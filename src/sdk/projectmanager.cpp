@@ -767,9 +767,13 @@ void ProjectManager::RebuildTree()
         if (project)
             project->SaveTreeState(m_pTree);
     }
-
     m_pTree->DeleteAllItems();
-    m_TreeRoot = m_pTree->AddRoot(_("Workspace"), 0, 0);
+    wxString title="";
+    if(m_pWorkspace)
+        title=m_pWorkspace->GetTitle();
+     if(title=="")
+         title="Workspace";
+    m_TreeRoot = m_pTree->AddRoot(title, 0, 0);
 
     for (int i = 0; i < count; ++i)
     {
