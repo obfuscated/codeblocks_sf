@@ -20,16 +20,28 @@ WorkspaceLoader::~WorkspaceLoader()
 	//dtor
 }
 
+inline ProjectManager* GetpMan() { return Manager::Get()->GetProjectManager(); }
+inline MessageManager* GetpMsg() { return Manager::Get()->GetMessageManager(); }
+
 bool WorkspaceLoader::Open(const wxString& filename)
 {
     TiXmlDocument doc(filename.c_str());
     if (!doc.LoadFile())
         return false;
     
-    ProjectManager* pMan = Manager::Get()->GetProjectManager();
-    MessageManager* pMsg = Manager::Get()->GetMessageManager();
-    if (!pMan || !pMsg)
+//    ProjectManager* pMan = Manager::Get()->GetProjectManager();
+//    MessageManager* pMsg = Manager::Get()->GetMessageManager();
+
+    if (!GetpMan() || !GetpMsg())
         return false;
+
+    // BUG: Race condition. to be fixed by Rick.
+    // If I click close AFTER pMan and pMsg are calculated,
+    // I get a segfault.
+    // I modified classes projectmanager and messagemanager,
+    // so that when self==NULL, they do nothing 
+    // (constructors, destructors and static functions excempted from this)
+    // This way, we'll use the *manager::Get() functions to check for nulls.
 
     TiXmlElement* root;
     TiXmlElement* wksp;
@@ -40,28 +52,30 @@ bool WorkspaceLoader::Open(const wxString& filename)
     root = doc.FirstChildElement("Code::Blocks_workspace_file");
     if (!root)
     {
-        pMsg->DebugLog("Not a valid Code::Blocks workspace file...");
+        GetpMsg()->DebugLog("Not a valid Code::Blocks workspace file...");
         return false;
     }
     wksp = root->FirstChildElement("Workspace");
     if (!wksp)
     {
-        pMsg->DebugLog("No 'Workspace' element in file...");
+        GetpMsg()->DebugLog("No 'Workspace' element in file...");
         return false;
     }
     proj = wksp->FirstChildElement("Project");
     if (!proj)
     {
-        pMsg->DebugLog("Workspace file contains no projects...");
+        GetpMsg()->DebugLog("Workspace file contains no projects...");
         return false;
     }
     
     while (proj)
     {
+        if(Manager::isappShuttingDown() || !GetpMan() || !GetpMsg())
+            return false;
         projectFilename = proj->Attribute("filename");
         if (projectFilename.IsEmpty())
         {
-            pMsg->DebugLog("'Project' node exists, but no filename?!?");
+            GetpMsg()->DebugLog("'Project' node exists, but no filename?!?");
             loadedProject = 0L;
         }
         else
@@ -69,7 +83,7 @@ bool WorkspaceLoader::Open(const wxString& filename)
             wxFileName wfname(filename);
             wxFileName fname(projectFilename);
             fname.MakeAbsolute(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
-            loadedProject = pMan->LoadProject(fname.GetFullPath());
+            loadedProject = GetpMan()->LoadProject(fname.GetFullPath());
         }
         if (loadedProject)
         {
@@ -82,8 +96,8 @@ bool WorkspaceLoader::Open(const wxString& filename)
                         m_pActiveProj = loadedProject;
                     break;
                 case TIXML_WRONG_TYPE:
-                    pMsg->DebugLog("Error %s: %s", doc.Value(), doc.ErrorDesc());
-                    pMsg->DebugLog("Wrong attribute type (expected 'int')");
+                    GetpMsg()->DebugLog("Error %s: %s", doc.Value(), doc.ErrorDesc());
+                    GetpMsg()->DebugLog("Wrong attribute type (expected 'int')");
                     break;
                 default:
                     break;
@@ -93,7 +107,7 @@ bool WorkspaceLoader::Open(const wxString& filename)
     }
     
     if (m_pActiveProj)
-        pMan->SetProject(m_pActiveProj);
+        GetpMan()->SetProject(m_pActiveProj);
     
     return true;
 }
