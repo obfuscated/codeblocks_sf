@@ -96,12 +96,20 @@ int AStylePlugin::Execute()
     FormatterSettings settings;
     settings.ApplyTo(formatter);
 
-    formatter.init(new ASStreamIterator(edText));
+    wxString eolChars;
+    switch (ed->GetControl()->GetEOLMode())
+    {
+        case wxSTC_EOL_CRLF: eolChars = "\r\n"; break;
+        case wxSTC_EOL_CR: eolChars = "\r"; break;
+        case wxSTC_EOL_LF: eolChars = "\n"; break;
+    }
+    
+    formatter.init(new ASStreamIterator(edText, eolChars));
     while (formatter.hasMoreLines())
     {
         formattedText << formatter.nextLine().c_str();
         if (formatter.hasMoreLines())
-            formattedText << '\n';
+            formattedText << eolChars;
     }
 
 	int pos = ed->GetControl()->GetCurrentPos();

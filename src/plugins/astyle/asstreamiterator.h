@@ -8,13 +8,15 @@
 class ASStreamIterator : public astyle::ASSourceIterator
 {
 	public:
-		ASStreamIterator(const wxChar* in);
+		ASStreamIterator(const wxChar* in, const wxString& eolChars);
 		virtual ~ASStreamIterator();
 
         bool hasMoreLines() const;
         std::string nextLine();
 	protected:
+        bool IsEOL(wxChar ch);
         const wxChar* m_In;
+        const wxString m_EOL;
         char buffer[2048];
 	private:
 };
