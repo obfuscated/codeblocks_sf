@@ -57,11 +57,9 @@ void CompilerMINGW::Reset()
 	m_Switches.libExtension = "a";
 	m_Switches.linkerNeedsLibPrefix = false;
 	m_Switches.linkerNeedsLibExtension = false;
-#ifdef __WXMSW__
 	m_Switches.buildMethod = cbmDirect;
-#else
-	m_Switches.buildMethod = cbmUseMake;
-#endif
+
+    // Summary of GCC options: http://gcc.gnu.org/onlinedocs/gcc/Option-Summary.html
 
     m_Options.ClearOptions();
 	m_Options.AddOption(_("Produce debugging symbols"),
@@ -72,12 +70,49 @@ void CompilerMINGW::Reset()
 				"-O -O1 -O2 -O3 -Os", 
 				_("You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."));
 	m_Options.AddOption(_("Profile code when executed"), "-pg", _("Profiling"), "-pg -lgmon");
-	m_Options.AddOption(_("Enable all compiler warnings"), "-Wall", _("Warnings"));
-	m_Options.AddOption(_("Optimize generated code (for speed)"), "-O", _("Optimization"));
-	m_Options.AddOption(_("Optimize more (for speed)"), "-O1", _("Optimization"));
-	m_Options.AddOption(_("Optimize even more (for speed)"), "-O2", _("Optimization"));
-	m_Options.AddOption(_("Optimize generated code (for size)"), "-Os", _("Optimization"));
-	m_Options.AddOption(_("Expensive optimizations"), "-fexpensive-optimizations", _("Optimization"));
+
+    wxString category = _("Warnings");
+
+    // warnings
+	m_Options.AddOption(_("Enable all compiler warnings (overrides every other setting)"), "-Wall", category);
+	m_Options.AddOption(_("Enable standard compiler warnings"), "-W", category);
+	m_Options.AddOption(_("Stop compiling after first error"), "-Wfatal-errors", category);
+	m_Options.AddOption(_("Inhibit all warning messages"), "-w", category);
+	m_Options.AddOption(_("Enable warnings demanded by strict ISO C and ISO C++"), "-pedantic", category);
+	m_Options.AddOption(_("Treat as errors the warnings demanded by strict ISO C and ISO C++"), "-pedantic-error", category);
+	m_Options.AddOption(_("Warn if main() is not conformant"), "-Wmain", category);
+    // optimization
+    category = _("Optimization");
+	m_Options.AddOption(_("Optimize generated code (for speed)"), "-O", category);
+	m_Options.AddOption(_("Optimize more (for speed)"), "-O1", category);
+	m_Options.AddOption(_("Optimize even more (for speed)"), "-O2", category);
+	m_Options.AddOption(_("Optimize generated code (for size)"), "-Os", category);
+	m_Options.AddOption(_("Expensive optimizations"), "-fexpensive-optimizations", category);
+    // machine dependent options - cpu arch
+    category = _("CPU architecture tuning (choose none, or only one of these)");
+	m_Options.AddOption(_("i386"), "-march=i386", category);
+	m_Options.AddOption(_("i486"), "-march=i486", category);
+	m_Options.AddOption(_("Intel Pentium"), "-march=i586", category);
+	m_Options.AddOption(_("Intel Pentium (MMX)"), "-march=pentium-mmx", category);
+	m_Options.AddOption(_("Intel Pentium PRO"), "-march=i686", category);
+	m_Options.AddOption(_("Intel Pentium 2 (MMX)"), "-march=pentium2", category);
+	m_Options.AddOption(_("Intel Pentium 3 (MMX, SSE)"), "-march=pentium3", category);
+	m_Options.AddOption(_("Intel Pentium 4 (MMX, SSE, SSE2)"), "-march=pentium4", category);
+	m_Options.AddOption(_("Intel Pentium 4 Prescott (MMX, SSE, SSE2, SSE3)"), "-march=prescott", category);
+	m_Options.AddOption(_("Intel Pentium 4 Nocona (MMX, SSE, SSE2, SSE3, 64bit extensions)"), "-march=nocona", category);
+	m_Options.AddOption(_("Intel Pentium M (MMX, SSE, SSE2)"), "-march=pentium-m", category);
+	m_Options.AddOption(_("AMD K6 (MMX)"), "-march=k6", category);
+	m_Options.AddOption(_("AMD K6-2 (MMX, 3DNow!)"), "-march=k6-2", category);
+	m_Options.AddOption(_("AMD K6-3 (MMX, 3DNow!)"), "-march=k6-3", category);
+	m_Options.AddOption(_("AMD Athlon (MMX, 3DNow!, enhanced 3DNow!, SSE prefetch)"), "-march=athlon", category);
+	m_Options.AddOption(_("AMD Athlon Thunderbird (MMX, 3DNow!, enhanced 3DNow!, SSE prefetch)"), "-march=athlon-tbird", category);
+	m_Options.AddOption(_("AMD Athlon 4 (MMX, 3DNow!, enhanced 3DNow!, full SSE)"), "-march=athlon-4", category);
+	m_Options.AddOption(_("AMD Athlon XP (MMX, 3DNow!, enhanced 3DNow!, full SSE)"), "-march=athlon-xp", category);
+	m_Options.AddOption(_("AMD Athlon MP (MMX, 3DNow!, enhanced 3DNow!, full SSE)"), "-march=athlon-mp", category);
+	m_Options.AddOption(_("AMD K8 core (x86-64 instruction set)"), "-march=k8", category);
+	m_Options.AddOption(_("AMD Opteron (x86-64 instruction set)"), "-march=opteron", category);
+	m_Options.AddOption(_("AMD Athlon64 (x86-64 instruction set)"), "-march=athlon64", category);
+	m_Options.AddOption(_("AMD Athlon-FX (x86-64 instruction set)"), "-march=athlon-fx", category);
 
     m_Commands[(int)ctCompileObjectCmd] = "$compiler $options $includes -c $file -o $object";
     m_Commands[(int)ctGenDependenciesCmd] = "$compiler -MM $options -MF $dep_object -MT $object $includes $file";
@@ -97,7 +132,9 @@ void CompilerMINGW::Reset()
     m_RegExes.Add(RegExStruct(_("Compiler warning"), cltWarning, "([ \tA-Za-z0-9_\\-\\+/\\.]+):([0-9]+):[ \t][Ww]arning:[ \t](.*)", 3, 1, 2));
     m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, "([ \tA-Za-z0-9_\\-\\+/\\.]+):([0-9]+):[ \t](.*)", 3, 1, 2));
     m_RegExes.Add(RegExStruct(_("Linker error"), cltError, "([ \tA-Za-z0-9_\\-\\+/\\.]+):([0-9]+):[0-9]+:[ \t](.*)", 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Linker error (2)"), cltError, "[ \tA-Za-z0-9_\\-\\+/\\.]+\\(.text\\+[0-9A-Za-z]+\\):([ \tA-Za-z0-9_\\-\\+/\\.]+):[ \t](.*)", 2, 1));
     m_RegExes.Add(RegExStruct(_("Undefined reference"), cltError, "([ \tA-Za-z0-9_\\-\\+/\\.]+):[ \t](undefined reference.*)", 2, 1));
+    m_RegExes.Add(RegExStruct(_("Resource compiler error"), cltError, "windres.exe:[ \t](.*)", 1));
 
     m_CompilerOptions.Clear();
     m_LinkerOptions.Clear();

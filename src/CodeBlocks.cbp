@@ -10,11 +10,11 @@
 		<Option compiler="0"/>
 		<Build>
 			<Target title="tinyXML">
-				<Option output="sdk\tinyxml\libtxml.a"/>
+				<Option output="codeblocks.dll"/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
-				<Option type="2"/>
+				<Option type="3"/>
 				<Option compiler="0"/>
 			</Target>
 			<Target title="sdk">
@@ -198,6 +198,30 @@
 					<Add library="libstc.a"/>
 					<Add library="libwxxrc.a"/>
 					<Add library="libwxmsw$(WX_VER).a"/>
+					<Add directory="devel"/>
+				</Linker>
+			</Target>
+			<Target title="plugin_DefMimeHandler">
+				<Option output="devel\share\CodeBlocks\plugins\defaultmimehandler.dll"/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option type="3"/>
+				<Option compiler="0"/>
+				<Option projectLinkerOptionsRelation="1"/>
+				<Option projectIncludeDirsRelation="2"/>
+				<Option projectLibDirsRelation="2"/>
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN"/>
+					<Add option="-D_WINDLL"/>
+					<Add directory="sdk"/>
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--enable-auto-image-base"/>
+					<Add option="-Wl,--add-stdcall-alias"/>
+					<Add library="codeblocks"/>
+					<Add library="wxxrc"/>
+					<Add library="wxmsw$(WX_VER)"/>
 					<Add directory="devel"/>
 				</Linker>
 			</Target>
@@ -1028,6 +1052,38 @@
 			<Option compile="0"/>
 			<Option link="0"/>
 			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\defaultmimehandler\defaultmimehandler.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_DefMimeHandler"/>
+		</Unit>
+		<Unit filename="plugins\defaultmimehandler\defaultmimehandler.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DefMimeHandler"/>
+		</Unit>
+		<Unit filename="plugins\defaultmimehandler\editmimetypesdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_DefMimeHandler"/>
+		</Unit>
+		<Unit filename="plugins\defaultmimehandler\editmimetypesdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DefMimeHandler"/>
+		</Unit>
+		<Unit filename="plugins\defaultmimehandler\mimetypesarray.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DefMimeHandler"/>
+		</Unit>
+		<Unit filename="plugins\defaultmimehandler\resources\edit_files_handling.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DefMimeHandler"/>
 		</Unit>
 		<Unit filename="plugins\pluginwizard\enterinfodlg.cpp">
 			<Option compilerVar="CPP"/>

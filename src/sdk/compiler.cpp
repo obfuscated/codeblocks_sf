@@ -224,7 +224,7 @@ CompilerLineType Compiler::CheckForWarningsAndErrors(const wxString& line)
         if (regex.Matches(line))
         {
             if (rs.filename > 0)
-                 m_ErrorFilename = regex.GetMatch(line, rs.filename);
+                 m_ErrorFilename = UnixFilename(regex.GetMatch(line, rs.filename));
             if (rs.line > 0)
                 m_ErrorLine = regex.GetMatch(line, rs.line);
             for (int x = 0; x < 3; ++x)

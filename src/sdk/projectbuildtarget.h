@@ -4,7 +4,6 @@
 #include "settings.h"
 #include "globals.h"
 #include "compiletargetbase.h"
-#include "projectfileoptionsdlg.h"
 #include <wx/dynarray.h>
 #include <wx/filename.h>
 

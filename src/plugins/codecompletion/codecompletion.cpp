@@ -147,17 +147,6 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
     	Manager::Get()->GetMessageManager()->DebugLog(_("Could not find Search menu!"));
 }
 
-void CodeCompletion::RemoveMenu(wxMenuBar* menuBar)
-{
-    if (m_EditMenu)
-    {
-        m_EditMenu->Delete(idMenuCodeComplete);
-        m_EditMenu->Delete(idMenuShowCallTip);
-    }
-    if (m_SearchMenu)
-        m_SearchMenu->Delete(idMenuGotoFunction);
-}
-
 void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg)
 {
     // if not attached, exit
@@ -189,11 +178,6 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
 }
 
 void CodeCompletion::BuildToolBar(wxToolBar* toolBar)
-{
-	// no need for toolbar items
-}
-
-void CodeCompletion::RemoveToolBar(wxToolBar* toolBar)
 {
 	// no need for toolbar items
 }

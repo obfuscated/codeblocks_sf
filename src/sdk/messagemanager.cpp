@@ -27,6 +27,7 @@
 #include <wx/datetime.h>
 #include <wx/menu.h>
 #include <wx/imaglist.h>
+#include <wx/log.h>
 
 #include "manager.h"
 #include "messagemanager.h" // class's header file
@@ -144,6 +145,36 @@ void MessageManager::DebugLog(const wxChar* msg, ...)
 	wxDateTime timestamp = wxDateTime::UNow();
     m_Logs[mltDebug]->AddLog("[" + timestamp.Format("%X.%l") + "]: " + tmp);
 	wxYield();
+}
+
+void MessageManager::DebugLogWarning(const wxChar* msg, ...)
+{
+    SANITY_CHECK();
+    wxString tmp;
+    va_list arg_list;
+
+    va_start(arg_list, msg);
+    tmp = wxString::FormatV(msg, arg_list);
+    va_end(arg_list);
+
+    wxString typ = _("WARNING");
+    wxSafeShowMessage(typ, typ + ":\n\n" + tmp);
+    DebugLog(typ + tmp);
+}
+
+void MessageManager::DebugLogError(const wxChar* msg, ...)
+{
+    SANITY_CHECK();
+    wxString tmp;
+    va_list arg_list;
+
+    va_start(arg_list, msg);
+    tmp = wxString::FormatV(msg, arg_list);
+    va_end(arg_list);
+
+    wxString typ = _("ERROR");
+    wxSafeShowMessage(typ, typ + ":\n\n" + tmp);
+    DebugLog(typ + tmp);
 }
 
 // add a new log page

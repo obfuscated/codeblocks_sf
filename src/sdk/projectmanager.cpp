@@ -844,10 +844,7 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
     SANITY_CHECK();
 	FileType ft = FileTypeOf(filename);
 	if (ft == ftHeader ||
-		ft == ftSource ||
-		ft == ftResource ||
-		ft == ftXRCResource ||
-		ft == ftLua)
+		ft == ftSource)
 	{
 		cbEditor* ed = Manager::Get()->GetEditorManager()->Open(filename);
 		if (ed)
@@ -856,7 +853,11 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
 			ed->Show(true);
 		}
 		else
-            Manager::Get()->GetMessageManager()->DebugLog("Failed to open '%s'", filename.c_str());
+		{
+            wxString msg;
+            msg.Printf(_("Failed to open '%s'."), filename.c_str());
+            Manager::Get()->GetMessageManager()->DebugLogError(msg);
+        }
 	}
 	else
 	{
@@ -865,16 +866,18 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
 		PluginsArray mimes = Manager::Get()->GetPluginManager()->GetMimeOffers();
 		for (unsigned int i = 0; i < mimes.GetCount(); ++i)
 		{
-			cbMimePlugin* plugin = dynamic_cast<cbMimePlugin*>(mimes[i]);
-			if (plugin && plugin->CanOpenFile(filename))
+			cbMimePlugin* plugin = (cbMimePlugin*)mimes[i];
+			if (plugin && plugin->CanHandleFile(filename))
 			{
-				opened = plugin->OpenFile(filename);
+				opened = plugin->OpenFile(filename) == 0;
 				break;
 			}
 		}
 		if (!opened)
 		{
-            Manager::Get()->GetMessageManager()->DebugLog("Could not open file '%s' (no registered handler)", filename.c_str());
+            wxString msg;
+            msg.Printf(_("Could not open file '%s'.\nNo handler registered for this type of file."), filename.c_str());
+            Manager::Get()->GetMessageManager()->DebugLogError(msg);
 		}
 	}
 }

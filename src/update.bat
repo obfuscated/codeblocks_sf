@@ -22,6 +22,7 @@ echo Packing plugins UI resources
 %ZIPCMD% -j9 %RESDIR%\code_completion.zip plugins\codecompletion\resources\*.xrc > nul
 %ZIPCMD% -j9 %RESDIR%\compiler_gcc.zip plugins\compilergcc\resources\*.xrc > nul
 %ZIPCMD% -j9 %RESDIR%\debugger_gdb.zip plugins\debuggergdb\resources\*.xrc > nul
+%ZIPCMD% -j9 %RESDIR%\defaultmimehandler.zip plugins\defaultmimehandler\resources\*.xrc > nul
 %ZIPCMD% -j9 %RESDIR%\todo.zip plugins\todo\resources\*.xrc > nul
 echo Packing core UI bitmaps
 cd src\resources

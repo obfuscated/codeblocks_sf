@@ -610,16 +610,13 @@ void MakefileGenerator::DoAddMakefileObjs(wxString& buffer)
 //				ConvertToMakefileFriendly(fname);
 				
 				wxFileName deps_tmp = fname;
-				wxString depsS = deps_tmp.GetPath(wxPATH_GET_VOLUME);
-				if (!depsS.IsEmpty())
-                     depsS << "/";
-                depsS << target->GetDepsOutput() << "/" << deps_tmp.GetName() << ".d";
+				deps_tmp.SetExt("d");
+				wxString depsS;
+                depsS << target->GetDepsOutput() << "/" << deps_tmp.GetFullPath();
 
 				wxFileName objs_tmp = fname;
-				wxString objsS = objs_tmp.GetPath(wxPATH_GET_VOLUME);
-				if (!objsS.IsEmpty())
-                     objsS << "/";
-                objsS << target->GetObjectOutput() << "/" << objs_tmp.GetName() << "." << objs_tmp.GetExt();
+				wxString objsS;
+                objsS << target->GetObjectOutput() << "/" << fname;
 
                 objsS = UnixFilename(objsS);
                 ConvertToMakefileFriendly(objsS);
@@ -1132,33 +1129,28 @@ void MakefileGenerator::DoAddMakefileTarget_Link(wxString& buffer)
 
 void MakefileGenerator::ConvertToMakefileFriendly(wxString& str)
 {
-#ifdef __WXMSW__
     if (!m_GeneratingMakefile)
         return;
-#endif
 
     if (str.IsEmpty())
         return;
 
+    str.Replace("\\", "/");
     for (unsigned int i = 0; i < str.Length(); ++i)
     {
         if (str[i] == ' ' && (i > 0 && str[i - 1] != '\\'))
             str.insert(i, '\\');
     }
-    str.Replace("/", "\\\\");
 //    str.Replace("\\\\", "/");
 }
 
 void MakefileGenerator::QuoteStringIfNeeded(wxString& str)
 {
-    bool force = false;
-#ifdef __WXMSW__
-    force = !m_GeneratingMakefile;
-#endif
-    if (force ||
-        ((m_CompilerSet->GetSwitches().forceCompilerUseQuotes ||
-        m_CompilerSet->GetSwitches().forceLinkerUseQuotes) &&
-        str.GetChar(0) != '"'))
+    if (m_GeneratingMakefile)
+        return;
+    if (m_CompilerSet->GetSwitches().forceCompilerUseQuotes ||
+        m_CompilerSet->GetSwitches().forceLinkerUseQuotes ||
+        (str.Find(' ') != -1 && str.GetChar(0) != '"'))
     {
         str = '"' + str + '"';
     }
@@ -1207,16 +1199,13 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
             ProjectFile* pf = m_Files[i];
             if (pf->compile &&
                 !pf->compilerVar.IsEmpty() &&
-                pf->buildTargets.Index(target->GetTitle()) >= 0)// &&
-//                m_ObjectFiles.Index(pf) == wxNOT_FOUND)
+                pf->buildTargets.Index(target->GetTitle()) >= 0)
             {
-//                m_ObjectFiles.Add(pf); // mark it as included in the Makefile
-
                 wxFileName d_filename_tmp = UnixFilename(pf->GetObjName());
-				wxFileName d_filename = d_filename_tmp.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + target->GetDepsOutput() + sep + d_filename_tmp.GetFullName();
+				wxFileName d_filename = target->GetDepsOutput() + sep + d_filename_tmp.GetFullPath();
                 d_filename.SetExt("d");
                 wxFileName o_filename_tmp = UnixFilename(pf->GetObjName());
-				wxFileName o_filename = o_filename_tmp.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + target->GetObjectOutput() + sep + o_filename_tmp.GetFullName();
+				wxFileName o_filename = target->GetObjectOutput() + sep + o_filename_tmp.GetFullPath();
                 // vars to make easier reading the following code
                 wxString o_file = UnixFilename(o_filename.GetFullPath());
                 ConvertToMakefileFriendly(o_file);

@@ -3,14 +3,14 @@
 
 [Setup]
 AppName=Code::Blocks
-AppVerName=Code::Blocks 1.0-beta5
+AppVerName=Code::Blocks 1.0-beta6
 AppPublisher=Code::Blocks
 DefaultDirName={pf}\CodeBlocks
 DefaultGroupName=CodeBlocks
 LicenseFile=..\COPYING
-OutputBaseFilename=CodeBlocks-1.0-beta5
+OutputBaseFilename=CodeBlocks-1.0-beta6
 AppPublisherURL=www.codeblocks.org
-AppVersion=1.0-beta5
+AppVersion=1.0-beta6
 UninstallDisplayIcon={app}\codeblocks.exe
 UninstallDisplayName=Code::Blocks
 ShowLanguageDialog=no
@@ -48,6 +48,7 @@ Source: WebSite.url; DestDir: {app}; Components: ProgramFiles
 Source: Forums.url; DestDir: {app}; Components: ProgramFiles
 Source: ReportBugs.url; DestDir: {app}; Components: ProgramFiles
 Source: Download_BCC55.url; DestDir: {app}; Components: ProgramFiles
+Source: Download_DMC.url; DestDir: {app}; Components: ProgramFiles
 Source: Download_MSVC2003.url; DestDir: {app}; Components: ProgramFiles
 Source: Download_MINGW.url; DestDir: {app}; Components: ProgramFiles
 Source: COMPILERS_win32.rtf; DestDir: {app}; Components: ProgramFiles
@@ -56,6 +57,7 @@ Source: ..\output\share\CodeBlocks\astyle.zip; DestDir: {app}\share\CodeBlocks; 
 Source: ..\output\share\CodeBlocks\class_wizard.zip; DestDir: {app}\share\CodeBlocks; Components: ClassWizard
 Source: ..\output\share\CodeBlocks\code_completion.zip; DestDir: {app}\share\CodeBlocks; Components: CodeCompletion
 Source: ..\output\share\CodeBlocks\compiler_gcc.zip; DestDir: {app}\share\CodeBlocks; Components: CompilerGCC
+Source: ..\output\share\CodeBlocks\debugger_gdb.zip; DestDir: {app}\share\CodeBlocks; Components: DebuggerGDB
 Source: ..\output\share\CodeBlocks\manager_resources.zip; DestDir: {app}\share\CodeBlocks; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\plugin_wizard.zip; DestDir: {app}\share\CodeBlocks; Components: PluginWizard
 Source: ..\output\share\CodeBlocks\todo.zip; DestDir: {app}\share\CodeBlocks; Components: ToDo
@@ -150,14 +152,15 @@ Source: ..\plugins\codecompletion\resources\images\var_public.png; DestDir: {app
 Name: {group}\CodeBlocks; Filename: {app}\codeblocks.exe; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Components: ProgramFiles
 Name: {userdesktop}\CodeBlocks; Filename: {app}\codeblocks.exe; Tasks: desktopicon; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Components: ProgramFiles
 Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\CodeBlocks; Filename: {app}\codeblocks.exe; Tasks: quicklaunchicon; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Components: ProgramFiles
-Name: {group}\CodeBlocks on-line; Filename: {app}\WebSite.url; Comment: Go to Code::Blocks IDE website; Components: ProgramFiles
-Name: {group}\CodeBlocks forums; Filename: {app}\Forums.url; Comment: Go to Code::Blocks IDE discussion forums; Components: ProgramFiles
-Name: {group}\License; Filename: {app}\COPYING.txt; Components: ProgramFiles
-Name: {group}\Report a bug; Filename: {app}\ReportBugs.url; Comment: Report bugs you 've found in Code::Blocks; Components: ProgramFiles
-Name: {group}\Download MinGW Compiler & Debugger; Filename: {app}\Download_MINGW.url; Comment: Download the MinGW distribution which contains the GNU GCC compiler and GDB debugger; Components: ProgramFiles
-Name: {group}\Download Microsoft Visual C++ Free Toolkit 2003; Filename: {app}\Download_MSVC2003.url; Comment: Download the Microsoft Visual C++ Free Toolkit 2003; Components: ProgramFiles
-Name: {group}\Download Borland C++ Compiler 5.5; Filename: {app}\Download_BCC55.url; Comment: Download the Borland C++ Compiler 5.5; Components: ProgramFiles
-Name: {group}\How to install a compiler; Filename: {app}\COMPILERS_win32.rtf
+Name: {group}\Links\CodeBlocks on-line; Filename: {app}\WebSite.url; Comment: Go to Code::Blocks IDE website; Components: ProgramFiles
+Name: {group}\Links\CodeBlocks forums; Filename: {app}\Forums.url; Comment: Go to Code::Blocks IDE discussion forums; Components: ProgramFiles
+Name: {group}\Docs\License; Filename: {app}\COPYING.txt; Components: ProgramFiles
+Name: {group}\Links\Report a bug; Filename: {app}\ReportBugs.url; Comment: Report bugs you 've found in Code::Blocks; Components: ProgramFiles
+Name: {group}\Links\Download MinGW Compiler & Debugger; Filename: {app}\Download_MINGW.url; Comment: Download the MinGW distribution which contains the GNU GCC compiler and GDB debugger; Components: ProgramFiles
+Name: {group}\Links\Download Microsoft Visual C++ Free Toolkit 2003; Filename: {app}\Download_MSVC2003.url; Comment: Download the Microsoft Visual C++ Free Toolkit 2003; Components: ProgramFiles
+Name: {group}\Links\Download Borland C++ Compiler 5.5; Filename: {app}\Download_BCC55.url; Comment: Download the Borland C++ Compiler 5.5; Components: ProgramFiles
+Name: {group}\Links\Download Digital Mars Compiler; Filename: {app}\Download_DMC.url; Comment: Download the Digital Mars free compiler; Components: ProgramFiles
+Name: {group}\Docs\How to install a compiler; Filename: {app}\COMPILERS_win32.rtf
 
 [Run]
 ; NOTE: The following entry contains an English phrase ("Launch"). You are free to translate it into another language if required.

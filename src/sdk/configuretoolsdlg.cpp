@@ -30,6 +30,7 @@
 #include <wx/msgdlg.h>
 
 #include "manager.h"
+#include "toolsmanager.h"
 #include "configuretoolsdlg.h"
 #include "edittooldlg.h"
 

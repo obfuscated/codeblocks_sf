@@ -79,31 +79,19 @@ bool CreateDirRecursively(const wxString& full_path, int perms)
 
 wxString UnixFilename(const wxString& filename)
 {
-    if (filename.IsEmpty())
-        return wxEmptyString;
-    wxString unixname = filename;
-#ifndef __WXMSW__
-    unixname.Replace("\\", "/");
+    wxString result = filename;
+#ifdef __WXMSW__
+    while (result.Replace("/", "\\"))
+        ;
+    while (result.Replace("\\\\", "\\"))
+        ;
 #else
-    if (wxGetOsVersion() == wxWIN95)
-    {
-        // win95 and win98 don't understand \\ in filenames as path separator
-        unixname.Replace("\\\\", "\\");
-        return unixname;
-    }
-
-    for (unsigned int i = 0; i < unixname.Length(); ++i)
-    {
-        if (unixname[i] == '\\' && i < unixname.Length() - 1)
-        {
-            if (unixname[i + 1] != ' ' && unixname[i + 1] != '\\')
-                unixname.insert(i, '\\'); // escape it
-            ++i;
-        }
-    }
+    while (result.Replace("\\", "/"))
+        ;
+    while (result.Replace("//", "/"))
+        ;
 #endif
-
-    return unixname;
+    return result;
 }
 
 FileType FileTypeOf(const wxString& filename)

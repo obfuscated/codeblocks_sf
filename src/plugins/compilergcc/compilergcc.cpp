@@ -329,7 +329,7 @@ void CompilerGCC::BuildMenu(wxMenuBar* menuBar)
     m_Menu->Append(idMenuCompileAll, _("Compile all pro&jects"), _("Compile all projects"));
     m_Menu->Append(idMenuRebuildAll, _("Reb&uild all projects"), _("Rebuild all projects"));
     m_Menu->AppendSeparator();
-    m_Menu->Append(idMenuKillProcess, _("&Kill process"), _("Kill the running process"));
+    m_Menu->Append(idMenuKillProcess, _("&Abort"), _("Abort the running build process"));
     m_Menu->AppendSeparator();
 
 	m_ErrorsMenu = new wxMenu(""); // target selection menu
@@ -379,17 +379,6 @@ void CompilerGCC::BuildMenu(wxMenuBar* menuBar)
     }
 }
 
-void CompilerGCC::RemoveMenu(wxMenuBar* menuBar)
-{
-    int pos = menuBar->FindMenu(_("&Compile"));
-    if (pos != wxNOT_FOUND)
-    {
-        m_Menu = menuBar->Remove(pos);
-        delete m_Menu;
-        m_Menu = 0;
-    }
-}
-
 void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg)
 {
 	if (!m_IsAttached)
@@ -400,37 +389,58 @@ void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxS
 		
 	if (!CheckProject())
 		return;
-		
+    
+    FileType ft = FileTypeOf(arg);
+
     if (arg.IsEmpty())
     {
         // popup menu in empty space in ProjectManager
         menu->Append(idMenuCompileAll, _("Compile all projects"));
         menu->Append(idMenuRebuildAll, _("Rebuild all projects"));
     }
-    else if (FileTypeOf(arg) != ftSource)
-    {
-        // popup menu on a tree item (not a file)
-        menu->AppendSeparator();
-        menu->Append(idMenuCompileFromProjectManager, _("&Compile\tCtrl-F9"));
-        menu->Append(idMenuRebuildFromProjectManager, _("Re&build\tCtrl-F11"));
-        menu->Append(idMenuCleanFromProjectManager, _("C&lean"));
-        menu->Append(idMenuDistCleanFromProjectManager, _("Di&st clean"));
-		wxMenu* subMenu = new wxMenu();
-        subMenu->Append(idMenuCompileTargetFromProjectManager, _("Compile"));
-        subMenu->Append(idMenuRebuildTargetFromProjectManager, _("Rebuild"));
-        subMenu->Append(idMenuCleanTargetFromProjectManager, _("Clean"));
-        subMenu->Append(idMenuDistCleanTargetFromProjectManager, _("Dist clean"));
-        subMenu->AppendSeparator();
-        subMenu->Append(idMenuTargetCompilerOptions, _("Build options"));
-		menu->Append(idMenuTargetCompilerOptionsSub, _("Specific build target..."), subMenu);
-        menu->AppendSeparator();
-        menu->Append(idMenuProjectCompilerOptions, _("Build options"));
-    }
     else
     {
-        // popup menu on a tree item (a file)
-        menu->AppendSeparator();
-        menu->Append(idMenuCompileFileFromProjectManager, _("Compile file"));
+        // see if the arg is a project name
+        bool found = false;
+        ProjectsArray* array = Manager::Get()->GetProjectManager()->GetProjects();
+        if (array)
+        {
+            for (size_t i = 0; i < array->GetCount(); ++i)
+            {
+                cbProject* cur = array->Item(i);
+                if (cur && cur->GetTitle() == arg)
+                {
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        if (found)
+        {
+            // popup menu on a project
+            menu->AppendSeparator();
+            menu->Append(idMenuCompileFromProjectManager, _("&Compile\tCtrl-F9"));
+            menu->Append(idMenuRebuildFromProjectManager, _("Re&build\tCtrl-F11"));
+            menu->Append(idMenuCleanFromProjectManager, _("C&lean"));
+            menu->Append(idMenuDistCleanFromProjectManager, _("Di&st clean"));
+            wxMenu* subMenu = new wxMenu();
+            subMenu->Append(idMenuCompileTargetFromProjectManager, _("Compile"));
+            subMenu->Append(idMenuRebuildTargetFromProjectManager, _("Rebuild"));
+            subMenu->Append(idMenuCleanTargetFromProjectManager, _("Clean"));
+            subMenu->Append(idMenuDistCleanTargetFromProjectManager, _("Dist clean"));
+            subMenu->AppendSeparator();
+            subMenu->Append(idMenuTargetCompilerOptions, _("Build options"));
+            menu->Append(idMenuTargetCompilerOptionsSub, _("Specific build target..."), subMenu);
+            menu->AppendSeparator();
+            menu->Append(idMenuProjectCompilerOptions, _("Build options"));
+        }
+        else if (ft == ftSource || ft == ftHeader)
+        {
+            // popup menu on a compilable file
+            menu->AppendSeparator();
+            menu->Append(idMenuCompileFileFromProjectManager, _("Compile file"));
+        }
     }
 }
 
@@ -462,20 +472,6 @@ void CompilerGCC::BuildToolBar(wxToolBar* toolBar)
         #endif
         toolBar->Realize();
 	}
-}
-
-void CompilerGCC::RemoveToolBar(wxToolBar* toolBar)
-{
-    toolBar->DeleteTool(idToolTarget);
-    toolBar->DeleteTool(idToolTargetLabel);
-    toolBar->DeleteTool(idMenuRebuild);
-    toolBar->DeleteTool(idMenuCompileAndRun);
-    toolBar->DeleteTool(idMenuRun);
-    toolBar->DeleteTool(idMenuCompile);
-    
-    m_ToolTargetLabel = 0;
-    m_ToolTarget = 0;
-    m_pToolbar = 0;
 }
 
 void CompilerGCC::SetupEnvironment()
@@ -1179,6 +1175,11 @@ int CompilerGCC::KillProcess()
         return -1;
         
     m_Queue.Clear();
+    
+    // in direct mode, no need to try and kill the process
+    // clearing the commands queue should be enough...
+    if (CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches().buildMethod == cbmDirect)
+        return 0;
 
     wxKillError ret = wxProcess::Kill(m_Pid, wxSIGTERM);
     switch (ret)

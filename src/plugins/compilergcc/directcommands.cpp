@@ -84,7 +84,7 @@ DirectCommands::~DirectCommands()
 // static
 void DirectCommands::QuoteStringIfNeeded(wxString& str)
 {
-    if (!str.IsEmpty() && str.GetChar(0) != '"')
+    if (!str.IsEmpty() && str.Find(' ') != -1 && str.GetChar(0) != '"')
         str = "\"" + str + "\"";
 }
 

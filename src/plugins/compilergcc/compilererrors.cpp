@@ -141,7 +141,7 @@ void CompilerErrors::DoGotoError(const CompileError& error)
 	cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
 	if (project)
 	{
-        wxString filename = UnixFilename(error.filename);
+        wxString filename = error.filename;
         bool isAbsolute = (filename.Length() > 1 && filename.GetChar(1) == ':') ||
                            filename.StartsWith("/") ||
                            filename.StartsWith("\\");

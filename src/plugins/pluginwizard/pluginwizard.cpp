@@ -50,7 +50,7 @@ PluginWizard::PluginWizard()
     wxXmlResource::Get()->Load(resPath + "/plugin_wizard.zip#zip:*.xrc");
 
     m_PluginInfo.name = "PluginWizard";
-    m_PluginInfo.title = "Plugin wizard";
+    m_PluginInfo.title = "Code::Blocks Plugin wizard";
     m_PluginInfo.version = "0.1";
     m_PluginInfo.description = "This is the Code::Blocks plugin wizard...";
     m_PluginInfo.author = "Yiannis An. Mandravellos";
@@ -80,8 +80,8 @@ int PluginWizard::Execute()
     project->AddCompilerOption("-D__GNUWIN32__");
     project->AddCompilerOption("-DWXUSINGDLL");
     project->AddCompilerOption("-DBUILDING_PLUGIN");
-    project->AddLinkerOption("-lcodeblocks");
-    project->AddLinkerOption("-lwxmsw242");
+    project->AddLinkLib("codeblocks");
+    project->AddLinkLib("wxmsw242");
 
     wxSetWorkingDirectory(project->GetBasePath());
 
@@ -103,7 +103,7 @@ int PluginWizard::Execute()
         Manager::Get()->GetProjectManager()->RebuildTree();
 
 		wxMessageDialog msg(Manager::Get()->GetAppWindow(),
-						_("The new plugin has been created.\n"
+						_("The new plugin project has been created.\n"
 						"Don't forget to add the SDK include and library dirs\n"
 						"in the respective project build options..."),
 						_("Information"),

@@ -32,6 +32,8 @@ class MessageManager : public wxNotebook
         int AddLog(MessageLog* log);
 		void Log(const wxChar* msg, ...);
 		void DebugLog(const wxChar* msg, ...);
+		void DebugLogWarning(const wxChar* msg, ...);
+		void DebugLogError(const wxChar* msg, ...);
 		void Log(int id, const wxChar* msg, ...);
 		void AppendLog(const wxChar* msg, ...);
 		void AppendLog(int id, const wxChar* msg, ...);

@@ -310,13 +310,33 @@ PluginsArray PluginManager::DoGetOffersFor(PluginType type)
 {
     PluginsArray arr;
     SANITY_CHECK(arr);
+
+    // special case for MIME plugins
+    // we 'll add the default MIME handler, last in the returned array
+    cbPlugin* dflt = 0;
+
     for (unsigned int i = 0; i < m_Plugins.GetCount(); ++i)
     {
         cbPlugin* plug = m_Plugins[i]->plugin;
         if (plug->GetType() == type)
-            arr.Add(plug);
+        {
+            if (type == ptMime)
+            {
+                // default MIME handler?
+                if (((cbMimePlugin*)plug)->HandlesEverything())
+                    dflt = plug;
+                else
+                    arr.Add(plug);
+            }
+            else
+                arr.Add(plug);
+        }
     }
-    
+
+    // add default MIME handler last
+    if (dflt)
+        arr.Add(dflt);
+
     return arr;
 }
 

@@ -221,17 +221,6 @@ void DebuggerGDB::BuildMenu(wxMenuBar* menuBar)
     menuBar->Insert(finalPos, m_pMenu, _("&Debug"));
 }
 
-void DebuggerGDB::RemoveMenu(wxMenuBar* menuBar)
-{
-    int pos = menuBar->FindMenu(_("&Debug"));
-    if (pos != wxNOT_FOUND)
-    {
-        m_pMenu = menuBar->Remove(pos);
-        delete m_pMenu;
-        m_pMenu = 0;
-    }
-}
-
 void DebuggerGDB::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg)
 {
 	if (!m_IsAttached)
@@ -302,14 +291,6 @@ void DebuggerGDB::BuildToolBar(wxToolBar* toolBar)
 	}
 }
 #endif
-void DebuggerGDB::RemoveToolBar(wxToolBar* toolBar)
-{
-    toolBar->DeleteTool(idMenuDebug);
-    toolBar->DeleteTool(idMenuRunToCursor);
-    toolBar->DeleteTool(idMenuNext);
-    toolBar->DeleteTool(idMenuStep);
-    toolBar->DeleteTool(idMenuStop);
-}
 
 void DebuggerGDB::DoWatches()
 {
@@ -403,7 +384,7 @@ int DebuggerGDB::Debug()
 		msgMan->AppendLog(m_PageIndex, _("Compiling: "));
 		m_pCompiler->Compile(target);
 		while (m_pCompiler->IsRunning())
-			wxYield();
+			wxSafeYield();
         msgMan->SwitchTo(m_PageIndex);
 		if (m_pCompiler->GetExitCode() != 0)
 		{
@@ -506,13 +487,6 @@ int DebuggerGDB::Debug()
 	if (!target->GetExecutionParameters().IsEmpty())
 		SendCommand("set args " + target->GetExecutionParameters());
 
-	SetBreakpoints();
-	if (!m_Tbreak.IsEmpty())
-	{
-		SendCommand(m_Tbreak);
-		m_Tbreak.Clear();
-	}
-
     // switch to output dir
     wxFileName dir(target->GetOutputFilename());
     wxString path = UnixFilename(dir.GetPath(wxPATH_GET_VOLUME));
@@ -524,6 +498,13 @@ int DebuggerGDB::Debug()
         SendCommand(cmd);
     }
 
+	SetBreakpoints();
+	if (!m_Tbreak.IsEmpty())
+	{
+		SendCommand(m_Tbreak);
+		m_Tbreak.Clear();
+	}
+
     // finally, run the process
 	SendCommand("run");
 	return 0;
@@ -533,27 +514,13 @@ void DebuggerGDB::ConvertToGDBFriendly(wxString& str)
 {
     if (str.IsEmpty())
         return;
-/*
-    for (unsigned int i = 0; i < str.Length(); ++i)
-    {
-        if (str[i] == ' ' && (i > 0 && str[i - 1] != '\\'))
-            str.insert(i, '\\');
-        else if (str[i] == '\\' && (i < str.Length() - 1 && str[i + 1] != ' '))
-            str[i] = '/';
-    }
-//    str.Replace("\\\\", "/");
-    str.Replace("//", "/");
-    str.Replace("//", "/");
-    str.Replace("\\", "/");
-    str.Replace("/", "//");
-*/
-    str.Replace("\\ ", " ");
-    str.Replace("\\", "/");
-    str.Replace("//", "/");
-    str.Replace(" ", "\\ ");
+
+    str = UnixFilename(str);
+    while (str.Replace("\\", "/"))
+        ;
     str.Replace("/", "//");
     if (str.Find(' ') != -1 && str.GetChar(0) != '"')
-        str = '"' + str + '"';
+        str = "\"" + str + "\"";
 }
 
 void DebuggerGDB::SendCommand(const wxString& cmd)

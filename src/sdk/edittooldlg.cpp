@@ -30,6 +30,7 @@
 #include <wx/button.h>
 #include <wx/filedlg.h>
 #include <wx/dirdlg.h>
+#include "toolsmanager.h"
 
 BEGIN_EVENT_TABLE(EditToolDlg, wxDialog)
 	EVT_BUTTON(XRCID("btnBrowseCommand"), 	EditToolDlg::OnBrowseCommand)

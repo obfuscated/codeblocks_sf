@@ -15,9 +15,6 @@ class ClassWizard : public cbToolPlugin
         virtual void OnRelease(bool appShutDown);
         virtual int Configure(){ return -1; }
 		virtual int Execute();
-        virtual void BuildMenu(wxMenuBar* menuBar){}
-		virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg){}
-		virtual void BuildToolBar(wxToolBar* toolBar){}
 };
 
 extern "C"

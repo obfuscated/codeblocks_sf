@@ -341,9 +341,8 @@ void MainFrame::ShowTips(bool forceShow)
 
 void MainFrame::CreateIDE()
 {
-	int leftW = 200;//ConfigManager::Get()->Read("/main_frame/layout/left_block_width", 200);
-	int bottomH = 150;//ConfigManager::Get()->Read("/main_frame/layout/bottom_block_height", 150);
-    // hide managers initially (they 'll open when a project is opened)
+	int leftW = ConfigManager::Get()->Read("/main_frame/layout/left_block_width", 200);
+	int bottomH = ConfigManager::Get()->Read("/main_frame/layout/bottom_block_height", 150);
 
 	// Create CloseFullScreen Button, and hide it initially
 	m_pCloseFullScreenBtn = new wxButton(this, idCloseFullScreen, _( "Close Fullscreen" ), wxDefaultPosition );
@@ -411,15 +410,6 @@ void MainFrame::CreateMenubar()
         m_pPrjMan->ReleaseMenu(mbar);
         m_pEdMan->ReleaseMenu(mbar);
         m_pMsgMan->ReleaseMenu(mbar);
-
-        // plugins: release menus
-        PluginElementsArray plugins = Manager::Get()->GetPluginManager()->GetPlugins();
-        for (unsigned int i = 0; i < plugins.GetCount(); ++i)
-        {
-            cbPlugin* plug = plugins[i]->plugin;
-            if (plug)
-                plug->RemoveMenu(mbar);
-        }
 
         TerminateRecentFilesHistory();
     }
@@ -506,13 +496,13 @@ void MainFrame::CreateMenubar()
 	wxMenu* project = RecreateMenu(mbar, _("&Project"));
 
 	wxMenu* import = new wxMenu();
-	import->Append(idProjectImportDevCpp, _("Bloodshed &Dev-C++ project"), _("Import an existing Dev-C++ project"));
+	import->Append(idProjectImportDevCpp, _("Dev-C++ project"), _("Import an existing Dev-C++ project"));
 	import->AppendSeparator();
-	import->Append(idProjectImportMSVC, _("Microsoft Visual C++ project"), _("Import an existing Microsoft Visual C++ project"));
-	import->Append(idProjectImportMSVCWksp, _("Microsoft Visual C++ workspace"), _("Import an existing Microsoft Visual C++ workspace"));
+	import->Append(idProjectImportMSVC, _("MS Visual C++ project"), _("Import an existing MS Visual C++ project"));
+	import->Append(idProjectImportMSVCWksp, _("MS Visual C++ workspace"), _("Import an existing MS Visual C++ workspace"));
 	import->AppendSeparator();
-	import->Append(idProjectImportMSVS, _("Microsoft Visual Studio project"), _("Import an existing Microsoft Visual Studio project"));
-	import->Append(idProjectImportMSVSWksp, _("Microsoft Visual Studio solution"), _("Import an existing Microsoft Visual Studio solution"));
+	import->Append(idProjectImportMSVS, _("MS Visual Studio project"), _("Import an existing MS Visual Studio project"));
+	import->Append(idProjectImportMSVSWksp, _("MS Visual Studio solution"), _("Import an existing MS Visual Studio solution"));
 
 	project->Append(idProjectNew, _("&New project..."), _("Create a new project based on a template"));
 	project->Append(idProjectNewEmptyProject, _("New &empty project"), _("Create a new empty project"));
@@ -837,28 +827,68 @@ void MainFrame::DoAddPlugin(cbPlugin* plugin)
 bool MainFrame::Open(const wxString& filename, bool addToHistory)
 {
 	wxYield();
-    wxString fname = filename;
-    bool ret = false;
-    if (!fname.IsEmpty())
-    {
-		FileType ft = FileTypeOf(fname);
-		if (ft == ftCodeBlocksProject || ft == ftDevCppProject)
-			ret = DoOpenProject(fname, addToHistory);
-		else if (ft == ftCodeBlocksWorkspace)
-        {
-            if (DoCloseCurrentWorkspace())
-                ret = m_pPrjMan->LoadWorkspace(fname);
-        }
-		else
-			ret = DoOpenFile(fname, addToHistory);
-    }
+    bool ret = OpenGeneric(filename, addToHistory);
     DoUpdateLayout();
 	return ret;
 }
 
+wxString MainFrame::ShowOpenFileDialog(const wxString& caption, const wxString& filter)
+{
+    wxFileDialog* dlg = new wxFileDialog(this,
+                            caption,
+                            wxEmptyString,
+                            wxEmptyString,
+                            filter,
+                            wxOPEN);
+    wxString sel;
+    if (dlg->ShowModal() == wxID_OK)
+		sel = dlg->GetPath();
+    delete dlg;
+    return sel;
+}
+
+bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
+{
+    if (filename.IsEmpty())
+        return false;
+    switch(FileTypeOf(filename))
+    {
+        //
+        // Workspaces
+        //
+        case ftCodeBlocksWorkspace:
+            // fallthrough
+        case ftMSVCWorkspace:
+            // fallthrough
+        case ftMSVSWorkspace:
+            if (DoCloseCurrentWorkspace())
+                m_pPrjMan->LoadWorkspace(filename);
+            break;
+
+        //
+        // Projects
+        //
+        case ftCodeBlocksProject:
+            // fallthrough
+        case ftDevCppProject:
+            // fallthrough
+        case ftMSVCProject:
+            // fallthrough
+        case ftMSVSProject:
+            DoOpenProject(filename, addToHistory);
+            break;
+
+        //
+        // All other files
+        //
+        default: return DoOpenFile(filename, addToHistory);
+    }
+    return true;
+}
+
 bool MainFrame::DoOpenProject(const wxString& filename, bool addToHistory)
 {
-    //m_pMsgMan->DebugLog(_("Opening project '%s'"), filename.c_str());
+//    m_pMsgMan->DebugLog(_("Opening project '%s'"), filename.c_str());
     cbProject* prj = m_pPrjMan->LoadProject(filename);
     if (prj)
     {
@@ -1105,33 +1135,25 @@ void MainFrame::OnFileOpen(wxCommandEvent& WXUNUSED(event))
         wxArrayString files;
         dlg->GetPaths(files);
 
-        // first check to see if a project was selected
-        bool foundProject = false;
+        // first check to see if a workspace is passed. If so, only this will be loaded
+        wxString foundWorkspace;
         for (unsigned int i = 0; i < files.GetCount(); ++i)
         {
-			wxString fname = files[i];
-			FileType ft = FileTypeOf(fname);
-			if (ft == ftCodeBlocksProject || ft == ftDevCppProject)
+			FileType ft = FileTypeOf(files[i]);
+            if (ft == ftCodeBlocksWorkspace || ft == ftMSVCWorkspace || ft == ftMSVSWorkspace)
             {
-                DoOpenProject(fname);
-                foundProject = true;
-            }
-            else if (ft == ftCodeBlocksWorkspace)
-            {
-                if (DoCloseCurrentWorkspace())
-                {
-                    m_pPrjMan->LoadWorkspace(fname);
-                    foundProject = true;
-                }
+                foundWorkspace = files[i];
+                break;
             }
         }
 
-        // else open all files
-        if (!foundProject)
+        if (!foundWorkspace.IsEmpty())
+            OpenGeneric(foundWorkspace);
+        else
 		{
             for (unsigned int i = 0; i < files.GetCount(); ++i)
             {
-                DoOpenFile(files[i]);
+                OpenGeneric(files[i]);
             }
 		}
     }
@@ -1222,34 +1244,14 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     }
 
     SaveWindowState();
-    
-    // let's ask the plugins to remove their menus first and see if it stops the SEGFAULTS...
-    /*wxMenuBar* mbar = GetMenuBar();
-    if (mbar)
-    {
-        // core modules: release menus
-        m_pPrjMan->ReleaseMenu(mbar);
-        m_pEdMan->ReleaseMenu(mbar);
-        m_pMsgMan->ReleaseMenu(mbar);
-
-        // plugins: release menus
-        PluginElementsArray plugins = Manager::Get()->GetPluginManager()->GetPlugins();
-        for (unsigned int i = 0; i < plugins.GetCount(); ++i)
-        {
-            cbPlugin* plug = plugins[i]->plugin;
-            if (plug)
-                plug->RemoveMenu(mbar);
-        }
-    }*/
-
     TerminateRecentFilesHistory();
     
     // remove all other event handlers from this window
     // this stops it from crashing, when no plugins are loaded
     while (GetEventHandler() != this)
         PopEventHandler(false);
+
 	Manager::Get()->Free();
-	
 	ConfigManager::Get()->Flush();
     Destroy();
 }
@@ -1541,97 +1543,27 @@ void MainFrame::OnProjectCloseAllProjects(wxCommandEvent& event)
 
 void MainFrame::OnProjectImportDevCpp(wxCommandEvent& event)
 {
-    wxFileDialog* dlg = new wxFileDialog(this,
-                            _("Import Bloodshed Dev-C++ project"),
-                            wxEmptyString,
-                            wxEmptyString,
-                            DEVCPP_FILES_FILTER,
-                            wxOPEN);
-
-    if (dlg->ShowModal() == wxID_OK)
-    {
-		wxString fname = dlg->GetPath();
-		if (FileTypeOf(fname) == ftDevCppProject)
-            DoOpenProject(fname);
-    }
-
-    delete dlg;
+    OpenGeneric(ShowOpenFileDialog(_("Import Dev-C++ project"), DEVCPP_FILES_FILTER), false);
 }
 
 void MainFrame::OnProjectImportMSVC(wxCommandEvent& event)
 {
-    wxFileDialog* dlg = new wxFileDialog(this,
-                            _("Import Microsoft Visual C++ project"),
-                            wxEmptyString,
-                            wxEmptyString,
-                            MSVC_FILES_FILTER,
-                            wxOPEN);
-
-    if (dlg->ShowModal() == wxID_OK)
-    {
-		wxString fname = dlg->GetPath();
-		if (FileTypeOf(fname) == ftMSVCProject)
-            DoOpenProject(fname);
-    }
-
-    delete dlg;
+    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual C++ project"), MSVC_FILES_FILTER), false);
 }
 
 void MainFrame::OnProjectImportMSVCWksp(wxCommandEvent& event)
 {
-    wxFileDialog* dlg = new wxFileDialog(this,
-                            _("Import Microsoft Visual C++ workspace"),
-                            wxEmptyString,
-                            wxEmptyString,
-                            MSVC_WORKSPACE_FILES_FILTER,
-                            wxOPEN);
-
-    if (dlg->ShowModal() == wxID_OK)
-    {
-		wxString fname = dlg->GetPath();
-		if (FileTypeOf(fname) == ftMSVCWorkspace)
-            m_pPrjMan->LoadWorkspace(fname);
-    }
-
-    delete dlg;
+    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual C++ workspace"), MSVC_WORKSPACE_FILES_FILTER), false);
 }
 
 void MainFrame::OnProjectImportMSVS(wxCommandEvent& event)
 {
-    wxFileDialog* dlg = new wxFileDialog(this,
-                            _("Import Microsoft Visual Studio project"),
-                            wxEmptyString,
-                            wxEmptyString,
-                            MSVS_FILES_FILTER,
-                            wxOPEN);
-
-    if (dlg->ShowModal() == wxID_OK)
-    {
-		wxString fname = dlg->GetPath();
-		if (FileTypeOf(fname) == ftMSVSProject)
-            DoOpenProject(fname);
-    }
-
-    delete dlg;
+    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual Studio project"), MSVS_FILES_FILTER), false);
 }
 
 void MainFrame::OnProjectImportMSVSWksp(wxCommandEvent& event)
 {
-    wxFileDialog* dlg = new wxFileDialog(this,
-                            _("Import Microsoft Visual Studio solution"),
-                            wxEmptyString,
-                            wxEmptyString,
-                            MSVS_WORKSPACE_FILES_FILTER,
-                            wxOPEN);
-
-    if (dlg->ShowModal() == wxID_OK)
-    {
-		wxString fname = dlg->GetPath();
-		if (FileTypeOf(fname) == ftMSVSWorkspace)
-            m_pPrjMan->LoadWorkspace(fname);
-    }
-
-    delete dlg;
+    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual Studio solution"), MSVS_WORKSPACE_FILES_FILTER), false);
 }
 
 void MainFrame::OnHelpAbout(wxCommandEvent& WXUNUSED(event))

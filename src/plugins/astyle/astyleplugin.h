@@ -29,18 +29,15 @@
 
 class AStylePlugin : public cbToolPlugin
 {
-public:
-	AStylePlugin();
-	~AStylePlugin();
-	int Configure();
-	void BuildMenu(wxMenuBar* menuBar){ return; }
-	void BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg){ return; }
-	void BuildToolBar(wxToolBar* toolBar){ return; }
-	int Execute();
-	void OnAttach(); // fires when the plugin is attached to the application
-	void OnRelease(bool appShutDown); // fires when the plugin is released from the application
-protected:
-private:
+    public:
+        AStylePlugin();
+        ~AStylePlugin();
+        int Configure();
+        int Execute();
+        void OnAttach(); // fires when the plugin is attached to the application
+        void OnRelease(bool appShutDown); // fires when the plugin is released from the application
+    protected:
+    private:
 };
 
 extern "C"

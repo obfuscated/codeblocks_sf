@@ -26,6 +26,7 @@
 #include "projectbuildtarget.h" // class's header file
 #include "cbproject.h"
 #include "compilerfactory.h"
+#include "projectfileoptionsdlg.h"
 
 #include <wx/listimpl.cpp>
 WX_DEFINE_LIST(FilesList);

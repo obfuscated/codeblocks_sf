@@ -1,0 +1,122 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxDialog" name="dlgEditFilesHandling">
+    <title>Edit files handling</title>
+    <centered>1</centered>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxStaticBoxSizer">
+              <orient>wxVERTICAL</orient>
+              <label>Registered wildcards</label>
+              <object class="sizeritem">
+                <object class="wxListBox" name="lstWild">
+                  <content/>
+                </object>
+                <option>1</option>
+                <flag>wxALL</flag>
+                <border>8</border>
+              </object>
+            </object>
+            <flag>wxGROW</flag>
+          </object>
+          <object class="sizeritem">
+            <object class="wxStaticBoxSizer">
+              <label>Wildcard handling details</label>
+              <orient>wxVERTICAL</orient>
+              <object class="sizeritem">
+                <object class="wxStaticText">
+                  <label>Wildcard:</label>
+                </object>
+                <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                <border>8</border>
+              </object>
+              <object class="sizeritem">
+                <object class="wxTextCtrl" name="txtWild"/>
+                <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                <border>8</border>
+              </object>
+              <object class="sizeritem">
+                <object class="wxRadioBox" name="rbOpen">
+                  <label>To open the file</label>
+                  <content>
+                    <item>launch an external program</item>
+                    <item>open it inside Code::Blocks editor</item>
+                  </content>
+                </object>
+                <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+                <border>8</border>
+              </object>
+              <object class="sizeritem">
+                <object class="wxStaticText">
+                  <label>External program:</label>
+                </object>
+                <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                <border>8</border>
+              </object>
+              <object class="sizeritem">
+                <object class="wxBoxSizer">
+                  <orient>wxHORIZONTAL</orient>
+                  <object class="sizeritem">
+                    <object class="wxTextCtrl" name="txtProgram"/>
+                    <option>1</option>
+                    <flag>wxGROW</flag>
+                    <border>8</border>
+                  </object>
+                  <object class="sizeritem">
+                    <object class="wxButton" name="btnBrowse">
+                      <label>...</label>
+                    </object>
+                    <minsize>22,22</minsize>
+                  </object>
+                </object>
+                <option>1</option>
+                <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+                <border>8</border>
+              </object>
+              <object class="sizeritem">
+                <object class="wxBoxSizer">
+                  <orient>wxHORIZONTAL</orient>
+                  <object class="spacer">
+                    <size>16,0</size>
+                  </object>
+                  <object class="sizeritem">
+                    <object class="wxCheckBox" name="chkModal">
+                      <label>Disable Code::Blocks while the external program is running</label>
+                    </object>
+                    <flag>wxTOP</flag>
+                    <border>4</border>
+                  </object>
+                </object>
+                <option>1</option>
+                <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+                <border>8</border>
+              </object>
+            </object>
+            <option>1</option>
+            <flag>wxLEFT|wxGROW</flag>
+            <border>8</border>
+          </object>
+        </object>
+        <option>1</option>
+        <flag>wxALL|wxGROW</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_CANCEL">
+              <label>&amp;Close</label>
+            </object>
+          </object>
+        </object>
+        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <border>8</border>
+      </object>
+    </object>
+  </object>
+</resource>

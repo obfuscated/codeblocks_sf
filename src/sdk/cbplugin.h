@@ -23,6 +23,11 @@
 	#define PLUGIN_EXPORT
 #endif
 
+// this is the plugins SDK version number
+// it will change when the plugins interface breaks
+#define PLUGIN_SDK_VERSION_MAJOR 1
+#define PLUGIN_SDK_VERSION_MINOR 0
+
 // class decls
 class ProjectBuildTarget;
 class wxMenuBar;
@@ -65,6 +70,16 @@ class cbPlugin : public wxEvtHandler
         cbPlugin();
 		/** cbPlugin destructor. */
         virtual ~cbPlugin();
+        /** This is <u>not</u> a virtual function, so you can't override it.
+          * It's used for returning the SDK major version number this plugin
+          * was built on.
+          */
+        int GetSDKVersionMajor(){ return PLUGIN_SDK_VERSION_MAJOR; }
+        /** This is <u>not</u> a virtual function, so you can't override it.
+          * It's used for returning the SDK minor version number this plugin
+          * was built on.
+          */
+        int GetSDKVersionMinor(){ return PLUGIN_SDK_VERSION_MINOR; }
 		/** Attach is <u>not</u> a virtual function, so you can't override it.
 		  * The default implementation hooks the plugin to Code::Block's
 		  * event handling system, so that the plugin can receive (and process)
@@ -102,14 +117,6 @@ class cbPlugin : public wxEvtHandler
 		  * @param menuBar the wxMenuBar to create items in
 		  */
         virtual void BuildMenu(wxMenuBar* menuBar) = 0;
-		/** When this method is called, the plugin must remove any menu items
-		  * and menus it has added on Code::Blocks's menu bar.\n
-		  * It is a pure virtual method that needs to be implemented by all
-		  * plugins. If the plugin has not added any menu items on the menu bar,
-		  * just do nothing ;)
-		  * @param menuBar the wxMenuBar to remove items from
-		  */
-        virtual void RemoveMenu(wxMenuBar* menuBar) = 0;
 		/** This method is called by Code::Blocks core modules (EditorManager,
 		  * ProjectManager etc) and is used by the plugin to add any menu 
 		  * items it needs in the module's popup menu. For example, when
@@ -134,14 +141,6 @@ class cbPlugin : public wxEvtHandler
 		  * @param toolBar the wxToolBar to create items on
 		  */
         virtual void BuildToolBar(wxToolBar* toolBar) = 0;
-		/** When this method is called, the plugin must remove any tools
-		  * it has added on Code::Blocks's tool bar.\n
-		  * It is a pure virtual method that needs to be implemented by all
-		  * plugins. If the plugin has not added any tool items on the tool bar,
-		  * just do nothing ;)
-		  * @param toolBar the wxToolBar to remove items from
-		  */
-        virtual void RemoveToolBar(wxToolBar* toolBar) = 0;
         /** See whether this plugin is attached or not. A plugin should not perform
 		  * any of its tasks, if not attached...
 		  */
@@ -188,42 +187,126 @@ class cbPlugin : public wxEvtHandler
 	private:
 };
 
+/** @brief Base class for compiler plugins
+  * 
+  * This plugin type must offer some pre-defined build facilities, on top
+  * of the generic plugin's.
+  */
 class cbCompilerPlugin: public cbPlugin
 {
 	public:
 		cbCompilerPlugin();
+		/** @brief Run the project/target.
+		  *
+		  * Running a project means executing its build output. Of course
+		  * this depends on the selected build target and its type.
+		  *
+		  * @param target The specific build target to "run". If NULL, the plugin
+		  * should ask the user which target to "run" (except maybe if there is
+		  * only one build target in the project).
+		  */
         virtual int Run(ProjectBuildTarget* target = 0L) = 0;
+		/** @brief Clean the project/target.
+		  *
+		  * Cleaning a project means deleting any files created by building it.
+		  * This includes any object files, the binary output file, etc.
+		  *
+		  * @param target The specific build target to "clean". If NULL, the plugin
+		  * should ask the user which target to "clean" (except maybe if there is
+		  * only one build target in the project).
+		  */
         virtual int Clean(ProjectBuildTarget* target = 0L) = 0;
+		/** @brief Compile the project/target.
+		  *
+		  * @param target The specific build target to compile. If NULL, all the
+		  * build targets should be compiled.
+		  */
         virtual int Compile(ProjectBuildTarget* target = 0L) = 0;
-        virtual int CompileAll() = 0;
-        virtual int RebuildAll() = 0;
+		/** @brief Rebuild the project/target.
+		  *
+		  * Rebuilding a project is equal to calling Clean() and then Compile().
+		  * This makes sure that all compilable files in the project will be
+		  * compiled again.
+		  *
+		  * @param target The specific build target to rebuild. If NULL, all the
+		  * build targets should be rebuilt.
+		  */
         virtual int Rebuild(ProjectBuildTarget* target = 0L) = 0;
+		/** @brief Compile all open projects. */
+        virtual int CompileAll() = 0;
+		/** @brief Rebuild all open projects. */
+        virtual int RebuildAll() = 0;
+        /** @brief Compile a specific file.
+          *
+          * @param file The file to compile (must be a project file!)
+          */
         virtual int CompileFile(const wxString& file) = 0;
+        /** @brief Abort the current build process. */
         virtual int KillProcess() = 0;
+        /** @brief Is the plugin currently compiling? */
 		virtual bool IsRunning() = 0;
+        /** @brief Get the exit code of the last build process. */
 		virtual int GetExitCode() = 0;
+        /** @brief Display configuration dialog.
+          *
+          * The default implementation calls Configure(cbProject*,ProjectBuildTarget*).
+          *
+          * @see Configure(cbProject*,ProjectBuildTarget*)
+          */
 		virtual int Configure(){ return Configure(0L, 0L); }
+        /** @brief Display configuration dialog.
+          *
+          * @param project The selected project (can be NULL).
+          * @param target The selected target (can be NULL).
+          */
 		virtual int Configure(cbProject* project, ProjectBuildTarget* target = 0L) = 0;
 	private:
 };
 
-class  cbDebuggerPlugin: public cbPlugin
+/** @brief Base class for debugger plugins
+  * 
+  * This plugin type must offer some pre-defined debug facilities, on top
+  * of the generic plugin's.
+  */
+class cbDebuggerPlugin: public cbPlugin
 {
 	public:
 		cbDebuggerPlugin();
+		/** @brief Start a new debugging process. */
 		virtual int Debug() = 0;
+		/** @brief Continue running the debugged program. */
 		virtual void CmdContinue() = 0;
+		/** @brief Execute the next instruction and return control to the debugger. */
 		virtual void CmdNext() = 0;
+		/** @brief Execute the next instruction, stepping into function calls if needed, and return control to the debugger. */
 		virtual void CmdStep() = 0;
+		/** @brief Stop the debugging process. */
 		virtual void CmdStop() = 0;
+        /** @brief Is the plugin currently debugging? */
 		virtual bool IsRunning() = 0;
+        /** @brief Get the exit code of the last debug process. */
 		virtual int GetExitCode() = 0;
 };
 
+/** @brief Base class for tool plugins
+  * 
+  * This plugin is automatically managed by Code::Blocks, so the inherited
+  * functions to build menus/toolbars are hidden.
+  *
+  * Tool plugins are automatically added under the "Plugins" menu. If they
+  * provide a configuration dialog, they 're also added under the
+  * "Settings/Configure plugins" menu.
+  */
 class cbToolPlugin : public cbPlugin
 {
     public:
         cbToolPlugin();
+        /** @brief Execute the plugin.
+          *
+          * This is the only function needed by a cbToolPlugin (and Configure() if needed).
+          * This will be called when the user selects the plugin from the "Plugins"
+          * menu.
+          */
         virtual int Execute() = 0;
     private:
         // "Hide" some virtual members, that are not needed in cbToolPlugin
@@ -234,12 +317,39 @@ class cbToolPlugin : public cbPlugin
         void RemoveToolBar(wxToolBar* toolBar){}
 };
 
+/** @brief Base class for mime plugins
+  *
+  * Mime plugins are called by Code::Blocks to operate on files that Code::Blocks
+  * wouldn't know how to handle on itself.
+  */
 class cbMimePlugin : public cbPlugin
 {
     public:
         cbMimePlugin();
-        virtual bool CanOpenFile(const wxString& filename) = 0;
+        /** @brief Can a file be handled by this plugin?
+          *
+          * @param filename The file in question.
+          * @return The plugin should return true if it can handle this file,
+          * false if not.
+          */
+        virtual bool CanHandleFile(const wxString& filename) = 0;
+        /** @brief Open the file.
+          *
+          * @param filename The file to open.
+          * @return The plugin should return zero on success, other value on error.
+          */
         virtual int OpenFile(const wxString& filename) = 0;
+        /** @brief Is this a default handler?
+          *
+          * This is a flag notifying the main app that this plugins can handle
+          * every file passed to it. Usually you 'll want to return false in
+          * this function, because you usually create specialized handler
+          * plugins (for specific MIME types)...
+          *
+          * @return True if this plugin can handle every possible MIME type,
+          * false if not.
+          */
+        virtual bool HandlesEverything() = 0;
     private:
         // "Hide" some virtual members, that are not needed in cbMimePlugin
         void BuildMenu(wxMenuBar* menuBar){}
@@ -249,7 +359,11 @@ class cbMimePlugin : public cbPlugin
         void RemoveToolBar(wxToolBar* toolBar){}
 };
 
-class  cbCodeCompletionPlugin : public cbPlugin
+/** @brief Base class for code-completion plugins
+  *
+  * This interface is subject to change, so not much info here...
+  */
+class cbCodeCompletionPlugin : public cbPlugin
 {
     public:
         cbCodeCompletionPlugin();

@@ -22,6 +22,11 @@ class MainFrame : public wxMDIParentFrame
         bool Open(const wxString& filename, bool addToHistory = true);
         void ShowTips(bool forceShow = false);
         
+        // show a file-open dialog and return the selection
+        wxString ShowOpenFileDialog(const wxString& caption, const wxString& filter);
+        // open the filename (based on what it is)
+        bool OpenGeneric(const wxString& filename, bool addToHistory = true);
+
         // event handlers
         void OnApplicationClose(wxCloseEvent& event);
 

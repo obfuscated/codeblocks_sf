@@ -58,6 +58,7 @@ void PluginWizardDlg::DoGuardBlock()
 	wxString GuardWord = headerFname.GetFullName();
 	GuardWord.MakeUpper();
 	GuardWord.Replace(".", "_");
+	GuardWord.Replace(" ", "_");
 	XRCCTRL(*this, "txtGuardBlock", wxTextCtrl)->SetValue(GuardWord);
 }
 
@@ -106,6 +107,13 @@ void PluginWizardDlg::DoAddHeaderCodeCompletion(wxString& buffer)
 	buffer << '\t' << '\t' << "wxArrayString GetCallTipsFor(const wxString& command);" << '\n';
 	buffer << '\t' << '\t' << "int CodeComplete();" << '\n';
 	buffer << '\t' << '\t' << "void ShowCallTip();" << '\n';
+}
+
+void PluginWizardDlg::DoAddHeaderMime(wxString& buffer)
+{
+	buffer << '\t' << '\t' << "bool HandlesEverything(){ return false; }" << '\n';
+	buffer << '\t' << '\t' << "bool CanHandleFile(const wxString& filename);" << '\n';
+	buffer << '\t' << '\t' << "int OpenFile(const wxString& filename);" << '\n';
 }
 
 void PluginWizardDlg::DoAddSourceTool(const wxString& classname, wxString& buffer)
@@ -250,6 +258,25 @@ void PluginWizardDlg::DoAddSourceCodeCompletion(const wxString& classname, wxStr
 	buffer << '\n';
 }
 
+void PluginWizardDlg::DoAddSourceMime(const wxString& classname, wxString& buffer)
+{
+	buffer << "bool " << classname << "::CanHandleFile(const wxString& filename)" << '\n';
+	buffer << "{" << '\n';
+	buffer << '\t' << "//return true if this plugin can handle the file, false if not..." << '\n';
+	buffer << '\t' << "NotImplemented(\"" << classname << "::CanHandleFile()" << "\");" << '\n';
+	buffer << '\t' << "return false;" << '\n';
+	buffer << "}" << '\n';
+	buffer << '\n';
+	buffer << "int " << classname << "::OpenFile(const wxString& filename)" << '\n';
+	buffer << "{" << '\n';
+	buffer << '\t' << "//Open the file. You said you could in CanHandleFile(), didn't you ;)" << '\n';
+	buffer << '\t' << "//Remember to return zero for success..." << '\n';
+	buffer << '\t' << "NotImplemented(\"" << classname << "::OpenFile()" << "\");" << '\n';
+	buffer << '\t' << "return -1;" << '\n';
+	buffer << "}" << '\n';
+	buffer << '\n';
+}
+
 // events
 
 void PluginWizardDlg::OnNameChange(wxCommandEvent& event)
@@ -264,9 +291,10 @@ void PluginWizardDlg::OnNameChange(wxCommandEvent& event)
 void PluginWizardDlg::OnUpdateUI(wxUpdateUIEvent& event)
 {
 	bool isTool = XRCCTRL(*this, "cmbType", wxComboBox)->GetSelection() == 1;
-	XRCCTRL(*this, "chkHasMenu", wxCheckBox)->Enable(!isTool);
-	XRCCTRL(*this, "chkHasModuleMenu", wxCheckBox)->Enable(!isTool);
-	XRCCTRL(*this, "chkHasToolbar", wxCheckBox)->Enable(!isTool);
+	bool isMime = XRCCTRL(*this, "cmbType", wxComboBox)->GetSelection() == 5;
+	XRCCTRL(*this, "chkHasMenu", wxCheckBox)->Enable(!isTool && !isMime);
+	XRCCTRL(*this, "chkHasModuleMenu", wxCheckBox)->Enable(!isTool && !isMime);
+	XRCCTRL(*this, "chkHasToolbar", wxCheckBox)->Enable(!isTool && !isMime);
 }
 
 void PluginWizardDlg::OnEditInfoClick(wxCommandEvent& event)
@@ -347,6 +375,7 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
 		case 2: buffer << " : public cbCompilerPlugin"; break;
 		case 3: buffer << " : public cbDebuggerPlugin"; break;
 		case 4: buffer << " : public cbCodeCompletionPlugin"; break;
+		case 5: buffer << " : public cbMimePlugin"; break;
 	}
 	buffer << '\n';
 	buffer << "{" << '\n';
@@ -356,12 +385,15 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
 	
 	buffer << '\t' << '\t' << "int Configure()";
 	DoAddHeaderOption(buffer, hasConfigure);
-	buffer << '\t' << '\t' << "void BuildMenu(wxMenuBar* menuBar)";
-	DoAddHeaderOption(buffer, hasMenu, wxEmptyString);
-	buffer << '\t' << '\t' << "void BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg)";
-	DoAddHeaderOption(buffer, hasModuleMenu, wxEmptyString);
-	buffer << '\t' << '\t' << "void BuildToolBar(wxToolBar* toolBar)";
-	DoAddHeaderOption(buffer, hasToolbar, wxEmptyString);
+	if (type != 1 && type != 5) // not cbToolPlugin and not cbMimePlugin
+	{
+        buffer << '\t' << '\t' << "void BuildMenu(wxMenuBar* menuBar)";
+        DoAddHeaderOption(buffer, hasMenu, wxEmptyString);
+        buffer << '\t' << '\t' << "void BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg)";
+        DoAddHeaderOption(buffer, hasModuleMenu, wxEmptyString);
+        buffer << '\t' << '\t' << "void BuildToolBar(wxToolBar* toolBar)";
+        DoAddHeaderOption(buffer, hasToolbar, wxEmptyString);
+	}
 	switch (type)
 	{
 		case 1: // tool
@@ -376,6 +408,9 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
 		case 4: // codecompl
 			DoAddHeaderCodeCompletion(buffer);
 			break;
+		case 5: // mime
+			DoAddHeaderMime(buffer);
+			break;
 	}
 	buffer << '\t' << '\t' << "void OnAttach(); // fires when the plugin is attached to the application" << '\n';
 	buffer << '\t' << '\t' << "void OnRelease(bool appShutDown); // fires when the plugin is released from the application" << '\n';
@@ -385,10 +420,13 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
 		buffer << '\t' << '\t' << "DECLARE_EVENT_TABLE()" << '\n';
 	buffer << "};" << '\n';
 	buffer << '\n';
-	buffer << "extern \"C\"" << '\n';
-	buffer << "{" << '\n';
+	buffer << "#ifdef __cplusplus" << '\n';
+	buffer << "extern \"C\" {" << '\n';
+	buffer << "#endif" << '\n';
 	buffer << '\t' << "PLUGIN_EXPORT cbPlugin* GetPlugin();" << '\n';
+	buffer << "#ifdef __cplusplus" << '\n';
 	buffer << "};" << '\n';
+	buffer << "#endif" << '\n';
 
 	if (GuardBlock)
 	{
@@ -397,7 +435,7 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
 	}
 	buffer << '\n';
 	// write buffer to disk
-	wxFile hdr(m_Header, wxFile::write);
+	wxFile hdr(UnixFilename(m_Header), wxFile::write);
 	hdr.Write(buffer, buffer.Length());
 	hdr.Flush();
 	// end of header file
@@ -432,9 +470,6 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
 		{
 			case 0: // generic
 				buffer << "cbPlugin)" << '\n';
-				break;
-			case 1: // tool
-				buffer << "cbToolPlugin)" << '\n';
 				break;
 			case 2: // compiler
 				buffer << "cbCompilerPlugin)" << '\n';
@@ -499,53 +534,44 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
 		buffer << "}" << '\n';
 		buffer << '\n';
 	}
-	if (hasMenu)
+	if (type != 1 && type != 5) // not cbToolPlugin and not cbMimePlugin
 	{
-		buffer << "void " << m_Info.name << "::BuildMenu(wxMenuBar* menuBar)" << '\n';
-		buffer << "{" << '\n';
-		buffer << '\t' << "//The application is offering its menubar for your plugin," << '\n';
-		buffer << '\t' << "//to add any menu items you want..." << '\n';
-		buffer << '\t' << "//Append any items you need in the menu..." << '\n';
-		buffer << '\t' << "//NOTE: Be careful in here... The application's menubar is at your disposal." << '\n';
-		buffer << '\t' << "//HINT: Keep a variable pointing to every menu item you create," << '\n';
-		buffer << '\t' << "//      so that you can delete it in the OnRelease() event..." << '\n';
-		buffer << '\t' << "NotImplemented(\"" << m_Info.name << "::OfferMenuSpace()" << "\");" << '\n';
-		buffer << "}" << '\n';
-		buffer << '\n';
-	}
-	if (hasModuleMenu)
-	{
-		buffer << "void " << m_Info.name << "::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg)" << '\n';
-		buffer << "{" << '\n';
-		buffer << '\t' << "//Some library module is ready to display a pop-up menu." << '\n';
-		buffer << '\t' << "//Check the parameter \"type\" and see which module it is" << '\n';
-		buffer << '\t' << "//and append any items you need in the menu..." << '\n';
-		buffer << '\t' << "//TIP: for consistency, add a separator as the first item..." << '\n';
-		buffer << '\t' << "NotImplemented(\"" << m_Info.name << "::OfferModuleMenuSpace()" << "\");" << '\n';
-		buffer << "}" << '\n';
-		buffer << '\n';
-	}
-	if (hasToolbar)
-	{
-		buffer << "void " << m_Info.name << "::BuildToolBar(wxToolBar* toolBar)" << '\n';
-		buffer << "{" << '\n';
-		buffer << '\t' << "//The application is offering its toolbar for your plugin," << '\n';
-		buffer << '\t' << "//to add any toolbar items you want..." << '\n';
-		buffer << '\t' << "//Append any items you need on the toolbar..." << '\n';
-		buffer << '\t' << "//" << '\n';
-		buffer << '\t' << "//An example follows for a toolbar button:" << '\n';
-		buffer << '\t' << "//" << '\t' << "PluginToolbarArray* m_ToolsArray;" << '\n';
-		buffer << '\t' << "//" << '\t' << "PluginToolbarItem* tool;" << '\n';
-		buffer << '\t' << "//" << '\n';
-		buffer << '\t' << "//" << '\t' << "tool = new PluginToolbarItem();" << '\n';
-		buffer << '\t' << "//" << '\t' << "tool->type = ptitButton;" << '\n';
-		buffer << '\t' << "//" << '\t' << "tool->id = idSomeID;" << '\n';
-		buffer << '\t' << "//" << '\t' << "tool->image << \"some_image.bmp\";" << '\n';
-		buffer << '\t' << "//" << '\t' << "m_ToolsArray->Add(tool);" << '\n';
-		buffer << '\t' << "NotImplemented(\"" << m_Info.name << "::BuildToolBar()" << "\");" << '\n';
-		buffer << '\t' << "return;" << '\n';
-		buffer << "}" << '\n';
-		buffer << '\n';
+        if (hasMenu)
+        {
+            buffer << "void " << m_Info.name << "::BuildMenu(wxMenuBar* menuBar)" << '\n';
+            buffer << "{" << '\n';
+            buffer << '\t' << "//The application is offering its menubar for your plugin," << '\n';
+            buffer << '\t' << "//to add any menu items you want..." << '\n';
+            buffer << '\t' << "//Append any items you need in the menu..." << '\n';
+            buffer << '\t' << "//NOTE: Be careful in here... The application's menubar is at your disposal." << '\n';
+            buffer << '\t' << "NotImplemented(\"" << m_Info.name << "::OfferMenuSpace()" << "\");" << '\n';
+            buffer << "}" << '\n';
+            buffer << '\n';
+        }
+        if (hasModuleMenu)
+        {
+            buffer << "void " << m_Info.name << "::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg)" << '\n';
+            buffer << "{" << '\n';
+            buffer << '\t' << "//Some library module is ready to display a pop-up menu." << '\n';
+            buffer << '\t' << "//Check the parameter \"type\" and see which module it is" << '\n';
+            buffer << '\t' << "//and append any items you need in the menu..." << '\n';
+            buffer << '\t' << "//TIP: for consistency, add a separator as the first item..." << '\n';
+            buffer << '\t' << "NotImplemented(\"" << m_Info.name << "::OfferModuleMenuSpace()" << "\");" << '\n';
+            buffer << "}" << '\n';
+            buffer << '\n';
+        }
+        if (hasToolbar)
+        {
+            buffer << "void " << m_Info.name << "::BuildToolBar(wxToolBar* toolBar)" << '\n';
+            buffer << "{" << '\n';
+            buffer << '\t' << "//The application is offering its toolbar for your plugin," << '\n';
+            buffer << '\t' << "//to add any toolbar items you want..." << '\n';
+            buffer << '\t' << "//Append any items you need on the toolbar..." << '\n';
+            buffer << '\t' << "NotImplemented(\"" << m_Info.name << "::BuildToolBar()" << "\");" << '\n';
+            buffer << '\t' << "return;" << '\n';
+            buffer << "}" << '\n';
+            buffer << '\n';
+        }
 	}
 	switch (type)
 	{
@@ -561,9 +587,12 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
 		case 4: // codecompl
 			DoAddSourceCodeCompletion(m_Info.name, buffer);
 			break;
+		case 5: // mime
+			DoAddSourceMime(m_Info.name, buffer);
+			break;
 	}
 	// write buffer to disk
-	wxFile impl(m_Implementation, wxFile::write);
+	wxFile impl(UnixFilename(m_Implementation), wxFile::write);
 	impl.Write(buffer, buffer.Length());
 	impl.Flush();
 	// end of implementation file

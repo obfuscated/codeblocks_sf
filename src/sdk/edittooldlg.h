@@ -3,7 +3,8 @@
 
 #include <wx/dialog.h>
 #include "settings.h"
-#include "toolsmanager.h"
+
+class Tool;
 
 class EditToolDlg : public wxDialog
 {

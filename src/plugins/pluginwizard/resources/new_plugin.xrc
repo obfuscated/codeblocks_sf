@@ -23,6 +23,7 @@
                 <item>Compiler</item>
                 <item>Debugger</item>
                 <item>Code completion</item>
+                <item>Mime handler</item>
               </content>
               <selection>1</selection>
               <style>wxCB_READONLY|wxCB_DROPDOWN</style>
@@ -69,13 +70,6 @@
                 <object class="wxCheckBox" name="chkHasConfigure">
                   <label>Provides configuration dialog</label>
                 </object>
-              </object>
-              <object class="sizeritem">
-                <object class="wxCheckBox" name="chkHasUpdate">
-                  <label>Receives notifications from library modules</label>
-                </object>
-                <flag>wxTOP</flag>
-                <border>8</border>
               </object>
               <object class="sizeritem">
                 <object class="wxCheckBox" name="chkHasMenu">
