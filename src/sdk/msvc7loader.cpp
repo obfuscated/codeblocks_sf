@@ -26,6 +26,7 @@ wxString MSVC7Loader::ReplaceMSVCMacros(const wxString& str)
     wxString ret = str;
     ret.Replace("$(OutDir)", m_OutDir);
     ret.Replace("$(ConfigurationName)", m_ConfigurationName);
+    ret.Replace("$(ProjectName)", m_ProjectName);
     ret.Replace("$(TargetPath)", m_TargetPath);
     ret.Replace("$(TargetFileName)", m_TargetFilename);
     if (ret.StartsWith("\""))
@@ -44,6 +45,7 @@ bool MSVC7Loader::Open(const wxString& filename)
 
 /* NOTE (mandrav#1#): not necessary to ask for switches conversion... */
     m_ConvertSwitches = m_pProject->GetCompilerIndex() == 0; // GCC
+    m_ProjectName = wxFileName(filename).GetName();
 
     pMsg->DebugLog(_("Importing MSVC 7.xx project: %s"), filename.c_str());
 
@@ -341,7 +343,16 @@ bool MSVC7Loader::DoImportFiles(TiXmlElement* root, int numConfigurations)
         Manager::Get()->GetMessageManager()->DebugLog("No 'Filter' node...");
         return false;
     }
+    
+    return DoImportFilter(filter, numConfigurations);
+}
 
+bool MSVC7Loader::DoImportFilter(TiXmlElement* root, int numConfigurations)
+{
+    if (!root)
+        return false;
+
+    TiXmlElement* filter = root;
     while(filter)
     {
         TiXmlElement* file = filter->FirstChildElement("File");
@@ -358,9 +369,18 @@ bool MSVC7Loader::DoImportFiles(TiXmlElement* root, int numConfigurations)
                         pf->AddBuildTarget(m_pProject->GetBuildTarget(i)->GetTitle());
                 }
             }
-            file = file->NextSiblingElement();
+            file = file->NextSiblingElement("File");
         }
         filter = filter->NextSiblingElement();
     }
+    
+    // recurse for nested filters
+    TiXmlElement* nested = root->FirstChildElement("Filter");
+    while(nested)
+    {
+        DoImportFilter(nested, numConfigurations);
+        nested = nested->NextSiblingElement("Filter");
+    }
+
     return true;
 }
