@@ -482,7 +482,9 @@ void DebuggerGDB::ConvertToGDBFriendly(wxString& str)
     str = UnixFilename(str);
     while (str.Replace("\\", "/"))
         ;
-    str.Replace("/", "//");
+    while (str.Replace("//", "/"))
+        ;
+//    str.Replace("/", "//");
     if (str.Find(' ') != -1 && str.GetChar(0) != '"')
         str = "\"" + str + "\"";
 }
@@ -794,9 +796,10 @@ wxString DebuggerGDB::GetEditorWordAtCaret()
 
 void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
 {
-static bool init_flag=false;
-static bool toolflags[3];
-bool tmpflags[3];
+    static bool init_flag=false;
+    static bool toolflags[3];
+    bool tmpflags[3];
+
 	cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
 	cbEditor* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
     wxMenuBar* mbar = Manager::Get()->GetAppWindow()->GetMenuBar();

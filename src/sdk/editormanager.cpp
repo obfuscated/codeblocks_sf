@@ -1136,10 +1136,14 @@ void EditorManager::OnTreeItemRightClick(wxTreeEvent &event)
 
 void EditorManager::OnUpdateUI(wxUpdateUIEvent& event)
 {
-    SANITY_CHECK();
-    if(Manager::isappShuttingDown())
-        return;
-    RefreshOpenedFilesTree();
+    // no need for check (happens in RefreshOpenedFilesTree, if called)
+//    SANITY_CHECK();
+    if(!Manager::isappShuttingDown())
+        RefreshOpenedFilesTree();
+
+    // allow other UpdateUI handlers to process this event
+    // *very* important! don't forget it...
+    event.Skip();
 }
 
 #else

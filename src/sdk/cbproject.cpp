@@ -419,7 +419,16 @@ ProjectFile* cbProject::AddFile(const wxString& targetName, const wxString& file
 
 ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool compile, bool link, unsigned short int weight)
 {
-    ProjectFile* f = new ProjectFile;
+    // look if the file belongs to the project already. If so, return it
+    ProjectFile* f = GetFileByFilename(filename, true, true);
+    if (f)
+        return f;
+    f = GetFileByFilename(filename, false, true);
+    if (f)
+        return f;
+
+    // OK, add file
+    f = new ProjectFile;
     bool localCompile, localLink;
     wxFileName fname;
     wxString ext;

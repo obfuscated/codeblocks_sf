@@ -367,32 +367,15 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
 
 bool MSVC7Loader::DoImportFiles(TiXmlElement* root, int numConfigurations)
 {
-    TiXmlElement* files = root->FirstChildElement("Files");
-    if (!files)
-    {
-        Manager::Get()->GetMessageManager()->DebugLog("No 'Files' node...");
-        return false;
-    }
-
-    TiXmlElement* filter = files->FirstChildElement("Filter");
-    if (!filter)
-    {
-        Manager::Get()->GetMessageManager()->DebugLog("No 'Filter' node...");
-        return false;
-    }
-    
-    return DoImportFilter(filter, numConfigurations);
-}
-
-bool MSVC7Loader::DoImportFilter(TiXmlElement* root, int numConfigurations)
-{
     if (!root)
         return false;
 
-    TiXmlElement* filter = root;
-    while(filter)
+    TiXmlElement* files = root->FirstChildElement("Files");
+    if (!files)
+        files = root; // might not have "Files" section
+    while (files)
     {
-        TiXmlElement* file = filter->FirstChildElement("File");
+        TiXmlElement* file = files->FirstChildElement("File");
         while(file)
         {
             wxString fname = ReplaceMSVCMacros(file->Attribute("RelativePath"));
@@ -408,14 +391,23 @@ bool MSVC7Loader::DoImportFilter(TiXmlElement* root, int numConfigurations)
             }
             file = file->NextSiblingElement("File");
         }
-        filter = filter->NextSiblingElement();
+
+        // recurse for nested filters
+        TiXmlElement* nested = files->FirstChildElement("Filter");
+        while(nested)
+        {
+            DoImportFiles(nested, numConfigurations);
+            nested = nested->NextSiblingElement("Filter");
+        }
+
+        files = files->NextSiblingElement("Files");
     }
     
     // recurse for nested filters
     TiXmlElement* nested = root->FirstChildElement("Filter");
     while(nested)
     {
-        DoImportFilter(nested, numConfigurations);
+        DoImportFiles(nested, numConfigurations);
         nested = nested->NextSiblingElement("Filter");
     }
 
