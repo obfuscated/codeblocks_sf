@@ -561,7 +561,7 @@ int CompilerGCC::DoRunQueue()
 	wxString dir = m_Project->GetBasePath();
 
 	m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLACK, *wxWHITE));
-    //msgMan->Log(m_PageIndex, m_Queue[m_QueueIndex].c_str());
+//    msgMan->Log(m_PageIndex, m_Queue[m_QueueIndex].c_str());
 
 	bool pipe = true;
 	int flags = wxEXEC_ASYNC;
@@ -659,9 +659,10 @@ bool CompilerGCC::DoPrepareMultiProjectCommand()
     ProjectManager* prjMan = Manager::Get()->GetProjectManager();
     ProjectsArray* projects = prjMan->GetProjects();
 
-    if (projects->GetCount() == 0)
+    if (projects->GetCount() <= 1)
         return false;
 
+    m_Queue.Clear();
 	AskForActiveProject();
 	m_BackupActiveProject = m_Project;
 	m_ProjectIndex = 0;
@@ -728,13 +729,14 @@ bool CompilerGCC::DoCreateMakefile(bool temporary)
     //wxString makefile = ProjectMakefile();
     m_LastTempMakefile = temporary ? wxFileName::CreateTempFileName("cbmk", 0L) : ProjectMakefile();
     Manager::Get()->GetMessageManager()->SwitchTo(m_PageIndex);
-    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Preparing (in directory \"%s\")..."), path.c_str());
-    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Using compiler \"%s\""), CompilerFactory::Compilers[m_CompilerIdx]->GetName().c_str());
+    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Project   : %s"), m_Project->GetTitle().c_str());
+    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Compiler  : %s"), CompilerFactory::Compilers[m_CompilerIdx]->GetName().c_str());
+    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Directory : %s"), path.c_str());
 
 	wxSetWorkingDirectory(path);
     MakefileGenerator generator(this, m_Project, m_LastTempMakefile, m_PageIndex);
     bool ret = generator.CreateMakefile();
-    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Done preparing"));
+//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Done preparing"));
 
     // if exporting Makefile, reset variable so that it's not deleted on
     // next Makefile generation :)
@@ -900,16 +902,16 @@ int CompilerGCC::Rebuild(ProjectBuildTarget* target)
 
 int CompilerGCC::CompileAll()
 {
-	DoPrepareQueue();
 	DoPrepareMultiProjectCommand();
+	DoPrepareQueue();
 	
     return Compile();
 }
 
 int CompilerGCC::RebuildAll()
 {
-	DoPrepareQueue();
 	DoPrepareMultiProjectCommand();
+	DoPrepareQueue();
 	
 	return Rebuild();
 }
@@ -1065,6 +1067,17 @@ void CompilerGCC::OnCompileAll(wxCommandEvent& event)
 
 void CompilerGCC::OnRebuildAll(wxCommandEvent& event)
 {
+	if (wxMessageBox(_("Rebuilding ALL the open projects will cause the deletion of all "
+                        "object files and building them from scratch. This action "
+                        "might take a while, especially if your projects contain "
+                        "more than a few files. Another factor is your CPU "
+                        "and the available system memory.\n\n"
+                        "Are you sure you want to rebuild ALL the projects?"),
+					_("Rebuild projects"),
+					wxYES_NO | wxICON_QUESTION) == wxNO)
+    {
+        return;
+    }
     RebuildAll();
 }
 
@@ -1356,8 +1369,12 @@ void CompilerGCC::OnGCCTerminated(CodeBlocksEvent& event)
 				}
 				else if (m_BackupActiveProject)
 				{
+                    m_DoAllProjects = false;
+                    m_QueueIndex = 0;
+                    m_Queue.Clear();
 					prjMan->SetProject(m_BackupActiveProject);
 					AskForActiveProject();
+					DoDeleteTempMakefile();
 				}
 			}
 			else
@@ -1369,6 +1386,7 @@ void CompilerGCC::OnGCCTerminated(CodeBlocksEvent& event)
 		}
 		else
 		{
+            m_DoAllProjects = false;
 			m_Queue.Clear();
 			m_QueueIndex = 0;
 			if (m_Errors.GetCount())

@@ -309,7 +309,8 @@ int DebuggerGDB::Debug()
 	if (m_pProcess)
 		return 1;
 	
-	cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
+	ProjectManager* prjMan = Manager::Get()->GetProjectManager();
+	cbProject* project = prjMan->GetActiveProject();
 	if (!project)
 		return 2;
 
@@ -350,6 +351,16 @@ int DebuggerGDB::Debug()
 	
 	wxString cmd;
 	cmd << "gdb -nw -annotate=2 -silent";
+	
+	// add as include dirs all open project base dirs
+	ProjectsArray* projects = prjMan->GetProjects();
+	for (unsigned int i = 0; i < projects->GetCount(); ++i)
+	{
+        cbProject* it = projects->Item(i);
+        if (it == project)
+            continue;
+        cmd << " --directory=\"" << it->GetBasePath() << "\"";
+	}
 
     m_pProcess = new PipedProcess(this, idGDBProcess, true, project->GetBasePath());
     m_Pid = wxExecute(cmd, wxEXEC_ASYNC, m_pProcess);
@@ -647,7 +658,7 @@ void DebuggerGDB::ParseOutput(const wxString& output)
 			buffer.Remove(0, 7); // remove "source "
 
 			if (!reSource.IsValid())
-				reSource.Compile("([A-Za-z]:)([A-Za-z0-9_/\\.]*):([0-9]*)");  // check for . - _ too
+				reSource.Compile("([A-Za-z]:)([ A-Za-z0-9_/\\.]*):([0-9]*)");  // check for . - _ too
 			if ( reSource.Matches(buffer) )
 			{
 				wxString file = reSource.GetMatch(buffer, 1) + reSource.GetMatch(buffer, 2);
@@ -685,13 +696,26 @@ void DebuggerGDB::SyncEditor(const wxString& filename, int line)
 	cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
 	if (project)
 	{
-	    ProjectFile* f = project->GetFileByFilename(filename, false, true);
+        wxFileName fname(filename);
+	    ProjectFile* f = project->GetFileByFilename(fname.GetFullPath(), false, true);
     	if (f)
         {
         	cbEditor* ed = Manager::Get()->GetEditorManager()->Open(f->file.GetFullPath());
             if (ed)
 			{
 				ed->SetProjectFile(f);
+            	ed->Show(true);
+				ed->GetControl()->GotoLine(line - 10); // make sure we can see some context...
+				ed->GetControl()->GotoLine(line - 1);
+				ed->MarkLine(ACTIVE_LINE, line - 1);
+			}
+        }
+        else
+        {
+            // no such file in project; maybe in another open project?
+        	cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname.GetFullPath());
+            if (ed)
+			{
             	ed->Show(true);
 				ed->GetControl()->GotoLine(line - 10); // make sure we can see some context...
 				ed->GetControl()->GotoLine(line - 1);
