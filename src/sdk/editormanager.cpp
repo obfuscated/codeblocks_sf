@@ -48,6 +48,9 @@ WX_DEFINE_LIST(EditorsList);
 
 EditorManager* EditorManager::Get(wxWindow* parent)
 {
+    if(Manager::isappShuttingDown()) // The mother of all sanity checks
+        EditorManager::Free();
+    else 
     if (!EditorManagerProxy::Get())
 	{
 		EditorManagerProxy::Set( new EditorManager(parent) );
@@ -71,6 +74,7 @@ EditorManager::EditorManager(wxWindow* parent)
 	m_LastFindReplaceData(0L),
 	m_IntfType(eitTabbed)
 {
+	SC_CONSTRUCTOR_BEGIN
 	m_EditorsList.Clear();
 	m_Theme = new EditorColorSet(ConfigManager::Get()->Read("/editor/color_sets/active_color_set", COLORSET_DEFAULT));
 
@@ -80,6 +84,7 @@ EditorManager::EditorManager(wxWindow* parent)
 // class destructor
 EditorManager::~EditorManager()
 {
+	SC_DESTRUCTOR_BEGIN
 	if (m_Theme)
 		delete m_Theme;
 		
@@ -87,25 +92,25 @@ EditorManager::~EditorManager()
 		delete m_LastFindReplaceData;
 		
     // free-up any memory used for editors
-	EditorsList::Node* node = m_EditorsList.GetFirst();
-	while (node)
-	{   
-		EditorsList::Node* next = node->GetNext();
-        m_EditorsList.DeleteNode(node);
-        node = next;
-    }
+    m_EditorsList.DeleteContents(true); // Set this to false to preserve
+    m_EditorsList.Clear();              // linked data.
+
+    SC_DESTRUCTOR_END
 }
 
 void EditorManager::CreateMenu(wxMenuBar* menuBar)
 {
+    SANITY_CHECK();
 }
 
 void EditorManager::ReleaseMenu(wxMenuBar* menuBar)
 {
+    SANITY_CHECK();
 }
 
 void EditorManager::Configure()
 {
+    SANITY_CHECK();
 	EditorConfigurationDlg dlg(Manager::Get()->GetAppWindow());
     if (dlg.ShowModal() == wxID_OK)
     {
@@ -120,6 +125,7 @@ void EditorManager::Configure()
 
 cbEditor* EditorManager::IsOpen(const wxString& filename)
 {
+    SANITY_CHECK(NULL);
 	wxString uFilename = UnixFilename(filename);
 	for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext())
 	{
@@ -134,12 +140,14 @@ cbEditor* EditorManager::IsOpen(const wxString& filename)
 
 void EditorManager::SetEditorInterfaceType(const EditorInterfaceType& _type)
 {
+    SANITY_CHECK();
 	m_IntfType = _type;
 	// we should re-create all editors here...
 }
 
 cbEditor* EditorManager::GetEditor(int index)
 {
+    SANITY_CHECK(0L);
 	EditorsList::Node* node = m_EditorsList.Item(index);
 	if (node)
 		return node->GetData();
@@ -148,6 +156,7 @@ cbEditor* EditorManager::GetEditor(int index)
 
 void EditorManager::SetColorSet(EditorColorSet* theme)
 {
+    SANITY_CHECK();
 	if (m_Theme)
 		delete m_Theme;
 	
@@ -163,6 +172,7 @@ void EditorManager::SetColorSet(EditorColorSet* theme)
 
 cbEditor* EditorManager::Open(const wxString& filename, int pos)
 {
+    SANITY_CHECK(0L);
 	wxString fname = UnixFilename(filename);
 //	Manager::Get()->GetMessageManager()->DebugLog("Trying to open '%s'", fname.c_str());
     if (!wxFileExists(fname))
@@ -238,6 +248,7 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos)
 
 cbEditor* EditorManager::GetActiveEditor()
 {
+    SANITY_CHECK(0L);
     wxMDIParentFrame *appwindow =Manager::Get()->GetAppWindow();
     if(!appwindow) return 0; // prevents segfault
     return static_cast<cbEditor*>(appwindow->GetActiveChild());
@@ -245,12 +256,14 @@ cbEditor* EditorManager::GetActiveEditor()
 
 void EditorManager::SetActiveEditor(cbEditor* ed)
 {
+    SANITY_CHECK();
     if (ed)
         ed->Activate();
 }
 
 cbEditor* EditorManager::New()
 {
+    SANITY_CHECK(0L);
     cbEditor* ed = new cbEditor(Manager::Get()->GetAppWindow(), wxEmptyString);
 	if (!ed->SaveAs())
 	{
@@ -274,6 +287,7 @@ cbEditor* EditorManager::New()
 
 bool EditorManager::UpdateProjectFiles(cbProject* project)
 {
+    SANITY_CHECK(false);
 	for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext())
 	{
         cbEditor* ed = node->GetData();
@@ -291,11 +305,13 @@ bool EditorManager::UpdateProjectFiles(cbProject* project)
 
 bool EditorManager::CloseAll()
 {
+    SANITY_CHECK(false);
 	return CloseAllExcept(0L);
 }
 
 bool EditorManager::CloseAllExcept(cbEditor* editor)
 {
+    SANITY_CHECK(false);
     int count = m_EditorsList.GetCount();
 	EditorsList::Node* node = m_EditorsList.GetFirst();
     while (node)
@@ -316,11 +332,13 @@ bool EditorManager::CloseAllExcept(cbEditor* editor)
 
 bool EditorManager::CloseActive()
 {
+    SANITY_CHECK(false);
     return Close(GetActiveEditor());
 }
 
 bool EditorManager::Close(const wxString& filename)
 {
+    SANITY_CHECK(false);
     cbEditor* ed = IsOpen(filename);
     if (ed)
         return Close(ed);
@@ -329,6 +347,7 @@ bool EditorManager::Close(const wxString& filename)
 
 bool EditorManager::Close(cbEditor* editor)
 {
+    SANITY_CHECK(false);
     if (editor)
 	{
 		EditorsList::Node* node = m_EditorsList.Find(editor);
@@ -357,6 +376,7 @@ bool EditorManager::Close(cbEditor* editor)
 
 bool EditorManager::Close(int index)
 {
+    SANITY_CHECK(false);
 	int i = 0;
 	for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext(), ++i)
 	{
@@ -371,6 +391,7 @@ bool EditorManager::Close(int index)
 
 bool EditorManager::Save(const wxString& filename)
 {
+    SANITY_CHECK(false);
     cbEditor* ed = IsOpen(filename);
     if (ed)
         return ed->Save();
@@ -379,6 +400,7 @@ bool EditorManager::Save(const wxString& filename)
 
 bool EditorManager::Save(int index)
 {
+    SANITY_CHECK(false);
 	int i = 0;
 	for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext(), ++i)
 	{
@@ -393,6 +415,7 @@ bool EditorManager::Save(int index)
 
 bool EditorManager::SaveActive()
 {
+    SANITY_CHECK(false);
 	if (GetActiveEditor())
 		return GetActiveEditor()->Save();
 	return true;
@@ -400,6 +423,7 @@ bool EditorManager::SaveActive()
 
 bool EditorManager::SaveAs(int index)
 {
+    SANITY_CHECK(false);
 	int i = 0;
 	for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext(), ++i)
 	{
@@ -414,6 +438,7 @@ bool EditorManager::SaveAs(int index)
 
 bool EditorManager::SaveActiveAs()
 {
+    SANITY_CHECK(false);
 	if (GetActiveEditor())
 		return GetActiveEditor()->SaveAs();
 	return true;
@@ -421,6 +446,7 @@ bool EditorManager::SaveActiveAs()
 
 bool EditorManager::SaveAll()
 {
+    SANITY_CHECK(false);
 	EditorsList::Node* node = m_EditorsList.GetFirst();
     while (node)
 	{
@@ -439,6 +465,7 @@ bool EditorManager::SaveAll()
 
 void EditorManager::UpdateEditorIndices()
 {
+    SANITY_CHECK();
 #if 0
 	for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext())
 	{
@@ -459,6 +486,7 @@ void EditorManager::UpdateEditorIndices()
 
 void EditorManager::CheckForExternallyModifiedFiles()
 {
+    SANITY_CHECK();
 	for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext())
 	{
         cbEditor* ed = node->GetData();
@@ -480,6 +508,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
 
 bool EditorManager::SwapActiveHeaderSource()
 {
+    SANITY_CHECK(false);
     cbEditor* ed = GetActiveEditor();
     if (!ed)
         return false;
@@ -582,6 +611,7 @@ bool EditorManager::SwapActiveHeaderSource()
 
 int EditorManager::ShowFindDialog(bool replace)
 {
+    SANITY_CHECK(-1);
 	cbEditor* ed = GetActiveEditor();
 	if (!ed)
 		return -1;
@@ -638,6 +668,7 @@ int EditorManager::ShowFindDialog(bool replace)
 
 void EditorManager::CalculateFindReplaceStartEnd(cbEditor* editor, cbFindReplaceData* data)
 {
+    SANITY_CHECK();
 	if (!data)
 		return;
 
@@ -677,6 +708,7 @@ void EditorManager::CalculateFindReplaceStartEnd(cbEditor* editor, cbFindReplace
 
 int EditorManager::Replace(cbEditor* editor, cbFindReplaceData* data)
 {
+    SANITY_CHECK(-1);
 	if (!editor || !data)
 		return -1;
 
@@ -778,6 +810,7 @@ int EditorManager::Replace(cbEditor* editor, cbFindReplaceData* data)
 
 int EditorManager::Find(cbEditor* editor, cbFindReplaceData* data)
 {
+    SANITY_CHECK(-1);
 	if (!editor || !data)
 		return -1;
 
@@ -821,6 +854,7 @@ int EditorManager::Find(cbEditor* editor, cbFindReplaceData* data)
 
 int EditorManager::FindNext(bool goingDown)
 {
+    SANITY_CHECK(-1);
 	if (!m_LastFindReplaceData)
 		return -1;
 	

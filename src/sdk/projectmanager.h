@@ -4,7 +4,7 @@
 #include <wx/event.h>
 #include <wx/dynarray.h>
 #include <wx/treectrl.h>
-
+#include "sanitycheck.h"
 #include "settings.h"
 
 // forward decls
@@ -213,23 +213,6 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
           * @return A pointer to a wxPanel window.
           */
 		wxPanel* GetPanel(){ return m_pPanel; }
-		
-		inline bool sanity_check() // Fixes segfault problems - by Rick
-		{
-		  if(!this) return false;
-		  if((void*)this!=m_sanitycheck_self)
-            return false;   //  Lightning rod for segfaults.
-                            // (triggered in the "if" clause)
-          if(m_shutdown)    // Alerts if shutdown
-            return false;
-          return true;
-        }
-          
-  protected:          
-		// *** Sanity check variables
-		bool m_shutdown; // 
-		void *m_sanitycheck_self;
-  
     private:
         static ProjectManager* Get(wxNotebook* parent);
 		static void Free();
@@ -269,6 +252,7 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
 		int m_TreeFreezeCounter;
 		
         DECLARE_EVENT_TABLE()
+        DECLARE_SANITY_CHECK
 };
 
 #endif // PROJECTMANAGER_H

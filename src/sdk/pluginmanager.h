@@ -4,6 +4,7 @@
 #include <wx/dynarray.h>
 #include "settings.h"
 #include "sdk_events.h"
+#include "sanitycheck.h"
 
 //forward decls
 struct PluginInfo;
@@ -56,6 +57,7 @@ class DLLIMPORT PluginManager
 		~PluginManager();
         PluginsArray DoGetOffersFor(PluginType type);
         PluginElementsArray m_Plugins;
+    DECLARE_SANITY_CHECK
 };
 
 #endif // PLUGINMANAGER_H

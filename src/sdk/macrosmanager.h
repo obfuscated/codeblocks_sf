@@ -2,7 +2,7 @@
 #define MACROSMANAGER_H
 
 #include "settings.h"
-
+#include "sanitycheck.h"
 // forward decls;
 class wxMenuBar;
 
@@ -20,6 +20,7 @@ class DLLIMPORT MacrosManager
 		static void Free();
 		MacrosManager();
 		~MacrosManager();
+		DECLARE_SANITY_CHECK
 };
 
 #endif // MACROSMANAGER_H

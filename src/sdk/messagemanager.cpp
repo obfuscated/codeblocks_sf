@@ -59,8 +59,7 @@ void MessageManager::Free()
 MessageManager::MessageManager(wxWindow* parent)
     : wxNotebook(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxCLIP_CHILDREN | wxNB_BOTTOM | wxNB_MULTILINE)
 {
-    m_shutdown=false;
-    m_sanitycheck_self=this;
+    SC_CONSTRUCTOR_BEGIN
     
     wxImageList* images = new wxImageList(16, 16);
 
@@ -91,23 +90,23 @@ MessageManager::MessageManager(wxWindow* parent)
 // class destructor
 MessageManager::~MessageManager()
 {
-    m_shutdown=true;
-    m_sanitycheck_self=NULL;
+    SC_DESTRUCTOR_BEGIN
+    SC_DESTRUCTOR_END
 }
 
 void MessageManager::CreateMenu(wxMenuBar* menuBar)
 {
-    if(!sanity_check()) return;
+    SANITY_CHECK();
 }
 
 void MessageManager::ReleaseMenu(wxMenuBar* menuBar)
 {
-    if(!sanity_check()) return;
+    SANITY_CHECK();
 }
 
 bool MessageManager::CheckLogType(MessageLogType type)
 {
-    if(!sanity_check()) return false;
+    SANITY_CHECK(false);
     if (type == mltOther)
     {
         DebugLog(_("Can't use MessageManager::Log(mltOther, ...); Use MessageManager::Log(id, ...)"));
@@ -118,7 +117,7 @@ bool MessageManager::CheckLogType(MessageLogType type)
 
 void MessageManager::Log(const wxChar* msg, ...)
 {
-    if(!sanity_check()) return;
+    SANITY_CHECK();
     wxString tmp;
     va_list arg_list;
 
@@ -132,7 +131,7 @@ void MessageManager::Log(const wxChar* msg, ...)
 
 void MessageManager::DebugLog(const wxChar* msg, ...)
 {
-	if(!sanity_check()) return;
+    SANITY_CHECK();
 	if (!m_HasDebugLog)
 		return;
     wxString tmp;
@@ -150,14 +149,14 @@ void MessageManager::DebugLog(const wxChar* msg, ...)
 // add a new log page
 int MessageManager::AddLog(MessageLog* log)
 {
-    if(!sanity_check()) return -1;
+    SANITY_CHECK(-1);
     return DoAddLog(mltOther, log);
 }
 
 // add a new log page
 int MessageManager::DoAddLog(MessageLogType type, MessageLog* log)
 {
-    if(!sanity_check()) return -1;
+    SANITY_CHECK(-1);
     if (!m_HasDebugLog && type == mltDebug)
         return -1;
 
@@ -170,7 +169,7 @@ int MessageManager::DoAddLog(MessageLogType type, MessageLog* log)
 
 void MessageManager::Log(int id, const wxChar* msg, ...)
 {
-    if(!sanity_check()) return;
+    SANITY_CHECK();
     if (!m_LogIDs[id])
         return;
 
@@ -187,7 +186,7 @@ void MessageManager::Log(int id, const wxChar* msg, ...)
 
 void MessageManager::AppendLog(const wxChar* msg, ...)
 {
-    if(!sanity_check()) return;
+    SANITY_CHECK();
     wxString tmp;
     va_list arg_list;
 
@@ -201,7 +200,7 @@ void MessageManager::AppendLog(const wxChar* msg, ...)
 
 void MessageManager::AppendLog(int id, const wxChar* msg, ...)
 {
-    if(!sanity_check()) return;
+    SANITY_CHECK();
     if (!m_LogIDs[id])
         return;
 
@@ -219,7 +218,7 @@ void MessageManager::AppendLog(int id, const wxChar* msg, ...)
 // switch to log page
 void MessageManager::SwitchTo(MessageLogType type)
 {
-    if(!sanity_check()) return;
+    SANITY_CHECK();
     if (!m_HasDebugLog && type == mltDebug)
         return;
 
@@ -230,13 +229,13 @@ void MessageManager::SwitchTo(MessageLogType type)
 
 void MessageManager::SwitchTo(int id)
 {
-    if(!sanity_check()) return;
+    SANITY_CHECK();
     DoSwitchTo(m_LogIDs[id]);
 }
 
 void MessageManager::DoSwitchTo(MessageLog* ml)
 {
-    if(!sanity_check()) return;
+    SANITY_CHECK();
     if (ml)
     {
         int index = ml->GetPageIndex();
@@ -248,7 +247,7 @@ void MessageManager::DoSwitchTo(MessageLog* ml)
 
 void MessageManager::SetLogImage(int id, const wxBitmap& bitmap)
 {
-    if(!sanity_check()) return;
+    SANITY_CHECK();
     if (!m_LogIDs[id] || !GetImageList())
         return;
 
@@ -258,7 +257,7 @@ void MessageManager::SetLogImage(int id, const wxBitmap& bitmap)
 
 void MessageManager::SetLogImage(MessageLog* log, const wxBitmap& bitmap)
 {
-    if(!sanity_check()) return;
+    SANITY_CHECK();
     if (!log || !GetImageList())
         return;
 

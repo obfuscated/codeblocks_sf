@@ -4,6 +4,7 @@
 #include <wx/event.h>
 #include "settings.h"
 #include "menuitemsmanager.h"
+#include "sanitycheck.h"
 
 struct Tool
 {
@@ -56,6 +57,8 @@ class DLLIMPORT ToolsManager : wxEvtHandler
 		wxMenu* m_Menu;
 		
 		DECLARE_EVENT_TABLE()
+		DECLARE_SANITY_CHECK
+		
 };
 
 #endif // TOOLSMANAGER_H

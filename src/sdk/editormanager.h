@@ -5,6 +5,7 @@
 
 #include "settings.h"
 #include "cbeditor.h"
+#include "sanitycheck.h"
 
 enum EditorInterfaceType
 {
@@ -90,6 +91,8 @@ class DLLIMPORT EditorManager : public wxEvtHandler
 		cbFindReplaceData* m_LastFindReplaceData;
 		EditorColorSet* m_Theme;
 		EditorInterfaceType m_IntfType;
+	DECLARE_SANITY_CHECK
+
 };
 
 #endif // EDITORMANAGER_H

@@ -36,6 +36,9 @@
 
 MacrosManager* MacrosManager::Get()
 {
+    if(Manager::isappShuttingDown()) // The mother of all sanity checks
+        MacrosManager::Free();
+    else 
     if (!MacrosManagerProxy::Get())
 	{
         MacrosManagerProxy::Set( new MacrosManager() );
@@ -56,23 +59,29 @@ void MacrosManager::Free()
 MacrosManager::MacrosManager()
 {
 	//ctor
+	SC_CONSTRUCTOR_BEGIN
 }
 
 MacrosManager::~MacrosManager()
 {
 	//dtor
+	SC_DESTRUCTOR_BEGIN
+	SC_DESTRUCTOR_END
 }
 
 void MacrosManager::CreateMenu(wxMenuBar* menuBar)
 {
+    SANITY_CHECK();
 }
 
 void MacrosManager::ReleaseMenu(wxMenuBar* menuBar)
 {
+    SANITY_CHECK();
 }
 
 wxString MacrosManager::ReplaceMacros(const wxString& buffer)
 {
+    SANITY_CHECK("");
 	wxString tmp = buffer;
 	ReplaceMacros(tmp);
 	return tmp;
@@ -80,6 +89,7 @@ wxString MacrosManager::ReplaceMacros(const wxString& buffer)
 
 void MacrosManager::ReplaceMacros(wxString& buffer)
 {
+    SANITY_CHECK();
 	/*
 		standard macros are:
 		

@@ -41,6 +41,9 @@ WX_DEFINE_LIST(ToolsList);
 
 ToolsManager* ToolsManager::Get()
 {
+    if(Manager::isappShuttingDown()) // The mother of all sanity checks
+        ToolsManager::Free();
+    else 
     if (!ToolsManagerProxy::Get())
 	{
         ToolsManagerProxy::Set( new ToolsManager() );
@@ -67,37 +70,37 @@ END_EVENT_TABLE()
 ToolsManager::ToolsManager()
 	: m_Menu(0L)
 {
-	Manager::Get()->GetAppWindow()->PushEventHandler(this);
+    SC_CONSTRUCTOR_BEGIN
 	LoadTools();
 	ConfigManager::AddConfiguration(_("Tools"), "/tools");
+	Manager::Get()->GetAppWindow()->PushEventHandler(this);
 }
 
 ToolsManager::~ToolsManager()
 {
-	m_ItemsManager.Clear( m_Menu );
+    SC_DESTRUCTOR_BEGIN
 	Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
+	m_ItemsManager.Clear( m_Menu );
 
     // free-up any memory used for tools
-    ToolsList::Node* node = m_Tools.GetFirst();
-	while (node)
-	{
-        ToolsList::Node* next = node->GetNext();
-        m_Tools.DeleteNode(node);
-        node = next;
-    }
+    m_Tools.DeleteContents(true);
+    m_Tools.Clear();
+    SC_DESTRUCTOR_END
 }
 
 void ToolsManager::CreateMenu(wxMenuBar* menuBar)
 {
-
+    SANITY_CHECK();
 }
 
 void ToolsManager::ReleaseMenu(wxMenuBar* menuBar)
 {
+    SANITY_CHECK();
 }
 
 bool ToolsManager::Execute(Tool* tool)
 {
+    SANITY_CHECK(false);
 	if (!tool)
 		return false;
 		
@@ -111,6 +114,10 @@ bool ToolsManager::Execute(Tool* tool)
 	Manager::Get()->GetMacrosManager()->ReplaceMacros(dir);
 
 	cmdline << cmd << " " << params;
+    SANITY_CHECK(false);
+    if(!(Manager::Get()->GetMacrosManager())) 
+        return false; // We cannot afford the Macros Manager to fail here!
+                      // What if it failed already?
     wxSetWorkingDirectory(dir);
 	wxProcess* process = new wxProcess();
 	return wxExecute(cmdline, wxEXEC_ASYNC, process);
@@ -118,6 +125,7 @@ bool ToolsManager::Execute(Tool* tool)
 
 void ToolsManager::AddTool(const wxString& name, const wxString& command, const wxString& params, const wxString& workingDir, bool save)
 {
+    SANITY_CHECK();
 	Tool tool;
 	tool.name = name;
 	tool.command = command;
@@ -128,12 +136,14 @@ void ToolsManager::AddTool(const wxString& name, const wxString& command, const 
 
 void ToolsManager::AddTool(Tool* tool, bool save)
 {
+    SANITY_CHECK();
 	if (tool)
 		InsertTool(m_Tools.GetCount(), tool, save);
 }
 
 void ToolsManager::InsertTool(int position, Tool* tool, bool save)
 {
+    SANITY_CHECK();
 	//Manager::Get()->GetMessageManager()->DebugLog("Creating tool: %s", tool->name.c_str());
 	m_Tools.Insert(position, new Tool(*tool));
 	if (save)
@@ -142,6 +152,7 @@ void ToolsManager::InsertTool(int position, Tool* tool, bool save)
 
 void ToolsManager::RemoveToolByIndex(int index)
 {
+    SANITY_CHECK();
 	int idx = 0;
 	for (ToolsList::Node* node = m_Tools.GetFirst(); node; node = node->GetNext())
 	{
@@ -156,6 +167,7 @@ void ToolsManager::RemoveToolByIndex(int index)
 
 void ToolsManager::RemoveToolByName(const wxString& name)
 {
+    SANITY_CHECK();
 	for (ToolsList::Node* node = m_Tools.GetFirst(); node; node = node->GetNext())
 	{
 		Tool* tool = node->GetData();
@@ -169,6 +181,7 @@ void ToolsManager::RemoveToolByName(const wxString& name)
 
 void ToolsManager::DoRemoveTool(ToolsList::Node* node)
 {
+    SANITY_CHECK();
 	if (node)
 	{
 		if (node->GetData()->menuId != -1)
@@ -180,6 +193,7 @@ void ToolsManager::DoRemoveTool(ToolsList::Node* node)
 
 Tool* ToolsManager::GetToolById(int id)
 {
+    SANITY_CHECK(0L);
 	for (ToolsList::Node* node = m_Tools.GetFirst(); node; node = node->GetNext())
 	{
 		Tool* tool = node->GetData();
@@ -191,6 +205,7 @@ Tool* ToolsManager::GetToolById(int id)
 
 Tool* ToolsManager::GetToolByIndex(int index)
 {
+    SANITY_CHECK(0L);
 	int idx = 0;
 	for (ToolsList::Node* node = m_Tools.GetFirst(); node; node = node->GetNext())
 	{
@@ -204,6 +219,7 @@ Tool* ToolsManager::GetToolByIndex(int index)
 
 void ToolsManager::LoadTools()
 {
+    SANITY_CHECK();
 	wxString str;
 	long cookie;
 	
@@ -230,6 +246,7 @@ void ToolsManager::LoadTools()
 
 void ToolsManager::SaveTools()
 {
+    SANITY_CHECK();
 	int count = 0;
 	ConfigManager::Get()->DeleteGroup("/tools");
 	for (ToolsList::Node* node = m_Tools.GetFirst(); node; node = node->GetNext())
@@ -250,6 +267,7 @@ void ToolsManager::SaveTools()
 
 void ToolsManager::BuildToolsMenu(wxMenu* menu)
 {
+    SANITY_CHECK();
     // clear previously added menu items
     m_ItemsManager.Clear(menu);
     
@@ -280,6 +298,7 @@ void ToolsManager::BuildToolsMenu(wxMenu* menu)
 
 int ToolsManager::Configure()
 {
+    SANITY_CHECK(0);
 	ConfigureToolsDlg dlg(Manager::Get()->GetAppWindow());
 	dlg.ShowModal();
 	SaveTools();
@@ -291,11 +310,13 @@ int ToolsManager::Configure()
 
 void ToolsManager::OnConfigure(wxCommandEvent& event)
 {
+    SANITY_CHECK();
 	Configure();
 }
 
 void ToolsManager::OnToolClick(wxCommandEvent& event)
 {
+    SANITY_CHECK();
 	Tool* tool = GetToolById(event.GetId());
 	if (!Execute(tool))
 		wxMessageBox(_("Could not execute ") + tool->name);
