@@ -48,15 +48,16 @@ wxArrayString GetArrayFromString(const wxString& text, const wxString& separator
 wxString UnixFilename(const wxString& filename)
 {
     wxString unixname = filename;
-    unixname.Replace("\\", "/");
-
-#ifdef __WXMSW__
-    /* TODO (mandrav#1#):
-    The next line is not working right...
-    If the filename contains "xxx\ zz" it will become "xxx\\ zz" and so on...
-    Need to replace it manually... */
-//    unixname.Replace(" ", "\\ ");
-#endif
+//    unixname.Replace("\\", "/");
+    for (unsigned int i = 0; i < unixname.Length(); ++i)
+    {
+        if (unixname[i] == '\\' && i < unixname.Length() - 1)
+        {
+            if (unixname[i + 1] != ' ' && unixname[i + 1] != '\\')
+                unixname.insert(i, '\\'); // escape it
+            ++i;
+        }
+    }
 
     return unixname;
 }

@@ -68,9 +68,13 @@ int idMenuRebuildTargetFromProjectManager = wxNewId();
 int idMenuCompileAll = wxNewId();
 int idMenuRebuildAll = wxNewId();
 int idMenuClean = wxNewId();
+int idMenuDistClean = wxNewId();
 int idMenuCleanTarget = wxNewId();
+int idMenuDistCleanTarget = wxNewId();
 int idMenuCleanFromProjectManager = wxNewId();
+int idMenuDistCleanFromProjectManager = wxNewId();
 int idMenuCleanTargetFromProjectManager = wxNewId();
+int idMenuDistCleanTargetFromProjectManager = wxNewId();
 int idMenuCompileAndRun = wxNewId();
 int idMenuRun = wxNewId();
 int idMenuKillProcess = wxNewId();
@@ -107,8 +111,11 @@ BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
 	EVT_MENU(idMenuProjectCompilerOptions,			CompilerGCC::OnProjectCompilerOptions)
 	EVT_MENU(idMenuTargetCompilerOptions,			CompilerGCC::OnTargetCompilerOptions)
     EVT_MENU(idMenuClean,                           CompilerGCC::OnClean)
+    EVT_MENU(idMenuDistClean,                       CompilerGCC::OnDistClean)
     EVT_MENU(idMenuCleanFromProjectManager,         CompilerGCC::OnClean)
+    EVT_MENU(idMenuDistCleanFromProjectManager,     CompilerGCC::OnDistClean)
     EVT_MENU(idMenuCleanTargetFromProjectManager,   CompilerGCC::OnClean)
+    EVT_MENU(idMenuDistCleanTargetFromProjectManager, CompilerGCC::OnDistClean)
     EVT_MENU(idMenuKillProcess,                     CompilerGCC::OnKillProcess)
 	EVT_MENU(idMenuSelectTargetAll,					CompilerGCC::OnSelectTarget)
 	EVT_MENU(idMenuNextError,						CompilerGCC::OnNextError)
@@ -297,6 +304,7 @@ void CompilerGCC::BuildMenu(wxMenuBar* menuBar)
     m_Menu->Append(idMenuCompileFile, _("Compile current &file\tCtrl-Shift-F9"), _("Compile current file"));
     m_Menu->Append(idMenuRebuild, _("Re&build\tCtrl-F11"), _("Rebuild current project"));
     m_Menu->Append(idMenuClean, _("C&lean"), _("Clean current project"));
+    m_Menu->Append(idMenuDistClean, _("Di&st clean"), _("Clean current project (dependencies too)"));
     m_Menu->AppendSeparator();
     m_Menu->Append(idMenuCompileAll, _("Compile all pro&jects"), _("Compile all projects"));
     m_Menu->Append(idMenuRebuildAll, _("Reb&uild all projects"), _("Rebuild all projects"));
@@ -375,10 +383,12 @@ void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxS
         menu->Append(idMenuCompileFromProjectManager, _("&Compile\tCtrl-F9"));
         menu->Append(idMenuRebuildFromProjectManager, _("Re&build\tCtrl-F11"));
         menu->Append(idMenuCleanFromProjectManager, _("C&lean"));
+        menu->Append(idMenuDistCleanFromProjectManager, _("Di&st clean"));
 		wxMenu* subMenu = new wxMenu();
         subMenu->Append(idMenuCompileTargetFromProjectManager, _("Compile"));
         subMenu->Append(idMenuRebuildTargetFromProjectManager, _("Rebuild"));
         subMenu->Append(idMenuCleanTargetFromProjectManager, _("Clean"));
+        subMenu->Append(idMenuDistCleanTargetFromProjectManager, _("Dist clean"));
         subMenu->AppendSeparator();
         subMenu->Append(idMenuTargetCompilerOptions, _("Build options"));
 		menu->Append(idMenuTargetCompilerOptionsSub, _("Specific build target..."), subMenu);
@@ -571,7 +581,7 @@ int CompilerGCC::DoRunQueue()
 	// leave if no commands in queue
     if (m_QueueIndex >= m_Queue.GetCount())
 	{
-        Manager::Get()->GetMessageManager()->DebugLog("Count=%d, index=%d", m_Queue.GetCount(), m_QueueIndex);
+        Manager::Get()->GetMessageManager()->DebugLog("Queue has been emptied! (count=%d, index=%d)", m_Queue.GetCount(), m_QueueIndex);
         return -3;
 	}
 
@@ -592,7 +602,7 @@ int CompilerGCC::DoRunQueue()
 	wxString cmd = m_Queue[m_QueueIndex];
 
 	m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLACK, *wxWHITE));
-	msgMan->Log(m_PageIndex, "cmd='%s' in '%s'", cmd.c_str(), m_CdRun.c_str());
+//	msgMan->Log(m_PageIndex, "cmd='%s' in '%s'", cmd.c_str(), m_CdRun.c_str());
 
 	bool pipe = true;
 	int flags = wxEXEC_ASYNC;
@@ -908,6 +918,21 @@ int CompilerGCC::Clean(ProjectBuildTarget* target)
     return DoRunQueue();
 }
 
+int CompilerGCC::DistClean(ProjectBuildTarget* target)
+{
+	DoPrepareQueue();
+
+    wxString cmd;
+    wxString make = CompilerFactory::Compilers[m_CompilerIdx]->GetPrograms().MAKE;
+    if (target)
+        cmd << make << " -f " << m_LastTempMakefile << " distclean_" << target->GetTitle();
+    else
+        cmd << make << " -f " << m_LastTempMakefile << " distclean";
+    m_Queue.Add(cmd);
+
+    return DoRunQueue();
+}
+
 int CompilerGCC::CreateDist()
 {
 	DoPrepareQueue();
@@ -1200,6 +1225,46 @@ void CompilerGCC::OnClean(wxCommandEvent& event)
 	m_TargetIndex = bak;
 }
 
+void CompilerGCC::OnDistClean(wxCommandEvent& event)
+{
+	if (wxMessageBox(_("Cleaning the target or project will cause the deletion "
+                        "of all relevant object files. This means that you will "
+                        "have to build your project from scratch next time you "
+                        "'ll want to build it. That action "
+                        "might take a while, especially if your project contains "
+                        "more than a few files. Another factor is your CPU "
+                        "and the available system memory.\n\n"
+                        "Are you sure you want to proceed to cleaning?"),
+					_("Clean target/project"),
+					wxYES_NO | wxICON_QUESTION) == wxNO)
+    {
+        return;
+    }
+
+	int bak = m_TargetIndex;
+    if (event.GetId() == idMenuDistCleanTargetFromProjectManager)
+	{
+    	// we 're called from a menu in ProjectManager
+		int idx = DoGUIAskForTarget();
+		if (idx == -1)
+			return;
+		else
+			m_TargetIndex = idx;
+
+    	// let's check the selected project...
+    	DoSwitchProjectTemporarily();
+	}
+    else if (event.GetId() == idMenuDistCleanFromProjectManager)
+    {
+    	// we 're called from a menu in ProjectManager
+    	// let's check the selected project...
+    	DoSwitchProjectTemporarily();
+    }
+    ProjectBuildTarget* target = DoAskForTarget();
+    DistClean(target);
+	m_TargetIndex = bak;
+}
+
 void CompilerGCC::OnProjectCompilerOptions(wxCommandEvent& event)
 {
 	wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
@@ -1289,8 +1354,11 @@ void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
         mbar->Enable(idMenuRebuildFromProjectManager, !m_Process && prj);
         mbar->Enable(idMenuRebuildTargetFromProjectManager, !m_Process && prj);
         mbar->Enable(idMenuClean, !m_Process && prj);
+        mbar->Enable(idMenuDistClean, !m_Process && prj);
         mbar->Enable(idMenuCleanFromProjectManager, !m_Process && prj);
+        mbar->Enable(idMenuDistCleanFromProjectManager, !m_Process && prj);
         mbar->Enable(idMenuCleanTargetFromProjectManager, !m_Process && prj);
+        mbar->Enable(idMenuDistCleanTargetFromProjectManager, !m_Process && prj);
         mbar->Enable(idMenuCompileAndRun, !m_Process && prj);
         mbar->Enable(idMenuRun, !m_Process && prj);
         mbar->Enable(idMenuKillProcess, m_Process);

@@ -32,6 +32,8 @@
 #include <wx/combobox.h>
 #include <wx/checkbox.h>
 #include <wx/file.h>
+#include <wx/msgdlg.h>
+#include <wx/log.h>
 
 BEGIN_EVENT_TABLE(ClassWizardDlg, wxDialog)
 	EVT_UPDATE_UI(-1, ClassWizardDlg::OnUpdateUI)
@@ -80,6 +82,8 @@ void ClassWizardDlg::OnUpdateUI(wxUpdateUIEvent& event)
 
 void ClassWizardDlg::OnOKClick(wxCommandEvent& event)
 {
+    wxLogNull null_logger; // we do all file checks ourselves
+    
 	// set some variable for easy reference
 	wxString Name = XRCCTRL(*this, "txtName", wxTextCtrl)->GetValue();
 	wxString Constructor = XRCCTRL(*this, "txtConstructor", wxTextCtrl)->GetValue();
@@ -109,8 +113,11 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& event)
 		buffer << '\n';
 	}
 
-	buffer << "#include <" << AncestorFilename << ">" << '\n';
-	buffer << '\n';
+    if (!AncestorFilename.IsEmpty())
+    {
+        buffer << "#include <" << AncestorFilename << ">" << '\n';
+        buffer << '\n';
+    }
 	buffer << "class " << Name;
 	if (Inherits)
 		buffer << " : " << AncestorScope << " " << Ancestor;
@@ -118,10 +125,10 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& event)
 	buffer << "{" << '\n';
 	buffer << '\t' << "public:" << '\n';
 	buffer << '\t' << '\t' << Name << "(" << Constructor << ");" << '\n';
+    buffer << '\t' << '\t';
 	if (VirtualDestructor)
-		buffer << '\t' << '\t' << "virtual ~" << Name << "();" << '\n';
-	else
-		buffer << '\t' << '\t' << "~" << Name << "();" << '\n';
+		buffer << "virtual ";
+    buffer << '~' << Name << "();" << '\n';
 	buffer << '\t' << "protected:" << '\n';
 	buffer << '\t' << "private:" << '\n';
 	buffer << "};" << '\n';
@@ -131,9 +138,16 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& event)
 		buffer << '\n';
 		buffer << "#endif // " << GuardWord << '\n';
 	}
-	buffer << '\n';
+
 	// write buffer to disk
 	wxFile hdr(m_Header, wxFile::write);
+	if (!hdr.IsOpened())
+	{
+        wxString msg;
+        msg.Printf(_("Could not create header file %s.\nAborting..."), m_Header.c_str());
+        wxMessageBox(msg, _("Error"), wxICON_ERROR);
+        return;
+	}
 	hdr.Write(buffer, buffer.Length());
 	hdr.Flush();
 	// end of header file
@@ -154,6 +168,13 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& event)
 	buffer << '\n';
 	// write buffer to disk
 	wxFile impl(m_Implementation, wxFile::write);
+	if (!impl.IsOpened())
+	{
+        wxString msg;
+        msg.Printf(_("Could not create implementation file %s.\nAborting..."), m_Implementation.c_str());
+        wxMessageBox(msg, _("Error"), wxICON_ERROR);
+        return;
+	}
 	impl.Write(buffer, buffer.Length());
 	impl.Flush();
 	// end of implementation file

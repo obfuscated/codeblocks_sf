@@ -44,7 +44,7 @@
 			<Add option="-lole32"/>
 			<Add option="-loleaut32"/>
 			<Add option="-luuid"/>
-			<Add option="-lwxmsw241"/>
+			<Add option="-lwxmsw242"/>
 			<Add option=""/>
 		</Linker>
 	</Project>

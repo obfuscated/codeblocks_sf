@@ -43,6 +43,7 @@ class CompilerGCC : public cbCompilerPlugin
 
         virtual int Run(ProjectBuildTarget* target = 0L);
         virtual int Clean(ProjectBuildTarget* target = 0L);
+        virtual int DistClean(ProjectBuildTarget* target = 0L);
         virtual int Compile(ProjectBuildTarget* target = 0L);
         virtual int CompileAll();
         virtual int RebuildAll();
@@ -69,6 +70,7 @@ class CompilerGCC : public cbCompilerPlugin
         void OnRebuild(wxCommandEvent& event);
         void OnCompileAll(wxCommandEvent& event);
         void OnRebuildAll(wxCommandEvent& event);
+        void OnDistClean(wxCommandEvent& event);
         void OnClean(wxCommandEvent& event);
         void OnRun(wxCommandEvent& event);
 		void OnProjectCompilerOptions(wxCommandEvent& event);
