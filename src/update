@@ -1,41 +1,54 @@
 #!/bin/sh
 
-ZIPCMD="zip -j9"
+echo Creating output directory tree
 
+mkdir -p output/share/CodeBlocks/images/codecompletion
+mkdir -p output/share/CodeBlocks/plugins
+mkdir -p output/share/CodeBlocks/templates
+
+ZIPCMD="zip"
+RESDIR="devel/share/CodeBlocks"
 echo Compressing core UI resources
-${ZIPCMD} devel/share/CodeBlocks/resources.zip src/resources/*.xrc > /dev/null
-${ZIPCMD} devel/share/CodeBlocks/manager_resources.zip sdk/resources/*.xrc > /dev/null
+${ZIPCMD} -j9 ${RESDIR}/resources.zip src/resources/*.xrc > /dev/null
+${ZIPCMD} -j9 ${RESDIR}/manager_resources.zip sdk/resources/*.xrc > /dev/null
 echo Compressing plugins UI resources
-${ZIPCMD} devel/share/CodeBlocks/astyle.zip plugins/astyle/resources/*.xrc > /dev/null
-${ZIPCMD} devel/share/CodeBlocks/plugin_wizard.zip plugins/pluginwizard/resources/*.xrc > /dev/null
-${ZIPCMD} devel/share/CodeBlocks/class_wizard.zip plugins/classwizard/resources/*.xrc > /dev/null
-${ZIPCMD} devel/share/CodeBlocks/code_completion.zip plugins/codecompletion/resources/*.xrc > /dev/null
-${ZIPCMD} devel/share/CodeBlocks/compiler_gcc.zip plugins/compilergcc/resources/*.xrc > /dev/null
-${ZIPCMD} devel/share/CodeBlocks/todo.zip plugins/todo/resources/*.xrc > /dev/null
-
-ZIPCMD=
+${ZIPCMD} -j9 ${RESDIR}/astyle.zip plugins/astyle/resources/*.xrc > /dev/null
+${ZIPCMD} -j9 ${RESDIR}/plugin_wizard.zip plugins/pluginwizard/resources/*.xrc > /dev/null
+${ZIPCMD} -j9 ${RESDIR}/class_wizard.zip plugins/classwizard/resources/*.xrc > /dev/null
+${ZIPCMD} -j9 ${RESDIR}/code_completion.zip plugins/codecompletion/resources/*.xrc > /dev/null
+${ZIPCMD} -j9 ${RESDIR}/compiler_gcc.zip plugins/compilergcc/resources/*.xrc > /dev/null
+${ZIPCMD} -j9 ${RESDIR}/todo.zip plugins/todo/resources/*.xrc > /dev/null
+echo Packing core UI bitmaps
+cd src/resources
+${ZIPCMD} -0 ../../${RESDIR}/resources.zip images/*.png images/16x16/*.png > /dev/null
+echo Packing plugins UI bitmaps
+cd ../../plugins/compilergcc/resources
+${ZIPCMD} -0 ../../../${RESDIR}/compiler_gcc.zip images/*.png images/16x16/*.png > /dev/null
+cd ../../../plugins/debuggergdb/resources
+${ZIPCMD} -0 ../../../${RESDIR}/debugger_gdb.zip images/*.png images/16x16/*.png > /dev/null
+cd ../../..
 
 echo Copying files
-cp -f devel/share/CodeBlocks/*.zip output/share/CodeBlocks > /dev/null
-cp -f src/resources/images/*.png devel/share/CodeBlocks/images > /dev/null
+cp -f ${RESDIR}/*.zip output/share/CodeBlocks > /dev/null
+cp -f src/resources/images/*.png ${RESDIR}/images > /dev/null
 cp -f src/resources/images/*.png output/share/CodeBlocks/images > /dev/null
-cp -f plugins/codecompletion/resources/images/*.png devel/share/CodeBlocks/images/codecompletion > /dev/null
+cp -f plugins/codecompletion/resources/images/*.png ${RESDIR}/images/codecompletion > /dev/null
 cp -f plugins/codecompletion/resources/images/*.png output/share/CodeBlocks/images/codecompletion > /dev/null
 cp -f templates/*.c* output/share/CodeBlocks/templates > /dev/null
 cp -f templates/*.h* output/share/CodeBlocks/templates > /dev/null
 cp -f templates/*.template output/share/CodeBlocks/templates > /dev/null
 cp -f templates/*.png output/share/CodeBlocks/templates > /dev/null
-cp -f templates/*.c* devel/share/CodeBlocks/templates > /dev/null
-cp -f templates/*.h* devel/share/CodeBlocks/templates > /dev/null
-cp -f templates/*.template devel/share/CodeBlocks/templates > /dev/null
-cp -f templates/*.png devel/share/CodeBlocks/templates > /dev/null
+cp -f templates/*.c* ${RESDIR}/templates > /dev/null
+cp -f templates/*.h* ${RESDIR}/templates > /dev/null
+cp -f templates/*.template ${RESDIR}/templates > /dev/null
+cp -f templates/*.png ${RESDIR}/templates > /dev/null
 cp -f tips.txt devel > /dev/null
 cp -f tips.txt output > /dev/null
 cp -f tools/ConsoleRunner/console_runner*.exe output > /dev/null
 cp -f tools/ConsoleRunner/console_runner*.exe devel > /dev/null
 cp -f devel/*.exe output > /dev/null
 cp -f devel/*.so output > /dev/null
-cp -f devel/share/CodeBlocks/plugins/*.so output/share/CodeBlocks/plugins > /dev/null
+cp -f ${RESDIR}/plugins/*.so output/share/CodeBlocks/plugins > /dev/null
 echo Stripping debug info from output tree
 strip output/*.exe
 strip output/*.so
@@ -54,3 +67,6 @@ echo `pwd`/devel >> devel/run.sh
 echo "export LD_LIBRARY_PATH=\$APP_DIR:\$LD_LIBRARY_PATH" >> devel/run.sh
 echo "\$APP_DIR/codeblocks.exe" >> devel/run.sh
 chmod +x devel/run.sh
+
+ZIPCMD=
+RESDIR=
