@@ -2,10 +2,16 @@
 #define EDITORMANAGER_H
 
 #include <wx/list.h>
+#include <wx/treectrl.h>
 
 #include "settings.h"
-#include "cbeditor.h"
 #include "sanitycheck.h"
+
+// New Feature: Opened Files tree in Projects tab
+#define use_openedfilestree
+
+#include "cbeditor.h"
+#include "cbproject.h"
 
 enum EditorInterfaceType
 {
@@ -20,6 +26,21 @@ class wxMenuBar;
 class wxNotebook;
 class EditorColorSet;
 class cbProject;
+
+#ifdef use_openedfilestree
+class MiscTreeItemData;
+
+class DLLIMPORT EditorTreeData : public MiscTreeItemData
+{
+    public:
+        EditorTreeData(wxEvtHandler *owner,const wxString &fullname)
+        { SetOwner(owner);m_fullname = fullname; }
+        wxString GetFullName(){ return m_fullname; }
+        void SetFullName(const wxString &fullname){ m_fullname = fullname; }
+    private:
+        wxString m_fullname;
+};
+#endif
 
 struct cbFindReplaceData
 {
@@ -85,6 +106,23 @@ class DLLIMPORT EditorManager : public wxEvtHandler
 		
 		/** Check if one of the open files has been modified outside the IDE. If so, ask to reload it. */
 		void CheckForExternallyModifiedFiles();
+		
+		#ifdef use_openedfilestree
+		/** Builds Opened Files tree in the Projects tab
+		  */
+        wxTreeCtrl *EditorManager::GetTree();
+        void BuildOpenedFilesTree(wxTreeCtrl *tree);
+        void RebuildOpenedFilesTree(wxTreeCtrl *tree=0L);
+        void RefreshOpenedFilesTree(bool force=false);
+        void AddFiletoTree(cbEditor* ed);
+        void DeleteFilefromTree(wxString filename);
+        #endif
+        
+        void OnUpdateUI(wxUpdateUIEvent& event);
+        void OnTreeItemSelected(wxTreeEvent &event);
+        void OnTreeItemActivated(wxTreeEvent &event);
+        void OnTreeItemRightClick(wxTreeEvent &event);
+        
     private:
         static EditorManager* Get(wxWindow* parent);
 		static void Free();
@@ -96,6 +134,12 @@ class DLLIMPORT EditorManager : public wxEvtHandler
 		cbFindReplaceData* m_LastFindReplaceData;
 		EditorColorSet* m_Theme;
 		EditorInterfaceType m_IntfType;
+		#ifdef use_openedfilestree
+        wxTreeItemId m_TreeOpenedFiles;
+        #endif
+        wxString m_LastActiveFile;
+        bool m_LastModifiedflag;
+	DECLARE_EVENT_TABLE()
 	DECLARE_SANITY_CHECK
 
 };

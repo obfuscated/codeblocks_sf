@@ -17,6 +17,7 @@ class ProjectFile;
 class FilesGroupsAndMasks;
 class cbWorkspace;
 
+extern int ID_ProjectManager; /* Used by both Project and Editor Managers */
 WX_DEFINE_ARRAY(cbProject*, ProjectsArray);
 
 /** @brief The entry point singleton for working with projects.

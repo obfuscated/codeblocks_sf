@@ -94,11 +94,12 @@ int idMenuViewUseFoldersPopup = wxNewId();
 int idMenuTreeRenameWorkspace = wxNewId();
 
 #ifndef __WXMSW__
-/*
-	Under wxGTK, I have noticed that wxTreeCtrl is not sending a EVT_COMMAND_RIGHT_CLICK
-	event when right-clicking on the client area.
-	This is a "proxy" wxTreeCtrl descendant that handles this for us...
+/*  
+    Under wxGTK, I have noticed that wxTreeCtrl is not sending a EVT_COMMAND_RIGHT_CLICK
+    event when right-clicking on the client area.
+    This is a "proxy" wxTreeCtrl descendant that handles this for us...
 */
+
 class PrjTree : public wxTreeCtrl
 {
 	public:
@@ -106,6 +107,7 @@ class PrjTree : public wxTreeCtrl
 	protected:
 		void OnRightClick(wxMouseEvent& event)
 		{
+            if(!this) return;
 		    //Manager::Get()->GetMessageManager()->DebugLog("OnRightClick");
 		    int flags;
 		    HitTest(wxPoint(event.GetX(), event.GetY()), flags);
@@ -120,11 +122,11 @@ class PrjTree : public wxTreeCtrl
 		}
 		DECLARE_EVENT_TABLE();
 };
-
 BEGIN_EVENT_TABLE(PrjTree, wxTreeCtrl)
 	EVT_RIGHT_DOWN(PrjTree::OnRightClick)
 END_EVENT_TABLE()
 #endif // !__WXMSW__
+
 
 BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
     EVT_TREE_ITEM_ACTIVATED(ID_ProjectManager, ProjectManager::OnProjectFileActivated)
@@ -169,7 +171,7 @@ ProjectManager::ProjectManager(wxNotebook* parent)
     m_pProjects = new ProjectsArray;
     m_pProjects->Clear();
 	m_pPanel = new wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
-
+    ProjectManagerProxy::Set(this);
     wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
 #ifndef __WXMSW__
 	m_pTree = new PrjTree(m_pPanel, ID_ProjectManager);
@@ -774,7 +776,9 @@ void ProjectManager::RebuildTree()
      if(title=="")
          title="Workspace";
     m_TreeRoot = m_pTree->AddRoot(title, 0, 0);
-
+    #ifdef use_openedfilestree
+    Manager::Get()->GetEditorManager()->BuildOpenedFilesTree(m_pTree);
+    #endif
     for (int i = 0; i < count; ++i)
     {
         cbProject* project = m_pProjects->Item(i);
@@ -983,6 +987,11 @@ void ProjectManager::DoOpenSelectedFile()
 
 void ProjectManager::OnProjectFileActivated(wxTreeEvent& event)
 {
+    SANITY_CHECK();
+    #ifdef use_openedfilestree
+    if(!MiscTreeItemData::OwnerCheck(event,m_pTree,this))
+        return;
+    #endif
 	DoOpenSelectedFile();
 }
 
@@ -1023,6 +1032,11 @@ void ProjectManager::OnRightClick(wxCommandEvent& event)
 void ProjectManager::OnTreeItemRightClick(wxTreeEvent& event)
 {
     SANITY_CHECK();
+    #ifdef use_openedfilestree
+    if(!MiscTreeItemData::OwnerCheck(event,m_pTree,this))
+        return;
+    #endif
+
     //Manager::Get()->GetMessageManager()->DebugLog("OnTreeItemRightClick");
 	m_pTree->SelectItem(event.GetItem());
     ShowMenu(event.GetItem(), event.GetPoint());

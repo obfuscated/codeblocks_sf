@@ -46,6 +46,15 @@ WX_DEFINE_LIST(EditorsList);
 #define MIN(a,b) (a<b?a:b)
 #define MAX(a,b) (a>b?a:b)
 
+BEGIN_EVENT_TABLE(EditorManager,wxEvtHandler)
+#ifdef use_openedfilestree
+    EVT_UPDATE_UI(-1,EditorManager::OnUpdateUI)
+    EVT_TREE_SEL_CHANGING(-1, EditorManager::OnTreeItemActivated)
+    EVT_TREE_ITEM_ACTIVATED(-1, EditorManager::OnTreeItemActivated)
+    EVT_TREE_ITEM_RIGHT_CLICK(-1, EditorManager::OnTreeItemRightClick)
+#endif
+END_EVENT_TABLE()
+
 EditorManager* EditorManager::Get(wxWindow* parent)
 {
     if(Manager::isappShuttingDown()) // The mother of all sanity checks
@@ -72,13 +81,16 @@ void EditorManager::Free()
 EditorManager::EditorManager(wxWindow* parent)
     : //wxNotebook(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize,  wxNO_FULL_REPAINT_ON_RESIZE | wxNB_MULTILINE | wxCLIP_CHILDREN),
 	m_LastFindReplaceData(0L),
-	m_IntfType(eitTabbed)
+	m_IntfType(eitTabbed),
+    m_LastActiveFile(""),
+    m_LastModifiedflag(false)
 {
 	SC_CONSTRUCTOR_BEGIN
 	m_EditorsList.Clear();
 	m_Theme = new EditorColorSet(ConfigManager::Get()->Read("/editor/color_sets/active_color_set", COLORSET_DEFAULT));
 
 	ConfigManager::AddConfiguration(_("Editor"), "/editor");
+	Manager::Get()->GetAppWindow()->PushEventHandler(this);
 }
 
 // class destructor
@@ -242,7 +254,10 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos)
             }
         }
     }
-    
+    #ifdef use_openedfilestree
+    AddFiletoTree(ed);
+    #endif
+        
     return ed;
 }
 
@@ -354,6 +369,9 @@ bool EditorManager::CloseAllExcept(cbEditor* editor,bool dontsave)
         else
             node = node->GetNext();
     }
+    #ifdef use_openedfilestree
+    RebuildOpenedFilesTree();
+    #endif
     return count == (editor ? 1 : 0);
 }
 
@@ -401,8 +419,11 @@ bool EditorManager::Close(cbEditor* editor,bool dontsave)
             if(!dontsave)
                 if(!QueryClose(editor))
                     return false;
+			#ifdef use_openedfilestree
+			DeleteFilefromTree(editor->GetFilename());
+			#endif
 			editor->Destroy();
-			m_EditorsList.DeleteNode(node);
+			m_EditorsList.DeleteNode(node);			
 			return true;
 		}
 	}
@@ -904,3 +925,240 @@ int EditorManager::FindNext(bool goingDown)
 	m_LastFindReplaceData->start += multi * (m_LastFindReplaceData->findText.Length() + 1);
 	return Find(GetActiveEditor(), m_LastFindReplaceData);
 }
+
+#ifdef use_openedfilestree
+wxTreeCtrl *EditorManager::GetTree()
+{
+    SANITY_CHECK(0L);
+    return Manager::Get()->GetProjectManager()->GetTree();
+}
+
+void EditorManager::DeleteFilefromTree(wxString filename)
+{
+    SANITY_CHECK();
+    if(Manager::isappShuttingDown())
+        return;
+    wxTreeCtrl *tree=GetTree();
+    if(!tree)
+        return;
+    if(!m_TreeOpenedFiles)
+        return;
+    if(!m_TreeOpenedFiles.IsOk())
+        return;
+    long int cookie = 0;
+    wxTreeItemId item = tree->GetFirstChild(m_TreeOpenedFiles,cookie);
+    wxString curfilename;
+    while (item)
+    {
+        EditorTreeData *data=(EditorTreeData*)tree->GetItemData(item);
+        if(data)
+        {
+            curfilename=data->GetFullName();
+            if(curfilename==filename)
+            {
+                tree->Delete(item);
+                break;
+            }
+        }
+        item = tree->GetNextChild(m_TreeOpenedFiles, cookie);
+    }    
+    RefreshOpenedFilesTree();
+}
+
+void EditorManager::AddFiletoTree(cbEditor* ed)
+{
+    SANITY_CHECK();
+    if(Manager::isappShuttingDown())
+        return;
+    if(!ed)
+        return;
+    wxTreeCtrl *tree=GetTree();
+    if(!tree)
+        return;
+    if(!m_TreeOpenedFiles)
+        return;
+    if(!m_TreeOpenedFiles.IsOk())
+        return;
+    long int cookie = 0;
+    wxString shortname=ed->GetShortName();
+    wxString filename=ed->GetFilename();
+    wxTreeItemId item = tree->GetFirstChild(m_TreeOpenedFiles,cookie);
+    wxString curfilename;
+    bool found=false;
+    while (item)
+    {
+        EditorTreeData *data=(EditorTreeData*)tree->GetItemData(item);
+        if(data)
+        {
+            curfilename=data->GetFullName();
+            if(curfilename==filename)
+            { 
+                found=true;
+                break;
+            }
+        }
+        item = tree->GetNextChild(m_TreeOpenedFiles, cookie);
+    }
+    if(found)
+        return;
+    if(ed->GetModified()) shortname=wxString("*")+shortname;
+    tree->AppendItem(m_TreeOpenedFiles,shortname,2,2,
+        new EditorTreeData(this,filename));
+    tree->SortChildren(m_TreeOpenedFiles);
+    RefreshOpenedFilesTree(true);
+}
+
+
+void EditorManager::BuildOpenedFilesTree(wxTreeCtrl *tree)
+{
+    SANITY_CHECK();
+    if(Manager::isappShuttingDown())
+        return;
+    if(!tree)
+        return;
+    m_TreeOpenedFiles=tree->PrependItem(tree->GetRootItem(),"Opened Files", 3, 3);
+    tree->SetItemBold(m_TreeOpenedFiles);
+    RebuildOpenedFilesTree(tree);
+}
+
+void EditorManager::RebuildOpenedFilesTree(wxTreeCtrl *tree)
+{    
+    SANITY_CHECK();
+    if(Manager::isappShuttingDown())
+        return;
+    if(!tree)
+        tree=GetTree();
+    if(!tree)
+        return;
+    tree->DeleteChildren(m_TreeOpenedFiles);
+    if(!GetEditorsCount())
+        return;
+    Manager::Get()->GetProjectManager()->FreezeTree();
+    for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext())
+    {
+        cbEditor* ed = node->GetData();
+        if(!ed)
+            continue;
+        wxString shortname=ed->GetShortName();
+        if(ed->GetModified()) shortname=wxString("*")+shortname;
+        wxTreeItemId item=tree->AppendItem(m_TreeOpenedFiles,shortname,2,2,
+          new EditorTreeData(this,ed->GetFilename()));
+        if(GetActiveEditor()==ed)
+            tree->SelectItem(item);
+    }
+    tree->Expand(m_TreeOpenedFiles);    
+    Manager::Get()->GetProjectManager()->UnfreezeTree();
+}
+
+void EditorManager::RefreshOpenedFilesTree(bool force)
+{
+    SANITY_CHECK();
+    if(Manager::isappShuttingDown())
+        return;
+    wxTreeCtrl *tree=GetTree();
+    if(!tree)
+        return;
+    wxString fname;
+    cbEditor *aed=GetActiveEditor();
+    if(!aed)
+        return;
+    bool ismodif=aed->GetModified();
+    fname=aed->GetFilename();
+    
+    if(!force && m_LastActiveFile==fname && m_LastModifiedflag==ismodif)
+        return; // Nothing to do
+    
+    m_LastActiveFile=fname;
+    m_LastModifiedflag=ismodif;
+    Manager::Get()->GetProjectManager()->FreezeTree();
+    long int cookie = 0;
+    wxTreeItemId item = tree->GetFirstChild(m_TreeOpenedFiles,cookie);
+    wxString filename,shortname;
+    while (item)
+    {
+        EditorTreeData *data=(EditorTreeData*)tree->GetItemData(item);
+        if(data)
+        {
+            filename=data->GetFullName();
+            cbEditor *ed=GetEditor(filename);
+            if(ed)
+            {
+                shortname=ed->GetShortName();
+                if(ed->GetModified()) shortname=wxString("*")+shortname;
+                if(tree->GetItemText(item)!=shortname)
+                    tree->SetItemText(item,shortname);
+                if(ed==aed)
+                    tree->SelectItem(item);
+                // tree->SetItemBold(item,(ed==aed));
+            }
+        }
+        item = tree->GetNextChild(m_TreeOpenedFiles, cookie);
+    }
+    Manager::Get()->GetProjectManager()->UnfreezeTree();
+}
+
+void EditorManager::OnTreeItemActivated(wxTreeEvent &event)
+{
+    SANITY_CHECK();
+    if(Manager::isappShuttingDown())
+        return;
+    if(event.GetId()!=ID_ProjectManager)
+        { event.Skip();return; }
+    if(!MiscTreeItemData::OwnerCheck(event,GetTree(),this,true))
+        return;
+    MiscTreeItemData* data = 
+        (MiscTreeItemData*)GetTree()->GetItemData(event.GetItem());
+    if(data)
+    {
+        cbEditor *ed=GetEditor(((EditorTreeData*)data)->GetFullName());
+        SetActiveEditor(ed);
+        if(ed)
+        {
+            wxStyledTextCtrl* control = ed->GetControl();
+            if(control)
+                control->SetFocus();
+        }
+    }
+    
+}
+
+void EditorManager::OnTreeItemRightClick(wxTreeEvent &event)
+{
+    SANITY_CHECK();
+    if(Manager::isappShuttingDown())
+        return;
+    if(event.GetId()!=ID_ProjectManager)
+        { event.Skip();return; }
+    if(!MiscTreeItemData::OwnerCheck(event,GetTree(),this,true))
+        return;
+    Manager::Get()->GetMessageManager()->DebugLog("(Editor Tree Popup menu not implemented yet)");
+}
+
+void EditorManager::OnUpdateUI(wxUpdateUIEvent& event)
+{
+    SANITY_CHECK();
+    if(Manager::isappShuttingDown())
+        return;
+    RefreshOpenedFilesTree();
+}
+
+#else
+void EditorManager::OnTreeItemSelected(wxTreeEvent &event)
+{
+    event.Skip();
+}
+
+void EditorManager::OnTreeItemActivated(wxTreeEvent &event) 
+{
+    event.Skip();
+}
+void EditorManager::OnTreeItemRightClick(wxTreeEvent &event) 
+{
+    event.Skip();
+}
+void EditorManager::OnUpdateUI(wxUpdateUIEvent& event)
+{
+    event.Skip();
+}
+
+#endif

@@ -938,3 +938,30 @@ void cbProject::ReOrderTargets(const wxArrayString& nameOrder)
     SetModified(true); 
 }
 
+#ifdef use_openedfilestree
+bool MiscTreeItemData::OwnerCheck(wxTreeEvent& event,wxTreeCtrl *tree,wxEvtHandler *handler,bool strict)
+{
+    if(!tree)   // No tree to get data from - ignore event
+        return false;
+        
+    MiscTreeItemData* data = 
+        (MiscTreeItemData*)tree->GetItemData(event.GetItem());
+    if(!data)
+    {
+        if(!strict)
+            return true; // On doubt, allow event
+        else
+        {
+            event.Skip();
+            return false;
+        }         
+    }
+    wxEvtHandler *h = data->GetOwner();
+    if((h && h!=handler) || (strict && !h))
+    {   // Tree Item belongs to another handler - skip
+        event.Skip(); 
+        return false;
+    }
+    return true;
+}
+#endif
