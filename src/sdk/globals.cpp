@@ -48,7 +48,9 @@ wxArrayString GetArrayFromString(const wxString& text, const wxString& separator
 wxString UnixFilename(const wxString& filename)
 {
     wxString unixname = filename;
-//    unixname.Replace("\\", "/");
+#ifndef __WXMSW__
+    unixname.Replace("\\", "/");
+#else
     for (unsigned int i = 0; i < unixname.Length(); ++i)
     {
         if (unixname[i] == '\\' && i < unixname.Length() - 1)
@@ -58,6 +60,7 @@ wxString UnixFilename(const wxString& filename)
             ++i;
         }
     }
+#endif
 
     return unixname;
 }

@@ -1,0 +1,2132 @@
+<?xml version="1.0"?>
+<!DOCTYPE Code::Blocks_project_file>
+<Code::Blocks_project_file>
+	<Project>
+		<Option title="Code::Blocks (Linux)"/>
+		<Option makefile="Makefile.unix"/>
+		<Option makefile_is_custom="0"/>
+		<Option default_target="2"/>
+		<Build>
+			<Target title="tinyXML">
+				<Option output="sdk\tinyxml\libtxml.a"/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option type="2"/>
+			</Target>
+			<Target title="sdk">
+				<Option output="devel\libcodeblocks.so"/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option type="3"/>
+				<Option parameters="--debug-log --no-check-associations"/>
+				<Option projectLinkerOptionsRelation="2"/>
+				<Compiler>
+					<Add option="-DEXPORT_LIB"/>
+					<Add option="-DEXPORT_EVENTS"/>
+					<Add option="-D_USRDLL"/>
+				</Compiler>
+				<Linker>
+					<Add option="-ltxml"/>
+				</Linker>
+				<IncludeDirs>
+					<Add option="sdk/tinyxml"/>
+				</IncludeDirs>
+			</Target>
+			<Target title="src">
+				<Option output="devel\codeblocks.exe"/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option type="0"/>
+				<Option parameters="--debug-log --no-check-associations -ns"/>
+				<Option projectLinkerOptionsRelation="2"/>
+				<Option projectIncludeDirsRelation="2"/>
+				<Option projectLibDirsRelation="2"/>
+				<Compiler>
+					<Add option="-DDATA_PREFIX=&quot;\&quot;$(INSTALL_DIR)\&quot;&quot;"/>
+				</Compiler>
+				<Linker>
+					<Add option="-lcodeblocks"/>
+					<Add option="-l$(LIB_WXXRC)"/>
+					<Add option="-l$(LIB_WXSTC)"/>
+				</Linker>
+				<IncludeDirs>
+					<Add option="sdk"/>
+				</IncludeDirs>
+				<LibDirs>
+					<Add option="devel"/>
+				</LibDirs>
+			</Target>
+			<Target title="plugin_Astyle">
+				<Option output="devel\share\CodeBlocks\plugins\libastyle.so"/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option type="3"/>
+				<Option projectLinkerOptionsRelation="2"/>
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN"/>
+					<Add option="-D_WINDLL"/>
+				</Compiler>
+				<Linker>
+					<Add option="-lcodeblocks"/>
+					<Add option="-l$(LIB_WXXRC)"/>
+					<Add option="-l$(LIB_WXSTC)"/>
+				</Linker>
+				<IncludeDirs>
+					<Add option="sdk"/>
+					<Add option="plugins\astyle\astyle"/>
+				</IncludeDirs>
+				<LibDirs>
+					<Add option="devel"/>
+				</LibDirs>
+			</Target>
+			<Target title="plugin_CompilerGCC">
+				<Option output="devel\share\CodeBlocks\plugins\libcompilergcc.so"/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option type="3"/>
+				<Option projectLinkerOptionsRelation="2"/>
+				<Option projectIncludeDirsRelation="2"/>
+				<Option projectLibDirsRelation="2"/>
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN"/>
+					<Add option="-D_WINDLL"/>
+				</Compiler>
+				<Linker>
+					<Add option="-lcodeblocks"/>
+					<Add option="-l$(LIB_WXXRC)"/>
+					<Add option="-l$(LIB_WXSTC)"/>
+				</Linker>
+				<IncludeDirs>
+					<Add option="sdk"/>
+				</IncludeDirs>
+				<LibDirs>
+					<Add option="devel"/>
+				</LibDirs>
+			</Target>
+			<Target title="plugin_DebuggerGDB">
+				<Option output="devel\share\CodeBlocks\plugins\libdebuggergdb.so"/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option type="3"/>
+				<Option projectLinkerOptionsRelation="2"/>
+				<Option projectIncludeDirsRelation="2"/>
+				<Option projectLibDirsRelation="2"/>
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN"/>
+					<Add option="-D_WINDLL"/>
+				</Compiler>
+				<Linker>
+					<Add option="-lcodeblocks"/>
+					<Add option="-l$(LIB_WXXRC)"/>
+					<Add option="-l$(LIB_WXSTC)"/>
+				</Linker>
+				<IncludeDirs>
+					<Add option="sdk"/>
+				</IncludeDirs>
+				<LibDirs>
+					<Add option="devel"/>
+				</LibDirs>
+			</Target>
+			<Target title="plugin_CodeCompletion">
+				<Option output="devel\share\CodeBlocks\plugins\libcodecompletion.so"/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option type="3"/>
+				<Option projectLinkerOptionsRelation="2"/>
+				<Option projectIncludeDirsRelation="2"/>
+				<Option projectLibDirsRelation="2"/>
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN"/>
+					<Add option="-D_WINDLL"/>
+				</Compiler>
+				<Linker>
+					<Add option="-lcodeblocks"/>
+					<Add option="-l$(LIB_WXXRC)"/>
+					<Add option="-l$(LIB_WXSTC)"/>
+				</Linker>
+				<IncludeDirs>
+					<Add option="sdk"/>
+				</IncludeDirs>
+				<LibDirs>
+					<Add option="devel"/>
+				</LibDirs>
+			</Target>
+			<Target title="plugin_ClassWizard">
+				<Option output="devel\share\CodeBlocks\plugins\libclasswizard.so"/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option type="3"/>
+				<Option projectLinkerOptionsRelation="2"/>
+				<Option projectIncludeDirsRelation="2"/>
+				<Option projectLibDirsRelation="2"/>
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN"/>
+					<Add option="-D_WINDLL"/>
+				</Compiler>
+				<Linker>
+					<Add option="-lcodeblocks"/>
+					<Add option="-l$(LIB_WXXRC)"/>
+					<Add option="-l$(LIB_WXSTC)"/>
+				</Linker>
+				<IncludeDirs>
+					<Add option="sdk"/>
+				</IncludeDirs>
+				<LibDirs>
+					<Add option="devel"/>
+				</LibDirs>
+			</Target>
+			<Target title="plugin_PluginsWizard">
+				<Option output="devel\share\CodeBlocks\plugins\libpluginwizard.so"/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option type="3"/>
+				<Option projectLinkerOptionsRelation="2"/>
+				<Option projectIncludeDirsRelation="2"/>
+				<Option projectLibDirsRelation="2"/>
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN"/>
+					<Add option="-D_WINDLL"/>
+				</Compiler>
+				<Linker>
+					<Add option="-lcodeblocks"/>
+					<Add option="-l$(LIB_WXXRC)"/>
+					<Add option="-l$(LIB_WXSTC)"/>
+				</Linker>
+				<IncludeDirs>
+					<Add option="sdk"/>
+				</IncludeDirs>
+				<LibDirs>
+					<Add option="devel"/>
+				</LibDirs>
+			</Target>
+			<Target title="plugin_ToDo">
+				<Option output="devel\share\CodeBlocks\plugins\libtodo.so"/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option type="3"/>
+				<Option projectLinkerOptionsRelation="2"/>
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN"/>
+					<Add option="-D_WINDLL"/>
+				</Compiler>
+				<Linker>
+					<Add option="-lcodeblocks"/>
+				</Linker>
+				<IncludeDirs>
+					<Add option="sdk"/>
+				</IncludeDirs>
+				<LibDirs>
+					<Add option="devel"/>
+				</LibDirs>
+			</Target>
+			<Target title="plugin_XPManifest">
+				<Option output="devel\share\CodeBlocks\plugins\libxpmanifest.so"/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option type="3"/>
+				<Option includeInTargetAll="0"/>
+				<Option projectIncludeDirsRelation="2"/>
+				<Option projectLibDirsRelation="2"/>
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN"/>
+					<Add option="-D_WINDLL"/>
+				</Compiler>
+				<Linker>
+					<Add option="-lcodeblocks"/>
+				</Linker>
+				<IncludeDirs>
+					<Add option="sdk"/>
+				</IncludeDirs>
+				<LibDirs>
+					<Add option="devel"/>
+				</LibDirs>
+			</Target>
+			<Target title="update">
+				<Option output="/home/mandrav/sandbox/codeblocks/src/CodeBlocks-unix"/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option type="4"/>
+				<Option includeInTargetAll="0"/>
+				<ExtraCommands>
+					<Add before="cd src/resources ${AMP}${AMP} $(ZIP) ../../devel/share/CodeBlocks/resources.zip *.xrc > nul"/>
+					<Add before="cd sdk/resources ${AMP}${AMP} $(ZIP) ../../devel/share/CodeBlocks/manager_resources.zip *.xrc > nul"/>
+					<Add before="cd plugins/astyle/resources ${AMP}${AMP} $(ZIP) ../../../devel/share/CodeBlocks/astyle.zip *.xrc > nul"/>
+					<Add before="cd plugins/pluginwizard/resources ${AMP}${AMP} $(ZIP) ../../../devel/share/CodeBlocks/plugin_wizard.zip *.xrc > nul"/>
+					<Add before="cd plugins/classwizard/resources ${AMP}${AMP} $(ZIP) ../../../devel/share/CodeBlocks/class_wizard.zip *.xrc > nul"/>
+					<Add before="cd plugins/codecompletion/resources ${AMP}${AMP} $(ZIP) ../../../devel/share/CodeBlocks/code_completion.zip *.xrc > nul"/>
+					<Add before="cd plugins/compilergcc/resources ${AMP}${AMP} $(ZIP) ../../../devel/share/CodeBlocks/compiler_gcc.zip *.xrc > nul"/>
+					<Add before="cd plugins/todo/resources ${AMP}${AMP} $(ZIP) ../../../devel/share/CodeBlocks/todo.zip *.xrc > nul"/>
+					<Add before="cp -f devel/share/CodeBlocks/*.zip output/share/CodeBlocks"/>
+					<Add before="cp -f src/resources/images/*.png devel/share/CodeBlocks/images"/>
+					<Add before="cp -f src/resources/images/*.png output/share/CodeBlocks/images"/>
+					<Add before="cp -f plugins/codecompletion/resources/images/*.png devel/share/CodeBlocks/images/codecompletion"/>
+					<Add before="cp -f plugins/codecompletion/resources/images/*.png output/share/CodeBlocks/images/codecompletion"/>
+					<Add before="cp -f templates/*.c* output/share/CodeBlocks/templates"/>
+					<Add before="cp -f templates/*.h* output/share/CodeBlocks/templates"/>
+					<Add before="cp -f templates/*.template output/share/CodeBlocks/templates"/>
+					<Add before="cp -f templates/*.png output/share/CodeBlocks/templates"/>
+					<Add before="cp -f templates/*.c* devel/share/CodeBlocks/templates"/>
+					<Add before="cp -f templates/*.h* devel/share/CodeBlocks/templates"/>
+					<Add before="cp -f templates/*.template devel/share/CodeBlocks/templates"/>
+					<Add before="cp -f templates/*.png devel/share/CodeBlocks/templates"/>
+					<Add before="cp -f tips.txt devel"/>
+					<Add before="cp -f tips.txt output"/>
+					<Add before="cp -f tools/ConsoleRunner/console_runner.exe output"/>
+					<Add before="cp -f tools/ConsoleRunner/console_runner.exe devel"/>
+					<Add before="cp -f devel/*.exe output"/>
+					<Add before="cp -f devel/*.so output"/>
+					<Add before="cp -f devel/share/CodeBlocks/plugins/*.so output/share/CodeBlocks/plugins"/>
+					<Add before="strip output/*.exe"/>
+					<Add before="strip output/*.so"/>
+					<Add before="strip output/share/CodeBlocks/plugins/*.so"/>
+				</ExtraCommands>
+			</Target>
+			<Target title="console_runner">
+				<Option output="tools\ConsoleRunner\console_runner.exe"/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option type="1"/>
+				<Option projectCompilerOptionsRelation="1"/>
+				<Option projectLinkerOptionsRelation="1"/>
+				<Option projectIncludeDirsRelation="2"/>
+				<Compiler>
+					<Add option="-Os"/>
+				</Compiler>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall"/>
+			<Add option="-g"/>
+			<Add option="`wx-config --cflags`"/>
+		</Compiler>
+		<Linker>
+			<Add option="`wx-config --libs`"/>
+		</Linker>
+		<LibDirs>
+			<Add option="sdk/tinyxml"/>
+		</LibDirs>
+		<Unit filename="devel\share\CodeBlocks\images\codecompletion\README.txt">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="devel\share\CodeBlocks\plugins\README.txt">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="devel\share\CodeBlocks\templates\README.txt">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="output\share\CodeBlocks\images\codecompletion\README.txt">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="output\share\CodeBlocks\plugins\README.txt">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="output\share\CodeBlocks\templates\README.txt">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/compilerBCC.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/compilerBCC.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\astyle\asstreamiterator.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_Astyle"/>
+		</Unit>
+		<Unit filename="plugins\astyle\asstreamiterator.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_Astyle"/>
+		</Unit>
+		<Unit filename="plugins\astyle\astyle\ASBeautifier.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_Astyle"/>
+		</Unit>
+		<Unit filename="plugins\astyle\astyle\ASFormatter.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_Astyle"/>
+		</Unit>
+		<Unit filename="plugins\astyle\astyle\ASResource.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_Astyle"/>
+		</Unit>
+		<Unit filename="plugins\astyle\astyle\INSTALL.TXT">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_Astyle"/>
+		</Unit>
+		<Unit filename="plugins\astyle\astyle\Makefile">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_Astyle"/>
+		</Unit>
+		<Unit filename="plugins\astyle\astyle\astyle.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_Astyle"/>
+		</Unit>
+		<Unit filename="plugins\astyle\astyle\astyle.html">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_Astyle"/>
+		</Unit>
+		<Unit filename="plugins\astyle\astyle\astyle_main.cpp">
+			<Option compilerVar="CPP"/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_Astyle"/>
+		</Unit>
+		<Unit filename="plugins\astyle\astyle\astyle_release_notes.html">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_Astyle"/>
+		</Unit>
+		<Unit filename="plugins\astyle\astyle\compiler_defines.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_Astyle"/>
+		</Unit>
+		<Unit filename="plugins\astyle\astyle\license.html">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_Astyle"/>
+		</Unit>
+		<Unit filename="plugins\astyle\astyleconfigdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_Astyle"/>
+		</Unit>
+		<Unit filename="plugins\astyle\astyleconfigdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_Astyle"/>
+		</Unit>
+		<Unit filename="plugins\astyle\astyleplugin.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_Astyle"/>
+		</Unit>
+		<Unit filename="plugins\astyle\astyleplugin.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_Astyle"/>
+		</Unit>
+		<Unit filename="plugins\astyle\formattersettings.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_Astyle"/>
+		</Unit>
+		<Unit filename="plugins\astyle\formattersettings.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_Astyle"/>
+		</Unit>
+		<Unit filename="plugins\astyle\resources\configuration.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_Astyle"/>
+		</Unit>
+		<Unit filename="plugins\classwizard\classwizard.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_ClassWizard"/>
+		</Unit>
+		<Unit filename="plugins\classwizard\classwizard.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_ClassWizard"/>
+		</Unit>
+		<Unit filename="plugins\classwizard\classwizarddlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_ClassWizard"/>
+		</Unit>
+		<Unit filename="plugins\classwizard\classwizarddlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_ClassWizard"/>
+		</Unit>
+		<Unit filename="plugins\classwizard\resources\new_class.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_ClassWizard"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\cclist.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\cclist.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\cclistctrl.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\cclistctrl.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\ccoptionsdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\ccoptionsdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\ccrenderer.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\ccrenderer.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\classbrowser.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\classbrowser.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\codecompletion.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\codecompletion.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\insertclassmethoddlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\insertclassmethoddlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\nativeparser.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\nativeparser.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\parser.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\parser.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\parserthread.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\parserthread.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\token.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\token.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\tokenizer.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\tokenizer.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\images\class.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\images\class_folder.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\images\ctor_private.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\images\ctor_protected.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\images\ctor_public.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\images\dtor_private.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\images\dtor_protected.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\images\dtor_public.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\images\enum.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\images\enumerator.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\images\enums_folder.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\images\method_private.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\images\method_protected.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\images\method_public.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\images\namespace.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\images\others_folder.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\images\preproc.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\images\preproc_folder.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\images\symbols_folder.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\images\var_private.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\images\var_protected.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\images\var_public.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\insert_class_method.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\settings.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\advancedcompileroptionsdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\advancedcompileroptionsdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerMINGW.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerMINGW.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerMSVC.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerMSVC.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilererrors.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilererrors.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilergcc.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilergcc.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilermessages.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilermessages.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\compileroptionsdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\compileroptionsdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\customvars.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\customvars.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\makefilegenerator.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\makefilegenerator.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\resources\advanced_compiler_options.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\resources\compiler_options.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\debuggergdb.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\debuggergdb.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\debuggertree.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\debuggertree.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\pluginwizard\enterinfodlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_PluginsWizard"/>
+		</Unit>
+		<Unit filename="plugins\pluginwizard\enterinfodlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_PluginsWizard"/>
+		</Unit>
+		<Unit filename="plugins\pluginwizard\pluginwizard.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_PluginsWizard"/>
+		</Unit>
+		<Unit filename="plugins\pluginwizard\pluginwizard.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_PluginsWizard"/>
+		</Unit>
+		<Unit filename="plugins\pluginwizard\pluginwizarddlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_PluginsWizard"/>
+		</Unit>
+		<Unit filename="plugins\pluginwizard\pluginwizarddlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_PluginsWizard"/>
+		</Unit>
+		<Unit filename="plugins\pluginwizard\resources\new_plugin.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_PluginsWizard"/>
+		</Unit>
+		<Unit filename="plugins\pluginwizard\resources\plugin_info.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_PluginsWizard"/>
+		</Unit>
+		<Unit filename="plugins\todo\addtododlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_ToDo"/>
+		</Unit>
+		<Unit filename="plugins\todo\addtododlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_ToDo"/>
+		</Unit>
+		<Unit filename="plugins\todo\resources\add_todo.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_ToDo"/>
+		</Unit>
+		<Unit filename="plugins\todo\resources\settings.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_ToDo"/>
+		</Unit>
+		<Unit filename="plugins\todo\todolist.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_ToDo"/>
+		</Unit>
+		<Unit filename="plugins\todo\todolist.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_ToDo"/>
+		</Unit>
+		<Unit filename="plugins\todo\todolistview.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_ToDo"/>
+		</Unit>
+		<Unit filename="plugins\todo\todolistview.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_ToDo"/>
+		</Unit>
+		<Unit filename="plugins\todo\todosettingsdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_ToDo"/>
+		</Unit>
+		<Unit filename="plugins\todo\todosettingsdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_ToDo"/>
+		</Unit>
+		<Unit filename="plugins\xpmanifest\windowsxplooknfeel.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_XPManifest"/>
+		</Unit>
+		<Unit filename="plugins\xpmanifest\windowsxplooknfeel.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_XPManifest"/>
+		</Unit>
+		<Unit filename="sdk/msvc7loader.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk/msvc7loader.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\Managers\Managers.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\Managers\Managers.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\Managers\StdAfx.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\Managers\StdAfx.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\cbeditor.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\cbeditor.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\cbplugin.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\cbplugin.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\cbproject.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\cbproject.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\compileoptionsbase.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\compileoptionsbase.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\compiler.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\compiler.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\compilerfactory.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\compilerfactory.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\compileroptions.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\compileroptions.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\compiletargetbase.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\compiletargetbase.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\configmanager.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\configmanager.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\configuretoolsdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\configuretoolsdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\confirmreplacedlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\confirmreplacedlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\devcpploader.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\devcpploader.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\editarrayfiledlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\editarrayfiledlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\editarrayorderdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\editarrayorderdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\editarraystringdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\editarraystringdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\editorcolorset.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\editorcolorset.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\editorconfigurationdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\editorconfigurationdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\editormanager.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\editormanager.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\edittooldlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\edittooldlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\filegroupsandmasks.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\filegroupsandmasks.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\finddlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\finddlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\findreplacebase.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\globals.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\globals.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\ibaseloader.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\incrementalselectlistdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\incrementalselectlistdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\licenses.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\macrosmanager.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\macrosmanager.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\manager.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\manager.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\managerproxy.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\menuitemsmanager.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\menuitemsmanager.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\messagelog.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\messagelog.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\messagemanager.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\messagemanager.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\msvcloader.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\msvcloader.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\newfromtemplatedlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\newfromtemplatedlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\pipedprocess.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\pipedprocess.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\pluginmanager.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\pluginmanager.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\pluginsconfigurationdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\pluginsconfigurationdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\projectbuildtarget.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\projectbuildtarget.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\projectfileoptionsdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\projectfileoptionsdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\projectlayoutloader.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\projectlayoutloader.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\projectloader.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\projectloader.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\projectmanager.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\projectmanager.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\projectoptionsdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\projectoptionsdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\projectsfilemasksdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\projectsfilemasksdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\projecttemplateloader.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\projecttemplateloader.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\replacedlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\replacedlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\configure_tools.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\confirm_replace.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\edit_array_order.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\edit_array_string.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\edit_tool.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\editor_configuration.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\find_dialog.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\incremental_select_list.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\new_from_template.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\plugins_configuration.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\project_manager_file_types.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\project_options.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\projectfile_options.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\replace_dialog.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\select_target.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\sdk_events.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\sdk_events.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\selecttargetdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\selecttargetdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\settings.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\simplelistlog.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\simplelistlog.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\simpletextlog.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\simpletextlog.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\templatemanager.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\templatemanager.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\tinyxml\tinystr.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="tinyXML"/>
+		</Unit>
+		<Unit filename="sdk\tinyxml\tinystr.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="tinyXML"/>
+		</Unit>
+		<Unit filename="sdk\tinyxml\tinyxml.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="tinyXML"/>
+		</Unit>
+		<Unit filename="sdk\tinyxml\tinyxml.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="tinyXML"/>
+		</Unit>
+		<Unit filename="sdk\tinyxml\tinyxmlerror.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="tinyXML"/>
+		</Unit>
+		<Unit filename="sdk\tinyxml\tinyxmlparser.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="tinyXML"/>
+		</Unit>
+		<Unit filename="sdk\toolsmanager.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\toolsmanager.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\workspaceloader.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\workspaceloader.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="src\app.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\app.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\dlgabout.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\dlgabout.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\dlgaboutplugin.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\dlgaboutplugin.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\environmentsettingsdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\environmentsettingsdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\globals.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\main.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\main.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\dlg_about.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\dlg_about_plugin.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\env_settings.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\icons\app.ico">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\icons\app.xpm">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\icons\c.ico">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\icons\cpp.ico">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\icons\csd.ico">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\icons\filetempl.ico">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\icons\h.ico">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\ascii.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\codeblocks.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\compile.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\compilerun.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\contents_16x16.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\dbgnext.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\dbgrun.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\dbgrunto.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\dbgstep.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\edit_16x16.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\editcopy.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\editcut.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\editpaste.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\filefind.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\filenew.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\fileopen.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\filesave.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\filesaveas.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\flag_16x16.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\folder.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\folder_new.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\folder_open.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\gohome.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\misc_16x16.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\newproject.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\rebuild.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\redo.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\run.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\searchreplace.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\source.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\splash.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\stop.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\undo.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\main_frame.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\resources.rc">
+			<Option compilerVar="WINDRES"/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="templates\console-main-c.cpp">
+			<Option compilerVar="CPP"/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="templates\console-main-cpp.cpp">
+			<Option compilerVar="CPP"/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="templates\console.cbp">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="templates\console.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="templates\console.template">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="templates\gui.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="templates\opengl-main.cpp">
+			<Option compilerVar="CPP"/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="templates\opengl.cbp">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="templates\opengl.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="templates\opengl.template">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="templates\win32-main.cpp">
+			<Option compilerVar="CPP"/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="templates\win32.cbp">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="templates\win32gui.template">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="templates\wx-app-ash.cpp">
+			<Option compilerVar="CPP"/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="templates\wx-app-ash.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="templates\wx-main-ash.cpp">
+			<Option compilerVar="CPP"/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="templates\wx-main-ash.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="templates\wx-main-s.cpp">
+			<Option compilerVar="CPP"/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="templates\wx-main-sh.cpp">
+			<Option compilerVar="CPP"/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="templates\wx-main-sh.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="templates\wxwindows.cbp">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="templates\wxwindows.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="templates\wxwindows.template">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="tips.txt">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="tools\ConsoleRunner\main.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="console_runner"/>
+		</Unit>
+	</Project>
+</Code::Blocks_project_file>
