@@ -16,6 +16,8 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent)
 	XRCCTRL(*this, "chkDDE", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/environment/use_dde", 1));
 	XRCCTRL(*this, "chkAssociations", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/environment/check_associations", 1));
 	XRCCTRL(*this, "chkDebugLog", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/message_manager/has_debug_log", (long int)0));
+	XRCCTRL(*this, "rbProjectOpen", wxRadioBox)->SetSelection(ConfigManager::Get()->Read("/project_manager/open_files", (long int)1));
+	XRCCTRL(*this, "rbEditorInterface", wxRadioBox)->Enable(false); // not implemented
 }
 
 EnvironmentSettingsDlg::~EnvironmentSettingsDlg()
@@ -32,6 +34,7 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
 		ConfigManager::Get()->Write("/environment/use_dde", XRCCTRL(*this, "chkDDE", wxCheckBox)->GetValue());
 		ConfigManager::Get()->Write("/environment/check_associations", XRCCTRL(*this, "chkAssociations", wxCheckBox)->GetValue());
         ConfigManager::Get()->Write("/message_manager/has_debug_log", XRCCTRL(*this, "chkDebugLog", wxCheckBox)->GetValue());
+        ConfigManager::Get()->Write("/project_manager/open_files", XRCCTRL(*this, "rbProjectOpen", wxRadioBox)->GetSelection());
 	}
 
 	wxDialog::EndModal(retCode);

@@ -6,6 +6,7 @@
 		<Option makefile="Makefile"/>
 		<Option makefile_is_custom="0"/>
 		<Option default_target="2"/>
+		<Option compiler="0"/>
 		<Build>
 			<Target title="tinyXML">
 				<Option output="sdk\tinyxml\libtxml.a"/>
@@ -13,6 +14,7 @@
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="2"/>
+				<Option compiler="0"/>
 			</Target>
 			<Target title="sdk">
 				<Option output="devel\codeblocks.dll"/>
@@ -20,6 +22,7 @@
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
+				<Option compiler="0"/>
 				<Option parameters="--debug-log --no-check-associations"/>
 				<Option createStaticLib="1"/>
 				<Option projectLinkerOptionsRelation="2"/>
@@ -43,6 +46,7 @@
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="0"/>
+				<Option compiler="0"/>
 				<Option parameters="--debug-log --no-check-associations -ns"/>
 				<Option projectLinkerOptionsRelation="2"/>
 				<Option projectIncludeDirsRelation="2"/>
@@ -80,6 +84,7 @@
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
+				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="1"/>
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
@@ -107,6 +112,7 @@
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
+				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="1"/>
 				<Option projectIncludeDirsRelation="2"/>
 				<Option projectLibDirsRelation="2"/>
@@ -135,6 +141,7 @@
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
+				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="1"/>
 				<Option projectIncludeDirsRelation="2"/>
 				<Option projectLibDirsRelation="2"/>
@@ -163,6 +170,7 @@
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
+				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="1"/>
 				<Option projectIncludeDirsRelation="2"/>
 				<Option projectLibDirsRelation="2"/>
@@ -191,6 +199,7 @@
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
+				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="1"/>
 				<Option projectIncludeDirsRelation="2"/>
 				<Option projectLibDirsRelation="2"/>
@@ -219,6 +228,7 @@
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
+				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="1"/>
 				<Option projectIncludeDirsRelation="2"/>
 				<Option projectLibDirsRelation="2"/>
@@ -247,6 +257,7 @@
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
+				<Option compiler="0"/>
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
@@ -270,6 +281,7 @@
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
+				<Option compiler="0"/>
 				<Option projectIncludeDirsRelation="2"/>
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
@@ -295,6 +307,7 @@
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="4"/>
+				<Option compiler="0"/>
 				<Option includeInTargetAll="0"/>
 				<ExtraCommands>
 					<Add before="update.bat"/>
@@ -306,6 +319,7 @@
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="1"/>
+				<Option compiler="0"/>
 				<Option projectCompilerOptionsRelation="0"/>
 				<Option projectLinkerOptionsRelation="1"/>
 				<Option projectIncludeDirsRelation="2"/>
@@ -2010,7 +2024,6 @@
 		</Unit>
 		<Unit filename="src\resources\resources.rc">
 			<Option compilerVar="WINDRES"/>
-			<Option objectName="resources.res"/>
 			<Option target="src"/>
 		</Unit>
 		<Unit filename="templates\console-main-c.cpp">

@@ -416,8 +416,12 @@ void ProjectLoader::DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file)
         if (node->Attribute("objectName"))
         {
             wxFileName objName(node->Attribute("objectName"));
-            if (objName.GetExt() != CompilerFactory::Compilers[m_pProject->GetCompilerIndex()]->GetSwitches().objectExtension)
-                file->SetObjName(objName.GetFullName());
+            FileType ft = FileTypeOf(file->relativeFilename);
+            if (ft != ftResource && ft != ftResourceBin)
+            {
+                if (objName.GetExt() != CompilerFactory::Compilers[m_pProject->GetCompilerIndex()]->GetSwitches().objectExtension)
+                    file->SetObjName(file->relativeFilename);
+            }
         }
         if (node->Attribute("target"))
             file->AddBuildTarget(node->Attribute("target"));

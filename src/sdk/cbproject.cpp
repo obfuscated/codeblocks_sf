@@ -39,6 +39,7 @@
 #include "projectmanager.h"
 #include "messagemanager.h"
 #include "editormanager.h"
+#include "configmanager.h"
 #include "filegroupsandmasks.h"
 #include "compilerfactory.h"
 
@@ -332,32 +333,58 @@ bool cbProject::LoadLayout()
 {
     if (m_Filename.IsEmpty())
         return false;
-	wxFileName fname(m_Filename);
-	fname.SetExt("layout");
-	cbEditor* top = 0L;
-    ProjectLayoutLoader loader(this);
-    if (loader.Open(fname.GetFullPath()))
-	{
-		FilesList::Node* node = m_Files.GetFirst();
-		while(node)
-		{
-			ProjectFile* f = node->GetData();
-			if (f->editorOpen)
-			{
-				cbEditor* ed = Manager::Get()->GetEditorManager()->Open(f->file.GetFullPath());
-				if (ed)
-				{
-					ed->SetProjectFile(f);
-					if (f == loader.GetTopProjectFile())
-						top = ed;
-				}
-			}
-			node = node->GetNext();
-		}
-		if (top)
-			top->Activate();
-		return true;
-	}
+    
+    int openmode = ConfigManager::Get()->Read("/project_manager/open_files", (long int)1);
+    switch (openmode)
+    {
+        case 0: // open all files
+            {
+                FilesList::Node* node = m_Files.GetFirst();
+                while(node)
+                {
+                    ProjectFile* f = node->GetData();
+                    Manager::Get()->GetEditorManager()->Open(f->file.GetFullPath());
+                    node = node->GetNext();
+                }
+            }
+            break;
+        
+        case 1: // open last open files
+            {
+                wxFileName fname(m_Filename);
+                fname.SetExt("layout");
+                cbEditor* top = 0L;
+                ProjectLayoutLoader loader(this);
+                if (loader.Open(fname.GetFullPath()))
+                {
+                    FilesList::Node* node = m_Files.GetFirst();
+                    while(node)
+                    {
+                        ProjectFile* f = node->GetData();
+                        if (f->editorOpen)
+                        {
+                            cbEditor* ed = Manager::Get()->GetEditorManager()->Open(f->file.GetFullPath());
+                            if (ed)
+                            {
+                                ed->SetProjectFile(f);
+                                if (f == loader.GetTopProjectFile())
+                                    top = ed;
+                            }
+                        }
+                        node = node->GetNext();
+                    }
+                    if (top)
+                        top->Activate();
+                    return true;
+                }
+            }
+            break;
+
+        case 2: // do not open any files
+            return true;
+        
+        default: break;
+    }
 	return false;
 }
 
