@@ -141,7 +141,11 @@ void CompilerErrors::DoGotoError(const CompileError& error)
 	cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
 	if (project)
 	{
-	    ProjectFile* f = project->GetFileByFilename(error.filename, true, true);
+        wxString filename = UnixFilename(error.filename);
+        bool isAbsolute = (filename.Length() > 1 && filename.GetChar(1) == ':') ||
+                           filename.StartsWith("/") ||
+                           filename.StartsWith("\\");
+	    ProjectFile* f = project->GetFileByFilename(error.filename, !isAbsolute, true);
     	if (f)
         {
         	cbEditor* ed = Manager::Get()->GetEditorManager()->Open(f->file.GetFullPath());
@@ -149,7 +153,9 @@ void CompilerErrors::DoGotoError(const CompileError& error)
 			{
 				ed->SetProjectFile(f);
 				ed->Activate();
-				ed->GetControl()->GotoLine(error.line - 10); // make sure we can see some context...
+				// make sure we can see some context...
+				ed->GetControl()->GotoLine(error.line - 10);
+				ed->GetControl()->GotoLine(error.line + 10);
 				ed->GetControl()->GotoLine(error.line - 1);
 				ed->MarkLine(ERROR_LINE, error.line - 1);
 			}
