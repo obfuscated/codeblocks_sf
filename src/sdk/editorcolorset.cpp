@@ -92,12 +92,7 @@ void EditorColorSet::ClearAllOptionColors()
 {
 	for (ColorsMap::iterator it = m_Colors.begin(); it != m_Colors.end(); ++it)
 	{
-		for (unsigned int i = 0; i < it->second.GetCount(); ++i)
-		{
-			OptionColor* opt = it->second.Item(i);
-			if (opt)
-				delete opt;
-		}
+        WX_CLEAR_ARRAY(it->second);
 		it->second.Clear();
 	}
 	m_Colors.clear();
@@ -228,7 +223,13 @@ void EditorColorSet::Apply(HighlightLanguage lang, wxStyledTextCtrl* control)
                 DoApplyStyle(control, i, defaults);
         }
     }
-    
+	// also set the caret color, same as the default foreground
+	control->SetCaretForeground(defaults->fore);
+	// for some strange reason, when switching styles, the line numbering changes color
+	// too, though we didn't ask it to...
+	// this makes sure it stays the correct color
+    control->StyleSetForeground(wxSTC_STYLE_LINENUMBER, wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
+
 	for (unsigned int i = 0; i < m_Colors[lang].GetCount(); ++i)
 	{
 		OptionColor* opt = m_Colors[lang].Item(i);

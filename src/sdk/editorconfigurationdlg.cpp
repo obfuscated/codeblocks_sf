@@ -555,7 +555,6 @@ void EditorConfigurationDlg::OnOK(wxCommandEvent& event)
 		m_Theme->Save();
 		Manager::Get()->GetEditorManager()->SetColorSet(m_Theme);
         ConfigManager::Get()->Write("/editor/color_sets/active_color_set", m_Theme->GetName());
-        delete m_Theme;
 	}
 
     EndModal(wxID_OK);
