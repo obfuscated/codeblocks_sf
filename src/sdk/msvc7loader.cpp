@@ -153,6 +153,7 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
     ProjectBuildTarget* bt = m_pProject->GetBuildTarget(m_ConfigurationName);
     if (!bt)
         bt = m_pProject->AddBuildTarget(m_ConfigurationName);
+    bt->SetCompilerIndex(m_pProject->GetCompilerIndex());
 
     m_OutDir = ReplaceMSVCMacros(conf->Attribute("OutputDirectory"));
     bt->SetObjectOutput(ReplaceMSVCMacros(conf->Attribute("IntermediateDirectory")));
