@@ -255,6 +255,7 @@ void CodeBlocksApp::SetAssociations()
 	GetModuleFileName(0L, name, MAX_PATH);
 	
 	DoSetAssociation(CODEBLOCKS_EXT, APP_NAME" project file", name, "1");
+	DoSetAssociation(WORKSPACE_EXT, APP_NAME" workspace file", name, "1");
 	DoSetAssociation(C_EXT, "C source file", name, "2");
 	DoSetAssociation(CPP_EXT, "C++ source file", name, "3");
 	DoSetAssociation(CC_EXT, "C++ source file", name, "3");

@@ -437,7 +437,8 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
 
 bool ProjectManager::SaveWorkspace(const wxString& filename)
 {
-	m_Workspace = filename;
+    if (!(!m_Workspace.IsEmpty() && filename.IsEmpty()))
+        m_Workspace = filename;
 	Manager::Get()->GetMessageManager()->DebugLog("Saving workspace \"%s\"", GetWorkspace().c_str());
 	WorkspaceLoader wsp;
 	bool ret = wsp.Save(GetWorkspace());

@@ -51,6 +51,7 @@ int idFileOpenRecentClearHistory = wxNewId();
 int idFileSave = wxNewId();
 int idFileSaveAs = wxNewId();
 int idFileSaveAllFiles = wxNewId();
+int idFileSaveWorkspaceAs = wxNewId();
 int idFileClose = wxNewId();
 int idFileCloseAll = wxNewId();
 int idFileExit = wxNewId();
@@ -116,6 +117,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idFileSave, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileSaveAs, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileSaveAllFiles, MainFrame::OnFileMenuUpdateUI)
+    EVT_UPDATE_UI(idFileSaveWorkspaceAs, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileClose, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileCloseAll, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idProjectSaveProject, MainFrame::OnProjectMenuUpdateUI)
@@ -165,6 +167,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idFileSave,  MainFrame::OnFileSave)
     EVT_MENU(idFileSaveAs,  MainFrame::OnFileSaveAs)
     EVT_MENU(idFileSaveAllFiles,  MainFrame::OnFileSaveAllFiles)
+    EVT_MENU(idFileSaveWorkspaceAs,  MainFrame::OnFileSaveWorkspaceAs)
     EVT_MENU(idFileClose,  MainFrame::OnFileClose)
     EVT_MENU(idFileCloseAll,  MainFrame::OnFileCloseAll)
     EVT_MENU(idFileExit,  MainFrame::OnFileQuit)
@@ -340,6 +343,8 @@ void MainFrame::CreateMenubar()
 	file->Append(idFileSave, _("&Save\tCtrl-S"), _("Save the active file"));
 	file->Append(idFileSaveAs, _("Save &as..."), _("Save the active file under a different name"));
 	file->Append(idFileSaveAllFiles, _("Save a&ll\tCtrl-Shift-S"), _("Save all modified files"));
+	file->AppendSeparator();
+	file->Append(idFileSaveWorkspaceAs, _("Save workspace..."), _("Save current workspace"));
 	file->AppendSeparator();
 	file->Append(idFileClose, _("&Close\tCtrl-W"), _("Close the active file"));
 	file->Append(idFileCloseAll, _("Clos&e all\tCtrl-Shift-W"), _("Close all open files"));
@@ -912,6 +917,14 @@ void MainFrame::OnFileOpen(wxCommandEvent& WXUNUSED(event))
                 DoOpenProject(fname);
                 foundProject = true;
             }
+            else if (ft == ftCodeBlocksWorkspace)
+            {
+                if (DoCloseCurrentWorkspace())
+                {
+                    m_pPrjMan->LoadWorkspace(fname);
+                    foundProject = true;
+                }
+            }
         }
 
         // else open all files
@@ -958,6 +971,21 @@ void MainFrame::OnFileSaveAllFiles(wxCommandEvent& event)
 {
     m_pEdMan->SaveAll();
     DoUpdateStatusBar();
+}
+
+void MainFrame::OnFileSaveWorkspaceAs(wxCommandEvent& event)
+{
+    wxFileName fname(m_pPrjMan->GetWorkspace());
+    
+    wxFileDialog* dlg = new wxFileDialog(this,
+                            _("Save workspace"),
+                            fname.GetPath(),
+                            fname.GetFullName(),
+                            WORKSPACES_FILES_FILTER,
+                            wxSAVE | wxHIDE_READONLY | wxOVERWRITE_PROMPT);
+    if (dlg->ShowModal() != wxID_OK)
+        return;
+    m_pPrjMan->SaveWorkspace(dlg->GetPath());
 }
 
 void MainFrame::OnFileClose(wxCommandEvent& WXUNUSED(event))
@@ -1231,6 +1259,7 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idFileSave, ed && ed->GetModified());
     mbar->Enable(idFileSaveAs, ed);
     mbar->Enable(idFileSaveAllFiles, ed);
+    mbar->Enable(idFileSaveWorkspaceAs, m_pPrjMan->GetActiveProject());
 	
 	if (m_pToolbar)
 	{
