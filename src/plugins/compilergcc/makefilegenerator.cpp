@@ -1161,17 +1161,17 @@ void MakefileGenerator::AddCreateSubdir(wxString& buffer, const wxString& basepa
     wxChar sep = wxFileName::GetPathSeparator();
 #ifdef __WXMSW__
     wxFileName d_filename_tmp = filename;
-    wxFileName d_filename = d_filename_tmp.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + subdir + sep + d_filename_tmp.GetFullName();
+    wxFileName d_filename = subdir + sep + d_filename_tmp.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + sep + d_filename_tmp.GetFullName();
     buffer << "\t-@if not exist ";
     buffer << "\"" << basepath << sep << d_filename.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) << ".\" ";
     buffer << "mkdir ";
     buffer << "\"" << basepath << sep << d_filename.GetPath(wxPATH_GET_VOLUME) << "\"";
 #else
     wxFileName d_filename_tmp = UnixFilename(filename);
-    wxFileName d_filename = d_filename_tmp.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + subdir + sep + d_filename_tmp.GetFullName();
+    wxFileName d_filename = subdir + sep + d_filename_tmp.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + sep + d_filename_tmp.GetFullName();
     buffer << "\t-@if ! test -d ";
     buffer << basepath << sep << d_filename.GetPath(wxPATH_GET_VOLUME);
-    buffer << "; then mkdir ";
+    buffer << "; then mkdir -p ";
     buffer << basepath << sep << d_filename.GetPath(wxPATH_GET_VOLUME);
     buffer << "; fi";
 #endif

@@ -116,7 +116,7 @@ int PluginManager::ScanForPlugins(const wxString& path)
 cbPlugin* PluginManager::LoadPlugin(const wxString& pluginName)
 {
     SANITY_CHECK(0L);
-    wxLogNull zero; // no need for error messages; we check everything ourselves...
+    //wxLogNull zero; // no need for error messages; we check everything ourselves...
     //MessageManager* msgMan = Manager::Get()->GetMessageManager();
 
     wxDynamicLibrary* lib = new wxDynamicLibrary();

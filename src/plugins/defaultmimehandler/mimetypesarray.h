@@ -10,8 +10,10 @@
 #ifndef MIMETYPESARRAY_H
 #define MIMETYPESARRAY_H
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-	#pragma interface "mimetypesarray.h"
+#ifdef __WXMSW__
+    #if defined(__GNUG__) && !defined(__APPLE__)
+        #pragma interface "mimetypesarray.h"
+    #endif
 #endif
 // For compilers that support precompilation, includes <wx/wx.h>
 #include <wx/wxprec.h>
