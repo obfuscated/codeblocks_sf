@@ -45,6 +45,11 @@ CompilerBCC::CompilerBCC()
     m_Commands[(int)ctLinkConsoleExeCmd] = "$linker -ap  $link_options $libdirs c0x32 $link_objects,$exe_output,,$libs,,$link_resobjects";
     m_Commands[(int)ctLinkDynamicCmd] = "$linker $libdirs -o $exe_output $libs $link_objects $link_options";
     m_Commands[(int)ctLinkStaticCmd] = "$lib_linker /C $static_output +$link_objects,$def_output";
+
+    m_RegExes.Add(RegExStruct(_("Compiler warning"), cltWarning, "(^Warning[ \t]W[0-9]+)[ \t]([A-Za-z0-9_:/\\.]+)[ \t]([0-9]+)(:[ \t].*)", 1, 2, 3, 4));
+    m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, "(^Error[ \t]E[0-9]+)[ \t]([A-Za-z0-9_:/\\.]+)[ \t]([0-9]+)(:[ \t].*)", 1, 2, 3, 4));
+    m_RegExes.Add(RegExStruct(_("Unknown error"), cltError, "(^Error[ \t]+E[0-9]+:.*)", 1));
+    m_RegExes.Add(RegExStruct(_("Fatal error"), cltError, "Fatal:[ \t]+(.*)", 1));
 }
 
 CompilerBCC::~CompilerBCC()
@@ -69,58 +74,4 @@ AutoDetectResult CompilerBCC::AutoDetectInstallationDir()
     }
 
     return wxFileExists(m_MasterPath + sep + "bin" + sep + m_Programs.C) ? adrDetected : adrGuessed;
-}
-
-Compiler::CompilerLineType CompilerBCC::CheckForWarningsAndErrors(const wxString& line)
-{
-    Compiler::CompilerLineType ret = Compiler::cltNormal;
-	if (line.IsEmpty())
-        return ret;
-
-    // quick regex's
-    wxRegEx reFatalError("Fatal:[ \t]+(.*)");
-    wxRegEx reError("^Error[ \t]+.*");
-    wxRegEx reWarning("^Warning[ \t]+.*");
-    wxRegEx reErrorLine("[ \t]+[WE]+[0-9]+.*");
-    wxRegEx reDetailedWarningLine("(^Warning[ \t]W[0-9]+)[ \t]([A-Za-z0-9_:/\\.]+)[ \t]([0-9]+)(:[ \t].*)");
-    wxRegEx reDetailedErrorLine("(^Error[ \t]E[0-9]+)[ \t]([A-Za-z0-9_:/\\.]+)[ \t]([0-9]+)(:[ \t].*)");
-    wxRegEx reDetailedLinkerErrorLine("^Error[ \t]+E[0-9]+:.*");
-
-    if (reErrorLine.Matches(line))
-    {
-        wxRegEx* actual = 0;
-        if (reDetailedErrorLine.Matches(line))
-            actual = &reDetailedErrorLine;
-        else if (reDetailedWarningLine.Matches(line))
-            actual = &reDetailedWarningLine;
-        if (actual)
-        {
-            if (reError.Matches(line))
-                ret = Compiler::cltError;
-            else if (reWarning.Matches(line))
-                ret = Compiler::cltWarning;
-            wxArrayString errors;
-            m_ErrorFilename = actual->GetMatch(line, 2);
-            m_ErrorLine = actual->GetMatch(line, 3);
-            m_Error = actual->GetMatch(line, 1) + actual->GetMatch(line, 4);
-        }
-        else if (reDetailedLinkerErrorLine.Matches(line))
-        {
-            // linker error
-            m_ErrorFilename = "";
-            m_ErrorLine = "";
-            m_Error = line;
-            ret = Compiler::cltError;
-        }
-    }
-    else if (reFatalError.Matches(line))
-    {
-        // linker error
-        m_ErrorFilename = "";
-        m_ErrorLine = "";
-        m_Error = reFatalError.GetMatch(line, 1);
-        ret = Compiler::cltError;
-    }
-
-    return ret;
 }

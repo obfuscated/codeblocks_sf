@@ -647,7 +647,6 @@ int CompilerGCC::DoRunQueue()
         return -3;
 	}
 
-	DoClearErrors();
 	m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLACK, *wxWHITE));
     wxString dir;// = m_Project->GetBasePath();
     wxString cmd;
@@ -800,7 +799,10 @@ void CompilerGCC::DoPrepareQueue()
 	{
 		m_QueueIndex = 0;
 		if (m_DoAllProjects == mpjNone)
+		{
             ClearLog();
+            DoClearErrors();
+        }
 		DoCreateMakefile();
 		wxStartTimer();
 	}
@@ -1092,6 +1094,7 @@ void CompilerGCC::OnExportMakefile(wxCommandEvent& event)
 
 int CompilerGCC::Compile(ProjectBuildTarget* target)
 {
+    	DoClearErrors();
 	DoPrepareQueue();
 	if (!m_Project)
         return -2;
@@ -1623,15 +1626,15 @@ void CompilerGCC::OnGCCError(CodeBlocksEvent& event)
 void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColor)
 {
 	Compiler* compiler = CompilerFactory::Compilers[m_CompilerIdx];
-	Compiler::CompilerLineType clt = compiler->CheckForWarningsAndErrors(output);
-	
+	CompilerLineType clt = compiler->CheckForWarningsAndErrors(output);
+
 	switch (clt)
 	{
-        case Compiler::cltWarning:
+        case cltWarning:
 			m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_NAVY));
 			break;
 			
-        case Compiler::cltError:
+        case cltError:
 			m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxRED));
 			break;
 			
@@ -1643,7 +1646,7 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColor)
 			break;
 	}
 
-	if (clt != Compiler::cltNormal)
+	if (clt != cltNormal)
 	{
         wxArrayString errors;
         errors.Add(compiler->GetLastErrorFilename());
@@ -1654,7 +1657,7 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColor)
         m_Errors.AddError(compiler->GetLastErrorFilename(),
                           !compiler->GetLastErrorLine().IsEmpty() ? atoi(compiler->GetLastErrorLine().c_str()) : 0,
                           compiler->GetLastError(),
-                          clt == Compiler::cltWarning);
+                          clt == cltWarning);
     }
 
 	if (!output.IsEmpty())

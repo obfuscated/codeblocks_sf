@@ -4,6 +4,10 @@
 #include "configmanager.h"
 #include "globals.h"
 #include <wx/intl.h>
+#include <wx/regex.h>
+
+#include <wx/arrimpl.cpp>
+WX_DEFINE_OBJARRAY(RegExArray);
 
 wxString Compiler::CommandTypeDescriptions[COMPILER_COMMAND_TYPES_COUNT] =
 {
@@ -101,6 +105,23 @@ void Compiler::SaveSettings(const wxString& baseKey)
     ConfigManager::Get()->Write(tmp + "/switches/libExtension", m_Switches.libExtension);
     ConfigManager::Get()->Write(tmp + "/switches/linkerNeedsLibPrefix", m_Switches.linkerNeedsLibPrefix);
     ConfigManager::Get()->Write(tmp + "/switches/linkerNeedsLibExtension", m_Switches.linkerNeedsLibExtension);
+
+    // regexes
+    ConfigManager::Get()->DeleteGroup(tmp + "/regex");
+    wxString group;
+    for (size_t i = 0; i < m_RegExes.Count(); ++i)
+    {
+        group.Printf("%s/regex/%3.3d", tmp.c_str(), i + 1);
+        RegExStruct& rs = m_RegExes[i];
+        ConfigManager::Get()->Write(group + "/description", rs.desc);
+        ConfigManager::Get()->Write(group + "/type", rs.lt);
+        ConfigManager::Get()->Write(group + "/regex", rs.regex);
+        ConfigManager::Get()->Write(group + "/msg1", rs.msg[0]);
+        ConfigManager::Get()->Write(group + "/msg2", rs.msg[1]);
+        ConfigManager::Get()->Write(group + "/msg3", rs.msg[2]);
+        ConfigManager::Get()->Write(group + "/filename", rs.filename);
+        ConfigManager::Get()->Write(group + "/line", rs.line);
+    }
 }
 
 void Compiler::LoadSettings(const wxString& baseKey)
@@ -152,4 +173,63 @@ void Compiler::LoadSettings(const wxString& baseKey)
     m_Switches.libExtension = ConfigManager::Get()->Read(tmp + "/switches/libExtension", m_Switches.libExtension);
     m_Switches.linkerNeedsLibPrefix = ConfigManager::Get()->Read(tmp + "/switches/linkerNeedsLibPrefix", m_Switches.linkerNeedsLibPrefix);
     m_Switches.linkerNeedsLibExtension = ConfigManager::Get()->Read(tmp + "/switches/linkerNeedsLibExtension", m_Switches.linkerNeedsLibExtension);
+
+    // regexes
+    wxString group;
+    int index = 1;
+    bool cleared = false;
+    while (true)
+    {
+        group.Printf("%s/regex/%3.3d", tmp.c_str(), index++);
+        if (!ConfigManager::Get()->HasGroup(group))
+            break;
+        else if (!cleared)
+        {
+            cleared = true;
+            m_RegExes.Clear();
+        }
+        RegExStruct rs;
+        rs.desc = ConfigManager::Get()->Read(group + "/description");
+        rs.lt = (CompilerLineType)ConfigManager::Get()->Read(group + "/type", 0L);
+        rs.regex = ConfigManager::Get()->Read(group + "/regex");
+        rs.msg[0] = ConfigManager::Get()->Read(group + "/msg1", 0L);
+        rs.msg[1] = ConfigManager::Get()->Read(group + "/msg2", 0L);
+        rs.msg[2] = ConfigManager::Get()->Read(group + "/msg3", 0L);
+        rs.filename = ConfigManager::Get()->Read(group + "/filename", 0L);
+        rs.line = ConfigManager::Get()->Read(group + "/line", 0L);
+        m_RegExes.Add(rs);
+    }
+}
+
+CompilerLineType Compiler::CheckForWarningsAndErrors(const wxString& line)
+{
+    m_ErrorFilename.Clear();
+    m_ErrorLine.Clear();
+    m_Error.Clear();
+
+    for (size_t i = 0; i < m_RegExes.Count(); ++i)
+    {
+        RegExStruct& rs = m_RegExes[i];
+        if (rs.regex.IsEmpty())
+            continue;
+        wxRegEx regex(rs.regex);
+        if (regex.Matches(line))
+        {
+            if (rs.filename > 0)
+                 m_ErrorFilename = regex.GetMatch(line, rs.filename);
+            if (rs.line > 0)
+                m_ErrorLine = regex.GetMatch(line, rs.line);
+            for (int x = 0; x < 3; ++x)
+            {
+                if (rs.msg[x] > 0)
+                {
+                    if (!m_Error.IsEmpty())
+                        m_Error << " ";
+                    m_Error << regex.GetMatch(line, rs.msg[x]);
+                }
+            }
+            return rs.lt;
+        }
+    }
+    return cltNormal; // default return value
 }

@@ -69,6 +69,12 @@ CompilerMINGW::CompilerMINGW()
     m_Commands[(int)ctLinkDynamicCmd] = "$linker -shared -Wl,--output-def=$def_output -Wl,--out-implib=$static_output $libdirs $link_objects $libs -o $exe_output $link_options";
 #endif
     m_Commands[(int)ctLinkStaticCmd] = "$lib_linker -r $static_output $link_objects\n\tranlib $exe_output";
+
+    m_RegExes.Add(RegExStruct(_("Fatal error"), cltError, "FATAL:[ \t]*(.*)", 1));
+    m_RegExes.Add(RegExStruct(_("Compiler warning"), cltWarning, "([ \tA-Za-z0-9_\\-\\+/\\.]+):([0-9]+):[ \t][Ww]arning:[ \t](.*)", 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, "([ \tA-Za-z0-9_\\-\\+/\\.]+):([0-9]+):[ \t](.*)", 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Linker error"), cltError, "([ \tA-Za-z0-9_\\-\\+/\\.]+):([0-9]+):[0-9]+:[ \t](.*)", 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Undefined reference"), cltError, "([ \tA-Za-z0-9_\\-\\+/\\.]+):[ \t](undefined reference.*)", 2, 1));
 }
 
 CompilerMINGW::~CompilerMINGW()
@@ -98,54 +104,4 @@ AutoDetectResult CompilerMINGW::AutoDetectInstallationDir()
         m_LibDirs.Add(m_MasterPath + sep + "lib");
     }
     return wxFileExists(m_MasterPath + sep + "bin" + sep + m_Programs.C) ? adrDetected : adrGuessed;
-}
-
-Compiler::CompilerLineType CompilerMINGW::CheckForWarningsAndErrors(const wxString& line)
-{
-    Compiler::CompilerLineType ret = Compiler::cltNormal;
-	if (line.IsEmpty())
-        return ret;
-
-    // quick regex's
-    wxRegEx reWarning("[ \t]warning:[ \t]");
-    wxRegEx reFatalErrorLine("FATAL:[ \t]*(.*)");
-    wxRegEx reErrorLine(".*:[0-9]+:.*");
-    wxRegEx reDetailedErrorLine("([ \tA-Za-z0-9_:\\-\\+/\\.]+):([0-9]+):[ \t](.*)");
-    wxRegEx reDetailedPreProcErrorLine("([ \tA-Za-z0-9_:\\-\\+/\\.]+):([0-9]+):[0-9]+:[ \t](.*)");
-    wxRegEx reDetailedLinkerErrorLine("([ \tA-Za-z0-9_\\-\\+/\\.]+):[ \t](undefined reference.*)"); // this doesn't expect driver letter...
-
-    if (reErrorLine.Matches(line))
-    {
-        // one more check to see it is an actual error line
-        if (reDetailedErrorLine.Matches(line))
-        {
-            if (reWarning.Matches(line))
-                ret = Compiler::cltWarning;
-            else
-                ret = Compiler::cltError;
-            wxRegEx* actual = 0;
-            if (reDetailedPreProcErrorLine.Matches(line))
-                actual = &reDetailedPreProcErrorLine;
-            else
-                actual = &reDetailedErrorLine;
-            m_ErrorFilename = actual->GetMatch(line, 1);
-            m_ErrorLine = actual->GetMatch(line, 2);
-            m_Error = actual->GetMatch(line, 3);
-        }
-    }
-    else if (reFatalErrorLine.Matches(line))
-    {
-        ret = Compiler::cltError;
-        m_ErrorFilename = "";
-        m_ErrorLine = "";
-        m_Error = reFatalErrorLine.GetMatch(line, 1);
-    }
-    else if (reDetailedLinkerErrorLine.Matches(line))
-    {
-        ret = Compiler::cltError;
-        m_ErrorFilename = reDetailedLinkerErrorLine.GetMatch(line, 1);
-        m_ErrorLine = "";
-        m_Error = reDetailedLinkerErrorLine.GetMatch(line, 2);
-    }
-    return ret;
 }

@@ -135,6 +135,10 @@ CompilerDMC::CompilerDMC()
     m_Commands[(int)ctLinkConsoleExeCmd] = "$linker /NOLOGO $link_options $link_objects, $exe_output, , $libs";
     m_Commands[(int)ctLinkDynamicCmd] = "$linker /NOLOGO /subsystem:windows -WD $link_options $link_objects, $exe_output, , $libs, , $link_resobjects";
     m_Commands[(int)ctLinkStaticCmd] = "$lib_linker $link_options $static_output $link_objects";
+
+    m_RegExes.Add(RegExStruct(_("Linker error"), cltError, "([ \tA-Za-z0-9_:\\-\\+/\\.\\(\\)]*)[ \t]+:[ \t]+(.*error LNK[0-9]+.*)", 2, 1));
+    m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, "([ \tA-Za-z0-9_:\\-\\+/\\.]+)\\(([0-9]+)\\) :[ \t](.*)", 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Fatal error"), cltError, "Fatal error:[ \t](.*)", 1));
 }
 
 CompilerDMC::~CompilerDMC()
@@ -163,53 +167,4 @@ AutoDetectResult CompilerDMC::AutoDetectInstallationDir()
     //
 
     return wxFileExists(m_MasterPath + sep + "bin" + sep + m_Programs.C) ? adrDetected : adrGuessed;
-}
-
-Compiler::CompilerLineType CompilerDMC::CheckForWarningsAndErrors(const wxString& line)
-{
-    Compiler::CompilerLineType ret = Compiler::cltNormal;
-	if (line.IsEmpty())
-        return ret;
-
-    //
-    // FIXME (hd#1#): should be implemented for dm
-    //
-    
-    // quick regex's
-    wxRegEx reError(": Error:");
-    wxRegEx reWarning(": Warning:");
-    wxRegEx reErrorLinker("([ \tA-Za-z0-9_:\\-\\+/\\.\\(\\)]*)[ \t]+:[ \t]+(.*error LNK[0-9]+.*)");
-    wxRegEx reErrorLine("\\([0-9]+\\) :[ \t].*:");
-    wxRegEx reDetailedErrorLine("([ \tA-Za-z0-9_:\\-\\+/\\.]+)\\(([0-9]+)\\) :[ \t](.*)");
-    wxRegEx reFatalError("Fatal error:[ \t](.*)");
-
-    if (reErrorLine.Matches(line))
-    {
-        // one more check to see it is an actual error line
-        if (reDetailedErrorLine.Matches(line))
-        {
-            if (reError.Matches(line))
-                ret = Compiler::cltError;
-            else if (reWarning.Matches(line))
-                ret = Compiler::cltWarning;
-            m_ErrorFilename = reDetailedErrorLine.GetMatch(line, 1);
-            m_ErrorLine = reDetailedErrorLine.GetMatch(line, 2);
-            m_Error = reDetailedErrorLine.GetMatch(line, 3);
-        }
-    }
-    else if (reErrorLinker.Matches(line))
-    {
-        m_ErrorFilename = reErrorLinker.GetMatch(line, 1);
-        m_ErrorLine = "";
-        m_Error = reErrorLinker.GetMatch(line, 2);
-        ret = Compiler::cltError;
-    }
-    else if (reFatalError.Matches(line))
-    {
-        m_ErrorFilename = "";
-        m_ErrorLine = "";
-        m_Error = reFatalError.GetMatch(line, 1);
-        ret = Compiler::cltError;
-    }
-    return ret;
 }

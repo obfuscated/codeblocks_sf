@@ -3,6 +3,7 @@
 
 #include <wx/string.h>
 #include <wx/filename.h>
+#include <wx/dynarray.h>
 #include "compileoptionsbase.h"
 #include "compileroptions.h"
 
@@ -35,6 +36,53 @@
     in a Makefile (properly tab aligned but *no* tabs at the start of the string)
     The macro substitution happens in compiler's MakefileGenerator.
 */
+
+/// Enum categorizing compiler's output line as warning/error/normal
+enum CompilerLineType
+{
+    cltNormal,
+    cltWarning,
+    cltError
+};
+
+// regexes array declaration
+struct RegExStruct
+{
+    RegExStruct()
+        : desc("Unknown"), lt(cltError), regex(""), filename(0), line(0)
+    {
+        memset(msg, 0, sizeof(msg));
+    }
+    RegExStruct(const RegExStruct& rhs)
+        : desc(rhs.desc), lt(rhs.lt), regex(rhs.regex), filename(rhs.filename), line(rhs.line)
+    {
+        memcpy(msg, rhs.msg, sizeof(msg));
+    }
+    RegExStruct(const wxString& _desc,
+                CompilerLineType _lt,
+                const wxString& _regex,
+                int _msg,
+                int _filename = 0,
+                int _line = 0,
+                int _msg2 = 0,
+                int _msg3 = 0)
+        : desc(_desc), lt(_lt), regex(_regex), filename(_filename), line(_line)
+    {
+        msg[0] = _msg;
+        msg[1] = _msg2;
+        msg[2] = _msg3;
+    }
+    wxString desc; // title of this regex
+    CompilerLineType lt; // classify the line, if regex matches
+    wxString regex; // the regex to match
+    int msg[3]; // up-to 3 sub-expression nr for warning/error message
+    int filename; // sub-expression nr for filename
+    int line; // sub-expression nr for line number
+    // if more than one sub-expressions are entered for msg,
+    // they are appended to each other, with one space in between.
+    // Appending takes place in the same order...
+};
+WX_DECLARE_OBJARRAY(RegExStruct, RegExArray);
 
 /// Helper enum to retrieve compiler commands
 enum CommandType
@@ -110,20 +158,12 @@ struct CompilerSwitches
 class DLLIMPORT Compiler : public CompileOptionsBase
 {
 	public:
-        /// Enum categorizing compiler's output line as warning/error/normal
-        enum CompilerLineType
-        {
-            cltNormal,
-            cltWarning,
-            cltError
-        };
-
 		Compiler(const wxString& name);
 		Compiler(const Compiler& other); // copy ctor to copy everything but update m_ID
 		virtual ~Compiler();
 		
 		/** @brief Check if the supplied string is a compiler warning/error */
-		virtual CompilerLineType CheckForWarningsAndErrors(const wxString& line) = 0;
+		virtual CompilerLineType CheckForWarningsAndErrors(const wxString& line);
 		/** @brief Returns warning/error filename. Use it after a call to CheckForWarningsAndErrors() */
 		virtual wxString GetLastErrorFilename(){ return m_ErrorFilename; }
 		/** @brief Returns warning/error line number (as a string). Use it after a call to CheckForWarningsAndErrors() */
@@ -142,6 +182,8 @@ class DLLIMPORT Compiler : public CompileOptionsBase
 		virtual const CompilerOptions& GetOptions() const { return m_Options; }
         /** @brief Get a command based on CommandType */
 		virtual const wxString& GetCommand(CommandType ct) const { return m_Commands[(int)ct]; }
+		/** @brief Get the array of regexes used in errors/warnings recognition */
+		virtual const RegExArray& GetRegExArray(){ return m_RegExes; }
 
         /** @brief Set the compiler's name */
 		virtual void SetName(const wxString& name){ m_Name = name; }
@@ -155,6 +197,8 @@ class DLLIMPORT Compiler : public CompileOptionsBase
 		virtual void SetOptions(const CompilerOptions& options){ m_Options = options; }
         /** @brief Set a command based on CommandType */
 		virtual void SetCommand(CommandType ct, const wxString& cmd){ m_Commands[(int)ct] = cmd; }
+		/** @brief Set the array of regexes used in errors/warnings recognition */
+		virtual void SetRegExArray(const RegExArray& regexes){ m_RegExes = regexes; }
 
         void SaveSettings(const wxString& baseKey);
         void LoadSettings(const wxString& baseKey);
@@ -174,6 +218,7 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         CompilerPrograms m_Programs;
         CompilerSwitches m_Switches;
         CompilerOptions m_Options;
+        RegExArray m_RegExes;
         wxString m_ErrorFilename;
         wxString m_ErrorLine;
         wxString m_Error;

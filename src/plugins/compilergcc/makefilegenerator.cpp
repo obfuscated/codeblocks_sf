@@ -380,7 +380,7 @@ void MakefileGenerator::DoGetMakefileLibs(wxString& buffer, ProjectBuildTarget* 
 {
 	buffer << " $(GLOBAL_LIBS)";
 
-    OptionsRelation relation = target->GetOptionRelation(ortLibDirs);
+    OptionsRelation relation = target->GetOptionRelation(ortLinkerOptions);
     switch (relation)
     {
         case orUseParentOptionsOnly:
