@@ -154,7 +154,8 @@ END_EVENT_TABLE()
 ProjectManager::ProjectManager(wxNotebook* parent)
 	: m_Modified(false),
     m_TreeCategorize(false),
-    m_TreeUseFolders(true)
+    m_TreeUseFolders(true),
+    m_TreeFreezeCounter(0)
 {
 	Manager::Get()->GetAppWindow()->PushEventHandler(this);
     m_pParent = parent;
@@ -276,6 +277,9 @@ void ProjectManager::SetProject(cbProject* project, bool refresh)
 	if (refresh)
 		RebuildTree();
 
+    if (m_pActiveProject)
+        m_pTree->EnsureVisible(m_pActiveProject->GetProjectNode());
+
 	CodeBlocksEvent event(cbEVT_PROJECT_ACTIVATE);
 	event.SetProject(m_pActiveProject);
 	Manager::Get()->GetPluginManager()->NotifyPlugins(event);
@@ -393,12 +397,14 @@ cbProject* ProjectManager::NewProject()
 
 bool ProjectManager::CloseAllProjects()
 {
+    FreezeTree();
     while (m_pProjects->GetCount() != 0)
     {
         if (!CloseActiveProject())
             return false;
     }
     RebuildTree();
+    UnfreezeTree(true);
     return true;
 }
 
@@ -498,6 +504,7 @@ bool ProjectManager::SaveActiveProjectAs()
 
 bool ProjectManager::SaveAllProjects()
 {
+    FreezeTree();
     int prjCount = m_pProjects->GetCount();
     int count = 0;
     for (int i = 0; i < prjCount; ++i)
@@ -506,6 +513,7 @@ bool ProjectManager::SaveAllProjects()
         if (SaveProject(project))
             ++count;
     }
+    UnfreezeTree(true);
     return count == prjCount;
 }
 
@@ -590,8 +598,29 @@ bool ProjectManager::SaveWorkspace(const wxString& filename)
 	return ret;
 }
 
+void ProjectManager::FreezeTree()
+{
+    if (!m_pTree)
+        return;
+    ++m_TreeFreezeCounter;
+    m_pTree->Freeze();
+}
+
+void ProjectManager::UnfreezeTree(bool force)
+{
+    if (!m_pTree)
+        return;
+    --m_TreeFreezeCounter;
+    if (force || m_TreeFreezeCounter <= 0)
+    {
+        m_pTree->Thaw();
+        m_TreeFreezeCounter = 0;
+    }
+}
+
 void ProjectManager::RebuildTree()
 {
+    FreezeTree();
     int count = m_pProjects->GetCount();
     for (int i = 0; i < count; ++i)
     {
@@ -620,6 +649,7 @@ void ProjectManager::RebuildTree()
         if (project)
             project->RestoreTreeState(m_pTree);
     }
+    UnfreezeTree();
 }
 
 int ProjectManager::AddFileToProject(const wxString& filename, cbProject* project, int target)
@@ -678,9 +708,18 @@ int ProjectManager::AddFileToProject(const wxString& filename, cbProject* projec
 		}
 	}
 
-    for (size_t i = 0; i < targets.GetCount(); ++i)
+    // add the file to the first selected target
+    ProjectFile* pf = prj->AddFile(targets[0], filename);
+    if (pf)
     {
-        prj->AddFile(targets[i], filename);
+        // if the file was added succesfully,
+        // add to this file the rest of the selected targets...
+        for (size_t i = 0; i < targets.GetCount(); ++i)
+        {
+            ProjectBuildTarget* target = prj->GetBuildTarget(targets[i]);
+            if (target)
+                pf->AddBuildTarget(target->GetTitle());
+        }
     }
 
 	CodeBlocksEvent event(cbEVT_PROJECT_FILE_ADDED);

@@ -22,30 +22,30 @@ pfDetails::pfDetails(DirectCommands* cmds, ProjectBuildTarget* target, ProjectFi
     wxString sep = wxFileName::GetPathSeparator();
     wxFileName tmp;
 
+    wxFileName prjbase(cmds->m_pProject->GetBasePath());
+
     source_file_native = pf->relativeFilename;
     tmp.Assign(source_file_native);
-    tmp.MakeAbsolute(cmds->m_pProject->GetBasePath());
+    tmp.MakeAbsolute(prjbase.GetFullPath());
     source_file_absolute_native = tmp.GetFullPath();
 
     tmp = pf->GetObjName();
 //    tmp = source_file_native;
 //    bool isResource = FileTypeOf(source_file_native) == ftResource;
 //    tmp.SetExt(isResource ? RESOURCEBIN_EXT : cmds->m_pCompiler->GetSwitches().objectExtension);
-    object_file_native = tmp.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) +
-                          (target ? target->GetObjectOutput() : "") +
+    object_file_native = (target ? target->GetObjectOutput() : "") +
                           sep +
-                          tmp.GetFullName();
+                          tmp.GetFullPath();
     wxFileName o_file(object_file_native);
-    o_file.MakeAbsolute(cmds->m_pProject->GetBasePath());
+    o_file.MakeAbsolute(prjbase.GetFullPath());
     object_dir_native = o_file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
     object_file_absolute_native = o_file.GetFullPath();
     tmp.SetExt("depend");
-    dep_file_native = tmp.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) +
-                      (target ? target->GetDepsOutput() : "") +
+    dep_file_native = (target ? target->GetDepsOutput() : "") +
                       sep +
-                      tmp.GetFullName();
+                      tmp.GetFullPath();
     wxFileName d_file(dep_file_native);
-    d_file.MakeAbsolute(cmds->m_pProject->GetBasePath());
+    d_file.MakeAbsolute(prjbase.GetFullPath());
     dep_dir_native = d_file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
     dep_file_absolute_native = o_file.GetFullPath();
     
@@ -468,6 +468,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
 
     // create output dir
     wxFileName out = UnixFilename(target->GetOutputFilename());
+    out.MakeAbsolute(m_pProject->GetBasePath());
     wxString dstname = out.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
     if (!dstname.IsEmpty() && !wxDirExists(dstname))
     {

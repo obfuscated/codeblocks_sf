@@ -190,6 +190,20 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
         const wxString& GetWorkspace();
 		/// Rebuild the project manager's tree.
         void RebuildTree();
+		/** Stop the tree control from updating.
+		  * @note This operation is accumulative. This means you have to call
+		  * UnfreezeTree() as many times as you 've called FreezeTree() for the 
+		  * tree control to un-freeze (except if you call UnfreezeTree(true)).
+		  */
+        void FreezeTree();
+		/** Le the tree control be updated again.
+		  * @param force If true the tree control is forced to un-freeze. Else it
+		  * depends on freeze-unfreeze balance (see note).
+		  * @note This operation is accumulative. This means you have to call
+		  * UnfreezeTree() as many times as you 've called FreezeTree() for the 
+		  * tree control to un-freeze (except if you call UnfreezeTree(true)).
+		  */
+        void UnfreezeTree(bool force = false);
         /** Retrieve a pointer to the project manager's tree (GUI).
           * @return A pointer to a wxTreeCtrl window.
           */
@@ -235,6 +249,7 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
         bool m_TreeCategorize;
         bool m_TreeUseFolders;
 		FilesGroupsAndMasks* m_pFileGroups;
+		int m_TreeFreezeCounter;
 
         DECLARE_EVENT_TABLE()
 };

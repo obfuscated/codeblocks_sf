@@ -65,7 +65,12 @@ bool WorkspaceLoader::Open(const wxString& filename)
             loadedProject = 0L;
         }
         else
-            loadedProject = pMan->LoadProject(projectFilename);
+        {
+            wxFileName wfname(filename);
+            wxFileName fname(projectFilename);
+            fname.MakeAbsolute(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
+            loadedProject = pMan->LoadProject(fname.GetFullPath());
+        }
         if (loadedProject)
         {
             int active = 0;
@@ -108,7 +113,12 @@ bool WorkspaceLoader::Save(const wxString& filename)
     for (unsigned int i = 0; i < arr->GetCount(); ++i)
     {
         cbProject* prj = arr->Item(i);
-        buffer << '\t' << '\t' << "<Project filename=\"" << prj->GetFilename() << "\"";
+
+        wxFileName wfname(filename);
+        wxFileName fname(prj->GetFilename());
+        fname.MakeRelativeTo(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
+
+        buffer << '\t' << '\t' << "<Project filename=\"" << fname.GetFullPath() << "\"";
         if (prj == Manager::Get()->GetProjectManager()->GetActiveProject())
             buffer << " active=\"1\"";
         buffer << "/>" << '\n';

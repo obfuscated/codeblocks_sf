@@ -327,10 +327,24 @@
                           <border>8</border>
                         </object>
                         <object class="sizeritem">
-                          <object class="wxButton" name="btnFileOptions">
-                            <label>Selected file options</label>
+                          <object class="wxBoxSizer">
+                            <orient>wxHORIZONTAL</orient>
+                            <object class="sizeritem">
+                              <object class="wxButton" name="btnToggleCheckmarks">
+                                <label>Toggle checkmarks</label>
+                              </object>
+                            </object>
+                            <object class="spacer">
+                              <size>1,1</size>
+                              <option>1</option>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxButton" name="btnFileOptions">
+                                <label>Selected file options</label>
+                              </object>
+                            </object>
                           </object>
-                          <flag>wxBOTTOM|wxALIGN_CENTRE</flag>
+                          <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
                           <border>8</border>
                         </object>
                       </object>

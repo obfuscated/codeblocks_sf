@@ -46,6 +46,7 @@ BEGIN_EVENT_TABLE(ProjectOptionsDlg, wxDialog)
 	EVT_BUTTON(    XRCID("btnEditDeps"),               ProjectOptionsDlg::OnEditDepsClick)
 	EVT_LISTBOX_DCLICK(XRCID("lstFiles"),              ProjectOptionsDlg::OnFileOptionsClick)
 	EVT_BUTTON(    XRCID("btnFileOptions"),            ProjectOptionsDlg::OnFileOptionsClick)
+	EVT_BUTTON(    XRCID("btnToggleCheckmarks"),       ProjectOptionsDlg::OnFileToggleMarkClick)
 	EVT_LISTBOX(   XRCID("lstBuildTarget"),            ProjectOptionsDlg::OnBuildTargetChanged)
 	EVT_COMBOBOX(  XRCID("cmbProjectType"),            ProjectOptionsDlg::OnProjectTypeChanged)
 END_EVENT_TABLE()
@@ -479,6 +480,24 @@ void ProjectOptionsDlg::OnFileOptionsClick(wxCommandEvent& event)
 		// show file options dialog
 		ProjectFile* pf = m_Project->GetFile(list->GetSelection());
 		pf->ShowOptions(this);
+	}
+}
+
+void ProjectOptionsDlg::OnFileToggleMarkClick(wxCommandEvent& event)
+{
+    wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
+    int targetIdx = lstTargets->GetSelection();
+    ProjectBuildTarget* target = m_Project->GetBuildTarget(targetIdx);
+
+    wxCheckListBox* list = XRCCTRL(*this, "lstFiles", wxCheckListBox);
+    for (int i = 0; i < list->GetCount(); ++i)
+	{
+		ProjectFile* pf = m_Project->GetFile(i);
+		list->Check(i, !list->IsChecked(i));
+        if (list->IsChecked(i))
+            pf->AddBuildTarget(target->GetTitle());
+        else
+            pf->RemoveBuildTarget(target->GetTitle());
 	}
 }
 

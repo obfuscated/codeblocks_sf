@@ -20,6 +20,7 @@ class ProjectOptionsDlg : public wxDialog
 
 		void OnOK(wxCommandEvent& event);
 		void OnFileOptionsClick(wxCommandEvent& event);
+		void OnFileToggleMarkClick(wxCommandEvent& event);
         void OnProjectTypeChanged(wxCommandEvent& event);
 		void OnBuildTargetChanged(wxCommandEvent& event);
 		void OnAddBuildTargetClick(wxCommandEvent& event);

@@ -1207,10 +1207,10 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
             ProjectFile* pf = m_Files[i];
             if (pf->compile &&
                 !pf->compilerVar.IsEmpty() &&
-                pf->buildTargets.Index(target->GetTitle()) >= 0 &&
-                m_ObjectFiles.Index(pf) == wxNOT_FOUND)
+                pf->buildTargets.Index(target->GetTitle()) >= 0)// &&
+//                m_ObjectFiles.Index(pf) == wxNOT_FOUND)
             {
-                m_ObjectFiles.Add(pf); // mark it as included in the Makefile
+//                m_ObjectFiles.Add(pf); // mark it as included in the Makefile
 
                 wxFileName d_filename_tmp = UnixFilename(pf->GetObjName());
 				wxFileName d_filename = d_filename_tmp.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + target->GetDepsOutput() + sep + d_filename_tmp.GetFullName();
