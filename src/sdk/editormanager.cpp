@@ -946,7 +946,7 @@ wxTreeCtrl *EditorManager::GetTree()
     return Manager::Get()->GetProjectManager()->GetTree();
 }
 
-wxTreeItemId EditorManager::FindTreeFile(wxString filename)
+wxTreeItemId EditorManager::FindTreeFile(const wxString& filename)
 {
     wxTreeItemId item = wxTreeItemId();
     SANITY_CHECK(item);
@@ -1001,7 +1001,7 @@ void EditorManager::DeleteItemfromTree(wxTreeItemId item)
     tree->Delete(item);    
 }
 
-void EditorManager::DeleteFilefromTree(wxString filename)
+void EditorManager::DeleteFilefromTree(const wxString& filename)
 {
     SANITY_CHECK();
     if(Manager::isappShuttingDown())
@@ -1034,7 +1034,7 @@ void EditorManager::AddFiletoTree(cbEditor* ed)
     RefreshOpenedFilesTree(true);
 }
 
-bool EditorManager::RenameTreeFile(wxString oldname,wxString newname)
+bool EditorManager::RenameTreeFile(const wxString& oldname, const wxString& newname)
 {
     SANITY_CHECK(false);
     if(Manager::isappShuttingDown())

@@ -484,38 +484,33 @@
                       <object class="wxBoxSizer">
                         <orient>wxVERTICAL</orient>
                         <object class="sizeritem">
-                          <object class="wxGridSizer">
-                            <cols>2</cols>
-                            <rows>2</rows>
-                            <vgap>8</vgap>
-                            <hgap>8</hgap>
-                            <object class="sizeritem">
-                              <object class="wxStaticText">
-                                <label>Commands before build:</label>
-                              </object>
-                            </object>
-                            <object class="sizeritem">
-                              <object class="wxTextCtrl" name="txtCmdBefore">
-                                <style>wxTE_MULTILINE|wxHSCROLL</style>
-                              </object>
-                              <option>1</option>
-                              <flag>wxEXPAND</flag>
-                            </object>
-                            <object class="sizeritem">
-                              <object class="wxStaticText">
-                                <label>Commands after build:</label>
-                              </object>
-                            </object>
-                            <object class="sizeritem">
-                              <object class="wxTextCtrl" name="txtCmdAfter">
-                                <style>wxTE_MULTILINE|wxHSCROLL</style>
-                              </object>
-                              <option>1</option>
-                              <flag>wxEXPAND</flag>
-                            </object>
+                          <object class="wxStaticText">
+                            <label>Pre-build steps:</label>
+                          </object>
+                          <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                          <border>8</border>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxTextCtrl" name="txtCmdBefore">
+                            <style>wxTE_MULTILINE|wxHSCROLL</style>
                           </object>
                           <option>1</option>
-                          <flag>wxALL|wxEXPAND</flag>
+                          <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                          <border>8</border>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                            <label>Post-build steps:</label>
+                          </object>
+                          <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                          <border>8</border>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxTextCtrl" name="txtCmdAfter">
+                            <style>wxTE_MULTILINE|wxHSCROLL</style>
+                          </object>
+                          <option>1</option>
+                          <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
                           <border>8</border>
                         </object>
                       </object>

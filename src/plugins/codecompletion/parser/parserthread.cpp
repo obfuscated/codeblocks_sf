@@ -75,6 +75,11 @@ void ParserThread::Log(const wxString& log)
 	wxYield();
 }
 
+void ParserThread::SetTokens(TokensArray* tokens)
+{
+    m_pTokens = tokens;
+}
+
 void* ParserThread::Entry()
 {
 	wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, THREAD_START);
@@ -135,6 +140,8 @@ void ParserThread::SkipBlock()
 
 bool ParserThread::ParseBufferForFunctions(const wxString& buffer)
 {
+    if (!m_pTokens)
+        return false;
 	m_pTokens->Clear();
 	m_Tokens.InitFromBuffer(buffer);
 	if (!m_Tokens.IsOK())
@@ -144,6 +151,9 @@ bool ParserThread::ParseBufferForFunctions(const wxString& buffer)
 	
 	while (1)
 	{
+        if (!m_pTokens || TestDestroy())
+            return false;
+
 		wxString token = m_Tokens.GetToken();
 		if (token.IsEmpty())
 			break;
@@ -234,6 +244,8 @@ bool ParserThread::ParseBufferForFunctions(const wxString& buffer)
 
 bool ParserThread::Parse()
 {
+    if (!m_pTokens)
+        return false;
 #if 0
 	if (!m_Options.useBuffer)
 		Log("Parsing " + m_Filename); 
@@ -252,7 +264,7 @@ bool ParserThread::Parse()
 	
 	while (1)
 	{
-		if (TestDestroy())
+		if (!m_pTokens || TestDestroy())
 			break;
 		
 		wxString token = m_Tokens.GetToken();
@@ -477,6 +489,8 @@ bool ParserThread::Parse()
 
 Token* ParserThread::TokenExists(const wxString& name)
 {
+    if (!m_pTokens)
+        return 0;
 	// when parsing a block, we must make sure the token does not already exist...
 	for (unsigned int i = m_StartBlockIndex; i < m_pTokens->GetCount(); ++i)
 	{
@@ -575,7 +589,8 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, const wxSt
 	if (!newToken->m_Type.IsEmpty())
 		newToken->m_DisplayName << " : " << newToken->m_Type;
 	
-	m_pTokens->Add(newToken);
+	if (m_pTokens)
+        m_pTokens->Add(newToken);
 	if (m_pLastParent)
 		m_pLastParent->AddChild(newToken);
 	return newToken;

@@ -65,8 +65,8 @@ void NativeParser::RemoveClassBrowser(bool appShutDown)
     if (!appShutDown && m_pClassBrowser)
     {
         delete m_pClassBrowser;
-        m_pClassBrowser = 0L;
     }
+    m_pClassBrowser = 0L;
 }
 
 void NativeParser::RereadParserOptions()
@@ -138,7 +138,9 @@ void NativeParser::ClearParsers()
 	{
 		Parser* parser = it->second;
 		if (parser)
+		{
 			delete parser;
+        }
 	}
 	m_Parsers.clear();
 }

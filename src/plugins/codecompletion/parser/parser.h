@@ -125,6 +125,8 @@ class Parser : public wxEvtHandler
 		void OnNewToken(wxCommandEvent& event);
 		void OnParseFile(wxCommandEvent& event);
 	private:
+        void ConnectEvents();
+        void DisconnectEvents();
         void BuildTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* parent);
         void AddTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* parent);
 		void AddTreeNode(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* token, bool childrenOnly = false);

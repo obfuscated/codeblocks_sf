@@ -40,10 +40,10 @@ static wxMutex s_mutexListProtection;
 int PARSER_END = wxNewId();
 
 BEGIN_EVENT_TABLE(Parser, wxEvtHandler)
-	EVT_MENU(THREAD_START, Parser::OnStartThread)
-	EVT_MENU(THREAD_END, Parser::OnEndThread)
-	EVT_MENU(NEW_TOKEN, Parser::OnNewToken)
-	EVT_MENU(FILE_NEEDS_PARSING, Parser::OnParseFile)
+//	EVT_MENU(THREAD_START, Parser::OnStartThread)
+//	EVT_MENU(THREAD_END, Parser::OnEndThread)
+//	EVT_MENU(NEW_TOKEN, Parser::OnNewToken)
+//	EVT_MENU(FILE_NEEDS_PARSING, Parser::OnParseFile)
 END_EVENT_TABLE()
 
 Parser::Parser(wxEvtHandler* parent)
@@ -105,14 +105,40 @@ Parser::Parser(wxEvtHandler* parent)
     bmp.LoadFile(prefix + "others_folder.png", wxBITMAP_TYPE_PNG);
     m_pImageList->Add(bmp); // PARSER_IMG_OTHERS_FOLDER
 #endif // STANDALONE
+    ConnectEvents();
 }
 
 Parser::~Parser()
 {
+    DisconnectEvents();
+	Clear();
 #ifndef STANDALONE
 	delete m_pImageList;
 #endif // STANDALONE
-	Clear();
+}
+
+void Parser::ConnectEvents()
+{
+    Connect(THREAD_START, -1, wxEVT_COMMAND_MENU_SELECTED,
+            (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
+            &Parser::OnStartThread);
+    Connect(THREAD_END, -1, wxEVT_COMMAND_MENU_SELECTED,
+            (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
+            &Parser::OnEndThread);
+    Connect(NEW_TOKEN, -1, wxEVT_COMMAND_MENU_SELECTED,
+            (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
+            &Parser::OnNewToken);
+    Connect(FILE_NEEDS_PARSING, -1, wxEVT_COMMAND_MENU_SELECTED,
+            (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
+            &Parser::OnParseFile);
+}
+
+void Parser::DisconnectEvents()
+{
+    Disconnect(THREAD_START, -1, wxEVT_COMMAND_MENU_SELECTED);//,
+    Disconnect(THREAD_END, -1, wxEVT_COMMAND_MENU_SELECTED);//,
+    Disconnect(NEW_TOKEN, -1, wxEVT_COMMAND_MENU_SELECTED);//,
+    Disconnect(FILE_NEEDS_PARSING, -1, wxEVT_COMMAND_MENU_SELECTED);//,
 }
 
 void Parser::ReadOptions()
@@ -309,7 +335,6 @@ void Parser::ScheduleThreads()
 	Manager::Get()->GetMessageManager()->DebugLog("Parser: Max running thread count: %d", m_MaxThreadsCount);
 	Manager::Get()->GetMessageManager()->DebugLog("Parser: Threads-in-store count: %d", m_ThreadsStore.GetCount());
 #endif*/
-
 	wxMutexLocker* lock = new wxMutexLocker(s_mutexListProtection);
 	if (m_Threads.GetCount() < m_MaxThreadsCount && m_ThreadsStore.GetCount())
 	{
@@ -472,6 +497,7 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
 #ifndef STANDALONE
         Manager::Get()->GetMessageManager()->DebugLog("Can't create new thread!");
 #endif
+        thread->Delete();
 		return false;
 	}
 	
@@ -552,10 +578,13 @@ bool Parser::Reparse(const wxString& filename, bool isLocal)
 
 void Parser::Clear()
 {
+    PauseAllThreads();
+	wxSafeYield();
+	wxSleep(0);
+
 	TerminateAllThreads();
-	wxMutexLocker lock1(s_mutexListProtection);
-	m_Threads.Clear();
-	m_ThreadsStore.Clear();
+	wxSafeYield();
+	wxSleep(0);
 
 	m_ParsedFiles.Clear();
 	m_ReparsedFiles.Clear();
@@ -585,8 +614,21 @@ void Parser::ClearTemporaries()
 void Parser::TerminateAllThreads()
 {
 	wxMutexLocker lock(s_mutexListProtection);
-	for (unsigned int i = 0; i < m_Threads.GetCount(); ++i)
-		m_Threads[i]->Delete();
+	while (m_Threads.GetCount())
+	{
+        ParserThread* pt = m_Threads.Item(0);
+        if (pt)
+            pt->SetTokens(0);
+        m_Threads.RemoveAt(0);
+	}
+
+	while (m_ThreadsStore.GetCount())
+	{
+        ParserThread* pt = m_ThreadsStore.Item(0);
+        if (pt)
+            pt->SetTokens(0);
+        m_ThreadsStore.RemoveAt(0);
+	}
 }
 
 void Parser::PauseAllThreads()

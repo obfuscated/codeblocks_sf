@@ -34,6 +34,7 @@ class ParserThread : public wxThread
 		bool Parse();
 		bool ParseBufferForFunctions(const wxString& buffer);
 		virtual void* Entry();
+        virtual void SetTokens(TokensArray* tokens);
 		const wxString& GetFilename(){ return m_Filename; }
 	protected:
 		wxChar SkipToOneOfChars(const wxString& chars, bool supportNesting = false);

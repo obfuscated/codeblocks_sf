@@ -1412,6 +1412,15 @@ void MainFrame::OnProjectSaveTemplate(wxCommandEvent& event)
 
 void MainFrame::OnProjectCloseProject(wxCommandEvent& event)
 {
+    // we 're not actually shutting down here, but we want to check if the
+    // active project is still opening files (still busy)
+    if (!ProjectManager::CanShutdown() || !EditorManager::CanShutdown())
+    {
+        wxMessageBox(_("This project is still opening files.\n"
+                        "Please wait for it to finish loading and then close it..."),
+                        _("Information"),
+                        wxICON_INFORMATION);
+    }
     m_pPrjMan->CloseActiveProject();
     DoUpdateStatusBar();
 }
