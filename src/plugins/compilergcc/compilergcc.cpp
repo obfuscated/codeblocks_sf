@@ -466,6 +466,8 @@ void CompilerGCC::BuildToolBar(wxToolBar* toolBar)
         m_ToolTarget = XRCCTRL(*toolBar, "idToolTarget", wxComboBox);
         #endif
         toolBar->Realize();
+        
+        DoRecreateTargetMenu(); // make sure the tool target combo is up-to-date
 	}
 }
 
