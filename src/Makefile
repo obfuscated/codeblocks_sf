@@ -165,7 +165,7 @@ plugin_ToDo_LIB_DEF=devel/share/codeblocks/plugins/libtodo.def
 plugin_XPManifest_BIN=devel/share/CodeBlocks/plugins/xpmanifest.dll
 plugin_XPManifest_STATIC_LIB=devel/share/CodeBlocks/plugins/libxpmanifest.a
 plugin_XPManifest_LIB_DEF=devel/share/CodeBlocks/plugins/libxpmanifest.def
-update_BIN=codeblocks.exe
+update_BIN=
 console_runner_BIN=tools/ConsoleRunner/console_runner.exe
 
 .PHONY: all all-before all-custom all-after clean clean-custom tinyXML-before tinyXML-after sdk-before sdk-after src-before src-after plugin_CompilerGCC-before plugin_CompilerGCC-after plugin_DebuggerGDB-before plugin_DebuggerGDB-after plugin_CodeCompletion-before plugin_CodeCompletion-after plugin_ClassWizard-before plugin_ClassWizard-after plugin_PluginsWizard-before plugin_PluginsWizard-after plugin_ToDo-before plugin_ToDo-after plugin_XPManifest-before plugin_XPManifest-after update-before update-after console_runner-before console_runner-after 
