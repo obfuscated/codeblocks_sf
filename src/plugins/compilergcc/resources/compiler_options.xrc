@@ -798,6 +798,25 @@
                             <vgap>8</vgap>
                             <hgap>8</hgap>
                             <growablecols>1</growablecols>
+                            <object class="sizeritem">
+                              <object class="wxStaticText">
+                                <label>Build method:</label>
+                              </object>
+                              <flag>wxTOP|wxRIGHT</flag>
+                              <border>4</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxComboBox" name="cmbBuildMethod">
+                                <content>
+                                  <item>Work with Makefiles (GNU &quot;make&quot; is required)</item>
+                                  <item>Invoke compiler directly</item>
+                                </content>
+                                <selection>0</selection>
+                                <style>wxCB_READONLY</style>
+                              </object>
+                              <option>1</option>
+                              <flag>wxGROW</flag>
+                            </object>
                           </object>
                           <flag>wxALL|wxGROW</flag>
                           <border>8</border>
@@ -809,25 +828,6 @@
                             <object class="sizeritem">
                               <object class="wxFlexGridSizer">
                                 <cols>2</cols>
-                                <object class="sizeritem">
-                                  <object class="wxStaticText">
-                                    <label>Build method:</label>
-                                  </object>
-                                  <flag>wxTOP|wxRIGHT</flag>
-                                  <border>4</border>
-                                </object>
-                                <object class="sizeritem">
-                                  <object class="wxComboBox" name="cmbBuildMethod">
-                                    <content>
-                                      <item>Work with Makefiles (GNU &quot;make&quot; is required)</item>
-                                      <item>Invoke compiler directly</item>
-                                    </content>
-                                    <selection>0</selection>
-                                    <style>wxCB_READONLY</style>
-                                  </object>
-                                  <option>1</option>
-                                  <flag>wxGROW</flag>
-                                </object>
                                 <object class="sizeritem">
                                   <object class="wxStaticText">
                                     <label>Shell to run console programs:</label>

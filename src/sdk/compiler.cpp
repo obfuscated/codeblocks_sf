@@ -13,6 +13,7 @@ wxString Compiler::CommandTypeDescriptions[COMPILER_COMMAND_TYPES_COUNT] =
     _("Generate dependencies for file"),
     _("Compile Win32 resource file"),
     _("Link object files to executable"),
+    _("Link object files to console executable"),
     _("Link object files to dynamic library"),
     _("Link object files to static library")
 };
@@ -87,7 +88,6 @@ void Compiler::SaveSettings(const wxString& baseKey)
     ConfigManager::Get()->Write(tmp + "/switches/link", m_Switches.linkLibs);
     ConfigManager::Get()->Write(tmp + "/switches/define", m_Switches.defines);
     ConfigManager::Get()->Write(tmp + "/switches/generic", m_Switches.genericSwitch);
-    ConfigManager::Get()->Write(tmp + "/switches/linkForGui", m_Switches.linkerSwitchForGui);
     ConfigManager::Get()->Write(tmp + "/switches/objectext", m_Switches.objectExtension);
     ConfigManager::Get()->Write(tmp + "/switches/deps", m_Switches.needDependencies);
     ConfigManager::Get()->Write(tmp + "/switches/forceCompilerQuotes", m_Switches.forceCompilerUseQuotes);
@@ -137,7 +137,6 @@ void Compiler::LoadSettings(const wxString& baseKey)
     m_Switches.linkLibs = ConfigManager::Get()->Read(tmp + "/switches/link", m_Switches.linkLibs);
     m_Switches.defines = ConfigManager::Get()->Read(tmp + "/switches/define", m_Switches.defines);
     m_Switches.genericSwitch = ConfigManager::Get()->Read(tmp + "/switches/generic", m_Switches.genericSwitch);
-    m_Switches.linkerSwitchForGui = ConfigManager::Get()->Read(tmp + "/switches/linkForGui", m_Switches.linkerSwitchForGui);
     m_Switches.objectExtension = ConfigManager::Get()->Read(tmp + "/switches/objectext", m_Switches.objectExtension);
     m_Switches.needDependencies = ConfigManager::Get()->Read(tmp + "/switches/deps", m_Switches.needDependencies);
     m_Switches.forceCompilerUseQuotes = ConfigManager::Get()->Read(tmp + "/switches/forceCompilerQuotes", m_Switches.forceCompilerUseQuotes);

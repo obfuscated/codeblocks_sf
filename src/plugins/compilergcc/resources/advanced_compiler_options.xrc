@@ -87,7 +87,6 @@ Object file:
 Dependency result:
 All object files:
 All *linkable* object files:
-All *linkable* object files (excl. resources):
 All *linkable* resource object files:
 Executable output file:
 Static library output file:
@@ -112,8 +111,7 @@ $$object
 $$dep_object
 $$objects
 $$link_objects
-$$link_objects_nores
-$$link_res_objects
+$$link_resobjects
 $$exe_output
 $$static_output
 $$exe_output
@@ -210,17 +208,6 @@ $$resource_output</label>
                     </object>
                     <object class="sizeritem">
                       <object class="wxTextCtrl" name="txtGenericSwitch"/>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>Linker option for GUI apps (e.g. -mwindows):</label>
-                      </object>
-                      <flag>wxTOP</flag>
-                      <border>4</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxTextCtrl" name="txtLinkForGui"/>
-                      <flag>wxGROW</flag>
                     </object>
                     <object class="sizeritem">
                       <object class="wxStaticText">

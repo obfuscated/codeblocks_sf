@@ -26,7 +26,6 @@ CompilerMINGW::CompilerMINGW()
 	m_Switches.linkLibs = "-l";
 	m_Switches.defines = "-D";
 	m_Switches.genericSwitch = "-";
-	m_Switches.linkerSwitchForGui = "-mwindows";
 	m_Switches.objectExtension = "o";
 	m_Switches.needDependencies = true;
 	m_Switches.forceCompilerUseQuotes = false;
@@ -60,7 +59,8 @@ CompilerMINGW::CompilerMINGW()
     m_Commands[(int)ctCompileObjectCmd] = "$compiler $options $includes -c $file -o $object";
     m_Commands[(int)ctGenDependenciesCmd] = "$compiler -MM $options -MF $dep_object -MT $object $includes $file";
     m_Commands[(int)ctCompileResourceCmd] = "$rescomp -i $file -J rc -o $resource_output -O coff $res_includes";
-    m_Commands[(int)ctLinkExeCmd] = "$linker $libdirs -o $exe_output $libs $link_objects $link_options";
+    m_Commands[(int)ctLinkExeCmd] = "$linker $libdirs -o $exe_output $libs $link_objects $link_resobjects $link_options -mwindows";
+    m_Commands[(int)ctLinkConsoleExeCmd] = "$linker $libdirs -o $exe_output $libs $link_objects $link_resobjects $link_options";
 #ifdef __WXMSW__
     m_Commands[(int)ctLinkDynamicCmd] = "$linker -shared -Wl,--output-def=$def_output -Wl,--out-implib=$static_output -Wl,--dll $libdirs $link_objects $libs -o $exe_output $link_options";
 #else

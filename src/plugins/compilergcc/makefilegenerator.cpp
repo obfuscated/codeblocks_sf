@@ -69,6 +69,7 @@ wxString MakefileGenerator::ReplaceCompilerMacros(CommandType et,
     compilerCmd.Replace("$dep_object", deps);
     compilerCmd.Replace("$object", object);
     compilerCmd.Replace("$link_objects", "$(" + target->GetTitle() + "_LINKOBJS)");
+    compilerCmd.Replace("$link_resobjects", "$(" + target->GetTitle() + "_RESOURCE)");
     compilerCmd.Replace("$exe_output", "$(" + target->GetTitle() + "_BIN)");
     if (target->GetTargetType() == ttDynamicLib && target->GetCreateStaticLib())
         compilerCmd.Replace("$static_output", "$(" + target->GetTitle() + "_STATIC_LIB)");
@@ -100,6 +101,7 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
                                                         const wxString& object,
                                                         const wxString& deps)
 {
+    // in case of linking command, deps has resource objects
     Compiler* compiler = target ? CompilerFactory::Compilers[target->GetCompilerIndex()] :
                         m_CompilerSet;
     if (!compiler)
@@ -141,8 +143,6 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
 	DoGetMakefileLDFlags(ldflags, target);
     ldflags.Replace("$(GLOBAL_LDFLAGS)", global_ldflags);
     ldflags.Replace("$(PROJECT_LDFLAGS)", prj_ldflags);
-    if (target && target->GetTargetType() == ttExecutable)
-        ldflags << " " << m_CompilerSet->GetSwitches().linkerSwitchForGui;
 
     wxString incs;
 	wxString global_incs;
@@ -186,6 +186,7 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
     compilerCmd.Replace("$object", object);
     compilerCmd.Replace("$exe_output", output);
     compilerCmd.Replace("$resource_output", object);
+    compilerCmd.Replace("$link_resobjects", deps);
     compilerCmd.Replace("$link_objects", object);
 
     wxFileName fname(target->GetOutputFilename());
@@ -572,8 +573,8 @@ void MakefileGenerator::DoAddMakefileObjs(wxString& buffer)
 			buffer << "$(" << target->GetTitle() << "_OBJS)";
 		else
 			buffer << tmpLink; // only write *_LINKOBJS if different from *_OBJS
-		if (target->GetTargetType() != ttConsoleOnly)
-			buffer << " $(" << target->GetTitle() << "_RESOURCE)";
+//		if (target->GetTargetType() != ttConsoleOnly)
+//			buffer << " $(" << target->GetTitle() << "_RESOURCE)";
         buffer << '\n';
         if (m_CompilerSet->GetSwitches().needDependencies)
         {
@@ -714,8 +715,6 @@ void MakefileGenerator::DoAddMakefileLDFlags(wxString& buffer)
         DoGetMakefileLDFlags(tmp, target);
 
         buffer << target->GetTitle() << "_LDFLAGS=" << tmp;
-        if (target->GetTargetType() == ttExecutable)
-            buffer << " " << m_CompilerSet->GetSwitches().linkerSwitchForGui;
         buffer << '\n';
     }
     buffer << '\n';
@@ -749,7 +748,7 @@ void MakefileGenerator::DoAddMakefileTargets(wxString& buffer)
         // the filename is already adapted based on the project type
         out = UnixFilename(target->GetOutputFilename());
         ConvertToMakefileFriendly(out);
-        QuoteStringIfNeeded(out);
+//        QuoteStringIfNeeded(out);
 		buffer << target->GetTitle() << "_BIN=" << out << '\n';
         if (target->GetTargetType() == ttDynamicLib)
         {
@@ -971,7 +970,7 @@ void MakefileGenerator::DoAddMakefileTarget_Link(wxString& buffer)
 		if (!IsTargetValid(target))
 			continue;
 
-		buffer << "$(" << target->GetTitle() << "_BIN): " << "$(" << target->GetTitle() << "_LINKOBJS)";
+		buffer << "$(" << target->GetTitle() << "_BIN): " << "$(" << target->GetTitle() << "_LINKOBJS) $(" << target->GetTitle() << "_RESOURCE)";
         // add external deps
         wxArrayString array = GetArrayFromString(target->GetExternalDeps());
         for (unsigned int i = 0; i < array.GetCount(); ++i)
@@ -1193,7 +1192,11 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
                 {
 #ifdef __WXMSW__
                     if (pf->compile && FileTypeOf(pf->relativeFilename) == ftResource)
-                        resources << UnixFilename(c_file) << " ";
+                    {
+                        wxString out = pf->relativeFilename;
+                        ConvertToMakefileFriendly(out);
+                        resources << out << " ";
+                    }
 #endif // __WXMSW__
                 }
             }
@@ -1205,7 +1208,10 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
             resFile.SetName(target->GetTitle() + "_private");
             resFile.SetExt(RESOURCE_EXT);
             resFile.MakeRelativeTo(m_Project->GetBasePath());
-            buffer << "$(" << target->GetTitle() << "_RESOURCE): " << resources << '\n';
+            buffer << "$(" << target->GetTitle() << "_RESOURCE): ";
+            if (m_CompilerSet->GetSwitches().needDependencies)
+                 buffer << resources;
+            buffer << '\n';
             if (m_CompilerSet->GetSwitches().logging == clogSimple)
 				buffer << '\t' << "@echo Compiling resources..." << '\n';
             wxString compilerCmd = ReplaceCompilerMacros(ctCompileResourceCmd, "", target, UnixFilename(resFile.GetFullPath()), "", "");

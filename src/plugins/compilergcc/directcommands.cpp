@@ -419,6 +419,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
 
     wxString output = target->GetOutputFilename();
     wxString linkfiles;
+    wxString resfiles;
 
     wxDateTime latestobjecttime;
 
@@ -437,7 +438,10 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
             continue;
 
         pfDetails pfd(this, target, pf);
-        linkfiles << pfd.object_file << " ";
+        if (FileTypeOf(pf->relativeFilename) == ftResource)
+            resfiles << pfd.object_file << " ";
+        else
+            linkfiles << pfd.object_file << " ";
 
         // timestamp check
         if (!force)
@@ -477,6 +481,10 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     switch (target->GetTargetType())
     {
         case ttConsoleOnly:
+            ct = ctLinkConsoleExeCmd;
+            kind_of_output = _("console executable");
+            break;
+
         case ttExecutable:
             ct = ctLinkExeCmd;
             kind_of_output = _("executable");
@@ -492,7 +500,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
             kind_of_output = _("static library");
             break;
     }
-    wxString compilerCmd = mg.CreateSingleFileCompileCmd(ct, target, 0, "", linkfiles, "");
+    wxString compilerCmd = mg.CreateSingleFileCompileCmd(ct, target, 0, "", linkfiles, resfiles);
     if (!compilerCmd.IsEmpty())
     {
         Compiler* compiler = target ? CompilerFactory::Compilers[target->GetCompilerIndex()] : m_pCompiler;

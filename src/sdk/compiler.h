@@ -41,11 +41,12 @@ enum CommandType
     ctCompileObjectCmd = 0, ///< Compile object command, e.g. "$compiler $options $includes -c $file -o $object"
     ctGenDependenciesCmd,   ///< Generate dependencies command
     ctCompileResourceCmd,   ///< Compile Win32 resources command, e.g. "$rescomp -i $file -J rc -o $resource_output -O coff $includes"
-    ctLinkExeCmd,           ///< Link executable command, e.g. "$linker $libdirs -o $exe_output $link_objects $libs"
+    ctLinkExeCmd,           ///< Link executable command, e.g. "$linker $libdirs -o $exe_output $link_objects $libs -mwindows"
+    ctLinkConsoleExeCmd,    ///< Link console executable command, e.g. "$linker $libdirs -o $exe_output $link_objects $libs"
     ctLinkDynamicCmd,       ///< Link dynamic (dll) lib command, e.g. "$linker -shared -Wl,--output-def=$def_output -Wl,--out-implib=$static_output -Wl,--dll $libdirs $link_objects $libs -o $dynamic_output"
     ctLinkStaticCmd         ///< Link static lib command, e.g. "ar -r $output $link_objects\n\tranlib $static_output"
 };
-#define COMPILER_COMMAND_TYPES_COUNT 6 // change this to reflect the above enumerators count
+#define COMPILER_COMMAND_TYPES_COUNT 7 // change this to reflect the above enumerators count
 
 /// Helper enum for type of compiler logging
 enum CompilerLoggingType
@@ -87,7 +88,6 @@ struct CompilerSwitches
     wxString linkLibs;      // -l
     wxString defines;       // -D
     wxString genericSwitch; // -
-    wxString linkerSwitchForGui; // -mwindows
     wxString objectExtension; // o
     bool forceLinkerUseQuotes; // use quotes for filenames in linker command line (needed or not)?
     bool forceCompilerUseQuotes; // use quotes for filenames in compiler command line (needed or not)?

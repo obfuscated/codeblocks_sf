@@ -763,6 +763,16 @@
 			<Option link="0"/>
 			<Option target="plugin_CompilerGCC"/>
 		</Unit>
+		<Unit filename="plugins\compilergcc\compilerDMC.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerDMC.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
 		<Unit filename="plugins\compilergcc\compilerMINGW.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="plugin_CompilerGCC"/>

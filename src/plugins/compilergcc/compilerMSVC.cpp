@@ -22,7 +22,6 @@ CompilerMSVC::CompilerMSVC()
 	m_Switches.linkLibs = "";
 	m_Switches.defines = "/D";
 	m_Switches.genericSwitch = "/";
-	m_Switches.linkerSwitchForGui = "/subsystem:windows";
 	m_Switches.objectExtension = "obj";
 	m_Switches.needDependencies = false;
 	m_Switches.forceCompilerUseQuotes = false;
@@ -72,7 +71,8 @@ CompilerMSVC::CompilerMSVC()
 
     m_Commands[(int)ctCompileObjectCmd] = "$compiler /nologo $options $includes /c $file /Fo$object";
     m_Commands[(int)ctCompileResourceCmd] = "$rescomp $res_includes -fo$resource_output $file";
-    m_Commands[(int)ctLinkExeCmd] = "$linker /nologo $libdirs /out:$exe_output $libs $link_objects $link_options";
+    m_Commands[(int)ctLinkExeCmd] = "$linker /nologo /subsystem:windows $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options";
+    m_Commands[(int)ctLinkConsoleExeCmd] = "$linker /nologo $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options";
     m_Commands[(int)ctLinkDynamicCmd] = "$linker /dll /nologo $libdirs /out:$exe_output $libs $link_objects $link_options";
     m_Commands[(int)ctLinkStaticCmd] = "$linker /lib /nologo $libdirs /out:$exe_output $libs $link_objects $link_options";
 }
