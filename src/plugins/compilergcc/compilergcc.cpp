@@ -297,6 +297,7 @@ int CompilerGCC::Configure(cbProject* project, ProjectBuildTarget* target)
 	dlg.ShowModal();
 	m_ConsoleShell = ConfigManager::Get()->Read("/compiler_gcc/console_shell", DEFAULT_CONSOLE_SHELL);
 	SaveOptions();
+	SetupEnvironment();
 	return 0;
 }
 
@@ -491,7 +492,7 @@ void CompilerGCC::SetupEnvironment()
 	Manager::Get()->GetMessageManager()->DebugLog(_("Setting up compiler environment..."));
     wxString masterPath = CompilerFactory::Compilers[m_CompilerIdx]->GetMasterPath();
     wxString gcc = CompilerFactory::Compilers[m_CompilerIdx]->GetPrograms().C;
-	//Manager::Get()->GetMessageManager()->DebugLog("Checking in " + masterPath + sep + "bin for " + gcc);
+//	Manager::Get()->GetMessageManager()->DebugLog("Checking in " + masterPath + sep + "bin for " + gcc);
 
     // reset PATH to original value
     if (!m_OriginalPath.IsEmpty())
@@ -509,7 +510,7 @@ void CompilerGCC::SetupEnvironment()
         // look directly for the file in question in masterPath
 		if (binPath.IsEmpty() || !pathList.Member(wxPathOnly(binPath)))
 		{
-            if (wxFileExists(masterPath + sep + "bin" + gcc))
+            if (wxFileExists(masterPath + sep + "bin" + sep + gcc))
                 binPath = masterPath + sep + "bin";
 		}
         
@@ -521,6 +522,7 @@ void CompilerGCC::SetupEnvironment()
 		}
 		else
 		{
+            m_EnvironmentMsg.Clear();
 #ifdef __WXMSW__
 	#define PATH_SEP ";"
 #else
@@ -528,8 +530,8 @@ void CompilerGCC::SetupEnvironment()
 #endif
 			// add bin path to PATH env. var.
 			wxSetEnv("PATH", masterPath + sep + "bin" + PATH_SEP + path);
-			wxGetEnv("PATH", &path);
-            //Manager::Get()->GetMessageManager()->DebugLog("$PATH=" + path);
+//			wxGetEnv("PATH", &path);
+//            Manager::Get()->GetMessageManager()->DebugLog("$PATH=" + path);
 #undef PATH_SEP
 		}
 	}

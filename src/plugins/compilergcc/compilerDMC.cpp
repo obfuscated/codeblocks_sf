@@ -20,6 +20,8 @@ CompilerDMC::CompilerDMC()
 	m_Switches.includeDirs = "-I";
 	m_Switches.libDirs = "";
 	m_Switches.linkLibs = "";
+	m_Switches.libPrefix = "";
+	m_Switches.libExtension = "lib";
 	m_Switches.defines = "-D";
 	m_Switches.genericSwitch = "-";
 	m_Switches.objectExtension = "obj";
@@ -28,6 +30,8 @@ CompilerDMC::CompilerDMC()
 	m_Switches.forceLinkerUseQuotes = true;
 	m_Switches.logging = clogSimple;
 	m_Switches.buildMethod = cbmDirect;
+	m_Switches.linkerNeedsLibPrefix = false;
+	m_Switches.linkerNeedsLibExtension = true;
 
 	m_Options.AddOption(_("Produce debugging symbols"),
 				"-g",
@@ -123,17 +127,13 @@ CompilerDMC::CompilerDMC()
 	m_Options.AddOption(_("Optimize for Pentium"), "-5", _("Architecture"));
 	m_Options.AddOption(_("Optimize for Pentium Pro, Pentium II, Pentium III"), "-6", _("Architecture"));
 
+    // FIXME (hd#1#): should be work on: we need $res_options
     m_Commands[(int)ctCompileObjectCmd] = "$compiler -mn -c $options $includes -o$object $file";
-    m_Commands[(int)ctCompileResourceCmd] = "$rescomp $file -o$resource_output -I$res_includes -32";
-    // FIXME (hd#1#): resource_output should be seperated from link_objects
-    // m_Commands[(int)ctLinkExeCmd] = "$linker /NOLOGO $link_objects, $exe_output, , $libs, , $resource_output $link_options";
-    // NOTE (hd#1#): I can only compiled console programs with this
-    m_Commands[(int)ctLinkExeCmd] = "$linker /NOLOGO /subsystem:windows $link_objects, $exe_output, , $link_options, , $link_resobjects";
-    m_Commands[(int)ctLinkConsoleExeCmd] = "$linker /NOLOGO $link_objects, $exe_output, , $link_options";
-    // FIXME (hd#3#): 
-    m_Commands[(int)ctLinkDynamicCmd] = "$linker /NOLOGO $link_objects -WD $libdirs -o$exe_output $libs $link_options";
-    // FIXME (hd#2#): 
-    m_Commands[(int)ctLinkStaticCmd] = "lib $exe_output /C $link_options , $link_objects";
+    m_Commands[(int)ctCompileResourceCmd] = "$rescomp -32 -I$res_includes -o$resource_output $file";
+    m_Commands[(int)ctLinkExeCmd] = "$linker /NOLOGO /subsystem:windows -WA $link_options $link_objects, $exe_output, , $libs, , $link_resobjects";
+    m_Commands[(int)ctLinkConsoleExeCmd] = "$linker /NOLOGO $link_options $link_objects, $exe_output, , $libs";
+    m_Commands[(int)ctLinkDynamicCmd] = "$linker /NOLOGO /subsystem:windows -WD $link_options $link_objects, $exe_output, , $libs, , $link_resobjects";
+    m_Commands[(int)ctLinkStaticCmd] = "lib $link_options $exe_output $link_objects";
 }
 
 CompilerDMC::~CompilerDMC()

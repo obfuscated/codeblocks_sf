@@ -40,8 +40,8 @@ CompilerBCC::CompilerBCC()
 
     m_Commands[(int)ctCompileObjectCmd] = "$compiler $options $includes -o$object -c $file";
     m_Commands[(int)ctCompileResourceCmd] = "$rescomp -32 -fo$resource_output $res_includes $file";
-    m_Commands[(int)ctLinkExeCmd] = "$linker -aa  $libs $libdirs c0w32 $link_objects,$exe_output,,$link_options,,$link_resobjects";
-    m_Commands[(int)ctLinkConsoleExeCmd] = "$linker -ap  $libs $libdirs c0x32 $link_objects,$exe_output,,$link_options,,$link_resobjects";
+    m_Commands[(int)ctLinkExeCmd] = "$linker -aa  $link_options $libdirs c0w32 $link_objects,$exe_output,,$libs,,$link_resobjects";
+    m_Commands[(int)ctLinkConsoleExeCmd] = "$linker -ap  $link_options $libdirs c0x32 $link_objects,$exe_output,,$libs,,$link_resobjects";
     m_Commands[(int)ctLinkDynamicCmd] = "$linker $libdirs -o $exe_output $libs $link_objects $link_options";
     m_Commands[(int)ctLinkStaticCmd] = "$linker $libdirs -o $exe_output $libs $link_objects $link_options";
 }

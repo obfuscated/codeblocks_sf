@@ -34,6 +34,7 @@ class MakefileGenerator
     private:
         void DoAppendCompilerOptions(wxString& cmd, ProjectBuildTarget* target = 0L, bool useGlobalOptions = false);
         void DoAppendLinkerOptions(wxString& cmd, ProjectBuildTarget* target = 0L, bool useGlobalOptions = false);
+        void DoAppendLinkerLibs(wxString& cmd, ProjectBuildTarget* target = 0L, bool useGlobalOptions = false);
         void DoAppendIncludeDirs(wxString& cmd, ProjectBuildTarget* target = 0L, const wxString& prefix = "-I", bool useGlobalOptions = false);
         void DoAppendLibDirs(wxString& cmd, ProjectBuildTarget* target = 0L, const wxString& prefix = "-L", bool useGlobalOptions = false);
         void DoAddMakefileVars(wxString& buffer);
@@ -43,6 +44,7 @@ class MakefileGenerator
         void DoAddMakefileObjs(wxString& buffer);
         void DoAddMakefileIncludes(wxString& buffer);
         void DoAddMakefileLibs(wxString& buffer);
+        void DoAddMakefileLibDirs(wxString& buffer);
         void DoAddMakefileOptions(wxString& buffer);
         void DoAddMakefileCFlags(wxString& buffer);
         void DoAddMakefileLDFlags(wxString& buffer);
@@ -57,6 +59,7 @@ class MakefileGenerator
         void DoAddMakefileTarget_Link(wxString& buffer);
         void DoAddMakefileTarget_Objs(wxString& buffer);
         void DoGetMakefileIncludes(wxString& buffer, ProjectBuildTarget* target);
+        void DoGetMakefileLibDirs(wxString& buffer, ProjectBuildTarget* target);
         void DoGetMakefileLibs(wxString& buffer, ProjectBuildTarget* target);
         void DoGetMakefileCFlags(wxString& buffer, ProjectBuildTarget* target);
         void DoGetMakefileLDFlags(wxString& buffer, ProjectBuildTarget* target);
