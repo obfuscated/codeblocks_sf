@@ -1,6 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <conio.h>
+#ifdef __WXMSW__
+	#include <conio.h>
+	#define wait_key getch
+#else
+	#define wait_key getchar
+#endif
 #include <string.h>
 
 int main(int argc, char** argv)
@@ -27,6 +32,6 @@ int main(int argc, char** argv)
     //printf("Would run '%s'\n", cmdline);
     system(cmdline);
     printf("\nPress any key to continue.\n");
-    getch();
+    wait_key();
     return 0;
 }

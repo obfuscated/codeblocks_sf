@@ -4,6 +4,7 @@
 CompilerMINGW::CompilerMINGW()
     : Compiler(_("MinGW Compiler Suite"))
 {
+#ifdef __WXMSW__
 	m_MasterPath = "C:\\MinGW";
 	
 	m_Programs.C = "mingw32-gcc.exe";
@@ -11,7 +12,15 @@ CompilerMINGW::CompilerMINGW()
 	m_Programs.LD = "mingw32-g++.exe";
 	m_Programs.WINDRES = "windres.exe";
 	m_Programs.MAKE = "mingw32-make.exe";
+#else
+	m_MasterPath = "/usr";
 	
+	m_Programs.C = "gcc";
+	m_Programs.CPP = "g++";
+	m_Programs.LD = "g++";
+	m_Programs.WINDRES = "";
+	m_Programs.MAKE = "make";
+#endif
 	m_Switches.includeDirs = "-I";
 	m_Switches.libDirs = "-L";
 	m_Switches.linkLibs = "-l";

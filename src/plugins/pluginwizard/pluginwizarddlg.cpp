@@ -33,6 +33,7 @@
 #include <wx/file.h>
 #include <wx/combobox.h>
 #include <wx/checkbox.h>
+#include <wx/textctrl.h>
 
 BEGIN_EVENT_TABLE(PluginWizardDlg, wxDialog)
 	EVT_UPDATE_UI(-1, PluginWizardDlg::OnUpdateUI)

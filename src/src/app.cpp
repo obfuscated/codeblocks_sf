@@ -104,7 +104,7 @@ bool CodeBlocksApp::OnInit()
 
     ConfigManager::Get()->Write("app_path", GetAppPath());
     ConfigManager::Get()->Write("data_path", GetAppPath() + "/share/CodeBlocks");
-    m_HasDebugLog = ConfigManager::Get()->Read("/message_manager/has_debug_log", (long int)0) | m_HasDebugLog;
+    m_HasDebugLog = true;//ConfigManager::Get()->Read("/message_manager/has_debug_log", (long int)0) | m_HasDebugLog;
     ConfigManager::Get()->Write("/message_manager/has_debug_log", m_HasDebugLog);
 
     wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
@@ -114,8 +114,9 @@ bool CodeBlocksApp::OnInit()
     /// @todo Checkout why it doesn't work with VC++ unless "#zip:*.xrc" appended
 	wxXmlResource::Get()->Load(res+"#zip:*.xrc");
 
-    MainFrame *frame = new MainFrame(NULL);
+    MainFrame *frame = new MainFrame((wxFrame*)0L);
     frame->Show(TRUE);
+    SetTopWindow(frame);
 
     if (ParseCmdLine(frame) == 0)
 		Manager::Get()->GetProjectManager()->LoadWorkspace();

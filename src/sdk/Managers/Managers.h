@@ -26,13 +26,17 @@
 #if !defined( __MANAGERS_MANAGERS_H )
 #define __MANAGERS_MANAGERS_H
 
-#include <wx\config.h>
+#include <wx/config.h>
 
-#ifdef _USRDLL
-	// Export
-	#define MANAGERS_API __declspec(dllexport)
+#ifdef __WXMSW__
+	#ifdef _USRDLL
+		// Export
+		#define MANAGERS_API __declspec(dllexport)
+	#else
+		#define MANAGERS_API __declspec(dllimport)
+	#endif
 #else
-	#define MANAGERS_API __declspec(dllimport)
+	#define MANAGERS_API
 #endif
 
 extern "C"

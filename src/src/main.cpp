@@ -272,10 +272,9 @@ MainFrame::MainFrame(wxWindow* parent)
 	//tmpFlag |= _CRTDBG_CHECK_ALWAYS_DF;
 	_CrtSetDbgFlag( tmpFlag );
 #endif
-		
+
 	CreateIDE();
 	m_pEdMan->SetEditorInterfaceType(eitMDI);
-	
 
 #ifdef __WXMSW__
     SetIcon(wxICON(A_MAIN_ICON));
@@ -306,7 +305,7 @@ MainFrame::MainFrame(wxWindow* parent)
 
 MainFrame::~MainFrame()
 {
-	Manager::Get()->Free();
+	//Manager::Get()->Free();
 }
 
 void MainFrame::ShowTips(bool forceShow)
@@ -327,16 +326,17 @@ void MainFrame::ShowTips(bool forceShow)
 
 void MainFrame::CreateIDE()
 {
-	int leftW = ConfigManager::Get()->Read("/main_frame/layout/left_block_width", 200);
-	int bottomH = ConfigManager::Get()->Read("/main_frame/layout/bottom_block_height", 150);
+	int leftW = 200;//ConfigManager::Get()->Read("/main_frame/layout/left_block_width", 200);
+	int bottomH = 150;//ConfigManager::Get()->Read("/main_frame/layout/bottom_block_height", 150);
     // hide managers initially (they 'll open when a project is opened)
 
 	// Create CloseFullScreen Button, and hide it initially
 	m_pCloseFullScreenBtn = new wxButton(this, idCloseFullScreen, _( "Close Fullscreen" ), wxDefaultPosition );
 	m_pCloseFullScreenBtn->Show( false );
 	
+	wxSize clientsize = GetClientSize();
 	m_pLeftSash = new wxSashLayoutWindow(this, idLeftSash, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxSW_3D | wxCLIP_CHILDREN);
-	m_pLeftSash->SetDefaultSize(wxSize(leftW, GetClientSize().GetHeight()));
+	m_pLeftSash->SetDefaultSize(wxSize(leftW, clientsize.GetHeight()));
 	m_pLeftSash->SetOrientation(wxLAYOUT_VERTICAL);
 	m_pLeftSash->SetAlignment(wxLAYOUT_LEFT);
 	m_pLeftSash->SetSashVisible(wxSASH_RIGHT, true);
@@ -344,14 +344,14 @@ void MainFrame::CreateIDE()
 	m_pNotebook = new wxNotebook(m_pLeftSash, wxID_ANY, wxDefaultPosition, wxDefaultSize, /*wxNB_LEFT | */wxCLIP_CHILDREN/* | wxNB_MULTILINE*/);
 
 	m_pBottomSash = new wxSashLayoutWindow(this, idBottomSash, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxSW_3D | wxCLIP_CHILDREN);
-	m_pBottomSash->SetDefaultSize(wxSize(GetClientSize().GetWidth() - leftW, bottomH));
+	m_pBottomSash->SetDefaultSize(wxSize(1000 - leftW, bottomH));
 	m_pBottomSash->SetOrientation(wxLAYOUT_HORIZONTAL);
 	m_pBottomSash->SetAlignment(wxLAYOUT_BOTTOM);
 	m_pBottomSash->SetSashVisible(wxSASH_TOP, true);
 
 	Manager::Get(this, m_pNotebook);
 	Manager::Get()->GetMessageManager()->Reparent(m_pBottomSash);
-	Manager::Get()->GetMessageManager()->SetSize(m_pBottomSash->GetClientSize());
+	Manager::Get()->GetMessageManager()->SetSize(wxSize(200, 30));
 
 	CreateMenubar();
 
@@ -1099,6 +1099,7 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
 
     SaveWindowState();
     TerminateRecentFilesHistory();
+	Manager::Get()->Free();
     Destroy();
 }
 
@@ -1452,7 +1453,7 @@ void MainFrame::OnHelpTips(wxCommandEvent& event)
 
 void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
 {
-    cbEditor* ed = m_pEdMan->GetActiveEditor();
+    cbEditor* ed = m_pEdMan ? m_pEdMan->GetActiveEditor() : 0L;
     wxMenuBar* mbar = GetMenuBar();
 
     mbar->Enable(idFileOpenRecentClearHistory, m_FilesHistory.GetCount());
@@ -1461,7 +1462,7 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idFileSave, ed && ed->GetModified());
     mbar->Enable(idFileSaveAs, ed);
     mbar->Enable(idFileSaveAllFiles, ed);
-    mbar->Enable(idFileSaveWorkspaceAs, m_pPrjMan->GetActiveProject());
+    mbar->Enable(idFileSaveWorkspaceAs, m_pPrjMan && m_pPrjMan->GetActiveProject());
 	
 	if (m_pToolbar)
 	{
@@ -1473,7 +1474,7 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
 
 void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
 {
-    cbEditor* ed = m_pEdMan->GetActiveEditor();
+    cbEditor* ed = m_pEdMan ? m_pEdMan->GetActiveEditor() : 0L;
     wxMenuBar* mbar = GetMenuBar();
 	bool hasSel = ed ? ed->GetControl()->GetSelectionStart() != ed->GetControl()->GetSelectionEnd() : false;
 	bool canUndo = ed ? ed->GetControl()->CanUndo() : false;
@@ -1531,7 +1532,7 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
 
 void MainFrame::OnSearchMenuUpdateUI(wxUpdateUIEvent& event)
 {
-    cbEditor* ed = m_pEdMan->GetActiveEditor();
+    cbEditor* ed = m_pEdMan ? m_pEdMan->GetActiveEditor() : 0L;
     wxMenuBar* mbar = GetMenuBar();
 
     mbar->Enable(idSearchFind, ed);
@@ -1551,7 +1552,7 @@ void MainFrame::OnSearchMenuUpdateUI(wxUpdateUIEvent& event)
 
 void MainFrame::OnProjectMenuUpdateUI(wxUpdateUIEvent& event)
 {
-    cbProject* prj = m_pPrjMan->GetActiveProject();
+    cbProject* prj = m_pPrjMan ? m_pPrjMan->GetActiveProject() : 0L;
     wxMenuBar* mbar = GetMenuBar();
 
     mbar->Enable(idProjectCloseProject, prj);
@@ -1565,7 +1566,7 @@ void MainFrame::OnProjectMenuUpdateUI(wxUpdateUIEvent& event)
 
 void MainFrame::OnEditorUpdateUI(CodeBlocksEvent& event)
 {
-	if (event.GetEditor() == m_pEdMan->GetActiveEditor())
+	if (m_pEdMan && event.GetEditor() == m_pEdMan->GetActiveEditor())
 	{
 		event.GetEditor()->HighlightBraces(); // brace highlighting
 		DoUpdateStatusBar();
@@ -1630,7 +1631,7 @@ void MainFrame::OnToggleStatusBar(wxCommandEvent& event)
 
 void MainFrame::OnFocusEditor(wxCommandEvent& event)
 {
-    cbEditor* ed = m_pEdMan->GetActiveEditor();
+    cbEditor* ed = m_pEdMan ? m_pEdMan->GetActiveEditor() : 0L;
     if (ed)
         ed->GetControl()->SetFocus();
 }

@@ -12,7 +12,7 @@
 
 
 // Insert your headers here
-#include <wx\wxprec.h>
+#include <wx/wxprec.h>
 #include "../manager.h"
 #include "../projectmanager.h"
 #include "../editormanager.h"

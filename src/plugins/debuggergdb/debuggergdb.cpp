@@ -841,7 +841,7 @@ wxString DebuggerGDB::GetInfoFor(const wxString& dbgCmd)
 	while (buf.IsEmpty() && i < 500)
 	{
 		buf = GetNextOutputLine();
-		Sleep(5);
+		wxUsleep(5);
 		i += 5;
 	}
 	
@@ -891,7 +891,7 @@ wxString DebuggerGDB::GetInfoFor(const wxString& dbgCmd)
 	while (!buf.IsEmpty() && i < 500)
 	{
 		buf = GetNextOutputLine();
-		Sleep(5);
+		wxUsleep(5);
 		i += 5;
 	}
 

@@ -100,12 +100,12 @@ void Compiler::LoadSettings(const wxString& baseKey)
 
     if (ConfigManager::Get()->HasGroup(tmp) || ConfigManager::Get()->HasEntry(tmp))
     {
-        m_MasterPath = ConfigManager::Get()->Read(tmp + "/master_path", wxEmptyString);
-        m_Programs.C = ConfigManager::Get()->Read(tmp + "/c_compiler", wxEmptyString);
-        m_Programs.CPP = ConfigManager::Get()->Read(tmp + "/cpp_compiler", wxEmptyString);
-        m_Programs.LD = ConfigManager::Get()->Read(tmp + "/linker", wxEmptyString);
-        m_Programs.WINDRES = ConfigManager::Get()->Read(tmp + "/res_compiler", wxEmptyString);
-        m_Programs.MAKE = ConfigManager::Get()->Read(tmp + "/make", wxEmptyString);
+        m_MasterPath = ConfigManager::Get()->Read(tmp + "/master_path", m_MasterPath);
+        m_Programs.C = ConfigManager::Get()->Read(tmp + "/c_compiler", m_Programs.C);
+        m_Programs.CPP = ConfigManager::Get()->Read(tmp + "/cpp_compiler", m_Programs.CPP);
+        m_Programs.LD = ConfigManager::Get()->Read(tmp + "/linker", m_Programs.LD);
+        m_Programs.WINDRES = ConfigManager::Get()->Read(tmp + "/res_compiler", m_Programs.WINDRES);
+        m_Programs.MAKE = ConfigManager::Get()->Read(tmp + "/make", m_Programs.MAKE);
     }
 
 	m_CompilerOptions = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/compiler_options", wxEmptyString));

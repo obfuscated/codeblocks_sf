@@ -1,10 +1,11 @@
 // Managers.cpp : Defines the entry point for the DLL application.
 //
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "../manager.h"
 #include "Managers.h"
 
+#ifdef __WXMSW__
 BOOL APIENTRY DllMain( HANDLE hModule, 
                        DWORD  ul_reason_for_call, 
                        LPVOID lpReserved
@@ -12,6 +13,7 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 {
     return TRUE;
 }
+#endif
 
 Manager* g_Manager;
 wxConfigBase* g_Config;

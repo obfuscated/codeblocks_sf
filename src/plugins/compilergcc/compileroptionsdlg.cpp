@@ -760,7 +760,11 @@ void CompilerOptionsDlg::OnEditCompilerClick(wxCommandEvent& event)
 	{
         int idx = cmb->GetSelection();
         CompilerFactory::Compilers[idx]->SetName(value);
+#ifndef __WXGTK__
         cmb->SetString(idx, value);
+#else
+	#warning wxComboBox::SetString() not implemented: CompilerOptionsDlg::OnEditCompilerClick() is not updating correctly...
+#endif
         cmb->SetSelection(idx);
     }
 }

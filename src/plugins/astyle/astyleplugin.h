@@ -24,7 +24,7 @@
 	#include <wx/wx.h>
 #endif
 
-#include <cbPlugin.h> // the base class we 're inheriting
+#include <cbplugin.h> // the base class we 're inheriting
 #include <settings.h> // needed to use the Code::Blocks SDK
 
 class AStylePlugin : public cbToolPlugin

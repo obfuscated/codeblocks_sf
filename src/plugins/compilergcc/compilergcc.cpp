@@ -239,6 +239,9 @@ void CompilerGCC::OnRelease(bool appShutDown)
     Manager::Get()->GetMessageManager()->DeletePage(m_ListPageIndex);
     Manager::Get()->GetMessageManager()->DeletePage(m_PageIndex);
     
+	if (appShutDown)
+		return; // no need to continue if app is shutting down
+
 	DoClearTargetMenu();
 
 	if (m_Menu)
