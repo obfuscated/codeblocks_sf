@@ -6,6 +6,8 @@
 #include <wx/msgdlg.h>
 #include <wx/log.h>
 
+#include <configmanager.h>
+
 #ifdef __WXMSW__
     #include <wx/msw/registry.h>
 #endif
@@ -32,6 +34,7 @@ void CompilerMINGW::Reset()
 	m_Programs.C = "mingw32-gcc.exe";
 	m_Programs.CPP = "mingw32-g++.exe";
 	m_Programs.LD = "mingw32-g++.exe";
+	m_Programs.DBG = "gdb.exe";
 	m_Programs.LIB = "ar.exe";
 	m_Programs.WINDRES = "windres.exe";
 	m_Programs.MAKE = "mingw32-make.exe";
@@ -39,6 +42,7 @@ void CompilerMINGW::Reset()
 	m_Programs.C = "gcc";
 	m_Programs.CPP = "g++";
 	m_Programs.LD = "g++";
+	m_Programs.DBG = "gdb";
 	m_Programs.LIB = "ar";
 	m_Programs.WINDRES = "";
 	m_Programs.MAKE = "make";
@@ -147,21 +151,28 @@ AutoDetectResult CompilerMINGW::AutoDetectInstallationDir()
 {
     wxString sep = wxFileName::GetPathSeparator();
 #ifdef __WXMSW__
-    // search for MinGW installation dir
-    wxString windir = wxGetOSDirectory();
-    wxFileConfig ini("", "", windir + "/MinGW.ini", "", wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_NO_ESCAPE_CHARACTERS);
-	m_MasterPath = ini.Read("/InstallSettings/InstallPath", "C:\\MinGW");
+    // look first if MinGW was installed with Code::Blocks (new in beta6)
+    m_MasterPath = ConfigManager::Get()->Read("app_path", wxEmptyString);
 	if (!wxFileExists(m_MasterPath + sep + "bin" + sep + m_Programs.C))
-	{
-        // not found...
-        // look for dev-cpp installation
-        wxLogNull ln;
-        wxRegKey key; // defaults to HKCR
-        key.SetName("HKEY_LOCAL_MACHINE\\Software\\Dev-C++");
-        if (key.Open())
-            // found; read it
-            key.QueryValue("Install_Dir", m_MasterPath);
-	}
+    {
+        // no... search for MinGW installation dir
+        wxString windir = wxGetOSDirectory();
+        wxFileConfig ini("", "", windir + "/MinGW.ini", "", wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_NO_ESCAPE_CHARACTERS);
+        m_MasterPath = ini.Read("/InstallSettings/InstallPath", "C:\\MinGW");
+        if (!wxFileExists(m_MasterPath + sep + "bin" + sep + m_Programs.C))
+        {
+            // not found...
+            // look for dev-cpp installation
+            wxLogNull ln;
+            wxRegKey key; // defaults to HKCR
+            key.SetName("HKEY_LOCAL_MACHINE\\Software\\Dev-C++");
+            if (key.Open())
+                // found; read it
+                key.QueryValue("Install_Dir", m_MasterPath);
+        }
+    }
+    else
+        m_Programs.MAKE = "make.exe"; // we distribute "make" not "mingw32-make"
 #else
     m_MasterPath = "/usr";
 #endif

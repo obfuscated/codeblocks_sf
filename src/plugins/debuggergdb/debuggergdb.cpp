@@ -37,8 +37,9 @@
 #include <projectbuildtarget.h>
 #include <sdk_events.h>
 #include <editarraystringdlg.h>
+#include <compilerfactory.h>
 #include <licenses.h>
-#include "xtra_res.h"
+#include <xtra_res.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/fs_zip.h>
 
@@ -379,29 +380,41 @@ int DebuggerGDB::Debug()
 	msgMan->AppendLog(m_PageIndex, _("Starting debugger: "));
 
 	wxString cmd;
-	cmd << "gdb -annotate=2 -silent";
+	wxString sep = wxFileName::GetPathSeparator();
+	Compiler* actualCompiler = CompilerFactory::Compilers[target ? target->GetCompilerIndex() : project->GetCompilerIndex()];
+	cmd << actualCompiler->GetMasterPath() << sep << "bin" << sep << actualCompiler->GetPrograms().DBG << " -annotate=2 -silent";
+//	msgMan->AppendLog(m_PageIndex, cmd);
 	
+	wxLogNull ln; // we perform our own error handling and logging
     m_pProcess = new PipedProcess((void**)&m_pProcess, this, idGDBProcess, true, project->GetBasePath());
     m_Pid = wxExecute(cmd, wxEXEC_ASYNC, m_pProcess);
 //    m_Pid = m_pProcess->Launch(cmd);
 
     if (!m_Pid)
     {
+		delete m_pProcess;
+		m_pProcess = 0;
 		msgMan->Log(m_PageIndex, _("failed"));
         return -1;
     }
     else if (!m_pProcess->GetOutputStream())
     {
+		delete m_pProcess;
+		m_pProcess = 0;
 		msgMan->Log(m_PageIndex, _("failed (to get debugger's stdin)"));
         return -2;
     }
     else if (!m_pProcess->GetInputStream())
     {
+		delete m_pProcess;
+		m_pProcess = 0;
 		msgMan->Log(m_PageIndex, _("failed (to get debugger's stdout)"));
         return -2;
     }
     else if (!m_pProcess->GetErrorStream())
     {
+		delete m_pProcess;
+		m_pProcess = 0;
 		msgMan->Log(m_PageIndex, _("failed (to get debugger's stderr)"));
         return -2;
     }
