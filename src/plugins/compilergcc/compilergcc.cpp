@@ -1172,6 +1172,7 @@ int CompilerGCC::CompileFile(const wxString& file)
     if (CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches().buildMethod == cbmUseMake)
     {
         wxFileName f(file);
+// TODO (mandrav#1#): Fix this to take into account the obj output dir
         wxString fname = UnixFilename(f.GetPath() + ".objs/" + f.GetFullName());
         MakefileGenerator mg(this, 0, "", 0);
         mg.ConvertToMakefileFriendly(fname);
@@ -1184,7 +1185,11 @@ int CompilerGCC::CompileFile(const wxString& file)
         DirectCommands dc(this, CompilerFactory::Compilers[m_CompilerIdx], m_Project, m_PageIndex);
         ProjectFile* pf = m_Project->GetFileByFilename(file, true, false);
         if (!pf)
+        {
+            wxMessageBox(_("Only files that belong to the active project can be compiled..."),
+                        _("Information"), wxICON_INFORMATION);
             return -1;
+        }
         ProjectBuildTarget* bt = m_Project->GetBuildTarget(pf->buildTargets[0]);
         if (!bt)
             return -2;
