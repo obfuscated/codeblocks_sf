@@ -113,11 +113,15 @@ class DLLIMPORT EditorManager : public wxEvtHandler
 		/** Builds Opened Files tree in the Projects tab
 		  */
         wxTreeCtrl *EditorManager::GetTree();
+        wxTreeItemId FindTreeFile(wxString filename);
+        wxString GetTreeItemFilename(wxTreeItemId item);
+        void DeleteItemfromTree(wxTreeItemId item);
+        void DeleteFilefromTree(wxString filename);
+        void AddFiletoTree(cbEditor* ed);
+        bool RenameTreeFile(wxString oldname,wxString newname);
         void BuildOpenedFilesTree(wxTreeCtrl *tree);
         void RebuildOpenedFilesTree(wxTreeCtrl *tree=0L);
         void RefreshOpenedFilesTree(bool force=false);
-        void AddFiletoTree(cbEditor* ed);
-        void DeleteFilefromTree(wxString filename);
         #endif
         
         void OnUpdateUI(wxUpdateUIEvent& event);

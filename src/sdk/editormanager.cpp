@@ -490,23 +490,26 @@ bool EditorManager::SaveActive()
 bool EditorManager::SaveAs(int index)
 {
     SANITY_CHECK(false);
-	int i = 0;
-	for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext(), ++i)
-	{
-		if (i == index)
-		{
-			cbEditor* ed = node->GetData();
-            return ed->SaveAs();
-		}
-	}
-	return false;
+	cbEditor *ed = GetEditor(index);
+	if(!ed)
+        return false;
+    wxString oldname=ed->GetFilename();
+    if(!ed->SaveAs())
+        return false;
+    RenameTreeFile(oldname,ed->GetFilename());
+    return true;
 }
 
 bool EditorManager::SaveActiveAs()
 {
     SANITY_CHECK(false);
 	if (GetActiveEditor())
-		return GetActiveEditor()->SaveAs();
+    {
+        cbEditor *ed=GetActiveEditor();
+        wxString oldname=ed->GetFilename();
+        if(ed->SaveAs())
+            RenameTreeFile(oldname,ed->GetFilename());
+    }
 	return true;
 }
 
@@ -943,36 +946,68 @@ wxTreeCtrl *EditorManager::GetTree()
     return Manager::Get()->GetProjectManager()->GetTree();
 }
 
-void EditorManager::DeleteFilefromTree(wxString filename)
+wxTreeItemId EditorManager::FindTreeFile(wxString filename)
+{
+    wxTreeItemId item = wxTreeItemId();
+    SANITY_CHECK(item);
+    do
+    {
+        if(Manager::isappShuttingDown())
+            break;
+        if(filename=="")
+            break;
+        wxTreeCtrl *tree=GetTree();
+        if(!tree || !m_TreeOpenedFiles)
+            break;
+        long int cookie = 0;
+        for(item = tree->GetFirstChild(m_TreeOpenedFiles,cookie);
+            item;
+            item = tree->GetNextChild(m_TreeOpenedFiles, cookie))
+        {
+            if(GetTreeItemFilename(item)==filename)
+                break;
+        }
+    }while(false);
+    return item;
+}
+
+wxString EditorManager::GetTreeItemFilename(wxTreeItemId item)
+{
+    SANITY_CHECK("");
+    if(Manager::isappShuttingDown())
+        return "";
+    wxTreeCtrl *tree=GetTree();
+    if(!tree || !m_TreeOpenedFiles || !item)
+        return "";
+    MiscTreeItemData *data=(MiscTreeItemData*)tree->GetItemData(item);
+    if(!data)
+        return "";
+    if(data->GetOwner()!=this)
+        return "";
+    return ((EditorTreeData*)data)->GetFullName();
+}
+
+void EditorManager::DeleteItemfromTree(wxTreeItemId item)
 {
     SANITY_CHECK();
     if(Manager::isappShuttingDown())
         return;
     wxTreeCtrl *tree=GetTree();
-    if(!tree)
+    if(!tree || !m_TreeOpenedFiles || !item)
         return;
-    if(!m_TreeOpenedFiles)
+    wxTreeItemId itemparent=tree->GetItemParent(item);
+    if(itemparent!=m_TreeOpenedFiles)
         return;
-    if(!m_TreeOpenedFiles.IsOk())
+    tree->Delete(item);    
+}
+
+void EditorManager::DeleteFilefromTree(wxString filename)
+{
+    SANITY_CHECK();
+    if(Manager::isappShuttingDown())
         return;
-    long int cookie = 0;
-    wxTreeItemId item = tree->GetFirstChild(m_TreeOpenedFiles,cookie);
-    wxString curfilename;
-    while (item)
-    {
-        EditorTreeData *data=(EditorTreeData*)tree->GetItemData(item);
-        if(data)
-        {
-            curfilename=data->GetFullName();
-            if(curfilename==filename)
-            {
-                tree->Delete(item);
-                break;
-            }
-        }
-        item = tree->GetNextChild(m_TreeOpenedFiles, cookie);
-    }    
-    RefreshOpenedFilesTree();
+    DeleteItemfromTree(FindTreeFile(filename));
+    RefreshOpenedFilesTree();    
 }
 
 void EditorManager::AddFiletoTree(cbEditor* ed)
@@ -982,34 +1017,15 @@ void EditorManager::AddFiletoTree(cbEditor* ed)
         return;
     if(!ed)
         return;
+    wxString shortname=ed->GetShortName();
+    wxString filename=ed->GetFilename();
+    wxTreeItemId item=FindTreeFile(filename);
+    if(item.IsOk())
+        return;
     wxTreeCtrl *tree=GetTree();
     if(!tree)
         return;
     if(!m_TreeOpenedFiles)
-        return;
-    if(!m_TreeOpenedFiles.IsOk())
-        return;
-    long int cookie = 0;
-    wxString shortname=ed->GetShortName();
-    wxString filename=ed->GetFilename();
-    wxTreeItemId item = tree->GetFirstChild(m_TreeOpenedFiles,cookie);
-    wxString curfilename;
-    bool found=false;
-    while (item)
-    {
-        EditorTreeData *data=(EditorTreeData*)tree->GetItemData(item);
-        if(data)
-        {
-            curfilename=data->GetFullName();
-            if(curfilename==filename)
-            { 
-                found=true;
-                break;
-            }
-        }
-        item = tree->GetNextChild(m_TreeOpenedFiles, cookie);
-    }
-    if(found)
         return;
     if(ed->GetModified()) shortname=wxString("*")+shortname;
     tree->AppendItem(m_TreeOpenedFiles,shortname,2,2,
@@ -1018,6 +1034,42 @@ void EditorManager::AddFiletoTree(cbEditor* ed)
     RefreshOpenedFilesTree(true);
 }
 
+bool EditorManager::RenameTreeFile(wxString oldname,wxString newname)
+{
+    SANITY_CHECK(false);
+    if(Manager::isappShuttingDown())
+        return false;
+    wxTreeCtrl *tree = GetTree();
+    if(!tree)
+        return false;
+    long int cookie = 0;
+    wxTreeItemId item;
+    wxString filename,shortname;
+    for(item=tree->GetFirstChild(m_TreeOpenedFiles,cookie);
+        item;
+        item = tree->GetNextChild(m_TreeOpenedFiles, cookie))
+    {
+        EditorTreeData *data=(EditorTreeData*)tree->GetItemData(item);
+        if(!data)
+            continue;
+        filename=data->GetFullName();
+        if(filename!=oldname)
+            continue;
+        data->SetFullName(newname);
+        cbEditor *ed=GetEditor(filename);
+        if(ed)
+        {
+            shortname=ed->GetShortName();
+            if(ed->GetModified()) shortname=wxString("*")+shortname;
+            if(tree->GetItemText(item)!=shortname)
+                tree->SetItemText(item,shortname);
+            if(ed==GetActiveEditor())
+                tree->SelectItem(item);
+        }
+        return true;
+    }
+    return false;
+}
 
 void EditorManager::BuildOpenedFilesTree(wxTreeCtrl *tree)
 {
@@ -1116,20 +1168,10 @@ void EditorManager::OnTreeItemActivated(wxTreeEvent &event)
         { event.Skip();return; }
     if(!MiscTreeItemData::OwnerCheck(event,GetTree(),this,true))
         return;
-    MiscTreeItemData* data = 
-        (MiscTreeItemData*)GetTree()->GetItemData(event.GetItem());
-    if(data)
-    {
-        cbEditor *ed=GetEditor(((EditorTreeData*)data)->GetFullName());
-        SetActiveEditor(ed);
-        if(ed)
-        {
-            wxStyledTextCtrl* control = ed->GetControl();
-            if(control)
-                control->SetFocus();
-        }
-    }
-    
+    wxString filename=GetTreeItemFilename(event.GetItem());
+    if(filename=="")
+        return;
+    Open(filename);
 }
 
 void EditorManager::OnTreeItemRightClick(wxTreeEvent &event)
