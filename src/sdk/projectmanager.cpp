@@ -600,6 +600,14 @@ void ProjectManager::OnRightClick(wxCommandEvent& event)
     //Manager::Get()->GetMessageManager()->DebugLog("OnRightClick");
 
     wxMenu menu;
+
+    // ask any plugins to add items in this menu
+    Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtProjectManager, &menu, "");
+
+    // if plugins added to this menu, add a separator
+    if (menu.GetMenuItemCount() != 0)
+        menu.AppendSeparator();
+
     menu.AppendCheckItem(idMenuViewCategorize, _("Categorize by file types"));
     menu.AppendCheckItem(idMenuViewUseFolders, _("Display folders as on disk"));
     menu.AppendSeparator();

@@ -342,24 +342,32 @@ void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxS
 	if (!CheckProject())
 		return;
 		
-    if (arg.Matches(m_Project->GetTitle()))
+    if (arg.IsEmpty())
     {
+        // popup menu in empty space in ProjectManager
+        menu->Append(idMenuCompileAll, _("Compile all projects"));
+        menu->Append(idMenuRebuildAll, _("Rebuild all projects"));
+    }
+    else if (FileTypeOf(arg) != ftSource)
+    {
+        // popup menu on a tree item (not a file)
         menu->AppendSeparator();
         menu->Append(idMenuCompileFromProjectManager, _("&Compile\tCtrl-F9"));
         menu->Append(idMenuRebuildFromProjectManager, _("Re&build\tCtrl-F11"));
         menu->Append(idMenuCleanFromProjectManager, _("C&lean"));
 		wxMenu* subMenu = new wxMenu();
-        subMenu->Append(idMenuCompileTargetFromProjectManager, _("Compile target..."));
-        subMenu->Append(idMenuRebuildTargetFromProjectManager, _("Rebuild target..."));
-        subMenu->Append(idMenuCleanTargetFromProjectManager, _("Clean target..."));
+        subMenu->Append(idMenuCompileTargetFromProjectManager, _("Compile"));
+        subMenu->Append(idMenuRebuildTargetFromProjectManager, _("Rebuild"));
+        subMenu->Append(idMenuCleanTargetFromProjectManager, _("Clean"));
         subMenu->AppendSeparator();
-        subMenu->Append(idMenuTargetCompilerOptions, _("Target build options..."));
-		menu->Append(idMenuTargetCompilerOptionsSub, _("Target"), subMenu);
+        subMenu->Append(idMenuTargetCompilerOptions, _("Build options"));
+		menu->Append(idMenuTargetCompilerOptionsSub, _("Specific build target..."), subMenu);
         menu->AppendSeparator();
         menu->Append(idMenuProjectCompilerOptions, _("Build options"));
     }
-    else if (FileTypeOf(arg) == ftSource)
+    else
     {
+        // popup menu on a tree item (a file)
         menu->AppendSeparator();
         menu->Append(idMenuCompileFileFromProjectManager, _("Compile file"));
     }
