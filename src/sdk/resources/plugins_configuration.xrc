@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxDialog" name="dlgConfigurePlugins">
+    <title>Configure plugins</title>
+    <centered>1</centered>
+    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxRESIZE_BOX</style>
+    <object class="wxBoxSizer">
+      <object class="sizeritem">
+        <object class="wxStaticText">
+          <label>Plugins to load on start-up:</label>
+        </object>
+        <flag>wxTOP|wxALL</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxCheckList" name="lstPlugins">
+          <content/>
+        </object>
+        <option>1</option>
+        <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+        <border>8</border>
+        <minsize>320,240</minsize>
+      </object>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxButton" name="btnOK">
+              <label>OK</label>
+              <default>1</default>
+            </object>
+            <flag>wxRIGHT</flag>
+            <border>8</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_CANCEL">
+              <label>Cancel</label>
+            </object>
+          </object>
+        </object>
+        <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <border>8</border>
+      </object>
+      <orient>wxVERTICAL</orient>
+    </object>
+  </object>
+</resource>

@@ -1,0 +1,250 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxDialog" name="dlgProjectFileOptions">
+    <title>Project file options</title>
+    <centered>1</centered>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxNotebook" name="nbMain">
+          <object class="notebookpage">
+            <label>General</label>
+            <object class="wxPanel" name="tabGeneral">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxCheckBox" name="chkCompile">
+                    <label>Compile file</label>
+                  </object>
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxCheckBox" name="chkLink">
+                    <label>Link file</label>
+                  </object>
+                  <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxFlexGridSizer">
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Belongs in target:</label>
+                      </object>
+                      <flag>wxTOP</flag>
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxComboBox" name="cmbTarget">
+                        <content/>
+                        <style>wxCB_READONLY|wxCB_DROPDOWN</style>
+                      </object>
+                      <flag>wxEXPAND</flag>
+                    </object>
+                    <cols>2</cols>
+                    <rows>2</rows>
+                    <vgap>8</vgap>
+                    <hgap>8</hgap>
+                    <growablecols>1</growablecols>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Priority weight:</label>
+                      </object>
+                      <flag>wxTOP</flag>
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxSlider" name="sliderWeight">
+                        <value>50</value>
+                        <min>0</min>
+                        <max>100</max>
+                        <style>wxSL_AUTOTICKS|wxSL_LABELS</style>
+                        <tickfreq>10</tickfreq>
+                        <pagesize>10</pagesize>
+                      </object>
+                      <option>1</option>
+                      <flag>wxEXPAND</flag>
+                    </object>
+                  </object>
+                  <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object class="notebookpage">
+            <label>Advanced</label>
+            <object class="wxPanel" name="tabAdvanced">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxFlexGridSizer">
+                    <cols>2</cols>
+                    <rows>2</rows>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Compiler variable:</label>
+                      </object>
+                      <flag>wxTOP|wxRIGHT</flag>
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxTextCtrl" name="txtCompiler">
+                        <style></style>
+                      </object>
+                      <option>1</option>
+                      <flag>wxLEFT|wxEXPAND</flag>
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Object file:</label>
+                      </object>
+                      <flag>wxTOP|wxLEFT|wxRIGHT</flag>
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxTextCtrl" name="txtObjName"/>
+                      <option>1</option>
+                      <flag>wxLEFT|wxEXPAND</flag>
+                      <border>4</border>
+                    </object>
+                    <vgap>8</vgap>
+                    <growablecols>1</growablecols>
+                  </object>
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>Please, don't change anything unless you really know what you 're doing.
+You could *really* mess-up Code::Blocks' Build System...</label>
+                    <fg>#FF0000</fg>
+                  </object>
+                  <flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
+                  <border>8</border>
+                </object>
+              </object>
+            </object>
+          </object>
+          <usenotebooksizer>1</usenotebooksizer>
+          <object class="notebookpage">
+            <label>Build</label>
+            <object class="wxPanel" name="tabBuild">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxCheckBox" name="chkBuildStage">
+                    <label>Use custom build commands</label>
+                  </object>
+                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxTextCtrl" name="txtBuildStage">
+                    <style>wxTE_MULTILINE</style>
+                  </object>
+                  <option>1</option>
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>You can use the following variables:
+    $$DIR : returns the directory where the file resides (no trailing path separator)
+    $$NAME : returns just the file's name (no path, no extension)
+    $$BASE : returns the relative filename without extension
+    $$OBJECT : returns the link object filename
+    $$FILENAME : returns the relative filename as-is</label>
+                  </object>
+                  <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>Please, don't change anything unless you really know what you 're doing.
+You could *really* mess-up Code::Blocks' Build System...</label>
+                    <fg>#FF0000</fg>
+                  </object>
+                  <flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
+                  <border>8</border>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object class="notebookpage">
+            <label>Dependencies</label>
+            <object class="wxPanel" name="tabDeps">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxCheckBox" name="chkCustomDeps">
+                    <label>Use custom dependencies generation</label>
+                  </object>
+                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxTextCtrl" name="txtCustomDeps">
+                    <style>wxTE_MULTILINE</style>
+                  </object>
+                  <option>1</option>
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>You can use the following variables:
+    $$DIR : returns the directory where the file resides (no trailing path separator)
+    $$NAME : returns just the file's name (no path, no extension)
+    $$BASE : returns the relative filename without extension
+    $$OBJECT : returns the link object filename
+    $$FILENAME : returns the relative filename as-is</label>
+                  </object>
+                  <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>Please, don't change anything unless you really know what you 're doing.
+You could *really* mess-up Code::Blocks' Build System...</label>
+                    <fg>#FF0000</fg>
+                  </object>
+                  <flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
+                  <border>8</border>
+                </object>
+              </object>
+            </object>
+          </object>
+        </object>
+        <option>1</option>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>8</border>
+        <minsize>320,240</minsize>
+      </object>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxButton" name="btnOK">
+              <label>OK</label>
+              <default>1</default>
+            </object>
+            <flag>wxRIGHT</flag>
+            <border>8</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_CANCEL">
+              <label>Cancel</label>
+            </object>
+          </object>
+        </object>
+        <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <border>8</border>
+        <minsize></minsize>
+      </object>
+    </object>
+    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxRESIZE_BOX</style>
+  </object>
+</resource>

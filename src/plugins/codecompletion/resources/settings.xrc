@@ -1,0 +1,241 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxDialog" name="dlgCCSettings">
+    <title>IntelliStudio(tm) settings</title>
+    <centered>1</centered>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxNotebook">
+          <object class="notebookpage">
+            <label>Code completion</label>
+            <object class="wxPanel" name="tabCC">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxStaticBoxSizer">
+                    <label>C++ Parser options</label>
+                    <orient>wxVERTICAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxBoxSizer">
+                        <orient>wxHORIZONTAL</orient>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                            <label>Maximum concurrent threads:</label>
+                          </object>
+                          <flag>wxTOP</flag>
+                          <border>4</border>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxSpinCtrl" name="spnThreads">
+                            <min>1</min>
+                            <max>32</max>
+                          </object>
+                          <flag>wxLEFT</flag>
+                          <border>8</border>
+                        </object>
+                      </object>
+                      <flag>wxALL</flag>
+                      <border>8</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkLocals">
+                        <label>Follow LOCAL includes</label>
+                      </object>
+                      <flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
+                      <border>8</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkGlobals">
+                        <label>Follow GLOBAL includes</label>
+                      </object>
+                      <flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
+                      <border>8</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkPreprocessor">
+                        <label>Parse preprocessor directives</label>
+                      </object>
+                      <flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
+                      <border>8</border>
+                    </object>
+                  </object>
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticBoxSizer">
+                    <label>Code completion options</label>
+                    <orient>wxVERTICAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkCaseSensitive">
+                        <label>Case sensitive matches</label>
+                      </object>
+                      <flag>wxALL</flag>
+                      <border>8</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Delay (ms):</label>
+                      </object>
+                      <flag>wxTOP|wxLEFT</flag>
+                      <border>8</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxBoxSizer">
+                        <orient>wxHORIZONTAL</orient>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                            <label>1 ms</label>
+                          </object>
+                          <flag>wxTOP|wxLEFT</flag>
+                          <border>8</border>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxBoxSizer">
+                            <orient>wxVERTICAL</orient>
+                            <object class="sizeritem">
+                              <object class="wxSlider" name="sliderDelay">
+                                <value>5</value>
+                                <min>0</min>
+                                <max>25</max>
+                                <style>wxSL_AUTOTICKS</style>
+                                <tickfreq>5</tickfreq>
+                                <pagesize>10</pagesize>
+                              </object>
+                              <flag>wxALL|wxEXPAND</flag>
+                              <border>8</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxStaticText" name="lblDelay">
+                                <label>500 ms</label>
+                              </object>
+                              <flag>wxALIGN_CENTRE_HORIZONTAL</flag>
+                            </object>
+                          </object>
+                          <flag>wxEXPAND</flag>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                            <label>2.5 sec</label>
+                          </object>
+                          <flag>wxTOP|wxRIGHT</flag>
+                          <border>8</border>
+                        </object>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxBoxSizer">
+                        <orient>wxHORIZONTAL</orient>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                            <label>List color:</label>
+                          </object>
+                          <flag>wxTOP</flag>
+                          <border>4</border>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxButton" name="btnColor">
+                            <label></label>
+                          </object>
+                          <option>1</option>
+                          <flag>wxLEFT|wxEXPAND</flag>
+                          <border>8</border>
+                        </object>
+                      </object>
+                      <flag>wxALL|wxEXPAND</flag>
+                      <border>8</border>
+                    </object>
+                  </object>
+                  <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object class="notebookpage">
+            <label>Class browser</label>
+            <object class="wxPanel" name="tabCB">
+              <object class="wxBoxSizer">
+                <orient>wxHORIZONTAL</orient>
+                <object class="sizeritem">
+                  <object class="wxTreeCtrl" name="treeClasses"/>
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>8</border>
+                  <minsize>160,-1</minsize>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxBoxSizer">
+                    <orient>wxVERTICAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxBoxSizer">
+                        <orient>wxHORIZONTAL</orient>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                            <label>View:</label>
+                          </object>
+                          <flag>wxTOP</flag>
+                          <border>4</border>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxComboBox" name="cmbCBView">
+                            <content>
+                              <item>Flat</item>
+                              <item>Structured</item>
+                            </content>
+                            <selection>1</selection>
+                            <style>wxCB_READONLY|wxCB_DROPDOWN</style>
+                          </object>
+                          <option>1</option>
+                          <flag>wxLEFT|wxEXPAND</flag>
+                          <border>8</border>
+                        </object>
+                      </object>
+                      <flag>wxEXPAND</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkInheritance">
+                        <label>Show inherited members</label>
+                      </object>
+                      <flag>wxTOP</flag>
+                      <border>8</border>
+                    </object>
+                  </object>
+                  <flag>wxTOP|wxBOTTOM|wxRIGHT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+              </object>
+            </object>
+          </object>
+          <usenotebooksizer>1</usenotebooksizer>
+        </object>
+        <option>1</option>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticLine"/>
+        <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_OK">
+              <label>&amp;OK</label>
+              <default>1</default>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_CANCEL">
+              <label>&amp;Cancel</label>
+            </object>
+          </object>
+        </object>
+        <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <border>8</border>
+      </object>
+    </object>
+  </object>
+</resource>

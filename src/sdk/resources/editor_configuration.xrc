@@ -1,0 +1,368 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxDialog" name="dlgConfigureEditor">
+    <title>Configure editor</title>
+    <centered>1</centered>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxNotebook" name="">
+          <usenotebooksizer>1</usenotebooksizer>
+          <object class="notebookpage">
+            <label>General</label>
+            <object class="wxPanel" name="tabGeneral">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxStaticBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxStaticText" name="lblEditorFont">
+                        <label>lblEditorFont</label>
+                        <bg>#FFFFFF</bg>
+                      </object>
+                      <option>1</option>
+                      <flag>wxALL|wxEXPAND</flag>
+                      <border>8</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxButton" name="btnChooseEditorFont">
+                        <label>Choose</label>
+                      </object>
+                      <flag>wxTOP|wxBOTTOM|wxRIGHT</flag>
+                      <border>4</border>
+                    </object>
+                    <label>Font</label>
+                  </object>
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxFlexGridSizer">
+                    <cols>2</cols>
+                    <vgap>4</vgap>
+                    <hgap>8</hgap>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkAutoIndent">
+                        <label>Auto indent</label>
+                        <checked>1</checked>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkUseTab">
+                        <label>Use TAB character</label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkShowIndentGuides">
+                        <label>Show indentation guides</label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkTabIndents">
+                        <label>TAB indents</label>
+                        <checked>1</checked>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkBackspaceUnindents">
+                        <label>Backspace unindents</label>
+                        <checked>1</checked>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkWordWrap">
+                        <label>Word wrap</label>
+                      </object>
+                    </object>
+                    <growablecols>1</growablecols>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkShowEOL">
+                        <label>Show end-of-line characters</label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkShowLineNumbers">
+                        <label>Show line numbers</label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkHighlightCaretLine">
+                        <label>Highlight line under caret</label>
+                        <checked>1</checked>
+                      </object>
+                    </object>
+                  </object>
+                  <option>1</option>
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object class="notebookpage">
+            <label>Folding</label>
+            <object class="wxPanel" name="tabFolding">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxCheckBox" name="chkEnableFolding">
+                    <label>Enable folding</label>
+                  </object>
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticBoxSizer">
+                    <label>Fold options</label>
+                    <orient>wxVERTICAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkFoldPreprocessor">
+                        <label>Fold preprocessor commands</label>
+                      </object>
+                      <flag>wxALL|wxEXPAND</flag>
+                      <border>8</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkFoldComments">
+                        <label>Fold comments</label>
+                      </object>
+                      <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                      <border>8</border>
+                    </object>
+                  </object>
+                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxCheckBox" name="chkFoldOnOpen">
+                    <label>Fold all on file open</label>
+                  </object>
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object class="notebookpage">
+            <label>Gutter</label>
+            <object class="wxPanel" name="tabGutter">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxFlexGridSizer">
+                    <cols>2</cols>
+                    <vgap>4</vgap>
+                    <hgap>8</hgap>
+                    <growablecols>1</growablecols>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Mode:</label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxChoice" name="lstGutterMode">
+                        <content>
+                          <item>None</item>
+                          <item>Visible line</item>
+                          <item>Highlight text beyond gutter</item>
+                        </content>
+                        <selection>1</selection>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Color:</label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxButton" name="btnGutterColor">
+                        <label></label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Column:</label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxSpinCtrl" name="spnGutterColumn">
+                        <value>80</value>
+                      </object>
+                    </object>
+                  </object>
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object class="notebookpage">
+            <label>Colors</label>
+            <object class="wxPanel" name="tabColors">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Syntax highlighting for:</label>
+                      </object>
+                      <flag>wxTOP</flag>
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxComboBox" name="cmbLangs">
+                        <content>
+                          <item>C++</item>
+                          <item>LUA</item>
+                        </content>
+                        <selection>0</selection>
+                        <style>wxCB_READONLY</style>
+                      </object>
+                      <option>1</option>
+                      <flag>wxLEFT</flag>
+                      <border>8</border>
+                    </object>
+                    <object class="spacer">
+                      <size>32,0</size>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxButton" name="btnKeywords">
+                        <label>Edit keywords</label>
+                      </object>
+                      <flag>wxALIGN_RIGHT</flag>
+                    </object>
+                  </object>
+                  <flag>wxTOP|wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticLine"/>
+                  <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxListBox" name="lstComponents">
+                        <content/>
+                        <style>wxLB_HSCROLL</style>
+                      </object>
+                      <option>1</option>
+                      <flag>wxEXPAND</flag>
+                      <minsize>240,144</minsize>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxBoxSizer">
+                        <orient>wxHORIZONTAL</orient>
+                        <object class="sizeritem">
+                          <object class="wxBoxSizer">
+                            <orient>wxVERTICAL</orient>
+                            <object class="sizeritem">
+                              <object class="wxStaticText">
+                                <label>Foreground:</label>
+                              </object>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxButton" name="btnColorsFore">
+                                <label></label>
+                              </object>
+                              <flag>wxEXPAND</flag>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxStaticText">
+                                <label>Background:</label>
+                              </object>
+                              <flag>wxTOP</flag>
+                              <border>8</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxButton" name="btnColorsBack">
+                                <label></label>
+                              </object>
+                              <flag>wxEXPAND</flag>
+                            </object>
+                          </object>
+                          <flag>wxRIGHT|wxALIGN_CENTRE_VERTICAL</flag>
+                          <border>8</border>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxStaticBoxSizer">
+                            <label>Style</label>
+                            <orient>wxVERTICAL</orient>
+                            <object class="sizeritem">
+                              <object class="wxCheckBox" name="chkColorsBold">
+                                <label>Bold</label>
+                              </object>
+                              <flag>wxALL|wxEXPAND</flag>
+                              <border>8</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxCheckBox" name="chkColorsItalics">
+                                <label>Italics</label>
+                              </object>
+                              <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                              <border>8</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxCheckBox" name="chkColorsUnderlined">
+                                <label>Underlined</label>
+                              </object>
+                              <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                              <border>8</border>
+                            </object>
+                          </object>
+                          <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                        </object>
+                      </object>
+                      <flag>wxLEFT|wxEXPAND</flag>
+                      <border>8</border>
+                    </object>
+                  </object>
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="unknown" name="txtColorsSample"/>
+                  <option>1</option>
+                  <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <border>8</border>
+                  <minsize>320,192</minsize>
+                </object>
+              </object>
+            </object>
+          </object>
+        </object>
+        <option>1</option>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxButton" name="btnOK">
+              <label>OK</label>
+              <default>1</default>
+            </object>
+            <flag>wxRIGHT</flag>
+            <border>8</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_CANCEL">
+              <label>Cancel</label>
+            </object>
+          </object>
+        </object>
+        <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <border>8</border>
+      </object>
+    </object>
+    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
+  </object>
+</resource>

@@ -1,0 +1,16 @@
+This list is far from complete, but here it goes...
+
+Stuff that should be implemented easily:
+-------------------------------------
+* [DONE 7/5/2004]: Make "Swap header/source" look in project (local) includes too, in search for the pair...
+* [DONE 7/5/2004]: On new project, don't make the title the full pathname, just the project's filename (no extension)
+* [DONE 17/3/2004]: Completely switch to TinyXML from Expat (only project file uses it still)
+* Add ProjectManager configuration dialog (things like OpenLastProjectOnStartup, etc)
+
+Stuff that need thought before implementing:
+--------------------------------------------
+* Make Makefile targets "clean", "install" etc, configurable by user
+* Configure compiler options by platform (or/and release/debug configurations)
+
+
+

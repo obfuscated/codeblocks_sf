@@ -1,0 +1,9 @@
+A_MAIN_ICON ICON "src/resources/icons/app.ico"
+PROJECT_FILE ICON "src/resources/icons/csd.ico"
+SOURCE_FILE_CPP ICON "src/resources/icons/cpp.ico"
+SOURCE_FILE_C ICON "src/resources/icons/c.ico"
+SOURCE_FILE_H ICON "src/resources/icons/h.ico"
+
+// that's the only thing needed from
+//#include <wx/msw/wx.rc>
+wxBITMAP_STD_COLOURS    BITMAP "wx/msw/colours.bmp"

@@ -1,0 +1,138 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxDialog" name="dlgInsertClassMethod">
+    <title>Insert class method...</title>
+    <centered>1</centered>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxFlexGridSizer">
+          <cols>2</cols>
+          <rows>2</rows>
+          <vgap>4</vgap>
+          <hgap>8</hgap>
+          <growablecols>1</growablecols>
+          <growablerows>1</growablerows>
+          <object class="sizeritem">
+            <object class="wxStaticText">
+              <label>Known classes:</label>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxStaticText">
+              <label>Class methods:</label>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxListBox" name="lstClasses">
+              <content/>
+            </object>
+            <flag>wxEXPAND</flag>
+            <minsize>196,-1</minsize>
+          </object>
+          <object class="sizeritem">
+            <object class="wxBoxSizer">
+              <orient>wxVERTICAL</orient>
+              <object class="sizeritem">
+                <object class="wxCheckList" name="chklstMethods">
+                  <content/>
+                </object>
+                <option>1</option>
+                <flag>wxEXPAND</flag>
+              </object>
+              <object class="sizeritem">
+                <object class="wxBoxSizer">
+                  <orient>wxHORIZONTAL</orient>
+                  <object class="sizeritem">
+                    <object class="wxRadioBox" name="rbCode">
+                      <label>Code output</label>
+                      <content>
+                        <item>Declaration</item>
+                        <item>Implementation</item>
+                      </content>
+                    </object>
+                    <flag>wxRIGHT</flag>
+                    <border>8</border>
+                  </object>
+                  <object class="sizeritem">
+                    <object class="wxStaticBoxSizer">
+                      <label>Filter methods</label>
+                      <orient>wxHORIZONTAL</orient>
+                      <object class="sizeritem">
+                        <object class="wxCheckBox" name="chkPrivate">
+                          <label>Private</label>
+                          <checked>0</checked>
+                        </object>
+                        <flag>wxALIGN_CENTRE_VERTICAL|wxLEFT</flag>
+                        <border>8</border>
+                      </object>
+                      <object class="sizeritem">
+                        <object class="wxCheckBox" name="chkProtected">
+                          <label>Protected</label>
+                          <checked>1</checked>
+                        </object>
+                        <flag>wxALIGN_CENTRE_VERTICAL|wxLEFT</flag>
+                        <border>8</border>
+                      </object>
+                      <object class="sizeritem">
+                        <object class="wxCheckBox" name="chkPublic">
+                          <label>Public</label>
+                          <checked>1</checked>
+                        </object>
+                        <flag>wxALIGN_CENTRE_VERTICAL|wxLEFT</flag>
+                        <border>8</border>
+                      </object>
+                    </object>
+                    <option>1</option>
+                    <flag>wxEXPAND</flag>
+                  </object>
+                </object>
+                <flag>wxEXPAND</flag>
+              </object>
+              <object class="sizeritem">
+                <object class="wxCheckBox" name="chkAddDoc">
+                  <label>Add &amp;documentation block above method</label>
+                  <checked>1</checked>
+                </object>
+                <flag>wxTOP</flag>
+                <border>4</border>
+              </object>
+            </object>
+            <option>1</option>
+            <flag>wxEXPAND</flag>
+            <minsize>320, 240</minsize>
+          </object>
+        </object>
+        <option>1</option>
+        <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticLine"/>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_OK">
+              <label>&amp;Insert</label>
+              <default>1</default>
+            </object>
+            <flag>wxRIGHT</flag>
+            <border>8</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_CANCEL">
+              <label>&amp;Cancel</label>
+            </object>
+          </object>
+        </object>
+        <flag>wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <border>8</border>
+      </object>
+    </object>
+    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxRESIZE_BOX</style>
+  </object>
+</resource>

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE Code::Blocks_project_file>
+<Code::Blocks_project_file>
+	<Project>
+		<Option title="Win32 Application"/>
+		<Option makefile="Makefile"/>
+		<Build>
+			<Target title="default">
+				<Option type="0"/>
+			</Target>
+		</Build>
+		<Linker>
+			<Add option="-lstdc++"/>
+			<Add option="-lgcc"/>
+			<Add option="-lgdi32"/>
+			<Add option="-lcomdlg32"/>
+			<Add option="-lodbc32"/>
+			<Add option="-lwsock32"/>
+			<Add option="-lwinspool"/>
+			<Add option="-lwinmm"/>
+			<Add option="-lshell32"/>
+			<Add option="-lcomctl32"/>
+			<Add option="-lctl3d32"/>
+			<Add option="-ladvapi32"/>
+			<Add option="-lopengl32"/>
+			<Add option="-lglu32"/>
+			<Add option="-lole32"/>
+			<Add option="-loleaut32"/>
+			<Add option="-luuid"/>
+		</Linker>
+	</Project>
+</Code::Blocks_project_file>

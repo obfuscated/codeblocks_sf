@@ -1,0 +1,250 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxDialog" name="dlgAdvancedCompilerOptions">
+    <title>Advanced compiler options</title>
+    <centered>1</centered>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxNotebook" name="nbMain">
+          <object class="notebookpage">
+            <label>Commands</label>
+            <object class="wxPanel" name="tabCommands">
+              <object class="wxBoxSizer">
+                <orient>wxHORIZONTAL</orient>
+                <object class="sizeritem">
+                  <object class="wxBoxSizer">
+                    <orient>wxVERTICAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Available commands:</label>
+                      </object>
+                      <flag>wxTOP|wxLEFT</flag>
+                      <border>8</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxListBox" name="lstCommands">
+                        <content/>
+                      </object>
+                      <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+                      <border>8</border>
+                      <minsize>96,96</minsize>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Command line macro:</label>
+                      </object>
+                      <flag>wxTOP|wxLEFT</flag>
+                      <border>8</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxTextCtrl" name="txtCommand">
+                        <style>wxTE_MULTILINE|wxHSCROLL</style>
+                      </object>
+                      <option>1</option>
+                      <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                      <border>8</border>
+                      <minsize>96,96</minsize>
+                    </object>
+                  </object>
+                  <flag>wxGROW</flag>
+                  <minsize>320,0</minsize>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxFlexGridSizer">
+                    <cols>2</cols>
+                    <vgap>4</vgap>
+                    <hgap>4</hgap>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Command macros:</label>
+                      </object>
+                    </object>
+                    <object class="spacer">
+                      <size>0,0</size>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticLine"/>
+                      <flag>wxGROW</flag>
+                    </object>
+                    <object class="spacer">
+                      <size>0,0</size>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Compiler executable:
+Resource compiler executable:
+Linker executable:
+Compiler flags:
+Linker flags:
+Compiler include paths:
+Resource include paths:
+Linker include paths:
+Link libraries:
+Source file:
+Object file:
+Dependency result:
+All object files:
+All *linkable* object files:
+Executable output file:
+Static library output file:
+Dynamic library output file:
+Dynamic library DEF output file:
+Resources output file:</label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>$$compiler
+$$rescomp
+$$linker
+$$options
+$$link_options
+$$includes
+$$res_includes
+$$libdirs
+$$libs
+$$file
+$$object
+$$dep_object
+$$objects
+$$link_objects
+$$exe_output
+$$static_output
+$$exe_output
+$$def_output
+$$resource_output</label>
+                      </object>
+                    </object>
+                  </object>
+                  <option>1</option>
+                  <flag>wxTOP|wxBOTTOM|wxRIGHT|wxGROW</flag>
+                  <border>8</border>
+                </object>
+              </object>
+            </object>
+            <selected>1</selected>
+          </object>
+          <object class="notebookpage">
+            <label>Others</label>
+            <object class="wxPanel" name="tabSwitches">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxFlexGridSizer">
+                    <cols>2</cols>
+                    <vgap>8</vgap>
+                    <hgap>8</hgap>
+                    <growablecols>1</growablecols>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Add header files search path (e.g. -I):</label>
+                      </object>
+                      <flag>wxTOP</flag>
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxTextCtrl" name="txtAddIncludePath"/>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Add libraries search path (e.g. -L):</label>
+                      </object>
+                      <flag>wxTOP</flag>
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxTextCtrl" name="txtAddLibPath"/>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Link library (e.g. -l):</label>
+                      </object>
+                      <flag>wxTOP</flag>
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxTextCtrl" name="txtAddLib"/>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Add preprocessor definition (e.g. -D):</label>
+                      </object>
+                      <flag>wxTOP</flag>
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxTextCtrl" name="txtDefine"/>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Generic switch character (e.g. -):</label>
+                      </object>
+                      <flag>wxTOP</flag>
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxTextCtrl" name="txtGenericSwitch"/>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Object file extension (e.g. o):</label>
+                      </object>
+                      <flag>wxTOP</flag>
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxTextCtrl" name="txtObjectExt"/>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Need dependency checks:</label>
+                      </object>
+                      <flag>wxTOP</flag>
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkNeedDeps">
+                        <label></label>
+                      </object>
+                      <flag>wxTOP</flag>
+                      <border>4</border>
+                    </object>
+                  </object>
+                  <option>1</option>
+                  <flag>wxALL|wxGROW</flag>
+                  <border>8</border>
+                </object>
+              </object>
+            </object>
+          </object>
+          <usenotebooksizer>1</usenotebooksizer>
+        </object>
+        <option>1</option>
+        <flag>wxALL|wxGROW</flag>
+        <border>8</border>
+        <minsize>480,320</minsize>
+      </object>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_OK">
+              <label>&amp;OK</label>
+              <default>1</default>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_CANCEL">
+              <label>&amp;Cancel</label>
+            </object>
+            <flag>wxLEFT</flag>
+            <border>8</border>
+          </object>
+        </object>
+        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE</flag>
+        <border>8</border>
+      </object>
+    </object>
+  </object>
+</resource>

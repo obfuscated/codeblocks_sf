@@ -1,0 +1,119 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxDialog" name="dlgEnvironmentSettings">
+    <title>Environment settings</title>
+    <centered>1</centered>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxNotebook" name="nbMain">
+          <usenotebooksizer>1</usenotebooksizer>
+          <object class="notebookpage">
+            <label>General</label>
+            <object class="wxPanel" name="tabGeneral">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxCheckBox" name="chkShowSplash">
+                    <label>Show splash screen on start-up</label>
+                    <checked>1</checked>
+                  </object>
+                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxCheckBox" name="chkDDE">
+                    <label>Run DDE server (Windows only)</label>
+                    <checked>1</checked>
+                  </object>
+                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxCheckBox" name="chkAssociations">
+                    <label>Check &amp;&amp; set file associations</label>
+                    <checked>1</checked>
+                  </object>
+                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxCheckBox" name="chkDebugLog">
+                    <label>Display application's debug log</label>
+                    <checked>0</checked>
+                  </object>
+                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object class="notebookpage">
+            <label>View</label>
+            <object class="wxPanel" name="tabView">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxRadioBox" name="rbProjectOpen">
+                    <label>On project open...</label>
+                    <content>
+                      <item>Open all project files</item>
+                      <item>Remember last open files</item>
+                      <item>Do not open any files</item>
+                    </content>
+                    <selection>1</selection>
+                  </object>
+                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxRadioBox" name="rbEditorInterface">
+                    <label>Default editor interface</label>
+                    <content>
+                      <item>MDI windows</item>
+                      <item>Tabbed windows</item>
+                    </content>
+                    <selection>0</selection>
+                  </object>
+                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxCheckBox" name="chkAutoMaxWindows">
+                    <label>By default, maximize new editors</label>
+                    <checked>1</checked>
+                  </object>
+                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+              </object>
+            </object>
+          </object>
+        </object>
+        <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_OK">
+              <label>&amp;OK</label>
+              <default>1</default>
+            </object>
+          </object>
+          <object class="spacer">
+            <size>8,0</size>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_CANCEL">
+              <label>&amp;Cancel</label>
+            </object>
+          </object>
+        </object>
+        <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <border>8</border>
+      </object>
+    </object>
+  </object>
+</resource>

@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxDialog" name="dlgConfirmReplace">
+    <title>Confirm replace</title>
+    <object class="wxBoxSizer">
+      <orient>wxHORIZONTAL</orient>
+      <object class="sizeritem">
+        <object class="wxButton" name="btnYes">
+          <label>&amp;Yes</label>
+          <default>1</default>
+        </object>
+        <flag>wxALL</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxButton" name="btnNo">
+          <label>&amp;No</label>
+        </object>
+        <flag>wxTOP|wxBOTTOM|wxRIGHT</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxButton" name="btnAll">
+          <label>&amp;All</label>
+        </object>
+        <flag>wxTOP|wxBOTTOM|wxRIGHT</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxButton" name="btnCancel">
+          <label>&amp;Cancel</label>
+        </object>
+        <flag>wxTOP|wxBOTTOM|wxRIGHT</flag>
+        <border>8</border>
+      </object>
+    </object>
+  </object>
+</resource>

@@ -1,0 +1,125 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxDialog" name="dlgEditTool">
+    <title>Edit tool</title>
+    <centered>1</centered>
+    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxRESIZE_BOX</style>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxFlexGridSizer">
+          <cols>2</cols>
+          <vgap>8</vgap>
+          <hgap>8</hgap>
+          <growablecols>1</growablecols>
+          <object class="sizeritem">
+            <object class="wxStaticText">
+              <label>Name:</label>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxTextCtrl" name="txtName"/>
+            <flag>wxEXPAND</flag>
+          </object>
+          <object class="sizeritem">
+            <object class="wxStaticText">
+              <label>Executable:</label>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxBoxSizer">
+              <orient>wxHORIZONTAL</orient>
+              <object class="sizeritem">
+                <object class="wxTextCtrl" name="txtCommand"/>
+                <option>1</option>
+                <flag>wxEXPAND</flag>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="btnBrowseCommand">
+                  <label>...</label>
+                  <size>24,-1</size>
+                </object>
+              </object>
+            </object>
+            <flag>wxEXPAND</flag>
+          </object>
+          <object class="sizeritem">
+            <object class="wxStaticText">
+              <label>Parameters:</label>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxTextCtrl" name="txtParams"/>
+            <flag>wxEXPAND</flag>
+          </object>
+          <object class="sizeritem">
+            <object class="wxStaticText">
+              <label>Working directory:</label>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxBoxSizer">
+              <orient>wxHORIZONTAL</orient>
+              <object class="sizeritem">
+                <object class="wxTextCtrl" name="txtDir"/>
+                <option>1</option>
+                <flag>wxEXPAND</flag>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="btnBrowseDir">
+                  <label>...</label>
+                  <size>24,-1</size>
+                </object>
+              </object>
+            </object>
+            <flag>wxEXPAND</flag>
+          </object>
+          <object class="spacer">
+            <size>0,0</size>
+          </object>
+          <object class="sizeritem">
+            <object class="wxStaticText">
+              <label>You can use the following macros:
+
+$${PROJECT_FILENAME}
+$${PROJECT_NAME}
+$${PROJECT_DIR}
+$${ACTIVE_EDITOR_FILENAME}
+$${ALL_PROJECT_FILES}
+$${MAKEFILE}</label>
+            </object>
+            <option>1</option>
+            <flag>wxEXPAND</flag>
+          </object>
+        </object>
+        <option>1</option>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>8</border>
+        <minsize>320,-1</minsize>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticLine"/>
+        <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxButton" name="btnOK">
+              <label>&amp;OK</label>
+              <default>1</default>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_CANCEL">
+              <label>&amp;Cancel</label>
+            </object>
+          </object>
+        </object>
+        <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <border>8</border>
+      </object>
+    </object>
+  </object>
+</resource>

@@ -1,0 +1,71 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxDialog" name="dlgEditArrayOrder">
+    <title>Edit order</title>
+    <centered>1</centered>
+    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxRESIZE_BOX</style>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxListBox" name="lstItems">
+              <content/>
+            </object>
+            <option>1</option>
+            <flag>wxEXPAND</flag>
+            <minsize>240,160</minsize>
+          </object>
+          <object class="sizeritem">
+            <object class="wxBoxSizer">
+              <orient>wxVERTICAL</orient>
+              <object class="sizeritem">
+                <object class="wxButton" name="btnMoveUp">
+                  <label>Move up</label>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="btnMoveDown">
+                  <label>Move down</label>
+                </object>
+                <flag>wxTOP</flag>
+                <border>8</border>
+              </object>
+            </object>
+            <flag>wxLEFT</flag>
+            <border>8</border>
+          </object>
+        </object>
+        <option>1</option>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticLine"/>
+        <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxButton" name="btnOK">
+              <label>OK</label>
+              <default>1</default>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_CANCEL">
+              <label>Cancel</label>
+            </object>
+            <flag>wxLEFT</flag>
+            <border>8</border>
+          </object>
+        </object>
+        <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <border>8</border>
+      </object>
+    </object>
+  </object>
+</resource>

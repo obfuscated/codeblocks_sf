@@ -1,0 +1,147 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxDialog" name="dlgAddToDo">
+    <title>Add To-Do item</title>
+    <centered>1</centered>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxStaticText">
+          <label>Text:</label>
+        </object>
+        <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxTextCtrl" name="txtText">
+          <style>wxTE_MULTILINE</style>
+        </object>
+        <option>1</option>
+        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxFlexGridSizer">
+          <cols>2</cols>
+          <hgap>8</hgap>
+          <object class="sizeritem">
+            <object class="wxStaticText">
+              <label>User:</label>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxStaticText">
+              <label>Priority:</label>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxComboBox" name="cmbUser">
+              <content/>
+            </object>
+            <flag>wxBOTTOM|wxEXPAND</flag>
+            <border>8</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxSpinCtrl" name="spnPriority">
+              <value>1</value>
+              <min>1</min>
+              <max>9</max>
+            </object>
+            <flag>wxBOTTOM|wxEXPAND</flag>
+            <border>8</border>
+          </object>
+          <growablecols>0</growablecols>
+          <object class="sizeritem">
+            <object class="wxStaticText">
+              <label>Type:</label>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxStaticText">
+              <label>Comment style:</label>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxComboBox" name="cmbType">
+              <content>
+                <item>To do</item>
+                <item>Fix me</item>
+                <item>Note</item>
+              </content>
+              <selection>0</selection>
+              <style>wxCB_READONLY</style>
+            </object>
+            <flag>wxBOTTOM|wxEXPAND</flag>
+            <border>8</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxComboBox" name="cmbStyle">
+              <content>
+                <item>C++ style comment</item>
+                <item>C style comment</item>
+                <item>Compiler warning</item>
+                <item>Compiler error</item>
+              </content>
+              <selection>0</selection>
+              <style>wxCB_READONLY</style>
+            </object>
+            <flag>wxBOTTOM|wxEXPAND</flag>
+            <border>8</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxStaticText">
+              <label>Position:</label>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxStaticText">
+              <size>0,0</size>
+              <label></label>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxComboBox" name="cmbPosition">
+              <content>
+                <item>New line above current line</item>
+                <item>Exactly where caret is now</item>
+                <item>New line below current line</item>
+              </content>
+              <selection>0</selection>
+              <style>wxCB_READONLY</style>
+            </object>
+            <flag>wxBOTTOM|wxEXPAND</flag>
+            <border>8</border>
+          </object>
+        </object>
+        <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticLine"/>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_OK">
+              <label>&amp;OK</label>
+              <default>1</default>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_CANCEL">
+              <label>&amp;Cancel</label>
+            </object>
+            <flag>wxLEFT</flag>
+            <border>8</border>
+          </object>
+        </object>
+        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <border>8</border>
+      </object>
+    </object>
+    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
+  </object>
+</resource>
