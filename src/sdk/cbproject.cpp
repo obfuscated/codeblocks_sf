@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include <wx/choicdlg.h>
 #include "cbproject.h" // class's header file
 #include "sdk_events.h"
 #include "manager.h"
@@ -30,7 +31,7 @@
 #include "projectloader.h"
 #include "devcpploader.h"
 #include "msvcloader.h"
-//#include "msvsloader.h"
+#include "msvc7loader.h"
 #include "projectlayoutloader.h"
 #include "selecttargetdlg.h"
 #include "globals.h"
@@ -227,6 +228,7 @@ void cbProject::Open()
         {
              case ftDevCppProject: loader = new DevCppLoader(this); break;
              case ftMSVCProject: loader = new MSVCLoader(this); break;
+             case ftMSVSProject: loader = new MSVC7Loader(this); break;
              default: return;
         }
         m_Loaded = loader->Open(m_Filename);
@@ -234,6 +236,24 @@ void cbProject::Open()
         m_Filename = fname.GetFullPath();
         SetModified(true);
         delete loader;
+        
+        // select compiler for the imported project
+        // first build a list of available compilers
+        wxString* comps = new wxString[CompilerFactory::Compilers.GetCount()];
+        for (unsigned int i = 0; i < CompilerFactory::Compilers.GetCount(); ++i)
+        {
+            comps[i] = CompilerFactory::Compilers[i]->GetName();
+        }
+        // now display a choice dialog
+        wxSingleChoiceDialog dlg(0,
+                            _("Select compiler to use for the newly imported project"),
+                            _("Select compiler"),
+                            CompilerFactory::Compilers.GetCount(),
+                            comps);
+        if (dlg.ShowModal() == wxID_OK)
+        {
+            SetCompilerIndex(dlg.GetSelection());
+        }
     }
 	
     if (m_Loaded)

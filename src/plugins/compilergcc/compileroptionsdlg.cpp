@@ -101,7 +101,7 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
 	if (!CompilerFactory::CompilerIndexOK(compilerIdx))
         compilerIdx = 0;
     m_Options = CompilerFactory::Compilers[compilerIdx]->GetOptions();
-	
+
 	DoFillCompilerSets();
 	DoFillCompilerPrograms();
 	DoFillPrograms();

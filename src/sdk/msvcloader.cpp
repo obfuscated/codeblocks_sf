@@ -4,6 +4,7 @@
 #include <wx/log.h>
 #include <wx/intl.h>
 #include <wx/filename.h>
+#include <wx/msgdlg.h>
 #include "manager.h"
 #include "projectmanager.h"
 #include "messagemanager.h"
@@ -12,7 +13,8 @@
 #include "msvcloader.h"
 
 MSVCLoader::MSVCLoader(cbProject* project)
-    : m_pProject(project)
+    : m_pProject(project),
+    m_ConvertSwitches(true)
 {
 	//ctor
 }
@@ -29,6 +31,11 @@ bool MSVCLoader::Open(const wxString& filename)
 
     if (!file.IsOpened())
         return false;
+
+	int conv = wxMessageBox(_("Do you want to convert compiler/linker command-line switches to GCC's switches?"),
+                            _("Convert command-line switches?"),
+                            wxICON_QUESTION | wxYES | wxNO);
+    m_ConvertSwitches = conv == wxID_YES;
 
     char* buff = m_FileContents.GetWriteBuf(file.Length());
     file.Read(buff, file.Length());
@@ -199,54 +206,71 @@ void MSVCLoader::ProcessCompilerOptions(const wxString& opts)
         wxString opt = array[i];
         opt.Trim();
 
-        if (opt.Matches("/D"))
-            m_pProject->AddCompilerOption("-D" + RemoveQuotes(array[++i]));
-        else if (opt.Matches("/U"))
-            m_pProject->AddCompilerOption("-U" + RemoveQuotes(array[++i]));
-        else if (opt.Matches("/I"))
-            m_pProject->AddIncludeDir(RemoveQuotes(array[++i]));
-        else if (opt.Matches("/W0"))
-            m_pProject->AddCompilerOption("-w");
-        else if (opt.Matches("/O1") ||
-                opt.Matches("/O2") ||
-                opt.Matches("/O3"))
-            m_pProject->AddCompilerOption("-O2");
-        else if (opt.Matches("/W1") ||
-                opt.Matches("/W2") ||
-                opt.Matches("/W3"))
-            m_pProject->AddCompilerOption("-W");
-        else if (opt.Matches("/W4"))
-            m_pProject->AddCompilerOption("-Wall");
-        else if (opt.Matches("/WX"))
-            m_pProject->AddCompilerOption("-Werror");
-        else if (opt.Matches("/GX"))
-            m_pProject->AddCompilerOption("-fexceptions");
-        else if (opt.Matches("/Ob0"))
-            m_pProject->AddCompilerOption("-fno-inline");
-        else if (opt.Matches("/Ob2"))
-            m_pProject->AddCompilerOption("-finline-functions");
-        else if (opt.Matches("/Oy"))
-            m_pProject->AddCompilerOption("-fomit-frame-pointer");
-        else if (opt.Matches("/GB"))
-            m_pProject->AddCompilerOption("-mcpu=pentiumpro -D_M_IX86=500");
-        else if (opt.Matches("/G6"))
-            m_pProject->AddCompilerOption("-mcpu=pentiumpro -D_M_IX86=600");
-        else if (opt.Matches("/G5"))
-            m_pProject->AddCompilerOption("-mcpu=pentium -D_M_IX86=500");
-        else if (opt.Matches("/G4"))
-            m_pProject->AddCompilerOption("-mcpu=i486 -D_M_IX86=400");
-        else if (opt.Matches("/G3"))
-            m_pProject->AddCompilerOption("-mcpu=i386 -D_M_IX86=300");
-        else if (opt.Matches("/Za"))
-            m_pProject->AddCompilerOption("-ansi");
-        else if (opt.Matches("/Zp1"))
-            m_pProject->AddCompilerOption("-fpack-struct");
-        else if (opt.Matches("/nologo"))
+        if (m_ConvertSwitches)
         {
-            // do nothing (ignore silently)
+            if (opt.Matches("/D"))
+                m_pProject->AddCompilerOption("-D" + RemoveQuotes(array[++i]));
+            else if (opt.Matches("/U"))
+                m_pProject->AddCompilerOption("-U" + RemoveQuotes(array[++i]));
+            else if (opt.Matches("/I"))
+                m_pProject->AddIncludeDir(RemoveQuotes(array[++i]));
+            else if (opt.Matches("/W0"))
+                m_pProject->AddCompilerOption("-w");
+            else if (opt.Matches("/O1") ||
+                    opt.Matches("/O2") ||
+                    opt.Matches("/O3"))
+                m_pProject->AddCompilerOption("-O2");
+            else if (opt.Matches("/W1") ||
+                    opt.Matches("/W2") ||
+                    opt.Matches("/W3"))
+                m_pProject->AddCompilerOption("-W");
+            else if (opt.Matches("/W4"))
+                m_pProject->AddCompilerOption("-Wall");
+            else if (opt.Matches("/WX"))
+                m_pProject->AddCompilerOption("-Werror");
+            else if (opt.Matches("/GX"))
+                m_pProject->AddCompilerOption("-fexceptions");
+            else if (opt.Matches("/Ob0"))
+                m_pProject->AddCompilerOption("-fno-inline");
+            else if (opt.Matches("/Ob2"))
+                m_pProject->AddCompilerOption("-finline-functions");
+            else if (opt.Matches("/Oy"))
+                m_pProject->AddCompilerOption("-fomit-frame-pointer");
+            else if (opt.Matches("/GB"))
+                m_pProject->AddCompilerOption("-mcpu=pentiumpro -D_M_IX86=500");
+            else if (opt.Matches("/G6"))
+                m_pProject->AddCompilerOption("-mcpu=pentiumpro -D_M_IX86=600");
+            else if (opt.Matches("/G5"))
+                m_pProject->AddCompilerOption("-mcpu=pentium -D_M_IX86=500");
+            else if (opt.Matches("/G4"))
+                m_pProject->AddCompilerOption("-mcpu=i486 -D_M_IX86=400");
+            else if (opt.Matches("/G3"))
+                m_pProject->AddCompilerOption("-mcpu=i386 -D_M_IX86=300");
+            else if (opt.Matches("/Za"))
+                m_pProject->AddCompilerOption("-ansi");
+            else if (opt.Matches("/Zp1"))
+                m_pProject->AddCompilerOption("-fpack-struct");
+            else if (opt.Matches("/nologo"))
+            {
+                // do nothing (ignore silently)
+            }
+            else
+                Manager::Get()->GetMessageManager()->DebugLog("Unknown compiler option: " + opt);
         }
-        else
-            Manager::Get()->GetMessageManager()->DebugLog("Unknown compiler option: " + opt);
+        else // !m_ConvertSwitches
+        {
+            // only differentiate includes and definitions
+            if (opt.Matches("/I"))
+                m_pProject->AddIncludeDir(RemoveQuotes(array[++i]));
+            else if (opt.Matches("/D"))
+                m_pProject->AddCompilerOption("/D" + RemoveQuotes(array[++i]));
+            else if (opt.Matches("/U"))
+                m_pProject->AddCompilerOption("/U" + RemoveQuotes(array[++i]));
+            else if (opt.StartsWith("/Yu"))
+                Manager::Get()->GetMessageManager()->DebugLog("Ignoring precompiled headers option (/Yu)");
+            else
+                m_pProject->AddCompilerOption(opt);
+        }
     }
 }
 
@@ -259,64 +283,101 @@ void MSVCLoader::ProcessLinkerOptions(const wxString& opts)
     {
         wxString opt = array[i];
         opt.Trim();
-        if (opt.Matches("/dll"))
+        
+        if (m_ConvertSwitches)
         {
-            ProjectBuildTarget* bt = m_pProject->GetBuildTarget(0);
-            if (bt)
-                bt->SetTargetType(ttDynamicLib);
-        }
-        else if (opt.StartsWith("/libpath:"))
-        {
-            opt.Remove(0, 9);
-            m_pProject->AddLibDir(RemoveQuotes(opt));
-        }
-        else if (opt.StartsWith("/base:"))
-        {
-            opt.Remove(0, 6);
-            m_pProject->AddLinkerOption("--image-base " + RemoveQuotes(opt));
-        }
-        else if (opt.StartsWith("/implib:"))
-        {
-            opt.Remove(0, 8);
-            m_pProject->AddLinkerOption("--implib " + RemoveQuotes(opt));
-        }
-        else if (opt.StartsWith("/map:"))
-        {
-            opt.Remove(0, 5);
-            m_pProject->AddLinkerOption("-Map " + RemoveQuotes(opt) + ".map");
-        }
-        else if (opt.StartsWith("/subsystem:"))
-        {
-            opt.Remove(0, 11);
-            ProjectBuildTarget* bt = 0L;
-            if (opt.Matches("windows"))
+            if (opt.StartsWith("/dll"))
             {
-                bt = m_pProject->GetBuildTarget(0);
+                ProjectBuildTarget* bt = m_pProject->GetBuildTarget(0);
                 if (bt)
-                    bt->SetTargetType(ttExecutable);
+                    bt->SetTargetType(ttDynamicLib);
             }
-            else if (opt.Matches("console"))
+            else if (opt.StartsWith("/libpath:"))
             {
-                bt = m_pProject->GetBuildTarget(0);
-                if (bt)
-                    bt->SetTargetType(ttConsoleOnly);
+                opt.Remove(0, 9);
+                m_pProject->AddLibDir(RemoveQuotes(opt));
             }
+            else if (opt.StartsWith("/base:"))
+            {
+                opt.Remove(0, 6);
+                m_pProject->AddLinkerOption("--image-base " + RemoveQuotes(opt));
+            }
+            else if (opt.StartsWith("/implib:"))
+            {
+                opt.Remove(0, 8);
+                m_pProject->AddLinkerOption("--implib " + RemoveQuotes(opt));
+            }
+            else if (opt.StartsWith("/map:"))
+            {
+                opt.Remove(0, 5);
+                m_pProject->AddLinkerOption("-Map " + RemoveQuotes(opt) + ".map");
+            }
+            else if (opt.StartsWith("/subsystem:"))
+            {
+                opt.Remove(0, 11);
+                ProjectBuildTarget* bt = 0L;
+                if (opt.Matches("windows"))
+                {
+                    bt = m_pProject->GetBuildTarget(0);
+                    if (bt)
+                        bt->SetTargetType(ttExecutable);
+                }
+                else if (opt.Matches("console"))
+                {
+                    bt = m_pProject->GetBuildTarget(0);
+                    if (bt)
+                        bt->SetTargetType(ttConsoleOnly);
+                }
+            }
+            else if (!opt.StartsWith("/"))
+            {
+                // probably linking lib
+                int idx = opt.Find(".lib");
+                if (idx != -1)
+                    opt.Remove(idx);
+    /* TODO (mandrav#1#): Make it compiler-agnostic */
+                m_pProject->AddLinkerOption("-l" + opt);
+            }
+            else if (opt.Matches("/nologo"))
+            {
+                // do nothing (ignore silently)
+            }
+            else
+                Manager::Get()->GetMessageManager()->DebugLog("Unknown linker option: " + opt);
         }
-        else if (!opt.StartsWith("/"))
+        else // !m_ConvertSwitches
         {
-            // probably linking lib
-            int idx = opt.Find(".lib");
-            if (idx != -1)
-                opt.Remove(idx);
-/* TODO (mandrav#1#): Make it compiler-agnostic */
-            m_pProject->AddLinkerOption("-l" + opt);
+            if (opt.StartsWith("/dll"))
+            {
+                ProjectBuildTarget* bt = m_pProject->GetBuildTarget(0);
+                if (bt)
+                    bt->SetTargetType(ttDynamicLib);
+            }
+            else if (opt.StartsWith("/libpath:"))
+            {
+                opt.Remove(0, 9);
+                m_pProject->AddLibDir(RemoveQuotes(opt));
+            }
+            else if (opt.StartsWith("/subsystem:"))
+            {
+                opt.Remove(0, 11);
+                ProjectBuildTarget* bt = 0L;
+                if (opt.Matches("windows"))
+                {
+                    bt = m_pProject->GetBuildTarget(0);
+                    if (bt)
+                        bt->SetTargetType(ttExecutable);
+                }
+                else if (opt.Matches("console"))
+                {
+                    bt = m_pProject->GetBuildTarget(0);
+                    if (bt)
+                        bt->SetTargetType(ttConsoleOnly);
+                }
+            }
+            else
+                m_pProject->AddLinkerOption(opt);
         }
-        else if (opt.Matches("/nologo"))
-        {
-            // do nothing (ignore silently)
-        }
-        else
-            Manager::Get()->GetMessageManager()->DebugLog("Unknown linker option: " + opt);
     }
 }
 

@@ -90,6 +90,7 @@ Compiler::CompilerLineType CompilerMSVC::CheckForWarningsAndErrors(const wxStrin
     // quick regex's
     wxRegEx reError(": error ");
     wxRegEx reWarning(": warning ");
+    wxRegEx reErrorLinker(" error LNK[0-9]+.*");
     wxRegEx reErrorLine("\\([0-9]+\\) :[ \t].*:");
     wxRegEx reDetailedErrorLine("([A-Za-z0-9_:/\\.]*)\\(([0-9]+)\\) :[ \t](.*)");
 
@@ -102,11 +103,17 @@ Compiler::CompilerLineType CompilerMSVC::CheckForWarningsAndErrors(const wxStrin
                 ret = Compiler::cltError;
             else if (reWarning.Matches(line))
                 ret = Compiler::cltWarning;
-            wxArrayString errors;
             m_ErrorFilename = reDetailedErrorLine.GetMatch(line, 1);
             m_ErrorLine = reDetailedErrorLine.GetMatch(line, 2);
             m_Error = reDetailedErrorLine.GetMatch(line, 3);
         }
+    }
+    else if (reErrorLinker.Matches(line))
+    {
+        m_ErrorFilename = "";
+        m_ErrorLine = "";
+        m_Error = line;
+        ret = Compiler::cltError;
     }
     return ret;
 }

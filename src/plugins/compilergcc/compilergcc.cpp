@@ -521,7 +521,7 @@ void CompilerGCC::LoadOptions()
 
 int CompilerGCC::GetCurrentCompilerIndex()
 {
-    return m_CompilerIdx;
+    return CompilerFactory::CompilerIndexOK(m_CompilerIdx) ? m_CompilerIdx : 0;
 }
 
 void CompilerGCC::SwitchCompiler(int compilerIdx)
@@ -1491,7 +1491,7 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColor)
         m_pListLog->AddLog(errors);
         
         m_Errors.AddError(compiler->GetLastErrorFilename(),
-                          atoi(compiler->GetLastErrorLine().c_str()),
+                          !compiler->GetLastErrorLine().IsEmpty() ? atoi(compiler->GetLastErrorLine().c_str()) : 0,
                           compiler->GetLastError(),
                           clt == Compiler::cltWarning);
     }
@@ -1536,6 +1536,8 @@ void CompilerGCC::OnGCCTerminated(CodeBlocksEvent& event)
 		int secs = (elapsed % 60);
         m_Log->GetTextControl()->SetDefaultStyle(m_LastExitCode == 0 ? wxTextAttr(*wxBLUE) : wxTextAttr(*wxRED));
         Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Process terminated with status %d (%d minutes, %d seconds)"), m_LastExitCode, mins, secs);
+        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLACK));
+        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("%d errors, %d warnings"), m_Errors.GetErrorsCount(), m_Errors.GetWarningsCount());
         m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLACK, *wxWHITE));
 		if (m_LastExitCode == 0)
 		{

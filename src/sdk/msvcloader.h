@@ -21,6 +21,7 @@ class MSVCLoader : public IBaseLoader
         wxString RemoveQuotes(const wxString& src);
         cbProject* m_pProject;
         wxString m_FileContents;
+        bool m_ConvertSwitches;
 	private:
 };
 

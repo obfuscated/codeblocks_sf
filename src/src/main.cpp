@@ -452,7 +452,6 @@ void MainFrame::CreateMenubar()
 	import->Append(idProjectImportDevCpp, _("Bloodshed &Dev-C++ project"), _("Import an existing Dev-C++ project"));
 	import->Append(idProjectImportMSVC, _("Microsoft Visual C++ project"), _("Import an existing Microsoft Visual C++ project"));
 	import->Append(idProjectImportMSVS, _("Microsoft Visual Studio project"), _("Import an existing Microsoft Visual Studio project"));
-	import->Enable(idProjectImportMSVS, false); // not implemented yet...
 
 	wxMenu* project = new wxMenu();
 	project->Append(idProjectNew, _("&New project..."), _("Create a new project based on a template"));

@@ -135,6 +135,8 @@ int CompilerErrors::ErrorLineHasMore(const wxString& filename, long int line)
 
 void CompilerErrors::DoGotoError(const CompileError& error)
 {
+    if (error.line <= 0)
+        return;
 	DoClearErrorMarkFromAllEditors();
 	cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
 	if (project)
@@ -184,4 +186,26 @@ wxString CompilerErrors::GetErrorString(int index)
     if (errors.GetCount())
         error = errors[0];
     return error;
+}
+
+unsigned int CompilerErrors::GetErrorsCount()
+{
+    unsigned int count = 0;
+	for (unsigned int i = 0; i < m_Errors.GetCount(); ++i)
+	{
+        if (!m_Errors[i].isWarning)
+            ++count;
+	}
+	return count;
+}
+
+unsigned int CompilerErrors::GetWarningsCount()
+{
+    unsigned int count = 0;
+	for (unsigned int i = 0; i < m_Errors.GetCount(); ++i)
+	{
+        if (m_Errors[i].isWarning)
+            ++count;
+	}
+	return count;
 }

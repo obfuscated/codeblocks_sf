@@ -265,7 +265,7 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
     txtO->Enable(true);
     txtO->SetValue(target->GetObjectOutput());
     txtD->Enable(true);
-    txtO->SetValue(target->GetDepsOutput());
+    txtD->SetValue(target->GetDepsOutput());
     browse->Enable(true);
     browseO->Enable(true);
     browseD->Enable(true);
