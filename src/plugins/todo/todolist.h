@@ -44,10 +44,8 @@ class ToDoList : public cbPlugin
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
 	protected:
 		void OnAddItem(wxCommandEvent& event);
-		void OnViewList(wxCommandEvent& event);
 		void OnReparse(CodeBlocksEvent& event);
     private:
-		wxMenu* m_pMenu;
 		ToDoListView* m_pListLog;
 		int m_ListPageIndex;
 		bool m_AutoRefresh;

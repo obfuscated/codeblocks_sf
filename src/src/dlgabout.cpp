@@ -51,9 +51,9 @@ dlgAbout::dlgAbout(wxWindow* parent)
 	XRCCTRL(*this, "txtThanksTo", wxTextCtrl)->SetValue(
         _("My wife and family\n"
         "The wxWidgets project (http://www.wxwidgets.org)\n"
-        "Expat XML parser (http://expat.sourceforge.net)\n"
+        "TinyXML parser (http://http://www.grinninglizard.com/tinyxml)\n"
         "The GNU Software Foundation (http://www.gnu.org)\n"
-        "Finally, but not last, the open-source community"));
+        "Last, but not least, the open-source community"));
 	XRCCTRL(*this, "txtLicense", wxTextCtrl)->SetValue(LICENSE_GPL);
 	XRCCTRL(*this, "lblName", wxStaticText)->SetLabel(APP_NAME);
 	XRCCTRL(*this, "lblVersion", wxStaticText)->SetLabel(APP_ACTUAL_VERSION);

@@ -124,7 +124,38 @@ bool CodeBlocksApp::OnInit()
     HideSplashScreen();
 
     frame->ShowTips(); // this func checks if the user wants tips, so no need to check here
-    
+
+#ifdef __WXMSW__
+    // for windows users only, display a message that no compiler is provided
+    if (ConfigManager::Get()->Read("version", "") != APP_ACTUAL_VERSION)
+    {
+        // this is a (probably) newer version; show a message box with
+        // important notes
+        
+        wxString msg;
+        msg = _("Welcome to " APP_NAME "!\n\n"
+                "" APP_NAME " is a front-end for various compilers. It does not install "
+                "any compiler on the system.\nIt is up to you to install the "
+                "compiler(s) of your choice and configure " APP_NAME ", if necessary, to use it.\n"
+                "To make things easier for you, " APP_NAME " comes with predefined settings "
+                "for three major compilers:\n\n"
+                "1. GNU GCC (http://www.mingw.org)\n"
+                "2. Microsoft's Free Visual C++ Toolkit 2003 (http://msdn.microsoft.com/visualc/vctoolkit2003/)\n"
+                "3. Borland's C++ Compiler 5.5 (http://www.borland.com/products/downloads/download_cbuilder.html#)\n\n"
+                "The above compilers are freely available on the net. Download "
+                "and install any one of them (or all three of them!). If you install "
+                "one of these compilers in its pre-defined installation path, there is nothing "
+                "more you need to do. " APP_NAME " is already configured for the default installations "
+                "of the above compilers!\n\n"
+                "IMPORTANT NOTE:\n"
+                "No matter what compiler you use, you will need to download and install the "
+                "GNU \"make\" utility. The supplied compiler plugin needs it to compile programs...");
+        wxMessageBox(msg, _("Information"), wxICON_INFORMATION);
+        
+        // update the version
+        ConfigManager::Get()->Write("version", APP_ACTUAL_VERSION);
+    }
+#endif
 	return TRUE;
 }
 

@@ -36,11 +36,9 @@ cbPlugin* GetPlugin()
 }
 
 const int idAddTodo = wxNewId();
-const int idViewTodo = wxNewId();
 
 BEGIN_EVENT_TABLE(ToDoList, cbPlugin)
 	EVT_MENU(idAddTodo, ToDoList::OnAddItem)
-	EVT_MENU(idViewTodo, ToDoList::OnViewList)
     EVT_EDITOR_OPEN(ToDoList::OnReparse)
     EVT_EDITOR_SAVE(ToDoList::OnReparse)
     EVT_PROJECT_CLOSE(ToDoList::OnReparse)
@@ -50,7 +48,6 @@ BEGIN_EVENT_TABLE(ToDoList, cbPlugin)
 END_EVENT_TABLE()
 
 ToDoList::ToDoList()
-	: m_pMenu(0L)
 {
 	//ctor
     wxFileSystem::AddHandler(new wxZipFSHandler);
@@ -98,25 +95,11 @@ void ToDoList::OnRelease(bool appShutDown)
 {
     if (Manager::Get()->GetMessageManager())
         Manager::Get()->GetMessageManager()->DeletePage(m_ListPageIndex);
-	if (m_pMenu)
-		m_pMenu->Delete(idViewTodo);
 }
 
 void ToDoList::BuildMenu(wxMenuBar* menuBar)
 {
-	if (!menuBar)
-		return;
-
-	wxMenu* menu = 0L;
-	int idx = menuBar->FindMenu(_("View"));
-	if (idx != wxNOT_FOUND)
-		menu = menuBar->GetMenu(idx);
-
-	m_pMenu = menu;
-	if (!menu)
-		return;
-
-	menu->Append(idViewTodo, _("To-Do list"), _("View list of To-Do items"));
+    // nothing to be added in menu
 }
 
 void ToDoList::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg)
@@ -133,7 +116,6 @@ void ToDoList::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxStri
 void ToDoList::BuildToolBar(wxToolBar* toolBar)
 {
 	//NotImplemented("ToDoList::BuildToolBar()");
-	return;
 }
 
 int ToDoList::Configure()
@@ -251,11 +233,6 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
 	control->EnsureCaretVisible();
 	
 	m_pListLog->Parse();
-}
-
-void ToDoList::OnViewList(wxCommandEvent& event)
-{
-    Manager::Get()->GetMessageManager()->SwitchTo(m_ListPageIndex);
 }
 
 void ToDoList::OnReparse(CodeBlocksEvent& event)

@@ -3,14 +3,14 @@
 
 [Setup]
 AppName=Code::Blocks
-AppVerName=Code::Blocks 1.0-beta3
+AppVerName=Code::Blocks 1.0-beta4
 AppPublisher=Code::Blocks
-DefaultDirName=C:\CodeBlocks
+DefaultDirName={pf}\CodeBlocks
 DefaultGroupName=CodeBlocks
 LicenseFile=..\COPYING
-OutputBaseFilename=CodeBlocks-1.0-beta3
+OutputBaseFilename=CodeBlocks-1.0-beta4
 AppPublisherURL=www.codeblocks.org
-AppVersion=1.0beta3
+AppVersion=1.0beta4
 UninstallDisplayIcon={app}\codeblocks.exe
 UninstallDisplayName=Code::Blocks
 ShowLanguageDialog=no
@@ -31,7 +31,7 @@ Name: quicklaunchicon; Description: Create a &Quick Launch icon; GroupDescriptio
 Source: ..\output\codeblocks.exe; DestDir: {app}; Flags: ignoreversion; Components: ProgramFiles
 Source: ..\output\codeblocks.dll; DestDir: {app}; Components: ProgramFiles
 Source: mingwm10.dll; DestDir: {sys}; Flags: sharedfile; Components: ProgramFiles
-Source: wxmsw241.dll; DestDir: {sys}; Flags: sharedfile; Components: ProgramFiles
+Source: wxmsw242.dll; DestDir: {sys}; Flags: sharedfile; Components: ProgramFiles
 Source: ..\output\console_runner.exe; DestDir: {app}; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\resources.zip; DestDir: {app}\share\CodeBlocks; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\astyle.zip; DestDir: {app}\share\CodeBlocks; Components: AStyleFormatter

@@ -1,5 +1,8 @@
 These notes are for developers wishing to build Code::Blocks from source.
 
+The only external library needed to build Code::Blocks is wxWidgets.
+You must compile wxWidgets as a DLL. You must also compile contrib/stc and contrib/xrc under the wxWidgets source dir. Refer to the build documentation in the wxWidgets sources on how to do it.
+
 Win32 build instructions:
 -------------------------
 If you already have Code::Blocks installed, then just open the provided project file and hit "Compile". Else read on...
