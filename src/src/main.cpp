@@ -373,7 +373,8 @@ void MainFrame::CreateIDE()
 	m_pPrjMan = Manager::Get()->GetProjectManager();
 	m_pMsgMan = Manager::Get()->GetMessageManager();
  
-    CreateToolbars();
+	if (ConfigManager::Get()->Read("/main_frame/layout/toolbar_show", 1))
+        CreateToolbars();
 }
 
 wxMenu* MainFrame::RecreateMenu(wxMenuBar* mbar, const wxString& name)
@@ -772,6 +773,9 @@ void MainFrame::LoadWindowState()
 	m_pLeftSash->Show(ConfigManager::Get()->Read("/main_frame/layout/left_block_show", 1));
 	m_pBottomSash->Show(ConfigManager::Get()->Read("/main_frame/layout/bottom_block_show", 1));
 
+    // the toolbar visibility is handled in CreateIDE
+
+    // maximized?
     if (ConfigManager::Get()->Read("/main_frame/maximized", 0L))
         Maximize();
 }
@@ -803,6 +807,9 @@ void MainFrame::SaveWindowState()
         ConfigManager::Get()->Write("/main_frame/layout/left_block_show", m_pLeftSash->IsShown());
         ConfigManager::Get()->Write("/main_frame/layout/bottom_block_show", m_pBottomSash->IsShown());
 	}
+
+    // toolbar visibility
+	ConfigManager::Get()->Write("/main_frame/layout/toolbar_show", m_pToolbar != 0);
 }
 
 void MainFrame::DoAddPlugin(cbPlugin* plugin)
@@ -1216,13 +1223,13 @@ void MainFrame::OnFileQuit(wxCommandEvent& WXUNUSED(event))
 
 void MainFrame::OnApplicationClose(wxCloseEvent& event)
 {
-    if (!DoCloseCurrentWorkspace())
+    if (!m_pEdMan->CloseAll())
     {
         event.Veto();
         return;
     }
 
-    if (!m_pEdMan->CloseAll())
+    if (!DoCloseCurrentWorkspace())
     {
         event.Veto();
         return;
@@ -1705,19 +1712,8 @@ void MainFrame::OnToggleBar(wxCommandEvent& event)
 	{
 		if (m_pToolbar)
 		{
-			/// The tool
 			SetToolBar(0L);
-			/**
-			@bug Deleting the toolbar crashes...At first, I thought it's owned
-			by the frame, and that a SetToolBar(0L) will delete it...it didn't.
-			I tried accessing toolbar methods after SetToolBar(0L), and it still
-			worked fine (I expected an access violation). Note that I could be
-			wrong...delete doesn't have to mess up the memory being deleted, it
-			can keep it as is AFAIK, and that'd result in the behavior I've seen
-			(working methods even though the object was deleted).
-			*/
-			//delete m_pToolbar;
-			
+			delete m_pToolbar;
 			m_pToolbar = 0L;
 		}
 		else

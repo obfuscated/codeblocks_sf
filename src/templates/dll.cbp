@@ -1,17 +1,15 @@
 <?xml version="1.0"?>
 <!DOCTYPE Code::Blocks_project_file>
 <Code::Blocks_project_file>
+	<FileVersion major="1" minor="1"/>
 	<Project>
 		<Option title="DLL Sample"/>
 		<Option makefile="Makefile"/>
 		<Option makefile_is_custom="0"/>
 		<Build>
 			<Target title="default">
-				<Option output="sample.dll"/>
-				<Option object_output=".objs"/>
-				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="3"/>
+				<Option output="sample.dll"/> 
 				<Option createStaticLib="1"/>
 			</Target>
 		</Build>

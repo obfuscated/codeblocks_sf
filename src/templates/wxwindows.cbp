@@ -1,8 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE Code::Blocks_project_file>
 <Code::Blocks_project_file>
+	<FileVersion major="1" minor="1"/>
 	<Project>
-		<Option title="wxWindows application"/>
+		<Option title="wxWidgets application"/>
 		<Option makefile="Makefile"/>
 		<Build>
 			<Target title="default">
@@ -27,25 +28,7 @@
 			<Add option="-D__WINDOWS__"/>
 		</Compiler>
 		<Linker>
-			<Add option="-lstdc++"/>
-			<Add option="-lgcc"/>
-			<Add option="-lgdi32"/>
-			<Add option="-lcomdlg32"/>
-			<Add option="-lodbc32"/>
-			<Add option="-lwsock32"/>
-			<Add option="-lwinspool"/>
-			<Add option="-lwinmm"/>
-			<Add option="-lshell32"/>
-			<Add option="-lcomctl32"/>
-			<Add option="-lctl3d32"/>
-			<Add option="-ladvapi32"/>
-			<Add option="-lopengl32"/>
-			<Add option="-lglu32"/>
-			<Add option="-lole32"/>
-			<Add option="-loleaut32"/>
-			<Add option="-luuid"/>
-			<Add option="-lwxmsw242"/>
-			<Add option=""/>
+			<Add library="wxmsw242"/>
 		</Linker>
 	</Project>
 </Code::Blocks_project_file>

@@ -299,14 +299,13 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
     
     if (type != -1)
     {
-        if (!output.IsEmpty())
-            target->SetOutputFilename(output);
+        target->SetTargetType((TargetType)type); // type *must* come before output filename!
+        target->SetOutputFilename(output); // because if no filename defined, one will be suggested based on target type...
         if (!obj_output.IsEmpty())
             target->SetObjectOutput(obj_output);
         if (!deps_output.IsEmpty())
             target->SetDepsOutput(deps_output);
         target->SetExternalDeps(deps);
-        target->SetTargetType((TargetType)type);
         target->SetCompilerIndex(compilerIdx);
         target->SetExecutionParameters(parameters);
         target->SetHostApplication(hostApplication);

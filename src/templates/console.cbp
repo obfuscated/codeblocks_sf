@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE Code::Blocks_project_file>
 <Code::Blocks_project_file>
+	<FileVersion major="1" minor="1"/>
 	<Project>
 		<Option title="Console application"/>
 		<Option makefile="Makefile"/>
@@ -21,11 +22,5 @@
 				</Linker>
 			</Target>
 		</Build>
-		<Compiler>
-			<Add option=""/>
-		</Compiler>
-		<Linker>
-			<Add option=""/>
-		</Linker>
 	</Project>
 </Code::Blocks_project_file>

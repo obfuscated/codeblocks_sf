@@ -345,7 +345,7 @@
 		</Compiler>
 		<Linker>
 			<Add library="libwxmsw$(WX_VER).a"/>
-			<Add directory="sdk/tinyxml"/>
+			<Add directory="sdk\tinyxml"/>
 		</Linker>
 		<Unit filename="devel\share\CodeBlocks\images\codecompletion\README.txt">
 			<Option compilerVar=""/>
@@ -1745,6 +1745,12 @@
 			<Option link="0"/>
 			<Option target="sdk"/>
 		</Unit>
+		<Unit filename="sdk\resources\auto_detect_compilers.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
 		<Unit filename="sdk\resources\configure_tools.xrc">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
@@ -1782,6 +1788,12 @@
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk\resources\find_dialog.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\generic_multi_select.xrc">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

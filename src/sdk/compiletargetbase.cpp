@@ -62,7 +62,13 @@ void CompileTargetBase::SetTitle(const wxString& title)
 
 void CompileTargetBase::SetOutputFilename(const wxString& filename)
 {
-	if (m_OutputFilename == filename || filename.IsEmpty())
+    if (filename.IsEmpty())
+    {
+        m_OutputFilename = SuggestOutputFilename();
+        SetModified(true);
+        return;
+    }
+	else if (m_OutputFilename == filename)
 		return;
 	m_OutputFilename = UnixFilename(filename);
 	SetModified(true);

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE Code::Blocks_template_file>
 <Code::Blocks_template_file>
-	<Template name="OpenGL" title="OpenGL Application" category="Multimedia" bitmap="opengl.png">
+		<Template name="OpenGL" title="OpenGL Application" category="2D/3D Graphics" bitmap="opengl.png">
 		<FileSet name="s" title="Default">
 			<File source="opengl-main.cpp" destination="main.cpp"/>
 		</FileSet>

@@ -1573,11 +1573,11 @@ void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
         tbar->EnableTool(idMenuRun, !m_Process && prj);
         tbar->EnableTool(idMenuCompileAndRun, !m_Process && prj);
         tbar->EnableTool(idMenuRebuild, !m_Process && prj);
-    }
 
-    m_ToolTarget = XRCCTRL(*tbar, "idToolTarget", wxComboBox);
-    if (m_ToolTarget)
-        m_ToolTarget->Enable(!m_Process && prj);
+        m_ToolTarget = XRCCTRL(*tbar, "idToolTarget", wxComboBox);
+        if (m_ToolTarget)
+            m_ToolTarget->Enable(!m_Process && prj);
+    }
 	
     // allow other UpdateUI handlers to process this event
     // *very* important! don't forget it...

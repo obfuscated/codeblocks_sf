@@ -19,7 +19,10 @@ class MultiSelectDlg : public wxDialog
 		wxArrayString GetSelectedStrings();
 		wxArrayInt GetSelectedIndices();
 	protected:
+        void OnWildcard(wxCommandEvent& event);
+        void OnToggle(wxCommandEvent& event);
 	private:
+        DECLARE_EVENT_TABLE();
 };
 
 #endif // MULTISELECTDLG_H
