@@ -1,57 +1,73 @@
+#include "todolistview.h"
 #include <wx/intl.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/file.h>
 #include <manager.h>
 #include <configmanager.h>
 #include <editormanager.h>
+#include <messagemanager.h>
 #include <projectmanager.h>
-#include <projectbuildtarget.h>
+#include <cbeditor.h>
 #include <cbproject.h>
-#include "viewtododlg.h"
-#include <wx/arrimpl.cpp>
-WX_DEFINE_OBJARRAY(ToDoItems);
+#include <wx/sizer.h>
+#include <wx/stattext.h>
+#include <wx/file.h>
+#include <wx/utils.h>
 
-BEGIN_EVENT_TABLE(ViewTodoDlg, wxDialog)
-	EVT_COMBOBOX(-1, ViewTodoDlg::OnComboChange)
-	EVT_LIST_ITEM_ACTIVATED(XRCID("lcItems"), ViewTodoDlg::OnListSelected)
-	EVT_UPDATE_UI(XRCID("wxID_OK"), ViewTodoDlg::OnUpdateUI)
+int idSource = wxNewId();
+int idUser = wxNewId();
+int idRefresh = wxNewId();
+
+BEGIN_EVENT_TABLE(ToDoListView, SimpleListLog)
+	EVT_COMBOBOX(idSource, ToDoListView::OnComboChange)
+	EVT_COMBOBOX(idUser, ToDoListView::OnComboChange)
+	EVT_BUTTON(idRefresh, ToDoListView::OnRefresh)
 END_EVENT_TABLE()
 
-ViewTodoDlg::ViewTodoDlg(wxWindow* parent)
+ToDoListView::ToDoListView(wxNotebook* parent, const wxString& title, int numCols, int widths[], const wxArrayString& titles)
+    : SimpleListLog(parent, title, numCols, widths, titles),
+    m_pSource(0L),
+    m_pUser(0L)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, "dlgViewTodo");
-	m_pItems = XRCCTRL(*this, "lcItems", wxListCtrl);
-	m_pSource = XRCCTRL(*this, "cmbSource", wxComboBox);
-	m_pUser = XRCCTRL(*this, "cmbUser", wxComboBox);
+    int id = m_pList->GetId();
+    Connect(id, -1, wxEVT_COMMAND_LIST_ITEM_SELECTED,
+            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+            &ToDoListView::OnListItemSelected);
 
-	Parse();
-	FillList();
+	wxSizer* bs = m_pList->GetContainingSizer();
+	if (bs)
+	{
+        wxArrayString choices;
+        choices.Add(_("Current file"));
+        choices.Add(_("Open files"));
+        choices.Add(_("All project files"));
+        wxBoxSizer* hbs = new wxBoxSizer(wxHORIZONTAL);
+
+        hbs->Add(new wxStaticText(this, wxID_ANY, _("Scope:")), 0, wxTOP, 4);
+
+        m_pSource = new wxComboBox(this, idSource, wxEmptyString, wxDefaultPosition, wxDefaultSize, 3, &choices[0], wxCB_READONLY);
+        m_pSource->SetSelection(0);
+        hbs->Add(m_pSource, 0, wxLEFT | wxRIGHT, 8);
+
+        hbs->Add(new wxStaticText(this, wxID_ANY, _("User:")), 0, wxTOP, 4);
+
+        m_pUser = new wxComboBox(this, idUser, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, 0L, wxCB_READONLY);
+        m_pUser->Append(_("<All users>"));
+        m_pUser->SetSelection(0);
+        hbs->Add(m_pUser, 0, wxLEFT, 8);
+        
+        m_pRefresh = new wxButton(this, idRefresh, _("Refresh list"));
+        hbs->Add(m_pRefresh, 0, wxLEFT, 8);
+
+        bs->Add(hbs, 0, wxGROW | wxALL, 8);
+	}
 }
 
-ViewTodoDlg::~ViewTodoDlg()
+ToDoListView::~ToDoListView()
 {
 	//dtor
-	m_Items.Clear();
 }
 
-wxString ViewTodoDlg::GetFilename()
-{
-	int idx = m_pItems->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-	if (idx == -1)
-		return wxEmptyString;
-	return m_Items[idx].filename;
-}
-
-int ViewTodoDlg::GetLine()
-{
-	int idx = m_pItems->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-	if (idx == -1)
-		return -1;
-	return m_Items[idx].line;
-}
-
-void ViewTodoDlg::LoadUsers()
+void ToDoListView::LoadUsers()
 {
 	wxString oldStr = m_pUser->GetStringSelection();
 	m_pUser->Clear();
@@ -74,23 +90,11 @@ void ViewTodoDlg::LoadUsers()
 		m_pUser->SetSelection(0); // all users
 }
 
-void ViewTodoDlg::InitList()
-{
-	m_pItems->ClearAll();
-
-	m_pItems->InsertColumn(0, _("Type"), wxLIST_FORMAT_LEFT, 64);
-	m_pItems->InsertColumn(1, _("Text"), wxLIST_FORMAT_LEFT, 240);
-	m_pItems->InsertColumn(2, _("User"), wxLIST_FORMAT_LEFT, 64);
-	m_pItems->InsertColumn(3, _("Priority"), wxLIST_FORMAT_RIGHT, 32);
-	m_pItems->InsertColumn(4, _("File"), wxLIST_FORMAT_LEFT, 128);
-	m_pItems->InsertColumn(5, _("Line"), wxLIST_FORMAT_RIGHT, 48);
-}
-
-void ViewTodoDlg::FillList()
+void ToDoListView::FillList()
 {
 	LoadUsers();
-	m_pItems->Freeze();
-	InitList();
+	GetListControl()->Freeze();
+	Clear();
 
 	for (unsigned int i = 0; i < m_Items.GetCount(); ++i)
 	{
@@ -98,23 +102,25 @@ void ViewTodoDlg::FillList()
 		if (m_pUser->GetSelection() == 0 || // all users
 			m_pUser->GetStringSelection().Matches(item.user)) // or matches user
 		{
-			int idx = m_pItems->InsertItem(m_pItems->GetItemCount(), item.type);
-			m_pItems->SetItem(idx, 1, item.text);
-			m_pItems->SetItem(idx, 2, item.user);
-			m_pItems->SetItem(idx, 3, item.priorityStr);
-			m_pItems->SetItem(idx, 4, item.filename);
-			m_pItems->SetItem(idx, 5, item.lineStr);
+			int idx = GetListControl()->InsertItem(GetListControl()->GetItemCount(), item.type);
+			GetListControl()->SetItem(idx, 1, item.text);
+			GetListControl()->SetItem(idx, 2, item.user);
+			GetListControl()->SetItem(idx, 3, item.priorityStr);
+			GetListControl()->SetItem(idx, 4, item.lineStr);
+			GetListControl()->SetItem(idx, 5, item.filename);
 		}
 	}
 
-	m_pItems->Thaw();
+	GetListControl()->Thaw();
 
 }
 
-void ViewTodoDlg::Parse()
+void ToDoListView::Parse()
 {
+    wxBusyCursor busy;
+
 	// based on user prefs, parse files for todo items
-	m_Items.Clear();	
+	m_Items.Clear();
 	
 	switch (m_pSource->GetSelection())
 	{
@@ -156,15 +162,27 @@ void ViewTodoDlg::Parse()
 			break;
 		}
 	}
+	FillList();
 }
 
-void ViewTodoDlg::ParseEditor(cbEditor* pEditor)
+int ToDoListView::CalculateLineNumber(const wxString& buffer, int upTo)
+{
+	int line = 0;
+	for (int i = 0; i < upTo; ++i)
+	{
+		if (buffer.GetChar(i) == '\n')
+			++line;
+	}
+	return line;
+}
+
+void ToDoListView::ParseEditor(cbEditor* pEditor)
 {
 	if (pEditor)
 		ParseBuffer(pEditor->GetControl()->GetText(), pEditor->GetFilename());
 }
 
-void ViewTodoDlg::ParseFile(const wxString& filename)
+void ToDoListView::ParseFile(const wxString& filename)
 {
 	if (!wxFileExists(filename))
 		return;
@@ -180,7 +198,7 @@ void ViewTodoDlg::ParseFile(const wxString& filename)
 	ParseBuffer(st, filename);
 }
 
-void ViewTodoDlg::ParseBuffer(const wxString& buffer, const wxString& filename)
+void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
 {
 	// this is the actual workhorse...
 	
@@ -332,31 +350,31 @@ void ViewTodoDlg::ParseBuffer(const wxString& buffer, const wxString& filename)
 	}
 }
 
-int ViewTodoDlg::CalculateLineNumber(const wxString& buffer, int upTo)
+void ToDoListView::OnComboChange(wxCommandEvent& event)
 {
-	int line = 0;
-	for (int i = 0; i < upTo; ++i)
+    Parse();
+}
+
+void ToDoListView::OnListItemSelected(wxListEvent& event)
+{
+    if (event.GetIndex() == -1)
+        return;
+    wxString file = m_Items[event.GetIndex()].filename;
+    long int line = m_Items[event.GetIndex()].line;
+    
+    if (file.IsEmpty() || line <= 0)
+        return;
+
+	// jump to file/line selected
+	cbEditor* ed = Manager::Get()->GetEditorManager()->Open(file);
+	if (ed)
 	{
-		if (buffer.GetChar(i) == '\n')
-			++line;
-	}
-	return line;
+		ed->GetControl()->GotoLine(line - 1);
+		ed->Activate();
+    }
 }
 
-// events
-
-void ViewTodoDlg::OnComboChange(wxCommandEvent& event)
+void ToDoListView::OnRefresh(wxCommandEvent& event)
 {
-	Parse();
-	FillList();
-}
-
-void ViewTodoDlg::OnListSelected(wxListEvent& event)
-{
-	EndModal(wxID_OK);
-}
-
-void ViewTodoDlg::OnUpdateUI(wxUpdateUIEvent& event)
-{
-	XRCCTRL(*this, "wxID_OK", wxButton)->Enable(m_pItems->GetSelectedItemCount() > 0);
+    Parse();
 }

@@ -1,0 +1,51 @@
+#ifndef TODOLISTVIEW_H
+#define TODOLISTVIEW_H
+
+#include <simplelistlog.h>
+#include <wx/combobox.h>
+#include <wx/button.h>
+#include <wx/dynarray.h>
+
+class cbEditor;
+
+struct ToDoItem
+{
+	wxString type;
+	wxString text;
+	wxString user;
+	wxString filename;
+	wxString lineStr;
+	wxString priorityStr;
+	int line;
+	int priority;
+};
+WX_DECLARE_OBJARRAY(ToDoItem, ToDoItems);
+
+class ToDoListView : public SimpleListLog
+{
+	public:
+		ToDoListView(wxNotebook* parent, const wxString& title, int numCols, int widths[], const wxArrayString& titles);
+		virtual ~ToDoListView();
+        void Parse();
+	protected:
+        void LoadUsers();
+        void FillList();
+		void ParseEditor(cbEditor* pEditor);
+		void ParseFile(const wxString& filename);
+		void ParseBuffer(const wxString& buffer, const wxString& filename);
+		int CalculateLineNumber(const wxString& buffer, int upTo);
+
+        void OnComboChange(wxCommandEvent& event);
+        void OnListItemSelected(wxListEvent& event);
+        void OnRefresh(wxCommandEvent& event);
+        
+		ToDoItems m_Items;
+        wxComboBox* m_pSource;
+        wxComboBox* m_pUser;
+        wxButton* m_pRefresh;
+	private:
+        DECLARE_EVENT_TABLE()
+};
+
+#endif // TODOLISTVIEW_H
+

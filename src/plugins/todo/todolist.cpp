@@ -18,11 +18,17 @@
 #include <manager.h>
 #include <configmanager.h>
 #include <editormanager.h>
+#include <messagemanager.h>
+#include <projectmanager.h>
 #include <cbeditor.h>
+#include <cbproject.h>
 #include <licenses.h>
 #include "todolist.h"
 #include "addtododlg.h"
-#include "viewtododlg.h"
+#include "todosettingsdlg.h"
+
+#include <wx/arrimpl.cpp>
+WX_DEFINE_OBJARRAY(ToDoItems);
 
 cbPlugin* GetPlugin()
 {
@@ -35,6 +41,12 @@ const int idViewTodo = wxNewId();
 BEGIN_EVENT_TABLE(ToDoList, cbPlugin)
 	EVT_MENU(idAddTodo, ToDoList::OnAddItem)
 	EVT_MENU(idViewTodo, ToDoList::OnViewList)
+    EVT_EDITOR_OPEN(ToDoList::OnReparse)
+    EVT_EDITOR_SAVE(ToDoList::OnReparse)
+    EVT_PROJECT_CLOSE(ToDoList::OnReparse)
+    EVT_PROJECT_ACTIVATE(ToDoList::OnReparse)
+    EVT_PROJECT_FILE_ADDED(ToDoList::OnReparse)
+    EVT_PROJECT_FILE_REMOVED(ToDoList::OnReparse)
 END_EVENT_TABLE()
 
 ToDoList::ToDoList()
@@ -55,7 +67,7 @@ ToDoList::ToDoList()
     m_PluginInfo.authorWebsite = "www.codeblocks.org";
 	m_PluginInfo.thanksTo = "";
 	m_PluginInfo.license = LICENSE_GPL;
-	m_PluginInfo.hasConfigure = false;
+	m_PluginInfo.hasConfigure = true;
 }
 
 ToDoList::~ToDoList()
@@ -65,10 +77,26 @@ ToDoList::~ToDoList()
 
 void ToDoList::OnAttach()
 {
+	// create ToDo in bottom view
+	wxArrayString titles;
+	int widths[6] = {64, 320, 64, 48, 48, 640};
+	titles.Add(_("Type"));
+	titles.Add(_("Text"));
+	titles.Add(_("User"));
+	titles.Add(_("Prio."));
+	titles.Add(_("Line"));
+	titles.Add(_("File"));
+
+    MessageManager* msgMan = Manager::Get()->GetMessageManager();
+	m_pListLog = new ToDoListView(msgMan, m_PluginInfo.title, 6, widths, titles);
+	m_ListPageIndex = msgMan->AddLog(m_pListLog);
+
+    m_AutoRefresh = ConfigManager::Get()->Read("todo_list/auto_refresh", true);
 }
 
 void ToDoList::OnRelease()
 {
+    Manager::Get()->GetMessageManager()->DeletePage(m_ListPageIndex);
 	if (m_pMenu)
 		m_pMenu->Delete(idViewTodo);
 }
@@ -105,6 +133,14 @@ void ToDoList::BuildToolBar(wxToolBar* toolBar)
 {
 	//NotImplemented("ToDoList::BuildToolBar()");
 	return;
+}
+
+int ToDoList::Configure()
+{
+    ToDoSettingsDlg dlg;
+    if (dlg.ShowModal() == wxID_OK)
+        m_AutoRefresh = ConfigManager::Get()->Read("todo_list/auto_refresh", true);
+	return 0;
 }
 
 // events
@@ -212,17 +248,17 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
 		origPos += buffer.Length() + crlfLen;
 	control->GotoPos(origPos);
 	control->EnsureCaretVisible();
+	
+	m_pListLog->Parse();
 }
 
 void ToDoList::OnViewList(wxCommandEvent& event)
 {
-    // display todo list
-    ViewTodoDlg dlg(Manager::Get()->GetAppWindow());
-    if (dlg.ShowModal() != wxID_OK)
-        return;
-	
-	// jump to file/line selected
-	cbEditor* ed = Manager::Get()->GetEditorManager()->Open(dlg.GetFilename());
-	if (ed)
-		ed->GetControl()->GotoLine(dlg.GetLine());
+    Manager::Get()->GetMessageManager()->SwitchTo(m_ListPageIndex);
+}
+
+void ToDoList::OnReparse(CodeBlocksEvent& event)
+{
+    if (m_AutoRefresh)
+        m_pListLog->Parse();
 }

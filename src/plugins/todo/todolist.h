@@ -26,14 +26,17 @@
 #endif
 
 #include <settings.h> // much of the SDK is here
-#include <cbPlugin.h> // the base class we 're inheriting
+#include <sdk_events.h>
+#include <cbplugin.h> // the base class we 're inheriting
+
+#include "todolistview.h"
 
 class PLUGIN_EXPORT ToDoList : public cbPlugin
 {
 	public:
 		ToDoList();
 		~ToDoList();
-		int Configure(){ return -1; }
+		int Configure();
 		void BuildMenu(wxMenuBar* menuBar);
 		void BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg);
 		void BuildToolBar(wxToolBar* toolBar);
@@ -42,8 +45,12 @@ class PLUGIN_EXPORT ToDoList : public cbPlugin
 	protected:
 		void OnAddItem(wxCommandEvent& event);
 		void OnViewList(wxCommandEvent& event);
-	private:
+		void OnReparse(CodeBlocksEvent& event);
+    private:
 		wxMenu* m_pMenu;
+		ToDoListView* m_pListLog;
+		int m_ListPageIndex;
+		bool m_AutoRefresh;
 		DECLARE_EVENT_TABLE()
 };
 
