@@ -12,12 +12,14 @@ CompilerMINGW::CompilerMINGW()
 	m_Programs.C = "mingw32-gcc.exe";
 	m_Programs.CPP = "mingw32-g++.exe";
 	m_Programs.LD = "mingw32-g++.exe";
+	m_Programs.LIB = "ar.exe";
 	m_Programs.WINDRES = "windres.exe";
 	m_Programs.MAKE = "mingw32-make.exe";
 #else
 	m_Programs.C = "gcc";
 	m_Programs.CPP = "g++";
 	m_Programs.LD = "g++";
+	m_Programs.LIB = "ar";
 	m_Programs.WINDRES = "";
 	m_Programs.MAKE = "make";
 #endif
@@ -66,7 +68,7 @@ CompilerMINGW::CompilerMINGW()
 #else
     m_Commands[(int)ctLinkDynamicCmd] = "$linker -shared -Wl,--output-def=$def_output -Wl,--out-implib=$static_output $libdirs $link_objects $libs -o $exe_output $link_options";
 #endif
-    m_Commands[(int)ctLinkStaticCmd] = "ar -r $exe_output $link_objects\n\tranlib $exe_output";
+    m_Commands[(int)ctLinkStaticCmd] = "$lib_linker -r $static_output $link_objects\n\tranlib $exe_output";
 }
 
 CompilerMINGW::~CompilerMINGW()

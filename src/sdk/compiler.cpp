@@ -64,6 +64,8 @@ void Compiler::SaveSettings(const wxString& baseKey)
 	ConfigManager::Get()->Write(tmp + "/include_dirs", key);
 	key = GetStringFromArray(m_LibDirs);
 	ConfigManager::Get()->Write(tmp + "/library_dirs", key);
+	key = GetStringFromArray(m_LinkLibs);
+	ConfigManager::Get()->Write(tmp + "/libraries", key);
 	key = GetStringFromArray(m_CmdsBefore);
 	ConfigManager::Get()->Write(tmp + "/commands_before", key);
 	key = GetStringFromArray(m_CmdsAfter);
@@ -73,6 +75,7 @@ void Compiler::SaveSettings(const wxString& baseKey)
     ConfigManager::Get()->Write(tmp + "/c_compiler", m_Programs.C);
     ConfigManager::Get()->Write(tmp + "/cpp_compiler", m_Programs.CPP);
     ConfigManager::Get()->Write(tmp + "/linker", m_Programs.LD);
+    ConfigManager::Get()->Write(tmp + "/lib_linker", m_Programs.LIB);
     ConfigManager::Get()->Write(tmp + "/res_compiler", m_Programs.WINDRES);
     ConfigManager::Get()->Write(tmp + "/make", m_Programs.MAKE);
     ConfigManager::Get()->Write(tmp + "/debugger", m_Programs.DBG);
@@ -115,6 +118,7 @@ void Compiler::LoadSettings(const wxString& baseKey)
     m_Programs.C = ConfigManager::Get()->Read(tmp + "/c_compiler", m_Programs.C);
     m_Programs.CPP = ConfigManager::Get()->Read(tmp + "/cpp_compiler", m_Programs.CPP);
     m_Programs.LD = ConfigManager::Get()->Read(tmp + "/linker", m_Programs.LD);
+    m_Programs.LIB = ConfigManager::Get()->Read(tmp + "/lib_linker", m_Programs.LIB);
     m_Programs.WINDRES = ConfigManager::Get()->Read(tmp + "/res_compiler", m_Programs.WINDRES);
     m_Programs.MAKE = ConfigManager::Get()->Read(tmp + "/make", m_Programs.MAKE);
     m_Programs.DBG = ConfigManager::Get()->Read(tmp + "/debugger", m_Programs.DBG);
@@ -123,6 +127,7 @@ void Compiler::LoadSettings(const wxString& baseKey)
     m_LinkerOptions = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/linker_options", wxEmptyString));
     m_IncludeDirs = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/include_dirs", m_MasterPath + sep + "include"));
     m_LibDirs = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/library_dirs", m_MasterPath + sep + "lib"));
+    m_LinkLibs = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/libraries", ""));
     m_CmdsBefore = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/commands_before", wxEmptyString));
     m_CmdsAfter = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/commands_after", wxEmptyString));
 

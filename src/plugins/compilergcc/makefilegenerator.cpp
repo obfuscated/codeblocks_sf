@@ -58,6 +58,7 @@ wxString MakefileGenerator::ReplaceCompilerMacros(CommandType et,
     
     compilerCmd.Replace("$compiler", "$(" + compilerVar + ")");
     compilerCmd.Replace("$linker", "$(LD)");
+    compilerCmd.Replace("$lib_linker", "$(LIB)");
     compilerCmd.Replace("$rescomp", "$(RESCOMP)");
     compilerCmd.Replace("$options", "$(" + target->GetTitle() + "_CFLAGS)");
     compilerCmd.Replace("$link_options", "$(" + target->GetTitle() + "_LDFLAGS)");
@@ -183,6 +184,7 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
     wxString compilerCmd = m_CompilerSet->GetCommand(et);
     compilerCmd.Replace("$compiler", compilerStr);
     compilerCmd.Replace("$linker", m_CompilerSet->GetPrograms().LD);
+    compilerCmd.Replace("$lib_linker", m_CompilerSet->GetPrograms().LIB);
     compilerCmd.Replace("$rescomp", m_CompilerSet->GetPrograms().WINDRES);
     compilerCmd.Replace("$options", cflags);
     compilerCmd.Replace("$link_options", ldflags);
@@ -198,27 +200,35 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
     compilerCmd.Replace("$link_resobjects", deps);
     compilerCmd.Replace("$link_objects", object);
 
-    wxFileName fname(target->GetOutputFilename());
-    fname.SetName("lib" + fname.GetName());
-    fname.SetExt(STATICLIB_EXT);
-    wxString out = UnixFilename(fname.GetFullPath());
-    ConvertToMakefileFriendly(out);
-    QuoteStringIfNeeded(out);
-
-    if (target->GetTargetType() == ttDynamicLib && target->GetCreateStaticLib())
-        compilerCmd.Replace("$static_output", out);
-    else
-        compilerCmd.Replace("-Wl,--out-implib=$static_output", "");
-    if ((target->GetTargetType() == ttDynamicLib || target->GetTargetType() == ttStaticLib) && target->GetCreateStaticLib())
+    if (target->GetTargetType() == ttStaticLib || target->GetTargetType() == ttDynamicLib)
     {
-        fname.SetExt("def");
-        out = UnixFilename(fname.GetFullPath());
+        wxFileName fname(target->GetOutputFilename());
+        fname.SetName(compiler->GetSwitches().libPrefix + fname.GetName());
+        fname.SetExt(compiler->GetSwitches().libExtension);
+        wxString out = UnixFilename(fname.GetFullPath());
         ConvertToMakefileFriendly(out);
         QuoteStringIfNeeded(out);
-        compilerCmd.Replace("$def_output", out);
+        if (target->GetTargetType() == ttStaticLib || target->GetCreateStaticLib())
+            compilerCmd.Replace("$static_output", out);
+        else
+        {
+            compilerCmd.Replace("-Wl,--out-implib=$static_output", ""); // special gcc case
+            compilerCmd.Replace("$static_output", "");
+        }
+        if (target->GetCreateDefFile())
+        {
+            fname.SetExt("def");
+            out = UnixFilename(fname.GetFullPath());
+            ConvertToMakefileFriendly(out);
+            QuoteStringIfNeeded(out);
+            compilerCmd.Replace("$def_output", out);
+        }
+        else
+        {
+            compilerCmd.Replace("-Wl,--output-def=$def_output", ""); // special gcc case
+            compilerCmd.Replace("$def_output", "");
+        }
     }
-    else
-        compilerCmd.Replace("-Wl,--output-def=$def_output", "");
 
     m_CompilerSet = old_compiler;
 
@@ -480,6 +490,7 @@ void MakefileGenerator::DoAddMakefileVars(wxString& buffer)
     buffer << "CC=" << m_CompilerSet->GetPrograms().C << '\n';
     buffer << "CPP=" << m_CompilerSet->GetPrograms().CPP << '\n';
     buffer << "LD=" << m_CompilerSet->GetPrograms().LD << '\n';
+    buffer << "LIB=" << m_CompilerSet->GetPrograms().LIB << '\n';
     buffer << "RESCOMP=" << m_CompilerSet->GetPrograms().WINDRES << '\n';
 	
     buffer << '\n';

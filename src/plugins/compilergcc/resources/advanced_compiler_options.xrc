@@ -76,6 +76,7 @@
                         <label>Compiler executable:
 Resource compiler executable:
 Linker executable:
+Linker executable for static libs:
 Compiler flags:
 Linker flags:
 Compiler include paths:
@@ -100,6 +101,7 @@ Resources output file:</label>
                         <label>$$compiler
 $$rescomp
 $$linker
+$$lib_linker
 $$options
 $$link_options
 $$includes

@@ -14,6 +14,7 @@ CompilerMSVC::CompilerMSVC()
 	m_Programs.C = "cl.exe";
 	m_Programs.CPP = "cl.exe";
 	m_Programs.LD = "link.exe";
+	m_Programs.LIB = "link.exe";
 	m_Programs.WINDRES = "rc.exe"; // platform SDK is needed for this
 	m_Programs.MAKE = "mingw32-make.exe";
 	
@@ -74,7 +75,7 @@ CompilerMSVC::CompilerMSVC()
     m_Commands[(int)ctLinkExeCmd] = "$linker /nologo /subsystem:windows $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options";
     m_Commands[(int)ctLinkConsoleExeCmd] = "$linker /nologo $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options";
     m_Commands[(int)ctLinkDynamicCmd] = "$linker /dll /nologo $libdirs /out:$exe_output $libs $link_objects $link_options";
-    m_Commands[(int)ctLinkStaticCmd] = "$linker /lib /nologo $libdirs /out:$exe_output $libs $link_objects $link_options";
+    m_Commands[(int)ctLinkStaticCmd] = "$lib_linker /lib /nologo $libdirs /out:$static_output $libs $link_objects $link_options";
 }
 
 CompilerMSVC::~CompilerMSVC()

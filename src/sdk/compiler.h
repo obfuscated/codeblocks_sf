@@ -12,6 +12,7 @@
     Compiler executable: $compiler
     Resource compiler executable: $rescomp
     Linker executable: $linker
+    Linker executable for static libs: $lib_linker
     Compiler options: $options
     Linker options: $link_options
     Include dirs: $includes
@@ -72,12 +73,13 @@ enum AutoDetectResult
 /// Struct to keep programs
 struct CompilerPrograms
 {
-    wxString C;
-    wxString CPP;
-    wxString LD;
-    wxString WINDRES;
-    wxString MAKE;
-    wxString DBG;
+    wxString C; // C compiler
+    wxString CPP; // C++ compiler
+    wxString LD; // dynamic libs linker
+    wxString LIB; // static libs linker
+    wxString WINDRES; // resource compiler
+    wxString MAKE; // make
+    wxString DBG; // debugger
 };
 
 /// Struct to keep switches

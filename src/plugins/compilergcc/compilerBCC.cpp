@@ -8,6 +8,7 @@ CompilerBCC::CompilerBCC()
 	m_Programs.C = "bcc32.exe";
 	m_Programs.CPP = "bcc32.exe";
 	m_Programs.LD = "ilink32.exe";
+	m_Programs.LIB = "tlib.exe";
 	m_Programs.WINDRES = "brcc32.exe"; // platform SDK is needed for this
 	m_Programs.MAKE = "mingw32-make.exe";
 	
@@ -43,7 +44,7 @@ CompilerBCC::CompilerBCC()
     m_Commands[(int)ctLinkExeCmd] = "$linker -aa  $link_options $libdirs c0w32 $link_objects,$exe_output,,$libs,,$link_resobjects";
     m_Commands[(int)ctLinkConsoleExeCmd] = "$linker -ap  $link_options $libdirs c0x32 $link_objects,$exe_output,,$libs,,$link_resobjects";
     m_Commands[(int)ctLinkDynamicCmd] = "$linker $libdirs -o $exe_output $libs $link_objects $link_options";
-    m_Commands[(int)ctLinkStaticCmd] = "$linker $libdirs -o $exe_output $libs $link_objects $link_options";
+    m_Commands[(int)ctLinkStaticCmd] = "$lib_linker /C $static_output +$link_objects,$def_output";
 }
 
 CompilerBCC::~CompilerBCC()

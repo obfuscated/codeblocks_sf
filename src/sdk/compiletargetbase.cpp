@@ -25,6 +25,7 @@
 
 #include <wx/filename.h>
 #include "compiletargetbase.h"
+#include "compilerfactory.h"
 #include "globals.h"
 
 CompileTargetBase::CompileTargetBase()
@@ -161,7 +162,7 @@ wxString CompileTargetBase::GetDynamicLibFilename()
         m_Filename = m_OutputFilename;
     wxFileName fname(m_Filename);
     fname.SetName(fname.GetName());
-    fname.SetExt(DYNAMICLIB_EXT); 
+    fname.SetExt(DYNAMICLIB_EXT);
     return fname.GetFullPath();
 }
 
@@ -170,7 +171,14 @@ wxString CompileTargetBase::GetDynamicLibDefFilename()
     if (m_Filename.IsEmpty())
         m_Filename = m_OutputFilename;
     wxFileName fname(m_Filename);
-    fname.SetName("lib" + fname.GetName());
+    
+    wxString prefix = "lib";
+    if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
+    {
+        Compiler* compiler = CompilerFactory::Compilers[m_CompilerIdx];
+        prefix = compiler->GetSwitches().libPrefix;
+    }
+    fname.SetName(prefix + fname.GetName());
     fname.SetExt("def");
     return fname.GetFullPath();
 }
@@ -180,8 +188,17 @@ wxString CompileTargetBase::GetStaticLibFilename()
     if (m_Filename.IsEmpty())
         m_Filename = m_OutputFilename;
     wxFileName fname(m_Filename);
-    fname.SetName("lib" + fname.GetName());
-    fname.SetExt(STATICLIB_EXT); 
+
+    wxString prefix = "lib";
+    wxString suffix = STATICLIB_EXT;
+    if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
+    {
+        Compiler* compiler = CompilerFactory::Compilers[m_CompilerIdx];
+        prefix = compiler->GetSwitches().libPrefix;
+        suffix = compiler->GetSwitches().libExtension;
+    }
+    fname.SetName(prefix + fname.GetName());
+    fname.SetExt(suffix);
     return fname.GetFullPath();
 }
 

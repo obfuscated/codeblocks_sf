@@ -556,7 +556,7 @@
                             <object class="sizeritem">
                               <object class="wxFlexGridSizer">
                                 <cols>2</cols>
-                                <rows>6</rows>
+                                <rows>8</rows>
                                 <vgap>8</vgap>
                                 <hgap>8</hgap>
                                 <growablecols>1</growablecols>
@@ -608,7 +608,7 @@
                                 </object>
                                 <object class="sizeritem">
                                   <object class="wxStaticText">
-                                    <label>Linker:</label>
+                                    <label>Linker for dynamic libs:</label>
                                   </object>
                                 </object>
                                 <object class="sizeritem">
@@ -622,6 +622,29 @@
                                     </object>
                                     <object class="sizeritem">
                                       <object class="wxButton" name="btnLinker">
+                                        <label>...</label>
+                                        <size>20,20</size>
+                                      </object>
+                                    </object>
+                                  </object>
+                                  <flag>wxEXPAND</flag>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxStaticText">
+                                    <label>Linker for static libs:</label>
+                                  </object>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxBoxSizer">
+                                    <orient>wxHORIZONTAL</orient>
+                                    <object class="sizeritem">
+                                      <object class="wxTextCtrl" name="txtLibLinker"/>
+                                      <option>1</option>
+                                      <flag>wxLEFT|wxEXPAND</flag>
+                                      <border>8</border>
+                                    </object>
+                                    <object class="sizeritem">
+                                      <object class="wxButton" name="btnLibLinker">
                                         <label>...</label>
                                         <size>20,20</size>
                                       </object>
@@ -874,7 +897,7 @@
                 <option>1</option>
                 <flag>wxLEFT|wxEXPAND</flag>
                 <border>8</border>
-                <minsize>480,320</minsize>
+                <minsize>480,340</minsize>
               </object>
             </object>
             <option>1</option>

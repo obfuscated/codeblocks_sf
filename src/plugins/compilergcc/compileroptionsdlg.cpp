@@ -61,6 +61,8 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxDialog)
     EVT_UPDATE_UI(			XRCID("btnCPPcompiler"),	CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("txtLinker"),			CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnLinker"),			CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(			XRCID("txtLibLinker"),		CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(			XRCID("btnLibLinker"),		CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("txtDebugger"),		CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnDebugger"),		CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("txtResComp"),		CompilerOptionsDlg::OnUpdateUI)
@@ -97,6 +99,7 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxDialog)
 	EVT_BUTTON(				XRCID("btnCcompiler"),		CompilerOptionsDlg::OnSelectProgramClick)
 	EVT_BUTTON(				XRCID("btnCPPcompiler"),	CompilerOptionsDlg::OnSelectProgramClick)
 	EVT_BUTTON(				XRCID("btnLinker"),		    CompilerOptionsDlg::OnSelectProgramClick)
+	EVT_BUTTON(				XRCID("btnLibLinker"),		    CompilerOptionsDlg::OnSelectProgramClick)
 	EVT_BUTTON(				XRCID("btnDebugger"),		CompilerOptionsDlg::OnSelectProgramClick)
 	EVT_BUTTON(				XRCID("btnResComp"),		CompilerOptionsDlg::OnSelectProgramClick)
 	EVT_BUTTON(				XRCID("btnMake"),		    CompilerOptionsDlg::OnSelectProgramClick)
@@ -197,6 +200,7 @@ void CompilerOptionsDlg::DoFillCompilerPrograms()
     XRCCTRL(*this, "txtCcompiler", wxTextCtrl)->SetValue(progs.C);
     XRCCTRL(*this, "txtCPPcompiler", wxTextCtrl)->SetValue(progs.CPP);
     XRCCTRL(*this, "txtLinker", wxTextCtrl)->SetValue(progs.LD);
+    XRCCTRL(*this, "txtLibLinker", wxTextCtrl)->SetValue(progs.LIB);
     XRCCTRL(*this, "txtResComp", wxTextCtrl)->SetValue(progs.WINDRES);
     XRCCTRL(*this, "txtMake", wxTextCtrl)->SetValue(progs.MAKE);
 }
@@ -680,6 +684,7 @@ void CompilerOptionsDlg::DoSaveCompilerPrograms(int compilerIdx)
     progs.C = XRCCTRL(*this, "txtCcompiler", wxTextCtrl)->GetValue();
     progs.CPP = XRCCTRL(*this, "txtCPPcompiler", wxTextCtrl)->GetValue();
     progs.LD = XRCCTRL(*this, "txtLinker", wxTextCtrl)->GetValue();
+    progs.LIB = XRCCTRL(*this, "txtLibLinker", wxTextCtrl)->GetValue();
     progs.WINDRES = XRCCTRL(*this, "txtResComp", wxTextCtrl)->GetValue();
     progs.MAKE = XRCCTRL(*this, "txtMake", wxTextCtrl)->GetValue();
     progs.DBG = XRCCTRL(*this, "txtDebugger", wxTextCtrl)->GetValue();
@@ -1087,6 +1092,8 @@ void CompilerOptionsDlg::OnSelectProgramClick(wxCommandEvent& event)
         obj = XRCCTRL(*this, "txtCPPcompiler", wxTextCtrl);
     else if (event.GetId() == XRCID("btnLinker"))
         obj = XRCCTRL(*this, "txtLinker", wxTextCtrl);
+    else if (event.GetId() == XRCID("btnLibLinker"))
+        obj = XRCCTRL(*this, "txtLibLinker", wxTextCtrl);
     else if (event.GetId() == XRCID("btnDebugger"))
         obj = XRCCTRL(*this, "txtDebugger", wxTextCtrl);
     else if (event.GetId() == XRCID("btnResComp"))
@@ -1189,6 +1196,8 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
         XRCCTRL(*this, "btnCPPcompiler", wxButton)->Enable(en);
         XRCCTRL(*this, "txtLinker", wxTextCtrl)->Enable(en);
         XRCCTRL(*this, "btnLinker", wxButton)->Enable(en);
+        XRCCTRL(*this, "txtLibLinker", wxTextCtrl)->Enable(en);
+        XRCCTRL(*this, "btnLibLinker", wxButton)->Enable(en);
         XRCCTRL(*this, "txtDebugger", wxTextCtrl)->Enable(en);
         XRCCTRL(*this, "btnDebugger", wxButton)->Enable(en);
         XRCCTRL(*this, "txtResComp", wxTextCtrl)->Enable(en);
