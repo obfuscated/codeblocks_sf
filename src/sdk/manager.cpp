@@ -27,6 +27,8 @@
 #include <wx/fs_zip.h>
 #include <wx/mdi.h>
 #include <wx/notebook.h>
+#include <wx/menu.h>
+#include <wx/toolbar.h>
 
 #include "manager.h" // class's header file
 #include "projectmanager.h"
@@ -38,6 +40,8 @@
 #include "configmanager.h"
 #include "templatemanager.h"
 #include "managerproxy.h"
+#include "xtra_res.h" // our new ToolBarAddOn handler
+
 
 static bool appShutingDown = false;
 
@@ -97,16 +101,84 @@ Manager::Manager(wxMDIParentFrame* appWindow, wxNotebook* notebook)
     // Basically, this is the very first place that will be called in the lib
     // (through Manager::Get()), so it's a very good place to load and initialize
     // any resources we 'll be using...
-    wxFileSystem::AddHandler(new wxZipFSHandler);
-    wxXmlResource::Get()->InitAllHandlers();
-    wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
-    wxXmlResource::Get()->Load(ConfigManager::Get()->Read("data_path", wxEmptyString) + "/manager_resources.zip#zip:*.xrc");
+    
+    Initxrc(true);
+    Loadxrc("/manager_resources.zip#zip:*.xrc");
 }
 
 // class destructor
 Manager::~Manager()
 {
     //delete m_Notebook;
+}
+
+void Manager::Initxrc(bool force)
+{
+    static bool xrcok = false;
+    if(!xrcok || force)
+    {
+        wxFileSystem::AddHandler(new wxZipFSHandler);
+        wxXmlResource::Get()->InitAllHandlers();
+        wxXmlResource::Get()->InsertHandler(new wxToolBarAddOnXmlHandler);
+        
+        xrcok=true;
+    }
+}
+
+void Manager::Loadxrc(wxString relpath)
+{
+    Manager::Initxrc();
+    wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
+    wxXmlResource::Get()->Load(resPath + relpath);
+}
+
+wxMenuBar *Manager::LoadMenuBar(wxString resid,bool createonfailure)
+{
+    wxMenuBar *m = wxXmlResource::Get()->LoadMenuBar(resid);
+    if(!m && createonfailure) m=new wxMenuBar();
+    return m;
+}
+
+wxMenu *Manager::LoadMenu(wxString menu_id,bool createonfailure)
+{
+    wxMenu *m = wxXmlResource::Get()->LoadMenu(menu_id);
+    if(!m && createonfailure) m=new wxMenu("");
+    return m;
+}
+
+wxToolBar *Manager::LoadToolBar(wxFrame *parent,wxString resid,bool defaultsmall)
+{
+    if(!parent) 
+        return 0L;
+    wxToolBar *tb = wxXmlResource::Get()->LoadToolBar(parent,resid);
+    if(!tb)
+    {
+        int flags = wxTB_HORIZONTAL;
+        int major;
+        int minor;
+        // version==wxWINDOWS_NT && major==5 && minor==1 => windowsXP
+        bool isXP = wxGetOsVersion(&major, &minor) == wxWINDOWS_NT && major == 5 && minor == 1;
+        if (!isXP)
+            flags |= wxTB_FLAT;
+        tb = parent->CreateToolBar(flags, wxID_ANY);  
+        tb->SetToolBitmapSize(defaultsmall ? wxSize(16, 16) : wxSize(22, 22));
+    }
+        
+    return tb;
+}
+
+void Manager::AddonToolBar(wxToolBar* toolBar,wxString resid)
+{
+    if(!toolBar)
+        return;
+    wxXmlResource::Get()->LoadObject(toolBar,NULL,resid,"wxToolBarAddOn");    
+}
+
+bool Manager::isToolBar16x16(wxToolBar* toolBar)
+{
+    if(!toolBar) return true; // Small by default
+    wxSize mysize=toolBar->GetToolBitmapSize();
+    return (mysize.GetWidth()<=16 && mysize.GetHeight()<=16);
 }
 
 wxMDIParentFrame* Manager::GetAppWindow()

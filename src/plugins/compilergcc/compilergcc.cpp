@@ -38,9 +38,7 @@
 #include "compilerBCC.h"
 #include "compilerDMC.h"
 #include "directcommands.h"
-#include "xtra_res.h"
 #include <wx/xrc/xmlres.h>
-#include <wx/fs_zip.h>
 
 #define COLOUR_MAROON wxColour(0xa0, 0x00, 0x00)
 #define COLOUR_NAVY   wxColour(0x00, 0x00, 0xa0)
@@ -173,11 +171,7 @@ CompilerGCC::CompilerGCC()
 	m_QueueIndex(0),
 	m_DeleteTempMakefile(true)
 {
-    wxFileSystem::AddHandler(new wxZipFSHandler);
-    wxXmlResource::Get()->InitAllHandlers();
-    wxXmlResource::Get()->InsertHandler(new wxToolBarAddOnXmlHandler);
-    wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
-    wxXmlResource::Get()->Load(resPath + "/compiler_gcc.zip#zip:*.xrc");
+    Manager::Get()->Loadxrc("/compiler_gcc.zip#zip:*.xrc");
 
     m_Type = ptCompiler;
     m_PluginInfo.name = "Compiler";
@@ -325,11 +319,7 @@ void CompilerGCC::BuildMenu(wxMenuBar* menuBar)
 	if (m_Menu)
 		return;
 
-    wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
-    wxXmlResource *myres = wxXmlResource::Get();
-    myres->Load(resPath + "/compiler_gcc.zip#zip:compiler_menu.xrc");
-    wxMenu *tmpmenu=myres->LoadMenu("compiler_menu");
-    m_Menu = tmpmenu ? tmpmenu : new wxMenu("");
+    m_Menu=Manager::Get()->LoadMenu("compiler_menu",true);
 
 	// target selection menu
 	wxMenuItem *tmpitem=m_Menu->FindItem(idMenuSelectTarget,NULL);
@@ -437,27 +427,17 @@ void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxS
 
 void CompilerGCC::BuildToolBar(wxToolBar* toolBar)
 {
-	if (!m_IsAttached)
+	if (!m_IsAttached || !toolBar)
 		return;
-	if (toolBar)
-	{        
-        wxSize mysize=toolBar->GetToolBitmapSize();
-        bool is_small=(mysize.GetWidth()<=16 && mysize.GetHeight()<=16);
-        wxString my_16x16=is_small ? "_16x16" : "";
-        
-        wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
-        wxXmlResource *myres = wxXmlResource::Get();
-        myres->Load(resPath + "/compiler_gcc.zip#zip:compiler_toolbar"+my_16x16+".xrc");
-		myres->LoadObject(toolBar,NULL,"compiler_toolbar"+my_16x16,"wxToolBarAddOn");
-		// supported by our *new* wxToolBarAddOnHandler
-
-        // neither the generic nor Motif native toolbars really support this
-        #if (wxUSE_TOOLBAR_NATIVE && !USE_GENERIC_TBAR) && !defined(__WXMOTIF__) && !defined(__WXX11__) && !defined(__WXMAC__)
-        m_ToolTarget = XRCCTRL(*toolBar, "idToolTarget", wxComboBox);
-        #endif
-        toolBar->Realize();
-        DoRecreateTargetMenu(); // make sure the tool target combo is up-to-date
-	}
+    wxString my_16x16=Manager::isToolBar16x16(toolBar) ? "_16x16" : "";
+    Manager::Get()->AddonToolBar(toolBar,"compiler_toolbar"+my_16x16);
+    
+    // neither the generic nor Motif native toolbars really support this
+    #if (wxUSE_TOOLBAR_NATIVE && !USE_GENERIC_TBAR) && !defined(__WXMOTIF__) && !defined(__WXX11__) && !defined(__WXMAC__)
+    m_ToolTarget = XRCCTRL(*toolBar, "idToolTarget", wxComboBox);
+    #endif
+    toolBar->Realize();
+    DoRecreateTargetMenu(); // make sure the tool target combo is up-to-date
 }
 
 void CompilerGCC::SetupEnvironment()

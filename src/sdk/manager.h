@@ -13,6 +13,9 @@ class MessageManager;
 class PluginManager;
 class ToolsManager;
 class MacrosManager;
+class wxMenu;
+class wxMenuBar;
+class wxToolBar;
 
 /*
  * No description
@@ -33,7 +36,24 @@ class DLLIMPORT Manager
 		static bool isappShutingDown();
 		// stupid typo ;-P		
 		static bool isappShuttingDown();
-		
+
+        /////// XML Resource functions ///////
+        
+		// Inits XML Resource system
+		static void Initxrc(bool force=false); 
+		// Loads XRC file(s) using data_path
+		static void Loadxrc(wxString relpath); 
+		// Loads Menubar from XRC
+		static wxMenuBar* LoadMenuBar(wxString resid,bool createonfailure=false);
+		// Loads Menu from XRC
+		static wxMenu* LoadMenu(wxString menu_id,bool createonfailure=false); 
+		// Loads ToolBar from XRC
+		static wxToolBar *LoadToolBar(wxFrame *parent,wxString resid,bool defaultsmall=true);
+		// Loads ToolBarAddOn from XRC into existing Toolbar
+
+        static void AddonToolBar(wxToolBar* toolBar,wxString resid);
+        static bool isToolBar16x16(wxToolBar* toolBar);
+
     private:
 		Manager(wxMDIParentFrame* appWindow, wxNotebook* notebook);
 		~Manager();
