@@ -345,15 +345,32 @@ int DebuggerGDB::Debug()
     msgMan->SwitchTo(m_PageIndex);
 	m_pLog->GetTextControl()->Clear();
 
+    m_TargetIndex = project->GetActiveBuildTarget();
+    msgMan->SwitchTo(m_PageIndex);
+	msgMan->AppendLog(m_PageIndex, _("Selecting target: "));
+	if (m_TargetIndex == -1)
+	{
+        m_TargetIndex = project->SelectTarget(m_TargetIndex);
+        if (m_TargetIndex == -1)
+        {
+            msgMan->Log(m_PageIndex, _("canceled"));
+            return 3;
+        }
+	}
+	ProjectBuildTarget* target = project->GetBuildTarget(m_TargetIndex);
+
+	msgMan->Log(m_PageIndex, target->GetTitle());
+
 	PluginsArray plugins = Manager::Get()->GetPluginManager()->GetCompilerOffers();
 	if (plugins.GetCount())
 		m_pCompiler = (cbCompilerPlugin*)plugins[0];
 	if (m_pCompiler)
 	{
-		m_pCompiler->Compile();
 		msgMan->AppendLog(m_PageIndex, _("Compiling: "));
+		m_pCompiler->Compile(target);
 		while (m_pCompiler->IsRunning())
 			wxYield();
+        msgMan->SwitchTo(m_PageIndex);
 		if (m_pCompiler->GetExitCode() != 0)
 		{
 			msgMan->Log(m_PageIndex, _("failed"));
@@ -363,17 +380,6 @@ int DebuggerGDB::Debug()
 		msgMan->Log(m_PageIndex, _("done"));
 	}
 
-    msgMan->SwitchTo(m_PageIndex);
-	msgMan->AppendLog(m_PageIndex, _("Selecting target: "));
-	m_TargetIndex = project->SelectTarget(m_TargetIndex);
-	if (m_TargetIndex == -1)
-	{
-		msgMan->Log(m_PageIndex, _("canceled"));
-		return 3;
-	}
-	ProjectBuildTarget* target = project->GetBuildTarget(m_TargetIndex);
-
-	msgMan->Log(m_PageIndex, target->GetTitle());
 	msgMan->AppendLog(m_PageIndex, _("Starting debugger: "));
 	
 	wxString cmd;

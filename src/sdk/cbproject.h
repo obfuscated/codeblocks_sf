@@ -66,7 +66,9 @@ class DLLIMPORT cbProject : public CompileTargetBase
         bool RemoveBuildTarget(int index);
         bool RemoveBuildTarget(const wxString& targetName);
         void ReOrderTargets(const wxArrayString& nameOrder);
-        
+		bool SetActiveBuildTarget(int target);
+		int GetActiveBuildTarget();
+
 		const wxArrayString& ExpandedNodes(){ return m_ExpandedNodes; }
 		void AddExpandedNode(const wxString& path){ m_ExpandedNodes.Add(path); }
 
@@ -96,6 +98,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
 
         // properties
         BuildTargets m_Targets;
+        int m_ActiveTarget;
         int m_DefaultExecuteTarget;
         wxString m_Makefile;
         bool m_CustomMakefile;

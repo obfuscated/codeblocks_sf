@@ -45,7 +45,8 @@
 
 // class constructor
 cbProject::cbProject(const wxString& filename)
-    : m_DefaultExecuteTarget(-1),
+    : m_ActiveTarget(-1),
+    m_DefaultExecuteTarget(-1),
     m_Makefile(""),
     m_CustomMakefile(false),
     m_Loaded(false)
@@ -831,6 +832,22 @@ int cbProject::IndexOfBuildTargetName(const wxString& targetName)
             return i;
     }
     return -1;
+}
+
+bool cbProject::SetActiveBuildTarget(int target)
+{
+    if (target == m_ActiveTarget)
+        return true;
+    m_ActiveTarget = target;
+    SetModified(true);
+    return true;
+}
+
+int cbProject::GetActiveBuildTarget()
+{
+    if (m_ActiveTarget < -1 || m_ActiveTarget >= (int)m_Targets.GetCount())
+        m_ActiveTarget = -1;
+    return m_ActiveTarget;
 }
 
 void cbProject::SetDefaultExecuteTargetIndex(int index)

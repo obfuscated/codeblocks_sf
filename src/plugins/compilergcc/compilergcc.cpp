@@ -734,6 +734,7 @@ void CompilerGCC::DoRecreateTargetMenu()
 	if (!CheckProject())
 		return;
 
+    m_TargetIndex = m_Project->GetActiveBuildTarget();
     m_TargetMenu->AppendCheckItem(idMenuSelectTargetAll, _("All"), _("Compile target 'all' in current project"));
 	if (m_ToolTarget)
 		m_ToolTarget->Append(_("All"));
@@ -765,6 +766,9 @@ void CompilerGCC::DoUpdateTargetMenu()
 	if (!m_TargetMenu)
 		return;
 	
+    if (m_Project)
+        m_Project->SetActiveBuildTarget(m_TargetIndex);
+
 	m_TargetMenu->Check(idMenuSelectTargetAll, m_TargetIndex == -1);
 	for (int i = 0; i < MAX_TARGETS; ++i)
 	{
@@ -1157,7 +1161,8 @@ int CompilerGCC::CompileAll()
     DoPrepareMultiProjectCommand(mpjCompile);
     DoPrepareQueue();
     ClearLog();
-    return Compile();
+    ProjectBuildTarget* target = DoAskForTarget();
+    return Compile(target);
 }
 
 int CompilerGCC::RebuildAll()
@@ -1165,7 +1170,8 @@ int CompilerGCC::RebuildAll()
     DoPrepareMultiProjectCommand(mpjRebuild);
     DoPrepareQueue();
     ClearLog();
-    return Rebuild();
+    ProjectBuildTarget* target = DoAskForTarget();
+    return Rebuild(target);
 }
 
 int CompilerGCC::KillProcess()
@@ -1742,11 +1748,12 @@ void CompilerGCC::OnJobEnd()
                     }
                     else
                     {
+                        ProjectBuildTarget* target = DoAskForTarget();
                         m_Queue.Clear();
                         switch (m_DoAllProjects)
                         {
-                            case mpjCompile: Compile(); break;
-                            case mpjRebuild: Rebuild(); break;
+                            case mpjCompile: Compile(target); break;
+                            case mpjRebuild: Rebuild(target); break;
                             default: break;
                         }
                     }

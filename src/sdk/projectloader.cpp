@@ -152,6 +152,7 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
     wxString makefile;
     bool makefile_custom = false;
     int defaultTarget = 0;
+    int activeTarget = -1;
     int compilerIdx = 0;
     
     // loop through all options
@@ -169,6 +170,9 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
         if (node->Attribute("default_target"))
             defaultTarget = atoi(node->Attribute("default_target"));
 
+        if (node->Attribute("active_target"))
+            activeTarget = atoi(node->Attribute("active_target"));
+
         if (node->Attribute("compiler"))
             compilerIdx = atoi(node->Attribute("compiler"));
         
@@ -179,6 +183,7 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
     m_pProject->SetMakefile(makefile);
     m_pProject->SetMakefileCustom(makefile_custom);
     m_pProject->SetDefaultExecuteTargetIndex(defaultTarget);
+    m_pProject->SetActiveBuildTarget(activeTarget);
     m_pProject->SetCompilerIndex(compilerIdx);
 }
 
@@ -549,6 +554,8 @@ bool ProjectLoader::Save(const wxString& filename)
     buffer << '\t' << '\t' << "<Option makefile_is_custom=\"" << m_pProject->IsMakefileCustom() << "\"/>" << '\n';
     if (m_pProject->GetDefaultExecuteTargetIndex() != 0)
         buffer << '\t' << '\t' << "<Option default_target=\"" << m_pProject->GetDefaultExecuteTargetIndex() << "\"/>" << '\n';
+    if (m_pProject->GetActiveBuildTarget() != -1)
+        buffer << '\t' << '\t' << "<Option active_target=\"" << m_pProject->GetActiveBuildTarget() << "\"/>" << '\n';
     buffer << '\t' << '\t' << "<Option compiler=\"" << m_pProject->GetCompilerIndex() << "\"/>" << '\n';
 
     buffer << '\t' << '\t' << "<Build>" << '\n';
