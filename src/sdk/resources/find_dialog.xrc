@@ -108,7 +108,9 @@
             </object>
           </object>
           <object class="notebookpage">
-            <label>Find in files</label>
+            <enabled>0</enabled>
+            <hidden>1</hidden>
+            <label>Find in files (not implemented yet)</label>
             <object class="wxPanel" name="tabFindInFiles">
               <object class="wxBoxSizer">
                 <orient>wxVERTICAL</orient>
@@ -181,6 +183,17 @@
                   <flag>wxTOP|wxEXPAND</flag>
                   <border>8</border>
                 </object>
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <style>wxALIGN_CENTRE</style>
+                    <font weight="bold" size="8"/>
+                    <label>Not implemented yet
+(sorry for the inconveniences).</label>
+                  </object>
+                  <flag>wxTOP|wxLEFT|wxRIGHT</flag>
+                  <border>8</border>
+                </object>
+                
               </object>
             </object>
           </object>

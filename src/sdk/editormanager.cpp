@@ -729,6 +729,17 @@ int EditorManager::ShowFindDialog(bool replace)
 			return -2;
 		}
 	}
+	
+/* TODO (Rick#1#): Implemente Find in Files and delete this sorry message. */
+	
+	if(dlg->IsFindInFiles())
+	{
+        wxMessageBox("Find in Files is not implemented yet.\n"
+        "Sorry for the inconveniences.\n"
+        "The Code::Blocks team.","Our Apologies...");
+        delete dlg;
+        return -2;
+	}
 		
 	if (!m_LastFindReplaceData)
 		m_LastFindReplaceData = new cbFindReplaceData;
