@@ -42,12 +42,12 @@ bool DevCppLoader::Open(const wxString& filename)
     if (tmp.IsEmpty())
         dev->Read("Compiler", &tmp, "");
     //tmp = tmp;
-    array = GetArrayFromString(tmp, "_@@@@_");
+    array = GetArrayFromString(tmp, "_@@_");
     m_pProject->SetCompilerOptions(array);
 
     dev->Read("Linker", &tmp, "");
     //tmp = tmp;
-    array = GetArrayFromString(tmp, "_@@@@_");
+    array = GetArrayFromString(tmp, "_@@_");
     m_pProject->SetLinkerOptions(array);
 
     dev->Read("Includes", &tmp, "");
@@ -64,6 +64,8 @@ bool DevCppLoader::Open(const wxString& filename)
     array = GetArrayFromString(tmp, ","); // make sure that this is comma-separated
     for (unsigned int i = 0; i < array.GetCount(); ++i)
     {
+        if (array[i].IsEmpty())
+            continue;
         tmp = array[i];
         m_pProject->AddFile(0, tmp, true, true);
     }
@@ -75,6 +77,8 @@ bool DevCppLoader::Open(const wxString& filename)
         dev->SetPath(path);
         tmp.Clear();
         dev->Read("FileName", &tmp, "");
+        if (tmp.IsEmpty())
+            continue;
 
         bool compile, compileCpp, link;
         dev->Read("Compile", &compile, false);
@@ -90,10 +94,10 @@ bool DevCppLoader::Open(const wxString& filename)
     dev->Read("Type", &typ, 0);
     target->SetTargetType(TargetType(typ));
 
-    if (dev->Read("OverrideOutput", 1) == 1)
+    if (dev->Read("OverrideOutput", (long)0) == 1)
         dev->Read("OverrideOutputName", &output, "");
     if (output.IsEmpty())
-        output = m_pProject->GetOutputFilename();
+        output = target->SuggestOutputFilename();
     dev->Read("ExeOutput", &out_path, "");
     if (!out_path.IsEmpty())
         output = out_path + "\\" + output;

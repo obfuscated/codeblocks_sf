@@ -38,10 +38,26 @@ wxString GetStringFromArray(const wxArrayString& array, const wxString& separato
 wxArrayString GetArrayFromString(const wxString& text, const wxString& separator)
 {
     wxArrayString out;
-	wxStringTokenizer tkz(text, separator);
-	while (tkz.HasMoreTokens())
-		out.Add(tkz.GetNextToken());
-
+    wxString search = text;
+    int seplen = separator.Length();
+    while (true)
+    {
+        int idx = search.Find(separator);
+        if (idx == -1)
+        {
+            search.Trim(false);
+            search.Trim(true);
+            if (!search.IsEmpty())
+                out.Add(search);
+            break;
+        }
+        wxString part = search.Left(idx);
+        search.Remove(0, idx + seplen);
+        part.Trim(false);
+        part.Trim(true);
+        if (!part.IsEmpty())
+            out.Add(part);
+    }
     return out;
 }
 

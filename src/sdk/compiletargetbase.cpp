@@ -100,21 +100,26 @@ void CompileTargetBase::SetOptionRelation(OptionsRelationType type, OptionsRelat
 wxString CompileTargetBase::GetOutputFilename()
 {
     if (m_OutputFilename.IsEmpty())
-    {
-        switch (m_TargetType)
-        {
-            case ttConsoleOnly: 
-            case ttExecutable: m_OutputFilename = GetExecutableFilename(); break;
-            case ttDynamicLib: m_OutputFilename = GetDynamicLibFilename(); break;
-            case ttStaticLib: m_OutputFilename = GetStaticLibFilename(); break;
-			default:
-                wxFileName fname;
-                fname.Assign(m_Filename);
-                m_OutputFilename = fname.GetFullPath();
-                break;
-        }
-    }
+        m_OutputFilename = SuggestOutputFilename();
     return m_OutputFilename;
+}
+
+wxString CompileTargetBase::SuggestOutputFilename()
+{
+    wxString suggestion;
+    switch (m_TargetType)
+    {
+        case ttConsoleOnly: 
+        case ttExecutable: suggestion = GetExecutableFilename(); break;
+        case ttDynamicLib: suggestion = GetDynamicLibFilename(); break;
+        case ttStaticLib: suggestion = GetStaticLibFilename(); break;
+        default:
+            wxFileName fname;
+            fname.Assign(m_Filename);
+            suggestion = fname.GetFullPath();
+            break;
+    }
+    return suggestion;
 }
 
 wxString CompileTargetBase::GetObjectOutput()

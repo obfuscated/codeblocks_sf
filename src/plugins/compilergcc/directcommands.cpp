@@ -37,7 +37,7 @@ pfDetails::pfDetails(DirectCommands* cmds, ProjectBuildTarget* target, ProjectFi
                           tmp.GetFullName();
     wxFileName o_file(object_file_native);
     o_file.MakeAbsolute(cmds->m_pProject->GetBasePath());
-    object_dir_native = o_file.GetPath(wxPATH_GET_VOLUME);
+    object_dir_native = o_file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
     object_file_absolute_native = o_file.GetFullPath();
     tmp.SetExt("depend");
     dep_file_native = tmp.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) +
@@ -46,7 +46,7 @@ pfDetails::pfDetails(DirectCommands* cmds, ProjectBuildTarget* target, ProjectFi
                       tmp.GetFullName();
     wxFileName d_file(dep_file_native);
     d_file.MakeAbsolute(cmds->m_pProject->GetBasePath());
-    dep_dir_native = d_file.GetPath(wxPATH_GET_VOLUME);
+    dep_dir_native = d_file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
     dep_file_absolute_native = o_file.GetFullPath();
     
     source_file = UnixFilename(source_file_native);

@@ -31,7 +31,8 @@ enum TargetType
 };
 
 /**
-  * Base class for build target classes. Each Code::Blocks project
+  * @brief Base class for build target classes
+  * Each Code::Blocks project
   * consists of at least one target. Each target has different settings,
   * e.g.:
   * \li Build options,
@@ -57,6 +58,7 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         virtual wxString GetObjectOutput(); ///< Read the target's objects output dir
         virtual wxString GetDepsOutput(); ///< Read the target's dependencies output dir
         virtual wxString GetOutputFilename(); ///< Read the target's output filename
+        virtual wxString SuggestOutputFilename(); ///< Suggest a filename based on the target's type
         virtual wxString GetExecutableFilename(); ///< Read the target's executable filename (produced if target type is ttExecutable)
         virtual wxString GetDynamicLibFilename(); ///< Read the target's dynamic library filename (produced if target type is ttDynamicLib)
         virtual wxString GetDynamicLibDefFilename(); ///< Read the target's dynamic library definition file filename (produced if target type is ttDynamicLib)

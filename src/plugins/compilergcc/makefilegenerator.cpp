@@ -277,6 +277,9 @@ void MakefileGenerator::DoAppendLinkerLibs(wxString& cmd, ProjectBuildTarget* ta
     wxArrayString libs = obj->GetLinkLibs();
     for (unsigned int x = 0; x < libs.GetCount(); ++x)
     {
+        if (libs[x].IsEmpty())
+            continue;
+
         // construct linker option for each lib, based on compiler's settings
         wxString libPrefix = m_CompilerSet->GetSwitches().libPrefix;
         wxString libExt = m_CompilerSet->GetSwitches().libExtension;
@@ -323,6 +326,8 @@ void MakefileGenerator::DoAppendIncludeDirs(wxString& cmd, ProjectBuildTarget* t
 	
     for (unsigned int x = 0; x < opts.GetCount(); ++x)
     {
+        if (opts[x].IsEmpty())
+            continue;
         wxString out = UnixFilename(opts[x]);
         ConvertToMakefileFriendly(out);
         QuoteStringIfNeeded(out);
@@ -345,6 +350,8 @@ void MakefileGenerator::DoAppendLibDirs(wxString& cmd, ProjectBuildTarget* targe
 	
     for (unsigned int x = 0; x < opts.GetCount(); ++x)
     {
+        if (opts[x].IsEmpty())
+            continue;
         wxString out = UnixFilename(opts[x]);
         ConvertToMakefileFriendly(out);
         QuoteStringIfNeeded(out);
