@@ -80,6 +80,7 @@ int idViewManager = wxNewId();
 int idViewMessageManager = wxNewId();
 int idViewStatusbar = wxNewId();
 int idViewFocusEditor = wxNewId();
+int idViewFullScreen = wxNewId();
 
 int idSearchFind = wxNewId();
 int idSearchFindNext = wxNewId();
@@ -108,6 +109,7 @@ int idHelpPlugins = wxNewId();
 
 int idLeftSash = wxNewId();
 int idBottomSash = wxNewId();
+int idCloseFullScreen = wxNewId();
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_SIZE(MainFrame::OnSize)
@@ -154,7 +156,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idViewManager, MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewStatusbar, MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewFocusEditor, MainFrame::OnViewMenuUpdateUI)
-
+    EVT_UPDATE_UI(idViewFullScreen, MainFrame::OnViewMenuUpdateUI)
+    
     EVT_EDITOR_UPDATE_UI(MainFrame::OnEditorUpdateUI)
 
     EVT_PLUGIN_ATTACHED(MainFrame::OnPluginLoaded)
@@ -200,6 +203,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idViewManager, MainFrame::OnToggleBar)
     EVT_MENU(idViewStatusbar, MainFrame::OnToggleStatusBar)
     EVT_MENU(idViewFocusEditor, MainFrame::OnFocusEditor)
+    EVT_MENU(idViewFullScreen, MainFrame::OnToggleFullScreen)
 
     EVT_MENU(idProjectNewEmptyProject, MainFrame::OnProjectNewEmpty)
     EVT_MENU(idProjectNew, MainFrame::OnProjectNew)
@@ -221,10 +225,14 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_SASH_DRAGGED(-1, MainFrame::OnDragSash)
 	
 	EVT_PROJECT_ACTIVATE(MainFrame::OnProjectActivated)
+	
+	/// CloseFullScreen event handling
+	EVT_BUTTON( idCloseFullScreen, MainFrame::OnToggleFullScreen )
 END_EVENT_TABLE()
 
 MainFrame::MainFrame(wxWindow* parent)
        : wxMDIParentFrame(parent, -1, "MainWin", wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE),
+	   m_pCloseFullScreenBtn(0L),
        m_pNotebook(0L),
 	   m_pLeftSash(0L),
 	   m_pBottomSash(0L),
@@ -294,6 +302,10 @@ void MainFrame::CreateIDE()
 	int bottomH = ConfigManager::Get()->Read("/main_frame/layout/bottom_block_height", 150);
     // hide managers initially (they 'll open when a project is opened)
 
+	// Create CloseFullScreen Button, and hide it initially
+	m_pCloseFullScreenBtn = new wxButton(this, idCloseFullScreen, _( "Close Fullscreen" ), wxDefaultPosition );
+	m_pCloseFullScreenBtn->Show( false );
+	
 	m_pLeftSash = new wxSashLayoutWindow(this, idLeftSash, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxSW_3D | wxCLIP_CHILDREN);
 	m_pLeftSash->SetDefaultSize(wxSize(leftW, GetClientSize().GetHeight()));
 	m_pLeftSash->SetOrientation(wxLAYOUT_VERTICAL);
@@ -386,7 +398,8 @@ void MainFrame::CreateMenubar()
 	view->AppendCheckItem(idViewManager, _("&Manager\tShift-F2"), _("Show/hide manager"));
 	view->AppendCheckItem(idViewMessageManager, _("Messa&ges\tF2"), _("Show/hide messages"));
 	view->AppendCheckItem(idViewStatusbar, _("&Status bar"), _("Show/hide status bar"));
-	view->Append(idViewFocusEditor, _("&Focus editor\tCtrl-Alt-E"), _("Set focus on the active editor"));
+	view->AppendCheckItem(idViewFullScreen, _("F&ullScreen"), _("Switch to FullScreen view"));
+	view->Append(idViewFocusEditor, _("&Focus editor\tCtrl-Alt-E"), _("Set focus on the active editor"));	
 	mbar->Append(view, _("&View"));
 	
 	wxMenu* search = new wxMenu();
@@ -481,6 +494,7 @@ void MainFrame::CreateToolbars()
 {
 	if (m_pToolbar)
 	{
+		/// @bug Deleting the toolbar crashes...So this could crash
 		delete m_pToolbar;
 		m_pToolbar = 0L;
 		SetToolBar(0L);
@@ -790,6 +804,18 @@ void MainFrame::DoUpdateLayout()
 //			layout.LayoutFrame(this, m_pEdMan);
 			break;
 	}
+	
+	/**
+	@attention Hack for fixing wxSashWindow oddness...Resize with 'height-1'.
+	This fixes the oddness. However, we resize again to 'height' to retain the
+	original height.
+	We resize here so that the bottom sash gets fixed both on startup, and when
+	it's hidden/shown later.
+	*/
+	int w, h;
+	m_pBottomSash->GetSize( &w, &h );
+	m_pBottomSash->SetSize( w, h-1 );
+	m_pBottomSash->SetSize( w, h );
 }
 
 void MainFrame::DoUpdateAppTitle()
@@ -1161,16 +1187,20 @@ void MainFrame::OnSearchGotoLine(wxCommandEvent& event)
 		return;
 
 	int max = ed->GetControl()->LineFromPosition(ed->GetControl()->GetLength()) + 1;
-	int line = ed->GetControl()->LineFromPosition(ed->GetControl()->GetCurrentPos()) + 1;
-	
-	line = wxGetNumberFromUser(_("Please enter the line number to jump to"),
-								_("Line:"),
+		
+	/**
+	@remarks We use wxGetText instead of wxGetNumber because wxGetNumber *must*
+	provide an initial line number...which doesn't make sense, and just keeps the
+	user deleting the initial line number everytime he instantiates the dialog.
+	However, this is just a temporary hack, because the default dialog used isn't
+	that suitable either.
+	*/
+    wxString strLine = wxGetTextFromUser( _("Line: "),
 								_("Goto line"),
-								line,
-								1,
-								max,
-								this);
-	if (line != -1)
+								_( "" ),
+								this );
+	int line = atol( strLine.c_str() );
+	if ( line > 1 && line <= max )
 		ed->GetControl()->GotoPos(ed->GetControl()->PositionFromLine(line - 1));
 }
 
@@ -1316,6 +1346,7 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Check(idViewMessageManager, m_pBottomSash && m_pBottomSash->IsShown());
     mbar->Check(idViewStatusbar, GetStatusBar());
     mbar->Check(idViewFocusEditor, ed);
+    mbar->Check(idViewFullScreen, IsFullScreen());
 
 	event.Skip();
 }
@@ -1366,20 +1397,37 @@ void MainFrame::OnEditorUpdateUI(CodeBlocksEvent& event)
 void MainFrame::OnToggleBar(wxCommandEvent& event)
 {
 	if (event.GetId() == idViewManager)
-		m_pLeftSash->Show(!m_pLeftSash->IsShown());
+    {
+        m_pLeftSash->Show(!m_pLeftSash->IsShown());
+        m_pLeftSash->SetSize( m_pLeftSash->GetSize() );
+    }
 	else if (event.GetId() == idViewMessageManager)
+	{
 		m_pBottomSash->Show(!m_pBottomSash->IsShown());
+    }
 	else if (event.GetId() == idViewToolMain)
 	{
 		if (m_pToolbar)
 		{
-			delete m_pToolbar;
-			m_pToolbar = 0L;
+			/// The tool
 			SetToolBar(0L);
+			/**
+			@bug Deleting the toolbar crashes...At first, I thought it's owned
+			by the frame, and that a SetToolBar(0L) will delete it...it didn't.
+			I tried accessing toolbar methods after SetToolBar(0L), and it still
+			worked fine (I expected an access violation). Note that I could be
+			wrong...delete doesn't have to mess up the memory being deleted, it
+			can keep it as is AFAIK, and that'd result in the behavior I've seen
+			(working methods even though the object was deleted).
+			*/
+			//delete m_pToolbar;
+			
+			m_pToolbar = 0L;
 		}
 		else
 			CreateToolbars();
 	}
+
 	DoUpdateLayout();
 }
 
@@ -1407,6 +1455,66 @@ void MainFrame::OnFocusEditor(wxCommandEvent& event)
     cbEditor* ed = m_pEdMan->GetActiveEditor();
     if (ed)
         ed->GetControl()->SetFocus();
+}
+
+void MainFrame::OnToggleFullScreen(wxCommandEvent& event)
+{
+    ShowFullScreen( !IsFullScreen(), wxFULLSCREEN_NOTOOLBAR | wxFULLSCREEN_NOSTATUSBAR 
+                    | wxFULLSCREEN_NOBORDER | wxFULLSCREEN_NOCAPTION );
+                    
+    // Create fullscreen-close button if we're in fullscreen
+    if( IsFullScreen() )
+    {
+        //
+        // Show the button to the bottom-right of the container
+        //
+        wxSize containerSize = GetClientSize();
+        wxSize buttonSize = m_pCloseFullScreenBtn->GetSize();
+        
+        // Align
+        m_pCloseFullScreenBtn->Move( containerSize.GetWidth() - buttonSize.GetWidth(),
+                    containerSize.GetHeight() - buttonSize.GetHeight() );
+        
+        m_pCloseFullScreenBtn->Show( true );
+        m_pCloseFullScreenBtn->Raise();
+    }
+    else
+    {
+        m_pCloseFullScreenBtn->Show( false );
+    }
+    /// @todo Check whether hiding all panes is desirable.
+    /// Perhaps make it customizable?
+    // Hide all panes
+    
+    /// @todo Can m_pLeftSash and m_pBottomSash ever be NULL?
+    if( !m_pLeftSash || !m_pBottomSash )
+    {
+        // Seems abnormal...
+        /// @todo Standardize a way for error/warning reporting...
+        m_pMsgMan->AppendLog( _( "(Warn)MainFrame::OnToggleFullScreen - Couldn't find the sash windows" ) );        
+    }
+    else if( m_pLeftSash && m_pBottomSash )
+    {
+        m_pLeftSash->Show(false);
+        m_pBottomSash->Show(false);
+    }
+    
+    // Update layout
+    DoUpdateLayout();
+    
+    /// @todo Update UI: This is hacky code duplication. Should be moved to a 
+    /// common function
+    wxMenuBar *mbar = GetMenuBar();
+    if( mbar )
+    {
+        mbar->Check(idViewManager, false);
+        mbar->Check(idViewMessageManager, false);
+    }
+    else
+    {
+        // As far as I know, this is abnormal...
+        m_pMsgMan->AppendLog( _( "(Warn)MainFrame::OnToggleFullScreen - Couldn't find the menubar" ) );
+    }
 }
 
 void MainFrame::OnPluginLoaded(CodeBlocksEvent& event)

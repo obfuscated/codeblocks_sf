@@ -84,6 +84,7 @@ class MainFrame : public wxMDIParentFrame
         void OnToggleBar(wxCommandEvent& event);
         void OnToggleStatusBar(wxCommandEvent& event);
         void OnFocusEditor(wxCommandEvent& event);
+        void OnToggleFullScreen(wxCommandEvent& event);
         
         // plugin events
         void OnPluginLoaded(CodeBlocksEvent& event);
@@ -136,6 +137,9 @@ class MainFrame : public wxMDIParentFrame
 		
         wxFileHistory m_FilesHistory;
 
+        /// "Close FullScreen" button. Only shown when in FullScreen view
+        wxButton* m_pCloseFullScreenBtn;
+        
         wxNotebook* m_pNotebook;
 		wxSashLayoutWindow* m_pLeftSash;
 		wxSashLayoutWindow* m_pBottomSash;
@@ -157,3 +161,4 @@ class MainFrame : public wxMDIParentFrame
 };
 
 #endif // MAIN_H
+
