@@ -5,6 +5,7 @@
 
 // forward decls
 class cbProject;
+class ProjectFile;
 
 class MSVC7Loader : public IBaseLoader
 {
@@ -25,6 +26,7 @@ class MSVC7Loader : public IBaseLoader
         wxString m_OutDir;
 	private:
         wxString ReplaceMSVCMacros(const wxString& str);
+        void HandleFileConfiguration(TiXmlElement* file, ProjectFile* pf);
         bool DoSelectConfiguration(TiXmlElement* root);
         bool DoImport(TiXmlElement* conf);
         bool DoImportFiles(TiXmlElement* root, int numConfigurations);

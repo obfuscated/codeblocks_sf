@@ -248,6 +248,16 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
                 bt->AddLibDir(ReplaceMSVCMacros(arr[i]));
             }
 
+            if (!m_ConvertSwitches) // no point importing this option, if converting to GCC
+            {
+                libs = tool->Attribute("IgnoreDefaultLibraryNames");
+                arr = GetArrayFromString(libs, ",");
+                for (unsigned int i = 0; i < arr.GetCount(); ++i)
+                {
+                    bt->AddLinkerOption("/NODEFAULTLIB:" + arr[i]);
+                }
+            }
+
             tmp = tool->Attribute("GenerateDebugInformation");
             if (tmp.Matches("TRUE"))
             {
@@ -293,7 +303,7 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
         {
             // compiler
             wxString incs = tool->Attribute("AdditionalIncludeDirectories");
-            wxArrayString arr = GetArrayFromString(incs, ";");
+            wxArrayString arr = GetArrayFromString(incs, ",");
             for (unsigned int i = 0; i < arr.GetCount(); ++i)
             {
                 bt->AddIncludeDir(ReplaceMSVCMacros(arr[i]));
@@ -387,6 +397,7 @@ bool MSVC7Loader::DoImportFiles(TiXmlElement* root, int numConfigurations)
                     // add it to all configurations, not just the first
                     for (int i = 1; i < numConfigurations; ++i)
                         pf->AddBuildTarget(m_pProject->GetBuildTarget(i)->GetTitle());
+                    HandleFileConfiguration(file, pf);
                 }
             }
             file = file->NextSiblingElement("File");
@@ -412,4 +423,29 @@ bool MSVC7Loader::DoImportFiles(TiXmlElement* root, int numConfigurations)
     }
 
     return true;
+}
+
+// function contributed by Tim Baker
+void MSVC7Loader::HandleFileConfiguration(TiXmlElement* file, ProjectFile* pf)
+{
+    TiXmlElement* fconf = file->FirstChildElement("FileConfiguration");
+    while (fconf)
+    {
+        if (const char* s = fconf->Attribute("ExcludedFromBuild"))
+        {
+            wxString exclude = s; // can you initialize wxString from NULL?
+            if (exclude.Matches("TRUE"))
+            {
+                wxString name = fconf->Attribute("Name");
+                int pos = name.Find('|');
+                if (pos != wxNOT_FOUND)
+                    name.Remove(pos);
+                pf->RemoveBuildTarget(name);
+                Manager::Get()->GetMessageManager()->DebugLog(
+                    "removed %s from %s",
+                    pf->file.GetFullPath().c_str(), name.c_str());
+            }
+        }
+        fconf = fconf->NextSiblingElement("FileConfiguration");
+    }
 }
