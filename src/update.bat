@@ -12,19 +12,19 @@ if not exist output\share\CodeBlocks\templates md output\share\CodeBlocks\templa
 set ZIPCMD=zip
 set RESDIR=devel\share\CodeBlocks
 
-echo Compressing core UI resources
+echo Packing core UI resources
 %ZIPCMD% -j9 %RESDIR%\resources.zip src\resources\*.xrc > nul
 %ZIPCMD% -j9 %RESDIR%\manager_resources.zip sdk\resources\*.xrc > nul
-echo Compressing plugins UI resources
+echo Packing core UI bitmaps
+cd src\resources
+%ZIPCMD% -0 -q ..\..\%RESDIR%\resources.zip images\*.png images\16x16\*.png > nul
+echo Packing plugins UI resources
 %ZIPCMD% -j9 %RESDIR%\astyle.zip plugins\astyle\resources\*.xrc > nul
 %ZIPCMD% -j9 %RESDIR%\plugin_wizard.zip plugins\pluginwizard\resources\*.xrc > nul
 %ZIPCMD% -j9 %RESDIR%\class_wizard.zip plugins\classwizard\resources\*.xrc > nul
 %ZIPCMD% -j9 %RESDIR%\code_completion.zip plugins\codecompletion\resources\*.xrc > nul
 %ZIPCMD% -j9 %RESDIR%\compiler_gcc.zip plugins\compilergcc\resources\*.xrc > nul
 %ZIPCMD% -j9 %RESDIR%\todo.zip plugins\todo\resources\*.xrc > nul
-echo Packing core UI bitmaps
-cd src\resources
-%ZIPCMD% -0 -q ..\..\%RESDIR%\resources.zip images\*.png images\16x16\*.png > nul
 echo Packing plugins UI bitmaps
 cd ..\..\plugins\compilergcc\resources
 %ZIPCMD% -0 -q ..\..\..\%RESDIR%\compiler_gcc.zip images\*.png images\16x16\*.png > nul
@@ -32,6 +32,9 @@ cd ..\..\..\plugins\debuggergdb\resources
 %ZIPCMD% -0 -q ..\..\..\%RESDIR%\debugger_gdb.zip images\*.png images\16x16\*.png > nul
 cd ..\..\..
 
+echo Copying external exception handler
+copy /y setup\exchndl.dll output > nul
+copy /y setup\exchndl.dll devel > nul
 echo Copying files
 copy /y %RESDIR%\*.zip output\share\codeblocks > nul
 copy /y src\resources\images\*.png %RESDIR%\images > nul

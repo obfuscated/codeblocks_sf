@@ -38,15 +38,6 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
 		static void CreateMenu(wxMenuBar* menuBar);
         /// Application menu removal. Called by the application only.
 		void ReleaseMenu(wxMenuBar* menuBar);
-        /** @return True if modified, false if not.
-          * @note: Refers to the workspace, not to a particular project.
-          */
-		bool GetModified(){ return (this==NULL) ? false : m_Modified; }
-        /** Set the workspace modification status.
-          * @param mod The modification flag.
-          * @note: Refers to the workspace, not to a particular project.
-          */
-		void SetModified(bool mod = true){ if(this!=NULL) m_Modified = mod; }
         /** Retrieve the active project. Most of the times, this is the function
           * you 'll be calling in ProjectManager.
           * @return A pointer to the active project.
@@ -180,15 +171,6 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
 		  * @return True if the workspace loads succefully, false if not.
 		  */
 		bool LoadWorkspace(const wxString& filename = "");
-		/** Save the workspace.
-		  * @return True if the workspace saved succefully, false if not.
-		  */
-		bool SaveWorkspace();
-		/** Save the workspace under a different filename.
-		  * @param filename The workspace to save.
-		  * @return True if the workspace saved succefully, false if not.
-		  */
-		bool SaveWorkspaceAs(const wxString& filename);
 		/** Close the workspace. */
 		void CloseWorkspace();
 		/** Get the current workspace filename.
@@ -230,6 +212,7 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
         void OnExecParameters(wxCommandEvent& event);
         void OnTreeItemRightClick(wxTreeEvent& event);
         void OnRightClick(wxCommandEvent& event);
+        void OnRenameWorkspace(wxCommandEvent& event);
         void OnSetActiveProject(wxCommandEvent& event);
         void OnAddFileToProject(wxCommandEvent& event);
         void OnRemoveFileFromProject(wxCommandEvent& event);
@@ -244,7 +227,6 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
         void DoOpenSelectedFile();
 		void DoOpenFile(ProjectFile* pf, const wxString& filename);
 
-		bool m_Modified; // workspace modified?
         wxNotebook* m_pParent;
         wxTreeCtrl* m_pTree;
 		wxPanel* m_pPanel;

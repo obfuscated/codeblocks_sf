@@ -27,6 +27,7 @@
 #include <wx/menu.h>
 #include <wx/utils.h>
 #include <wx/dir.h>
+#include <wx/textdlg.h>
 
 #include "projectmanager.h" // class's header file
 #include "sdk_events.h"
@@ -90,6 +91,7 @@ int idMenuProjectUp = wxNewId();
 int idMenuProjectDown = wxNewId();
 int idMenuViewCategorizePopup = wxNewId();
 int idMenuViewUseFoldersPopup = wxNewId();
+int idMenuTreeRenameWorkspace = wxNewId();
 
 #ifndef __WXMSW__
 /*
@@ -133,6 +135,7 @@ BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
     EVT_MENU(idMenuPriorProject, ProjectManager::OnSetActiveProject)
     EVT_MENU(idMenuProjectUp, ProjectManager::OnSetActiveProject)
     EVT_MENU(idMenuProjectDown, ProjectManager::OnSetActiveProject)
+    EVT_MENU(idMenuTreeRenameWorkspace, ProjectManager::OnRenameWorkspace)
     EVT_MENU(idMenuAddFile, ProjectManager::OnAddFileToProject)
     EVT_MENU(idMenuRemoveFile, ProjectManager::OnRemoveFileFromProject)
     EVT_MENU(idMenuAddFilePopup, ProjectManager::OnAddFileToProject)
@@ -155,9 +158,7 @@ END_EVENT_TABLE()
 
 // class constructor
 ProjectManager::ProjectManager(wxNotebook* parent)
-	: 
-	m_Modified(false),
-	m_pWorkspace(0),
+	: m_pWorkspace(0),
     m_TreeCategorize(false),
     m_TreeUseFolders(true),
     m_TreeFreezeCounter(0)
@@ -291,7 +292,7 @@ void ProjectManager::SetProject(cbProject* project, bool refresh)
 {
     SANITY_CHECK();
 	if (project != m_pActiveProject)
-        SetModified();
+        GetWorkspace()->SetModified(true);
     if (m_pActiveProject)
         m_pTree->SetItemBold(m_pActiveProject->GetProjectNode(), false);
     m_pActiveProject = project;
@@ -370,6 +371,10 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
         else
             menu.Append(idMenuTreeFileProperties, _("Properties"));
     }
+    else if (id == m_TreeRoot)
+    {
+        menu.Append(idMenuTreeRenameWorkspace, _("Rename workspace"));
+    }
 
     if (menu.GetMenuItemCount() != 0)
         m_pPanel->PopupMenu(&menu, pt);
@@ -396,7 +401,7 @@ cbProject* ProjectManager::LoadProject(const wxString& filename)
 	cbProject* project = IsOpen(filename);
 	if (project)
 	{
-		SetModified();
+		GetWorkspace()->SetModified(true);
 		return project;
 	}
 	project = new cbProject(filename);	
@@ -418,7 +423,7 @@ cbProject* ProjectManager::LoadProject(const wxString& filename)
 	project->LoadLayout();
 	if(!sanity_check()) return 0L; // sanity check
 	project->RestoreTreeState(m_pTree);
-	SetModified();
+	GetWorkspace()->SetModified(true);
     return project;
 }
 
@@ -489,7 +494,7 @@ bool ProjectManager::CloseActiveProject()
             case wxCANCEL:  return false;
         }
     }
-	SetModified();
+	GetWorkspace()->SetModified(true);
 
     if (!m_pActiveProject->CloseAllFiles())
         return false;
@@ -580,7 +585,7 @@ void ProjectManager::MoveProjectUp(cbProject* project, bool warpAround)
     m_pProjects->RemoveAt(idx--);
     m_pProjects->Insert(project, idx);
     RebuildTree();
-    SetModified(true);
+    GetWorkspace()->SetModified(true);
 }
 
 void ProjectManager::MoveProjectDown(cbProject* project, bool warpAround)
@@ -603,13 +608,14 @@ void ProjectManager::MoveProjectDown(cbProject* project, bool warpAround)
     m_pProjects->RemoveAt(idx++);
     m_pProjects->Insert(project, idx);
     RebuildTree();
-    SetModified(true);
+    GetWorkspace()->SetModified(true);
 }
 
 cbWorkspace* ProjectManager::GetWorkspace()
 {
+    SANITY_CHECK(0L);
     if (!m_pWorkspace)
-        m_pWorkspace = new cbWorkspace; // the "default" workspace
+        LoadWorkspace(); // the "default" workspace
     return m_pWorkspace;
 }
 
@@ -622,31 +628,17 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
         delete m_pWorkspace;
     }
     m_pWorkspace = new cbWorkspace(filename);
+    if (m_pWorkspace->IsOK())
+        m_pTree->SetItemText(m_TreeRoot, m_pWorkspace->GetTitle());
     return m_pWorkspace->IsOK();
-}
-
-bool ProjectManager::SaveWorkspace()
-{
-    SANITY_CHECK(false);
-    if (m_pWorkspace)
-        return m_pWorkspace->Save();
-    return true;
-}
-
-bool ProjectManager::SaveWorkspaceAs(const wxString& filename)
-{
-    SANITY_CHECK(false);
-    if (m_pWorkspace)
-        return m_pWorkspace->SaveAs(filename);
-    return true;
 }
 
 void ProjectManager::CloseWorkspace()
 {
     SANITY_CHECK();
-    SaveWorkspace();
     if (m_pWorkspace && !m_pWorkspace->IsDefault())
     {
+        m_pWorkspace->Save();
         delete m_pWorkspace;
         m_pWorkspace = new cbWorkspace;
     }
@@ -937,6 +929,20 @@ void ProjectManager::OnTreeItemRightClick(wxTreeEvent& event)
     //Manager::Get()->GetMessageManager()->DebugLog("OnTreeItemRightClick");
 	m_pTree->SelectItem(event.GetItem());
     ShowMenu(event.GetItem(), event.GetPoint());
+}
+
+void ProjectManager::OnRenameWorkspace(wxCommandEvent& event)
+{
+    SANITY_CHECK();
+    if (m_pWorkspace)
+    {
+        wxString text = wxGetTextFromUser(_("Please enter the new name for the workspace:"), _("Rename workspace"), m_pWorkspace->GetTitle());
+        if (!text.IsEmpty())
+        {
+            m_pWorkspace->SetTitle(text);
+            m_pTree->SetItemText(m_TreeRoot, m_pWorkspace->GetTitle());
+        }
+    }
 }
 
 void ProjectManager::OnSetActiveProject(wxCommandEvent& event)

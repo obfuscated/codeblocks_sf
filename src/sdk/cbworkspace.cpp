@@ -27,6 +27,8 @@
 #include "manager.h"
 #include "messagemanager.h"
 #include "workspaceloader.h"
+#include <wx/filedlg.h>
+#include <wx/intl.h>
 
 cbWorkspace::cbWorkspace(const wxString& filename)
 {
@@ -79,8 +81,16 @@ bool cbWorkspace::Save(bool force)
 
 bool cbWorkspace::SaveAs(const wxString& filename)
 {
-// TODO (mandrav#1#): Implement cbWorkspace::SaveAs()
-    return false;
+    wxFileDialog* dlg = new wxFileDialog(0,
+                            _("Save workspace"),
+                            m_Filename.GetPath(),
+                            m_Filename.GetFullName(),
+                            WORKSPACES_FILES_FILTER,
+                            wxSAVE | wxHIDE_READONLY | wxOVERWRITE_PROMPT);
+    if (dlg->ShowModal() != wxID_OK)
+        return false;
+    m_Filename = dlg->GetPath();
+    return Save(true);
 }
 
 void cbWorkspace::SetTitle(const wxString& title)

@@ -885,7 +885,7 @@ bool MainFrame::DoCloseCurrentWorkspace()
                         _("Save workspace"),
                         wxYES_NO | wxCANCEL | wxICON_QUESTION))
         {
-            case wxYES: m_pPrjMan->SaveWorkspace(); break;
+            case wxYES: wksp->Save(); break;
             case wxCANCEL: return false;
             default: break;
         }
@@ -1179,17 +1179,7 @@ void MainFrame::OnFileSaveWorkspaceAs(wxCommandEvent& event)
     cbWorkspace* wksp = m_pPrjMan->GetWorkspace();
     if (!wksp)
         return;
-    wxFileName fname = wksp->GetFilename();
-    
-    wxFileDialog* dlg = new wxFileDialog(this,
-                            _("Save workspace"),
-                            fname.GetPath(),
-                            fname.GetFullName(),
-                            WORKSPACES_FILES_FILTER,
-                            wxSAVE | wxHIDE_READONLY | wxOVERWRITE_PROMPT);
-    if (dlg->ShowModal() != wxID_OK)
-        return;
-    m_pPrjMan->SaveWorkspaceAs(dlg->GetPath());
+    wksp->SaveAs(""); // force SaveAs dialog
 }
 
 void MainFrame::OnFileClose(wxCommandEvent& WXUNUSED(event))

@@ -63,7 +63,7 @@ bool WorkspaceLoader::Open(const wxString& filename)
     }
     m_Title = wksp->Attribute("title");
     if (m_Title.IsEmpty())
-        m_Title = _("Workspace");
+        m_Title = _("Default workspace");
 
     proj = wksp->FirstChildElement("Project");
     if (!proj)
