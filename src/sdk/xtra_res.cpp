@@ -47,6 +47,11 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
                                NULL,
                                GetText(wxT("tooltip")),
                                GetText(wxT("longhelp")));
+           if (GetBool(wxT("disabled")))
+           {
+               m_toolbar->Realize();
+               m_toolbar->EnableTool(GetID(),false);
+           }
         }
         else
         {        
@@ -66,6 +71,11 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
                                kind,
                                GetText(wxT("tooltip")),
                                GetText(wxT("longhelp")));
+           if (GetBool(wxT("disabled")))
+           {
+               m_toolbar->Realize();
+               m_toolbar->EnableTool(GetID(),false);
+           }
         }
         return m_toolbar; // must return non-NULL
     }

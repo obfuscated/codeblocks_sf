@@ -22,6 +22,12 @@
       <longhelp>Recompile all modules in the active project</longhelp>
       <bitmap>images/rebuild.png</bitmap>
     </object>
+    <object class="tool" name="idCompilerMenuKillProcess">
+      <tooltip>Abort</tooltip>
+      <longhelp>Abort the running build process</longhelp>
+      <bitmap>images/stop.png</bitmap>
+      <disabled>1</disabled>
+    </object>
     <object class="separator" />
     <object class="wxStaticText" name="idToolTargetLabel">
       <label>Build target:</label>

@@ -1139,16 +1139,20 @@ int CompilerGCC::KillProcess()
 {
     if (!m_Process || !m_Pid)
         return -1;
+    wxKillError ret;
+    bool isdirect=(CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches().buildMethod == cbmDirect);
         
     m_Queue.Clear();
     
-    // in direct mode, no need to try and kill the process
-    // clearing the commands queue should be enough...
-    if (CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches().buildMethod == cbmDirect)
-        return 0;
-
-    wxKillError ret = wxProcess::Kill(m_Pid, wxSIGTERM);
-    switch (ret)
+    // Close input pipe
+    m_Process->CloseOutput();
+    ret = wxProcess::Kill(m_Pid, wxSIGTERM);    
+    if(isdirect && ret!=wxKILL_OK)
+    {
+        // No need to tell the user about the errors - just keep him waiting.
+        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Aborting..."));
+    }
+    else switch (ret)
     {
         case wxKILL_ACCESS_DENIED: wxMessageBox(_("Access denied")); break;
         case wxKILL_NO_PROCESS: wxMessageBox(_("No process")); break;
@@ -1500,8 +1504,8 @@ void CompilerGCC::OnCreateDist(wxCommandEvent& event)
 void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
 {
     static bool flag_init=false;
-    static bool toolflag;
-    bool tmpflag;
+    static bool toolflag,toolflag2;
+    bool tmpflag,tmpflag2;
 	cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
 	cbEditor* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
     wxMenuBar* mbar = Manager::Get()->GetAppWindow()->GetMenuBar();
@@ -1544,14 +1548,17 @@ void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
 	if (tbar)
 	{
 		tmpflag=(!m_Process && prj);
-		if(tmpflag!=toolflag || !flag_init)
+		tmpflag2=(m_Process && prj);
+		if(tmpflag!=toolflag || tmpflag2!=toolflag2 || !flag_init)
 		{
             if(!flag_init) flag_init=true;
             toolflag=tmpflag;
+            toolflag2=tmpflag2;
             tbar->EnableTool(idMenuCompile,toolflag);
             tbar->EnableTool(idMenuRun,toolflag);
             tbar->EnableTool(idMenuCompileAndRun,toolflag);
             tbar->EnableTool(idMenuRebuild,toolflag);
+            tbar->EnableTool(idMenuKillProcess,toolflag2);
 
             m_ToolTarget = XRCCTRL(*tbar, "idToolTarget", wxComboBox);
             if (m_ToolTarget)

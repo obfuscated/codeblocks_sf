@@ -1009,6 +1009,12 @@
 			<Option link="0"/>
 			<Option target="plugin_DebuggerGDB"/>
 		</Unit>
+		<Unit filename="plugins\debuggergdb\resources\debugger_menu.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
 		<Unit filename="plugins\debuggergdb\resources\images\16x16\dbgnext.png">
 			<Option compilerVar=""/>
 			<Option compile="0"/>

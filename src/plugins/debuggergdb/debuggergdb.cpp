@@ -54,11 +54,11 @@ int idMenuRunToCursor = XRCID("idDebuggerMenuRunToCursor");
 int idMenuNext = XRCID("idDebuggerMenuNext");
 int idMenuStep = XRCID("idDebuggerMenuStep");
 int idMenuStop = XRCID("idDebuggerMenuStop");
-int idMenuContinue = wxNewId();
-int idMenuToggleBreakpoint = wxNewId();
-int idMenuSendCommandToGDB = wxNewId();
-int idMenuAddSymbolFile = wxNewId();
-int idMenuEditWatches = wxNewId();
+int idMenuContinue = XRCID("idDebuggerMenuContinue");
+int idMenuToggleBreakpoint = XRCID("idDebuggerMenuToggleBreakpoint");
+int idMenuSendCommandToGDB = XRCID("idDebuggerMenuSendCommandToGDB");
+int idMenuAddSymbolFile = XRCID("idDebuggerMenuAddSymbolFile");
+int idMenuEditWatches = XRCID("idDebuggerMenuEditWatches");
 
 int idGDBProcess = wxNewId();
 int idTimerPollDebugger = wxNewId();
@@ -191,23 +191,8 @@ void DebuggerGDB::BuildMenu(wxMenuBar* menuBar)
 {
 	if (!m_IsAttached)
 		return;
+    m_pMenu=Manager::Get()->LoadMenu("debugger_menu",true);
 
-	m_pMenu = new wxMenu("");
-    m_pMenu->Append(idMenuDebug, _("&Debug\tF8"), _("Run current project in debugger"));
-    m_pMenu->AppendSeparator();
-    m_pMenu->Append(idMenuContinue, _("Continue\tCtrl-F7"), _("Continue execution"));
-    m_pMenu->Append(idMenuNext, _("Next\tF7"), _("Execute the next line of code"));
-    m_pMenu->Append(idMenuStep, _("Step in\tShift-F7"), _("Execute the next instruction, stepping into functions"));
-    m_pMenu->AppendSeparator();
-    m_pMenu->Append(idMenuToggleBreakpoint, _("Toggle breakpoint\tF5"), _("Toggle breakpoint in current line"));
-    m_pMenu->Append(idMenuRunToCursor, _("Run to cursor\tF4"), _("Run program until it reaches the current line"));
-    m_pMenu->AppendSeparator();
-    m_pMenu->Append(idMenuSendCommandToGDB, _("Send command to GDB"), _("Sends a user-defined command to the GDB debugger"));
-    m_pMenu->Append(idMenuAddSymbolFile, _("Add symbol file"), _("Adds symbols from another file"));
-    m_pMenu->Append(idMenuEditWatches, _("&Watches..."), _("Edit watches..."));
-    m_pMenu->AppendSeparator();
-    m_pMenu->Append(idMenuStop, _("Stop debugger"), _("Stop current debugging session"));
-	
 	// ok, now, where do we insert?
 	// three possibilities here:
 	// a) locate "Compile" menu and insert after it
