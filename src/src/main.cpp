@@ -28,6 +28,12 @@
 #include "globals.h"
 #include "environmentsettingsdlg.h"
 
+#if defined(_MSC_VER) && defined( _DEBUG )
+	#define _CRTDBG_MAP_ALLOC
+	#include <stdlib.h>
+	#include <crtdbg.h>
+#endif
+
 #include <wx/tipdlg.h>
 
 #include "../sdk/configmanager.h"
@@ -257,6 +263,12 @@ MainFrame::MainFrame(wxWindow* parent)
        m_SettingsMenu(0L),
        m_HelpPluginsMenu(0L)
 {
+#if defined( _MSC_VER ) && defined( _DEBUG )
+	int tmpFlag = _CrtSetDbgFlag( _CRTDBG_REPORT_FLAG );
+	//tmpFlag |= _CRTDBG_CHECK_ALWAYS_DF;
+	_CrtSetDbgFlag( tmpFlag );
+#endif
+		
 	CreateIDE();
 	m_pEdMan->SetEditorInterfaceType(eitMDI);
 	
@@ -290,7 +302,7 @@ MainFrame::MainFrame(wxWindow* parent)
 
 MainFrame::~MainFrame()
 {
-	//Manager::Get()->Free();
+	Manager::Get()->Free();
 }
 
 void MainFrame::ShowTips(bool forceShow)
@@ -498,7 +510,7 @@ void MainFrame::CreateMenubar()
 		cbPlugin* plug = plugins[i]->plugin;
 		if (plug && plug->IsAttached())
 		{
-			if (plug->GetPluginType() == ptTool)
+			if (plug->GetType() == ptTool)
 				DoAddPlugin(plug);
 			else
 				plug->BuildMenu(mbar);
@@ -548,7 +560,7 @@ void MainFrame::CreateToolbars()
 		cbPlugin* plug = plugins[i]->plugin;
 		if (plug && plug->IsAttached())
 		{
-			if (plug->GetPluginType() != ptTool)
+			if (plug->GetType() != ptTool)
 				plug->BuildToolBar(m_pToolbar);
 		}
 	}
@@ -704,7 +716,7 @@ void MainFrame::DoAddPlugin(cbPlugin* plugin)
     //m_pMsgMan->DebugLog(_("Adding plugin: %s"), plugin->GetInfo()->name.c_str());
     AddPluginInSettingsMenu(plugin);
     AddPluginInHelpPluginsMenu(plugin);
-    if (plugin->GetPluginType() == ptTool)
+    if (plugin->GetType() == ptTool)
     {
         AddPluginInToolsMenu(plugin);
     }
@@ -911,7 +923,7 @@ void MainFrame::OnHelpPluginMenu(wxCommandEvent& event)
     wxString pluginName = m_PluginIDsMap[event.GetId()];
     if (!pluginName.IsEmpty())
     {
-        PluginInfo* pi = Manager::Get()->GetPluginManager()->GetPluginInfo(pluginName);
+        const PluginInfo* pi = Manager::Get()->GetPluginManager()->GetPluginInfo(pluginName);
         if (!pi)
         {
             m_pMsgMan->DebugLog(_("No plugin info for %s!"), pluginName.c_str());
@@ -1193,18 +1205,8 @@ void MainFrame::OnEditCommentSelected(wxCommandEvent& event)
 				startLine++;
 			}
 		}
-		// mandrav: removed the following "else"s because in UpdateUI the menu
-		//          entry is enabled/disabled accordingly
-		/*else
-		{
-			wxMessageBox( _( "No code currently selected" ), _( "Error" ) );
-		}*/
 		ed->GetControl()->EndUndoAction();
 	}
-	/*else
-	{
-		wxMessageBox( _( "No editors currently open" ), _( "Error" ) );
-	}*/
 }
 
 void MainFrame::OnEditFoldAll(wxCommandEvent& event)

@@ -41,7 +41,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "./devel/vc6/sdk/release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /Ob2 /I "e:\devcode\wxWindows-2.4.2\lib\msw" /D "NDEBUG" /D PLUGIN_EXPORT= /D "WIN32" /D "_WINDOWS" /D "__WINDOWS__" /D "__WXMSW__" /D "__WIN95__" /D "__WIN32__" /D WINVER=0x0400 /D "STRICT" /D "_LIB" /YX"wx\wxprec.h" /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /Ob2 /I "e:\devcode\wxWindows-2.4.2\lib\mswdll" /D "NDEBUG" /D "STATIC_SDK" /D PLUGIN_EXPORT= /D "_LIB" /D "WIN32" /D "_WINDOWS" /D "__WINDOWS__" /D "__WXMSW__" /D "__WIN95__" /D "__WIN32__" /D WINVER=0x0400 /D "STRICT" /YX"wx\wxprec.h" /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -64,7 +64,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "./devel/vc6/sdk/debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "e:\devcode\wxWindows-2.4.2\lib\mswd" /D "_DEBUG" /D "__WXDEBUG__" /D WXDEBUG=1 /D PLUGIN_EXPORT= /D "WIN32" /D "_WINDOWS" /D "__WINDOWS__" /D "__WXMSW__" /D "__WIN95__" /D "__WIN32__" /D WINVER=0x0400 /D "STRICT" /D "_LIB" /D "__WX__" /YX"wx\wxprec.h" /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "e:\devcode\wxWindows-2.4.2\lib\mswdlld" /D "WXUSINGDLL" /D "_DEBUG" /D "__WXDEBUG__" /D WXDEBUG=1 /D "__WX__" /D "STATIC_SDK" /D PLUGIN_EXPORT= /D "_LIB" /D "WIN32" /D "_WINDOWS" /D "__WINDOWS__" /D "__WXMSW__" /D "__WIN95__" /D "__WIN32__" /D WINVER=0x0400 /D "STRICT" /YX"wx\wxprec.h" /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -378,6 +378,10 @@ SOURCE=.\sdk\macrosmanager.h
 # Begin Source File
 
 SOURCE=.\sdk\manager.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\sdk\managerproxy.h
 # End Source File
 # Begin Source File
 

@@ -32,23 +32,25 @@
 #include "manager.h"
 #include "cbproject.h"
 #include "cbeditor.h"
-
-MacrosManager* g_MacrosManager = 0L;
+#include "managerproxy.h"
 
 MacrosManager* MacrosManager::Get()
 {
-    if (!g_MacrosManager)
+    if (!MacrosManagerProxy::Get())
 	{
-        g_MacrosManager = new MacrosManager();
+        MacrosManagerProxy::Set( new MacrosManager() );
 		Manager::Get()->GetMessageManager()->Log(_("MacrosManager initialized"));
 	}
-    return g_MacrosManager;
+    return MacrosManagerProxy::Get();
 }
 
 void MacrosManager::Free()
 {
-	if (g_MacrosManager)
-		delete g_MacrosManager;
+	if (MacrosManagerProxy::Get())
+	{
+		delete MacrosManagerProxy::Get();
+		MacrosManagerProxy::Set( 0L );
+	}
 }
 
 MacrosManager::MacrosManager()

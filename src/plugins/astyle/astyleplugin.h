@@ -24,23 +24,23 @@
 	#include <wx/wx.h>
 #endif
 
-#include "../../sdk/cbPlugin.h" // the base class we 're inheriting
-#include "../../sdk/settings.h" // needed to use the Code::Blocks SDK
+#include <cbPlugin.h> // the base class we 're inheriting
+#include <settings.h> // needed to use the Code::Blocks SDK
 
-class PLUGIN_EXPORT AStylePlugin : public cbToolPlugin
+class AStylePlugin : public cbToolPlugin
 {
-	public:
-		AStylePlugin();
-		~AStylePlugin();
-		int Configure();
-		void BuildMenu(wxMenuBar* menuBar){ return; }
-		void BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg){ return; }
-		void BuildToolBar(wxToolBar* toolBar){ return; }
-		int Execute();
-		void OnAttach(); // fires when the plugin is attached to the application
-		void OnRelease(); // fires when the plugin is released from the application
-	protected:
-	private:
+public:
+	AStylePlugin();
+	~AStylePlugin();
+	int Configure();
+	void BuildMenu(wxMenuBar* menuBar){ return; }
+	void BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg){ return; }
+	void BuildToolBar(wxToolBar* toolBar){ return; }
+	int Execute();
+	void OnAttach(); // fires when the plugin is attached to the application
+	void OnRelease(); // fires when the plugin is released from the application
+protected:
+private:
 };
 
 extern "C"

@@ -31,7 +31,7 @@
 
 #include "todolistview.h"
 
-class PLUGIN_EXPORT ToDoList : public cbPlugin
+class ToDoList : public cbPlugin
 {
 	public:
 		ToDoList();
@@ -56,7 +56,7 @@ class PLUGIN_EXPORT ToDoList : public cbPlugin
 
 extern "C"
 {
-	cbPlugin* PLUGIN_EXPORT GetPlugin();
+	PLUGIN_EXPORT cbPlugin* GetPlugin();
 };
 
 #endif // TODOLIST_H

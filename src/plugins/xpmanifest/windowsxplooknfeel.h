@@ -4,7 +4,7 @@
 #include <cbplugin.h> // the base class we 're inheriting
 #include <settings.h> // much of the SDK is here
 
-class PLUGIN_EXPORT WindowsXPLookNFeel : public cbToolPlugin
+class WindowsXPLookNFeel : public cbToolPlugin
 {
 	public:
 		WindowsXPLookNFeel();
@@ -23,7 +23,7 @@ class PLUGIN_EXPORT WindowsXPLookNFeel : public cbToolPlugin
 
 extern "C"
 {
-	cbPlugin* PLUGIN_EXPORT GetPlugin();
+	PLUGIN_EXPORT cbPlugin* GetPlugin();
 };
 
 #endif // WINDOWSXPLOOKNFEEL_H

@@ -55,7 +55,7 @@ struct PluginInfo
   * Code::Blocks creates a menu entry for the plugin, under the Settings
   * menu, to configure it. See Configure() for more information.
   */
-class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
+class cbPlugin : public wxEvtHandler
 {
     public:
 		/** In default cbPlugin's constructor the associated PluginInfo structure
@@ -81,27 +81,10 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 		  */
         void Release();
 		/** The plugin must return its type on request. */
-        virtual PluginType GetPluginType(){ return m_Type; }
-		/** Any descendent plugin should override this virtual method and
-		  * perform any necessary initialization. This method is called by
-		  * Code::Blocks (PluginManager actually) when the plugin has been
-		  * loaded and should attach in Code::Blocks. When Code::Blocks
-		  * starts up, it finds and <em>loads</em> all plugins but <em>does
-		  * not</em> activate (attaches) them. It then activates all plugins
-		  * that the user has selected to be activated on start-up.\n
-		  * This means that a plugin might be loaded but <b>not</b> activated...\n
-		  * Think of this method as the actual constructor...
-		  */
-        virtual void OnAttach(){}
-		/** Any descendent plugin should override this virtual method and
-		  * perform any necessary de-initialization. This method is called by
-		  * Code::Blocks (PluginManager actually) when the plugin has been
-		  * loaded, attached and should de-attach from Code::Blocks.\n
-		  * Think of this method as the actual destructor...
-		  */
-        virtual void OnRelease(){}
+        virtual PluginType GetType(){ return m_Type; }
+		
 		/** The plugin must return its info on request. */
-        virtual PluginInfo* GetInfo(){ return &m_PluginInfo; }
+        virtual PluginInfo const* GetInfo(){ return &m_PluginInfo; }
 		/** This is a pure virtual method that should be overriden by all
 		  * plugins. If a plugin provides some sort of configuration dialog,
 		  * this is the place to invoke it. If it does not support/allow
@@ -145,6 +128,26 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 		  */
 		bool IsAttached(){ return m_IsAttached; }
     protected:
+		/** Any descendent plugin should override this virtual method and
+		  * perform any necessary initialization. This method is called by
+		  * Code::Blocks (PluginManager actually) when the plugin has been
+		  * loaded and should attach in Code::Blocks. When Code::Blocks
+		  * starts up, it finds and <em>loads</em> all plugins but <em>does
+		  * not</em> activate (attaches) them. It then activates all plugins
+		  * that the user has selected to be activated on start-up.\n
+		  * This means that a plugin might be loaded but <b>not</b> activated...\n
+		  * Think of this method as the actual constructor...
+		  */
+        virtual void OnAttach(){}
+		
+		/** Any descendent plugin should override this virtual method and
+		  * perform any necessary de-initialization. This method is called by
+		  * Code::Blocks (PluginManager actually) when the plugin has been
+		  * loaded, attached and should de-attach from Code::Blocks.\n
+		  * Think of this method as the actual destructor...
+		  */
+        virtual void OnRelease(){}
+		
 		/** This method logs a "Not implemented" message and is provided for
 		  * convenience only. For example, if the plugin *will* provide a
 		  * configuration dialog, but it's not implemented yet, the author
@@ -163,7 +166,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 	private:
 };
 
-class PLUGIN_EXPORT cbCompilerPlugin: public cbPlugin
+class cbCompilerPlugin: public cbPlugin
 {
 	public:
 		cbCompilerPlugin();
@@ -182,7 +185,7 @@ class PLUGIN_EXPORT cbCompilerPlugin: public cbPlugin
 	private:
 };
 
-class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
+class  cbDebuggerPlugin: public cbPlugin
 {
 	public:
 		cbDebuggerPlugin();
@@ -195,7 +198,7 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
 		virtual int GetExitCode() = 0;
 };
 
-class PLUGIN_EXPORT cbToolPlugin : public cbPlugin
+class cbToolPlugin : public cbPlugin
 {
     public:
         cbToolPlugin();
@@ -207,7 +210,7 @@ class PLUGIN_EXPORT cbToolPlugin : public cbPlugin
         void BuildToolBar(wxToolBar* toolBar){}
 };
 
-class PLUGIN_EXPORT cbMimePlugin : public cbPlugin
+class cbMimePlugin : public cbPlugin
 {
     public:
         cbMimePlugin();
@@ -220,7 +223,7 @@ class PLUGIN_EXPORT cbMimePlugin : public cbPlugin
         void BuildToolBar(wxToolBar* toolBar){}
 };
 
-class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
+class  cbCodeCompletionPlugin : public cbPlugin
 {
     public:
         cbCodeCompletionPlugin();

@@ -11,7 +11,7 @@
 
 #include "debuggertree.h"
 
-class PLUGIN_EXPORT DebuggerGDB : public cbDebuggerPlugin
+class DebuggerGDB : public cbDebuggerPlugin
 {
 	public:
 		DebuggerGDB();
@@ -93,7 +93,7 @@ class PLUGIN_EXPORT DebuggerGDB : public cbDebuggerPlugin
 
 extern "C"
 {
-	cbPlugin* PLUGIN_EXPORT GetPlugin();
+	PLUGIN_EXPORT cbPlugin* GetPlugin();
 };
 
 #endif // DEBUGGERGDB_H

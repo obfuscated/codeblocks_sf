@@ -38,26 +38,26 @@
 #include "projectmanager.h"
 #include "cbproject.h"
 #include "globals.h"
+#include "managerproxy.h"
 
-TemplateManager* g_TemplateManager = 0L;
 int idMenuNewFromTemplate = wxNewId();
 
 TemplateManager* TemplateManager::Get()
 {
-	 if (!g_TemplateManager)
+	if (!TemplateManagerProxy::Get())
 	 {
-		g_TemplateManager = new TemplateManager;
+		TemplateManagerProxy::Set( new TemplateManager );
 		Manager::Get()->GetMessageManager()->Log(_("TemplateManager initialized"));
 	 }
-	 return g_TemplateManager;
+	 return TemplateManagerProxy::Get();
 }
 
 void TemplateManager::Free()
 {
-	if (g_TemplateManager)
+	if (TemplateManagerProxy::Get())
 	{
-		delete g_TemplateManager;
-		g_TemplateManager = 0L;
+		delete TemplateManagerProxy::Get();
+		TemplateManagerProxy::Set( 0L );
 	}
 }
 

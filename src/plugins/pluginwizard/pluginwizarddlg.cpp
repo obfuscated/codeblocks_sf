@@ -338,7 +338,7 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
 	buffer << "#include <cbPlugin.h> // the base class we 're inheriting" << '\n';
 	buffer << "#include <settings.h> // needed to use the Code::Blocks SDK" << '\n';
 	buffer << '\n';
-	buffer << "class PLUGIN_EXPORT " << m_Info.name;
+	buffer << "class " << m_Info.name;
 	switch (type)
 	{
 		case 0: buffer << " : public cbPlugin"; break;
@@ -386,7 +386,7 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
 	buffer << '\n';
 	buffer << "extern \"C\"" << '\n';
 	buffer << "{" << '\n';
-	buffer << '\t' << "cbPlugin* PLUGIN_EXPORT GetPlugin();" << '\n';
+	buffer << '\t' << "PLUGIN_EXPORT cbPlugin* GetPlugin();" << '\n';
 	buffer << "};" << '\n';
 
 	if (GuardBlock)

@@ -10,6 +10,7 @@ MenuItemsManager::~MenuItemsManager()
 {
 	//dtor
 	Clear(m_Menu);
+	m_MenuItems.Clear();
 }
 
 /** @brief Add a menu item

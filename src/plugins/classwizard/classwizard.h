@@ -5,7 +5,7 @@
 #include <cbplugin.h>
 #include <simpletextlog.h>
 
-class PLUGIN_EXPORT ClassWizard : public cbToolPlugin
+class ClassWizard : public cbToolPlugin
 {
     public:
         ClassWizard();
@@ -22,7 +22,7 @@ class PLUGIN_EXPORT ClassWizard : public cbToolPlugin
 
 extern "C"
 {
-    cbPlugin* PLUGIN_EXPORT GetPlugin();
+    PLUGIN_EXPORT cbPlugin* GetPlugin();
 };
 
 #endif // CLASSWIZARD_H

@@ -40,25 +40,24 @@
 #include "workspaceloader.h"
 #include "filegroupsandmasks.h"
 #include "projectsfilemasksdlg.h"
-
-ProjectManager* g_ProjectManager = 0L;
+#include "managerproxy.h"
 
 ProjectManager* ProjectManager::Get(wxNotebook* parent)
 {
-    if (!g_ProjectManager)
+    if (!ProjectManagerProxy::Get())
 	{
-        g_ProjectManager = new ProjectManager(parent);
+		ProjectManagerProxy::Set( new ProjectManager(parent) );
 		Manager::Get()->GetMessageManager()->Log(_("ProjectManager initialized"));
 	}
-    return g_ProjectManager;
+    return ProjectManagerProxy::Get();
 }
 
 void ProjectManager::Free()
 {
-	if (g_ProjectManager)
+	if (ProjectManagerProxy::Get())
 	{
-		delete g_ProjectManager;
-		g_ProjectManager = 0L;
+		delete ProjectManagerProxy::Get();
+		ProjectManagerProxy::Set( 0L );
 	}
 }
 

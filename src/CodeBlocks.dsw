@@ -11,6 +11,54 @@ Package=<5>
 
 Package=<4>
 {{{
+    Begin Project Dependency
+    Project_Dep_Name sdk
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ClassWizard"=.\ClassWizard.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name sdk
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "CodeCompletion"=.\CodeCompletion.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name sdk
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "CompilerGCC"=.\CompilerGCC.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name sdk
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -27,6 +75,48 @@ Package=<4>
 
 ###############################################################################
 
+Project: "DebuggerGDB"=.\DebuggerGDB.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name sdk
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Managers"=.\Managers.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "PluginWizard"=.\PluginWizard.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name sdk
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "TinyXML"=.\TinyXML.dsp - Package Owner=<4>
 
 Package=<5>
@@ -35,6 +125,36 @@ Package=<5>
 
 Package=<4>
 {{{
+}}}
+
+###############################################################################
+
+Project: "ToDo"=.\ToDo.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name sdk
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "XPManifest"=.\XPManifest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name sdk
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -64,6 +184,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name TinyXML
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Managers
     End Project Dependency
 }}}
 

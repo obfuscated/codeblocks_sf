@@ -34,26 +34,27 @@
 #include "configmanager.h"
 #include "messagemanager.h"
 #include "configuretoolsdlg.h"
-
+#include "managerproxy.h"
 #include <wx/listimpl.cpp>
 WX_DEFINE_LIST(ToolsList);
 
-ToolsManager* g_ToolsManager = 0L;
-
 ToolsManager* ToolsManager::Get()
 {
-    if (!g_ToolsManager)
+    if (!ToolsManagerProxy::Get())
 	{
-        g_ToolsManager = new ToolsManager();
+        ToolsManagerProxy::Set( new ToolsManager() );
 		Manager::Get()->GetMessageManager()->Log(_("ToolsManager initialized"));
 	}
-    return g_ToolsManager;
+    return ToolsManagerProxy::Get();
 }
 
 void ToolsManager::Free()
 {
-	if (g_ToolsManager)
-		delete g_ToolsManager;
+	if (ToolsManagerProxy::Get())
+	{
+		delete ToolsManagerProxy::Get();
+		ToolsManagerProxy::Set( 0L );
+	}
 }
 
 int idToolsConfigure = wxNewId();
@@ -71,12 +72,12 @@ ToolsManager::ToolsManager()
 
 ToolsManager::~ToolsManager()
 {
+	m_ItemsManager.Clear( m_Menu );
 	Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
-#if 0
+
     // free-up any memory used for tools
 	for (ToolsList::Node* node = m_Tools.GetFirst(); node; node = node->GetNext())
         m_Tools.DeleteNode(node);
-#endif
 }
 
 void ToolsManager::CreateMenu(wxMenuBar* menuBar)

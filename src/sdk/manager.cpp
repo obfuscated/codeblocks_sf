@@ -37,32 +37,37 @@
 #include "macrosmanager.h"
 #include "configmanager.h"
 #include "templatemanager.h"
-
-Manager* g_Manager = 0L;
+#include "managerproxy.h"
 
 Manager* Manager::Get(wxMDIParentFrame* appWindow, wxNotebook* notebook)
 {
-    if (!g_Manager && appWindow)
+    if (!ManagerProxy::Get() && appWindow)
 	{
-        g_Manager = new Manager(appWindow, notebook);
-		g_Manager->GetMessageManager()->Log(_("Manager initialized"));
+        ManagerProxy::Set( new Manager(appWindow, notebook) );
+		ManagerProxy::Get()->GetMessageManager()->Log(_("Manager initialized"));
 	}
-    return g_Manager;
+    return ManagerProxy::Get();
 }
 
 void Manager::Free()
 {
-	if (g_Manager)
+	if (ManagerProxy::Get())
 	{
+		/**
+		@bug This is a dumb nasty bug. If ProjectManager is freed after ToolsManager, we get
+		a crash. Seems like wxRemoveEventHandler doesn't work correctly (it doesn't NULL the
+		prev event handler pointer)
+		*/
 		MacrosManager::Free();
-		ToolsManager::Free();
+		ProjectManager::Free();
+		ToolsManager::Free();		
 		TemplateManager::Free();
 		PluginManager::Free();
 		EditorManager::Free();
-		//ProjectManager::Free();
+		
 		MessageManager::Free();
-		delete g_Manager;
-		g_Manager = 0L;
+		delete ManagerProxy::Get();
+		ManagerProxy::Set( 0L );
 	}
 }
 

@@ -31,23 +31,25 @@
 #include "messagemanager.h" // class's header file
 #include "configmanager.h"
 #include "simpletextlog.h"
-
-MessageManager* g_MessageManager = 0L;
+#include "managerproxy.h"
 
 MessageManager* MessageManager::Get(wxWindow* parent)
 {
-    if (!g_MessageManager)
+    if (!MessageManagerProxy::Get())
 	{
-        g_MessageManager = new MessageManager(parent);
-		g_MessageManager->Log(_("MessageManager initialized"));
+		MessageManagerProxy::Set( new MessageManager(parent) );
+		MessageManagerProxy::Get()->Log(_("MessageManager initialized"));
 	}
-    return g_MessageManager;
+    return MessageManagerProxy::Get();
 }
 
 void MessageManager::Free()
 {
-	if (g_MessageManager)
-		delete g_MessageManager;
+	if (MessageManagerProxy::Get())
+	{
+		delete MessageManagerProxy::Get();
+		MessageManagerProxy::Set( 0L );
+	}
 }
 
 // class constructor

@@ -8,7 +8,7 @@
 #include <sdk_events.h>
 #include "nativeparser.h"
 
-class PLUGIN_EXPORT CodeCompletion : public cbCodeCompletionPlugin
+class CodeCompletion : public cbCodeCompletionPlugin
 {
     public:
         CodeCompletion();
@@ -52,7 +52,7 @@ class PLUGIN_EXPORT CodeCompletion : public cbCodeCompletionPlugin
 
 extern "C"
 {
-    cbPlugin* PLUGIN_EXPORT GetPlugin();
+    PLUGIN_EXPORT cbPlugin* GetPlugin();
 };
 
 #endif // CODECOMPLETION_H

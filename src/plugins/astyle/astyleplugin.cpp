@@ -12,14 +12,14 @@
 #endif
 
 #include "astyleplugin.h"
-#include "../../sdk/licenses.h"
+#include <licenses.h>
 #include "astyleconfigdlg.h"
 #include "asstreamiterator.h"
 #include "formattersettings.h"
-#include "../../sdk/manager.h"
-#include "../../sdk/editormanager.h"
-#include "../../sdk/configmanager.h"
-#include "../../sdk/cbeditor.h"
+#include <manager.h>
+#include <editormanager.h>
+#include <configmanager.h>
+#include <cbeditor.h>
 #include <wx/msgdlg.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/fs_zip.h>
@@ -84,7 +84,8 @@ int AStylePlugin::Execute()
 {
     if (!IsAttached())
         return -1;
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    Manager *manager = Manager::Get();
+	cbEditor* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
     if (!ed)
         return 0;
     wxString edText = ed->GetControl()->GetText();

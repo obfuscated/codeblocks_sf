@@ -28,7 +28,7 @@ enum ErrorType
 	etWarning
 };
 
-class PLUGIN_EXPORT CompilerGCC : public cbCompilerPlugin
+class CompilerGCC : public cbCompilerPlugin
 {
     public:
         CompilerGCC();
@@ -149,7 +149,7 @@ class PLUGIN_EXPORT CompilerGCC : public cbCompilerPlugin
 
 extern "C"
 {
-    cbPlugin* PLUGIN_EXPORT GetPlugin();
+    PLUGIN_EXPORT cbPlugin* GetPlugin();
 };
 
 #endif // COMPILERGCC_H

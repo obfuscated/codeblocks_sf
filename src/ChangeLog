@@ -1,6 +1,15 @@
 Changes for version 1.0-beta2
 -----------------------------
 
+2004-06-11 07:17  mhaggag
+
+	* Minor bug fixes
+	* Reduced the number of memory leaks a little :)
+	* No longer using relative include paths for plugins
+	* Plugin classes no longer exported
+	* Minor code cleanup
+	* Created VC6 projects for all plugins
+
 2004-06-05 00:08  mhaggag
 
 	* Added VC++6 workspaces/project files for cb. Plugins not done yet, though.

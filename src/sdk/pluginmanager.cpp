@@ -34,23 +34,25 @@
 #include "editormanager.h"
 #include "pluginsconfigurationdlg.h"
 #include "configmanager.h"
-
-PluginManager* g_PluginManager = 0L;
+#include "managerproxy.h"
 
 PluginManager* PluginManager::Get()
 {
-    if (!g_PluginManager)
+    if (!PluginManagerProxy::Get())
 	{
-        g_PluginManager = new PluginManager();
+        PluginManagerProxy::Set( new PluginManager() );
 		Manager::Get()->GetMessageManager()->Log(_("PluginManager initialized"));
 	}
-    return g_PluginManager;
+    return PluginManagerProxy::Get();
 }
 
 void PluginManager::Free()
 {
-	if (g_PluginManager)
-		delete g_PluginManager;
+	if (PluginManagerProxy::Get())
+	{
+		delete PluginManagerProxy::Get();
+		PluginManagerProxy::Set( 0L );
+	}
 }
 
 // class constructor
@@ -206,7 +208,7 @@ cbPlugin* PluginManager::FindPluginByFileName(const wxString& pluginFileName)
     return NULL;
 }
 
-PluginInfo* PluginManager::GetPluginInfo(const wxString& pluginName)
+const PluginInfo* PluginManager::GetPluginInfo(const wxString& pluginName)
 {
     cbPlugin* plug = FindPluginByName(pluginName);
     if (plug)
@@ -220,7 +222,7 @@ int PluginManager::ExecutePlugin(const wxString& pluginName)
     cbPlugin* plug = FindPluginByName(pluginName);
     if (plug)
     {
-        if (plug->GetPluginType() != ptTool)
+        if (plug->GetType() != ptTool)
         {
             MessageManager* msgMan = Manager::Get()->GetMessageManager();
             msgMan->DebugLog(_("Plugin %s is not a tool to have Execute() method!"), plug->GetInfo()->name.c_str());
@@ -267,7 +269,7 @@ PluginsArray PluginManager::DoGetOffersFor(PluginType type)
     for (unsigned int i = 0; i < m_Plugins.GetCount(); ++i)
     {
         cbPlugin* plug = m_Plugins[i]->plugin;
-        if (plug->GetPluginType() == type)
+        if (plug->GetType() == type)
             arr.Add(plug);
     }
     

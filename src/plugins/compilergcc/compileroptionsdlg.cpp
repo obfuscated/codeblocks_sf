@@ -847,18 +847,18 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
 {
     // add/edit/delete includes
     bool en = XRCCTRL(*this, "lstIncludeDirs", wxListBox)->GetSelection() >= 0;
-    XRCCTRL(*this, "btnEditIncludes", wxListBox)->Enable(en);
-    XRCCTRL(*this, "btnDelIncludes", wxListBox)->Enable(en);
+    XRCCTRL(*this, "btnEditIncludes", wxButton)->Enable(en);
+    XRCCTRL(*this, "btnDelIncludes", wxButton)->Enable(en);
 
     // add/edit/delete libs
     en = XRCCTRL(*this, "lstLibDirs", wxListBox)->GetSelection() >= 0;
-    XRCCTRL(*this, "btnEditLibs", wxListBox)->Enable(en);
-    XRCCTRL(*this, "btnDelLibs", wxListBox)->Enable(en);
+    XRCCTRL(*this, "btnEditLibs", wxButton)->Enable(en);
+    XRCCTRL(*this, "btnDelLibs", wxButton)->Enable(en);
 
     // add/edit/delete vars
     en = XRCCTRL(*this, "lstVars", wxListBox)->GetSelection() >= 0;
-    XRCCTRL(*this, "btnEditVar", wxListBox)->Enable(en);
-    XRCCTRL(*this, "btnDeleteVar", wxListBox)->Enable(en);
+    XRCCTRL(*this, "btnEditVar", wxButton)->Enable(en);
+    XRCCTRL(*this, "btnDeleteVar", wxButton)->Enable(en);
 
     // policies
 	wxTreeCtrl* tc = XRCCTRL(*this, "tcScope", wxTreeCtrl);

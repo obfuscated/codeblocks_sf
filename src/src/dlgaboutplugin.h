@@ -23,7 +23,7 @@ class dlgAboutPlugin : public wxDialog
 {
 	public:
 		// class constructor
-		dlgAboutPlugin(wxWindow* parent, PluginInfo* pi);
+		dlgAboutPlugin(wxWindow* parent, const PluginInfo* pi);
 		// class destructor
 		~dlgAboutPlugin();
 };

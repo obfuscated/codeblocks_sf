@@ -39,29 +39,30 @@
 #include "projectbuildtarget.h"
 #include "cbproject.h"
 #include "globals.h"
-
+#include "managerproxy.h"
 #include <wx/listimpl.cpp>
 WX_DEFINE_LIST(EditorsList);
 
 #define MIN(a,b) (a<b?a:b)
 #define MAX(a,b) (a>b?a:b)
 
-EditorManager* g_EditorManager = 0L;
-
 EditorManager* EditorManager::Get(wxWindow* parent)
 {
-    if (!g_EditorManager)
+    if (!EditorManagerProxy::Get())
 	{
-        g_EditorManager = new EditorManager(parent);
+		EditorManagerProxy::Set( new EditorManager(parent) );
 		Manager::Get()->GetMessageManager()->Log(_("EditorManager initialized"));
 	}
-    return g_EditorManager;
+    return EditorManagerProxy::Get();
 }
 
 void EditorManager::Free()
 {
-	if (g_EditorManager)
-		delete g_EditorManager;
+	if (EditorManagerProxy::Get())
+	{
+		delete EditorManagerProxy::Get();
+		EditorManagerProxy::Set( 0L );
+	}
 }
 
 // class constructor

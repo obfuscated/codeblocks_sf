@@ -26,7 +26,7 @@
 #include "dlgaboutplugin.h" // class's header file
 
 // class constructor
-dlgAboutPlugin::dlgAboutPlugin(wxWindow* parent, PluginInfo* pi)
+dlgAboutPlugin::dlgAboutPlugin(wxWindow* parent, const PluginInfo* pi)
 {
 	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgAboutPlugin"));
 	

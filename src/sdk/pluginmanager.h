@@ -38,7 +38,7 @@ class DLLIMPORT PluginManager
         void UnloadAllPlugins();
         int ExecutePlugin(const wxString& pluginName);
         int ConfigurePlugin(const wxString& pluginName);
-        PluginInfo* GetPluginInfo(const wxString& pluginName);
+        const PluginInfo* GetPluginInfo(const wxString& pluginName);
         PluginElementsArray& GetPlugins(){ return m_Plugins; }
         cbPlugin* FindPluginByName(const wxString& pluginName);
         cbPlugin* FindPluginByFileName(const wxString& pluginFileName);

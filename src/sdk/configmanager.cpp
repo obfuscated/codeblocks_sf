@@ -27,24 +27,23 @@
 #include "configmanager.h" // class's header file
 #include "manager.h"
 #include "messagemanager.h"
-
-wxConfigBase* g_Config = NULL;
+#include "managerproxy.h"
 
 void ConfigManager::Init(wxConfigBase* config)
 {
-    g_Config = config;
+	ConfigBaseProxy::Set( config );
 //    if (!g_Config)
 //        g_Config = new wxConfig(appName, vendorName);
 }
 
 wxConfigBase* ConfigManager::Get()
 {
-    if (!g_Config)
+    if (!ConfigBaseProxy::Get())
 	{
         ConfigManager::Init(wxConfigBase::Get());
 		Manager::Get()->GetMessageManager()->Log(_("ConfigManager initialized"));
 	}
-    return g_Config;
+    return ConfigBaseProxy::Get();
 }
 
 ConfigManager::ConfigManager()
@@ -53,10 +52,9 @@ ConfigManager::ConfigManager()
 
 ConfigManager::~ConfigManager()
 {
-    if (g_Config)
+    if (ConfigBaseProxy::Get())
     {
-        delete g_Config;
-        g_Config = NULL;
+        delete ConfigBaseProxy::Get();
+        ConfigBaseProxy::Set( NULL );
     }
 }
-

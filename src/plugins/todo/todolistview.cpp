@@ -224,7 +224,7 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
 			bool isValid = false; // found it in a comment?
 			bool isC = false; // C or C++ style comment?
 			
-#warning TODO (mandrav#1#): Make viewtododlg understand and display todo notes that are compiler warnings/errors...
+//#warning TODO (mandrav#1#): Make viewtododlg understand and display todo notes that are compiler warnings/errors...
 
 			// first check what type of comment we have
 			wxString allowedChars = " \t/*";
