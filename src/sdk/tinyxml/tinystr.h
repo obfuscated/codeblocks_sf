@@ -30,7 +30,8 @@ distribution.
 #ifndef TIXML_STRING_INCLUDED
 #define TIXML_STRING_INCLUDED
 
-#pragma warning( disable : 4514 )
+/* TODO (mandrav#1#): What's the macro to see if we 're using MS compiler to allow #pragma */
+//#pragma warning( disable : 4514 )
 
 #include <assert.h>
 

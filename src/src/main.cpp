@@ -28,6 +28,8 @@
 #include "globals.h"
 #include "environmentsettingsdlg.h"
 
+#include <wx/tipdlg.h>
+
 #include <configmanager.h>
 #include <cbproject.h>
 #include <cbplugin.h>
@@ -100,6 +102,7 @@ int idSettingsEditor = wxNewId();
 int idSettingsPlugins = wxNewId();
 int idSettingsConfigurePlugins = wxNewId();
 
+int idHelpTips = wxNewId();
 int idHelpPlugins = wxNewId();
 
 int idLeftSash = wxNewId();
@@ -210,6 +213,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idSettingsPlugins, MainFrame::OnSettingsPlugins)
 
     EVT_MENU(wxID_ABOUT, MainFrame::OnHelpAbout)
+    EVT_MENU(idHelpTips, MainFrame::OnHelpTips)
 	
 	EVT_SASH_DRAGGED(-1, MainFrame::OnDragSash)
 	
@@ -263,6 +267,22 @@ MainFrame::MainFrame(wxWindow* parent)
 MainFrame::~MainFrame()
 {
 	//Manager::Get()->Free();
+}
+
+void MainFrame::ShowTips(bool forceShow)
+{
+    bool showAtStartup = ConfigManager::Get()->Read("/show_tips", 1) != 0;
+    if (forceShow || showAtStartup)
+    {
+        wxLogNull null; // disable error message if tips file does not exist
+        wxString tipsFile = ConfigManager::Get()->Read("/app_path") + "/tips.txt";
+        long tipsIndex = ConfigManager::Get()->Read("/next_tip", (long)0);
+        wxTipProvider* tipProvider = wxCreateFileTipProvider(tipsFile, tipsIndex);
+        showAtStartup = wxShowTip(this, tipProvider, showAtStartup);
+        delete tipProvider;
+        ConfigManager::Get()->Write("/show_tips", showAtStartup);
+        ConfigManager::Get()->Write("/next_tip", (long)tipProvider->GetCurrentTip());
+    }
 }
 
 void MainFrame::CreateIDE()
@@ -414,6 +434,7 @@ void MainFrame::CreateMenubar()
 	
 	wxMenu* help = new wxMenu();
 	help->Append(wxID_ABOUT, _("&About..."), _("Display information about the application"));
+	help->Append(idHelpTips, _("&Tips"), _("Display tips on using the application"));
 	help->Append(idHelpPlugins, _("&Plugins"), pluginsM);
 	mbar->Append(help, _("&Help"));
 	
@@ -1192,6 +1213,11 @@ void MainFrame::OnHelpAbout(wxCommandEvent& WXUNUSED(event))
     dlgAbout* dlg = new dlgAbout(this);
     dlg->ShowModal();
     delete dlg;
+}
+
+void MainFrame::OnHelpTips(wxCommandEvent& event)
+{
+    ShowTips(true);
 }
 
 void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)

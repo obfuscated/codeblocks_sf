@@ -3,8 +3,8 @@
 ###############################################################################
 
 # Project:          Code::Blocks
-# Project filename: CodeBlocks.cbp
-# Date:             05/14/04 10:38:25
+# Project filename: D:\CVS\Others\codeblocks\src\CodeBlocks.cbp
+# Date:             05/14/04 13:22:30
 # Compiler used:    MinGW Compiler Suite
 
 ### Variables used in this Makefile
@@ -18,9 +18,9 @@ RESCOMP=windres.exe
 
 ### Compiler/linker options
 GLOBAL_CFLAGS= -Wall -pipe -fmessage-length=0
-PROJECT_CFLAGS= -ggdb -pipe -mthreads -fno-pcc-struct-return -fno-rtti -fno-exceptions -fmessage-length=0 -D__GNUWIN32__ -D__WXMSW__ -DWXUSINGDLL
+PROJECT_CFLAGS= -ggdb -pipe -mthreads -fno-pcc-struct-return -fno-rtti -fno-exceptions -fmessage-length=0  -D__GNUWIN32__ -D__WXMSW__ -DWXUSINGDLL
 GLOBAL_LDFLAGS= 
-PROJECT_LDFLAGS= -lwxmsw241 -lgmon
+PROJECT_LDFLAGS= -lwxmsw241 -lgmon 
 GLOBAL_INCS= -IC:/MinGW/include
 PROJECT_INCS=
 GLOBAL_LIBS= -LC:/MinGW/lib
@@ -37,7 +37,7 @@ plugin_ClassWizard_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) -DBUILDING_PLUGIN 
 plugin_PluginsWizard_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL
 plugin_ToDo_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL
 plugin_XPManifest_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL
-update_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS)
+update_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) 
 console_runner_CFLAGS= $(GLOBAL_CFLAGS) -Os
 
 ### Targets linker flags
@@ -51,7 +51,7 @@ plugin_ClassWizard_LDFLAGS= $(GLOBAL_LDFLAGS) -Wl,--enable-auto-image-base -Wl,-
 plugin_PluginsWizard_LDFLAGS= $(GLOBAL_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias -lcodeblocks -lstc -lwxxrc -lwxmsw241
 plugin_ToDo_LDFLAGS= $(GLOBAL_LDFLAGS) $(PROJECT_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias -lcodeblocks -lwxmsw241
 plugin_XPManifest_LDFLAGS= $(GLOBAL_LDFLAGS) $(PROJECT_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias -lcodeblocks -lwxmsw241
-update_LDFLAGS= $(GLOBAL_LDFLAGS) $(PROJECT_LDFLAGS)
+update_LDFLAGS= $(GLOBAL_LDFLAGS) $(PROJECT_LDFLAGS) 
 console_runner_LDFLAGS= $(GLOBAL_LDFLAGS)
 
 ### Targets include directories
@@ -216,6 +216,8 @@ update-before:
 	cp -f templates/*.h* devel/share/codeblocks/templates
 	cp -f templates/*.template devel/share/codeblocks/templates
 	cp -f templates/*.png devel/share/codeblocks/templates
+	cp -f tips.txt devel
+	cp -f tips.txt output
 	cp -f tools/ConsoleRunner/console_runner*.exe output
 	cp -f tools/ConsoleRunner/console_runner*.exe devel
 	cp -f devel/*.exe output
@@ -379,36 +381,6 @@ $(plugin_XPManifest_BIN): $(plugin_XPManifest_LINKOBJS)
 update: update-before $(update_BIN) update-after
 
 $(update_BIN): $(update_LINKOBJS) 
-	-@if not exist "$(update_OUTDIR)/." mkdir "$(update_OUTDIR)"
-	cd src/resources && $(ZIP) ../../devel/share/codeblocks/resources.zip *.xrc > nul
-	cd sdk/resources && $(ZIP) ../../devel/share/codeblocks/manager_resources.zip *.xrc > nul
-	cd plugins/pluginwizard/resources && $(ZIP) ../../../devel/share/codeblocks/plugin_wizard.zip *.xrc > nul
-	cd plugins/classwizard/resources && $(ZIP) ../../../devel/share/codeblocks/class_wizard.zip *.xrc > nul
-	cd plugins/codecompletion/resources && $(ZIP) ../../../devel/share/codeblocks/code_completion.zip *.xrc > nul
-	cd plugins/compilergcc/resources && $(ZIP) ../../../devel/share/codeblocks/compiler_gcc.zip *.xrc > nul
-	cd plugins/todo/resources && $(ZIP) ../../../devel/share/codeblocks/todo.zip *.xrc > nul
-	cp -f devel/share/codeblocks/*.zip output/share/codeblocks
-	cp -f src/resources/images/*.png devel/share/codeblocks/images
-	cp -f src/resources/images/*.png output/share/codeblocks/images
-	cp -f plugins/codecompletion/resources/images/*.png devel/share/codeblocks/images/codecompletion
-	cp -f plugins/codecompletion/resources/images/*.png output/share/codeblocks/images/codecompletion
-	cp -f templates/*.c* output/share/codeblocks/templates
-	cp -f templates/*.h* output/share/codeblocks/templates
-	cp -f templates/*.template output/share/codeblocks/templates
-	cp -f templates/*.png output/share/codeblocks/templates
-	cp -f templates/*.c* devel/share/codeblocks/templates
-	cp -f templates/*.h* devel/share/codeblocks/templates
-	cp -f templates/*.template devel/share/codeblocks/templates
-	cp -f templates/*.png devel/share/codeblocks/templates
-	cp -f tools/ConsoleRunner/console_runner*.exe output
-	cp -f tools/ConsoleRunner/console_runner*.exe devel
-	cp -f devel/*.exe output
-	cp -f devel/*.dll output
-	cp -f devel/share/codeblocks/plugins/*.dll output/share/codeblocks/plugins
-	strip output/*.exe
-	strip output/*.dll
-	strip output/share/CodeBlocks/plugins/*.dll
-
 
 console_runner: console_runner-before $(console_runner_BIN) console_runner-after
 

@@ -255,6 +255,8 @@
 					<Add before="cp -f templates/*.h* devel/share/codeblocks/templates"/>
 					<Add before="cp -f templates/*.template devel/share/codeblocks/templates"/>
 					<Add before="cp -f templates/*.png devel/share/codeblocks/templates"/>
+					<Add before="cp -f tips.txt devel"/>
+					<Add before="cp -f tips.txt output"/>
 					<Add before="cp -f tools/ConsoleRunner/console_runner*.exe output"/>
 					<Add before="cp -f tools/ConsoleRunner/console_runner*.exe devel"/>
 					<Add before="cp -f devel/*.exe output"/>

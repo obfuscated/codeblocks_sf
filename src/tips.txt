@@ -1,0 +1,7 @@
+You can disable these tips on startup if you uncheck the "Show tips at startup" box below
+You can have more than one projects open simultaneously
+Each project can have more than one build target. For example, a target to build a library and a target to build an application using that library
+You can quickly create a new project by using one of the ready-made templates, by clicking on "Project/New"
+You can zoom in and out in the editor by holding Control while rolling the mousewheel
+You can change the colors of the editor by either using "Settings/Editor/Colors" or right-clicking inside the editor and click "Configure editor"
+You can create a duplicate of the line the caret is on, by pressing Ctrl+D

@@ -19,6 +19,7 @@ class MainFrame : public wxMDIParentFrame
         ~MainFrame();
 
         bool Open(const wxString& filename, bool addToHistory = true);
+        void ShowTips(bool forceShow = false);
         
         // event handlers
         void OnApplicationClose(wxCloseEvent& event);
@@ -75,6 +76,7 @@ class MainFrame : public wxMDIParentFrame
         void OnPluginSettingsMenu(wxCommandEvent& event);
 
         void OnHelpAbout(wxCommandEvent& event);
+        void OnHelpTips(wxCommandEvent& event);
         void OnHelpPluginMenu(wxCommandEvent& event);
 
         void OnSize(wxSizeEvent& event);
