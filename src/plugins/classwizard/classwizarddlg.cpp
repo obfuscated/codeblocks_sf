@@ -34,6 +34,7 @@
 #include <wx/file.h>
 #include <wx/msgdlg.h>
 #include <wx/log.h>
+#include <globals.h>
 
 BEGIN_EVENT_TABLE(ClassWizardDlg, wxDialog)
 	EVT_UPDATE_UI(-1, ClassWizardDlg::OnUpdateUI)
@@ -100,7 +101,7 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& event)
 	wxString GuardWord = XRCCTRL(*this, "txtGuardBlock", wxTextCtrl)->GetValue();
 	if (GuardWord.IsEmpty())
 		DoGuardBlock();
-	wxFileName headerFname(m_Header);
+	wxFileName headerFname(UnixFilename(m_Header));
 	
 	wxString buffer;
 
@@ -140,7 +141,7 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& event)
 	}
 
 	// write buffer to disk
-	wxFile hdr(m_Header, wxFile::write);
+	wxFile hdr(UnixFilename(m_Header), wxFile::write);
 	if (!hdr.IsOpened())
 	{
         wxString msg;
@@ -167,7 +168,7 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& event)
 	buffer << "}" << '\n';
 	buffer << '\n';
 	// write buffer to disk
-	wxFile impl(m_Implementation, wxFile::write);
+	wxFile impl(UnixFilename(m_Implementation), wxFile::write);
 	if (!impl.IsOpened())
 	{
         wxString msg;

@@ -294,8 +294,8 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
 	wxString GuardWord = XRCCTRL(*this, "txtGuardBlock", wxTextCtrl)->GetValue();
 	if (GuardWord.IsEmpty())
 		DoGuardBlock();
-	wxFileName headerFname(m_Header);
-	wxFileName implFname(m_Implementation);
+	wxFileName headerFname(UnixFilename(m_Header));
+	wxFileName implFname(UnixFilename(m_Implementation));
 	
 	wxString buffer;
 

@@ -432,7 +432,7 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 	f->autoDeps = true;
     f->weight = weight;
 
-	fname = filename;
+	fname = UnixFilename(filename);
 	ext = fname.GetExt().Lower();
 	if (ext.Matches(CPP_EXT) ||
 		ext.Matches(CXX_EXT))
@@ -473,7 +473,7 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     
     f->compile = localCompile;
     f->link = localLink;
-    fname.Assign(filename);
+    fname.Assign(UnixFilename(filename));
     // is it a wxFileName bug???
     // if we don't call Normalize twice, the very first time it's called
     // it returns a lowercase filename...
