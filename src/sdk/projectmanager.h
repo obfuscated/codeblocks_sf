@@ -98,15 +98,39 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
           * @param project A pointer to the project to close.
           * @return True if project was closed, false if not.
           */
-        bool CloseProject(cbProject* project);
+        bool CloseProject(cbProject* project,bool dontsave=false);
         /** Close the active project. Same as CloseProject(GetActiveProject()).
           * @return True if project was closed, false if not.
           */
-        bool CloseActiveProject();
+        bool CloseActiveProject(bool dontsave=false);
         /** Close all projects.
           * @return True if all projects were closed, false if even one close operation failed.
           */
-        bool CloseAllProjects();
+        bool CloseAllProjects(bool dontsave=false);
+        /** Checks whether all projects are saved. If not, asks
+          *  the user to save and saves accordingly.
+          *  @return False if the user pressed cancel.
+          *  Note: calls QueryCloseProject for all projects.
+          */
+        bool QueryCloseAllProjects();
+
+        /** Checks whether project is saved. If not, asks
+          *  the user to save and saves accordingly.
+          *  @return False if the user pressed cancel.
+          *  Note: By default this asks the user if he should
+          *  save any unmodified files in the project.
+          */
+        bool QueryCloseProject(cbProject *proj,bool dontsavefiles=false);
+
+        /** Asks user to save the workspace, projects and files
+          * (Yes/No/cancel). If user pressed Yes, it saves accordingly.
+          * @return False if the user pressed cancel; true otherwise.
+          * After this function is called and returns true, it
+          * is safe to close the workspace, all files and projects
+          * without asking the user later.
+          */  
+        bool QueryCloseWorkspace();
+
         /** Move a project up in the project manager tree. This effectively
           * re-orders the projects build order.
           * @param project The project to move up.

@@ -75,7 +75,8 @@ class DLLIMPORT cbProject : public CompileTargetBase
         void SetCompilerIndex(int compilerIdx); // overriden
 
         wxTreeItemId GetProjectNode(){ return m_ProjectNode; }
-        bool CloseAllFiles();
+        bool QueryCloseAllFiles();
+        bool CloseAllFiles(bool dontsave=false);
         bool SaveAllFiles();
         bool Save();
         bool SaveAs();

@@ -704,29 +704,39 @@ ProjectFile* cbProject::GetFileByFilename(const wxString& filename, bool isRelat
 	return 0L;
 }
 
-bool cbProject::CloseAllFiles()
+bool cbProject::QueryCloseAllFiles()
 {
-	// first try to close modified editors
-    FilesList::Node* node = m_Files.GetFirst();
-    while(node)
-    {
-        ProjectFile* f = node->GetData();
-		cbEditor* ed = Manager::Get()->GetEditorManager()->IsOpen(f->file.GetFullPath());
-		if (ed && ed->GetModified())
-		{
-			if (!Manager::Get()->GetEditorManager()->Close(ed))
-				return false;
-		}
-		node = node->GetNext();
-    }
-
-	// now free the rest of the project files
-    int count = m_Files.GetCount();
+    FilesList::Node* node;
     node = m_Files.GetFirst();
     while(node)
     {
         ProjectFile* f = node->GetData();
-        if (Manager::Get()->GetEditorManager()->Close(f->file.GetFullPath()))
+        cbEditor* ed = Manager::Get()->GetEditorManager()->IsOpen(f->file.GetFullPath());
+        if (ed && ed->GetModified())
+        {
+            if (!Manager::Get()->GetEditorManager()->QueryClose(ed))
+                return false;
+        }
+        node = node->GetNext();
+    }
+    return true;
+}
+
+bool cbProject::CloseAllFiles(bool dontsave)
+{
+	// first try to close modified editors
+	
+    if(!dontsave)
+        if(!QueryCloseAllFiles())
+            return false;
+
+	// now free the rest of the project files
+    int count = m_Files.GetCount();
+    FilesList::Node* node = m_Files.GetFirst();
+    while(node)
+    {
+        ProjectFile* f = node->GetData();
+        if (Manager::Get()->GetEditorManager()->Close(f->file.GetFullPath(),true))
         {
             FilesList::Node* oldNode = node;
             node = node->GetNext();

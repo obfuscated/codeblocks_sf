@@ -61,12 +61,17 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         cbEditor* New();
 		bool UpdateProjectFiles(cbProject* project);
         bool SwapActiveHeaderSource();
-        bool CloseActive();
-        bool Close(const wxString& filename);
-		bool Close(cbEditor* editor);
-        bool Close(int index);
-        bool CloseAll();
-        bool CloseAllExcept(cbEditor* editor);
+        bool CloseActive(bool dontsave=false);
+        bool Close(const wxString& filename,bool dontsave=false);
+		bool Close(cbEditor* editor,bool dontsave=false);
+        bool Close(int index,bool dontsave=false);
+
+        // If file is modified, queries to save (yes/no/cancel). 
+        // Returns false on "cancel".
+        bool QueryClose(cbEditor *editor);
+        bool QueryCloseAll();
+        bool CloseAll(bool dontsave=false);
+        bool CloseAllExcept(cbEditor* editor,bool dontsave=false);
         bool Save(const wxString& filename);
         bool Save(int index);
         bool SaveActive();

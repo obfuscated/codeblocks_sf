@@ -303,22 +303,50 @@ bool EditorManager::UpdateProjectFiles(cbProject* project)
     return true;
 }
 
-bool EditorManager::CloseAll()
+bool EditorManager::CloseAll(bool dontsave)
 {
-    SANITY_CHECK(false);
-	return CloseAllExcept(0L);
+    SANITY_CHECK(true);
+	return CloseAllExcept(0L,dontsave);
 }
 
-bool EditorManager::CloseAllExcept(cbEditor* editor)
+bool EditorManager::QueryCloseAll()
 {
-    SANITY_CHECK(false);
-    int count = m_EditorsList.GetCount();
+    SANITY_CHECK(true);
 	EditorsList::Node* node = m_EditorsList.GetFirst();
     while (node)
 	{
         cbEditor* ed = node->GetData();
+        if(ed && !QueryClose(ed))
+            return false; // aborted
+        node = node->GetNext();
+    }
+    return true;
+}
+
+bool EditorManager::CloseAllExcept(cbEditor* editor,bool dontsave)
+{
+    if(!editor)
+        SANITY_CHECK(true);
+    SANITY_CHECK(false);
+    
+    int count = m_EditorsList.GetCount();
+	EditorsList::Node* node = m_EditorsList.GetFirst();
+    if(!dontsave)
+    while (node)
+	{
+        cbEditor* ed = node->GetData();
+        if(ed && ed != editor && !QueryClose(ed))
+            return false; // aborted
+        node = node->GetNext();
+    }
+    
+    count = m_EditorsList.GetCount();
+    node = m_EditorsList.GetFirst();
+    while (node)
+	{
+        cbEditor* ed = node->GetData();
         EditorsList::Node* next = node->GetNext();
-        if (ed && ed != editor && Close(ed))
+        if (ed && ed != editor && Close(ed,true))
         {
             node = next;
             --count;
@@ -326,26 +354,43 @@ bool EditorManager::CloseAllExcept(cbEditor* editor)
         else
             node = node->GetNext();
     }
-
     return count == (editor ? 1 : 0);
 }
 
-bool EditorManager::CloseActive()
+bool EditorManager::CloseActive(bool dontsave)
 {
     SANITY_CHECK(false);
-    return Close(GetActiveEditor());
+    return Close(GetActiveEditor(),dontsave);
 }
 
-bool EditorManager::Close(const wxString& filename)
+bool EditorManager::QueryClose(cbEditor *editor)
 {
-    SANITY_CHECK(false);
-    cbEditor* ed = IsOpen(filename);
-    if (ed)
-        return Close(ed);
+    if(!editor) 
+        return true;
+    if (editor->GetModified())
+    {
+        wxString msg;
+        msg.Printf(_("File %s is modified...\nDo you want to save the changes?"), editor->GetFilename().c_str());
+        switch (wxMessageBox(msg, _("Save file"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
+        {
+            case wxYES:     if (!editor->Save())
+                                return false;
+                            break;
+            case wxNO:      break;
+            case wxCANCEL:  return false;
+        }
+    }
     return true;
 }
 
-bool EditorManager::Close(cbEditor* editor)
+bool EditorManager::Close(const wxString& filename,bool dontsave)
+{
+    SANITY_CHECK(false);
+    cbEditor* ed = IsOpen(filename);
+    return Close(ed,dontsave);
+}
+
+bool EditorManager::Close(cbEditor* editor,bool dontsave)
 {
     SANITY_CHECK(false);
     if (editor)
@@ -353,19 +398,9 @@ bool EditorManager::Close(cbEditor* editor)
 		EditorsList::Node* node = m_EditorsList.Find(editor);
 		if (node)
 		{
-            if (editor->GetModified())
-            {
-                wxString msg;
-                msg.Printf(_("File %s is modified...\nDo you want to save the changes?"), editor->GetFilename().c_str());
-                switch (wxMessageBox(msg, _("Save file"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
-                {
-                    case wxYES:     if (!editor->Save())
-										return false;
-									break;
-                    case wxNO:      break;
-                    case wxCANCEL:  return false;
-                }
-            }
+            if(!dontsave)
+                if(!QueryClose(editor))
+                    return false;
 			editor->Destroy();
 			m_EditorsList.DeleteNode(node);
 			return true;
@@ -374,7 +409,7 @@ bool EditorManager::Close(cbEditor* editor)
     return true;
 }
 
-bool EditorManager::Close(int index)
+bool EditorManager::Close(int index,bool dontsave)
 {
     SANITY_CHECK(false);
 	int i = 0;
@@ -383,7 +418,7 @@ bool EditorManager::Close(int index)
 		if (i == index)
 		{
 			cbEditor* ed = node->GetData();
-			return Close(ed);
+			return Close(ed,dontsave);
 		}
 	}
 	return false;

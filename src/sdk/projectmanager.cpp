@@ -441,13 +441,57 @@ cbProject* ProjectManager::NewProject()
     return LoadProject(wxEmptyString);
 }
 
-bool ProjectManager::CloseAllProjects()
+bool ProjectManager::QueryCloseAllProjects()
 {
-    SANITY_CHECK(false);
+    SANITY_CHECK(true);
+    unsigned int i;
+
+    if (!Manager::Get()->GetEditorManager()->QueryCloseAll())
+        return false;
+
+    for(i=0;i<m_pProjects->GetCount();i++)
+    {
+        // Ask for saving modified projects. However,
+        // we already asked to save projects' files; 
+        // do not ask again
+        if(!QueryCloseProject(m_pProjects->Item(i),true))
+            return false;
+    }
+    return true;
+}
+
+bool ProjectManager::QueryCloseProject(cbProject *proj,bool dontsavefiles)
+{
+    SANITY_CHECK(true);
+    if(!proj) 
+        return true;
+    if(!dontsavefiles)
+        if(!proj->QueryCloseAllFiles())
+            return false;
+    if (proj->GetModified())
+    {
+        wxString msg;
+        msg.Printf(_("Project '%s' is modified...\nDo you want to save the changes?"), proj->GetTitle().c_str());
+        switch (wxMessageBox(msg, _("Save project"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
+        {
+            case wxYES:     if (!proj->Save()) return false; 
+            case wxNO:      break;
+            case wxCANCEL:  return false;
+        }
+    }
+    return true;
+}
+
+bool ProjectManager::CloseAllProjects(bool dontsave)
+{
+    SANITY_CHECK(true);    
+    if(!dontsave) 
+        if(!QueryCloseAllProjects())
+            return false;
     FreezeTree();
     while (m_pProjects->GetCount() != 0)
     {
-        if (!CloseActiveProject())
+        if (!CloseActiveProject(true))
             return false;
     }
     RebuildTree();
@@ -455,11 +499,14 @@ bool ProjectManager::CloseAllProjects()
     return true;
 }
 
-bool ProjectManager::CloseProject(cbProject* project)
+bool ProjectManager::CloseProject(cbProject* project,bool dontsave)
 {
-    SANITY_CHECK(false);
+    SANITY_CHECK(true);
     if (!project)
-        return false;
+        return true;
+    if(!dontsave)
+         if(!QueryCloseProject(project))
+            return false;
 
     cbProject* tmp = 0L;
 	bool same = (project == m_pActiveProject);
@@ -470,44 +517,36 @@ bool ProjectManager::CloseProject(cbProject* project)
     	SetProject(project);
     }
 
-    bool ret = CloseActiveProject();
+    // The project and its files should have been saved by now.
+    // It's safe to not save files now.
+    bool ret = CloseActiveProject(true);
 
     if (!same)
 	    SetProject(tmp);
 	return ret;
 }
 
-bool ProjectManager::CloseActiveProject()
+bool ProjectManager::CloseActiveProject(bool dontsave)
 {
     SANITY_CHECK(false);
     if (!m_pActiveProject)
         return true;
-
+    if(m_sanitycheck_shutdown) // if shutdown, don't ask.
+        dontsave=true;
+    if(!dontsave)
+         if(!QueryCloseProject(m_pActiveProject))
+            return false;
     int index = m_pProjects->Index(m_pActiveProject);
     if (index == wxNOT_FOUND)
         return false;
-
 	Manager::Get()->GetEditorManager()->UpdateProjectFiles(m_pActiveProject);
 	m_pActiveProject->SaveTreeState(m_pTree);
-	m_pActiveProject->SaveLayout();
+    m_pActiveProject->SaveLayout();
 
-    if(!m_sanitycheck_shutdown) // if shutdown, don't ask.
-    if (m_pActiveProject->GetModified())
-    {
-        wxString msg;
-        msg.Printf(_("Project '%s' is modified...\nDo you want to save the changes?"), m_pActiveProject->GetTitle().c_str());
-        switch (wxMessageBox(msg, _("Save project"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
-        {
-            case wxYES:     if (!m_pActiveProject->Save()) return false; 
-            case wxNO:      break;
-            case wxCANCEL:  return false;
-        }
-    }
     if (m_pWorkspace)
         m_pWorkspace->SetModified(true);
 
-    if (!m_pActiveProject->CloseAllFiles())
-        return false;
+    m_pActiveProject->CloseAllFiles(true);
     m_pProjects->Remove(m_pActiveProject);
     delete m_pActiveProject;
 	m_pActiveProject = 0L;
@@ -515,7 +554,6 @@ bool ProjectManager::CloseActiveProject()
         SetProject(m_pProjects->Item(0));
     else
         SetProject(0L);
-
     return true;
 }
 
@@ -656,49 +694,39 @@ bool ProjectManager::SaveWorkspaceAs(const wxString& filename)
     return true;
 }
 
+bool ProjectManager::QueryCloseWorkspace()
+{     
+    SANITY_CHECK(true);
+    if(!m_pWorkspace)
+        return true;
+    if (m_pWorkspace->GetModified())
+    {
+        // workspace needs save
+        wxString msg;
+        msg.Printf(_("Workspace '%s' is modified. Do you want to save it?"), m_pWorkspace->GetTitle().c_str());
+        switch (wxMessageBox(msg,
+                        _("Save workspace"),
+                        wxYES_NO | wxCANCEL | wxICON_QUESTION))
+        {
+            case wxYES: SaveWorkspace(); break;
+            case wxCANCEL: return false;
+            default: break;
+        }
+    }
+    if(!QueryCloseAllProjects())
+        return false;
+    return true;
+}        
+
 bool ProjectManager::CloseWorkspace()
 {
     SANITY_CHECK(false);
     if (m_pWorkspace)
     {
-
-/* TODO (Rick#1#): 
-        I just noticed something weird in this routine.
-        There SHOULD be a querycloseworkspace(), which
-        would call querycloseallprojects() (which would
-        call also querycloseallfiles()). These should 
-        ask to save the modified files/project/workspace/,
-        and save or else DO NOTHING. 
-        This way, we can make sure that no file or project 
-        whatsoever has been closed if the user hits "cancel".
-*/
-
-        if(!CloseAllProjects())
+        if(!QueryCloseWorkspace())
             return false;
-        
-        #if 0
-/* TODO (Rick#1#): Should we save the workspace by default? 
-        I never understood why it had to ask you. 
-        So I'm leaving this option for later modification. */
-        
-        if (m_pWorkspace->GetModified())
-            SaveWorkspace();
-        #else
-        if (m_pWorkspace->GetModified())
-        {
-            // workspace needs save
-            wxString msg;
-            msg.Printf(_("Workspace '%s' is modified. Do you want to save it?"), m_pWorkspace->GetTitle().c_str());
-            switch (wxMessageBox(msg,
-                            _("Save workspace"),
-                            wxYES_NO | wxCANCEL | wxICON_QUESTION))
-            {
-                case wxYES: SaveWorkspace(); break;
-                case wxCANCEL: return false;
-                default: break;
-            }
-        }
-        #endif
+        if(!CloseAllProjects(true))
+            return false;
         
         delete m_pWorkspace;
         m_pWorkspace = 0;
