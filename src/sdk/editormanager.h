@@ -76,6 +76,9 @@ class DLLIMPORT EditorManager : public wxEvtHandler
 		int Find(cbEditor* editor, cbFindReplaceData* data);
 		int Replace(cbEditor* editor, cbFindReplaceData* data);
 		int FindNext(bool goingDown);
+		
+		/** Check if one of the open files has been modified outside the IDE. If so, ask to reload it. */
+		void CheckForExternallyModifiedFiles();
     private:
         static EditorManager* Get(wxWindow* parent);
 		static void Free();

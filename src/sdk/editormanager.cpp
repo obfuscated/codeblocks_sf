@@ -437,6 +437,28 @@ void EditorManager::UpdateEditorIndices()
 #endif
 }
 
+void EditorManager::CheckForExternallyModifiedFiles()
+{
+    wxLogNull nul; // no error logging here
+	for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext())
+	{
+        cbEditor* ed = node->GetData();
+        wxFileName fname(ed->GetFilename());
+        wxDateTime last = fname.GetModificationTime();
+        if (!last.IsEqualTo(ed->GetLastModificationTime()))
+        {
+            // modified; ask to reload
+            wxString msg;
+            msg.Printf(_("File %s is modified outside the IDE...\nDo you want to reload it (you will lose any unsaved work)?"), ed->GetFilename().c_str());
+            if (wxMessageBox(msg, _("Reload?"), wxICON_QUESTION | wxYES_NO) == wxYES)
+            {
+                if (!ed->Reload())
+                    wxMessageBox(_("Could not reload file!"), _("Error"), wxICON_ERROR);
+            }
+        }
+    }
+}
+
 bool EditorManager::SwapActiveHeaderSource()
 {
     cbEditor* ed = GetActiveEditor();

@@ -335,7 +335,8 @@ void CodeBlocksApp::OnAppActivate(wxActivateEvent& event)
 {
 	if (!event.GetActive())
 		return;
-		
+    
+    Manager::Get()->GetEditorManager()->CheckForExternallyModifiedFiles();
 	cbEditor* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
 	if (ed)
 		ed->GetControl()->SetFocus();
