@@ -1,7 +1,170 @@
+Changes for version 1.0-beta4
+-------------------------------
+
+2005-01-04 17:15  mandrav
+
+	* Final touches before newest version release.
+
+2005-01-04 00:17  mandrav
+
+	* Fixed some menu entries enabling/disabling as appropriate
+
+2005-01-03 16:59  mandrav
+
+	* Fixes in MSVC compiler and loader
+	* Minor bug-fixes
+
+2005-01-03 00:10  mandrav
+
+	* Added unix project file (and updated unix Makefile)
+
+2005-01-02 22:13  mandrav
+
+	* Added MS Visual Studio import (preliminary)
+	* Added reporting of number of warnings/errors on build end
+	* When importing a project, the user is asked if compiler/linker options
+	  should be converted for GCC
+	* When importing a project, the user is asked what compiler to
+	  use for the imported project
+	* Fixed error reporting for MSVC compiler (should catch all errors now)
+
+2004-12-30 17:00  mandrav
+
+	* Fixed typo in projectmanager.cpp
+	* GCC warnings/errors are now detected properly
+	* Double-clicking a warning/error in the "Compiler messages" tab displays
+	  a message box with the error (useful for long errors)
+
+2004-12-30 12:27  mandrav
+
+	* Changes for succesfull compilation under Linux/wxWidgets-2.5.3
+
+2004-12-30 09:59  mandrav
+
+	* Fixed bug #1092685 - Right clicking in debugger's watches tree (empty
+	  space) had no effect
+
+2004-12-29 15:24  mandrav
+
+	* Fine-tuned support for MS VC Free Toolkit 2003
+	* Added support for Borland C++ Compiler 5.5
+
+2004-12-29 13:02  mandrav
+
+	* Fixed MS VC Toolkit 2003 integration
+
+2004-12-29 12:06  mandrav
+
+	* Improved handling of read-only files
+
+2004-12-29 10:30  mandrav
+
+	* Bug-fix: codeblocks would crash on exit, if the "Symbols" or "Watches"
+	  tab was active in the project manager
+
+2004-12-27 13:41  mandrav
+
+	* Bug-fix in code-completion's plugin tokenizer
+
+2004-12-27 00:10  mandrav
+
+	* Added preliminary VC Toolkit 2003 compiler support
+
+2004-12-26 01:25  mandrav
+
+	* Object and dependencies output directory is now configurable per
+	  build-target (defaults to ".objs" and ".deps" respectively)
+
+2004-12-24 17:52  mandrav
+
+	* Custom makefiles are now supported (makefile will not be
+	  auto-generated)
+	* Bug-fix: compile single-file was not working after some changes in the
+	  makefile generation
+
+2004-12-19 16:13  mandrav
+
+	* Bug-fix in class wizard plugin
+	* All dependencies are generated in a subfolder .deps and all object
+	  files are generated in a subfolder .objs (to make source dir stay
+	  clean)
+	* Makefile is now generated correctly (even with filenames
+	  with spaces -- all cases). Got to check it under Linux...
+	* Code::Blocks is now built and distributed with wxWidgets 2.4.2
+
+2004-12-18 22:09  mandrav
+
+	* Fixed bug in setup script that wouldn't install main executable if no
+	  shortcut was requested
+	* Many bug-fixes relating to crashes on exit
+	* Fixed bug that wouldn't allow changing of compiler's master path
+	* Fixed bug in win32 generated makefile
+	* Changed default color for C++ keywords and default gutter color in editor
+	* Added manifest file to adopt win XP look and feel under, err, XP ;)
+
+2004-12-18 11:40  mandrav
+
+	* Bug-fix in generated Makefile plus some other minor bug-fixes
+
+2004-12-18 11:08  mandrav
+
+	* Improved file association handling on startup. Asks before establishing
+	  associations.
+
+2004-11-29 23:41  mandrav
+
+	* Compiler: Improved generated Makefile
+	* Code-completion: Now compiles and runs under Linux (kind of...);
+	  still needs work to become stable
+	* General: UI updates + minor bug fixes
+
+2004-11-19 00:44  mandrav
+
+	* Fixed debugger process hanging under Linux (same problem as the
+	  compiler used to have)
+
+2004-11-07 13:26  mandrav
+
+	* More Unix compilation updates and some bug-fixes
+
+2004-11-07 01:19  mandrav
+
+	* Dependencies are now generated in a .deps subdirectory
+
+2004-11-01 00:04  mandrav
+
+	* Temporary fix for crash under wxGTK when editor's popup menu hides
+	  (introduced mem-leak now, I 'm afraid)
+	* XRC resource updates
+
+2004-10-31 12:52  mandrav
+
+	* Linux version fixes: Fixed hang on compiler process end. Remains to do
+	  the same for the debugger.  Also fixed a bug in the editor color sets
+	  (themes).  The Linux version is starting to stabilize :)
+
+2004-10-29 17:08  mandrav
+
+	* Added Makefile.unix for unix builds. Finally compiles under Linux.
+	  Tested under Debian unstable. Small updates to make code compile
+	  under Linux.
+
+2004-10-24 11:21  mandrav
+
+	* Templates: Fixed bug that on creating a new project from template, would
+	  overwrite any existing files without asking for permission.
+
+2004-10-22 19:18  mandrav
+
+  * Compiler: Bug-fix in compiler options (duplicated -lgmon each time
+    the "Build options" dialog was visited)
+  * Compiler: Bug-fix for profiling compiler option (wouldn't add -pg in linker options)
+
 Changes for version 1.0-beta3
 -------------------------------
 
 2004-10-05 20:05  mandrav
+
 	* Main app: Added exchndl.dll to catch and report fatal exceptions (a file
 	named codeblocks.rpt is created containing exception info) - Win32 only
 
