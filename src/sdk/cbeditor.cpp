@@ -405,6 +405,7 @@ bool cbEditor::Open()
 
     char* buff = st.GetWriteBuf(file.Length());
     file.Read(buff, file.Length());
+    file.Close();
     st.UngetWriteBuf();
 
     m_pControl->InsertText(0, st);
@@ -413,7 +414,6 @@ bool cbEditor::Open()
 	if (ConfigManager::Get()->Read("/editor/fold_all_on_open", 0L))
 		FoldAll();
     
-    wxLogNull nul; // no error logging here
     wxFileName fname(m_Filename);
     m_LastModified = fname.GetModificationTime();
 
@@ -435,8 +435,8 @@ bool cbEditor::Save()
     wxFile file(m_Filename, wxFile::write);
     file.Write(m_pControl->GetText().c_str(), m_pControl->GetTextLength());
     file.Flush();
+    file.Close();
     
-    wxLogNull nul; // no error logging here
     wxFileName fname(m_Filename);
     m_LastModified = fname.GetModificationTime();
 

@@ -439,7 +439,6 @@ void EditorManager::UpdateEditorIndices()
 
 void EditorManager::CheckForExternallyModifiedFiles()
 {
-    wxLogNull nul; // no error logging here
 	for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext())
 	{
         cbEditor* ed = node->GetData();
