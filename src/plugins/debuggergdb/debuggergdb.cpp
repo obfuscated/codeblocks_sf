@@ -67,7 +67,13 @@ cbPlugin* GetPlugin()
 }
 
 BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
-	EVT_UPDATE_UI_RANGE(idMenuDebug, idMenuDebuggerAddWatch, DebuggerGDB::OnUpdateUI)
+	EVT_UPDATE_UI_RANGE(idMenuContinue, idMenuDebuggerAddWatch, DebuggerGDB::OnUpdateUI)
+	// these are different because they are loaded from the XRC
+	EVT_UPDATE_UI(XRCID("idDebuggerMenuDebug"), DebuggerGDB::OnUpdateUI)
+	EVT_UPDATE_UI(XRCID("idDebuggerMenuRunToCursor"), DebuggerGDB::OnUpdateUI)
+	EVT_UPDATE_UI(XRCID("idDebuggerMenuNext"), DebuggerGDB::OnUpdateUI)
+	EVT_UPDATE_UI(XRCID("idDebuggerMenuStep"), DebuggerGDB::OnUpdateUI)
+	EVT_UPDATE_UI(XRCID("idDebuggerMenuStop"), DebuggerGDB::OnUpdateUI)
 
 	EVT_MENU(idMenuDebug, DebuggerGDB::OnDebug)
 	EVT_MENU(idMenuContinue, DebuggerGDB::OnContinue)
