@@ -23,14 +23,20 @@ std::string ASStreamIterator::nextLine()
     memset(buffer, 0, sizeof(buffer));
     filterPtr = buffer;
 
-    while (*m_In != 0 && *m_In != '\r' && *m_In != '\n')
+    while (*m_In != 0)
     {
-        *filterPtr++ = *m_In++;
+        if (*m_In != '\r' && *m_In != '\n')
+            *filterPtr++ = *m_In;
+        ++m_In;
+        if (*m_In == '\r' || *m_In == '\n')
+        {
+            // peek next char (avoid duplicating empty-lines)
+            if (*(m_In + 1) == '\r' || *(m_In + 1) == '\n')
+                ++m_In;
+            break;
+        }
     }
     *filterPtr = 0;
-
-    while (*m_In == '\r' || *m_In == '\n')
-        ++m_In;
 
     return std::string(buffer);
 }
