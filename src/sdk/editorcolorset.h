@@ -61,6 +61,7 @@ class EditorColorSet
 		void Apply(cbEditor* editor);
 		void Apply(HighlightLanguage lang, wxStyledTextCtrl* control);
 		void Save();
+		void Reset(HighlightLanguage lang);
 		wxString& GetKeywords(HighlightLanguage lang){ return m_Keywords[lang]; }
 		void SetKeywords(HighlightLanguage lang, const wxString& keywords){ if (lang != hlNone) m_Keywords[lang] = keywords; }
 	protected:

@@ -19,6 +19,7 @@ class EditorConfigurationDlg : public wxDialog
         void OnChooseColor(wxCommandEvent& event);
         void OnBoldItalicUline(wxCommandEvent& event);
 		void OnColorComponent(wxCommandEvent& event);
+		void OnColorsReset(wxCommandEvent& event);
 		void OnEditKeywords(wxCommandEvent& event);
 		void OnChangeLang(wxCommandEvent& event);
 		void OnChangeDefCodeFileType(wxCommandEvent& event);

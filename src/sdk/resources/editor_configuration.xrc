@@ -300,65 +300,79 @@
                     </object>
                     <object class="sizeritem">
                       <object class="wxBoxSizer">
-                        <orient>wxHORIZONTAL</orient>
+                        <orient>wxVERTICAL</orient>
                         <object class="sizeritem">
                           <object class="wxBoxSizer">
-                            <orient>wxVERTICAL</orient>
+                            <orient>wxHORIZONTAL</orient>
                             <object class="sizeritem">
-                              <object class="wxStaticText">
-                                <label>Foreground:</label>
+                              <object class="wxBoxSizer">
+                                <orient>wxVERTICAL</orient>
+                                <object class="sizeritem">
+                                  <object class="wxStaticText">
+                                    <label>Foreground:</label>
+                                  </object>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxButton" name="btnColorsFore">
+                                    <label></label>
+                                  </object>
+                                  <flag>wxEXPAND</flag>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxStaticText">
+                                    <label>Background:</label>
+                                  </object>
+                                  <flag>wxTOP</flag>
+                                  <border>8</border>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxButton" name="btnColorsBack">
+                                    <label></label>
+                                  </object>
+                                  <flag>wxEXPAND</flag>
+                                </object>
                               </object>
-                            </object>
-                            <object class="sizeritem">
-                              <object class="wxButton" name="btnColorsFore">
-                                <label></label>
-                              </object>
-                              <flag>wxEXPAND</flag>
-                            </object>
-                            <object class="sizeritem">
-                              <object class="wxStaticText">
-                                <label>Background:</label>
-                              </object>
-                              <flag>wxTOP</flag>
+                              <flag>wxRIGHT|wxALIGN_CENTRE_VERTICAL</flag>
                               <border>8</border>
                             </object>
                             <object class="sizeritem">
-                              <object class="wxButton" name="btnColorsBack">
-                                <label></label>
+                              <object class="wxStaticBoxSizer">
+                                <label>Style</label>
+                                <orient>wxVERTICAL</orient>
+                                <object class="sizeritem">
+                                  <object class="wxCheckBox" name="chkColorsBold">
+                                    <label>Bold</label>
+                                  </object>
+                                  <flag>wxALL|wxEXPAND</flag>
+                                  <border>8</border>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxCheckBox" name="chkColorsItalics">
+                                    <label>Italics</label>
+                                  </object>
+                                  <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                                  <border>8</border>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxCheckBox" name="chkColorsUnderlined">
+                                    <label>Underlined</label>
+                                  </object>
+                                  <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                                  <border>8</border>
+                                </object>
                               </object>
-                              <flag>wxEXPAND</flag>
+                              <flag>wxALIGN_CENTRE_VERTICAL</flag>
                             </object>
                           </object>
-                          <flag>wxRIGHT|wxALIGN_CENTRE_VERTICAL</flag>
-                          <border>8</border>
+                        </object>
+                        <object class="spacer">
+                          <option>1</option>
+                          <flag>wxGROW</flag>
                         </object>
                         <object class="sizeritem">
-                          <object class="wxStaticBoxSizer">
-                            <label>Style</label>
-                            <orient>wxVERTICAL</orient>
-                            <object class="sizeritem">
-                              <object class="wxCheckBox" name="chkColorsBold">
-                                <label>Bold</label>
-                              </object>
-                              <flag>wxALL|wxEXPAND</flag>
-                              <border>8</border>
-                            </object>
-                            <object class="sizeritem">
-                              <object class="wxCheckBox" name="chkColorsItalics">
-                                <label>Italics</label>
-                              </object>
-                              <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
-                              <border>8</border>
-                            </object>
-                            <object class="sizeritem">
-                              <object class="wxCheckBox" name="chkColorsUnderlined">
-                                <label>Underlined</label>
-                              </object>
-                              <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
-                              <border>8</border>
-                            </object>
+                          <object class="wxButton" name="btnColorsReset">
+                            <label>Reset defaults</label>
                           </object>
-                          <flag>wxALIGN_CENTRE_VERTICAL</flag>
                         </object>
                       </object>
                       <flag>wxLEFT|wxEXPAND</flag>
