@@ -301,7 +301,7 @@ Parser* NativeParser::FindParserFromActiveEditor()
 	return FindParserFromEditor(edMan->GetActiveEditor());
 }	
 
-int NativeParser::MarkItemsByAI()
+int NativeParser::MarkItemsByAI(bool reallyUseAI)
 {
 	cbEditor* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
 	if (!ed)
@@ -366,11 +366,14 @@ int NativeParser::MarkItemsByAI()
 		for (unsigned int i = 0; i < tokens.GetCount(); ++i)
 		{
 			Token* token = tokens[i];
-			token->m_Bool = false;
+			token->m_Bool = !reallyUseAI;
 		}
 
-		// AI will mark (m_Bool == true) every token we should include in list
-		return AI(ed, parser);
+        if (!reallyUseAI)
+            return tokens.GetCount();
+
+        // AI will mark (m_Bool == true) every token we should include in list
+        return AI(ed, parser);
 	}
 	return 0;
 }

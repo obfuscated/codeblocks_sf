@@ -39,7 +39,7 @@ class NativeParser : public wxEvtHandler
 		void AddFileToParser(cbProject* project, const wxString& filename);
 		void RemoveFileFromParser(cbProject* project, const wxString& filename);
 
-		int MarkItemsByAI();
+		int MarkItemsByAI(bool reallyUseAI = true);
 		
 		const wxString& GetCodeCompletionItems();
 		const wxArrayString& GetCallTips();

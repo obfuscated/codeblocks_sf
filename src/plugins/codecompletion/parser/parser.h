@@ -58,6 +58,7 @@ struct ParserOptions
 	bool followGlobalIncludes;
 	bool caseSensitive;
 	bool wantPreprocessor;
+	bool useSmartSense;
 };
 
 struct BrowserOptions

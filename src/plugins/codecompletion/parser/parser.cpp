@@ -122,6 +122,7 @@ void Parser::ReadOptions()
 	m_Options.followGlobalIncludes = false;
 	m_Options.caseSensitive = true;
 	m_Options.wantPreprocessor = false;
+	m_Options.useSmartSense = true;
 	m_BrowserOptions.showInheritance = false;
 	m_BrowserOptions.viewFlat = false;
 #else // !STANDALONE
@@ -129,6 +130,7 @@ void Parser::ReadOptions()
 	m_Options.followLocalIncludes = ConfigManager::Get()->Read("/code_completion/parser_follow_local_includes", 1L);
 	m_Options.followGlobalIncludes = ConfigManager::Get()->Read("/code_completion/parser_follow_global_includes", 0L);
 	m_Options.caseSensitive = ConfigManager::Get()->Read("/code_completion/case_sensitive", 1);
+	m_Options.useSmartSense = ConfigManager::Get()->Read("/code_completion/use_SmartSense", 1);
 	m_Options.wantPreprocessor = ConfigManager::Get()->Read("/code_completion/want_preprocessor", 0L);
 	m_BrowserOptions.showInheritance = ConfigManager::Get()->Read("/code_completion/browser_show_inheritance", 0L);
 	m_BrowserOptions.viewFlat = ConfigManager::Get()->Read("/code_completion/browser_view_flat", 0L);
@@ -142,6 +144,7 @@ void Parser::WriteOptions()
 	ConfigManager::Get()->Write("/code_completion/parser_follow_local_includes", m_Options.followLocalIncludes);
 	ConfigManager::Get()->Write("/code_completion/parser_follow_global_includes", m_Options.followGlobalIncludes);
 	ConfigManager::Get()->Write("/code_completion/case_sensitive", m_Options.caseSensitive);
+	ConfigManager::Get()->Write("/code_completion/use_SmartSense", m_Options.useSmartSense);
 	ConfigManager::Get()->Write("/code_completion/want_preprocessor", m_Options.wantPreprocessor);
 	ConfigManager::Get()->Write("/code_completion/browser_show_inheritance", m_BrowserOptions.showInheritance);
 	ConfigManager::Get()->Write("/code_completion/browser_view_flat", m_BrowserOptions.viewFlat);

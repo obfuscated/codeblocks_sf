@@ -229,12 +229,12 @@ int CodeCompletion::CodeComplete()
 		return -4;
 	}
 	
-	if (m_NativeParsers.MarkItemsByAI())
-	{
-		CCList::Free(); // free any previously open cc list
-		CCList::Get(this, ed->GetControl(), parser)->Show();
-		return 0;
-	}
+    if (m_NativeParsers.MarkItemsByAI(parser->Options().useSmartSense))
+    {
+        CCList::Free(); // free any previously open cc list
+        CCList::Get(this, ed->GetControl(), parser)->Show();
+        return 0;
+    }
 	return -5;
 }
 

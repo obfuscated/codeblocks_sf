@@ -68,6 +68,13 @@
                     <label>Code completion options</label>
                     <orient>wxVERTICAL</orient>
                     <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkSimpleMode">
+                        <label>Do not use SmartSense</label>
+                      </object>
+                      <flag>wxTOP|wxLEFT|wxRIGHT</flag>
+                      <border>8</border>
+                    </object>
+                    <object class="sizeritem">
                       <object class="wxCheckBox" name="chkCaseSensitive">
                         <label>Case sensitive matches</label>
                       </object>
