@@ -2,11 +2,6 @@
 #define EDITOR_H
 
 #define EDITOR_MODIFIED             "*"
-#ifdef __WXMSW__
-    #define DEFAULT_EDITOR_FONT 	"0;-13;0;0;0;400;0;0;0;0;3;2;1;49;Courier New"
-#else
-    #define DEFAULT_EDITOR_FONT 	"0;-monotype-courier new-medium-r-normal-*-*-110-*-*-m-*-iso8859-1"
-#endif // __WXMSW__
 
 #define BOOKMARK_MARKER					0
 #define BOOKMARK_STYLE 					wxSTC_MARK_ARROW

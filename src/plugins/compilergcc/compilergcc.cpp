@@ -1072,6 +1072,7 @@ int CompilerGCC::Compile(ProjectBuildTarget* target)
     }
     else
     {
+        wxSetWorkingDirectory(m_Project->GetBasePath());
         DirectCommands dc(this, CompilerFactory::Compilers[m_CompilerIdx], m_Project, m_PageIndex);
         wxArrayString compile = dc.GetCompileCommands(target);
         dc.AppendArray(compile, m_Queue);
@@ -1265,9 +1266,9 @@ void CompilerGCC::OnCompileFile(wxCommandEvent& event)
 void CompilerGCC::OnRebuild(wxCommandEvent& event)
 {
 	if (wxMessageBox(_("Rebuilding the project will cause the deletion of all "
-                        "object files and building it from scratch. This action "
+                        "object files and building it from scratch.\nThis action "
                         "might take a while, especially if your project contains "
-                        "more than a few files. Another factor is your CPU "
+                        "more than a few files.\nAnother factor is your CPU "
                         "and the available system memory.\n\n"
                         "Are you sure you want to rebuild the entire project?"),
 					_("Rebuild project"),
@@ -1308,9 +1309,9 @@ void CompilerGCC::OnCompileAll(wxCommandEvent& event)
 void CompilerGCC::OnRebuildAll(wxCommandEvent& event)
 {
 	if (wxMessageBox(_("Rebuilding ALL the open projects will cause the deletion of all "
-                        "object files and building them from scratch. This action "
+                        "object files and building them from scratch.\nThis action "
                         "might take a while, especially if your projects contain "
-                        "more than a few files. Another factor is your CPU "
+                        "more than a few files.\nAnother factor is your CPU "
                         "and the available system memory.\n\n"
                         "Are you sure you want to rebuild ALL the projects?"),
 					_("Rebuild projects"),
@@ -1324,11 +1325,11 @@ void CompilerGCC::OnRebuildAll(wxCommandEvent& event)
 void CompilerGCC::OnClean(wxCommandEvent& event)
 {
 	if (wxMessageBox(_("Cleaning the target or project will cause the deletion "
-                        "of all relevant object files. This means that you will "
+                        "of all relevant object files.\nThis means that you will "
                         "have to build your project from scratch next time you "
-                        "'ll want to build it. That action "
+                        "'ll want to build it.\nThat action "
                         "might take a while, especially if your project contains "
-                        "more than a few files. Another factor is your CPU "
+                        "more than a few files.\nAnother factor is your CPU "
                         "and the available system memory.\n\n"
                         "Are you sure you want to proceed to cleaning?"),
 					_("Clean target/project"),
@@ -1363,15 +1364,15 @@ void CompilerGCC::OnClean(wxCommandEvent& event)
 
 void CompilerGCC::OnDistClean(wxCommandEvent& event)
 {
-	if (wxMessageBox(_("Cleaning the target or project will cause the deletion "
-                        "of all relevant object files. This means that you will "
+	if (wxMessageBox(_("Dist-cleaning the target or project will cause the deletion "
+                        "of all relevant object files.\nThis means that you will "
                         "have to build your project from scratch next time you "
-                        "'ll want to build it. That action "
+                        "'ll want to build it.\nThat action "
                         "might take a while, especially if your project contains "
-                        "more than a few files. Another factor is your CPU "
+                        "more than a few files.\nAnother factor is your CPU "
                         "and the available system memory.\n\n"
-                        "Are you sure you want to proceed to cleaning?"),
-					_("Clean target/project"),
+                        "Are you sure you want to proceed to dist-cleaning?"),
+					_("Dist-clean target/project"),
 					wxYES_NO | wxICON_QUESTION) == wxNO)
     {
         return;

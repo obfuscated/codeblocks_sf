@@ -306,15 +306,15 @@ wxColour cbEditor::GetOptionColour(const wxString& option, const wxColour _defau
 
 void cbEditor::SetEditorStyle()
 {
-    wxFont font;
+    wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
+    wxString fontstring = ConfigManager::Get()->Read("/editor/font", wxEmptyString);
 
-//#ifdef __WXMSW__
-    wxNativeFontInfo nfi;
-    nfi.FromString(ConfigManager::Get()->Read("/editor/font", DEFAULT_EDITOR_FONT));
-    font.SetNativeFontInfo(nfi);
-//#else
-//    font.SetNativeFontInfo(ConfigManager::Get()->Read("/editor/font", DEFAULT_EDITOR_FONT));
-//#endif // __WXMSW__
+    if (!fontstring.IsEmpty())
+    {
+        wxNativeFontInfo nfi;
+        nfi.FromString(fontstring);
+        font.SetNativeFontInfo(nfi);
+    }
 
 	m_pControl->SetMouseDwellTime(1000);
 

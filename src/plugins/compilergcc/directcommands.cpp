@@ -155,8 +155,12 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
     // timestamp check
     if (!force)
     {
-        wxDateTime srclast = wxFileName(pfd.source_file_native).GetModificationTime();
-        wxDateTime dstlast = wxFileName(pfd.object_file_native).GetModificationTime();
+        wxDateTime srclast;
+        if (wxFileExists(pfd.source_file_native))
+            srclast = wxFileName(pfd.source_file_native).GetModificationTime();
+        wxDateTime dstlast;
+        if (wxFileExists(pfd.object_file_native))
+             dstlast = wxFileName(pfd.object_file_native).GetModificationTime();
         if (srclast.IsValid() && dstlast.IsValid() && !srclast.IsLaterThan(dstlast))
             return ret;
     }
@@ -437,7 +441,9 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
         // timestamp check
         if (!force)
         {
-            wxDateTime objtime = wxFileName(pfd.object_file_native).GetModificationTime();
+            wxDateTime objtime;
+            if (wxFileExists(pfd.object_file_native))
+                objtime = wxFileName(pfd.object_file_native).GetModificationTime();
             if (!latestobjecttime.IsValid() ||
                 (objtime.IsValid() && objtime.IsLaterThan(latestobjecttime)))
             {
@@ -448,7 +454,9 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
 
     if (!force)
     {
-        wxDateTime outputtime = wxFileName(target->GetOutputFilename()).GetModificationTime();
+        wxDateTime outputtime;
+        if (wxFileExists(target->GetOutputFilename()))
+            outputtime = wxFileName(target->GetOutputFilename()).GetModificationTime();
         if (outputtime.IsValid() && outputtime.IsLaterThan(latestobjecttime))
             return ret; // no object file more recent than output file
     }
@@ -566,8 +574,12 @@ bool DirectCommands::ForceCompileByDependencies(const pfDetails& pfd)
     {
         // check source file time with deps file time
         // if newer, force a scan of dependencies again
-        wxDateTime src = wxFileName(pfd.source_file_native).GetModificationTime();
-        wxDateTime dep = wxFileName(pfd.dep_file_native).GetModificationTime();
+        wxDateTime src;
+        if (wxFileExists(pfd.source_file_native))
+            src = wxFileName(pfd.source_file_native).GetModificationTime();
+        wxDateTime dep;
+        if (wxFileExists(pfd.dep_file_native))
+            dep = wxFileName(pfd.dep_file_native).GetModificationTime();
         if (src.IsValid() && dep.IsValid() && !src.IsLaterThan(dep))
         {
             // just read existing deps file
@@ -773,13 +785,17 @@ bool DirectCommands::DependsOnChangedFile(const pfDetails& pfd, const wxArrayStr
 {
     wxFileName basefile(pfd.source_file_native);
     wxFileName baseobjfile(pfd.object_file_native);
-    wxDateTime basetime = baseobjfile.GetModificationTime();
+    wxDateTime basetime;
+    if (wxFileExists(pfd.object_file_native))
+        basetime = baseobjfile.GetModificationTime();
     for (unsigned int i = 0; i < deps.GetCount(); ++i)
     {
         wxFileName otherfile(deps[i]);
         if (otherfile.SameAs(basefile))
             continue;
-        wxDateTime othertime = wxFileName(deps[i]).GetModificationTime();
+        wxDateTime othertime;
+        if (wxFileExists(deps[i]))
+             othertime = wxFileName(deps[i]).GetModificationTime();
         if (basetime.IsValid() && othertime.IsValid() && othertime.IsLaterThan(basetime))
         {
 //            Manager::Get()->GetMessageManager()->Log(m_PageIndex, "    DBG: file %s depends on modified %s", pfd.source_file_native.c_str(), deps[i].c_str());

@@ -1009,8 +1009,10 @@ void MakefileGenerator::DoAddMakefileTarget_Link(wxString& buffer)
 
 void MakefileGenerator::ConvertToMakefileFriendly(wxString& str)
 {
+#ifdef __WXMSW__
     if (!m_GeneratingMakefile)
         return;
+#endif
 
     if (str.IsEmpty())
         return;
@@ -1025,7 +1027,11 @@ void MakefileGenerator::ConvertToMakefileFriendly(wxString& str)
 
 void MakefileGenerator::QuoteStringIfNeeded(wxString& str)
 {
-    if (!m_GeneratingMakefile ||
+    bool force = false;
+#ifdef __WXMSW__
+    force = !m_GeneratingMakefile;
+#endif
+    if (force ||
         ((m_CompilerSet->GetSwitches().forceCompilerUseQuotes ||
         m_CompilerSet->GetSwitches().forceLinkerUseQuotes) &&
         str.GetChar(0) != '"'))

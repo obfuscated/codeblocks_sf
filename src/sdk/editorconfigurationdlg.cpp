@@ -253,15 +253,15 @@ void EditorConfigurationDlg::WriteColors()
 
 void EditorConfigurationDlg::UpdateSampleFont(bool askForNewFont)
 {
-    wxFont tmpFont;
+    wxFont tmpFont(8, wxMODERN, wxNORMAL, wxNORMAL);
+    wxString fontstring = ConfigManager::Get()->Read("/editor/font", wxEmptyString);
 
-//#ifdef __WXMSW__
-    wxNativeFontInfo nfi;
-    nfi.FromString(ConfigManager::Get()->Read("/editor/font", DEFAULT_EDITOR_FONT));
-    tmpFont.SetNativeFontInfo(nfi);
-//#else
-//    tmpFont.SetNativeFontInfo(ConfigManager::Get()->Read("/editor/font", DEFAULT_EDITOR_FONT));
-//#endif // __WXMSW__
+    if (!fontstring.IsEmpty())
+    {
+        wxNativeFontInfo nfi;
+        nfi.FromString(fontstring);
+        tmpFont.SetNativeFontInfo(nfi);
+    }
 
 	XRCCTRL(*this, "lblEditorFont", wxStaticText)->SetFont(tmpFont);
 	if (!askForNewFont)

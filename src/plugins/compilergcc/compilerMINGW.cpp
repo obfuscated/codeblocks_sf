@@ -6,7 +6,7 @@
 #include <wx/msgdlg.h>
 
 CompilerMINGW::CompilerMINGW()
-    : Compiler(_("MinGW Compiler Suite"))
+    : Compiler(_("GNU GCC Compiler"))
 {
 #ifdef __WXMSW__
 	m_Programs.C = "mingw32-gcc.exe";
@@ -32,7 +32,11 @@ CompilerMINGW::CompilerMINGW()
 	m_Switches.forceCompilerUseQuotes = false;
 	m_Switches.forceLinkerUseQuotes = false;
 	m_Switches.logging = clogSimple;
+#ifdef __WXMSW__
 	m_Switches.buildMethod = cbmDirect;
+#else
+	m_Switches.buildMethod = cbmUseMake;
+#endif
 
 	m_Options.AddOption(_("Produce debugging symbols"),
 				"-g",
@@ -53,7 +57,11 @@ CompilerMINGW::CompilerMINGW()
     m_Commands[(int)ctGenDependenciesCmd] = "$compiler -MM $options -MF $dep_object -MT $object $includes $file";
     m_Commands[(int)ctCompileResourceCmd] = "$rescomp -i $file -J rc -o $resource_output -O coff $res_includes";
     m_Commands[(int)ctLinkExeCmd] = "$linker $libdirs -o $exe_output $libs $link_objects $link_options";
+#ifdef __WXMSW__
     m_Commands[(int)ctLinkDynamicCmd] = "$linker -shared -Wl,--output-def=$def_output -Wl,--out-implib=$static_output -Wl,--dll $libdirs $link_objects $libs -o $exe_output $link_options";
+#else
+    m_Commands[(int)ctLinkDynamicCmd] = "$linker -shared -Wl,--output-def=$def_output -Wl,--out-implib=$static_output $libdirs $link_objects $libs -o $exe_output $link_options";
+#endif
     m_Commands[(int)ctLinkStaticCmd] = "ar -r $exe_output $link_objects\n\tranlib $exe_output";
 }
 
