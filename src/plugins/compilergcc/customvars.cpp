@@ -131,7 +131,8 @@ bool CustomVars::DoDeleteVar(Var* var, bool deleteIfBuiltin)
 {
 	if (var && (!var->builtin || deleteIfBuiltin))
 	{
-		m_Vars.Remove(var);
+		int idx = m_Vars.Index(*var);
+		m_Vars.RemoveAt(idx);
 		return true;
 	}
     return false;

@@ -75,7 +75,7 @@ ProjectFileOptionsDlg::~ProjectFileOptionsDlg()
 {
 }
 
-void ProjectFileOptionsDlg::OnUpdateUI(wxCommandEvent& event)
+void ProjectFileOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
 {
 	if (m_ProjectFile)
 	{

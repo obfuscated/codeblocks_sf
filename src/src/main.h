@@ -3,6 +3,7 @@
 
 #include <wx/toolbar.h>
 #include <wx/laywin.h>
+#include <wx/docview.h>
 #include <wx/stc/stc.h>
 #include "../sdk/manager.h"
 #include "../sdk/cbplugin.h"

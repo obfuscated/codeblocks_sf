@@ -11,7 +11,7 @@ class ProjectFileOptionsDlg : public wxDialog
 	public:
 		ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf);
 		~ProjectFileOptionsDlg();
-		void OnUpdateUI(wxCommandEvent& event);
+		void OnUpdateUI(wxUpdateUIEvent& event);
 		void OnOKClick(wxCommandEvent& event);
 	private:
 		ProjectFile* m_ProjectFile;

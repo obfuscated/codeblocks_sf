@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include <wx/string.h>
 #include <wx/dir.h>
 #include <wx/menu.h>
 #include <wx/dynlib.h>

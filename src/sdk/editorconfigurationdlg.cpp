@@ -196,7 +196,8 @@ void EditorConfigurationDlg::ApplyColors()
 {
 	if (m_TextColorControl && m_Theme)
 	{
-		m_TextColorControl->StyleSetFont(wxSTC_STYLE_DEFAULT, XRCCTRL(*this, "lblEditorFont", wxStaticText)->GetFont());
+		wxFont fnt = XRCCTRL(*this, "lblEditorFont", wxStaticText)->GetFont();
+		m_TextColorControl->StyleSetFont(wxSTC_STYLE_DEFAULT,fnt); 
 		m_Theme->Apply(m_Lang, m_TextColorControl);
 	}
 }
