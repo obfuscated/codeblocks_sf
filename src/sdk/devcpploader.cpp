@@ -41,25 +41,42 @@ bool DevCppLoader::Open(const wxString& filename)
     dev->Read("CppCompiler", &tmp, "");
     if (tmp.IsEmpty())
         dev->Read("Compiler", &tmp, "");
-    //tmp = tmp;
     array = GetArrayFromString(tmp, "_@@_");
     m_pProject->SetCompilerOptions(array);
 
     dev->Read("Linker", &tmp, "");
-    //tmp = tmp;
+    // some .dev I got my hands on, had the following in the linker options
+    // remove them
+    tmp.Replace("-o$@", "");
+    tmp.Replace("-o $@", "");
+    // read the list of linker options
     array = GetArrayFromString(tmp, "_@@_");
+    // but separate the libs
+    size_t i = 0;
+    while (i < array.GetCount())
+    {
+        if (array[i].StartsWith("-l"))
+        {
+            m_pProject->AddLinkLib(array[i].Right(array[i].Length() - 2));
+            array.Remove(i, 1);
+        }
+        else
+            ++i;
+    }
+    // the remaining are linker options
     m_pProject->SetLinkerOptions(array);
 
+    // read compiler's dirs
     dev->Read("Includes", &tmp, "");
-    //tmp = tmp;
     array = GetArrayFromString(tmp, ";");
     m_pProject->SetIncludeDirs(array);
 
+    // read linker's dirs
     dev->Read("Libs", &tmp, "");
-    //tmp = tmp;
     array = GetArrayFromString(tmp, ";");
     m_pProject->SetLibDirs(array);
 
+    // read resource files
     dev->Read("Resources", &tmp, "");
     array = GetArrayFromString(tmp, ","); // make sure that this is comma-separated
     for (unsigned int i = 0; i < array.GetCount(); ++i)
@@ -90,10 +107,12 @@ bool DevCppLoader::Open(const wxString& filename)
     }
     dev->SetPath("/Project");
 
+    // set the target type
     ProjectBuildTarget* target = m_pProject->GetBuildTarget(0);
     dev->Read("Type", &typ, 0);
     target->SetTargetType(TargetType(typ));
 
+    // decide on the output filename
     if (dev->Read("OverrideOutput", (long)0) == 1)
         dev->Read("OverrideOutputName", &output, "");
     if (output.IsEmpty())
@@ -103,10 +122,12 @@ bool DevCppLoader::Open(const wxString& filename)
         output = out_path + "\\" + output;
     target->SetOutputFilename(output);
 
+    // set the object output
     dev->Read("ObjectOutput", &obj_path, "");
     if (!obj_path.IsEmpty())
         target->SetObjectOutput(obj_path);
 
+    // all done
     delete dev;
 
     m_pProject->SetModified(true);
