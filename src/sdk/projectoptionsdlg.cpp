@@ -27,6 +27,7 @@
 #include "manager.h"
 #include "configmanager.h"
 #include "editarrayorderdlg.h"
+#include "editarrayfiledlg.h"
 #include "pluginmanager.h"
 #include <wx/xrc/xmlres.h>
 
@@ -40,6 +41,7 @@ BEGIN_EVENT_TABLE(ProjectOptionsDlg, wxDialog)
 	EVT_BUTTON(    XRCID("btnEditBuildTarget"),        ProjectOptionsDlg::OnEditBuildTargetClick)
 	EVT_BUTTON(    XRCID("btnDelBuildTarget"),         ProjectOptionsDlg::OnRemoveBuildTargetClick)
 	EVT_BUTTON(    XRCID("btnBrowseOutputFilename"),   ProjectOptionsDlg::OnBrowseOutputFilenameClick)
+	EVT_BUTTON(    XRCID("btnEditDeps"),               ProjectOptionsDlg::OnEditDepsClick)
 	EVT_LISTBOX_DCLICK(XRCID("lstFiles"),              ProjectOptionsDlg::OnFileOptionsClick)
 	EVT_BUTTON(    XRCID("btnFileOptions"),            ProjectOptionsDlg::OnFileOptionsClick)
 	EVT_LISTBOX(   XRCID("lstBuildTarget"),            ProjectOptionsDlg::OnBuildTargetChanged)
@@ -106,7 +108,10 @@ void ProjectOptionsDlg::DoTargetChange()
 	wxComboBox* cmb = XRCCTRL(*this, "cmbProjectType", wxComboBox);
     wxTextCtrl* txt = XRCCTRL(*this, "txtOutputFilename", wxTextCtrl);
     wxButton* browse = XRCCTRL(*this, "btnBrowseOutputFilename", wxButton);
-    if (cmb && txt && browse)
+    wxTextCtrl* txtDeps = XRCCTRL(*this, "txtExternalDeps", wxTextCtrl);
+    wxButton* btnDeps = XRCCTRL(*this, "btnEditDeps", wxButton);
+    txtDeps->Enable(false);
+    if (cmb && txt && browse && txtDeps && btnDeps)
     {
         cmb->SetSelection(target->GetTargetType());
         switch ((TargetType)cmb->GetSelection())
@@ -118,12 +123,16 @@ void ProjectOptionsDlg::DoTargetChange()
                 txt->SetValue(target->GetOutputFilename());
                 txt->Enable(true);
                 browse->Enable(true);
+                txtDeps->SetValue(target->GetExternalDeps());
+                btnDeps->Enable(true);
                 break;
                 
             default: // for commands-only targets
                 txt->SetValue("");
                 txt->Enable(false);
                 browse->Enable(false);
+                txtDeps->SetValue("");
+                btnDeps->Enable(false);
                 break;
         }
     }
@@ -171,6 +180,8 @@ void ProjectOptionsDlg::DoBeforeTargetChange(bool force)
 		fname.MakeRelativeTo(m_Project->GetBasePath());
 		target->SetOutputFilename(fname.GetFullPath());
 
+        target->SetExternalDeps(XRCCTRL(*this, "txtExternalDeps", wxTextCtrl)->GetValue());
+
 		// files options
 		wxCheckListBox* list = XRCCTRL(*this, "lstFiles", wxCheckListBox);
 		int count = list->GetCount();
@@ -192,11 +203,22 @@ void ProjectOptionsDlg::DoBeforeTargetChange(bool force)
 
 void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
 {
+    ProjectBuildTarget* target = m_Project->GetBuildTarget(m_Current_Sel);
+    if (!target)
+        return;
 	wxComboBox* cmb = XRCCTRL(*this, "cmbProjectType", wxComboBox);
     wxTextCtrl* txt = XRCCTRL(*this, "txtOutputFilename", wxTextCtrl);
     wxButton* browse = XRCCTRL(*this, "btnBrowseOutputFilename", wxButton);
-    if (!cmb || !txt || !browse)
+    wxTextCtrl* txtDeps = XRCCTRL(*this, "txtExternalDeps", wxTextCtrl);
+    wxButton* btnDeps = XRCCTRL(*this, "btnEditDeps", wxButton);
+    if (!cmb || !txt || !txtDeps || !btnDeps || !browse)
         return;
+
+    txtDeps->SetValue(target->GetExternalDeps());
+    btnDeps->Enable(true);
+    txt->Enable(true);
+    browse->Enable(true);
+
     wxFileName fname;
     switch ((TargetType)cmb->GetSelection())
     {
@@ -205,27 +227,25 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
             fname.Assign(m_Project->GetExecutableFilename());
             fname.MakeRelativeTo(m_Project->GetBasePath());
             txt->SetValue(fname.GetFullPath());
-            txt->Enable(true);
-            browse->Enable(true);
             break;
         case ttDynamicLib:
             fname.Assign(m_Project->GetDynamicLibFilename());
             fname.MakeRelativeTo(m_Project->GetBasePath());
             txt->SetValue(fname.GetFullPath());
-            txt->Enable(true);
-            browse->Enable(true);
             break;
         case ttStaticLib:
             fname.Assign(m_Project->GetStaticLibFilename());
             fname.MakeRelativeTo(m_Project->GetBasePath());
             txt->SetValue(fname.GetFullPath());
-            txt->Enable(true);
-            browse->Enable(true);
+            txtDeps->SetValue(target->GetExternalDeps());
             break;
         default:
             txt->SetValue("");
+            txtDeps->SetValue("");
             txt->Enable(false);
             browse->Enable(false);
+            txtDeps->Enable(false);
+            btnDeps->Enable(false);
     }
 }
 
@@ -344,6 +364,18 @@ void ProjectOptionsDlg::OnRemoveBuildTargetClick(wxCommandEvent& event)
     lstTargets->SetSelection(targetIdx);
     m_Current_Sel = -1;
     DoTargetChange();
+}
+
+void ProjectOptionsDlg::OnEditDepsClick(wxCommandEvent& event)
+{
+    wxTextCtrl* txtDeps = XRCCTRL(*this, "txtExternalDeps", wxTextCtrl);
+    wxArrayString array = GetArrayFromString(txtDeps->GetValue());
+    EditArrayFileDlg dlg(this, array, true, m_Project->GetBasePath());
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        wxString deps = GetStringFromArray(array);
+        txtDeps->SetValue(deps);
+    }
 }
 
 void ProjectOptionsDlg::OnBrowseOutputFilenameClick(wxCommandEvent& event)

@@ -56,7 +56,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
         "Finally, but not last, the open-source community"));
 	XRCCTRL(*this, "txtLicense", wxTextCtrl)->SetValue(LICENSE_GPL);
 	XRCCTRL(*this, "lblName", wxStaticText)->SetLabel(APP_NAME);
-	XRCCTRL(*this, "lblVersion", wxStaticText)->SetLabel(APP_VERSION);
+	XRCCTRL(*this, "lblVersion", wxStaticText)->SetLabel(APP_ACTUAL_VERSION);
 	XRCCTRL(*this, "lblAuthor", wxStaticText)->SetLabel("Yiannis An. Mandravellos");
 	XRCCTRL(*this, "lblEmail", wxStaticText)->SetLabel(APP_CONTACT_EMAIL);
 	XRCCTRL(*this, "lblWebsite", wxStaticText)->SetLabel(APP_URL);

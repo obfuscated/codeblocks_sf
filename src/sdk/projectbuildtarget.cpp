@@ -41,6 +41,17 @@ ProjectBuildTarget::~ProjectBuildTarget()
 {
 }
 
+const wxString & ProjectBuildTarget::GetExternalDeps()
+{
+    return m_ExternalDeps;
+}
+
+void ProjectBuildTarget::SetExternalDeps(const wxString& deps)
+{
+    m_ExternalDeps = deps;
+    SetModified(true);
+}
+
 bool ProjectBuildTarget::GetIncludeInTargetAll()
 {
 	return m_BuildWithAll;

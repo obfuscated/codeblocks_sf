@@ -68,9 +68,12 @@ class DLLIMPORT ProjectBuildTarget : public CompileTargetBase
 		~ProjectBuildTarget();
 
         //properties
-        bool GetIncludeInTargetAll();
-        void SetIncludeInTargetAll(bool buildIt);
+        virtual const wxString& GetExternalDeps();
+        virtual void SetExternalDeps(const wxString& deps);
+        virtual bool GetIncludeInTargetAll();
+        virtual void SetIncludeInTargetAll(bool buildIt);
     private:
+        wxString m_ExternalDeps;
         bool m_BuildWithAll;
 };
 

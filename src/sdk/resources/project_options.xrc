@@ -167,7 +167,33 @@
                               <object class="wxButton" name="btnBrowseOutputFilename">
                                 <label>...</label>
                               </object>
-                              <minsize>24,-1</minsize>
+                              <minsize>22,22</minsize>
+                            </object>
+                          </object>
+                          <flag>wxEXPAND</flag>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                            <label>External dependencies:</label>
+                          </object>
+                          <flag>wxTOP</flag>
+                          <border>4</border>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxBoxSizer">
+                            <orient>wxHORIZONTAL</orient>
+                            <object class="sizeritem">
+                              <object class="wxTextCtrl" name="txtExternalDeps">
+                                <style>wxTE_READONLY</style>
+                              </object>
+                              <option>1</option>
+                              <flag>wxEXPAND</flag>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxButton" name="btnEditDeps">
+                                <label>...</label>
+                              </object>
+                              <minsize>22,22</minsize>
                             </object>
                           </object>
                           <flag>wxEXPAND</flag>

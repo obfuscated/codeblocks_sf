@@ -719,9 +719,9 @@ void MakefileGenerator::DoAddMakefileTarget_Depend(wxString& buffer)
 			continue;
 
         buffer << "depend_" << target->GetTitle() << ": $(" << target->GetTitle() << "_DEPS)" << '\n' << '\n';
-        tmp << "depend_" << target->GetTitle() << " ";
+        tmp << " depend_" << target->GetTitle();
     }
-    buffer << "depend: " << tmp << '\n';
+    buffer << "depend:" << tmp << '\n';
     buffer << '\n';
 }
 
@@ -753,7 +753,13 @@ void MakefileGenerator::DoAddMakefileTarget_Link(wxString& buffer)
 		if (!IsTargetValid(target))
 			continue;
 
-		buffer << "$(" << target->GetTitle() << "_BIN): " << "$(" << target->GetTitle() << "_LINKOBJS) ";
+		buffer << "$(" << target->GetTitle() << "_BIN): " << "$(" << target->GetTitle() << "_LINKOBJS)";
+        // add external deps
+        wxArrayString array = GetArrayFromString(target->GetExternalDeps());
+        for (unsigned int i = 0; i < array.GetCount(); ++i)
+        {
+            buffer << ' ' << UnixFilename(array[i]);
+        }
 		buffer << '\n';
 
         // command to create the target dir
