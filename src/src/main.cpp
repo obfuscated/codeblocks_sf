@@ -1531,11 +1531,14 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
 void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
 {
     wxMenuBar* mbar = GetMenuBar();
+    cbEditor* ed = m_pEdMan ? m_pEdMan->GetActiveEditor() : 0L;
+
     mbar->Check(idViewToolMain, m_pToolbar && m_pToolbar->IsShown());
     mbar->Check(idViewManager, m_pLeftSash && m_pLeftSash->IsShown());
     mbar->Check(idViewMessageManager, m_pBottomSash && m_pBottomSash->IsShown());
     mbar->Check(idViewStatusbar, GetStatusBar() && GetStatusBar()->IsShown());
     mbar->Check(idViewFullScreen, IsFullScreen());
+    mbar->Enable(idViewFocusEditor, ed);
 
 	event.Skip();
 }

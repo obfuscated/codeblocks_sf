@@ -513,12 +513,17 @@ void CodeCompletion::OnReparseActiveEditor(CodeBlocksEvent& event)
 
 void CodeCompletion::OnUpdateUI(wxUpdateUIEvent& event)
 {
+    bool hasEd = Manager::Get()->GetEditorManager()->GetActiveEditor() != 0;
 	if (m_EditMenu)
 	{
-		bool hasEd = Manager::Get()->GetEditorManager()->GetActiveEditor();
 	    m_EditMenu->Enable(idMenuCodeComplete, hasEd);
 	    m_EditMenu->Enable(idMenuShowCallTip, hasEd);
 	}
+	
+	if (m_SearchMenu)
+	{
+	    m_SearchMenu->Enable(idMenuGotoFunction, hasEd);
+    }
 
     // must do...
     event.Skip();

@@ -52,7 +52,7 @@ bool MSVC7Loader::Open(const wxString& filename)
     }
     if (strncmp(root->Attribute("Version"), "7", 1) != 0)
     {
-        wxMessageBox(_("Project version is not 7.xx. It might not be imported correctly..."), _("Warning"), wxICON_WARNING);
+        pMsg->DebugLog(_("Project version is '%s'. Although this loader was designed for version 7.xx, will try to import..."), root->Attribute("Version"));
     }
 
     m_pProject->ClearAllProperties();
@@ -106,7 +106,7 @@ bool MSVC7Loader::DoSelectConfiguration(TiXmlElement* root)
                             names);
     if (dlg.ShowModal() == wxID_CANCEL)
     {
-        Manager::Get()->GetMessageManager()->DebugLog("Cancelled...");
+        Manager::Get()->GetMessageManager()->DebugLog("Canceled...");
         return false;
     }
     
