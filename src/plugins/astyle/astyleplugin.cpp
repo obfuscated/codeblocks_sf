@@ -47,6 +47,8 @@ AStylePlugin::AStylePlugin()
 	m_PluginInfo.thanksTo = "AStyle team for the useful library.\nSee http://astyle.sourceforge.net";
 	m_PluginInfo.license = LICENSE_GPL;
 	m_PluginInfo.hasConfigure = true;
+	
+	ConfigManager::AddConfiguration(m_PluginInfo.title, "/astyle");
 }
 
 AStylePlugin::~AStylePlugin()

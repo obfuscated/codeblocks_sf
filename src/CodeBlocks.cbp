@@ -1748,6 +1748,16 @@
 			<Option link="0"/>
 			<Option target="src"/>
 		</Unit>
+		<Unit filename="src\impexpconfig.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\impexpconfig.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
 		<Unit filename="src\main.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="src"/>
@@ -2016,6 +2026,12 @@
 			<Option link="0"/>
 			<Option target="src"/>
 		</Unit>
+		<Unit filename="src\resources\imp_exp_config.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
 		<Unit filename="src\resources\main_frame.xrc">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
@@ -2024,6 +2040,7 @@
 		</Unit>
 		<Unit filename="src\resources\resources.rc">
 			<Option compilerVar="WINDRES"/>
+			<Option objectName="src\resources\resources.res"/>
 			<Option target="src"/>
 		</Unit>
 		<Unit filename="templates\console-main-c.cpp">

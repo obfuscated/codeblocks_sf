@@ -31,6 +31,10 @@
 #include "messagemanager.h"
 #include "managerproxy.h"
 
+#include <wx/arrimpl.cpp> // this is a magic incantation which must be done!
+WX_DEFINE_OBJARRAY(Configurations);
+Configurations ConfigManager::s_Configurations;
+
 void ConfigManager::Init(wxConfigBase* config)
 {
 	ConfigBaseProxy::Set( config );
@@ -61,7 +65,15 @@ ConfigManager::~ConfigManager()
     }
 }
 
-static void ExportGroup(wxConfigBase* conf, wxFileConfig* file, const wxString& groupName)
+void ConfigManager::AddConfiguration(const wxString& desc, const wxString& key)
+{
+    ConfigurationPath conf;
+    conf.desc = desc;
+    conf.key = key;
+    s_Configurations.Add(conf);
+}
+
+static void ExportGroup(wxConfigBase* conf, wxConfigBase* file, const wxString& groupName)
 {
     long group_cookie;
     long entry_cookie;
@@ -72,12 +84,11 @@ static void ExportGroup(wxConfigBase* conf, wxFileConfig* file, const wxString& 
     long int rInt;
     bool rBool;
     double rDbl;
-/*
+
     // loop group entries
     bool cont_entry = conf->GetFirstEntry(entry, entry_cookie);
     while (cont_entry)
     {
-//        Manager::Get()->GetMessageManager()->DebugLog("Entry " + entry);
         wxConfigBase::EntryType et = conf->GetEntryType(entry);
         switch (et)
         {
@@ -101,37 +112,47 @@ static void ExportGroup(wxConfigBase* conf, wxFileConfig* file, const wxString& 
         }
         cont_entry = conf->GetNextEntry(entry, entry_cookie);
     }
-*/
-    // loop groups
+
+    // loop groups and recurse
     bool cont_group = conf->GetFirstGroup(group, group_cookie);
     while (cont_group)
     {
-        wxString path = groupName + "/" + group;
-
-        Manager::Get()->GetMessageManager()->DebugLog("Path " + path);
-        conf->SetPath(path);
-        file->SetPath(path);
-        ExportGroup(conf, file, path);
-
-        Manager::Get()->GetMessageManager()->DebugLog("Return " + groupName);
-        conf->SetPath(groupName);
-        file->SetPath(groupName);
-
+        if (group != "*")
+        {
+            wxString path = (groupName != "/" ? groupName : "" ) + "/" + group;
+    
+            conf->SetPath(path);
+            file->SetPath(path);
+            ExportGroup(conf, file, path);
+    
+            conf->SetPath(groupName);
+            file->SetPath(groupName);
+        }
         cont_group = conf->GetNextGroup(group, group_cookie);
     }
 }
 
-bool ConfigManager::ExportToFile(const wxString& filename, const wxString& topLevel)
+bool ConfigManager::ExportToFile(const wxString& filename, int index)
 {
-    wxConfigBase* conf = Get();
+    if (index < 0 || index >= (int)s_Configurations.Count())
+        return false;
+    return ExportToFile(filename, s_Configurations[index]);
+}
+
+bool ConfigManager::ExportToFile(const wxString& filename, const ConfigurationPath& configuration)
+{
+    wxConfigBase* conf = ConfigManager::Get();
     if (!conf)
         return false;
     wxString oldpath = conf->GetPath();
-    wxFileConfig* file = new wxFileConfig("", "", filename, "", wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_NO_ESCAPE_CHARACTERS);
 
-    conf->SetPath(topLevel);
-    file->SetPath(topLevel);
-    ExportGroup(conf, file, topLevel);
+    wxFileConfig* file = new wxFileConfig("", "", filename, "", wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_NO_ESCAPE_CHARACTERS);
+    if (!file)
+        return false;
+
+    conf->SetPath(configuration.key);
+    file->SetPath(configuration.key);
+    ExportGroup(conf, file, configuration.key);
 
     delete file;
     conf->SetPath(oldpath);
@@ -139,7 +160,14 @@ bool ConfigManager::ExportToFile(const wxString& filename, const wxString& topLe
     return true;
 }
 
-bool ConfigManager::ImportFromFile(const wxString& filename, const wxString& topLevel)
+bool ConfigManager::ImportFromFile(const wxString& filename, int index)
+{
+    if (index < 0 || index >= (int)s_Configurations.Count())
+        return false;
+    return ImportFromFile(filename, s_Configurations[index]);
+}
+
+bool ConfigManager::ImportFromFile(const wxString& filename, const ConfigurationPath& configuration)
 {
     return true;
 }

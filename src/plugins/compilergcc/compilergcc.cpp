@@ -196,6 +196,8 @@ CompilerGCC::CompilerGCC()
 #endif
 	// register (if any) user-copies of built-in compilers
 	CompilerFactory::RegisterUserCompilers();
+
+	ConfigManager::AddConfiguration(m_PluginInfo.title, "/compiler_gcc");
 }
 
 CompilerGCC::~CompilerGCC()

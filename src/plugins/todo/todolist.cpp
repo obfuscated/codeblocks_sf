@@ -65,6 +65,8 @@ ToDoList::ToDoList()
 	m_PluginInfo.thanksTo = "";
 	m_PluginInfo.license = LICENSE_GPL;
 	m_PluginInfo.hasConfigure = true;
+
+	ConfigManager::AddConfiguration(m_PluginInfo.title, "/todo_list");
 }
 
 ToDoList::~ToDoList()

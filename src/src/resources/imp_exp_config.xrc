@@ -1,0 +1,57 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxDialog" name="dlgImpExpConfig">
+    <title>Import / Export configuration settings</title>
+    <centered>1</centered>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxStaticText">
+          <label>Select configuration settings to import / export:</label>
+        </object>
+        <flag>wxALL</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxCheckList" name="lstConf">
+          <content/>
+        </object>
+        <option>1</option>
+        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+        <border>8</border>
+        <minsize>-1,128</minsize>
+      </object>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxButton" name="btnImport">
+              <label>&amp;Import</label>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="btnExport">
+              <label>&amp;Export</label>
+            </object>
+            <flag>wxLEFT</flag>
+            <border>8</border>
+          </object>
+        </object>
+        <flag>wxALIGN_CENTRE_HORIZONTAL</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticLine"/>
+        <flag>wxALL|wxGROW</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxButton" name="wxID_CANCEL">
+          <label>&amp;Close</label>
+          <default>1</default>
+        </object>
+        <flag>wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <border>8</border>
+      </object>
+    </object>
+  </object>
+</resource>

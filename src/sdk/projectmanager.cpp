@@ -183,6 +183,8 @@ ProjectManager::ProjectManager(wxNotebook* parent)
 	m_TreeCategorize = ConfigManager::Get()->Read("/project_manager/categorize_tree", 1);
 	m_TreeUseFolders = ConfigManager::Get()->Read("/project_manager/use_folders", 1);
     RebuildTree();
+
+	ConfigManager::AddConfiguration(_("Project Manager"), "/project_manager");
 }
 
 // class destructor

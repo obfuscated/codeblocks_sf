@@ -5,7 +5,7 @@
 #include "manager.h"
 #include "messagemanager.h"
 
-#define CONF_GROUP "file_groups/"
+#define CONF_GROUP "/project_manager/file_groups/"
 
 FilesGroupsAndMasks::FilesGroupsAndMasks()
 {
@@ -19,6 +19,8 @@ FilesGroupsAndMasks::FilesGroupsAndMasks()
 		SetFileMasks(group, "*.c;*.cpp;*.cc;*.cxx;*.C;*.CPP;*.CC;*.CXX");
 		group = AddGroup(_("Headers"));
 		SetFileMasks(group, "*.h;*.hpp;*.hh;*.hxx;*.H;*.HPP;*.HH;*.HXX");
+		group = AddGroup(_("Resources"));
+		SetFileMasks(group, "*.res;*.xrc;*.RES;*.XRC");
 	}
 }
 

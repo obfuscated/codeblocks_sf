@@ -120,6 +120,8 @@ DebuggerGDB::DebuggerGDB()
 	m_PluginInfo.hasConfigure = true;
 	
 	m_TimerPollDebugger.SetOwner(this, idTimerPollDebugger);
+
+	ConfigManager::AddConfiguration(m_PluginInfo.title, "/debugger_gdb");
 }
 
 void DebuggerGDB::OnAttach()

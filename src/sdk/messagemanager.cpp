@@ -78,6 +78,8 @@ MessageManager::MessageManager(wxWindow* parent)
 		DoAddLog(mltDebug, new SimpleTextLog(this, _("Code::Blocks Debug")));
 		SetPageImage(m_Logs[mltDebug]->GetPageIndex(), 1); // set debug log image
     }
+
+    ConfigManager::AddConfiguration(_("Message Manager"), "/message_manager");
 }
 
 // class destructor

@@ -10,9 +10,7 @@ class EnvironmentSettingsDlg : public wxDialog
 		virtual ~EnvironmentSettingsDlg();
 		virtual void EndModal(int retCode);
 	protected:
-        void OnExportConfig(wxCommandEvent& event);
 	private:
-        DECLARE_EVENT_TABLE();
 };
 
 #endif // ENVIRONMENTSETTINGSDLG_H

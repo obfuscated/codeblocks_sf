@@ -73,6 +73,8 @@ EditorManager::EditorManager(wxWindow* parent)
 {
 	m_EditorsList.Clear();
 	m_Theme = new EditorColorSet(ConfigManager::Get()->Read("/editor/color_sets/active_color_set", COLORSET_DEFAULT));
+
+	ConfigManager::AddConfiguration(_("Editor"), "/editor");
 }
 
 // class destructor

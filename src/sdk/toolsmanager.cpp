@@ -69,6 +69,7 @@ ToolsManager::ToolsManager()
 {
 	Manager::Get()->GetAppWindow()->PushEventHandler(this);
 	LoadTools();
+	ConfigManager::AddConfiguration(_("Tools"), "/tools");
 }
 
 ToolsManager::~ToolsManager()

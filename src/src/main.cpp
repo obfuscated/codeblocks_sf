@@ -27,6 +27,7 @@
 #include "main.h"
 #include "globals.h"
 #include "environmentsettingsdlg.h"
+#include "impexpconfig.h"
 
 #if defined(_MSC_VER) && defined( _DEBUG )
 	#define _CRTDBG_MAP_ALLOC
@@ -117,6 +118,7 @@ int idSettingsEnvironment = wxNewId();
 int idSettingsEditor = wxNewId();
 int idPluginsManagePlugins = wxNewId();
 int idSettingsConfigurePlugins = wxNewId();
+int idSettingsImpExpConfig = wxNewId();
 
 int idHelpTips = wxNewId();
 int idHelpPlugins = wxNewId();
@@ -244,6 +246,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_MENU(idSettingsEnvironment, MainFrame::OnSettingsEnvironment)
 	EVT_MENU(idSettingsEditor, MainFrame::OnSettingsEditor)
     EVT_MENU(idPluginsManagePlugins, MainFrame::OnSettingsPlugins)
+    EVT_MENU(idSettingsImpExpConfig, MainFrame::OnSettingsImpExpConfig)
 
     EVT_MENU(wxID_ABOUT, MainFrame::OnHelpAbout)
     EVT_MENU(idHelpTips, MainFrame::OnHelpTips)
@@ -304,6 +307,9 @@ MainFrame::MainFrame(wxWindow* parent)
 	// not be correctly laid out until *manually* resizing m_pBottomSash...
 	m_pMsgMan->SetSize(wxSize(2048, 2048));
 #endif // __WXMSW__
+
+    ConfigManager::AddConfiguration(_("Application"), "/main_frame");
+    ConfigManager::AddConfiguration(_("Environment"), "/environment");
 }
 
 MainFrame::~MainFrame()
@@ -530,7 +536,9 @@ void MainFrame::CreateMenubar()
 	settings->Append(idSettingsEnvironment, _("&Environment"), _("Change environment settings"));
 	settings->Append(idSettingsEditor, _("E&ditor"), _("Change editor's settings"));
 	settings->Append(idSettingsConfigurePlugins, _("&Configure plugins"), settingsPlugins);
-	
+	settings->AppendSeparator();
+	settings->Append(idSettingsImpExpConfig, _("Import/export configuration"), _("Import/export configuration settings to/from file"));
+
 /////////////////// HELP //////////////////
 	wxMenu* help = RecreateMenu(mbar, _("&Help"));
 
@@ -1851,6 +1859,12 @@ void MainFrame::OnSettingsPlugins(wxCommandEvent& event)
         CreateToolbars();
 	}
     m_ReconfiguringPlugins = false;
+}
+
+void MainFrame::OnSettingsImpExpConfig(wxCommandEvent& event)
+{
+    ImpExpConfig dlg(this);
+    dlg.ShowModal();
 }
 
 void MainFrame::OnDragSash(wxSashEvent& event)

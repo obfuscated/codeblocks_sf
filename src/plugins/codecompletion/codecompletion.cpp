@@ -100,6 +100,8 @@ CodeCompletion::CodeCompletion()
     m_PageIndex = -1;
     m_EditMenu = 0L;
 	m_SearchMenu = 0L;
+
+	ConfigManager::AddConfiguration(m_PluginInfo.title, "/code_completion");
 }
 
 CodeCompletion::~CodeCompletion()

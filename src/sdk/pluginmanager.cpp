@@ -59,6 +59,7 @@ void PluginManager::Free()
 // class constructor
 PluginManager::PluginManager()
 {
+	ConfigManager::AddConfiguration(_("Plugin Manager"), "/plugins");
 }
 
 // class destructor
