@@ -34,6 +34,9 @@ cd ..\..\..\plugins\debuggergdb\resources
 %ZIPCMD% -0 -q ..\..\..\%RESDIR%\debugger_gdb.zip images\*.png images\16x16\*.png > nul
 cd ..\..\..
 
+echo Copying manifest file
+copy /y setup\codeblocks.exe.manifest output > nul
+copy /y setup\codeblocks.exe.manifest devel > nul
 echo Copying external exception handler
 copy /y setup\exchndl.dll output > nul
 copy /y setup\exchndl.dll devel > nul
