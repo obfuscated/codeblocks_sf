@@ -10,7 +10,7 @@ DefaultGroupName=CodeBlocks
 LicenseFile=..\COPYING
 OutputBaseFilename=CodeBlocks-1.0-beta5
 AppPublisherURL=www.codeblocks.org
-AppVersion=1.0beta4
+AppVersion=1.0-beta5
 UninstallDisplayIcon={app}\codeblocks.exe
 UninstallDisplayName=Code::Blocks
 ShowLanguageDialog=no
@@ -37,7 +37,20 @@ Source: ..\output\codeblocks.exe; DestDir: {app}; Flags: ignoreversion; Componen
 Source: ..\output\codeblocks.dll; DestDir: {app}; Components: ProgramFiles
 Source: mingwm10.dll; DestDir: {app}; Components: ProgramFiles
 Source: wxmsw242.dll; DestDir: {app}; Components: ProgramFiles
+Source: ..\output\exchndl.dll; DestDir: {app}; Components: ProgramFiles
 Source: ..\output\console_runner.exe; DestDir: {app}; Components: ProgramFiles
+Source: ..\AUTHORS; DestDir: {app}; DestName: AUTHORS.txt; Components: ProgramFiles
+Source: ..\COPYING; DestDir: {app}; DestName: COPYING.txt; Components: ProgramFiles
+Source: ..\README; DestDir: {app}; DestName: README.txt; Components: ProgramFiles
+Source: ..\tips.txt; DestDir: {app}; Components: ProgramFiles
+Source: ..\ChangeLog; DestDir: {app}; Components: ProgramFiles
+Source: WebSite.url; DestDir: {app}; Components: ProgramFiles
+Source: Forums.url; DestDir: {app}; Components: ProgramFiles
+Source: ReportBugs.url; DestDir: {app}; Components: ProgramFiles
+Source: Download_BCC55.url; DestDir: {app}; Components: ProgramFiles
+Source: Download_MSVC2003.url; DestDir: {app}; Components: ProgramFiles
+Source: Download_MINGW.url; DestDir: {app}; Components: ProgramFiles
+Source: COMPILERS_win32.rtf; DestDir: {app}; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\resources.zip; DestDir: {app}\share\CodeBlocks; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\astyle.zip; DestDir: {app}\share\CodeBlocks; Components: AStyleFormatter
 Source: ..\output\share\CodeBlocks\class_wizard.zip; DestDir: {app}\share\CodeBlocks; Components: ClassWizard
@@ -132,17 +145,6 @@ Source: ..\plugins\codecompletion\resources\images\symbols_folder.png; DestDir: 
 Source: ..\plugins\codecompletion\resources\images\var_private.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
 Source: ..\plugins\codecompletion\resources\images\var_protected.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
 Source: ..\plugins\codecompletion\resources\images\var_public.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
-Source: ..\AUTHORS; DestDir: {app}; DestName: AUTHORS.txt; Components: ProgramFiles
-Source: ..\COPYING; DestDir: {app}; DestName: COPYING.txt; Components: ProgramFiles
-Source: ..\README; DestDir: {app}; DestName: README.txt; Components: ProgramFiles
-Source: ..\tips.txt; DestDir: {app}; Components: ProgramFiles
-Source: WebSite.url; DestDir: {app}; Components: ProgramFiles
-Source: Forums.url; DestDir: {app}; Components: ProgramFiles
-Source: ReportBugs.url; DestDir: {app}; Components: ProgramFiles
-Source: Download_BCC55.url; DestDir: {app}; Components: ProgramFiles
-Source: Download_MSVC2003.url; DestDir: {app}; Components: ProgramFiles
-Source: Download_MINGW.url; DestDir: {app}; Components: ProgramFiles
-Source: COMPILERS_win32.rtf; DestDir: {app}
 
 [Icons]
 Name: {group}\CodeBlocks; Filename: {app}\codeblocks.exe; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Components: ProgramFiles
