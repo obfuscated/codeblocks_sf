@@ -39,7 +39,8 @@ MakefileGenerator::MakefileGenerator(CompilerGCC* compiler, cbProject* project, 
 	m_Project(project),
     m_Makefile(makefile),
     m_LogIndex(logIndex),
-    m_Vars(compiler)
+    m_Vars(compiler),
+    m_GeneratingMakefile(false)
 {
 }
 
@@ -90,6 +91,110 @@ wxString MakefileGenerator::ReplaceCompilerMacros(CommandType et,
         DoAppendIncludeDirs(incs, target, "-I");
         compilerCmd.Replace("$res_includes", incs);
     }
+
+    return compilerCmd;
+}
+
+wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
+                                                        ProjectBuildTarget* target,
+                                                        ProjectFile* pf,
+                                                        const wxString& file,
+                                                        const wxString& object,
+                                                        const wxString& deps)
+{
+    wxString compiler;
+    if (pf)
+    {
+        if (pf->compilerVar.Matches("CPP"))
+            compiler = m_Programs.CPP;
+        else if (pf->compilerVar.Matches("CC"))
+            compiler = m_Programs.C;
+        else if (pf->compilerVar.Matches("WINDRES"))
+            compiler = m_Programs.WINDRES;
+        else
+            return wxEmptyString; // unknown compiler var
+    }
+    
+    wxString cflags;
+    wxString global_cflags;
+	wxString prj_cflags;
+	DoAppendCompilerOptions(global_cflags, 0L, true);
+	DoAppendCompilerOptions(prj_cflags, 0L);
+    DoGetMakefileCFlags(cflags, target);
+    cflags.Replace("$(GLOBAL_CFLAGS)", global_cflags);
+    cflags.Replace("$(PROJECT_CFLAGS)", prj_cflags);
+
+    wxString ldflags;
+	wxString global_ldflags;
+	wxString prj_ldflags;
+	DoAppendLinkerOptions(global_ldflags, 0L, true);
+	DoAppendLinkerOptions(prj_ldflags, 0L);
+	DoGetMakefileLDFlags(ldflags, target);
+    ldflags.Replace("$(GLOBAL_LDFLAGS)", global_ldflags);
+    ldflags.Replace("$(PROJECT_LDFLAGS)", prj_ldflags);
+    if (target && target->GetTargetType() == ttExecutable)
+        ldflags << " " << m_CompilerSet->GetSwitches().linkerSwitchForGui;
+
+    wxString incs;
+	wxString global_incs;
+	wxString prj_incs;
+	DoAppendIncludeDirs(global_incs, 0L, m_Switches.includeDirs, true);
+	DoAppendIncludeDirs(prj_incs, 0L, m_Switches.includeDirs);
+	DoGetMakefileIncludes(incs, target);
+    incs.Replace("$(GLOBAL_INCS)", global_incs);
+    incs.Replace("$(PROJECT_INCS)", prj_incs);
+
+    wxString libs;
+	wxString global_libs;
+	wxString prj_libs;
+	DoAppendLibDirs(global_libs, 0L, m_Switches.libDirs, true);
+	DoAppendLibDirs(prj_libs, 0L, m_Switches.libDirs);
+	DoGetMakefileLibs(libs, target);
+    libs.Replace("$(GLOBAL_LIBS)", global_libs);
+    libs.Replace("$(PROJECT_LIBS)", prj_libs);
+
+    wxString output = UnixFilename(target->GetOutputFilename());
+    ConvertToMakefileFriendly(output);
+    QuoteStringIfNeeded(output);
+    
+    wxString linkobjs;
+
+    wxString compilerCmd = m_CompilerSet->GetCommand(et);
+    compilerCmd.Replace("$compiler", compiler);
+    compilerCmd.Replace("$linker", m_Programs.LD);
+    compilerCmd.Replace("$rescomp", m_Programs.WINDRES);
+    compilerCmd.Replace("$options", cflags);
+    compilerCmd.Replace("$link_options", ldflags);
+    compilerCmd.Replace("$includes", incs);
+    compilerCmd.Replace("$libdirs", libs);
+    compilerCmd.Replace("$libs", libs);
+    compilerCmd.Replace("$file", file);
+    compilerCmd.Replace("$dep_object", deps);
+    compilerCmd.Replace("$object", object);
+    compilerCmd.Replace("$exe_output", output);
+    compilerCmd.Replace("$link_objects", object);
+
+    wxFileName fname(target->GetOutputFilename());
+    fname.SetName("lib" + fname.GetName());
+    fname.SetExt(STATICLIB_EXT);
+    wxString out = UnixFilename(fname.GetFullPath());
+    ConvertToMakefileFriendly(out);
+    QuoteStringIfNeeded(out);
+
+    if (target->GetTargetType() == ttDynamicLib && target->GetCreateStaticLib())
+        compilerCmd.Replace("$static_output", out);
+    else
+        compilerCmd.Replace("-Wl,--out-implib=$static_output", "");
+    if ((target->GetTargetType() == ttDynamicLib || target->GetTargetType() == ttStaticLib) && target->GetCreateStaticLib())
+    {
+        fname.SetExt("def");
+        out = UnixFilename(fname.GetFullPath());
+        ConvertToMakefileFriendly(out);
+        QuoteStringIfNeeded(out);
+        compilerCmd.Replace("$def_output", out);
+    }
+    else
+        compilerCmd.Replace("-Wl,--output-def=$def_output", "");
 
     return compilerCmd;
 }
@@ -886,9 +991,11 @@ void MakefileGenerator::DoAddMakefileTarget_Link(wxString& buffer)
     buffer << '\n';
 }
 
-// static
 void MakefileGenerator::ConvertToMakefileFriendly(wxString& str)
 {
+    if (!m_GeneratingMakefile)
+        return;
+
     if (str.IsEmpty())
         return;
 
@@ -902,9 +1009,10 @@ void MakefileGenerator::ConvertToMakefileFriendly(wxString& str)
 
 void MakefileGenerator::QuoteStringIfNeeded(wxString& str)
 {
-    if ((m_CompilerSet->GetSwitches().forceCompilerUseQuotes ||
+    if (!m_GeneratingMakefile ||
+        ((m_CompilerSet->GetSwitches().forceCompilerUseQuotes ||
         m_CompilerSet->GetSwitches().forceLinkerUseQuotes) &&
-        str.GetChar(0) != '"')
+        str.GetChar(0) != '"'))
     {
         str = '"' + str + '"';
     }
@@ -1135,6 +1243,8 @@ void MakefileGenerator::ReplaceMacros(ProjectFile* pf, wxString& text)
 
 bool MakefileGenerator::CreateMakefile()
 {
+    m_GeneratingMakefile = true;
+
 	m_Quiet = m_Compiler->GetSimpleLog() ? "@" : wxEmptyString;
     DoPrepareFiles();
 	DoPrepareValidTargets();
@@ -1179,5 +1289,6 @@ bool MakefileGenerator::CreateMakefile()
     file.Write(buffer, buffer.Length());
     file.Flush();
 
+    m_GeneratingMakefile = false;
     return true;
 }

@@ -29,6 +29,8 @@ CompilerMSVC::CompilerMSVC()
 	m_Switches.needDependencies = false;
 	m_Switches.forceCompilerUseQuotes = false;
 	m_Switches.forceLinkerUseQuotes = false;
+	m_Switches.logging = clogNone;
+	m_Switches.buildMethod = cbmDirect;
 
 	m_Options.AddOption(_("Produce debugging symbols"),
 				"/Zi",
@@ -92,9 +94,9 @@ Compiler::CompilerLineType CompilerMSVC::CheckForWarningsAndErrors(const wxStrin
     // quick regex's
     wxRegEx reError(": error ");
     wxRegEx reWarning(": warning ");
-    wxRegEx reErrorLinker("([A-Za-z0-9_:/\\.\\(\\)]*)[ \t]+:[ \t]+(.*error LNK[0-9]+.*)");
+    wxRegEx reErrorLinker("([ \tA-Za-z0-9_:\\-\\+/\\.\\(\\)]*)[ \t]+:[ \t]+(.*error LNK[0-9]+.*)");
     wxRegEx reErrorLine("\\([0-9]+\\) :[ \t].*:");
-    wxRegEx reDetailedErrorLine("([A-Za-z0-9_:/\\.]*)\\(([0-9]+)\\) :[ \t](.*)");
+    wxRegEx reDetailedErrorLine("([ \tA-Za-z0-9_:\\-\\+/\\.]+)\\(([0-9]+)\\) :[ \t](.*)");
 
     if (reErrorLine.Matches(line))
     {

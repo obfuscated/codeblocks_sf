@@ -32,7 +32,9 @@ CompilerMINGW::CompilerMINGW()
 	m_Switches.needDependencies = true;
 	m_Switches.forceCompilerUseQuotes = false;
 	m_Switches.forceLinkerUseQuotes = false;
-	
+	m_Switches.logging = clogSimple;
+	m_Switches.buildMethod = cbmDirect;
+
 	m_Options.AddOption(_("Produce debugging symbols"),
 				"-g",
 				_("Debugging"), 
@@ -73,29 +75,31 @@ Compiler::CompilerLineType CompilerMINGW::CheckForWarningsAndErrors(const wxStri
         return ret;
 
     // quick regex's
-    wxRegEx reError("[ \t]error:[ \t]");
     wxRegEx reWarning("[ \t]warning:[ \t]");
-    wxRegEx reErrorLine(":[0-9]+:[ \t][we].*");
-    wxRegEx reDetailedErrorLine("([A-Za-z0-9_:/\\.]+):([0-9]+):[ \t](.*)");
-
-//plugins/cache/cache.cpp: In member function `virtual PGF::IMesh* Cache::LoadMeshFromMem(void*, int, const std::string&)':
-//plugins/cache/cache.cpp:266: error: 'class std::map<std::string, PGF::IMesh*, std::less<std::string>, std::allocator<std::pair<const std::string, PGF::IMesh*> > >' has no member named 'push_back'
-
+    wxRegEx reFatalErrorLine("FATAL:[ \t]*(.*)");
+    wxRegEx reErrorLine(".*:[0-9]+:.*");
+    wxRegEx reDetailedErrorLine("([ \tA-Za-z0-9_:\\-\\+/\\.]+):([0-9]+):[ \t](.*)");
 
     if (reErrorLine.Matches(line))
     {
         // one more check to see it is an actual error line
         if (reDetailedErrorLine.Matches(line))
         {
-            if (reError.Matches(line))
-                ret = Compiler::cltError;
-            else if (reWarning.Matches(line))
+            if (reWarning.Matches(line))
                 ret = Compiler::cltWarning;
-            wxArrayString errors;
+            else
+                ret = Compiler::cltError;
             m_ErrorFilename = reDetailedErrorLine.GetMatch(line, 1);
             m_ErrorLine = reDetailedErrorLine.GetMatch(line, 2);
             m_Error = reDetailedErrorLine.GetMatch(line, 3);
         }
+    }
+    else if (reFatalErrorLine.Matches(line))
+    {
+        ret = Compiler::cltError;
+        m_ErrorFilename = "";
+        m_ErrorLine = "";
+        m_Error = reFatalErrorLine.GetMatch(line, 1);
     }
     return ret;
 }

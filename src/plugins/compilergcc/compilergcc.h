@@ -113,6 +113,7 @@ class CompilerGCC : public cbCompilerPlugin
 		void DoClearErrors();
         wxString ProjectMakefile();
         void AddOutputLine(const wxString& output, bool forceErrorColor = false);
+
 		
 		// programs
 		int m_CompilerIdx;

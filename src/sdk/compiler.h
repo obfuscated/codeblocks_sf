@@ -46,6 +46,21 @@ enum CommandType
 };
 #define COMPILER_COMMAND_TYPES_COUNT 6 // change this to reflect the above enumerators count
 
+/// Helper enum for type of compiler logging
+enum CompilerLoggingType
+{
+    clogFull,
+    clogSimple,
+    clogNone
+};
+
+// Helper enum for compiler build method
+enum CompilerBuildMethod
+{
+    cbmUseMake,
+    cbmDirect
+};
+
 /// Struct to keep programs
 struct CompilerPrograms
 {
@@ -69,6 +84,8 @@ struct CompilerSwitches
     bool forceLinkerUseQuotes; // use quotes for filenames in linker command line (needed or not)?
     bool forceCompilerUseQuotes; // use quotes for filenames in compiler command line (needed or not)?
     bool needDependencies; // true
+    CompilerLoggingType logging;
+    CompilerBuildMethod buildMethod;
 };
 
 /**

@@ -156,14 +156,18 @@ wxString CompileTargetBase::GetExecutableFilename()
 
 wxString CompileTargetBase::GetDynamicLibFilename()
 {
+    if (m_Filename.IsEmpty())
+        m_Filename = m_OutputFilename;
     wxFileName fname(m_Filename);
-    fname.SetName("lib" + fname.GetName());
+    fname.SetName(fname.GetName());
     fname.SetExt(DYNAMICLIB_EXT); 
     return fname.GetFullPath();
 }
 
 wxString CompileTargetBase::GetDynamicLibDefFilename()
 {
+    if (m_Filename.IsEmpty())
+        m_Filename = m_OutputFilename;
     wxFileName fname(m_Filename);
     fname.SetName("lib" + fname.GetName());
     fname.SetExt("def");
@@ -172,6 +176,8 @@ wxString CompileTargetBase::GetDynamicLibDefFilename()
 
 wxString CompileTargetBase::GetStaticLibFilename()
 {
+    if (m_Filename.IsEmpty())
+        m_Filename = m_OutputFilename;
     wxFileName fname(m_Filename);
     fname.SetName("lib" + fname.GetName());
     fname.SetExt(STATICLIB_EXT); 

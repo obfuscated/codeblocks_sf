@@ -12,10 +12,12 @@ WX_DEFINE_ARRAY(ProjectTemplateLoader*, ProjectTemplateArray);
 class NewFromTemplateDlg : public wxDialog
 {
 	public:
-		NewFromTemplateDlg(const ProjectTemplateArray& templates);
+		NewFromTemplateDlg(const ProjectTemplateArray& templates, const wxArrayString& user_templates);
 		virtual ~NewFromTemplateDlg();
 		
 		ProjectTemplateLoader* GetTemplate(){ return m_Template; }
+		bool SelectedUserTemplate();
+		wxString GetSelectedUserTemplate();
 		int GetOptionIndex();
 		int GetFileSetIndex();
 	protected:

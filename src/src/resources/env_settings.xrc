@@ -31,7 +31,7 @@
                 </object>
                 <object class="sizeritem">
                   <object class="wxCheckBox" name="chkAssociations">
-                    <label>Check &amp;&amp; set file associations</label>
+                    <label>Check &amp;&amp; set file associations (Windows only)</label>
                     <checked>1</checked>
                   </object>
                   <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
@@ -68,10 +68,10 @@
                 </object>
                 <object class="sizeritem">
                   <object class="wxRadioBox" name="rbEditorInterface">
-                    <label>Default editor interface</label>
+                    <label>Default editor interface (Windows only)</label>
                     <content>
                       <item>MDI windows</item>
-                      <item>Tabbed windows</item>
+                      <item>Tabbed windows (not implemented)</item>
                     </content>
                     <selection>0</selection>
                   </object>

@@ -27,6 +27,8 @@ CompilerBCC::CompilerBCC()
 	m_Switches.needDependencies = false;
 	m_Switches.forceCompilerUseQuotes = false;
 	m_Switches.forceLinkerUseQuotes = true;
+	m_Switches.logging = clogSimple;
+	m_Switches.buildMethod = cbmDirect;
 
 //	m_Options.AddOption(_("Enable all compiler warnings"), "/Wall", _("Warnings"));
 	m_Options.AddOption(_("Optimizations level 1"), "-O1", _("Optimization"));
@@ -70,7 +72,6 @@ Compiler::CompilerLineType CompilerBCC::CheckForWarningsAndErrors(const wxString
     wxRegEx reDetailedWarningLine("(^Warning[ \t]W[0-9]+)[ \t]([A-Za-z0-9_:/\\.]+)[ \t]([0-9]+)(:[ \t].*)");
     wxRegEx reDetailedErrorLine("(^Error[ \t]E[0-9]+)[ \t]([A-Za-z0-9_:/\\.]+)[ \t]([0-9]+)(:[ \t].*)");
     wxRegEx reDetailedLinkerErrorLine("^Error[ \t]+E[0-9]+:.*");
-//Fatal: Unable to open file 'GDI32.LIB'
 
     if (reErrorLine.Matches(line))
     {

@@ -27,6 +27,8 @@
 #include <wx/xrc/xmlres.h>
 #include <wx/combobox.h>
 #include <wx/button.h>
+#include <wx/listbox.h>
+#include <wx/notebook.h>
 
 #include "newfromtemplatedlg.h"
 #include "manager.h"
@@ -38,7 +40,7 @@ BEGIN_EVENT_TABLE(NewFromTemplateDlg, wxDialog)
 	EVT_COMBOBOX(XRCID("cmbCategories"), NewFromTemplateDlg::OnCategoryChanged)
 END_EVENT_TABLE()
 
-NewFromTemplateDlg::NewFromTemplateDlg(const ProjectTemplateArray& templates)
+NewFromTemplateDlg::NewFromTemplateDlg(const ProjectTemplateArray& templates, const wxArrayString& user_templates)
 	: m_Template(0L),
 	m_ImageList(32, 32),
 	m_Templates(templates)
@@ -47,6 +49,13 @@ NewFromTemplateDlg::NewFromTemplateDlg(const ProjectTemplateArray& templates)
 	wxXmlResource::Get()->LoadDialog(this, 0L, _("dlgNewFromTemplate"));
 	BuildCategories();
 	BuildList();
+
+    // fill user templates list
+    XRCCTRL(*this, "lstUser", wxListBox)->Clear();
+    for (unsigned int i = 0; i < user_templates.GetCount(); ++i)
+    {
+        XRCCTRL(*this, "lstUser", wxListBox)->Append(user_templates[i]);
+    }
 }
 
 NewFromTemplateDlg::~NewFromTemplateDlg()
@@ -134,7 +143,20 @@ void NewFromTemplateDlg::FillTemplate(ProjectTemplateLoader* pt)
 	XRCCTRL(*this, "cmbFileSets", wxComboBox)->Enable(pt->m_FileSets.GetCount());
 	XRCCTRL(*this, "cmbFileSets", wxComboBox)->SetSelection(0);
 
-	XRCCTRL(*this, "wxID_OK", wxButton)->Enable(pt->m_TemplateOptions.GetCount() && pt->m_FileSets.GetCount());
+	XRCCTRL(*this, "wxID_OK", wxButton)->Enable(pt->m_TemplateOptions.GetCount() && pt->m_FileSets.GetCount() ||
+                                                XRCCTRL(*this, "lstUser", wxListBox)->GetSelection() != -1);
+}
+
+bool NewFromTemplateDlg::SelectedUserTemplate()
+{
+    return  XRCCTRL(*this, "nbMain", wxNotebook)->GetSelection() == 1 &&
+            XRCCTRL(*this, "lstUser", wxListBox)->GetSelection() != -1;
+}
+
+wxString NewFromTemplateDlg::GetSelectedUserTemplate()
+{
+    int sel = XRCCTRL(*this, "lstUser", wxListBox)->GetSelection();
+    return sel != -1 ? XRCCTRL(*this, "lstUser", wxListBox)->GetString(sel) : "";
 }
 
 void NewFromTemplateDlg::OnListSelection(wxListEvent& event)

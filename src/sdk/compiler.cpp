@@ -92,6 +92,8 @@ void Compiler::SaveSettings(const wxString& baseKey)
     ConfigManager::Get()->Write(tmp + "/switches/deps", m_Switches.needDependencies);
     ConfigManager::Get()->Write(tmp + "/switches/forceCompilerQuotes", m_Switches.forceCompilerUseQuotes);
     ConfigManager::Get()->Write(tmp + "/switches/forceLinkerQuotes", m_Switches.forceLinkerUseQuotes);
+    ConfigManager::Get()->Write(tmp + "/switches/logging", m_Switches.logging);
+    ConfigManager::Get()->Write(tmp + "/switches/buildMethod", m_Switches.buildMethod);
 }
 
 void Compiler::LoadSettings(const wxString& baseKey)
@@ -135,4 +137,6 @@ void Compiler::LoadSettings(const wxString& baseKey)
     m_Switches.needDependencies = ConfigManager::Get()->Read(tmp + "/switches/deps", m_Switches.needDependencies);
     m_Switches.forceCompilerUseQuotes = ConfigManager::Get()->Read(tmp + "/switches/forceCompilerQuotes", m_Switches.forceCompilerUseQuotes);
     m_Switches.forceLinkerUseQuotes = ConfigManager::Get()->Read(tmp + "/switches/forceLinkerQuotes", m_Switches.forceLinkerUseQuotes);
+    m_Switches.logging = (CompilerLoggingType)ConfigManager::Get()->Read(tmp + "/switches/logging", m_Switches.logging);
+    m_Switches.buildMethod = (CompilerBuildMethod)ConfigManager::Get()->Read(tmp + "/switches/buildMethod", m_Switches.buildMethod);
 }

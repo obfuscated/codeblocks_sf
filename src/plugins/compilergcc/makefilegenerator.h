@@ -22,7 +22,15 @@ class MakefileGenerator
 		// class destructor
 		~MakefileGenerator();
         bool CreateMakefile();
-        static void ConvertToMakefileFriendly(wxString& str);
+        void ReplaceMacros(ProjectFile* pf, wxString& text);
+        void QuoteStringIfNeeded(wxString& str);
+        wxString CreateSingleFileCompileCmd(CommandType et,
+                                            ProjectBuildTarget* target,
+                                            ProjectFile* pf,
+                                            const wxString& file,
+                                            const wxString& object,
+                                            const wxString& deps);
+        void ConvertToMakefileFriendly(wxString& str);
     private:
         void DoAppendCompilerOptions(wxString& cmd, ProjectBuildTarget* target = 0L, bool useGlobalOptions = false);
         void DoAppendLinkerOptions(wxString& cmd, ProjectBuildTarget* target = 0L, bool useGlobalOptions = false);
@@ -53,18 +61,16 @@ class MakefileGenerator
         void DoGetMakefileCFlags(wxString& buffer, ProjectBuildTarget* target);
         void DoGetMakefileLDFlags(wxString& buffer, ProjectBuildTarget* target);
 
+		void DoPrepareFiles();
+		void DoPrepareValidTargets();
+		bool IsTargetValid(ProjectBuildTarget* target);
+        void AddCreateSubdir(wxString& buffer, const wxString& basepath, const wxString& filename, const wxString& subdir);
         wxString ReplaceCompilerMacros(CommandType et,
                                     const wxString& compilerVar,
                                     ProjectBuildTarget* target,
                                     const wxString& file,
                                     const wxString& object,
                                     const wxString& deps);
-		void DoPrepareFiles();
-		void DoPrepareValidTargets();
-		bool IsTargetValid(ProjectBuildTarget* target);
-        void ReplaceMacros(ProjectFile* pf, wxString& text);
-        void AddCreateSubdir(wxString& buffer, const wxString& basepath, const wxString& filename, const wxString& subdir);
-        void QuoteStringIfNeeded(wxString& str);
 
 		CompilerGCC* m_Compiler;
 		Compiler* m_CompilerSet;
@@ -79,6 +85,8 @@ class MakefileGenerator
 		CustomVars m_Vars;
 		
 		wxString m_Quiet; // used for compiler simple log
+    private:
+        bool m_GeneratingMakefile;
 };
 
 #endif // MAKEFILEGENERATOR_H

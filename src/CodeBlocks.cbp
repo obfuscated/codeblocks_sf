@@ -355,6 +355,7 @@
 			<Add option="-D__GNUWIN32__"/>
 			<Add option="-D__WXMSW__"/>
 			<Add option="-DWXUSINGDLL"/>
+			<Add option="-DALWAYS_USE_MAKE_X"/>
 		</Compiler>
 		<Linker>
 			<Add option="-lwxmsw$(WX_VER)"/>
@@ -879,6 +880,16 @@
 			<Option target="plugin_CompilerGCC"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\customvars.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\directcommands.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\directcommands.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

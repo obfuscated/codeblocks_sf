@@ -31,6 +31,7 @@
 #include <wx/filedlg.h>
 #include <wx/filename.h>
 #include <wx/msgdlg.h>
+#include <wx/textdlg.h>
 
 #include "templatemanager.h"
 #include "manager.h"
@@ -122,67 +123,128 @@ void TemplateManager::LoadTemplates()
 	Manager::Get()->GetMessageManager()->DebugLog(_("%d templates loaded"), m_Templates.GetCount());
 }
 
+void TemplateManager::LoadUserTemplates()
+{
+    wxLogNull zero; // disable error logging
+
+    m_UserTemplates.Clear();
+    wxString baseDir = ConfigManager::Get()->Read("/data_path");
+	baseDir << "/templates";
+
+    wxDir dir(baseDir);
+
+    if (!dir.IsOpened())
+        return;
+
+    wxString filename;
+    bool ok = dir.GetFirst(&filename, "*", wxDIR_DIRS);
+    while (ok)
+    {
+        m_UserTemplates.Add(filename);
+        ok = dir.GetNext(&filename);
+    }
+	
+	Manager::Get()->GetMessageManager()->DebugLog(_("%d user templates loaded"), m_UserTemplates.GetCount());
+}
+
 void TemplateManager::NewProject()
 {
 	LoadTemplates();
-	NewFromTemplateDlg dlg(m_Templates);
+	LoadUserTemplates();
+	NewFromTemplateDlg dlg(m_Templates, m_UserTemplates);
 	if (dlg.ShowModal() == wxID_OK)
 	{
-		ProjectTemplateLoader* pt = dlg.GetTemplate();
-		if (!pt)
-		{
-			Manager::Get()->GetMessageManager()->DebugLog(_("Templates dialog returned OK but no template was selected ?!?"));
-			return;
-		}
-		int optidx = dlg.GetOptionIndex();
-		int filesetidx = dlg.GetFileSetIndex();
-		TemplateOption& option = pt->m_TemplateOptions[optidx];
-		FileSet& fileset = pt->m_FileSets[filesetidx];
-
-		wxString baseDir = ConfigManager::Get()->Read("/data_path");
-		wxFileDialog* fdlg = new wxFileDialog(0L,
-								_("Save project"),
-								wxEmptyString,
-								pt->m_Name,
-								CODEBLOCKS_FILES_FILTER,
-								wxSAVE | wxHIDE_READONLY | wxOVERWRITE_PROMPT);
-	
-		if (fdlg->ShowModal() != wxID_OK)
-			return;
-		wxFileName fname;
-		fname.Assign(fdlg->GetPath());
-		wxString path = fname.GetPath(wxPATH_GET_VOLUME);
-		wxString filename = fname.GetFullPath();
-		
-		baseDir << "/templates";
-		wxCopyFile(baseDir + "/" + option.file, filename);
-
-		cbProject* prj = Manager::Get()->GetProjectManager()->LoadProject(filename);
-		if (prj)
-		{
-			for (unsigned int i = 0; i < fileset.files.GetCount(); ++i)
-			{
-				FileSetFile& fsf = fileset.files[i];
-				wxString dst = path + "/" + fsf.destination;
-				if (wxFileExists(dst))
-				{
-                    wxString msg;
-                    msg.Printf(_("File %s already exists. Do you really want to overwrite this file?"), dst.c_str());
-                    if (wxMessageBox(msg, _("Overwrite existing file?"), wxYES_NO | wxICON_QUESTION) != wxYES)
-                        continue;
-				}
-				wxCopyFile(baseDir + "/" + fsf.source, dst);
-				prj->AddFile(0, dst);
-			}
-		
-			for (unsigned int i = 0; i < option.extraCFlags.GetCount(); ++i)
-				prj->AddCompilerOption(option.extraCFlags[i]);
-			for (unsigned int i = 0; i < option.extraLDFlags.GetCount(); ++i)
-				prj->AddLinkerOption(option.extraLDFlags[i]);
-				
-			Manager::Get()->GetProjectManager()->RebuildTree();
-		}
+        if (dlg.SelectedUserTemplate())
+            NewProjectFromUserTemplate(dlg);
+        else
+            NewProjectFromTemplate(dlg);
 	}
+}
+
+void TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
+{
+    ProjectTemplateLoader* pt = dlg.GetTemplate();
+    if (!pt)
+    {
+        Manager::Get()->GetMessageManager()->DebugLog(_("Templates dialog returned OK but no template was selected ?!?"));
+        return;
+    }
+    int optidx = dlg.GetOptionIndex();
+    int filesetidx = dlg.GetFileSetIndex();
+    TemplateOption& option = pt->m_TemplateOptions[optidx];
+    FileSet& fileset = pt->m_FileSets[filesetidx];
+
+    wxString baseDir = ConfigManager::Get()->Read("/data_path");
+    wxFileDialog* fdlg = new wxFileDialog(0L,
+                            _("Save project"),
+                            wxEmptyString,
+                            pt->m_Name,
+                            CODEBLOCKS_FILES_FILTER,
+                            wxSAVE | wxHIDE_READONLY | wxOVERWRITE_PROMPT);
+
+    if (fdlg->ShowModal() != wxID_OK)
+        return;
+    wxFileName fname;
+    fname.Assign(fdlg->GetPath());
+    wxString path = fname.GetPath(wxPATH_GET_VOLUME);
+    wxString filename = fname.GetFullPath();
+    
+    baseDir << "/templates";
+    wxCopyFile(baseDir + "/" + option.file, filename);
+
+    cbProject* prj = Manager::Get()->GetProjectManager()->LoadProject(filename);
+    if (prj)
+    {
+        for (unsigned int i = 0; i < fileset.files.GetCount(); ++i)
+        {
+            FileSetFile& fsf = fileset.files[i];
+            wxString dst = path + "/" + fsf.destination;
+            if (wxFileExists(dst))
+            {
+                wxString msg;
+                msg.Printf(_("File %s already exists. Do you really want to overwrite this file?"), dst.c_str());
+                if (wxMessageBox(msg, _("Overwrite existing file?"), wxYES_NO | wxICON_QUESTION) != wxYES)
+                    continue;
+            }
+            wxCopyFile(baseDir + "/" + fsf.source, dst);
+            prj->AddFile(0, dst);
+        }
+    
+        for (unsigned int i = 0; i < option.extraCFlags.GetCount(); ++i)
+            prj->AddCompilerOption(option.extraCFlags[i]);
+        for (unsigned int i = 0; i < option.extraLDFlags.GetCount(); ++i)
+            prj->AddLinkerOption(option.extraLDFlags[i]);
+            
+        Manager::Get()->GetProjectManager()->RebuildTree();
+    }
+}
+
+void TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg)
+{
+    // select directory to copy user template files
+    
+    // copy files
+    
+    // open new project
+}
+
+void TemplateManager::SaveUserTemplate(cbProject* prj)
+{
+    if (!prj)
+        return;
+
+    // TODO: save project & all files
+    
+    // ask for template title (unique)
+    wxTextEntryDialog dlg(0, _("Enter a title for this template"), _("Enter title"), prj->GetTitle());
+    if (dlg.ShowModal() != wxID_OK)
+        return;
+    wxString title = dlg.GetValue();
+    
+    // create destination dir
+    // TODO: check if it exists and ask a different title
+    
+    // copy project and all files to destination dir
 }
 
 // events

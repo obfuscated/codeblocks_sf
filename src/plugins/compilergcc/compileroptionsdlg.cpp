@@ -205,9 +205,6 @@ void CompilerOptionsDlg::DoFillPrograms()
 
 void CompilerOptionsDlg::DoFillOthers()
 {
-    wxCheckBox* chk = XRCCTRL(*this, "chkSimpleBuild", wxCheckBox);
-    if (chk)
-        chk->SetValue(ConfigManager::Get()->Read("/compiler_gcc/simple_build", 0L));
     wxTextCtrl* txt = XRCCTRL(*this, "txtConsoleShell", wxTextCtrl);
     if (txt)
     {
@@ -512,6 +509,13 @@ void CompilerOptionsDlg::DoLoadOptions(int compilerIdx, ScopeTreeData* data)
 		m_LinkerOptions = compiler->GetLinkerOptions();
 		m_CommandsAfterBuild = compiler->GetCommandsAfterBuild();
 		m_CommandsBeforeBuild = compiler->GetCommandsBeforeBuild();
+
+        wxComboBox* cmb = XRCCTRL(*this, "cmbLogging", wxComboBox);
+        if (cmb)
+            cmb->SetSelection((int)compiler->GetSwitches().logging);
+        cmb = XRCCTRL(*this, "cmbBuildMethod", wxComboBox);
+        if (cmb)
+            cmb->SetSelection((int)compiler->GetSwitches().buildMethod);
 	}
 	else
 	{
@@ -574,6 +578,21 @@ void CompilerOptionsDlg::DoSaveOptions(int compilerIdx, ScopeTreeData* data)
 		compiler->SetLinkerOptions(m_LinkerOptions);
 		compiler->SetCommandsBeforeBuild(m_CommandsBeforeBuild);
 		compiler->SetCommandsAfterBuild(m_CommandsAfterBuild);
+
+        wxComboBox* cmb = XRCCTRL(*this, "cmbLogging", wxComboBox);
+        if (cmb)
+        {
+            CompilerSwitches switches = compiler->GetSwitches();
+            switches.logging = (CompilerLoggingType)cmb->GetSelection();
+            compiler->SetSwitches(switches);
+        }
+        cmb = XRCCTRL(*this, "cmbBuildMethod", wxComboBox);
+        if (cmb)
+        {
+            CompilerSwitches switches = compiler->GetSwitches();
+            switches.buildMethod = (CompilerBuildMethod)cmb->GetSelection();
+            compiler->SetSwitches(switches);
+        }
 	}
 	else
 	{
@@ -1014,9 +1033,6 @@ void CompilerOptionsDlg::EndModal(int retCode)
     }
     
 	//others
-    wxCheckBox* chk = XRCCTRL(*this, "chkSimpleBuild", wxCheckBox);
-    if (chk)
-        ConfigManager::Get()->Write("/compiler_gcc/simple_build", chk->GetValue());	
     wxTextCtrl* txt = XRCCTRL(*this, "txtConsoleShell", wxTextCtrl);
     if (txt)
         ConfigManager::Get()->Write("/compiler_gcc/console_shell", txt->GetValue());
