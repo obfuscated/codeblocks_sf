@@ -29,8 +29,8 @@ class DirectCommands
 		wxArrayString GetCleanCommands(ProjectBuildTarget* target, bool distclean = false);
 		wxArrayString GetTargetCleanCommands(ProjectBuildTarget* target, bool distclean = false);
 
-        void QuoteStringIfNeeded(wxString& str);
-        void AppendArray(const wxArrayString& from, wxArrayString& to);
+        static void QuoteStringIfNeeded(wxString& str);
+        static void AppendArray(const wxArrayString& from, wxArrayString& to);
         bool ReadDependencies(const wxString& filename, wxArrayString& deps);
         bool GetDependenciesOf(const wxString& filename, wxArrayString& deps);
 	protected:
@@ -65,6 +65,9 @@ class pfDetails
         wxString dep_file_native;
         wxString object_dir_native;
         wxString dep_dir_native;
+        wxString source_file_absolute_native;
+        wxString object_file_absolute_native;
+        wxString dep_file_absolute_native;
 };
 
 #endif // DIRECTCOMMANDS_H

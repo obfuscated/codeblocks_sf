@@ -69,6 +69,7 @@ END_EVENT_TABLE()
 bool CodeBlocksApp::OnInit()
 {
     m_pSplash = 0;
+    wxHandleFatalExceptions(true);
 
 #ifdef __WXMSW__
     m_ExceptionHandlerLib = LoadLibrary("exchndl.dll");
@@ -93,7 +94,7 @@ bool CodeBlocksApp::OnInit()
 
     ConfigManager::Get()->Write("app_path", GetAppPath());
     ConfigManager::Get()->Write("data_path", GetAppPath() + "/share/CodeBlocks");
-    m_HasDebugLog = true;//ConfigManager::Get()->Read("/message_manager/has_debug_log", (long int)0) | m_HasDebugLog;
+    m_HasDebugLog = ConfigManager::Get()->Read("/message_manager/has_debug_log", (long int)0) | m_HasDebugLog;
     ConfigManager::Get()->Write("/message_manager/has_debug_log", m_HasDebugLog);
 
     wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
@@ -141,15 +142,12 @@ bool CodeBlocksApp::OnInit()
                 "for three major compilers:\n\n"
                 "1. GNU GCC (http://www.mingw.org)\n"
                 "2. Microsoft's Free Visual C++ Toolkit 2003 (http://msdn.microsoft.com/visualc/vctoolkit2003/)\n"
-                "3. Borland's C++ Compiler 5.5 (http://www.borland.com/products/downloads/download_cbuilder.html#)\n\n"
+                "3. Borland C++ Compiler 5.5 (http://www.borland.com/products/downloads/download_cbuilder.html#)\n\n"
                 "The above compilers are freely available on the net. Download "
                 "and install any one of them (or all three of them!). If you install "
                 "one of these compilers in its pre-defined installation path, there is nothing "
                 "more you need to do. " APP_NAME " is already configured for the default installations "
-                "of the above compilers!\n\n"
-                "IMPORTANT NOTE:\n"
-                "No matter what compiler you use, you will need to download and install the "
-                "GNU \"make\" utility. The supplied compiler plugin needs it to compile programs...");
+                "of the above compilers!");
         wxMessageBox(msg, _("Information"), wxICON_INFORMATION);
         
         // update the version
@@ -168,6 +166,18 @@ int CodeBlocksApp::OnExit()
         FreeLibrary(m_ExceptionHandlerLib);
 #endif
     return 0;
+}
+
+bool CodeBlocksApp::OnCmdLineParsed(wxCmdLineParser& parser)
+{
+    return wxApp::OnCmdLineParsed(parser);
+}
+
+void CodeBlocksApp::OnFatalException()
+{
+    wxMessageBox(_("Something terrible has happened to " APP_NAME " and it "
+                    "will terminate immediately.\n"
+                    "We are sorry for the inconvenience..."));
 }
 
 void CodeBlocksApp::ShowSplashScreen()
@@ -273,14 +283,14 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
 
         case 0:
             {
-                if (handlerFrame)
-                {
-                    int count = parser.GetParamCount();
-					filesInCmdLine = count != 0;
-                    for ( int param = 0; param < count; ++param )
-                        handlerFrame->Open(parser.GetParam(param));
-                }
-                else
+//                if (handlerFrame)
+//                {
+//                    int count = parser.GetParamCount();
+//					filesInCmdLine = count != 0;
+//                    for ( int param = 0; param < count; ++param )
+//                        handlerFrame->Open(parser.GetParam(param));
+//                }
+//                else
                 {
                     wxString val;
                     if (parser.Found(_("prefix"), &val))
@@ -443,12 +453,12 @@ bool DDEConnection::OnExecute(const wxString& topic, wxChar *data, int size, wxI
 	wxString strData = data;
 	if (!strData.StartsWith("[Open(\""))
 		return false;
-		
+
 	wxRegEx reCmd("\"(.*)\"");
 	if (reCmd.Matches(strData))
 	{
 		wxString file = reCmd.GetMatch(strData, 1);
-		m_Frame->Open(file, false); // don't add to history, files that open through DDE
+        m_Frame->Open(file, false); // don't add to history, files that open through DDE
 	}
 
     return true;

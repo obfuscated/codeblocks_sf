@@ -23,6 +23,10 @@ pfDetails::pfDetails(DirectCommands* cmds, ProjectBuildTarget* target, ProjectFi
     wxFileName tmp;
 
     source_file_native = pf->relativeFilename;
+    tmp.Assign(source_file_native);
+    tmp.MakeAbsolute(cmds->m_pProject->GetBasePath());
+    source_file_absolute_native = tmp.GetFullPath();
+
     tmp = pf->GetObjName();
 //    tmp = source_file_native;
 //    bool isResource = FileTypeOf(source_file_native) == ftResource;
@@ -34,6 +38,7 @@ pfDetails::pfDetails(DirectCommands* cmds, ProjectBuildTarget* target, ProjectFi
     wxFileName o_file(object_file_native);
     o_file.MakeAbsolute(cmds->m_pProject->GetBasePath());
     object_dir_native = o_file.GetPath(wxPATH_GET_VOLUME);
+    object_file_absolute_native = o_file.GetFullPath();
     tmp.SetExt("depend");
     dep_file_native = tmp.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) +
                       (target ? target->GetDepsOutput() : "") +
@@ -42,6 +47,7 @@ pfDetails::pfDetails(DirectCommands* cmds, ProjectBuildTarget* target, ProjectFi
     wxFileName d_file(dep_file_native);
     d_file.MakeAbsolute(cmds->m_pProject->GetBasePath());
     dep_dir_native = d_file.GetPath(wxPATH_GET_VOLUME);
+    dep_file_absolute_native = o_file.GetFullPath();
     
     source_file = UnixFilename(source_file_native);
     cmds->QuoteStringIfNeeded(source_file);
@@ -74,12 +80,14 @@ DirectCommands::~DirectCommands()
 	//dtor
 }
 
+// static
 void DirectCommands::QuoteStringIfNeeded(wxString& str)
 {
     if (!str.IsEmpty() && str.GetChar(0) != '"')
         str = "\"" + str + "\"";
 }
 
+// static
 void DirectCommands::AppendArray(const wxArrayString& from, wxArrayString& to)
 {
     for (unsigned int i = 0; i < from.GetCount(); ++i)
@@ -532,9 +540,9 @@ wxArrayString DirectCommands::GetTargetCleanCommands(ProjectBuildTarget* target,
             continue;
         
         pfDetails pfd(this, target, pf);
-        ret.Add(pfd.object_file_native);
+        ret.Add(pfd.object_file_absolute_native);
         if (distclean)
-            ret.Add(pfd.dep_file_native);
+            ret.Add(pfd.dep_file_absolute_native);
     }
 
     // add target output

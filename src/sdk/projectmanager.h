@@ -43,6 +43,8 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
         bool CloseProject(cbProject* project);
         bool CloseActiveProject();
         bool CloseAllProjects();
+        void MoveProjectUp(cbProject* project, bool warpAround = false);
+        void MoveProjectDown(cbProject* project, bool warpAround = false);
         cbProject* NewProject();
 		int AddFileToProject(const wxString& filename, cbProject* project = 0L, int target = -1);
 		int AskForBuildTargetIndex(cbProject* project = 0L);

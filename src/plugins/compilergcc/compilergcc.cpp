@@ -153,7 +153,7 @@ CompilerGCC::CompilerGCC()
 	m_ToolTargetLabel(0L),
 	m_IsRun(false),
 	m_RunAfterCompile(false),
-	m_DoAllProjects(false),
+	m_DoAllProjects(mpjNone),
 	m_BackupActiveProject(0L),
 	m_ProjectIndex(0),
 	m_LastExitCode(0),
@@ -588,33 +588,34 @@ int CompilerGCC::DoRunQueue()
 
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
     msgMan->SwitchTo(m_PageIndex);
-
+    
 	// leave if no active project
     if (!CheckProject())
         return -1;
         
     // make sure all project files are saved
     if (!Manager::Get()->GetProjectManager()->GetActiveProject()->SaveAllFiles())
-        Manager::Get()->GetMessageManager()->Log(_("Could not save all files..."));
+        msgMan->Log(_("Could not save all files..."));
 
     if (m_Queue.GetCount() == 0)
 	{
         m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLUE, *wxWHITE));
         msgMan->Log(m_PageIndex, _("Nothing to be done."));
         m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLACK, *wxWHITE));
+        OnJobEnd();
         return 0;
 	}
 
 	// leave if no commands in queue
     if (m_QueueIndex >= m_Queue.GetCount())
 	{
-        Manager::Get()->GetMessageManager()->DebugLog("Queue has been emptied! (count=%d, index=%d)", m_Queue.GetCount(), m_QueueIndex);
+        msgMan->DebugLog("Queue has been emptied! (count=%d, index=%d)", m_Queue.GetCount(), m_QueueIndex);
         return -3;
 	}
-    
+
 	DoClearErrors();
 	m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLACK, *wxWHITE));
-    wxString dir = m_Project->GetBasePath();
+    wxString dir;// = m_Project->GetBasePath();
     wxString cmd;
 
     // loop added for compiler log when not working with Makefiles
@@ -627,20 +628,22 @@ int CompilerGCC::DoRunQueue()
         {
             cmd.Remove(0, strlen(COMPILER_SIMPLE_LOG));
             msgMan->Log(m_PageIndex, cmd);
-            ++m_QueueIndex;
-            if (m_QueueIndex >= m_Queue.GetCount())
-            {
-                msgMan->Log(m_PageIndex, _("Nothing to be done."));
-                return 0;
-            }
         }
         else
             break;
+
+        ++m_QueueIndex;
+        if (m_QueueIndex >= m_Queue.GetCount())
+        {
+            msgMan->Log(m_PageIndex, _("Nothing to be done."));
+            OnJobEnd();
+            return 0;
+        }
     }
 
 	bool pipe = true;
 	int flags = wxEXEC_ASYNC;
-	if (/*m_RunAfterCompile &&*/ m_IsRun && m_QueueIndex == m_Queue.GetCount() - 1)
+	if (m_RunAfterCompile && m_IsRun && m_QueueIndex == m_Queue.GetCount() - 1)
 	{
 		pipe = false; // no need to pipe output channels...
 		flags |= wxEXEC_NOHIDE;
@@ -650,6 +653,7 @@ int CompilerGCC::DoRunQueue()
 		wxSetEnv("LD_LIBRARY_PATH", ".");
 #endif
 	}
+
     m_Process = new PipedProcess((void**)&m_Process, this, idGCCProcess, pipe, dir);
     m_Pid = wxExecute(cmd, flags, m_Process);
     if ( !m_Pid )
@@ -736,7 +740,7 @@ void CompilerGCC::DoUpdateTargetMenu()
 		m_ToolTarget->SetSelection(m_TargetIndex + 1);
 }
 
-bool CompilerGCC::DoPrepareMultiProjectCommand()
+bool CompilerGCC::DoPrepareMultiProjectCommand(MultiProjectJob job)
 {
     ProjectManager* prjMan = Manager::Get()->GetProjectManager();
     ProjectsArray* projects = prjMan->GetProjects();
@@ -748,7 +752,7 @@ bool CompilerGCC::DoPrepareMultiProjectCommand()
 	AskForActiveProject();
 	m_BackupActiveProject = m_Project;
 	m_ProjectIndex = 0;
-	m_DoAllProjects = true;
+	m_DoAllProjects = job;
 	prjMan->SetProject(projects->Item(0));
 	AskForActiveProject();
 	
@@ -760,7 +764,8 @@ void CompilerGCC::DoPrepareQueue()
 	if (m_LastTempMakefile.IsEmpty() || m_Queue.GetCount() == 0)
 	{
 		m_QueueIndex = 0;
-		ClearLog();
+		if (m_DoAllProjects == mpjNone)
+            ClearLog();
 		DoCreateMakefile();
 		wxStartTimer();
 	}
@@ -831,14 +836,8 @@ bool CompilerGCC::DoCreateMakefile(bool temporary, const wxString& makefile)
         }
     }
 
-	wxString path = m_Project->GetBasePath();
-    Manager::Get()->GetMessageManager()->SwitchTo(m_PageIndex);
-    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Project   : %s"), m_Project->GetTitle().c_str());
-    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Compiler  : %s"), CompilerFactory::Compilers[m_CompilerIdx]->GetName().c_str());
-    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Directory : %s"), path.c_str());
-    Manager::Get()->GetMessageManager()->Log(m_PageIndex, "--------------------------------------------------------------------------------");
-
-	wxSetWorkingDirectory(path);
+    PrintBanner();
+	wxSetWorkingDirectory(m_Project->GetBasePath());
 
     if (CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches().buildMethod == cbmUseMake)
     {
@@ -854,6 +853,17 @@ bool CompilerGCC::DoCreateMakefile(bool temporary, const wxString& makefile)
         return ret;
     }
     return true;
+}
+
+void CompilerGCC::PrintBanner()
+{
+    if (!m_Project)
+        return;
+    Manager::Get()->GetMessageManager()->SwitchTo(m_PageIndex);
+    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Project   : %s"), m_Project->GetTitle().c_str());
+    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Compiler  : %s"), CompilerFactory::Compilers[m_Project->GetCompilerIndex()]->GetName().c_str());
+    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Directory : %s"), m_Project->GetBasePath().c_str());
+    Manager::Get()->GetMessageManager()->Log(m_PageIndex, "--------------------------------------------------------------------------------");
 }
 
 void CompilerGCC::DoGotoNextError()
@@ -970,9 +980,9 @@ int CompilerGCC::Clean(ProjectBuildTarget* target)
     }
     else
     {
-        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Cleaning %s..."), target ? target->GetTitle().c_str() : m_Project->GetTitle().c_str());
         DirectCommands dc(this, CompilerFactory::Compilers[m_CompilerIdx], m_Project, m_PageIndex);
-        wxArrayString clean = dc.GetCleanCommands(target);
+        wxArrayString clean = dc.GetCleanCommands(target, false);
+        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Cleaning %s..."), target ? target->GetTitle().c_str() : m_Project->GetTitle().c_str());
         for (unsigned int i = 0; i < clean.GetCount(); ++i)
         {
             wxRemoveFile(clean[i]);
@@ -999,9 +1009,9 @@ int CompilerGCC::DistClean(ProjectBuildTarget* target)
     }
     else
     {
-        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Dist-cleaning %s..."), target ? target->GetTitle().c_str() : m_Project->GetTitle().c_str());
         DirectCommands dc(this, CompilerFactory::Compilers[m_CompilerIdx], m_Project, m_PageIndex);
         wxArrayString clean = dc.GetCleanCommands(target, true);
+        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Dist-cleaning %s..."), target ? target->GetTitle().c_str() : m_Project->GetTitle().c_str());
         for (unsigned int i = 0; i < clean.GetCount(); ++i)
         {
             wxRemoveFile(clean[i]);
@@ -1064,11 +1074,6 @@ int CompilerGCC::Compile(ProjectBuildTarget* target)
         DirectCommands dc(this, CompilerFactory::Compilers[m_CompilerIdx], m_Project, m_PageIndex);
         wxArrayString compile = dc.GetCompileCommands(target);
         dc.AppendArray(compile, m_Queue);
-        if (m_Queue.IsEmpty() && m_RunAfterCompile)
-        {
-            m_RunAfterCompile = false;
-            Run(); // for the case of no compilation needed, but still want to run
-        }
     }
     return DoRunQueue();
 }
@@ -1108,18 +1113,18 @@ int CompilerGCC::Rebuild(ProjectBuildTarget* target)
 
 int CompilerGCC::CompileAll()
 {
-	DoPrepareMultiProjectCommand();
-	DoPrepareQueue();
-	
+    DoPrepareMultiProjectCommand(mpjCompile);
+    DoPrepareQueue();
+    ClearLog();
     return Compile();
 }
 
 int CompilerGCC::RebuildAll()
 {
-	DoPrepareMultiProjectCommand();
-	DoPrepareQueue();
-	
-	return Rebuild();
+    DoPrepareMultiProjectCommand(mpjRebuild);
+    DoPrepareQueue();
+    ClearLog();
+    return Rebuild();
 }
 
 int CompilerGCC::KillProcess()
@@ -1614,17 +1619,19 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColor)
 
 void CompilerGCC::OnGCCTerminated(CodeBlocksEvent& event)
 {
-//    ((PipedProcess*)m_Process)->HasInput();
+	m_LastExitCode = event.GetInt();
+	OnJobEnd();
+}
 
+void CompilerGCC::OnJobEnd()
+{
 	errcnt = 0;
     m_timerIdleWakeUp.Stop();
     m_Pid = 0;
-	m_LastExitCode = event.GetInt();
 
 	bool ended = true;
-    if (m_QueueIndex < m_Queue.GetCount() - 1)
+    if (m_Queue.GetCount() != 0 && m_QueueIndex < m_Queue.GetCount() - 1)
     {
-        wxString cmd;
         if (m_LastExitCode == 0)
         {
 			++m_QueueIndex;
@@ -1639,9 +1646,9 @@ void CompilerGCC::OnGCCTerminated(CodeBlocksEvent& event)
 
 	if (ended)
     {
-		long int elapsed = wxGetElapsedTime() / 1000;
-		int mins = elapsed / 60;
-		int secs = (elapsed % 60);
+        long int elapsed = wxGetElapsedTime() / 1000;
+        int mins = elapsed / 60;
+        int secs = (elapsed % 60);
         m_Log->GetTextControl()->SetDefaultStyle(m_LastExitCode == 0 ? wxTextAttr(*wxBLUE) : wxTextAttr(*wxRED));
         Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Process terminated with status %d (%d minutes, %d seconds)"), m_LastExitCode, mins, secs);
         if (!m_RunAfterCompile)
@@ -1650,59 +1657,74 @@ void CompilerGCC::OnGCCTerminated(CodeBlocksEvent& event)
             Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("%d errors, %d warnings"), m_Errors.GetErrorsCount(), m_Errors.GetWarningsCount());
         }
         m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLACK, *wxWHITE));
-		if (m_LastExitCode == 0)
-		{
-			if (m_RunAfterCompile)
-			{
-				m_QueueIndex = 0;
-				m_Queue.Clear();
-				if (Run() == 0)
-					DoRunQueue();
-			}
-			if (m_DoAllProjects)
-			{
-				ProjectManager* prjMan = Manager::Get()->GetProjectManager();
-				ProjectsArray* projects = prjMan->GetProjects();
+        Manager::Get()->GetMessageManager()->Log(m_PageIndex, " "); // blank line
 
-				if (m_ProjectIndex < projects->GetCount() - 1)
-				{
-					prjMan->SetProject(projects->Item(++m_ProjectIndex));
-					AskForActiveProject();
-					m_QueueIndex = 0;
-					wxString oldMK = m_LastTempMakefile;
-                    DoCreateMakefile();
-                    for (unsigned int i = 0; i < m_Queue.GetCount(); ++i)
-                        m_Queue[i].Replace(oldMK, m_LastTempMakefile);
-					DoRunQueue();
-				}
-				else if (m_BackupActiveProject)
-				{
-                    m_DoAllProjects = false;
+        if (m_LastExitCode == 0)
+        {
+            if (m_RunAfterCompile)
+            {
+                m_QueueIndex = 0;
+                m_Queue.Clear();
+                if (Run() == 0)
+                    DoRunQueue();
+            }
+            if (m_DoAllProjects != mpjNone)
+            {
+                ProjectManager* prjMan = Manager::Get()->GetProjectManager();
+                ProjectsArray* projects = prjMan->GetProjects();
+    
+                if (m_ProjectIndex < projects->GetCount() - 1)
+                {
+                    prjMan->SetProject(projects->Item(++m_ProjectIndex));
+                    CheckProject();
+                    m_QueueIndex = 0;
+                    if (CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches().buildMethod == cbmUseMake)
+                    {
+                        wxString oldMK = m_LastTempMakefile;
+                        DoCreateMakefile();
+                        for (unsigned int i = 0; i < m_Queue.GetCount(); ++i)
+                            m_Queue[i].Replace(oldMK, m_LastTempMakefile);
+                        DoRunQueue();
+                    }
+                    else
+                    {
+                        m_Queue.Clear();
+                        switch (m_DoAllProjects)
+                        {
+                            case mpjCompile: Compile(); break;
+                            case mpjRebuild: Rebuild(); break;
+                            default: break;
+                        }
+                    }
+                }
+                else if (m_BackupActiveProject)
+                {
+                    m_DoAllProjects = mpjNone;
                     m_QueueIndex = 0;
                     m_Queue.Clear();
-					prjMan->SetProject(m_BackupActiveProject);
-					AskForActiveProject();
-					DoDeleteTempMakefile();
-				}
-			}
-			else
-			{
-				m_Queue.Clear();
-				m_QueueIndex = 0;
-				DoDeleteTempMakefile();
-			}
-		}
-		else
-		{
-            m_DoAllProjects = false;
-			m_Queue.Clear();
-			m_QueueIndex = 0;
-			if (m_Errors.GetCount())
-			{
-				Manager::Get()->GetMessageManager()->SwitchTo(m_ListPageIndex);
-				DoGotoNextError();
-			}
-		}
-		m_RunAfterCompile = false;
+                    prjMan->SetProject(m_BackupActiveProject);
+                    AskForActiveProject();
+                    DoDeleteTempMakefile();
+                }
+            }
+            else
+            {
+                m_Queue.Clear();
+                m_QueueIndex = 0;
+                DoDeleteTempMakefile();
+            }
+        }
+        else
+        {
+            m_DoAllProjects = mpjNone;
+            m_Queue.Clear();
+            m_QueueIndex = 0;
+            if (m_Errors.GetCount())
+            {
+                Manager::Get()->GetMessageManager()->SwitchTo(m_ListPageIndex);
+                DoGotoNextError();
+            }
+        }
+        m_RunAfterCompile = false;
     }
 }

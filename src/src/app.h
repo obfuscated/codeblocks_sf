@@ -40,6 +40,8 @@ class CodeBlocksApp : public wxApp
         wxString GetAppPath() const;
         int ParseCmdLine(MainFrame* handlerFrame);
 		void OnAppActivate(wxActivateEvent& event);
+        bool OnCmdLineParsed(wxCmdLineParser& parser);
+        void OnFatalException();
 #ifdef __WXMSW__
 		void SetAssociations();
 		void DoSetAssociation(const wxString& ext, const wxString& descr, const wxString& exe, const wxString& icoNum);

@@ -29,6 +29,13 @@ enum ErrorType
 	etWarning
 };
 
+enum MultiProjectJob
+{
+    mpjNone,
+    mpjCompile,
+    mpjRebuild
+};
+
 class CompilerGCC : public cbCompilerPlugin
 {
     public:
@@ -90,10 +97,11 @@ class CompilerGCC : public cbCompilerPlugin
 		void OnGCCOutput(CodeBlocksEvent& event);
 		void OnGCCError(CodeBlocksEvent& event);
 		void OnGCCTerminated(CodeBlocksEvent& event);
+        void OnJobEnd();
 
 		void SaveOptions();
 		void LoadOptions();
-		bool DoPrepareMultiProjectCommand();
+		bool DoPrepareMultiProjectCommand(MultiProjectJob job);
 		void DoPrepareQueue();
         int DoRunQueue();
         bool DoCreateMakefile(bool temporary = true, const wxString& makefile = "");
@@ -112,8 +120,8 @@ class CompilerGCC : public cbCompilerPlugin
 		void DoClearErrors();
         wxString ProjectMakefile();
         void AddOutputLine(const wxString& output, bool forceErrorColor = false);
-
-		
+        void PrintBanner();
+        
 		// programs
 		int m_CompilerIdx;
 		CompilerPrograms m_EmptyCompilerPrograms; // always empty; returned on invalid compiler index
@@ -137,7 +145,7 @@ class CompilerGCC : public cbCompilerPlugin
 		bool m_IsRun;
 		bool m_RunAfterCompile;
 		wxString m_CdRun;
-		bool m_DoAllProjects; // for xxxAll() functions
+		MultiProjectJob m_DoAllProjects; // for xxxAll() functions
 		cbProject* m_BackupActiveProject;
 		unsigned int m_ProjectIndex;
 		wxString m_RunCmd;

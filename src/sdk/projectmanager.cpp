@@ -80,6 +80,8 @@ int idMenuViewFileMasks = wxNewId();
 int idMenuNextProject = wxNewId();
 int idMenuPriorProject = wxNewId();
 int idMenuProjectTreeProps = wxNewId();
+int idMenuProjectUp = wxNewId();
+int idMenuProjectDown = wxNewId();
 
 #ifndef __WXMSW__
 /*
@@ -121,6 +123,8 @@ BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
     EVT_MENU(idMenuSetActiveProject, ProjectManager::OnSetActiveProject)
     EVT_MENU(idMenuNextProject, ProjectManager::OnSetActiveProject)
     EVT_MENU(idMenuPriorProject, ProjectManager::OnSetActiveProject)
+    EVT_MENU(idMenuProjectUp, ProjectManager::OnSetActiveProject)
+    EVT_MENU(idMenuProjectDown, ProjectManager::OnSetActiveProject)
     EVT_MENU(idMenuAddFile, ProjectManager::OnAddFileToProject)
     EVT_MENU(idMenuRemoveFile, ProjectManager::OnRemoveFileFromProject)
     EVT_MENU(idMenuCloseProject, ProjectManager::OnCloseProject)
@@ -220,6 +224,9 @@ void ProjectManager::CreateMenu(wxMenuBar* menuBar)
 		menu = menuBar->GetMenu(pos);
 		if (menu)
         {
+            menu->AppendSeparator();
+            menu->Append(idMenuProjectUp, _("Move up\tCtrl-Shift-Up"), _("Move project up in project tree"));
+            menu->Append(idMenuProjectDown, _("Move down\tCtrl-Shift-Down"), _("Move project down in project tree"));
             menu->AppendSeparator();
             menu->Append(idMenuPriorProject, _("Activate prior\tAlt-F5"), _("Activate prior project in open projects list"));
             menu->Append(idMenuNextProject, _("Activate next\tAlt-F6"), _("Activate next project in open projects list"));
@@ -479,6 +486,50 @@ bool ProjectManager::SaveAllProjects()
     return count == prjCount;
 }
 
+void ProjectManager::MoveProjectUp(cbProject* project, bool warpAround)
+{
+    if (!project)
+        return;
+
+    int idx = m_pProjects->Index(project);
+    if (idx == wxNOT_FOUND)
+        return; // project not opened in project manager???
+
+    if (idx == 0)
+    {
+         if (!warpAround)
+            return;
+        else
+            idx = m_pProjects->Count();
+    }
+    m_pProjects->RemoveAt(idx--);
+    m_pProjects->Insert(project, idx);
+    RebuildTree();
+    SetModified(true);
+}
+
+void ProjectManager::MoveProjectDown(cbProject* project, bool warpAround)
+{
+    if (!project)
+        return;
+
+    int idx = m_pProjects->Index(project);
+    if (idx == wxNOT_FOUND)
+        return; // project not opened in project manager???
+
+    if (idx == (int)m_pProjects->Count() - 1)
+    {
+         if (!warpAround)
+            return;
+        else
+            idx = 0;
+    }
+    m_pProjects->RemoveAt(idx++);
+    m_pProjects->Insert(project, idx);
+    RebuildTree();
+    SetModified(true);
+}
+
 const wxString& ProjectManager::GetWorkspace()
 {
     if (m_Workspace.IsEmpty())
@@ -724,7 +775,7 @@ void ProjectManager::OnSetActiveProject(wxCommandEvent& event)
             index = m_pProjects->GetCount() - 1;
         SetProject(m_pProjects->Item(index), false);
     }
-    else // activate next project
+    else if (event.GetId() == idMenuNextProject)
     {
         int index = m_pProjects->Index(m_pActiveProject);
         if (index == wxNOT_FOUND)
@@ -733,6 +784,14 @@ void ProjectManager::OnSetActiveProject(wxCommandEvent& event)
         if (index == (int)m_pProjects->GetCount())
             index = 0;
         SetProject(m_pProjects->Item(index), false);
+    }
+    else if (event.GetId() == idMenuProjectUp)
+    {
+        MoveProjectUp(m_pActiveProject);
+    }
+    else if (event.GetId() == idMenuProjectDown)
+    {
+        MoveProjectDown(m_pActiveProject);
     }
 }
 
