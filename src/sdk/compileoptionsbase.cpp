@@ -105,8 +105,9 @@ void CompileOptionsBase::SetIncludeDirs(const wxArrayString& includeDirs)
     m_IncludeDirs.Clear();
     for (size_t i = 0; i < includeDirs.GetCount(); ++i)
     {
-        if (m_IncludeDirs.Index(includeDirs[i], casesens) == wxNOT_FOUND)
-            m_IncludeDirs.Add(includeDirs[i]);
+        wxString entry = UnixFilename(includeDirs[i]);
+        if (m_IncludeDirs.Index(entry, casesens) == wxNOT_FOUND)
+            m_IncludeDirs.Add(entry);
     }
 	SetModified(true);
 }
@@ -130,8 +131,9 @@ void CompileOptionsBase::SetLibDirs(const wxArrayString& libDirs)
     m_LibDirs.Clear();
     for (size_t i = 0; i < libDirs.GetCount(); ++i)
     {
-        if (m_LibDirs.Index(libDirs[i], casesens) == wxNOT_FOUND)
-            m_LibDirs.Add(libDirs[i]);
+        wxString entry = UnixFilename(libDirs[i]);
+        if (m_LibDirs.Index(entry, casesens) == wxNOT_FOUND)
+            m_LibDirs.Add(entry);
     }
 	SetModified(true);
 }
@@ -222,9 +224,10 @@ void CompileOptionsBase::AddIncludeDir(const wxString& option)
 #ifdef __WXMSW__
     casesens = false;
 #endif
-    if (m_IncludeDirs.Index(option, casesens) == wxNOT_FOUND)
+    wxString entry = UnixFilename(option);
+    if (m_IncludeDirs.Index(entry, casesens) == wxNOT_FOUND)
     {
-        m_IncludeDirs.Add(option);
+        m_IncludeDirs.Add(entry);
         SetModified(true);
     }
 }
@@ -235,9 +238,10 @@ void CompileOptionsBase::AddLibDir(const wxString& option)
 #ifdef __WXMSW__
     casesens = false;
 #endif
-    if (m_LibDirs.Index(option, casesens) == wxNOT_FOUND)
+    wxString entry = UnixFilename(option);
+    if (m_LibDirs.Index(entry, casesens) == wxNOT_FOUND)
     {
-        m_LibDirs.Add(option);
+        m_LibDirs.Add(entry);
         SetModified(true);
     }
 }

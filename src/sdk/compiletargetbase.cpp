@@ -64,7 +64,7 @@ void CompileTargetBase::SetOutputFilename(const wxString& filename)
 {
 	if (m_OutputFilename == filename || filename.IsEmpty())
 		return;
-	m_OutputFilename = filename;
+	m_OutputFilename = UnixFilename(filename);
 	SetModified(true);
 }
 
@@ -72,7 +72,7 @@ void CompileTargetBase::SetObjectOutput(const wxString& dirname)
 {
 	if (m_ObjectOutput == dirname)
 		return;
-	m_ObjectOutput = dirname;
+	m_ObjectOutput = UnixFilename(dirname);
 	SetModified(true);
 }
 
@@ -80,7 +80,7 @@ void CompileTargetBase::SetDepsOutput(const wxString& dirname)
 {
 	if (m_DepsOutput == dirname)
 		return;
-	m_DepsOutput = dirname;
+	m_DepsOutput = UnixFilename(dirname);
 	SetModified(true);
 }
 
@@ -119,7 +119,7 @@ wxString CompileTargetBase::SuggestOutputFilename()
             suggestion = fname.GetFullPath();
             break;
     }
-    return suggestion;
+    return UnixFilename(suggestion);
 }
 
 wxString CompileTargetBase::GetObjectOutput()
