@@ -211,7 +211,14 @@ bool ParserThread::ParseBufferForFunctions(const wxString& buffer)
 						!token.Matches("IMPLEMENT_APP") &&
 						!token.Matches("WX_DECLARE_*") &&
 						!token.Matches("WX_DEFINE_*"))
-						HandleFunction(token);
+                    {
+						if (m_Str.GetChar(0) == '~')
+						{
+                            token = '~' + token;
+                            m_Str.Clear();
+                        }
+                        HandleFunction(token);
+                    }
 					else
 						m_Tokens.GetToken(); // skip args
 				}

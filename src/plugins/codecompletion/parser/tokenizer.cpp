@@ -318,7 +318,8 @@ bool Tokenizer::SkipUnwanted()
 		{
 			// C/C++ style comments
 			bool cstyle = NextChar() == '*';
-			m_TokenIndex += 2;
+			MoveToNextChar();
+			MoveToNextChar();
 			while (1)
 			{
 				if (!cstyle)
@@ -463,10 +464,7 @@ wxString Tokenizer::DoGetToken()
 	else if (isdigit(CurrentChar()))
 	{
 		// numbers
-		while (!IsEOF() &&
-				(isdigit(CurrentChar()) ||
-				CurrentChar() == 'x' ||
-				CurrentChar() == 'X'))
+		while (!IsEOF() && CharInString(CurrentChar(), "0123456789.abcdefABCDEFfXxLl"))
 			MoveToNextChar();
 		if (IsEOF())
 			return wxEmptyString;
@@ -488,7 +486,8 @@ wxString Tokenizer::DoGetToken()
 	{
 		if (NextChar() == ':')
 		{
-			m_TokenIndex += 2;
+			MoveToNextChar();
+			MoveToNextChar();
 			m_Str = "::";
 		}
 		else
@@ -560,7 +559,8 @@ wxString Tokenizer::DoGetToken()
 			++m_NestLevel;
 		else if (CurrentChar() == '}')
 			--m_NestLevel;
-		m_Str = m_Buffer.GetChar(m_TokenIndex++);
+		m_Str = CurrentChar();
+		MoveToNextChar();
 	}
 
 	if (m_LastWasPreprocessor && !m_Str.Matches("#") && !m_LastPreprocessor.Matches("#"))
