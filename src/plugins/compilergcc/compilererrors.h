@@ -18,7 +18,6 @@ class CompilerErrors
 		CompilerErrors();
 		virtual ~CompilerErrors();
 		
-		void AddErrorLine(const wxString& line);
 		void AddError(const wxString& filename, long int line, const wxString& error, bool isWarning);
 		
         void GotoError(int nr);

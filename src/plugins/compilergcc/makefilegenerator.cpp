@@ -986,6 +986,8 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
                             buffer << '\n';
                         }
                     }
+                    else
+                        d_file = UnixFilename(pf->relativeFilename); // for compilers that don't need deps, use .cpp file
 					
 					if (pf->useCustomBuildCommand)
 					{

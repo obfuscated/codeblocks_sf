@@ -76,10 +76,26 @@ struct CompilerSwitches
 class DLLIMPORT Compiler : public CompileOptionsBase
 {
 	public:
+        /// Enum categorizing compiler's output line as warning/error/normal
+        enum CompilerLineType
+        {
+            cltNormal,
+            cltWarning,
+            cltError
+        };
+
 		Compiler(const wxString& name);
 		Compiler(const Compiler& other); // copy ctor to copy everything but update m_ID
 		virtual ~Compiler();
 		
+		/** @brief Check if the supplied string is a compiler warning/error */
+		virtual CompilerLineType CheckForWarningsAndErrors(const wxString& line) = 0;
+		/** @brief Returns warning/error filename. Use it after a call to CheckForWarningsAndErrors() */
+		virtual wxString GetLastErrorFilename(){ return m_ErrorFilename; }
+		/** @brief Returns warning/error line number (as a string). Use it after a call to CheckForWarningsAndErrors() */
+		virtual wxString GetLastErrorLine(){ return m_ErrorLine; }
+		/** @brief Returns warning/error actual string. Use it after a call to CheckForWarningsAndErrors() */
+		virtual wxString GetLastError(){ return m_Error; }
         /** @brief Get the compiler's name */
 		virtual const wxString& GetName() const { return m_Name; }
         /** @brief Get the compiler's master path (must contain "bin", "include" and "lib") */
@@ -123,6 +139,9 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         CompilerPrograms m_Programs;
         CompilerSwitches m_Switches;
         CompilerOptions m_Options;
+        wxString m_ErrorFilename;
+        wxString m_ErrorLine;
+        wxString m_Error;
 	private:
         long m_ID;
         long m_ParentID; // -1 for builtin compilers, the builtin compiler's ID to derive from for user compilers...

@@ -8,6 +8,7 @@ class CompilerMINGW : public Compiler
 	public:
 		CompilerMINGW();
 		virtual ~CompilerMINGW();
+		virtual Compiler::CompilerLineType CheckForWarningsAndErrors(const wxString& line);
     protected:
         virtual Compiler* CreateCopy();
 	private:

@@ -1,4 +1,6 @@
 #include "compilerMSVC.h"
+#include <wx/intl.h>
+#include <wx/regex.h>
 
 CompilerMSVC::CompilerMSVC()
     : Compiler(_("Microsoft Visual C++ Toolkit 2003"))
@@ -22,10 +24,11 @@ CompilerMSVC::CompilerMSVC()
 	m_Switches.linkLibs = "";
 	m_Switches.defines = "/D";
 	m_Switches.genericSwitch = "/";
+	m_Switches.objectExtension = "obj";
 	m_Switches.needDependencies = false;
 	
 	m_Options.AddOption(_("Produce debugging symbols"),
-				"/ZI",
+				"/Zi",
 				_("Debugging"),
 				"",
 				true, 
@@ -54,7 +57,7 @@ CompilerMSVC::CompilerMSVC()
 	m_Options.AddOption(_("Enable SSE instruction set"), "/arch:SSE", _("Architecture"));
 	m_Options.AddOption(_("Enable SSE2 instruction set"), "/arch:SSE2", _("Architecture"));
 	m_Options.AddOption(_("Enable minimal rebuild"), "/Gm", _("Others"));
-	m_Options.AddOption(_("Enable link-time code generation"), "/GL", _("Others"), "", true, "/ZI", _("Link-time code generation is incompatible with debugging info"));
+	m_Options.AddOption(_("Enable link-time code generation"), "/GL", _("Others"), "", true, "/Zi /ZI", _("Link-time code generation is incompatible with debugging info"));
 	m_Options.AddOption(_("Optimize for windows application"), "/GA", _("Others"));
 	m_Options.AddOption(_("__cdecl calling convention"), "/Gd", _("Others"));
 	m_Options.AddOption(_("__fastcall calling convention"), "/Gr", _("Others"));
@@ -75,4 +78,34 @@ CompilerMSVC::~CompilerMSVC()
 Compiler * CompilerMSVC::CreateCopy()
 {
     return new CompilerMSVC(*this);
+}
+
+Compiler::CompilerLineType CompilerMSVC::CheckForWarningsAndErrors(const wxString& line)
+{
+    Compiler::CompilerLineType ret = Compiler::cltNormal;
+	if (line.IsEmpty())
+        return ret;
+
+    // quick regex's
+    wxRegEx reError(": error ");
+    wxRegEx reWarning(": warning ");
+    wxRegEx reErrorLine("\\([0-9]+\\) :[ \t].*:");
+    wxRegEx reDetailedErrorLine("([A-Za-z0-9_:/\\.]*)\\(([0-9]+)\\) :[ \t](.*)");
+
+    if (reErrorLine.Matches(line))
+    {
+        // one more check to see it is an actual error line
+        if (reDetailedErrorLine.Matches(line))
+        {
+            if (reError.Matches(line))
+                ret = Compiler::cltError;
+            else if (reWarning.Matches(line))
+                ret = Compiler::cltWarning;
+            wxArrayString errors;
+            m_ErrorFilename = reDetailedErrorLine.GetMatch(line, 1);
+            m_ErrorLine = reDetailedErrorLine.GetMatch(line, 2);
+            m_Error = reDetailedErrorLine.GetMatch(line, 3);
+        }
+    }
+    return ret;
 }

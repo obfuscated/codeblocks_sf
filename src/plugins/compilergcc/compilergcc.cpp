@@ -27,7 +27,6 @@
 #include <manager.h>
 #include <sdk_events.h>
 #include <pipedprocess.h>
-#include <wx/regex.h>
 #include <configmanager.h>
 #include <messagemanager.h>
 #include <projectmanager.h>
@@ -1443,8 +1442,7 @@ void CompilerGCC::OnGCCOutput(CodeBlocksEvent& event)
                                 // turn it off), I put this condition here to avoid
                                 // displaying it...
 	{
-		m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLACK));
-		Manager::Get()->GetMessageManager()->Log(m_PageIndex, msg.c_str());
+        AddOutputLine(msg);
 	}
 }
 
@@ -1456,36 +1454,48 @@ void CompilerGCC::OnGCCError(CodeBlocksEvent& event)
 	if (errcnt > 50)
 		return;
 	wxString msg = event.GetString();
-	if (!msg.IsEmpty())
+	AddOutputLine(msg, true);
+}
+
+void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColor)
+{
+	Compiler* compiler = CompilerFactory::Compilers[m_CompilerIdx];
+	Compiler::CompilerLineType clt = compiler->CheckForWarningsAndErrors(output);
+	
+	switch (clt)
 	{
-		wxRegEx reError(" Error ");
-		wxRegEx reWarning(" warning: ");
-		wxRegEx reErrorLine(":[0-9]*:[ \t].*");
-
-		if (reErrorLine.Matches(msg))
-		{
-			// duplicate code from CompilerErrors.AddErrorLine()...
-			wxRegEx reErrorLine("([A-Za-z0-9_:/\\.]*):([0-9]*):[ \t](.*)");
-		
-			if (reErrorLine.Matches(msg))
-			{
-				wxArrayString errors;
-				errors.Add(reErrorLine.GetMatch(msg, 1));
-				errors.Add(reErrorLine.GetMatch(msg, 2));
-				errors.Add(reErrorLine.GetMatch(msg, 3));
-				m_pListLog->AddLog(errors);
-			}
-            m_Errors.AddErrorLine(msg);
-		}
-
-		if ( reError.Matches(msg) )
-			m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxRED));
-		else if ( reWarning.Matches(msg) )
+        case Compiler::cltWarning:
 			m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_NAVY));
-		else
-			m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_MAROON));
-		Manager::Get()->GetMessageManager()->Log(m_PageIndex, msg.c_str());
- 	}
+			break;
+			
+        case Compiler::cltError:
+			m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxRED));
+			break;
+			
+        default:
+            if (forceErrorColor)
+                m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_MAROON));
+            else
+                m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLACK));
+			break;
+	}
+
+	if (clt != Compiler::cltNormal)
+	{
+        wxArrayString errors;
+        errors.Add(compiler->GetLastErrorFilename());
+        errors.Add(compiler->GetLastErrorLine());
+        errors.Add(compiler->GetLastError());
+        m_pListLog->AddLog(errors);
+        
+        m_Errors.AddError(compiler->GetLastErrorFilename(),
+                          atoi(compiler->GetLastErrorLine().c_str()),
+                          compiler->GetLastError(),
+                          clt == Compiler::cltWarning);
+    }
+
+	if (!output.IsEmpty())
+        Manager::Get()->GetMessageManager()->Log(m_PageIndex, output.c_str());
 }
 
 void CompilerGCC::OnGCCTerminated(CodeBlocksEvent& event)

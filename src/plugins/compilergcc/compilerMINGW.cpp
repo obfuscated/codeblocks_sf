@@ -1,5 +1,6 @@
 #include "compilerMINGW.h"
 #include <wx/intl.h>
+#include <wx/regex.h>
 
 CompilerMINGW::CompilerMINGW()
     : Compiler(_("MinGW Compiler Suite"))
@@ -60,4 +61,34 @@ CompilerMINGW::~CompilerMINGW()
 Compiler * CompilerMINGW::CreateCopy()
 {
     return new CompilerMINGW(*this);
+}
+
+Compiler::CompilerLineType CompilerMINGW::CheckForWarningsAndErrors(const wxString& line)
+{
+    Compiler::CompilerLineType ret = Compiler::cltNormal;
+	if (line.IsEmpty())
+        return ret;
+
+    // quick regex's
+    wxRegEx reError(" Error ");
+    wxRegEx reWarning(" warning: ");
+    wxRegEx reErrorLine(":[0-9]*:[ \t].*");
+    wxRegEx reDetailedErrorLine("([A-Za-z0-9_:/\\.]*):([0-9]*):[ \t](.*)");
+
+    if (reErrorLine.Matches(line))
+    {
+        // one more check to see it is an actual error line
+        if (reDetailedErrorLine.Matches(line))
+        {
+            if (reError.Matches(line))
+                ret = Compiler::cltError;
+            else if (reWarning.Matches(line))
+                ret = Compiler::cltWarning;
+            wxArrayString errors;
+            m_ErrorFilename = reDetailedErrorLine.GetMatch(line, 1);
+            m_ErrorLine = reDetailedErrorLine.GetMatch(line, 2);
+            m_Error = reDetailedErrorLine.GetMatch(line, 3);
+        }
+    }
+    return ret;
 }

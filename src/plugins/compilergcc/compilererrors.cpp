@@ -45,25 +45,6 @@ CompilerErrors::~CompilerErrors()
 	//dtor
 }
 
-void CompilerErrors::AddErrorLine(const wxString& line)
-{
-	if (line.IsEmpty())
-		return;
-    wxRegEx reWarning(" warning: ");
-	wxRegEx reErrorLine("([A-Za-z0-9_/\\.]*):([0-9]*):[ \t](.*)");
-
-	if (reErrorLine.Matches(line))
-	{
-		CompileError err;
-		err.isWarning = reWarning.Matches(line);
-		err.filename = reErrorLine.GetMatch(line, 1);
-        err.errors.Add(reErrorLine.GetMatch(line, 3));
-        wxString sLine = reErrorLine.GetMatch(line, 2);
-		sLine.ToLong(&err.line);
-		DoAddError(err);
-	}
-}
-
 void CompilerErrors::AddError(const wxString& filename, long int line, const wxString& error, bool isWarning)
 {
 	CompileError err;
