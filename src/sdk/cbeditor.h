@@ -19,6 +19,7 @@
 #include <wx/frame.h>
 #include <wx/stc/stc.h>
 #include <wx/hashmap.h>
+#include <wx/datetime.h>
 
 #include "settings.h"
 
@@ -95,7 +96,7 @@ class DLLIMPORT cbEditor : public wxMDIChildFrame
 		/** Returns true if editor is modified, false otherwise */
 		bool GetModified(){ return m_Modified || m_pControl->GetModify(); }
 		/** Set the editor's modification state to \c modified. */
-		void SetModified(const bool modified){ m_Modified = modified; }
+		void SetModified(bool modified = true);
 		/** Set the editor's page index in the parent wxNotebook */
 		void SetPageIndex(int index){ m_Index = index; }
 		/** Read the editor's page index in the parent wxNotebook */
@@ -169,6 +170,10 @@ class DLLIMPORT cbEditor : public wxMDIChildFrame
         int GetLineIndentInSpaces(int line = -1);
         /** Returns the specified line's (0-based) indentation (whitespace) string. If line is -1, it uses the current line */
         wxString GetLineIndentString(int line = -1);
+        /** Returns the last modification time for the file. Used to detect modifications outside the editor. */
+        wxDateTime GetLastModificationTime(){ return m_LastModified; }
+        /** Reloads the file from disk. @return True on success, False on failure. */
+        bool Reload();
     private:
         // functions
 		void DoFoldAll(int fold); // 0=unfold, 1=fold, 2=toggle
@@ -211,6 +216,7 @@ class DLLIMPORT cbEditor : public wxMDIChildFrame
 		EditorColorSet* m_pTheme;
 		short int m_ActiveCalltipsNest;
         SwitchToMap m_SwitchTo;
+        wxDateTime m_LastModified; // to check if the file was modified outside the editor
 };
 
 #endif // EDITOR_H

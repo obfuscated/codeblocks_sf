@@ -155,8 +155,7 @@ cbEditor::cbEditor(wxMDIParentFrame* parent, const wxString& filename, EditorCol
     // if !m_IsOK then it's a new file, so set the modified flag ON
     if (!m_IsOK && filename.IsEmpty())
     {
-        m_Modified = true;
-        SetEditorTitle(EDITOR_MODIFIED + m_Shortname);
+        SetModified(true);
     }
 }
 
@@ -183,6 +182,18 @@ void cbEditor::NotifyPlugins(wxEventType type, int intArg, const wxString& strAr
 	event.SetY(yArg);
 	//wxPostEvent(Manager::Get()->GetAppWindow(), event);
 	Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+}
+
+void cbEditor::SetModified(bool modified)
+{
+    if (modified != m_Modified)
+    {
+        m_Modified = modified;
+        if (m_Modified)
+            SetEditorTitle(EDITOR_MODIFIED + m_Shortname);
+        else
+            SetEditorTitle(m_Shortname);
+    }
 }
 
 void cbEditor::SetEditorTitle(const wxString& title)
@@ -373,6 +384,11 @@ void cbEditor::SetColorSet(EditorColorSet* theme)
 	m_pTheme->Apply(this);
 }
 
+bool cbEditor::Reload()
+{
+    return Open();
+}
+
 bool cbEditor::Open()
 {
     if (!wxFileExists(m_Filename))
@@ -397,6 +413,11 @@ bool cbEditor::Open()
 	if (ConfigManager::Get()->Read("/editor/fold_all_on_open", 0L))
 		FoldAll();
     
+    wxLogNull nul; // no error logging here
+    wxFileName fname(m_Filename);
+    m_LastModified = fname.GetModificationTime();
+
+    SetModified(false);
 	NotifyPlugins(cbEVT_EDITOR_OPEN);
     return true;
 }
@@ -413,12 +434,16 @@ bool cbEditor::Save()
     
     wxFile file(m_Filename, wxFile::write);
     file.Write(m_pControl->GetText().c_str(), m_pControl->GetTextLength());
+    file.Flush();
     
+    wxLogNull nul; // no error logging here
+    wxFileName fname(m_Filename);
+    m_LastModified = fname.GetModificationTime();
+
     m_IsOK = true;
-    m_Modified = false;
 
     m_pControl->SetSavePoint();
-    SetEditorTitle(m_Shortname);
+    SetModified(false);
     
 	NotifyPlugins(cbEVT_EDITOR_SAVE);
     return true;
@@ -880,19 +905,7 @@ void cbEditor::OnEditorUpdateUI(wxStyledTextEvent& event)
 
 void cbEditor::OnEditorChange(wxStyledTextEvent& event)
 {
-    if (!m_pParent)
-        return;
-
-    static int modified = GetModified();
-    
-    if (modified != GetModified())
-    {
-        if (GetModified())
-            SetEditorTitle(EDITOR_MODIFIED + m_Shortname);
-        else
-            SetEditorTitle(m_Shortname);
-        modified = GetModified();
-    }
+    SetModified(m_pControl->GetModify());
 }
 
 void cbEditor::OnEditorCharAdded(wxStyledTextEvent& event)
