@@ -22,6 +22,7 @@ class MakefileGenerator
 		// class destructor
 		~MakefileGenerator();
         bool CreateMakefile();
+        static void ConvertToMakefileFriendly(wxString& str);
     private:
         void DoAppendCompilerOptions(wxString& cmd, ProjectBuildTarget* target = 0L, bool useGlobalOptions = false);
         void DoAppendLinkerOptions(wxString& cmd, ProjectBuildTarget* target = 0L, bool useGlobalOptions = false);
@@ -63,7 +64,6 @@ class MakefileGenerator
 		bool IsTargetValid(ProjectBuildTarget* target);
         void ReplaceMacros(ProjectFile* pf, wxString& text);
         void AddCreateSubdir(wxString& buffer, const wxString& basepath, const wxString& filename, const wxString& subdir);
-        void ConvertToMakefileFriendly(wxString& str);
 
 		CompilerGCC* m_Compiler;
 		Compiler* m_CompilerSet;

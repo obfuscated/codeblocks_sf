@@ -45,6 +45,7 @@
 cbProject::cbProject(const wxString& filename)
     : m_DefaultExecuteTarget(-1),
     m_Makefile(""),
+    m_CustomMakefile(false),
     m_CompilerIdx(0),
     m_Loaded(false)
 {
@@ -137,6 +138,15 @@ void cbProject::SetModified(bool modified)
     {
         ProjectBuildTarget* target = m_Targets[i];
         target->SetModified(modified);
+    }
+}
+
+void cbProject::SetMakefileCustom(bool custom)
+{
+    if (m_CustomMakefile != custom)
+    {
+        m_CustomMakefile = custom;
+        SetModified(true);
     }
 }
 

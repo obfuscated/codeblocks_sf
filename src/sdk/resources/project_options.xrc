@@ -45,10 +45,35 @@
                       <object class="wxStaticText">
                         <label>Makefile:</label>
                       </object>
+                      <flag>wxTOP</flag>
+                      <border>4</border>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxTextCtrl" name="txtProjectMakefile"/>
-                      <minsize>160,-1</minsize>
+                      <object class="wxFlexGridSizer">
+                        <object class="sizeritem">
+                          <object class="wxTextCtrl" name="txtProjectMakefile"/>
+                          <minsize>160,-1</minsize>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxCheckBox" name="chkCustomMakefile">
+                            <label>This is a custom Makefile</label>
+                          </object>
+                          <flag>wxTOP</flag>
+                          <border>4</border>
+                        </object>
+                        <cols>2</cols>
+                        <rows>2</rows>
+                        <object class="spacer">
+                          <size>0,0</size>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                            <label>(the file must exist, no Makefile will be auto-generated)</label>
+                            <fg>#800000</fg>
+                          </object>
+                        </object>
+                        <hgap>8</hgap>
+                      </object>
                     </object>
                   </object>
                   <option>1</option>

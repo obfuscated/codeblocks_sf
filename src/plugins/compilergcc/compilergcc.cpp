@@ -157,7 +157,8 @@ CompilerGCC::CompilerGCC()
 	m_ProjectIndex(0),
 	m_LastExitCode(0),
 	m_Vars(this),
-	m_QueueIndex(0)
+	m_QueueIndex(0),
+	m_DeleteTempMakefile(true)
 {
     wxFileSystem::AddHandler(new wxZipFSHandler);
     wxXmlResource::Get()->InitAllHandlers();
@@ -751,7 +752,7 @@ int CompilerGCC::DoGUIAskForTarget()
 void CompilerGCC::DoDeleteTempMakefile()
 {
     // delete temp Makefile
-    if (!m_LastTempMakefile.IsEmpty())
+    if (m_DeleteTempMakefile && !m_LastTempMakefile.IsEmpty())
         wxRemoveFile(m_LastTempMakefile);
     m_LastTempMakefile = "";
 }
@@ -772,6 +773,15 @@ bool CompilerGCC::DoCreateMakefile(bool temporary, const wxString& makefile)
     if (!m_Project)
         return false;
     
+
+    // if the project has a custom makefile, use that (i.e. don't create makefile)
+    if (temporary && m_Project->IsMakefileCustom())
+    {
+        m_LastTempMakefile = m_Project->GetMakefile();
+        m_DeleteTempMakefile = false;
+        return true;
+    }
+
     // invoke Makefile generation
 	wxString path = m_Project->GetBasePath();
 
@@ -802,6 +812,7 @@ bool CompilerGCC::DoCreateMakefile(bool temporary, const wxString& makefile)
     // next Makefile generation :)
     if (!temporary)
         m_LastTempMakefile = "";
+    m_DeleteTempMakefile = temporary;
 
     return ret;
 }
@@ -1038,8 +1049,12 @@ int CompilerGCC::CompileFile(const wxString& file)
 {
 	DoPrepareQueue();
 
+    wxFileName f(file);
+    wxString fname = UnixFilename(f.GetPath(true) + ".objs/" + f.GetFullName());
+    MakefileGenerator::ConvertToMakefileFriendly(fname);
+
     wxString make = CompilerFactory::Compilers[m_CompilerIdx]->GetPrograms().MAKE;
-    m_Queue.Add(make + " -f " + m_LastTempMakefile + " " + file);
+    m_Queue.Add(make + " -f " + m_LastTempMakefile + " " + fname);
 
     return DoRunQueue();
 }

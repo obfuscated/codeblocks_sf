@@ -150,7 +150,8 @@ class CompilerGCC : public cbCompilerPlugin
 
 		wxString m_OriginalPath;
 		wxString m_LastTempMakefile;
-		
+        bool m_DeleteTempMakefile;
+
 		wxString m_ConsoleShell;
 
         DECLARE_EVENT_TABLE()

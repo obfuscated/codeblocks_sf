@@ -70,6 +70,7 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
     
     wxString title;
     wxString makefile;
+    bool makefile_custom;
     int defaultTarget = 0;
     int compilerIdx = 0;
     
@@ -81,6 +82,9 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
         
         if (node->Attribute("makefile"))
             makefile = node->Attribute("makefile");
+
+        if (node->Attribute("makefile_is_custom"))
+            makefile_custom = strncmp(node->Attribute("makefile_is_custom"), "1", 1) == 0;
         
         if (node->Attribute("default_target"))
             defaultTarget = atoi(node->Attribute("default_target"));
@@ -93,6 +97,7 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
     
     m_pProject->SetTitle(title);
     m_pProject->SetMakefile(makefile);
+    m_pProject->SetMakefileCustom(makefile_custom);
     m_pProject->SetDefaultExecuteTargetIndex(defaultTarget);
     m_pProject->SetCompilerIndex(compilerIdx);
 }
@@ -415,6 +420,7 @@ bool ProjectLoader::Save(const wxString& filename)
     buffer << '\t' << "<Project>" << '\n';
     buffer << '\t' << '\t' << "<Option title=\"" << FixEntities(m_pProject->GetTitle()) << "\"/>" << '\n';
     buffer << '\t' << '\t' << "<Option makefile=\"" << FixEntities(m_pProject->GetMakefile()) << "\"/>" << '\n';
+    buffer << '\t' << '\t' << "<Option makefile_is_custom=\"" << m_pProject->IsMakefileCustom() << "\"/>" << '\n';
     if (m_pProject->GetDefaultExecuteTargetIndex() != 0)
         buffer << '\t' << '\t' << "<Option default_target=\"" << m_pProject->GetDefaultExecuteTargetIndex() << "\"/>" << '\n';
     if (m_pProject->GetCompilerIndex() != 0)

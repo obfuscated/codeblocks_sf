@@ -878,6 +878,7 @@ void MakefileGenerator::DoAddMakefileTarget_Link(wxString& buffer)
     buffer << '\n';
 }
 
+// static
 void MakefileGenerator::ConvertToMakefileFriendly(wxString& str)
 {
     for (unsigned int i = 0; i < str.Length(); ++i)

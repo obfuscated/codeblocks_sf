@@ -53,6 +53,8 @@ class DLLIMPORT cbProject : public CompileTargetBase
         int GetFilesCount(){ return m_Files.GetCount(); }
         void SetMakefile(const wxString& makefile){ m_Makefile = makefile; SetModified(true); }
         const wxString& GetMakefile();
+        void SetMakefileCustom(bool custom);
+        bool IsMakefileCustom(){ return m_CustomMakefile; }
         int GetDefaultExecuteTargetIndex();
         void SetDefaultExecuteTargetIndex(int index);
         int GetBuildTargetsCount(){ return m_Targets.GetCount(); }
@@ -97,6 +99,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
         BuildTargets m_Targets;
         int m_DefaultExecuteTarget;
         wxString m_Makefile;
+        bool m_CustomMakefile;
         int m_CompilerIdx;
 
         FilesList m_Files;
