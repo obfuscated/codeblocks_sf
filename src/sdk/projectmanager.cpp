@@ -41,6 +41,7 @@
 #include "filegroupsandmasks.h"
 #include "projectsfilemasksdlg.h"
 #include "managerproxy.h"
+#include "multiselectdlg.h"
 
 ProjectManager* ProjectManager::Get(wxNotebook* parent)
 {
@@ -66,7 +67,9 @@ int idMenuSetActiveProject = wxNewId();
 int idMenuOpenFile = wxNewId();
 int idMenuCloseProject = wxNewId();
 int idMenuCloseFile = wxNewId();
+int idMenuAddFilePopup = wxNewId();
 int idMenuAddFile = wxNewId();
+int idMenuRemoveFilePopup = wxNewId();
 int idMenuRemoveFile = wxNewId();
 int idMenuProjectProperties = wxNewId();
 int idMenuFileProperties = wxNewId();
@@ -129,6 +132,8 @@ BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
     EVT_MENU(idMenuProjectDown, ProjectManager::OnSetActiveProject)
     EVT_MENU(idMenuAddFile, ProjectManager::OnAddFileToProject)
     EVT_MENU(idMenuRemoveFile, ProjectManager::OnRemoveFileFromProject)
+    EVT_MENU(idMenuAddFilePopup, ProjectManager::OnAddFileToProject)
+    EVT_MENU(idMenuRemoveFilePopup, ProjectManager::OnRemoveFileFromProject)
     EVT_MENU(idMenuCloseProject, ProjectManager::OnCloseProject)
     EVT_MENU(idMenuCloseFile, ProjectManager::OnCloseFile)
     EVT_MENU(idMenuOpenFile, ProjectManager::OnOpenFile)
@@ -230,6 +235,10 @@ void ProjectManager::CreateMenu(wxMenuBar* menuBar)
 		menu = menuBar->GetMenu(pos);
 		if (menu)
         {
+            menu->AppendSeparator();
+            menu->Append(idMenuAddFile, _("Add files..."), _("Add files to the project"));
+            menu->Append(idMenuRemoveFile, _("Remove files..."), _("Remove files from the project"));
+
             wxMenu* treeprops = new wxMenu;
             treeprops->Append(idMenuProjectUp, _("Move project up\tCtrl-Shift-Up"), _("Move project up in project tree"));
             treeprops->Append(idMenuProjectDown, _("Move project down\tCtrl-Shift-Down"), _("Move project down in project tree"));
@@ -291,7 +300,7 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
 				menu.Append(idMenuSetActiveProject, _("Activate project"));
     		menu.Append(idMenuCloseProject, _("Close project"));
     		menu.AppendSeparator();
-    	    menu.Append(idMenuAddFile, _("Add files to project..."));
+    	    menu.Append(idMenuAddFilePopup, _("Add files to project..."));
         }
         // if it is a file...
         else
@@ -321,7 +330,7 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
 				menu.Append(idMenuOpenFile, caption);
 			}
     		menu.AppendSeparator();
-    	    menu.Append(idMenuRemoveFile, _("Remove file from project"));
+    	    menu.Append(idMenuRemoveFilePopup, _("Remove file from project"));
         }
 
         // ask any plugins to add items in this menu
@@ -797,15 +806,22 @@ void ProjectManager::OnSetActiveProject(wxCommandEvent& event)
 
 void ProjectManager::OnAddFileToProject(wxCommandEvent& event)
 {
-    wxTreeItemId sel = m_pTree->GetSelection();
-    FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
-
-    if (!ftd)
+    cbProject* prj = 0;
+    if (event.GetId() == idMenuAddFile)
+        prj = GetActiveProject();
+    else
+    {
+        wxTreeItemId sel = m_pTree->GetSelection();
+        FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
+        if (ftd)
+            prj = ftd->GetProject();
+    }
+    if (!prj)
         return;
 
     wxFileDialog dlg(m_pPanel,
                     _("Add files to project..."),
-                    ftd->GetProject()->GetBasePath(),
+                    prj->GetBasePath(),
                     wxEmptyString,
                     KNOWN_SOURCES_DIALOG_FILTER,
                     wxOPEN | wxMULTIPLE | wxFILE_MUST_EXIST);
@@ -813,7 +829,6 @@ void ProjectManager::OnAddFileToProject(wxCommandEvent& event)
     
     if (dlg.ShowModal() == wxID_OK)
     {
-        cbProject* prj = ftd->GetProject();
 		int target = prj->GetBuildTargetsCount() == 1 ? 0 : -1; // ask for target only if more than one
 		
 		wxArrayString array;
@@ -830,21 +845,70 @@ void ProjectManager::OnAddFileToProject(wxCommandEvent& event)
 
 void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
 {
-    wxTreeItemId sel = m_pTree->GetSelection();
-    FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
-
-    if (!ftd)
-        return;
-
-	cbProject* prj = ftd->GetProject();
-	wxString filename = prj->GetFile(ftd->GetFileIndex())->file.GetFullPath();
-    prj->RemoveFile(ftd->GetFileIndex());
-    RebuildTree();
-
-	CodeBlocksEvent evt(cbEVT_PROJECT_FILE_REMOVED);
-	evt.SetProject(prj);
-	evt.SetString(filename);
-	Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
+    if (event.GetId() == idMenuRemoveFile)
+    {
+        // remove multiple-files
+        cbProject* prj = GetActiveProject();
+        if (!prj)
+            return;
+        wxArrayString files;
+        for (int i = 0; i < prj->GetFilesCount(); ++i)
+        {
+            files.Add(prj->GetFile(i)->relativeFilename);
+        }
+        MultiSelectDlg dlg(0, files);
+        if (dlg.ShowModal() == wxID_OK)
+        {
+            wxArrayInt indices = dlg.GetSelectedIndices();
+            if (indices.GetCount() == 0)
+                return;
+            if (wxMessageBox(_("Are you sure you want to remove these files from the project?"),
+                            _("Confirmation"),
+                            wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) != wxYES)
+            {
+                return;
+            }
+            // we iterate the arry backwards, because if we iterate it normally,
+            // when we remove the first index, the rest become invalid...
+            for (int i = (int)indices.GetCount() - 1; i >= 0; --i)
+            {
+                ProjectFile* pf = prj->GetFile(indices[i]);
+                if (!pf)
+                {
+                    Manager::Get()->GetMessageManager()->DebugLog("Invalid project file: Index %d", indices[i]);
+                    continue;
+                }
+                wxString filename = pf->file.GetFullPath();
+                Manager::Get()->GetMessageManager()->DebugLog("Removing index %d, %s", indices[i], filename.c_str());
+                prj->RemoveFile(indices[i]);
+                CodeBlocksEvent evt(cbEVT_PROJECT_FILE_REMOVED);
+                evt.SetProject(prj);
+                evt.SetString(filename);
+                Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
+            }
+            RebuildTree();
+        }
+    }
+    else
+    {
+        // remove single file
+        wxTreeItemId sel = m_pTree->GetSelection();
+        FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
+        if (ftd)
+        {
+            cbProject* prj = ftd->GetProject();
+            if (!prj)
+                return;
+            int fileindex = ftd->GetFileIndex();
+            wxString filename = prj->GetFile(fileindex)->file.GetFullPath();
+            prj->RemoveFile(fileindex);
+            RebuildTree();
+            CodeBlocksEvent evt(cbEVT_PROJECT_FILE_REMOVED);
+            evt.SetProject(prj);
+            evt.SetString(filename);
+            Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
+        }
+    }
 }
 
 void ProjectManager::OnCloseProject(wxCommandEvent& event)
