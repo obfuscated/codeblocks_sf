@@ -320,9 +320,11 @@ void DebuggerGDB::SetBreakpoints()
 			for (unsigned int x = 0; x < pf->breakpoints.GetCount(); ++x)
 			{
 				DebuggerBreakpoint* bp = pf->breakpoints[x];
+				wxString filename = pf->relativeFilename;
+				ConvertToGDBFriendly(filename);
 				wxString cmd;
 				if (bp->enabled)
-					cmd << "break " << UnixFilename(pf->relativeFilename) << ":" << bp->line + 1;
+					cmd << "break " << filename << ":" << bp->line + 1;
 			
 				SendCommand(cmd);
 			}
