@@ -59,6 +59,7 @@ extern "C" {
 // global helper funcs
 extern DLLIMPORT wxString GetStringFromArray(const wxArrayString& array, const wxString& separator = ";");
 extern DLLIMPORT wxArrayString GetArrayFromString(const wxString& text, const wxString& separator = ";");
+extern DLLIMPORT bool CreateDirRecursively(const wxString& full_path, int perms = 0755);
 extern DLLIMPORT wxString UnixFilename(const wxString& filename);
 extern DLLIMPORT FileType FileTypeOf(const wxString& filename);
 extern DLLIMPORT void SaveTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& nodePaths);

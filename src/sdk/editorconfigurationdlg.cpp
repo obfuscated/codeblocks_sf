@@ -105,6 +105,8 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
 	wxString key;
     key.Printf("/editor/default_code/%d", IdxToFileType[m_DefCodeFileType]);
     XRCCTRL(*this, "txtDefCode", wxTextCtrl)->SetValue(ConfigManager::Get()->Read(key, wxEmptyString));
+    wxFont tmpFont(8, wxMODERN, wxNORMAL, wxNORMAL);
+    XRCCTRL(*this, "txtDefCode", wxTextCtrl)->SetFont(tmpFont);
 }
 
 EditorConfigurationDlg::~EditorConfigurationDlg()

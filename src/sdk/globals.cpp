@@ -45,6 +45,22 @@ wxArrayString GetArrayFromString(const wxString& text, const wxString& separator
     return out;
 }
 
+bool CreateDirRecursively(const wxString& full_path, int perms)
+{
+    wxFileName tmp(full_path);
+    wxString sep = wxFileName::GetPathSeparator();
+    wxString currdir = tmp.GetVolume() + tmp.GetVolumeSeparator() + sep;
+    wxArrayString dirs = tmp.GetDirs();
+    for (size_t i = 0; i < dirs.GetCount(); ++i)
+    {
+        currdir << dirs[i];
+        if (!wxDirExists(currdir) && !wxMkdir(currdir, perms))
+            return false;
+        currdir << sep;
+    }
+    return true;
+}
+
 wxString UnixFilename(const wxString& filename)
 {
     wxString unixname = filename;

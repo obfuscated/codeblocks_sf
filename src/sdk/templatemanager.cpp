@@ -32,6 +32,7 @@
 #include <wx/filename.h>
 #include <wx/msgdlg.h>
 #include <wx/textdlg.h>
+#include <wx/dirdlg.h>
 
 #include "templatemanager.h"
 #include "manager.h"
@@ -129,8 +130,8 @@ void TemplateManager::LoadUserTemplates()
     wxLogNull zero; // disable error logging
 
     m_UserTemplates.Clear();
-    wxString baseDir = ConfigManager::Get()->Read("/data_path");
-	baseDir << "/templates";
+    wxString baseDir = wxGetHomeDir();
+	baseDir << "/.CodeBlocks";
 
     wxDir dir(baseDir);
 
@@ -223,16 +224,66 @@ void TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
 
 void TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg)
 {
+    if (!dlg.SelectedUserTemplate())
+    {
+        Manager::Get()->GetMessageManager()->DebugLog(_("TemplateManager::NewProjectFromUserTemplate() called when no user template was selected ?!?"));
+        return;
+    }
+
     // select directory to copy user template files
-    
+    wxString sep = wxFileName::GetPathSeparator();
+    wxDirDialog dirdlg(0, _("Choose a directory to create the new project"), wxEmptyString, wxDD_NEW_DIR_BUTTON);
+    if (dirdlg.ShowModal() != wxID_OK)
+        return;
+
+    wxBusyCursor busy;
+
+    wxString templ = wxGetHomeDir();
+    templ << sep << ".CodeBlocks" << sep << dlg.GetSelectedUserTemplate();
+    if (!wxDirExists(templ))
+    {
+        Manager::Get()->GetMessageManager()->DebugLog(_("Cannot open user-template source path '%s'!"), templ.c_str());
+        return;
+    }
+
     // copy files
-    
-    // open new project
+    wxString project_filename;
+    wxArrayString files;
+    wxDir::GetAllFiles(templ, &files);
+    int count = 0;
+    int total_count = files.GetCount();
+    for (size_t i = 0; i < files.GetCount(); ++i)
+    {
+        wxFileName dstname(files[i]);
+        dstname.MakeRelativeTo(templ + sep);
+        wxString src = files[i];
+        wxString dst = dirdlg.GetPath() + sep + dstname.GetFullPath();
+        Manager::Get()->GetMessageManager()->DebugLog("dst=%s, dstname=%s", dst.c_str(), dstname.GetFullPath().c_str());
+        if (!CreateDirRecursively(dst))
+            Manager::Get()->GetMessageManager()->DebugLog("Failed creating directory for %s", dst.c_str());
+        if (wxCopyFile(src, dst, true))
+        {
+            if (FileTypeOf(dst) == ftCodeBlocksProject)
+                project_filename = dst;
+            ++count;
+        }
+        else
+            Manager::Get()->GetMessageManager()->DebugLog("Failed copying %s to %s", src.c_str(), dst.c_str());
+    }
+    if (count != total_count)
+        wxMessageBox(_("Some files could not be loaded with the template..."), _("Error"), wxICON_ERROR);
+    else
+    {
+        // open new project
+        if (project_filename.IsEmpty())
+            wxMessageBox(_("User-template saved succesfuly but no project file exists in it!"));
+        else
+            Manager::Get()->GetProjectManager()->LoadProject(project_filename);
+    }
 }
 
 void TemplateManager::SaveUserTemplate(cbProject* prj)
 {
-#if 0
     if (!prj)
         return;
 
@@ -240,20 +291,15 @@ void TemplateManager::SaveUserTemplate(cbProject* prj)
     if (!prj->SaveAllFiles() ||
         !prj->Save())
     {
-        wxMessageBox(_("Could not save project and/or all its files. Aborting..."));
+        wxMessageBox(_("Could not save project and/or all its files. Aborting..."), _("Error"), wxICON_ERROR);
         return;
     }
 
     // create destination dir
-    // USERPROFILE is used under windows; all other OSes use HOME,
-    // so if HOME is not defined, we 'll try USERPROFILE...
-    wxString templ;
-    if (wxGetEnv("HOME", &templ) || wxGetEnv("USERPROFILE", &templ))
-    {
-        templ << "/.CodeBlocks";
-        if (!wxDirExists(templ))
-            wxMkdir(templ, 0755);
-    }
+    wxString templ = wxGetHomeDir();
+    templ << "/.CodeBlocks";
+    if (!wxDirExists(templ))
+        wxMkdir(templ, 0755);
 
     // check if it exists and ask a different title
     wxString title = prj->GetTitle();
@@ -275,18 +321,33 @@ void TemplateManager::SaveUserTemplate(cbProject* prj)
             wxMessageBox(_("You have another template with the same title.\nPlease choose another title..."));
     }
 
+    wxBusyCursor busy;
+
     // copy project and all files to destination dir
+    int count = 0;
+    int total_count = prj->GetFilesCount();
     templ << "/";
     wxFileName fname;
-    for (int i = 0; i < prj->GetFilesCount(); ++i)
+    for (int i = 0; i < total_count; ++i)
     {
-        wxString src = prj->GetFile(i)->relativeFilename;
+        wxString src = prj->GetFile(i)->file.GetFullPath();
         wxString dst = templ + prj->GetFile(i)->relativeFilename;
-        wxCopyFile(src, dst, true);
+//        Manager::Get()->GetMessageManager()->DebugLog("Copying %s to %s", src.c_str(), dst.c_str());
+        if (!CreateDirRecursively(dst))
+            Manager::Get()->GetMessageManager()->DebugLog("Failed creating directory for %s", dst.c_str());
+        if (wxCopyFile(src, dst, true))
+            ++count;
+        else
+            Manager::Get()->GetMessageManager()->DebugLog("Failed copying %s to %s", src.c_str(), dst.c_str());
     }
     fname.Assign(prj->GetFilename());
-    wxCopyFile(prj->GetFilename(), templ + fname.GetFullName());
-#endif
+    if (!wxCopyFile(prj->GetFilename(), templ + fname.GetFullName()))
+        wxMessageBox(_("Failed to copy the project file!"), _("Error"), wxICON_ERROR);
+
+    if (count == total_count)
+        wxMessageBox(_("User-template saved succesfuly"));
+    else
+        wxMessageBox(_("Some files could not be saved with the template..."), _("Error"), wxICON_ERROR);
 }
 
 // events

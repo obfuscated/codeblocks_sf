@@ -87,7 +87,7 @@
             </object>
           </object>
           <object class="notebookpage">
-            <label>User</label>
+            <label>User templates</label>
             <object class="wxPanel" name="pnlUser">
               <object class="wxBoxSizer">
                 <orient>wxVERTICAL</orient>
@@ -109,7 +109,7 @@
                 <object class="sizeritem">
                   <object class="wxStaticText">
                     <label>To create a user template, create a project the way you want it
-and click &quot;Project/Keep project as template...&quot; in main menu bar.</label>
+and click &quot;Project/Save project as user-template&quot; in main menu bar.</label>
                   </object>
                   <flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
                   <border>8</border>

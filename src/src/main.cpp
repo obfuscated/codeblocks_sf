@@ -461,17 +461,16 @@ void MainFrame::CreateMenubar()
 	project->Append(idProjectNewEmptyProject, _("New &empty project"), _("Create a new empty project"));
 	project->AppendSeparator();
 	project->Append(idProjectOpen, _("&Open project"), _("Open an existing project"));
+	project->Append(idProjectImport, _("&Import"), import);
 	project->AppendSeparator();
 	project->Append(idProjectSaveProject, _("&Save project"), _("Save active project"));
 	project->Append(idProjectSaveProjectAs, _("Save project &as..."), _("Save active project under a different name"));
 	project->Append(idProjectSaveAllProjects, _("Save a&ll projects"), _("Save all modified projects"));
 	project->AppendSeparator();
-	project->Append(idProjectSaveTemplate, _("&Keep project as template"), _("Keep this project as a user-template to base new projects on"));
+	project->Append(idProjectSaveTemplate, _("&Save project as user-template"), _("Keep this project as a user-template to base new projects on"));
 	project->AppendSeparator();
 	project->Append(idProjectCloseProject, _("&Close project"), _("Close active project"));
 	project->Append(idProjectCloseAllProjects, _("Close all projects"), _("Close all opened projects"));
-	project->AppendSeparator();
-	project->Append(idProjectImport, _("&Import"), import);
 	mbar->Append(project, _("&Project"));
 
 	wxMenu* tools = new wxMenu();
