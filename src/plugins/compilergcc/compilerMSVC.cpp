@@ -11,6 +11,21 @@
 CompilerMSVC::CompilerMSVC()
     : Compiler(_("Microsoft Visual C++ Toolkit 2003"))
 {
+    Reset();
+}
+
+CompilerMSVC::~CompilerMSVC()
+{
+	//dtor
+}
+
+Compiler * CompilerMSVC::CreateCopy()
+{
+    return new CompilerMSVC(*this);
+}
+
+void CompilerMSVC::Reset()
+{
 	m_Programs.C = "cl.exe";
 	m_Programs.CPP = "cl.exe";
 	m_Programs.LD = "link.exe";
@@ -34,6 +49,7 @@ CompilerMSVC::CompilerMSVC()
 	m_Switches.linkerNeedsLibPrefix = false;
 	m_Switches.linkerNeedsLibExtension = true;
 
+    m_Options.ClearOptions();
 	m_Options.AddOption(_("Produce debugging symbols"),
 				"/Zi",
 				_("Debugging"),
@@ -77,20 +93,16 @@ CompilerMSVC::CompilerMSVC()
     m_Commands[(int)ctLinkDynamicCmd] = "$linker /dll /nologo $libdirs /out:$exe_output $libs $link_objects $link_options";
     m_Commands[(int)ctLinkStaticCmd] = "$lib_linker /lib /nologo $libdirs /out:$static_output $libs $link_objects $link_options";
 
-
+    m_RegExes.Clear();
     m_RegExes.Add(RegExStruct(_("Compiler warning"), cltWarning, "([ \tA-Za-z0-9_:\\-\\+/\\.]+)\\(([0-9]+)\\) :[ \t]([Ww]arning[ \t].*)", 3, 1, 2));
     m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, "([ \tA-Za-z0-9_:\\-\\+/\\.]+)\\(([0-9]+)\\) :[ \t]([Ee]rror[ \t].*)", 3, 1, 2));
     m_RegExes.Add(RegExStruct(_("Linker error"), cltError, "([ \tA-Za-z0-9_:\\-\\+/\\.\\(\\)]*)[ \t]+:[ \t]+(.*error LNK[0-9]+.*)", 2, 1, 0));
-}
 
-CompilerMSVC::~CompilerMSVC()
-{
-	//dtor
-}
-
-Compiler * CompilerMSVC::CreateCopy()
-{
-    return new CompilerMSVC(*this);
+    m_CompilerOptions.Clear();
+    m_LinkerOptions.Clear();
+    m_LinkLibs.Clear();
+    m_CmdsBefore.Clear();
+    m_CmdsAfter.Clear();
 }
 
 AutoDetectResult CompilerMSVC::AutoDetectInstallationDir()
@@ -110,8 +122,8 @@ AutoDetectResult CompilerMSVC::AutoDetectInstallationDir()
 
     if (!m_MasterPath.IsEmpty())
     {
-        m_IncludeDirs.Add(m_MasterPath + sep + "include");
-        m_LibDirs.Add(m_MasterPath + sep + "lib");
+        AddIncludeDir(m_MasterPath + sep + "include");
+        AddLibDir(m_MasterPath + sep + "lib");
     
         // add include dirs for MS Platform SDK too
         wxLogNull no_log_here;
@@ -125,8 +137,8 @@ AutoDetectResult CompilerMSVC::AutoDetectInstallationDir()
             {
                 if (dir.GetChar(dir.Length() - 1) != '\\')
                     dir += sep;
-                m_IncludeDirs.Add(dir + "include");
-                m_LibDirs.Add(dir + "lib");
+                AddIncludeDir(dir + "include");
+                AddLibDir(dir + "lib");
             }
         }
     }

@@ -49,6 +49,7 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxDialog)
     EVT_UPDATE_UI(			XRCID("btnAddCompiler"),	CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnRenameCompiler"),	CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnDelCompiler"),	CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(			XRCID("btnResetCompiler"),	CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnAddLib"),	        CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnEditLib"),	    CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnDelLib"),	        CompilerOptionsDlg::OnUpdateUI)
@@ -80,6 +81,7 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxDialog)
 	EVT_BUTTON(				XRCID("btnAddCompiler"),	CompilerOptionsDlg::OnAddCompilerClick)
 	EVT_BUTTON(				XRCID("btnRenameCompiler"),	CompilerOptionsDlg::OnEditCompilerClick)
 	EVT_BUTTON(				XRCID("btnDelCompiler"),	CompilerOptionsDlg::OnRemoveCompilerClick)
+	EVT_BUTTON(				XRCID("btnResetCompiler"),	CompilerOptionsDlg::OnResetCompilerClick)
 	EVT_BUTTON(				XRCID("btnAddIncludes"),	CompilerOptionsDlg::OnAddDirClick)
 	EVT_BUTTON(				XRCID("btnEditIncludes"),	CompilerOptionsDlg::OnEditDirClick)
 	EVT_BUTTON(				XRCID("btnDelIncludes"),	CompilerOptionsDlg::OnRemoveDirClick)
@@ -774,6 +776,37 @@ void CompilerOptionsDlg::UpdateCompilerForTargets(int compilerIdx)
     }
 }
 
+void CompilerOptionsDlg::AutoDetectCompiler()
+{
+    wxComboBox* cmb = XRCCTRL(*this, "cmbCompiler", wxComboBox);
+    int compilerIdx = cmb->GetSelection();
+    Compiler* compiler = CompilerFactory::Compilers[compilerIdx];
+    wxString backup = XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->GetValue();
+    
+    switch (compiler->AutoDetectInstallationDir())
+    {
+        case adrDetected:
+        {
+            wxString msg;
+            msg.Printf(_("Auto-detected installation path of \"%s\"\nin \"%s\""), compiler->GetName().c_str(), compiler->GetMasterPath().c_str());
+            wxMessageBox(msg);
+        }
+        break;
+        
+        case adrGuessed:
+        {
+            wxString msg;
+            msg.Printf(_("Could not auto-detect installation path of \"%s\"...\n"
+                        "Do you want to use this compiler's default installation directory?"),
+                        compiler->GetName().c_str());
+            if (wxMessageBox(msg, _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxNO)
+                compiler->SetMasterPath(backup);
+        }
+        break;
+    }
+    XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->SetValue(compiler->GetMasterPath());
+}
+
 void CompilerOptionsDlg::OnCategoryChanged(wxCommandEvent& event)
 {
 	DoFillOptions();
@@ -930,7 +963,12 @@ void CompilerOptionsDlg::OnAddCompilerClick(wxCommandEvent& event)
 
         cmb->Append(value);
         cmb->SetSelection(cmb->GetCount() - 1);
+        // refresh settings in dialog
         DoFillCompilerPrograms();
+        DoFillCategories();
+        DoFillOptions();
+        DoLoadOptions(newIdx, 0);
+        m_LastCompilerIdx = newIdx;
         wxMessageBox(_("The new compiler has been added! Don't forget to update the \"Programs\" page..."));
     }
 }
@@ -956,7 +994,7 @@ void CompilerOptionsDlg::OnRemoveCompilerClick(wxCommandEvent& event)
 {
 	if (wxMessageBox(_("Are you sure you want to remove this compiler?"),
 					_("Confirmation"),
-					wxYES_NO | wxICON_QUESTION) == wxYES)
+					wxYES_NO | wxICON_QUESTION | wxNO_DEFAULT) == wxYES)
     {
         wxComboBox* cmb = XRCCTRL(*this, "cmbCompiler", wxComboBox);
         int compilerIdx = cmb->GetSelection();
@@ -969,12 +1007,28 @@ void CompilerOptionsDlg::OnRemoveCompilerClick(wxCommandEvent& event)
         DoFillCompilerPrograms();
         DoFillCategories();
         DoFillOptions();
-    
-        if (m_BuildingTree)
-            return;
-        wxTreeCtrl* tc = XRCCTRL(*this, "tcScope", wxTreeCtrl);
-        ScopeTreeData* data = (ScopeTreeData*)tc->GetItemData(tc->GetSelection());
-        DoLoadOptions(compilerIdx, data);
+        m_LastCompilerIdx = compilerIdx;
+        DoLoadOptions(compilerIdx, 0);
+    }
+}
+
+void CompilerOptionsDlg::OnResetCompilerClick(wxCommandEvent& event)
+{
+	if (wxMessageBox(_("Are you sure you want to reset this compiler's settings to the defaults?"),
+					_("Confirmation"),
+					wxYES_NO | wxICON_QUESTION | wxNO_DEFAULT) == wxYES)
+    {
+        wxComboBox* cmb = XRCCTRL(*this, "cmbCompiler", wxComboBox);
+        int compilerIdx = cmb->GetSelection();
+        CompilerFactory::Compilers[compilerIdx]->Reset();
+        // run auto-detection
+        AutoDetectCompiler();
+        CompilerFactory::SaveSettings();
+        // refresh settings in dialog
+        DoFillCompilerPrograms();
+        DoFillCategories();
+        DoFillOptions();
+        DoLoadOptions(compilerIdx, 0);
     }
 }
 
@@ -1053,33 +1107,7 @@ void CompilerOptionsDlg::OnMasterPathClick(wxCommandEvent& event)
 
 void CompilerOptionsDlg::OnAutoDetectClick(wxCommandEvent& event)
 {
-    wxComboBox* cmb = XRCCTRL(*this, "cmbCompiler", wxComboBox);
-    int compilerIdx = cmb->GetSelection();
-    Compiler* compiler = CompilerFactory::Compilers[compilerIdx];
-    wxString backup = XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->GetValue();
-    
-    switch (compiler->AutoDetectInstallationDir())
-    {
-        case adrDetected:
-        {
-            wxString msg;
-            msg.Printf(_("Auto-detected installation path of \"%s\"\nin \"%s\""), compiler->GetName().c_str(), compiler->GetMasterPath().c_str());
-            wxMessageBox(msg);
-        }
-        break;
-        
-        case adrGuessed:
-        {
-            wxString msg;
-            msg.Printf(_("Could not auto-detect installation path of \"%s\"...\n"
-                        "Do you want to use this compiler's default installation directory?"),
-                        compiler->GetName().c_str());
-            if (wxMessageBox(msg, _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxNO)
-                compiler->SetMasterPath(backup);
-        }
-        break;
-    }
-    XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->SetValue(compiler->GetMasterPath());
+    AutoDetectCompiler();
 }
 
 void CompilerOptionsDlg::OnSelectProgramClick(wxCommandEvent& event)
@@ -1182,6 +1210,9 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
         XRCCTRL(*this, "btnDelCompiler", wxButton)->Enable(en &&
                                                         CompilerFactory::CompilerIndexOK(idx) &&
                                                         CompilerFactory::Compilers[idx]->GetParentID() != -1);
+        XRCCTRL(*this, "btnResetCompiler", wxButton)->Enable(en &&
+                                                        CompilerFactory::CompilerIndexOK(idx) &&
+                                                        CompilerFactory::Compilers[idx]->GetParentID() == -1);
     }
     
     // compiler programs

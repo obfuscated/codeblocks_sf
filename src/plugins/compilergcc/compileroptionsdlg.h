@@ -46,6 +46,7 @@ class CompilerOptionsDlg : public wxDialog
 		void DoSaveCompilerPrograms(int compilerIdx);
 		void CompilerChanged(ScopeTreeData* data);
 		void UpdateCompilerForTargets(int compilerIdx);
+		void AutoDetectCompiler();
 
 		void OnTreeSelectionChange(wxTreeEvent& event);
 		void OnTreeSelectionChanging(wxTreeEvent& event);
@@ -62,6 +63,7 @@ class CompilerOptionsDlg : public wxDialog
 		void OnAddCompilerClick(wxCommandEvent& event);
 		void OnEditCompilerClick(wxCommandEvent& event);
 		void OnRemoveCompilerClick(wxCommandEvent& event);
+		void OnResetCompilerClick(wxCommandEvent& event);
 		void OnAddLibClick(wxCommandEvent& event);
 		void OnEditLibClick(wxCommandEvent& event);
 		void OnRemoveLibClick(wxCommandEvent& event);

@@ -5,6 +5,21 @@
 CompilerBCC::CompilerBCC()
     : Compiler(_("Borland C++ Compiler 5.5"))
 {
+    Reset();
+}
+
+CompilerBCC::~CompilerBCC()
+{
+	//dtor
+}
+
+Compiler * CompilerBCC::CreateCopy()
+{
+    return new CompilerBCC(*this);
+}
+
+void CompilerBCC::Reset()
+{
 	m_Programs.C = "bcc32.exe";
 	m_Programs.CPP = "bcc32.exe";
 	m_Programs.LD = "ilink32.exe";
@@ -28,6 +43,7 @@ CompilerBCC::CompilerBCC()
 	m_Switches.linkerNeedsLibPrefix = false;
 	m_Switches.linkerNeedsLibExtension = true;
 
+    m_Options.ClearOptions();
 //	m_Options.AddOption(_("Enable all compiler warnings"), "/Wall", _("Warnings"));
 	m_Options.AddOption(_("Optimizations level 1"), "-O1", _("Optimization"));
 	m_Options.AddOption(_("Optimizations level 2"), "-O2", _("Optimization"));
@@ -46,20 +62,17 @@ CompilerBCC::CompilerBCC()
     m_Commands[(int)ctLinkDynamicCmd] = "$linker $libdirs -o $exe_output $libs $link_objects $link_options";
     m_Commands[(int)ctLinkStaticCmd] = "$lib_linker /C $static_output +$link_objects,$def_output";
 
+    m_RegExes.Clear();
     m_RegExes.Add(RegExStruct(_("Compiler warning"), cltWarning, "(^Warning[ \t]W[0-9]+)[ \t]([A-Za-z0-9_:/\\.]+)[ \t]([0-9]+)(:[ \t].*)", 1, 2, 3, 4));
     m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, "(^Error[ \t]E[0-9]+)[ \t]([A-Za-z0-9_:/\\.]+)[ \t]([0-9]+)(:[ \t].*)", 1, 2, 3, 4));
     m_RegExes.Add(RegExStruct(_("Unknown error"), cltError, "(^Error[ \t]+E[0-9]+:.*)", 1));
     m_RegExes.Add(RegExStruct(_("Fatal error"), cltError, "Fatal:[ \t]+(.*)", 1));
-}
 
-CompilerBCC::~CompilerBCC()
-{
-	//dtor
-}
-
-Compiler * CompilerBCC::CreateCopy()
-{
-    return new CompilerBCC(*this);
+    m_CompilerOptions.Clear();
+    m_LinkerOptions.Clear();
+    m_LinkLibs.Clear();
+    m_CmdsBefore.Clear();
+    m_CmdsAfter.Clear();
 }
 
 AutoDetectResult CompilerBCC::AutoDetectInstallationDir()
@@ -69,8 +82,8 @@ AutoDetectResult CompilerBCC::AutoDetectInstallationDir()
     wxString sep = wxFileName::GetPathSeparator();
     if (!m_MasterPath.IsEmpty())
     {
-        m_IncludeDirs.Add(m_MasterPath + sep + "include");
-        m_LibDirs.Add(m_MasterPath + sep + "lib");
+        AddIncludeDir(m_MasterPath + sep + "include");
+        AddLibDir(m_MasterPath + sep + "lib");
     }
 
     return wxFileExists(m_MasterPath + sep + "bin" + sep + m_Programs.C) ? adrDetected : adrGuessed;

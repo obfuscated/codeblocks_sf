@@ -95,7 +95,19 @@ void CompileOptionsBase::SetIncludeDirs(const wxArrayString& includeDirs)
 {
 	if (m_IncludeDirs == includeDirs)
 		return;
-	m_IncludeDirs = includeDirs;
+
+    // make sure we don't have duplicate entries
+    // that's why we don't assign the array but rather copy it entry by entry...
+    bool casesens = true;
+#ifdef __WXMSW__
+    casesens = false;
+#endif
+    m_IncludeDirs.Clear();
+    for (size_t i = 0; i < includeDirs.GetCount(); ++i)
+    {
+        if (m_IncludeDirs.Index(includeDirs[i], casesens) == wxNOT_FOUND)
+            m_IncludeDirs.Add(includeDirs[i]);
+    }
 	SetModified(true);
 }
 
@@ -108,7 +120,19 @@ void CompileOptionsBase::SetLibDirs(const wxArrayString& libDirs)
 {
 	if (m_LibDirs == libDirs)
 		return;
-	m_LibDirs = libDirs;
+
+    // make sure we don't have duplicate entries
+    // that's why we don't assign the array but rather copy it entry by entry...
+    bool casesens = true;
+#ifdef __WXMSW__
+    casesens = false;
+#endif
+    m_LibDirs.Clear();
+    for (size_t i = 0; i < libDirs.GetCount(); ++i)
+    {
+        if (m_LibDirs.Index(libDirs[i], casesens) == wxNOT_FOUND)
+            m_LibDirs.Add(libDirs[i]);
+    }
 	SetModified(true);
 }
 
@@ -155,32 +179,67 @@ void CompileOptionsBase::SetModified(bool modified)
 
 void CompileOptionsBase::AddLinkerOption(const wxString& option)
 {
-	m_LinkerOptions.Add(option);
-	SetModified(true);
+    bool casesens = true;
+#ifdef __WXMSW__
+    casesens = false;
+#endif
+    if (m_LinkerOptions.Index(option, casesens) == wxNOT_FOUND)
+    {
+        m_LinkerOptions.Add(option);
+        SetModified(true);
+    }
 }
 
 void CompileOptionsBase::AddLinkLib(const wxString& lib)
 {
-    m_LinkLibs.Add(lib);
-    SetModified(true);
+    bool casesens = true;
+#ifdef __WXMSW__
+    casesens = false;
+#endif
+    if (m_LinkLibs.Index(lib, casesens) == wxNOT_FOUND)
+    {
+        m_LinkLibs.Add(lib);
+        SetModified(true);
+    }
 }
 
 void CompileOptionsBase::AddCompilerOption(const wxString& option)
 {
-	m_CompilerOptions.Add(option);
-	SetModified(true);
+    bool casesens = true;
+#ifdef __WXMSW__
+    casesens = false;
+#endif
+    if (m_CompilerOptions.Index(option, casesens) == wxNOT_FOUND)
+    {
+        m_CompilerOptions.Add(option);
+        SetModified(true);
+    }
 }
 
 void CompileOptionsBase::AddIncludeDir(const wxString& option)
 {
-	m_IncludeDirs.Add(option);
-	SetModified(true);
+    bool casesens = true;
+#ifdef __WXMSW__
+    casesens = false;
+#endif
+    if (m_IncludeDirs.Index(option, casesens) == wxNOT_FOUND)
+    {
+        m_IncludeDirs.Add(option);
+        SetModified(true);
+    }
 }
 
 void CompileOptionsBase::AddLibDir(const wxString& option)
 {
-	m_LibDirs.Add(option);
-	SetModified(true);
+    bool casesens = true;
+#ifdef __WXMSW__
+    casesens = false;
+#endif
+    if (m_LibDirs.Index(option, casesens) == wxNOT_FOUND)
+    {
+        m_LibDirs.Add(option);
+        SetModified(true);
+    }
 }
 
 void CompileOptionsBase::AddCommandsBeforeBuild(const wxString& command)

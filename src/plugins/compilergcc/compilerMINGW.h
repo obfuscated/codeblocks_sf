@@ -8,6 +8,7 @@ class CompilerMINGW : public Compiler
 	public:
 		CompilerMINGW();
 		virtual ~CompilerMINGW();
+        virtual void Reset();
         virtual AutoDetectResult AutoDetectInstallationDir();
     protected:
         virtual Compiler* CreateCopy();

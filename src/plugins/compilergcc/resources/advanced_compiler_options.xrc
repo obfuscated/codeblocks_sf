@@ -134,248 +134,244 @@ $$resource_output</label>
             <label>Output parsing</label>
             <object class="wxPanel" name="tabRegExes">
               <object class="wxBoxSizer">
-                <orient>wxHORIZONTAL</orient>
+                <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
                   <object class="wxBoxSizer">
-                    <orient>wxVERTICAL</orient>
+                    <orient>wxHORIZONTAL</orient>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>Regular expressions:</label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxBoxSizer">
-                        <orient>wxHORIZONTAL</orient>
+                      <object class="wxStaticBoxSizer">
+                        <orient>wxVERTICAL</orient>
                         <object class="sizeritem">
-                          <object class="wxListBox" name="lstRegex">
-                            <content/>
+                          <object class="wxBoxSizer">
+                            <orient>wxHORIZONTAL</orient>
+                            <object class="sizeritem">
+                              <object class="wxListBox" name="lstRegex">
+                                <content/>
+                              </object>
+                              <option>1</option>
+                              <flag>wxGROW</flag>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxSpinButton" name="spnRegexOrder"/>
+                              <flag>wxLEFT|wxRIGHT|wxALIGN_CENTRE_VERTICAL</flag>
+                              <border>4</border>
+                            </object>
                           </object>
                           <option>1</option>
-                          <flag>wxGROW</flag>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxSpinButton" name="spnRegexOrder"/>
-                          <flag>wxLEFT|wxRIGHT|wxALIGN_CENTRE_VERTICAL</flag>
-                          <border>4</border>
-                        </object>
-                      </object>
-                      <option>1</option>
-                      <flag>wxTOP|wxGROW</flag>
-                      <border>4</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>Order matters!
-The first matching regular expression is selected.</label>
-                        <fg>#800000</fg>
-                      </object>
-                      <flag>wxTOP|wxLEFT|wxGROW</flag>
-                      <border>4</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxBoxSizer">
-                        <orient>wxHORIZONTAL</orient>
-                        <object class="sizeritem">
-                          <object class="wxButton" name="btnRegexAdd">
-                            <label>Add</label>
-                          </object>
-                          <flag>wxRIGHT</flag>
-                          <border>8</border>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxButton" name="btnRegexDelete">
-                            <label>Delete</label>
-                          </object>
-                        </object>
-                      </object>
-                      <flag>wxTOP|wxALIGN_CENTRE_HORIZONTAL</flag>
-                      <border>8</border>
-                    </object>
-                  </object>
-                  <flag>wxTOP|wxBOTTOM|wxLEFT|wxGROW</flag>
-                  <border>8</border>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxStaticLine">
-                    <style>wxLI_VERTICAL</style>
-                  </object>
-                  <flag>wxALL|wxGROW</flag>
-                  <border>8</border>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxBoxSizer">
-                    <orient>wxVERTICAL</orient>
-                    <object class="sizeritem">
-                      <object class="wxFlexGridSizer">
-                        <cols>2</cols>
-                        <rows>2</rows>
-                        <vgap>4</vgap>
-                        <hgap>8</hgap>
-                        <growablecols>0</growablecols>
-                        <object class="sizeritem">
-                          <object class="wxStaticText">
-                            <label>Description:</label>
-                          </object>
-                          <flag>wxGROW</flag>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxStaticText">
-                            <label>Type:</label>
-                          </object>
-                          <flag>wxGROW</flag>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxTextCtrl" name="txtRegexDesc"/>
-                          <flag>wxGROW</flag>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxComboBox" name="cmbRegexType">
-                            <content>
-                              <item>Warning</item>
-                              <item>Error</item>
-                            </content>
-                            <selection>0</selection>
-                            <style>wxCB_READONLY</style>
-                          </object>
-                          <flag>wxGROW</flag>
-                        </object>
-                      </object>
-                      <flag>wxGROW</flag>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>Regular expression:</label>
-                      </object>
-                      <flag>wxTOP|wxGROW</flag>
-                      <border>8</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxTextCtrl" name="txtRegex"/>
-                      <flag>wxTOP|wxGROW</flag>
-                      <border>4</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticBoxSizer">
-                        <label>Sub-expression indices</label>
-                        <orient>wxVERTICAL</orient>
-                        <object class="sizeritem">
-                          <object class="wxFlexGridSizer">
-                            <cols>2</cols>
-                            <rows>3</rows>
-                            <vgap>4</vgap>
-                            <hgap>8</hgap>
-                            <object class="sizeritem">
-                              <object class="wxStaticText">
-                                <label>Message:</label>
-                              </object>
-                            </object>
-                            <object class="sizeritem">
-                              <object class="wxSpinCtrl" name="spnRegexMsg1">
-                                <value>0</value>
-                                <min>0</min>
-                                <max>16</max>
-                              </object>
-                            </object>
-                            <object class="sizeritem">
-                              <object class="wxStaticText">
-                                <label>Additional message 2:</label>
-                              </object>
-                            </object>
-                            <object class="sizeritem">
-                              <object class="wxSpinCtrl" name="spnRegexMsg2">
-                                <value>0</value>
-                                <min>0</min>
-                                <max>16</max>
-                              </object>
-                            </object>
-                            <object class="sizeritem">
-                              <object class="wxStaticText">
-                                <label>Additional message 3:</label>
-                              </object>
-                            </object>
-                            <object class="sizeritem">
-                              <object class="wxSpinCtrl" name="spnRegexMsg3">
-                                <value>0</value>
-                                <min>0</min>
-                                <max>16</max>
-                              </object>
-                            </object>
-                            <object class="sizeritem">
-                              <object class="wxStaticText">
-                                <label>Filename:</label>
-                              </object>
-                            </object>
-                            <object class="sizeritem">
-                              <object class="wxSpinCtrl" name="spnRegexFilename">
-                                <value>0</value>
-                                <min>0</min>
-                                <max>16</max>
-                              </object>
-                            </object>
-                            <object class="sizeritem">
-                              <object class="wxStaticText">
-                                <label>Line:</label>
-                              </object>
-                            </object>
-                            <object class="sizeritem">
-                              <object class="wxSpinCtrl" name="spnRegexLine">
-                                <value>0</value>
-                                <min>0</min>
-                                <max>16</max>
-                              </object>
-                            </object>
-                          </object>
-                          <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
-                          <border>8</border>
-                        </object>
-                      </object>
-                      <flag>wxTOP|wxGROW</flag>
-                      <border>8</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>A sub-expression index of 0 (zero), means it's not provided by
-the regular expression.
-</label>
-                        <fg>#800000</fg>
-                      </object>
-                      <flag>wxTOP|wxGROW</flag>
-                      <border>4</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticBoxSizer">
-                        <label>Test space</label>
-                        <orient>wxVERTICAL</orient>
-                        <object class="sizeritem">
-                          <object class="wxStaticText">
-                            <label>Compiler output:</label>
-                          </object>
-                          <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                          <flag>wxTOP|wxLEFT|wxGROW</flag>
                           <border>8</border>
                         </object>
                         <object class="sizeritem">
                           <object class="wxBoxSizer">
                             <orient>wxHORIZONTAL</orient>
                             <object class="sizeritem">
-                              <object class="wxTextCtrl" name="txtRegexTest"/>
-                              <option>1</option>
-                              <flag>wxGROW</flag>
+                              <object class="wxButton" name="btnRegexAdd">
+                                <label>Add</label>
+                              </object>
+                              <flag>wxRIGHT</flag>
+                              <border>8</border>
                             </object>
                             <object class="sizeritem">
-                              <object class="wxButton" name="btnRegexTest">
-                                <label>Test</label>
+                              <object class="wxButton" name="btnRegexDelete">
+                                <label>Delete</label>
                               </object>
                             </object>
                           </object>
-                          <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                          <flag>wxTOP|wxALIGN_CENTRE_HORIZONTAL</flag>
                           <border>8</border>
                         </object>
+                        <label>Parsing expressions</label>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                            <label>Order matters!
+The first matching parsing expression is selected.</label>
+                            <fg>#800000</fg>
+                          </object>
+                          <flag>wxTOP|wxLEFT|wxGROW</flag>
+                          <border>4</border>
+                        </object>
                       </object>
-                      <flag>wxGROW</flag>
+                      <flag>wxTOP|wxBOTTOM|wxLEFT|wxGROW</flag>
+                      <border>8</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticBoxSizer">
+                        <orient>wxVERTICAL</orient>
+                        <object class="sizeritem">
+                          <object class="wxFlexGridSizer">
+                            <cols>2</cols>
+                            <rows>2</rows>
+                            <hgap>8</hgap>
+                            <growablecols>0</growablecols>
+                            <object class="sizeritem">
+                              <object class="wxStaticText">
+                                <label>Description:</label>
+                              </object>
+                              <flag>wxGROW</flag>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxStaticText">
+                                <label>Type:</label>
+                              </object>
+                              <flag>wxGROW</flag>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxTextCtrl" name="txtRegexDesc"/>
+                              <flag>wxGROW</flag>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxComboBox" name="cmbRegexType">
+                                <content>
+                                  <item>Warning</item>
+                                  <item>Error</item>
+                                </content>
+                                <selection>0</selection>
+                                <style>wxCB_READONLY</style>
+                              </object>
+                              <flag>wxGROW</flag>
+                            </object>
+                          </object>
+                          <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                          <border>8</border>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                            <label>Regular expression:</label>
+                          </object>
+                          <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                          <border>8</border>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxTextCtrl" name="txtRegex"/>
+                          <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+                          <border>8</border>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxStaticBoxSizer">
+                            <label>Sub-expression indices</label>
+                            <orient>wxVERTICAL</orient>
+                            <object class="sizeritem">
+                              <object class="wxFlexGridSizer">
+                                <cols>2</cols>
+                                <rows>3</rows>
+                                <vgap>4</vgap>
+                                <hgap>8</hgap>
+                                <object class="sizeritem">
+                                  <object class="wxStaticText">
+                                    <label>Message:</label>
+                                  </object>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxSpinCtrl" name="spnRegexMsg1">
+                                    <value>0</value>
+                                    <min>0</min>
+                                    <max>16</max>
+                                  </object>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxStaticText">
+                                    <label>Additional message 2:</label>
+                                  </object>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxSpinCtrl" name="spnRegexMsg2">
+                                    <value>0</value>
+                                    <min>0</min>
+                                    <max>16</max>
+                                  </object>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxStaticText">
+                                    <label>Additional message 3:</label>
+                                  </object>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxSpinCtrl" name="spnRegexMsg3">
+                                    <value>0</value>
+                                    <min>0</min>
+                                    <max>16</max>
+                                  </object>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxStaticText">
+                                    <label>Filename:</label>
+                                  </object>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxSpinCtrl" name="spnRegexFilename">
+                                    <value>0</value>
+                                    <min>0</min>
+                                    <max>16</max>
+                                  </object>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxStaticText">
+                                    <label>Line:</label>
+                                  </object>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxSpinCtrl" name="spnRegexLine">
+                                    <value>0</value>
+                                    <min>0</min>
+                                    <max>16</max>
+                                  </object>
+                                </object>
+                                <growablecols>0</growablecols>
+                              </object>
+                              <flag>wxALL|wxGROW</flag>
+                              <border>8</border>
+                            </object>
+                          </object>
+                          <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                          <border>8</border>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                            <label>A sub-expression index of 0 (zero), means it's not provided by
+the regular expression.</label>
+                            <fg>#800000</fg>
+                          </object>
+                          <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                          <border>8</border>
+                        </object>
+                        <label>Parsing expression details</label>
+                      </object>
+                      <option>1</option>
+                      <flag>wxALL|wxGROW</flag>
+                      <border>8</border>
                     </object>
                   </object>
-                  <option>1</option>
-                  <flag>wxTOP|wxBOTTOM|wxRIGHT|wxGROW</flag>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticBoxSizer">
+                    <label>Test parsing expressions</label>
+                    <orient>wxVERTICAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Test string (e.g. compiler output line):</label>
+                      </object>
+                      <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                      <border>8</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxBoxSizer">
+                        <orient>wxHORIZONTAL</orient>
+                        <object class="sizeritem">
+                          <object class="wxTextCtrl" name="txtRegexTest"/>
+                          <option>1</option>
+                          <flag>wxGROW</flag>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxButton" name="btnRegexTest">
+                            <label>Test</label>
+                          </object>
+                        </object>
+                      </object>
+                      <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                      <border>8</border>
+                    </object>
+                  </object>
+                  <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
                   <border>8</border>
                 </object>
               </object>

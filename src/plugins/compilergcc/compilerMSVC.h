@@ -8,6 +8,7 @@ class CompilerMSVC : public Compiler
 	public:
 		CompilerMSVC();
 		virtual ~CompilerMSVC();
+        virtual void Reset();
         virtual AutoDetectResult AutoDetectInstallationDir();
 	protected:
         Compiler * CreateCopy();

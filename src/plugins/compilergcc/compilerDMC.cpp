@@ -11,6 +11,21 @@
 CompilerDMC::CompilerDMC()
     : Compiler(_("Digital Mars Compiler"))
 {
+    Reset();
+}
+
+CompilerDMC::~CompilerDMC()
+{
+	//dtor
+}
+
+Compiler * CompilerDMC::CreateCopy()
+{
+    return new CompilerDMC(*this);
+}
+
+void CompilerDMC::Reset()
+{
 	m_Programs.C = "dmc.exe";
 	m_Programs.CPP = "dmc.exe";
 	m_Programs.LD = "link.exe";
@@ -34,6 +49,7 @@ CompilerDMC::CompilerDMC()
 	m_Switches.linkerNeedsLibPrefix = false;
 	m_Switches.linkerNeedsLibExtension = true;
 
+    m_Options.ClearOptions();
 	m_Options.AddOption(_("Produce debugging symbols"),
 				"-g",
 				_("Debugging"),
@@ -136,19 +152,16 @@ CompilerDMC::CompilerDMC()
     m_Commands[(int)ctLinkDynamicCmd] = "$linker /NOLOGO /subsystem:windows -WD $link_options $link_objects, $exe_output, , $libs, , $link_resobjects";
     m_Commands[(int)ctLinkStaticCmd] = "$lib_linker $link_options $static_output $link_objects";
 
+    m_RegExes.Clear();
     m_RegExes.Add(RegExStruct(_("Linker error"), cltError, "([ \tA-Za-z0-9_:\\-\\+/\\.\\(\\)]*)[ \t]+:[ \t]+(.*error LNK[0-9]+.*)", 2, 1));
     m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, "([ \tA-Za-z0-9_:\\-\\+/\\.]+)\\(([0-9]+)\\) :[ \t](.*)", 3, 1, 2));
     m_RegExes.Add(RegExStruct(_("Fatal error"), cltError, "Fatal error:[ \t](.*)", 1));
-}
 
-CompilerDMC::~CompilerDMC()
-{
-	//dtor
-}
-
-Compiler * CompilerDMC::CreateCopy()
-{
-    return new CompilerDMC(*this);
+    m_CompilerOptions.Clear();
+    m_LinkerOptions.Clear();
+    m_LinkLibs.Clear();
+    m_CmdsBefore.Clear();
+    m_CmdsAfter.Clear();
 }
 
 AutoDetectResult CompilerDMC::AutoDetectInstallationDir()
@@ -156,15 +169,14 @@ AutoDetectResult CompilerDMC::AutoDetectInstallationDir()
     // just a guess; the default installation dir
 	m_MasterPath = "C:\\dm";
     wxString sep = wxFileName::GetPathSeparator();
-    //
+
     // NOTE (hd#1#): dmc uses sc.ini for compiler's master directories
-    //
-    // if (!m_MasterPath.IsEmpty())
-    // {
-    //     m_IncludeDirs.Add(m_MasterPath + sep + "include");
-    //     m_LibDirs.Add(m_MasterPath + sep + "lib");
-    // }
-    //
+    // NOTE (mandrav#1#): which doesn't seem to exist if you don't have the CD version ;)
+    if (!m_MasterPath.IsEmpty())
+    {
+        AddIncludeDir(m_MasterPath + sep + "include");
+        AddLibDir(m_MasterPath + sep + "lib");
+    }
 
     return wxFileExists(m_MasterPath + sep + "bin" + sep + m_Programs.C) ? adrDetected : adrGuessed;
 }

@@ -42,6 +42,14 @@ Compiler::Compiler(const Compiler& other)
     m_Programs = other.m_Programs;
     m_Switches = other.m_Switches;
     m_Options = other.m_Options;
+    m_IncludeDirs = other.m_IncludeDirs;
+    m_LibDirs = other.m_LibDirs;
+    m_CompilerOptions = other.m_CompilerOptions;
+    m_LinkerOptions = other.m_LinkerOptions;
+    m_LinkLibs = other.m_LinkLibs;
+    m_CmdsBefore = other.m_CmdsBefore;
+    m_CmdsAfter = other.m_CmdsAfter;
+    m_RegExes = other.m_RegExes;
     for (int i = 0; i < COMPILER_COMMAND_TYPES_COUNT; ++i)
     {
         m_Commands[i] = other.m_Commands[i];
@@ -144,13 +152,13 @@ void Compiler::LoadSettings(const wxString& baseKey)
     m_Programs.MAKE = ConfigManager::Get()->Read(tmp + "/make", m_Programs.MAKE);
     m_Programs.DBG = ConfigManager::Get()->Read(tmp + "/debugger", m_Programs.DBG);
 
-    m_CompilerOptions = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/compiler_options", wxEmptyString));
-    m_LinkerOptions = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/linker_options", wxEmptyString));
-    m_IncludeDirs = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/include_dirs", m_MasterPath + sep + "include"));
-    m_LibDirs = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/library_dirs", m_MasterPath + sep + "lib"));
-    m_LinkLibs = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/libraries", ""));
-    m_CmdsBefore = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/commands_before", wxEmptyString));
-    m_CmdsAfter = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/commands_after", wxEmptyString));
+    SetCompilerOptions(GetArrayFromString(ConfigManager::Get()->Read(tmp + "/compiler_options", wxEmptyString)));
+    SetLinkerOptions(GetArrayFromString(ConfigManager::Get()->Read(tmp + "/linker_options", wxEmptyString)));
+    SetIncludeDirs(GetArrayFromString(ConfigManager::Get()->Read(tmp + "/include_dirs", m_MasterPath + sep + "include")));
+    SetLibDirs(GetArrayFromString(ConfigManager::Get()->Read(tmp + "/library_dirs", m_MasterPath + sep + "lib")));
+    SetLinkLibs(GetArrayFromString(ConfigManager::Get()->Read(tmp + "/libraries", "")));
+    SetCommandsBeforeBuild(GetArrayFromString(ConfigManager::Get()->Read(tmp + "/commands_before", wxEmptyString)));
+    SetCommandsAfterBuild(GetArrayFromString(ConfigManager::Get()->Read(tmp + "/commands_after", wxEmptyString)));
 
     for (int i = 0; i < COMPILER_COMMAND_TYPES_COUNT; ++i)
     {

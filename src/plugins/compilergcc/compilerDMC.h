@@ -8,6 +8,7 @@ class CompilerDMC : public Compiler
 	public:
 		CompilerDMC();
 		virtual ~CompilerDMC();
+        virtual void Reset();
         virtual AutoDetectResult AutoDetectInstallationDir();
 	protected:
         Compiler * CreateCopy();

@@ -63,6 +63,13 @@
                           <flag>wxTOP|wxRIGHT</flag>
                           <border>4</border>
                         </object>
+                        <object class="sizeritem">
+                          <object class="wxButton" name="btnResetCompiler">
+                            <label>Reset defaults</label>
+                          </object>
+                          <flag>wxTOP|wxRIGHT</flag>
+                          <border>4</border>
+                        </object>
                       </object>
                       <flag>wxALIGN_RIGHT</flag>
                     </object>

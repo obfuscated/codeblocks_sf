@@ -8,6 +8,7 @@ class CompilerBCC : public Compiler
 	public:
 		CompilerBCC();
 		virtual ~CompilerBCC();
+        virtual void Reset();
         virtual AutoDetectResult AutoDetectInstallationDir();
 	protected:
         Compiler * CreateCopy();

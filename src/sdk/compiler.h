@@ -200,17 +200,28 @@ class DLLIMPORT Compiler : public CompileOptionsBase
 		/** @brief Set the array of regexes used in errors/warnings recognition */
 		virtual void SetRegExArray(const RegExArray& regexes){ m_RegExes = regexes; }
 
-        void SaveSettings(const wxString& baseKey);
-        void LoadSettings(const wxString& baseKey);
+        /** @brief Save settings */
+        virtual void SaveSettings(const wxString& baseKey);
+        /** @brief Load settings */
+        virtual void LoadSettings(const wxString& baseKey);
+        /** @brief Reset settings to defaults.
+          * Put initialization code here and call this from the default constructor.
+          */
+        virtual void Reset() = 0;
+        /** @brief Try to auto-detect the compiler's installation directory */
         virtual AutoDetectResult AutoDetectInstallationDir() = 0;
 
+        /** @brief Get this compiler's unique ID */
         long GetID() const { return m_ID; }
+        /** @brief Get this compiler's parent's unique ID */
         long GetParentID() const { return m_ParentID; }
 
+        /** @brief Get the command type descriptions (used in advanced compiler options) */
         static wxString CommandTypeDescriptions[COMPILER_COMMAND_TYPES_COUNT];
 	protected:
         friend class CompilerFactory;
-        virtual Compiler* CreateCopy() = 0; // override in new compilers, to return a new copy
+        /** @brief Implement this in new compilers, to return a new copy */
+        virtual Compiler* CreateCopy() = 0;
         // set the following members in your class
         wxString m_Name;
         wxString m_MasterPath;
