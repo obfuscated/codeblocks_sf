@@ -1499,6 +1499,9 @@ void CompilerGCC::OnCreateDist(wxCommandEvent& event)
 
 void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
 {
+    static bool flag_init=false;
+    static bool toolflag;
+    bool tmpflag;
 	cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
 	cbEditor* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
     wxMenuBar* mbar = Manager::Get()->GetAppWindow()->GetMenuBar();
@@ -1540,14 +1543,20 @@ void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
 	wxToolBar* tbar = Manager::Get()->GetAppWindow()->GetToolBar();
 	if (tbar)
 	{
-		tbar->EnableTool(idMenuCompile, !m_Process && prj);
-        tbar->EnableTool(idMenuRun, !m_Process && prj);
-        tbar->EnableTool(idMenuCompileAndRun, !m_Process && prj);
-        tbar->EnableTool(idMenuRebuild, !m_Process && prj);
+		tmpflag=(!m_Process && prj);
+		if(tmpflag!=toolflag || !flag_init)
+		{
+            if(!flag_init) flag_init=true;
+            toolflag=tmpflag;
+            tbar->EnableTool(idMenuCompile,toolflag);
+            tbar->EnableTool(idMenuRun,toolflag);
+            tbar->EnableTool(idMenuCompileAndRun,toolflag);
+            tbar->EnableTool(idMenuRebuild,toolflag);
 
-        m_ToolTarget = XRCCTRL(*tbar, "idToolTarget", wxComboBox);
-        if (m_ToolTarget)
-            m_ToolTarget->Enable(!m_Process && prj);
+            m_ToolTarget = XRCCTRL(*tbar, "idToolTarget", wxComboBox);
+            if (m_ToolTarget)
+                m_ToolTarget->Enable(toolflag);
+        }
     }
 	
     // allow other UpdateUI handlers to process this event

@@ -46,6 +46,7 @@
 #include "debuggergdb.h"
 #include "debuggeroptionsdlg.h"
 
+#define implement_debugger_toolbar
 static const wxString g_EscapeChars = char(26);
 
 int idMenuDebug = XRCID("idDebuggerMenuDebug");
@@ -119,11 +120,7 @@ DebuggerGDB::DebuggerGDB()
 	m_pTree(0L),
 	m_NoDebugInfo(false)
 {
-    wxFileSystem::AddHandler(new wxZipFSHandler);
-    wxXmlResource::Get()->InitAllHandlers();
-    wxXmlResource::Get()->InsertHandler(new wxToolBarAddOnXmlHandler);
-    wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
-    wxXmlResource::Get()->Load(resPath + "/debugger_gdb.zip#zip:*.xrc");
+    Manager::Get()->Loadxrc("/debugger_gdb.zip#zip:*.xrc");
 
 	m_PluginInfo.name = "DebuggerGDB";
 	m_PluginInfo.title = "GDB Debugger";
@@ -251,26 +248,14 @@ void DebuggerGDB::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxS
 
 void DebuggerGDB::BuildToolBar(wxToolBar* toolBar)
 {
-/* NOTE (mandrav#1#): Removed debugger toolbar.
-Without it, the combobox in the compiler toolbar doesn't dissappear anymore...
-Until we find out why, better without a debugger toolbar. */
-
-	/*if (!m_IsAttached)
+    /* Loads toolbar using new Manager class functions */
+#ifdef implement_debugger_toolbar
+    if (!m_IsAttached)
 		return;
-	if (toolBar)
-	{        
-        wxSize mysize=toolBar->GetToolBitmapSize();
-        bool is_small=(mysize.GetWidth()<=16 && mysize.GetHeight()<=16);
-        wxString my_16x16=is_small ? "_16x16" : "";
-        
-        wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
-        wxXmlResource *myres = wxXmlResource::Get();
-        myres->Load(resPath + "/debugger_gdb.zip#zip:*.xrc");
-        
-		// supported by our new wxToolBarAddOnHandler
-		myres->LoadObject(toolBar,NULL,"debugger_toolbar"+my_16x16,"wxToolBarAddOn");
-        toolBar->Realize();
-	}*/
+    wxString my_16x16=Manager::isToolBar16x16(toolBar) ? "_16x16" : "";
+    Manager::AddonToolBar(toolBar,wxString("debugger_toolbar")+my_16x16);
+    toolBar->Realize();
+#endif    
 }
 
 void DebuggerGDB::DoWatches()
@@ -824,10 +809,12 @@ wxString DebuggerGDB::GetEditorWordAtCaret()
 
 void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
 {
+static bool init_flag=false;
+static bool toolflags[3];
+bool tmpflags[3];
 	cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
 	cbEditor* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
     wxMenuBar* mbar = Manager::Get()->GetAppWindow()->GetMenuBar();
-//	wxToolBar* tbar = Manager::Get()->GetAppWindow()->GetToolBar();
     if (mbar)
     {
         mbar->Enable(idMenuDebug, !m_pProcess && prj);
@@ -841,15 +828,46 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
  		mbar->Enable(idMenuEditWatches, prj && m_ProgramIsStopped);
         mbar->Enable(idMenuStop, m_pProcess && prj && m_ProgramIsStopped);
 	}
+/*  NOTE (Rick#1#): The disappearing combobox bug happens due to interference 
+    between the different UpdateUI handlers in plugins. Apparently after 
+    every ToolBar->Enable() call, the combobox disappears and needs to be drawn 
+    again.
 
-	/*if (tbar)
+    This could be solved by calling ToolBar->Refresh(), 
+    but surprise! This triggers another UpdateUI event.
+    
+    To solve this, we simply check whether the status of the tools has been
+    changed. If it hasn't, then there's no need to refresh.
+    
+*/    
+    #ifdef implement_debugger_toolbar
+	wxToolBar* tbar = Manager::Get()->GetAppWindow()->GetToolBar();
+	if (tbar)
 	{
-        tbar->EnableTool(idMenuDebug, !m_pProcess && prj);
-		tbar->EnableTool(idMenuRunToCursor, !m_pProcess && prj && ed);
-        tbar->EnableTool(idMenuNext, m_pProcess && prj && m_ProgramIsStopped);
-        tbar->EnableTool(idMenuStep, m_pProcess && prj && m_ProgramIsStopped);
-        tbar->EnableTool(idMenuStop, m_pProcess && prj && m_ProgramIsStopped);
-	}*/
+        tmpflags[0]=(!m_pProcess && prj);
+        tmpflags[1]=(!m_pProcess && prj && ed);
+        tmpflags[2]=(m_pProcess && prj && m_ProgramIsStopped);
+        if(!init_flag ||
+           toolflags[0]!=tmpflags[0] ||
+           toolflags[1]!=tmpflags[1] ||
+           toolflags[2]!=tmpflags[2])
+        {
+            if(!init_flag) init_flag=true;
+            toolflags[0]=tmpflags[0];
+            toolflags[1]=tmpflags[1];
+            toolflags[2]=tmpflags[2];
+
+            tbar->EnableTool(idMenuDebug,toolflags[0]);
+            tbar->EnableTool(idMenuRunToCursor,toolflags[1]);
+            tbar->EnableTool(idMenuNext,toolflags[2]);
+            tbar->EnableTool(idMenuStep,toolflags[2]);
+            tbar->EnableTool(idMenuStop,toolflags[2]);
+            // This creates a recursive call but since we're checking the flags
+            // it only happens once.
+            tbar->Refresh(); 
+        }
+	}
+	#endif
 
     // allow other UpdateUI handlers to process this event
     // *very* important! don't forget it...
