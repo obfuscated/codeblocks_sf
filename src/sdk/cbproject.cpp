@@ -275,6 +275,14 @@ void cbProject::Open()
 			AddDefaultBuildTarget();
 		SetModified(ft != ftCodeBlocksProject || fileUpgraded);
 		NotifyPlugins(cbEVT_PROJECT_OPEN);
+		
+		if (fileUpgraded)
+		{
+            wxString msg;
+            msg.Printf(_("The project file of \"%s\" needs to be updated to the latest format.\n"
+                        "This will happen automatically when you save the project."), m_Title.c_str());
+            wxMessageBox(msg, _("Information"), wxICON_INFORMATION);
+        }
 	}
 	else
 		Manager::Get()->GetMessageManager()->Log(_("failed"));    
