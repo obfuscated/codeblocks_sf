@@ -150,7 +150,7 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
     
     wxString title;
     wxString makefile;
-    bool makefile_custom;
+    bool makefile_custom = false;
     int defaultTarget = 0;
     int compilerIdx = 0;
     
