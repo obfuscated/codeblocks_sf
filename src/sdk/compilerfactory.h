@@ -19,7 +19,13 @@ class DLLIMPORT CompilerFactory
         static void SaveSettings();
         static void LoadSettings();
         static bool CompilerIndexOK(int compilerIdx);
+        static int GetDefaultCompilerIndex();
+        static void SetDefaultCompilerIndex(int compilerIdx);
+        static Compiler* GetDefaultCompiler();
+        static void SetDefaultCompiler(Compiler* compiler);
         static CompilersArray Compilers;
+    private:
+        static int s_DefaultCompilerIdx;
 };
 
 #endif // COMPILERFACTORY_H

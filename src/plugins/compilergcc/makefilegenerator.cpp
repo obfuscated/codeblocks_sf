@@ -840,7 +840,7 @@ void MakefileGenerator::DoAddMakefileTarget_Clean(wxString& buffer)
 			continue;
 
         buffer << "clean_" << target->GetTitle() << ":" << '\n';
-		if (m_Compiler->GetSimpleLog())
+		if (m_CompilerSet->GetSwitches().logging == clogSimple)
 			buffer << '\t' << "@echo Cleaning target \"" << target->GetTitle() << "\"..." << '\n';
         buffer << '\t' << m_Quiet << "$(RM) $(" << target->GetTitle() << "_BIN) ";
         buffer << "$(" << target->GetTitle() << "_OBJS) ";
@@ -854,7 +854,7 @@ void MakefileGenerator::DoAddMakefileTarget_Clean(wxString& buffer)
         tmp << "clean_" << target->GetTitle() << " ";
 
         buffer << "distclean_" << target->GetTitle() << ":" << '\n';
-		if (m_Compiler->GetSimpleLog())
+		if (m_CompilerSet->GetSwitches().logging == clogSimple)
 			buffer << '\t' << "@echo Dist-cleaning target \"" << target->GetTitle() << "\"..." << '\n';
         buffer << '\t' << m_Quiet << "$(RM) $(" << target->GetTitle() << "_BIN) ";
         buffer << "$(" << target->GetTitle() << "_OBJS) ";
@@ -963,7 +963,7 @@ void MakefileGenerator::DoAddMakefileTarget_Link(wxString& buffer)
 			case ttConsoleOnly:
 			case ttExecutable:
             {
-				if (m_Compiler->GetSimpleLog())
+                if (m_CompilerSet->GetSwitches().logging == clogSimple)
 					buffer << '\t' << "@echo Linking executable \"" << target->GetOutputFilename() << "\"..." << '\n';
 				wxString compilerCmd = ReplaceCompilerMacros(ctLinkExeCmd, "", target, "", "", "");
 				buffer << '\t' << m_Quiet << compilerCmd<< '\n';
@@ -972,7 +972,7 @@ void MakefileGenerator::DoAddMakefileTarget_Link(wxString& buffer)
 
 			case ttStaticLib:
 			{
-				if (m_Compiler->GetSimpleLog())
+                if (m_CompilerSet->GetSwitches().logging == clogSimple)
 					buffer << '\t' << "@echo Linking static library \"" << target->GetOutputFilename() << "\"..." << '\n';
 				wxString compilerCmd = ReplaceCompilerMacros(ctLinkStaticCmd, "", target, "", "", "");
 				buffer << '\t' << m_Quiet << compilerCmd<< '\n';
@@ -981,7 +981,7 @@ void MakefileGenerator::DoAddMakefileTarget_Link(wxString& buffer)
 
 			case ttDynamicLib:
 			{
-				if (m_Compiler->GetSimpleLog())
+                if (m_CompilerSet->GetSwitches().logging == clogSimple)
 					buffer << '\t' << "@echo Linking shared library \"" << target->GetOutputFilename() << "\"..." << '\n';
 				wxString compilerCmd = ReplaceCompilerMacros(ctLinkDynamicCmd, "", target, "", "", "");
 				buffer << '\t' << m_Quiet << compilerCmd<< '\n';
@@ -1101,7 +1101,7 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
                         {
                             // depend rule
                             buffer << d_file << ": " << c_file << '\n';
-                            if (m_Compiler->GetSimpleLog())
+                            if (m_CompilerSet->GetSwitches().logging == clogSimple)
                                 buffer << '\t' << "@echo Calculating dependencies for \"" << pf->relativeFilename << "\"..." << '\n';
                             AddCreateSubdir(buffer, target->GetBasePath(), pf->GetObjName(), target->GetDepsOutput());
                             wxString compilerCmd = ReplaceCompilerMacros(ctGenDependenciesCmd, pf->compilerVar, target, c_file, o_file, d_file);
@@ -1116,7 +1116,7 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
                             ReplaceMacros(pf, customDeps);
     
                             buffer << d_file << ": " << c_file << '\n';
-                            if (m_Compiler->GetSimpleLog())
+                            if (m_CompilerSet->GetSwitches().logging == clogSimple)
                                 buffer << '\t' << "@echo Generating dependencies for \"" << pf->relativeFilename << "\"... (custom dependencies)" << '\n';
                             buffer << '\t' << m_Quiet << customDeps << '\n';
                             buffer << '\n';
@@ -1131,7 +1131,7 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
                         wxString customBuild = pf->buildCommand;
                         ReplaceMacros(pf, customBuild);
 						buffer << pf->GetObjName() << ": " << d_file << '\n';
-						if (m_Compiler->GetSimpleLog())
+                        if (m_CompilerSet->GetSwitches().logging == clogSimple)
 							buffer << '\t' << "@echo Compiling \"" << pf->relativeFilename << "\" (custom command)..." << '\n';
 						buffer << '\t' << m_Quiet << customBuild << '\n';
 						buffer << '\n';
@@ -1140,7 +1140,7 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
 					{	
 						// compile rule
 						buffer << o_file << ": " << d_file << '\n';
-						if (m_Compiler->GetSimpleLog())
+                        if (m_CompilerSet->GetSwitches().logging == clogSimple)
 							buffer << '\t' << "@echo Compiling \"" << pf->relativeFilename << "\"..." << '\n';
                         AddCreateSubdir(buffer, target->GetBasePath(), pf->GetObjName(), target->GetObjectOutput());
 						wxString compilerCmd = ReplaceCompilerMacros(ctCompileObjectCmd, pf->compilerVar, target, c_file, o_file, d_file);
@@ -1166,7 +1166,7 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
             resFile.SetExt(RESOURCE_EXT);
             resFile.MakeRelativeTo(m_Project->GetBasePath());
             buffer << "$(" << target->GetTitle() << "_RESOURCE): " << resources << '\n';
-			if (m_Compiler->GetSimpleLog())
+            if (m_CompilerSet->GetSwitches().logging == clogSimple)
 				buffer << '\t' << "@echo Compiling resources..." << '\n';
             wxString compilerCmd = ReplaceCompilerMacros(ctCompileResourceCmd, "", target, UnixFilename(resFile.GetFullPath()), "", "");
             if (!compilerCmd.IsEmpty())
@@ -1252,7 +1252,10 @@ bool MakefileGenerator::CreateMakefile()
 {
     m_GeneratingMakefile = true;
 
-	m_Quiet = m_Compiler->GetSimpleLog() ? "@" : wxEmptyString;
+    if (m_CompilerSet->GetSwitches().logging != clogFull)
+        m_Quiet = "@";
+    else
+        m_Quiet = wxEmptyString;
     DoPrepareFiles();
 	DoPrepareValidTargets();
 	

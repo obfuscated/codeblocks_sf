@@ -184,7 +184,6 @@ CompilerGCC::CompilerGCC()
 	
 	for (int i = 0; i < MAX_TARGETS; ++i)
 		idMenuSelectTargetOther[i] = wxNewId();
-	m_SimpleLog = ConfigManager::Get()->Read("/compiler_gcc/simple_build", 1);
 #ifndef __WXMSW__
 	m_ConsoleShell = ConfigManager::Get()->Read("/compiler_gcc/console_shell", DEFAULT_CONSOLE_SHELL);
 #endif

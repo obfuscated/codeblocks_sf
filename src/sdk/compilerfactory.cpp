@@ -3,7 +3,9 @@
 #include "messagemanager.h"
 #include "configmanager.h"
 
+// statics
 CompilersArray CompilerFactory::Compilers;
+int CompilerFactory::s_DefaultCompilerIdx = 0;
 
 void CompilerFactory::RegisterCompiler(Compiler* compiler)
 {
@@ -78,6 +80,34 @@ void CompilerFactory::UnregisterCompilers()
 bool CompilerFactory::CompilerIndexOK(int compilerIdx)
 {
     return CompilerFactory::Compilers.GetCount() && compilerIdx >= 0 && compilerIdx < (int)CompilerFactory::Compilers.GetCount();
+}
+
+int CompilerFactory::GetDefaultCompilerIndex()
+{
+    return CompilerIndexOK(s_DefaultCompilerIdx) ? s_DefaultCompilerIdx : 0;
+}
+
+void CompilerFactory::SetDefaultCompilerIndex(int compilerIdx)
+{
+    if (CompilerIndexOK(compilerIdx))
+        s_DefaultCompilerIdx = compilerIdx;
+}
+
+Compiler* CompilerFactory::GetDefaultCompiler()
+{
+    return Compilers[s_DefaultCompilerIdx];
+}
+
+void CompilerFactory::SetDefaultCompiler(Compiler* compiler)
+{
+    for (unsigned int i = 0; i < Compilers.GetCount(); ++i)
+    {
+        if (compiler == Compilers[i])
+        {
+            s_DefaultCompilerIdx = i;
+            break;
+        }
+    }
 }
 
 void CompilerFactory::SaveSettings()

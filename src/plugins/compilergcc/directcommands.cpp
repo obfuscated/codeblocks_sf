@@ -63,7 +63,8 @@ DirectCommands::DirectCommands(CompilerGCC* compilerPlugin, Compiler* compiler, 
     : m_PageIndex(logPageIndex),
     m_pCompilerPlugin(compilerPlugin),
     m_pCompiler(compiler),
-    m_pProject(project)
+    m_pProject(project),
+    m_pCurrTarget(0)
 {
 	//ctor
 }
@@ -239,6 +240,8 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
 {
     wxArrayString ret;
     ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Switching to target: ") + target->GetTitle());
+
+    m_pCurrTarget = target;
 
     // make sure all project files are saved
     if (!m_pProject->SaveAllFiles())
@@ -625,6 +628,8 @@ bool DirectCommands::ReadDependencies(const wxString& filename, wxArrayString& d
 /// This list of files is deps
 bool DirectCommands::GetDependenciesOf(const wxString& filename, wxArrayString& deps)
 {
+    wxLogNull ln;
+
     // check if we already scanned this file (to avoid infinite loop)
     wxFileName fname(filename);
     if (deps.Index(fname.GetFullPath()) != wxNOT_FOUND)
@@ -660,7 +665,7 @@ bool DirectCommands::GetDependenciesOf(const wxString& filename, wxArrayString& 
             if (rest.GetChar(0) != '"' && rest.GetChar(0) != '<')
                 continue; // invalid token?
 
-            bool isLocal = rest.GetChar(0) == '"';
+//            bool isLocal = rest.GetChar(0) == '"';
 
             // now "rest" must hold either "some/file.name" or <some/file.name>
             rest.Remove(0, 1);
@@ -687,15 +692,31 @@ bool DirectCommands::GetDependenciesOf(const wxString& filename, wxArrayString& 
             {
 //                Manager::Get()->GetMessageManager()->Log(m_PageIndex, "    DBG: found included file: %s", rest.c_str());
                 // if #include uses quotes (is local relative filename), scan it directly
-                if (isLocal)
-                    GetDependenciesOf(rest, deps);
-                else
+                if (!GetDependenciesOf(rest, deps))
+//                if (isLocal)
+//                    GetDependenciesOf(rest, deps);
+//                else
                 {
                     // try scanning the file by prepending all the globals and project include dirs until it's found
                     wxString newfilename;
                     wxString sep = wxFileName::GetPathSeparator();
                     
-                    // project include dirs first
+                    // target include dirs first
+                    if (m_pCurrTarget)
+                    {
+                        const wxArrayString& tgt_incs = m_pCurrTarget->GetIncludeDirs();
+                        for (unsigned int i = 0; i < tgt_incs.GetCount(); ++i)
+                        {
+                            newfilename = tgt_incs[i] + sep + rest;
+                            if (wxFileExists(newfilename))
+                            {
+                                if (GetDependenciesOf(newfilename, deps))
+                                    break;
+                            }
+                        }
+                    }
+
+                    // project include dirs second
                     const wxArrayString& prj_incs = m_pProject->GetIncludeDirs();
                     for (unsigned int i = 0; i < prj_incs.GetCount(); ++i)
                     {
@@ -707,14 +728,14 @@ bool DirectCommands::GetDependenciesOf(const wxString& filename, wxArrayString& 
                         }
                     }
 
-                    // global include dirs second
+                    // global include dirs last
 //                    const wxArrayString& global_incs = m_pCompiler->GetIncludeDirs();
 //                    for (unsigned int i = 0; i < global_incs.GetCount(); ++i)
 //                    {
 //                        newfilename = global_incs[i] + sep + rest;
 //                        if (wxFileExists(newfilename))
 //                        {
-//                            if (GetDependenciesOf(newfilename))
+//                            if (GetDependenciesOf(newfilename, deps))
 //                                break;
 //                        }
 //                    }

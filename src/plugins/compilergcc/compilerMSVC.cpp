@@ -1,6 +1,12 @@
 #include "compilerMSVC.h"
+#include <wx/log.h>
 #include <wx/intl.h>
 #include <wx/regex.h>
+#include <wx/config.h>
+
+#ifdef __WXMSW__
+    #include <wx/msw/registry.h>
+#endif
 
 CompilerMSVC::CompilerMSVC()
     : Compiler(_("Microsoft Visual C++ Toolkit 2003"))
@@ -88,8 +94,23 @@ AutoDetectResult CompilerMSVC::AutoDetectInstallationDir()
         m_LibDirs.Add(m_MasterPath + sep + "lib");
     
         // add include dirs for MS Platform SDK too
-        m_IncludeDirs.Add("C:\\Program Files\\Microsoft SDK\\include");
-        m_LibDirs.Add("C:\\Program Files\\Microsoft SDK\\lib");
+#ifdef __WXMSW__
+        wxLogNull no_log_here;
+        wxRegKey key; // defaults to HKCR
+        key.SetName("HKEY_CURRENT_USER\\Software\\Microsoft\\Win32SDK\\Directories");
+        if (key.Open())
+        {
+            wxString dir;
+            key.QueryValue("Install Dir", dir);
+            if (!dir.IsEmpty())
+            {
+                if (dir.GetChar(dir.Length() - 1) != '\\')
+                    dir += sep;
+                m_IncludeDirs.Add(dir + "include");
+                m_LibDirs.Add(dir + "lib");
+            }
+        }
+#endif
     }
 
     return wxFileExists(m_MasterPath + sep + "bin" + sep + m_Programs.C) ? adrDetected : adrGuessed;

@@ -355,7 +355,6 @@
 			<Add option="-D__GNUWIN32__"/>
 			<Add option="-D__WXMSW__"/>
 			<Add option="-DWXUSINGDLL"/>
-			<Add option="-DALWAYS_USE_MAKE_X"/>
 		</Compiler>
 		<Linker>
 			<Add option="-lwxmsw$(WX_VER)"/>
@@ -2031,6 +2030,7 @@
 		</Unit>
 		<Unit filename="src\resources\resources.rc">
 			<Option compilerVar="WINDRES"/>
+			<Option objectName="src\resources\resources.res"/>
 			<Option target="src"/>
 		</Unit>
 		<Unit filename="templates\console-main-c.cpp">

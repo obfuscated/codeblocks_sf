@@ -56,7 +56,6 @@ class CompilerGCC : public cbCompilerPlugin
 		virtual int Configure(cbProject* project, ProjectBuildTarget* target = 0L);
 		
 		CustomVars& GetCustomVars(){ return m_Vars; }
-		bool GetSimpleLog(){ return m_SimpleLog; }
 		
 		void SwitchCompiler(int compilerIdx);
 		int GetCurrentCompilerIndex();
@@ -145,7 +144,6 @@ class CompilerGCC : public cbCompilerPlugin
 		bool m_LastExitCode;
 		CompilerErrors m_Errors;
 		CustomVars m_Vars;
-		bool m_SimpleLog;
 
 		unsigned int m_QueueIndex;
         wxArrayString m_Queue;

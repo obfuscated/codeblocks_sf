@@ -45,6 +45,7 @@ class DirectCommands
         CompilerGCC* m_pCompilerPlugin;
         Compiler* m_pCompiler;
         cbProject* m_pProject;
+        ProjectBuildTarget* m_pCurrTarget; // temp
 	private:
 };
 
