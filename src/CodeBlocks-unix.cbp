@@ -249,9 +249,9 @@
 				</Linker>
 			</Target>
 			<Target title="update">
-				<Option output="/home/mandrav/sandbox/codeblocks/src/CodeBlocks-unix"/>
-				<Option object_output=".objs"/>
-				<Option deps_output=".deps"/>
+				<Option output="/home/mandrav/devel/codeblocks/src/CodeBlocks-unix.cbp"/>
+				<Option object_output="/home/mandrav/devel/codeblocks/src//.objs"/>
+				<Option deps_output="/home/mandrav/devel/codeblocks/src//.deps"/>
 				<Option external_deps=""/>
 				<Option type="4"/>
 				<Option compiler="0"/>
@@ -874,6 +874,16 @@
 			<Option target="plugin_DebuggerGDB"/>
 		</Unit>
 		<Unit filename="plugins/debuggergdb/debuggergdb.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins/debuggergdb/debuggeroptionsdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins/debuggergdb/debuggeroptionsdlg.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

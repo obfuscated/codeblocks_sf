@@ -1,3 +1,533 @@
+Changes for version 1.0-beta6
+-------------------------------
+
+2005-03-19  mandrav
+
+	* Updated unix project file and Makefile.unix
+	* Updated ChangeLog for beta6
+
+2005-03-19  mandrav
+
+	* Fixed MinGW auto-detection to search in app path too
+	* Fixed debugger to respect the debugger setting of the compiler
+
+2005-03-19  mandrav
+
+	* Bug-fix: when changing toolbar size in environment settings, the
+	  compiler's build target combobox would be cleared
+
+2005-03-19  mandrav
+
+	* Finally fixed (really!) the issue with the initial output filename
+	  for new projects (was wrong in many cases)
+	* Updated the "install compiler" readme file
+	* Minor updates regarding the release of beta6 (version, authors,
+	  etc)
+
+2005-03-19  mandrav
+
+	* Added "wildcard selection" and "toggle selection" functionality in
+	  GenericMultiSelectDlg
+	* Fixed loading/saving state of the layout
+	* Updated all available templates to the current project format
+
+2005-03-18  mandrav
+
+	* Improved workspaces handling
+	* Workspaces are now added to recent files
+	* Fixed compiler's "target" combobox disappearing (visual glitch)
+	* Removed debugger's toolbar (until dockable toolbars are
+	  implemented)
+	* Added elementary debugger options dialog
+
+2005-03-17  mandrav
+
+	* Fixed: files/paths names loaded from project file, are converted
+	  to OS-accepted paths/files
+
+2005-03-17  mandrav
+
+	* When adding a new ToDo item, the last used type is remembered now.
+
+2005-03-17  mandrav
+
+	* Fixed "debugger program not remembered" bug
+
+2005-03-16  mandrav
+
+	* Fixed erroneous substitution for $static_output macro
+
+2005-03-16  mandrav
+
+	* Added "new" and "delete" buttons in defaultmimehandler settings
+	  dialog.
+
+2005-03-15  mandrav
+
+	* Fixed main toolbar (accidentally had toggle buttons)
+
+2005-03-15  mandrav
+
+	* Fixed bug where new projects' default target wouldn't have an
+	  output filename
+
+2005-03-15  mandrav
+
+	* Fixed "tatic_output" bug when working with GNU "make" and static
+	  libraries
+	* Updated win32 Makefile
+
+2005-03-15  mandrav
+
+	* Re-designed the "Import/Export settings" dialog
+
+2005-03-14  mandrav
+
+	* Updated files for succesfull linux compilation
+
+2005-03-14  mandrav
+
+	* Fixed filenames handling/conversion throughout the project. It
+	  should be much more consistent now.
+	* Added default MIME handler plugin (to open unknown types of files
+	  in the project tree).
+	* Fixed generated Makefile to treat output directories the same as
+	  direct-mode.
+	* Added more GCC compiler options.
+	* Added version numbers in the plugins SDK.
+	* Updated plugin wizard to support the latest SDK changes.
+	* Fully documented all types of plugins (sdk/cbplugin.h).
+	* SDK: Added new MessageManager::DebugLogWarning() and
+	  MessageManager::DebugLogError() functions.
+	* SDK: Removed cbPlugin::RemoveMenu() and cbPlugin::RemoveToolbar()
+	  functions.
+
+2005-03-12  mandrav
+
+	* Disabled on-the-fly plugins enabling/disabling (could crash under
+	  certain circumstances)
+
+2005-03-12  rickg22
+
+	* Added sanity checks to project loading functions
+
+2005-03-12  mandrav
+
+	* Fixed some filename issues under linux
+
+2005-03-11  mandrav
+
+	* Fixed a missing command output redirection to /dev/null in linux
+	  update script
+
+2005-03-11  mandrav
+
+	* Updated linux project, Makefile.unix and fixed a bug that caused
+	  the linux version to crash on exit
+
+2005-03-11  mandrav
+
+	* Fixed small bug in MS Visual Studio project importer
+
+2005-03-11  mandrav
+
+	* Fixed bug #1154511 (devcpp project importer)
+
+2005-03-11  mandrav
+
+	* Added "Static Library" template
+
+2005-03-11  mandrav
+
+	* Fixed bug that would crash on exit, if no plugins were loaded
+
+2005-03-10  mandrav
+
+	* Fixed error in debugger toolbar (not enabling/disabling items)
+
+2005-03-10  mandrav
+
+	* Improved MSVC 6 project file importer - supports selection of
+	  multiple configurations to import
+	* Added importer for MSVC 6 workspaces (*.dsw)
+	* Added importer for MS Visual Studio solutions (*.sln)
+	* Updated MSVC compiler regex's
+
+2005-03-10  rickg22
+
+	* + Added XRC resources for debugger toolbar
+
+2005-03-09  mandrav
+
+	* Added color output in compiler messages list
+
+2005-03-09  mandrav
+
+	* Fixed a just-introduced bug in workspace management
+
+2005-03-09  mandrav
+
+	* Conversion to use cbWorkspace, done
+
+2005-03-09  mandrav
+
+	* Created new SDK class: cbWorkspace (to give it some more features
+	  than save/load only) - WIP
+
+2005-03-09  mandrav
+
+	* Added "Toolbar iscons size" setting in environment settings
+	  dialog.
+	* Fixed compiler's and debugger's menu removal
+	* Removed plugins menu removal from application shut down procedure
+	  (the menus are all freed upon app exit).
+
+2005-03-09  rickg22
+
+	* Turned projectmanager::BuildMenu() into static function.
+
+2005-03-09  mandrav
+
+	* Fixed a small compiler plugin menu bug
+	* Re-added the missing project menu entries
+	* Added some extra clean-up code in main app (maybe it gets rid of
+	  the crashes some people experience on exit)
+
+2005-03-08  mandrav
+
+	* Bug-fix in setting breakpoints *before* debugger launch.
+
+2005-03-08  rickg22
+
+	* Replaced static vars with heap vars in config manager (fixes crash
+	  on end)
+
+2005-03-08  mandrav
+
+	* Updated Makefile (Makefile.unix still needs update).
+	* Updated MS Visual Studio project loader to use the project's
+	  compiler for all targets it creates.
+
+2005-03-07  mandrav
+
+	* Fixed MS Visual Studio project importer. Imports multiple
+	  configurations and correctly substitutes MSVC macros. Almost perfect
+	  now :)
+
+2005-03-07  rickg22
+
+	* Added credits (or blames) of code changes for future references
+
+2005-03-07  rickg22
+
+	* Fixed annoying warnings in Astyle plugin. (was using signed integers
+	  in various for loops)
+
+2005-03-06  rickg22
+
+	* Added sanitycheck.h to project
+
+2005-03-06  rickg22
+
+	* Fixed node segfault on a couple of managers that use linked lists.
+	  Added "sanity check" to all manager classes (checks for self==NULL
+	  before doing anything) Added Manager::isappShuttingDown() function
+	  that helps in Manager::Free().
+
+2005-03-06  rickg22
+
+	* Added debugging help lines for Win32 platform. Requires directive
+	  __CBDEBUG__ and to be compiled as "console app" to work.
+
+2005-03-05  rickg22
+
+	* Fixes segfault on early exit
+
+2005-03-05  rickg22
+
+	* Fixed segfault on early shutdown
+
+2005-03-05  rickg22
+
+	* Fixes segfault on early exit.
+
+2005-03-05  rickg22
+
+	* Fixes early shutdown crash. WARNING: Bug chains to ALL *_manager
+	  classes. They need fixes, too!
+
+2005-03-05  rickg22
+
+	* GetActiveEditor() Returns NULL instead of generating a segfault
+
+2005-03-05  rickg22
+
+	* Fixed memory leak caused by popup menu fix (just added a delete at
+	  the end)
+
+2005-03-05  rickg22
+
+	* Fixed bug [ 1096905 ] Crash under FC2.  (Lesson learned: Don't use
+	  stack variables for menus. They get destroyed after function call -
+	  on menu closing they get destroyed again, possibly generating a
+	  segfault)
+
+2005-03-05  rickg22
+
+	* Modified to load plugins from SDK.  Fixed the dreaded
+	  "DoClearTargetMenu()" bug (fix must've been lost in CVS somewhere)
+
+2005-03-05  rickg22
+
+	* moved "xtra_res" files to the SDK. And added copyright notice (they
+	  were adapted from the wxxrc library)
+
+2005-03-04  rickg22
+
+	* Main toolbar in XRC
+
+2005-03-04  rickg22
+
+	* Moved Compiler plugin toolbar into XRC resources. The resources are
+	  loaded with the new class wxXMLToolBarAddOnHandler (xtra_res.cpp).
+	  Converted id's in main.cpp into XRCID("idName") for future
+	  conversions.
+
+2005-03-04  rickg22
+
+	* Removed output/share directory from the project
+
+2005-03-04  rickg22
+
+	* Output directory tree is unnecessary to be in CVS.  "update" shell
+	  scripts will take care of creating it from now on.
+
+2005-03-04  rickg22
+
+	* Updated scripts create output directory tree.  Additionally, they
+	  create resource trees inside zip files (for use with XRC)
+
+2005-03-04  mandrav
+
+	* Temporary fix for Linux compilation
+	* Updated Makefile.unix
+
+2005-03-03  rickg22
+
+	* 16x16 and normal icons in plugin. These will make it into the
+	  plugin's resources zip file (see "update" makefile).
+
+2005-03-03  rickg22
+
+	* 16x16 icons in main
+
+2005-03-03  rickg22
+
+	* 16x16 icons in plugin. Additionally, all future icons will go under
+	  plugins/*/resources/images
+
+2005-03-03  rickg22
+
+	* 16x16 icons in plugin. Additionally, all future icons will go under
+	  plugins/*/resources/images
+
+2005-03-03  rickg22
+
+	* New directory for 16x16 icons
+
+2005-03-02  mandrav
+
+	* Fixed bug #1149964 (various To-Do bugs)
+
+2005-03-02  mandrav
+
+	* Fixed bug #1153876 (click on compiler error in listbox, doesn't
+	  always open the file in the editor)
+
+2005-03-01  mandrav
+
+	* Debugging watches are correctly parsed now
+	* Added default debugging watches locals and function args
+	* Added word-under-the-mouse debugger evaluation
+	* Fixed bug in CodeBlocksEvent copy ctor
+
+2005-02-25  mandrav
+
+	* Optimized dependencies calculations in direct build mode (70% -
+	  90% less time needed!)
+	* Updated win32 Makefile
+
+2005-02-24  mandrav
+
+	* Projects now "remember" their active build target
+	* Fixed debugger bugs with multi-build-target projects
+
+2005-02-24  mandrav
+
+	* Added environment option "Check for externally modified files"
+	* Fixed editor bug with new files not correctly assigned to active
+	  project (if selected so)
+
+2005-02-23  mandrav
+
+	* Fixed bug in build output directory creation
+	* Objects and dependencies output directories are now global (not in
+	  the same directory as the source file) - less source clutter :)
+	* Speeded up projects tree updating
+	* Added button to toggle marked files in project options dialog
+	  (assign files to target listbox)
+	* Updated workspaces to work with relative project filenames
+
+2005-02-23  mandrav
+
+	* Fixed buggy GetArrayFromString()
+	* Fixed dev-cpp importer
+
+2005-02-22  mandrav
+
+	* Fixed dynamic library compiler command for MinGW
+	* Fixed bug in "Compile'n'Run" option when a target was selected in
+	  the targets listbox
+	* Updated direct build mode to create object and dependenciy
+	  directories recursively
+
+2005-02-21  mandrav
+
+	* Fixed a compiler warning
+
+2005-02-19  mandrav
+
+	* Updated SDK doxygen filename in "doc" target
+
+2005-02-19  mandrav
+
+	* When adding files to a project, multiple target selection is
+	  allowed
+	* Added documentation to ProjectManager
+	* Add new target "doc" to build SDK documentation using doxygen
+	* Fixed bug in $static_output macro replacement in compiler commands
+
+2005-02-18  mandrav
+
+	* Updated C-source templates to create .c files instead of .cpp
+
+2005-02-18  mandrav
+
+	* Fixed bug that when creating new project from template, the
+	  default compiler was not used for the build targets
+
+2005-02-18  mandrav
+
+	* Added "Add files" and "Remove files" in Project menu
+
+2005-02-18  mandrav
+
+	* Fixed a minor bug in the GCC compiler command lines
+
+2005-02-17  mandrav
+
+	* Fixed bug #1124251
+
+2005-02-17  mandrav
+
+	* Added "Reset defaults" button for compiler in compiler options to
+	  reset all the compiler's settings
+	* Added preprocessor error regex for GCC
+	* Projects/targets now ignore duplicate dirs for compiler/linker
+	* Added Dev-C++ auto-detection for GCC, if MinGW is not detected
+	  (win32 only)
+
+2005-02-16  mandrav
+
+	* Fixed bug #1123572 (erroneous dev-cpp project importing)
+
+2005-02-16  mandrav
+
+	* Refactored compiler output parsing into user-defined regular
+	  expressions ;)
+	* Fixed small bug in project/target linker options ordering
+
+2005-02-15  mandrav
+
+	* Added linker program setting for static libs, in compiler.
+	* Added compiler command macro "$lib_linker"
+	* Updated compiler commands based on the above
+	* Fixed BCC compiler command for static lib creation
+	* Fixed auto-name suggestion for static libs to respect the
+	  compiler's settings
+
+2005-02-15  mandrav
+
+	* Fixed compiler commands for all supported compilers (except BCC's
+	  DLL & LIB generation)
+
+2005-02-14  mandrav
+
+	* Added contributors section in about dialog
+
+2005-02-14  mandrav
+
+	* Separated link objects from resource objects macros (needed for
+	  BCC and possibly other compilers)
+	* Fixed BCC support (for executables at least)
+	* Added DigitalMars compiler support (thanks to Hakki Dogusan who
+	  contributed it)
+
+2005-02-14  mandrav
+
+	* Changed codeblocks version to 1.0-cvs (forgot it earlier...)
+
+2005-02-14  mandrav
+
+	* Added message for project file update to newer version
+
+2005-02-14  mandrav
+
+	* Separated linker libraries from the rest of the linker options.
+	  Codeblocks offers to auto-detect used libraries and configure the
+	  project accordingly, if the said project was saved with an earlier
+	  version of codeblocks.
+	* Because of the above, the project file format changed subtly
+	  (conversion of older projects is done automatically, on first open).
+
+2005-02-12  mandrav
+
+	* Separated link libraries from other linker options in compiler
+
+2005-02-11  mandrav
+
+	* Fixed minor bug in editor color themes switching
+
+2005-02-11  mandrav
+
+	* Fixed configuration expporting to file (importing not implemented
+	  yet)
+	* Added menu "Settings/Import-export configuration"
+
+2005-02-10  mandrav
+
+	* Added multiple themes support in editor color options
+	* Support is on the way for importing/exporting various (or all)
+	  configuration settings to/from file
+
+2005-02-10  mandrav
+
+	* Fixed editor color configuration
+	* Added "Default" style in editor color configuration
+	* Added "Reset defaults" button in editor color configuration
+
+2005-02-02  mandrav
+
+	* Added editor configuration option for tab size
+
+2005-01-31  mandrav
+
+	* Fixed crash on tree right-clicking in project's build options
+
+2005-01-30  mandrav
+
+	* Updated Makefile to add sdk/autodetectcompilers.(cpp | h)
+
 Changes for version 1.0-beta5
 -------------------------------
 
