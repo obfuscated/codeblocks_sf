@@ -698,7 +698,6 @@ void Parser::BuildTree(wxTreeCtrl& tree)
 	tree.SetImageList(m_pImageList);
 #endif
 	m_RootNode = tree.AddRoot(_("Symbols"), PARSER_IMG_FOLDER);
-
 	if (m_BrowserOptions.viewFlat)
 	{
 		for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
@@ -713,56 +712,74 @@ void Parser::BuildTree(wxTreeCtrl& tree)
 		return;
 	}
 
-	wxTreeItemId node = tree.AppendItem(m_RootNode, _("Namespaces"), PARSER_IMG_FOLDER);
+	wxTreeItemId globalNS = tree.AppendItem(m_RootNode, _("Global namespace"), PARSER_IMG_NAMESPACE);
+    AddTreeNamespace(tree, globalNS, 0L);
+    
 	for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
 	{
 		Token* token = m_Tokens[x];
 		if (!token->m_pParent && // base (no parent)
 			token->m_IsLocal && // local symbols only
 			token->m_TokenKind == tkNamespace) // namespaces
-			AddTreeNode(tree, node, token);
+        {
+            ClassTreeData* ctd = new ClassTreeData(token);
+            wxTreeItemId newNS = tree.AppendItem(m_RootNode, token->m_Name, PARSER_IMG_NAMESPACE, -1, ctd);
+            AddTreeNamespace(tree, newNS, token);
+        }
 	}
-	node = tree.AppendItem(m_RootNode, _("Classes"), PARSER_IMG_FOLDER);
+	tree.Expand(m_RootNode);
+	tree.Thaw();
+}
+
+void Parser::AddTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* parent)
+{
+	wxTreeItemId node = tree.AppendItem(parentNode, _("Classes"), PARSER_IMG_FOLDER);
 	for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
 	{
 		Token* token = m_Tokens[x];
-		if (!token->m_pParent && // base (no parent)
+		if (token->m_pParent == parent && // parent matches
 			token->m_IsLocal && // local symbols only
 			token->m_TokenKind == tkClass) // classes
+        {
 			AddTreeNode(tree, node, token);
+        }
 	}
-	node = tree.AppendItem(m_RootNode, _("Enums"), PARSER_IMG_FOLDER);
+	node = tree.AppendItem(parentNode, _("Enums"), PARSER_IMG_FOLDER);
 	for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
 	{
 		Token* token = m_Tokens[x];
-		if (!token->m_pParent && // base (no parent)
+		if (token->m_pParent == parent && // parent matches
 			token->m_IsLocal && // local symbols only
 			token->m_TokenKind == tkEnum) // enums
+        {
 			AddTreeNode(tree, node, token);
+        }
 	}
-	node = tree.AppendItem(m_RootNode, _("Preprocessor"), PARSER_IMG_FOLDER);
+	node = tree.AppendItem(parentNode, _("Preprocessor"), PARSER_IMG_FOLDER);
 	for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
 	{
 		Token* token = m_Tokens[x];
-		if (!token->m_pParent && // base (no parent)
+		if (token->m_pParent == parent && // parent matches
 			token->m_IsLocal && // local symbols only
 			token->m_TokenKind == tkPreprocessor) // preprocessor
+        {
 			AddTreeNode(tree, node, token);
+        }
 	}
-	node = tree.AppendItem(m_RootNode, _("Others"), PARSER_IMG_FOLDER);
+	node = tree.AppendItem(parentNode, _("Others"), PARSER_IMG_FOLDER);
 	for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
 	{
 		Token* token = m_Tokens[x];
-		if (!token->m_pParent && // base (no parent)
+		if (token->m_pParent == parent && // parent matches
 			token->m_IsLocal && // local symbols only
 			(token->m_TokenKind == tkEnumerator || // enumerators
 			token->m_TokenKind == tkFunction || // functions
 			token->m_TokenKind == tkVariable || // variables
 			token->m_TokenKind == tkUndefined)) // others
+        {
 			AddTreeNode(tree, node, token);
+        }
 	}
-	tree.Expand(m_RootNode);
-	tree.Thaw();
 }
 
 void Parser::AddTreeNode(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* token, bool childrenOnly)
