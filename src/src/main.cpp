@@ -642,6 +642,10 @@ void MainFrame::LoadWindowState()
 	Manager::Get()->GetNotebook()->SetSelection(ConfigManager::Get()->Read("/main_frame/layout/left_block_selection", 0L));
 	m_pMsgMan->SetSelection(ConfigManager::Get()->Read("/main_frame/layout/bottom_block_selection", 0L));
 
+	// load manager and messages visibility state
+	m_pLeftSash->Show(ConfigManager::Get()->Read("/main_frame/layout/left_block_show", 1));
+	m_pBottomSash->Show(ConfigManager::Get()->Read("/main_frame/layout/bottom_block_show", 1));
+
     if (ConfigManager::Get()->Read("/main_frame/maximized", 0L))
         Maximize();
 }
@@ -664,6 +668,15 @@ void MainFrame::SaveWindowState()
 	// save manager and messages selected page
 	ConfigManager::Get()->Write("/main_frame/layout/left_block_selection", Manager::Get()->GetNotebook()->GetSelection());
 	ConfigManager::Get()->Write("/main_frame/layout/bottom_block_selection", m_pMsgMan->GetSelection());
+
+    // save manager and messages visibility state
+    // only if *not* in fullscreen mode (in this case the values were saved
+    // before going fullscreen)
+    if (!IsFullScreen())
+    {
+        ConfigManager::Get()->Write("/main_frame/layout/left_block_show", m_pLeftSash->IsShown());
+        ConfigManager::Get()->Write("/main_frame/layout/bottom_block_show", m_pBottomSash->IsShown());
+	}
 }
 
 void MainFrame::DoAddPlugin(cbPlugin* plugin)
@@ -1341,10 +1354,10 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
 {
     wxMenuBar* mbar = GetMenuBar();
     cbEditor* ed = m_pEdMan->GetActiveEditor();
-    mbar->Check(idViewToolMain, m_pToolbar);
+    mbar->Check(idViewToolMain, m_pToolbar && m_pToolbar->IsShown());
     mbar->Check(idViewManager, m_pLeftSash && m_pLeftSash->IsShown());
     mbar->Check(idViewMessageManager, m_pBottomSash && m_pBottomSash->IsShown());
-    mbar->Check(idViewStatusbar, GetStatusBar());
+    mbar->Check(idViewStatusbar, GetStatusBar() && GetStatusBar()->IsShown());
     mbar->Check(idViewFocusEditor, ed);
     mbar->Check(idViewFullScreen, IsFullScreen());
 
@@ -1459,6 +1472,14 @@ void MainFrame::OnFocusEditor(wxCommandEvent& event)
 
 void MainFrame::OnToggleFullScreen(wxCommandEvent& event)
 {
+    if (!IsFullScreen())
+    {
+        // we are going to toggle to fullscreen: save current sashes state
+        // so that we can restore it when leaving fullscreen...
+        ConfigManager::Get()->Write("/main_frame/layout/left_block_show", m_pLeftSash->IsShown());
+        ConfigManager::Get()->Write("/main_frame/layout/bottom_block_show", m_pBottomSash->IsShown());
+	}
+
     ShowFullScreen( !IsFullScreen(), wxFULLSCREEN_NOTOOLBAR | wxFULLSCREEN_NOSTATUSBAR 
                     | wxFULLSCREEN_NOBORDER | wxFULLSCREEN_NOCAPTION );
                     
@@ -1475,46 +1496,35 @@ void MainFrame::OnToggleFullScreen(wxCommandEvent& event)
         m_pCloseFullScreenBtn->Move( containerSize.GetWidth() - buttonSize.GetWidth(),
                     containerSize.GetHeight() - buttonSize.GetHeight() );
         
+        m_pLeftSash->Show(false);
+        m_pBottomSash->Show(false);
+
         m_pCloseFullScreenBtn->Show( true );
         m_pCloseFullScreenBtn->Raise();
     }
     else
     {
         m_pCloseFullScreenBtn->Show( false );
+        
+        // leaving fullscreen: restore sashes state
+        m_pLeftSash->Show(ConfigManager::Get()->Read("/main_frame/layout/left_block_show", 1));
+        m_pBottomSash->Show(ConfigManager::Get()->Read("/main_frame/layout/bottom_block_show", 1));
     }
     /// @todo Check whether hiding all panes is desirable.
     /// Perhaps make it customizable?
-    // Hide all panes
     
-    /// @todo Can m_pLeftSash and m_pBottomSash ever be NULL?
-    if( !m_pLeftSash || !m_pBottomSash )
-    {
-        // Seems abnormal...
-        /// @todo Standardize a way for error/warning reporting...
-        m_pMsgMan->AppendLog( _( "(Warn)MainFrame::OnToggleFullScreen - Couldn't find the sash windows" ) );        
-    }
-    else if( m_pLeftSash && m_pBottomSash )
-    {
-        m_pLeftSash->Show(false);
-        m_pBottomSash->Show(false);
-    }
+    /// Can m_pLeftSash and m_pBottomSash ever be NULL?
+    // mandrav: No, both sashes are always valid. If they are not,
+    // we 've messed up something really bad ;)
     
     // Update layout
     DoUpdateLayout();
     
-    /// @todo Update UI: This is hacky code duplication. Should be moved to a 
+    /// Update UI: This is hacky code duplication. Should be moved to a 
     /// common function
-    wxMenuBar *mbar = GetMenuBar();
-    if( mbar )
-    {
-        mbar->Check(idViewManager, false);
-        mbar->Check(idViewMessageManager, false);
-    }
-    else
-    {
-        // As far as I know, this is abnormal...
-        m_pMsgMan->AppendLog( _( "(Warn)MainFrame::OnToggleFullScreen - Couldn't find the menubar" ) );
-    }
+    
+    // mandrav: There is no need for this hack. View menu UpdateUI
+    // takes care of everything now...
 }
 
 void MainFrame::OnPluginLoaded(CodeBlocksEvent& event)
