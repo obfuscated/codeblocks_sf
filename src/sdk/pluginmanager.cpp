@@ -153,7 +153,7 @@ void PluginManager::LoadAllPlugins()
     if (!probPlugin.IsEmpty())
     {
         wxString msg;
-        msg.Printf(_("Plugin %s failed to load last time Code::Blocks was executed.\n"
+        msg.Printf(_("Plugin \"%s\" failed to load last time Code::Blocks was executed.\n"
                     "Do you want to disable this plugin from loading?"), probPlugin.c_str());
         if (wxMessageBox(msg, _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxNO)
             probPlugin = "";
