@@ -20,6 +20,7 @@ class MSVC7Loader : public IBaseLoader
         // macros used in Visual Studio projects
         wxString m_ConfigurationName;
         wxString m_TargetFilename;
+        wxString m_TargetPath;
         wxString m_OutDir;
 	private:
         wxString ReplaceMSVCMacros(const wxString& str);

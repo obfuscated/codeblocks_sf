@@ -42,6 +42,7 @@
 #include "configmanager.h"
 #include "filegroupsandmasks.h"
 #include "compilerfactory.h"
+#include "importers_globals.h"
 
 // class constructor
 cbProject::cbProject(const wxString& filename)
@@ -239,25 +240,35 @@ void cbProject::Open()
              default: return;
         }
 
-        // select compiler for the imported project
-        // need to do it before actual import, because the importer might need
-        // project's compiler information (like the object files extension etc).
-
-        // first build a list of available compilers
-        wxString* comps = new wxString[CompilerFactory::Compilers.GetCount()];
-        for (unsigned int i = 0; i < CompilerFactory::Compilers.GetCount(); ++i)
+        int compilerIdx = -1;
+        if (ImportersGlobals::UseDefaultCompiler)
+            compilerIdx = CompilerFactory::GetDefaultCompilerIndex();
+        else
         {
-            comps[i] = CompilerFactory::Compilers[i]->GetName();
+            // select compiler for the imported project
+            // need to do it before actual import, because the importer might need
+            // project's compiler information (like the object files extension etc).
+    
+            // first build a list of available compilers
+            wxString* comps = new wxString[CompilerFactory::Compilers.GetCount()];
+            for (unsigned int i = 0; i < CompilerFactory::Compilers.GetCount(); ++i)
+            {
+                comps[i] = CompilerFactory::Compilers[i]->GetName();
+            }
+            // now display a choice dialog
+            wxSingleChoiceDialog dlg(0,
+                                _("Select compiler to use for the imported project"),
+                                _("Select compiler for ") + wxFileName(m_Filename).GetFullName(),
+                                CompilerFactory::Compilers.GetCount(),
+                                comps);
+            dlg.SetSelection(CompilerFactory::GetDefaultCompilerIndex());
+            if (dlg.ShowModal() == wxID_OK)
+                compilerIdx = dlg.GetSelection();
         }
-        // now display a choice dialog
-        wxSingleChoiceDialog dlg(0,
-                            _("Select compiler to use for the imported project"),
-                            _("Select compiler"),
-                            CompilerFactory::Compilers.GetCount(),
-                            comps);
-        if (dlg.ShowModal() == wxID_OK)
+
+        if (compilerIdx != -1)
         {
-            SetCompilerIndex(dlg.GetSelection());
+            SetCompilerIndex(compilerIdx);
 
             // actually import project file
             m_Loaded = loader->Open(m_Filename);

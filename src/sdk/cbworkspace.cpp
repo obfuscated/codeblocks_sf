@@ -24,9 +24,12 @@
 */
 
 #include "cbworkspace.h"
+#include "globals.h"
 #include "manager.h"
 #include "messagemanager.h"
 #include "workspaceloader.h"
+#include "msvcworkspaceloader.h"
+#include "msvc7workspaceloader.h"
 #include <wx/filedlg.h>
 #include <wx/intl.h>
 
@@ -62,10 +65,24 @@ void cbWorkspace::Load()
 {
     wxString fname = m_Filename.GetFullPath();
 	Manager::Get()->GetMessageManager()->DebugLog("Loading workspace \"%s\"", fname.c_str());
-	WorkspaceLoader wsp;
-	m_IsOK = wsp.Open(fname) || m_IsDefault;
-	m_Title = wsp.GetTitle();
-    SetModified(false);
+	
+	bool modified = false;
+	IBaseWorkspaceLoader* pWsp = 0;
+	switch (FileTypeOf(fname))
+	{
+        case ftCodeBlocksWorkspace: pWsp = new WorkspaceLoader; modified = false; break;
+        case ftMSVCWorkspace: pWsp = new MSVCWorkspaceLoader; modified = true; break;
+        case ftMSVSWorkspace: pWsp = new MSVC7WorkspaceLoader; modified = true; break;
+        default: break;
+    }
+	m_IsOK = pWsp && (pWsp->Open(fname) || m_IsDefault);
+	m_Title = pWsp ? pWsp->GetTitle() : wxString(wxEmptyString);
+    
+    m_Filename.SetExt(WORKSPACE_EXT);
+    SetModified(modified);
+    
+    if (pWsp)
+        delete pWsp;
 }
 
 bool cbWorkspace::Save(bool force)

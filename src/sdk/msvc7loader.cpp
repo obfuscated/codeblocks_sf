@@ -7,6 +7,7 @@
 #include "globals.h"
 #include "msvc7loader.h"
 #include "multiselectdlg.h"
+#include "importers_globals.h"
 
 MSVC7Loader::MSVC7Loader(cbProject* project)
     : m_pProject(project),
@@ -25,6 +26,7 @@ wxString MSVC7Loader::ReplaceMSVCMacros(const wxString& str)
     wxString ret = str;
     ret.Replace("$(OutDir)", m_OutDir);
     ret.Replace("$(ConfigurationName)", m_ConfigurationName);
+    ret.Replace("$(TargetPath)", m_TargetPath);
     ret.Replace("$(TargetFileName)", m_TargetFilename);
     if (ret.StartsWith("\""))
     {
@@ -109,16 +111,26 @@ bool MSVC7Loader::DoSelectConfiguration(TiXmlElement* root)
         confs = confs->NextSiblingElement();
     }
 
-    // ask the user to select a configuration - multiple choice ;)
-    MultiSelectDlg dlg(0, configurations, true, _("Select configurations to import:"));
-    if (dlg.ShowModal() == wxID_CANCEL)
+    wxArrayInt selected_indices;
+    if (ImportersGlobals::ImportAllTargets)
     {
-        Manager::Get()->GetMessageManager()->DebugLog("Canceled...");
-        return false;
+        // don't ask; just fill selected_indices with all indices
+        for (size_t i = 0; i < configurations.GetCount(); ++i)
+            selected_indices.Add(i);
+    }
+    else
+    {
+        // ask the user to select a configuration - multiple choice ;)
+        MultiSelectDlg dlg(0, configurations, true, _("Select configurations to import:"), m_pProject->GetTitle());
+        if (dlg.ShowModal() == wxID_CANCEL)
+        {
+            Manager::Get()->GetMessageManager()->DebugLog("Canceled...");
+            return false;
+        }
+        selected_indices = dlg.GetSelectedIndices();
     }
 
     confs = config->FirstChildElement("Configuration");
-    wxArrayInt selected_indices = dlg.GetSelectedIndices();
     int current_sel = 0;
     bool success = true;
     for (size_t i = 0; i < selected_indices.GetCount(); ++i)
@@ -187,6 +199,7 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
             wxString tmp = ReplaceMSVCMacros(tool->Attribute("OutputFile"));
             tmp = UnixFilename(tmp);
             bt->SetOutputFilename(tmp);
+            m_TargetPath = wxFileName(tmp).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
             m_TargetFilename = wxFileName(tmp).GetFullName();
 
             wxString libs = tool->Attribute("AdditionalLibraryDirectories");
@@ -340,7 +353,7 @@ bool MSVC7Loader::DoImportFiles(TiXmlElement* root, int numConfigurations)
                 ProjectFile* pf = m_pProject->AddFile(0, fname);
                 if (pf)
                 {
-                    // add it to all aconfigrations, not just the first
+                    // add it to all configurations, not just the first
                     for (int i = 1; i < numConfigurations; ++i)
                         pf->AddBuildTarget(m_pProject->GetBuildTarget(i)->GetTitle());
                 }

@@ -113,7 +113,9 @@ int idProjectCloseAllProjects = XRCID("idProjectCloseAllProjects");
 int idProjectImport = XRCID("idProjectImport");
 int idProjectImportDevCpp = XRCID("idProjectImportDevCpp");
 int idProjectImportMSVC = XRCID("idProjectImportMSVC");
+int idProjectImportMSVCWksp = XRCID("idProjectImportMSVCWksp");
 int idProjectImportMSVS = XRCID("idProjectImportMSVS");
+int idProjectImportMSVSWksp = XRCID("idProjectImportMSVSWksp");
 
 int idSettingsEnvironment = XRCID("idSettingsEnvironment");
 int idSettingsEditor = XRCID("idSettingsEditor");
@@ -242,7 +244,9 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idProjectCloseAllProjects,  MainFrame::OnProjectCloseAllProjects)
     EVT_MENU(idProjectImportDevCpp,  MainFrame::OnProjectImportDevCpp)
     EVT_MENU(idProjectImportMSVC,  MainFrame::OnProjectImportMSVC)
+    EVT_MENU(idProjectImportMSVCWksp,  MainFrame::OnProjectImportMSVCWksp)
     EVT_MENU(idProjectImportMSVS,  MainFrame::OnProjectImportMSVS)
+    EVT_MENU(idProjectImportMSVSWksp,  MainFrame::OnProjectImportMSVSWksp)
 
 	EVT_MENU(idSettingsEnvironment, MainFrame::OnSettingsEnvironment)
 	EVT_MENU(idSettingsEditor, MainFrame::OnSettingsEditor)
@@ -503,8 +507,12 @@ void MainFrame::CreateMenubar()
 
 	wxMenu* import = new wxMenu();
 	import->Append(idProjectImportDevCpp, _("Bloodshed &Dev-C++ project"), _("Import an existing Dev-C++ project"));
+	import->AppendSeparator();
 	import->Append(idProjectImportMSVC, _("Microsoft Visual C++ project"), _("Import an existing Microsoft Visual C++ project"));
+	import->Append(idProjectImportMSVCWksp, _("Microsoft Visual C++ workspace"), _("Import an existing Microsoft Visual C++ workspace"));
+	import->AppendSeparator();
 	import->Append(idProjectImportMSVS, _("Microsoft Visual Studio project"), _("Import an existing Microsoft Visual Studio project"));
+	import->Append(idProjectImportMSVSWksp, _("Microsoft Visual Studio solution"), _("Import an existing Microsoft Visual Studio solution"));
 
 	project->Append(idProjectNew, _("&New project..."), _("Create a new project based on a template"));
 	project->Append(idProjectNewEmptyProject, _("New &empty project"), _("Create a new empty project"));
@@ -1563,6 +1571,25 @@ void MainFrame::OnProjectImportMSVC(wxCommandEvent& event)
     delete dlg;
 }
 
+void MainFrame::OnProjectImportMSVCWksp(wxCommandEvent& event)
+{
+    wxFileDialog* dlg = new wxFileDialog(this,
+                            _("Import Microsoft Visual C++ workspace"),
+                            wxEmptyString,
+                            wxEmptyString,
+                            MSVC_WORKSPACE_FILES_FILTER,
+                            wxOPEN);
+
+    if (dlg->ShowModal() == wxID_OK)
+    {
+		wxString fname = dlg->GetPath();
+		if (FileTypeOf(fname) == ftMSVCWorkspace)
+            m_pPrjMan->LoadWorkspace(fname);
+    }
+
+    delete dlg;
+}
+
 void MainFrame::OnProjectImportMSVS(wxCommandEvent& event)
 {
     wxFileDialog* dlg = new wxFileDialog(this,
@@ -1577,6 +1604,25 @@ void MainFrame::OnProjectImportMSVS(wxCommandEvent& event)
 		wxString fname = dlg->GetPath();
 		if (FileTypeOf(fname) == ftMSVSProject)
             DoOpenProject(fname);
+    }
+
+    delete dlg;
+}
+
+void MainFrame::OnProjectImportMSVSWksp(wxCommandEvent& event)
+{
+    wxFileDialog* dlg = new wxFileDialog(this,
+                            _("Import Microsoft Visual Studio solution"),
+                            wxEmptyString,
+                            wxEmptyString,
+                            MSVS_WORKSPACE_FILES_FILTER,
+                            wxOPEN);
+
+    if (dlg->ShowModal() == wxID_OK)
+    {
+		wxString fname = dlg->GetPath();
+		if (FileTypeOf(fname) == ftMSVSWorkspace)
+            m_pPrjMan->LoadWorkspace(fname);
     }
 
     delete dlg;

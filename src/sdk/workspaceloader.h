@@ -1,11 +1,11 @@
 #ifndef WORKSPACELOADER_H
 #define WORKSPACELOADER_H
 
-#include <wx/string.h>
+#include "ibaseworkspaceloader.h"
 
 class cbProject;
 
-class WorkspaceLoader
+class WorkspaceLoader : public IBaseWorkspaceLoader
 {
 	public:
 		WorkspaceLoader();
@@ -13,12 +13,9 @@ class WorkspaceLoader
 
         bool Open(const wxString& filename);
         bool Save(const wxString& title, const wxString& filename);
-        wxString GetTitle(){ return m_Title; }
 	protected:
 	private:
         cbProject* m_pActiveProj;
-        wxString m_Title;
 };
 
 #endif // WORKSPACELOADER_H
-

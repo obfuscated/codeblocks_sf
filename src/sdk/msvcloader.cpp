@@ -5,12 +5,21 @@
 #include <wx/intl.h>
 #include <wx/filename.h>
 #include <wx/msgdlg.h>
+
+#include <wx/stream.h>
+#include <wx/wfstream.h>
+#include <wx/txtstrm.h>
+
 #include "manager.h"
 #include "projectmanager.h"
 #include "messagemanager.h"
 #include "cbproject.h"
 #include "globals.h"
+#include "importers_globals.h"
 #include "msvcloader.h"
+#include "compilerfactory.h"
+#include "compiler.h"
+#include "multiselectdlg.h"
 
 MSVCLoader::MSVCLoader(cbProject* project)
     : m_pProject(project),
@@ -26,27 +35,48 @@ MSVCLoader::~MSVCLoader()
 
 bool MSVCLoader::Open(const wxString& filename)
 {
-    // open file
-    wxFile file(filename);
+ /* NOTE (mandrav#1#): not necessary to ask for switches conversion... */
+    m_ConvertSwitches = m_pProject->GetCompilerIndex() == 0; // GCC
 
-    if (!file.IsOpened())
+   m_Filename = filename;
+    if (!ReadConfigurations())
         return false;
 
-	int conv = wxMessageBox(_("Do you want to convert compiler/linker command-line switches to GCC's switches?"),
-                            _("Convert command-line switches?"),
-                            wxICON_QUESTION | wxYES | wxNO);
-    m_ConvertSwitches = conv == wxID_YES;
-
-    char* buff = m_FileContents.GetWriteBuf(file.Length());
-    file.Read(buff, file.Length());
-    file.Close();
-    m_FileContents.UngetWriteBuf();
-    
     // the file is read, now process it
     Manager::Get()->GetMessageManager()->DebugLog(_("Importing MSVC project: %s"), filename.c_str());
-    bool ret = ProcessContents();
-    Manager::Get()->GetMessageManager()->DebugLog(_("Finished %s"), ret ? "succesfully" : "with errors");
-    return ret;
+
+    // delete all targets of the project (we 'll create new ones from the imported configurations)
+    while (m_pProject->GetBuildTargetsCount())
+        m_pProject->RemoveBuildTarget(0);
+
+    wxArrayInt selected_indices;
+    if (ImportersGlobals::ImportAllTargets)
+    {
+        // don't ask; just fill selected_indices with all indices
+        for (size_t i = 0; i < m_Configurations.GetCount(); ++i)
+            selected_indices.Add(i);
+    }
+    else
+    {
+        // ask the user to select a configuration - multiple choice ;)
+        MultiSelectDlg dlg(0, m_Configurations, true, _("Select configurations to import:"), m_Filename.GetName());
+        if (dlg.ShowModal() == wxID_CANCEL)
+        {
+            Manager::Get()->GetMessageManager()->DebugLog("Canceled...");
+            return false;
+        }
+        selected_indices = dlg.GetSelectedIndices();
+    }
+
+    // create all selected targets
+    for (size_t i = 0; i < selected_indices.GetCount(); ++i)
+    {
+        if (!ParseConfiguration(selected_indices[i]))
+            return false;
+    }
+    
+    m_pProject->SetTitle(m_Filename.GetName());
+    return ParseSourceFiles();
 }
 
 bool MSVCLoader::Save(const wxString& filename)
@@ -55,148 +85,214 @@ bool MSVCLoader::Save(const wxString& filename)
     return false;
 }
 
-bool MSVCLoader::ProcessContents()
+bool MSVCLoader::ReadConfigurations()
 {
-    /*
-    OK, this will be a *simple* loader for MSVC files. Don't expect too much.
-    It is only added for the convenience of the users...
-    
-    We 'll get the project name from:
-        # Microsoft Developer Studio Project File - Name="game" - Package Owner=<4>
-    We 'll find the project files by looking for:
-        SOURCE=<relative_filename>
-    We 'll also read (and convert) the following:
-        # ADD CPP
-        # ADD LINK32
-    */
+    m_Configurations.Clear();
+    m_ConfigurationsLineIndex.Clear();
+    m_Type = ttExecutable;
+    m_BeginTargetLine = -1;
 
-    m_pProject->ClearAllProperties();
-    m_pProject->SetModified(true);
+    wxFileInputStream file(m_Filename.GetFullPath());
+    if (!file.Ok())
+        return false; // error opening file???
 
-    wxString tmp;
-    wxChar ch;
-    
-    // step 1: get the name
-    int idx = m_FileContents.Find("# Microsoft Developer Studio Project File - Name=\"");
-    if (idx == -1)
-    {
-        wxMessageBox(_("Can't read project's name..."), _("Error"), wxICON_ERROR);
-        return false;
-    }
-    // we 're at the name starting quote
-    idx += 50;
-    ch = m_FileContents.GetChar(idx);
-    while (ch && ch != '\"')
-    {
-        tmp << ch;
-        ch = m_FileContents.GetChar(++idx);
-    }
-    m_pProject->SetTitle(tmp);
-    
-    // step 2: get the flags
-    idx = m_FileContents.Find("# ADD BASE CPP");
-    if (idx == -1)
-    {
-        wxMessageBox(_("Can't read project's base compiler flags..."), _("Error"), wxICON_ERROR);
-        return false;
-    }
-    // we 're at the name starting quote
-    tmp = "";
-    idx += 14;
-    ch = m_FileContents.GetChar(idx);
-    while (ch && ch != '\r' && ch != '\n')
-    {
-        tmp << ch;
-        ch = m_FileContents.GetChar(++idx);
-    }
-    ProcessCompilerOptions(tmp);
-    //Manager::Get()->GetMessageManager()->DebugLog("Project base compiler flags: " + tmp);
-    
-    idx = m_FileContents.Find("# ADD CPP");
-    if (idx == -1)
-    {
-        wxMessageBox(_("Can't read project's compiler flags..."), _("Error"), wxICON_ERROR);
-        return false;
-    }
-    // we 're at the name starting quote
-    idx += 9;
-    tmp = "";
-    ch = m_FileContents.GetChar(idx);
-    while (ch && ch != '\r' && ch != '\n')
-    {
-        tmp << ch;
-        ch = m_FileContents.GetChar(++idx);
-    }
-    ProcessCompilerOptions(tmp);
-    //Manager::Get()->GetMessageManager()->DebugLog("Project compiler flags: " + tmp);
+    wxArrayString comps;
+    wxTextInputStream input(file);
 
-    // step 3: get the linker flags
-    idx = m_FileContents.Find("# ADD BASE LINK32");
-    if (idx == -1)
+    int currentLine = 0;
+    while (!file.Eof())
     {
-        idx = m_FileContents.Find("# ADD BASE LIB32");
-        if (idx == -1)
+        wxString line = input.ReadLine();
+        line.Trim(true);
+        line.Trim(false);
+        int size = -1;
+        if (line.StartsWith("# TARGTYPE"))
         {
-            wxMessageBox(_("Can't read project's base linker flags..."), _("Error"), wxICON_ERROR);
-            return false;
+            int idx = line.Find(' ', true);
+            if (idx != -1)
+            {
+                int typ = atoi(line.Mid(idx + 3, 4));
+                switch (typ)
+                {
+                    case 101: m_Type = ttExecutable; break;
+                    case 102: m_Type = ttDynamicLib; break;
+                    case 103: m_Type = ttConsoleOnly; break;
+                    case 104: m_Type = ttStaticLib; break;
+                    // I 've seen 0x010a "Generic project" which was empty.
+                    // don't know what to do with it...
+                    default: break;
+                }
+                Manager::Get()->GetMessageManager()->DebugLog("Project type set to %d", typ);
+            }
+            continue;
         }
-    }
-    // we 're at the name starting quote
-    tmp = "";
-    idx += 17;
-    ch = m_FileContents.GetChar(idx);
-    while (ch && ch != '\r' && ch != '\n')
-    {
-        tmp << ch;
-        ch = m_FileContents.GetChar(++idx);
-    }
-    ProcessLinkerOptions(tmp);
-    //Manager::Get()->GetMessageManager()->DebugLog("Project base linker flags: " + tmp);
-    
-    idx = m_FileContents.Find("# ADD LINK32");
-    if (idx == -1)
-    {
-        idx = m_FileContents.Find("# ADD LIB32");
-        if (idx == -1)
+        else if (line.StartsWith("!IF  \"$(CFG)\" =="))
+            size = 16;
+        else if (line.StartsWith("!ELSEIF  \"$(CFG)\" =="))
+            size = 20;
+        else if (line == "# Begin Target")
         {
-            wxMessageBox(_("Can't read project's linker flags..."), _("Error"), wxICON_ERROR);
-            return false;
+            // done
+            m_BeginTargetLine = currentLine;
+            break;
         }
-    }
-    // we 're at the name starting quote
-    tmp = "";
-    idx += 12;
-    ch = m_FileContents.GetChar(idx);
-    while (ch && ch != '\r' && ch != '\n')
-    {
-        tmp << ch;
-        ch = m_FileContents.GetChar(++idx);
-    }
-    ProcessLinkerOptions(tmp);
-    //Manager::Get()->GetMessageManager()->DebugLog("Project linker flags: " + tmp);
-
-    // step 4: locate files
-    idx = m_FileContents.Find("SOURCE=");
-    while (idx != -1)
-    {
-        tmp = "";
-        idx += 7;
-        ch = m_FileContents.GetChar(idx);
-        while (ch != '\r' && ch != '\n')
+        if (size != -1)
         {
-            tmp << ch;
-            ch = m_FileContents.GetChar(++idx);
+            // read configuration name
+            line.Remove(0, size);
+            line.Trim(true);
+            line.Trim(false);
+            wxString tmp = RemoveQuotes(line);
+            if (m_Configurations.Index(tmp) == wxNOT_FOUND)
+            {
+                m_Configurations.Add(tmp);
+                m_ConfigurationsLineIndex.Add(currentLine + 1);
+                Manager::Get()->GetMessageManager()->DebugLog("Detected configuration '%s'", tmp.c_str());
+            }
         }
-        m_pProject->AddFile(0, RemoveQuotes(tmp));
-        
-        m_FileContents.Remove(1, idx + 7);
-        idx = m_FileContents.Find("SOURCE=");
+        ++currentLine;
     }
-
     return true;
 }
 
-void MSVCLoader::ProcessCompilerOptions(const wxString& opts)
+bool MSVCLoader::ParseConfiguration(int index)
+{
+    wxFileInputStream file(m_Filename.GetFullPath());
+    if (!file.Ok())
+        return false; // error opening file???
+
+    // create new target
+    ProjectBuildTarget* bt = m_pProject->AddBuildTarget(m_Configurations[index]);
+    if (!bt)
+        return false;
+    bt->SetCompilerIndex(m_pProject->GetCompilerIndex());
+    bt->SetTargetType(m_Type);
+    bt->SetOutputFilename(bt->SuggestOutputFilename());
+
+    wxTextInputStream input(file);
+
+    // go to the configuration's line
+    int currentLine = 0;
+    while (!file.Eof() && currentLine <= m_ConfigurationsLineIndex[index])
+    {
+        input.ReadLine();
+        ++currentLine;
+    }
+    
+    // start parsing the configuration
+    while (!file.Eof())
+    {
+        wxString line = input.ReadLine();
+        line.Trim(true);
+        line.Trim(false);
+        
+        // we want empty lines (skipped) or lines starting with #
+        // if we encounter a line starting with !, we break out of here
+        if (line.GetChar(0) == '!')
+            break;
+        if (line.IsEmpty() || line.GetChar(0) != '#')
+            continue;
+        
+//        if (line.StartsWith("# PROP BASE Output_Dir "))
+        if (line.StartsWith("# PROP Output_Dir "))
+        {
+            line.Remove(0, 18);
+            line.Trim(true);
+            line.Trim(false);
+            wxString tmp = RemoveQuotes(line);
+            if (!line.IsEmpty())
+            {
+                wxFileName out = bt->GetOutputFilename();
+                out.SetPath(out.GetPath() + wxFileName::GetPathSeparator() + tmp);
+                bt->SetOutputFilename(out.GetFullPath());
+            }
+        }
+//        else if (line.StartsWith("# PROP BASE Intermediate_Dir "))
+        else if (line.StartsWith("# PROP Intermediate_Dir "))
+        {
+            line.Remove(0, 24);
+            line.Trim(true);
+            line.Trim(false);
+            wxString tmp = RemoveQuotes(line);
+            if (!line.IsEmpty())
+            {
+                bt->SetObjectOutput(tmp);
+            }
+        }
+        else if (line.StartsWith("# ADD BASE CPP "))
+        {
+            line.Remove(0, 15);
+            line.Trim(true);
+            line.Trim(false);
+            ProcessCompilerOptions(bt, line);
+        }
+        else if (line.StartsWith("# ADD CPP "))
+        {
+            line.Remove(0, 10);
+            line.Trim(true);
+            line.Trim(false);
+            ProcessCompilerOptions(bt, line);
+        }
+        else if (line.StartsWith("# ADD BASE LIB32 "))
+        {
+            line.Remove(0, 17);
+            line.Trim(true);
+            line.Trim(false);
+            ProcessLinkerOptions(bt, line);
+        }
+        else if (line.StartsWith("# ADD LIB32 "))
+        {
+            line.Remove(0, 12);
+            line.Trim(true);
+            line.Trim(false);
+            ProcessLinkerOptions(bt, line);
+        }
+    }
+    return true;
+}
+
+bool MSVCLoader::ParseSourceFiles()
+{
+    wxFileInputStream file(m_Filename.GetFullPath());
+    if (!file.Ok())
+        return false; // error opening file???
+
+    wxTextInputStream input(file);
+
+    // go to the begining of source files
+    int currentLine = 0;
+    while (!file.Eof() && currentLine < m_BeginTargetLine)
+    {
+        input.ReadLine();
+        ++currentLine;
+    }
+
+    while (!file.Eof())
+    {
+        wxString line = input.ReadLine();
+        line.Trim(true);
+        line.Trim(false);
+
+        // we 're only interested in lines starting with SOURCE=
+        if (!line.StartsWith("SOURCE="))
+            continue;
+        
+        line.Remove(0, 7);
+        line.Trim(true);
+        line.Trim(false);
+        
+        ProjectFile* pf = m_pProject->AddFile(0, RemoveQuotes(line));
+        if (pf)
+        {
+            // add it to all configurations, not just the first
+            for (int i = 1; i < m_pProject->GetBuildTargetsCount(); ++i)
+                pf->AddBuildTarget(m_pProject->GetBuildTarget(i)->GetTitle());
+        }
+    }
+    return true;
+}
+
+void MSVCLoader::ProcessCompilerOptions(ProjectBuildTarget* target, const wxString& opts)
 {
     wxArrayString array;
     array = GetArrayFromString(opts, " ");
@@ -209,72 +305,74 @@ void MSVCLoader::ProcessCompilerOptions(const wxString& opts)
         if (m_ConvertSwitches)
         {
             if (opt.Matches("/D"))
-                m_pProject->AddCompilerOption("-D" + RemoveQuotes(array[++i]));
+                target->AddCompilerOption("-D" + RemoveQuotes(array[++i]));
             else if (opt.Matches("/U"))
-                m_pProject->AddCompilerOption("-U" + RemoveQuotes(array[++i]));
+                target->AddCompilerOption("-U" + RemoveQuotes(array[++i]));
+            else if (opt.Matches("/Zi") || opt.Matches("/ZI"))
+                target->AddCompilerOption("-g");
             else if (opt.Matches("/I"))
-                m_pProject->AddIncludeDir(RemoveQuotes(array[++i]));
+                target->AddIncludeDir(RemoveQuotes(array[++i]));
             else if (opt.Matches("/W0"))
-                m_pProject->AddCompilerOption("-w");
+                target->AddCompilerOption("-w");
             else if (opt.Matches("/O1") ||
                     opt.Matches("/O2") ||
                     opt.Matches("/O3"))
-                m_pProject->AddCompilerOption("-O2");
+                target->AddCompilerOption("-O2");
             else if (opt.Matches("/W1") ||
                     opt.Matches("/W2") ||
                     opt.Matches("/W3"))
-                m_pProject->AddCompilerOption("-W");
+                target->AddCompilerOption("-W");
             else if (opt.Matches("/W4"))
-                m_pProject->AddCompilerOption("-Wall");
+                target->AddCompilerOption("-Wall");
             else if (opt.Matches("/WX"))
-                m_pProject->AddCompilerOption("-Werror");
+                target->AddCompilerOption("-Werror");
             else if (opt.Matches("/GX"))
-                m_pProject->AddCompilerOption("-fexceptions");
+                target->AddCompilerOption("-fexceptions");
             else if (opt.Matches("/Ob0"))
-                m_pProject->AddCompilerOption("-fno-inline");
+                target->AddCompilerOption("-fno-inline");
             else if (opt.Matches("/Ob2"))
-                m_pProject->AddCompilerOption("-finline-functions");
+                target->AddCompilerOption("-finline-functions");
             else if (opt.Matches("/Oy"))
-                m_pProject->AddCompilerOption("-fomit-frame-pointer");
+                target->AddCompilerOption("-fomit-frame-pointer");
             else if (opt.Matches("/GB"))
-                m_pProject->AddCompilerOption("-mcpu=pentiumpro -D_M_IX86=500");
+                target->AddCompilerOption("-mcpu=pentiumpro -D_M_IX86=500");
             else if (opt.Matches("/G6"))
-                m_pProject->AddCompilerOption("-mcpu=pentiumpro -D_M_IX86=600");
+                target->AddCompilerOption("-mcpu=pentiumpro -D_M_IX86=600");
             else if (opt.Matches("/G5"))
-                m_pProject->AddCompilerOption("-mcpu=pentium -D_M_IX86=500");
+                target->AddCompilerOption("-mcpu=pentium -D_M_IX86=500");
             else if (opt.Matches("/G4"))
-                m_pProject->AddCompilerOption("-mcpu=i486 -D_M_IX86=400");
+                target->AddCompilerOption("-mcpu=i486 -D_M_IX86=400");
             else if (opt.Matches("/G3"))
-                m_pProject->AddCompilerOption("-mcpu=i386 -D_M_IX86=300");
+                target->AddCompilerOption("-mcpu=i386 -D_M_IX86=300");
             else if (opt.Matches("/Za"))
-                m_pProject->AddCompilerOption("-ansi");
+                target->AddCompilerOption("-ansi");
             else if (opt.Matches("/Zp1"))
-                m_pProject->AddCompilerOption("-fpack-struct");
+                target->AddCompilerOption("-fpack-struct");
             else if (opt.Matches("/nologo"))
             {
                 // do nothing (ignore silently)
             }
             else
-                Manager::Get()->GetMessageManager()->DebugLog("Unknown compiler option: " + opt);
+                Manager::Get()->GetMessageManager()->DebugLog("Unhandled compiler option: " + opt);
         }
         else // !m_ConvertSwitches
         {
             // only differentiate includes and definitions
             if (opt.Matches("/I"))
-                m_pProject->AddIncludeDir(RemoveQuotes(array[++i]));
+                target->AddIncludeDir(RemoveQuotes(array[++i]));
             else if (opt.Matches("/D"))
-                m_pProject->AddCompilerOption("/D" + RemoveQuotes(array[++i]));
+                target->AddCompilerOption("/D" + RemoveQuotes(array[++i]));
             else if (opt.Matches("/U"))
-                m_pProject->AddCompilerOption("/U" + RemoveQuotes(array[++i]));
+                target->AddCompilerOption("/U" + RemoveQuotes(array[++i]));
             else if (opt.StartsWith("/Yu"))
                 Manager::Get()->GetMessageManager()->DebugLog("Ignoring precompiled headers option (/Yu)");
             else
-                m_pProject->AddCompilerOption(opt);
+                target->AddCompilerOption(opt);
         }
     }
 }
 
-void MSVCLoader::ProcessLinkerOptions(const wxString& opts)
+void MSVCLoader::ProcessLinkerOptions(ProjectBuildTarget* target, const wxString& opts)
 {
     wxArrayString array;
     array = GetArrayFromString(opts, " ");
@@ -286,97 +384,87 @@ void MSVCLoader::ProcessLinkerOptions(const wxString& opts)
         
         if (m_ConvertSwitches)
         {
-            if (opt.StartsWith("/dll"))
-            {
-                ProjectBuildTarget* bt = m_pProject->GetBuildTarget(0);
-                if (bt)
-                    bt->SetTargetType(ttDynamicLib);
-            }
-            else if (opt.StartsWith("/libpath:"))
+            if (opt.StartsWith("/libpath:"))
             {
                 opt.Remove(0, 9);
-                m_pProject->AddLibDir(RemoveQuotes(opt));
+                target->AddLibDir(RemoveQuotes(opt));
             }
             else if (opt.StartsWith("/base:"))
             {
                 opt.Remove(0, 6);
-                m_pProject->AddLinkerOption("--image-base " + RemoveQuotes(opt));
+                target->AddLinkerOption("--image-base " + RemoveQuotes(opt));
             }
             else if (opt.StartsWith("/implib:"))
             {
                 opt.Remove(0, 8);
-                m_pProject->AddLinkerOption("--implib " + RemoveQuotes(opt));
+                target->AddLinkerOption("--implib " + RemoveQuotes(opt));
             }
             else if (opt.StartsWith("/map:"))
             {
                 opt.Remove(0, 5);
-                m_pProject->AddLinkerOption("-Map " + RemoveQuotes(opt) + ".map");
-            }
-            else if (opt.StartsWith("/subsystem:"))
-            {
-                opt.Remove(0, 11);
-                ProjectBuildTarget* bt = 0L;
-                if (opt.Matches("windows"))
-                {
-                    bt = m_pProject->GetBuildTarget(0);
-                    if (bt)
-                        bt->SetTargetType(ttExecutable);
-                }
-                else if (opt.Matches("console"))
-                {
-                    bt = m_pProject->GetBuildTarget(0);
-                    if (bt)
-                        bt->SetTargetType(ttConsoleOnly);
-                }
-            }
-            else if (!opt.StartsWith("/"))
-            {
-                // probably linking lib
-                int idx = opt.Find(".lib");
-                if (idx != -1)
-                    opt.Remove(idx);
-    /* TODO (mandrav#1#): Make it compiler-agnostic */
-                m_pProject->AddLinkerOption("-l" + opt);
+                target->AddLinkerOption("-Map " + RemoveQuotes(opt) + ".map");
             }
             else if (opt.Matches("/nologo"))
             {
                 // do nothing (ignore silently)
+            }
+            else if (opt.StartsWith("/out:"))
+            {
+                // do nothing; it is handled below, in common options
             }
             else
                 Manager::Get()->GetMessageManager()->DebugLog("Unknown linker option: " + opt);
         }
         else // !m_ConvertSwitches
         {
-            if (opt.StartsWith("/dll"))
-            {
-                ProjectBuildTarget* bt = m_pProject->GetBuildTarget(0);
-                if (bt)
-                    bt->SetTargetType(ttDynamicLib);
-            }
-            else if (opt.StartsWith("/libpath:"))
+            if (opt.StartsWith("/libpath:"))
             {
                 opt.Remove(0, 9);
-                m_pProject->AddLibDir(RemoveQuotes(opt));
-            }
-            else if (opt.StartsWith("/subsystem:"))
-            {
-                opt.Remove(0, 11);
-                ProjectBuildTarget* bt = 0L;
-                if (opt.Matches("windows"))
-                {
-                    bt = m_pProject->GetBuildTarget(0);
-                    if (bt)
-                        bt->SetTargetType(ttExecutable);
-                }
-                else if (opt.Matches("console"))
-                {
-                    bt = m_pProject->GetBuildTarget(0);
-                    if (bt)
-                        bt->SetTargetType(ttConsoleOnly);
-                }
+                target->AddLibDir(RemoveQuotes(opt));
             }
             else
-                m_pProject->AddLinkerOption(opt);
+            {
+                // don't add linking lib (added below, in common options)
+                int idx = opt.Find(".lib");
+                if (idx == -1)
+                    target->AddLinkerOption(opt);
+            }
+        }
+
+        // common options
+        if (!opt.StartsWith("/"))
+        {
+            // probably linking lib
+            int idx = opt.Find(".lib");
+            if (idx != -1)
+            {
+                opt.Remove(idx);
+                target->AddLinkLib(opt);
+            }
+        }
+        else if (opt.StartsWith("/out:"))
+        {
+            opt.Remove(0, 5);
+            opt = RemoveQuotes(opt);
+            if (m_Type == ttStaticLib)
+            {
+                // convert lib filename based on compiler
+/* NOTE (mandrav#1#): I think I should move this code somewhere more accessible...
+I need it here and there... */
+                wxFileName orig = target->GetOutputFilename();
+                wxFileName newf = opt;
+                if (newf.IsRelative())
+                    newf.MakeAbsolute(m_pProject->GetBasePath());
+                Compiler* compiler = CompilerFactory::Compilers[m_pProject->GetCompilerIndex()];
+                newf.SetExt(compiler->GetSwitches().libExtension);
+                wxString name = newf.GetName();
+                wxString prefix = compiler->GetSwitches().libPrefix;
+                if (!prefix.IsEmpty() && !name.StartsWith(prefix))
+                    newf.SetName(prefix + name);
+                target->SetOutputFilename(newf.GetFullPath());
+            }
+            else
+                target->SetOutputFilename(opt);
         }
     }
 }

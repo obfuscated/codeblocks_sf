@@ -634,10 +634,11 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
     {
         m_pWorkspace->Save();
         delete m_pWorkspace;
+        m_pWorkspace = 0;
     }
+    CloseAllProjects();
     m_pWorkspace = new cbWorkspace(filename);
-    if (m_pWorkspace->IsOK())
-        m_pTree->SetItemText(m_TreeRoot, m_pWorkspace->GetTitle());
+    m_pTree->SetItemText(m_TreeRoot, m_pWorkspace->GetTitle());
     return m_pWorkspace->IsOK();
 }
 
