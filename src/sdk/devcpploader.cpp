@@ -30,19 +30,13 @@ bool DevCppLoader::Open(const wxString& filename)
     int unitCount;
     dev->Read("UnitCount", &unitCount, 0);
         
-    wxString path, tmp, title, output; 
+    wxString path, tmp, title, output, out_path, obj_path; 
     wxArrayString array;
     int typ;
         
     // read project options
     dev->Read("Name", &title, "");
     m_pProject->SetTitle(title);
-
-    dev->Read("Type", &typ, 0);
-    m_pProject->SetTargetType(TargetType(typ));
-
-    dev->Read("OverrideOutputName", &output, "");
-    m_pProject->SetOutputFilename(output);
 
     dev->Read("CppCompiler", &tmp, "");
     if (tmp.IsEmpty())
@@ -86,8 +80,28 @@ bool DevCppLoader::Open(const wxString& filename)
         dev->Read("Compile", &compile, false);
         dev->Read("CompileCpp", &compileCpp, true);
         dev->Read("Link", &link, true);
-        m_pProject->AddFile(0, tmp, compile || compileCpp, link);
+        ProjectFile* pf = m_pProject->AddFile(0, tmp, compile || compileCpp, link);
+        if (pf)
+            pf->compilerVar = compileCpp ? "CPP" : "CC";
     }
+    dev->SetPath("/Project");
+
+    ProjectBuildTarget* target = m_pProject->GetBuildTarget(0);
+    dev->Read("Type", &typ, 0);
+    target->SetTargetType(TargetType(typ));
+
+    if (dev->Read("OverrideOutput", 1) == 1)
+        dev->Read("OverrideOutputName", &output, "");
+    if (output.IsEmpty())
+        output = m_pProject->GetOutputFilename();
+    dev->Read("ExeOutput", &out_path, "");
+    if (!out_path.IsEmpty())
+        output = out_path + "\\" + output;
+    target->SetOutputFilename(output);
+
+    dev->Read("ObjectOutput", &obj_path, "");
+    if (!obj_path.IsEmpty())
+        target->SetObjectOutput(obj_path);
 
     delete dev;
 
