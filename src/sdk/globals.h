@@ -40,6 +40,8 @@ enum FileType
 	ftDevCppProject,
 	ftMSVCProject,
 	ftMSVSProject,
+	ftMSVCWorkspace,
+	ftMSVSWorkspace,
 	ftSource,
 	ftHeader,
 	ftObject,

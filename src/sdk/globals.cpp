@@ -126,6 +126,12 @@ FileType FileTypeOf(const wxString& filename)
 	else if (ext.Matches(MSVS_EXT))
 		return ftMSVSProject;
 
+	else if (ext.Matches(MSVC_WORKSPACE_EXT))
+		return ftMSVCWorkspace;
+
+	else if (ext.Matches(MSVS_WORKSPACE_EXT))
+		return ftMSVSWorkspace;
+
 	else if (ext.Matches(CPP_EXT) ||
 		ext.Matches(C_EXT) ||
 		ext.Matches(CC_EXT) ||

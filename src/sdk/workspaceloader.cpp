@@ -61,6 +61,10 @@ bool WorkspaceLoader::Open(const wxString& filename)
         GetpMsg()->DebugLog("No 'Workspace' element in file...");
         return false;
     }
+    m_Title = wksp->Attribute("title");
+    if (m_Title.IsEmpty())
+        m_Title = _("Workspace");
+
     proj = wksp->FirstChildElement("Project");
     if (!proj)
     {
@@ -112,7 +116,7 @@ bool WorkspaceLoader::Open(const wxString& filename)
     return true;
 }
 
-bool WorkspaceLoader::Save(const wxString& filename)
+bool WorkspaceLoader::Save(const wxString& title, const wxString& filename)
 {
     wxString buffer;
     wxArrayString array;
@@ -122,7 +126,7 @@ bool WorkspaceLoader::Save(const wxString& filename)
     buffer << "<?xml version=\"1.0\"?>" << '\n';
     buffer << "<!DOCTYPE Code::Blocks_workspace_file>" << '\n';
     buffer << "<Code::Blocks_workspace_file>" << '\n';
-    buffer << '\t' << "<Workspace>" << '\n';
+    buffer << '\t' << "<Workspace title=\"" << title << "\">" << '\n';
     
     for (unsigned int i = 0; i < arr->GetCount(); ++i)
     {

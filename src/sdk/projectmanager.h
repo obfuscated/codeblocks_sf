@@ -15,6 +15,7 @@ class cbProject;
 class wxImageList;
 class ProjectFile;
 class FilesGroupsAndMasks;
+class cbWorkspace;
 
 WX_DEFINE_ARRAY(cbProject*, ProjectsArray);
 
@@ -180,14 +181,20 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
 		  */
 		bool LoadWorkspace(const wxString& filename = "");
 		/** Save the workspace.
-		  * @param filename The workspace to save.
-		  * @return True if the workspace loads succefully, false if not.
+		  * @return True if the workspace saved succefully, false if not.
 		  */
-		bool SaveWorkspace(const wxString& filename = "");
+		bool SaveWorkspace();
+		/** Save the workspace under a different filename.
+		  * @param filename The workspace to save.
+		  * @return True if the workspace saved succefully, false if not.
+		  */
+		bool SaveWorkspaceAs(const wxString& filename);
+		/** Close the workspace. */
+		void CloseWorkspace();
 		/** Get the current workspace filename.
 		  * @return The current workspace filename.
 		  */
-        const wxString& GetWorkspace();
+        cbWorkspace* GetWorkspace();
 		/// Rebuild the project manager's tree.
         void RebuildTree();
 		/** Stop the tree control from updating.
@@ -245,7 +252,7 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
         cbProject* m_pActiveProject;
         wxImageList* m_pImages;
         ProjectsArray* m_pProjects;
-        wxString m_Workspace;
+        cbWorkspace* m_pWorkspace;
         bool m_TreeCategorize;
         bool m_TreeUseFolders;
 		FilesGroupsAndMasks* m_pFileGroups;

@@ -323,19 +323,19 @@
 			<Add library="libwxmsw$(WX_VER).a"/>
 			<Add directory="sdk/tinyxml"/>
 		</Linker>
-		<Unit filename="devel\share\CodeBlocks\images\codecompletion\readme.txt">
+		<Unit filename="devel\share\CodeBlocks\images\codecompletion\README.txt">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
 			<Option target="src"/>
 		</Unit>
-		<Unit filename="devel\share\CodeBlocks\plugins\readme.txt">
+		<Unit filename="devel\share\CodeBlocks\plugins\README.txt">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
 			<Option target="src"/>
 		</Unit>
-		<Unit filename="devel\share\CodeBlocks\templates\readme.txt">
+		<Unit filename="devel\share\CodeBlocks\templates\README.txt">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -1194,6 +1194,16 @@
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk\cbproject.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\cbworkspace.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\cbworkspace.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

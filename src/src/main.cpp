@@ -28,6 +28,7 @@
 #include "globals.h"
 #include "environmentsettingsdlg.h"
 #include "impexpconfig.h"
+#include "cbworkspace.h"
 
 #if defined(_MSC_VER) && defined( _DEBUG )
 	#define _CRTDBG_MAP_ALLOC
@@ -874,11 +875,12 @@ bool MainFrame::DoOpenFile(const wxString& filename, bool addToHistory)
 
 bool MainFrame::DoCloseCurrentWorkspace()
 {
-	if (m_pPrjMan->GetModified())
+    cbWorkspace* wksp = m_pPrjMan->GetWorkspace();
+	if (wksp && wksp->GetModified())
 	{
 		// workspace needs save
         wxString msg;
-        msg.Printf(_("Workspace '%s' is modified. Do you want to save it?"), m_pPrjMan->GetWorkspace().c_str());
+        msg.Printf(_("Workspace '%s' is modified. Do you want to save it?"), wksp->GetTitle().c_str());
         switch (wxMessageBox(msg,
                         _("Save workspace"),
                         wxYES_NO | wxCANCEL | wxICON_QUESTION))
@@ -1174,7 +1176,10 @@ void MainFrame::OnFileSaveAllFiles(wxCommandEvent& event)
 
 void MainFrame::OnFileSaveWorkspaceAs(wxCommandEvent& event)
 {
-    wxFileName fname(m_pPrjMan->GetWorkspace());
+    cbWorkspace* wksp = m_pPrjMan->GetWorkspace();
+    if (!wksp)
+        return;
+    wxFileName fname = wksp->GetFilename();
     
     wxFileDialog* dlg = new wxFileDialog(this,
                             _("Save workspace"),
@@ -1184,7 +1189,7 @@ void MainFrame::OnFileSaveWorkspaceAs(wxCommandEvent& event)
                             wxSAVE | wxHIDE_READONLY | wxOVERWRITE_PROMPT);
     if (dlg->ShowModal() != wxID_OK)
         return;
-    m_pPrjMan->SaveWorkspace(dlg->GetPath());
+    m_pPrjMan->SaveWorkspaceAs(dlg->GetPath());
 }
 
 void MainFrame::OnFileClose(wxCommandEvent& WXUNUSED(event))

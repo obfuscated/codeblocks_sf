@@ -42,6 +42,7 @@
 #include "projectsfilemasksdlg.h"
 #include "managerproxy.h"
 #include "multiselectdlg.h"
+#include "cbworkspace.h"
 
 ProjectManager* ProjectManager::Get(wxNotebook* parent)
 {   
@@ -155,7 +156,8 @@ END_EVENT_TABLE()
 // class constructor
 ProjectManager::ProjectManager(wxNotebook* parent)
 	: 
-	m_Modified(false),    
+	m_Modified(false),
+	m_pWorkspace(0),
     m_TreeCategorize(false),
     m_TreeUseFolders(true),
     m_TreeFreezeCounter(0)
@@ -210,6 +212,10 @@ ProjectManager::ProjectManager(wxNotebook* parent)
 ProjectManager::~ProjectManager()
 {
     SC_DESTRUCTOR_BEGIN
+
+    if (m_pWorkspace)
+        delete m_pWorkspace;
+    m_pWorkspace = 0;
 
 	Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
     
@@ -600,44 +606,50 @@ void ProjectManager::MoveProjectDown(cbProject* project, bool warpAround)
     SetModified(true);
 }
 
-const wxString& ProjectManager::GetWorkspace()
+cbWorkspace* ProjectManager::GetWorkspace()
 {
-    SANITY_CHECK(m_Workspace);
-    if (m_Workspace.IsEmpty())
-	{
-        m_Workspace = wxGetHomeDir();
-        m_Workspace << "/.CodeBlocks";
-        if (!wxDirExists(m_Workspace))
-            wxMkdir(m_Workspace, 0755);
-        m_Workspace << "/" << DEFAULT_WORKSPACE;
-		//m_Workspace = ConfigManager::Get()->Read("/app_path", ".") + "/" + DEFAULT_WORKSPACE;
-	}
-    return m_Workspace;
+    if (!m_pWorkspace)
+        m_pWorkspace = new cbWorkspace; // the "default" workspace
+    return m_pWorkspace;
 }
 
 bool ProjectManager::LoadWorkspace(const wxString& filename)
 {
     SANITY_CHECK(false);
-	m_Workspace = filename;
-	Manager::Get()->GetMessageManager()->DebugLog("Loading workspace \"%s\"", GetWorkspace().c_str());
-	WorkspaceLoader wsp;
-	bool ret = wsp.Open(GetWorkspace());
-	if (ret)
-		SetModified(false);
-	return ret;
+    if (m_pWorkspace)
+    {
+        m_pWorkspace->Save();
+        delete m_pWorkspace;
+    }
+    m_pWorkspace = new cbWorkspace(filename);
+    return m_pWorkspace->IsOK();
 }
 
-bool ProjectManager::SaveWorkspace(const wxString& filename)
+bool ProjectManager::SaveWorkspace()
 {
     SANITY_CHECK(false);
-    if (!(!m_Workspace.IsEmpty() && filename.IsEmpty()))
-        m_Workspace = filename;
-	Manager::Get()->GetMessageManager()->DebugLog("Saving workspace \"%s\"", GetWorkspace().c_str());
-	WorkspaceLoader wsp;
-	bool ret = wsp.Save(GetWorkspace());
-	if (ret)
-		SetModified(false);
-	return ret;
+    if (m_pWorkspace)
+        return m_pWorkspace->Save();
+    return true;
+}
+
+bool ProjectManager::SaveWorkspaceAs(const wxString& filename)
+{
+    SANITY_CHECK(false);
+    if (m_pWorkspace)
+        return m_pWorkspace->SaveAs(filename);
+    return true;
+}
+
+void ProjectManager::CloseWorkspace()
+{
+    SANITY_CHECK();
+    SaveWorkspace();
+    if (m_pWorkspace && !m_pWorkspace->IsDefault())
+    {
+        delete m_pWorkspace;
+        m_pWorkspace = new cbWorkspace;
+    }
 }
 
 void ProjectManager::FreezeTree()

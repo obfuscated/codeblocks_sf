@@ -207,12 +207,13 @@ void cbProject::ClearAllProperties()
 
 void cbProject::Open()
 {
+    m_Loaded = false;
+
 	if (!wxFileName::FileExists(m_Filename))
 	{
         wxString msg;
         msg.Printf(_("Project '%s' does not exist..."), m_Filename.c_str());
         wxMessageBox(msg, _("Error"), wxOK | wxCENTRE | wxICON_ERROR);
-        m_Loaded = false;
         return;
     }
 	
