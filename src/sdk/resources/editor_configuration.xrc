@@ -38,63 +38,104 @@
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
-                  <object class="wxFlexGridSizer">
-                    <cols>2</cols>
-                    <vgap>4</vgap>
-                    <hgap>8</hgap>
-                    <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkAutoIndent">
-                        <label>Auto indent</label>
-                        <checked>1</checked>
-                      </object>
-                    </object>
+                  <object class="wxStaticBoxSizer">
+                    <label>TAB options</label>
+                    <orient>wxVERTICAL</orient>
                     <object class="sizeritem">
                       <object class="wxCheckBox" name="chkUseTab">
                         <label>Use TAB character</label>
                       </object>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkShowIndentGuides">
-                        <label>Show indentation guides</label>
-                      </object>
+                      <flag>wxALL|wxGROW</flag>
+                      <border>8</border>
                     </object>
                     <object class="sizeritem">
                       <object class="wxCheckBox" name="chkTabIndents">
                         <label>TAB indents</label>
                         <checked>1</checked>
                       </object>
+                      <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                      <border>8</border>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkBackspaceUnindents">
-                        <label>Backspace unindents</label>
-                        <checked>1</checked>
+                      <object class="wxBoxSizer">
+                        <orient>wxHORIZONTAL</orient>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                            <label>TAB size in spaces:</label>
+                          </object>
+                          <flag>wxTOP</flag>
+                          <border>4</border>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxSpinCtrl" name="spnTabSize">
+                            <value>4</value>
+                            <min>1</min>
+                            <max>16</max>
+                          </object>
+                          <flag>wxLEFT|wxRIGHT</flag>
+                          <border>8</border>
+                        </object>
                       </object>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkWordWrap">
-                        <label>Word wrap</label>
-                      </object>
-                    </object>
-                    <growablecols>1</growablecols>
-                    <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkShowEOL">
-                        <label>Show end-of-line characters</label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkShowLineNumbers">
-                        <label>Show line numbers</label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkHighlightCaretLine">
-                        <label>Highlight line under caret</label>
-                        <checked>1</checked>
-                      </object>
+                      <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                      <border>8</border>
                     </object>
                   </object>
-                  <option>1</option>
-                  <flag>wxALL|wxEXPAND</flag>
+                  <flag>wxALL|wxGROW</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticBoxSizer">
+                    <label>Other options</label>
+                    <orient>wxVERTICAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxGridSizer">
+                        <cols>2</cols>
+                        <vgap>4</vgap>
+                        <hgap>8</hgap>
+                        <object class="sizeritem">
+                          <object class="wxCheckBox" name="chkAutoIndent">
+                            <label>Auto indent</label>
+                            <checked>1</checked>
+                          </object>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxCheckBox" name="chkShowEOL">
+                            <label>Show end-of-line characters</label>
+                          </object>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxCheckBox" name="chkShowIndentGuides">
+                            <label>Show indentation guides</label>
+                          </object>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxCheckBox" name="chkWordWrap">
+                            <label>Word wrap</label>
+                          </object>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxCheckBox" name="chkBackspaceUnindents">
+                            <label>Backspace unindents</label>
+                            <checked>1</checked>
+                          </object>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxCheckBox" name="chkShowLineNumbers">
+                            <label>Show line numbers</label>
+                          </object>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxCheckBox" name="chkHighlightCaretLine">
+                            <label>Highlight line under caret</label>
+                            <checked>1</checked>
+                          </object>
+                        </object>
+                      </object>
+                      <flag>wxALL|wxGROW</flag>
+                      <border>8</border>
+                    </object>
+                  </object>
+                  <flag>wxALL|wxGROW</flag>
                   <border>8</border>
                 </object>
               </object>

@@ -335,7 +335,7 @@ void cbEditor::SetEditorStyle()
     m_pControl->StyleSetFont(wxSTC_STYLE_DEFAULT, font);
     m_pControl->StyleClearAll();
 
-    m_pControl->SetTabWidth(4);
+    m_pControl->SetTabWidth(ConfigManager::Get()->Read("/editor/tab_size", 4));
 
     // line numbering
    	if (ConfigManager::Get()->Read("/editor/show_line_numbers", 0L))

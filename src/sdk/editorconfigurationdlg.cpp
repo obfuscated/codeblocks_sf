@@ -78,6 +78,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
    	XRCCTRL(*this, "chkShowEOL", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/editor/show_eol", 0l));
    	XRCCTRL(*this, "chkShowLineNumbers", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/editor/show_line_numbers", 0l));
    	XRCCTRL(*this, "chkHighlightCaretLine", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/editor/highlight_caret_line", 1));
+   	XRCCTRL(*this, "spnTabSize", wxSpinCtrl)->SetValue(ConfigManager::Get()->Read("/editor/tab_size", 4));
 	//folding
    	XRCCTRL(*this, "chkEnableFolding", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/editor/folding/show_folds", 1));
    	XRCCTRL(*this, "chkFoldOnOpen", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/editor/folding/fold_all_on_open", 0L));
@@ -374,6 +375,7 @@ void EditorConfigurationDlg::OnOK(wxCommandEvent& event)
    	ConfigManager::Get()->Write("/editor/show_eol", 			XRCCTRL(*this, "chkShowEOL", wxCheckBox)->GetValue());
    	ConfigManager::Get()->Write("/editor/show_line_numbers", 	XRCCTRL(*this, "chkShowLineNumbers", wxCheckBox)->GetValue());
    	ConfigManager::Get()->Write("/editor/highlight_caret_line", XRCCTRL(*this, "chkHighlightCaretLine", wxCheckBox)->GetValue());
+   	ConfigManager::Get()->Write("/editor/tab_size",             XRCCTRL(*this, "spnTabSize", wxSpinCtrl)->GetValue());
 	//folding
    	ConfigManager::Get()->Write("/editor/folding/show_folds", 			XRCCTRL(*this, "chkEnableFolding", wxCheckBox)->GetValue());
    	ConfigManager::Get()->Write("/editor/folding/fold_all_on_open", 	XRCCTRL(*this, "chkFoldOnOpen", wxCheckBox)->GetValue());
