@@ -18,6 +18,7 @@ bool wxSplitPanel::Create(wxWindow* parent, wxWindowID id,
     if(!wxPanel::Create(parent,id,pos,size,style,name))
         return false;
     m_splitter = new wxSplitterWindow(this,-1);
+    m_splitter->SetMinimumPaneSize(20);
     m_sizer = new wxBoxSizer(wxVERTICAL);
     SetSizer(m_sizer);
     m_sizer->Add( m_splitter, 1, wxGROW, 0 );
