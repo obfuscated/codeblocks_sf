@@ -1,0 +1,56 @@
+#!/bin/sh
+
+ZIPCMD="zip -j9"
+
+echo Compressing core UI resources
+${ZIPCMD} devel/share/CodeBlocks/resources.zip src/resources/*.xrc > /dev/null
+${ZIPCMD} devel/share/CodeBlocks/manager_resources.zip sdk/resources/*.xrc > /dev/null
+echo Compressing plugins UI resources
+${ZIPCMD} devel/share/CodeBlocks/astyle.zip plugins/astyle/resources/*.xrc > /dev/null
+${ZIPCMD} devel/share/CodeBlocks/plugin_wizard.zip plugins/pluginwizard/resources/*.xrc > /dev/null
+${ZIPCMD} devel/share/CodeBlocks/class_wizard.zip plugins/classwizard/resources/*.xrc > /dev/null
+${ZIPCMD} devel/share/CodeBlocks/code_completion.zip plugins/codecompletion/resources/*.xrc > /dev/null
+${ZIPCMD} devel/share/CodeBlocks/compiler_gcc.zip plugins/compilergcc/resources/*.xrc > /dev/null
+${ZIPCMD} devel/share/CodeBlocks/todo.zip plugins/todo/resources/*.xrc > /dev/null
+
+ZIPCMD=
+
+echo Copying files
+cp -f devel/share/CodeBlocks/*.zip output/share/CodeBlocks > /dev/null
+cp -f src/resources/images/*.png devel/share/CodeBlocks/images > /dev/null
+cp -f src/resources/images/*.png output/share/CodeBlocks/images > /dev/null
+cp -f plugins/codecompletion/resources/images/*.png devel/share/CodeBlocks/images/codecompletion > /dev/null
+cp -f plugins/codecompletion/resources/images/*.png output/share/CodeBlocks/images/codecompletion > /dev/null
+cp -f templates/*.c* output/share/CodeBlocks/templates > /dev/null
+cp -f templates/*.h* output/share/CodeBlocks/templates > /dev/null
+cp -f templates/*.template output/share/CodeBlocks/templates > /dev/null
+cp -f templates/*.png output/share/CodeBlocks/templates > /dev/null
+cp -f templates/*.c* devel/share/CodeBlocks/templates > /dev/null
+cp -f templates/*.h* devel/share/CodeBlocks/templates > /dev/null
+cp -f templates/*.template devel/share/CodeBlocks/templates > /dev/null
+cp -f templates/*.png devel/share/CodeBlocks/templates > /dev/null
+cp -f tips.txt devel > /dev/null
+cp -f tips.txt output > /dev/null
+cp -f tools/ConsoleRunner/console_runner*.exe output > /dev/null
+cp -f tools/ConsoleRunner/console_runner*.exe devel > /dev/null
+cp -f devel/*.exe output > /dev/null
+cp -f devel/*.so output > /dev/null
+cp -f devel/share/CodeBlocks/plugins/*.so output/share/CodeBlocks/plugins > /dev/null
+echo Stripping debug info from output tree
+strip output/*.exe
+strip output/*.so
+strip output/share/CodeBlocks/plugins/*.so
+
+echo Creating launch-scripts
+echo -e "#!/bin/sh\n\n" > output/run.sh
+echo -n "APP_DIR=" >> output/run.sh
+echo `pwd`/output >> output/run.sh
+echo "export LD_LIBRARY_PATH=\$APP_DIR:\$LD_LIBRARY_PATH" >> output/run.sh
+echo "\$APP_DIR/codeblocks.exe --prefix=\$APP_DIR" >> output/run.sh
+chmod +x output/run.sh
+echo -e "#!/bin/sh\n\n" > devel/run.sh
+echo -n "APP_DIR=" >> devel/run.sh
+echo `pwd`/output >> devel/run.sh
+echo "export LD_LIBRARY_PATH=\$APP_DIR:\$LD_LIBRARY_PATH" >> devel/run.sh
+echo "\$APP_DIR/codeblocks.exe --prefix=\$APP_DIR" >> devel/run.sh
+chmod +x devel/run.sh

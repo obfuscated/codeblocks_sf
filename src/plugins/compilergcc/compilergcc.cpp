@@ -1045,6 +1045,7 @@ void CompilerGCC::OnExportMakefile(wxCommandEvent& event)
     }
     else
     {
+        wxSetWorkingDirectory(m_Project->GetBasePath());
         MakefileGenerator generator(this, m_Project, makefile, m_PageIndex);
         generator.CreateMakefile();
     }

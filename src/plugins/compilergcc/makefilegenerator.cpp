@@ -1241,9 +1241,10 @@ void MakefileGenerator::DoPrepareValidTargets()
 
 bool MakefileGenerator::IsTargetValid(ProjectBuildTarget* target)
 {
+    bool hasBin = target->GetTargetType() != 4; // is not "commands-only" target
     bool hasCmds = !target->GetCommandsAfterBuild().IsEmpty() ||
                     !target->GetCommandsBeforeBuild().IsEmpty();
-	return hasCmds || m_LinkableTargets.Index(target) != -1;
+	return hasBin && (hasCmds || m_LinkableTargets.Index(target) != -1);
 }
 
 // WARNING: similar function in DirectCommands too.

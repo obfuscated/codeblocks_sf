@@ -98,6 +98,7 @@ Compiler::CompilerLineType CompilerMINGW::CheckForWarningsAndErrors(const wxStri
     wxRegEx reErrorLine(".*:[0-9]+:.*");
     wxRegEx reDetailedErrorLine("([ \tA-Za-z0-9_:\\-\\+/\\.]+):([0-9]+):[ \t](.*)");
     wxRegEx reDetailedPreProcErrorLine("([ \tA-Za-z0-9_:\\-\\+/\\.]+):([0-9]+):[0-9]+:[ \t](.*)");
+    wxRegEx reDetailedLinkerErrorLine("([ \tA-Za-z0-9_\\-\\+/\\.]+):[ \t](undefined reference.*)"); // this doesn't expect driver letter...
 
     if (reErrorLine.Matches(line))
     {
@@ -124,6 +125,13 @@ Compiler::CompilerLineType CompilerMINGW::CheckForWarningsAndErrors(const wxStri
         m_ErrorFilename = "";
         m_ErrorLine = "";
         m_Error = reFatalErrorLine.GetMatch(line, 1);
+    }
+    else if (reDetailedLinkerErrorLine.Matches(line))
+    {
+        ret = Compiler::cltError;
+        m_ErrorFilename = reDetailedLinkerErrorLine.GetMatch(line, 1);
+        m_ErrorLine = "";
+        m_Error = reDetailedLinkerErrorLine.GetMatch(line, 2);
     }
     return ret;
 }

@@ -6,6 +6,7 @@
 		<Option makefile="Makefile.unix"/>
 		<Option makefile_is_custom="0"/>
 		<Option default_target="2"/>
+		<Option compiler="0"/>
 		<Build>
 			<Target title="tinyXML">
 				<Option output="sdk\tinyxml\libtxml.a"/>
@@ -13,6 +14,7 @@
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="2"/>
+				<Option compiler="0"/>
 			</Target>
 			<Target title="sdk">
 				<Option output="devel\libcodeblocks.so"/>
@@ -20,6 +22,7 @@
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
+				<Option compiler="0"/>
 				<Option parameters="--debug-log --no-check-associations"/>
 				<Option projectLinkerOptionsRelation="2"/>
 				<Compiler>
@@ -40,6 +43,7 @@
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="0"/>
+				<Option compiler="0"/>
 				<Option parameters="--debug-log --no-check-associations -ns"/>
 				<Option projectLinkerOptionsRelation="2"/>
 				<Option projectIncludeDirsRelation="2"/>
@@ -65,6 +69,7 @@
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
+				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="2"/>
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
@@ -89,6 +94,7 @@
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
+				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="2"/>
 				<Option projectIncludeDirsRelation="2"/>
 				<Option projectLibDirsRelation="2"/>
@@ -114,6 +120,7 @@
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
+				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="2"/>
 				<Option projectIncludeDirsRelation="2"/>
 				<Option projectLibDirsRelation="2"/>
@@ -139,6 +146,7 @@
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
+				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="2"/>
 				<Option projectIncludeDirsRelation="2"/>
 				<Option projectLibDirsRelation="2"/>
@@ -164,6 +172,7 @@
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
+				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="2"/>
 				<Option projectIncludeDirsRelation="2"/>
 				<Option projectLibDirsRelation="2"/>
@@ -189,6 +198,7 @@
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
+				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="2"/>
 				<Option projectIncludeDirsRelation="2"/>
 				<Option projectLibDirsRelation="2"/>
@@ -214,6 +224,7 @@
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
+				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="2"/>
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
@@ -235,6 +246,7 @@
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
+				<Option compiler="0"/>
 				<Option includeInTargetAll="0"/>
 				<Option projectIncludeDirsRelation="2"/>
 				<Option projectLibDirsRelation="2"/>
@@ -258,51 +270,10 @@
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="4"/>
+				<Option compiler="0"/>
 				<Option includeInTargetAll="0"/>
 				<ExtraCommands>
-					<Add before="cd src/resources ${AMP}${AMP} $(ZIP) ../../devel/share/CodeBlocks/resources.zip *.xrc > nul"/>
-					<Add before="cd sdk/resources ${AMP}${AMP} $(ZIP) ../../devel/share/CodeBlocks/manager_resources.zip *.xrc > nul"/>
-					<Add before="cd plugins/astyle/resources ${AMP}${AMP} $(ZIP) ../../../devel/share/CodeBlocks/astyle.zip *.xrc > nul"/>
-					<Add before="cd plugins/pluginwizard/resources ${AMP}${AMP} $(ZIP) ../../../devel/share/CodeBlocks/plugin_wizard.zip *.xrc > nul"/>
-					<Add before="cd plugins/classwizard/resources ${AMP}${AMP} $(ZIP) ../../../devel/share/CodeBlocks/class_wizard.zip *.xrc > nul"/>
-					<Add before="cd plugins/codecompletion/resources ${AMP}${AMP} $(ZIP) ../../../devel/share/CodeBlocks/code_completion.zip *.xrc > nul"/>
-					<Add before="cd plugins/compilergcc/resources ${AMP}${AMP} $(ZIP) ../../../devel/share/CodeBlocks/compiler_gcc.zip *.xrc > nul"/>
-					<Add before="cd plugins/todo/resources ${AMP}${AMP} $(ZIP) ../../../devel/share/CodeBlocks/todo.zip *.xrc > nul"/>
-					<Add before="cp -f devel/share/CodeBlocks/*.zip output/share/CodeBlocks"/>
-					<Add before="cp -f src/resources/images/*.png devel/share/CodeBlocks/images"/>
-					<Add before="cp -f src/resources/images/*.png output/share/CodeBlocks/images"/>
-					<Add before="cp -f plugins/codecompletion/resources/images/*.png devel/share/CodeBlocks/images/codecompletion"/>
-					<Add before="cp -f plugins/codecompletion/resources/images/*.png output/share/CodeBlocks/images/codecompletion"/>
-					<Add before="cp -f templates/*.c* output/share/CodeBlocks/templates"/>
-					<Add before="cp -f templates/*.h* output/share/CodeBlocks/templates"/>
-					<Add before="cp -f templates/*.template output/share/CodeBlocks/templates"/>
-					<Add before="cp -f templates/*.png output/share/CodeBlocks/templates"/>
-					<Add before="cp -f templates/*.c* devel/share/CodeBlocks/templates"/>
-					<Add before="cp -f templates/*.h* devel/share/CodeBlocks/templates"/>
-					<Add before="cp -f templates/*.template devel/share/CodeBlocks/templates"/>
-					<Add before="cp -f templates/*.png devel/share/CodeBlocks/templates"/>
-					<Add before="cp -f tips.txt devel"/>
-					<Add before="cp -f tips.txt output"/>
-					<Add before="cp -f tools/ConsoleRunner/console_runner.exe output"/>
-					<Add before="cp -f tools/ConsoleRunner/console_runner.exe devel"/>
-					<Add before="cp -f devel/*.exe output"/>
-					<Add before="cp -f devel/*.so output"/>
-					<Add before="cp -f devel/share/CodeBlocks/plugins/*.so output/share/CodeBlocks/plugins"/>
-					<Add before="echo -e &quot;#!/bin/sh\n\n&quot; > output/run.sh"/>
-					<Add before="echo -n &quot;APP_DIR=&quot; >> output/run.sh"/>
-					<Add before="echo `pwd`/output >> output/run.sh"/>
-					<Add before="echo &quot;export LD_LIBRARY_PATH=\$$APP_DIR:\$$LD_LIBRARY_PATH&quot; >> output/run.sh"/>
-					<Add before="echo &quot;\$$APP_DIR/codeblocks.exe --prefix=\$$APP_DIR&quot; >> output/run.sh"/>
-					<Add before="chmod +x output/run.sh"/>
-					<Add before="echo -e &quot;#!/bin/sh\n\n&quot; > devel/run.sh"/>
-					<Add before="echo -n &quot;APP_DIR=&quot; >> devel/run.sh"/>
-					<Add before="echo `pwd`/output >> devel/run.sh"/>
-					<Add before="echo &quot;export LD_LIBRARY_PATH=\$$APP_DIR:\$$LD_LIBRARY_PATH&quot; >> devel/run.sh"/>
-					<Add before="echo &quot;\$$APP_DIR/codeblocks.exe --prefix=\$$APP_DIR&quot; >> devel/run.sh"/>
-					<Add before="chmod +x devel/run.sh"/>
-					<Add before="strip output/*.exe"/>
-					<Add before="strip output/*.so"/>
-					<Add before="strip output/share/CodeBlocks/plugins/*.so"/>
+					<Add before="sh update"/>
 				</ExtraCommands>
 			</Target>
 			<Target title="console_runner">
@@ -311,6 +282,7 @@
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="1"/>
+				<Option compiler="0"/>
 				<Option projectCompilerOptionsRelation="1"/>
 				<Option projectLinkerOptionsRelation="1"/>
 				<Option projectIncludeDirsRelation="2"/>
@@ -376,6 +348,16 @@
 			<Option link="0"/>
 			<Option target="plugin_CompilerGCC"/>
 		</Unit>
+		<Unit filename="plugins/compilergcc/directcommands.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/directcommands.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
 		<Unit filename="plugins\astyle\asstreamiterator.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="plugin_Astyle"/>
@@ -408,6 +390,7 @@
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
+			<Option objectName="plugins\astyle\astyle\Makefile"/>
 			<Option target="plugin_Astyle"/>
 		</Unit>
 		<Unit filename="plugins\astyle\astyle\astyle.h">
@@ -997,6 +980,16 @@
 			<Option compile="0"/>
 			<Option link="0"/>
 			<Option target="plugin_XPManifest"/>
+		</Unit>
+		<Unit filename="sdk/autodetectcompilers.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk/autodetectcompilers.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk/msvc7loader.cpp">
 			<Option compilerVar="CPP"/>
