@@ -8,7 +8,7 @@
 #include "sanitycheck.h"
 
 // New Feature: Opened Files tree in Projects tab
-#define use_openedfilestree
+#define USE_OPENFILES_TREE
 
 #include "cbeditor.h"
 #include "cbproject.h"
@@ -29,7 +29,7 @@ class wxNotebook;
 class EditorColorSet;
 class cbProject;
 
-#ifdef use_openedfilestree
+#ifdef USE_OPENFILES_TREE
 class MiscTreeItemData;
 
 class DLLIMPORT EditorTreeData : public MiscTreeItemData
@@ -86,10 +86,10 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         cbEditor* New();
         bool UpdateProjectFiles(cbProject* project);
         bool SwapActiveHeaderSource();
-        bool CloseActive(bool dontsave=false);
-        bool Close(const wxString& filename,bool dontsave=false);
-        bool Close(cbEditor* editor,bool dontsave=false);
-        bool Close(int index,bool dontsave=false);
+        bool CloseActive(bool dontsave = false);
+        bool Close(const wxString& filename,bool dontsave = false);
+        bool Close(cbEditor* editor,bool dontsave = false);
+        bool Close(int index,bool dontsave = false);
 
         // If file is modified, queries to save (yes/no/cancel). 
         // Returns false on "cancel".
@@ -107,11 +107,18 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         int Find(cbEditor* editor, cbFindReplaceData* data);
         int Replace(cbEditor* editor, cbFindReplaceData* data);
         int FindNext(bool goingDown);
-        
+
         /** Check if one of the open files has been modified outside the IDE. If so, ask to reload it. */
         void CheckForExternallyModifiedFiles();
         
-        #ifdef use_openedfilestree
+// TODO (rick#1#): check if all these belong to the public section of the class...
+        #ifdef USE_OPENFILES_TREE
+        /// Is the opened files tree supported? (depends on platform)
+        bool OpenFilesTreeSupported();
+        /// Show/hide the opened files tree
+        void ShowOpenFilesTree(bool show);
+        /// Return true if opened files tree is visible, false if not
+        bool IsOpenFilesTreeVisible();
         /** Builds Opened Files tree in the Projects tab
           */
         wxTreeCtrl *EditorManager::GetTree();
@@ -143,9 +150,9 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         cbFindReplaceData* m_LastFindReplaceData;
         EditorColorSet* m_Theme;
         EditorInterfaceType m_IntfType;
-        #ifdef use_openedfilestree
+        #ifdef USE_OPENFILES_TREE
         wxImageList* m_pImages;
-        wxTreeCtrl *m_pTree;
+        wxTreeCtrl* m_pTree;
         wxTreeItemId m_TreeOpenedFiles;
         #endif
         wxString m_LastActiveFile;

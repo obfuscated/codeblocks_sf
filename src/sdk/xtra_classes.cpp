@@ -30,16 +30,18 @@ void wxSplitPanel::RefreshSplitter(int idtop,int idbottom,int sashPosition)
     wxWindow *topwin = m_splitter->FindWindowById(idtop);
     wxWindow *bottomwin = m_splitter->FindWindowById(idbottom);
     m_splitter->Freeze();
-    if(m_splitter->IsSplit())
-       { m_splitter->Unsplit(); }
-    if((topwin) && (bottomwin))
+    if(topwin && topwin->IsShown() && bottomwin && bottomwin->IsShown())
     {
         m_splitter->SplitHorizontally(topwin,bottomwin);
     }
     else
     {
-        wxWindow *thewin = (topwin!=0 ? topwin : bottomwin);
-            m_splitter->Initialize(thewin);
+        wxWindow* thewin = 0;
+        if (topwin && topwin->IsShown())
+            thewin = topwin;
+        else if (bottomwin && bottomwin->IsShown())
+            thewin = bottomwin;
+        m_splitter->Initialize(thewin);
     }
     if(sashPosition)
     {

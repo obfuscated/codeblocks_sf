@@ -48,12 +48,12 @@ WX_DEFINE_LIST(EditorsList);
 #define MIN(a,b) (a<b?a:b)
 #define MAX(a,b) (a>b?a:b)
 
-// #define dont_build_opened_files_tree
+//#define DONT_USE_OPENFILES_TREE
 
 int ID_EditorManager = wxNewId();
 
 BEGIN_EVENT_TABLE(EditorManager,wxEvtHandler)
-#ifdef use_openedfilestree
+#ifdef USE_OPENFILES_TREE
     EVT_UPDATE_UI(ID_EditorManager,EditorManager::OnUpdateUI)
     EVT_TREE_SEL_CHANGING(ID_EditorManager, EditorManager::OnTreeItemActivated)
     EVT_TREE_ITEM_ACTIVATED(ID_EditorManager, EditorManager::OnTreeItemActivated)
@@ -99,9 +99,10 @@ EditorManager::EditorManager(wxWindow* parent)
 	SC_CONSTRUCTOR_BEGIN
 	EditorManagerProxy::Set(this);
 	m_EditorsList.Clear();
-	InitPane();
+    #ifdef USE_OPENFILES_TREE
+	ShowOpenFilesTree(ConfigManager::Get()->Read("/editor/show_opened_files_tree", true));
+	#endif
 	m_Theme = new EditorColorSet(ConfigManager::Get()->Read("/editor/color_sets/active_color_set", COLORSET_DEFAULT));
-
 	ConfigManager::AddConfiguration(_("Editor"), "/editor");
 	Manager::Get()->GetAppWindow()->PushEventHandler(this);
 }
@@ -280,7 +281,7 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos)
             }
         }
     }
-    #ifdef use_openedfilestree
+    #ifdef USE_OPENFILES_TREE
     AddFiletoTree(ed);
     #endif
 
@@ -324,7 +325,7 @@ cbEditor* EditorManager::New()
 
 	ed->SetColorSet(m_Theme);
     m_EditorsList.Append(ed);
-    #ifdef use_openedfilestree
+    #ifdef USE_OPENFILES_TREE
     AddFiletoTree(ed);
     #endif
 	ed->Show(true);
@@ -401,7 +402,7 @@ bool EditorManager::CloseAllExcept(cbEditor* editor,bool dontsave)
         else
             node = node->GetNext();
     }
-    #ifdef use_openedfilestree
+    #ifdef USE_OPENFILES_TREE
     RebuildOpenedFilesTree();
     #endif
     return count == (editor ? 1 : 0);
@@ -451,7 +452,7 @@ bool EditorManager::Close(cbEditor* editor,bool dontsave)
             if(!dontsave)
                 if(!QueryClose(editor))
                     return false;
-			#ifdef use_openedfilestree
+			#ifdef USE_OPENFILES_TREE
 			DeleteFilefromTree(editor->GetFilename());
 			#endif
 			editor->Destroy();
@@ -972,8 +973,51 @@ int EditorManager::FindNext(bool goingDown)
 	return Find(GetActiveEditor(), m_LastFindReplaceData);
 }
 
-#ifdef use_openedfilestree
-wxTreeCtrl *EditorManager::GetTree()
+#ifdef USE_OPENFILES_TREE
+bool EditorManager::OpenFilesTreeSupported()
+{
+    #if defined(__WXGTK__) || defined(DONT_USE_OPENFILES_TREE)
+    return false;
+    #else
+    return true;
+    #endif
+}
+
+void EditorManager::ShowOpenFilesTree(bool show)
+{
+    static int s_SashPosition = 200;
+
+    if (!OpenFilesTreeSupported())
+        return;
+    if (!m_pTree)
+        InitPane();
+    if (!m_pTree)
+        return;
+    if(Manager::isappShuttingDown())
+        return;
+    wxSplitPanel* mypanel = (wxSplitPanel*)(Manager::Get()->GetNotebookPage("Projects",wxTAB_TRAVERSAL | wxCLIP_CHILDREN,true));
+    wxSplitterWindow* mysplitter = mypanel->GetSplitter();
+    if (show && !IsOpenFilesTreeVisible())
+    {
+        m_pTree->Show(true);
+        mypanel->RefreshSplitter(ID_EditorManager,ID_ProjectManager,s_SashPosition);
+    }
+    else if (!show && IsOpenFilesTreeVisible())
+    {
+        s_SashPosition = mysplitter->GetSashPosition();
+        m_pTree->Show(false);
+        mypanel->RefreshSplitter(ID_EditorManager,ID_ProjectManager,s_SashPosition);
+    }
+    // update user prefs
+    ConfigManager::Get()->Write("/editor/show_opened_files_tree", show);
+}
+
+bool EditorManager::IsOpenFilesTreeVisible()
+{
+    return m_pTree && m_pTree->IsShown();
+}
+
+wxTreeCtrl* EditorManager::GetTree()
 {
     SANITY_CHECK(0L);
     return m_pTree;
@@ -1107,11 +1151,8 @@ bool EditorManager::RenameTreeFile(const wxString& oldname, const wxString& newn
 
 void EditorManager::InitPane()
 {
-    #ifdef __WXGTK__
+    #if defined(__WXGTK__) || defined(DONT_USE_OPENFILES_TREE)
         return; // wxGTK uses Tabs, no need for the tree
-    #endif
-    #ifdef dont_build_opened_files_tree
-        return;
     #endif
 
     SANITY_CHECK();
@@ -1128,13 +1169,9 @@ void EditorManager::InitPane()
 
 void EditorManager::BuildOpenedFilesTree(wxWindow* parent)
 {
-    #ifdef __WXGTK__
+    #if defined(__WXGTK__) || defined(DONT_USE_OPENFILES_TREE)
         return; // wxGTK uses Tabs, no need for the tree
     #endif
-    #ifdef dont_build_opened_files_tree
-        return;
-    #endif
-    
     SANITY_CHECK();
     if(m_pTree)
         return;
@@ -1159,13 +1196,11 @@ void EditorManager::BuildOpenedFilesTree(wxWindow* parent)
 
 void EditorManager::RebuildOpenedFilesTree(wxTreeCtrl *tree)
 {    
-    #ifdef __WXGTK__
+    #if defined(__WXGTK__) || defined(DONT_USE_OPENFILES_TREE)
         return; // wxGTK uses Tabs, no need for the tree
     #endif
-    #ifdef dont_build_opened_files_tree
-        return;
-    #endif
     SANITY_CHECK();
+
     if(Manager::isappShuttingDown())
         return;
     if(!tree)
@@ -1194,11 +1229,8 @@ void EditorManager::RebuildOpenedFilesTree(wxTreeCtrl *tree)
 
 void EditorManager::RefreshOpenedFilesTree(bool force)
 {
-    #ifdef __WXGTK__
+    #if defined(__WXGTK__) || defined(DONT_USE_OPENFILES_TREE)
         return; // wxGTK uses Tabs, no need for the tree
-    #endif
-    #ifdef dont_build_opened_files_tree
-        return;
     #endif
     SANITY_CHECK();
     if(Manager::isappShuttingDown())

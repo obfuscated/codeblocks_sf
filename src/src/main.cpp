@@ -104,6 +104,7 @@ int idEditCommentSelected = XRCID("idEditCommentSelected");
 
 int idViewToolMain = XRCID("idViewToolMain");
 int idViewManager = XRCID("idViewManager");
+int idViewOpenFilesTree = XRCID("idViewOpenFilesTree");
 int idViewMessageManager = XRCID("idViewMessageManager");
 int idViewStatusbar = XRCID("idViewStatusbar");
 int idViewFocusEditor = XRCID("idViewFocusEditor");
@@ -243,6 +244,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idViewToolMain, MainFrame::OnToggleBar)
     EVT_MENU(idViewMessageManager, MainFrame::OnToggleBar)
     EVT_MENU(idViewManager, MainFrame::OnToggleBar)
+    EVT_MENU(idViewOpenFilesTree, MainFrame::OnToggleOpenFilesTree)
     EVT_MENU(idViewStatusbar, MainFrame::OnToggleStatusBar)
     EVT_MENU(idViewFocusEditor, MainFrame::OnFocusEditor)
     EVT_MENU(idViewFullScreen, MainFrame::OnToggleFullScreen)
@@ -1564,6 +1566,7 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
 
     mbar->Check(idViewToolMain, m_pToolbar && m_pToolbar->IsShown());
     mbar->Check(idViewManager, m_pLeftSash && m_pLeftSash->IsShown());
+    mbar->Check(idViewOpenFilesTree, m_pEdMan->IsOpenFilesTreeVisible());
     mbar->Check(idViewMessageManager, m_pBottomSash && m_pBottomSash->IsShown());
     mbar->Check(idViewStatusbar, GetStatusBar() && GetStatusBar()->IsShown());
     mbar->Check(idViewFullScreen, IsFullScreen());
@@ -1615,6 +1618,12 @@ void MainFrame::OnEditorUpdateUI(CodeBlocksEvent& event)
 		DoUpdateStatusBar();
 	}
 	event.Skip();
+}
+
+void MainFrame::OnToggleOpenFilesTree(wxCommandEvent& event)
+{
+    if (m_pEdMan->OpenFilesTreeSupported())
+        m_pEdMan->ShowOpenFilesTree(!m_pEdMan->IsOpenFilesTreeVisible());
 }
 
 void MainFrame::OnToggleBar(wxCommandEvent& event)

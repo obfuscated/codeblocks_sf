@@ -97,6 +97,7 @@ class MainFrame : public wxMDIParentFrame
 
         void OnSize(wxSizeEvent& event);
         void OnToggleBar(wxCommandEvent& event);
+        void OnToggleOpenFilesTree(wxCommandEvent& event);
         void OnToggleStatusBar(wxCommandEvent& event);
         void OnFocusEditor(wxCommandEvent& event);
         void OnToggleFullScreen(wxCommandEvent& event);

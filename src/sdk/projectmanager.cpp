@@ -1041,7 +1041,7 @@ void ProjectManager::DoOpenSelectedFile()
 void ProjectManager::OnProjectFileActivated(wxTreeEvent& event)
 {
     SANITY_CHECK();
-    #ifdef use_openedfilestree
+    #ifdef USE_OPENFILES_TREE
     if(!MiscTreeItemData::OwnerCheck(event,m_pTree,this))
         return;
     #endif
@@ -1085,7 +1085,7 @@ void ProjectManager::OnRightClick(wxCommandEvent& event)
 void ProjectManager::OnTreeItemRightClick(wxTreeEvent& event)
 {
     SANITY_CHECK();
-    #ifdef use_openedfilestree
+    #ifdef USE_OPENFILES_TREE
     if(!MiscTreeItemData::OwnerCheck(event,m_pTree,this))
         return;
     #endif

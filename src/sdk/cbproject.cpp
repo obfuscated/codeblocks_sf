@@ -947,7 +947,7 @@ void cbProject::ReOrderTargets(const wxArrayString& nameOrder)
     SetModified(true); 
 }
 
-#ifdef use_openedfilestree
+#ifdef USE_OPENFILES_TREE
 bool MiscTreeItemData::OwnerCheck(wxTreeEvent& event,wxTreeCtrl *tree,wxEvtHandler *handler,bool strict)
 {
     if(!tree)   // No tree to get data from - ignore event
