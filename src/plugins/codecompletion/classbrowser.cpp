@@ -98,39 +98,43 @@ void ClassBrowser::Update()
 
 void ClassBrowser::ShowMenu(wxTreeItemId id, const wxPoint& pt)
 {
+// Bug fixed.
+// NOTE from Rick: Never, _EVER_ use STACK variables for menus!
+// Remember they're DESTROYED after function call return!
+
     if ( !id.IsOk() )
         return;
 
 #if wxUSE_MENUS
 	wxString caption;
-    wxMenu menu(wxEmptyString);
+    wxMenu *menu=new wxMenu(wxEmptyString);
 
 	ClassTreeData* ctd = (ClassTreeData*)m_Tree->GetItemData(id);
     if (ctd)
     {
-       menu.Append(idMenuJumpToDeclaration, _("Jump to &declaration"));
+       menu->Append(idMenuJumpToDeclaration, _("Jump to &declaration"));
     }
 
     // ask any plugins to add items in this menu
-    Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtClassBrowser, &menu, m_Tree->GetItemText(id));
+    Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtClassBrowser, menu, m_Tree->GetItemText(id));
 
-    if (menu.GetMenuItemCount() != 0)
-		menu.AppendSeparator();
+    if (menu->GetMenuItemCount() != 0)
+		menu->AppendSeparator();
 
-	wxMenu sub("");
-    sub.AppendCheckItem(idCBViewInheritance, _("Show inherited members"));
-    sub.AppendSeparator();
-    sub.AppendRadioItem(idCBViewModeFlat, _("Flat"));
-    sub.AppendRadioItem(idCBViewModeStructured, _("Structured"));
+	wxMenu *sub = new wxMenu("");
+    sub->AppendCheckItem(idCBViewInheritance, _("Show inherited members"));
+    sub->AppendSeparator();
+    sub->AppendRadioItem(idCBViewModeFlat, _("Flat"));
+    sub->AppendRadioItem(idCBViewModeStructured, _("Structured"));
 
-	menu.Append(wxNewId(), _("&View options"), &sub);
-    menu.Append(idMenuRefreshTree, _("&Refresh tree"));
+	menu->Append(wxNewId(), _("&View options"), sub);
+    menu->Append(idMenuRefreshTree, _("&Refresh tree"));
 
-	menu.Check(idCBViewInheritance, m_pParser ? m_pParser->ClassBrowserOptions().showInheritance : false);
-	sub.Check(idCBViewModeFlat, m_pParser ? m_pParser->ClassBrowserOptions().viewFlat : false);
-	sub.Check(idCBViewModeStructured, m_pParser ? !m_pParser->ClassBrowserOptions().viewFlat : false);
+	menu->Check(idCBViewInheritance, m_pParser ? m_pParser->ClassBrowserOptions().showInheritance : false);
+	sub->Check(idCBViewModeFlat, m_pParser ? m_pParser->ClassBrowserOptions().viewFlat : false);
+	sub->Check(idCBViewModeStructured, m_pParser ? !m_pParser->ClassBrowserOptions().viewFlat : false);
 
-    PopupMenu(&menu, pt);
+    PopupMenu(menu, pt);
 #endif // wxUSE_MENUS
 }
 
