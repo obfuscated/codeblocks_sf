@@ -37,6 +37,8 @@
 	#include <shlobj.h> // for SHChangeNotify()
 	#define DDE_SERVICE	"CODEBLOCKS"
 	#define DDE_TOPIC	"CodeBlocksDDEServer"
+#else
+    #include "prefix.h" // binreloc
 #endif
 
 #include "globals.h"
@@ -229,17 +231,17 @@ bool CodeBlocksApp::CheckResource(const wxString& res)
 wxString CodeBlocksApp::GetAppPath() const
 {
     wxString base;
-    if (!wxGetEnv("DATA_PREFIX", &base))
-    {
 #ifdef __WXMSW__
-        wxChar name[MAX_PATH] = {0};
-        GetModuleFileName(0L, name, MAX_PATH);
-        wxFileName fname(name);
-        base = fname.GetPath(wxPATH_GET_VOLUME);
+    wxChar name[MAX_PATH] = {0};
+    GetModuleFileName(0L, name, MAX_PATH);
+    wxFileName fname(name);
+    base = fname.GetPath(wxPATH_GET_VOLUME);
 #else
-        base = DATA_PREFIX;
+    // SELFPATH is a macro from prefix.h (binreloc)
+    // it returns the absolute filename of us
+    // similar to win32 GetModuleFileName()...
+    base = wxFileName(SELFPATH).GetPath();
 #endif
-    }
     return base;
 }
 

@@ -49,7 +49,7 @@
 				<Option projectIncludeDirsRelation="2"/>
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
-					<Add option="-DDATA_PREFIX=&quot;\&quot;$(INSTALL_DIR)\&quot;&quot;"/>
+					<Add option="-DENABLE_BINRELOC"/>
 				</Compiler>
 				<Linker>
 					<Add option="-lcodeblocks"/>
@@ -1658,6 +1658,16 @@
 			<Option compile="0"/>
 			<Option link="0"/>
 			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="src/prefix.c">
+			<Option compilerVar="CC"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src/prefix.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
 		</Unit>
 		<Unit filename="src\app.cpp">
 			<Option compilerVar="CPP"/>
