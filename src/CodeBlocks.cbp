@@ -293,7 +293,6 @@
 				</Linker>
 			</Target>
 			<Target title="update">
-				<Option output="G:\projects\codeblocks\src\CodeBlocks.cbp"/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -319,7 +318,6 @@
 				</Compiler>
 			</Target>
 			<Target title="doc">
-				<Option output="G:\projects\codeblocks\src\CodeBlocks.cbp"/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
