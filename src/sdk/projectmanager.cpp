@@ -82,6 +82,8 @@ int idMenuPriorProject = wxNewId();
 int idMenuProjectTreeProps = wxNewId();
 int idMenuProjectUp = wxNewId();
 int idMenuProjectDown = wxNewId();
+int idMenuViewCategorizePopup = wxNewId();
+int idMenuViewUseFoldersPopup = wxNewId();
 
 #ifndef __WXMSW__
 /*
@@ -137,7 +139,9 @@ BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
 	EVT_MENU(idMenuGotoFile, ProjectManager::OnGotoFile)
     EVT_MENU(idMenuExecParams, ProjectManager::OnExecParameters)
     EVT_MENU(idMenuViewCategorize, ProjectManager::OnViewCategorize)
+    EVT_MENU(idMenuViewCategorizePopup, ProjectManager::OnViewCategorize)
     EVT_MENU(idMenuViewUseFolders, ProjectManager::OnViewUseFolders)
+    EVT_MENU(idMenuViewUseFoldersPopup, ProjectManager::OnViewUseFolders)
     EVT_MENU(idMenuViewFileMasks, ProjectManager::OnViewFileMasks)
 END_EVENT_TABLE()
 
@@ -730,13 +734,13 @@ void ProjectManager::OnRightClick(wxCommandEvent& event)
     if (menu.GetMenuItemCount() != 0)
         menu.AppendSeparator();
 
-    menu.AppendCheckItem(idMenuViewCategorize, _("Categorize by file types"));
-    menu.AppendCheckItem(idMenuViewUseFolders, _("Display folders as on disk"));
+    menu.AppendCheckItem(idMenuViewCategorizePopup, _("Categorize by file types"));
+    menu.AppendCheckItem(idMenuViewUseFoldersPopup, _("Display folders as on disk"));
     menu.AppendSeparator();
     menu.Append(idMenuViewFileMasks, _("Edit file types && categories..."));
     
-    menu.Check(idMenuViewCategorize, m_TreeCategorize);
-    menu.Check(idMenuViewUseFolders, m_TreeUseFolders);
+    menu.Check(idMenuViewCategorizePopup, m_TreeCategorize);
+    menu.Check(idMenuViewUseFoldersPopup, m_TreeUseFolders);
 
     wxPoint pt = wxGetMousePosition();
     pt = m_pTree->ScreenToClient(pt);
@@ -949,10 +953,8 @@ void ProjectManager::OnGotoFile(wxCommandEvent& event)
 void ProjectManager::OnViewCategorize(wxCommandEvent& event)
 {
     bool isChecked = event.IsChecked();
-#ifdef __WXMSW__
-	// it seems that wxMSW checkable menus behave differently than wxGTK (others?)
-	isChecked = !isChecked;
-#endif
+    if (event.GetId() == idMenuViewCategorizePopup)
+        isChecked = !isChecked;
     m_TreeCategorize = isChecked;
     Manager::Get()->GetAppWindow()->GetMenuBar()->Check(idMenuViewCategorize, m_TreeCategorize);
 	ConfigManager::Get()->Write("/project_manager/categorize_tree", m_TreeCategorize);
@@ -962,10 +964,8 @@ void ProjectManager::OnViewCategorize(wxCommandEvent& event)
 void ProjectManager::OnViewUseFolders(wxCommandEvent& event)
 {
     bool isChecked = event.IsChecked();
-#ifdef __WXMSW__
-	// it seems that wxMSW checkable menus behave differently than wxGTK (others?)
-	isChecked = !isChecked;
-#endif
+    if (event.GetId() == idMenuViewUseFoldersPopup)
+        isChecked = !isChecked;
     m_TreeUseFolders = isChecked;
     Manager::Get()->GetAppWindow()->GetMenuBar()->Check(idMenuViewUseFolders, m_TreeUseFolders);
 	ConfigManager::Get()->Write("/project_manager/use_folders", m_TreeUseFolders);
