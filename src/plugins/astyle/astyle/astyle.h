@@ -18,6 +18,10 @@
  *
  * You should have received a copy of the GNU General Public
  * License along with this program.
+ * Patches:
+ * 03 March 2005 - Ricardo Garcia
+ *        Replaced integers for unsigned integers in various for loops
+ *        (were compared against string and vector length(), which are unsigned)
  */
 #ifndef ASTYLE_H
 #define ASTYLE_H

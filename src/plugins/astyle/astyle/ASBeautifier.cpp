@@ -22,6 +22,9 @@
  * Patches:
  * 18 March 1999 - Brian Rampel -
  *       Fixed inverse insertion of spaces vs. tabs when in -t mode.
+ * 03 March 2005 - Ricardo Garcia
+ *        Replaced integers for unsigned integers in various for loops
+ *        (were compared against string and vector length(), which are unsigned)
 */
 
 #include "compiler_defines.h"

@@ -24,6 +24,9 @@
  * 26 November 1998 - Richard Bullington -
  *        A correction of line-breaking in headers following '}',
  *        was created using a variation of a  patch by Richard Bullington.
+ * 03 March 2005 - Ricardo Garcia
+ *        Replaced integers for unsigned integers in various for loops
+ *        (were compared against string and vector length(), which are unsigned)
  */
 
 #include "compiler_defines.h"
