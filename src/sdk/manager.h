@@ -30,6 +30,10 @@ class DLLIMPORT Manager
 		PluginManager* GetPluginManager();
 		ToolsManager* GetToolsManager();
 		MacrosManager* GetMacrosManager();
+		static bool isappShutingDown();
+		// stupid typo ;-P		
+		static bool isappShuttingDown();
+		
     private:
 		Manager(wxMDIParentFrame* appWindow, wxNotebook* notebook);
 		~Manager();

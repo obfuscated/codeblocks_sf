@@ -67,7 +67,7 @@ void Manager::Free()
                     test under MSVC too...
         */
 		MacrosManager::Free();
-		ToolsManager::Free();		
+		ToolsManager::Free();
 		TemplateManager::Free();
 		ProjectManager::Free();
 		EditorManager::Free();
@@ -77,6 +77,16 @@ void Manager::Free()
 		delete ManagerProxy::Get();
 		ManagerProxy::Set( 0L );
 	}
+}
+
+bool Manager::isappShutingDown()
+{
+    return(appShutingDown);
+}
+// stupid typo ;-P		
+bool Manager::isappShuttingDown()
+{
+    return(appShutingDown);
 }
 
 // class constructor
@@ -101,11 +111,13 @@ Manager::~Manager()
 
 wxMDIParentFrame* Manager::GetAppWindow()
 {
+	if(!this) return 0; // Fixes early-shutdown segfault
 	return m_pAppWindow;
 }
 
 wxNotebook* Manager::GetNotebook()
 {
+	if(!this) return 0; // Fixes early-shutdown segfault
 	return m_pNotebook;
 }
 
