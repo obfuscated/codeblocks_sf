@@ -208,6 +208,54 @@
                         </object>
                         <object class="sizeritem">
                           <object class="wxStaticText">
+                            <label>Objects output dir:</label>
+                          </object>
+                          <flag>wxTOP</flag>
+                          <border>4</border>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxBoxSizer">
+                            <orient>wxHORIZONTAL</orient>
+                            <object class="sizeritem">
+                              <object class="wxTextCtrl" name="txtObjectDir"/>
+                              <option>1</option>
+                              <flag>wxEXPAND</flag>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxButton" name="btnBrowseObjectDir">
+                                <label>...</label>
+                              </object>
+                              <minsize>22,22</minsize>
+                            </object>
+                          </object>
+                          <flag>wxEXPAND</flag>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                            <label>Dependencies output dir:</label>
+                          </object>
+                          <flag>wxTOP</flag>
+                          <border>4</border>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxBoxSizer">
+                            <orient>wxHORIZONTAL</orient>
+                            <object class="sizeritem">
+                              <object class="wxTextCtrl" name="txtDepsDir"/>
+                              <option>1</option>
+                              <flag>wxEXPAND</flag>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxButton" name="btnBrowseDepsDir">
+                                <label>...</label>
+                              </object>
+                              <minsize>22,22</minsize>
+                            </object>
+                          </object>
+                          <flag>wxEXPAND</flag>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
                             <label>External dependencies:</label>
                           </object>
                           <flag>wxTOP</flag>

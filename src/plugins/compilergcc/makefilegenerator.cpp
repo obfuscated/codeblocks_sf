@@ -396,13 +396,13 @@ void MakefileGenerator::DoAddMakefileObjs(wxString& buffer)
 				wxString depsS = deps_tmp.GetPath(wxPATH_GET_VOLUME);
 				if (!depsS.IsEmpty())
                      depsS << "/";
-                depsS << ".deps/" << deps_tmp.GetName() << ".d";
+                depsS << target->GetDepsOutput() << "/" << deps_tmp.GetName() << ".d";
 
 				wxFileName objs_tmp = fname;
 				wxString objsS = objs_tmp.GetPath(wxPATH_GET_VOLUME);
 				if (!objsS.IsEmpty())
                      objsS << "/";
-                objsS << ".objs/" << objs_tmp.GetName() << ".o"; // TODO: do not hardcode .o
+                objsS << target->GetObjectOutput() << "/" << objs_tmp.GetName() << "." << objs_tmp.GetExt();
 
                 objsS = UnixFilename(objsS);
                 ConvertToMakefileFriendly(objsS);
@@ -566,8 +566,9 @@ void MakefileGenerator::DoAddMakefileLDFlags(wxString& buffer)
         DoGetMakefileLDFlags(tmp, target);
 
         buffer << target->GetTitle() << "_LDFLAGS=" << tmp;
-        if (target->GetTargetType() == ttExecutable)
-            buffer << " -mwindows";
+/* NOTE (mandrav#1#): Commented-out because it's not a GNU GCC makefile anymore ;) */
+//        if (target->GetTargetType() == ttExecutable)
+//            buffer << " -mwindows";
         buffer << '\n';
     }
     buffer << '\n';
@@ -938,10 +939,10 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
                 m_ObjectFiles.Add(pf); // mark it as included in the Makefile
 
                 wxFileName d_filename_tmp = UnixFilename(pf->GetObjName());
-				wxFileName d_filename = d_filename_tmp.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + ".deps" + sep + d_filename_tmp.GetFullName();
+				wxFileName d_filename = d_filename_tmp.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + target->GetDepsOutput() + sep + d_filename_tmp.GetFullName();
                 d_filename.SetExt("d");
                 wxFileName o_filename_tmp = UnixFilename(pf->GetObjName());
-				wxFileName o_filename = o_filename_tmp.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + ".objs" + sep + o_filename_tmp.GetFullName();
+				wxFileName o_filename = o_filename_tmp.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + target->GetObjectOutput() + sep + o_filename_tmp.GetFullName();
                 // vars to make easier reading the following code
                 wxString o_file = UnixFilename(o_filename.GetFullPath());
                 ConvertToMakefileFriendly(o_file);
@@ -958,29 +959,32 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
                 bool isResource = FileTypeOf(pf->relativeFilename) == ftResource;
                 if (!isResource)
                 {
-					if (pf->autoDeps)
-					{
-						// depend rule
-						buffer << d_file << ": " << c_file << '\n';
-						if (m_Compiler->GetSimpleLog())
-							buffer << '\t' << "@echo Calculating dependencies for \"" << pf->relativeFilename << "\"..." << '\n';
-                        AddCreateSubdir(buffer, target->GetBasePath(), pf->GetObjName(), ".deps");
-						wxString compilerCmd = ReplaceCompilerMacros(ctGenDependenciesCmd, pf->compilerVar, target, c_file, o_file, d_file);
-						if (!compilerCmd.IsEmpty())
-                            buffer << '\t' << m_Quiet << compilerCmd << '\n';
-						buffer << '\n';
-					}
-                    else if (!pf->customDeps.IsEmpty())
+                    if (m_CompilerSet->GetSwitches().needDependencies)
                     {
-						// custom depend rule
-                        wxString customDeps = pf->customDeps;
-                        ReplaceMacros(pf, customDeps);
-
-						buffer << d_file << ": " << c_file << '\n';
-						if (m_Compiler->GetSimpleLog())
-							buffer << '\t' << "@echo Generating dependencies for \"" << pf->relativeFilename << "\"... (custom dependencies)" << '\n';
-						buffer << '\t' << m_Quiet << customDeps << '\n';
-						buffer << '\n';
+                        if (pf->autoDeps)
+                        {
+                            // depend rule
+                            buffer << d_file << ": " << c_file << '\n';
+                            if (m_Compiler->GetSimpleLog())
+                                buffer << '\t' << "@echo Calculating dependencies for \"" << pf->relativeFilename << "\"..." << '\n';
+                            AddCreateSubdir(buffer, target->GetBasePath(), pf->GetObjName(), target->GetDepsOutput());
+                            wxString compilerCmd = ReplaceCompilerMacros(ctGenDependenciesCmd, pf->compilerVar, target, c_file, o_file, d_file);
+                            if (!compilerCmd.IsEmpty())
+                                buffer << '\t' << m_Quiet << compilerCmd << '\n';
+                            buffer << '\n';
+                        }
+                        else if (!pf->customDeps.IsEmpty())
+                        {
+                            // custom depend rule
+                            wxString customDeps = pf->customDeps;
+                            ReplaceMacros(pf, customDeps);
+    
+                            buffer << d_file << ": " << c_file << '\n';
+                            if (m_Compiler->GetSimpleLog())
+                                buffer << '\t' << "@echo Generating dependencies for \"" << pf->relativeFilename << "\"... (custom dependencies)" << '\n';
+                            buffer << '\t' << m_Quiet << customDeps << '\n';
+                            buffer << '\n';
+                        }
                     }
 					
 					if (pf->useCustomBuildCommand)
@@ -1000,7 +1004,7 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
 						buffer << o_file << ": " << d_file << '\n';
 						if (m_Compiler->GetSimpleLog())
 							buffer << '\t' << "@echo Compiling \"" << pf->relativeFilename << "\"..." << '\n';
-                        AddCreateSubdir(buffer, target->GetBasePath(), pf->GetObjName(), ".objs");
+                        AddCreateSubdir(buffer, target->GetBasePath(), pf->GetObjName(), target->GetObjectOutput());
 						wxString compilerCmd = ReplaceCompilerMacros(ctCompileObjectCmd, pf->compilerVar, target, c_file, o_file, d_file);
 						if (!compilerCmd.IsEmpty())
                             buffer << '\t' << m_Quiet << compilerCmd << '\n';

@@ -31,7 +31,7 @@ enum TargetType
 };
 
 /**
-  * Base class for build target classes. Each Code::Studio project
+  * Base class for build target classes. Each Code::Blocks project
   * consists of at least one target. Each target has different settings,
   * e.g.:
   * \li Build options,
@@ -50,8 +50,12 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         virtual const wxString& GetTitle(); ///< Read the target's title
         virtual void SetTitle(const wxString& title); ///< Set the target's title
         virtual void SetOutputFilename(const wxString& filename); ///< Set the target's output filename
+        virtual void SetObjectOutput(const wxString& dirname); ///< Set the target's objects output dir
+        virtual void SetDepsOutput(const wxString& dirname); ///< Set the target's dependencies output dir
         virtual OptionsRelation GetOptionRelation(OptionsRelationType type); ///< Read the target's options relation for \c type
         virtual void SetOptionRelation(OptionsRelationType type, OptionsRelation rel); ///< Set the target's options relation for \c type to \c rel
+        virtual wxString GetObjectOutput(); ///< Read the target's objects output dir
+        virtual wxString GetDepsOutput(); ///< Read the target's dependencies output dir
         virtual wxString GetOutputFilename(); ///< Read the target's output filename
         virtual wxString GetExecutableFilename(); ///< Read the target's executable filename (produced if target type is ttExecutable)
         virtual wxString GetDynamicLibFilename(); ///< Read the target's dynamic library filename (produced if target type is ttDynamicLib)
@@ -68,6 +72,8 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         wxString m_Filename;
         wxString m_Title;
         wxString m_OutputFilename;
+        wxString m_ObjectOutput;
+        wxString m_DepsOutput;
         wxString m_ExecutionParameters;
         wxString m_HostApplication;
         OptionsRelation m_OptionsRelation[4];

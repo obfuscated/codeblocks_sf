@@ -147,6 +147,8 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
         return; // no options
     
     wxString output;
+    wxString obj_output;
+    wxString deps_output;
     wxString deps;
     int type = -1;
     wxString parameters;
@@ -163,6 +165,12 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
     {
         if (node->Attribute("output"))
             output = node->Attribute("output");
+
+        if (node->Attribute("object_output"))
+            obj_output = node->Attribute("object_output");
+
+        if (node->Attribute("deps_output"))
+            deps_output = node->Attribute("deps_output");
             
         if (node->Attribute("external_deps"))
             deps = node->Attribute("external_deps");
@@ -204,6 +212,10 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
     {
         if (!output.IsEmpty())
             target->SetOutputFilename(output);
+        if (!obj_output.IsEmpty())
+            target->SetObjectOutput(obj_output);
+        if (!deps_output.IsEmpty())
+            target->SetDepsOutput(deps_output);
         target->SetExternalDeps(deps);
         target->SetTargetType((TargetType)type);
         target->SetExecutionParameters(parameters);
@@ -435,6 +447,8 @@ bool ProjectLoader::Save(const wxString& filename)
             
         buffer << '\t' << '\t' << '\t' << "<Target title=\"" << FixEntities(target->GetTitle()) << "\">" << '\n';
         buffer << '\t' << '\t' << '\t' << '\t' << "<Option output=\"" << FixEntities(target->GetOutputFilename()) << "\"/>" << '\n';
+        buffer << '\t' << '\t' << '\t' << '\t' << "<Option object_output=\"" << FixEntities(target->GetObjectOutput()) << "\"/>" << '\n';
+        buffer << '\t' << '\t' << '\t' << '\t' << "<Option deps_output=\"" << FixEntities(target->GetDepsOutput()) << "\"/>" << '\n';
         buffer << '\t' << '\t' << '\t' << '\t' << "<Option external_deps=\"" << FixEntities(target->GetExternalDeps()) << "\"/>" << '\n';
         buffer << '\t' << '\t' << '\t' << '\t' << "<Option type=\"" << target->GetTargetType() << "\"/>" << '\n';
         if (!target->GetExecutionParameters().IsEmpty())

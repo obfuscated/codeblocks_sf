@@ -66,6 +66,22 @@ void CompileTargetBase::SetOutputFilename(const wxString& filename)
 	SetModified(true);
 }
 
+void CompileTargetBase::SetObjectOutput(const wxString& dirname)
+{
+	if (m_ObjectOutput == dirname)
+		return;
+	m_ObjectOutput = dirname;
+	SetModified(true);
+}
+
+void CompileTargetBase::SetDepsOutput(const wxString& dirname)
+{
+	if (m_DepsOutput == dirname)
+		return;
+	m_DepsOutput = dirname;
+	SetModified(true);
+}
+
 OptionsRelation CompileTargetBase::GetOptionRelation(OptionsRelationType type)
 {
 	return m_OptionsRelation[type];
@@ -97,6 +113,34 @@ wxString CompileTargetBase::GetOutputFilename()
         }
     }
     return m_OutputFilename;
+}
+
+wxString CompileTargetBase::GetObjectOutput()
+{
+    wxString out;
+    if (m_ObjectOutput.IsEmpty())
+    {
+        out = GetBasePath();
+        if (out.IsEmpty() || out.Matches("."))
+             return ".objs";
+        else
+            return out + wxFileName::GetPathSeparator() + ".objs";
+    }
+    return m_ObjectOutput;
+}
+
+wxString CompileTargetBase::GetDepsOutput()
+{
+    wxString out;
+    if (m_DepsOutput.IsEmpty())
+    {
+        out = GetBasePath();
+        if (out.IsEmpty() || out.Matches("."))
+             return ".deps";
+        else
+            return out + wxFileName::GetPathSeparator() + ".deps";
+    }
+    return m_DepsOutput;
 }
 
 wxString CompileTargetBase::GetExecutableFilename()
