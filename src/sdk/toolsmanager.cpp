@@ -233,10 +233,14 @@ void ToolsManager::SaveTools()
 
 void ToolsManager::BuildToolsMenu(wxMenu* menu)
 {
+    // clear previously added menu items
+    m_ItemsManager.Clear(menu);
+    
+    // add menu items for tools
 	m_Menu = menu;
 	if (m_Menu->GetMenuItemCount() > 0)
 	{
-		m_Menu->AppendSeparator();
+        m_ItemsManager.Add(menu, wxID_SEPARATOR, "", "");
 	}
 
 	for (ToolsList::Node* node = m_Tools.GetFirst(); node; node = node->GetNext())
@@ -244,7 +248,7 @@ void ToolsManager::BuildToolsMenu(wxMenu* menu)
 		Tool* tool = node->GetData();
 		if (tool->menuId == -1)
 			tool->menuId = wxNewId();
-		m_Menu->Append(tool->menuId, tool->name);
+        m_ItemsManager.Add(menu, tool->menuId, tool->name, tool->name);
 		Connect(tool->menuId, -1, wxEVT_COMMAND_MENU_SELECTED,
 				(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
 				&ToolsManager::OnToolClick);
@@ -252,9 +256,9 @@ void ToolsManager::BuildToolsMenu(wxMenu* menu)
 
 	if (m_Tools.GetCount() > 0)
 	{
-		m_Menu->AppendSeparator();
+        m_ItemsManager.Add(menu, wxID_SEPARATOR, "", "");
 	}
-	m_Menu->Append(idToolsConfigure, _("&Configure tools..."), _("Add/remove user-defined tools"));
+    m_ItemsManager.Add(menu, idToolsConfigure, _("&Configure tools..."), _("Add/remove user-defined tools"));
 }
 
 int ToolsManager::Configure()

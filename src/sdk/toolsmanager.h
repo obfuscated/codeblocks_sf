@@ -3,6 +3,7 @@
 
 #include <wx/event.h>
 #include "settings.h"
+#include "menuitemsmanager.h"
 
 struct Tool
 {
@@ -51,6 +52,7 @@ class DLLIMPORT ToolsManager : wxEvtHandler
 		~ToolsManager();
 		
 		ToolsList m_Tools;
+		MenuItemsManager m_ItemsManager;
 		wxMenu* m_Menu;
 		
 		DECLARE_EVENT_TABLE()
