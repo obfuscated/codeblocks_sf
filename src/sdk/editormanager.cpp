@@ -254,6 +254,13 @@ cbEditor* EditorManager::New()
 		ed->Destroy();
 		return 0L;
 	}
+
+    // add default text
+    wxString key;
+    key.Printf("/editor/default_code/%d", (int)FileTypeOf(ed->GetFilename()));
+    wxString code = ConfigManager::Get()->Read(key, wxEmptyString);
+    ed->GetControl()->SetText(code);
+
 	ed->SetColorSet(m_Theme);
     m_EditorsList.Append(ed);
 	ed->Show(true);

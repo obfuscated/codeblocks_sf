@@ -37,6 +37,11 @@
 #include "configmanager.h"
 #include "editormanager.h"
 #include "cbeditor.h"
+#include "globals.h"
+
+// map cmbDefCodeFileType indexes to FileType values
+// if more entries are added to cmbDefCodeFileType, edit the mapping here
+const FileType IdxToFileType[] = { ftSource, ftHeader };
 
 BEGIN_EVENT_TABLE(EditorConfigurationDlg, wxDialog)
 	EVT_BUTTON(XRCID("btnChooseEditorFont"), 	EditorConfigurationDlg::OnChooseFont)
@@ -50,12 +55,14 @@ BEGIN_EVENT_TABLE(EditorConfigurationDlg, wxDialog)
 	EVT_BUTTON(XRCID("btnOK"), 					EditorConfigurationDlg::OnOK)
 	EVT_LISTBOX(XRCID("lstComponents"),			EditorConfigurationDlg::OnColorComponent)
 	EVT_COMBOBOX(XRCID("cmbLangs"),				EditorConfigurationDlg::OnChangeLang)
+	EVT_COMBOBOX(XRCID("cmbDefCodeFileType"),	EditorConfigurationDlg::OnChangeDefCodeFileType)
 END_EVENT_TABLE()
 
 EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
 	: m_TextColorControl(0L),
 	m_Theme(0L),
-	m_Lang(hlCpp)
+	m_Lang(hlCpp),
+	m_DefCodeFileType(0)
 {
 	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgConfigureEditor"));
 
@@ -93,6 +100,11 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
 	if (m_Theme)
 		m_Lang = HighlightLanguage(XRCCTRL(*this, "cmbLangs", wxComboBox)->GetSelection() + 1); // +1 because 0 would mean hlNone
 	CreateColorsSample();
+	
+	// default code
+	wxString key;
+    key.Printf("/editor/default_code/%d", IdxToFileType[m_DefCodeFileType]);
+    XRCCTRL(*this, "txtDefCode", wxTextCtrl)->SetValue(ConfigManager::Get()->Read(key, wxEmptyString));
 }
 
 EditorConfigurationDlg::~EditorConfigurationDlg()
@@ -300,6 +312,20 @@ void EditorConfigurationDlg::OnChangeLang(wxCommandEvent& event)
 	CreateColorsSample();
 }
 
+void EditorConfigurationDlg::OnChangeDefCodeFileType(wxCommandEvent& event)
+{
+    wxString key;
+	int sel = XRCCTRL(*this, "cmbDefCodeFileType", wxComboBox)->GetSelection();
+	if (sel != m_DefCodeFileType)
+	{
+        key.Printf("/editor/default_code/%d", IdxToFileType[m_DefCodeFileType]);
+        ConfigManager::Get()->Write(key, XRCCTRL(*this, "txtDefCode", wxTextCtrl)->GetValue());
+	}
+	m_DefCodeFileType = sel;
+    key.Printf("/editor/default_code/%d", IdxToFileType[m_DefCodeFileType]);
+    XRCCTRL(*this, "txtDefCode", wxTextCtrl)->SetValue(ConfigManager::Get()->Read(key, wxEmptyString));
+}
+
 void EditorConfigurationDlg::OnChooseColor(wxCommandEvent& event)
 {
 	wxColourData data;
@@ -357,7 +383,12 @@ void EditorConfigurationDlg::OnOK(wxCommandEvent& event)
     ConfigManager::Get()->Write("/editor/gutter/color/green",	XRCCTRL(*this, "btnGutterColor", wxButton)->GetBackgroundColour().Green());
     ConfigManager::Get()->Write("/editor/gutter/color/blue",	XRCCTRL(*this, "btnGutterColor", wxButton)->GetBackgroundColour().Blue());
     ConfigManager::Get()->Write("/editor/gutter/column", 		XRCCTRL(*this, "spnGutterColumn", wxSpinCtrl)->GetValue());
-		
+
+	int sel = XRCCTRL(*this, "cmbDefCodeFileType", wxComboBox)->GetSelection();
+    wxString key;
+    key.Printf("/editor/default_code/%d", IdxToFileType[sel]);
+    ConfigManager::Get()->Write(key, XRCCTRL(*this, "txtDefCode", wxTextCtrl)->GetValue());
+
 	if (m_Theme)
 	{
 		m_Theme->Save();

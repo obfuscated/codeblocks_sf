@@ -337,6 +337,56 @@
               </object>
             </object>
           </object>
+          <object class="notebookpage">
+            <label>Default code</label>
+            <object class="wxPanel" name="tabDefaultCode">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Type of file:</label>
+                      </object>
+                      <flag>wxTOP</flag>
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxComboBox" name="cmbDefCodeFileType">
+                        <content>
+                          <item>C/C++ Source File</item>
+                          <item>C/C++ Header File</item>
+                        </content>
+                        <selection>0</selection>
+                        <style>wxCB_READONLY</style>
+                      </object>
+                      <option>1</option>
+                      <flag>wxLEFT|wxGROW</flag>
+                      <border>8</border>
+                    </object>
+                  </object>
+                  <flag>wxALL|wxGROW</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxTextCtrl" name="txtDefCode">
+                    <style>wxTE_PROCESS_TAB|wxTE_MULTILINE|wxHSCROLL</style>
+                  </object>
+                  <option>1</option>
+                  <flag>wxALL|wxGROW</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>The text you enter here, will appear on every new file (of the selected file-type) you create...</label>
+                  </object>
+                  <flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
+                  <border>8</border>
+                </object>
+              </object>
+            </object>
+          </object>
         </object>
         <option>1</option>
         <flag>wxALL|wxEXPAND</flag>

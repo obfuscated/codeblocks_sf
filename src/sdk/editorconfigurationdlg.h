@@ -21,6 +21,7 @@ class EditorConfigurationDlg : public wxDialog
 		void OnColorComponent(wxCommandEvent& event);
 		void OnEditKeywords(wxCommandEvent& event);
 		void OnChangeLang(wxCommandEvent& event);
+		void OnChangeDefCodeFileType(wxCommandEvent& event);
 		void UpdateSampleFont(bool askForNewFont);
     private:
 		void CreateColorsSample();
@@ -31,6 +32,7 @@ class EditorConfigurationDlg : public wxDialog
 		wxStyledTextCtrl* m_TextColorControl;
 		EditorColorSet* m_Theme;
 		HighlightLanguage m_Lang;
+		int m_DefCodeFileType;
     	DECLARE_EVENT_TABLE()
 };
 
