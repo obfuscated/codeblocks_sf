@@ -293,7 +293,7 @@
 				</Linker>
 			</Target>
 			<Target title="update">
-				<Option output=""/>
+				<Option output="G:\projects\codeblocks\src\CodeBlocks.cbp"/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -319,7 +319,7 @@
 				</Compiler>
 			</Target>
 			<Target title="doc">
-				<Option output=""/>
+				<Option output="G:\projects\codeblocks\src\CodeBlocks.cbp"/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -347,19 +347,19 @@
 			<Add library="libwxmsw$(WX_VER).a"/>
 			<Add directory="sdk\tinyxml"/>
 		</Linker>
-		<Unit filename="devel\share\CodeBlocks\images\codecompletion\README.txt">
+		<Unit filename="devel\share\CodeBlocks\images\codecompletion\readme.txt">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
 			<Option target="src"/>
 		</Unit>
-		<Unit filename="devel\share\CodeBlocks\plugins\README.txt">
+		<Unit filename="devel\share\CodeBlocks\plugins\readme.txt">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
 			<Option target="src"/>
 		</Unit>
-		<Unit filename="devel\share\CodeBlocks\templates\README.txt">
+		<Unit filename="devel\share\CodeBlocks\templates\readme.txt">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -902,6 +902,12 @@
 			<Option target="plugin_CompilerGCC"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\resources\advanced_compiler_options.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\resources\compiler_menu.xrc">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -2382,6 +2388,12 @@
 			<Option target="src"/>
 		</Unit>
 		<Unit filename="src\resources\main_frame.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\main_menu.xrc">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

@@ -22,7 +22,8 @@
       <longhelp>Recompile all modules in the active project</longhelp>
       <bitmap>images/rebuild.png</bitmap>
     </object>
-    <object class="wxStaticText">
+    <object class="separator" />
+    <object class="wxStaticText" name="idToolTargetLabel">
       <label>Build target:</label>
     </object>
     <object class="wxComboBox" name="idToolTarget">

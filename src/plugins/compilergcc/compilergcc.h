@@ -90,6 +90,7 @@ class CompilerGCC : public cbCompilerPlugin
         void OnCreateDist(wxCommandEvent& event);
         void OnExportMakefile(wxCommandEvent& event);
         void OnUpdateUI(wxUpdateUIEvent& event);
+        void OnConfig(wxCommandEvent& event);
     private:
 		void SetupEnvironment();
 		void OnProjectActivated(CodeBlocksEvent& event);

@@ -185,7 +185,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_EDITOR_UPDATE_UI(MainFrame::OnEditorUpdateUI)
 
     EVT_PLUGIN_ATTACHED(MainFrame::OnPluginLoaded)
-    EVT_PLUGIN_RELEASED(MainFrame::OnPluginUnloaded)
+    // EVT_PLUGIN_RELEASED(MainFrame::OnPluginUnloaded)
 
     EVT_MENU(idFileNew, MainFrame::OnFileNewEmpty)
     EVT_MENU(idFileOpen,  MainFrame::OnFileOpen)
@@ -402,156 +402,40 @@ wxMenu* MainFrame::RecreateMenu(wxMenuBar* mbar, const wxString& name)
 
 void MainFrame::CreateMenubar()
 {
-	wxMenuBar* mbar = GetMenuBar();
-	if (!mbar)
-        mbar = new wxMenuBar(); // first run
-    else
+	int tmpidx;
+	wxMenuBar* mbar=0L;
+	wxMenu *tools=0L, *plugs=0L, *pluginsM=0L, *settingsPlugins=0L;
+	wxMenuItem *tmpitem=0L;
+	
+    wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
+    wxXmlResource *myres = wxXmlResource::Get();
+    myres->Load(resPath + "/resources.zip#zip:main_menu.xrc");
+    mbar = myres->LoadMenuBar("main_menu_bar");
+    if(!mbar)
     {
-        // core modules: release menus
-        m_pPrjMan->ReleaseMenu(mbar);
-        m_pEdMan->ReleaseMenu(mbar);
-        m_pMsgMan->ReleaseMenu(mbar);
-
-        TerminateRecentFilesHistory();
+      mbar = new wxMenuBar(); // Some error happened.
+      SetMenuBar(mbar);
     }
+    
+    // Find Menus that we'll change later
+    
+    tmpidx=mbar->FindMenu("&Tools");
+    if(tmpidx!=wxNOT_FOUND)
+        tools = mbar->GetMenu(tmpidx);
 
-/////////////////// FILE //////////////////
-    wxMenu* file = RecreateMenu(mbar, _("&File"));
-
-	wxMenu* recent = new wxMenu();
-	recent->Append(idFileOpenRecentClearHistory, _("Clear history"), _("Clear the recent files list"));
-
-	file->Append(idFileNew, _("&New\tCtrl-N"), _("Create a new source file"));
-	file->AppendSeparator();
-	file->Append(idFileOpen, _("&Open\tCtrl-O"), _("Open a file or project"));
-	file->Append(idFileReopen, _("Open &recent file"), recent);
-	file->AppendSeparator();
-	file->Append(idFileSave, _("&Save\tCtrl-S"), _("Save the active file"));
-	file->Append(idFileSaveAs, _("Save &as..."), _("Save the active file under a different name"));
-	file->Append(idFileSaveAllFiles, _("Save a&ll\tCtrl-Shift-S"), _("Save all modified files"));
-	file->AppendSeparator();
-	file->Append(idFileSaveWorkspaceAs, _("Save workspace..."), _("Save current workspace"));
-	file->AppendSeparator();
-	file->Append(idFileClose, _("&Close\tCtrl-W"), _("Close the active file"));
-	file->Append(idFileCloseAll, _("Clos&e all\tCtrl-Shift-W"), _("Close all open files"));
-	file->AppendSeparator();
-	file->Append(idFileExit, _("&Quit\tCtrl-Q"), _("Quit the application"));
-
-/////////////////// EDIT //////////////////
-	wxMenu* edit = RecreateMenu(mbar, _("&Edit"));
-
-	wxMenu* bookmarks = new wxMenu();
-	bookmarks->Append(idEditBookmarksToggle, _("&Toggle bookmark\tCtrl-B"), _("Toggle a bookmark for the current position"));
-	bookmarks->Append(idEditBookmarksPrevious, _("Goto &previous bookmark\tAlt-PgUp"), _("Goto previous bookmark"));
-	bookmarks->Append(idEditBookmarksNext, _("Goto &next bookmark\tAlt-PgDn"), _("Goto next bookmark"));
-
-	wxMenu* folding = new wxMenu();
-	folding->Append(idEditFoldAll, _("Fold &all"), _("Fold all"));
-	folding->Append(idEditUnfoldAll, _("&Unfold all"), _("Unfold all"));
-	folding->Append(idEditToggleAllFolds, _("&Toggle all folds\tShift-F12"), _("Toggle all folds"));
-	folding->AppendSeparator();
-	folding->Append(idEditFoldBlock, _("Fold &current block"), _("Fold current block"));
-	folding->Append(idEditUnfoldBlock, _("Unfold cu&rrent block"), _("Unfold current block"));
-	folding->Append(idEditToggleFoldBlock, _("Toggle current &block\tF12"), _("Toggle folding of current block"));
-
-    wxMenu* eol = new wxMenu();
-    eol->AppendCheckItem(idEditEOLCRLF, _("CR && LF"), _("End-of-line mode uses carriage return and line feed"));
-    eol->AppendCheckItem(idEditEOLCR, _("CR"), _("End-of-line mode uses carriage return only"));
-    eol->AppendCheckItem(idEditEOLLF, _("LF"), _("End-of-line mode uses line feed only"));
-
-	edit->Append(idEditUndo, _("&Undo\tCtrl-Z"), _("Undo the last editing operation"));
-	edit->Append(idEditRedo, _("&Redo\tCtrl-Shift-Z"), _("Redo the last editing operation"));
-	edit->AppendSeparator();
-	edit->Append(idEditCut, _("Cu&t\tCtrl-X"), _("Copy selected text to clipboard and erase it"));
-	edit->Append(idEditCopy, _("&Copy\tCtrl-C"), _("Copy selected text to clipboard"));
-	edit->Append(idEditPaste, _("&Paste\tCtrl-V"), _("Paste text from clipboard"));
-	edit->AppendSeparator();
-	edit->Append(idEditSwapHeaderSource, _("S&wap header/source\tF11"), _("Swap between header and source file pair"));
-	edit->Append(idEditBookmarks, _("&Bookmarks"), bookmarks);
-	edit->Append(idEditFolding, _("&Folding"), folding);
-	edit->Append(idEditEOLMode, _("&End-of-line mode"), eol);
-	edit->AppendSeparator();
-	edit->Append(idEditSelectAll, _("Select &all\tCtrl-A"), _("Selects the entire text range"));
-	edit->Append(idEditCommentSelected, _("Comment / uncomment\tShift-Ctrl-C"), _("Comments / uncomments the selected block of code") );
-	
-/////////////////// VIEW //////////////////
-	wxMenu* view = RecreateMenu(mbar, _("&View"));
-	view->AppendCheckItem(idViewToolMain, _("&Toolbar"), _("Show/hide toolbar"));
-	view->AppendCheckItem(idViewManager, _("&Manager\tShift-F2"), _("Show/hide manager"));
-	view->AppendCheckItem(idViewMessageManager, _("Messa&ges\tF2"), _("Show/hide messages"));
-	view->AppendCheckItem(idViewStatusbar, _("&Status bar"), _("Show/hide status bar"));
-	view->AppendCheckItem(idViewFullScreen, _("F&ullScreen"), _("Switch to FullScreen view"));
-	view->Append(idViewFocusEditor, _("&Focus editor\tCtrl-Alt-E"), _("Set focus on the active editor"));	
-	
-/////////////////// SEARCH //////////////////
-	wxMenu* search = RecreateMenu(mbar, _("&Search"));
-	search->Append(idSearchFind, _("&Find...\tCtrl-F"), _("Search for text"));
-	search->Append(idSearchFindNext, _("Find &next\tF3"), _("Repeat the last search in the same direction"));
-	search->Append(idSearchFindPrevious, _("Find &previous\tShift-F3"), _("Repeat the last search in the opposite direction"));
-	search->AppendSeparator();
-	search->Append(idSearchReplace, _("&Replace\tCtrl-R"), _("Find and replace text"));
-	search->AppendSeparator();
-	search->Append(idSearchGotoLine, _("Goto &line...\tCtrl-G"), _("Goto a specific line"));
-
-/////////////////// PROJECT //////////////////
-	wxMenu* project = RecreateMenu(mbar, _("&Project"));
-
-	wxMenu* import = new wxMenu();
-	import->Append(idProjectImportDevCpp, _("Dev-C++ project"), _("Import an existing Dev-C++ project"));
-	import->AppendSeparator();
-	import->Append(idProjectImportMSVC, _("MS Visual C++ project"), _("Import an existing MS Visual C++ project"));
-	import->Append(idProjectImportMSVCWksp, _("MS Visual C++ workspace"), _("Import an existing MS Visual C++ workspace"));
-	import->AppendSeparator();
-	import->Append(idProjectImportMSVS, _("MS Visual Studio project"), _("Import an existing MS Visual Studio project"));
-	import->Append(idProjectImportMSVSWksp, _("MS Visual Studio solution"), _("Import an existing MS Visual Studio solution"));
-
-	project->Append(idProjectNew, _("&New project..."), _("Create a new project based on a template"));
-	project->Append(idProjectNewEmptyProject, _("New &empty project"), _("Create a new empty project"));
-	project->AppendSeparator();
-	project->Append(idProjectOpen, _("&Open project"), _("Open an existing project"));
-	project->Append(idProjectImport, _("&Import"), import);
-	project->AppendSeparator();
-	project->Append(idProjectSaveProject, _("&Save project"), _("Save active project"));
-	project->Append(idProjectSaveProjectAs, _("Save project &as..."), _("Save active project under a different name"));
-	project->Append(idProjectSaveAllProjects, _("Save a&ll projects"), _("Save all modified projects"));
-	project->AppendSeparator();
-	project->Append(idProjectSaveTemplate, _("&Save project as user-template"), _("Keep this project as a user-template to base new projects on"));
-	project->AppendSeparator();
-	project->Append(idProjectCloseProject, _("&Close project"), _("Close active project"));
-	project->Append(idProjectCloseAllProjects, _("Close all projects"), _("Close all opened projects"));
-
-/////////////////// TOOLS //////////////////
-	wxMenu* tools = RecreateMenu(mbar, _("&Tools"));
-	// nothing to add here
-	// it is managed by the ToolsManager ;)
-
-/////////////////// PLUGINS //////////////////
-	wxMenu* plugs = RecreateMenu(mbar, _("P&lugins"));
-	plugs->Append(idPluginsManagePlugins, _("Manage &plugins"), _("Change plugins auto-start properties (on-the-fly)"));
-
-/////////////////// SETTINGS //////////////////
-	wxMenu* settings = RecreateMenu(mbar, _("Sett&ings"));
-
-	wxMenu* settingsPlugins = new wxMenu();
-
-	settings->Append(idSettingsEnvironment, _("&Environment"), _("Change environment settings"));
-	settings->Append(idSettingsEditor, _("E&ditor"), _("Change editor's settings"));
-	settings->Append(idSettingsConfigurePlugins, _("&Configure plugins"), settingsPlugins);
-	settings->AppendSeparator();
-	settings->Append(idSettingsImpExpConfig, _("Import/export configuration"), _("Import/export configuration settings to/from file"));
-
-/////////////////// HELP //////////////////
-	wxMenu* help = RecreateMenu(mbar, _("&Help"));
-
-	wxMenu* pluginsM = new wxMenu();
-	help->Append(wxID_ABOUT, _("&About..."), _("Display information about the application"));
-	help->Append(idHelpTips, _("&Tips"), _("Display tips on using the application"));
-	help->Append(idHelpPlugins, _("&Plugins"), pluginsM);
-	
-	m_ToolsMenu = tools;
-	m_PluginsMenu = plugs;
-	m_SettingsMenu = settingsPlugins;
-	m_HelpPluginsMenu = pluginsM;
+    tmpidx=mbar->FindMenu("P&lugins");
+    if(tmpidx!=wxNOT_FOUND)
+        plugs = mbar->GetMenu(tmpidx);
+        
+    if(tmpitem = mbar->FindItem(idSettingsConfigurePlugins,NULL))
+        settingsPlugins = tmpitem->GetSubMenu();
+    if(tmpitem = mbar->FindItem(idHelpPlugins,NULL))
+        pluginsM = tmpitem->GetSubMenu();
+    
+	m_ToolsMenu = tools ? tools : new wxMenu();
+	m_PluginsMenu = plugs ? plugs : new wxMenu();
+	m_SettingsMenu = settingsPlugins ? settingsPlugins : new wxMenu();
+	m_HelpPluginsMenu = pluginsM ? pluginsM : new wxMenu();
 
 	// core modules: create menus
 	m_pPrjMan->CreateMenu(mbar);
@@ -577,7 +461,6 @@ void MainFrame::CreateMenubar()
             }
 		}
 	}
-
 
 	Manager::Get()->GetToolsManager()->BuildToolsMenu(m_ToolsMenu);
 
@@ -706,7 +589,9 @@ void MainFrame::AddPluginInPluginsMenu(cbPlugin* plugin)
 
 void MainFrame::AddPluginInSettingsMenu(cbPlugin* plugin)
 {
-    if (plugin && !plugin->GetInfo()->hasConfigure)
+    if(!plugin)
+        return;
+    if (!plugin->GetInfo()->hasConfigure)
         return;
     AddPluginInMenus(m_SettingsMenu, plugin,
                     (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)&MainFrame::OnPluginSettingsMenu);
@@ -1808,6 +1693,7 @@ void MainFrame::OnPluginLoaded(CodeBlocksEvent& event)
 	}
 }
 
+#if 0
 void MainFrame::OnPluginUnloaded(CodeBlocksEvent& event)
 {
     cbPlugin* plug = event.GetPlugin();
@@ -1823,6 +1709,7 @@ void MainFrame::OnPluginUnloaded(CodeBlocksEvent& event)
         m_pMsgMan->DebugLog(_("%s plugin unloaded"), msg.c_str());
     }
 }
+#endif
 
 void MainFrame::OnSettingsEnvironment(wxCommandEvent& event)
 {
@@ -1848,7 +1735,7 @@ void MainFrame::OnSettingsPlugins(wxCommandEvent& event)
 	if (Manager::Get()->GetPluginManager()->Configure() == wxID_OK)
 	{
         // mandrav: disabled on-the-fly plugins enabling/disabling (still has glitches)
-        wxMessageBox(_("Any changes you made, will take effect the next time you start " APP_NAME "."),
+        wxMessageBox(_("Changes will take effect on the next startup."),
                     _("Information"),
                     wxICON_INFORMATION);
 //        wxBusyCursor busy;

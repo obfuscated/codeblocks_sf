@@ -54,43 +54,45 @@ cbPlugin* GetPlugin()
 // just because we don't know other plugins' used identifiers,
 // we use wxNewId() to generate a guaranteed unique ID ;), instead of enum
 // (don't forget that, especially in a plugin)
-int idTimerPollCompiler = wxNewId();
+int idTimerPollCompiler = XRCID("idTimerPollCompiler");
 int idMenuCompile = XRCID("idCompilerMenuCompile");
-int idMenuCompileTarget = wxNewId();
-int idMenuCompileFromProjectManager = wxNewId();
-int idMenuProjectCompilerOptions = wxNewId();
-int idMenuTargetCompilerOptions = wxNewId();
-int idMenuTargetCompilerOptionsSub = wxNewId();
-int idMenuCompileTargetFromProjectManager = wxNewId();
-int idMenuCompileFile = wxNewId();
-int idMenuCompileFileFromProjectManager = wxNewId();
+int idMenuCompileTarget = XRCID("idCompilerMenuCompileTarget");
+int idMenuCompileFromProjectManager = XRCID("idCompilerMenuCompileFromProjectManager");
+int idMenuProjectCompilerOptions = XRCID("idCompilerMenuProjectCompilerOptions");
+int idMenuTargetCompilerOptions = XRCID("idCompilerMenuTargetCompilerOptions");
+int idMenuTargetCompilerOptionsSub = XRCID("idCompilerMenuTargetCompilerOptionsSub");
+int idMenuCompileTargetFromProjectManager = XRCID("idCompilerMenuCompileTargetFromProjectManager");
+int idMenuCompileFile = XRCID("idCompilerMenuCompileFile");
+int idMenuCompileFileFromProjectManager = XRCID("idCompilerMenuCompileFileFromProjectManager");
 int idMenuRebuild = XRCID("idCompilerMenuRebuild");
-int idMenuRebuildTarget = wxNewId();
-int idMenuRebuildFromProjectManager = wxNewId();
-int idMenuRebuildTargetFromProjectManager = wxNewId();
-int idMenuCompileAll = wxNewId();
-int idMenuRebuildAll = wxNewId();
-int idMenuClean = wxNewId();
-int idMenuDistClean = wxNewId();
-int idMenuCleanTarget = wxNewId();
-int idMenuDistCleanTarget = wxNewId();
-int idMenuCleanFromProjectManager = wxNewId();
-int idMenuDistCleanFromProjectManager = wxNewId();
-int idMenuCleanTargetFromProjectManager = wxNewId();
-int idMenuDistCleanTargetFromProjectManager = wxNewId();
+int idMenuRebuildTarget = XRCID("idCompilerMenuRebuildTarget");
+int idMenuRebuildFromProjectManager = XRCID("idCompilerMenuRebuildFromProjectManager");
+int idMenuRebuildTargetFromProjectManager = XRCID("idCompilerMenuRebuildTargetFromProjectManager");
+int idMenuCompileAll = XRCID("idCompilerMenuCompileAll");
+int idMenuRebuildAll = XRCID("idCompilerMenuRebuildAll");
+int idMenuClean = XRCID("idCompilerMenuClean");
+int idMenuDistClean = XRCID("idCompilerMenuDistClean");
+int idMenuCleanTarget = XRCID("idCompilerMenuCleanTarget");
+int idMenuDistCleanTarget = XRCID("idCompilerMenuDistCleanTarget");
+int idMenuCleanFromProjectManager = XRCID("idCompilerMenuCleanFromProjectManager");
+int idMenuDistCleanFromProjectManager = XRCID("idCompilerMenuDistCleanFromProjectManager");
+int idMenuCleanTargetFromProjectManager = XRCID("idCompilerMenuCleanTargetFromProjectManager");
+int idMenuDistCleanTargetFromProjectManager = XRCID("idCompilerMenuDistCleanTargetFromProjectManager");
 int idMenuCompileAndRun = XRCID("idCompilerMenuCompileAndRun");
 int idMenuRun = XRCID("idCompilerMenuRun");
-int idMenuKillProcess = wxNewId();
-int idMenuSelectTarget = wxNewId();
-int idMenuSelectTargetAll = wxNewId();
+int idMenuKillProcess = XRCID("idCompilerMenuKillProcess");
+int idMenuSelectTarget = XRCID("idCompilerMenuSelectTarget");
+int idMenuSelectTargetAll = XRCID("idCompilerMenuSelectTargetAll");
 int idMenuSelectTargetOther[MAX_TARGETS]; // initialized in ctor
-int idMenuNextError = wxNewId();
-int idMenuPreviousError = wxNewId();
-int idMenuClearErrors = wxNewId();
-int idMenuCreateDist = wxNewId();
-int idMenuExportMakefile = wxNewId();
-int idToolTarget = wxNewId();
-int idToolTargetLabel = wxNewId();
+int idMenuNextError = XRCID("idCompilerMenuNextError");
+int idMenuPreviousError = XRCID("idCompilerMenuPreviousError");
+int idMenuClearErrors = XRCID("idCompilerMenuClearErrors");
+int idMenuCreateDist = XRCID("idCompilerMenuCreateDist");
+int idMenuExportMakefile = XRCID("idCompilerMenuExportMakefile");
+int idMenuSettings = XRCID("idCompilerMenuSettings");
+
+int idToolTarget = XRCID("idToolTarget");
+int idToolTargetLabel = XRCID("idToolTargetLabel");
 
 int idGCCProcess = wxNewId();
 
@@ -133,6 +135,7 @@ BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
 	EVT_MENU(idMenuClearErrors,						CompilerGCC::OnClearErrors)
     EVT_MENU(idMenuCreateDist,                      CompilerGCC::OnCreateDist)
     EVT_MENU(idMenuExportMakefile,                  CompilerGCC::OnExportMakefile)
+    EVT_MENU(idMenuSettings,                        CompilerGCC::OnConfig)
 	
 	EVT_COMBOBOX(idToolTarget,						CompilerGCC::OnSelectTarget)
 	
@@ -310,42 +313,29 @@ int CompilerGCC::Configure(cbProject* project, ProjectBuildTarget* target)
 	return 0;
 }
 
+void CompilerGCC::OnConfig(wxCommandEvent& event)
+{
+    Configure(NULL);
+}
+
 void CompilerGCC::BuildMenu(wxMenuBar* menuBar)
 {
 	if (!m_IsAttached)
 		return;
-//	if (m_Menu)
-//		return;
-	m_Menu = new wxMenu("");
-    m_Menu->Append(idMenuRun, _("&Run\tCtrl-F10"), _("Run current project"));
-    m_Menu->Append(idMenuCompileAndRun, _("Com&pile && run\tF9"), _("Compile and run current project"));
-    m_Menu->AppendSeparator();
-    m_Menu->Append(idMenuCompile, _("&Compile\tCtrl-F9"), _("Compile current project"));
-    m_Menu->Append(idMenuCompileFile, _("Compile current &file\tCtrl-Shift-F9"), _("Compile current file"));
-    m_Menu->Append(idMenuRebuild, _("Re&build\tCtrl-F11"), _("Rebuild current project"));
-    m_Menu->Append(idMenuClean, _("C&lean"), _("Clean current project"));
-    m_Menu->Append(idMenuDistClean, _("Di&st clean"), _("Clean current project (dependencies too)"));
-    m_Menu->AppendSeparator();
-    m_Menu->Append(idMenuCompileAll, _("Compile all pro&jects"), _("Compile all projects"));
-    m_Menu->Append(idMenuRebuildAll, _("Reb&uild all projects"), _("Rebuild all projects"));
-    m_Menu->AppendSeparator();
-    m_Menu->Append(idMenuKillProcess, _("&Abort"), _("Abort the running build process"));
-    m_Menu->AppendSeparator();
+	if (m_Menu)
+		return;
 
-	m_ErrorsMenu = new wxMenu(""); // target selection menu
-	m_ErrorsMenu->Append(idMenuPreviousError, _("&Previous error\tAlt-F1"), _("Go to previous compilation error"));
-	m_ErrorsMenu->Append(idMenuNextError, _("&Next error\tAlt-F2"), _("Go to next compilation error"));
-    m_ErrorsMenu->AppendSeparator();
-	m_ErrorsMenu->Append(idMenuClearErrors, _("&Clear all errors"), _("Clear all compilation errors"));
-	m_Menu->Append(idMenuSelectTarget, _("&Errors"), m_ErrorsMenu);
+    wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
+    wxXmlResource *myres = wxXmlResource::Get();
+    myres->Load(resPath + "/compiler_gcc.zip#zip:compiler_menu.xrc");
+    wxMenu *tmpmenu=myres->LoadMenu("compiler_menu");
+    m_Menu = tmpmenu ? tmpmenu : new wxMenu("");
 
-	m_TargetMenu = new wxMenu(""); // target selection menu
-	DoRecreateTargetMenu();
-	m_Menu->Append(idMenuSelectTarget, _("Select target..."), m_TargetMenu);
-
-    m_Menu->AppendSeparator();
-    m_Menu->Append(idMenuCreateDist, _("Create &distribution"), _("Create a source distribution package"));
-    m_Menu->Append(idMenuExportMakefile, _("E&xport Makefile"), _("Export Makefile so that you can build the program from the command line"));
+	// target selection menu
+	wxMenuItem *tmpitem=m_Menu->FindItem(idMenuSelectTarget,NULL);
+    m_TargetMenu = tmpitem ? tmpitem->GetSubMenu() : new wxMenu("");
+    DoRecreateTargetMenu();
+	//m_Menu->Append(idMenuSelectTarget, _("Select target..."), m_TargetMenu);
 
 	// ok, now, where do we insert?
 	// three possibilities here:
@@ -375,7 +365,8 @@ void CompilerGCC::BuildMenu(wxMenuBar* menuBar)
         int propsID = prj->FindItem("Properties");
         if (propsID != wxNOT_FOUND)
             prj->FindChildItem(propsID, &propsPos);
-        prj->Insert(propsPos, idMenuProjectCompilerOptions, _("Build options"), _("Set the project's build options"));
+        prj->Insert(propsPos, idMenuProjectCompilerOptions, _("Build options"), _("Set the project's build options"));        
+        prj->InsertSeparator(propsPos);
     }
 }
 
@@ -456,8 +447,7 @@ void CompilerGCC::BuildToolBar(wxToolBar* toolBar)
         
         wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
         wxXmlResource *myres = wxXmlResource::Get();
-        myres->Load(resPath + "/compiler_gcc.zip#zip:*.xrc");
-        
+        myres->Load(resPath + "/compiler_gcc.zip#zip:compiler_toolbar"+my_16x16+".xrc");
 		myres->LoadObject(toolBar,NULL,"compiler_toolbar"+my_16x16,"wxToolBarAddOn");
 		// supported by our *new* wxToolBarAddOnHandler
 
@@ -466,7 +456,6 @@ void CompilerGCC::BuildToolBar(wxToolBar* toolBar)
         m_ToolTarget = XRCCTRL(*toolBar, "idToolTarget", wxComboBox);
         #endif
         toolBar->Realize();
-        
         DoRecreateTargetMenu(); // make sure the tool target combo is up-to-date
 	}
 }
