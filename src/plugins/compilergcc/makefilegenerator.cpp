@@ -286,6 +286,7 @@ void MakefileGenerator::DoAppendLinkerLibs(wxString& cmd, ProjectBuildTarget* ta
         wxString libPrefix = m_CompilerSet->GetSwitches().libPrefix;
         wxString libExt = m_CompilerSet->GetSwitches().libExtension;
         wxString lib = libs[x];
+        QuoteStringIfNeeded(lib);
         // run replacements on libs only if no slashes in name (which means it's a relative or absolute path)
         if (lib.Find('/') == -1 && lib.Find('\\') == -1)
         {
