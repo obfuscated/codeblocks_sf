@@ -33,8 +33,11 @@ WX_DEFINE_ARRAY(cbProject*, ProjectsArray);
   */
 class DLLIMPORT ProjectManager : public wxEvtHandler
 {
+        static bool s_CanShutdown;
 	public:
         friend class Manager; // give Manager access to our private members
+        // Can the app shutdown? (actually: is ProjectManager busy at the moment?)
+        static bool CanShutdown(){ return s_CanShutdown; }
         /// Application menu creation. Called by the application only.
 		static void CreateMenu(wxMenuBar* menuBar);
         /// Application menu removal. Called by the application only.

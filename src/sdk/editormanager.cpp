@@ -55,6 +55,9 @@ BEGIN_EVENT_TABLE(EditorManager,wxEvtHandler)
 #endif
 END_EVENT_TABLE()
 
+// static
+bool EditorManager::s_CanShutdown = true;
+
 EditorManager* EditorManager::Get(wxWindow* parent)
 {
     if(Manager::isappShuttingDown()) // The mother of all sanity checks
@@ -191,6 +194,10 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos)
         return NULL;
 //	Manager::Get()->GetMessageManager()->DebugLog("File exists '%s'", fname.c_str());
 
+    // disallow application shutdown while opening files
+    // WARNING: remember to set it to true, when exiting this function!!!
+    s_CanShutdown = false;
+
     cbEditor* ed = IsOpen(fname);
     if (!ed)
     {
@@ -257,7 +264,10 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos)
     #ifdef use_openedfilestree
     AddFiletoTree(ed);
     #endif
-        
+
+    // we 're done
+    s_CanShutdown = true;
+
     return ed;
 }
 

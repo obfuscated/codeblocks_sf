@@ -45,6 +45,9 @@
 #include "multiselectdlg.h"
 #include "cbworkspace.h"
 
+// static
+bool ProjectManager::s_CanShutdown = true;
+
 ProjectManager* ProjectManager::Get(wxNotebook* parent)
 {   
     if(Manager::isappShuttingDown()) // The mother of all sanity checks
@@ -407,15 +410,22 @@ cbProject* ProjectManager::IsOpen(const wxString& filename)
 cbProject* ProjectManager::LoadProject(const wxString& filename)
 {
     SANITY_CHECK(0L);
+
+    // disallow application shutdown while opening files
+    // WARNING: remember to set it to true, when exiting this function!!!
+    s_CanShutdown = false;
+
 	cbProject* project = IsOpen(filename);
 	if (project)
 	{
         if (m_pWorkspace)
             m_pWorkspace->SetModified(true);
+        // we 're done
+        s_CanShutdown = true;
 		return project;
 	}
 	project = new cbProject(filename);	
-	if(!sanity_check()) return 0L; // sanity check
+	if(!sanity_check()) goto SanityExit; // sanity check
 	// We need to do this because creating cbProject allows the app to be
 	// closed in the middle of the operation. So the class destructor gets
 	// called in the middle of a method call.
@@ -423,19 +433,26 @@ cbProject* ProjectManager::LoadProject(const wxString& filename)
 	if (!project->IsLoaded())
 	{
         delete project;
-		return 0L;
+		goto SanityExit;
     }
 	
-    if(!sanity_check()) return 0L; // sanity check
+    if(!sanity_check()) goto SanityExit; // sanity check
     m_pProjects->Add(project);
 	SetProject(project);
-	if(!sanity_check()) return 0L; // sanity check
+	if(!sanity_check()) goto SanityExit; // sanity check
 	project->LoadLayout();
-	if(!sanity_check()) return 0L; // sanity check
+	if(!sanity_check()) goto SanityExit; // sanity check
 	project->RestoreTreeState(m_pTree);
     if (m_pWorkspace)
         m_pWorkspace->SetModified(true);
+    // we 're done
+    s_CanShutdown = true;
     return project;
+
+SanityExit:
+    // we 're done
+    s_CanShutdown = true;
+    return 0;
 }
 
 cbProject* ProjectManager::NewProject()

@@ -1108,13 +1108,22 @@ void MainFrame::OnFileQuit(wxCommandEvent& WXUNUSED(event))
 
 void MainFrame::OnApplicationClose(wxCloseEvent& event)
 {
+    if (!ProjectManager::CanShutdown() || !EditorManager::CanShutdown())
+    {
+        event.Veto();
+        wxMessageBox(_("Code::Blocks is still opening files.\n"
+                        "Please wait for it to finish loading and then close it..."),
+                        _("Information"),
+                        wxICON_INFORMATION);
+        return;
+    }
+
     if (!DoCloseCurrentWorkspace())
     {
         event.Veto();
         return;
     }
 
-    
     SaveWindowState();
     TerminateRecentFilesHistory();
     

@@ -63,8 +63,10 @@ struct cbFindReplaceData
  */
 class DLLIMPORT EditorManager : public wxEvtHandler
 {
+        static bool s_CanShutdown;
 	public:
         friend class Manager; // give Manager access to our private members
+        static bool CanShutdown(){ return s_CanShutdown; }
 		void CreateMenu(wxMenuBar* menuBar);
 		void ReleaseMenu(wxMenuBar* menuBar);
 		void Configure();        
