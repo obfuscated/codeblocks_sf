@@ -3,56 +3,57 @@
 ###############################################################################
 
 # Project:          Code::Blocks
-# Project filename: C:\Devel\Tigris.org\codeblocks\src\CodeBlocks.cbp
-# Date:             05/09/04 14:06:30
+# Project filename: D:\CVS\Others\codeblocks\src\CodeBlocks.cbp
+# Date:             05/10/04 14:14:52
 # Compiler used:    MinGW Compiler Suite
 
 ### Variables used in this Makefile
 RM=rm -f
 ZIP=zip
 ZIP_EXT=zip
+MGE_PACK=tools/mge_pack.exe
 CC=mingw32-gcc.exe
 CPP=mingw32-g++.exe
 LD=mingw32-g++.exe
 RESCOMP=windres.exe
 
 ### Compiler/linker options
-GLOBAL_CFLAGS= -Wall 
-PROJECT_CFLAGS= -ggdb -pipe -mthreads -fno-pcc-struct-return -fno-rtti -fno-exceptions -fmessage-length=0  -D__GNUWIN32__ -D__WXMSW__ -DWXUSINGDLL
+GLOBAL_CFLAGS= -Wall -pipe -fmessage-length=0
+PROJECT_CFLAGS= -ggdb -pipe -mthreads -fno-pcc-struct-return -fno-rtti -fno-exceptions -fmessage-length=0 -D__GNUWIN32__ -D__WXMSW__ -DWXUSINGDLL
 GLOBAL_LDFLAGS= 
-PROJECT_LDFLAGS= -lwxmsw241 -lgmon 
+PROJECT_LDFLAGS= -lwxmsw241 -lgmon
 GLOBAL_INCS= -IC:/MinGW/include
 PROJECT_INCS=
 GLOBAL_LIBS= -LC:/MinGW/lib
 PROJECT_LIBS= -Lsdk/tinyxml
 
 ### Targets compiler flags
-tinyXML_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) 
-sdk_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS)  -DEXPORT_LIB -DEXPORT_EVENTS
-src_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) 
-plugin_CompilerGCC_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS)  -DBUILDING_PLUGIN -D_WINDLL
-plugin_DebuggerGDB_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS)  -DBUILDING_PLUGIN -D_WINDLL
-plugin_CodeCompletion_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS)  -DBUILDING_PLUGIN -D_WINDLL
-plugin_ClassWizard_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS)  -DBUILDING_PLUGIN -D_WINDLL
-plugin_PluginsWizard_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS)  -DBUILDING_PLUGIN -D_WINDLL
-plugin_ToDo_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS)  -DBUILDING_PLUGIN -D_WINDLL
-plugin_XPManifest_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS)  -DBUILDING_PLUGIN -D_WINDLL
-update_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) 
-console_runner_CFLAGS= $(GLOBAL_CFLAGS) -Os 
+tinyXML_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS)
+sdk_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) -DEXPORT_LIB -DEXPORT_EVENTS
+src_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS)
+plugin_CompilerGCC_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL
+plugin_DebuggerGDB_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL
+plugin_CodeCompletion_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL
+plugin_ClassWizard_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL
+plugin_PluginsWizard_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL
+plugin_ToDo_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL
+plugin_XPManifest_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL
+update_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS)
+console_runner_CFLAGS= $(GLOBAL_CFLAGS) -Os
 
 ### Targets linker flags
-tinyXML_LDFLAGS= $(GLOBAL_LDFLAGS) $(PROJECT_LDFLAGS) 
-sdk_LDFLAGS= $(GLOBAL_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--export-all-symbols -Wl,--add-stdcall-alias -lexpat -ltxml -lwxxrc -lstc  $(PROJECT_LDFLAGS)
-src_LDFLAGS= $(GLOBAL_LDFLAGS) -lcodeblocks -lstc -lwxxrc -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lodbc32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32  $(PROJECT_LDFLAGS) -mwindows
-plugin_CompilerGCC_LDFLAGS= $(GLOBAL_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias -lcodeblocks -lstc -lwxxrc -lwxmsw241 
-plugin_DebuggerGDB_LDFLAGS= $(GLOBAL_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias -lcodeblocks -lstc -lwxxrc -lwxmsw241 
-plugin_CodeCompletion_LDFLAGS= $(GLOBAL_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias -lcodeblocks -lstc -lwxxrc -lwxmsw241 
-plugin_ClassWizard_LDFLAGS= $(GLOBAL_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias -lcodeblocks -lstc -lwxxrc -lwxmsw241 
-plugin_PluginsWizard_LDFLAGS= $(GLOBAL_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias -lcodeblocks -lstc -lwxxrc -lwxmsw241 
-plugin_ToDo_LDFLAGS= $(GLOBAL_LDFLAGS) $(PROJECT_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias -lcodeblocks -lwxmsw241 
-plugin_XPManifest_LDFLAGS= $(GLOBAL_LDFLAGS) $(PROJECT_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias -lcodeblocks -lwxmsw241 
-update_LDFLAGS= $(GLOBAL_LDFLAGS) $(PROJECT_LDFLAGS) 
-console_runner_LDFLAGS= $(GLOBAL_LDFLAGS) 
+tinyXML_LDFLAGS= $(GLOBAL_LDFLAGS) $(PROJECT_LDFLAGS)
+sdk_LDFLAGS= $(GLOBAL_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--export-all-symbols -Wl,--add-stdcall-alias -lexpat -ltxml -lwxxrc -lstc $(PROJECT_LDFLAGS)
+src_LDFLAGS= $(GLOBAL_LDFLAGS) -lcodeblocks -lstc -lwxxrc -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lodbc32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32 $(PROJECT_LDFLAGS) -mwindows
+plugin_CompilerGCC_LDFLAGS= $(GLOBAL_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias -lcodeblocks -lstc -lwxxrc -lwxmsw241
+plugin_DebuggerGDB_LDFLAGS= $(GLOBAL_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias -lcodeblocks -lstc -lwxxrc -lwxmsw241
+plugin_CodeCompletion_LDFLAGS= $(GLOBAL_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias -lcodeblocks -lstc -lwxxrc -lwxmsw241
+plugin_ClassWizard_LDFLAGS= $(GLOBAL_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias -lcodeblocks -lstc -lwxxrc -lwxmsw241
+plugin_PluginsWizard_LDFLAGS= $(GLOBAL_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias -lcodeblocks -lstc -lwxxrc -lwxmsw241
+plugin_ToDo_LDFLAGS= $(GLOBAL_LDFLAGS) $(PROJECT_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias -lcodeblocks -lwxmsw241
+plugin_XPManifest_LDFLAGS= $(GLOBAL_LDFLAGS) $(PROJECT_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias -lcodeblocks -lwxmsw241
+update_LDFLAGS= $(GLOBAL_LDFLAGS) $(PROJECT_LDFLAGS)
+console_runner_LDFLAGS= $(GLOBAL_LDFLAGS)
 
 ### Targets include directories
 tinyXML_INCS= $(GLOBAL_INCS) $(PROJECT_INCS)
@@ -125,7 +126,7 @@ plugin_ClassWizard_DEPS=$(plugin_ClassWizard_OBJS:.o=.d)
 plugin_PluginsWizard_OBJS=plugins/pluginwizard/enterinfodlg.o plugins/pluginwizard/pluginwizard.o plugins/pluginwizard/pluginwizarddlg.o 
 plugin_PluginsWizard_LINKOBJS=$(plugin_PluginsWizard_OBJS) $(plugin_PluginsWizard_RESOURCE)
 plugin_PluginsWizard_DEPS=$(plugin_PluginsWizard_OBJS:.o=.d)
-plugin_ToDo_OBJS=plugins/todo/addtododlg.o plugins/todo/todolist.o plugins/todo/viewtododlg.o 
+plugin_ToDo_OBJS=plugins/todo/addtododlg.o plugins/todo/todolist.o plugins/todo/todolistview.o plugins/todo/todosettingsdlg.o 
 plugin_ToDo_LINKOBJS=$(plugin_ToDo_OBJS) $(plugin_ToDo_RESOURCE)
 plugin_ToDo_DEPS=$(plugin_ToDo_OBJS:.o=.d)
 plugin_XPManifest_OBJS=plugins/xpmanifest/windowsxplooknfeel.o 
@@ -165,7 +166,7 @@ plugin_ToDo_LIB_DEF=devel/share/codeblocks/plugins/libtodo.def
 plugin_XPManifest_BIN=devel/share/CodeBlocks/plugins/xpmanifest.dll
 plugin_XPManifest_STATIC_LIB=devel/share/CodeBlocks/plugins/libxpmanifest.a
 plugin_XPManifest_LIB_DEF=devel/share/CodeBlocks/plugins/libxpmanifest.def
-update_BIN=
+update_BIN=codeblocks.exe
 console_runner_BIN=tools/ConsoleRunner/console_runner.exe
 
 .PHONY: all all-before all-custom all-after clean clean-custom tinyXML-before tinyXML-after sdk-before sdk-after src-before src-after plugin_CompilerGCC-before plugin_CompilerGCC-after plugin_DebuggerGDB-before plugin_DebuggerGDB-after plugin_CodeCompletion-before plugin_CodeCompletion-after plugin_ClassWizard-before plugin_ClassWizard-after plugin_PluginsWizard-before plugin_PluginsWizard-after plugin_ToDo-before plugin_ToDo-after plugin_XPManifest-before plugin_XPManifest-after update-before update-after console_runner-before console_runner-after 
@@ -215,7 +216,7 @@ update-before:
 
 
 dist:
-	@$(ZIP) Code::Blocks.$(ZIP_EXT) CodeBlocks.cbp Makefile plugins/classwizard/classwizard.cpp plugins/classwizard/classwizard.h plugins/classwizard/classwizarddlg.cpp plugins/classwizard/classwizarddlg.h plugins/classwizard/resources/new_class.xrc plugins/codecompletion/cclist.cpp plugins/codecompletion/cclist.h plugins/codecompletion/cclistctrl.cpp plugins/codecompletion/cclistctrl.h plugins/codecompletion/ccoptionsdlg.cpp plugins/codecompletion/ccoptionsdlg.h plugins/codecompletion/ccrenderer.cpp plugins/codecompletion/ccrenderer.h plugins/codecompletion/classbrowser.cpp plugins/codecompletion/classbrowser.h plugins/codecompletion/codecompletion.cpp plugins/codecompletion/codecompletion.h plugins/codecompletion/insertclassmethoddlg.cpp plugins/codecompletion/insertclassmethoddlg.h plugins/codecompletion/nativeparser.cpp plugins/codecompletion/nativeparser.h plugins/codecompletion/parser/parser.cpp plugins/codecompletion/parser/parser.h plugins/codecompletion/parser/parserthread.cpp plugins/codecompletion/parser/parserthread.h plugins/codecompletion/parser/token.cpp plugins/codecompletion/parser/token.h plugins/codecompletion/parser/tokenizer.cpp plugins/codecompletion/parser/tokenizer.h plugins/codecompletion/resources/images/class.png plugins/codecompletion/resources/images/class_folder.png plugins/codecompletion/resources/images/ctor_private.png plugins/codecompletion/resources/images/ctor_protected.png plugins/codecompletion/resources/images/ctor_public.png plugins/codecompletion/resources/images/dtor_private.png plugins/codecompletion/resources/images/dtor_protected.png plugins/codecompletion/resources/images/dtor_public.png plugins/codecompletion/resources/images/enum.png plugins/codecompletion/resources/images/enumerator.png plugins/codecompletion/resources/images/method_private.png plugins/codecompletion/resources/images/method_protected.png plugins/codecompletion/resources/images/method_public.png plugins/codecompletion/resources/images/preproc.png plugins/codecompletion/resources/images/var_private.png plugins/codecompletion/resources/images/var_protected.png plugins/codecompletion/resources/images/var_public.png plugins/codecompletion/resources/insert_class_method.xrc plugins/codecompletion/resources/settings.xrc plugins/compilergcc/advancedcompileroptionsdlg.cpp plugins/compilergcc/advancedcompileroptionsdlg.h plugins/compilergcc/compilerMINGW.cpp plugins/compilergcc/compilerMINGW.h plugins/compilergcc/compilerMSVC.cpp plugins/compilergcc/compilerMSVC.h plugins/compilergcc/compilererrors.cpp plugins/compilergcc/compilererrors.h plugins/compilergcc/compilergcc.cpp plugins/compilergcc/compilergcc.h plugins/compilergcc/compilermessages.cpp plugins/compilergcc/compilermessages.h plugins/compilergcc/compileroptionsdlg.cpp plugins/compilergcc/compileroptionsdlg.h plugins/compilergcc/customvars.cpp plugins/compilergcc/customvars.h plugins/compilergcc/makefilegenerator.cpp plugins/compilergcc/makefilegenerator.h plugins/compilergcc/resources/advanced_compiler_options.xrc plugins/compilergcc/resources/compiler_options.xrc plugins/debuggergdb/debuggergdb.cpp plugins/debuggergdb/debuggergdb.h plugins/debuggergdb/debuggertree.cpp plugins/debuggergdb/debuggertree.h plugins/pluginwizard/enterinfodlg.cpp plugins/pluginwizard/enterinfodlg.h plugins/pluginwizard/pluginwizard.cpp plugins/pluginwizard/pluginwizard.h plugins/pluginwizard/pluginwizarddlg.cpp plugins/pluginwizard/pluginwizarddlg.h plugins/pluginwizard/resources/new_plugin.xrc plugins/pluginwizard/resources/plugin_info.xrc plugins/todo/addtododlg.cpp plugins/todo/addtododlg.h plugins/todo/resources/add_todo.xrc plugins/todo/todolist.cpp plugins/todo/todolist.h plugins/todo/viewtododlg.cpp plugins/todo/viewtododlg.h plugins/xpmanifest/windowsxplooknfeel.cpp plugins/xpmanifest/windowsxplooknfeel.h sdk/cbeditor.cpp sdk/cbeditor.h sdk/cbplugin.cpp sdk/cbplugin.h sdk/cbproject.cpp sdk/cbproject.h sdk/compileoptionsbase.cpp sdk/compileoptionsbase.h sdk/compiler.cpp sdk/compiler.h sdk/compilerfactory.cpp sdk/compilerfactory.h sdk/compileroptions.cpp sdk/compileroptions.h sdk/compiletargetbase.cpp sdk/compiletargetbase.h sdk/configmanager.cpp sdk/configmanager.h sdk/configuretoolsdlg.cpp sdk/configuretoolsdlg.h sdk/confirmreplacedlg.cpp sdk/confirmreplacedlg.h sdk/editarrayorderdlg.cpp sdk/editarrayorderdlg.h sdk/editarraystringdlg.cpp sdk/editarraystringdlg.h sdk/editorcolorset.cpp sdk/editorcolorset.h sdk/editorconfigurationdlg.cpp sdk/editorconfigurationdlg.h sdk/editormanager.cpp sdk/editormanager.h sdk/edittooldlg.cpp sdk/edittooldlg.h sdk/filegroupsandmasks.cpp sdk/filegroupsandmasks.h sdk/finddlg.cpp sdk/finddlg.h sdk/findreplacebase.h sdk/globals.cpp sdk/globals.h sdk/incrementalselectlistdlg.cpp sdk/incrementalselectlistdlg.h sdk/licenses.h sdk/macrosmanager.cpp sdk/macrosmanager.h sdk/manager.cpp sdk/manager.h sdk/messagelog.cpp sdk/messagelog.h sdk/messagemanager.cpp sdk/messagemanager.h sdk/newfromtemplatedlg.cpp sdk/newfromtemplatedlg.h sdk/pipedprocess.cpp sdk/pipedprocess.h sdk/pluginmanager.cpp sdk/pluginmanager.h sdk/pluginsconfigurationdlg.cpp sdk/pluginsconfigurationdlg.h sdk/projectbuildtarget.cpp sdk/projectbuildtarget.h sdk/projectfileoptionsdlg.cpp sdk/projectfileoptionsdlg.h sdk/projectlayoutloader.cpp sdk/projectlayoutloader.h sdk/projectloader.cpp sdk/projectloader.h sdk/projectmanager.cpp sdk/projectmanager.h sdk/projectoptionsdlg.cpp sdk/projectoptionsdlg.h sdk/projectsfilemasksdlg.cpp sdk/projectsfilemasksdlg.h sdk/projecttemplateloader.cpp sdk/projecttemplateloader.h sdk/replacedlg.cpp sdk/replacedlg.h sdk/resources/configure_tools.xrc sdk/resources/confirm_replace.xrc sdk/resources/edit_array_order.xrc sdk/resources/edit_array_string.xrc sdk/resources/edit_tool.xrc sdk/resources/editor_configuration.xrc sdk/resources/find_dialog.xrc sdk/resources/plugins_configuration.xrc sdk/resources/project_manager_file_types.xrc sdk/resources/project_options.xrc sdk/resources/projectfile_options.xrc sdk/resources/replace_dialog.xrc sdk/resources/select_target.xrc sdk/sdk_events.cpp sdk/sdk_events.h sdk/selecttargetdlg.cpp sdk/selecttargetdlg.h sdk/settings.h sdk/simplelistlog.cpp sdk/simplelistlog.h sdk/simpletextlog.cpp sdk/simpletextlog.h sdk/templatemanager.cpp sdk/templatemanager.h sdk/tinyxml/tinystr.cpp sdk/tinyxml/tinystr.h sdk/tinyxml/tinyxml.cpp sdk/tinyxml/tinyxml.h sdk/tinyxml/tinyxmlerror.cpp sdk/tinyxml/tinyxmlparser.cpp sdk/toolsmanager.cpp sdk/toolsmanager.h sdk/workspaceloader.cpp sdk/workspaceloader.h src/app.cpp src/app.h src/dlgabout.cpp src/dlgabout.h src/dlgaboutplugin.cpp src/dlgaboutplugin.h src/environmentsettingsdlg.cpp src/environmentsettingsdlg.h src/globals.h src/main.cpp src/main.h src/resources/dlg_about.xrc src/resources/dlg_about_plugin.xrc src/resources/env_settings.xrc src/resources/icons/app.ico src/resources/icons/app.xpm src/resources/icons/c.ico src/resources/icons/cpp.ico src/resources/icons/csd.ico src/resources/icons/filetempl.ico src/resources/icons/h.ico src/resources/images/ascii.png src/resources/images/compile.png src/resources/images/compilerun.png src/resources/images/dbgnext.png src/resources/images/dbgrun.png src/resources/images/dbgrunto.png src/resources/images/dbgstep.png src/resources/images/editcopy.png src/resources/images/editcut.png src/resources/images/editpaste.png src/resources/images/filefind.png src/resources/images/filenew.png src/resources/images/fileopen.png src/resources/images/filesave.png src/resources/images/filesaveas.png src/resources/images/folder.png src/resources/images/folder_new.png src/resources/images/folder_open.png src/resources/images/gohome.png src/resources/images/newproject.png src/resources/images/rebuild.png src/resources/images/redo.png src/resources/images/run.png src/resources/images/searchreplace.png src/resources/images/source.png src/resources/images/splash.png src/resources/images/stop.png src/resources/images/undo.png src/resources/main_frame.xrc src/resources/resources.rc tools/ConsoleRunner/main.cpp 
+	@$(ZIP) Code::Blocks.$(ZIP_EXT) CodeBlocks.cbp Makefile plugins/classwizard/classwizard.cpp plugins/classwizard/classwizard.h plugins/classwizard/classwizarddlg.cpp plugins/classwizard/classwizarddlg.h plugins/classwizard/resources/new_class.xrc plugins/codecompletion/cclist.cpp plugins/codecompletion/cclist.h plugins/codecompletion/cclistctrl.cpp plugins/codecompletion/cclistctrl.h plugins/codecompletion/ccoptionsdlg.cpp plugins/codecompletion/ccoptionsdlg.h plugins/codecompletion/ccrenderer.cpp plugins/codecompletion/ccrenderer.h plugins/codecompletion/classbrowser.cpp plugins/codecompletion/classbrowser.h plugins/codecompletion/codecompletion.cpp plugins/codecompletion/codecompletion.h plugins/codecompletion/insertclassmethoddlg.cpp plugins/codecompletion/insertclassmethoddlg.h plugins/codecompletion/nativeparser.cpp plugins/codecompletion/nativeparser.h plugins/codecompletion/parser/parser.cpp plugins/codecompletion/parser/parser.h plugins/codecompletion/parser/parserthread.cpp plugins/codecompletion/parser/parserthread.h plugins/codecompletion/parser/token.cpp plugins/codecompletion/parser/token.h plugins/codecompletion/parser/tokenizer.cpp plugins/codecompletion/parser/tokenizer.h plugins/codecompletion/resources/images/class.png plugins/codecompletion/resources/images/class_folder.png plugins/codecompletion/resources/images/ctor_private.png plugins/codecompletion/resources/images/ctor_protected.png plugins/codecompletion/resources/images/ctor_public.png plugins/codecompletion/resources/images/dtor_private.png plugins/codecompletion/resources/images/dtor_protected.png plugins/codecompletion/resources/images/dtor_public.png plugins/codecompletion/resources/images/enum.png plugins/codecompletion/resources/images/enumerator.png plugins/codecompletion/resources/images/enums_folder.png plugins/codecompletion/resources/images/method_private.png plugins/codecompletion/resources/images/method_protected.png plugins/codecompletion/resources/images/method_public.png plugins/codecompletion/resources/images/namespace.png plugins/codecompletion/resources/images/others_folder.png plugins/codecompletion/resources/images/preproc.png plugins/codecompletion/resources/images/preproc_folder.png plugins/codecompletion/resources/images/symbols_folder.png plugins/codecompletion/resources/images/var_private.png plugins/codecompletion/resources/images/var_protected.png plugins/codecompletion/resources/images/var_public.png plugins/codecompletion/resources/insert_class_method.xrc plugins/codecompletion/resources/settings.xrc plugins/compilergcc/advancedcompileroptionsdlg.cpp plugins/compilergcc/advancedcompileroptionsdlg.h plugins/compilergcc/compilerMINGW.cpp plugins/compilergcc/compilerMINGW.h plugins/compilergcc/compilerMSVC.cpp plugins/compilergcc/compilerMSVC.h plugins/compilergcc/compilererrors.cpp plugins/compilergcc/compilererrors.h plugins/compilergcc/compilergcc.cpp plugins/compilergcc/compilergcc.h plugins/compilergcc/compilermessages.cpp plugins/compilergcc/compilermessages.h plugins/compilergcc/compileroptionsdlg.cpp plugins/compilergcc/compileroptionsdlg.h plugins/compilergcc/customvars.cpp plugins/compilergcc/customvars.h plugins/compilergcc/makefilegenerator.cpp plugins/compilergcc/makefilegenerator.h plugins/compilergcc/resources/advanced_compiler_options.xrc plugins/compilergcc/resources/compiler_options.xrc plugins/debuggergdb/debuggergdb.cpp plugins/debuggergdb/debuggergdb.h plugins/debuggergdb/debuggertree.cpp plugins/debuggergdb/debuggertree.h plugins/pluginwizard/enterinfodlg.cpp plugins/pluginwizard/enterinfodlg.h plugins/pluginwizard/pluginwizard.cpp plugins/pluginwizard/pluginwizard.h plugins/pluginwizard/pluginwizarddlg.cpp plugins/pluginwizard/pluginwizarddlg.h plugins/pluginwizard/resources/new_plugin.xrc plugins/pluginwizard/resources/plugin_info.xrc plugins/todo/addtododlg.cpp plugins/todo/addtododlg.h plugins/todo/resources/add_todo.xrc plugins/todo/todolist.cpp plugins/todo/todolist.h plugins/todo/todolistview.cpp plugins/todo/todolistview.h plugins/todo/todosettingsdlg.cpp plugins/todo/todosettingsdlg.h plugins/xpmanifest/windowsxplooknfeel.cpp plugins/xpmanifest/windowsxplooknfeel.h sdk/cbeditor.cpp sdk/cbeditor.h sdk/cbplugin.cpp sdk/cbplugin.h sdk/cbproject.cpp sdk/cbproject.h sdk/compileoptionsbase.cpp sdk/compileoptionsbase.h sdk/compiler.cpp sdk/compiler.h sdk/compilerfactory.cpp sdk/compilerfactory.h sdk/compileroptions.cpp sdk/compileroptions.h sdk/compiletargetbase.cpp sdk/compiletargetbase.h sdk/configmanager.cpp sdk/configmanager.h sdk/configuretoolsdlg.cpp sdk/configuretoolsdlg.h sdk/confirmreplacedlg.cpp sdk/confirmreplacedlg.h sdk/editarrayorderdlg.cpp sdk/editarrayorderdlg.h sdk/editarraystringdlg.cpp sdk/editarraystringdlg.h sdk/editorcolorset.cpp sdk/editorcolorset.h sdk/editorconfigurationdlg.cpp sdk/editorconfigurationdlg.h sdk/editormanager.cpp sdk/editormanager.h sdk/edittooldlg.cpp sdk/edittooldlg.h sdk/filegroupsandmasks.cpp sdk/filegroupsandmasks.h sdk/finddlg.cpp sdk/finddlg.h sdk/findreplacebase.h sdk/globals.cpp sdk/globals.h sdk/incrementalselectlistdlg.cpp sdk/incrementalselectlistdlg.h sdk/licenses.h sdk/macrosmanager.cpp sdk/macrosmanager.h sdk/manager.cpp sdk/manager.h sdk/messagelog.cpp sdk/messagelog.h sdk/messagemanager.cpp sdk/messagemanager.h sdk/newfromtemplatedlg.cpp sdk/newfromtemplatedlg.h sdk/pipedprocess.cpp sdk/pipedprocess.h sdk/pluginmanager.cpp sdk/pluginmanager.h sdk/pluginsconfigurationdlg.cpp sdk/pluginsconfigurationdlg.h sdk/projectbuildtarget.cpp sdk/projectbuildtarget.h sdk/projectfileoptionsdlg.cpp sdk/projectfileoptionsdlg.h sdk/projectlayoutloader.cpp sdk/projectlayoutloader.h sdk/projectloader.cpp sdk/projectloader.h sdk/projectmanager.cpp sdk/projectmanager.h sdk/projectoptionsdlg.cpp sdk/projectoptionsdlg.h sdk/projectsfilemasksdlg.cpp sdk/projectsfilemasksdlg.h sdk/projecttemplateloader.cpp sdk/projecttemplateloader.h sdk/replacedlg.cpp sdk/replacedlg.h sdk/resources/configure_tools.xrc sdk/resources/confirm_replace.xrc sdk/resources/edit_array_order.xrc sdk/resources/edit_array_string.xrc sdk/resources/edit_tool.xrc sdk/resources/editor_configuration.xrc sdk/resources/find_dialog.xrc sdk/resources/plugins_configuration.xrc sdk/resources/project_manager_file_types.xrc sdk/resources/project_options.xrc sdk/resources/projectfile_options.xrc sdk/resources/replace_dialog.xrc sdk/resources/select_target.xrc sdk/sdk_events.cpp sdk/sdk_events.h sdk/selecttargetdlg.cpp sdk/selecttargetdlg.h sdk/settings.h sdk/simplelistlog.cpp sdk/simplelistlog.h sdk/simpletextlog.cpp sdk/simpletextlog.h sdk/templatemanager.cpp sdk/templatemanager.h sdk/tinyxml/tinystr.cpp sdk/tinyxml/tinystr.h sdk/tinyxml/tinyxml.cpp sdk/tinyxml/tinyxml.h sdk/tinyxml/tinyxmlerror.cpp sdk/tinyxml/tinyxmlparser.cpp sdk/toolsmanager.cpp sdk/toolsmanager.h sdk/workspaceloader.cpp sdk/workspaceloader.h src/app.cpp src/app.h src/dlgabout.cpp src/dlgabout.h src/dlgaboutplugin.cpp src/dlgaboutplugin.h src/environmentsettingsdlg.cpp src/environmentsettingsdlg.h src/globals.h src/main.cpp src/main.h src/resources/dlg_about.xrc src/resources/dlg_about_plugin.xrc src/resources/env_settings.xrc src/resources/icons/app.ico src/resources/icons/app.xpm src/resources/icons/c.ico src/resources/icons/cpp.ico src/resources/icons/csd.ico src/resources/icons/filetempl.ico src/resources/icons/h.ico src/resources/images/ascii.png src/resources/images/compile.png src/resources/images/compilerun.png src/resources/images/dbgnext.png src/resources/images/dbgrun.png src/resources/images/dbgrunto.png src/resources/images/dbgstep.png src/resources/images/editcopy.png src/resources/images/editcut.png src/resources/images/editpaste.png src/resources/images/filefind.png src/resources/images/filenew.png src/resources/images/fileopen.png src/resources/images/filesave.png src/resources/images/filesaveas.png src/resources/images/folder.png src/resources/images/folder_new.png src/resources/images/folder_open.png src/resources/images/gohome.png src/resources/images/newproject.png src/resources/images/rebuild.png src/resources/images/redo.png src/resources/images/run.png src/resources/images/searchreplace.png src/resources/images/source.png src/resources/images/splash.png src/resources/images/stop.png src/resources/images/undo.png src/resources/main_frame.xrc src/resources/resources.rc tools/ConsoleRunner/main.cpp 
 
 clean_tinyXML:
 	@echo Cleaning target "tinyXML"...
@@ -355,6 +356,8 @@ $(plugin_XPManifest_BIN): $(plugin_XPManifest_LINKOBJS)
 	@$(LD) -shared -Wl,--output-def=$(plugin_XPManifest_LIB_DEF) -Wl,--out-implib=$(plugin_XPManifest_STATIC_LIB) -Wl,--dll $(plugin_XPManifest_LIBS) $(plugin_XPManifest_LINKOBJS) $(plugin_XPManifest_LDADD) -o $(plugin_XPManifest_BIN) $(plugin_XPManifest_LDFLAGS)
 
 update: update-before $(update_BIN) update-after
+
+$(update_BIN): $(update_LINKOBJS) 
 
 console_runner: console_runner-before $(console_runner_BIN) console_runner-after
 
@@ -1047,13 +1050,21 @@ plugins/todo/todolist.o: plugins/todo/todolist.d
 	@echo Compiling "plugins\todo\todolist.cpp"...
 	@$(CPP) $(plugin_ToDo_CFLAGS) $(plugin_ToDo_INCS) -c plugins/todo/todolist.cpp -o plugins/todo/todolist.o
 
-plugins/todo/viewtododlg.d: plugins/todo/viewtododlg.cpp
-	@echo Calculating dependencies for "plugins\todo\viewtododlg.cpp"...
-	@$(CPP) -MM $(plugin_ToDo_CFLAGS) -MF plugins/todo/viewtododlg.d -MT plugins/todo/viewtododlg.o $(plugin_ToDo_INCS) plugins/todo/viewtododlg.cpp
+plugins/todo/todolistview.d: plugins/todo/todolistview.cpp
+	@echo Calculating dependencies for "plugins\todo\todolistview.cpp"...
+	@$(CPP) -MM $(plugin_ToDo_CFLAGS) -MF plugins/todo/todolistview.d -MT plugins/todo/todolistview.o $(plugin_ToDo_INCS) plugins/todo/todolistview.cpp
 
-plugins/todo/viewtododlg.o: plugins/todo/viewtododlg.d
-	@echo Compiling "plugins\todo\viewtododlg.cpp"...
-	@$(CPP) $(plugin_ToDo_CFLAGS) $(plugin_ToDo_INCS) -c plugins/todo/viewtododlg.cpp -o plugins/todo/viewtododlg.o
+plugins/todo/todolistview.o: plugins/todo/todolistview.d
+	@echo Compiling "plugins\todo\todolistview.cpp"...
+	@$(CPP) $(plugin_ToDo_CFLAGS) $(plugin_ToDo_INCS) -c plugins/todo/todolistview.cpp -o plugins/todo/todolistview.o
+
+plugins/todo/todosettingsdlg.d: plugins/todo/todosettingsdlg.cpp
+	@echo Calculating dependencies for "plugins\todo\todosettingsdlg.cpp"...
+	@$(CPP) -MM $(plugin_ToDo_CFLAGS) -MF plugins/todo/todosettingsdlg.d -MT plugins/todo/todosettingsdlg.o $(plugin_ToDo_INCS) plugins/todo/todosettingsdlg.cpp
+
+plugins/todo/todosettingsdlg.o: plugins/todo/todosettingsdlg.d
+	@echo Compiling "plugins\todo\todosettingsdlg.cpp"...
+	@$(CPP) $(plugin_ToDo_CFLAGS) $(plugin_ToDo_INCS) -c plugins/todo/todosettingsdlg.cpp -o plugins/todo/todosettingsdlg.o
 
 
 plugins/xpmanifest/windowsxplooknfeel.d: plugins/xpmanifest/windowsxplooknfeel.cpp

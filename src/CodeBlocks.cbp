@@ -501,6 +501,12 @@
 			<Option link="0"/>
 			<Option target="plugin_CodeCompletion"/>
 		</Unit>
+		<Unit filename="plugins\codecompletion\resources\images\enums_folder.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
 		<Unit filename="plugins\codecompletion\resources\images\method_private.png">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
@@ -519,7 +525,31 @@
 			<Option link="0"/>
 			<Option target="plugin_CodeCompletion"/>
 		</Unit>
+		<Unit filename="plugins\codecompletion\resources\images\namespace.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\images\others_folder.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
 		<Unit filename="plugins\codecompletion\resources\images\preproc.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\images\preproc_folder.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CodeCompletion"/>
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\images\symbols_folder.png">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -745,11 +775,21 @@
 			<Option link="0"/>
 			<Option target="plugin_ToDo"/>
 		</Unit>
-		<Unit filename="plugins\todo\viewtododlg.cpp">
+		<Unit filename="plugins\todo\todolistview.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="plugin_ToDo"/>
 		</Unit>
-		<Unit filename="plugins\todo\viewtododlg.h">
+		<Unit filename="plugins\todo\todolistview.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_ToDo"/>
+		</Unit>
+		<Unit filename="plugins\todo\todosettingsdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_ToDo"/>
+		</Unit>
+		<Unit filename="plugins\todo\todosettingsdlg.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -1199,6 +1239,18 @@
 			<Option link="0"/>
 			<Option target="sdk"/>
 		</Unit>
+		<Unit filename="sdk\resources\incremental_select_list.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\new_from_template.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
 		<Unit filename="sdk\resources\plugins_configuration.xrc">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
@@ -1461,6 +1513,12 @@
 			<Option link="0"/>
 			<Option target="src"/>
 		</Unit>
+		<Unit filename="src\resources\images\codeblocks.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
 		<Unit filename="src\resources\images\compile.png">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
@@ -1468,6 +1526,12 @@
 			<Option target="src"/>
 		</Unit>
 		<Unit filename="src\resources\images\compilerun.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\contents_16x16.png">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -1492,6 +1556,12 @@
 			<Option target="src"/>
 		</Unit>
 		<Unit filename="src\resources\images\dbgstep.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\edit_16x16.png">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -1545,6 +1615,12 @@
 			<Option link="0"/>
 			<Option target="src"/>
 		</Unit>
+		<Unit filename="src\resources\images\flag_16x16.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
 		<Unit filename="src\resources\images\folder.png">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
@@ -1564,6 +1640,12 @@
 			<Option target="src"/>
 		</Unit>
 		<Unit filename="src\resources\images\gohome.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\images\misc_16x16.png">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
