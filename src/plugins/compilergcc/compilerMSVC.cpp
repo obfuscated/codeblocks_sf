@@ -27,7 +27,9 @@ CompilerMSVC::CompilerMSVC()
 	m_Switches.linkerSwitchForGui = "/subsystem:windows";
 	m_Switches.objectExtension = "obj";
 	m_Switches.needDependencies = false;
-	
+	m_Switches.forceCompilerUseQuotes = false;
+	m_Switches.forceLinkerUseQuotes = false;
+
 	m_Options.AddOption(_("Produce debugging symbols"),
 				"/Zi",
 				_("Debugging"),

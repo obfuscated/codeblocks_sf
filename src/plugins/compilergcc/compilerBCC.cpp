@@ -25,7 +25,9 @@ CompilerBCC::CompilerBCC()
 	m_Switches.linkerSwitchForGui = "";
 	m_Switches.objectExtension = "obj";
 	m_Switches.needDependencies = false;
-	
+	m_Switches.forceCompilerUseQuotes = false;
+	m_Switches.forceLinkerUseQuotes = true;
+
 //	m_Options.AddOption(_("Enable all compiler warnings"), "/Wall", _("Warnings"));
 	m_Options.AddOption(_("Optimizations level 1"), "-O1", _("Optimization"));
 	m_Options.AddOption(_("Optimizations level 2"), "-O2", _("Optimization"));
@@ -39,7 +41,7 @@ CompilerBCC::CompilerBCC()
 
     m_Commands[(int)ctCompileObjectCmd] = "$compiler $options $includes -o$object -c $file";
     m_Commands[(int)ctCompileResourceCmd] = "$rescomp -32 -fo$resource_output $res_includes $file";
-    m_Commands[(int)ctLinkExeCmd] = "$linker $libdirs -o $exe_output $libs $link_objects $link_options";
+    m_Commands[(int)ctLinkExeCmd] = "$linker -aa  $libs $libdirs c0w32 $link_objects,$exe_output,,$link_options";
     m_Commands[(int)ctLinkDynamicCmd] = "$linker $libdirs -o $exe_output $libs $link_objects $link_options";
     m_Commands[(int)ctLinkStaticCmd] = "$linker $libdirs -o $exe_output $libs $link_objects $link_options";
 }
@@ -61,12 +63,14 @@ Compiler::CompilerLineType CompilerBCC::CheckForWarningsAndErrors(const wxString
         return ret;
 
     // quick regex's
+    wxRegEx reFatalError("Fatal:[ \t]+(.*)");
     wxRegEx reError("^Error[ \t]+.*");
     wxRegEx reWarning("^Warning[ \t]+.*");
     wxRegEx reErrorLine("[ \t]+[WE]+[0-9]+.*");
     wxRegEx reDetailedWarningLine("(^Warning[ \t]W[0-9]+)[ \t]([A-Za-z0-9_:/\\.]+)[ \t]([0-9]+)(:[ \t].*)");
     wxRegEx reDetailedErrorLine("(^Error[ \t]E[0-9]+)[ \t]([A-Za-z0-9_:/\\.]+)[ \t]([0-9]+)(:[ \t].*)");
     wxRegEx reDetailedLinkerErrorLine("^Error[ \t]+E[0-9]+:.*");
+//Fatal: Unable to open file 'GDI32.LIB'
 
     if (reErrorLine.Matches(line))
     {
@@ -95,5 +99,14 @@ Compiler::CompilerLineType CompilerBCC::CheckForWarningsAndErrors(const wxString
             ret = Compiler::cltError;
         }
     }
+    else if (reFatalError.Matches(line))
+    {
+        // linker error
+        m_ErrorFilename = "";
+        m_ErrorLine = "";
+        m_Error = reFatalError.GetMatch(line, 1);
+        ret = Compiler::cltError;
+    }
+
     return ret;
 }

@@ -90,6 +90,8 @@ void Compiler::SaveSettings(const wxString& baseKey)
     ConfigManager::Get()->Write(tmp + "/switches/linkForGui", m_Switches.linkerSwitchForGui);
     ConfigManager::Get()->Write(tmp + "/switches/objectext", m_Switches.objectExtension);
     ConfigManager::Get()->Write(tmp + "/switches/deps", m_Switches.needDependencies);
+    ConfigManager::Get()->Write(tmp + "/switches/forceCompilerQuotes", m_Switches.forceCompilerUseQuotes);
+    ConfigManager::Get()->Write(tmp + "/switches/forceLinkerQuotes", m_Switches.forceLinkerUseQuotes);
 }
 
 void Compiler::LoadSettings(const wxString& baseKey)
@@ -131,4 +133,6 @@ void Compiler::LoadSettings(const wxString& baseKey)
     m_Switches.linkerSwitchForGui = ConfigManager::Get()->Read(tmp + "/switches/linkForGui", m_Switches.linkerSwitchForGui);
     m_Switches.objectExtension = ConfigManager::Get()->Read(tmp + "/switches/objectext", m_Switches.objectExtension);
     m_Switches.needDependencies = ConfigManager::Get()->Read(tmp + "/switches/deps", m_Switches.needDependencies);
+    m_Switches.forceCompilerUseQuotes = ConfigManager::Get()->Read(tmp + "/switches/forceCompilerQuotes", m_Switches.forceCompilerUseQuotes);
+    m_Switches.forceLinkerUseQuotes = ConfigManager::Get()->Read(tmp + "/switches/forceLinkerQuotes", m_Switches.forceLinkerUseQuotes);
 }

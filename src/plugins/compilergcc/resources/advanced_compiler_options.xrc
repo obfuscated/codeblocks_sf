@@ -221,6 +221,34 @@ $$resource_output</label>
                       <flag>wxTOP</flag>
                       <border>4</border>
                     </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Force quotes for filenames in compiler command-line:</label>
+                      </object>
+                      <flag>wxTOP</flag>
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkForceCompilerQuotes">
+                        <label></label>
+                      </object>
+                      <flag>wxTOP</flag>
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Force quotes for filenames in linker command-line:</label>
+                      </object>
+                      <flag>wxTOP</flag>
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkForceLinkerQuotes">
+                        <label></label>
+                      </object>
+                      <flag>wxTOP</flag>
+                      <border>4</border>
+                    </object>
                   </object>
                   <option>1</option>
                   <flag>wxALL|wxGROW</flag>

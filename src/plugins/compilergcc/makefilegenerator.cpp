@@ -145,6 +145,7 @@ void MakefileGenerator::DoAppendIncludeDirs(wxString& cmd, ProjectBuildTarget* t
     {
         wxString out = UnixFilename(opts[x]);
         ConvertToMakefileFriendly(out);
+        QuoteStringIfNeeded(out);
         cmd << " " << prefix << out;
     }
 }
@@ -166,6 +167,7 @@ void MakefileGenerator::DoAppendLibDirs(wxString& cmd, ProjectBuildTarget* targe
     {
         wxString out = UnixFilename(opts[x]);
         ConvertToMakefileFriendly(out);
+        QuoteStringIfNeeded(out);
         cmd << " " << prefix << out;
     }
 }
@@ -406,8 +408,10 @@ void MakefileGenerator::DoAddMakefileObjs(wxString& buffer)
 
                 objsS = UnixFilename(objsS);
                 ConvertToMakefileFriendly(objsS);
+                QuoteStringIfNeeded(objsS);
                 depsS = UnixFilename(depsS);
                 ConvertToMakefileFriendly(depsS);
+                QuoteStringIfNeeded(depsS);
 
 				if (pf->compile)
 				{
@@ -595,11 +599,13 @@ void MakefileGenerator::DoAddMakefileTargets(wxString& buffer)
 		if (out.IsEmpty())
 			out = ".";
         ConvertToMakefileFriendly(out);
+        QuoteStringIfNeeded(out);
         buffer << target->GetTitle() << "_OUTDIR=" << out << '\n';
 
         // the filename is already adapted based on the project type
         out = UnixFilename(target->GetOutputFilename());
         ConvertToMakefileFriendly(out);
+        QuoteStringIfNeeded(out);
 		buffer << target->GetTitle() << "_BIN=" << out << '\n';
         if (target->GetTargetType() == ttDynamicLib)
         {
@@ -608,10 +614,12 @@ void MakefileGenerator::DoAddMakefileTargets(wxString& buffer)
             fname.SetExt(STATICLIB_EXT);
             out = UnixFilename(fname.GetFullPath());
             ConvertToMakefileFriendly(out);
+            QuoteStringIfNeeded(out);
             buffer << target->GetTitle() << "_STATIC_LIB=" << out << '\n';
             fname.SetExt("def");
             out = UnixFilename(fname.GetFullPath());
             ConvertToMakefileFriendly(out);
+            QuoteStringIfNeeded(out);
             buffer << target->GetTitle() << "_LIB_DEF=" << out << '\n';
         }
     }
@@ -881,12 +889,25 @@ void MakefileGenerator::DoAddMakefileTarget_Link(wxString& buffer)
 // static
 void MakefileGenerator::ConvertToMakefileFriendly(wxString& str)
 {
+    if (str.IsEmpty())
+        return;
+
     for (unsigned int i = 0; i < str.Length(); ++i)
     {
         if (str[i] == ' ' && (i > 0 && str[i - 1] != '\\'))
             str.insert(i, '\\');
     }
     str.Replace("\\\\", "/");
+}
+
+void MakefileGenerator::QuoteStringIfNeeded(wxString& str)
+{
+    if ((m_CompilerSet->GetSwitches().forceCompilerUseQuotes ||
+        m_CompilerSet->GetSwitches().forceLinkerUseQuotes) &&
+        str.GetChar(0) != '"')
+    {
+        str = '"' + str + '"';
+    }
 }
 
 void MakefileGenerator::AddCreateSubdir(wxString& buffer, const wxString& basepath, const wxString& filename, const wxString& subdir)
@@ -945,14 +966,17 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
                 // vars to make easier reading the following code
                 wxString o_file = UnixFilename(o_filename.GetFullPath());
                 ConvertToMakefileFriendly(o_file);
+                QuoteStringIfNeeded(o_file);
                 wxString d_file;
                 if (m_CompilerSet->GetSwitches().needDependencies)
                 {
                     d_file = UnixFilename(d_filename.GetFullPath());
                     ConvertToMakefileFriendly(d_file);
+                    QuoteStringIfNeeded(d_file);
                 }
                 wxString c_file = UnixFilename(pf->relativeFilename);
                 ConvertToMakefileFriendly(c_file);
+                QuoteStringIfNeeded(c_file);
                 wxString targetName = target->GetTitle();
 
                 bool isResource = FileTypeOf(pf->relativeFilename) == ftResource;

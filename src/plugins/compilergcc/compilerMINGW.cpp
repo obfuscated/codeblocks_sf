@@ -30,6 +30,8 @@ CompilerMINGW::CompilerMINGW()
 	m_Switches.linkerSwitchForGui = "-mwindows";
 	m_Switches.objectExtension = "o";
 	m_Switches.needDependencies = true;
+	m_Switches.forceCompilerUseQuotes = false;
+	m_Switches.forceLinkerUseQuotes = false;
 	
 	m_Options.AddOption(_("Produce debugging symbols"),
 				"-g",

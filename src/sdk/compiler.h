@@ -66,6 +66,8 @@ struct CompilerSwitches
     wxString genericSwitch; // -
     wxString linkerSwitchForGui; // -mwindows
     wxString objectExtension; // o
+    bool forceLinkerUseQuotes; // use quotes for filenames in linker command line (needed or not)?
+    bool forceCompilerUseQuotes; // use quotes for filenames in compiler command line (needed or not)?
     bool needDependencies; // true
 };
 
