@@ -213,7 +213,10 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos)
             if (pf)
             {
                 Manager::Get()->GetMessageManager()->DebugLog("found %s", pf->file.GetFullPath().c_str());
+                bool wasModified = ed->GetModified();
                 ed->SetProjectFile(pf);
+                // don't modify an unmodified file because of ed->SetProjectFile(pf)
+                ed->SetModified(wasModified);
                 break;
             }
         }
