@@ -21,7 +21,7 @@ CompilerMINGW::CompilerMINGW()
 	m_Switches.needDependencies = true;
 	
 	m_Options.AddOption(_("Produce debugging symbols"),
-				"-ggdb",
+				"-g",
 				_("Debugging"), 
 				"",
 				true, 

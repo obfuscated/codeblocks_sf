@@ -28,6 +28,9 @@
 #include "manager.h"
 #include "projectoptionsdlg.h"
 #include "projectloader.h"
+#include "devcpploader.h"
+#include "msvcloader.h"
+//#include "msvsloader.h"
 #include "projectlayoutloader.h"
 #include "selecttargetdlg.h"
 #include "globals.h"
@@ -200,19 +203,27 @@ void cbProject::Open()
 	
     wxFileName fname(m_Filename);
 	FileType ft = FileTypeOf(m_Filename);
-    if (ft == ftDevCppProject)
-    {
-		Manager::Get()->GetMessageManager()->AppendLog(_("Importing %s: "), m_Filename.c_str());    
-        ProjectLoader loader(this);
-        m_Loaded = loader.ImportDevCpp(m_Filename);
-        fname.SetExt(CODEBLOCKS_EXT);
-        m_Filename = fname.GetFullPath();
-    }
-    else if (ft == ftCodeBlocksProject)
+    if (ft == ftCodeBlocksProject)
     {
 		Manager::Get()->GetMessageManager()->AppendLog(_("Opening %s: "), m_Filename.c_str());    
         ProjectLoader loader(this);
         m_Loaded = loader.Open(m_Filename);
+    }
+    else
+    {
+        Manager::Get()->GetMessageManager()->AppendLog(_("Importing %s: "), m_Filename.c_str());    
+        IBaseLoader* loader = 0L;
+        switch (ft)
+        {
+             case ftDevCppProject: loader = new DevCppLoader(this); break;
+             case ftMSVCProject: loader = new MSVCLoader(this); break;
+             default: return;
+        }
+        m_Loaded = loader->Open(m_Filename);
+        fname.SetExt(CODEBLOCKS_EXT);
+        m_Filename = fname.GetFullPath();
+        SetModified(true);
+        delete loader;
     }
 	
     if (m_Loaded)

@@ -147,6 +147,8 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
     wxString parameters;
     wxString hostApplication;
     bool includeInTargetAll = true;
+    bool createStaticLib = false;
+    bool createDefFile = false;
     int projectCompilerOptionsRelation = 3;
     int projectLinkerOptionsRelation = 3;
     int projectIncludeDirsRelation = 3;
@@ -172,6 +174,12 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
         if (node->Attribute("includeInTargetAll"))
             includeInTargetAll = atoi(node->Attribute("includeInTargetAll")) != 0;
 
+        if (node->Attribute("createDefFile"))
+            createDefFile = atoi(node->Attribute("createDefFile")) != 0;
+
+        if (node->Attribute("createStaticLib"))
+            createStaticLib = atoi(node->Attribute("createStaticLib")) != 0;
+
         if (node->Attribute("projectCompilerOptionsRelation"))
             projectCompilerOptionsRelation = atoi(node->Attribute("projectCompilerOptionsRelation"));
 
@@ -196,6 +204,8 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
         target->SetExecutionParameters(parameters);
         target->SetHostApplication(hostApplication);
         target->SetIncludeInTargetAll(includeInTargetAll);
+        target->SetCreateDefFile(createDefFile);
+        target->SetCreateStaticLib(createStaticLib);
         target->SetOptionRelation(ortCompilerOptions, (OptionsRelation)projectCompilerOptionsRelation);
         target->SetOptionRelation(ortLinkerOptions, (OptionsRelation)projectLinkerOptionsRelation);
         target->SetOptionRelation(ortIncludeDirs, (OptionsRelation)projectIncludeDirsRelation);
@@ -425,6 +435,10 @@ bool ProjectLoader::Save(const wxString& filename)
             buffer << '\t' << '\t' << '\t' << '\t' << "<Option parameters=\"" << target->GetExecutionParameters() << "\"/>" << '\n';
         if (!target->GetIncludeInTargetAll())
             buffer << '\t' << '\t' << '\t' << '\t' << "<Option includeInTargetAll=\"0\"/>" << '\n';
+        if ((target->GetTargetType() == ttStaticLib || target->GetTargetType() == ttDynamicLib) && target->GetCreateDefFile())
+            buffer << '\t' << '\t' << '\t' << '\t' << "<Option createDefFile=\"1\"/>" << '\n';
+        if (target->GetTargetType() == ttDynamicLib && target->GetCreateStaticLib())
+            buffer << '\t' << '\t' << '\t' << '\t' << "<Option createStaticLib=\"1\"/>" << '\n';
         if (target->GetOptionRelation(ortCompilerOptions) != 3) // 3 is the default
             buffer << '\t' << '\t' << '\t' << '\t' << "<Option projectCompilerOptionsRelation=\"" << target->GetOptionRelation(ortCompilerOptions) << "\"/>" << '\n';
         if (target->GetOptionRelation(ortLinkerOptions) != 3) // 3 is the default
@@ -506,80 +520,6 @@ bool ProjectLoader::Save(const wxString& filename)
         return true;
     }
     return false;
-}
-
-bool ProjectLoader::ImportDevCpp(const wxString& filename)
-{
-    m_pProject->ClearAllProperties();
-        
-    wxFileConfig* dev = new wxFileConfig("", "", filename, "", wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_NO_ESCAPE_CHARACTERS);
-    dev->SetPath("/Project");
-    int unitCount;
-    dev->Read("UnitCount", &unitCount, 0);
-        
-    wxString path, tmp, title, output; 
-    wxArrayString array;
-    int typ;
-        
-    // read project options
-    dev->Read("Name", &title, "");
-    m_pProject->SetTitle(title);
-
-    dev->Read("Type", &typ, 0);
-    m_pProject->SetTargetType(TargetType(typ));
-
-    dev->Read("OverrideOutputName", &output, "");
-    m_pProject->SetOutputFilename(output);
-
-    dev->Read("CppCompiler", &tmp, "");
-    if (tmp.IsEmpty())
-        dev->Read("Compiler", &tmp, "");
-    //tmp = tmp;
-    array = GetArrayFromString(tmp, "_@@@@_");
-    m_pProject->SetCompilerOptions(array);
-
-    dev->Read("Linker", &tmp, "");
-    //tmp = tmp;
-    array = GetArrayFromString(tmp, "_@@@@_");
-    m_pProject->SetLinkerOptions(array);
-
-    dev->Read("Includes", &tmp, "");
-    //tmp = tmp;
-    array = GetArrayFromString(tmp, ";");
-    m_pProject->SetIncludeDirs(array);
-
-    dev->Read("Libs", &tmp, "");
-    //tmp = tmp;
-    array = GetArrayFromString(tmp, ";");
-    m_pProject->SetLibDirs(array);
-
-    dev->Read("Resources", &tmp, "");
-    array = GetArrayFromString(tmp, ","); // make sure that this is comma-separated
-    for (unsigned int i = 0; i < array.GetCount(); ++i)
-    {
-        tmp = array[i];
-        m_pProject->AddFile(0, tmp, true, true);
-    }
-
-    // read project units
-    for (int x = 0; x < unitCount; ++x)
-    {
-        path.Printf("/Unit%d", x + 1);
-        dev->SetPath(path);
-        tmp.Clear();
-        dev->Read("FileName", &tmp, "");
-
-        bool compile, compileCpp, link;
-        dev->Read("Compile", &compile, false);
-        dev->Read("CompileCpp", &compileCpp, true);
-        dev->Read("Link", &link, true);
-        m_pProject->AddFile(0, tmp, compile || compileCpp, link);
-    }
-
-    delete dev;
-
-    m_pProject->SetModified(true);
-    return true;
 }
 
 void ProjectLoader::SaveOptions(wxString& buffer, const wxArrayString& array, const wxString& sectionName, int nrOfTabs, const wxString& optionName)

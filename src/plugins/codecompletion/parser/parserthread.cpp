@@ -42,6 +42,7 @@ ParserThread::ParserThread(wxEvtHandler* parent,
 	m_pTokens(tokens),
 	m_pLastParent(0L),
 	m_IsLocal(isLocal),
+	m_StartBlockIndex(0),
 	m_Options(options)
 {
 	//ctor
@@ -330,7 +331,16 @@ bool ParserThread::Parse()
 		}
 		else if (token.Matches("extern"))
 		{
-            m_Str.Clear(); // just eat it
+            // check for "C"
+            m_Str = m_Tokens.GetToken();
+            if (m_Str.Matches("\"C\""))
+            {
+                m_Tokens.GetToken(); // "eat" {
+                Parse(); // time for recursion ;)
+            }
+            else
+                m_Tokens.UngetToken(); // nope, return the token back...
+            m_Str.Clear();
         }
         else if (token.StartsWith("__asm"))
 		{
@@ -458,34 +468,53 @@ bool ParserThread::Parse()
 	return true;
 }
 
-bool ParserThread::TokenExists(const wxString& name)
+Token* ParserThread::TokenExists(const wxString& name)
 {
 	// when parsing a block, we must make sure the token does not already exist...
 	for (unsigned int i = m_StartBlockIndex; i < m_pTokens->GetCount(); ++i)
 	{
 		Token* token = m_pTokens->Item(i);
 		if (token->m_Name.Matches(name))
-			return true;
+			return token;
 	}
-	return false;
+	return 0L;
 }
 
 wxString ParserThread::GetActualTokenType()
 {
+    // we will compensate for spaces between 
+    // namespaces (e.g. NAMESPACE :: SomeType) wich is valid C++ construct
+    // we 'll remove spaces that follow a semicolon
+	int pos = 0;
+	while (pos < (int)m_Str.Length())
+	{
+        if (m_Str.GetChar(pos) == ' ' &&
+            (
+                (pos > 0 && m_Str.GetChar(pos - 1) == ':') ||
+                (pos < (int)m_Str.Length() - 1 && m_Str.GetChar(pos + 1) == ':')
+            )
+           )
+        {
+            m_Str.Remove(pos, 1);
+        }
+        else
+            ++pos;
+	}
+
 	// m_Str contains the full text before the token's declaration
 	// an example m_Str value would be: const wxString&
 	// what we do here is locate the actual return value (wxString in this example)
 	// it will be needed by code completion code ;)
-	int pos = m_Str.Length() - 1;
+	pos = m_Str.Length() - 1;
 	// we walk m_Str backwards until we find a non-space character which also is
 	// not * or &
 	//                        const wxString&
 	// in this example, we would stop here ^
-	while (pos >= 0 && 
-			(isspace(m_Str.GetChar(pos)) ||
-			m_Str.GetChar(pos) == '*' ||
-			m_Str.GetChar(pos) == '&'))
-		--pos;
+    while (pos >= 0 && 
+            (isspace(m_Str.GetChar(pos)) ||
+            m_Str.GetChar(pos) == '*' ||
+            m_Str.GetChar(pos) == '&'))
+        --pos;
 	if (pos >= 0)
 	{
 		// we have the end of the word we 're interested in
@@ -493,8 +522,8 @@ wxString ParserThread::GetActualTokenType()
 		// continue walking backwards until we find the start of the word
 		//                               const wxString&
 		// in this example, we would stop here ^
-		while (pos >= 0 && (isalnum(m_Str.GetChar(pos)) || m_Str.GetChar(pos) == '_'))
-			--pos;
+        while (pos >= 0 && (isalnum(m_Str.GetChar(pos)) || m_Str.GetChar(pos) == '_' || m_Str.GetChar(pos) == ':'))
+            --pos;
 		return m_Str.Mid(pos + 1, end - pos);
 	}
 	return wxEmptyString;
@@ -597,9 +626,15 @@ void ParserThread::HandleDefines()
 	// BLAH_BLAH
 	if (!token.IsEmpty())
 	{
+        // make sure preprocessor definitions are not going under namespaces or classes!
+        Token* oldParent = m_pLastParent;
+        m_pLastParent = 0L;
+
 		DoAddToken(tkPreprocessor, token);
 		if (m_Tokens.PeekToken().GetChar(0) == '(') // TODO: find better way...
 			m_Tokens.GetToken(); // eat args
+
+        m_pLastParent = oldParent;
 	}
 }
 
@@ -610,7 +645,10 @@ void ParserThread::HandleNamespace()
     
     if (next.Matches("{"))
     {
-        Token* newToken = DoAddToken(tkNamespace, ns);
+        // use the existing copy (if any)
+        Token* newToken = TokenExists(ns);
+        if (!newToken)
+            newToken = DoAddToken(tkNamespace, ns);
         if (!newToken)
             return;
 
@@ -655,7 +693,11 @@ void ParserThread::HandleClass(bool isClass)
 						!tmp.Matches(">") &&
 						!tmp.Matches(","))
                     {
-						ancestors << tmp << ',';
+                        // fix for namespace usage in ancestors
+                        if (tmp.Matches("::") || next.Matches("::"))
+                            ancestors << tmp;
+						else
+                            ancestors << tmp << ',';
 						//Log("Adding ancestor " + tmp);
                     }
 					if (next.IsEmpty() ||
@@ -686,6 +728,7 @@ void ParserThread::HandleClass(bool isClass)
                         }
                     }
 				}
+                //Log("Ancestors: " + ancestors);
 			}
 			
 			if (next.Matches("{"))   // no ancestor(s)

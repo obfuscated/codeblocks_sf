@@ -433,6 +433,13 @@ int DebuggerGDB::Debug()
 		SendCommand(m_Tbreak);
 		m_Tbreak.Clear();
 	}
+
+    // switch to output dir
+    wxFileName dir(target->GetOutputFilename());
+    cmd.Clear();
+    cmd << "cd " << UnixFilename(dir.GetPath(wxPATH_GET_VOLUME));
+    SendCommand(cmd);
+
 	SendCommand("run");
 	return 0;
 }

@@ -129,6 +129,7 @@ class CompilerGCC : public cbCompilerPlugin
 		wxStaticText* m_ToolTargetLabel;
 		bool m_IsRun;
 		bool m_RunAfterCompile;
+		wxString m_CdRun;
 		bool m_DoAllProjects; // for xxxAll() functions
 		cbProject* m_BackupActiveProject;
 		unsigned int m_ProjectIndex;

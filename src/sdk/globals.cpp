@@ -73,6 +73,12 @@ FileType FileTypeOf(const wxString& filename)
 	else if (ext.Matches(DEVCPP_EXT))
 		return ftDevCppProject;
 
+	else if (ext.Matches(MSVC_EXT))
+		return ftMSVCProject;
+
+	else if (ext.Matches(MSVS_EXT))
+		return ftMSVSProject;
+
 	else if (ext.Matches(CPP_EXT) ||
 		ext.Matches(C_EXT) ||
 		ext.Matches(CC_EXT) ||

@@ -211,6 +211,24 @@
                         <vgap>8</vgap>
                         <hgap>8</hgap>
                         <growablecols>1</growablecols>
+                        <object class="spacer">
+                          <size>0,0</size>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxCheckBox" name="chkCreateDefFile">
+                            <label>Create .DEF exports file</label>
+                          </object>
+                          <flag>wxEXPAND</flag>
+                        </object>
+                        <object class="spacer">
+                          <size>0,0</size>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxCheckBox" name="chkCreateStaticLib">
+                            <label>Create static library too</label>
+                          </object>
+                          <flag>wxEXPAND</flag>
+                        </object>
                       </object>
                       <flag>wxEXPAND</flag>
                     </object>

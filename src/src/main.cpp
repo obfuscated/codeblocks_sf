@@ -109,6 +109,8 @@ int idProjectCloseProject = wxNewId();
 int idProjectCloseAllProjects = wxNewId();
 int idProjectImport = wxNewId();
 int idProjectImportDevCpp = wxNewId();
+int idProjectImportMSVC = wxNewId();
+int idProjectImportMSVS = wxNewId();
 
 int idSettingsEnvironment = wxNewId();
 int idSettingsEditor = wxNewId();
@@ -233,6 +235,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idProjectCloseProject,  MainFrame::OnProjectCloseProject)
     EVT_MENU(idProjectCloseAllProjects,  MainFrame::OnProjectCloseAllProjects)
     EVT_MENU(idProjectImportDevCpp,  MainFrame::OnProjectImportDevCpp)
+    EVT_MENU(idProjectImportMSVC,  MainFrame::OnProjectImportMSVC)
+    EVT_MENU(idProjectImportMSVS,  MainFrame::OnProjectImportMSVS)
 
 	EVT_MENU(idSettingsEnvironment, MainFrame::OnSettingsEnvironment)
 	EVT_MENU(idSettingsEditor, MainFrame::OnSettingsEditor)
@@ -446,7 +450,10 @@ void MainFrame::CreateMenubar()
 
 	wxMenu* import = new wxMenu();
 	import->Append(idProjectImportDevCpp, _("Bloodshed &Dev-C++ project"), _("Import an existing Dev-C++ project"));
-	
+	import->Append(idProjectImportMSVC, _("Microsoft Visual C++ project"), _("Import an existing Microsoft Visual C++ project"));
+	import->Append(idProjectImportMSVS, _("Microsoft Visual Studio project"), _("Import an existing Microsoft Visual Studio project"));
+	import->Enable(idProjectImportMSVS, false); // not implemented yet...
+
 	wxMenu* project = new wxMenu();
 	project->Append(idProjectNew, _("&New..."), _("Create a new project based on a template"));
 	project->Append(idProjectNewEmptyProject, _("New &empty project"), _("Create a new empty project"));
@@ -1388,6 +1395,43 @@ void MainFrame::OnProjectImportDevCpp(wxCommandEvent& event)
     {
 		wxString fname = dlg->GetPath();
 		if (FileTypeOf(fname) == ftDevCppProject)
+            DoOpenProject(fname);
+    }
+
+    delete dlg;
+}
+
+void MainFrame::OnProjectImportMSVC(wxCommandEvent& event)
+{
+    wxFileDialog* dlg = new wxFileDialog(this,
+                            _("Import Microsoft Visual C++ project"),
+                            wxEmptyString,
+                            wxEmptyString,
+                            MSVC_FILES_FILTER,
+                            wxOPEN);
+
+    if (dlg->ShowModal() == wxID_OK)
+    {
+		wxString fname = dlg->GetPath();
+		if (FileTypeOf(fname) == ftMSVCProject)
+            DoOpenProject(fname);
+    }
+
+    delete dlg;
+}
+void MainFrame::OnProjectImportMSVS(wxCommandEvent& event)
+{
+    wxFileDialog* dlg = new wxFileDialog(this,
+                            _("Import Microsoft Visual Studio project"),
+                            wxEmptyString,
+                            wxEmptyString,
+                            MSVS_FILES_FILTER,
+                            wxOPEN);
+
+    if (dlg->ShowModal() == wxID_OK)
+    {
+		wxString fname = dlg->GetPath();
+		if (FileTypeOf(fname) == ftMSVSProject)
             DoOpenProject(fname);
     }
 

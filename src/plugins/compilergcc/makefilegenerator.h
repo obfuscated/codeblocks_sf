@@ -9,6 +9,7 @@
 
 WX_DEFINE_ARRAY(ProjectBuildTarget*, TargetsArray);
 WX_DEFINE_ARRAY(ProjectFile*, FilesArray); // keep our own copy, to sort it by file weight (priority)
+WX_DEFINE_ARRAY(ProjectFile*, ObjectFilesArray); // holds object files already included in the Makefile
 
 /*
  * No description
@@ -70,6 +71,7 @@ class MakefileGenerator
         wxString m_Makefile;
 		TargetsArray m_LinkableTargets;
         FilesArray m_Files;
+        ObjectFilesArray m_ObjectFiles;
         int m_LogIndex;
 		CustomVars m_Vars;
 		

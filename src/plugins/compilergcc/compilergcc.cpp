@@ -545,6 +545,8 @@ FileTreeData* CompilerGCC::DoSwitchProjectTemporarily()
 	wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
 	wxTreeItemId sel = tree->GetSelection();
     FileTreeData* ftd = (FileTreeData*)tree->GetItemData(sel);
+    if (!ftd)
+        return 0L;
     // copy ftd to a new instance, because after the SetProject() call
     // that follows, ftd will no longer be valid...
     FileTreeData* newFtd = new FileTreeData(ftd->GetProject(), ftd->GetFileIndex());
@@ -592,6 +594,7 @@ int CompilerGCC::DoRunQueue()
 		pipe = false; // no need to pipe output channels...
 		flags |= wxEXEC_NOHIDE;
 		m_IsRun = false;
+		dir = m_CdRun;
 	}
     m_Process = new PipedProcess(this, idGCCProcess, pipe, dir);
     m_Pid = wxExecute(m_Queue[m_QueueIndex], flags, m_Process);
@@ -603,6 +606,7 @@ int CompilerGCC::DoRunQueue()
 		m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLACK, *wxWHITE));
         delete m_Process;
         m_Process = NULL;
+        m_Queue.Clear();
     }
     else
         m_timerIdleWakeUp.Start(100);
@@ -818,6 +822,8 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 
 
     wxString cmd;
+    wxFileName f(target->GetOutputFilename());
+    m_CdRun = f.GetPath(wxPATH_GET_VOLUME);
 
 #ifdef __WXMSW__
     // for Windows, use helper application for console projects...
@@ -841,8 +847,9 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 		cmd << "\"" << target->GetHostApplication() << "\" " << target->GetExecutionParameters();
 	}
 	else
-		cmd << "\"" << target->GetOutputFilename() << "\" " << target->GetExecutionParameters();
-    //wxMessageBox("Will run: " + cmd);
+		cmd << "\"" << f.GetFullName() << "\" " << target->GetExecutionParameters();
+//		cmd << "\"" << target->GetOutputFilename() << "\" " << target->GetExecutionParameters();
+//    wxMessageBox("cdrun=" + m_CdRun + "\nWill run: " + cmd);
 	m_Queue.Add(cmd);
 
 	m_IsRun = true;
@@ -1147,7 +1154,11 @@ void CompilerGCC::OnClean(wxCommandEvent& event)
 
 void CompilerGCC::OnProjectCompilerOptions(wxCommandEvent& event)
 {
-	Configure(m_Project);
+	wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
+	wxTreeItemId sel = tree->GetSelection();
+    FileTreeData* ftd = (FileTreeData*)tree->GetItemData(sel);
+    if (ftd)
+        Configure(ftd->GetProject());
 }
 
 void CompilerGCC::OnTargetCompilerOptions(wxCommandEvent& event)
@@ -1311,7 +1322,7 @@ void CompilerGCC::OnGCCError(CodeBlocksEvent& event)
 		if (reErrorLine.Matches(msg))
 		{
 			// duplicate code from CompilerErrors.AddErrorLine()...
-			wxRegEx reErrorLine("([A-Za-z0-9_/\\.]*):([0-9]*):[ \t](.*)");
+			wxRegEx reErrorLine("([A-Za-z0-9_:/\\.]*):([0-9]*):[ \t](.*)");
 		
 			if (reErrorLine.Matches(msg))
 			{

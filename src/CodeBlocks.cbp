@@ -222,7 +222,7 @@
 				</LibDirs>
 			</Target>
 			<Target title="plugin_ToDo">
-				<Option output="devel/share/codeblocks/plugins/todo.dll"/>
+				<Option output="devel\share\CodeBlocks\plugins\todo.dll"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
 				<Compiler>
@@ -266,7 +266,7 @@
 				</LibDirs>
 			</Target>
 			<Target title="update">
-				<Option output="codeblocks.exe"/>
+				<Option output="C:\Devel\codeblocks\src\CodeBlocks.exe"/>
 				<Option external_deps=""/>
 				<Option type="4"/>
 				<Option includeInTargetAll="0"/>
@@ -317,7 +317,8 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-ggdb"/>
+			<Add option="-Wall"/>
+			<Add option="-g"/>
 			<Add option="-pipe"/>
 			<Add option="-mthreads"/>
 			<Add option="-fno-pcc-struct-return"/>
@@ -1122,6 +1123,16 @@
 			<Option link="0"/>
 			<Option target="sdk"/>
 		</Unit>
+		<Unit filename="sdk\devcpploader.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\devcpploader.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
 		<Unit filename="sdk\editarrayfiledlg.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="sdk"/>
@@ -1228,6 +1239,12 @@
 			<Option link="0"/>
 			<Option target="sdk"/>
 		</Unit>
+		<Unit filename="sdk\ibaseloader.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
 		<Unit filename="sdk\incrementalselectlistdlg.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="sdk"/>
@@ -1295,6 +1312,16 @@
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk\messagemanager.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\msvcloader.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\msvcloader.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

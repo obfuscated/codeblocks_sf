@@ -5,6 +5,7 @@
 
 struct CompileError
 {
+    bool isWarning;
 	wxString filename;
 	long int line;
 	wxArrayString errors;
@@ -18,7 +19,7 @@ class CompilerErrors
 		virtual ~CompilerErrors();
 		
 		void AddErrorLine(const wxString& line);
-		void AddError(const wxString& filename, long int line, const wxString& error);
+		void AddError(const wxString& filename, long int line, const wxString& error, bool isWarning);
 		
         void GotoError(int nr);
 		void Next();

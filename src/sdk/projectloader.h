@@ -1,14 +1,13 @@
 #ifndef PROJECTLOADER_H
 #define PROJECTLOADER_H
 
-#include <wx/string.h>
-#include "tinyxml/tinyxml.h"
+#include "ibaseloader.h"
 
 class cbProject;
 class ProjectBuildTarget;
 class ProjectFile;
 
-class DLLIMPORT ProjectLoader
+class DLLIMPORT ProjectLoader : public IBaseLoader
 {
 	public:
 		ProjectLoader(cbProject* project);
@@ -16,7 +15,6 @@ class DLLIMPORT ProjectLoader
 
         bool Open(const wxString& filename);
         bool Save(const wxString& filename);
-        bool ImportDevCpp(const wxString& filename);
 	protected:
         void DoProjectOptions(TiXmlElement* parentNode);
         void DoCompilerOptions(TiXmlElement* parentNode, ProjectBuildTarget* target = 0L);
@@ -34,6 +32,7 @@ class DLLIMPORT ProjectLoader
         
         void SaveOptions(wxString& buffer, const wxArrayString& array, const wxString& sectionName, int nrOfTabs, const wxString& optionName = "option");
 	private:
+        ProjectLoader(){} // no default ctor
         cbProject* m_pProject;
 };
 

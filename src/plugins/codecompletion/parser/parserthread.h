@@ -48,7 +48,7 @@ class ParserThread : public wxThread
 		wxString GetActualTokenType();
 	private:
 		void Log(const wxString& log);
-		bool TokenExists(const wxString& name);
+		Token* TokenExists(const wxString& name);
 		Tokenizer m_Tokens;
 		wxEvtHandler* m_pParent;
 		TokensArray* m_pTokens;

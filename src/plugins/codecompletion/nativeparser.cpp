@@ -663,10 +663,10 @@ int NativeParser::AI(cbEditor* editor, Parser* parser, const wxString& lineText,
 
 	while (1)
 	{
-		//wxString bef = actual;
+//		wxString bef = actual;
 		wxString tok = GetCCToken(actual, tokenType);
-		//wxString aft = actual;
-		//Manager::Get()->GetMessageManager()->DebugLog("before='%s', token='%s', after='%s', namespace=%d", bef.c_str(), tok.c_str(), aft.c_str(), tokenType);
+//		wxString aft = actual;
+//		Manager::Get()->GetMessageManager()->DebugLog("before='%s', token='%s', after='%s', namespace=%d", bef.c_str(), tok.c_str(), aft.c_str(), tokenType);
 		Manager::Get()->GetMessageManager()->DebugLog("tok='%s'", tok.c_str());
 		if (tok.IsEmpty())
 			break;
@@ -691,7 +691,7 @@ int NativeParser::AI(cbEditor* editor, Parser* parser, const wxString& lineText,
 		}
 		else
 		{
-			//Manager::Get()->GetMessageManager()->Log(mltDevDebug, "Looking for %s under %s", tok.c_str(), parentToken ? parentToken->m_Name.c_str() : "Unknown");
+			Manager::Get()->GetMessageManager()->DebugLog("Looking for %s under %s", tok.c_str(), parentToken ? parentToken->m_Name.c_str() : "Unknown");
 			Token* token = 0L;
 			//if (parentToken)
 			token = parser->FindChildTokenByName(parentToken, tok, true);
@@ -701,8 +701,26 @@ int NativeParser::AI(cbEditor* editor, Parser* parser, const wxString& lineText,
 			//	token = parser->FindTokenByName(tok, false);
 			if (token && !token->m_ActualType.IsEmpty())
 			{
-				//Manager::Get()->GetMessageManager()->Log(mltDevDebug, "actual type is %s", token->m_ActualType.c_str());
-				parentToken = parser->FindTokenByName(token->m_ActualType);
+				Manager::Get()->GetMessageManager()->DebugLog("actual type is %s", token->m_ActualType.c_str());
+                wxString srch = token->m_ActualType;
+				int colon = srch.Find("::");
+				if (colon != -1)
+				{
+                    // type has namespace; break it down and search for it
+                    while (!srch.IsEmpty())
+                    {
+                        parentToken = parser->FindChildTokenByName(parentToken, srch.Left(colon), true);
+                        if (!parentToken)
+                            break;
+                        Manager::Get()->GetMessageManager()->DebugLog("searching under %s", parentToken->m_DisplayName.c_str());
+                        srch.Remove(0, colon + 2); // plus two to compensate for "::"
+                        colon = srch.Find("::");
+                        if (colon == -1)
+                            colon = wxSTRING_MAXLEN;
+                    }
+				}
+				else
+                    parentToken = parser->FindTokenByName(token->m_ActualType);
 			}
 			Manager::Get()->GetMessageManager()->DebugLog("Class '%s'", parentToken ? parentToken->m_Name.c_str() : "unknown");
 

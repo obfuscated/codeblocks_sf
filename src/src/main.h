@@ -70,6 +70,8 @@ class MainFrame : public wxMDIParentFrame
         void OnProjectCloseProject(wxCommandEvent& event);
         void OnProjectCloseAllProjects(wxCommandEvent& event);
 		void OnProjectImportDevCpp(wxCommandEvent& event);
+		void OnProjectImportMSVC(wxCommandEvent& event);
+		void OnProjectImportMSVS(wxCommandEvent& event);
 
         void OnToolsExecuteMenu(wxCommandEvent& event);
 

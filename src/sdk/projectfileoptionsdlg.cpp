@@ -65,6 +65,8 @@ ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf)
 		XRCCTRL(*this, "txtBuildStage", wxTextCtrl)->SetValue(pf->buildCommand);
 		XRCCTRL(*this, "chkCustomDeps", wxCheckBox)->SetValue(!pf->autoDeps);
 		XRCCTRL(*this, "txtCustomDeps", wxTextCtrl)->SetValue(pf->customDeps);
+		
+		SetTitle(_("Options for ") + wxString("\"") + pf->relativeFilename + wxString("\""));
 	}
 	// FIXME: support more than one target per file
 }

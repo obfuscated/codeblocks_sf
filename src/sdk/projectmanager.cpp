@@ -68,24 +68,34 @@ int idMenuCloseProject = wxNewId();
 int idMenuCloseFile = wxNewId();
 int idMenuAddFile = wxNewId();
 int idMenuRemoveFile = wxNewId();
-int idMenuProperties = wxNewId();
+int idMenuProjectProperties = wxNewId();
+int idMenuFileProperties = wxNewId();
+int idMenuTreeProjectProperties = wxNewId();
+int idMenuTreeFileProperties = wxNewId();
 int idMenuGotoFile = wxNewId();
 int idMenuExecParams = wxNewId();
 int idMenuViewCategorize = wxNewId();
 int idMenuViewUseFolders = wxNewId();
 int idMenuViewFileMasks = wxNewId();
+int idMenuNextProject = wxNewId();
+int idMenuPriorProject = wxNewId();
 
 BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
     EVT_TREE_ITEM_ACTIVATED(ID_ProjectManager, ProjectManager::OnProjectFileActivated)
     EVT_TREE_ITEM_RIGHT_CLICK(ID_ProjectManager, ProjectManager::OnTreeItemRightClick)
     EVT_COMMAND_RIGHT_CLICK(ID_ProjectManager, ProjectManager::OnRightClick)
     EVT_MENU(idMenuSetActiveProject, ProjectManager::OnSetActiveProject)
+    EVT_MENU(idMenuNextProject, ProjectManager::OnSetActiveProject)
+    EVT_MENU(idMenuPriorProject, ProjectManager::OnSetActiveProject)
     EVT_MENU(idMenuAddFile, ProjectManager::OnAddFileToProject)
     EVT_MENU(idMenuRemoveFile, ProjectManager::OnRemoveFileFromProject)
     EVT_MENU(idMenuCloseProject, ProjectManager::OnCloseProject)
     EVT_MENU(idMenuCloseFile, ProjectManager::OnCloseFile)
     EVT_MENU(idMenuOpenFile, ProjectManager::OnOpenFile)
-    EVT_MENU(idMenuProperties, ProjectManager::OnProperties)
+    EVT_MENU(idMenuProjectProperties, ProjectManager::OnProperties)
+    EVT_MENU(idMenuFileProperties, ProjectManager::OnProperties)
+    EVT_MENU(idMenuTreeProjectProperties, ProjectManager::OnProperties)
+    EVT_MENU(idMenuTreeFileProperties, ProjectManager::OnProperties)
 	EVT_MENU(idMenuGotoFile, ProjectManager::OnGotoFile)
     EVT_MENU(idMenuExecParams, ProjectManager::OnExecParameters)
     EVT_MENU(idMenuViewCategorize, ProjectManager::OnViewCategorize)
@@ -160,13 +170,24 @@ void ProjectManager::CreateMenu(wxMenuBar* menuBar)
 		if (menu)
 			menu->Append(idMenuGotoFile, _("Goto file...\tAlt-G"));
 		
+		pos = menuBar->FindMenu(_("File"));
+		menu = menuBar->GetMenu(pos);
+		if (menu)
+		{
+            menu->Insert(menu->GetMenuItemCount() - 1, idMenuFileProperties, _("Properties"));
+            menu->Insert(menu->GetMenuItemCount() - 1, -1, ""); // instead of AppendSeparator();
+        }
+
         pos = menuBar->FindMenu(_("Project"));
 		menu = menuBar->GetMenu(pos);
 		if (menu)
         {
             menu->AppendSeparator();
+            menu->Append(idMenuPriorProject, _("Activate prior\tAlt-F5"), _("Activate prior project in open projects list"));
+            menu->Append(idMenuNextProject, _("Activate next\tAlt-F6"), _("Activate next project in open projects list"));
+            menu->AppendSeparator();
             menu->Append(idMenuExecParams, _("Set execution &parameters..."), _("Set execution parameters for the targets of this project"));
-            menu->Append(idMenuProperties, _("Properties"));
+            menu->Append(idMenuProjectProperties, _("Properties"));
         }
 	}
 }
@@ -243,16 +264,15 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
     		menu.AppendSeparator();
     	    menu.Append(idMenuRemoveFile, _("Remove file from project"));
         }
-    }
 
-//	NotifyPlugins(cbEVT_PROJECT_POPUP_MENU, 0, m_pTree->GetItemText(id), &menu);
-    // ask any plugins to add items in this menu
-    Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtProjectManager, &menu, m_pTree->GetItemText(id));
+        // ask any plugins to add items in this menu
+        Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtProjectManager, &menu, m_pTree->GetItemText(id));
 
-    if (ftd && id != m_TreeRoot)
-    {
         menu.AppendSeparator();
-		menu.Append(idMenuProperties, _("Properties"));
+        if (ftd->GetFileIndex() == -1)
+            menu.Append(idMenuTreeProjectProperties, _("Properties"));
+        else
+            menu.Append(idMenuTreeFileProperties, _("Properties"));
     }
 
     if (menu.GetMenuItemCount() != 0)
@@ -307,6 +327,7 @@ bool ProjectManager::CloseAllProjects()
         if (!CloseActiveProject())
             return false;
     }
+    RebuildTree();
     return true;
 }
 
@@ -631,12 +652,35 @@ void ProjectManager::OnTreeItemRightClick(wxTreeEvent& event)
 
 void ProjectManager::OnSetActiveProject(wxCommandEvent& event)
 {
-    wxTreeItemId sel = m_pTree->GetSelection();
-    FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
-    if (!ftd)
-        return;
-
-	SetProject(ftd->GetProject(), false);
+    if (event.GetId() == idMenuSetActiveProject)
+    {
+        wxTreeItemId sel = m_pTree->GetSelection();
+        FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
+        if (!ftd)
+            return;
+    
+        SetProject(ftd->GetProject(), false);
+	}
+    else if (event.GetId() == idMenuPriorProject)
+    {
+        int index = m_pProjects->Index(m_pActiveProject);
+        if (index == wxNOT_FOUND)
+            return;
+        --index;
+        if (index < 0)
+            index = m_pProjects->GetCount() - 1;
+        SetProject(m_pProjects->Item(index), false);
+    }
+    else // activate next project
+    {
+        int index = m_pProjects->Index(m_pActiveProject);
+        if (index == wxNOT_FOUND)
+            return;
+        ++index;
+        if (index == (int)m_pProjects->GetCount())
+            index = 0;
+        SetProject(m_pProjects->Item(index), false);
+    }
 }
 
 void ProjectManager::OnAddFileToProject(wxCommandEvent& event)
@@ -721,24 +765,50 @@ void ProjectManager::OnOpenFile(wxCommandEvent& event)
 
 void ProjectManager::OnProperties(wxCommandEvent& event)
 {
-    wxTreeItemId sel = m_pTree->GetSelection();
-    FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
-
-    cbProject* project = ftd ? ftd->GetProject() : m_pActiveProject;
-    if (project)
+    if (event.GetId() == idMenuProjectProperties)
     {
-        if (!ftd || (ftd && ftd->GetFileIndex() == -1))
+        if (m_pActiveProject && m_pActiveProject->ShowOptions())
         {
-                if (project->ShowOptions())
-                {
-                    // rebuild tree and make sure that cbEVT_PROJECT_ACTIVATE
-                    // is sent (maybe targets have changed)...
-                    SetProject(project, true);
-                }
+            // rebuild tree and make sure that cbEVT_PROJECT_ACTIVATE
+            // is sent (maybe targets have changed)...
+            SetProject(m_pActiveProject, true);
         }
-        else if (ftd)
+    }
+    else if (event.GetId() == idMenuTreeProjectProperties)
+    {
+        wxTreeItemId sel = m_pTree->GetSelection();
+        FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
+    
+        cbProject* project = ftd ? ftd->GetProject() : m_pActiveProject;
+        if (project && project->ShowOptions() && project == m_pActiveProject)
         {
-            ProjectFile* pf = project->GetFile(ftd->GetFileIndex());
+            // rebuild tree and make sure that cbEVT_PROJECT_ACTIVATE
+            // is sent (maybe targets have changed)...
+            SetProject(project, true);
+        }
+    }
+    else if (event.GetId() == idMenuTreeFileProperties)
+    {
+        wxTreeItemId sel = m_pTree->GetSelection();
+        FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
+    
+        cbProject* project = ftd ? ftd->GetProject() : m_pActiveProject;
+        if (project)
+        {
+            if (ftd && ftd->GetFileIndex() != -1)
+            {
+                ProjectFile* pf = project->GetFile(ftd->GetFileIndex());
+                if (pf)
+                    pf->ShowOptions(m_pPanel);
+            }
+        }
+    }
+    else // active editor properties
+    {
+        cbEditor* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
+        if (ed)
+        {
+            ProjectFile* pf = ed->GetProjectFile();
             if (pf)
                 pf->ShowOptions(m_pPanel);
         }

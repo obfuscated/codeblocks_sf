@@ -72,9 +72,15 @@ class DLLIMPORT ProjectBuildTarget : public CompileTargetBase
         virtual void SetExternalDeps(const wxString& deps);
         virtual bool GetIncludeInTargetAll();
         virtual void SetIncludeInTargetAll(bool buildIt);
+        virtual bool GetCreateDefFile();
+        virtual void SetCreateDefFile(bool createIt);
+        virtual bool GetCreateStaticLib();
+        virtual void SetCreateStaticLib(bool createIt);
     private:
         wxString m_ExternalDeps;
         bool m_BuildWithAll;
+        bool m_CreateStaticLib;
+        bool m_CreateDefFile;
 };
 
 #endif // PROJECTBUILDTARGET_H

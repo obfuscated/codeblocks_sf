@@ -34,6 +34,8 @@ WX_DEFINE_LIST(FilesList);
 ProjectBuildTarget::ProjectBuildTarget()
 {
     m_BuildWithAll = true;
+    m_CreateStaticLib = true;
+    m_CreateDefFile = true;
 }
 
 // class destructor
@@ -61,6 +63,28 @@ void ProjectBuildTarget::SetIncludeInTargetAll(bool buildIt)
 {
 	m_BuildWithAll = buildIt;
 	SetModified(true);
+}
+
+bool ProjectBuildTarget::GetCreateDefFile()
+{
+    return m_CreateDefFile;
+}
+
+void ProjectBuildTarget::SetCreateDefFile(bool createIt)
+{
+    m_CreateDefFile = createIt;
+    SetModified(true);
+}
+
+bool ProjectBuildTarget::GetCreateStaticLib()
+{
+    return m_CreateStaticLib;
+}
+
+void ProjectBuildTarget::SetCreateStaticLib(bool createIt)
+{
+    m_CreateStaticLib = createIt;
+    SetModified(true);
 }
 
 //// PROJECTFILE //////////////////////

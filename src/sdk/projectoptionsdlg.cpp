@@ -103,6 +103,8 @@ void ProjectOptionsDlg::DoTargetChange()
 		return;
 
 	XRCCTRL(*this, "chkBuildThisTarget", wxCheckBox)->SetValue(target->GetIncludeInTargetAll());
+	XRCCTRL(*this, "chkCreateDefFile", wxCheckBox)->SetValue(target->GetCreateDefFile());
+	XRCCTRL(*this, "chkCreateStaticLib", wxCheckBox)->SetValue(target->GetCreateStaticLib());
 
 	// global project options
 	wxComboBox* cmb = XRCCTRL(*this, "cmbProjectType", wxComboBox);
@@ -111,6 +113,9 @@ void ProjectOptionsDlg::DoTargetChange()
     wxTextCtrl* txtDeps = XRCCTRL(*this, "txtExternalDeps", wxTextCtrl);
     wxButton* btnDeps = XRCCTRL(*this, "btnEditDeps", wxButton);
     txtDeps->Enable(false);
+    XRCCTRL(*this, "chkCreateDefFile", wxCheckBox)->Enable(target->GetTargetType() == ttStaticLib ||
+                                                            target->GetTargetType() == ttDynamicLib);
+    XRCCTRL(*this, "chkCreateStaticLib", wxCheckBox)->Enable(target->GetTargetType() == ttDynamicLib);
     if (cmb && txt && browse && txtDeps && btnDeps)
     {
         cmb->SetSelection(target->GetTargetType());
@@ -172,6 +177,8 @@ void ProjectOptionsDlg::DoBeforeTargetChange(bool force)
 			return;
 
 		target->SetIncludeInTargetAll(XRCCTRL(*this, "chkBuildThisTarget", wxCheckBox)->GetValue());
+        target->SetCreateDefFile(XRCCTRL(*this, "chkCreateDefFile", wxCheckBox)->GetValue());
+        target->SetCreateStaticLib(XRCCTRL(*this, "chkCreateStaticLib", wxCheckBox)->GetValue());
 
 		// global project options
 		target->SetTargetType(TargetType(XRCCTRL(*this, "cmbProjectType", wxComboBox)->GetSelection()));
@@ -213,6 +220,10 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
     wxButton* btnDeps = XRCCTRL(*this, "btnEditDeps", wxButton);
     if (!cmb || !txt || !txtDeps || !btnDeps || !browse)
         return;
+
+    XRCCTRL(*this, "chkCreateDefFile", wxCheckBox)->Enable(cmb->GetSelection() == ttStaticLib ||
+                                                            cmb->GetSelection() == ttDynamicLib);
+    XRCCTRL(*this, "chkCreateStaticLib", wxCheckBox)->Enable(cmb->GetSelection() == ttDynamicLib);
 
     txtDeps->SetValue(target->GetExternalDeps());
     btnDeps->Enable(true);

@@ -31,6 +31,7 @@
 
 #include "toolsmanager.h"
 #include "manager.h"
+#include "macrosmanager.h"
 #include "configmanager.h"
 #include "messagemanager.h"
 #include "configuretoolsdlg.h"
@@ -94,10 +95,19 @@ bool ToolsManager::Execute(Tool* tool)
 	if (!tool)
 		return false;
 		
-	wxString cmd;
-	cmd << tool->command << " " << tool->params;
+	wxString cmdline;
+	wxString cmd = tool->command;
+	wxString params = tool->params;
+	wxString dir = tool->workingDir;
+	
+	Manager::Get()->GetMacrosManager()->ReplaceMacros(cmd);
+	Manager::Get()->GetMacrosManager()->ReplaceMacros(params);
+	Manager::Get()->GetMacrosManager()->ReplaceMacros(dir);
+
+	cmdline << cmd << " " << params;
+    wxSetWorkingDirectory(dir);
 	wxProcess* process = new wxProcess();
-	return wxExecute(cmd, wxEXEC_ASYNC, process);
+	return wxExecute(cmdline, wxEXEC_ASYNC, process);
 }
 
 void ToolsManager::AddTool(const wxString& name, const wxString& command, const wxString& params, const wxString& workingDir, bool save)

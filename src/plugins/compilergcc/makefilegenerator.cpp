@@ -71,8 +71,14 @@ wxString MakefileGenerator::ReplaceCompilerMacros(CommandType et,
     compilerCmd.Replace("$object", object);
     compilerCmd.Replace("$link_objects", "$(" + target->GetTitle() + "_LINKOBJS)");
     compilerCmd.Replace("$exe_output", "$(" + target->GetTitle() + "_BIN)");
-    compilerCmd.Replace("$static_output", "$(" + target->GetTitle() + "_STATIC_LIB)");
-    compilerCmd.Replace("$def_output", "$(" + target->GetTitle() + "_LIB_DEF)");
+    if (target->GetTargetType() == ttDynamicLib && target->GetCreateStaticLib())
+        compilerCmd.Replace("$static_output", "$(" + target->GetTitle() + "_STATIC_LIB)");
+    else
+        compilerCmd.Replace("-Wl,--out-implib=$static_output", "");
+    if ((target->GetTargetType() == ttDynamicLib || target->GetTargetType() == ttStaticLib) && target->GetCreateStaticLib())
+        compilerCmd.Replace("$def_output", "$(" + target->GetTitle() + "_LIB_DEF)");
+    else
+        compilerCmd.Replace("-Wl,--output-def=$def_output", "");
     compilerCmd.Replace("$resource_output", "$(" + target->GetTitle() + "_RESOURCE)");
 
     int idx = compilerCmd.Find("$res_includes");
@@ -809,6 +815,7 @@ void MakefileGenerator::DoAddMakefileTarget_Link(wxString& buffer)
 
 void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
 {
+    m_ObjectFiles.Clear();
     wxString tmp;
     int targetsCount = m_Project->GetBuildTargetsCount();
     for (int x = 0; x < targetsCount; ++x)
@@ -826,8 +833,11 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
             ProjectFile* pf = m_Files[i];
             if (pf->compile &&
                 !pf->compilerVar.IsEmpty() &&
-                pf->buildTargets.Index(target->GetTitle()) >= 0)
+                pf->buildTargets.Index(target->GetTitle()) >= 0 &&
+                m_ObjectFiles.Index(pf) == wxNOT_FOUND)
             {
+                m_ObjectFiles.Add(pf); // mark it as included in the Makefile
+
                 wxFileName d_filename = pf->GetObjName();
                 d_filename.SetExt("d");
                 // vars to make easier reading the following code

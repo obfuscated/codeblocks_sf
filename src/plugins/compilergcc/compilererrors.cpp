@@ -49,11 +49,13 @@ void CompilerErrors::AddErrorLine(const wxString& line)
 {
 	if (line.IsEmpty())
 		return;
+    wxRegEx reWarning(" warning: ");
 	wxRegEx reErrorLine("([A-Za-z0-9_/\\.]*):([0-9]*):[ \t](.*)");
 
 	if (reErrorLine.Matches(line))
 	{
 		CompileError err;
+		err.isWarning = reWarning.Matches(line);
 		err.filename = reErrorLine.GetMatch(line, 1);
         err.errors.Add(reErrorLine.GetMatch(line, 3));
         wxString sLine = reErrorLine.GetMatch(line, 2);
@@ -62,9 +64,10 @@ void CompilerErrors::AddErrorLine(const wxString& line)
 	}
 }
 
-void CompilerErrors::AddError(const wxString& filename, long int line, const wxString& error)
+void CompilerErrors::AddError(const wxString& filename, long int line, const wxString& error, bool isWarning)
 {
 	CompileError err;
+	err.isWarning = isWarning;
 	err.filename = filename;
 	err.line = line;
 	err.errors.Add(error);
@@ -83,13 +86,40 @@ void CompilerErrors::Next()
 {
 	if (m_ErrorIndex >= (int)m_Errors.GetCount() - 1)
 		return;
-	DoGotoError(m_Errors[++m_ErrorIndex]);
+
+    // locate next *error* (not warning), if there is any
+    int bkp = ++m_ErrorIndex;
+    while (bkp < (int)m_Errors.GetCount())
+    {
+        if (!m_Errors[bkp].isWarning)
+        {
+            m_ErrorIndex = bkp;
+            break;
+        }
+        ++bkp;
+    }
+
+	DoGotoError(m_Errors[m_ErrorIndex]);
 }
 
 void CompilerErrors::Previous()
 {
-	if (m_ErrorIndex > 0)
-		DoGotoError(m_Errors[--m_ErrorIndex]);
+	if (m_ErrorIndex <= 0)
+        return;
+
+    // locate previous *error* (not warning), if there is any
+    int bkp = --m_ErrorIndex;
+    while (bkp >= 0)
+    {
+        if (!m_Errors[bkp].isWarning)
+        {
+            m_ErrorIndex = bkp;
+            break;
+        }
+        --bkp;
+    }
+
+    DoGotoError(m_Errors[m_ErrorIndex]);
 }
 
 void CompilerErrors::Clear()

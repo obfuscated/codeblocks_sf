@@ -34,6 +34,7 @@
 #include <configmanager.h>
 #include <projectmanager.h>
 #include "classwizarddlg.h"
+#include <cbproject.h>
 
 cbPlugin* GetPlugin()
 {
@@ -75,11 +76,14 @@ void ClassWizard::OnRelease(bool appShutDown)
 
 int ClassWizard::Execute()
 {
+    ProjectManager* prjMan = Manager::Get()->GetProjectManager();
+    cbProject* prj = prjMan->GetActiveProject();
+    if (prj)
+        wxSetWorkingDirectory(prj->GetBasePath());
+
 	ClassWizardDlg dlg(Manager::Get()->GetAppWindow());
 	if (dlg.ShowModal() == wxID_OK)
 	{
-		ProjectManager* prjMan = Manager::Get()->GetProjectManager();
-		cbProject* prj = prjMan->GetActiveProject();
 		if (!prj)
 		{
 			wxMessageDialog msg(Manager::Get()->GetAppWindow(),
@@ -89,6 +93,7 @@ int ClassWizard::Execute()
 			msg.ShowModal();
 			return 0;
 		}
+
 		wxMessageDialog msg(Manager::Get()->GetAppWindow(),
 							_("The new class has been created.\n"
 							"Do you want to add it to the current project?"),

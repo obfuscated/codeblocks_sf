@@ -38,6 +38,8 @@ enum FileType
 	ftCodeBlocksProject = 0,
     ftCodeBlocksWorkspace,
 	ftDevCppProject,
+	ftMSVCProject,
+	ftMSVSProject,
 	ftSource,
 	ftHeader,
 	ftObject,

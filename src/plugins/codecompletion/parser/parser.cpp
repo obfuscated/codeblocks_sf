@@ -722,21 +722,26 @@ void Parser::BuildTree(wxTreeCtrl& tree)
 
 	wxTreeItemId globalNS = tree.AppendItem(m_RootNode, _("Global namespace"), PARSER_IMG_NAMESPACE);
     AddTreeNamespace(tree, globalNS, 0L);
-    
+    BuildTreeNamespace(tree, m_RootNode, 0L);
+	tree.Expand(m_RootNode);
+	tree.Thaw();
+}
+
+void Parser::BuildTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* parent)
+{
 	for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
 	{
 		Token* token = m_Tokens[x];
-		if (!token->m_pParent && // base (no parent)
+		if (token->m_pParent == parent &&
 			token->m_IsLocal && // local symbols only
 			token->m_TokenKind == tkNamespace) // namespaces
         {
             ClassTreeData* ctd = new ClassTreeData(token);
-            wxTreeItemId newNS = tree.AppendItem(m_RootNode, token->m_Name, PARSER_IMG_NAMESPACE, -1, ctd);
+            wxTreeItemId newNS = tree.AppendItem(parentNode, token->m_Name, PARSER_IMG_NAMESPACE, -1, ctd);
+            BuildTreeNamespace(tree, newNS, token);
             AddTreeNamespace(tree, newNS, token);
         }
 	}
-	tree.Expand(m_RootNode);
-	tree.Thaw();
 }
 
 void Parser::AddTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* parent)

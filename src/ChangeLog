@@ -1,3 +1,40 @@
+Changes for version 1.0-beta3
+-------------------------------
+
+2004-09-30 21:24  mandrav
+
+	* Code-completion plugin: Fixed bug that would skip "extern "C" {}" blocks
+	* Compiler GCC plugin: If compilation errors occur, jump to first/next error,
+	not	warning (if there are any)
+	* Core: Introduced "Project/Import/Visual C++ project" option
+
+2004-09-11 12:15  mandrav
+
+	* Compiler GCC plugin: Generated Makefile doesn't complain anymore when
+	the same project file is included in multiple targets
+	* ClassWizard plugin: Change current directory to project's base path (if
+	a project is open) before generating the new class
+	* Debugger GDB plugin: Switch to output directory before start of
+	debugging session
+	* Code-completion plugin: Make sure preprocessor definitions are not
+	stored under namespaces or classes
+	* Code-completion plugin: Many updates and bug-fixes regarding
+	code-completion using namespaces
+	* Project manager: Added "Project/Activate Prior" and "Project/Activate Next"
+	for easy navigation between open projects
+	* Project manager: Added "File/Properties" for active editor
+	* Project manager: Changed "Project/Properties" to display the project
+	properties (it would display the selected file's properties in the project
+	tree, if one was selected)
+	* Project manager: Fixed "Build Options" tree context menu entry, to
+	display the build options for the "clicked" project
+	* Tools manager: Bug-fix (didn't substitute macros)
+
+2004-07-20 21:03  mandrav
+
+	* Code-completion plugin: Fix crash if namespace was used in class inheritance
+	* Code-completion plugin: Fix superfluous namespaces in class browser
+
 Changes for version 1.0-beta2
 -----------------------------
 
