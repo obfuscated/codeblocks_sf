@@ -24,6 +24,7 @@ CompilerMSVC::CompilerMSVC()
 	m_Switches.linkLibs = "";
 	m_Switches.defines = "/D";
 	m_Switches.genericSwitch = "/";
+	m_Switches.linkerSwitchForGui = "/subsystem:windows";
 	m_Switches.objectExtension = "obj";
 	m_Switches.needDependencies = false;
 	

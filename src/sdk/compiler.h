@@ -64,6 +64,7 @@ struct CompilerSwitches
     wxString linkLibs;      // -l
     wxString defines;       // -D
     wxString genericSwitch; // -
+    wxString linkerSwitchForGui; // -mwindows
     wxString objectExtension; // o
     bool needDependencies; // true
 };

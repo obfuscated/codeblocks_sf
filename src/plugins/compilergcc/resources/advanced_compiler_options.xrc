@@ -188,6 +188,17 @@ $$resource_output</label>
                     </object>
                     <object class="sizeritem">
                       <object class="wxStaticText">
+                        <label>Linker option for GUI apps (e.g. -mwindows):</label>
+                      </object>
+                      <flag>wxTOP</flag>
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxTextCtrl" name="txtLinkForGui"/>
+                      <flag>wxGROW</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
                         <label>Object file extension (e.g. o):</label>
                       </object>
                       <flag>wxTOP</flag>

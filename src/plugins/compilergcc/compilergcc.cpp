@@ -35,6 +35,7 @@
 #include "compileroptionsdlg.h"
 #include "compilerMINGW.h"
 #include "compilerMSVC.h"
+#include "compilerBCC.h"
 #include <wx/xrc/xmlres.h>
 #include <wx/fs_zip.h>
 
@@ -191,6 +192,7 @@ CompilerGCC::CompilerGCC()
 	CompilerFactory::RegisterCompiler(new CompilerMINGW);
 #ifdef __WXMSW__
 	CompilerFactory::RegisterCompiler(new CompilerMSVC);
+	CompilerFactory::RegisterCompiler(new CompilerBCC);
 #endif
 	// register (if any) user-copies of built-in compilers
 	CompilerFactory::RegisterUserCompilers();

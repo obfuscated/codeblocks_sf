@@ -44,6 +44,7 @@ void AdvancedCompilerOptionsDlg::ReadCompilerOptions()
     XRCCTRL(*this, "txtAddLib", wxTextCtrl)->SetValue(switches.linkLibs);
     XRCCTRL(*this, "txtDefine", wxTextCtrl)->SetValue(switches.defines);
     XRCCTRL(*this, "txtGenericSwitch", wxTextCtrl)->SetValue(switches.genericSwitch);
+    XRCCTRL(*this, "txtLinkForGui", wxTextCtrl)->SetValue(switches.linkerSwitchForGui);
     XRCCTRL(*this, "txtObjectExt", wxTextCtrl)->SetValue(switches.objectExtension);
     XRCCTRL(*this, "chkNeedDeps", wxCheckBox)->SetValue(switches.needDependencies);
 }
@@ -63,6 +64,7 @@ void AdvancedCompilerOptionsDlg::WriteCompilerOptions()
     switches.linkLibs = XRCCTRL(*this, "txtAddLib", wxTextCtrl)->GetValue();
     switches.defines = XRCCTRL(*this, "txtDefine", wxTextCtrl)->GetValue();
     switches.genericSwitch = XRCCTRL(*this, "txtGenericSwitch", wxTextCtrl)->GetValue();
+    switches.linkerSwitchForGui = XRCCTRL(*this, "txtLinkForGui", wxTextCtrl)->GetValue();
     switches.objectExtension = XRCCTRL(*this, "txtObjectExt", wxTextCtrl)->GetValue();
     switches.needDependencies = XRCCTRL(*this, "chkNeedDeps", wxCheckBox)->GetValue();
     CompilerFactory::Compilers[m_CompilerIdx]->SetSwitches(switches);

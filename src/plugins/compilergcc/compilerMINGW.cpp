@@ -27,6 +27,7 @@ CompilerMINGW::CompilerMINGW()
 	m_Switches.linkLibs = "-l";
 	m_Switches.defines = "-D";
 	m_Switches.genericSwitch = "-";
+	m_Switches.linkerSwitchForGui = "-mwindows";
 	m_Switches.objectExtension = "o";
 	m_Switches.needDependencies = true;
 	

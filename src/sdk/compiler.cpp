@@ -86,6 +86,7 @@ void Compiler::SaveSettings(const wxString& baseKey)
     ConfigManager::Get()->Write(tmp + "/switches/link", m_Switches.linkLibs);
     ConfigManager::Get()->Write(tmp + "/switches/define", m_Switches.defines);
     ConfigManager::Get()->Write(tmp + "/switches/generic", m_Switches.genericSwitch);
+    ConfigManager::Get()->Write(tmp + "/switches/linkForGui", m_Switches.linkerSwitchForGui);
     ConfigManager::Get()->Write(tmp + "/switches/objectext", m_Switches.objectExtension);
     ConfigManager::Get()->Write(tmp + "/switches/deps", m_Switches.needDependencies);
 }
@@ -126,6 +127,7 @@ void Compiler::LoadSettings(const wxString& baseKey)
     m_Switches.linkLibs = ConfigManager::Get()->Read(tmp + "/switches/link", m_Switches.linkLibs);
     m_Switches.defines = ConfigManager::Get()->Read(tmp + "/switches/define", m_Switches.defines);
     m_Switches.genericSwitch = ConfigManager::Get()->Read(tmp + "/switches/generic", m_Switches.genericSwitch);
+    m_Switches.linkerSwitchForGui = ConfigManager::Get()->Read(tmp + "/switches/linkForGui", m_Switches.linkerSwitchForGui);
     m_Switches.objectExtension = ConfigManager::Get()->Read(tmp + "/switches/objectext", m_Switches.objectExtension);
     m_Switches.needDependencies = ConfigManager::Get()->Read(tmp + "/switches/deps", m_Switches.needDependencies);
 }

@@ -566,9 +566,8 @@ void MakefileGenerator::DoAddMakefileLDFlags(wxString& buffer)
         DoGetMakefileLDFlags(tmp, target);
 
         buffer << target->GetTitle() << "_LDFLAGS=" << tmp;
-/* NOTE (mandrav#1#): Commented-out because it's not a GNU GCC makefile anymore ;) */
-//        if (target->GetTargetType() == ttExecutable)
-//            buffer << " -mwindows";
+        if (target->GetTargetType() == ttExecutable)
+            buffer << " " << m_CompilerSet->GetSwitches().linkerSwitchForGui;
         buffer << '\n';
     }
     buffer << '\n';
