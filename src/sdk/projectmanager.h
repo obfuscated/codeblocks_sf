@@ -40,23 +40,23 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
         /** @return True if modified, false if not.
           * @note: Refers to the workspace, not to a particular project.
           */
-		bool GetModified(){ return m_Modified; }
+		bool GetModified(){ return (this==NULL) ? false : m_Modified; }
         /** Set the workspace modification status.
           * @param mod The modification flag.
           * @note: Refers to the workspace, not to a particular project.
           */
-		void SetModified(bool mod = true){ m_Modified = mod; }
+		void SetModified(bool mod = true){ if(this!=NULL) m_Modified = mod; }
         /** Retrieve the active project. Most of the times, this is the function
           * you 'll be calling in ProjectManager.
           * @return A pointer to the active project.
           */
-		cbProject* GetActiveProject(){ return m_pActiveProject; }
+		cbProject* GetActiveProject(){ return (this==NULL) ? 0 : m_pActiveProject; }
         /** Retrieve an array of all the opened projects. This is a standard
           * wxArray containing pointers to projects. Using this array you can
           * iterate through all the opened projects.
           * @return A pointer to the array containing the projects.
           */
-        ProjectsArray* GetProjects(){ return m_pProjects; }
+        ProjectsArray* GetProjects(){ return (this==NULL) ? 0 : m_pProjects; }
         /** Check if a project is open based on the project's filename.
           * @param filename The project's filename. Must be an absolute path.
           * @return A pointer to the project if it is open, or NULL if it is not.
@@ -213,6 +213,23 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
           * @return A pointer to a wxPanel window.
           */
 		wxPanel* GetPanel(){ return m_pPanel; }
+		
+		inline bool sanity_check() // Fixes segfault problems - by Rick
+		{
+		  if(!this) return false;
+		  if((void*)this!=m_sanitycheck_self)
+            return false;   //  Lightning rod for segfaults.
+                            // (triggered in the "if" clause)
+          if(m_shutdown)    // Alerts if shutdown
+            return false;
+          return true;
+        }
+          
+  protected:          
+		// *** Sanity check variables
+		bool m_shutdown; // 
+		void *m_sanitycheck_self;
+  
     private:
         static ProjectManager* Get(wxNotebook* parent);
 		static void Free();
@@ -250,7 +267,7 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
         bool m_TreeUseFolders;
 		FilesGroupsAndMasks* m_pFileGroups;
 		int m_TreeFreezeCounter;
-
+		
         DECLARE_EVENT_TABLE()
 };
 
