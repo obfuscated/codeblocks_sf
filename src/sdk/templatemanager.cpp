@@ -198,6 +198,12 @@ void TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
     if (prj)
     {
         prj->SetCompilerIndex(CompilerFactory::GetDefaultCompilerIndex());
+        for (int i = 0; i < prj->GetBuildTargetsCount(); ++i)
+        {
+            ProjectBuildTarget* target = prj->GetBuildTarget(i);
+            target->SetCompilerIndex(CompilerFactory::GetDefaultCompilerIndex());
+        }
+        
         for (unsigned int i = 0; i < fileset.files.GetCount(); ++i)
         {
             FileSetFile& fsf = fileset.files[i];
