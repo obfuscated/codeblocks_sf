@@ -329,6 +329,20 @@ void CompilerGCC::BuildMenu(wxMenuBar* menuBar)
 			finalPos = projMenuPos + 1;
 	}
     menuBar->Insert(finalPos, m_Menu, _("&Compile"));
+    
+    // now add some entries in Project menu
+	projMenuPos = menuBar->FindMenu("Project");
+	if (projMenuPos != wxNOT_FOUND)
+	{
+        wxMenu* prj = menuBar->GetMenu(projMenuPos);
+        // look if we have a "Properties" item. If yes, we 'll insert
+        // before it, else we 'll just append...
+        size_t propsPos = prj->GetMenuItemCount(); // append
+        int propsID = prj->FindItem("Properties");
+        if (propsID != wxNOT_FOUND)
+            prj->FindChildItem(propsID, &propsPos);
+        prj->Insert(propsPos, idMenuProjectCompilerOptions, _("Build options"), _("Set the project's build options"));
+    }
 }
 
 void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg)
@@ -1227,6 +1241,9 @@ void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
 		
         mbar->Enable(idMenuCreateDist, !m_Process && prj);
         mbar->Enable(idMenuExportMakefile, !m_Process && prj);
+        
+        // Project menu
+        mbar->Enable(idMenuProjectCompilerOptions, !m_Process && prj);
     }
 
 	// enable disable target selection combobox

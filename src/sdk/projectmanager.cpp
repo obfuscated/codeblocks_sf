@@ -153,6 +153,7 @@ ProjectManager::~ProjectManager()
 
 void ProjectManager::CreateMenu(wxMenuBar* menuBar)
 {
+/* TODO (mandrav#1#): Move menu items from main.cpp, here */
 	if (menuBar)
 	{
 		int pos = menuBar->FindMenu(_("Search"));
@@ -166,6 +167,7 @@ void ProjectManager::CreateMenu(wxMenuBar* menuBar)
         {
             menu->AppendSeparator();
             menu->Append(idMenuExecParams, _("Set execution &parameters..."), _("Set execution parameters for the targets of this project"));
+            menu->Append(idMenuProperties, _("Properties"));
         }
 	}
 }
@@ -723,27 +725,24 @@ void ProjectManager::OnProperties(wxCommandEvent& event)
     wxTreeItemId sel = m_pTree->GetSelection();
     FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
 
-    if (ftd)
+    cbProject* project = ftd ? ftd->GetProject() : m_pActiveProject;
+    if (project)
     {
-	    cbProject* project = ftd->GetProject();
-		if (project)
-		{
-			if (ftd->GetFileIndex() == -1)
-			{
-					if (project->ShowOptions())
-					{
-                        // rebuild tree and make sure that cbEVT_PROJECT_ACTIVATE
-                        // is sent (maybe targets have changed)...
-						SetProject(project, true);
-                    }
-			}
-			else
-			{
-				ProjectFile* pf = project->GetFile(ftd->GetFileIndex());
-				if (pf)
-					pf->ShowOptions(m_pPanel);
-			}
-		}
+        if (!ftd || (ftd && ftd->GetFileIndex() == -1))
+        {
+                if (project->ShowOptions())
+                {
+                    // rebuild tree and make sure that cbEVT_PROJECT_ACTIVATE
+                    // is sent (maybe targets have changed)...
+                    SetProject(project, true);
+                }
+        }
+        else if (ftd)
+        {
+            ProjectFile* pf = project->GetFile(ftd->GetFileIndex());
+            if (pf)
+                pf->ShowOptions(m_pPanel);
+        }
     }
 }
 

@@ -834,7 +834,10 @@ void cbEditor::OnContextMenuEntry(wxCommandEvent& event)
 	else if (id == idConfigureEditor)
 		Manager::Get()->GetEditorManager()->Configure();
 	else if (id == idProperties)
-		Manager::Get()->GetMessageManager()->DebugLog("cbEditor::OnProperties() : Not implemented...");
+	{
+        if (m_pProjectFile)
+            m_pProjectFile->ShowOptions(this);
+    }
     else
     {
         // probably a "Switch to..." item

@@ -201,6 +201,24 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos)
 
 	if (ed)
 		ed->GetControl()->SetFocus();
+    
+    // check for ProjectFile
+    if (ed && !ed->GetProjectFile())
+    {
+        ProjectsArray* projects = Manager::Get()->GetProjectManager()->GetProjects();
+        for (unsigned int i = 0; i < projects->GetCount(); ++i)
+        {
+            cbProject* prj = projects->Item(i);
+            ProjectFile* pf = prj->GetFileByFilename(ed->GetFilename(), false);
+            if (pf)
+            {
+                Manager::Get()->GetMessageManager()->DebugLog("found %s", pf->file.GetFullPath().c_str());
+                ed->SetProjectFile(pf);
+                break;
+            }
+        }
+    }
+    
     return ed;
 }
 
@@ -511,8 +529,8 @@ bool EditorManager::SwapActiveHeaderSource()
     {
         //Manager::Get()->GetMessageManager()->DebugLog("ed=%s, pair=%s", ed->GetFilename().c_str(), pair.c_str());
         cbEditor* newEd = Open(fname.GetFullPath());
-        if (newEd)
-            newEd->SetProjectFile(ed->GetProjectFile());
+        //if (newEd)
+        //    newEd->SetProjectFile(ed->GetProjectFile());
         return newEd;
     }
     return 0L;
