@@ -666,6 +666,8 @@ void CompilerOptionsDlg::OnTreeSelectionChange(wxTreeEvent& event)
 		return;
 	wxTreeCtrl* tc = XRCCTRL(*this, "tcScope", wxTreeCtrl);
 	ScopeTreeData* data = (ScopeTreeData*)tc->GetItemData(event.GetItem());
+	if (!data)
+        return;
     int compilerIdx = data->GetTarget() ? data->GetTarget()->GetCompilerIndex() :
                         (data->GetProject() ? data->GetProject()->GetCompilerIndex() :
                         XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection());
@@ -680,6 +682,8 @@ void CompilerOptionsDlg::OnTreeSelectionChanging(wxTreeEvent& event)
 		return;
 	wxTreeCtrl* tc = XRCCTRL(*this, "tcScope", wxTreeCtrl);
 	ScopeTreeData* data = (ScopeTreeData*)tc->GetItemData(event.GetOldItem());
+	if (!data)
+        return;
     int compilerIdx = XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection();
 	DoSaveOptions(compilerIdx, data);
 }
