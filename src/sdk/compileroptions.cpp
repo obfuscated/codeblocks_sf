@@ -111,3 +111,14 @@ CompOption* CompilerOptions::GetOptionByOption(const wxString& option)
 	}
 	return 0L;
 }
+
+CompOption* CompilerOptions::GetOptionByAdditionalLibs(const wxString& libs)
+{
+	for (unsigned int i = 0; i < m_Options.GetCount(); ++i)
+	{
+		CompOption* coption = m_Options.Item(i);
+		if (coption->additionalLibs == libs)
+			return coption;
+	}
+	return 0L;
+}

@@ -331,7 +331,6 @@
 		</Compiler>
 		<Linker>
 			<Add option="-lwxmsw$(WX_VER)"/>
-			<Add option="-lgmon"/>
 		</Linker>
 		<LibDirs>
 			<Add option="sdk/tinyxml"/>

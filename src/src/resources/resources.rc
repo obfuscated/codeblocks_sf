@@ -7,3 +7,5 @@ SOURCE_FILE_H ICON "src/resources/icons/h.ico"
 // that's the only thing needed from
 //#include <wx/msw/wx.rc>
 wxBITMAP_STD_COLOURS    BITMAP "wx/msw/colours.bmp"
+
+1 24 "output/codeblocks.exe.manifest"

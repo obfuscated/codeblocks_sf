@@ -538,7 +538,7 @@ void MainFrame::CreateToolbars()
 		m_pToolbar = 0L;
 		SetToolBar(0L);
 	}
-	m_pToolbar = CreateToolBar(wxTB_HORIZONTAL | wxTB_FLAT, wxID_ANY);
+	m_pToolbar = CreateToolBar(wxTB_HORIZONTAL, wxID_ANY);
 	m_pToolbar->SetToolBitmapSize(wxSize(22, 22));
 	SetToolBar(m_pToolbar);
 	

@@ -28,11 +28,11 @@ Name: desktopicon; Description: Create a &desktop icon; GroupDescription: Additi
 Name: quicklaunchicon; Description: Create a &Quick Launch icon; GroupDescription: Additional icons:
 
 [Files]
-Source: ..\output\codeblocks.exe; DestDir: {app}; Flags: ignoreversion; Components: ProgramFiles; Tasks: quicklaunchicon desktopicon
+Source: ..\output\codeblocks.exe; DestDir: {app}; Flags: ignoreversion; Components: ProgramFiles
 Source: ..\output\codeblocks.dll; DestDir: {app}; Components: ProgramFiles
 Source: mingwm10.dll; DestDir: {sys}; Flags: sharedfile; Components: ProgramFiles
 Source: wxmsw241.dll; DestDir: {sys}; Flags: sharedfile; Components: ProgramFiles
-Source: ..\tools\ConsoleRunner\console_runner.exe; DestDir: {app}; Components: ProgramFiles
+Source: ..\output\console_runner.exe; DestDir: {app}; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\resources.zip; DestDir: {app}\share\CodeBlocks; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\astyle.zip; DestDir: {app}\share\CodeBlocks; Components: AStyleFormatter
 Source: ..\output\share\CodeBlocks\class_wizard.zip; DestDir: {app}\share\CodeBlocks; Components: ClassWizard
@@ -127,9 +127,9 @@ Source: ..\plugins\codecompletion\resources\images\symbols_folder.png; DestDir: 
 Source: ..\plugins\codecompletion\resources\images\var_private.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
 Source: ..\plugins\codecompletion\resources\images\var_protected.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
 Source: ..\plugins\codecompletion\resources\images\var_public.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
-Source: ..\AUTHORS; DestDir: {app}; Components: ProgramFiles; DestName: AUTHORS.txt
-Source: ..\COPYING; DestDir: {app}; Components: ProgramFiles; DestName: COPYING.txt
-Source: ..\README; DestDir: {app}; Components: ProgramFiles; DestName: README.txt
+Source: ..\AUTHORS; DestDir: {app}; DestName: AUTHORS.txt; Components: ProgramFiles
+Source: ..\COPYING; DestDir: {app}; DestName: COPYING.txt; Components: ProgramFiles
+Source: ..\README; DestDir: {app}; DestName: README.txt; Components: ProgramFiles
 Source: ..\tips.txt; DestDir: {app}; Components: ProgramFiles
 
 [Icons]

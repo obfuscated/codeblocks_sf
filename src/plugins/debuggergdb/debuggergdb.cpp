@@ -152,8 +152,11 @@ void DebuggerGDB::OnRelease(bool appShutDown)
 		m_pTree = 0L;
 	}
 
-    Manager::Get()->GetMessageManager()->DeletePage(m_DbgPageIndex);
-    Manager::Get()->GetMessageManager()->DeletePage(m_PageIndex);
+    if (Manager::Get()->GetMessageManager())
+    {
+        Manager::Get()->GetMessageManager()->DeletePage(m_DbgPageIndex);
+        Manager::Get()->GetMessageManager()->DeletePage(m_PageIndex);
+    }
 }
 
 DebuggerGDB::~DebuggerGDB()

@@ -235,8 +235,11 @@ void CompilerGCC::OnRelease(bool appShutDown)
 {
     DoDeleteTempMakefile();
 	SaveOptions();
-    Manager::Get()->GetMessageManager()->DeletePage(m_ListPageIndex);
-    Manager::Get()->GetMessageManager()->DeletePage(m_PageIndex);
+	if (Manager::Get()->GetMessageManager())
+	{
+        Manager::Get()->GetMessageManager()->DeletePage(m_ListPageIndex);
+        Manager::Get()->GetMessageManager()->DeletePage(m_PageIndex);
+    }
     
 	if (appShutDown)
 		return; // no need to continue if app is shutting down

@@ -347,6 +347,21 @@ void CompilerOptionsDlg::TextToOptions()
 		else
 			++i;
 	}
+	i = 0;
+	while (i < m_LinkerOptions.GetCount())
+	{
+		wxString opt = m_LinkerOptions.Item(i);
+		opt.Trim(wxString::both);
+		CompOption* copt = m_Options.GetOptionByAdditionalLibs(opt);
+		if (copt)
+		{
+//            Manager::Get()->GetMessageManager()->DebugLog("Enabling option %s", copt->option.c_str());
+			copt->enabled = true;
+			m_LinkerOptions.Remove(i);
+		}
+		else
+			++i;
+	}
 }
 
 void CompilerOptionsDlg::OptionsToText()
@@ -384,6 +399,17 @@ void CompilerOptionsDlg::OptionsToText()
                 if (m_LinkerOptions.Index(copt->additionalLibs) == wxNOT_FOUND)
                     m_LinkerOptions.Insert(copt->additionalLibs, 0);
             }
+        }
+        else
+        {
+            // for disabled options, remove relative text option *and*
+            // relative linker option
+            int idx = m_CompilerOptions.Index(copt->option);
+            if (idx != wxNOT_FOUND)
+                m_CompilerOptions.Remove(idx);
+            idx = m_LinkerOptions.Index(copt->additionalLibs);
+            if (idx != wxNOT_FOUND)
+                m_LinkerOptions.Remove(idx);
         }
 	}
 }
@@ -843,7 +869,10 @@ void CompilerOptionsDlg::OnMasterPathClick(wxCommandEvent& event)
     wxDirDialog dlg(this);
     dlg.SetPath(XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->GetValue());
     if (dlg.ShowModal() == wxID_OK)
+    {
         XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->SetValue(dlg.GetPath());
+        DoUpdateCompiler();
+    }
 }
 
 void CompilerOptionsDlg::OnSelectProgramClick(wxCommandEvent& event)

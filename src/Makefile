@@ -3,15 +3,15 @@
 ###############################################################################
 
 # Project:          Code::Blocks
-# Project filename: C:\Devel\codeblocks\src\CodeBlocks.cbp
-# Date:             09/11/04 11:50:11
+# Project filename: c:\Devel\codeblocks\src\CodeBlocks.cbp
+# Date:             12/13/04 20:52:03
 # Compiler used:    MinGW Compiler Suite
 
 ### Variables used in this Makefile
 RM=rm -f
 ZIP=zip.exe
 ZIP_EXT=zip
-WX_VER=241
+WX_VER=242
 CC=mingw32-gcc.exe
 CPP=mingw32-g++.exe
 LD=mingw32-g++.exe
@@ -19,9 +19,9 @@ RESCOMP=windres.exe
 
 ### Compiler/linker options
 GLOBAL_CFLAGS= 
-PROJECT_CFLAGS= -Wall -g -pipe -mthreads -fno-pcc-struct-return -fno-rtti -fmessage-length=0  -D__GNUWIN32__ -D__WXMSW__ -DWXUSINGDLL
+PROJECT_CFLAGS= -Wall -g -pipe -mthreads -fno-pcc-struct-return -fno-rtti -fmessage-length=0 -D__GNUWIN32__ -D__WXMSW__ -DWXUSINGDLL
 GLOBAL_LDFLAGS= 
-PROJECT_LDFLAGS= -lwxmsw$(WX_VER) -lgmon 
+PROJECT_LDFLAGS= -lwxmsw$(WX_VER) -lgmon
 GLOBAL_INCS= -IC:/MinGW/include
 PROJECT_INCS=
 GLOBAL_LIBS= -LC:/MinGW/lib
@@ -40,7 +40,7 @@ plugin_PluginsWizard_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) -DBUILDING_PLUGI
 plugin_ToDo_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL
 plugin_XPManifest_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL
 update_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS)
-console_runner_CFLAGS= $(GLOBAL_CFLAGS) -Os
+console_runner_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS)
 
 ### Targets linker flags
 tinyXML_LDFLAGS= $(GLOBAL_LDFLAGS) $(PROJECT_LDFLAGS)
@@ -109,43 +109,43 @@ console_runner_RESOURCE=
 ### Objects used in this Makefile
 tinyXML_OBJS=sdk/tinyxml/tinystr.o sdk/tinyxml/tinyxml.o sdk/tinyxml/tinyxmlerror.o sdk/tinyxml/tinyxmlparser.o 
 tinyXML_LINKOBJS=$(tinyXML_OBJS) $(tinyXML_RESOURCE)
-tinyXML_DEPS=$(tinyXML_OBJS:.o=.d)
+tinyXML_DEPS=sdk\tinyxml\.deps/tinystr.d sdk\tinyxml\.deps/tinyxml.d sdk\tinyxml\.deps/tinyxmlerror.d sdk\tinyxml\.deps/tinyxmlparser.d 
 sdk_OBJS=sdk/Managers/Managers.o sdk/Managers/StdAfx.o sdk/cbeditor.o sdk/cbplugin.o sdk/cbproject.o sdk/compileoptionsbase.o sdk/compiler.o sdk/compilerfactory.o sdk/compileroptions.o sdk/compiletargetbase.o sdk/configmanager.o sdk/configuretoolsdlg.o sdk/confirmreplacedlg.o sdk/devcpploader.o sdk/editarrayfiledlg.o sdk/editarrayorderdlg.o sdk/editarraystringdlg.o sdk/editorcolorset.o sdk/editorconfigurationdlg.o sdk/editormanager.o sdk/edittooldlg.o sdk/filegroupsandmasks.o sdk/finddlg.o sdk/globals.o sdk/incrementalselectlistdlg.o sdk/macrosmanager.o sdk/manager.o sdk/menuitemsmanager.o sdk/messagelog.o sdk/messagemanager.o sdk/msvcloader.o sdk/newfromtemplatedlg.o sdk/pipedprocess.o sdk/pluginmanager.o sdk/pluginsconfigurationdlg.o sdk/projectbuildtarget.o sdk/projectfileoptionsdlg.o sdk/projectlayoutloader.o sdk/projectloader.o sdk/projectmanager.o sdk/projectoptionsdlg.o sdk/projectsfilemasksdlg.o sdk/projecttemplateloader.o sdk/replacedlg.o sdk/sdk_events.o sdk/selecttargetdlg.o sdk/simplelistlog.o sdk/simpletextlog.o sdk/templatemanager.o sdk/toolsmanager.o sdk/workspaceloader.o 
 sdk_LINKOBJS=$(sdk_OBJS) $(sdk_RESOURCE)
-sdk_DEPS=$(sdk_OBJS:.o=.d)
+sdk_DEPS=sdk\Managers\.deps/Managers.d sdk\Managers\.deps/StdAfx.d sdk\.deps/cbeditor.d sdk\.deps/cbplugin.d sdk\.deps/cbproject.d sdk\.deps/compileoptionsbase.d sdk\.deps/compiler.d sdk\.deps/compilerfactory.d sdk\.deps/compileroptions.d sdk\.deps/compiletargetbase.d sdk\.deps/configmanager.d sdk\.deps/configuretoolsdlg.d sdk\.deps/confirmreplacedlg.d sdk\.deps/devcpploader.d sdk\.deps/editarrayfiledlg.d sdk\.deps/editarrayorderdlg.d sdk\.deps/editarraystringdlg.d sdk\.deps/editorcolorset.d sdk\.deps/editorconfigurationdlg.d sdk\.deps/editormanager.d sdk\.deps/edittooldlg.d sdk\.deps/filegroupsandmasks.d sdk\.deps/finddlg.d sdk\.deps/globals.d sdk\.deps/incrementalselectlistdlg.d sdk\.deps/macrosmanager.d sdk\.deps/manager.d sdk\.deps/menuitemsmanager.d sdk\.deps/messagelog.d sdk\.deps/messagemanager.d sdk\.deps/msvcloader.d sdk\.deps/newfromtemplatedlg.d sdk\.deps/pipedprocess.d sdk\.deps/pluginmanager.d sdk\.deps/pluginsconfigurationdlg.d sdk\.deps/projectbuildtarget.d sdk\.deps/projectfileoptionsdlg.d sdk\.deps/projectlayoutloader.d sdk\.deps/projectloader.d sdk\.deps/projectmanager.d sdk\.deps/projectoptionsdlg.d sdk\.deps/projectsfilemasksdlg.d sdk\.deps/projecttemplateloader.d sdk\.deps/replacedlg.d sdk\.deps/sdk_events.d sdk\.deps/selecttargetdlg.d sdk\.deps/simplelistlog.d sdk\.deps/simpletextlog.d sdk\.deps/templatemanager.d sdk\.deps/toolsmanager.d sdk\.deps/workspaceloader.d 
 src_OBJS=src/app.o src/dlgabout.o src/dlgaboutplugin.o src/environmentsettingsdlg.o src/main.o 
 src_LINKOBJS=$(src_OBJS) $(src_RESOURCE)
-src_DEPS=$(src_OBJS:.o=.d)
+src_DEPS=src\.deps/app.d src\.deps/dlgabout.d src\.deps/dlgaboutplugin.d src\.deps/environmentsettingsdlg.d src\.deps/main.d 
 plugin_Astyle_OBJS=plugins/astyle/asstreamiterator.o plugins/astyle/astyle/ASBeautifier.o plugins/astyle/astyle/ASFormatter.o plugins/astyle/astyle/ASResource.o plugins/astyle/astyleconfigdlg.o plugins/astyle/astyleplugin.o plugins/astyle/formattersettings.o 
 plugin_Astyle_LINKOBJS=$(plugin_Astyle_OBJS) $(plugin_Astyle_RESOURCE)
-plugin_Astyle_DEPS=$(plugin_Astyle_OBJS:.o=.d)
+plugin_Astyle_DEPS=plugins\astyle\.deps/asstreamiterator.d plugins\astyle\astyle\.deps/ASBeautifier.d plugins\astyle\astyle\.deps/ASFormatter.d plugins\astyle\astyle\.deps/ASResource.d plugins\astyle\.deps/astyleconfigdlg.d plugins\astyle\.deps/astyleplugin.d plugins\astyle\.deps/formattersettings.d 
 plugin_CompilerGCC_OBJS=plugins/compilergcc/advancedcompileroptionsdlg.o plugins/compilergcc/compilerMINGW.o plugins/compilergcc/compilerMSVC.o plugins/compilergcc/compilererrors.o plugins/compilergcc/compilergcc.o plugins/compilergcc/compilermessages.o plugins/compilergcc/compileroptionsdlg.o plugins/compilergcc/customvars.o plugins/compilergcc/makefilegenerator.o 
 plugin_CompilerGCC_LINKOBJS=$(plugin_CompilerGCC_OBJS) $(plugin_CompilerGCC_RESOURCE)
-plugin_CompilerGCC_DEPS=$(plugin_CompilerGCC_OBJS:.o=.d)
+plugin_CompilerGCC_DEPS=plugins\compilergcc\.deps/advancedcompileroptionsdlg.d plugins\compilergcc\.deps/compilerMINGW.d plugins\compilergcc\.deps/compilerMSVC.d plugins\compilergcc\.deps/compilererrors.d plugins\compilergcc\.deps/compilergcc.d plugins\compilergcc\.deps/compilermessages.d plugins\compilergcc\.deps/compileroptionsdlg.d plugins\compilergcc\.deps/customvars.d plugins\compilergcc\.deps/makefilegenerator.d 
 plugin_DebuggerGDB_OBJS=plugins/debuggergdb/debuggergdb.o plugins/debuggergdb/debuggertree.o 
 plugin_DebuggerGDB_LINKOBJS=$(plugin_DebuggerGDB_OBJS) $(plugin_DebuggerGDB_RESOURCE)
-plugin_DebuggerGDB_DEPS=$(plugin_DebuggerGDB_OBJS:.o=.d)
+plugin_DebuggerGDB_DEPS=plugins\debuggergdb\.deps/debuggergdb.d plugins\debuggergdb\.deps/debuggertree.d 
 plugin_CodeCompletion_OBJS=plugins/codecompletion/cclist.o plugins/codecompletion/cclistctrl.o plugins/codecompletion/ccoptionsdlg.o plugins/codecompletion/ccrenderer.o plugins/codecompletion/classbrowser.o plugins/codecompletion/codecompletion.o plugins/codecompletion/insertclassmethoddlg.o plugins/codecompletion/nativeparser.o plugins/codecompletion/parser/parser.o plugins/codecompletion/parser/parserthread.o plugins/codecompletion/parser/token.o plugins/codecompletion/parser/tokenizer.o 
 plugin_CodeCompletion_LINKOBJS=$(plugin_CodeCompletion_OBJS) $(plugin_CodeCompletion_RESOURCE)
-plugin_CodeCompletion_DEPS=$(plugin_CodeCompletion_OBJS:.o=.d)
+plugin_CodeCompletion_DEPS=plugins\codecompletion\.deps/cclist.d plugins\codecompletion\.deps/cclistctrl.d plugins\codecompletion\.deps/ccoptionsdlg.d plugins\codecompletion\.deps/ccrenderer.d plugins\codecompletion\.deps/classbrowser.d plugins\codecompletion\.deps/codecompletion.d plugins\codecompletion\.deps/insertclassmethoddlg.d plugins\codecompletion\.deps/nativeparser.d plugins\codecompletion\parser\.deps/parser.d plugins\codecompletion\parser\.deps/parserthread.d plugins\codecompletion\parser\.deps/token.d plugins\codecompletion\parser\.deps/tokenizer.d 
 plugin_ClassWizard_OBJS=plugins/classwizard/classwizard.o plugins/classwizard/classwizarddlg.o 
 plugin_ClassWizard_LINKOBJS=$(plugin_ClassWizard_OBJS) $(plugin_ClassWizard_RESOURCE)
-plugin_ClassWizard_DEPS=$(plugin_ClassWizard_OBJS:.o=.d)
+plugin_ClassWizard_DEPS=plugins\classwizard\.deps/classwizard.d plugins\classwizard\.deps/classwizarddlg.d 
 plugin_PluginsWizard_OBJS=plugins/pluginwizard/enterinfodlg.o plugins/pluginwizard/pluginwizard.o plugins/pluginwizard/pluginwizarddlg.o 
 plugin_PluginsWizard_LINKOBJS=$(plugin_PluginsWizard_OBJS) $(plugin_PluginsWizard_RESOURCE)
-plugin_PluginsWizard_DEPS=$(plugin_PluginsWizard_OBJS:.o=.d)
+plugin_PluginsWizard_DEPS=plugins\pluginwizard\.deps/enterinfodlg.d plugins\pluginwizard\.deps/pluginwizard.d plugins\pluginwizard\.deps/pluginwizarddlg.d 
 plugin_ToDo_OBJS=plugins/todo/addtododlg.o plugins/todo/todolist.o plugins/todo/todolistview.o plugins/todo/todosettingsdlg.o 
 plugin_ToDo_LINKOBJS=$(plugin_ToDo_OBJS) $(plugin_ToDo_RESOURCE)
-plugin_ToDo_DEPS=$(plugin_ToDo_OBJS:.o=.d)
+plugin_ToDo_DEPS=plugins\todo\.deps/addtododlg.d plugins\todo\.deps/todolist.d plugins\todo\.deps/todolistview.d plugins\todo\.deps/todosettingsdlg.d 
 plugin_XPManifest_OBJS=plugins/xpmanifest/windowsxplooknfeel.o 
 plugin_XPManifest_LINKOBJS=$(plugin_XPManifest_OBJS) $(plugin_XPManifest_RESOURCE)
-plugin_XPManifest_DEPS=$(plugin_XPManifest_OBJS:.o=.d)
+plugin_XPManifest_DEPS=plugins\xpmanifest\.deps/windowsxplooknfeel.d 
 update_OBJS=
 update_LINKOBJS=$(update_OBJS) $(update_RESOURCE)
-update_DEPS=$(update_OBJS:.o=.d)
+update_DEPS=
 console_runner_OBJS=tools/ConsoleRunner/main.o 
 console_runner_LINKOBJS=$(console_runner_OBJS)
-console_runner_DEPS=$(console_runner_OBJS:.o=.d)
+console_runner_DEPS=tools\ConsoleRunner\.deps/main.d 
 
 ### The targets of this project
 tinyXML_OUTDIR=sdk/tinyxml
@@ -188,7 +188,7 @@ plugin_XPManifest_OUTDIR=devel/share/CodeBlocks/plugins
 plugin_XPManifest_BIN=devel/share/CodeBlocks/plugins/xpmanifest.dll
 plugin_XPManifest_STATIC_LIB=devel/share/CodeBlocks/plugins/libxpmanifest.a
 plugin_XPManifest_LIB_DEF=devel/share/CodeBlocks/plugins/libxpmanifest.def
-update_OUTDIR=
+update_OUTDIR=.
 update_BIN=C:/Devel/codeblocks/src/CodeBlocks.exe
 console_runner_OUTDIR=tools/ConsoleRunner
 console_runner_BIN=tools/ConsoleRunner/console_runner.exe
@@ -331,7 +331,7 @@ depend: depend_tinyXML depend_sdk depend_src depend_plugin_Astyle depend_plugin_
 tinyXML: tinyXML-before $(tinyXML_BIN) tinyXML-after
 
 $(tinyXML_BIN): $(tinyXML_LINKOBJS)
-	-@if not exist "$(tinyXML_OUTDIR)/." mkdir "$(tinyXML_OUTDIR)"
+	-@if not exist "$(tinyXML_OUTDIR)" mkdir "$(tinyXML_OUTDIR)"
 	@echo Linking static library "sdk\tinyxml\libtxml.a"...
 	@ar -r $(tinyXML_BIN) $(tinyXML_LINKOBJS)
 	ranlib $(tinyXML_BIN)
@@ -339,77 +339,77 @@ $(tinyXML_BIN): $(tinyXML_LINKOBJS)
 sdk: sdk-before $(sdk_BIN) sdk-after
 
 $(sdk_BIN): $(sdk_LINKOBJS)
-	-@if not exist "$(sdk_OUTDIR)/." mkdir "$(sdk_OUTDIR)"
+	-@if not exist "$(sdk_OUTDIR)" mkdir "$(sdk_OUTDIR)"
 	@echo Linking shared library "devel\codeblocks.dll"...
-	@$(LD) -shared   -Wl,--dll $(sdk_LIBS) $(sdk_LINKOBJS) $(sdk_LDADD) -o $(sdk_BIN) $(sdk_LDFLAGS)
+	@$(LD) -shared -Wl,--output-def=$(sdk_LIB_DEF) -Wl,--out-implib=$(sdk_STATIC_LIB) -Wl,--dll $(sdk_LIBS) $(sdk_LINKOBJS) $(sdk_LDADD) -o $(sdk_BIN) $(sdk_LDFLAGS)
 
 src: src-before $(src_BIN) src-after
 
 $(src_BIN): $(src_LINKOBJS)
-	-@if not exist "$(src_OUTDIR)/." mkdir "$(src_OUTDIR)"
+	-@if not exist "$(src_OUTDIR)" mkdir "$(src_OUTDIR)"
 	@echo Linking executable "devel\codeblocks.exe"...
 	@$(LD) $(src_LIBS) -o $(src_BIN) $(src_LDADD) $(src_LINKOBJS) $(src_LDFLAGS)
 
 plugin_Astyle: plugin_Astyle-before $(plugin_Astyle_BIN) plugin_Astyle-after
 
 $(plugin_Astyle_BIN): $(plugin_Astyle_LINKOBJS)
-	-@if not exist "$(plugin_Astyle_OUTDIR)/." mkdir "$(plugin_Astyle_OUTDIR)"
+	-@if not exist "$(plugin_Astyle_OUTDIR)" mkdir "$(plugin_Astyle_OUTDIR)"
 	@echo Linking shared library "devel\share\CodeBlocks\plugins\astyle.dll"...
 	@$(LD) -shared   -Wl,--dll $(plugin_Astyle_LIBS) $(plugin_Astyle_LINKOBJS) $(plugin_Astyle_LDADD) -o $(plugin_Astyle_BIN) $(plugin_Astyle_LDFLAGS)
 
 plugin_CompilerGCC: plugin_CompilerGCC-before $(plugin_CompilerGCC_BIN) plugin_CompilerGCC-after
 
 $(plugin_CompilerGCC_BIN): $(plugin_CompilerGCC_LINKOBJS)
-	-@if not exist "$(plugin_CompilerGCC_OUTDIR)/." mkdir "$(plugin_CompilerGCC_OUTDIR)"
+	-@if not exist "$(plugin_CompilerGCC_OUTDIR)" mkdir "$(plugin_CompilerGCC_OUTDIR)"
 	@echo Linking shared library "devel\share\CodeBlocks\plugins\compilergcc.dll"...
 	@$(LD) -shared   -Wl,--dll $(plugin_CompilerGCC_LIBS) $(plugin_CompilerGCC_LINKOBJS) $(plugin_CompilerGCC_LDADD) -o $(plugin_CompilerGCC_BIN) $(plugin_CompilerGCC_LDFLAGS)
 
 plugin_DebuggerGDB: plugin_DebuggerGDB-before $(plugin_DebuggerGDB_BIN) plugin_DebuggerGDB-after
 
 $(plugin_DebuggerGDB_BIN): $(plugin_DebuggerGDB_LINKOBJS)
-	-@if not exist "$(plugin_DebuggerGDB_OUTDIR)/." mkdir "$(plugin_DebuggerGDB_OUTDIR)"
+	-@if not exist "$(plugin_DebuggerGDB_OUTDIR)" mkdir "$(plugin_DebuggerGDB_OUTDIR)"
 	@echo Linking shared library "devel\share\CodeBlocks\plugins\debuggergdb.dll"...
 	@$(LD) -shared   -Wl,--dll $(plugin_DebuggerGDB_LIBS) $(plugin_DebuggerGDB_LINKOBJS) $(plugin_DebuggerGDB_LDADD) -o $(plugin_DebuggerGDB_BIN) $(plugin_DebuggerGDB_LDFLAGS)
 
 plugin_CodeCompletion: plugin_CodeCompletion-before $(plugin_CodeCompletion_BIN) plugin_CodeCompletion-after
 
 $(plugin_CodeCompletion_BIN): $(plugin_CodeCompletion_LINKOBJS)
-	-@if not exist "$(plugin_CodeCompletion_OUTDIR)/." mkdir "$(plugin_CodeCompletion_OUTDIR)"
+	-@if not exist "$(plugin_CodeCompletion_OUTDIR)" mkdir "$(plugin_CodeCompletion_OUTDIR)"
 	@echo Linking shared library "devel\share\CodeBlocks\plugins\codecompletion.dll"...
 	@$(LD) -shared   -Wl,--dll $(plugin_CodeCompletion_LIBS) $(plugin_CodeCompletion_LINKOBJS) $(plugin_CodeCompletion_LDADD) -o $(plugin_CodeCompletion_BIN) $(plugin_CodeCompletion_LDFLAGS)
 
 plugin_ClassWizard: plugin_ClassWizard-before $(plugin_ClassWizard_BIN) plugin_ClassWizard-after
 
 $(plugin_ClassWizard_BIN): $(plugin_ClassWizard_LINKOBJS)
-	-@if not exist "$(plugin_ClassWizard_OUTDIR)/." mkdir "$(plugin_ClassWizard_OUTDIR)"
+	-@if not exist "$(plugin_ClassWizard_OUTDIR)" mkdir "$(plugin_ClassWizard_OUTDIR)"
 	@echo Linking shared library "devel\share\CodeBlocks\plugins\classwizard.dll"...
 	@$(LD) -shared   -Wl,--dll $(plugin_ClassWizard_LIBS) $(plugin_ClassWizard_LINKOBJS) $(plugin_ClassWizard_LDADD) -o $(plugin_ClassWizard_BIN) $(plugin_ClassWizard_LDFLAGS)
 
 plugin_PluginsWizard: plugin_PluginsWizard-before $(plugin_PluginsWizard_BIN) plugin_PluginsWizard-after
 
 $(plugin_PluginsWizard_BIN): $(plugin_PluginsWizard_LINKOBJS)
-	-@if not exist "$(plugin_PluginsWizard_OUTDIR)/." mkdir "$(plugin_PluginsWizard_OUTDIR)"
+	-@if not exist "$(plugin_PluginsWizard_OUTDIR)" mkdir "$(plugin_PluginsWizard_OUTDIR)"
 	@echo Linking shared library "devel\share\CodeBlocks\plugins\pluginwizard.dll"...
 	@$(LD) -shared   -Wl,--dll $(plugin_PluginsWizard_LIBS) $(plugin_PluginsWizard_LINKOBJS) $(plugin_PluginsWizard_LDADD) -o $(plugin_PluginsWizard_BIN) $(plugin_PluginsWizard_LDFLAGS)
 
 plugin_ToDo: plugin_ToDo-before $(plugin_ToDo_BIN) plugin_ToDo-after
 
 $(plugin_ToDo_BIN): $(plugin_ToDo_LINKOBJS)
-	-@if not exist "$(plugin_ToDo_OUTDIR)/." mkdir "$(plugin_ToDo_OUTDIR)"
+	-@if not exist "$(plugin_ToDo_OUTDIR)" mkdir "$(plugin_ToDo_OUTDIR)"
 	@echo Linking shared library "devel\share\CodeBlocks\plugins\todo.dll"...
 	@$(LD) -shared   -Wl,--dll $(plugin_ToDo_LIBS) $(plugin_ToDo_LINKOBJS) $(plugin_ToDo_LDADD) -o $(plugin_ToDo_BIN) $(plugin_ToDo_LDFLAGS)
 
 plugin_XPManifest: plugin_XPManifest-before $(plugin_XPManifest_BIN) plugin_XPManifest-after
 
 $(plugin_XPManifest_BIN): $(plugin_XPManifest_LINKOBJS)
-	-@if not exist "$(plugin_XPManifest_OUTDIR)/." mkdir "$(plugin_XPManifest_OUTDIR)"
+	-@if not exist "$(plugin_XPManifest_OUTDIR)" mkdir "$(plugin_XPManifest_OUTDIR)"
 	@echo Linking shared library "devel\share\CodeBlocks\plugins\xpmanifest.dll"...
 	@$(LD) -shared   -Wl,--dll $(plugin_XPManifest_LIBS) $(plugin_XPManifest_LINKOBJS) $(plugin_XPManifest_LDADD) -o $(plugin_XPManifest_BIN) $(plugin_XPManifest_LDFLAGS)
 
 update: update-before $(update_BIN) update-after
 
 $(update_BIN): $(update_LINKOBJS)
-	-@if not exist "$(update_OUTDIR)/." mkdir "$(update_OUTDIR)"
+	-@if not exist "$(update_OUTDIR)" mkdir "$(update_OUTDIR)"
 	cd src/resources && $(ZIP) ../../devel/share/codeblocks/resources.zip *.xrc > nul
 	cd sdk/resources && $(ZIP) ../../devel/share/codeblocks/manager_resources.zip *.xrc > nul
 	cd plugins/astyle/resources && $(ZIP) ../../../devel/share/codeblocks/astyle.zip *.xrc > nul
@@ -446,490 +446,550 @@ $(update_BIN): $(update_LINKOBJS)
 console_runner: console_runner-before $(console_runner_BIN) console_runner-after
 
 $(console_runner_BIN): $(console_runner_LINKOBJS)
-	-@if not exist "$(console_runner_OUTDIR)/." mkdir "$(console_runner_OUTDIR)"
+	-@if not exist "$(console_runner_OUTDIR)" mkdir "$(console_runner_OUTDIR)"
 	@echo Linking executable "tools\ConsoleRunner\console_runner.exe"...
 	@$(LD) $(console_runner_LIBS) -o $(console_runner_BIN) $(console_runner_LDADD) $(console_runner_LINKOBJS) $(console_runner_LDFLAGS)
 
 
-sdk/tinyxml/tinystr.d: sdk/tinyxml/tinystr.cpp
+sdk/tinyxml/.deps/tinystr.d: sdk/tinyxml/tinystr.cpp
 	@echo Calculating dependencies for "sdk\tinyxml\tinystr.cpp"...
-	@$(CPP) -MM $(tinyXML_CFLAGS) -MF sdk/tinyxml/tinystr.d -MT sdk/tinyxml/tinystr.o $(tinyXML_INCS) sdk/tinyxml/tinystr.cpp
+	-@if not exist ./sdk\tinyxml\.deps\. mkdir ./sdk\tinyxml\.deps
+	@$(CPP) -MM $(tinyXML_CFLAGS) -MF sdk/tinyxml/.deps/tinystr.d -MT sdk/tinyxml/tinystr.o $(tinyXML_INCS) sdk/tinyxml/tinystr.cpp
 
-sdk/tinyxml/tinystr.o: sdk/tinyxml/tinystr.d
+sdk/tinyxml/tinystr.o: sdk/tinyxml/.deps/tinystr.d
 	@echo Compiling "sdk\tinyxml\tinystr.cpp"...
 	@$(CPP) $(tinyXML_CFLAGS) $(tinyXML_INCS) -c sdk/tinyxml/tinystr.cpp -o sdk/tinyxml/tinystr.o
 
-sdk/tinyxml/tinyxml.d: sdk/tinyxml/tinyxml.cpp
+sdk/tinyxml/.deps/tinyxml.d: sdk/tinyxml/tinyxml.cpp
 	@echo Calculating dependencies for "sdk\tinyxml\tinyxml.cpp"...
-	@$(CPP) -MM $(tinyXML_CFLAGS) -MF sdk/tinyxml/tinyxml.d -MT sdk/tinyxml/tinyxml.o $(tinyXML_INCS) sdk/tinyxml/tinyxml.cpp
+	-@if not exist ./sdk\tinyxml\.deps\. mkdir ./sdk\tinyxml\.deps
+	@$(CPP) -MM $(tinyXML_CFLAGS) -MF sdk/tinyxml/.deps/tinyxml.d -MT sdk/tinyxml/tinyxml.o $(tinyXML_INCS) sdk/tinyxml/tinyxml.cpp
 
-sdk/tinyxml/tinyxml.o: sdk/tinyxml/tinyxml.d
+sdk/tinyxml/tinyxml.o: sdk/tinyxml/.deps/tinyxml.d
 	@echo Compiling "sdk\tinyxml\tinyxml.cpp"...
 	@$(CPP) $(tinyXML_CFLAGS) $(tinyXML_INCS) -c sdk/tinyxml/tinyxml.cpp -o sdk/tinyxml/tinyxml.o
 
-sdk/tinyxml/tinyxmlerror.d: sdk/tinyxml/tinyxmlerror.cpp
+sdk/tinyxml/.deps/tinyxmlerror.d: sdk/tinyxml/tinyxmlerror.cpp
 	@echo Calculating dependencies for "sdk\tinyxml\tinyxmlerror.cpp"...
-	@$(CPP) -MM $(tinyXML_CFLAGS) -MF sdk/tinyxml/tinyxmlerror.d -MT sdk/tinyxml/tinyxmlerror.o $(tinyXML_INCS) sdk/tinyxml/tinyxmlerror.cpp
+	-@if not exist ./sdk\tinyxml\.deps\. mkdir ./sdk\tinyxml\.deps
+	@$(CPP) -MM $(tinyXML_CFLAGS) -MF sdk/tinyxml/.deps/tinyxmlerror.d -MT sdk/tinyxml/tinyxmlerror.o $(tinyXML_INCS) sdk/tinyxml/tinyxmlerror.cpp
 
-sdk/tinyxml/tinyxmlerror.o: sdk/tinyxml/tinyxmlerror.d
+sdk/tinyxml/tinyxmlerror.o: sdk/tinyxml/.deps/tinyxmlerror.d
 	@echo Compiling "sdk\tinyxml\tinyxmlerror.cpp"...
 	@$(CPP) $(tinyXML_CFLAGS) $(tinyXML_INCS) -c sdk/tinyxml/tinyxmlerror.cpp -o sdk/tinyxml/tinyxmlerror.o
 
-sdk/tinyxml/tinyxmlparser.d: sdk/tinyxml/tinyxmlparser.cpp
+sdk/tinyxml/.deps/tinyxmlparser.d: sdk/tinyxml/tinyxmlparser.cpp
 	@echo Calculating dependencies for "sdk\tinyxml\tinyxmlparser.cpp"...
-	@$(CPP) -MM $(tinyXML_CFLAGS) -MF sdk/tinyxml/tinyxmlparser.d -MT sdk/tinyxml/tinyxmlparser.o $(tinyXML_INCS) sdk/tinyxml/tinyxmlparser.cpp
+	-@if not exist ./sdk\tinyxml\.deps\. mkdir ./sdk\tinyxml\.deps
+	@$(CPP) -MM $(tinyXML_CFLAGS) -MF sdk/tinyxml/.deps/tinyxmlparser.d -MT sdk/tinyxml/tinyxmlparser.o $(tinyXML_INCS) sdk/tinyxml/tinyxmlparser.cpp
 
-sdk/tinyxml/tinyxmlparser.o: sdk/tinyxml/tinyxmlparser.d
+sdk/tinyxml/tinyxmlparser.o: sdk/tinyxml/.deps/tinyxmlparser.d
 	@echo Compiling "sdk\tinyxml\tinyxmlparser.cpp"...
 	@$(CPP) $(tinyXML_CFLAGS) $(tinyXML_INCS) -c sdk/tinyxml/tinyxmlparser.cpp -o sdk/tinyxml/tinyxmlparser.o
 
 
-sdk/Managers/Managers.d: sdk/Managers/Managers.cpp
+sdk/Managers/.deps/Managers.d: sdk/Managers/Managers.cpp
 	@echo Calculating dependencies for "sdk\Managers\Managers.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/Managers/Managers.d -MT sdk/Managers/Managers.o $(sdk_INCS) sdk/Managers/Managers.cpp
+	-@if not exist ./sdk\Managers\.deps\. mkdir ./sdk\Managers\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/Managers/.deps/Managers.d -MT sdk/Managers/Managers.o $(sdk_INCS) sdk/Managers/Managers.cpp
 
-sdk/Managers/Managers.o: sdk/Managers/Managers.d
+sdk/Managers/Managers.o: sdk/Managers/.deps/Managers.d
 	@echo Compiling "sdk\Managers\Managers.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/Managers/Managers.cpp -o sdk/Managers/Managers.o
 
-sdk/Managers/StdAfx.d: sdk/Managers/StdAfx.cpp
+sdk/Managers/.deps/StdAfx.d: sdk/Managers/StdAfx.cpp
 	@echo Calculating dependencies for "sdk\Managers\StdAfx.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/Managers/StdAfx.d -MT sdk/Managers/StdAfx.o $(sdk_INCS) sdk/Managers/StdAfx.cpp
+	-@if not exist ./sdk\Managers\.deps\. mkdir ./sdk\Managers\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/Managers/.deps/StdAfx.d -MT sdk/Managers/StdAfx.o $(sdk_INCS) sdk/Managers/StdAfx.cpp
 
-sdk/Managers/StdAfx.o: sdk/Managers/StdAfx.d
+sdk/Managers/StdAfx.o: sdk/Managers/.deps/StdAfx.d
 	@echo Compiling "sdk\Managers\StdAfx.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/Managers/StdAfx.cpp -o sdk/Managers/StdAfx.o
 
-sdk/cbeditor.d: sdk/cbeditor.cpp
+sdk/.deps/cbeditor.d: sdk/cbeditor.cpp
 	@echo Calculating dependencies for "sdk\cbeditor.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/cbeditor.d -MT sdk/cbeditor.o $(sdk_INCS) sdk/cbeditor.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/cbeditor.d -MT sdk/cbeditor.o $(sdk_INCS) sdk/cbeditor.cpp
 
-sdk/cbeditor.o: sdk/cbeditor.d
+sdk/cbeditor.o: sdk/.deps/cbeditor.d
 	@echo Compiling "sdk\cbeditor.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/cbeditor.cpp -o sdk/cbeditor.o
 
-sdk/cbplugin.d: sdk/cbplugin.cpp
+sdk/.deps/cbplugin.d: sdk/cbplugin.cpp
 	@echo Calculating dependencies for "sdk\cbplugin.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/cbplugin.d -MT sdk/cbplugin.o $(sdk_INCS) sdk/cbplugin.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/cbplugin.d -MT sdk/cbplugin.o $(sdk_INCS) sdk/cbplugin.cpp
 
-sdk/cbplugin.o: sdk/cbplugin.d
+sdk/cbplugin.o: sdk/.deps/cbplugin.d
 	@echo Compiling "sdk\cbplugin.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/cbplugin.cpp -o sdk/cbplugin.o
 
-sdk/cbproject.d: sdk/cbproject.cpp
+sdk/.deps/cbproject.d: sdk/cbproject.cpp
 	@echo Calculating dependencies for "sdk\cbproject.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/cbproject.d -MT sdk/cbproject.o $(sdk_INCS) sdk/cbproject.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/cbproject.d -MT sdk/cbproject.o $(sdk_INCS) sdk/cbproject.cpp
 
-sdk/cbproject.o: sdk/cbproject.d
+sdk/cbproject.o: sdk/.deps/cbproject.d
 	@echo Compiling "sdk\cbproject.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/cbproject.cpp -o sdk/cbproject.o
 
-sdk/compileoptionsbase.d: sdk/compileoptionsbase.cpp
+sdk/.deps/compileoptionsbase.d: sdk/compileoptionsbase.cpp
 	@echo Calculating dependencies for "sdk\compileoptionsbase.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/compileoptionsbase.d -MT sdk/compileoptionsbase.o $(sdk_INCS) sdk/compileoptionsbase.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/compileoptionsbase.d -MT sdk/compileoptionsbase.o $(sdk_INCS) sdk/compileoptionsbase.cpp
 
-sdk/compileoptionsbase.o: sdk/compileoptionsbase.d
+sdk/compileoptionsbase.o: sdk/.deps/compileoptionsbase.d
 	@echo Compiling "sdk\compileoptionsbase.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/compileoptionsbase.cpp -o sdk/compileoptionsbase.o
 
-sdk/compiler.d: sdk/compiler.cpp
+sdk/.deps/compiler.d: sdk/compiler.cpp
 	@echo Calculating dependencies for "sdk\compiler.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/compiler.d -MT sdk/compiler.o $(sdk_INCS) sdk/compiler.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/compiler.d -MT sdk/compiler.o $(sdk_INCS) sdk/compiler.cpp
 
-sdk/compiler.o: sdk/compiler.d
+sdk/compiler.o: sdk/.deps/compiler.d
 	@echo Compiling "sdk\compiler.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/compiler.cpp -o sdk/compiler.o
 
-sdk/compilerfactory.d: sdk/compilerfactory.cpp
+sdk/.deps/compilerfactory.d: sdk/compilerfactory.cpp
 	@echo Calculating dependencies for "sdk\compilerfactory.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/compilerfactory.d -MT sdk/compilerfactory.o $(sdk_INCS) sdk/compilerfactory.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/compilerfactory.d -MT sdk/compilerfactory.o $(sdk_INCS) sdk/compilerfactory.cpp
 
-sdk/compilerfactory.o: sdk/compilerfactory.d
+sdk/compilerfactory.o: sdk/.deps/compilerfactory.d
 	@echo Compiling "sdk\compilerfactory.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/compilerfactory.cpp -o sdk/compilerfactory.o
 
-sdk/compileroptions.d: sdk/compileroptions.cpp
+sdk/.deps/compileroptions.d: sdk/compileroptions.cpp
 	@echo Calculating dependencies for "sdk\compileroptions.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/compileroptions.d -MT sdk/compileroptions.o $(sdk_INCS) sdk/compileroptions.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/compileroptions.d -MT sdk/compileroptions.o $(sdk_INCS) sdk/compileroptions.cpp
 
-sdk/compileroptions.o: sdk/compileroptions.d
+sdk/compileroptions.o: sdk/.deps/compileroptions.d
 	@echo Compiling "sdk\compileroptions.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/compileroptions.cpp -o sdk/compileroptions.o
 
-sdk/compiletargetbase.d: sdk/compiletargetbase.cpp
+sdk/.deps/compiletargetbase.d: sdk/compiletargetbase.cpp
 	@echo Calculating dependencies for "sdk\compiletargetbase.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/compiletargetbase.d -MT sdk/compiletargetbase.o $(sdk_INCS) sdk/compiletargetbase.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/compiletargetbase.d -MT sdk/compiletargetbase.o $(sdk_INCS) sdk/compiletargetbase.cpp
 
-sdk/compiletargetbase.o: sdk/compiletargetbase.d
+sdk/compiletargetbase.o: sdk/.deps/compiletargetbase.d
 	@echo Compiling "sdk\compiletargetbase.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/compiletargetbase.cpp -o sdk/compiletargetbase.o
 
-sdk/configmanager.d: sdk/configmanager.cpp
+sdk/.deps/configmanager.d: sdk/configmanager.cpp
 	@echo Calculating dependencies for "sdk\configmanager.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/configmanager.d -MT sdk/configmanager.o $(sdk_INCS) sdk/configmanager.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/configmanager.d -MT sdk/configmanager.o $(sdk_INCS) sdk/configmanager.cpp
 
-sdk/configmanager.o: sdk/configmanager.d
+sdk/configmanager.o: sdk/.deps/configmanager.d
 	@echo Compiling "sdk\configmanager.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/configmanager.cpp -o sdk/configmanager.o
 
-sdk/configuretoolsdlg.d: sdk/configuretoolsdlg.cpp
+sdk/.deps/configuretoolsdlg.d: sdk/configuretoolsdlg.cpp
 	@echo Calculating dependencies for "sdk\configuretoolsdlg.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/configuretoolsdlg.d -MT sdk/configuretoolsdlg.o $(sdk_INCS) sdk/configuretoolsdlg.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/configuretoolsdlg.d -MT sdk/configuretoolsdlg.o $(sdk_INCS) sdk/configuretoolsdlg.cpp
 
-sdk/configuretoolsdlg.o: sdk/configuretoolsdlg.d
+sdk/configuretoolsdlg.o: sdk/.deps/configuretoolsdlg.d
 	@echo Compiling "sdk\configuretoolsdlg.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/configuretoolsdlg.cpp -o sdk/configuretoolsdlg.o
 
-sdk/confirmreplacedlg.d: sdk/confirmreplacedlg.cpp
+sdk/.deps/confirmreplacedlg.d: sdk/confirmreplacedlg.cpp
 	@echo Calculating dependencies for "sdk\confirmreplacedlg.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/confirmreplacedlg.d -MT sdk/confirmreplacedlg.o $(sdk_INCS) sdk/confirmreplacedlg.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/confirmreplacedlg.d -MT sdk/confirmreplacedlg.o $(sdk_INCS) sdk/confirmreplacedlg.cpp
 
-sdk/confirmreplacedlg.o: sdk/confirmreplacedlg.d
+sdk/confirmreplacedlg.o: sdk/.deps/confirmreplacedlg.d
 	@echo Compiling "sdk\confirmreplacedlg.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/confirmreplacedlg.cpp -o sdk/confirmreplacedlg.o
 
-sdk/devcpploader.d: sdk/devcpploader.cpp
+sdk/.deps/devcpploader.d: sdk/devcpploader.cpp
 	@echo Calculating dependencies for "sdk\devcpploader.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/devcpploader.d -MT sdk/devcpploader.o $(sdk_INCS) sdk/devcpploader.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/devcpploader.d -MT sdk/devcpploader.o $(sdk_INCS) sdk/devcpploader.cpp
 
-sdk/devcpploader.o: sdk/devcpploader.d
+sdk/devcpploader.o: sdk/.deps/devcpploader.d
 	@echo Compiling "sdk\devcpploader.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/devcpploader.cpp -o sdk/devcpploader.o
 
-sdk/editarrayfiledlg.d: sdk/editarrayfiledlg.cpp
+sdk/.deps/editarrayfiledlg.d: sdk/editarrayfiledlg.cpp
 	@echo Calculating dependencies for "sdk\editarrayfiledlg.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/editarrayfiledlg.d -MT sdk/editarrayfiledlg.o $(sdk_INCS) sdk/editarrayfiledlg.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/editarrayfiledlg.d -MT sdk/editarrayfiledlg.o $(sdk_INCS) sdk/editarrayfiledlg.cpp
 
-sdk/editarrayfiledlg.o: sdk/editarrayfiledlg.d
+sdk/editarrayfiledlg.o: sdk/.deps/editarrayfiledlg.d
 	@echo Compiling "sdk\editarrayfiledlg.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/editarrayfiledlg.cpp -o sdk/editarrayfiledlg.o
 
-sdk/editarrayorderdlg.d: sdk/editarrayorderdlg.cpp
+sdk/.deps/editarrayorderdlg.d: sdk/editarrayorderdlg.cpp
 	@echo Calculating dependencies for "sdk\editarrayorderdlg.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/editarrayorderdlg.d -MT sdk/editarrayorderdlg.o $(sdk_INCS) sdk/editarrayorderdlg.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/editarrayorderdlg.d -MT sdk/editarrayorderdlg.o $(sdk_INCS) sdk/editarrayorderdlg.cpp
 
-sdk/editarrayorderdlg.o: sdk/editarrayorderdlg.d
+sdk/editarrayorderdlg.o: sdk/.deps/editarrayorderdlg.d
 	@echo Compiling "sdk\editarrayorderdlg.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/editarrayorderdlg.cpp -o sdk/editarrayorderdlg.o
 
-sdk/editarraystringdlg.d: sdk/editarraystringdlg.cpp
+sdk/.deps/editarraystringdlg.d: sdk/editarraystringdlg.cpp
 	@echo Calculating dependencies for "sdk\editarraystringdlg.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/editarraystringdlg.d -MT sdk/editarraystringdlg.o $(sdk_INCS) sdk/editarraystringdlg.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/editarraystringdlg.d -MT sdk/editarraystringdlg.o $(sdk_INCS) sdk/editarraystringdlg.cpp
 
-sdk/editarraystringdlg.o: sdk/editarraystringdlg.d
+sdk/editarraystringdlg.o: sdk/.deps/editarraystringdlg.d
 	@echo Compiling "sdk\editarraystringdlg.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/editarraystringdlg.cpp -o sdk/editarraystringdlg.o
 
-sdk/editorcolorset.d: sdk/editorcolorset.cpp
+sdk/.deps/editorcolorset.d: sdk/editorcolorset.cpp
 	@echo Calculating dependencies for "sdk\editorcolorset.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/editorcolorset.d -MT sdk/editorcolorset.o $(sdk_INCS) sdk/editorcolorset.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/editorcolorset.d -MT sdk/editorcolorset.o $(sdk_INCS) sdk/editorcolorset.cpp
 
-sdk/editorcolorset.o: sdk/editorcolorset.d
+sdk/editorcolorset.o: sdk/.deps/editorcolorset.d
 	@echo Compiling "sdk\editorcolorset.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/editorcolorset.cpp -o sdk/editorcolorset.o
 
-sdk/editorconfigurationdlg.d: sdk/editorconfigurationdlg.cpp
+sdk/.deps/editorconfigurationdlg.d: sdk/editorconfigurationdlg.cpp
 	@echo Calculating dependencies for "sdk\editorconfigurationdlg.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/editorconfigurationdlg.d -MT sdk/editorconfigurationdlg.o $(sdk_INCS) sdk/editorconfigurationdlg.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/editorconfigurationdlg.d -MT sdk/editorconfigurationdlg.o $(sdk_INCS) sdk/editorconfigurationdlg.cpp
 
-sdk/editorconfigurationdlg.o: sdk/editorconfigurationdlg.d
+sdk/editorconfigurationdlg.o: sdk/.deps/editorconfigurationdlg.d
 	@echo Compiling "sdk\editorconfigurationdlg.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/editorconfigurationdlg.cpp -o sdk/editorconfigurationdlg.o
 
-sdk/editormanager.d: sdk/editormanager.cpp
+sdk/.deps/editormanager.d: sdk/editormanager.cpp
 	@echo Calculating dependencies for "sdk\editormanager.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/editormanager.d -MT sdk/editormanager.o $(sdk_INCS) sdk/editormanager.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/editormanager.d -MT sdk/editormanager.o $(sdk_INCS) sdk/editormanager.cpp
 
-sdk/editormanager.o: sdk/editormanager.d
+sdk/editormanager.o: sdk/.deps/editormanager.d
 	@echo Compiling "sdk\editormanager.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/editormanager.cpp -o sdk/editormanager.o
 
-sdk/edittooldlg.d: sdk/edittooldlg.cpp
+sdk/.deps/edittooldlg.d: sdk/edittooldlg.cpp
 	@echo Calculating dependencies for "sdk\edittooldlg.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/edittooldlg.d -MT sdk/edittooldlg.o $(sdk_INCS) sdk/edittooldlg.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/edittooldlg.d -MT sdk/edittooldlg.o $(sdk_INCS) sdk/edittooldlg.cpp
 
-sdk/edittooldlg.o: sdk/edittooldlg.d
+sdk/edittooldlg.o: sdk/.deps/edittooldlg.d
 	@echo Compiling "sdk\edittooldlg.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/edittooldlg.cpp -o sdk/edittooldlg.o
 
-sdk/filegroupsandmasks.d: sdk/filegroupsandmasks.cpp
+sdk/.deps/filegroupsandmasks.d: sdk/filegroupsandmasks.cpp
 	@echo Calculating dependencies for "sdk\filegroupsandmasks.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/filegroupsandmasks.d -MT sdk/filegroupsandmasks.o $(sdk_INCS) sdk/filegroupsandmasks.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/filegroupsandmasks.d -MT sdk/filegroupsandmasks.o $(sdk_INCS) sdk/filegroupsandmasks.cpp
 
-sdk/filegroupsandmasks.o: sdk/filegroupsandmasks.d
+sdk/filegroupsandmasks.o: sdk/.deps/filegroupsandmasks.d
 	@echo Compiling "sdk\filegroupsandmasks.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/filegroupsandmasks.cpp -o sdk/filegroupsandmasks.o
 
-sdk/finddlg.d: sdk/finddlg.cpp
+sdk/.deps/finddlg.d: sdk/finddlg.cpp
 	@echo Calculating dependencies for "sdk\finddlg.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/finddlg.d -MT sdk/finddlg.o $(sdk_INCS) sdk/finddlg.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/finddlg.d -MT sdk/finddlg.o $(sdk_INCS) sdk/finddlg.cpp
 
-sdk/finddlg.o: sdk/finddlg.d
+sdk/finddlg.o: sdk/.deps/finddlg.d
 	@echo Compiling "sdk\finddlg.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/finddlg.cpp -o sdk/finddlg.o
 
-sdk/globals.d: sdk/globals.cpp
+sdk/.deps/globals.d: sdk/globals.cpp
 	@echo Calculating dependencies for "sdk\globals.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/globals.d -MT sdk/globals.o $(sdk_INCS) sdk/globals.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/globals.d -MT sdk/globals.o $(sdk_INCS) sdk/globals.cpp
 
-sdk/globals.o: sdk/globals.d
+sdk/globals.o: sdk/.deps/globals.d
 	@echo Compiling "sdk\globals.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/globals.cpp -o sdk/globals.o
 
-sdk/incrementalselectlistdlg.d: sdk/incrementalselectlistdlg.cpp
+sdk/.deps/incrementalselectlistdlg.d: sdk/incrementalselectlistdlg.cpp
 	@echo Calculating dependencies for "sdk\incrementalselectlistdlg.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/incrementalselectlistdlg.d -MT sdk/incrementalselectlistdlg.o $(sdk_INCS) sdk/incrementalselectlistdlg.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/incrementalselectlistdlg.d -MT sdk/incrementalselectlistdlg.o $(sdk_INCS) sdk/incrementalselectlistdlg.cpp
 
-sdk/incrementalselectlistdlg.o: sdk/incrementalselectlistdlg.d
+sdk/incrementalselectlistdlg.o: sdk/.deps/incrementalselectlistdlg.d
 	@echo Compiling "sdk\incrementalselectlistdlg.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/incrementalselectlistdlg.cpp -o sdk/incrementalselectlistdlg.o
 
-sdk/macrosmanager.d: sdk/macrosmanager.cpp
+sdk/.deps/macrosmanager.d: sdk/macrosmanager.cpp
 	@echo Calculating dependencies for "sdk\macrosmanager.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/macrosmanager.d -MT sdk/macrosmanager.o $(sdk_INCS) sdk/macrosmanager.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/macrosmanager.d -MT sdk/macrosmanager.o $(sdk_INCS) sdk/macrosmanager.cpp
 
-sdk/macrosmanager.o: sdk/macrosmanager.d
+sdk/macrosmanager.o: sdk/.deps/macrosmanager.d
 	@echo Compiling "sdk\macrosmanager.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/macrosmanager.cpp -o sdk/macrosmanager.o
 
-sdk/manager.d: sdk/manager.cpp
+sdk/.deps/manager.d: sdk/manager.cpp
 	@echo Calculating dependencies for "sdk\manager.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/manager.d -MT sdk/manager.o $(sdk_INCS) sdk/manager.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/manager.d -MT sdk/manager.o $(sdk_INCS) sdk/manager.cpp
 
-sdk/manager.o: sdk/manager.d
+sdk/manager.o: sdk/.deps/manager.d
 	@echo Compiling "sdk\manager.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/manager.cpp -o sdk/manager.o
 
-sdk/menuitemsmanager.d: sdk/menuitemsmanager.cpp
+sdk/.deps/menuitemsmanager.d: sdk/menuitemsmanager.cpp
 	@echo Calculating dependencies for "sdk\menuitemsmanager.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/menuitemsmanager.d -MT sdk/menuitemsmanager.o $(sdk_INCS) sdk/menuitemsmanager.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/menuitemsmanager.d -MT sdk/menuitemsmanager.o $(sdk_INCS) sdk/menuitemsmanager.cpp
 
-sdk/menuitemsmanager.o: sdk/menuitemsmanager.d
+sdk/menuitemsmanager.o: sdk/.deps/menuitemsmanager.d
 	@echo Compiling "sdk\menuitemsmanager.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/menuitemsmanager.cpp -o sdk/menuitemsmanager.o
 
-sdk/messagelog.d: sdk/messagelog.cpp
+sdk/.deps/messagelog.d: sdk/messagelog.cpp
 	@echo Calculating dependencies for "sdk\messagelog.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/messagelog.d -MT sdk/messagelog.o $(sdk_INCS) sdk/messagelog.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/messagelog.d -MT sdk/messagelog.o $(sdk_INCS) sdk/messagelog.cpp
 
-sdk/messagelog.o: sdk/messagelog.d
+sdk/messagelog.o: sdk/.deps/messagelog.d
 	@echo Compiling "sdk\messagelog.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/messagelog.cpp -o sdk/messagelog.o
 
-sdk/messagemanager.d: sdk/messagemanager.cpp
+sdk/.deps/messagemanager.d: sdk/messagemanager.cpp
 	@echo Calculating dependencies for "sdk\messagemanager.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/messagemanager.d -MT sdk/messagemanager.o $(sdk_INCS) sdk/messagemanager.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/messagemanager.d -MT sdk/messagemanager.o $(sdk_INCS) sdk/messagemanager.cpp
 
-sdk/messagemanager.o: sdk/messagemanager.d
+sdk/messagemanager.o: sdk/.deps/messagemanager.d
 	@echo Compiling "sdk\messagemanager.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/messagemanager.cpp -o sdk/messagemanager.o
 
-sdk/msvcloader.d: sdk/msvcloader.cpp
+sdk/.deps/msvcloader.d: sdk/msvcloader.cpp
 	@echo Calculating dependencies for "sdk\msvcloader.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/msvcloader.d -MT sdk/msvcloader.o $(sdk_INCS) sdk/msvcloader.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/msvcloader.d -MT sdk/msvcloader.o $(sdk_INCS) sdk/msvcloader.cpp
 
-sdk/msvcloader.o: sdk/msvcloader.d
+sdk/msvcloader.o: sdk/.deps/msvcloader.d
 	@echo Compiling "sdk\msvcloader.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/msvcloader.cpp -o sdk/msvcloader.o
 
-sdk/newfromtemplatedlg.d: sdk/newfromtemplatedlg.cpp
+sdk/.deps/newfromtemplatedlg.d: sdk/newfromtemplatedlg.cpp
 	@echo Calculating dependencies for "sdk\newfromtemplatedlg.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/newfromtemplatedlg.d -MT sdk/newfromtemplatedlg.o $(sdk_INCS) sdk/newfromtemplatedlg.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/newfromtemplatedlg.d -MT sdk/newfromtemplatedlg.o $(sdk_INCS) sdk/newfromtemplatedlg.cpp
 
-sdk/newfromtemplatedlg.o: sdk/newfromtemplatedlg.d
+sdk/newfromtemplatedlg.o: sdk/.deps/newfromtemplatedlg.d
 	@echo Compiling "sdk\newfromtemplatedlg.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/newfromtemplatedlg.cpp -o sdk/newfromtemplatedlg.o
 
-sdk/pipedprocess.d: sdk/pipedprocess.cpp
+sdk/.deps/pipedprocess.d: sdk/pipedprocess.cpp
 	@echo Calculating dependencies for "sdk\pipedprocess.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/pipedprocess.d -MT sdk/pipedprocess.o $(sdk_INCS) sdk/pipedprocess.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/pipedprocess.d -MT sdk/pipedprocess.o $(sdk_INCS) sdk/pipedprocess.cpp
 
-sdk/pipedprocess.o: sdk/pipedprocess.d
+sdk/pipedprocess.o: sdk/.deps/pipedprocess.d
 	@echo Compiling "sdk\pipedprocess.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/pipedprocess.cpp -o sdk/pipedprocess.o
 
-sdk/pluginmanager.d: sdk/pluginmanager.cpp
+sdk/.deps/pluginmanager.d: sdk/pluginmanager.cpp
 	@echo Calculating dependencies for "sdk\pluginmanager.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/pluginmanager.d -MT sdk/pluginmanager.o $(sdk_INCS) sdk/pluginmanager.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/pluginmanager.d -MT sdk/pluginmanager.o $(sdk_INCS) sdk/pluginmanager.cpp
 
-sdk/pluginmanager.o: sdk/pluginmanager.d
+sdk/pluginmanager.o: sdk/.deps/pluginmanager.d
 	@echo Compiling "sdk\pluginmanager.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/pluginmanager.cpp -o sdk/pluginmanager.o
 
-sdk/pluginsconfigurationdlg.d: sdk/pluginsconfigurationdlg.cpp
+sdk/.deps/pluginsconfigurationdlg.d: sdk/pluginsconfigurationdlg.cpp
 	@echo Calculating dependencies for "sdk\pluginsconfigurationdlg.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/pluginsconfigurationdlg.d -MT sdk/pluginsconfigurationdlg.o $(sdk_INCS) sdk/pluginsconfigurationdlg.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/pluginsconfigurationdlg.d -MT sdk/pluginsconfigurationdlg.o $(sdk_INCS) sdk/pluginsconfigurationdlg.cpp
 
-sdk/pluginsconfigurationdlg.o: sdk/pluginsconfigurationdlg.d
+sdk/pluginsconfigurationdlg.o: sdk/.deps/pluginsconfigurationdlg.d
 	@echo Compiling "sdk\pluginsconfigurationdlg.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/pluginsconfigurationdlg.cpp -o sdk/pluginsconfigurationdlg.o
 
-sdk/projectbuildtarget.d: sdk/projectbuildtarget.cpp
+sdk/.deps/projectbuildtarget.d: sdk/projectbuildtarget.cpp
 	@echo Calculating dependencies for "sdk\projectbuildtarget.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/projectbuildtarget.d -MT sdk/projectbuildtarget.o $(sdk_INCS) sdk/projectbuildtarget.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/projectbuildtarget.d -MT sdk/projectbuildtarget.o $(sdk_INCS) sdk/projectbuildtarget.cpp
 
-sdk/projectbuildtarget.o: sdk/projectbuildtarget.d
+sdk/projectbuildtarget.o: sdk/.deps/projectbuildtarget.d
 	@echo Compiling "sdk\projectbuildtarget.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/projectbuildtarget.cpp -o sdk/projectbuildtarget.o
 
-sdk/projectfileoptionsdlg.d: sdk/projectfileoptionsdlg.cpp
+sdk/.deps/projectfileoptionsdlg.d: sdk/projectfileoptionsdlg.cpp
 	@echo Calculating dependencies for "sdk\projectfileoptionsdlg.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/projectfileoptionsdlg.d -MT sdk/projectfileoptionsdlg.o $(sdk_INCS) sdk/projectfileoptionsdlg.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/projectfileoptionsdlg.d -MT sdk/projectfileoptionsdlg.o $(sdk_INCS) sdk/projectfileoptionsdlg.cpp
 
-sdk/projectfileoptionsdlg.o: sdk/projectfileoptionsdlg.d
+sdk/projectfileoptionsdlg.o: sdk/.deps/projectfileoptionsdlg.d
 	@echo Compiling "sdk\projectfileoptionsdlg.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/projectfileoptionsdlg.cpp -o sdk/projectfileoptionsdlg.o
 
-sdk/projectlayoutloader.d: sdk/projectlayoutloader.cpp
+sdk/.deps/projectlayoutloader.d: sdk/projectlayoutloader.cpp
 	@echo Calculating dependencies for "sdk\projectlayoutloader.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/projectlayoutloader.d -MT sdk/projectlayoutloader.o $(sdk_INCS) sdk/projectlayoutloader.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/projectlayoutloader.d -MT sdk/projectlayoutloader.o $(sdk_INCS) sdk/projectlayoutloader.cpp
 
-sdk/projectlayoutloader.o: sdk/projectlayoutloader.d
+sdk/projectlayoutloader.o: sdk/.deps/projectlayoutloader.d
 	@echo Compiling "sdk\projectlayoutloader.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/projectlayoutloader.cpp -o sdk/projectlayoutloader.o
 
-sdk/projectloader.d: sdk/projectloader.cpp
+sdk/.deps/projectloader.d: sdk/projectloader.cpp
 	@echo Calculating dependencies for "sdk\projectloader.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/projectloader.d -MT sdk/projectloader.o $(sdk_INCS) sdk/projectloader.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/projectloader.d -MT sdk/projectloader.o $(sdk_INCS) sdk/projectloader.cpp
 
-sdk/projectloader.o: sdk/projectloader.d
+sdk/projectloader.o: sdk/.deps/projectloader.d
 	@echo Compiling "sdk\projectloader.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/projectloader.cpp -o sdk/projectloader.o
 
-sdk/projectmanager.d: sdk/projectmanager.cpp
+sdk/.deps/projectmanager.d: sdk/projectmanager.cpp
 	@echo Calculating dependencies for "sdk\projectmanager.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/projectmanager.d -MT sdk/projectmanager.o $(sdk_INCS) sdk/projectmanager.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/projectmanager.d -MT sdk/projectmanager.o $(sdk_INCS) sdk/projectmanager.cpp
 
-sdk/projectmanager.o: sdk/projectmanager.d
+sdk/projectmanager.o: sdk/.deps/projectmanager.d
 	@echo Compiling "sdk\projectmanager.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/projectmanager.cpp -o sdk/projectmanager.o
 
-sdk/projectoptionsdlg.d: sdk/projectoptionsdlg.cpp
+sdk/.deps/projectoptionsdlg.d: sdk/projectoptionsdlg.cpp
 	@echo Calculating dependencies for "sdk\projectoptionsdlg.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/projectoptionsdlg.d -MT sdk/projectoptionsdlg.o $(sdk_INCS) sdk/projectoptionsdlg.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/projectoptionsdlg.d -MT sdk/projectoptionsdlg.o $(sdk_INCS) sdk/projectoptionsdlg.cpp
 
-sdk/projectoptionsdlg.o: sdk/projectoptionsdlg.d
+sdk/projectoptionsdlg.o: sdk/.deps/projectoptionsdlg.d
 	@echo Compiling "sdk\projectoptionsdlg.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/projectoptionsdlg.cpp -o sdk/projectoptionsdlg.o
 
-sdk/projectsfilemasksdlg.d: sdk/projectsfilemasksdlg.cpp
+sdk/.deps/projectsfilemasksdlg.d: sdk/projectsfilemasksdlg.cpp
 	@echo Calculating dependencies for "sdk\projectsfilemasksdlg.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/projectsfilemasksdlg.d -MT sdk/projectsfilemasksdlg.o $(sdk_INCS) sdk/projectsfilemasksdlg.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/projectsfilemasksdlg.d -MT sdk/projectsfilemasksdlg.o $(sdk_INCS) sdk/projectsfilemasksdlg.cpp
 
-sdk/projectsfilemasksdlg.o: sdk/projectsfilemasksdlg.d
+sdk/projectsfilemasksdlg.o: sdk/.deps/projectsfilemasksdlg.d
 	@echo Compiling "sdk\projectsfilemasksdlg.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/projectsfilemasksdlg.cpp -o sdk/projectsfilemasksdlg.o
 
-sdk/projecttemplateloader.d: sdk/projecttemplateloader.cpp
+sdk/.deps/projecttemplateloader.d: sdk/projecttemplateloader.cpp
 	@echo Calculating dependencies for "sdk\projecttemplateloader.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/projecttemplateloader.d -MT sdk/projecttemplateloader.o $(sdk_INCS) sdk/projecttemplateloader.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/projecttemplateloader.d -MT sdk/projecttemplateloader.o $(sdk_INCS) sdk/projecttemplateloader.cpp
 
-sdk/projecttemplateloader.o: sdk/projecttemplateloader.d
+sdk/projecttemplateloader.o: sdk/.deps/projecttemplateloader.d
 	@echo Compiling "sdk\projecttemplateloader.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/projecttemplateloader.cpp -o sdk/projecttemplateloader.o
 
-sdk/replacedlg.d: sdk/replacedlg.cpp
+sdk/.deps/replacedlg.d: sdk/replacedlg.cpp
 	@echo Calculating dependencies for "sdk\replacedlg.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/replacedlg.d -MT sdk/replacedlg.o $(sdk_INCS) sdk/replacedlg.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/replacedlg.d -MT sdk/replacedlg.o $(sdk_INCS) sdk/replacedlg.cpp
 
-sdk/replacedlg.o: sdk/replacedlg.d
+sdk/replacedlg.o: sdk/.deps/replacedlg.d
 	@echo Compiling "sdk\replacedlg.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/replacedlg.cpp -o sdk/replacedlg.o
 
-sdk/sdk_events.d: sdk/sdk_events.cpp
+sdk/.deps/sdk_events.d: sdk/sdk_events.cpp
 	@echo Calculating dependencies for "sdk\sdk_events.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/sdk_events.d -MT sdk/sdk_events.o $(sdk_INCS) sdk/sdk_events.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/sdk_events.d -MT sdk/sdk_events.o $(sdk_INCS) sdk/sdk_events.cpp
 
-sdk/sdk_events.o: sdk/sdk_events.d
+sdk/sdk_events.o: sdk/.deps/sdk_events.d
 	@echo Compiling "sdk\sdk_events.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/sdk_events.cpp -o sdk/sdk_events.o
 
-sdk/selecttargetdlg.d: sdk/selecttargetdlg.cpp
+sdk/.deps/selecttargetdlg.d: sdk/selecttargetdlg.cpp
 	@echo Calculating dependencies for "sdk\selecttargetdlg.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/selecttargetdlg.d -MT sdk/selecttargetdlg.o $(sdk_INCS) sdk/selecttargetdlg.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/selecttargetdlg.d -MT sdk/selecttargetdlg.o $(sdk_INCS) sdk/selecttargetdlg.cpp
 
-sdk/selecttargetdlg.o: sdk/selecttargetdlg.d
+sdk/selecttargetdlg.o: sdk/.deps/selecttargetdlg.d
 	@echo Compiling "sdk\selecttargetdlg.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/selecttargetdlg.cpp -o sdk/selecttargetdlg.o
 
-sdk/simplelistlog.d: sdk/simplelistlog.cpp
+sdk/.deps/simplelistlog.d: sdk/simplelistlog.cpp
 	@echo Calculating dependencies for "sdk\simplelistlog.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/simplelistlog.d -MT sdk/simplelistlog.o $(sdk_INCS) sdk/simplelistlog.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/simplelistlog.d -MT sdk/simplelistlog.o $(sdk_INCS) sdk/simplelistlog.cpp
 
-sdk/simplelistlog.o: sdk/simplelistlog.d
+sdk/simplelistlog.o: sdk/.deps/simplelistlog.d
 	@echo Compiling "sdk\simplelistlog.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/simplelistlog.cpp -o sdk/simplelistlog.o
 
-sdk/simpletextlog.d: sdk/simpletextlog.cpp
+sdk/.deps/simpletextlog.d: sdk/simpletextlog.cpp
 	@echo Calculating dependencies for "sdk\simpletextlog.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/simpletextlog.d -MT sdk/simpletextlog.o $(sdk_INCS) sdk/simpletextlog.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/simpletextlog.d -MT sdk/simpletextlog.o $(sdk_INCS) sdk/simpletextlog.cpp
 
-sdk/simpletextlog.o: sdk/simpletextlog.d
+sdk/simpletextlog.o: sdk/.deps/simpletextlog.d
 	@echo Compiling "sdk\simpletextlog.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/simpletextlog.cpp -o sdk/simpletextlog.o
 
-sdk/templatemanager.d: sdk/templatemanager.cpp
+sdk/.deps/templatemanager.d: sdk/templatemanager.cpp
 	@echo Calculating dependencies for "sdk\templatemanager.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/templatemanager.d -MT sdk/templatemanager.o $(sdk_INCS) sdk/templatemanager.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/templatemanager.d -MT sdk/templatemanager.o $(sdk_INCS) sdk/templatemanager.cpp
 
-sdk/templatemanager.o: sdk/templatemanager.d
+sdk/templatemanager.o: sdk/.deps/templatemanager.d
 	@echo Compiling "sdk\templatemanager.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/templatemanager.cpp -o sdk/templatemanager.o
 
-sdk/toolsmanager.d: sdk/toolsmanager.cpp
+sdk/.deps/toolsmanager.d: sdk/toolsmanager.cpp
 	@echo Calculating dependencies for "sdk\toolsmanager.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/toolsmanager.d -MT sdk/toolsmanager.o $(sdk_INCS) sdk/toolsmanager.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/toolsmanager.d -MT sdk/toolsmanager.o $(sdk_INCS) sdk/toolsmanager.cpp
 
-sdk/toolsmanager.o: sdk/toolsmanager.d
+sdk/toolsmanager.o: sdk/.deps/toolsmanager.d
 	@echo Compiling "sdk\toolsmanager.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/toolsmanager.cpp -o sdk/toolsmanager.o
 
-sdk/workspaceloader.d: sdk/workspaceloader.cpp
+sdk/.deps/workspaceloader.d: sdk/workspaceloader.cpp
 	@echo Calculating dependencies for "sdk\workspaceloader.cpp"...
-	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/workspaceloader.d -MT sdk/workspaceloader.o $(sdk_INCS) sdk/workspaceloader.cpp
+	-@if not exist ./sdk\.deps\. mkdir ./sdk\.deps
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/workspaceloader.d -MT sdk/workspaceloader.o $(sdk_INCS) sdk/workspaceloader.cpp
 
-sdk/workspaceloader.o: sdk/workspaceloader.d
+sdk/workspaceloader.o: sdk/.deps/workspaceloader.d
 	@echo Compiling "sdk\workspaceloader.cpp"...
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/workspaceloader.cpp -o sdk/workspaceloader.o
 
 
-src/app.d: src/app.cpp
+src/.deps/app.d: src/app.cpp
 	@echo Calculating dependencies for "src\app.cpp"...
-	@$(CPP) -MM $(src_CFLAGS) -MF src/app.d -MT src/app.o $(src_INCS) src/app.cpp
+	-@if not exist ./src\.deps\. mkdir ./src\.deps
+	@$(CPP) -MM $(src_CFLAGS) -MF src/.deps/app.d -MT src/app.o $(src_INCS) src/app.cpp
 
-src/app.o: src/app.d
+src/app.o: src/.deps/app.d
 	@echo Compiling "src\app.cpp"...
 	@$(CPP) $(src_CFLAGS) $(src_INCS) -c src/app.cpp -o src/app.o
 
-src/dlgabout.d: src/dlgabout.cpp
+src/.deps/dlgabout.d: src/dlgabout.cpp
 	@echo Calculating dependencies for "src\dlgabout.cpp"...
-	@$(CPP) -MM $(src_CFLAGS) -MF src/dlgabout.d -MT src/dlgabout.o $(src_INCS) src/dlgabout.cpp
+	-@if not exist ./src\.deps\. mkdir ./src\.deps
+	@$(CPP) -MM $(src_CFLAGS) -MF src/.deps/dlgabout.d -MT src/dlgabout.o $(src_INCS) src/dlgabout.cpp
 
-src/dlgabout.o: src/dlgabout.d
+src/dlgabout.o: src/.deps/dlgabout.d
 	@echo Compiling "src\dlgabout.cpp"...
 	@$(CPP) $(src_CFLAGS) $(src_INCS) -c src/dlgabout.cpp -o src/dlgabout.o
 
-src/dlgaboutplugin.d: src/dlgaboutplugin.cpp
+src/.deps/dlgaboutplugin.d: src/dlgaboutplugin.cpp
 	@echo Calculating dependencies for "src\dlgaboutplugin.cpp"...
-	@$(CPP) -MM $(src_CFLAGS) -MF src/dlgaboutplugin.d -MT src/dlgaboutplugin.o $(src_INCS) src/dlgaboutplugin.cpp
+	-@if not exist ./src\.deps\. mkdir ./src\.deps
+	@$(CPP) -MM $(src_CFLAGS) -MF src/.deps/dlgaboutplugin.d -MT src/dlgaboutplugin.o $(src_INCS) src/dlgaboutplugin.cpp
 
-src/dlgaboutplugin.o: src/dlgaboutplugin.d
+src/dlgaboutplugin.o: src/.deps/dlgaboutplugin.d
 	@echo Compiling "src\dlgaboutplugin.cpp"...
 	@$(CPP) $(src_CFLAGS) $(src_INCS) -c src/dlgaboutplugin.cpp -o src/dlgaboutplugin.o
 
-src/environmentsettingsdlg.d: src/environmentsettingsdlg.cpp
+src/.deps/environmentsettingsdlg.d: src/environmentsettingsdlg.cpp
 	@echo Calculating dependencies for "src\environmentsettingsdlg.cpp"...
-	@$(CPP) -MM $(src_CFLAGS) -MF src/environmentsettingsdlg.d -MT src/environmentsettingsdlg.o $(src_INCS) src/environmentsettingsdlg.cpp
+	-@if not exist ./src\.deps\. mkdir ./src\.deps
+	@$(CPP) -MM $(src_CFLAGS) -MF src/.deps/environmentsettingsdlg.d -MT src/environmentsettingsdlg.o $(src_INCS) src/environmentsettingsdlg.cpp
 
-src/environmentsettingsdlg.o: src/environmentsettingsdlg.d
+src/environmentsettingsdlg.o: src/.deps/environmentsettingsdlg.d
 	@echo Compiling "src\environmentsettingsdlg.cpp"...
 	@$(CPP) $(src_CFLAGS) $(src_INCS) -c src/environmentsettingsdlg.cpp -o src/environmentsettingsdlg.o
 
-src/main.d: src/main.cpp
+src/.deps/main.d: src/main.cpp
 	@echo Calculating dependencies for "src\main.cpp"...
-	@$(CPP) -MM $(src_CFLAGS) -MF src/main.d -MT src/main.o $(src_INCS) src/main.cpp
+	-@if not exist ./src\.deps\. mkdir ./src\.deps
+	@$(CPP) -MM $(src_CFLAGS) -MF src/.deps/main.d -MT src/main.o $(src_INCS) src/main.cpp
 
-src/main.o: src/main.d
+src/main.o: src/.deps/main.d
 	@echo Compiling "src\main.cpp"...
 	@$(CPP) $(src_CFLAGS) $(src_INCS) -c src/main.cpp -o src/main.o
 
@@ -938,340 +998,381 @@ $(src_RESOURCE): src/resources/resources.rc
 	@$(RESCOMP) -i src_private.rc -J rc -o $(src_RESOURCE) -O coff  --include-dir=C:/MinGW/include --include-dir=sdk
 
 
-plugins/astyle/asstreamiterator.d: plugins/astyle/asstreamiterator.cpp
+plugins/astyle/.deps/asstreamiterator.d: plugins/astyle/asstreamiterator.cpp
 	@echo Calculating dependencies for "plugins\astyle\asstreamiterator.cpp"...
-	@$(CPP) -MM $(plugin_Astyle_CFLAGS) -MF plugins/astyle/asstreamiterator.d -MT plugins/astyle/asstreamiterator.o $(plugin_Astyle_INCS) plugins/astyle/asstreamiterator.cpp
+	-@if not exist ./plugins\astyle\.deps\. mkdir ./plugins\astyle\.deps
+	@$(CPP) -MM $(plugin_Astyle_CFLAGS) -MF plugins/astyle/.deps/asstreamiterator.d -MT plugins/astyle/asstreamiterator.o $(plugin_Astyle_INCS) plugins/astyle/asstreamiterator.cpp
 
-plugins/astyle/asstreamiterator.o: plugins/astyle/asstreamiterator.d
+plugins/astyle/asstreamiterator.o: plugins/astyle/.deps/asstreamiterator.d
 	@echo Compiling "plugins\astyle\asstreamiterator.cpp"...
 	@$(CPP) $(plugin_Astyle_CFLAGS) $(plugin_Astyle_INCS) -c plugins/astyle/asstreamiterator.cpp -o plugins/astyle/asstreamiterator.o
 
-plugins/astyle/astyle/ASBeautifier.d: plugins/astyle/astyle/ASBeautifier.cpp
+plugins/astyle/astyle/.deps/ASBeautifier.d: plugins/astyle/astyle/ASBeautifier.cpp
 	@echo Calculating dependencies for "plugins\astyle\astyle\ASBeautifier.cpp"...
-	@$(CPP) -MM $(plugin_Astyle_CFLAGS) -MF plugins/astyle/astyle/ASBeautifier.d -MT plugins/astyle/astyle/ASBeautifier.o $(plugin_Astyle_INCS) plugins/astyle/astyle/ASBeautifier.cpp
+	-@if not exist ./plugins\astyle\astyle\.deps\. mkdir ./plugins\astyle\astyle\.deps
+	@$(CPP) -MM $(plugin_Astyle_CFLAGS) -MF plugins/astyle/astyle/.deps/ASBeautifier.d -MT plugins/astyle/astyle/ASBeautifier.o $(plugin_Astyle_INCS) plugins/astyle/astyle/ASBeautifier.cpp
 
-plugins/astyle/astyle/ASBeautifier.o: plugins/astyle/astyle/ASBeautifier.d
+plugins/astyle/astyle/ASBeautifier.o: plugins/astyle/astyle/.deps/ASBeautifier.d
 	@echo Compiling "plugins\astyle\astyle\ASBeautifier.cpp"...
 	@$(CPP) $(plugin_Astyle_CFLAGS) $(plugin_Astyle_INCS) -c plugins/astyle/astyle/ASBeautifier.cpp -o plugins/astyle/astyle/ASBeautifier.o
 
-plugins/astyle/astyle/ASFormatter.d: plugins/astyle/astyle/ASFormatter.cpp
+plugins/astyle/astyle/.deps/ASFormatter.d: plugins/astyle/astyle/ASFormatter.cpp
 	@echo Calculating dependencies for "plugins\astyle\astyle\ASFormatter.cpp"...
-	@$(CPP) -MM $(plugin_Astyle_CFLAGS) -MF plugins/astyle/astyle/ASFormatter.d -MT plugins/astyle/astyle/ASFormatter.o $(plugin_Astyle_INCS) plugins/astyle/astyle/ASFormatter.cpp
+	-@if not exist ./plugins\astyle\astyle\.deps\. mkdir ./plugins\astyle\astyle\.deps
+	@$(CPP) -MM $(plugin_Astyle_CFLAGS) -MF plugins/astyle/astyle/.deps/ASFormatter.d -MT plugins/astyle/astyle/ASFormatter.o $(plugin_Astyle_INCS) plugins/astyle/astyle/ASFormatter.cpp
 
-plugins/astyle/astyle/ASFormatter.o: plugins/astyle/astyle/ASFormatter.d
+plugins/astyle/astyle/ASFormatter.o: plugins/astyle/astyle/.deps/ASFormatter.d
 	@echo Compiling "plugins\astyle\astyle\ASFormatter.cpp"...
 	@$(CPP) $(plugin_Astyle_CFLAGS) $(plugin_Astyle_INCS) -c plugins/astyle/astyle/ASFormatter.cpp -o plugins/astyle/astyle/ASFormatter.o
 
-plugins/astyle/astyle/ASResource.d: plugins/astyle/astyle/ASResource.cpp
+plugins/astyle/astyle/.deps/ASResource.d: plugins/astyle/astyle/ASResource.cpp
 	@echo Calculating dependencies for "plugins\astyle\astyle\ASResource.cpp"...
-	@$(CPP) -MM $(plugin_Astyle_CFLAGS) -MF plugins/astyle/astyle/ASResource.d -MT plugins/astyle/astyle/ASResource.o $(plugin_Astyle_INCS) plugins/astyle/astyle/ASResource.cpp
+	-@if not exist ./plugins\astyle\astyle\.deps\. mkdir ./plugins\astyle\astyle\.deps
+	@$(CPP) -MM $(plugin_Astyle_CFLAGS) -MF plugins/astyle/astyle/.deps/ASResource.d -MT plugins/astyle/astyle/ASResource.o $(plugin_Astyle_INCS) plugins/astyle/astyle/ASResource.cpp
 
-plugins/astyle/astyle/ASResource.o: plugins/astyle/astyle/ASResource.d
+plugins/astyle/astyle/ASResource.o: plugins/astyle/astyle/.deps/ASResource.d
 	@echo Compiling "plugins\astyle\astyle\ASResource.cpp"...
 	@$(CPP) $(plugin_Astyle_CFLAGS) $(plugin_Astyle_INCS) -c plugins/astyle/astyle/ASResource.cpp -o plugins/astyle/astyle/ASResource.o
 
-plugins/astyle/astyleconfigdlg.d: plugins/astyle/astyleconfigdlg.cpp
+plugins/astyle/.deps/astyleconfigdlg.d: plugins/astyle/astyleconfigdlg.cpp
 	@echo Calculating dependencies for "plugins\astyle\astyleconfigdlg.cpp"...
-	@$(CPP) -MM $(plugin_Astyle_CFLAGS) -MF plugins/astyle/astyleconfigdlg.d -MT plugins/astyle/astyleconfigdlg.o $(plugin_Astyle_INCS) plugins/astyle/astyleconfigdlg.cpp
+	-@if not exist ./plugins\astyle\.deps\. mkdir ./plugins\astyle\.deps
+	@$(CPP) -MM $(plugin_Astyle_CFLAGS) -MF plugins/astyle/.deps/astyleconfigdlg.d -MT plugins/astyle/astyleconfigdlg.o $(plugin_Astyle_INCS) plugins/astyle/astyleconfigdlg.cpp
 
-plugins/astyle/astyleconfigdlg.o: plugins/astyle/astyleconfigdlg.d
+plugins/astyle/astyleconfigdlg.o: plugins/astyle/.deps/astyleconfigdlg.d
 	@echo Compiling "plugins\astyle\astyleconfigdlg.cpp"...
 	@$(CPP) $(plugin_Astyle_CFLAGS) $(plugin_Astyle_INCS) -c plugins/astyle/astyleconfigdlg.cpp -o plugins/astyle/astyleconfigdlg.o
 
-plugins/astyle/astyleplugin.d: plugins/astyle/astyleplugin.cpp
+plugins/astyle/.deps/astyleplugin.d: plugins/astyle/astyleplugin.cpp
 	@echo Calculating dependencies for "plugins\astyle\astyleplugin.cpp"...
-	@$(CPP) -MM $(plugin_Astyle_CFLAGS) -MF plugins/astyle/astyleplugin.d -MT plugins/astyle/astyleplugin.o $(plugin_Astyle_INCS) plugins/astyle/astyleplugin.cpp
+	-@if not exist ./plugins\astyle\.deps\. mkdir ./plugins\astyle\.deps
+	@$(CPP) -MM $(plugin_Astyle_CFLAGS) -MF plugins/astyle/.deps/astyleplugin.d -MT plugins/astyle/astyleplugin.o $(plugin_Astyle_INCS) plugins/astyle/astyleplugin.cpp
 
-plugins/astyle/astyleplugin.o: plugins/astyle/astyleplugin.d
+plugins/astyle/astyleplugin.o: plugins/astyle/.deps/astyleplugin.d
 	@echo Compiling "plugins\astyle\astyleplugin.cpp"...
 	@$(CPP) $(plugin_Astyle_CFLAGS) $(plugin_Astyle_INCS) -c plugins/astyle/astyleplugin.cpp -o plugins/astyle/astyleplugin.o
 
-plugins/astyle/formattersettings.d: plugins/astyle/formattersettings.cpp
+plugins/astyle/.deps/formattersettings.d: plugins/astyle/formattersettings.cpp
 	@echo Calculating dependencies for "plugins\astyle\formattersettings.cpp"...
-	@$(CPP) -MM $(plugin_Astyle_CFLAGS) -MF plugins/astyle/formattersettings.d -MT plugins/astyle/formattersettings.o $(plugin_Astyle_INCS) plugins/astyle/formattersettings.cpp
+	-@if not exist ./plugins\astyle\.deps\. mkdir ./plugins\astyle\.deps
+	@$(CPP) -MM $(plugin_Astyle_CFLAGS) -MF plugins/astyle/.deps/formattersettings.d -MT plugins/astyle/formattersettings.o $(plugin_Astyle_INCS) plugins/astyle/formattersettings.cpp
 
-plugins/astyle/formattersettings.o: plugins/astyle/formattersettings.d
+plugins/astyle/formattersettings.o: plugins/astyle/.deps/formattersettings.d
 	@echo Compiling "plugins\astyle\formattersettings.cpp"...
 	@$(CPP) $(plugin_Astyle_CFLAGS) $(plugin_Astyle_INCS) -c plugins/astyle/formattersettings.cpp -o plugins/astyle/formattersettings.o
 
 
-plugins/compilergcc/advancedcompileroptionsdlg.d: plugins/compilergcc/advancedcompileroptionsdlg.cpp
+plugins/compilergcc/.deps/advancedcompileroptionsdlg.d: plugins/compilergcc/advancedcompileroptionsdlg.cpp
 	@echo Calculating dependencies for "plugins\compilergcc\advancedcompileroptionsdlg.cpp"...
-	@$(CPP) -MM $(plugin_CompilerGCC_CFLAGS) -MF plugins/compilergcc/advancedcompileroptionsdlg.d -MT plugins/compilergcc/advancedcompileroptionsdlg.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/advancedcompileroptionsdlg.cpp
+	-@if not exist ./plugins\compilergcc\.deps\. mkdir ./plugins\compilergcc\.deps
+	@$(CPP) -MM $(plugin_CompilerGCC_CFLAGS) -MF plugins/compilergcc/.deps/advancedcompileroptionsdlg.d -MT plugins/compilergcc/advancedcompileroptionsdlg.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/advancedcompileroptionsdlg.cpp
 
-plugins/compilergcc/advancedcompileroptionsdlg.o: plugins/compilergcc/advancedcompileroptionsdlg.d
+plugins/compilergcc/advancedcompileroptionsdlg.o: plugins/compilergcc/.deps/advancedcompileroptionsdlg.d
 	@echo Compiling "plugins\compilergcc\advancedcompileroptionsdlg.cpp"...
 	@$(CPP) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/advancedcompileroptionsdlg.cpp -o plugins/compilergcc/advancedcompileroptionsdlg.o
 
-plugins/compilergcc/compilerMINGW.d: plugins/compilergcc/compilerMINGW.cpp
+plugins/compilergcc/.deps/compilerMINGW.d: plugins/compilergcc/compilerMINGW.cpp
 	@echo Calculating dependencies for "plugins\compilergcc\compilerMINGW.cpp"...
-	@$(CPP) -MM $(plugin_CompilerGCC_CFLAGS) -MF plugins/compilergcc/compilerMINGW.d -MT plugins/compilergcc/compilerMINGW.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/compilerMINGW.cpp
+	-@if not exist ./plugins\compilergcc\.deps\. mkdir ./plugins\compilergcc\.deps
+	@$(CPP) -MM $(plugin_CompilerGCC_CFLAGS) -MF plugins/compilergcc/.deps/compilerMINGW.d -MT plugins/compilergcc/compilerMINGW.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/compilerMINGW.cpp
 
-plugins/compilergcc/compilerMINGW.o: plugins/compilergcc/compilerMINGW.d
+plugins/compilergcc/compilerMINGW.o: plugins/compilergcc/.deps/compilerMINGW.d
 	@echo Compiling "plugins\compilergcc\compilerMINGW.cpp"...
 	@$(CPP) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/compilerMINGW.cpp -o plugins/compilergcc/compilerMINGW.o
 
-plugins/compilergcc/compilerMSVC.d: plugins/compilergcc/compilerMSVC.cpp
+plugins/compilergcc/.deps/compilerMSVC.d: plugins/compilergcc/compilerMSVC.cpp
 	@echo Calculating dependencies for "plugins\compilergcc\compilerMSVC.cpp"...
-	@$(CPP) -MM $(plugin_CompilerGCC_CFLAGS) -MF plugins/compilergcc/compilerMSVC.d -MT plugins/compilergcc/compilerMSVC.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/compilerMSVC.cpp
+	-@if not exist ./plugins\compilergcc\.deps\. mkdir ./plugins\compilergcc\.deps
+	@$(CPP) -MM $(plugin_CompilerGCC_CFLAGS) -MF plugins/compilergcc/.deps/compilerMSVC.d -MT plugins/compilergcc/compilerMSVC.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/compilerMSVC.cpp
 
-plugins/compilergcc/compilerMSVC.o: plugins/compilergcc/compilerMSVC.d
+plugins/compilergcc/compilerMSVC.o: plugins/compilergcc/.deps/compilerMSVC.d
 	@echo Compiling "plugins\compilergcc\compilerMSVC.cpp"...
 	@$(CPP) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/compilerMSVC.cpp -o plugins/compilergcc/compilerMSVC.o
 
-plugins/compilergcc/compilererrors.d: plugins/compilergcc/compilererrors.cpp
+plugins/compilergcc/.deps/compilererrors.d: plugins/compilergcc/compilererrors.cpp
 	@echo Calculating dependencies for "plugins\compilergcc\compilererrors.cpp"...
-	@$(CPP) -MM $(plugin_CompilerGCC_CFLAGS) -MF plugins/compilergcc/compilererrors.d -MT plugins/compilergcc/compilererrors.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/compilererrors.cpp
+	-@if not exist ./plugins\compilergcc\.deps\. mkdir ./plugins\compilergcc\.deps
+	@$(CPP) -MM $(plugin_CompilerGCC_CFLAGS) -MF plugins/compilergcc/.deps/compilererrors.d -MT plugins/compilergcc/compilererrors.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/compilererrors.cpp
 
-plugins/compilergcc/compilererrors.o: plugins/compilergcc/compilererrors.d
+plugins/compilergcc/compilererrors.o: plugins/compilergcc/.deps/compilererrors.d
 	@echo Compiling "plugins\compilergcc\compilererrors.cpp"...
 	@$(CPP) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/compilererrors.cpp -o plugins/compilergcc/compilererrors.o
 
-plugins/compilergcc/compilergcc.d: plugins/compilergcc/compilergcc.cpp
+plugins/compilergcc/.deps/compilergcc.d: plugins/compilergcc/compilergcc.cpp
 	@echo Calculating dependencies for "plugins\compilergcc\compilergcc.cpp"...
-	@$(CPP) -MM $(plugin_CompilerGCC_CFLAGS) -MF plugins/compilergcc/compilergcc.d -MT plugins/compilergcc/compilergcc.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/compilergcc.cpp
+	-@if not exist ./plugins\compilergcc\.deps\. mkdir ./plugins\compilergcc\.deps
+	@$(CPP) -MM $(plugin_CompilerGCC_CFLAGS) -MF plugins/compilergcc/.deps/compilergcc.d -MT plugins/compilergcc/compilergcc.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/compilergcc.cpp
 
-plugins/compilergcc/compilergcc.o: plugins/compilergcc/compilergcc.d
+plugins/compilergcc/compilergcc.o: plugins/compilergcc/.deps/compilergcc.d
 	@echo Compiling "plugins\compilergcc\compilergcc.cpp"...
 	@$(CPP) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/compilergcc.cpp -o plugins/compilergcc/compilergcc.o
 
-plugins/compilergcc/compilermessages.d: plugins/compilergcc/compilermessages.cpp
+plugins/compilergcc/.deps/compilermessages.d: plugins/compilergcc/compilermessages.cpp
 	@echo Calculating dependencies for "plugins\compilergcc\compilermessages.cpp"...
-	@$(CPP) -MM $(plugin_CompilerGCC_CFLAGS) -MF plugins/compilergcc/compilermessages.d -MT plugins/compilergcc/compilermessages.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/compilermessages.cpp
+	-@if not exist ./plugins\compilergcc\.deps\. mkdir ./plugins\compilergcc\.deps
+	@$(CPP) -MM $(plugin_CompilerGCC_CFLAGS) -MF plugins/compilergcc/.deps/compilermessages.d -MT plugins/compilergcc/compilermessages.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/compilermessages.cpp
 
-plugins/compilergcc/compilermessages.o: plugins/compilergcc/compilermessages.d
+plugins/compilergcc/compilermessages.o: plugins/compilergcc/.deps/compilermessages.d
 	@echo Compiling "plugins\compilergcc\compilermessages.cpp"...
 	@$(CPP) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/compilermessages.cpp -o plugins/compilergcc/compilermessages.o
 
-plugins/compilergcc/compileroptionsdlg.d: plugins/compilergcc/compileroptionsdlg.cpp
+plugins/compilergcc/.deps/compileroptionsdlg.d: plugins/compilergcc/compileroptionsdlg.cpp
 	@echo Calculating dependencies for "plugins\compilergcc\compileroptionsdlg.cpp"...
-	@$(CPP) -MM $(plugin_CompilerGCC_CFLAGS) -MF plugins/compilergcc/compileroptionsdlg.d -MT plugins/compilergcc/compileroptionsdlg.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/compileroptionsdlg.cpp
+	-@if not exist ./plugins\compilergcc\.deps\. mkdir ./plugins\compilergcc\.deps
+	@$(CPP) -MM $(plugin_CompilerGCC_CFLAGS) -MF plugins/compilergcc/.deps/compileroptionsdlg.d -MT plugins/compilergcc/compileroptionsdlg.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/compileroptionsdlg.cpp
 
-plugins/compilergcc/compileroptionsdlg.o: plugins/compilergcc/compileroptionsdlg.d
+plugins/compilergcc/compileroptionsdlg.o: plugins/compilergcc/.deps/compileroptionsdlg.d
 	@echo Compiling "plugins\compilergcc\compileroptionsdlg.cpp"...
 	@$(CPP) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/compileroptionsdlg.cpp -o plugins/compilergcc/compileroptionsdlg.o
 
-plugins/compilergcc/customvars.d: plugins/compilergcc/customvars.cpp
+plugins/compilergcc/.deps/customvars.d: plugins/compilergcc/customvars.cpp
 	@echo Calculating dependencies for "plugins\compilergcc\customvars.cpp"...
-	@$(CPP) -MM $(plugin_CompilerGCC_CFLAGS) -MF plugins/compilergcc/customvars.d -MT plugins/compilergcc/customvars.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/customvars.cpp
+	-@if not exist ./plugins\compilergcc\.deps\. mkdir ./plugins\compilergcc\.deps
+	@$(CPP) -MM $(plugin_CompilerGCC_CFLAGS) -MF plugins/compilergcc/.deps/customvars.d -MT plugins/compilergcc/customvars.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/customvars.cpp
 
-plugins/compilergcc/customvars.o: plugins/compilergcc/customvars.d
+plugins/compilergcc/customvars.o: plugins/compilergcc/.deps/customvars.d
 	@echo Compiling "plugins\compilergcc\customvars.cpp"...
 	@$(CPP) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/customvars.cpp -o plugins/compilergcc/customvars.o
 
-plugins/compilergcc/makefilegenerator.d: plugins/compilergcc/makefilegenerator.cpp
+plugins/compilergcc/.deps/makefilegenerator.d: plugins/compilergcc/makefilegenerator.cpp
 	@echo Calculating dependencies for "plugins\compilergcc\makefilegenerator.cpp"...
-	@$(CPP) -MM $(plugin_CompilerGCC_CFLAGS) -MF plugins/compilergcc/makefilegenerator.d -MT plugins/compilergcc/makefilegenerator.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/makefilegenerator.cpp
+	-@if not exist ./plugins\compilergcc\.deps\. mkdir ./plugins\compilergcc\.deps
+	@$(CPP) -MM $(plugin_CompilerGCC_CFLAGS) -MF plugins/compilergcc/.deps/makefilegenerator.d -MT plugins/compilergcc/makefilegenerator.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/makefilegenerator.cpp
 
-plugins/compilergcc/makefilegenerator.o: plugins/compilergcc/makefilegenerator.d
+plugins/compilergcc/makefilegenerator.o: plugins/compilergcc/.deps/makefilegenerator.d
 	@echo Compiling "plugins\compilergcc\makefilegenerator.cpp"...
 	@$(CPP) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/makefilegenerator.cpp -o plugins/compilergcc/makefilegenerator.o
 
 
-plugins/debuggergdb/debuggergdb.d: plugins/debuggergdb/debuggergdb.cpp
+plugins/debuggergdb/.deps/debuggergdb.d: plugins/debuggergdb/debuggergdb.cpp
 	@echo Calculating dependencies for "plugins\debuggergdb\debuggergdb.cpp"...
-	@$(CPP) -MM $(plugin_DebuggerGDB_CFLAGS) -MF plugins/debuggergdb/debuggergdb.d -MT plugins/debuggergdb/debuggergdb.o $(plugin_DebuggerGDB_INCS) plugins/debuggergdb/debuggergdb.cpp
+	-@if not exist ./plugins\debuggergdb\.deps\. mkdir ./plugins\debuggergdb\.deps
+	@$(CPP) -MM $(plugin_DebuggerGDB_CFLAGS) -MF plugins/debuggergdb/.deps/debuggergdb.d -MT plugins/debuggergdb/debuggergdb.o $(plugin_DebuggerGDB_INCS) plugins/debuggergdb/debuggergdb.cpp
 
-plugins/debuggergdb/debuggergdb.o: plugins/debuggergdb/debuggergdb.d
+plugins/debuggergdb/debuggergdb.o: plugins/debuggergdb/.deps/debuggergdb.d
 	@echo Compiling "plugins\debuggergdb\debuggergdb.cpp"...
 	@$(CPP) $(plugin_DebuggerGDB_CFLAGS) $(plugin_DebuggerGDB_INCS) -c plugins/debuggergdb/debuggergdb.cpp -o plugins/debuggergdb/debuggergdb.o
 
-plugins/debuggergdb/debuggertree.d: plugins/debuggergdb/debuggertree.cpp
+plugins/debuggergdb/.deps/debuggertree.d: plugins/debuggergdb/debuggertree.cpp
 	@echo Calculating dependencies for "plugins\debuggergdb\debuggertree.cpp"...
-	@$(CPP) -MM $(plugin_DebuggerGDB_CFLAGS) -MF plugins/debuggergdb/debuggertree.d -MT plugins/debuggergdb/debuggertree.o $(plugin_DebuggerGDB_INCS) plugins/debuggergdb/debuggertree.cpp
+	-@if not exist ./plugins\debuggergdb\.deps\. mkdir ./plugins\debuggergdb\.deps
+	@$(CPP) -MM $(plugin_DebuggerGDB_CFLAGS) -MF plugins/debuggergdb/.deps/debuggertree.d -MT plugins/debuggergdb/debuggertree.o $(plugin_DebuggerGDB_INCS) plugins/debuggergdb/debuggertree.cpp
 
-plugins/debuggergdb/debuggertree.o: plugins/debuggergdb/debuggertree.d
+plugins/debuggergdb/debuggertree.o: plugins/debuggergdb/.deps/debuggertree.d
 	@echo Compiling "plugins\debuggergdb\debuggertree.cpp"...
 	@$(CPP) $(plugin_DebuggerGDB_CFLAGS) $(plugin_DebuggerGDB_INCS) -c plugins/debuggergdb/debuggertree.cpp -o plugins/debuggergdb/debuggertree.o
 
 
-plugins/codecompletion/cclist.d: plugins/codecompletion/cclist.cpp
+plugins/codecompletion/.deps/cclist.d: plugins/codecompletion/cclist.cpp
 	@echo Calculating dependencies for "plugins\codecompletion\cclist.cpp"...
-	@$(CPP) -MM $(plugin_CodeCompletion_CFLAGS) -MF plugins/codecompletion/cclist.d -MT plugins/codecompletion/cclist.o $(plugin_CodeCompletion_INCS) plugins/codecompletion/cclist.cpp
+	-@if not exist ./plugins\codecompletion\.deps\. mkdir ./plugins\codecompletion\.deps
+	@$(CPP) -MM $(plugin_CodeCompletion_CFLAGS) -MF plugins/codecompletion/.deps/cclist.d -MT plugins/codecompletion/cclist.o $(plugin_CodeCompletion_INCS) plugins/codecompletion/cclist.cpp
 
-plugins/codecompletion/cclist.o: plugins/codecompletion/cclist.d
+plugins/codecompletion/cclist.o: plugins/codecompletion/.deps/cclist.d
 	@echo Compiling "plugins\codecompletion\cclist.cpp"...
 	@$(CPP) $(plugin_CodeCompletion_CFLAGS) $(plugin_CodeCompletion_INCS) -c plugins/codecompletion/cclist.cpp -o plugins/codecompletion/cclist.o
 
-plugins/codecompletion/cclistctrl.d: plugins/codecompletion/cclistctrl.cpp
+plugins/codecompletion/.deps/cclistctrl.d: plugins/codecompletion/cclistctrl.cpp
 	@echo Calculating dependencies for "plugins\codecompletion\cclistctrl.cpp"...
-	@$(CPP) -MM $(plugin_CodeCompletion_CFLAGS) -MF plugins/codecompletion/cclistctrl.d -MT plugins/codecompletion/cclistctrl.o $(plugin_CodeCompletion_INCS) plugins/codecompletion/cclistctrl.cpp
+	-@if not exist ./plugins\codecompletion\.deps\. mkdir ./plugins\codecompletion\.deps
+	@$(CPP) -MM $(plugin_CodeCompletion_CFLAGS) -MF plugins/codecompletion/.deps/cclistctrl.d -MT plugins/codecompletion/cclistctrl.o $(plugin_CodeCompletion_INCS) plugins/codecompletion/cclistctrl.cpp
 
-plugins/codecompletion/cclistctrl.o: plugins/codecompletion/cclistctrl.d
+plugins/codecompletion/cclistctrl.o: plugins/codecompletion/.deps/cclistctrl.d
 	@echo Compiling "plugins\codecompletion\cclistctrl.cpp"...
 	@$(CPP) $(plugin_CodeCompletion_CFLAGS) $(plugin_CodeCompletion_INCS) -c plugins/codecompletion/cclistctrl.cpp -o plugins/codecompletion/cclistctrl.o
 
-plugins/codecompletion/ccoptionsdlg.d: plugins/codecompletion/ccoptionsdlg.cpp
+plugins/codecompletion/.deps/ccoptionsdlg.d: plugins/codecompletion/ccoptionsdlg.cpp
 	@echo Calculating dependencies for "plugins\codecompletion\ccoptionsdlg.cpp"...
-	@$(CPP) -MM $(plugin_CodeCompletion_CFLAGS) -MF plugins/codecompletion/ccoptionsdlg.d -MT plugins/codecompletion/ccoptionsdlg.o $(plugin_CodeCompletion_INCS) plugins/codecompletion/ccoptionsdlg.cpp
+	-@if not exist ./plugins\codecompletion\.deps\. mkdir ./plugins\codecompletion\.deps
+	@$(CPP) -MM $(plugin_CodeCompletion_CFLAGS) -MF plugins/codecompletion/.deps/ccoptionsdlg.d -MT plugins/codecompletion/ccoptionsdlg.o $(plugin_CodeCompletion_INCS) plugins/codecompletion/ccoptionsdlg.cpp
 
-plugins/codecompletion/ccoptionsdlg.o: plugins/codecompletion/ccoptionsdlg.d
+plugins/codecompletion/ccoptionsdlg.o: plugins/codecompletion/.deps/ccoptionsdlg.d
 	@echo Compiling "plugins\codecompletion\ccoptionsdlg.cpp"...
 	@$(CPP) $(plugin_CodeCompletion_CFLAGS) $(plugin_CodeCompletion_INCS) -c plugins/codecompletion/ccoptionsdlg.cpp -o plugins/codecompletion/ccoptionsdlg.o
 
-plugins/codecompletion/ccrenderer.d: plugins/codecompletion/ccrenderer.cpp
+plugins/codecompletion/.deps/ccrenderer.d: plugins/codecompletion/ccrenderer.cpp
 	@echo Calculating dependencies for "plugins\codecompletion\ccrenderer.cpp"...
-	@$(CPP) -MM $(plugin_CodeCompletion_CFLAGS) -MF plugins/codecompletion/ccrenderer.d -MT plugins/codecompletion/ccrenderer.o $(plugin_CodeCompletion_INCS) plugins/codecompletion/ccrenderer.cpp
+	-@if not exist ./plugins\codecompletion\.deps\. mkdir ./plugins\codecompletion\.deps
+	@$(CPP) -MM $(plugin_CodeCompletion_CFLAGS) -MF plugins/codecompletion/.deps/ccrenderer.d -MT plugins/codecompletion/ccrenderer.o $(plugin_CodeCompletion_INCS) plugins/codecompletion/ccrenderer.cpp
 
-plugins/codecompletion/ccrenderer.o: plugins/codecompletion/ccrenderer.d
+plugins/codecompletion/ccrenderer.o: plugins/codecompletion/.deps/ccrenderer.d
 	@echo Compiling "plugins\codecompletion\ccrenderer.cpp"...
 	@$(CPP) $(plugin_CodeCompletion_CFLAGS) $(plugin_CodeCompletion_INCS) -c plugins/codecompletion/ccrenderer.cpp -o plugins/codecompletion/ccrenderer.o
 
-plugins/codecompletion/classbrowser.d: plugins/codecompletion/classbrowser.cpp
+plugins/codecompletion/.deps/classbrowser.d: plugins/codecompletion/classbrowser.cpp
 	@echo Calculating dependencies for "plugins\codecompletion\classbrowser.cpp"...
-	@$(CPP) -MM $(plugin_CodeCompletion_CFLAGS) -MF plugins/codecompletion/classbrowser.d -MT plugins/codecompletion/classbrowser.o $(plugin_CodeCompletion_INCS) plugins/codecompletion/classbrowser.cpp
+	-@if not exist ./plugins\codecompletion\.deps\. mkdir ./plugins\codecompletion\.deps
+	@$(CPP) -MM $(plugin_CodeCompletion_CFLAGS) -MF plugins/codecompletion/.deps/classbrowser.d -MT plugins/codecompletion/classbrowser.o $(plugin_CodeCompletion_INCS) plugins/codecompletion/classbrowser.cpp
 
-plugins/codecompletion/classbrowser.o: plugins/codecompletion/classbrowser.d
+plugins/codecompletion/classbrowser.o: plugins/codecompletion/.deps/classbrowser.d
 	@echo Compiling "plugins\codecompletion\classbrowser.cpp"...
 	@$(CPP) $(plugin_CodeCompletion_CFLAGS) $(plugin_CodeCompletion_INCS) -c plugins/codecompletion/classbrowser.cpp -o plugins/codecompletion/classbrowser.o
 
-plugins/codecompletion/codecompletion.d: plugins/codecompletion/codecompletion.cpp
+plugins/codecompletion/.deps/codecompletion.d: plugins/codecompletion/codecompletion.cpp
 	@echo Calculating dependencies for "plugins\codecompletion\codecompletion.cpp"...
-	@$(CPP) -MM $(plugin_CodeCompletion_CFLAGS) -MF plugins/codecompletion/codecompletion.d -MT plugins/codecompletion/codecompletion.o $(plugin_CodeCompletion_INCS) plugins/codecompletion/codecompletion.cpp
+	-@if not exist ./plugins\codecompletion\.deps\. mkdir ./plugins\codecompletion\.deps
+	@$(CPP) -MM $(plugin_CodeCompletion_CFLAGS) -MF plugins/codecompletion/.deps/codecompletion.d -MT plugins/codecompletion/codecompletion.o $(plugin_CodeCompletion_INCS) plugins/codecompletion/codecompletion.cpp
 
-plugins/codecompletion/codecompletion.o: plugins/codecompletion/codecompletion.d
+plugins/codecompletion/codecompletion.o: plugins/codecompletion/.deps/codecompletion.d
 	@echo Compiling "plugins\codecompletion\codecompletion.cpp"...
 	@$(CPP) $(plugin_CodeCompletion_CFLAGS) $(plugin_CodeCompletion_INCS) -c plugins/codecompletion/codecompletion.cpp -o plugins/codecompletion/codecompletion.o
 
-plugins/codecompletion/insertclassmethoddlg.d: plugins/codecompletion/insertclassmethoddlg.cpp
+plugins/codecompletion/.deps/insertclassmethoddlg.d: plugins/codecompletion/insertclassmethoddlg.cpp
 	@echo Calculating dependencies for "plugins\codecompletion\insertclassmethoddlg.cpp"...
-	@$(CPP) -MM $(plugin_CodeCompletion_CFLAGS) -MF plugins/codecompletion/insertclassmethoddlg.d -MT plugins/codecompletion/insertclassmethoddlg.o $(plugin_CodeCompletion_INCS) plugins/codecompletion/insertclassmethoddlg.cpp
+	-@if not exist ./plugins\codecompletion\.deps\. mkdir ./plugins\codecompletion\.deps
+	@$(CPP) -MM $(plugin_CodeCompletion_CFLAGS) -MF plugins/codecompletion/.deps/insertclassmethoddlg.d -MT plugins/codecompletion/insertclassmethoddlg.o $(plugin_CodeCompletion_INCS) plugins/codecompletion/insertclassmethoddlg.cpp
 
-plugins/codecompletion/insertclassmethoddlg.o: plugins/codecompletion/insertclassmethoddlg.d
+plugins/codecompletion/insertclassmethoddlg.o: plugins/codecompletion/.deps/insertclassmethoddlg.d
 	@echo Compiling "plugins\codecompletion\insertclassmethoddlg.cpp"...
 	@$(CPP) $(plugin_CodeCompletion_CFLAGS) $(plugin_CodeCompletion_INCS) -c plugins/codecompletion/insertclassmethoddlg.cpp -o plugins/codecompletion/insertclassmethoddlg.o
 
-plugins/codecompletion/nativeparser.d: plugins/codecompletion/nativeparser.cpp
+plugins/codecompletion/.deps/nativeparser.d: plugins/codecompletion/nativeparser.cpp
 	@echo Calculating dependencies for "plugins\codecompletion\nativeparser.cpp"...
-	@$(CPP) -MM $(plugin_CodeCompletion_CFLAGS) -MF plugins/codecompletion/nativeparser.d -MT plugins/codecompletion/nativeparser.o $(plugin_CodeCompletion_INCS) plugins/codecompletion/nativeparser.cpp
+	-@if not exist ./plugins\codecompletion\.deps\. mkdir ./plugins\codecompletion\.deps
+	@$(CPP) -MM $(plugin_CodeCompletion_CFLAGS) -MF plugins/codecompletion/.deps/nativeparser.d -MT plugins/codecompletion/nativeparser.o $(plugin_CodeCompletion_INCS) plugins/codecompletion/nativeparser.cpp
 
-plugins/codecompletion/nativeparser.o: plugins/codecompletion/nativeparser.d
+plugins/codecompletion/nativeparser.o: plugins/codecompletion/.deps/nativeparser.d
 	@echo Compiling "plugins\codecompletion\nativeparser.cpp"...
 	@$(CPP) $(plugin_CodeCompletion_CFLAGS) $(plugin_CodeCompletion_INCS) -c plugins/codecompletion/nativeparser.cpp -o plugins/codecompletion/nativeparser.o
 
-plugins/codecompletion/parser/parser.d: plugins/codecompletion/parser/parser.cpp
+plugins/codecompletion/parser/.deps/parser.d: plugins/codecompletion/parser/parser.cpp
 	@echo Calculating dependencies for "plugins\codecompletion\parser\parser.cpp"...
-	@$(CPP) -MM $(plugin_CodeCompletion_CFLAGS) -MF plugins/codecompletion/parser/parser.d -MT plugins/codecompletion/parser/parser.o $(plugin_CodeCompletion_INCS) plugins/codecompletion/parser/parser.cpp
+	-@if not exist ./plugins\codecompletion\parser\.deps\. mkdir ./plugins\codecompletion\parser\.deps
+	@$(CPP) -MM $(plugin_CodeCompletion_CFLAGS) -MF plugins/codecompletion/parser/.deps/parser.d -MT plugins/codecompletion/parser/parser.o $(plugin_CodeCompletion_INCS) plugins/codecompletion/parser/parser.cpp
 
-plugins/codecompletion/parser/parser.o: plugins/codecompletion/parser/parser.d
+plugins/codecompletion/parser/parser.o: plugins/codecompletion/parser/.deps/parser.d
 	@echo Compiling "plugins\codecompletion\parser\parser.cpp"...
 	@$(CPP) $(plugin_CodeCompletion_CFLAGS) $(plugin_CodeCompletion_INCS) -c plugins/codecompletion/parser/parser.cpp -o plugins/codecompletion/parser/parser.o
 
-plugins/codecompletion/parser/parserthread.d: plugins/codecompletion/parser/parserthread.cpp
+plugins/codecompletion/parser/.deps/parserthread.d: plugins/codecompletion/parser/parserthread.cpp
 	@echo Calculating dependencies for "plugins\codecompletion\parser\parserthread.cpp"...
-	@$(CPP) -MM $(plugin_CodeCompletion_CFLAGS) -MF plugins/codecompletion/parser/parserthread.d -MT plugins/codecompletion/parser/parserthread.o $(plugin_CodeCompletion_INCS) plugins/codecompletion/parser/parserthread.cpp
+	-@if not exist ./plugins\codecompletion\parser\.deps\. mkdir ./plugins\codecompletion\parser\.deps
+	@$(CPP) -MM $(plugin_CodeCompletion_CFLAGS) -MF plugins/codecompletion/parser/.deps/parserthread.d -MT plugins/codecompletion/parser/parserthread.o $(plugin_CodeCompletion_INCS) plugins/codecompletion/parser/parserthread.cpp
 
-plugins/codecompletion/parser/parserthread.o: plugins/codecompletion/parser/parserthread.d
+plugins/codecompletion/parser/parserthread.o: plugins/codecompletion/parser/.deps/parserthread.d
 	@echo Compiling "plugins\codecompletion\parser\parserthread.cpp"...
 	@$(CPP) $(plugin_CodeCompletion_CFLAGS) $(plugin_CodeCompletion_INCS) -c plugins/codecompletion/parser/parserthread.cpp -o plugins/codecompletion/parser/parserthread.o
 
-plugins/codecompletion/parser/token.d: plugins/codecompletion/parser/token.cpp
+plugins/codecompletion/parser/.deps/token.d: plugins/codecompletion/parser/token.cpp
 	@echo Calculating dependencies for "plugins\codecompletion\parser\token.cpp"...
-	@$(CPP) -MM $(plugin_CodeCompletion_CFLAGS) -MF plugins/codecompletion/parser/token.d -MT plugins/codecompletion/parser/token.o $(plugin_CodeCompletion_INCS) plugins/codecompletion/parser/token.cpp
+	-@if not exist ./plugins\codecompletion\parser\.deps\. mkdir ./plugins\codecompletion\parser\.deps
+	@$(CPP) -MM $(plugin_CodeCompletion_CFLAGS) -MF plugins/codecompletion/parser/.deps/token.d -MT plugins/codecompletion/parser/token.o $(plugin_CodeCompletion_INCS) plugins/codecompletion/parser/token.cpp
 
-plugins/codecompletion/parser/token.o: plugins/codecompletion/parser/token.d
+plugins/codecompletion/parser/token.o: plugins/codecompletion/parser/.deps/token.d
 	@echo Compiling "plugins\codecompletion\parser\token.cpp"...
 	@$(CPP) $(plugin_CodeCompletion_CFLAGS) $(plugin_CodeCompletion_INCS) -c plugins/codecompletion/parser/token.cpp -o plugins/codecompletion/parser/token.o
 
-plugins/codecompletion/parser/tokenizer.d: plugins/codecompletion/parser/tokenizer.cpp
+plugins/codecompletion/parser/.deps/tokenizer.d: plugins/codecompletion/parser/tokenizer.cpp
 	@echo Calculating dependencies for "plugins\codecompletion\parser\tokenizer.cpp"...
-	@$(CPP) -MM $(plugin_CodeCompletion_CFLAGS) -MF plugins/codecompletion/parser/tokenizer.d -MT plugins/codecompletion/parser/tokenizer.o $(plugin_CodeCompletion_INCS) plugins/codecompletion/parser/tokenizer.cpp
+	-@if not exist ./plugins\codecompletion\parser\.deps\. mkdir ./plugins\codecompletion\parser\.deps
+	@$(CPP) -MM $(plugin_CodeCompletion_CFLAGS) -MF plugins/codecompletion/parser/.deps/tokenizer.d -MT plugins/codecompletion/parser/tokenizer.o $(plugin_CodeCompletion_INCS) plugins/codecompletion/parser/tokenizer.cpp
 
-plugins/codecompletion/parser/tokenizer.o: plugins/codecompletion/parser/tokenizer.d
+plugins/codecompletion/parser/tokenizer.o: plugins/codecompletion/parser/.deps/tokenizer.d
 	@echo Compiling "plugins\codecompletion\parser\tokenizer.cpp"...
 	@$(CPP) $(plugin_CodeCompletion_CFLAGS) $(plugin_CodeCompletion_INCS) -c plugins/codecompletion/parser/tokenizer.cpp -o plugins/codecompletion/parser/tokenizer.o
 
 
-plugins/classwizard/classwizard.d: plugins/classwizard/classwizard.cpp
+plugins/classwizard/.deps/classwizard.d: plugins/classwizard/classwizard.cpp
 	@echo Calculating dependencies for "plugins\classwizard\classwizard.cpp"...
-	@$(CPP) -MM $(plugin_ClassWizard_CFLAGS) -MF plugins/classwizard/classwizard.d -MT plugins/classwizard/classwizard.o $(plugin_ClassWizard_INCS) plugins/classwizard/classwizard.cpp
+	-@if not exist ./plugins\classwizard\.deps\. mkdir ./plugins\classwizard\.deps
+	@$(CPP) -MM $(plugin_ClassWizard_CFLAGS) -MF plugins/classwizard/.deps/classwizard.d -MT plugins/classwizard/classwizard.o $(plugin_ClassWizard_INCS) plugins/classwizard/classwizard.cpp
 
-plugins/classwizard/classwizard.o: plugins/classwizard/classwizard.d
+plugins/classwizard/classwizard.o: plugins/classwizard/.deps/classwizard.d
 	@echo Compiling "plugins\classwizard\classwizard.cpp"...
 	@$(CPP) $(plugin_ClassWizard_CFLAGS) $(plugin_ClassWizard_INCS) -c plugins/classwizard/classwizard.cpp -o plugins/classwizard/classwizard.o
 
-plugins/classwizard/classwizarddlg.d: plugins/classwizard/classwizarddlg.cpp
+plugins/classwizard/.deps/classwizarddlg.d: plugins/classwizard/classwizarddlg.cpp
 	@echo Calculating dependencies for "plugins\classwizard\classwizarddlg.cpp"...
-	@$(CPP) -MM $(plugin_ClassWizard_CFLAGS) -MF plugins/classwizard/classwizarddlg.d -MT plugins/classwizard/classwizarddlg.o $(plugin_ClassWizard_INCS) plugins/classwizard/classwizarddlg.cpp
+	-@if not exist ./plugins\classwizard\.deps\. mkdir ./plugins\classwizard\.deps
+	@$(CPP) -MM $(plugin_ClassWizard_CFLAGS) -MF plugins/classwizard/.deps/classwizarddlg.d -MT plugins/classwizard/classwizarddlg.o $(plugin_ClassWizard_INCS) plugins/classwizard/classwizarddlg.cpp
 
-plugins/classwizard/classwizarddlg.o: plugins/classwizard/classwizarddlg.d
+plugins/classwizard/classwizarddlg.o: plugins/classwizard/.deps/classwizarddlg.d
 	@echo Compiling "plugins\classwizard\classwizarddlg.cpp"...
 	@$(CPP) $(plugin_ClassWizard_CFLAGS) $(plugin_ClassWizard_INCS) -c plugins/classwizard/classwizarddlg.cpp -o plugins/classwizard/classwizarddlg.o
 
 
-plugins/pluginwizard/enterinfodlg.d: plugins/pluginwizard/enterinfodlg.cpp
+plugins/pluginwizard/.deps/enterinfodlg.d: plugins/pluginwizard/enterinfodlg.cpp
 	@echo Calculating dependencies for "plugins\pluginwizard\enterinfodlg.cpp"...
-	@$(CPP) -MM $(plugin_PluginsWizard_CFLAGS) -MF plugins/pluginwizard/enterinfodlg.d -MT plugins/pluginwizard/enterinfodlg.o $(plugin_PluginsWizard_INCS) plugins/pluginwizard/enterinfodlg.cpp
+	-@if not exist ./plugins\pluginwizard\.deps\. mkdir ./plugins\pluginwizard\.deps
+	@$(CPP) -MM $(plugin_PluginsWizard_CFLAGS) -MF plugins/pluginwizard/.deps/enterinfodlg.d -MT plugins/pluginwizard/enterinfodlg.o $(plugin_PluginsWizard_INCS) plugins/pluginwizard/enterinfodlg.cpp
 
-plugins/pluginwizard/enterinfodlg.o: plugins/pluginwizard/enterinfodlg.d
+plugins/pluginwizard/enterinfodlg.o: plugins/pluginwizard/.deps/enterinfodlg.d
 	@echo Compiling "plugins\pluginwizard\enterinfodlg.cpp"...
 	@$(CPP) $(plugin_PluginsWizard_CFLAGS) $(plugin_PluginsWizard_INCS) -c plugins/pluginwizard/enterinfodlg.cpp -o plugins/pluginwizard/enterinfodlg.o
 
-plugins/pluginwizard/pluginwizard.d: plugins/pluginwizard/pluginwizard.cpp
+plugins/pluginwizard/.deps/pluginwizard.d: plugins/pluginwizard/pluginwizard.cpp
 	@echo Calculating dependencies for "plugins\pluginwizard\pluginwizard.cpp"...
-	@$(CPP) -MM $(plugin_PluginsWizard_CFLAGS) -MF plugins/pluginwizard/pluginwizard.d -MT plugins/pluginwizard/pluginwizard.o $(plugin_PluginsWizard_INCS) plugins/pluginwizard/pluginwizard.cpp
+	-@if not exist ./plugins\pluginwizard\.deps\. mkdir ./plugins\pluginwizard\.deps
+	@$(CPP) -MM $(plugin_PluginsWizard_CFLAGS) -MF plugins/pluginwizard/.deps/pluginwizard.d -MT plugins/pluginwizard/pluginwizard.o $(plugin_PluginsWizard_INCS) plugins/pluginwizard/pluginwizard.cpp
 
-plugins/pluginwizard/pluginwizard.o: plugins/pluginwizard/pluginwizard.d
+plugins/pluginwizard/pluginwizard.o: plugins/pluginwizard/.deps/pluginwizard.d
 	@echo Compiling "plugins\pluginwizard\pluginwizard.cpp"...
 	@$(CPP) $(plugin_PluginsWizard_CFLAGS) $(plugin_PluginsWizard_INCS) -c plugins/pluginwizard/pluginwizard.cpp -o plugins/pluginwizard/pluginwizard.o
 
-plugins/pluginwizard/pluginwizarddlg.d: plugins/pluginwizard/pluginwizarddlg.cpp
+plugins/pluginwizard/.deps/pluginwizarddlg.d: plugins/pluginwizard/pluginwizarddlg.cpp
 	@echo Calculating dependencies for "plugins\pluginwizard\pluginwizarddlg.cpp"...
-	@$(CPP) -MM $(plugin_PluginsWizard_CFLAGS) -MF plugins/pluginwizard/pluginwizarddlg.d -MT plugins/pluginwizard/pluginwizarddlg.o $(plugin_PluginsWizard_INCS) plugins/pluginwizard/pluginwizarddlg.cpp
+	-@if not exist ./plugins\pluginwizard\.deps\. mkdir ./plugins\pluginwizard\.deps
+	@$(CPP) -MM $(plugin_PluginsWizard_CFLAGS) -MF plugins/pluginwizard/.deps/pluginwizarddlg.d -MT plugins/pluginwizard/pluginwizarddlg.o $(plugin_PluginsWizard_INCS) plugins/pluginwizard/pluginwizarddlg.cpp
 
-plugins/pluginwizard/pluginwizarddlg.o: plugins/pluginwizard/pluginwizarddlg.d
+plugins/pluginwizard/pluginwizarddlg.o: plugins/pluginwizard/.deps/pluginwizarddlg.d
 	@echo Compiling "plugins\pluginwizard\pluginwizarddlg.cpp"...
 	@$(CPP) $(plugin_PluginsWizard_CFLAGS) $(plugin_PluginsWizard_INCS) -c plugins/pluginwizard/pluginwizarddlg.cpp -o plugins/pluginwizard/pluginwizarddlg.o
 
 
-plugins/todo/addtododlg.d: plugins/todo/addtododlg.cpp
+plugins/todo/.deps/addtododlg.d: plugins/todo/addtododlg.cpp
 	@echo Calculating dependencies for "plugins\todo\addtododlg.cpp"...
-	@$(CPP) -MM $(plugin_ToDo_CFLAGS) -MF plugins/todo/addtododlg.d -MT plugins/todo/addtododlg.o $(plugin_ToDo_INCS) plugins/todo/addtododlg.cpp
+	-@if not exist ./plugins\todo\.deps\. mkdir ./plugins\todo\.deps
+	@$(CPP) -MM $(plugin_ToDo_CFLAGS) -MF plugins/todo/.deps/addtododlg.d -MT plugins/todo/addtododlg.o $(plugin_ToDo_INCS) plugins/todo/addtododlg.cpp
 
-plugins/todo/addtododlg.o: plugins/todo/addtododlg.d
+plugins/todo/addtododlg.o: plugins/todo/.deps/addtododlg.d
 	@echo Compiling "plugins\todo\addtododlg.cpp"...
 	@$(CPP) $(plugin_ToDo_CFLAGS) $(plugin_ToDo_INCS) -c plugins/todo/addtododlg.cpp -o plugins/todo/addtododlg.o
 
-plugins/todo/todolist.d: plugins/todo/todolist.cpp
+plugins/todo/.deps/todolist.d: plugins/todo/todolist.cpp
 	@echo Calculating dependencies for "plugins\todo\todolist.cpp"...
-	@$(CPP) -MM $(plugin_ToDo_CFLAGS) -MF plugins/todo/todolist.d -MT plugins/todo/todolist.o $(plugin_ToDo_INCS) plugins/todo/todolist.cpp
+	-@if not exist ./plugins\todo\.deps\. mkdir ./plugins\todo\.deps
+	@$(CPP) -MM $(plugin_ToDo_CFLAGS) -MF plugins/todo/.deps/todolist.d -MT plugins/todo/todolist.o $(plugin_ToDo_INCS) plugins/todo/todolist.cpp
 
-plugins/todo/todolist.o: plugins/todo/todolist.d
+plugins/todo/todolist.o: plugins/todo/.deps/todolist.d
 	@echo Compiling "plugins\todo\todolist.cpp"...
 	@$(CPP) $(plugin_ToDo_CFLAGS) $(plugin_ToDo_INCS) -c plugins/todo/todolist.cpp -o plugins/todo/todolist.o
 
-plugins/todo/todolistview.d: plugins/todo/todolistview.cpp
+plugins/todo/.deps/todolistview.d: plugins/todo/todolistview.cpp
 	@echo Calculating dependencies for "plugins\todo\todolistview.cpp"...
-	@$(CPP) -MM $(plugin_ToDo_CFLAGS) -MF plugins/todo/todolistview.d -MT plugins/todo/todolistview.o $(plugin_ToDo_INCS) plugins/todo/todolistview.cpp
+	-@if not exist ./plugins\todo\.deps\. mkdir ./plugins\todo\.deps
+	@$(CPP) -MM $(plugin_ToDo_CFLAGS) -MF plugins/todo/.deps/todolistview.d -MT plugins/todo/todolistview.o $(plugin_ToDo_INCS) plugins/todo/todolistview.cpp
 
-plugins/todo/todolistview.o: plugins/todo/todolistview.d
+plugins/todo/todolistview.o: plugins/todo/.deps/todolistview.d
 	@echo Compiling "plugins\todo\todolistview.cpp"...
 	@$(CPP) $(plugin_ToDo_CFLAGS) $(plugin_ToDo_INCS) -c plugins/todo/todolistview.cpp -o plugins/todo/todolistview.o
 
-plugins/todo/todosettingsdlg.d: plugins/todo/todosettingsdlg.cpp
+plugins/todo/.deps/todosettingsdlg.d: plugins/todo/todosettingsdlg.cpp
 	@echo Calculating dependencies for "plugins\todo\todosettingsdlg.cpp"...
-	@$(CPP) -MM $(plugin_ToDo_CFLAGS) -MF plugins/todo/todosettingsdlg.d -MT plugins/todo/todosettingsdlg.o $(plugin_ToDo_INCS) plugins/todo/todosettingsdlg.cpp
+	-@if not exist ./plugins\todo\.deps\. mkdir ./plugins\todo\.deps
+	@$(CPP) -MM $(plugin_ToDo_CFLAGS) -MF plugins/todo/.deps/todosettingsdlg.d -MT plugins/todo/todosettingsdlg.o $(plugin_ToDo_INCS) plugins/todo/todosettingsdlg.cpp
 
-plugins/todo/todosettingsdlg.o: plugins/todo/todosettingsdlg.d
+plugins/todo/todosettingsdlg.o: plugins/todo/.deps/todosettingsdlg.d
 	@echo Compiling "plugins\todo\todosettingsdlg.cpp"...
 	@$(CPP) $(plugin_ToDo_CFLAGS) $(plugin_ToDo_INCS) -c plugins/todo/todosettingsdlg.cpp -o plugins/todo/todosettingsdlg.o
 
 
-plugins/xpmanifest/windowsxplooknfeel.d: plugins/xpmanifest/windowsxplooknfeel.cpp
+plugins/xpmanifest/.deps/windowsxplooknfeel.d: plugins/xpmanifest/windowsxplooknfeel.cpp
 	@echo Calculating dependencies for "plugins\xpmanifest\windowsxplooknfeel.cpp"...
-	@$(CPP) -MM $(plugin_XPManifest_CFLAGS) -MF plugins/xpmanifest/windowsxplooknfeel.d -MT plugins/xpmanifest/windowsxplooknfeel.o $(plugin_XPManifest_INCS) plugins/xpmanifest/windowsxplooknfeel.cpp
+	-@if not exist ./plugins\xpmanifest\.deps\. mkdir ./plugins\xpmanifest\.deps
+	@$(CPP) -MM $(plugin_XPManifest_CFLAGS) -MF plugins/xpmanifest/.deps/windowsxplooknfeel.d -MT plugins/xpmanifest/windowsxplooknfeel.o $(plugin_XPManifest_INCS) plugins/xpmanifest/windowsxplooknfeel.cpp
 
-plugins/xpmanifest/windowsxplooknfeel.o: plugins/xpmanifest/windowsxplooknfeel.d
+plugins/xpmanifest/windowsxplooknfeel.o: plugins/xpmanifest/.deps/windowsxplooknfeel.d
 	@echo Compiling "plugins\xpmanifest\windowsxplooknfeel.cpp"...
 	@$(CPP) $(plugin_XPManifest_CFLAGS) $(plugin_XPManifest_INCS) -c plugins/xpmanifest/windowsxplooknfeel.cpp -o plugins/xpmanifest/windowsxplooknfeel.o
 
 
 
-tools/ConsoleRunner/main.d: tools/ConsoleRunner/main.cpp
+tools/ConsoleRunner/.deps/main.d: tools/ConsoleRunner/main.cpp
 	@echo Calculating dependencies for "tools\ConsoleRunner\main.cpp"...
-	@$(CPP) -MM $(console_runner_CFLAGS) -MF tools/ConsoleRunner/main.d -MT tools/ConsoleRunner/main.o $(console_runner_INCS) tools/ConsoleRunner/main.cpp
+	-@if not exist ./tools\ConsoleRunner\.deps\. mkdir ./tools\ConsoleRunner\.deps
+	@$(CPP) -MM $(console_runner_CFLAGS) -MF tools/ConsoleRunner/.deps/main.d -MT tools/ConsoleRunner/main.o $(console_runner_INCS) tools/ConsoleRunner/main.cpp
 
-tools/ConsoleRunner/main.o: tools/ConsoleRunner/main.d
+tools/ConsoleRunner/main.o: tools/ConsoleRunner/.deps/main.d
 	@echo Compiling "tools\ConsoleRunner\main.cpp"...
 	@$(CPP) $(console_runner_CFLAGS) $(console_runner_INCS) -c tools/ConsoleRunner/main.cpp -o tools/ConsoleRunner/main.o
 

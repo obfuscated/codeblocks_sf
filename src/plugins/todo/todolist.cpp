@@ -96,7 +96,8 @@ void ToDoList::OnAttach()
 
 void ToDoList::OnRelease(bool appShutDown)
 {
-    Manager::Get()->GetMessageManager()->DeletePage(m_ListPageIndex);
+    if (Manager::Get()->GetMessageManager())
+        Manager::Get()->GetMessageManager()->DeletePage(m_ListPageIndex);
 	if (m_pMenu)
 		m_pMenu->Delete(idViewTodo);
 }

@@ -39,6 +39,7 @@ class DLLIMPORT CompilerOptions
 		CompOption* GetOption(int index){ return m_Options[index]; }
 		CompOption* GetOptionByName(const wxString& name);
 		CompOption* GetOptionByOption(const wxString& option);
+		CompOption* GetOptionByAdditionalLibs(const wxString& libs);
 	protected:
 	private:
 		OptionsArray m_Options;

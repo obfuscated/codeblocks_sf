@@ -177,6 +177,8 @@ cbEditor::~cbEditor()
 
 void cbEditor::NotifyPlugins(wxEventType type, int intArg, const wxString& strArg, int xArg, int yArg)
 {
+    if (!Manager::Get()->GetPluginManager())
+        return; // no plugin manager! app shuting down?
 	CodeBlocksEvent event(type);
 	event.SetEditor(this);
 	event.SetInt(intArg);
@@ -327,7 +329,7 @@ void cbEditor::SetEditorStyle()
     m_pControl->SetViewEOL(ConfigManager::Get()->Read("/editor/show_eol", 0L));
 	//gutter
     m_pControl->SetEdgeMode(ConfigManager::Get()->Read("/editor/gutter/mode", 1));
-    m_pControl->SetEdgeColour(GetOptionColour("/editor/gutter/color", wxColour(0x00, 0x00, 0x00)));
+    m_pControl->SetEdgeColour(GetOptionColour("/editor/gutter/color", wxColour(0xC0, 0xC0, 0xC0)));
     m_pControl->SetEdgeColumn(ConfigManager::Get()->Read("/editor/gutter/column", 80));
 
     m_pControl->StyleSetFont(wxSTC_STYLE_DEFAULT, font);
@@ -809,11 +811,9 @@ void cbEditor::DisplayContextMenu(const wxPoint& position)
 	PopupMenu(popup, pos.x, pos.y);
 	
 	// FIXME: mandrav:
-	// I 'm perfectly sure that this is a memory leak here (not deleting the menu),
-	// but why deleting the menu causes a SIGSEGV under wxGTK???
-#ifdef __WXMSW__
- 	delete popup;
-#endif
+	// I 'm pretty sure that this is a memory leak here (not deleting the menu),
+	// but why deleting the menu causes a SIGSEGV???
+// 	delete popup;
 }
 
 // events

@@ -280,7 +280,7 @@ void EditorColorSet::LoadBuiltInSet(HighlightLanguage lang)
 		AddOption(lang, _("Documentation comment (line)"), 	        wxSTC_C_COMMENTLINEDOC, 		wxColour(0xA0, 0xA0, 0xA0), wxColour(0xFF, 0xFF, 0xFF));
 		AddOption(lang, _("Documentation comment keyword"), 	    wxSTC_C_COMMENTDOCKEYWORD, 		wxColour(0xA0, 0xA0, 0xA0), wxColour(0xFF, 0xFF, 0xFF));
 		AddOption(lang, _("Documentation comment keyword error"),   wxSTC_C_COMMENTDOCKEYWORDERROR,	wxColour(0xA0, 0xA0, 0xA0), wxColour(0xFF, 0xFF, 0xFF));
-		AddOption(lang, _("Keyword"),					            wxSTC_C_WORD,					wxNullColour, wxColour(0xFF, 0xFF, 0xFF), true);
+		AddOption(lang, _("Keyword"),					            wxSTC_C_WORD,					wxColour(0x00, 0x00, 0xA0), wxColour(0xFF, 0xFF, 0xFF), true);
 		AddOption(lang, _("Number"), 					            wxSTC_C_NUMBER,					wxColour(0xF0, 0x00, 0xF0), wxColour(0xFF, 0xFF, 0xFF));
 		AddOption(lang, _("Operator"), 					            wxSTC_C_OPERATOR,				wxColour(0xFF, 0x00, 0x00), wxColour(0xFF, 0xFF, 0xFF));
 		AddOption(lang, _("Preprocessor"), 				            wxSTC_C_PREPROCESSOR,			wxColour(0x00, 0xA0, 0x00), wxColour(0xFF, 0xFF, 0xFF));
@@ -294,7 +294,7 @@ void EditorColorSet::LoadBuiltInSet(HighlightLanguage lang)
 		Manager::Get()->GetMessageManager()->DebugLog(_("Loading LUA highlighter"));
 		AddOption(lang, _("Comment (block)"), 			wxSTC_LUA_COMMENT, 				wxColour(0xA0, 0xA0, 0xA0), wxColour(0xFF, 0xFF, 0xFF));
 		AddOption(lang, _("Comment (line)"), 			wxSTC_LUA_COMMENTLINE,			wxColour(0xA0, 0xA0, 0xA0), wxColour(0xFF, 0xFF, 0xFF));
-		AddOption(lang, _("Keyword"),					wxSTC_LUA_WORD,					wxNullColour, wxColour(0xFF, 0xFF, 0xFF), true);
+		AddOption(lang, _("Keyword"),					wxSTC_LUA_WORD,					wxColour(0x00, 0x00, 0xA0), wxColour(0xFF, 0xFF, 0xFF), true);
 		AddOption(lang, _("Number"), 					wxSTC_LUA_NUMBER,				wxColour(0xF0, 0x00, 0xF0), wxColour(0xFF, 0xFF, 0xFF));
 		AddOption(lang, _("Operator"), 					wxSTC_LUA_OPERATOR,				wxColour(0xFF, 0x00, 0x00), wxColour(0xFF, 0xFF, 0xFF));
 		AddOption(lang, _("String"), 					wxSTC_LUA_STRING,				wxColour(0x00, 0x00, 0xFF), wxColour(0xFF, 0xFF, 0xFF));

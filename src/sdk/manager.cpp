@@ -39,6 +39,8 @@
 #include "templatemanager.h"
 #include "managerproxy.h"
 
+static bool appShutingDown = false;
+
 Manager* Manager::Get(wxMDIParentFrame* appWindow, wxNotebook* notebook)
 {
     if (!ManagerProxy::Get() && appWindow)
@@ -51,6 +53,7 @@ Manager* Manager::Get(wxMDIParentFrame* appWindow, wxNotebook* notebook)
 
 void Manager::Free()
 {
+    appShutingDown = true;
 	if (ManagerProxy::Get())
 	{
 		/**
@@ -108,30 +111,30 @@ wxNotebook* Manager::GetNotebook()
 
 ProjectManager* Manager::GetProjectManager()
 {
-	return ProjectManager::Get(m_pNotebook);
+	return appShutingDown ? 0 : ProjectManager::Get(m_pNotebook);
 }
 
 EditorManager* Manager::GetEditorManager()
 {
-	return EditorManager::Get(m_pAppWindow);
+	return appShutingDown ? 0 : EditorManager::Get(m_pAppWindow);
 }
 
 MessageManager* Manager::GetMessageManager()
 {
-	return MessageManager::Get(m_pAppWindow);
+	return appShutingDown ? 0 : MessageManager::Get(m_pAppWindow);
 }
 
 PluginManager* Manager::GetPluginManager()
 {
-	return PluginManager::Get();
+	return appShutingDown ? 0 : PluginManager::Get();
 }
 
 ToolsManager* Manager::GetToolsManager()
 {
-	return ToolsManager::Get();
+	return appShutingDown ? 0 : ToolsManager::Get();
 }
 
 MacrosManager* Manager::GetMacrosManager()
 {
-	return MacrosManager::Get();
+	return appShutingDown ? 0 : MacrosManager::Get();
 }
