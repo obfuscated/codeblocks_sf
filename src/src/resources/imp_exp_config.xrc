@@ -7,37 +7,56 @@
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
         <object class="wxStaticText">
-          <label>Select configuration settings to import / export:</label>
+          <label>Registered configuration settings:</label>
         </object>
-        <flag>wxALL</flag>
+        <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
         <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxCheckList" name="lstConf">
-          <content/>
-        </object>
-        <option>1</option>
-        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
-        <border>8</border>
-        <minsize>-1,128</minsize>
       </object>
       <object class="sizeritem">
         <object class="wxBoxSizer">
           <orient>wxHORIZONTAL</orient>
           <object class="sizeritem">
-            <object class="wxButton" name="btnImport">
-              <label>&amp;Import</label>
+            <object class="wxCheckList" name="lstConf">
+              <content/>
             </object>
+            <option>1</option>
+            <flag>wxGROW</flag>
+            <border>8</border>
+            <minsize>192,192</minsize>
           </object>
           <object class="sizeritem">
-            <object class="wxButton" name="btnExport">
-              <label>&amp;Export</label>
+            <object class="wxBoxSizer">
+              <orient>wxVERTICAL</orient>
+              <object class="sizeritem">
+                <object class="wxButton" name="btnImport">
+                  <label>&amp;Import selected</label>
+                </object>
+                <flag>wxGROW</flag>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="btnExport">
+                  <label>&amp;Export selected</label>
+                </object>
+                <flag>wxTOP|wxGROW</flag>
+                <border>8</border>
+              </object>
+              <object class="spacer">
+                <option>1</option>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="btnToggle">
+                  <label>&amp;Toggle selection</label>
+                </object>
+                <flag>wxGROW</flag>
+              </object>
             </object>
-            <flag>wxLEFT</flag>
+            <flag>wxLEFT|wxGROW</flag>
             <border>8</border>
           </object>
         </object>
-        <flag>wxALIGN_CENTRE_HORIZONTAL</flag>
+        <option>1</option>
+        <flag>wxALL|wxGROW</flag>
+        <border>8</border>
       </object>
       <object class="sizeritem">
         <object class="wxStaticLine"/>

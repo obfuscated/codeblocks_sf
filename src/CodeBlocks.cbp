@@ -10,11 +10,11 @@
 		<Option compiler="0"/>
 		<Build>
 			<Target title="tinyXML">
-				<Option output="codeblocks.dll"/>
+				<Option output="sdk\tinyxml\libtxml.a"/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
-				<Option type="3"/>
+				<Option type="2"/>
 				<Option compiler="0"/>
 			</Target>
 			<Target title="sdk">

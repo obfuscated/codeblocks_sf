@@ -11,6 +11,7 @@ class ImpExpConfig : public wxDialog
 	protected:
         void OnImport(wxCommandEvent& event);
         void OnExport(wxCommandEvent& event);
+        void OnToggle(wxCommandEvent& event);
         void OnUpdateUI(wxUpdateUIEvent& event);
 	private:
         wxString AskForFile(const wxString& msg, int flags);

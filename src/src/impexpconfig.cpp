@@ -11,6 +11,7 @@
 BEGIN_EVENT_TABLE(ImpExpConfig, wxDialog)
     EVT_BUTTON(XRCID("btnImport"), ImpExpConfig::OnImport)
     EVT_BUTTON(XRCID("btnExport"), ImpExpConfig::OnExport)
+    EVT_BUTTON(XRCID("btnToggle"), ImpExpConfig::OnToggle)
 END_EVENT_TABLE()
 
 ImpExpConfig::ImpExpConfig(wxWindow* parent)
@@ -40,6 +41,15 @@ wxString ImpExpConfig::AskForFile(const wxString& msg, int flags)
     if (dlg.ShowModal() == wxID_OK)
         return dlg.GetPath();
     return wxEmptyString;
+}
+
+void ImpExpConfig::OnToggle(wxCommandEvent& event)
+{
+    wxCheckListBox* list = XRCCTRL(*this, "lstConf", wxCheckListBox);
+    for (int i = 0; i < list->GetCount(); ++i)
+    {
+        list->Check(i, !list->IsChecked(i));
+    }
 }
 
 void ImpExpConfig::OnImport(wxCommandEvent& event)
