@@ -34,11 +34,12 @@ BEGIN_EVENT_TABLE(PipedProcess, wxProcess)
 END_EVENT_TABLE()
 
 // class constructor
-PipedProcess::PipedProcess(wxEvtHandler* parent, int id, bool pipe, const wxString& dir)
+PipedProcess::PipedProcess(void** pvThis, wxEvtHandler* parent, int id, bool pipe, const wxString& dir)
     : wxProcess(parent, id),
 	m_Parent(parent),
 	m_Id(id),
-	m_Pid(0)
+	m_Pid(0),
+	m_pvThis(pvThis)
 {
 	wxSetWorkingDirectory(dir);
 	if (pipe)
@@ -78,20 +79,6 @@ bool PipedProcess::HasInput()
 {
     bool hasInput = false;
 
-    if (IsErrorAvailable())
-    {
-        wxTextInputStream serr(*GetErrorStream());
-
-        wxString msg;
-        msg << serr.ReadLine();
-
-		CodeBlocksEvent event(cbEVT_PIPEDPROCESS_STDERR, m_Id);
-        event.SetString(msg);
-		m_Parent->ProcessEvent(event);
-
-        hasInput = true;
-    }
-
     if (IsInputAvailable())
     {
         wxTextInputStream sout(*GetInputStream());
@@ -101,7 +88,23 @@ bool PipedProcess::HasInput()
 
 		CodeBlocksEvent event(cbEVT_PIPEDPROCESS_STDOUT, m_Id);
         event.SetString(msg);
-		m_Parent->ProcessEvent(event);
+		wxPostEvent(m_Parent, event);
+// 		m_Parent->ProcessEvent(event);
+
+        hasInput = true;
+    }
+
+	    if (IsErrorAvailable())
+    {
+        wxTextInputStream serr(*GetErrorStream());
+
+        wxString msg;
+        msg << serr.ReadLine();
+
+		CodeBlocksEvent event(cbEVT_PIPEDPROCESS_STDERR, m_Id);
+        event.SetString(msg);
+		wxPostEvent(m_Parent, event);
+// 		m_Parent->ProcessEvent(event);
 
         hasInput = true;
     }
@@ -114,12 +117,14 @@ void PipedProcess::OnTerminate(int pid, int status)
     // show the rest of the output
     while ( HasInput() )
         ;
-
+	
 	CodeBlocksEvent event(cbEVT_PIPEDPROCESS_TERMINATED, m_Id);
     event.SetInt(status);
-//	m_Parent->ProcessEvent(event);
+//   	m_Parent->ProcessEvent(event);
 	wxPostEvent(m_Parent, event);
-
+	
+	if (m_pvThis)
+		*m_pvThis = 0L;
     delete this;
 }
 

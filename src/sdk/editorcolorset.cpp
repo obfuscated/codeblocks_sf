@@ -344,6 +344,7 @@ void EditorColorSet::Load()
 	
 	for (ColorsMap::iterator it = m_Colors.begin(); it != m_Colors.end(); ++it)
 	{
+		key = "";
 		key << "/editor/color_sets/" << m_Name << "/" << GetLanguageName(it->first);
 		if (!ConfigManager::Get()->HasGroup(key))
 		{

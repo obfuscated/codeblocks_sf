@@ -59,7 +59,10 @@ class CompilerGCC : public cbCompilerPlugin
 		void SwitchCompiler(int compilerIdx);
 		int GetCurrentCompilerIndex();
 
+		// used to read from the external process
+		void OnIdle(wxIdleEvent& event);
         void OnTimer(wxTimerEvent& event);
+
         void OnCompile(wxCommandEvent& event);
         void OnCompileFile(wxCommandEvent& event);
         void OnRebuild(wxCommandEvent& event);

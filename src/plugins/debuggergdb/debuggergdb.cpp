@@ -362,7 +362,7 @@ int DebuggerGDB::Debug()
         cmd << " --directory=\"" << it->GetBasePath() << "\"";
 	}
 
-    m_pProcess = new PipedProcess(this, idGDBProcess, true, project->GetBasePath());
+    m_pProcess = new PipedProcess((void**)&m_pProcess, this, idGDBProcess, true, project->GetBasePath());
     m_Pid = wxExecute(cmd, wxEXEC_ASYNC, m_pProcess);
 //    m_Pid = m_pProcess->Launch(cmd);
 

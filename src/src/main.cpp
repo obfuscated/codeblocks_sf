@@ -1100,6 +1100,7 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     SaveWindowState();
     TerminateRecentFilesHistory();
 	Manager::Get()->Free();
+	ConfigManager::Get()->Flush();
     Destroy();
 }
 
@@ -1554,8 +1555,8 @@ void MainFrame::OnProjectMenuUpdateUI(wxUpdateUIEvent& event)
 {
     cbProject* prj = m_pPrjMan ? m_pPrjMan->GetActiveProject() : 0L;
     wxMenuBar* mbar = GetMenuBar();
-
-    mbar->Enable(idProjectCloseProject, prj);
+    
+	mbar->Enable(idProjectCloseProject, prj);
     mbar->Enable(idProjectCloseAllProjects, prj);
     mbar->Enable(idProjectSaveProject, prj && prj->GetModified());
     mbar->Enable(idProjectSaveProjectAs, prj);
@@ -1571,6 +1572,7 @@ void MainFrame::OnEditorUpdateUI(CodeBlocksEvent& event)
 		event.GetEditor()->HighlightBraces(); // brace highlighting
 		DoUpdateStatusBar();
 	}
+	event.Skip();
 }
 
 void MainFrame::OnToggleBar(wxCommandEvent& event)

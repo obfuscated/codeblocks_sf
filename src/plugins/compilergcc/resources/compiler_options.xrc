@@ -141,6 +141,7 @@
                                   <object class="wxTextCtrl" name="txtCompilerOptions">
                                     <style>wxTE_MULTILINE|wxHSCROLL|wxTE_RICH2</style>
                                   </object>
+                                  <option>1</option>
                                   <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
                                   <border>8</border>
                                 </object>
@@ -171,6 +172,7 @@
                               <flag>wxEXPAND</flag>
                             </object>
                           </object>
+                          <option>1</option>
                           <flag>wxEXPAND</flag>
                         </object>
                       </object>
@@ -399,12 +401,11 @@
                       <object class="wxBoxSizer">
                         <orient>wxVERTICAL</orient>
                         <object class="sizeritem">
-                          <object class="wxFlexGridSizer">
+                          <object class="wxGridSizer">
                             <cols>2</cols>
                             <rows>2</rows>
                             <vgap>8</vgap>
                             <hgap>8</hgap>
-                            <growablecols>1</growablecols>
                             <object class="sizeritem">
                               <object class="wxStaticText">
                                 <label>Commands before build:</label>
@@ -414,6 +415,7 @@
                               <object class="wxTextCtrl" name="txtCmdBefore">
                                 <style>wxTE_MULTILINE|wxHSCROLL</style>
                               </object>
+                              <option>1</option>
                               <flag>wxEXPAND</flag>
                             </object>
                             <object class="sizeritem">
@@ -425,10 +427,9 @@
                               <object class="wxTextCtrl" name="txtCmdAfter">
                                 <style>wxTE_MULTILINE|wxHSCROLL</style>
                               </object>
+                              <option>1</option>
                               <flag>wxEXPAND</flag>
                             </object>
-                            <growablerows>0</growablerows>
-                            <growablerows>1</growablerows>
                           </object>
                           <option>1</option>
                           <flag>wxALL|wxEXPAND</flag>

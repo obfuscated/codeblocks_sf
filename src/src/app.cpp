@@ -136,8 +136,8 @@ bool CodeBlocksApp::OnInit()
         delete splash;
 
     frame->ShowTips(); // this func checks if the user wants tips, so no need to check here
-
-    return TRUE;
+    
+	return TRUE;
 }
 
 int CodeBlocksApp::OnExit()

@@ -55,7 +55,7 @@ END_EVENT_TABLE()
 EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
 	: m_TextColorControl(0L),
 	m_Theme(0L),
-	m_Lang(hlNone)
+	m_Lang(hlCpp)
 {
 	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgConfigureEditor"));
 

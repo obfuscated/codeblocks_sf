@@ -89,7 +89,8 @@ int idGCCProcess = wxNewId();
 
 BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
     EVT_UPDATE_UI_RANGE(idMenuCompile, idToolTargetLabel, CompilerGCC::OnUpdateUI)
-    EVT_TIMER(idTimerPollCompiler,                  CompilerGCC::OnTimer)
+    EVT_IDLE(										CompilerGCC::OnIdle)
+	EVT_TIMER(idTimerPollCompiler,                  CompilerGCC::OnTimer)
     
     EVT_MENU(idMenuRun,                             CompilerGCC::OnRun)
     EVT_MENU(idMenuCompileAndRun,                   CompilerGCC::OnCompileAndRun)
@@ -588,7 +589,7 @@ int CompilerGCC::DoRunQueue()
 	wxString dir = m_Project->GetBasePath();
 
 	m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLACK, *wxWHITE));
-//    msgMan->Log(m_PageIndex, m_Queue[m_QueueIndex].c_str());
+	//msgMan->Log(m_PageIndex, m_Queue[m_QueueIndex].c_str());
 
 	bool pipe = true;
 	int flags = wxEXEC_ASYNC;
@@ -599,7 +600,7 @@ int CompilerGCC::DoRunQueue()
 		m_IsRun = false;
 		dir = m_CdRun;
 	}
-    m_Process = new PipedProcess(this, idGCCProcess, pipe, dir);
+    m_Process = new PipedProcess((void**)&m_Process, this, idGCCProcess, pipe, dir);
     m_Pid = wxExecute(m_Queue[m_QueueIndex], flags, m_Process);
     if ( !m_Pid )
     {
@@ -850,9 +851,9 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 		cmd << "\"" << target->GetHostApplication() << "\" " << target->GetExecutionParameters();
 	}
 	else
-		cmd << "\"" << f.GetFullName() << "\" " << target->GetExecutionParameters();
+		cmd << "\"" << UnixFilename(f.GetFullName()) << "\" " << target->GetExecutionParameters();
 //		cmd << "\"" << target->GetOutputFilename() << "\" " << target->GetExecutionParameters();
-//    wxMessageBox("cdrun=" + m_CdRun + "\nWill run: " + cmd);
+    wxMessageBox("cdrun=" + m_CdRun + "\nWill run: " + cmd);
 	m_Queue.Add(cmd);
 
 	m_IsRun = true;
@@ -983,10 +984,17 @@ int CompilerGCC::CompileFile(const wxString& file)
 
 // events
 
+void CompilerGCC::OnIdle(wxIdleEvent& event)
+{
+    if (m_Process && ((PipedProcess*)m_Process)->HasInput())
+		event.RequestMore();
+	else
+		event.Skip();
+}
+
 void CompilerGCC::OnTimer(wxTimerEvent& event)
 {
-    while (m_Process && ((PipedProcess*)m_Process)->HasInput())
-		;
+	wxWakeUpIdle();
 }
 
 void CompilerGCC::OnRun(wxCommandEvent& event)
@@ -1318,8 +1326,13 @@ void CompilerGCC::OnGCCOutput(CodeBlocksEvent& event)
 	}
 }
 
+static int errcnt = 0;
+
 void CompilerGCC::OnGCCError(CodeBlocksEvent& event)
 {
+	++errcnt;
+	if (errcnt > 50)
+		return;
 	wxString msg = event.GetString();
 	if (!msg.IsEmpty())
 	{
@@ -1350,13 +1363,15 @@ void CompilerGCC::OnGCCError(CodeBlocksEvent& event)
 		else
 			m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_MAROON));
 		Manager::Get()->GetMessageManager()->Log(m_PageIndex, msg.c_str());
-	}
+ 	}
 }
 
 void CompilerGCC::OnGCCTerminated(CodeBlocksEvent& event)
 {
+//    ((PipedProcess*)m_Process)->HasInput();
+
+	errcnt = 0;
     m_timerIdleWakeUp.Stop();
-    m_Process = 0L;
     m_Pid = 0;
 	m_LastExitCode = event.GetInt();
 
