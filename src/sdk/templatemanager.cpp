@@ -232,21 +232,61 @@ void TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg)
 
 void TemplateManager::SaveUserTemplate(cbProject* prj)
 {
+#if 0
     if (!prj)
         return;
 
-    // TODO: save project & all files
-    
-    // ask for template title (unique)
-    wxTextEntryDialog dlg(0, _("Enter a title for this template"), _("Enter title"), prj->GetTitle());
-    if (dlg.ShowModal() != wxID_OK)
+    // save project & all files
+    if (!prj->SaveAllFiles() ||
+        !prj->Save())
+    {
+        wxMessageBox(_("Could not save project and/or all its files. Aborting..."));
         return;
-    wxString title = dlg.GetValue();
-    
+    }
+
     // create destination dir
-    // TODO: check if it exists and ask a different title
-    
+    // USERPROFILE is used under windows; all other OSes use HOME,
+    // so if HOME is not defined, we 'll try USERPROFILE...
+    wxString templ;
+    if (wxGetEnv("HOME", &templ) || wxGetEnv("USERPROFILE", &templ))
+    {
+        templ << "/.CodeBlocks";
+        if (!wxDirExists(templ))
+            wxMkdir(templ, 0755);
+    }
+
+    // check if it exists and ask a different title
+    wxString title = prj->GetTitle();
+    while (true)
+    {
+        // ask for template title (unique)
+        wxTextEntryDialog dlg(0, _("Enter a title for this template"), _("Enter title"), title);
+        if (dlg.ShowModal() != wxID_OK)
+            return;
+
+        title = dlg.GetValue();
+        if (!wxDirExists(templ + "/" + title))
+        {
+            templ << "/" << title;
+            wxMkdir(templ, 0755);
+            break;
+        }
+        else
+            wxMessageBox(_("You have another template with the same title.\nPlease choose another title..."));
+    }
+
     // copy project and all files to destination dir
+    templ << "/";
+    wxFileName fname;
+    for (int i = 0; i < prj->GetFilesCount(); ++i)
+    {
+        wxString src = prj->GetFile(i)->relativeFilename;
+        wxString dst = templ + prj->GetFile(i)->relativeFilename;
+        wxCopyFile(src, dst, true);
+    }
+    fname.Assign(prj->GetFilename());
+    wxCopyFile(prj->GetFilename(), templ + fname.GetFullName());
+#endif
 }
 
 // events

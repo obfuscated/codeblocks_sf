@@ -68,6 +68,7 @@ class MainFrame : public wxMDIParentFrame
         void OnProjectSaveProject(wxCommandEvent& event);
         void OnProjectSaveProjectAs(wxCommandEvent& event);
         void OnProjectSaveAllProjects(wxCommandEvent& event);
+        void OnProjectSaveTemplate(wxCommandEvent& event);
         void OnProjectCloseProject(wxCommandEvent& event);
         void OnProjectCloseAllProjects(wxCommandEvent& event);
 		void OnProjectImportDevCpp(wxCommandEvent& event);

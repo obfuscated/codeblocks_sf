@@ -105,6 +105,7 @@ int idProjectOpen = wxNewId();
 int idProjectSaveProject = wxNewId();
 int idProjectSaveProjectAs = wxNewId();
 int idProjectSaveAllProjects = wxNewId();
+int idProjectSaveTemplate = wxNewId();
 int idProjectCloseProject = wxNewId();
 int idProjectCloseAllProjects = wxNewId();
 int idProjectImport = wxNewId();
@@ -138,6 +139,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idProjectSaveProject, MainFrame::OnProjectMenuUpdateUI)
     EVT_UPDATE_UI(idProjectSaveProjectAs, MainFrame::OnProjectMenuUpdateUI)
     EVT_UPDATE_UI(idProjectSaveAllProjects, MainFrame::OnProjectMenuUpdateUI)
+    EVT_UPDATE_UI(idProjectSaveTemplate, MainFrame::OnProjectMenuUpdateUI)
     EVT_UPDATE_UI(idProjectCloseProject, MainFrame::OnProjectMenuUpdateUI)
     EVT_UPDATE_UI(idProjectCloseAllProjects, MainFrame::OnProjectMenuUpdateUI)
 
@@ -232,6 +234,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idProjectSaveProject,  MainFrame::OnProjectSaveProject)
     EVT_MENU(idProjectSaveProjectAs,  MainFrame::OnProjectSaveProjectAs)
     EVT_MENU(idProjectSaveAllProjects,  MainFrame::OnProjectSaveAllProjects)
+    EVT_MENU(idProjectSaveTemplate,  MainFrame::OnProjectSaveTemplate)
     EVT_MENU(idProjectCloseProject,  MainFrame::OnProjectCloseProject)
     EVT_MENU(idProjectCloseAllProjects,  MainFrame::OnProjectCloseAllProjects)
     EVT_MENU(idProjectImportDevCpp,  MainFrame::OnProjectImportDevCpp)
@@ -462,6 +465,8 @@ void MainFrame::CreateMenubar()
 	project->Append(idProjectSaveProject, _("&Save project"), _("Save active project"));
 	project->Append(idProjectSaveProjectAs, _("Save project &as..."), _("Save active project under a different name"));
 	project->Append(idProjectSaveAllProjects, _("Save a&ll projects"), _("Save all modified projects"));
+	project->AppendSeparator();
+	project->Append(idProjectSaveTemplate, _("&Keep project as template"), _("Keep this project as a user-template to base new projects on"));
 	project->AppendSeparator();
 	project->Append(idProjectCloseProject, _("&Close project"), _("Close active project"));
 	project->Append(idProjectCloseAllProjects, _("Close all projects"), _("Close all opened projects"));
@@ -1381,6 +1386,11 @@ void MainFrame::OnProjectSaveAllProjects(wxCommandEvent& event)
     DoUpdateStatusBar();
 }
 
+void MainFrame::OnProjectSaveTemplate(wxCommandEvent& event)
+{
+    TemplateManager::Get()->SaveUserTemplate(m_pPrjMan->GetActiveProject());
+}
+
 void MainFrame::OnProjectCloseProject(wxCommandEvent& event)
 {
     m_pPrjMan->CloseActiveProject();
@@ -1430,6 +1440,7 @@ void MainFrame::OnProjectImportMSVC(wxCommandEvent& event)
 
     delete dlg;
 }
+
 void MainFrame::OnProjectImportMSVS(wxCommandEvent& event)
 {
     wxFileDialog* dlg = new wxFileDialog(this,
@@ -1573,6 +1584,7 @@ void MainFrame::OnProjectMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idProjectSaveProject, prj && prj->GetModified());
     mbar->Enable(idProjectSaveProjectAs, prj);
     mbar->Enable(idProjectSaveAllProjects, prj);
+    mbar->Enable(idProjectSaveTemplate, prj);
 	
 	event.Skip();
 }
