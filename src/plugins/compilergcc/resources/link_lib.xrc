@@ -1,0 +1,63 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxDialog" name="dlgLinkLib">
+    <title>Link library</title>
+    <centered>1</centered>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxStaticText">
+              <label>Library:</label>
+            </object>
+            <flag>wxTOP</flag>
+            <border>4</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxTextCtrl" name="txtLib"/>
+            <option>1</option>
+            <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+            <border>8</border>
+            <minsize>240,-1</minsize>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="btnBrowse">
+              <label>...</label>
+            </object>
+            <minsize>24,24</minsize>
+          </object>
+        </object>
+        <option>1</option>
+        <flag>wxALL|wxGROW</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticLine"/>
+        <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_OK">
+              <label>&amp;OK</label>
+              <default>1</default>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_CANCEL">
+              <label>&amp;Cancel</label>
+            </object>
+            <flag>wxLEFT</flag>
+            <border>8</border>
+          </object>
+        </object>
+        <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <border>8</border>
+      </object>
+    </object>
+  </object>
+</resource>

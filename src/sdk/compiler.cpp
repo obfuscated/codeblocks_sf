@@ -74,6 +74,7 @@ void Compiler::SaveSettings(const wxString& baseKey)
     ConfigManager::Get()->Write(tmp + "/linker", m_Programs.LD);
     ConfigManager::Get()->Write(tmp + "/res_compiler", m_Programs.WINDRES);
     ConfigManager::Get()->Write(tmp + "/make", m_Programs.MAKE);
+    ConfigManager::Get()->Write(tmp + "/debugger", m_Programs.DBG);
 
     for (int i = 0; i < COMPILER_COMMAND_TYPES_COUNT; ++i)
     {
@@ -93,6 +94,10 @@ void Compiler::SaveSettings(const wxString& baseKey)
     ConfigManager::Get()->Write(tmp + "/switches/forceLinkerQuotes", m_Switches.forceLinkerUseQuotes);
     ConfigManager::Get()->Write(tmp + "/switches/logging", m_Switches.logging);
     ConfigManager::Get()->Write(tmp + "/switches/buildMethod", m_Switches.buildMethod);
+    ConfigManager::Get()->Write(tmp + "/switches/libPrefix", m_Switches.libPrefix);
+    ConfigManager::Get()->Write(tmp + "/switches/libExtension", m_Switches.libExtension);
+    ConfigManager::Get()->Write(tmp + "/switches/linkerNeedsLibPrefix", m_Switches.linkerNeedsLibPrefix);
+    ConfigManager::Get()->Write(tmp + "/switches/linkerNeedsLibExtension", m_Switches.linkerNeedsLibExtension);
 }
 
 void Compiler::LoadSettings(const wxString& baseKey)
@@ -112,6 +117,7 @@ void Compiler::LoadSettings(const wxString& baseKey)
     m_Programs.LD = ConfigManager::Get()->Read(tmp + "/linker", m_Programs.LD);
     m_Programs.WINDRES = ConfigManager::Get()->Read(tmp + "/res_compiler", m_Programs.WINDRES);
     m_Programs.MAKE = ConfigManager::Get()->Read(tmp + "/make", m_Programs.MAKE);
+    m_Programs.DBG = ConfigManager::Get()->Read(tmp + "/debugger", m_Programs.DBG);
 
     m_CompilerOptions = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/compiler_options", wxEmptyString));
     m_LinkerOptions = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/linker_options", wxEmptyString));
@@ -138,4 +144,8 @@ void Compiler::LoadSettings(const wxString& baseKey)
     m_Switches.forceLinkerUseQuotes = ConfigManager::Get()->Read(tmp + "/switches/forceLinkerQuotes", m_Switches.forceLinkerUseQuotes);
     m_Switches.logging = (CompilerLoggingType)ConfigManager::Get()->Read(tmp + "/switches/logging", m_Switches.logging);
     m_Switches.buildMethod = (CompilerBuildMethod)ConfigManager::Get()->Read(tmp + "/switches/buildMethod", m_Switches.buildMethod);
+    m_Switches.libPrefix = ConfigManager::Get()->Read(tmp + "/switches/libPrefix", m_Switches.libPrefix);
+    m_Switches.libExtension = ConfigManager::Get()->Read(tmp + "/switches/libExtension", m_Switches.libExtension);
+    m_Switches.linkerNeedsLibPrefix = ConfigManager::Get()->Read(tmp + "/switches/linkerNeedsLibPrefix", m_Switches.linkerNeedsLibPrefix);
+    m_Switches.linkerNeedsLibExtension = ConfigManager::Get()->Read(tmp + "/switches/linkerNeedsLibExtension", m_Switches.linkerNeedsLibExtension);
 }

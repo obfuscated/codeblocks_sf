@@ -62,6 +62,11 @@ class CompilerOptionsDlg : public wxDialog
 		void OnAddCompilerClick(wxCommandEvent& event);
 		void OnEditCompilerClick(wxCommandEvent& event);
 		void OnRemoveCompilerClick(wxCommandEvent& event);
+		void OnAddLibClick(wxCommandEvent& event);
+		void OnEditLibClick(wxCommandEvent& event);
+		void OnRemoveLibClick(wxCommandEvent& event);
+		void OnMoveLibUpClick(wxCommandEvent& event);
+		void OnMoveLibDownClick(wxCommandEvent& event);
 		void OnMasterPathClick(wxCommandEvent& event);
 		void OnAutoDetectClick(wxCommandEvent& event);
 		void OnSelectProgramClick(wxCommandEvent& event);

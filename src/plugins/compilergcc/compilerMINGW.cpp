@@ -32,6 +32,10 @@ CompilerMINGW::CompilerMINGW()
 	m_Switches.forceCompilerUseQuotes = false;
 	m_Switches.forceLinkerUseQuotes = false;
 	m_Switches.logging = clogSimple;
+	m_Switches.libPrefix = "lib";
+	m_Switches.libExtension = "a";
+	m_Switches.linkerNeedsLibPrefix = false;
+	m_Switches.linkerNeedsLibExtension = false;
 #ifdef __WXMSW__
 	m_Switches.buildMethod = cbmDirect;
 #else

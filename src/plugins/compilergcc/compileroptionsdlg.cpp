@@ -27,10 +27,12 @@
 #include "compilergcc.h"
 #include "advancedcompileroptionsdlg.h"
 #include <wx/xrc/xmlres.h>
+#include <wx/spinbutt.h>
 #include <manager.h>
 #include <configmanager.h>
 #include <messagemanager.h>
 #include <projectmanager.h>
+#include "linklibdlg.h"
 
 BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxDialog)
     EVT_UPDATE_UI(			XRCID("btnEditIncludes"),	CompilerOptionsDlg::OnUpdateUI)
@@ -47,6 +49,10 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxDialog)
     EVT_UPDATE_UI(			XRCID("btnAddCompiler"),	CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnRenameCompiler"),	CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnDelCompiler"),	CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(			XRCID("btnAddLib"),	        CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(			XRCID("btnEditLib"),	    CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(			XRCID("btnDelLib"),	        CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(			XRCID("spnLibs"),	        CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("txtMasterPath"),		CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnMasterPath"),		CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("txtCcompiler"),		CompilerOptionsDlg::OnUpdateUI)
@@ -78,6 +84,11 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxDialog)
 	EVT_BUTTON(				XRCID("btnAddLibs"),		CompilerOptionsDlg::OnAddDirClick)
 	EVT_BUTTON(				XRCID("btnEditLibs"),		CompilerOptionsDlg::OnEditDirClick)
 	EVT_BUTTON(				XRCID("btnDelLibs"),		CompilerOptionsDlg::OnRemoveDirClick)
+    EVT_BUTTON(			    XRCID("btnAddLib"),	        CompilerOptionsDlg::OnAddLibClick)
+    EVT_BUTTON(			    XRCID("btnEditLib"),	    CompilerOptionsDlg::OnEditLibClick)
+    EVT_BUTTON(			    XRCID("btnDelLib"),	        CompilerOptionsDlg::OnRemoveLibClick)
+    EVT_SPIN_UP(			XRCID("spnLibs"),	        CompilerOptionsDlg::OnMoveLibUpClick)
+    EVT_SPIN_DOWN(			XRCID("spnLibs"),	        CompilerOptionsDlg::OnMoveLibDownClick)
 	EVT_BUTTON(				XRCID("btnAddVar"),			CompilerOptionsDlg::OnAddVarClick)
 	EVT_BUTTON(				XRCID("btnEditVar"),		CompilerOptionsDlg::OnEditVarClick)
 	EVT_BUTTON(				XRCID("btnDeleteVar"),		CompilerOptionsDlg::OnRemoveVarClick)
@@ -345,6 +356,10 @@ void CompilerOptionsDlg::TextToOptions()
 			++i;
 	}
 	i = 0;
+	XRCCTRL(*this, "lstLibs", wxListBox)->Clear();
+    wxString linkLib = compiler->GetSwitches().linkLibs;
+    wxString libExt = compiler->GetSwitches().libExtension;
+    size_t libExtLen = libExt.Length();
 	while (i < m_LinkerOptions.GetCount())
 	{
 		wxString opt = m_LinkerOptions.Item(i);
@@ -357,7 +372,25 @@ void CompilerOptionsDlg::TextToOptions()
 			m_LinkerOptions.Remove(i);
 		}
 		else
-			++i;
+		{
+            // linker options and libs
+            if (!linkLib.IsEmpty() && opt.StartsWith(linkLib))
+            {
+                opt.Remove(0, 2);
+                wxString ext = compiler->GetSwitches().libExtension;
+                if (!ext.IsEmpty())
+                    ext = "." + ext;
+                XRCCTRL(*this, "lstLibs", wxListBox)->Append(compiler->GetSwitches().libPrefix + opt + ext);
+                m_LinkerOptions.Remove(i);
+            }
+            else if (opt.Length() > libExtLen && opt.Right(libExtLen) == libExt)
+            {
+                XRCCTRL(*this, "lstLibs", wxListBox)->Append(opt);
+                m_LinkerOptions.Remove(i);
+            }
+            else
+                ++i;
+        }
 	}
 }
 
@@ -408,6 +441,36 @@ void CompilerOptionsDlg::OptionsToText()
             if (idx != wxNOT_FOUND)
                 m_LinkerOptions.Remove(idx);
         }
+	}
+	
+	// linker options and libs
+    wxString linkLib = compiler->GetSwitches().linkLibs;
+    wxString libPrefix = compiler->GetSwitches().libPrefix;
+    wxString libExt = compiler->GetSwitches().libExtension;
+	wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
+	for (int i = 0; i < lstLibs->GetCount(); ++i)
+	{
+        wxString link = lstLibs->GetString(i);
+        wxString prefix = compiler->GetSwitches().linkLibs;
+        if (!compiler->GetSwitches().linkerNeedsLibPrefix &&
+            !libPrefix.IsEmpty() &&
+            link.StartsWith(libPrefix))
+        {
+            link.Remove(0, libPrefix.Length());
+        }
+        else
+            prefix = "";
+        size_t libExtLen = libExt.Length();
+        if (!compiler->GetSwitches().linkerNeedsLibExtension &&
+            !libExt.IsEmpty() &&
+            link.Find('/') == -1 &&
+            link.Find('\\') == -1 &&
+            link.Length() > libExtLen &&
+            link.Right(libExtLen) == libExt)
+        {
+            link.Remove(link.Length() - (libExtLen + 1));
+        }
+        m_LinkerOptions.Add(prefix + link);
 	}
 }
 
@@ -653,6 +716,7 @@ void CompilerOptionsDlg::DoSaveCompilerPrograms(int compilerIdx)
     progs.LD = XRCCTRL(*this, "txtLinker", wxTextCtrl)->GetValue();
     progs.WINDRES = XRCCTRL(*this, "txtResComp", wxTextCtrl)->GetValue();
     progs.MAKE = XRCCTRL(*this, "txtMake", wxTextCtrl)->GetValue();
+    progs.DBG = XRCCTRL(*this, "txtDebugger", wxTextCtrl)->GetValue();
     CompilerFactory::Compilers[compilerIdx]->SetPrograms(progs);
     CompilerFactory::Compilers[compilerIdx]->SetMasterPath(masterPath);
     CompilerFactory::Compilers[compilerIdx]->SetOptions(m_Options);
@@ -673,6 +737,7 @@ void CompilerOptionsDlg::OnTreeSelectionChange(wxTreeEvent& event)
                         XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection());
     XRCCTRL(*this, "cmbCompiler", wxComboBox)->SetSelection(compilerIdx);
     CompilerChanged(data);
+    m_pTarget = data->GetTarget();
 //	DoLoadOptions(compilerIdx, data);
 }
 
@@ -942,6 +1007,63 @@ void CompilerOptionsDlg::OnRemoveCompilerClick(wxCommandEvent& event)
     }
 }
 
+void CompilerOptionsDlg::OnAddLibClick(wxCommandEvent& event)
+{
+    int compilerIdx = m_pTarget ? m_pTarget->GetCompilerIndex()
+                                : (m_pProject ? m_pProject->GetCompilerIndex() 
+                                              : XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection());
+    wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
+    LinkLibDlg dlg(this, m_pProject, m_pTarget, CompilerFactory::Compilers[compilerIdx], "");
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        lstLibs->Append(dlg.GetLib());
+    }
+}
+
+void CompilerOptionsDlg::OnEditLibClick(wxCommandEvent& event)
+{
+    int compilerIdx = m_pTarget ? m_pTarget->GetCompilerIndex()
+                                : (m_pProject ? m_pProject->GetCompilerIndex() 
+                                              : XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection());
+    wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
+    LinkLibDlg dlg(this, m_pProject, m_pTarget, CompilerFactory::Compilers[compilerIdx], lstLibs->GetStringSelection());
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        lstLibs->SetString(lstLibs->GetSelection(), dlg.GetLib());
+    }
+}
+
+void CompilerOptionsDlg::OnRemoveLibClick(wxCommandEvent& event)
+{
+    wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
+    if (wxMessageBox(_("Are you sure you want to remove this library?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxYES)
+        lstLibs->Delete(lstLibs->GetSelection());
+}
+
+void CompilerOptionsDlg::OnMoveLibUpClick(wxCommandEvent& event)
+{
+    wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
+    if (lstLibs->GetSelection() <= 0)
+        return;
+    int sel = lstLibs->GetSelection();
+    wxString lib = lstLibs->GetStringSelection();
+    lstLibs->Delete(sel);
+    lstLibs->InsertItems(1, &lib, sel - 1);
+    lstLibs->SetSelection(sel - 1);
+}
+
+void CompilerOptionsDlg::OnMoveLibDownClick(wxCommandEvent& event)
+{
+    wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
+    if (lstLibs->GetSelection() == lstLibs->GetCount() - 1)
+        return;
+    int sel = lstLibs->GetSelection();
+    wxString lib = lstLibs->GetStringSelection();
+    lstLibs->Delete(sel);
+    lstLibs->InsertItems(1, &lib, sel + 1);
+    lstLibs->SetSelection(sel + 1);
+}
+
 void CompilerOptionsDlg::OnMasterPathClick(wxCommandEvent& event)
 {
     wxDirDialog dlg(this);
@@ -1050,6 +1172,12 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
     en = XRCCTRL(*this, "lstLibDirs", wxListBox)->GetSelection() >= 0;
     XRCCTRL(*this, "btnEditLibs", wxButton)->Enable(en);
     XRCCTRL(*this, "btnDelLibs", wxButton)->Enable(en);
+
+    // add/edit/delete/moveup/movedown lib
+    en = XRCCTRL(*this, "lstLibs", wxListBox)->GetSelection() >= 0;
+    XRCCTRL(*this, "btnEditLib", wxButton)->Enable(en);
+    XRCCTRL(*this, "btnDelLib", wxButton)->Enable(en);
+    XRCCTRL(*this, "spnLibs", wxSpinButton)->Enable(en);
 
     // add/edit/delete vars
     en = XRCCTRL(*this, "lstVars", wxListBox)->GetSelection() >= 0;

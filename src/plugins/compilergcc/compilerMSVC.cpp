@@ -29,6 +29,10 @@ CompilerMSVC::CompilerMSVC()
 	m_Switches.forceLinkerUseQuotes = false;
 	m_Switches.logging = clogNone;
 	m_Switches.buildMethod = cbmDirect;
+	m_Switches.libPrefix = "";
+	m_Switches.libExtension = "lib";
+	m_Switches.linkerNeedsLibPrefix = false;
+	m_Switches.linkerNeedsLibExtension = true;
 
 	m_Options.AddOption(_("Produce debugging symbols"),
 				"/Zi",

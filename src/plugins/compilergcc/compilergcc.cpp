@@ -1441,6 +1441,12 @@ void CompilerGCC::OnProjectCompilerOptions(wxCommandEvent& event)
     FileTreeData* ftd = (FileTreeData*)tree->GetItemData(sel);
     if (ftd)
         Configure(ftd->GetProject());
+    else
+    {
+        cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+        if (prj)
+            Configure(prj);
+    }
 }
 
 void CompilerGCC::OnTargetCompilerOptions(wxCommandEvent& event)

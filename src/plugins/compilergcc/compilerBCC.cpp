@@ -23,6 +23,10 @@ CompilerBCC::CompilerBCC()
 	m_Switches.forceLinkerUseQuotes = true;
 	m_Switches.logging = clogSimple;
 	m_Switches.buildMethod = cbmDirect;
+	m_Switches.libPrefix = "";
+	m_Switches.libExtension = "lib";
+	m_Switches.linkerNeedsLibPrefix = false;
+	m_Switches.linkerNeedsLibExtension = true;
 
 //	m_Options.AddOption(_("Enable all compiler warnings"), "/Wall", _("Warnings"));
 	m_Options.AddOption(_("Optimizations level 1"), "-O1", _("Optimization"));

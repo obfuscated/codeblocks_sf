@@ -246,7 +246,20 @@ void MakefileGenerator::DoAppendLinkerOptions(wxString& cmd, ProjectBuildTarget*
 	}
 
     for (unsigned int x = 0; x < opts.GetCount(); ++x)
+    {
+        if (opts[x].StartsWith(LIB_PREFIX_IN_PROJECT_FILE))
+        {
+            opts[x].Remove(0, 5);
+            wxString tmp = m_CompilerSet->GetSwitches().linkLibs;
+            if (m_CompilerSet->GetSwitches().linkerNeedsLibPrefix)
+                tmp += m_CompilerSet->GetSwitches().libPrefix;
+            tmp += opts[x];
+            if (m_CompilerSet->GetSwitches().linkerNeedsLibExtension)
+                tmp += "." + m_CompilerSet->GetSwitches().libExtension;
+            opts[x] = tmp;
+        }
         cmd << " " << opts[x];
+    }
 }
 
 void MakefileGenerator::DoAppendIncludeDirs(wxString& cmd, ProjectBuildTarget* target, const wxString& prefix, bool useGlobalOptions)
@@ -731,8 +744,8 @@ void MakefileGenerator::DoAddMakefileTargets(wxString& buffer)
         if (target->GetTargetType() == ttDynamicLib)
         {
             wxFileName fname(target->GetOutputFilename());
-            fname.SetName("lib" + fname.GetName());
-            fname.SetExt(STATICLIB_EXT);
+            fname.SetName(m_CompilerSet->GetSwitches().libPrefix + fname.GetName());
+            fname.SetExt(m_CompilerSet->GetSwitches().libExtension);
             out = UnixFilename(fname.GetFullPath());
             ConvertToMakefileFriendly(out);
             QuoteStringIfNeeded(out);

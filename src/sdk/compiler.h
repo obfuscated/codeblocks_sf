@@ -76,6 +76,7 @@ struct CompilerPrograms
     wxString LD;
     wxString WINDRES;
     wxString MAKE;
+    wxString DBG;
 };
 
 /// Struct to keep switches
@@ -91,8 +92,12 @@ struct CompilerSwitches
     bool forceLinkerUseQuotes; // use quotes for filenames in linker command line (needed or not)?
     bool forceCompilerUseQuotes; // use quotes for filenames in compiler command line (needed or not)?
     bool needDependencies; // true
-    CompilerLoggingType logging;
-    CompilerBuildMethod buildMethod;
+    CompilerLoggingType logging; // clogFull
+    CompilerBuildMethod buildMethod; // cbmDirect
+    wxString libPrefix; // lib
+    wxString libExtension; // a
+    bool linkerNeedsLibPrefix; // when adding a link library, linker needs prefix?
+    bool linkerNeedsLibExtension; // when adding a link library, linker needs extension?
 };
 
 /**
