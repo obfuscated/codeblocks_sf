@@ -8,10 +8,12 @@
 		<Build>
 			<Target title="tinyXML">
 				<Option output="sdk\tinyxml\libtxml.a"/>
+				<Option external_deps=""/>
 				<Option type="2"/>
 			</Target>
 			<Target title="sdk">
 				<Option output="devel\codeblocks.dll"/>
+				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option parameters="--debug-log --no-check-associations"/>
 				<Option projectLinkerOptionsRelation="2"/>
@@ -23,7 +25,6 @@
 					<Add option="-Wl,--enable-auto-image-base"/>
 					<Add option="-Wl,--export-all-symbols"/>
 					<Add option="-Wl,--add-stdcall-alias"/>
-					<Add option="-lexpat"/>
 					<Add option="-ltxml"/>
 					<Add option="-lwxxrc"/>
 					<Add option="-lstc"/>
@@ -31,6 +32,7 @@
 			</Target>
 			<Target title="src">
 				<Option output="devel\codeblocks.exe"/>
+				<Option external_deps=""/>
 				<Option type="0"/>
 				<Option parameters="--debug-log --no-check-associations -ns"/>
 				<Option projectLinkerOptionsRelation="2"/>
@@ -65,6 +67,7 @@
 			</Target>
 			<Target title="plugin_Astyle">
 				<Option output="devel\share\CodeBlocks\plugins\astyle.dll"/>
+				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option projectLinkerOptionsRelation="1"/>
 				<Compiler>
@@ -77,7 +80,7 @@
 					<Add option="-lcodeblocks"/>
 					<Add option="-lstc"/>
 					<Add option="-lwxxrc"/>
-					<Add option="-lwxmsw241"/>
+					<Add option="-lwxmsw$(WX_VER)"/>
 				</Linker>
 				<IncludeDirs>
 					<Add option="sdk"/>
@@ -89,6 +92,7 @@
 			</Target>
 			<Target title="plugin_CompilerGCC">
 				<Option output="devel\share\CodeBlocks\plugins\compilergcc.dll"/>
+				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option projectLinkerOptionsRelation="1"/>
 				<Option projectIncludeDirsRelation="2"/>
@@ -103,7 +107,7 @@
 					<Add option="-lcodeblocks"/>
 					<Add option="-lstc"/>
 					<Add option="-lwxxrc"/>
-					<Add option="-lwxmsw242"/>
+					<Add option="-lwxmsw$(WX_VER)"/>
 				</Linker>
 				<IncludeDirs>
 					<Add option="sdk"/>
@@ -114,6 +118,7 @@
 			</Target>
 			<Target title="plugin_DebuggerGDB">
 				<Option output="devel\share\CodeBlocks\plugins\debuggergdb.dll"/>
+				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option projectLinkerOptionsRelation="1"/>
 				<Option projectIncludeDirsRelation="2"/>
@@ -128,7 +133,7 @@
 					<Add option="-lcodeblocks"/>
 					<Add option="-lstc"/>
 					<Add option="-lwxxrc"/>
-					<Add option="-lwxmsw242"/>
+					<Add option="-lwxmsw$(WX_VER)"/>
 				</Linker>
 				<IncludeDirs>
 					<Add option="sdk"/>
@@ -139,6 +144,7 @@
 			</Target>
 			<Target title="plugin_CodeCompletion">
 				<Option output="devel\share\CodeBlocks\plugins\codecompletion.dll"/>
+				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option projectLinkerOptionsRelation="1"/>
 				<Option projectIncludeDirsRelation="2"/>
@@ -153,7 +159,7 @@
 					<Add option="-lcodeblocks"/>
 					<Add option="-lstc"/>
 					<Add option="-lwxxrc"/>
-					<Add option="-lwxmsw242"/>
+					<Add option="-lwxmsw$(WX_VER)"/>
 				</Linker>
 				<IncludeDirs>
 					<Add option="sdk"/>
@@ -164,6 +170,7 @@
 			</Target>
 			<Target title="plugin_ClassWizard">
 				<Option output="devel\share\CodeBlocks\plugins\classwizard.dll"/>
+				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option projectLinkerOptionsRelation="1"/>
 				<Option projectIncludeDirsRelation="2"/>
@@ -178,7 +185,7 @@
 					<Add option="-lcodeblocks"/>
 					<Add option="-lstc"/>
 					<Add option="-lwxxrc"/>
-					<Add option="-lwxmsw242"/>
+					<Add option="-lwxmsw$(WX_VER)"/>
 				</Linker>
 				<IncludeDirs>
 					<Add option="sdk"/>
@@ -189,6 +196,7 @@
 			</Target>
 			<Target title="plugin_PluginsWizard">
 				<Option output="devel\share\CodeBlocks\plugins\pluginwizard.dll"/>
+				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option projectLinkerOptionsRelation="1"/>
 				<Option projectIncludeDirsRelation="2"/>
@@ -203,7 +211,7 @@
 					<Add option="-lcodeblocks"/>
 					<Add option="-lstc"/>
 					<Add option="-lwxxrc"/>
-					<Add option="-lwxmsw242"/>
+					<Add option="-lwxmsw$(WX_VER)"/>
 				</Linker>
 				<IncludeDirs>
 					<Add option="sdk"/>
@@ -214,6 +222,7 @@
 			</Target>
 			<Target title="plugin_ToDo">
 				<Option output="devel/share/codeblocks/plugins/todo.dll"/>
+				<Option external_deps=""/>
 				<Option type="3"/>
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
@@ -223,7 +232,7 @@
 					<Add option="-Wl,--enable-auto-image-base"/>
 					<Add option="-Wl,--add-stdcall-alias"/>
 					<Add option="-lcodeblocks"/>
-					<Add option="-lwxmsw242"/>
+					<Add option="-lwxmsw$(WX_VER)"/>
 				</Linker>
 				<IncludeDirs>
 					<Add option="sdk"/>
@@ -234,6 +243,7 @@
 			</Target>
 			<Target title="plugin_XPManifest">
 				<Option output="devel\share\CodeBlocks\plugins\xpmanifest.dll"/>
+				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option projectIncludeDirsRelation="2"/>
 				<Option projectLibDirsRelation="2"/>
@@ -245,7 +255,7 @@
 					<Add option="-Wl,--enable-auto-image-base"/>
 					<Add option="-Wl,--add-stdcall-alias"/>
 					<Add option="-lcodeblocks"/>
-					<Add option="-lwxmsw242"/>
+					<Add option="-lwxmsw$(WX_VER)"/>
 				</Linker>
 				<IncludeDirs>
 					<Add option="sdk"/>
@@ -256,6 +266,7 @@
 			</Target>
 			<Target title="update">
 				<Option output="codeblocks.exe"/>
+				<Option external_deps=""/>
 				<Option type="4"/>
 				<Option includeInTargetAll="0"/>
 				<ExtraCommands>
@@ -294,6 +305,7 @@
 			</Target>
 			<Target title="console_runner">
 				<Option output="tools\ConsoleRunner\console_runner.exe"/>
+				<Option external_deps=""/>
 				<Option type="1"/>
 				<Option projectCompilerOptionsRelation="1"/>
 				<Option projectLinkerOptionsRelation="1"/>
@@ -315,7 +327,7 @@
 			<Add option="-DWXUSINGDLL"/>
 		</Compiler>
 		<Linker>
-			<Add option="-lwxmsw242"/>
+			<Add option="-lwxmsw$(WX_VER)"/>
 			<Add option="-lgmon"/>
 		</Linker>
 		<LibDirs>
@@ -367,16 +379,28 @@
 			<Option link="0"/>
 			<Option target="plugin_Astyle"/>
 		</Unit>
-		<Unit filename="plugins\astyle\astyle\asbeautifier.cpp">
+		<Unit filename="plugins\astyle\astyle\ASBeautifier.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="plugin_Astyle"/>
 		</Unit>
-		<Unit filename="plugins\astyle\astyle\asformatter.cpp">
+		<Unit filename="plugins\astyle\astyle\ASFormatter.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="plugin_Astyle"/>
 		</Unit>
-		<Unit filename="plugins\astyle\astyle\asresource.cpp">
+		<Unit filename="plugins\astyle\astyle\ASResource.cpp">
 			<Option compilerVar="CPP"/>
+			<Option target="plugin_Astyle"/>
+		</Unit>
+		<Unit filename="plugins\astyle\astyle\INSTALL.TXT">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_Astyle"/>
+		</Unit>
+		<Unit filename="plugins\astyle\astyle\Makefile">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
 			<Option target="plugin_Astyle"/>
 		</Unit>
 		<Unit filename="plugins\astyle\astyle\astyle.h">
@@ -409,19 +433,7 @@
 			<Option link="0"/>
 			<Option target="plugin_Astyle"/>
 		</Unit>
-		<Unit filename="plugins\astyle\astyle\install.txt">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="plugin_Astyle"/>
-		</Unit>
 		<Unit filename="plugins\astyle\astyle\license.html">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="plugin_Astyle"/>
-		</Unit>
-		<Unit filename="plugins\astyle\astyle\makefile">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

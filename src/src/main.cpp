@@ -152,6 +152,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idEditBookmarksToggle, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditBookmarksNext, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditBookmarksPrevious, MainFrame::OnEditMenuUpdateUI)
+    EVT_UPDATE_UI(idEditCommentSelected, MainFrame::OnEditMenuUpdateUI)
 
     EVT_UPDATE_UI(idSearchFind, MainFrame::OnSearchMenuUpdateUI)
     EVT_UPDATE_UI(idSearchFindNext, MainFrame::OnSearchMenuUpdateUI)
@@ -409,7 +410,7 @@ void MainFrame::CreateMenubar()
 	edit->Append(idEditEOLMode, _("&End-of-line mode"), eol);
 	edit->AppendSeparator();
 	edit->Append(idEditSelectAll, _("Select &all\tCtrl-A"), _("Selects the entire text range"));
-	edit->Append(idEditCommentSelected, _("(Un)Comment"), _("(Un)Comments the selected code") );
+	edit->Append(idEditCommentSelected, _("Comment / uncomment\tShift-Ctrl-C"), _("Comments / uncomments the selected block of code") );
 	mbar->Append(edit, _("&Edit"));
 	
 	wxMenu* view = new wxMenu();
@@ -1156,6 +1157,7 @@ void MainFrame::OnEditCommentSelected(wxCommandEvent& event)
 	cbEditor* ed = m_pEdMan->GetActiveEditor();
 	if( ed )
 	{
+        ed->GetControl()->BeginUndoAction();
 		cbStyledTextCtrl *stc = ed->GetControl();
 		if( wxSTC_INVALID_POSITION != stc->GetSelectionStart() )
 		{
@@ -1191,15 +1193,18 @@ void MainFrame::OnEditCommentSelected(wxCommandEvent& event)
 				startLine++;
 			}
 		}
-		else
+		// mandrav: removed the following "else"s because in UpdateUI the menu
+		//          entry is enabled/disabled accordingly
+		/*else
 		{
 			wxMessageBox( _( "No code currently selected" ), _( "Error" ) );
-		}
+		}*/
+		ed->GetControl()->EndUndoAction();
 	}
-	else
+	/*else
 	{
 		wxMessageBox( _( "No editors currently open" ), _( "Error" ) );
-	}
+	}*/
 }
 
 void MainFrame::OnEditFoldAll(wxCommandEvent& event)
@@ -1438,6 +1443,7 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
 	mbar->Check(idEditEOLCRLF, eolMode == wxSTC_EOL_CRLF);
 	mbar->Check(idEditEOLCR, eolMode == wxSTC_EOL_CR);
 	mbar->Check(idEditEOLLF, eolMode == wxSTC_EOL_LF);
+	mbar->Enable(idEditCommentSelected, ed);
 
 	if (m_pToolbar)
 	{
@@ -1454,7 +1460,6 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
 void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
 {
     wxMenuBar* mbar = GetMenuBar();
-    cbEditor* ed = m_pEdMan->GetActiveEditor();
     mbar->Check(idViewToolMain, m_pToolbar && m_pToolbar->IsShown());
     mbar->Check(idViewManager, m_pLeftSash && m_pLeftSash->IsShown());
     mbar->Check(idViewMessageManager, m_pBottomSash && m_pBottomSash->IsShown());
