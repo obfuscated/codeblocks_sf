@@ -634,28 +634,52 @@ cbWorkspace* ProjectManager::GetWorkspace()
 bool ProjectManager::LoadWorkspace(const wxString& filename)
 {
     SANITY_CHECK(false);
-    if (m_pWorkspace)
-    {
-        m_pWorkspace->Save();
-        delete m_pWorkspace;
-        m_pWorkspace = 0;
-    }
-    CloseAllProjects();
+    if (!CloseWorkspace())
+        return false; // didn't close
     m_pWorkspace = new cbWorkspace(filename);
     SANITY_CHECK(false);
     m_pTree->SetItemText(m_TreeRoot, m_pWorkspace->GetTitle());
     return m_pWorkspace->IsOK();
 }
 
-void ProjectManager::CloseWorkspace()
+bool ProjectManager::SaveWorkspace()
 {
-    SANITY_CHECK();
-    if (m_pWorkspace && !m_pWorkspace->IsDefault())
+    if (m_pWorkspace)
+        return m_pWorkspace->Save();
+    return true;
+}
+
+bool ProjectManager::SaveWorkspaceAs(const wxString& filename)
+{
+    if (m_pWorkspace)
+        return m_pWorkspace->Save(filename);
+    return true;
+}
+
+bool ProjectManager::CloseWorkspace()
+{
+    SANITY_CHECK(false);
+    if (m_pWorkspace)
     {
-        m_pWorkspace->Save();
+        if (m_pWorkspace->GetModified())
+        {
+            // workspace needs save
+            wxString msg;
+            msg.Printf(_("Workspace '%s' is modified. Do you want to save it?"), m_pWorkspace->GetTitle().c_str());
+            switch (wxMessageBox(msg,
+                            _("Save workspace"),
+                            wxYES_NO | wxCANCEL | wxICON_QUESTION))
+            {
+                case wxYES: SaveWorkspace(); break;
+                case wxCANCEL: return false;
+                default: break;
+            }
+        }
         delete m_pWorkspace;
-        m_pWorkspace = new cbWorkspace;
+        m_pWorkspace = 0;
+        CloseAllProjects();
     }
+    return true;
 }
 
 void ProjectManager::FreezeTree()

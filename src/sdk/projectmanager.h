@@ -171,8 +171,20 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
 		  * @return True if the workspace loads succefully, false if not.
 		  */
 		bool LoadWorkspace(const wxString& filename = "");
-		/** Close the workspace. */
-		void CloseWorkspace();
+		/** Save the open workspace.
+		  * @return True if the workspace is saved succefully, false if not.
+		  */
+		bool SaveWorkspace();
+		/** Save the open workspace under a different filename.
+		  * @param filename The workspace to save.
+		  * @return True if the workspace is saved succefully, false if not.
+		  */
+		bool SaveWorkspaceAs(const wxString& filename);
+		/** Close the workspace.
+		  * @return True if the workspace closes, false if not (the user is asked to save
+		  * the workspace, if it is modified)
+		  */
+		bool CloseWorkspace();
 		/** Get the current workspace filename.
 		  * @return The current workspace filename.
 		  */

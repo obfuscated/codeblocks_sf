@@ -463,12 +463,7 @@ void CompilerGCC::BuildToolBar(wxToolBar* toolBar)
 
         // neither the generic nor Motif native toolbars really support this
         #if (wxUSE_TOOLBAR_NATIVE && !USE_GENERIC_TBAR) && !defined(__WXMOTIF__) && !defined(__WXX11__) && !defined(__WXMAC__)
-		m_ToolTargetLabel = new wxStaticText(toolBar, idToolTargetLabel, _("Build target: "), wxDefaultPosition);
-		toolBar->AddControl(m_ToolTargetLabel);
-		m_ToolTarget = new wxComboBox(toolBar, idToolTarget, "Compiler Target Selection", wxDefaultPosition, wxDefaultSize, 0, 0L, wxCB_DROPDOWN | wxCB_READONLY);
-		toolBar->AddControl(m_ToolTarget);
-		m_ToolTarget->Enable(false); // to force OnUpdateUI() to call tbar->Refresh() the first time...
-		
+        m_ToolTarget = XRCCTRL(*toolBar, "idToolTarget", wxComboBox);
         #endif
         toolBar->Realize();
 	}
@@ -1570,16 +1565,6 @@ void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
         mbar->Enable(idMenuProjectCompilerOptions, !m_Process && prj);
     }
 
-	// enable disable target selection combobox
-	bool refreshTbar = false; // decide if we should refresh the toolbar
-    if (m_ToolTarget)
-	{
-		bool en = !m_Process && prj;
-		// refresh the toolbar if we change state of the combobox...
-		refreshTbar = en != m_ToolTarget->IsEnabled();
-        m_ToolTarget->Enable(en);
-	}
-
 	// enable/disable compiler toolbar buttons
 	wxToolBar* tbar = Manager::Get()->GetAppWindow()->GetToolBar();
 	if (tbar)
@@ -1588,10 +1573,11 @@ void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
         tbar->EnableTool(idMenuRun, !m_Process && prj);
         tbar->EnableTool(idMenuCompileAndRun, !m_Process && prj);
         tbar->EnableTool(idMenuRebuild, !m_Process && prj);
-		
-		if (refreshTbar)
-			tbar->Refresh();
     }
+
+    m_ToolTarget = XRCCTRL(*tbar, "idToolTarget", wxComboBox);
+    if (m_ToolTarget)
+        m_ToolTarget->Enable(!m_Process && prj);
 	
     // allow other UpdateUI handlers to process this event
     // *very* important! don't forget it...

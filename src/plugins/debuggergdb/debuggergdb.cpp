@@ -43,6 +43,7 @@
 #include <wx/fs_zip.h>
 
 #include "debuggergdb.h"
+#include "debuggeroptionsdlg.h"
 
 static const wxString g_EscapeChars = char(26);
 
@@ -117,6 +118,12 @@ DebuggerGDB::DebuggerGDB()
 	m_pTree(0L),
 	m_NoDebugInfo(false)
 {
+    wxFileSystem::AddHandler(new wxZipFSHandler);
+    wxXmlResource::Get()->InitAllHandlers();
+    wxXmlResource::Get()->InsertHandler(new wxToolBarAddOnXmlHandler);
+    wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
+    wxXmlResource::Get()->Load(resPath + "/debugger_gdb.zip#zip:*.xrc");
+
 	m_PluginInfo.name = "DebuggerGDB";
 	m_PluginInfo.title = "GDB Debugger";
 	m_PluginInfo.version = "0.1";
@@ -178,8 +185,8 @@ DebuggerGDB::~DebuggerGDB()
 
 int DebuggerGDB::Configure()
 {
-	NotImplemented("DebuggerGDB::Configure()");
-	return -1;
+	DebuggerOptionsDlg dlg(Manager::Get()->GetAppWindow());
+	return dlg.ShowModal();
 }
 
 void DebuggerGDB::BuildMenu(wxMenuBar* menuBar)
@@ -241,39 +248,13 @@ void DebuggerGDB::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxS
     menu->Insert(1, -1, "-");
 }
 
-#if 0
-// Old version
 void DebuggerGDB::BuildToolBar(wxToolBar* toolBar)
 {
-	if (toolBar)
-	{
-		wxString res = ConfigManager::Get()->Read("data_path") + "/images/";
-		
-		toolBar->AddSeparator();
-		
-		toolBar->AddTool(idMenuDebug, _("Debug"), wxBitmap(res + "dbgrun.png", wxBITMAP_TYPE_PNG));
-		toolBar->SetToolShortHelp(idMenuDebug, _("Debug"));
-		toolBar->SetToolLongHelp(idMenuDebug, _("Debug program"));
-		toolBar->AddTool(idMenuRunToCursor, _("Run to cursor"), wxBitmap(res + "dbgrunto.png", wxBITMAP_TYPE_PNG));
-		toolBar->SetToolShortHelp(idMenuRunToCursor, _("Run to cursor"));
-		toolBar->SetToolLongHelp(idMenuRunToCursor, _("Run program until it reaches the current line"));
-		toolBar->AddTool(idMenuNext, _("Next"), wxBitmap(res + "dbgnext.png", wxBITMAP_TYPE_PNG));
-		toolBar->SetToolShortHelp(idMenuNext, _("Next line"));
-		toolBar->SetToolLongHelp(idMenuNext, _("Execute the next line of code"));
-		toolBar->AddTool(idMenuStep, _("Step"), wxBitmap(res + "dbgstep.png", wxBITMAP_TYPE_PNG));
-		toolBar->SetToolShortHelp(idMenuStep, _("Next instruction"));
-		toolBar->SetToolLongHelp(idMenuStep, _("Execute the next instruction, stepping into functions"));
-		toolBar->AddTool(idMenuStop, _("Stop"), wxBitmap(res + "stop.png", wxBITMAP_TYPE_PNG));
-		toolBar->SetToolShortHelp(idMenuStop, _("Stop debugger"));
-		toolBar->SetToolLongHelp(idMenuStop, _("Stop current debugging session"));
-		toolBar->Realize();
-	}
-}
-#else
-// New version
-void DebuggerGDB::BuildToolBar(wxToolBar* toolBar)
-{
-	if (!m_IsAttached)
+/* NOTE (mandrav#1#): Removed debugger toolbar.
+Without it, the combobox in the compiler toolbar doesn't dissappear anymore...
+Until we find out why, better without a debugger toolbar. */
+
+	/*if (!m_IsAttached)
 		return;
 	if (toolBar)
 	{        
@@ -288,18 +269,18 @@ void DebuggerGDB::BuildToolBar(wxToolBar* toolBar)
 		// supported by our new wxToolBarAddOnHandler
 		myres->LoadObject(toolBar,NULL,"debugger_toolbar"+my_16x16,"wxToolBarAddOn");
         toolBar->Realize();
-	}
+	}*/
 }
-#endif
 
 void DebuggerGDB::DoWatches()
 {
 	wxString info;
 	if (m_pProcess)
 	{
-		// TODO: add configuration for the following...
-//		info << "Function Arguments = {" << GetInfoFor("info args") << "}" << '\n';
-//		info << "Local variables = {" << GetInfoFor("info locals") << "}" << '\n';
+        if (ConfigManager::Get()->Read("debugger_gdb/watch_args", 0L))
+            info << "Function Arguments = {" << GetInfoFor("info args") << "}" << '\n';
+        if (ConfigManager::Get()->Read("debugger_gdb/watch_locals", 0L))
+    		info << "Local variables = {" << GetInfoFor("info locals") << "}" << '\n';
 		for (unsigned int i = 0; i < m_pTree->GetWatches().GetCount(); ++i)
 		{
 			wxString watch = m_pTree->GetWatches()[i];
@@ -833,7 +814,7 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
 	cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
 	cbEditor* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
     wxMenuBar* mbar = Manager::Get()->GetAppWindow()->GetMenuBar();
-	wxToolBar* tbar = Manager::Get()->GetAppWindow()->GetToolBar();
+//	wxToolBar* tbar = Manager::Get()->GetAppWindow()->GetToolBar();
     if (mbar)
     {
         mbar->Enable(idMenuDebug, !m_pProcess && prj);
@@ -848,14 +829,14 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
         mbar->Enable(idMenuStop, m_pProcess && prj && m_ProgramIsStopped);
 	}
 
-	if (tbar)
+	/*if (tbar)
 	{
         tbar->EnableTool(idMenuDebug, !m_pProcess && prj);
 		tbar->EnableTool(idMenuRunToCursor, !m_pProcess && prj && ed);
         tbar->EnableTool(idMenuNext, m_pProcess && prj && m_ProgramIsStopped);
         tbar->EnableTool(idMenuStep, m_pProcess && prj && m_ProgramIsStopped);
         tbar->EnableTool(idMenuStop, m_pProcess && prj && m_ProgramIsStopped);
-	}
+	}*/
 
     // allow other UpdateUI handlers to process this event
     // *very* important! don't forget it...
@@ -1094,6 +1075,8 @@ void DebuggerGDB::OnValueTooltip(CodeBlocksEvent& event)
 {
 	if (!m_pProcess || !m_ProgramIsStopped)
 		return;
+    if (!ConfigManager::Get()->Read("debugger_gdb/eval_tooltip", 0L))
+        return;
 
 	cbEditor* ed = event.GetEditor();
 	if (!ed)

@@ -862,7 +862,10 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
             // fallthrough
         case ftMSVSWorkspace:
             if (DoCloseCurrentWorkspace())
+            {
                 m_pPrjMan->LoadWorkspace(filename);
+                m_FilesHistory.AddFileToHistory(filename);
+            }
             break;
 
         //
@@ -913,23 +916,7 @@ bool MainFrame::DoOpenFile(const wxString& filename, bool addToHistory)
 
 bool MainFrame::DoCloseCurrentWorkspace()
 {
-    cbWorkspace* wksp = m_pPrjMan->GetWorkspace();
-	if (wksp && wksp->GetModified())
-	{
-		// workspace needs save
-        wxString msg;
-        msg.Printf(_("Workspace '%s' is modified. Do you want to save it?"), wksp->GetTitle().c_str());
-        switch (wxMessageBox(msg,
-                        _("Save workspace"),
-                        wxYES_NO | wxCANCEL | wxICON_QUESTION))
-        {
-            case wxYES: wksp->Save(); break;
-            case wxCANCEL: return false;
-            default: break;
-        }
-	}
-	
-    return m_pPrjMan->CloseAllProjects();
+    return m_pPrjMan->CloseWorkspace();
 }
 
 void MainFrame::DoCreateStatusBar()
@@ -1206,10 +1193,8 @@ void MainFrame::OnFileSaveAllFiles(wxCommandEvent& event)
 
 void MainFrame::OnFileSaveWorkspaceAs(wxCommandEvent& event)
 {
-    cbWorkspace* wksp = m_pPrjMan->GetWorkspace();
-    if (!wksp)
-        return;
-    wksp->SaveAs(""); // force SaveAs dialog
+    if (m_pPrjMan->SaveWorkspaceAs(""))
+        m_FilesHistory.AddFileToHistory(m_pPrjMan->GetWorkspace()->GetFilename());
 }
 
 void MainFrame::OnFileClose(wxCommandEvent& WXUNUSED(event))
@@ -1537,7 +1522,7 @@ void MainFrame::OnProjectCloseProject(wxCommandEvent& event)
 
 void MainFrame::OnProjectCloseAllProjects(wxCommandEvent& event)
 {
-    m_pPrjMan->CloseAllProjects();
+    m_pPrjMan->CloseWorkspace();
     DoUpdateStatusBar();
 }
 

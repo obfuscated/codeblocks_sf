@@ -293,7 +293,7 @@
 				</Linker>
 			</Target>
 			<Target title="update">
-				<Option output="C:\Devel\codeblocks\src\CodeBlocks.exe"/>
+				<Option output=""/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -319,7 +319,7 @@
 				</Compiler>
 			</Target>
 			<Target title="doc">
-				<Option output="c:\Devel\codeblocks\src\CodeBlocks.exe"/>
+				<Option output=""/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -978,6 +978,16 @@
 			<Option target="plugin_DebuggerGDB"/>
 		</Unit>
 		<Unit filename="plugins\debuggergdb\debuggergdb.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\debuggeroptionsdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\debuggeroptionsdlg.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
