@@ -60,9 +60,9 @@ void NativeParser::CreateClassBrowser()
 		m_pClassBrowser = new ClassBrowser(Manager::Get()->GetNotebook());
 }
 
-void NativeParser::RemoveClassBrowser()
+void NativeParser::RemoveClassBrowser(bool appShutDown)
 {
-    if (m_pClassBrowser)
+    if (!appShutDown && m_pClassBrowser)
     {
         delete m_pClassBrowser;
         m_pClassBrowser = 0L;

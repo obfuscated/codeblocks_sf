@@ -191,7 +191,7 @@ void CodeCompletion::OnAttach()
 
 void CodeCompletion::OnRelease(bool appShutDown)
 {
-	m_NativeParsers.RemoveClassBrowser();
+	m_NativeParsers.RemoveClassBrowser(appShutDown);
 	m_NativeParsers.ClearParsers();
 	CCList::Free();
 	
