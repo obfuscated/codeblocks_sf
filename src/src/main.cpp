@@ -1934,9 +1934,13 @@ void MainFrame::OnSettingsPlugins(wxCommandEvent& event)
     m_ReconfiguringPlugins = true;
 	if (Manager::Get()->GetPluginManager()->Configure() == wxID_OK)
 	{
-        wxBusyCursor busy;
-        CreateMenubar();
-        CreateToolbars();
+        // mandrav: disabled on-the-fly plugins enabling/disabling (still has glitches)
+        wxMessageBox(_("Any changes you made, will take effect the next time you start " APP_NAME "."),
+                    _("Information"),
+                    wxICON_INFORMATION);
+//        wxBusyCursor busy;
+//        CreateMenubar();
+//        CreateToolbars();
 	}
     m_ReconfiguringPlugins = false;
 }

@@ -367,6 +367,8 @@ int PluginManager::Configure()
     if (dlg.ShowModal() == wxID_CANCEL)
         return wxID_CANCEL;
 
+    // mandrav: disabled on-the-fly plugins enabling/disabling (still has glitches)
+/*
     for (unsigned int i = 0; i < m_Plugins.GetCount(); ++i)
     {
         cbPlugin* plug = m_Plugins[i]->plugin;
@@ -386,6 +388,7 @@ int PluginManager::Configure()
     }
     wxLogNull ln;
     ConfigManager::Get()->DeleteEntry("/plugins/try_to_load");
+*/
     return wxID_OK;
 }
 
