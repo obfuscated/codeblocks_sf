@@ -34,7 +34,7 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
 	public:
         friend class Manager; // give Manager access to our private members
         /// Application menu creation. Called by the application only.
-		void CreateMenu(wxMenuBar* menuBar);
+		static void CreateMenu(wxMenuBar* menuBar);
         /// Application menu removal. Called by the application only.
 		void ReleaseMenu(wxMenuBar* menuBar);
         /** @return True if modified, false if not.
