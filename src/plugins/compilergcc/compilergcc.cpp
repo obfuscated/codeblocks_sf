@@ -174,7 +174,7 @@ CompilerGCC::CompilerGCC()
 	
 	for (int i = 0; i < MAX_TARGETS; ++i)
 		idMenuSelectTargetOther[i] = wxNewId();
-	m_SimpleLog = ConfigManager::Get()->Read("/compiler_gcc/simple_build", 0L);
+	m_SimpleLog = ConfigManager::Get()->Read("/compiler_gcc/simple_build", 1);
 	
 	// register built-in compilers
 	CompilerFactory::RegisterCompiler(new CompilerMINGW);
@@ -272,7 +272,7 @@ int CompilerGCC::Configure(cbProject* project, ProjectBuildTarget* target)
 {
 	CompilerOptionsDlg dlg(Manager::Get()->GetAppWindow(), this, project, target);
 	dlg.ShowModal();
-	m_SimpleLog = ConfigManager::Get()->Read("/compiler_gcc/simple_build", 0L);
+	m_SimpleLog = ConfigManager::Get()->Read("/compiler_gcc/simple_build", 1);
 	SaveOptions();
 	return 0;
 }
@@ -1303,7 +1303,12 @@ void CompilerGCC::OnProjectActivated(CodeBlocksEvent& event)
 void CompilerGCC::OnGCCOutput(CodeBlocksEvent& event)
 {
 	wxString msg = event.GetString();
-	if (!msg.IsEmpty())
+	if (!msg.IsEmpty() &&
+        !msg.Matches("# ??*"))  // gcc 3.4 started displaying a line like this filter
+                                // when calculating dependencies. Until I check out
+                                // why this happens (and if there is a switch to
+                                // turn it off), I put this condition here to avoid
+                                // displaying it...
 	{
 		m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLACK));
 		Manager::Get()->GetMessageManager()->Log(m_PageIndex, msg.c_str());
@@ -1332,7 +1337,7 @@ void CompilerGCC::OnGCCError(CodeBlocksEvent& event)
 				errors.Add(reErrorLine.GetMatch(msg, 3));
 				m_pListLog->AddLog(errors);
 			}
-			m_Errors.AddErrorLine(msg);
+            m_Errors.AddErrorLine(msg);
 		}
 
 		if ( reError.Matches(msg) )

@@ -38,13 +38,13 @@ AStylePlugin::AStylePlugin()
     wxXmlResource::Get()->Load(resPath + "/astyle.zip#zip:*.xrc");
 
 	m_PluginInfo.name = "AStylePlugin";
-	m_PluginInfo.title = "AStylePlugin source code formatter";
+	m_PluginInfo.title = "Source code formatter (AStyle)";
 	m_PluginInfo.version = "1.0";
-	m_PluginInfo.description = "Uses AStylePlugin 1.15.3 to reformat your sources. Useful when copying code from the net and it pastes non-formatted.";
+	m_PluginInfo.description = "Uses AStyle 1.15.3 to reformat your sources. Useful when copying code from the net or if you just want to reformat your sources based on a specific style.";
 	m_PluginInfo.author = "Yiannis Mandravellos";
 	m_PluginInfo.authorEmail = "mandrav@codeblocks.org";
 	m_PluginInfo.authorWebsite = "http://www.codeblocks.org";
-	m_PluginInfo.thanksTo = "AStylePlugin team for the beautiful tool.";
+	m_PluginInfo.thanksTo = "AStyle team for the useful library.\nSee http://astyle.sourceforge.net";
 	m_PluginInfo.license = LICENSE_GPL;
 	m_PluginInfo.hasConfigure = true;
 }

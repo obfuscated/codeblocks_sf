@@ -131,13 +131,13 @@ void CompilerErrors::Clear()
 
 void CompilerErrors::DoAddError(const CompileError& error)
 {
-	int index = ErrorLineHasMore(error.filename, error.line);
-	if (index != -1)
-	{
-		for (unsigned int i = 0; i < error.errors.GetCount(); ++i)
-			m_Errors[index].errors.Add(error.errors[i]);
-	}
-	else
+//	int index = ErrorLineHasMore(error.filename, error.line);
+//	if (index != -1)
+//	{
+//		for (unsigned int i = 0; i < error.errors.GetCount(); ++i)
+//			m_Errors[index].errors.Add(error.errors[i]);
+//	}
+//	else
 		m_Errors.Add(error);
 }
 

@@ -69,6 +69,10 @@ END_EVENT_TABLE()
 
 bool CodeBlocksApp::OnInit()
 {
+#ifdef __WXMSW__
+    m_ExceptionHandlerLib = LoadLibrary("exchndl.dll");
+#endif
+
     if (ParseCmdLine(0L) == -1)
         return false;
 
@@ -140,6 +144,8 @@ int CodeBlocksApp::OnExit()
 #ifdef __WXMSW__
 	if (g_DDEServer)
 		delete g_DDEServer;
+    if (m_ExceptionHandlerLib)
+        FreeLibrary(m_ExceptionHandlerLib);
 #endif
     return 0;
 }

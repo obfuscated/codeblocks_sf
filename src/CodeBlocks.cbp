@@ -16,6 +16,7 @@
 				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option parameters="--debug-log --no-check-associations"/>
+				<Option createStaticLib="1"/>
 				<Option projectLinkerOptionsRelation="2"/>
 				<Compiler>
 					<Add option="-DEXPORT_LIB"/>
@@ -266,7 +267,7 @@
 				</LibDirs>
 			</Target>
 			<Target title="update">
-				<Option output="C:\Devel\codeblocks\src\CodeBlocks.exe"/>
+				<Option output=""/>
 				<Option external_deps=""/>
 				<Option type="4"/>
 				<Option includeInTargetAll="0"/>

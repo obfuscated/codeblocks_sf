@@ -1,6 +1,10 @@
 Changes for version 1.0-beta3
 -------------------------------
 
+2004-10-05 20:05  mandrav
+	* Main app: Added exchndl.dll to catch and report fatal exceptions (a file
+	named codeblocks.rpt is created containing exception info) - Win32 only
+
 2004-09-30 21:24  mandrav
 
 	* Code-completion plugin: Fixed bug that would skip "extern "C" {}" blocks
