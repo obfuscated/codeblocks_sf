@@ -38,7 +38,7 @@
 #include "compilerBCC.h"
 #include "compilerDMC.h"
 #include "directcommands.h"
-#include "../xtra_res.h"
+#include "xtra_res.h"
 #include <wx/xrc/xmlres.h>
 #include <wx/fs_zip.h>
 
@@ -451,6 +451,7 @@ void CompilerGCC::BuildToolBar(wxToolBar* toolBar)
 		m_ToolTarget = new wxComboBox(toolBar, idToolTarget, "Compiler Target Selection", wxDefaultPosition, wxDefaultSize, 0, 0L, wxCB_DROPDOWN | wxCB_READONLY);
 		toolBar->AddControl(m_ToolTarget);
 		m_ToolTarget->Enable(false); // to force OnUpdateUI() to call tbar->Refresh() the first time...
+		
         #endif
         toolBar->Realize();
 	}
@@ -698,6 +699,10 @@ int CompilerGCC::DoRunQueue()
 
 void CompilerGCC::DoClearTargetMenu()
 {
+/*
+// GAH!!! REGRESSION BUG! 
+// This was supposed to be fixed 2 days ago.
+// Why is the old buggy code in here?
     if (m_TargetMenu)
 	{
 		wxMenuItemList& items = m_TargetMenu->GetMenuItems();
@@ -710,6 +715,15 @@ void CompilerGCC::DoClearTargetMenu()
 			else
 				break;
 		}
+	}
+*/	
+    if (m_TargetMenu)
+	{
+		wxMenuItemList& items = m_TargetMenu->GetMenuItems();
+		bool olddelete=items.GetDeleteContents();
+		items.DeleteContents(true);
+		items.Clear();
+		items.DeleteContents(olddelete);
 	}
 }
 
