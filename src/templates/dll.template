@@ -1,5 +1,5 @@
 <Code::Blocks_template_file>
-	<Template name="dll" title="Dynamic Link Library" category="Dynamic Library" bitmap="dll.png">
+	<Template name="dll" title="Dynamic Link Library" category="Libraries" bitmap="dll.png">
 		<FileSet name="c" title="C source">
 			<File source="dll-main.cpp" destination="main.c"/>
 		</FileSet>
