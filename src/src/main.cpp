@@ -37,6 +37,7 @@
 #endif
 
 #include <wx/tipdlg.h>
+#include <wx/dnd.h>
 
 #include "../sdk/configmanager.h"
 #include "../sdk/cbproject.h"
@@ -51,6 +52,19 @@
 
 #include "dlgaboutplugin.h"
 #include "dlgabout.h"
+
+class wxMyFileDropTarget : public wxFileDropTarget
+{
+public:
+    wxMyFileDropTarget::wxMyFileDropTarget(MainFrame *frame):m_frame(frame){}
+    virtual bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames)
+    {
+        if(!m_frame) return false;
+        return m_frame->OnDropFiles(x,y,filenames);
+    }
+private:
+    MainFrame* m_frame;
+};
 
 int idFileNew = XRCID("idFileNew");
 int idFileOpen = XRCID("idFileOpen");
@@ -284,7 +298,10 @@ MainFrame::MainFrame(wxWindow* parent)
 	//tmpFlag |= _CRTDBG_CHECK_ALWAYS_DF;
 	_CrtSetDbgFlag( tmpFlag );
 #endif
-
+    
+    // New: Allow drag and drop of files into the editor
+    SetDropTarget(new wxMyFileDropTarget(this));
+    
     m_SmallToolBar = ConfigManager::Get()->Read("/environment/toolbar_size", (long int)0) == 1;
 	CreateIDE();
 	m_pEdMan->SetEditorInterfaceType(eitMDI);
@@ -999,6 +1016,32 @@ void MainFrame::OnFileNewEmpty(wxCommandEvent& event)
 	}
 }
 
+bool MainFrame::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& files)
+{
+    // first check to see if a workspace is passed. If so, only this will be loaded
+    wxString foundWorkspace;
+    for (unsigned int i = 0; i < files.GetCount(); ++i)
+    {
+        FileType ft = FileTypeOf(files[i]);
+        if (ft == ftCodeBlocksWorkspace || ft == ftMSVCWorkspace || ft == ftMSVSWorkspace)
+        {
+            foundWorkspace = files[i];
+            break;
+        }
+    }
+
+    if (!foundWorkspace.IsEmpty())
+        OpenGeneric(foundWorkspace);
+    else
+    {
+        for (unsigned int i = 0; i < files.GetCount(); ++i)
+        {
+            OpenGeneric(files[i]);
+        }
+    }
+    return true;
+}
+
 void MainFrame::OnFileOpen(wxCommandEvent& WXUNUSED(event))
 {
     wxFileDialog* dlg = new wxFileDialog(this,
@@ -1013,28 +1056,7 @@ void MainFrame::OnFileOpen(wxCommandEvent& WXUNUSED(event))
     {
         wxArrayString files;
         dlg->GetPaths(files);
-
-        // first check to see if a workspace is passed. If so, only this will be loaded
-        wxString foundWorkspace;
-        for (unsigned int i = 0; i < files.GetCount(); ++i)
-        {
-			FileType ft = FileTypeOf(files[i]);
-            if (ft == ftCodeBlocksWorkspace || ft == ftMSVCWorkspace || ft == ftMSVSWorkspace)
-            {
-                foundWorkspace = files[i];
-                break;
-            }
-        }
-
-        if (!foundWorkspace.IsEmpty())
-            OpenGeneric(foundWorkspace);
-        else
-		{
-            for (unsigned int i = 0; i < files.GetCount(); ++i)
-            {
-                OpenGeneric(files[i]);
-            }
-		}
+        OnDropFiles(0,0,files);
     }
 
     delete dlg;

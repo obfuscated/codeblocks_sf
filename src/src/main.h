@@ -20,6 +20,7 @@ class MainFrame : public wxMDIParentFrame
         ~MainFrame();
 
         bool Open(const wxString& filename, bool addToHistory = true);
+        bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames);
         void ShowTips(bool forceShow = false);
         
         // show a file-open dialog and return the selection
