@@ -580,7 +580,7 @@ void MainFrame::AddPluginInPluginsMenu(cbPlugin* plugin)
     
     // this will insert a separator when the first plugin is added in the "Plugins" menu
     if (m_PluginsMenu->GetMenuItemCount() == 1)
-        m_PluginsMenu->Insert(0, wxID_ANY, "");
+         m_PluginsMenu->Insert(0, wxID_ANY, "");
 
     AddPluginInMenus(m_PluginsMenu, plugin,
                     (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)&MainFrame::OnPluginsExecuteMenu,
@@ -1108,18 +1108,13 @@ void MainFrame::OnFileQuit(wxCommandEvent& WXUNUSED(event))
 
 void MainFrame::OnApplicationClose(wxCloseEvent& event)
 {
-    if (!m_pEdMan->CloseAll())
-    {
-        event.Veto();
-        return;
-    }
-
     if (!DoCloseCurrentWorkspace())
     {
         event.Veto();
         return;
     }
 
+    
     SaveWindowState();
     TerminateRecentFilesHistory();
     
