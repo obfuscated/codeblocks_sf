@@ -101,9 +101,10 @@ int ClassWizard::Execute()
 							wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION);
 		if (msg.ShowModal() == wxID_YES)
 		{
-			int target = prjMan->AddFileToProject(dlg.GetHeaderFilename(), prj, -1);
-			if (target != -1)
-				prjMan->AddFileToProject(dlg.GetImplementationFilename(), prj, target);
+            wxArrayInt targets;
+			prjMan->AddFileToProject(dlg.GetHeaderFilename(), prj, targets);
+			if (targets.GetCount() != 0)
+				prjMan->AddFileToProject(dlg.GetImplementationFilename(), prj, targets);
 			prjMan->RebuildTree();
 		}
 		return 0;

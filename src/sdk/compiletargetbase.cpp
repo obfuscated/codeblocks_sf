@@ -197,7 +197,8 @@ wxString CompileTargetBase::GetStaticLibFilename()
         prefix = compiler->GetSwitches().libPrefix;
         suffix = compiler->GetSwitches().libExtension;
     }
-    fname.SetName(prefix + fname.GetName());
+    if (!fname.GetName().StartsWith(prefix))
+        fname.SetName(prefix + fname.GetName());
     fname.SetExt(suffix);
     return fname.GetFullPath();
 }

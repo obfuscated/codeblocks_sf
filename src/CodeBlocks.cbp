@@ -294,6 +294,18 @@
 					<Add option="-Os"/>
 				</Compiler>
 			</Target>
+			<Target title="doc">
+				<Option output="c:\Devel\codeblocks\src\CodeBlocks.exe"/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option type="4"/>
+				<Option compiler="0"/>
+				<Option includeInTargetAll="0"/>
+				<ExtraCommands>
+					<Add before="doxygen codeblocks.doxy"/>
+				</ExtraCommands>
+			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall"/>
@@ -311,6 +323,12 @@
 			<Add library="libwxmsw$(WX_VER).a"/>
 			<Add directory="sdk/tinyxml"/>
 		</Linker>
+		<Unit filename="sdk.doxy">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="doc"/>
+		</Unit>
 		<Unit filename="devel\share\CodeBlocks\images\codecompletion\README.txt">
 			<Option compilerVar=""/>
 			<Option compile="0"/>

@@ -203,7 +203,8 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
     if (target->GetTargetType() == ttStaticLib || target->GetTargetType() == ttDynamicLib)
     {
         wxFileName fname(target->GetOutputFilename());
-        fname.SetName(compiler->GetSwitches().libPrefix + fname.GetName());
+        if (!fname.GetName().StartsWith(compiler->GetSwitches().libPrefix))
+            fname.SetName(compiler->GetSwitches().libPrefix + fname.GetName());
         fname.SetExt(compiler->GetSwitches().libExtension);
         wxString out = UnixFilename(fname.GetFullPath());
         ConvertToMakefileFriendly(out);
@@ -845,7 +846,8 @@ void MakefileGenerator::DoAddMakefileTargets(wxString& buffer)
         if (target->GetTargetType() == ttDynamicLib)
         {
             wxFileName fname(target->GetOutputFilename());
-            fname.SetName(m_CompilerSet->GetSwitches().libPrefix + fname.GetName());
+            if (!fname.GetName().StartsWith(m_CompilerSet->GetSwitches().libPrefix))
+                fname.SetName(m_CompilerSet->GetSwitches().libPrefix + fname.GetName());
             fname.SetExt(m_CompilerSet->GetSwitches().libExtension);
             out = UnixFilename(fname.GetFullPath());
             ConvertToMakefileFriendly(out);

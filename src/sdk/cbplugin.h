@@ -45,8 +45,8 @@ struct PluginInfo
 	bool hasConfigure;
 };
 
-/**
-  * Base class for plugins. This is the minimum class a plugin must descend
+/** @brief Base class for plugins
+  * This is the most basic class a plugin must descend
   * from.
   * cbPlugin descends from wxEvtHandler, so it provides its methods as well...
   * \n \n

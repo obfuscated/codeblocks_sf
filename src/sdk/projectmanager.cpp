@@ -405,7 +405,7 @@ bool ProjectManager::CloseAllProjects()
 bool ProjectManager::CloseProject(cbProject* project)
 {
     if (!project)
-        return true;
+        return false;
 
     cbProject* tmp = 0L;
 	bool same = (project == m_pActiveProject);
@@ -416,11 +416,11 @@ bool ProjectManager::CloseProject(cbProject* project)
     	SetProject(project);
     }
 
-    CloseActiveProject();
+    bool ret = CloseActiveProject();
 
     if (!same)
 	    SetProject(tmp);
-	return true;
+	return ret;
 }
 
 bool ProjectManager::CloseActiveProject()
@@ -465,13 +465,8 @@ bool ProjectManager::CloseActiveProject()
 bool ProjectManager::SaveProject(cbProject* project)
 {
     if (!project)
-        return true;
-    return project->Save();
-}
-
-bool ProjectManager::SaveActiveProject()
-{
-    if (SaveProject(m_pActiveProject))
+        return false;
+    if (project->Save())
     {
         RebuildTree();
         return true;
@@ -479,11 +474,26 @@ bool ProjectManager::SaveActiveProject()
     return false;
 }
 
+bool ProjectManager::SaveProjectAs(cbProject* project)
+{
+    if (!project)
+        return false;
+    if (project->SaveAs())
+    {
+        RebuildTree();
+        return true;
+    }
+    return false;
+}
+
+bool ProjectManager::SaveActiveProject()
+{
+    return SaveProject(m_pActiveProject);
+}
+
 bool ProjectManager::SaveActiveProjectAs()
 {
-    if (!m_pActiveProject)
-        return true;
-    return m_pActiveProject->SaveAs();
+    return SaveProjectAs(m_pActiveProject);
 }
 
 bool ProjectManager::SaveAllProjects()
@@ -645,6 +655,42 @@ int ProjectManager::AddFileToProject(const wxString& filename, cbProject* projec
 	return target;
 }
 
+int ProjectManager::AddFileToProject(const wxString& filename, cbProject* project, wxArrayInt& targets)
+{
+	cbProject* prj = project;
+	if (!prj)
+		prj = GetActiveProject();
+	if (!prj)
+		return 0;
+
+	// do we have to ask for target?
+	if (targets.GetCount() == 0)
+	{
+		// if project has only one target, use this
+		if (prj->GetBuildTargetsCount() == 1)
+			targets.Add(0);
+		// else display multiple target selection dialog
+		else
+		{
+			targets = AskForMultiBuildTargetIndex(prj);
+			if (targets.GetCount() == 0)
+				return 0;
+		}
+	}
+
+    for (size_t i = 0; i < targets.GetCount(); ++i)
+    {
+        prj->AddFile(targets[i], filename);
+    }
+
+	CodeBlocksEvent event(cbEVT_PROJECT_FILE_ADDED);
+	event.SetProject(prj);
+	event.SetString(filename);
+	Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+
+	return targets.GetCount();
+}
+
 int ProjectManager::AskForBuildTargetIndex(cbProject* project)
 {
 	cbProject* prj = project;
@@ -659,7 +705,30 @@ int ProjectManager::AskForBuildTargetIndex(cbProject* project)
 	for (int i = 0; i < count; ++i)
 		array.Add(prj->GetBuildTarget(i)->GetTitle());
 	int target = wxGetSingleChoiceIndex(_("Select the target:"), _("Project targets"), array);
+	
 	return target;
+}
+
+wxArrayInt ProjectManager::AskForMultiBuildTargetIndex(cbProject* project)
+{
+    wxArrayInt indices;
+	cbProject* prj = project;
+	if (!prj)
+		prj = GetActiveProject();
+	if (!prj)
+		return indices;
+
+	// ask for target
+	wxArrayString array;
+	int count = prj->GetBuildTargetsCount();
+	for (int i = 0; i < count; ++i)
+		array.Add(prj->GetBuildTarget(i)->GetTitle());
+    
+    MultiSelectDlg dlg(0, array, false, _("Select the targets this file should belong to:"));
+    if (dlg.ShowModal() == wxID_OK)
+        indices = dlg.GetSelectedIndices();
+	
+	return indices;
 }
 
 void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
@@ -829,14 +898,17 @@ void ProjectManager::OnAddFileToProject(wxCommandEvent& event)
     
     if (dlg.ShowModal() == wxID_OK)
     {
-		int target = prj->GetBuildTargetsCount() == 1 ? 0 : -1; // ask for target only if more than one
+		wxArrayInt targets;
+        // ask for target only if more than one
+		if (prj->GetBuildTargetsCount() == 1)
+             targets.Add(0);
 		
 		wxArrayString array;
         dlg.GetPaths(array);
         for (unsigned int i = 0; i < array.GetCount(); ++i)
 		{
-            target = AddFileToProject(array[i], prj, target);
-			if (target == -1)
+            AddFileToProject(array[i], prj, targets);
+			if (targets.GetCount() == 0)
 				break;
 		}
         RebuildTree();
@@ -856,7 +928,9 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
         {
             files.Add(prj->GetFile(i)->relativeFilename);
         }
-        MultiSelectDlg dlg(0, files);
+        wxString msg;
+        msg.Printf(_("Select files to remove from %s:"), prj->GetTitle().c_str());
+        MultiSelectDlg dlg(0, files, false, msg);
         if (dlg.ShowModal() == wxID_OK)
         {
             wxArrayInt indices = dlg.GetSelectedIndices();

@@ -39,13 +39,15 @@ class cbStyledTextCtrl : public wxStyledTextCtrl
 		DECLARE_EVENT_TABLE()
 };
 
-/**
- * This class represents one editor in Code::Studio. It holds all the necessary
- * information about an editor. When you want to access a Code::Studio editor,
- * this is the class you want to get at ;)\n
- * <em>Note: this class descends from wxPanel, so it provides all wxPanel methods
- * as well...</em>
- */
+/** @brief A file editor
+  *
+  * This class represents one editor in Code::Blocks. It holds all the necessary
+  * information about an editor. When you want to access a Code::Blocks editor,
+  * this is the class you want to get at ;)\n
+  * To do this, use Manager::Get()->GetEditorManager() functions.
+  * @note This class descends from wxPanel, so it provides all wxPanel methods
+  * as well...
+  */
 class DLLIMPORT cbEditor : public wxMDIChildFrame
 {
     DECLARE_EVENT_TABLE()

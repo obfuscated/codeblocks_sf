@@ -1,14 +1,21 @@
-#include <wx/intl.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/checklst.h>
+#include <wx/stattext.h>
 
 #include "multiselectdlg.h"
 
-MultiSelectDlg::MultiSelectDlg(wxWindow* parent, const wxArrayString& items, bool selectall)
+MultiSelectDlg::MultiSelectDlg(wxWindow* parent,
+                                const wxArrayString& items,
+                                bool selectall,
+                                const wxString& label,
+                                const wxString& title)
 {
 	//ctor
 	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgGenericMultiSelect"));
-	
+
+	SetTitle(title);
+	XRCCTRL(*this, "lblLabel", wxStaticText)->SetLabel(label);
+
     wxCheckListBox* lst = XRCCTRL(*this, "lstItems", wxCheckListBox);
 	for (size_t i = 0; i < items.GetCount(); ++i)
 	{

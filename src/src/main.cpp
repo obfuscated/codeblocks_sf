@@ -1066,7 +1066,8 @@ void MainFrame::OnFileNewEmpty(wxCommandEvent& event)
 					_("Add file to project"),
 					wxYES_NO | wxICON_QUESTION) == wxYES)
 	{
-		if (m_pPrjMan->AddFileToProject(ed->GetFilename(), project) != -1)
+        wxArrayInt targets;
+		if (m_pPrjMan->AddFileToProject(ed->GetFilename(), project, targets) != 0)
 		{
 			ed->SetProjectFile(project->GetFileByFilename(ed->GetFilename(), false));
 			m_pPrjMan->RebuildTree();

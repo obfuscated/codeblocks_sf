@@ -6,7 +6,7 @@
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
-        <object class="wxStaticText">
+        <object class="wxStaticText" name="lblLabel">
           <label>Select items:</label>
         </object>
         <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
