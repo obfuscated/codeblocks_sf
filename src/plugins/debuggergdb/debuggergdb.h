@@ -62,6 +62,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         void OnGDBOutput(wxCommandEvent& event);
         void OnGDBError(wxCommandEvent& event);
         void OnGDBTerminated(wxCommandEvent& event);
+        void OnIdle(wxIdleEvent& event);
 		void OnTimer(wxTimerEvent& event);
 		void OnWatchesChanged(wxCommandEvent& event);
         void OnAddWatch(wxCommandEvent& event);

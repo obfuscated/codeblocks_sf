@@ -85,6 +85,7 @@ BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
 	EVT_PIPEDPROCESS_STDERR(idGDBProcess, DebuggerGDB::OnGDBError)
 	EVT_PIPEDPROCESS_TERMINATED(idGDBProcess, DebuggerGDB::OnGDBTerminated)
 	
+	EVT_IDLE(DebuggerGDB::OnIdle)
 	EVT_TIMER(idTimerPollDebugger, DebuggerGDB::OnTimer)
 	
 	EVT_COMMAND(-1, cbCustom_WATCHES_CHANGED, DebuggerGDB::OnWatchesChanged)
@@ -946,7 +947,7 @@ void DebuggerGDB::OnGDBTerminated(wxCommandEvent& event)
 	m_TimerPollDebugger.Stop();
 	m_LastExitCode = event.GetInt();
 	//the process deletes itself
-	m_pProcess = 0L;
+//	m_pProcess = 0L;
 
 	ClearActiveMarkFromAllEditors();
 	Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Debugger finished with status %d"), m_LastExitCode);
@@ -1037,10 +1038,17 @@ void DebuggerGDB::OnValueTooltip(CodeBlocksEvent& event)
 	}
 }
 
+void DebuggerGDB::OnIdle(wxIdleEvent& event)
+{
+    if (m_pProcess && ((PipedProcess*)m_pProcess)->HasInput())
+		event.RequestMore();
+	else
+		event.Skip();
+}
+
 void DebuggerGDB::OnTimer(wxTimerEvent& event)
 {
-    while (m_pProcess && ((PipedProcess*)m_pProcess)->HasInput())
-		;
+    wxWakeUpIdle();
 }
 
 void DebuggerGDB::OnWatchesChanged(wxCommandEvent& event)
