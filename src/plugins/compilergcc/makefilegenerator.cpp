@@ -885,7 +885,7 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
 #ifdef __WXMSW__
         if (!resources.IsEmpty())
         {
-            wxFileName resFile(m_Makefile);
+            wxFileName resFile;
             resFile.SetName(target->GetTitle() + "_private");
             resFile.SetExt(RESOURCE_EXT);
             resFile.MakeRelativeTo(m_Project->GetBasePath());
