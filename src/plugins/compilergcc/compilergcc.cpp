@@ -38,6 +38,7 @@
 #include "compilerBCC.h"
 #include "compilerDMC.h"
 #include "directcommands.h"
+#include "../xtra_res.h"
 #include <wx/xrc/xmlres.h>
 #include <wx/fs_zip.h>
 
@@ -54,7 +55,7 @@ cbPlugin* GetPlugin()
 // we use wxNewId() to generate a guaranteed unique ID ;), instead of enum
 // (don't forget that, especially in a plugin)
 int idTimerPollCompiler = wxNewId();
-int idMenuCompile = wxNewId();
+int idMenuCompile = XRCID("idCompilerMenuCompile");
 int idMenuCompileTarget = wxNewId();
 int idMenuCompileFromProjectManager = wxNewId();
 int idMenuProjectCompilerOptions = wxNewId();
@@ -63,7 +64,7 @@ int idMenuTargetCompilerOptionsSub = wxNewId();
 int idMenuCompileTargetFromProjectManager = wxNewId();
 int idMenuCompileFile = wxNewId();
 int idMenuCompileFileFromProjectManager = wxNewId();
-int idMenuRebuild = wxNewId();
+int idMenuRebuild = XRCID("idCompilerMenuRebuild");
 int idMenuRebuildTarget = wxNewId();
 int idMenuRebuildFromProjectManager = wxNewId();
 int idMenuRebuildTargetFromProjectManager = wxNewId();
@@ -77,8 +78,8 @@ int idMenuCleanFromProjectManager = wxNewId();
 int idMenuDistCleanFromProjectManager = wxNewId();
 int idMenuCleanTargetFromProjectManager = wxNewId();
 int idMenuDistCleanTargetFromProjectManager = wxNewId();
-int idMenuCompileAndRun = wxNewId();
-int idMenuRun = wxNewId();
+int idMenuCompileAndRun = XRCID("idCompilerMenuCompileAndRun");
+int idMenuRun = XRCID("idCompilerMenuRun");
 int idMenuKillProcess = wxNewId();
 int idMenuSelectTarget = wxNewId();
 int idMenuSelectTargetAll = wxNewId();
@@ -164,6 +165,7 @@ CompilerGCC::CompilerGCC()
 {
     wxFileSystem::AddHandler(new wxZipFSHandler);
     wxXmlResource::Get()->InitAllHandlers();
+    wxXmlResource::Get()->InsertHandler(new wxToolBarAddOnXmlHandler);
     wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
     wxXmlResource::Get()->Load(resPath + "/compiler_gcc.zip#zip:*.xrc");
 
@@ -430,50 +432,38 @@ void CompilerGCC::BuildToolBar(wxToolBar* toolBar)
 	if (!m_IsAttached)
 		return;
 	if (toolBar)
-	{
-		m_pToolbar = toolBar;
-		wxString res = ConfigManager::Get()->Read("/data_path") + "/images/";
-		
-		toolBar->AddSeparator();
-		
-		toolBar->AddTool(idMenuCompile, _("Compile"), wxBitmap(res + "compile.png", wxBITMAP_TYPE_PNG));
-		toolBar->SetToolShortHelp(idMenuCompile, _("Compile"));
-		toolBar->SetToolLongHelp(idMenuCompile, _("Compile the active project"));
+	{        
+        wxSize mysize=toolBar->GetToolBitmapSize();
+        bool is_small=(mysize.GetWidth()<=16 && mysize.GetHeight()<=16);
+        wxString my_16x16=is_small ? "_16x16" : "";
+        
+        wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
+        wxXmlResource *myres = wxXmlResource::Get();
+        myres->Load(resPath + "/compiler_gcc.zip#zip:*.xrc");
+        
+		myres->LoadObject(toolBar,NULL,"compiler_toolbar"+my_16x16,"wxToolBarAddOn");
+		// supported by our *new* wxToolBarAddOnHandler
 
-		toolBar->AddTool(idMenuRun, _("Run"), wxBitmap(res + "run.png", wxBITMAP_TYPE_PNG));
-		toolBar->SetToolShortHelp(idMenuRun, _("Run"));
-		toolBar->SetToolLongHelp(idMenuRun, _("Run the active project"));
-
-		toolBar->AddTool(idMenuCompileAndRun, _("Compile and run"), wxBitmap(res + "compilerun.png", wxBITMAP_TYPE_PNG));
-		toolBar->SetToolShortHelp(idMenuCompileAndRun, _("Compile and run"));
-		toolBar->SetToolLongHelp(idMenuCompileAndRun, _("Compile and run the active project"));
-
-		toolBar->AddTool(idMenuRebuild, _("Rebuild"), wxBitmap(res + "rebuild.png", wxBITMAP_TYPE_PNG));
-		toolBar->SetToolShortHelp(idMenuRebuild, _("Rebuild"));
-		toolBar->SetToolLongHelp(idMenuRebuild, _("Rebuild the active project"));
-
-		toolBar->AddSeparator();
-		
-// neither the generic nor Motif native toolbars really support this
-#if (wxUSE_TOOLBAR_NATIVE && !USE_GENERIC_TBAR) && !defined(__WXMOTIF__) && !defined(__WXX11__) && !defined(__WXMAC__)
+        // neither the generic nor Motif native toolbars really support this
+        #if (wxUSE_TOOLBAR_NATIVE && !USE_GENERIC_TBAR) && !defined(__WXMOTIF__) && !defined(__WXX11__) && !defined(__WXMAC__)
 		m_ToolTargetLabel = new wxStaticText(toolBar, idToolTargetLabel, _("Build target: "), wxDefaultPosition);
 		toolBar->AddControl(m_ToolTargetLabel);
 		m_ToolTarget = new wxComboBox(toolBar, idToolTarget, "Compiler Target Selection", wxDefaultPosition, wxDefaultSize, 0, 0L, wxCB_DROPDOWN | wxCB_READONLY);
 		toolBar->AddControl(m_ToolTarget);
 		m_ToolTarget->Enable(false); // to force OnUpdateUI() to call tbar->Refresh() the first time...
-#endif
-		toolBar->Realize();
+        #endif
+        toolBar->Realize();
 	}
 }
 
 void CompilerGCC::RemoveToolBar(wxToolBar* toolBar)
 {
-    toolBar->DeleteTool(idMenuCompile);
-    toolBar->DeleteTool(idMenuRun);
-    toolBar->DeleteTool(idMenuCompileAndRun);
-    toolBar->DeleteTool(idMenuRebuild);
-    toolBar->DeleteTool(idToolTargetLabel);
     toolBar->DeleteTool(idToolTarget);
+    toolBar->DeleteTool(idToolTargetLabel);
+    toolBar->DeleteTool(idMenuRebuild);
+    toolBar->DeleteTool(idMenuCompileAndRun);
+    toolBar->DeleteTool(idMenuRun);
+    toolBar->DeleteTool(idMenuCompile);
     
     m_ToolTargetLabel = 0;
     m_ToolTarget = 0;

@@ -51,81 +51,81 @@
 #include "dlgaboutplugin.h"
 #include "dlgabout.h"
 
-int idFileNew = wxNewId();
-int idFileOpen = wxNewId();
-int idFileReopen = wxNewId();
-int idFileOpenRecentClearHistory = wxNewId();
-int idFileSave = wxNewId();
-int idFileSaveAs = wxNewId();
-int idFileSaveAllFiles = wxNewId();
-int idFileSaveWorkspaceAs = wxNewId();
-int idFileClose = wxNewId();
-int idFileCloseAll = wxNewId();
-int idFileExit = wxNewId();
+int idFileNew = XRCID("idFileNew");
+int idFileOpen = XRCID("idFileOpen");
+int idFileReopen = XRCID("idFileReopen");
+int idFileOpenRecentClearHistory = XRCID("idFileOpenRecentClearHistory");
+int idFileSave = XRCID("idFileSave");
+int idFileSaveAs = XRCID("idFileSaveAs");
+int idFileSaveAllFiles = XRCID("idFileSaveAllFiles");
+int idFileSaveWorkspaceAs = XRCID("idFileSaveWorkspaceAs");
+int idFileClose = XRCID("idFileClose");
+int idFileCloseAll = XRCID("idFileCloseAll");
+int idFileExit = XRCID("idFileExit");
 
-int idEditUndo = wxNewId();
-int idEditRedo = wxNewId();
-int idEditCopy = wxNewId();
-int idEditCut = wxNewId();
-int idEditPaste = wxNewId();
-int idEditSwapHeaderSource = wxNewId();
-int idEditBookmarks = wxNewId();
-int idEditBookmarksToggle = wxNewId();
-int idEditBookmarksPrevious = wxNewId();
-int idEditBookmarksNext = wxNewId();
-int idEditFolding = wxNewId();
-int idEditFoldAll = wxNewId();
-int idEditUnfoldAll = wxNewId();
-int idEditToggleAllFolds = wxNewId();
-int idEditFoldBlock = wxNewId();
-int idEditUnfoldBlock = wxNewId();
-int idEditToggleFoldBlock = wxNewId();
-int idEditEOLMode = wxNewId();
-int idEditEOLCRLF = wxNewId();
-int idEditEOLCR = wxNewId();
-int idEditEOLLF = wxNewId();
-int idEditSelectAll = wxNewId();
-int idEditCommentSelected = wxNewId();
+int idEditUndo = XRCID("idEditUndo");
+int idEditRedo = XRCID("idEditRedo");
+int idEditCopy = XRCID("idEditCopy");
+int idEditCut = XRCID("idEditCut");
+int idEditPaste = XRCID("idEditPaste");
+int idEditSwapHeaderSource = XRCID("idEditSwapHeaderSource");
+int idEditBookmarks = XRCID("idEditBookmarks");
+int idEditBookmarksToggle = XRCID("idEditBookmarksToggle");
+int idEditBookmarksPrevious = XRCID("idEditBookmarksPrevious");
+int idEditBookmarksNext = XRCID("idEditBookmarksNext");
+int idEditFolding = XRCID("idEditFolding");
+int idEditFoldAll = XRCID("idEditFoldAll");
+int idEditUnfoldAll = XRCID("idEditUnfoldAll");
+int idEditToggleAllFolds = XRCID("idEditToggleAllFolds");
+int idEditFoldBlock = XRCID("idEditFoldBlock");
+int idEditUnfoldBlock = XRCID("idEditUnfoldBlock");
+int idEditToggleFoldBlock = XRCID("idEditToggleFoldBlock");
+int idEditEOLMode = XRCID("idEditEOLMode");
+int idEditEOLCRLF = XRCID("idEditEOLCRLF");
+int idEditEOLCR = XRCID("idEditEOLCR");
+int idEditEOLLF = XRCID("idEditEOLLF");
+int idEditSelectAll = XRCID("idEditSelectAll");
+int idEditCommentSelected = XRCID("idEditCommentSelected");
 
-int idViewToolMain = wxNewId();
-int idViewManager = wxNewId();
-int idViewMessageManager = wxNewId();
-int idViewStatusbar = wxNewId();
-int idViewFocusEditor = wxNewId();
-int idViewFullScreen = wxNewId();
+int idViewToolMain = XRCID("idViewToolMain");
+int idViewManager = XRCID("idViewManager");
+int idViewMessageManager = XRCID("idViewMessageManager");
+int idViewStatusbar = XRCID("idViewStatusbar");
+int idViewFocusEditor = XRCID("idViewFocusEditor");
+int idViewFullScreen = XRCID("idViewFullScreen");
 
-int idSearchFind = wxNewId();
-int idSearchFindNext = wxNewId();
-int idSearchFindPrevious = wxNewId();
-int idSearchReplace = wxNewId();
-int idSearchGotoLine = wxNewId();
+int idSearchFind = XRCID("idSearchFind");
+int idSearchFindNext = XRCID("idSearchFindNext");
+int idSearchFindPrevious = XRCID("idSearchFindPrevious");
+int idSearchReplace = XRCID("idSearchReplace");
+int idSearchGotoLine = XRCID("idSearchGotoLine");
 
-int idProjectNew = wxNewId();
-int idProjectNewEmptyProject = wxNewId();
-int idProjectOpen = wxNewId();
-int idProjectSaveProject = wxNewId();
-int idProjectSaveProjectAs = wxNewId();
-int idProjectSaveAllProjects = wxNewId();
-int idProjectSaveTemplate = wxNewId();
-int idProjectCloseProject = wxNewId();
-int idProjectCloseAllProjects = wxNewId();
-int idProjectImport = wxNewId();
-int idProjectImportDevCpp = wxNewId();
-int idProjectImportMSVC = wxNewId();
-int idProjectImportMSVS = wxNewId();
+int idProjectNew = XRCID("idProjectNew");
+int idProjectNewEmptyProject = XRCID("idProjectNewEmptyProject");
+int idProjectOpen = XRCID("idProjectOpen");
+int idProjectSaveProject = XRCID("idProjectSaveProject");
+int idProjectSaveProjectAs = XRCID("idProjectSaveProjectAs");
+int idProjectSaveAllProjects = XRCID("idProjectSaveAllProjects");
+int idProjectSaveTemplate = XRCID("idProjectSaveTemplate");
+int idProjectCloseProject = XRCID("idProjectCloseProject");
+int idProjectCloseAllProjects = XRCID("idProjectCloseAllProjects");
+int idProjectImport = XRCID("idProjectImport");
+int idProjectImportDevCpp = XRCID("idProjectImportDevCpp");
+int idProjectImportMSVC = XRCID("idProjectImportMSVC");
+int idProjectImportMSVS = XRCID("idProjectImportMSVS");
 
-int idSettingsEnvironment = wxNewId();
-int idSettingsEditor = wxNewId();
-int idPluginsManagePlugins = wxNewId();
-int idSettingsConfigurePlugins = wxNewId();
-int idSettingsImpExpConfig = wxNewId();
+int idSettingsEnvironment = XRCID("idSettingsEnvironment");
+int idSettingsEditor = XRCID("idSettingsEditor");
+int idPluginsManagePlugins = XRCID("idPluginsManagePlugins");
+int idSettingsConfigurePlugins = XRCID("idSettingsConfigurePlugins");
+int idSettingsImpExpConfig = XRCID("idSettingsImpExpConfig");
 
-int idHelpTips = wxNewId();
-int idHelpPlugins = wxNewId();
+int idHelpTips = XRCID("idHelpTips");
+int idHelpPlugins = XRCID("idHelpPlugins");
 
-int idLeftSash = wxNewId();
-int idBottomSash = wxNewId();
-int idCloseFullScreen = wxNewId();
+int idLeftSash = XRCID("idLeftSash");
+int idBottomSash = XRCID("idBottomSash");
+int idCloseFullScreen = XRCID("idCloseFullScreen");
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_SIZE(MainFrame::OnSize)
@@ -272,7 +272,8 @@ MainFrame::MainFrame(wxWindow* parent)
        m_ToolsMenu(0L),
        m_SettingsMenu(0L),
        m_HelpPluginsMenu(0L),
-       m_ReconfiguringPlugins(false)
+       m_ReconfiguringPlugins(false),
+       m_SmallToolBar(true)
 {
 #if defined( _MSC_VER ) && defined( _DEBUG )
 	int tmpFlag = _CrtSetDbgFlag( _CRTDBG_REPORT_FLAG );
@@ -586,43 +587,44 @@ void MainFrame::CreateMenubar()
 
 void MainFrame::CreateToolbars()
 {
+	wxXmlResource *myres = wxXmlResource::Get();
 	if (m_pToolbar)
 	{
 		SetToolBar(0L);
 		delete m_pToolbar;
 		m_pToolbar = 0L;
 	}
-
-    int flags = wxTB_HORIZONTAL;
-    int major;
-    int minor;
-    // version==wxWINDOWS_NT && major==5 && minor==1 => windowsXP
-    bool isXP = wxGetOsVersion(&major, &minor) == wxWINDOWS_NT && major == 5 && minor == 1;
-    if (!isXP)
-        flags |= wxTB_FLAT;
-
-    m_pToolbar = CreateToolBar(flags, wxID_ANY);
-    m_pToolbar->SetToolBitmapSize(wxSize(22, 22));
+    // *** Begin new Toolbar routine ***
+    wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
+    wxString xrcToolbarName = "main_toolbar";
+    if(m_SmallToolBar) // Insert logic here
+        xrcToolbarName += "_16x16";
+    myres->Load(resPath + "/resources.zip#zip:*.xrc");
+    m_pMsgMan->DebugLog("Loading toolbar...");
+    wxToolBar *mytoolbar = myres->LoadToolBar(this,xrcToolbarName);
+    
+    if(mytoolbar==0L)
+    {
+        m_pMsgMan->DebugLog(wxString("failed!"));          
+        int flags = wxTB_HORIZONTAL;
+        int major;
+        int minor;
+        // version==wxWINDOWS_NT && major==5 && minor==1 => windowsXP
+        bool isXP = wxGetOsVersion(&major, &minor) == wxWINDOWS_NT && major == 5 && minor == 1;
+        if (!isXP)
+            flags |= wxTB_FLAT;
+        mytoolbar = CreateToolBar(flags, wxID_ANY);  
+        if(m_SmallToolBar)
+            mytoolbar->SetToolBitmapSize(wxSize(16, 16));
+        else
+            mytoolbar->SetToolBitmapSize(wxSize(22, 22));        
+    }
+    
+    m_pToolbar=mytoolbar;
     SetToolBar(m_pToolbar);
-	
+    // *** End new Toolbar routine ***
+
     wxString res = ConfigManager::Get()->Read("data_path") + "/images/";
-
-	AddToolbarItem(idProjectNew, _("New project"), _("New project"), _("Create a new project"), res + "newproject.png");
-	AddToolbarItem(idFileNew, _("New file"), _("New file"), _("Create a new source file"), res + "filenew.png");
-    m_pToolbar->AddSeparator();
-	AddToolbarItem(idFileOpen, _("Open"), _("Open"), _("Open an existing file or project"), res + "fileopen.png");
-	AddToolbarItem(idFileSave, _("Save"), _("Save"), _("Save current file"), res + "filesave.png");
-    m_pToolbar->AddSeparator();
-	AddToolbarItem(idEditUndo, _("Undo"), _("Undo"), _("Undo the last editing action"), res + "undo.png");
-	AddToolbarItem(idEditRedo, _("Redo"), _("Redo"), _("Redo the last editing action"), res + "redo.png");
-    m_pToolbar->AddSeparator();
-	AddToolbarItem(idEditCut, _("Cut"), _("Cut"), _("Cut selected text to clipboard"), res + "editcut.png");
-	AddToolbarItem(idEditCopy, _("Copy"), _("Copy"), _("Copy selected text to clipboard"), res + "editcopy.png");
-	AddToolbarItem(idEditPaste, _("Paste"), _("Paste"), _("Paste text from clipboard"), res + "editpaste.png");
-    m_pToolbar->AddSeparator();
-	AddToolbarItem(idSearchFind, _("Find"), _("Find"), _("Find text"), res + "filefind.png");
-	AddToolbarItem(idSearchReplace, _("Replace"), _("Replace"), _("Replace text"), res + "searchreplace.png");
-
 	// ask all plugins to rebuild their toolbars
 	PluginElementsArray plugins = Manager::Get()->GetPluginManager()->GetPlugins();
 	for (unsigned int i = 0; i < plugins.GetCount(); ++i)
@@ -634,8 +636,8 @@ void MainFrame::CreateToolbars()
 				plug->BuildToolBar(m_pToolbar);
 		}
 	}
-	wxYield();
 
+	wxYield();
 //	m_pToolbar->SetRows(2);
 	m_pToolbar->Realize();
 }

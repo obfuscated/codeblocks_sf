@@ -167,6 +167,7 @@ class MainFrame : public wxMDIParentFrame
         wxMenu* m_HelpPluginsMenu;
         
         bool m_ReconfiguringPlugins;
+        bool m_SmallToolBar;
 		
         DECLARE_EVENT_TABLE()
 };

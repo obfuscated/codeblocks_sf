@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxToolBarAddOn" name="compiler_toolbar">
+    <object class="separator" />
+    <object class="tool" name="idCompilerMenuCompile">
+      <tooltip>Compile</tooltip>
+      <longhelp>Compile the active project</longhelp>
+      <bitmap>images/compile.png</bitmap>
+    </object>
+    <object class="tool" name="idCompilerMenuRun">
+      <tooltip>Run</tooltip>
+      <longhelp>Run the active project</longhelp>
+      <bitmap>images/run.png</bitmap>
+    </object>
+    <object class="tool" name="idCompilerMenuCompileAndRun">
+      <tooltip>Compile and run</tooltip>
+      <longhelp>Compile and run the active project</longhelp>
+      <bitmap>images/compilerun.png</bitmap>
+    </object>
+    <object class="tool" name="idCompilerMenuRebuild">
+      <tooltip>Rebuild</tooltip>
+      <longhelp>Recompile all modules in the active project</longhelp>
+      <bitmap>images/rebuild.png</bitmap>
+    </object>
+    <object class="separator" />
+  </object>
+</resource>
