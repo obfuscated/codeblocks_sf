@@ -288,6 +288,18 @@
 					<Add before="cp -f devel/*.exe output"/>
 					<Add before="cp -f devel/*.so output"/>
 					<Add before="cp -f devel/share/CodeBlocks/plugins/*.so output/share/CodeBlocks/plugins"/>
+					<Add before="echo -e &quot;#!/bin/sh\n\n&quot; > output/run.sh"/>
+					<Add before="echo -n &quot;APP_DIR=&quot; >> output/run.sh"/>
+					<Add before="echo `pwd`/output >> output/run.sh"/>
+					<Add before="echo &quot;export LD_LIBRARY_PATH=\$$APP_DIR:\$$LD_LIBRARY_PATH&quot; >> output/run.sh"/>
+					<Add before="echo &quot;\$$APP_DIR/codeblocks.exe --prefix=\$$APP_DIR&quot; >> output/run.sh"/>
+					<Add before="chmod +x output/run.sh"/>
+					<Add before="echo -e &quot;#!/bin/sh\n\n&quot; > devel/run.sh"/>
+					<Add before="echo -n &quot;APP_DIR=&quot; >> devel/run.sh"/>
+					<Add before="echo `pwd`/output >> devel/run.sh"/>
+					<Add before="echo &quot;export LD_LIBRARY_PATH=\$$APP_DIR:\$$LD_LIBRARY_PATH&quot; >> devel/run.sh"/>
+					<Add before="echo &quot;\$$APP_DIR/codeblocks.exe --prefix=\$$APP_DIR&quot; >> devel/run.sh"/>
+					<Add before="chmod +x devel/run.sh"/>
 					<Add before="strip output/*.exe"/>
 					<Add before="strip output/*.so"/>
 					<Add before="strip output/share/CodeBlocks/plugins/*.so"/>
