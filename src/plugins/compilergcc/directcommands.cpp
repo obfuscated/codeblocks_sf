@@ -173,7 +173,7 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
     // create output dir
     if (!pfd.object_dir_native.IsEmpty() && !wxDirExists(pfd.object_dir_native))
     {
-        if (!wxMkdir(pfd.object_dir_native, 0755))
+        if (!CreateDirRecursively(pfd.object_dir_native, 0755))
             wxMessageBox(_("Can't create object output directory ") + pfd.object_dir_native);
     }
 
@@ -471,7 +471,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     wxString dstname = out.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
     if (!dstname.IsEmpty() && !wxDirExists(dstname))
     {
-        if (!wxMkdir(dstname, 0755))
+        if (!CreateDirRecursively(dstname, 0755))
             wxMessageBox(_("Can't create output directory ") + dstname);
     }
 
@@ -608,7 +608,7 @@ bool DirectCommands::ForceCompileByDependencies(const pfDetails& pfd)
         // create deps dir
         if (!pfd.dep_dir_native.IsEmpty() && !wxDirExists(pfd.dep_dir_native))
         {
-            if (!wxMkdir(pfd.dep_dir_native, 0755))
+            if (!CreateDirRecursively(pfd.dep_dir_native, 0755))
                 wxMessageBox(_("Can't create dependencies output directory ") + pfd.dep_dir_native);
         }
 

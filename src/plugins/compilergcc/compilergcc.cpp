@@ -1094,7 +1094,7 @@ void CompilerGCC::OnExportMakefile(wxCommandEvent& event)
 
 int CompilerGCC::Compile(ProjectBuildTarget* target)
 {
-    	DoClearErrors();
+    DoClearErrors();
 	DoPrepareQueue();
 	if (!m_Project)
         return -2;
@@ -1244,7 +1244,7 @@ void CompilerGCC::OnRun(wxCommandEvent& event)
 void CompilerGCC::OnCompileAndRun(wxCommandEvent& event)
 {
 	m_RunAfterCompile = true;
-    Compile();
+    Compile(DoAskForTarget());
 }
 
 void CompilerGCC::OnCompile(wxCommandEvent& event)
@@ -1291,7 +1291,13 @@ void CompilerGCC::OnCompileFile(wxCommandEvent& event)
     }
     else
     {
-        file.Assign(Manager::Get()->GetEditorManager()->GetActiveEditor()->GetFilename());
+        cbEditor* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
+        if (ed)
+        {
+            // make sure it is saved
+            if (ed->Save())
+                file.Assign(ed->GetFilename());
+        }
     }
 
     file.MakeRelativeTo(m_Project->GetFilename());
@@ -1299,7 +1305,8 @@ void CompilerGCC::OnCompileFile(wxCommandEvent& event)
 	file.SetExt(OBJECT_EXT);
 #endif
     wxString fname = file.GetFullPath();
-    CompileFile(UnixFilename(fname));
+    if (!fname.IsEmpty())
+        CompileFile(UnixFilename(fname));
 }
 
 void CompilerGCC::OnRebuild(wxCommandEvent& event)
