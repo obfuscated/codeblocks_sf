@@ -550,6 +550,11 @@ void MakefileGenerator::DoAddMakefileTargets(wxString& buffer)
 		if (!IsTargetValid(target))
 			continue;
 
+        // add commands to create the target directory (if it does not exist)
+        wxFileName fname(target->GetOutputFilename());
+        fname.MakeRelativeTo(m_Project->GetBasePath());
+        buffer << target->GetTitle() << "_OUTDIR=" << UnixFilename(fname.GetPath(wxPATH_GET_VOLUME)) << '\n';
+
         // the filename is already adapted based on the project type
 		buffer << target->GetTitle() << "_BIN=" << UnixFilename(target->GetOutputFilename()) << '\n';
         if (target->GetTargetType() == ttDynamicLib)
@@ -749,7 +754,10 @@ void MakefileGenerator::DoAddMakefileTarget_Link(wxString& buffer)
 
 		buffer << "$(" << target->GetTitle() << "_BIN): " << "$(" << target->GetTitle() << "_LINKOBJS) ";
 		buffer << '\n';
-        
+
+        // command to create the target dir
+        buffer << "\t-@if not exist \"$(" << target->GetTitle() << "_OUTDIR)/.\" mkdir \"$(" << target->GetTitle() << "_OUTDIR)\"\n";
+
 		// run any user-defined commands *before* build
 		DoAddMakefileCommands(wxEmptyString, target->GetCommandsBeforeBuild(), buffer);
 		
