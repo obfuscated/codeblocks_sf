@@ -1,5 +1,187 @@
+Changes for version 1.0-beta5
+-------------------------------
+
+2005-01-30 22:20  mandrav
+
+	* Fixed bug that would mess compiler options when continually
+	   switching compiler in compiler options
+	* Debugger pops a message if no debugging info in executable
+
+2005-01-30 11:41  mandrav
+
+	* Changed the plugins SDK
+	* Corrected plugins loading/unloading on-the-fly
+	* Moved menu entry "Settings/Manage plugins" to "Plugins/Manage plugins"
+
+2005-01-29 13:59  mandrav
+
+	* Fixed CompilerMSVC to compile under non-win32 platforms
+
+2005-01-29 13:29  mandrav
+
+	* PluginWizard now creates a new project for the
+	   plugin it generates
+	* Added some developer's documentation in cbProject tree building
+	* Renamed menu entry "Settings/Plugins" to "Settings/Manage plugins"
+	   to better reflect its purpose
+
+2005-01-28 20:16  mandrav
+
+	* Added option in code-completion to disable SmartSense (provide
+	  non context-sensitive matches)
+
+2005-01-28 16:24  mandrav
+
+	* Added support for user-templates
+	* Re-organized the "Project" menu to eliminate the clutter
+
+2005-01-28 14:48  mandrav
+
+	* Added configuration for default code for new files (in editor settings)
+
+2005-01-28 10:15  mandrav
+
+	* Bug fix: When creating new source file, it was not added to the current
+	   project (by asking the user)
+
+2005-01-26 23:22  mandrav
+
+	* When compiling in direct-mode, dependencies are always generated
+	   and checked
+	* Fixed compilers auto-detection
+	* Fixed editor issue under Win98 (could not open any file in the editor)
+	* Changed version to 1.0-beta5
+
+2005-01-26 17:02  mandrav
+
+	* Fixed bug that recent file history would disappear if plugins were
+	   loaded/unloaded
+	* Added "Auto-detect" button in compiler configuration dialog,
+	   under "Programs" page
+	* Added "--clear-configuration" command-line option to completely clear all configuration
+ 	   settings (used by the win32 uninstaller)
+ 	* Added "--no-dde" command-line option to disable DDE server startup under win32
+ 	* Removed first-run message about compilers (moved to win32 setup)
+	* Added some web shortcuts for use by the win32 installer
+	* Added compiler-howto
+
+2005-01-26 13:59  mandrav
+
+	* Fixed a typo in last commit
+
+2005-01-26 13:40  mandrav
+
+	* If a plugin crashes Code::Blocks on activation, when the app is executed
+	   again the user is asked to allow the offending plugin's activation
+
+2005-01-25 13:25  mandrav
+
+	* MSVC Free Toolkit 2003 is now really auto-detected
+	* Add comment in the build banner for the build mode ("make" or direct)
+
+2005-01-24 14:54  mandrav
+
+	* Bug-fix for debugger error message about "working directory needs an argument"
+	* Bug-fix for compiler in direct-build-mode where the last process exit code
+	   would persist until a new build
+
+2005-01-23 19:38  mandrav
+
+	* Fixed plugins loading/unloading on-the-fly
+	* Changed all error reporting from wxLogError() to wxMessageBox(),
+	   so that it appears immediately
+
+2005-01-23 00:25  mandrav
+
+	* Fixed direct-build-mode under linux
+	* Fixed default editor font under linux
+
+2005-01-22 14:39  mandrav
+
+	* Added binreloc (under unix), to correctly report the executable's full-path filename
+
+2005-01-22 14:07  mandrav
+
+	* Updated unix project file and Makefile.unix
+	* Added "update" shell script for unix
+	* Add error handling for some linker errors
+	* Fixed bug that would export Makefile in the wrong dir if direct-build-mode was enabled
+	  and the project was not compiled once...
+
+2005-01-22 13:11  mandrav
+
+	* Fixed non-working environment options
+	* Fixed compiling of win32 resource files with the new direct-build-mode
+
+2005-01-20 23:55  mandrav
+
+	* Fixed CompileAll and RebuildAll in direct-build-mode
+	* Added menu entries to change project order in project tree
+
+2005-01-19 17:04  mandrav
+
+	* Compiler can now be configured per-target (was per-project)
+
+2005-01-19 01:09  mandrav
+
+	* Half-implemented user template saving
+
+2005-01-18 17:06  mandrav
+
+	* Fixed compilers auto-detection
+	* Added "Set as default" button in compiler options, to set the default
+	   compiler for new projects
+
+2005-01-18 14:00  mandrav
+
+	* Fixed dependencies generation in direct-mode
+	* Moved "make update" commands to a batch file named update.bat
+	   (will add update.sh for unix too)
+
+2005-01-18 00:22  mandrav
+
+	* When using "make" for builds, respect logging setting
+	* Partial fix for incomplete dependencies generation in direct-mode
+	* Added code to set the default compiler - no GUI option yet
+
+2005-01-17 16:24  mandrav
+
+	* Started implementing auto compiler discovery
+
+2005-01-17 15:17  mandrav
+
+	* Done with new compiler mode (no GNU "make" requirement)
+	* Minor bug-fixes
+
+2005-01-17 00:31  mandrav
+
+	* Removed GNU "make" requirement for the compiler plugin (WIP: ~80% done)
+	* Refined some compiler options (in "Others" tab)
+	* Support for user templates (WIP: ~50% done)
+
+2005-01-10 13:22  mandrav
+
+	* Fixed support for Borlans's compiler (works now for executables, but not yet for libs and
+	   dlls)
+	* Added two new options in advanced compiler settings: Force
+	   add quotes for filenames in compiler/linker command-lines (needed
+	   for BCC)
+
+2005-01-09 14:20  mandrav
+
+	* Added DLL template
+
+2005-01-06 12:01  mandrav
+
+	* Updated Makefile.unix and unix project file to create a "run.sh" script under
+	   src/output and src/devel. Use this script to launch Code::Blocks
+
 Changes for version 1.0-beta4
 -------------------------------
+
+2005-01-04 21:57  mandrav
+
+	* Updated ChangeLog for version 1.0-beta4
 
 2005-01-04 17:15  mandrav
 
