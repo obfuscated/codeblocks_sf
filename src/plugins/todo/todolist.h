@@ -28,6 +28,7 @@
 #include <settings.h> // much of the SDK is here
 #include <sdk_events.h>
 #include <cbplugin.h> // the base class we 're inheriting
+#include <wx/dynarray.h>
 
 #include "todolistview.h"
 
@@ -48,9 +49,12 @@ class ToDoList : public cbPlugin
 		void OnAddItem(wxCommandEvent& event);
 		void OnReparse(CodeBlocksEvent& event);
     private:
+        void LoadTypes();
+        void SaveTypes();
 		ToDoListView* m_pListLog;
 		int m_ListPageIndex;
 		bool m_AutoRefresh;
+		wxArrayString m_Types;
 		DECLARE_EVENT_TABLE()
 };
 

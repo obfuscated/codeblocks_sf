@@ -31,7 +31,7 @@
           </object>
           <object class="sizeritem">
             <object class="wxStaticText">
-              <label>Priority:</label>
+              <label>Priority (1-9):</label>
             </object>
           </object>
           <object class="sizeritem">
@@ -63,13 +63,7 @@
           </object>
           <object class="sizeritem">
             <object class="wxComboBox" name="cmbType">
-              <content>
-                <item>To do</item>
-                <item>Fix me</item>
-                <item>Note</item>
-              </content>
-              <selection>0</selection>
-              <style>wxCB_READONLY</style>
+              <content/>
             </object>
             <flag>wxBOTTOM|wxEXPAND</flag>
             <border>8</border>

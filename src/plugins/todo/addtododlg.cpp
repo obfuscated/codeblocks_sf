@@ -9,10 +9,29 @@
 
 #define CONF_GROUP "/todo/users"
 
-AddTodoDlg::AddTodoDlg(wxWindow* parent)
+AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString& types)
+    : m_Types(types)
 {
 	wxXmlResource::Get()->LoadDialog(this, parent, "dlgAddToDo");
 	LoadUsers();
+
+    // load types
+    wxComboBox* cmb = XRCCTRL(*this, "cmbType", wxComboBox);
+    cmb->Clear();
+    if (m_Types.GetCount() == 0)
+    {
+        cmb->Append("TODO");
+        cmb->Append("FIXME");
+        cmb->Append("NOTE");
+    }
+    else
+    {
+        for (unsigned int i = 0; i < m_Types.GetCount(); ++i)
+        {
+            cmb->Append(m_Types[i]);
+        }
+    }
+    cmb->SetSelection(0);
 }
 
 AddTodoDlg::~AddTodoDlg()
@@ -70,17 +89,22 @@ wxString AddTodoDlg::GetUser()
 
 int AddTodoDlg::GetPriority()
 {
-    return XRCCTRL(*this, "spnPriority", wxSpinCtrl)->GetValue();
-}
-
-ToDoType AddTodoDlg::GetType()
-{
-    return (ToDoType)(XRCCTRL(*this, "cmbType", wxComboBox)->GetSelection());
+    int prio = XRCCTRL(*this, "spnPriority", wxSpinCtrl)->GetValue();
+    if (prio < 1)
+        prio = 1;
+    else if (prio > 9)
+        prio = 9;
+    return prio;
 }
 
 ToDoPosition AddTodoDlg::GetPosition()
 {
     return (ToDoPosition)(XRCCTRL(*this, "cmbPosition", wxComboBox)->GetSelection());
+}
+
+wxString AddTodoDlg::GetType()
+{
+    return XRCCTRL(*this, "cmbType", wxComboBox)->GetValue();
 }
 
 ToDoCommentType AddTodoDlg::GetCommentType()
@@ -93,6 +117,16 @@ void AddTodoDlg::EndModal(int retVal)
 	if (retVal == wxID_OK)
 	{
 		SaveUsers();
+
+        // "save" types
+        wxComboBox* cmb = XRCCTRL(*this, "cmbType", wxComboBox);
+        m_Types.Clear();
+        if (cmb->FindString(cmb->GetValue()) == wxNOT_FOUND)
+            m_Types.Add(cmb->GetValue());
+        for (int i = 0; i < cmb->GetCount(); ++i)
+        {
+            m_Types.Add(cmb->GetString(i));
+        }
 	}
 
 	wxDialog::EndModal(retVal);

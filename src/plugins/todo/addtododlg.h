@@ -3,13 +3,6 @@
 
 #include <wx/dialog.h>
 
-enum ToDoType
-{
-    tdtToDo = 0,
-    tdtFixMe,
-    tdtNote
-};
-
 enum ToDoPosition
 {
     tdpAbove = 0,
@@ -19,8 +12,8 @@ enum ToDoPosition
 
 enum ToDoCommentType
 {
-    tdctC = 0, // C style
-    tdctCpp, // C++ style,
+    tdctCpp = 0, // C++ style,
+    tdctC, // C style
     tdctWarning, // compiler warning
     tdctError // compiler error
 };
@@ -28,20 +21,21 @@ enum ToDoCommentType
 class AddTodoDlg : public wxDialog
 {
 	public:
-		AddTodoDlg(wxWindow* parent);
+		AddTodoDlg(wxWindow* parent, wxArrayString& types);
 		virtual ~AddTodoDlg();
         
         wxString GetText();
         wxString GetUser();
         int GetPriority();
-        ToDoType GetType();
         ToDoPosition GetPosition();
+        wxString GetType();
         ToDoCommentType GetCommentType();
 		
 		virtual void EndModal(int retVal);
 	protected:
 		void LoadUsers();
 		void SaveUsers();
+		wxArrayString& m_Types;
 	private:
 };
 

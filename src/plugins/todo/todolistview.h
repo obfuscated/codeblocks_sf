@@ -24,7 +24,7 @@ WX_DECLARE_OBJARRAY(ToDoItem, ToDoItems);
 class ToDoListView : public SimpleListLog
 {
 	public:
-		ToDoListView(wxNotebook* parent, const wxString& title, int numCols, int widths[], const wxArrayString& titles);
+		ToDoListView(wxNotebook* parent, const wxString& title, int numCols, int widths[], const wxArrayString& titles, const wxArrayString& types);
 		virtual ~ToDoListView();
         void Parse();
 	protected:
@@ -43,6 +43,7 @@ class ToDoListView : public SimpleListLog
         wxComboBox* m_pSource;
         wxComboBox* m_pUser;
         wxButton* m_pRefresh;
+        const wxArrayString& m_Types;
 	private:
         DECLARE_EVENT_TABLE()
 };

@@ -22,10 +22,11 @@ BEGIN_EVENT_TABLE(ToDoListView, SimpleListLog)
 	EVT_BUTTON(idRefresh, ToDoListView::OnRefresh)
 END_EVENT_TABLE()
 
-ToDoListView::ToDoListView(wxNotebook* parent, const wxString& title, int numCols, int widths[], const wxArrayString& titles)
+ToDoListView::ToDoListView(wxNotebook* parent, const wxString& title, int numCols, int widths[], const wxArrayString& titles, const wxArrayString& m_Types)
     : SimpleListLog(parent, title, numCols, widths, titles),
     m_pSource(0L),
-    m_pUser(0L)
+    m_pUser(0L),
+    m_Types(m_Types)
 {
 	//ctor
     int id = m_pList->GetId();
@@ -210,13 +211,10 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
 	// and a generic version...
     // TODO: Implement code to do this and the other...
 	
-	// we 'll use an array of wxString to look for TODO, FIXME and NOTE
-	wxString todoBase[3] = {"TODO", "FIXME", "NOTE"};
-	
-	for (int i = 0; i < 3; ++i)
+	for (unsigned int i = 0; i < m_Types.GetCount(); ++i)
 	{
-//Manager::Get()->GetMessageManager()->DebugLog("Looking for %s", todoBase[i].c_str());
-		int pos = buffer.find(todoBase[i], 0);
+//Manager::Get()->GetMessageManager()->DebugLog("Looking for %s", m_Types[i].c_str());
+		int pos = buffer.find(m_Types[i], 0);
 		
 		while (pos > 0)
 		{
@@ -248,14 +246,14 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
 				lastChar = c;
 			}
 			
-//Manager::Get()->GetMessageManager()->DebugLog("Found %s %s style %s at %d", isValid ? "valid" : "invalid", isC ? "C" : "C++", todoBase[i].c_str(), pos);
+//Manager::Get()->GetMessageManager()->DebugLog("Found %s %s style %s at %d", isValid ? "valid" : "invalid", isC ? "C" : "C++", m_Types[i].c_str(), pos);
 			if (isValid)
 			{
 				ToDoItem item;
-				item.type = todoBase[i];
+				item.type = m_Types[i];
 				item.filename = filename;
 				
-				idx = pos + todoBase[i].Length();
+				idx = pos + m_Types[i].Length();
 				wxChar c = '\0';
 				
 //Manager::Get()->GetMessageManager()->DebugLog("1");
@@ -322,7 +320,11 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
 					if (c1 == '\r' || c1 == '\n')
 						break;
 					if (isC && c1 == '/' && lastChar == '*')
+					{
+                        // remove last char '*'
+                        item.text.RemoveLast();
 						break;
+                    }
 					if (c1 == ' ' || c1 == '\t')
 					{
 						// allow one consecutive space
@@ -346,7 +348,7 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
 			else
 				break; // invalid style...
 
-			pos = buffer.find(todoBase[i], idx);
+			pos = buffer.find(m_Types[i], idx);
 		}
 //		Manager::Get()->GetMessageManager()->DebugLog("Found it at %d", pos);
 	}
@@ -371,7 +373,7 @@ void ToDoListView::OnListItemSelected(wxListEvent& event)
 	cbEditor* ed = Manager::Get()->GetEditorManager()->Open(file);
 	if (ed)
 	{
-		ed->GetControl()->GotoLine(line - 1);
+		ed->GetControl()->GotoLine(line);
 		ed->Activate();
     }
 }

@@ -87,7 +87,7 @@ void ToDoList::OnAttach()
 	titles.Add(_("File"));
 
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
-	m_pListLog = new ToDoListView(msgMan, m_PluginInfo.title, 6, widths, titles);
+	m_pListLog = new ToDoListView(msgMan, m_PluginInfo.title, 6, widths, titles, m_Types);
 	m_ListPageIndex = msgMan->AddLog(m_pListLog);
 
     m_AutoRefresh = ConfigManager::Get()->Read("todo_list/auto_refresh", true);
@@ -138,6 +138,36 @@ int ToDoList::Configure()
 	return 0;
 }
 
+void ToDoList::LoadTypes()
+{
+    m_Types.Clear();
+	long cookie;
+	wxString entry;
+	wxConfigBase* conf = ConfigManager::Get();
+	wxString oldPath = conf->GetPath();
+	conf->SetPath("/todo/types");
+	bool cont = conf->GetFirstEntry(entry, cookie);
+	while (cont)
+	{
+		m_Types.Add(entry);
+		cont = conf->GetNextEntry(entry, cookie);
+	}
+	conf->SetPath(oldPath);
+}
+
+void ToDoList::SaveTypes()
+{
+	wxConfigBase* conf = ConfigManager::Get();
+	conf->DeleteGroup("/todo/types");
+	wxString oldPath = conf->GetPath();
+	conf->SetPath("/todo/types");
+	for (unsigned int i = 0; i < m_Types.GetCount(); ++i)
+	{
+		conf->Write(m_Types[i], wxEmptyString);
+	}
+	conf->SetPath(oldPath);
+}
+
 // events
 
 void ToDoList::OnAddItem(wxCommandEvent& event)
@@ -147,9 +177,11 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
 		return;
 
     // display todo dialog
-    AddTodoDlg dlg(Manager::Get()->GetAppWindow());
+    LoadTypes();
+    AddTodoDlg dlg(Manager::Get()->GetAppWindow(), m_Types);
     if (dlg.ShowModal() != wxID_OK)
         return;
+    SaveTypes();
 
 	cbStyledTextCtrl* control = ed->GetControl();
 	
@@ -193,14 +225,8 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
             buffer << "/* ";
     }
 
-	
-	// continue with the type
-	switch (dlg.GetType())
-	{
-		case tdtToDo: buffer << "TODO "; break;
-		case tdtFixMe: buffer << "FIXME "; break;
-		case tdtNote: buffer << "NOTE "; break;
-	}
+    // continue with the type
+	buffer << dlg.GetType() << " ";
 
 	// now do the () part
 	buffer << "(" << dlg.GetUser() << "#" << dlg.GetPriority() << "#): ";
