@@ -28,6 +28,7 @@
 #endif
 
 #include <wx/stc/stc.h>
+#include <wx/splash.h>
 #include "../sdk/manager.h"
 #include "main.h"
 
@@ -42,15 +43,20 @@ class CodeBlocksApp : public wxApp
 #ifdef __WXMSW__
 		void SetAssociations();
 		void DoSetAssociation(const wxString& ext, const wxString& descr, const wxString& exe, const wxString& icoNum);
+		void CheckAssociations();
+		bool DoCheckAssociation(const wxString& ext, const wxString& descr, const wxString& exe, const wxString& icoNum);
 #endif
     private:
-        bool CheckResource(const wxString& res) const;
+        void ShowSplashScreen();
+        void HideSplashScreen();
+        bool CheckResource(const wxString& res);
 		bool m_NoAssocs; // no associations check
 		bool m_NoSplash; // no splash screen
 		bool m_HasDebugLog; // display debug log
 #ifdef __WXMSW__
         HINSTANCE m_ExceptionHandlerLib;
 #endif
+        wxSplashScreen* m_pSplash;
         DECLARE_EVENT_TABLE()
 };
 DECLARE_APP(CodeBlocksApp);

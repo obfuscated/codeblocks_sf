@@ -26,7 +26,6 @@
 #include "app.h"
 #include <wx/fs_zip.h>
 #include <wx/xrc/xmlres.h>
-#include <wx/splash.h>
 #include <wx/cmdline.h>
 #include <wx/regex.h>
 #include <wx/filefn.h>
@@ -69,6 +68,8 @@ END_EVENT_TABLE()
 
 bool CodeBlocksApp::OnInit()
 {
+    m_pSplash = 0;
+
 #ifdef __WXMSW__
     m_ExceptionHandlerLib = LoadLibrary("exchndl.dll");
 #endif
@@ -84,19 +85,7 @@ bool CodeBlocksApp::OnInit()
     SetAppName(APP_NAME" v"APP_VERSION);
     ConfigManager::Init(wxConfigBase::Get());
 
-    wxSplashScreen* splash = 0L;
-	if (!m_NoSplash && ConfigManager::Get()->Read("/environment/show_splash", 1) == 1)
-	{
-		wxBitmap bitmap;
-		if (bitmap.LoadFile(GetAppPath() + "/share/CodeBlocks/images/splash.png", wxBITMAP_TYPE_PNG))
-		{
-			splash = new wxSplashScreen(bitmap,
-										wxSPLASH_CENTRE_ON_SCREEN | wxSPLASH_TIMEOUT,
-										6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
-										wxSIMPLE_BORDER | wxSTAY_ON_TOP);
-		}
-		wxYield();
-	}
+    ShowSplashScreen();
 
     // load all application-resources
     wxFileSystem::AddHandler(new wxZipFSHandler);
@@ -123,7 +112,7 @@ bool CodeBlocksApp::OnInit()
 
 #ifdef __WXMSW__
 	if (!m_NoAssocs && ConfigManager::Get()->Read("/environment/check_associations", 1) == 1)
-		SetAssociations();
+		CheckAssociations();
 
 	if (ConfigManager::Get()->Read("/environment/use_dde", 1) == 1)
 	{
@@ -132,8 +121,7 @@ bool CodeBlocksApp::OnInit()
 	}
 #endif
 
-    if (splash)
-        delete splash;
+    HideSplashScreen();
 
     frame->ShowTips(); // this func checks if the user wants tips, so no need to check here
     
@@ -151,10 +139,36 @@ int CodeBlocksApp::OnExit()
     return 0;
 }
 
-bool CodeBlocksApp::CheckResource(const wxString& res) const
+void CodeBlocksApp::ShowSplashScreen()
+{
+    HideSplashScreen();
+
+	if (!m_NoSplash && ConfigManager::Get()->Read("/environment/show_splash", 1) == 1)
+	{
+		wxBitmap bitmap;
+		if (bitmap.LoadFile(GetAppPath() + "/share/CodeBlocks/images/splash.png", wxBITMAP_TYPE_PNG))
+		{
+			m_pSplash = new wxSplashScreen(bitmap,
+										wxSPLASH_CENTRE_ON_SCREEN | wxSPLASH_TIMEOUT,
+										6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
+										wxSIMPLE_BORDER | wxSTAY_ON_TOP);
+		}
+		wxYield();
+	}
+}
+
+void CodeBlocksApp::HideSplashScreen()
+{
+    if (m_pSplash)
+        delete m_pSplash;
+    m_pSplash = 0;
+}
+
+bool CodeBlocksApp::CheckResource(const wxString& res)
 {
     if (!wxFileExists(res))
     {
+        HideSplashScreen();
     	wxString msg;
     	msg.Printf("Cannot find %s...\n"
     		APP_NAME" was configured to be installed in '%s'.\n"
@@ -307,6 +321,79 @@ void CodeBlocksApp::DoSetAssociation(const wxString& ext, const wxString& descr,
 	key.SetName("HKEY_CLASSES_ROOT\\CodeBlocks." + ext + "\\shell\\open\\ddeexec\\topic");
 	key.Create();
 	key = DDE_TOPIC;
+}
+
+// sets file associations if not there (depending on user prefs)
+void CodeBlocksApp::CheckAssociations()
+{
+	wxChar name[MAX_PATH] = {0};
+	GetModuleFileName(0L, name, MAX_PATH);
+	
+	if (!DoCheckAssociation(CODEBLOCKS_EXT, APP_NAME" project file", name, "1") ||
+        !DoCheckAssociation(WORKSPACE_EXT, APP_NAME" workspace file", name, "1") ||
+        !DoCheckAssociation(C_EXT, "C source file", name, "2") ||
+        !DoCheckAssociation(CPP_EXT, "C++ source file", name, "3") ||
+        !DoCheckAssociation(CC_EXT, "C++ source file", name, "3") ||
+        !DoCheckAssociation(CXX_EXT, "C++ source file", name, "3") ||
+        !DoCheckAssociation(H_EXT, "C/C++ header file", name, "4") ||
+        !DoCheckAssociation(HPP_EXT, "C/C++ header file", name, "4") ||
+        !DoCheckAssociation(HH_EXT, "C/C++ header file", name, "4") ||
+        !DoCheckAssociation(HXX_EXT, "C/C++ header file", name, "4"))
+    {
+        HideSplashScreen();
+        wxString msg;
+        msg.Printf(_("%s is not currently the default application for C/C++ source files\nDo you want to set it as default?"), APP_NAME);
+        int answer = wxMessageBox(msg,
+                                    _("File associations"),
+                                    wxICON_QUESTION | wxYES_NO | wxYES_DEFAULT);
+        if (answer == wxYES)
+            SetAssociations();
+        else
+        {
+            wxMessageBox(_("File associations will *not* be checked from now on, on program startup.\n"
+                           "If you want to enable the check, go to \"Settings/Environment\" and check \"Check & set file associations\"..."),
+                         _("Information"),
+                         wxICON_INFORMATION);
+            ConfigManager::Get()->Write("/environment/check_associations", 0L);
+        }
+    }
+}
+
+// returns true if association is already established
+bool CodeBlocksApp::DoCheckAssociation(const wxString& ext, const wxString& descr, const wxString& exe, const wxString& icoNum)
+{
+    wxLogNull no_log_here;
+	wxRegKey key; // defaults to HKCR
+	
+	key.SetName("HKEY_CLASSES_ROOT\\." + ext);
+	if (!key.Open())
+        return false;
+	
+	key.SetName("HKEY_CLASSES_ROOT\\CodeBlocks." + ext);
+	if (!key.Open())
+        return false;
+
+	key.SetName("HKEY_CLASSES_ROOT\\CodeBlocks." + ext + "\\DefaultIcon");
+	if (!key.Open())
+        return false;
+
+	key.SetName("HKEY_CLASSES_ROOT\\CodeBlocks." + ext + "\\shell\\open\\command");
+	if (!key.Open())
+        return false;
+
+	key.SetName("HKEY_CLASSES_ROOT\\CodeBlocks." + ext + "\\shell\\open\\ddeexec");
+	if (!key.Open())
+        return false;
+
+	key.SetName("HKEY_CLASSES_ROOT\\CodeBlocks." + ext + "\\shell\\open\\ddeexec\\application");
+	if (!key.Open())
+        return false;
+
+	key.SetName("HKEY_CLASSES_ROOT\\CodeBlocks." + ext + "\\shell\\open\\ddeexec\\topic");
+	if (!key.Open())
+        return false;
+    
+    return true;
 }
 
 //// DDE
