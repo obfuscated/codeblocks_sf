@@ -612,7 +612,7 @@ void CompilerOptionsDlg::OnOptionToggled(wxCommandEvent& event)
 void CompilerOptionsDlg::OnAddDirClick(wxCommandEvent& event)
 {
     wxDirDialog dlg(this);
-    dlg.SetPath(m_pProject->GetBasePath());
+    dlg.SetPath(m_pProject ? m_pProject->GetBasePath() : "");
     if (dlg.ShowModal() != wxID_OK)
         return;
         
