@@ -48,6 +48,7 @@ class MainFrame : public wxMDIParentFrame
         void OnEditFoldBlock(wxCommandEvent& event);
         void OnEditUnfoldBlock(wxCommandEvent& event);
         void OnEditToggleFoldBlock(wxCommandEvent& event);
+        void OnEditEOLMode(wxCommandEvent& event);
         void OnEditSelectAll(wxCommandEvent& event);
 		
 		void OnEditBookmarksToggle(wxCommandEvent& event);

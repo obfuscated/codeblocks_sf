@@ -73,6 +73,10 @@ int idEditToggleAllFolds = wxNewId();
 int idEditFoldBlock = wxNewId();
 int idEditUnfoldBlock = wxNewId();
 int idEditToggleFoldBlock = wxNewId();
+int idEditEOLMode = wxNewId();
+int idEditEOLCRLF = wxNewId();
+int idEditEOLCR = wxNewId();
+int idEditEOLLF = wxNewId();
 int idEditSelectAll = wxNewId();
 
 int idViewToolMain = wxNewId();
@@ -140,6 +144,9 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idEditFoldBlock, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditUnfoldBlock, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditToggleFoldBlock, MainFrame::OnEditMenuUpdateUI)
+    EVT_UPDATE_UI(idEditEOLCRLF, MainFrame::OnEditMenuUpdateUI)
+    EVT_UPDATE_UI(idEditEOLCR, MainFrame::OnEditMenuUpdateUI)
+    EVT_UPDATE_UI(idEditEOLLF, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditSelectAll, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditBookmarksToggle, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditBookmarksNext, MainFrame::OnEditMenuUpdateUI)
@@ -187,6 +194,9 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idEditFoldBlock,  MainFrame::OnEditFoldBlock)
     EVT_MENU(idEditUnfoldBlock,  MainFrame::OnEditUnfoldBlock)
     EVT_MENU(idEditToggleFoldBlock,  MainFrame::OnEditToggleFoldBlock)
+    EVT_MENU(idEditEOLCRLF,  MainFrame::OnEditEOLMode)
+    EVT_MENU(idEditEOLCR,  MainFrame::OnEditEOLMode)
+    EVT_MENU(idEditEOLLF,  MainFrame::OnEditEOLMode)
     EVT_MENU(idEditSelectAll,  MainFrame::OnEditSelectAll)
     EVT_MENU(idEditBookmarksToggle,  MainFrame::OnEditBookmarksToggle)
     EVT_MENU(idEditBookmarksNext,  MainFrame::OnEditBookmarksNext)
@@ -378,6 +388,11 @@ void MainFrame::CreateMenubar()
 	folding->Append(idEditUnfoldBlock, _("Unfold cu&rrent block"), _("Unfold current block"));
 	folding->Append(idEditToggleFoldBlock, _("Toggle current &block\tF12"), _("Toggle folding of current block"));
 
+    wxMenu* eol = new wxMenu();
+    eol->AppendCheckItem(idEditEOLCRLF, _("CR && LF"), _("End-of-line mode uses carriage return and line feed"));
+    eol->AppendCheckItem(idEditEOLCR, _("CR"), _("End-of-line mode uses carriage return only"));
+    eol->AppendCheckItem(idEditEOLLF, _("LF"), _("End-of-line mode uses line feed only"));
+
 	wxMenu* edit = new wxMenu();
 	edit->Append(idEditUndo, _("&Undo\tCtrl-Z"), _("Undo the last editing operation"));
 	edit->Append(idEditRedo, _("&Redo\tCtrl-Shift-Z"), _("Redo the last editing operation"));
@@ -389,6 +404,7 @@ void MainFrame::CreateMenubar()
 	edit->Append(idEditSwapHeaderSource, _("S&wap header/source\tF11"), _("Swap between header and source file pair"));
 	edit->Append(idEditBookmarks, _("&Bookmarks"), bookmarks);
 	edit->Append(idEditFolding, _("&Folding"), folding);
+	edit->Append(idEditEOLMode, _("&End-of-line mode"), eol);
 	edit->AppendSeparator();
 	edit->Append(idEditSelectAll, _("Select &all\tCtrl-A"), _("Selects the entire text range"));
 	mbar->Append(edit, _("&Edit"));
@@ -1175,6 +1191,30 @@ void MainFrame::OnEditToggleFoldBlock(wxCommandEvent& event)
 		ed->ToggleFoldBlockFromLine();
 }
 
+void MainFrame::OnEditEOLMode(wxCommandEvent& event)
+{
+    cbEditor* ed = m_pEdMan->GetActiveEditor();
+    if (ed)
+    {
+        int mode = -1;
+        
+        if (event.GetId() == idEditEOLCRLF)
+            mode = wxSTC_EOL_CRLF;
+        else if (event.GetId() == idEditEOLCR)
+            mode = wxSTC_EOL_CR;
+        else if (event.GetId() == idEditEOLLF)
+            mode = wxSTC_EOL_LF;
+        
+		if (mode != -1 && mode != ed->GetControl()->GetEOLMode())
+		{
+            ed->GetControl()->BeginUndoAction();
+            ed->GetControl()->ConvertEOLs(mode);
+            ed->GetControl()->SetEOLMode(mode);
+            ed->GetControl()->EndUndoAction();
+        }
+    }
+}
+
 void MainFrame::OnSearchFind(wxCommandEvent& event)
 {
 	m_pEdMan->ShowFindDialog(false);
@@ -1320,6 +1360,7 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
 	bool canUndo = ed ? ed->GetControl()->CanUndo() : false;
 	bool canRedo = ed ? ed->GetControl()->CanRedo() : false;
 	bool canPaste = ed ? ed->GetControl()->CanPaste() : false;
+    int eolMode = ed ? ed->GetControl()->GetEOLMode() : -1;
 
     mbar->Enable(idEditUndo, ed && canUndo);
     mbar->Enable(idEditRedo, ed && canRedo);
@@ -1337,6 +1378,12 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
 	mbar->Enable(idEditFoldBlock, ed);
 	mbar->Enable(idEditUnfoldBlock, ed);
 	mbar->Enable(idEditToggleFoldBlock, ed);
+	mbar->Enable(idEditEOLCRLF, ed);
+	mbar->Enable(idEditEOLCR, ed);
+	mbar->Enable(idEditEOLLF, ed);
+	mbar->Check(idEditEOLCRLF, eolMode == wxSTC_EOL_CRLF);
+	mbar->Check(idEditEOLCR, eolMode == wxSTC_EOL_CR);
+	mbar->Check(idEditEOLLF, eolMode == wxSTC_EOL_LF);
 
 	if (m_pToolbar)
 	{
