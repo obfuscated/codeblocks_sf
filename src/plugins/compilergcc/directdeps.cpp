@@ -99,6 +99,12 @@ bool DirectDeps::ReadDependencies(const wxString& filename, wxArrayString& deps)
     return true;
 }
 
+#define DT_HASH // TNB
+#ifdef DT_HASH
+WX_DECLARE_STRING_HASH_MAP(wxArrayString, IncludeHash);
+IncludeHash g_IncludeHash;
+#endif
+
 /// Creates a list of files this project file depends on, by scanning for #include directives
 /// This list of files is deps
 bool DirectDeps::GetDependenciesOf(const wxString& filename, wxArrayString& deps,
@@ -109,6 +115,21 @@ bool DirectDeps::GetDependenciesOf(const wxString& filename, wxArrayString& deps
     wxLogNull ln;
 
     wxFileName fname(filename);
+#ifdef DT_HASH
+    IncludeHash::iterator it = g_IncludeHash.find(fname.GetFullPath());
+    if (it != g_IncludeHash.end())
+    {
+        if (deps.Index(fname.GetFullPath()) != wxNOT_FOUND)
+            return true;
+        deps.Add(fname.GetFullPath());
+        wxArrayString& includes = it->second;
+        for (size_t inc = 0; inc < includes.GetCount(); ++inc)
+        {
+            GetDependenciesOf(includes[inc], deps, pageIndex, project, target);
+        }
+        return true;
+    }
+#endif
 
     // check if we already scanned this file (to avoid infinite loop)
     if (deps.Index(fname.GetFullPath()) != wxNOT_FOUND)
@@ -207,6 +228,9 @@ bool DirectDeps::GetDependenciesOf(const wxString& filename, wxArrayString& deps
         tmp.MakeRelativeTo(project->GetBasePath());
         if (wxFileExists(tmp.GetFullPath()))
         {
+#ifdef DT_HASH
+            g_IncludeHash[fname.GetFullPath()].Add(tmp.GetFullPath());
+#endif
             GetDependenciesOf(tmp.GetFullPath(), deps, pageIndex, project, target);
             continue;
         }
@@ -225,6 +249,9 @@ bool DirectDeps::GetDependenciesOf(const wxString& filename, wxArrayString& deps
                 newfilename = tgt_incs[i] + sep + rest;
                 if (wxFileExists(newfilename))
                 {
+#ifdef DT_HASH
+                    g_IncludeHash[fname.GetFullPath()].Add(newfilename);
+#endif
                     GetDependenciesOf(newfilename, deps, pageIndex, project, target);
                     found = true;
                     break;
@@ -241,6 +268,9 @@ bool DirectDeps::GetDependenciesOf(const wxString& filename, wxArrayString& deps
             newfilename = prj_incs[i] + sep + rest;
             if (wxFileExists(newfilename))
             {
+#ifdef DT_HASH
+                g_IncludeHash[fname.GetFullPath()].Add(newfilename);
+#endif
                 GetDependenciesOf(newfilename, deps, pageIndex, project, target);
                 break;
             }

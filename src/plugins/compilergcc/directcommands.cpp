@@ -250,6 +250,12 @@ wxArrayString DirectCommands::GetCompileCommands(ProjectBuildTarget* target, boo
     return ret;
 }
 
+#define DT_HASH // TNB
+#ifdef DT_HASH
+WX_DECLARE_STRING_HASH_MAP(wxDateTime, DateTimeHash);
+DateTimeHash g_DateTimeHash;
+#endif
+
 wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* target, bool force)
 {
     wxArrayString ret;
@@ -270,7 +276,9 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
         AppendArray(GetPostBuildCommands(target), ret);
         return ret;
     }
-
+#ifdef DT_HASH
+	g_DateTimeHash.clear();
+#endif
     // iterate all files of the project/target and add them to the build process
     MyFilesArray files = GetProjectFilesSortedByWeight();
     for (unsigned int i = 0; i < files.GetCount(); ++i)
@@ -637,6 +645,44 @@ bool DirectCommands::ForceCompileByDependencies(const pfDetails& pfd)
     return DependsOnChangedFile(pfd, deps);
 }
 
+#ifdef DT_HASH
+/// Returns true if any one of the files listed in deps, has later modification
+/// A call to GetDependenciesOf() must have preceded to fill deps...
+bool DirectCommands::DependsOnChangedFile(const pfDetails& pfd, const wxArrayString& deps)
+{
+    wxFileName basefile(pfd.source_file_native);
+    wxFileName baseobjfile(pfd.object_file_native);
+    wxDateTime basetime;
+    if (wxFileExists(pfd.object_file_native))
+        basetime = baseobjfile.GetModificationTime();
+    if (!basetime.IsValid())
+        return false;
+    for (unsigned int i = 0; i < deps.GetCount(); ++i)
+    {
+        wxDateTime othertime;
+        DateTimeHash::iterator it = g_DateTimeHash.find(deps[i]);
+        if (it != g_DateTimeHash.end())
+            othertime = it->second;
+        else
+        {
+            wxFileName otherfile(deps[i]);
+            if (otherfile.SameAs(basefile))
+                continue;
+            if (wxFileExists(deps[i]))
+            {
+                othertime = wxFileName(deps[i]).GetModificationTime();
+                g_DateTimeHash[deps[i]] = othertime;
+            }
+        }
+        if (othertime.IsValid() && othertime.IsLaterThan(basetime))
+        {
+//            Manager::Get()->GetMessageManager()->Log(m_PageIndex, "    DBG: file %s depends on modified %s", pfd.source_file_native.c_str(), deps[i].c_str());
+            return true; // one match is enough ;)
+        }
+    }
+    return false;
+}
+#else
 /// Returns true if any one of the files listed in deps, has later modification
 /// A call to GetDependenciesOf() must have preceded to fill deps...
 bool DirectCommands::DependsOnChangedFile(const pfDetails& pfd, const wxArrayString& deps)
@@ -662,3 +708,4 @@ bool DirectCommands::DependsOnChangedFile(const pfDetails& pfd, const wxArrayStr
     }
     return false;
 }
+#endif
