@@ -102,6 +102,14 @@ class cbPlugin : public wxEvtHandler
 		  * @param menuBar the wxMenuBar to create items in
 		  */
         virtual void BuildMenu(wxMenuBar* menuBar) = 0;
+		/** When this method is called, the plugin must remove any menu items
+		  * and menus it has added on Code::Blocks's menu bar.\n
+		  * It is a pure virtual method that needs to be implemented by all
+		  * plugins. If the plugin has not added any menu items on the menu bar,
+		  * just do nothing ;)
+		  * @param menuBar the wxMenuBar to remove items from
+		  */
+        virtual void RemoveMenu(wxMenuBar* menuBar) = 0;
 		/** This method is called by Code::Blocks core modules (EditorManager,
 		  * ProjectManager etc) and is used by the plugin to add any menu 
 		  * items it needs in the module's popup menu. For example, when
@@ -126,6 +134,14 @@ class cbPlugin : public wxEvtHandler
 		  * @param toolBar the wxToolBar to create items on
 		  */
         virtual void BuildToolBar(wxToolBar* toolBar) = 0;
+		/** When this method is called, the plugin must remove any tools
+		  * it has added on Code::Blocks's tool bar.\n
+		  * It is a pure virtual method that needs to be implemented by all
+		  * plugins. If the plugin has not added any tool items on the tool bar,
+		  * just do nothing ;)
+		  * @param toolBar the wxToolBar to remove items from
+		  */
+        virtual void RemoveToolBar(wxToolBar* toolBar) = 0;
         /** See whether this plugin is attached or not. A plugin should not perform
 		  * any of its tasks, if not attached...
 		  */
@@ -212,8 +228,10 @@ class cbToolPlugin : public cbPlugin
     private:
         // "Hide" some virtual members, that are not needed in cbToolPlugin
         void BuildMenu(wxMenuBar* menuBar){}
+        void RemoveMenu(wxMenuBar* menuBar){}
         void BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg){}
         void BuildToolBar(wxToolBar* toolBar){}
+        void RemoveToolBar(wxToolBar* toolBar){}
 };
 
 class cbMimePlugin : public cbPlugin
@@ -225,8 +243,10 @@ class cbMimePlugin : public cbPlugin
     private:
         // "Hide" some virtual members, that are not needed in cbMimePlugin
         void BuildMenu(wxMenuBar* menuBar){}
+        void RemoveMenu(wxMenuBar* menuBar){}
         void BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg){}
         void BuildToolBar(wxToolBar* toolBar){}
+        void RemoveToolBar(wxToolBar* toolBar){}
 };
 
 class  cbCodeCompletionPlugin : public cbPlugin

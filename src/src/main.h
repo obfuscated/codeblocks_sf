@@ -75,7 +75,7 @@ class MainFrame : public wxMDIParentFrame
 		void OnProjectImportMSVC(wxCommandEvent& event);
 		void OnProjectImportMSVS(wxCommandEvent& event);
 
-        void OnToolsExecuteMenu(wxCommandEvent& event);
+        void OnPluginsExecuteMenu(wxCommandEvent& event);
 
 		void OnSettingsEnvironment(wxCommandEvent& event);
         void OnSettingsEditor(wxCommandEvent& event);
@@ -115,11 +115,13 @@ class MainFrame : public wxMDIParentFrame
         void CreateToolbars();
         void ScanForPlugins();
 		void AddToolbarItem(int id, const wxString& title, const wxString& shortHelp, const wxString& longHelp, const wxString& image);
+        wxMenu* RecreateMenu(wxMenuBar* mbar, const wxString& name);
 
         void DoAddPlugin(cbPlugin* plugin);
-        void AddPluginInToolsMenu(cbPlugin* plugin);
+        void AddPluginInPluginsMenu(cbPlugin* plugin);
         void AddPluginInSettingsMenu(cbPlugin* plugin);
         void AddPluginInHelpPluginsMenu(cbPlugin* plugin);
+        void AddPluginInMenus(wxMenu* menu, cbPlugin* plugin, wxObjectEventFunction callback, int pos = -1);
         void RemovePluginFromMenus(const wxString& pluginName);
 		
 		void AddEditorInWindowMenu(const wxString& filename, const wxString& title);
@@ -140,7 +142,7 @@ class MainFrame : public wxMDIParentFrame
 
         void InitializeRecentFilesHistory();
         void TerminateRecentFilesHistory();
-		
+        
         wxFileHistory m_FilesHistory;
 
         /// "Close FullScreen" button. Only shown when in FullScreen view
@@ -163,7 +165,7 @@ class MainFrame : public wxMDIParentFrame
         wxMenu* m_SettingsMenu;
         wxMenu* m_HelpPluginsMenu;
         
-        bool m_RecreatingMenus;
+        bool m_ReconfiguringPlugins;
 		
         DECLARE_EVENT_TABLE()
 };

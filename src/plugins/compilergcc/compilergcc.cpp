@@ -365,6 +365,17 @@ void CompilerGCC::BuildMenu(wxMenuBar* menuBar)
     }
 }
 
+void CompilerGCC::RemoveMenu(wxMenuBar* menuBar)
+{
+    int idx = menuBar->FindMenu(_("&Compile"));
+    if (idx != wxNOT_FOUND)
+    {
+        m_Menu = menuBar->Remove(idx);
+        delete m_Menu;
+        m_Menu = 0;
+    }
+}
+
 void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg)
 {
 	if (!m_IsAttached)
@@ -438,14 +449,30 @@ void CompilerGCC::BuildToolBar(wxToolBar* toolBar)
 
 		toolBar->AddSeparator();
 		
+// neither the generic nor Motif native toolbars really support this
+#if (wxUSE_TOOLBAR_NATIVE && !USE_GENERIC_TBAR) && !defined(__WXMOTIF__) && !defined(__WXX11__) && !defined(__WXMAC__)
 		m_ToolTargetLabel = new wxStaticText(toolBar, idToolTargetLabel, _("Build target: "), wxDefaultPosition);
 		toolBar->AddControl(m_ToolTargetLabel);
 		m_ToolTarget = new wxComboBox(toolBar, idToolTarget, "Compiler Target Selection", wxDefaultPosition, wxDefaultSize, 0, 0L, wxCB_DROPDOWN | wxCB_READONLY);
 		toolBar->AddControl(m_ToolTarget);
 		m_ToolTarget->Enable(false); // to force OnUpdateUI() to call tbar->Refresh() the first time...
-
-		//no need to call toolBar->Realize(); it will be called by the host app
+#endif
+		toolBar->Realize();
 	}
+}
+
+void CompilerGCC::RemoveToolBar(wxToolBar* toolBar)
+{
+    toolBar->DeleteTool(idMenuCompile);
+    toolBar->DeleteTool(idMenuRun);
+    toolBar->DeleteTool(idMenuCompileAndRun);
+    toolBar->DeleteTool(idMenuRebuild);
+    toolBar->DeleteTool(idToolTargetLabel);
+    toolBar->DeleteTool(idToolTarget);
+    
+    m_ToolTargetLabel = 0;
+    m_ToolTarget = 0;
+    m_pToolbar = 0;
 }
 
 void CompilerGCC::SetupEnvironment()

@@ -102,6 +102,11 @@ void ToDoList::BuildMenu(wxMenuBar* menuBar)
     // nothing to be added in menu
 }
 
+void ToDoList::RemoveMenu(wxMenuBar* menuBar)
+{
+    // nothing to be removed from menu
+}
+
 void ToDoList::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg)
 {
 	if (!menu || !m_IsAttached)
@@ -116,6 +121,11 @@ void ToDoList::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxStri
 void ToDoList::BuildToolBar(wxToolBar* toolBar)
 {
 	//NotImplemented("ToDoList::BuildToolBar()");
+}
+
+void ToDoList::RemoveToolBar(wxToolBar* toolBar)
+{
+	//NotImplemented("ToDoList::RemoveToolBar()");
 }
 
 int ToDoList::Configure()

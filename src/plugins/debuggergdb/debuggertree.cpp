@@ -78,6 +78,7 @@ DebuggerTree::DebuggerTree(wxEvtHandler* debugger, wxNotebook* parent)
 DebuggerTree::~DebuggerTree()
 {
 	//dtor
+	m_pParent->RemovePage(m_PageIndex);
 }
 
 void DebuggerTree::BuildTree(const wxString& infoText)

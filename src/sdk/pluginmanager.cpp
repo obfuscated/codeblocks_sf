@@ -185,6 +185,8 @@ void PluginManager::LoadAllPlugins()
 		}
     }
 	Manager::Get()->GetMessageManager()->Log("");
+
+    wxLogNull ln;
     ConfigManager::Get()->DeleteEntry("/plugins/try_to_load");
 }
 
@@ -360,6 +362,7 @@ int PluginManager::Configure()
             plug->Attach();
         }
     }
+    wxLogNull ln;
     ConfigManager::Get()->DeleteEntry("/plugins/try_to_load");
     return wxID_OK;
 }

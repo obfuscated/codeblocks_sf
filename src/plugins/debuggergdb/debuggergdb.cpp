@@ -172,6 +172,9 @@ int DebuggerGDB::Configure()
 
 void DebuggerGDB::BuildMenu(wxMenuBar* menuBar)
 {
+	if (!m_IsAttached)
+		return;
+
 	m_pMenu = new wxMenu("");
     m_pMenu->Append(idMenuDebug, _("&Debug\tF8"), _("Run current project in debugger"));
     m_pMenu->AppendSeparator();
@@ -204,6 +207,17 @@ void DebuggerGDB::BuildMenu(wxMenuBar* menuBar)
 			finalPos = projcompMenuPos + 1;
 	}
     menuBar->Insert(finalPos, m_pMenu, _("&Debug"));
+}
+
+void DebuggerGDB::RemoveMenu(wxMenuBar* menuBar)
+{
+    int idx = menuBar->FindMenu(_("&Debug"));
+    if (idx != wxNOT_FOUND)
+    {
+        m_pMenu = menuBar->Remove(idx);
+        delete m_pMenu;
+        m_pMenu = 0;
+    }
 }
 
 void DebuggerGDB::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg)
@@ -251,6 +265,15 @@ void DebuggerGDB::BuildToolBar(wxToolBar* toolBar)
 		toolBar->SetToolLongHelp(idMenuStop, _("Stop current debugging session"));
 		toolBar->Realize();
 	}
+}
+
+void DebuggerGDB::RemoveToolBar(wxToolBar* toolBar)
+{
+    toolBar->DeleteTool(idMenuDebug);
+    toolBar->DeleteTool(idMenuRunToCursor);
+    toolBar->DeleteTool(idMenuNext);
+    toolBar->DeleteTool(idMenuStep);
+    toolBar->DeleteTool(idMenuStop);
 }
 
 void DebuggerGDB::DoWatches()

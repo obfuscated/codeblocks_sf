@@ -115,7 +115,7 @@ int idProjectImportMSVS = wxNewId();
 
 int idSettingsEnvironment = wxNewId();
 int idSettingsEditor = wxNewId();
-int idSettingsPlugins = wxNewId();
+int idPluginsManagePlugins = wxNewId();
 int idSettingsConfigurePlugins = wxNewId();
 
 int idHelpTips = wxNewId();
@@ -243,7 +243,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
 	EVT_MENU(idSettingsEnvironment, MainFrame::OnSettingsEnvironment)
 	EVT_MENU(idSettingsEditor, MainFrame::OnSettingsEditor)
-    EVT_MENU(idSettingsPlugins, MainFrame::OnSettingsPlugins)
+    EVT_MENU(idPluginsManagePlugins, MainFrame::OnSettingsPlugins)
 
     EVT_MENU(wxID_ABOUT, MainFrame::OnHelpAbout)
     EVT_MENU(idHelpTips, MainFrame::OnHelpTips)
@@ -268,7 +268,8 @@ MainFrame::MainFrame(wxWindow* parent)
 	   m_pToolbar(0L),
        m_ToolsMenu(0L),
        m_SettingsMenu(0L),
-       m_HelpPluginsMenu(0L)
+       m_HelpPluginsMenu(0L),
+       m_ReconfiguringPlugins(false)
 {
 #if defined( _MSC_VER ) && defined( _DEBUG )
 	int tmpFlag = _CrtSetDbgFlag( _CRTDBG_REPORT_FLAG );
@@ -293,7 +294,6 @@ MainFrame::MainFrame(wxWindow* parent)
     SetTitle(_(APP_NAME" v"APP_VERSION));
 
     ScanForPlugins();
-    InitializeRecentFilesHistory();
     LoadWindowState();
 	
 #ifdef __WXMSW__
@@ -365,20 +365,59 @@ void MainFrame::CreateIDE()
     CreateToolbars();
 }
 
+wxMenu* MainFrame::RecreateMenu(wxMenuBar* mbar, const wxString& name)
+{
+    wxMenu* menu = 0;
+    int idx = mbar->FindMenu(name);
+    if (idx != wxNOT_FOUND)
+        menu = mbar->GetMenu(idx);
+
+    if (!menu)
+    {
+        menu = new wxMenu();
+        mbar->Append(menu, name);
+    }
+    else
+    {
+        while (menu->GetMenuItemCount() > 0)
+        {
+            menu->Destroy(menu->GetMenuItems()[0]);
+        }
+    }
+
+    return menu;
+}
+
 void MainFrame::CreateMenubar()
 {
 	wxMenuBar* mbar = GetMenuBar();
-	if (mbar)
-	{
-		SetMenuBar(0L);
-		delete mbar;
-	}
-	mbar = new wxMenuBar();
-	
+	if (!mbar)
+        mbar = new wxMenuBar(); // first run
+    else
+    {
+        // core modules: release menus
+        m_pPrjMan->ReleaseMenu(mbar);
+        m_pEdMan->ReleaseMenu(mbar);
+        m_pMsgMan->ReleaseMenu(mbar);
+
+        // plugins: release menus
+        PluginElementsArray plugins = Manager::Get()->GetPluginManager()->GetPlugins();
+        for (unsigned int i = 0; i < plugins.GetCount(); ++i)
+        {
+            cbPlugin* plug = plugins[i]->plugin;
+            if (plug)
+                plug->RemoveMenu(mbar);
+        }
+
+        TerminateRecentFilesHistory();
+    }
+
+/////////////////// FILE //////////////////
+    wxMenu* file = RecreateMenu(mbar, _("&File"));
+
 	wxMenu* recent = new wxMenu();
 	recent->Append(idFileOpenRecentClearHistory, _("Clear history"), _("Clear the recent files list"));
 
-	wxMenu* file = new wxMenu();
 	file->Append(idFileNew, _("&New\tCtrl-N"), _("Create a new source file"));
 	file->AppendSeparator();
 	file->Append(idFileOpen, _("&Open\tCtrl-O"), _("Open a file or project"));
@@ -394,8 +433,10 @@ void MainFrame::CreateMenubar()
 	file->Append(idFileCloseAll, _("Clos&e all\tCtrl-Shift-W"), _("Close all open files"));
 	file->AppendSeparator();
 	file->Append(idFileExit, _("&Quit\tCtrl-Q"), _("Quit the application"));
-	mbar->Append(file, _("&File"));
-	
+
+/////////////////// EDIT //////////////////
+	wxMenu* edit = RecreateMenu(mbar, _("&Edit"));
+
 	wxMenu* bookmarks = new wxMenu();
 	bookmarks->Append(idEditBookmarksToggle, _("&Toggle bookmark\tCtrl-B"), _("Toggle a bookmark for the current position"));
 	bookmarks->Append(idEditBookmarksPrevious, _("Goto &previous bookmark\tAlt-PgUp"), _("Goto previous bookmark"));
@@ -415,7 +456,6 @@ void MainFrame::CreateMenubar()
     eol->AppendCheckItem(idEditEOLCR, _("CR"), _("End-of-line mode uses carriage return only"));
     eol->AppendCheckItem(idEditEOLLF, _("LF"), _("End-of-line mode uses line feed only"));
 
-	wxMenu* edit = new wxMenu();
 	edit->Append(idEditUndo, _("&Undo\tCtrl-Z"), _("Undo the last editing operation"));
 	edit->Append(idEditRedo, _("&Redo\tCtrl-Shift-Z"), _("Redo the last editing operation"));
 	edit->AppendSeparator();
@@ -430,18 +470,18 @@ void MainFrame::CreateMenubar()
 	edit->AppendSeparator();
 	edit->Append(idEditSelectAll, _("Select &all\tCtrl-A"), _("Selects the entire text range"));
 	edit->Append(idEditCommentSelected, _("Comment / uncomment\tShift-Ctrl-C"), _("Comments / uncomments the selected block of code") );
-	mbar->Append(edit, _("&Edit"));
 	
-	wxMenu* view = new wxMenu();
+/////////////////// VIEW //////////////////
+	wxMenu* view = RecreateMenu(mbar, _("&View"));
 	view->AppendCheckItem(idViewToolMain, _("&Toolbar"), _("Show/hide toolbar"));
 	view->AppendCheckItem(idViewManager, _("&Manager\tShift-F2"), _("Show/hide manager"));
 	view->AppendCheckItem(idViewMessageManager, _("Messa&ges\tF2"), _("Show/hide messages"));
 	view->AppendCheckItem(idViewStatusbar, _("&Status bar"), _("Show/hide status bar"));
 	view->AppendCheckItem(idViewFullScreen, _("F&ullScreen"), _("Switch to FullScreen view"));
 	view->Append(idViewFocusEditor, _("&Focus editor\tCtrl-Alt-E"), _("Set focus on the active editor"));	
-	mbar->Append(view, _("&View"));
 	
-	wxMenu* search = new wxMenu();
+/////////////////// SEARCH //////////////////
+	wxMenu* search = RecreateMenu(mbar, _("&Search"));
 	search->Append(idSearchFind, _("&Find...\tCtrl-F"), _("Search for text"));
 	search->Append(idSearchFindNext, _("Find &next\tF3"), _("Repeat the last search in the same direction"));
 	search->Append(idSearchFindPrevious, _("Find &previous\tShift-F3"), _("Repeat the last search in the opposite direction"));
@@ -449,14 +489,15 @@ void MainFrame::CreateMenubar()
 	search->Append(idSearchReplace, _("&Replace\tCtrl-R"), _("Find and replace text"));
 	search->AppendSeparator();
 	search->Append(idSearchGotoLine, _("Goto &line...\tCtrl-G"), _("Goto a specific line"));
-	mbar->Append(search, _("&Search"));
+
+/////////////////// PROJECT //////////////////
+	wxMenu* project = RecreateMenu(mbar, _("&Project"));
 
 	wxMenu* import = new wxMenu();
 	import->Append(idProjectImportDevCpp, _("Bloodshed &Dev-C++ project"), _("Import an existing Dev-C++ project"));
 	import->Append(idProjectImportMSVC, _("Microsoft Visual C++ project"), _("Import an existing Microsoft Visual C++ project"));
 	import->Append(idProjectImportMSVS, _("Microsoft Visual Studio project"), _("Import an existing Microsoft Visual Studio project"));
 
-	wxMenu* project = new wxMenu();
 	project->Append(idProjectNew, _("&New project..."), _("Create a new project based on a template"));
 	project->Append(idProjectNewEmptyProject, _("New &empty project"), _("Create a new empty project"));
 	project->AppendSeparator();
@@ -471,42 +512,37 @@ void MainFrame::CreateMenubar()
 	project->AppendSeparator();
 	project->Append(idProjectCloseProject, _("&Close project"), _("Close active project"));
 	project->Append(idProjectCloseAllProjects, _("Close all projects"), _("Close all opened projects"));
-	mbar->Append(project, _("&Project"));
 
-	wxMenu* tools = new wxMenu();
+/////////////////// TOOLS //////////////////
+	wxMenu* tools = RecreateMenu(mbar, _("&Tools"));
 	// nothing to add here
 	// it is managed by the ToolsManager ;)
-	mbar->Append(tools, _("&Tools"));
 
-	wxMenu* plugs = new wxMenu();
-	mbar->Append(plugs, _("&Plugins"));
-	
+/////////////////// PLUGINS //////////////////
+	wxMenu* plugs = RecreateMenu(mbar, _("P&lugins"));
+	plugs->Append(idPluginsManagePlugins, _("Manage &plugins"), _("Change plugins auto-start properties (on-the-fly)"));
+
+/////////////////// SETTINGS //////////////////
+	wxMenu* settings = RecreateMenu(mbar, _("Sett&ings"));
+
 	wxMenu* settingsPlugins = new wxMenu();
 
-	wxMenu* settings = new wxMenu();
 	settings->Append(idSettingsEnvironment, _("&Environment"), _("Change environment settings"));
 	settings->Append(idSettingsEditor, _("E&ditor"), _("Change editor's settings"));
-	settings->Append(idSettingsPlugins, _("Manage &plugins"), _("Change plugins auto-start properties (on-the-fly)"));
 	settings->Append(idSettingsConfigurePlugins, _("&Configure plugins"), settingsPlugins);
-	mbar->Append(settings, _("Sett&ings"));
 	
+/////////////////// HELP //////////////////
+	wxMenu* help = RecreateMenu(mbar, _("&Help"));
+
 	wxMenu* pluginsM = new wxMenu();
-	
-	wxMenu* help = new wxMenu();
 	help->Append(wxID_ABOUT, _("&About..."), _("Display information about the application"));
 	help->Append(idHelpTips, _("&Tips"), _("Display tips on using the application"));
 	help->Append(idHelpPlugins, _("&Plugins"), pluginsM);
-	mbar->Append(help, _("&Help"));
 	
 	m_ToolsMenu = tools;
 	m_PluginsMenu = plugs;
 	m_SettingsMenu = settingsPlugins;
 	m_HelpPluginsMenu = pluginsM;
-
-	// core modules: release menus
-	m_pPrjMan->ReleaseMenu(mbar);
-	m_pEdMan->ReleaseMenu(mbar);
-	m_pMsgMan->ReleaseMenu(mbar);
 
 	// core modules: create menus
 	m_pPrjMan->CreateMenu(mbar);
@@ -533,8 +569,10 @@ void MainFrame::CreateMenubar()
 		}
 	}
 
+
 	Manager::Get()->GetToolsManager()->BuildToolsMenu(m_ToolsMenu);
 
+    InitializeRecentFilesHistory();
 	SetMenuBar(mbar);
 }
 
@@ -542,14 +580,22 @@ void MainFrame::CreateToolbars()
 {
 	if (m_pToolbar)
 	{
-		/// @bug Deleting the toolbar crashes...So this could crash
+		SetToolBar(0L);
 		delete m_pToolbar;
 		m_pToolbar = 0L;
-		SetToolBar(0L);
 	}
-	m_pToolbar = CreateToolBar(wxTB_HORIZONTAL, wxID_ANY);
-	m_pToolbar->SetToolBitmapSize(wxSize(22, 22));
-	SetToolBar(m_pToolbar);
+
+    int flags = wxTB_HORIZONTAL;
+    int major;
+    int minor;
+    // version==wxWINDOWS_NT && major==5 && minor==1 => windowsXP
+    bool isXP = wxGetOsVersion(&major, &minor) == wxWINDOWS_NT && major == 5 && minor == 1;
+    if (!isXP)
+        flags |= wxTB_FLAT;
+
+    m_pToolbar = CreateToolBar(flags, wxID_ANY);
+    m_pToolbar->SetToolBitmapSize(wxSize(22, 22));
+    SetToolBar(m_pToolbar);
 	
     wxString res = ConfigManager::Get()->Read("data_path") + "/images/";
 
@@ -580,6 +626,7 @@ void MainFrame::CreateToolbars()
 				plug->BuildToolBar(m_pToolbar);
 		}
 	}
+	wxYield();
 
 //	m_pToolbar->SetRows(2);
 	m_pToolbar->Realize();
@@ -608,43 +655,57 @@ void MainFrame::ScanForPlugins()
 //    m_pMsgMan->DebugLog(_("%d plugins loaded"), count);
 }
 
-void MainFrame::AddPluginInToolsMenu(cbPlugin* plugin)
+void MainFrame::AddPluginInMenus(wxMenu* menu, cbPlugin* plugin, wxObjectEventFunction callback, int pos)
 {
-    if (!plugin || !m_PluginsMenu)
+    if (!plugin || !menu)
 		return;
+
+    PluginIDsMap::iterator it;
+    for (it = m_PluginIDsMap.begin(); it != m_PluginIDsMap.end(); ++it)
+    {
+        if (it->second == plugin->GetInfo()->name)
+        {
+            if (menu->FindItem(it->first) != 0)
+                return;
+        }
+    }
 
     int id = wxNewId();
     m_PluginIDsMap[id] = plugin->GetInfo()->name;
-    m_PluginsMenu->Append(id, plugin->GetInfo()->title);
-    Connect( id,  wxEVT_COMMAND_MENU_SELECTED,
-        (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-        &MainFrame::OnToolsExecuteMenu );
+    if (pos == -1)
+        menu->Append(id, plugin->GetInfo()->title);
+    else
+        menu->Insert(pos, id, plugin->GetInfo()->title);
+    Connect( id,  wxEVT_COMMAND_MENU_SELECTED, callback );
+}
+
+void MainFrame::AddPluginInPluginsMenu(cbPlugin* plugin)
+{
+    // "Plugins" menu is special case because it contains "Manage plugins",
+    // which must stay at the end of the menu
+    // So we insert entries, not append...
+    
+    // this will insert a separator when the first plugin is added in the "Plugins" menu
+    if (m_PluginsMenu->GetMenuItemCount() == 1)
+        m_PluginsMenu->Insert(0, wxID_ANY, "");
+
+    AddPluginInMenus(m_PluginsMenu, plugin,
+                    (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)&MainFrame::OnPluginsExecuteMenu,
+                    m_PluginsMenu->GetMenuItemCount() - 2);
 }
 
 void MainFrame::AddPluginInSettingsMenu(cbPlugin* plugin)
 {
-    if (!plugin || !plugin->GetInfo()->hasConfigure)
-		return;
-
-    int id = wxNewId();
-    m_PluginIDsMap[id] = plugin->GetInfo()->name;
-    m_SettingsMenu->Append(id, plugin->GetInfo()->title);
-    Connect( id,  wxEVT_COMMAND_MENU_SELECTED,
-        (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-        &MainFrame::OnPluginSettingsMenu );
+    if (plugin && !plugin->GetInfo()->hasConfigure)
+        return;
+    AddPluginInMenus(m_SettingsMenu, plugin,
+                    (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)&MainFrame::OnPluginSettingsMenu);
 }
 
 void MainFrame::AddPluginInHelpPluginsMenu(cbPlugin* plugin)
 {
-    if (!plugin || !m_HelpPluginsMenu)
-        return;
-
-    int id = wxNewId();
-    m_PluginIDsMap[id] = plugin->GetInfo()->name;
-    m_HelpPluginsMenu->Append(id, plugin->GetInfo()->title);
-    Connect( id,  wxEVT_COMMAND_MENU_SELECTED,
-        (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-        &MainFrame::OnHelpPluginMenu );
+    AddPluginInMenus(m_HelpPluginsMenu, plugin,
+                    (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)&MainFrame::OnHelpPluginMenu);
 }
 
 void MainFrame::RemovePluginFromMenus(const wxString& pluginName)
@@ -676,7 +737,7 @@ void MainFrame::RemovePluginFromMenus(const wxString& pluginName)
 	{
 		Disconnect( id[i],  wxEVT_COMMAND_MENU_SELECTED,
 			(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-			&MainFrame::OnToolsExecuteMenu );
+			&MainFrame::OnPluginsExecuteMenu );
 		m_PluginIDsMap.erase(id[i]);
 		m_PluginsMenu->Delete(id[i]);
 		m_HelpPluginsMenu->Delete(id[i]);
@@ -742,7 +803,7 @@ void MainFrame::DoAddPlugin(cbPlugin* plugin)
     AddPluginInHelpPluginsMenu(plugin);
     if (plugin->GetType() == ptTool)
     {
-        AddPluginInToolsMenu(plugin);
+        AddPluginInPluginsMenu(plugin);
     }
     // offer menu and toolbar space for other plugins
 	else
@@ -899,11 +960,15 @@ void MainFrame::DoUpdateAppTitle()
 void MainFrame::InitializeRecentFilesHistory()
 {
     wxMenuBar* mbar = GetMenuBar();
-    int pos = mbar->FindMenu(_("File"));
+    if (!mbar)
+        return;
+    int pos = mbar->FindMenu(_("&File"));
     if (pos != wxNOT_FOUND)
     {
         wxMenu* menu = mbar->GetMenu(pos);
-        wxMenu* recentFiles = NULL;
+        if (!menu)
+            return;
+        wxMenu* recentFiles = 0;
         menu->FindItem(idFileOpenRecentClearHistory, &recentFiles);
         if (recentFiles)
         {
@@ -920,11 +985,26 @@ void MainFrame::TerminateRecentFilesHistory()
     ConfigManager::Get()->SetPath("/recent_files");
     m_FilesHistory.Save(*ConfigManager::Get());
     ConfigManager::Get()->SetPath("/");
+
+    wxMenuBar* mbar = GetMenuBar();
+    if (!mbar)
+        return;
+    int pos = mbar->FindMenu(_("&File"));
+    if (pos != wxNOT_FOUND)
+    {
+        wxMenu* menu = mbar->GetMenu(pos);
+        if (!menu)
+            return;
+        wxMenu* recentFiles = 0;
+        menu->FindItem(idFileOpenRecentClearHistory, &recentFiles);
+        if (recentFiles)
+            m_FilesHistory.RemoveMenu(recentFiles);
+    }
 }
 
 // event handlers
 
-void MainFrame::OnToolsExecuteMenu(wxCommandEvent& event)
+void MainFrame::OnPluginsExecuteMenu(wxCommandEvent& event)
 {
     wxString pluginName = m_PluginIDsMap[event.GetId()];
     if (!pluginName.IsEmpty())
@@ -1724,13 +1804,11 @@ void MainFrame::OnToggleFullScreen(wxCommandEvent& event)
 
 void MainFrame::OnPluginLoaded(CodeBlocksEvent& event)
 {
-    if (m_RecreatingMenus)
-        return;
-
     cbPlugin* plug = event.GetPlugin();
     if (plug)
 	{
-		DoAddPlugin(plug);
+        if (!m_ReconfiguringPlugins)
+            DoAddPlugin(plug);
         wxString msg = plug->GetInfo()->title;
         m_pMsgMan->DebugLog(_("%s plugin loaded"), msg.c_str());
 	}
@@ -1741,10 +1819,12 @@ void MainFrame::OnPluginUnloaded(CodeBlocksEvent& event)
     cbPlugin* plug = event.GetPlugin();
     if (plug)
     {
-		RemovePluginFromMenus(plug->GetInfo()->name);
-		CreateToolbars();
-		CreateMenubar();
-		InitializeRecentFilesHistory(); // must call since menubar gets reconstructed
+        if (!m_ReconfiguringPlugins)
+        {
+            RemovePluginFromMenus(plug->GetInfo()->name);
+            CreateToolbars();
+            CreateMenubar();
+		}
         wxString msg = plug->GetInfo()->title;
         m_pMsgMan->DebugLog(_("%s plugin unloaded"), msg.c_str());
     }
@@ -1763,15 +1843,14 @@ void MainFrame::OnSettingsEditor(wxCommandEvent& event)
 
 void MainFrame::OnSettingsPlugins(wxCommandEvent& event)
 {
+    m_ReconfiguringPlugins = true;
 	if (Manager::Get()->GetPluginManager()->Configure() == wxID_OK)
 	{
         wxBusyCursor busy;
-        m_RecreatingMenus = true;
         CreateMenubar();
         CreateToolbars();
-		InitializeRecentFilesHistory(); // must call since menubar gets reconstructed
-        m_RecreatingMenus = false;
 	}
+    m_ReconfiguringPlugins = false;
 }
 
 void MainFrame::OnDragSash(wxSashEvent& event)
