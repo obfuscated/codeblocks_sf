@@ -34,6 +34,7 @@
 #include "manager.h"
 
 #define cbHIGHLIGHT_LINE -99 // highlight line under caret virtual style
+#define cbSELECTION      -98 // selection virtual style
 
 #define EDITOR_KEYWORDS_CPP "asm auto bool break case catch char class const " \
 						"const_cast continue default delete do double " \
@@ -267,6 +268,18 @@ void EditorColorSet::Apply(HighlightLanguage lang, wxStyledTextCtrl* control)
                 ConfigManager::Get()->Write("/editor/highlight_caret_line_color/green", opt->back.Green());
                 ConfigManager::Get()->Write("/editor/highlight_caret_line_color/blue",  opt->back.Blue());
             }
+            else if (opt->value == cbSELECTION)
+            {
+                if (opt->back != wxNullColour)
+                {
+                    control->SetSelBackground(true, opt->back);
+                    ConfigManager::Get()->Write("/editor/selection_color/red",	 opt->back.Red());
+                    ConfigManager::Get()->Write("/editor/selection_color/green", opt->back.Green());
+                    ConfigManager::Get()->Write("/editor/selection_color/blue",  opt->back.Blue());
+                }
+                else
+                    control->SetSelBackground(false, wxColour(0xC0, 0xC0, 0xC0));
+            }
             else
                 control->MarkerDefine(-opt->value, 1, wxNullColour, opt->back);
 		}
@@ -319,6 +332,7 @@ void EditorColorSet::LoadBuiltInSet(HighlightLanguage lang)
 		Manager::Get()->GetMessageManager()->DebugLog(_("EditorColorSet::LoadBuiltInSet() : Unknown language..."));
 
     // common options to all languages
+    AddOption(lang, _("Selection"), 	                        cbSELECTION,                    wxNullColour, wxColour(0xC0, 0xC0, 0xC0), false, false, false, false);
     AddOption(lang, _("Editor active line"), 	                cbHIGHLIGHT_LINE,               wxNullColour, wxColour(0xFF, 0xFF, 0xA0), false, false, false, false);
     AddOption(lang, _("Brace match highlight"), 	            wxSTC_STYLE_BRACELIGHT,			wxColour(0xFF, 0x00, 0x00), wxNullColour, true, false, true);
     AddOption(lang, _("Brace no match highlight"),	            wxSTC_STYLE_BRACEBAD,			wxColour(0xFF, 0x00, 0x00), wxNullColour, true);
