@@ -1665,6 +1665,13 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColor)
         errors.Add(compiler->GetLastErrorLine());
         errors.Add(compiler->GetLastError());
         m_pListLog->AddLog(errors);
+        m_pListLog->GetListControl()->SetColumnWidth(2, wxLIST_AUTOSIZE);
+
+        // colorize the list output
+/* NOTE (mandrav#1#): For this to work under win32, one must use -D_WIN32_IE=0x300 when building wxWidgets
+                      and probably edit wx/msw/treectrl.cpp and wx/listctrl.cpp (grep for _WIN32_IE) */
+        m_pListLog->GetListControl()->SetItemTextColour(m_pListLog->GetListControl()->GetItemCount() - 1,
+                                                        clt == cltWarning ? COLOUR_NAVY : *wxRED);
         
         m_Errors.AddError(compiler->GetLastErrorFilename(),
                           !compiler->GetLastErrorLine().IsEmpty() ? atoi(compiler->GetLastErrorLine().c_str()) : 0,

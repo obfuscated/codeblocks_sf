@@ -85,7 +85,7 @@ void SimpleListLog::AddLog(const wxArrayString& values)
 	m_pList->Freeze();
 	m_pList->InsertItem(m_pList->GetItemCount(), values[0]);
 	int idx = m_pList->GetItemCount() - 1;
-	for (int i = 1; i < m_pList->GetColumnCount(); ++i)
+	for (int i = 1; i < m_pList->GetColumnCount() && i < (int)values.GetCount(); ++i)
 	{
 		m_pList->SetItem(idx, i, values[i]);
 	}

@@ -15,9 +15,6 @@ set RESDIR=devel\share\CodeBlocks
 echo Packing core UI resources
 %ZIPCMD% -j9 %RESDIR%\resources.zip src\resources\*.xrc > nul
 %ZIPCMD% -j9 %RESDIR%\manager_resources.zip sdk\resources\*.xrc > nul
-echo Packing core UI bitmaps
-cd src\resources
-%ZIPCMD% -0 -q ..\..\%RESDIR%\resources.zip images\*.png images\16x16\*.png > nul
 echo Packing plugins UI resources
 %ZIPCMD% -j9 %RESDIR%\astyle.zip plugins\astyle\resources\*.xrc > nul
 %ZIPCMD% -j9 %RESDIR%\plugin_wizard.zip plugins\pluginwizard\resources\*.xrc > nul
@@ -25,6 +22,9 @@ echo Packing plugins UI resources
 %ZIPCMD% -j9 %RESDIR%\code_completion.zip plugins\codecompletion\resources\*.xrc > nul
 %ZIPCMD% -j9 %RESDIR%\compiler_gcc.zip plugins\compilergcc\resources\*.xrc > nul
 %ZIPCMD% -j9 %RESDIR%\todo.zip plugins\todo\resources\*.xrc > nul
+echo Packing core UI bitmaps
+cd src\resources
+%ZIPCMD% -0 -q ..\..\%RESDIR%\resources.zip images\*.png images\16x16\*.png > nul
 echo Packing plugins UI bitmaps
 cd ..\..\plugins\compilergcc\resources
 %ZIPCMD% -0 -q ..\..\..\%RESDIR%\compiler_gcc.zip images\*.png images\16x16\*.png > nul
