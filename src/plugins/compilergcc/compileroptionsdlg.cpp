@@ -203,6 +203,7 @@ void CompilerOptionsDlg::DoFillCompilerPrograms()
     XRCCTRL(*this, "txtCPPcompiler", wxTextCtrl)->SetValue(progs.CPP);
     XRCCTRL(*this, "txtLinker", wxTextCtrl)->SetValue(progs.LD);
     XRCCTRL(*this, "txtLibLinker", wxTextCtrl)->SetValue(progs.LIB);
+    XRCCTRL(*this, "txtDebugger", wxTextCtrl)->SetValue(progs.DBG);
     XRCCTRL(*this, "txtResComp", wxTextCtrl)->SetValue(progs.WINDRES);
     XRCCTRL(*this, "txtMake", wxTextCtrl)->SetValue(progs.MAKE);
 }
