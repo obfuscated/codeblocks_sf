@@ -641,11 +641,12 @@ void CompilerOptionsDlg::OnEditDirClick(wxCommandEvent& event)
         
     wxDirDialog dlg(this);
     wxFileName dir(control->GetString(control->GetSelection()) + wxFileName::GetPathSeparator());
-    dir.Normalize(wxPATH_NORM_ALL, m_pProject->GetBasePath());
+    if (m_pProject)
+        dir.Normalize(wxPATH_NORM_ALL, m_pProject->GetBasePath());
     Manager::Get()->GetMessageManager()->DebugLog(dir.GetFullPath());
     if (dir.DirExists())
         dlg.SetPath(dir.GetPath(wxPATH_GET_VOLUME));
-    else
+    else if (m_pProject)
         dlg.SetPath(m_pProject->GetBasePath());
     if (dlg.ShowModal() != wxID_OK)
         return;
