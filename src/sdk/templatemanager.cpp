@@ -30,6 +30,7 @@
 #include <wx/log.h>
 #include <wx/filedlg.h>
 #include <wx/filename.h>
+#include <wx/msgdlg.h>
 
 #include "templatemanager.h"
 #include "manager.h"
@@ -162,8 +163,16 @@ void TemplateManager::NewProject()
 			for (unsigned int i = 0; i < fileset.files.GetCount(); ++i)
 			{
 				FileSetFile& fsf = fileset.files[i];
-				wxCopyFile(baseDir + "/" + fsf.source, path + "/" + fsf.destination);
-				prj->AddFile(0, path + "/" + fsf.destination);
+				wxString dst = path + "/" + fsf.destination;
+				if (wxFileExists(dst))
+				{
+                    wxString msg;
+                    msg.Printf(_("File %s already exists. Do you really want to overwrite this file?"), dst.c_str());
+                    if (wxMessageBox(msg, _("Overwrite existing file?"), wxYES_NO | wxICON_QUESTION) != wxYES)
+                        continue;
+				}
+				wxCopyFile(baseDir + "/" + fsf.source, dst);
+				prj->AddFile(0, dst);
 			}
 		
 			for (unsigned int i = 0; i < option.extraCFlags.GetCount(); ++i)
