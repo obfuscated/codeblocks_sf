@@ -3,30 +3,37 @@
 
 [Setup]
 AppName=Code::Blocks
-AppVerName=Code::Blocks 1.0-beta1
-AppPublisher=(c)mandrav
+AppVerName=Code::Blocks 1.0-beta2
+AppPublisher=Code::Blocks
 DefaultDirName=C:\CodeBlocks
 DefaultGroupName=CodeBlocks
 LicenseFile=..\COPYING
-OutputBaseFilename=CodeBlocks-1.0-beta1
+OutputBaseFilename=CodeBlocks-1.0-beta2
 AppPublisherURL=www.codeblocks.org
-AppVersion=1.0beta1
+AppVersion=1.0beta2
 UninstallDisplayIcon={app}\codeblocks.exe
 UninstallDisplayName=Code::Blocks
-InternalCompressLevel=ultra
-Compression=lzma/ultra
+InternalCompressLevel=9
+Compression=bzip
+ShowLanguageDialog=false
+AppSupportURL=www.codeblocks.org
+AppUpdatesURL=www.codeblocks.org
 
 [Tasks]
 ; NOTE: The following entry contains English phrases ("Create a desktop icon" and "Additional icons"). You are free to translate them into another language if required.
 Name: desktopicon; Description: Create a &desktop icon; GroupDescription: Additional icons:
 ; NOTE: The following entry contains English phrases ("Create a Quick Launch icon" and "Additional icons"). You are free to translate them into another language if required.
-Name: quicklaunchicon; Description: Create a &Quick Launch icon; GroupDescription: Additional icons:; Flags: unchecked
+Name: quicklaunchicon; Description: Create a &Quick Launch icon; GroupDescription: Additional icons:
 
 [Files]
 Source: ..\output\codeblocks.exe; DestDir: {app}; Flags: ignoreversion; Components: ProgramFiles; Tasks: quicklaunchicon desktopicon
 Source: ..\output\codeblocks.dll; DestDir: {app}; Components: ProgramFiles
+Source: mingwm10.dll; DestDir: {sys}; Flags: sharedfile; Components: ProgramFiles
+Source: wxmsw241.dll; DestDir: {sys}; Flags: sharedfile; Components: ProgramFiles
+Source: ..\tools\ConsoleRunner\console_runner.exe; DestDir: {app}; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\resources.zip; DestDir: {app}\share\CodeBlocks; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\class_wizard.zip; DestDir: {app}\share\CodeBlocks; Components: ClassWizard
+Source: ..\output\share\CodeBlocks\code_completion.zip; DestDir: {app}\share\CodeBlocks; Components: CodeCompletion
 Source: ..\output\share\CodeBlocks\compiler_gcc.zip; DestDir: {app}\share\CodeBlocks; Components: CompilerGCC
 Source: ..\output\share\CodeBlocks\manager_resources.zip; DestDir: {app}\share\CodeBlocks; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\plugin_wizard.zip; DestDir: {app}\share\CodeBlocks; Components: PluginWizard
@@ -38,8 +45,6 @@ Source: ..\output\share\CodeBlocks\plugins\debuggergdb.dll; DestDir: {app}\share
 Source: ..\output\share\CodeBlocks\plugins\pluginwizard.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: PluginWizard
 Source: ..\output\share\CodeBlocks\plugins\xpmanifest.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: XPManifest
 Source: ..\output\share\CodeBlocks\plugins\todo.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: ToDo
-Source: wxmsw241.dll; DestDir: {sys}; Flags: sharedfile; Components: ProgramFiles
-; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 Source: ..\output\share\CodeBlocks\templates\console.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
 Source: ..\output\share\CodeBlocks\templates\console.png; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
 Source: ..\output\share\CodeBlocks\templates\console.template; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
@@ -96,35 +101,39 @@ Source: ..\output\share\CodeBlocks\images\source.png; DestDir: {app}\share\CodeB
 Source: ..\output\share\CodeBlocks\images\splash.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\images\stop.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\images\undo.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
-Source: ..\output\share\CodeBlocks\images\codecompletion\class.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
-Source: ..\output\share\CodeBlocks\images\codecompletion\class_folder.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
-Source: ..\output\share\CodeBlocks\images\codecompletion\ctor_private.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
-Source: ..\output\share\CodeBlocks\images\codecompletion\ctor_protected.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
-Source: ..\output\share\CodeBlocks\images\codecompletion\ctor_public.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
-Source: ..\output\share\CodeBlocks\images\codecompletion\dtor_private.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
-Source: ..\output\share\CodeBlocks\images\codecompletion\dtor_protected.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
-Source: ..\output\share\CodeBlocks\images\codecompletion\dtor_public.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
-Source: ..\output\share\CodeBlocks\images\codecompletion\enum.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
-Source: ..\output\share\CodeBlocks\images\codecompletion\enumerator.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
-Source: ..\output\share\CodeBlocks\images\codecompletion\method_private.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
-Source: ..\output\share\CodeBlocks\images\codecompletion\method_protected.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
-Source: ..\output\share\CodeBlocks\images\codecompletion\method_public.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
-Source: ..\output\share\CodeBlocks\images\codecompletion\preproc.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
-Source: ..\output\share\CodeBlocks\images\codecompletion\var_private.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
-Source: ..\output\share\CodeBlocks\images\codecompletion\var_protected.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
-Source: ..\output\share\CodeBlocks\images\codecompletion\var_public.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
-Source: mingwm10.dll; DestDir: {sys}; Flags: sharedfile; Components: ProgramFiles
-Source: ..\tools\ConsoleRunner\console_runner.exe; DestDir: {app}; Components: ProgramFiles
+Source: ..\plugins\codecompletion\resources\images\class.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
+Source: ..\plugins\codecompletion\resources\images\class_folder.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
+Source: ..\plugins\codecompletion\resources\images\ctor_private.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
+Source: ..\plugins\codecompletion\resources\images\ctor_protected.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
+Source: ..\plugins\codecompletion\resources\images\ctor_public.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
+Source: ..\plugins\codecompletion\resources\images\dtor_private.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
+Source: ..\plugins\codecompletion\resources\images\dtor_protected.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
+Source: ..\plugins\codecompletion\resources\images\dtor_public.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
+Source: ..\plugins\codecompletion\resources\images\enum.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
+Source: ..\plugins\codecompletion\resources\images\enumerator.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
+Source: ..\plugins\codecompletion\resources\images\enums_folder.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
+Source: ..\plugins\codecompletion\resources\images\method_private.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
+Source: ..\plugins\codecompletion\resources\images\method_protected.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
+Source: ..\plugins\codecompletion\resources\images\method_public.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
+Source: ..\plugins\codecompletion\resources\images\namespace.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
+Source: ..\plugins\codecompletion\resources\images\others_folder.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
+Source: ..\plugins\codecompletion\resources\images\preproc.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
+Source: ..\plugins\codecompletion\resources\images\preproc_folder.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
+Source: ..\plugins\codecompletion\resources\images\symbols_folder.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
+Source: ..\plugins\codecompletion\resources\images\var_private.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
+Source: ..\plugins\codecompletion\resources\images\var_protected.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
+Source: ..\plugins\codecompletion\resources\images\var_public.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
 Source: ..\AUTHORS; DestDir: {app}; Components: ProgramFiles; DestName: AUTHORS.txt
 Source: ..\COPYING; DestDir: {app}; Components: ProgramFiles; DestName: COPYING.txt
 Source: ..\README; DestDir: {app}; Components: ProgramFiles; DestName: README.txt
+Source: ..\tips.txt; DestDir: {app}; Components: ProgramFiles
 
 [Icons]
 Name: {group}\CodeBlocks; Filename: {app}\codeblocks.exe; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Components: ProgramFiles
 Name: {userdesktop}\CodeBlocks; Filename: {app}\codeblocks.exe; Tasks: desktopicon; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Components: ProgramFiles
 Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\CodeBlocks; Filename: {app}\codeblocks.exe; Tasks: quicklaunchicon; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Components: ProgramFiles
-Name: {group}\CodeBlocks on-line; Filename: http://www.codeblocks.org; Comment: Goto the on-line home of Code::Blocks IDE; Components: ProgramFiles
-Name: {group}\License; Filename: notepad.exe; Components: ProgramFiles; Parameters: {app}\COPYING
+Name: {group}\CodeBlocks on-line; Filename: http://www.codeblocks.org; Comment: Go to the on-line home of Code::Blocks IDE; Components: ProgramFiles
+Name: {group}\License; Filename: {app}\COPYING.txt; Components: ProgramFiles
 
 [Run]
 ; NOTE: The following entry contains an English phrase ("Launch"). You are free to translate it into another language if required.
@@ -140,5 +149,6 @@ Name: PluginWizard; Description: Code::Blocks Plugin wizard plugin; Types: custo
 Name: ToDo; Description: To-Do List plugin; Types: custom full
 Name: XPManifest; Description: WindowsXP Manifest plugin; Types: custom full
 Name: Templates; Description: Project templates; Types: custom full
+
 [Registry]
-Root: HKCU; Subkey: Software\Code::Blocks; ValueType: none; Flags: uninsdeletekeyifempty; Components: ProgramFiles
+Root: HKCU; Subkey: Software\Code::Blocks; ValueType: none; Flags: uninsdeletekey; Components: ProgramFiles
