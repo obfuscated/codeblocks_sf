@@ -148,7 +148,7 @@ void DebuggerGDB::OnAttach()
 		m_pTree = new DebuggerTree(this, Manager::Get()->GetNotebook());
 }
 
-void DebuggerGDB::OnRelease()
+void DebuggerGDB::OnRelease(bool appShutDown)
 {
 	if (m_pTree)
 	{

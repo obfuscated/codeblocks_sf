@@ -72,7 +72,7 @@ void WindowsXPLookNFeel::OnAttach()
 	// (see: does not need) this plugin...
 }
 
-void WindowsXPLookNFeel::OnRelease()
+void WindowsXPLookNFeel::OnRelease(bool appShutDown)
 {
 	// do de-initialization for your plugin
 	// NOTE: after this function, the inherited member variable

@@ -177,7 +177,7 @@ void PluginManager::UnloadAllPlugins()
 		if (!plug)
 			continue;
         Manager::Get()->GetMessageManager()->DebugLog("Doing '%s'", m_Plugins[i]->name.c_str());
-        plug->Release();
+        plug->Release(true);
         //it->first->library->Unload();
         Manager::Get()->GetMessageManager()->DebugLog("Plugin '%s' unloaded", m_Plugins[i]->name.c_str());
         // FIXME: find a way to delete the toolbars too...
@@ -330,7 +330,7 @@ void PluginManager::Configure()
         bool loadIt = ConfigManager::Get()->Read(baseKey, true);
 
         if (!loadIt && plug->IsAttached())
-            plug->Release();
+            plug->Release(false);
         else if (loadIt && !plug->IsAttached())
             plug->Attach();
     }

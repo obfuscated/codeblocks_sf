@@ -16,7 +16,7 @@ class WindowsXPLookNFeel : public cbToolPlugin
 		void BuildToolBar(wxToolBar* toolBar){}
 		int Execute();
 		void OnAttach(); // fires when the plugin is attached to the application
-		void OnRelease(); // fires when the plugin is released from the application
+		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
 	protected:
 	private:
 };

@@ -94,7 +94,7 @@ void ToDoList::OnAttach()
     m_AutoRefresh = ConfigManager::Get()->Read("todo_list/auto_refresh", true);
 }
 
-void ToDoList::OnRelease()
+void ToDoList::OnRelease(bool appShutDown)
 {
     Manager::Get()->GetMessageManager()->DeletePage(m_ListPageIndex);
 	if (m_pMenu)

@@ -232,7 +232,7 @@ void CompilerGCC::OnAttach()
 	SetupEnvironment();
 }
 
-void CompilerGCC::OnRelease()
+void CompilerGCC::OnRelease(bool appShutDown)
 {
     DoDeleteTempMakefile();
 	SaveOptions();

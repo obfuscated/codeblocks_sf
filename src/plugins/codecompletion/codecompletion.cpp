@@ -189,7 +189,7 @@ void CodeCompletion::OnAttach()
 		m_NativeParsers.AddParser(prjMan->GetProjects()->Item(i));
 }
 
-void CodeCompletion::OnRelease()
+void CodeCompletion::OnRelease(bool appShutDown)
 {
 	m_NativeParsers.RemoveClassBrowser();
 	m_NativeParsers.ClearParsers();

@@ -15,7 +15,7 @@ class CodeCompletion : public cbCodeCompletionPlugin
         ~CodeCompletion();
 
         virtual void OnAttach();
-        virtual void OnRelease();
+        virtual void OnRelease(bool appShutDown);
         virtual int Configure();
         virtual void BuildMenu(wxMenuBar* menuBar); // offer for menu space by host
 		virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg);

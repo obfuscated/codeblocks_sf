@@ -69,7 +69,7 @@ void ClassWizard::OnAttach()
 {
 }
 
-void ClassWizard::OnRelease()
+void ClassWizard::OnRelease(bool appShutDown)
 {
 }
 

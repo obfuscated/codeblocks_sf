@@ -66,7 +66,7 @@ void PluginWizard::OnAttach()
 {
 }
 
-void PluginWizard::OnRelease()
+void PluginWizard::OnRelease(bool appShutDown)
 {
 }
 

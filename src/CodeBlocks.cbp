@@ -20,6 +20,7 @@
 				<Compiler>
 					<Add option="-DEXPORT_LIB"/>
 					<Add option="-DEXPORT_EVENTS"/>
+					<Add option="-D_USRDLL"/>
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base"/>
@@ -991,6 +992,26 @@
 			<Option link="0"/>
 			<Option target="plugin_XPManifest"/>
 		</Unit>
+		<Unit filename="sdk\Managers\Managers.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\Managers\Managers.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\Managers\StdAfx.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\Managers\StdAfx.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
 		<Unit filename="sdk\cbeditor.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="sdk"/>
@@ -1238,6 +1259,12 @@
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk\manager.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\managerproxy.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

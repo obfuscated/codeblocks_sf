@@ -12,7 +12,7 @@ class ClassWizard : public cbToolPlugin
         ~ClassWizard();
 
         virtual void OnAttach();
-        virtual void OnRelease();
+        virtual void OnRelease(bool appShutDown);
         virtual int Configure(){ return -1; }
 		virtual int Execute();
         virtual void BuildMenu(wxMenuBar* menuBar){}

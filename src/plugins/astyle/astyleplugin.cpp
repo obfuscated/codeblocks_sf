@@ -64,7 +64,7 @@ void AStylePlugin::OnAttach()
 	// (see: does not need) this plugin...
 }
 
-void AStylePlugin::OnRelease()
+void AStylePlugin::OnRelease(bool appShutDown)
 {
 	// do de-initialization for your plugin
 	// NOTE: after this function, the inherited member variable
@@ -84,7 +84,6 @@ int AStylePlugin::Execute()
 {
     if (!IsAttached())
         return -1;
-    Manager *manager = Manager::Get();
 	cbEditor* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
     if (!ed)
         return 0;

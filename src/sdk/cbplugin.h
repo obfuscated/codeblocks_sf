@@ -77,9 +77,12 @@ class cbPlugin : public wxEvtHandler
 		  * The default implementation un-hooks the plugin from Code::Blocks's
 		  * event handling system. Use OnRelease() for any clean-up specific
 		  * tasks.
+		  * @param appShutDown If true, the application is shutting down. In this
+		  *         case *don't* use Manager::Get()->Get...() functions or the
+		  *         behaviour is undefined...
 		  * @see OnRelease()
 		  */
-        void Release();
+        void Release(bool appShutDown);
 		/** The plugin must return its type on request. */
         virtual PluginType GetType(){ return m_Type; }
 		
@@ -145,8 +148,11 @@ class cbPlugin : public wxEvtHandler
 		  * Code::Blocks (PluginManager actually) when the plugin has been
 		  * loaded, attached and should de-attach from Code::Blocks.\n
 		  * Think of this method as the actual destructor...
+		  * @param appShutDown If true, the application is shutting down. In this
+		  *         case *don't* use Manager::Get()->Get...() functions or the
+		  *         behaviour is undefined...
 		  */
-        virtual void OnRelease(){}
+        virtual void OnRelease(bool appShutDown){}
 		
 		/** This method logs a "Not implemented" message and is provided for
 		  * convenience only. For example, if the plugin *will* provide a

@@ -76,13 +76,17 @@ void cbPlugin::Attach()
 	SetEvtHandlerEnabled(true);
 }
 
-void cbPlugin::Release()
+void cbPlugin::Release(bool appShutDown)
 {
 	if (!m_IsAttached)
 		return;
 	m_IsAttached = false;
 	SetEvtHandlerEnabled(false);
-	OnRelease();
+	OnRelease(appShutDown);
+
+	if (appShutDown)
+        return; // nothing more to do, if the app is shutting down
+
     wxFrame* frame = Manager::Get()->GetAppWindow();
     if (frame)
     {

@@ -1177,6 +1177,20 @@ void MainFrame::OnEditCommentSelected(wxCommandEvent& event)
 			int endLine   = stc->LineFromPosition( stc->GetSelectionEnd() );
 			wxString strLine, str;
 
+            /**
+                Fix a glitch: when selecting multiple lines and the caret
+                is at the start of the line after the last line selected,
+                the code would, wrongly, (un)comment that line too.
+                This fixes it.
+            */
+            if (startLine != endLine && // selection is more than one line
+                stc->GetColumn( stc->GetSelectionEnd() ) == 0) // and the caret is at the start of the line
+            {
+                // don't take into account the line the caret is on,
+                // because it contains no selection (caret_column == 0)...
+                --endLine;
+            }
+            
 			while( startLine <= endLine )
 			{
 				// For each line: If it's commented, uncomment. Otherwise, comment.

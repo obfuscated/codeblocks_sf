@@ -58,11 +58,16 @@ void Manager::Free()
 		a crash. Seems like wxRemoveEventHandler doesn't work correctly (it doesn't NULL the
 		prev event handler pointer)
 		*/
+		/*
+            mandrav: This bug seems to be solved after cbPlugin::Release() was
+                    changed to cbPlugin::Release(bool appShutDown). Please
+                    test under MSVC too...
+        */
+		PluginManager::Free();
 		MacrosManager::Free();
-		ProjectManager::Free();
 		ToolsManager::Free();		
 		TemplateManager::Free();
-		PluginManager::Free();
+		ProjectManager::Free();
 		EditorManager::Free();
 		
 		MessageManager::Free();
