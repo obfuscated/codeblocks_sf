@@ -148,22 +148,44 @@ cbPlugin* PluginManager::LoadPlugin(const wxString& pluginName)
 
 void PluginManager::LoadAllPlugins()
 {
+    // check if a plugin crashed the app last time
+    wxString probPlugin = ConfigManager::Get()->Read("/plugins/try_to_load", wxEmptyString);
+    if (!probPlugin.IsEmpty())
+    {
+        wxString msg;
+        msg.Printf(_("Plugin %s failed to load last time Code::Blocks was executed.\n"
+                    "Do you want to disable this plugin from loading?"), probPlugin.c_str());
+        if (wxMessageBox(msg, _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxNO)
+            probPlugin = "";
+    }
+
     for (unsigned int i = 0; i < m_Plugins.GetCount(); ++i)
     {
         cbPlugin* plug = m_Plugins[i]->plugin;
 
-        // do not load it if the user has explicitely asked not to...
+        // do not load it if the user has explicitly asked not to...
         wxString baseKey;
         baseKey << "/plugins/" << m_Plugins[i]->name;
         bool loadIt = ConfigManager::Get()->Read(baseKey, true);
+        
+        // if we have a problematic plugin, check if this is it
+        if (loadIt && !probPlugin.IsEmpty())
+        {
+            loadIt = plug->GetInfo()->title != probPlugin;
+            // if this is the problematic plugin, don't load it
+            if (!loadIt)
+                ConfigManager::Get()->Write(baseKey, false);
+        }
 
         if (loadIt && !plug->IsAttached())
 		{
+            ConfigManager::Get()->Write("/plugins/try_to_load", plug->GetInfo()->title);
 			Manager::Get()->GetMessageManager()->AppendLog(_("%s "), m_Plugins[i]->name.c_str());
             plug->Attach();
 		}
     }
 	Manager::Get()->GetMessageManager()->Log("");
+    ConfigManager::Get()->DeleteEntry("/plugins/try_to_load");
 }
 
 void PluginManager::UnloadAllPlugins()
@@ -333,8 +355,12 @@ int PluginManager::Configure()
         if (!loadIt && plug->IsAttached())
             plug->Release(false);
         else if (loadIt && !plug->IsAttached())
+        {
+            ConfigManager::Get()->Write("/plugins/try_to_load", plug->GetInfo()->title);
             plug->Attach();
+        }
     }
+    ConfigManager::Get()->DeleteEntry("/plugins/try_to_load");
     return wxID_OK;
 }
 
