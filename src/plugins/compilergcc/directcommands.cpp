@@ -573,6 +573,7 @@ bool DirectCommands::ForceCompileByDependencies(const pfDetails& pfd)
         // scan for dependencies
         Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Calculating dependencies: %s"), pfd.source_file_native.c_str());
         GetDependenciesOf(pfd.source_file_native, deps);
+//        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("    DBG: %s has %d deps"), pfd.source_file_native.c_str(), deps.GetCount());
         if (!deps.IsEmpty())
             deps.Remove(0, 1); // remove the first entry; it's always this file
 
@@ -630,8 +631,11 @@ bool DirectCommands::GetDependenciesOf(const wxString& filename, wxArrayString& 
 {
     wxLogNull ln;
 
-    // check if we already scanned this file (to avoid infinite loop)
     wxFileName fname(filename);
+//    if (fname.IsRelative())
+//        fname.MakeAbsolute(m_pProject->GetBasePath());
+
+    // check if we already scanned this file (to avoid infinite loop)
     if (deps.Index(fname.GetFullPath()) != wxNOT_FOUND)
         return true; // already scanned
 //    Manager::Get()->GetMessageManager()->Log(m_PageIndex, "    DBG: %s not scanned yet", fname.GetFullPath().c_str());
@@ -665,7 +669,7 @@ bool DirectCommands::GetDependenciesOf(const wxString& filename, wxArrayString& 
             if (rest.GetChar(0) != '"' && rest.GetChar(0) != '<')
                 continue; // invalid token?
 
-//            bool isLocal = rest.GetChar(0) == '"';
+            bool isLocal = rest.GetChar(0) == '"';
 
             // now "rest" must hold either "some/file.name" or <some/file.name>
             rest.Remove(0, 1);
@@ -692,10 +696,20 @@ bool DirectCommands::GetDependenciesOf(const wxString& filename, wxArrayString& 
             {
 //                Manager::Get()->GetMessageManager()->Log(m_PageIndex, "    DBG: found included file: %s", rest.c_str());
                 // if #include uses quotes (is local relative filename), scan it directly
-                if (!GetDependenciesOf(rest, deps))
-//                if (isLocal)
-//                    GetDependenciesOf(rest, deps);
-//                else
+//                if (!GetDependenciesOf(rest, deps))
+                if (isLocal)
+                {
+//                    wxFileName tmp(rest);
+//                    if (tmp.IsRelative())
+//                        tmp.MakeAbsolute(fname.GetPath());
+//                    GetDependenciesOf(tmp.GetFullPath(), deps);
+                    wxFileName tmp(fname.GetPath(wxPATH_GET_SEPARATOR) + rest);
+                    tmp.Normalize(wxPATH_NORM_ALL, m_pProject->GetBasePath());
+                    tmp.MakeRelativeTo(m_pProject->GetBasePath());
+                    
+                    GetDependenciesOf(tmp.GetFullPath(), deps);
+                }
+                else
                 {
                     // try scanning the file by prepending all the globals and project include dirs until it's found
                     wxString newfilename;
@@ -761,7 +775,7 @@ bool DirectCommands::DependsOnChangedFile(const pfDetails& pfd, const wxArrayStr
         wxDateTime othertime = wxFileName(deps[i]).GetModificationTime();
         if (basetime.IsValid() && othertime.IsValid() && othertime.IsLaterThan(basetime))
         {
-            Manager::Get()->GetMessageManager()->Log(m_PageIndex, "    DBG: file %s depends on modified %s", pfd.source_file_native.c_str(), deps[i].c_str());
+//            Manager::Get()->GetMessageManager()->Log(m_PageIndex, "    DBG: file %s depends on modified %s", pfd.source_file_native.c_str(), deps[i].c_str());
             return true; // one match is enough ;)
         }
     }

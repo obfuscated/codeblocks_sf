@@ -297,37 +297,7 @@
 				<Option type="4"/>
 				<Option includeInTargetAll="0"/>
 				<ExtraCommands>
-					<Add before="cd src/resources ${AMP}${AMP} $(ZIP) ../../devel/share/codeblocks/resources.zip *.xrc > nul"/>
-					<Add before="cd sdk/resources ${AMP}${AMP} $(ZIP) ../../devel/share/codeblocks/manager_resources.zip *.xrc > nul"/>
-					<Add before="cd plugins/astyle/resources ${AMP}${AMP} $(ZIP) ../../../devel/share/codeblocks/astyle.zip *.xrc > nul"/>
-					<Add before="cd plugins/pluginwizard/resources ${AMP}${AMP} $(ZIP) ../../../devel/share/codeblocks/plugin_wizard.zip *.xrc > nul"/>
-					<Add before="cd plugins/classwizard/resources ${AMP}${AMP} $(ZIP) ../../../devel/share/codeblocks/class_wizard.zip *.xrc > nul"/>
-					<Add before="cd plugins/codecompletion/resources ${AMP}${AMP} $(ZIP) ../../../devel/share/codeblocks/code_completion.zip *.xrc > nul"/>
-					<Add before="cd plugins/compilergcc/resources ${AMP}${AMP} $(ZIP) ../../../devel/share/codeblocks/compiler_gcc.zip *.xrc > nul"/>
-					<Add before="cd plugins/todo/resources ${AMP}${AMP} $(ZIP) ../../../devel/share/codeblocks/todo.zip *.xrc > nul"/>
-					<Add before="cp -f devel/share/codeblocks/*.zip output/share/codeblocks"/>
-					<Add before="cp -f src/resources/images/*.png devel/share/codeblocks/images"/>
-					<Add before="cp -f src/resources/images/*.png output/share/codeblocks/images"/>
-					<Add before="cp -f plugins/codecompletion/resources/images/*.png devel/share/codeblocks/images/codecompletion"/>
-					<Add before="cp -f plugins/codecompletion/resources/images/*.png output/share/codeblocks/images/codecompletion"/>
-					<Add before="cp -f templates/*.c* output/share/codeblocks/templates"/>
-					<Add before="cp -f templates/*.h* output/share/codeblocks/templates"/>
-					<Add before="cp -f templates/*.template output/share/codeblocks/templates"/>
-					<Add before="cp -f templates/*.png output/share/codeblocks/templates"/>
-					<Add before="cp -f templates/*.c* devel/share/codeblocks/templates"/>
-					<Add before="cp -f templates/*.h* devel/share/codeblocks/templates"/>
-					<Add before="cp -f templates/*.template devel/share/codeblocks/templates"/>
-					<Add before="cp -f templates/*.png devel/share/codeblocks/templates"/>
-					<Add before="cp -f tips.txt devel"/>
-					<Add before="cp -f tips.txt output"/>
-					<Add before="cp -f tools/ConsoleRunner/console_runner*.exe output"/>
-					<Add before="cp -f tools/ConsoleRunner/console_runner*.exe devel"/>
-					<Add before="cp -f devel/*.exe output"/>
-					<Add before="cp -f devel/*.dll output"/>
-					<Add before="cp -f devel/share/codeblocks/plugins/*.dll output/share/codeblocks/plugins"/>
-					<Add before="strip output/*.exe"/>
-					<Add before="strip output/*.dll"/>
-					<Add before="strip output/share/CodeBlocks/plugins/*.dll"/>
+					<Add before="update.bat"/>
 				</ExtraCommands>
 			</Target>
 			<Target title="console_runner">
@@ -2030,7 +2000,7 @@
 		</Unit>
 		<Unit filename="src\resources\resources.rc">
 			<Option compilerVar="WINDRES"/>
-			<Option objectName="src\resources\resources.res"/>
+			<Option objectName="resources.res"/>
 			<Option target="src"/>
 		</Unit>
 		<Unit filename="templates\console-main-c.cpp">
