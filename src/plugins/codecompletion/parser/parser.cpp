@@ -61,7 +61,7 @@ Parser::Parser(wxEvtHandler* parent)
     prefix = ConfigManager::Get()->Read("data_path") + "/images/codecompletion/";
     // bitmaps must be added by order of PARSER_IMG_* consts
     bmp.LoadFile(prefix + "class_folder.png", wxBITMAP_TYPE_PNG);
-    m_pImageList->Add(bmp); // PARSER_IMG_FOLDER
+    m_pImageList->Add(bmp); // PARSER_IMG_CLASS_FOLDER
     bmp.LoadFile(prefix + "class.png", wxBITMAP_TYPE_PNG);
     m_pImageList->Add(bmp); // PARSER_IMG_CLASS
     bmp.LoadFile(prefix + "ctor_private.png", wxBITMAP_TYPE_PNG);
@@ -94,8 +94,16 @@ Parser::Parser(wxEvtHandler* parent)
     m_pImageList->Add(bmp); // PARSER_IMG_ENUM
     bmp.LoadFile(prefix + "enumerator.png", wxBITMAP_TYPE_PNG);
     m_pImageList->Add(bmp); // PARSER_IMG_ENUMERATOR
-    bmp.LoadFile(prefix + "class.png", wxBITMAP_TYPE_PNG);
+    bmp.LoadFile(prefix + "namespace.png", wxBITMAP_TYPE_PNG);
     m_pImageList->Add(bmp); // PARSER_IMG_NAMESPACE
+    bmp.LoadFile(prefix + "symbols_folder.png", wxBITMAP_TYPE_PNG);
+    m_pImageList->Add(bmp); // PARSER_IMG_SYMBOLS_FOLDER
+    bmp.LoadFile(prefix + "enums_folder.png", wxBITMAP_TYPE_PNG);
+    m_pImageList->Add(bmp); // PARSER_IMG_ENUMS_FOLDER
+    bmp.LoadFile(prefix + "preproc_folder.png", wxBITMAP_TYPE_PNG);
+    m_pImageList->Add(bmp); // PARSER_IMG_PREPROC_FOLDER
+    bmp.LoadFile(prefix + "others_folder.png", wxBITMAP_TYPE_PNG);
+    m_pImageList->Add(bmp); // PARSER_IMG_OTHERS_FOLDER
 #endif // STANDALONE
 }
 
@@ -697,7 +705,7 @@ void Parser::BuildTree(wxTreeCtrl& tree)
 #ifndef STANDALONE
 	tree.SetImageList(m_pImageList);
 #endif
-	m_RootNode = tree.AddRoot(_("Symbols"), PARSER_IMG_FOLDER);
+	m_RootNode = tree.AddRoot(_("Symbols"), PARSER_IMG_SYMBOLS_FOLDER);
 	if (m_BrowserOptions.viewFlat)
 	{
 		for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
@@ -733,7 +741,7 @@ void Parser::BuildTree(wxTreeCtrl& tree)
 
 void Parser::AddTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* parent)
 {
-	wxTreeItemId node = tree.AppendItem(parentNode, _("Classes"), PARSER_IMG_FOLDER);
+	wxTreeItemId node = tree.AppendItem(parentNode, _("Classes"), PARSER_IMG_CLASS_FOLDER);
 	for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
 	{
 		Token* token = m_Tokens[x];
@@ -744,7 +752,7 @@ void Parser::AddTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, 
 			AddTreeNode(tree, node, token);
         }
 	}
-	node = tree.AppendItem(parentNode, _("Enums"), PARSER_IMG_FOLDER);
+	node = tree.AppendItem(parentNode, _("Enums"), PARSER_IMG_ENUMS_FOLDER);
 	for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
 	{
 		Token* token = m_Tokens[x];
@@ -755,7 +763,7 @@ void Parser::AddTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, 
 			AddTreeNode(tree, node, token);
         }
 	}
-	node = tree.AppendItem(parentNode, _("Preprocessor"), PARSER_IMG_FOLDER);
+	node = tree.AppendItem(parentNode, _("Preprocessor"), PARSER_IMG_PREPROC_FOLDER);
 	for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
 	{
 		Token* token = m_Tokens[x];
@@ -766,7 +774,7 @@ void Parser::AddTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, 
 			AddTreeNode(tree, node, token);
         }
 	}
-	node = tree.AppendItem(parentNode, _("Others"), PARSER_IMG_FOLDER);
+	node = tree.AppendItem(parentNode, _("Others"), PARSER_IMG_OTHERS_FOLDER);
 	for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
 	{
 		Token* token = m_Tokens[x];
