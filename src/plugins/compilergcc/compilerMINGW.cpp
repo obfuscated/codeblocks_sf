@@ -27,7 +27,7 @@ CompilerMINGW::CompilerMINGW()
 				true, 
 				"-O -O1 -O2 -O3 -Os", 
 				_("You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."));
-	m_Options.AddOption(_("Profile code when executed"), "-pg", _("Profiling"), "-lgmon");
+	m_Options.AddOption(_("Profile code when executed"), "-pg", _("Profiling"), "-pg -lgmon");
 	m_Options.AddOption(_("Enable all compiler warnings"), "-Wall", _("Warnings"));
 	m_Options.AddOption(_("Optimize generated code (for speed)"), "-O", _("Optimization"));
 	m_Options.AddOption(_("Optimize more (for speed)"), "-O1", _("Optimization"));

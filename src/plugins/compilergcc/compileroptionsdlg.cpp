@@ -355,9 +355,15 @@ void CompilerOptionsDlg::OptionsToText()
 		if (!array[i].IsEmpty())
 		{
 			if (array[i].StartsWith("-"))
-				m_CompilerOptions.Add(array[i]);
+			{
+                if (m_CompilerOptions.Index(array[i]) == wxNOT_FOUND)
+                    m_CompilerOptions.Add(array[i]);
+            }
 			else
-				m_CompilerOptions.Add(compiler->GetSwitches().defines + array[i]);
+			{
+                if (m_CompilerOptions.Index(compiler->GetSwitches().defines + array[i]) == wxNOT_FOUND)
+                    m_CompilerOptions.Add(compiler->GetSwitches().defines + array[i]);
+            }
 		}
 	}
 	for (unsigned int i = 0; i < m_Options.GetCount(); ++i)
@@ -367,7 +373,10 @@ void CompilerOptionsDlg::OptionsToText()
 		{
 			m_CompilerOptions.Insert(copt->option, 0);
 			if (!copt->additionalLibs.IsEmpty())
-                m_LinkerOptions.Insert(copt->additionalLibs, 0);
+			{
+                if (m_LinkerOptions.Index(copt->additionalLibs) == wxNOT_FOUND)
+                    m_LinkerOptions.Insert(copt->additionalLibs, 0);
+            }
         }
 	}
 }
