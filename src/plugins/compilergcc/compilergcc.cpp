@@ -863,7 +863,8 @@ void CompilerGCC::PrintBanner()
         return;
     Manager::Get()->GetMessageManager()->SwitchTo(m_PageIndex);
     Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Project   : %s"), m_Project->GetTitle().c_str());
-    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Compiler  : %s"), CompilerFactory::Compilers[m_Project->GetCompilerIndex()]->GetName().c_str());
+    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Compiler  : %s (%s)"), CompilerFactory::Compilers[m_Project->GetCompilerIndex()]->GetName().c_str(),
+                                                                                    CompilerFactory::Compilers[m_Project->GetCompilerIndex()]->GetSwitches().buildMethod == cbmUseMake ? _("using GNU \"make\"") : _("called directly"));
     Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Directory : %s"), m_Project->GetBasePath().c_str());
     Manager::Get()->GetMessageManager()->Log(m_PageIndex, "--------------------------------------------------------------------------------");
 }
