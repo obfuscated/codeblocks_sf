@@ -214,10 +214,10 @@ void DebuggerGDB::BuildMenu(wxMenuBar* menuBar)
 
 void DebuggerGDB::RemoveMenu(wxMenuBar* menuBar)
 {
-    int idx = menuBar->FindMenu(_("&Debug"));
-    if (idx != wxNOT_FOUND)
+    int pos = menuBar->FindMenu(_("&Debug"));
+    if (pos != wxNOT_FOUND)
     {
-        m_pMenu = menuBar->Remove(idx);
+        m_pMenu = menuBar->Remove(pos);
         delete m_pMenu;
         m_pMenu = 0;
     }
@@ -285,8 +285,8 @@ void DebuggerGDB::DoWatches()
 	if (m_pProcess)
 	{
 		// TODO: add configuration for the following...
-		info << "Function Arguments = {" << GetInfoFor("info args") << "}" << '\n';
-		info << "Local variables = {" << GetInfoFor("info locals") << "}" << '\n';
+//		info << "Function Arguments = {" << GetInfoFor("info args") << "}" << '\n';
+//		info << "Local variables = {" << GetInfoFor("info locals") << "}" << '\n';
 		for (unsigned int i = 0; i < m_pTree->GetWatches().GetCount(); ++i)
 		{
 			wxString watch = m_pTree->GetWatches()[i];

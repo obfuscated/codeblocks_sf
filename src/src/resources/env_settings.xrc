@@ -53,17 +53,6 @@
                   <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
                   <border>8</border>
                 </object>
-                <object class="spacer">
-                  <size>01</size>
-                  <option>1</option>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxButton" name="btnExportConfig">
-                    <label>Export configuration to file</label>
-                  </object>
-                  <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
-                  <border>8</border>
-                </object>
               </object>
             </object>
           </object>
@@ -86,6 +75,18 @@
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
+                  <object class="wxRadioBox" name="rbToolbarSize">
+                    <label>Toolbar icons size</label>
+                    <content>
+                      <item>32 x 32 - Large</item>
+                      <item>16 x 16 - Small</item>
+                    </content>
+                    <selection>0</selection>
+                  </object>
+                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
                   <object class="wxRadioBox" name="rbEditorInterface">
                     <label>Default editor interface (Windows only)</label>
                     <content>
@@ -102,7 +103,7 @@
                     <label>By default, maximize new editors</label>
                     <checked>1</checked>
                   </object>
-                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <flag>wxALL|wxEXPAND</flag>
                   <border>8</border>
                 </object>
               </object>

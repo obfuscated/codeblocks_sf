@@ -272,8 +272,7 @@ MainFrame::MainFrame(wxWindow* parent)
        m_ToolsMenu(0L),
        m_SettingsMenu(0L),
        m_HelpPluginsMenu(0L),
-       m_ReconfiguringPlugins(false),
-       m_SmallToolBar(true)
+       m_ReconfiguringPlugins(false)
 {
 #if defined( _MSC_VER ) && defined( _DEBUG )
 	int tmpFlag = _CrtSetDbgFlag( _CRTDBG_REPORT_FLAG );
@@ -281,6 +280,7 @@ MainFrame::MainFrame(wxWindow* parent)
 	_CrtSetDbgFlag( tmpFlag );
 #endif
 
+    m_SmallToolBar = ConfigManager::Get()->Read("/environment/toolbar_size", (long int)0) == 1;
 	CreateIDE();
 	m_pEdMan->SetEditorInterfaceType(eitMDI);
 
@@ -1221,7 +1221,7 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     SaveWindowState();
     
     // let's ask the plugins to remove their menus first and see if it stops the SEGFAULTS...
-    wxMenuBar* mbar = GetMenuBar();
+    /*wxMenuBar* mbar = GetMenuBar();
     if (mbar)
     {
         // core modules: release menus
@@ -1237,7 +1237,7 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
             if (plug)
                 plug->RemoveMenu(mbar);
         }
-    }
+    }*/
 
     TerminateRecentFilesHistory();
 	Manager::Get()->Free();
@@ -1866,8 +1866,15 @@ void MainFrame::OnPluginUnloaded(CodeBlocksEvent& event)
 
 void MainFrame::OnSettingsEnvironment(wxCommandEvent& event)
 {
+    bool tbarsmall = m_SmallToolBar;
+
 	EnvironmentSettingsDlg dlg(this);
-	dlg.ShowModal();
+	if (dlg.ShowModal() == wxID_OK)
+	{
+        m_SmallToolBar = ConfigManager::Get()->Read("/environment/toolbar_size", (long int)0) == 1;
+        if (m_SmallToolBar != tbarsmall)
+            CreateToolbars();
+	}
 }
 
 void MainFrame::OnSettingsEditor(wxCommandEvent& event)

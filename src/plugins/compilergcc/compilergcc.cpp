@@ -381,10 +381,10 @@ void CompilerGCC::BuildMenu(wxMenuBar* menuBar)
 
 void CompilerGCC::RemoveMenu(wxMenuBar* menuBar)
 {
-    int idx = menuBar->FindMenu(_("&Compile"));
-    if (idx != wxNOT_FOUND)
+    int pos = menuBar->FindMenu(_("&Compile"));
+    if (pos != wxNOT_FOUND)
     {
-        m_Menu = menuBar->Remove(idx);
+        m_Menu = menuBar->Remove(pos);
         delete m_Menu;
         m_Menu = 0;
     }
