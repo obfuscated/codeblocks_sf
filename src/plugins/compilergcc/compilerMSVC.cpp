@@ -85,6 +85,7 @@ Compiler * CompilerMSVC::CreateCopy()
 
 AutoDetectResult CompilerMSVC::AutoDetectInstallationDir()
 {
+    wxString sep = wxFileName::GetPathSeparator();
 #ifdef __WXMSW__
     wxLogNull ln;
     wxRegKey key; // defaults to HKCR
@@ -97,7 +98,6 @@ AutoDetectResult CompilerMSVC::AutoDetectInstallationDir()
         // just a guess; the default installation dir
         m_MasterPath = "C:\\Program Files\\Microsoft Visual C++ Toolkit 2003";
 
-    wxString sep = wxFileName::GetPathSeparator();
     if (!m_MasterPath.IsEmpty())
     {
         m_IncludeDirs.Add(m_MasterPath + sep + "include");
@@ -120,6 +120,8 @@ AutoDetectResult CompilerMSVC::AutoDetectInstallationDir()
             }
         }
     }
+#else
+    m_MasterPath="."; // doesn't matter under non-win32 platforms...
 #endif
 
     return wxFileExists(m_MasterPath + sep + "bin" + sep + m_Programs.C) ? adrDetected : adrGuessed;
