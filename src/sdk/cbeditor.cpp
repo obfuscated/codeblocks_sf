@@ -449,8 +449,11 @@ bool cbEditor::Save()
     }
     
     wxFile file(m_Filename, wxFile::write);
-    if (file.Write(m_pControl->GetText().c_str(), m_pControl->GetTextLength()) == 0)
+    if (file.Write(m_pControl->GetText().c_str(), m_pControl->GetTextLength()) == 0 &&
+        m_pControl->GetTextLength() != 0)
+    {
         return false; // failed; file is read-only?
+    }
     file.Flush();
     file.Close();
     
