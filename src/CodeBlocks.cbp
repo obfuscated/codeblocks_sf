@@ -1133,18 +1133,6 @@
 			<Option link="0"/>
 			<Option target="plugin_XPManifest"/>
 		</Unit>
-		<Unit filename="plugins\xtra_res.cpp">
-			<Option compilerVar="CPP"/>
-			<Option target="plugin_CompilerGCC"/>
-			<Option target="plugin_DebuggerGDB"/>
-		</Unit>
-		<Unit filename="plugins\xtra_res.h">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
-			<Option target="plugin_DebuggerGDB"/>
-		</Unit>
 		<Unit filename="sdk.doxy">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
@@ -1834,6 +1822,16 @@
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk\workspaceloader.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\xtra_res.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\xtra_res.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
