@@ -60,9 +60,10 @@ cbWorkspace::~cbWorkspace()
 
 void cbWorkspace::Load()
 {
-	Manager::Get()->GetMessageManager()->DebugLog("Loading workspace \"%s\"", m_Filename.GetFullPath().c_str());
+    wxString fname = m_Filename.GetFullPath();
+	Manager::Get()->GetMessageManager()->DebugLog("Loading workspace \"%s\"", fname.c_str());
 	WorkspaceLoader wsp;
-	m_IsOK = wsp.Open(m_Filename.GetFullPath()) || m_IsDefault;
+	m_IsOK = wsp.Open(fname) || m_IsDefault;
 	m_Title = wsp.GetTitle();
     SetModified(false);
 }

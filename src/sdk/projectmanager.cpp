@@ -292,7 +292,10 @@ void ProjectManager::SetProject(cbProject* project, bool refresh)
 {
     SANITY_CHECK();
 	if (project != m_pActiveProject)
-        GetWorkspace()->SetModified(true);
+	{
+        if (m_pWorkspace)
+            m_pWorkspace->SetModified(true);
+    }
     if (m_pActiveProject)
         m_pTree->SetItemBold(m_pActiveProject->GetProjectNode(), false);
     m_pActiveProject = project;
@@ -401,7 +404,8 @@ cbProject* ProjectManager::LoadProject(const wxString& filename)
 	cbProject* project = IsOpen(filename);
 	if (project)
 	{
-		GetWorkspace()->SetModified(true);
+        if (m_pWorkspace)
+            m_pWorkspace->SetModified(true);
 		return project;
 	}
 	project = new cbProject(filename);	
@@ -423,7 +427,8 @@ cbProject* ProjectManager::LoadProject(const wxString& filename)
 	project->LoadLayout();
 	if(!sanity_check()) return 0L; // sanity check
 	project->RestoreTreeState(m_pTree);
-	GetWorkspace()->SetModified(true);
+    if (m_pWorkspace)
+        m_pWorkspace->SetModified(true);
     return project;
 }
 
@@ -494,7 +499,8 @@ bool ProjectManager::CloseActiveProject()
             case wxCANCEL:  return false;
         }
     }
-	GetWorkspace()->SetModified(true);
+    if (m_pWorkspace)
+        m_pWorkspace->SetModified(true);
 
     if (!m_pActiveProject->CloseAllFiles())
         return false;
@@ -585,7 +591,8 @@ void ProjectManager::MoveProjectUp(cbProject* project, bool warpAround)
     m_pProjects->RemoveAt(idx--);
     m_pProjects->Insert(project, idx);
     RebuildTree();
-    GetWorkspace()->SetModified(true);
+    if (m_pWorkspace)
+        m_pWorkspace->SetModified(true);
 }
 
 void ProjectManager::MoveProjectDown(cbProject* project, bool warpAround)
@@ -608,7 +615,8 @@ void ProjectManager::MoveProjectDown(cbProject* project, bool warpAround)
     m_pProjects->RemoveAt(idx++);
     m_pProjects->Insert(project, idx);
     RebuildTree();
-    GetWorkspace()->SetModified(true);
+    if (m_pWorkspace)
+        m_pWorkspace->SetModified(true);
 }
 
 cbWorkspace* ProjectManager::GetWorkspace()
