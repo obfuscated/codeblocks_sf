@@ -72,11 +72,11 @@ wxString MakefileGenerator::ReplaceCompilerMacros(CommandType et,
     compilerCmd.Replace("$link_objects", "$(" + target->GetTitle() + "_LINKOBJS)");
     compilerCmd.Replace("$link_resobjects", "$(" + target->GetTitle() + "_RESOURCE)");
     compilerCmd.Replace("$exe_output", "$(" + target->GetTitle() + "_BIN)");
-    if (target->GetTargetType() == ttDynamicLib && target->GetCreateStaticLib())
+    if (target->GetTargetType() == ttStaticLib || (target->GetTargetType() == ttDynamicLib && target->GetCreateStaticLib()))
         compilerCmd.Replace("$static_output", "$(" + target->GetTitle() + "_STATIC_LIB)");
     else
         compilerCmd.Replace("-Wl,--out-implib=$static_output", "");
-    if ((target->GetTargetType() == ttDynamicLib || target->GetTargetType() == ttStaticLib) && target->GetCreateStaticLib())
+    if (target->GetTargetType() == ttStaticLib || (target->GetTargetType() == ttDynamicLib && target->GetCreateStaticLib()))
         compilerCmd.Replace("$def_output", "$(" + target->GetTitle() + "_LIB_DEF)");
     else
         compilerCmd.Replace("-Wl,--output-def=$def_output", "");
