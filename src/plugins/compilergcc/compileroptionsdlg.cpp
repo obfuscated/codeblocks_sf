@@ -157,14 +157,9 @@ void CompilerOptionsDlg::DoFillCompilerSets()
     {
         cmb->Append(CompilerFactory::Compilers[i]->GetName());
     }
-    if (m_pProject)
-    {
-        if (cmb->GetCount())
-            cmb->SetSelection(m_Compiler->GetCurrentCompilerIndex());
-    }
-    else
-        cmb->SetSelection(0);
-    m_LastCompilerIdx = cmb->GetSelection();
+	int compilerIdx = m_pProject ? m_pProject->GetCompilerIndex() : m_Compiler->GetCurrentCompilerIndex();
+    cmb->SetSelection(compilerIdx);
+    m_LastCompilerIdx = compilerIdx;
 }
 
 void CompilerOptionsDlg::DoFillCompilerPrograms()
@@ -173,11 +168,12 @@ void CompilerOptionsDlg::DoFillCompilerPrograms()
         return; // no "Programs" page
 
     int compilerIdx = XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection();
+    /*Manager::Get()->GetMessageManager()->DebugLog("compilerIdx=%d, m_LastCompilerIdx=%d", compilerIdx, m_LastCompilerIdx);
     if (compilerIdx != m_LastCompilerIdx)
     {
         // compiler changed; check for changes and update as needed
         DoUpdateCompiler();
-    }
+    }*/
     
     m_LastCompilerIdx = compilerIdx;
     const CompilerPrograms& progs = CompilerFactory::Compilers[compilerIdx]->GetPrograms();
@@ -300,7 +296,7 @@ void CompilerOptionsDlg::DoFillOptions()
 		{
 			list->Append(copt->name);
 			list->Check(list->GetCount() - 1, copt->enabled);
-  //          Manager::Get()->GetMessageManager()->DebugLog("(FILL) option %s (0x%8.8x) %s", copt->option.c_str(), copt, copt->enabled ? "enabled" : "disabled");
+//            Manager::Get()->GetMessageManager()->DebugLog("(FILL) option %s (0x%8.8x) %s", copt->option.c_str(), copt, copt->enabled ? "enabled" : "disabled");
 		}
 	}
 	Connect(XRCID("lstCompilerOptions"), -1,
@@ -620,6 +616,8 @@ void CompilerOptionsDlg::DoMakeRelative(wxFileName& path)
 
 void CompilerOptionsDlg::DoUpdateCompiler()
 {
+    if (!CompilerFactory::CompilerIndexOK(m_LastCompilerIdx))
+        return;
     CompilerPrograms progs;
     wxString masterPath = XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->GetValue();
     progs.C = XRCCTRL(*this, "txtCcompiler", wxTextCtrl)->GetValue();
@@ -1005,6 +1003,14 @@ void CompilerOptionsDlg::EndModal(int retCode)
         wxMessageBox(_("You changed the compiler used for this project.\n"
                         "It is recommended that you fully rebuild your project, "
                         "otherwise linking errors might occur..."));
+    }
+
+    if (!m_pProject)
+    {
+        // only do it for global compiler options
+        // why does it crash for project compiler options???
+        m_LastCompilerIdx = idx;
+        DoUpdateCompiler();
     }
     
 	//others

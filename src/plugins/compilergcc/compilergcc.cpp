@@ -190,7 +190,9 @@ CompilerGCC::CompilerGCC()
 	
 	// register built-in compilers
 	CompilerFactory::RegisterCompiler(new CompilerMINGW);
-//	CompilerFactory::RegisterCompiler(new CompilerMSVC);
+#ifdef __WXMSW__
+	CompilerFactory::RegisterCompiler(new CompilerMSVC);
+#endif
 	// register (if any) user-copies of built-in compilers
 	CompilerFactory::RegisterUserCompilers();
 }

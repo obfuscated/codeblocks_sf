@@ -85,9 +85,9 @@ wxString MakefileGenerator::ReplaceCompilerMacros(CommandType et,
     if (idx != -1)
     {
         wxString incs;
-        DoAppendIncludeDirs(incs, 0L, "--include-dir=", true);
-        DoAppendIncludeDirs(incs, 0L, "--include-dir=");
-        DoAppendIncludeDirs(incs, target, "--include-dir=");
+        DoAppendIncludeDirs(incs, 0L, "-I", true);
+        DoAppendIncludeDirs(incs, 0L, "-I");
+        DoAppendIncludeDirs(incs, target, "-I");
         compilerCmd.Replace("$res_includes", incs);
     }
 
