@@ -303,7 +303,7 @@
 				<Option compiler="0"/>
 				<Option includeInTargetAll="0"/>
 				<ExtraCommands>
-					<Add before="doxygen codeblocks.doxy"/>
+					<Add before="doxygen sdk.doxy"/>
 				</ExtraCommands>
 			</Target>
 		</Build>

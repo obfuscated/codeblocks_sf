@@ -4,7 +4,7 @@
 
 # Project:          Code::Blocks
 # Project filename: c:\Devel\codeblocks\src\CodeBlocks.cbp
-# Date:             02/19/05 13:49:35
+# Date:             02/19/05 13:54:16
 # Compiler used:    GNU GCC Compiler
 
 ### Variables used in this Makefile
@@ -220,7 +220,7 @@ update-before:
 	update.bat
 
 doc-before: 
-	doxygen codeblocks.doxy
+	doxygen sdk.doxy
 
 
 dist:
