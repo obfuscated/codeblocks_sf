@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxDialog" name="dlgIncrementalSelectList">
+    <title>Select...</title>
+    <centered>1</centered>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxStaticText" name="lblMessage">
+          <label>Please select:</label>
+        </object>
+        <flag>wxTOP|wxLEFT|wxEXPAND</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxTextCtrl" name="txtSearch">
+          <style>wxTE_PROCESS_ENTER|wxTE_PROCESS_TAB|wxWANTS_CHARS</style>
+        </object>
+        <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxListBox" name="lstItems">
+          <content/>
+          <style>wxLB_SINGLE|wxLB_HSCROLL|wxLB_NEEDED_SB|wxWANTS_CHARS</style>
+        </object>
+        <option>1</option>
+        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+        <border>8</border>
+        <minsize>320,160</minsize>
+      </object>
+    </object>
+  </object>
+</resource>
