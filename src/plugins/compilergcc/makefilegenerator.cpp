@@ -1162,20 +1162,28 @@ void MakefileGenerator::QuoteStringIfNeeded(wxString& str)
 void MakefileGenerator::AddCreateSubdir(wxString& buffer, const wxString& basepath, const wxString& filename, const wxString& subdir)
 {
     wxChar sep = wxFileName::GetPathSeparator();
+    
+    // make sure we don't use absolute filenames, if we don't have to
+    wxString path = basepath;
+    if (path.Right(1) == '\\' || path.Right(1) == '/')
+        path.Remove(path.Length() - 1);
+    if (path == wxGetCwd())
+        path = ".";
+
 #ifdef __WXMSW__
     wxFileName d_filename_tmp = filename;
     wxFileName d_filename = subdir + sep + d_filename_tmp.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + sep + d_filename_tmp.GetFullName();
     buffer << "\t-@if not exist ";
-    buffer << "\"" << basepath << sep << d_filename.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) << ".\" ";
+    buffer << "\"" << path << sep << d_filename.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) << ".\" ";
     buffer << "mkdir ";
-    buffer << "\"" << basepath << sep << d_filename.GetPath(wxPATH_GET_VOLUME) << "\"";
+    buffer << "\"" << path << sep << d_filename.GetPath(wxPATH_GET_VOLUME) << "\"";
 #else
     wxFileName d_filename_tmp = UnixFilename(filename);
     wxFileName d_filename = subdir + sep + d_filename_tmp.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + sep + d_filename_tmp.GetFullName();
     buffer << "\t-@if ! test -d ";
-    buffer << basepath << sep << d_filename.GetPath(wxPATH_GET_VOLUME);
+    buffer << path << sep << d_filename.GetPath(wxPATH_GET_VOLUME);
     buffer << "; then mkdir -p ";
-    buffer << basepath << sep << d_filename.GetPath(wxPATH_GET_VOLUME);
+    buffer << path << sep << d_filename.GetPath(wxPATH_GET_VOLUME);
     buffer << "; fi";
 #endif
     buffer << "\n";
