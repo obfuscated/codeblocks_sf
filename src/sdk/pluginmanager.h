@@ -48,7 +48,7 @@ class DLLIMPORT PluginManager
         PluginsArray GetCodeCompletionOffers();
         void AskPluginsForModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg);
         void NotifyPlugins(CodeBlocksEvent& event);
-        void Configure();
+        int Configure();
     private:
         static PluginManager* Get();
 		static void Free();

@@ -48,10 +48,11 @@ PluginsConfigurationDlg::PluginsConfigurationDlg(wxWindow* parent)
     // populate Plugins and Help/Plugins menu
     for (unsigned int i = 0; i < plugins.GetCount(); ++i)
     {
-        list->Append(plugins[i]->name);
+        PluginElement* elem = plugins[i];
+        list->Append(elem->plugin->GetInfo()->title + ", v" + elem->plugin->GetInfo()->version);
 
         wxString baseKey;
-        baseKey << "/plugins/" << plugins[i]->name;
+        baseKey << "/plugins/" << elem->name;
         list->Check(list->GetCount()-1, ConfigManager::Get()->Read(baseKey, true));
     }
 }
@@ -65,11 +66,14 @@ PluginsConfigurationDlg::~PluginsConfigurationDlg()
 void PluginsConfigurationDlg::OnOK(wxCommandEvent& event)
 {
     wxCheckListBox* list = XRCCTRL(*this, "lstPlugins", wxCheckListBox);
-    
+    PluginManager* man = Manager::Get()->GetPluginManager();
+    PluginElementsArray& plugins = man->GetPlugins();
+
     for (int i = 0; i < list->GetCount(); ++i)
     {
+        PluginElement* elem = plugins[i];
         wxString baseKey;
-        baseKey << "/plugins/" << list->GetString(i);
+        baseKey << "/plugins/" << elem->name;
         bool checked = list->IsChecked(i);
         ConfigManager::Get()->Write(baseKey, checked);
     }

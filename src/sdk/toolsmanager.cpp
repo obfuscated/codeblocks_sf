@@ -27,7 +27,7 @@
 #include <wx/process.h>
 #include <wx/menu.h>
 #include <wx/mdi.h>
-#include <wx/log.h>
+#include <wx/msgdlg.h>
 
 #include "toolsmanager.h"
 #include "manager.h"
@@ -297,5 +297,5 @@ void ToolsManager::OnToolClick(wxCommandEvent& event)
 {
 	Tool* tool = GetToolById(event.GetId());
 	if (!Execute(tool))
-		wxLogError(_("Could not execute %s"), tool->name.c_str());
+		wxMessageBox(_("Could not execute ") + tool->name);
 }

@@ -29,6 +29,7 @@
 #include <wx/cmdline.h>
 #include <wx/regex.h>
 #include <wx/filefn.h>
+#include <wx/msgdlg.h>
 #include "../sdk/editormanager.h"
 #include "../sdk/projectmanager.h"
 
@@ -221,7 +222,7 @@ bool CodeBlocksApp::CheckResource(const wxString& res)
     		"or try re-installing the application...",
     		res.c_str(),
     		ConfigManager::Get()->Read("app_path", wxEmptyString).c_str());
-    	wxLogError(msg);
+    	wxMessageBox(msg);
     	return false;
     }
 

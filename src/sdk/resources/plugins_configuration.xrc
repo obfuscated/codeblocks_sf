@@ -7,7 +7,7 @@
     <object class="wxBoxSizer">
       <object class="sizeritem">
         <object class="wxStaticText">
-          <label>Plugins to load on start-up:</label>
+          <label>Available plugins:</label>
         </object>
         <flag>wxTOP|wxALL</flag>
         <border>8</border>
@@ -17,9 +17,28 @@
           <content/>
         </object>
         <option>1</option>
-        <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+        <flag>wxLEFT|wxRIGHT|wxGROW</flag>
         <border>8</border>
         <minsize>320,240</minsize>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticText">
+          <label>Put a checkmark on those plugins that should be auto-loaded on startup.</label>
+        </object>
+        <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticText">
+          <label>Note that the plugins will be loaded/unloaded when you press &quot;OK&quot;.</label>
+        </object>
+        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticLine"/>
+        <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+        <border>8</border>
       </object>
       <object class="sizeritem">
         <object class="wxBoxSizer">

@@ -169,15 +169,15 @@ CompilerGCC::CompilerGCC()
     m_Type = ptCompiler;
     m_PluginInfo.name = "Compiler";
     m_PluginInfo.title = "Compiler";
-    m_PluginInfo.version = "0.1a";
-    m_PluginInfo.description = "This plugin is an interface to various compilers. "
-                               "Most well-supported is GNU GCC compiler but attempts "
-                               "are on the way to support the newly released "
-                               "freeware Microsoft's optimizing compiler ;)";
+    m_PluginInfo.version = "1.0";
+    m_PluginInfo.description = "This plugin is an interface to various compilers:\n\n"
+                               "\tGNU GCC compiler\n"
+                               "\tMicrosoft Visual C++ Free Toolkit 2003\n"
+                               "\tBorland C++ Compiler 5.5";
     m_PluginInfo.author = "Yiannis An. Mandravellos";
     m_PluginInfo.authorEmail = "info@codeblocks.org";
     m_PluginInfo.authorWebsite = "www.codeblocks.org";
-    m_PluginInfo.thanksTo = "";
+    m_PluginInfo.thanksTo = "All the free (and not) compilers out there";
 	m_PluginInfo.hasConfigure = true;
 
     m_timerIdleWakeUp.SetOwner(this, idTimerPollCompiler);
@@ -300,8 +300,8 @@ void CompilerGCC::BuildMenu(wxMenuBar* menuBar)
 {
 	if (!m_IsAttached)
 		return;
-	if (m_Menu)
-		return;
+//	if (m_Menu)
+//		return;
 	m_Menu = new wxMenu("");
     m_Menu->Append(idMenuRun, _("&Run\tCtrl-F10"), _("Run current project"));
     m_Menu->Append(idMenuCompileAndRun, _("Com&pile && run\tF9"), _("Compile and run current project"));
@@ -939,7 +939,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 		// check for hostapp
 		if (target->GetHostApplication().IsEmpty())
 		{
-			wxLogError(_("You must select a host application to \"run\" a library..."));
+			wxMessageBox(_("You must select a host application to \"run\" a library..."));
 			return -1;
 		}
 		cmd << "\"" << target->GetHostApplication() << "\" " << target->GetExecutionParameters();
@@ -1139,10 +1139,10 @@ int CompilerGCC::KillProcess()
     wxKillError ret = wxProcess::Kill(m_Pid, wxSIGTERM);
     switch (ret)
     {
-        case wxKILL_ACCESS_DENIED: wxLogError(_("Access denied")); break;
-        case wxKILL_NO_PROCESS: wxLogError(_("No process")); break;
-        case wxKILL_BAD_SIGNAL: wxLogError(_("Bad signal")); break;
-        case wxKILL_ERROR: wxLogError(_("Unspecified error")); break;
+        case wxKILL_ACCESS_DENIED: wxMessageBox(_("Access denied")); break;
+        case wxKILL_NO_PROCESS: wxMessageBox(_("No process")); break;
+        case wxKILL_BAD_SIGNAL: wxMessageBox(_("Bad signal")); break;
+        case wxKILL_ERROR: wxMessageBox(_("Unspecified error")); break;
 
         case wxKILL_OK: 
         default: Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Process killed..."));
@@ -1245,7 +1245,7 @@ void CompilerGCC::OnCompileFile(wxCommandEvent& event)
     	ProjectFile* pf = m_Project->GetFile(ftd->GetFileIndex());
     	if (!pf)
     	{
-            wxLogError("File index=%d", ftd->GetFileIndex());
+//            wxLogError("File index=%d", ftd->GetFileIndex());
             return;
         }
     	file = pf->file;

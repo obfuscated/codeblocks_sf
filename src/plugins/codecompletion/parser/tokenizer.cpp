@@ -26,7 +26,7 @@
 #include "tokenizer.h"
 #include <wx/utils.h>
 #include <wx/file.h>
-#include <wx/log.h>
+#include <wx/msgdlg.h>
 
 Tokenizer::Tokenizer(const wxString& filename)
 	: m_Filename(filename),
@@ -58,7 +58,7 @@ bool Tokenizer::Init(const wxString& filename)
 	{
 		if (m_Filename.IsEmpty())
 		{
-			wxLogError("Tokenizer::Init() called without filename...");
+			wxMessageBox("Tokenizer::Init() called without filename...");
 			return false;
 		}
 	}
@@ -70,13 +70,13 @@ bool Tokenizer::Init(const wxString& filename)
 
 	if (!ReadFile())
 	{
-		wxLogError("File %s does not exist...", m_Filename.c_str());
+		wxMessageBox("File " + filename + " does not exist...");
 		return false;
 	}
 
 	if (!m_BufferLen)
 	{
-		//wxLogError("File is empty!");
+		//wxMessageBox("File is empty!");
 		return false;
 	}
 

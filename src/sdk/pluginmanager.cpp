@@ -315,11 +315,11 @@ void PluginManager::NotifyPlugins(CodeBlocksEvent& event)
     }
 }
 
-void PluginManager::Configure()
+int PluginManager::Configure()
 {
 	PluginsConfigurationDlg dlg(Manager::Get()->GetAppWindow());
     if (dlg.ShowModal() == wxID_CANCEL)
-        return;
+        return wxID_CANCEL;
 
     for (unsigned int i = 0; i < m_Plugins.GetCount(); ++i)
     {
@@ -335,5 +335,6 @@ void PluginManager::Configure()
         else if (loadIt && !plug->IsAttached())
             plug->Attach();
     }
+    return wxID_OK;
 }
 

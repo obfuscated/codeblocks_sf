@@ -522,12 +522,18 @@ void MainFrame::CreateMenubar()
 		if (plug && plug->IsAttached())
 		{
 			if (plug->GetType() == ptTool)
-				DoAddPlugin(plug);
+			{
+                DoAddPlugin(plug);
+            }
 			else
+			{
+                AddPluginInSettingsMenu(plug);
+                AddPluginInHelpPluginsMenu(plug);
 				plug->BuildMenu(mbar);
+            }
 		}
 	}
-	
+
 	Manager::Get()->GetToolsManager()->BuildToolsMenu(m_ToolsMenu);
 
 	SetMenuBar(mbar);
@@ -650,10 +656,18 @@ void MainFrame::RemovePluginFromMenus(const wxString& pluginName)
 	
 	// look for plugin's id
 	wxArrayInt id;
-	for (PluginIDsMap::iterator it = m_PluginIDsMap.begin(); it != m_PluginIDsMap.end(); ++it)
+	PluginIDsMap::iterator it = m_PluginIDsMap.begin();
+	while (it != m_PluginIDsMap.end())
 	{
 		if (pluginName.Matches(it->second))
+		{
 			id.Add(it->first);
+			PluginIDsMap::iterator it2 = it;
+			++it;
+			m_PluginIDsMap.erase(it2);
+        }
+        else
+            ++it;
 	}
     //m_pMsgMan->DebugLog("id=%d", id);
 	if (id.GetCount() == 0)
@@ -1711,28 +1725,29 @@ void MainFrame::OnToggleFullScreen(wxCommandEvent& event)
 
 void MainFrame::OnPluginLoaded(CodeBlocksEvent& event)
 {
-    wxString msg = _("Unknown");
+    if (m_RecreatingMenus)
+        return;
+
     cbPlugin* plug = event.GetPlugin();
     if (plug)
 	{
 		DoAddPlugin(plug);
-//        msg = plug->GetInfo()->title;
-//    m_pMsgMan->Log(mltDevDebug, _("%s plugin loaded"), msg.c_str());
+        wxString msg = plug->GetInfo()->title;
+        m_pMsgMan->DebugLog(_("%s plugin loaded"), msg.c_str());
 	}
 }
 
 void MainFrame::OnPluginUnloaded(CodeBlocksEvent& event)
 {
-    wxString msg = _("Unknown");
     cbPlugin* plug = event.GetPlugin();
     if (plug)
     {
 		RemovePluginFromMenus(plug->GetInfo()->name);
-		//msg = plug->GetInfo()->title;
 		CreateToolbars();
 		CreateMenubar();
+        wxString msg = plug->GetInfo()->title;
+        m_pMsgMan->DebugLog(_("%s plugin unloaded"), msg.c_str());
     }
-//    m_pMsgMan->Log(mltDevDebug, _("%s plugin unloaded"), msg.c_str());
 }
 
 void MainFrame::OnSettingsEnvironment(wxCommandEvent& event)
@@ -1743,28 +1758,19 @@ void MainFrame::OnSettingsEnvironment(wxCommandEvent& event)
 
 void MainFrame::OnSettingsEditor(wxCommandEvent& event)
 {
-    /*long style = m_pToolbar->GetWindowStyle();
-    style &= ~(wxTB_NOICONS | wxTB_TEXT); // default: icons, no text
-	//style |= wxTB_NOICONS; // no icons
-	style |= wxTB_TEXT; // show text
-    m_pToolbar->SetWindowStyle(style);
-	m_Layout->RefreshNow();*/
-
 	m_pEdMan->Configure();
 }
 
 void MainFrame::OnSettingsPlugins(wxCommandEvent& event)
 {
-    wxMessageBox(_("There is a known problem with plugins enabling/disabling in this "
-                "version and it has been disabled.\nWhen this problem has been fixed "
-                "in a later version, this menu option will work again..."),
-                _("Information"),
-                wxICON_INFORMATION);
-#if 0
-	Manager::Get()->GetPluginManager()->Configure();
-	CreateMenubar();
-	CreateToolbars();
-#endif
+	if (Manager::Get()->GetPluginManager()->Configure() == wxID_OK)
+	{
+        wxBusyCursor busy;
+        m_RecreatingMenus = true;
+        CreateMenubar();
+        CreateToolbars();
+        m_RecreatingMenus = false;
+	}
 }
 
 void MainFrame::OnDragSash(wxSashEvent& event)

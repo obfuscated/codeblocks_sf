@@ -28,6 +28,7 @@
 #include <wx/filename.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/fs_zip.h>
+#include <wx/msgdlg.h>
 #include <manager.h>
 #include <configmanager.h>
 #include <messagemanager.h>
@@ -121,8 +122,8 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
     if (!m_IsAttached)
         return;
 
-	if (m_EditMenu)
-    	return; // already set-up
+//	if (m_EditMenu)
+//    	return; // already set-up
 
     int pos = menuBar->FindMenu(_("Edit"));
     if (pos != wxNOT_FOUND)
@@ -563,7 +564,7 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
 	}
 	if (!funcs.GetCount())
 	{
-		wxLogError(_("No functions parsed in this file..."));
+		wxMessageBox(_("No functions parsed in this file..."));
 		return;
 	}
 	IncrementalSelectListDlg dlg(Manager::Get()->GetAppWindow(), funcs, _("Select function..."), _("Please select function to go to:"));

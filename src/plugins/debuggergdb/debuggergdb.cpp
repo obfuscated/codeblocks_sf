@@ -26,6 +26,7 @@
 #include <wx/txtstrm.h>
 #include <wx/regex.h>
 #include <wx/dialog.h>
+#include <wx/msgdlg.h>
 
 #include <manager.h>
 #include <configmanager.h>
@@ -408,7 +409,7 @@ int DebuggerGDB::Debug()
 			// check for hostapp
 			if (target->GetHostApplication().IsEmpty())
 			{
-				wxLogError(_("You must select a host application to \"run\" a library..."));
+				wxMessageBox(_("You must select a host application to \"run\" a library..."));
 				CmdStop();
 				return 4;
 			}

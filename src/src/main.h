@@ -162,6 +162,8 @@ class MainFrame : public wxMDIParentFrame
 		wxMenu* m_PluginsMenu;
         wxMenu* m_SettingsMenu;
         wxMenu* m_HelpPluginsMenu;
+        
+        bool m_RecreatingMenus;
 		
         DECLARE_EVENT_TABLE()
 };
