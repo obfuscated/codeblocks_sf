@@ -1,11 +1,16 @@
 #include <wx/xrc/xmlres.h>
-#include "../sdk/configmanager.h"
+#include <configmanager.h>
 #include <wx/intl.h>
 #include <wx/checkbox.h>
 #include <wx/radiobox.h>
 #include <wx/msgdlg.h>
+#include <wx/filedlg.h>
 
 #include "environmentsettingsdlg.h"
+
+BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxDialog)
+    EVT_BUTTON(XRCID("btnExportConfig"), EnvironmentSettingsDlg::OnExportConfig)
+END_EVENT_TABLE()
 
 EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent)
 {
@@ -23,6 +28,14 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent)
 EnvironmentSettingsDlg::~EnvironmentSettingsDlg()
 {
 	//dtor
+}
+
+void EnvironmentSettingsDlg::OnExportConfig(wxCommandEvent& event)
+{
+//    wxFileDialog dlg(this, _("Choose a file"), "", "", "*.*", wxSAVE | wxOVERWRITE_PROMPT | wxHIDE_READONLY);
+//    if (dlg.ShowModal() == wxID_OK)
+//        ConfigManager::ExportToFile(dlg.GetPath());
+    ConfigManager::ExportToFile("c:/Devel/codeblocks/src/devel/test.conf");
 }
 
 void EnvironmentSettingsDlg::EndModal(int retCode)

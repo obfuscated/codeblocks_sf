@@ -341,7 +341,7 @@ void cbEditor::SetEditorStyle()
    	if (ConfigManager::Get()->Read("/editor/show_line_numbers", 0L))
     {
 	    m_pControl->SetMarginType(0, wxSTC_MARGIN_NUMBER);
-    	m_pControl->SetMarginWidth(0, 32);
+    	m_pControl->SetMarginWidth(0, 48);
     }
 	else
 		m_pControl->SetMarginWidth(0, 0);

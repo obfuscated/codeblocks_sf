@@ -58,6 +58,8 @@ class EditorColorSet
 		int GetOptionCount(HighlightLanguage lang){ return m_Colors[lang].GetCount(); }
 		HighlightLanguage GetLanguageForFilename(const wxString& filename);
 		wxString GetLanguageName(HighlightLanguage lang);
+		wxString GetName(){ return m_Name; }
+		void SetName(const wxString& name){ m_Name = name; }
 		void Apply(cbEditor* editor);
 		void Apply(HighlightLanguage lang, wxStyledTextCtrl* control);
 		void Save();

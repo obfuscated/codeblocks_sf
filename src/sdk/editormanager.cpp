@@ -72,7 +72,7 @@ EditorManager::EditorManager(wxWindow* parent)
 	m_IntfType(eitTabbed)
 {
 	m_EditorsList.Clear();
-	m_Theme = new EditorColorSet(ConfigManager::Get()->Read("/editor/color_sets", COLORSET_DEFAULT));
+	m_Theme = new EditorColorSet(ConfigManager::Get()->Read("/editor/color_sets/active_color_set", COLORSET_DEFAULT));
 }
 
 // class destructor

@@ -24,6 +24,7 @@
 */
 
 #include <wx/stc/stc.h>
+#include <wx/log.h>
 
 #include "globals.h"
 #include "cbeditor.h"
@@ -405,5 +406,12 @@ void EditorColorSet::Reset(HighlightLanguage lang)
 {
     WX_CLEAR_ARRAY(m_Colors[lang]);
     m_Colors[lang].Clear();
+
+    wxLogNull ln;
+    wxString key;
+    key << "/editor/color_sets/" << m_Name << "/" << GetLanguageName(lang);
+    if (ConfigManager::Get()->HasGroup(key))
+        ConfigManager::Get()->DeleteGroup(key);
+
     LoadBuiltInSet(lang);
 }

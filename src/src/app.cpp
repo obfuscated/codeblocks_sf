@@ -312,7 +312,6 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
 					m_NoSplash = parser.Found(_("no-splash-screen"), &val);
 					m_ClearConf = parser.Found(_("clear-configuration"), &val);
 					m_HasDebugLog = parser.Found(_("debug-log"), &val);
-						
                 }
             }
             break;

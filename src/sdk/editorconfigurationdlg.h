@@ -18,6 +18,10 @@ class EditorConfigurationDlg : public wxDialog
 		void OnChooseFont(wxCommandEvent& event);
         void OnChooseColor(wxCommandEvent& event);
         void OnBoldItalicUline(wxCommandEvent& event);
+		void OnColorTheme(wxCommandEvent& event);
+		void OnAddColorTheme(wxCommandEvent& event);
+		void OnDeleteColorTheme(wxCommandEvent& event);
+		void OnRenameColorTheme(wxCommandEvent& event);
 		void OnColorComponent(wxCommandEvent& event);
 		void OnColorsReset(wxCommandEvent& event);
 		void OnEditKeywords(wxCommandEvent& event);
@@ -30,10 +34,14 @@ class EditorConfigurationDlg : public wxDialog
 		void FillColorComponents();
 		void ReadColors();
 		void WriteColors();
+		void LoadThemes();
+		void ChangeTheme();
+		bool AskToSaveTheme();
 		wxStyledTextCtrl* m_TextColorControl;
 		EditorColorSet* m_Theme;
 		HighlightLanguage m_Lang;
 		int m_DefCodeFileType;
+		bool m_ThemeModified;
     	DECLARE_EVENT_TABLE()
 };
 

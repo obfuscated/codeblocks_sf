@@ -50,6 +50,9 @@ BEGIN_EVENT_TABLE(EditorConfigurationDlg, wxDialog)
 	EVT_BUTTON(XRCID("btnGutterColor"), 		EditorConfigurationDlg::OnChooseColor)
 	EVT_BUTTON(XRCID("btnColorsFore"), 			EditorConfigurationDlg::OnChooseColor)
 	EVT_BUTTON(XRCID("btnColorsBack"), 			EditorConfigurationDlg::OnChooseColor)
+	EVT_BUTTON(XRCID("btnColorsAddTheme"), 		EditorConfigurationDlg::OnAddColorTheme)
+	EVT_BUTTON(XRCID("btnColorsDeleteTheme"), 	EditorConfigurationDlg::OnDeleteColorTheme)
+	EVT_BUTTON(XRCID("btnColorsRenameTheme"), 	EditorConfigurationDlg::OnRenameColorTheme)
 	EVT_CHECKBOX(XRCID("chkColorsBold"),		EditorConfigurationDlg::OnBoldItalicUline)
 	EVT_CHECKBOX(XRCID("chkColorsItalics"),		EditorConfigurationDlg::OnBoldItalicUline)
 	EVT_CHECKBOX(XRCID("chkColorsUnderlined"),	EditorConfigurationDlg::OnBoldItalicUline)
@@ -57,13 +60,15 @@ BEGIN_EVENT_TABLE(EditorConfigurationDlg, wxDialog)
 	EVT_LISTBOX(XRCID("lstComponents"),			EditorConfigurationDlg::OnColorComponent)
 	EVT_COMBOBOX(XRCID("cmbLangs"),				EditorConfigurationDlg::OnChangeLang)
 	EVT_COMBOBOX(XRCID("cmbDefCodeFileType"),	EditorConfigurationDlg::OnChangeDefCodeFileType)
+	EVT_COMBOBOX(XRCID("cmbThemes"),	        EditorConfigurationDlg::OnColorTheme)
 END_EVENT_TABLE()
 
 EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
 	: m_TextColorControl(0L),
 	m_Theme(0L),
 	m_Lang(hlCpp),
-	m_DefCodeFileType(0)
+	m_DefCodeFileType(0),
+	m_ThemeModified(false)
 {
 	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgConfigureEditor"));
 
@@ -93,18 +98,12 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "lstGutterMode", wxChoice)->SetSelection(ConfigManager::Get()->Read("/editor/gutter/mode", 1));
     XRCCTRL(*this, "btnGutterColor", wxButton)->SetBackgroundColour(color);
     XRCCTRL(*this, "spnGutterColumn", wxSpinCtrl)->SetValue(ConfigManager::Get()->Read("/editor/gutter/column", 80));
-	// color set
-	m_Theme = new EditorColorSet(ConfigManager::Get()->Read("/editor/color_sets", COLORSET_DEFAULT));
 
-	//keywords
-   	XRCCTRL(*this, "btnKeywords", wxButton)->Enable(m_Theme);
-   	XRCCTRL(*this, "cmbLangs", wxComboBox)->Enable(m_Theme);
-	if (m_Theme)
-		m_Lang = HighlightLanguage(XRCCTRL(*this, "cmbLangs", wxComboBox)->GetSelection() + 1); // +1 because 0 would mean hlNone
-	CreateColorsSample();
-	
+	// color set
+	LoadThemes();
+
 	// default code
-	wxString key;
+    wxString key;
     key.Printf("/editor/default_code/%d", IdxToFileType[m_DefCodeFileType]);
     XRCCTRL(*this, "txtDefCode", wxTextCtrl)->SetValue(ConfigManager::Get()->Read(key, wxEmptyString));
     wxFont tmpFont(8, wxMODERN, wxNORMAL, wxNORMAL);
@@ -183,6 +182,8 @@ void EditorConfigurationDlg::CreateColorsSample()
 	m_TextColorControl->SetText(buffer);
 	m_TextColorControl->SetReadOnly(true);
 	m_TextColorControl->SetCaretWidth(0);
+    m_TextColorControl->SetMarginType(0, wxSTC_MARGIN_NUMBER);
+    m_TextColorControl->SetMarginWidth(0, 32);
 	ApplyColors();
 
     m_TextColorControl->SetMarginWidth(1, 0);
@@ -284,6 +285,7 @@ void EditorConfigurationDlg::WriteColors()
 		}
 	}
 	ApplyColors();
+	m_ThemeModified = true;
 }
 
 void EditorConfigurationDlg::UpdateSampleFont(bool askForNewFont)
@@ -314,7 +316,130 @@ void EditorConfigurationDlg::UpdateSampleFont(bool askForNewFont)
     }
 }
 
+void EditorConfigurationDlg::LoadThemes()
+{
+	wxComboBox* cmbThemes = XRCCTRL(*this, "cmbThemes", wxComboBox);
+	cmbThemes->Clear();
+	wxString group;
+	long cookie;
+	wxConfigBase* conf = ConfigManager::Get();
+	wxString oldPath = conf->GetPath();
+	conf->SetPath("/editor/color_sets");
+	bool cont = conf->GetFirstGroup(group, cookie);
+	while (cont)
+	{
+        cmbThemes->Append(group);
+        cont = conf->GetNextGroup(group, cookie);
+    }
+	conf->SetPath(oldPath);
+    if (cmbThemes->GetCount() == 0)
+        cmbThemes->Append(COLORSET_DEFAULT);
+    group = ConfigManager::Get()->Read("/editor/color_sets/active_color_set", COLORSET_DEFAULT);
+    cookie = cmbThemes->FindString(group);
+    if (cookie == wxNOT_FOUND)
+        cookie = 0;
+    cmbThemes->SetSelection(cookie);
+    ChangeTheme();
+}
+
+bool EditorConfigurationDlg::AskToSaveTheme()
+{
+    wxComboBox* cmbThemes = XRCCTRL(*this, "cmbThemes", wxComboBox);
+    if (m_Theme && m_ThemeModified)
+    {
+        wxString msg;
+        msg.Printf(_("The color theme \"%s\" is modified.\nDo you want to save the changes?"), m_Theme->GetName().c_str());
+        int ret = wxMessageBox(msg, _("Save"), wxYES_NO | wxCANCEL);
+        switch (ret)
+        {
+            case wxYES: m_Theme->Save(); break;
+            case wxCANCEL:
+            {
+                int idx = cmbThemes->FindString(m_Theme->GetName());
+                cmbThemes->SetSelection(idx);
+                return false;
+            }
+            default: break;
+        }
+    }
+    return true;
+}
+
+void EditorConfigurationDlg::ChangeTheme()
+{
+    wxComboBox* cmbThemes = XRCCTRL(*this, "cmbThemes", wxComboBox);
+    if (cmbThemes->GetSelection() == wxNOT_FOUND)
+        cmbThemes->SetSelection(0);
+    wxString key = cmbThemes->GetStringSelection();
+    XRCCTRL(*this, "btnColorsRenameTheme", wxButton)->Enable(key != COLORSET_DEFAULT);
+    XRCCTRL(*this, "btnColorsDeleteTheme", wxButton)->Enable(key != COLORSET_DEFAULT);
+    
+    if (m_Theme)
+        delete m_Theme;
+    m_Theme = new EditorColorSet(key);
+
+   	XRCCTRL(*this, "btnKeywords", wxButton)->Enable(m_Theme);
+   	XRCCTRL(*this, "cmbLangs", wxComboBox)->Enable(m_Theme);
+	if (m_Theme)
+		m_Lang = HighlightLanguage(XRCCTRL(*this, "cmbLangs", wxComboBox)->GetSelection() + 1); // +1 because 0 would mean hlNone
+	CreateColorsSample();
+	m_ThemeModified = false;
+}
+
 // events
+
+void EditorConfigurationDlg::OnColorTheme(wxCommandEvent& event)
+{
+    // theme has changed
+    wxComboBox* cmbThemes = XRCCTRL(*this, "cmbThemes", wxComboBox);
+    if (m_Theme && m_Theme->GetName() != cmbThemes->GetStringSelection())
+    {
+        if (AskToSaveTheme())
+            ChangeTheme();
+    }
+}
+
+void EditorConfigurationDlg::OnAddColorTheme(wxCommandEvent& event)
+{
+    wxTextEntryDialog dlg(this, _("Please enter the name of the new color theme:"), _("New theme name"));
+    if (dlg.ShowModal() != wxID_OK)
+        return;
+
+    wxString name = dlg.GetValue();
+    wxComboBox* cmbThemes = XRCCTRL(*this, "cmbThemes", wxComboBox);
+    cmbThemes->Append(name);
+    cmbThemes->SetSelection(cmbThemes->GetCount() - 1);
+    ChangeTheme();
+}
+
+void EditorConfigurationDlg::OnDeleteColorTheme(wxCommandEvent& event)
+{
+    if (wxMessageBox(_("Are you sure you want to delete this theme?"), _("Confirmation"), wxYES_NO) == wxYES)
+    {
+        ConfigManager::Get()->DeleteGroup("/editor/color_sets/" + m_Theme->GetName());
+        wxComboBox* cmbThemes = XRCCTRL(*this, "cmbThemes", wxComboBox);
+        int idx = cmbThemes->FindString(m_Theme->GetName());
+        if (idx != wxNOT_FOUND)
+            cmbThemes->Delete(idx);
+        cmbThemes->SetSelection(wxNOT_FOUND);
+        ChangeTheme();
+    }
+}
+
+void EditorConfigurationDlg::OnRenameColorTheme(wxCommandEvent& event)
+{
+    wxTextEntryDialog dlg(this, _("Please enter the new name of the new color theme:"), _("New theme name"), m_Theme->GetName());
+    if (dlg.ShowModal() != wxID_OK)
+        return;
+
+    wxString name = dlg.GetValue();
+    wxComboBox* cmbThemes = XRCCTRL(*this, "cmbThemes", wxComboBox);
+    int idx = cmbThemes->FindString(m_Theme->GetName());
+    if (idx != wxNOT_FOUND)
+        cmbThemes->SetString(idx, name);
+    ConfigManager::Get()->RenameGroup("/editor/color_sets/" + m_Theme->GetName(), "/editor/color_sets/" + name);
+    m_Theme->SetName(name);
+}
 
 void EditorConfigurationDlg::OnEditKeywords(wxCommandEvent& event)
 {
@@ -336,6 +461,7 @@ void EditorConfigurationDlg::OnColorsReset(wxCommandEvent& event)
     {
         m_Theme->Reset(m_Lang);
         ApplyColors();
+        m_ThemeModified = true;
     }
 }
 
@@ -428,6 +554,8 @@ void EditorConfigurationDlg::OnOK(wxCommandEvent& event)
 	{
 		m_Theme->Save();
 		Manager::Get()->GetEditorManager()->SetColorSet(m_Theme);
+        ConfigManager::Get()->Write("/editor/color_sets/active_color_set", m_Theme->GetName());
+        delete m_Theme;
 	}
 
     EndModal(wxID_OK);

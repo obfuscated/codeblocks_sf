@@ -23,8 +23,10 @@
 * $Date$
 */
 
-#include <wx/intl.h>
 #include "configmanager.h" // class's header file
+
+#include <wx/intl.h>
+#include <wx/fileconf.h>
 #include "manager.h"
 #include "messagemanager.h"
 #include "managerproxy.h"
@@ -57,4 +59,87 @@ ConfigManager::~ConfigManager()
         delete ConfigBaseProxy::Get();
         ConfigBaseProxy::Set( NULL );
     }
+}
+
+static void ExportGroup(wxConfigBase* conf, wxFileConfig* file, const wxString& groupName)
+{
+    long group_cookie;
+    long entry_cookie;
+    wxString group;
+    wxString entry;
+
+    wxString rStr;
+    long int rInt;
+    bool rBool;
+    double rDbl;
+/*
+    // loop group entries
+    bool cont_entry = conf->GetFirstEntry(entry, entry_cookie);
+    while (cont_entry)
+    {
+//        Manager::Get()->GetMessageManager()->DebugLog("Entry " + entry);
+        wxConfigBase::EntryType et = conf->GetEntryType(entry);
+        switch (et)
+        {
+            case wxConfigBase::Type_String:
+                conf->Read(entry, &rStr);
+                file->Write(entry, rStr);
+                break;
+            case wxConfigBase::Type_Boolean:
+                conf->Read(entry, &rBool);
+                file->Write(entry, rBool);
+                break;
+            case wxConfigBase::Type_Integer:
+                conf->Read(entry, &rInt);
+                file->Write(entry, rInt);
+                break;
+            case wxConfigBase::Type_Float:
+                conf->Read(entry, &rDbl);
+                file->Write(entry, rDbl);
+                break;
+            default: break;
+        }
+        cont_entry = conf->GetNextEntry(entry, entry_cookie);
+    }
+*/
+    // loop groups
+    bool cont_group = conf->GetFirstGroup(group, group_cookie);
+    while (cont_group)
+    {
+        wxString path = groupName + "/" + group;
+
+        Manager::Get()->GetMessageManager()->DebugLog("Path " + path);
+        conf->SetPath(path);
+        file->SetPath(path);
+        ExportGroup(conf, file, path);
+
+        Manager::Get()->GetMessageManager()->DebugLog("Return " + groupName);
+        conf->SetPath(groupName);
+        file->SetPath(groupName);
+
+        cont_group = conf->GetNextGroup(group, group_cookie);
+    }
+}
+
+bool ConfigManager::ExportToFile(const wxString& filename, const wxString& topLevel)
+{
+    wxConfigBase* conf = Get();
+    if (!conf)
+        return false;
+    wxString oldpath = conf->GetPath();
+    wxFileConfig* file = new wxFileConfig("", "", filename, "", wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_NO_ESCAPE_CHARACTERS);
+
+    conf->SetPath(topLevel);
+    file->SetPath(topLevel);
+    ExportGroup(conf, file, topLevel);
+
+    delete file;
+    conf->SetPath(oldpath);
+
+    return true;
+}
+
+bool ConfigManager::ImportFromFile(const wxString& filename, const wxString& topLevel)
+{
+    return true;
 }

@@ -45,6 +45,17 @@
                   <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
                   <border>8</border>
                 </object>
+                <object class="spacer">
+                  <size>01</size>
+                  <option>1</option>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxButton" name="btnExportConfig">
+                    <label>Export configuration to file</label>
+                  </object>
+                  <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
+                  <border>8</border>
+                </object>
               </object>
             </object>
           </object>
