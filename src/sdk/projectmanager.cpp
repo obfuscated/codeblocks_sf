@@ -661,6 +661,29 @@ bool ProjectManager::CloseWorkspace()
     SANITY_CHECK(false);
     if (m_pWorkspace)
     {
+
+/* TODO (Rick#1#): 
+        I just noticed something weird in this routine.
+        There SHOULD be a querycloseworkspace(), which
+        would call querycloseallprojects() (which would
+        call also querycloseallfiles()). These should 
+        ask to save the modified files/project/workspace/,
+        and save or else DO NOTHING. 
+        This way, we can make sure that no file or project 
+        whatsoever has been closed if the user hits "cancel".
+*/
+
+        if(!CloseAllProjects())
+            return false;
+        
+        #if 0
+/* TODO (Rick#1#): Should we save the workspace by default? 
+        I never understood why it had to ask you. 
+        So I'm leaving this option for later modification. */
+        
+        if (m_pWorkspace->GetModified())
+            SaveWorkspace();
+        #else
         if (m_pWorkspace->GetModified())
         {
             // workspace needs save
@@ -675,9 +698,10 @@ bool ProjectManager::CloseWorkspace()
                 default: break;
             }
         }
+        #endif
+        
         delete m_pWorkspace;
         m_pWorkspace = 0;
-        CloseAllProjects();
     }
     return true;
 }
