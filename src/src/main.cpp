@@ -1455,9 +1455,16 @@ void MainFrame::OnSettingsEditor(wxCommandEvent& event)
 
 void MainFrame::OnSettingsPlugins(wxCommandEvent& event)
 {
+    wxMessageBox(_("There is a known problem with plugins enabling/disabling in this "
+                "version and it has been disabled.\nWhen this problem has been fixed "
+                "in a later version, this menu option will work again..."),
+                _("Information"),
+                wxICON_INFORMATION);
+#if 0
 	Manager::Get()->GetPluginManager()->Configure();
 	CreateMenubar();
 	CreateToolbars();
+#endif
 }
 
 void MainFrame::OnDragSash(wxSashEvent& event)

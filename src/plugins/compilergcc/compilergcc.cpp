@@ -1204,6 +1204,8 @@ void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
         mbar->Enable(idMenuPreviousError, !m_Process && prj && m_Errors.HasPreviousError());
 //        mbar->Enable(idMenuClearErrors, cnt);
 		
+        mbar->Enable(idMenuCreateDist, !m_Process && prj);
+        mbar->Enable(idMenuExportMakefile, !m_Process && prj);
     }
 
 	// enable disable target selection combobox

@@ -694,9 +694,10 @@ void MakefileGenerator::DoAddMakefileTarget_Dist(wxString& buffer)
 {
     wxString tmp = "${PROJECT_FILENAME} ${MAKEFILE} ${ALL_PROJECT_FILES}";
     Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp);
+    wxFileName fname(m_Project->GetFilename());
     
     buffer << "dist:" << '\n';
-    buffer << '\t' << "@$(ZIP) " << UnixFilename(m_Project->GetTitle()) << ".$(ZIP_EXT) " << tmp << '\n';
+    buffer << '\t' << "@$(ZIP) " << UnixFilename(fname.GetFullName()) << ".$(ZIP_EXT) " << tmp << '\n';
     buffer << '\n';
 }
 
