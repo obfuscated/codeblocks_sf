@@ -51,6 +51,13 @@ wxString UnixFilename(const wxString& filename)
 #ifndef __WXMSW__
     unixname.Replace("\\", "/");
 #else
+    if (wxGetOsVersion() == wxWIN95)
+    {
+        // win95 and win98 don't understand \\ in filenames as path separator
+        unixname.Replace("\\\\", "\\");
+        return unixname;
+    }
+
     for (unsigned int i = 0; i < unixname.Length(); ++i)
     {
         if (unixname[i] == '\\' && i < unixname.Length() - 1)

@@ -86,12 +86,14 @@ Compiler * CompilerMSVC::CreateCopy()
 AutoDetectResult CompilerMSVC::AutoDetectInstallationDir()
 {
 #ifdef __WXMSW__
+    wxLogNull ln;
     wxRegKey key; // defaults to HKCR
     key.SetName("HKEY_CURRENT_USER\\Environment");
     if (key.Open())
         // found; read it
         key.QueryValue("VCToolkitInstallDir", m_MasterPath);
-    else
+
+    if (m_MasterPath.IsEmpty())
         // just a guess; the default installation dir
         m_MasterPath = "C:\\Program Files\\Microsoft Visual C++ Toolkit 2003";
 

@@ -165,6 +165,7 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos)
 //	Manager::Get()->GetMessageManager()->DebugLog("Trying to open '%s'", fname.c_str());
     if (!wxFileExists(fname))
         return NULL;
+//	Manager::Get()->GetMessageManager()->DebugLog("File exists '%s'", fname.c_str());
 
     cbEditor* ed = IsOpen(fname);
     if (!ed)

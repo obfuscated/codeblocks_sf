@@ -31,10 +31,18 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
             int idx = list->GetItemCount() - 1;
             if (compiler->GetParentID() != -1) // not built-in
                 list->SetItem(idx, 1, _("User-defined"));
-            else if (!compiler->GetMasterPath().IsEmpty())
-                list->SetItem(idx, 1, _("Detected"));
-            else if (compiler->AutoDetectInstallationDir() == adrDetected)
-                list->SetItem(idx, 1, _("Detected"));
+            else
+            {
+                wxString path = compiler->GetMasterPath();
+                bool detected = compiler->AutoDetectInstallationDir() == adrDetected;
+                if (detected && (path.IsEmpty() || path == compiler->GetMasterPath()))
+                    list->SetItem(idx, 1, _("Detected"));
+                else if (!path.IsEmpty())
+                {
+                    list->SetItem(idx, 1, _("User-defined"));
+                    compiler->SetMasterPath(path);
+                }
+            }
         }
     }
     

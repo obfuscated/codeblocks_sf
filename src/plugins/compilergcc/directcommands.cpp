@@ -283,7 +283,8 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
         {
             // check for deps
             bool forceByDeps = false;
-            if (m_pCompiler->GetSwitches().needDependencies)
+            // in direct-mode, dependencies are always generated
+//            if (m_pCompiler->GetSwitches().needDependencies)
             {
                 pfDetails pfd(this, target, pf);
                 if (pf->autoDeps)

@@ -136,7 +136,6 @@ Source: ..\AUTHORS; DestDir: {app}; DestName: AUTHORS.txt; Components: ProgramFi
 Source: ..\COPYING; DestDir: {app}; DestName: COPYING.txt; Components: ProgramFiles
 Source: ..\README; DestDir: {app}; DestName: README.txt; Components: ProgramFiles
 Source: ..\tips.txt; DestDir: {app}; Components: ProgramFiles
-Source: ..\COMPILERS; DestDir: {app}; Components: ProgramFiles
 Source: WebSite.url; DestDir: {app}; Components: ProgramFiles
 Source: Forums.url; DestDir: {app}; Components: ProgramFiles
 Source: ReportBugs.url; DestDir: {app}; Components: ProgramFiles

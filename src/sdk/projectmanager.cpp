@@ -534,15 +534,11 @@ const wxString& ProjectManager::GetWorkspace()
 {
     if (m_Workspace.IsEmpty())
 	{
-        // USERPROFILE is used under windows; all other OSes use HOME,
-        // so if HOME is not defined, we 'll try USERPROFILE...
-		if (wxGetEnv("HOME", &m_Workspace) || wxGetEnv("USERPROFILE", &m_Workspace))
-		{
-			m_Workspace << "/.CodeBlocks";
-			if (!wxDirExists(m_Workspace))
-				wxMkdir(m_Workspace, 0755);
-			m_Workspace << "/" << DEFAULT_WORKSPACE;
-		}
+        m_Workspace = wxGetHomeDir();
+        m_Workspace << "/.CodeBlocks";
+        if (!wxDirExists(m_Workspace))
+            wxMkdir(m_Workspace, 0755);
+        m_Workspace << "/" << DEFAULT_WORKSPACE;
 		//m_Workspace = ConfigManager::Get()->Read("/app_path", ".") + "/" + DEFAULT_WORKSPACE;
 	}
     return m_Workspace;
