@@ -253,6 +253,10 @@ MainFrame::MainFrame(wxWindow* parent)
 #ifdef __WXMSW__
     SendSizeEvent(); // make sure everything is laid out properly
 	wxYield();
+	// Make deliberately huge - it will be resized by m_pBottomSash.
+	// This is to avoid a nasty UI glitch where the MessageManager logs would
+	// not be correctly laid out until *manually* resizing m_pBottomSash...
+	m_pMsgMan->SetSize(wxSize(2048, 2048));
 #endif // __WXMSW__
 }
 
