@@ -58,6 +58,7 @@ Source: ..\output\share\CodeBlocks\class_wizard.zip; DestDir: {app}\share\CodeBl
 Source: ..\output\share\CodeBlocks\code_completion.zip; DestDir: {app}\share\CodeBlocks; Components: CodeCompletion
 Source: ..\output\share\CodeBlocks\compiler_gcc.zip; DestDir: {app}\share\CodeBlocks; Components: CompilerGCC
 Source: ..\output\share\CodeBlocks\debugger_gdb.zip; DestDir: {app}\share\CodeBlocks; Components: DebuggerGDB
+Source: ..\output\share\CodeBlocks\defaultmimehandler.zip; DestDir: {app}\share\CodeBlocks; Components: DefMimeHandler
 Source: ..\output\share\CodeBlocks\manager_resources.zip; DestDir: {app}\share\CodeBlocks; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\plugin_wizard.zip; DestDir: {app}\share\CodeBlocks; Components: PluginWizard
 Source: ..\output\share\CodeBlocks\todo.zip; DestDir: {app}\share\CodeBlocks; Components: ToDo
@@ -66,6 +67,7 @@ Source: ..\output\share\CodeBlocks\plugins\classwizard.dll; DestDir: {app}\share
 Source: ..\output\share\CodeBlocks\plugins\codecompletion.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: CodeCompletion
 Source: ..\output\share\CodeBlocks\plugins\compilergcc.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: CompilerGCC
 Source: ..\output\share\CodeBlocks\plugins\debuggergdb.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: DebuggerGDB
+Source: ..\output\share\CodeBlocks\plugins\defaultmimehandler.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: DefMimeHandler
 Source: ..\output\share\CodeBlocks\plugins\pluginwizard.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: PluginWizard
 Source: ..\output\share\CodeBlocks\plugins\xpmanifest.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: XPManifest
 Source: ..\output\share\CodeBlocks\plugins\todo.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: ToDo
@@ -75,6 +77,13 @@ Source: ..\output\share\CodeBlocks\templates\console.template; DestDir: {app}\sh
 Source: ..\output\share\CodeBlocks\templates\console-main-c.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
 Source: ..\output\share\CodeBlocks\templates\console-main-cpp.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
 Source: ..\output\share\CodeBlocks\templates\gui.png; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\output\share\CodeBlocks\templates\dll-main.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\output\share\CodeBlocks\templates\staticlib.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\output\share\CodeBlocks\templates\staticlib.template; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\output\share\CodeBlocks\templates\staticlib-sample.c; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\output\share\CodeBlocks\templates\dll.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\output\share\CodeBlocks\templates\dll.png; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\output\share\CodeBlocks\templates\dll.template; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
 Source: ..\output\share\CodeBlocks\templates\opengl.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
 Source: ..\output\share\CodeBlocks\templates\opengl.png; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
 Source: ..\output\share\CodeBlocks\templates\opengl.template; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
@@ -177,6 +186,7 @@ Name: ToDo; Description: To-Do List plugin; Types: custom full
 Name: XPManifest; Description: WindowsXP Manifest plugin; Types: custom full
 Name: Templates; Description: Project templates; Types: custom full
 Name: AStyleFormatter; Description: Astyle code formatter plugin; Types: custom full
+Name: DefMimeHandler; Description: Default MIME handler; Types: custom compact full
 
 [UninstallRun]
 Filename: {app}\codeblocks.exe; Parameters: --clear-configuration; WorkingDir: {app}

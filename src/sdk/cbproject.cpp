@@ -780,6 +780,7 @@ ProjectBuildTarget* cbProject::AddDefaultBuildTarget()
 ProjectBuildTarget* cbProject::AddBuildTarget(const wxString& targetName)
 {
     ProjectBuildTarget* target = new ProjectBuildTarget();
+    target->m_Filename = m_Filename; // really important
     target->SetTitle(targetName);
     target->SetOutputFilename(GetOutputFilename());
     m_Targets.Add(target);

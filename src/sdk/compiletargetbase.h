@@ -73,6 +73,7 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         virtual void SetCompilerIndex(int compilerIdx);
         virtual int GetCompilerIndex(){ return m_CompilerIdx; }
 	protected:
+        friend class cbProject;
         wxString m_Filename;
         wxString m_Title;
         wxString m_OutputFilename;
