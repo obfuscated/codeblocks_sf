@@ -32,6 +32,8 @@
 #include <wx/msgdlg.h>
 #include <manager.h>
 #include <configmanager.h>
+#include <projectmanager.h>
+#include <cbproject.h>
 #include "pluginwizarddlg.h"
 
 cbPlugin* GetPlugin()
@@ -72,11 +74,38 @@ void PluginWizard::OnRelease(bool appShutDown)
 
 int PluginWizard::Execute()
 {
+    cbProject* project = Manager::Get()->GetProjectManager()->NewProject();
+    if (!project)
+        return -1;
+    project->AddCompilerOption("-D__GNUWIN32__");
+    project->AddCompilerOption("-DWXUSINGDLL");
+    project->AddCompilerOption("-DBUILDING_PLUGIN");
+    project->AddLinkerOption("-lcodeblocks");
+    project->AddLinkerOption("-lwxmsw242");
+
+    wxSetWorkingDirectory(project->GetBasePath());
+
 	PluginWizardDlg dlg;
 	if (dlg.ShowModal() == wxID_OK)
 	{
+        wxString name = !dlg.GetInfo().name.IsEmpty() ? dlg.GetInfo().name : "CustomPlugin";
+        wxString title = !dlg.GetInfo().title.IsEmpty() ? dlg.GetInfo().title : "Custom Plugin";
+        project->SetTitle(title);
+        project->AddFile(0, dlg.GetHeaderFilename());
+        project->AddFile(0, dlg.GetImplementationFilename());
+
+        ProjectBuildTarget* target = project->GetBuildTarget(0);
+        target->SetTargetType(ttDynamicLib);
+        target->SetCreateDefFile(false);
+        target->SetCreateStaticLib(false);
+        target->SetOutputFilename(name + "." + DYNAMICLIB_EXT);
+
+        Manager::Get()->GetProjectManager()->RebuildTree();
+
 		wxMessageDialog msg(Manager::Get()->GetAppWindow(),
-						_("The new plugin has been created."),
+						_("The new plugin has been created.\n"
+						"Don't forget to add the SDK include and library dirs\n"
+						"in the respective project build options..."),
 						_("Information"),
 						wxOK | wxICON_INFORMATION);
 		msg.ShowModal();

@@ -486,7 +486,7 @@ void MainFrame::CreateMenubar()
 	wxMenu* settings = new wxMenu();
 	settings->Append(idSettingsEnvironment, _("&Environment"), _("Change environment settings"));
 	settings->Append(idSettingsEditor, _("E&ditor"), _("Change editor's settings"));
-	settings->Append(idSettingsPlugins, _("&Plugins"), _("Change plugin manager's settings"));
+	settings->Append(idSettingsPlugins, _("Manage &plugins"), _("Change plugins auto-start properties (on-the-fly)"));
 	settings->Append(idSettingsConfigurePlugins, _("&Configure plugins"), settingsPlugins);
 	mbar->Append(settings, _("Sett&ings"));
 	

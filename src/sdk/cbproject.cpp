@@ -498,6 +498,7 @@ void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, bool categ
     m_ProjectNode = tree->AppendItem(root, GetTitle(), 1, 1, ftd);
     wxTreeItemId others = m_ProjectNode;
     
+    // create file-type categories nodes (if enabled)
     wxTreeItemId* pGroupNodes = 0L;
     if (categorize && fgam)
     {
@@ -506,9 +507,11 @@ void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, bool categ
         {
             pGroupNodes[i] = tree->AppendItem(m_ProjectNode, fgam->GetGroupName(i), 3, 3);
         }
+        // add a default category "Others" for all non-matching file-types
         others = tree->AppendItem(m_ProjectNode, _("Others"), 3, 3);
     }
 
+    // iterate all project files and add them to the tree
     int count = 0;
     for (FilesList::Node* node = m_Files.GetFirst(); node; node = node->GetNext())
     {
@@ -516,6 +519,7 @@ void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, bool categ
         ftd = new FileTreeData(this, count++);
 
         wxTreeItemId parentNode = m_ProjectNode;
+        // check if files grouping is enabled and find the group parent
         if (categorize && pGroupNodes && fgam)
         {
             bool found = false;
@@ -529,13 +533,15 @@ void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, bool categ
                     break;
                 }
             }
+            // if not matched a group, put it in "Others" group
             if (!found)
                 parentNode = others;
         }
+        // add file in the tree
         AddTreeNode(tree, f->relativeFilename, parentNode, useFolders, f->compile, ftd);
     }
 
-	// remove empty tree nodes
+	// remove empty tree nodes (like empty groups)
     if (categorize && fgam)
     {
 		for (unsigned int i = 0; i < fgam->GetGroupsCount(); ++i)
@@ -556,6 +562,7 @@ void cbProject::AddTreeNode(wxTreeCtrl* tree, const wxString& text, const wxTree
     // see if the text contains any path info, e.g. plugins/compilergcc/compilergcc.cpp
     // in that case, take the first element (plugins in this example), create a sub-folder
     // with the same name and recurse with the result...
+    
     wxString path = text;
     int pos = path.Find('/');
     if (pos == -1)
@@ -611,7 +618,7 @@ void cbProject::AddTreeNode(wxTreeCtrl* tree, const wxString& text, const wxTree
     else
 	{
         wxTreeItemId newnode = tree->AppendItem(parent, text, 2, 2, data);
-		// the following doesn't seem to work...
+		// the following doesn't seem to work under wxMSW...
 		if (!compiles)
 			tree->SetItemTextColour(newnode, wxColour(*wxLIGHT_GREY));
 	}

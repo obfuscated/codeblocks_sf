@@ -12,6 +12,7 @@ class PluginWizardDlg : public wxDialog
         ~PluginWizardDlg();
 		const wxString& GetHeaderFilename(){ return m_Header; }
 		const wxString& GetImplementationFilename(){ return m_Implementation; }
+		const PluginInfo& GetInfo(){ return m_Info; }
 	private:
     	void OnUpdateUI(wxUpdateUIEvent& event);
 		void OnEditInfoClick(wxCommandEvent& event);

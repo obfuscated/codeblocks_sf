@@ -336,7 +336,7 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
 	buffer << "#endif" << '\n';
 	buffer << '\n';
 
-	buffer << "#include <cbPlugin.h> // the base class we 're inheriting" << '\n';
+	buffer << "#include <cbplugin.h> // the base class we 're inheriting" << '\n';
 	buffer << "#include <settings.h> // needed to use the Code::Blocks SDK" << '\n';
 	buffer << '\n';
 	buffer << "class " << m_Info.name;
@@ -378,7 +378,7 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
 			break;
 	}
 	buffer << '\t' << '\t' << "void OnAttach(); // fires when the plugin is attached to the application" << '\n';
-	buffer << '\t' << '\t' << "void OnRelease(); // fires when the plugin is released from the application" << '\n';
+	buffer << '\t' << '\t' << "void OnRelease(bool appShutDown); // fires when the plugin is released from the application" << '\n';
 	buffer << '\t' << "protected:" << '\n';
 	buffer << '\t' << "private:" << '\n';
 	if (hasMenu || hasModuleMenu || hasToolbar)
@@ -418,6 +418,7 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
 	buffer << "#endif" << '\n';
 	buffer << '\n';
 	buffer << "#include \"" << headerFname.GetFullName() << "\"" << '\n';
+	buffer << "#include <licenses.h> // defines some common licenses (like the GPL)" << '\n';
 	buffer << '\n';
 	buffer << "cbPlugin* GetPlugin()" << '\n';
 	buffer << "{" << '\n';
@@ -479,9 +480,11 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
 	buffer << '\t' << "// (see: does not need) this plugin..." << '\n';
 	buffer << "}" << '\n';
 	buffer << '\n';
-	buffer << "void " << m_Info.name << "::OnRelease()" << '\n';
+	buffer << "void " << m_Info.name << "::OnRelease(bool appShutDown)" << '\n';
 	buffer << "{" << '\n';
 	buffer << '\t' << "// do de-initialization for your plugin" << '\n';
+	buffer << '\t' << "// if appShutDown is false, the plugin is unloaded because Code::Blocks is being shut down," << '\n';
+	buffer << '\t' << "// which means you must not use any of the SDK Managers" << '\n';
 	buffer << '\t' << "// NOTE: after this function, the inherited member variable" << '\n';
 	buffer << '\t' << "// m_IsAttached will be FALSE..." << '\n';
 	buffer << "}" << '\n';
