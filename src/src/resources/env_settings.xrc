@@ -38,6 +38,14 @@
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
+                  <object class="wxCheckBox" name="chkModifiedFiles">
+                    <label>Check for externally modified files</label>
+                    <checked>1</checked>
+                  </object>
+                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
                   <object class="wxCheckBox" name="chkDebugLog">
                     <label>Display application's debug log</label>
                     <checked>0</checked>

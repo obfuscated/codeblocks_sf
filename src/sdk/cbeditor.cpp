@@ -133,14 +133,14 @@ cbEditor::cbEditor(wxMDIParentFrame* parent, const wxString& filename, EditorCol
 {
     m_timerWait.SetOwner(this);
     if (filename.IsEmpty())
-    	m_Filename = CreateUniqueFilename();
+    	m_Filename = wxGetCwd() + wxFileName::GetPathSeparator() + CreateUniqueFilename();
     else
     	m_Filename = filename;
 
     wxFileName fname;
     fname.Assign(m_Filename);
     m_Shortname = fname.GetFullName();
-//    Manager::Get()->GetMessageManager()->Log(mltDevDebug, "ctor: Filename=%s\nShort=%s", m_Filename.c_str(), m_Shortname.c_str());
+//    Manager::Get()->GetMessageManager()->DebugLog("ctor: Filename=%s\nShort=%s", m_Filename.c_str(), m_Shortname.c_str());
 
 	CreateEditor();
 	SetEditorStyle();
@@ -217,6 +217,9 @@ void cbEditor::SetProjectFile(ProjectFile* project_file)
 	m_pProjectFile = project_file;
 	if (m_pProjectFile)
 	{
+        // update our filename
+        m_Filename = UnixFilename(project_file->file.GetFullPath());
+
 		m_pControl->GotoPos(m_pProjectFile->editorPos);
 		m_pControl->ScrollToLine(m_pProjectFile->editorTopLine);
 		m_pControl->ScrollToColumn(0);
@@ -230,7 +233,7 @@ void cbEditor::SetProjectFile(ProjectFile* project_file)
 	dbg << "[ed] Short name: " << GetShortName() << '\n';
 	dbg << "[ed] Modified: " << GetModified() << '\n';
 	dbg << "[ed] Page index: " << GetPageIndex() << '\n';
-	dbg << "[ed] Project: " << (m_pProjectFile ? m_pProjectFile->project->GetTitle() : "unknown") << '\n';
+	dbg << "[ed] Project: " << ((m_pProjectFile && m_pProjectFile->project) ? m_pProjectFile->project->GetTitle() : "unknown") << '\n';
 	dbg << "[ed] Project file: " << (m_pProjectFile ? m_pProjectFile->relativeFilename : "unknown") << '\n';
 	Manager::Get()->GetMessageManager()->DebugLog(dbg);
 #endif

@@ -1056,8 +1056,10 @@ void MainFrame::OnSize(wxSizeEvent& WXUNUSED(event))
 
 void MainFrame::OnFileNewEmpty(wxCommandEvent& event)
 {
-    cbEditor* ed = m_pEdMan->New();
 	cbProject* project = m_pPrjMan->GetActiveProject();
+	if (project)
+        wxSetWorkingDirectory(project->GetBasePath());
+    cbEditor* ed = m_pEdMan->New();
 
 	if (!ed || !project)
 		return;
@@ -1069,7 +1071,8 @@ void MainFrame::OnFileNewEmpty(wxCommandEvent& event)
         wxArrayInt targets;
 		if (m_pPrjMan->AddFileToProject(ed->GetFilename(), project, targets) != 0)
 		{
-			ed->SetProjectFile(project->GetFileByFilename(ed->GetFilename(), false));
+            ProjectFile* pf = project->GetFileByFilename(ed->GetFilename(), false);
+			ed->SetProjectFile(pf);
 			m_pPrjMan->RebuildTree();
 		}
 	}
