@@ -987,7 +987,7 @@ void cbEditor::OnEditorCharAdded(wxStyledTextEvent& event)
         else
         {
             if (style != wxSTC_C_DEFAULT && style != wxSTC_C_OPERATOR && style != wxSTC_C_IDENTIFIER)
-            return;
+                return;
         }
 
 		int timerDelay = ConfigManager::Get()->Read("/editor/cc_delay", 500);
@@ -1000,7 +1000,9 @@ void cbEditor::OnEditorCharAdded(wxStyledTextEvent& event)
 
 void cbEditor::OnEditorDwellStart(wxStyledTextEvent& event)
 {
-	NotifyPlugins(cbEVT_EDITOR_TOOLTIP, 0, wxEmptyString, event.GetX(), event.GetY());
+	int pos = m_pControl->PositionFromPoint(wxPoint(event.GetX(), event.GetY()));
+    int style = m_pControl->GetStyleAt(pos);
+    NotifyPlugins(cbEVT_EDITOR_TOOLTIP, style, wxEmptyString, event.GetX(), event.GetY());
 }
 
 void cbEditor::OnEditorDwellEnd(wxStyledTextEvent& event)

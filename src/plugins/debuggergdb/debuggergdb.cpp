@@ -80,7 +80,7 @@ BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
 	
 	EVT_EDITOR_BREAKPOINT_ADDED(DebuggerGDB::OnBreakpointAdded)
 	EVT_EDITOR_BREAKPOINT_DELETED(DebuggerGDB::OnBreakpointDeleted)
-	//EVT_EDITOR_TOOLTIP(DebuggerGDB::OnValueTooltip)
+	EVT_EDITOR_TOOLTIP(DebuggerGDB::OnValueTooltip)
 	
 	EVT_PIPEDPROCESS_STDOUT(idGDBProcess, DebuggerGDB::OnGDBOutput)
 	EVT_PIPEDPROCESS_STDERR(idGDBProcess, DebuggerGDB::OnGDBError)
@@ -285,8 +285,8 @@ void DebuggerGDB::DoWatches()
 	if (m_pProcess)
 	{
 		// TODO: add configuration for the following...
-		//info << GetInfoFor("info args") << '\n';
-		//info << GetInfoFor("info locals") << '\n';
+		info << "Function Arguments = {" << GetInfoFor("info args") << "}" << '\n';
+		info << "Local variables = {" << GetInfoFor("info locals") << "}" << '\n';
 		for (unsigned int i = 0; i < m_pTree->GetWatches().GetCount(); ++i)
 		{
 			wxString watch = m_pTree->GetWatches()[i];
@@ -381,21 +381,10 @@ int DebuggerGDB::Debug()
 	}
 
 	msgMan->AppendLog(m_PageIndex, _("Starting debugger: "));
-	
-	wxString cmd;
-	cmd << "gdb -nw -annotate=2 -silent";
-	
-	// add as include dirs all open project base dirs
-	ProjectsArray* projects = prjMan->GetProjects();
-	for (unsigned int i = 0; i < projects->GetCount(); ++i)
-	{
-        cbProject* it = projects->Item(i);
-        if (it == project)
-            continue;
-        cmd << " --directory=\"" << it->GetBasePath() << "\"";
-	}
-//    msgMan->Log(m_PageIndex, cmd);
 
+	wxString cmd;
+	cmd << "gdb -annotate=2 -silent";
+	
     m_pProcess = new PipedProcess((void**)&m_pProcess, this, idGDBProcess, true, project->GetBasePath());
     m_Pid = wxExecute(cmd, wxEXEC_ASYNC, m_pProcess);
 //    m_Pid = m_pProcess->Launch(cmd);
@@ -426,6 +415,21 @@ int DebuggerGDB::Debug()
 	wxString out;
 	m_TimerPollDebugger.Start(100);
 	SendCommand("set confirm off");
+
+	// add as include dirs all open project base dirs
+	ProjectsArray* projects = prjMan->GetProjects();
+	for (unsigned int i = 0; i < projects->GetCount(); ++i)
+	{
+        cbProject* it = projects->Item(i);
+//        if (it == project)
+//            continue;
+        wxString filename = it->GetBasePath();
+        ConvertToGDBFriendly(filename);
+        msgMan->Log(m_PageIndex, _("Adding source dir: %s"), filename.c_str());
+        SendCommand("directory " + filename);
+	}
+//    msgMan->Log(m_PageIndex, cmd);
+
 	cmd.Clear();
 	switch (target->GetTargetType())
 	{
@@ -486,6 +490,7 @@ int DebuggerGDB::Debug()
         SendCommand(cmd);
     }
 
+    // finally, run the process
 	SendCommand("run");
 	return 0;
 }
@@ -494,7 +499,7 @@ void DebuggerGDB::ConvertToGDBFriendly(wxString& str)
 {
     if (str.IsEmpty())
         return;
-
+/*
     for (unsigned int i = 0; i < str.Length(); ++i)
     {
         if (str[i] == ' ' && (i > 0 && str[i - 1] != '\\'))
@@ -502,7 +507,19 @@ void DebuggerGDB::ConvertToGDBFriendly(wxString& str)
         else if (str[i] == '\\' && (i < str.Length() - 1 && str[i + 1] != ' '))
             str[i] = '/';
     }
-    str.Replace("\\\\", "/");
+//    str.Replace("\\\\", "/");
+    str.Replace("//", "/");
+    str.Replace("//", "/");
+    str.Replace("\\", "/");
+    str.Replace("/", "//");
+*/
+    str.Replace("\\ ", " ");
+    str.Replace("\\", "/");
+    str.Replace("//", "/");
+    str.Replace(" ", "\\ ");
+    str.Replace("/", "//");
+    if (str.Find(' ') != -1 && str.GetChar(0) != '"')
+        str = '"' + str + '"';
 }
 
 void DebuggerGDB::SendCommand(const wxString& cmd)
@@ -742,6 +759,8 @@ void DebuggerGDB::ParseOutput(const wxString& output)
 			}
 		}
 	}
+//	else
+//        Manager::Get()->GetMessageManager()->Log(m_PageIndex, buffer);
 }
 
 void DebuggerGDB::BringAppToFront()
@@ -1036,8 +1055,11 @@ void DebuggerGDB::OnBreakpointAdded(CodeBlocksEvent& event)
 		ProjectFile* pf = ed->GetProjectFile();
 		if (!pf)
 			return;
+        wxString filename = pf->relativeFilename;
+        ConvertToGDBFriendly(filename);
+//		Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("file %s"), filename.c_str());
 		wxString cmd;
-		cmd << "break " << pf->relativeFilename << ":" << event.GetInt() + 1;
+		cmd << "break " << filename << ":" << event.GetInt() + 1;
 		SendCommand(cmd);
 	}
 	else
@@ -1056,8 +1078,11 @@ void DebuggerGDB::OnBreakpointDeleted(CodeBlocksEvent& event)
 		ProjectFile* pf = ed->GetProjectFile();
 		if (!pf)
 			return;
+        wxString filename = pf->relativeFilename;
+        ConvertToGDBFriendly(filename);
+//		Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("file %s"), filename.c_str());
 		wxString cmd;
-		cmd << "clear " << pf->relativeFilename << ":" << event.GetInt() + 1;
+		cmd << "clear " << filename << ":" << event.GetInt() + 1;
 		SendCommand(cmd);
 	}
 	else
@@ -1072,6 +1097,10 @@ void DebuggerGDB::OnValueTooltip(CodeBlocksEvent& event)
 	cbEditor* ed = event.GetEditor();
 	if (!ed)
 		return;
+
+    int style = event.GetInt();
+    if (style != wxSTC_C_DEFAULT && style != wxSTC_C_OPERATOR && style != wxSTC_C_IDENTIFIER)
+        return;
 
 	wxPoint pt;
 	pt.x = event.GetX();
@@ -1090,7 +1119,7 @@ void DebuggerGDB::OnValueTooltip(CodeBlocksEvent& event)
 	
 	if (!token.IsEmpty())
 	{
-		//Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Value of %s:"), token.c_str());
+//		Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Value of %s:"), token.c_str());
 		pt = ed->GetControl()->PointFromPosition(start);
 		pt = ed->GetControl()->ClientToScreen(pt);
 		m_EvalRect.x = pt.x;
@@ -1101,11 +1130,21 @@ void DebuggerGDB::OnValueTooltip(CodeBlocksEvent& event)
 		m_EvalRect.height = (pt.y + ed->GetControl()->GetCharHeight()) - m_EvalRect.y;
 		m_LastEval = token;
 		wxString tip;
-		tip.Printf(_("Evaluating '%s'..."), m_LastEval.c_str());
+        tip = GetInfoFor("p " + m_LastEval);
+        int pos = tip.First('\n'); // tip is e.g. "$1 = \n<value>"
+        if (pos != -1)
+            tip.Remove(0, pos + 1); // discard first line
+        tip = token + " = " + tip;
+		if (m_EvalWin)
+            m_EvalWin->Destroy();
 		m_EvalWin = new wxTipWindow(ed->GetControl(), tip, 640, &m_EvalWin);
-		wxString cmd;
-		cmd << "p " << token;
-		SendCommand(cmd);
+		// set the rect that when the cursor gets out of, the tip window closes
+		// just use the tipwindow's rect, a little bit enlarged vertically
+		// (because it displays below the cursor)
+		wxRect r = m_EvalWin->GetRect();
+		r.Inflate(0, 32);
+		r.Offset(0, -16);
+		m_EvalWin->SetBoundingRect(r);
 	}
 }
 

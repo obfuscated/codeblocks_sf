@@ -6,6 +6,8 @@
 #include <wx/app.h>
 #include <globals.h>
 #include "debuggertree.h"
+#include <manager.h>
+#include <messagemanager.h>
 
 int cbCustom_WATCHES_CHANGED = wxNewId();
 int idTree = wxNewId();
@@ -88,22 +90,27 @@ void DebuggerTree::BuildTree(const wxString& infoText)
 	m_pTree->Freeze();
 
 	m_pTree->DeleteAllItems();
-	wxTreeItemId root = m_pTree->AddRoot(_("Variables"));
+	wxTreeItemId root = m_pTree->AddRoot(_("Watches"));
 	
+//    Manager::Get()->GetMessageManager()->DebugLog("DebuggerTree::BuildTree(): Parsing '%s'", infoText.c_str());
 	wxString buffer = infoText;
 	wxTreeItemId parent = root;
-	while (1)
+	// remove CRLFs (except if inside quotes)
+	int len = buffer.Length();
+	bool inQuotes = false;
+	for (int i = 0; i < len; ++i)
 	{
-		int linePos = buffer.First('\n');
-		if (linePos == -1)
-		{
-			ParseEntry(parent, buffer);
-			break;
-		}
-		wxString tmp = buffer.Left(linePos);
-		ParseEntry(parent, tmp);
-		buffer.Remove(0, linePos + 1);
+        if (buffer.GetChar(i) == '"' && (i == 0 || (i > 0 && buffer.GetChar(i - 1) != '\\')))
+            inQuotes = !inQuotes;
+        if (!inQuotes)
+        {
+            if (buffer.GetChar(i) == '\r')
+                buffer.SetChar(i, ' ');
+            else if (buffer.GetChar(i) == '\n')
+                buffer.SetChar(i, ',');
+        }
 	}
+	ParseEntry(parent, buffer);
 
 	m_pTree->Expand(root);
 	::RestoreTreeState(m_pTree, root, treeState);
@@ -115,6 +122,7 @@ void DebuggerTree::ParseEntry(const wxTreeItemId& parent, wxString& text)
 #define MIN(a,b) (a < b ? a : b)
     if (text.IsEmpty())
         return;
+//    Manager::Get()->GetMessageManager()->DebugLog("DebuggerTree::ParseEntry(): Parsing '%s' (itemId=%p)", text.c_str(), &parent);
 	while (1)
 	{
 		// trim the string from left and right
@@ -124,19 +132,22 @@ void DebuggerTree::ParseEntry(const wxTreeItemId& parent, wxString& text)
 		// find position of '{', '}' and ','.
 		// decide which is nearer to the start
 		int braceOpenPos = text.First('{');
-		if (braceOpenPos == -1)	braceOpenPos = 0xFFFFFF;
+		if (braceOpenPos == -1)	braceOpenPos = 0xFFFFFE;
 		int braceClosePos = text.First('}');
-		if (braceClosePos == -1)	braceClosePos = 0xFFFFFF;
+		if (braceClosePos == -1)	braceClosePos = 0xFFFFFE;
 		int commaPos = text.First(',');
-		if (commaPos == -1)	commaPos = 0xFFFFFF;
+		if (commaPos == -1)	commaPos = 0xFFFFFE;
 		int pos = MIN(commaPos, MIN(braceOpenPos, braceClosePos));
 		
-		if (pos == 0xFFFFFF)
+		if (pos == 0xFFFFFE)
 		{
 			if (text.Right(3).Matches(" = "))
 				text.Truncate(text.Length() - 3);
 			if (!text.IsEmpty())
+			{
 				m_pTree->AppendItem(parent, text);
+				text.Clear();
+            }
 			break;
 		}
 		else

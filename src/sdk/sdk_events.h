@@ -19,7 +19,9 @@ class EVTIMPORT CodeBlocksEvent : public wxCommandEvent
 			: wxCommandEvent(event),
 			m_pProject(event.m_pProject),
 			m_pEditor(event.m_pEditor),
-			m_pPlugin(event.m_pPlugin) {}
+			m_pPlugin(event.m_pPlugin),
+			m_X(event.m_X),
+			m_Y(event.m_Y) {}
 		virtual wxEvent *Clone() const { return new CodeBlocksEvent(*this); }
 
 		cbProject* GetProject() const { return m_pProject; }
