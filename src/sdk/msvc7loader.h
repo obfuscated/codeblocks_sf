@@ -17,10 +17,15 @@ class MSVC7Loader : public IBaseLoader
 	protected:
         cbProject* m_pProject;
         bool m_ConvertSwitches;
+        // macros used in Visual Studio projects
+        wxString m_ConfigurationName;
+        wxString m_TargetFilename;
+        wxString m_OutDir;
 	private:
+        wxString ReplaceMSVCMacros(const wxString& str);
         bool DoSelectConfiguration(TiXmlElement* root);
         bool DoImport(TiXmlElement* conf);
-        bool DoImportFiles(TiXmlElement* root);
+        bool DoImportFiles(TiXmlElement* root, int numConfigurations);
 };
 
 #endif // MSVC7LOADER_H

@@ -6,10 +6,11 @@
 #include "cbproject.h"
 #include "globals.h"
 #include "msvc7loader.h"
+#include "multiselectdlg.h"
 
 MSVC7Loader::MSVC7Loader(cbProject* project)
     : m_pProject(project),
-    m_ConvertSwitches(true)
+    m_ConvertSwitches(false)
 {
 	//ctor
 }
@@ -19,16 +20,28 @@ MSVC7Loader::~MSVC7Loader()
 	//dtor
 }
 
+wxString MSVC7Loader::ReplaceMSVCMacros(const wxString& str)
+{
+    wxString ret = str;
+    ret.Replace("$(OutDir)", m_OutDir);
+    ret.Replace("$(ConfigurationName)", m_ConfigurationName);
+    ret.Replace("$(TargetFileName)", m_TargetFilename);
+    if (ret.StartsWith("\""))
+    {
+        ret.Remove(0, 1);
+        ret.Remove(ret.Length() - 1);
+    }
+    return ret;
+}
+
 bool MSVC7Loader::Open(const wxString& filename)
 {
     MessageManager* pMsg = Manager::Get()->GetMessageManager();
     if (!pMsg)
         return false;
 
-	int conv = wxMessageBox(_("Do you want to convert compiler/linker command-line switches to GCC's switches?"),
-                            _("Convert command-line switches?"),
-                            wxICON_QUESTION | wxYES | wxNO);
-    m_ConvertSwitches = conv == wxID_YES;
+/* NOTE (mandrav#1#): not necessary to ask for switches conversion... */
+    m_ConvertSwitches = m_pProject->GetCompilerIndex() == 0; // GCC
 
     pMsg->DebugLog(_("Importing MSVC 7.xx project: %s"), filename.c_str());
 
@@ -58,6 +71,10 @@ bool MSVC7Loader::Open(const wxString& filename)
     m_pProject->ClearAllProperties();
     m_pProject->SetModified(true);
     m_pProject->SetTitle(root->Attribute("Name"));
+
+    // delete all targets of the project (we 'll create new ones from the imported configurations)
+    while (m_pProject->GetBuildTargetsCount())
+        m_pProject->RemoveBuildTarget(0);
 
     return DoSelectConfiguration(root);
 }
@@ -91,44 +108,54 @@ bool MSVC7Loader::DoSelectConfiguration(TiXmlElement* root)
         configurations.Add(confs->Attribute("Name"));
         confs = confs->NextSiblingElement();
     }
-    int size = configurations.GetCount();
 
-    // ask the user to select a configuration
-    wxString* names = new wxString[size];
-    for (int i = 0; i < size; ++i)
-    {
-        names[i] = configurations[i];
-    }
-    wxSingleChoiceDialog dlg(0,
-                            _("Select configuration to import"),
-                            _("Import MSVC7 project"),
-                            size,
-                            names);
+    // ask the user to select a configuration - multiple choice ;)
+    MultiSelectDlg dlg(0, configurations, true, _("Select configurations to import:"));
     if (dlg.ShowModal() == wxID_CANCEL)
     {
         Manager::Get()->GetMessageManager()->DebugLog("Canceled...");
         return false;
     }
-    
-    // re-iterate configurations to find the selected one
-    confs = config->FirstChildElement("Configuration");
-    for (int i = 0; i < dlg.GetSelection(); ++i)
-        confs = confs->NextSiblingElement();
-    
-    delete[] names;
 
-    // parse the selected configuration
-    return DoImport(confs) && DoImportFiles(root);
+    confs = config->FirstChildElement("Configuration");
+    wxArrayInt selected_indices = dlg.GetSelectedIndices();
+    int current_sel = 0;
+    bool success = true;
+    for (size_t i = 0; i < selected_indices.GetCount(); ++i)
+    {
+        // re-iterate configurations to find each selected one
+        while (confs && current_sel++ < selected_indices[i])
+            confs = confs->NextSiblingElement();
+        if (!confs)
+        {
+            Manager::Get()->GetMessageManager()->DebugLog("Cannot find configuration nr %d...", selected_indices[i]);
+            success = false;
+            break;
+        }
+
+        Manager::Get()->GetMessageManager()->DebugLog("Importing configuration: %s", configurations[selected_indices[i]].c_str());
+
+        // prepare the configuration name
+        m_ConfigurationName = configurations[selected_indices[i]];
+        int pos = m_ConfigurationName.Find('|');
+        if (pos != wxNOT_FOUND)
+            m_ConfigurationName.Remove(pos);
+
+        // parse the selected configuration
+        success = success && DoImport(confs);
+        confs = confs->NextSiblingElement();
+    }
+    return success && DoImportFiles(root, selected_indices.GetCount());
 }
 
 bool MSVC7Loader::DoImport(TiXmlElement* conf)
 {
-    ProjectBuildTarget* bt = m_pProject->GetBuildTarget(0);
+    ProjectBuildTarget* bt = m_pProject->GetBuildTarget(m_ConfigurationName);
     if (!bt)
-        bt = m_pProject->AddBuildTarget(_("default"));
+        bt = m_pProject->AddBuildTarget(m_ConfigurationName);
 
-    wxString outdir = conf->Attribute("OutputDirectory");
-    bt->SetObjectOutput(conf->Attribute("IntermediateDirectory"));
+    m_OutDir = ReplaceMSVCMacros(conf->Attribute("OutputDirectory"));
+    bt->SetObjectOutput(ReplaceMSVCMacros(conf->Attribute("IntermediateDirectory")));
     
     wxString conftype = conf->Attribute("ConfigurationType");
     if (conftype.Matches("1"))
@@ -152,14 +179,71 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
 
     while (tool)
     {
-        if (strcmp(tool->Attribute("Name"), "VCCLCompilerTool") == 0)
+        if (strcmp(tool->Attribute("Name"), "VCLinkerTool") == 0 ||
+            strcmp(tool->Attribute("Name"), "VCLibrarianTool") == 0)
+        {
+            // linker
+            wxString tmp = ReplaceMSVCMacros(tool->Attribute("OutputFile"));
+            tmp = UnixFilename(tmp);
+            bt->SetOutputFilename(tmp);
+            m_TargetFilename = wxFileName(tmp).GetFullName();
+
+            wxString libs = tool->Attribute("AdditionalLibraryDirectories");
+            wxArrayString arr = GetArrayFromString(libs, ";");
+            for (unsigned int i = 0; i < arr.GetCount(); ++i)
+            {
+                bt->AddLibDir(ReplaceMSVCMacros(arr[i]));
+            }
+
+            tmp = tool->Attribute("GenerateDebugInformation");
+            if (tmp.Matches("TRUE"))
+            {
+                bt->AddCompilerOption(m_ConvertSwitches ? "-g" : "/Zi");
+                if (!m_ConvertSwitches)
+                    bt->AddLinkerOption("/debug");
+            }
+
+            if (!m_ConvertSwitches)
+            {
+                tmp = tool->Attribute("SuppressStartupBanner");
+                if (tmp.Matches("TRUE"))
+                    bt->AddLinkerOption("/nologo");
+            }
+            
+            m_pProject->AddLinkerOption(ReplaceMSVCMacros(tool->Attribute("AdditionalOptions")));
+            libs = ReplaceMSVCMacros(tool->Attribute("AdditionalDependencies"));
+            arr = GetArrayFromString(libs, " ");
+            for (unsigned int i = 0; i < arr.GetCount(); ++i)
+            {
+                tmp = arr[i];
+                if (tmp.Right(4).CmpNoCase(".lib") == 0)
+                    tmp.Remove(tmp.Length() - 4);
+                bt->AddLinkLib(tmp);
+            }
+//            m_pProject->AddLinkLib(ReplaceMSVCMacros(tool->Attribute("ImportLibrary")));
+            
+            if (!m_ConvertSwitches)
+            {
+                tmp = tool->Attribute("LinkIncremental");
+                if (!tmp.Matches("0")) // is this correct???
+                    bt->AddLinkerOption("/incremental");
+            }
+            
+            if (!m_ConvertSwitches)
+            {
+                tmp = ReplaceMSVCMacros(tool->Attribute("ProgramDatabaseFile"));
+                if (!tmp.IsEmpty())
+                    bt->AddLinkerOption("/pdb:" + UnixFilename(tmp));
+            }
+        }
+        else if (strcmp(tool->Attribute("Name"), "VCCLCompilerTool") == 0)
         {
             // compiler
             wxString incs = tool->Attribute("AdditionalIncludeDirectories");
             wxArrayString arr = GetArrayFromString(incs, ";");
             for (unsigned int i = 0; i < arr.GetCount(); ++i)
             {
-                m_pProject->AddIncludeDir(arr[i]);
+                bt->AddIncludeDir(ReplaceMSVCMacros(arr[i]));
             }
             
             wxString defs = tool->Attribute("PreprocessorDefinitions");
@@ -167,101 +251,68 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
             for (unsigned int i = 0; i < arr.GetCount(); ++i)
             {
                 if (m_ConvertSwitches)
-                    m_pProject->AddCompilerOption("-D" + arr[i]);
+                    bt->AddCompilerOption("-D" + arr[i]);
                 else
-                    m_pProject->AddCompilerOption("/D" + arr[i]);
+                    bt->AddCompilerOption("/D" + arr[i]);
             }
             
             wxString tmp = tool->Attribute("WarningLevel");
             if (m_ConvertSwitches)
             {
                 if (tmp.Matches("0"))
-                    m_pProject->AddCompilerOption("-w");
+                    bt->AddCompilerOption("-w");
                 else if (tmp.Matches("1") || tmp.Matches("2") || tmp.Matches("3"))
-                    m_pProject->AddCompilerOption("-W");
+                    bt->AddCompilerOption("-W");
                 else if (tmp.Matches("4"))
-                    m_pProject->AddCompilerOption("-Wall");
+                    bt->AddCompilerOption("-Wall");
             }
             else
             {
                 m_pProject->AddCompilerOption("/W" + tmp);
             }
 
-            if (m_ConvertSwitches)
+            if (!m_ConvertSwitches)
             {
                 tmp = tool->Attribute("Detect64BitPortabilityProblems");
                 if (tmp.Matches("TRUE"))
-                    m_pProject->AddCompilerOption("/Wp64");
+                    bt->AddCompilerOption("/Wp64");
 
                 tmp = tool->Attribute("MinimalRebuild");
                 if (tmp.Matches("TRUE"))
-                    m_pProject->AddCompilerOption("/Gm");
-
+                    bt->AddCompilerOption("/Gm");
             }
 
             tmp = tool->Attribute("RuntimeTypeInfo");
             if (tmp.Matches("TRUE"))
-                m_pProject->AddCompilerOption(m_ConvertSwitches ? "-frtti" : "/GR");
+                bt->AddCompilerOption(m_ConvertSwitches ? "-frtti" : "/GR");
 
-            if (m_ConvertSwitches)
+            if (!m_ConvertSwitches)
             {
                 tmp = tool->Attribute("SuppressStartupBanner");
                 if (tmp.Matches("TRUE"))
-                    m_pProject->AddCompilerOption("/nologo");
+                    bt->AddCompilerOption("/nologo");
             }
         }
-        else if (strcmp(tool->Attribute("Name"), "VCLinkerTool") == 0 ||
-                 strcmp(tool->Attribute("Name"), "VCLibrarianTool") == 0)
+        else if (strcmp(tool->Attribute("Name"), "VCPreBuildEventTool") == 0)
         {
-            // linker
-            wxString libs = tool->Attribute("AdditionalLibraryDirectories");
-            wxArrayString arr = GetArrayFromString(libs, ";");
-            for (unsigned int i = 0; i < arr.GetCount(); ++i)
-            {
-                m_pProject->AddLibDir(arr[i]);
-            }
-
-            wxString tmp = tool->Attribute("GenerateDebugInformation");
-            if (tmp.Matches("TRUE"))
-                m_pProject->AddCompilerOption(m_ConvertSwitches ? "-g" : "/Zi");
-
-            if (m_ConvertSwitches)
-            {
-                tmp = tool->Attribute("SuppressStartupBanner");
-                if (tmp.Matches("TRUE"))
-                    m_pProject->AddLinkerOption("/nologo");
-            }
-
-            tmp = tool->Attribute("OutputFile");
-            tmp.Replace("$(OutDir)", outdir);
-            bt->SetOutputFilename(UnixFilename(tmp));
-            
-            m_pProject->AddLinkerOption(tool->Attribute("AdditionalOptions"));
-            m_pProject->AddLinkerOption(tool->Attribute("AdditionalDependencies"));
-            m_pProject->AddLinkerOption(tool->Attribute("ImportLibrary"));
-            
-            tmp = tool->Attribute("LinkIncremental");
-            if (!tmp.Matches("0")) // is this correct???
-                m_pProject->AddLinkerOption("/incremental");
-
-            tmp = tool->Attribute("GenerateDebugInformation");
-            if (tmp.Matches("TRUE"))
-                m_pProject->AddLinkerOption("/debug");
-            
-            tmp = tool->Attribute("ProgramDatabaseFile");
-            if (!tmp.IsEmpty())
-            {
-                tmp.Replace("$(OutDir)", outdir);
-                m_pProject->AddLinkerOption("/pdb:" + UnixFilename(tmp));
-            }
+            // pre-build step
+            wxString cmd = ReplaceMSVCMacros(tool->Attribute("CommandLine"));
+            if (!cmd.IsEmpty())
+                bt->AddCommandsBeforeBuild(cmd);
         }
-        
+        else if (strcmp(tool->Attribute("Name"), "VCPostBuildEventTool") == 0)
+        {
+            // post-build step
+            wxString cmd = ReplaceMSVCMacros(tool->Attribute("CommandLine"));
+            if (!cmd.IsEmpty())
+                bt->AddCommandsAfterBuild(cmd);
+        }
         tool = tool->NextSiblingElement();
     }
     return true;
 }
 
-bool MSVC7Loader::DoImportFiles(TiXmlElement* root)
+bool MSVC7Loader::DoImportFiles(TiXmlElement* root, int numConfigurations)
 {
     TiXmlElement* files = root->FirstChildElement("Files");
     if (!files)
@@ -284,7 +335,15 @@ bool MSVC7Loader::DoImportFiles(TiXmlElement* root)
         {
             wxString fname = file->Attribute("RelativePath");
             if (!fname.IsEmpty())
-                m_pProject->AddFile(0, fname);
+            {
+                ProjectFile* pf = m_pProject->AddFile(0, fname);
+                if (pf)
+                {
+                    // add it to all aconfigrations, not just the first
+                    for (int i = 1; i < numConfigurations; ++i)
+                        pf->AddBuildTarget(m_pProject->GetBuildTarget(i)->GetTitle());
+                }
+            }
             file = file->NextSiblingElement();
         }
         filter = filter->NextSiblingElement();
