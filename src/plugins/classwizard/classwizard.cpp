@@ -46,7 +46,7 @@ ClassWizard::ClassWizard()
     wxFileSystem::AddHandler(new wxZipFSHandler);
     wxXmlResource::Get()->InitAllHandlers();
     wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
-    wxXmlResource::Get()->Load(resPath + "/class_wizard.zip");
+    wxXmlResource::Get()->Load(resPath + "/class_wizard.zip#zip:*.xrc");
 
     m_PluginInfo.name = "ClassWizard";
     m_PluginInfo.title = "Class wizard";

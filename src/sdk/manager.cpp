@@ -77,7 +77,7 @@ Manager::Manager(wxMDIParentFrame* appWindow, wxNotebook* notebook)
     wxFileSystem::AddHandler(new wxZipFSHandler);
     wxXmlResource::Get()->InitAllHandlers();
     wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
-    wxXmlResource::Get()->Load(ConfigManager::Get()->Read("data_path", wxEmptyString) + "/manager_resources.zip");
+    wxXmlResource::Get()->Load(ConfigManager::Get()->Read("data_path", wxEmptyString) + "/manager_resources.zip#zip:*.xrc");
 }
 
 // class destructor

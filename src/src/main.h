@@ -4,9 +4,9 @@
 #include <wx/toolbar.h>
 #include <wx/laywin.h>
 #include <wx/stc/stc.h>
-#include <manager.h>
-#include <cbplugin.h>
-#include <sdk_events.h>
+#include "../sdk/manager.h"
+#include "../sdk/cbplugin.h"
+#include "../sdk/sdk_events.h"
 
 WX_DECLARE_HASH_MAP(int, wxString, wxIntegerHash, wxIntegerEqual, WindowIDsMap);
 WX_DECLARE_HASH_MAP(int, wxString, wxIntegerHash, wxIntegerEqual, PluginIDsMap);
@@ -50,6 +50,7 @@ class MainFrame : public wxMDIParentFrame
         void OnEditToggleFoldBlock(wxCommandEvent& event);
         void OnEditEOLMode(wxCommandEvent& event);
         void OnEditSelectAll(wxCommandEvent& event);
+        void OnEditCommentSelected(wxCommandEvent& event);
 		
 		void OnEditBookmarksToggle(wxCommandEvent& event);
 		void OnEditBookmarksNext(wxCommandEvent& event);

@@ -22,7 +22,7 @@ class wxMenuBar;
 /*
  * No description
  */
-class DLLIMPORT MessageManager : public wxNotebook
+class MessageManager : public wxNotebook
 {
 	public:
         friend class Manager; // give Manager access to our private members

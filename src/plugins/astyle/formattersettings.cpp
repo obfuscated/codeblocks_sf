@@ -1,5 +1,5 @@
 #include "formattersettings.h"
-#include <configmanager.h>
+#include "../../sdk/configmanager.h"
 
 FormatterSettings::FormatterSettings()
 {

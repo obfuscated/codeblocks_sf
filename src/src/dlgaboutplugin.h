@@ -14,7 +14,7 @@
 
 #include <wx/dialog.h> // inheriting class's header file
 #include <wx/xrc/xmlres.h>
-#include <cbplugin.h>
+#include "../sdk/cbplugin.h"
 
 /*
  * No description

@@ -32,6 +32,7 @@
 #include "manager.h"
 #include "configmanager.h"
 
+
 BEGIN_EVENT_TABLE(NewFromTemplateDlg, wxDialog)
 	EVT_LIST_ITEM_SELECTED(XRCID("listTemplates"), NewFromTemplateDlg::OnListSelection)
 	EVT_COMBOBOX(XRCID("cmbCategories"), NewFromTemplateDlg::OnCategoryChanged)

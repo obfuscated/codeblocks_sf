@@ -30,8 +30,8 @@
 #include <wx/cmdline.h>
 #include <wx/regex.h>
 #include <wx/filefn.h>
-#include <editormanager.h>
-#include <projectmanager.h>
+#include "../sdk/editormanager.h"
+#include "../sdk/projectmanager.h"
 
 #ifdef __WXMSW__
 	#include <wx/msw/registry.h>
@@ -42,7 +42,7 @@
 
 #include "globals.h"
 
-#include <configmanager.h>
+#include "../sdk/configmanager.h"
 
 #if wxUSE_CMDLINE_PARSER
 static const wxCmdLineEntryDesc cmdLineDesc[] =
@@ -107,7 +107,8 @@ bool CodeBlocksApp::OnInit()
     wxString res = resPath + "/resources.zip";
     if (!CheckResource(res))
     	return false;
-    wxXmlResource::Get()->Load(res);
+    /// @todo Checkout why it doesn't work with VC++ unless "#zip:*.xrc" appended
+	wxXmlResource::Get()->Load(res+"#zip:*.xrc");
 
     MainFrame *frame = new MainFrame(NULL);
     frame->Show(TRUE);
@@ -169,7 +170,7 @@ wxString CodeBlocksApp::GetAppPath() const
     if (!wxGetEnv("DATA_PREFIX", &base))
     {
 #ifdef __WXMSW__
-        wxChar name[MAX_PATH] = {};
+        wxChar name[MAX_PATH] = {0};
         GetModuleFileName(0L, name, MAX_PATH);
         wxFileName fname(name);
         base = fname.GetPath(wxPATH_GET_VOLUME);
@@ -251,7 +252,7 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
 #ifdef __WXMSW__
 void CodeBlocksApp::SetAssociations()
 {
-	wxChar name[MAX_PATH] = {};
+	wxChar name[MAX_PATH] = {0};
 	GetModuleFileName(0L, name, MAX_PATH);
 	
 	DoSetAssociation(CODEBLOCKS_EXT, APP_NAME" project file", name, "1");

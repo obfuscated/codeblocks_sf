@@ -6,7 +6,7 @@
 #include "settings.h"
 
 // forward decls
-class Tool;
+struct Tool;
 
 class ConfigureToolsDlg : public wxDialog
 {

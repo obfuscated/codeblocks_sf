@@ -691,7 +691,8 @@ int EditorManager::Replace(cbEditor* editor, cbFindReplaceData* data)
 	while (!stop)
 	{
 		int lengthFound = 0;
-		pos = control->FindText(data->start, data->end, data->findText, flags, &lengthFound);
+		pos = control->FindText(data->start, data->end, data->findText, flags/*, &lengthFound*/);
+		lengthFound = data->findText.Length();
 		if (pos == -1)
 			break;
 		control->GotoPos(pos);
@@ -784,7 +785,8 @@ int EditorManager::Find(cbEditor* editor, cbFindReplaceData* data)
 		flags |= wxSTC_FIND_REGEXP;
 	
 	int lengthFound = 0;
-	int pos = control->FindText(data->start, data->end, data->findText, flags, &lengthFound);
+	int pos = control->FindText(data->start, data->end, data->findText, flags/*, &lengthFound*/);
+	lengthFound = data->findText.Length();
 	if (pos != -1)
 	{
 		control->GotoPos(pos);

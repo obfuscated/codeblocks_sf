@@ -82,7 +82,7 @@ CodeCompletion::CodeCompletion()
     wxFileSystem::AddHandler(new wxZipFSHandler);
     wxXmlResource::Get()->InitAllHandlers();
     wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
-    wxXmlResource::Get()->Load(resPath + "/code_completion.zip");
+    wxXmlResource::Get()->Load(resPath + "/code_completion.zip#zip:*.xrc");
 
     m_PluginInfo.name = "CodeCompletion";
     m_PluginInfo.title = "Code completion";

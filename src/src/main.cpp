@@ -30,16 +30,16 @@
 
 #include <wx/tipdlg.h>
 
-#include <configmanager.h>
-#include <cbproject.h>
-#include <cbplugin.h>
-#include <sdk_events.h>
-#include <projectmanager.h>
-#include <editormanager.h>
-#include <messagemanager.h>
-#include <pluginmanager.h>
-#include <templatemanager.h>
-#include <toolsmanager.h>
+#include "../sdk/configmanager.h"
+#include "../sdk/cbproject.h"
+#include "../sdk/cbplugin.h"
+#include "../sdk/sdk_events.h"
+#include "../sdk/projectmanager.h"
+#include "../sdk/editormanager.h"
+#include "../sdk/messagemanager.h"
+#include "../sdk/pluginmanager.h"
+#include "../sdk/templatemanager.h"
+#include "../sdk/toolsmanager.h"
 
 #include "dlgaboutplugin.h"
 #include "dlgabout.h"
@@ -78,6 +78,7 @@ int idEditEOLCRLF = wxNewId();
 int idEditEOLCR = wxNewId();
 int idEditEOLLF = wxNewId();
 int idEditSelectAll = wxNewId();
+int idEditCommentSelected = wxNewId();
 
 int idViewToolMain = wxNewId();
 int idViewManager = wxNewId();
@@ -201,6 +202,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idEditBookmarksToggle,  MainFrame::OnEditBookmarksToggle)
     EVT_MENU(idEditBookmarksNext,  MainFrame::OnEditBookmarksNext)
     EVT_MENU(idEditBookmarksPrevious,  MainFrame::OnEditBookmarksPrevious)
+    EVT_MENU(idEditCommentSelected, MainFrame::OnEditCommentSelected)
 
     EVT_MENU(idSearchFind,  MainFrame::OnSearchFind)
     EVT_MENU(idSearchFindNext,  MainFrame::OnSearchFindNext)
@@ -407,6 +409,7 @@ void MainFrame::CreateMenubar()
 	edit->Append(idEditEOLMode, _("&End-of-line mode"), eol);
 	edit->AppendSeparator();
 	edit->Append(idEditSelectAll, _("Select &all\tCtrl-A"), _("Selects the entire text range"));
+	edit->Append(idEditCommentSelected, _("(Un)Comment"), _("(Un)Comments the selected code") );
 	mbar->Append(edit, _("&Edit"));
 	
 	wxMenu* view = new wxMenu();
@@ -1148,6 +1151,57 @@ void MainFrame::OnEditSelectAll(wxCommandEvent& event)
         ed->GetControl()->SelectAll();
 }
 
+void MainFrame::OnEditCommentSelected(wxCommandEvent& event)
+{
+	cbEditor* ed = m_pEdMan->GetActiveEditor();
+	if( ed )
+	{
+		cbStyledTextCtrl *stc = ed->GetControl();
+		if( wxSTC_INVALID_POSITION != stc->GetSelectionStart() )
+		{
+			int startLine = stc->LineFromPosition( stc->GetSelectionStart() );
+			int endLine   = stc->LineFromPosition( stc->GetSelectionEnd() );
+			wxString strLine, str;
+
+			while( startLine <= endLine )
+			{
+				// For each line: If it's commented, uncomment. Otherwise, comment.
+				strLine = stc->GetLine( startLine );
+				int commentPos = strLine.Strip( wxString::leading ).Find( _( "//" ) );
+				
+				if( -1 == commentPos || commentPos > 0 )
+				{
+					// Comment
+					/// @todo This should be language-dependent. We're currently assuming C++
+					stc->InsertText( stc->PositionFromLine( startLine ), _( "//" ) );
+				}
+				else
+				{
+					// Uncomment
+					strLine.Replace( _( "//" ), _( "" ), false );
+						
+					// Update
+					int start = stc->PositionFromLine( startLine );
+					stc->SetTargetStart( start );
+					// The +2 is for the '//' we erased
+					stc->SetTargetEnd( start + strLine.Length() + 2 );
+					stc->ReplaceTarget( strLine );
+				}
+				
+				startLine++;
+			}
+		}
+		else
+		{
+			wxMessageBox( _( "No code currently selected" ), _( "Error" ) );
+		}
+	}
+	else
+	{
+		wxMessageBox( _( "No editors currently open" ), _( "Error" ) );
+	}
+}
+
 void MainFrame::OnEditFoldAll(wxCommandEvent& event)
 {
     cbEditor* ed = m_pEdMan->GetActiveEditor();
@@ -1405,7 +1459,6 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Check(idViewManager, m_pLeftSash && m_pLeftSash->IsShown());
     mbar->Check(idViewMessageManager, m_pBottomSash && m_pBottomSash->IsShown());
     mbar->Check(idViewStatusbar, GetStatusBar() && GetStatusBar()->IsShown());
-    mbar->Check(idViewFocusEditor, ed);
     mbar->Check(idViewFullScreen, IsFullScreen());
 
 	event.Skip();
@@ -1560,18 +1613,8 @@ void MainFrame::OnToggleFullScreen(wxCommandEvent& event)
     /// @todo Check whether hiding all panes is desirable.
     /// Perhaps make it customizable?
     
-    /// Can m_pLeftSash and m_pBottomSash ever be NULL?
-    // mandrav: No, both sashes are always valid. If they are not,
-    // we 've messed up something really bad ;)
-    
     // Update layout
     DoUpdateLayout();
-    
-    /// Update UI: This is hacky code duplication. Should be moved to a 
-    /// common function
-    
-    // mandrav: There is no need for this hack. View menu UpdateUI
-    // takes care of everything now...
 }
 
 void MainFrame::OnPluginLoaded(CodeBlocksEvent& event)

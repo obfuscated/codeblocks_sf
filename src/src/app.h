@@ -7,7 +7,10 @@
     #pragma hdrstop
 #endif
 
-#ifndef WX_PRECOMP
+/**
+@remarks VC++ 6 requires the following headers to compile correctly, so I added a check for it
+*/
+#if !defined(WX_PRECOMP) || defined(_MSC_VER)
     #include <wx/wx.h>
     #include <wx/laywin.h>
     #include <wx/image.h>
@@ -25,7 +28,7 @@
 #endif
 
 #include <wx/stc/stc.h>
-#include <manager.h>
+#include "../sdk/manager.h"
 #include "main.h"
 
 class CodeBlocksApp : public wxApp

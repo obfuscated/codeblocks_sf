@@ -25,8 +25,8 @@
 
 #include "dlgabout.h" // class's header file
 #include "globals.h"
-#include <licenses.h>
-#include <configmanager.h>
+#include "../sdk/licenses.h"
+#include "../sdk/configmanager.h"
 
 #define DESCR		"Welcome to "APP_NAME" v"APP_VERSION"!\n" \
 					APP_NAME" is a full-featured IDE (Integrated Development Environment) " \

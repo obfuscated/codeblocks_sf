@@ -55,7 +55,7 @@ struct PluginInfo
   * Code::Blocks creates a menu entry for the plugin, under the Settings
   * menu, to configure it. See Configure() for more information.
   */
-class DLLIMPORT cbPlugin : public wxEvtHandler
+class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 {
     public:
 		/** In default cbPlugin's constructor the associated PluginInfo structure
@@ -163,7 +163,7 @@ class DLLIMPORT cbPlugin : public wxEvtHandler
 	private:
 };
 
-class DLLIMPORT cbCompilerPlugin: public cbPlugin
+class PLUGIN_EXPORT cbCompilerPlugin: public cbPlugin
 {
 	public:
 		cbCompilerPlugin();
@@ -182,7 +182,7 @@ class DLLIMPORT cbCompilerPlugin: public cbPlugin
 	private:
 };
 
-class DLLIMPORT cbDebuggerPlugin: public cbPlugin
+class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
 {
 	public:
 		cbDebuggerPlugin();
@@ -195,7 +195,7 @@ class DLLIMPORT cbDebuggerPlugin: public cbPlugin
 		virtual int GetExitCode() = 0;
 };
 
-class DLLIMPORT cbToolPlugin : public cbPlugin
+class PLUGIN_EXPORT cbToolPlugin : public cbPlugin
 {
     public:
         cbToolPlugin();
@@ -207,7 +207,7 @@ class DLLIMPORT cbToolPlugin : public cbPlugin
         void BuildToolBar(wxToolBar* toolBar){}
 };
 
-class DLLIMPORT cbMimePlugin : public cbPlugin
+class PLUGIN_EXPORT cbMimePlugin : public cbPlugin
 {
     public:
         cbMimePlugin();
@@ -220,7 +220,7 @@ class DLLIMPORT cbMimePlugin : public cbPlugin
         void BuildToolBar(wxToolBar* toolBar){}
 };
 
-class DLLIMPORT cbCodeCompletionPlugin : public cbPlugin
+class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
 {
     public:
         cbCodeCompletionPlugin();

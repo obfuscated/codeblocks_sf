@@ -1,5 +1,5 @@
 #include <wx/xrc/xmlres.h>
-#include <configmanager.h>
+#include "../sdk/configmanager.h"
 #include <wx/intl.h>
 #include <wx/checkbox.h>
 #include <wx/radiobox.h>

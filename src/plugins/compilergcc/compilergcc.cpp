@@ -154,7 +154,7 @@ CompilerGCC::CompilerGCC()
     wxFileSystem::AddHandler(new wxZipFSHandler);
     wxXmlResource::Get()->InitAllHandlers();
     wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
-    wxXmlResource::Get()->Load(resPath + "/compiler_gcc.zip");
+    wxXmlResource::Get()->Load(resPath + "/compiler_gcc.zip#zip:*.xrc");
 
     m_Type = ptCompiler;
     m_PluginInfo.name = "Compiler";
@@ -617,7 +617,9 @@ void CompilerGCC::DoClearTargetMenu()
 		wxMenuItemList& items = m_TargetMenu->GetMenuItems();
 		for (wxMenuItemList::Node* node = items.GetFirst(); node; node = node->GetNext())
 		{
-			if (node)
+			// Note: I added the second check to prevent segmentation faults, when
+			// node exists, yet the data is NULL
+			if (node && node->GetData())
 				m_TargetMenu->Delete(node->GetData());
 			else
 				break;

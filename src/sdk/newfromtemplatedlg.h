@@ -1,11 +1,11 @@
 #ifndef NEWFROMTEMPLATEDLG_H
 #define NEWFROMTEMPLATEDLG_H
 
-#include "settings.h"
-#include "projecttemplateloader.h"
 #include <wx/dialog.h>
 #include <wx/listctrl.h>
 #include <wx/imaglist.h>
+#include "projecttemplateloader.h"
+#include "settings.h"
 
 WX_DEFINE_ARRAY(ProjectTemplateLoader*, ProjectTemplateArray);
 

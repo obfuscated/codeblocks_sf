@@ -24,8 +24,8 @@
 	#include <wx/wx.h>
 #endif
 
-#include <cbPlugin.h> // the base class we 're inheriting
-#include <settings.h> // needed to use the Code::Blocks SDK
+#include "../../sdk/cbPlugin.h" // the base class we 're inheriting
+#include "../../sdk/settings.h" // needed to use the Code::Blocks SDK
 
 class PLUGIN_EXPORT AStylePlugin : public cbToolPlugin
 {
@@ -45,7 +45,7 @@ class PLUGIN_EXPORT AStylePlugin : public cbToolPlugin
 
 extern "C"
 {
-	cbPlugin* PLUGIN_EXPORT GetPlugin();
+	PLUGIN_EXPORT cbPlugin* GetPlugin();
 };
 
 #endif // ASTYLEPLUGIN_H

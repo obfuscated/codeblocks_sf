@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <wx/string.h>
-#include <astyle.h>
+#include "./astyle/astyle.h"
 
 class ASStreamIterator : public astyle::ASSourceIterator
 {

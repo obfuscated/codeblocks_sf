@@ -56,7 +56,7 @@ ToDoList::ToDoList()
     wxFileSystem::AddHandler(new wxZipFSHandler);
     wxXmlResource::Get()->InitAllHandlers();
     wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
-    wxXmlResource::Get()->Load(resPath + "/todo.zip");
+    wxXmlResource::Get()->Load(resPath + "/todo.zip#zip:*.xrc");
 
 	m_PluginInfo.name = "ToDoList";
 	m_PluginInfo.title = "To-Do List";

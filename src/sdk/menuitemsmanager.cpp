@@ -24,7 +24,7 @@ void MenuItemsManager::Add(wxMenu* parent, int id, const wxString& caption, cons
     if (!parent)
         return;
     m_Menu = parent;
-    wxMenuItem* ni = new wxMenuItem(0L, id, caption, helptext);
+    wxMenuItem* ni = new wxMenuItem(parent, id, caption, helptext);
     m_MenuItems.Add(ni);
     parent->Append(ni);
 }

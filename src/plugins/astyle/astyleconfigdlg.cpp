@@ -1,5 +1,5 @@
 #include "astyleconfigdlg.h"
-#include <configmanager.h>
+#include "../../sdk/configmanager.h"
 #include <wx/xrc/xmlres.h>
 #include <wx/intl.h>
 #include <wx/font.h>

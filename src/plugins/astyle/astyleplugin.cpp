@@ -12,14 +12,14 @@
 #endif
 
 #include "astyleplugin.h"
-#include "licenses.h"
+#include "../../sdk/licenses.h"
 #include "astyleconfigdlg.h"
 #include "asstreamiterator.h"
 #include "formattersettings.h"
-#include <manager.h>
-#include <editormanager.h>
-#include <configmanager.h>
-#include <cbeditor.h>
+#include "../../sdk/manager.h"
+#include "../../sdk/editormanager.h"
+#include "../../sdk/configmanager.h"
+#include "../../sdk/cbeditor.h"
 #include <wx/msgdlg.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/fs_zip.h>
@@ -35,7 +35,7 @@ AStylePlugin::AStylePlugin()
     wxFileSystem::AddHandler(new wxZipFSHandler);
     wxXmlResource::Get()->InitAllHandlers();
     wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
-    wxXmlResource::Get()->Load(resPath + "/astyle.zip");
+    wxXmlResource::Get()->Load(resPath + "/astyle.zip#zip:*.xrc");
 
 	m_PluginInfo.name = "AStylePlugin";
 	m_PluginInfo.title = "AStylePlugin source code formatter";
