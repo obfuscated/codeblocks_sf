@@ -28,6 +28,7 @@
 #include <wx/utils.h>
 #include <wx/dir.h>
 #include <wx/textdlg.h>
+#include <wx/splitter.h>
 
 #include "projectmanager.h" // class's header file
 #include "sdk_events.h"
@@ -44,6 +45,7 @@
 #include "managerproxy.h"
 #include "multiselectdlg.h"
 #include "cbworkspace.h"
+#include "xtra_classes.h"
 
 // static
 bool ProjectManager::s_CanShutdown = true;
@@ -163,7 +165,9 @@ END_EVENT_TABLE()
 
 // class constructor
 ProjectManager::ProjectManager(wxNotebook* parent)
-	: m_pWorkspace(0),
+	: m_pTree(0),
+    m_pPanel(0),
+    m_pWorkspace(0),
     m_TreeCategorize(false),
     m_TreeUseFolders(true),
     m_TreeFreezeCounter(0)
@@ -173,33 +177,10 @@ ProjectManager::ProjectManager(wxNotebook* parent)
     m_pActiveProject = 0L;
     m_pProjects = new ProjectsArray;
     m_pProjects->Clear();
-	m_pPanel = new wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
+	// m_pPanel = new wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
     ProjectManagerProxy::Set(this);
-    wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
-#ifndef __WXMSW__
-	m_pTree = new PrjTree(m_pPanel, ID_ProjectManager);
-#else
-	m_pTree = new wxTreeCtrl(m_pPanel, ID_ProjectManager);
-#endif
-    bs->Add(m_pTree, 1, wxEXPAND | wxALL);
-    m_pPanel->SetAutoLayout(true);
-    m_pPanel->SetSizer(bs);
+    InitPane();
 
-    wxBitmap bmp;
-    m_pImages = new wxImageList(16, 16);
-    wxString prefix = ConfigManager::Get()->Read("data_path") + "/images/";
-    bmp.LoadFile(prefix + "gohome.png", wxBITMAP_TYPE_PNG); // workspace
-    m_pImages->Add(bmp);
-    bmp.LoadFile(prefix + "codeblocks.png", wxBITMAP_TYPE_PNG); // project
-    m_pImages->Add(bmp);
-    bmp.LoadFile(prefix + "ascii.png", wxBITMAP_TYPE_PNG); // file
-    m_pImages->Add(bmp);
-    bmp.LoadFile(prefix + "folder_open.png", wxBITMAP_TYPE_PNG); // folder
-    m_pImages->Add(bmp);
-    m_pTree->SetImageList(m_pImages);
-
-    m_pParent->AddPage(m_pPanel, _("Projects"));
-	
 	m_pFileGroups = new FilesGroupsAndMasks;
 	m_TreeCategorize = ConfigManager::Get()->Read("/project_manager/categorize_tree", 1);
 	m_TreeUseFolders = ConfigManager::Get()->Read("/project_manager/use_folders", 1);
@@ -214,6 +195,42 @@ ProjectManager::ProjectManager(wxNotebook* parent)
     Manager::Get()->GetAppWindow()->PushEventHandler(this);    
 }
 
+void ProjectManager::InitPane()
+{
+    SANITY_CHECK();
+    if(Manager::isappShuttingDown())
+        return;
+    if(m_pTree)
+        return;
+    wxSplitPanel* mypanel = (wxSplitPanel*)(Manager::Get()->GetNotebookPage("Projects",wxTAB_TRAVERSAL | wxCLIP_CHILDREN,true));
+    m_pPanel = mypanel;
+    wxSplitterWindow* mysplitter = mypanel->GetSplitter();
+    BuildTree(mysplitter);
+    mypanel->SetAutoLayout(true);
+    mypanel->RefreshSplitter(ID_EditorManager,ID_ProjectManager,200);
+}
+
+void ProjectManager::BuildTree(wxWindow* parent)
+{
+    #ifndef __WXMSW__
+        m_pTree = new PrjTree(parent, ID_ProjectManager);
+    #else
+        m_pTree = new wxTreeCtrl(parent, ID_ProjectManager);
+    #endif
+
+    wxBitmap bmp;
+    m_pImages = new wxImageList(16, 16);
+    wxString prefix = ConfigManager::Get()->Read("data_path") + "/images/";
+    bmp.LoadFile(prefix + "gohome.png", wxBITMAP_TYPE_PNG); // workspace
+    m_pImages->Add(bmp);
+    bmp.LoadFile(prefix + "codeblocks.png", wxBITMAP_TYPE_PNG); // project
+    m_pImages->Add(bmp);
+    bmp.LoadFile(prefix + "ascii.png", wxBITMAP_TYPE_PNG); // file
+    m_pImages->Add(bmp);
+    bmp.LoadFile(prefix + "folder_open.png", wxBITMAP_TYPE_PNG); // folder
+    m_pImages->Add(bmp);
+    m_pTree->SetImageList(m_pImages);
+}
 // class destructor
 ProjectManager::~ProjectManager()
 {
@@ -389,7 +406,7 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
     }
 
     if (menu.GetMenuItemCount() != 0)
-        m_pPanel->PopupMenu(&menu, pt);
+        m_pTree->PopupMenu(&menu, pt);
 }
 
 cbProject* ProjectManager::IsOpen(const wxString& filename)
@@ -793,9 +810,6 @@ void ProjectManager::RebuildTree()
      if(title=="")
          title="Workspace";
     m_TreeRoot = m_pTree->AddRoot(title, 0, 0);
-    #ifdef use_openedfilestree
-    Manager::Get()->GetEditorManager()->BuildOpenedFilesTree(m_pTree);
-    #endif
     for (int i = 0; i < count; ++i)
     {
         cbProject* project = m_pProjects->Item(i);
@@ -1042,7 +1056,7 @@ void ProjectManager::OnRightClick(wxCommandEvent& event)
     menu.Check(idMenuViewUseFoldersPopup, m_TreeUseFolders);
 
     wxPoint pt = wxGetMousePosition();
-    pt = m_pTree->ScreenToClient(pt);
+    pt = m_pPanel->ScreenToClient(pt);
     m_pPanel->PopupMenu(&menu, pt);
 }
 

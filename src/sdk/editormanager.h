@@ -13,10 +13,12 @@
 #include "cbeditor.h"
 #include "cbproject.h"
 
+extern int ID_EditorManager;
+
 enum EditorInterfaceType
 {
-	eitTabbed = 0,
-	eitMDI
+    eitTabbed = 0,
+    eitMDI
 };
 
 WX_DECLARE_LIST(cbEditor, EditorsList);
@@ -44,18 +46,18 @@ class DLLIMPORT EditorTreeData : public MiscTreeItemData
 
 struct cbFindReplaceData
 {
-	int start;
-	int end;
-	wxString findText;
-	wxString replaceText;
-	bool findInFiles;
-	bool matchWord;
-	bool startWord;
-	bool matchCase;
-	bool regEx;
-	bool directionDown;
-	bool originEntireScope;
-	bool scopeSelectedText;
+    int start;
+    int end;
+    wxString findText;
+    wxString replaceText;
+    bool findInFiles;
+    bool matchWord;
+    bool startWord;
+    bool matchCase;
+    bool regEx;
+    bool directionDown;
+    bool originEntireScope;
+    bool scopeSelectedText;
 };
 
 /*
@@ -64,29 +66,29 @@ struct cbFindReplaceData
 class DLLIMPORT EditorManager : public wxEvtHandler
 {
         static bool s_CanShutdown;
-	public:
+    public:
         friend class Manager; // give Manager access to our private members
         static bool CanShutdown(){ return s_CanShutdown; }
-		void CreateMenu(wxMenuBar* menuBar);
-		void ReleaseMenu(wxMenuBar* menuBar);
-		void Configure();        
-		int GetEditorsCount(){ return m_EditorsList.GetCount(); }
-		cbEditor* GetEditor(int index);
+        void CreateMenu(wxMenuBar* menuBar);
+        void ReleaseMenu(wxMenuBar* menuBar);
+        void Configure();        
+        int GetEditorsCount(){ return m_EditorsList.GetCount(); }
+        cbEditor* GetEditor(int index);
         cbEditor* GetEditor(const wxString& filename){ return IsOpen(filename); } // synonym of IsOpen()
         cbEditor* IsOpen(const wxString& filename);
         cbEditor* Open(const wxString& filename, int pos = 0);
         cbEditor* GetActiveEditor();
         void SetActiveEditor(cbEditor* ed);
-		EditorColorSet* GetColorSet(){ return m_Theme; }
-		void SetColorSet(EditorColorSet* theme);
-		const EditorInterfaceType& GetEditorInterfaceType(){ return m_IntfType; }
-		void SetEditorInterfaceType(const EditorInterfaceType& _type);
+        EditorColorSet* GetColorSet(){ return (this==NULL) ? 0 : m_Theme; }
+        void SetColorSet(EditorColorSet* theme);
+        const EditorInterfaceType& GetEditorInterfaceType(){ return m_IntfType; }
+        void SetEditorInterfaceType(const EditorInterfaceType& _type);
         cbEditor* New();
-		bool UpdateProjectFiles(cbProject* project);
+        bool UpdateProjectFiles(cbProject* project);
         bool SwapActiveHeaderSource();
         bool CloseActive(bool dontsave=false);
         bool Close(const wxString& filename,bool dontsave=false);
-		bool Close(cbEditor* editor,bool dontsave=false);
+        bool Close(cbEditor* editor,bool dontsave=false);
         bool Close(int index,bool dontsave=false);
 
         // If file is modified, queries to save (yes/no/cancel). 
@@ -101,17 +103,17 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         bool SaveAs(int index);
         bool SaveActiveAs();
         bool SaveAll();
-		int ShowFindDialog(bool replace);
-		int Find(cbEditor* editor, cbFindReplaceData* data);
-		int Replace(cbEditor* editor, cbFindReplaceData* data);
-		int FindNext(bool goingDown);
-		
-		/** Check if one of the open files has been modified outside the IDE. If so, ask to reload it. */
-		void CheckForExternallyModifiedFiles();
-		
-		#ifdef use_openedfilestree
-		/** Builds Opened Files tree in the Projects tab
-		  */
+        int ShowFindDialog(bool replace);
+        int Find(cbEditor* editor, cbFindReplaceData* data);
+        int Replace(cbEditor* editor, cbFindReplaceData* data);
+        int FindNext(bool goingDown);
+        
+        /** Check if one of the open files has been modified outside the IDE. If so, ask to reload it. */
+        void CheckForExternallyModifiedFiles();
+        
+        #ifdef use_openedfilestree
+        /** Builds Opened Files tree in the Projects tab
+          */
         wxTreeCtrl *EditorManager::GetTree();
         wxTreeItemId FindTreeFile(const wxString& filename);
         wxString GetTreeItemFilename(wxTreeItemId item);
@@ -119,7 +121,8 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         void DeleteFilefromTree(const wxString& filename);
         void AddFiletoTree(cbEditor* ed);
         bool RenameTreeFile(const wxString& oldname, const wxString& newname);
-        void BuildOpenedFilesTree(wxTreeCtrl *tree);
+        void InitPane();
+        void BuildOpenedFilesTree(wxWindow* parent);
         void RebuildOpenedFilesTree(wxTreeCtrl *tree = 0L);
         void RefreshOpenedFilesTree(bool force = false);
         #endif
@@ -131,22 +134,24 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         
     private:
         static EditorManager* Get(wxWindow* parent);
-		static void Free();
-		EditorManager(wxWindow* parent);
-		~EditorManager();
+        static void Free();
+        EditorManager(wxWindow* parent);
+        ~EditorManager();
         void UpdateEditorIndices();
-		void CalculateFindReplaceStartEnd(cbEditor* editor, cbFindReplaceData* data);
+        void CalculateFindReplaceStartEnd(cbEditor* editor, cbFindReplaceData* data);
         EditorsList m_EditorsList;
-		cbFindReplaceData* m_LastFindReplaceData;
-		EditorColorSet* m_Theme;
-		EditorInterfaceType m_IntfType;
-		#ifdef use_openedfilestree
+        cbFindReplaceData* m_LastFindReplaceData;
+        EditorColorSet* m_Theme;
+        EditorInterfaceType m_IntfType;
+        #ifdef use_openedfilestree
+        wxImageList* m_pImages;
+        wxTreeCtrl *m_pTree;
         wxTreeItemId m_TreeOpenedFiles;
         #endif
         wxString m_LastActiveFile;
         bool m_LastModifiedflag;
-	DECLARE_EVENT_TABLE()
-	DECLARE_SANITY_CHECK
+    DECLARE_EVENT_TABLE()
+    DECLARE_SANITY_CHECK
 
 };
 

@@ -25,6 +25,7 @@
 
 #include <wx/notebook.h>
 #include <wx/menu.h>
+#include <wx/splitter.h>
 
 #include "editormanager.h" // class's header file
 #include "configmanager.h"
@@ -40,18 +41,23 @@
 #include "cbproject.h"
 #include "globals.h"
 #include "managerproxy.h"
+#include "xtra_classes.h"
 #include <wx/listimpl.cpp>
 WX_DEFINE_LIST(EditorsList);
 
 #define MIN(a,b) (a<b?a:b)
 #define MAX(a,b) (a>b?a:b)
 
+// #define dont_build_opened_files_tree
+
+int ID_EditorManager = wxNewId();
+
 BEGIN_EVENT_TABLE(EditorManager,wxEvtHandler)
 #ifdef use_openedfilestree
-    EVT_UPDATE_UI(-1,EditorManager::OnUpdateUI)
-    EVT_TREE_SEL_CHANGING(-1, EditorManager::OnTreeItemActivated)
-    EVT_TREE_ITEM_ACTIVATED(-1, EditorManager::OnTreeItemActivated)
-    EVT_TREE_ITEM_RIGHT_CLICK(-1, EditorManager::OnTreeItemRightClick)
+    EVT_UPDATE_UI(ID_EditorManager,EditorManager::OnUpdateUI)
+    EVT_TREE_SEL_CHANGING(ID_EditorManager, EditorManager::OnTreeItemActivated)
+    EVT_TREE_ITEM_ACTIVATED(ID_EditorManager, EditorManager::OnTreeItemActivated)
+    EVT_TREE_ITEM_RIGHT_CLICK(ID_EditorManager, EditorManager::OnTreeItemRightClick)
 #endif
 END_EVENT_TABLE()
 
@@ -85,11 +91,15 @@ EditorManager::EditorManager(wxWindow* parent)
     : //wxNotebook(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize,  wxNO_FULL_REPAINT_ON_RESIZE | wxNB_MULTILINE | wxCLIP_CHILDREN),
 	m_LastFindReplaceData(0L),
 	m_IntfType(eitTabbed),
+    m_pImages(0L),
+    m_pTree(0L),
     m_LastActiveFile(""),
     m_LastModifiedflag(false)
 {
 	SC_CONSTRUCTOR_BEGIN
+	EditorManagerProxy::Set(this);
 	m_EditorsList.Clear();
+	InitPane();
 	m_Theme = new EditorColorSet(ConfigManager::Get()->Read("/editor/color_sets/active_color_set", COLORSET_DEFAULT));
 
 	ConfigManager::AddConfiguration(_("Editor"), "/editor");
@@ -105,7 +115,16 @@ EditorManager::~EditorManager()
 		
 	if (m_LastFindReplaceData)
 		delete m_LastFindReplaceData;
-		
+    if (m_pTree)
+        { 
+            delete m_pTree;
+            m_pTree = 0L;
+        }
+    if (m_pImages)
+        {
+            delete m_pImages;
+            m_pImages = 0L;
+        }
     // free-up any memory used for editors
     m_EditorsList.DeleteContents(true); // Set this to false to preserve
     m_EditorsList.Clear();              // linked data.
@@ -943,7 +962,8 @@ int EditorManager::FindNext(bool goingDown)
 wxTreeCtrl *EditorManager::GetTree()
 {
     SANITY_CHECK(0L);
-    return Manager::Get()->GetProjectManager()->GetTree();
+    return m_pTree;
+    // Manager::Get()->GetProjectManager()->GetTree();
 }
 
 wxTreeItemId EditorManager::FindTreeFile(const wxString& filename)
@@ -1071,20 +1091,66 @@ bool EditorManager::RenameTreeFile(const wxString& oldname, const wxString& newn
     return false;
 }
 
-void EditorManager::BuildOpenedFilesTree(wxTreeCtrl *tree)
+void EditorManager::InitPane()
 {
+    #ifdef __WXGTK__
+        return; // wxGTK uses Tabs, no need for the tree
+    #endif
+    #ifdef dont_build_opened_files_tree
+        return;
+    #endif
+
     SANITY_CHECK();
     if(Manager::isappShuttingDown())
         return;
-    if(!tree)
+    if(m_pTree)
         return;
-    m_TreeOpenedFiles=tree->PrependItem(tree->GetRootItem(),"Opened Files", 3, 3);
-    tree->SetItemBold(m_TreeOpenedFiles);
-    RebuildOpenedFilesTree(tree);
+    wxSplitPanel* mypanel = (wxSplitPanel*)(Manager::Get()->GetNotebookPage("Projects",wxTAB_TRAVERSAL | wxCLIP_CHILDREN,true));
+    wxSplitterWindow* mysplitter = mypanel->GetSplitter();
+    BuildOpenedFilesTree(mysplitter);
+    mypanel->SetAutoLayout(true);
+    mypanel->RefreshSplitter(ID_EditorManager,ID_ProjectManager,200);
+}
+
+void EditorManager::BuildOpenedFilesTree(wxWindow* parent)
+{
+    #ifdef __WXGTK__
+        return; // wxGTK uses Tabs, no need for the tree
+    #endif
+    #ifdef dont_build_opened_files_tree
+        return;
+    #endif
+    
+    SANITY_CHECK();
+    if(m_pTree)
+        return;
+    m_pTree = new wxTreeCtrl(parent, ID_EditorManager,wxDefaultPosition,wxDefaultSize,wxTR_HAS_BUTTONS | wxNO_BORDER);
+
+    wxBitmap bmp;
+    m_pImages = new wxImageList(16, 16);
+    wxString prefix = ConfigManager::Get()->Read("data_path") + "/images/";
+    bmp.LoadFile(prefix + "gohome.png", wxBITMAP_TYPE_PNG); // workspace
+    m_pImages->Add(bmp);
+    bmp.LoadFile(prefix + "codeblocks.png", wxBITMAP_TYPE_PNG); // project
+    m_pImages->Add(bmp);
+    bmp.LoadFile(prefix + "ascii.png", wxBITMAP_TYPE_PNG); // file
+    m_pImages->Add(bmp);
+    bmp.LoadFile(prefix + "folder_open.png", wxBITMAP_TYPE_PNG); // folder
+    m_pImages->Add(bmp);
+    m_pTree->SetImageList(m_pImages);
+    m_TreeOpenedFiles=m_pTree->AddRoot("Opened Files", 3, 3);
+    m_pTree->SetItemBold(m_TreeOpenedFiles);
+    RebuildOpenedFilesTree(m_pTree);
 }
 
 void EditorManager::RebuildOpenedFilesTree(wxTreeCtrl *tree)
 {    
+    #ifdef __WXGTK__
+        return; // wxGTK uses Tabs, no need for the tree
+    #endif
+    #ifdef dont_build_opened_files_tree
+        return;
+    #endif
     SANITY_CHECK();
     if(Manager::isappShuttingDown())
         return;
@@ -1095,7 +1161,7 @@ void EditorManager::RebuildOpenedFilesTree(wxTreeCtrl *tree)
     tree->DeleteChildren(m_TreeOpenedFiles);
     if(!GetEditorsCount())
         return;
-    Manager::Get()->GetProjectManager()->FreezeTree();
+    tree->Freeze();
     for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext())
     {
         cbEditor* ed = node->GetData();
@@ -1109,11 +1175,17 @@ void EditorManager::RebuildOpenedFilesTree(wxTreeCtrl *tree)
             tree->SelectItem(item);
     }
     tree->Expand(m_TreeOpenedFiles);    
-    Manager::Get()->GetProjectManager()->UnfreezeTree();
+    tree->Thaw();
 }
 
 void EditorManager::RefreshOpenedFilesTree(bool force)
 {
+    #ifdef __WXGTK__
+        return; // wxGTK uses Tabs, no need for the tree
+    #endif
+    #ifdef dont_build_opened_files_tree
+        return;
+    #endif
     SANITY_CHECK();
     if(Manager::isappShuttingDown())
         return;
@@ -1164,8 +1236,6 @@ void EditorManager::OnTreeItemActivated(wxTreeEvent &event)
     SANITY_CHECK();
     if(Manager::isappShuttingDown())
         return;
-    if(event.GetId()!=ID_ProjectManager)
-        { event.Skip();return; }
     if(!MiscTreeItemData::OwnerCheck(event,GetTree(),this,true))
         return;
     wxString filename=GetTreeItemFilename(event.GetItem());
@@ -1179,8 +1249,6 @@ void EditorManager::OnTreeItemRightClick(wxTreeEvent &event)
     SANITY_CHECK();
     if(Manager::isappShuttingDown())
         return;
-    if(event.GetId()!=ID_ProjectManager)
-        { event.Skip();return; }
     if(!MiscTreeItemData::OwnerCheck(event,GetTree(),this,true))
         return;
     Manager::Get()->GetMessageManager()->DebugLog("(Editor Tree Popup menu not implemented yet)");

@@ -217,6 +217,7 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
 		  * @return The current workspace filename.
 		  */
         cbWorkspace* GetWorkspace();
+		
 		/// Rebuild the project manager's tree.
         void RebuildTree();
 		/** Stop the tree control from updating.
@@ -236,17 +237,20 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
         /** Retrieve a pointer to the project manager's tree (GUI).
           * @return A pointer to a wxTreeCtrl window.
           */
-        wxTreeCtrl* GetTree(){ return m_pTree; }
+        wxTreeCtrl* GetTree(){ return (this==NULL) ? 0 : m_pTree; }
         /** Retrieve a pointer to the project manager's panel (GUI). This panel
           * is the parent of the project manager's tree obtained through GetTree().
           * @return A pointer to a wxPanel window.
           */
-		wxPanel* GetPanel(){ return m_pPanel; }
+		wxPanel* GetPanel(){ return (this==NULL) ? 0 : m_pPanel; }
     private:
         static ProjectManager* Get(wxNotebook* parent);
 		static void Free();
 		ProjectManager(wxNotebook* parent);
 		~ProjectManager();
+
+		void InitPane();
+		void BuildTree(wxWindow* parent);
         void ShowMenu(wxTreeItemId id, const wxPoint& pt);
         void OnProjectFileActivated(wxTreeEvent& event);
         void OnExecParameters(wxCommandEvent& event);

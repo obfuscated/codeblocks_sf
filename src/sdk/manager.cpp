@@ -40,6 +40,7 @@
 #include "configmanager.h"
 #include "templatemanager.h"
 #include "managerproxy.h"
+#include "xtra_classes.h" // Our custom set of wxWidgets classes
 #include "xtra_res.h" // our new ToolBarAddOn handler
 
 
@@ -221,4 +222,30 @@ ToolsManager* Manager::GetToolsManager()
 MacrosManager* Manager::GetMacrosManager()
 {
 	return appShutingDown ? 0 : MacrosManager::Get();
+}
+
+wxWindow* Manager::GetNotebookPage(const wxString &name, long style,bool issplit)
+{
+    if(appShutingDown) return 0L;
+    if(!m_pNotebook) return 0L;
+    int i;
+    wxNotebookPage* page=0L;
+    for(i=0;i<m_pNotebook->GetPageCount();++i)
+    {
+        if(m_pNotebook->GetPageText(i)==name)
+        {
+            return m_pNotebook->GetPage(i); 
+        }
+    }
+    // Not found. Let's create it.
+    if(issplit)
+    {
+        page=new wxSplitPanel(m_pNotebook,-1,wxDefaultPosition,wxDefaultSize,style);
+    }
+    else
+    {
+        page=new wxPanel(m_pNotebook,-1,wxDefaultPosition,wxDefaultSize,style);
+    }
+    m_pNotebook->AddPage(page,name);
+    return page;
 }

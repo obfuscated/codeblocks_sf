@@ -37,6 +37,9 @@ class DLLIMPORT Manager
 		// stupid typo ;-P		
 		static bool isappShuttingDown();
 
+        // Gets a notebook panel with the specified name
+        wxWindow* GetNotebookPage(const wxString &name, long style =  wxTAB_TRAVERSAL | wxCLIP_CHILDREN,bool issplit=false);
+
         /////// XML Resource functions ///////
         
 		// Inits XML Resource system
