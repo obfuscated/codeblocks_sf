@@ -18,6 +18,8 @@ AppSupportURL=www.codeblocks.org
 AppUpdatesURL=www.codeblocks.org
 VersionInfoVersion=1.0
 VersionInfoDescription=Code::Blocks IDE
+WizardImageFile=C:\Devel\codeblocks\src\setup\setup.bmp
+WizardSmallImageFile=C:\Devel\codeblocks\src\setup\setupsmall.bmp
 
 [Tasks]
 ; NOTE: The following entry contains English phrases ("Create a desktop icon" and "Additional icons"). You are free to translate them into another language if required.
