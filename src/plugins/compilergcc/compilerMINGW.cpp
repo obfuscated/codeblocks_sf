@@ -71,10 +71,14 @@ Compiler::CompilerLineType CompilerMINGW::CheckForWarningsAndErrors(const wxStri
         return ret;
 
     // quick regex's
-    wxRegEx reError(" Error ");
-    wxRegEx reWarning(" warning: ");
-    wxRegEx reErrorLine(":[0-9]*:[ \t].*");
-    wxRegEx reDetailedErrorLine("([A-Za-z0-9_:/\\.]*):([0-9]*):[ \t](.*)");
+    wxRegEx reError("[ \t]error:[ \t]");
+    wxRegEx reWarning("[ \t]warning:[ \t]");
+    wxRegEx reErrorLine(":[0-9]+:[ \t][we].*");
+    wxRegEx reDetailedErrorLine("([A-Za-z0-9_:/\\.]+):([0-9]+):[ \t](.*)");
+
+//plugins/cache/cache.cpp: In member function `virtual PGF::IMesh* Cache::LoadMeshFromMem(void*, int, const std::string&)':
+//plugins/cache/cache.cpp:266: error: 'class std::map<std::string, PGF::IMesh*, std::less<std::string>, std::allocator<std::pair<const std::string, PGF::IMesh*> > >' has no member named 'push_back'
+
 
     if (reErrorLine.Matches(line))
     {

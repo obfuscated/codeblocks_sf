@@ -27,6 +27,7 @@ class CompilerErrors
 		bool HasNextError();
 		bool HasPreviousError();
 		int GetCount(){ return m_Errors.GetCount(); }
+		wxString GetErrorString(int index);
         
         int GetFocusedError(){ return m_ErrorIndex; }
 	protected:

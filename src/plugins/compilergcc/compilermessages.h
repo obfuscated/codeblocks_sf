@@ -14,6 +14,7 @@ class CompilerMessages : public SimpleListLog
         virtual void FocusError(int nr);
 	protected:
         void OnClick(wxCommandEvent& event);
+        void OnDoubleClick(wxCommandEvent& event);
         CompilerErrors* m_pErrors;
 	private:
         DECLARE_EVENT_TABLE()

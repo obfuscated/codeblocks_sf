@@ -1,3 +1,5 @@
+#include <wx/intl.h>
+#include <wx/msgdlg.h>
 #include <manager.h>
 #include <messagemanager.h>
 #include "compilererrors.h"
@@ -17,6 +19,9 @@ CompilerMessages::CompilerMessages(wxNotebook* parent, const wxString& title, in
     Connect(id, -1, wxEVT_COMMAND_LIST_ITEM_SELECTED,
             (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
             &CompilerMessages::OnClick);
+    Connect(id, -1, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
+            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+            &CompilerMessages::OnDoubleClick);
 }
 
 CompilerMessages::~CompilerMessages()
@@ -32,7 +37,7 @@ void CompilerMessages::FocusError(int nr)
 
 void CompilerMessages::OnClick(wxCommandEvent& event)
 {
-    // a compiler message has been double-clicked
+    // a compiler message has been clicked
     // go to the relevant file/line
     if (m_pList->GetSelectedItemCount() == 0 || !m_pErrors)
         return;
@@ -44,4 +49,21 @@ void CompilerMessages::OnClick(wxCommandEvent& event)
 
     // call the CompilerErrors* ptr; it 'll do all the hard work ;)
     m_pErrors->GotoError(index);
+}
+
+void CompilerMessages::OnDoubleClick(wxCommandEvent& event)
+{
+    // a compiler message has been double-clicked
+    // go to the relevant file/line
+    if (m_pList->GetSelectedItemCount() == 0 || !m_pErrors)
+        return;
+
+    // find selected item index
+    int index = m_pList->GetNextItem(-1,
+                                     wxLIST_NEXT_ALL,
+                                     wxLIST_STATE_SELECTED);
+
+    // call the CompilerErrors* ptr; it 'll do all the hard work ;)
+    wxString error = m_pErrors->GetErrorString(index);
+    wxMessageBox(error, _("Compiler warning/error"));
 }

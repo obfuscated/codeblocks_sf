@@ -174,3 +174,14 @@ bool CompilerErrors::HasPreviousError()
 {
 	return m_ErrorIndex > 0;
 }
+
+wxString CompilerErrors::GetErrorString(int index)
+{
+	if (m_Errors.GetCount() == 0 || index < 0 || index > (int)m_Errors.GetCount() - 1)
+		return wxEmptyString;
+    wxArrayString& errors = m_Errors[index].errors;
+    wxString error;
+    if (errors.GetCount())
+        error = errors[0];
+    return error;
+}

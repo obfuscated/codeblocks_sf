@@ -81,7 +81,7 @@ int idMenuNextProject = wxNewId();
 int idMenuPriorProject = wxNewId();
 int idMenuProjectTreeProps = wxNewId();
 
-#ifndef __WXMSW
+#ifndef __WXMSW__
 /*
 	Under wxGTK, I have noticed that wxTreeCtrl is not sending a EVT_COMMAND_RIGHT_CLICK
 	event when right-clicking on the client area.
@@ -151,7 +151,7 @@ ProjectManager::ProjectManager(wxNotebook* parent)
 	m_pPanel = new wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
 
     wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
-#ifndef __WXMSW
+#ifndef __WXMSW__
 	m_pTree = new PrjTree(m_pPanel, ID_ProjectManager);
 #else
 	m_pTree = new wxTreeCtrl(m_pPanel, ID_ProjectManager);
