@@ -204,9 +204,6 @@ void TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
         {
             ProjectBuildTarget* target = prj->GetBuildTarget(i);
             target->SetCompilerIndex(CompilerFactory::GetDefaultCompilerIndex());
-
-            // fix the initially suggested output filename
-            target->SetOutputFilename(target->SuggestOutputFilename());
         }
         
         for (unsigned int i = 0; i < fileset.files.GetCount(); ++i)
