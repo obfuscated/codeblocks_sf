@@ -171,14 +171,15 @@ void CompilerOptionsDlg::DoFillCompilerPrograms()
         return; // no "Programs" page
 
     int compilerIdx = XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection();
+/*
 //    Manager::Get()->GetMessageManager()->DebugLog("compilerIdx=%d, m_LastCompilerIdx=%d", compilerIdx, m_LastCompilerIdx);
     if (compilerIdx != m_LastCompilerIdx)
     {
         // compiler changed; check for changes and update as needed
-        DoUpdateCompiler();
+        DoSaveCompilerPrograms();
     }
-    
     m_LastCompilerIdx = compilerIdx;
+*/    
     const CompilerPrograms& progs = CompilerFactory::Compilers[compilerIdx]->GetPrograms();
     
     XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->SetValue(CompilerFactory::Compilers[compilerIdx]->GetMasterPath());
@@ -638,10 +639,13 @@ void CompilerOptionsDlg::DoMakeRelative(wxFileName& path)
 		path.MakeRelativeTo(data->GetProject()->GetBasePath());
 }
 
-void CompilerOptionsDlg::DoUpdateCompiler()
+void CompilerOptionsDlg::DoSaveCompilerPrograms(int compilerIdx)
 {
-    if (!CompilerFactory::CompilerIndexOK(m_LastCompilerIdx))
+    if (m_pProject || // no "Programs" page
+        !CompilerFactory::CompilerIndexOK(compilerIdx))
+    {
         return;
+    }
     CompilerPrograms progs;
     wxString masterPath = XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->GetValue();
     progs.C = XRCCTRL(*this, "txtCcompiler", wxTextCtrl)->GetValue();
@@ -649,9 +653,9 @@ void CompilerOptionsDlg::DoUpdateCompiler()
     progs.LD = XRCCTRL(*this, "txtLinker", wxTextCtrl)->GetValue();
     progs.WINDRES = XRCCTRL(*this, "txtResComp", wxTextCtrl)->GetValue();
     progs.MAKE = XRCCTRL(*this, "txtMake", wxTextCtrl)->GetValue();
-    CompilerFactory::Compilers[m_LastCompilerIdx]->SetPrograms(progs);
-    CompilerFactory::Compilers[m_LastCompilerIdx]->SetMasterPath(masterPath);
-    CompilerFactory::Compilers[m_LastCompilerIdx]->SetOptions(m_Options);
+    CompilerFactory::Compilers[compilerIdx]->SetPrograms(progs);
+    CompilerFactory::Compilers[compilerIdx]->SetMasterPath(masterPath);
+    CompilerFactory::Compilers[compilerIdx]->SetOptions(m_Options);
 }
 
 // events
@@ -676,13 +680,15 @@ void CompilerOptionsDlg::OnTreeSelectionChanging(wxTreeEvent& event)
 		return;
 	wxTreeCtrl* tc = XRCCTRL(*this, "tcScope", wxTreeCtrl);
 	ScopeTreeData* data = (ScopeTreeData*)tc->GetItemData(event.GetOldItem());
-	DoSaveOptions(m_LastCompilerIdx, data);
+    int compilerIdx = XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection();
+	DoSaveOptions(compilerIdx, data);
 }
 
 void CompilerOptionsDlg::OnCompilerChanged(wxCommandEvent& event)
 {
 	wxTreeCtrl* tc = XRCCTRL(*this, "tcScope", wxTreeCtrl);
 	ScopeTreeData* data = tc ? (ScopeTreeData*)tc->GetItemData(tc->GetSelection()) : 0;
+	DoSaveCompilerPrograms(m_LastCompilerIdx);
 	DoSaveOptions(m_LastCompilerIdx, data);
     CompilerChanged(data);
 }
@@ -709,6 +715,23 @@ void CompilerOptionsDlg::CompilerChanged(ScopeTreeData* data)
 	if (m_BuildingTree)
 		return;
 	DoLoadOptions(compilerIdx, data);
+	m_LastCompilerIdx = compilerIdx;
+}
+
+void CompilerOptionsDlg::UpdateCompilerForTargets(int compilerIdx)
+{
+    int ret = wxMessageBox(_("You have changed the compiler used for the project.\n"
+                            "Do you want to use the same compiler for all the project's build targets too?"),
+                            _("Question"),
+                            wxICON_QUESTION | wxYES_NO);
+    if (ret == wxYES)
+    {
+        for (int i = 0; i < m_pProject->GetBuildTargetsCount(); ++i)
+        {
+            ProjectBuildTarget* target = m_pProject->GetBuildTarget(i);
+            target->SetCompilerIndex(compilerIdx);
+        }
+    }
 }
 
 void CompilerOptionsDlg::OnCategoryChanged(wxCommandEvent& event)
@@ -922,7 +945,8 @@ void CompilerOptionsDlg::OnMasterPathClick(wxCommandEvent& event)
     if (dlg.ShowModal() == wxID_OK)
     {
         XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->SetValue(dlg.GetPath());
-        DoUpdateCompiler();
+        int compilerIdx = XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection();
+        DoSaveCompilerPrograms(compilerIdx);
     }
 }
 
@@ -990,7 +1014,8 @@ void CompilerOptionsDlg::OnSelectProgramClick(wxCommandEvent& event)
         return;
     wxFileName fname(dlg->GetPath());
     obj->SetValue(fname.GetFullName());
-    DoUpdateCompiler();
+    int compilerIdx = XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection();
+    DoSaveCompilerPrograms(compilerIdx);
 }
 
 void CompilerOptionsDlg::OnAdvancedClick(wxCommandEvent& event)
@@ -1085,17 +1110,19 @@ void CompilerOptionsDlg::EndModal(int retCode)
     if (m_pProject && idx != m_InitialCompilerIdx)
     {
         m_pProject->SetCompilerIndex(idx);
+        UpdateCompilerForTargets(idx);
         wxMessageBox(_("You changed the compiler used for this project.\n"
                         "It is recommended that you fully rebuild your project, "
-                        "otherwise linking errors might occur..."));
+                        "otherwise linking errors might occur..."),
+                        _("Notice"),
+                        wxICON_EXCLAMATION);
     }
 
     if (!m_pProject)
     {
         // only do it for global compiler options
         // why does it crash for project compiler options???
-        m_LastCompilerIdx = idx;
-        DoUpdateCompiler();
+        DoSaveCompilerPrograms(idx);
     }
     
 	//others

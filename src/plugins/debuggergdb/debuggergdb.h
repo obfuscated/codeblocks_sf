@@ -25,6 +25,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 		void OnAttach(); // fires when the plugin is attached to the application
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
 	protected:
+        void ConvertToGDBFriendly(wxString& str);
 		int Debug();
 		void CmdContinue();
 		void CmdNext();
@@ -90,6 +91,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 		wxRect m_EvalRect;
 		wxTimer m_TimerPollDebugger;
 		DebuggerTree* m_pTree;
+		bool m_NoDebugInfo;
 		
 		DECLARE_EVENT_TABLE()
 };

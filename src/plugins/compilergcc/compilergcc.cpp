@@ -689,7 +689,7 @@ int CompilerGCC::DoRunQueue()
     {
         m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxWHITE, *wxRED));
         msgMan->Log(m_PageIndex, _("Command execution failed..."));
-//        msgMan->Log(m_PageIndex, _("Execution of '%s' in '%s' failed."), m_Queue[m_QueueIndex].c_str(), dir.c_str());
+        msgMan->DebugLog(_("Execution of '%s' in '%s' failed."), m_Queue[m_QueueIndex].c_str(), wxGetCwd().c_str());
 		m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLACK, *wxWHITE));
         delete m_Process;
         m_Process = NULL;

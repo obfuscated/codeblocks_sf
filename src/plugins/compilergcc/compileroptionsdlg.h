@@ -43,8 +43,9 @@ class CompilerOptionsDlg : public wxDialog
 		void DoSaveOptions(int compilerIdx, ScopeTreeData* data = 0L);
 		void DoLoadOptions(int compilerIdx, ScopeTreeData* data = 0L);
 		void DoMakeRelative(wxFileName& path);
-		void DoUpdateCompiler();
+		void DoSaveCompilerPrograms(int compilerIdx);
 		void CompilerChanged(ScopeTreeData* data);
+		void UpdateCompilerForTargets(int compilerIdx);
 
 		void OnTreeSelectionChange(wxTreeEvent& event);
 		void OnTreeSelectionChanging(wxTreeEvent& event);

@@ -63,6 +63,8 @@ bool CreateDirRecursively(const wxString& full_path, int perms)
 
 wxString UnixFilename(const wxString& filename)
 {
+    if (filename.IsEmpty())
+        return wxEmptyString;
     wxString unixname = filename;
 #ifndef __WXMSW__
     unixname.Replace("\\", "/");

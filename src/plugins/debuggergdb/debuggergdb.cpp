@@ -105,7 +105,8 @@ DebuggerGDB::DebuggerGDB()
 	m_TargetIndex(-1),
 	m_Pid(0),
 	m_EvalWin(0L),
-	m_pTree(0L)
+	m_pTree(0L),
+	m_NoDebugInfo(false)
 {
 	m_PluginInfo.name = "DebuggerGDB";
 	m_PluginInfo.title = "GDB Debugger";
@@ -331,7 +332,8 @@ int DebuggerGDB::Debug()
 {
 	if (m_pProcess)
 		return 1;
-	
+    m_NoDebugInfo = false;
+
 	ProjectManager* prjMan = Manager::Get()->GetProjectManager();
 	cbProject* project = prjMan->GetActiveProject();
 	if (!project)
@@ -413,6 +415,7 @@ int DebuggerGDB::Debug()
 	else
 		msgMan->Log(m_PageIndex, _("done"));
 	
+	wxString out;
 	m_TimerPollDebugger.Start(100);
 	SendCommand("set confirm off");
 	cmd.Clear();
@@ -421,7 +424,9 @@ int DebuggerGDB::Debug()
 		case ttExecutable:
 		case ttConsoleOnly:
 			// "-async" option is not really supported, at least under Win32, as far as I know
-			cmd << "file " << UnixFilename(target->GetOutputFilename());
+			out = UnixFilename(target->GetOutputFilename());
+			ConvertToGDBFriendly(out);
+			cmd << "file " << out;
 			// dll debugging steps:
 			// gdb <hostapp>
 			// (gdb) add-symbol-file <dllname> (and any other dlls the same way)
@@ -437,12 +442,16 @@ int DebuggerGDB::Debug()
 				CmdStop();
 				return 4;
 			}
-			cmd << "file " << UnixFilename(target->GetHostApplication());
+			out = UnixFilename(target->GetHostApplication());
+			ConvertToGDBFriendly(out);
+			cmd << "file " << out;
 			SendCommand(cmd);
 			if (target->GetTargetType() == ttDynamicLib)
 			{
 				wxString symbols;
-				symbols << "add-symbol-file " << UnixFilename(target->GetOutputFilename());
+				out = UnixFilename(target->GetOutputFilename());
+                ConvertToGDBFriendly(out);
+				symbols << "add-symbol-file " << out;
 				SendCommand(symbols);
 			}
 			break;
@@ -464,6 +473,7 @@ int DebuggerGDB::Debug()
     if (!path.IsEmpty())
     {
         cmd.Clear();
+        ConvertToGDBFriendly(path);
         cmd << "cd " << path;
         SendCommand(cmd);
     }
@@ -472,11 +482,26 @@ int DebuggerGDB::Debug()
 	return 0;
 }
 
+void DebuggerGDB::ConvertToGDBFriendly(wxString& str)
+{
+    if (str.IsEmpty())
+        return;
+
+    for (unsigned int i = 0; i < str.Length(); ++i)
+    {
+        if (str[i] == ' ' && (i > 0 && str[i - 1] != '\\'))
+            str.insert(i, '\\');
+        else if (str[i] == '\\' && (i < str.Length() - 1 && str[i + 1] != ' '))
+            str[i] = '/';
+    }
+    str.Replace("\\\\", "/");
+}
+
 void DebuggerGDB::SendCommand(const wxString& cmd)
 {
     if (!m_pProcess || !m_ProgramIsStopped)
         return;
-	//Manager::Get()->GetMessageManager()->Log(m_PageIndex, cmd);
+	Manager::Get()->GetMessageManager()->Log(m_DbgPageIndex, "> " + cmd);
 	m_pProcess->SendString(cmd);
 }
 
@@ -616,7 +641,10 @@ void DebuggerGDB::ParseOutput(const wxString& output)
 		}
 		else if (buffer.StartsWith("error-begin"))
 		{
-			Manager::Get()->GetMessageManager()->Log(m_PageIndex, GetNextOutputLineClean(true));
+            wxString error = GetNextOutputLineClean(true);
+			Manager::Get()->GetMessageManager()->Log(m_PageIndex, error);
+			if (error.StartsWith("No symbol table is loaded."))
+                m_NoDebugInfo = true;
 			//CmdStop();
 		}
 
@@ -978,6 +1006,14 @@ void DebuggerGDB::OnGDBTerminated(wxCommandEvent& event)
 
 	ClearActiveMarkFromAllEditors();
 	Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Debugger finished with status %d"), m_LastExitCode);
+	
+	if (m_NoDebugInfo)
+	{
+        wxMessageBox(_("This project/target has no debugging info."
+                        "Please change this in the project's build options and retry..."),
+                        _("Error"),
+                        wxICON_STOP);
+	}
 }
 
 void DebuggerGDB::OnBreakpointAdded(CodeBlocksEvent& event)

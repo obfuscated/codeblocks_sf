@@ -572,8 +572,8 @@ void MainFrame::CreateMenubar()
 
 	Manager::Get()->GetToolsManager()->BuildToolsMenu(m_ToolsMenu);
 
-    InitializeRecentFilesHistory();
 	SetMenuBar(mbar);
+    InitializeRecentFilesHistory();
 }
 
 void MainFrame::CreateToolbars()
