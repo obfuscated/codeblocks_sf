@@ -324,6 +324,9 @@ cbEditor* EditorManager::New()
 
 	ed->SetColorSet(m_Theme);
     m_EditorsList.Append(ed);
+    #ifdef use_openedfilestree
+    AddFiletoTree(ed);
+    #endif
 	ed->Show(true);
     //SetSelection(ed->GetPageIndex());
     return ed;

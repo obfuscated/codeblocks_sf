@@ -427,49 +427,71 @@ cbProject* ProjectManager::IsOpen(const wxString& filename)
 cbProject* ProjectManager::LoadProject(const wxString& filename)
 {
     SANITY_CHECK(0L);
-
+    cbProject* result = 0;
+    
     // disallow application shutdown while opening files
     // WARNING: remember to set it to true, when exiting this function!!!
     s_CanShutdown = false;
-
+    
 	cbProject* project = IsOpen(filename);
-	if (project)
+	
+	Manager::Get()->GetAppWindow()->GetClientWindow()->Hide();
+	// Freeze child windows' flickery display
+	
+	// "Try" block (loop which only gets executed once)
+	// These blocks are extremely useful in constructs that need 
+	// premature exits. Instead of having multiple return points,
+	// multiple return values and/or gotos, 
+	// you just break out of the loop (which only gets executed once) to exit.
+	do 
 	{
+        if (project)
+        {
+            if (m_pWorkspace)
+                m_pWorkspace->SetModified(true);
+            // we 're done
+            result = project;
+            break;
+        }
+        project = new cbProject(filename);	
+        if(!sanity_check()) 
+            break; // sanity check
+        // We need to do this because creating cbProject allows the app to be
+        // closed in the middle of the operation. So the class destructor gets
+        // called in the middle of a method call.
+        
+        if (!project->IsLoaded())
+        {
+            delete project;
+            break;
+        }
+        
+        if(!sanity_check()) 
+            break; // sanity check
+            
+        m_pProjects->Add(project);
+        SetProject(project);
+        if(!sanity_check()) 
+            break; // sanity check
+            
+        project->LoadLayout();
+        if(!sanity_check()) 
+            break; // sanity check
+        project->RestoreTreeState(m_pTree);
         if (m_pWorkspace)
             m_pWorkspace->SetModified(true);
         // we 're done
-        s_CanShutdown = true;
-		return project;
-	}
-	project = new cbProject(filename);	
-	if(!sanity_check()) goto SanityExit; // sanity check
-	// We need to do this because creating cbProject allows the app to be
-	// closed in the middle of the operation. So the class destructor gets
-	// called in the middle of a method call.
-	
-	if (!project->IsLoaded())
-	{
-        delete project;
-		goto SanityExit;
-    }
-	
-    if(!sanity_check()) goto SanityExit; // sanity check
-    m_pProjects->Add(project);
-	SetProject(project);
-	if(!sanity_check()) goto SanityExit; // sanity check
-	project->LoadLayout();
-	if(!sanity_check()) goto SanityExit; // sanity check
-	project->RestoreTreeState(m_pTree);
-    if (m_pWorkspace)
-        m_pWorkspace->SetModified(true);
+    
+        result = project;
+        break;
+    }while(false);
     // we 're done
-    s_CanShutdown = true;
-    return project;
 
-SanityExit:
-    // we 're done
+	// Restore child windows' display
+	Manager::Get()->GetAppWindow()->GetClientWindow()->Show();
+	
     s_CanShutdown = true;
-    return 0;
+    return result;
 }
 
 cbProject* ProjectManager::NewProject()
