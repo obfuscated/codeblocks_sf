@@ -2,6 +2,7 @@
 #define COMPILER_H
 
 #include <wx/string.h>
+#include <wx/filename.h>
 #include "compileoptionsbase.h"
 #include "compileroptions.h"
 
@@ -59,6 +60,12 @@ enum CompilerBuildMethod
 {
     cbmUseMake,
     cbmDirect
+};
+
+enum AutoDetectResult
+{
+    adrDetected,
+    adrGuessed
 };
 
 /// Struct to keep programs
@@ -144,6 +151,7 @@ class DLLIMPORT Compiler : public CompileOptionsBase
 
         void SaveSettings(const wxString& baseKey);
         void LoadSettings(const wxString& baseKey);
+        virtual AutoDetectResult AutoDetectInstallationDir() = 0;
 
         long GetID() const { return m_ID; }
         long GetParentID() const { return m_ParentID; }

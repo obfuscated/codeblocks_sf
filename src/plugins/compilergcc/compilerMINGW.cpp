@@ -1,21 +1,20 @@
 #include "compilerMINGW.h"
 #include <wx/intl.h>
 #include <wx/regex.h>
+#include <wx/config.h>
+#include <wx/fileconf.h>
+#include <wx/msgdlg.h>
 
 CompilerMINGW::CompilerMINGW()
     : Compiler(_("MinGW Compiler Suite"))
 {
 #ifdef __WXMSW__
-	m_MasterPath = "C:\\MinGW";
-	
 	m_Programs.C = "mingw32-gcc.exe";
 	m_Programs.CPP = "mingw32-g++.exe";
 	m_Programs.LD = "mingw32-g++.exe";
 	m_Programs.WINDRES = "windres.exe";
 	m_Programs.MAKE = "mingw32-make.exe";
 #else
-	m_MasterPath = "/usr";
-	
 	m_Programs.C = "gcc";
 	m_Programs.CPP = "g++";
 	m_Programs.LD = "g++";
@@ -66,6 +65,25 @@ CompilerMINGW::~CompilerMINGW()
 Compiler * CompilerMINGW::CreateCopy()
 {
     return new CompilerMINGW(*this);
+}
+
+AutoDetectResult CompilerMINGW::AutoDetectInstallationDir()
+{
+#ifdef __WXMSW__
+    // search for MinGW installation dir
+    wxString windir = wxGetOSDirectory();
+    wxFileConfig ini("", "", windir + "/MinGW.ini", "", wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_NO_ESCAPE_CHARACTERS);
+	m_MasterPath = ini.Read("/InstallSettings/InstallPath", "C:\\MinGW");
+#else
+    m_MasterPath = "/usr";
+#endif
+    wxString sep = wxFileName::GetPathSeparator();
+    if (!m_MasterPath.IsEmpty())
+    {
+        m_IncludeDirs.Add(m_MasterPath + sep + "include");
+        m_LibDirs.Add(m_MasterPath + sep + "lib");
+    }
+    return wxFileExists(m_MasterPath + sep + "bin" + sep + m_Programs.C) ? adrDetected : adrGuessed;
 }
 
 Compiler::CompilerLineType CompilerMINGW::CheckForWarningsAndErrors(const wxString& line)

@@ -9,6 +9,7 @@ class CompilerBCC : public Compiler
 		CompilerBCC();
 		virtual ~CompilerBCC();
 		virtual Compiler::CompilerLineType CheckForWarningsAndErrors(const wxString& line);
+        virtual AutoDetectResult AutoDetectInstallationDir();
 	protected:
         Compiler * CreateCopy();
 	private:

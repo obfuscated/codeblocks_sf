@@ -5,19 +5,11 @@
 CompilerMSVC::CompilerMSVC()
     : Compiler(_("Microsoft Visual C++ Toolkit 2003"))
 {
-	m_MasterPath = "C:\\Program Files\\Microsoft Visual C++ Toolkit 2003";
-	
 	m_Programs.C = "cl.exe";
 	m_Programs.CPP = "cl.exe";
 	m_Programs.LD = "link.exe";
 	m_Programs.WINDRES = "rc.exe"; // platform SDK is needed for this
 	m_Programs.MAKE = "mingw32-make.exe";
-	
-	// add default dirs
-	m_IncludeDirs.Add("C:\\Program Files\\Microsoft Visual C++ Toolkit 2003\\include");
-	m_IncludeDirs.Add("C:\\Program Files\\Microsoft SDK\\include");
-	m_LibDirs.Add("C:\\Program Files\\Microsoft Visual C++ Toolkit 2003\\lib");
-	m_LibDirs.Add("C:\\Program Files\\Microsoft SDK\\lib");
 	
 	m_Switches.includeDirs = "/I";
 	m_Switches.libDirs = "/LIBPATH:";
@@ -83,6 +75,24 @@ CompilerMSVC::~CompilerMSVC()
 Compiler * CompilerMSVC::CreateCopy()
 {
     return new CompilerMSVC(*this);
+}
+
+AutoDetectResult CompilerMSVC::AutoDetectInstallationDir()
+{
+    // just a guess; the default installation dir
+	m_MasterPath = "C:\\Program Files\\Microsoft Visual C++ Toolkit 2003";
+    wxString sep = wxFileName::GetPathSeparator();
+    if (!m_MasterPath.IsEmpty())
+    {
+        m_IncludeDirs.Add(m_MasterPath + sep + "include");
+        m_LibDirs.Add(m_MasterPath + sep + "lib");
+    
+        // add include dirs for MS Platform SDK too
+        m_IncludeDirs.Add("C:\\Program Files\\Microsoft SDK\\include");
+        m_LibDirs.Add("C:\\Program Files\\Microsoft SDK\\lib");
+    }
+
+    return wxFileExists(m_MasterPath + sep + "bin" + sep + m_Programs.C) ? adrDetected : adrGuessed;
 }
 
 Compiler::CompilerLineType CompilerMSVC::CheckForWarningsAndErrors(const wxString& line)

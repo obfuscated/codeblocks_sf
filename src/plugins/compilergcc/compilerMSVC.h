@@ -9,6 +9,7 @@ class CompilerMSVC : public Compiler
 		CompilerMSVC();
 		virtual ~CompilerMSVC();
 		virtual Compiler::CompilerLineType CheckForWarningsAndErrors(const wxString& line);
+        virtual AutoDetectResult AutoDetectInstallationDir();
 	protected:
         Compiler * CreateCopy();
 	private:

@@ -5,17 +5,11 @@
 CompilerBCC::CompilerBCC()
     : Compiler(_("Borland C++ Compiler 5.5"))
 {
-	m_MasterPath = "C:\\Borland\\BCC55";
-	
 	m_Programs.C = "bcc32.exe";
 	m_Programs.CPP = "bcc32.exe";
 	m_Programs.LD = "ilink32.exe";
 	m_Programs.WINDRES = "brcc32.exe"; // platform SDK is needed for this
 	m_Programs.MAKE = "mingw32-make.exe";
-	
-	// add default dirs
-	m_IncludeDirs.Add("C:\\Borland\\BCC55\\include");
-	m_LibDirs.Add("C:\\Borland\\BCC55\\lib");
 	
 	m_Switches.includeDirs = "-I";
 	m_Switches.libDirs = "-L";
@@ -56,6 +50,20 @@ CompilerBCC::~CompilerBCC()
 Compiler * CompilerBCC::CreateCopy()
 {
     return new CompilerBCC(*this);
+}
+
+AutoDetectResult CompilerBCC::AutoDetectInstallationDir()
+{
+    // just a guess; the default installation dir
+	m_MasterPath = "C:\\Borland\\BCC55";
+    wxString sep = wxFileName::GetPathSeparator();
+    if (!m_MasterPath.IsEmpty())
+    {
+        m_IncludeDirs.Add(m_MasterPath + sep + "include");
+        m_LibDirs.Add(m_MasterPath + sep + "lib");
+    }
+
+    return wxFileExists(m_MasterPath + sep + "bin" + sep + m_Programs.C) ? adrDetected : adrGuessed;
 }
 
 Compiler::CompilerLineType CompilerBCC::CheckForWarningsAndErrors(const wxString& line)

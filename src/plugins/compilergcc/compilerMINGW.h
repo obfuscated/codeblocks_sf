@@ -9,6 +9,7 @@ class CompilerMINGW : public Compiler
 		CompilerMINGW();
 		virtual ~CompilerMINGW();
 		virtual Compiler::CompilerLineType CheckForWarningsAndErrors(const wxString& line);
+        virtual AutoDetectResult AutoDetectInstallationDir();
     protected:
         virtual Compiler* CreateCopy();
 	private:

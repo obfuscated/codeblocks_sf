@@ -4,7 +4,7 @@
 #include "configmanager.h"
 #include "globals.h"
 #include <wx/intl.h>
-#include <wx/filename.h>
+#include <wx/msgdlg.h>
 
 wxString Compiler::CommandTypeDescriptions[COMPILER_COMMAND_TYPES_COUNT] =
 {
@@ -139,4 +139,21 @@ void Compiler::LoadSettings(const wxString& baseKey)
     m_Switches.forceLinkerUseQuotes = ConfigManager::Get()->Read(tmp + "/switches/forceLinkerQuotes", m_Switches.forceLinkerUseQuotes);
     m_Switches.logging = (CompilerLoggingType)ConfigManager::Get()->Read(tmp + "/switches/logging", m_Switches.logging);
     m_Switches.buildMethod = (CompilerBuildMethod)ConfigManager::Get()->Read(tmp + "/switches/buildMethod", m_Switches.buildMethod);
+
+//    if (m_MasterPath.IsEmpty())
+//    {
+//        wxString msg;
+//        AutoDetectResult adr = AutoDetectInstallationDir();
+//        if (adr == adrDetected)
+//            msg.Printf(_("Auto-detected %s installation at %s"), m_Name.c_str(), m_MasterPath.c_str());
+//        else
+//            msg.Printf(_("Could not detect a valid %s installation. Will configure it for the "
+//                         "default %s installation directory, %s.\n"
+//                         "If %s is already installed at a different path or you plan to install it "
+//                         "later, you can configure it under \"Settings/Configure plugins/Compiler/Programs\"..."),
+//                         m_Name.c_str(),
+//                         m_MasterPath.c_str(),
+//                         m_Name.c_str());
+//        wxMessageBox(msg, m_Name);
+//    }
 }
