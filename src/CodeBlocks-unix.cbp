@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE Code::Blocks_project_file>
 <Code::Blocks_project_file>
+	<FileVersion major="1" minor="1"/>
 	<Project>
 		<Option title="Code::Blocks (Linux)"/>
 		<Option makefile="Makefile.unix"/>
@@ -29,13 +30,11 @@
 					<Add option="-DEXPORT_LIB"/>
 					<Add option="-DEXPORT_EVENTS"/>
 					<Add option="-D_USRDLL"/>
+					<Add directory="sdk/tinyxml"/>
 				</Compiler>
 				<Linker>
-					<Add option="-ltxml"/>
+					<Add library="libtxml.a"/>
 				</Linker>
-				<IncludeDirs>
-					<Add option="sdk/tinyxml"/>
-				</IncludeDirs>
 			</Target>
 			<Target title="src">
 				<Option output="devel\codeblocks.exe"/>
@@ -50,18 +49,14 @@
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
 					<Add option="-DENABLE_BINRELOC"/>
+					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
-					<Add option="-lcodeblocks"/>
-					<Add option="-l$(LIB_WXXRC)"/>
-					<Add option="-l$(LIB_WXSTC)"/>
+					<Add library="libcodeblocks.a"/>
+					<Add library="lib$(LIB_WXXRC).a"/>
+					<Add library="lib$(LIB_WXSTC).a"/>
+					<Add directory="devel"/>
 				</Linker>
-				<IncludeDirs>
-					<Add option="sdk"/>
-				</IncludeDirs>
-				<LibDirs>
-					<Add option="devel"/>
-				</LibDirs>
 			</Target>
 			<Target title="plugin_Astyle">
 				<Option output="devel\share\CodeBlocks\plugins\libastyle.so"/>
@@ -74,19 +69,15 @@
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
+					<Add directory="sdk"/>
+					<Add directory="plugins\astyle\astyle"/>
 				</Compiler>
 				<Linker>
-					<Add option="-lcodeblocks"/>
-					<Add option="-l$(LIB_WXXRC)"/>
-					<Add option="-l$(LIB_WXSTC)"/>
+					<Add library="libcodeblocks.a"/>
+					<Add library="lib$(LIB_WXXRC).a"/>
+					<Add library="lib$(LIB_WXSTC).a"/>
+					<Add directory="devel"/>
 				</Linker>
-				<IncludeDirs>
-					<Add option="sdk"/>
-					<Add option="plugins\astyle\astyle"/>
-				</IncludeDirs>
-				<LibDirs>
-					<Add option="devel"/>
-				</LibDirs>
 			</Target>
 			<Target title="plugin_CompilerGCC">
 				<Option output="devel\share\CodeBlocks\plugins\libcompilergcc.so"/>
@@ -101,18 +92,14 @@
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
+					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
-					<Add option="-lcodeblocks"/>
-					<Add option="-l$(LIB_WXXRC)"/>
-					<Add option="-l$(LIB_WXSTC)"/>
+					<Add library="libcodeblocks.a"/>
+					<Add library="lib$(LIB_WXXRC).a"/>
+					<Add library="lib$(LIB_WXSTC).a"/>
+					<Add directory="devel"/>
 				</Linker>
-				<IncludeDirs>
-					<Add option="sdk"/>
-				</IncludeDirs>
-				<LibDirs>
-					<Add option="devel"/>
-				</LibDirs>
 			</Target>
 			<Target title="plugin_DebuggerGDB">
 				<Option output="devel\share\CodeBlocks\plugins\libdebuggergdb.so"/>
@@ -127,18 +114,14 @@
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
+					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
-					<Add option="-lcodeblocks"/>
-					<Add option="-l$(LIB_WXXRC)"/>
-					<Add option="-l$(LIB_WXSTC)"/>
+					<Add library="libcodeblocks.a"/>
+					<Add library="lib$(LIB_WXXRC).a"/>
+					<Add library="lib$(LIB_WXSTC).a"/>
+					<Add directory="devel"/>
 				</Linker>
-				<IncludeDirs>
-					<Add option="sdk"/>
-				</IncludeDirs>
-				<LibDirs>
-					<Add option="devel"/>
-				</LibDirs>
 			</Target>
 			<Target title="plugin_CodeCompletion">
 				<Option output="devel\share\CodeBlocks\plugins\libcodecompletion.so"/>
@@ -153,18 +136,14 @@
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
+					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
-					<Add option="-lcodeblocks"/>
-					<Add option="-l$(LIB_WXXRC)"/>
-					<Add option="-l$(LIB_WXSTC)"/>
+					<Add library="libcodeblocks.a"/>
+					<Add library="lib$(LIB_WXXRC).a"/>
+					<Add library="lib$(LIB_WXSTC).a"/>
+					<Add directory="devel"/>
 				</Linker>
-				<IncludeDirs>
-					<Add option="sdk"/>
-				</IncludeDirs>
-				<LibDirs>
-					<Add option="devel"/>
-				</LibDirs>
 			</Target>
 			<Target title="plugin_ClassWizard">
 				<Option output="devel\share\CodeBlocks\plugins\libclasswizard.so"/>
@@ -179,18 +158,14 @@
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
+					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
-					<Add option="-lcodeblocks"/>
-					<Add option="-l$(LIB_WXXRC)"/>
-					<Add option="-l$(LIB_WXSTC)"/>
+					<Add library="libcodeblocks.a"/>
+					<Add library="lib$(LIB_WXXRC).a"/>
+					<Add library="lib$(LIB_WXSTC).a"/>
+					<Add directory="devel"/>
 				</Linker>
-				<IncludeDirs>
-					<Add option="sdk"/>
-				</IncludeDirs>
-				<LibDirs>
-					<Add option="devel"/>
-				</LibDirs>
 			</Target>
 			<Target title="plugin_PluginsWizard">
 				<Option output="devel\share\CodeBlocks\plugins\libpluginwizard.so"/>
@@ -205,18 +180,14 @@
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
+					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
-					<Add option="-lcodeblocks"/>
-					<Add option="-l$(LIB_WXXRC)"/>
-					<Add option="-l$(LIB_WXSTC)"/>
+					<Add library="libcodeblocks.a"/>
+					<Add library="lib$(LIB_WXXRC).a"/>
+					<Add library="lib$(LIB_WXSTC).a"/>
+					<Add directory="devel"/>
 				</Linker>
-				<IncludeDirs>
-					<Add option="sdk"/>
-				</IncludeDirs>
-				<LibDirs>
-					<Add option="devel"/>
-				</LibDirs>
 			</Target>
 			<Target title="plugin_ToDo">
 				<Option output="devel\share\CodeBlocks\plugins\libtodo.so"/>
@@ -229,16 +200,12 @@
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
+					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
-					<Add option="-lcodeblocks"/>
+					<Add library="libcodeblocks.a"/>
+					<Add directory="devel"/>
 				</Linker>
-				<IncludeDirs>
-					<Add option="sdk"/>
-				</IncludeDirs>
-				<LibDirs>
-					<Add option="devel"/>
-				</LibDirs>
 			</Target>
 			<Target title="plugin_XPManifest">
 				<Option output="devel\share\CodeBlocks\plugins\libxpmanifest.so"/>
@@ -253,16 +220,12 @@
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
+					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
-					<Add option="-lcodeblocks"/>
+					<Add library="libcodeblocks.a"/>
+					<Add directory="devel"/>
 				</Linker>
-				<IncludeDirs>
-					<Add option="sdk"/>
-				</IncludeDirs>
-				<LibDirs>
-					<Add option="devel"/>
-				</LibDirs>
 			</Target>
 			<Target title="update">
 				<Option output="/home/mandrav/sandbox/codeblocks/src/CodeBlocks-unix"/>
@@ -298,10 +261,8 @@
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`"/>
+			<Add directory="sdk/tinyxml"/>
 		</Linker>
-		<LibDirs>
-			<Add option="sdk/tinyxml"/>
-		</LibDirs>
 		<Unit filename="devel\share\CodeBlocks\images\codecompletion\README.txt">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
@@ -348,11 +309,41 @@
 			<Option link="0"/>
 			<Option target="plugin_CompilerGCC"/>
 		</Unit>
+		<Unit filename="plugins/compilergcc/compilerDMC.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/compilerDMC.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
 		<Unit filename="plugins/compilergcc/directcommands.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="plugin_CompilerGCC"/>
 		</Unit>
 		<Unit filename="plugins/compilergcc/directcommands.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/directdeps.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/directdeps.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/linklibdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/linklibdlg.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -991,11 +982,73 @@
 			<Option link="0"/>
 			<Option target="sdk"/>
 		</Unit>
+		<Unit filename="sdk/cbworkspace.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk/cbworkspace.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk/ibaseworkspaceloader.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk/importers_globals.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk/importers_globals.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
 		<Unit filename="sdk/msvc7loader.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk/msvc7loader.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk/msvc7workspaceloader.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk/msvc7workspaceloader.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk/msvcworkspaceloader.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk/msvcworkspaceloader.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk/sanitycheck.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk/xtra_res.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk/xtra_res.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

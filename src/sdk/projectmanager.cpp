@@ -231,9 +231,11 @@ ProjectManager::~ProjectManager()
     }
     m_pProjects->Clear();
     
-    delete m_pProjects;m_pProjects = NULL;
-    delete m_pImages;m_pImages = NULL;
-	delete m_pFileGroups;m_pFileGroups = NULL;
+    delete m_pProjects;m_pProjects = 0;
+    delete m_pImages;m_pImages = 0;
+	delete m_pFileGroups;m_pFileGroups = 0;
+
+	delete m_pTree; m_pTree = 0;
 
 	SC_DESTRUCTOR_END
 }

@@ -95,18 +95,18 @@ console_runner_LDADD= $(GLOBAL_LIBS) $(PROJECT_LIBS)
 tinyXML_OBJS=sdk/tinyxml/.objs/tinystr.o sdk/tinyxml/.objs/tinyxml.o sdk/tinyxml/.objs/tinyxmlerror.o sdk/tinyxml/.objs/tinyxmlparser.o 
 tinyXML_LINKOBJS=$(tinyXML_OBJS) $(tinyXML_RESOURCE)
 tinyXML_DEPS=sdk/tinyxml/.deps/tinystr.d sdk/tinyxml/.deps/tinyxml.d sdk/tinyxml/.deps/tinyxmlerror.d sdk/tinyxml/.deps/tinyxmlparser.d 
-sdk_OBJS=sdk/.objs/autodetectcompilers.o sdk/.objs/msvc7loader.o sdk/Managers/.objs/Managers.o sdk/Managers/.objs/StdAfx.o sdk/.objs/cbeditor.o sdk/.objs/cbplugin.o sdk/.objs/cbproject.o sdk/.objs/compileoptionsbase.o sdk/.objs/compiler.o sdk/.objs/compilerfactory.o sdk/.objs/compileroptions.o sdk/.objs/compiletargetbase.o sdk/.objs/configmanager.o sdk/.objs/configuretoolsdlg.o sdk/.objs/confirmreplacedlg.o sdk/.objs/devcpploader.o sdk/.objs/editarrayfiledlg.o sdk/.objs/editarrayorderdlg.o sdk/.objs/editarraystringdlg.o sdk/.objs/editorcolorset.o sdk/.objs/editorconfigurationdlg.o sdk/.objs/editormanager.o sdk/.objs/edittooldlg.o sdk/.objs/filegroupsandmasks.o sdk/.objs/finddlg.o sdk/.objs/globals.o sdk/.objs/incrementalselectlistdlg.o sdk/.objs/macrosmanager.o sdk/.objs/manager.o sdk/.objs/menuitemsmanager.o sdk/.objs/messagelog.o sdk/.objs/messagemanager.o sdk/.objs/msvcloader.o sdk/.objs/newfromtemplatedlg.o sdk/.objs/pipedprocess.o sdk/.objs/pluginmanager.o sdk/.objs/pluginsconfigurationdlg.o sdk/.objs/projectbuildtarget.o sdk/.objs/projectfileoptionsdlg.o sdk/.objs/projectlayoutloader.o sdk/.objs/projectloader.o sdk/.objs/projectmanager.o sdk/.objs/projectoptionsdlg.o sdk/.objs/projectsfilemasksdlg.o sdk/.objs/projecttemplateloader.o sdk/.objs/replacedlg.o sdk/.objs/sdk_events.o sdk/.objs/selecttargetdlg.o sdk/.objs/simplelistlog.o sdk/.objs/simpletextlog.o sdk/.objs/templatemanager.o sdk/.objs/toolsmanager.o sdk/.objs/workspaceloader.o sdk/.objs/multiselectdlg.o
+sdk_OBJS=sdk/.objs/importers_globals.o sdk/.objs/cbworkspace.o sdk/.objs/msvcworkspaceloader.o sdk/.objs/msvc7workspaceloader.o sdk/.objs/xtra_res.o sdk/.objs/autodetectcompilers.o sdk/.objs/msvc7loader.o sdk/Managers/.objs/Managers.o sdk/Managers/.objs/StdAfx.o sdk/.objs/cbeditor.o sdk/.objs/cbplugin.o sdk/.objs/cbproject.o sdk/.objs/compileoptionsbase.o sdk/.objs/compiler.o sdk/.objs/compilerfactory.o sdk/.objs/compileroptions.o sdk/.objs/compiletargetbase.o sdk/.objs/configmanager.o sdk/.objs/configuretoolsdlg.o sdk/.objs/confirmreplacedlg.o sdk/.objs/devcpploader.o sdk/.objs/editarrayfiledlg.o sdk/.objs/editarrayorderdlg.o sdk/.objs/editarraystringdlg.o sdk/.objs/editorcolorset.o sdk/.objs/editorconfigurationdlg.o sdk/.objs/editormanager.o sdk/.objs/edittooldlg.o sdk/.objs/filegroupsandmasks.o sdk/.objs/finddlg.o sdk/.objs/globals.o sdk/.objs/incrementalselectlistdlg.o sdk/.objs/macrosmanager.o sdk/.objs/manager.o sdk/.objs/menuitemsmanager.o sdk/.objs/messagelog.o sdk/.objs/messagemanager.o sdk/.objs/msvcloader.o sdk/.objs/newfromtemplatedlg.o sdk/.objs/pipedprocess.o sdk/.objs/pluginmanager.o sdk/.objs/pluginsconfigurationdlg.o sdk/.objs/projectbuildtarget.o sdk/.objs/projectfileoptionsdlg.o sdk/.objs/projectlayoutloader.o sdk/.objs/projectloader.o sdk/.objs/projectmanager.o sdk/.objs/projectoptionsdlg.o sdk/.objs/projectsfilemasksdlg.o sdk/.objs/projecttemplateloader.o sdk/.objs/replacedlg.o sdk/.objs/sdk_events.o sdk/.objs/selecttargetdlg.o sdk/.objs/simplelistlog.o sdk/.objs/simpletextlog.o sdk/.objs/templatemanager.o sdk/.objs/toolsmanager.o sdk/.objs/workspaceloader.o sdk/.objs/multiselectdlg.o
 sdk_LINKOBJS=$(sdk_OBJS) $(sdk_RESOURCE)
-sdk_DEPS=sdk/.deps/autodetectcompilers.d sdk/.deps/msvc7loader.d sdk/Managers/.deps/Managers.d sdk/Managers/.deps/StdAfx.d sdk/.deps/cbeditor.d sdk/.deps/cbplugin.d sdk/.deps/cbproject.d sdk/.deps/compileoptionsbase.d sdk/.deps/compiler.d sdk/.deps/compilerfactory.d sdk/.deps/compileroptions.d sdk/.deps/compiletargetbase.d sdk/.deps/configmanager.d sdk/.deps/configuretoolsdlg.d sdk/.deps/confirmreplacedlg.d sdk/.deps/devcpploader.d sdk/.deps/editarrayfiledlg.d sdk/.deps/editarrayorderdlg.d sdk/.deps/editarraystringdlg.d sdk/.deps/editorcolorset.d sdk/.deps/editorconfigurationdlg.d sdk/.deps/editormanager.d sdk/.deps/edittooldlg.d sdk/.deps/filegroupsandmasks.d sdk/.deps/finddlg.d sdk/.deps/globals.d sdk/.deps/incrementalselectlistdlg.d sdk/.deps/macrosmanager.d sdk/.deps/manager.d sdk/.deps/menuitemsmanager.d sdk/.deps/messagelog.d sdk/.deps/messagemanager.d sdk/.deps/msvcloader.d sdk/.deps/newfromtemplatedlg.d sdk/.deps/pipedprocess.d sdk/.deps/pluginmanager.d sdk/.deps/pluginsconfigurationdlg.d sdk/.deps/projectbuildtarget.d sdk/.deps/projectfileoptionsdlg.d sdk/.deps/projectlayoutloader.d sdk/.deps/projectloader.d sdk/.deps/projectmanager.d sdk/.deps/projectoptionsdlg.d sdk/.deps/projectsfilemasksdlg.d sdk/.deps/projecttemplateloader.d sdk/.deps/replacedlg.d sdk/.deps/sdk_events.d sdk/.deps/selecttargetdlg.d sdk/.deps/simplelistlog.d sdk/.deps/simpletextlog.d sdk/.deps/templatemanager.d sdk/.deps/toolsmanager.d sdk/.deps/workspaceloader.d sdk/.deps/multiselectdlg.d
+sdk_DEPS=sdk/.deps/importers_globals.d sdk/.deps/cbworkspace.d sdk/.deps/msvcworkspaceloader.d sdk/.deps/msvc7workspaceloader.d sdk/.deps/xtra_res.d sdk/.deps/autodetectcompilers.d sdk/.deps/msvc7loader.d sdk/Managers/.deps/Managers.d sdk/Managers/.deps/StdAfx.d sdk/.deps/cbeditor.d sdk/.deps/cbplugin.d sdk/.deps/cbproject.d sdk/.deps/compileoptionsbase.d sdk/.deps/compiler.d sdk/.deps/compilerfactory.d sdk/.deps/compileroptions.d sdk/.deps/compiletargetbase.d sdk/.deps/configmanager.d sdk/.deps/configuretoolsdlg.d sdk/.deps/confirmreplacedlg.d sdk/.deps/devcpploader.d sdk/.deps/editarrayfiledlg.d sdk/.deps/editarrayorderdlg.d sdk/.deps/editarraystringdlg.d sdk/.deps/editorcolorset.d sdk/.deps/editorconfigurationdlg.d sdk/.deps/editormanager.d sdk/.deps/edittooldlg.d sdk/.deps/filegroupsandmasks.d sdk/.deps/finddlg.d sdk/.deps/globals.d sdk/.deps/incrementalselectlistdlg.d sdk/.deps/macrosmanager.d sdk/.deps/manager.d sdk/.deps/menuitemsmanager.d sdk/.deps/messagelog.d sdk/.deps/messagemanager.d sdk/.deps/msvcloader.d sdk/.deps/newfromtemplatedlg.d sdk/.deps/pipedprocess.d sdk/.deps/pluginmanager.d sdk/.deps/pluginsconfigurationdlg.d sdk/.deps/projectbuildtarget.d sdk/.deps/projectfileoptionsdlg.d sdk/.deps/projectlayoutloader.d sdk/.deps/projectloader.d sdk/.deps/projectmanager.d sdk/.deps/projectoptionsdlg.d sdk/.deps/projectsfilemasksdlg.d sdk/.deps/projecttemplateloader.d sdk/.deps/replacedlg.d sdk/.deps/sdk_events.d sdk/.deps/selecttargetdlg.d sdk/.deps/simplelistlog.d sdk/.deps/simpletextlog.d sdk/.deps/templatemanager.d sdk/.deps/toolsmanager.d sdk/.deps/workspaceloader.d sdk/.deps/multiselectdlg.d
 src_OBJS=src/.objs/prefix.o src/.objs/app.o src/.objs/dlgabout.o src/.objs/dlgaboutplugin.o src/.objs/environmentsettingsdlg.o src/.objs/impexpconfig.o src/.objs/main.o 
 src_LINKOBJS=$(src_OBJS) $(src_RESOURCE)
 src_DEPS=src/.deps/prefix.d src/.deps/app.d src/.deps/dlgabout.d src/.deps/dlgaboutplugin.d src/.deps/environmentsettingsdlg.d src/.deps/impexpconfig.d src/.deps/main.d 
 plugin_Astyle_OBJS=plugins/astyle/.objs/asstreamiterator.o plugins/astyle/astyle/.objs/ASBeautifier.o plugins/astyle/astyle/.objs/ASFormatter.o plugins/astyle/astyle/.objs/ASResource.o plugins/astyle/.objs/astyleconfigdlg.o plugins/astyle/.objs/astyleplugin.o plugins/astyle/.objs/formattersettings.o 
 plugin_Astyle_LINKOBJS=$(plugin_Astyle_OBJS) $(plugin_Astyle_RESOURCE)
 plugin_Astyle_DEPS=plugins/astyle/.deps/asstreamiterator.d plugins/astyle/astyle/.deps/ASBeautifier.d plugins/astyle/astyle/.deps/ASFormatter.d plugins/astyle/astyle/.deps/ASResource.d plugins/astyle/.deps/astyleconfigdlg.d plugins/astyle/.deps/astyleplugin.d plugins/astyle/.deps/formattersettings.d 
-plugin_CompilerGCC_OBJS=plugins/compilergcc/.objs/compilerBCC.o plugins/compilergcc/.objs/directcommands.o plugins/compilergcc/.objs/advancedcompileroptionsdlg.o plugins/compilergcc/.objs/compilerMINGW.o plugins/compilergcc/.objs/compilerMSVC.o plugins/compilergcc/.objs/compilererrors.o plugins/compilergcc/.objs/compilergcc.o plugins/compilergcc/.objs/compilermessages.o plugins/compilergcc/.objs/compileroptionsdlg.o plugins/compilergcc/.objs/customvars.o plugins/compilergcc/.objs/makefilegenerator.o 
+plugin_CompilerGCC_OBJS=plugins/compilergcc/.objs/directdeps.o plugins/compilergcc/.objs/linklibdlg.o plugins/compilergcc/.objs/compilerDMC.o plugins/compilergcc/.objs/compilerBCC.o plugins/compilergcc/.objs/directcommands.o plugins/compilergcc/.objs/advancedcompileroptionsdlg.o plugins/compilergcc/.objs/compilerMINGW.o plugins/compilergcc/.objs/compilerMSVC.o plugins/compilergcc/.objs/compilererrors.o plugins/compilergcc/.objs/compilergcc.o plugins/compilergcc/.objs/compilermessages.o plugins/compilergcc/.objs/compileroptionsdlg.o plugins/compilergcc/.objs/customvars.o plugins/compilergcc/.objs/makefilegenerator.o 
 plugin_CompilerGCC_LINKOBJS=$(plugin_CompilerGCC_OBJS) $(plugin_CompilerGCC_RESOURCE)
-plugin_CompilerGCC_DEPS=plugins/compilergcc/.deps/compilerBCC.d plugins/compilergcc/.deps/directcommands.d plugins/compilergcc/.deps/advancedcompileroptionsdlg.d plugins/compilergcc/.deps/compilerMINGW.d plugins/compilergcc/.deps/compilerMSVC.d plugins/compilergcc/.deps/compilererrors.d plugins/compilergcc/.deps/compilergcc.d plugins/compilergcc/.deps/compilermessages.d plugins/compilergcc/.deps/compileroptionsdlg.d plugins/compilergcc/.deps/customvars.d plugins/compilergcc/.deps/makefilegenerator.d 
+plugin_CompilerGCC_DEPS=plugins/compilergcc/.deps/directdeps.d plugins/compilergcc/.deps/linklibdlg.d plugins/compilergcc/.deps/compilerDMC.d plugins/compilergcc/.deps/compilerBCC.d plugins/compilergcc/.deps/directcommands.d plugins/compilergcc/.deps/advancedcompileroptionsdlg.d plugins/compilergcc/.deps/compilerMINGW.d plugins/compilergcc/.deps/compilerMSVC.d plugins/compilergcc/.deps/compilererrors.d plugins/compilergcc/.deps/compilergcc.d plugins/compilergcc/.deps/compilermessages.d plugins/compilergcc/.deps/compileroptionsdlg.d plugins/compilergcc/.deps/customvars.d plugins/compilergcc/.deps/makefilegenerator.d 
 plugin_DebuggerGDB_OBJS=plugins/debuggergdb/.objs/debuggergdb.o plugins/debuggergdb/.objs/debuggertree.o 
 plugin_DebuggerGDB_LINKOBJS=$(plugin_DebuggerGDB_OBJS) $(plugin_DebuggerGDB_RESOURCE)
 plugin_DebuggerGDB_DEPS=plugins/debuggergdb/.deps/debuggergdb.d plugins/debuggergdb/.deps/debuggertree.d 
@@ -979,6 +979,56 @@ sdk/.objs/workspaceloader.o: sdk/.deps/workspaceloader.d
 	-@if ! test -d ./sdk/.objs; then mkdir ./sdk/.objs; fi
 	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/workspaceloader.cpp -o sdk/.objs/workspaceloader.o
 
+sdk/.deps/msvc7workspaceloader.d: sdk/msvc7workspaceloader.cpp
+	@echo Calculating dependencies for "sdk\msvc7workspaceloader.cpp"...
+	-@if ! test -d ./sdk/.deps; then mkdir ./sdk/.deps; fi
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/msvc7workspaceloader.d -MT sdk/.objs/msvc7workspaceloader.o $(sdk_INCS) sdk/msvc7workspaceloader.cpp
+
+sdk/.objs/msvc7workspaceloader.o: sdk/.deps/msvc7workspaceloader.d
+	@echo Compiling "sdk\msvc7workspaceloader.cpp"...
+	-@if ! test -d ./sdk/.objs; then mkdir ./sdk/.objs; fi
+	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/msvc7workspaceloader.cpp -o sdk/.objs/msvc7workspaceloader.o
+
+sdk/.deps/msvcworkspaceloader.d: sdk/msvcworkspaceloader.cpp
+	@echo Calculating dependencies for "sdk\msvcworkspaceloader.cpp"...
+	-@if ! test -d ./sdk/.deps; then mkdir ./sdk/.deps; fi
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/msvcworkspaceloader.d -MT sdk/.objs/msvcworkspaceloader.o $(sdk_INCS) sdk/msvcworkspaceloader.cpp
+
+sdk/.objs/msvcworkspaceloader.o: sdk/.deps/msvcworkspaceloader.d
+	@echo Compiling "sdk\msvcworkspaceloader.cpp"...
+	-@if ! test -d ./sdk/.objs; then mkdir ./sdk/.objs; fi
+	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/msvcworkspaceloader.cpp -o sdk/.objs/msvcworkspaceloader.o
+
+sdk/.deps/cbworkspace.d: sdk/cbworkspace.cpp
+	@echo Calculating dependencies for "sdk\cbworkspace.cpp"...
+	-@if ! test -d ./sdk/.deps; then mkdir ./sdk/.deps; fi
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/cbworkspace.d -MT sdk/.objs/cbworkspace.o $(sdk_INCS) sdk/cbworkspace.cpp
+
+sdk/.objs/cbworkspace.o: sdk/.deps/cbworkspace.d
+	@echo Compiling "sdk\cbworkspace.cpp"...
+	-@if ! test -d ./sdk/.objs; then mkdir ./sdk/.objs; fi
+	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/cbworkspace.cpp -o sdk/.objs/cbworkspace.o
+
+sdk/.deps/xtra_res.d: sdk/xtra_res.cpp
+	@echo Calculating dependencies for "sdk\xtra_res.cpp"...
+	-@if ! test -d ./sdk/.deps; then mkdir ./sdk/.deps; fi
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/xtra_res.d -MT sdk/.objs/xtra_res.o $(sdk_INCS) sdk/xtra_res.cpp
+
+sdk/.objs/xtra_res.o: sdk/.deps/xtra_res.d
+	@echo Compiling "sdk\xtra_res.cpp"...
+	-@if ! test -d ./sdk/.objs; then mkdir ./sdk/.objs; fi
+	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/xtra_res.cpp -o sdk/.objs/xtra_res.o
+
+sdk/.deps/importers_globals.d: sdk/importers_globals.cpp
+	@echo Calculating dependencies for "sdk\importers_globals.cpp"...
+	-@if ! test -d ./sdk/.deps; then mkdir ./sdk/.deps; fi
+	@$(CPP) -MM $(sdk_CFLAGS) -MF sdk/.deps/importers_globals.d -MT sdk/.objs/importers_globals.o $(sdk_INCS) sdk/importers_globals.cpp
+
+sdk/.objs/importers_globals.o: sdk/.deps/importers_globals.d
+	@echo Compiling "sdk\importers_globals.cpp"...
+	-@if ! test -d ./sdk/.objs; then mkdir ./sdk/.objs; fi
+	@$(CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/importers_globals.cpp -o sdk/.objs/importers_globals.o
+
 sdk/.deps/multiselectdlg.d: sdk/multiselectdlg.cpp
 	@echo Calculating dependencies for "sdk\multiselectdlg.cpp"...
 	-@if ! test -d ./sdk/.deps; then mkdir ./sdk/.deps; fi
@@ -1158,6 +1208,36 @@ plugins/compilergcc/.objs/advancedcompileroptionsdlg.o: plugins/compilergcc/.dep
 	@echo Compiling "plugins\compilergcc\advancedcompileroptionsdlg.cpp"...
 	-@if ! test -d ./plugins/compilergcc/.objs; then mkdir ./plugins/compilergcc/.objs; fi
 	@$(CPP) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/advancedcompileroptionsdlg.cpp -o plugins/compilergcc/.objs/advancedcompileroptionsdlg.o
+
+plugins/compilergcc/.deps/directdeps.d: plugins/compilergcc/directdeps.cpp
+	@echo Calculating dependencies for "plugins\compilergcc\directdeps.cpp"...
+	-@if ! test -d ./plugins/compilergcc/.deps; then mkdir ./plugins/compilergcc/.deps; fi
+	@$(CPP) -MM $(plugin_CompilerGCC_CFLAGS) -MF plugins/compilergcc/.deps/directdeps.d -MT plugins/compilergcc/.objs/directdeps.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/directdeps.cpp
+
+plugins/compilergcc/.objs/directdeps.o: plugins/compilergcc/.deps/directdeps.d
+	@echo Compiling "plugins\compilergcc\directdeps.cpp"...
+	-@if ! test -d ./plugins/compilergcc/.objs; then mkdir ./plugins/compilergcc/.objs; fi
+	@$(CPP) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/directdeps.cpp -o plugins/compilergcc/.objs/directdeps.o
+
+plugins/compilergcc/.deps/linklibdlg.d: plugins/compilergcc/linklibdlg.cpp
+	@echo Calculating dependencies for "plugins\compilergcc\linklibdlg.cpp"...
+	-@if ! test -d ./plugins/compilergcc/.deps; then mkdir ./plugins/compilergcc/.deps; fi
+	@$(CPP) -MM $(plugin_CompilerGCC_CFLAGS) -MF plugins/compilergcc/.deps/linklibdlg.d -MT plugins/compilergcc/.objs/linklibdlg.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/linklibdlg.cpp
+
+plugins/compilergcc/.objs/linklibdlg.o: plugins/compilergcc/.deps/linklibdlg.d
+	@echo Compiling "plugins\compilergcc\linklibdlg.cpp"...
+	-@if ! test -d ./plugins/compilergcc/.objs; then mkdir ./plugins/compilergcc/.objs; fi
+	@$(CPP) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/linklibdlg.cpp -o plugins/compilergcc/.objs/linklibdlg.o
+
+plugins/compilergcc/.deps/compilerDMC.d: plugins/compilergcc/compilerDMC.cpp
+	@echo Calculating dependencies for "plugins\compilergcc\compilerDMC.cpp"...
+	-@if ! test -d ./plugins/compilergcc/.deps; then mkdir ./plugins/compilergcc/.deps; fi
+	@$(CPP) -MM $(plugin_CompilerGCC_CFLAGS) -MF plugins/compilergcc/.deps/compilerDMC.d -MT plugins/compilergcc/.objs/compilerDMC.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/compilerDMC.cpp
+
+plugins/compilergcc/.objs/compilerDMC.o: plugins/compilergcc/.deps/compilerDMC.d
+	@echo Compiling "plugins\compilergcc\compilerDMC.cpp"...
+	-@if ! test -d ./plugins/compilergcc/.objs; then mkdir ./plugins/compilergcc/.objs; fi
+	@$(CPP) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/compilerDMC.cpp -o plugins/compilergcc/.objs/compilerDMC.o
 
 plugins/compilergcc/.deps/compilerMINGW.d: plugins/compilergcc/compilerMINGW.cpp
 	@echo Calculating dependencies for "plugins\compilergcc\compilerMINGW.cpp"...
