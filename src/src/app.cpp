@@ -180,7 +180,7 @@ void CodeBlocksApp::ShowSplashScreen()
 		if (bitmap.LoadFile(GetAppPath() + "/share/CodeBlocks/images/splash.png", wxBITMAP_TYPE_PNG))
 		{
 			m_pSplash = new wxSplashScreen(bitmap,
-										wxSPLASH_CENTRE_ON_SCREEN | wxSPLASH_TIMEOUT,
+										wxSPLASH_CENTRE_ON_SCREEN,// | wxSPLASH_TIMEOUT,
 										6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
 										wxSIMPLE_BORDER);// | wxSTAY_ON_TOP);
 		}

@@ -47,7 +47,7 @@ cbProject::cbProject(const wxString& filename)
     : m_DefaultExecuteTarget(-1),
     m_Makefile(""),
     m_CustomMakefile(false),
-    m_CompilerIdx(0),
+    m_CompilerIdx(CompilerFactory::GetDefaultCompilerIndex()),
     m_Loaded(false)
 {
 	m_Files.Clear();

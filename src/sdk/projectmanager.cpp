@@ -352,7 +352,10 @@ cbProject* ProjectManager::LoadProject(const wxString& filename)
 	
 	project = new cbProject(filename);
 	if (!project->IsLoaded())
+	{
+        delete project;
 		return 0L;
+    }
 	
     m_pProjects->Add(project);
 	SetProject(project);

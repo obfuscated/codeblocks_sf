@@ -56,6 +56,7 @@ class CompilerOptionsDlg : public wxDialog
 		void OnAddVarClick(wxCommandEvent& event);
 		void OnEditVarClick(wxCommandEvent& event);
 		void OnRemoveVarClick(wxCommandEvent& event);
+		void OnSetDefaultCompilerClick(wxCommandEvent& event);
 		void OnAddCompilerClick(wxCommandEvent& event);
 		void OnEditCompilerClick(wxCommandEvent& event);
 		void OnRemoveCompilerClick(wxCommandEvent& event);

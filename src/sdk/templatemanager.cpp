@@ -41,6 +41,7 @@
 #include "cbproject.h"
 #include "globals.h"
 #include "managerproxy.h"
+#include "compilerfactory.h"
 
 int idMenuNewFromTemplate = wxNewId();
 
@@ -195,6 +196,7 @@ void TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
     cbProject* prj = Manager::Get()->GetProjectManager()->LoadProject(filename);
     if (prj)
     {
+        prj->SetCompilerIndex(CompilerFactory::GetDefaultCompilerIndex());
         for (unsigned int i = 0; i < fileset.files.GetCount(); ++i)
         {
             FileSetFile& fsf = fileset.files[i];

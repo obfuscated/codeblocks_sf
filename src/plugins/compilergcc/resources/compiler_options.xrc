@@ -19,36 +19,52 @@
                 <object class="wxPanel" name="pnlCompiler">
                   <object class="wxStaticBoxSizer">
                     <label>Selected compiler</label>
-                    <orient>wxHORIZONTAL</orient>
+                    <orient>wxVERTICAL</orient>
                     <object class="sizeritem">
                       <object class="wxComboBox" name="cmbCompiler">
                         <content/>
                         <style>wxCB_READONLY|wxCB_DROPDOWN</style>
                       </object>
                       <option>1</option>
-                      <flag>wxALL|wxEXPAND</flag>
+                      <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxButton" name="btnAddCompiler">
-                        <label>Copy</label>
+                      <object class="wxBoxSizer">
+                        <orient>wxHORIZONTAL</orient>
+                        <object class="sizeritem">
+                          <object class="wxButton" name="btnSetDefaultCompiler">
+                            <label>Set as default</label>
+                          </object>
+                          <flag>wxTOP</flag>
+                          <border>4</border>
+                        </object>
+                        <object class="spacer">
+                          <size>24,-1</size>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxButton" name="btnAddCompiler">
+                            <label>Copy</label>
+                          </object>
+                          <flag>wxTOP</flag>
+                          <border>4</border>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxButton" name="btnRenameCompiler">
+                            <label>Rename</label>
+                          </object>
+                          <flag>wxTOP</flag>
+                          <border>4</border>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxButton" name="btnDelCompiler">
+                            <label>Delete</label>
+                          </object>
+                          <flag>wxTOP|wxRIGHT</flag>
+                          <border>4</border>
+                        </object>
                       </object>
-                      <flag>wxTOP</flag>
-                      <border>4</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxButton" name="btnRenameCompiler">
-                        <label>Rename</label>
-                      </object>
-                      <flag>wxTOP</flag>
-                      <border>4</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxButton" name="btnDelCompiler">
-                        <label>Delete</label>
-                      </object>
-                      <flag>wxTOP|wxRIGHT</flag>
-                      <border>4</border>
+                      <flag>wxALIGN_RIGHT</flag>
                     </object>
                   </object>
                 </object>

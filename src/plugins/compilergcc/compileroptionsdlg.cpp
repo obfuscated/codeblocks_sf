@@ -43,6 +43,7 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxDialog)
     EVT_UPDATE_UI(			XRCID("cmbLinkerPolicy"),	CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("cmbIncludesPolicy"),	CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("cmbLibsPolicy"),		CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(			XRCID("btnSetDefaultCompiler"),	CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnAddCompiler"),	CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnRenameCompiler"),	CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnDelCompiler"),	CompilerOptionsDlg::OnUpdateUI)
@@ -67,6 +68,7 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxDialog)
 	EVT_COMBOBOX(			XRCID("cmbCategory"), 		CompilerOptionsDlg::OnCategoryChanged)
 	EVT_COMBOBOX(			XRCID("cmbCompiler"), 		CompilerOptionsDlg::OnCompilerChanged)
 	EVT_LISTBOX_DCLICK(		XRCID("lstVars"),			CompilerOptionsDlg::OnEditVarClick)
+	EVT_BUTTON(				XRCID("btnSetDefaultCompiler"),	CompilerOptionsDlg::OnSetDefaultCompilerClick)
 	EVT_BUTTON(				XRCID("btnAddCompiler"),	CompilerOptionsDlg::OnAddCompilerClick)
 	EVT_BUTTON(				XRCID("btnRenameCompiler"),	CompilerOptionsDlg::OnEditCompilerClick)
 	EVT_BUTTON(				XRCID("btnDelCompiler"),	CompilerOptionsDlg::OnRemoveCompilerClick)
@@ -818,6 +820,16 @@ void CompilerOptionsDlg::OnRemoveVarClick(wxCommandEvent& event)
 	}
 }
 
+void CompilerOptionsDlg::OnSetDefaultCompilerClick(wxCommandEvent& event)
+{
+    wxComboBox* cmb = XRCCTRL(*this, "cmbCompiler", wxComboBox);
+    int idx = cmb->GetSelection();
+    CompilerFactory::SetDefaultCompilerIndex(idx);
+    wxString msg;
+    msg.Printf(_("%s is now selected as the default compiler for new projects"), CompilerFactory::GetDefaultCompiler()->GetName().c_str());
+    wxMessageBox(msg);
+}
+
 void CompilerOptionsDlg::OnAddCompilerClick(wxCommandEvent& event)
 {
     wxComboBox* cmb = XRCCTRL(*this, "cmbCompiler", wxComboBox);
@@ -977,6 +989,7 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
         en = !data; // global options selected
         int idx = XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection();
         int count = XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetCount(); // compilers count
+        XRCCTRL(*this, "btnSetDefaultCompiler", wxButton)->Enable(CompilerFactory::GetDefaultCompilerIndex() != idx);
         XRCCTRL(*this, "btnAddCompiler", wxButton)->Enable(en);
         XRCCTRL(*this, "btnRenameCompiler", wxButton)->Enable(en && count);
         XRCCTRL(*this, "btnDelCompiler", wxButton)->Enable(en &&

@@ -1,23 +1,16 @@
-@set ZIP=zip
+@set ZIPCMD=zip -j9
 
 @echo Compressing core UI resources
-@cd src\resources && %ZIP% ..\..\devel\share\codeblocks\resources.zip *.xrc > nul
-@cd ..\..
-@cd sdk\resources && %ZIP% ..\..\devel\share\codeblocks\manager_resources.zip *.xrc > nul
-@cd ..\..
+%ZIPCMD% devel\share\codeblocks\resources.zip src\resources\*.xrc > nul
+%ZIPCMD% devel\share\codeblocks\manager_resources.zip sdk\resources\*.xrc > nul
 @echo Compressing plugins UI resources
-@cd plugins\astyle\resources && %ZIP% ..\..\..\devel\share\codeblocks\astyle.zip *.xrc > nul
-@cd ..\..\..
-@cd plugins\pluginwizard\resources && %ZIP% ..\..\..\devel\share\codeblocks\plugin_wizard.zip *.xrc > nul
-@cd ..\..\..
-@cd plugins\classwizard\resources && %ZIP% ..\..\..\devel\share\codeblocks\class_wizard.zip *.xrc > nul
-@cd ..\..\..
-@cd plugins\codecompletion\resources && %ZIP% ..\..\..\devel\share\codeblocks\code_completion.zip *.xrc > nul
-@cd ..\..\..
-@cd plugins\compilergcc\resources && %ZIP% ..\..\..\devel\share\codeblocks\compiler_gcc.zip *.xrc > nul
-@cd ..\..\..
-@cd plugins\todo\resources && %ZIP% ..\..\..\devel\share\codeblocks\todo.zip *.xrc > nul
-@cd ..\..\..
+%ZIPCMD% devel\share\codeblocks\astyle.zip plugins\astyle\resources\*.xrc > nul
+%ZIPCMD% devel\share\codeblocks\plugin_wizard.zip plugins\pluginwizard\resources\*.xrc > nul
+%ZIPCMD% devel\share\codeblocks\class_wizard.zip plugins\classwizard\resources\*.xrc > nul
+%ZIPCMD% devel\share\codeblocks\code_completion.zip plugins\codecompletion\resources\*.xrc > nul
+%ZIPCMD% devel\share\codeblocks\compiler_gcc.zip plugins\compilergcc\resources\*.xrc > nul
+%ZIPCMD% devel\share\codeblocks\todo.zip plugins\todo\resources\*.xrc > nul
+
 @echo Copying files
 @copy /y devel\share\codeblocks\*.zip output\share\codeblocks > nul
 @copy /y src\resources\images\*.png devel\share\codeblocks\images > nul
@@ -43,4 +36,6 @@
 @strip output\*.exe
 @strip output\*.dll
 @strip output\share\CodeBlocks\plugins\*.dll
+
+@set ZIPCMD=
 

@@ -2,6 +2,7 @@
 #include "manager.h"
 #include "messagemanager.h"
 #include "configmanager.h"
+#include "autodetectcompilers.h"
 
 // statics
 CompilersArray CompilerFactory::Compilers;
@@ -95,7 +96,9 @@ void CompilerFactory::SetDefaultCompilerIndex(int compilerIdx)
 
 Compiler* CompilerFactory::GetDefaultCompiler()
 {
-    return Compilers[s_DefaultCompilerIdx];
+    if (CompilerIndexOK(s_DefaultCompilerIdx))
+        return Compilers[s_DefaultCompilerIdx];
+    return 0;
 }
 
 void CompilerFactory::SetDefaultCompiler(Compiler* compiler)
@@ -122,9 +125,19 @@ void CompilerFactory::SaveSettings()
 
 void CompilerFactory::LoadSettings()
 {
+    bool needAutoDetection = false;
     wxString baseKey = "/compiler_gcc/compiler_sets";
     for (unsigned int i = 0; i < Compilers.GetCount(); ++i)
     {
         Compilers[i]->LoadSettings(baseKey);
+        if (Compilers[i]->GetMasterPath().IsEmpty())
+            needAutoDetection = true;
+    }
+
+    // auto-detect missing compilers
+    if (needAutoDetection)
+    {
+        AutoDetectCompilers adc(0L);
+        adc.ShowModal();
     }
 }

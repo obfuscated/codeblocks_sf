@@ -4,7 +4,6 @@
 #include "configmanager.h"
 #include "globals.h"
 #include <wx/intl.h>
-#include <wx/msgdlg.h>
 
 wxString Compiler::CommandTypeDescriptions[COMPILER_COMMAND_TYPES_COUNT] =
 {
@@ -100,6 +99,8 @@ void Compiler::LoadSettings(const wxString& baseKey)
 {
     wxString tmp;
     tmp.Printf("%s/%3.3d", baseKey.c_str(), (int)m_ID);
+    if (!ConfigManager::Get()->HasEntry(tmp) && !ConfigManager::Get()->HasGroup(tmp))
+        return;
 
     wxString sep = wxFileName::GetPathSeparator();
 
@@ -112,49 +113,29 @@ void Compiler::LoadSettings(const wxString& baseKey)
     m_Programs.WINDRES = ConfigManager::Get()->Read(tmp + "/res_compiler", m_Programs.WINDRES);
     m_Programs.MAKE = ConfigManager::Get()->Read(tmp + "/make", m_Programs.MAKE);
 
-    if (!m_MasterPath.IsEmpty())
+    m_CompilerOptions = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/compiler_options", wxEmptyString));
+    m_LinkerOptions = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/linker_options", wxEmptyString));
+    m_IncludeDirs = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/include_dirs", m_MasterPath + sep + "include"));
+    m_LibDirs = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/library_dirs", m_MasterPath + sep + "lib"));
+    m_CmdsBefore = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/commands_before", wxEmptyString));
+    m_CmdsAfter = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/commands_after", wxEmptyString));
+
+    for (int i = 0; i < COMPILER_COMMAND_TYPES_COUNT; ++i)
     {
-        m_CompilerOptions = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/compiler_options", wxEmptyString));
-        m_LinkerOptions = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/linker_options", wxEmptyString));
-        m_IncludeDirs = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/include_dirs", m_MasterPath + sep + "include"));
-        m_LibDirs = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/library_dirs", m_MasterPath + sep + "lib"));
-        m_CmdsBefore = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/commands_before", wxEmptyString));
-        m_CmdsAfter = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/commands_after", wxEmptyString));
-    
-        for (int i = 0; i < COMPILER_COMMAND_TYPES_COUNT; ++i)
-        {
-            m_Commands[i] = ConfigManager::Get()->Read(tmp + "/macros/" + CommandTypeDescriptions[i], m_Commands[i]);
-        }
-    
-        // switches
-        m_Switches.includeDirs = ConfigManager::Get()->Read(tmp + "/switches/includes", m_Switches.includeDirs);
-        m_Switches.libDirs = ConfigManager::Get()->Read(tmp + "/switches/libs", m_Switches.libDirs);
-        m_Switches.linkLibs = ConfigManager::Get()->Read(tmp + "/switches/link", m_Switches.linkLibs);
-        m_Switches.defines = ConfigManager::Get()->Read(tmp + "/switches/define", m_Switches.defines);
-        m_Switches.genericSwitch = ConfigManager::Get()->Read(tmp + "/switches/generic", m_Switches.genericSwitch);
-        m_Switches.linkerSwitchForGui = ConfigManager::Get()->Read(tmp + "/switches/linkForGui", m_Switches.linkerSwitchForGui);
-        m_Switches.objectExtension = ConfigManager::Get()->Read(tmp + "/switches/objectext", m_Switches.objectExtension);
-        m_Switches.needDependencies = ConfigManager::Get()->Read(tmp + "/switches/deps", m_Switches.needDependencies);
-        m_Switches.forceCompilerUseQuotes = ConfigManager::Get()->Read(tmp + "/switches/forceCompilerQuotes", m_Switches.forceCompilerUseQuotes);
-        m_Switches.forceLinkerUseQuotes = ConfigManager::Get()->Read(tmp + "/switches/forceLinkerQuotes", m_Switches.forceLinkerUseQuotes);
-        m_Switches.logging = (CompilerLoggingType)ConfigManager::Get()->Read(tmp + "/switches/logging", m_Switches.logging);
-        m_Switches.buildMethod = (CompilerBuildMethod)ConfigManager::Get()->Read(tmp + "/switches/buildMethod", m_Switches.buildMethod);
+        m_Commands[i] = ConfigManager::Get()->Read(tmp + "/macros/" + CommandTypeDescriptions[i], m_Commands[i]);
     }
-    else
-    {
-        wxString msg;
-        AutoDetectResult adr = AutoDetectInstallationDir();
-        if (adr == adrDetected)
-            msg.Printf(_("Auto-detected %s installation at %s"), m_Name.c_str(), m_MasterPath.c_str());
-        else
-            msg.Printf(_("Could not detect a valid %s installation. Code::Blocks will be configured for the "
-                         "default %s installation directory, which is %s.\n"
-                         "If %s is already installed at a different path or you plan to install it "
-                         "later, you can configure it under \"Settings/Configure plugins/Compiler/Programs\"..."),
-                         m_Name.c_str(),
-                         m_Name.c_str(),
-                         m_MasterPath.c_str(),
-                         m_Name.c_str());
-        wxMessageBox(msg, m_Name);
-    }
+
+    // switches
+    m_Switches.includeDirs = ConfigManager::Get()->Read(tmp + "/switches/includes", m_Switches.includeDirs);
+    m_Switches.libDirs = ConfigManager::Get()->Read(tmp + "/switches/libs", m_Switches.libDirs);
+    m_Switches.linkLibs = ConfigManager::Get()->Read(tmp + "/switches/link", m_Switches.linkLibs);
+    m_Switches.defines = ConfigManager::Get()->Read(tmp + "/switches/define", m_Switches.defines);
+    m_Switches.genericSwitch = ConfigManager::Get()->Read(tmp + "/switches/generic", m_Switches.genericSwitch);
+    m_Switches.linkerSwitchForGui = ConfigManager::Get()->Read(tmp + "/switches/linkForGui", m_Switches.linkerSwitchForGui);
+    m_Switches.objectExtension = ConfigManager::Get()->Read(tmp + "/switches/objectext", m_Switches.objectExtension);
+    m_Switches.needDependencies = ConfigManager::Get()->Read(tmp + "/switches/deps", m_Switches.needDependencies);
+    m_Switches.forceCompilerUseQuotes = ConfigManager::Get()->Read(tmp + "/switches/forceCompilerQuotes", m_Switches.forceCompilerUseQuotes);
+    m_Switches.forceLinkerUseQuotes = ConfigManager::Get()->Read(tmp + "/switches/forceLinkerQuotes", m_Switches.forceLinkerUseQuotes);
+    m_Switches.logging = (CompilerLoggingType)ConfigManager::Get()->Read(tmp + "/switches/logging", m_Switches.logging);
+    m_Switches.buildMethod = (CompilerBuildMethod)ConfigManager::Get()->Read(tmp + "/switches/buildMethod", m_Switches.buildMethod);
 }

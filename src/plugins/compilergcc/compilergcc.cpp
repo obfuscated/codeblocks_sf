@@ -238,6 +238,8 @@ void CompilerGCC::OnAttach()
     bmp.LoadFile(prefix + "flag_16x16.png", wxBITMAP_TYPE_PNG);
     Manager::Get()->GetMessageManager()->SetLogImage(m_pListLog, bmp);
 
+    // set default compiler for new projects
+    CompilerFactory::SetDefaultCompilerIndex(ConfigManager::Get()->Read("/compiler_gcc/default_compiler", (long int)0));
 	LoadOptions();
 	SetupEnvironment();
 }
@@ -246,6 +248,7 @@ void CompilerGCC::OnRelease(bool appShutDown)
 {
     DoDeleteTempMakefile();
 	SaveOptions();
+    ConfigManager::Get()->Write("/compiler_gcc/default_compiler", CompilerFactory::GetDefaultCompilerIndex());
 	if (Manager::Get()->GetMessageManager())
 	{
         Manager::Get()->GetMessageManager()->DeletePage(m_ListPageIndex);
