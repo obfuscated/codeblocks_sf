@@ -98,9 +98,13 @@ void ClassBrowser::Update()
 
 void ClassBrowser::ShowMenu(wxTreeItemId id, const wxPoint& pt)
 {
-// Bug fixed.
-// NOTE from Rick: Never, _EVER_ use STACK variables for menus!
-// Remember they're DESTROYED after function call return!
+// NOTE: local variables are tricky! If you build two local menus
+// and attach menu B to menu A, on function exit both menu A and menu B
+// will be destroyed. But when destroying menu A, menu B will be destroyed
+// again. Its already-freed memory will be accessed, generating a segfault.
+
+// A safer approach is to make all menus heap-based, and delete the topmost
+// on exit.
 
     if ( !id.IsOk() )
         return;
@@ -135,6 +139,7 @@ void ClassBrowser::ShowMenu(wxTreeItemId id, const wxPoint& pt)
 	sub->Check(idCBViewModeStructured, m_pParser ? !m_pParser->ClassBrowserOptions().viewFlat : false);
 
     PopupMenu(menu, pt);
+    delete menu; // Prevents memory leak
 #endif // wxUSE_MENUS
 }
 
