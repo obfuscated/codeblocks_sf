@@ -31,6 +31,7 @@ class ProjectOptionsDlg : public wxDialog
 		void OnTargetBuildOptionsClick(wxCommandEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);
     private:
+        void FillBuildTargets();
         void DoTargetChange();
         void DoBeforeTargetChange(bool force = false);
         cbProject* m_Project;

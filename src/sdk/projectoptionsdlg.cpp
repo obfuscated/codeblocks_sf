@@ -66,13 +66,7 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
 	XRCCTRL(*this, "txtProjectName", wxTextCtrl)->SetValue(m_Project->GetTitle());
 	XRCCTRL(*this, "txtProjectFilename", wxStaticText)->SetLabel(m_Project->GetFilename());
 
-    // add build targets
-    wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
-    for (int i = 0; i < m_Project->GetBuildTargetsCount(); ++i)
-        lstTargets->Append(m_Project->GetBuildTarget(i)->GetTitle());
-    lstTargets->SetSelection(0);
-
-    DoTargetChange();
+    FillBuildTargets();
 	
 	PluginsArray plugins = Manager::Get()->GetPluginManager()->GetCompilerOffers();
 	if (plugins.GetCount())
@@ -83,6 +77,17 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
 ProjectOptionsDlg::~ProjectOptionsDlg()
 {
 	// insert your code here
+}
+
+void ProjectOptionsDlg::FillBuildTargets()
+{
+    // add build targets
+    wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
+    lstTargets->Clear();
+    for (int i = 0; i < m_Project->GetBuildTargetsCount(); ++i)
+        lstTargets->Append(m_Project->GetBuildTarget(i)->GetTitle());
+    lstTargets->SetSelection(0);
+    DoTargetChange();
 }
 
 void ProjectOptionsDlg::DoTargetChange()
@@ -98,8 +103,30 @@ void ProjectOptionsDlg::DoTargetChange()
 	XRCCTRL(*this, "chkBuildThisTarget", wxCheckBox)->SetValue(target->GetIncludeInTargetAll());
 
 	// global project options
-	XRCCTRL(*this, "cmbProjectType", wxComboBox)->SetSelection(target->GetTargetType());
-	XRCCTRL(*this, "txtOutputFilename", wxTextCtrl)->SetValue(target->GetOutputFilename());
+	wxComboBox* cmb = XRCCTRL(*this, "cmbProjectType", wxComboBox);
+    wxTextCtrl* txt = XRCCTRL(*this, "txtOutputFilename", wxTextCtrl);
+    wxButton* browse = XRCCTRL(*this, "btnBrowseOutputFilename", wxButton);
+    if (cmb && txt && browse)
+    {
+        cmb->SetSelection(target->GetTargetType());
+        switch ((TargetType)cmb->GetSelection())
+        {
+            case ttConsoleOnly:
+            case ttExecutable:
+            case ttDynamicLib:
+            case ttStaticLib:
+                txt->SetValue(target->GetOutputFilename());
+                txt->Enable(true);
+                browse->Enable(true);
+                break;
+                
+            default: // for commands-only targets
+                txt->SetValue("");
+                txt->Enable(false);
+                browse->Enable(false);
+                break;
+        }
+    }
 
 	// files options
 	wxCheckListBox* list = XRCCTRL(*this, "lstFiles", wxCheckListBox);
@@ -141,7 +168,6 @@ void ProjectOptionsDlg::DoBeforeTargetChange(bool force)
 		target->SetTargetType(TargetType(XRCCTRL(*this, "cmbProjectType", wxComboBox)->GetSelection()));
 		wxFileName fname(XRCCTRL(*this, "txtOutputFilename", wxTextCtrl)->GetValue());
 		fname.Normalize(wxPATH_NORM_ALL, m_Project->GetBasePath());
-		fname.Normalize(wxPATH_NORM_ALL, m_Project->GetBasePath());
 		fname.MakeRelativeTo(m_Project->GetBasePath());
 		target->SetOutputFilename(fname.GetFullPath());
 
@@ -168,26 +194,38 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
 {
 	wxComboBox* cmb = XRCCTRL(*this, "cmbProjectType", wxComboBox);
     wxTextCtrl* txt = XRCCTRL(*this, "txtOutputFilename", wxTextCtrl);
-    if (!cmb || !txt)
+    wxButton* browse = XRCCTRL(*this, "btnBrowseOutputFilename", wxButton);
+    if (!cmb || !txt || !browse)
         return;
+    wxFileName fname;
     switch ((TargetType)cmb->GetSelection())
     {
         case ttConsoleOnly:
         case ttExecutable:
-            txt->SetValue(m_Project->GetExecutableFilename());
+            fname.Assign(m_Project->GetExecutableFilename());
+            fname.MakeRelativeTo(m_Project->GetBasePath());
+            txt->SetValue(fname.GetFullPath());
             txt->Enable(true);
+            browse->Enable(true);
             break;
         case ttDynamicLib:
-            txt->SetValue(m_Project->GetDynamicLibFilename());
+            fname.Assign(m_Project->GetDynamicLibFilename());
+            fname.MakeRelativeTo(m_Project->GetBasePath());
+            txt->SetValue(fname.GetFullPath());
             txt->Enable(true);
+            browse->Enable(true);
             break;
         case ttStaticLib:
-            txt->SetValue(m_Project->GetStaticLibFilename());
+            fname.Assign(m_Project->GetStaticLibFilename());
+            fname.MakeRelativeTo(m_Project->GetBasePath());
+            txt->SetValue(fname.GetFullPath());
             txt->Enable(true);
+            browse->Enable(true);
             break;
         default:
             txt->SetValue("");
             txt->Enable(false);
+            browse->Enable(false);
     }
 }
 
@@ -204,7 +242,12 @@ void ProjectOptionsDlg::OnBuildOrderClick(wxCommandEvent& event)
 
     EditArrayOrderDlg dlg(this, array);
     if (dlg.ShowModal() == wxID_OK)
+    {
+        DoBeforeTargetChange(); // save changes in current target
         m_Project->ReOrderTargets(dlg.GetArray());
+        m_Current_Sel = -1; // force no "save changes" for next call
+        FillBuildTargets();
+    }
 }
 
 void ProjectOptionsDlg::OnProjectBuildOptionsClick(wxCommandEvent& event)
@@ -307,6 +350,7 @@ void ProjectOptionsDlg::OnBrowseOutputFilenameClick(wxCommandEvent& event)
 {
     wxFileName fname;
     fname.Assign(XRCCTRL(*this, "txtOutputFilename", wxTextCtrl)->GetValue());
+    fname.Normalize(wxPATH_NORM_ALL, m_Project->GetBasePath());
     wxFileDialog dlg(this,
                     _("Select output filename"),
                     fname.GetPath(),
@@ -316,7 +360,9 @@ void ProjectOptionsDlg::OnBrowseOutputFilenameClick(wxCommandEvent& event)
 
     if (dlg.ShowModal() != wxID_OK)
         return;
-    XRCCTRL(*this, "txtOutputFilename", wxTextCtrl)->SetValue(dlg.GetPath());
+    fname.Assign(dlg.GetPath());
+    fname.MakeRelativeTo(m_Project->GetBasePath());
+    XRCCTRL(*this, "txtOutputFilename", wxTextCtrl)->SetValue(fname.GetFullPath());
 }
 
 void ProjectOptionsDlg::OnFileOptionsClick(wxCommandEvent& event)

@@ -83,15 +83,17 @@ wxString CompileTargetBase::GetOutputFilename()
 {
     if (m_OutputFilename.IsEmpty())
     {
-        wxFileName fname;
-        fname.Assign(m_Filename);
         switch (m_TargetType)
         {
             case ttConsoleOnly: 
             case ttExecutable: m_OutputFilename = GetExecutableFilename(); break;
             case ttDynamicLib: m_OutputFilename = GetDynamicLibFilename(); break;
             case ttStaticLib: m_OutputFilename = GetStaticLibFilename(); break;
-			default: m_OutputFilename = fname.GetFullPath(); break;
+			default:
+                wxFileName fname;
+                fname.Assign(m_Filename);
+                m_OutputFilename = fname.GetFullPath();
+                break;
         }
     }
     return m_OutputFilename;
