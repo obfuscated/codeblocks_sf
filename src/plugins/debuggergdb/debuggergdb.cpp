@@ -361,6 +361,7 @@ int DebuggerGDB::Debug()
             continue;
         cmd << " --directory=\"" << it->GetBasePath() << "\"";
 	}
+//    msgMan->Log(m_PageIndex, cmd);
 
     m_pProcess = new PipedProcess((void**)&m_pProcess, this, idGDBProcess, true, project->GetBasePath());
     m_Pid = wxExecute(cmd, wxEXEC_ASYNC, m_pProcess);
@@ -436,9 +437,13 @@ int DebuggerGDB::Debug()
 
     // switch to output dir
     wxFileName dir(target->GetOutputFilename());
-    cmd.Clear();
-    cmd << "cd " << UnixFilename(dir.GetPath(wxPATH_GET_VOLUME));
-    SendCommand(cmd);
+    wxString path = UnixFilename(dir.GetPath(wxPATH_GET_VOLUME));
+    if (!path.IsEmpty())
+    {
+        cmd.Clear();
+        cmd << "cd " << path;
+        SendCommand(cmd);
+    }
 
 	SendCommand("run");
 	return 0;

@@ -602,6 +602,7 @@ int CompilerGCC::DoRunQueue()
         m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLUE, *wxWHITE));
         msgMan->Log(m_PageIndex, _("Nothing to be done."));
         m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLACK, *wxWHITE));
+        m_LastExitCode = 0;
         OnJobEnd();
         return 0;
 	}
@@ -636,6 +637,7 @@ int CompilerGCC::DoRunQueue()
         if (m_QueueIndex >= m_Queue.GetCount())
         {
             msgMan->Log(m_PageIndex, _("Nothing to be done."));
+            m_LastExitCode = 0;
             OnJobEnd();
             return 0;
         }
