@@ -13,8 +13,42 @@ int idAddWatch = wxNewId();
 int idEditWatch = wxNewId();
 int idDeleteWatch = wxNewId();
 
+#ifndef __WXMSW__
+/*
+	Under wxGTK, I have noticed that wxTreeCtrl is not sending a EVT_COMMAND_RIGHT_CLICK
+	event when right-clicking on the client area.
+	This is a "proxy" wxTreeCtrl descendant that handles this for us...
+*/
+class WatchTree : public wxTreeCtrl
+{
+	public:
+		WatchTree(wxWindow* parent, int id) : wxTreeCtrl(parent, id) {}
+	protected:
+		void OnRightClick(wxMouseEvent& event)
+		{
+		    //Manager::Get()->GetMessageManager()->DebugLog("OnRightClick");
+		    int flags;
+		    HitTest(wxPoint(event.GetX(), event.GetY()), flags);
+		    if (flags & (wxTREE_HITTEST_ABOVE | wxTREE_HITTEST_BELOW | wxTREE_HITTEST_NOWHERE))
+		    {
+		    	// "proxy" the call
+			    wxCommandEvent e(wxEVT_COMMAND_RIGHT_CLICK, idTree);
+				wxPostEvent(GetParent(), e);
+			}
+			else
+		    	event.Skip();
+		}
+		DECLARE_EVENT_TABLE();
+};
+
+BEGIN_EVENT_TABLE(WatchTree, wxTreeCtrl)
+	EVT_RIGHT_DOWN(WatchTree::OnRightClick)
+END_EVENT_TABLE()
+#endif // !__WXMSW__
+
 BEGIN_EVENT_TABLE(DebuggerTree, wxPanel)
     EVT_TREE_ITEM_RIGHT_CLICK(idTree, DebuggerTree::OnTreeRightClick)
+    EVT_COMMAND_RIGHT_CLICK(idTree, DebuggerTree::OnRightClick)
 	EVT_MENU(idAddWatch, DebuggerTree::OnAddWatch)
 	EVT_MENU(idEditWatch, DebuggerTree::OnEditWatch)
 	EVT_MENU(idDeleteWatch, DebuggerTree::OnDeleteWatch)
@@ -26,13 +60,19 @@ DebuggerTree::DebuggerTree(wxEvtHandler* debugger, wxNotebook* parent)
 	m_pDebugger(debugger)
 {
     wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
+#ifndef __WXMSW__
+	m_pTree = new WatchTree(this, idTree);
+#else
 	m_pTree = new wxTreeCtrl(this, idTree);
+#endif
     bs->Add(m_pTree, 1, wxEXPAND | wxALL);
     SetAutoLayout(TRUE);
     SetSizer(bs);
 
     m_pParent->AddPage(this, _("Watches"));
     m_PageIndex = m_pParent->GetPageCount() - 1;
+    
+    BuildTree(wxEmptyString);
 }
 
 DebuggerTree::~DebuggerTree()
@@ -72,6 +112,8 @@ void DebuggerTree::BuildTree(const wxString& infoText)
 void DebuggerTree::ParseEntry(const wxTreeItemId& parent, wxString& text)
 {
 #define MIN(a,b) (a < b ? a : b)
+    if (text.IsEmpty())
+        return;
 	while (1)
 	{
 		// trim the string from left and right
@@ -159,13 +201,11 @@ void DebuggerTree::ShowMenu(wxTreeItemId id, const wxPoint& pt)
 	menu.Append(idAddWatch, _("&Add watch"));
 
 	// we have to have a valid id for the following to be enabled
-    if ( !id.IsOk() )
-        return;
-	if (m_pTree->GetItemParent(id) != m_pTree->GetRootItem())
-		return;
-		
-	menu.Append(idEditWatch, _("&Edit watch"));
-	menu.Append(idDeleteWatch, _("&Delete watch"));
+    if (id.IsOk()  && m_pTree->GetItemParent(id) == m_pTree->GetRootItem())
+    {
+        menu.Append(idEditWatch, _("&Edit watch"));
+        menu.Append(idDeleteWatch, _("&Delete watch"));
+	}
 	
 	PopupMenu(&menu, pt);
 }
@@ -176,6 +216,16 @@ void DebuggerTree::OnTreeRightClick(wxTreeEvent& event)
 {
 	m_pTree->SelectItem(event.GetItem());
     ShowMenu(event.GetItem(), event.GetPoint());
+}
+
+void DebuggerTree::OnRightClick(wxCommandEvent& event)
+{
+    wxTreeItemId tmp; // dummy var for next call
+    // get right-click point
+    wxPoint pt = wxGetMousePosition();
+    pt = m_pTree->ScreenToClient(pt);
+    
+    ShowMenu(tmp, pt);
 }
 
 void DebuggerTree::OnAddWatch(wxCommandEvent& event)

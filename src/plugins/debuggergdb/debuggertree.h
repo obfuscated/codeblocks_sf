@@ -23,6 +23,7 @@ class DebuggerTree : public wxPanel
 	protected:
 		void ShowMenu(wxTreeItemId id, const wxPoint& pt);
 		void OnTreeRightClick(wxTreeEvent& event);
+		void OnRightClick(wxCommandEvent& event);
 		void OnAddWatch(wxCommandEvent& event);
 		void OnEditWatch(wxCommandEvent& event);
 		void OnDeleteWatch(wxCommandEvent& event);
