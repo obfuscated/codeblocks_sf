@@ -28,6 +28,7 @@
 #include <wx/menu.h>
 #include <wx/imaglist.h>
 
+#include "manager.h"
 #include "messagemanager.h" // class's header file
 #include "configmanager.h"
 #include "simpletextlog.h"
@@ -35,7 +36,9 @@
 
 MessageManager* MessageManager::Get(wxWindow* parent)
 {
-    if (!MessageManagerProxy::Get())
+    if(Manager::isappShuttingDown()) // The mother of all sanity checks
+        MessageManager::Free();        
+    else if (!MessageManagerProxy::Get())
 	{
 		MessageManagerProxy::Set( new MessageManager(parent) );
 		MessageManagerProxy::Get()->Log(_("MessageManager initialized"));
@@ -56,6 +59,9 @@ void MessageManager::Free()
 MessageManager::MessageManager(wxWindow* parent)
     : wxNotebook(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxCLIP_CHILDREN | wxNB_BOTTOM | wxNB_MULTILINE)
 {
+    m_shutdown=false;
+    m_sanitycheck_self=this;
+    
     wxImageList* images = new wxImageList(16, 16);
 
     // add default log and debug images (index 0 and 1)
@@ -85,18 +91,23 @@ MessageManager::MessageManager(wxWindow* parent)
 // class destructor
 MessageManager::~MessageManager()
 {
+    m_shutdown=true;
+    m_sanitycheck_self=NULL;
 }
 
 void MessageManager::CreateMenu(wxMenuBar* menuBar)
 {
+    if(!sanity_check()) return;
 }
 
 void MessageManager::ReleaseMenu(wxMenuBar* menuBar)
 {
+    if(!sanity_check()) return;
 }
 
 bool MessageManager::CheckLogType(MessageLogType type)
 {
+    if(!sanity_check()) return false;
     if (type == mltOther)
     {
         DebugLog(_("Can't use MessageManager::Log(mltOther, ...); Use MessageManager::Log(id, ...)"));
@@ -107,6 +118,7 @@ bool MessageManager::CheckLogType(MessageLogType type)
 
 void MessageManager::Log(const wxChar* msg, ...)
 {
+    if(!sanity_check()) return;
     wxString tmp;
     va_list arg_list;
 
@@ -120,6 +132,7 @@ void MessageManager::Log(const wxChar* msg, ...)
 
 void MessageManager::DebugLog(const wxChar* msg, ...)
 {
+	if(!sanity_check()) return;
 	if (!m_HasDebugLog)
 		return;
     wxString tmp;
@@ -137,12 +150,14 @@ void MessageManager::DebugLog(const wxChar* msg, ...)
 // add a new log page
 int MessageManager::AddLog(MessageLog* log)
 {
+    if(!sanity_check()) return -1;
     return DoAddLog(mltOther, log);
 }
 
 // add a new log page
 int MessageManager::DoAddLog(MessageLogType type, MessageLog* log)
 {
+    if(!sanity_check()) return -1;
     if (!m_HasDebugLog && type == mltDebug)
         return -1;
 
@@ -155,6 +170,7 @@ int MessageManager::DoAddLog(MessageLogType type, MessageLog* log)
 
 void MessageManager::Log(int id, const wxChar* msg, ...)
 {
+    if(!sanity_check()) return;
     if (!m_LogIDs[id])
         return;
 
@@ -171,6 +187,7 @@ void MessageManager::Log(int id, const wxChar* msg, ...)
 
 void MessageManager::AppendLog(const wxChar* msg, ...)
 {
+    if(!sanity_check()) return;
     wxString tmp;
     va_list arg_list;
 
@@ -184,6 +201,7 @@ void MessageManager::AppendLog(const wxChar* msg, ...)
 
 void MessageManager::AppendLog(int id, const wxChar* msg, ...)
 {
+    if(!sanity_check()) return;
     if (!m_LogIDs[id])
         return;
 
@@ -201,6 +219,7 @@ void MessageManager::AppendLog(int id, const wxChar* msg, ...)
 // switch to log page
 void MessageManager::SwitchTo(MessageLogType type)
 {
+    if(!sanity_check()) return;
     if (!m_HasDebugLog && type == mltDebug)
         return;
 
@@ -211,11 +230,13 @@ void MessageManager::SwitchTo(MessageLogType type)
 
 void MessageManager::SwitchTo(int id)
 {
+    if(!sanity_check()) return;
     DoSwitchTo(m_LogIDs[id]);
 }
 
 void MessageManager::DoSwitchTo(MessageLog* ml)
 {
+    if(!sanity_check()) return;
     if (ml)
     {
         int index = ml->GetPageIndex();
@@ -227,6 +248,7 @@ void MessageManager::DoSwitchTo(MessageLog* ml)
 
 void MessageManager::SetLogImage(int id, const wxBitmap& bitmap)
 {
+    if(!sanity_check()) return;
     if (!m_LogIDs[id] || !GetImageList())
         return;
 
@@ -236,6 +258,7 @@ void MessageManager::SetLogImage(int id, const wxBitmap& bitmap)
 
 void MessageManager::SetLogImage(MessageLog* log, const wxBitmap& bitmap)
 {
+    if(!sanity_check()) return;
     if (!log || !GetImageList())
         return;
 

@@ -38,6 +38,23 @@ class MessageManager : public wxNotebook
 		void SwitchTo(int id);
 		void SetLogImage(int id, const wxBitmap& bitmap);
 		void SetLogImage(MessageLog* log, const wxBitmap& bitmap);
+
+        inline bool sanity_check() // Fixes segfault problems - by Rick
+        {
+            if(!this) return false;
+            if((void*)this!=m_sanitycheck_self)
+            return false;   //  Lightning rod for segfaults.
+                            // (triggered in the "if" clause)
+            if(m_shutdown)    // Alerts if shutdown
+            return false;
+            return true;
+        }
+          
+    protected:          
+		// *** Sanity check variables
+		bool m_shutdown; // 
+		void *m_sanitycheck_self;
+
     private:
 		static MessageManager* Get(wxWindow* parent);
 		static void Free();
