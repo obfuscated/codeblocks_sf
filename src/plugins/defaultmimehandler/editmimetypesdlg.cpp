@@ -14,11 +14,16 @@
 #include <wx/radiobox.h>
 #include <wx/checkbox.h>
 #include <wx/button.h>
+#include <wx/msgdlg.h>
 #include <wx/filedlg.h>
+#include <wx/textdlg.h>
 #include <configmanager.h>
 
 BEGIN_EVENT_TABLE(EditMimeTypesDlg, wxDialog)
+    EVT_BUTTON(XRCID("btnNew"), EditMimeTypesDlg::OnNew)
+    EVT_BUTTON(XRCID("btnDelete"), EditMimeTypesDlg::OnDelete)
     EVT_BUTTON(XRCID("btnBrowse"), EditMimeTypesDlg::OnBrowseProgram)
+    EVT_RADIOBOX(XRCID("rbOpen"), EditMimeTypesDlg::OnActionChanged)
     EVT_LISTBOX(XRCID("lstWild"), EditMimeTypesDlg::OnSelectionChanged)
 END_EVENT_TABLE()
 
@@ -102,6 +107,49 @@ void EditMimeTypesDlg::UpdateDisplay()
 void EditMimeTypesDlg::OnSelectionChanged(wxCommandEvent& event)
 {
     m_Selection = XRCCTRL(*this, "lstWild", wxListBox)->GetSelection();
+    UpdateDisplay();
+}
+
+void EditMimeTypesDlg::OnActionChanged(wxCommandEvent& event)
+{
+    bool useEd = XRCCTRL(*this, "rbOpen", wxRadioBox)->GetSelection();
+    XRCCTRL(*this, "txtProgram", wxTextCtrl)->Enable(!useEd);
+    XRCCTRL(*this, "btnBrowse", wxButton)->Enable(!useEd);
+    XRCCTRL(*this, "chkModal", wxCheckBox)->Enable(!useEd);
+}
+
+void EditMimeTypesDlg::OnNew(wxCommandEvent& event)
+{
+    wxString wild = wxGetTextFromUser(_("Enter the new wildcard to add:"));
+    if (wild.IsEmpty())
+        return;
+
+    Save(m_Selection);
+
+    cbMimeType* mt = new cbMimeType;
+    mt->wildcard = wild;
+    mt->useEditor = true;
+    mt->program = "";
+    mt->programIsModal = false;
+    m_Array.Add(mt);
+
+    FillList();
+    m_Selection = m_Array.GetCount() - 1;
+    m_LastSelection = m_Selection;
+    UpdateDisplay();
+}
+
+void EditMimeTypesDlg::OnDelete(wxCommandEvent& event)
+{
+    if (m_Selection == -1)
+        return;
+    if (wxMessageBox(_("Are you sure you want to remove this wildcard?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxYES)
+    {
+        cbMimeType* mt = m_Array[m_Selection];
+        m_Array.RemoveAt(m_Selection);
+        delete mt;
+    }
+    FillList();
     UpdateDisplay();
 }
 

@@ -17,7 +17,26 @@
                   <content/>
                 </object>
                 <option>1</option>
-                <flag>wxALL</flag>
+                <flag>wxALL|wxGROW</flag>
+                <border>8</border>
+              </object>
+              <object class="sizeritem">
+                <object class="wxBoxSizer">
+                  <orient>wxHORIZONTAL</orient>
+                  <object class="sizeritem">
+                    <object class="wxButton" name="btnNew">
+                      <label>&amp;New</label>
+                    </object>
+                  </object>
+                  <object class="sizeritem">
+                    <object class="wxButton" name="btnDelete">
+                      <label>&amp;Delete</label>
+                    </object>
+                    <flag>wxLEFT</flag>
+                    <border>8</border>
+                  </object>
+                </object>
+                <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
                 <border>8</border>
               </object>
             </object>

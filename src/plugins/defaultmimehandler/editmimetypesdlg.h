@@ -39,7 +39,10 @@ class EditMimeTypesDlg : public wxDialog
         void UpdateDisplay();
         void Save(int index);
         void OnSelectionChanged(wxCommandEvent& event);
+        void OnActionChanged(wxCommandEvent& event);
         void OnBrowseProgram(wxCommandEvent& event);
+        void OnNew(wxCommandEvent& event);
+        void OnDelete(wxCommandEvent& event);
         void EndModal(int retCode);
 
         MimeTypesArray& m_Array;
