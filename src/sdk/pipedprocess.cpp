@@ -41,7 +41,7 @@ PipedProcess::PipedProcess(void** pvThis, wxEvtHandler* parent, int id, bool pip
 	m_Pid(0),
 	m_pvThis(pvThis)
 {
-	wxSetWorkingDirectory(dir);
+	wxSetWorkingDirectory(UnixFilename(dir));
 	if (pipe)
 		Redirect();
 }

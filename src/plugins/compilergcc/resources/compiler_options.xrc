@@ -691,8 +691,28 @@
                               <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
                               <border>8</border>
                             </object>
+                            <object class="sizeritem">
+                              <object class="wxBoxSizer">
+                                <orient>wxHORIZONTAL</orient>
+                                <object class="sizeritem">
+                                  <object class="wxStaticText">
+                                    <label>Shell to run console programs:</label>
+                                  </object>
+                                  <flag>wxTOP|wxRIGHT</flag>
+                                  <border>4</border>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxTextCtrl" name="txtConsoleShell"/>
+                                  <option>1</option>
+                                  <flag>wxGROW</flag>
+                                </object>
+                              </object>
+                              <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                              <border>8</border>
+                            </object>
                           </object>
                           <flag>wxGROW</flag>
+                          <border>8</border>
                         </object>
                         <object class="sizeritem">
                           <object class="wxButton" name="btnAdvanced">

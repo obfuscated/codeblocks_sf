@@ -137,10 +137,11 @@ wxString CompileTargetBase::GetStaticLibFilename()
 wxString CompileTargetBase::GetBasePath()
 {
     if (m_Filename.IsEmpty())
-        return wxEmptyString;
+        return ".";
         
     wxFileName basePath(m_Filename);
-    return basePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    wxString base = basePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    return !base.IsEmpty() ? base : ".";
 }
 
 void CompileTargetBase::SetTargetType(const TargetType& pt)

@@ -14,6 +14,7 @@
 #include "compilerfactory.h"
 
 #define MAX_TARGETS 10
+#define DEFAULT_CONSOLE_SHELL "xterm -T $TITLE -e"
 
 enum CompilerOptionsType
 {
@@ -94,7 +95,7 @@ class CompilerGCC : public cbCompilerPlugin
 		bool DoPrepareMultiProjectCommand();
 		void DoPrepareQueue();
         int DoRunQueue();
-        bool DoCreateMakefile(bool temporary = true);
+        bool DoCreateMakefile(bool temporary = true, const wxString& makefile = "");
         void DoDeleteTempMakefile();
 		void DoClearTargetMenu();
 		void DoRecreateTargetMenu();
@@ -148,6 +149,8 @@ class CompilerGCC : public cbCompilerPlugin
 		wxString m_OriginalPath;
 		wxString m_LastTempMakefile;
 		
+		wxString m_ConsoleShell;
+
         DECLARE_EVENT_TABLE()
 };
 

@@ -50,11 +50,13 @@ wxString UnixFilename(const wxString& filename)
     wxString unixname = filename;
     unixname.Replace("\\", "/");
 
+#ifdef __WXMSW__
     /* TODO (mandrav#1#):
     The next line is not working right...
     If the filename contains "xxx\ zz" it will become "xxx\\ zz" and so on...
     Need to replace it manually... */
     unixname.Replace(" ", "\\ ");
+#endif
 
     return unixname;
 }

@@ -207,6 +207,7 @@ void NativeParser::AddParser(cbProject* project)
 		return;
 
 	Manager::Get()->GetMessageManager()->DebugLog(_("Start parsing project %s"), project->GetTitle().c_str());
+	int fcount = 0;
 	Parser* parser = new Parser(this);
 	AddCompilerDirs(parser, project);
 	parser->StartTimer();
@@ -215,9 +216,14 @@ void NativeParser::AddParser(cbProject* project)
 		ProjectFile* pf = project->GetFile(i);
 		FileType ft = FileTypeOf(pf->relativeFilename);
 		if ( ft == ftHeader) // only parse header files
+		{
+            ++fcount;
 			parser->Parse(pf->file.GetFullPath());
+        }
 	}
 	m_Parsers[project] = parser;
+	if (fcount == 0)
+        Manager::Get()->GetMessageManager()->DebugLog(_("End parsing project %s (no header files found)"), project->GetTitle().c_str());
 }
 
 void NativeParser::RemoveParser(cbProject* project)

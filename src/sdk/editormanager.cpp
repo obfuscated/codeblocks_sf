@@ -157,6 +157,7 @@ void EditorManager::SetColorSet(EditorColorSet* theme)
 cbEditor* EditorManager::Open(const wxString& filename, int pos)
 {
 	wxString fname = UnixFilename(filename);
+//	Manager::Get()->GetMessageManager()->DebugLog("Trying to open \"%s\"", fname.c_str());
     if (!wxFileExists(fname))
         return NULL;
 

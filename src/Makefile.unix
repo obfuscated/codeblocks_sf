@@ -9,12 +9,12 @@
 
 ### Variables used in this Makefile
 INSTALL_DIR=.
-LIB_WX=wx_gtk-$(WX_VER)
-LIB_WXSTC=wx_gtk_stc-$(WX_VER)
-LIB_WXXRC=wx_gtk_xrc-$(WX_VER)
+LIB_WX=wx_gtk2-$(WX_VER)
+LIB_WXSTC=wx_gtk2_stc-$(WX_VER)
+LIB_WXXRC=wx_gtk2_xrc-$(WX_VER)
 RM=rm -f
 WX_VER=2.4
-ZIP=zip -a
+ZIP=zip
 ZIP_EXT=zip
 CC=gcc
 CPP=g++
@@ -49,7 +49,7 @@ console_runner_CFLAGS= $(GLOBAL_CFLAGS) -Os
 ### Targets linker flags
 tinyXML_LDFLAGS= $(GLOBAL_LDFLAGS) $(PROJECT_LDFLAGS)
 sdk_LDFLAGS= $(GLOBAL_LDFLAGS) -ltxml -l$(LIB_WXXRC) -l$(LIB_WXSTC) $(PROJECT_LDFLAGS)
-src_LDFLAGS= $(GLOBAL_LDFLAGS) -lcodeblocks -l$(LIB_WXXRC) -l$(LIB_WXSTC) $(PROJECT_LDFLAGS) -mwindows
+src_LDFLAGS= $(GLOBAL_LDFLAGS) -lcodeblocks -l$(LIB_WXXRC) -l$(LIB_WXSTC) $(PROJECT_LDFLAGS)
 plugin_Astyle_LDFLAGS= $(GLOBAL_LDFLAGS) -lcodeblocks -l$(LIB_WXXRC) -l$(LIB_WXSTC) $(PROJECT_LDFLAGS)
 plugin_CompilerGCC_LDFLAGS= $(GLOBAL_LDFLAGS) -lcodeblocks -l$(LIB_WXXRC) -l$(LIB_WXSTC) $(PROJECT_LDFLAGS)
 plugin_DebuggerGDB_LDFLAGS= $(GLOBAL_LDFLAGS) -lcodeblocks -l$(LIB_WXXRC) -l$(LIB_WXSTC) $(PROJECT_LDFLAGS)
@@ -180,7 +180,7 @@ plugin_XPManifest_LIB_DEF=libdevel/share/CodeBlocks/plugins/libxpmanifest.def
 update_OUTDIR=.
 update_BIN=/home/mandrav/sandbox/codeblocks/src/CodeBlocks-unix
 console_runner_OUTDIR=.
-console_runner_BIN=tools/ConsoleRunner/console_runner
+console_runner_BIN=tools/ConsoleRunner/console_runner.exe
 
 .PHONY: all all-before all-custom all-after clean clean-custom tinyXML-before tinyXML-after sdk-before sdk-after src-before src-after plugin_Astyle-before plugin_Astyle-after plugin_CompilerGCC-before plugin_CompilerGCC-after plugin_DebuggerGDB-before plugin_DebuggerGDB-after plugin_CodeCompletion-before plugin_CodeCompletion-after plugin_ClassWizard-before plugin_ClassWizard-after plugin_PluginsWizard-before plugin_PluginsWizard-after plugin_ToDo-before plugin_ToDo-after plugin_XPManifest-before plugin_XPManifest-after update-before update-after console_runner-before console_runner-after 
 
@@ -197,37 +197,37 @@ all: all-before tinyXML sdk src plugin_Astyle plugin_CompilerGCC plugin_Debugger
 -include $(console_runner_DEPS)
 
 update-before: 
-	cd src/resources && $(ZIP) ../../devel/share/codeblocks/resources.zip *.xrc > nul
-	cd sdk/resources && $(ZIP) ../../devel/share/codeblocks/manager_resources.zip *.xrc > nul
-	cd plugins/astyle/resources && $(ZIP) ../../../devel/share/codeblocks/astyle.zip *.xrc > nul
-	cd plugins/pluginwizard/resources && $(ZIP) ../../../devel/share/codeblocks/plugin_wizard.zip *.xrc > nul
-	cd plugins/classwizard/resources && $(ZIP) ../../../devel/share/codeblocks/class_wizard.zip *.xrc > nul
-	cd plugins/codecompletion/resources && $(ZIP) ../../../devel/share/codeblocks/code_completion.zip *.xrc > nul
-	cd plugins/compilergcc/resources && $(ZIP) ../../../devel/share/codeblocks/compiler_gcc.zip *.xrc > nul
-	cd plugins/todo/resources && $(ZIP) ../../../devel/share/codeblocks/todo.zip *.xrc > nul
-	cp -f devel/share/codeblocks/*.zip output/share/codeblocks
-	cp -f src/resources/images/*.png devel/share/codeblocks/images
-	cp -f src/resources/images/*.png output/share/codeblocks/images
-	cp -f plugins/codecompletion/resources/images/*.png devel/share/codeblocks/images/codecompletion
-	cp -f plugins/codecompletion/resources/images/*.png output/share/codeblocks/images/codecompletion
-	cp -f templates/*.c* output/share/codeblocks/templates
-	cp -f templates/*.h* output/share/codeblocks/templates
-	cp -f templates/*.template output/share/codeblocks/templates
-	cp -f templates/*.png output/share/codeblocks/templates
-	cp -f templates/*.c* devel/share/codeblocks/templates
-	cp -f templates/*.h* devel/share/codeblocks/templates
-	cp -f templates/*.template devel/share/codeblocks/templates
-	cp -f templates/*.png devel/share/codeblocks/templates
+	cd src/resources && $(ZIP) ../../devel/share/CodeBlocks/resources.zip *.xrc > nul
+	cd sdk/resources && $(ZIP) ../../devel/share/CodeBlocks/manager_resources.zip *.xrc > nul
+	cd plugins/astyle/resources && $(ZIP) ../../../devel/share/CodeBlocks/astyle.zip *.xrc > nul
+	cd plugins/pluginwizard/resources && $(ZIP) ../../../devel/share/CodeBlocks/plugin_wizard.zip *.xrc > nul
+	cd plugins/classwizard/resources && $(ZIP) ../../../devel/share/CodeBlocks/class_wizard.zip *.xrc > nul
+	cd plugins/codecompletion/resources && $(ZIP) ../../../devel/share/CodeBlocks/code_completion.zip *.xrc > nul
+	cd plugins/compilergcc/resources && $(ZIP) ../../../devel/share/CodeBlocks/compiler_gcc.zip *.xrc > nul
+	cd plugins/todo/resources && $(ZIP) ../../../devel/share/CodeBlocks/todo.zip *.xrc > nul
+	cp -f devel/share/CodeBlocks/*.zip output/share/CodeBlocks
+	cp -f src/resources/images/*.png devel/share/CodeBlocks/images
+	cp -f src/resources/images/*.png output/share/CodeBlocks/images
+	cp -f plugins/codecompletion/resources/images/*.png devel/share/CodeBlocks/images/codecompletion
+	cp -f plugins/codecompletion/resources/images/*.png output/share/CodeBlocks/images/codecompletion
+	cp -f templates/*.c* output/share/CodeBlocks/templates
+	cp -f templates/*.h* output/share/CodeBlocks/templates
+	cp -f templates/*.template output/share/CodeBlocks/templates
+	cp -f templates/*.png output/share/CodeBlocks/templates
+	cp -f templates/*.c* devel/share/CodeBlocks/templates
+	cp -f templates/*.h* devel/share/CodeBlocks/templates
+	cp -f templates/*.template devel/share/CodeBlocks/templates
+	cp -f templates/*.png devel/share/CodeBlocks/templates
 	cp -f tips.txt devel
 	cp -f tips.txt output
-	cp -f tools/ConsoleRunner/console_runner*.exe output
-	cp -f tools/ConsoleRunner/console_runner*.exe devel
+	cp -f tools/ConsoleRunner/console_runner.exe output
+	cp -f tools/ConsoleRunner/console_runner.exe devel
 	cp -f devel/*.exe output
-	cp -f devel/*.dll output
-	cp -f devel/share/codeblocks/plugins/*.dll output/share/codeblocks/plugins
+	cp -f devel/*.so output
+	cp -f devel/share/CodeBlocks/plugins/*.so output/share/CodeBlocks/plugins
 	strip output/*.exe
-	strip output/*.dll
-	strip output/share/CodeBlocks/plugins/*.dll
+	strip output/*.so
+	strip output/share/CodeBlocks/plugins/*.so
 
 
 dist:
@@ -397,44 +397,44 @@ update: update-before $(update_BIN) update-after
 
 $(update_BIN): $(update_LINKOBJS)
 	-@if ! test -d $(update_OUTDIR); then mkdir $(update_OUTDIR); fi
-	cd src/resources && $(ZIP) ../../devel/share/codeblocks/resources.zip *.xrc > nul
-	cd sdk/resources && $(ZIP) ../../devel/share/codeblocks/manager_resources.zip *.xrc > nul
-	cd plugins/astyle/resources && $(ZIP) ../../../devel/share/codeblocks/astyle.zip *.xrc > nul
-	cd plugins/pluginwizard/resources && $(ZIP) ../../../devel/share/codeblocks/plugin_wizard.zip *.xrc > nul
-	cd plugins/classwizard/resources && $(ZIP) ../../../devel/share/codeblocks/class_wizard.zip *.xrc > nul
-	cd plugins/codecompletion/resources && $(ZIP) ../../../devel/share/codeblocks/code_completion.zip *.xrc > nul
-	cd plugins/compilergcc/resources && $(ZIP) ../../../devel/share/codeblocks/compiler_gcc.zip *.xrc > nul
-	cd plugins/todo/resources && $(ZIP) ../../../devel/share/codeblocks/todo.zip *.xrc > nul
-	cp -f devel/share/codeblocks/*.zip output/share/codeblocks
-	cp -f src/resources/images/*.png devel/share/codeblocks/images
-	cp -f src/resources/images/*.png output/share/codeblocks/images
-	cp -f plugins/codecompletion/resources/images/*.png devel/share/codeblocks/images/codecompletion
-	cp -f plugins/codecompletion/resources/images/*.png output/share/codeblocks/images/codecompletion
-	cp -f templates/*.c* output/share/codeblocks/templates
-	cp -f templates/*.h* output/share/codeblocks/templates
-	cp -f templates/*.template output/share/codeblocks/templates
-	cp -f templates/*.png output/share/codeblocks/templates
-	cp -f templates/*.c* devel/share/codeblocks/templates
-	cp -f templates/*.h* devel/share/codeblocks/templates
-	cp -f templates/*.template devel/share/codeblocks/templates
-	cp -f templates/*.png devel/share/codeblocks/templates
+	cd src/resources && $(ZIP) ../../devel/share/CodeBlocks/resources.zip *.xrc > nul
+	cd sdk/resources && $(ZIP) ../../devel/share/CodeBlocks/manager_resources.zip *.xrc > nul
+	cd plugins/astyle/resources && $(ZIP) ../../../devel/share/CodeBlocks/astyle.zip *.xrc > nul
+	cd plugins/pluginwizard/resources && $(ZIP) ../../../devel/share/CodeBlocks/plugin_wizard.zip *.xrc > nul
+	cd plugins/classwizard/resources && $(ZIP) ../../../devel/share/CodeBlocks/class_wizard.zip *.xrc > nul
+	cd plugins/codecompletion/resources && $(ZIP) ../../../devel/share/CodeBlocks/code_completion.zip *.xrc > nul
+	cd plugins/compilergcc/resources && $(ZIP) ../../../devel/share/CodeBlocks/compiler_gcc.zip *.xrc > nul
+	cd plugins/todo/resources && $(ZIP) ../../../devel/share/CodeBlocks/todo.zip *.xrc > nul
+	cp -f devel/share/CodeBlocks/*.zip output/share/CodeBlocks
+	cp -f src/resources/images/*.png devel/share/CodeBlocks/images
+	cp -f src/resources/images/*.png output/share/CodeBlocks/images
+	cp -f plugins/codecompletion/resources/images/*.png devel/share/CodeBlocks/images/codecompletion
+	cp -f plugins/codecompletion/resources/images/*.png output/share/CodeBlocks/images/codecompletion
+	cp -f templates/*.c* output/share/CodeBlocks/templates
+	cp -f templates/*.h* output/share/CodeBlocks/templates
+	cp -f templates/*.template output/share/CodeBlocks/templates
+	cp -f templates/*.png output/share/CodeBlocks/templates
+	cp -f templates/*.c* devel/share/CodeBlocks/templates
+	cp -f templates/*.h* devel/share/CodeBlocks/templates
+	cp -f templates/*.template devel/share/CodeBlocks/templates
+	cp -f templates/*.png devel/share/CodeBlocks/templates
 	cp -f tips.txt devel
 	cp -f tips.txt output
-	cp -f tools/ConsoleRunner/console_runner*.exe output
-	cp -f tools/ConsoleRunner/console_runner*.exe devel
+	cp -f tools/ConsoleRunner/console_runner.exe output
+	cp -f tools/ConsoleRunner/console_runner.exe devel
 	cp -f devel/*.exe output
-	cp -f devel/*.dll output
-	cp -f devel/share/codeblocks/plugins/*.dll output/share/codeblocks/plugins
+	cp -f devel/*.so output
+	cp -f devel/share/CodeBlocks/plugins/*.so output/share/CodeBlocks/plugins
 	strip output/*.exe
-	strip output/*.dll
-	strip output/share/CodeBlocks/plugins/*.dll
+	strip output/*.so
+	strip output/share/CodeBlocks/plugins/*.so
 
 
 console_runner: console_runner-before $(console_runner_BIN) console_runner-after
 
 $(console_runner_BIN): $(console_runner_LINKOBJS)
 	-@if ! test -d $(console_runner_OUTDIR); then mkdir $(console_runner_OUTDIR); fi
-	@echo Linking executable "tools\ConsoleRunner\console_runner"...
+	@echo Linking executable "tools\ConsoleRunner\console_runner.exe"...
 	@$(LD) $(console_runner_LIBS) -o $(console_runner_BIN) $(console_runner_LDADD) $(console_runner_LINKOBJS) $(console_runner_LDFLAGS)
 
 

@@ -125,12 +125,7 @@ void DebuggerGDB::OnAttach()
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
     m_pLog = new SimpleTextLog(msgMan, m_PluginInfo.title);
     m_pDbgLog = new SimpleTextLog(msgMan, m_PluginInfo.title + _(" (debug)"));
-#ifdef __WXMSW__
-    #define DEFAULT_SIZE 9
-#else
-    #define DEFAULT_SIZE 12
-#endif // __WXMSW__
-    wxFont font(DEFAULT_SIZE, wxMODERN, wxNORMAL, wxNORMAL);
+    wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
 
     m_pLog->GetTextControl()->SetFont(font);
     m_pDbgLog->GetTextControl()->SetFont(font);

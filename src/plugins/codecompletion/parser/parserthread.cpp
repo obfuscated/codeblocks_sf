@@ -82,7 +82,7 @@ void* ParserThread::Entry()
 	event.SetInt((int)this);
 	wxPostEvent(m_pParent, event);
 
-    //Log("ParserThread running for " + m_Filename);
+//    Log("ParserThread running for " + m_Filename);
 	Parse();
 
 	wxCommandEvent event1(wxEVT_COMMAND_MENU_SELECTED, THREAD_END);

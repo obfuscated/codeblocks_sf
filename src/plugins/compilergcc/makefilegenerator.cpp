@@ -873,9 +873,9 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
 						if (m_Compiler->GetSimpleLog())
 							buffer << '\t' << "@echo Calculating dependencies for \"" << pf->relativeFilename << "\"..." << '\n';
 #ifdef __WXMSW__
-						buffer << "\t-@if not exist $(" << target->GetTitle() << "_OUTDIR)/" << d_filename.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) << ". mkdir $(" << target->GetTitle() << "_OUTDIR)/" << d_filename.GetPath(wxPATH_GET_VOLUME) << "\n";
+						buffer << "\t-@if not exist " << target->GetBasePath() << "/" << d_filename.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) << ". mkdir " << target->GetBasePath() << "/" << d_filename.GetPath(wxPATH_GET_VOLUME) << "\n";
 #else
-						buffer << "\t-@if ! test -d $(" << target->GetTitle() << "_OUTDIR)/" << d_filename.GetPath(wxPATH_GET_VOLUME) << "; then mkdir $(" << target->GetTitle() << "_OUTDIR)/" << d_filename.GetPath(wxPATH_GET_VOLUME) << "; fi\n";
+						buffer << "\t-@if ! test -d " << target->GetBasePath() << "/" << d_filename.GetPath(wxPATH_GET_VOLUME) << "; then mkdir " << target->GetBasePath() << "/" << d_filename.GetPath(wxPATH_GET_VOLUME) << "; fi\n";
 #endif
 						wxString compilerCmd = ReplaceCompilerMacros(ctGenDependenciesCmd, pf->compilerVar, target, c_file, o_file, d_file);
 						if (!compilerCmd.IsEmpty())

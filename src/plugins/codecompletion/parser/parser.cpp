@@ -306,7 +306,8 @@ void Parser::ScheduleThreads()
 	Manager::Get()->GetMessageManager()->DebugLog("Parser: Max running thread count: %d", m_MaxThreadsCount);
 	Manager::Get()->GetMessageManager()->DebugLog("Parser: Threads-in-store count: %d", m_ThreadsStore.GetCount());
 #endif*/
-	wxMutexLocker lock(s_mutexListProtection);
+
+	wxMutexLocker* lock = new wxMutexLocker(s_mutexListProtection);
 	if (m_Threads.GetCount() < m_MaxThreadsCount && m_ThreadsStore.GetCount())
 	{
 		ParserThread* thread = m_ThreadsStore[0];
@@ -314,11 +315,14 @@ void Parser::ScheduleThreads()
 		m_Threads.Add(thread);
 		thread->Run();
 	}
+	delete lock;
 	
 	if (Done())
 	{
+        lock = new wxMutexLocker(s_mutexListProtection);
 		LinkInheritance();
 		SortAllTokens();
+		delete lock;
 		wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, PARSER_END);
 		event.SetInt((int)this);
 		wxPostEvent(m_pParent, event);
@@ -437,7 +441,7 @@ bool Parser::Parse(const wxString& filename, bool isLocal)
 	opts.wantPreprocessor = m_Options.wantPreprocessor;
 	opts.useBuffer = false;
 	opts.bufferSkipBlocks = false;
-	return Parse(filename, isLocal, opts);
+	return Parse(UnixFilename(filename), isLocal, opts);
 }
 
 bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadOptions& opts)
@@ -506,7 +510,7 @@ bool Parser::RemoveFile(const wxString& filename)
 	wxMutexLocker lock(s_mutexListProtection);
 	wxMutexLocker lock1(s_mutexProtection);
 	
-	wxString file = filename;
+	wxString file = UnixFilename(filename);
 	if (m_ParsedFiles.Index(file) != wxNOT_FOUND)
 	{
 		// only if it has been parsed before...
@@ -532,11 +536,11 @@ bool Parser::Reparse(const wxString& filename, bool isLocal)
 	if (!Done())
 		return false; // if still parsing, exit with error
 
-	wxString file = filename;
+	wxString file = UnixFilename(filename);
 	Manager::Get()->GetMessageManager()->DebugLog("Reparsing %s", file.c_str());
 	RemoveFile(file);
-	wxMutexLocker* lock = new wxMutexLocker(s_mutexListProtection);
 	ClearTemporaries();
+	wxMutexLocker* lock = new wxMutexLocker(s_mutexListProtection);
 	m_ReparsedFiles.Add(file);
 	delete lock;
 	

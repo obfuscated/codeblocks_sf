@@ -67,6 +67,7 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
     // general
 	XRCCTRL(*this, "txtProjectName", wxTextCtrl)->SetValue(m_Project->GetTitle());
 	XRCCTRL(*this, "txtProjectFilename", wxStaticText)->SetLabel(m_Project->GetFilename());
+	XRCCTRL(*this, "txtProjectMakefile", wxTextCtrl)->SetValue(m_Project->GetMakefile());
 
     FillBuildTargets();
 	
@@ -444,6 +445,7 @@ void ProjectOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
 void ProjectOptionsDlg::OnOK(wxCommandEvent& event)
 {
 	m_Project->SetTitle(XRCCTRL(*this, "txtProjectName", wxTextCtrl)->GetValue());
+	m_Project->SetMakefile(XRCCTRL(*this, "txtProjectMakefile", wxTextCtrl)->GetValue());
 	m_Project->SetTargetType(TargetType(XRCCTRL(*this, "cmbProjectType", wxComboBox)->GetSelection()));
 
 #if 1

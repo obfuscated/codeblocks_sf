@@ -16,7 +16,17 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    char cmdline[4096] = {0};
+    // count size of arguments
+    int fullsize = 0;
+    for (int i = 1; i < argc; ++i)
+    {
+        fullsize += strlen(argv[i]);
+    }
+    // add some slack for spaces between args plus quotes around executable
+    fullsize += argc + 32;
+    
+    char* cmdline = new char[fullsize];
+    memset(cmdline, 0, fullsize);
 
     // 1st arg (executable) enclosed in quotes to support filenames with spaces
     strcat(cmdline, "\"");
@@ -30,8 +40,10 @@ int main(int argc, char** argv)
     }
     
     //printf("Would run '%s'\n", cmdline);
-    system(cmdline);
-    printf("\nPress any key to continue.\n");
+    int ret = system(cmdline);
+    printf("\nPress ENTER to continue.\n");
     wait_key();
-    return 0;
+    
+    delete[] cmdline;
+    return ret;
 }

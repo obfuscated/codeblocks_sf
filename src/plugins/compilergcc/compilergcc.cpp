@@ -176,6 +176,9 @@ CompilerGCC::CompilerGCC()
 	for (int i = 0; i < MAX_TARGETS; ++i)
 		idMenuSelectTargetOther[i] = wxNewId();
 	m_SimpleLog = ConfigManager::Get()->Read("/compiler_gcc/simple_build", 1);
+#ifndef __WXMSW__
+	m_ConsoleShell = ConfigManager::Get()->Read("/compiler_gcc/console_shell", DEFAULT_CONSOLE_SHELL);
+#endif
 	
 	// register built-in compilers
 	CompilerFactory::RegisterCompiler(new CompilerMINGW);
@@ -194,12 +197,7 @@ CompilerGCC::~CompilerGCC()
 
 void CompilerGCC::OnAttach()
 {   
-#ifdef __WXMSW__
-    #define DEFAULT_SIZE 8
-#else
-    #define DEFAULT_SIZE 12
-#endif // __WXMSW__
-    wxFont font(DEFAULT_SIZE, wxMODERN, wxNORMAL, wxNORMAL);
+    wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
 
 	// create compiler's log
@@ -277,6 +275,7 @@ int CompilerGCC::Configure(cbProject* project, ProjectBuildTarget* target)
 	CompilerOptionsDlg dlg(Manager::Get()->GetAppWindow(), this, project, target);
 	dlg.ShowModal();
 	m_SimpleLog = ConfigManager::Get()->Read("/compiler_gcc/simple_build", 1);
+	m_ConsoleShell = ConfigManager::Get()->Read("/compiler_gcc/console_shell", DEFAULT_CONSOLE_SHELL);
 	SaveOptions();
 	return 0;
 }
@@ -587,9 +586,10 @@ int CompilerGCC::DoRunQueue()
     msgMan->SwitchTo(m_PageIndex);
 
 	wxString dir = m_Project->GetBasePath();
+	wxString cmd = m_Queue[m_QueueIndex];
 
 	m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLACK, *wxWHITE));
-	//msgMan->Log(m_PageIndex, m_Queue[m_QueueIndex].c_str());
+	msgMan->Log(m_PageIndex, "cmd='%s' in '%s'", cmd.c_str(), m_CdRun.c_str());
 
 	bool pipe = true;
 	int flags = wxEXEC_ASYNC;
@@ -599,14 +599,17 @@ int CompilerGCC::DoRunQueue()
 		flags |= wxEXEC_NOHIDE;
 		m_IsRun = false;
 		dir = m_CdRun;
+#ifndef __WXMSW__
+		wxSetEnv("LD_LIBRARY_PATH", ".");
+#endif
 	}
     m_Process = new PipedProcess((void**)&m_Process, this, idGCCProcess, pipe, dir);
-    m_Pid = wxExecute(m_Queue[m_QueueIndex], flags, m_Process);
+    m_Pid = wxExecute(cmd, flags, m_Process);
     if ( !m_Pid )
     {
         m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxWHITE, *wxRED));
         msgMan->Log(m_PageIndex, _("Command execution failed..."));
-        //msgMan->Log(m_PageIndex, _("Execution of '%s' in '%s' failed."), m_Queue[m_QueueIndex].c_str(), dir.c_str());
+//        msgMan->Log(m_PageIndex, _("Execution of '%s' in '%s' failed."), m_Queue[m_QueueIndex].c_str(), dir.c_str());
 		m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLACK, *wxWHITE));
         delete m_Process;
         m_Process = NULL;
@@ -740,7 +743,7 @@ void CompilerGCC::DoDeleteTempMakefile()
     m_LastTempMakefile = "";
 }
 
-bool CompilerGCC::DoCreateMakefile(bool temporary)
+bool CompilerGCC::DoCreateMakefile(bool temporary, const wxString& makefile)
 {
     DoDeleteTempMakefile();
 
@@ -758,8 +761,20 @@ bool CompilerGCC::DoCreateMakefile(bool temporary)
     
     // invoke Makefile generation
 	wxString path = m_Project->GetBasePath();
-    //wxString makefile = ProjectMakefile();
-    m_LastTempMakefile = temporary ? wxFileName::CreateTempFileName("cbmk", 0L) : ProjectMakefile();
+
+	if (temporary)
+	    m_LastTempMakefile = wxFileName::CreateTempFileName("cbmk", 0L);
+	else
+	{
+	    m_LastTempMakefile = makefile;
+	    if (m_LastTempMakefile.IsEmpty())
+	    {
+	    	m_LastTempMakefile = ProjectMakefile();
+		    if (m_LastTempMakefile.IsEmpty())
+		    	m_LastTempMakefile = "Makefile";
+		}
+	}
+
     Manager::Get()->GetMessageManager()->SwitchTo(m_PageIndex);
     Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Project   : %s"), m_Project->GetTitle().c_str());
     Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Compiler  : %s"), CompilerFactory::Compilers[m_CompilerIdx]->GetName().c_str());
@@ -826,18 +841,24 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 
 
     wxString cmd;
-    wxFileName f(target->GetOutputFilename());
+    wxFileName f(UnixFilename(target->GetOutputFilename()));
+    f.MakeAbsolute(m_Project->GetBasePath());
     m_CdRun = f.GetPath(wxPATH_GET_VOLUME);
 
-#ifdef __WXMSW__
-    // for Windows, use helper application for console projects...
+    // for console projects, use helper app to wait for a key after
+    // execution ends...
 	if (target->GetTargetType() == ttConsoleOnly)
 	{
-		wxString baseDir = ConfigManager::Get()->Read("/app_path");
-		if (wxFileExists(baseDir + "\\console_runner.exe"))
-            cmd << baseDir << "\\console_runner.exe ";
-    }
+#ifndef __WXMSW__
+        // for non-win platforms, use m_ConsoleShell to run the console app
+        wxString shell = m_ConsoleShell;
+        shell.Replace("$TITLE", "'" + m_Project->GetTitle() + "'");
+        cmd << shell << " ";
 #endif
+		wxString baseDir = ConfigManager::Get()->Read("/app_path");
+		if (wxFileExists(baseDir + "/console_runner.exe"))
+            cmd << baseDir << "/console_runner.exe ";
+    }
 
 	if (target->GetTargetType() == ttDynamicLib ||
 		target->GetTargetType() == ttStaticLib)
@@ -851,7 +872,15 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 		cmd << "\"" << target->GetHostApplication() << "\" " << target->GetExecutionParameters();
 	}
 	else
-		cmd << "\"" << UnixFilename(f.GetFullName()) << "\" " << target->GetExecutionParameters();
+    {
+        cmd << "\"";
+#ifndef __WXMSW__
+        cmd << "./";
+#endif
+		cmd << f.GetFullName();
+		cmd << "\" ";
+		cmd << target->GetExecutionParameters();
+    }
 //		cmd << "\"" << target->GetOutputFilename() << "\" " << target->GetExecutionParameters();
 //    wxMessageBox("cdrun=" + m_CdRun + "\nWill run: " + cmd);
 	m_Queue.Add(cmd);
@@ -890,8 +919,13 @@ int CompilerGCC::CreateDist()
 
 void CompilerGCC::OnExportMakefile(wxCommandEvent& event)
 {
-    DoCreateMakefile(false);
-    wxMessageBox(_("A valid Makefile has been exported in the same directory as the project file."));
+	wxString makefile = wxGetTextFromUser(_("Please enter the \"Makefile\" name:"), _("Rename compiler"), ProjectMakefile());
+	if (makefile.IsEmpty())
+		return;
+    DoCreateMakefile(false, makefile);
+    wxString msg;
+    msg.Printf(_("\"%s\" has been exported in the same directory as the project file."), makefile.c_str());
+    wxMessageBox(msg);
 }
 
 int CompilerGCC::Compile(ProjectBuildTarget* target)

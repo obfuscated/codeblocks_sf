@@ -79,6 +79,40 @@ int idMenuViewUseFolders = wxNewId();
 int idMenuViewFileMasks = wxNewId();
 int idMenuNextProject = wxNewId();
 int idMenuPriorProject = wxNewId();
+int idMenuProjectTreeProps = wxNewId();
+
+#ifndef __WXMSW
+/*
+	Under wxGTK, I have noticed that wxTreeCtrl is not sending a EVT_COMMAND_RIGHT_CLICK
+	event when right-clicking on the client area.
+	This is a "proxy" wxTreeCtrl descendant that handles this for us...
+*/
+class PrjTree : public wxTreeCtrl
+{
+	public:
+		PrjTree(wxWindow* parent, int id) : wxTreeCtrl(parent, id) {}
+	protected:
+		void OnRightClick(wxMouseEvent& event)
+		{
+		    //Manager::Get()->GetMessageManager()->DebugLog("OnRightClick");
+		    int flags;
+		    HitTest(wxPoint(event.GetX(), event.GetY()), flags);
+		    if (flags & (wxTREE_HITTEST_ABOVE | wxTREE_HITTEST_BELOW | wxTREE_HITTEST_NOWHERE))
+		    {
+		    	// "proxy" the call
+			    wxCommandEvent e(wxEVT_COMMAND_RIGHT_CLICK, ID_ProjectManager);
+				wxPostEvent(GetParent(), e);
+			}
+			else
+		    	event.Skip();
+		}
+		DECLARE_EVENT_TABLE();
+};
+
+BEGIN_EVENT_TABLE(PrjTree, wxTreeCtrl)
+	EVT_RIGHT_DOWN(PrjTree::OnRightClick)
+END_EVENT_TABLE()
+#endif // !__WXMSW__
 
 BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
     EVT_TREE_ITEM_ACTIVATED(ID_ProjectManager, ProjectManager::OnProjectFileActivated)
@@ -117,7 +151,11 @@ ProjectManager::ProjectManager(wxNotebook* parent)
 	m_pPanel = new wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
 
     wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
+#ifndef __WXMSW
+	m_pTree = new PrjTree(m_pPanel, ID_ProjectManager);
+#else
 	m_pTree = new wxTreeCtrl(m_pPanel, ID_ProjectManager);
+#endif
     bs->Add(m_pTree, 1, wxEXPAND | wxALL);
     m_pPanel->SetAutoLayout(true);
     m_pPanel->SetSizer(bs);
@@ -186,6 +224,16 @@ void ProjectManager::CreateMenu(wxMenuBar* menuBar)
             menu->Append(idMenuPriorProject, _("Activate prior\tAlt-F5"), _("Activate prior project in open projects list"));
             menu->Append(idMenuNextProject, _("Activate next\tAlt-F6"), _("Activate next project in open projects list"));
             menu->AppendSeparator();
+
+            wxMenu* treeprops = new wxMenu;
+            treeprops->AppendCheckItem(idMenuViewCategorize, _("Categorize by file types"));
+            treeprops->AppendCheckItem(idMenuViewUseFolders, _("Display folders as on disk"));
+            treeprops->Check(idMenuViewCategorize, ConfigManager::Get()->Read("/project_manager/categorize_tree", 1));
+            treeprops->Check(idMenuViewUseFolders, ConfigManager::Get()->Read("/project_manager/use_folders", 1));
+            treeprops->AppendSeparator();
+            treeprops->Append(idMenuViewFileMasks, _("Edit file types && categories..."));
+            menu->Append(idMenuProjectTreeProps, _("Project tree properties"), treeprops);
+
             menu->Append(idMenuExecParams, _("Set execution &parameters..."), _("Set execution parameters for the targets of this project"));
             menu->Append(idMenuProjectProperties, _("Properties"));
         }
@@ -840,14 +888,26 @@ void ProjectManager::OnGotoFile(wxCommandEvent& event)
 
 void ProjectManager::OnViewCategorize(wxCommandEvent& event)
 {
-    m_TreeCategorize = !event.IsChecked();
+    bool isChecked = event.IsChecked();
+#ifdef __WXMSW__
+	// it seems that wxMSW checkable menus behave differently than wxGTK (others?)
+	isChecked = !isChecked;
+#endif
+    m_TreeCategorize = isChecked;
+    Manager::Get()->GetAppWindow()->GetMenuBar()->Check(idMenuViewCategorize, m_TreeCategorize);
 	ConfigManager::Get()->Write("/project_manager/categorize_tree", m_TreeCategorize);
     RebuildTree();
 }
 
 void ProjectManager::OnViewUseFolders(wxCommandEvent& event)
 {
-    m_TreeUseFolders = !event.IsChecked();
+    bool isChecked = event.IsChecked();
+#ifdef __WXMSW__
+	// it seems that wxMSW checkable menus behave differently than wxGTK (others?)
+	isChecked = !isChecked;
+#endif
+    m_TreeUseFolders = isChecked;
+    Manager::Get()->GetAppWindow()->GetMenuBar()->Check(idMenuViewUseFolders, m_TreeUseFolders);
 	ConfigManager::Get()->Write("/project_manager/use_folders", m_TreeUseFolders);
     RebuildTree();
 }

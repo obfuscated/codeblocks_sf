@@ -210,9 +210,16 @@ void CompilerOptionsDlg::DoFillPrograms()
 void CompilerOptionsDlg::DoFillOthers()
 {
     wxCheckBox* chk = XRCCTRL(*this, "chkSimpleBuild", wxCheckBox);
-    if (chk) // if "Other" page exists
-    {
+    if (chk)
         chk->SetValue(ConfigManager::Get()->Read("/compiler_gcc/simple_build", 0L));
+    wxTextCtrl* txt = XRCCTRL(*this, "txtConsoleShell", wxTextCtrl);
+    if (txt)
+    {
+        txt->SetValue(ConfigManager::Get()->Read("/compiler_gcc/console_shell", DEFAULT_CONSOLE_SHELL));
+#ifdef __WXMSW__
+        // under win32, this option is not needed, so disable it
+        txt->Enable(false);
+#endif
     }
 }
 
@@ -408,7 +415,42 @@ void CompilerOptionsDlg::DoFillCompileDirs(const wxArrayString& array, wxListBox
 
 void CompilerOptionsDlg::DoGetCompileOptions(wxArrayString& array, wxTextCtrl* control)
 {
+/* NOTE (mandrav#1#): Under Gnome2, wxTextCtrl::GetLineLength() returns always 0,
+                      so wxTextCtrl::GetLineText() is always empty...
+                      Now, we 're breaking up by newlines. */
     array.Clear();
+#if 1
+    wxString tmp = control->GetValue();
+    int nl = tmp.Find('\n');
+    wxString line;
+    if (nl == -1)
+    {
+        line = tmp;
+        tmp = "";
+    }
+    else
+        line = tmp.Left(nl);
+    while (nl != -1 || !line.IsEmpty())
+    {
+//        Manager::Get()->GetMessageManager()->DebugLog("%s text=%s", control->GetName().c_str(), line.c_str());
+        if (!line.IsEmpty())
+        {
+            // just to make sure..
+            line.Replace("\r", " ", true); // remove CRs
+            line.Replace("\n", " ", true); // remove LFs
+            array.Add(line.Strip(wxString::both));
+        }
+        tmp.Remove(0, nl + 1);
+        nl = tmp.Find('\n');
+        if (nl == -1)
+        {
+            line = tmp;
+            tmp = "";
+        }
+        else
+            line = tmp.Left(nl);
+    }
+#else
 	int count = control->GetNumberOfLines();
 	for (int i = 0; i < count; ++i)
 	{
@@ -420,6 +462,7 @@ void CompilerOptionsDlg::DoGetCompileOptions(wxArrayString& array, wxTextCtrl* c
             array.Add(tmp.Strip(wxString::both));
         }
     }
+#endif
 }
 
 void CompilerOptionsDlg::DoGetCompileDirs(wxArrayString& array, wxListBox* control)
@@ -842,7 +885,7 @@ void CompilerOptionsDlg::OnSelectProgramClick(wxCommandEvent& event)
 void CompilerOptionsDlg::OnAdvancedClick(wxCommandEvent& event)
 {
 	if (wxMessageBox(_("The compiler's advanced settings, need command-line "
-                        "compiler knowledge to be tweaked. If you don't know "
+                        "compiler knowledge to be tweaked.\nIf you don't know "
                         "*exactly* what you 're doing, it is suggested to "
                         "NOT tamper with the advanced settings...\n\n"
                         "Are you sure you want to edit the advanced settings?"),
@@ -937,9 +980,10 @@ void CompilerOptionsDlg::EndModal(int retCode)
     
 	//others
     wxCheckBox* chk = XRCCTRL(*this, "chkSimpleBuild", wxCheckBox);
-    if (chk) // if "Other" page exists
-    {
+    if (chk)
         ConfigManager::Get()->Write("/compiler_gcc/simple_build", chk->GetValue());	
-    }
+    wxTextCtrl* txt = XRCCTRL(*this, "txtConsoleShell", wxTextCtrl);
+    if (txt)
+        ConfigManager::Get()->Write("/compiler_gcc/console_shell", txt->GetValue());
 	wxDialog::EndModal(retCode);
 }

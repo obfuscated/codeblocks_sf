@@ -41,6 +41,15 @@
                       </object>
                       <flag>wxEXPAND</flag>
                     </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Makefile:</label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxTextCtrl" name="txtProjectMakefile"/>
+                      <minsize>160,-1</minsize>
+                    </object>
                   </object>
                   <option>1</option>
                   <flag>wxALL|wxEXPAND</flag>
