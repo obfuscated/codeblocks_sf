@@ -1,0 +1,71 @@
+Changes for version 1.0-beta2
+-----------------------------
+
+2004-05-14 09:11  mandrav
+
+	* setup/CodeBlocks_Core.iss: Updated setup file for 1.0-beta2
+
+2004-05-14 08:43  mandrav
+
+	* A couple of small bug-fixes in compiler plugin
+	* Disabled use of "Settings/Plugins" menu item (plugins enable/disable)
+	* Increased version to 1.0-beta2
+
+2004-05-14 07:08  mandrav
+
+	* Added "File/Save workspace" to select workspace filename instead
+	  of always using the default workspace
+	* Added file association for workspaces
+
+2004-05-14 06:27  mandrav
+
+	* Added a tips dialog to show on start-up and under Help/Tips
+	* Added tips.txt file (one tip per-line; to disable a tip put a #
+	  at the start of the line)
+	* Commented out a #pragma directive in sdk/tinyxml/tinystr.h to
+	  stop a gcc warning
+
+2004-05-14 05:24  mandrav
+
+	* Fixed a nasty UI glitch where the MessageManager logs would  not
+	  be correctly laid out until *manually* resizing MessageManager
+
+2004-05-14 03:43  mandrav
+
+	* Bug-fix: Tools menu messed-up after "configure tools"
+	* Added new class MenuItemsManager to manage menu items for classes
+	  that need to add menu items and then remove them (ToolsManager,
+	  plugins etc)
+
+2004-05-11 09:48  mandrav
+
+	* [Compiler]: generated Makefile contains code to automatically create
+	  the target dirs (if they do not exist)
+
+2004-05-11 08:37  mandrav
+
+	* Fixed some UI-related behaviour in project options dialog
+
+2004-05-11 07:33  mandrav
+
+	* Bug-fix: crash on global compiler options add/edit dirs
+
+2004-05-11 03:51  mandrav
+
+	* Bug-fix: global compiler settings, add compiler dir crash
+
+2004-05-10 07:18  mandrav
+
+	* Changed ToDo plugin interface: it now adds a tab in the bottom view
+
+2004-05-10 04:25  mandrav
+
+	* Update symbols browser images
+
+2004-05-10 03:35  mandrav
+
+	* Changed namespaces display in symbols browser
+
+2004-05-09 16:07  mandrav
+
+	* Bug fix: Generated Makefile: wrong relative filename for private resources
