@@ -16,6 +16,7 @@
 #include "compilergcc.h"
 #include "makefilegenerator.h"
 #include "customvars.h"
+#include "directdeps.h"
 
 pfDetails::pfDetails(DirectCommands* cmds, ProjectBuildTarget* target, ProjectFile* pf)
 {
@@ -593,16 +594,17 @@ bool DirectCommands::ForceCompileByDependencies(const pfDetails& pfd)
         if (src.IsValid() && dep.IsValid() && !src.IsLaterThan(dep))
         {
             // just read existing deps file
-            done = ReadDependencies(pfd.dep_file_native, deps);
+            done = DirectDeps::ReadDependencies(pfd.dep_file_native, deps);
         }
     }
     
     if (!done)
     {
         // scan for dependencies
+        wxStopWatch sw;
         Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Calculating dependencies: %s"), pfd.source_file_native.c_str());
-        GetDependenciesOf(pfd.source_file_native, deps);
-//        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("    DBG: %s has %d deps"), pfd.source_file_native.c_str(), deps.GetCount());
+        DirectDeps::GetDependenciesOf(pfd.source_file_native, deps, m_PageIndex, m_pProject, m_pCurrTarget);
+//        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("    DBG: %s has %d deps (in %ldms)"), pfd.source_file_native.c_str(), deps.GetCount(), sw.Time());
         if (!deps.IsEmpty())
             deps.Remove(0, 1); // remove the first entry; it's always this file
 
@@ -627,166 +629,6 @@ bool DirectCommands::ForceCompileByDependencies(const pfDetails& pfd)
     /*for (size_t i = 0; i < deps.GetCount(); ++i)
         Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("    DBG: %s"), deps[i].c_str());*/
     return DependsOnChangedFile(pfd, deps);
-}
-
-bool DirectCommands::ReadDependencies(const wxString& filename, wxArrayString& deps)
-{
-    wxFileInputStream file(filename);
-    if (!file.Ok())
-        return false; // error opening file???
-
-    wxTextInputStream input(file);
-    while (!file.Eof())
-    {
-        wxString line = input.ReadLine();
-        line.Trim(false);
-        line.Trim(true);
-        if (line.GetChar(line.Length() - 1) == '\\')
-        {
-            // GNU "make" style dependencies file detected
-            deps.Clear();
-            return false;
-        }
-//        Manager::Get()->GetMessageManager()->Log(m_PageIndex, "Line: '%s'", line.c_str());
-        if (!line.IsEmpty())
-            deps.Add(line);
-    }
-    return true;
-}
-
-/// Creates a list of files this project file depends on, by scanning for #include directives
-/// This list of files is deps
-bool DirectCommands::GetDependenciesOf(const wxString& filename, wxArrayString& deps)
-{
-    wxLogNull ln;
-
-    wxFileName fname(filename);
-//    if (fname.IsRelative())
-//        fname.MakeAbsolute(m_pProject->GetBasePath());
-
-    // check if we already scanned this file (to avoid infinite loop)
-    if (deps.Index(fname.GetFullPath()) != wxNOT_FOUND)
-        return true; // already scanned
-//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, "    DBG: %s not scanned yet", fname.GetFullPath().c_str());
-
-    wxFileInputStream file(fname.GetFullPath());
-    if (!file.Ok())
-        return false; // error opening file???
-//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, "    DBG: %s exists", fname.GetFullPath().c_str());
-
-    deps.Add(fname.GetFullPath());
-
-    wxTextInputStream input(file);
-    while (!file.Eof())
-    {
-        wxString line = input.ReadLine();
-        line.Trim(false);
-        
-        // only lines containing preprocessor directives
-        if (line.GetChar(0) != '#')
-            continue;
-        
-        // remove #, so that we can trim the rest up to the directive
-        line.Remove(0, 1);
-        line.Trim(false);
-
-        // check if it is an #include directive
-        wxString rest;
-        if (line.StartsWith("include", &rest))
-        {
-            rest.Trim(false);
-            if (rest.GetChar(0) != '"' && rest.GetChar(0) != '<')
-                continue; // invalid token?
-
-            bool isLocal = rest.GetChar(0) == '"';
-
-            // now "rest" must hold either "some/file.name" or <some/file.name>
-            rest.Remove(0, 1);
-            
-            size_t idx = 0;
-            while (true)
-            {
-                if (idx >= rest.Length())
-                {
-                    // we reached the end of line and didn't find the string :(
-                    rest.Clear();
-                    break;
-                }
-                if (rest.GetChar(idx) == '"' || rest.GetChar(idx) == '>')
-                {
-                    rest.Remove(idx);
-                    break;
-                }
-                ++idx;
-            }
-
-            // if rest is not empty, we got an included filename :)
-            if (!rest.IsEmpty())
-            {
-//                Manager::Get()->GetMessageManager()->Log(m_PageIndex, "    DBG: found included file: %s", rest.c_str());
-                // if #include uses quotes (is local relative filename), scan it directly
-//                if (!GetDependenciesOf(rest, deps))
-                if (isLocal)
-                {
-//                    wxFileName tmp(rest);
-//                    if (tmp.IsRelative())
-//                        tmp.MakeAbsolute(fname.GetPath());
-//                    GetDependenciesOf(tmp.GetFullPath(), deps);
-                    wxFileName tmp(fname.GetPath(wxPATH_GET_SEPARATOR) + rest);
-                    tmp.Normalize(wxPATH_NORM_ALL, m_pProject->GetBasePath());
-                    tmp.MakeRelativeTo(m_pProject->GetBasePath());
-                    
-                    GetDependenciesOf(tmp.GetFullPath(), deps);
-                }
-                else
-                {
-                    // try scanning the file by prepending all the globals and project include dirs until it's found
-                    wxString newfilename;
-                    wxString sep = wxFileName::GetPathSeparator();
-                    
-                    // target include dirs first
-                    if (m_pCurrTarget)
-                    {
-                        const wxArrayString& tgt_incs = m_pCurrTarget->GetIncludeDirs();
-                        for (unsigned int i = 0; i < tgt_incs.GetCount(); ++i)
-                        {
-                            newfilename = tgt_incs[i] + sep + rest;
-                            if (wxFileExists(newfilename))
-                            {
-                                if (GetDependenciesOf(newfilename, deps))
-                                    break;
-                            }
-                        }
-                    }
-
-                    // project include dirs second
-                    const wxArrayString& prj_incs = m_pProject->GetIncludeDirs();
-                    for (unsigned int i = 0; i < prj_incs.GetCount(); ++i)
-                    {
-                        newfilename = prj_incs[i] + sep + rest;
-                        if (wxFileExists(newfilename))
-                        {
-                            if (GetDependenciesOf(newfilename, deps))
-                                break;
-                        }
-                    }
-
-                    // global include dirs last
-//                    const wxArrayString& global_incs = m_pCompiler->GetIncludeDirs();
-//                    for (unsigned int i = 0; i < global_incs.GetCount(); ++i)
-//                    {
-//                        newfilename = global_incs[i] + sep + rest;
-//                        if (wxFileExists(newfilename))
-//                        {
-//                            if (GetDependenciesOf(newfilename, deps))
-//                                break;
-//                        }
-//                    }
-                }
-            }
-        }
-    }
-    return true;
 }
 
 /// Returns true if any one of the files listed in deps, has later modification

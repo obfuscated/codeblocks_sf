@@ -323,12 +323,6 @@
 			<Add library="libwxmsw$(WX_VER).a"/>
 			<Add directory="sdk/tinyxml"/>
 		</Linker>
-		<Unit filename="sdk.doxy">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="doc"/>
-		</Unit>
 		<Unit filename="devel\share\CodeBlocks\images\codecompletion\README.txt">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
@@ -871,6 +865,16 @@
 			<Option link="0"/>
 			<Option target="plugin_CompilerGCC"/>
 		</Unit>
+		<Unit filename="plugins\compilergcc\directdeps.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\directdeps.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
 		<Unit filename="plugins\compilergcc\linklibdlg.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="plugin_CompilerGCC"/>
@@ -1026,6 +1030,12 @@
 			<Option compile="0"/>
 			<Option link="0"/>
 			<Option target="plugin_XPManifest"/>
+		</Unit>
+		<Unit filename="sdk.doxy">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="doc"/>
 		</Unit>
 		<Unit filename="sdk\Managers\Managers.cpp">
 			<Option compilerVar="CPP"/>

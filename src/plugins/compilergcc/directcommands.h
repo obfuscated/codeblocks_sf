@@ -31,8 +31,6 @@ class DirectCommands
 
         static void QuoteStringIfNeeded(wxString& str);
         static void AppendArray(const wxArrayString& from, wxArrayString& to);
-        bool ReadDependencies(const wxString& filename, wxArrayString& deps);
-        bool GetDependenciesOf(const wxString& filename, wxArrayString& deps);
 	protected:
         friend class pfDetails;
         bool ForceCompileByDependencies(const pfDetails& pfd);
