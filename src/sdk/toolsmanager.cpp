@@ -79,7 +79,11 @@ ToolsManager::ToolsManager()
 ToolsManager::~ToolsManager()
 {
     SC_DESTRUCTOR_BEGIN
-	Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
+    
+    // this is a core manager, so it is removed when the app is shutting down.
+    // in this case, the app has already un-hooked us, so no need to do it ourselves...
+//	Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
+	
 	m_ItemsManager.Clear( m_Menu );
 
     // free-up any memory used for tools

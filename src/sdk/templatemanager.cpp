@@ -78,7 +78,9 @@ TemplateManager::TemplateManager()
 TemplateManager::~TemplateManager()
 {
 	//dtor
-	Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
+    // this is a core manager, so it is removed when the app is shutting down.
+    // in this case, the app has already un-hooked us, so no need to do it ourselves...
+//	Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
 
 	WX_CLEAR_ARRAY(m_Templates);
 }

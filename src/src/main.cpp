@@ -1243,7 +1243,13 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     }*/
 
     TerminateRecentFilesHistory();
+    
+    // remove all other event handlers from this window
+    // this stops it from crashing, when no plugins are loaded
+    while (GetEventHandler() != this)
+        PopEventHandler(false);
 	Manager::Get()->Free();
+	
 	ConfigManager::Get()->Flush();
     Destroy();
 }

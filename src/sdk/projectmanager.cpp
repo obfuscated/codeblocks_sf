@@ -214,11 +214,13 @@ ProjectManager::~ProjectManager()
 {
     SC_DESTRUCTOR_BEGIN
 
+    // this is a core manager, so it is removed when the app is shutting down.
+    // in this case, the app has already un-hooked us, so no need to do it ourselves...
+//	Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
+
     if (m_pWorkspace)
         delete m_pWorkspace;
     m_pWorkspace = 0;
-
-	Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
     
     int count = m_pProjects->GetCount();
     for (int i = 0; i < count; ++i)
