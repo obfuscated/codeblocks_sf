@@ -231,7 +231,7 @@ ProjectManager::~ProjectManager()
 
 void ProjectManager::CreateMenu(wxMenuBar* menuBar)
 {
-    SANITY_CHECK();
+//    SANITY_CHECK();
 /* TODO (mandrav#1#): Move menu items from main.cpp, here */
 	if (menuBar)
 	{

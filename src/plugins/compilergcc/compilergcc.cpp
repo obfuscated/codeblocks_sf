@@ -96,6 +96,13 @@ int idGCCProcess = wxNewId();
 
 BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
     EVT_UPDATE_UI_RANGE(idMenuCompile, idToolTargetLabel, CompilerGCC::OnUpdateUI)
+
+    // these are loaded from the XRC
+    EVT_UPDATE_UI(XRCID("idCompilerMenuCompile"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(XRCID("idCompilerMenuRebuild"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(XRCID("idCompilerMenuCompileAndRun"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(XRCID("idCompilerMenuRun"), CompilerGCC::OnUpdateUI)
+
     EVT_IDLE(										CompilerGCC::OnIdle)
 	EVT_TIMER(idTimerPollCompiler,                  CompilerGCC::OnTimer)
     
@@ -266,15 +273,15 @@ void CompilerGCC::OnRelease(bool appShutDown)
 
 	DoClearTargetMenu();
 
-	if (m_Menu)
-	{
-		wxMenuBar* mBar = Manager::Get()->GetAppWindow()->GetMenuBar();
-		int pos = mBar->FindMenu(_("&Compile"));
-		if (pos != wxNOT_FOUND)
-			mBar->Remove(pos);
-		delete m_Menu;
-		m_Menu = 0L;
-	}
+//	if (m_Menu)
+//	{
+//		wxMenuBar* mBar = Manager::Get()->GetAppWindow()->GetMenuBar();
+//		int pos = mBar->FindMenu(_("&Compile"));
+//		if (pos != wxNOT_FOUND)
+//			mBar->Remove(pos);
+//		delete m_Menu;
+//		m_Menu = 0L;
+//	}
 
 	if (m_pToolbar)
 	{
@@ -699,31 +706,20 @@ int CompilerGCC::DoRunQueue()
 
 void CompilerGCC::DoClearTargetMenu()
 {
-/*
-// GAH!!! REGRESSION BUG! 
-// This was supposed to be fixed 2 days ago.
-// Why is the old buggy code in here?
     if (m_TargetMenu)
 	{
 		wxMenuItemList& items = m_TargetMenu->GetMenuItems();
-		for (wxMenuItemList::Node* node = items.GetFirst(); node; node = node->GetNext())
+		while (wxMenuItemList::Node* node = items.GetFirst())
 		{
-			// Note: I added the second check to prevent segmentation faults, when
-			// node exists, yet the data is NULL
-			if (node && node->GetData())
-				m_TargetMenu->Delete(node->GetData());
-			else
-				break;
-		}
-	}
-*/	
-    if (m_TargetMenu)
-	{
-		wxMenuItemList& items = m_TargetMenu->GetMenuItems();
-		bool olddelete=items.GetDeleteContents();
-		items.DeleteContents(true);
-		items.Clear();
-		items.DeleteContents(olddelete);
+            if (node->GetData())
+                m_TargetMenu->Delete(node->GetData());
+        }
+// mandrav: The following lines DO NOT clear the menu!
+//		wxMenuItemList& items = m_TargetMenu->GetMenuItems();
+//		bool olddelete=items.GetDeleteContents();
+//		items.DeleteContents(true);
+//		items.Clear();
+//		items.DeleteContents(olddelete);
 	}
 }
 
@@ -1000,8 +996,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 		cmd << "\" ";
 		cmd << target->GetExecutionParameters();
     }
-//		cmd << "\"" << target->GetOutputFilename() << "\" " << target->GetExecutionParameters();
-//    wxMessageBox("cdrun=" + m_CdRun + "\nWill run: " + cmd);
+    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Executing: %s (in %s)"), cmd.c_str(), m_CdRun.c_str());
 	m_Queue.Add(cmd);
 
 	m_IsRun = true;

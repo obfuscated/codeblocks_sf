@@ -624,7 +624,7 @@ void MainFrame::CreateToolbars()
     SetToolBar(m_pToolbar);
     // *** End new Toolbar routine ***
 
-    wxString res = ConfigManager::Get()->Read("data_path") + "/images/";
+//    wxString res = ConfigManager::Get()->Read("data_path") + "/images/";
 	// ask all plugins to rebuild their toolbars
 	PluginElementsArray plugins = Manager::Get()->GetPluginManager()->GetPlugins();
 	for (unsigned int i = 0; i < plugins.GetCount(); ++i)
@@ -1219,6 +1219,26 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     }
 
     SaveWindowState();
+    
+    // let's ask the plugins to remove their menus first and see if it stops the SEGFAULTS...
+    wxMenuBar* mbar = GetMenuBar();
+    if (mbar)
+    {
+        // core modules: release menus
+        m_pPrjMan->ReleaseMenu(mbar);
+        m_pEdMan->ReleaseMenu(mbar);
+        m_pMsgMan->ReleaseMenu(mbar);
+
+        // plugins: release menus
+        PluginElementsArray plugins = Manager::Get()->GetPluginManager()->GetPlugins();
+        for (unsigned int i = 0; i < plugins.GetCount(); ++i)
+        {
+            cbPlugin* plug = plugins[i]->plugin;
+            if (plug)
+                plug->RemoveMenu(mbar);
+        }
+    }
+
     TerminateRecentFilesHistory();
 	Manager::Get()->Free();
 	ConfigManager::Get()->Flush();
