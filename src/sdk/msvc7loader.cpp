@@ -34,6 +34,43 @@ wxString MSVC7Loader::ReplaceMSVCMacros(const wxString& str)
         ret.Remove(0, 1);
         ret.Remove(ret.Length() - 1);
     }
+
+    // search for other $(...) occurences (env.vars)
+    while (true)
+    {
+        int len = ret.Length();
+        int idx = ret.Find("$(");
+        if (idx == -1)
+            break; // no more
+        idx += 2; // move to first letter of env.var
+        // find the last letter
+        int last = -1;
+        for (int i = idx; i < len; ++i)
+        {
+            if (ret.GetChar(i) == ')')
+            {
+                last = i;
+                break;
+            }
+        }
+        if (last < idx)
+            break;
+        wxString var = ret.Mid(idx, last - idx);
+        if (var.IsEmpty())
+            break;
+        wxString envvar;
+        if (!wxGetEnv(var, &envvar))
+            break;
+        ret.Replace("$(" + var + ")", envvar);
+        
+        wxFileName fname(ret);
+        if (fname.IsAbsolute())
+        {
+            fname.MakeRelativeTo(m_pProject->GetBasePath());
+            ret = fname.GetFullPath();
+        }
+    }
+
     return ret;
 }
 
@@ -358,7 +395,7 @@ bool MSVC7Loader::DoImportFilter(TiXmlElement* root, int numConfigurations)
         TiXmlElement* file = filter->FirstChildElement("File");
         while(file)
         {
-            wxString fname = file->Attribute("RelativePath");
+            wxString fname = ReplaceMSVCMacros(file->Attribute("RelativePath"));
             if (!fname.IsEmpty())
             {
                 ProjectFile* pf = m_pProject->AddFile(0, fname);
