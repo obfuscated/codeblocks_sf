@@ -520,7 +520,7 @@ string ASFormatter::nextLine()
 		{
 			int templateDepth = 0;
 			const string *oper;
-			for ( int i=charNum; 
+			for ( unsigned int i=charNum; 
 			      i< currentLine.length(); 
 				  i += (oper ? oper->length() : 1) )
 			{
@@ -1161,8 +1161,8 @@ void ASFormatter::goForward(int i)
 */
 char ASFormatter::peekNextChar() const
 {
-    int peekNum = charNum + 1;
-    int len = currentLine.length();
+    unsigned int peekNum = charNum + 1;
+    unsigned int len = currentLine.length();
     char ch = ' ';
 
     while (peekNum < len)
@@ -1185,8 +1185,8 @@ char ASFormatter::peekNextChar() const
 */
 bool ASFormatter::isBeforeComment() const
 {
-    int peekNum = charNum + 1;
-    int len = currentLine.length();
+    unsigned int peekNum = charNum + 1;
+    unsigned int len = currentLine.length();
     // char ch = ' ';
     bool foundComment = false;
 
@@ -1232,7 +1232,7 @@ bool ASFormatter::getNextChar()
             previousCommandChar = previousNonWSChar;
     }
 
-    int currentLineLength = currentLine.length();
+    unsigned int currentLineLength = currentLine.length();
 
     if (charNum+1 < currentLineLength
             && (!isWhiteSpace(peekNextChar()) || isInComment || isInLineComment))
@@ -1294,7 +1294,7 @@ bool ASFormatter::getNextChar()
 */
 void ASFormatter::trimNewLine()
 {
-    int len = currentLine.length();
+    unsigned int len = currentLine.length();
     charNum = 0;
 
     if (isInComment || isInPreprocessor)
@@ -1516,8 +1516,8 @@ bool ASFormatter::isOneLineBlockReached() const
     bool isInComment = false;
     bool isInQuote = false;
     int bracketCount = 1;
-    int currentLineLength = currentLine.length();
-    int i = 0;
+    unsigned int currentLineLength = currentLine.length();
+    unsigned int i = 0;
     char ch = ' ';
     char quoteChar = ' ';
 

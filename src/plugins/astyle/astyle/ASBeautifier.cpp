@@ -236,7 +236,7 @@ ASBeautifier::ASBeautifier(const ASBeautifier &other)
     inStatementIndentStack = new vector<int>;
     *inStatementIndentStack = *other.inStatementIndentStack;
 
-    inStatementIndentStackSizeStack = new vector<int>;
+    inStatementIndentStackSizeStack = new vector<unsigned int>;
     *inStatementIndentStackSizeStack = *other.inStatementIndentStackSizeStack;
 
     parenIndentStack = new vector<int>;
@@ -335,8 +335,8 @@ void ASBeautifier::init()
     INIT_CONTAINER( waitingBeautifierStack,  new vector<ASBeautifier*> );
     INIT_CONTAINER( activeBeautifierStack,  new vector<ASBeautifier*> );
 
-    INIT_CONTAINER( waitingBeautifierStackLengthStack, new vector<int> );
-    INIT_CONTAINER( activeBeautifierStackLengthStack, new vector<int> );
+    INIT_CONTAINER( waitingBeautifierStackLengthStack, new vector<unsigned int> );
+    INIT_CONTAINER( activeBeautifierStackLengthStack, new vector<unsigned int> );
 
     INIT_CONTAINER( headerStack,  new vector<const string*> );
     INIT_CONTAINER( tempStacks, new vector< vector<const string*>* > );
@@ -350,7 +350,7 @@ void ASBeautifier::init()
     bracketBlockStateStack->push_back(true);
 
     INIT_CONTAINER( inStatementIndentStack, new vector<int> );
-    INIT_CONTAINER( inStatementIndentStackSizeStack, new vector<int> );
+    INIT_CONTAINER( inStatementIndentStackSizeStack, new vector<unsigned int> );
     inStatementIndentStackSizeStack->push_back(0);
     INIT_CONTAINER( parenIndentStack, new vector<int> );
 
@@ -601,13 +601,13 @@ string ASBeautifier::beautify(const string &originalLine)
     bool closingBracketReached = false;
     int spaceTabCount = 0;
     char tempCh;
-    int headerStackSize = headerStack->size();
+    unsigned int headerStackSize = headerStack->size();
     //bool isLineInStatement = isInStatement;
     bool shouldIndentBrackettedLine = true;
     int lineOpeningBlocksNum = 0;
     int lineClosingBlocksNum = 0;
     bool previousLineProbation = (probationHeader != NULL);
-    int i;
+    unsigned int i;
 
     currentHeader = NULL;
 
@@ -627,7 +627,7 @@ string ASBeautifier::beautify(const string &originalLine)
     }
     else
     {
-        int trimSize;
+        unsigned int trimSize;
         for (trimSize=0;
                 trimSize < originalLine.length() && trimSize<leadingWhiteSpaces && originalLine[trimSize] <= 0x20 ;
                 trimSize++)
@@ -709,7 +709,7 @@ string ASBeautifier::beautify(const string &originalLine)
             }
             else if (preproc.COMPARE(0, 5, string("endif")) == 0)
             {
-                int stackLength;
+                unsigned int stackLength;
                 ASBeautifier *beautifier;
 
                 if (!waitingBeautifierStackLengthStack->empty())
@@ -1032,7 +1032,7 @@ string ASBeautifier::beautify(const string &originalLine)
 
                 if (!inStatementIndentStackSizeStack->empty())
                 {
-                    int previousIndentStackSize = inStatementIndentStackSizeStack->back();
+                    unsigned int previousIndentStackSize = inStatementIndentStackSizeStack->back();
                     inStatementIndentStackSizeStack->pop_back();
                     while (previousIndentStackSize < inStatementIndentStack->size())
                         inStatementIndentStack->pop_back();
@@ -1072,7 +1072,7 @@ string ASBeautifier::beautify(const string &originalLine)
             isInClassHeader = false;
             if (!isBlockOpener && currentHeader != NULL)
             {
-                for (int n=0; n < nonParenHeaders.size(); n++)
+                for (unsigned int n=0; n < nonParenHeaders.size(); n++)
                     if (currentHeader == nonParenHeaders[n])
                     {
                         isBlockOpener = true;
@@ -1399,7 +1399,7 @@ string ASBeautifier::beautify(const string &originalLine)
                         {
                             // this bracket is a static array
 
-                            int previousIndentStackSize = inStatementIndentStackSizeStack->back();
+                            unsigned int previousIndentStackSize = inStatementIndentStackSizeStack->back();
                             inStatementIndentStackSizeStack->pop_back();
                             while (previousIndentStackSize < inStatementIndentStack->size())
                                 inStatementIndentStack->pop_back();

@@ -147,15 +147,15 @@ class ASBeautifier : protected ASResource
         ASSourceIterator *sourceIterator;
         vector<ASBeautifier*> *waitingBeautifierStack;
         vector<ASBeautifier*> *activeBeautifierStack;
-        vector<int> *waitingBeautifierStackLengthStack;
-        vector<int> *activeBeautifierStackLengthStack;
+        vector<unsigned int> *waitingBeautifierStackLengthStack;
+        vector<unsigned int> *activeBeautifierStackLengthStack;
         vector<const string*> *headerStack;
         vector< vector<const string*>* > *tempStacks;
         vector<int> *blockParenDepthStack;
         vector<bool> *blockStatementStack;
         vector<bool> *parenStatementStack;
         vector<int> *inStatementIndentStack;
-        vector<int> *inStatementIndentStackSizeStack;
+        vector<unsigned int> *inStatementIndentStackSizeStack;
         vector<int> *parenIndentStack;
         vector<bool> *bracketBlockStateStack;
         string indentString;
@@ -192,7 +192,7 @@ class ASBeautifier : protected ASResource
         int parenDepth;
         int indentLength;
         int blockTabCount;
-        int leadingWhiteSpaces;
+        unsigned int leadingWhiteSpaces;
         int maxInStatementIndent;
         int templateDepth;
         char quoteChar;
@@ -273,7 +273,7 @@ class ASFormatter : public ASBeautifier
         char previousNonWSChar;
         char previousCommandChar;
         char quoteChar;
-        int charNum;
+        unsigned int charNum;
         BracketMode bracketFormatMode;
         bool isVirgin;
         bool shouldPadOperators;
