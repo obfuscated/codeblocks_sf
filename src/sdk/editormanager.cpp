@@ -85,8 +85,13 @@ EditorManager::~EditorManager()
 		delete m_LastFindReplaceData;
 		
     // free-up any memory used for editors
-	for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext())
+	EditorsList::Node* node = m_EditorsList.GetFirst();
+	while (node)
+	{   
+		EditorsList::Node* next = node->GetNext();
         m_EditorsList.DeleteNode(node);
+        node = next;
+    }
 }
 
 void EditorManager::CreateMenu(wxMenuBar* menuBar)
@@ -157,7 +162,7 @@ void EditorManager::SetColorSet(EditorColorSet* theme)
 cbEditor* EditorManager::Open(const wxString& filename, int pos)
 {
 	wxString fname = UnixFilename(filename);
-//	Manager::Get()->GetMessageManager()->DebugLog("Trying to open \"%s\"", fname.c_str());
+//	Manager::Get()->GetMessageManager()->DebugLog("Trying to open '%s'", fname.c_str());
     if (!wxFileExists(fname))
         return NULL;
 
@@ -285,7 +290,7 @@ bool EditorManager::CloseAllExcept(cbEditor* editor)
 	{
         cbEditor* ed = node->GetData();
         EditorsList::Node* next = node->GetNext();
-        if (ed != editor && Close(ed))
+        if (ed && ed != editor && Close(ed))
         {
             node = next;
             --count;

@@ -77,8 +77,13 @@ ToolsManager::~ToolsManager()
 	Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
 
     // free-up any memory used for tools
-	for (ToolsList::Node* node = m_Tools.GetFirst(); node; node = node->GetNext())
+    ToolsList::Node* node = m_Tools.GetFirst();
+	while (node)
+	{
+        ToolsList::Node* next = node->GetNext();
         m_Tools.DeleteNode(node);
+        node = next;
+    }
 }
 
 void ToolsManager::CreateMenu(wxMenuBar* menuBar)

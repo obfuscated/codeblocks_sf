@@ -384,10 +384,13 @@ void MakefileGenerator::DoAddMakefileObjs(wxString& buffer)
 				wxString fname = UnixFilename(pf->GetObjName());
 				
 				wxFileName deps_tmp = fname;
-				deps << deps_tmp.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) << ".deps/" << deps_tmp.GetName() << ".d ";
+				wxString depsS = deps_tmp.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) << ".deps/" << deps_tmp.GetName() << ".d";
 
 				if (pf->compile)
+				{
+                    deps << depsS << " ";
 					tmp << fname << " "; // if the file is allowed to compile
+                }
 				if (pf->link)
 					tmpLink << fname << " "; // if the file is allowed to link
             }
@@ -779,7 +782,7 @@ void MakefileGenerator::DoAddMakefileTarget_Link(wxString& buffer)
 
         // command to create the target dir
 #ifdef __WXMSW__
-        buffer << "\t-@if not exist \"$(" << target->GetTitle() << "_OUTDIR)/.\" mkdir \"$(" << target->GetTitle() << "_OUTDIR)\"\n";
+        buffer << "\t-@if not exist \"$(" << target->GetTitle() << "_OUTDIR)\" mkdir \"$(" << target->GetTitle() << "_OUTDIR)\"\n";
 #else
 		buffer << "\t-@if ! test -d $(" << target->GetTitle() << "_OUTDIR); then mkdir $(" << target->GetTitle() << "_OUTDIR); fi\n";
 #endif
@@ -853,7 +856,7 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
                 m_ObjectFiles.Add(pf); // mark it as included in the Makefile
 
                 wxFileName d_filename_tmp = UnixFilename(pf->GetObjName());
-				wxFileName d_filename = d_filename_tmp.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + ".deps/" + d_filename_tmp.GetFullName();
+				wxFileName d_filename = d_filename_tmp.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + ".deps" + wxFileName::GetPathSeparator() + d_filename_tmp.GetFullName();
                 d_filename.SetExt("d");
                 // vars to make easier reading the following code
                 wxString o_file = UnixFilename(pf->GetObjName());

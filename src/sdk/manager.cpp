@@ -63,14 +63,14 @@ void Manager::Free()
                     changed to cbPlugin::Release(bool appShutDown). Please
                     test under MSVC too...
         */
-		PluginManager::Free();
 		MacrosManager::Free();
 		ToolsManager::Free();		
 		TemplateManager::Free();
 		ProjectManager::Free();
 		EditorManager::Free();
-		
+		PluginManager::Free();
 		MessageManager::Free();
+
 		delete ManagerProxy::Get();
 		ManagerProxy::Set( 0L );
 	}

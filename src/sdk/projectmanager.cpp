@@ -614,6 +614,8 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
 			ed->SetProjectFile(pf);
 			ed->Show(true);
 		}
+		else
+            Manager::Get()->GetMessageManager()->DebugLog("Failed to open '%s'", filename.c_str());
 	}
 	else
 	{
@@ -631,7 +633,7 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
 		}
 		if (!opened)
 		{
-			wxLogError(_("Could not open file %s..."), filename.c_str());
+            Manager::Get()->GetMessageManager()->DebugLog("Could not open file '%s' (no registered handler)", filename.c_str());
 		}
 	}
 }

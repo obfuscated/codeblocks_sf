@@ -267,7 +267,7 @@
 				</LibDirs>
 			</Target>
 			<Target title="update">
-				<Option output=""/>
+				<Option output="C:\Devel\codeblocks\src\CodeBlocks.exe"/>
 				<Option external_deps=""/>
 				<Option type="4"/>
 				<Option includeInTargetAll="0"/>
@@ -309,7 +309,7 @@
 				<Option output="tools\ConsoleRunner\console_runner.exe"/>
 				<Option external_deps=""/>
 				<Option type="1"/>
-				<Option projectCompilerOptionsRelation="1"/>
+				<Option projectCompilerOptionsRelation="0"/>
 				<Option projectLinkerOptionsRelation="1"/>
 				<Option projectIncludeDirsRelation="2"/>
 				<Compiler>

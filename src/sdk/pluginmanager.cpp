@@ -167,19 +167,19 @@ void PluginManager::LoadAllPlugins()
 
 void PluginManager::UnloadAllPlugins()
 {
-    Manager::Get()->GetMessageManager()->DebugLog("Count %d", m_Plugins.GetCount());
+//    Manager::Get()->GetMessageManager()->DebugLog("Count %d", m_Plugins.GetCount());
 	unsigned int i = m_Plugins.GetCount();
     while (i > 0)
     {
 		--i;
-		Manager::Get()->GetMessageManager()->DebugLog("At %d", i);
+//		Manager::Get()->GetMessageManager()->DebugLog("At %d", i);
         cbPlugin* plug = m_Plugins[i]->plugin;
 		if (!plug)
 			continue;
-        Manager::Get()->GetMessageManager()->DebugLog("Doing '%s'", m_Plugins[i]->name.c_str());
+//        Manager::Get()->GetMessageManager()->DebugLog("Doing '%s'", m_Plugins[i]->name.c_str());
         plug->Release(true);
         //it->first->library->Unload();
-        Manager::Get()->GetMessageManager()->DebugLog("Plugin '%s' unloaded", m_Plugins[i]->name.c_str());
+//        Manager::Get()->GetMessageManager()->DebugLog("Plugin '%s' unloaded", m_Plugins[i]->name.c_str());
         // FIXME: find a way to delete the toolbars too...
     }
 }

@@ -162,6 +162,9 @@ cbEditor::cbEditor(wxMDIParentFrame* parent, const wxString& filename, EditorCol
 // class destructor
 cbEditor::~cbEditor()
 {
+//    if (!Manager::Get())
+//        return;
+//    Manager::Get()->GetMessageManager()->DebugLog("~cbEditor(): " + m_Filename);
 	NotifyPlugins(cbEVT_EDITOR_CLOSE, 0, m_Filename);
 	UpdateProjectFile();
 	if (m_pControl)
@@ -808,7 +811,9 @@ void cbEditor::DisplayContextMenu(const wxPoint& position)
 	// FIXME: mandrav:
 	// I 'm perfectly sure that this is a memory leak here (not deleting the menu),
 	// but why deleting the menu causes a SIGSEGV under wxGTK???
-// 	delete popup;
+#ifdef __WXMSW__
+ 	delete popup;
+#endif
 }
 
 // events
