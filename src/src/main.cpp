@@ -455,17 +455,17 @@ void MainFrame::CreateMenubar()
 	import->Enable(idProjectImportMSVS, false); // not implemented yet...
 
 	wxMenu* project = new wxMenu();
-	project->Append(idProjectNew, _("&New..."), _("Create a new project based on a template"));
+	project->Append(idProjectNew, _("&New project..."), _("Create a new project based on a template"));
 	project->Append(idProjectNewEmptyProject, _("New &empty project"), _("Create a new empty project"));
 	project->AppendSeparator();
-	project->Append(idProjectOpen, _("&Open"), _("Open an existing project"));
+	project->Append(idProjectOpen, _("&Open project"), _("Open an existing project"));
 	project->AppendSeparator();
-	project->Append(idProjectSaveProject, _("&Save"), _("Save active project"));
-	project->Append(idProjectSaveProjectAs, _("Save &as..."), _("Save active project under a different name"));
-	project->Append(idProjectSaveAllProjects, _("Save a&ll"), _("Save all modified projects"));
+	project->Append(idProjectSaveProject, _("&Save project"), _("Save active project"));
+	project->Append(idProjectSaveProjectAs, _("Save project &as..."), _("Save active project under a different name"));
+	project->Append(idProjectSaveAllProjects, _("Save a&ll projects"), _("Save all modified projects"));
 	project->AppendSeparator();
-	project->Append(idProjectCloseProject, _("&Close"), _("Close active project"));
-	project->Append(idProjectCloseAllProjects, _("Close all"), _("Close all opened projects"));
+	project->Append(idProjectCloseProject, _("&Close project"), _("Close active project"));
+	project->Append(idProjectCloseAllProjects, _("Close all projects"), _("Close all opened projects"));
 	project->AppendSeparator();
 	project->Append(idProjectImport, _("&Import"), import);
 	mbar->Append(project, _("&Project"));

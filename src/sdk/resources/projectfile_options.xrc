@@ -221,7 +221,7 @@ You could *really* mess-up Code::Blocks' Build System...</label>
         <option>1</option>
         <flag>wxALL|wxEXPAND</flag>
         <border>8</border>
-        <minsize>320,240</minsize>
+        <minsize>320,320</minsize>
       </object>
       <object class="sizeritem">
         <object class="wxBoxSizer">

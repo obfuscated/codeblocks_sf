@@ -113,7 +113,7 @@ void EditorManager::Configure()
 
 cbEditor* EditorManager::IsOpen(const wxString& filename)
 {
-	wxString uFilename = filename;
+	wxString uFilename = UnixFilename(filename);
 	for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext())
 	{
         cbEditor* ed = node->GetData();
@@ -156,13 +156,14 @@ void EditorManager::SetColorSet(EditorColorSet* theme)
 
 cbEditor* EditorManager::Open(const wxString& filename, int pos)
 {
-    if (!wxFileExists(filename))
+	wxString fname = UnixFilename(filename);
+    if (!wxFileExists(fname))
         return NULL;
 
-    cbEditor* ed = IsOpen(filename);
+    cbEditor* ed = IsOpen(fname);
     if (!ed)
     {
-        ed = new cbEditor(Manager::Get()->GetAppWindow(), filename, m_Theme);
+        ed = new cbEditor(Manager::Get()->GetAppWindow(), fname, m_Theme);
         if (ed->IsOK())
         {
             m_EditorsList.Append(ed);

@@ -713,7 +713,7 @@ wxString cbEditor::GetLineIndentString(int line)
 void cbEditor::DisplayContextMenu(const wxPoint& position)
 {
 	// build menu
-	wxMenu popup;
+	wxMenu* popup = new wxMenu;
     wxMenu switchto;
     wxMenu insert;
 
@@ -737,29 +737,29 @@ void cbEditor::DisplayContextMenu(const wxPoint& position)
                 &cbEditor::OnContextMenuEntry );
     }
 
-    popup.Append(idSwitchTo, _("Switch to..."), &switchto);
-    popup.Append(idInsert, _("Insert..."), &insert);
-    popup.AppendSeparator();
+    popup->Append(idSwitchTo, _("Switch to..."), &switchto);
+    popup->Append(idInsert, _("Insert..."), &insert);
+    popup->AppendSeparator();
     
-    popup.Append(idUndo, _("Undo"));
-    popup.Append(idRedo, _("Redo"));
-    popup.AppendSeparator();
+    popup->Append(idUndo, _("Undo"));
+    popup->Append(idRedo, _("Redo"));
+    popup->AppendSeparator();
 
-    popup.Append(idCut, _("Cut"));
-    popup.Append(idCopy, _("Copy"));
-    popup.Append(idPaste, _("Paste"));
-    popup.Append(idDelete, _("Delete"));
-    popup.AppendSeparator();
+    popup->Append(idCut, _("Cut"));
+    popup->Append(idCopy, _("Copy"));
+    popup->Append(idPaste, _("Paste"));
+    popup->Append(idDelete, _("Delete"));
+    popup->AppendSeparator();
 
-	popup.Append(idSelectAll, _("Select All"));
-	popup.AppendSeparator();
+	popup->Append(idSelectAll, _("Select All"));
+	popup->AppendSeparator();
 
-	popup.Append(idSwapHeaderSource, _("Swap header/source"));
+	popup->Append(idSwapHeaderSource, _("Swap header/source"));
 	wxMenu bookmarks; // bookmarks submenu
 	bookmarks.Append(idBookmarksToggle, _("Toggle bookmark"));
 	bookmarks.Append(idBookmarksPrevious, _("Previous bookmark"));
 	bookmarks.Append(idBookmarksNext, _("Next bookmark"));
-	popup.Append(idBookmarks, _("Bookmarks"), &bookmarks);
+	popup->Append(idBookmarks, _("Bookmarks"), &bookmarks);
 	wxMenu folding; // folding submenu
 	folding.Append(idFoldingFoldAll, _("Fold all"));
 	folding.Append(idFoldingUnfoldAll, _("Unfold all"));
@@ -768,34 +768,34 @@ void cbEditor::DisplayContextMenu(const wxPoint& position)
 	folding.Append(idFoldingFoldCurrent, _("Fold current block"));
 	folding.Append(idFoldingUnfoldCurrent, _("Unfold current block"));
 	folding.Append(idFoldingToggleCurrent, _("Toggle current block"));
-	popup.Append(idFolding, _("Folding"), &folding);
+	popup->Append(idFolding, _("Folding"), &folding);
 
 	// ask other plugins if they need to add any entries in this menu...
-	Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtEditorManager, &popup, m_Filename);
+	Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtEditorManager, popup, m_Filename);
 
 	// add more options here
-	popup.AppendSeparator();
+	popup->AppendSeparator();
 
-	popup.Append(idCloseMe, _("Close"));
-    popup.Append(idCloseAll, _("Close all"));
-    popup.Append(idCloseAllOthers, _("Close all others"));
-	popup.AppendSeparator();
+	popup->Append(idCloseMe, _("Close"));
+    popup->Append(idCloseAll, _("Close all"));
+    popup->Append(idCloseAllOthers, _("Close all others"));
+	popup->AppendSeparator();
 
-	popup.Append(idConfigureEditor, _("Configure editor"));
-	popup.Append(idProperties, _("Properties"));
+	popup->Append(idConfigureEditor, _("Configure editor"));
+	popup->Append(idProperties, _("Properties"));
 	
 	// enable/disable some items, based on state
 	bool hasSel = m_pControl->GetSelectionEnd() - m_pControl->GetSelectionStart() != 0;
     bool hasOthers = m_SwitchTo.size() != 0;
-	popup.Enable(idSwitchTo, hasOthers);
-	popup.Enable(idUndo, m_pControl->CanUndo());
-	popup.Enable(idRedo, m_pControl->CanRedo());
-	popup.Enable(idCut, hasSel);
-	popup.Enable(idCopy, hasSel);
-	popup.Enable(idPaste, m_pControl->CanPaste());
-	popup.Enable(idDelete, hasSel);
-	popup.Enable(idCloseAll, hasOthers);
-	popup.Enable(idCloseAllOthers, hasOthers);
+	popup->Enable(idSwitchTo, hasOthers);
+	popup->Enable(idUndo, m_pControl->CanUndo());
+	popup->Enable(idRedo, m_pControl->CanRedo());
+	popup->Enable(idCut, hasSel);
+	popup->Enable(idCopy, hasSel);
+	popup->Enable(idPaste, m_pControl->CanPaste());
+	popup->Enable(idDelete, hasSel);
+	popup->Enable(idCloseAll, hasOthers);
+	popup->Enable(idCloseAllOthers, hasOthers);
 
     // remove "Insert/Empty" if more than one entry
     if (insert.GetMenuItemCount() > 1)
@@ -803,7 +803,12 @@ void cbEditor::DisplayContextMenu(const wxPoint& position)
 
 	// display menu
 	wxPoint pos = ScreenToClient(position);
-	PopupMenu(&popup, pos.x, pos.y);
+	PopupMenu(popup, pos.x, pos.y);
+	
+	// FIXME: mandrav:
+	// I 'm perfectly sure that this is a memory leak here (not deleting the menu),
+	// but why deleting the menu causes a SIGSEGV under wxGTK???
+// 	delete popup;
 }
 
 // events
