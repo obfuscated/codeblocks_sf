@@ -339,7 +339,7 @@ void CodeBlocksApp::DoSetAssociation(const wxString& ext, const wxString& descr,
 
 	key.SetName("HKEY_CLASSES_ROOT\\CodeBlocks." + ext + "\\shell\\open\\command");
 	key.Create();
-	key = exe + " \"%1\"";
+	key = "\"" + exe + "\" \"%1\"";
 
 	key.SetName("HKEY_CLASSES_ROOT\\CodeBlocks." + ext + "\\shell\\open\\ddeexec");
 	key.Create();
@@ -431,7 +431,7 @@ bool CodeBlocksApp::DoCheckAssociation(const wxString& ext, const wxString& desc
 
 wxConnectionBase* DDEServer::OnAcceptConnection(const wxString& topic)
 {
-   if (topic == DDE_TOPIC)
+    if (topic == DDE_TOPIC)
         return new DDEConnection(m_Frame);
 
     // unknown topic
@@ -445,9 +445,9 @@ bool DDEConnection::OnExecute(const wxString& topic, wxChar *data, int size, wxI
 		return false;
 		
 	wxRegEx reCmd("\"(.*)\"");
-	if (reCmd.Matches(data))
+	if (reCmd.Matches(strData))
 	{
-		wxString file = reCmd.GetMatch(data, 1);
+		wxString file = reCmd.GetMatch(strData, 1);
 		m_Frame->Open(file, false); // don't add to history, files that open through DDE
 	}
 

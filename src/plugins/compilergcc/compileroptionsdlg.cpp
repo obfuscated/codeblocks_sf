@@ -95,15 +95,11 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
 	: m_Compiler(compiler),
 	m_InitialCompilerIdx(0),
 	m_pProject(project),
+	m_pTarget(target),
 	m_BuildingTree(false)
 {
 	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgCompilerOptions"));
 	
-	int compilerIdx = m_pProject ? m_pProject->GetCompilerIndex() : m_Compiler->GetCurrentCompilerIndex();
-	if (!CompilerFactory::CompilerIndexOK(compilerIdx))
-        compilerIdx = 0;
-    m_Options = CompilerFactory::Compilers[compilerIdx]->GetOptions();
-
 	DoFillCompilerSets();
 	DoFillCompilerPrograms();
 	DoFillPrograms();
@@ -133,17 +129,12 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
         // remove "Compiler" buttons
         wxWindow* win = XRCCTRL(*this, "btnAddCompiler", wxButton);
         wxSizer* sizer2 = win->GetContainingSizer();
-        sizer2->Remove(win);
-        win->Show(false);
-        win = XRCCTRL(*this, "btnRenameCompiler", wxButton);
-        sizer2->Remove(win);
-        win->Show(false);
-        win = XRCCTRL(*this, "btnDelCompiler", wxButton);
-        sizer2->Remove(win);
-        win->Show(false);
+        sizer2->Clear(true);
+        sizer2->RecalcSizes();
         sizer2->Layout();
     }
     sizer->Layout();
+    Layout();
 }
 
 CompilerOptionsDlg::~CompilerOptionsDlg()
@@ -159,7 +150,16 @@ void CompilerOptionsDlg::DoFillCompilerSets()
     {
         cmb->Append(CompilerFactory::Compilers[i]->GetName());
     }
-	int compilerIdx = m_pProject ? m_pProject->GetCompilerIndex() : m_Compiler->GetCurrentCompilerIndex();
+
+	int compilerIdx = CompilerFactory::GetDefaultCompilerIndex();
+    if (m_pTarget)
+        compilerIdx = m_pTarget->GetCompilerIndex();
+    else if (m_pProject)
+        compilerIdx = m_pProject->GetCompilerIndex();
+
+	if (!CompilerFactory::CompilerIndexOK(compilerIdx))
+        compilerIdx = 0;
+    m_Options = CompilerFactory::Compilers[compilerIdx]->GetOptions();
     cmb->SetSelection(compilerIdx);
     m_LastCompilerIdx = compilerIdx;
 }
@@ -170,7 +170,7 @@ void CompilerOptionsDlg::DoFillCompilerPrograms()
         return; // no "Programs" page
 
     int compilerIdx = XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection();
-    Manager::Get()->GetMessageManager()->DebugLog("compilerIdx=%d, m_LastCompilerIdx=%d", compilerIdx, m_LastCompilerIdx);
+//    Manager::Get()->GetMessageManager()->DebugLog("compilerIdx=%d, m_LastCompilerIdx=%d", compilerIdx, m_LastCompilerIdx);
     if (compilerIdx != m_LastCompilerIdx)
     {
         // compiler changed; check for changes and update as needed
@@ -524,6 +524,7 @@ void CompilerOptionsDlg::DoLoadOptions(int compilerIdx, ScopeTreeData* data)
 		if (!data->GetTarget())
 		{
 			// project options
+			m_pTarget = 0;
 			cbProject* project = data->GetProject();
 			m_IncludeDirs = project->GetIncludeDirs();
 			m_LibDirs = project->GetLibDirs();
@@ -536,6 +537,7 @@ void CompilerOptionsDlg::DoLoadOptions(int compilerIdx, ScopeTreeData* data)
 		{
 			// target options
 			ProjectBuildTarget* target = data->GetTarget();
+			m_pTarget = target;
 			m_IncludeDirs = target->GetIncludeDirs();
 			m_LibDirs = target->GetLibDirs();
 			m_CompilerOptions = target->GetCompilerOptions();
@@ -659,8 +661,12 @@ void CompilerOptionsDlg::OnTreeSelectionChange(wxTreeEvent& event)
 		return;
 	wxTreeCtrl* tc = XRCCTRL(*this, "tcScope", wxTreeCtrl);
 	ScopeTreeData* data = (ScopeTreeData*)tc->GetItemData(event.GetItem());
-    int compilerIdx = XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection();
-	DoLoadOptions(compilerIdx, data);
+    int compilerIdx = data->GetTarget() ? data->GetTarget()->GetCompilerIndex() :
+                        (data->GetProject() ? data->GetProject()->GetCompilerIndex() :
+                        XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection());
+    XRCCTRL(*this, "cmbCompiler", wxComboBox)->SetSelection(compilerIdx);
+    CompilerChanged(data);
+//	DoLoadOptions(compilerIdx, data);
 }
 
 void CompilerOptionsDlg::OnTreeSelectionChanging(wxTreeEvent& event)
@@ -675,10 +681,25 @@ void CompilerOptionsDlg::OnTreeSelectionChanging(wxTreeEvent& event)
 void CompilerOptionsDlg::OnCompilerChanged(wxCommandEvent& event)
 {
 	wxTreeCtrl* tc = XRCCTRL(*this, "tcScope", wxTreeCtrl);
-	ScopeTreeData* data = (ScopeTreeData*)tc->GetItemData(tc->GetSelection());
+	ScopeTreeData* data = tc ? (ScopeTreeData*)tc->GetItemData(tc->GetSelection()) : 0;
 	DoSaveOptions(m_LastCompilerIdx, data);
+    CompilerChanged(data);
+}
 
+void CompilerOptionsDlg::CompilerChanged(ScopeTreeData* data)
+{
     int compilerIdx = XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection();
+
+    if (data)
+    {
+        if (data->GetTarget())
+             data->GetTarget()->SetCompilerIndex(compilerIdx);
+        else if (data->GetProject())
+            data->GetProject()->SetCompilerIndex(compilerIdx);
+    }
+    else if (m_pProject)
+        m_pProject->SetCompilerIndex(compilerIdx);
+
     m_Options = CompilerFactory::Compilers[compilerIdx]->GetOptions();
     DoFillCompilerPrograms();
     DoFillCategories();

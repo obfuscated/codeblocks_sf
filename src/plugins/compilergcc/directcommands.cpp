@@ -190,7 +190,8 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
 
     if (!compilerCmd.IsEmpty())
     {
-        switch (m_pCompiler->GetSwitches().logging)
+        Compiler* compiler = target ? CompilerFactory::Compilers[target->GetCompilerIndex()] : m_pCompiler;
+        switch (compiler->GetSwitches().logging)
         {
             case clogFull:
                 ret.Add(wxString(COMPILER_SIMPLE_LOG) + compilerCmd);
@@ -477,17 +478,15 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     wxString compilerCmd = mg.CreateSingleFileCompileCmd(ct, target, 0, "", linkfiles, "");
     if (!compilerCmd.IsEmpty())
     {
-        switch (m_pCompiler->GetSwitches().logging)
+        Compiler* compiler = target ? CompilerFactory::Compilers[target->GetCompilerIndex()] : m_pCompiler;
+        switch (compiler->GetSwitches().logging)
         {
             case clogFull:
                 ret.Add(wxString(COMPILER_SIMPLE_LOG) + compilerCmd);
                 break;
             
-            case clogSimple:
+            default: // linker always simple log (if not full)
                 ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Linking ") + kind_of_output + ": " + target->GetOutputFilename());
-                break;
-            
-            default:
                 break;
         }
         AddCommandsToArray(compilerCmd, ret);

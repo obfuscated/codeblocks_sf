@@ -74,8 +74,6 @@ class MakefileGenerator
 
 		CompilerGCC* m_Compiler;
 		Compiler* m_CompilerSet;
-		const CompilerPrograms& m_Programs;
-		const CompilerSwitches& m_Switches;
         cbProject* m_Project;
         wxString m_Makefile;
 		TargetsArray m_LinkableTargets;

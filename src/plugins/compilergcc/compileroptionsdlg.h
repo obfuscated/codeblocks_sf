@@ -44,6 +44,7 @@ class CompilerOptionsDlg : public wxDialog
 		void DoLoadOptions(int compilerIdx, ScopeTreeData* data = 0L);
 		void DoMakeRelative(wxFileName& path);
 		void DoUpdateCompiler();
+		void CompilerChanged(ScopeTreeData* data);
 
 		void OnTreeSelectionChange(wxTreeEvent& event);
 		void OnTreeSelectionChanging(wxTreeEvent& event);
@@ -78,6 +79,7 @@ class CompilerOptionsDlg : public wxDialog
 		int m_LastCompilerIdx;
 		int m_InitialCompilerIdx;
 		cbProject* m_pProject;
+		ProjectBuildTarget* m_pTarget;
 		
 		bool m_BuildingTree; // flag to ignore tree changing events while building it
 

@@ -1,15 +1,15 @@
 @set ZIPCMD=zip -j9
 
 @echo Compressing core UI resources
-%ZIPCMD% devel\share\codeblocks\resources.zip src\resources\*.xrc > nul
-%ZIPCMD% devel\share\codeblocks\manager_resources.zip sdk\resources\*.xrc > nul
+@%ZIPCMD% devel\share\codeblocks\resources.zip src\resources\*.xrc > nul
+@%ZIPCMD% devel\share\codeblocks\manager_resources.zip sdk\resources\*.xrc > nul
 @echo Compressing plugins UI resources
-%ZIPCMD% devel\share\codeblocks\astyle.zip plugins\astyle\resources\*.xrc > nul
-%ZIPCMD% devel\share\codeblocks\plugin_wizard.zip plugins\pluginwizard\resources\*.xrc > nul
-%ZIPCMD% devel\share\codeblocks\class_wizard.zip plugins\classwizard\resources\*.xrc > nul
-%ZIPCMD% devel\share\codeblocks\code_completion.zip plugins\codecompletion\resources\*.xrc > nul
-%ZIPCMD% devel\share\codeblocks\compiler_gcc.zip plugins\compilergcc\resources\*.xrc > nul
-%ZIPCMD% devel\share\codeblocks\todo.zip plugins\todo\resources\*.xrc > nul
+@%ZIPCMD% devel\share\codeblocks\astyle.zip plugins\astyle\resources\*.xrc > nul
+@%ZIPCMD% devel\share\codeblocks\plugin_wizard.zip plugins\pluginwizard\resources\*.xrc > nul
+@%ZIPCMD% devel\share\codeblocks\class_wizard.zip plugins\classwizard\resources\*.xrc > nul
+@%ZIPCMD% devel\share\codeblocks\code_completion.zip plugins\codecompletion\resources\*.xrc > nul
+@%ZIPCMD% devel\share\codeblocks\compiler_gcc.zip plugins\compilergcc\resources\*.xrc > nul
+@%ZIPCMD% devel\share\codeblocks\todo.zip plugins\todo\resources\*.xrc > nul
 
 @echo Copying files
 @copy /y devel\share\codeblocks\*.zip output\share\codeblocks > nul

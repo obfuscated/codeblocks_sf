@@ -67,12 +67,11 @@ class DLLIMPORT cbProject : public CompileTargetBase
         bool RemoveBuildTarget(const wxString& targetName);
         void ReOrderTargets(const wxArrayString& nameOrder);
         
-        void SetCompilerIndex(int compilerIdx);
-        int GetCompilerIndex(){ return m_CompilerIdx; }
-        
 		const wxArrayString& ExpandedNodes(){ return m_ExpandedNodes; }
 		void AddExpandedNode(const wxString& path){ m_ExpandedNodes.Add(path); }
-		
+
+        void SetCompilerIndex(int compilerIdx); // overriden
+
         wxTreeItemId GetProjectNode(){ return m_ProjectNode; }
         bool CloseAllFiles();
         bool SaveAllFiles();
@@ -100,7 +99,6 @@ class DLLIMPORT cbProject : public CompileTargetBase
         int m_DefaultExecuteTarget;
         wxString m_Makefile;
         bool m_CustomMakefile;
-        int m_CompilerIdx;
 
         FilesList m_Files;
         wxArrayString m_ExpandedNodes;

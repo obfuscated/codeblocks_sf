@@ -64,10 +64,12 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         virtual wxString GetBasePath(); ///< Read the target's base path, e.g. if GetOutputFilename() returns "/usr/local/bin/xxx", base path will return "/usr/local/bin"
         virtual void SetTargetType(const TargetType& pt); ///< Set the target's type to \c pt
         virtual const TargetType& GetTargetType(); ///< Read the target's type
-        const wxString& GetExecutionParameters(); ///< Read the target's execution parameters
-        void SetExecutionParameters(const wxString& params); ///< Set the target's execution parameters to \c params
-		const wxString& GetHostApplication(); ///< Read the target's host application
-		void SetHostApplication(const wxString& app); ///< Set the target's host application to \c app
+        virtual const wxString& GetExecutionParameters(); ///< Read the target's execution parameters
+        virtual void SetExecutionParameters(const wxString& params); ///< Set the target's execution parameters to \c params
+		virtual const wxString& GetHostApplication(); ///< Read the target's host application
+		virtual void SetHostApplication(const wxString& app); ///< Set the target's host application to \c app
+        virtual void SetCompilerIndex(int compilerIdx);
+        virtual int GetCompilerIndex(){ return m_CompilerIdx; }
 	protected:
         wxString m_Filename;
         wxString m_Title;
@@ -78,6 +80,7 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         wxString m_HostApplication;
         OptionsRelation m_OptionsRelation[4];
         TargetType m_TargetType;
+        int m_CompilerIdx;
 	private:
 };
 

@@ -151,6 +151,7 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
     wxString deps_output;
     wxString deps;
     int type = -1;
+    int compilerIdx = m_pProject->GetCompilerIndex();
     wxString parameters;
     wxString hostApplication;
     bool includeInTargetAll = true;
@@ -178,6 +179,9 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
         if (node->Attribute("type"))
             type = atoi(node->Attribute("type"));
             
+        if (node->Attribute("compiler"))
+            compilerIdx = atoi(node->Attribute("compiler"));
+
         if (node->Attribute("parameters"))
             parameters = node->Attribute("parameters");
 
@@ -218,6 +222,7 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
             target->SetDepsOutput(deps_output);
         target->SetExternalDeps(deps);
         target->SetTargetType((TargetType)type);
+        target->SetCompilerIndex(compilerIdx);
         target->SetExecutionParameters(parameters);
         target->SetHostApplication(hostApplication);
         target->SetIncludeInTargetAll(includeInTargetAll);
@@ -435,8 +440,7 @@ bool ProjectLoader::Save(const wxString& filename)
     buffer << '\t' << '\t' << "<Option makefile_is_custom=\"" << m_pProject->IsMakefileCustom() << "\"/>" << '\n';
     if (m_pProject->GetDefaultExecuteTargetIndex() != 0)
         buffer << '\t' << '\t' << "<Option default_target=\"" << m_pProject->GetDefaultExecuteTargetIndex() << "\"/>" << '\n';
-    if (m_pProject->GetCompilerIndex() != 0)
-        buffer << '\t' << '\t' << "<Option compiler=\"" << m_pProject->GetCompilerIndex() << "\"/>" << '\n';
+    buffer << '\t' << '\t' << "<Option compiler=\"" << m_pProject->GetCompilerIndex() << "\"/>" << '\n';
 
     buffer << '\t' << '\t' << "<Build>" << '\n';
     for (int i = 0; i < m_pProject->GetBuildTargetsCount(); ++i)
@@ -451,6 +455,7 @@ bool ProjectLoader::Save(const wxString& filename)
         buffer << '\t' << '\t' << '\t' << '\t' << "<Option deps_output=\"" << FixEntities(target->GetDepsOutput()) << "\"/>" << '\n';
         buffer << '\t' << '\t' << '\t' << '\t' << "<Option external_deps=\"" << FixEntities(target->GetExternalDeps()) << "\"/>" << '\n';
         buffer << '\t' << '\t' << '\t' << '\t' << "<Option type=\"" << target->GetTargetType() << "\"/>" << '\n';
+        buffer << '\t' << '\t' << '\t' << '\t' << "<Option compiler=\"" << target->GetCompilerIndex() << "\"/>" << '\n';
         if (!target->GetExecutionParameters().IsEmpty())
             buffer << '\t' << '\t' << '\t' << '\t' << "<Option parameters=\"" << FixEntities(target->GetExecutionParameters()) << "\"/>" << '\n';
         if (!target->GetIncludeInTargetAll())

@@ -34,8 +34,6 @@
 MakefileGenerator::MakefileGenerator(CompilerGCC* compiler, cbProject* project, const wxString& makefile, int logIndex)
     : m_Compiler(compiler),
     m_CompilerSet(CompilerFactory::Compilers[compiler->GetCurrentCompilerIndex()]),
-    m_Programs(m_CompilerSet->GetPrograms()),
-    m_Switches(m_CompilerSet->GetSwitches()),
 	m_Project(project),
     m_Makefile(makefile),
     m_LogIndex(logIndex),
@@ -86,9 +84,9 @@ wxString MakefileGenerator::ReplaceCompilerMacros(CommandType et,
     if (idx != -1)
     {
         wxString incs;
-        DoAppendIncludeDirs(incs, 0L, m_Switches.includeDirs, true);
-        DoAppendIncludeDirs(incs, 0L, m_Switches.includeDirs);
-        DoAppendIncludeDirs(incs, target, m_Switches.includeDirs);
+        DoAppendIncludeDirs(incs, 0L, m_CompilerSet->GetSwitches().includeDirs, true);
+        DoAppendIncludeDirs(incs, 0L, m_CompilerSet->GetSwitches().includeDirs);
+        DoAppendIncludeDirs(incs, target, m_CompilerSet->GetSwitches().includeDirs);
         compilerCmd.Replace("$res_includes", incs);
     }
 
@@ -102,17 +100,28 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
                                                         const wxString& object,
                                                         const wxString& deps)
 {
-    wxString compiler;
+    Compiler* compiler = target ? CompilerFactory::Compilers[target->GetCompilerIndex()] :
+                        m_CompilerSet;
+    if (!compiler)
+        return wxEmptyString;
+
+    Compiler* old_compiler = m_CompilerSet;
+    m_CompilerSet = compiler;
+
+    wxString compilerStr;
     if (pf)
     {
         if (pf->compilerVar.Matches("CPP"))
-            compiler = m_Programs.CPP;
+            compilerStr = m_CompilerSet->GetPrograms().CPP;
         else if (pf->compilerVar.Matches("CC"))
-            compiler = m_Programs.C;
+            compilerStr = m_CompilerSet->GetPrograms().C;
         else if (pf->compilerVar.Matches("WINDRES"))
-            compiler = m_Programs.WINDRES;
+            compilerStr = m_CompilerSet->GetPrograms().WINDRES;
         else
+        {
+            m_CompilerSet = old_compiler;
             return wxEmptyString; // unknown compiler var
+        }
     }
     
     wxString cflags;
@@ -139,10 +148,10 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
 	wxString global_incs;
 	wxString prj_incs;
 	wxString res_incs;
-	DoAppendIncludeDirs(global_incs, 0L, m_Switches.includeDirs, true);
-	DoAppendIncludeDirs(prj_incs, 0L, m_Switches.includeDirs);
+	DoAppendIncludeDirs(global_incs, 0L, m_CompilerSet->GetSwitches().includeDirs, true);
+	DoAppendIncludeDirs(prj_incs, 0L, m_CompilerSet->GetSwitches().includeDirs);
 	res_incs  << global_incs << " " << prj_incs << " ";
-	DoAppendIncludeDirs(res_incs, target, m_Switches.includeDirs);
+	DoAppendIncludeDirs(res_incs, target, m_CompilerSet->GetSwitches().includeDirs);
 	DoGetMakefileIncludes(incs, target);
     incs.Replace("$(GLOBAL_INCS)", global_incs);
     incs.Replace("$(PROJECT_INCS)", prj_incs);
@@ -150,8 +159,8 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
     wxString libs;
 	wxString global_libs;
 	wxString prj_libs;
-	DoAppendLibDirs(global_libs, 0L, m_Switches.libDirs, true);
-	DoAppendLibDirs(prj_libs, 0L, m_Switches.libDirs);
+	DoAppendLibDirs(global_libs, 0L, m_CompilerSet->GetSwitches().libDirs, true);
+	DoAppendLibDirs(prj_libs, 0L, m_CompilerSet->GetSwitches().libDirs);
 	DoGetMakefileLibs(libs, target);
     libs.Replace("$(GLOBAL_LIBS)", global_libs);
     libs.Replace("$(PROJECT_LIBS)", prj_libs);
@@ -163,9 +172,9 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
     wxString linkobjs;
 
     wxString compilerCmd = m_CompilerSet->GetCommand(et);
-    compilerCmd.Replace("$compiler", compiler);
-    compilerCmd.Replace("$linker", m_Programs.LD);
-    compilerCmd.Replace("$rescomp", m_Programs.WINDRES);
+    compilerCmd.Replace("$compiler", compilerStr);
+    compilerCmd.Replace("$linker", m_CompilerSet->GetPrograms().LD);
+    compilerCmd.Replace("$rescomp", m_CompilerSet->GetPrograms().WINDRES);
     compilerCmd.Replace("$options", cflags);
     compilerCmd.Replace("$link_options", ldflags);
     compilerCmd.Replace("$includes", incs);
@@ -200,6 +209,8 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
     }
     else
         compilerCmd.Replace("-Wl,--output-def=$def_output", "");
+
+    m_CompilerSet = old_compiler;
 
     return compilerCmd;
 }
@@ -284,7 +295,7 @@ void MakefileGenerator::DoAppendLibDirs(wxString& cmd, ProjectBuildTarget* targe
 
 void MakefileGenerator::DoGetMakefileIncludes(wxString& buffer, ProjectBuildTarget* target)
 {
-    wxString prefix = m_Switches.includeDirs;
+    wxString prefix = m_CompilerSet->GetSwitches().includeDirs;
 	buffer << " $(GLOBAL_INCS)";
 	
     OptionsRelation relation = target->GetOptionRelation(ortIncludeDirs);
@@ -309,7 +320,7 @@ void MakefileGenerator::DoGetMakefileIncludes(wxString& buffer, ProjectBuildTarg
 
 void MakefileGenerator::DoGetMakefileLibs(wxString& buffer, ProjectBuildTarget* target)
 {
-    wxString prefix = m_Switches.libDirs;
+    wxString prefix = m_CompilerSet->GetSwitches().libDirs;
 	buffer << " $(GLOBAL_LIBS)";
 
     OptionsRelation relation = target->GetOptionRelation(ortLibDirs);
@@ -394,10 +405,10 @@ void MakefileGenerator::DoAddMakefileVars(wxString& buffer)
     // compiler vars
     // defined last so even if the user sets custom vars
     // by these names, ours will have precedence...
-    buffer << "CC=" << m_Programs.C << '\n';
-    buffer << "CPP=" << m_Programs.CPP << '\n';
-    buffer << "LD=" << m_Programs.LD << '\n';
-    buffer << "RESCOMP=" << m_Programs.WINDRES << '\n';
+    buffer << "CC=" << m_CompilerSet->GetPrograms().C << '\n';
+    buffer << "CPP=" << m_CompilerSet->GetPrograms().CPP << '\n';
+    buffer << "LD=" << m_CompilerSet->GetPrograms().LD << '\n';
+    buffer << "RESCOMP=" << m_CompilerSet->GetPrograms().WINDRES << '\n';
 	
     buffer << '\n';
 }
@@ -573,19 +584,19 @@ void MakefileGenerator::DoAddMakefileOptions(wxString& buffer)
     buffer << '\n';
 
 	buffer << "GLOBAL_INCS=";
-	DoAppendIncludeDirs(buffer, 0L, m_Switches.includeDirs, true);
+	DoAppendIncludeDirs(buffer, 0L, m_CompilerSet->GetSwitches().includeDirs, true);
 	buffer << '\n';
 	
 	buffer << "PROJECT_INCS=";
-	DoAppendIncludeDirs(buffer, 0L, m_Switches.includeDirs);
+	DoAppendIncludeDirs(buffer, 0L, m_CompilerSet->GetSwitches().includeDirs);
     buffer << '\n';
 
 	buffer << "GLOBAL_LIBS=";
-	DoAppendLibDirs(buffer, 0L, m_Switches.libDirs, true);
+	DoAppendLibDirs(buffer, 0L, m_CompilerSet->GetSwitches().libDirs, true);
 	buffer << '\n';
 	
 	buffer << "PROJECT_LIBS=";
-	DoAppendLibDirs(buffer, 0L, m_Switches.libDirs);
+	DoAppendLibDirs(buffer, 0L, m_CompilerSet->GetSwitches().libDirs);
     buffer << '\n';
 
 	buffer << '\n';

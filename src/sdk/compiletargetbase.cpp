@@ -28,7 +28,8 @@
 #include "globals.h"
 
 CompileTargetBase::CompileTargetBase()
-    : m_TargetType(ttExecutable)
+    : m_TargetType(ttExecutable),
+    m_CompilerIdx(0)
 {
 	//ctor
     for (int i = 0; i < 4; ++i)
@@ -231,4 +232,12 @@ void CompileTargetBase::SetHostApplication(const wxString& app)
 		return;
 	m_HostApplication = app;
 	SetModified(true);
+}
+
+void CompileTargetBase::SetCompilerIndex(int compilerIdx)
+{
+    if (compilerIdx == m_CompilerIdx)
+        return;
+    m_CompilerIdx = compilerIdx;
+    SetModified(true);
 }
