@@ -366,6 +366,7 @@ void MakefileGenerator::DoAddMakefileObjs(wxString& buffer)
 		if (!IsTargetValid(target))
 			continue;
 
+        wxString deps;
         wxString tmp;
 		wxString tmpLink;
         int filesCount = (int)m_Files.GetCount();
@@ -381,6 +382,10 @@ void MakefileGenerator::DoAddMakefileObjs(wxString& buffer)
                     continue; // resource file are treated differently        
 
 				wxString fname = UnixFilename(pf->GetObjName());
+				
+				wxFileName deps_tmp = fname;
+				deps << deps_tmp.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) << ".deps/" << deps_tmp.GetName() << ".d ";
+
 				if (pf->compile)
 					tmp << fname << " "; // if the file is allowed to compile
 				if (pf->link)
@@ -398,9 +403,10 @@ void MakefileGenerator::DoAddMakefileObjs(wxString& buffer)
         buffer << '\n';
         if (m_CompilerSet->GetSwitches().needDependencies)
         {
-            buffer << target->GetTitle() << "_DEPS=$(" << target->GetTitle() << "_OBJS:.";
-            buffer << m_CompilerSet->GetSwitches().objectExtension;
-            buffer << "=.d)" << '\n';
+            buffer << target->GetTitle() << "_DEPS=" << deps << '\n';
+//            buffer << target->GetTitle() << "_DEPS=$(" << target->GetTitle() << "_OBJS:.";
+//            buffer << m_CompilerSet->GetSwitches().objectExtension;
+//            buffer << "=.d)" << '\n';
         }
     }
     buffer << '\n';

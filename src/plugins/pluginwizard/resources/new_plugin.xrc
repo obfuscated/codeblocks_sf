@@ -177,6 +177,8 @@
               <label>C&amp;reate</label>
               <default>1</default>
             </object>
+            <flag>wxRIGHT</flag>
+            <border>8</border>
           </object>
           <object class="sizeritem">
             <object class="wxButton" name="wxID_CANCEL">

@@ -413,8 +413,8 @@ bool ProjectLoader::Save(const wxString& filename)
     buffer << "<!DOCTYPE Code::Blocks_project_file>" << '\n';
     buffer << "<Code::Blocks_project_file>" << '\n';
     buffer << '\t' << "<Project>" << '\n';
-    buffer << '\t' << '\t' << "<Option title=\"" << m_pProject->GetTitle() << "\"/>" << '\n';
-    buffer << '\t' << '\t' << "<Option makefile=\"" << m_pProject->GetMakefile() << "\"/>" << '\n';
+    buffer << '\t' << '\t' << "<Option title=\"" << FixEntities(m_pProject->GetTitle()) << "\"/>" << '\n';
+    buffer << '\t' << '\t' << "<Option makefile=\"" << FixEntities(m_pProject->GetMakefile()) << "\"/>" << '\n';
     if (m_pProject->GetDefaultExecuteTargetIndex() != 0)
         buffer << '\t' << '\t' << "<Option default_target=\"" << m_pProject->GetDefaultExecuteTargetIndex() << "\"/>" << '\n';
     if (m_pProject->GetCompilerIndex() != 0)
@@ -427,12 +427,12 @@ bool ProjectLoader::Save(const wxString& filename)
         if (!target)
             break;
             
-        buffer << '\t' << '\t' << '\t' << "<Target title=\"" << target->GetTitle() << "\">" << '\n';
-        buffer << '\t' << '\t' << '\t' << '\t' << "<Option output=\"" << target->GetOutputFilename() << "\"/>" << '\n';
-        buffer << '\t' << '\t' << '\t' << '\t' << "<Option external_deps=\"" << target->GetExternalDeps() << "\"/>" << '\n';
+        buffer << '\t' << '\t' << '\t' << "<Target title=\"" << FixEntities(target->GetTitle()) << "\">" << '\n';
+        buffer << '\t' << '\t' << '\t' << '\t' << "<Option output=\"" << FixEntities(target->GetOutputFilename()) << "\"/>" << '\n';
+        buffer << '\t' << '\t' << '\t' << '\t' << "<Option external_deps=\"" << FixEntities(target->GetExternalDeps()) << "\"/>" << '\n';
         buffer << '\t' << '\t' << '\t' << '\t' << "<Option type=\"" << target->GetTargetType() << "\"/>" << '\n';
         if (!target->GetExecutionParameters().IsEmpty())
-            buffer << '\t' << '\t' << '\t' << '\t' << "<Option parameters=\"" << target->GetExecutionParameters() << "\"/>" << '\n';
+            buffer << '\t' << '\t' << '\t' << '\t' << "<Option parameters=\"" << FixEntities(target->GetExecutionParameters()) << "\"/>" << '\n';
         if (!target->GetIncludeInTargetAll())
             buffer << '\t' << '\t' << '\t' << '\t' << "<Option includeInTargetAll=\"0\"/>" << '\n';
         if ((target->GetTargetType() == ttStaticLib || target->GetTargetType() == ttDynamicLib) && target->GetCreateDefFile())
@@ -468,8 +468,8 @@ bool ProjectLoader::Save(const wxString& filename)
     for (int i = 0; i < count; ++i)
     {
         ProjectFile* f = m_pProject->GetFile(i);
-        buffer << '\t' << '\t' << "<Unit filename=\"" << f->relativeFilename << "\">" << '\n';
-        buffer << '\t' << '\t' << '\t' << "<Option compilerVar=\"" << f->compilerVar << "\"/>" << '\n';
+        buffer << '\t' << '\t' << "<Unit filename=\"" << FixEntities(f->relativeFilename) << "\">" << '\n';
+        buffer << '\t' << '\t' << '\t' << "<Option compilerVar=\"" << FixEntities(f->compilerVar) << "\"/>" << '\n';
         if (!f->compile)
             buffer << '\t' << '\t' << '\t' << "<Option compile=\"0\"/>" << '\n';
         if (!f->link)
@@ -481,23 +481,23 @@ bool ProjectLoader::Save(const wxString& filename)
         if (!f->buildCommand.IsEmpty())
         {
             f->buildCommand.Replace("\n", "\\n");
-            buffer << '\t' << '\t' << '\t' << "<Option buildCommand=\"" << f->buildCommand << "\"/>" << '\n';
+            buffer << '\t' << '\t' << '\t' << "<Option buildCommand=\"" << FixEntities(f->buildCommand) << "\"/>" << '\n';
         }
         if (!f->autoDeps)
             buffer << '\t' << '\t' << '\t' << "<Option autoDeps=\"0\"/>" << '\n';
         if (!f->customDeps.IsEmpty())
         {
             f->customDeps.Replace("\n", "\\n");
-            buffer << '\t' << '\t' << '\t' << "<Option customDeps=\"" << f->customDeps << "\"/>" << '\n';
+            buffer << '\t' << '\t' << '\t' << "<Option customDeps=\"" << FixEntities(f->customDeps) << "\"/>" << '\n';
         }
         if (!f->GetObjName().IsEmpty())
         {
             wxFileName tmp(f->GetObjName());
             if (tmp.GetExt() != CompilerFactory::Compilers[m_pProject->GetCompilerIndex()]->GetSwitches().objectExtension)
-                buffer << '\t' << '\t' << '\t' << "<Option objectName=\"" << f->GetObjName() << "\"/>" << '\n';
+                buffer << '\t' << '\t' << '\t' << "<Option objectName=\"" << FixEntities(f->GetObjName()) << "\"/>" << '\n';
         }
         for (unsigned int x = 0; x < f->buildTargets.GetCount(); ++x)
-            buffer << '\t' << '\t' << '\t' << "<Option target=\"" << f->buildTargets[x] << "\"/>" << '\n';
+            buffer << '\t' << '\t' << '\t' << "<Option target=\"" << FixEntities(f->buildTargets[x]) << "\"/>" << '\n';
         for (unsigned int x = 0; x < f->breakpoints.GetCount(); ++x)
 		{
 			DebuggerBreakpoint* bp = f->breakpoints[x];
@@ -541,7 +541,7 @@ void ProjectLoader::SaveOptions(wxString& buffer, const wxArrayString& array, co
         empty = false;
         for (int x = 0; x <= nrOfTabs; ++x)
             local << '\t';
-        local << "<Add " << optionName << "=\"" << array[i] << "\"/>" << '\n';
+        local << "<Add " << optionName << "=\"" << FixEntities(array[i]) << "\"/>" << '\n';
     }
     for (int i = 0; i < nrOfTabs; ++i)
         local << '\t';

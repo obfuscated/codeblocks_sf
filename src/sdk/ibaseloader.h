@@ -13,6 +13,14 @@ class DLLIMPORT IBaseLoader
 
         virtual bool Open(const wxString& filename) = 0;
         virtual bool Save(const wxString& filename) = 0;
+    protected:
+        wxString FixEntities(const wxString& str)
+        {
+            // replace double quotes (") with &quot; entities
+            wxString ret = str;
+            ret.Replace("\"", "&quot;");
+            return ret;
+        }
 };
 
 #endif // IBASELOADER_H

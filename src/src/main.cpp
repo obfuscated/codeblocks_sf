@@ -392,7 +392,7 @@ void MainFrame::CreateMenubar()
 	file->AppendSeparator();
 	file->Append(idFileExit, _("&Quit\tCtrl-Q"), _("Quit the application"));
 	mbar->Append(file, _("&File"));
-
+	
 	wxMenu* bookmarks = new wxMenu();
 	bookmarks->Append(idEditBookmarksToggle, _("&Toggle bookmark\tCtrl-B"), _("Toggle a bookmark for the current position"));
 	bookmarks->Append(idEditBookmarksPrevious, _("Goto &previous bookmark\tAlt-PgUp"), _("Goto previous bookmark"));

@@ -853,7 +853,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 	else
 		cmd << "\"" << UnixFilename(f.GetFullName()) << "\" " << target->GetExecutionParameters();
 //		cmd << "\"" << target->GetOutputFilename() << "\" " << target->GetExecutionParameters();
-    wxMessageBox("cdrun=" + m_CdRun + "\nWill run: " + cmd);
+//    wxMessageBox("cdrun=" + m_CdRun + "\nWill run: " + cmd);
 	m_Queue.Add(cmd);
 
 	m_IsRun = true;

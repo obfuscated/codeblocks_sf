@@ -72,7 +72,7 @@ FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection)
 	XRCCTRL(*this, "chkStartWord2", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/find_options/start_word2", 0L));
 	XRCCTRL(*this, "chkMatchCase2", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/find_options/match_case2", 0L));
 	XRCCTRL(*this, "chkRegEx2", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/find_options/regex2", 0L));
-	XRCCTRL(*this, "rbScope2", wxRadioBox)->SetSelection(ConfigManager::Get()->Read("/find_options/scope2", 0L));	
+	XRCCTRL(*this, "rbScope2", wxRadioBox)->SetSelection(ConfigManager::Get()->Read("/find_options/scope2", 0L));
 }
 
 FindDlg::~FindDlg()
@@ -171,10 +171,19 @@ int FindDlg::GetScope()
 
 void FindDlg::OnFindChange(wxCommandEvent& event)
 {
-	if (event.GetId() == XRCID("cmbFind1"))
-		XRCCTRL(*this, "cmbFind2", wxComboBox)->SetValue(XRCCTRL(*this, "cmbFind1", wxComboBox)->GetValue());
-	else
-		XRCCTRL(*this, "cmbFind1", wxComboBox)->SetValue(XRCCTRL(*this, "cmbFind2", wxComboBox)->GetValue());
+/* FIXME (mandrav#1#): Disabled it because it segfaults under Linux.
+    No problem for now, because the find in files functionality is
+    not implemented yet, but it must be fixed... */
+
+//    wxComboBox* cmbFind1 = XRCCTRL(*this, "cmbFind1", wxComboBox);
+//    wxComboBox* cmbFind2 = XRCCTRL(*this, "cmbFind2", wxComboBox);
+//    if (!cmbFind1 || !cmbFind2)
+//        return;
+//
+//	if (event.GetId() == XRCID("cmbFind1"))
+//		cmbFind2->SetValue(cmbFind1->GetValue());
+//	else
+//		cmbFind1->SetValue(cmbFind2->GetValue());
 }
 
 void FindDlg::OnRegEx(wxCommandEvent& event)
