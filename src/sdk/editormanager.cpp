@@ -238,7 +238,9 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos)
 
 cbEditor* EditorManager::GetActiveEditor()
 {
-    return static_cast<cbEditor*>(Manager::Get()->GetAppWindow()->GetActiveChild());
+    wxMDIParentFrame *appwindow =Manager::Get()->GetAppWindow();
+    if(!appwindow) return 0; // prevents segfault
+    return static_cast<cbEditor*>(appwindow->GetActiveChild());
 }
 
 void EditorManager::SetActiveEditor(cbEditor* ed)
