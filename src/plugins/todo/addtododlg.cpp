@@ -31,7 +31,16 @@ AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString& types)
             cmb->Append(m_Types[i]);
         }
     }
-    cmb->SetSelection(0);
+    
+    wxString sels = ConfigManager::Get()->Read("/todo/last_used_type", "");
+    if (!sels.IsEmpty())
+    {
+        int sel = cmb->FindString(sels);
+        if (sel != -1)
+            cmb->SetSelection(sel);
+    }
+    else
+        cmb->SetSelection(0);
 }
 
 AddTodoDlg::~AddTodoDlg()
@@ -127,6 +136,8 @@ void AddTodoDlg::EndModal(int retVal)
         {
             m_Types.Add(cmb->GetString(i));
         }
+
+        ConfigManager::Get()->Write("/todo/last_used_type", cmb->GetValue());
 	}
 
 	wxDialog::EndModal(retVal);
