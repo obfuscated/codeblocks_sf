@@ -34,7 +34,7 @@
                     </object>
                     <label>Font</label>
                   </object>
-                  <flag>wxALL|wxEXPAND</flag>
+                  <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
@@ -80,7 +80,7 @@
                       <border>8</border>
                     </object>
                   </object>
-                  <flag>wxALL|wxGROW</flag>
+                  <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
@@ -96,16 +96,6 @@
                           <object class="wxCheckBox" name="chkAutoIndent">
                             <label>Auto indent</label>
                             <checked>1</checked>
-                          </object>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxCheckBox" name="chkShowEOL">
-                            <label>Show end-of-line characters</label>
-                          </object>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxCheckBox" name="chkShowIndentGuides">
-                            <label>Show indentation guides</label>
                           </object>
                         </object>
                         <object class="sizeritem">
@@ -135,7 +125,60 @@
                       <border>8</border>
                     </object>
                   </object>
-                  <flag>wxALL|wxGROW</flag>
+                  <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticBoxSizer">
+                    <label>Whitespace options</label>
+                    <orient>wxVERTICAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxFlexGridSizer">
+                        <cols>2</cols>
+                        <vgap>4</vgap>
+                        <hgap>8</hgap>
+                        <growablecols>1</growablecols>
+                        <object class="sizeritem">
+                          <object class="wxCheckBox" name="chkShowEOL">
+                            <label>Show end-of-line characters</label>
+                          </object>
+                        </object>
+                        <object class="spacer">
+                          <size>0,0</size>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxCheckBox" name="chkShowIndentGuides">
+                            <label>Show indentation guides</label>
+                          </object>
+                        </object>
+                        <object class="spacer">
+                          <size>0,0</size>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxStaticText" name="">
+                            <label>View whitespace (tabs and spaces):</label>
+                          </object>
+                          <flag>wxTOP|wxGROW</flag>
+                          <border>4</border>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxComboBox" name="cmbViewWS">
+                            <content>
+                              <item>No</item>
+                              <item>Always</item>
+                              <item>Only after indentation</item>
+                            </content>
+                            <selection>0</selection>
+                            <style>wxCB_READONLY</style>
+                          </object>
+                          <flag>wxGROW</flag>
+                        </object>
+                      </object>
+                      <flag>wxALL|wxGROW</flag>
+                      <border>8</border>
+                    </object>
+                  </object>
+                  <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
                   <border>8</border>
                 </object>
               </object>

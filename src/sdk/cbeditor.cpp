@@ -330,6 +330,7 @@ void cbEditor::SetEditorStyle()
     m_pControl->SetBackSpaceUnIndents(ConfigManager::Get()->Read("/editor/backspace_unindents", 1));
     m_pControl->SetWrapMode(ConfigManager::Get()->Read("/editor/word_wrap", 0L));
     m_pControl->SetViewEOL(ConfigManager::Get()->Read("/editor/show_eol", 0L));
+    m_pControl->SetViewWhiteSpace(ConfigManager::Get()->Read("/editor/view_whitespace", 0L));
 	//gutter
     m_pControl->SetEdgeMode(ConfigManager::Get()->Read("/editor/gutter/mode", 1));
     m_pControl->SetEdgeColour(GetOptionColour("/editor/gutter/color", wxColour(0xC0, 0xC0, 0xC0)));
