@@ -34,6 +34,8 @@ class DLLIMPORT CompileOptionsBase
 		virtual const BuildConfiguration& GetBuildConfiguration();
 		virtual void SetLinkerOptions(const wxArrayString& linkerOpts);
 		virtual const wxArrayString& GetLinkerOptions();
+		virtual void SetLinkLibs(const wxArrayString& linkLibs);
+		virtual const wxArrayString& GetLinkLibs();
 		virtual void SetCompilerOptions(const wxArrayString& compilerOpts);
 		virtual const wxArrayString& GetCompilerOptions();
 		virtual void SetIncludeDirs(const wxArrayString& includeDirs);
@@ -47,6 +49,7 @@ class DLLIMPORT CompileOptionsBase
 		virtual bool GetModified();
 		virtual void SetModified(bool modified);
         virtual void AddLinkerOption(const wxString& option);
+        virtual void AddLinkLib(const wxString& lib);
         virtual void AddCompilerOption(const wxString& option);
         virtual void AddIncludeDir(const wxString& option);
         virtual void AddLibDir(const wxString& option);
@@ -57,6 +60,7 @@ class DLLIMPORT CompileOptionsBase
 	protected:
 		BuildConfiguration m_BuildConfiguration;
 		wxArrayString m_LinkerOptions;
+		wxArrayString m_LinkLibs;
 		wxArrayString m_CompilerOptions;
 		wxArrayString m_IncludeDirs;
 		wxArrayString m_LibDirs;

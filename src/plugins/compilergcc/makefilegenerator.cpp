@@ -235,30 +235,40 @@ void MakefileGenerator::DoAppendCompilerOptions(wxString& cmd, ProjectBuildTarge
 void MakefileGenerator::DoAppendLinkerOptions(wxString& cmd, ProjectBuildTarget* target, bool useGlobalOptions)
 {
     wxArrayString opts;
+    wxArrayString libs;
+    CompileOptionsBase* obj;
 	if (useGlobalOptions)
-		opts = m_CompilerSet->GetLinkerOptions();
+        obj = m_CompilerSet;
 	else
-	{
-		if (target)
-			opts = target->GetLinkerOptions();
-		else
-			opts = m_Project->GetLinkerOptions();
-	}
+        obj = target ? (CompileOptionsBase*)target : (CompileOptionsBase*)m_Project;
 
+    opts = obj->GetLinkerOptions();
+    libs = obj->GetLinkLibs();
     for (unsigned int x = 0; x < opts.GetCount(); ++x)
-    {
-        if (opts[x].StartsWith(LIB_PREFIX_IN_PROJECT_FILE))
-        {
-            opts[x].Remove(0, 5);
-            wxString tmp = m_CompilerSet->GetSwitches().linkLibs;
-            if (m_CompilerSet->GetSwitches().linkerNeedsLibPrefix)
-                tmp += m_CompilerSet->GetSwitches().libPrefix;
-            tmp += opts[x];
-            if (m_CompilerSet->GetSwitches().linkerNeedsLibExtension)
-                tmp += "." + m_CompilerSet->GetSwitches().libExtension;
-            opts[x] = tmp;
-        }
         cmd << " " << opts[x];
+    for (unsigned int x = 0; x < libs.GetCount(); ++x)
+    {
+        // construct linker option for each lib, based on compiler's settings
+        wxString libPrefix = m_CompilerSet->GetSwitches().libPrefix;
+        wxString libExt = m_CompilerSet->GetSwitches().libExtension;
+        wxString lib = libs[x];
+        // run replacements on libs only if no slashes in name (which means it's a relative or absolute path)
+        if (lib.Find('/') == -1 && lib.Find('\\') == -1)
+        {
+            if (!m_CompilerSet->GetSwitches().linkerNeedsLibPrefix &&
+                lib.StartsWith(libPrefix))
+            {
+                lib.Remove(0, libPrefix.Length());
+            }
+            if (!m_CompilerSet->GetSwitches().linkerNeedsLibExtension &&
+                lib.Length() > libExt.Length() &&
+                lib.Right(libExt.Length() + 1) == "." + libExt)
+            {
+                lib.RemoveLast(libExt.Length() + 1);
+            }
+            lib = m_CompilerSet->GetSwitches().linkLibs + lib;
+        }
+        cmd << " " << lib;
     }
 }
 

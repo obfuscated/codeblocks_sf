@@ -78,6 +78,7 @@ class CompilerOptionsDlg : public wxDialog
 		CompilerGCC* m_Compiler;
 		CompilerOptions m_Options;
         wxArrayString m_LinkerOptions;
+        wxArrayString m_LinkLibs;
         wxArrayString m_CompilerOptions;
         wxArrayString m_IncludeDirs;
         wxArrayString m_LibDirs;

@@ -356,10 +356,6 @@ void CompilerOptionsDlg::TextToOptions()
 			++i;
 	}
 	i = 0;
-	XRCCTRL(*this, "lstLibs", wxListBox)->Clear();
-    wxString linkLib = compiler->GetSwitches().linkLibs;
-    wxString libExt = compiler->GetSwitches().libExtension;
-    size_t libExtLen = libExt.Length();
 	while (i < m_LinkerOptions.GetCount())
 	{
 		wxString opt = m_LinkerOptions.Item(i);
@@ -372,26 +368,15 @@ void CompilerOptionsDlg::TextToOptions()
 			m_LinkerOptions.Remove(i);
 		}
 		else
-		{
-            // linker options and libs
-            if (!linkLib.IsEmpty() && opt.StartsWith(linkLib))
-            {
-                opt.Remove(0, 2);
-                wxString ext = compiler->GetSwitches().libExtension;
-                if (!ext.IsEmpty())
-                    ext = "." + ext;
-                XRCCTRL(*this, "lstLibs", wxListBox)->Append(compiler->GetSwitches().libPrefix + opt + ext);
-                m_LinkerOptions.Remove(i);
-            }
-            else if (opt.Length() > libExtLen && opt.Right(libExtLen) == libExt)
-            {
-                XRCCTRL(*this, "lstLibs", wxListBox)->Append(opt);
-                m_LinkerOptions.Remove(i);
-            }
-            else
-                ++i;
-        }
+            ++i;
 	}
+
+	XRCCTRL(*this, "lstLibs", wxListBox)->Clear();
+	for (i = 0; i < m_LinkLibs.GetCount(); ++i)
+	{
+        XRCCTRL(*this, "lstLibs", wxListBox)->Append(m_LinkLibs[i]);
+	}
+	m_LinkLibs.Clear();
 }
 
 void CompilerOptionsDlg::OptionsToText()
@@ -444,34 +429,9 @@ void CompilerOptionsDlg::OptionsToText()
 	}
 	
 	// linker options and libs
-    wxString linkLib = compiler->GetSwitches().linkLibs;
-    wxString libPrefix = compiler->GetSwitches().libPrefix;
-    wxString libExt = compiler->GetSwitches().libExtension;
 	wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
 	for (int i = 0; i < lstLibs->GetCount(); ++i)
-	{
-        wxString link = lstLibs->GetString(i);
-        wxString prefix = compiler->GetSwitches().linkLibs;
-        if (!compiler->GetSwitches().linkerNeedsLibPrefix &&
-            !libPrefix.IsEmpty() &&
-            link.StartsWith(libPrefix))
-        {
-            link.Remove(0, libPrefix.Length());
-        }
-        else
-            prefix = "";
-        size_t libExtLen = libExt.Length();
-        if (!compiler->GetSwitches().linkerNeedsLibExtension &&
-            !libExt.IsEmpty() &&
-            link.Find('/') == -1 &&
-            link.Find('\\') == -1 &&
-            link.Length() > libExtLen &&
-            link.Right(libExtLen) == libExt)
-        {
-            link.Remove(link.Length() - (libExtLen + 1));
-        }
-        m_LinkerOptions.Add(prefix + link);
-	}
+        m_LinkLibs.Add(lstLibs->GetString(i));
 }
 
 void CompilerOptionsDlg::DoFillCompileOptions(const wxArrayString& array, wxTextCtrl* control)
@@ -574,6 +534,7 @@ void CompilerOptionsDlg::DoLoadOptions(int compilerIdx, ScopeTreeData* data)
 		m_LibDirs = compiler->GetLibDirs();
 		m_CompilerOptions = compiler->GetCompilerOptions();
 		m_LinkerOptions = compiler->GetLinkerOptions();
+		m_LinkLibs = compiler->GetLinkLibs();
 		m_CommandsAfterBuild = compiler->GetCommandsAfterBuild();
 		m_CommandsBeforeBuild = compiler->GetCommandsBeforeBuild();
 
@@ -595,6 +556,7 @@ void CompilerOptionsDlg::DoLoadOptions(int compilerIdx, ScopeTreeData* data)
 			m_LibDirs = project->GetLibDirs();
 			m_CompilerOptions = project->GetCompilerOptions();
 			m_LinkerOptions = project->GetLinkerOptions();
+			m_LinkLibs = project->GetLinkLibs();
 			m_CommandsAfterBuild = project->GetCommandsAfterBuild();
 			m_CommandsBeforeBuild = project->GetCommandsBeforeBuild();
 		}
@@ -607,6 +569,7 @@ void CompilerOptionsDlg::DoLoadOptions(int compilerIdx, ScopeTreeData* data)
 			m_LibDirs = target->GetLibDirs();
 			m_CompilerOptions = target->GetCompilerOptions();
 			m_LinkerOptions = target->GetLinkerOptions();
+			m_LinkLibs = target->GetLinkLibs();
 			m_CommandsAfterBuild = target->GetCommandsAfterBuild();
 			m_CommandsBeforeBuild = target->GetCommandsBeforeBuild();
 			XRCCTRL(*this, "cmbCompilerPolicy", wxComboBox)->SetSelection(target->GetOptionRelation(ortCompilerOptions));
@@ -645,6 +608,7 @@ void CompilerOptionsDlg::DoSaveOptions(int compilerIdx, ScopeTreeData* data)
 		compiler->SetLibDirs(m_LibDirs);
 		compiler->SetCompilerOptions(m_CompilerOptions);
 		compiler->SetLinkerOptions(m_LinkerOptions);
+		compiler->SetLinkLibs(m_LinkLibs);
 		compiler->SetCommandsBeforeBuild(m_CommandsBeforeBuild);
 		compiler->SetCommandsAfterBuild(m_CommandsAfterBuild);
 
@@ -673,6 +637,7 @@ void CompilerOptionsDlg::DoSaveOptions(int compilerIdx, ScopeTreeData* data)
 			project->SetLibDirs(m_LibDirs);
 			project->SetCompilerOptions(m_CompilerOptions);
 			project->SetLinkerOptions(m_LinkerOptions);
+			project->SetLinkLibs(m_LinkLibs);
 			project->SetCommandsBeforeBuild(m_CommandsBeforeBuild);
 			project->SetCommandsAfterBuild(m_CommandsAfterBuild);
 		}
@@ -684,6 +649,7 @@ void CompilerOptionsDlg::DoSaveOptions(int compilerIdx, ScopeTreeData* data)
 			target->SetLibDirs(m_LibDirs);
 			target->SetCompilerOptions(m_CompilerOptions);
 			target->SetLinkerOptions(m_LinkerOptions);
+			target->SetLinkLibs(m_LinkLibs);
             target->SetOptionRelation(ortCompilerOptions, OptionsRelation(XRCCTRL(*this, "cmbCompilerPolicy", wxComboBox)->GetSelection()));
             target->SetOptionRelation(ortLinkerOptions, OptionsRelation(XRCCTRL(*this, "cmbLinkerPolicy", wxComboBox)->GetSelection()));
             target->SetOptionRelation(ortIncludeDirs, OptionsRelation(XRCCTRL(*this, "cmbIncludesPolicy", wxComboBox)->GetSelection()));
@@ -1050,6 +1016,8 @@ void CompilerOptionsDlg::OnMoveLibUpClick(wxCommandEvent& event)
     lstLibs->Delete(sel);
     lstLibs->InsertItems(1, &lib, sel - 1);
     lstLibs->SetSelection(sel - 1);
+    if (m_pProject)
+        m_pProject->SetModified(true);
 }
 
 void CompilerOptionsDlg::OnMoveLibDownClick(wxCommandEvent& event)
@@ -1062,6 +1030,8 @@ void CompilerOptionsDlg::OnMoveLibDownClick(wxCommandEvent& event)
     lstLibs->Delete(sel);
     lstLibs->InsertItems(1, &lib, sel + 1);
     lstLibs->SetSelection(sel + 1);
+    if (m_pProject)
+        m_pProject->SetModified(true);
 }
 
 void CompilerOptionsDlg::OnMasterPathClick(wxCommandEvent& event)

@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE Code::Blocks_project_file>
 <Code::Blocks_project_file>
+	<FileVersion major="1" minor="1"/>
 	<Project>
 		<Option title="Code::Blocks"/>
 		<Option makefile="Makefile"/>
@@ -35,9 +36,9 @@
 					<Add option="-Wl,--enable-auto-image-base"/>
 					<Add option="-Wl,--export-all-symbols"/>
 					<Add option="-Wl,--add-stdcall-alias"/>
-					<Add option="-ltxml"/>
-					<Add option="-lwxxrc"/>
-					<Add option="-lstc"/>
+					<Add library="libtxml.a"/>
+					<Add library="libwxxrc.a"/>
+					<Add library="libstc.a"/>
 				</Linker>
 			</Target>
 			<Target title="src">
@@ -51,32 +52,30 @@
 				<Option projectLinkerOptionsRelation="2"/>
 				<Option projectIncludeDirsRelation="2"/>
 				<Option projectLibDirsRelation="2"/>
+				<Compiler>
+					<Add directory="sdk"/>
+				</Compiler>
 				<Linker>
-					<Add option="-lcodeblocks"/>
-					<Add option="-lstc"/>
-					<Add option="-lwxxrc"/>
-					<Add option="-lkernel32"/>
-					<Add option="-luser32"/>
-					<Add option="-lgdi32"/>
-					<Add option="-lcomdlg32"/>
-					<Add option="-lwinspool"/>
-					<Add option="-lwinmm"/>
-					<Add option="-lshell32"/>
-					<Add option="-lcomctl32"/>
-					<Add option="-lodbc32"/>
-					<Add option="-lole32"/>
-					<Add option="-loleaut32"/>
-					<Add option="-luuid"/>
-					<Add option="-lrpcrt4"/>
-					<Add option="-ladvapi32"/>
-					<Add option="-lwsock32"/>
+					<Add library="libcodeblocks.a"/>
+					<Add library="libstc.a"/>
+					<Add library="libwxxrc.a"/>
+					<Add library="libkernel32.a"/>
+					<Add library="libuser32.a"/>
+					<Add library="libgdi32.a"/>
+					<Add library="libcomdlg32.a"/>
+					<Add library="libwinspool.a"/>
+					<Add library="libwinmm.a"/>
+					<Add library="libshell32.a"/>
+					<Add library="libcomctl32.a"/>
+					<Add library="libodbc32.a"/>
+					<Add library="libole32.a"/>
+					<Add library="liboleaut32.a"/>
+					<Add library="libuuid.a"/>
+					<Add library="librpcrt4.a"/>
+					<Add library="libadvapi32.a"/>
+					<Add library="libwsock32.a"/>
+					<Add directory="devel"/>
 				</Linker>
-				<IncludeDirs>
-					<Add option="sdk"/>
-				</IncludeDirs>
-				<LibDirs>
-					<Add option="devel"/>
-				</LibDirs>
 			</Target>
 			<Target title="plugin_Astyle">
 				<Option output="devel\share\CodeBlocks\plugins\astyle.dll"/>
@@ -89,22 +88,18 @@
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
+					<Add directory="sdk"/>
+					<Add directory="plugins\astyle\astyle"/>
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base"/>
 					<Add option="-Wl,--add-stdcall-alias"/>
-					<Add option="-lcodeblocks"/>
-					<Add option="-lstc"/>
-					<Add option="-lwxxrc"/>
-					<Add option="-lwxmsw$(WX_VER)"/>
+					<Add library="libcodeblocks.a"/>
+					<Add library="libstc.a"/>
+					<Add library="libwxxrc.a"/>
+					<Add library="libwxmsw$(WX_VER).a"/>
+					<Add directory="devel"/>
 				</Linker>
-				<IncludeDirs>
-					<Add option="sdk"/>
-					<Add option="plugins\astyle\astyle"/>
-				</IncludeDirs>
-				<LibDirs>
-					<Add option="devel"/>
-				</LibDirs>
 			</Target>
 			<Target title="plugin_CompilerGCC">
 				<Option output="devel\share\CodeBlocks\plugins\compilergcc.dll"/>
@@ -119,21 +114,17 @@
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
+					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base"/>
 					<Add option="-Wl,--add-stdcall-alias"/>
-					<Add option="-lcodeblocks"/>
-					<Add option="-lstc"/>
-					<Add option="-lwxxrc"/>
-					<Add option="-lwxmsw$(WX_VER)"/>
+					<Add library="libcodeblocks.a"/>
+					<Add library="libstc.a"/>
+					<Add library="libwxxrc.a"/>
+					<Add library="libwxmsw$(WX_VER).a"/>
+					<Add directory="devel"/>
 				</Linker>
-				<IncludeDirs>
-					<Add option="sdk"/>
-				</IncludeDirs>
-				<LibDirs>
-					<Add option="devel"/>
-				</LibDirs>
 			</Target>
 			<Target title="plugin_DebuggerGDB">
 				<Option output="devel\share\CodeBlocks\plugins\debuggergdb.dll"/>
@@ -148,21 +139,17 @@
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
+					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base"/>
 					<Add option="-Wl,--add-stdcall-alias"/>
-					<Add option="-lcodeblocks"/>
-					<Add option="-lstc"/>
-					<Add option="-lwxxrc"/>
-					<Add option="-lwxmsw$(WX_VER)"/>
+					<Add library="libcodeblocks.a"/>
+					<Add library="libstc.a"/>
+					<Add library="libwxxrc.a"/>
+					<Add library="libwxmsw$(WX_VER).a"/>
+					<Add directory="devel"/>
 				</Linker>
-				<IncludeDirs>
-					<Add option="sdk"/>
-				</IncludeDirs>
-				<LibDirs>
-					<Add option="devel"/>
-				</LibDirs>
 			</Target>
 			<Target title="plugin_CodeCompletion">
 				<Option output="devel\share\CodeBlocks\plugins\codecompletion.dll"/>
@@ -177,21 +164,17 @@
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
+					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base"/>
 					<Add option="-Wl,--add-stdcall-alias"/>
-					<Add option="-lcodeblocks"/>
-					<Add option="-lstc"/>
-					<Add option="-lwxxrc"/>
-					<Add option="-lwxmsw$(WX_VER)"/>
+					<Add library="libcodeblocks.a"/>
+					<Add library="libstc.a"/>
+					<Add library="libwxxrc.a"/>
+					<Add library="libwxmsw$(WX_VER).a"/>
+					<Add directory="devel"/>
 				</Linker>
-				<IncludeDirs>
-					<Add option="sdk"/>
-				</IncludeDirs>
-				<LibDirs>
-					<Add option="devel"/>
-				</LibDirs>
 			</Target>
 			<Target title="plugin_ClassWizard">
 				<Option output="devel\share\CodeBlocks\plugins\classwizard.dll"/>
@@ -206,21 +189,17 @@
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
+					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base"/>
 					<Add option="-Wl,--add-stdcall-alias"/>
-					<Add option="-lcodeblocks"/>
-					<Add option="-lstc"/>
-					<Add option="-lwxxrc"/>
-					<Add option="-lwxmsw$(WX_VER)"/>
+					<Add library="libcodeblocks.a"/>
+					<Add library="libstc.a"/>
+					<Add library="libwxxrc.a"/>
+					<Add library="libwxmsw$(WX_VER).a"/>
+					<Add directory="devel"/>
 				</Linker>
-				<IncludeDirs>
-					<Add option="sdk"/>
-				</IncludeDirs>
-				<LibDirs>
-					<Add option="devel"/>
-				</LibDirs>
 			</Target>
 			<Target title="plugin_PluginsWizard">
 				<Option output="devel\share\CodeBlocks\plugins\pluginwizard.dll"/>
@@ -235,21 +214,17 @@
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
+					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base"/>
 					<Add option="-Wl,--add-stdcall-alias"/>
-					<Add option="-lcodeblocks"/>
-					<Add option="-lstc"/>
-					<Add option="-lwxxrc"/>
-					<Add option="-lwxmsw$(WX_VER)"/>
+					<Add library="libcodeblocks.a"/>
+					<Add library="libstc.a"/>
+					<Add library="libwxxrc.a"/>
+					<Add library="libwxmsw$(WX_VER).a"/>
+					<Add directory="devel"/>
 				</Linker>
-				<IncludeDirs>
-					<Add option="sdk"/>
-				</IncludeDirs>
-				<LibDirs>
-					<Add option="devel"/>
-				</LibDirs>
 			</Target>
 			<Target title="plugin_ToDo">
 				<Option output="devel\share\CodeBlocks\plugins\todo.dll"/>
@@ -261,19 +236,15 @@
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
+					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base"/>
 					<Add option="-Wl,--add-stdcall-alias"/>
-					<Add option="-lcodeblocks"/>
-					<Add option="-lwxmsw$(WX_VER)"/>
+					<Add library="libcodeblocks.a"/>
+					<Add library="libwxmsw$(WX_VER).a"/>
+					<Add directory="devel"/>
 				</Linker>
-				<IncludeDirs>
-					<Add option="sdk"/>
-				</IncludeDirs>
-				<LibDirs>
-					<Add option="devel"/>
-				</LibDirs>
 			</Target>
 			<Target title="plugin_XPManifest">
 				<Option output="devel\share\CodeBlocks\plugins\xpmanifest.dll"/>
@@ -287,19 +258,15 @@
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
+					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base"/>
 					<Add option="-Wl,--add-stdcall-alias"/>
-					<Add option="-lcodeblocks"/>
-					<Add option="-lwxmsw$(WX_VER)"/>
+					<Add library="libcodeblocks.a"/>
+					<Add library="libwxmsw$(WX_VER).a"/>
+					<Add directory="devel"/>
 				</Linker>
-				<IncludeDirs>
-					<Add option="sdk"/>
-				</IncludeDirs>
-				<LibDirs>
-					<Add option="devel"/>
-				</LibDirs>
 			</Target>
 			<Target title="update">
 				<Option output="C:\Devel\codeblocks\src\CodeBlocks.exe"/>
@@ -341,11 +308,9 @@
 			<Add option="-DWXUSINGDLL"/>
 		</Compiler>
 		<Linker>
-			<Add option="-lwxmsw$(WX_VER)"/>
+			<Add library="libwxmsw$(WX_VER).a"/>
+			<Add directory="sdk/tinyxml"/>
 		</Linker>
-		<LibDirs>
-			<Add option="sdk/tinyxml"/>
-		</LibDirs>
 		<Unit filename="devel\share\CodeBlocks\images\codecompletion\README.txt">
 			<Option compilerVar=""/>
 			<Option compile="0"/>

@@ -3,6 +3,7 @@
 #include <wx/log.h>
 #include <wx/intl.h>
 #include <wx/filename.h>
+#include <wx/msgdlg.h>
 #include "manager.h"
 #include "projectmanager.h"
 #include "messagemanager.h"
@@ -12,7 +13,8 @@
 #include "globals.h"
 
 ProjectLoader::ProjectLoader(cbProject* project)
-    : m_pProject(project)
+    : m_pProject(project),
+    m_Upgraded(false)
 {
 	//ctor
 }
@@ -59,7 +61,85 @@ bool ProjectLoader::Open(const wxString& filename)
     DoExtraCommands(proj);
     DoUnits(proj);
 
+    TiXmlElement* version = root->FirstChildElement("FileVersion");
+    if (!version)
+    {
+        // pre 1.1 version
+        ConvertVersion_Pre_1_1();
+        // format changed also:
+        // removed <IncludeDirs> and <LibDirs> elements and added them as child elements
+        // in <Compiler> and <Linker> elements respectively
+        // so set m_Upgraded to true, irrespectively of libs detection...
+        m_Upgraded = true;
+    }
+    else
+    {
+        // do something important based on version
+//        wxString major = version->Attribute("major");
+//        wxString minor = version->Attribute("minor");
+    }
+
     return true;
+}
+
+void ProjectLoader::ConvertVersion_Pre_1_1()
+{
+    // ask to detect linker libraries and move them to the new
+    // CompileOptionsBase linker libs container
+    wxString msg;
+    msg.Printf(_("Project \"%s\" was saved with an earlier version of Code::Blocks.\n"
+                "In the current version, link libraries are treated separately from linker options.\n"
+                "Do you want to auto-detect the libraries \"%s\" is using and configure it accordingly?"),
+                m_pProject->GetTitle().c_str(),
+                m_pProject->GetTitle().c_str());
+    if (wxMessageBox(msg, _("Question"), wxICON_QUESTION | wxYES_NO) == wxYES)
+    {
+        // project first
+        ConvertLibraries(m_pProject);
+        
+        for (int i = 0; i < m_pProject->GetBuildTargetsCount(); ++i)
+        {
+            ConvertLibraries(m_pProject->GetBuildTarget(i));
+            m_Upgraded = true;
+        }
+    }
+}
+
+void ProjectLoader::ConvertLibraries(CompileTargetBase* object)
+{
+    wxArrayString linkerOpts = object->GetLinkerOptions();
+    wxArrayString linkLibs = object->GetLinkLibs();
+
+    int compilerIdx = object->GetCompilerIndex();
+    Compiler* compiler = CompilerFactory::Compilers[compilerIdx];
+    wxString linkLib = compiler->GetSwitches().linkLibs;
+    wxString libExt = compiler->GetSwitches().libExtension;
+    size_t libExtLen = libExt.Length();
+
+    size_t i = 0;
+    while (i < linkerOpts.GetCount())
+    {
+        wxString opt = linkerOpts[i];
+        if (!linkLib.IsEmpty() && opt.StartsWith(linkLib))
+        {
+            opt.Remove(0, 2);
+            wxString ext = compiler->GetSwitches().libExtension;
+            if (!ext.IsEmpty())
+                ext = "." + ext;
+            linkLibs.Add(compiler->GetSwitches().libPrefix + opt + ext);
+            linkerOpts.Remove(i);
+        }
+        else if (opt.Length() > libExtLen && opt.Right(libExtLen) == libExt)
+        {
+            linkLibs.Add(opt);
+            linkerOpts.Remove(i);
+        }
+        else
+            ++i;
+    }
+    
+    object->SetLinkerOptions(linkerOpts);
+    object->SetLinkLibs(linkLibs);
 }
 
 void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
@@ -245,12 +325,20 @@ void ProjectLoader::DoCompilerOptions(TiXmlElement* parentNode, ProjectBuildTarg
     while (child)
     {
         wxString option = child->Attribute("option");
+        wxString dir = child->Attribute("directory");
         if (!option.IsEmpty())
         {
             if (target)
                 target->AddCompilerOption(option);
             else
                 m_pProject->AddCompilerOption(option);
+        }
+        if (!dir.IsEmpty())
+        {
+            if (target)
+                target->AddIncludeDir(dir);
+            else
+                m_pProject->AddIncludeDir(dir);
         }
 
         child = child->NextSiblingElement("Add");
@@ -267,12 +355,28 @@ void ProjectLoader::DoLinkerOptions(TiXmlElement* parentNode, ProjectBuildTarget
     while (child)
     {
         wxString option = child->Attribute("option");
+        wxString dir = child->Attribute("directory");
+        wxString lib = child->Attribute("library");
         if (!option.IsEmpty())
         {
             if (target)
                 target->AddLinkerOption(option);
             else
                 m_pProject->AddLinkerOption(option);
+        }
+        if (!lib.IsEmpty())
+        {
+            if (target)
+                target->AddLinkLib(lib);
+            else
+                m_pProject->AddLinkLib(lib);
+        }
+        if (!dir.IsEmpty())
+        {
+            if (target)
+                target->AddLibDir(dir);
+            else
+                m_pProject->AddLibDir(dir);
         }
 
         child = child->NextSiblingElement("Add");
@@ -438,6 +542,7 @@ bool ProjectLoader::Save(const wxString& filename)
     buffer << "<?xml version=\"1.0\"?>" << '\n';
     buffer << "<!DOCTYPE Code::Blocks_project_file>" << '\n';
     buffer << "<Code::Blocks_project_file>" << '\n';
+    buffer << '\t' << "<FileVersion major=\"" << PROJECT_FILE_VERSION_MAJOR << "\" minor=\"" << PROJECT_FILE_VERSION_MINOR << "\"/>" << '\n';
     buffer << '\t' << "<Project>" << '\n';
     buffer << '\t' << '\t' << "<Option title=\"" << FixEntities(m_pProject->GetTitle()) << "\"/>" << '\n';
     buffer << '\t' << '\t' << "<Option makefile=\"" << FixEntities(m_pProject->GetMakefile()) << "\"/>" << '\n';
@@ -476,20 +581,16 @@ bool ProjectLoader::Save(const wxString& filename)
             buffer << '\t' << '\t' << '\t' << '\t' << "<Option projectIncludeDirsRelation=\"" << target->GetOptionRelation(ortIncludeDirs) << "\"/>" << '\n';
         if (target->GetOptionRelation(ortLibDirs) != 3) // 3 is the default
             buffer << '\t' << '\t' << '\t' << '\t' << "<Option projectLibDirsRelation=\"" << target->GetOptionRelation(ortLibDirs) << "\"/>" << '\n';
-        SaveOptions(buffer, target->GetCompilerOptions(), "Compiler", 4);
-        SaveOptions(buffer, target->GetLinkerOptions(), "Linker", 4);
-        SaveOptions(buffer, target->GetIncludeDirs(), "IncludeDirs", 4);
-        SaveOptions(buffer, target->GetLibDirs(), "LibDirs", 4);
+        SaveCompilerOptions(buffer, target, 4);
+        SaveLinkerOptions(buffer, target, 4);
         SaveOptions(buffer, target->GetCommandsBeforeBuild(), "ExtraCommands", 4, "before");
         SaveOptions(buffer, target->GetCommandsAfterBuild(), "ExtraCommands", 4, "after");
         buffer << '\t' << '\t' << '\t' << "</Target>" << '\n';
     }
     buffer << '\t' << '\t' << "</Build>" << '\n';
 
-    SaveOptions(buffer, m_pProject->GetCompilerOptions(), "Compiler", 2);
-    SaveOptions(buffer, m_pProject->GetLinkerOptions(), "Linker", 2);
-    SaveOptions(buffer, m_pProject->GetIncludeDirs(), "IncludeDirs", 2);
-    SaveOptions(buffer, m_pProject->GetLibDirs(), "LibDirs", 2);
+    SaveCompilerOptions(buffer, m_pProject, 2);
+    SaveLinkerOptions(buffer, m_pProject, 2);
     SaveOptions(buffer, m_pProject->GetCommandsBeforeBuild(), "ExtraCommands", 2, "before");
     SaveOptions(buffer, m_pProject->GetCommandsAfterBuild(), "ExtraCommands", 2, "after");
 
@@ -551,31 +652,83 @@ bool ProjectLoader::Save(const wxString& filename)
     return false;
 }
 
-void ProjectLoader::SaveOptions(wxString& buffer, const wxArrayString& array, const wxString& sectionName, int nrOfTabs, const wxString& optionName)
+void ProjectLoader::SaveCompilerOptions(wxString& buffer, CompileOptionsBase* object, int nrOfTabs)
 {
-    if (!array.GetCount())
-        return;
-    
+    wxString compopts;
+    BeginOptionSection(compopts, "Compiler", nrOfTabs);
+    bool hasCompOpts = DoOptionSection(compopts, object->GetCompilerOptions(), nrOfTabs + 1, "option");
+    bool hasCompDirs = DoOptionSection(compopts, object->GetIncludeDirs(), nrOfTabs + 1, "directory");
+    if (hasCompOpts || hasCompDirs)
+    {
+        EndOptionSection(compopts, "Compiler", nrOfTabs);
+        buffer << compopts;
+    }
+}
+
+void ProjectLoader::SaveLinkerOptions(wxString& buffer, CompileOptionsBase* object, int nrOfTabs)
+{
+    wxString linkopts;
+    BeginOptionSection(linkopts, "Linker", nrOfTabs);
+    bool hasLinkOpts = DoOptionSection(linkopts, object->GetLinkerOptions(), nrOfTabs + 1, "option");
+    bool hasLibs = DoOptionSection(linkopts, object->GetLinkLibs(), nrOfTabs + 1, "library");
+    bool hasLinkDirs = DoOptionSection(linkopts, object->GetLibDirs(), nrOfTabs + 1, "directory");
+    if (hasLinkOpts || hasLibs || hasLinkDirs)
+    {
+        EndOptionSection(linkopts, "Linker", nrOfTabs);
+        buffer << linkopts;
+    }
+}
+
+void ProjectLoader::BeginOptionSection(wxString& buffer, const wxString& sectionName, int nrOfTabs)
+{
     wxString local;
-    bool empty = true;
-    
     for (int i = 0; i < nrOfTabs; ++i)
         local << '\t';
     local << "<" << sectionName << ">" << '\n';
+    buffer << local;
+}
+
+bool ProjectLoader::DoOptionSection(wxString& buffer, const wxArrayString& array, int nrOfTabs, const wxString& optionName)
+{
+    if (!array.GetCount())
+        return false;
+
+    bool empty = true;
+    wxString local;
     for (unsigned int i = 0; i < array.GetCount(); ++i)
     {
         if (array[i].IsEmpty())
             continue;
         
         empty = false;
-        for (int x = 0; x <= nrOfTabs; ++x)
+        for (int x = 0; x < nrOfTabs; ++x)
             local << '\t';
         local << "<Add " << optionName << "=\"" << FixEntities(array[i]) << "\"/>" << '\n';
     }
+    buffer << local;
+    return !empty;
+}
+
+void ProjectLoader::EndOptionSection(wxString& buffer, const wxString& sectionName, int nrOfTabs)
+{
+    wxString local;
     for (int i = 0; i < nrOfTabs; ++i)
         local << '\t';
     local << "</" << sectionName << ">" << '\n';
-    
-    if (!empty)
+    buffer << local;
+}
+
+void ProjectLoader::SaveOptions(wxString& buffer, const wxArrayString& array, const wxString& sectionName, int nrOfTabs, const wxString& optionName)
+{
+    if (!array.GetCount())
+        return;
+
+    wxString local;
+    BeginOptionSection(local, sectionName, nrOfTabs);
+    bool notEmpty = DoOptionSection(local, array, nrOfTabs + 1, optionName);
+    if (notEmpty)
+    {
+        EndOptionSection(local, sectionName, nrOfTabs);
         buffer << local;
+    }
 }

@@ -374,7 +374,7 @@
                                     <style>wxTE_MULTILINE|wxHSCROLL|wxTE_RICH2</style>
                                   </object>
                                   <option>1</option>
-                                  <flag>wxALL|wxGROW</flag>
+                                  <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
                                   <border>8</border>
                                 </object>
                                 <label>Other linker options:</label>

@@ -215,6 +215,7 @@ void cbProject::Open()
         return;
     }
 	
+	bool fileUpgraded = false;
     wxFileName fname(m_Filename);
 	FileType ft = FileTypeOf(m_Filename);
     if (ft == ftCodeBlocksProject)
@@ -222,6 +223,7 @@ void cbProject::Open()
 		Manager::Get()->GetMessageManager()->AppendLog(_("Opening %s: "), m_Filename.c_str());    
         ProjectLoader loader(this);
         m_Loaded = loader.Open(m_Filename);
+        fileUpgraded = loader.FileUpgraded();
     }
     else
     {
@@ -271,7 +273,7 @@ void cbProject::Open()
 		Manager::Get()->GetMessageManager()->Log(_("done"));    
 		if (!m_Targets.GetCount())
 			AddDefaultBuildTarget();
-		SetModified(ft == ftDevCppProject);
+		SetModified(ft != ftCodeBlocksProject || fileUpgraded);
 		NotifyPlugins(cbEVT_PROJECT_OPEN);
 	}
 	else

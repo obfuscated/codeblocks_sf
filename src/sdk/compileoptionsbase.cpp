@@ -65,6 +65,19 @@ const wxArrayString& CompileOptionsBase::GetLinkerOptions()
 	return m_LinkerOptions;
 }
 
+void CompileOptionsBase::SetLinkLibs(const wxArrayString& linkLibs)
+{
+    if (m_LinkLibs == linkLibs)
+        return;
+    m_LinkLibs = linkLibs;
+    SetModified(true);
+}
+
+const wxArrayString& CompileOptionsBase::GetLinkLibs()
+{
+    return m_LinkLibs;
+}
+
 void CompileOptionsBase::SetCompilerOptions(const wxArrayString& compilerOpts)
 {
 	if (m_CompilerOptions == compilerOpts)
@@ -144,6 +157,12 @@ void CompileOptionsBase::AddLinkerOption(const wxString& option)
 {
 	m_LinkerOptions.Add(option);
 	SetModified(true);
+}
+
+void CompileOptionsBase::AddLinkLib(const wxString& lib)
+{
+    m_LinkLibs.Add(lib);
+    SetModified(true);
 }
 
 void CompileOptionsBase::AddCompilerOption(const wxString& option)
