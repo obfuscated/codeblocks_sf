@@ -38,18 +38,21 @@
 #include <sdk_events.h>
 #include <editarraystringdlg.h>
 #include <licenses.h>
+#include "xtra_res.h"
+#include <wx/xrc/xmlres.h>
+#include <wx/fs_zip.h>
 
 #include "debuggergdb.h"
 
 static const wxString g_EscapeChars = char(26);
 
-int idMenuDebug = wxNewId();
-int idMenuRunToCursor = wxNewId();
+int idMenuDebug = XRCID("idDebuggerMenuDebug");
+int idMenuRunToCursor = XRCID("idDebuggerMenuRunToCursor");
+int idMenuNext = XRCID("idDebuggerMenuNext");
+int idMenuStep = XRCID("idDebuggerMenuStep");
+int idMenuStop = XRCID("idDebuggerMenuStop");
 int idMenuContinue = wxNewId();
-int idMenuNext = wxNewId();
-int idMenuStep = wxNewId();
 int idMenuToggleBreakpoint = wxNewId();
-int idMenuStop = wxNewId();
 int idMenuSendCommandToGDB = wxNewId();
 int idMenuAddSymbolFile = wxNewId();
 int idMenuEditWatches = wxNewId();
@@ -243,6 +246,8 @@ void DebuggerGDB::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxS
     menu->Insert(1, -1, "-");
 }
 
+#if 0
+// Old version
 void DebuggerGDB::BuildToolBar(wxToolBar* toolBar)
 {
 	if (toolBar)
@@ -269,7 +274,28 @@ void DebuggerGDB::BuildToolBar(wxToolBar* toolBar)
 		toolBar->Realize();
 	}
 }
-
+#else
+// New version
+void DebuggerGDB::BuildToolBar(wxToolBar* toolBar)
+{
+	if (!m_IsAttached)
+		return;
+	if (toolBar)
+	{        
+        wxSize mysize=toolBar->GetToolBitmapSize();
+        bool is_small=(mysize.GetWidth()<=16 && mysize.GetHeight()<=16);
+        wxString my_16x16=is_small ? "_16x16" : "";
+        
+        wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
+        wxXmlResource *myres = wxXmlResource::Get();
+        myres->Load(resPath + "/debugger_gdb.zip#zip:*.xrc");
+        
+		// supported by our new wxToolBarAddOnHandler
+		myres->LoadObject(toolBar,NULL,"debugger_toolbar"+my_16x16,"wxToolBarAddOn");
+        toolBar->Realize();
+	}
+}
+#endif
 void DebuggerGDB::RemoveToolBar(wxToolBar* toolBar)
 {
     toolBar->DeleteTool(idMenuDebug);

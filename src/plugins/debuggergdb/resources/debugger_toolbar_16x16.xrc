@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxToolBarAddOn" name="debugger_toolbar_16x16">
+    <object class="separator" />
+    <object class="tool" name="idDebuggerMenuDebug">
+      <tooltip>Debug</tooltip>
+      <longhelp>Debug program</longhelp>
+      <bitmap>images/16x16/dbgrun.png</bitmap>
+    </object>
+    <object class="tool" name="idDebuggerMenuRunToCursor">
+      <tooltip>Run to cursor</tooltip>
+      <longhelp>Run program until it reaches the current line</longhelp>
+      <bitmap>images/16x16/dbgrunto.png</bitmap>
+    </object>
+    <object class="tool" name="idDebuggerMenuNext">
+      <tooltip>Next line</tooltip>
+      <longhelp>Execute the next line of code</longhelp>
+      <bitmap>images/16x16/dbgnext.png</bitmap>
+    </object>
+    <object class="tool" name="idDebuggerMenuStep">
+      <tooltip>Step into</tooltip>
+      <longhelp>Execute the next instruction, stepping into functions</longhelp>
+      <bitmap>images/16x16/dbgstep.png</bitmap>
+    </object>
+    <object class="tool" name="idDebuggerMenuStop">
+      <tooltip>Stop debugger</tooltip>
+      <longhelp>Stop current debugging session</longhelp>
+      <bitmap>images/16x16/stop.png</bitmap>
+    </object>
+  </object>
+</resource>
