@@ -67,10 +67,10 @@ ConfigManager::~ConfigManager()
 
 void ConfigManager::AddConfiguration(const wxString& desc, const wxString& key)
 {
-    ConfigurationPath conf;
-    conf.desc = desc;
-    conf.key = key;
-    s_Configurations.Add(conf);
+    ConfigurationPath* conf = new ConfigurationPath;
+    conf->desc = desc;
+    conf->key = key;
+    s_Configurations.Add(*conf);
 }
 
 static void ExportGroup(wxConfigBase* conf, wxConfigBase* file, const wxString& groupName)

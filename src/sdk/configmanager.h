@@ -11,6 +11,7 @@ struct ConfigurationPath
     wxString key; ///< The configuration key
     wxString desc; ///< The description
 };
+
 WX_DECLARE_OBJARRAY(ConfigurationPath, Configurations);
 
 /**
