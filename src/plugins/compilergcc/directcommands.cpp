@@ -11,9 +11,11 @@
 #include <globals.h>
 #include <manager.h>
 #include <messagemanager.h>
+#include <macrosmanager.h>
 #include "directcommands.h"
 #include "compilergcc.h"
 #include "makefilegenerator.h"
+#include "customvars.h"
 
 pfDetails::pfDetails(DirectCommands* cmds, ProjectBuildTarget* target, ProjectFile* pf)
 {
@@ -21,8 +23,10 @@ pfDetails::pfDetails(DirectCommands* cmds, ProjectBuildTarget* target, ProjectFi
     wxFileName tmp;
 
     source_file_native = pf->relativeFilename;
-    tmp = source_file_native;
-    tmp.SetExt(cmds->m_pCompiler->GetSwitches().objectExtension);
+    tmp = pf->GetObjName();
+//    tmp = source_file_native;
+//    bool isResource = FileTypeOf(source_file_native) == ftResource;
+//    tmp.SetExt(isResource ? RESOURCEBIN_EXT : cmds->m_pCompiler->GetSwitches().objectExtension);
     object_file_native = tmp.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) +
                           (target ? target->GetObjectOutput() : "") +
                           sep +
@@ -30,11 +34,14 @@ pfDetails::pfDetails(DirectCommands* cmds, ProjectBuildTarget* target, ProjectFi
     wxFileName o_file(object_file_native);
     o_file.MakeAbsolute(cmds->m_pProject->GetBasePath());
     object_dir_native = o_file.GetPath(wxPATH_GET_VOLUME);
-    tmp.SetExt("d");
+    tmp.SetExt("depend");
     dep_file_native = tmp.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) +
                       (target ? target->GetDepsOutput() : "") +
                       sep +
                       tmp.GetFullName();
+    wxFileName d_file(dep_file_native);
+    d_file.MakeAbsolute(cmds->m_pProject->GetBasePath());
+    dep_dir_native = d_file.GetPath(wxPATH_GET_VOLUME);
     
     source_file = UnixFilename(source_file_native);
     cmds->QuoteStringIfNeeded(source_file);
@@ -47,6 +54,9 @@ pfDetails::pfDetails(DirectCommands* cmds, ProjectBuildTarget* target, ProjectFi
     
     object_dir = UnixFilename(object_dir_native);
     cmds->QuoteStringIfNeeded(object_dir);
+
+    dep_dir = UnixFilename(dep_dir_native);
+    cmds->QuoteStringIfNeeded(dep_dir);
 }
 
 DirectCommands::DirectCommands(CompilerGCC* compilerPlugin, Compiler* compiler, cbProject* project, int logPageIndex)
@@ -77,6 +87,51 @@ void DirectCommands::AppendArray(const wxArrayString& from, wxArrayString& to)
     }
 }
 
+void DirectCommands::AddCommandsToArray(const wxString& cmds, wxArrayString& array)
+{
+    wxString cmd = cmds;
+
+    // macros and custom vars substitution
+    CustomVars customvars(m_pCompilerPlugin);
+    const VarsArray& vars = customvars.GetVars();
+    for (unsigned int i = 0; i < vars.GetCount(); ++i)
+    {
+        Var& var = vars[i];
+        cmd.Replace("$(" + var.name + ")", var.value);
+    }
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(cmd);
+    
+    while (!cmd.IsEmpty())
+    {
+        int idx = cmd.Find("\n");
+        wxString cmdpart = idx != -1 ? cmd.Left(idx) : cmd;
+        cmdpart.Trim(false);
+        cmdpart.Trim(true);
+        if (!cmdpart.IsEmpty())
+            array.Add(cmdpart);
+        if (idx == -1)
+            break;
+        cmd.Remove(0, idx + 1);
+    }
+}
+
+int MySortProjectFilesByWeight(ProjectFile** one, ProjectFile** two)
+{
+    return (*one)->weight - (*two)->weight;
+}
+
+MyFilesArray DirectCommands::GetProjectFilesSortedByWeight()
+{
+    MyFilesArray files;
+    for (int i = 0; i < m_pProject->GetFilesCount(); ++i)
+    {
+        ProjectFile* pf = m_pProject->GetFile(i);
+        files.Add(pf);
+    }
+    files.Sort(MySortProjectFilesByWeight);
+    return files;
+}
+
 wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, ProjectFile* pf, bool force)
 {
     wxLogNull ln;
@@ -96,56 +151,58 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
         if (srclast.IsValid() && dstlast.IsValid() && !srclast.IsLaterThan(dstlast))
             return ret;
     }
-/* TODO (mandrav#1#): Check for deps timestamp too... */
     
     MakefileGenerator mg(m_pCompilerPlugin, m_pProject, "", 0); // don't worry! we just need a couple of utility funcs from it
     
     // lookup file's type
     FileType ft = FileTypeOf(pf->relativeFilename);
-    
-    if (ft != ftResource)
-    {
-        // normal source file
-        
-        // create output dir
-        if (!pfd.object_dir_native.IsEmpty() && !wxDirExists(pfd.object_dir_native))
-        {
-            if (!wxMkdir(pfd.object_dir_native, 0755))
-                wxMessageBox(_("Can't create object output directory ") + pfd.object_dir_native);
-        }
 
-        // add actual compile command
-        wxString compilerCmd = mg.CreateSingleFileCompileCmd(ctCompileObjectCmd,
-                                                             target,
-                                                             pf,
-                                                             pfd.source_file,
-                                                             pfd.object_file,
-                                                             pfd.dep_file);
-        if (!compilerCmd.IsEmpty())
-        {
-            switch (m_pCompiler->GetSwitches().logging)
-            {
-                case clogFull:
-                    ret.Add(wxString(COMPILER_SIMPLE_LOG) + compilerCmd);
-                    break;
-                
-                case clogSimple:
-                    ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Compiling: ") + pfd.source_file_native);
-                    break;
-                
-                default:
-                    break;
-            }
-//            if (force)
-//                Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Forced compiling"));
-            ret.Add(compilerCmd);
-        }
-    }
-    else
+    // create output dir
+    if (!pfd.object_dir_native.IsEmpty() && !wxDirExists(pfd.object_dir_native))
     {
-        // win32 resource file
-//        Manager::Get()->GetMessageManager()->SwitchTo(m_PageIndex);
-//        Manager::Get()->GetMessageManager()->Log(m_PageIndex, "win32 resource file: not implemented");
+        if (!wxMkdir(pfd.object_dir_native, 0755))
+            wxMessageBox(_("Can't create object output directory ") + pfd.object_dir_native);
+    }
+
+    bool isResource = ft == ftResource;
+#ifndef __WXMSW__
+    // not supported under non-win32 platforms
+    if (isResource)
+        return ret;
+#endif
+    if (pf->useCustomBuildCommand)
+    {
+        wxString msg;
+        msg.Printf(_("File %s has custom custom build command set."
+                    "This feature only works when using GNU \"make\""
+                    "for the build process..."), pfd.source_file_native.c_str());
+        ret.Add(wxString(COMPILER_SIMPLE_LOG) + msg);
+        return ret;
+    }
+    wxString compilerCmd;
+    compilerCmd = mg.CreateSingleFileCompileCmd(isResource ? ctCompileResourceCmd : ctCompileObjectCmd,
+                                                 target,
+                                                 pf,
+                                                 pfd.source_file,
+                                                 pfd.object_file,
+                                                 pfd.dep_file);
+
+    if (!compilerCmd.IsEmpty())
+    {
+        switch (m_pCompiler->GetSwitches().logging)
+        {
+            case clogFull:
+                ret.Add(wxString(COMPILER_SIMPLE_LOG) + compilerCmd);
+                break;
+            
+            case clogSimple:
+                ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Compiling: ") + pfd.source_file_native);
+                break;
+            
+            default:
+                break;
+        }
+        AddCommandsToArray(compilerCmd, ret);
     }
     return ret;
 }
@@ -158,12 +215,22 @@ wxArrayString DirectCommands::GetCompileCommands(ProjectBuildTarget* target, boo
         ret = GetTargetCompileCommands(target, force);
     else
     {
+        // add pre-build commands
+        AppendArray(GetPreBuildCommands(0L), ret);
+
         for (int x = 0; x < m_pProject->GetBuildTargetsCount(); ++x)
         {
             ProjectBuildTarget* bt = m_pProject->GetBuildTarget(x);
-            wxArrayString targetcompile = GetTargetCompileCommands(bt, force);
-            AppendArray(targetcompile, ret);
+            if (bt->GetIncludeInTargetAll()) // only if target gets build with "all"
+            {
+                wxArrayString targetcompile = GetTargetCompileCommands(bt, force);
+                AppendArray(targetcompile, ret);
+            }
         }
+
+        // add post-build commands
+        if (!ret.IsEmpty())
+            AppendArray(GetPostBuildCommands(0L), ret);
     }
     return ret;
 }
@@ -171,35 +238,138 @@ wxArrayString DirectCommands::GetCompileCommands(ProjectBuildTarget* target, boo
 wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* target, bool force)
 {
     wxArrayString ret;
+    ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Switching to target: ") + target->GetTitle());
 
     // make sure all project files are saved
     if (!m_pProject->SaveAllFiles())
         wxMessageBox(_("Could not save all files. Build might be incomplete..."));
 
-    // iterate all files of the project/target and add them to the build process
-    for (int i = 0; i < m_pProject->GetFilesCount(); ++i)
+    // add pre-build commands
+    AppendArray(GetPreBuildCommands(target), ret);
+
+    if (target->GetTargetType() == 4)
     {
-        ProjectFile* pf = m_pProject->GetFile(i);
+        // commands-only target
+        AppendArray(GetPostBuildCommands(target), ret);
+        return ret;
+    }
+
+    // iterate all files of the project/target and add them to the build process
+    MyFilesArray files = GetProjectFilesSortedByWeight();
+    for (unsigned int i = 0; i < files.GetCount(); ++i)
+    {
+        ProjectFile* pf = files[i];
         // if the file does not belong in this target (if we have a target), skip it
         if (target && pf->buildTargets.Index(target->GetTitle()) == wxNOT_FOUND)
             continue;
         
-        if (pf->compile) // TODO: add check if need deps
+        if (pf->compile)
         {
-//            Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Calculating dependencies: %s"), pf->relativeFilename.c_str());
-//            m_DepFiles.Clear();
-//            GetDependenciesOf(pf->relativeFilename);
-//            if (!m_DepFiles.IsEmpty())
-//                m_DepFiles.Remove(0, 1); // remove the first entry; it's always this file
-//            /*for (size_t i = 0; i < m_DepFiles.GetCount(); ++i)
-//                Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("    DBG: %s"), m_DepFiles[i].c_str());*/
+            // check for deps
+            bool forceByDeps = false;
+            if (m_pCompiler->GetSwitches().needDependencies)
+            {
+                pfDetails pfd(this, target, pf);
+                if (pf->autoDeps)
+                    forceByDeps = ForceCompileByDependencies(pfd);
+                else
+                {
+                    wxString msg;
+                    msg.Printf(_("File %s has custom dependencies set."
+                                "This feature only works when using GNU \"make\""
+                                "for the build process..."), pfd.source_file_native.c_str());
+                    ret.Add(wxString(COMPILER_SIMPLE_LOG) + msg);
+                }
+            }
 
-            pfDetails pfd(this, target, pf);
-            wxArrayString filecmd = GetCompileFileCommand(target, pf, force | DependsOnChangedFile(pfd));
+            // compile file
+            wxArrayString filecmd = GetCompileFileCommand(target, pf, force | forceByDeps);
             AppendArray(filecmd, ret);
         }
     }
+
+    if (ret.GetCount() == 1)
+        ret.Clear(); // it's just the "Switching to..." message
+
+    // add link command
+    wxArrayString link = GetLinkCommands(target, ret.GetCount() > 1);
+    AppendArray(link, ret);
+
+    // add post-build commands
+    if (!ret.IsEmpty())
+        AppendArray(GetPostBuildCommands(target), ret);
+
     return ret;
+}
+
+wxArrayString DirectCommands::GetPreBuildCommands(ProjectBuildTarget* target)
+{
+    wxArrayString buildcmds = target ? target->GetCommandsBeforeBuild() : m_pProject->GetCommandsBeforeBuild();
+    if (!buildcmds.IsEmpty())
+    {
+        wxString title = target ? target->GetTitle() : m_pProject->GetTitle();
+        switch (m_pCompiler->GetSwitches().logging)
+        {
+            case clogFull:
+                {
+                    wxArrayString tmp;
+                    for (size_t i = 0; i < buildcmds.GetCount(); ++i)
+                    {
+                        wxArrayString tmp2;
+                        AddCommandsToArray(buildcmds[i], tmp2);
+                        for (size_t n = 0; n < tmp2.GetCount(); ++n)
+                        {
+                            tmp.Add(wxString(COMPILER_SIMPLE_LOG) + tmp2[n]);
+                            tmp.Add(tmp2[n]);
+                        }
+                    }
+                    buildcmds = tmp;
+                }
+                break;
+            
+            case clogSimple:
+                buildcmds.Insert(wxString(COMPILER_SIMPLE_LOG) + _("Running pre-build step: ") + title, 0);
+
+            default:
+                break;
+        }
+    }
+    return buildcmds;
+}
+
+wxArrayString DirectCommands::GetPostBuildCommands(ProjectBuildTarget* target)
+{
+    wxArrayString buildcmds = target ? target->GetCommandsAfterBuild() : m_pProject->GetCommandsAfterBuild();
+    if (!buildcmds.IsEmpty())
+    {
+        wxString title = target ? target->GetTitle() : m_pProject->GetTitle();
+        switch (m_pCompiler->GetSwitches().logging)
+        {
+            case clogFull:
+                {
+                    wxArrayString tmp;
+                    for (size_t i = 0; i < buildcmds.GetCount(); ++i)
+                    {
+                        wxArrayString tmp2;
+                        AddCommandsToArray(buildcmds[i], tmp2);
+                        for (size_t n = 0; n < tmp2.GetCount(); ++n)
+                        {
+                            tmp.Add(wxString(COMPILER_SIMPLE_LOG) + tmp2[n]);
+                            tmp.Add(tmp2[n]);
+                        }
+                    }
+                    buildcmds = tmp;
+                }
+                break;
+            
+            case clogSimple:
+                buildcmds.Insert(wxString(COMPILER_SIMPLE_LOG) + _("Running post-build step: ") + title, 0);
+
+            default:
+                break;
+        }
+    }
+    return buildcmds;
 }
 
 wxArrayString DirectCommands::GetLinkCommands(ProjectBuildTarget* target, bool force)
@@ -213,8 +383,11 @@ wxArrayString DirectCommands::GetLinkCommands(ProjectBuildTarget* target, bool f
         for (int x = 0; x < m_pProject->GetBuildTargetsCount(); ++x)
         {
             ProjectBuildTarget* bt = m_pProject->GetBuildTarget(x);
-            wxArrayString targetlink = GetTargetLinkCommands(bt, force);
-            AppendArray(targetlink, ret);
+            if (bt->GetIncludeInTargetAll()) // only if target gets build with "all"
+            {
+                wxArrayString targetlink = GetTargetLinkCommands(bt, force);
+                AppendArray(targetlink, ret);
+            }
         }
     }
     return ret;
@@ -233,9 +406,10 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     wxDateTime latestobjecttime;
 
     // get all the linkable objects for the target
-    for (int i = 0; i < m_pProject->GetFilesCount(); ++i)
+    MyFilesArray files = GetProjectFilesSortedByWeight();
+    for (unsigned int i = 0; i < files.GetCount(); ++i)
     {
-        ProjectFile* pf = m_pProject->GetFile(i);
+        ProjectFile* pf = files[i];
 
         // if the file is not linkable, skip it
         if (!pf->link)
@@ -313,13 +487,13 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
             default:
                 break;
         }
-        ret.Add(compilerCmd);
+        AddCommandsToArray(compilerCmd, ret);
     }
     
     return ret;
 }
 
-wxArrayString DirectCommands::GetCleanCommands(ProjectBuildTarget* target)
+wxArrayString DirectCommands::GetCleanCommands(ProjectBuildTarget* target, bool distclean)
 {
     wxArrayString ret;
     
@@ -330,21 +504,22 @@ wxArrayString DirectCommands::GetCleanCommands(ProjectBuildTarget* target)
         for (int x = 0; x < m_pProject->GetBuildTargetsCount(); ++x)
         {
             ProjectBuildTarget* bt = m_pProject->GetBuildTarget(x);
-            wxArrayString targetclear = GetTargetCleanCommands(bt);
+            wxArrayString targetclear = GetTargetCleanCommands(bt, distclean);
             AppendArray(targetclear, ret);
         }
     }
     return ret;
 }
 
-wxArrayString DirectCommands::GetTargetCleanCommands(ProjectBuildTarget* target)
+wxArrayString DirectCommands::GetTargetCleanCommands(ProjectBuildTarget* target, bool distclean)
 {
     wxArrayString ret;
 
     // add object files
-    for (int i = 0; i < m_pProject->GetFilesCount(); ++i)
+    MyFilesArray files = GetProjectFilesSortedByWeight();
+    for (unsigned int i = 0; i < files.GetCount(); ++i)
     {
-        ProjectFile* pf = m_pProject->GetFile(i);
+        ProjectFile* pf = files[i];
 
         // if the file is not compilable, skip it
         if (!pf->compile)
@@ -356,6 +531,8 @@ wxArrayString DirectCommands::GetTargetCleanCommands(ProjectBuildTarget* target)
         
         pfDetails pfd(this, target, pf);
         ret.Add(pfd.object_file_native);
+        if (distclean)
+            ret.Add(pfd.dep_file_native);
     }
 
     // add target output
@@ -370,14 +547,87 @@ wxArrayString DirectCommands::GetTargetCleanCommands(ProjectBuildTarget* target)
     return ret;
 }
 
+bool DirectCommands::ForceCompileByDependencies(const pfDetails& pfd)
+{
+    wxArrayString deps;
+    bool done = false;
+
+    if (wxFileExists(pfd.dep_file_native))
+    {
+        // check source file time with deps file time
+        // if newer, force a scan of dependencies again
+        wxDateTime src = wxFileName(pfd.source_file_native).GetModificationTime();
+        wxDateTime dep = wxFileName(pfd.dep_file_native).GetModificationTime();
+        if (src.IsValid() && dep.IsValid() && !src.IsLaterThan(dep))
+        {
+            // just read existing deps file
+            done = ReadDependencies(pfd.dep_file_native, deps);
+        }
+    }
+    
+    if (!done)
+    {
+        // scan for dependencies
+        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Calculating dependencies: %s"), pfd.source_file_native.c_str());
+        GetDependenciesOf(pfd.source_file_native, deps);
+        if (!deps.IsEmpty())
+            deps.Remove(0, 1); // remove the first entry; it's always this file
+
+        // create deps dir
+        if (!pfd.dep_dir_native.IsEmpty() && !wxDirExists(pfd.dep_dir_native))
+        {
+            if (!wxMkdir(pfd.dep_dir_native, 0755))
+                wxMessageBox(_("Can't create dependencies output directory ") + pfd.dep_dir_native);
+        }
+
+        // save them to file
+        wxFile file;
+        file.Create(pfd.dep_file_native, true);
+        if (file.IsOpened())
+        {
+            for (size_t i = 0; i < deps.GetCount(); ++i)
+            {
+                file.Write(deps[i] + "\n");
+            }
+        }
+    }
+    /*for (size_t i = 0; i < deps.GetCount(); ++i)
+        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("    DBG: %s"), deps[i].c_str());*/
+    return DependsOnChangedFile(pfd, deps);
+}
+
+bool DirectCommands::ReadDependencies(const wxString& filename, wxArrayString& deps)
+{
+    wxFileInputStream file(filename);
+    if (!file.Ok())
+        return false; // error opening file???
+
+    wxTextInputStream input(file);
+    while (!file.Eof())
+    {
+        wxString line = input.ReadLine();
+        line.Trim(false);
+        line.Trim(true);
+        if (line.GetChar(line.Length() - 1) == '\\')
+        {
+            // GNU "make" style dependencies file detected
+            deps.Clear();
+            return false;
+        }
+//        Manager::Get()->GetMessageManager()->Log(m_PageIndex, "Line: '%s'", line.c_str());
+        if (!line.IsEmpty())
+            deps.Add(line);
+    }
+    return true;
+}
+
 /// Creates a list of files this project file depends on, by scanning for #include directives
-/// This list of files is m_DepFiles
-/// You have to clear m_DepFiles manually before calling this function!
-bool DirectCommands::GetDependenciesOf(const wxString& filename)
+/// This list of files is deps
+bool DirectCommands::GetDependenciesOf(const wxString& filename, wxArrayString& deps)
 {
     // check if we already scanned this file (to avoid infinite loop)
     wxFileName fname(filename);
-    if (m_DepFiles.Index(fname.GetFullPath()) != wxNOT_FOUND)
+    if (deps.Index(fname.GetFullPath()) != wxNOT_FOUND)
         return true; // already scanned
 //    Manager::Get()->GetMessageManager()->Log(m_PageIndex, "    DBG: %s not scanned yet", fname.GetFullPath().c_str());
 
@@ -386,9 +636,9 @@ bool DirectCommands::GetDependenciesOf(const wxString& filename)
         return false; // error opening file???
 //    Manager::Get()->GetMessageManager()->Log(m_PageIndex, "    DBG: %s exists", fname.GetFullPath().c_str());
 
-    m_DepFiles.Add(fname.GetFullPath());
+    deps.Add(fname.GetFullPath());
+
     wxTextInputStream input(file);
-    
     while (!file.Eof())
     {
         wxString line = input.ReadLine();
@@ -438,7 +688,7 @@ bool DirectCommands::GetDependenciesOf(const wxString& filename)
 //                Manager::Get()->GetMessageManager()->Log(m_PageIndex, "    DBG: found included file: %s", rest.c_str());
                 // if #include uses quotes (is local relative filename), scan it directly
                 if (isLocal)
-                    GetDependenciesOf(rest);
+                    GetDependenciesOf(rest, deps);
                 else
                 {
                     // try scanning the file by prepending all the globals and project include dirs until it's found
@@ -452,7 +702,7 @@ bool DirectCommands::GetDependenciesOf(const wxString& filename)
                         newfilename = prj_incs[i] + sep + rest;
                         if (wxFileExists(newfilename))
                         {
-                            if (GetDependenciesOf(newfilename))
+                            if (GetDependenciesOf(newfilename, deps))
                                 break;
                         }
                     }
@@ -475,22 +725,22 @@ bool DirectCommands::GetDependenciesOf(const wxString& filename)
     return true;
 }
 
-/// Returns true if any one of the files listed in m_DepFiles, has later modification
-/// A call to GetDependenciesOf() must have preceded to fill m_DepFiles...
-bool DirectCommands::DependsOnChangedFile(const pfDetails& pfd)
+/// Returns true if any one of the files listed in deps, has later modification
+/// A call to GetDependenciesOf() must have preceded to fill deps...
+bool DirectCommands::DependsOnChangedFile(const pfDetails& pfd, const wxArrayString& deps)
 {
     wxFileName basefile(pfd.source_file_native);
     wxFileName baseobjfile(pfd.object_file_native);
     wxDateTime basetime = baseobjfile.GetModificationTime();
-    for (unsigned int i = 0; i < m_DepFiles.GetCount(); ++i)
+    for (unsigned int i = 0; i < deps.GetCount(); ++i)
     {
-        wxFileName otherfile(m_DepFiles[i]);
+        wxFileName otherfile(deps[i]);
         if (otherfile.SameAs(basefile))
             continue;
-        wxDateTime othertime = wxFileName(m_DepFiles[i]).GetModificationTime();
+        wxDateTime othertime = wxFileName(deps[i]).GetModificationTime();
         if (basetime.IsValid() && othertime.IsValid() && othertime.IsLaterThan(basetime))
         {
-            Manager::Get()->GetMessageManager()->Log(m_PageIndex, "    DBG: file %s depends on modified %s", pfd.source_file_native.c_str(), m_DepFiles[i].c_str());
+            Manager::Get()->GetMessageManager()->Log(m_PageIndex, "    DBG: file %s depends on modified %s", pfd.source_file_native.c_str(), deps[i].c_str());
             return true; // one match is enough ;)
         }
     }

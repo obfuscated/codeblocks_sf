@@ -101,7 +101,8 @@ void cbProject::SetCompilerIndex(int compilerIdx)
                 {
                     ProjectFile* pf = GetFile(i);
                     wxFileName obj(pf->GetObjName());
-                    if (obj.GetExt() == CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches().objectExtension)
+                    if (FileTypeOf(pf->relativeFilename) != ftResource &&
+                        obj.GetExt() == CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches().objectExtension)
                     {
                         obj.SetExt(CompilerFactory::Compilers[compilerIdx]->GetSwitches().objectExtension);
                         pf->SetObjName(obj.GetFullName());

@@ -191,6 +191,10 @@ const wxString& ProjectFile::GetObjName()
 void ProjectFile::SetObjName(const wxString& name)
 {
     wxFileName fname(name);
-    fname.SetExt(CompilerFactory::Compilers[project->GetCompilerIndex()]->GetSwitches().objectExtension);
+    FileType ft = FileTypeOf(name);
+    if (ft == ftResource || ft == ftResourceBin)
+        fname.SetExt(RESOURCEBIN_EXT);
+    else
+        fname.SetExt(CompilerFactory::Compilers[project->GetCompilerIndex()]->GetSwitches().objectExtension);
     m_ObjName = fname.GetFullPath();
 }

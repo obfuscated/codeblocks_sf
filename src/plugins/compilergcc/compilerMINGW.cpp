@@ -79,6 +79,7 @@ Compiler::CompilerLineType CompilerMINGW::CheckForWarningsAndErrors(const wxStri
     wxRegEx reFatalErrorLine("FATAL:[ \t]*(.*)");
     wxRegEx reErrorLine(".*:[0-9]+:.*");
     wxRegEx reDetailedErrorLine("([ \tA-Za-z0-9_:\\-\\+/\\.]+):([0-9]+):[ \t](.*)");
+    wxRegEx reDetailedPreProcErrorLine("([ \tA-Za-z0-9_:\\-\\+/\\.]+):([0-9]+):[0-9]+:[ \t](.*)");
 
     if (reErrorLine.Matches(line))
     {
@@ -89,9 +90,14 @@ Compiler::CompilerLineType CompilerMINGW::CheckForWarningsAndErrors(const wxStri
                 ret = Compiler::cltWarning;
             else
                 ret = Compiler::cltError;
-            m_ErrorFilename = reDetailedErrorLine.GetMatch(line, 1);
-            m_ErrorLine = reDetailedErrorLine.GetMatch(line, 2);
-            m_Error = reDetailedErrorLine.GetMatch(line, 3);
+            wxRegEx* actual = 0;
+            if (reDetailedPreProcErrorLine.Matches(line))
+                actual = &reDetailedPreProcErrorLine;
+            else
+                actual = &reDetailedErrorLine;
+            m_ErrorFilename = actual->GetMatch(line, 1);
+            m_ErrorLine = actual->GetMatch(line, 2);
+            m_Error = actual->GetMatch(line, 3);
         }
     }
     else if (reFatalErrorLine.Matches(line))

@@ -5,6 +5,8 @@
 
 #define COMPILER_SIMPLE_LOG "CB_SLOG:"
 
+WX_DEFINE_ARRAY(ProjectFile*, MyFilesArray); // keep our own copy, to sort it by file weight (priority)
+
 // forward decls
 class CompilerGCC;
 class Compiler;
@@ -24,20 +26,25 @@ class DirectCommands
 		wxArrayString GetTargetCompileCommands(ProjectBuildTarget* target, bool force = false);
 		wxArrayString GetLinkCommands(ProjectBuildTarget* target, bool force = false);
 		wxArrayString GetTargetLinkCommands(ProjectBuildTarget* target, bool force = false);
-		wxArrayString GetCleanCommands(ProjectBuildTarget* target);
-		wxArrayString GetTargetCleanCommands(ProjectBuildTarget* target);
+		wxArrayString GetCleanCommands(ProjectBuildTarget* target, bool distclean = false);
+		wxArrayString GetTargetCleanCommands(ProjectBuildTarget* target, bool distclean = false);
 
         void QuoteStringIfNeeded(wxString& str);
         void AppendArray(const wxArrayString& from, wxArrayString& to);
-        bool GetDependenciesOf(const wxString& filename);
+        bool ReadDependencies(const wxString& filename, wxArrayString& deps);
+        bool GetDependenciesOf(const wxString& filename, wxArrayString& deps);
 	protected:
         friend class pfDetails;
-        bool DependsOnChangedFile(const pfDetails& pfd);
+        bool ForceCompileByDependencies(const pfDetails& pfd);
+        bool DependsOnChangedFile(const pfDetails& pfd, const wxArrayString& deps);
+        wxArrayString GetPreBuildCommands(ProjectBuildTarget* target);
+        wxArrayString GetPostBuildCommands(ProjectBuildTarget* target);
+        MyFilesArray GetProjectFilesSortedByWeight();
+        void AddCommandsToArray(const wxString& cmds, wxArrayString& array);
         int m_PageIndex;
         CompilerGCC* m_pCompilerPlugin;
         Compiler* m_pCompiler;
         cbProject* m_pProject;
-        wxArrayString m_DepFiles; // used in GetDependenciesOf()
 	private:
 };
 
@@ -50,11 +57,13 @@ class pfDetails
         wxString object_file;
         wxString dep_file;
         wxString object_dir;
+        wxString dep_dir;
         // those below, have no UnixFilename() applied, nor QuoteStringIfNeeded()
         wxString source_file_native;
         wxString object_file_native;
         wxString dep_file_native;
         wxString object_dir_native;
+        wxString dep_dir_native;
 };
 
 #endif // DIRECTCOMMANDS_H

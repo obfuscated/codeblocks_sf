@@ -86,9 +86,9 @@ wxString MakefileGenerator::ReplaceCompilerMacros(CommandType et,
     if (idx != -1)
     {
         wxString incs;
-        DoAppendIncludeDirs(incs, 0L, "-I", true);
-        DoAppendIncludeDirs(incs, 0L, "-I");
-        DoAppendIncludeDirs(incs, target, "-I");
+        DoAppendIncludeDirs(incs, 0L, m_Switches.includeDirs, true);
+        DoAppendIncludeDirs(incs, 0L, m_Switches.includeDirs);
+        DoAppendIncludeDirs(incs, target, m_Switches.includeDirs);
         compilerCmd.Replace("$res_includes", incs);
     }
 
@@ -138,8 +138,11 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
     wxString incs;
 	wxString global_incs;
 	wxString prj_incs;
+	wxString res_incs;
 	DoAppendIncludeDirs(global_incs, 0L, m_Switches.includeDirs, true);
 	DoAppendIncludeDirs(prj_incs, 0L, m_Switches.includeDirs);
+	res_incs  << global_incs << " " << prj_incs << " ";
+	DoAppendIncludeDirs(res_incs, target, m_Switches.includeDirs);
 	DoGetMakefileIncludes(incs, target);
     incs.Replace("$(GLOBAL_INCS)", global_incs);
     incs.Replace("$(PROJECT_INCS)", prj_incs);
@@ -166,12 +169,14 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
     compilerCmd.Replace("$options", cflags);
     compilerCmd.Replace("$link_options", ldflags);
     compilerCmd.Replace("$includes", incs);
+    compilerCmd.Replace("$res_includes", res_incs);
     compilerCmd.Replace("$libdirs", libs);
     compilerCmd.Replace("$libs", libs);
     compilerCmd.Replace("$file", file);
     compilerCmd.Replace("$dep_object", deps);
     compilerCmd.Replace("$object", object);
     compilerCmd.Replace("$exe_output", output);
+    compilerCmd.Replace("$resource_output", object);
     compilerCmd.Replace("$link_objects", object);
 
     wxFileName fname(target->GetOutputFilename());
@@ -1230,6 +1235,8 @@ bool MakefileGenerator::IsTargetValid(ProjectBuildTarget* target)
 	return hasCmds || m_LinkableTargets.Index(target) != -1;
 }
 
+// WARNING: similar function in DirectCommands too.
+// If you change this, change that too
 void MakefileGenerator::ReplaceMacros(ProjectFile* pf, wxString& text)
 {
     wxFileName fname(pf->relativeFilename);
