@@ -341,24 +341,6 @@
 			<Option link="0"/>
 			<Option target="src"/>
 		</Unit>
-		<Unit filename="output\share\CodeBlocks\images\codecompletion\README.txt">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="src"/>
-		</Unit>
-		<Unit filename="output\share\CodeBlocks\plugins\README.txt">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="src"/>
-		</Unit>
-		<Unit filename="output\share\CodeBlocks\templates\README.txt">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="src"/>
-		</Unit>
 		<Unit filename="plugins\astyle\asstreamiterator.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="plugin_Astyle"/>
