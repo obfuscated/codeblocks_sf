@@ -38,6 +38,11 @@
 	#include <shlobj.h> // for SHChangeNotify()
 	#define DDE_SERVICE	"CODEBLOCKS"
 	#define DDE_TOPIC	"CodeBlocksDDEServer"
+	#ifdef __CBDEBUG__
+	#include <windows.h>
+	#include <wincon.h>
+	#include <wx/log.h>
+	#endif
 #else
     #include "prefix.h" // binreloc
 #endif
@@ -77,6 +82,18 @@ bool CodeBlocksApp::OnInit()
 {
     m_pSplash = 0;
     wxHandleFatalExceptions(true);
+    
+#ifdef __WXMSW__
+	#ifdef __CBDEBUG__
+    // Remember to compile as a console application!
+    AllocConsole();
+    HANDLE myhandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	COORD co = {80,2000};
+	SetConsoleScreenBufferSize(myhandle, co);
+	fprintf(stdout,"CONSOLE DEBUG ACTIVATED\n");
+	// wxLogWindow *myerr = new wxLogWindow(NULL,"debug");
+	#endif
+#endif    
 
 #ifdef __WXMSW__
     m_ExceptionHandlerLib = LoadLibrary("exchndl.dll");
@@ -132,7 +149,7 @@ bool CodeBlocksApp::OnInit()
     MainFrame *frame = new MainFrame((wxFrame*)0L);
     frame->Show(TRUE);
     SetTopWindow(frame);
-
+    
     if (ParseCmdLine(frame) == 0)
 		Manager::Get()->GetProjectManager()->LoadWorkspace();
 
