@@ -1035,13 +1035,23 @@ void MainFrame::OnFileOpenRecentClearHistory(wxCommandEvent& event)
 
 void MainFrame::OnFileSave(wxCommandEvent& event)
 {
-    m_pEdMan->SaveActive();
+    if (!m_pEdMan->SaveActive())
+    {
+        wxString msg;
+        msg.Printf(_("File %s could not be saved..."), m_pEdMan->GetActiveEditor()->GetFilename().c_str());
+        wxMessageBox(msg, _("Error saving file"));
+    }
     DoUpdateStatusBar();
 }
 
 void MainFrame::OnFileSaveAs(wxCommandEvent& event)
 {
-    m_pEdMan->SaveActiveAs();
+    if (!m_pEdMan->SaveActiveAs())
+    {
+        wxString msg;
+        msg.Printf(_("File %s could not be saved..."), m_pEdMan->GetActiveEditor()->GetFilename().c_str());
+        wxMessageBox(msg, _("Error saving file"));
+    }
     DoUpdateStatusBar();
 }
 

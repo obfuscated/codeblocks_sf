@@ -400,6 +400,7 @@ bool cbEditor::Open()
         return false;
 
     // open file
+    m_pControl->SetReadOnly(false);
     wxString st;
 
     m_pControl->ClearAll();
@@ -415,6 +416,16 @@ bool cbEditor::Open()
 
     m_pControl->InsertText(0, st);
     m_pControl->EmptyUndoBuffer();
+
+    // mark the file read-only, if applicable
+    bool read_only = !wxFile::Access(m_Filename.c_str(), wxFile::write);
+    m_pControl->SetReadOnly(read_only);
+    // if editor is read-only, override bg color for *all* styles...
+    if (read_only)
+    {
+        for (int i = 0; i < wxSTC_STYLE_MAX; ++i)
+            m_pControl->StyleSetBackground(i, wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
+    }
 
 	if (ConfigManager::Get()->Read("/editor/fold_all_on_open", 0L))
 		FoldAll();
@@ -438,7 +449,8 @@ bool cbEditor::Save()
     }
     
     wxFile file(m_Filename, wxFile::write);
-    file.Write(m_pControl->GetText().c_str(), m_pControl->GetTextLength());
+    if (file.Write(m_pControl->GetText().c_str(), m_pControl->GetTextLength()) == 0)
+        return false; // failed; file is read-only?
     file.Flush();
     file.Close();
     
