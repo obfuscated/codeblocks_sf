@@ -261,4 +261,5 @@ void ToDoList::OnReparse(CodeBlocksEvent& event)
 {
     if (m_AutoRefresh)
         m_pListLog->Parse();
+    event.Skip();
 }
