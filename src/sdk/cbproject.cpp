@@ -231,13 +231,11 @@ void cbProject::Open()
              case ftMSVSProject: loader = new MSVC7Loader(this); break;
              default: return;
         }
-        m_Loaded = loader->Open(m_Filename);
-        fname.SetExt(CODEBLOCKS_EXT);
-        m_Filename = fname.GetFullPath();
-        SetModified(true);
-        delete loader;
-        
+
         // select compiler for the imported project
+        // need to do it before actual import, because the importer might need
+        // project's compiler information (like the object files extension etc).
+
         // first build a list of available compilers
         wxString* comps = new wxString[CompilerFactory::Compilers.GetCount()];
         for (unsigned int i = 0; i < CompilerFactory::Compilers.GetCount(); ++i)
@@ -246,14 +244,23 @@ void cbProject::Open()
         }
         // now display a choice dialog
         wxSingleChoiceDialog dlg(0,
-                            _("Select compiler to use for the newly imported project"),
+                            _("Select compiler to use for the imported project"),
                             _("Select compiler"),
                             CompilerFactory::Compilers.GetCount(),
                             comps);
         if (dlg.ShowModal() == wxID_OK)
         {
             SetCompilerIndex(dlg.GetSelection());
+
+            // actually import project file
+            m_Loaded = loader->Open(m_Filename);
+            fname.SetExt(CODEBLOCKS_EXT);
+            m_Filename = fname.GetFullPath();
+            SetModified(true);
         }
+        else
+            m_Loaded = false;
+        delete loader;
     }
 	
     if (m_Loaded)

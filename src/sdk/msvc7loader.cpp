@@ -141,7 +141,7 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
         bt->SetTargetType(ttStaticLib);
 
     if (!m_ConvertSwitches)
-        bt->AddCompilerOption("/GX"); // add C++ exception handling (by default)
+        m_pProject->AddCompilerOption("/GX"); // add C++ exception handling (by default)
 
     TiXmlElement* tool = conf->FirstChildElement("Tool");
     if (!tool)
@@ -236,9 +236,24 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
             tmp.Replace("$(OutDir)", outdir);
             bt->SetOutputFilename(UnixFilename(tmp));
             
-            bt->AddLinkerOption(tool->Attribute("AdditionalOptions"));
-            bt->AddLinkerOption(tool->Attribute("AdditionalDependencies"));
-            bt->AddLinkerOption(tool->Attribute("ImportLibrary"));
+            m_pProject->AddLinkerOption(tool->Attribute("AdditionalOptions"));
+            m_pProject->AddLinkerOption(tool->Attribute("AdditionalDependencies"));
+            m_pProject->AddLinkerOption(tool->Attribute("ImportLibrary"));
+            
+            tmp = tool->Attribute("LinkIncremental");
+            if (!tmp.Matches("0")) // is this correct???
+                m_pProject->AddLinkerOption("/incremental");
+
+            tmp = tool->Attribute("GenerateDebugInformation");
+            if (tmp.Matches("TRUE"))
+                m_pProject->AddLinkerOption("/debug");
+            
+            tmp = tool->Attribute("ProgramDatabaseFile");
+            if (!tmp.IsEmpty())
+            {
+                tmp.Replace("$(OutDir)", outdir);
+                m_pProject->AddLinkerOption("/pdb:" + UnixFilename(tmp));
+            }
         }
         
         tool = tool->NextSiblingElement();

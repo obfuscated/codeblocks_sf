@@ -65,7 +65,7 @@ CompilerMSVC::CompilerMSVC()
 	m_Options.AddOption(_("__stdcall calling convention"), "/Gz", _("Others"));
 
     m_Commands[(int)ctCompileObjectCmd] = "$compiler /nologo $options $includes /c $file /Fo$object";
-    m_Commands[(int)ctCompileResourceCmd] = "$rescomp -i $file -J rc -o $resource_output -O coff $res_includes";
+    m_Commands[(int)ctCompileResourceCmd] = "$rescomp $res_includes -fo$resource_output $file";
     m_Commands[(int)ctLinkExeCmd] = "$linker /nologo $libdirs /out:$exe_output $libs $link_objects $link_options";
     m_Commands[(int)ctLinkDynamicCmd] = "$linker /dll /nologo $libdirs /out:$exe_output $libs $link_objects $link_options";
     m_Commands[(int)ctLinkStaticCmd] = "$linker /lib /nologo $libdirs /out:$exe_output $libs $link_objects $link_options";
@@ -90,7 +90,7 @@ Compiler::CompilerLineType CompilerMSVC::CheckForWarningsAndErrors(const wxStrin
     // quick regex's
     wxRegEx reError(": error ");
     wxRegEx reWarning(": warning ");
-    wxRegEx reErrorLinker(" error LNK[0-9]+.*");
+    wxRegEx reErrorLinker("([A-Za-z0-9_:/\\.\\(\\)]*)[ \t]+:[ \t]+(.*error LNK[0-9]+.*)");
     wxRegEx reErrorLine("\\([0-9]+\\) :[ \t].*:");
     wxRegEx reDetailedErrorLine("([A-Za-z0-9_:/\\.]*)\\(([0-9]+)\\) :[ \t](.*)");
 
@@ -110,9 +110,9 @@ Compiler::CompilerLineType CompilerMSVC::CheckForWarningsAndErrors(const wxStrin
     }
     else if (reErrorLinker.Matches(line))
     {
-        m_ErrorFilename = "";
+        m_ErrorFilename = reErrorLinker.GetMatch(line, 1);
         m_ErrorLine = "";
-        m_Error = line;
+        m_Error = reErrorLinker.GetMatch(line, 2);
         ret = Compiler::cltError;
     }
     return ret;

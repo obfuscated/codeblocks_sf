@@ -146,7 +146,8 @@ class DLLIMPORT Compiler : public CompileOptionsBase
 	private:
         long m_ID;
         long m_ParentID; // -1 for builtin compilers, the builtin compiler's ID to derive from for user compilers...
-        static long CompilerIDCounter;
+        static long CompilerIDCounter; // for builtin compilers
+        static long UserCompilerIDCounter; // for user compilers
 };
 
 #endif // COMPILER_H

@@ -17,7 +17,8 @@ wxString Compiler::CommandTypeDescriptions[COMPILER_COMMAND_TYPES_COUNT] =
     _("Link object files to dynamic library"),
     _("Link object files to static library")
 };
-long Compiler::CompilerIDCounter = 0;
+long Compiler::CompilerIDCounter = 0; // built-in compilers can have IDs from 1 to 255
+long Compiler::UserCompilerIDCounter = 255; // user compilers have IDs over 255 (256+)
 
 Compiler::Compiler(const wxString& name)
     : m_Name(name),
@@ -29,9 +30,9 @@ Compiler::Compiler(const wxString& name)
 }
 
 Compiler::Compiler(const Compiler& other)
-    : m_ParentID(other.m_ID)
+    : m_ID(++UserCompilerIDCounter),
+    m_ParentID(other.m_ID)
 {
-    m_ID = ++CompilerIDCounter; // this copy ctor is created for this
     m_Name = "Copy of " + other.m_Name;
     m_MasterPath = other.m_MasterPath;
     m_Programs = other.m_Programs;
@@ -39,7 +40,7 @@ Compiler::Compiler(const Compiler& other)
     m_Options = other.m_Options;
     for (int i = 0; i < COMPILER_COMMAND_TYPES_COUNT; ++i)
     {
-        m_Commands[i] = "echo \"No compiler command set for this operation!\"";
+        m_Commands[i] = other.m_Commands[i];
     }
 }
 

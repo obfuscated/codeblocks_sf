@@ -43,6 +43,8 @@ int CompilerFactory::CreateCompilerCopy(Compiler* compiler)
 
 void CompilerFactory::RemoveCompiler(Compiler* compiler)
 {
+    if (!compiler)
+        return;
     int listIdx = compiler->m_ID;
     
     // loop through compilers list and adjust all following compilers m_ID -= 1 and m_ParentID -= 1

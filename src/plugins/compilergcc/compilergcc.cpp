@@ -1536,8 +1536,11 @@ void CompilerGCC::OnGCCTerminated(CodeBlocksEvent& event)
 		int secs = (elapsed % 60);
         m_Log->GetTextControl()->SetDefaultStyle(m_LastExitCode == 0 ? wxTextAttr(*wxBLUE) : wxTextAttr(*wxRED));
         Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Process terminated with status %d (%d minutes, %d seconds)"), m_LastExitCode, mins, secs);
-        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLACK));
-        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("%d errors, %d warnings"), m_Errors.GetErrorsCount(), m_Errors.GetWarningsCount());
+        if (!m_RunAfterCompile)
+        {
+            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_NAVY));
+            Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("%d errors, %d warnings"), m_Errors.GetErrorsCount(), m_Errors.GetWarningsCount());
+        }
         m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLACK, *wxWHITE));
 		if (m_LastExitCode == 0)
 		{

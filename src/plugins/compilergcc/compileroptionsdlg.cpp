@@ -168,12 +168,12 @@ void CompilerOptionsDlg::DoFillCompilerPrograms()
         return; // no "Programs" page
 
     int compilerIdx = XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection();
-    /*Manager::Get()->GetMessageManager()->DebugLog("compilerIdx=%d, m_LastCompilerIdx=%d", compilerIdx, m_LastCompilerIdx);
+    Manager::Get()->GetMessageManager()->DebugLog("compilerIdx=%d, m_LastCompilerIdx=%d", compilerIdx, m_LastCompilerIdx);
     if (compilerIdx != m_LastCompilerIdx)
     {
         // compiler changed; check for changes and update as needed
         DoUpdateCompiler();
-    }*/
+    }
     
     m_LastCompilerIdx = compilerIdx;
     const CompilerPrograms& progs = CompilerFactory::Compilers[compilerIdx]->GetPrograms();
