@@ -147,6 +147,7 @@ bool CodeBlocksApp::OnInit()
 	wxXmlResource::Get()->Load(res+"#zip:*.xrc");
 
     MainFrame *frame = new MainFrame((wxFrame*)0L);
+    HideSplashScreen();
     frame->Show(TRUE);
     SetTopWindow(frame);
     
@@ -164,7 +165,6 @@ bool CodeBlocksApp::OnInit()
 	}
 #endif
 
-    HideSplashScreen();
 
     frame->ShowTips(); // this func checks if the user wants tips, so no need to check here
 
