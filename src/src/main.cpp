@@ -1745,6 +1745,7 @@ void MainFrame::OnPluginUnloaded(CodeBlocksEvent& event)
 		RemovePluginFromMenus(plug->GetInfo()->name);
 		CreateToolbars();
 		CreateMenubar();
+		InitializeRecentFilesHistory(); // must call since menubar gets reconstructed
         wxString msg = plug->GetInfo()->title;
         m_pMsgMan->DebugLog(_("%s plugin unloaded"), msg.c_str());
     }
@@ -1769,6 +1770,7 @@ void MainFrame::OnSettingsPlugins(wxCommandEvent& event)
         m_RecreatingMenus = true;
         CreateMenubar();
         CreateToolbars();
+		InitializeRecentFilesHistory(); // must call since menubar gets reconstructed
         m_RecreatingMenus = false;
 	}
 }

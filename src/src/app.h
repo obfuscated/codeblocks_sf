@@ -52,9 +52,11 @@ class CodeBlocksApp : public wxApp
         void ShowSplashScreen();
         void HideSplashScreen();
         bool CheckResource(const wxString& res);
+		bool m_NoDDE; // no DDE
 		bool m_NoAssocs; // no associations check
 		bool m_NoSplash; // no splash screen
 		bool m_HasDebugLog; // display debug log
+		bool m_ClearConf; // clear configuration
 #ifdef __WXMSW__
         HINSTANCE m_ExceptionHandlerLib;
 #endif

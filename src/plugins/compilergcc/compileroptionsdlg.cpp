@@ -82,6 +82,7 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxDialog)
 	EVT_BUTTON(				XRCID("btnEditVar"),		CompilerOptionsDlg::OnEditVarClick)
 	EVT_BUTTON(				XRCID("btnDeleteVar"),		CompilerOptionsDlg::OnRemoveVarClick)
 	EVT_BUTTON(				XRCID("btnMasterPath"),		CompilerOptionsDlg::OnMasterPathClick)
+	EVT_BUTTON(				XRCID("btnAutoDetect"),		CompilerOptionsDlg::OnAutoDetectClick)
 	EVT_BUTTON(				XRCID("btnCcompiler"),		CompilerOptionsDlg::OnSelectProgramClick)
 	EVT_BUTTON(				XRCID("btnCPPcompiler"),	CompilerOptionsDlg::OnSelectProgramClick)
 	EVT_BUTTON(				XRCID("btnLinker"),		    CompilerOptionsDlg::OnSelectProgramClick)
@@ -923,6 +924,37 @@ void CompilerOptionsDlg::OnMasterPathClick(wxCommandEvent& event)
         XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->SetValue(dlg.GetPath());
         DoUpdateCompiler();
     }
+}
+
+void CompilerOptionsDlg::OnAutoDetectClick(wxCommandEvent& event)
+{
+    wxComboBox* cmb = XRCCTRL(*this, "cmbCompiler", wxComboBox);
+    int compilerIdx = cmb->GetSelection();
+    Compiler* compiler = CompilerFactory::Compilers[compilerIdx];
+    wxString backup = XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->GetValue();
+    
+    switch (compiler->AutoDetectInstallationDir())
+    {
+        case adrDetected:
+        {
+            wxString msg;
+            msg.Printf(_("Auto-detected installation path of \"%s\"\nin \"%s\""), compiler->GetName().c_str(), compiler->GetMasterPath().c_str());
+            wxMessageBox(msg);
+        }
+        break;
+        
+        case adrGuessed:
+        {
+            wxString msg;
+            msg.Printf(_("Could not auto-detect installation path of \"%s\"...\n"
+                        "Do you want to use this compiler's default installation directory?"),
+                        compiler->GetName().c_str());
+            if (wxMessageBox(msg, _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxNO)
+                compiler->SetMasterPath(backup);
+        }
+        break;
+    }
+    XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->SetValue(compiler->GetMasterPath());
 }
 
 void CompilerOptionsDlg::OnSelectProgramClick(wxCommandEvent& event)

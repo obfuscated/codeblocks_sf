@@ -1,26 +1,5 @@
 Bugs that need immediate attention:
 -----------------------------------
-* Handle on-the-fly plugins enabling/disabling (works) to not mess-up the interface (menus/toolbars)
-* If a plugin is disabled, it breaks the event processing chain...
-    Now, the plugin manager sends the event only to the last plugin. It might process it or not and then
-    it "travels" up the chain of plugins. If one plugin (say in the middle) is disabled, it's not processing
-    events and so the event "travelling" stops. The rest of the plugins never hear about this event.
-    One solution is that plugin manager checks for disabled plugins and posts the event not only to the
-    last plugin but also to all plugins that are followed by a disabled plugin (skipping the chain-breakers that is)...
-    Pseudo-code:
-        bool sendevt = true
-        for(last-plugin to first-plugin) // reverse iteration
-        {
-            if (!plugin->active)
-                sendevt = true // notify next plugin
-            else
-            {
-                plugin->notify
-                sendevt = false // don't notify next plugin
-            }
-        }
-* Work on existing plugins enabling/disabling
-
 * File properties crashes when no compiler plugins loaded:
 When there are no compiler plugins installed, selecting the properties of any project files causes an assertion failure + a crash, because ProjectFile::SetObjName is called, and this line:
 "fname.SetExt(CompilerFactory::Compilers[project->GetCompilerIndex()]->GetSwitches().objectExtension);"

@@ -3,12 +3,12 @@
 
 [Setup]
 AppName=Code::Blocks
-AppVerName=Code::Blocks 1.0-beta4
+AppVerName=Code::Blocks 1.0-beta5
 AppPublisher=Code::Blocks
 DefaultDirName={pf}\CodeBlocks
 DefaultGroupName=CodeBlocks
 LicenseFile=..\COPYING
-OutputBaseFilename=CodeBlocks-1.0-beta4
+OutputBaseFilename=CodeBlocks-1.0-beta5
 AppPublisherURL=www.codeblocks.org
 AppVersion=1.0beta4
 UninstallDisplayIcon={app}\codeblocks.exe
@@ -18,8 +18,13 @@ AppSupportURL=www.codeblocks.org
 AppUpdatesURL=www.codeblocks.org
 VersionInfoVersion=1.0
 VersionInfoDescription=Code::Blocks IDE
-WizardImageFile=C:\Devel\codeblocks\src\setup\setup.bmp
-WizardSmallImageFile=C:\Devel\codeblocks\src\setup\setupsmall.bmp
+WizardImageFile=setup.bmp
+WizardSmallImageFile=setupsmall.bmp
+InfoAfterFile=COMPILERS_win32.rtf
+InternalCompressLevel=ultra
+SolidCompression=true
+Compression=lzma/ultra
+InfoBeforeFile=
 
 [Tasks]
 ; NOTE: The following entry contains English phrases ("Create a desktop icon" and "Additional icons"). You are free to translate them into another language if required.
@@ -30,8 +35,8 @@ Name: quicklaunchicon; Description: Create a &Quick Launch icon; GroupDescriptio
 [Files]
 Source: ..\output\codeblocks.exe; DestDir: {app}; Flags: ignoreversion; Components: ProgramFiles
 Source: ..\output\codeblocks.dll; DestDir: {app}; Components: ProgramFiles
-Source: mingwm10.dll; DestDir: {sys}; Flags: sharedfile; Components: ProgramFiles
-Source: wxmsw242.dll; DestDir: {sys}; Flags: sharedfile; Components: ProgramFiles
+Source: mingwm10.dll; DestDir: {app}; Components: ProgramFiles
+Source: wxmsw242.dll; DestDir: {app}; Components: ProgramFiles
 Source: ..\output\console_runner.exe; DestDir: {app}; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\resources.zip; DestDir: {app}\share\CodeBlocks; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\astyle.zip; DestDir: {app}\share\CodeBlocks; Components: AStyleFormatter
@@ -131,13 +136,27 @@ Source: ..\AUTHORS; DestDir: {app}; DestName: AUTHORS.txt; Components: ProgramFi
 Source: ..\COPYING; DestDir: {app}; DestName: COPYING.txt; Components: ProgramFiles
 Source: ..\README; DestDir: {app}; DestName: README.txt; Components: ProgramFiles
 Source: ..\tips.txt; DestDir: {app}; Components: ProgramFiles
+Source: ..\COMPILERS; DestDir: {app}; Components: ProgramFiles
+Source: WebSite.url; DestDir: {app}; Components: ProgramFiles
+Source: Forums.url; DestDir: {app}; Components: ProgramFiles
+Source: ReportBugs.url; DestDir: {app}; Components: ProgramFiles
+Source: Download_BCC55.url; DestDir: {app}; Components: ProgramFiles
+Source: Download_MSVC2003.url; DestDir: {app}; Components: ProgramFiles
+Source: Download_MINGW.url; DestDir: {app}; Components: ProgramFiles
+Source: COMPILERS_win32.rtf; DestDir: {app}
 
 [Icons]
 Name: {group}\CodeBlocks; Filename: {app}\codeblocks.exe; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Components: ProgramFiles
 Name: {userdesktop}\CodeBlocks; Filename: {app}\codeblocks.exe; Tasks: desktopicon; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Components: ProgramFiles
 Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\CodeBlocks; Filename: {app}\codeblocks.exe; Tasks: quicklaunchicon; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Components: ProgramFiles
-Name: {group}\CodeBlocks on-line; Filename: http://www.codeblocks.org; Comment: Go to the on-line home of Code::Blocks IDE; Components: ProgramFiles
+Name: {group}\CodeBlocks on-line; Filename: {app}\WebSite.url; Comment: Go to Code::Blocks IDE website; Components: ProgramFiles
+Name: {group}\CodeBlocks forums; Filename: {app}\Forums.url; Comment: Go to Code::Blocks IDE discussion forums; Components: ProgramFiles
 Name: {group}\License; Filename: {app}\COPYING.txt; Components: ProgramFiles
+Name: {group}\Report a bug; Filename: {app}\ReportBugs.url; Comment: Report bugs you 've found in Code::Blocks; Components: ProgramFiles
+Name: {group}\Download MinGW Compiler & Debugger; Filename: {app}\Download_MINGW.url; Comment: Download the MinGW distribution which contains the GNU GCC compiler and GDB debugger; Components: ProgramFiles
+Name: {group}\Download Microsoft Visual C++ Free Toolkit 2003; Filename: {app}\Download_MSVC2003.url; Comment: Download the Microsoft Visual C++ Free Toolkit 2003; Components: ProgramFiles
+Name: {group}\Download Borland C++ Compiler 5.5; Filename: {app}\Download_BCC55.url; Comment: Download the Borland C++ Compiler 5.5; Components: ProgramFiles
+Name: {group}\How to install a compiler; Filename: {app}\COMPILERS_win32.rtf
 
 [Run]
 ; NOTE: The following entry contains an English phrase ("Launch"). You are free to translate it into another language if required.
@@ -155,5 +174,5 @@ Name: XPManifest; Description: WindowsXP Manifest plugin; Types: custom full
 Name: Templates; Description: Project templates; Types: custom full
 Name: AStyleFormatter; Description: Astyle code formatter plugin; Types: custom full
 
-[Registry]
-Root: HKCU; Subkey: Software\Code::Blocks; ValueType: none; Flags: uninsdeletekey; Components: ProgramFiles
+[UninstallRun]
+Filename: {app}\codeblocks.exe; Parameters: --clear-configuration; WorkingDir: {app}

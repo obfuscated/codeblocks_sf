@@ -474,6 +474,14 @@
                                 <label>...</label>
                                 <size>20,20</size>
                               </object>
+                              <flag>wxTOP|wxBOTTOM</flag>
+                              <border>8</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxButton" name="btnAutoDetect">
+                                <label>Auto-detect</label>
+                                <size>-1,20</size>
+                              </object>
                               <flag>wxTOP|wxBOTTOM|wxRIGHT</flag>
                               <border>8</border>
                             </object>

@@ -50,9 +50,13 @@
 static const wxCmdLineEntryDesc cmdLineDesc[] =
 {
     { wxCMD_LINE_SWITCH, _T("h"), _T("help"), _T("show this help message"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
+#ifdef __WXMSW__
     { wxCMD_LINE_SWITCH, _T("na"), _T("no-check-associations"), _T("don't perform any association checks"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_SWITCH, _T("nd"), _T("no-dde"), _T("don't start a DDE server"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
+#endif
     { wxCMD_LINE_SWITCH, _T("ns"), _T("no-splash-screen"), _T("don't display a splash screen while loading"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_SWITCH, _T("d"), _T("debug-log"), _T("display application's debug log"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_SWITCH, _T(""), _T("clear-configuration"), _T("completely clear program's configuration"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_OPTION, _T(""), _T("prefix"),  _T("the shared data dir prefix"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
     { wxCMD_LINE_PARAM, _T(""), _T(""),  _T("filename(s)"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE },
     { wxCMD_LINE_NONE }
@@ -78,7 +82,7 @@ bool CodeBlocksApp::OnInit()
     m_ExceptionHandlerLib = LoadLibrary("exchndl.dll");
 #endif
 
-    if (ParseCmdLine(0L) == -1)
+    if (ParseCmdLine(0L) != 0)
         return false;
 
     wxImage::AddHandler(new wxBMPHandler);
@@ -88,6 +92,24 @@ bool CodeBlocksApp::OnInit()
     SetVendorName(APP_VENDOR);
     SetAppName(APP_NAME" v"APP_VERSION);
     ConfigManager::Init(wxConfigBase::Get());
+
+    if (m_ClearConf)
+    {
+        int ret = wxMessageBox(_("Do you want to clear all Code::Blocks configuration settings?"), _("Clear configuration settings"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT);
+        if (ret == wxYES)
+        {
+            ret = wxMessageBox(_("Are you *really* sure you want to clear all Code::Blocks configuration settings?"), _("Clear configuration settings"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT);
+            if (ret == wxYES)
+            {
+                ConfigManager::Get()->DeleteAll();
+                ret = wxMessageBox(_("Code::Blocks configuration settings cleared"), _("Information"), wxICON_INFORMATION);
+            }
+        }
+        // When using the --clear-configuration switch, the program doesn't run
+        // no matter what the answer is for the above questions.
+        // This switch is used by the uninstaller also...
+        return false;
+    }
 
     ShowSplashScreen();
 
@@ -118,7 +140,7 @@ bool CodeBlocksApp::OnInit()
 	if (!m_NoAssocs && ConfigManager::Get()->Read("/environment/check_associations", 1) == 1)
 		CheckAssociations();
 
-	if (ConfigManager::Get()->Read("/environment/use_dde", 1) == 1)
+	if (!m_NoDDE && ConfigManager::Get()->Read("/environment/use_dde", 1) == 1)
 	{
 		g_DDEServer = new DDEServer(frame);
 		g_DDEServer->Create(DDE_SERVICE);
@@ -136,22 +158,9 @@ bool CodeBlocksApp::OnInit()
         // this is a (probably) newer version; show a message box with
         // important notes
         
-        wxString msg;
-        msg = _("Welcome to " APP_NAME "!\n\n"
-                "" APP_NAME " is a front-end for various compilers. It does not install "
-                "any compiler on the system.\nIt is up to you to install the "
-                "compiler(s) of your choice and configure " APP_NAME ", if necessary, to use it.\n"
-                "To make things easier for you, " APP_NAME " comes with predefined settings "
-                "for three major compilers:\n\n"
-                "1. GNU GCC (http://www.mingw.org)\n"
-                "2. Microsoft's Free Visual C++ Toolkit 2003 (http://msdn.microsoft.com/visualc/vctoolkit2003/)\n"
-                "3. Borland C++ Compiler 5.5 (http://www.borland.com/products/downloads/download_cbuilder.html#)\n\n"
-                "The above compilers are freely available on the net. Download "
-                "and install any one of them (or all three of them!). If you install "
-                "one of these compilers in its pre-defined installation path, there is nothing "
-                "more you need to do. " APP_NAME " is already configured for the default installations "
-                "of the above compilers!");
-        wxMessageBox(msg, _("Information"), wxICON_INFORMATION);
+        // NOTE:
+        // the info box, has moved to the installer, because now there are
+        // setup files including a compiler...
         
         // update the version
         ConfigManager::Get()->Write("version", APP_ACTUAL_VERSION);
@@ -178,7 +187,7 @@ bool CodeBlocksApp::OnCmdLineParsed(wxCmdLineParser& parser)
 
 void CodeBlocksApp::OnFatalException()
 {
-    wxMessageBox(_("Something terrible has happened to " APP_NAME " and it "
+    wxMessageBox(_("Something has gone wrong inside " APP_NAME " and it "
                     "will terminate immediately.\n"
                     "We are sorry for the inconvenience..."));
 }
@@ -286,20 +295,22 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
 
         case 0:
             {
-//                if (handlerFrame)
-//                {
-//                    int count = parser.GetParamCount();
-//					filesInCmdLine = count != 0;
-//                    for ( int param = 0; param < count; ++param )
-//                        handlerFrame->Open(parser.GetParam(param));
-//                }
-//                else
+                if (handlerFrame)
+                {
+                    int count = parser.GetParamCount();
+					filesInCmdLine = count != 0;
+                    for ( int param = 0; param < count; ++param )
+                        handlerFrame->Open(parser.GetParam(param));
+                }
+                else
                 {
                     wxString val;
                     if (parser.Found(_("prefix"), &val))
                         wxSetEnv("DATA_PREFIX", val);
+					m_NoDDE = parser.Found(_("no-dde"), &val);
 					m_NoAssocs = parser.Found(_("no-check-associations"), &val);
 					m_NoSplash = parser.Found(_("no-splash-screen"), &val);
+					m_ClearConf = parser.Found(_("clear-configuration"), &val);
 					m_HasDebugLog = parser.Found(_("debug-log"), &val);
 						
                 }
@@ -307,8 +318,7 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
             break;
 
         default:
-//            wxLogMessage(_T("Syntax error detected, aborting."));
-            break;
+            return 1; // syntax error / unknown option
     }
 #endif // wxUSE_CMDLINE_PARSER
     return filesInCmdLine ? 1 : 0;
@@ -352,7 +362,7 @@ void CodeBlocksApp::DoSetAssociation(const wxString& ext, const wxString& descr,
 
 	key.SetName("HKEY_CLASSES_ROOT\\CodeBlocks." + ext + "\\shell\\open\\command");
 	key.Create();
-	key = "\"" + exe + "\" \"%1\"";
+	key = "\"" + exe + "\" %1";
 
 	key.SetName("HKEY_CLASSES_ROOT\\CodeBlocks." + ext + "\\shell\\open\\ddeexec");
 	key.Create();

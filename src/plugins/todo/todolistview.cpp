@@ -184,9 +184,11 @@ void ToDoListView::ParseEditor(cbEditor* pEditor)
 
 void ToDoListView::ParseFile(const wxString& filename)
 {
+    wxLogNull ln;
+
 	if (!wxFileExists(filename))
 		return;
-				
+
 	// open file
 	wxString st;
 	wxFile file(filename);
