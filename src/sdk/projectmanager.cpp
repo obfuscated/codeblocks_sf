@@ -435,7 +435,9 @@ cbProject* ProjectManager::LoadProject(const wxString& filename)
     
 	cbProject* project = IsOpen(filename);
 	
-	Manager::Get()->GetAppWindow()->GetClientWindow()->Hide();
+	wxMDIClientWindow* mywin =  Manager::Get()->GetAppWindow()->GetClientWindow();
+	if(mywin)
+        mywin->Hide();
 	// Freeze child windows' flickery display
 	
 	// "Try" block (loop which only gets executed once)
@@ -488,7 +490,8 @@ cbProject* ProjectManager::LoadProject(const wxString& filename)
     // we 're done
 
 	// Restore child windows' display
-	Manager::Get()->GetAppWindow()->GetClientWindow()->Show();
+	if(mywin)
+        mywin->Show();
 	
     s_CanShutdown = true;
     return result;

@@ -111,7 +111,7 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         /** Check if one of the open files has been modified outside the IDE. If so, ask to reload it. */
         void CheckForExternallyModifiedFiles();
         
-// TODO (rick#1#): check if all these belong to the public section of the class...
+        /// Open Files Tree functions
         #ifdef USE_OPENFILES_TREE
         /// Is the opened files tree supported? (depends on platform)
         bool OpenFilesTreeSupported();
@@ -124,11 +124,6 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         wxTreeCtrl *EditorManager::GetTree();
         wxTreeItemId FindTreeFile(const wxString& filename);
         wxString GetTreeItemFilename(wxTreeItemId item);
-        void DeleteItemfromTree(wxTreeItemId item);
-        void DeleteFilefromTree(const wxString& filename);
-        void AddFiletoTree(cbEditor* ed);
-        bool RenameTreeFile(const wxString& oldname, const wxString& newname);
-        void InitPane();
         void BuildOpenedFilesTree(wxWindow* parent);
         void RebuildOpenedFilesTree(wxTreeCtrl *tree = 0L);
         void RefreshOpenedFilesTree(bool force = false);
@@ -139,6 +134,15 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         void OnTreeItemActivated(wxTreeEvent &event);
         void OnTreeItemRightClick(wxTreeEvent &event);
         
+    protected:
+        #ifdef USE_OPENFILES_TREE
+        void DeleteItemfromTree(wxTreeItemId item);
+        void DeleteFilefromTree(const wxString& filename);
+        void AddFiletoTree(cbEditor* ed);
+        bool RenameTreeFile(const wxString& oldname, const wxString& newname);
+        void InitPane();
+        #endif
+    
     private:
         static EditorManager* Get(wxWindow* parent);
         static void Free();

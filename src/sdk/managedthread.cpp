@@ -92,8 +92,11 @@ void ManagedThread::abort_all()
     ManagedThread::s_abort_all = false; 
 }
 
-void ManagedThread::abort(bool* flag)
+void ManagedThread::abort(bool* flag,bool delete_thread)
 {
+    if(!flag)
+        return;
+        
     // 1) Send signal to threads telling to terminate ASAP
     if(count_running() > 0)
     {
@@ -112,7 +115,8 @@ void ManagedThread::abort(bool* flag)
             continue;
         if(thread->IsAlive())
             { thread->Delete(); }
-        delete thread;
+        if(delete_thread)
+            delete thread;
     }
     
     // 4) Reset the abort flag now that no associated threads are running
@@ -157,7 +161,16 @@ void ManagedThread::DeleteThreadFromList(ManagedThread* thread)
     }
 }
 
+bool ManagedThread::TestDestroy()
+{
+    return is_aborted() || wxThread::TestDestroy();
+}
+
 bool ManagedThread::is_aborted()
 {
-    return (*m_pAbort) || ManagedThread::s_abort_all;
+    if(ManagedThread::s_abort_all)
+        return true;
+    if(m_pAbort)
+        return (*m_pAbort);
+    return false;
 }

@@ -7,6 +7,7 @@
 #include <wx/dynarray.h>
 #include "tokenizer.h"
 #include "token.h"
+#include "managedthread.h"
 
 extern int THREAD_START;
 extern int THREAD_END;
@@ -22,10 +23,10 @@ struct ParserThreadOptions
 	bool wantPreprocessor;
 };
 
-class ParserThread : public wxThread
+class ParserThread : public ManagedThread
 {
 	public:
-		ParserThread(wxEvtHandler* parent,
+		ParserThread(wxEvtHandler* parent,bool* abortflag,
 					const wxString& bufferOrFilename,
 					bool isLocal,
 					ParserThreadOptions& options,
@@ -33,7 +34,7 @@ class ParserThread : public wxThread
 		virtual ~ParserThread();
 		bool Parse();
 		bool ParseBufferForFunctions(const wxString& buffer);
-		virtual void* Entry();
+		virtual void* DoRun();
         virtual void SetTokens(TokensArray* tokens);
 		const wxString& GetFilename(){ return m_Filename; }
 	protected:

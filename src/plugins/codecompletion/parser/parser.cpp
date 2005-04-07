@@ -52,6 +52,7 @@ Parser::Parser(wxEvtHandler* parent)
 #ifndef STANDALONE
 	,m_pImageList(0L)
 #endif
+    ,m_abort_flag(false)
 {
 	ReadOptions();
 #ifndef STANDALONE
@@ -487,7 +488,7 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
 		return false; // already parsed
     }
 	
-	ParserThread* thread = new ParserThread(this,
+	ParserThread* thread = new ParserThread(this,&this->m_abort_flag,
 											buffOrFile,
 											isLocal,
 											opts,
@@ -526,7 +527,7 @@ bool Parser::ParseBufferForFunctions(const wxString& buffer)
 	opts.wantPreprocessor = m_Options.wantPreprocessor;
 	opts.useBuffer = false;
 	opts.bufferSkipBlocks = false;
-	ParserThread* thread = new ParserThread(this,
+	ParserThread* thread = new ParserThread(this,&this->m_abort_flag,
 											wxEmptyString,
 											false,
 											opts,
@@ -578,10 +579,6 @@ bool Parser::Reparse(const wxString& filename, bool isLocal)
 
 void Parser::Clear()
 {
-    PauseAllThreads();
-	wxSafeYield();
-	wxSleep(0);
-
 	TerminateAllThreads();
 	wxSafeYield();
 	wxSleep(0);
@@ -614,11 +611,15 @@ void Parser::ClearTemporaries()
 void Parser::TerminateAllThreads()
 {
 	wxMutexLocker lock(s_mutexListProtection);
+	ParserThread::abort(&this->m_abort_flag,false); // Quickly abort all threads
 	while (m_Threads.GetCount())
 	{
         ParserThread* pt = m_Threads.Item(0);
         if (pt)
+        {
             pt->SetTokens(0);
+            delete pt;
+        }
         m_Threads.RemoveAt(0);
 	}
 

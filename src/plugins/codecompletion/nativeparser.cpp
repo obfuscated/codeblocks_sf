@@ -947,13 +947,14 @@ bool NativeParser::FindFunctionNamespace(cbEditor* editor, wxString* nameSpace, 
 
 void NativeParser::OnThreadStart(wxCommandEvent& event)
 {
-	// nothing for now
+//	 nothing for now
 }
 
 void NativeParser::OnThreadEnd(wxCommandEvent& event)
 {
-	// nothing for now
+//	 nothing for now
 }
+
 
 void NativeParser::OnParserEnd(wxCommandEvent& event)
 {
@@ -972,7 +973,7 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
 							tim % 1000);
 		}
 		else
-			Manager::Get()->GetMessageManager()->DebugLog(_("Done parsing unknown project ?!?!"));
+			Manager::Get()->GetMessageManager()->DebugLog(_("Parser aborted (project closed)."));
 
 		if (project == Manager::Get()->GetProjectManager()->GetActiveProject())
 		{

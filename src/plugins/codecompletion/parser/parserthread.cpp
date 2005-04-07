@@ -33,7 +33,7 @@ int THREAD_END = wxNewId();
 int NEW_TOKEN = wxNewId();
 int FILE_NEEDS_PARSING = wxNewId();
 
-ParserThread::ParserThread(wxEvtHandler* parent,
+ParserThread::ParserThread(wxEvtHandler* parent,bool* abortflag,
 							const wxString& bufferOrFilename,
 							bool isLocal,
 							ParserThreadOptions& options,
@@ -43,8 +43,9 @@ ParserThread::ParserThread(wxEvtHandler* parent,
 	m_pLastParent(0L),
 	m_IsLocal(isLocal),
 	m_StartBlockIndex(0),
-	m_Options(options)
+	m_Options(options)	
 {
+	m_pAbort=abortflag;
 	//ctor
 	m_Tokens.m_Options.wantPreprocessor = options.wantPreprocessor;
 	
@@ -80,10 +81,10 @@ void ParserThread::SetTokens(TokensArray* tokens)
     m_pTokens = tokens;
 }
 
-void* ParserThread::Entry()
+void* ParserThread::DoRun()
 {
 	wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, THREAD_START);
-	event.SetString(m_Filename);
+    event.SetString(m_Filename);
 	event.SetInt((int)this);
 	wxPostEvent(m_pParent, event);
 

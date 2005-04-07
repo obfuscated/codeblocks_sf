@@ -145,6 +145,9 @@ class Parser : public wxEvtHandler
 		wxTreeItemId m_RootNode;
 #ifndef STANDALONE
 		wxImageList* m_pImageList;
+    protected:
+        bool m_abort_flag;
+
 #endif // STANDALONE
 		
 		DECLARE_EVENT_TABLE()
