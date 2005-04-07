@@ -410,6 +410,17 @@ bool ParserThread::Parse()
 			m_Str.Clear();
 			HandleEnum();
 		}
+		else if (token.Matches("union"))
+        {
+            SkipToOneOfChars("{;");
+//            if (m_Tokens.GetToken() == "{")
+            {
+                Token* oldparent = m_pLastParent;
+                Parse();
+                m_Str.Clear();
+                m_pLastParent = oldparent;
+            }
+        }
 #if 1
 		else if (token.Matches("operator"))
 		{
@@ -824,7 +835,21 @@ void ParserThread::HandleClass(bool isClass)
                 //Log("Ancestors: " + ancestors);
 			}
 			
-			if (next.Matches("{"))   // no ancestor(s)
+			if (current.Matches("{")) // unnamed class/struct
+			{
+				Token* lastParent = m_pLastParent;
+				TokenScope lastScope = m_LastScope;
+
+				// default scope is: private for classes, public for structs
+				m_LastScope = isClass ? tsPrivate : tsPublic;
+				
+				Parse();
+				
+				m_pLastParent = lastParent;
+				m_LastScope = lastScope;
+                break;
+			}
+			else if (next.Matches("{"))   // no ancestor(s)
 			{
 				Token* newToken = DoAddToken(tkClass, current);
 				if (!newToken)
@@ -832,7 +857,7 @@ void ParserThread::HandleClass(bool isClass)
                 newToken->m_Line = lineNr; // correct line number (might be messed if class has ancestors)
 				newToken->m_AncestorsString = ancestors;
 
-				m_Tokens.GetToken(); // eat {
+                m_Tokens.GetToken(); // eat {
 					
 				Token* lastParent = m_pLastParent;
 				TokenScope lastScope = m_LastScope;

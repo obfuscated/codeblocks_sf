@@ -121,7 +121,8 @@ void ClassBrowser::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             case tkConstructor:
             case tkDestructor:
             case tkFunction:
-                menu->Append(idMenuJumpToImplementation, _("Jump to &implementation"));
+                if (ctd->GetToken()->m_ImplLine != 0 && !ctd->GetToken()->m_ImplFilename.IsEmpty())
+                    menu->Append(idMenuJumpToImplementation, _("Jump to &implementation"));
                 // intentionally fall through
             default:
                 menu->Append(idMenuJumpToDeclaration, _("Jump to &declaration"));
