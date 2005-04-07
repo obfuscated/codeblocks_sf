@@ -488,17 +488,30 @@ bool ParserThread::Parse()
 	return true;
 }
 
-Token* ParserThread::TokenExists(const wxString& name)
+Token* ParserThread::TokenExists(const wxString& name, Token* parent)
 {
     if (!m_pTokens)
         return 0;
-	// when parsing a block, we must make sure the token does not already exist...
-	for (unsigned int i = m_StartBlockIndex; i < m_pTokens->GetCount(); ++i)
-	{
-		Token* token = m_pTokens->Item(i);
-		if (token->m_Name.Matches(name))
-			return token;
-	}
+    if (!parent)
+    {
+        // when parsing a block, we must make sure the token does not already exist...
+        for (unsigned int i = m_StartBlockIndex; i < m_pTokens->GetCount(); ++i)
+        {
+            Token* token = m_pTokens->Item(i);
+            if (token->m_Name.Matches(name))
+                return token;
+        }
+    }
+    else
+    {
+        // search only under the parent token
+        for (unsigned int i = 0; i < parent->m_Children.GetCount(); ++i)
+        {
+            Token* token = parent->m_Children.Item(i);
+            if (token->m_Name.Matches(name))
+                return token;
+        }
+    }
 	return 0L;
 }
 
@@ -653,7 +666,9 @@ void ParserThread::HandleDefines()
         Token* oldParent = m_pLastParent;
         m_pLastParent = 0L;
 
-		DoAddToken(tkPreprocessor, token);
+		Token* newToken = DoAddToken(tkPreprocessor, token);
+		if (newToken)
+            newToken->m_Line -= 1; // preprocessor definitions need correction for the line number
 		if (m_Tokens.PeekToken().GetChar(0) == '(') // TODO: find better way...
 			m_Tokens.GetToken(); // eat args
 
@@ -695,6 +710,7 @@ void ParserThread::HandleNamespace()
 
 void ParserThread::HandleClass(bool isClass)
 {
+    int lineNr = m_Tokens.GetLineNumber();
 	wxString ancestors;
 	while (1)
 	{
@@ -759,6 +775,7 @@ void ParserThread::HandleClass(bool isClass)
 				Token* newToken = DoAddToken(tkClass, current);
 				if (!newToken)
 					return;
+                newToken->m_Line = lineNr; // correct line number (might be messed if class has ancestors)
 				newToken->m_AncestorsString = ancestors;
 
 				m_Tokens.GetToken(); // eat {
@@ -814,10 +831,17 @@ void ParserThread::HandleEnum()
 {
 	// enums have the following rough definition:
 	// enum [xxx] { type1 name1 [= 1][, [type2 name2 [= 2]]] };
-	
+	bool isUnnamed = false;
 	wxString token = m_Tokens.GetToken();
 	if (token.IsEmpty())
 		return;
+    else if (token.Matches("{"))
+	{
+        // we have an un-named enum
+		token = "Un-named";
+		m_Tokens.UngetToken(); // return '{' back
+		isUnnamed = true;
+    }
 	
 	Token* newEnum = 0L;
 	unsigned int level = 0;
@@ -825,7 +849,16 @@ void ParserThread::HandleEnum()
 	{
 		if (m_Tokens.PeekToken().GetChar(0) != '{')
 			return;
-		newEnum = DoAddToken(tkEnum, token);
+
+        if (isUnnamed)
+        {
+            // for unnamed enums, look if we already have "Unnamed", so we don't
+            // add a new one for every unnamed enum we encounter, in this scope...
+            newEnum = TokenExists(token, m_pLastParent);
+        }
+
+        if (!newEnum) // either named or first unnamed enum
+            newEnum = DoAddToken(tkEnum, token);
 		level = m_Tokens.GetNestingLevel();
 		m_Tokens.GetToken(); // skip {
 	}
@@ -849,10 +882,15 @@ void ParserThread::HandleEnum()
 		// so we don't have to worry about them here ;)
 		if (peek.Matches(",") || peek.Matches("}") || peek.Matches(":"))
 		{
-			Token* lastParent = m_pLastParent;
-			m_pLastParent = newEnum;
-			DoAddToken(tkEnumerator, token);
-			m_pLastParent = lastParent;
+            // this "if", avoids non-valid enumerators
+            // like a comma (if no enumerators follow)
+            if (isalpha(token.GetChar(0)))
+            {
+                Token* lastParent = m_pLastParent;
+                m_pLastParent = newEnum;
+                DoAddToken(tkEnumerator, token);
+                m_pLastParent = lastParent;
+			}
 			if (peek.Matches(":"))
 			{
 				// bit specifier (eg, xxx:1)

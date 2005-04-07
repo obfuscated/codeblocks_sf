@@ -166,7 +166,7 @@ void ClassBrowser::OnJumpTo(wxCommandEvent& event)
         	cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname.GetFullPath());
 			if (ed)
 			{
-				int pos = ed->GetControl()->PositionFromLine(ctd->GetToken()->m_Line);
+				int pos = ed->GetControl()->PositionFromLine(ctd->GetToken()->m_Line - 1);
 				ed->GetControl()->GotoPos(pos);
 			}
         }
