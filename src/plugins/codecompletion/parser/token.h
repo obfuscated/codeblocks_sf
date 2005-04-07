@@ -50,6 +50,8 @@ class Token
 		wxString m_AncestorsString; // all ancestors comma-separated list
 		wxString m_Filename;
 		unsigned int m_Line;
+		wxString m_ImplFilename;
+		unsigned int m_ImplLine;
 		TokenScope m_Scope;
 		TokenKind m_TokenKind;
 		bool m_IsOperator;

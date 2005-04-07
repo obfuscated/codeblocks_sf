@@ -116,7 +116,16 @@ void ClassBrowser::ShowMenu(wxTreeItemId id, const wxPoint& pt)
 	ClassTreeData* ctd = (ClassTreeData*)m_Tree->GetItemData(id);
     if (ctd)
     {
-       menu->Append(idMenuJumpToDeclaration, _("Jump to &declaration"));
+        switch (ctd->GetToken()->m_TokenKind)
+        {
+            case tkConstructor:
+            case tkDestructor:
+            case tkFunction:
+                menu->Append(idMenuJumpToImplementation, _("Jump to &implementation"));
+                // intentionally fall through
+            default:
+                menu->Append(idMenuJumpToDeclaration, _("Jump to &declaration"));
+        }
     }
 
     // ask any plugins to add items in this menu
@@ -161,12 +170,21 @@ void ClassBrowser::OnJumpTo(wxCommandEvent& event)
         if (prj)
         {
             wxString base = prj->GetBasePath();
-            wxFileName fname(ctd->GetToken()->m_Filename);
+            wxFileName fname;
+            if (event.GetId() == idMenuJumpToImplementation)
+                fname.Assign(ctd->GetToken()->m_ImplFilename);
+            else
+                fname.Assign(ctd->GetToken()->m_Filename);
             fname.Normalize(wxPATH_NORM_ALL, base);
         	cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname.GetFullPath());
 			if (ed)
 			{
-				int pos = ed->GetControl()->PositionFromLine(ctd->GetToken()->m_Line - 1);
+                int line;
+                if (event.GetId() == idMenuJumpToImplementation)
+                    line = ctd->GetToken()->m_ImplLine - 1;
+                else
+                    line = ctd->GetToken()->m_Line - 1;
+				int pos = ed->GetControl()->PositionFromLine(line);
 				ed->GetControl()->GotoPos(pos);
 			}
         }

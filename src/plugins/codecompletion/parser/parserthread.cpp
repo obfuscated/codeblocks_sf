@@ -149,6 +149,7 @@ bool ParserThread::ParseBufferForFunctions(const wxString& buffer)
 		return false;
 
 	m_Str.Clear();
+    m_EncounteredNamespaces.Clear();
 	
 	while (1)
 	{
@@ -262,7 +263,8 @@ bool ParserThread::Parse()
 		m_StartBlockIndex = m_pTokens->GetCount();
 	m_Str.Clear();
 	m_LastToken.Clear();
-	
+    m_EncounteredNamespaces.Clear();
+
 	while (1)
 	{
 		if (!m_pTokens || TestDestroy())
@@ -460,7 +462,9 @@ bool ParserThread::Parse()
 							!token.Matches("IMPLEMENT_DYNAMIC_CLASS") &&
 							!token.Matches("WX_DECLARE_*") &&
 							!token.Matches("WX_DEFINE_*"))
+                        {
 							HandleFunction(token);
+                        }
 						else
 							m_Tokens.GetToken(); // skip args
 					}
@@ -477,6 +481,12 @@ bool ParserThread::Parse()
                     // skip comma (we had peeked it)
                     m_Tokens.GetToken();
 				}
+                else if (peek.Matches("::"))
+                {
+//                    Log("peek='::', token='" + token + "', m_LastToken='" + m_LastToken + "', m_Str='" + m_Str + "'");
+                    m_EncounteredNamespaces.Add(token);
+                    m_Tokens.GetToken(); // eat ::
+                }
 				else if ((peek.Matches(";") || (m_Options.useBuffer && peek.GetChar(0) == '(') && !m_Str.Contains("::")) && m_pTokens)
 				{
 //					Log("m_Str='"+m_Str+"'");
@@ -590,6 +600,36 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, const wxSt
 	}
 	else
 		newToken->m_Name = name;
+
+    // check for implementation member function
+    Token* localParent = 0;
+    if (m_EncounteredNamespaces.GetCount())
+    {
+        unsigned int count = m_EncounteredNamespaces.GetCount();
+        for (unsigned int i = 0; i < count; ++i)
+        {
+//            Log("NS: '" + m_EncounteredNamespaces[i] + "' for " + newToken->m_Name);
+            localParent = TokenExists(m_EncounteredNamespaces[i], localParent);
+            if (!localParent)
+                break;
+        }
+    }
+    if (localParent)
+    {
+//        Log("Parent found for " + newToken->m_Name + ": " + localParent->m_DisplayName);
+        Token* existing = TokenExists(newToken->m_Name, localParent);
+        if (existing)
+        {
+            // if the token exists, all we have to do is adjust the
+            // implementation file/line
+            existing->m_ImplFilename = m_Tokens.GetFilename();
+            existing->m_ImplLine = m_Tokens.GetLineNumber();
+            m_EncounteredNamespaces.Clear();
+            delete newToken;
+            return existing;
+        }
+    }
+
 	newToken->m_Type = m_Str;
 	newToken->m_ActualType = GetActualTokenType();	
 	newToken->m_Args = args;
@@ -599,6 +639,7 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, const wxSt
 	newToken->m_pParent = m_pLastParent;
 	newToken->m_Filename = m_Tokens.GetFilename();
 	newToken->m_Line = m_Tokens.GetLineNumber();
+	newToken->m_ImplLine = 0;
 	newToken->m_IsOperator = isOperator;
 	newToken->m_IsTemporary = m_Options.useBuffer;
 #if 0
@@ -618,6 +659,8 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, const wxSt
         m_pTokens->Add(newToken);
 	if (m_pLastParent)
 		m_pLastParent->AddChild(newToken);
+
+    m_EncounteredNamespaces.Clear();
 	return newToken;
 }
 
@@ -824,7 +867,25 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
 	if (!m_Str.StartsWith("friend"))
 	{
 		TokenKind kind = tkFunction;
-		if (m_pLastParent && name.Matches(m_pLastParent->m_Name))
+		bool CtorDtor = m_pLastParent && name.Matches(m_pLastParent->m_Name);
+		if (!CtorDtor)
+		{
+            // check for m_EncounteredNamespaces
+            unsigned int count = m_EncounteredNamespaces.GetCount();
+            if (count)
+            {
+                Token* localParent = 0;
+                for (unsigned int i = 0; i < count; ++i)
+                {
+//                    Log("NS: '" + m_EncounteredNamespaces[i] + "' for " + newToken->m_Name);
+                    localParent = TokenExists(m_EncounteredNamespaces[i], localParent);
+                    if (!localParent)
+                        break;
+                }
+                CtorDtor = localParent && name.Matches(localParent->m_Name);
+            }
+		}
+		if (CtorDtor)
 		{
 			m_Str.Trim();
 			if (m_Str.IsEmpty())
@@ -832,6 +893,7 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
 			else if (m_Str.Matches("~"))
 				kind = tkDestructor;
 		}
+//        Log("Adding function '"+name+"': m_Str='"+m_Str+"'");
 		DoAddToken(kind, name, args, isOperator);
 	}
 	if (!m_Tokens.PeekToken().Matches("}"))

@@ -213,11 +213,23 @@ void NativeParser::AddParser(cbProject* project)
 	Parser* parser = new Parser(this);
 	AddCompilerDirs(parser, project);
 	parser->StartTimer();
+	// parse header files first
 	for (int i = 0; i < project->GetFilesCount(); ++i)
 	{
 		ProjectFile* pf = project->GetFile(i);
 		FileType ft = FileTypeOf(pf->relativeFilename);
-		if ( ft == ftHeader) // only parse header files
+		if (ft == ftHeader) // only parse header files
+		{
+            ++fcount;
+			parser->Parse(pf->file.GetFullPath());
+        }
+	}
+	// next, parse source files
+	for (int i = 0; i < project->GetFilesCount(); ++i)
+	{
+		ProjectFile* pf = project->GetFile(i);
+		FileType ft = FileTypeOf(pf->relativeFilename);
+		if (ft == ftSource) // only parse source files
 		{
             ++fcount;
 			parser->Parse(pf->file.GetFullPath());

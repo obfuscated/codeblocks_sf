@@ -62,6 +62,7 @@ class ParserThread : public ManagedThread
 		wxString m_Str;
 		wxString m_LastToken;
 		ParserThreadOptions m_Options;
+		wxArrayString  m_EncounteredNamespaces; // for member funcs implementation
 };
 
 #endif // PARSERTHREAD_H
