@@ -293,6 +293,7 @@
 				</Linker>
 			</Target>
 			<Target title="update">
+				<Option output="G:\projects\codeblocks\src\CodeBlocks.cbp"/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -318,6 +319,7 @@
 				</Compiler>
 			</Target>
 			<Target title="doc">
+				<Option output="G:\projects\codeblocks\src\CodeBlocks.cbp"/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -1524,6 +1526,16 @@
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk\macrosmanager.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\managedthread.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\managedthread.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
