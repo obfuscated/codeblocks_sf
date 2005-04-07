@@ -468,13 +468,24 @@ bool ParserThread::Parse()
 						m_Tokens.GetToken(); // eat args when parsing block
 					m_Str.Clear();
 				}
+				else if (peek.Matches(","))
+				{
+                    // example decl to encounter a comma: int x,y,z;
+                    // token should hold the var (x/y/z)
+                    // m_Str should hold the type (int)
+                    DoAddToken(tkVariable, token);
+                    // skip comma (we had peeked it)
+                    m_Tokens.GetToken();
+				}
 				else if ((peek.Matches(";") || (m_Options.useBuffer && peek.GetChar(0) == '(') && !m_Str.Contains("::")) && m_pTokens)
 				{
-					/*Log("m_Str="+m_Str);
-					Log("token="+token);
-					Log("peek="+peek);*/
+//					Log("m_Str='"+m_Str+"'");
+//					Log("token='"+token+"'");
+//					Log("peek='"+peek+"'");
 					if (!m_Str.IsEmpty() && isalpha(token.GetChar(0)))
-						DoAddToken(tkVariable, token);
+					{
+                        DoAddToken(tkVariable, token);
+                    }
 					//m_Str.Clear();
 				}
 				else
