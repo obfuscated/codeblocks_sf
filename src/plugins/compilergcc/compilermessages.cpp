@@ -37,6 +37,8 @@ void CompilerMessages::FocusError(int nr)
 
 void CompilerMessages::OnClick(wxCommandEvent& event)
 {
+    // single and double-click, behave the same
+
     // a compiler message has been clicked
     // go to the relevant file/line
     if (m_pList->GetSelectedItemCount() == 0 || !m_pErrors)
@@ -53,17 +55,7 @@ void CompilerMessages::OnClick(wxCommandEvent& event)
 
 void CompilerMessages::OnDoubleClick(wxCommandEvent& event)
 {
-    // a compiler message has been double-clicked
-    // go to the relevant file/line
-    if (m_pList->GetSelectedItemCount() == 0 || !m_pErrors)
-        return;
-
-    // find selected item index
-    int index = m_pList->GetNextItem(-1,
-                                     wxLIST_NEXT_ALL,
-                                     wxLIST_STATE_SELECTED);
-
-    // call the CompilerErrors* ptr; it 'll do all the hard work ;)
-    wxString error = m_pErrors->GetErrorString(index);
-    wxMessageBox(error, _("Compiler warning/error"));
+    // single and double-click, behave the same
+    OnClick(event);
+    return;
 }
