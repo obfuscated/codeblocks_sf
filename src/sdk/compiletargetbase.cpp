@@ -105,6 +105,8 @@ void CompileTargetBase::SetOptionRelation(OptionsRelationType type, OptionsRelat
 
 wxString CompileTargetBase::GetOutputFilename()
 {
+    if (m_TargetType == ttCommandsOnly)
+        return wxEmptyString;
     if (m_OutputFilename.IsEmpty())
         m_OutputFilename = SuggestOutputFilename();
     return m_OutputFilename;
@@ -120,9 +122,7 @@ wxString CompileTargetBase::SuggestOutputFilename()
         case ttDynamicLib: suggestion = GetDynamicLibFilename(); break;
         case ttStaticLib: suggestion = GetStaticLibFilename(); break;
         default:
-            wxFileName fname;
-            fname.Assign(m_Filename);
-            suggestion = fname.GetFullPath();
+            suggestion.Clear();
             break;
     }
     return UnixFilename(suggestion);
@@ -130,6 +130,8 @@ wxString CompileTargetBase::SuggestOutputFilename()
 
 wxString CompileTargetBase::GetObjectOutput()
 {
+    if (m_TargetType == ttCommandsOnly)
+        return wxEmptyString;
     wxString out;
     if (m_ObjectOutput.IsEmpty())
     {
@@ -144,6 +146,8 @@ wxString CompileTargetBase::GetObjectOutput()
 
 wxString CompileTargetBase::GetDepsOutput()
 {
+    if (m_TargetType == ttCommandsOnly)
+        return wxEmptyString;
     wxString out;
     if (m_DepsOutput.IsEmpty())
     {
@@ -158,6 +162,8 @@ wxString CompileTargetBase::GetDepsOutput()
 
 wxString CompileTargetBase::GetExecutableFilename()
 {
+    if (m_TargetType == ttCommandsOnly)
+        return wxEmptyString;
     wxFileName fname(m_Filename);
 #ifdef __WXMSW__
     fname.SetExt(EXECUTABLE_EXT); 
@@ -169,6 +175,8 @@ wxString CompileTargetBase::GetExecutableFilename()
 
 wxString CompileTargetBase::GetDynamicLibFilename()
 {
+    if (m_TargetType == ttCommandsOnly)
+        return wxEmptyString;
     if (m_Filename.IsEmpty())
         m_Filename = m_OutputFilename;
     wxFileName fname(m_Filename);
@@ -179,6 +187,8 @@ wxString CompileTargetBase::GetDynamicLibFilename()
 
 wxString CompileTargetBase::GetDynamicLibDefFilename()
 {
+    if (m_TargetType == ttCommandsOnly)
+        return wxEmptyString;
     if (m_Filename.IsEmpty())
         m_Filename = m_OutputFilename;
     wxFileName fname(m_Filename);
@@ -196,6 +206,8 @@ wxString CompileTargetBase::GetDynamicLibDefFilename()
 
 wxString CompileTargetBase::GetStaticLibFilename()
 {
+    if (m_TargetType == ttCommandsOnly)
+        return wxEmptyString;
     if (m_Filename.IsEmpty())
         m_Filename = m_OutputFilename;
     wxFileName fname(m_Filename);

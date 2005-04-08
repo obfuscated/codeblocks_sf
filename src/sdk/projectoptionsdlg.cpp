@@ -291,11 +291,17 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
             txt->SetValue(fname.GetFullPath());
             txtDeps->SetValue(target->GetExternalDeps());
             break;
-        default:
+        case ttCommandsOnly:
             txt->SetValue("");
+            txtO->SetValue("");
+            txtD->SetValue("");
             txtDeps->SetValue("");
             txt->Enable(false);
             browse->Enable(false);
+            browseO->Enable(false);
+            browseD->Enable(false);
+            txtO->Enable(false);
+            txtD->Enable(false);
             txtDeps->Enable(false);
             btnDeps->Enable(false);
     }

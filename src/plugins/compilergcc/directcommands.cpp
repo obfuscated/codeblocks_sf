@@ -270,7 +270,7 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
     // add pre-build commands
     AppendArray(GetPreBuildCommands(target), ret);
 
-    if (target->GetTargetType() == 4)
+    if (target->GetTargetType() == ttCommandsOnly)
     {
         // commands-only target
         AppendArray(GetPostBuildCommands(target), ret);
@@ -424,6 +424,9 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     wxLogNull ln;
     wxArrayString ret;
 
+    if (target && target->GetTargetType() == ttCommandsOnly)
+        return ret;
+
     MakefileGenerator mg(m_pCompilerPlugin, m_pProject, "", 0); // don't worry! we just need a couple of utility funcs from it
 
     wxString output = target->GetOutputFilename();
@@ -509,6 +512,8 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
             ct = ctLinkStaticCmd;
             kind_of_output = _("static library");
             break;
+        
+        default: break;
     }
     wxString compilerCmd = mg.CreateSingleFileCompileCmd(ct, target, 0, "", linkfiles, resfiles);
     if (!compilerCmd.IsEmpty())

@@ -325,6 +325,12 @@ int DebuggerGDB::Debug()
         }
 	}
 	ProjectBuildTarget* target = project->GetBuildTarget(m_TargetIndex);
+    if (target->GetTargetType() == ttCommandsOnly)
+    {
+        wxMessageBox(_("The selected target is only running pre/post build step commands\n"
+                    "Can't debug such a target..."), _("Information"), wxICON_INFORMATION);
+        return 3;
+    }
 
 	msgMan->Log(m_PageIndex, target->GetTitle());
 
@@ -446,6 +452,8 @@ int DebuggerGDB::Debug()
 				SendCommand(symbols);
 			}
 			break;
+
+        default: break;
 	}
 
 	if (!target->GetExecutionParameters().IsEmpty())

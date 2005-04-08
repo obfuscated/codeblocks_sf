@@ -27,7 +27,8 @@ enum TargetType
     ttExecutable = 0, /**< Target produces an executable */
     ttConsoleOnly, /**< Target produces a console executable (without GUI) (distinction between ttExecutable and ttConsoleOnly happens only under Win32) */
     ttStaticLib, /**< Target produces a static library */
-    ttDynamicLib /**< Target produces a dynamic library */
+    ttDynamicLib, /**< Target produces a dynamic library */
+    ttCommandsOnly /**< Target only runs commands in pre-build and/or post-build steps */
 };
 
 /**

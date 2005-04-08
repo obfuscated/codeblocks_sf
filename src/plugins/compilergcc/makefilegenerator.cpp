@@ -1051,7 +1051,6 @@ void MakefileGenerator::DoAddMakefileTarget_Link(wxString& buffer)
         ProjectBuildTarget* target = m_Project->GetBuildTarget(x);
         if (!target)
             break;
-
 		buffer << target->GetTitle() << ": " << target->GetTitle() << "-before ";
 		if (IsTargetValid(target))
         {
@@ -1121,6 +1120,7 @@ void MakefileGenerator::DoAddMakefileTarget_Link(wxString& buffer)
 				buffer << '\t' << m_Quiet << compilerCmd<< '\n';
 				break;
             }
+            default: break;
 		}
 
 		// run any user-defined commands *after* build
