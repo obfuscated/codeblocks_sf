@@ -293,9 +293,9 @@
 				</Linker>
 			</Target>
 			<Target title="update">
-				<Option output="G:\projects\codeblocks\src\CodeBlocks.cbp"/>
-				<Option object_output=".objs"/>
-				<Option deps_output=".deps"/>
+				<Option output="C:\Devel\codeblocks\src\CodeBlocks.cbp"/>
+				<Option object_output="C:\Devel\codeblocks\src\\.objs"/>
+				<Option deps_output="C:\Devel\codeblocks\src\\.deps"/>
 				<Option external_deps=""/>
 				<Option type="4"/>
 				<Option compiler="0"/>
@@ -319,9 +319,9 @@
 				</Compiler>
 			</Target>
 			<Target title="doc">
-				<Option output="G:\projects\codeblocks\src\CodeBlocks.cbp"/>
-				<Option object_output=".objs"/>
-				<Option deps_output=".deps"/>
+				<Option output="C:\Devel\codeblocks\src\CodeBlocks.cbp"/>
+				<Option object_output="C:\Devel\codeblocks\src\\.objs"/>
+				<Option deps_output="C:\Devel\codeblocks\src\\.deps"/>
 				<Option external_deps=""/>
 				<Option type="4"/>
 				<Option compiler="0"/>
@@ -347,19 +347,19 @@
 			<Add library="libwxmsw$(WX_VER).a"/>
 			<Add directory="sdk\tinyxml"/>
 		</Linker>
-		<Unit filename="devel\share\CodeBlocks\images\codecompletion\readme.txt">
+		<Unit filename="devel\share\CodeBlocks\images\codecompletion\README.txt">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
 			<Option target="src"/>
 		</Unit>
-		<Unit filename="devel\share\CodeBlocks\plugins\readme.txt">
+		<Unit filename="devel\share\CodeBlocks\plugins\README.txt">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
 			<Option target="src"/>
 		</Unit>
-		<Unit filename="devel\share\CodeBlocks\templates\readme.txt">
+		<Unit filename="devel\share\CodeBlocks\templates\README.txt">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
