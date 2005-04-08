@@ -914,7 +914,7 @@ wxString DebuggerGDB::GetInfoFor(const wxString& dbgCmd)
 	if (!m_pProcess)
 		return wxEmptyString;
 	m_TimerPollDebugger.Stop();
-	wxYield();
+	wxSafeYield();
 	SendCommand(dbgCmd);
 	wxString buf = GetNextOutputLine();
 	wxString output;

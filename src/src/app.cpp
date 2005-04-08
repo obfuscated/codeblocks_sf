@@ -223,7 +223,7 @@ void CodeBlocksApp::ShowSplashScreen()
 										6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
 										wxSIMPLE_BORDER);// | wxSTAY_ON_TOP);
 		}
-		wxYield();
+		wxSafeYield();
 	}
 }
 

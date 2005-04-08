@@ -952,7 +952,7 @@ void cbEditor::OnEditorCharAdded(wxStyledTextEvent& event)
 	{
 		// cancel any active calltip
 		m_pControl->CallTipCancel();
-		wxYield();
+		wxSafeYield();
 		if (m_ActiveCalltipsNest > 0)
 		{
 			--m_ActiveCalltipsNest;

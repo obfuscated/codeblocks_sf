@@ -326,7 +326,7 @@ MainFrame::MainFrame(wxWindow* parent)
 	
 #ifdef __WXMSW__
     SendSizeEvent(); // make sure everything is laid out properly
-	wxYield();
+	wxSafeYield();
 	// Make deliberately huge - it will be resized by m_pBottomSash.
 	// This is to avoid a nasty UI glitch where the MessageManager logs would
 	// not be correctly laid out until *manually* resizing m_pBottomSash...
@@ -539,7 +539,7 @@ void MainFrame::CreateToolbars()
 		}
 	}
 
-	wxYield();
+	wxSafeYield();
 //	m_pToolbar->SetRows(2);
 	m_pToolbar->Realize();
 }
@@ -737,7 +737,7 @@ void MainFrame::DoAddPlugin(cbPlugin* plugin)
 
 bool MainFrame::Open(const wxString& filename, bool addToHistory)
 {
-	wxYield();
+	wxSafeYield();
     bool ret = OpenGeneric(filename, addToHistory);
     DoUpdateLayout();
 	return ret;
@@ -1666,7 +1666,7 @@ void MainFrame::OnToggleStatusBar(wxCommandEvent& event)
 // under Windows, the statusbar doesn't disappear immediately...
 #ifdef __WXMSW__
     SendSizeEvent(); // make sure everything is laid out properly
-	wxYield();
+	wxSafeYield();
 #endif // __WXMSW__
 	DoUpdateStatusBar();
 }

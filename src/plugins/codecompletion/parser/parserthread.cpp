@@ -73,7 +73,7 @@ void ParserThread::Log(const wxString& log)
 	event.SetString(log);
 	event.SetInt(m_Tokens.GetLineNumber());
 	wxPostEvent(m_pParent, event);
-	wxYield();
+	wxSafeYield();
 }
 
 void ParserThread::SetTokens(TokensArray* tokens)
