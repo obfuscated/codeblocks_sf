@@ -205,9 +205,10 @@ void EditorManager::SetColorSet(EditorColorSet* theme)
 	}
 }
 
-cbEditor* EditorManager::Open(const wxString& filename, int pos)
+cbEditor* EditorManager::Open(const wxString& filename, int pos,ProjectFile* data)
 {
     SANITY_CHECK(0L);
+    bool can_updateui = !GetActiveEditor() || !Manager::Get()->GetProjectManager()->IsLoading();
 	wxString fname = UnixFilename(filename);
 //	Manager::Get()->GetMessageManager()->DebugLog("Trying to open '%s'", fname.c_str());
     if (!wxFileExists(fname))
@@ -232,7 +233,7 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos)
 			ed->GetControl()->MoveCaretInsideView();
 			ed->GetControl()->Refresh();
 #endif
-			ed->Activate();
+            ed->Activate();
 //            SetSelection(ed->GetPageIndex());
 			//ed->GetControl()->GotoPos(pos);
 #if 0
@@ -259,30 +260,43 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos)
 		ed->Activate();
 //        SetSelection(ed->GetPageIndex());
 
-	if (ed)
-		ed->GetControl()->SetFocus();
+	
+    if(can_updateui)
+    {
+        if (ed)
+            ed->GetControl()->SetFocus();
+    }
     
     // check for ProjectFile
     if (ed && !ed->GetProjectFile())
     {
-        ProjectsArray* projects = Manager::Get()->GetProjectManager()->GetProjects();
-        for (unsigned int i = 0; i < projects->GetCount(); ++i)
+        // First checks if we're already being passed a ProjectFile
+        // as a parameter
+        if(data) 
         {
-            cbProject* prj = projects->Item(i);
-            ProjectFile* pf = prj->GetFileByFilename(ed->GetFilename(), false);
-            if (pf)
+            Manager::Get()->GetMessageManager()->DebugLog("project data set for %s", data->file.GetFullPath().c_str());
+        }
+        else
+        {
+            ProjectsArray* projects = Manager::Get()->GetProjectManager()->GetProjects();
+            for (unsigned int i = 0; i < projects->GetCount(); ++i)
             {
-                Manager::Get()->GetMessageManager()->DebugLog("found %s", pf->file.GetFullPath().c_str());
-                bool wasModified = ed->GetModified();
-                ed->SetProjectFile(pf);
-                // don't modify an unmodified file because of ed->SetProjectFile(pf)
-                ed->SetModified(wasModified);
-                break;
+                cbProject* prj = projects->Item(i);
+                ProjectFile* pf = prj->GetFileByFilename(ed->GetFilename(), false);
+                if (pf)
+                {
+                    Manager::Get()->GetMessageManager()->DebugLog("found %s", pf->file.GetFullPath().c_str());
+                    data = pf;
+                    break;
+                }
             }
         }
+        if(data)
+            ed->SetProjectFile(data,true);
     }
     #ifdef USE_OPENFILES_TREE
-    AddFiletoTree(ed);
+    if(can_updateui)
+        AddFiletoTree(ed);
     #endif
 
     // we 're done

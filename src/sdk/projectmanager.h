@@ -213,6 +213,10 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
 		  * the workspace, if it is modified)
 		  */
 		bool CloseWorkspace();
+		/** Check if the project manager is loading a project/workspace.
+		  * @return True if it's loading a workspace/project, false otherwise
+		  */
+		bool IsLoading();
 		/** Get the current workspace filename.
 		  * @return The current workspace filename.
 		  */
@@ -283,6 +287,8 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
         bool m_TreeUseFolders;
 		FilesGroupsAndMasks* m_pFileGroups;
 		int m_TreeFreezeCounter;
+		bool m_IsLoadingProject;
+		bool m_IsLoadingWorkspace;
 		
         DECLARE_EVENT_TABLE()
         DECLARE_SANITY_CHECK

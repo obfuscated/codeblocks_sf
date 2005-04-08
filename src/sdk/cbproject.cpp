@@ -366,7 +366,7 @@ bool cbProject::LoadLayout()
                 while(node)
                 {
                     ProjectFile* f = node->GetData();
-                    Manager::Get()->GetEditorManager()->Open(f->file.GetFullPath());
+                    Manager::Get()->GetEditorManager()->Open(f->file.GetFullPath(),0,f);
                     node = node->GetNext();
                 }
             }
@@ -386,7 +386,7 @@ bool cbProject::LoadLayout()
                         ProjectFile* f = node->GetData();
                         if (f->editorOpen)
                         {
-                            cbEditor* ed = Manager::Get()->GetEditorManager()->Open(f->file.GetFullPath());
+                            cbEditor* ed = Manager::Get()->GetEditorManager()->Open(f->file.GetFullPath(),0,f);
                             if (ed)
                             {
                                 ed->SetProjectFile(f);

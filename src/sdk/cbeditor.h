@@ -100,8 +100,9 @@ class DLLIMPORT cbEditor : public wxMDIChildFrame
 		int GetPageIndex(){ return m_Index; }
 		/** Set the ProjectFile pointer associated with this editor. All editors
 		  * which belong to a project file, should have this set. All others should return NULL.
+		  * Optionally you can preserve the "modified" flag of the file.
 		  */
-		void SetProjectFile(ProjectFile* project_file);
+		void SetProjectFile(ProjectFile* project_file,bool preserve_modified = false);
 		/** Read the ProjectFile pointer associated with this editor. All editors
 		  * which belong to a project file, have this set. All others return NULL.
 		  */

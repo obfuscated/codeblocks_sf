@@ -170,7 +170,9 @@ ProjectManager::ProjectManager(wxNotebook* parent)
     m_pWorkspace(0),
     m_TreeCategorize(false),
     m_TreeUseFolders(true),
-    m_TreeFreezeCounter(0)
+    m_TreeFreezeCounter(0),
+    m_IsLoadingProject(false),
+	m_IsLoadingWorkspace(false)
 {
     SC_CONSTRUCTOR_BEGIN
     m_pParent = parent;
@@ -455,6 +457,8 @@ cbProject* ProjectManager::LoadProject(const wxString& filename)
             result = project;
             break;
         }
+
+        m_IsLoadingProject=true;
         project = new cbProject(filename);	
         if(!sanity_check()) 
             break; // sanity check
@@ -489,6 +493,10 @@ cbProject* ProjectManager::LoadProject(const wxString& filename)
     }while(false);
     // we 're done
 
+    m_IsLoadingProject=false;
+    #ifdef USE_OPENFILES_TREE
+    Manager::Get()->GetEditorManager()->RebuildOpenedFilesTree();
+    #endif
 	// Restore child windows' display
 	if(mywin)
         mywin->Show();
@@ -735,7 +743,10 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
     SANITY_CHECK(false);
     if (!CloseWorkspace())
         return false; // didn't close
+    m_IsLoadingWorkspace=true;    
     m_pWorkspace = new cbWorkspace(filename);
+    m_IsLoadingWorkspace=false;
+    Manager::Get()->GetEditorManager()->RebuildOpenedFilesTree();
     SANITY_CHECK(false);
     m_pTree->SetItemText(m_TreeRoot, m_pWorkspace->GetTitle());
     return m_pWorkspace->IsOK();
@@ -793,6 +804,12 @@ bool ProjectManager::CloseWorkspace()
         m_pWorkspace = 0;
     }
     return true;
+}
+
+bool ProjectManager::IsLoading()
+{
+    SANITY_CHECK(false);
+    return (m_IsLoadingProject | m_IsLoadingWorkspace);
 }
 
 void ProjectManager::FreezeTree()

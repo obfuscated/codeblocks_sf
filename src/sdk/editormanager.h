@@ -76,7 +76,7 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         cbEditor* GetEditor(int index);
         cbEditor* GetEditor(const wxString& filename){ return IsOpen(filename); } // synonym of IsOpen()
         cbEditor* IsOpen(const wxString& filename);
-        cbEditor* Open(const wxString& filename, int pos = 0);
+        cbEditor* Open(const wxString& filename, int pos = 0,ProjectFile* data = 0);
         cbEditor* GetActiveEditor();
         void SetActiveEditor(cbEditor* ed);
         EditorColorSet* GetColorSet(){ return (this==NULL) ? 0 : m_Theme; }

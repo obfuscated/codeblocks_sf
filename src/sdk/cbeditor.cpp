@@ -209,10 +209,14 @@ void cbEditor::SetEditorTitle(const wxString& title)
 		SetTitle(title);
 }
 
-void cbEditor::SetProjectFile(ProjectFile* project_file)
+void cbEditor::SetProjectFile(ProjectFile* project_file,bool preserve_modified)
 {
 	if (m_pProjectFile == project_file)
 		return; // we 've been here before ;)
+
+	bool wasmodified;
+	if(preserve_modified)
+        wasmodified = GetModified();
 		
 	m_pProjectFile = project_file;
 	if (m_pProjectFile)
@@ -237,6 +241,8 @@ void cbEditor::SetProjectFile(ProjectFile* project_file)
 	dbg << "[ed] Project file: " << (m_pProjectFile ? m_pProjectFile->relativeFilename : "unknown") << '\n';
 	Manager::Get()->GetMessageManager()->DebugLog(dbg);
 #endif
+    if(preserve_modified)
+        SetModified(wasmodified);
 }
 
 void cbEditor::UpdateProjectFile()
