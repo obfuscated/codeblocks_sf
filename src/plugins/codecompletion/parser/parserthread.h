@@ -40,6 +40,7 @@ class ParserThread : public ManagedThread
 	protected:
 		wxChar SkipToOneOfChars(const wxString& chars, bool supportNesting = false);
 		void SkipBlock();
+		void SkipAngleBraces();
 		void HandleIncludes();
 		void HandleDefines();
 		void HandleNamespace();

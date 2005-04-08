@@ -27,6 +27,7 @@
 #include <wx/app.h>
 #include <wx/log.h>
 #include <wx/msgdlg.h>
+#include <globals.h>
 
 int THREAD_START = wxNewId();
 int THREAD_END = wxNewId();
@@ -43,7 +44,7 @@ ParserThread::ParserThread(wxEvtHandler* parent,bool* abortflag,
 	m_pLastParent(0L),
 	m_IsLocal(isLocal),
 	m_StartBlockIndex(0),
-	m_Options(options)	
+	m_Options(options)
 {
 	m_pAbort=abortflag;
 	//ctor
@@ -139,6 +140,23 @@ void ParserThread::SkipBlock()
 	}
 }
 
+void ParserThread::SkipAngleBraces()
+{
+    int nestLvl = 0;
+    while (true)
+    {
+        wxString tmp = m_Tokens.GetToken();
+        if (tmp.Matches("<"))
+            ++nestLvl;
+        else if (tmp.Matches(">"))
+            --nestLvl;
+        else if (tmp.IsEmpty() || tmp.Matches(";"))
+            break;
+        if (nestLvl <= 0)
+            break;
+    }
+}
+
 bool ParserThread::ParseBufferForFunctions(const wxString& buffer)
 {
     if (!m_pTokens)
@@ -181,10 +199,10 @@ bool ParserThread::ParseBufferForFunctions(const wxString& buffer)
 		{
 			m_Str.Clear();
 		}
-		else if (token.Matches("::"))
-		{
-			m_Str.Clear();
-		}
+//		else if (token.Matches("::"))
+//		{
+//			m_Str.Clear();
+//		}
 		else if (token.Matches("typedef") ||
 			token.Matches(":"))
 		{
@@ -361,7 +379,8 @@ bool ParserThread::Parse()
                 Parse(); // time for recursion ;)
             }
             else
-                m_Tokens.UngetToken(); // nope, return the token back...
+                SkipToOneOfChars(";"); // skip externs
+//                m_Tokens.UngetToken(); // nope, return the token back...
             m_Str.Clear();
         }
         else if (token.StartsWith("__asm"))
@@ -385,6 +404,10 @@ bool ParserThread::Parse()
 				HandleDefines();
 			m_Str.Clear();
 		}
+//		else if (token.Matches("<")) // template <>
+//		{
+//            SkipToOneOfChars(">;");
+//		}
 		else if (token.Matches("using")) // using namespace ?
 		{
             SkipToOneOfChars(";}", true);
@@ -394,6 +417,11 @@ bool ParserThread::Parse()
 		{
 			m_Str.Clear();
 			HandleNamespace();
+		}
+		else if (token.Matches("template"))
+		{
+			m_Str.Clear();
+			SkipToOneOfChars(">;", true);
 		}
 		else if (token.Matches("class"))
 		{
@@ -474,6 +502,9 @@ bool ParserThread::Parse()
 							!token.Matches("WX_DECLARE_*") &&
 							!token.Matches("WX_DEFINE_*"))
                         {
+//                            Log("m_Str='"+m_Str+"'");
+//                            Log("token='"+token+"'");
+//                            Log("peek='"+peek+"'");
 							HandleFunction(token);
                         }
 						else
@@ -491,6 +522,24 @@ bool ParserThread::Parse()
                     DoAddToken(tkVariable, token);
                     // skip comma (we had peeked it)
                     m_Tokens.GetToken();
+				}
+				else if (peek.Matches("<"))
+				{
+                    // a template, e.g. someclass<void>::memberfunc
+                    // we have to skip <>, so we 're left with someclass::memberfunc
+                    SkipAngleBraces();
+                    peek = m_Tokens.PeekToken();
+                    if (peek.Matches("::"))
+                    {
+    //                    Log("peek='::', token='" + token + "', m_LastToken='" + m_LastToken + "', m_Str='" + m_Str + "'");
+                        m_EncounteredNamespaces.Add(token);
+                        m_Tokens.GetToken(); // eat ::
+                    }
+                    if (m_Str.IsEmpty())
+                    {
+                        m_Str = GetStringFromArray(m_EncounteredNamespaces, "::") + token;
+                        m_EncounteredNamespaces.Clear();
+                    }
 				}
                 else if (peek.Matches("::"))
                 {
@@ -783,6 +832,12 @@ void ParserThread::HandleClass(bool isClass)
 		wxString next = m_Tokens.PeekToken();
 		if (!current.IsEmpty() && !next.IsEmpty())
 		{
+			if (next.Matches("<")) // template specialization
+			{
+                SkipAngleBraces();
+                next = m_Tokens.PeekToken();
+			}
+
 			if (next.Matches(":")) // has ancestor(s)
 			{
                 //Log("Class " + current + " has ancestors");
