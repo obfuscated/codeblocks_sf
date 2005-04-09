@@ -78,11 +78,36 @@ BEGIN_EVENT_TABLE(CodeBlocksApp, wxApp)
 	EVT_ACTIVATE_APP(CodeBlocksApp::OnAppActivate)
 END_EVENT_TABLE()
 
-bool CodeBlocksApp::OnInit()
+bool CodeBlocksApp::LoadConfig()
 {
-    m_pSplash = 0;
-    wxHandleFatalExceptions(true);
+    SetVendorName(APP_VENDOR);
+    SetAppName(APP_NAME" v"APP_VERSION);
+    ConfigManager::Init(wxConfigBase::Get());
+    ConfigManager::Get()->Write("app_path", GetAppPath());
+    ConfigManager::Get()->Write("data_path", GetAppPath() + "/share/CodeBlocks");
+    m_HasDebugLog = ConfigManager::Get()->Read("/message_manager/has_debug_log", (long int)0) | m_HasDebugLog;
+    ConfigManager::Get()->Write("/message_manager/has_debug_log", m_HasDebugLog);
+    if (ParseCmdLine(0L) != 0)
+        return false;
+    return true;
+}
+
+void CodeBlocksApp::InitAssociations()
+{
+#ifdef __WXMSW__
+	if (!m_NoAssocs && ConfigManager::Get()->Read("/environment/check_associations", 1) == 1)
+		CheckAssociations();
+
+	if (!m_NoDDE && ConfigManager::Get()->Read("/environment/use_dde", 1) == 1)
+	{
+		g_DDEServer = new DDEServer(0);
+		g_DDEServer->Create(DDE_SERVICE);
+	}
+#endif
+}
     
+void CodeBlocksApp::InitDebugConsole()
+{
 #ifdef __WXMSW__
 	#ifdef __CBDEBUG__
     // Remember to compile as a console application!
@@ -93,51 +118,45 @@ bool CodeBlocksApp::OnInit()
 	fprintf(stdout,"CONSOLE DEBUG ACTIVATED\n");
 	// wxLogWindow *myerr = new wxLogWindow(NULL,"debug");
 	#endif
-#endif    
+#endif
+}
 
+void CodeBlocksApp::InitExceptionHandler()
+{
 #ifdef __WXMSW__
     m_ExceptionHandlerLib = LoadLibrary("exchndl.dll");
 #endif
+}
 
-    if (ParseCmdLine(0L) != 0)
-        return false;
-
+void CodeBlocksApp::InitImageHandlers()
+{    
     wxImage::AddHandler(new wxBMPHandler);
     wxImage::AddHandler(new wxPNGHandler);
 	wxInitAllImageHandlers();
+}
 
-    SetVendorName(APP_VENDOR);
-    SetAppName(APP_NAME" v"APP_VERSION);
-    ConfigManager::Init(wxConfigBase::Get());
-
-    if (m_ClearConf)
+void CodeBlocksApp::ClearConf()
+{
+    int ret = wxMessageBox(_("Do you want to clear all Code::Blocks configuration settings?"), _("Clear configuration settings"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT);
+    if (ret == wxYES)
     {
-        int ret = wxMessageBox(_("Do you want to clear all Code::Blocks configuration settings?"), _("Clear configuration settings"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT);
+        ret = wxMessageBox(_("Are you *really* sure you want to clear all Code::Blocks configuration settings?"), _("Clear configuration settings"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT);
         if (ret == wxYES)
         {
-            ret = wxMessageBox(_("Are you *really* sure you want to clear all Code::Blocks configuration settings?"), _("Clear configuration settings"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT);
-            if (ret == wxYES)
-            {
-                ConfigManager::Get()->DeleteAll();
-                ret = wxMessageBox(_("Code::Blocks configuration settings cleared"), _("Information"), wxICON_INFORMATION);
-            }
+            ConfigManager::Get()->DeleteAll();
+            ret = wxMessageBox(_("Code::Blocks configuration settings cleared"), _("Information"), wxICON_INFORMATION);
         }
-        // When using the --clear-configuration switch, the program doesn't run
-        // no matter what the answer is for the above questions.
-        // This switch is used by the uninstaller also...
-        return false;
     }
+    // When using the --clear-configuration switch, the program doesn't run
+    // no matter what the answer is for the above questions.
+    // This switch is used by the uninstaller also...
+}
 
-    ShowSplashScreen();
-
+bool CodeBlocksApp::InitXRCStuff()
+{
     // load all application-resources
     wxFileSystem::AddHandler(new wxZipFSHandler);
     wxXmlResource::Get()->InitAllHandlers();
-
-    ConfigManager::Get()->Write("app_path", GetAppPath());
-    ConfigManager::Get()->Write("data_path", GetAppPath() + "/share/CodeBlocks");
-    m_HasDebugLog = ConfigManager::Get()->Read("/message_manager/has_debug_log", (long int)0) | m_HasDebugLog;
-    ConfigManager::Get()->Write("/message_manager/has_debug_log", m_HasDebugLog);
 
     wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
     wxString res = resPath + "/resources.zip";
@@ -145,29 +164,27 @@ bool CodeBlocksApp::OnInit()
     	return false;
     /// @todo Checkout why it doesn't work with VC++ unless "#zip:*.xrc" appended
 	wxXmlResource::Get()->Load(res+"#zip:*.xrc");
+	return true;
+}
 
+void CodeBlocksApp::InitFrame()
+{
     MainFrame *frame = new MainFrame((wxFrame*)0L);
+    #ifdef __WXMSW__
+        if(g_DDEServer) 
+            g_DDEServer->SetFrame(frame);
+    #endif
     HideSplashScreen();
     frame->Show(TRUE);
     SetTopWindow(frame);
-    
     if (ParseCmdLine(frame) == 0)
 		Manager::Get()->GetProjectManager()->LoadWorkspace();
 
-#ifdef __WXMSW__
-	if (!m_NoAssocs && ConfigManager::Get()->Read("/environment/check_associations", 1) == 1)
-		CheckAssociations();
-
-	if (!m_NoDDE && ConfigManager::Get()->Read("/environment/use_dde", 1) == 1)
-	{
-		g_DDEServer = new DDEServer(frame);
-		g_DDEServer->Create(DDE_SERVICE);
-	}
-#endif
-
-
     frame->ShowTips(); // this func checks if the user wants tips, so no need to check here
+}
 
+void CodeBlocksApp::CheckVersion()
+{
 #ifdef __WXMSW__
     // for windows users only, display a message that no compiler is provided
     if (ConfigManager::Get()->Read("version", "") != APP_ACTUAL_VERSION)
@@ -183,6 +200,28 @@ bool CodeBlocksApp::OnInit()
         ConfigManager::Get()->Write("version", APP_ACTUAL_VERSION);
     }
 #endif
+}
+
+bool CodeBlocksApp::OnInit()
+{
+    m_pSplash = 0;
+    wxHandleFatalExceptions(true);
+    if(!LoadConfig())
+        return false;
+    InitAssociations();
+    InitDebugConsole();
+    InitExceptionHandler();
+    InitImageHandlers();
+    if(m_ClearConf)
+    {
+        ClearConf();
+        return false;
+    }
+    ShowSplashScreen();
+    if(!InitXRCStuff())
+        return false;
+    InitFrame();
+    CheckVersion();
 	return TRUE;
 }
 
@@ -378,13 +417,13 @@ void CodeBlocksApp::DoSetAssociation(const wxString& ext, const wxString& descr,
 
 	key.SetName("HKEY_CLASSES_ROOT\\CodeBlocks." + ext + "\\shell\\open\\command");
 	key.Create();
-	key = "\"" + exe + "\" %1";
+	key = "\"" + exe + "\" \"%1\"";
 
 	key.SetName("HKEY_CLASSES_ROOT\\CodeBlocks." + ext + "\\shell\\open\\ddeexec");
 	key.Create();
 	key = "[Open(\"%1\")]";
 
-	key.SetName("HKEY_CLASSES_ROOT\\CodeBlocks." + ext + "\\shell\\open\\ddeexec\\application");
+	key.SetName("HKEY_CLASSES_ROOT\\CodeBlocks." + ext + "\\shell\\open\\ddeexec\\Application");
 	key.Create();
 	key = DDE_SERVICE;
 
@@ -487,9 +526,9 @@ bool DDEConnection::OnExecute(const wxString& topic, wxChar *data, int size, wxI
 	if (reCmd.Matches(strData))
 	{
 		wxString file = reCmd.GetMatch(strData, 1);
-        m_Frame->Open(file, false); // don't add to history, files that open through DDE
+		if(m_Frame)
+            m_Frame->Open(file, false); // don't add to history, files that open through DDE
 	}
-
     return true;
 }
 #endif
@@ -500,6 +539,8 @@ void CodeBlocksApp::OnAppActivate(wxActivateEvent& event)
 {
 	if (!event.GetActive())
 		return;
+    if (!Manager::Get())
+        return;
 
     if (ConfigManager::Get()->Read("/environment/check_modified_files", 1))
         Manager::Get()->GetEditorManager()->CheckForExternallyModifiedFiles();

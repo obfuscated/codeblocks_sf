@@ -48,6 +48,16 @@ class CodeBlocksApp : public wxApp
 		void CheckAssociations();
 		bool DoCheckAssociation(const wxString& ext, const wxString& descr, const wxString& exe, const wxString& icoNum);
 #endif
+    protected:
+        bool LoadConfig();
+        void InitAssociations();
+        void InitDebugConsole();
+        void InitExceptionHandler();
+        void InitImageHandlers();
+        void ClearConf();
+        bool InitXRCStuff();
+        void InitFrame();
+        void CheckVersion();
     private:
         void ShowSplashScreen();
         void HideSplashScreen();
