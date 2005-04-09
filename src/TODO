@@ -1,0 +1,33 @@
+PROGRAM:
+
+* Files Tree popup menu: save, save all, close, close all, compile, hide (tree)
+* Implement "search in files" functionality
+* Add extra panel for plugins' combo boxes below toolbar 
+  (a panel with boxsizer should do)
+* optimize parser by either changing the event type (NOT wxCommandEvent) or
+      by keeping a separate event queue
+* Create parser cache      
+* Add "Set file associations now" button to the settings
+* (low priority) Add CVS plugin
+* Set up "static wxwidgets" template so it will compile correctly
+* Print function
+* Add support for local objects' code completion: mystring. (hint should appear)
+* Ctrl+click'ing include file
+* jump to implmentation / click to swap between header and implementation
+* Allow running program as parameter of external exe(cross platform development)
+* Replace compiler macros in "programs" ($exe_output)
+* More friendly search results handling (selection stuff)
+* any other features requested at SF
+
+DOCS:
+
+* Create tutorial and how-to on installation. Preferred windows html-help format.
+* Create "compiling wxWidgets" tutorial
+
+WEBSITE:
+
+* Clean up stuff, make it pretty, easy access to sections, add slashdot emergency handler if possible ;-)
+* Add categories beta 1.6, beta 1.7 in both bugs and feature requests (SF)
+
+-------------------
+LONG TERM STUFF (move items from above)
