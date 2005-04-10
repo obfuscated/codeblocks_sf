@@ -55,12 +55,14 @@ dlgAbout::dlgAbout(wxWindow* parent)
         "The GNU Software Foundation (http://www.gnu.org)\n"
         "Last, but not least, the open-source community\n\n"
         "Co-developers:\n"
-        "-------------\n"
+        "--------------\n"
         "Ricardo Garcia: All-hands person\n"
         "\n"
-        "Contributors:\n"
-        "-------------\n"
-        "Hakki Dogusan : DigitalMars compiler support"));
+        "Contributors (in no special order):\n"
+        "-----------------------------------\n"
+        "Hakki Dogusan : DigitalMars compiler support\n"
+        "Tim Baker     : Patches for the direct-compile-mode\n"
+        "                dependencies generation system"));
 	XRCCTRL(*this, "txtLicense", wxTextCtrl)->SetValue(LICENSE_GPL);
 	XRCCTRL(*this, "lblName", wxStaticText)->SetLabel(APP_NAME);
 	XRCCTRL(*this, "lblVersion", wxStaticText)->SetLabel(APP_ACTUAL_VERSION);

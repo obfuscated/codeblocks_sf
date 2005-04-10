@@ -6,7 +6,7 @@
 #define APP_VERSION				"1.0"
 #define APP_ACTUAL_VERSION		"1.0-cvs"
 #define APP_URL					"http://www.codeblocks.org"
-#define APP_CONTACT_EMAIL		"info@codeblocks.org"
+#define APP_CONTACT_EMAIL		"mandrav@codeblocks.org"
 #define APP_BUILD_TIMESTAMP		__DATE__", "__TIME__
 
 #endif // GLOBALS_H
