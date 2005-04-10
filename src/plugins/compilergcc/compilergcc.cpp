@@ -1190,10 +1190,17 @@ int CompilerGCC::CompileFile(const wxString& file)
                         _("Information"), wxICON_INFORMATION);
             return -1;
         }
+		if (!pf->buildTargets.GetCount())
+		{
+            wxMessageBox(_("That file isn't assigned to any target."),
+                        _("Information"), wxICON_INFORMATION);
+			return -2;
+		}
         ProjectBuildTarget* bt = m_Project->GetBuildTarget(pf->buildTargets[0]);
         if (!bt)
             return -2;
-        wxArrayString compile = dc.GetCompileFileCommand(bt, pf);
+//        wxArrayString compile = dc.GetCompileFileCommand(bt, pf);
+        wxArrayString compile = dc.CompileFile(bt, pf);
         dc.AppendArray(compile, m_Queue);
     }
     return DoRunQueue();

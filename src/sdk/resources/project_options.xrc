@@ -231,19 +231,32 @@
                           <flag>wxEXPAND</flag>
                         </object>
                         <object class="sizeritem">
-                          <object class="wxStaticText">
-                            <label>Dependencies output dir:</label>
+                          <object class="wxBoxSizer">
+                            <orient>wxVERTICAL</orient>
+                            <object class="sizeritem">
+                              <object class="wxStaticText">
+                                <label>Dependencies output dir:</label>
+                              </object>
+                              <flag>wxTOP</flag>
+                              <border>4</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxStaticText">
+                                <label>(used only with GNU &quot;make&quot;)</label>
+                                <fg>#800000</fg>
+                              </object>
+                            </object>
                           </object>
-                          <flag>wxTOP</flag>
-                          <border>4</border>
+                          <flag>wxGROW</flag>
                         </object>
                         <object class="sizeritem">
                           <object class="wxBoxSizer">
                             <orient>wxHORIZONTAL</orient>
                             <object class="sizeritem">
-                              <object class="wxTextCtrl" name="txtDepsDir"/>
+                              <object class="wxTextCtrl" name="txtDepsDir">
+                                <style></style>
+                              </object>
                               <option>1</option>
-                              <flag>wxEXPAND</flag>
                             </object>
                             <object class="sizeritem">
                               <object class="wxButton" name="btnBrowseDepsDir">

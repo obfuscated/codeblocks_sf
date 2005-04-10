@@ -15,13 +15,14 @@ class ProjectBuildTarget;
 class ProjectFile;
 class pfDetails;
 
-class DirectCommands
+class DirectCommands 
 {
 	public:
 		DirectCommands(CompilerGCC* compilerPlugin, Compiler* compiler, cbProject* project, int logPageIndex = 0);
 		~DirectCommands();
 		
-		wxArrayString GetCompileFileCommand(ProjectBuildTarget* target, ProjectFile* pf, bool force = false);
+		wxArrayString CompileFile(ProjectBuildTarget* target, ProjectFile* pf, bool force = false);
+		wxArrayString GetCompileFileCommand(ProjectBuildTarget* target, ProjectFile* pf);
 		wxArrayString GetCompileCommands(ProjectBuildTarget* target, bool force = false);
 		wxArrayString GetTargetCompileCommands(ProjectBuildTarget* target, bool force = false);
 		wxArrayString GetLinkCommands(ProjectBuildTarget* target, bool force = false);
@@ -33,8 +34,7 @@ class DirectCommands
         static void AppendArray(const wxArrayString& from, wxArrayString& to);
 	protected:
         friend class pfDetails;
-        bool ForceCompileByDependencies(const pfDetails& pfd);
-        bool DependsOnChangedFile(const pfDetails& pfd, const wxArrayString& deps);
+        bool IsObjectOutdated(const pfDetails& pfd);
         wxArrayString GetPreBuildCommands(ProjectBuildTarget* target);
         wxArrayString GetPostBuildCommands(ProjectBuildTarget* target);
         MyFilesArray GetProjectFilesSortedByWeight();

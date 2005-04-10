@@ -1,28 +1,3 @@
-/*
-* This file is part of Code::Blocks Studio, an open-source cross-platform IDE
-* Copyright (C) 2003  Yiannis An. Mandravellos
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*
-* Contact e-mail: Yiannis An. Mandravellos <mandrav@codeblocks.org>
-* Program URL   : http://www.codeblocks.org
-*
-* $Id$
-* $Date$
-*/
-
 #include <wx/log.h>
 #include <wx/intl.h>
 #include <wx/filename.h>
@@ -41,7 +16,7 @@
 #include "compilergcc.h"
 #include "makefilegenerator.h"
 #include "customvars.h"
-#include "directdeps.h"
+#include "depslib.h"
 
 pfDetails::pfDetails(DirectCommands* cmds, ProjectBuildTarget* target, ProjectFile* pf)
 {
@@ -99,11 +74,32 @@ DirectCommands::DirectCommands(CompilerGCC* compilerPlugin, Compiler* compiler, 
     m_pCurrTarget(0)
 {
 	//ctor
+	depsStart();
+	wxFileName cwd;
+	cwd.Assign(m_pProject->GetBasePath());
+	depsSetCWD(cwd.GetPath(wxPATH_GET_VOLUME).c_str());
+
+	wxFileName fname(m_pProject->GetFilename());
+	fname.SetExt("depend");
+	depsCacheRead(fname.GetFullPath().c_str());
 }
 
 DirectCommands::~DirectCommands()
 {
 	//dtor
+	struct depsStats stats;
+	depsGetStats(&stats);
+	if (stats.cache_updated)
+	{
+		wxFileName fname(m_pProject->GetFilename());
+		fname.SetExt("depend");
+		depsCacheWrite(fname.GetFullPath().c_str());
+	}
+	Manager::Get()->GetMessageManager()->DebugLog(
+		_("Scanned %d files for #includes, cache used %d, cache updated %d"),
+		stats.scanned, stats.cache_used, stats.cache_updated);
+
+	depsDone();
 }
 
 // static
@@ -167,7 +163,35 @@ MyFilesArray DirectCommands::GetProjectFilesSortedByWeight()
     return files;
 }
 
-wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, ProjectFile* pf, bool force)
+wxArrayString DirectCommands::CompileFile(ProjectBuildTarget* target, ProjectFile* pf, bool force)
+{
+    wxArrayString ret;
+
+    // is it compilable?
+    if (!pf->compile || pf->compilerVar.IsEmpty())
+        return ret;
+
+	if (!force)
+	{
+		depsSearchStart();
+
+		const wxArrayString& tgt_incs = target->GetIncludeDirs();
+		for (unsigned int i = 0; i < tgt_incs.GetCount(); ++i)
+			depsAddSearchDir(tgt_incs[i].c_str());
+
+		const wxArrayString& prj_incs = m_pProject->GetIncludeDirs();
+		for (unsigned int i = 0; i < prj_incs.GetCount(); ++i)
+			depsAddSearchDir(prj_incs[i].c_str());
+
+		pfDetails pfd(this, target, pf);
+		if (!IsObjectOutdated(pfd))
+			return ret;
+	}
+
+	return GetCompileFileCommand(target, pf);
+}
+
+wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, ProjectFile* pf)
 {
     wxLogNull ln;
     wxArrayString ret;
@@ -177,19 +201,6 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
         return ret;
 
     pfDetails pfd(this, target, pf);
-
-    // timestamp check
-    if (!force)
-    {
-        wxDateTime srclast;
-        if (wxFileExists(pfd.source_file_native))
-            srclast = wxFileName(pfd.source_file_native).GetModificationTime();
-        wxDateTime dstlast;
-        if (wxFileExists(pfd.object_file_native))
-             dstlast = wxFileName(pfd.object_file_native).GetModificationTime();
-        if (srclast.IsValid() && dstlast.IsValid() && !srclast.IsLaterThan(dstlast))
-            return ret;
-    }
     
     MakefileGenerator mg(m_pCompilerPlugin, m_pProject, "", 0); // don't worry! we just need a couple of utility funcs from it
     
@@ -275,14 +286,6 @@ wxArrayString DirectCommands::GetCompileCommands(ProjectBuildTarget* target, boo
     return ret;
 }
 
-#define DT_HASH // TNB
-#ifdef DT_HASH
-WX_DECLARE_STRING_HASH_MAP(wxDateTime, DateTimeHash);
-DateTimeHash g_DateTimeHash;
-WX_DECLARE_STRING_HASH_MAP(wxArrayString, IncludeHash);
-extern IncludeHash g_IncludeHash;
-#endif
-
 wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* target, bool force)
 {
     wxArrayString ret;
@@ -297,16 +300,23 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
     // add pre-build commands
     AppendArray(GetPreBuildCommands(target), ret);
 
-    if (target->GetTargetType() == ttCommandsOnly)
+    if (target->GetTargetType() == 4)
     {
         // commands-only target
         AppendArray(GetPostBuildCommands(target), ret);
         return ret;
     }
-#ifdef DT_HASH
-	g_DateTimeHash.clear();
-	g_IncludeHash.clear();	
-#endif
+
+	depsSearchStart();
+
+	const wxArrayString& tgt_incs = target->GetIncludeDirs();
+	for (unsigned int i = 0; i < tgt_incs.GetCount(); ++i)
+		depsAddSearchDir(tgt_incs[i].c_str());
+
+	const wxArrayString& prj_incs = m_pProject->GetIncludeDirs();
+	for (unsigned int i = 0; i < prj_incs.GetCount(); ++i)
+		depsAddSearchDir(prj_incs[i].c_str());
+
     // iterate all files of the project/target and add them to the build process
     MyFilesArray files = GetProjectFilesSortedByWeight();
     for (unsigned int i = 0; i < files.GetCount(); ++i)
@@ -319,13 +329,13 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
         if (pf->compile)
         {
             // check for deps
-            bool forceByDeps = false;
+            bool doBuild = false;
             // in direct-mode, dependencies are always generated
 //            if (m_pCompiler->GetSwitches().needDependencies)
             {
                 pfDetails pfd(this, target, pf);
                 if (pf->autoDeps)
-                    forceByDeps = ForceCompileByDependencies(pfd);
+                    doBuild = force || IsObjectOutdated(pfd);
                 else
                 {
                     wxString msg;
@@ -335,10 +345,12 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
                     ret.Add(wxString(COMPILER_SIMPLE_LOG) + msg);
                 }
             }
-
-            // compile file
-            wxArrayString filecmd = GetCompileFileCommand(target, pf, force | forceByDeps);
-            AppendArray(filecmd, ret);
+			if (doBuild)
+			{
+            	// compile file
+            	wxArrayString filecmd = GetCompileFileCommand(target, pf);
+            	AppendArray(filecmd, ret);
+            }
         }
     }
 
@@ -452,9 +464,6 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     wxLogNull ln;
     wxArrayString ret;
 
-    if (target && target->GetTargetType() == ttCommandsOnly)
-        return ret;
-
     MakefileGenerator mg(m_pCompilerPlugin, m_pProject, "", 0); // don't worry! we just need a couple of utility funcs from it
 
     wxString output = target->GetOutputFilename();
@@ -540,7 +549,6 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
             ct = ctLinkStaticCmd;
             kind_of_output = _("static library");
             break;
-        
         default: break;
     }
     wxString compilerCmd = mg.CreateSingleFileCompileCmd(ct, target, 0, "", linkfiles, resfiles);
@@ -623,122 +631,39 @@ wxArrayString DirectCommands::GetTargetCleanCommands(ProjectBuildTarget* target,
     return ret;
 }
 
-bool DirectCommands::ForceCompileByDependencies(const pfDetails& pfd)
+bool DirectCommands::IsObjectOutdated(const pfDetails& pfd)
 {
-    wxArrayString deps;
-    bool done = false;
+	// If the source file does not exist, then do not compile.
+	time_t timeSrc;
+	depsTimeStamp(pfd.source_file_native.c_str(), &timeSrc);
+	if (!timeSrc)
+		return false;
 
-    if (wxFileExists(pfd.dep_file_native))
-    {
-        // check source file time with deps file time
-        // if newer, force a scan of dependencies again
-        wxDateTime src;
-        if (wxFileExists(pfd.source_file_native))
-            src = wxFileName(pfd.source_file_native).GetModificationTime();
-        wxDateTime dep;
-        if (wxFileExists(pfd.dep_file_native))
-            dep = wxFileName(pfd.dep_file_native).GetModificationTime();
-        if (src.IsValid() && dep.IsValid() && !src.IsLaterThan(dep))
-        {
-            // just read existing deps file
-            done = DirectDeps::ReadDependencies(pfd.dep_file_native, deps);
-        }
-    }
-    
-    if (!done)
-    {
-        // scan for dependencies
-        wxStopWatch sw;
-        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Calculating dependencies: %s"), pfd.source_file_native.c_str());
-        DirectDeps::GetDependenciesOf(pfd.source_file_native, deps, m_PageIndex, m_pProject, m_pCurrTarget);
-//        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("    DBG: %s has %d deps (in %ldms)"), pfd.source_file_native.c_str(), deps.GetCount(), sw.Time());
-        if (!deps.IsEmpty())
-            deps.Remove(0, 1); // remove the first entry; it's always this file
+	// If the object file does not exist, then it must be built. In this case
+	// there is no need to scan the source file for headers.
+	time_t timeObj;
+	depsTimeStamp(pfd.object_file_native.c_str(), &timeObj);
+	if (!timeObj)
+		return true;
 
-        // create deps dir
-        if (!pfd.dep_dir_native.IsEmpty() && !wxDirExists(pfd.dep_dir_native))
-        {
-            if (!CreateDirRecursively(pfd.dep_dir_native, 0755))
-                wxMessageBox(_("Can't create dependencies output directory ") + pfd.dep_dir_native);
-        }
+	// If the source file is newer than the object file, then the object file
+	// must be built. In this case there is no need to scan the source file
+	// for headers.
+	if (timeSrc > timeObj)
+		return true;
 
-        // save them to file
-        wxFile file;
-        file.Create(pfd.dep_file_native, true);
-        if (file.IsOpened())
-        {
-            for (size_t i = 0; i < deps.GetCount(); ++i)
-            {
-                file.Write(deps[i] + "\n");
-            }
-        }
-    }
-    /*for (size_t i = 0; i < deps.GetCount(); ++i)
-        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("    DBG: %s"), deps[i].c_str());*/
-    return DependsOnChangedFile(pfd, deps);
+	// Scan the source file for headers. Result is NULL if the file does
+	// not exist. If one of the descendent header files is newer than the
+	// object file, then the object file must be built.
+	depsRef ref = depsScanForHeaders(pfd.source_file_native.c_str());
+	if (ref)
+	{
+		time_t timeNewest;
+		(void) depsGetNewest(ref, &timeNewest);
+		return (timeNewest > timeObj);
+	}
+
+	// Source file doesn't exist.
+	return false;
 }
 
-#ifdef DT_HASH
-/// Returns true if any one of the files listed in deps, has later modification
-/// A call to GetDependenciesOf() must have preceded to fill deps...
-bool DirectCommands::DependsOnChangedFile(const pfDetails& pfd, const wxArrayString& deps)
-{
-    wxFileName basefile(pfd.source_file_native);
-    wxFileName baseobjfile(pfd.object_file_native);
-    wxDateTime basetime;
-    if (wxFileExists(pfd.object_file_native))
-        basetime = baseobjfile.GetModificationTime();
-    if (!basetime.IsValid())
-        return false;
-    for (unsigned int i = 0; i < deps.GetCount(); ++i)
-    {
-        wxDateTime othertime;
-        DateTimeHash::iterator it = g_DateTimeHash.find(deps[i]);
-        if (it != g_DateTimeHash.end())
-            othertime = it->second;
-        else
-        {
-            wxFileName otherfile(deps[i]);
-            if (otherfile.SameAs(basefile))
-                continue;
-            if (wxFileExists(deps[i]))
-            {
-                othertime = wxFileName(deps[i]).GetModificationTime();
-                g_DateTimeHash[deps[i]] = othertime;
-            }
-        }
-        if (othertime.IsValid() && othertime.IsLaterThan(basetime))
-        {
-//            Manager::Get()->GetMessageManager()->Log(m_PageIndex, "    DBG: file %s depends on modified %s", pfd.source_file_native.c_str(), deps[i].c_str());
-            return true; // one match is enough ;)
-        }
-    }
-    return false;
-}
-#else
-/// Returns true if any one of the files listed in deps, has later modification
-/// A call to GetDependenciesOf() must have preceded to fill deps...
-bool DirectCommands::DependsOnChangedFile(const pfDetails& pfd, const wxArrayString& deps)
-{
-    wxFileName basefile(pfd.source_file_native);
-    wxFileName baseobjfile(pfd.object_file_native);
-    wxDateTime basetime;
-    if (wxFileExists(pfd.object_file_native))
-        basetime = baseobjfile.GetModificationTime();
-    for (unsigned int i = 0; i < deps.GetCount(); ++i)
-    {
-        wxFileName otherfile(deps[i]);
-        if (otherfile.SameAs(basefile))
-            continue;
-        wxDateTime othertime;
-        if (wxFileExists(deps[i]))
-             othertime = wxFileName(deps[i]).GetModificationTime();
-        if (basetime.IsValid() && othertime.IsValid() && othertime.IsLaterThan(basetime))
-        {
-//            Manager::Get()->GetMessageManager()->Log(m_PageIndex, "    DBG: file %s depends on modified %s", pfd.source_file_native.c_str(), deps[i].c_str());
-            return true; // one match is enough ;)
-        }
-    }
-    return false;
-}
-#endif
