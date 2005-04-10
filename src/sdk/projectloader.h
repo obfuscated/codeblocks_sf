@@ -22,6 +22,7 @@ class DLLIMPORT ProjectLoader : public IBaseLoader
 	protected:
         void DoProjectOptions(TiXmlElement* parentNode);
         void DoCompilerOptions(TiXmlElement* parentNode, ProjectBuildTarget* target = 0L);
+        void DoResourceCompilerOptions(TiXmlElement* parentNode, ProjectBuildTarget* target = 0L);
         void DoLinkerOptions(TiXmlElement* parentNode, ProjectBuildTarget* target = 0L);
         void DoIncludesOptions(TiXmlElement* parentNode, ProjectBuildTarget* target = 0L);
         void DoLibsOptions(TiXmlElement* parentNode, ProjectBuildTarget* target = 0L);
@@ -42,6 +43,7 @@ class DLLIMPORT ProjectLoader : public IBaseLoader
         void SaveOptions(wxString& buffer, const wxArrayString& array, const wxString& sectionName, int nrOfTabs, const wxString& optionName = "option");
 	private:
         void SaveCompilerOptions(wxString& buffer, CompileOptionsBase* object, int nrOfTabs);
+        void SaveResourceCompilerOptions(wxString& buffer, CompileOptionsBase* object, int nrOfTabs);
         void SaveLinkerOptions(wxString& buffer, CompileOptionsBase* object, int nrOfTabs);
 
         void ConvertVersion_Pre_1_1();

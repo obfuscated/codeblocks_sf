@@ -35,16 +35,14 @@
 #include "linklibdlg.h"
 
 BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxDialog)
-    EVT_UPDATE_UI(			XRCID("btnEditIncludes"),	CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(			XRCID("btnDelIncludes"),	CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(			XRCID("btnEditLibs"),		CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(			XRCID("btnDelLibs"),		CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(			XRCID("btnEditDir"),	CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(			XRCID("btnDelDir"),	CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnEditVar"),		CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnDeleteVar"),		CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("cmbCompilerPolicy"),	CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("cmbLinkerPolicy"),	CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("cmbIncludesPolicy"),	CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(			XRCID("cmbLibsPolicy"),		CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(			XRCID("cmbLibDirsPolicy"),	CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnSetDefaultCompiler"),	CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnAddCompiler"),	CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnRenameCompiler"),	CompilerOptionsDlg::OnUpdateUI)
@@ -82,17 +80,16 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxDialog)
 	EVT_BUTTON(				XRCID("btnRenameCompiler"),	CompilerOptionsDlg::OnEditCompilerClick)
 	EVT_BUTTON(				XRCID("btnDelCompiler"),	CompilerOptionsDlg::OnRemoveCompilerClick)
 	EVT_BUTTON(				XRCID("btnResetCompiler"),	CompilerOptionsDlg::OnResetCompilerClick)
-	EVT_BUTTON(				XRCID("btnAddIncludes"),	CompilerOptionsDlg::OnAddDirClick)
-	EVT_BUTTON(				XRCID("btnEditIncludes"),	CompilerOptionsDlg::OnEditDirClick)
-	EVT_BUTTON(				XRCID("btnDelIncludes"),	CompilerOptionsDlg::OnRemoveDirClick)
-	EVT_BUTTON(				XRCID("btnAddLibs"),		CompilerOptionsDlg::OnAddDirClick)
-	EVT_BUTTON(				XRCID("btnEditLibs"),		CompilerOptionsDlg::OnEditDirClick)
-	EVT_BUTTON(				XRCID("btnDelLibs"),		CompilerOptionsDlg::OnRemoveDirClick)
+	EVT_BUTTON(				XRCID("btnAddDir"),	        CompilerOptionsDlg::OnAddDirClick)
+	EVT_BUTTON(				XRCID("btnEditDir"),	    CompilerOptionsDlg::OnEditDirClick)
+	EVT_BUTTON(				XRCID("btnDelDir"),	        CompilerOptionsDlg::OnRemoveDirClick)
     EVT_BUTTON(			    XRCID("btnAddLib"),	        CompilerOptionsDlg::OnAddLibClick)
     EVT_BUTTON(			    XRCID("btnEditLib"),	    CompilerOptionsDlg::OnEditLibClick)
     EVT_BUTTON(			    XRCID("btnDelLib"),	        CompilerOptionsDlg::OnRemoveLibClick)
     EVT_SPIN_UP(			XRCID("spnLibs"),	        CompilerOptionsDlg::OnMoveLibUpClick)
     EVT_SPIN_DOWN(			XRCID("spnLibs"),	        CompilerOptionsDlg::OnMoveLibDownClick)
+    EVT_SPIN_UP(			XRCID("spnDirs"),	        CompilerOptionsDlg::OnMoveLibUpClick)
+    EVT_SPIN_DOWN(			XRCID("spnDirs"),	        CompilerOptionsDlg::OnMoveLibDownClick)
 	EVT_BUTTON(				XRCID("btnAddVar"),			CompilerOptionsDlg::OnAddVarClick)
 	EVT_BUTTON(				XRCID("btnEditVar"),		CompilerOptionsDlg::OnEditVarClick)
 	EVT_BUTTON(				XRCID("btnDeleteVar"),		CompilerOptionsDlg::OnRemoveVarClick)
@@ -140,8 +137,8 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
         SetTitle(_("Project's compiler options"));
 
         wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook);
-        nb->DeletePage(7); // remove "Other" page
-        nb->DeletePage(5); // remove "Programs" page
+        nb->DeletePage(6); // remove "Other" page
+        nb->DeletePage(4); // remove "Programs" page
         
         // remove "Compiler" buttons
         wxWindow* win = XRCCTRL(*this, "btnAddCompiler", wxButton);
@@ -538,6 +535,7 @@ void CompilerOptionsDlg::DoLoadOptions(int compilerIdx, ScopeTreeData* data)
         Compiler* compiler = CompilerFactory::Compilers[compilerIdx];
 
 		m_IncludeDirs = compiler->GetIncludeDirs();
+		m_ResDirs = compiler->GetResourceIncludeDirs();
 		m_LibDirs = compiler->GetLibDirs();
 		m_CompilerOptions = compiler->GetCompilerOptions();
 		m_LinkerOptions = compiler->GetLinkerOptions();
@@ -560,6 +558,7 @@ void CompilerOptionsDlg::DoLoadOptions(int compilerIdx, ScopeTreeData* data)
 			m_pTarget = 0;
 			cbProject* project = data->GetProject();
 			m_IncludeDirs = project->GetIncludeDirs();
+			m_ResDirs = project->GetResourceIncludeDirs();
 			m_LibDirs = project->GetLibDirs();
 			m_CompilerOptions = project->GetCompilerOptions();
 			m_LinkerOptions = project->GetLinkerOptions();
@@ -573,6 +572,7 @@ void CompilerOptionsDlg::DoLoadOptions(int compilerIdx, ScopeTreeData* data)
 			ProjectBuildTarget* target = data->GetTarget();
 			m_pTarget = target;
 			m_IncludeDirs = target->GetIncludeDirs();
+			m_ResDirs = target->GetResourceIncludeDirs();
 			m_LibDirs = target->GetLibDirs();
 			m_CompilerOptions = target->GetCompilerOptions();
 			m_LinkerOptions = target->GetLinkerOptions();
@@ -582,7 +582,8 @@ void CompilerOptionsDlg::DoLoadOptions(int compilerIdx, ScopeTreeData* data)
 			XRCCTRL(*this, "cmbCompilerPolicy", wxComboBox)->SetSelection(target->GetOptionRelation(ortCompilerOptions));
 			XRCCTRL(*this, "cmbLinkerPolicy", wxComboBox)->SetSelection(target->GetOptionRelation(ortLinkerOptions));
 			XRCCTRL(*this, "cmbIncludesPolicy", wxComboBox)->SetSelection(target->GetOptionRelation(ortIncludeDirs));
-			XRCCTRL(*this, "cmbLibsPolicy", wxComboBox)->SetSelection(target->GetOptionRelation(ortLibDirs));
+			XRCCTRL(*this, "cmbLibDirsPolicy", wxComboBox)->SetSelection(target->GetOptionRelation(ortLibDirs));
+			XRCCTRL(*this, "cmbResDirsPolicy", wxComboBox)->SetSelection(target->GetOptionRelation(ortResDirs));
 		}
 	}
 	TextToOptions();
@@ -590,6 +591,7 @@ void CompilerOptionsDlg::DoLoadOptions(int compilerIdx, ScopeTreeData* data)
 	DoFillOptions();
 	DoFillCompileDirs(m_IncludeDirs, XRCCTRL(*this, "lstIncludeDirs", wxListBox));
 	DoFillCompileDirs(m_LibDirs, XRCCTRL(*this, "lstLibDirs", wxListBox));
+	DoFillCompileDirs(m_ResDirs, XRCCTRL(*this, "lstResDirs", wxListBox));
 	DoFillCompileOptions(m_CompilerOptions, XRCCTRL(*this, "txtCompilerOptions", wxTextCtrl));
 	DoFillCompileOptions(m_LinkerOptions, XRCCTRL(*this, "txtLinkerOptions", wxTextCtrl));
 	DoFillCompileOptions(m_CommandsBeforeBuild, XRCCTRL(*this, "txtCmdBefore", wxTextCtrl));
@@ -600,6 +602,7 @@ void CompilerOptionsDlg::DoSaveOptions(int compilerIdx, ScopeTreeData* data)
 {
 	DoGetCompileDirs(m_IncludeDirs, XRCCTRL(*this, "lstIncludeDirs", wxListBox));
 	DoGetCompileDirs(m_LibDirs, XRCCTRL(*this, "lstLibDirs", wxListBox));
+	DoGetCompileDirs(m_ResDirs, XRCCTRL(*this, "lstResDirs", wxListBox));
 	DoGetCompileOptions(m_CompilerOptions, XRCCTRL(*this, "txtCompilerOptions", wxTextCtrl));
 	DoGetCompileOptions(m_LinkerOptions, XRCCTRL(*this, "txtLinkerOptions", wxTextCtrl));
 	DoGetCompileOptions(m_CommandsBeforeBuild, XRCCTRL(*this, "txtCmdBefore", wxTextCtrl));
@@ -613,6 +616,7 @@ void CompilerOptionsDlg::DoSaveOptions(int compilerIdx, ScopeTreeData* data)
 
 		compiler->SetIncludeDirs(m_IncludeDirs);
 		compiler->SetLibDirs(m_LibDirs);
+		compiler->SetResourceIncludeDirs(m_ResDirs);
 		compiler->SetCompilerOptions(m_CompilerOptions);
 		compiler->SetLinkerOptions(m_LinkerOptions);
 		compiler->SetLinkLibs(m_LinkLibs);
@@ -641,6 +645,7 @@ void CompilerOptionsDlg::DoSaveOptions(int compilerIdx, ScopeTreeData* data)
 			// project options
 			cbProject* project = data->GetProject();
 			project->SetIncludeDirs(m_IncludeDirs);
+			project->SetResourceIncludeDirs(m_ResDirs);
 			project->SetLibDirs(m_LibDirs);
 			project->SetCompilerOptions(m_CompilerOptions);
 			project->SetLinkerOptions(m_LinkerOptions);
@@ -653,6 +658,7 @@ void CompilerOptionsDlg::DoSaveOptions(int compilerIdx, ScopeTreeData* data)
 			// target options
 			ProjectBuildTarget* target = data->GetTarget();
 			target->SetIncludeDirs(m_IncludeDirs);
+			target->SetResourceIncludeDirs(m_ResDirs);
 			target->SetLibDirs(m_LibDirs);
 			target->SetCompilerOptions(m_CompilerOptions);
 			target->SetLinkerOptions(m_LinkerOptions);
@@ -660,7 +666,8 @@ void CompilerOptionsDlg::DoSaveOptions(int compilerIdx, ScopeTreeData* data)
             target->SetOptionRelation(ortCompilerOptions, OptionsRelation(XRCCTRL(*this, "cmbCompilerPolicy", wxComboBox)->GetSelection()));
             target->SetOptionRelation(ortLinkerOptions, OptionsRelation(XRCCTRL(*this, "cmbLinkerPolicy", wxComboBox)->GetSelection()));
             target->SetOptionRelation(ortIncludeDirs, OptionsRelation(XRCCTRL(*this, "cmbIncludesPolicy", wxComboBox)->GetSelection()));
-            target->SetOptionRelation(ortLibDirs, OptionsRelation(XRCCTRL(*this, "cmbLibsPolicy", wxComboBox)->GetSelection()));
+            target->SetOptionRelation(ortLibDirs, OptionsRelation(XRCCTRL(*this, "cmbLibDirsPolicy", wxComboBox)->GetSelection()));
+            target->SetOptionRelation(ortResDirs, OptionsRelation(XRCCTRL(*this, "cmbResDirsPolicy", wxComboBox)->GetSelection()));
 			target->SetCommandsBeforeBuild(m_CommandsBeforeBuild);
 			target->SetCommandsAfterBuild(m_CommandsAfterBuild);
 		}
@@ -808,6 +815,24 @@ void CompilerOptionsDlg::AutoDetectCompiler()
     XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->SetValue(compiler->GetMasterPath());
 }
 
+wxListBox* CompilerOptionsDlg::GetDirsListBox()
+{
+    wxNotebook* nb = XRCCTRL(*this, "nbDirs", wxNotebook);
+    if (!nb)
+        return 0;
+    switch (nb->GetSelection())
+    {
+        case 0: // compiler dirs
+            return XRCCTRL(*this, "lstIncludeDirs", wxListBox);
+        case 1: // linker dirs
+            return XRCCTRL(*this, "lstLibDirs", wxListBox);
+        case 2: // resource compiler dirs
+            return XRCCTRL(*this, "lstResDirs", wxListBox);
+        default: break;
+    }
+    return 0;
+}
+
 void CompilerOptionsDlg::OnCategoryChanged(wxCommandEvent& event)
 {
 	DoFillOptions();
@@ -835,24 +860,15 @@ void CompilerOptionsDlg::OnAddDirClick(wxCommandEvent& event)
     wxFileName path(dlg.GetPath());
 	DoMakeRelative(path);
    
-    wxListBox* control = 0L;
-    if (event.GetId() == XRCID("btnAddIncludes"))
-        control = XRCCTRL(*this, "lstIncludeDirs", wxListBox);
-    else
-        control = XRCCTRL(*this, "lstLibDirs", wxListBox);
-
-    control->Append(path.GetFullPath());
+    wxListBox* control = GetDirsListBox();
+    if (control)
+        control->Append(path.GetFullPath());
 }
 
 void CompilerOptionsDlg::OnEditDirClick(wxCommandEvent& event)
 {
-    wxListBox* control = 0L;
-    if (event.GetId() == XRCID("btnEditIncludes"))
-        control = XRCCTRL(*this, "lstIncludeDirs", wxListBox);
-    else
-        control = XRCCTRL(*this, "lstLibDirs", wxListBox);
-        
-    if (control->GetSelection() < 0)
+    wxListBox* control = GetDirsListBox();
+    if (!control || control->GetSelection() < 0)
         return;
         
     wxDirDialog dlg(this);
@@ -875,13 +891,8 @@ void CompilerOptionsDlg::OnEditDirClick(wxCommandEvent& event)
 
 void CompilerOptionsDlg::OnRemoveDirClick(wxCommandEvent& event)
 {
-    wxListBox* control = 0L;
-    if (event.GetId() == XRCID("btnDelIncludes"))
-        control = XRCCTRL(*this, "lstIncludeDirs", wxListBox);
-    else
-        control = XRCCTRL(*this, "lstLibDirs", wxListBox);
-
-    if (control->GetSelection() < 0)
+    wxListBox* control = GetDirsListBox();
+    if (!control || control->GetSelection() < 0)
         return;
 
     control->Delete(control->GetSelection());
@@ -1094,6 +1105,34 @@ void CompilerOptionsDlg::OnMoveLibDownClick(wxCommandEvent& event)
         m_pProject->SetModified(true);
 }
 
+void CompilerOptionsDlg::OnMoveDirUpClick(wxCommandEvent& event)
+{
+    wxListBox* lst = GetDirsListBox();
+    if (!lst || lst->GetSelection() <= 0)
+        return;
+    int sel = lst->GetSelection();
+    wxString lib = lst->GetStringSelection();
+    lst->Delete(sel);
+    lst->InsertItems(1, &lib, sel - 1);
+    lst->SetSelection(sel - 1);
+    if (m_pProject)
+        m_pProject->SetModified(true);
+}
+
+void CompilerOptionsDlg::OnMoveDirDownClick(wxCommandEvent& event)
+{
+    wxListBox* lst = GetDirsListBox();
+    if (!lst || lst->GetSelection() == lst->GetCount() - 1)
+        return;
+    int sel = lst->GetSelection();
+    wxString lib = lst->GetStringSelection();
+    lst->Delete(sel);
+    lst->InsertItems(1, &lib, sel + 1);
+    lst->SetSelection(sel + 1);
+    if (m_pProject)
+        m_pProject->SetModified(true);
+}
+
 void CompilerOptionsDlg::OnMasterPathClick(wxCommandEvent& event)
 {
     wxDirDialog dlg(this);
@@ -1169,18 +1208,20 @@ void CompilerOptionsDlg::OnAdvancedClick(wxCommandEvent& event)
 
 void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
 {
-    // add/edit/delete includes
-    bool en = XRCCTRL(*this, "lstIncludeDirs", wxListBox)->GetSelection() >= 0;
-    XRCCTRL(*this, "btnEditIncludes", wxButton)->Enable(en);
-    XRCCTRL(*this, "btnDelIncludes", wxButton)->Enable(en);
+    wxListBox* control = GetDirsListBox();
+    if (control)
+    {
+        // add/edit/delete dir
+        bool en = control->GetSelection() >= 0;
+        XRCCTRL(*this, "btnEditDir", wxButton)->Enable(en);
+        XRCCTRL(*this, "btnDelDir", wxButton)->Enable(en);
 
-    // add/edit/delete libs
-    en = XRCCTRL(*this, "lstLibDirs", wxListBox)->GetSelection() >= 0;
-    XRCCTRL(*this, "btnEditLibs", wxButton)->Enable(en);
-    XRCCTRL(*this, "btnDelLibs", wxButton)->Enable(en);
+        // moveup/movedown dir
+        XRCCTRL(*this, "spnDirs", wxSpinButton)->Enable(en);
+    }
 
     // add/edit/delete/moveup/movedown lib
-    en = XRCCTRL(*this, "lstLibs", wxListBox)->GetSelection() >= 0;
+    bool en = XRCCTRL(*this, "lstLibs", wxListBox)->GetSelection() >= 0;
     XRCCTRL(*this, "btnEditLib", wxButton)->Enable(en);
     XRCCTRL(*this, "btnDelLib", wxButton)->Enable(en);
     XRCCTRL(*this, "spnLibs", wxSpinButton)->Enable(en);
@@ -1197,7 +1238,8 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
     XRCCTRL(*this, "cmbCompilerPolicy", wxComboBox)->Enable(en);
     XRCCTRL(*this, "cmbLinkerPolicy", wxComboBox)->Enable(en);
     XRCCTRL(*this, "cmbIncludesPolicy", wxComboBox)->Enable(en);
-    XRCCTRL(*this, "cmbLibsPolicy", wxComboBox)->Enable(en);
+    XRCCTRL(*this, "cmbLibDirsPolicy", wxComboBox)->Enable(en);
+    XRCCTRL(*this, "cmbResDirsPolicy", wxComboBox)->Enable(en);
 
     // compiler set buttons
     if (XRCCTRL(*this, "btnAddCompiler", wxButton)) // only if exist

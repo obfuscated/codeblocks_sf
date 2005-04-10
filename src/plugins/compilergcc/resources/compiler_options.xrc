@@ -202,86 +202,6 @@
                     </object>
                   </object>
                   <object class="notebookpage">
-                    <label>Compiler dirs</label>
-                    <object class="wxPanel" name="tabCompilerDirs">
-                      <object class="wxBoxSizer">
-                        <orient>wxVERTICAL</orient>
-                        <object class="sizeritem">
-                          <object class="wxFlexGridSizer">
-                            <cols>2</cols>
-                            <rows>2</rows>
-                            <vgap>8</vgap>
-                            <hgap>8</hgap>
-                            <growablecols>1</growablecols>
-                            <object class="sizeritem">
-                              <object class="wxStaticText">
-                                <label>Policy:</label>
-                              </object>
-                              <flag>wxTOP</flag>
-                              <border>4</border>
-                            </object>
-                            <object class="sizeritem">
-                              <object class="wxComboBox" name="cmbIncludesPolicy">
-                                <content>
-                                  <item>Use project options only</item>
-                                  <item>Use target options only</item>
-                                  <item>Prepend target options to project options</item>
-                                  <item>Append target options to project options</item>
-                                </content>
-                                <style>wxCB_READONLY|wxCB_DROPDOWN</style>
-                              </object>
-                            </object>
-                          </object>
-                          <flag>wxALL|wxEXPAND</flag>
-                          <border>8</border>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxStaticLine"/>
-                          <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
-                          <border>8</border>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxStaticText">
-                            <label>Compiler directories:</label>
-                          </object>
-                          <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
-                          <border>8</border>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxListBox" name="lstIncludeDirs">
-                            <content/>
-                            <style>wxLB_SINGLE|wxLB_HSCROLL|wxLB_NEEDED_SB</style>
-                          </object>
-                          <option>1</option>
-                          <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
-                          <border>8</border>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxBoxSizer">
-                            <orient>wxHORIZONTAL</orient>
-                            <object class="sizeritem">
-                              <object class="wxButton" name="btnAddIncludes">
-                                <label>Add</label>
-                              </object>
-                            </object>
-                            <object class="sizeritem">
-                              <object class="wxButton" name="btnEditIncludes">
-                                <label>Edit</label>
-                              </object>
-                            </object>
-                            <object class="sizeritem">
-                              <object class="wxButton" name="btnDelIncludes">
-                                <label>Delete</label>
-                              </object>
-                            </object>
-                          </object>
-                          <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>
-                          <border>8</border>
-                        </object>
-                      </object>
-                    </object>
-                  </object>
-                  <object class="notebookpage">
                     <label>Linker options</label>
                     <object class="wxPanel" name="tabLinker">
                       <object class="wxBoxSizer">
@@ -399,80 +319,205 @@
                     </object>
                   </object>
                   <object class="notebookpage">
-                    <label>Linker dirs</label>
-                    <object class="wxPanel" name="tabLinkerDirs">
+                    <label>Directories</label>
+                    <object class="wxPanel" name="tabDirs">
                       <object class="wxBoxSizer">
                         <orient>wxVERTICAL</orient>
                         <object class="sizeritem">
-                          <object class="wxFlexGridSizer">
-                            <cols>2</cols>
-                            <rows>2</rows>
-                            <vgap>8</vgap>
-                            <hgap>8</hgap>
-                            <growablecols>1</growablecols>
+                          <object class="wxBoxSizer">
+                            <orient>wxHORIZONTAL</orient>
                             <object class="sizeritem">
-                              <object class="wxStaticText">
-                                <label>Policy:</label>
+                              <object class="wxNotebook" name="nbDirs">
+                                <object class="notebookpage">
+                                  <label>Compiler</label>
+                                  <object class="wxPanel" name="tabCompilerDirs">
+                                    <object class="wxBoxSizer">
+                                      <orient>wxVERTICAL</orient>
+                                      <object class="sizeritem">
+                                        <object class="wxFlexGridSizer">
+                                          <cols>2</cols>
+                                          <rows>2</rows>
+                                          <vgap>8</vgap>
+                                          <hgap>8</hgap>
+                                          <growablecols>1</growablecols>
+                                          <object class="sizeritem">
+                                            <object class="wxStaticText">
+                                              <label>Policy:</label>
+                                            </object>
+                                            <flag>wxTOP</flag>
+                                            <border>4</border>
+                                          </object>
+                                          <object class="sizeritem">
+                                            <object class="wxComboBox" name="cmbIncludesPolicy">
+                                              <content>
+                                                <item>Use project options only</item>
+                                                <item>Use target options only</item>
+                                                <item>Prepend target options to project options</item>
+                                                <item>Append target options to project options</item>
+                                              </content>
+                                              <style>wxCB_READONLY|wxCB_DROPDOWN</style>
+                                            </object>
+                                          </object>
+                                        </object>
+                                        <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                                        <border>8</border>
+                                      </object>
+                                      <object class="sizeritem">
+                                        <object class="wxStaticLine"/>
+                                        <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                                        <border>8</border>
+                                      </object>
+                                      <object class="sizeritem">
+                                        <object class="wxListBox" name="lstIncludeDirs">
+                                          <content/>
+                                          <style>wxLB_SINGLE|wxLB_HSCROLL|wxLB_NEEDED_SB</style>
+                                        </object>
+                                        <option>1</option>
+                                        <flag>wxALL|wxGROW</flag>
+                                        <border>8</border>
+                                      </object>
+                                    </object>
+                                  </object>
+                                </object>
+                                <object class="notebookpage">
+                                  <label>Linker</label>
+                                  <object class="wxPanel" name="tabLinkerDirs">
+                                    <object class="wxBoxSizer">
+                                      <orient>wxVERTICAL</orient>
+                                      <object class="sizeritem">
+                                        <object class="wxFlexGridSizer">
+                                          <cols>2</cols>
+                                          <rows>2</rows>
+                                          <vgap>8</vgap>
+                                          <hgap>8</hgap>
+                                          <growablecols>1</growablecols>
+                                          <object class="sizeritem">
+                                            <object class="wxStaticText">
+                                              <label>Policy:</label>
+                                            </object>
+                                            <flag>wxTOP</flag>
+                                            <border>4</border>
+                                          </object>
+                                          <object class="sizeritem">
+                                            <object class="wxComboBox" name="cmbLibDirsPolicy">
+                                              <content>
+                                                <item>Use project options only</item>
+                                                <item>Use target options only</item>
+                                                <item>Prepend target options to project options</item>
+                                                <item>Append target options to project options</item>
+                                              </content>
+                                              <style>wxCB_READONLY|wxCB_DROPDOWN</style>
+                                            </object>
+                                          </object>
+                                        </object>
+                                        <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                                        <border>8</border>
+                                      </object>
+                                      <object class="sizeritem">
+                                        <object class="wxStaticLine"/>
+                                        <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                                        <border>8</border>
+                                      </object>
+                                      <object class="sizeritem">
+                                        <object class="wxListBox" name="lstLibDirs">
+                                          <content/>
+                                          <style>wxLB_SINGLE|wxLB_HSCROLL|wxLB_NEEDED_SB</style>
+                                        </object>
+                                        <option>1</option>
+                                        <flag>wxALL|wxGROW</flag>
+                                        <border>8</border>
+                                      </object>
+                                    </object>
+                                  </object>
+                                </object>
+                                <object class="notebookpage">
+                                  <label>Resource compiler</label>
+                                  <object class="wxPanel" name="tabResourceDirs">
+                                    <object class="wxBoxSizer">
+                                      <orient>wxVERTICAL</orient>
+                                      <object class="sizeritem">
+                                        <object class="wxFlexGridSizer">
+                                          <cols>2</cols>
+                                          <rows>2</rows>
+                                          <vgap>8</vgap>
+                                          <hgap>8</hgap>
+                                          <growablecols>1</growablecols>
+                                          <object class="sizeritem">
+                                            <object class="wxStaticText">
+                                              <label>Policy:</label>
+                                            </object>
+                                            <flag>wxTOP</flag>
+                                            <border>4</border>
+                                          </object>
+                                          <object class="sizeritem">
+                                            <object class="wxComboBox" name="cmbResDirsPolicy">
+                                              <content>
+                                                <item>Use project options only</item>
+                                                <item>Use target options only</item>
+                                                <item>Prepend target options to project options</item>
+                                                <item>Append target options to project options</item>
+                                              </content>
+                                              <style>wxCB_READONLY|wxCB_DROPDOWN</style>
+                                            </object>
+                                          </object>
+                                        </object>
+                                        <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                                        <border>8</border>
+                                      </object>
+                                      <object class="sizeritem">
+                                        <object class="wxStaticLine"/>
+                                        <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                                        <border>8</border>
+                                      </object>
+                                      <object class="sizeritem">
+                                        <object class="wxListBox" name="lstResDirs">
+                                          <content/>
+                                          <style>wxLB_SINGLE|wxLB_HSCROLL|wxLB_NEEDED_SB</style>
+                                        </object>
+                                        <option>1</option>
+                                        <flag>wxALL|wxGROW</flag>
+                                        <border>8</border>
+                                      </object>
+                                    </object>
+                                  </object>
+                                </object>
+                                <usenotebooksizer>1</usenotebooksizer>
                               </object>
-                              <flag>wxTOP</flag>
-                              <border>4</border>
+                              <option>1</option>
+                              <flag>wxGROW</flag>
                             </object>
                             <object class="sizeritem">
-                              <object class="wxComboBox" name="cmbLibsPolicy">
-                                <content>
-                                  <item>Use project options only</item>
-                                  <item>Use target options only</item>
-                                  <item>Prepend target options to project options</item>
-                                  <item>Append target options to project options</item>
-                                </content>
-                                <style>wxCB_READONLY|wxCB_DROPDOWN</style>
+                              <object class="wxSpinButton" name="spnDirs">
+                                <tooltip>Re-order directories</tooltip>
                               </object>
+                              <flag>wxLEFT|wxALIGN_CENTRE_VERTICAL</flag>
+                              <border>8</border>
                             </object>
-                          </object>
-                          <flag>wxALL|wxEXPAND</flag>
-                          <border>8</border>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxStaticLine"/>
-                          <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
-                          <border>8</border>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxStaticText">
-                            <label>Linker directories:</label>
-                          </object>
-                          <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
-                          <border>8</border>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxListBox" name="lstLibDirs">
-                            <content/>
-                            <style>wxLB_SINGLE|wxLB_HSCROLL|wxLB_NEEDED_SB</style>
                           </object>
                           <option>1</option>
-                          <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+                          <flag>wxALL|wxGROW</flag>
                           <border>8</border>
                         </object>
                         <object class="sizeritem">
                           <object class="wxBoxSizer">
                             <orient>wxHORIZONTAL</orient>
                             <object class="sizeritem">
-                              <object class="wxButton" name="btnAddLibs">
+                              <object class="wxButton" name="btnAddDir">
                                 <label>Add</label>
                               </object>
                             </object>
                             <object class="sizeritem">
-                              <object class="wxButton" name="btnEditLibs">
+                              <object class="wxButton" name="btnEditDir">
                                 <label>Edit</label>
                               </object>
                             </object>
                             <object class="sizeritem">
-                              <object class="wxButton" name="btnDelLibs">
+                              <object class="wxButton" name="btnDelDir">
                                 <label>Delete</label>
                               </object>
                             </object>
                           </object>
-                          <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>
+                          <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
                           <border>8</border>
                         </object>
                       </object>
@@ -524,27 +569,37 @@
                         <object class="sizeritem">
                           <object class="wxStaticBoxSizer">
                             <label>Compiler's installation directory</label>
-                            <orient>wxHORIZONTAL</orient>
+                            <orient>wxVERTICAL</orient>
                             <object class="sizeritem">
-                              <object class="wxTextCtrl" name="txtMasterPath"/>
-                              <option>1</option>
-                              <flag>wxTOP|wxBOTTOM|wxLEFT|wxEXPAND</flag>
+                              <object class="wxBoxSizer">
+                                <orient>wxHORIZONTAL</orient>
+                                <object class="sizeritem">
+                                  <object class="wxTextCtrl" name="txtMasterPath"/>
+                                  <option>1</option>
+                                  <flag>wxGROW</flag>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxButton" name="btnMasterPath">
+                                    <label>...</label>
+                                    <size>20,20</size>
+                                  </object>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxButton" name="btnAutoDetect">
+                                    <label>Auto-detect</label>
+                                    <size>-1,20</size>
+                                  </object>
+                                </object>
+                              </object>
+                              <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
                               <border>8</border>
                             </object>
                             <object class="sizeritem">
-                              <object class="wxButton" name="btnMasterPath">
-                                <label>...</label>
-                                <size>20,20</size>
+                              <object class="wxStaticText">
+                                <label>NOTE: All programs below, must exist in the &quot;bin&quot; sub-directory of this path...</label>
+                                <fg>#800000</fg>
                               </object>
-                              <flag>wxTOP|wxBOTTOM</flag>
-                              <border>8</border>
-                            </object>
-                            <object class="sizeritem">
-                              <object class="wxButton" name="btnAutoDetect">
-                                <label>Auto-detect</label>
-                                <size>-1,20</size>
-                              </object>
-                              <flag>wxTOP|wxBOTTOM|wxRIGHT</flag>
+                              <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
                               <border>8</border>
                             </object>
                           </object>
@@ -573,7 +628,7 @@
                                     <object class="sizeritem">
                                       <object class="wxTextCtrl" name="txtCcompiler"/>
                                       <option>1</option>
-                                      <flag>wxLEFT|wxEXPAND</flag>
+                                      <flag>wxEXPAND</flag>
                                       <border>8</border>
                                     </object>
                                     <object class="sizeritem">
@@ -596,7 +651,7 @@
                                     <object class="sizeritem">
                                       <object class="wxTextCtrl" name="txtCPPcompiler"/>
                                       <option>1</option>
-                                      <flag>wxLEFT|wxEXPAND</flag>
+                                      <flag>wxEXPAND</flag>
                                       <border>8</border>
                                     </object>
                                     <object class="sizeritem">
@@ -619,7 +674,7 @@
                                     <object class="sizeritem">
                                       <object class="wxTextCtrl" name="txtLinker"/>
                                       <option>1</option>
-                                      <flag>wxLEFT|wxEXPAND</flag>
+                                      <flag>wxEXPAND</flag>
                                       <border>8</border>
                                     </object>
                                     <object class="sizeritem">
@@ -642,7 +697,7 @@
                                     <object class="sizeritem">
                                       <object class="wxTextCtrl" name="txtLibLinker"/>
                                       <option>1</option>
-                                      <flag>wxLEFT|wxEXPAND</flag>
+                                      <flag>wxEXPAND</flag>
                                       <border>8</border>
                                     </object>
                                     <object class="sizeritem">
@@ -665,7 +720,7 @@
                                     <object class="sizeritem">
                                       <object class="wxTextCtrl" name="txtDebugger"/>
                                       <option>1</option>
-                                      <flag>wxLEFT|wxEXPAND</flag>
+                                      <flag>wxEXPAND</flag>
                                       <border>8</border>
                                     </object>
                                     <object class="sizeritem">
@@ -688,7 +743,7 @@
                                     <object class="sizeritem">
                                       <object class="wxTextCtrl" name="txtResComp"/>
                                       <option>1</option>
-                                      <flag>wxLEFT|wxEXPAND</flag>
+                                      <flag>wxEXPAND</flag>
                                       <border>8</border>
                                     </object>
                                     <object class="sizeritem">
@@ -711,7 +766,7 @@
                                     <object class="sizeritem">
                                       <object class="wxTextCtrl" name="txtMake"/>
                                       <option>1</option>
-                                      <flag>wxLEFT|wxEXPAND</flag>
+                                      <flag>wxEXPAND</flag>
                                       <border>8</border>
                                     </object>
                                     <object class="sizeritem">
@@ -895,6 +950,7 @@
                       </object>
                     </object>
                   </object>
+                  <usenotebooksizer>1</usenotebooksizer>
                 </object>
                 <option>1</option>
                 <flag>wxLEFT|wxEXPAND</flag>

@@ -117,6 +117,32 @@ const wxArrayString& CompileOptionsBase::GetIncludeDirs()
 	return m_IncludeDirs;
 }
 
+void CompileOptionsBase::SetResourceIncludeDirs(const wxArrayString& resIncludeDirs)
+{
+	if (m_ResIncludeDirs == resIncludeDirs)
+		return;
+
+    // make sure we don't have duplicate entries
+    // that's why we don't assign the array but rather copy it entry by entry...
+    bool casesens = true;
+#ifdef __WXMSW__
+    casesens = false;
+#endif
+    m_ResIncludeDirs.Clear();
+    for (size_t i = 0; i < resIncludeDirs.GetCount(); ++i)
+    {
+        wxString entry = UnixFilename(resIncludeDirs[i]);
+        if (m_ResIncludeDirs.Index(entry, casesens) == wxNOT_FOUND)
+            m_ResIncludeDirs.Add(entry);
+    }
+	SetModified(true);
+}
+
+const wxArrayString& CompileOptionsBase::GetResourceIncludeDirs()
+{
+    return m_ResIncludeDirs;
+}
+
 void CompileOptionsBase::SetLibDirs(const wxArrayString& libDirs)
 {
 	if (m_LibDirs == libDirs)
@@ -228,6 +254,20 @@ void CompileOptionsBase::AddIncludeDir(const wxString& option)
     if (m_IncludeDirs.Index(entry, casesens) == wxNOT_FOUND)
     {
         m_IncludeDirs.Add(entry);
+        SetModified(true);
+    }
+}
+
+void CompileOptionsBase::AddResourceIncludeDir(const wxString& option)
+{
+    bool casesens = true;
+#ifdef __WXMSW__
+    casesens = false;
+#endif
+    wxString entry = UnixFilename(option);
+    if (m_ResIncludeDirs.Index(entry, casesens) == wxNOT_FOUND)
+    {
+        m_ResIncludeDirs.Add(entry);
         SetModified(true);
     }
 }

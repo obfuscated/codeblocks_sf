@@ -88,9 +88,9 @@ wxString MakefileGenerator::ReplaceCompilerMacros(CommandType et,
     if (idx != -1)
     {
         wxString incs;
-        DoAppendIncludeDirs(incs, 0L, m_CompilerSet->GetSwitches().includeDirs, true);
-        DoAppendIncludeDirs(incs, 0L, m_CompilerSet->GetSwitches().includeDirs);
-        DoAppendIncludeDirs(incs, target, m_CompilerSet->GetSwitches().includeDirs);
+        DoAppendResourceIncludeDirs(incs, 0L, m_CompilerSet->GetSwitches().includeDirs, true);
+        DoAppendResourceIncludeDirs(incs, 0L, m_CompilerSet->GetSwitches().includeDirs);
+        DoAppendResourceIncludeDirs(incs, target, m_CompilerSet->GetSwitches().includeDirs);
         compilerCmd.Replace("$res_includes", incs);
     }
 
@@ -156,14 +156,19 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
     ldadd.Replace("$(GLOBAL_LIBS)", global_ldadd);
     ldadd.Replace("$(PROJECT_LIBS)", prj_ldadd);
 
+	wxString global_res_incs;
+	wxString prj_res_incs;
+	wxString res_incs;
+	DoAppendResourceIncludeDirs(global_res_incs, 0L, m_CompilerSet->GetSwitches().includeDirs, true);
+	DoAppendResourceIncludeDirs(prj_res_incs, 0L, m_CompilerSet->GetSwitches().includeDirs);
+	res_incs << global_res_incs << " " << prj_res_incs << " ";
+	DoAppendResourceIncludeDirs(res_incs, target, m_CompilerSet->GetSwitches().includeDirs);
+
     wxString incs;
 	wxString global_incs;
 	wxString prj_incs;
-	wxString res_incs;
 	DoAppendIncludeDirs(global_incs, 0L, m_CompilerSet->GetSwitches().includeDirs, true);
 	DoAppendIncludeDirs(prj_incs, 0L, m_CompilerSet->GetSwitches().includeDirs);
-	res_incs  << global_incs << " " << prj_incs << " ";
-	DoAppendIncludeDirs(res_incs, target, m_CompilerSet->GetSwitches().includeDirs);
 	DoGetMakefileIncludes(incs, target);
     incs.Replace("$(GLOBAL_INCS)", global_incs);
     incs.Replace("$(PROJECT_INCS)", prj_incs);
@@ -325,6 +330,30 @@ void MakefileGenerator::DoAppendIncludeDirs(wxString& cmd, ProjectBuildTarget* t
 			opts = target->GetIncludeDirs();
 		else
 			opts = m_Project->GetIncludeDirs();
+	}
+	
+    for (unsigned int x = 0; x < opts.GetCount(); ++x)
+    {
+        if (opts[x].IsEmpty())
+            continue;
+        wxString out = UnixFilename(opts[x]);
+        ConvertToMakefileFriendly(out);
+        QuoteStringIfNeeded(out);
+        cmd << " " << prefix << out;
+    }
+}
+
+void MakefileGenerator::DoAppendResourceIncludeDirs(wxString& cmd, ProjectBuildTarget* target, const wxString& prefix, bool useGlobalOptions)
+{
+    wxArrayString opts;
+	if (useGlobalOptions)
+		opts = m_CompilerSet->GetResourceIncludeDirs();
+	else
+	{
+		if (target)
+			opts = target->GetResourceIncludeDirs();
+		else
+			opts = m_Project->GetResourceIncludeDirs();
 	}
 	
     for (unsigned int x = 0; x < opts.GetCount(); ++x)

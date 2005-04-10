@@ -55,6 +55,7 @@ bool ProjectLoader::Open(const wxString& filename)
     DoProjectOptions(proj);
     DoBuild(proj);
     DoCompilerOptions(proj);
+    DoResourceCompilerOptions(proj);
     DoLinkerOptions(proj);
     DoIncludesOptions(proj);
     DoLibsOptions(proj);
@@ -215,6 +216,7 @@ void ProjectLoader::DoBuildTarget(TiXmlElement* parentNode)
             Manager::Get()->GetMessageManager()->DebugLog("Loading target %s", title.c_str());
             DoBuildTargetOptions(node, target);
             DoCompilerOptions(node, target);
+            DoResourceCompilerOptions(node, target);
             DoLinkerOptions(node, target);
             DoIncludesOptions(node, target);
             DoLibsOptions(node, target);
@@ -343,6 +345,28 @@ void ProjectLoader::DoCompilerOptions(TiXmlElement* parentNode, ProjectBuildTarg
                 target->AddIncludeDir(dir);
             else
                 m_pProject->AddIncludeDir(dir);
+        }
+
+        child = child->NextSiblingElement("Add");
+    }
+}
+
+void ProjectLoader::DoResourceCompilerOptions(TiXmlElement* parentNode, ProjectBuildTarget* target)
+{
+    TiXmlElement* node = parentNode->FirstChildElement("ResourceCompiler");
+    if (!node)
+        return; // no options
+
+    TiXmlElement* child = node->FirstChildElement("Add");
+    while (child)
+    {
+        wxString dir = child->Attribute("directory");
+        if (!dir.IsEmpty())
+        {
+            if (target)
+                target->AddResourceIncludeDir(dir);
+            else
+                m_pProject->AddResourceIncludeDir(dir);
         }
 
         child = child->NextSiblingElement("Add");
@@ -588,9 +612,12 @@ bool ProjectLoader::Save(const wxString& filename)
             buffer << '\t' << '\t' << '\t' << '\t' << "<Option projectLinkerOptionsRelation=\"" << target->GetOptionRelation(ortLinkerOptions) << "\"/>" << '\n';
         if (target->GetOptionRelation(ortIncludeDirs) != 3) // 3 is the default
             buffer << '\t' << '\t' << '\t' << '\t' << "<Option projectIncludeDirsRelation=\"" << target->GetOptionRelation(ortIncludeDirs) << "\"/>" << '\n';
+        if (target->GetOptionRelation(ortResDirs) != 3) // 3 is the default
+            buffer << '\t' << '\t' << '\t' << '\t' << "<Option projectResourceIncludeDirsRelation=\"" << target->GetOptionRelation(ortResDirs) << "\"/>" << '\n';
         if (target->GetOptionRelation(ortLibDirs) != 3) // 3 is the default
             buffer << '\t' << '\t' << '\t' << '\t' << "<Option projectLibDirsRelation=\"" << target->GetOptionRelation(ortLibDirs) << "\"/>" << '\n';
         SaveCompilerOptions(buffer, target, 4);
+        SaveResourceCompilerOptions(buffer, target, 4);
         SaveLinkerOptions(buffer, target, 4);
         SaveOptions(buffer, target->GetCommandsBeforeBuild(), "ExtraCommands", 4, "before");
         SaveOptions(buffer, target->GetCommandsAfterBuild(), "ExtraCommands", 4, "after");
@@ -599,6 +626,7 @@ bool ProjectLoader::Save(const wxString& filename)
     buffer << '\t' << '\t' << "</Build>" << '\n';
 
     SaveCompilerOptions(buffer, m_pProject, 2);
+    SaveResourceCompilerOptions(buffer, m_pProject, 2);
     SaveLinkerOptions(buffer, m_pProject, 2);
     SaveOptions(buffer, m_pProject->GetCommandsBeforeBuild(), "ExtraCommands", 2, "before");
     SaveOptions(buffer, m_pProject->GetCommandsAfterBuild(), "ExtraCommands", 2, "after");
@@ -670,6 +698,18 @@ void ProjectLoader::SaveCompilerOptions(wxString& buffer, CompileOptionsBase* ob
     if (hasCompOpts || hasCompDirs)
     {
         EndOptionSection(compopts, "Compiler", nrOfTabs);
+        buffer << compopts;
+    }
+}
+
+void ProjectLoader::SaveResourceCompilerOptions(wxString& buffer, CompileOptionsBase* object, int nrOfTabs)
+{
+    wxString compopts;
+    BeginOptionSection(compopts, "ResourceCompiler", nrOfTabs);
+    bool hasCompDirs = DoOptionSection(compopts, object->GetResourceIncludeDirs(), nrOfTabs + 1, "directory");
+    if (hasCompDirs)
+    {
+        EndOptionSection(compopts, "ResourceCompiler", nrOfTabs);
         buffer << compopts;
     }
 }

@@ -36,6 +36,7 @@ class MakefileGenerator
         void DoAppendLinkerOptions(wxString& cmd, ProjectBuildTarget* target = 0L, bool useGlobalOptions = false);
         void DoAppendLinkerLibs(wxString& cmd, ProjectBuildTarget* target = 0L, bool useGlobalOptions = false);
         void DoAppendIncludeDirs(wxString& cmd, ProjectBuildTarget* target = 0L, const wxString& prefix = "-I", bool useGlobalOptions = false);
+        void DoAppendResourceIncludeDirs(wxString& cmd, ProjectBuildTarget* target = 0L, const wxString& prefix = "-I", bool useGlobalOptions = false);
         void DoAppendLibDirs(wxString& cmd, ProjectBuildTarget* target = 0L, const wxString& prefix = "-L", bool useGlobalOptions = false);
         void DoAddMakefileVars(wxString& buffer);
 #ifdef __WXMSW__

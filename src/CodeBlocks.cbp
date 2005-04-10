@@ -16,6 +16,7 @@
 				<Option external_deps=""/>
 				<Option type="2"/>
 				<Option compiler="0"/>
+				<Option projectResourceIncludeDirsRelation="2"/>
 			</Target>
 			<Target title="sdk">
 				<Option output="devel\codeblocks.dll"/>
@@ -51,10 +52,14 @@
 				<Option parameters="--debug-log --no-check-associations -ns"/>
 				<Option projectLinkerOptionsRelation="2"/>
 				<Option projectIncludeDirsRelation="2"/>
+				<Option projectResourceIncludeDirsRelation="0"/>
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
 					<Add directory="sdk"/>
 				</Compiler>
+				<ResourceCompiler>
+					<Add directory="..\..\..\MinGW\include"/>
+				</ResourceCompiler>
 				<Linker>
 					<Add library="libcodeblocks.a"/>
 					<Add library="libstc.a"/>
@@ -293,13 +298,10 @@
 				</Linker>
 			</Target>
 			<Target title="update">
-				<Option output="C:\Devel\codeblocks\src\CodeBlocks.cbp"/>
-				<Option object_output="C:\Devel\codeblocks\src\\.objs"/>
-				<Option deps_output="C:\Devel\codeblocks\src\\.deps"/>
-				<Option external_deps=""/>
 				<Option type="4"/>
 				<Option compiler="0"/>
 				<Option includeInTargetAll="0"/>
+				<Option projectResourceIncludeDirsRelation="4"/>
 				<ExtraCommands>
 					<Add before="update.bat"/>
 				</ExtraCommands>
@@ -314,18 +316,16 @@
 				<Option projectCompilerOptionsRelation="0"/>
 				<Option projectLinkerOptionsRelation="1"/>
 				<Option projectIncludeDirsRelation="2"/>
+				<Option projectResourceIncludeDirsRelation="1"/>
 				<Compiler>
 					<Add option="-Os"/>
 				</Compiler>
 			</Target>
 			<Target title="doc">
-				<Option output="C:\Devel\codeblocks\src\CodeBlocks.cbp"/>
-				<Option object_output="C:\Devel\codeblocks\src\\.objs"/>
-				<Option deps_output="C:\Devel\codeblocks\src\\.deps"/>
-				<Option external_deps=""/>
 				<Option type="4"/>
 				<Option compiler="0"/>
 				<Option includeInTargetAll="0"/>
+				<Option projectResourceIncludeDirsRelation="4"/>
 				<ExtraCommands>
 					<Add before="doxygen sdk.doxy"/>
 				</ExtraCommands>

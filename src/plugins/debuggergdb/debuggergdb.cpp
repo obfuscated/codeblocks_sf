@@ -330,10 +330,21 @@ int DebuggerGDB::Debug()
     {
         wxMessageBox(_("The selected target is only running pre/post build step commands\n"
                     "Can't debug such a target..."), _("Information"), wxICON_INFORMATION);
+        msgMan->Log(m_PageIndex, _("aborted"));
         return 3;
     }
-
 	msgMan->Log(m_PageIndex, target->GetTitle());
+
+	Compiler* actualCompiler = CompilerFactory::Compilers[target ? target->GetCompilerIndex() : project->GetCompilerIndex()];
+	if (actualCompiler->GetPrograms().DBG.IsEmpty() ||
+        !wxFileExists(actualCompiler->GetMasterPath() + wxFileName::GetPathSeparator() + "bin" + wxFileName::GetPathSeparator() + actualCompiler->GetPrograms().DBG))
+	{
+        wxMessageBox(_("The debugger executable is not set.\n"
+                    "To set it, go to \"Settings/Configure plugins/Compiler\", switch to the \"Programs\" tab\n"
+                    "and select the debugger program."), _("Error"), wxICON_ERROR);
+        msgMan->Log(m_PageIndex, _("Aborted"));
+        return 4;
+	}
 
 	PluginsArray plugins = Manager::Get()->GetPluginManager()->GetCompilerOffers();
 	if (plugins.GetCount())
@@ -355,7 +366,6 @@ int DebuggerGDB::Debug()
 	}
 
 	wxString cmdexe;
-	Compiler* actualCompiler = CompilerFactory::Compilers[target ? target->GetCompilerIndex() : project->GetCompilerIndex()];
 	cmdexe = actualCompiler->GetPrograms().DBG;
 	cmdexe.Trim();
 	cmdexe.Trim(true);
@@ -372,12 +382,12 @@ int DebuggerGDB::Debug()
 
 	wxString cmd;
 	wxString sep = wxFileName::GetPathSeparator();
-	cmd << actualCompiler->GetMasterPath() << sep << "bin" << sep << cmdexe << " -annotate=2 -silent";
+	cmd << actualCompiler->GetMasterPath() << sep << "bin" << sep << cmdexe << " -nw -annotate=2 -silent";
 	
 	wxLogNull ln; // we perform our own error handling and logging
     m_pProcess = new PipedProcess((void**)&m_pProcess, this, idGDBProcess, true, project->GetBasePath());
 	msgMan->AppendLog(m_PageIndex, _("Starting debugger: "));
-    msgMan->AppendLog(m_PageIndex, _(cmd));
+//    msgMan->AppendLog(m_PageIndex, _(cmd));
     m_Pid = wxExecute(cmd, wxEXEC_ASYNC, m_pProcess);
 //    m_Pid = m_pProcess->Launch(cmd);
 

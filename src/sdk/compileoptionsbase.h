@@ -17,6 +17,7 @@ enum BuildConfiguration
   * \li Compiler options
   * \li Linker options
   * \li Compiler include dirs
+  * \li Resource compiler include dirs
   * \li Linker include dirs
   * \li Custom commands to be executed before/after build
   * \li The settings modification status
@@ -40,6 +41,8 @@ class DLLIMPORT CompileOptionsBase
 		virtual const wxArrayString& GetCompilerOptions();
 		virtual void SetIncludeDirs(const wxArrayString& includeDirs);
 		virtual const wxArrayString& GetIncludeDirs();
+		virtual void SetResourceIncludeDirs(const wxArrayString& resIncludeDirs);
+		virtual const wxArrayString& GetResourceIncludeDirs();
 		virtual void SetLibDirs(const wxArrayString& libDirs);
 		virtual const wxArrayString& GetLibDirs();
 		virtual void SetCommandsBeforeBuild(const wxArrayString& commands);
@@ -52,6 +55,7 @@ class DLLIMPORT CompileOptionsBase
         virtual void AddLinkLib(const wxString& lib);
         virtual void AddCompilerOption(const wxString& option);
         virtual void AddIncludeDir(const wxString& option);
+        virtual void AddResourceIncludeDir(const wxString& option);
         virtual void AddLibDir(const wxString& option);
 		virtual void AddCommandsBeforeBuild(const wxString& command);
 		virtual void AddCommandsAfterBuild(const wxString& command);
@@ -63,6 +67,7 @@ class DLLIMPORT CompileOptionsBase
 		wxArrayString m_LinkLibs;
 		wxArrayString m_CompilerOptions;
 		wxArrayString m_IncludeDirs;
+		wxArrayString m_ResIncludeDirs;
 		wxArrayString m_LibDirs;
 		wxArrayString m_CmdsBefore;
 		wxArrayString m_CmdsAfter;

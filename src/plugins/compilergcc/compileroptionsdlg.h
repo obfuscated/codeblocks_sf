@@ -6,6 +6,8 @@
 #include "compileroptions.h"
 #include <cbproject.h>
 
+class wxListBox;
+
 class DLLIMPORT ScopeTreeData : public wxTreeItemData
 {
     public:
@@ -47,6 +49,7 @@ class CompilerOptionsDlg : public wxDialog
 		void CompilerChanged(ScopeTreeData* data);
 		void UpdateCompilerForTargets(int compilerIdx);
 		void AutoDetectCompiler();
+		wxListBox* GetDirsListBox();
 
 		void OnTreeSelectionChange(wxTreeEvent& event);
 		void OnTreeSelectionChanging(wxTreeEvent& event);
@@ -69,6 +72,8 @@ class CompilerOptionsDlg : public wxDialog
 		void OnRemoveLibClick(wxCommandEvent& event);
 		void OnMoveLibUpClick(wxCommandEvent& event);
 		void OnMoveLibDownClick(wxCommandEvent& event);
+		void OnMoveDirUpClick(wxCommandEvent& event);
+		void OnMoveDirDownClick(wxCommandEvent& event);
 		void OnMasterPathClick(wxCommandEvent& event);
 		void OnAutoDetectClick(wxCommandEvent& event);
 		void OnSelectProgramClick(wxCommandEvent& event);
@@ -84,6 +89,7 @@ class CompilerOptionsDlg : public wxDialog
         wxArrayString m_CompilerOptions;
         wxArrayString m_IncludeDirs;
         wxArrayString m_LibDirs;
+        wxArrayString m_ResDirs;
 		wxArrayString m_CommandsBeforeBuild;
 		wxArrayString m_CommandsAfterBuild;
 		int m_LastCompilerIdx;

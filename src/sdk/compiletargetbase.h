@@ -9,7 +9,8 @@ enum OptionsRelationType
     ortCompilerOptions = 0, /**< Compiler option */
     ortLinkerOptions, /**< Linker option */
     ortIncludeDirs, /**< Compiler include dir option */
-    ortLibDirs /**< Linker include dir option */
+    ortLibDirs, /**< Linker include dir option */
+    ortResDirs /**< Resource compiler include dir option */
 };
 
 /** Option's relation */
@@ -89,4 +90,3 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
 };
 
 #endif // COMPILETARGETBASE_H
-
