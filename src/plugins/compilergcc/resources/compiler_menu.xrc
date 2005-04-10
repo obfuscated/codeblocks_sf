@@ -13,7 +13,7 @@
     <object class="wxMenuItem" name="idCompilerMenuCompileAll"><label>Compile all pro&amp;jects</label><help>Compile all projects</help></object>
     <object class="wxMenuItem" name="idCompilerMenuRebuildAll"><label>Reb&amp;uild all projects</label><help>Rebuild all projects</help></object>
     <object class="separator"/>
-    <object class="wxMenuItem" name="idCompilerMenuKillProcess"><label>&amp;Abort</label><accel>Esc</accel><help>Abort the running build process</help></object>
+    <object class="wxMenuItem" name="idCompilerMenuKillProcess"><label>&amp;Abort</label><help>Abort the running build process</help></object>
     <object class="separator"/>
 
     <object class="wxMenu" name="idCompilerMenuErrors"><label>&amp;Errors</label>

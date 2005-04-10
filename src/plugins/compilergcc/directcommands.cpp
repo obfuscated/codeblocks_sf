@@ -279,6 +279,8 @@ wxArrayString DirectCommands::GetCompileCommands(ProjectBuildTarget* target, boo
 #ifdef DT_HASH
 WX_DECLARE_STRING_HASH_MAP(wxDateTime, DateTimeHash);
 DateTimeHash g_DateTimeHash;
+WX_DECLARE_STRING_HASH_MAP(wxArrayString, IncludeHash);
+extern IncludeHash g_IncludeHash;
 #endif
 
 wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* target, bool force)
@@ -303,6 +305,7 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
     }
 #ifdef DT_HASH
 	g_DateTimeHash.clear();
+	g_IncludeHash.clear();	
 #endif
     // iterate all files of the project/target and add them to the build process
     MyFilesArray files = GetProjectFilesSortedByWeight();
