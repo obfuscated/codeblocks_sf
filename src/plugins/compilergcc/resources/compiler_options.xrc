@@ -899,7 +899,7 @@
                 <option>1</option>
                 <flag>wxLEFT|wxEXPAND</flag>
                 <border>8</border>
-                <minsize>480,340</minsize>
+                <minsize>480,375</minsize>
               </object>
             </object>
             <option>1</option>

@@ -312,6 +312,7 @@ int DebuggerGDB::Debug()
     msgMan->SwitchTo(m_PageIndex);
 	m_pLog->GetTextControl()->Clear();
 
+
     m_TargetIndex = project->GetActiveBuildTarget();
     msgMan->SwitchTo(m_PageIndex);
 	msgMan->AppendLog(m_PageIndex, _("Selecting target: "));
@@ -353,16 +354,30 @@ int DebuggerGDB::Debug()
 		msgMan->Log(m_PageIndex, _("done"));
 	}
 
-	msgMan->AppendLog(m_PageIndex, _("Starting debugger: "));
+	wxString cmdexe;
+	Compiler* actualCompiler = CompilerFactory::Compilers[target ? target->GetCompilerIndex() : project->GetCompilerIndex()];
+	cmdexe = actualCompiler->GetPrograms().DBG;
+	cmdexe.Trim();
+	cmdexe.Trim(true);
+	if(cmdexe.IsEmpty())
+    {
+        msgMan->AppendLog(m_PageIndex,_("ERROR: You need to specify a debugger program in the compiler's settings."));
+        #ifdef __WXMSW__
+        msgMan->Log(m_PageIndex,_("\n(For MINGW compilers, it's 'gdb.exe' (without the quotes))"));
+        #else
+        msgMan->Log(m_PageIndex,_("\n(For MINGW compilers, it's 'gdb' (without the quotes))"));
+        #endif
+        return -1;
+    }
 
 	wxString cmd;
 	wxString sep = wxFileName::GetPathSeparator();
-	Compiler* actualCompiler = CompilerFactory::Compilers[target ? target->GetCompilerIndex() : project->GetCompilerIndex()];
-	cmd << actualCompiler->GetMasterPath() << sep << "bin" << sep << actualCompiler->GetPrograms().DBG << " -annotate=2 -silent";
-//	msgMan->AppendLog(m_PageIndex, cmd);
+	cmd << actualCompiler->GetMasterPath() << sep << "bin" << sep << cmdexe << " -annotate=2 -silent";
 	
 	wxLogNull ln; // we perform our own error handling and logging
     m_pProcess = new PipedProcess((void**)&m_pProcess, this, idGDBProcess, true, project->GetBasePath());
+	msgMan->AppendLog(m_PageIndex, _("Starting debugger: "));
+    msgMan->AppendLog(m_PageIndex, _(cmd));
     m_Pid = wxExecute(cmd, wxEXEC_ASYNC, m_pProcess);
 //    m_Pid = m_pProcess->Launch(cmd);
 

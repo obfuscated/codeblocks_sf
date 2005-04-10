@@ -127,7 +127,7 @@ void MessageManager::Log(const wxChar* msg, ...)
     va_end(arg_list);
 
     m_Logs[mltLog]->AddLog(tmp);
-	wxSafeYield(0L,true);
+	wxSafeYield(this,true);
 }
 
 void MessageManager::DebugLog(const wxChar* msg, ...)
@@ -144,7 +144,7 @@ void MessageManager::DebugLog(const wxChar* msg, ...)
 
 	wxDateTime timestamp = wxDateTime::UNow();
     m_Logs[mltDebug]->AddLog("[" + timestamp.Format("%X.%l") + "]: " + tmp);
-	wxSafeYield(0L,true);
+	wxSafeYield(this,true);
 }
 
 void MessageManager::DebugLogWarning(const wxChar* msg, ...)
@@ -212,7 +212,7 @@ void MessageManager::Log(int id, const wxChar* msg, ...)
     va_end(arg_list);
 
     m_LogIDs[id]->AddLog(tmp);
-	wxSafeYield(0L,true);
+	wxSafeYield(this,true);
 }
 
 void MessageManager::AppendLog(const wxChar* msg, ...)
@@ -226,7 +226,7 @@ void MessageManager::AppendLog(const wxChar* msg, ...)
     va_end(arg_list);
 
     m_Logs[mltLog]->AddLog(tmp, false);
-	wxSafeYield(0L,true);
+	wxSafeYield(this,true);
 }
 
 void MessageManager::AppendLog(int id, const wxChar* msg, ...)
@@ -243,7 +243,7 @@ void MessageManager::AppendLog(int id, const wxChar* msg, ...)
     va_end(arg_list);
 
     m_LogIDs[id]->AddLog(tmp, false);
-	wxSafeYield(0L,true);
+	wxSafeYield(this,true);
 }
 
 // switch to log page
