@@ -4,7 +4,7 @@
 
 # Project:          Code::Blocks
 # Project filename: C:\Devel\codeblocks\src\CodeBlocks.cbp
-# Date:             04/10/05 11:59:10
+# Date:             04/13/05 01:00:26
 # Compiler used:    GNU GCC Compiler
 
 ### Variables used in this Makefile
@@ -23,7 +23,7 @@ GLOBAL_CFLAGS=
 PROJECT_CFLAGS= -Wall -g -pipe -mthreads -fno-pcc-struct-return -fno-rtti -fmessage-length=0 -D__GNUWIN32__ -D__WXMSW__ -DWXUSINGDLL
 GLOBAL_LDFLAGS=
 PROJECT_LDFLAGS=
-GLOBAL_INCS= -IC:/MinGW/include
+GLOBAL_INCS= -IC:/MinGW/include -IC:/Games
 PROJECT_INCS=
 GLOBAL_LIBDIRS= -LC:/MinGW/lib
 PROJECT_LIBDIRS= -Lsdk/tinyxml
@@ -31,78 +31,78 @@ GLOBAL_LIBS=
 PROJECT_LIBS= -lwxmsw$(WX_VER)
 
 ### Targets compiler flags
-tinyXML_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS)
-sdk_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) -DEXPORT_LIB -DEXPORT_EVENTS -D_USRDLL
-src_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS)
-plugin_Astyle_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL
-plugin_CompilerGCC_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL
-plugin_DebuggerGDB_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL
-plugin_CodeCompletion_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL
-plugin_ClassWizard_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL
-plugin_DefMimeHandler_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL
-plugin_PluginsWizard_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL
-plugin_ToDo_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL
-plugin_XPManifest_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL
-console_runner_CFLAGS= $(GLOBAL_CFLAGS) $(PROJECT_CFLAGS)
+tinyXML_CFLAGS= $(PROJECT_CFLAGS) $(GLOBAL_CFLAGS)
+sdk_CFLAGS= $(PROJECT_CFLAGS) -DEXPORT_LIB -DEXPORT_EVENTS -D_USRDLL $(GLOBAL_CFLAGS)
+src_CFLAGS= $(PROJECT_CFLAGS) $(GLOBAL_CFLAGS)
+plugin_Astyle_CFLAGS= $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL $(GLOBAL_CFLAGS)
+plugin_CompilerGCC_CFLAGS= $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL -DDEPSLIB_WINDOWS $(GLOBAL_CFLAGS)
+plugin_DebuggerGDB_CFLAGS= $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL $(GLOBAL_CFLAGS)
+plugin_CodeCompletion_CFLAGS= $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL $(GLOBAL_CFLAGS)
+plugin_ClassWizard_CFLAGS= $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL $(GLOBAL_CFLAGS)
+plugin_DefMimeHandler_CFLAGS= $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL $(GLOBAL_CFLAGS)
+plugin_PluginsWizard_CFLAGS= $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL $(GLOBAL_CFLAGS)
+plugin_ToDo_CFLAGS= $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL $(GLOBAL_CFLAGS)
+plugin_XPManifest_CFLAGS= $(PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL $(GLOBAL_CFLAGS)
+console_runner_CFLAGS= $(PROJECT_CFLAGS) $(GLOBAL_CFLAGS)
 
 ### Targets linker flags
-tinyXML_LDFLAGS= $(GLOBAL_LDFLAGS) $(PROJECT_LDFLAGS)
-sdk_LDFLAGS= $(GLOBAL_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--export-all-symbols -Wl,--add-stdcall-alias $(PROJECT_LDFLAGS)
-src_LDFLAGS= $(GLOBAL_LDFLAGS) $(PROJECT_LDFLAGS)
-plugin_Astyle_LDFLAGS= $(GLOBAL_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias
-plugin_CompilerGCC_LDFLAGS= $(GLOBAL_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias
-plugin_DebuggerGDB_LDFLAGS= $(GLOBAL_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias
-plugin_CodeCompletion_LDFLAGS= $(GLOBAL_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias
-plugin_ClassWizard_LDFLAGS= $(GLOBAL_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias
-plugin_DefMimeHandler_LDFLAGS= $(GLOBAL_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias
-plugin_PluginsWizard_LDFLAGS= $(GLOBAL_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias
-plugin_ToDo_LDFLAGS= $(GLOBAL_LDFLAGS) $(PROJECT_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias
-plugin_XPManifest_LDFLAGS= $(GLOBAL_LDFLAGS) $(PROJECT_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias
-console_runner_LDFLAGS= $(GLOBAL_LDFLAGS)
+tinyXML_LDFLAGS=$(PROJECT_LDFLAGS) $(GLOBAL_LDFLAGS) 
+sdk_LDFLAGS= -Wl,--enable-auto-image-base -Wl,--export-all-symbols -Wl,--add-stdcall-alias$(PROJECT_LDFLAGS) $(GLOBAL_LDFLAGS) 
+src_LDFLAGS=$(PROJECT_LDFLAGS) $(GLOBAL_LDFLAGS) 
+plugin_Astyle_LDFLAGS= -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias$(GLOBAL_LDFLAGS) 
+plugin_CompilerGCC_LDFLAGS= -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias$(GLOBAL_LDFLAGS) 
+plugin_DebuggerGDB_LDFLAGS= -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias$(GLOBAL_LDFLAGS) 
+plugin_CodeCompletion_LDFLAGS= -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias$(GLOBAL_LDFLAGS) 
+plugin_ClassWizard_LDFLAGS= -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias$(GLOBAL_LDFLAGS) 
+plugin_DefMimeHandler_LDFLAGS= -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias$(GLOBAL_LDFLAGS) 
+plugin_PluginsWizard_LDFLAGS= -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias$(GLOBAL_LDFLAGS) 
+plugin_ToDo_LDFLAGS=$(PROJECT_LDFLAGS)  -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias$(GLOBAL_LDFLAGS) 
+plugin_XPManifest_LDFLAGS=$(PROJECT_LDFLAGS)  -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias$(GLOBAL_LDFLAGS) 
+console_runner_LDFLAGS=$(GLOBAL_LDFLAGS) 
 
 ### Targets include directories
-tinyXML_INCS= $(GLOBAL_INCS) $(PROJECT_INCS)
-sdk_INCS= $(GLOBAL_INCS) $(PROJECT_INCS)
-src_INCS= $(GLOBAL_INCS) -Isdk $(PROJECT_INCS)
-plugin_Astyle_INCS= $(GLOBAL_INCS) $(PROJECT_INCS) -Isdk -Iplugins/astyle/astyle
-plugin_CompilerGCC_INCS= $(GLOBAL_INCS) -Isdk $(PROJECT_INCS)
-plugin_DebuggerGDB_INCS= $(GLOBAL_INCS) -Isdk $(PROJECT_INCS)
-plugin_CodeCompletion_INCS= $(GLOBAL_INCS) -Isdk $(PROJECT_INCS)
-plugin_ClassWizard_INCS= $(GLOBAL_INCS) -Isdk $(PROJECT_INCS)
-plugin_DefMimeHandler_INCS= $(GLOBAL_INCS) -Isdk $(PROJECT_INCS)
-plugin_PluginsWizard_INCS= $(GLOBAL_INCS) -Isdk $(PROJECT_INCS)
-plugin_ToDo_INCS= $(GLOBAL_INCS) $(PROJECT_INCS) -Isdk
-plugin_XPManifest_INCS= $(GLOBAL_INCS) -Isdk $(PROJECT_INCS)
-console_runner_INCS= $(GLOBAL_INCS) $(PROJECT_INCS)
+tinyXML_INCS= $(PROJECT_INCS) $(GLOBAL_INCS)
+sdk_INCS= $(PROJECT_INCS) $(GLOBAL_INCS)
+src_INCS= -Isdk $(PROJECT_INCS) $(GLOBAL_INCS)
+plugin_Astyle_INCS= $(PROJECT_INCS) -Isdk -Iplugins/astyle/astyle $(GLOBAL_INCS)
+plugin_CompilerGCC_INCS= -Isdk -Iplugins/compilergcc/depslib/src $(PROJECT_INCS) $(GLOBAL_INCS)
+plugin_DebuggerGDB_INCS= -Isdk $(PROJECT_INCS) $(GLOBAL_INCS)
+plugin_CodeCompletion_INCS= -Isdk $(PROJECT_INCS) $(GLOBAL_INCS)
+plugin_ClassWizard_INCS= -Isdk $(PROJECT_INCS) $(GLOBAL_INCS)
+plugin_DefMimeHandler_INCS= -Isdk $(PROJECT_INCS) $(GLOBAL_INCS)
+plugin_PluginsWizard_INCS= -Isdk $(PROJECT_INCS) $(GLOBAL_INCS)
+plugin_ToDo_INCS= $(PROJECT_INCS) -Isdk $(GLOBAL_INCS)
+plugin_XPManifest_INCS= -Isdk $(PROJECT_INCS) $(GLOBAL_INCS)
+console_runner_INCS= $(PROJECT_INCS) $(GLOBAL_INCS)
 
 ### Targets library directories
-tinyXML_LIBDIRS= $(GLOBAL_LIBDIRS) $(PROJECT_LIBDIRS)
-sdk_LIBDIRS= $(GLOBAL_LIBDIRS) $(PROJECT_LIBDIRS)
-src_LIBDIRS= $(GLOBAL_LIBDIRS) -Ldevel $(PROJECT_LIBDIRS)
-plugin_Astyle_LIBDIRS= $(GLOBAL_LIBDIRS) $(PROJECT_LIBDIRS) -Ldevel
-plugin_CompilerGCC_LIBDIRS= $(GLOBAL_LIBDIRS) -Ldevel $(PROJECT_LIBDIRS)
-plugin_DebuggerGDB_LIBDIRS= $(GLOBAL_LIBDIRS) -Ldevel $(PROJECT_LIBDIRS)
-plugin_CodeCompletion_LIBDIRS= $(GLOBAL_LIBDIRS) -Ldevel $(PROJECT_LIBDIRS)
-plugin_ClassWizard_LIBDIRS= $(GLOBAL_LIBDIRS) -Ldevel $(PROJECT_LIBDIRS)
-plugin_DefMimeHandler_LIBDIRS= $(GLOBAL_LIBDIRS) -Ldevel $(PROJECT_LIBDIRS)
-plugin_PluginsWizard_LIBDIRS= $(GLOBAL_LIBDIRS) -Ldevel $(PROJECT_LIBDIRS)
-plugin_ToDo_LIBDIRS= $(GLOBAL_LIBDIRS) $(PROJECT_LIBDIRS) -Ldevel
-plugin_XPManifest_LIBDIRS= $(GLOBAL_LIBDIRS) -Ldevel $(PROJECT_LIBDIRS)
-console_runner_LIBDIRS= $(GLOBAL_LIBDIRS) $(PROJECT_LIBDIRS)
+tinyXML_LIBDIRS= $(PROJECT_LIBDIRS) $(GLOBAL_LIBDIRS)
+sdk_LIBDIRS= $(PROJECT_LIBDIRS) $(GLOBAL_LIBDIRS)
+src_LIBDIRS= -Ldevel $(PROJECT_LIBDIRS) $(GLOBAL_LIBDIRS)
+plugin_Astyle_LIBDIRS= $(PROJECT_LIBDIRS) -Ldevel $(GLOBAL_LIBDIRS)
+plugin_CompilerGCC_LIBDIRS= -Ldevel $(PROJECT_LIBDIRS) $(GLOBAL_LIBDIRS)
+plugin_DebuggerGDB_LIBDIRS= -Ldevel $(PROJECT_LIBDIRS) $(GLOBAL_LIBDIRS)
+plugin_CodeCompletion_LIBDIRS= -Ldevel $(PROJECT_LIBDIRS) $(GLOBAL_LIBDIRS)
+plugin_ClassWizard_LIBDIRS= -Ldevel $(PROJECT_LIBDIRS) $(GLOBAL_LIBDIRS)
+plugin_DefMimeHandler_LIBDIRS= -Ldevel $(PROJECT_LIBDIRS) $(GLOBAL_LIBDIRS)
+plugin_PluginsWizard_LIBDIRS= -Ldevel $(PROJECT_LIBDIRS) $(GLOBAL_LIBDIRS)
+plugin_ToDo_LIBDIRS= $(PROJECT_LIBDIRS) -Ldevel $(GLOBAL_LIBDIRS)
+plugin_XPManifest_LIBDIRS= -Ldevel $(PROJECT_LIBDIRS) $(GLOBAL_LIBDIRS)
+console_runner_LIBDIRS= $(PROJECT_LIBDIRS) $(GLOBAL_LIBDIRS)
 
 ### Targets libraries
-tinyXML_LIBS= $(GLOBAL_LIBS) $(PROJECT_LIBS)
-sdk_LIBS= $(GLOBAL_LIBS) -ltxml -lwxxrc -lstc $(PROJECT_LIBS)
-src_LIBS= $(GLOBAL_LIBS) -lcodeblocks -lstc -lwxxrc -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lodbc32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32 $(PROJECT_LIBS)
-plugin_Astyle_LIBS= $(GLOBAL_LIBS) -lcodeblocks -lstc -lwxxrc -lwxmsw$(WX_VER)
-plugin_CompilerGCC_LIBS= $(GLOBAL_LIBS) -lcodeblocks -lstc -lwxxrc -lwxmsw$(WX_VER)
-plugin_DebuggerGDB_LIBS= $(GLOBAL_LIBS) -lcodeblocks -lstc -lwxxrc -lwxmsw$(WX_VER)
-plugin_CodeCompletion_LIBS= $(GLOBAL_LIBS) -lcodeblocks -lstc -lwxxrc -lwxmsw$(WX_VER)
-plugin_ClassWizard_LIBS= $(GLOBAL_LIBS) -lcodeblocks -lstc -lwxxrc -lwxmsw$(WX_VER)
-plugin_DefMimeHandler_LIBS= $(GLOBAL_LIBS) -lcodeblocks -lwxxrc -lwxmsw$(WX_VER)
-plugin_PluginsWizard_LIBS= $(GLOBAL_LIBS) -lcodeblocks -lstc -lwxxrc -lwxmsw$(WX_VER)
-plugin_ToDo_LIBS= $(GLOBAL_LIBS) $(PROJECT_LIBS) -lcodeblocks -lwxmsw$(WX_VER)
-plugin_XPManifest_LIBS= $(GLOBAL_LIBS) $(PROJECT_LIBS) -lcodeblocks -lwxmsw$(WX_VER)
+tinyXML_LIBS= $(PROJECT_LIBS) $(GLOBAL_LIBS)
+sdk_LIBS= -ltxml -lwxxrc -lstc $(PROJECT_LIBS) $(GLOBAL_LIBS)
+src_LIBS= -lcodeblocks -lstc -lwxxrc -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lodbc32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32 $(PROJECT_LIBS) $(GLOBAL_LIBS)
+plugin_Astyle_LIBS= -lcodeblocks -lstc -lwxxrc -lwxmsw$(WX_VER) $(GLOBAL_LIBS)
+plugin_CompilerGCC_LIBS= -lcodeblocks -lstc -lwxxrc -lwxmsw$(WX_VER) $(GLOBAL_LIBS)
+plugin_DebuggerGDB_LIBS= -lcodeblocks -lstc -lwxxrc -lwxmsw$(WX_VER) $(GLOBAL_LIBS)
+plugin_CodeCompletion_LIBS= -lcodeblocks -lstc -lwxxrc -lwxmsw$(WX_VER) $(GLOBAL_LIBS)
+plugin_ClassWizard_LIBS= -lcodeblocks -lstc -lwxxrc -lwxmsw$(WX_VER) $(GLOBAL_LIBS)
+plugin_DefMimeHandler_LIBS= -lcodeblocks -lwxxrc -lwxmsw$(WX_VER) $(GLOBAL_LIBS)
+plugin_PluginsWizard_LIBS= -lcodeblocks -lstc -lwxxrc -lwxmsw$(WX_VER) $(GLOBAL_LIBS)
+plugin_ToDo_LIBS= $(PROJECT_LIBS) -lcodeblocks -lwxmsw$(WX_VER) $(GLOBAL_LIBS)
+plugin_XPManifest_LIBS= $(PROJECT_LIBS) -lcodeblocks -lwxmsw$(WX_VER) $(GLOBAL_LIBS)
 console_runner_LIBS= $(GLOBAL_LIBS)
 
 ###############################################################################
@@ -137,9 +137,9 @@ src_DEPS=.deps/src/app.d .deps/src/dlgabout.d .deps/src/dlgaboutplugin.d .deps/s
 plugin_Astyle_OBJS=.objs/plugins/astyle/asstreamiterator.o .objs/plugins/astyle/astyle/ASBeautifier.o .objs/plugins/astyle/astyle/ASFormatter.o .objs/plugins/astyle/astyle/ASResource.o .objs/plugins/astyle/astyleconfigdlg.o .objs/plugins/astyle/astyleplugin.o .objs/plugins/astyle/formattersettings.o 
 plugin_Astyle_LINKOBJS=$(plugin_Astyle_OBJS)
 plugin_Astyle_DEPS=.deps/plugins/astyle/asstreamiterator.d .deps/plugins/astyle/astyle/ASBeautifier.d .deps/plugins/astyle/astyle/ASFormatter.d .deps/plugins/astyle/astyle/ASResource.d .deps/plugins/astyle/astyleconfigdlg.d .deps/plugins/astyle/astyleplugin.d .deps/plugins/astyle/formattersettings.d 
-plugin_CompilerGCC_OBJS=.objs/plugins/compilergcc/advancedcompileroptionsdlg.o .objs/plugins/compilergcc/compilerBCC.o .objs/plugins/compilergcc/compilerDMC.o .objs/plugins/compilergcc/compilerMINGW.o .objs/plugins/compilergcc/compilerMSVC.o .objs/plugins/compilergcc/compilererrors.o .objs/plugins/compilergcc/compilergcc.o .objs/plugins/compilergcc/compilermessages.o .objs/plugins/compilergcc/compileroptionsdlg.o .objs/plugins/compilergcc/customvars.o .objs/plugins/compilergcc/directcommands.o .objs/plugins/compilergcc/directdeps.o .objs/plugins/compilergcc/linklibdlg.o .objs/plugins/compilergcc/makefilegenerator.o 
+plugin_CompilerGCC_OBJS=.objs/plugins/compilergcc/advancedcompileroptionsdlg.o .objs/plugins/compilergcc/compilerBCC.o .objs/plugins/compilergcc/compilerDMC.o .objs/plugins/compilergcc/compilerMINGW.o .objs/plugins/compilergcc/compilerMSVC.o .objs/plugins/compilergcc/compilererrors.o .objs/plugins/compilergcc/compilergcc.o .objs/plugins/compilergcc/compilermessages.o .objs/plugins/compilergcc/compileroptionsdlg.o .objs/plugins/compilergcc/customvars.o .objs/plugins/compilergcc/depslib/src/alloc.o .objs/plugins/compilergcc/depslib/src/cache.o .objs/plugins/compilergcc/depslib/src/depslib.o .objs/plugins/compilergcc/depslib/src/filent.o .objs/plugins/compilergcc/depslib/src/fileunix.o .objs/plugins/compilergcc/depslib/src/hash.o .objs/plugins/compilergcc/depslib/src/headers.o .objs/plugins/compilergcc/depslib/src/lists.o .objs/plugins/compilergcc/depslib/src/main.o .objs/plugins/compilergcc/depslib/src/newstr.o .objs/plugins/compilergcc/depslib/src/pathsplit.o .objs/plugins/compilergcc/depslib/src/pathunix.o .objs/plugins/compilergcc/depslib/src/regexp.o .objs/plugins/compilergcc/depslib/src/search.o .objs/plugins/compilergcc/depslib/src/timestamp.o .objs/plugins/compilergcc/directcommands.o .objs/plugins/compilergcc/linklibdlg.o .objs/plugins/compilergcc/makefilegenerator.o 
 plugin_CompilerGCC_LINKOBJS=$(plugin_CompilerGCC_OBJS)
-plugin_CompilerGCC_DEPS=.deps/plugins/compilergcc/advancedcompileroptionsdlg.d .deps/plugins/compilergcc/compilerBCC.d .deps/plugins/compilergcc/compilerDMC.d .deps/plugins/compilergcc/compilerMINGW.d .deps/plugins/compilergcc/compilerMSVC.d .deps/plugins/compilergcc/compilererrors.d .deps/plugins/compilergcc/compilergcc.d .deps/plugins/compilergcc/compilermessages.d .deps/plugins/compilergcc/compileroptionsdlg.d .deps/plugins/compilergcc/customvars.d .deps/plugins/compilergcc/directcommands.d .deps/plugins/compilergcc/directdeps.d .deps/plugins/compilergcc/linklibdlg.d .deps/plugins/compilergcc/makefilegenerator.d 
+plugin_CompilerGCC_DEPS=.deps/plugins/compilergcc/advancedcompileroptionsdlg.d .deps/plugins/compilergcc/compilerBCC.d .deps/plugins/compilergcc/compilerDMC.d .deps/plugins/compilergcc/compilerMINGW.d .deps/plugins/compilergcc/compilerMSVC.d .deps/plugins/compilergcc/compilererrors.d .deps/plugins/compilergcc/compilergcc.d .deps/plugins/compilergcc/compilermessages.d .deps/plugins/compilergcc/compileroptionsdlg.d .deps/plugins/compilergcc/customvars.d .deps/plugins/compilergcc/depslib/src/alloc.d .deps/plugins/compilergcc/depslib/src/cache.d .deps/plugins/compilergcc/depslib/src/depslib.d .deps/plugins/compilergcc/depslib/src/filent.d .deps/plugins/compilergcc/depslib/src/fileunix.d .deps/plugins/compilergcc/depslib/src/hash.d .deps/plugins/compilergcc/depslib/src/headers.d .deps/plugins/compilergcc/depslib/src/lists.d .deps/plugins/compilergcc/depslib/src/main.d .deps/plugins/compilergcc/depslib/src/newstr.d .deps/plugins/compilergcc/depslib/src/pathsplit.d .deps/plugins/compilergcc/depslib/src/pathunix.d .deps/plugins/compilergcc/depslib/src/regexp.d .deps/plugins/compilergcc/depslib/src/search.d .deps/plugins/compilergcc/depslib/src/timestamp.d .deps/plugins/compilergcc/directcommands.d .deps/plugins/compilergcc/linklibdlg.d .deps/plugins/compilergcc/makefilegenerator.d 
 plugin_DebuggerGDB_OBJS=.objs/plugins/debuggergdb/debuggergdb.o .objs/plugins/debuggergdb/debuggeroptionsdlg.o .objs/plugins/debuggergdb/debuggertree.o 
 plugin_DebuggerGDB_LINKOBJS=$(plugin_DebuggerGDB_OBJS)
 plugin_DebuggerGDB_DEPS=.deps/plugins/debuggergdb/debuggergdb.d .deps/plugins/debuggergdb/debuggeroptionsdlg.d .deps/plugins/debuggergdb/debuggertree.d 
@@ -238,7 +238,7 @@ doc-before:
 
 
 dist:
-	@$(ZIP) CodeBlocks.cbp.$(ZIP_EXT) CodeBlocks.cbp Makefile devel\share\CodeBlocks\images\codecompletion\README.txt devel\share\CodeBlocks\plugins\README.txt devel\share\CodeBlocks\templates\README.txt plugins\astyle\asstreamiterator.cpp plugins\astyle\asstreamiterator.h plugins\astyle\astyle\ASBeautifier.cpp plugins\astyle\astyle\ASFormatter.cpp plugins\astyle\astyle\ASResource.cpp plugins\astyle\astyle\INSTALL.TXT plugins\astyle\astyle\Makefile plugins\astyle\astyle\astyle.h plugins\astyle\astyle\astyle.html plugins\astyle\astyle\astyle_main.cpp plugins\astyle\astyle\astyle_release_notes.html plugins\astyle\astyle\compiler_defines.h plugins\astyle\astyle\license.html plugins\astyle\astyleconfigdlg.cpp plugins\astyle\astyleconfigdlg.h plugins\astyle\astyleplugin.cpp plugins\astyle\astyleplugin.h plugins\astyle\formattersettings.cpp plugins\astyle\formattersettings.h plugins\astyle\resources\configuration.xrc plugins\classwizard\classwizard.cpp plugins\classwizard\classwizard.h plugins\classwizard\classwizarddlg.cpp plugins\classwizard\classwizarddlg.h plugins\classwizard\resources\new_class.xrc plugins\codecompletion\cclist.cpp plugins\codecompletion\cclist.h plugins\codecompletion\cclistctrl.cpp plugins\codecompletion\cclistctrl.h plugins\codecompletion\ccoptionsdlg.cpp plugins\codecompletion\ccoptionsdlg.h plugins\codecompletion\ccrenderer.cpp plugins\codecompletion\ccrenderer.h plugins\codecompletion\classbrowser.cpp plugins\codecompletion\classbrowser.h plugins\codecompletion\codecompletion.cpp plugins\codecompletion\codecompletion.h plugins\codecompletion\insertclassmethoddlg.cpp plugins\codecompletion\insertclassmethoddlg.h plugins\codecompletion\nativeparser.cpp plugins\codecompletion\nativeparser.h plugins\codecompletion\parser\parser.cpp plugins\codecompletion\parser\parser.h plugins\codecompletion\parser\parserthread.cpp plugins\codecompletion\parser\parserthread.h plugins\codecompletion\parser\token.cpp plugins\codecompletion\parser\token.h plugins\codecompletion\parser\tokenizer.cpp plugins\codecompletion\parser\tokenizer.h plugins\codecompletion\resources\images\class.png plugins\codecompletion\resources\images\class_folder.png plugins\codecompletion\resources\images\ctor_private.png plugins\codecompletion\resources\images\ctor_protected.png plugins\codecompletion\resources\images\ctor_public.png plugins\codecompletion\resources\images\dtor_private.png plugins\codecompletion\resources\images\dtor_protected.png plugins\codecompletion\resources\images\dtor_public.png plugins\codecompletion\resources\images\enum.png plugins\codecompletion\resources\images\enumerator.png plugins\codecompletion\resources\images\enums_folder.png plugins\codecompletion\resources\images\method_private.png plugins\codecompletion\resources\images\method_protected.png plugins\codecompletion\resources\images\method_public.png plugins\codecompletion\resources\images\namespace.png plugins\codecompletion\resources\images\others_folder.png plugins\codecompletion\resources\images\preproc.png plugins\codecompletion\resources\images\preproc_folder.png plugins\codecompletion\resources\images\symbols_folder.png plugins\codecompletion\resources\images\var_private.png plugins\codecompletion\resources\images\var_protected.png plugins\codecompletion\resources\images\var_public.png plugins\codecompletion\resources\insert_class_method.xrc plugins\codecompletion\resources\settings.xrc plugins\compilergcc\advancedcompileroptionsdlg.cpp plugins\compilergcc\advancedcompileroptionsdlg.h plugins\compilergcc\compilerBCC.cpp plugins\compilergcc\compilerBCC.h plugins\compilergcc\compilerDMC.cpp plugins\compilergcc\compilerDMC.h plugins\compilergcc\compilerMINGW.cpp plugins\compilergcc\compilerMINGW.h plugins\compilergcc\compilerMSVC.cpp plugins\compilergcc\compilerMSVC.h plugins\compilergcc\compilererrors.cpp plugins\compilergcc\compilererrors.h plugins\compilergcc\compilergcc.cpp plugins\compilergcc\compilergcc.h plugins\compilergcc\compilermessages.cpp plugins\compilergcc\compilermessages.h plugins\compilergcc\compileroptionsdlg.cpp plugins\compilergcc\compileroptionsdlg.h plugins\compilergcc\customvars.cpp plugins\compilergcc\customvars.h plugins\compilergcc\directcommands.cpp plugins\compilergcc\directcommands.h plugins\compilergcc\directdeps.cpp plugins\compilergcc\directdeps.h plugins\compilergcc\linklibdlg.cpp plugins\compilergcc\linklibdlg.h plugins\compilergcc\makefilegenerator.cpp plugins\compilergcc\makefilegenerator.h plugins\compilergcc\resources\advanced_compiler_options.xrc plugins\compilergcc\resources\compiler_menu.xrc plugins\compilergcc\resources\compiler_options.xrc plugins\compilergcc\resources\compiler_toolbar.xrc plugins\compilergcc\resources\compiler_toolbar_16x16.xrc plugins\compilergcc\resources\images\16x16\compile.png plugins\compilergcc\resources\images\16x16\compilerun.png plugins\compilergcc\resources\images\16x16\rebuild.png plugins\compilergcc\resources\images\16x16\run.png plugins\compilergcc\resources\images\compile.png plugins\compilergcc\resources\images\compilerun.png plugins\compilergcc\resources\images\rebuild.png plugins\compilergcc\resources\images\run.png plugins\debuggergdb\debuggergdb.cpp plugins\debuggergdb\debuggergdb.h plugins\debuggergdb\debuggeroptionsdlg.cpp plugins\debuggergdb\debuggeroptionsdlg.h plugins\debuggergdb\debuggertree.cpp plugins\debuggergdb\debuggertree.h plugins\debuggergdb\resources\debugger_menu.xrc plugins\debuggergdb\resources\images\16x16\dbgnext.png plugins\debuggergdb\resources\images\16x16\dbgrun.png plugins\debuggergdb\resources\images\16x16\dbgrunto.png plugins\debuggergdb\resources\images\16x16\dbgstep.png plugins\debuggergdb\resources\images\16x16\stop.png plugins\debuggergdb\resources\images\dbgnext.png plugins\debuggergdb\resources\images\dbgrun.png plugins\debuggergdb\resources\images\dbgrunto.png plugins\debuggergdb\resources\images\dbgstep.png plugins\debuggergdb\resources\images\stop.png plugins\defaultmimehandler\defaultmimehandler.cpp plugins\defaultmimehandler\defaultmimehandler.h plugins\defaultmimehandler\editmimetypesdlg.cpp plugins\defaultmimehandler\editmimetypesdlg.h plugins\defaultmimehandler\mimetypesarray.h plugins\defaultmimehandler\resources\edit_files_handling.xrc plugins\pluginwizard\enterinfodlg.cpp plugins\pluginwizard\enterinfodlg.h plugins\pluginwizard\pluginwizard.cpp plugins\pluginwizard\pluginwizard.h plugins\pluginwizard\pluginwizarddlg.cpp plugins\pluginwizard\pluginwizarddlg.h plugins\pluginwizard\resources\new_plugin.xrc plugins\pluginwizard\resources\plugin_info.xrc plugins\todo\addtododlg.cpp plugins\todo\addtododlg.h plugins\todo\resources\add_todo.xrc plugins\todo\resources\settings.xrc plugins\todo\todolist.cpp plugins\todo\todolist.h plugins\todo\todolistview.cpp plugins\todo\todolistview.h plugins\todo\todosettingsdlg.cpp plugins\todo\todosettingsdlg.h plugins\xpmanifest\windowsxplooknfeel.cpp plugins\xpmanifest\windowsxplooknfeel.h sdk.doxy sdk\Managers\Managers.cpp sdk\Managers\Managers.h sdk\Managers\StdAfx.cpp sdk\Managers\StdAfx.h sdk\autodetectcompilers.cpp sdk\autodetectcompilers.h sdk\cbeditor.cpp sdk\cbeditor.h sdk\cbplugin.cpp sdk\cbplugin.h sdk\cbproject.cpp sdk\cbproject.h sdk\cbworkspace.cpp sdk\cbworkspace.h sdk\compileoptionsbase.cpp sdk\compileoptionsbase.h sdk\compiler.cpp sdk\compiler.h sdk\compilerfactory.cpp sdk\compilerfactory.h sdk\compileroptions.cpp sdk\compileroptions.h sdk\compiletargetbase.cpp sdk\compiletargetbase.h sdk\configmanager.cpp sdk\configmanager.h sdk\configuretoolsdlg.cpp sdk\configuretoolsdlg.h sdk\confirmreplacedlg.cpp sdk\confirmreplacedlg.h sdk\devcpploader.cpp sdk\devcpploader.h sdk\editarrayfiledlg.cpp sdk\editarrayfiledlg.h sdk\editarrayorderdlg.cpp sdk\editarrayorderdlg.h sdk\editarraystringdlg.cpp sdk\editarraystringdlg.h sdk\editorcolorset.cpp sdk\editorcolorset.h sdk\editorconfigurationdlg.cpp sdk\editorconfigurationdlg.h sdk\editormanager.cpp sdk\editormanager.h sdk\edittooldlg.cpp sdk\edittooldlg.h sdk\filegroupsandmasks.cpp sdk\filegroupsandmasks.h sdk\finddlg.cpp sdk\finddlg.h sdk\findreplacebase.h sdk\globals.cpp sdk\globals.h sdk\ibaseloader.h sdk\ibaseworkspaceloader.h sdk\importers_globals.cpp sdk\importers_globals.h sdk\incrementalselectlistdlg.cpp sdk\incrementalselectlistdlg.h sdk\licenses.h sdk\macrosmanager.cpp sdk\macrosmanager.h sdk\managedthread.cpp sdk\managedthread.h sdk\manager.cpp sdk\manager.h sdk\managerproxy.h sdk\menuitemsmanager.cpp sdk\menuitemsmanager.h sdk\messagelog.cpp sdk\messagelog.h sdk\messagemanager.cpp sdk\messagemanager.h sdk\msvc7loader.cpp sdk\msvc7loader.h sdk\msvc7workspaceloader.cpp sdk\msvc7workspaceloader.h sdk\msvcloader.cpp sdk\msvcloader.h sdk\msvcworkspaceloader.cpp sdk\msvcworkspaceloader.h sdk\multiselectdlg.cpp sdk\multiselectdlg.h sdk\newfromtemplatedlg.cpp sdk\newfromtemplatedlg.h sdk\pipedprocess.cpp sdk\pipedprocess.h sdk\pluginmanager.cpp sdk\pluginmanager.h sdk\pluginsconfigurationdlg.cpp sdk\pluginsconfigurationdlg.h sdk\projectbuildtarget.cpp sdk\projectbuildtarget.h sdk\projectfileoptionsdlg.cpp sdk\projectfileoptionsdlg.h sdk\projectlayoutloader.cpp sdk\projectlayoutloader.h sdk\projectloader.cpp sdk\projectloader.h sdk\projectmanager.cpp sdk\projectmanager.h sdk\projectoptionsdlg.cpp sdk\projectoptionsdlg.h sdk\projectsfilemasksdlg.cpp sdk\projectsfilemasksdlg.h sdk\projecttemplateloader.cpp sdk\projecttemplateloader.h sdk\replacedlg.cpp sdk\replacedlg.h sdk\resources\auto_detect_compilers.xrc sdk\resources\configure_tools.xrc sdk\resources\confirm_replace.xrc sdk\resources\edit_array_order.xrc sdk\resources\edit_array_string.xrc sdk\resources\edit_tool.xrc sdk\resources\editor_configuration.xrc sdk\resources\find_dialog.xrc sdk\resources\generic_multi_select.xrc sdk\resources\incremental_select_list.xrc sdk\resources\new_from_template.xrc sdk\resources\plugins_configuration.xrc sdk\resources\project_manager_file_types.xrc sdk\resources\project_options.xrc sdk\resources\projectfile_options.xrc sdk\resources\replace_dialog.xrc sdk\resources\select_target.xrc sdk\sanitycheck.h sdk\sdk_events.cpp sdk\sdk_events.h sdk\selecttargetdlg.cpp sdk\selecttargetdlg.h sdk\settings.h sdk\simplelistlog.cpp sdk\simplelistlog.h sdk\simpletextlog.cpp sdk\simpletextlog.h sdk\templatemanager.cpp sdk\templatemanager.h sdk\tinyxml\tinystr.cpp sdk\tinyxml\tinystr.h sdk\tinyxml\tinyxml.cpp sdk\tinyxml\tinyxml.h sdk\tinyxml\tinyxmlerror.cpp sdk\tinyxml\tinyxmlparser.cpp sdk\toolsmanager.cpp sdk\toolsmanager.h sdk\workspaceloader.cpp sdk\workspaceloader.h sdk\xtra_classes.cpp sdk\xtra_classes.h sdk\xtra_res.cpp sdk\xtra_res.h src\app.cpp src\app.h src\dlgabout.cpp src\dlgabout.h src\dlgaboutplugin.cpp src\dlgaboutplugin.h src\environmentsettingsdlg.cpp src\environmentsettingsdlg.h src\globals.h src\impexpconfig.cpp src\impexpconfig.h src\main.cpp src\main.h src\resources\dlg_about.xrc src\resources\dlg_about_plugin.xrc src\resources\env_settings.xrc src\resources\icons\app.ico src\resources\icons\app.xpm src\resources\icons\c.ico src\resources\icons\cpp.ico src\resources\icons\csd.ico src\resources\icons\filetempl.ico src\resources\icons\h.ico src\resources\images\16x16\editcopy.png src\resources\images\16x16\editcut.png src\resources\images\16x16\editpaste.png src\resources\images\16x16\filefind.png src\resources\images\16x16\filenew.png src\resources\images\16x16\fileopen.png src\resources\images\16x16\filesave.png src\resources\images\16x16\folder.png src\resources\images\16x16\folder_new.png src\resources\images\16x16\folder_open.png src\resources\images\16x16\newproject.png src\resources\images\16x16\redo.png src\resources\images\16x16\searchreplace.png src\resources\images\16x16\undo.png src\resources\images\ascii.png src\resources\images\codeblocks.png src\resources\images\compile.png src\resources\images\compilerun.png src\resources\images\contents_16x16.png src\resources\images\dbgnext.png src\resources\images\dbgrun.png src\resources\images\dbgrunto.png src\resources\images\dbgstep.png src\resources\images\edit_16x16.png src\resources\images\editcopy.png src\resources\images\editcut.png src\resources\images\editpaste.png src\resources\images\filefind.png src\resources\images\filenew.png src\resources\images\fileopen.png src\resources\images\filesave.png src\resources\images\filesaveas.png src\resources\images\flag_16x16.png src\resources\images\folder.png src\resources\images\folder_new.png src\resources\images\folder_open.png src\resources\images\gohome.png src\resources\images\misc_16x16.png src\resources\images\newproject.png src\resources\images\rebuild.png src\resources\images\redo.png src\resources\images\run.png src\resources\images\searchreplace.png src\resources\images\source.png src\resources\images\splash.png src\resources\images\stop.png src\resources\images\undo.png src\resources\imp_exp_config.xrc src\resources\main_frame.xrc src\resources\main_menu.xrc src\resources\main_toolbar.xrc src\resources\main_toolbar_16x16.xrc src\resources\resources.rc templates\console-main-c.cpp templates\console-main-cpp.cpp templates\console.cbp templates\console.png templates\console.template templates\gui.png templates\opengl-main.cpp templates\opengl.cbp templates\opengl.png templates\opengl.template templates\win32-main.cpp templates\win32.cbp templates\win32gui.template templates\wx-app-ash.cpp templates\wx-app-ash.h templates\wx-main-ash.cpp templates\wx-main-ash.h templates\wx-main-s.cpp templates\wx-main-sh.cpp templates\wx-main-sh.h templates\wxwindows.cbp templates\wxwindows.png templates\wxwindows.template tips.txt tools\ConsoleRunner\main.cpp 
+	@$(ZIP) CodeBlocks.cbp.$(ZIP_EXT) CodeBlocks.cbp Makefile devel\share\CodeBlocks\images\codecompletion\README.txt devel\share\CodeBlocks\plugins\README.txt devel\share\CodeBlocks\templates\README.txt plugins\astyle\asstreamiterator.cpp plugins\astyle\asstreamiterator.h plugins\astyle\astyle\ASBeautifier.cpp plugins\astyle\astyle\ASFormatter.cpp plugins\astyle\astyle\ASResource.cpp plugins\astyle\astyle\INSTALL.TXT plugins\astyle\astyle\Makefile plugins\astyle\astyle\astyle.h plugins\astyle\astyle\astyle.html plugins\astyle\astyle\astyle_main.cpp plugins\astyle\astyle\astyle_release_notes.html plugins\astyle\astyle\compiler_defines.h plugins\astyle\astyle\license.html plugins\astyle\astyleconfigdlg.cpp plugins\astyle\astyleconfigdlg.h plugins\astyle\astyleplugin.cpp plugins\astyle\astyleplugin.h plugins\astyle\formattersettings.cpp plugins\astyle\formattersettings.h plugins\astyle\resources\configuration.xrc plugins\classwizard\classwizard.cpp plugins\classwizard\classwizard.h plugins\classwizard\classwizarddlg.cpp plugins\classwizard\classwizarddlg.h plugins\classwizard\resources\new_class.xrc plugins\codecompletion\cclist.cpp plugins\codecompletion\cclist.h plugins\codecompletion\cclistctrl.cpp plugins\codecompletion\cclistctrl.h plugins\codecompletion\ccoptionsdlg.cpp plugins\codecompletion\ccoptionsdlg.h plugins\codecompletion\ccrenderer.cpp plugins\codecompletion\ccrenderer.h plugins\codecompletion\classbrowser.cpp plugins\codecompletion\classbrowser.h plugins\codecompletion\codecompletion.cpp plugins\codecompletion\codecompletion.h plugins\codecompletion\insertclassmethoddlg.cpp plugins\codecompletion\insertclassmethoddlg.h plugins\codecompletion\nativeparser.cpp plugins\codecompletion\nativeparser.h plugins\codecompletion\parser\parser.cpp plugins\codecompletion\parser\parser.h plugins\codecompletion\parser\parserthread.cpp plugins\codecompletion\parser\parserthread.h plugins\codecompletion\parser\token.cpp plugins\codecompletion\parser\token.h plugins\codecompletion\parser\tokenizer.cpp plugins\codecompletion\parser\tokenizer.h plugins\codecompletion\resources\images\class.png plugins\codecompletion\resources\images\class_folder.png plugins\codecompletion\resources\images\ctor_private.png plugins\codecompletion\resources\images\ctor_protected.png plugins\codecompletion\resources\images\ctor_public.png plugins\codecompletion\resources\images\dtor_private.png plugins\codecompletion\resources\images\dtor_protected.png plugins\codecompletion\resources\images\dtor_public.png plugins\codecompletion\resources\images\enum.png plugins\codecompletion\resources\images\enumerator.png plugins\codecompletion\resources\images\enums_folder.png plugins\codecompletion\resources\images\method_private.png plugins\codecompletion\resources\images\method_protected.png plugins\codecompletion\resources\images\method_public.png plugins\codecompletion\resources\images\namespace.png plugins\codecompletion\resources\images\others_folder.png plugins\codecompletion\resources\images\preproc.png plugins\codecompletion\resources\images\preproc_folder.png plugins\codecompletion\resources\images\symbols_folder.png plugins\codecompletion\resources\images\var_private.png plugins\codecompletion\resources\images\var_protected.png plugins\codecompletion\resources\images\var_public.png plugins\codecompletion\resources\insert_class_method.xrc plugins\codecompletion\resources\settings.xrc plugins\compilergcc\advancedcompileroptionsdlg.cpp plugins\compilergcc\advancedcompileroptionsdlg.h plugins\compilergcc\compilerBCC.cpp plugins\compilergcc\compilerBCC.h plugins\compilergcc\compilerDMC.cpp plugins\compilergcc\compilerDMC.h plugins\compilergcc\compilerMINGW.cpp plugins\compilergcc\compilerMINGW.h plugins\compilergcc\compilerMSVC.cpp plugins\compilergcc\compilerMSVC.h plugins\compilergcc\compilererrors.cpp plugins\compilergcc\compilererrors.h plugins\compilergcc\compilergcc.cpp plugins\compilergcc\compilergcc.h plugins\compilergcc\compilermessages.cpp plugins\compilergcc\compilermessages.h plugins\compilergcc\compileroptionsdlg.cpp plugins\compilergcc\compileroptionsdlg.h plugins\compilergcc\customvars.cpp plugins\compilergcc\customvars.h plugins\compilergcc\depslib\src\alloc.c plugins\compilergcc\depslib\src\alloc.h plugins\compilergcc\depslib\src\cache.c plugins\compilergcc\depslib\src\cache.h plugins\compilergcc\depslib\src\depslib.c plugins\compilergcc\depslib\src\depslib.h plugins\compilergcc\depslib\src\filent.c plugins\compilergcc\depslib\src\filesys.h plugins\compilergcc\depslib\src\fileunix.c plugins\compilergcc\depslib\src\hash.c plugins\compilergcc\depslib\src\hash.h plugins\compilergcc\depslib\src\headers.c plugins\compilergcc\depslib\src\headers.h plugins\compilergcc\depslib\src\jam.h plugins\compilergcc\depslib\src\lists.c plugins\compilergcc\depslib\src\lists.h plugins\compilergcc\depslib\src\main.c plugins\compilergcc\depslib\src\newstr.c plugins\compilergcc\depslib\src\newstr.h plugins\compilergcc\depslib\src\pathsplit.c plugins\compilergcc\depslib\src\pathsplit.h plugins\compilergcc\depslib\src\pathsys.h plugins\compilergcc\depslib\src\pathunix.c plugins\compilergcc\depslib\src\regexp.c plugins\compilergcc\depslib\src\regexp.h plugins\compilergcc\depslib\src\search.c plugins\compilergcc\depslib\src\search.h plugins\compilergcc\depslib\src\timestamp.c plugins\compilergcc\depslib\src\timestamp.h plugins\compilergcc\directcommands.cpp plugins\compilergcc\directcommands.h plugins\compilergcc\linklibdlg.cpp plugins\compilergcc\linklibdlg.h plugins\compilergcc\makefilegenerator.cpp plugins\compilergcc\makefilegenerator.h plugins\compilergcc\resources\advanced_compiler_options.xrc plugins\compilergcc\resources\compiler_menu.xrc plugins\compilergcc\resources\compiler_options.xrc plugins\compilergcc\resources\compiler_toolbar.xrc plugins\compilergcc\resources\compiler_toolbar_16x16.xrc plugins\compilergcc\resources\images\16x16\compile.png plugins\compilergcc\resources\images\16x16\compilerun.png plugins\compilergcc\resources\images\16x16\rebuild.png plugins\compilergcc\resources\images\16x16\run.png plugins\compilergcc\resources\images\compile.png plugins\compilergcc\resources\images\compilerun.png plugins\compilergcc\resources\images\rebuild.png plugins\compilergcc\resources\images\run.png plugins\debuggergdb\debuggergdb.cpp plugins\debuggergdb\debuggergdb.h plugins\debuggergdb\debuggeroptionsdlg.cpp plugins\debuggergdb\debuggeroptionsdlg.h plugins\debuggergdb\debuggertree.cpp plugins\debuggergdb\debuggertree.h plugins\debuggergdb\resources\debugger_menu.xrc plugins\debuggergdb\resources\images\16x16\dbgnext.png plugins\debuggergdb\resources\images\16x16\dbgrun.png plugins\debuggergdb\resources\images\16x16\dbgrunto.png plugins\debuggergdb\resources\images\16x16\dbgstep.png plugins\debuggergdb\resources\images\16x16\stop.png plugins\debuggergdb\resources\images\dbgnext.png plugins\debuggergdb\resources\images\dbgrun.png plugins\debuggergdb\resources\images\dbgrunto.png plugins\debuggergdb\resources\images\dbgstep.png plugins\debuggergdb\resources\images\stop.png plugins\defaultmimehandler\defaultmimehandler.cpp plugins\defaultmimehandler\defaultmimehandler.h plugins\defaultmimehandler\editmimetypesdlg.cpp plugins\defaultmimehandler\editmimetypesdlg.h plugins\defaultmimehandler\mimetypesarray.h plugins\defaultmimehandler\resources\edit_files_handling.xrc plugins\pluginwizard\enterinfodlg.cpp plugins\pluginwizard\enterinfodlg.h plugins\pluginwizard\pluginwizard.cpp plugins\pluginwizard\pluginwizard.h plugins\pluginwizard\pluginwizarddlg.cpp plugins\pluginwizard\pluginwizarddlg.h plugins\pluginwizard\resources\new_plugin.xrc plugins\pluginwizard\resources\plugin_info.xrc plugins\todo\addtododlg.cpp plugins\todo\addtododlg.h plugins\todo\resources\add_todo.xrc plugins\todo\resources\settings.xrc plugins\todo\todolist.cpp plugins\todo\todolist.h plugins\todo\todolistview.cpp plugins\todo\todolistview.h plugins\todo\todosettingsdlg.cpp plugins\todo\todosettingsdlg.h plugins\xpmanifest\windowsxplooknfeel.cpp plugins\xpmanifest\windowsxplooknfeel.h sdk.doxy sdk\Managers\Managers.cpp sdk\Managers\Managers.h sdk\Managers\StdAfx.cpp sdk\Managers\StdAfx.h sdk\autodetectcompilers.cpp sdk\autodetectcompilers.h sdk\cbeditor.cpp sdk\cbeditor.h sdk\cbplugin.cpp sdk\cbplugin.h sdk\cbproject.cpp sdk\cbproject.h sdk\cbworkspace.cpp sdk\cbworkspace.h sdk\compileoptionsbase.cpp sdk\compileoptionsbase.h sdk\compiler.cpp sdk\compiler.h sdk\compilerfactory.cpp sdk\compilerfactory.h sdk\compileroptions.cpp sdk\compileroptions.h sdk\compiletargetbase.cpp sdk\compiletargetbase.h sdk\configmanager.cpp sdk\configmanager.h sdk\configuretoolsdlg.cpp sdk\configuretoolsdlg.h sdk\confirmreplacedlg.cpp sdk\confirmreplacedlg.h sdk\devcpploader.cpp sdk\devcpploader.h sdk\editarrayfiledlg.cpp sdk\editarrayfiledlg.h sdk\editarrayorderdlg.cpp sdk\editarrayorderdlg.h sdk\editarraystringdlg.cpp sdk\editarraystringdlg.h sdk\editorcolorset.cpp sdk\editorcolorset.h sdk\editorconfigurationdlg.cpp sdk\editorconfigurationdlg.h sdk\editormanager.cpp sdk\editormanager.h sdk\edittooldlg.cpp sdk\edittooldlg.h sdk\filegroupsandmasks.cpp sdk\filegroupsandmasks.h sdk\finddlg.cpp sdk\finddlg.h sdk\findreplacebase.h sdk\globals.cpp sdk\globals.h sdk\ibaseloader.h sdk\ibaseworkspaceloader.h sdk\importers_globals.cpp sdk\importers_globals.h sdk\incrementalselectlistdlg.cpp sdk\incrementalselectlistdlg.h sdk\licenses.h sdk\macrosmanager.cpp sdk\macrosmanager.h sdk\managedthread.cpp sdk\managedthread.h sdk\manager.cpp sdk\manager.h sdk\managerproxy.h sdk\menuitemsmanager.cpp sdk\menuitemsmanager.h sdk\messagelog.cpp sdk\messagelog.h sdk\messagemanager.cpp sdk\messagemanager.h sdk\msvc7loader.cpp sdk\msvc7loader.h sdk\msvc7workspaceloader.cpp sdk\msvc7workspaceloader.h sdk\msvcloader.cpp sdk\msvcloader.h sdk\msvcworkspaceloader.cpp sdk\msvcworkspaceloader.h sdk\multiselectdlg.cpp sdk\multiselectdlg.h sdk\newfromtemplatedlg.cpp sdk\newfromtemplatedlg.h sdk\pipedprocess.cpp sdk\pipedprocess.h sdk\pluginmanager.cpp sdk\pluginmanager.h sdk\pluginsconfigurationdlg.cpp sdk\pluginsconfigurationdlg.h sdk\projectbuildtarget.cpp sdk\projectbuildtarget.h sdk\projectfileoptionsdlg.cpp sdk\projectfileoptionsdlg.h sdk\projectlayoutloader.cpp sdk\projectlayoutloader.h sdk\projectloader.cpp sdk\projectloader.h sdk\projectmanager.cpp sdk\projectmanager.h sdk\projectoptionsdlg.cpp sdk\projectoptionsdlg.h sdk\projectsfilemasksdlg.cpp sdk\projectsfilemasksdlg.h sdk\projecttemplateloader.cpp sdk\projecttemplateloader.h sdk\replacedlg.cpp sdk\replacedlg.h sdk\resources\auto_detect_compilers.xrc sdk\resources\configure_tools.xrc sdk\resources\confirm_replace.xrc sdk\resources\edit_array_order.xrc sdk\resources\edit_array_string.xrc sdk\resources\edit_tool.xrc sdk\resources\editor_configuration.xrc sdk\resources\find_dialog.xrc sdk\resources\generic_multi_select.xrc sdk\resources\incremental_select_list.xrc sdk\resources\new_from_template.xrc sdk\resources\plugins_configuration.xrc sdk\resources\project_manager_file_types.xrc sdk\resources\project_options.xrc sdk\resources\projectfile_options.xrc sdk\resources\replace_dialog.xrc sdk\resources\select_target.xrc sdk\sanitycheck.h sdk\sdk_events.cpp sdk\sdk_events.h sdk\selecttargetdlg.cpp sdk\selecttargetdlg.h sdk\settings.h sdk\simplelistlog.cpp sdk\simplelistlog.h sdk\simpletextlog.cpp sdk\simpletextlog.h sdk\templatemanager.cpp sdk\templatemanager.h sdk\tinyxml\tinystr.cpp sdk\tinyxml\tinystr.h sdk\tinyxml\tinyxml.cpp sdk\tinyxml\tinyxml.h sdk\tinyxml\tinyxmlerror.cpp sdk\tinyxml\tinyxmlparser.cpp sdk\toolsmanager.cpp sdk\toolsmanager.h sdk\workspaceloader.cpp sdk\workspaceloader.h sdk\xtra_classes.cpp sdk\xtra_classes.h sdk\xtra_res.cpp sdk\xtra_res.h src\app.cpp src\app.h src\dlgabout.cpp src\dlgabout.h src\dlgaboutplugin.cpp src\dlgaboutplugin.h src\environmentsettingsdlg.cpp src\environmentsettingsdlg.h src\globals.h src\impexpconfig.cpp src\impexpconfig.h src\main.cpp src\main.h src\resources\dlg_about.xrc src\resources\dlg_about_plugin.xrc src\resources\env_settings.xrc src\resources\icons\app.ico src\resources\icons\app.xpm src\resources\icons\c.ico src\resources\icons\cpp.ico src\resources\icons\csd.ico src\resources\icons\filetempl.ico src\resources\icons\h.ico src\resources\images\16x16\editcopy.png src\resources\images\16x16\editcut.png src\resources\images\16x16\editpaste.png src\resources\images\16x16\filefind.png src\resources\images\16x16\filenew.png src\resources\images\16x16\fileopen.png src\resources\images\16x16\filesave.png src\resources\images\16x16\folder.png src\resources\images\16x16\folder_new.png src\resources\images\16x16\folder_open.png src\resources\images\16x16\newproject.png src\resources\images\16x16\redo.png src\resources\images\16x16\searchreplace.png src\resources\images\16x16\undo.png src\resources\images\ascii.png src\resources\images\codeblocks.png src\resources\images\compile.png src\resources\images\compilerun.png src\resources\images\contents_16x16.png src\resources\images\dbgnext.png src\resources\images\dbgrun.png src\resources\images\dbgrunto.png src\resources\images\dbgstep.png src\resources\images\edit_16x16.png src\resources\images\editcopy.png src\resources\images\editcut.png src\resources\images\editpaste.png src\resources\images\filefind.png src\resources\images\filenew.png src\resources\images\fileopen.png src\resources\images\filesave.png src\resources\images\filesaveas.png src\resources\images\flag_16x16.png src\resources\images\folder.png src\resources\images\folder_new.png src\resources\images\folder_open.png src\resources\images\gohome.png src\resources\images\misc_16x16.png src\resources\images\newproject.png src\resources\images\rebuild.png src\resources\images\redo.png src\resources\images\run.png src\resources\images\searchreplace.png src\resources\images\source.png src\resources\images\splash.png src\resources\images\stop.png src\resources\images\undo.png src\resources\imp_exp_config.xrc src\resources\main_frame.xrc src\resources\main_menu.xrc src\resources\main_toolbar.xrc src\resources\main_toolbar_16x16.xrc src\resources\resources.rc templates\console-main-c.cpp templates\console-main-cpp.cpp templates\console.cbp templates\console.png templates\console.template templates\gui.png templates\opengl-main.cpp templates\opengl.cbp templates\opengl.png templates\opengl.template templates\win32-main.cpp templates\win32.cbp templates\win32gui.template templates\wx-app-ash.cpp templates\wx-app-ash.h templates\wx-main-ash.cpp templates\wx-main-ash.h templates\wx-main-s.cpp templates\wx-main-sh.cpp templates\wx-main-sh.h templates\wxwindows.cbp templates\wxwindows.png templates\wxwindows.template tips.txt tools\ConsoleRunner\main.cpp 
 
 clean_tinyXML:
 	@echo Cleaning target "tinyXML"...
@@ -1361,6 +1361,156 @@ $(src_RESOURCE): src/resources/resources.rc
 	-@if not exist ".\.objs\plugins\compilergcc\." mkdir ".\.objs\plugins\compilergcc"
 	@$(CPP) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/customvars.cpp -o .objs/plugins/compilergcc/customvars.o
 
+.deps/plugins/compilergcc/depslib/src/alloc.d: plugins/compilergcc/depslib/src/alloc.c
+	@echo Calculating dependencies for "plugins\compilergcc\depslib\src\alloc.c"...
+	-@if not exist ".\.deps\plugins\compilergcc\depslib\src\." mkdir ".\.deps\plugins\compilergcc\depslib\src"
+	@$(CC) -MM $(plugin_CompilerGCC_CFLAGS) -MF .deps/plugins/compilergcc/depslib/src/alloc.d -MT .objs/plugins/compilergcc/depslib/src/alloc.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/depslib/src/alloc.c
+
+.objs/plugins/compilergcc/depslib/src/alloc.o: .deps/plugins/compilergcc/depslib/src/alloc.d
+	@echo Compiling "plugins\compilergcc\depslib\src\alloc.c"...
+	-@if not exist ".\.objs\plugins\compilergcc\depslib\src\." mkdir ".\.objs\plugins\compilergcc\depslib\src"
+	@$(CC) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/depslib/src/alloc.c -o .objs/plugins/compilergcc/depslib/src/alloc.o
+
+.deps/plugins/compilergcc/depslib/src/cache.d: plugins/compilergcc/depslib/src/cache.c
+	@echo Calculating dependencies for "plugins\compilergcc\depslib\src\cache.c"...
+	-@if not exist ".\.deps\plugins\compilergcc\depslib\src\." mkdir ".\.deps\plugins\compilergcc\depslib\src"
+	@$(CC) -MM $(plugin_CompilerGCC_CFLAGS) -MF .deps/plugins/compilergcc/depslib/src/cache.d -MT .objs/plugins/compilergcc/depslib/src/cache.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/depslib/src/cache.c
+
+.objs/plugins/compilergcc/depslib/src/cache.o: .deps/plugins/compilergcc/depslib/src/cache.d
+	@echo Compiling "plugins\compilergcc\depslib\src\cache.c"...
+	-@if not exist ".\.objs\plugins\compilergcc\depslib\src\." mkdir ".\.objs\plugins\compilergcc\depslib\src"
+	@$(CC) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/depslib/src/cache.c -o .objs/plugins/compilergcc/depslib/src/cache.o
+
+.deps/plugins/compilergcc/depslib/src/depslib.d: plugins/compilergcc/depslib/src/depslib.c
+	@echo Calculating dependencies for "plugins\compilergcc\depslib\src\depslib.c"...
+	-@if not exist ".\.deps\plugins\compilergcc\depslib\src\." mkdir ".\.deps\plugins\compilergcc\depslib\src"
+	@$(CC) -MM $(plugin_CompilerGCC_CFLAGS) -MF .deps/plugins/compilergcc/depslib/src/depslib.d -MT .objs/plugins/compilergcc/depslib/src/depslib.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/depslib/src/depslib.c
+
+.objs/plugins/compilergcc/depslib/src/depslib.o: .deps/plugins/compilergcc/depslib/src/depslib.d
+	@echo Compiling "plugins\compilergcc\depslib\src\depslib.c"...
+	-@if not exist ".\.objs\plugins\compilergcc\depslib\src\." mkdir ".\.objs\plugins\compilergcc\depslib\src"
+	@$(CC) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/depslib/src/depslib.c -o .objs/plugins/compilergcc/depslib/src/depslib.o
+
+.deps/plugins/compilergcc/depslib/src/filent.d: plugins/compilergcc/depslib/src/filent.c
+	@echo Calculating dependencies for "plugins\compilergcc\depslib\src\filent.c"...
+	-@if not exist ".\.deps\plugins\compilergcc\depslib\src\." mkdir ".\.deps\plugins\compilergcc\depslib\src"
+	@$(CC) -MM $(plugin_CompilerGCC_CFLAGS) -MF .deps/plugins/compilergcc/depslib/src/filent.d -MT .objs/plugins/compilergcc/depslib/src/filent.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/depslib/src/filent.c
+
+.objs/plugins/compilergcc/depslib/src/filent.o: .deps/plugins/compilergcc/depslib/src/filent.d
+	@echo Compiling "plugins\compilergcc\depslib\src\filent.c"...
+	-@if not exist ".\.objs\plugins\compilergcc\depslib\src\." mkdir ".\.objs\plugins\compilergcc\depslib\src"
+	@$(CC) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/depslib/src/filent.c -o .objs/plugins/compilergcc/depslib/src/filent.o
+
+.deps/plugins/compilergcc/depslib/src/fileunix.d: plugins/compilergcc/depslib/src/fileunix.c
+	@echo Calculating dependencies for "plugins\compilergcc\depslib\src\fileunix.c"...
+	-@if not exist ".\.deps\plugins\compilergcc\depslib\src\." mkdir ".\.deps\plugins\compilergcc\depslib\src"
+	@$(CC) -MM $(plugin_CompilerGCC_CFLAGS) -MF .deps/plugins/compilergcc/depslib/src/fileunix.d -MT .objs/plugins/compilergcc/depslib/src/fileunix.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/depslib/src/fileunix.c
+
+.objs/plugins/compilergcc/depslib/src/fileunix.o: .deps/plugins/compilergcc/depslib/src/fileunix.d
+	@echo Compiling "plugins\compilergcc\depslib\src\fileunix.c"...
+	-@if not exist ".\.objs\plugins\compilergcc\depslib\src\." mkdir ".\.objs\plugins\compilergcc\depslib\src"
+	@$(CC) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/depslib/src/fileunix.c -o .objs/plugins/compilergcc/depslib/src/fileunix.o
+
+.deps/plugins/compilergcc/depslib/src/hash.d: plugins/compilergcc/depslib/src/hash.c
+	@echo Calculating dependencies for "plugins\compilergcc\depslib\src\hash.c"...
+	-@if not exist ".\.deps\plugins\compilergcc\depslib\src\." mkdir ".\.deps\plugins\compilergcc\depslib\src"
+	@$(CC) -MM $(plugin_CompilerGCC_CFLAGS) -MF .deps/plugins/compilergcc/depslib/src/hash.d -MT .objs/plugins/compilergcc/depslib/src/hash.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/depslib/src/hash.c
+
+.objs/plugins/compilergcc/depslib/src/hash.o: .deps/plugins/compilergcc/depslib/src/hash.d
+	@echo Compiling "plugins\compilergcc\depslib\src\hash.c"...
+	-@if not exist ".\.objs\plugins\compilergcc\depslib\src\." mkdir ".\.objs\plugins\compilergcc\depslib\src"
+	@$(CC) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/depslib/src/hash.c -o .objs/plugins/compilergcc/depslib/src/hash.o
+
+.deps/plugins/compilergcc/depslib/src/headers.d: plugins/compilergcc/depslib/src/headers.c
+	@echo Calculating dependencies for "plugins\compilergcc\depslib\src\headers.c"...
+	-@if not exist ".\.deps\plugins\compilergcc\depslib\src\." mkdir ".\.deps\plugins\compilergcc\depslib\src"
+	@$(CC) -MM $(plugin_CompilerGCC_CFLAGS) -MF .deps/plugins/compilergcc/depslib/src/headers.d -MT .objs/plugins/compilergcc/depslib/src/headers.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/depslib/src/headers.c
+
+.objs/plugins/compilergcc/depslib/src/headers.o: .deps/plugins/compilergcc/depslib/src/headers.d
+	@echo Compiling "plugins\compilergcc\depslib\src\headers.c"...
+	-@if not exist ".\.objs\plugins\compilergcc\depslib\src\." mkdir ".\.objs\plugins\compilergcc\depslib\src"
+	@$(CC) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/depslib/src/headers.c -o .objs/plugins/compilergcc/depslib/src/headers.o
+
+.deps/plugins/compilergcc/depslib/src/lists.d: plugins/compilergcc/depslib/src/lists.c
+	@echo Calculating dependencies for "plugins\compilergcc\depslib\src\lists.c"...
+	-@if not exist ".\.deps\plugins\compilergcc\depslib\src\." mkdir ".\.deps\plugins\compilergcc\depslib\src"
+	@$(CC) -MM $(plugin_CompilerGCC_CFLAGS) -MF .deps/plugins/compilergcc/depslib/src/lists.d -MT .objs/plugins/compilergcc/depslib/src/lists.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/depslib/src/lists.c
+
+.objs/plugins/compilergcc/depslib/src/lists.o: .deps/plugins/compilergcc/depslib/src/lists.d
+	@echo Compiling "plugins\compilergcc\depslib\src\lists.c"...
+	-@if not exist ".\.objs\plugins\compilergcc\depslib\src\." mkdir ".\.objs\plugins\compilergcc\depslib\src"
+	@$(CC) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/depslib/src/lists.c -o .objs/plugins/compilergcc/depslib/src/lists.o
+
+.deps/plugins/compilergcc/depslib/src/main.d: plugins/compilergcc/depslib/src/main.c
+	@echo Calculating dependencies for "plugins\compilergcc\depslib\src\main.c"...
+	-@if not exist ".\.deps\plugins\compilergcc\depslib\src\." mkdir ".\.deps\plugins\compilergcc\depslib\src"
+	@$(CC) -MM $(plugin_CompilerGCC_CFLAGS) -MF .deps/plugins/compilergcc/depslib/src/main.d -MT .objs/plugins/compilergcc/depslib/src/main.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/depslib/src/main.c
+
+.objs/plugins/compilergcc/depslib/src/main.o: .deps/plugins/compilergcc/depslib/src/main.d
+	@echo Compiling "plugins\compilergcc\depslib\src\main.c"...
+	-@if not exist ".\.objs\plugins\compilergcc\depslib\src\." mkdir ".\.objs\plugins\compilergcc\depslib\src"
+	@$(CC) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/depslib/src/main.c -o .objs/plugins/compilergcc/depslib/src/main.o
+
+.deps/plugins/compilergcc/depslib/src/newstr.d: plugins/compilergcc/depslib/src/newstr.c
+	@echo Calculating dependencies for "plugins\compilergcc\depslib\src\newstr.c"...
+	-@if not exist ".\.deps\plugins\compilergcc\depslib\src\." mkdir ".\.deps\plugins\compilergcc\depslib\src"
+	@$(CC) -MM $(plugin_CompilerGCC_CFLAGS) -MF .deps/plugins/compilergcc/depslib/src/newstr.d -MT .objs/plugins/compilergcc/depslib/src/newstr.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/depslib/src/newstr.c
+
+.objs/plugins/compilergcc/depslib/src/newstr.o: .deps/plugins/compilergcc/depslib/src/newstr.d
+	@echo Compiling "plugins\compilergcc\depslib\src\newstr.c"...
+	-@if not exist ".\.objs\plugins\compilergcc\depslib\src\." mkdir ".\.objs\plugins\compilergcc\depslib\src"
+	@$(CC) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/depslib/src/newstr.c -o .objs/plugins/compilergcc/depslib/src/newstr.o
+
+.deps/plugins/compilergcc/depslib/src/pathsplit.d: plugins/compilergcc/depslib/src/pathsplit.c
+	@echo Calculating dependencies for "plugins\compilergcc\depslib\src\pathsplit.c"...
+	-@if not exist ".\.deps\plugins\compilergcc\depslib\src\." mkdir ".\.deps\plugins\compilergcc\depslib\src"
+	@$(CC) -MM $(plugin_CompilerGCC_CFLAGS) -MF .deps/plugins/compilergcc/depslib/src/pathsplit.d -MT .objs/plugins/compilergcc/depslib/src/pathsplit.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/depslib/src/pathsplit.c
+
+.objs/plugins/compilergcc/depslib/src/pathsplit.o: .deps/plugins/compilergcc/depslib/src/pathsplit.d
+	@echo Compiling "plugins\compilergcc\depslib\src\pathsplit.c"...
+	-@if not exist ".\.objs\plugins\compilergcc\depslib\src\." mkdir ".\.objs\plugins\compilergcc\depslib\src"
+	@$(CC) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/depslib/src/pathsplit.c -o .objs/plugins/compilergcc/depslib/src/pathsplit.o
+
+.deps/plugins/compilergcc/depslib/src/pathunix.d: plugins/compilergcc/depslib/src/pathunix.c
+	@echo Calculating dependencies for "plugins\compilergcc\depslib\src\pathunix.c"...
+	-@if not exist ".\.deps\plugins\compilergcc\depslib\src\." mkdir ".\.deps\plugins\compilergcc\depslib\src"
+	@$(CC) -MM $(plugin_CompilerGCC_CFLAGS) -MF .deps/plugins/compilergcc/depslib/src/pathunix.d -MT .objs/plugins/compilergcc/depslib/src/pathunix.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/depslib/src/pathunix.c
+
+.objs/plugins/compilergcc/depslib/src/pathunix.o: .deps/plugins/compilergcc/depslib/src/pathunix.d
+	@echo Compiling "plugins\compilergcc\depslib\src\pathunix.c"...
+	-@if not exist ".\.objs\plugins\compilergcc\depslib\src\." mkdir ".\.objs\plugins\compilergcc\depslib\src"
+	@$(CC) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/depslib/src/pathunix.c -o .objs/plugins/compilergcc/depslib/src/pathunix.o
+
+.deps/plugins/compilergcc/depslib/src/regexp.d: plugins/compilergcc/depslib/src/regexp.c
+	@echo Calculating dependencies for "plugins\compilergcc\depslib\src\regexp.c"...
+	-@if not exist ".\.deps\plugins\compilergcc\depslib\src\." mkdir ".\.deps\plugins\compilergcc\depslib\src"
+	@$(CC) -MM $(plugin_CompilerGCC_CFLAGS) -MF .deps/plugins/compilergcc/depslib/src/regexp.d -MT .objs/plugins/compilergcc/depslib/src/regexp.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/depslib/src/regexp.c
+
+.objs/plugins/compilergcc/depslib/src/regexp.o: .deps/plugins/compilergcc/depslib/src/regexp.d
+	@echo Compiling "plugins\compilergcc\depslib\src\regexp.c"...
+	-@if not exist ".\.objs\plugins\compilergcc\depslib\src\." mkdir ".\.objs\plugins\compilergcc\depslib\src"
+	@$(CC) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/depslib/src/regexp.c -o .objs/plugins/compilergcc/depslib/src/regexp.o
+
+.deps/plugins/compilergcc/depslib/src/search.d: plugins/compilergcc/depslib/src/search.c
+	@echo Calculating dependencies for "plugins\compilergcc\depslib\src\search.c"...
+	-@if not exist ".\.deps\plugins\compilergcc\depslib\src\." mkdir ".\.deps\plugins\compilergcc\depslib\src"
+	@$(CC) -MM $(plugin_CompilerGCC_CFLAGS) -MF .deps/plugins/compilergcc/depslib/src/search.d -MT .objs/plugins/compilergcc/depslib/src/search.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/depslib/src/search.c
+
+.objs/plugins/compilergcc/depslib/src/search.o: .deps/plugins/compilergcc/depslib/src/search.d
+	@echo Compiling "plugins\compilergcc\depslib\src\search.c"...
+	-@if not exist ".\.objs\plugins\compilergcc\depslib\src\." mkdir ".\.objs\plugins\compilergcc\depslib\src"
+	@$(CC) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/depslib/src/search.c -o .objs/plugins/compilergcc/depslib/src/search.o
+
+.deps/plugins/compilergcc/depslib/src/timestamp.d: plugins/compilergcc/depslib/src/timestamp.c
+	@echo Calculating dependencies for "plugins\compilergcc\depslib\src\timestamp.c"...
+	-@if not exist ".\.deps\plugins\compilergcc\depslib\src\." mkdir ".\.deps\plugins\compilergcc\depslib\src"
+	@$(CC) -MM $(plugin_CompilerGCC_CFLAGS) -MF .deps/plugins/compilergcc/depslib/src/timestamp.d -MT .objs/plugins/compilergcc/depslib/src/timestamp.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/depslib/src/timestamp.c
+
+.objs/plugins/compilergcc/depslib/src/timestamp.o: .deps/plugins/compilergcc/depslib/src/timestamp.d
+	@echo Compiling "plugins\compilergcc\depslib\src\timestamp.c"...
+	-@if not exist ".\.objs\plugins\compilergcc\depslib\src\." mkdir ".\.objs\plugins\compilergcc\depslib\src"
+	@$(CC) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/depslib/src/timestamp.c -o .objs/plugins/compilergcc/depslib/src/timestamp.o
+
 .deps/plugins/compilergcc/directcommands.d: plugins/compilergcc/directcommands.cpp
 	@echo Calculating dependencies for "plugins\compilergcc\directcommands.cpp"...
 	-@if not exist ".\.deps\plugins\compilergcc\." mkdir ".\.deps\plugins\compilergcc"
@@ -1370,16 +1520,6 @@ $(src_RESOURCE): src/resources/resources.rc
 	@echo Compiling "plugins\compilergcc\directcommands.cpp"...
 	-@if not exist ".\.objs\plugins\compilergcc\." mkdir ".\.objs\plugins\compilergcc"
 	@$(CPP) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/directcommands.cpp -o .objs/plugins/compilergcc/directcommands.o
-
-.deps/plugins/compilergcc/directdeps.d: plugins/compilergcc/directdeps.cpp
-	@echo Calculating dependencies for "plugins\compilergcc\directdeps.cpp"...
-	-@if not exist ".\.deps\plugins\compilergcc\." mkdir ".\.deps\plugins\compilergcc"
-	@$(CPP) -MM $(plugin_CompilerGCC_CFLAGS) -MF .deps/plugins/compilergcc/directdeps.d -MT .objs/plugins/compilergcc/directdeps.o $(plugin_CompilerGCC_INCS) plugins/compilergcc/directdeps.cpp
-
-.objs/plugins/compilergcc/directdeps.o: .deps/plugins/compilergcc/directdeps.d
-	@echo Compiling "plugins\compilergcc\directdeps.cpp"...
-	-@if not exist ".\.objs\plugins\compilergcc\." mkdir ".\.objs\plugins\compilergcc"
-	@$(CPP) $(plugin_CompilerGCC_CFLAGS) $(plugin_CompilerGCC_INCS) -c plugins/compilergcc/directdeps.cpp -o .objs/plugins/compilergcc/directdeps.o
 
 .deps/plugins/compilergcc/linklibdlg.d: plugins/compilergcc/linklibdlg.cpp
 	@echo Calculating dependencies for "plugins\compilergcc\linklibdlg.cpp"...
