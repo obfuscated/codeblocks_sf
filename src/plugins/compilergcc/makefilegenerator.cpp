@@ -394,8 +394,6 @@ void MakefileGenerator::DoAppendLibDirs(wxString& cmd, ProjectBuildTarget* targe
 void MakefileGenerator::DoGetMakefileIncludes(wxString& buffer, ProjectBuildTarget* target)
 {
     wxString prefix = m_CompilerSet->GetSwitches().includeDirs;
-	buffer << " $(GLOBAL_INCS)";
-	
     OptionsRelation relation = target->GetOptionRelation(ortIncludeDirs);
     switch (relation)
     {
@@ -414,12 +412,11 @@ void MakefileGenerator::DoGetMakefileIncludes(wxString& buffer, ProjectBuildTarg
             DoAppendIncludeDirs(buffer, target, prefix);
             break;
     }
+	buffer << " $(GLOBAL_INCS)";
 }
 
 void MakefileGenerator::DoGetMakefileLibs(wxString& buffer, ProjectBuildTarget* target)
 {
-	buffer << " $(GLOBAL_LIBS)";
-
     OptionsRelation relation = target->GetOptionRelation(ortLinkerOptions);
     switch (relation)
     {
@@ -438,13 +435,12 @@ void MakefileGenerator::DoGetMakefileLibs(wxString& buffer, ProjectBuildTarget* 
             DoAppendLinkerLibs(buffer, target);
             break;
     }
+	buffer << " $(GLOBAL_LIBS)";
 }
 
 void MakefileGenerator::DoGetMakefileLibDirs(wxString& buffer, ProjectBuildTarget* target)
 {
     wxString prefix = m_CompilerSet->GetSwitches().libDirs;
-	buffer << " $(GLOBAL_LIBDIRS)";
-
     OptionsRelation relation = target->GetOptionRelation(ortLibDirs);
     switch (relation)
     {
@@ -463,12 +459,11 @@ void MakefileGenerator::DoGetMakefileLibDirs(wxString& buffer, ProjectBuildTarge
             DoAppendLibDirs(buffer, target, prefix);
             break;
     }
+	buffer << " $(GLOBAL_LIBDIRS)";
 }
 
 void MakefileGenerator::DoGetMakefileCFlags(wxString& buffer, ProjectBuildTarget* target)
 {
-	buffer << " $(GLOBAL_CFLAGS)";
-	
     OptionsRelation relation = target->GetOptionRelation(ortCompilerOptions);
     switch (relation)
     {
@@ -487,30 +482,30 @@ void MakefileGenerator::DoGetMakefileCFlags(wxString& buffer, ProjectBuildTarget
             DoAppendCompilerOptions(buffer, target);
             break;
     }
+	buffer << " $(GLOBAL_CFLAGS)";
 }
 
 void MakefileGenerator::DoGetMakefileLDFlags(wxString& buffer, ProjectBuildTarget* target)
 {
-	buffer << " $(GLOBAL_LDFLAGS)";
-    
 	OptionsRelation relation = target->GetOptionRelation(ortLinkerOptions);
     switch (relation)
     {
         case orUseParentOptionsOnly:
-			buffer << " $(PROJECT_LDFLAGS)";
+			buffer << "$(PROJECT_LDFLAGS) ";
             break;
         case orUseTargetOptionsOnly:
             DoAppendLinkerOptions(buffer, target);
             break;
         case orPrependToParentOptions:
             DoAppendLinkerOptions(buffer, target);
-			buffer << " $(PROJECT_LDFLAGS)";
+			buffer << "$(PROJECT_LDFLAGS) ";
             break;
         case orAppendToParentOptions:
-			buffer << " $(PROJECT_LDFLAGS)";
+			buffer << "$(PROJECT_LDFLAGS) ";
             DoAppendLinkerOptions(buffer, target);
             break;
     }
+	buffer << "$(GLOBAL_LDFLAGS) ";
 }
 
 void MakefileGenerator::DoAddMakefileVars(wxString& buffer)
