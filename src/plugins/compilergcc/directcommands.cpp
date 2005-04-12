@@ -73,33 +73,33 @@ DirectCommands::DirectCommands(CompilerGCC* compilerPlugin, Compiler* compiler, 
     m_pProject(project),
     m_pCurrTarget(0)
 {
-	//ctor
-	depsStart();
-	wxFileName cwd;
-	cwd.Assign(m_pProject->GetBasePath());
-	depsSetCWD(cwd.GetPath(wxPATH_GET_VOLUME).c_str());
+    //ctor
+    depsStart();
+    wxFileName cwd;
+    cwd.Assign(m_pProject->GetBasePath());
+    depsSetCWD(cwd.GetPath(wxPATH_GET_VOLUME).c_str());
 
-	wxFileName fname(m_pProject->GetFilename());
-	fname.SetExt("depend");
-	depsCacheRead(fname.GetFullPath().c_str());
+    wxFileName fname(m_pProject->GetFilename());
+    fname.SetExt("depend");
+    depsCacheRead(fname.GetFullPath().c_str());
 }
 
 DirectCommands::~DirectCommands()
 {
-	//dtor
-	struct depsStats stats;
-	depsGetStats(&stats);
-	if (stats.cache_updated)
-	{
-		wxFileName fname(m_pProject->GetFilename());
-		fname.SetExt("depend");
-		depsCacheWrite(fname.GetFullPath().c_str());
-	}
-	Manager::Get()->GetMessageManager()->DebugLog(
-		_("Scanned %d files for #includes, cache used %d, cache updated %d"),
-		stats.scanned, stats.cache_used, stats.cache_updated);
+    //dtor
+    struct depsStats stats;
+    depsGetStats(&stats);
+    if (stats.cache_updated)
+    {
+        wxFileName fname(m_pProject->GetFilename());
+        fname.SetExt("depend");
+        depsCacheWrite(fname.GetFullPath().c_str());
+    }
+    Manager::Get()->GetMessageManager()->DebugLog(
+        _("Scanned %d files for #includes, cache used %d, cache updated %d"),
+        stats.scanned, stats.cache_used, stats.cache_updated);
 
-	depsDone();
+    depsDone();
 }
 
 // static
@@ -151,12 +151,21 @@ int MySortProjectFilesByWeight(ProjectFile** one, ProjectFile** two)
     return (*one)->weight - (*two)->weight;
 }
 
-MyFilesArray DirectCommands::GetProjectFilesSortedByWeight()
+MyFilesArray DirectCommands::GetProjectFilesSortedByWeight(ProjectBuildTarget* target, bool compile, bool link)
 {
     MyFilesArray files;
     for (int i = 0; i < m_pProject->GetFilesCount(); ++i)
     {
         ProjectFile* pf = m_pProject->GetFile(i);
+        // require compile
+        if (compile && !pf->compile)
+            continue;
+        // require link
+        if (link && !pf->link)
+            continue;
+        // if the file does not belong in this target (if we have a target), skip it
+        if (target && (pf->buildTargets.Index(target->GetTitle()) == wxNOT_FOUND))
+            continue;
         files.Add(pf);
     }
     files.Sort(MySortProjectFilesByWeight);
@@ -171,24 +180,16 @@ wxArrayString DirectCommands::CompileFile(ProjectBuildTarget* target, ProjectFil
     if (!pf->compile || pf->compilerVar.IsEmpty())
         return ret;
 
-	if (!force)
-	{
-		depsSearchStart();
+    if (!force)
+    {
+        DepsSearchStart(target);
 
-		const wxArrayString& tgt_incs = target->GetIncludeDirs();
-		for (unsigned int i = 0; i < tgt_incs.GetCount(); ++i)
-			depsAddSearchDir(tgt_incs[i].c_str());
+        pfDetails pfd(this, target, pf);
+        if (!IsObjectOutdated(pfd))
+            return ret;
+    }
 
-		const wxArrayString& prj_incs = m_pProject->GetIncludeDirs();
-		for (unsigned int i = 0; i < prj_incs.GetCount(); ++i)
-			depsAddSearchDir(prj_incs[i].c_str());
-
-		pfDetails pfd(this, target, pf);
-		if (!IsObjectOutdated(pfd))
-			return ret;
-	}
-
-	return GetCompileFileCommand(target, pf);
+    return GetCompileFileCommand(target, pf);
 }
 
 wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, ProjectFile* pf)
@@ -223,7 +224,7 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
     if (pf->useCustomBuildCommand)
     {
         wxString msg;
-        msg.Printf(_("File %s has custom custom build command set."
+        msg.Printf(_("File %s has a custom build command set."
                     "This feature only works when using GNU \"make\""
                     "for the build process..."), pfd.source_file_native.c_str());
         ret.Add(wxString(COMPILER_SIMPLE_LOG) + msg);
@@ -300,57 +301,39 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
     // add pre-build commands
     AppendArray(GetPreBuildCommands(target), ret);
 
-    if (target->GetTargetType() == 4)
+    if (target->GetTargetType() == ttCommandsOnly)
     {
         // commands-only target
         AppendArray(GetPostBuildCommands(target), ret);
         return ret;
     }
 
-	depsSearchStart();
-
-	const wxArrayString& tgt_incs = target->GetIncludeDirs();
-	for (unsigned int i = 0; i < tgt_incs.GetCount(); ++i)
-		depsAddSearchDir(tgt_incs[i].c_str());
-
-	const wxArrayString& prj_incs = m_pProject->GetIncludeDirs();
-	for (unsigned int i = 0; i < prj_incs.GetCount(); ++i)
-		depsAddSearchDir(prj_incs[i].c_str());
+    // set list of #include directories
+    DepsSearchStart(target);
 
     // iterate all files of the project/target and add them to the build process
-    MyFilesArray files = GetProjectFilesSortedByWeight();
+    MyFilesArray files = GetProjectFilesSortedByWeight(target, true, false);
     for (unsigned int i = 0; i < files.GetCount(); ++i)
     {
         ProjectFile* pf = files[i];
-        // if the file does not belong in this target (if we have a target), skip it
-        if (target && pf->buildTargets.Index(target->GetTitle()) == wxNOT_FOUND)
-            continue;
-        
-        if (pf->compile)
+        pfDetails pfd(this, target, pf);
+        bool doBuild = false;
+
+       if (pf->autoDeps)
+            doBuild = force || IsObjectOutdated(pfd);
+        else
         {
-            // check for deps
-            bool doBuild = false;
-            // in direct-mode, dependencies are always generated
-//            if (m_pCompiler->GetSwitches().needDependencies)
-            {
-                pfDetails pfd(this, target, pf);
-                if (pf->autoDeps)
-                    doBuild = force || IsObjectOutdated(pfd);
-                else
-                {
-                    wxString msg;
-                    msg.Printf(_("File %s has custom dependencies set."
-                                "This feature only works when using GNU \"make\""
-                                "for the build process..."), pfd.source_file_native.c_str());
-                    ret.Add(wxString(COMPILER_SIMPLE_LOG) + msg);
-                }
-            }
-			if (doBuild)
-			{
-            	// compile file
-            	wxArrayString filecmd = GetCompileFileCommand(target, pf);
-            	AppendArray(filecmd, ret);
-            }
+            wxString msg;
+            msg.Printf(_("File %s has custom dependencies set."
+                        "This feature only works when using GNU \"make\""
+                        "for the build process..."), pfd.source_file_native.c_str());
+            ret.Add(wxString(COMPILER_SIMPLE_LOG) + msg);
+        }
+        if (doBuild)
+        {
+            // compile file
+            wxArrayString filecmd = GetCompileFileCommand(target, pf);
+            AppendArray(filecmd, ret);
         }
     }
 
@@ -470,23 +453,18 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     wxString linkfiles;
     wxString resfiles;
 
-    wxDateTime latestobjecttime;
+    time_t outputtime;
+    depsTimeStamp(output.c_str(), &outputtime);
+    if (!outputtime)
+        force = true;
 
     // get all the linkable objects for the target
-    MyFilesArray files = GetProjectFilesSortedByWeight();
+    MyFilesArray files = GetProjectFilesSortedByWeight(target, false, true);
     for (unsigned int i = 0; i < files.GetCount(); ++i)
     {
         ProjectFile* pf = files[i];
-
-        // if the file is not linkable, skip it
-        if (!pf->link)
-            continue;
-
-        // if the file does not belong in this target (if we have a target), skip it
-        if (target && pf->buildTargets.Index(target->GetTitle()) == wxNOT_FOUND)
-            continue;
-
         pfDetails pfd(this, target, pf);
+
         if (FileTypeOf(pf->relativeFilename) == ftResource)
             resfiles << pfd.object_file << " ";
         else
@@ -495,25 +473,15 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
         // timestamp check
         if (!force)
         {
-            wxDateTime objtime;
-            if (wxFileExists(pfd.object_file_native))
-                objtime = wxFileName(pfd.object_file_native).GetModificationTime();
-            if (!latestobjecttime.IsValid() ||
-                (objtime.IsValid() && objtime.IsLaterThan(latestobjecttime)))
-            {
-                latestobjecttime = objtime;
-            }
+            time_t objtime;
+            depsTimeStamp(pfd.object_file_native.c_str(), &objtime);
+            if (objtime > outputtime)
+                force = true;
         }
     }
 
     if (!force)
-    {
-        wxDateTime outputtime;
-        if (wxFileExists(target->GetOutputFilename()))
-            outputtime = wxFileName(target->GetOutputFilename()).GetModificationTime();
-        if (outputtime.IsValid() && outputtime.IsLaterThan(latestobjecttime))
-            return ret; // no object file more recent than output file
-    }
+        return ret;
 
     // create output dir
     wxFileName out = UnixFilename(target->GetOutputFilename());
@@ -594,19 +562,10 @@ wxArrayString DirectCommands::GetTargetCleanCommands(ProjectBuildTarget* target,
     wxArrayString ret;
 
     // add object files
-    MyFilesArray files = GetProjectFilesSortedByWeight();
+    MyFilesArray files = GetProjectFilesSortedByWeight(target, true, false);
     for (unsigned int i = 0; i < files.GetCount(); ++i)
     {
         ProjectFile* pf = files[i];
-
-        // if the file is not compilable, skip it
-        if (!pf->compile)
-            continue;
-
-        // if the file does not belong in this target (if we have a target), skip it
-        if (target && pf->buildTargets.Index(target->GetTitle()) == wxNOT_FOUND)
-            continue;
-        
         pfDetails pfd(this, target, pf);
         ret.Add(pfd.object_file_absolute_native);
         if (distclean)
@@ -633,37 +592,72 @@ wxArrayString DirectCommands::GetTargetCleanCommands(ProjectBuildTarget* target,
 
 bool DirectCommands::IsObjectOutdated(const pfDetails& pfd)
 {
-	// If the source file does not exist, then do not compile.
-	time_t timeSrc;
-	depsTimeStamp(pfd.source_file_native.c_str(), &timeSrc);
-	if (!timeSrc)
-		return false;
+    // If the source file does not exist, then do not compile.
+    time_t timeSrc;
+    depsTimeStamp(pfd.source_file_native.c_str(), &timeSrc);
+    if (!timeSrc)
+        return false;
 
-	// If the object file does not exist, then it must be built. In this case
-	// there is no need to scan the source file for headers.
-	time_t timeObj;
-	depsTimeStamp(pfd.object_file_native.c_str(), &timeObj);
-	if (!timeObj)
-		return true;
+    // If the object file does not exist, then it must be built. In this case
+    // there is no need to scan the source file for headers.
+    time_t timeObj;
+    depsTimeStamp(pfd.object_file_native.c_str(), &timeObj);
+    if (!timeObj)
+        return true;
 
-	// If the source file is newer than the object file, then the object file
-	// must be built. In this case there is no need to scan the source file
-	// for headers.
-	if (timeSrc > timeObj)
-		return true;
+    // If the source file is newer than the object file, then the object file
+    // must be built. In this case there is no need to scan the source file
+    // for headers.
+    if (timeSrc > timeObj)
+        return true;
 
-	// Scan the source file for headers. Result is NULL if the file does
-	// not exist. If one of the descendent header files is newer than the
-	// object file, then the object file must be built.
-	depsRef ref = depsScanForHeaders(pfd.source_file_native.c_str());
-	if (ref)
-	{
-		time_t timeNewest;
-		(void) depsGetNewest(ref, &timeNewest);
-		return (timeNewest > timeObj);
-	}
+    // Scan the source file for headers. Result is NULL if the file does
+    // not exist. If one of the descendent header files is newer than the
+    // object file, then the object file must be built.
+    depsRef ref = depsScanForHeaders(pfd.source_file_native.c_str());
+    if (ref)
+    {
+        time_t timeNewest;
+        (void) depsGetNewest(ref, &timeNewest);
+        return (timeNewest > timeObj);
+    }
 
-	// Source file doesn't exist.
-	return false;
+    // Source file doesn't exist.
+    return false;
 }
 
+void DirectCommands::DepsSearchStart(ProjectBuildTarget* target)
+{
+    depsSearchStart();
+
+    const wxArrayString& prj_incs = m_pProject->GetIncludeDirs();
+    const wxArrayString& tgt_incs = target->GetIncludeDirs();
+
+    OptionsRelation relation = target->GetOptionRelation(ortIncludeDirs);
+    switch (relation)
+    {
+        case orUseParentOptionsOnly:
+            for (unsigned int i = 0; i < prj_incs.GetCount(); ++i)
+                depsAddSearchDir(prj_incs[i].c_str());
+            break;
+        case orUseTargetOptionsOnly:
+            for (unsigned int i = 0; i < tgt_incs.GetCount(); ++i)
+                depsAddSearchDir(tgt_incs[i].c_str());
+            break;
+        case orPrependToParentOptions:
+            for (unsigned int i = 0; i < tgt_incs.GetCount(); ++i)
+                depsAddSearchDir(tgt_incs[i].c_str());
+            for (unsigned int i = 0; i < prj_incs.GetCount(); ++i)
+                depsAddSearchDir(prj_incs[i].c_str());
+            break;
+        case orAppendToParentOptions:
+            for (unsigned int i = 0; i < prj_incs.GetCount(); ++i)
+                depsAddSearchDir(prj_incs[i].c_str());
+            for (unsigned int i = 0; i < tgt_incs.GetCount(); ++i)
+                depsAddSearchDir(tgt_incs[i].c_str());
+            break;
+    }
+
+    // We could add the "global" compiler directories too, but we normally
+    // don't care about the modification times of system include files.
+}

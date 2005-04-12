@@ -23,6 +23,10 @@
 * $Date$
 */
 
+#ifndef wxUSE_CHOICEDLG
+#define wxUSE_CHOICEDLG 1
+#endif
+
 #include <wx/choicdlg.h>
 #include "cbproject.h" // class's header file
 #include "sdk_events.h"

@@ -35,9 +35,10 @@ class DirectCommands
 	protected:
         friend class pfDetails;
         bool IsObjectOutdated(const pfDetails& pfd);
+        void DepsSearchStart(ProjectBuildTarget* target);
         wxArrayString GetPreBuildCommands(ProjectBuildTarget* target);
         wxArrayString GetPostBuildCommands(ProjectBuildTarget* target);
-        MyFilesArray GetProjectFilesSortedByWeight();
+        MyFilesArray GetProjectFilesSortedByWeight(ProjectBuildTarget* target, bool compile, bool link);
         void AddCommandsToArray(const wxString& cmds, wxArrayString& array);
         int m_PageIndex;
         CompilerGCC* m_pCompilerPlugin;
