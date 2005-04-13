@@ -53,10 +53,12 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         virtual const wxString& GetTitle(); ///< Read the target's title
         virtual void SetTitle(const wxString& title); ///< Set the target's title
         virtual void SetOutputFilename(const wxString& filename); ///< Set the target's output filename
+        virtual void SetWorkingDir(const wxString& dirname); ///< Set the target's working dir on execution (valid only for executable targets)
         virtual void SetObjectOutput(const wxString& dirname); ///< Set the target's objects output dir
         virtual void SetDepsOutput(const wxString& dirname); ///< Set the target's dependencies output dir
         virtual OptionsRelation GetOptionRelation(OptionsRelationType type); ///< Read the target's options relation for \c type
         virtual void SetOptionRelation(OptionsRelationType type, OptionsRelation rel); ///< Set the target's options relation for \c type to \c rel
+        virtual wxString GetWorkingDir(); ///< Read the target's working dir for execution (valid only for executable targets)
         virtual wxString GetObjectOutput(); ///< Read the target's objects output dir
         virtual wxString GetDepsOutput(); ///< Read the target's dependencies output dir
         virtual wxString GetOutputFilename(); ///< Read the target's output filename
@@ -79,6 +81,7 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         wxString m_Filename;
         wxString m_Title;
         wxString m_OutputFilename;
+        wxString m_WorkingDir;
         wxString m_ObjectOutput;
         wxString m_DepsOutput;
         wxString m_ExecutionParameters;

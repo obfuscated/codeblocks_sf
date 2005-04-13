@@ -762,7 +762,9 @@ void ParserThread::HandleIncludes()
 	{
 		wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, FILE_NEEDS_PARSING);
 		event.SetString(m_Filename + "+" + filename);
-		event.SetInt(isGlobal);
+		// setting all #includes as global
+		// it's amazing how many projects use #include "..." for global headers (MSVC mainly - booh)
+		event.SetInt(1);//isGlobal);
 		wxPostEvent(m_pParent, event);
 	}
 }

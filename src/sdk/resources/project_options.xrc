@@ -208,6 +208,30 @@
                         </object>
                         <object class="sizeritem">
                           <object class="wxStaticText">
+                            <label>Execution working dir:</label>
+                          </object>
+                          <flag>wxTOP</flag>
+                          <border>4</border>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxBoxSizer">
+                            <orient>wxHORIZONTAL</orient>
+                            <object class="sizeritem">
+                              <object class="wxTextCtrl" name="txtWorkingDir"/>
+                              <option>1</option>
+                              <flag>wxEXPAND</flag>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxButton" name="btnBrowseWorkingDir">
+                                <label>...</label>
+                              </object>
+                              <minsize>22,22</minsize>
+                            </object>
+                          </object>
+                          <flag>wxEXPAND</flag>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
                             <label>Objects output dir:</label>
                           </object>
                           <flag>wxTOP</flag>

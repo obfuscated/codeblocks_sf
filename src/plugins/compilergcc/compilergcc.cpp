@@ -920,7 +920,8 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     wxString cmd;
     wxFileName f(UnixFilename(target->GetOutputFilename()));
     f.MakeAbsolute(m_Project->GetBasePath());
-    m_CdRun = f.GetPath(wxPATH_GET_VOLUME);
+//    m_CdRun = f.GetPath(wxPATH_GET_VOLUME);
+    m_CdRun = target->GetWorkingDir();
 
     // for console projects, use helper app to wait for a key after
     // execution ends...

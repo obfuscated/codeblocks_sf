@@ -74,6 +74,14 @@ void CompileTargetBase::SetOutputFilename(const wxString& filename)
 	SetModified(true);
 }
 
+void CompileTargetBase::SetWorkingDir(const wxString& dirname)
+{
+	if (m_WorkingDir == dirname)
+		return;
+	m_WorkingDir = UnixFilename(dirname);
+	SetModified(true);
+}
+
 void CompileTargetBase::SetObjectOutput(const wxString& dirname)
 {
 	if (m_ObjectOutput == dirname)
@@ -126,6 +134,19 @@ wxString CompileTargetBase::SuggestOutputFilename()
             break;
     }
     return UnixFilename(suggestion);
+}
+
+wxString CompileTargetBase::GetWorkingDir()
+{
+    if (m_TargetType != ttConsoleOnly && m_TargetType != ttExecutable)
+        return wxEmptyString;
+    wxString out;
+    if (m_WorkingDir.IsEmpty())
+    {
+        out = GetOutputFilename();
+        return wxFileName(out).GetPath(wxPATH_GET_VOLUME);
+    }
+    return m_WorkingDir;
 }
 
 wxString CompileTargetBase::GetObjectOutput()

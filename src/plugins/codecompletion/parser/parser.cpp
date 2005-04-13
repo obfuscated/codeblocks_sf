@@ -296,7 +296,7 @@ Token* Parser::FindTokenByName(const wxString& name, bool globalsOnly)
 Token* Parser::FindChildTokenByName(Token* parent, const wxString& name, bool useInheritance)
 {
 	if (!parent)
-		return FindTokenByName(name);
+		return FindTokenByName(name, false);
 
 	for (unsigned int i = 0; i < parent->m_Children.GetCount(); ++i)
 	{

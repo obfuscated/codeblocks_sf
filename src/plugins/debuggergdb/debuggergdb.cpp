@@ -485,8 +485,9 @@ int DebuggerGDB::Debug()
 		SendCommand("set args " + target->GetExecutionParameters());
 
     // switch to output dir
-    wxFileName dir(target->GetOutputFilename());
-    wxString path = UnixFilename(dir.GetPath(wxPATH_GET_VOLUME));
+//    wxFileName dir(target->GetOutputFilename());
+//    wxString path = UnixFilename(dir.GetPath(wxPATH_GET_VOLUME));
+    wxString path = UnixFilename(target->GetWorkingDir());
     if (!path.IsEmpty())
     {
         cmd.Clear();

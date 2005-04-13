@@ -160,7 +160,10 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
         if (!dir.IsAbsolute())
             dir.Normalize(wxPATH_NORM_ALL, base);
         if (dir.IsOk() && parser->IncludeDirs().Index(dir.GetFullPath()) == wxNOT_FOUND)
+        {
             parser->IncludeDirs().Add(dir.GetFullPath());
+            Manager::Get()->GetMessageManager()->DebugLog("Parser prj dir: " + dir.GetFullPath());
+        }
     }
     
     // get targets include dirs
@@ -175,7 +178,10 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
                 if (!dir.IsAbsolute())
                     dir.Normalize(wxPATH_NORM_ALL, base);
                 if (dir.IsOk() && parser->IncludeDirs().Index(dir.GetFullPath()) == wxNOT_FOUND)
+                {
                     parser->IncludeDirs().Add(dir.GetFullPath());
+                    Manager::Get()->GetMessageManager()->DebugLog("Parser tgt dir: " + dir.GetFullPath());
+                }
             }
         }
     }
@@ -192,7 +198,10 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
             if (!dir.IsAbsolute())
                 dir.Normalize(wxPATH_NORM_ALL, base);
             if (dir.IsOk() && parser->IncludeDirs().Index(dir.GetFullPath()) == wxNOT_FOUND)
+            {
                 parser->IncludeDirs().Add(dir.GetFullPath());
+                Manager::Get()->GetMessageManager()->DebugLog("Parser cmp dir: " + dir.GetFullPath());
+            }
 		}
 	}
 	else
@@ -743,7 +752,7 @@ int NativeParser::AI(cbEditor* editor, Parser* parser, const wxString& lineText,
                     }
 				}
 				else
-                    parentToken = parser->FindTokenByName(token->m_ActualType);
+                    parentToken = parser->FindTokenByName(token->m_ActualType, false);
 			}
 			Manager::Get()->GetMessageManager()->DebugLog("Class '%s'", parentToken ? parentToken->m_Name.c_str() : "unknown");
 

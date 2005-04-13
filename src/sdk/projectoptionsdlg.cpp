@@ -29,6 +29,7 @@
 #include "editarrayorderdlg.h"
 #include "editarrayfiledlg.h"
 #include "pluginmanager.h"
+#include "compilerfactory.h"
 #include <wx/xrc/xmlres.h>
 
 BEGIN_EVENT_TABLE(ProjectOptionsDlg, wxDialog)
@@ -41,6 +42,7 @@ BEGIN_EVENT_TABLE(ProjectOptionsDlg, wxDialog)
 	EVT_BUTTON(    XRCID("btnEditBuildTarget"),        ProjectOptionsDlg::OnEditBuildTargetClick)
 	EVT_BUTTON(    XRCID("btnDelBuildTarget"),         ProjectOptionsDlg::OnRemoveBuildTargetClick)
 	EVT_BUTTON(    XRCID("btnBrowseOutputFilename"),   ProjectOptionsDlg::OnBrowseOutputFilenameClick)
+	EVT_BUTTON(    XRCID("btnBrowseWorkingDir"),       ProjectOptionsDlg::OnBrowseDirClick)
 	EVT_BUTTON(    XRCID("btnBrowseObjectDir"),        ProjectOptionsDlg::OnBrowseDirClick)
 	EVT_BUTTON(    XRCID("btnBrowseDepsDir"),          ProjectOptionsDlg::OnBrowseDirClick)
 	EVT_BUTTON(    XRCID("btnEditDeps"),               ProjectOptionsDlg::OnEditDepsClick)
@@ -114,9 +116,11 @@ void ProjectOptionsDlg::DoTargetChange()
 	// global project options
 	wxComboBox* cmb = XRCCTRL(*this, "cmbProjectType", wxComboBox);
     wxTextCtrl* txt = XRCCTRL(*this, "txtOutputFilename", wxTextCtrl);
+    wxTextCtrl* txtW = XRCCTRL(*this, "txtWorkingDir", wxTextCtrl);
     wxTextCtrl* txtO = XRCCTRL(*this, "txtObjectDir", wxTextCtrl);
     wxTextCtrl* txtD = XRCCTRL(*this, "txtDepsDir", wxTextCtrl);
     wxButton* browse = XRCCTRL(*this, "btnBrowseOutputFilename", wxButton);
+    wxButton* browseW = XRCCTRL(*this, "btnBrowseWorkingDir", wxButton);
     wxButton* browseO = XRCCTRL(*this, "btnBrowseObjectDir", wxButton);
     wxButton* browseD = XRCCTRL(*this, "btnBrowseDepsDir", wxButton);
     wxTextCtrl* txtDeps = XRCCTRL(*this, "txtExternalDeps", wxTextCtrl);
@@ -136,13 +140,16 @@ void ProjectOptionsDlg::DoTargetChange()
             case ttStaticLib:
                 txt->SetValue(target->GetOutputFilename());
                 txt->Enable(true);
+                txtW->SetValue(target->GetWorkingDir());
+                txtW->Enable((TargetType)cmb->GetSelection() == ttExecutable || (TargetType)cmb->GetSelection() == ttConsoleOnly);
                 txtO->SetValue(target->GetObjectOutput());
                 txtO->Enable(true);
                 txtD->SetValue(target->GetDepsOutput());
-                txtD->Enable(true);
+                txtD->Enable(CompilerFactory::Compilers[target->GetCompilerIndex()]->GetSwitches().buildMethod == cbmUseMake);
                 browse->Enable(true);
+                browseW->Enable((TargetType)cmb->GetSelection() == ttExecutable || (TargetType)cmb->GetSelection() == ttConsoleOnly);
                 browseO->Enable(true);
-                browseD->Enable(true);
+                browseD->Enable(CompilerFactory::Compilers[target->GetCompilerIndex()]->GetSwitches().buildMethod == cbmUseMake);
                 txtDeps->SetValue(target->GetExternalDeps());
                 btnDeps->Enable(true);
                 break;
@@ -150,11 +157,14 @@ void ProjectOptionsDlg::DoTargetChange()
             default: // for commands-only targets
                 txt->SetValue("");
                 txt->Enable(false);
+                txtW->SetValue("");
+                txtW->Enable(false);
                 txtO->SetValue("");
                 txtO->Enable(false);
                 txtD->SetValue("");
                 txtD->Enable(false);
                 browse->Enable(false);
+                browseW->Enable(false);
                 browseO->Enable(false);
                 browseD->Enable(false);
                 txtDeps->SetValue("");
@@ -208,6 +218,11 @@ void ProjectOptionsDlg::DoBeforeTargetChange(bool force)
 		fname.MakeRelativeTo(m_Project->GetBasePath());
 		target->SetOutputFilename(fname.GetFullPath());
 		
+		fname.Assign(XRCCTRL(*this, "txtWorkingDir", wxTextCtrl)->GetValue());
+		fname.Normalize(wxPATH_NORM_ALL, m_Project->GetBasePath());
+		fname.MakeRelativeTo(m_Project->GetBasePath());
+		target->SetWorkingDir(fname.GetFullPath());
+
 		fname.Assign(XRCCTRL(*this, "txtObjectDir", wxTextCtrl)->GetValue());
 		fname.Normalize(wxPATH_NORM_ALL, m_Project->GetBasePath());
 		fname.MakeRelativeTo(m_Project->GetBasePath());
@@ -246,9 +261,11 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
         return;
 	wxComboBox* cmb = XRCCTRL(*this, "cmbProjectType", wxComboBox);
     wxTextCtrl* txt = XRCCTRL(*this, "txtOutputFilename", wxTextCtrl);
+    wxTextCtrl* txtW = XRCCTRL(*this, "txtWorkingDir", wxTextCtrl);
     wxTextCtrl* txtO = XRCCTRL(*this, "txtObjectDir", wxTextCtrl);
     wxTextCtrl* txtD = XRCCTRL(*this, "txtDepsDir", wxTextCtrl);
     wxButton* browse = XRCCTRL(*this, "btnBrowseOutputFilename", wxButton);
+    wxButton* browseW = XRCCTRL(*this, "btnBrowseWorkingDir", wxButton);
     wxButton* browseO = XRCCTRL(*this, "btnBrowseObjectDir", wxButton);
     wxButton* browseD = XRCCTRL(*this, "btnBrowseDepsDir", wxButton);
     wxTextCtrl* txtDeps = XRCCTRL(*this, "txtExternalDeps", wxTextCtrl);
@@ -263,13 +280,16 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
     txtDeps->SetValue(target->GetExternalDeps());
     btnDeps->Enable(true);
     txt->Enable(true);
+    txtW->SetValue(target->GetWorkingDir());
+    txtW->Enable((TargetType)cmb->GetSelection() == ttExecutable || (TargetType)cmb->GetSelection() == ttConsoleOnly);
     txtO->Enable(true);
     txtO->SetValue(target->GetObjectOutput());
-    txtD->Enable(true);
+    txtD->Enable(CompilerFactory::Compilers[target->GetCompilerIndex()]->GetSwitches().buildMethod == cbmUseMake);
     txtD->SetValue(target->GetDepsOutput());
     browse->Enable(true);
+    browseW->Enable((TargetType)cmb->GetSelection() == ttExecutable || (TargetType)cmb->GetSelection() == ttConsoleOnly);
     browseO->Enable(true);
-    browseD->Enable(true);
+    browseD->Enable(CompilerFactory::Compilers[target->GetCompilerIndex()]->GetSwitches().buildMethod == cbmUseMake);
 
     wxFileName fname;
     switch ((TargetType)cmb->GetSelection())
@@ -293,15 +313,18 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
             break;
         case ttCommandsOnly:
             txt->SetValue("");
+            txtW->SetValue("");
             txtO->SetValue("");
             txtD->SetValue("");
             txtDeps->SetValue("");
             txt->Enable(false);
-            browse->Enable(false);
-            browseO->Enable(false);
-            browseD->Enable(false);
+            txtW->Enable(false);
             txtO->Enable(false);
             txtD->Enable(false);
+            browse->Enable(false);
+            browseW->Enable(false);
+            browseO->Enable(false);
+            browseD->Enable(false);
             txtDeps->Enable(false);
             btnDeps->Enable(false);
     }
@@ -439,7 +462,9 @@ void ProjectOptionsDlg::OnEditDepsClick(wxCommandEvent& event)
 void ProjectOptionsDlg::OnBrowseDirClick(wxCommandEvent& event)
 {
     wxTextCtrl* targettext = 0;
-    if (event.GetId() == XRCID("btnBrowseObjectDir"))
+    if (event.GetId() == XRCID("btnBrowseWorkingDir"))
+        targettext = XRCCTRL(*this, "txtWorkingDir", wxTextCtrl);
+    else if (event.GetId() == XRCID("btnBrowseObjectDir"))
         targettext = XRCCTRL(*this, "txtObjectDir", wxTextCtrl);
     else if (event.GetId() == XRCID("btnBrowseDepsDir"))
         targettext = XRCCTRL(*this, "txtDepsDir", wxTextCtrl);

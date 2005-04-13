@@ -234,6 +234,7 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
         return; // no options
     
     wxString output;
+    wxString working_dir;
     wxString obj_output;
     wxString deps_output;
     wxString deps;
@@ -253,6 +254,9 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
     {
         if (node->Attribute("output"))
             output = node->Attribute("output");
+
+        if (node->Attribute("working_dir"))
+            working_dir = node->Attribute("working_dir");
 
         if (node->Attribute("object_output"))
             obj_output = node->Attribute("object_output");
@@ -303,6 +307,8 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
     {
         target->SetTargetType((TargetType)type); // type *must* come before output filename!
         target->SetOutputFilename(output); // because if no filename defined, one will be suggested based on target type...
+        if (!working_dir.IsEmpty())
+            target->SetWorkingDir(working_dir);
         if (!obj_output.IsEmpty())
             target->SetObjectOutput(obj_output);
         if (!deps_output.IsEmpty())
@@ -592,6 +598,7 @@ bool ProjectLoader::Save(const wxString& filename)
         if (target->GetTargetType() != ttCommandsOnly)
         {
             buffer << '\t' << '\t' << '\t' << '\t' << "<Option output=\"" << FixEntities(target->GetOutputFilename()) << "\"/>" << '\n';
+            buffer << '\t' << '\t' << '\t' << '\t' << "<Option working_dir=\"" << FixEntities(target->GetWorkingDir()) << "\"/>" << '\n';
             buffer << '\t' << '\t' << '\t' << '\t' << "<Option object_output=\"" << FixEntities(target->GetObjectOutput()) << "\"/>" << '\n';
             buffer << '\t' << '\t' << '\t' << '\t' << "<Option deps_output=\"" << FixEntities(target->GetDepsOutput()) << "\"/>" << '\n';
             buffer << '\t' << '\t' << '\t' << '\t' << "<Option external_deps=\"" << FixEntities(target->GetExternalDeps()) << "\"/>" << '\n';
