@@ -9,6 +9,12 @@ class ProjectFile;
 
 class MSVC7Loader : public IBaseLoader
 {
+        enum VCProjVersion
+        {
+            vc70,
+            vc71,
+            vcOther
+        };
 	public:
 		MSVC7Loader(cbProject* project);
 		virtual ~MSVC7Loader();
@@ -24,6 +30,7 @@ class MSVC7Loader : public IBaseLoader
         wxString m_TargetFilename;
         wxString m_TargetPath;
         wxString m_OutDir;
+        VCProjVersion m_Version;
 	private:
         wxString ReplaceMSVCMacros(const wxString& str);
         void HandleFileConfiguration(TiXmlElement* file, ProjectFile* pf);

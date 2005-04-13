@@ -11,7 +11,8 @@
 
 MSVC7Loader::MSVC7Loader(cbProject* project)
     : m_pProject(project),
-    m_ConvertSwitches(false)
+    m_ConvertSwitches(false),
+    m_Version(vcOther)
 {
 	//ctor
 }
@@ -104,7 +105,11 @@ bool MSVC7Loader::Open(const wxString& filename)
         pMsg->DebugLog("Project is not Visual C++...");
         return false;
     }
-    if (strncmp(root->Attribute("Version"), "7", 1) != 0)
+    if (strncmp(root->Attribute("Version"), "7.0", 3) == 0)
+        m_Version = vc70;
+    else if (strncmp(root->Attribute("Version"), "7.1", 3) == 0)
+        m_Version = vc71;
+    else
     {
         pMsg->DebugLog(_("Project version is '%s'. Although this loader was designed for version 7.xx, will try to import..."), root->Attribute("Version"));
     }
@@ -303,7 +308,13 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
         {
             // compiler
             wxString incs = tool->Attribute("AdditionalIncludeDirectories");
-            wxArrayString arr = GetArrayFromString(incs, ",");
+            // vc70 uses ";" while vc71 uses "," separators
+            wxString lsep;
+            if (m_Version == vc70)
+                lsep = ";";
+            else
+                lsep = ",";
+            wxArrayString arr = GetArrayFromString(incs, lsep);
             for (unsigned int i = 0; i < arr.GetCount(); ++i)
             {
                 bt->AddIncludeDir(ReplaceMSVCMacros(arr[i]));
