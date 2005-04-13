@@ -1566,7 +1566,7 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
 
     mbar->Check(idViewToolMain, m_pToolbar && m_pToolbar->IsShown());
     mbar->Check(idViewManager, m_pLeftSash && m_pLeftSash->IsShown());
-    mbar->Check(idViewOpenFilesTree, m_pEdMan->IsOpenFilesTreeVisible());
+    mbar->Check(idViewOpenFilesTree, m_pEdMan && m_pEdMan->IsOpenFilesTreeVisible());
     mbar->Check(idViewMessageManager, m_pBottomSash && m_pBottomSash->IsShown());
     mbar->Check(idViewStatusbar, GetStatusBar() && GetStatusBar()->IsShown());
     mbar->Check(idViewFullScreen, IsFullScreen());

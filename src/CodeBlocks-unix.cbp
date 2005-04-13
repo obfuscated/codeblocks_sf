@@ -16,6 +16,7 @@
 				<Option external_deps=""/>
 				<Option type="2"/>
 				<Option compiler="0"/>
+				<Option projectResourceIncludeDirsRelation="2"/>
 			</Target>
 			<Target title="sdk">
 				<Option output="devel/libcodeblocks.so"/>
@@ -46,6 +47,7 @@
 				<Option parameters="--debug-log --no-check-associations -ns"/>
 				<Option projectLinkerOptionsRelation="2"/>
 				<Option projectIncludeDirsRelation="2"/>
+				<Option projectResourceIncludeDirsRelation="0"/>
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
 					<Add option="-DENABLE_BINRELOC"/>
@@ -92,7 +94,9 @@
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
+					<Add option="-DDEPSLIB_UNIX"/>
 					<Add directory="sdk"/>
+					<Add directory="plugins/compilergcc/depslib/src"/>
 				</Compiler>
 				<Linker>
 					<Add library="libcodeblocks.a"/>
@@ -249,13 +253,10 @@
 				</Linker>
 			</Target>
 			<Target title="update">
-				<Option output="/home/mandrav/devel/codeblocks/src/CodeBlocks-unix.cbp"/>
-				<Option object_output="/home/mandrav/devel/codeblocks/src//.objs"/>
-				<Option deps_output="/home/mandrav/devel/codeblocks/src//.deps"/>
-				<Option external_deps=""/>
 				<Option type="4"/>
 				<Option compiler="0"/>
 				<Option includeInTargetAll="0"/>
+				<Option projectResourceIncludeDirsRelation="4"/>
 				<ExtraCommands>
 					<Add before="sh update"/>
 				</ExtraCommands>
@@ -270,6 +271,7 @@
 				<Option projectCompilerOptionsRelation="1"/>
 				<Option projectLinkerOptionsRelation="1"/>
 				<Option projectIncludeDirsRelation="2"/>
+				<Option projectResourceIncludeDirsRelation="1"/>
 				<Compiler>
 					<Add option="-Os"/>
 				</Compiler>
@@ -817,21 +819,155 @@
 			<Option link="0"/>
 			<Option target="plugin_CompilerGCC"/>
 		</Unit>
-		<Unit filename="plugins/compilergcc/directcommands.cpp">
-			<Option compilerVar="CPP"/>
+		<Unit filename="plugins/compilergcc/depslib/src/alloc.c">
+			<Option compilerVar="CC"/>
 			<Option target="plugin_CompilerGCC"/>
 		</Unit>
-		<Unit filename="plugins/compilergcc/directcommands.h">
+		<Unit filename="plugins/compilergcc/depslib/src/alloc.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
 			<Option target="plugin_CompilerGCC"/>
 		</Unit>
-		<Unit filename="plugins/compilergcc/directdeps.cpp">
+		<Unit filename="plugins/compilergcc/depslib/src/cache.c">
+			<Option compilerVar="CC"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/depslib/src/cache.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/depslib/src/depslib.c">
+			<Option compilerVar="CC"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/depslib/src/depslib.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/depslib/src/filent.c">
+			<Option compilerVar="CC"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/depslib/src/filesys.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/depslib/src/fileunix.c">
+			<Option compilerVar="CC"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/depslib/src/hash.c">
+			<Option compilerVar="CC"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/depslib/src/hash.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/depslib/src/headers.c">
+			<Option compilerVar="CC"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/depslib/src/headers.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/depslib/src/jam.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/depslib/src/lists.c">
+			<Option compilerVar="CC"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/depslib/src/lists.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/depslib/src/main.c">
+			<Option compilerVar="CC"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/depslib/src/newstr.c">
+			<Option compilerVar="CC"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/depslib/src/newstr.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/depslib/src/pathsplit.c">
+			<Option compilerVar="CC"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/depslib/src/pathsplit.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/depslib/src/pathsys.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/depslib/src/pathunix.c">
+			<Option compilerVar="CC"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/depslib/src/regexp.c">
+			<Option compilerVar="CC"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/depslib/src/regexp.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/depslib/src/search.c">
+			<Option compilerVar="CC"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/depslib/src/search.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/depslib/src/timestamp.c">
+			<Option compilerVar="CC"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/depslib/src/timestamp.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/directcommands.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="plugin_CompilerGCC"/>
 		</Unit>
-		<Unit filename="plugins/compilergcc/directdeps.h">
+		<Unit filename="plugins/compilergcc/directcommands.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -1349,6 +1485,16 @@
 			<Option link="0"/>
 			<Option target="sdk"/>
 		</Unit>
+		<Unit filename="sdk/managedthread.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk/managedthread.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
 		<Unit filename="sdk/manager.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="sdk"/>
@@ -1770,6 +1916,16 @@
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk/workspaceloader.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk/xtra_classes.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk/xtra_classes.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
