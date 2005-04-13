@@ -39,6 +39,7 @@
 #include "editormanager.h"
 #include "messagemanager.h"
 #include "cbplugin.h"
+#include "cbeditorprintout.h"
 
 BEGIN_EVENT_TABLE(cbStyledTextCtrl, wxStyledTextCtrl)
 	EVT_CONTEXT_MENU(cbStyledTextCtrl::OnContextMenu)
@@ -839,6 +840,36 @@ void cbEditor::DisplayContextMenu(const wxPoint& position)
 	// I 'm pretty sure that this is a memory leak here (not deleting the menu),
 	// but why deleting the menu causes a SIGSEGV???
 // 	delete popup;
+}
+
+void cbEditor::Print(bool selectionOnly, PrintColorMode pcm)
+{
+    switch (pcm)
+    {
+        case pcmAsIs:
+            m_pControl->SetPrintColourMode(wxSTC_PRINT_NORMAL);
+            break;
+        case pcmBlackAndWhite:
+            m_pControl->SetPrintColourMode(wxSTC_PRINT_BLACKONWHITE);
+            break;
+        case pcmColorOnWhite:
+            m_pControl->SetPrintColourMode(wxSTC_PRINT_COLOURONWHITE);
+            break;
+        case pcmInvertColors:
+            m_pControl->SetPrintColourMode(wxSTC_PRINT_INVERTLIGHT);
+            break;
+    }
+    wxPrinter printer;
+    wxPrintout* printout = new cbEditorPrintout(m_Filename, m_pControl, selectionOnly);
+    if (!printer.Print(this, printout, false))
+    {
+        if (wxPrinter::GetLastError() == wxPRINTER_ERROR)
+        {
+            wxMessageBox(_("There was a problem printing.\n"
+                            "Perhaps your current printer is not set correctly?"), _("Printing"), wxICON_ERROR);
+        }
+    }
+    delete printout;
 }
 
 // events

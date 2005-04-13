@@ -67,6 +67,13 @@
         <help>Close active project</help>
       </object>
       <object class="separator"/>
+      <object class="wxMenuItem" name="idFilePrintSetup">
+        <label>Print setup...</label>
+      </object>
+      <object class="wxMenuItem" name="idFilePrint">
+        <label>Print...</label>
+      </object>
+      <object class="separator"/>
       <object class="wxMenuItem" name="idFileExit">
         <label>&amp;Quit</label>
         <accel>Ctrl-Q</accel>

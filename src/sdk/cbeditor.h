@@ -17,6 +17,7 @@
 #include <wx/datetime.h>
 
 #include "settings.h"
+#include "printing_types.h"
 
 // forward decls
 class cbEditor;
@@ -172,6 +173,11 @@ class DLLIMPORT cbEditor : public wxMDIChildFrame
         wxDateTime GetLastModificationTime(){ return m_LastModified; }
         /** Reloads the file from disk. @return True on success, False on failure. */
         bool Reload();
+        /** Print the file.
+          * @param selectionOnly Should the selected text be printed only?
+          * @param pcm The color mode to use when printing
+          */
+        void Print(bool selectionOnly, PrintColorMode pcm);
     private:
         // functions
 		void DoFoldAll(int fold); // 0=unfold, 1=fold, 2=toggle
@@ -218,4 +224,3 @@ class DLLIMPORT cbEditor : public wxMDIChildFrame
 };
 
 #endif // EDITOR_H
-

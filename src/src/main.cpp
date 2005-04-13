@@ -52,6 +52,8 @@
 
 #include "dlgaboutplugin.h"
 #include "dlgabout.h"
+#include "printdlg.h"
+#include <wx/printdlg.h>
 
 class wxMyFileDropTarget : public wxFileDropTarget
 {
@@ -76,6 +78,8 @@ int idFileSaveAllFiles = XRCID("idFileSaveAllFiles");
 int idFileSaveWorkspaceAs = XRCID("idFileSaveWorkspaceAs");
 int idFileClose = XRCID("idFileClose");
 int idFileCloseAll = XRCID("idFileCloseAll");
+int idFilePrintSetup = XRCID("idFilePrintSetup");
+int idFilePrint = XRCID("idFilePrint");
 int idFileExit = XRCID("idFileExit");
 
 int idEditUndo = XRCID("idEditUndo");
@@ -156,6 +160,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idFileSaveWorkspaceAs, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileClose, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileCloseAll, MainFrame::OnFileMenuUpdateUI)
+    EVT_UPDATE_UI(idFilePrintSetup, MainFrame::OnFileMenuUpdateUI)
+    EVT_UPDATE_UI(idFilePrint, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idProjectSaveProject, MainFrame::OnProjectMenuUpdateUI)
     EVT_UPDATE_UI(idProjectSaveProjectAs, MainFrame::OnProjectMenuUpdateUI)
     EVT_UPDATE_UI(idProjectSaveAllProjects, MainFrame::OnProjectMenuUpdateUI)
@@ -212,6 +218,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idFileSaveWorkspaceAs,  MainFrame::OnFileSaveWorkspaceAs)
     EVT_MENU(idFileClose,  MainFrame::OnFileClose)
     EVT_MENU(idFileCloseAll,  MainFrame::OnFileCloseAll)
+    EVT_MENU(idFilePrintSetup,  MainFrame::OnFilePrintSetup)
+    EVT_MENU(idFilePrint,  MainFrame::OnFilePrint)
     EVT_MENU(idFileExit,  MainFrame::OnFileQuit)
 
     EVT_MENU(idEditUndo,  MainFrame::OnEditUndo)
@@ -333,12 +341,15 @@ MainFrame::MainFrame(wxWindow* parent)
 	m_pMsgMan->SetSize(wxSize(2048, 2048));
 #endif // __WXMSW__
 
+    InitPrinting();
+
     ConfigManager::AddConfiguration(_("Application"), "/main_frame");
     ConfigManager::AddConfiguration(_("Environment"), "/environment");
 }
 
 MainFrame::~MainFrame()
 {
+    DeInitPrinting();
 	//Manager::Get()->Free();
 }
 
@@ -1125,6 +1136,20 @@ void MainFrame::OnFileCloseAll(wxCommandEvent& WXUNUSED(event))
     DoUpdateStatusBar();
 }
 
+void MainFrame::OnFilePrintSetup(wxCommandEvent& event)
+{
+    wxPrintDialog dlg;
+    if (dlg.ShowModal() == wxID_OK)
+        *g_printData = dlg.GetPrintDialogData().GetPrintData();
+}
+
+void MainFrame::OnFilePrint(wxCommandEvent& event)
+{
+    PrintDialog dlg(this);
+    if (dlg.ShowModal() == wxID_OK)
+        m_pEdMan->Print(dlg.GetPrintScope(), dlg.GetPrintColorMode());
+}
+
 void MainFrame::OnFileQuit(wxCommandEvent& WXUNUSED(event))
 {
     Close(TRUE);
@@ -1504,6 +1529,7 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idFileSaveAs, ed);
     mbar->Enable(idFileSaveAllFiles, ed);
     mbar->Enable(idFileSaveWorkspaceAs, m_pPrjMan && m_pPrjMan->GetActiveProject());
+    mbar->Enable(idFilePrint, m_pEdMan && m_pEdMan->GetActiveEditor());
 	
 	if (m_pToolbar)
 	{

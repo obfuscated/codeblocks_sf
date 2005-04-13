@@ -1,0 +1,69 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxDialog" name="dlgPrint">
+    <title>Print...</title>
+    <centered>1</centered>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxRadioBox" name="rbScope">
+              <label>Printing scope</label>
+              <content>
+                <item>Selected text only</item>
+                <item>Active editor</item>
+                <item>All open files</item>
+              </content>
+            </object>
+            <flag>wxGROW</flag>
+            <border>8</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxRadioBox" name="rbColorMode">
+              <label>Color Mode</label>
+              <content>
+                <item>Black &amp;&amp; White</item>
+                <item>Color on white background</item>
+                <item>Invert colors</item>
+                <item>As on screen</item>
+              </content>
+              <selection>1</selection>
+            </object>
+            <flag>wxLEFT|wxGROW</flag>
+            <border>8</border>
+          </object>
+        </object>
+        <option>1</option>
+        <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticLine"/>
+        <flag>wxALL|wxGROW</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_OK">
+              <label>&amp;Print</label>
+              <default>1</default>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_CANCEL">
+              <label>&amp;Cancel</label>
+            </object>
+            <flag>wxLEFT</flag>
+            <border>8</border>
+          </object>
+        </object>
+        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <border>8</border>
+      </object>
+    </object>
+  </object>
+</resource>

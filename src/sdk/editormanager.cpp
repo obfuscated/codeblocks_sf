@@ -570,6 +570,31 @@ bool EditorManager::SaveAll()
     return true;
 }
 
+void EditorManager::Print(PrintScope ps, PrintColorMode pcm)
+{
+    switch (ps)
+    {
+        case psAllOpenEditors:
+        {
+            for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext())
+            {
+                cbEditor* ed = node->GetData();
+                if (ed)
+                    ed->Print(false, pcm);
+                    
+            }
+            break;
+        }
+        default:
+        {
+            cbEditor* ed = GetActiveEditor();
+            if (ed)
+                ed->Print(ps == psSelection, pcm);
+            break;
+        }
+    }
+}
+
 void EditorManager::UpdateEditorIndices()
 {
     SANITY_CHECK();

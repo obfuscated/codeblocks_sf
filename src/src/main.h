@@ -41,6 +41,8 @@ class MainFrame : public wxMDIParentFrame
         void OnFileSaveWorkspaceAs(wxCommandEvent& event);
         void OnFileClose(wxCommandEvent& event);
         void OnFileCloseAll(wxCommandEvent& event);
+        void OnFilePrintSetup(wxCommandEvent& event);
+        void OnFilePrint(wxCommandEvent& event);
         void OnFileQuit(wxCommandEvent& event);
 
         void OnEditUndo(wxCommandEvent& event);

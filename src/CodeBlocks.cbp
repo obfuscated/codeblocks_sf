@@ -11,6 +11,7 @@
 		<Build>
 			<Target title="tinyXML">
 				<Option output="sdk\tinyxml\libtxml.a"/>
+				<Option working_dir=""/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -20,6 +21,7 @@
 			</Target>
 			<Target title="sdk">
 				<Option output="devel\codeblocks.dll"/>
+				<Option working_dir=""/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -44,6 +46,7 @@
 			</Target>
 			<Target title="src">
 				<Option output="devel\codeblocks.exe"/>
+				<Option working_dir="devel"/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -84,6 +87,7 @@
 			</Target>
 			<Target title="plugin_Astyle">
 				<Option output="devel\share\CodeBlocks\plugins\astyle.dll"/>
+				<Option working_dir=""/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -108,6 +112,7 @@
 			</Target>
 			<Target title="plugin_CompilerGCC">
 				<Option output="devel\share\CodeBlocks\plugins\compilergcc.dll"/>
+				<Option working_dir=""/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -135,6 +140,7 @@
 			</Target>
 			<Target title="plugin_DebuggerGDB">
 				<Option output="devel\share\CodeBlocks\plugins\debuggergdb.dll"/>
+				<Option working_dir=""/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -160,6 +166,7 @@
 			</Target>
 			<Target title="plugin_CodeCompletion">
 				<Option output="devel\share\CodeBlocks\plugins\codecompletion.dll"/>
+				<Option working_dir=""/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -185,6 +192,7 @@
 			</Target>
 			<Target title="plugin_ClassWizard">
 				<Option output="devel\share\CodeBlocks\plugins\classwizard.dll"/>
+				<Option working_dir=""/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -210,6 +218,7 @@
 			</Target>
 			<Target title="plugin_DefMimeHandler">
 				<Option output="devel\share\CodeBlocks\plugins\defaultmimehandler.dll"/>
+				<Option working_dir=""/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -234,6 +243,7 @@
 			</Target>
 			<Target title="plugin_PluginsWizard">
 				<Option output="devel\share\CodeBlocks\plugins\pluginwizard.dll"/>
+				<Option working_dir=""/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -259,6 +269,7 @@
 			</Target>
 			<Target title="plugin_ToDo">
 				<Option output="devel\share\CodeBlocks\plugins\todo.dll"/>
+				<Option working_dir=""/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -279,6 +290,7 @@
 			</Target>
 			<Target title="plugin_XPManifest">
 				<Option output="devel\share\CodeBlocks\plugins\xpmanifest.dll"/>
+				<Option working_dir=""/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -310,6 +322,7 @@
 			</Target>
 			<Target title="console_runner">
 				<Option output="tools\ConsoleRunner\console_runner.exe"/>
+				<Option working_dir="tools\ConsoleRunner"/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -1393,6 +1406,16 @@
 			<Option link="0"/>
 			<Option target="sdk"/>
 		</Unit>
+		<Unit filename="sdk\cbeditorprintout.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\cbeditorprintout.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
 		<Unit filename="sdk\cbplugin.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="sdk"/>
@@ -1813,6 +1836,16 @@
 			<Option link="0"/>
 			<Option target="sdk"/>
 		</Unit>
+		<Unit filename="sdk\printing_types.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\printing_types.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
 		<Unit filename="sdk\projectbuildtarget.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="sdk"/>
@@ -2201,6 +2234,16 @@
 			<Option link="0"/>
 			<Option target="src"/>
 		</Unit>
+		<Unit filename="src\printdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\printdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
 		<Unit filename="src\resources\dlg_about.xrc">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
@@ -2568,6 +2611,12 @@
 			<Option target="src"/>
 		</Unit>
 		<Unit filename="src\resources\main_toolbar_16x16.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\print_dialog.xrc">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
