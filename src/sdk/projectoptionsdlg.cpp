@@ -219,18 +219,18 @@ void ProjectOptionsDlg::DoBeforeTargetChange(bool force)
 		target->SetOutputFilename(fname.GetFullPath());
 		
 		fname.Assign(XRCCTRL(*this, "txtWorkingDir", wxTextCtrl)->GetValue());
-		fname.Normalize(wxPATH_NORM_ALL, m_Project->GetBasePath());
-		fname.MakeRelativeTo(m_Project->GetBasePath());
+//		fname.Normalize(wxPATH_NORM_ALL, m_Project->GetBasePath());
+//		fname.MakeRelativeTo(m_Project->GetBasePath());
 		target->SetWorkingDir(fname.GetFullPath());
 
 		fname.Assign(XRCCTRL(*this, "txtObjectDir", wxTextCtrl)->GetValue());
-		fname.Normalize(wxPATH_NORM_ALL, m_Project->GetBasePath());
-		fname.MakeRelativeTo(m_Project->GetBasePath());
+//		fname.Normalize(wxPATH_NORM_ALL, m_Project->GetBasePath());
+//		fname.MakeRelativeTo(m_Project->GetBasePath());
 		target->SetObjectOutput(fname.GetFullPath());
 		
 		fname.Assign(XRCCTRL(*this, "txtDepsDir", wxTextCtrl)->GetValue());
-		fname.Normalize(wxPATH_NORM_ALL, m_Project->GetBasePath());
-		fname.MakeRelativeTo(m_Project->GetBasePath());
+//		fname.Normalize(wxPATH_NORM_ALL, m_Project->GetBasePath());
+//		fname.MakeRelativeTo(m_Project->GetBasePath());
 		target->SetDepsOutput(fname.GetFullPath());
 
         target->SetExternalDeps(XRCCTRL(*this, "txtExternalDeps", wxTextCtrl)->GetValue());
@@ -471,16 +471,20 @@ void ProjectOptionsDlg::OnBrowseDirClick(wxCommandEvent& event)
     else
         return;
     
-    wxFileName fname(targettext->GetValue());
+    wxFileName fname(targettext->GetValue() + wxFileName::GetPathSeparator());
     fname.Normalize(wxPATH_NORM_ALL, m_Project->GetBasePath());
-    wxString path = fname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-    wxDirDialog dlg(this, _("Select directory"), path);
-    if (dlg.ShowModal() != wxID_OK)
+
+    wxString path = ChooseDirectory(this,
+                                    _("Select directory"),
+                                    fname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR),
+                                    m_Project->GetBasePath(),
+                                    true,
+                                    true);
+    if (path.IsEmpty())
         return;
 
-    fname.Assign(dlg.GetPath());
-    fname.MakeRelativeTo(m_Project->GetBasePath());
-    targettext->SetValue(fname.GetFullPath());
+    fname.Assign(path);
+    targettext->SetValue(path);
 }
 
 void ProjectOptionsDlg::OnBrowseOutputFilenameClick(wxCommandEvent& event)

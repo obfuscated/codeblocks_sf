@@ -806,6 +806,9 @@ ProjectBuildTarget* cbProject::AddBuildTarget(const wxString& targetName)
     target->m_Filename = m_Filename; // really important
     target->SetTitle(targetName);
     target->SetOutputFilename(GetOutputFilename());
+    target->SetWorkingDir(".");
+    target->SetObjectOutput(".objs");
+    target->SetDepsOutput(".deps");
     m_Targets.Add(target);
 
     SetModified(true);

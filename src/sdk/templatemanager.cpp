@@ -32,7 +32,6 @@
 #include <wx/filename.h>
 #include <wx/msgdlg.h>
 #include <wx/textdlg.h>
-#include <wx/dirdlg.h>
 
 #include "templatemanager.h"
 #include "manager.h"
@@ -240,8 +239,8 @@ void TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg)
 
     // select directory to copy user template files
     wxString sep = wxFileName::GetPathSeparator();
-    wxDirDialog dirdlg(0, _("Choose a directory to create the new project"), wxEmptyString, wxDD_NEW_DIR_BUTTON);
-    if (dirdlg.ShowModal() != wxID_OK)
+    wxString path = ChooseDirectory(0, _("Choose a directory to create the new project"));
+    if (path.IsEmpty())
         return;
 
     wxBusyCursor busy;
@@ -265,7 +264,7 @@ void TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg)
         wxFileName dstname(files[i]);
         dstname.MakeRelativeTo(templ + sep);
         wxString src = files[i];
-        wxString dst = dirdlg.GetPath() + sep + dstname.GetFullPath();
+        wxString dst = path + sep + dstname.GetFullPath();
         Manager::Get()->GetMessageManager()->DebugLog("dst=%s, dstname=%s", dst.c_str(), dstname.GetFullPath().c_str());
         if (!CreateDirRecursively(dst))
             Manager::Get()->GetMessageManager()->DebugLog("Failed creating directory for %s", dst.c_str());

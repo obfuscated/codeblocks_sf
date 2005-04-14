@@ -4,6 +4,7 @@
 #include "settings.h"
 #include <wx/string.h>
 #include <wx/treectrl.h>
+#include <wx/intl.h>
 
 enum PluginType
 {
@@ -66,6 +67,12 @@ extern DLLIMPORT wxString UnixFilename(const wxString& filename);
 extern DLLIMPORT FileType FileTypeOf(const wxString& filename);
 extern DLLIMPORT void SaveTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& nodePaths);
 extern DLLIMPORT void RestoreTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& nodePaths);
+extern DLLIMPORT wxString ChooseDirectory(wxWindow* parent,
+                                          const wxString& message = _("Select directory"),
+                                          const wxString& initialPath = _(""),
+                                          const wxString& basePath = _(""),
+                                          bool askToMakeRelative = false, // relative to basePath
+                                          bool showCreateDirButton = false); // where supported
 #ifdef __cplusplus
 };
 #endif

@@ -26,6 +26,8 @@
 #include "globals.h"
 #include <wx/tokenzr.h>
 #include <wx/filename.h>
+#include <wx/dirdlg.h>
+#include <wx/msgdlg.h>
 
 wxString GetStringFromArray(const wxArrayString& array, const wxString& separator)
 {
@@ -242,4 +244,30 @@ void RestoreTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayStrin
     for (unsigned int i = 0; i < nodePaths.GetCount(); ++i)
         DoExpandRememberedNode(tree, parent, nodePaths[i]);
     nodePaths.Clear();
+}
+
+wxString ChooseDirectory(wxWindow* parent,
+                         const wxString& message,
+                         const wxString& initialPath,
+                         const wxString& basePath,
+                         bool askToMakeRelative, // relative to initialPath
+                         bool showCreateDirButton) // where supported
+{
+    wxDirDialog dlg(parent, message, "", showCreateDirButton ? wxDD_NEW_DIR_BUTTON : 0);
+    dlg.SetPath(initialPath);
+    if (dlg.ShowModal() != wxID_OK)
+        return wxEmptyString;
+        
+    wxFileName path(dlg.GetPath());
+    if (askToMakeRelative && !basePath.IsEmpty())
+    {
+        // ask the user if he wants it to be kept as relative
+        if (wxMessageBox(_("Keep this as a relative path?"),
+                        _("Question"),
+                        wxICON_QUESTION | wxYES_NO) == wxYES)
+        {
+            path.MakeRelativeTo(basePath);
+        }
+    }
+    return path.GetFullPath();
 }

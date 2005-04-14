@@ -29,8 +29,8 @@
 #include <wx/textctrl.h>
 #include <wx/button.h>
 #include <wx/filedlg.h>
-#include <wx/dirdlg.h>
 #include "toolsmanager.h"
+#include "globals.h"
 
 BEGIN_EVENT_TABLE(EditToolDlg, wxDialog)
 	EVT_BUTTON(XRCID("btnBrowseCommand"), 	EditToolDlg::OnBrowseCommand)
@@ -74,7 +74,7 @@ void EditToolDlg::OnBrowseCommand(wxCommandEvent& event)
 
 void EditToolDlg::OnBrowseDir(wxCommandEvent& event)
 {
-	const wxString& dir = wxDirSelector(_("Select working directory"), XRCCTRL(*this, "txtDir", wxTextCtrl)->GetValue());
+    wxString dir = ChooseDirectory(this, _("Select working directory"), XRCCTRL(*this, "txtDir", wxTextCtrl)->GetValue());
 	if (!dir.IsEmpty())
 		XRCCTRL(*this, "txtDir", wxTextCtrl)->SetValue(dir);
 }

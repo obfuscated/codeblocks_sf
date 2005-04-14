@@ -677,10 +677,14 @@ void CompilerOptionsDlg::DoSaveOptions(int compilerIdx, ScopeTreeData* data)
 
 void CompilerOptionsDlg::DoMakeRelative(wxFileName& path)
 {
+    // NOTE: this function is not currently used
+
 	wxTreeCtrl* tc = XRCCTRL(*this, "tcScope", wxTreeCtrl);
 	ScopeTreeData* data = (ScopeTreeData*)tc->GetItemData(tc->GetSelection());
-	if (data)
-		path.MakeRelativeTo(data->GetProject()->GetBasePath());
+	if (data && data->GetProject())
+	{
+        path.MakeRelativeTo(data->GetProject()->GetBasePath());
+    }
 }
 
 void CompilerOptionsDlg::DoSaveCompilerPrograms(int compilerIdx)
@@ -853,17 +857,18 @@ void CompilerOptionsDlg::OnOptionToggled(wxCommandEvent& event)
 
 void CompilerOptionsDlg::OnAddDirClick(wxCommandEvent& event)
 {
-    wxDirDialog dlg(this);
-    dlg.SetPath(m_pProject ? m_pProject->GetBasePath() : "");
-    if (dlg.ShowModal() != wxID_OK)
+    wxString path = ChooseDirectory(this,
+                                    _("Select directory"),
+                                    m_pProject ? m_pProject->GetBasePath() : "",
+                                    m_pProject ? m_pProject->GetBasePath() : "",
+                                    true,
+                                    true);
+    if (path.IsEmpty())
         return;
-        
-    wxFileName path(dlg.GetPath());
-	DoMakeRelative(path);
-   
+
     wxListBox* control = GetDirsListBox();
     if (control)
-        control->Append(path.GetFullPath());
+        control->Append(path);
 }
 
 void CompilerOptionsDlg::OnEditDirClick(wxCommandEvent& event)
@@ -872,22 +877,26 @@ void CompilerOptionsDlg::OnEditDirClick(wxCommandEvent& event)
     if (!control || control->GetSelection() < 0)
         return;
         
-    wxDirDialog dlg(this);
     wxFileName dir(control->GetString(control->GetSelection()) + wxFileName::GetPathSeparator());
     if (m_pProject)
         dir.Normalize(wxPATH_NORM_ALL, m_pProject->GetBasePath());
-    Manager::Get()->GetMessageManager()->DebugLog(dir.GetFullPath());
+//    Manager::Get()->GetMessageManager()->DebugLog(dir.GetFullPath());
+    wxString initial = _("");
     if (dir.DirExists())
-        dlg.SetPath(dir.GetPath(wxPATH_GET_VOLUME));
+        initial = dir.GetPath(wxPATH_GET_VOLUME);
     else if (m_pProject)
-        dlg.SetPath(m_pProject->GetBasePath());
-    if (dlg.ShowModal() != wxID_OK)
+        initial = m_pProject->GetBasePath();
+
+    wxString path = ChooseDirectory(this,
+                                    _("Select directory"),
+                                    initial,
+                                    m_pProject ? m_pProject->GetBasePath() : "",
+                                    true,
+                                    true);
+    if (path.IsEmpty())
         return;
 
-    wxFileName path(dlg.GetPath());
-	DoMakeRelative(path);
-
-    control->SetString(control->GetSelection(), path.GetFullPath());
+    control->SetString(control->GetSelection(), path);
 }
 
 void CompilerOptionsDlg::OnRemoveDirClick(wxCommandEvent& event)
@@ -1136,11 +1145,14 @@ void CompilerOptionsDlg::OnMoveDirDownClick(wxCommandEvent& event)
 
 void CompilerOptionsDlg::OnMasterPathClick(wxCommandEvent& event)
 {
-    wxDirDialog dlg(this);
-    dlg.SetPath(XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->GetValue());
-    if (dlg.ShowModal() == wxID_OK)
+    wxString path = ChooseDirectory(this,
+                                    _("Select directory"),
+                                    XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->GetValue());
+    if (path.IsEmpty())
+        return;
+    if (!path.IsEmpty())
     {
-        XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->SetValue(dlg.GetPath());
+        XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->SetValue(path);
         int compilerIdx = XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection();
         DoSaveCompilerPrograms(compilerIdx);
     }
