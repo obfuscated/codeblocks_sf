@@ -1,3 +1,7 @@
+/* compilerMINGW.cpp
+ * $Id$
+ */
+
 #include "compilerMINGW.h"
 #include <wx/intl.h>
 #include <wx/regex.h>
@@ -132,12 +136,12 @@ void CompilerMINGW::Reset()
 
     m_RegExes.Clear();
     m_RegExes.Add(RegExStruct(_("Fatal error"), cltError, "FATAL:[ \t]*(.*)", 1));
-    m_RegExes.Add(RegExStruct(_("Preprocessor error"), cltError, "([ \tA-Za-z0-9_\\-\\+/\\.]+):([0-9]+):[0-9]+:[ \t](.*)", 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Compiler warning"), cltWarning, "([ \tA-Za-z0-9_\\-\\+/\\.]+):([0-9]+):[ \t][Ww]arning:[ \t](.*)", 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, "([ \tA-Za-z0-9_\\-\\+/\\.]+):([0-9]+):[ \t](.*)", 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Linker error"), cltError, "([ \tA-Za-z0-9_\\-\\+/\\.]+):([0-9]+):[0-9]+:[ \t](.*)", 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Linker error (2)"), cltError, "[ \tA-Za-z0-9_\\-\\+/\\.]+\\(.text\\+[0-9A-Za-z]+\\):([ \tA-Za-z0-9_\\-\\+/\\.]+):[ \t](.*)", 2, 1));
-    m_RegExes.Add(RegExStruct(_("Undefined reference"), cltError, "([ \tA-Za-z0-9_\\-\\+/\\.]+):[ \t](undefined reference.*)", 2, 1));
+    m_RegExes.Add(RegExStruct(_("Preprocessor error"), cltError, "([ \tA-Za-z0-9_:+/\\.-]+):([0-9]+):[0-9]+:[ \t](.*)", 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Compiler warning"), cltWarning, "([ \tA-Za-z0-9_:+/\\.-]+):([0-9]+):[ \t][Ww]arning:[ \t](.*)", 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, "([ \tA-Za-z0-9_:+/\\.-]+):([0-9]+):[ \t](.*)", 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Linker error"), cltError, "([ \tA-Za-z0-9_:+/\\.-]+):([0-9]+):[0-9]+:[ \t](.*)", 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Linker error (2)"), cltError, "[ \tA-Za-z0-9_:+/\\.-]+\\(.text\\+[0-9A-Za-z]+\\):([ \tA-Za-z0-9_:+/\\.-]+):[ \t](.*)", 2, 1));
+    m_RegExes.Add(RegExStruct(_("Undefined reference"), cltError, "([ \tA-Za-z0-9_:+/\\.-]+):[ \t](undefined reference.*)", 2, 1));
     m_RegExes.Add(RegExStruct(_("Resource compiler error"), cltError, "windres.exe:[ \t](.*)", 1));
 
     m_CompilerOptions.Clear();
