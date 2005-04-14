@@ -162,7 +162,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
         if (dir.IsOk() && parser->IncludeDirs().Index(dir.GetFullPath()) == wxNOT_FOUND)
         {
             parser->IncludeDirs().Add(dir.GetFullPath());
-            Manager::Get()->GetMessageManager()->DebugLog("Parser prj dir: " + dir.GetFullPath());
+//            Manager::Get()->GetMessageManager()->DebugLog("Parser prj dir: " + dir.GetFullPath());
         }
     }
     
@@ -180,7 +180,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
                 if (dir.IsOk() && parser->IncludeDirs().Index(dir.GetFullPath()) == wxNOT_FOUND)
                 {
                     parser->IncludeDirs().Add(dir.GetFullPath());
-                    Manager::Get()->GetMessageManager()->DebugLog("Parser tgt dir: " + dir.GetFullPath());
+//                    Manager::Get()->GetMessageManager()->DebugLog("Parser tgt dir: " + dir.GetFullPath());
                 }
             }
         }
@@ -200,7 +200,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
             if (dir.IsOk() && parser->IncludeDirs().Index(dir.GetFullPath()) == wxNOT_FOUND)
             {
                 parser->IncludeDirs().Add(dir.GetFullPath());
-                Manager::Get()->GetMessageManager()->DebugLog("Parser cmp dir: " + dir.GetFullPath());
+//                Manager::Get()->GetMessageManager()->DebugLog("Parser cmp dir: " + dir.GetFullPath());
             }
 		}
 	}

@@ -1,6 +1,6 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <resource>
-  <object class="wxDialog" name="dlgProjectFileOptions">
+  <object class="wxDialog" name="dlgProjectFileOptionsWRK">
     <title>Project file options</title>
     <centered>1</centered>
     <object class="wxBoxSizer">
@@ -27,32 +27,28 @@
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
-                  <object class="wxFlexGridSizer">
+                  <object class="wxStaticBoxSizer">
+                    <label>Belongs in targets:</label>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>Belongs in target:</label>
-                      </object>
-                      <flag>wxTOP</flag>
-                      <border>4</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxComboBox" name="cmbTarget">
+                      <object class="wxCheckList" name="lstTargets">
                         <content/>
-                        <style>wxCB_READONLY|wxCB_DROPDOWN</style>
+                        <size>-1,150</size>
                       </object>
-                      <flag>wxEXPAND</flag>
+                      <flag>wxEXPAND|wxALL</flag>
+                      <border>4</border>
+                      <option>1</option>
                     </object>
-                    <cols>2</cols>
-                    <rows>2</rows>
-                    <vgap>8</vgap>
-                    <hgap>8</hgap>
-                    <growablecols>1</growablecols>
+                    <orient>wxVERTICAL</orient>
+                  </object>
+                  <flag>wxEXPAND|wxALL</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxFlexGridSizer">
                     <object class="sizeritem">
                       <object class="wxStaticText">
                         <label>Priority weight:</label>
                       </object>
-                      <flag>wxTOP</flag>
-                      <border>4</border>
                     </object>
                     <object class="sizeritem">
                       <object class="wxSlider" name="sliderWeight">
@@ -64,11 +60,14 @@
                         <pagesize>10</pagesize>
                       </object>
                       <option>1</option>
-                      <flag>wxEXPAND</flag>
+                      <flag>wxGROW</flag>
                     </object>
+                    <cols></cols>
+                    <hgap>8</hgap>
+                    <growablecols>1</growablecols>
                   </object>
-                  <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
                   <border>8</border>
+                  <flag>wxALL|wxGROW</flag>
                 </object>
               </object>
             </object>

@@ -354,7 +354,7 @@ int DebuggerGDB::Debug()
 		msgMan->AppendLog(m_PageIndex, _("Compiling: "));
 		m_pCompiler->Compile(target);
 		while (m_pCompiler->IsRunning())
-			wxSafeYield();
+			wxYield();
         msgMan->SwitchTo(m_PageIndex);
 		if (m_pCompiler->GetExitCode() != 0)
 		{

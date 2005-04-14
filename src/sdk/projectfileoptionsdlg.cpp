@@ -27,7 +27,7 @@
 #include "cbproject.h"
 #include <wx/xrc/xmlres.h>
 #include <wx/intl.h>
-#include <wx/combobox.h>
+#include <wx/checklst.h>
 #include <wx/checkbox.h>
 #include <wx/slider.h>
 #include <wx/textctrl.h>
@@ -41,22 +41,21 @@ END_EVENT_TABLE()
 ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf)
 	: m_ProjectFile(pf)
 {
-	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgProjectFileOptions"));
+	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgProjectFileOptionsWRK"));
 	
 	if (pf)
 	{
-		int idx = -1;
 		cbProject* prj = pf->project;
+		wxCheckListBox *list = XRCCTRL(*this, "lstTargets", wxCheckListBox);
 		for (int i = 0; i < prj->GetBuildTargetsCount(); ++i)
 		{
 			wxString targetName = prj->GetBuildTarget(i)->GetTitle();
-			XRCCTRL(*this, "cmbTarget", wxComboBox)->Append(targetName);
-			if (idx == -1 && pf->buildTargets.Index(targetName) != -1)
-				idx = i;
+			list->Append(targetName);
+			if (pf->buildTargets.Index(targetName) != -1)
+				list->Check(i, true);
 		}
 
 		XRCCTRL(*this, "txtCompiler", wxTextCtrl)->SetValue(pf->compilerVar);
-		XRCCTRL(*this, "cmbTarget", wxComboBox)->SetSelection(idx);
 		XRCCTRL(*this, "chkCompile", wxCheckBox)->SetValue(pf->compile);
 		XRCCTRL(*this, "chkLink", wxCheckBox)->SetValue(pf->link);
 		XRCCTRL(*this, "sliderWeight", wxSlider)->SetValue(pf->weight);
@@ -87,7 +86,7 @@ void ProjectFileOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
 	else
 	{
 		XRCCTRL(*this, "txtCompiler", wxTextCtrl)->Enable(false);
-		XRCCTRL(*this, "cmbTarget", wxComboBox)->Enable(false);
+		XRCCTRL(*this, "lstTargets", wxCheckListBox)->Enable(false);
 		XRCCTRL(*this, "chkCompile", wxCheckBox)->Enable(false);
 		XRCCTRL(*this, "chkLink", wxCheckBox)->Enable(false);
 		XRCCTRL(*this, "txtObjName", wxTextCtrl)->Enable(false);;
@@ -101,7 +100,13 @@ void ProjectFileOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
 void ProjectFileOptionsDlg::OnOKClick(wxCommandEvent& event)
 {
 	m_ProjectFile->buildTargets.Clear();
-	m_ProjectFile->AddBuildTarget(XRCCTRL(*this, "cmbTarget", wxComboBox)->GetValue());
+	wxCheckListBox *list = XRCCTRL(*this, "lstTargets", wxCheckListBox);
+	for (int i = 0; i < list->GetCount(); i++)
+	{
+		if (list->IsChecked(i))
+			m_ProjectFile->AddBuildTarget(list->GetString(i));
+	}
+
 	m_ProjectFile->compile = XRCCTRL(*this, "chkCompile", wxCheckBox)->GetValue();
 	m_ProjectFile->link = XRCCTRL(*this, "chkLink", wxCheckBox)->GetValue();
 	m_ProjectFile->weight = XRCCTRL(*this, "sliderWeight", wxSlider)->GetValue();

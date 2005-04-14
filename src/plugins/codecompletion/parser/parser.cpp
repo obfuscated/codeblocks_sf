@@ -579,6 +579,7 @@ bool Parser::Reparse(const wxString& filename, bool isLocal)
 
 void Parser::Clear()
 {
+    DisconnectEvents();
 	TerminateAllThreads();
 	wxSafeYield();
 	wxSleep(0);
@@ -590,6 +591,9 @@ void Parser::Clear()
 	wxMutexLocker lock(s_mutexProtection);
 	WX_CLEAR_ARRAY(m_Tokens);
 	m_Tokens.Clear();
+
+	wxSafeYield();
+	ConnectEvents();
 }
 
 void Parser::ClearTemporaries()

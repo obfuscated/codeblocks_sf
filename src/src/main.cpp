@@ -748,7 +748,6 @@ void MainFrame::DoAddPlugin(cbPlugin* plugin)
 
 bool MainFrame::Open(const wxString& filename, bool addToHistory)
 {
-	wxSafeYield();
     bool ret = OpenGeneric(filename, addToHistory);
     DoUpdateLayout();
 	return ret;
