@@ -603,6 +603,104 @@ void MakefileGenerator::DoAddMakefileResources(wxString& buffer)
 }
 #endif // __WXMSW__
 
+void MakefileGenerator::DoAddMakefileCreateDirs(wxString& buffer, ProjectBuildTarget* target, bool obj, bool dep, bool bin)
+{
+    if (!target)
+        return;
+
+    // create target's options only if it has at least one linkable file
+    if (!IsTargetValid(target))
+        return;
+
+    wxArrayString addedDirs; // avoid creating multiple commands for the same dir
+    int filesCount = (int)m_Files.GetCount();
+
+    if (obj)
+    {
+        // object output dirs
+        addedDirs.Clear();
+        for (int i = 0; i < filesCount; ++i)
+        {
+            ProjectFile* pf = m_Files[i];
+            // if the file belongs in this target
+            if (pf->buildTargets.Index(target->GetTitle()) >= 0)
+            {
+                wxString sep = wxFileName::GetPathSeparator();
+                wxString o_out = target->GetObjectOutput();
+                wxString object_file = (!o_out.IsEmpty() ? o_out : ".") +
+                                       sep +
+                                       pf->GetObjName();
+                wxFileName o_file(object_file);
+                wxFileName o_dir(o_file.GetPath(wxPATH_GET_SEPARATOR));
+                RecursiveCreateDir(buffer, o_dir.GetDirs(), addedDirs);
+            }
+        }
+    }
+
+    if (dep)
+    {
+        // deps output dirs
+        addedDirs.Clear();
+        for (int i = 0; i < filesCount; ++i)
+        {
+            ProjectFile* pf = m_Files[i];
+            // if the file belongs in this target
+            if (pf->buildTargets.Index(target->GetTitle()) >= 0)
+            {
+                wxString sep = wxFileName::GetPathSeparator();
+                wxString o_out = target->GetDepsOutput();
+                wxString object_file = (!o_out.IsEmpty() ? o_out : ".") +
+                                       sep +
+                                       pf->GetObjName();
+                wxFileName o_file(object_file);
+                wxFileName o_dir(o_file.GetPath(wxPATH_GET_SEPARATOR));
+                RecursiveCreateDir(buffer, o_dir.GetDirs(), addedDirs);
+            }
+        }
+    }
+
+    if (bin)
+    {
+        // add output dir also
+        addedDirs.Clear();
+        wxFileName fname(target->GetOutputFilename());
+        fname.MakeRelativeTo(m_Project->GetBasePath());
+        wxString out = UnixFilename(fname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
+        if (!out.IsEmpty())
+        {
+            ConvertToMakefileFriendly(out);
+            QuoteStringIfNeeded(out);
+            wxFileName o_file(out);
+            wxFileName o_dir(o_file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
+            RecursiveCreateDir(buffer, o_dir.GetDirs(), addedDirs);
+        }
+    }
+}
+
+void MakefileGenerator::RecursiveCreateDir(wxString& buffer, const wxArrayString& subdirs, wxArrayString& guardList)
+{
+    wxString currdir;
+    for (size_t i = 0; i < subdirs.GetCount(); ++i)
+    {
+        currdir << subdirs[i];
+        if (guardList.Index(currdir) != wxNOT_FOUND)
+        {
+            currdir << wxFileName::GetPathSeparator();
+            continue;
+        }
+        guardList.Add(currdir);
+#ifdef __WXMSW__
+        buffer << "\t-@if not exist \"" << currdir << wxFileName::GetPathSeparator() << ".\" mkdir \"" << currdir << "\"\n";
+#else
+        wxString out = currdir;
+        ConvertToMakefileFriendly(out);
+        QuoteStringIfNeeded(out);
+        buffer << "\t-@if ! test -d " << out << "; then mkdir " << out << "; fi\n";
+#endif
+        currdir << wxFileName::GetPathSeparator();
+    }
+}
+
 void MakefileGenerator::DoAddMakefileObjs(wxString& buffer)
 {
     buffer << "### Objects used in this Makefile" << '\n';
@@ -859,18 +957,8 @@ void MakefileGenerator::DoAddMakefileTargets(wxString& buffer)
 		if (!IsTargetValid(target))
 			continue;
 
-        // add commands to create the target directory (if it does not exist)
-        wxFileName fname(target->GetOutputFilename());
-        fname.MakeRelativeTo(m_Project->GetBasePath());
-		wxString out = UnixFilename(fname.GetPath(wxPATH_GET_VOLUME));
-		if (out.IsEmpty())
-			out = ".";
-        ConvertToMakefileFriendly(out);
-        QuoteStringIfNeeded(out);
-        buffer << target->GetTitle() << "_OUTDIR=" << out << '\n';
-
         // the filename is already adapted based on the project type
-        out = UnixFilename(target->GetOutputFilename());
+        wxString out = UnixFilename(target->GetOutputFilename());
         ConvertToMakefileFriendly(out);
 //        QuoteStringIfNeeded(out);
 		buffer << target->GetTitle() << "_BIN=" << out << '\n';
@@ -928,10 +1016,10 @@ void MakefileGenerator::DoAddMakefileTarget_All(wxString& buffer)
             // or custom commands...
 			if (IsTargetValid(target))
 			{
-				tmp << target->GetTitle() << " ";
+				tmp << target->GetTitle() << "_DIRS " << target->GetTitle() << " ";
                 // to include dependencies, the target must have linkable files...
-                if (m_LinkableTargets.Index(target) != -1 && m_CompilerSet->GetSwitches().needDependencies)
-                    deps << "-include $(" << target->GetTitle() << "_DEPS)" << '\n';
+//                if (m_LinkableTargets.Index(target) != -1 && m_CompilerSet->GetSwitches().needDependencies)
+//                    deps << "-include $(" << target->GetTitle() << "_DEPS)" << '\n';
 			}
 		}
     }
@@ -943,27 +1031,29 @@ void MakefileGenerator::DoAddMakefileTarget_All(wxString& buffer)
     buffer << '\n';
 }
 
-void MakefileGenerator::DoAddMakefileCommands(const wxString& prefix, const wxArrayString& commands, wxString& buffer)
+void MakefileGenerator::DoAddMakefileCommands(const wxString& desc, const wxString& prefix, const wxArrayString& commands, wxString& buffer)
 {
 	if (commands.GetCount())
 	{
 		// run any user-defined commands *before* build
-		if (!prefix.IsEmpty())
-			buffer << prefix << ": " << '\n';
+        if (!prefix.IsEmpty())
+            buffer << prefix << ": " << '\n';
+        if (m_CompilerSet->GetSwitches().logging == clogSimple)
+            buffer << '\t' << "@echo " << desc << '\n';
 		for (unsigned int i = 0; i < commands.GetCount(); ++i)
 		{
 			wxString tmp = commands[i];
 			Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp);
-			buffer << '\t' << tmp << '\n';
+			buffer << '\t' << m_Quiet << tmp << '\n';
 		}
-		buffer << '\n';
+        buffer << '\n';
 	}
 }
 
 void MakefileGenerator::DoAddMakefileTargets_BeforeAfter(wxString& buffer)
 {
-	DoAddMakefileCommands("all-before", m_Project->GetCommandsBeforeBuild(), buffer);
-	DoAddMakefileCommands("all-after", m_Project->GetCommandsAfterBuild(), buffer);
+	DoAddMakefileCommands("Running project pre-build step", "all-before", m_Project->GetCommandsBeforeBuild(), buffer);
+	DoAddMakefileCommands("Running project post-build step", "all-after", m_Project->GetCommandsAfterBuild(), buffer);
 	
     wxString tmp;
     int targetsCount = m_Project->GetBuildTargetsCount();
@@ -975,9 +1065,10 @@ void MakefileGenerator::DoAddMakefileTargets_BeforeAfter(wxString& buffer)
 
 		tmp.Clear();
 		tmp << target->GetTitle() << "-before";
-		DoAddMakefileCommands(tmp, target->GetCommandsBeforeBuild(), buffer);
+		DoAddMakefileCommands("Running pre-build step", tmp, target->GetCommandsBeforeBuild(), buffer);
+		tmp.Clear();
 		tmp << target->GetTitle() << "-after";
-		DoAddMakefileCommands(tmp, target->GetCommandsAfterBuild(), buffer);
+		DoAddMakefileCommands("Running post-build step", tmp, target->GetCommandsAfterBuild(), buffer);
     }
 	buffer << '\n';
 }
@@ -1060,7 +1151,13 @@ void MakefileGenerator::DoAddMakefileTarget_Depend(wxString& buffer)
 		if (!IsTargetValid(target))
 			continue;
 
-        buffer << "depend_" << target->GetTitle() << ": $(" << target->GetTitle() << "_DEPS)" << '\n' << '\n';
+        buffer << "depend_" << target->GetTitle() << "_DIRS:" << '\n';
+        DoAddMakefileCreateDirs(buffer, target, false, true, false);
+        buffer << '\n';
+
+        buffer << "depend_" << target->GetTitle() << ": depend_" << target->GetTitle() << "_DIRS $(" << target->GetTitle() << "_DEPS)" << '\n';
+        buffer << '\n';
+
         tmp << " depend_" << target->GetTitle();
     }
     buffer << "depend:" << tmp << '\n';
@@ -1075,7 +1172,12 @@ void MakefileGenerator::DoAddMakefileTarget_Link(wxString& buffer)
         ProjectBuildTarget* target = m_Project->GetBuildTarget(x);
         if (!target)
             break;
-		buffer << target->GetTitle() << ": " << target->GetTitle() << "-before ";
+
+		buffer << target->GetTitle() << "_DIRS:" << '\n';
+        DoAddMakefileCreateDirs(buffer, target, true, false, true);
+		buffer << '\n';
+
+		buffer << target->GetTitle() << ": depend_" << target->GetTitle() << " " << target->GetTitle() << "_DIRS " << target->GetTitle() << "-before ";
 		if (IsTargetValid(target))
         {
 			buffer << "$(" << target->GetTitle() << "_BIN) ";
@@ -1088,7 +1190,8 @@ void MakefileGenerator::DoAddMakefileTarget_Link(wxString& buffer)
                     buffer << pf->relativeFilename << " ";
             }
         }
-		buffer << target->GetTitle() << "-after" << '\n' << '\n';
+		buffer << target->GetTitle() << "-after" << '\n';
+		buffer << '\n';
 
 		// create target's options only if it has at least one linkable file
 		if (!IsTargetValid(target))
@@ -1103,17 +1206,6 @@ void MakefileGenerator::DoAddMakefileTarget_Link(wxString& buffer)
         }
 		buffer << '\n';
 
-        // command to create the target dir
-#ifdef __WXMSW__
-        buffer << "\t-@if not exist \"$(" << target->GetTitle() << "_OUTDIR)\" mkdir \"$(" << target->GetTitle() << "_OUTDIR)\"\n";
-#else
-		buffer << "\t-@if ! test -d $(" << target->GetTitle() << "_OUTDIR); then mkdir $(" << target->GetTitle() << "_OUTDIR); fi\n";
-#endif
-
-
-		// run any user-defined commands *before* build
-		DoAddMakefileCommands(wxEmptyString, target->GetCommandsBeforeBuild(), buffer);
-		
 		// change link stage command based on target type
 		switch (target->GetTargetType())
 		{
@@ -1146,9 +1238,6 @@ void MakefileGenerator::DoAddMakefileTarget_Link(wxString& buffer)
             }
             default: break;
 		}
-
-		// run any user-defined commands *after* build
-		DoAddMakefileCommands(wxEmptyString, target->GetCommandsAfterBuild(), buffer);
         buffer << '\n';
     }
     buffer << '\n';
@@ -1181,36 +1270,6 @@ void MakefileGenerator::QuoteStringIfNeeded(wxString& str)
     {
         str = '"' + str + '"';
     }
-}
-
-void MakefileGenerator::AddCreateSubdir(wxString& buffer, const wxString& basepath, const wxString& filename, const wxString& subdir)
-{
-    wxChar sep = wxFileName::GetPathSeparator();
-    
-    // make sure we don't use absolute filenames, if we don't have to
-    wxString path = basepath;
-    if (path.Right(1) == '\\' || path.Right(1) == '/')
-        path.Remove(path.Length() - 1);
-    if (path == wxGetCwd())
-        path = ".";
-
-#ifdef __WXMSW__
-    wxFileName d_filename_tmp = filename;
-    wxFileName d_filename = subdir + sep + d_filename_tmp.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + sep + d_filename_tmp.GetFullName();
-    buffer << "\t-@if not exist ";
-    buffer << "\"" << path << sep << d_filename.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) << ".\" ";
-    buffer << "mkdir ";
-    buffer << "\"" << path << sep << d_filename.GetPath(wxPATH_GET_VOLUME) << "\"";
-#else
-    wxFileName d_filename_tmp = UnixFilename(filename);
-    wxFileName d_filename = subdir + sep + d_filename_tmp.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + sep + d_filename_tmp.GetFullName();
-    buffer << "\t-@if ! test -d ";
-    buffer << path << sep << d_filename.GetPath(wxPATH_GET_VOLUME);
-    buffer << "; then mkdir -p ";
-    buffer << path << sep << d_filename.GetPath(wxPATH_GET_VOLUME);
-    buffer << "; fi";
-#endif
-    buffer << "\n";
 }
 
 void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
@@ -1268,7 +1327,7 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
                             buffer << d_file << ": " << c_file << '\n';
                             if (m_CompilerSet->GetSwitches().logging == clogSimple)
                                 buffer << '\t' << "@echo Calculating dependencies for \"" << pf->relativeFilename << "\"..." << '\n';
-                            AddCreateSubdir(buffer, target->GetBasePath(), pf->GetObjName(), target->GetDepsOutput());
+//                            AddCreateSubdir(buffer, target->GetBasePath(), pf->GetObjName(), target->GetDepsOutput());
                             wxString compilerCmd = ReplaceCompilerMacros(ctGenDependenciesCmd, pf->compilerVar, target, c_file, o_file, d_file);
                             if (!compilerCmd.IsEmpty())
                                 buffer << '\t' << m_Quiet << compilerCmd << '\n';
@@ -1295,7 +1354,7 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
 						// custom build command
                         wxString customBuild = pf->buildCommand;
                         ReplaceMacros(pf, customBuild);
-						buffer << pf->GetObjName() << ": " << d_file << '\n';
+						buffer << pf->GetObjName() << d_file << '\n';
                         if (m_CompilerSet->GetSwitches().logging == clogSimple)
 							buffer << '\t' << "@echo Compiling \"" << pf->relativeFilename << "\" (custom command)..." << '\n';
 						buffer << '\t' << m_Quiet << customBuild << '\n';
@@ -1307,7 +1366,7 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
 						buffer << o_file << ": " << d_file << '\n';
                         if (m_CompilerSet->GetSwitches().logging == clogSimple)
 							buffer << '\t' << "@echo Compiling \"" << pf->relativeFilename << "\"..." << '\n';
-                        AddCreateSubdir(buffer, target->GetBasePath(), pf->GetObjName(), target->GetObjectOutput());
+//                        AddCreateSubdir(buffer, target->GetBasePath(), pf->GetObjName(), target->GetObjectOutput());
 						wxString compilerCmd = ReplaceCompilerMacros(ctCompileObjectCmd, pf->compilerVar, target, c_file, o_file, d_file);
 						if (!compilerCmd.IsEmpty())
                             buffer << '\t' << m_Quiet << compilerCmd << '\n';

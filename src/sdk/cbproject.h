@@ -62,6 +62,9 @@ class DLLIMPORT cbProject : public CompileTargetBase
         void BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, bool categorize, bool useFolders, FilesGroupsAndMasks* fgam = 0L);
         void ClearAllProperties();
 
+        void CalculateCommonTopLevelPath();
+        wxString GetCommonTopLevelPath();
+
         // properties
 		bool GetModified();
 		void SetModified(bool modified);
@@ -126,6 +129,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
         wxArrayString m_ExpandedNodes;
         bool m_Loaded;
         wxTreeItemId m_ProjectNode;
+        wxString m_CommonTopLevelPath;
 };
 
 #endif // DEVPROJECT_H

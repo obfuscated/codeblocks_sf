@@ -26,15 +26,10 @@ pfDetails::pfDetails(DirectCommands* cmds, ProjectBuildTarget* target, ProjectFi
     wxFileName prjbase(cmds->m_pProject->GetBasePath());
 
     source_file_native = pf->relativeFilename;
-    tmp.Assign(source_file_native);
-    tmp.MakeAbsolute(prjbase.GetFullPath());
-    source_file_absolute_native = tmp.GetFullPath();
+    source_file_absolute_native = pf->file.GetFullPath();
 
     tmp = pf->GetObjName();
-//    tmp = source_file_native;
-//    bool isResource = FileTypeOf(source_file_native) == ftResource;
-//    tmp.SetExt(isResource ? RESOURCEBIN_EXT : cmds->m_pCompiler->GetSwitches().objectExtension);
-    object_file_native = (target ? target->GetObjectOutput() : "") +
+    object_file_native = (target ? target->GetObjectOutput() : ".") +
                           sep +
                           tmp.GetFullPath();
     wxFileName o_file(object_file_native);
@@ -42,7 +37,7 @@ pfDetails::pfDetails(DirectCommands* cmds, ProjectBuildTarget* target, ProjectFi
     object_dir_native = o_file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
     object_file_absolute_native = o_file.GetFullPath();
     tmp.SetExt("depend");
-    dep_file_native = (target ? target->GetDepsOutput() : "") +
+    dep_file_native = (target ? target->GetDepsOutput() : ".") +
                       sep +
                       tmp.GetFullPath();
     wxFileName d_file(dep_file_native);

@@ -1232,6 +1232,7 @@ void ProjectManager::OnAddFileToProject(wxCommandEvent& event)
 			if (targets.GetCount() == 0)
 				break;
 		}
+		prj->CalculateCommonTopLevelPath();
         RebuildTree();
     }
 }
@@ -1282,6 +1283,7 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
                 evt.SetString(filename);
                 Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
             }
+            prj->CalculateCommonTopLevelPath();
             RebuildTree();
         }
     }
@@ -1298,6 +1300,7 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
             int fileindex = ftd->GetFileIndex();
             wxString filename = prj->GetFile(fileindex)->file.GetFullPath();
             prj->RemoveFile(fileindex);
+            prj->CalculateCommonTopLevelPath();
             RebuildTree();
             CodeBlocksEvent evt(cbEVT_PROJECT_FILE_REMOVED);
             evt.SetProject(prj);

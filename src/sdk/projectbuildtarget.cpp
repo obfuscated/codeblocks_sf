@@ -185,7 +185,7 @@ wxString ProjectFile::GetBaseName()
 const wxString& ProjectFile::GetObjName()
 {
     if (m_ObjName.IsEmpty())
-        SetObjName(relativeFilename);
+        SetObjName(relativeToCommonTopLevelPath);
     return m_ObjName;
 }
 

@@ -42,6 +42,7 @@ class MakefileGenerator
 #ifdef __WXMSW__
         void DoAddMakefileResources(wxString& buffer);
 #endif // __WXMSW__
+        void DoAddMakefileCreateDirs(wxString& buffer, ProjectBuildTarget* target, bool obj, bool dep, bool bin);
         void DoAddMakefileObjs(wxString& buffer);
         void DoAddMakefileIncludes(wxString& buffer);
         void DoAddMakefileLibs(wxString& buffer);
@@ -53,7 +54,7 @@ class MakefileGenerator
 		void DoAddPhonyTargets(wxString& buffer);
         void DoAddMakefileTarget_All(wxString& buffer);
         void DoAddMakefileTargets_BeforeAfter(wxString& buffer);
-		void DoAddMakefileCommands(const wxString& prefix, const wxArrayString& commands, wxString& buffer);
+		void DoAddMakefileCommands(const wxString& desc, const wxString& prefix, const wxArrayString& commands, wxString& buffer);
         void DoAddMakefileTarget_Clean(wxString& buffer);
         void DoAddMakefileTarget_Dist(wxString& buffer);
         void DoAddMakefileTarget_Depend(wxString& buffer);
@@ -68,7 +69,7 @@ class MakefileGenerator
 		void DoPrepareFiles();
 		void DoPrepareValidTargets();
 		bool IsTargetValid(ProjectBuildTarget* target);
-        void AddCreateSubdir(wxString& buffer, const wxString& basepath, const wxString& filename, const wxString& subdir);
+		void RecursiveCreateDir(wxString& buffer, const wxArrayString& subdirs, wxArrayString& guardList);
         wxString ReplaceCompilerMacros(CommandType et,
                                     const wxString& compilerVar,
                                     ProjectBuildTarget* target,

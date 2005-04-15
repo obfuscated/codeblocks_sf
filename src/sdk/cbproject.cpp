@@ -75,6 +75,7 @@ cbProject::cbProject(const wxString& filename)
 		{
             wxFileName fname(m_Filename);
 			m_Title = fname.GetName();
+			m_CommonTopLevelPath = GetBasePath() + wxFileName::GetPathSeparator();
 			NotifyPlugins(cbEVT_PROJECT_OPEN);
 		}
     }
@@ -287,6 +288,7 @@ void cbProject::Open()
 	
     if (m_Loaded)
 	{
+        CalculateCommonTopLevelPath();
 		Manager::Get()->GetMessageManager()->Log(_("done"));    
 		if (!m_Targets.GetCount())
 			AddDefaultBuildTarget();
@@ -303,6 +305,49 @@ void cbProject::Open()
 	}
 	else
 		Manager::Get()->GetMessageManager()->Log(_("failed"));    
+}
+
+void cbProject::CalculateCommonTopLevelPath()
+{
+    // find the common toplevel path
+    // for simple projects, this might be the path to the project file
+    // for projects where the project file is in a subdir, files will have ..
+    // in their paths
+    wxString sep = wxFileName::GetPathSeparator();
+    wxFileName base = GetBasePath() + sep;
+    Manager::Get()->GetMessageManager()->DebugLog("Project's base path: %s", base.GetFullPath().c_str());
+    for (FilesList::Node* node = m_Files.GetFirst(); node; node = node->GetNext())
+    {
+        ProjectFile* f = node->GetData();
+        wxString tmp = f->relativeFilename;
+        wxFileName tmpbase = GetBasePath() + sep;
+        while (tmp.StartsWith(_("..")))
+        {
+            tmpbase.AppendDir(_(".."));
+            tmp.Remove(0, 3); // two dots + separator
+        }
+        tmpbase.Normalize(wxPATH_NORM_ALL);
+
+        if (tmpbase.GetDirCount() < base.GetDirCount())
+            base = tmpbase;
+    }
+
+    // update ProjectFiles info
+    for (FilesList::Node* node = m_Files.GetFirst(); node; node = node->GetNext())
+    {
+        ProjectFile* f = node->GetData();
+        wxFileName fname = f->file;
+        fname.MakeRelativeTo(base.GetFullPath());
+        f->relativeToCommonTopLevelPath = fname.GetFullPath();
+        f->SetObjName(f->relativeToCommonTopLevelPath);
+    }
+    m_CommonTopLevelPath = base.GetFullPath();
+    Manager::Get()->GetMessageManager()->DebugLog("Project's common toplevel path: %s", m_CommonTopLevelPath.c_str());
+}
+
+wxString cbProject::GetCommonTopLevelPath()
+{
+    return m_CommonTopLevelPath;
 }
 
 bool cbProject::SaveAs()
@@ -561,7 +606,7 @@ void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, bool categ
             bool found = false;
             for (unsigned int i = 0; i < fgam->GetGroupsCount(); ++i)
             {
-                wxFileName fname(f->relativeFilename);
+                wxFileName fname(f->relativeToCommonTopLevelPath);
                 if (fgam->MatchesMask(fname.GetFullName(), i))
                 {
                     parentNode = pGroupNodes[i];
@@ -574,7 +619,7 @@ void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, bool categ
                 parentNode = others;
         }
         // add file in the tree
-        AddTreeNode(tree, f->relativeFilename, parentNode, useFolders, f->compile, ftd);
+        AddTreeNode(tree, f->relativeToCommonTopLevelPath, parentNode, useFolders, f->compile, ftd);
     }
 
 	// remove empty tree nodes (like empty groups)

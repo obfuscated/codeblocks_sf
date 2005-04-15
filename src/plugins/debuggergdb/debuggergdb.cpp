@@ -46,6 +46,8 @@
 #include "debuggergdb.h"
 #include "debuggeroptionsdlg.h"
 
+#define USE_DEBUG_LOG 0 // set it to 1, to enable the debugger's debug log
+
 #define implement_debugger_toolbar
 static const wxString g_EscapeChars = char(26);
 
@@ -141,22 +143,24 @@ DebuggerGDB::DebuggerGDB()
 void DebuggerGDB::OnAttach()
 {
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
-    m_pLog = new SimpleTextLog(msgMan, m_PluginInfo.title);
-    m_pDbgLog = new SimpleTextLog(msgMan, m_PluginInfo.title + _(" (debug)"));
     wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
-
+    m_pLog = new SimpleTextLog(msgMan, m_PluginInfo.title);
     m_pLog->GetTextControl()->SetFont(font);
-    m_pDbgLog->GetTextControl()->SetFont(font);
     m_PageIndex = msgMan->AddLog(m_pLog);
-    m_DbgPageIndex = msgMan->AddLog(m_pDbgLog);
-
     // set log image
 	wxBitmap bmp;
 	wxString prefix = ConfigManager::Get()->Read("data_path") + "/images/";
     bmp.LoadFile(prefix + "misc_16x16.png", wxBITMAP_TYPE_PNG);
     Manager::Get()->GetMessageManager()->SetLogImage(m_pLog, bmp);
+
+#if USE_DEBUG_LOG
+    m_pDbgLog = new SimpleTextLog(msgMan, m_PluginInfo.title + _(" (debug)"));
+    m_pDbgLog->GetTextControl()->SetFont(font);
+    m_DbgPageIndex = msgMan->AddLog(m_pDbgLog);
+    // set log image
     bmp.LoadFile(prefix + "contents_16x16.png", wxBITMAP_TYPE_PNG);
     Manager::Get()->GetMessageManager()->SetLogImage(m_pDbgLog, bmp);
+#endif
 
 	if (!m_pTree)
 		m_pTree = new DebuggerTree(this, Manager::Get()->GetNotebook());
@@ -172,7 +176,9 @@ void DebuggerGDB::OnRelease(bool appShutDown)
 
     if (Manager::Get()->GetMessageManager())
     {
+#if USE_DEBUG_LOG
         Manager::Get()->GetMessageManager()->DeletePage(m_DbgPageIndex);
+#endif
         Manager::Get()->GetMessageManager()->DeletePage(m_PageIndex);
     }
 }
@@ -527,7 +533,9 @@ void DebuggerGDB::SendCommand(const wxString& cmd)
 {
     if (!m_pProcess || !m_ProgramIsStopped)
         return;
+#if USE_DEBUG_LOG
 	Manager::Get()->GetMessageManager()->Log(m_DbgPageIndex, "> " + cmd);
+#endif
 	m_pProcess->SendString(cmd);
 }
 
@@ -557,8 +565,10 @@ wxString DebuggerGDB::GetNextOutputLine(bool useStdErr)
 			bufferOut << ch;
 	}
 
+#if USE_DEBUG_LOG
 	if (!bufferOut.IsEmpty())
 		m_pDbgLog->AddLog(bufferOut);
+#endif
 	return bufferOut;
 }
 
@@ -636,8 +646,9 @@ void DebuggerGDB::ParseOutput(const wxString& output)
 	if (buffer.StartsWith(g_EscapeChars)) // ->->
 	{
 		buffer.Remove(0, 2); // remove ->->
+#if USE_DEBUG_LOG
 		m_pDbgLog->AddLog(buffer); // write it in the full debugger log
-		
+#endif		
 		// Is the program running?
 		if (buffer.Matches("starting"))
 			m_ProgramIsStopped = false;
@@ -1044,7 +1055,9 @@ void DebuggerGDB::OnGDBOutput(wxCommandEvent& event)
 	wxString msg = event.GetString();
 	if (!msg.IsEmpty())
 	{
+#if USE_DEBUG_LOG
 		//m_pDbgLog->AddLog(msg); // write it in the full debugger log
+#endif
 		ParseOutput(msg);
 	}
 }
@@ -1054,7 +1067,9 @@ void DebuggerGDB::OnGDBError(wxCommandEvent& event)
 	wxString msg = event.GetString();
 	if (!msg.IsEmpty())
 	{
+#if USE_DEBUG_LOG
 		//m_pDbgLog->AddLog(msg); // write it in the full debugger log
+#endif
 		ParseOutput(msg);
 	}
 }

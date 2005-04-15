@@ -265,7 +265,7 @@ void TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg)
         dstname.MakeRelativeTo(templ + sep);
         wxString src = files[i];
         wxString dst = path + sep + dstname.GetFullPath();
-        Manager::Get()->GetMessageManager()->DebugLog("dst=%s, dstname=%s", dst.c_str(), dstname.GetFullPath().c_str());
+//        Manager::Get()->GetMessageManager()->DebugLog("dst=%s, dstname=%s", dst.c_str(), dstname.GetFullPath().c_str());
         if (!CreateDirRecursively(dst))
             Manager::Get()->GetMessageManager()->DebugLog("Failed creating directory for %s", dst.c_str());
         if (wxCopyFile(src, dst, true))

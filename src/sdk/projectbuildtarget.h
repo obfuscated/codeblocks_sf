@@ -35,6 +35,7 @@ class ProjectFile
         cbProject* project;
         wxFileName file;
         wxString relativeFilename;
+        wxString relativeToCommonTopLevelPath; // used for the tree, .objs and .deps (has no "..")
         bool compile;
         bool link;
         unsigned short int weight; // files acn be sorted by their weight and a
