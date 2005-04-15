@@ -426,15 +426,32 @@ cbProject* ProjectManager::IsOpen(const wxString& filename)
 	return 0L;
 }
 
+wxMenu* ProjectManager::GetProjectMenu()
+{
+    SANITY_CHECK(0L);
+    wxMenu* result = 0L;
+    do
+    {
+        wxFrame* frame = Manager::Get()->GetAppWindow();
+        if(!frame)
+            break;        
+        wxMenuBar* mb = frame->GetMenuBar();
+        if(!mb)
+            break;
+        result = mb->GetMenu(mb->FindMenu("Project"));
+        break;
+    }while(false);
+    return result;    
+}
+
 cbProject* ProjectManager::LoadProject(const wxString& filename)
 {
     SANITY_CHECK(0L);
     cbProject* result = 0;
-    
+
     // disallow application shutdown while opening files
     // WARNING: remember to set it to true, when exiting this function!!!
     s_CanShutdown = false;
-    
 	cbProject* project = IsOpen(filename);
 	
 	// wxMDIClientWindow* mywin =  Manager::Get()->GetAppWindow()->GetClientWindow();
@@ -457,7 +474,6 @@ cbProject* ProjectManager::LoadProject(const wxString& filename)
             result = project;
             break;
         }
-
         m_IsLoadingProject=true;
         project = new cbProject(filename);	
         if(!sanity_check()) 
@@ -494,6 +510,7 @@ cbProject* ProjectManager::LoadProject(const wxString& filename)
     // we 're done
 
     m_IsLoadingProject=false;
+    
     #ifdef USE_OPENFILES_TREE
     Manager::Get()->GetEditorManager()->RebuildOpenedFilesTree();
     #endif
@@ -1109,6 +1126,11 @@ void ProjectManager::OnTreeItemRightClick(wxTreeEvent& event)
     if(!MiscTreeItemData::OwnerCheck(event,m_pTree,this))
         return;
     #endif
+    if(m_IsLoadingProject)
+    {
+        wxBell();
+        return;
+    }
 
     //Manager::Get()->GetMessageManager()->DebugLog("OnTreeItemRightClick");
 	m_pTree->SelectItem(event.GetItem());
@@ -1290,9 +1312,18 @@ void ProjectManager::OnCloseProject(wxCommandEvent& event)
     SANITY_CHECK();
     wxTreeItemId sel = m_pTree->GetSelection();
     FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
-
+    cbProject *proj;
     if (ftd)
-	    CloseProject(ftd->GetProject());
+        proj = ftd->GetProject();
+    if(proj)
+    {
+        if(m_IsLoadingProject)
+        {
+            wxBell();
+        }
+        else
+            CloseProject(proj);
+    }
 }
 
 void ProjectManager::OnCloseFile(wxCommandEvent& event)

@@ -247,6 +247,7 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
           * @return A pointer to a wxPanel window.
           */
 		wxPanel* GetPanel(){ return (this==NULL) ? 0 : m_pPanel; }
+		wxMenu* GetProjectMenu();
     private:
         static ProjectManager* Get(wxNotebook* parent);
 		static void Free();

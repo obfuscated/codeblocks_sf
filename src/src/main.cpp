@@ -1159,10 +1159,11 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     if (!ProjectManager::CanShutdown() || !EditorManager::CanShutdown())
     {
         event.Veto();
-        wxMessageBox(_("Code::Blocks is still opening files.\n"
-                        "Please wait for it to finish loading and then close it..."),
-                        _("Information"),
-                        wxICON_INFORMATION);
+        wxBell();
+//         wxMessageBox(_("Code::Blocks is still opening files.\n"
+//                        "Please wait for it to finish loading and then close it..."),
+//                        _("Information"),
+//                        wxICON_INFORMATION);
         return;
     }
 
@@ -1464,10 +1465,8 @@ void MainFrame::OnProjectCloseProject(wxCommandEvent& event)
     // active project is still opening files (still busy)
     if (!ProjectManager::CanShutdown() || !EditorManager::CanShutdown())
     {
-        wxMessageBox(_("This project is still opening files.\n"
-                        "Please wait for it to finish loading and then close it..."),
-                        _("Information"),
-                        wxICON_INFORMATION);
+        wxBell();
+        return;
     }
     m_pPrjMan->CloseActiveProject();
     DoUpdateStatusBar();
@@ -1475,6 +1474,11 @@ void MainFrame::OnProjectCloseProject(wxCommandEvent& event)
 
 void MainFrame::OnProjectCloseAllProjects(wxCommandEvent& event)
 {
+    if (!ProjectManager::CanShutdown() || !EditorManager::CanShutdown())
+    {
+        wxBell();
+        return;
+    }
     m_pPrjMan->CloseWorkspace();
     DoUpdateStatusBar();
 }
@@ -1521,6 +1525,9 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
     cbEditor* ed = m_pEdMan ? m_pEdMan->GetActiveEditor() : 0L;
     wxMenuBar* mbar = GetMenuBar();
 
+    bool canCloseProject = (ProjectManager::CanShutdown() && EditorManager::CanShutdown());
+    mbar->Enable(idProjectCloseProject,canCloseProject);
+    mbar->Enable(idFileOpenRecentClearHistory, m_FilesHistory.GetCount());
     mbar->Enable(idFileOpenRecentClearHistory, m_FilesHistory.GetCount());
     mbar->Enable(idFileClose, ed);
     mbar->Enable(idFileCloseAll, ed);
@@ -1625,12 +1632,13 @@ void MainFrame::OnProjectMenuUpdateUI(wxUpdateUIEvent& event)
     cbProject* prj = m_pPrjMan ? m_pPrjMan->GetActiveProject() : 0L;
     wxMenuBar* mbar = GetMenuBar();
     
-	mbar->Enable(idProjectCloseProject, prj);
-    mbar->Enable(idProjectCloseAllProjects, prj);
-    mbar->Enable(idProjectSaveProject, prj && prj->GetModified());
-    mbar->Enable(idProjectSaveProjectAs, prj);
-    mbar->Enable(idProjectSaveAllProjects, prj);
-    mbar->Enable(idProjectSaveTemplate, prj);
+    bool canCloseProject = (ProjectManager::CanShutdown() && EditorManager::CanShutdown());
+	mbar->Enable(idProjectCloseProject, prj && canCloseProject);
+    mbar->Enable(idProjectCloseAllProjects, prj && canCloseProject);
+    mbar->Enable(idProjectSaveProject, prj && prj->GetModified() && canCloseProject);
+    mbar->Enable(idProjectSaveProjectAs, prj && canCloseProject);
+    mbar->Enable(idProjectSaveAllProjects, prj && canCloseProject);
+    mbar->Enable(idProjectSaveTemplate, prj && canCloseProject);
 	
 	event.Skip();
 }
