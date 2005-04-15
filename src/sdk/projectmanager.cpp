@@ -492,7 +492,16 @@ cbProject* ProjectManager::LoadProject(const wxString& filename)
             break; // sanity check
             
         m_pProjects->Add(project);
-        SetProject(project);
+
+        // to avoid tree flickering, we 'll manually call here the project's BuildTree
+        // but before we do it, remove bold from current active project (if any)
+        if (m_pActiveProject)
+            m_pTree->SetItemBold(m_pActiveProject->GetProjectNode(), false);
+        // ok, set the new project
+        SetProject(project, false);
+        project->BuildTree(m_pTree, m_TreeRoot, m_TreeCategorize, m_TreeUseFolders, m_pFileGroups);
+        m_pTree->SetItemBold(project->GetProjectNode(), true);
+
         if(!sanity_check()) 
             break; // sanity check
             
@@ -1354,11 +1363,13 @@ void ProjectManager::OnProperties(wxCommandEvent& event)
     SANITY_CHECK();
     if (event.GetId() == idMenuProjectProperties)
     {
+        wxString backupTitle = m_pActiveProject ? m_pActiveProject->GetTitle() : "";
         if (m_pActiveProject && m_pActiveProject->ShowOptions())
         {
-            // rebuild tree and make sure that cbEVT_PROJECT_ACTIVATE
+            // make sure that cbEVT_PROJECT_ACTIVATE
             // is sent (maybe targets have changed)...
-            SetProject(m_pActiveProject, true);
+            // rebuild tree  only if title has changed
+            SetProject(m_pActiveProject, backupTitle != m_pActiveProject->GetTitle());
         }
     }
     else if (event.GetId() == idMenuTreeProjectProperties)
@@ -1367,11 +1378,13 @@ void ProjectManager::OnProperties(wxCommandEvent& event)
         FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
     
         cbProject* project = ftd ? ftd->GetProject() : m_pActiveProject;
+        wxString backupTitle = project ? project->GetTitle() : "";
         if (project && project->ShowOptions() && project == m_pActiveProject)
         {
             // rebuild tree and make sure that cbEVT_PROJECT_ACTIVATE
             // is sent (maybe targets have changed)...
-            SetProject(project, true);
+            // rebuild tree  only if title has changed
+            SetProject(project, backupTitle != project->GetTitle());
         }
     }
     else if (event.GetId() == idMenuTreeFileProperties)

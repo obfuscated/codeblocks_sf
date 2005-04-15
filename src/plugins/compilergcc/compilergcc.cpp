@@ -565,7 +565,7 @@ FileTreeData* CompilerGCC::DoSwitchProjectTemporarily()
     // copy ftd to a new instance, because after the SetProject() call
     // that follows, ftd will no longer be valid...
     FileTreeData* newFtd = new FileTreeData(ftd->GetProject(), ftd->GetFileIndex());
-    Manager::Get()->GetProjectManager()->SetProject(ftd->GetProject());
+    Manager::Get()->GetProjectManager()->SetProject(ftd->GetProject(), false);
     AskForActiveProject();
     
     return newFtd;
@@ -753,7 +753,7 @@ bool CompilerGCC::DoPrepareMultiProjectCommand(MultiProjectJob job)
 	m_BackupActiveProject = m_Project;
 	m_ProjectIndex = 0;
 	m_DoAllProjects = job;
-	prjMan->SetProject(projects->Item(0));
+	prjMan->SetProject(projects->Item(0), false);
 	AskForActiveProject();
 	
 	return true;
@@ -1728,7 +1728,7 @@ void CompilerGCC::OnJobEnd()
     
                 if (m_ProjectIndex < projects->GetCount() - 1)
                 {
-                    prjMan->SetProject(projects->Item(++m_ProjectIndex));
+                    prjMan->SetProject(projects->Item(++m_ProjectIndex), false);
                     CheckProject();
                     m_QueueIndex = 0;
                     if (CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches().buildMethod == cbmUseMake)
@@ -1756,7 +1756,7 @@ void CompilerGCC::OnJobEnd()
                     m_DoAllProjects = mpjNone;
                     m_QueueIndex = 0;
                     m_Queue.Clear();
-                    prjMan->SetProject(m_BackupActiveProject);
+                    prjMan->SetProject(m_BackupActiveProject, false);
                     AskForActiveProject();
                     DoDeleteTempMakefile();
                 }
