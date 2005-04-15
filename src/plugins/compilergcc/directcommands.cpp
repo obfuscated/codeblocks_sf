@@ -570,16 +570,17 @@ wxArrayString DirectCommands::GetTargetCleanCommands(ProjectBuildTarget* target,
     // add target output
     wxString outputfilename = target->GetOutputFilename();
     
-    // Make sure no .cbp file is deleted
-    // (Just in case a project was added to the target output)
-    if(outputfilename.Right(4).Lower()!=".cbp" && outputfilename!="")
-    { ret.Add(outputfilename); }
+    if (target->GetTargetType() != ttCommandsOnly)
+    {
+        ret.Add(outputfilename);
+    }
     
     if (target->GetTargetType() == ttDynamicLib)
     {
-        // for dynamic libs, delete static lib and def too
+        // for dynamic libs, delete static lib
         ret.Add(target->GetStaticLibFilename());
-        ret.Add(target->GetDynamicLibDefFilename());
+        // .def exports file is not deleted, because it may be user-supplied
+//        ret.Add(target->GetDynamicLibDefFilename());
     }
 
     return ret;
