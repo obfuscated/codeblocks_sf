@@ -11,7 +11,7 @@
 #include <wx/process.h>
 #include "compilererrors.h"
 #include "customvars.h"
-#include "compilerfactory.h"
+#include <compilerfactory.h>
 
 #define MAX_TARGETS 64
 #define DEFAULT_CONSOLE_SHELL "xterm -T $TITLE -e"

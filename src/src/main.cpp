@@ -28,7 +28,7 @@
 #include "globals.h"
 #include "environmentsettingsdlg.h"
 #include "impexpconfig.h"
-#include "cbworkspace.h"
+#include <cbworkspace.h>
 
 #if defined(_MSC_VER) && defined( _DEBUG )
 	#define _CRTDBG_MAP_ALLOC
@@ -39,16 +39,16 @@
 #include <wx/tipdlg.h>
 #include <wx/dnd.h>
 
-#include "../sdk/configmanager.h"
-#include "../sdk/cbproject.h"
-#include "../sdk/cbplugin.h"
-#include "../sdk/sdk_events.h"
-#include "../sdk/projectmanager.h"
-#include "../sdk/editormanager.h"
-#include "../sdk/messagemanager.h"
-#include "../sdk/pluginmanager.h"
-#include "../sdk/templatemanager.h"
-#include "../sdk/toolsmanager.h"
+#include <configmanager.h>
+#include <cbproject.h>
+#include <cbplugin.h>
+#include <sdk_events.h>
+#include <projectmanager.h>
+#include <editormanager.h>
+#include <messagemanager.h>
+#include <pluginmanager.h>
+#include <templatemanager.h>
+#include <toolsmanager.h>
 
 #include "dlgaboutplugin.h"
 #include "dlgabout.h"
@@ -1137,7 +1137,7 @@ void MainFrame::OnFileCloseAll(wxCommandEvent& WXUNUSED(event))
 
 void MainFrame::OnFilePrintSetup(wxCommandEvent& event)
 {
-    wxPrintDialog dlg;
+    wxPrintDialog dlg(this, g_printData);
     if (dlg.ShowModal() == wxID_OK)
         *g_printData = dlg.GetPrintDialogData().GetPrintData();
 }

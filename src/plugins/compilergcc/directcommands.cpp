@@ -16,7 +16,7 @@
 #include "compilergcc.h"
 #include "makefilegenerator.h"
 #include "customvars.h"
-#include "depslib.h"
+#include <depslib.h>
 
 pfDetails::pfDetails(DirectCommands* cmds, ProjectBuildTarget* target, ProjectFile* pf)
 {

@@ -3,7 +3,7 @@
 
 #include <settings.h>
 #include "compilergcc.h"
-#include "compileroptions.h"
+#include <compileroptions.h>
 #include <cbproject.h>
 
 class wxListBox;

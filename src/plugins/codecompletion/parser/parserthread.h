@@ -7,7 +7,7 @@
 #include <wx/dynarray.h>
 #include "tokenizer.h"
 #include "token.h"
-#include "managedthread.h"
+#include <managedthread.h>
 
 extern int THREAD_START;
 extern int THREAD_END;

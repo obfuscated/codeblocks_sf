@@ -28,7 +28,7 @@
 #include <macrosmanager.h>
 #include <messagemanager.h>
 #include <wx/file.h>
-#include "compilerfactory.h"
+#include <compilerfactory.h>
 
 // class constructor
 MakefileGenerator::MakefileGenerator(CompilerGCC* compiler, cbProject* project, const wxString& makefile, int logIndex)
@@ -1016,7 +1016,7 @@ void MakefileGenerator::DoAddMakefileTarget_All(wxString& buffer)
             // or custom commands...
 			if (IsTargetValid(target))
 			{
-				tmp << target->GetTitle() << "_DIRS " << target->GetTitle() << " ";
+				tmp << target->GetTitle() << " ";
                 // to include dependencies, the target must have linkable files...
 //                if (m_LinkableTargets.Index(target) != -1 && m_CompilerSet->GetSwitches().needDependencies)
 //                    deps << "-include $(" << target->GetTitle() << "_DEPS)" << '\n';

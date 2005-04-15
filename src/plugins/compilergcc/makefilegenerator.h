@@ -5,7 +5,7 @@
 #include <cbproject.h>
 #include "compilergcc.h"
 #include "customvars.h"
-#include "compiler.h"
+#include <compiler.h>
 
 WX_DEFINE_ARRAY(ProjectBuildTarget*, TargetsArray);
 WX_DEFINE_ARRAY(ProjectFile*, FilesArray); // keep our own copy, to sort it by file weight (priority)
