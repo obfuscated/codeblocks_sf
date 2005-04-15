@@ -402,7 +402,18 @@ void cbEditor::SetColorSet(EditorColorSet* theme)
 
 bool cbEditor::Reload()
 {
-    return Open();
+    // keep current pos
+    int pos = m_pControl ? m_pControl->GetCurrentPos() : 0;
+
+    // call open
+    if (!Open())
+        return false;
+    
+    // return (if possible) to old pos
+    if (m_pControl)
+        m_pControl->GotoPos(pos);
+
+    return true;
 }
 
 bool cbEditor::Open()

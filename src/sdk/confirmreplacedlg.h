@@ -2,6 +2,7 @@
 #define CONFIRMREPLACEDLG_H
 
 #include <wx/dialog.h>
+#include <wx/intl.h>
 #include "settings.h"
 
 enum ConfirmResponse
@@ -15,7 +16,7 @@ enum ConfirmResponse
 class ConfirmReplaceDlg : public wxDialog
 {
 	public:
-		ConfirmReplaceDlg(wxWindow* parent);
+		ConfirmReplaceDlg(wxWindow* parent, const wxString& label = _("Replace this occurence?"));
 		~ConfirmReplaceDlg();
 		void OnYes(wxCommandEvent& event);
 		void OnNo(wxCommandEvent& event);

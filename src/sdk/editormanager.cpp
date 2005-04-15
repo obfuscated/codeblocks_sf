@@ -619,6 +619,8 @@ void EditorManager::UpdateEditorIndices()
 void EditorManager::CheckForExternallyModifiedFiles()
 {
     SANITY_CHECK();
+    bool reloadAll = false; // flag to stop bugging the user
+    wxArrayString failedFiles; // list of files failed to reload
 	for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext())
 	{
         cbEditor* ed = node->GetData();
@@ -627,14 +629,32 @@ void EditorManager::CheckForExternallyModifiedFiles()
         if (!last.IsEqualTo(ed->GetLastModificationTime()))
         {
             // modified; ask to reload
-            wxString msg;
-            msg.Printf(_("File %s is modified outside the IDE...\nDo you want to reload it (you will lose any unsaved work)?"), ed->GetFilename().c_str());
-            if (wxMessageBox(msg, _("Reload?"), wxICON_QUESTION | wxYES_NO) == wxYES)
+            int ret = -1;
+            if (!reloadAll)
+            {
+                wxString msg;
+                msg.Printf(_("File %s is modified outside the IDE...\nDo you want to reload it (you will lose any unsaved work)?"),
+                            ed->GetFilename().c_str());
+                ConfirmReplaceDlg dlg(Manager::Get()->GetAppWindow(), msg);
+                dlg.SetTitle(_("Reload file?"));
+                ret = dlg.ShowModal();
+                reloadAll = ret == crAll;
+            }
+            if (reloadAll || ret == crYes)
             {
                 if (!ed->Reload())
-                    wxMessageBox(_("Could not reload file!"), _("Error"), wxICON_ERROR);
+                    failedFiles.Add(ed->GetFilename());
             }
+            if (ret == crCancel)
+                break;
         }
+    }
+    
+    if (failedFiles.GetCount())
+    {
+        wxString msg;
+        msg.Printf(_("Could not reload all files:\n\n%s"), GetStringFromArray(failedFiles, "\n").c_str());
+        wxMessageBox(msg, _("Error"), wxICON_ERROR);
     }
 }
 

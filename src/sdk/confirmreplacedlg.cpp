@@ -25,7 +25,7 @@
 
 #include "confirmreplacedlg.h"
 #include <wx/xrc/xmlres.h>
-#include <wx/intl.h>
+#include <wx/stattext.h>
 
 BEGIN_EVENT_TABLE(ConfirmReplaceDlg, wxDialog)
 	EVT_BUTTON(XRCID("btnYes"), 	ConfirmReplaceDlg::OnYes)
@@ -34,9 +34,10 @@ BEGIN_EVENT_TABLE(ConfirmReplaceDlg, wxDialog)
 	EVT_BUTTON(XRCID("btnCancel"),	ConfirmReplaceDlg::OnCancel)
 END_EVENT_TABLE()
 
-ConfirmReplaceDlg::ConfirmReplaceDlg(wxWindow* parent)
+ConfirmReplaceDlg::ConfirmReplaceDlg(wxWindow* parent, const wxString& label)
 {
 	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgConfirmReplace"));
+	XRCCTRL(*this, _("lblMessage"), wxStaticText)->SetLabel(label);
 }
 
 ConfirmReplaceDlg::~ConfirmReplaceDlg()
