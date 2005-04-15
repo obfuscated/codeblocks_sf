@@ -501,6 +501,7 @@ cbProject* ProjectManager::LoadProject(const wxString& filename)
         SetProject(project, false);
         project->BuildTree(m_pTree, m_TreeRoot, m_TreeCategorize, m_TreeUseFolders, m_pFileGroups);
         m_pTree->SetItemBold(project->GetProjectNode(), true);
+        m_pTree->Expand(m_TreeRoot); // make sure the root node is open
 
         if(!sanity_check()) 
             break; // sanity check
