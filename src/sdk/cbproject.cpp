@@ -704,7 +704,7 @@ void cbProject::AddTreeNode(wxTreeCtrl* tree, const wxString& text, const wxTree
         wxTreeItemId newnode = tree->AppendItem(parent, text, 2, 2, data);
 		// the following doesn't seem to work under wxMSW...
 		if (!compiles)
-			tree->SetItemTextColour(newnode, wxColour(*wxLIGHT_GREY));
+			tree->SetItemTextColour(newnode, wxColour(0x80, 0x80, 0x80));
 	}
 }
 
