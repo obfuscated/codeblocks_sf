@@ -51,7 +51,7 @@ class ParserThread : public ManagedThread
 		wxString GetActualTokenType();
 	private:
 		void Log(const wxString& log);
-		Token* TokenExists(const wxString& name, Token* parent = 0); // if parent is 0, all tokens are searched
+		Token* TokenExists(const wxString& name, Token* parent = 0, short int kindMask = 0xFFFF); // if parent is 0, all tokens are searched
 		Tokenizer m_Tokens;
 		wxEvtHandler* m_pParent;
 		TokensArray* m_pTokens;

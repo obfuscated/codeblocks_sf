@@ -280,28 +280,35 @@ int Parser::GetTokenKindImage(Token* token)
 }
 #endif // STANDALONE
 
-Token* Parser::FindTokenByName(const wxString& name, bool globalsOnly)
+Token* Parser::FindTokenByName(const wxString& name, bool globalsOnly, short int kindMask)
 {
+//	for (unsigned int i = m_Tokens.GetCount() - 1; i >= 0; --i)
+    Token* res = 0;
 	for (unsigned int i = 0; i < m_Tokens.GetCount(); ++i)
 	{
 		Token* token = m_Tokens[i];
 		if (globalsOnly && token->m_pParent)
 			continue;
-		if (token->m_Name.Matches(name))
-			return token;
+		if ((token->m_TokenKind & kindMask) && token->m_Name.Matches(name))
+		{
+            res = token;
+//            Manager::Get()->GetMessageManager()->DebugLog("token=%s (%d)", name.c_str(), token->m_Children.GetCount());
+//            return token;
+        }
 	}
-	return 0L;
+//	return 0;
+	return res;
 }
 
-Token* Parser::FindChildTokenByName(Token* parent, const wxString& name, bool useInheritance)
+Token* Parser::FindChildTokenByName(Token* parent, const wxString& name, bool useInheritance, short int kindMask)
 {
 	if (!parent)
-		return FindTokenByName(name, false);
+		return FindTokenByName(name, false, kindMask);
 
 	for (unsigned int i = 0; i < parent->m_Children.GetCount(); ++i)
 	{
 		Token* token = parent->m_Children[i];
-		if (token->m_Name.Matches(name))
+		if ((token->m_TokenKind & kindMask) && token->m_Name.Matches(name))
 			return token;
 	}
 	// not found; check ancestors now...
@@ -309,7 +316,7 @@ Token* Parser::FindChildTokenByName(Token* parent, const wxString& name, bool us
 	{
 		for (unsigned int i = 0; i < parent->m_Ancestors.GetCount(); ++i)
 		{
-			Token* inherited = FindChildTokenByName(parent->m_Ancestors[i], name, true);
+			Token* inherited = FindChildTokenByName(parent->m_Ancestors[i], name, true, kindMask);
 			if (inherited)
 				return inherited;
 		}
@@ -385,7 +392,7 @@ int TokensSortProc(Token** first, Token** second)
 	}
 	else if (parent1 && parent2)
 	{
-		if (parent1 == parent2)
+		if (parent1 != parent2)
 		{
 			// if both tokens have parent, order by *parent* name
 			diff = parent1->m_Name.CompareTo(parent2->m_Name);
@@ -439,7 +446,7 @@ void Parser::LinkInheritance(bool tempsOnly)
 			if (ancestor.IsEmpty())
 				continue;
 			//Manager::Get()->GetMessageManager()->DebugLog("Ancestor %s", ancestor.c_str());
-			Token* ancestorToken = FindTokenByName(ancestor);
+			Token* ancestorToken = FindTokenByName(ancestor, tkClass);
 			//Manager::Get()->GetMessageManager()->DebugLog(ancestorToken ? "Found" : "not Found");
 			if (ancestorToken)
 			{
@@ -733,6 +740,10 @@ void Parser::OnParseFile(wxCommandEvent& event)
 		return; // the file is being re-parsed; don't follow includes
 	*/
 	
+	if (m_ParsedFiles.Index(filename) != wxNOT_FOUND) // parsed file
+        return;
+//	Manager::Get()->GetMessageManager()->DebugLog("Adding in parse queue: %s", filename.c_str());
+
 	bool res = false;
 	if (m_ReparsedFiles.Index(source.GetFullPath()) != wxNOT_FOUND) // reparsing file
 		res = Reparse(filename, event.GetInt() == 0);

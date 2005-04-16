@@ -347,7 +347,7 @@ int NativeParser::MarkItemsByAI(bool reallyUseAI)
 		wxString _procedure;
 		if (FindFunctionNamespace(ed, &_namespace, &_procedure))
 		{
-			Token* token = parser->FindTokenByName(_procedure, false);
+			Token* token = parser->FindTokenByName(_procedure, false, tkFunction);
 			if (token)
 			{
 				 if (!token->m_Args.IsEmpty() && !token->m_Args.Matches("()"))
@@ -691,7 +691,7 @@ int NativeParser::AI(cbEditor* editor, Parser* parser, const wxString& lineText,
 	FindFunctionNamespace(editor, &scopeName, &procName);
 	Token* scopeToken = 0L;
 	if (!scopeName.IsEmpty())
-		scopeToken = parser->FindTokenByName(scopeName);
+		scopeToken = parser->FindTokenByName(scopeName, false, tkNamespace | tkClass);
 
 	while (1)
 	{
@@ -728,9 +728,12 @@ int NativeParser::AI(cbEditor* editor, Parser* parser, const wxString& lineText,
 			//if (parentToken)
 			token = parser->FindChildTokenByName(parentToken, tok, true);
 			if (!token)
+			{
+                Manager::Get()->GetMessageManager()->DebugLog("Looking for %s under %s", tok.c_str(), scopeToken ? scopeToken->m_Name.c_str() : "Unknown");
 				token = parser->FindChildTokenByName(scopeToken, tok, true); // try local scope
-			//else
-			//	token = parser->FindTokenByName(tok, false);
+            }
+			if (token)
+                Manager::Get()->GetMessageManager()->DebugLog("Token found %s, type '%s'", token->m_Name.c_str(), token->m_ActualType.c_str());
 			if (token && !token->m_ActualType.IsEmpty())
 			{
 				Manager::Get()->GetMessageManager()->DebugLog("actual type is %s", token->m_ActualType.c_str());
@@ -752,7 +755,12 @@ int NativeParser::AI(cbEditor* editor, Parser* parser, const wxString& lineText,
                     }
 				}
 				else
-                    parentToken = parser->FindTokenByName(token->m_ActualType, false);
+				{
+                    Manager::Get()->GetMessageManager()->DebugLog("Locating %s", token->m_ActualType.c_str());
+                    parentToken = parser->FindTokenByName(token->m_ActualType, true, tkClass | tkNamespace | tkEnum);
+                    if (!parentToken) // one more, global, try (might be under a namespace)
+                        parentToken = parser->FindTokenByName(token->m_ActualType, false, tkClass | tkNamespace | tkEnum);
+                }
 			}
 			Manager::Get()->GetMessageManager()->DebugLog("Class '%s'", parentToken ? parentToken->m_Name.c_str() : "unknown");
 

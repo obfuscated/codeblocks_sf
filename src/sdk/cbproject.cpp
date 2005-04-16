@@ -324,7 +324,10 @@ void cbProject::CalculateCommonTopLevelPath()
         while (tmp.StartsWith(_("..")))
         {
             tmpbase.AppendDir(_(".."));
-            tmp.Remove(0, 3); // two dots + separator
+            tmp.Remove(0, 2); // two dots
+            // remove separator(s) after dots
+            while (!tmp.IsEmpty() &&  (tmp.GetChar(0) == '/' || tmp.GetChar(0) == '\\'))
+                tmp.Remove(0, 1);
         }
         tmpbase.Normalize(wxPATH_NORM_ALL);
 

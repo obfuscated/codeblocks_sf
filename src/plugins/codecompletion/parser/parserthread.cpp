@@ -279,6 +279,8 @@ bool ParserThread::Parse()
 
 	if (m_Options.useBuffer)
 		m_StartBlockIndex = m_pTokens->GetCount();
+    else
+        m_StartBlockIndex = 0;
 	m_Str.Clear();
 	m_LastToken.Clear();
     m_EncounteredNamespaces.Clear();
@@ -350,18 +352,6 @@ bool ParserThread::Parse()
 				m_Tokens.GetToken(); //skip args
 			m_Str.Clear();
 		}
-		/*else if (token.Matches("::") && m_Options.useBuffer)
-		{
-             if (m_Options.bufferSkipBlocks)
-                SkipToOneOfChars(";}", false);
-            m_Str.Clear();
-		}*/
-		/*else if (token.Matches("::"))
-		{
-			if (!m_Options.useBuffer || m_Options.bufferSkipBlocks)
-				SkipToOneOfChars(";}", true);
-            m_Str.Clear();
-		}*/
 		else if (token.Matches("typedef") ||
 			token.Matches("return") ||
 			token.Matches(":"))
@@ -404,10 +394,6 @@ bool ParserThread::Parse()
 				HandleDefines();
 			m_Str.Clear();
 		}
-//		else if (token.Matches("<")) // template <>
-//		{
-//            SkipToOneOfChars(">;");
-//		}
 		else if (token.Matches("using")) // using namespace ?
 		{
             SkipToOneOfChars(";}", true);
@@ -569,7 +555,7 @@ bool ParserThread::Parse()
 	return true;
 }
 
-Token* ParserThread::TokenExists(const wxString& name, Token* parent)
+Token* ParserThread::TokenExists(const wxString& name, Token* parent, short int kindMask)
 {
     if (!m_pTokens)
         return 0;
@@ -579,7 +565,7 @@ Token* ParserThread::TokenExists(const wxString& name, Token* parent)
         for (unsigned int i = m_StartBlockIndex; i < m_pTokens->GetCount(); ++i)
         {
             Token* token = m_pTokens->Item(i);
-            if (token->m_Name.Matches(name))
+            if ((token->m_TokenKind & kindMask) && token->m_Name.Matches(name))
                 return token;
         }
     }
@@ -589,7 +575,7 @@ Token* ParserThread::TokenExists(const wxString& name, Token* parent)
         for (unsigned int i = 0; i < parent->m_Children.GetCount(); ++i)
         {
             Token* token = parent->m_Children.Item(i);
-            if (token->m_Name.Matches(name))
+            if ((token->m_TokenKind & kindMask) && token->m_Name.Matches(name))
                 return token;
         }
     }
@@ -669,22 +655,23 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, const wxSt
         for (unsigned int i = 0; i < count; ++i)
         {
 //            Log("NS: '" + m_EncounteredNamespaces[i] + "' for " + newToken->m_Name);
-            localParent = TokenExists(m_EncounteredNamespaces[i], localParent);
+            localParent = TokenExists(m_EncounteredNamespaces[i], localParent, tkClass | tkNamespace);
             if (!localParent)
                 break;
         }
+        m_EncounteredNamespaces.Clear();
     }
     if (localParent)
     {
-//        Log("Parent found for " + newToken->m_Name + ": " + localParent->m_DisplayName);
+//        Log("Parent found for " + m_Str + " " + newToken->m_Name + ": " + localParent->m_DisplayName);
         Token* existing = TokenExists(newToken->m_Name, localParent);
         if (existing)
         {
+//            Log("Existing found for " + newToken->m_Name);
             // if the token exists, all we have to do is adjust the
             // implementation file/line
             existing->m_ImplFilename = m_Tokens.GetFilename();
             existing->m_ImplLine = m_Tokens.GetLineNumber();
-            m_EncounteredNamespaces.Clear();
             delete newToken;
             return existing;
         }
@@ -702,25 +689,18 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, const wxSt
 	newToken->m_ImplLine = 0;
 	newToken->m_IsOperator = isOperator;
 	newToken->m_IsTemporary = m_Options.useBuffer;
-#if 0
-	if (!newToken->m_Type.IsEmpty())
-		newToken->m_DisplayName << newToken->m_Type << " ";
-	if (m_pLastParent)
-		newToken->m_DisplayName << m_pLastParent->m_Name << "::";
-	newToken->m_DisplayName << newToken->m_Name << args;
-#endif
+//    Log("Added token " +name+ ", type '" +newToken->m_Type+ "', actual '" +newToken->m_ActualType+ "'");
 	if (m_pLastParent)
 		newToken->m_DisplayName << m_pLastParent->m_Name << "::";
 	newToken->m_DisplayName << newToken->m_Name << args;
 	if (!newToken->m_Type.IsEmpty())
 		newToken->m_DisplayName << " : " << newToken->m_Type;
-	
-	if (m_pTokens)
-        m_pTokens->Add(newToken);
-	if (m_pLastParent)
-		m_pLastParent->AddChild(newToken);
 
-    m_EncounteredNamespaces.Clear();
+    if (m_pTokens)
+        m_pTokens->Add(newToken);
+    if (m_pLastParent)
+        m_pLastParent->AddChild(newToken);
+
 	return newToken;
 }
 
@@ -800,7 +780,7 @@ void ParserThread::HandleNamespace()
     if (next.Matches("{"))
     {
         // use the existing copy (if any)
-        Token* newToken = TokenExists(ns);
+        Token* newToken = TokenExists(ns, 0, tkNamespace);
         if (!newToken)
             newToken = DoAddToken(tkNamespace, ns);
         if (!newToken)
@@ -959,14 +939,14 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
                 Token* localParent = 0;
                 for (unsigned int i = 0; i < count; ++i)
                 {
-//                    Log("NS: '" + m_EncounteredNamespaces[i] + "' for " + newToken->m_Name);
-                    localParent = TokenExists(m_EncounteredNamespaces[i], localParent);
+                    localParent = TokenExists(m_EncounteredNamespaces[i], localParent, tkClass | tkNamespace);
                     if (!localParent)
                         break;
                 }
                 CtorDtor = localParent && name.Matches(localParent->m_Name);
             }
 		}
+		
 		if (CtorDtor)
 		{
 			m_Str.Trim();
@@ -975,7 +955,7 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
 			else if (m_Str.Matches("~"))
 				kind = tkDestructor;
 		}
-//        Log("Adding function '"+name+"': m_Str='"+m_Str+"'");
+//        Log("Adding function '"+name+"': m_Str='"+m_Str+"'"+", enc_ns="+(m_EncounteredNamespaces.GetCount()?m_EncounteredNamespaces[0]:"nil"));
 		DoAddToken(kind, name, args, isOperator);
 	}
 	if (!m_Tokens.PeekToken().Matches("}"))
@@ -1009,7 +989,7 @@ void ParserThread::HandleEnum()
         {
             // for unnamed enums, look if we already have "Unnamed", so we don't
             // add a new one for every unnamed enum we encounter, in this scope...
-            newEnum = TokenExists(token, m_pLastParent);
+            newEnum = TokenExists(token, m_pLastParent, tkEnum);
         }
 
         if (!newEnum) // either named or first unnamed enum

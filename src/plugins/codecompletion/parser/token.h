@@ -17,16 +17,16 @@ enum TokenScope
 
 enum TokenKind
 {
-	tkClass = 0,
-	tkNamespace,
-	tkConstructor,
-	tkDestructor,
-	tkFunction,
-	tkVariable,
-	tkEnum,
-	tkEnumerator,
-	tkPreprocessor,
-	tkUndefined
+	tkClass         = 0x0001,
+	tkNamespace     = 0x0002,
+	tkConstructor   = 0x0004,
+	tkDestructor    = 0x0008,
+	tkFunction      = 0x0010,
+	tkVariable      = 0x0020,
+	tkEnum          = 0x0040,
+	tkEnumerator    = 0x0080,
+	tkPreprocessor  = 0x0100,
+	tkUndefined     = 0xFFFF,
 };
 
 class Token
