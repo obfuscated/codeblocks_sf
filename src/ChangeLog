@@ -1,3 +1,439 @@
+Changes for version 1.0-beta7
+-------------------------------
+
+2005-04-16  mandrav
+
+	* Updated code-completion
+	* A small future-bug fix (!) in cbProject
+
+2005-04-16  mandrav
+
+	* Fixed a project tree flicker-less update issue
+
+2005-04-16  mandrav
+
+	* Improved handling of externally modified files (rfe #1183847)
+	* Updated win32 Makefile
+
+2005-04-15  mandrav
+
+	* Removed most of the project tree flickering on certain actions
+
+2005-04-15  mandrav
+
+	* When "cleaning" a dynamic library target (dll), the .def exports
+	  file is not deleted anymore, because it might be supplied by the
+	  user (bug #1183690)
+
+2005-04-15  mandrav
+
+	* Updated unix project file and Makefile.unix
+	* Updated some #includes to work in linux (quotes used instead of
+	  angled braces)
+
+2005-04-15  mandrav
+
+	* Fixed generated Makefile to correctly create needed dirs for
+	  objects and dependencies output
+	* Fixed project tree to contain "clean" paths (folders). No more
+	  ".." folders ;)
+	* Fixed objects and dependencies output to behave correctly even for
+	  relative files in dirs above the project file's dir
+
+2005-04-15  rickg22
+
+	* Disabled Project menus (even popup menus) when Project hasn't
+	  finished loading.
+	* Replaced annoying "Project files are still being loaded"
+	  wxMessageBox() with a much more friendly wxBell().
+	* Fixed crash in MainFrame::OnProjectCloseProject (a "return;" was
+	  missing inside the "if").
+
+2005-04-14  mandrav
+
+	* Added ChooseDirectory() function in globals.cpp - use this if you
+	  want a dir selector dialog
+	* Because of the above, absolute paths are now possible where a path
+	  is entered (like compiler dirs, working directory, etc)
+	* Replaced all calls to other dir selector dialogs to use the new
+	  ChooseDirectory()
+
+2005-04-14  mandrav
+
+	* Bug-fix that, upon "Run", would try to locate the executable in
+	  the working dir.
+
+2005-04-14  mandrav
+
+	* Removed calls to wxSafeYield() which disabled input and made the
+	  program slower (at least appeared to be)
+	* Updated project file options dialog to support multiple build
+	  targets. Contribution by Tim Baker (patch #1182707)
+
+2005-04-14  rickg22
+
+	* 	Added Tim Baker's regexp patch
+
+2005-04-13  mandrav
+
+	* Added initial printing support :)
+
+2005-04-13  rickg22
+
+	* 	Restored opening windows showing (aka flicker) so the program won't
+	  seem to be slow
+
+2005-04-13  mandrav
+
+	* Added "working dir" build target property (used for program
+	  execution)
+	* Updated code-completion's intelligence to look inside namespaces
+	  for unknown tokens
+
+2005-04-13  mandrav
+
+	* Fixed MSVS7 importer to correctly detect .vcproj version and
+	  adjust importing accordingly
+
+2005-04-13  mandrav
+
+	* Updated unix project file and Makefile.unix
+
+2005-04-13  mandrav
+
+	* Updated win32 Makefile
+
+2005-04-13  mandrav
+
+	* Added missing source files from compiler plugin (sorry!)
+
+2005-04-12  mandrav
+
+	* Updates in dependencies generation by Tim Baker (patch #1181730)
+	* Corrected a couple of #include's
+
+2005-04-12  mandrav
+
+	* Fixed search directories re-ordering in compiler options (bug
+	  #1181038)
+
+2005-04-12  mandrav
+
+	* Global compile options (compiler/linker dirs/options) are now put
+	  after the project options (bug #1180420)
+
+2005-04-10  mandrav
+
+	* Updated "about" dialog (contributors part) and contact email
+
+2005-04-10  mandrav
+
+	* Updated dependencies generation for direct-mode, using Tim Baker's
+	  patches (#1179956 and #1179950). Changes offer a huge speed increase
+	  and there is no need for individual .depend files anymore. One
+	  dependency file per-project is used now to cache the file
+	  dependencies. The per-target dependency output directory setting is
+	  now used only for "make-mode" compiling.
+
+2005-04-10  mandrav
+
+	* Added separate setting for resource compiler dirs
+	* Re-arranged the compiler options dialog: merged the compiler and
+	  linker dirs and added resource dirs, all in one page
+	* Added message display when the debugger isn't set and a debugging
+	  session has been requested (bug #1180013)
+	* Updated win32 Makefile and project
+
+2005-04-10  rickg22
+
+	* 	+ Added Tim Baker's (yet another) optimization patch for
+	  directcommands.cpp
+	* Removed "Esc" accelerator key from "abort" compiler menu (didn't
+	  work, anyway)
+
+2005-04-10  rickg22
+
+	* 	+ Added maintenance comments and CVS ID tags to directcommands.cpp
+
+2005-04-10  rickg22
+
+	* 	+ Added "self" parameter to wxSafeYield for messagemanager (this
+	  should allow *in theory* changing tabs. In practice it doesn't work,
+	  but doesn't harm either so i'm leaving it like that) + Added user
+	  friendly error message to the debugger in case the default debugger
+	  is not set up.
+	* Fixed display glitch in the Compiler Settings dialog (xrc).
+
+2005-04-10  rickg22
+
+	* 	To do items for beta 1.8 and above
+
+2005-04-09  rickg22
+
+	* Fixed "ugly DDE error" bug (TODO: Add a button in settings to "Set
+	  File associations now")
+
+2005-04-09  mandrav
+
+	* Removed from CVS the obsolete .dsp files. They were old and
+	  unmaintained and they were cluttering the base dir.
+
+2005-04-08  mandrav
+
+	* Updated project file with the latest fixes about commands-only
+	  targets
+
+2005-04-08  mandrav
+
+	* Fixed filename issue with commands-only targets (bug #1178232)
+
+2005-04-08  mandrav
+
+	* Improved templates handling in class-parser
+
+2005-04-08  rickg22
+
+	* Sped up (a little) project/workspace loading (less flicker, etc)
+	* Added new parameter to EditorManager::Open to speed up project
+	  loading (doesn't search for projectfile data anymore, since we
+	  already have it)
+
+2005-04-08  rickg22
+
+	* Replaced all occurrences of wxYield() with wxSafeYield().
+	  wxYield() is _NOT_ safe for critical operations and may lead to
+	  unexpected crashes.
+
+2005-04-07  mandrav
+
+	* Minor update to class browser to display "jump to implementation"
+	  only where appropriate.
+	* Added union support in class-parser
+	* Fixed handling of nameless structs (f.e. used in unions) in
+	  class-parser
+
+2005-04-07  mandrav
+
+	* Added "jump to implementation" class-parser functionality for the
+	  symbols tab - Needs testing.
+
+2005-04-07  mandrav
+
+	* Fixed class-parser handling of multiple var declarations on a
+	  single line, e.g. "int x,y,z;" (bug #1162313)
+
+2005-04-07  mandrav
+
+	* Both single and double-click on a compiler error, jumps to the
+	  error line (bug #1178104)
+
+2005-04-07  mandrav
+
+	* Fixed handling of unnamed enums in class-parser
+	* Corrected line number calculation for class-parser tokens (used in
+	  "jump to declaration")
+
+2005-04-07  rickg22
+
+	* Moved some methods of Editor Manager into the protected area ***
+	  Fixed thread crashing on early exit (TODO: Fix project manager's
+	  freeze on early project closing)
+
+2005-04-07  rickg22
+
+	* 	+ Added managed thread class for later use.
+
+2005-04-07  rickg22
+
+	* 	Added managed thread class for future reimplementation of
+	  parserthread (WARNING: Not tested yet)
+
+2005-04-07  mandrav
+
+	* Added message that files outside project can't be compiled (bug
+	  #1177988)
+	* Added setup file for the full package (codeblocks + mingw)
+
+2005-04-06  mandrav
+
+	* Added menu entry "View/Open files list"
+
+2005-04-06  rickg22
+
+	* Fixed bug in Files Tree that didn't show files created with "new"
+	* FIXED THE ANNOYING FLICKER WHEN OPENING PROJECTS!! :D
+
+2005-04-05  mandrav
+
+	* Fixed generated Makefile to use relative paths for object and deps
+	  directories (bug #1175490)
+
+2005-04-05  mandrav
+
+	* Fixed bug with spaces in link library filename (#1167228)
+
+2005-04-05  mandrav
+
+	* Added deps calculation speed-up patches, contributed by Tim Baker
+	  (patch #1174658, #1174545)
+
+2005-04-05  mandrav
+
+	* Added MSVC7Loader patches contributed by Tim Baker (patch
+	  #1174519)
+	* Fixed wrong importing of AdditionalIncludeDirectories from .vcproj
+	  files (bug #1173826)
+
+2005-04-05  mandrav
+
+	* Added configuration entry for selections in editor colors
+	  configuration (RFE #1175452)
+
+2005-04-05  mandrav
+
+	* Added "View whitespace" editor option to display spaces and tabs
+	  (RFE #1174716)
+
+2005-04-05  rickg22
+
+	* Fixed critical bug where some project files were deleted on
+	  "clean".
+
+2005-04-05  rickg22
+
+	* Removed output filename "codeblocks.cbp" from non-compilable
+	  targets. (TODO: Need to find out how it was added there in the first
+	  place)
+
+2005-04-04  rickg22
+
+	* 	+ Added notice that says "Find in files not implemented yet".
+
+2005-04-04  rickg22
+
+	* Fixed tiny bug that made the File Tree disappear if the sash was
+	  moved to the top.
+
+2005-04-04  rickg22
+
+	* 	+ Added drag and drop support for opening files - send bug reports
+	  to rick_g22.
+
+2005-04-04  rickg22
+
+	* 	+ Added auxiliary wxWidget classes for the SDK. (xtra_classes.cpp -
+	  add your own classes here)
+
+2005-04-04  rickg22
+
+	* 	Moved Files Tree into separate pane
+
+2005-04-01  mandrav
+
+	* Semi-fix for "early-shutdown-crash" bug (related to
+	  code-completion plugin)
+
+2005-04-01  rickg22
+
+	* Fixed bug in Editor Tree when renaming files
+	* Cleaned up code in Editor Tree stuff (editormanager)
+
+2005-03-31  mandrav
+
+	* Fixed one reason for the "early-shutdown-crash" bug (the other is
+	  code-completion - still under investigation)
+
+2005-03-31  mandrav
+
+	* Fixed GDB filenames compatibility in debugger plugin
+	* When adding a new file in a project, checks are made that it's not
+	  already a member
+	* Fixed MS Visual Studio project file importer to correctly recurse
+	  project files
+	* Fixed bug in update UI events introduced with the addition of
+	  opened files list
+
+2005-03-31  rickg22
+
+	* 	+ New feature: Editor Tree above the project tree. With one click
+	     you can switch between files.  (Also shows which files are modified)
+
+2005-03-27  rickg22
+
+	* Fixed bug #1167477: "Save all projects" resets the workspace name
+
+2005-03-27  rickg22
+
+	* Fixed bug 1167913 (cancel button on close misbehavior)
+
+2005-03-27  rickg22
+
+	* Fixed bug #1167913 (Save project cancel button doesn't work).
+	* Also, modified the workspace/project/files closing process. Before
+	  closing ANYTHING, it checks EVERYTHING for modifications and asks
+	  user to save. This way, if the user presses "cancel", the state of
+	  the workspace is not modified at all.
+
+2005-03-26  rickg22
+
+	* 	"Cancel" button on close now works when project is modified. However
+	  this is a temporary fix (see notes)
+
+2005-03-26  rickg22
+
+	* 	+ Added stop button to compiler toolbar
+	* Converted debugger plugin to XRC
+
+2005-03-26  rickg22
+
+	* Fixed "disappearing-combo" bug in toolbar
+
+2005-03-26  rickg22
+
+	* 	+ Included copying of manifest file in update.bat
+
+2005-03-26  rickg22
+
+	* Moved manifest file to /src/setup
+
+2005-03-26  rickg22
+
+	* Moved winxp manifest file to /src/setup
+
+2005-03-26  rickg22
+
+	* 	+ manager.cpp: Added menu,toolbar and xrc auxiliary functions
+	* compilergcc.cpp: Simplified menu and toolbar building process
+
+2005-03-26  rickg22
+
+	* 	+ Added auxiliary menu and toolbar functions in Manager class
+	* Heavy modifications to PluginManager: 99% of the code has been
+	  moved from main.cpp + Added transitional code so the plugins can
+	  later use a data-driven menu system
+	* moved aboutplugin dialog to SDK
+
+2005-03-26  rickg22
+
+	* Minor aesthetic update (hides splash screen before showing main
+	  window)
+
+2005-03-22  mandrav
+
+	* Fixed environment variables substitution in MS VS project importer
+
+2005-03-21  rickg22
+
+	* Converted Main and Compiler Menus to XRC.
+	* Added "Compiler options" in compiler menu (xrc)
+	* Copied some project options to File Menu (xrc)
+	* Fixed ugly non-space in compiler toolbar
+	* Synced compiler target tool's xrc id with source
+
+2005-03-19  mandrav
+
+	* Fixed win32 Makefile
+
 Changes for version 1.0-beta6
 -------------------------------
 
