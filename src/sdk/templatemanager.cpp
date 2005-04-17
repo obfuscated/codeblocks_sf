@@ -178,22 +178,24 @@ void TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
     FileSet& fileset = pt->m_FileSets[filesetidx];
 
     wxString baseDir = ConfigManager::Get()->Read("/data_path");
-    wxFileDialog* fdlg = new wxFileDialog(0L,
-                            _("Save project"),
-                            wxEmptyString,
-                            pt->m_Name,
-                            CODEBLOCKS_FILES_FILTER,
-                            wxSAVE | wxHIDE_READONLY | wxOVERWRITE_PROMPT);
+    wxFileDialog fdlg(0L,
+                        _("Save project"),
+                        wxEmptyString,
+                        pt->m_Name,
+                        CODEBLOCKS_FILES_FILTER,
+                        wxSAVE | wxHIDE_READONLY | wxOVERWRITE_PROMPT);
 
-    if (fdlg->ShowModal() != wxID_OK)
+    if (fdlg.ShowModal() != wxID_OK)
         return;
+
     wxFileName fname;
-    fname.Assign(fdlg->GetPath());
+    fname.Assign(fdlg.GetPath());
     wxString path = fname.GetPath(wxPATH_GET_VOLUME);
     wxString filename = fname.GetFullPath();
-    
-    baseDir << "/templates";
-    wxCopyFile(baseDir + "/" + option.file, filename);
+    wxString sep = wxFileName::GetPathSeparator();
+
+    baseDir << sep << "templates";
+    wxCopyFile(baseDir + sep + option.file, filename);
 
     cbProject* prj = Manager::Get()->GetProjectManager()->LoadProject(filename);
     if (prj)
@@ -208,15 +210,32 @@ void TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
         for (unsigned int i = 0; i < fileset.files.GetCount(); ++i)
         {
             FileSetFile& fsf = fileset.files[i];
-            wxString dst = path + "/" + fsf.destination;
-            if (wxFileExists(dst))
+            wxString dst = path + sep + fsf.destination;
+            bool skipped = false;
+            while (wxFileExists(dst))
             {
                 wxString msg;
-                msg.Printf(_("File %s already exists. Do you really want to overwrite this file?"), dst.c_str());
-                if (wxMessageBox(msg, _("Overwrite existing file?"), wxYES_NO | wxICON_QUESTION) != wxYES)
-                    continue;
+                msg.Printf(_("File %s already exists.\nDo you really want to overwrite this file?"), dst.c_str());
+                if (wxMessageBox(msg, _("Overwrite existing file?"), wxYES_NO | wxICON_WARNING) == wxYES)
+                    break;
+                wxFileDialog fdlg(0L,
+                                    _("Save file as..."),
+                                    wxEmptyString,
+                                    dst,
+                                    SOURCE_FILES_FILTER,
+                                    wxSAVE | wxHIDE_READONLY);
+                if (fdlg.ShowModal() == wxID_CANCEL)
+                {
+                    msg.Printf(_("File %s is skipped..."), dst.c_str());
+                    wxMessageBox(msg, _("File skipped"), wxICON_ERROR);
+                    skipped = true;
+                    break;
+                }
+                dst = fdlg.GetPath();
             }
-            wxCopyFile(baseDir + "/" + fsf.source, dst);
+            if (skipped)
+                continue;
+            wxCopyFile(baseDir + sep + fsf.source, dst);
             prj->AddFile(0, dst);
         }
     
@@ -224,7 +243,8 @@ void TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
             prj->AddCompilerOption(option.extraCFlags[i]);
         for (unsigned int i = 0; i < option.extraLDFlags.GetCount(); ++i)
             prj->AddLinkerOption(option.extraLDFlags[i]);
-            
+        
+        prj->CalculateCommonTopLevelPath(); // must-do because we manually added files
         Manager::Get()->GetProjectManager()->RebuildTree();
     }
 }
