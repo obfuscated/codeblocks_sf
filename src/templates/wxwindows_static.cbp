@@ -36,7 +36,6 @@
 			<Add library="ctl3d32"/>
 			<Add library="odbc32"/>
 			<Add library="advapi32"/>
-			<Add library="odbc3"/>
 			<Add library="wsock32"/>
 			<Add library="opengl32"/>
 			<Add library="glu32"/>
