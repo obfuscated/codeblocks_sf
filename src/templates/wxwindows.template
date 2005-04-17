@@ -16,7 +16,7 @@
 			<File source="wx-main-ash.h" destination="main.h"/>
 		</FileSet>
 		<Option name="Using static wxWidgets library">
-			<Project file="wxWindows.cbp"/>
+			<Project file="wxWindows_static.cbp"/>
 		</Option>
 		<Option name="Using wxWidgets DLL">
 			<Project file="wxWindows.cbp"/>
