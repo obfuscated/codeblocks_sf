@@ -167,6 +167,7 @@ HighlightLanguage EditorColorSet::GetLanguageForFilename(const wxString& filenam
 	FileType ft = FileTypeOf(filename);
 	switch (ft)
 	{
+		case ftResource: // resource files are highlighted like C/C++ files (rfe #1184765)
 		case ftSource:
 		case ftHeader: return hlCpp;
 		
