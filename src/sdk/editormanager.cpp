@@ -773,11 +773,19 @@ int EditorManager::ShowFindDialog(bool replace)
 	int wordStart = control->WordStartPosition(control->GetCurrentPos(), true);
 	int wordEnd = control->WordEndPosition(control->GetCurrentPos(), true);
 	wxString wordAtCursor = control->GetTextRange(wordStart, wordEnd);
+    bool hasSelection = control->GetSelectionStart() != control->GetSelectionEnd();
+    // if selected text is the last searched text, don't suggest "search in selection"
+    if (m_LastFindReplaceData &&
+        !control->GetSelectedText().IsEmpty() &&
+        control->GetSelectedText() == m_LastFindReplaceData->findText)
+    {
+        hasSelection = false;
+    }
 
 	FindReplaceBase* dlg;
 	if (!replace)
 	{
-		dlg = new FindDlg(Manager::Get()->GetAppWindow(), wordAtCursor, control->GetSelectionStart() != control->GetSelectionEnd());
+		dlg = new FindDlg(Manager::Get()->GetAppWindow(), wordAtCursor, hasSelection);
 		if (dlg->ShowModal() == wxID_CANCEL)
 		{
 			delete dlg;
@@ -786,7 +794,7 @@ int EditorManager::ShowFindDialog(bool replace)
 	}
 	else
 	{
-		dlg = new ReplaceDlg(Manager::Get()->GetAppWindow(), wordAtCursor, control->GetSelectionStart() != control->GetSelectionEnd());
+		dlg = new ReplaceDlg(Manager::Get()->GetAppWindow(), wordAtCursor, hasSelection);
 		if (dlg->ShowModal() == wxID_CANCEL)
 		{
 			delete dlg;
