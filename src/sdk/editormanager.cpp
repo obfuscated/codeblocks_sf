@@ -1011,6 +1011,19 @@ int EditorManager::Find(cbEditor* editor, cbFindReplaceData* data)
 //		Manager::Get()->GetMessageManager()->DebugLog("pos=%d, selLen=%d, length=%d", pos, data->end - data->start, lengthFound);
 		data->start = pos;
 	}
+	else
+	{
+        if (start != 0)
+        {
+            if (wxMessageBox(_("Text not found.\nSearch from the start of the document?"), _("Result"), wxYES_NO | wxICON_QUESTION) == wxYES)
+            {
+                data->start = 0;
+                return Find(editor, data);
+            }
+        }
+        else
+            wxMessageBox(_("Text not found"), _("Result"), wxICON_INFORMATION);
+    }
 	
 	return pos;
 }
