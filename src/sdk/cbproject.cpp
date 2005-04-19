@@ -288,7 +288,6 @@ void cbProject::Open()
 	
     if (m_Loaded)
 	{
-        CalculateCommonTopLevelPath();
 		Manager::Get()->GetMessageManager()->Log(_("done"));    
 		if (!m_Targets.GetCount())
 			AddDefaultBuildTarget();
@@ -549,6 +548,7 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     
     m_Files.Append(f);
 	
+    CalculateCommonTopLevelPath();
     SetModified(true);
 	return f;
 }

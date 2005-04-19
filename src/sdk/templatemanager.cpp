@@ -244,7 +244,6 @@ void TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
         for (unsigned int i = 0; i < option.extraLDFlags.GetCount(); ++i)
             prj->AddLinkerOption(option.extraLDFlags[i]);
         
-        prj->CalculateCommonTopLevelPath(); // must-do because we manually added files
         Manager::Get()->GetProjectManager()->RebuildTree();
     }
 }
