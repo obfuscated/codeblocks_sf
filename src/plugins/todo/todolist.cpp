@@ -91,6 +91,7 @@ void ToDoList::OnAttach()
 	m_ListPageIndex = msgMan->AddLog(m_pListLog);
 
     m_AutoRefresh = ConfigManager::Get()->Read("todo_list/auto_refresh", true);
+    LoadTypes();
 }
 
 void ToDoList::OnRelease(bool appShutDown)
@@ -167,7 +168,6 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
 		return;
 
     // display todo dialog
-    LoadTypes();
     AddTodoDlg dlg(Manager::Get()->GetAppWindow(), m_Types);
     if (dlg.ShowModal() != wxID_OK)
         return;
