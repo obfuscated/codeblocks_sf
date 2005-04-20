@@ -787,6 +787,8 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
                 m_pPrjMan->LoadWorkspace(filename);
                 m_FilesHistory.AddFileToHistory(filename);
             }
+            else
+                return false;
             break;
 
         //
@@ -799,13 +801,26 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
         case ftMSVCProject:
             // fallthrough
         case ftMSVSProject:
-            DoOpenProject(filename, addToHistory);
-            break;
+            return DoOpenProject(filename, addToHistory);
 
         //
-        // All other files
+        // Source files
         //
-        default: return DoOpenFile(filename, addToHistory);
+        case ftHeader:
+            // fallthrough
+        case ftSource:
+            // fallthrough
+        case ftResource:
+            return DoOpenFile(filename, addToHistory);
+
+        //
+        // For all other files, ask MIME plugin for a suitable handler
+        //
+        default:
+        {
+            cbMimePlugin* plugin = Manager::Get()->GetPluginManager()->GetMIMEHandlerForFile(filename);
+            return plugin && plugin->OpenFile(filename) == 0;
+        }
     }
     return true;
 }

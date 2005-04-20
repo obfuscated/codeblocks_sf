@@ -1046,18 +1046,8 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
 	else
 	{
 		// not a recognized file type
-		bool opened = false;
-		PluginsArray mimes = Manager::Get()->GetPluginManager()->GetMimeOffers();
-		for (unsigned int i = 0; i < mimes.GetCount(); ++i)
-		{
-			cbMimePlugin* plugin = (cbMimePlugin*)mimes[i];
-			if (plugin && plugin->CanHandleFile(filename))
-			{
-				opened = plugin->OpenFile(filename) == 0;
-				break;
-			}
-		}
-		if (!opened)
+        cbMimePlugin* plugin = Manager::Get()->GetPluginManager()->GetMIMEHandlerForFile(filename);
+        if (!plugin || plugin->OpenFile(filename) != 0)
 		{
             wxString msg;
             msg.Printf(_("Could not open file '%s'.\nNo handler registered for this type of file."), filename.c_str());

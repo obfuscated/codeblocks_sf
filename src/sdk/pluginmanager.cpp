@@ -380,6 +380,18 @@ void PluginManager::NotifyPlugins(CodeBlocksEvent& event)
     }
 }
 
+cbMimePlugin* PluginManager::GetMIMEHandlerForFile(const wxString& filename)
+{
+    PluginsArray mimes = GetMimeOffers();
+    for (unsigned int i = 0; i < mimes.GetCount(); ++i)
+    {
+        cbMimePlugin* plugin = (cbMimePlugin*)mimes[i];
+        if (plugin && plugin->CanHandleFile(filename))
+            return plugin;
+    }
+    return 0;
+}
+
 int PluginManager::Configure()
 {
     SANITY_CHECK(wxID_CANCEL);
