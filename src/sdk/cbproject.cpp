@@ -751,6 +751,11 @@ ProjectFile* cbProject::GetFile(int index)
         
     return NULL;
 }
+// TODO (Anyone#1#): Optimize GetFileByFilename by using hashes
+// When loading the project, if we have 150 files in it, 
+// the routine inside the while gets Executed 1+2+3+...+150 times
+// This is probably the cause of the 2+ seconds delay when 
+// generating the project tree
 
 ProjectFile* cbProject::GetFileByFilename(const wxString& filename, bool isRelative, bool isUnixFilename)
 {

@@ -499,6 +499,7 @@ void ProjectLoader::DoExtraCommands(TiXmlElement* parentNode, ProjectBuildTarget
 
 void ProjectLoader::DoUnits(TiXmlElement* parentNode)
 {
+    Manager::Get()->GetMessageManager()->DebugLog("Generating project tree...");
     TiXmlElement* unit = parentNode->FirstChildElement("Unit");
     while (unit)
     {
