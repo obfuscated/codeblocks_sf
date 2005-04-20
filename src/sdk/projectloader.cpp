@@ -514,6 +514,7 @@ void ProjectLoader::DoUnits(TiXmlElement* parentNode)
         
         unit = unit->NextSiblingElement("Unit");
     }
+    m_pProject->CalculateCommonTopLevelPath();
 }
 
 void ProjectLoader::DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file)

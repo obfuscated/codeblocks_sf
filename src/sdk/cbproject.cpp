@@ -547,8 +547,10 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     f->relativeFilename = fname.GetFullPath();
     
     m_Files.Append(f);
-	
-    CalculateCommonTopLevelPath();
+    if(!Manager::Get()->GetProjectManager()->IsLoading())
+    {
+        CalculateCommonTopLevelPath();        
+    }
     SetModified(true);
 	return f;
 }
