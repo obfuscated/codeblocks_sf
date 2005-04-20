@@ -129,6 +129,8 @@ class DLLIMPORT cbProject : public CompileTargetBase
         wxArrayString m_ExpandedNodes;
         bool m_Loaded;
         wxTreeItemId m_ProjectNode;
+        
+        bool m_CurrentlyLoading;
         wxString m_CommonTopLevelPath;
 };
 

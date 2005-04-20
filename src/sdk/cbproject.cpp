@@ -54,7 +54,8 @@ cbProject::cbProject(const wxString& filename)
     m_DefaultExecuteTarget(-1),
     m_Makefile(""),
     m_CustomMakefile(false),
-    m_Loaded(false)
+    m_Loaded(false),
+    m_CurrentlyLoading(false)
 {
     SetCompilerIndex(CompilerFactory::GetDefaultCompilerIndex());
 
@@ -229,9 +230,11 @@ void cbProject::Open()
     if (ft == ftCodeBlocksProject)
     {
 		Manager::Get()->GetMessageManager()->AppendLog(_("Opening %s: "), m_Filename.c_str());    
+        m_CurrentlyLoading = true;
         ProjectLoader loader(this);
         m_Loaded = loader.Open(m_Filename);
         fileUpgraded = loader.FileUpgraded();
+        m_CurrentlyLoading = false;
     }
     else
     {
@@ -276,10 +279,12 @@ void cbProject::Open()
             SetCompilerIndex(compilerIdx);
 
             // actually import project file
+            m_CurrentlyLoading = true;
             m_Loaded = loader->Open(m_Filename);
             fname.SetExt(CODEBLOCKS_EXT);
             m_Filename = fname.GetFullPath();
             SetModified(true);
+            m_CurrentlyLoading = false;
         }
         else
             m_Loaded = false;
@@ -288,6 +293,7 @@ void cbProject::Open()
 	
     if (m_Loaded)
 	{
+        CalculateCommonTopLevelPath();
 		Manager::Get()->GetMessageManager()->Log(_("done"));    
 		if (!m_Targets.GetCount())
 			AddDefaultBuildTarget();
@@ -547,7 +553,7 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     f->relativeFilename = fname.GetFullPath();
     
     m_Files.Append(f);
-    if(!Manager::Get()->GetProjectManager()->IsLoading())
+    if (!m_CurrentlyLoading)
     {
         CalculateCommonTopLevelPath();        
     }
