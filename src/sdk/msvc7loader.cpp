@@ -309,12 +309,11 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
             // compiler
             wxString incs = tool->Attribute("AdditionalIncludeDirectories");
             // vc70 uses ";" while vc71 uses "," separators
-            wxString lsep;
-            if (m_Version == vc70)
-                lsep = ";";
-            else
-                lsep = ",";
-            wxArrayString arr = GetArrayFromString(incs, lsep);
+            // NOTE (mandrav#1#): No, that is *not* the case (what were they thinking at MS?)
+            // try with comma (,) which is the newest I believe
+            wxArrayString arr = GetArrayFromString(incs, ",");
+            if (arr.GetCount() == 1) // if it fails, try with semicolon
+                arr = GetArrayFromString(incs, ";");
             for (unsigned int i = 0; i < arr.GetCount(); ++i)
             {
                 bt->AddIncludeDir(ReplaceMSVCMacros(arr[i]));

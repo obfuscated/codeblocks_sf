@@ -103,6 +103,7 @@ bool MSVCLoader::ReadConfigurations()
     while (!file.Eof())
     {
         wxString line = input.ReadLine();
+        ++currentLine;
         line.Trim(true);
         line.Trim(false);
         int size = -1;
@@ -146,11 +147,10 @@ bool MSVCLoader::ReadConfigurations()
             if (m_Configurations.Index(tmp) == wxNOT_FOUND)
             {
                 m_Configurations.Add(tmp);
-                m_ConfigurationsLineIndex.Add(currentLine + 1);
-                Manager::Get()->GetMessageManager()->DebugLog("Detected configuration '%s'", tmp.c_str());
+                m_ConfigurationsLineIndex.Add(currentLine);
+                Manager::Get()->GetMessageManager()->DebugLog("Detected configuration '%s' at line %d", tmp.c_str(), currentLine);
             }
         }
-        ++currentLine;
     }
     return true;
 }
@@ -178,7 +178,7 @@ bool MSVCLoader::ParseConfiguration(int index)
         input.ReadLine();
         ++currentLine;
     }
-    
+
     // start parsing the configuration
     while (!file.Eof())
     {
