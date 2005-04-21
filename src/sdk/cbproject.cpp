@@ -477,12 +477,22 @@ ProjectFile* cbProject::AddFile(const wxString& targetName, const wxString& file
 ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool compile, bool link, unsigned short int weight)
 {
     // look if the file belongs to the project already. If so, return it
-    ProjectFile* f = GetFileByFilename(filename, true, true);
-    if (f)
-        return f;
-    f = GetFileByFilename(filename, false, true);
-    if (f)
-        return f;
+    ProjectFile* f;
+
+//  NOTE (Rick#1#): When loading the project, do not search for existing files
+//  (Assumming that there are no duplicate entries in the .cbp file)
+//  This saves us a lot of processing when loading large projects.
+//  Remove the if to do the search anyway
+
+    if(!m_CurrentlyLoading)
+    {
+        f = GetFileByFilename(filename, true, true);
+        if (f)
+            return f;
+        f = GetFileByFilename(filename, false, true);
+        if (f)
+            return f;
+    }
 
     // OK, add file
     f = new ProjectFile;
@@ -751,11 +761,6 @@ ProjectFile* cbProject::GetFile(int index)
         
     return NULL;
 }
-// TODO (Anyone#1#): Optimize GetFileByFilename by using hashes
-// When loading the project, if we have 150 files in it, 
-// the routine inside the while gets Executed 1+2+3+...+150 times
-// This is probably the cause of the 2+ seconds delay when 
-// generating the project tree
 
 ProjectFile* cbProject::GetFileByFilename(const wxString& filename, bool isRelative, bool isUnixFilename)
 {
