@@ -314,7 +314,6 @@ MainFrame::MainFrame(wxWindow* parent)
     
     m_SmallToolBar = ConfigManager::Get()->Read("/environment/toolbar_size", (long int)0) == 1;
 	CreateIDE();
-	m_pEdMan->SetEditorInterfaceType(eitMDI);
 
 #ifdef __WXMSW__
     SetIcon(wxICON(A_MAIN_ICON));
@@ -871,7 +870,7 @@ void MainFrame::DoUpdateStatusBar()
 #if wxUSE_STATUSBAR
     if (!GetStatusBar())
         return;
-    cbEditor* ed = m_pEdMan->GetActiveEditor();
+    cbEditor* ed = m_pEdMan->GetBuiltinActiveEditor();
     if (ed)
     {
         int pos = ed->GetControl()->GetCurrentPos();
@@ -897,16 +896,7 @@ void MainFrame::DoUpdateLayout()
 	if (!m_pEdMan)
 		return;
 	wxLayoutAlgorithm layout;
-	switch (m_pEdMan->GetEditorInterfaceType())
-	{
-		case eitMDI:
-			layout.LayoutMDIFrame(this);
-			break;
-		case eitTabbed:
-			layout.LayoutMDIFrame(this);
-//			layout.LayoutFrame(this, m_pEdMan);
-			break;
-	}
+    layout.LayoutMDIFrame(this);
 	
 	/**
 	@attention Hack for fixing wxSashWindow oddness...Resize with 'height-1'.
@@ -1209,70 +1199,70 @@ void MainFrame::OnEditSwapHeaderSource(wxCommandEvent& event)
 
 void MainFrame::OnEditBookmarksToggle(wxCommandEvent& event)
 {
-    cbEditor* ed = m_pEdMan->GetActiveEditor();
+    cbEditor* ed = m_pEdMan->GetBuiltinActiveEditor();
     if (ed)
 		ed->MarkerToggle(BOOKMARK_MARKER);
 }
 
 void MainFrame::OnEditBookmarksNext(wxCommandEvent& event)
 {
-    cbEditor* ed = m_pEdMan->GetActiveEditor();
+    cbEditor* ed = m_pEdMan->GetBuiltinActiveEditor();
     if (ed)
 		ed->MarkerNext(BOOKMARK_MARKER);
 }
 
 void MainFrame::OnEditBookmarksPrevious(wxCommandEvent& event)
 {
-    cbEditor* ed = m_pEdMan->GetActiveEditor();
+    cbEditor* ed = m_pEdMan->GetBuiltinActiveEditor();
     if (ed)
 		ed->MarkerPrevious(BOOKMARK_MARKER);
 }
 
 void MainFrame::OnEditUndo(wxCommandEvent& event)
 {
-    cbEditor* ed = m_pEdMan->GetActiveEditor();
+    cbEditor* ed = m_pEdMan->GetBuiltinActiveEditor();
     if (ed)
         ed->GetControl()->Undo();
 }
 
 void MainFrame::OnEditRedo(wxCommandEvent& event)
 {
-    cbEditor* ed = m_pEdMan->GetActiveEditor();
+    cbEditor* ed = m_pEdMan->GetBuiltinActiveEditor();
     if (ed)
         ed->GetControl()->Redo();
 }
 
 void MainFrame::OnEditCopy(wxCommandEvent& event)
 {
-    cbEditor* ed = m_pEdMan->GetActiveEditor();
+    cbEditor* ed = m_pEdMan->GetBuiltinActiveEditor();
     if (ed)
         ed->GetControl()->Copy();
 }
 
 void MainFrame::OnEditCut(wxCommandEvent& event)
 {
-    cbEditor* ed = m_pEdMan->GetActiveEditor();
+    cbEditor* ed = m_pEdMan->GetBuiltinActiveEditor();
     if (ed)
         ed->GetControl()->Cut();
 }
 
 void MainFrame::OnEditPaste(wxCommandEvent& event)
 {
-    cbEditor* ed = m_pEdMan->GetActiveEditor();
+    cbEditor* ed = m_pEdMan->GetBuiltinActiveEditor();
     if (ed)
         ed->GetControl()->Paste();
 }
 
 void MainFrame::OnEditSelectAll(wxCommandEvent& event)
 {
-    cbEditor* ed = m_pEdMan->GetActiveEditor();
+    cbEditor* ed = m_pEdMan->GetBuiltinActiveEditor();
     if (ed)
         ed->GetControl()->SelectAll();
 }
 
 void MainFrame::OnEditCommentSelected(wxCommandEvent& event)
 {
-	cbEditor* ed = m_pEdMan->GetActiveEditor();
+    cbEditor* ed = m_pEdMan->GetBuiltinActiveEditor();
 	if( ed )
 	{
         ed->GetControl()->BeginUndoAction();
@@ -1331,21 +1321,21 @@ void MainFrame::OnEditCommentSelected(wxCommandEvent& event)
 
 void MainFrame::OnEditFoldAll(wxCommandEvent& event)
 {
-    cbEditor* ed = m_pEdMan->GetActiveEditor();
+    cbEditor* ed = m_pEdMan->GetBuiltinActiveEditor();
     if (ed)
 		ed->FoldAll();
 }
 
 void MainFrame::OnEditUnfoldAll(wxCommandEvent& event)
 {
-    cbEditor* ed = m_pEdMan->GetActiveEditor();
+    cbEditor* ed = m_pEdMan->GetBuiltinActiveEditor();
     if (ed)
 		ed->UnfoldAll();
 }
 
 void MainFrame::OnEditToggleAllFolds(wxCommandEvent& event)
 {
-    cbEditor* ed = m_pEdMan->GetActiveEditor();
+    cbEditor* ed = m_pEdMan->GetBuiltinActiveEditor();
     if (ed)
 		ed->ToggleAllFolds();
 }
@@ -1353,28 +1343,28 @@ void MainFrame::OnEditToggleAllFolds(wxCommandEvent& event)
 
 void MainFrame::OnEditFoldBlock(wxCommandEvent& event)
 {
-    cbEditor* ed = m_pEdMan->GetActiveEditor();
+    cbEditor* ed = m_pEdMan->GetBuiltinActiveEditor();
     if (ed)
 		ed->FoldBlockFromLine();
 }
 
 void MainFrame::OnEditUnfoldBlock(wxCommandEvent& event)
 {
-    cbEditor* ed = m_pEdMan->GetActiveEditor();
+    cbEditor* ed = m_pEdMan->GetBuiltinActiveEditor();
     if (ed)
 		ed->UnfoldBlockFromLine();
 }
 
 void MainFrame::OnEditToggleFoldBlock(wxCommandEvent& event)
 {
-    cbEditor* ed = m_pEdMan->GetActiveEditor();
+    cbEditor* ed = m_pEdMan->GetBuiltinActiveEditor();
     if (ed)
 		ed->ToggleFoldBlockFromLine();
 }
 
 void MainFrame::OnEditEOLMode(wxCommandEvent& event)
 {
-    cbEditor* ed = m_pEdMan->GetActiveEditor();
+    cbEditor* ed = m_pEdMan->GetBuiltinActiveEditor();
     if (ed)
     {
         int mode = -1;
@@ -1416,7 +1406,7 @@ void MainFrame::OnSearchReplace(wxCommandEvent& event)
 
 void MainFrame::OnSearchGotoLine(wxCommandEvent& event)
 {
-	cbEditor* ed = m_pEdMan->GetActiveEditor();
+    cbEditor* ed = m_pEdMan->GetBuiltinActiveEditor();
 	if (!ed)
 		return;
 
@@ -1537,7 +1527,7 @@ void MainFrame::OnHelpTips(wxCommandEvent& event)
 
 void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
 {
-    cbEditor* ed = m_pEdMan ? m_pEdMan->GetActiveEditor() : 0L;
+    cbEditor* ed = m_pEdMan ? m_pEdMan->GetBuiltinEditor(m_pEdMan->GetActiveEditor()) : 0;
     wxMenuBar* mbar = GetMenuBar();
 
     bool canCloseProject = (ProjectManager::CanShutdown() && EditorManager::CanShutdown());
@@ -1562,7 +1552,7 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
 
 void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
 {
-    cbEditor* ed = m_pEdMan ? m_pEdMan->GetActiveEditor() : 0L;
+    cbEditor* ed = m_pEdMan ? m_pEdMan->GetBuiltinEditor(m_pEdMan->GetActiveEditor()) : 0;
     wxMenuBar* mbar = GetMenuBar();
 	bool hasSel = ed ? ed->GetControl()->GetSelectionStart() != ed->GetControl()->GetSelectionEnd() : false;
 	bool canUndo = ed ? ed->GetControl()->CanUndo() : false;
@@ -1609,7 +1599,7 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
 void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
 {
     wxMenuBar* mbar = GetMenuBar();
-    cbEditor* ed = m_pEdMan ? m_pEdMan->GetActiveEditor() : 0L;
+    cbEditor* ed = m_pEdMan ? m_pEdMan->GetBuiltinEditor(m_pEdMan->GetActiveEditor()) : 0;
 
     mbar->Check(idViewToolMain, m_pToolbar && m_pToolbar->IsShown());
     mbar->Check(idViewManager, m_pLeftSash && m_pLeftSash->IsShown());
@@ -1624,7 +1614,7 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
 
 void MainFrame::OnSearchMenuUpdateUI(wxUpdateUIEvent& event)
 {
-    cbEditor* ed = m_pEdMan ? m_pEdMan->GetActiveEditor() : 0L;
+    cbEditor* ed = m_pEdMan ? m_pEdMan->GetBuiltinEditor(m_pEdMan->GetActiveEditor()) : 0;
     wxMenuBar* mbar = GetMenuBar();
 
     mbar->Enable(idSearchFind, ed);
@@ -1721,7 +1711,7 @@ void MainFrame::OnToggleStatusBar(wxCommandEvent& event)
 
 void MainFrame::OnFocusEditor(wxCommandEvent& event)
 {
-    cbEditor* ed = m_pEdMan ? m_pEdMan->GetActiveEditor() : 0L;
+    cbEditor* ed = m_pEdMan ? m_pEdMan->GetBuiltinEditor(m_pEdMan->GetActiveEditor()) : 0;
     if (ed)
         ed->GetControl()->SetFocus();
 }

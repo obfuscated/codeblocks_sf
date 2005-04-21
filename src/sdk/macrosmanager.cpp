@@ -130,7 +130,7 @@ void MacrosManager::ReplaceMacros(wxString& buffer)
 		buffer.Replace("${ALL_PROJECT_FILES}", wxEmptyString);
 	}
 
-	cbEditor* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
+	EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
 	if (editor)
 		buffer.Replace("${ACTIVE_EDITOR_FILENAME}", UnixFilename(editor->GetFilename()));
 	else

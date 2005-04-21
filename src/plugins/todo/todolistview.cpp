@@ -128,7 +128,7 @@ void ToDoListView::Parse()
 		case 0: // current file only
 		{
 			// this is the easiest selection ;)
-			cbEditor* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
+            cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(Manager::Get()->GetEditorManager()->GetActiveEditor());
 			ParseEditor(ed);
 			break;
 		}
@@ -137,7 +137,7 @@ void ToDoListView::Parse()
 			// easy too; parse all open editor files...
 			for (int i = 0; i < Manager::Get()->GetEditorManager()->GetEditorsCount(); ++i)
 			{
-				cbEditor* ed = Manager::Get()->GetEditorManager()->GetEditor(i);
+                cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(Manager::Get()->GetEditorManager()->GetEditor(i));
 				ParseEditor(ed);
 			}
 			break;
@@ -154,7 +154,7 @@ void ToDoListView::Parse()
 			{
 				ProjectFile* pf = prj->GetFile(i);
 				wxString filename = pf->file.GetFullPath();
-				cbEditor* ed = Manager::Get()->GetEditorManager()->IsOpen(filename);
+                cbEditor* ed = Manager::Get()->GetEditorManager()->IsBuiltinOpen(filename);
 				if (ed)
 					ParseEditor(ed);
 				else

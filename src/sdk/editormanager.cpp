@@ -40,6 +40,7 @@
 #include "confirmreplacedlg.h"
 #include "projectbuildtarget.h"
 #include "cbproject.h"
+#include "cbeditor.h"
 #include "globals.h"
 #include "managerproxy.h"
 #include "xtra_classes.h"
@@ -91,7 +92,6 @@ void EditorManager::Free()
 EditorManager::EditorManager(wxWindow* parent)
     : //wxNotebook(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize,  wxNO_FULL_REPAINT_ON_RESIZE | wxNB_MULTILINE | wxCLIP_CHILDREN),
 	m_LastFindReplaceData(0L),
-	m_IntfType(eitTabbed),
     m_pImages(0L),
     m_pTree(0L),
     m_LastActiveFile(""),
@@ -118,15 +118,15 @@ EditorManager::~EditorManager()
 	if (m_LastFindReplaceData)
 		delete m_LastFindReplaceData;
     if (m_pTree)
-        { 
+    { 
             delete m_pTree;
             m_pTree = 0L;
-        }
+    }
     if (m_pImages)
-        {
+    {
             delete m_pImages;
             m_pImages = 0L;
-        }
+    }
     // free-up any memory used for editors
     m_EditorsList.DeleteContents(true); // Set this to false to preserve
     m_EditorsList.Clear();              // linked data.
@@ -153,35 +153,42 @@ void EditorManager::Configure()
     	// tell all open editors to re-create their styles
 		for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext())
 		{
-        	cbEditor* ed = node->GetData();
-            ed->SetEditorStyle();
+        	cbEditor* ed = InternalGetBuiltinEditor(node);
+        	if (ed)
+                ed->SetEditorStyle();
         }
     }
 }
 
-cbEditor* EditorManager::IsOpen(const wxString& filename)
+cbEditor* EditorManager::InternalGetBuiltinEditor(EditorsList::Node* node)
+{
+    EditorBase* eb = node->GetData();
+    if (eb && eb->IsBuiltinEditor())
+        return (cbEditor*)eb;
+    return 0;
+}
+
+cbEditor* EditorManager::GetBuiltinEditor(EditorBase* eb)
+{
+    return eb && eb->IsBuiltinEditor() ? (cbEditor*)eb : 0;
+}
+
+EditorBase* EditorManager::IsOpen(const wxString& filename)
 {
     SANITY_CHECK(NULL);
 	wxString uFilename = UnixFilename(filename);
 	for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext())
 	{
-        cbEditor* ed = node->GetData();
-        wxString fname = ed->GetFilename();
+        EditorBase* eb = node->GetData();
+        wxString fname = eb->GetFilename();
         if (fname.IsSameAs(uFilename) || fname.IsSameAs(EDITOR_MODIFIED + uFilename))
-            return ed;
+            return eb;
 	}
 
 	return NULL;
 }
 
-void EditorManager::SetEditorInterfaceType(const EditorInterfaceType& _type)
-{
-    SANITY_CHECK();
-	m_IntfType = _type;
-	// we should re-create all editors here...
-}
-
-cbEditor* EditorManager::GetEditor(int index)
+EditorBase* EditorManager::GetEditor(int index)
 {
     SANITY_CHECK(0L);
 	EditorsList::Node* node = m_EditorsList.Item(index);
@@ -201,8 +208,9 @@ void EditorManager::SetColorSet(EditorColorSet* theme)
 
 	for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext())
 	{
-        cbEditor* ed = node->GetData();
-		ed->SetColorSet(m_Theme);
+        cbEditor* ed = InternalGetBuiltinEditor(node);
+        if (ed)
+            ed->SetColorSet(m_Theme);
 	}
 }
 
@@ -220,13 +228,22 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos,ProjectFile* dat
     // WARNING: remember to set it to true, when exiting this function!!!
     s_CanShutdown = false;
 
-    cbEditor* ed = IsOpen(fname);
+    EditorBase* eb = IsOpen(fname);
+    cbEditor* ed = 0;
+    if (eb)
+    {
+        if (eb->IsBuiltinEditor())
+            ed = (cbEditor*)eb;
+        else
+            return 0; // is open but not a builtin editor
+    }
+
     if (!ed)
     {
         ed = new cbEditor(Manager::Get()->GetAppWindow(), fname, m_Theme);
         if (ed->IsOK())
         {
-            m_EditorsList.Append(ed);
+            AddEditorBase(ed);
 #if 0
             int pos = ed->GetControl()->PositionFromLine(line);
             pos += col;
@@ -306,15 +323,15 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos,ProjectFile* dat
     return ed;
 }
 
-cbEditor* EditorManager::GetActiveEditor()
+EditorBase* EditorManager::GetActiveEditor()
 {
     SANITY_CHECK(0L);
     wxMDIParentFrame *appwindow =Manager::Get()->GetAppWindow();
     if(!appwindow) return 0; // prevents segfault
-    return static_cast<cbEditor*>(appwindow->GetActiveChild());
+    return static_cast<EditorBase*>(appwindow->GetActiveChild());
 }
 
-void EditorManager::SetActiveEditor(cbEditor* ed)
+void EditorManager::SetActiveEditor(EditorBase* ed)
 {
     SANITY_CHECK();
     if (ed)
@@ -339,7 +356,7 @@ cbEditor* EditorManager::New()
     ed->GetControl()->SetText(code);
 
 	ed->SetColorSet(m_Theme);
-    m_EditorsList.Append(ed);
+    AddEditorBase(ed);
     #ifdef USE_OPENFILES_TREE
     AddFiletoTree(ed);
     #endif
@@ -348,12 +365,40 @@ cbEditor* EditorManager::New()
     return ed;
 }
 
+void EditorManager::AddCustomEditor(EditorBase* eb)
+{
+    SANITY_CHECK();
+    AddEditorBase(eb);
+}
+
+void EditorManager::RemoveCustomEditor(EditorBase* eb)
+{
+    SANITY_CHECK();
+    RemoveEditorBase(eb);
+}
+
+void EditorManager::AddEditorBase(EditorBase* eb)
+{
+    SANITY_CHECK();
+    if (!m_EditorsList.Find(eb))
+        m_EditorsList.Append(eb);
+}
+
+void EditorManager::RemoveEditorBase(EditorBase* eb)
+{
+    SANITY_CHECK();
+    if (m_EditorsList.Find(eb))
+        m_EditorsList.DeleteObject(eb);
+}
+
 bool EditorManager::UpdateProjectFiles(cbProject* project)
 {
     SANITY_CHECK(false);
 	for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext())
 	{
-        cbEditor* ed = node->GetData();
+        cbEditor* ed = InternalGetBuiltinEditor(node);
+        if (!ed)
+            continue;
 		ProjectFile* pf = ed->GetProjectFile();
 		if (!pf)
 			continue;
@@ -378,15 +423,15 @@ bool EditorManager::QueryCloseAll()
 	EditorsList::Node* node = m_EditorsList.GetFirst();
     while (node)
 	{
-        cbEditor* ed = node->GetData();
-        if(ed && !QueryClose(ed))
+        EditorBase* eb = node->GetData();
+        if(eb && !QueryClose(eb))
             return false; // aborted
         node = node->GetNext();
     }
     return true;
 }
 
-bool EditorManager::CloseAllExcept(cbEditor* editor,bool dontsave)
+bool EditorManager::CloseAllExcept(EditorBase* editor,bool dontsave)
 {
     if(!editor)
         SANITY_CHECK(true);
@@ -395,21 +440,23 @@ bool EditorManager::CloseAllExcept(cbEditor* editor,bool dontsave)
     int count = m_EditorsList.GetCount();
 	EditorsList::Node* node = m_EditorsList.GetFirst();
     if(!dontsave)
-    while (node)
-	{
-        cbEditor* ed = node->GetData();
-        if(ed && ed != editor && !QueryClose(ed))
-            return false; // aborted
-        node = node->GetNext();
+    {
+        while (node)
+        {
+            EditorBase* eb = node->GetData();
+            if(eb && eb != editor && !QueryClose(eb))
+                return false; // aborted
+            node = node->GetNext();
+        }
     }
     
     count = m_EditorsList.GetCount();
     node = m_EditorsList.GetFirst();
     while (node)
 	{
-        cbEditor* ed = node->GetData();
+        EditorBase* eb = node->GetData();
         EditorsList::Node* next = node->GetNext();
-        if (ed && ed != editor && Close(ed,true))
+        if (eb && eb != editor && Close(eb, true))
         {
             node = next;
             --count;
@@ -429,22 +476,28 @@ bool EditorManager::CloseActive(bool dontsave)
     return Close(GetActiveEditor(),dontsave);
 }
 
-bool EditorManager::QueryClose(cbEditor *editor)
+bool EditorManager::QueryClose(EditorBase *editor)
 {
     if(!editor) 
         return true;
-    if (editor->GetModified())
+    cbEditor* ed = editor->IsBuiltinEditor() ? (cbEditor*)editor : 0;
+    if (ed && ed->GetModified())
     {
+// TODO (mandrav#1#): Move this in cbEditor
         wxString msg;
-        msg.Printf(_("File %s is modified...\nDo you want to save the changes?"), editor->GetFilename().c_str());
+        msg.Printf(_("File %s is modified...\nDo you want to save the changes?"), ed->GetFilename().c_str());
         switch (wxMessageBox(msg, _("Save file"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
         {
-            case wxYES:     if (!editor->Save())
+            case wxYES:     if (!ed->Save())
                                 return false;
                             break;
             case wxNO:      break;
             case wxCANCEL:  return false;
         }
+    }
+    else
+    {
+        return editor->QueryClose();
     }
     return true;
 }
@@ -452,11 +505,10 @@ bool EditorManager::QueryClose(cbEditor *editor)
 bool EditorManager::Close(const wxString& filename,bool dontsave)
 {
     SANITY_CHECK(false);
-    cbEditor* ed = IsOpen(filename);
-    return Close(ed,dontsave);
+    return Close(IsOpen(filename),dontsave);
 }
 
-bool EditorManager::Close(cbEditor* editor,bool dontsave)
+bool EditorManager::Close(EditorBase* editor,bool dontsave)
 {
     SANITY_CHECK(false);
     if (editor)
@@ -464,15 +516,21 @@ bool EditorManager::Close(cbEditor* editor,bool dontsave)
 		EditorsList::Node* node = m_EditorsList.Find(editor);
 		if (node)
 		{
-            if(!dontsave)
-                if(!QueryClose(editor))
-                    return false;
-			#ifdef USE_OPENFILES_TREE
-			DeleteFilefromTree(editor->GetFilename());
-			#endif
-			editor->Destroy();
-			m_EditorsList.DeleteNode(node);			
-			return true;
+            if (editor->IsBuiltinEditor())
+            {
+                cbEditor* ed = (cbEditor*)editor;
+                if(!dontsave)
+                    if(!QueryClose(ed))
+                        return false;
+                #ifdef USE_OPENFILES_TREE
+                DeleteFilefromTree(ed->GetFilename());
+                #endif
+                ed->Destroy();
+                m_EditorsList.DeleteNode(node);			
+                return true;
+			}
+			else
+                return editor->Close();
 		}
 	}
     return true;
@@ -486,8 +544,7 @@ bool EditorManager::Close(int index,bool dontsave)
 	{
 		if (i == index)
 		{
-			cbEditor* ed = node->GetData();
-			return Close(ed,dontsave);
+            return Close(node->GetData(),dontsave);
 		}
 	}
 	return false;
@@ -496,7 +553,7 @@ bool EditorManager::Close(int index,bool dontsave)
 bool EditorManager::Save(const wxString& filename)
 {
     SANITY_CHECK(false);
-    cbEditor* ed = IsOpen(filename);
+    cbEditor* ed = GetBuiltinEditor(IsOpen(filename));
     if (ed)
         return ed->Save();
     return true;
@@ -510,8 +567,9 @@ bool EditorManager::Save(int index)
 	{
 		if (i == index)
 		{
-			cbEditor* ed = node->GetData();
-            return ed->Save();
+			cbEditor* ed = InternalGetBuiltinEditor(node);
+			if (ed)
+                return ed->Save();
 		}
 	}
 	return false;
@@ -520,15 +578,16 @@ bool EditorManager::Save(int index)
 bool EditorManager::SaveActive()
 {
     SANITY_CHECK(false);
-	if (GetActiveEditor())
-		return GetActiveEditor()->Save();
+    cbEditor* ed = GetBuiltinEditor(GetActiveEditor());
+	if (ed)
+		return ed->Save();
 	return true;
 }
 
 bool EditorManager::SaveAs(int index)
 {
     SANITY_CHECK(false);
-	cbEditor *ed = GetEditor(index);
+    cbEditor* ed = GetBuiltinEditor(GetEditor(index));
 	if(!ed)
         return false;
     wxString oldname=ed->GetFilename();
@@ -541,9 +600,9 @@ bool EditorManager::SaveAs(int index)
 bool EditorManager::SaveActiveAs()
 {
     SANITY_CHECK(false);
-	if (GetActiveEditor())
+    cbEditor* ed = GetBuiltinEditor(GetActiveEditor());
+	if (ed)
     {
-        cbEditor *ed=GetActiveEditor();
         wxString oldname=ed->GetFilename();
         if(ed->SaveAs())
             RenameTreeFile(oldname,ed->GetFilename());
@@ -557,8 +616,8 @@ bool EditorManager::SaveAll()
 	EditorsList::Node* node = m_EditorsList.GetFirst();
     while (node)
 	{
-        cbEditor* ed = node->GetData();
-        if (!ed->Save())
+        cbEditor* ed = InternalGetBuiltinEditor(node);
+        if (ed && !ed->Save())
 		{
 			wxString msg;
 			msg.Printf(_("File %s could not be saved..."), ed->GetFilename().c_str());
@@ -578,7 +637,7 @@ void EditorManager::Print(PrintScope ps, PrintColorMode pcm)
         {
             for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext())
             {
-                cbEditor* ed = node->GetData();
+                cbEditor* ed = InternalGetBuiltinEditor(node);
                 if (ed)
                     ed->Print(false, pcm);
                     
@@ -587,33 +646,12 @@ void EditorManager::Print(PrintScope ps, PrintColorMode pcm)
         }
         default:
         {
-            cbEditor* ed = GetActiveEditor();
+            cbEditor* ed = GetBuiltinEditor(GetActiveEditor());
             if (ed)
                 ed->Print(ps == psSelection, pcm);
             break;
         }
     }
-}
-
-void EditorManager::UpdateEditorIndices()
-{
-    SANITY_CHECK();
-#if 0
-	for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext())
-	{
-        cbEditor* ed = node->GetData();
-        // for each node, find the respective notebook panel
-        for (int i = 0; i < GetPageCount(); ++i)
-        {
-            if (GetPageText(i).IsSameAs(ed->GetShortName()) ||
-                GetPageText(i).IsSameAs(EDITOR_MODIFIED + ed->GetShortName()))
-            {
-                ed->SetPageIndex(i);
-                break;
-            }
-        }
-	}
-#endif
 }
 
 void EditorManager::CheckForExternallyModifiedFiles()
@@ -623,7 +661,9 @@ void EditorManager::CheckForExternallyModifiedFiles()
     wxArrayString failedFiles; // list of files failed to reload
 	for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext())
 	{
-        cbEditor* ed = node->GetData();
+        cbEditor* ed = InternalGetBuiltinEditor(node);
+        if (!ed)
+            continue;
         wxFileName fname(ed->GetFilename());
         wxDateTime last = fname.GetModificationTime();
         if (!last.IsEqualTo(ed->GetLastModificationTime()))
@@ -661,7 +701,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
 bool EditorManager::SwapActiveHeaderSource()
 {
     SANITY_CHECK(false);
-    cbEditor* ed = GetActiveEditor();
+    cbEditor* ed = GetBuiltinEditor(GetActiveEditor());
     if (!ed)
         return false;
 
@@ -764,7 +804,7 @@ bool EditorManager::SwapActiveHeaderSource()
 int EditorManager::ShowFindDialog(bool replace)
 {
     SANITY_CHECK(-1);
-	cbEditor* ed = GetActiveEditor();
+	cbEditor* ed = GetBuiltinEditor(GetActiveEditor());
 	if (!ed)
 		return -1;
 		
@@ -1025,8 +1065,9 @@ int EditorManager::Find(cbEditor* editor, cbFindReplaceData* data)
         }
         else
         {
-            if ((data->directionDown && start != 0) ||
-                (!data->directionDown && start != control->GetLength()))
+            if (!data->scopeSelectedText &&
+                ((data->directionDown && start != 0) ||
+                (!data->directionDown && start != control->GetLength())))
             {
                 wxString msg;
                 if (data->directionDown)
@@ -1065,7 +1106,8 @@ int EditorManager::Find(cbEditor* editor, cbFindReplaceData* data)
 int EditorManager::FindNext(bool goingDown)
 {
     SANITY_CHECK(-1);
-	if (!m_LastFindReplaceData || !GetActiveEditor())
+    cbEditor* ed = GetBuiltinEditor(GetActiveEditor());
+	if (!m_LastFindReplaceData || !ed)
 		return -1;
 	
 	if (!goingDown && m_LastFindReplaceData->directionDown)
@@ -1077,9 +1119,9 @@ int EditorManager::FindNext(bool goingDown)
 	// when going down, no need to add the search-text length, because the cursor
 	// is already positioned at the end of the word...
 	int multi = goingDown ? 0 : -1;
-	m_LastFindReplaceData->start = GetActiveEditor()->GetControl()->GetCurrentPos();
+	m_LastFindReplaceData->start = ed->GetControl()->GetCurrentPos();
 	m_LastFindReplaceData->start += multi * (m_LastFindReplaceData->findText.Length() + 1);
-	return Find(GetActiveEditor(), m_LastFindReplaceData);
+	return Find(ed, m_LastFindReplaceData);
 }
 
 #ifdef USE_OPENFILES_TREE
@@ -1243,7 +1285,7 @@ bool EditorManager::RenameTreeFile(const wxString& oldname, const wxString& newn
         if(filename!=oldname)
             continue;
         data->SetFullName(newname);
-        cbEditor *ed=GetEditor(filename);
+        cbEditor *ed=GetBuiltinEditor(GetEditor(filename));
         if(ed)
         {
             shortname=ed->GetShortName();
@@ -1322,7 +1364,7 @@ void EditorManager::RebuildOpenedFilesTree(wxTreeCtrl *tree)
     tree->Freeze();
     for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext())
     {
-        cbEditor* ed = node->GetData();
+        cbEditor* ed = InternalGetBuiltinEditor(node);
         if(!ed)
             continue;
         wxString shortname=ed->GetShortName();
@@ -1348,7 +1390,7 @@ void EditorManager::RefreshOpenedFilesTree(bool force)
     if(!tree)
         return;
     wxString fname;
-    cbEditor *aed=GetActiveEditor();
+    cbEditor *aed=GetBuiltinEditor(GetActiveEditor());
     if(!aed)
         return;
     bool ismodif=aed->GetModified();
@@ -1369,7 +1411,7 @@ void EditorManager::RefreshOpenedFilesTree(bool force)
         if(data)
         {
             filename=data->GetFullName();
-            cbEditor *ed=GetEditor(filename);
+            cbEditor *ed=GetBuiltinEditor(GetEditor(filename));
             if(ed)
             {
                 shortname=ed->GetShortName();

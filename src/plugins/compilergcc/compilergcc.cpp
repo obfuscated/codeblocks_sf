@@ -1280,7 +1280,7 @@ void CompilerGCC::OnCompileFile(wxCommandEvent& event)
     }
     else
     {
-        cbEditor* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
+        cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
         if (ed)
         {
             // make sure it is saved
@@ -1520,7 +1520,7 @@ void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
     static bool toolflag,toolflag2;
     bool tmpflag,tmpflag2;
 	cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-	cbEditor* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     wxMenuBar* mbar = Manager::Get()->GetAppWindow()->GetMenuBar();
     if (mbar)
     {		

@@ -6,6 +6,7 @@
 #include "projectmanager.h"
 #include "messagemanager.h"
 #include "editormanager.h"
+#include "cbeditor.h"
 #include "cbproject.h"
 #include "projectlayoutloader.h"
 #include "tinyxml/tinyxml.h"
@@ -108,8 +109,9 @@ bool ProjectLayoutLoader::Save(const wxString& filename)
     buffer << "<Code::Blocks_layout_file>" << '\n';
 
 	ProjectFile* active = 0L;
-	if (Manager::Get()->GetEditorManager()->GetActiveEditor())
-		active = Manager::Get()->GetEditorManager()->GetActiveEditor()->GetProjectFile();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+	if (ed)
+		active = ed->GetProjectFile();
 
 	int count = m_pProject->GetFilesCount();
 	for (int i = 0; i < count; ++i)

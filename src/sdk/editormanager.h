@@ -10,25 +10,21 @@
 // New Feature: Opened Files tree in Projects tab
 #define USE_OPENFILES_TREE
 
-#include "cbeditor.h"
+#include "editorbase.h"
 #include "cbproject.h"
 #include "printing_types.h"
 
 extern int ID_EditorManager;
 
-enum EditorInterfaceType
-{
-    eitTabbed = 0,
-    eitMDI
-};
 
-WX_DECLARE_LIST(cbEditor, EditorsList);
+WX_DECLARE_LIST(EditorBase, EditorsList);
 
 // forward decls
 class wxMenuBar;
 class wxNotebook;
 class EditorColorSet;
 class cbProject;
+class cbEditor;
 
 #ifdef USE_OPENFILES_TREE
 class MiscTreeItemData;
@@ -74,30 +70,43 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         void ReleaseMenu(wxMenuBar* menuBar);
         void Configure();        
         int GetEditorsCount(){ return m_EditorsList.GetCount(); }
-        cbEditor* GetEditor(int index);
-        cbEditor* GetEditor(const wxString& filename){ return IsOpen(filename); } // synonym of IsOpen()
-        cbEditor* IsOpen(const wxString& filename);
+
+        EditorBase* IsOpen(const wxString& filename);
         cbEditor* Open(const wxString& filename, int pos = 0,ProjectFile* data = 0);
-        cbEditor* GetActiveEditor();
-        void SetActiveEditor(cbEditor* ed);
+        EditorBase* GetEditor(int index);
+        EditorBase* GetEditor(const wxString& filename){ return IsOpen(filename); } // synonym of IsOpen()
+        EditorBase* GetActiveEditor();
+        cbEditor* GetBuiltinEditor(EditorBase* eb);
+
+        // "overloaded" functions for easier access
+        // they all return a cbEditor pointer if the editor is builtin, or NULL
+        cbEditor* IsBuiltinOpen(const wxString& filename){ return GetBuiltinEditor(IsOpen(filename)); }
+        cbEditor* GetBuiltinEditor(int index){ return GetBuiltinEditor(GetEditor(index)); }
+        cbEditor* GetBuiltinEditor(const wxString& filename){ return IsBuiltinOpen(filename); } // synonym of IsBuiltinOpen()
+        cbEditor* GetBuiltinActiveEditor(){ return GetBuiltinEditor(GetActiveEditor()); }
+
+        void SetActiveEditor(EditorBase* ed);
         EditorColorSet* GetColorSet(){ return (this==NULL) ? 0 : m_Theme; }
         void SetColorSet(EditorColorSet* theme);
-        const EditorInterfaceType& GetEditorInterfaceType(){ return m_IntfType; }
-        void SetEditorInterfaceType(const EditorInterfaceType& _type);
         cbEditor* New();
+        
+        // these are used *only* for custom editors
+        void AddCustomEditor(EditorBase* eb);
+        void RemoveCustomEditor(EditorBase* eb);
+
         bool UpdateProjectFiles(cbProject* project);
         bool SwapActiveHeaderSource();
         bool CloseActive(bool dontsave = false);
         bool Close(const wxString& filename,bool dontsave = false);
-        bool Close(cbEditor* editor,bool dontsave = false);
+        bool Close(EditorBase* editor,bool dontsave = false);
         bool Close(int index,bool dontsave = false);
 
         // If file is modified, queries to save (yes/no/cancel). 
         // Returns false on "cancel".
-        bool QueryClose(cbEditor *editor);
+        bool QueryClose(EditorBase* editor);
         bool QueryCloseAll();
         bool CloseAll(bool dontsave=false);
-        bool CloseAllExcept(cbEditor* editor,bool dontsave=false);
+        bool CloseAllExcept(EditorBase* editor,bool dontsave=false);
         bool Save(const wxString& filename);
         bool Save(int index);
         bool SaveActive();
@@ -138,6 +147,11 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         void OnTreeItemRightClick(wxTreeEvent &event);
         
     protected:
+        // m_EditorsList access
+        void AddEditorBase(EditorBase* eb);
+        void RemoveEditorBase(EditorBase* eb);
+        cbEditor* InternalGetBuiltinEditor(EditorsList::Node* node);
+
         #ifdef USE_OPENFILES_TREE
         void DeleteItemfromTree(wxTreeItemId item);
         void DeleteFilefromTree(const wxString& filename);
@@ -151,12 +165,10 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         static void Free();
         EditorManager(wxWindow* parent);
         ~EditorManager();
-        void UpdateEditorIndices();
         void CalculateFindReplaceStartEnd(cbEditor* editor, cbFindReplaceData* data);
         EditorsList m_EditorsList;
         cbFindReplaceData* m_LastFindReplaceData;
         EditorColorSet* m_Theme;
-        EditorInterfaceType m_IntfType;
         #ifdef USE_OPENFILES_TREE
         wxImageList* m_pImages;
         wxTreeCtrl* m_pTree;

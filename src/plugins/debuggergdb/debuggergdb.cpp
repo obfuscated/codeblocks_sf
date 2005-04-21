@@ -602,7 +602,7 @@ void DebuggerGDB::CmdStep()
 
 void DebuggerGDB::CmdRunToCursor()
 {
-	cbEditor* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 	if (!ed)
 		return;
 	
@@ -627,7 +627,7 @@ void DebuggerGDB::CmdRunToCursor()
 void DebuggerGDB::CmdToggleBreakpoint()
 {
 	ClearActiveMarkFromAllEditors();
-	cbEditor* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 	if (!ed)
 		return;
 	ed->MarkerToggle(BREAKPOINT_MARKER);
@@ -787,8 +787,9 @@ void DebuggerGDB::ClearActiveMarkFromAllEditors()
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
 	for (int i = 0; i < edMan->GetEditorsCount(); ++i)
 	{
-		cbEditor* ed = edMan->GetEditor(i);
-		ed->MarkLine(ACTIVE_LINE, -1);
+        cbEditor* ed = edMan->GetBuiltinEditor(i);
+        if (ed)
+            ed->MarkLine(ACTIVE_LINE, -1);
 	}
 }
 
@@ -829,7 +830,7 @@ void DebuggerGDB::SyncEditor(const wxString& filename, int line)
 
 wxString DebuggerGDB::GetEditorWordAtCaret()
 {
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (!ed)
         return "";
     int start = ed->GetControl()->WordStartPosition(ed->GetControl()->GetCurrentPos(), true);
@@ -846,7 +847,7 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
     bool tmpflags[3];
 
 	cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-	cbEditor* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     wxMenuBar* mbar = Manager::Get()->GetAppWindow()->GetMenuBar();
     if (mbar)
     {

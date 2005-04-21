@@ -123,8 +123,7 @@ END_EVENT_TABLE()
 
 // class constructor
 cbEditor::cbEditor(wxMDIParentFrame* parent, const wxString& filename, EditorColorSet* theme)
-    : wxMDIChildFrame(parent, -1, filename, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE | wxDEFAULT_FRAME_STYLE | wxCLIP_CHILDREN),
-    m_pParent(parent),
+    : EditorBase(parent, filename),
 	m_pControl(0L),
 	m_Modified(false),
 	m_Index(-1),
@@ -132,6 +131,10 @@ cbEditor::cbEditor(wxMDIParentFrame* parent, const wxString& filename, EditorCol
 	m_pTheme(theme),
 	m_ActiveCalltipsNest(0)
 {
+    // first thing to do!
+    // if we add more constructors in the future, don't forget to set this!
+    m_IsBuiltinEditor = true;
+
     m_timerWait.SetOwner(this);
     if (filename.IsEmpty())
     	m_Filename = wxGetCwd() + wxFileName::GetPathSeparator() + CreateUniqueFilename();
@@ -147,12 +150,6 @@ cbEditor::cbEditor(wxMDIParentFrame* parent, const wxString& filename, EditorCol
 	SetEditorStyle();
 	m_IsOK = Open();
 
-/*	if (Manager::Get()->GetEditorManager()->GetEditorInterfaceType() == eitTabbed)
-	{
-		((wxNotebook*)m_pParent)->AddPage(this, m_Shortname);
-		m_Index = ((wxNotebook*)m_pParent)->GetPageCount()-1;
-	}*/
-    
     // if !m_IsOK then it's a new file, so set the modified flag ON
     if (!m_IsOK && filename.IsEmpty())
     {
@@ -204,10 +201,7 @@ void cbEditor::SetModified(bool modified)
 
 void cbEditor::SetEditorTitle(const wxString& title)
 {
-	if (Manager::Get()->GetEditorManager()->GetEditorInterfaceType() == eitTabbed && m_pParent)
-		((wxNotebook*)m_pParent)->SetPageText(m_Index, title);
-	else
-		SetTitle(title);
+    SetTitle(title);
 }
 
 void cbEditor::SetProjectFile(ProjectFile* project_file,bool preserve_modified)
@@ -237,7 +231,6 @@ void cbEditor::SetProjectFile(ProjectFile* project_file,bool preserve_modified)
 	dbg << "[ed] Filename: " << GetFilename() << '\n';
 	dbg << "[ed] Short name: " << GetShortName() << '\n';
 	dbg << "[ed] Modified: " << GetModified() << '\n';
-	dbg << "[ed] Page index: " << GetPageIndex() << '\n';
 	dbg << "[ed] Project: " << ((m_pProjectFile && m_pProjectFile->project) ? m_pProjectFile->project->GetTitle() : "unknown") << '\n';
 	dbg << "[ed] Project file: " << (m_pProjectFile ? m_pProjectFile->relativeFilename : "unknown") << '\n';
 	Manager::Get()->GetMessageManager()->DebugLog(dbg);
@@ -766,8 +759,8 @@ void cbEditor::DisplayContextMenu(const wxPoint& position)
     m_SwitchTo.clear();
     for (int i = 0; i < Manager::Get()->GetEditorManager()->GetEditorsCount(); ++i)
     {
-        cbEditor* other = Manager::Get()->GetEditorManager()->GetEditor(i);
-        if (other == this)
+        cbEditor* other = Manager::Get()->GetEditorManager()->GetBuiltinEditor(i);
+        if (!other || other == this)
             continue;
         
         int id = wxNewId();

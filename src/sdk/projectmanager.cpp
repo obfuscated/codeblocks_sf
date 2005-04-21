@@ -369,7 +369,7 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
 			int idx = ftd->GetFileIndex();
 			ProjectFile* pf = ftd->GetProject()->GetFile(idx);
 			// is it already open in the editor?
-			cbEditor* ed = Manager::Get()->GetEditorManager()->IsOpen(pf->file.GetFullPath());
+            EditorBase* ed = Manager::Get()->GetEditorManager()->IsOpen(pf->file.GetFullPath());
 			
 			if (ed)
 			{
@@ -1030,14 +1030,15 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
 	if (ft == ftHeader ||
 		ft == ftSource)
 	{
-		cbEditor* ed = Manager::Get()->GetEditorManager()->Open(filename);
-		if (ed)
-		{
-			ed->SetProjectFile(pf);
-			ed->Show(true);
-		}
-		else
-		{
+        // C/C++ header/source files, always get opened inside Code::Blocks
+        cbEditor* ed = Manager::Get()->GetEditorManager()->Open(filename);
+        if (ed)
+        {
+            ed->SetProjectFile(pf);
+            ed->Show(true);
+        }
+        else
+        {
             wxString msg;
             msg.Printf(_("Failed to open '%s'."), filename.c_str());
             Manager::Get()->GetMessageManager()->DebugLogError(msg);
@@ -1045,6 +1046,16 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
 	}
 	else
 	{
+        // first look for custom editors
+        // if that fails, try MIME handlers
+		EditorBase* eb = Manager::Get()->GetEditorManager()->IsOpen(filename);
+		if (eb && !eb->IsBuiltinEditor())
+		{
+            // custom editors just get activated
+            eb->Activate();
+            return;
+        }
+
 		// not a recognized file type
         cbMimePlugin* plugin = Manager::Get()->GetPluginManager()->GetMIMEHandlerForFile(filename);
         if (!plugin || plugin->OpenFile(filename) != 0)
@@ -1395,7 +1406,7 @@ void ProjectManager::OnProperties(wxCommandEvent& event)
     }
     else // active editor properties
     {
-        cbEditor* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
+        cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
         if (ed)
         {
             ProjectFile* pf = ed->GetProjectFile();

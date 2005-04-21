@@ -86,7 +86,7 @@ int AStylePlugin::Execute()
 {
     if (!IsAttached())
         return -1;
-	cbEditor* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (!ed)
         return 0;
     wxString edText = ed->GetControl()->GetText();

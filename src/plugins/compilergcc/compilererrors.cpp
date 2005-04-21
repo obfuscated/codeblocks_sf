@@ -168,8 +168,9 @@ void CompilerErrors::DoClearErrorMarkFromAllEditors()
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
 	for (int i = 0; i < edMan->GetEditorsCount(); ++i)
 	{
-		cbEditor* ed = edMan->GetEditor(i);
-		ed->MarkLine(ERROR_LINE, -1);
+        cbEditor* ed = edMan->GetBuiltinEditor(i);
+        if (ed)
+            ed->MarkLine(ERROR_LINE, -1);
 	}
 }
 

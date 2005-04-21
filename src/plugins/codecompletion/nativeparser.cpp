@@ -301,7 +301,8 @@ cbProject* NativeParser::FindProjectFromActiveEditor()
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
     if (!edMan)
     	return 0L;
-	return FindProjectFromEditor(edMan->GetActiveEditor());
+    cbEditor* ed = edMan->GetBuiltinActiveEditor();
+	return FindProjectFromEditor(ed);
 }
 
 Parser* NativeParser::FindParserFromEditor(cbEditor* editor)
@@ -321,12 +322,13 @@ Parser* NativeParser::FindParserFromActiveEditor()
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
     if (!edMan)
     	return 0L;
-	return FindParserFromEditor(edMan->GetActiveEditor());
+    cbEditor* ed = edMan->GetBuiltinActiveEditor();
+	return FindParserFromEditor(ed);
 }	
 
 int NativeParser::MarkItemsByAI(bool reallyUseAI)
 {
-	cbEditor* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 	if (!ed)
 		return 0;
 
@@ -432,7 +434,7 @@ const wxArrayString& NativeParser::GetCallTips()
 {
     m_CallTips.Clear();
 
-	cbEditor* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 	if (!ed)
 		return m_CallTips;
 

@@ -216,7 +216,7 @@ int CodeCompletion::CodeComplete()
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
     if (!edMan)
 		return -2;
-    cbEditor* ed = edMan->GetActiveEditor();
+    cbEditor* ed = edMan->GetBuiltinActiveEditor();
     if (!ed)
 		return -3;
 
@@ -252,7 +252,7 @@ void CodeCompletion::CodeCompleteIncludes()
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
     if (!edMan)
 		return;
-    cbEditor* ed = edMan->GetActiveEditor();
+    cbEditor* ed = edMan->GetBuiltinActiveEditor();
     if (!ed)
 		return;
 
@@ -336,7 +336,7 @@ void CodeCompletion::ShowCallTip()
 	if (!Manager::Get()->GetEditorManager())
 		return;
 		
-	cbEditor* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 	if (!ed)
 		return;
 	
@@ -363,7 +363,7 @@ int CodeCompletion::DoClassMethodDeclImpl()
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
     if (!edMan)
 		return -2;
-    cbEditor* ed = edMan->GetActiveEditor();
+    cbEditor* ed = edMan->GetBuiltinActiveEditor();
     if (!ed)
 		return -3;
 
@@ -408,7 +408,7 @@ void CodeCompletion::DoCodeComplete()
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
     if (!edMan)
     	return;
-    cbEditor* ed = edMan->GetActiveEditor();
+    cbEditor* ed = edMan->GetBuiltinActiveEditor();
     if (!ed)
     	return;
 
@@ -437,7 +437,7 @@ void CodeCompletion::DoInsertCodeCompleteToken(wxString tokName)
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
     if (!edMan)
     	return;
-    cbEditor* ed = edMan->GetActiveEditor();
+    cbEditor* ed = edMan->GetBuiltinActiveEditor();
     if (!ed)
     	return;
 
@@ -551,7 +551,7 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
    	if (!edMan)
    		return;
-   	cbEditor* ed = edMan->GetActiveEditor();
+    cbEditor* ed = edMan->GetBuiltinActiveEditor();
    	if (!ed)
 		return;
 

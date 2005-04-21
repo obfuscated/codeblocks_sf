@@ -163,7 +163,7 @@ void ToDoList::SaveTypes()
 
 void ToDoList::OnAddItem(wxCommandEvent& event)
 {
-	cbEditor* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 	if (!ed)
 		return;
 

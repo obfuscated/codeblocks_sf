@@ -11,12 +11,12 @@
 #define ACTIVE_LINE						3
 #define ERROR_LINE						4
 
-#include <wx/frame.h>
 #include <wx/stc/stc.h>
 #include <wx/hashmap.h>
 #include <wx/datetime.h>
 
 #include "settings.h"
+#include "editorbase.h"
 #include "printing_types.h"
 
 // forward decls
@@ -49,9 +49,9 @@ class cbStyledTextCtrl : public wxStyledTextCtrl
   * @note This class descends from wxPanel, so it provides all wxPanel methods
   * as well...
   */
-class DLLIMPORT cbEditor : public wxMDIChildFrame
+class DLLIMPORT cbEditor : public EditorBase
 {
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
     	friend class EditorManager;
 	public:
 		/** cbEditor constructor.
@@ -95,10 +95,6 @@ class DLLIMPORT cbEditor : public wxMDIChildFrame
 		bool GetModified(){ return m_Modified || m_pControl->GetModify(); }
 		/** Set the editor's modification state to \c modified. */
 		void SetModified(bool modified = true);
-		/** Set the editor's page index in the parent wxNotebook */
-		void SetPageIndex(int index){ m_Index = index; }
-		/** Read the editor's page index in the parent wxNotebook */
-		int GetPageIndex(){ return m_Index; }
 		/** Set the ProjectFile pointer associated with this editor. All editors
 		  * which belong to a project file, should have this set. All others should return NULL.
 		  * Optionally you can preserve the "modified" flag of the file.
@@ -208,7 +204,6 @@ class DLLIMPORT cbEditor : public wxMDIChildFrame
 
         // variables
         bool m_IsOK;
-        wxMDIParentFrame* m_pParent;
         cbStyledTextCtrl* m_pControl;
         int m_ID;
 		wxString m_Filename;

@@ -798,7 +798,7 @@ bool cbProject::QueryCloseAllFiles()
     while(node)
     {
         ProjectFile* f = node->GetData();
-        cbEditor* ed = Manager::Get()->GetEditorManager()->IsOpen(f->file.GetFullPath());
+        cbEditor* ed = Manager::Get()->GetEditorManager()->IsBuiltinOpen(f->file.GetFullPath());
         if (ed && ed->GetModified())
         {
             if (!Manager::Get()->GetEditorManager()->QueryClose(ed))
