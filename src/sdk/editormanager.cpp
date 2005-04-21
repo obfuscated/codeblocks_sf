@@ -1008,29 +1008,55 @@ int EditorManager::Find(cbEditor* editor, cbFindReplaceData* data)
 	if (data->regEx)
 		flags |= wxSTC_FIND_REGEXP;
 	
-	int lengthFound = 0;
-	int pos = control->FindText(data->start, data->end, data->findText, flags/*, &lengthFound*/);
-	lengthFound = data->findText.Length();
-	if (pos != -1)
+	int pos = -1;
+	while (true) // loop while not found and user selects to start again from the top
 	{
-		control->GotoPos(pos);
-		control->EnsureVisible(control->LineFromPosition(pos));
-		control->SetSelection(pos, pos + lengthFound);
-//		Manager::Get()->GetMessageManager()->DebugLog("pos=%d, selLen=%d, length=%d", pos, data->end - data->start, lengthFound);
-		data->start = pos;
-	}
-	else
-	{
-        if (start != 0)
+        int lengthFound = 0;
+        pos = control->FindText(data->start, data->end, data->findText, flags/*, &lengthFound*/);
+        lengthFound = data->findText.Length();
+        if (pos != -1)
         {
-            if (wxMessageBox(_("Text not found.\nSearch from the start of the document?"), _("Result"), wxYES_NO | wxICON_QUESTION) == wxYES)
-            {
-                data->start = 0;
-                return Find(editor, data);
-            }
+            control->GotoPos(pos);
+            control->EnsureVisible(control->LineFromPosition(pos));
+            control->SetSelection(pos, pos + lengthFound);
+//            Manager::Get()->GetMessageManager()->DebugLog("pos=%d, selLen=%d, length=%d", pos, data->end - data->start, lengthFound);
+            data->start = pos;
+            break; // done
         }
         else
-            wxMessageBox(_("Text not found"), _("Result"), wxICON_INFORMATION);
+        {
+            if ((data->directionDown && start != 0) ||
+                (!data->directionDown && start != control->GetLength()))
+            {
+                wxString msg;
+                if (data->directionDown)
+                    msg = _("Text not found.\nSearch from the start of the document?");
+                else
+                    msg = _("Text not found.\nSearch from the end of the document?");
+                if (wxMessageBox(msg, _("Result"), wxYES_NO | wxICON_QUESTION) == wxYES)
+                {
+                    if (data->directionDown)
+                    {
+                        data->start = 0;
+                        data->end = control->GetLength();
+                    }
+                    else
+                    {
+                        data->start = control->GetLength();
+                        data->end = 0;
+                    }
+                }
+                else
+                    break; // done
+            }
+            else
+            {
+                wxString msg;
+                msg.Printf(_("Not found: %s"), data->findText.c_str());
+                wxMessageBox(msg, _("Result"), wxICON_INFORMATION);
+                break; // done
+            }
+        }
     }
 	
 	return pos;
@@ -1039,7 +1065,7 @@ int EditorManager::Find(cbEditor* editor, cbFindReplaceData* data)
 int EditorManager::FindNext(bool goingDown)
 {
     SANITY_CHECK(-1);
-	if (!m_LastFindReplaceData)
+	if (!m_LastFindReplaceData || !GetActiveEditor())
 		return -1;
 	
 	if (!goingDown && m_LastFindReplaceData->directionDown)
@@ -1048,7 +1074,9 @@ int EditorManager::FindNext(bool goingDown)
 		m_LastFindReplaceData->end = m_LastFindReplaceData->start;
 
 	m_LastFindReplaceData->directionDown = goingDown;
-	int multi = goingDown ? 1 : -1;
+	// when going down, no need to add the search-text length, because the cursor
+	// is already positioned at the end of the word...
+	int multi = goingDown ? 0 : -1;
 	m_LastFindReplaceData->start = GetActiveEditor()->GetControl()->GetCurrentPos();
 	m_LastFindReplaceData->start += multi * (m_LastFindReplaceData->findText.Length() + 1);
 	return Find(GetActiveEditor(), m_LastFindReplaceData);
