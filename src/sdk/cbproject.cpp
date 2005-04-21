@@ -216,6 +216,7 @@ void cbProject::ClearAllProperties()
 void cbProject::Open()
 {
     m_Loaded = false;
+    m_ProjectFilesMap.clear();
 
 	if (!wxFileName::FileExists(m_Filename))
 	{
@@ -485,15 +486,17 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 //  This saves us a lot of processing when loading large projects.
 //  Remove the if to do the search anyway
 
-    if(!m_CurrentlyLoading)
-    {
-        f = GetFileByFilename(filename, true, true);
-        if (f)
-            return f;
-        f = GetFileByFilename(filename, false, true);
-        if (f)
-            return f;
-    }
+//  NOTE (mandrav#1#): We can't ignore that because even if we can rely on .cbp
+//  containing discrete files, we can't do that for imported projects...
+//  This means we have to search anyway.
+//  NP though, I added a hashmap for fast searches in GetFileByFilename()
+
+    f = GetFileByFilename(filename, true, true);
+    if (f)
+        return f;
+    f = GetFileByFilename(filename, false, true);
+    if (f)
+        return f;
 
     // OK, add file
     f = new ProjectFile;
@@ -567,12 +570,14 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
         CalculateCommonTopLevelPath();        
     }
     SetModified(true);
+    m_ProjectFilesMap[UnixFilename(f->relativeFilename)] = f; // add to hashmap
 	return f;
 }
 
 bool cbProject::RemoveFile(int index)
 {
     ProjectFile* f = m_Files[index];
+    m_ProjectFilesMap.erase(UnixFilename(f->relativeFilename)); // remove from hashmap
     Manager::Get()->GetEditorManager()->Close(f->file.GetFullPath());
     
     FilesList::Node* node = m_Files.Item(index);
@@ -763,23 +768,27 @@ ProjectFile* cbProject::GetFile(int index)
 
 ProjectFile* cbProject::GetFileByFilename(const wxString& filename, bool isRelative, bool isUnixFilename)
 {
-	wxString file = filename;
-    FilesList::Node* node = m_Files.GetFirst();
-    while(node)
+    // m_ProjectFilesMap keeps UnixFilename(ProjectFile::relativeFilename)
+    wxString tmp = filename;
+    if (!isRelative)
     {
-        ProjectFile* f = node->GetData();
-		wxString tmp;
-		if (isRelative)
-			tmp = f->relativeFilename;
-		else
-			tmp = f->file.GetFullPath();
-        if (isUnixFilename)
-            tmp = UnixFilename(tmp);
-		if (tmp == file)
-			return f;
-        node = node->GetNext();
+        // if the search is not relative, make it
+        wxFileName fname(filename);
+        fname.MakeRelativeTo(GetBasePath());
+        tmp = fname.GetFullPath();
     }
-	return 0L;
+    else
+    {
+        // make sure filename doesn't start with ".\"
+        // our own relative files don't have it, so the search would fail
+        // this happens when importing MS projects...
+        if (tmp.StartsWith(".\\"))
+            tmp.Remove(0, 2);
+    }
+
+    if (isUnixFilename)
+        return m_ProjectFilesMap[tmp];
+    return m_ProjectFilesMap[UnixFilename(tmp)];
 }
 
 bool cbProject::QueryCloseAllFiles()

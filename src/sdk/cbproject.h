@@ -2,6 +2,7 @@
 #define DEVPROJECT_H
 
 #include <wx/dynarray.h>
+#include <wx/hashmap.h>
 #include <wx/treectrl.h>
 
 #include "settings.h"
@@ -15,6 +16,8 @@ class ProjectFile;
 class FilesGroupsAndMasks;
 
 WX_DEFINE_ARRAY(ProjectBuildTarget*, BuildTargets);
+// hashmap for fast searches in cbProject::GetFileByFilename()
+WX_DECLARE_STRING_HASH_MAP(ProjectFile*, ProjectFiles);
 
 /* New class: MiscTreeItemData.
  * This class allows a TreeData to be created specifying 
@@ -133,6 +136,9 @@ class DLLIMPORT cbProject : public CompileTargetBase
         bool m_CurrentlyLoading;
         wxString m_CommonTopLevelPath;
         wxString m_BasePath;
+        
+        // hashmap for fast searches in cbProject::GetFileByFilename()
+        ProjectFiles m_ProjectFilesMap; // keeps UnixFilename(ProjectFile::relativeFilename)
 };
 
 #endif // DEVPROJECT_H
