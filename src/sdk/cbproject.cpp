@@ -55,7 +55,8 @@ cbProject::cbProject(const wxString& filename)
     m_Makefile(""),
     m_CustomMakefile(false),
     m_Loaded(false),
-    m_CurrentlyLoading(false)
+    m_CurrentlyLoading(false),
+    m_BasePath("")
 {
     SetCompilerIndex(CompilerFactory::GetDefaultCompilerIndex());
 
@@ -550,16 +551,14 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     f->compile = localCompile;
     f->link = localLink;
     fname.Assign(UnixFilename(filename));
-    // is it a wxFileName bug???
-    // if we don't call Normalize twice, the very first time it's called
-    // it returns a lowercase filename...
-    fname.Normalize(wxPATH_NORM_ALL, GetBasePath());
-    fname.Normalize(wxPATH_NORM_ALL, GetBasePath());
+    if(!m_CurrentlyLoading || m_BasePath.IsEmpty())
+        m_BasePath = GetBasePath();
+    fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_BasePath);
     
     fname.Assign(fname.GetFullPath());
     f->file.Assign(fname);
 	//Manager::Get()->GetMessageManager()->Log("Adding %s", f->file.GetFullPath().c_str());
-    fname.MakeRelativeTo(GetBasePath());
+    fname.MakeRelativeTo(m_BasePath);
     f->relativeFilename = fname.GetFullPath();
     
     m_Files.Append(f);

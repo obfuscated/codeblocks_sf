@@ -132,6 +132,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
         
         bool m_CurrentlyLoading;
         wxString m_CommonTopLevelPath;
+        wxString m_BasePath;
 };
 
 #endif // DEVPROJECT_H
