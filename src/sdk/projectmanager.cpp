@@ -279,7 +279,7 @@ void ProjectManager::CreateMenu(wxMenuBar* menuBar)
 		if (menu)
 		{
             menu->Insert(menu->GetMenuItemCount() - 1, idMenuFileProperties, _("Properties"));
-            menu->Insert(menu->GetMenuItemCount() - 1, -1, ""); // instead of AppendSeparator();
+            menu->Insert(menu->GetMenuItemCount() - 1, wxID_SEPARATOR, ""); // instead of AppendSeparator();
         }
 
         pos = menuBar->FindMenu(_("Project"));

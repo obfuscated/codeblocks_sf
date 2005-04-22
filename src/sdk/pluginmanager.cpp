@@ -103,7 +103,7 @@ int PluginManager::ScanForPlugins(const wxString& path)
     bool ok = dir.GetFirst(&filename, PLUGINS_MASK, wxDIR_FILES);
     while (ok)
     {
-		//Manager::Get()->GetMessageManager()->AppendDebugLog(_("Trying %s: "), filename.c_str());
+//		Manager::Get()->GetMessageManager()->AppendDebugLog(_("Trying %s: "), filename.c_str());
         if (LoadPlugin(path + '/' + filename))
             ++count;
         ok = dir.GetNext(&filename);
@@ -161,7 +161,7 @@ void PluginManager::LoadAllPlugins()
 {
     SANITY_CHECK();
     // check if a plugin crashed the app last time
-    wxString probPlugin = ConfigManager::Get()->Read("/plugins/try_to_load", wxEmptyString);
+    wxString probPlugin = ConfigManager::Get()->Read("/plugins/try_to_activate", wxEmptyString);
     if (!probPlugin.IsEmpty())
     {
         wxString msg;
@@ -191,7 +191,7 @@ void PluginManager::LoadAllPlugins()
 
         if (loadIt && !plug->IsAttached())
 		{
-            ConfigManager::Get()->Write("/plugins/try_to_load", plug->GetInfo()->title);
+            ConfigManager::Get()->Write("/plugins/try_to_activate", plug->GetInfo()->title);
 			Manager::Get()->GetMessageManager()->AppendLog(_("%s "), m_Plugins[i]->name.c_str());
             plug->Attach();
 		}
@@ -199,7 +199,7 @@ void PluginManager::LoadAllPlugins()
 	Manager::Get()->GetMessageManager()->Log("");
 
     wxLogNull ln;
-    ConfigManager::Get()->DeleteEntry("/plugins/try_to_load");
+    ConfigManager::Get()->DeleteEntry("/plugins/try_to_activate");
 }
 
 void PluginManager::UnloadAllPlugins()
@@ -414,12 +414,12 @@ int PluginManager::Configure()
             plug->Release(false);
         else if (loadIt && !plug->IsAttached())
         {
-            ConfigManager::Get()->Write("/plugins/try_to_load", plug->GetInfo()->title);
+            ConfigManager::Get()->Write("/plugins/try_to_activate", plug->GetInfo()->title);
             plug->Attach();
         }
     }
     wxLogNull ln;
-    ConfigManager::Get()->DeleteEntry("/plugins/try_to_load");
+    ConfigManager::Get()->DeleteEntry("/plugins/try_to_activate");
 */
     return wxID_OK;
 }

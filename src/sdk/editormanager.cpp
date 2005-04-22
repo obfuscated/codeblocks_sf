@@ -242,47 +242,21 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos,ProjectFile* dat
     {
         ed = new cbEditor(Manager::Get()->GetAppWindow(), fname, m_Theme);
         if (ed->IsOK())
-        {
             AddEditorBase(ed);
-#if 0
-            int pos = ed->GetControl()->PositionFromLine(line);
-            pos += col;
-            ed->GetControl()->GotoPos(pos);
-			ed->GetControl()->MoveCaretInsideView();
-			ed->GetControl()->Refresh();
-#endif
-            ed->Activate();
-//            SetSelection(ed->GetPageIndex());
-			//ed->GetControl()->GotoPos(pos);
-#if 0
-			cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-			if (prj)
-			{
-				ProjectFile* pf = prj->GetFileByFilename(ed->GetFilename(), false);
-				if (pf)
-				{
-					ed->GetControl()->GotoPos(pf->editorPos);
-					pf->editorOpen = true;
-				}
-			}
-#endif
-        }
         else
         {
 			ed->Destroy();
-//            DeletePage(ed->GetPageIndex());
             ed = NULL;
         }
     }
-    else
-		ed->Activate();
-//        SetSelection(ed->GetPageIndex());
 
-	
     if(can_updateui)
     {
         if (ed)
+        {
+            ed->Activate();
             ed->GetControl()->SetFocus();
+        }
     }
     
     // check for ProjectFile

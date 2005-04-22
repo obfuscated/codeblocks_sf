@@ -609,7 +609,7 @@ void MainFrame::AddPluginInPluginsMenu(cbPlugin* plugin)
     
     // this will insert a separator when the first plugin is added in the "Plugins" menu
     if (m_PluginsMenu->GetMenuItemCount() == 1)
-         m_PluginsMenu->Insert(0, wxID_ANY, "");
+         m_PluginsMenu->Insert(0, wxID_SEPARATOR, "");
 
     AddPluginInMenus(m_PluginsMenu, plugin,
                     (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)&MainFrame::OnPluginsExecuteMenu,
@@ -893,11 +893,10 @@ void MainFrame::DoUpdateStatusBar()
 
 void MainFrame::DoUpdateLayout()
 {
-	if (!m_pEdMan)
-		return;
 	wxLayoutAlgorithm layout;
     layout.LayoutMDIFrame(this);
-	
+
+#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)	
 	/**
 	@attention Hack for fixing wxSashWindow oddness...Resize with 'height-1'.
 	This fixes the oddness. However, we resize again to 'height' to retain the
@@ -909,6 +908,7 @@ void MainFrame::DoUpdateLayout()
 	m_pBottomSash->GetSize( &w, &h );
 	m_pBottomSash->SetSize( w, h-1 );
 	m_pBottomSash->SetSize( w, h );
+#endif
 }
 
 void MainFrame::DoUpdateAppTitle()
@@ -1004,7 +1004,7 @@ void MainFrame::OnHelpPluginMenu(wxCommandEvent& event)
         m_pMsgMan->DebugLog(_("No plugin found for ID %d"), event.GetId());
 }
 
-void MainFrame::OnSize(wxSizeEvent& WXUNUSED(event))
+void MainFrame::OnSize(wxSizeEvent& event)
 {
 	DoUpdateLayout();
 }

@@ -27,7 +27,6 @@
 #include "compilergcc.h"
 #include "advancedcompileroptionsdlg.h"
 #include <wx/xrc/xmlres.h>
-#include <wx/spinbutt.h>
 #include <manager.h>
 #include <configmanager.h>
 #include <messagemanager.h>
@@ -1087,7 +1086,7 @@ void CompilerOptionsDlg::OnRemoveLibClick(wxCommandEvent& event)
         lstLibs->Delete(lstLibs->GetSelection());
 }
 
-void CompilerOptionsDlg::OnMoveLibUpClick(wxCommandEvent& event)
+void CompilerOptionsDlg::OnMoveLibUpClick(wxSpinEvent& event)
 {
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
     if (lstLibs->GetSelection() <= 0)
@@ -1101,7 +1100,7 @@ void CompilerOptionsDlg::OnMoveLibUpClick(wxCommandEvent& event)
         m_pProject->SetModified(true);
 }
 
-void CompilerOptionsDlg::OnMoveLibDownClick(wxCommandEvent& event)
+void CompilerOptionsDlg::OnMoveLibDownClick(wxSpinEvent& event)
 {
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
     if (lstLibs->GetSelection() == lstLibs->GetCount() - 1)
@@ -1115,7 +1114,7 @@ void CompilerOptionsDlg::OnMoveLibDownClick(wxCommandEvent& event)
         m_pProject->SetModified(true);
 }
 
-void CompilerOptionsDlg::OnMoveDirUpClick(wxCommandEvent& event)
+void CompilerOptionsDlg::OnMoveDirUpClick(wxSpinEvent& event)
 {
     wxListBox* lst = GetDirsListBox();
     if (!lst || lst->GetSelection() <= 0)
@@ -1129,7 +1128,7 @@ void CompilerOptionsDlg::OnMoveDirUpClick(wxCommandEvent& event)
         m_pProject->SetModified(true);
 }
 
-void CompilerOptionsDlg::OnMoveDirDownClick(wxCommandEvent& event)
+void CompilerOptionsDlg::OnMoveDirDownClick(wxSpinEvent& event)
 {
     wxListBox* lst = GetDirsListBox();
     if (!lst || lst->GetSelection() == lst->GetCount() - 1)

@@ -3,7 +3,6 @@
 
 #include <wx/wxprec.h>
 #include <wx/xrc/xmlres.h>
-#include <wx/xrc/xml.h>
 #include <wx/toolbar.h>
 
 #ifdef __BORLANDC__

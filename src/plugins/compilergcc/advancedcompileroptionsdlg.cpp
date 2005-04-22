@@ -6,7 +6,6 @@
 #include <wx/textctrl.h>
 #include <wx/combobox.h>
 #include <wx/checkbox.h>
-#include <wx/spinctrl.h>
 #include <wx/msgdlg.h>
 
 BEGIN_EVENT_TABLE(AdvancedCompilerOptionsDlg, wxDialog)
@@ -200,7 +199,7 @@ void AdvancedCompilerOptionsDlg::OnRegexDelete(wxCommandEvent& event)
     }
 }
 
-void AdvancedCompilerOptionsDlg::OnRegexUp(wxCommandEvent& event)
+void AdvancedCompilerOptionsDlg::OnRegexUp(wxSpinEvent& event)
 {
     if (m_SelectedRegex <= 0)
         return;
@@ -212,7 +211,7 @@ void AdvancedCompilerOptionsDlg::OnRegexUp(wxCommandEvent& event)
     FillRegexes();
 }
 
-void AdvancedCompilerOptionsDlg::OnRegexDown(wxCommandEvent& event)
+void AdvancedCompilerOptionsDlg::OnRegexDown(wxSpinEvent& event)
 {
     if (m_SelectedRegex >= (int)m_Regexes.Count() - 1)
         return;

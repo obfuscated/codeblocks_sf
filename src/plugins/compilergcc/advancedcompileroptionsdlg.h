@@ -2,6 +2,7 @@
 #define ADVANCEDCOMPILEROPTIONSDLG_H
 
 #include <wx/dialog.h>
+#include <wx/spinctrl.h>
 #include <compiler.h>
 
 class AdvancedCompilerOptionsDlg : public wxDialog
@@ -15,8 +16,8 @@ class AdvancedCompilerOptionsDlg : public wxDialog
         void OnRegexTest(wxCommandEvent& event);
         void OnRegexAdd(wxCommandEvent& event);
         void OnRegexDelete(wxCommandEvent& event);
-        void OnRegexUp(wxCommandEvent& event);
-        void OnRegexDown(wxCommandEvent& event);
+        void OnRegexUp(wxSpinEvent& event);
+        void OnRegexDown(wxSpinEvent& event);
         
         void EndModal(int retCode);
         void ReadCompilerOptions();
