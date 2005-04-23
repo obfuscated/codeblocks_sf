@@ -227,6 +227,12 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos,ProjectFile* dat
     // disallow application shutdown while opening files
     // WARNING: remember to set it to true, when exiting this function!!!
     s_CanShutdown = false;
+    bool domaximize = false;
+    if(!Manager::Get()->GetProjectManager()->IsLoading())
+    {
+        wxMDIChildFrame* frame = Manager::Get()->GetAppWindow()->GetActiveChild();
+        if(!frame || frame->IsMaximized()) domaximize = true;
+    }
 
     EditorBase* eb = IsOpen(fname);
     cbEditor* ed = 0;
@@ -255,6 +261,8 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos,ProjectFile* dat
         if (ed)
         {
             ed->Activate();
+            if(domaximize)
+                ed->Maximize(true);
             ed->GetControl()->SetFocus();
         }
     }
