@@ -415,7 +415,6 @@ bool cbProject::LoadLayout()
 {
     if (m_Filename.IsEmpty())
         return false;
-    
     int openmode = ConfigManager::Get()->Read("/project_manager/open_files", (long int)1);
     switch (openmode)
     {
@@ -435,10 +434,10 @@ bool cbProject::LoadLayout()
             {
                 wxFileName fname(m_Filename);
                 fname.SetExt("layout");
-                cbEditor* top = 0L;
                 ProjectLayoutLoader loader(this);
                 if (loader.Open(fname.GetFullPath()))
                 {
+                    cbEditor* top = 0L;
                     FilesList::Node* node = m_Files.GetFirst();
                     while(node)
                     {
@@ -456,7 +455,10 @@ bool cbProject::LoadLayout()
                         node = node->GetNext();
                     }
                     if (top)
+                    {
+                        Manager::Get()->GetProjectManager()->SetTopEditor(top);
                         top->Activate();
+                    }
                     return true;
                 }
             }

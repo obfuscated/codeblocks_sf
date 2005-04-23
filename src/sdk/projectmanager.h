@@ -12,6 +12,7 @@ class wxMenuBar;
 class wxNotebook;
 class wxPanel;
 class cbProject;
+class EditorBase;
 class wxImageList;
 class ProjectFile;
 class FilesGroupsAndMasks;
@@ -248,6 +249,10 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
           */
 		wxPanel* GetPanel(){ return (this==NULL) ? 0 : m_pPanel; }
 		wxMenu* GetProjectMenu();
+		/** Sets the Top Editor (the active editor from the last session) */
+		void SetTopEditor(EditorBase* ed);
+		/** @return The Top Editor */
+		EditorBase* GetTopEditor();
     private:
         static ProjectManager* Get(wxNotebook* parent);
 		static void Free();
@@ -284,12 +289,13 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
         wxImageList* m_pImages;
         ProjectsArray* m_pProjects;
         cbWorkspace* m_pWorkspace;
+        EditorBase* m_pTopEditor;
         bool m_TreeCategorize;
         bool m_TreeUseFolders;
 		FilesGroupsAndMasks* m_pFileGroups;
 		int m_TreeFreezeCounter;
 		bool m_IsLoadingProject;
-		bool m_IsLoadingWorkspace;
+		bool m_IsLoadingWorkspace;		
 		
         DECLARE_EVENT_TABLE()
         DECLARE_SANITY_CHECK

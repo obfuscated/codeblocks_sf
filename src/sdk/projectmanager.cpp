@@ -168,6 +168,7 @@ ProjectManager::ProjectManager(wxNotebook* parent)
 	: m_pTree(0),
     m_pPanel(0),
     m_pWorkspace(0),
+	m_pTopEditor(0),
     m_TreeCategorize(false),
     m_TreeUseFolders(true),
     m_TreeFreezeCounter(0),
@@ -765,9 +766,22 @@ cbWorkspace* ProjectManager::GetWorkspace()
     return m_pWorkspace;
 }
 
+void ProjectManager::SetTopEditor(EditorBase* ed)
+{
+    SANITY_CHECK();
+    m_pTopEditor = ed;
+}
+
+EditorBase* ProjectManager::GetTopEditor()
+{
+    SANITY_CHECK(0);
+    return m_pTopEditor;
+}
+
 bool ProjectManager::LoadWorkspace(const wxString& filename)
 {
     SANITY_CHECK(false);
+    m_pTopEditor = 0;
     if (!CloseWorkspace())
         return false; // didn't close
     m_IsLoadingWorkspace=true;    
@@ -776,6 +790,11 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
     Manager::Get()->GetEditorManager()->RebuildOpenedFilesTree();
     SANITY_CHECK(false);
     m_pTree->SetItemText(m_TreeRoot, m_pWorkspace->GetTitle());
+    if(m_pTopEditor)
+        m_pTopEditor->Activate();
+    wxMDIChildFrame* child=Manager::Get()->GetAppWindow()->GetActiveChild();
+    if(child)
+        child->Maximize();
     return m_pWorkspace->IsOK();
 }
 
