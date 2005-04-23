@@ -1046,6 +1046,13 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
 {
     SANITY_CHECK();
 	FileType ft = FileTypeOf(filename);
+	bool wasmaximized = false;
+	if(!IsLoading())
+	{
+        if(Manager::Get()->GetAppWindow()->GetActiveChild())
+            wasmaximized = Manager::Get()->GetAppWindow()->GetActiveChild()->IsMaximized();
+    }
+	
 	if (ft == ftHeader ||
 		ft == ftSource)
 	{
@@ -1053,8 +1060,11 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
         cbEditor* ed = Manager::Get()->GetEditorManager()->Open(filename);
         if (ed)
         {
+            if(wasmaximized)
+                ed->Maximize();
             ed->SetProjectFile(pf);
             ed->Show(true);
+            
         }
         else
         {
@@ -1072,6 +1082,8 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
 		{
             // custom editors just get activated
             eb->Activate();
+            if(wasmaximized)
+                eb->Maximize();
             return;
         }
 
