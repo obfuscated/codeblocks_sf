@@ -128,12 +128,12 @@ void ProjectLoader::ConvertLibraries(CompileTargetBase* object)
             if (!ext.IsEmpty())
                 ext = "." + ext;
             linkLibs.Add(compiler->GetSwitches().libPrefix + opt + ext);
-            linkerOpts.Remove(i);
+            linkerOpts.RemoveAt(i, 1);
         }
         else if (opt.Length() > libExtLen && opt.Right(libExtLen) == libExt)
         {
             linkLibs.Add(opt);
-            linkerOpts.Remove(i);
+            linkerOpts.RemoveAt(i, 1);
         }
         else
             ++i;

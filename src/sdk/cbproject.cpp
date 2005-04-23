@@ -682,7 +682,11 @@ void cbProject::AddTreeNode(wxTreeCtrl* tree, const wxString& text, const wxTree
         path = path.Right(path.Length() - pos - 1);
         
         // see if we already have this path
+#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)	
         long int cookie = 0;
+#else
+        wxTreeItemIdValue cookie; //2.6.0
+#endif
         wxTreeItemId newparent = tree->GetFirstChild(parent, cookie);
         while (newparent)
         {
@@ -696,7 +700,11 @@ void cbProject::AddTreeNode(wxTreeCtrl* tree, const wxString& text, const wxTree
 		{
 			// in order not to override wxTreeCtrl to sort alphabetically but the
 			// folders be always on top, we just search here where to put the new folder...
-			long int cookie2 = 0;
+#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)	
+            long int cookie2 = 0;
+#else
+            wxTreeItemIdValue cookie2; //2.6.0
+#endif
 			wxTreeItemId child = tree->GetFirstChild(parent, cookie2);
 			wxTreeItemId lastChild;
 			while (child)

@@ -1162,7 +1162,11 @@ wxTreeItemId EditorManager::FindTreeFile(const wxString& filename)
         wxTreeCtrl *tree=GetTree();
         if(!tree || !m_TreeOpenedFiles)
             break;
+#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)	
         long int cookie = 0;
+#else
+        wxTreeItemIdValue cookie; //2.6.0
+#endif
         for(item = tree->GetFirstChild(m_TreeOpenedFiles,cookie);
             item;
             item = tree->GetNextChild(m_TreeOpenedFiles, cookie))
@@ -1245,7 +1249,11 @@ bool EditorManager::RenameTreeFile(const wxString& oldname, const wxString& newn
     wxTreeCtrl *tree = GetTree();
     if(!tree)
         return false;
+#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)	
     long int cookie = 0;
+#else
+    wxTreeItemIdValue cookie; //2.6.0
+#endif
     wxTreeItemId item;
     wxString filename,shortname;
     for(item=tree->GetFirstChild(m_TreeOpenedFiles,cookie);
@@ -1376,7 +1384,11 @@ void EditorManager::RefreshOpenedFilesTree(bool force)
     m_LastActiveFile=fname;
     m_LastModifiedflag=ismodif;
     Manager::Get()->GetProjectManager()->FreezeTree();
+#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)	
     long int cookie = 0;
+#else
+    wxTreeItemIdValue cookie; //2.6.0
+#endif
     wxTreeItemId item = tree->GetFirstChild(m_TreeOpenedFiles,cookie);
     wxString filename,shortname;
     while (item)

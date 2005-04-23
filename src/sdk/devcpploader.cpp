@@ -58,7 +58,7 @@ bool DevCppLoader::Open(const wxString& filename)
         if (array[i].StartsWith("-l"))
         {
             m_pProject->AddLinkLib(array[i].Right(array[i].Length() - 2));
-            array.Remove(i, 1);
+            array.RemoveAt(i, 1);
         }
         else
             ++i;

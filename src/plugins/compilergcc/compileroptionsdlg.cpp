@@ -347,14 +347,14 @@ void CompilerOptionsDlg::TextToOptions()
 		{
 //            Manager::Get()->GetMessageManager()->DebugLog("Enabling option %s", copt->option.c_str());
 			copt->enabled = true;
-			m_CompilerOptions.Remove(i);
+			m_CompilerOptions.RemoveAt(i, 1);
 		}
 		else if (opt.StartsWith(compiler->GetSwitches().defines, &rest))
 		{
 			// definition
 			XRCCTRL(*this, "txtCompilerDefines", wxTextCtrl)->AppendText(rest);
 			XRCCTRL(*this, "txtCompilerDefines", wxTextCtrl)->AppendText("\n");
-			m_CompilerOptions.Remove(i);
+			m_CompilerOptions.RemoveAt(i, 1);
 		}
 		else
 			++i;
@@ -369,7 +369,7 @@ void CompilerOptionsDlg::TextToOptions()
 		{
 //            Manager::Get()->GetMessageManager()->DebugLog("Enabling option %s", copt->option.c_str());
 			copt->enabled = true;
-			m_LinkerOptions.Remove(i);
+			m_LinkerOptions.RemoveAt(i, 1);
 		}
 		else
             ++i;
@@ -425,10 +425,10 @@ void CompilerOptionsDlg::OptionsToText()
             // relative linker option
             int idx = m_CompilerOptions.Index(copt->option);
             if (idx != wxNOT_FOUND)
-                m_CompilerOptions.Remove(idx);
+                m_CompilerOptions.RemoveAt(idx, 1);
             idx = m_LinkerOptions.Index(copt->additionalLibs);
             if (idx != wxNOT_FOUND)
-                m_LinkerOptions.Remove(idx);
+                m_LinkerOptions.RemoveAt(idx, 1);
         }
 	}
 	
