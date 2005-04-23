@@ -437,7 +437,6 @@ bool cbProject::LoadLayout()
                 ProjectLayoutLoader loader(this);
                 if (loader.Open(fname.GetFullPath()))
                 {
-                    cbEditor* top = 0L;
                     FilesList::Node* node = m_Files.GetFirst();
                     while(node)
                     {
@@ -446,18 +445,20 @@ bool cbProject::LoadLayout()
                         {
                             cbEditor* ed = Manager::Get()->GetEditorManager()->Open(f->file.GetFullPath(),0,f);
                             if (ed)
-                            {
                                 ed->SetProjectFile(f);
-                                if (f == loader.GetTopProjectFile())
-                                    top = ed;
-                            }
                         }
                         node = node->GetNext();
                     }
-                    if (top)
+                    ProjectFile* f = loader.GetTopProjectFile();
+                    if (f)
                     {
-                        Manager::Get()->GetProjectManager()->SetTopEditor(top);
-                        top->Activate();
+                        Manager::Get()->GetMessageManager()->DebugLog(_T("Top Editor: %s"),_T(f->file.GetFullPath().c_str()));
+                        EditorBase* eb = Manager::Get()->GetEditorManager()->Open(f->file.GetFullPath());
+                        if(eb)
+                        {
+                            Manager::Get()->GetProjectManager()->SetTopEditor(eb);
+                            eb->Activate();
+                        }
                     }
                     return true;
                 }

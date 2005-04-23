@@ -78,7 +78,10 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
             if (elem->QueryIntAttribute("open", &open) == TIXML_SUCCESS)
                 pf->editorOpen = open != 0;
             if (elem->QueryIntAttribute("top", &top) == TIXML_SUCCESS)
-                m_TopProjectFile = pf;
+            {   
+                if(top)
+                    m_TopProjectFile = pf;
+            }
 
             TiXmlElement* cursor = elem->FirstChildElement();
             if (cursor)
