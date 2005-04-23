@@ -231,7 +231,12 @@ wxWindow* Manager::GetNotebookPage(const wxString &name, long style,bool issplit
     if (!m_pNotebook)
         return 0L;
     wxNotebookPage* page = 0L;
-    for (unsigned int i = 0; i < m_pNotebook->GetPageCount(); ++i)
+    #if wxVERSION_NUMBER < 2500
+    int i;
+    #else
+    unsigned int i;
+    #endif
+    for (i = 0; i < m_pNotebook->GetPageCount(); ++i)
     {
         if (m_pNotebook->GetPageText(i) == name)
         {

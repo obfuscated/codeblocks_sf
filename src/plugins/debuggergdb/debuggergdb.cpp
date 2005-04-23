@@ -971,7 +971,11 @@ wxString DebuggerGDB::GetInfoFor(const wxString& dbgCmd)
 	while (buf.IsEmpty() && i < 500)
 	{
 		buf = GetNextOutputLine();
-		wxMilliSleep(5);
+		#if wxVERSION_NUMBER < 2500
+            wxUsleep(5);
+        #else
+            wxMilliSleep(5);
+        #endif
 		i += 5;
 	}
 	
@@ -1021,7 +1025,11 @@ wxString DebuggerGDB::GetInfoFor(const wxString& dbgCmd)
 	while (!buf.IsEmpty() && i < 500)
 	{
 		buf = GetNextOutputLine();
-		wxMilliSleep(5);
+		#if wxVERSION_NUMBER < 2500
+            wxUsleep(5);
+        #else
+            wxMilliSleep(5);
+        #endif
 		i += 5;
 	}
 
