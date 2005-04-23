@@ -792,6 +792,7 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
     m_pTree->SetItemText(m_TreeRoot, m_pWorkspace->GetTitle());
     if(m_pTopEditor)
         m_pTopEditor->Activate();
+    Manager::Get()->GetEditorManager()->RefreshOpenedFilesTree(true);
     wxMDIChildFrame* child=Manager::Get()->GetAppWindow()->GetActiveChild();
     if(child)
         child->Maximize();
