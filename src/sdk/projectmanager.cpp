@@ -795,7 +795,7 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
     Manager::Get()->GetEditorManager()->RefreshOpenedFilesTree(true);
     wxMDIChildFrame* child=Manager::Get()->GetAppWindow()->GetActiveChild();
     if(child)
-        child->Maximize();
+        child->Maximize(true);
     return m_pWorkspace->IsOK();
 }
 
@@ -1062,7 +1062,7 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
         if (ed)
         {
             if(wasmaximized)
-                ed->Maximize();
+                ed->Maximize(true);
             ed->SetProjectFile(pf);
             ed->Show(true);
             
@@ -1084,7 +1084,7 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
             // custom editors just get activated
             eb->Activate();
             if(wasmaximized)
-                eb->Maximize();
+                eb->Maximize(true);
             return;
         }
 
