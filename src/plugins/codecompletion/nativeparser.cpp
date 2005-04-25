@@ -1008,11 +1008,13 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
 
 		if (project == Manager::Get()->GetProjectManager()->GetActiveProject())
 		{
+            Manager::Get()->GetMessageManager()->DebugLog(_("Updating class browser..."));
 			if (m_pClassBrowser)
 			{
 				m_pClassBrowser->SetParser(parser);
 				m_pClassBrowser->Update();
 			}
+            Manager::Get()->GetMessageManager()->DebugLog(_("Class browser updated."));
 		}
 	}
 }

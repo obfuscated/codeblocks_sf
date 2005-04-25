@@ -443,7 +443,7 @@ void Parser::LinkInheritance(bool tempsOnly)
 		while (tkz.HasMoreTokens())
 		{
 			wxString ancestor = tkz.GetNextToken();
-			if (ancestor.IsEmpty())
+			if (ancestor.IsEmpty() || ancestor == token->m_Name)
 				continue;
 			//Manager::Get()->GetMessageManager()->DebugLog("Ancestor %s", ancestor.c_str());
 			Token* ancestorToken = FindTokenByName(ancestor, tkClass);
@@ -877,7 +877,6 @@ void Parser::AddTreeNode(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token
 	{
 		Token* childToken = token->m_Children[i];
 		AddTreeNode(tree, node, childToken);
-
 	}
 	
 	if (!m_BrowserOptions.showInheritance || (token->m_TokenKind != tkClass && token->m_TokenKind != tkNamespace))
