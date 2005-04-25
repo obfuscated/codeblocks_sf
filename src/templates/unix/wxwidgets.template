@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE Code::Blocks_template_file>
+<Code::Blocks_template_file>
+	<Template name="wxWidgets" title="wxWidgets Application" category="GUI" bitmap="wxwidgets.png">
+		<FileSet name="s" title="No header file">
+			<File source="wx-main-s.cpp" destination="main.cpp"/>
+		</FileSet>
+		<FileSet name="sh" title="With header file">
+			<File source="wx-main-sh.cpp" destination="main.cpp"/>
+			<File source="wx-main-sh.h" destination="main.h"/>
+		</FileSet>
+		<FileSet name="ash" title="Use separate wxApp, wxFrame files">
+			<File source="wx-app-ash.cpp" destination="app.cpp"/>
+			<File source="wx-app-ash.h" destination="app.h"/>
+			<File source="wx-main-ash.cpp" destination="main.cpp"/>
+			<File source="wx-main-ash.h" destination="main.h"/>
+		</FileSet>
+		<Option name="wxWidgets Application">
+			<Project file="wxwidgets.cbp"/>
+		</Option>
+	</Template>
+</Code::Blocks_template_file>

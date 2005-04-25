@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE Code::Blocks_template_file>
 <Code::Blocks_template_file>
-	<Template name="wxWidgets" title="wxWidgets Application" category="GUI" bitmap="wxwindows.png">
+	<Template name="wxWidgets" title="wxWidgets Application" category="GUI" bitmap="wxwidgets.png">
 		<FileSet name="s" title="No header file">
 			<File source="wx-main-s.cpp" destination="main.cpp"/>
 		</FileSet>
@@ -16,10 +16,10 @@
 			<File source="wx-main-ash.h" destination="main.h"/>
 		</FileSet>
 		<Option name="Using static wxWidgets library">
-			<Project file="wxWindows_static.cbp"/>
+			<Project file="wxwidgets_static.cbp"/>
 		</Option>
 		<Option name="Using wxWidgets DLL">
-			<Project file="wxWindows.cbp"/>
+			<Project file="wxwidgets.cbp"/>
 			<Compiler flag="-DWXUSINGDLL"/>
 		</Option>
 	</Template>
