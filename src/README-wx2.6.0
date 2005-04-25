@@ -1,0 +1,43 @@
+Now that wxWidgets-2.6.0 is released, work has begun to port Code::Blocks to work with it.
+Officialy, Code::Blocks still uses wxWidgets-2.4.2, until all issues from porting it to wxWidgets-2.6.0  are resolved.
+
+KNOWN ISSUES
+------------
+Win32: MDI client window is not behaving correctly when maximized (initially, by code)
+
+HOWTO build wxWidgets-2.6.0 for use with Code::Blocks
+------------------------------------------------------
+This process requires that you have MinGW installed. MSYS is *not* needed.
+Download and decompress the wxWidgets-2.6.0 source distribution. For the rest of this small HOWTO, C:\wx2.6.0 will be assumed to be the directory wxWidgets-2.6.0 exists in.
+Open a command prompt and type the following:
+
+cd C:\wx2.6.0\build\msw
+mingw32-make -f makefile.gcc BUILD=release SHARED=1 MONOLITHIC=1 USE_XRC=1 UNICODE=0 VENDOR=cb
+cd ..\..\contrib\build\stc
+mingw32-make -f makefile.gcc BUILD=release SHARED=1 MONOLITHIC=1 USE_XRC=1 UNICODE=0 VENDOR=cb
+
+If all has gone well, the necessary libs and DLLs will exist in C:\wx2.6.0\lib\gcc_dll.
+Copy the DLLs somewhere in your path (c:\windows\system32 is a good choice).
+Open CodeBlocks-wx2.6.0.cbp with Code::Blocks and add the following search dirs:
+
+Compiler:
+C:\wx2.6.0\include
+C:\wx2.6.0\contrib\include
+
+Linker:
+C:\wx2.6.0\lib\gcc_dll
+
+Resource compiler:
+C:\wx2.6.0\include
+
+Now hit "Compile".
+That's it!
+Now, fix that MDI window bug ;)
+
+REMARKS:
+- If all goes well and you build Code::Blocks with wx2.6.0, but when you launch it it crashes, delete all plugins and hit "Compile" again (it will only link the plugins).
+- Different object files output dirs are used for building Code::Blocks with wx2.6.0, so you can have Code::Blocks work with either wxWidgets version (2.4.2 or 2.6.0) independently.
+
+If you have any problems, post them in the Development forum at http://www.codeblocks.org/index.php?name=PNphpBB2&file=viewforum&f=7
+
+Yiannis.
