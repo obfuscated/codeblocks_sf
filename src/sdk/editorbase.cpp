@@ -3,13 +3,11 @@
 #include "editormanager.h"
 
 EditorBase::EditorBase(wxMDIParentFrame* parent, const wxString& title)
-    : wxMDIChildFrame(parent, -1, title),
+    : wxMDIChildFrame(parent, -1, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE | wxMAXIMIZE),
     m_IsBuiltinEditor(false),
     m_pParent(parent),
     m_WinTitle(title)
 {
-// TODO (mandrav#1#): Respect relevant setting in environment options
-//    Maximize(true);
     Manager::Get()->GetEditorManager()->AddCustomEditor(this);
 }
 

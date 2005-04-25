@@ -993,7 +993,9 @@ void MakefileGenerator::DoAddPhonyTargets(wxString& buffer)
         if (!target)
             break;
 
-        tmp << target->GetTitle() << "-before " << target->GetTitle() << "-after ";
+        tmp << "depend_" << target->GetTitle() << " "
+            << target->GetTitle() << "-before "
+            << target->GetTitle() << "-after ";
     }
     buffer << ".PHONY: " << tmp << '\n';
     buffer << '\n';
@@ -1461,7 +1463,7 @@ void MakefileGenerator::DoPrepareValidTargets()
 
 bool MakefileGenerator::IsTargetValid(ProjectBuildTarget* target)
 {
-    bool hasBin = target->GetTargetType() != 4; // is not "commands-only" target
+    bool hasBin = target->GetTargetType() != ttCommandsOnly; // is not "commands-only" target
     bool hasCmds = !target->GetCommandsAfterBuild().IsEmpty() ||
                     !target->GetCommandsBeforeBuild().IsEmpty();
 	return hasBin && (hasCmds || m_LinkableTargets.Index(target) != -1);
