@@ -952,9 +952,6 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 	else
     {
         cmd << "\"";
-#ifndef __WXMSW__
-        cmd << "./";
-#endif
 		cmd << f.GetFullPath();
 		cmd << "\" ";
 		cmd << target->GetExecutionParameters();

@@ -16,6 +16,8 @@ CPP=g++
 LD=g++
 LIB=ar
 RESCOMP=
+LIB_WXXRC=wx_gtk2_xrc-2.4
+LIB_WXSTC=wx_gtk2_stc-2.4
 
 ### Compiler/linker options
 GLOBAL_CFLAGS=
