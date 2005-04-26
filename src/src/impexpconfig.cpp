@@ -61,7 +61,7 @@ void ImpExpConfig::OnImport(wxCommandEvent& event)
 
 void ImpExpConfig::OnExport(wxCommandEvent& event)
 {
-    wxString filename = AskForFile(_("Choose a file to export"), wxSAVE | wxOVERWRITE_PROMPT | wxHIDE_READONLY);
+    wxString filename = AskForFile(_("Choose a file to export"), wxSAVE | wxOVERWRITE_PROMPT);
     if (filename.IsEmpty())
         return;
     

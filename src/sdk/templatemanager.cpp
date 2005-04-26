@@ -183,7 +183,7 @@ void TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
                         wxEmptyString,
                         pt->m_Name,
                         CODEBLOCKS_FILES_FILTER,
-                        wxSAVE | wxHIDE_READONLY | wxOVERWRITE_PROMPT);
+                        wxSAVE | wxOVERWRITE_PROMPT);
 
     if (fdlg.ShowModal() != wxID_OK)
         return;
@@ -223,7 +223,7 @@ void TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
                                     wxEmptyString,
                                     dst,
                                     SOURCE_FILES_FILTER,
-                                    wxSAVE | wxHIDE_READONLY);
+                                    wxSAVE);
                 if (fdlg.ShowModal() == wxID_CANCEL)
                 {
                     msg.Printf(_("File %s is skipped..."), dst.c_str());

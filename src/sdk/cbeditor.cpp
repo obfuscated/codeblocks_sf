@@ -493,7 +493,7 @@ bool cbEditor::SaveAs()
                             fname.GetPath(),
                             fname.GetFullName(),
                             SOURCE_FILES_DIALOG_FILTER,
-                            wxSAVE | wxHIDE_READONLY | wxOVERWRITE_PROMPT);
+                            wxSAVE | wxOVERWRITE_PROMPT);
     dlg->SetFilterIndex(SOURCE_FILES_FILTER_INDEX);
 
     if (dlg->ShowModal() != wxID_OK)

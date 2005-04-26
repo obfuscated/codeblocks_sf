@@ -369,7 +369,7 @@ bool cbProject::SaveAs()
                     fname.GetPath(),
                     fname.GetFullName(),
                     CODEBLOCKS_FILES_FILTER,
-                    wxSAVE | wxHIDE_READONLY | wxOVERWRITE_PROMPT);
+                    wxSAVE | wxOVERWRITE_PROMPT);
 
     if (dlg.ShowModal() != wxID_OK)
         return false;
