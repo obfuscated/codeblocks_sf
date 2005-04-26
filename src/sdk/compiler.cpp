@@ -74,6 +74,8 @@ void Compiler::SaveSettings(const wxString& baseKey)
 	ConfigManager::Get()->Write(tmp + "/linker_options", key);
 	key = GetStringFromArray(m_IncludeDirs);
 	ConfigManager::Get()->Write(tmp + "/include_dirs", key);
+	key = GetStringFromArray(m_ResIncludeDirs);
+	ConfigManager::Get()->Write(tmp + "/res_include_dirs", key);
 	key = GetStringFromArray(m_LibDirs);
 	ConfigManager::Get()->Write(tmp + "/library_dirs", key);
 	key = GetStringFromArray(m_LinkLibs);
@@ -155,6 +157,7 @@ void Compiler::LoadSettings(const wxString& baseKey)
     SetCompilerOptions(GetArrayFromString(ConfigManager::Get()->Read(tmp + "/compiler_options", wxEmptyString)));
     SetLinkerOptions(GetArrayFromString(ConfigManager::Get()->Read(tmp + "/linker_options", wxEmptyString)));
     SetIncludeDirs(GetArrayFromString(ConfigManager::Get()->Read(tmp + "/include_dirs", m_MasterPath + sep + "include")));
+    SetResourceIncludeDirs(GetArrayFromString(ConfigManager::Get()->Read(tmp + "/res_include_dirs", m_MasterPath + sep + "include")));
     SetLibDirs(GetArrayFromString(ConfigManager::Get()->Read(tmp + "/library_dirs", m_MasterPath + sep + "lib")));
     SetLinkLibs(GetArrayFromString(ConfigManager::Get()->Read(tmp + "/libraries", "")));
     SetCommandsBeforeBuild(GetArrayFromString(ConfigManager::Get()->Read(tmp + "/commands_before", wxEmptyString)));
