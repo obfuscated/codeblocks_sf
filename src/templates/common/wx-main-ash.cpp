@@ -34,5 +34,5 @@ void MyFrame::OnQuit(wxCommandEvent& event)
 
 void MyFrame::OnAbout(wxCommandEvent& event)
 {
-	wxMessageBox(_("wxWindows Application Template"), _("Welcome to..."));
+	wxMessageBox(_("wxWidgets Application Template"), _("Welcome to..."));
 }

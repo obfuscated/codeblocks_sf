@@ -4,7 +4,7 @@ IMPLEMENT_APP(MyApp);
 
 bool MyApp::OnInit()
 {
-	MyFrame* frame = new MyFrame(0L, _("wxWindows Application Template"));
+	MyFrame* frame = new MyFrame(0L, _("wxWidgets Application Template"));
 	frame->Show();
 	return true;
 }
@@ -43,5 +43,5 @@ void MyFrame::OnQuit(wxCommandEvent& event)
 
 void MyFrame::OnAbout(wxCommandEvent& event)
 {
-	wxMessageBox(_("wxWindows Application Template"), _("Welcome to..."));
+	wxMessageBox(_("wxWidgets Application Template"), _("Welcome to..."));
 }
