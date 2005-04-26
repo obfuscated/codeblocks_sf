@@ -236,7 +236,7 @@ int DefaultMimeHandler::DoOpenFile(cbMimeType* mt, const wxString& filename)
         if (external.Find("$(FILE)") != -1)
             external.Replace("$(FILE)", filename);
         else
-            external << " " << filename;
+            external << " \"" << filename << "\""; // file args wrapped in quotes (bug #1187231)
 
         // launch external program
         int ret = 0;
