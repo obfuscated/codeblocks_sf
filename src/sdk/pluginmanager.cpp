@@ -36,6 +36,7 @@
 #include "pluginsconfigurationdlg.h"
 #include "configmanager.h"
 #include "managerproxy.h"
+#include "personalitymanager.h"
 
 PluginManager* PluginManager::Get()
 {
@@ -63,7 +64,12 @@ void PluginManager::Free()
 PluginManager::PluginManager()
 {
     SC_CONSTRUCTOR_BEGIN
+
+    const wxString& personalityKey = Manager::Get()->GetPersonalityManager()->GetPersonalityKey();
+
 	ConfigManager::AddConfiguration(_("Plugin Manager"), "/plugins");
+	if (!personalityKey.IsEmpty())
+        ConfigManager::AddConfiguration(_("Plugin Manager"), personalityKey + "/plugins");
 }
 
 // class destructor
@@ -160,8 +166,10 @@ cbPlugin* PluginManager::LoadPlugin(const wxString& pluginName)
 void PluginManager::LoadAllPlugins()
 {
     SANITY_CHECK();
+    const wxString& personalityKey = Manager::Get()->GetPersonalityManager()->GetPersonalityKey();
+
     // check if a plugin crashed the app last time
-    wxString probPlugin = ConfigManager::Get()->Read("/plugins/try_to_activate", wxEmptyString);
+    wxString probPlugin = ConfigManager::Get()->Read(personalityKey + "/plugins/try_to_activate", wxEmptyString);
     if (!probPlugin.IsEmpty())
     {
         wxString msg;
@@ -177,7 +185,7 @@ void PluginManager::LoadAllPlugins()
 
         // do not load it if the user has explicitly asked not to...
         wxString baseKey;
-        baseKey << "/plugins/" << m_Plugins[i]->name;
+        baseKey << personalityKey << "/plugins/" << m_Plugins[i]->name;
         bool loadIt = ConfigManager::Get()->Read(baseKey, true);
         
         // if we have a problematic plugin, check if this is it
@@ -191,7 +199,7 @@ void PluginManager::LoadAllPlugins()
 
         if (loadIt && !plug->IsAttached())
 		{
-            ConfigManager::Get()->Write("/plugins/try_to_activate", plug->GetInfo()->title);
+            ConfigManager::Get()->Write(personalityKey + "/plugins/try_to_activate", plug->GetInfo()->title);
 			Manager::Get()->GetMessageManager()->AppendLog(_("%s "), m_Plugins[i]->name.c_str());
             plug->Attach();
 		}
@@ -199,7 +207,7 @@ void PluginManager::LoadAllPlugins()
 	Manager::Get()->GetMessageManager()->Log("");
 
     wxLogNull ln;
-    ConfigManager::Get()->DeleteEntry("/plugins/try_to_activate");
+    ConfigManager::Get()->DeleteEntry(personalityKey + "/plugins/try_to_activate");
 }
 
 void PluginManager::UnloadAllPlugins()
@@ -423,4 +431,3 @@ int PluginManager::Configure()
 */
     return wxID_OK;
 }
-

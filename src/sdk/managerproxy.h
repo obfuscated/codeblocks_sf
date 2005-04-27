@@ -36,6 +36,7 @@ class MacrosManager;
 class MessageManager;
 class ProjectManager;
 class ToolsManager;
+class PersonalityManager;
 
 #ifdef STATIC_SDK
 	#include "Managers/Managers.h"
@@ -88,5 +89,6 @@ typedef GenericManagerProxy<MacrosManager> MacrosManagerProxy;
 typedef GenericManagerProxy<MessageManager> MessageManagerProxy;
 typedef GenericManagerProxy<ProjectManager> ProjectManagerProxy;
 typedef GenericManagerProxy<ToolsManager> ToolsManagerProxy;
+typedef GenericManagerProxy<PersonalityManager> PersonalityManagerProxy;
 
 #endif	// if !defined( __SDK_MANAGERPROXY_H )

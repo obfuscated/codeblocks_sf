@@ -304,8 +304,8 @@
 			<Target title="update">
 				<Option output="C:\Devel\codeblocks\src\CodeBlocks-wx2.6.0.dll"/>
 				<Option working_dir=""/>
-				<Option object_output="C:\Devel\codeblocks\src\\.objs"/>
-				<Option deps_output="C:\Devel\codeblocks\src\\.deps"/>
+				<Option object_output="C:\Devel\codeblocks\src\.objs"/>
+				<Option deps_output="C:\Devel\codeblocks\src\.deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option compiler="0"/>
@@ -1813,6 +1813,16 @@
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk\newfromtemplatedlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\personalitymanager.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\personalitymanager.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

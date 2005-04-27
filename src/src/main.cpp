@@ -49,6 +49,7 @@
 #include <pluginmanager.h>
 #include <templatemanager.h>
 #include <toolsmanager.h>
+#include <personalitymanager.h>
 
 #include "dlgaboutplugin.h"
 #include "dlgabout.h"
@@ -671,59 +672,63 @@ void MainFrame::RemovePluginFromMenus(const wxString& pluginName)
 
 void MainFrame::LoadWindowState()
 {
-    SetSize(ConfigManager::Get()->Read("/main_frame/left", 0L),
-            ConfigManager::Get()->Read("/main_frame/top", 0L),
-            ConfigManager::Get()->Read("/main_frame/width", 640),
-            ConfigManager::Get()->Read("/main_frame/height", 480));
+    const wxString& personalityKey = Manager::Get()->GetPersonalityManager()->GetPersonalityKey();
+
+    SetSize(ConfigManager::Get()->Read(personalityKey + "/main_frame/left", 0L),
+            ConfigManager::Get()->Read(personalityKey + "/main_frame/top", 0L),
+            ConfigManager::Get()->Read(personalityKey + "/main_frame/width", 640),
+            ConfigManager::Get()->Read(personalityKey + "/main_frame/height", 480));
 
 	// sash sizes are set on creation in CreateIDE()
 	DoUpdateLayout();
 
 	// load manager and messages selected page
-	Manager::Get()->GetNotebook()->SetSelection(ConfigManager::Get()->Read("/main_frame/layout/left_block_selection", 0L));
-	m_pMsgMan->SetSelection(ConfigManager::Get()->Read("/main_frame/layout/bottom_block_selection", 0L));
+	Manager::Get()->GetNotebook()->SetSelection(ConfigManager::Get()->Read(personalityKey + "/main_frame/layout/left_block_selection", 0L));
+	m_pMsgMan->SetSelection(ConfigManager::Get()->Read(personalityKey + "/main_frame/layout/bottom_block_selection", 0L));
 
 	// load manager and messages visibility state
-	m_pLeftSash->Show(ConfigManager::Get()->Read("/main_frame/layout/left_block_show", 1));
-	m_pBottomSash->Show(ConfigManager::Get()->Read("/main_frame/layout/bottom_block_show", 1));
+	m_pLeftSash->Show(ConfigManager::Get()->Read(personalityKey + "/main_frame/layout/left_block_show", 1));
+	m_pBottomSash->Show(ConfigManager::Get()->Read(personalityKey + "/main_frame/layout/bottom_block_show", 1));
 
     // the toolbar visibility is handled in CreateIDE
 
     // maximized?
-    if (ConfigManager::Get()->Read("/main_frame/maximized", 0L))
+    if (ConfigManager::Get()->Read(personalityKey + "/main_frame/maximized", 0L))
         Maximize();
 }
 
 void MainFrame::SaveWindowState()
 {
-    ConfigManager::Get()->Write("/main_frame/maximized", IsMaximized());
+    const wxString& personalityKey = Manager::Get()->GetPersonalityManager()->GetPersonalityKey();
+
+    ConfigManager::Get()->Write(personalityKey + "/main_frame/maximized", IsMaximized());
     if (!IsMaximized() && !IsIconized())
     {
-        ConfigManager::Get()->Write("/main_frame/left", GetPosition().x);
-        ConfigManager::Get()->Write("/main_frame/top", GetPosition().y);
-        ConfigManager::Get()->Write("/main_frame/width", GetSize().x);
-        ConfigManager::Get()->Write("/main_frame/height", GetSize().y);
+        ConfigManager::Get()->Write(personalityKey + "/main_frame/left", GetPosition().x);
+        ConfigManager::Get()->Write(personalityKey + "/main_frame/top", GetPosition().y);
+        ConfigManager::Get()->Write(personalityKey + "/main_frame/width", GetSize().x);
+        ConfigManager::Get()->Write(personalityKey + "/main_frame/height", GetSize().y);
     }
 
 	// save block sizes
-	ConfigManager::Get()->Write("/main_frame/layout/left_block_width", m_pLeftSash->GetSize().GetWidth());
-	ConfigManager::Get()->Write("/main_frame/layout/bottom_block_height", m_pBottomSash->GetSize().GetHeight());
+	ConfigManager::Get()->Write(personalityKey + "/main_frame/layout/left_block_width", m_pLeftSash->GetSize().GetWidth());
+	ConfigManager::Get()->Write(personalityKey + "/main_frame/layout/bottom_block_height", m_pBottomSash->GetSize().GetHeight());
 
 	// save manager and messages selected page
-	ConfigManager::Get()->Write("/main_frame/layout/left_block_selection", Manager::Get()->GetNotebook()->GetSelection());
-	ConfigManager::Get()->Write("/main_frame/layout/bottom_block_selection", m_pMsgMan->GetSelection());
+	ConfigManager::Get()->Write(personalityKey + "/main_frame/layout/left_block_selection", Manager::Get()->GetNotebook()->GetSelection());
+	ConfigManager::Get()->Write(personalityKey + "/main_frame/layout/bottom_block_selection", m_pMsgMan->GetSelection());
 
     // save manager and messages visibility state
     // only if *not* in fullscreen mode (in this case the values were saved
     // before going fullscreen)
     if (!IsFullScreen())
     {
-        ConfigManager::Get()->Write("/main_frame/layout/left_block_show", m_pLeftSash->IsShown());
-        ConfigManager::Get()->Write("/main_frame/layout/bottom_block_show", m_pBottomSash->IsShown());
+        ConfigManager::Get()->Write(personalityKey + "/main_frame/layout/left_block_show", m_pLeftSash->IsShown());
+        ConfigManager::Get()->Write(personalityKey + "/main_frame/layout/bottom_block_show", m_pBottomSash->IsShown());
 	}
 
     // toolbar visibility
-	ConfigManager::Get()->Write("/main_frame/layout/toolbar_show", m_pToolbar != 0);
+	ConfigManager::Get()->Write(personalityKey + "/main_frame/layout/toolbar_show", m_pToolbar != 0);
 }
 
 void MainFrame::DoAddPlugin(cbPlugin* plugin)

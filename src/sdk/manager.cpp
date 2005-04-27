@@ -39,6 +39,7 @@
 #include "macrosmanager.h"
 #include "configmanager.h"
 #include "templatemanager.h"
+#include "personalitymanager.h"
 #include "managerproxy.h"
 #include "xtra_classes.h" // Our custom set of wxWidgets classes
 #include "xtra_res.h" // our new ToolBarAddOn handler
@@ -77,6 +78,7 @@ void Manager::Free()
 		ProjectManager::Free();
 		EditorManager::Free();
 		PluginManager::Free();
+		PersonalityManager::Free();
 		MessageManager::Free();
 
 		delete ManagerProxy::Get();
@@ -222,6 +224,11 @@ ToolsManager* Manager::GetToolsManager()
 MacrosManager* Manager::GetMacrosManager()
 {
 	return appShutingDown ? 0 : MacrosManager::Get();
+}
+
+PersonalityManager* Manager::GetPersonalityManager()
+{
+    return appShutingDown ? 0 : PersonalityManager::Get();
 }
 
 wxWindow* Manager::GetNotebookPage(const wxString &name, long style,bool issplit)

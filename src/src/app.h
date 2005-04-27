@@ -62,6 +62,7 @@ class CodeBlocksApp : public wxApp
         void ShowSplashScreen();
         void HideSplashScreen();
         bool CheckResource(const wxString& res);
+        void SetupPersonality(const wxString& personality);
 		bool m_NoDDE; // no DDE
 		bool m_NoAssocs; // no associations check
 		bool m_NoSplash; // no splash screen

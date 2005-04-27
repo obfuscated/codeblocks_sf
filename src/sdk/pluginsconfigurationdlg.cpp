@@ -31,6 +31,7 @@
 #include "manager.h"
 #include "configmanager.h"
 #include "pluginmanager.h"
+#include "personalitymanager.h"
 
 BEGIN_EVENT_TABLE(PluginsConfigurationDlg, wxDialog)
 	EVT_BUTTON(XRCID("btnOK"), PluginsConfigurationDlg::OnOK)
@@ -45,6 +46,8 @@ PluginsConfigurationDlg::PluginsConfigurationDlg(wxWindow* parent)
     PluginManager* man = Manager::Get()->GetPluginManager();
     PluginElementsArray& plugins = man->GetPlugins();
 
+    const wxString& personalityKey = Manager::Get()->GetPersonalityManager()->GetPersonalityKey();
+
     // populate Plugins and Help/Plugins menu
     for (unsigned int i = 0; i < plugins.GetCount(); ++i)
     {
@@ -52,7 +55,7 @@ PluginsConfigurationDlg::PluginsConfigurationDlg(wxWindow* parent)
         list->Append(elem->plugin->GetInfo()->title + ", v" + elem->plugin->GetInfo()->version);
 
         wxString baseKey;
-        baseKey << "/plugins/" << elem->name;
+        baseKey << personalityKey << "/plugins/" << elem->name;
         list->Check(list->GetCount()-1, ConfigManager::Get()->Read(baseKey, true));
     }
 }
@@ -69,15 +72,16 @@ void PluginsConfigurationDlg::OnOK(wxCommandEvent& event)
     PluginManager* man = Manager::Get()->GetPluginManager();
     PluginElementsArray& plugins = man->GetPlugins();
 
+    const wxString& personalityKey = Manager::Get()->GetPersonalityManager()->GetPersonalityKey();
+
     for (int i = 0; i < list->GetCount(); ++i)
     {
         PluginElement* elem = plugins[i];
         wxString baseKey;
-        baseKey << "/plugins/" << elem->name;
+        baseKey << personalityKey << "/plugins/" << elem->name;
         bool checked = list->IsChecked(i);
         ConfigManager::Get()->Write(baseKey, checked);
     }
     
     EndModal(wxID_OK);
 }
-

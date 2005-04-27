@@ -30,8 +30,11 @@
 #include <wx/regex.h>
 #include <wx/filefn.h>
 #include <wx/msgdlg.h>
-#include "../sdk/editormanager.h"
-#include "../sdk/projectmanager.h"
+#include <wx/choicdlg.h>
+#include <configmanager.h>
+#include <editormanager.h>
+#include <projectmanager.h>
+#include <personalitymanager.h>
 
 #ifdef __WXMSW__
 	#include <wx/msw/registry.h>
@@ -49,8 +52,6 @@
 
 #include "globals.h"
 
-#include "../sdk/configmanager.h"
-
 #if wxUSE_CMDLINE_PARSER
 static const wxCmdLineEntryDesc cmdLineDesc[] =
 {
@@ -63,6 +64,7 @@ static const wxCmdLineEntryDesc cmdLineDesc[] =
     { wxCMD_LINE_SWITCH, _T("d"), _T("debug-log"), _T("display application's debug log"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_SWITCH, _T(""), _T("clear-configuration"), _T("completely clear program's configuration"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_OPTION, _T(""), _T("prefix"),  _T("the shared data dir prefix"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
+    { wxCMD_LINE_OPTION, _T("p"), _T("personality"),  _T("the personality to use: \"ask\" or <personality-name>"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
     { wxCMD_LINE_PARAM, _T(""), _T(""),  _T("filename(s)"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE },
     { wxCMD_LINE_NONE }
 };
@@ -368,6 +370,8 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
 					m_NoSplash = parser.Found(_("no-splash-screen"), &val);
 					m_ClearConf = parser.Found(_("clear-configuration"), &val);
 					m_HasDebugLog = parser.Found(_("debug-log"), &val);
+					if (parser.Found(_("personality"), &val))
+                        SetupPersonality(val);
                 }
             }
             break;
@@ -377,6 +381,36 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
     }
 #endif // wxUSE_CMDLINE_PARSER
     return filesInCmdLine ? 1 : 0;
+}
+
+void CodeBlocksApp::SetupPersonality(const wxString& personality)
+{
+    if (personality.CmpNoCase("ask") == 0)
+    {
+#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)
+        // wx < 2.5.x single choice dialog wants wxString*
+        const wxArrayString& list = Manager::Get()->GetPersonalityManager()->GetPersonalitiesList();
+        wxString* strings = new wxString[list.GetCount()];
+        for (unsigned int i = 0; i < list.GetCount(); ++i)
+            strings[i] = list[i];
+#endif
+        // display personality selection dialog
+        wxSingleChoiceDialog dlg(0,
+                                _("Please choose which personality to load:"),
+                                _("Personalities"),
+#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)
+                                list.GetCount(), strings);
+#else
+                                Manager::Get()->GetPersonalityManager()->GetPersonalitiesList());
+#endif
+        if (dlg.ShowModal() == wxID_OK)
+            Manager::Get()->GetPersonalityManager()->SetPersonality(dlg.GetStringSelection());
+#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)
+        delete[] strings;
+#endif
+    }
+    else
+        Manager::Get()->GetPersonalityManager()->SetPersonality(personality, true);
 }
 
 #ifdef __WXMSW__

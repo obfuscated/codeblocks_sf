@@ -13,6 +13,7 @@ class MessageManager;
 class PluginManager;
 class ToolsManager;
 class MacrosManager;
+class PersonalityManager;
 class wxMenu;
 class wxMenuBar;
 class wxToolBar;
@@ -33,6 +34,7 @@ class DLLIMPORT Manager
 		PluginManager* GetPluginManager();
 		ToolsManager* GetToolsManager();
 		MacrosManager* GetMacrosManager();
+		PersonalityManager* GetPersonalityManager();
 		static bool isappShutingDown();
 		// stupid typo ;-P		
 		static bool isappShuttingDown();

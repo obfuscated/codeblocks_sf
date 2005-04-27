@@ -50,6 +50,7 @@ extern "C"
 	MANAGERS_API MessageManager* GetMessageManager();
 	MANAGERS_API ProjectManager* GetProjectManager();
 	MANAGERS_API ToolsManager* GetToolsManager();
+	MANAGERS_API PersonalityManager* GetPersonalityManager();
 
 	MANAGERS_API void SetManager( Manager* manager );
 	MANAGERS_API void SetConfigBase( wxConfigBase* config );
@@ -60,6 +61,7 @@ extern "C"
 	MANAGERS_API void SetMessageManager( MessageManager* manager );
 	MANAGERS_API void SetProjectManager( ProjectManager* manager );
 	MANAGERS_API void SetToolsManager( ToolsManager* manager );
+	MANAGERS_API void SetPersonalityManager( PersonalityManager* manager );
 }
 
 namespace Managers
@@ -100,6 +102,10 @@ namespace Managers
 	// Tools specializations
 	inline ToolsManager* Get(ToolsManager *overloader) { return GetToolsManager(); }
 	inline void Set( ToolsManager* manager ) { SetToolsManager( manager ); }
+
+	// Personality specializations
+	inline PersonalityManager* Get(PersonalityManager *overloader) { return GetPersonalityManager(); }
+	inline void Set( PersonalityManager* manager ) { SetPersonalityManager( manager ); }
 };
 
 #endif	// if !defined( __MANAGERS_MANAGERS_H )
