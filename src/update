@@ -53,17 +53,17 @@ strip output/*.so
 strip output/share/CodeBlocks/plugins/*.so
 
 echo Creating launch-scripts
-echo -e "#!/bin/sh\n\n" > output/run.sh
+echo -e "#!/bin/sh\n" > output/run.sh
 echo -n "APP_DIR=" >> output/run.sh
 echo `pwd`/output >> output/run.sh
 echo "export LD_LIBRARY_PATH=\$APP_DIR:\$LD_LIBRARY_PATH" >> output/run.sh
-echo "\$APP_DIR/codeblocks.exe" >> output/run.sh
+echo "\$APP_DIR/codeblocks.exe \$@" >> output/run.sh
 chmod +x output/run.sh
-echo -e "#!/bin/sh\n\n" > devel/run.sh
+echo -e "#!/bin/sh\n" > devel/run.sh
 echo -n "APP_DIR=" >> devel/run.sh
 echo `pwd`/devel >> devel/run.sh
 echo "export LD_LIBRARY_PATH=\$APP_DIR:\$LD_LIBRARY_PATH" >> devel/run.sh
-echo "\$APP_DIR/codeblocks.exe" >> devel/run.sh
+echo "\$APP_DIR/codeblocks.exe \$@" >> devel/run.sh
 chmod +x devel/run.sh
 
 ZIPCMD=
