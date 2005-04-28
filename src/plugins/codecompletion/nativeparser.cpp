@@ -25,6 +25,7 @@
 
 #include "nativeparser.h"
 #include <manager.h>
+#include <configmanager.h>
 #include <projectmanager.h>
 #include <pluginmanager.h>
 #include <messagemanager.h>
@@ -220,8 +221,17 @@ void NativeParser::AddParser(cbProject* project)
 	Manager::Get()->GetMessageManager()->DebugLog(_("Start parsing project %s"), project->GetTitle().c_str());
 	int fcount = 0;
 	Parser* parser = new Parser(this);
+	m_Parsers[project] = parser;
+	m_ParsersFilenames[project] = project->GetFilename();
 	AddCompilerDirs(parser, project);
 	parser->StartTimer();
+
+    if (ConfigManager::Get()->Read("/code_completion/use_cache", 0L) != 0)
+    {
+        if (LoadCachedData(parser, project))
+            return;
+    }
+
 	// parse header files first
 	for (int i = 0; i < project->GetFilesCount(); ++i)
 	{
@@ -244,7 +254,6 @@ void NativeParser::AddParser(cbProject* project)
 			parser->Parse(pf->file.GetFullPath());
         }
 	}
-	m_Parsers[project] = parser;
 	if (fcount == 0)
         Manager::Get()->GetMessageManager()->DebugLog(_("End parsing project %s (no header files found)"), project->GetTitle().c_str());
 }
@@ -256,7 +265,17 @@ void NativeParser::RemoveParser(cbProject* project)
 	if (!parser)
 		return;
 
+    if (ConfigManager::Get()->Read("/code_completion/use_cache", 0L) != 0)
+    {
+        if (ConfigManager::Get()->Read("/code_completion/update_cache_always", 0L) != 0 ||
+            parser->CacheNeedsUpdate())
+        {
+            SaveCachedData(parser, m_ParsersFilenames[project]);
+        }
+    }
+
 	m_Parsers.erase(project);
+	m_ParsersFilenames.erase(project);
 	if (parser)
 		delete parser;
     if (m_pClassBrowser)
@@ -325,6 +344,60 @@ Parser* NativeParser::FindParserFromActiveEditor()
     cbEditor* ed = edMan->GetBuiltinActiveEditor();
 	return FindParserFromEditor(ed);
 }	
+
+bool NativeParser::LoadCachedData(Parser* parser, cbProject* project)
+{
+    if (!parser || !project)
+        return false;
+
+    wxFileName projectCache = project->GetFilename();
+    projectCache.SetExt("cbCache");
+    
+    wxLogNull ln;
+    wxFile f(projectCache.GetFullPath(), wxFile::read);
+    if (!f.IsOpened())
+        return false;
+    
+    // read cache file
+    Manager::Get()->GetMessageManager()->DebugLog(_("Using parser's existing cache: %s"), projectCache.GetFullPath().c_str());
+    bool ret = parser->ReadFromCache(&f);
+    DisplayStatus(parser, project);
+    return ret;
+}
+
+bool NativeParser::SaveCachedData(Parser* parser, const wxString& projectFilename)
+{
+    if (!parser)
+        return false;
+
+    wxFileName projectCache = projectFilename;
+    projectCache.SetExt("cbCache");
+    
+    wxLogNull ln;
+    wxFile f(projectCache.GetFullPath(), wxFile::write);
+    if (!f.IsOpened())
+    {
+        Manager::Get()->GetMessageManager()->DebugLog(_("Failed updating parser's cache: %s"), projectCache.GetFullPath().c_str());
+        return false;
+    }
+    
+    // write cache file
+    Manager::Get()->GetMessageManager()->DebugLog(_("Updating parser's cache: %s"), projectCache.GetFullPath().c_str());
+    return parser->WriteToCache(&f);
+}
+
+void NativeParser::DisplayStatus(Parser* parser, cbProject* project)
+{
+    if (!parser || !project)
+        return;
+    long int tim = parser->GetElapsedTime();
+    Manager::Get()->GetMessageManager()->DebugLog(_("Done parsing project %s (%d total parsed files, %d tokens in %d.%d seconds)."),
+                    project->GetTitle().c_str(),
+                    parser->GetFilesCount(),
+                    parser->GetTokens().GetCount(),
+                    tim / 1000,
+                    tim % 1000);
+}
 
 int NativeParser::MarkItemsByAI(bool reallyUseAI)
 {
@@ -994,15 +1067,7 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
 	{
 		cbProject* project = FindProjectFromParser(parser);
 		if (project)
-		{
-			long int tim = parser->GetElapsedTime();
-			Manager::Get()->GetMessageManager()->DebugLog(_("Done parsing project %s (%d total parsed files, %d tokens in %d.%d seconds)."),
-							project->GetTitle().c_str(),
-							parser->GetFilesCount(),
-							parser->GetTokens().GetCount(),
-							tim / 1000,
-							tim % 1000);
-		}
+            DisplayStatus(parser, project);
 		else
 			Manager::Get()->GetMessageManager()->DebugLog(_("Parser aborted (project closed)."));
 

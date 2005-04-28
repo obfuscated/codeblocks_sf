@@ -96,6 +96,8 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent)
 	XRCCTRL(*this, "chkCaseSensitive", wxCheckBox)->SetValue(m_Parser.Options().caseSensitive);
 	XRCCTRL(*this, "chkInheritance", wxCheckBox)->SetValue(m_Parser.ClassBrowserOptions().showInheritance);
 	XRCCTRL(*this, "cmbCBView", wxComboBox)->SetSelection(m_Parser.ClassBrowserOptions().viewFlat ? 0 : 1);
+	XRCCTRL(*this, "chkUseCache", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/code_completion/use_cache", 0L));
+	XRCCTRL(*this, "chkAlwaysUpdateCache", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/code_completion/update_cache_always", 0L));
 
     wxColour color(ConfigManager::Get()->Read("/code_completion/color/red", 0xFF),
     				ConfigManager::Get()->Read("/code_completion/color/green", 0xFF),
@@ -164,6 +166,9 @@ void CCOptionsDlg::OnOK(wxCommandEvent& event)
 	m_Parser.ClassBrowserOptions().showInheritance = XRCCTRL(*this, "chkInheritance", wxCheckBox)->GetValue();
 	m_Parser.ClassBrowserOptions().viewFlat = XRCCTRL(*this, "cmbCBView", wxComboBox)->GetSelection() == 0;
 	m_Parser.WriteOptions();
+
+	ConfigManager::Get()->Write("/code_completion/use_cache", XRCCTRL(*this, "chkUseCache", wxCheckBox)->GetValue());
+	ConfigManager::Get()->Write("/code_completion/update_cache_always", XRCCTRL(*this, "chkAlwaysUpdateCache", wxCheckBox)->GetValue());
 
     ConfigManager::Get()->Write("/code_completion/color/red",		XRCCTRL(*this, "btnColor", wxButton)->GetBackgroundColour().Red());
     ConfigManager::Get()->Write("/code_completion/color/green",	XRCCTRL(*this, "btnColor", wxButton)->GetBackgroundColour().Green());

@@ -8,13 +8,13 @@
       <object class="sizeritem">
         <object class="wxNotebook">
           <object class="notebookpage">
-            <label>Code completion</label>
-            <object class="wxPanel" name="tabCC">
+            <label>Parser</label>
+            <object class="wxPanel" name="tabParser">
               <object class="wxBoxSizer">
                 <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
                   <object class="wxStaticBoxSizer">
-                    <label>C++ Parser options</label>
+                    <label>C/C++ Parser options</label>
                     <orient>wxVERTICAL</orient>
                     <object class="sizeritem">
                       <object class="wxBoxSizer">
@@ -63,6 +63,14 @@
                   <flag>wxALL|wxEXPAND</flag>
                   <border>8</border>
                 </object>
+              </object>
+            </object>
+          </object>
+          <object class="notebookpage">
+            <label>Code completion</label>
+            <object class="wxPanel" name="tabCC">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
                   <object class="wxStaticBoxSizer">
                     <label>Code completion options</label>
@@ -157,7 +165,7 @@
                       <border>8</border>
                     </object>
                   </object>
-                  <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <flag>wxALL|wxEXPAND</flag>
                   <border>8</border>
                 </object>
               </object>
@@ -218,6 +226,37 @@
             </object>
           </object>
           <usenotebooksizer>1</usenotebooksizer>
+          <object class="notebookpage">
+            <label>Cache</label>
+            <object class="wxPanel" name="tabCache">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxStaticBoxSizer">
+                    <label>Cache file options</label>
+                    <orient>wxVERTICAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkUseCache">
+                        <label>Use cache</label>
+                      </object>
+                      <flag>wxALL|wxGROW</flag>
+                      <border>8</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkAlwaysUpdateCache">
+                        <label>Always update cache</label>
+                        <tooltip>If checked, the cache file will be updated every time the project is closed. If not, it will be updated only if needed.</tooltip>
+                      </object>
+                      <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                      <border>8</border>
+                    </object>
+                  </object>
+                  <flag>wxALL|wxGROW</flag>
+                  <border>8</border>
+                </object>
+              </object>
+            </object>
+          </object>
         </object>
         <option>1</option>
         <flag>wxALL|wxEXPAND</flag>

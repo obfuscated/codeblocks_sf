@@ -52,7 +52,10 @@ Parser::Parser(wxEvtHandler* parent)
 #ifndef STANDALONE
 	,m_pImageList(0L)
 #endif
-    ,m_abort_flag(false)
+    ,m_abort_flag(false),
+    m_UsingCache(false),
+    m_CacheFilesCount(0),
+    m_CacheTokensCount(0)
 {
 	ReadOptions();
 #ifndef STANDALONE
@@ -176,6 +179,201 @@ void Parser::WriteOptions()
 	ConfigManager::Get()->Write("/code_completion/browser_show_inheritance", m_BrowserOptions.showInheritance);
 	ConfigManager::Get()->Write("/code_completion/browser_view_flat", m_BrowserOptions.viewFlat);
 #endif // STANDALONE
+}
+
+#define TOKEN_REC 0xFFFFFFFE
+#define FILE_REC 0xFFFFFFFD
+
+bool Parser::ReadFromCache(wxFile* f)
+{
+    Clear();
+
+    // m_Tokens
+    while (!f->Eof())
+    {
+        int rec;
+        if (!LoadIntFromFile(f, &rec) || rec != (int)TOKEN_REC)
+            break;
+        if (!LoadTokenFromCache(f, 0))
+            break;
+    }
+
+    // m_ParsedFiles
+    while (!f->Eof())
+    {
+        wxString file;
+        if (!LoadStringFromFile(f, file))
+            break;
+        m_ParsedFiles.Add(file);
+    }
+
+    LinkInheritance(); // fix ancestors relationships
+    
+    m_UsingCache = true;
+    m_CacheFilesCount = m_ParsedFiles.GetCount();
+    m_CacheTokensCount = m_Tokens.GetCount();
+
+    return true;
+}
+
+bool Parser::CacheNeedsUpdate()
+{
+    if (m_UsingCache)
+    {
+        if (m_CacheFilesCount == (int)m_ParsedFiles.GetCount() &&
+            m_CacheTokensCount == (int)m_Tokens.GetCount())
+        {
+            // in-mem data and cache seem to be in sync
+            // @warning: this is *not* bulletproof!
+            // consider a token name change, for example...
+            // maybe use a CRC of some kind?
+            return false;
+        }
+    }
+    return true;
+}
+
+bool Parser::WriteToCache(wxFile* f)
+{
+    // m_Tokens
+    unsigned int tcount = m_Tokens.GetCount();
+    for (unsigned int i = 0; i < tcount; ++i)
+    {
+        Token* token = m_Tokens[i];
+        // only save globals (it's recursive)
+        if (!token->m_pParent && !token->m_IsTemporary)
+        {
+            SaveIntToFile(f, TOKEN_REC);
+            SaveTokenToCache(f, token);
+        }
+    }
+
+    SaveIntToFile(f, FILE_REC);
+
+    // m_ParsedFiles
+    tcount = m_ParsedFiles.GetCount();
+    for (unsigned int i = 0; i < tcount; ++i)
+    {
+        SaveStringToFile(f, m_ParsedFiles[i]);
+    }
+
+    return true;
+}
+
+Token* Parser::LoadTokenFromCache(wxFile* f, Token* parent)
+{
+//    int rec;
+//    if (!LoadIntFromFile(f, &rec) || rec != (int)TOKEN_REC)
+//        return 0;
+
+    Token* token = new Token;
+    token->m_pParent = parent;
+    
+    bool ok = false;
+    // this loop actually runs only once
+    // it is a block that if we break before ok==true, the token is considered
+    // invalid and deleted.
+    // it is a simple way to avoid goto's and stuff...
+    while (true)
+    {
+        if (!LoadStringFromFile(f, token->m_Type)) break;
+        if (!LoadStringFromFile(f, token->m_ActualType)) break;
+        if (!LoadStringFromFile(f, token->m_Name)) break;
+        if (!LoadStringFromFile(f, token->m_DisplayName)) break;
+        if (!LoadStringFromFile(f, token->m_Args)) break;
+        if (!LoadStringFromFile(f, token->m_AncestorsString)) break;
+        if (!LoadStringFromFile(f, token->m_Filename)) break;
+        if (!LoadIntFromFile(f, (int*)&token->m_Line)) break;
+        if (!LoadStringFromFile(f, token->m_ImplFilename)) break;
+        if (!LoadIntFromFile(f, (int*)&token->m_ImplLine)) break;
+        if (!LoadIntFromFile(f, (int*)&token->m_Scope)) break;
+        if (!LoadIntFromFile(f, (int*)&token->m_TokenKind)) break;
+        if (!LoadIntFromFile(f, (int*)&token->m_IsOperator)) break;
+        if (!LoadIntFromFile(f, (int*)&token->m_IsLocal)) break;
+        
+        ok = true;
+        m_Tokens.Add(token);
+        if (parent)
+            parent->m_Children.Add(token);
+
+        int ccount;
+        if (!LoadIntFromFile(f, &ccount)) break;
+
+        for (int i = 0; i < ccount; ++i)
+            LoadTokenFromCache(f, token);
+        
+        break; // no looping
+    }
+
+    if (!ok)
+    {
+        delete token;
+        token = 0;
+    }
+
+    return token;
+}
+
+void Parser::SaveTokenToCache(wxFile* f, Token* token)
+{
+//    SaveIntToFile(f, TOKEN_REC);
+
+    SaveStringToFile(f, token->m_Type);
+    SaveStringToFile(f, token->m_ActualType);
+    SaveStringToFile(f, token->m_Name);
+    SaveStringToFile(f, token->m_DisplayName);
+    SaveStringToFile(f, token->m_Args);
+    SaveStringToFile(f, token->m_AncestorsString);
+    SaveStringToFile(f, token->m_Filename);
+    SaveIntToFile(f, token->m_Line);
+    SaveStringToFile(f, token->m_ImplFilename);
+    SaveIntToFile(f, token->m_ImplLine);
+    SaveIntToFile(f, token->m_Scope);
+    SaveIntToFile(f, token->m_TokenKind);
+    SaveIntToFile(f, token->m_IsOperator);
+    SaveIntToFile(f, token->m_IsLocal);
+
+    int tcount = (int)token->m_Children.GetCount();
+    SaveIntToFile(f, tcount); // save num of children
+
+    for (int i = 0; i < tcount; ++i)
+    {
+        Token* tok = token->m_Children[i];
+        SaveTokenToCache(f, tok);
+    }
+}
+
+inline void Parser::SaveStringToFile(wxFile* f, const wxString& str)
+{
+    int size = str.Length();
+    SaveIntToFile(f, size);
+    f->Write(str.c_str(), size);
+}
+
+inline void Parser::SaveIntToFile(wxFile* f, int i)
+{
+    f->Write(&i, sizeof(int));
+}
+
+inline bool Parser::LoadStringFromFile(wxFile* f, wxString& str)
+{
+    int size;
+    if (!LoadIntFromFile(f, &size))
+        return false;
+    bool ok = true;
+    if (size > 0 && size < 512)
+    {
+        static char buf[512];
+        ok = f->Read(buf, size) == size;
+        buf[size] = '\0';
+        str = buf;
+    }
+    return ok;
+}
+
+inline bool Parser::LoadIntFromFile(wxFile* f, int* i)
+{
+    return f->Read(i, sizeof(int)) == sizeof(int);
 }
 
 unsigned int Parser::GetThreadsCount()
@@ -601,6 +799,10 @@ void Parser::Clear()
 
 	wxSafeYield();
 	ConnectEvents();
+	
+	m_UsingCache = false;
+	m_CacheFilesCount = 0;
+	m_CacheTokensCount = 0;
 }
 
 void Parser::ClearTemporaries()
@@ -862,6 +1064,8 @@ void Parser::AddTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, 
 
 void Parser::AddTreeNode(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* token, bool childrenOnly)
 {
+    if (!token)
+        return;
 	ClassTreeData* ctd = new ClassTreeData(token);
 	int image = -1;
 #ifndef STANDALONE

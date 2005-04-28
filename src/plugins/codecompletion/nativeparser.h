@@ -12,6 +12,7 @@ class Parser;
 class Token;
 
 WX_DECLARE_HASH_MAP(cbProject*, Parser*, wxPointerHash, wxPointerEqual, ParsersMap);
+WX_DECLARE_HASH_MAP(cbProject*, wxString, wxPointerHash, wxPointerEqual, ParsersFilenameMap);
 
 enum ParserTokenType
 {
@@ -68,11 +69,15 @@ class NativeParser : public wxEvtHandler
 		int FindCurrentBlockStart(cbEditor* editor);
 		int DoInheritanceAI(Token* parentToken, Token* scopeToken, const wxString& searchText = wxEmptyString, bool caseSensitive = true);
 		void AddCompilerDirs(Parser* parser, cbProject* project);
+		bool LoadCachedData(Parser* parser, cbProject* project);
+		bool SaveCachedData(Parser* parser, const wxString& projectFilename);
+		void DisplayStatus(Parser* parser, cbProject* project);
 		void OnThreadStart(wxCommandEvent& event);
 		void OnThreadEnd(wxCommandEvent& event);
 		void OnParserEnd(wxCommandEvent& event);
 		
 		ParsersMap m_Parsers;
+		ParsersFilenameMap m_ParsersFilenames;
 		int m_EditorStartWord;
 		int m_EditorEndWord;
 		wxString m_CCItems;

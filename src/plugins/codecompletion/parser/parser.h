@@ -6,6 +6,7 @@
 #include <wx/event.h>
 #include <wx/timer.h>
 #include <wx/dynarray.h>
+#include <wx/file.h>
 #include "parserthread.h"
 
 #ifndef STANDALONE
@@ -82,6 +83,9 @@ class Parser : public wxEvtHandler
 		void Clear();
 		void ReadOptions();
 		void WriteOptions();
+		bool ReadFromCache(wxFile* f);
+		bool WriteToCache(wxFile* f);
+		bool CacheNeedsUpdate();
 
 		void StartTimer(){ wxStartTimer(); }
 		unsigned long int GetElapsedTime(){ return wxGetElapsedTime(); }
@@ -132,6 +136,12 @@ class Parser : public wxEvtHandler
 		void AddTreeNode(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* token, bool childrenOnly = false);
 		void ScheduleThreads();
 		void LinkInheritance(bool tempsOnly = false);
+		Token* LoadTokenFromCache(wxFile* f, Token* parent);
+		void SaveTokenToCache(wxFile* f, Token* token);
+		inline void SaveStringToFile(wxFile* f, const wxString& str);
+		inline void SaveIntToFile(wxFile* f, int i);
+		inline bool LoadStringFromFile(wxFile* f, wxString& str);
+		inline bool LoadIntFromFile(wxFile* f, int* i);
 		ParserOptions m_Options;
 		BrowserOptions m_BrowserOptions;
 		unsigned int m_MaxThreadsCount;
@@ -147,6 +157,11 @@ class Parser : public wxEvtHandler
 		wxImageList* m_pImageList;
     protected:
         bool m_abort_flag;
+        // the following three members are used to detect changes between
+        // in-mem data and cache
+        bool m_UsingCache; // true if loaded from cache
+        int m_CacheFilesCount; // m_ParsedFiles.GetCount() when (if) loaded from cache
+        int m_CacheTokensCount; // m_Tokens.GetCount() when (if) loaded from cache
 
 #endif // STANDALONE
 		
