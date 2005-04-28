@@ -1056,7 +1056,7 @@ int EditorManager::Find(cbEditor* editor, cbFindReplaceData* data)
                     msg = _("Text not found.\nSearch from the start of the document?");
                 else
                     msg = _("Text not found.\nSearch from the end of the document?");
-                if (wxMessageBox(msg, _("Result"), wxYES_NO | wxICON_QUESTION) == wxYES)
+                if (wxMessageBox(msg, _("Result"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK)
                 {
                     if (data->directionDown)
                     {
