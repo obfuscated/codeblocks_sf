@@ -1027,11 +1027,17 @@ int CompilerGCC::CreateDist()
 	DoPrepareQueue();
 
     wxString cmd;
-    wxString make = CompilerFactory::Compilers[m_CompilerIdx]->GetPrograms().MAKE;
-    cmd << make << " -f " << m_LastTempMakefile << " dist";
-    m_Queue.Add(cmd);
+    if (CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches().buildMethod == cbmUseMake)
+    {
+        wxString make = CompilerFactory::Compilers[m_CompilerIdx]->GetPrograms().MAKE;
+        cmd << make << " -f " << m_LastTempMakefile << " dist";
+        m_Queue.Add(cmd);
+        return DoRunQueue();
+    }
+    else
+        wxMessageBox(_("\"Create distribution\" is only valid when using GNU \"make\"..."));
 
-    return DoRunQueue();
+    return -1;
 }
 
 void CompilerGCC::OnExportMakefile(wxCommandEvent& event)

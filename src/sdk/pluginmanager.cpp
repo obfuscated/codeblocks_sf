@@ -386,7 +386,6 @@ void PluginManager::NotifyPlugins(CodeBlocksEvent& event)
             sendEvt = false;
         }
     }
-	wxSafeYield(); // it is so simple...
 }
 
 cbMimePlugin* PluginManager::GetMIMEHandlerForFile(const wxString& filename)

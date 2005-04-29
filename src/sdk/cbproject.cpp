@@ -87,6 +87,7 @@ cbProject::cbProject(const wxString& filename)
 cbProject::~cbProject()
 {
 	NotifyPlugins(cbEVT_PROJECT_CLOSE);
+	wxSafeYield();
 	ClearAllProperties();
 }
 
