@@ -171,7 +171,11 @@ bool DoRememberExpandedNodes(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArr
         
     wxString originalPath = path;
     bool found = false;
+#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)	
     long int cookie = 0;
+#else
+    wxTreeItemIdValue cookie; //2.6.0
+#endif
     wxTreeItemId child = tree->GetFirstChild(parent, cookie);
     while (child)
     {
@@ -216,7 +220,11 @@ void DoExpandRememberedNode(wxTreeCtrl* tree, const wxTreeItemId& parent, const 
 
         //Manager::Get()->GetMessageManager()->Log(mltDevDebug, "%s, %s", folder.c_str(), tmpPath.c_str());
 
-        long int cookie = 0;
+#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)	
+	    long int cookie = 0;
+#else
+	    wxTreeItemIdValue cookie; //2.6.0
+#endif
         wxTreeItemId child = tree->GetFirstChild(parent, cookie);
         while (child)
         {
