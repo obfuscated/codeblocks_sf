@@ -431,6 +431,16 @@ int DebuggerGDB::Debug()
 	wxString out;
 	m_TimerPollDebugger.Start(100);
 	SendCommand("set confirm off");
+	if (target->GetTargetType() == ttConsoleOnly)
+        SendCommand("set new-console on");
+
+    // pass init-commands
+    wxString init = ConfigManager::Get()->Read("debugger_gdb/init_commands", "");
+    wxArrayString initCmds = GetArrayFromString(init, '\n');
+    for (unsigned int i = 0; i < initCmds.GetCount(); ++i)
+    {
+        SendCommand(initCmds[i]);
+    }
 
 	// add as include dirs all open project base dirs
 	ProjectsArray* projects = prjMan->GetProjects();

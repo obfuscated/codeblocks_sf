@@ -6,6 +6,30 @@
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
+        <object class="wxStaticBoxSizer">
+          <label>Initial GDB commands</label>
+          <orient>wxVERTICAL</orient>
+          <object class="sizeritem">
+            <object class="wxTextCtrl" name="txtInit">
+              <style>wxTE_MULTILINE</style>
+            </object>
+            <option>1</option>
+            <flag>wxALL|wxGROW</flag>
+            <border>8</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxStaticText">
+              <label>These commands will be sent to GDB on each session start</label>
+              <fg>#800000</fg>
+            </object>
+            <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+            <border>8</border>
+          </object>
+        </object>
+        <flag>wxALL|wxGROW</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
         <object class="wxFlexGridSizer">
           <cols>1</cols>
           <vgap>8</vgap>
