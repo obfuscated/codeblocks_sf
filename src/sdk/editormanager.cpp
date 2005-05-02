@@ -797,9 +797,10 @@ int EditorManager::ShowFindDialog(bool replace)
 	wxString wordAtCursor = control->GetTextRange(wordStart, wordEnd);
     bool hasSelection = control->GetSelectionStart() != control->GetSelectionEnd();
     // if selected text is the last searched text, don't suggest "search in selection"
-    if (m_LastFindReplaceData &&
+    if ((m_LastFindReplaceData &&
         !control->GetSelectedText().IsEmpty() &&
         control->GetSelectedText() == m_LastFindReplaceData->findText)
+        || control->GetSelectedText() == wordAtCursor)
     {
         hasSelection = false;
     }
