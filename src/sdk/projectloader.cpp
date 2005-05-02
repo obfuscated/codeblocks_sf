@@ -608,6 +608,8 @@ bool ProjectLoader::Save(const wxString& filename)
         buffer << '\t' << '\t' << '\t' << '\t' << "<Option compiler=\"" << target->GetCompilerIndex() << "\"/>" << '\n';
         if (!target->GetExecutionParameters().IsEmpty())
             buffer << '\t' << '\t' << '\t' << '\t' << "<Option parameters=\"" << FixEntities(target->GetExecutionParameters()) << "\"/>" << '\n';
+        if (!target->GetHostApplication().IsEmpty())
+            buffer << '\t' << '\t' << '\t' << '\t' << "<Option host_application=\"" << FixEntities(target->GetHostApplication()) << "\"/>" << '\n';
         if (!target->GetIncludeInTargetAll())
             buffer << '\t' << '\t' << '\t' << '\t' << "<Option includeInTargetAll=\"0\"/>" << '\n';
         if ((target->GetTargetType() == ttStaticLib || target->GetTargetType() == ttDynamicLib) && target->GetCreateDefFile())
