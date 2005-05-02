@@ -1164,6 +1164,24 @@
 			<Option link="0"/>
 			<Option target="plugin_DebuggerGDB"/>
 		</Unit>
+		<Unit filename="plugins\debuggergdb\resources\debugger_options_dlg.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\resources\debugger_toolbar.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\resources\debugger_toolbar_16x16.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
 		<Unit filename="plugins\debuggergdb\resources\images\16x16\dbgnext.png">
 			<Option compilerVar=""/>
 			<Option compile="0"/>

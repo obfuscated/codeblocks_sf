@@ -1682,14 +1682,7 @@ void MainFrame::OnToggleBar(wxCommandEvent& event)
     }
 	else if (event.GetId() == idViewToolMain)
 	{
-		if (m_pToolbar)
-		{
-			SetToolBar(0L);
-			delete m_pToolbar;
-			m_pToolbar = 0L;
-		}
-		else
-			CreateToolbars();
+        m_pToolbar->Show(event.IsChecked());
 	}
 
 	DoUpdateLayout();
