@@ -24,6 +24,7 @@
 */
 
 #include "classbrowser.h" // class's header file
+#include "nativeparser.h"
 #include <wx/intl.h>
 #include <wx/notebook.h>
 #include <wx/sizer.h>
@@ -41,21 +42,24 @@ int idMenuRefreshTree = wxNewId();
 int idCBViewInheritance = wxNewId();
 int idCBViewModeFlat = wxNewId();
 int idCBViewModeStructured = wxNewId();
+int idMenuForceReparse = wxNewId();
 
 BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
     EVT_TREE_ITEM_RIGHT_CLICK(ID_ClassBrowser, ClassBrowser::OnTreeItemRightClick)
     EVT_MENU(idMenuJumpToDeclaration, ClassBrowser::OnJumpTo)
     EVT_MENU(idMenuJumpToImplementation, ClassBrowser::OnJumpTo)
     EVT_MENU(idMenuRefreshTree, ClassBrowser::OnRefreshTree)
+    EVT_MENU(idMenuForceReparse, ClassBrowser::OnForceReparse)
     EVT_MENU(idCBViewInheritance, ClassBrowser::OnCBViewMode)
     EVT_MENU(idCBViewModeFlat, ClassBrowser::OnCBViewMode)
     EVT_MENU(idCBViewModeStructured, ClassBrowser::OnCBViewMode)
 END_EVENT_TABLE()
 
 // class constructor
-ClassBrowser::ClassBrowser(wxNotebook* parent)
+ClassBrowser::ClassBrowser(wxNotebook* parent, NativeParser* np)
     : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxCLIP_CHILDREN),
     m_Parent(parent),
+    m_NativeParser(np),
 	m_pParser(0L)
 {
     wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
@@ -144,6 +148,12 @@ void ClassBrowser::ShowMenu(wxTreeItemId id, const wxPoint& pt)
 	menu->Append(wxNewId(), _("&View options"), sub);
     menu->Append(idMenuRefreshTree, _("&Refresh tree"));
 
+    if (id == m_Tree->GetRootItem())
+    {
+        menu->AppendSeparator();
+        menu->Append(idMenuForceReparse, _("Re-parse now"));
+    }
+
 	menu->Check(idCBViewInheritance, m_pParser ? m_pParser->ClassBrowserOptions().showInheritance : false);
 	sub->Check(idCBViewModeFlat, m_pParser ? m_pParser->ClassBrowserOptions().viewFlat : false);
 	sub->Check(idCBViewModeStructured, m_pParser ? !m_pParser->ClassBrowserOptions().viewFlat : false);
@@ -195,6 +205,12 @@ void ClassBrowser::OnJumpTo(wxCommandEvent& event)
 void ClassBrowser::OnRefreshTree(wxCommandEvent& event)
 {
 	Update();
+}
+
+void ClassBrowser::OnForceReparse(wxCommandEvent& event)
+{
+    if (m_NativeParser)
+        m_NativeParser->ForceReparseActiveProject();
 }
 
 void ClassBrowser::OnCBViewMode(wxCommandEvent& event)

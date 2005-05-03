@@ -33,12 +33,13 @@ class NativeParser : public wxEvtHandler
 		NativeParser();
 		~NativeParser();
 
-		void AddParser(cbProject* project);
-		void RemoveParser(cbProject* project);
+		void AddParser(cbProject* project, bool useCache = true);
+		void RemoveParser(cbProject* project, bool useCache = true);
 		void ClearParsers();
 		void RereadParserOptions();
 		void AddFileToParser(cbProject* project, const wxString& filename);
 		void RemoveFileFromParser(cbProject* project, const wxString& filename);
+		void ForceReparseActiveProject();
 
 		int MarkItemsByAI(bool reallyUseAI = true);
 		

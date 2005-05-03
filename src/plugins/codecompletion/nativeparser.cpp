@@ -58,7 +58,7 @@ NativeParser::~NativeParser()
 void NativeParser::CreateClassBrowser()
 {
 	if (!m_pClassBrowser)
-		m_pClassBrowser = new ClassBrowser(Manager::Get()->GetNotebook());
+		m_pClassBrowser = new ClassBrowser(Manager::Get()->GetNotebook(), this);
 }
 
 void NativeParser::RemoveClassBrowser(bool appShutDown)
@@ -209,7 +209,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
 		Manager::Get()->GetMessageManager()->DebugLog(_("No compilers found!"));
 }
 
-void NativeParser::AddParser(cbProject* project)
+void NativeParser::AddParser(cbProject* project, bool useCache)
 {
 	if (!project)
 		return;
@@ -226,7 +226,7 @@ void NativeParser::AddParser(cbProject* project)
 	AddCompilerDirs(parser, project);
 	parser->StartTimer();
 
-    if (ConfigManager::Get()->Read("/code_completion/use_cache", 0L) != 0)
+    if (useCache && ConfigManager::Get()->Read("/code_completion/use_cache", 0L) != 0)
     {
         if (LoadCachedData(parser, project))
             return;
@@ -258,14 +258,14 @@ void NativeParser::AddParser(cbProject* project)
         Manager::Get()->GetMessageManager()->DebugLog(_("End parsing project %s (no header files found)"), project->GetTitle().c_str());
 }
 
-void NativeParser::RemoveParser(cbProject* project)
+void NativeParser::RemoveParser(cbProject* project, bool useCache)
 {
 	// check if we already have a parser for this project
 	Parser* parser = m_Parsers[project];
 	if (!parser)
 		return;
 
-    if (ConfigManager::Get()->Read("/code_completion/use_cache", 0L) != 0)
+    if (useCache && ConfigManager::Get()->Read("/code_completion/use_cache", 0L) != 0)
     {
         if (ConfigManager::Get()->Read("/code_completion/update_cache_always", 0L) != 0 ||
             parser->CacheNeedsUpdate())
@@ -297,6 +297,16 @@ void NativeParser::RemoveFileFromParser(cbProject* project, const wxString& file
 	if (!parser)
 		return;
 	parser->RemoveFile(filename);
+}
+
+void NativeParser::ForceReparseActiveProject()
+{
+    cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+    if (prj)
+    {
+        RemoveParser(prj, false);
+        AddParser(prj, false);
+    }
 }
 
 cbProject* NativeParser::FindProjectFromParser(Parser* parser)
