@@ -809,7 +809,7 @@ bool ProjectManager::SaveWorkspace()
 bool ProjectManager::SaveWorkspaceAs(const wxString& filename)
 {
     if (m_pWorkspace)
-        return m_pWorkspace->Save(filename);
+        return m_pWorkspace->SaveAs(filename);
     return true;
 }
 

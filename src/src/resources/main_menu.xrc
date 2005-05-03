@@ -47,9 +47,13 @@
         <help>Save all modified files</help>
       </object>
       <object class="separator"/>
-      <object class="wxMenuItem" name="idFileSaveWorkspaceAs">
-        <label>Save &amp;workspace...</label>
+      <object class="wxMenuItem" name="idFileSaveWorkspace">
+        <label>Save &amp;Workspace</label>
         <help>Save current workspace</help>
+      </object>
+      <object class="wxMenuItem" name="idFileSaveWorkspaceAs">
+        <label>Save Wor&amp;kspace as...</label>
+        <help>Save current workspace under a different name</help>
       </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idFileClose">

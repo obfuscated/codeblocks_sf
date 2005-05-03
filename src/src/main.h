@@ -38,6 +38,7 @@ class MainFrame : public wxMDIParentFrame
         void OnFileSave(wxCommandEvent& event);
         void OnFileSaveAs(wxCommandEvent& event);
         void OnFileSaveAllFiles(wxCommandEvent& event);
+        void OnFileSaveWorkspace(wxCommandEvent& event);
         void OnFileSaveWorkspaceAs(wxCommandEvent& event);
         void OnFileClose(wxCommandEvent& event);
         void OnFileCloseAll(wxCommandEvent& event);

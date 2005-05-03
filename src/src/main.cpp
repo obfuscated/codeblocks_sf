@@ -76,6 +76,7 @@ int idFileOpenRecentClearHistory = XRCID("idFileOpenRecentClearHistory");
 int idFileSave = XRCID("idFileSave");
 int idFileSaveAs = XRCID("idFileSaveAs");
 int idFileSaveAllFiles = XRCID("idFileSaveAllFiles");
+int idFileSaveWorkspace = XRCID("idFileSaveWorkspace");
 int idFileSaveWorkspaceAs = XRCID("idFileSaveWorkspaceAs");
 int idFileClose = XRCID("idFileClose");
 int idFileCloseAll = XRCID("idFileCloseAll");
@@ -158,6 +159,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idFileSave, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileSaveAs, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileSaveAllFiles, MainFrame::OnFileMenuUpdateUI)
+    EVT_UPDATE_UI(idFileSaveWorkspace, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileSaveWorkspaceAs, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileClose, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileCloseAll, MainFrame::OnFileMenuUpdateUI)
@@ -1127,6 +1129,12 @@ void MainFrame::OnFileSaveAllFiles(wxCommandEvent& event)
     DoUpdateStatusBar();
 }
 
+void MainFrame::OnFileSaveWorkspace(wxCommandEvent& event)
+{
+    if (m_pPrjMan->SaveWorkspace())
+        m_FilesHistory.AddFileToHistory(m_pPrjMan->GetWorkspace()->GetFilename());
+}
+
 void MainFrame::OnFileSaveWorkspaceAs(wxCommandEvent& event)
 {
     if (m_pPrjMan->SaveWorkspaceAs(""))
@@ -1544,7 +1552,8 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idFileSave, ed && ed->GetModified());
     mbar->Enable(idFileSaveAs, ed);
     mbar->Enable(idFileSaveAllFiles, ed);
-    mbar->Enable(idFileSaveWorkspaceAs, m_pPrjMan && m_pPrjMan->GetActiveProject());
+    mbar->Enable(idFileSaveWorkspace, m_pPrjMan && canCloseProject);
+    mbar->Enable(idFileSaveWorkspaceAs, m_pPrjMan && canCloseProject);
     mbar->Enable(idFilePrint, m_pEdMan && m_pEdMan->GetActiveEditor());
 	
 	if (m_pToolbar)
