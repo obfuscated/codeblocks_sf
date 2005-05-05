@@ -94,6 +94,7 @@ void CompilerMINGW::Reset()
 	m_Options.AddOption(_("Optimize generated code (for speed)"), "-O", category);
 	m_Options.AddOption(_("Optimize more (for speed)"), "-O1", category);
 	m_Options.AddOption(_("Optimize even more (for speed)"), "-O2", category);
+	m_Options.AddOption(_("Optimize fully (for speed)"), "-O3", category);
 	m_Options.AddOption(_("Optimize generated code (for size)"), "-Os", category);
 	m_Options.AddOption(_("Expensive optimizations"), "-fexpensive-optimizations", category);
     // machine dependent options - cpu arch
