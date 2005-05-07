@@ -382,7 +382,8 @@ void PluginManager::NotifyPlugins(CodeBlocksEvent& event)
             sendEvt = true;
         else if (sendEvt)
         {
-            wxPostEvent(plug, event);
+            plug->ProcessEvent(event); // Plugins require immediate attention
+            // wxPostEvent(plug, event);
             sendEvt = false;
         }
     }
