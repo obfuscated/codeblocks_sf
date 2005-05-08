@@ -185,7 +185,7 @@ CompilerGCC::CompilerGCC()
     m_PluginInfo.authorEmail = "info@codeblocks.org";
     m_PluginInfo.authorWebsite = "www.codeblocks.org";
     m_PluginInfo.thanksTo = "All the free (and not) compilers out there";
-	m_PluginInfo.hasConfigure = true;
+	m_PluginInfo.hasConfigure = false;
 
     m_timerIdleWakeUp.SetOwner(this, idTimerPollCompiler);
 	
@@ -357,6 +357,13 @@ void CompilerGCC::BuildMenu(wxMenuBar* menuBar)
             prj->FindChildItem(propsID, &propsPos);
         prj->Insert(propsPos, idMenuProjectCompilerOptions, _("Build options"), _("Set the project's build options"));        
         prj->InsertSeparator(propsPos);
+    }
+    // Add entry in settings menu (outside "plugins")
+    int settingsMenuPos = menuBar->FindMenu("Settings");
+    if (settingsMenuPos != wxNOT_FOUND)
+    {
+        wxMenu* settingsmenu = menuBar->GetMenu(settingsMenuPos);
+        settingsmenu->Insert(2,idMenuSettings,_("C&ompiler"),_T("Global Compiler Options"));
     }
 }
 
