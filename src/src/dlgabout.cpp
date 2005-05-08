@@ -62,7 +62,9 @@ dlgAbout::dlgAbout(wxWindow* parent)
         "-----------------------------------\n"
         "Hakki Dogusan : DigitalMars compiler support\n"
         "Tim Baker     : Patches for the direct-compile-mode\n"
-        "                dependencies generation system"));
+        "                dependencies generation system\n"
+        "Chris Raschko : Design of the 3D logo for Code::Blocks"
+        ));
 	XRCCTRL(*this, "txtLicense", wxTextCtrl)->SetValue(LICENSE_GPL);
 	XRCCTRL(*this, "lblName", wxStaticText)->SetLabel(APP_NAME);
 	XRCCTRL(*this, "lblVersion", wxStaticText)->SetLabel(APP_ACTUAL_VERSION);
