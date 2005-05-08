@@ -54,6 +54,9 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxDialog)
     EVT_UPDATE_UI(			XRCID("spnLibs"),	        CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("txtMasterPath"),		CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnMasterPath"),		CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(			XRCID("btnExtraAdd"),	    CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(			XRCID("btnExtraEdit"),	    CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(			XRCID("btnExtraDelete"),	CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("txtCcompiler"),		CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnCcompiler"),		CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("txtCPPcompiler"),	CompilerOptionsDlg::OnUpdateUI)
@@ -86,6 +89,9 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxDialog)
     EVT_BUTTON(			    XRCID("btnAddLib"),	        CompilerOptionsDlg::OnAddLibClick)
     EVT_BUTTON(			    XRCID("btnEditLib"),	    CompilerOptionsDlg::OnEditLibClick)
     EVT_BUTTON(			    XRCID("btnDelLib"),	        CompilerOptionsDlg::OnRemoveLibClick)
+    EVT_BUTTON(			    XRCID("btnExtraAdd"),	    CompilerOptionsDlg::OnAddExtraPathClick)
+    EVT_BUTTON(			    XRCID("btnExtraEdit"),	    CompilerOptionsDlg::OnEditExtraPathClick)
+    EVT_BUTTON(			    XRCID("btnExtraDelete"),	CompilerOptionsDlg::OnRemoveExtraPathClick)
     EVT_SPIN_UP(			XRCID("spnLibs"),	        CompilerOptionsDlg::OnMoveLibUpClick)
     EVT_SPIN_DOWN(			XRCID("spnLibs"),	        CompilerOptionsDlg::OnMoveLibDownClick)
     EVT_SPIN_UP(			XRCID("spnDirs"),	        CompilerOptionsDlg::OnMoveDirUpClick)
@@ -203,6 +209,13 @@ void CompilerOptionsDlg::DoFillCompilerPrograms()
     XRCCTRL(*this, "txtDebugger", wxTextCtrl)->SetValue(progs.DBG);
     XRCCTRL(*this, "txtResComp", wxTextCtrl)->SetValue(progs.WINDRES);
     XRCCTRL(*this, "txtMake", wxTextCtrl)->SetValue(progs.MAKE);
+    
+    XRCCTRL(*this, "lstExtraPaths", wxListBox)->Clear();
+    const wxArrayString& extraPaths = CompilerFactory::Compilers[compilerIdx]->GetExtraPaths();
+    for (unsigned int i = 0; i < extraPaths.GetCount(); ++i)
+    {
+        XRCCTRL(*this, "lstExtraPaths", wxListBox)->Append(extraPaths[i]);
+    }
 }
 
 void CompilerOptionsDlg::DoFillPrograms()
@@ -795,7 +808,10 @@ void CompilerOptionsDlg::AutoDetectCompiler()
     int compilerIdx = cmb->GetSelection();
     Compiler* compiler = CompilerFactory::Compilers[compilerIdx];
     wxString backup = XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->GetValue();
-    
+
+    wxArrayString empty;
+    compiler->SetExtraPaths(empty);
+
     switch (compiler->AutoDetectInstallationDir())
     {
         case adrDetected:
@@ -818,6 +834,12 @@ void CompilerOptionsDlg::AutoDetectCompiler()
         break;
     }
     XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->SetValue(compiler->GetMasterPath());
+    XRCCTRL(*this, "lstExtraPaths", wxListBox)->Clear();
+    const wxArrayString& extraPaths = CompilerFactory::Compilers[compilerIdx]->GetExtraPaths();
+    for (unsigned int i = 0; i < extraPaths.GetCount(); ++i)
+    {
+        XRCCTRL(*this, "lstExtraPaths", wxListBox)->Append(extraPaths[i]);
+    }
 }
 
 wxListBox* CompilerOptionsDlg::GetDirsListBox()
@@ -1087,6 +1109,81 @@ void CompilerOptionsDlg::OnRemoveLibClick(wxCommandEvent& event)
         lstLibs->Delete(lstLibs->GetSelection());
 }
 
+void CompilerOptionsDlg::OnAddExtraPathClick(wxCommandEvent& event)
+{
+    wxString path = ChooseDirectory(this,
+                                    _("Select directory"),
+                                    "",
+                                    "",
+                                    true,
+                                    true);
+    if (path.IsEmpty())
+        return;
+
+    wxListBox* control = XRCCTRL(*this, "lstExtraPaths", wxListBox);
+    if (control)
+    {
+        int compilerIdx = XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection();
+        Compiler* compiler = CompilerFactory::Compilers[compilerIdx];
+        wxArrayString extraPaths = CompilerFactory::Compilers[compilerIdx]->GetExtraPaths();
+        if (extraPaths.Index(path) != wxNOT_FOUND)
+        {
+            wxMessageBox(_("Path already in extra paths list!"), _("Warning"), wxICON_WARNING);
+            return;
+        }
+        extraPaths.Add(path);
+        compiler->SetExtraPaths(extraPaths);
+        control->Append(path);
+    }
+}
+
+void CompilerOptionsDlg::OnEditExtraPathClick(wxCommandEvent& event)
+{
+    wxListBox* control = XRCCTRL(*this, "lstExtraPaths", wxListBox);
+    if (!control || control->GetSelection() < 0)
+        return;
+        
+    wxFileName dir(control->GetString(control->GetSelection()) + wxFileName::GetPathSeparator());
+    wxString initial = _("");
+    if (dir.DirExists())
+        initial = dir.GetPath(wxPATH_GET_VOLUME);
+
+    wxString path = ChooseDirectory(this,
+                                    _("Select directory"),
+                                    initial,
+                                    "",
+                                    true,
+                                    true);
+    if (path.IsEmpty())
+        return;
+
+    int compilerIdx = XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection();
+    Compiler* compiler = CompilerFactory::Compilers[compilerIdx];
+    wxArrayString extraPaths = CompilerFactory::Compilers[compilerIdx]->GetExtraPaths();
+    if (extraPaths.Index(path) != wxNOT_FOUND)
+    {
+        wxMessageBox(_("Path already in extra paths list!"), _("Warning"), wxICON_WARNING);
+        return;
+    }
+    extraPaths[control->GetSelection()] = path;
+    compiler->SetExtraPaths(extraPaths);
+    control->SetString(control->GetSelection(), path);
+}
+
+void CompilerOptionsDlg::OnRemoveExtraPathClick(wxCommandEvent& event)
+{
+    wxListBox* control = XRCCTRL(*this, "lstExtraPaths", wxListBox);
+    if (!control || control->GetSelection() < 0)
+        return;
+
+    int compilerIdx = XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection();
+    Compiler* compiler = CompilerFactory::Compilers[compilerIdx];
+    wxArrayString extraPaths = CompilerFactory::Compilers[compilerIdx]->GetExtraPaths();
+    extraPaths.RemoveAt(control->GetSelection());
+    compiler->SetExtraPaths(extraPaths);
+    control->Delete(control->GetSelection());
+}
+
 void CompilerOptionsDlg::OnMoveLibUpClick(wxSpinEvent& event)
 {
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
@@ -1275,8 +1372,12 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
     if (XRCCTRL(*this, "txtMasterPath", wxTextCtrl)) // "Programs" page exists?
     {
         en = !data; // global options selected
+        int extraSel = XRCCTRL(*this, "lstExtraPaths", wxListBox)->GetSelection();
         XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->Enable(en);
         XRCCTRL(*this, "btnMasterPath", wxButton)->Enable(en);
+        XRCCTRL(*this, "btnExtraAdd", wxButton)->Enable(en);
+        XRCCTRL(*this, "btnExtraEdit", wxButton)->Enable(en && extraSel != -1);
+        XRCCTRL(*this, "btnExtraDelete", wxButton)->Enable(en && extraSel != -1);
         XRCCTRL(*this, "txtCcompiler", wxTextCtrl)->Enable(en);
         XRCCTRL(*this, "btnCcompiler", wxButton)->Enable(en);
         XRCCTRL(*this, "txtCPPcompiler", wxTextCtrl)->Enable(en);

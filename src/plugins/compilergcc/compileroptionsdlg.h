@@ -79,6 +79,9 @@ class CompilerOptionsDlg : public wxDialog
 		void OnAutoDetectClick(wxCommandEvent& event);
 		void OnSelectProgramClick(wxCommandEvent& event);
 		void OnAdvancedClick(wxCommandEvent& event);
+		void OnAddExtraPathClick(wxCommandEvent& event);
+		void OnEditExtraPathClick(wxCommandEvent& event);
+		void OnRemoveExtraPathClick(wxCommandEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);
 
 		virtual void EndModal(int retCode);

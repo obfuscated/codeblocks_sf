@@ -174,6 +174,8 @@ class DLLIMPORT Compiler : public CompileOptionsBase
 		virtual const wxString& GetName() const { return m_Name; }
         /** @brief Get the compiler's master path (must contain "bin", "include" and "lib") */
 		virtual const wxString& GetMasterPath() const { return m_MasterPath; }
+        /** @brief Get the compiler's extra paths */
+		virtual const wxArrayString& GetExtraPaths() const { return m_ExtraPaths; }
         /** @brief Get the compiler's programs */
 		virtual const CompilerPrograms& GetPrograms() const { return m_Programs; }
         /** @brief Get the compiler's generic switches */
@@ -189,6 +191,8 @@ class DLLIMPORT Compiler : public CompileOptionsBase
 		virtual void SetName(const wxString& name){ m_Name = name; }
         /** @brief Set the compiler's master path (must contain "bin", "include" and "lib") */
 		virtual void SetMasterPath(const wxString& path){ m_MasterPath = path; }
+        /** @brief Set the compiler's extra paths */
+		virtual void SetExtraPaths(const wxArrayString& paths){ m_ExtraPaths = paths; }
         /** @brief Set the compiler's programs */
 		virtual void SetPrograms(const CompilerPrograms& programs){ m_Programs = programs; }
         /** @brief Set the compiler's generic switches */
@@ -225,6 +229,7 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         // set the following members in your class
         wxString m_Name;
         wxString m_MasterPath;
+        wxArrayString m_ExtraPaths;
         wxString m_Commands[COMPILER_COMMAND_TYPES_COUNT];
         CompilerPrograms m_Programs;
         CompilerSwitches m_Switches;

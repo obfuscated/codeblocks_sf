@@ -140,6 +140,21 @@ AutoDetectResult CompilerMSVC::AutoDetectInstallationDir()
                     dir += sep;
                 AddIncludeDir(dir + "include");
                 AddLibDir(dir + "lib");
+                m_ExtraPaths.Add(dir + "bin");
+            }
+        }
+        
+        // add extra paths for "Debugging tools" too
+        key.SetName("HKEY_CURRENT_USER\\Software\\Microsoft\\DebuggingTools");
+        if (key.Open())
+        {
+            wxString dir;
+            key.QueryValue("WinDbg", dir);
+            if (!dir.IsEmpty())
+            {
+                if (dir.GetChar(dir.Length() - 1) == '\\')
+                    dir.Remove(dir.Length() - 1, 1);
+                m_ExtraPaths.Add(dir);
             }
         }
     }

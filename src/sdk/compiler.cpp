@@ -86,6 +86,7 @@ void Compiler::SaveSettings(const wxString& baseKey)
 	ConfigManager::Get()->Write(tmp + "/commands_after", key);
 
     ConfigManager::Get()->Write(tmp + "/master_path", m_MasterPath);
+    ConfigManager::Get()->Write(tmp + "/extra_paths", GetStringFromArray(m_ExtraPaths, ";"));
     ConfigManager::Get()->Write(tmp + "/c_compiler", m_Programs.C);
     ConfigManager::Get()->Write(tmp + "/cpp_compiler", m_Programs.CPP);
     ConfigManager::Get()->Write(tmp + "/linker", m_Programs.LD);
@@ -146,6 +147,7 @@ void Compiler::LoadSettings(const wxString& baseKey)
 	m_Name = ConfigManager::Get()->Read(tmp + "/_name", m_Name);
 
     m_MasterPath = ConfigManager::Get()->Read(tmp + "/master_path", m_MasterPath);
+    m_ExtraPaths = GetArrayFromString(ConfigManager::Get()->Read(tmp + "/extra_paths", ""), ";");
     m_Programs.C = ConfigManager::Get()->Read(tmp + "/c_compiler", m_Programs.C);
     m_Programs.CPP = ConfigManager::Get()->Read(tmp + "/cpp_compiler", m_Programs.CPP);
     m_Programs.LD = ConfigManager::Get()->Read(tmp + "/linker", m_Programs.LD);

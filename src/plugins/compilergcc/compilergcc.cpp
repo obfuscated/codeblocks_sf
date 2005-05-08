@@ -452,6 +452,7 @@ void CompilerGCC::SetupEnvironment()
 	Manager::Get()->GetMessageManager()->DebugLog(_("Setting up compiler environment..."));
     wxString masterPath = CompilerFactory::Compilers[m_CompilerIdx]->GetMasterPath();
     wxString gcc = CompilerFactory::Compilers[m_CompilerIdx]->GetPrograms().C;
+    const wxArrayString& extraPaths = CompilerFactory::Compilers[m_CompilerIdx]->GetExtraPaths();
 //	Manager::Get()->GetMessageManager()->DebugLog("Checking in " + masterPath + sep + "bin for " + gcc);
 
     // reset PATH to original value
@@ -464,6 +465,11 @@ void CompilerGCC::SetupEnvironment()
         if (m_OriginalPath.IsEmpty())
             m_OriginalPath = path;
         pathList.Add(masterPath + sep + "bin");
+        for (unsigned int i = 0; i < extraPaths.GetCount(); ++i)
+        {
+            if (!extraPaths[i].IsEmpty())
+                pathList.Add(extraPaths[i]);
+        }
 		pathList.AddEnvList("PATH");
 		wxString binPath = pathList.FindAbsoluteValidPath(gcc);
         // it seems, under Win32, the above command doesn't search in paths with spaces...

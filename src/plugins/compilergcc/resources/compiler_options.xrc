@@ -596,7 +596,7 @@
                             </object>
                             <object class="sizeritem">
                               <object class="wxStaticText">
-                                <label>NOTE: All programs below, must exist in the &quot;bin&quot; sub-directory of this path...</label>
+                                <label>NOTE: All programs below, must exist either in the &quot;bin&quot; sub-directory of this path or in any of the extra paths below...</label>
                                 <fg>#800000</fg>
                               </object>
                               <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
@@ -607,185 +607,232 @@
                           <border>8</border>
                         </object>
                         <object class="sizeritem">
-                          <object class="wxStaticBoxSizer">
-                            <label>Program files</label>
-                            <orient>wxVERTICAL</orient>
+                          <object class="wxBoxSizer">
+                            <orient>wxHORIZONTAL</orient>
                             <object class="sizeritem">
-                              <object class="wxFlexGridSizer">
-                                <cols>2</cols>
-                                <rows>8</rows>
-                                <vgap>8</vgap>
-                                <hgap>8</hgap>
-                                <growablecols>1</growablecols>
+                              <object class="wxStaticBoxSizer">
+                                <label>Program files</label>
+                                <orient>wxVERTICAL</orient>
                                 <object class="sizeritem">
-                                  <object class="wxStaticText">
-                                    <label>C compiler:</label>
-                                  </object>
-                                </object>
-                                <object class="sizeritem">
-                                  <object class="wxBoxSizer">
-                                    <orient>wxHORIZONTAL</orient>
+                                  <object class="wxFlexGridSizer">
+                                    <cols>2</cols>
+                                    <rows>8</rows>
+                                    <vgap>8</vgap>
+                                    <hgap>8</hgap>
+                                    <growablecols>1</growablecols>
                                     <object class="sizeritem">
-                                      <object class="wxTextCtrl" name="txtCcompiler"/>
-                                      <option>1</option>
-                                      <flag>wxEXPAND</flag>
-                                      <border>8</border>
-                                    </object>
-                                    <object class="sizeritem">
-                                      <object class="wxButton" name="btnCcompiler">
-                                        <label>...</label>
-                                        <size>20,20</size>
+                                      <object class="wxStaticText">
+                                        <label>C compiler:</label>
                                       </object>
                                     </object>
-                                  </object>
-                                  <flag>wxEXPAND</flag>
-                                </object>
-                                <object class="sizeritem">
-                                  <object class="wxStaticText">
-                                    <label>C++ compiler:</label>
-                                  </object>
-                                </object>
-                                <object class="sizeritem">
-                                  <object class="wxBoxSizer">
-                                    <orient>wxHORIZONTAL</orient>
                                     <object class="sizeritem">
-                                      <object class="wxTextCtrl" name="txtCPPcompiler"/>
-                                      <option>1</option>
+                                      <object class="wxBoxSizer">
+                                        <orient>wxHORIZONTAL</orient>
+                                        <object class="sizeritem">
+                                          <object class="wxTextCtrl" name="txtCcompiler"/>
+                                          <option>1</option>
+                                          <flag>wxEXPAND</flag>
+                                          <border>8</border>
+                                        </object>
+                                        <object class="sizeritem">
+                                          <object class="wxButton" name="btnCcompiler">
+                                            <label>...</label>
+                                            <size>20,20</size>
+                                          </object>
+                                        </object>
+                                      </object>
                                       <flag>wxEXPAND</flag>
-                                      <border>8</border>
                                     </object>
                                     <object class="sizeritem">
-                                      <object class="wxButton" name="btnCPPcompiler">
-                                        <label>...</label>
-                                        <size>20,20</size>
+                                      <object class="wxStaticText">
+                                        <label>C++ compiler:</label>
                                       </object>
                                     </object>
-                                  </object>
-                                  <flag>wxEXPAND</flag>
-                                </object>
-                                <object class="sizeritem">
-                                  <object class="wxStaticText">
-                                    <label>Linker for dynamic libs:</label>
-                                  </object>
-                                </object>
-                                <object class="sizeritem">
-                                  <object class="wxBoxSizer">
-                                    <orient>wxHORIZONTAL</orient>
                                     <object class="sizeritem">
-                                      <object class="wxTextCtrl" name="txtLinker"/>
-                                      <option>1</option>
+                                      <object class="wxBoxSizer">
+                                        <orient>wxHORIZONTAL</orient>
+                                        <object class="sizeritem">
+                                          <object class="wxTextCtrl" name="txtCPPcompiler"/>
+                                          <option>1</option>
+                                          <flag>wxEXPAND</flag>
+                                          <border>8</border>
+                                        </object>
+                                        <object class="sizeritem">
+                                          <object class="wxButton" name="btnCPPcompiler">
+                                            <label>...</label>
+                                            <size>20,20</size>
+                                          </object>
+                                        </object>
+                                      </object>
                                       <flag>wxEXPAND</flag>
-                                      <border>8</border>
                                     </object>
                                     <object class="sizeritem">
-                                      <object class="wxButton" name="btnLinker">
-                                        <label>...</label>
-                                        <size>20,20</size>
+                                      <object class="wxStaticText">
+                                        <label>Linker for dynamic libs:</label>
                                       </object>
                                     </object>
-                                  </object>
-                                  <flag>wxEXPAND</flag>
-                                </object>
-                                <object class="sizeritem">
-                                  <object class="wxStaticText">
-                                    <label>Linker for static libs:</label>
-                                  </object>
-                                </object>
-                                <object class="sizeritem">
-                                  <object class="wxBoxSizer">
-                                    <orient>wxHORIZONTAL</orient>
                                     <object class="sizeritem">
-                                      <object class="wxTextCtrl" name="txtLibLinker"/>
-                                      <option>1</option>
+                                      <object class="wxBoxSizer">
+                                        <orient>wxHORIZONTAL</orient>
+                                        <object class="sizeritem">
+                                          <object class="wxTextCtrl" name="txtLinker"/>
+                                          <option>1</option>
+                                          <flag>wxEXPAND</flag>
+                                          <border>8</border>
+                                        </object>
+                                        <object class="sizeritem">
+                                          <object class="wxButton" name="btnLinker">
+                                            <label>...</label>
+                                            <size>20,20</size>
+                                          </object>
+                                        </object>
+                                      </object>
                                       <flag>wxEXPAND</flag>
-                                      <border>8</border>
                                     </object>
                                     <object class="sizeritem">
-                                      <object class="wxButton" name="btnLibLinker">
-                                        <label>...</label>
-                                        <size>20,20</size>
+                                      <object class="wxStaticText">
+                                        <label>Linker for static libs:</label>
                                       </object>
                                     </object>
-                                  </object>
-                                  <flag>wxEXPAND</flag>
-                                </object>
-                                <object class="sizeritem">
-                                  <object class="wxStaticText">
-                                    <label>Debugger:</label>
-                                  </object>
-                                </object>
-                                <object class="sizeritem">
-                                  <object class="wxBoxSizer">
-                                    <orient>wxHORIZONTAL</orient>
                                     <object class="sizeritem">
-                                      <object class="wxTextCtrl" name="txtDebugger"/>
-                                      <option>1</option>
+                                      <object class="wxBoxSizer">
+                                        <orient>wxHORIZONTAL</orient>
+                                        <object class="sizeritem">
+                                          <object class="wxTextCtrl" name="txtLibLinker"/>
+                                          <option>1</option>
+                                          <flag>wxEXPAND</flag>
+                                          <border>8</border>
+                                        </object>
+                                        <object class="sizeritem">
+                                          <object class="wxButton" name="btnLibLinker">
+                                            <label>...</label>
+                                            <size>20,20</size>
+                                          </object>
+                                        </object>
+                                      </object>
                                       <flag>wxEXPAND</flag>
-                                      <border>8</border>
                                     </object>
                                     <object class="sizeritem">
-                                      <object class="wxButton" name="btnDebugger">
-                                        <label>...</label>
-                                        <size>20,20</size>
+                                      <object class="wxStaticText">
+                                        <label>Debugger:</label>
                                       </object>
                                     </object>
-                                  </object>
-                                  <flag>wxEXPAND</flag>
-                                </object>
-                                <object class="sizeritem">
-                                  <object class="wxStaticText">
-                                    <label>Resource compiler:</label>
-                                  </object>
-                                </object>
-                                <object class="sizeritem">
-                                  <object class="wxBoxSizer">
-                                    <orient>wxHORIZONTAL</orient>
                                     <object class="sizeritem">
-                                      <object class="wxTextCtrl" name="txtResComp"/>
-                                      <option>1</option>
+                                      <object class="wxBoxSizer">
+                                        <orient>wxHORIZONTAL</orient>
+                                        <object class="sizeritem">
+                                          <object class="wxTextCtrl" name="txtDebugger"/>
+                                          <option>1</option>
+                                          <flag>wxEXPAND</flag>
+                                          <border>8</border>
+                                        </object>
+                                        <object class="sizeritem">
+                                          <object class="wxButton" name="btnDebugger">
+                                            <label>...</label>
+                                            <size>20,20</size>
+                                          </object>
+                                        </object>
+                                      </object>
                                       <flag>wxEXPAND</flag>
-                                      <border>8</border>
                                     </object>
                                     <object class="sizeritem">
-                                      <object class="wxButton" name="btnResComp">
-                                        <label>...</label>
-                                        <size>20,20</size>
+                                      <object class="wxStaticText">
+                                        <label>Resource compiler:</label>
                                       </object>
                                     </object>
-                                  </object>
-                                  <flag>wxEXPAND</flag>
-                                </object>
-                                <object class="sizeritem">
-                                  <object class="wxStaticText">
-                                    <label>Make program:</label>
-                                  </object>
-                                </object>
-                                <object class="sizeritem">
-                                  <object class="wxBoxSizer">
-                                    <orient>wxHORIZONTAL</orient>
                                     <object class="sizeritem">
-                                      <object class="wxTextCtrl" name="txtMake"/>
-                                      <option>1</option>
+                                      <object class="wxBoxSizer">
+                                        <orient>wxHORIZONTAL</orient>
+                                        <object class="sizeritem">
+                                          <object class="wxTextCtrl" name="txtResComp"/>
+                                          <option>1</option>
+                                          <flag>wxEXPAND</flag>
+                                          <border>8</border>
+                                        </object>
+                                        <object class="sizeritem">
+                                          <object class="wxButton" name="btnResComp">
+                                            <label>...</label>
+                                            <size>20,20</size>
+                                          </object>
+                                        </object>
+                                      </object>
                                       <flag>wxEXPAND</flag>
-                                      <border>8</border>
                                     </object>
                                     <object class="sizeritem">
-                                      <object class="wxButton" name="btnMake">
-                                        <label>...</label>
-                                        <size>20,20</size>
+                                      <object class="wxStaticText">
+                                        <label>Make program:</label>
                                       </object>
                                     </object>
+                                    <object class="sizeritem">
+                                      <object class="wxBoxSizer">
+                                        <orient>wxHORIZONTAL</orient>
+                                        <object class="sizeritem">
+                                          <object class="wxTextCtrl" name="txtMake"/>
+                                          <option>1</option>
+                                          <flag>wxEXPAND</flag>
+                                          <border>8</border>
+                                        </object>
+                                        <object class="sizeritem">
+                                          <object class="wxButton" name="btnMake">
+                                            <label>...</label>
+                                            <size>20,20</size>
+                                          </object>
+                                        </object>
+                                      </object>
+                                      <flag>wxEXPAND</flag>
+                                    </object>
                                   </object>
-                                  <flag>wxEXPAND</flag>
+                                  <option>1</option>
+                                  <flag>wxALL|wxEXPAND</flag>
+                                  <border>8</border>
                                 </object>
                               </object>
                               <option>1</option>
-                              <flag>wxALL|wxEXPAND</flag>
+                              <flag>wxEXPAND</flag>
+                              <border>8</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxStaticBoxSizer">
+                                <label>Extra paths</label>
+                                <orient>wxVERTICAL</orient>
+                                <object class="sizeritem">
+                                  <object class="wxListBox" name="lstExtraPaths">
+                                    <content/>
+                                  </object>
+                                  <option>1</option>
+                                  <flag>wxALL|wxGROW</flag>
+                                  <border>8</border>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxBoxSizer">
+                                    <orient>wxHORIZONTAL</orient>
+                                    <object class="sizeritem">
+                                      <object class="wxButton" name="btnExtraAdd">
+                                        <label>Add</label>
+                                      </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                      <object class="wxButton" name="btnExtraEdit">
+                                        <label>Edit</label>
+                                      </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                      <object class="wxButton" name="btnExtraDelete">
+                                        <label>Delete</label>
+                                      </object>
+                                    </object>
+                                  </object>
+                                  <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
+                                  <border>8</border>
+                                </object>
+                              </object>
+                              <option>1</option>
+                              <flag>wxLEFT|wxGROW</flag>
                               <border>8</border>
                             </object>
                           </object>
                           <option>1</option>
-                          <flag>wxALL|wxEXPAND</flag>
+                          <flag>wxALL|wxGROW</flag>
                           <border>8</border>
                         </object>
                       </object>
