@@ -83,6 +83,7 @@ class CompilerOptionsDlg : public wxDialog
 		void OnEditExtraPathClick(wxCommandEvent& event);
 		void OnRemoveExtraPathClick(wxCommandEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);
+		void OnMyCharHook(wxKeyEvent& event);
 
 		virtual void EndModal(int retCode);
 		

@@ -109,6 +109,7 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxDialog)
 	EVT_BUTTON(				XRCID("btnResComp"),		CompilerOptionsDlg::OnSelectProgramClick)
 	EVT_BUTTON(				XRCID("btnMake"),		    CompilerOptionsDlg::OnSelectProgramClick)
 	EVT_BUTTON(				XRCID("btnAdvanced"),		CompilerOptionsDlg::OnAdvancedClick)
+	EVT_CHAR_HOOK(CompilerOptionsDlg::OnMyCharHook)
 END_EVENT_TABLE()
 
 CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, cbProject* project, ProjectBuildTarget* target)
@@ -926,8 +927,12 @@ void CompilerOptionsDlg::OnRemoveDirClick(wxCommandEvent& event)
     wxListBox* control = GetDirsListBox();
     if (!control || control->GetSelection() < 0)
         return;
-
-    control->Delete(control->GetSelection());
+	if (wxMessageBox(_("Remove '"+control->GetStringSelection()+"' from the list?"),
+					_("Confirmation"),
+					wxOK | wxCANCEL | wxICON_QUESTION) == wxOK)
+	{
+        control->Delete(control->GetSelection());
+    }
 }
 
 void CompilerOptionsDlg::OnAddVarClick(wxCommandEvent& event)
@@ -971,7 +976,7 @@ void CompilerOptionsDlg::OnRemoveVarClick(wxCommandEvent& event)
 		return;
 	if (wxMessageBox(_("Are you sure you want to delete this variable?"),
 					_("Confirmation"),
-					wxYES_NO | wxICON_QUESTION) == wxYES)
+					wxOK | wxCANCEL | wxICON_QUESTION) == wxOK)
 	{
 		Var* var = static_cast<Var*>(XRCCTRL(*this, "lstVars", wxListBox)->GetClientData(sel));
 		if (var)
@@ -1038,7 +1043,7 @@ void CompilerOptionsDlg::OnRemoveCompilerClick(wxCommandEvent& event)
 {
 	if (wxMessageBox(_("Are you sure you want to remove this compiler?"),
 					_("Confirmation"),
-					wxYES_NO | wxICON_QUESTION | wxNO_DEFAULT) == wxYES)
+					wxOK | wxCANCEL | wxICON_QUESTION | wxNO_DEFAULT) == wxOK)
     {
         wxComboBox* cmb = XRCCTRL(*this, "cmbCompiler", wxComboBox);
         int compilerIdx = cmb->GetSelection();
@@ -1058,9 +1063,13 @@ void CompilerOptionsDlg::OnRemoveCompilerClick(wxCommandEvent& event)
 
 void CompilerOptionsDlg::OnResetCompilerClick(wxCommandEvent& event)
 {
-	if (wxMessageBox(_("Are you sure you want to reset this compiler's settings to the defaults?"),
+	if (wxMessageBox(_("Reset this compiler's settings to the defaults?"),
 					_("Confirmation"),
-					wxYES_NO | wxICON_QUESTION | wxNO_DEFAULT) == wxYES)
+					wxOK | wxCANCEL | wxICON_QUESTION | wxNO_DEFAULT) == wxOK)
+	if (wxMessageBox(_("Reset this compiler's settings to the defaults?\n"
+	                   "\nAre you REALLY sure?"),
+					_("Confirmation"),
+					wxOK | wxCANCEL | wxICON_QUESTION | wxNO_DEFAULT) == wxOK)
     {
         wxComboBox* cmb = XRCCTRL(*this, "cmbCompiler", wxComboBox);
         int compilerIdx = cmb->GetSelection();
@@ -1105,7 +1114,9 @@ void CompilerOptionsDlg::OnEditLibClick(wxCommandEvent& event)
 void CompilerOptionsDlg::OnRemoveLibClick(wxCommandEvent& event)
 {
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
-    if (wxMessageBox(_("Are you sure you want to remove this library?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxYES)
+    if (!lstLibs || lstLibs->GetSelection() < 0)
+        return;
+    if (wxMessageBox(_("Remove library '"+lstLibs->GetStringSelection()+"' from the list?"), _("Confirmation"), wxICON_QUESTION | wxOK | wxCANCEL) == wxOK)
         lstLibs->Delete(lstLibs->GetSelection());
 }
 
@@ -1307,7 +1318,7 @@ void CompilerOptionsDlg::OnAdvancedClick(wxCommandEvent& event)
                         "NOT tamper with the advanced settings...\n\n"
                         "Are you sure you want to edit the advanced settings?"),
 					_("Warning"),
-					wxYES_NO | wxICON_WARNING) == wxYES)
+					wxOK | wxCANCEL | wxICON_WARNING) == wxOK)
     {
         wxComboBox* cmb = XRCCTRL(*this, "cmbCompiler", wxComboBox);
         int compilerIdx = cmb->GetSelection();
@@ -1429,4 +1440,50 @@ void CompilerOptionsDlg::EndModal(int retCode)
     if (txt)
         ConfigManager::Get()->Write("/compiler_gcc/console_shell", txt->GetValue());
 	wxDialog::EndModal(retCode);
+}
+
+void CompilerOptionsDlg::OnMyCharHook(wxKeyEvent& event)
+{
+    wxWindow* focused = wxWindow::FindFocus();
+    if(!focused)
+        { event.Skip();return; }
+    int keycode = event.GetKeyCode();
+    int id = focused->GetId();
+    
+    int myid = 0;
+    unsigned int myidx = 0;
+    
+    const wxChar* str_libs[3] = { _("btnEditLib"),_("btnAddLib"),_("btnDelLib") };
+    const wxChar* str_dirs[3] = { _("btnEditDir"),_("btnAddDir"),_("btnDelDir") };
+    const wxChar* str_vars[3] = { _("btnEditVar"),_("btnAddVar"),_("btnDeleteVar") };
+    const wxChar* str_xtra[3] = { _("btnExtraEdit"),_("btnExtraAdd"),_("btnExtraDelete") };
+    
+    if(keycode == WXK_RETURN || keycode == WXK_NUMPAD_ENTER)
+        { myidx = 0; } // Edit
+    else if(keycode == WXK_INSERT || keycode == WXK_NUMPAD_INSERT)
+        { myidx = 1; } // Add
+    else if(keycode == WXK_DELETE || keycode == WXK_NUMPAD_DELETE)
+        { myidx = 2; } // Delete
+    else
+        { event.Skip();return; }
+        
+    if(     id == XRCID("lstLibs")) // Link libraries
+        { myid =  XRCID(str_libs[myidx]); }
+    else if(id == XRCID("lstIncludeDirs") || id == XRCID("lstLibDirs") || id == XRCID("lstResDirs")) // Directories
+        { myid =  XRCID(str_dirs[myidx]); }
+    else if(id == XRCID("lstVars")) // Custom Vars
+        { myid =  XRCID(str_vars[myidx]); }
+    else if(id == XRCID("lstExtraPaths")) // Extra Paths
+        { myid =  XRCID(str_xtra[myidx]); }
+    else
+        myid = 0;
+        
+    // Generate the event
+    if(myid == 0)
+        event.Skip();
+    else
+    {
+        wxCommandEvent newevent(wxEVT_COMMAND_BUTTON_CLICKED,myid);
+        this->ProcessEvent(newevent);
+    }
 }
