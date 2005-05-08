@@ -3,6 +3,7 @@
 
 #include <wx/list.h>
 #include <wx/treectrl.h>
+#include <wx/hashmap.h>
 
 #include "settings.h"
 #include "sanitycheck.h"
@@ -18,6 +19,7 @@ extern int ID_EditorManager;
 
 
 WX_DECLARE_LIST(EditorBase, EditorsList);
+WX_DECLARE_STRING_HASH_MAP(wxString, AutoCompleteMap);
 
 // forward decls
 class wxMenuBar;
@@ -70,6 +72,7 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         void ReleaseMenu(wxMenuBar* menuBar);
         void Configure();        
         int GetEditorsCount(){ return m_EditorsList.GetCount(); }
+        AutoCompleteMap& GetAutoCompleteMap(){ return m_AutoCompleteMap; }
 
         EditorBase* IsOpen(const wxString& filename);
         cbEditor* Open(const wxString& filename, int pos = 0,ProjectFile* data = 0);
@@ -151,6 +154,9 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         void AddEditorBase(EditorBase* eb);
         void RemoveEditorBase(EditorBase* eb);
         cbEditor* InternalGetBuiltinEditor(EditorsList::Node* node);
+        
+        void LoadAutoComplete();
+        void SaveAutoComplete();
 
         #ifdef USE_OPENFILES_TREE
         void DeleteItemfromTree(wxTreeItemId item);
@@ -159,7 +165,8 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         bool RenameTreeFile(const wxString& oldname, const wxString& newname);
         void InitPane();
         #endif
-    
+
+        AutoCompleteMap m_AutoCompleteMap;
     private:
         static EditorManager* Get(wxWindow* parent);
         static void Free();

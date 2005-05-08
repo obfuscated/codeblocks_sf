@@ -106,12 +106,17 @@ EditorManager::EditorManager(wxWindow* parent)
 	m_Theme = new EditorColorSet(ConfigManager::Get()->Read("/editor/color_sets/active_color_set", COLORSET_DEFAULT));
 	ConfigManager::AddConfiguration(_("Editor"), "/editor");
 	Manager::Get()->GetAppWindow()->PushEventHandler(this);
+	
+	LoadAutoComplete();
 }
 
 // class destructor
 EditorManager::~EditorManager()
 {
 	SC_DESTRUCTOR_BEGIN
+	
+	SaveAutoComplete();
+
 	if (m_Theme)
 		delete m_Theme;
 		
@@ -158,6 +163,62 @@ void EditorManager::Configure()
                 ed->SetEditorStyle();
         }
     }
+}
+
+void EditorManager::LoadAutoComplete()
+{
+	m_AutoCompleteMap.clear();
+	long cookie;
+	wxString entry;
+	wxConfigBase* conf = ConfigManager::Get();
+	wxString oldPath = conf->GetPath();
+	conf->SetPath(_("/editor/auto_complete"));
+	bool cont = conf->GetFirstEntry(entry, cookie);
+	while (cont)
+	{
+        wxString code = conf->Read(entry, _(""));
+        // convert non-printable chars to printable
+        code.Replace(_("\\n"), _("\n"));
+        code.Replace(_("\\r"), _("\r"));
+        code.Replace(_("\\t"), _("\t"));
+        m_AutoCompleteMap[entry] = code;
+		cont = conf->GetNextEntry(entry, cookie);
+	}
+	conf->SetPath(oldPath);
+
+    if (m_AutoCompleteMap.size() == 0)
+    {
+        // default auto-complete items
+        m_AutoCompleteMap[_("if")] = _("if (|)\n\t;");
+        m_AutoCompleteMap[_("ifb")] = _("if (|)\n{\n\t\n}");
+        m_AutoCompleteMap[_("ife")] = _("if (|)\n{\n\t\n}\nelse\n{\n\t\n}");
+        m_AutoCompleteMap[_("ifei")] = _("if (|)\n{\n\t\n}\nelse if ()\n{\n\t\n}\nelse\n{\n\t\n}");
+        m_AutoCompleteMap[_("while")] = _("while (|)\n\t;");
+        m_AutoCompleteMap[_("whileb")] = _("while (|)\n{\n\t\n}");
+        m_AutoCompleteMap[_("for")] = _("for (|; ; )\n\t;");
+        m_AutoCompleteMap[_("forb")] = _("for (|; ; )\n{\n\t\n}");
+        m_AutoCompleteMap[_("class")] = _("class $(Class name)|\n{\n\tpublic:\n\t\t$(Class name)();\n\t\t~$(Class name)();\n\tprotected:\n\t\t\n\tprivate:\n\t\t\n};\n");
+        m_AutoCompleteMap[_("struct")] = _("struct |\n{\n\t\n};\n");
+    }
+}
+
+void EditorManager::SaveAutoComplete()
+{
+	wxConfigBase* conf = ConfigManager::Get();
+	conf->DeleteGroup(_("/editor/auto_complete"));
+	wxString oldPath = conf->GetPath();
+	conf->SetPath(_("/editor/auto_complete"));
+	AutoCompleteMap::iterator it;
+	for (it = m_AutoCompleteMap.begin(); it != m_AutoCompleteMap.end(); ++it)
+	{
+        wxString code = it->second;
+        // convert non-printable chars to printable
+        code.Replace(_("\n"), _("\\n"));
+        code.Replace(_("\r"), _("\\r"));
+        code.Replace(_("\t"), _("\\t"));
+		conf->Write(it->first, code);
+	}
+	conf->SetPath(oldPath);
 }
 
 cbEditor* EditorManager::InternalGetBuiltinEditor(EditorsList::Node* node)

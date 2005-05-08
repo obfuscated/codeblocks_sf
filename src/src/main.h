@@ -61,6 +61,7 @@ class MainFrame : public wxMDIParentFrame
         void OnEditEOLMode(wxCommandEvent& event);
         void OnEditSelectAll(wxCommandEvent& event);
         void OnEditCommentSelected(wxCommandEvent& event);
+        void OnEditAutoComplete(wxCommandEvent& event);
 		
 		void OnEditBookmarksToggle(wxCommandEvent& event);
 		void OnEditBookmarksNext(wxCommandEvent& event);

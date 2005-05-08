@@ -968,6 +968,7 @@ int CompilerGCC::Clean(ProjectBuildTarget* target)
 {
 	DoPrepareQueue();
 
+    wxSetWorkingDirectory(m_Project->GetBasePath());
     if (CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches().buildMethod == cbmUseMake)
     {
         wxString cmd;
@@ -997,6 +998,7 @@ int CompilerGCC::DistClean(ProjectBuildTarget* target)
 {
 	DoPrepareQueue();
 
+    wxSetWorkingDirectory(m_Project->GetBasePath());
     if (CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches().buildMethod == cbmUseMake)
     {
         wxString cmd;
@@ -1046,13 +1048,13 @@ void CompilerGCC::OnExportMakefile(wxCommandEvent& event)
 	if (makefile.IsEmpty())
 		return;
     
+    wxSetWorkingDirectory(m_Project->GetBasePath());
     if (CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches().buildMethod == cbmUseMake)
     {
         DoCreateMakefile(false, makefile);
     }
     else
     {
-        wxSetWorkingDirectory(m_Project->GetBasePath());
         MakefileGenerator generator(this, m_Project, makefile, m_PageIndex);
         generator.CreateMakefile();
     }
@@ -1069,6 +1071,7 @@ int CompilerGCC::Compile(ProjectBuildTarget* target)
         return -2;
 
     wxString cmd;
+    wxSetWorkingDirectory(m_Project->GetBasePath());
     if (CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches().buildMethod == cbmUseMake)
     {
         wxString make = CompilerFactory::Compilers[m_CompilerIdx]->GetPrograms().MAKE;
@@ -1080,7 +1083,6 @@ int CompilerGCC::Compile(ProjectBuildTarget* target)
     }
     else
     {
-        wxSetWorkingDirectory(m_Project->GetBasePath());
         DirectCommands dc(this, CompilerFactory::Compilers[m_CompilerIdx], m_Project, m_PageIndex);
         wxArrayString compile = dc.GetCompileCommands(target);
         dc.AppendArray(compile, m_Queue);
@@ -1173,6 +1175,7 @@ int CompilerGCC::CompileFile(const wxString& file)
 {
 	DoPrepareQueue();
 
+    wxSetWorkingDirectory(m_Project->GetBasePath());
     if (CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches().buildMethod == cbmUseMake)
     {
         wxFileName f(file);

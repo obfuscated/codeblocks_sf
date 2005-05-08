@@ -31,6 +31,8 @@
 #include <wx/fontmap.h>
 #include <wx/spinctrl.h>
 #include <wx/combobox.h>
+#include <wx/listbox.h>
+#include <wx/textctrl.h>
 
 #include "editorcolorset.h"
 #include "editorconfigurationdlg.h"
@@ -62,14 +64,19 @@ BEGIN_EVENT_TABLE(EditorConfigurationDlg, wxDialog)
 	EVT_COMBOBOX(XRCID("cmbLangs"),				EditorConfigurationDlg::OnChangeLang)
 	EVT_COMBOBOX(XRCID("cmbDefCodeFileType"),	EditorConfigurationDlg::OnChangeDefCodeFileType)
 	EVT_COMBOBOX(XRCID("cmbThemes"),	        EditorConfigurationDlg::OnColorTheme)
+	EVT_LISTBOX(XRCID("lstAutoCompKeyword"),	EditorConfigurationDlg::OnAutoCompKeyword)
+	EVT_BUTTON(XRCID("btnAutoCompAdd"),	        EditorConfigurationDlg::OnAutoCompAdd)
+	EVT_BUTTON(XRCID("btnAutoCompDelete"),	    EditorConfigurationDlg::OnAutoCompDelete)
 END_EVENT_TABLE()
 
 EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
 	: m_TextColorControl(0L),
+	m_AutoCompTextControl(0L),
 	m_Theme(0L),
 	m_Lang(hlCpp),
 	m_DefCodeFileType(0),
-	m_ThemeModified(false)
+	m_ThemeModified(false),
+	m_LastAutoCompKeyword(-1)
 {
 	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgConfigureEditor"));
 
@@ -104,6 +111,24 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
 	// color set
 	LoadThemes();
 
+    // auto-complete
+    CreateAutoCompText();
+    wxListBox* lstKeyword = XRCCTRL(*this, "lstAutoCompKeyword", wxListBox);
+    lstKeyword->Clear();
+    m_AutoCompMap = Manager::Get()->GetEditorManager()->GetAutoCompleteMap();
+    AutoCompleteMap::iterator it;
+    for (it = m_AutoCompMap.begin(); it != m_AutoCompMap.end(); ++it)
+    {
+    	lstKeyword->Append(it->first);
+    }
+    if (m_AutoCompMap.size() != 0)
+    {
+        lstKeyword->SetSelection(0);
+        m_LastAutoCompKeyword = 0;
+        it = m_AutoCompMap.begin();
+        m_AutoCompTextControl->SetText(it->second);
+    }
+
 	// default code
     wxString key;
     key.Printf("/editor/default_code/%d", IdxToFileType[m_DefCodeFileType]);
@@ -119,6 +144,9 @@ EditorConfigurationDlg::~EditorConfigurationDlg()
 		
 	if (m_TextColorControl)
 		delete m_TextColorControl;
+    
+    if (m_AutoCompTextControl)
+        delete m_AutoCompTextControl;
 }
 
 void EditorConfigurationDlg::CreateColorsSample()
@@ -126,7 +154,7 @@ void EditorConfigurationDlg::CreateColorsSample()
 	if (m_TextColorControl)
 		delete m_TextColorControl;
 	m_TextColorControl = new wxStyledTextCtrl(this, wxID_ANY);
-	m_TextColorControl->SetTabWidth(2);
+	m_TextColorControl->SetTabWidth(4);
 	wxString buffer;
 	if (m_Lang == hlCpp)
 	{
@@ -197,6 +225,19 @@ void EditorConfigurationDlg::CreateColorsSample()
     wxXmlResource::Get()->AttachUnknownControl("txtColorsSample", m_TextColorControl);
 }
 
+void EditorConfigurationDlg::CreateAutoCompText()
+{
+	if (m_AutoCompTextControl)
+		delete m_AutoCompTextControl;
+	m_AutoCompTextControl = new wxStyledTextCtrl(this, wxID_ANY);
+	m_AutoCompTextControl->SetTabWidth(4);
+    m_AutoCompTextControl->SetMarginType(0, wxSTC_MARGIN_NUMBER);
+    m_AutoCompTextControl->SetMarginWidth(0, 32);
+    m_AutoCompTextControl->SetViewWhiteSpace(1);
+	ApplyColors();
+    wxXmlResource::Get()->AttachUnknownControl("txtAutoCompCode", m_AutoCompTextControl);
+}
+
 void EditorConfigurationDlg::FillColorComponents()
 {
 	wxListBox* colors = XRCCTRL(*this, "lstComponents", wxListBox);
@@ -216,8 +257,16 @@ void EditorConfigurationDlg::ApplyColors()
 	if (m_TextColorControl && m_Theme)
 	{
 		wxFont fnt = XRCCTRL(*this, "lblEditorFont", wxStaticText)->GetFont();
-		m_TextColorControl->StyleSetFont(wxSTC_STYLE_DEFAULT,fnt); 
-		m_Theme->Apply(m_Lang, m_TextColorControl);
+		if (m_TextColorControl)
+		{
+            m_TextColorControl->StyleSetFont(wxSTC_STYLE_DEFAULT,fnt); 
+            m_Theme->Apply(m_Lang, m_TextColorControl);
+        }
+		if (m_AutoCompTextControl)
+		{
+            m_AutoCompTextControl->StyleSetFont(wxSTC_STYLE_DEFAULT,fnt); 
+            m_Theme->Apply(hlCpp, m_AutoCompTextControl);
+        }
 	}
 }
 
@@ -525,6 +574,78 @@ void EditorConfigurationDlg::OnBoldItalicUline(wxCommandEvent& event)
 	WriteColors();
 }
 
+void EditorConfigurationDlg::AutoCompUpdate(int index)
+{
+    if (index != -1)
+    {
+        wxListBox* lstKeyword = XRCCTRL(*this, "lstAutoCompKeyword", wxListBox);
+        wxString lastSel = lstKeyword->GetString(index);
+        if (m_AutoCompTextControl->GetText() != m_AutoCompMap[lastSel])
+            m_AutoCompMap[lastSel] = m_AutoCompTextControl->GetText();
+    }
+}
+
+void EditorConfigurationDlg::OnAutoCompAdd(wxCommandEvent& event)
+{
+    wxString key = wxGetTextFromUser(_("Please enter the new keyword"), _("Add keyword"));
+    if (!key.IsEmpty())
+    {
+        AutoCompleteMap::iterator it = m_AutoCompMap.find(key);
+        if (it != m_AutoCompMap.end())
+        {
+            wxMessageBox(_("This keyword already exists!"), _("Error"), wxICON_ERROR);
+            return;
+        }
+        m_AutoCompMap[key] = _("");
+        wxListBox* lstKeyword = XRCCTRL(*this, "lstAutoCompKeyword", wxListBox);
+        lstKeyword->Append(key);
+        AutoCompUpdate(lstKeyword->GetSelection());
+        m_AutoCompTextControl->SetText(_(""));
+        m_LastAutoCompKeyword = lstKeyword->GetCount() - 1;
+        lstKeyword->SetSelection(m_LastAutoCompKeyword);
+    }
+}
+
+void EditorConfigurationDlg::OnAutoCompDelete(wxCommandEvent& event)
+{
+    wxListBox* lstKeyword = XRCCTRL(*this, "lstAutoCompKeyword", wxListBox);
+    if (lstKeyword->GetSelection() == -1)
+        return;
+    
+    if (wxMessageBox(_("Are you sure you want to delete this keyword?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxNO)
+        return;
+    
+    int sel = lstKeyword->GetSelection();
+    AutoCompleteMap::iterator it = m_AutoCompMap.find(lstKeyword->GetString(sel));
+    if (it != m_AutoCompMap.end())
+    {
+        m_AutoCompMap.erase(it);
+        lstKeyword->Delete(sel);
+        if (sel >= lstKeyword->GetCount())
+            sel = lstKeyword->GetCount() - 1;
+        lstKeyword->SetSelection(sel);
+        if (sel != -1)
+        {
+            m_AutoCompTextControl->SetText(m_AutoCompMap[lstKeyword->GetString(sel)]);
+            m_LastAutoCompKeyword = sel;
+        }
+        else
+            m_AutoCompTextControl->SetText(_(""));
+    }
+}
+
+void EditorConfigurationDlg::OnAutoCompKeyword(wxCommandEvent& event)
+{
+    wxListBox* lstKeyword = XRCCTRL(*this, "lstAutoCompKeyword", wxListBox);
+    if (lstKeyword->GetSelection() == m_LastAutoCompKeyword)
+        return;
+    
+    AutoCompUpdate(m_LastAutoCompKeyword);
+    // list new keyword's code
+    m_AutoCompTextControl->SetText(m_AutoCompMap[lstKeyword->GetString(lstKeyword->GetSelection())]);
+    m_LastAutoCompKeyword = lstKeyword->GetSelection();
+}
+
 void EditorConfigurationDlg::OnOK(wxCommandEvent& event)
 {
     ConfigManager::Get()->Write("/editor/font", XRCCTRL(*this, "lblEditorFont", wxStaticText)->GetFont().GetNativeFontInfoDesc());
@@ -563,6 +684,12 @@ void EditorConfigurationDlg::OnOK(wxCommandEvent& event)
 		Manager::Get()->GetEditorManager()->SetColorSet(m_Theme);
         ConfigManager::Get()->Write("/editor/color_sets/active_color_set", m_Theme->GetName());
 	}
+
+    // save any changes in auto-completion
+    wxListBox* lstKeyword = XRCCTRL(*this, "lstAutoCompKeyword", wxListBox);
+    AutoCompUpdate(lstKeyword->GetSelection());
+    AutoCompleteMap& map = Manager::Get()->GetEditorManager()->GetAutoCompleteMap();
+    map = m_AutoCompMap;
 
     EndModal(wxID_OK);
 }

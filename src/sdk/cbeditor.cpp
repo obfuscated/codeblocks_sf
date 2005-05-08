@@ -515,10 +515,75 @@ bool cbEditor::RenameTo(const wxString& filename, bool deleteOldFromDisk)
 	return false;
 }
 
-void cbEditor::DoShowAutoComplete()
+void cbEditor::DoAskForCodeCompletion()
 {
     m_timerWait.Stop();
 	NotifyPlugins(cbEVT_EDITOR_AUTOCOMPLETE);
+}
+
+void cbEditor::AutoComplete()
+{
+    MessageManager* msgMan = Manager::Get()->GetMessageManager();
+    AutoCompleteMap& map = Manager::Get()->GetEditorManager()->GetAutoCompleteMap();
+    int curPos = m_pControl->GetCurrentPos();
+    int wordStartPos = m_pControl->WordStartPosition(curPos, true);
+    wxString keyword = m_pControl->GetTextRange(wordStartPos, curPos);
+    wxString lineIndent = GetLineIndentString(m_pControl->GetCurrentLine());
+    msgMan->DebugLog("Auto-complete keyword: %s", keyword.c_str());
+    
+    AutoCompleteMap::iterator it;
+    for (it = map.begin(); it != map.end(); ++it)
+    {
+        if (keyword == it->first)
+        {
+            // found; auto-complete it
+            msgMan->DebugLog("Match found");
+            m_pControl->BeginUndoAction();
+            
+            // indent code accordingly
+            wxString code = it->second;
+            code.Replace("\n", '\n' + lineIndent);
+
+            // look for and replace macros
+            int macroPos = code.Find("$(");
+            while (macroPos != -1)
+            {
+                // locate ending parenthesis
+                int macroPosEnd = macroPos + 2;
+                int len = (int)code.Length();
+                while (macroPosEnd < len && code.GetChar(macroPosEnd) != ')')
+                    ++macroPosEnd;
+                if (macroPosEnd == len)
+                    break; // no ending parenthesis
+                
+                wxString macroName = code.SubString(macroPos + 2, macroPosEnd - 1);
+                msgMan->DebugLog("Found macro: %s", macroName.c_str());
+                wxString macro = wxGetTextFromUser(_("Please enter the text for \"" + macroName + "\":"), _("Macro substitution"));
+                code.Replace(_("$(") + macroName + _(")"), macro);
+                macroPos = code.Find("$(");
+            }
+
+            // delete keyword
+            m_pControl->SetSelection(wordStartPos, curPos);
+            m_pControl->ReplaceSelection("");
+            curPos = wordStartPos;
+
+            // add the text
+            m_pControl->InsertText(curPos, code);
+
+            // put cursor where "|" appears in code (if it appears)
+            int caretPos = code.Find('|');
+            if (caretPos != -1)
+            {
+                m_pControl->SetCurrentPos(curPos + caretPos);
+                m_pControl->SetSelection(curPos + caretPos, curPos + caretPos + 1);
+                m_pControl->ReplaceSelection("");
+            }
+
+            m_pControl->EndUndoAction();
+            break;
+        }
+    }
 }
 
 void cbEditor::DoFoldAll(int fold)
@@ -1033,7 +1098,7 @@ void cbEditor::OnEditorCharAdded(wxStyledTextEvent& event)
 
 		int timerDelay = ConfigManager::Get()->Read("/editor/cc_delay", 500);
 		if (timerDelay == 0)
-			DoShowAutoComplete();
+			DoAskForCodeCompletion();
 		else
 			m_timerWait.Start(timerDelay);
     }
@@ -1058,7 +1123,7 @@ void cbEditor::OnUserListSelection(wxStyledTextEvent& event)
 
 void cbEditor::OnTimer(wxTimerEvent& event)
 {
-    DoShowAutoComplete();
+    DoAskForCodeCompletion();
 }
 
 void cbEditor::OnClose(wxCloseEvent& event)

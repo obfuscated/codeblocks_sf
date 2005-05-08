@@ -3,6 +3,7 @@
 
 #include <wx/dialog.h>
 #include "settings.h"
+#include "editormanager.h"
 
 // forward decls
 class wxStyledTextCtrl;
@@ -27,9 +28,14 @@ class EditorConfigurationDlg : public wxDialog
 		void OnEditKeywords(wxCommandEvent& event);
 		void OnChangeLang(wxCommandEvent& event);
 		void OnChangeDefCodeFileType(wxCommandEvent& event);
+		void OnAutoCompKeyword(wxCommandEvent& event);
+		void OnAutoCompAdd(wxCommandEvent& event);
+		void OnAutoCompDelete(wxCommandEvent& event);
 		void UpdateSampleFont(bool askForNewFont);
     private:
 		void CreateColorsSample();
+		void CreateAutoCompText();
+		void AutoCompUpdate(int index);
 		void ApplyColors();
 		void FillColorComponents();
 		void ReadColors();
@@ -38,10 +44,13 @@ class EditorConfigurationDlg : public wxDialog
 		void ChangeTheme();
 		bool AskToSaveTheme();
 		wxStyledTextCtrl* m_TextColorControl;
+		wxStyledTextCtrl* m_AutoCompTextControl;
 		EditorColorSet* m_Theme;
 		HighlightLanguage m_Lang;
 		int m_DefCodeFileType;
 		bool m_ThemeModified;
+		int m_LastAutoCompKeyword;
+		AutoCompleteMap m_AutoCompMap;
     	DECLARE_EVENT_TABLE()
 };
 

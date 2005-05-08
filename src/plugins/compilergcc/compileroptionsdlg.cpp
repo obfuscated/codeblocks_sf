@@ -407,6 +407,7 @@ void CompilerOptionsDlg::OptionsToText()
             }
 		}
 	}
+	
 	for (unsigned int i = 0; i < m_Options.GetCount(); ++i)
 	{
 		CompOption* copt = m_Options.GetOption(i);
@@ -1304,7 +1305,7 @@ void CompilerOptionsDlg::EndModal(int retCode)
 
     // compiler set
     int idx = XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection();
-    if (m_pProject && idx != m_InitialCompilerIdx)
+    if (m_pProject && !data->GetTarget() && idx != m_InitialCompilerIdx)
     {
         m_pProject->SetCompilerIndex(idx);
         UpdateCompilerForTargets(idx);

@@ -488,6 +488,124 @@
             </object>
           </object>
           <object class="notebookpage">
+            <label>Auto-complete</label>
+            <object class="wxPanel" name="tabAutoComplete">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>Auto-complete has nothing to do with the code-completion plugin.</label>
+                  </object>
+                  <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>It is invoked by typing one of the keywords below and pressing Ctrl-J.</label>
+                  </object>
+                  <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>It then replaces the typed keyword with the corresponding code.</label>
+                  </object>
+                  <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+                  <border>8</border>
+                </object>
+                <object class="spacer">
+                  <size>0,8</size>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>Notes:</label>
+                  </object>
+                  <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>* If you put a | (pipe) symbol in the code, the caret will be placed there.</label>
+                  </object>
+                  <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>* You can put macros in the code, like $$(my macro).</label>
+                  </object>
+                  <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>  You will be asked for the macro substitution value, when auto-completing.</label>
+                  </object>
+                  <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticBoxSizer">
+                    <label>Keyword/code pairs</label>
+                    <orient>wxVERTICAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxFlexGridSizer">
+                        <cols>2</cols>
+                        <vgap>4</vgap>
+                        <hgap>8</hgap>
+                        <growablecols>1</growablecols>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                            <label>Keywords:</label>
+                          </object>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                            <label>Code:</label>
+                          </object>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxListBox" name="lstAutoCompKeyword">
+                            <content/>
+                          </object>
+                          <option>1</option>
+                          <flag>wxGROW</flag>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="unknown" name="txtAutoCompCode"/>
+                          <option>1</option>
+                          <flag>wxGROW</flag>
+                        </object>
+                        <growablerows>1</growablerows>
+                        <object class="sizeritem">
+                          <object class="wxBoxSizer">
+                            <orient>wxHORIZONTAL</orient>
+                            <object class="sizeritem">
+                              <object class="wxButton" name="btnAutoCompAdd">
+                                <label>Add</label>
+                              </object>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxButton" name="btnAutoCompDelete">
+                                <label>Delete</label>
+                              </object>
+                            </object>
+                          </object>
+                        </object>
+                      </object>
+                      <option>1</option>
+                      <flag>wxALL|wxGROW</flag>
+                      <border>8</border>
+                    </object>
+                  </object>
+                  <option>1</option>
+                  <flag>wxALL|wxGROW</flag>
+                  <border>8</border>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object class="notebookpage">
             <label>Default code</label>
             <object class="wxPanel" name="tabDefaultCode">
               <object class="wxBoxSizer">

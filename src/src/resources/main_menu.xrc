@@ -196,6 +196,11 @@
         <accel>Shift-Ctrl-C</accel>
         <help>Comments / uncomments the selected block of code</help>
       </object>
+      <object class="wxMenuItem" name="idEditAutoComplete">
+        <label>Auto-complete</label>
+        <accel>Ctrl-J</accel>
+        <help>Auto-completes the word under the caret (nothing to do with code-completion plugins)</help>
+      </object>
     </object>
     <object class="wxMenu" name="menu_view">
       <label>&amp;View</label>

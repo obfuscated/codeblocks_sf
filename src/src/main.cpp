@@ -107,6 +107,7 @@ int idEditEOLCR = XRCID("idEditEOLCR");
 int idEditEOLLF = XRCID("idEditEOLLF");
 int idEditSelectAll = XRCID("idEditSelectAll");
 int idEditCommentSelected = XRCID("idEditCommentSelected");
+int idEditAutoComplete = XRCID("idEditAutoComplete");
 
 int idViewToolMain = XRCID("idViewToolMain");
 int idViewManager = XRCID("idViewManager");
@@ -192,6 +193,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idEditBookmarksNext, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditBookmarksPrevious, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditCommentSelected, MainFrame::OnEditMenuUpdateUI)
+    EVT_UPDATE_UI(idEditAutoComplete, MainFrame::OnEditMenuUpdateUI)
 
     EVT_UPDATE_UI(idSearchFind, MainFrame::OnSearchMenuUpdateUI)
     EVT_UPDATE_UI(idSearchFindNext, MainFrame::OnSearchMenuUpdateUI)
@@ -245,6 +247,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idEditBookmarksNext,  MainFrame::OnEditBookmarksNext)
     EVT_MENU(idEditBookmarksPrevious,  MainFrame::OnEditBookmarksPrevious)
     EVT_MENU(idEditCommentSelected, MainFrame::OnEditCommentSelected)
+    EVT_MENU(idEditAutoComplete, MainFrame::OnEditAutoComplete)
 
     EVT_MENU(idSearchFind,  MainFrame::OnSearchFind)
     EVT_MENU(idSearchFindNext,  MainFrame::OnSearchFindNext)
@@ -1332,6 +1335,13 @@ void MainFrame::OnEditCommentSelected(wxCommandEvent& event)
 	}
 }
 
+void MainFrame::OnEditAutoComplete(wxCommandEvent& event)
+{
+    cbEditor* ed = m_pEdMan->GetBuiltinActiveEditor();
+    if (ed)
+		ed->AutoComplete();
+}
+
 void MainFrame::OnEditFoldAll(wxCommandEvent& event)
 {
     cbEditor* ed = m_pEdMan->GetBuiltinActiveEditor();
@@ -1352,7 +1362,6 @@ void MainFrame::OnEditToggleAllFolds(wxCommandEvent& event)
     if (ed)
 		ed->ToggleAllFolds();
 }
-
 
 void MainFrame::OnEditFoldBlock(wxCommandEvent& event)
 {
@@ -1597,6 +1606,7 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
 	mbar->Check(idEditEOLCR, eolMode == wxSTC_EOL_CR);
 	mbar->Check(idEditEOLLF, eolMode == wxSTC_EOL_LF);
 	mbar->Enable(idEditCommentSelected, ed);
+	mbar->Enable(idEditAutoComplete, ed);
 
 	if (m_pToolbar)
 	{
