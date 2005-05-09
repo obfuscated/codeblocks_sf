@@ -24,6 +24,8 @@ class DebuggerGDB : public cbDebuggerPlugin
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
 	protected:
         void ConvertToGDBFriendly(wxString& str);
+        void ConvertToGDBDirectory(wxString& str, wxString base = "", bool relative = true);
+        void StripQuotes(wxString& str);
 		int Debug();
 		void CmdContinue();
 		void CmdNext();

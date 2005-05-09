@@ -117,6 +117,57 @@ void DebuggerTree::BuildTree(const wxString& infoText)
 	m_pTree->Thaw();
 }
 
+int DebuggerTree::FindCharOutsideQuotes(const wxString& str, wxChar ch)
+{
+    int len = str.Length();
+    int i = 0;
+    bool inQuotes = false;
+    while (i < len)
+    {
+        if (!inQuotes && str.GetChar(i) == ch)
+            return i;
+        else if (str.GetChar(i) == '"' && (i == 0 || (i > 0 && str.GetChar(i - 1) != '\\')))
+            inQuotes = !inQuotes;
+        ++i;
+    }
+    return -1;
+}
+
+int DebuggerTree::FindCommaPos(const wxString& str)
+{
+    // comma is a special case because it separates the fields
+    // but it can also appear in a function signature, where
+    // we shouldn't treat it as a field separator
+    
+    // what we 'll do now, is decide if the comma is inside
+    // a function signature.
+    // we 'll do it by counting the opening and closing parenthesis
+    // *up to* the comma.
+    // if they 're equal, it's a field separator.
+    // if they 're not, it's in a function signature
+    // ;)
+    
+    int len = str.Length();
+    int i = 0;
+    int parCount = 0;
+    bool inQuotes = false;
+    while (i < len)
+    {
+        if (str.GetChar(i) == '(' && (i == 0 || (i > 0 && str.GetChar(i - 1) != '\\')))
+            ++parCount; // increment on opening parenthesis
+        else if (str.GetChar(i) == ')' && (i == 0 || (i > 0 && str.GetChar(i - 1) != '\\')))
+            --parCount; // decrement on opening parenthesis
+
+        // if it's not inside quotes *and* we have parCount == 0, it's a field separator
+        if (!inQuotes && parCount == 0 && str.GetChar(i) == ',')
+            return i;
+        else if (str.GetChar(i) == '"' && (i == 0 || (i > 0 && str.GetChar(i - 1) != '\\')))
+            inQuotes = !inQuotes;
+        ++i;
+    }
+    return -1;
+}
+
 void DebuggerTree::ParseEntry(const wxTreeItemId& parent, wxString& text)
 {
 #define MIN(a,b) (a < b ? a : b)
@@ -129,14 +180,14 @@ void DebuggerTree::ParseEntry(const wxTreeItemId& parent, wxString& text)
 		text.Trim(true);
 		text.Trim(false);
 		
-		// find position of '{', '}' and ','.
+		// find position of '{', '}' and ',' ***outside*** of any quotes.
 		// decide which is nearer to the start
-		int braceOpenPos = text.First('{');
+		int braceOpenPos = FindCharOutsideQuotes(text, '{');
 		if (braceOpenPos == -1)	braceOpenPos = 0xFFFFFE;
-		int braceClosePos = text.First('}');
-		if (braceClosePos == -1)	braceClosePos = 0xFFFFFE;
-		int commaPos = text.First(',');
-		if (commaPos == -1)	commaPos = 0xFFFFFE;
+		int braceClosePos = FindCharOutsideQuotes(text, '}');
+		if (braceClosePos == -1) braceClosePos = 0xFFFFFE;
+        int commaPos = FindCommaPos(text);
+		if (commaPos == -1) commaPos = 0xFFFFFE;
 		int pos = MIN(commaPos, MIN(braceOpenPos, braceClosePos));
 		
 		if (pos == 0xFFFFFE)

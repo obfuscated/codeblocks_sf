@@ -63,6 +63,9 @@ dlgAbout::dlgAbout(wxWindow* parent)
         "Hakki Dogusan : DigitalMars compiler support\n"
         "Tim Baker     : Patches for the direct-compile-mode\n"
         "                dependencies generation system\n"
+        "Eric Burnett  : GDB debugger patch correcting filenames\n"
+        "                sent to the debugger plus allowing debugging\n"
+        "                of filenames with spaces\n"
         "Chris Raschko : Design of the 3D logo for Code::Blocks\n"
         "J.A. Ortega   : 3D Icon based on the above"
         ));

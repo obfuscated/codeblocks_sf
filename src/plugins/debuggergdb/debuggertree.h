@@ -35,6 +35,8 @@ class DebuggerTree : public wxPanel
 		int m_PageIndex;
 		wxArrayString m_Watches;
 	private:
+        int FindCharOutsideQuotes(const wxString& str, wxChar ch); // returns position of ch in str
+        int FindCommaPos(const wxString& str); // ignores commas in function signatures
 		DECLARE_EVENT_TABLE()
 };
 

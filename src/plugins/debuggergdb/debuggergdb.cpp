@@ -46,7 +46,21 @@
 #include "debuggergdb.h"
 #include "debuggeroptionsdlg.h"
 
-#define USE_DEBUG_LOG 0 // set it to 1, to enable the debugger's debug log
+#ifndef OS 
+    #if defined(__MINGW32__) || defined(__WIN32__) || defined(__WXMSW__)
+        #define OS WIN32
+    #elif defined(linux) || defined(Linux) || defined(unix) || defined (UNIX) 
+        #define OS UNIX
+    #else 
+        #error "Unsupported OS?"
+    #endif //unix
+#endif //ifndef OS
+
+#if OS==WIN32
+    #include <winbase.h> //For GetShortPathName()...only for windows systems
+#endif
+
+#define USE_DEBUG_LOG 1 // set it to 1, to enable the debugger's debug log
 
 #define implement_debugger_toolbar
 static const wxString g_EscapeChars = char(26);
@@ -291,8 +305,7 @@ void DebuggerGDB::SetBreakpoints()
 			for (unsigned int x = 0; x < pf->breakpoints.GetCount(); ++x)
 			{
 				DebuggerBreakpoint* bp = pf->breakpoints[x];
-				wxString filename = pf->relativeFilename;
-				ConvertToGDBFriendly(filename);
+				wxString filename = pf->file.GetFullName();
 				wxString cmd;
 				if (bp->enabled)
 					cmd << "break " << filename << ":" << bp->line + 1;
@@ -381,7 +394,7 @@ int DebuggerGDB::Debug()
         #ifdef __WXMSW__
         msgMan->Log(m_PageIndex,_("\n(For MINGW compilers, it's 'gdb.exe' (without the quotes))"));
         #else
-        msgMan->Log(m_PageIndex,_("\n(For MINGW compilers, it's 'gdb' (without the quotes))"));
+        msgMan->Log(m_PageIndex,_("\n(For GCC compilers, it's 'gdb' (without the quotes))"));
         #endif
         return -1;
     }
@@ -450,8 +463,8 @@ int DebuggerGDB::Debug()
 //        if (it == project)
 //            continue;
         wxString filename = it->GetBasePath();
-        ConvertToGDBFriendly(filename);
         msgMan->Log(m_PageIndex, _("Adding source dir: %s"), filename.c_str());
+        ConvertToGDBDirectory(filename, "", false);//project->GetBasePath(), true);
         SendCommand("directory " + filename);
 	}
 //    msgMan->Log(m_PageIndex, cmd);
@@ -463,7 +476,8 @@ int DebuggerGDB::Debug()
 		case ttConsoleOnly:
 			// "-async" option is not really supported, at least under Win32, as far as I know
 			out = UnixFilename(target->GetOutputFilename());
-			ConvertToGDBFriendly(out);
+			msgMan->Log(m_PageIndex, _("Adding file: %s"), out.c_str());
+            ConvertToGDBDirectory(out);
 			cmd << "file " << out;
 			// dll debugging steps:
 			// gdb <hostapp>
@@ -481,14 +495,16 @@ int DebuggerGDB::Debug()
 				return 4;
 			}
 			out = UnixFilename(target->GetHostApplication());
-			ConvertToGDBFriendly(out);
+			msgMan->Log(m_PageIndex, _("Adding file: %s"), out.c_str());
+			ConvertToGDBDirectory(out);
 			cmd << "file " << out;
 			SendCommand(cmd);
 			if (target->GetTargetType() == ttDynamicLib)
 			{
 				wxString symbols;
 				out = UnixFilename(target->GetOutputFilename());
-                ConvertToGDBFriendly(out);
+				msgMan->Log(m_PageIndex, _("Adding symbol file: %s"), out.c_str());
+                ConvertToGDBDirectory(out);
 				symbols << "add-symbol-file " << out;
 				SendCommand(symbols);
 			}
@@ -501,15 +517,19 @@ int DebuggerGDB::Debug()
 		SendCommand("set args " + target->GetExecutionParameters());
 
     // switch to output dir
-//    wxFileName dir(target->GetOutputFilename());
-//    wxString path = UnixFilename(dir.GetPath(wxPATH_GET_VOLUME));
+	// wxFileName dir(target->GetOutputFilename());
+	// wxString path = UnixFilename(dir.GetPath(wxPATH_GET_VOLUME));
     wxString path = UnixFilename(target->GetWorkingDir());
     if (!path.IsEmpty())
     {
         cmd.Clear();
-        ConvertToGDBFriendly(path);
-        cmd << "cd " << path;
-        SendCommand(cmd);
+        ConvertToGDBDirectory(path);
+        if (path != _(".")) // avoid silly message "changing to ."
+        {
+            msgMan->Log(m_PageIndex, _("Changing directory to: %s"), path.c_str());
+            cmd << "cd " << path;
+            SendCommand(cmd);
+        }
     }
 
 	SetBreakpoints();
@@ -522,6 +542,12 @@ int DebuggerGDB::Debug()
     // finally, run the process
 	SendCommand("run");
 	return 0;
+}
+
+void DebuggerGDB::StripQuotes(wxString& str)
+{
+	if (str.GetChar(0) == '\"' && str.GetChar(str.Length() - 1) == '\"') 
+			str = str.Mid(1, str.Length() - 2);
 }
 
 void DebuggerGDB::ConvertToGDBFriendly(wxString& str)
@@ -537,6 +563,79 @@ void DebuggerGDB::ConvertToGDBFriendly(wxString& str)
 //    str.Replace("/", "//");
     if (str.Find(' ') != -1 && str.GetChar(0) != '"')
         str = "\"" + str + "\"";
+}
+
+//if relative == false, try to leave as an absolute path
+void DebuggerGDB::ConvertToGDBDirectory(wxString& str, wxString base, bool relative)
+{
+    if (str.IsEmpty())
+        return;
+        
+	ConvertToGDBFriendly(str);
+	ConvertToGDBFriendly(base);
+	StripQuotes(str);
+	StripQuotes(base);
+
+	#if OS == WIN32
+		int ColonLocation = str.Find(':');
+		char buf[255];
+		if(ColonLocation != -1)
+		{
+			//If can, get 8.3 name for path (Windows only)
+			GetShortPathName(str.c_str(), buf, 255);
+			str = buf;
+		} 
+		else if(!base.IsEmpty() && str.GetChar(0) != '/') 
+		{
+			if(base.GetChar(base.Length()) == '/') base = base.Mid(0, base.Length() - 2);
+			while(!str.IsEmpty())
+			{
+				base += "/" + str.BeforeFirst('/');
+				if(str.Find('/') != -1) str = str.AfterFirst('/');
+				else str.Clear();
+			}
+			GetShortPathName(base.c_str(), buf, 255);
+			str = buf;
+		}
+		
+		if(ColonLocation == -1 || base.IsEmpty())
+			relative = false;		//Can't do it
+	#elif OS == UNIX
+		if((str.GetChar(0) != '/' && str.GetChar(0) != '~') || base.IsEmpty())
+			relative = false;	
+	#endif
+	
+	if(relative)
+	{
+		#if OS == WIN32
+			if(str.Find(':') != -1) str = str.Mid(str.Find(':') + 2, str.Length());
+			if(base.Find(':') != -1) base = base.Mid(base.Find(':') + 2, base.Length());
+		#elif OS == UNIX
+			if(str.GetChar(0) == '/') str = str.Mid(1, str.Length());
+			else if(str.GetChar(0) == '~') str = str.Mid(2, str.Length());
+			if(base.GetChar(0) == '/') base = base.Mid(1, base.Length());
+			else if(base.GetChar(0) == '~') base = base.Mid(2, base.Length());
+		#endif
+		
+		while(!base.IsEmpty() && !str.IsEmpty())
+		{
+			if(str.BeforeFirst('/') == base.BeforeFirst('/'))
+			{
+				if(str.Find('/') == -1) str.Clear();
+				else str = str.AfterFirst('/');
+				
+				if(base.Find('/') == -1) base.Clear();
+				else base = base.AfterFirst('/');
+			}
+			else break;
+		}
+		while (!base.IsEmpty())
+		{
+			str = "../" + str;
+			if(base.Find('/') == -1) base.Clear();
+			else base = base.AfterFirst('/');
+		}
+	}	
 }
 
 void DebuggerGDB::SendCommand(const wxString& cmd)
@@ -768,14 +867,14 @@ void DebuggerGDB::ParseOutput(const wxString& output)
 			buffer.Remove(0, 7); // remove "source "
 
 			if (!reSource.IsValid())
-				reSource.Compile("([A-Za-z]:)([ A-Za-z0-9_/\\.]*):([0-9]*)");  // check for . - _ too
+				reSource.Compile("([A-Za-z]:)([ A-Za-z0-9_/\\.~]*):([0-9]*)");  // check for . - _ too
 			if ( reSource.Matches(buffer) )
 			{
 				wxString file = reSource.GetMatch(buffer, 1) + reSource.GetMatch(buffer, 2);
 				wxString lineStr = reSource.GetMatch(buffer, 3);
 				long int line;
-				Manager::Get()->GetMessageManager()->DebugLog("file %s, line %ld", file.c_str(), line);
 				lineStr.ToLong(&line);
+//				Manager::Get()->GetMessageManager()->DebugLog("file %s, line %ld", file.c_str(), line);
 				SyncEditor(file, line);
 				BringAppToFront();
 			}
@@ -1056,6 +1155,8 @@ void DebuggerGDB::OnAddSymbolFile(wxCommandEvent& event)
 									wxOPEN | wxFILE_MUST_EXIST);
 	if (file.IsEmpty())
 		return;
+    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Adding symbol file: %s"), file.c_str());
+    ConvertToGDBDirectory(file);
 	SendCommand("add-symbol-file " + file);
 }
 
