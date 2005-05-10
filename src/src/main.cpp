@@ -1676,7 +1676,6 @@ void MainFrame::OnEditorUpdateUI(CodeBlocksEvent& event)
 {
 	if (m_pEdMan && event.GetEditor() == m_pEdMan->GetActiveEditor())
 	{
-		event.GetEditor()->HighlightBraces(); // brace highlighting
 		DoUpdateStatusBar();
 	}
 	event.Skip();

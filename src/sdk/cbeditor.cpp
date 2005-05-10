@@ -758,6 +758,11 @@ void cbEditor::HighlightBraces()
     ////// BRACES HIGHLIGHTING ///////
     int currPos = m_pControl->GetCurrentPos();
     int newPos = m_pControl->BraceMatch(currPos);
+    if (newPos == wxSTC_INVALID_POSITION)
+    {
+        if(currPos > 0) currPos--;
+        newPos = m_pControl->BraceMatch(currPos);
+    }
     if (newPos != wxSTC_INVALID_POSITION)
         m_pControl->BraceHighlight(currPos, newPos);
     else
@@ -1035,7 +1040,10 @@ void cbEditor::OnMarginClick(wxStyledTextEvent& event)
 void cbEditor::OnEditorUpdateUI(wxStyledTextEvent& event)
 {
 	if (Manager::Get()->GetEditorManager()->GetActiveEditor() == this)
+	{
         NotifyPlugins(cbEVT_EDITOR_UPDATE_UI);
+		HighlightBraces(); // brace highlighting
+    }
 }
 
 void cbEditor::OnEditorChange(wxStyledTextEvent& event)
