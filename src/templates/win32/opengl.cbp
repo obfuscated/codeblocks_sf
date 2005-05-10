@@ -14,6 +14,8 @@
 			<Add library="opengl32"/>
 			<Add library="glu32"/>
 			<Add library="gdi32"/>
+			<Add library="user32"/>
+			<Add library="kernel32"/>
 		</Linker>
 	</Project>
 </Code::Blocks_project_file>
