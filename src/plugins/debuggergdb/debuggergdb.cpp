@@ -53,6 +53,15 @@
 #define USE_DEBUG_LOG 1 // set it to 1, to enable the debugger's debug log
 
 #define implement_debugger_toolbar
+
+// valid debugger command constants
+#define CMD_CONTINUE    1
+#define CMD_STEP        2
+#define CMD_STEPIN      3
+#define CMD_STOP        4
+#define CMD_BACKTRACE   5
+#define CMD_DISASSEMBLE 6
+
 static const wxString g_EscapeChars = char(26);
 
 int idMenuDebug = XRCID("idDebuggerMenuDebug");
@@ -64,6 +73,8 @@ int idMenuContinue = XRCID("idDebuggerMenuContinue");
 int idMenuToggleBreakpoint = XRCID("idDebuggerMenuToggleBreakpoint");
 int idMenuSendCommandToGDB = XRCID("idDebuggerMenuSendCommandToGDB");
 int idMenuAddSymbolFile = XRCID("idDebuggerMenuAddSymbolFile");
+int idMenuDisassemble = XRCID("idDebuggerMenuDisassemble");
+int idMenuBacktrace = XRCID("idDebuggerMenuBacktrace");
 int idMenuEditWatches = XRCID("idDebuggerMenuEditWatches");
 
 int idGDBProcess = wxNewId();
@@ -93,6 +104,8 @@ BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
 	EVT_MENU(idMenuStop, DebuggerGDB::OnStop)
 	EVT_MENU(idMenuSendCommandToGDB, DebuggerGDB::OnSendCommandToGDB)
 	EVT_MENU(idMenuAddSymbolFile, DebuggerGDB::OnAddSymbolFile)
+	EVT_MENU(idMenuBacktrace, DebuggerGDB::OnBacktrace)
+	EVT_MENU(idMenuDisassemble, DebuggerGDB::OnDisassemble)
 	EVT_MENU(idMenuEditWatches, DebuggerGDB::OnEditWatches)
     EVT_MENU(idMenuDebuggerAddWatch, DebuggerGDB::OnAddWatch)
 	
@@ -124,7 +137,9 @@ DebuggerGDB::DebuggerGDB()
 	m_Pid(0),
 	m_EvalWin(0L),
 	m_pTree(0L),
-	m_NoDebugInfo(false)
+	m_NoDebugInfo(false),
+	m_pDisassembly(0),
+	m_pBacktrace(0)
 {
     Manager::Get()->Loadxrc("/debugger_gdb.zip#zip:*.xrc");
 
@@ -172,6 +187,14 @@ void DebuggerGDB::OnAttach()
 
 void DebuggerGDB::OnRelease(bool appShutDown)
 {
+    if (m_pDisassembly)
+        m_pDisassembly->Destroy();
+    m_pDisassembly = 0;
+
+    if (m_pBacktrace)
+        m_pBacktrace->Destroy();
+    m_pBacktrace = 0;
+
 	if (m_pTree)
 	{
 		delete m_pTree;
@@ -436,6 +459,11 @@ int DebuggerGDB::Debug()
 	SendCommand("set confirm off");
 	if (target->GetTargetType() == ttConsoleOnly)
         SendCommand("set new-console on");
+#ifndef __WXMSW__
+    SendCommand("set disassembly-flavor att");
+#else
+    SendCommand("set disassembly-flavor intel");
+#endif
 
     // pass init-commands
     wxString init = ConfigManager::Get()->Read("debugger_gdb/init_commands", "");
@@ -680,23 +708,75 @@ wxString DebuggerGDB::GetNextOutputLineClean(bool useStdErr)
 	return line;
 }
 
+void DebuggerGDB::RunCommand(int cmd)
+{
+    switch (cmd)
+    {
+        case CMD_CONTINUE:
+            ClearActiveMarkFromAllEditors();
+            Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Continuing..."));
+            SendCommand("cont");
+            break;
+
+        case CMD_STEP:
+            ClearActiveMarkFromAllEditors();
+            SendCommand("next");
+            break;
+
+        case CMD_STEPIN:
+            ClearActiveMarkFromAllEditors();
+            SendCommand("step");
+            break;
+
+        case CMD_STOP:
+            ClearActiveMarkFromAllEditors();
+            SendCommand("quit");
+            break;
+
+        case CMD_BACKTRACE:
+//            Manager::Get()->GetMessageManager()->Log(m_PageIndex, "Running back-trace...");
+            SendCommand("bt");
+            break;
+
+        case CMD_DISASSEMBLE:
+//            Manager::Get()->GetMessageManager()->Log(m_PageIndex, "Disassembling...");
+            SendCommand("disassemble");
+            break;
+
+        default: break;
+    }
+}
+
+void DebuggerGDB::CmdDisassemble()
+{
+    if (!m_pDisassembly)
+        m_pDisassembly = new DisassemblyDlg(Manager::Get()->GetAppWindow(), this);
+    m_pDisassembly->Show();
+    RunCommand(CMD_DISASSEMBLE);
+}
+
+void DebuggerGDB::CmdBacktrace()
+{
+    if (!m_pBacktrace)
+        m_pBacktrace = new BacktraceDlg(Manager::Get()->GetAppWindow(), this);
+    m_pBacktrace->Clear();
+    m_pBacktrace->Show();
+    RunCommand(CMD_BACKTRACE);
+}
+
 void DebuggerGDB::CmdContinue()
 {
-	ClearActiveMarkFromAllEditors();
-	Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Continuing..."));
-	SendCommand("cont");
+    RunCommand(CMD_CONTINUE);
 }
 
 void DebuggerGDB::CmdNext()
 {
-	ClearActiveMarkFromAllEditors();
-	SendCommand("next");
+    RunCommand(CMD_STEP);
 }
 
 void DebuggerGDB::CmdStep()
 {
-	ClearActiveMarkFromAllEditors();
-	SendCommand("step");
+    RunCommand(CMD_STEPIN);
 }
 
 void DebuggerGDB::CmdRunToCursor()
@@ -735,8 +815,7 @@ void DebuggerGDB::CmdToggleBreakpoint()
 
 void DebuggerGDB::CmdStop()
 {
-	ClearActiveMarkFromAllEditors();
-	SendCommand("quit");
+    RunCommand(CMD_STOP);
 }
 
 void DebuggerGDB::ParseOutput(const wxString& output)
@@ -798,18 +877,34 @@ void DebuggerGDB::ParseOutput(const wxString& output)
 		}
 
 		// Stack-frame info
+		else if (buffer.Matches("frames-invalid"))
+            m_CurrentFrame.Clear();
 		else if (buffer.StartsWith("frame-begin "))
-			m_LastFrame << GetNextOutputLineClean();
-		else if (buffer.Matches("frame-function-name"))
-			m_LastFrame << GetNextOutputLineClean();
-		else if (buffer.Matches("frame-source-file"))
-			m_LastFrame << _(" at ") << GetNextOutputLineClean();
-		else if (buffer.Matches("frame-source-line"))
-			m_LastFrame << ":" << GetNextOutputLineClean();
-		else if (buffer.Matches("frame-end") && !m_LastFrame.IsEmpty())
 		{
-			Manager::Get()->GetMessageManager()->Log(m_PageIndex, m_LastFrame);
-			m_LastFrame.Clear();
+            m_CurrentFrame.Clear();
+            sscanf(buffer.c_str(), "frame-begin %d %x", &m_CurrentFrame.number, &m_CurrentFrame.address);
+            m_CurrentFrame.valid = true;
+        }
+		else if (buffer.Matches("frame-function-name"))
+		{
+            m_CurrentFrame.function = GetNextOutputLineClean();
+//			Manager::Get()->GetMessageManager()->Log(m_PageIndex, "m_FrameFunction=%s", m_FrameFunction.c_str());
+        }
+		else if (buffer.Matches("frame-source-file"))
+			m_CurrentFrame.file = GetNextOutputLineClean();
+		else if (buffer.Matches("frame-source-line"))
+			m_CurrentFrame.line = GetNextOutputLineClean();
+		else if (buffer.Matches("frame-end") && m_CurrentFrame.valid)
+		{
+            if (m_pBacktrace)
+                m_pBacktrace->AddFrame(m_CurrentFrame);
+//			Manager::Get()->GetMessageManager()->Log(m_PageIndex,
+//                                                    _("Frame #%-2d [0x%8.8x]: %s (%s:%s)"),
+//                                                    m_CurrentFrame.number,
+//                                                    m_CurrentFrame.address,
+//                                                    m_CurrentFrame.valid ? m_CurrentFrame.function.c_str() : "??",
+//                                                    m_CurrentFrame.valid && !m_CurrentFrame.file.IsEmpty() ? m_CurrentFrame.file.c_str() : "??",
+//                                                    m_CurrentFrame.valid && !m_CurrentFrame.line.IsEmpty() ? m_CurrentFrame.line.c_str() : "??");
 		}
 
 		// variable info
@@ -870,7 +965,36 @@ void DebuggerGDB::ParseOutput(const wxString& output)
 			}
 		}
 	}
-//	else
+	else
+	{
+        if (buffer.StartsWith("Dump of assembler code"))
+        {
+//            Manager::Get()->GetMessageManager()->Log(m_PageIndex,
+//                                                    "Starting disassembly of %s (starting address: 0x%8.8x)",
+//                                                    m_CurrentFrame.valid ? m_CurrentFrame.function.c_str() : "??",
+//                                                    m_CurrentFrame.valid ? m_CurrentFrame.address : 0);
+            if (m_pDisassembly)
+                m_pDisassembly->Clear(m_CurrentFrame);
+            //0x00403977 <_ZN7MyFrame11OnLocalTestER14wxCommandEvent+521>:	ret
+            wxRegEx re("(0x[0-9A-Za-z]+)[ \t]+<.*>:[ \t]+(.*)");
+            wxString tmp;
+            do
+            {
+                tmp = GetNextOutputLine();
+                if (tmp.Matches("End of assembler dump."))
+                {
+//                    Manager::Get()->GetMessageManager()->Log(m_PageIndex, "Disassembly end");
+                    break;
+                }
+                if (re.Matches(tmp))
+                    m_pDisassembly->AddAssemblerLine(re.GetMatch(tmp, 1) + ": " + re.GetMatch(tmp, 2));
+//                    Manager::Get()->GetMessageManager()->Log(m_PageIndex, "%s: %s", re.GetMatch(tmp, 1).c_str(), re.GetMatch(tmp, 2).c_str());
+            }
+            while (!tmp.IsEmpty());
+            if (m_pDisassembly)
+                m_pDisassembly->Show(true);
+        }
+	}
 //        Manager::Get()->GetMessageManager()->Log(m_PageIndex, buffer);
 }
 
@@ -958,6 +1082,8 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
 		mbar->Enable(idMenuToggleBreakpoint, ed && m_ProgramIsStopped);
 		mbar->Enable(idMenuSendCommandToGDB, m_pProcess && m_ProgramIsStopped);
  		mbar->Enable(idMenuAddSymbolFile, m_pProcess && m_ProgramIsStopped);
+ 		mbar->Enable(idMenuBacktrace, m_pProcess && m_ProgramIsStopped);
+ 		mbar->Enable(idMenuDisassemble, m_pProcess && m_ProgramIsStopped);
  		mbar->Enable(idMenuEditWatches, prj && m_ProgramIsStopped);
         mbar->Enable(idMenuStop, m_pProcess && prj && m_ProgramIsStopped);
 	}
@@ -1148,6 +1274,16 @@ void DebuggerGDB::OnAddSymbolFile(wxCommandEvent& event)
     Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Adding symbol file: %s"), file.c_str());
     ConvertToGDBDirectory(file);
 	SendCommand("add-symbol-file " + file);
+}
+
+void DebuggerGDB::OnBacktrace(wxCommandEvent& event)
+{
+    CmdBacktrace();
+}
+
+void DebuggerGDB::OnDisassemble(wxCommandEvent& event)
+{
+    CmdDisassemble();
 }
 
 void DebuggerGDB::OnEditWatches(wxCommandEvent& event)

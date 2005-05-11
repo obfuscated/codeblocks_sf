@@ -1128,6 +1128,16 @@
 			<Option link="0"/>
 			<Option target="plugin_CompilerGCC"/>
 		</Unit>
+		<Unit filename="plugins\debuggergdb\backtracedlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\backtracedlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
 		<Unit filename="plugins\debuggergdb\debuggergdb.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="plugin_DebuggerGDB"/>
@@ -1158,6 +1168,22 @@
 			<Option link="0"/>
 			<Option target="plugin_DebuggerGDB"/>
 		</Unit>
+		<Unit filename="plugins\debuggergdb\disassemblydlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\disassemblydlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\resources\backtrace.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
 		<Unit filename="plugins\debuggergdb\resources\debugger_menu.xrc">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
@@ -1177,6 +1203,12 @@
 			<Option target="plugin_DebuggerGDB"/>
 		</Unit>
 		<Unit filename="plugins\debuggergdb\resources\debugger_toolbar_16x16.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\resources\disassembly.xrc">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

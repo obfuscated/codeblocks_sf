@@ -10,6 +10,28 @@
 #include <wx/tipwin.h>
 
 #include "debuggertree.h"
+#include "backtracedlg.h"
+#include "disassemblydlg.h"
+
+struct StackFrame
+{
+    StackFrame() : valid(false), number(0), address(0) {}
+    void Clear()
+    {
+        valid = false;
+        number = 0;
+        address = 0;
+        function.Clear();
+        file.Clear();
+        line.Clear();
+    }
+    bool valid;
+    int number;
+    int address;
+    wxString function;
+    wxString file;
+    wxString line;
+};
 
 class DebuggerGDB : public cbDebuggerPlugin
 {
@@ -22,10 +44,11 @@ class DebuggerGDB : public cbDebuggerPlugin
 		void BuildToolBar(wxToolBar* toolBar);
 		void OnAttach(); // fires when the plugin is attached to the application
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
-	protected:
-        void ConvertToGDBFriendly(wxString& str);
-        void ConvertToGDBDirectory(wxString& str, wxString base = "", bool relative = true);
-        void StripQuotes(wxString& str);
+
+		void RunCommand(int cmd);
+		void CmdDisassemble();
+		void CmdBacktrace();
+
 		int Debug();
 		void CmdContinue();
 		void CmdNext();
@@ -35,9 +58,14 @@ class DebuggerGDB : public cbDebuggerPlugin
 		void CmdStop();
 		bool IsRunning(){ return m_pProcess; }
 		int GetExitCode(){ return m_LastExitCode; }
+
+		void SyncEditor(const wxString& filename, int line);
+	protected:
+        void ConvertToGDBFriendly(wxString& str);
+        void ConvertToGDBDirectory(wxString& str, wxString base = "", bool relative = true);
+        void StripQuotes(wxString& str);
 	private:
 		void ParseOutput(const wxString& output);
-		void SyncEditor(const wxString& filename, int line);
 		void BringAppToFront();
 		void ClearActiveMarkFromAllEditors();
 		void SetBreakpoints();
@@ -53,6 +81,8 @@ class DebuggerGDB : public cbDebuggerPlugin
 		void OnStop(wxCommandEvent& event);
 		void OnSendCommandToGDB(wxCommandEvent& event);
 		void OnAddSymbolFile(wxCommandEvent& event);
+		void OnBacktrace(wxCommandEvent& event);
+		void OnDisassemble(wxCommandEvent& event);
 		void OnEditWatches(wxCommandEvent& event);
 		void OnContinue(wxCommandEvent& event);
 		void OnNext(wxCommandEvent& event);
@@ -79,7 +109,6 @@ class DebuggerGDB : public cbDebuggerPlugin
 		wxRegEx reSource;
 		bool m_ProgramIsStopped;
 		wxString m_LastCmd;
-		wxString m_LastFrame;
 		wxString m_Variable;
 		cbCompilerPlugin* m_pCompiler;
 		bool m_LastExitCode;
@@ -92,6 +121,13 @@ class DebuggerGDB : public cbDebuggerPlugin
 		wxTimer m_TimerPollDebugger;
 		DebuggerTree* m_pTree;
 		bool m_NoDebugInfo;
+		
+		// current frame info
+		StackFrame m_CurrentFrame;
+		
+		// extra dialogs
+		DisassemblyDlg* m_pDisassembly;
+		BacktraceDlg* m_pBacktrace;
 		
 		DECLARE_EVENT_TABLE()
 };

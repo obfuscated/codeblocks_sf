@@ -962,13 +962,20 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 		}
 		cmd << "\"" << target->GetHostApplication() << "\" " << target->GetExecutionParameters();
 	}
-	else
+	else if (target->GetTargetType() == ttExecutable)
     {
         cmd << "\"";
 		cmd << f.GetFullPath();
 		cmd << "\" ";
 		cmd << target->GetExecutionParameters();
     }
+    else
+    {
+        // commands-only target?
+        wxMessageBox(_("You can't \"run\" a commands-only target..."));
+        return -1;
+    }
+
     Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Executing: %s (in %s)"), cmd.c_str(), m_CdRun.c_str());
 	m_Queue.Add(cmd);
 
