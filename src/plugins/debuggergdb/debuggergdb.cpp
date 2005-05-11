@@ -46,17 +46,7 @@
 #include "debuggergdb.h"
 #include "debuggeroptionsdlg.h"
 
-#ifndef OS 
-    #if defined(__MINGW32__) || defined(__WIN32__) || defined(__WXMSW__)
-        #define OS WIN32
-    #elif defined(linux) || defined(Linux) || defined(unix) || defined (UNIX) 
-        #define OS UNIX
-    #else 
-        #error "Unsupported OS?"
-    #endif //unix
-#endif //ifndef OS
-
-#if OS==WIN32
+#ifdef __WXMSW__
     #include <winbase.h> //For GetShortPathName()...only for windows systems
 #endif
 
@@ -576,7 +566,7 @@ void DebuggerGDB::ConvertToGDBDirectory(wxString& str, wxString base, bool relat
 	StripQuotes(str);
 	StripQuotes(base);
 
-	#if OS == WIN32
+	#ifdef __WXMSW__
 		int ColonLocation = str.Find(':');
 		char buf[255];
 		if(ColonLocation != -1)
@@ -600,17 +590,17 @@ void DebuggerGDB::ConvertToGDBDirectory(wxString& str, wxString base, bool relat
 		
 		if(ColonLocation == -1 || base.IsEmpty())
 			relative = false;		//Can't do it
-	#elif OS == UNIX
+	#else
 		if((str.GetChar(0) != '/' && str.GetChar(0) != '~') || base.IsEmpty())
 			relative = false;	
 	#endif
 	
 	if(relative)
 	{
-		#if OS == WIN32
+		#ifdef __WXMSW__
 			if(str.Find(':') != -1) str = str.Mid(str.Find(':') + 2, str.Length());
 			if(base.Find(':') != -1) base = base.Mid(base.Find(':') + 2, base.Length());
-		#elif OS == UNIX
+		#else
 			if(str.GetChar(0) == '/') str = str.Mid(1, str.Length());
 			else if(str.GetChar(0) == '~') str = str.Mid(2, str.Length());
 			if(base.GetChar(0) == '/') base = base.Mid(1, base.Length());
