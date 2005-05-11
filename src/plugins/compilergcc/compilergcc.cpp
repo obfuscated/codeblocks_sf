@@ -962,7 +962,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 		}
 		cmd << "\"" << target->GetHostApplication() << "\" " << target->GetExecutionParameters();
 	}
-	else if (target->GetTargetType() == ttExecutable)
+	else if (target->GetTargetType() != ttCommandsOnly)
     {
         cmd << "\"";
 		cmd << f.GetFullPath();

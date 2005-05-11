@@ -173,6 +173,7 @@ void EditorManager::LoadAutoComplete()
 	wxConfigBase* conf = ConfigManager::Get();
 	wxString oldPath = conf->GetPath();
 	conf->SetPath(_("/editor/auto_complete"));
+	conf->SetExpandEnvVars(false);
 	bool cont = conf->GetFirstEntry(entry, cookie);
 	while (cont)
 	{
@@ -184,6 +185,7 @@ void EditorManager::LoadAutoComplete()
         m_AutoCompleteMap[entry] = code;
 		cont = conf->GetNextEntry(entry, cookie);
 	}
+	conf->SetExpandEnvVars(true);
 	conf->SetPath(oldPath);
 
     if (m_AutoCompleteMap.size() == 0)
@@ -208,6 +210,7 @@ void EditorManager::SaveAutoComplete()
 	conf->DeleteGroup(_("/editor/auto_complete"));
 	wxString oldPath = conf->GetPath();
 	conf->SetPath(_("/editor/auto_complete"));
+	conf->SetExpandEnvVars(false);
 	AutoCompleteMap::iterator it;
 	for (it = m_AutoCompleteMap.begin(); it != m_AutoCompleteMap.end(); ++it)
 	{
@@ -218,6 +221,7 @@ void EditorManager::SaveAutoComplete()
         code.Replace(_("\t"), _("\\t"));
 		conf->Write(it->first, code);
 	}
+	conf->SetExpandEnvVars(true);
 	conf->SetPath(oldPath);
 }
 
