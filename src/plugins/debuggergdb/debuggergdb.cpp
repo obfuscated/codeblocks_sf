@@ -456,22 +456,6 @@ int DebuggerGDB::Debug()
 	
 	wxString out;
 	m_TimerPollDebugger.Start(100);
-	SendCommand("set confirm off");
-	if (target->GetTargetType() == ttConsoleOnly)
-        SendCommand("set new-console on");
-#ifndef __WXMSW__
-    SendCommand("set disassembly-flavor att");
-#else
-    SendCommand("set disassembly-flavor intel");
-#endif
-
-    // pass init-commands
-    wxString init = ConfigManager::Get()->Read("debugger_gdb/init_commands", "");
-    wxArrayString initCmds = GetArrayFromString(init, '\n');
-    for (unsigned int i = 0; i < initCmds.GetCount(); ++i)
-    {
-        SendCommand(initCmds[i]);
-    }
 
 	// add as include dirs all open project base dirs
 	ProjectsArray* projects = prjMan->GetProjects();
@@ -556,6 +540,24 @@ int DebuggerGDB::Debug()
 		SendCommand(m_Tbreak);
 		m_Tbreak.Clear();
 	}
+
+    // send built-in init commands
+	SendCommand("set confirm off");
+	if (target->GetTargetType() == ttConsoleOnly)
+        SendCommand("set new-console on");
+#ifndef __WXMSW__
+    SendCommand("set disassembly-flavor att");
+#else
+    SendCommand("set disassembly-flavor intel");
+#endif
+
+    // pass user init-commands
+    wxString init = ConfigManager::Get()->Read("debugger_gdb/init_commands", "");
+    wxArrayString initCmds = GetArrayFromString(init, '\n');
+    for (unsigned int i = 0; i < initCmds.GetCount(); ++i)
+    {
+        SendCommand(initCmds[i]);
+    }
 
     // finally, run the process
 	SendCommand("run");
@@ -952,11 +954,20 @@ void DebuggerGDB::ParseOutput(const wxString& output)
 			buffer.Remove(0, 7); // remove "source "
 
 			if (!reSource.IsValid())
-				reSource.Compile("([A-Za-z]:)([ A-Za-z0-9_/\\.~]*):([0-9]*)");  // check for . - _ too
+			#ifdef __WXMSW__
+				reSource.Compile("([A-Za-z]:)([ A-Za-z0-9_/\\.~-]*):([0-9]*)");
+			#else
+				reSource.Compile("([ A-Za-z0-9_/\\.~-]*):([0-9]*)");
+			#endif
 			if ( reSource.Matches(buffer) )
 			{
+			#ifdef __WXMSW__
 				wxString file = reSource.GetMatch(buffer, 1) + reSource.GetMatch(buffer, 2);
 				wxString lineStr = reSource.GetMatch(buffer, 3);
+            #else
+				wxString file = reSource.GetMatch(buffer, 1);
+				wxString lineStr = reSource.GetMatch(buffer, 2);
+            #endif
 				long int line;
 				lineStr.ToLong(&line);
 //				Manager::Get()->GetMessageManager()->DebugLog("file %s, line %ld", file.c_str(), line);
