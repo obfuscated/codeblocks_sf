@@ -1103,7 +1103,7 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
 	wxToolBar* tbar = Manager::Get()->GetAppWindow()->GetToolBar();
 	if (tbar)
 	{
-        tmpflags[0]=(!m_pProcess && prj);
+        tmpflags[0]=((!m_pProcess || m_ProgramIsStopped) && prj);
         tmpflags[1]=(!m_pProcess && prj && ed);
         tmpflags[2]=(m_pProcess && prj && m_ProgramIsStopped);
         if(!init_flag ||
@@ -1135,7 +1135,13 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
 
 void DebuggerGDB::OnDebug(wxCommandEvent& event)
 {
-	Debug();
+    if (!m_pProcess)
+        Debug();
+    else
+    {
+        if (m_ProgramIsStopped)
+            CmdContinue();
+    }
 }
 
 void DebuggerGDB::OnContinue(wxCommandEvent& event)

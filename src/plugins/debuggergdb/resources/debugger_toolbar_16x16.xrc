@@ -3,8 +3,8 @@
   <object class="wxToolBarAddOn" name="debugger_toolbar_16x16">
     <object class="separator" />
     <object class="tool" name="idDebuggerMenuDebug">
-      <tooltip>Debug</tooltip>
-      <longhelp>Debug program</longhelp>
+	  <tooltip>Debug / Continue</tooltip>
+      <longhelp>Debug or continue program (depends on context)</longhelp>
       <bitmap>images/16x16/dbgrun.png</bitmap>
     </object>
     <object class="tool" name="idDebuggerMenuRunToCursor">
