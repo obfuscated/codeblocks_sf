@@ -138,7 +138,7 @@ wxString CompileTargetBase::SuggestOutputFilename()
 
 wxString CompileTargetBase::GetWorkingDir()
 {
-    if (m_TargetType != ttConsoleOnly && m_TargetType != ttExecutable)
+    if (m_TargetType != ttConsoleOnly && m_TargetType != ttExecutable && m_TargetType != ttDynamicLib)
         return wxEmptyString;
     wxString out;
     if (m_WorkingDir.IsEmpty())

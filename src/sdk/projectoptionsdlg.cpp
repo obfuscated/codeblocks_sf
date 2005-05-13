@@ -141,13 +141,17 @@ void ProjectOptionsDlg::DoTargetChange()
                 txt->SetValue(target->GetOutputFilename());
                 txt->Enable(true);
                 txtW->SetValue(target->GetWorkingDir());
-                txtW->Enable((TargetType)cmb->GetSelection() == ttExecutable || (TargetType)cmb->GetSelection() == ttConsoleOnly);
+                txtW->Enable((TargetType)cmb->GetSelection() == ttExecutable ||
+                            (TargetType)cmb->GetSelection() == ttConsoleOnly ||
+                            (TargetType)cmb->GetSelection() == ttDynamicLib);
                 txtO->SetValue(target->GetObjectOutput());
                 txtO->Enable(true);
                 txtD->SetValue(target->GetDepsOutput());
                 txtD->Enable(CompilerFactory::Compilers[target->GetCompilerIndex()]->GetSwitches().buildMethod == cbmUseMake);
                 browse->Enable(true);
-                browseW->Enable((TargetType)cmb->GetSelection() == ttExecutable || (TargetType)cmb->GetSelection() == ttConsoleOnly);
+                browseW->Enable((TargetType)cmb->GetSelection() == ttExecutable ||
+                                (TargetType)cmb->GetSelection() == ttConsoleOnly ||
+                                (TargetType)cmb->GetSelection() == ttDynamicLib);
                 browseO->Enable(true);
                 browseD->Enable(CompilerFactory::Compilers[target->GetCompilerIndex()]->GetSwitches().buildMethod == cbmUseMake);
                 txtDeps->SetValue(target->GetExternalDeps());
@@ -221,7 +225,7 @@ void ProjectOptionsDlg::DoBeforeTargetChange(bool force)
 		fname.Assign(XRCCTRL(*this, "txtWorkingDir", wxTextCtrl)->GetValue());
 //		fname.Normalize(wxPATH_NORM_ALL, m_Project->GetBasePath());
 //		fname.MakeRelativeTo(m_Project->GetBasePath());
-		target->SetWorkingDir(fname.GetFullPath());
+        target->SetWorkingDir(fname.GetFullPath());
 
 		fname.Assign(XRCCTRL(*this, "txtObjectDir", wxTextCtrl)->GetValue());
 //		fname.Normalize(wxPATH_NORM_ALL, m_Project->GetBasePath());
@@ -281,13 +285,17 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
     btnDeps->Enable(true);
     txt->Enable(true);
     txtW->SetValue(target->GetWorkingDir());
-    txtW->Enable((TargetType)cmb->GetSelection() == ttExecutable || (TargetType)cmb->GetSelection() == ttConsoleOnly);
+    txtW->Enable((TargetType)cmb->GetSelection() == ttExecutable ||
+                (TargetType)cmb->GetSelection() == ttConsoleOnly ||
+                (TargetType)cmb->GetSelection() == ttDynamicLib);
     txtO->Enable(true);
     txtO->SetValue(target->GetObjectOutput());
     txtD->Enable(CompilerFactory::Compilers[target->GetCompilerIndex()]->GetSwitches().buildMethod == cbmUseMake);
     txtD->SetValue(target->GetDepsOutput());
     browse->Enable(true);
-    browseW->Enable((TargetType)cmb->GetSelection() == ttExecutable || (TargetType)cmb->GetSelection() == ttConsoleOnly);
+    browseW->Enable((TargetType)cmb->GetSelection() == ttExecutable ||
+                    (TargetType)cmb->GetSelection() == ttConsoleOnly ||
+                    (TargetType)cmb->GetSelection() == ttDynamicLib);
     browseO->Enable(true);
     browseD->Enable(CompilerFactory::Compilers[target->GetCompilerIndex()]->GetSwitches().buildMethod == cbmUseMake);
 
