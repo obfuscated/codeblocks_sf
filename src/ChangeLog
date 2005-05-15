@@ -1,3 +1,407 @@
+Changes for version 1.0-finalbeta
+-------------------------------
+
+2005-05-15 22:22  mandrav
+
+	* Fixed debugger to work again under win98
+	* Updated setup files
+
+2005-05-15 16:04  mandrav
+
+	* Removed the debugger's debugging log (prior to releasing
+	  finalbeta)
+	* Updated version to 1.0-finalbeta
+
+2005-05-13 12:13  mandrav
+
+	* Enabled "working dir" build target setting for dynamic libraries
+	  (bug #1201182)
+
+2005-05-11 14:58  mandrav
+
+	* Added new 64x64 icon (xpm) for unix
+
+2005-05-11 14:40  mandrav
+
+	* Fixed debugger's behaviour under linux
+
+2005-05-11 14:29  mandrav
+
+	* Updated unix project file and Makefile.unix
+	* Fixed error in auto-complete keywords loading, where it would
+	  wrongly try to expand environment variables
+
+2005-05-11 13:11  mandrav
+
+	* "Debug" button in debugger's toolbar, now behaves as "Continue" if
+	  the program is already being debugged
+
+2005-05-11 13:01  mandrav
+
+	* Added "Disassembly" debugging window
+	* Added "Back-trace" debugging window
+	* Display message that the user cannot "run" a commands-only target
+
+2005-05-11 04:27  rickg22
+
+	* Fixed debuggergdb compilation problems that appeared with the path
+	  handling patch.
+
+2005-05-10 04:55  rickg22
+
+	* Fixed missing user32 in OpenGL template
+
+2005-05-10 04:37  rickg22
+
+	* Moved braces highlighting to the SDK for coherence.  + Improved
+	  braces highlighting to detect braces in the previous cursor
+	  position.
+
+2005-05-09 14:21  mandrav
+
+	* Modified new icon (made it a little brighter)
+	* Modified the small codeblocks setup logo to use the new "3D" style
+
+2005-05-09 12:20  mandrav
+
+	* Corrected filenames sent to the debugger plus allowed debugging of
+	  filenames with spaces (patch #1197802 by Eric Burnett)
+	* Fixed some cases where the debugger's watches tree would get
+	  malformed (wrong fields separation)
+	* Added Eric Burnett to contributors in the about dialog
+
+2005-05-09 06:30  rickg22
+
+	* 	+ Added thanks to JA Ortega for the 3d icon
+
+2005-05-09 06:22  rickg22
+
+	* 	Added 3D icon. Thanks to Juan Antonio Ortega.
+
+2005-05-09 00:56  rickg22
+
+	* 	Various usability enhancements to the compiler options: + Libraries,
+	  variables and paths can be added/edited/deleted with the
+	  INS/ENTER/DEL keys.  + Most dialogs are now OK/Cancel instead of
+	  YES/NO (this means you can press ESC to abort them) + Added extra
+	  confirmation ("Are you really sure?") for "reset to compiler
+	  defaults".
+
+2005-05-08 18:40  rickg22
+
+	* 	+ Added thanks to Chris Raschko (chrispunkt) for the 3D logo
+
+2005-05-08 18:30  rickg22
+
+	* Moved compiler settings outside the "plugins" menu.
+
+2005-05-08 18:29  rickg22
+
+	* 	+ Updated the Code::Blocks logo to the 3D version
+
+2005-05-08 13:43  mandrav
+
+	* Added "extra paths" in compiler configuration (added in
+	  environment PATH while running compiler)
+
+2005-05-08 12:31  mandrav
+
+	* Fixed working directory when using makefiles (bug #1197518)
+	* Added keywords auto-completion in editor (not to be confused with
+	  the code-completion plugin). Check editor's configuration,
+	  "Auto-complete" page for more info...
+
+2005-05-08 00:45  rickg22
+
+	* 	Fixed early exit hang/crash by replacing wxPostEvent(x,e) with
+	  x->ProcessEvent(e) in pluginmanager.cpp
+
+2005-05-07 17:29  rickg22
+
+	* 	Fixed early exit hang/crash by replacing wxPostEvent(x,e) with
+	  x->ProcessEvent(e) in pluginmanager.cpp
+
+2005-05-05 09:34  mandrav
+
+	* Added gcc compiler option -O3 (rfe #1191601)
+
+2005-05-03 12:59  mandrav
+
+	* Added "reparse now" entry in class browser's context menu, when on
+	  root item
+
+2005-05-03 08:10  rickg22
+
+	* 	Added menu option: "Save Workspace as..."
+
+2005-05-02 21:17  mandrav
+
+	* Fixed search dialog to not set "selected-text" search by default,
+	  if the selected text is just the searched word (bug #1192823)
+
+2005-05-02 10:35  mandrav
+
+	* Project execution setting "host application" is now remembered
+	  (bug #1191932)
+
+2005-05-02 10:28  mandrav
+
+	* Fixed toolbar show/hide (side-effect: bug #1192650)
+	* Added debugger's resources to project.
+
+2005-04-29 19:07  mandrav
+
+	* Added "gdb-initial-commands" in debugger's configuration (useful
+	  for new users to avoid creating .gdbinit)
+	* By default, for console projects, debugger is configured with "set
+	  new-console on"
+
+2005-04-29 18:44  mandrav
+
+	* Show message for "Compiler/Create distribution" when "make" is not
+	  used
+	* Fix code-completion cache saving when closing C::B
+
+2005-04-29 12:26  mandrav
+
+	* Added Makefile.unix.wx2.6 (codeblocks doesn't work well with
+	  wx2.6)
+	* Fixed a "deprecated" warning for wx2.6
+
+2005-04-28 12:41  mandrav
+
+	* Replaced yes-no buttons with ok-cancel in "search text not found"
+	  dialog, to dismiss with Escape (bug #1191222)
+
+2005-04-28 12:36  mandrav
+
+	* Implemented code-completion cache (rfe #1190481).
+	* Code-completion plugin's configuration dialog updated.
+
+2005-04-27 15:27  mandrav
+
+	* Updated unix build files
+
+2005-04-27 15:13  mandrav
+
+	* Added PersonalityManager to support different
+	  personalities/profiles (see documentation in
+	  sdk/personalitymanager.h for info)
+
+2005-04-27 15:09  mandrav
+
+	* Added PersonalityManager to support different
+	  personalities/profiles (see documentation in
+	  sdk/personalitymanager.h for info)
+
+2005-04-26 16:15  mandrav
+
+	* Updated "wxWindows" strings to "wxWidgets" in the wxWidgets
+	  template.
+
+2005-04-26 16:07  mandrav
+
+	* Removed obsolete wxHIDE_READONLY flag from file dialogs
+
+2005-04-26 14:01  mandrav
+
+	* Global resource compiler dirs are remembered now (bug #1186685)
+
+2005-04-26 13:52  mandrav
+
+	* Fixed handling of filenames with spaces in default MIME handler
+	  plugin (bug #1187231)
+
+2005-04-25 16:35  mandrav
+
+	* Fixed recursion bug in class-browser's class-ancestors handling.
+
+2005-04-25 15:32  mandrav
+
+	* Added new project file for building Code::Blocks with
+	  wxWidgets-2.6.0. Also added a small HOWTO of the process.
+
+2005-04-25 15:10  mandrav
+
+	* Fixed SDL template icon
+
+2005-04-25 15:06  mandrav
+
+	* Re-adding template images, as binaries this time
+
+2005-04-25 15:04  mandrav
+
+	* Removing template images (corrupted because they were not added as
+	  binaries)
+
+2005-04-25 14:55  mandrav
+
+	* Re-organized templates folder to allow for different templates
+	  based on OS
+
+2005-04-25 12:20  mandrav
+
+	* Fixed error in compiler's run command that wouldn't work under
+	  linux
+
+2005-04-25 11:26  mandrav
+
+	* Updated linux build files
+
+2005-04-25 10:31  mandrav
+
+	* Updated win32 Makefile (after fixing a small bug in
+	  makefilegenerator.cpp)
+
+2005-04-24 02:50  rickg22
+
+	* Fixed display bug in Open Files tree (top editor was not refreshed
+	  on layout loading)
+
+2005-04-24 02:08  rickg22
+
+	* all opened cbEditors are maximized on opening (except when
+	  loading) by default
+
+2005-04-23 21:55  rickg22
+
+	* 	Fixed "random file on top at startup" bug
+
+2005-04-23 17:16  rickg22
+
+	* 	Files opened from the project tree (double click) are opened with
+	  the current window's normal/maximized state
+
+2005-04-23 16:43  rickg22
+
+	* 	Added various #if's to manage incompatibilities between wx2.4.2 and
+	  wx.2.5+
+
+2005-04-23 11:05  mandrav
+
+	* Removed all warnings about deprecated symbols when compiling with
+	  wxWidgets-2.6.0
+
+2005-04-23 05:29  rickg22
+
+	* Restores (in theory) the top editor when loading workspace. In
+	  practice, however, that editor isn't found (!?)
+	* Maximizes the last opened file after loading workspace
+
+2005-04-22 16:37  mandrav
+
+	* Fixes for compilation with wxWidgets-2.6.0
+	* Project files and Makefiles *not* updated - something's wrong with
+	  MDI...
+
+2005-04-21 18:52  mandrav
+
+	* Updated XP-style-manifest location in win32 resource file
+
+2005-04-21 16:13  mandrav
+
+	* Added EditorBase class to allow for custom editors, beside the
+	  builtin. cbEditor inherits it and so must do every custom editor.
+	* Updated whole project for the above change.
+
+2005-04-21 11:40  mandrav
+
+	* Fixed bug in search function
+
+2005-04-21 10:49  mandrav
+
+	* Improved project loading times by using a hashmap in
+	  cbProject::GetFileByFilename()
+
+2005-04-21 06:12  rickg22
+
+	* Further optimized project loading (AddFile)
+
+2005-04-21 04:31  rickg22
+
+	* 	Optimized building of the project tree: AddFile now only checks for
+	  existing files if(!m_CurrentlyLoading).
+
+2005-04-20 16:17  mandrav
+
+	* Bug-fix in .vcproj importer: compiler search dirs
+	* Bug-fix in .dsp importer: no compiler options imported some times
+	  (bug #1186606)
+
+2005-04-20 16:03  rickg22
+
+	* 	+ Added message "Generating project tree..." in projectloader
+	* Pinpointed loading bottleneck in cbproject.cpp (Added TODO item)
+
+2005-04-20 11:56  mandrav
+
+	* Fixed ToDo list not refreshing (bug #1185950)
+
+2005-04-20 11:25  mandrav
+
+	* When a file of unknown type is opened, the MIME handler plugins
+	  are asked to open it.
+
+2005-04-20 10:48  mandrav
+
+	* Speed-up project loading times (broken by my last commit about
+	  the"unnamed-new-files" bug)
+
+2005-04-20 05:34  rickg22
+
+	* Skipped the base path calculation if the project is still loading
+	  (now does it at the end of ProjectLoader::DoUnits). Still works as
+	  usual when adding the files manually.
+
+2005-04-19 16:20  mandrav
+
+	* Don't default to "search in selected text" for searches, when the
+	  selected text is the result of the previous search (rfe #1144178)
+
+2005-04-19 16:07  mandrav
+
+	* Display "text not found" message if the search failed (rfe
+	  #1143936)
+
+2005-04-19 15:35  mandrav
+
+	* Correct fix for unnamed-new-files in project tree
+
+2005-04-18 17:37  mandrav
+
+	* Resource files are highlighted like C/C++ files (rfe #1184765)
+
+2005-04-17 22:03  mandrav
+
+	* Fixed bug when creating a new project from template, where the
+	  files in the tree wouldn't have names (visual glitch).
+
+2005-04-17 20:14  rickg22
+
+	* 	Removed manifest file from the output directory (it's already copied
+	  by update.bat from the setup directory)
+
+2005-04-17 17:14  rickg22
+
+	* 	Fixed typo library in the wxwindows_static.cbp
+
+2005-04-17 04:29  rickg22
+
+	* You can now build statically-linked wxWidgets projects (note:
+	  needs libwxmsw.a in your library directory)
+
+2005-04-16 20:35  mandrav
+
+	* Added missing manifest file for XP styles in repository
+
+2005-04-16 20:26  mandrav
+
+	* Preparing for 1.0-beta7
+
+2005-04-16 20:20  mandrav
+
+	* Updated ChangeLog for 1.0-beta7
+
 Changes for version 1.0-beta7
 -------------------------------
 
