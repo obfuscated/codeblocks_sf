@@ -50,7 +50,7 @@
     #include <winbase.h> //For GetShortPathName()...only for windows systems
 #endif
 
-#define USE_DEBUG_LOG 1 // set it to 1, to enable the debugger's debug log
+#define USE_DEBUG_LOG 0 // set it to 1, to enable the debugger's debug log
 
 #define implement_debugger_toolbar
 
