@@ -3,14 +3,14 @@
 
 [Setup]
 AppName=Code::Blocks
-AppVerName=Code::Blocks 1.0-beta7
+AppVerName=Code::Blocks 1.0-finalbeta
 AppPublisher=Code::Blocks
 DefaultDirName={pf}\CodeBlocks
 DefaultGroupName=CodeBlocks
 LicenseFile=..\COPYING
-OutputBaseFilename=CodeBlocks-1.0-beta7_MinGW
+OutputBaseFilename=CodeBlocks-1.0-finalbeta_MinGW
 AppPublisherURL=www.codeblocks.org
-AppVersion=1.0-beta7
+AppVersion=1.0-finalbeta
 UninstallDisplayIcon={app}\codeblocks.exe
 UninstallDisplayName=Code::Blocks
 ShowLanguageDialog=no
@@ -35,6 +35,7 @@ Name: quicklaunchicon; Description: Create a &Quick Launch icon; GroupDescriptio
 [Files]
 Source: ..\output\codeblocks.exe; DestDir: {app}; Flags: ignoreversion; Components: ProgramFiles
 Source: ..\output\codeblocks.dll; DestDir: {app}; Components: ProgramFiles
+Source: codeblocks.exe.manifest; DestDir: {app}; Components: ProgramFiles
 Source: mingwm10.dll; DestDir: {app}; Components: ProgramFiles
 Source: wxmsw242.dll; DestDir: {app}; Components: ProgramFiles
 Source: ..\output\exchndl.dll; DestDir: {app}; Components: ProgramFiles
@@ -88,6 +89,11 @@ Source: ..\output\share\CodeBlocks\templates\opengl.cbp; DestDir: {app}\share\Co
 Source: ..\output\share\CodeBlocks\templates\opengl.png; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
 Source: ..\output\share\CodeBlocks\templates\opengl.template; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
 Source: ..\output\share\CodeBlocks\templates\opengl-main.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\output\share\CodeBlocks\templates\sdl-main.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\output\share\CodeBlocks\templates\sdl.png; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\output\share\CodeBlocks\templates\sdlapp.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\output\share\CodeBlocks\templates\sdlapp.template; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\output\share\CodeBlocks\templates\sdl-cb.bmp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
 Source: ..\output\share\CodeBlocks\templates\win32.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
 Source: ..\output\share\CodeBlocks\templates\win32gui.template; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
 Source: ..\output\share\CodeBlocks\templates\win32-main.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates

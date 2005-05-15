@@ -655,7 +655,8 @@ void DebuggerGDB::ConvertToGDBDirectory(wxString& str, wxString base, bool relat
 			if(base.Find('/') == -1) base.Clear();
 			else base = base.AfterFirst('/');
 		}
-	}	
+	}
+	ConvertToGDBFriendly(str);
 }
 
 void DebuggerGDB::SendCommand(const wxString& cmd)
