@@ -986,6 +986,41 @@ int NativeParser::DoInheritanceAI(Token* parentToken, Token* scopeToken, const w
 	return count;
 }
 
+bool NativeParser::SkipWhitespaceForward(cbEditor* editor, int& pos)
+{
+    if (!editor)
+        return false;
+    wxChar ch = editor->GetControl()->GetCharAt(pos);
+    int len = editor->GetControl()->GetLength() - 1;
+    if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n')
+    {
+        while (pos < len && (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n'))
+        {
+            ++pos;
+            ch = editor->GetControl()->GetCharAt(pos);
+        }
+        return true;
+    }
+    return false;
+}
+
+bool NativeParser::SkipWhitespaceBackward(cbEditor* editor, int& pos)
+{
+    if (!editor)
+        return false;
+    wxChar ch = editor->GetControl()->GetCharAt(pos);
+    if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n')
+    {
+        while (pos > 0 && (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n'))
+        {
+            --pos;
+            ch = editor->GetControl()->GetCharAt(pos);
+        }
+        return true;
+    }
+    return false;
+}
+
 int NativeParser::FindCurrentBlockStart(cbEditor* editor)
 {
 	int pos = -1;
@@ -1023,6 +1058,7 @@ bool NativeParser::FindFunctionNamespace(cbEditor* editor, wxString* nameSpace, 
 		bool done = false;
 		int nest = 0;
 		bool passedArgs = false;
+		bool hasNS = false;
 		while (posOf > 0)
 		{	
 			--posOf;
@@ -1030,14 +1066,31 @@ bool NativeParser::FindFunctionNamespace(cbEditor* editor, wxString* nameSpace, 
 			switch (ch)
 			{
 				case ')' : --nest; passedArgs = false; break;
-				case '(' : ++nest; passedArgs = nest == 0; break;
+                case '(' :
+                    ++nest;
+                    passedArgs = nest == 0;
+                    if (passedArgs)
+                    {
+                        --posOf;
+                        SkipWhitespaceBackward(editor, posOf);
+                    }
+                    break;
 			}
-			done = nest == 0 &&
-					ch == ':' && 
-					editor->GetControl()->GetCharAt(posOf - 1) == ':';
+			if (passedArgs)
+			{
+                if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n' || ch == ':') 
+                {
+                    int bkp = posOf;
+                    SkipWhitespaceBackward(editor, posOf);
+                    done = true;
+                    hasNS = ch == ':' && editor->GetControl()->GetCharAt(posOf - 1) == ':';
+                    posOf = bkp;
+                }
+            }
 			if (done || ch == '}' || ch == ';')
 				break;
 		}
+        Manager::Get()->GetMessageManager()->DebugLog("Pos=%d", posOf);
 		if (done)
 		{
 			if (procName)
@@ -1045,15 +1098,19 @@ bool NativeParser::FindFunctionNamespace(cbEditor* editor, wxString* nameSpace, 
 				int procEnd = editor->GetControl()->WordEndPosition(posOf + 1, true);
 				*procName = editor->GetControl()->GetTextRange(posOf + 1, procEnd);
 			}
-			if (nameSpace)
+			if (nameSpace && hasNS)
 			{
+                nameSpace->Clear();
 				posOf -= 2;
 				int scopeStart = editor->GetControl()->WordStartPosition(posOf, true);
 				*nameSpace = editor->GetControl()->GetTextRange(scopeStart, posOf + 1);
 			}
+            Manager::Get()->GetMessageManager()->DebugLog("NS: '%s', PROC: '%s'", nameSpace ? nameSpace->c_str() : "", procName ? procName->c_str() : "");
 			return true;
 		}
 	}
+	else
+        Manager::Get()->GetMessageManager()->DebugLog("Can't find block start.");
 	return false;
 }
 

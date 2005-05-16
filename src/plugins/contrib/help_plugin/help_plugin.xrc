@@ -1,0 +1,101 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxDialog" name="HelpConfigDialog" subclass="HelpConfigDialog">
+    <title>Help Plugin Config</title>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxStaticBoxSizer">
+          <label>Configure help files</label>
+          <orient>wxVERTICAL</orient>
+          <object class="sizeritem">
+            <object class="wxBoxSizer">
+              <orient>wxHORIZONTAL</orient>
+              <object class="sizeritem">
+                <object class="wxListBox" name="lstHelp">
+                  <content/>
+                </object>
+                <option>1</option>
+                <flag>wxALL|wxGROW</flag>
+                <border>8</border>
+              </object>
+              <object class="sizeritem">
+                <object class="wxBoxSizer">
+                  <orient>wxVERTICAL</orient>
+                  <object class="sizeritem">
+                    <object class="wxButton" name="btnAdd">
+                      <label>Add</label>
+                    </object>
+                  </object>
+                  <object class="sizeritem">
+                    <object class="wxButton" name="btnRename">
+                      <label>Rename</label>
+                    </object>
+                  </object>
+                  <object class="sizeritem">
+                    <object class="wxButton" name="btnDelete">
+                      <label>Delete</label>
+                    </object>
+                  </object>
+                </object>
+                <flag>wxTOP|wxBOTTOM|wxRIGHT|wxGROW</flag>
+                <border>8</border>
+              </object>
+            </object>
+            <option>1</option>
+            <flag>wxALL|wxGROW</flag>
+          </object>
+          <object class="sizeritem">
+            <object class="wxBoxSizer">
+              <object class="sizeritem">
+                <option>1</option>
+                <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+                <object class="wxTextCtrl" name="txtHelp"/>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="btnBrowse">
+                  <size>22,-1</size>
+                  <label>...</label>
+                </object>
+              </object>
+              <orient>wxHORIZONTAL</orient>
+            </object>
+            <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+            <border>8</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxCheckBox" name="chkDefault">
+              <label>This is the default help file (shortcut: F1)</label>
+            </object>
+            <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+            <border>8</border>
+          </object>
+        </object>
+        <option>1</option>
+        <flag>wxALL|wxGROW</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxButton" name="btnOK">
+              <label>&amp;OK</label>
+              <default>1</default>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_CANCEL">
+              <label>&amp;Cancel</label>
+            </object>
+            <flag>wxLEFT</flag>
+            <border>8</border>
+          </object>
+        </object>
+        <border>8</border>
+      </object>
+    </object>
+    <size>320,240</size>
+  </object>
+</resource>

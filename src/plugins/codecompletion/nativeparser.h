@@ -77,6 +77,9 @@ class NativeParser : public wxEvtHandler
 		void OnThreadEnd(wxCommandEvent& event);
 		void OnParserEnd(wxCommandEvent& event);
 		
+		bool SkipWhitespaceForward(cbEditor* editor, int& pos);
+		bool SkipWhitespaceBackward(cbEditor* editor, int& pos);
+		
 		ParsersMap m_Parsers;
 		ParsersFilenameMap m_ParsersFilenames;
 		int m_EditorStartWord;
