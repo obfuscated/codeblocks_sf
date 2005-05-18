@@ -30,6 +30,8 @@
 #include <wx/file.h>
 #include <compilerfactory.h>
 
+// TODO (mandrav#1#): Fix Makefile for targets using different compilers
+
 // class constructor
 MakefileGenerator::MakefileGenerator(CompilerGCC* compiler, cbProject* project, const wxString& makefile, int logIndex)
     : m_Compiler(compiler),

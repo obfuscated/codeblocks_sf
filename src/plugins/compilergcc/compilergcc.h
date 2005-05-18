@@ -153,6 +153,7 @@ class CompilerGCC : public cbCompilerPlugin
 		bool m_LastExitCode;
 		CompilerErrors m_Errors;
 		CustomVars m_Vars;
+		bool m_HasTargetAll;
 
 		unsigned int m_QueueIndex;
         wxArrayString m_Queue;

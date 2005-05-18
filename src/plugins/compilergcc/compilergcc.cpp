@@ -168,6 +168,7 @@ CompilerGCC::CompilerGCC()
 	m_ProjectIndex(0),
 	m_LastExitCode(0),
 	m_Vars(this),
+	m_HasTargetAll(false),
 	m_QueueIndex(0),
 	m_DeleteTempMakefile(true)
 {
@@ -456,7 +457,7 @@ void CompilerGCC::SetupEnvironment()
     
 	wxPathList pathList;
 	wxString path;
-	Manager::Get()->GetMessageManager()->DebugLog(_("Setting up compiler environment..."));
+//	Manager::Get()->GetMessageManager()->DebugLog(_("Setting up compiler environment..."));
     wxString masterPath = CompilerFactory::Compilers[m_CompilerIdx]->GetMasterPath();
     wxString gcc = CompilerFactory::Compilers[m_CompilerIdx]->GetPrograms().C;
     const wxArrayString& extraPaths = CompilerFactory::Compilers[m_CompilerIdx]->GetExtraPaths();
@@ -629,11 +630,26 @@ int CompilerGCC::DoRunQueue()
     {
         cmd = m_Queue[m_QueueIndex];
 //	    msgMan->Log(m_PageIndex, "cmd='%s' in '%s'", cmd.c_str(), m_CdRun.c_str());
-    
+
+        // logging
         if (cmd.StartsWith(COMPILER_SIMPLE_LOG))
         {
             cmd.Remove(0, strlen(COMPILER_SIMPLE_LOG));
             msgMan->Log(m_PageIndex, cmd);
+        }
+        // compiler change
+        else if (cmd.StartsWith(COMPILER_TARGET_CHANGE))
+        {
+            cmd.Remove(0, strlen(COMPILER_TARGET_CHANGE));
+            // using other compiler now: find it and set it
+            ProjectBuildTarget* bt = m_Project->GetBuildTarget(cmd);
+            if (bt)
+            {
+//                msgMan->Log(m_PageIndex, _("Switching compiler to: %s"), CompilerFactory::Compilers[bt->GetCompilerIndex()]->GetName().c_str());
+                SwitchCompiler(bt->GetCompilerIndex());
+            }
+            else
+                msgMan->Log(m_PageIndex, _("Can't locate target '%s'!"), cmd.c_str());
         }
         else
             break;
@@ -696,6 +712,7 @@ void CompilerGCC::DoClearTargetMenu()
 //		items.Clear();
 //		items.DeleteContents(olddelete);
 	}
+	m_HasTargetAll = false;
 }
 
 void CompilerGCC::DoRecreateTargetMenu()
@@ -709,10 +726,35 @@ void CompilerGCC::DoRecreateTargetMenu()
 	if (!CheckProject())
 		return;
 
+    if (m_Project->GetBuildTargetsCount() == 0)
+        return;
+
+    // find out if at least one target is included in "all"
+    // (if not, no need to add "all" in menus and target combo)
+    bool atLeastOneBuildableTarget = false;
+    for (int i = 0; i < m_Project->GetBuildTargetsCount(); ++i)
+    {
+        ProjectBuildTarget* bt = m_Project->GetBuildTarget(i);
+        if (bt->GetIncludeInTargetAll())
+        {
+            atLeastOneBuildableTarget = true;
+            break;
+        }
+    }
+
     m_TargetIndex = m_Project->GetActiveBuildTarget();
-    m_TargetMenu->AppendCheckItem(idMenuSelectTargetAll, _("All"), _("Compile target 'all' in current project"));
-	if (m_ToolTarget)
-		m_ToolTarget->Append(_("All"));
+    if (atLeastOneBuildableTarget)
+    {
+        m_TargetMenu->AppendCheckItem(idMenuSelectTargetAll, _("All"), _("Compile target 'all' in current project"));
+        if (m_ToolTarget)
+            m_ToolTarget->Append(_("All"));
+    }
+    else
+    {
+        if (m_TargetIndex == -1)
+            m_TargetIndex = 0;
+    }
+    m_HasTargetAll = atLeastOneBuildableTarget;
 		
     int targetsCount = m_Project->GetBuildTargetsCount();
     for (int x = 0; x < targetsCount; ++x)
@@ -740,7 +782,10 @@ void CompilerGCC::DoUpdateTargetMenu()
 {
 	if (!m_TargetMenu)
 		return;
-	
+
+    if (!m_HasTargetAll && m_TargetIndex == -1)
+        m_TargetIndex = 0;
+
     if (m_Project)
         m_Project->SetActiveBuildTarget(m_TargetIndex);
 
@@ -750,7 +795,7 @@ void CompilerGCC::DoUpdateTargetMenu()
 		m_TargetMenu->Check(idMenuSelectTargetOther[i], i == m_TargetIndex);
 	}
 	if (m_ToolTarget)
-		m_ToolTarget->SetSelection(m_TargetIndex + 1);
+		m_ToolTarget->SetSelection(m_TargetIndex + (m_HasTargetAll ? 1 : 0));
 }
 
 bool CompilerGCC::DoPrepareMultiProjectCommand(MultiProjectJob job)
@@ -1209,7 +1254,6 @@ int CompilerGCC::CompileFile(const wxString& file)
     }
     else
     {
-        DirectCommands dc(this, CompilerFactory::Compilers[m_CompilerIdx], m_Project, m_PageIndex);
         ProjectFile* pf = m_Project->GetFileByFilename(file, true, false);
         if (!pf)
         {
@@ -1223,10 +1267,14 @@ int CompilerGCC::CompileFile(const wxString& file)
                         _("Information"), wxICON_INFORMATION);
 			return -2;
 		}
-        ProjectBuildTarget* bt = m_Project->GetBuildTarget(pf->buildTargets[0]);
+        ProjectBuildTarget* bt = 0;
+        if (m_HasTargetAll && m_TargetIndex == -1)
+            bt = m_Project->GetBuildTarget(pf->buildTargets[0]); // pick the first target
+        else
+            bt = m_Project->GetBuildTarget(m_TargetIndex); // pick the selected target
         if (!bt)
             return -2;
-//        wxArrayString compile = dc.GetCompileFileCommand(bt, pf);
+        DirectCommands dc(this, CompilerFactory::Compilers[bt->GetCompilerIndex()], m_Project, m_PageIndex);
         wxArrayString compile = dc.CompileFile(bt, pf);
         dc.AppendArray(compile, m_Queue);
     }
@@ -1505,7 +1553,7 @@ void CompilerGCC::OnSelectTarget(wxCommandEvent& event)
  	if (event.GetId() == idMenuSelectTargetAll)
 		m_TargetIndex = -1;
 	else if (event.GetId() == idToolTarget)
-		m_TargetIndex = m_ToolTarget->GetSelection() - 1;
+		m_TargetIndex = m_ToolTarget->GetSelection() - (m_HasTargetAll ? 1 : 0);
 	else
 	{
 		for (int i = 0; i < MAX_TARGETS; ++i)

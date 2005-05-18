@@ -184,7 +184,10 @@ wxArrayString DirectCommands::CompileFile(ProjectBuildTarget* target, ProjectFil
             return ret;
     }
 
-    return GetCompileFileCommand(target, pf);
+    if (target)
+        ret.Add(wxString(COMPILER_TARGET_CHANGE) + target->GetTitle());
+    AppendArray(GetCompileFileCommand(target, pf), ret);
+    return ret;
 }
 
 wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, ProjectFile* pf)
@@ -276,8 +279,7 @@ wxArrayString DirectCommands::GetCompileCommands(ProjectBuildTarget* target, boo
         }
 
         // add post-build commands
-        if (!ret.IsEmpty())
-            AppendArray(GetPostBuildCommands(0L), ret);
+        AppendArray(GetPostBuildCommands(0L), ret);
     }
     return ret;
 }
@@ -286,6 +288,13 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
 {
     wxArrayString ret;
     ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Switching to target: ") + target->GetTitle());
+    // NOTE: added this to notify compiler about the active target.
+    // this is needed when targets use different compiler each
+    // and C::B tries to parse the compiler's output.
+    // previous behaviour, used the project's compiler for parsing
+    // all targets output, which failed when a target's compiler
+    // was different than the project's...
+    ret.Add(wxString(COMPILER_TARGET_CHANGE) + target->GetTitle());
 
     m_pCurrTarget = target;
 
@@ -307,6 +316,7 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
     DepsSearchStart(target);
 
     // iterate all files of the project/target and add them to the build process
+    int filesCounter = 0;
     MyFilesArray files = GetProjectFilesSortedByWeight(target, true, false);
     for (unsigned int i = 0; i < files.GetCount(); ++i)
     {
@@ -328,20 +338,20 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
         {
             // compile file
             wxArrayString filecmd = GetCompileFileCommand(target, pf);
+            ++filesCounter;
             AppendArray(filecmd, ret);
         }
     }
 
-    if (ret.GetCount() == 1)
-        ret.Clear(); // it's just the "Switching to..." message
-
-    // add link command
-    wxArrayString link = GetLinkCommands(target, ret.GetCount() > 1);
-    AppendArray(link, ret);
+    if (filesCounter != 0)
+    {
+        // add link command
+        wxArrayString link = GetLinkCommands(target, true);
+        AppendArray(link, ret);
+    }
 
     // add post-build commands
-    if (!ret.IsEmpty())
-        AppendArray(GetPostBuildCommands(target), ret);
+    AppendArray(GetPostBuildCommands(target), ret);
 
     return ret;
 }
@@ -351,8 +361,9 @@ wxArrayString DirectCommands::GetPreBuildCommands(ProjectBuildTarget* target)
     wxArrayString buildcmds = target ? target->GetCommandsBeforeBuild() : m_pProject->GetCommandsBeforeBuild();
     if (!buildcmds.IsEmpty())
     {
+        Compiler* compiler = target ? CompilerFactory::Compilers[target->GetCompilerIndex()] : m_pCompiler;
         wxString title = target ? target->GetTitle() : m_pProject->GetTitle();
-        switch (m_pCompiler->GetSwitches().logging)
+        switch (compiler->GetSwitches().logging)
         {
             case clogFull:
                 {
@@ -528,6 +539,11 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
                 ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Linking ") + kind_of_output + ": " + target->GetOutputFilename());
                 break;
         }
+
+        // for an explanation of the following, see GetTargetCompileCommands()
+        if (target && ret.GetCount() != 0)
+            ret.Add(wxString(COMPILER_TARGET_CHANGE) + target->GetTitle());
+
         AddCommandsToArray(compilerCmd, ret);
     }
     
