@@ -136,6 +136,8 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
         SetTitle(_("Global compiler options"));
         sizer->Remove(tree);
         tree->Show(false);
+        wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook);
+        nb->DeletePage(3); // remove "Commands" page
 	}
 	else
 	{
@@ -145,6 +147,7 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
 
         wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook);
         nb->DeletePage(6); // remove "Other" page
+        nb->DeletePage(5); // remove "Custom vars" page
         nb->DeletePage(4); // remove "Programs" page
         
         // remove "Compiler" buttons
@@ -221,9 +224,11 @@ void CompilerOptionsDlg::DoFillCompilerPrograms()
 
 void CompilerOptionsDlg::DoFillPrograms()
 {
-	const VarsArray& vars = m_Compiler->GetCustomVars().GetVars();
 	wxListBox* lst = XRCCTRL(*this, "lstVars", wxListBox);
+	if (!lst)
+        return;
 	lst->Clear();
+	const VarsArray& vars = m_Compiler->GetCustomVars().GetVars();
 	//Manager::Get()->GetMessageManager()->DebugLog("[0x%8.8x] Current var count is %d (0x%8.8x)", m_Compiler, vars.GetCount(), &vars);
 	for (unsigned int i = 0; i < vars.GetCount(); ++i)
 	{
@@ -615,23 +620,32 @@ void CompilerOptionsDlg::DoLoadOptions(int compilerIdx, ScopeTreeData* data)
 	DoFillCompileDirs(m_ResDirs, XRCCTRL(*this, "lstResDirs", wxListBox));
 	DoFillCompileOptions(m_CompilerOptions, XRCCTRL(*this, "txtCompilerOptions", wxTextCtrl));
 	DoFillCompileOptions(m_LinkerOptions, XRCCTRL(*this, "txtLinkerOptions", wxTextCtrl));
-	DoFillCompileOptions(m_CommandsBeforeBuild, XRCCTRL(*this, "txtCmdBefore", wxTextCtrl));
-	DoFillCompileOptions(m_CommandsAfterBuild, XRCCTRL(*this, "txtCmdAfter", wxTextCtrl));
-	XRCCTRL(*this, "chkAlwaysRunPre", wxCheckBox)->SetValue(m_AlwaysUsePre);
-	XRCCTRL(*this, "chkAlwaysRunPost", wxCheckBox)->SetValue(m_AlwaysUsePost);
+
+    // only if "Commands" page exists
+	if (XRCCTRL(*this, "txtCmdBefore", wxTextCtrl))
+	{
+        DoFillCompileOptions(m_CommandsBeforeBuild, XRCCTRL(*this, "txtCmdBefore", wxTextCtrl));
+        DoFillCompileOptions(m_CommandsAfterBuild, XRCCTRL(*this, "txtCmdAfter", wxTextCtrl));
+        XRCCTRL(*this, "chkAlwaysRunPre", wxCheckBox)->SetValue(m_AlwaysUsePre);
+        XRCCTRL(*this, "chkAlwaysRunPost", wxCheckBox)->SetValue(m_AlwaysUsePost);
+    }
 }
 
 void CompilerOptionsDlg::DoSaveOptions(int compilerIdx, ScopeTreeData* data)
 {
-	m_AlwaysUsePre = XRCCTRL(*this, "chkAlwaysRunPre", wxCheckBox)->GetValue();
-	m_AlwaysUsePost = XRCCTRL(*this, "chkAlwaysRunPost", wxCheckBox)->GetValue();
+    // only if "Commands" page exists
+	if (XRCCTRL(*this, "txtCmdBefore", wxTextCtrl))
+	{
+        m_AlwaysUsePre = XRCCTRL(*this, "chkAlwaysRunPre", wxCheckBox)->GetValue();
+        m_AlwaysUsePost = XRCCTRL(*this, "chkAlwaysRunPost", wxCheckBox)->GetValue();
+        DoGetCompileOptions(m_CommandsBeforeBuild, XRCCTRL(*this, "txtCmdBefore", wxTextCtrl));
+        DoGetCompileOptions(m_CommandsAfterBuild, XRCCTRL(*this, "txtCmdAfter", wxTextCtrl));
+	}
 	DoGetCompileDirs(m_IncludeDirs, XRCCTRL(*this, "lstIncludeDirs", wxListBox));
 	DoGetCompileDirs(m_LibDirs, XRCCTRL(*this, "lstLibDirs", wxListBox));
 	DoGetCompileDirs(m_ResDirs, XRCCTRL(*this, "lstResDirs", wxListBox));
 	DoGetCompileOptions(m_CompilerOptions, XRCCTRL(*this, "txtCompilerOptions", wxTextCtrl));
 	DoGetCompileOptions(m_LinkerOptions, XRCCTRL(*this, "txtLinkerOptions", wxTextCtrl));
-	DoGetCompileOptions(m_CommandsBeforeBuild, XRCCTRL(*this, "txtCmdBefore", wxTextCtrl));
-	DoGetCompileOptions(m_CommandsAfterBuild, XRCCTRL(*this, "txtCmdAfter", wxTextCtrl));
     OptionsToText();
     
 	if (!data)
@@ -1364,9 +1378,12 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
     XRCCTRL(*this, "spnLibs", wxSpinButton)->Enable(en);
 
     // add/edit/delete vars
-    en = XRCCTRL(*this, "lstVars", wxListBox)->GetSelection() >= 0;
-    XRCCTRL(*this, "btnEditVar", wxButton)->Enable(en);
-    XRCCTRL(*this, "btnDeleteVar", wxButton)->Enable(en);
+    if (XRCCTRL(*this, "lstVars", wxListBox))
+    {
+        en = XRCCTRL(*this, "lstVars", wxListBox)->GetSelection() >= 0;
+        XRCCTRL(*this, "btnEditVar", wxButton)->Enable(en);
+        XRCCTRL(*this, "btnDeleteVar", wxButton)->Enable(en);
+    }
 
     // policies
 	wxTreeCtrl* tc = XRCCTRL(*this, "tcScope", wxTreeCtrl);
