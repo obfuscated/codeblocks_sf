@@ -1699,10 +1699,11 @@ static int errcnt = 0;
 void CompilerGCC::OnGCCError(CodeBlocksEvent& event)
 {
 	++errcnt;
-	if (errcnt > 50)
+// FIXME (mandrav#1#): Don't harcode max nr of errors reported by compiler
+	if (errcnt > 150)
 		return;
 	wxString msg = event.GetString();
-	AddOutputLine(msg, true);
+	AddOutputLine(msg);
 }
 
 void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColor)
