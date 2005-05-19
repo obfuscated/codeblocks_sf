@@ -76,7 +76,7 @@ void CompilerOptions::AddOption(const wxString& name,
 								const wxString& checkAgainst,
 								const wxString& checkMessage)
 {
-	if (name.IsEmpty() || option.IsEmpty())
+	if (name.IsEmpty() || (option.IsEmpty() && additionalLibs.IsEmpty()))
 		return;
 	CompOption* coption = new CompOption;
 	coption->name = name;

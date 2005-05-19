@@ -91,6 +91,7 @@ void CompilerMINGW::Reset()
 	m_Options.AddOption(_("Warn if main() is not conformant"), "-Wmain", category);
     // optimization
     category = _("Optimization");
+	m_Options.AddOption(_("Strip all symbols from binary (minimizes size)"), "", category, "-s", true, "-g -ggdb", "Stripping the binary will strip debugging symbols as well!");
 	m_Options.AddOption(_("Optimize generated code (for speed)"), "-O", category);
 	m_Options.AddOption(_("Optimize more (for speed)"), "-O1", category);
 	m_Options.AddOption(_("Optimize even more (for speed)"), "-O2", category);
