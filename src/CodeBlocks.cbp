@@ -21,7 +21,7 @@
 			</Target>
 			<Target title="sdk">
 				<Option output="devel\codeblocks.dll"/>
-				<Option working_dir=""/>
+				<Option working_dir="."/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -87,7 +87,7 @@
 			</Target>
 			<Target title="plugin_Astyle">
 				<Option output="devel\share\CodeBlocks\plugins\astyle.dll"/>
-				<Option working_dir=""/>
+				<Option working_dir="."/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -112,7 +112,7 @@
 			</Target>
 			<Target title="plugin_CompilerGCC">
 				<Option output="devel\share\CodeBlocks\plugins\compilergcc.dll"/>
-				<Option working_dir=""/>
+				<Option working_dir="."/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -140,7 +140,7 @@
 			</Target>
 			<Target title="plugin_DebuggerGDB">
 				<Option output="devel\share\CodeBlocks\plugins\debuggergdb.dll"/>
-				<Option working_dir=""/>
+				<Option working_dir="."/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -166,7 +166,7 @@
 			</Target>
 			<Target title="plugin_CodeCompletion">
 				<Option output="devel\share\CodeBlocks\plugins\codecompletion.dll"/>
-				<Option working_dir=""/>
+				<Option working_dir="."/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -192,7 +192,7 @@
 			</Target>
 			<Target title="plugin_ClassWizard">
 				<Option output="devel\share\CodeBlocks\plugins\classwizard.dll"/>
-				<Option working_dir=""/>
+				<Option working_dir="."/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -218,7 +218,7 @@
 			</Target>
 			<Target title="plugin_DefMimeHandler">
 				<Option output="devel\share\CodeBlocks\plugins\defaultmimehandler.dll"/>
-				<Option working_dir=""/>
+				<Option working_dir="."/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -243,7 +243,7 @@
 			</Target>
 			<Target title="plugin_PluginsWizard">
 				<Option output="devel\share\CodeBlocks\plugins\pluginwizard.dll"/>
-				<Option working_dir=""/>
+				<Option working_dir="."/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -269,7 +269,7 @@
 			</Target>
 			<Target title="plugin_ToDo">
 				<Option output="devel\share\CodeBlocks\plugins\todo.dll"/>
-				<Option working_dir=""/>
+				<Option working_dir="."/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -290,7 +290,7 @@
 			</Target>
 			<Target title="plugin_XPManifest">
 				<Option output="devel\share\CodeBlocks\plugins\xpmanifest.dll"/>
-				<Option working_dir=""/>
+				<Option working_dir="."/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>

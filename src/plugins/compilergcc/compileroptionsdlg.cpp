@@ -557,6 +557,8 @@ void CompilerOptionsDlg::DoLoadOptions(int compilerIdx, ScopeTreeData* data)
 		m_LinkLibs = compiler->GetLinkLibs();
 		m_CommandsAfterBuild = compiler->GetCommandsAfterBuild();
 		m_CommandsBeforeBuild = compiler->GetCommandsBeforeBuild();
+		m_AlwaysUsePre = compiler->GetAlwaysRunPreBuildSteps();
+		m_AlwaysUsePost = compiler->GetAlwaysRunPostBuildSteps();
 
         wxComboBox* cmb = XRCCTRL(*this, "cmbLogging", wxComboBox);
         if (cmb)
@@ -580,6 +582,8 @@ void CompilerOptionsDlg::DoLoadOptions(int compilerIdx, ScopeTreeData* data)
 			m_LinkLibs = project->GetLinkLibs();
 			m_CommandsAfterBuild = project->GetCommandsAfterBuild();
 			m_CommandsBeforeBuild = project->GetCommandsBeforeBuild();
+			m_AlwaysUsePre = project->GetAlwaysRunPreBuildSteps();
+			m_AlwaysUsePost = project->GetAlwaysRunPostBuildSteps();
 		}
 		else
 		{
@@ -594,6 +598,8 @@ void CompilerOptionsDlg::DoLoadOptions(int compilerIdx, ScopeTreeData* data)
 			m_LinkLibs = target->GetLinkLibs();
 			m_CommandsAfterBuild = target->GetCommandsAfterBuild();
 			m_CommandsBeforeBuild = target->GetCommandsBeforeBuild();
+			m_AlwaysUsePre = target->GetAlwaysRunPreBuildSteps();
+			m_AlwaysUsePost = target->GetAlwaysRunPostBuildSteps();
 			XRCCTRL(*this, "cmbCompilerPolicy", wxComboBox)->SetSelection(target->GetOptionRelation(ortCompilerOptions));
 			XRCCTRL(*this, "cmbLinkerPolicy", wxComboBox)->SetSelection(target->GetOptionRelation(ortLinkerOptions));
 			XRCCTRL(*this, "cmbIncludesPolicy", wxComboBox)->SetSelection(target->GetOptionRelation(ortIncludeDirs));
@@ -611,10 +617,14 @@ void CompilerOptionsDlg::DoLoadOptions(int compilerIdx, ScopeTreeData* data)
 	DoFillCompileOptions(m_LinkerOptions, XRCCTRL(*this, "txtLinkerOptions", wxTextCtrl));
 	DoFillCompileOptions(m_CommandsBeforeBuild, XRCCTRL(*this, "txtCmdBefore", wxTextCtrl));
 	DoFillCompileOptions(m_CommandsAfterBuild, XRCCTRL(*this, "txtCmdAfter", wxTextCtrl));
+	XRCCTRL(*this, "chkAlwaysRunPre", wxCheckBox)->SetValue(m_AlwaysUsePre);
+	XRCCTRL(*this, "chkAlwaysRunPost", wxCheckBox)->SetValue(m_AlwaysUsePost);
 }
 
 void CompilerOptionsDlg::DoSaveOptions(int compilerIdx, ScopeTreeData* data)
 {
+	m_AlwaysUsePre = XRCCTRL(*this, "chkAlwaysRunPre", wxCheckBox)->GetValue();
+	m_AlwaysUsePost = XRCCTRL(*this, "chkAlwaysRunPost", wxCheckBox)->GetValue();
 	DoGetCompileDirs(m_IncludeDirs, XRCCTRL(*this, "lstIncludeDirs", wxListBox));
 	DoGetCompileDirs(m_LibDirs, XRCCTRL(*this, "lstLibDirs", wxListBox));
 	DoGetCompileDirs(m_ResDirs, XRCCTRL(*this, "lstResDirs", wxListBox));
@@ -637,6 +647,8 @@ void CompilerOptionsDlg::DoSaveOptions(int compilerIdx, ScopeTreeData* data)
 		compiler->SetLinkLibs(m_LinkLibs);
 		compiler->SetCommandsBeforeBuild(m_CommandsBeforeBuild);
 		compiler->SetCommandsAfterBuild(m_CommandsAfterBuild);
+		compiler->SetAlwaysRunPreBuildSteps(m_AlwaysUsePre);
+		compiler->SetAlwaysRunPostBuildSteps(m_AlwaysUsePost);
 
         wxComboBox* cmb = XRCCTRL(*this, "cmbLogging", wxComboBox);
         if (cmb)
@@ -667,6 +679,8 @@ void CompilerOptionsDlg::DoSaveOptions(int compilerIdx, ScopeTreeData* data)
 			project->SetLinkLibs(m_LinkLibs);
 			project->SetCommandsBeforeBuild(m_CommandsBeforeBuild);
 			project->SetCommandsAfterBuild(m_CommandsAfterBuild);
+            project->SetAlwaysRunPreBuildSteps(m_AlwaysUsePre);
+            project->SetAlwaysRunPostBuildSteps(m_AlwaysUsePost);
 		}
 		else
 		{
@@ -685,6 +699,8 @@ void CompilerOptionsDlg::DoSaveOptions(int compilerIdx, ScopeTreeData* data)
             target->SetOptionRelation(ortResDirs, OptionsRelation(XRCCTRL(*this, "cmbResDirsPolicy", wxComboBox)->GetSelection()));
 			target->SetCommandsBeforeBuild(m_CommandsBeforeBuild);
 			target->SetCommandsAfterBuild(m_CommandsAfterBuild);
+            target->SetAlwaysRunPreBuildSteps(m_AlwaysUsePre);
+            target->SetAlwaysRunPostBuildSteps(m_AlwaysUsePost);
 		}
 	}
 }

@@ -1517,7 +1517,16 @@ void CompilerGCC::OnProjectCompilerOptions(wxCommandEvent& event)
 	wxTreeItemId sel = tree->GetSelection();
     FileTreeData* ftd = (FileTreeData*)tree->GetItemData(sel);
     if (ftd)
-        Configure(ftd->GetProject());
+    {
+        // 'configure' selected target, if other than 'All'
+        ProjectBuildTarget* target = 0;
+        if (ftd->GetProject() == m_Project)
+        {
+            if (!m_HasTargetAll || m_TargetIndex != -1)
+                target = m_Project->GetBuildTarget(m_TargetIndex);
+        }
+        Configure(ftd->GetProject(), target);
+    }
     else
     {
         cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();

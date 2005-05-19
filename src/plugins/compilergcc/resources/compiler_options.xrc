@@ -529,30 +529,48 @@
                       <object class="wxBoxSizer">
                         <orient>wxVERTICAL</orient>
                         <object class="sizeritem">
-                          <object class="wxStaticText">
-                            <label>Pre-build steps:</label>
-                          </object>
-                          <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
-                          <border>8</border>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxTextCtrl" name="txtCmdBefore">
-                            <style>wxTE_MULTILINE|wxHSCROLL</style>
+                          <object class="wxStaticBoxSizer">
+                            <label>Pre-build steps</label>
+                            <orient>wxVERTICAL</orient>
+                            <object class="sizeritem">
+                              <object class="wxTextCtrl" name="txtCmdBefore">
+                                <style>wxTE_MULTILINE|wxHSCROLL</style>
+                              </object>
+                              <option>1</option>
+                              <flag>wxALL|wxGROW</flag>
+                              <border>8</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxCheckBox" name="chkAlwaysRunPre">
+                                <label>Always execute, even if target is up-to-date</label>
+                              </object>
+                              <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                              <border>8</border>
+                            </object>
                           </object>
                           <option>1</option>
-                          <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                          <flag>wxALL|wxGROW</flag>
                           <border>8</border>
                         </object>
                         <object class="sizeritem">
-                          <object class="wxStaticText">
-                            <label>Post-build steps:</label>
-                          </object>
-                          <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
-                          <border>8</border>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxTextCtrl" name="txtCmdAfter">
-                            <style>wxTE_MULTILINE|wxHSCROLL</style>
+                          <object class="wxStaticBoxSizer">
+                            <label>Post-build steps</label>
+                            <orient>wxVERTICAL</orient>
+                            <object class="sizeritem">
+                              <object class="wxTextCtrl" name="txtCmdAfter">
+                                <style>wxTE_MULTILINE|wxHSCROLL</style>
+                              </object>
+                              <option>1</option>
+                              <flag>wxALL|wxGROW</flag>
+                              <border>8</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxCheckBox" name="chkAlwaysRunPost">
+                                <label>Always execute, even if target is up-to-date</label>
+                              </object>
+                              <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                              <border>8</border>
+                            </object>
                           </object>
                           <option>1</option>
                           <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>

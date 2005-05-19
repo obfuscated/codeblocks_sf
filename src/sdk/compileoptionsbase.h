@@ -61,6 +61,10 @@ class DLLIMPORT CompileOptionsBase
 		virtual void AddCommandsAfterBuild(const wxString& command);
 		virtual bool GetCpp();
 		virtual void SetCpp(bool cpp);
+		virtual bool GetAlwaysRunPreBuildSteps();
+		virtual bool GetAlwaysRunPostBuildSteps();
+		virtual void SetAlwaysRunPreBuildSteps(bool always);
+		virtual void SetAlwaysRunPostBuildSteps(bool always);
 	protected:
 		BuildConfiguration m_BuildConfiguration;
 		wxArrayString m_LinkerOptions;
@@ -73,6 +77,8 @@ class DLLIMPORT CompileOptionsBase
 		wxArrayString m_CmdsAfter;
 		bool m_Modified;
 		bool m_Cpp;
+		bool m_AlwaysRunPreCmds;
+		bool m_AlwaysRunPostCmds;
 	private:
 };
 

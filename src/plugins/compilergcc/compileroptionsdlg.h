@@ -97,6 +97,8 @@ class CompilerOptionsDlg : public wxDialog
         wxArrayString m_ResDirs;
 		wxArrayString m_CommandsBeforeBuild;
 		wxArrayString m_CommandsAfterBuild;
+		bool m_AlwaysUsePre;
+		bool m_AlwaysUsePost;
 		int m_LastCompilerIdx;
 		int m_InitialCompilerIdx;
 		cbProject* m_pProject;

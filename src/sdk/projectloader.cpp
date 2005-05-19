@@ -467,7 +467,21 @@ void ProjectLoader::DoExtraCommands(TiXmlElement* parentNode, ProjectBuildTarget
     if (!node)
         return; // no options
 
-    TiXmlElement* child = node->FirstChildElement("Add");
+    CompileOptionsBase* base = target ? target : (CompileOptionsBase*)m_pProject;
+    TiXmlElement* child = node->FirstChildElement("Mode");
+    while (child)
+    {
+        wxString mode = child->Attribute("before");
+        if (mode == "always")
+            base->SetAlwaysRunPreBuildSteps(true);
+        mode = child->Attribute("after");
+        if (mode == "always")
+            base->SetAlwaysRunPostBuildSteps(true);
+
+        child = child->NextSiblingElement("Mode");
+    }
+
+    child = node->FirstChildElement("Add");
     while (child)
     {
         wxString before;
@@ -479,19 +493,9 @@ void ProjectLoader::DoExtraCommands(TiXmlElement* parentNode, ProjectBuildTarget
             after = child->Attribute("after");
 
         if (!before.IsEmpty())
-        {
-            if (target)
-                target->AddCommandsBeforeBuild(before);
-            else
-                m_pProject->AddCommandsBeforeBuild(before);
-        }
+            base->AddCommandsBeforeBuild(before);
         if (!after.IsEmpty())
-        {
-            if (target)
-                target->AddCommandsAfterBuild(after);
-            else
-                m_pProject->AddCommandsAfterBuild(after);
-        }
+            base->AddCommandsAfterBuild(after);
 
         child = child->NextSiblingElement("Add");
     }
@@ -629,8 +633,8 @@ bool ProjectLoader::Save(const wxString& filename)
         SaveCompilerOptions(buffer, target, 4);
         SaveResourceCompilerOptions(buffer, target, 4);
         SaveLinkerOptions(buffer, target, 4);
-        SaveOptions(buffer, target->GetCommandsBeforeBuild(), "ExtraCommands", 4, "before");
-        SaveOptions(buffer, target->GetCommandsAfterBuild(), "ExtraCommands", 4, "after");
+        SaveOptions(buffer, target->GetCommandsBeforeBuild(), "ExtraCommands", 4, "before", target->GetAlwaysRunPreBuildSteps() ? "<Mode before=\"always\" />" : "");
+        SaveOptions(buffer, target->GetCommandsAfterBuild(), "ExtraCommands", 4, "after", target->GetAlwaysRunPostBuildSteps() ? "<Mode after=\"always\" />" : "");
         buffer << '\t' << '\t' << '\t' << "</Target>" << '\n';
     }
     buffer << '\t' << '\t' << "</Build>" << '\n';
@@ -638,8 +642,8 @@ bool ProjectLoader::Save(const wxString& filename)
     SaveCompilerOptions(buffer, m_pProject, 2);
     SaveResourceCompilerOptions(buffer, m_pProject, 2);
     SaveLinkerOptions(buffer, m_pProject, 2);
-    SaveOptions(buffer, m_pProject->GetCommandsBeforeBuild(), "ExtraCommands", 2, "before");
-    SaveOptions(buffer, m_pProject->GetCommandsAfterBuild(), "ExtraCommands", 2, "after");
+    SaveOptions(buffer, m_pProject->GetCommandsBeforeBuild(), "ExtraCommands", 2, "before", m_pProject->GetAlwaysRunPreBuildSteps() ? "<Mode before=\"always\" />" : "");
+    SaveOptions(buffer, m_pProject->GetCommandsAfterBuild(), "ExtraCommands", 2, "after", m_pProject->GetAlwaysRunPostBuildSteps() ? "<Mode after=\"always\" />" : "");
 
     int count = m_pProject->GetFilesCount();
     for (int i = 0; i < count; ++i)
@@ -777,15 +781,21 @@ void ProjectLoader::EndOptionSection(wxString& buffer, const wxString& sectionNa
     buffer << local;
 }
 
-void ProjectLoader::SaveOptions(wxString& buffer, const wxArrayString& array, const wxString& sectionName, int nrOfTabs, const wxString& optionName)
+void ProjectLoader::SaveOptions(wxString& buffer, const wxArrayString& array, const wxString& sectionName, int nrOfTabs, const wxString& optionName, const wxString& extra)
 {
     if (!array.GetCount())
         return;
 
     wxString local;
     BeginOptionSection(local, sectionName, nrOfTabs);
+    if (!extra.IsEmpty())
+    {
+        for (int i = 0; i < nrOfTabs + 1; ++i)
+            local << '\t';
+        local << extra << '\n';
+    }
     bool notEmpty = DoOptionSection(local, array, nrOfTabs + 1, optionName);
-    if (notEmpty)
+    if (notEmpty || !extra.IsEmpty())
     {
         EndOptionSection(local, sectionName, nrOfTabs);
         buffer << local;

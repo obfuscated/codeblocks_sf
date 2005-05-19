@@ -268,6 +268,7 @@ wxArrayString DirectCommands::GetCompileCommands(ProjectBuildTarget* target, boo
         // add pre-build commands
         AppendArray(GetPreBuildCommands(0L), ret);
 
+        size_t counter = ret.GetCount();
         for (int x = 0; x < m_pProject->GetBuildTargetsCount(); ++x)
         {
             ProjectBuildTarget* bt = m_pProject->GetBuildTarget(x);
@@ -278,8 +279,12 @@ wxArrayString DirectCommands::GetCompileCommands(ProjectBuildTarget* target, boo
             }
         }
 
+        if (ret.GetCount() == counter  && !m_pProject->GetAlwaysRunPreBuildSteps())
+            ret.Clear();
+
         // add post-build commands
-        AppendArray(GetPostBuildCommands(0L), ret);
+        if (ret.GetCount() != 0 || m_pProject->GetAlwaysRunPostBuildSteps())
+            AppendArray(GetPostBuildCommands(0L), ret);
     }
     return ret;
 }
@@ -349,9 +354,15 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
         wxArrayString link = GetLinkCommands(target, true);
         AppendArray(link, ret);
     }
+    else
+    {
+        if (!target->GetAlwaysRunPreBuildSteps())
+            ret.Clear();
+    }
 
     // add post-build commands
-    AppendArray(GetPostBuildCommands(target), ret);
+    if (filesCounter != 0 || target->GetAlwaysRunPostBuildSteps())
+        AppendArray(GetPostBuildCommands(target), ret);
 
     return ret;
 }

@@ -40,7 +40,7 @@ class DLLIMPORT ProjectLoader : public IBaseLoader
         void EndOptionSection(wxString& buffer, const wxString& sectionName, int nrOfTabs);
 
         // shortcut that calls BeginOptionSection(), DoOptionSection() and EndOptionSection()
-        void SaveOptions(wxString& buffer, const wxArrayString& array, const wxString& sectionName, int nrOfTabs, const wxString& optionName = "option");
+        void SaveOptions(wxString& buffer, const wxArrayString& array, const wxString& sectionName, int nrOfTabs, const wxString& optionName = "option", const wxString& extra = "");
 	private:
         void SaveCompilerOptions(wxString& buffer, CompileOptionsBase* object, int nrOfTabs);
         void SaveResourceCompilerOptions(wxString& buffer, CompileOptionsBase* object, int nrOfTabs);
