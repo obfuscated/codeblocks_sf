@@ -105,6 +105,7 @@ class MainFrame : public wxMDIParentFrame
         void OnToggleStatusBar(wxCommandEvent& event);
         void OnFocusEditor(wxCommandEvent& event);
         void OnToggleFullScreen(wxCommandEvent& event);
+        void OnPositionManagerTree(wxCommandEvent& event);
         
         // plugin events
         void OnPluginLoaded(CodeBlocksEvent& event);
@@ -150,6 +151,8 @@ class MainFrame : public wxMDIParentFrame
         void DoUpdateStatusBar();
 		void DoUpdateAppTitle();
 		void DoUpdateLayout();
+
+        void RePositionManagerTree(bool left);
 		
         void LoadWindowState();
         void SaveWindowState();

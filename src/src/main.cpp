@@ -111,6 +111,8 @@ int idEditAutoComplete = XRCID("idEditAutoComplete");
 
 int idViewToolMain = XRCID("idViewToolMain");
 int idViewManager = XRCID("idViewManager");
+int idViewManagerPositionLeft = XRCID("idViewManagerPositionLeft");
+int idViewManagerPositionRight = XRCID("idViewManagerPositionRight");
 int idViewOpenFilesTree = XRCID("idViewOpenFilesTree");
 int idViewMessageManager = XRCID("idViewMessageManager");
 int idViewStatusbar = XRCID("idViewStatusbar");
@@ -204,6 +206,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idViewToolMain, MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewMessageManager, MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewManager, MainFrame::OnViewMenuUpdateUI)
+    EVT_UPDATE_UI(idViewManagerPositionLeft, MainFrame::OnViewMenuUpdateUI)
+    EVT_UPDATE_UI(idViewManagerPositionRight, MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewStatusbar, MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewFocusEditor, MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewFullScreen, MainFrame::OnViewMenuUpdateUI)
@@ -258,6 +262,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idViewToolMain, MainFrame::OnToggleBar)
     EVT_MENU(idViewMessageManager, MainFrame::OnToggleBar)
     EVT_MENU(idViewManager, MainFrame::OnToggleBar)
+    EVT_MENU(idViewManagerPositionLeft, MainFrame::OnPositionManagerTree)
+    EVT_MENU(idViewManagerPositionRight, MainFrame::OnPositionManagerTree)
     EVT_MENU(idViewOpenFilesTree, MainFrame::OnToggleOpenFilesTree)
     EVT_MENU(idViewStatusbar, MainFrame::OnToggleStatusBar)
     EVT_MENU(idViewFocusEditor, MainFrame::OnFocusEditor)
@@ -687,6 +693,10 @@ void MainFrame::LoadWindowState()
 	// sash sizes are set on creation in CreateIDE()
 	DoUpdateLayout();
 
+    // position manager tree left or right
+    bool left = ConfigManager::Get()->Read(personalityKey + "/main_frame/layout/left_block_is_left", true);
+    RePositionManagerTree(left);
+
 	// load manager and messages selected page
 	Manager::Get()->GetNotebook()->SetSelection(ConfigManager::Get()->Read(personalityKey + "/main_frame/layout/left_block_selection", 0L));
 	m_pMsgMan->SetSelection(ConfigManager::Get()->Read(personalityKey + "/main_frame/layout/bottom_block_selection", 0L));
@@ -714,6 +724,9 @@ void MainFrame::SaveWindowState()
         ConfigManager::Get()->Write(personalityKey + "/main_frame/width", GetSize().x);
         ConfigManager::Get()->Write(personalityKey + "/main_frame/height", GetSize().y);
     }
+
+    // save manager tree position
+    ConfigManager::Get()->Write(personalityKey + "/main_frame/layout/left_block_is_left", m_pLeftSash->GetAlignment() == wxLAYOUT_LEFT);
 
 	// save block sizes
 	ConfigManager::Get()->Write(personalityKey + "/main_frame/layout/left_block_width", m_pLeftSash->GetSize().GetWidth());
@@ -928,6 +941,24 @@ void MainFrame::DoUpdateAppTitle()
 	    SetTitle(APP_NAME" - " + prj->GetTitle());
 	else
 		SetTitle(_(APP_NAME" v"APP_VERSION));
+}
+
+void MainFrame::RePositionManagerTree(bool left)
+{
+    if (!m_pLeftSash)
+        return;
+    
+    if (left)
+    {
+        m_pLeftSash->SetAlignment(wxLAYOUT_LEFT);
+        m_pLeftSash->SetSashVisible(wxSASH_RIGHT, true);
+    }
+    else
+    {
+        m_pLeftSash->SetAlignment(wxLAYOUT_RIGHT);
+        m_pLeftSash->SetSashVisible(wxSASH_LEFT, true);
+    }
+    DoUpdateLayout();
 }
 
 void MainFrame::InitializeRecentFilesHistory()
@@ -1627,6 +1658,8 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
 
     mbar->Check(idViewToolMain, m_pToolbar && m_pToolbar->IsShown());
     mbar->Check(idViewManager, m_pLeftSash && m_pLeftSash->IsShown());
+    mbar->Check(idViewManagerPositionLeft, m_pLeftSash && m_pLeftSash->GetAlignment() == wxLAYOUT_LEFT);
+    mbar->Check(idViewManagerPositionRight, m_pLeftSash && m_pLeftSash->GetAlignment() != wxLAYOUT_LEFT);
     mbar->Check(idViewOpenFilesTree, m_pEdMan && m_pEdMan->IsOpenFilesTreeVisible());
     mbar->Check(idViewMessageManager, m_pBottomSash && m_pBottomSash->IsShown());
     mbar->Check(idViewStatusbar, GetStatusBar() && GetStatusBar()->IsShown());
@@ -1777,6 +1810,11 @@ void MainFrame::OnToggleFullScreen(wxCommandEvent& event)
     
     // Update layout
     DoUpdateLayout();
+}
+
+void MainFrame::OnPositionManagerTree(wxCommandEvent& event)
+{
+    RePositionManagerTree(event.GetId() == idViewManagerPositionLeft);
 }
 
 void MainFrame::OnPluginLoaded(CodeBlocksEvent& event)
