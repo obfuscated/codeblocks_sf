@@ -49,6 +49,12 @@ MakefileGenerator::~MakefileGenerator()
 {
 }
 
+void MakefileGenerator::UpdateCompiler(ProjectBuildTarget* target)
+{
+    int idx = target ? target->GetCompilerIndex() : m_Project->GetCompilerIndex();
+    m_CompilerSet = CompilerFactory::Compilers[idx];
+}
+
 wxString MakefileGenerator::ReplaceCompilerMacros(CommandType et,
                                                 const wxString& compilerVar,
                                                 ProjectBuildTarget* target,
@@ -56,12 +62,14 @@ wxString MakefileGenerator::ReplaceCompilerMacros(CommandType et,
                                                 const wxString& object,
                                                 const wxString& deps)
 {
-    wxString compilerCmd = m_CompilerSet->GetCommand(et);
+    wxString compilerCmd;
+    UpdateCompiler(target);
+    compilerCmd = m_CompilerSet->GetCommand(et);
     
-    compilerCmd.Replace("$compiler", "$(" + compilerVar + ")");
-    compilerCmd.Replace("$linker", "$(LD)");
-    compilerCmd.Replace("$lib_linker", "$(LIB)");
-    compilerCmd.Replace("$rescomp", "$(RESCOMP)");
+    compilerCmd.Replace("$compiler", "$(" + target->GetTitle() + "_" + compilerVar + ")");
+    compilerCmd.Replace("$linker", "$(" + target->GetTitle() + "_LD)");
+    compilerCmd.Replace("$lib_linker", "$(" + target->GetTitle() + "_LIB)");
+    compilerCmd.Replace("$rescomp", "$(" + target->GetTitle() + "_RESCOMP)");
     compilerCmd.Replace("$options", "$(" + target->GetTitle() + "_CFLAGS)");
     compilerCmd.Replace("$link_options", "$(" + target->GetTitle() + "_LDFLAGS)");
     compilerCmd.Replace("$includes", "$(" + target->GetTitle() + "_INCS)");
@@ -107,13 +115,7 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
                                                         const wxString& deps)
 {
     // in case of linking command, deps has resource objects
-    Compiler* compiler = target ? CompilerFactory::Compilers[target->GetCompilerIndex()] :
-                        m_CompilerSet;
-    if (!compiler)
-        return wxEmptyString;
-
-    Compiler* old_compiler = m_CompilerSet;
-    m_CompilerSet = compiler;
+    UpdateCompiler(target);
 
     wxString compilerStr;
     if (pf)
@@ -125,10 +127,7 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
         else if (pf->compilerVar.Matches("WINDRES"))
             compilerStr = m_CompilerSet->GetPrograms().WINDRES;
         else
-        {
-            m_CompilerSet = old_compiler;
             return wxEmptyString; // unknown compiler var
-        }
     }
     
     wxString cflags;
@@ -137,8 +136,8 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
 	DoAppendCompilerOptions(global_cflags, 0L, true);
 	DoAppendCompilerOptions(prj_cflags, 0L);
     DoGetMakefileCFlags(cflags, target);
-    cflags.Replace("$(GLOBAL_CFLAGS)", global_cflags);
-    cflags.Replace("$(PROJECT_CFLAGS)", prj_cflags);
+    cflags.Replace("$(" + target->GetTitle() + "_GLOBAL_CFLAGS)", global_cflags);
+    cflags.Replace("$(" + target->GetTitle() + "_PROJECT_CFLAGS)", prj_cflags);
 
     wxString ldflags;
 	wxString global_ldflags;
@@ -146,8 +145,8 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
 	DoAppendLinkerOptions(global_ldflags, 0L, true);
 	DoAppendLinkerOptions(prj_ldflags, 0L);
 	DoGetMakefileLDFlags(ldflags, target);
-    ldflags.Replace("$(GLOBAL_LDFLAGS)", global_ldflags);
-    ldflags.Replace("$(PROJECT_LDFLAGS)", prj_ldflags);
+    ldflags.Replace("$(" + target->GetTitle() + "_GLOBAL_LDFLAGS)", global_ldflags);
+    ldflags.Replace("$(" + target->GetTitle() + "_PROJECT_LDFLAGS)", prj_ldflags);
 
     wxString ldadd;
 	wxString global_ldadd;
@@ -155,8 +154,8 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
 	DoAppendLinkerLibs(global_ldadd, 0L, true);
 	DoAppendLinkerLibs(prj_ldadd, 0L);
 	DoGetMakefileLibs(ldadd, target);
-    ldadd.Replace("$(GLOBAL_LIBS)", global_ldadd);
-    ldadd.Replace("$(PROJECT_LIBS)", prj_ldadd);
+    ldadd.Replace("$(" + target->GetTitle() + "_GLOBAL_LIBS)", global_ldadd);
+    ldadd.Replace("$(" + target->GetTitle() + "_PROJECT_LIBS)", prj_ldadd);
 
 	wxString global_res_incs;
 	wxString prj_res_incs;
@@ -172,8 +171,8 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
 	DoAppendIncludeDirs(global_incs, 0L, m_CompilerSet->GetSwitches().includeDirs, true);
 	DoAppendIncludeDirs(prj_incs, 0L, m_CompilerSet->GetSwitches().includeDirs);
 	DoGetMakefileIncludes(incs, target);
-    incs.Replace("$(GLOBAL_INCS)", global_incs);
-    incs.Replace("$(PROJECT_INCS)", prj_incs);
+    incs.Replace("$(" + target->GetTitle() + "_GLOBAL_INCS)", global_incs);
+    incs.Replace("$(" + target->GetTitle() + "_PROJECT_INCS)", prj_incs);
 
     wxString libs;
 	wxString global_libs;
@@ -181,8 +180,8 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
 	DoAppendLibDirs(global_libs, 0L, m_CompilerSet->GetSwitches().libDirs, true);
 	DoAppendLibDirs(prj_libs, 0L, m_CompilerSet->GetSwitches().libDirs);
 	DoGetMakefileLibDirs(libs, target);
-    libs.Replace("$(GLOBAL_LIBDIRS)", global_libs);
-    libs.Replace("$(PROJECT_LIBDIRS)", prj_libs);
+    libs.Replace("$(" + target->GetTitle() + "_GLOBAL_LIBDIRS)", global_libs);
+    libs.Replace("$(" + target->GetTitle() + "_PROJECT_LIBDIRS)", prj_libs);
 
     wxString output = UnixFilename(target->GetOutputFilename());
     ConvertToMakefileFriendly(output);
@@ -212,9 +211,9 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
     if (target->GetTargetType() == ttStaticLib || target->GetTargetType() == ttDynamicLib)
     {
         wxFileName fname(target->GetOutputFilename());
-        if (!fname.GetName().StartsWith(compiler->GetSwitches().libPrefix))
-            fname.SetName(compiler->GetSwitches().libPrefix + fname.GetName());
-        fname.SetExt(compiler->GetSwitches().libExtension);
+        if (!fname.GetName().StartsWith(m_CompilerSet->GetSwitches().libPrefix))
+            fname.SetName(m_CompilerSet->GetSwitches().libPrefix + fname.GetName());
+        fname.SetExt(m_CompilerSet->GetSwitches().libExtension);
         wxString out = UnixFilename(fname.GetFullPath());
         ConvertToMakefileFriendly(out);
         QuoteStringIfNeeded(out);
@@ -239,15 +238,13 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
             compilerCmd.Replace("$def_output", "");
         }
     }
-
-    m_CompilerSet = old_compiler;
-
     return compilerCmd;
 }
 
 void MakefileGenerator::DoAppendCompilerOptions(wxString& cmd, ProjectBuildTarget* target, bool useGlobalOptions)
 {
     wxArrayString opts;
+//    UpdateCompiler(target);
 	if (useGlobalOptions)
 		opts = m_CompilerSet->GetCompilerOptions();
 	else
@@ -265,6 +262,7 @@ void MakefileGenerator::DoAppendCompilerOptions(wxString& cmd, ProjectBuildTarge
 void MakefileGenerator::DoAppendLinkerOptions(wxString& cmd, ProjectBuildTarget* target, bool useGlobalOptions)
 {
     CompileOptionsBase* obj;
+//    UpdateCompiler(target);
 	if (useGlobalOptions)
         obj = m_CompilerSet;
 	else
@@ -281,7 +279,11 @@ void MakefileGenerator::DoAppendLinkerLibs(wxString& cmd, ProjectBuildTarget* ta
 	if (useGlobalOptions)
         obj = m_CompilerSet;
 	else
+	{
         obj = target ? (CompileOptionsBase*)target : (CompileOptionsBase*)m_Project;
+        int index = target ? target->GetCompilerIndex() : m_Project->GetCompilerIndex();
+        m_CompilerSet = CompilerFactory::Compilers[index];
+    }
 
     wxArrayString libs = obj->GetLinkLibs();
     for (unsigned int x = 0; x < libs.GetCount(); ++x)
@@ -324,6 +326,7 @@ void MakefileGenerator::DoAppendLinkerLibs(wxString& cmd, ProjectBuildTarget* ta
 void MakefileGenerator::DoAppendIncludeDirs(wxString& cmd, ProjectBuildTarget* target, const wxString& prefix, bool useGlobalOptions)
 {
     wxArrayString opts;
+//    UpdateCompiler(target);
 	if (useGlobalOptions)
 		opts = m_CompilerSet->GetIncludeDirs();
 	else
@@ -348,6 +351,7 @@ void MakefileGenerator::DoAppendIncludeDirs(wxString& cmd, ProjectBuildTarget* t
 void MakefileGenerator::DoAppendResourceIncludeDirs(wxString& cmd, ProjectBuildTarget* target, const wxString& prefix, bool useGlobalOptions)
 {
     wxArrayString opts;
+//    UpdateCompiler(target);
 	if (useGlobalOptions)
 		opts = m_CompilerSet->GetResourceIncludeDirs();
 	else
@@ -372,6 +376,7 @@ void MakefileGenerator::DoAppendResourceIncludeDirs(wxString& cmd, ProjectBuildT
 void MakefileGenerator::DoAppendLibDirs(wxString& cmd, ProjectBuildTarget* target, const wxString& prefix, bool useGlobalOptions)
 {
     wxArrayString opts;
+//    UpdateCompiler(target);
 	if (useGlobalOptions)
 		opts = m_CompilerSet->GetLibDirs();
 	else
@@ -395,26 +400,27 @@ void MakefileGenerator::DoAppendLibDirs(wxString& cmd, ProjectBuildTarget* targe
 
 void MakefileGenerator::DoGetMakefileIncludes(wxString& buffer, ProjectBuildTarget* target)
 {
+    UpdateCompiler(target);
     wxString prefix = m_CompilerSet->GetSwitches().includeDirs;
     OptionsRelation relation = target->GetOptionRelation(ortIncludeDirs);
     switch (relation)
     {
         case orUseParentOptionsOnly:
-            buffer << " $(PROJECT_INCS)";
+            buffer << " $(" + target->GetTitle() + "_PROJECT_INCS)";
             break;
         case orUseTargetOptionsOnly:
             DoAppendIncludeDirs(buffer, target, prefix);
             break;
         case orPrependToParentOptions:
             DoAppendIncludeDirs(buffer, target, prefix);
-            buffer << " $(PROJECT_INCS)";
+            buffer << " $(" + target->GetTitle() + "_PROJECT_INCS)";
             break;
         case orAppendToParentOptions:
-            buffer << " $(PROJECT_INCS)";
+            buffer << " $(" + target->GetTitle() + "_PROJECT_INCS)";
             DoAppendIncludeDirs(buffer, target, prefix);
             break;
     }
-	buffer << " $(GLOBAL_INCS)";
+	buffer << " $(" + target->GetTitle() + "_GLOBAL_INCS)";
 }
 
 void MakefileGenerator::DoGetMakefileLibs(wxString& buffer, ProjectBuildTarget* target)
@@ -423,45 +429,46 @@ void MakefileGenerator::DoGetMakefileLibs(wxString& buffer, ProjectBuildTarget* 
     switch (relation)
     {
         case orUseParentOptionsOnly:
-			buffer << " $(PROJECT_LIBS)";
+			buffer << " $(" + target->GetTitle() + "_PROJECT_LIBS)";
             break;
         case orUseTargetOptionsOnly:
             DoAppendLinkerLibs(buffer, target);
             break;
         case orPrependToParentOptions:
             DoAppendLinkerLibs(buffer, target);
-			buffer << " $(PROJECT_LIBS)";
+			buffer << " $(" + target->GetTitle() + "_PROJECT_LIBS)";
             break;
         case orAppendToParentOptions:
-			buffer << " $(PROJECT_LIBS)";
+			buffer << " $(" + target->GetTitle() + "_PROJECT_LIBS)";
             DoAppendLinkerLibs(buffer, target);
             break;
     }
-	buffer << " $(GLOBAL_LIBS)";
+	buffer << " $(" + target->GetTitle() + "_GLOBAL_LIBS)";
 }
 
 void MakefileGenerator::DoGetMakefileLibDirs(wxString& buffer, ProjectBuildTarget* target)
 {
+    UpdateCompiler(target);
     wxString prefix = m_CompilerSet->GetSwitches().libDirs;
     OptionsRelation relation = target->GetOptionRelation(ortLibDirs);
     switch (relation)
     {
         case orUseParentOptionsOnly:
-			buffer << " $(PROJECT_LIBDIRS)";
+			buffer << " $(" + target->GetTitle() + "_PROJECT_LIBDIRS)";
             break;
         case orUseTargetOptionsOnly:
             DoAppendLibDirs(buffer, target, prefix);
             break;
         case orPrependToParentOptions:
             DoAppendLibDirs(buffer, target, prefix);
-			buffer << " $(PROJECT_LIBDIRS)";
+			buffer << " $(" + target->GetTitle() + "_PROJECT_LIBDIRS)";
             break;
         case orAppendToParentOptions:
-			buffer << " $(PROJECT_LIBDIRS)";
+			buffer << " $(" + target->GetTitle() + "_PROJECT_LIBDIRS)";
             DoAppendLibDirs(buffer, target, prefix);
             break;
     }
-	buffer << " $(GLOBAL_LIBDIRS)";
+	buffer << " $(" + target->GetTitle() + "_GLOBAL_LIBDIRS)";
 }
 
 void MakefileGenerator::DoGetMakefileCFlags(wxString& buffer, ProjectBuildTarget* target)
@@ -470,21 +477,21 @@ void MakefileGenerator::DoGetMakefileCFlags(wxString& buffer, ProjectBuildTarget
     switch (relation)
     {
         case orUseParentOptionsOnly:
-			buffer << " $(PROJECT_CFLAGS)";
+			buffer << " $(" + target->GetTitle() + "_PROJECT_CFLAGS)";
             break;
         case orUseTargetOptionsOnly:
             DoAppendCompilerOptions(buffer, target);
             break;
         case orPrependToParentOptions:
             DoAppendCompilerOptions(buffer, target);
-			buffer << " $(PROJECT_CFLAGS)";
+			buffer << " $(" + target->GetTitle() + "_PROJECT_CFLAGS)";
             break;
         case orAppendToParentOptions:
-			buffer << " $(PROJECT_CFLAGS)";
+			buffer << " $(" + target->GetTitle() + "_PROJECT_CFLAGS)";
             DoAppendCompilerOptions(buffer, target);
             break;
     }
-	buffer << " $(GLOBAL_CFLAGS)";
+	buffer << " $(" + target->GetTitle() + "_GLOBAL_CFLAGS)";
 }
 
 void MakefileGenerator::DoGetMakefileLDFlags(wxString& buffer, ProjectBuildTarget* target)
@@ -493,21 +500,21 @@ void MakefileGenerator::DoGetMakefileLDFlags(wxString& buffer, ProjectBuildTarge
     switch (relation)
     {
         case orUseParentOptionsOnly:
-			buffer << "$(PROJECT_LDFLAGS) ";
+			buffer << " $(" + target->GetTitle() + "_PROJECT_LDFLAGS)";
             break;
         case orUseTargetOptionsOnly:
             DoAppendLinkerOptions(buffer, target);
             break;
         case orPrependToParentOptions:
             DoAppendLinkerOptions(buffer, target);
-			buffer << "$(PROJECT_LDFLAGS) ";
+			buffer << " $(" + target->GetTitle() + "_PROJECT_LDFLAGS)";
             break;
         case orAppendToParentOptions:
-			buffer << "$(PROJECT_LDFLAGS) ";
+			buffer << " $(" + target->GetTitle() + "_PROJECT_LDFLAGS)";
             DoAppendLinkerOptions(buffer, target);
             break;
     }
-	buffer << "$(GLOBAL_LDFLAGS) ";
+	buffer << " $(" + target->GetTitle() + "_GLOBAL_LDFLAGS)";
 }
 
 void MakefileGenerator::DoAddMakefileVars(wxString& buffer)
@@ -524,11 +531,17 @@ void MakefileGenerator::DoAddMakefileVars(wxString& buffer)
     // compiler vars
     // defined last so even if the user sets custom vars
     // by these names, ours will have precedence...
-    buffer << "CC=" << m_CompilerSet->GetPrograms().C << '\n';
-    buffer << "CPP=" << m_CompilerSet->GetPrograms().CPP << '\n';
-    buffer << "LD=" << m_CompilerSet->GetPrograms().LD << '\n';
-    buffer << "LIB=" << m_CompilerSet->GetPrograms().LIB << '\n';
-    buffer << "RESCOMP=" << m_CompilerSet->GetPrograms().WINDRES << '\n';
+    int targetsCount = m_Project->GetBuildTargetsCount();
+    for (int x = 0; x < targetsCount; ++x)
+    {
+        ProjectBuildTarget* target = m_Project->GetBuildTarget(x);
+        Compiler* compilerSet = CompilerFactory::Compilers[target->GetCompilerIndex()];
+        buffer << target->GetTitle() << "_CC=" << compilerSet->GetPrograms().C << '\n';
+        buffer << target->GetTitle() << "_CPP=" << compilerSet->GetPrograms().CPP << '\n';
+        buffer << target->GetTitle() << "_LD=" << compilerSet->GetPrograms().LD << '\n';
+        buffer << target->GetTitle() << "_LIB=" << compilerSet->GetPrograms().LIB << '\n';
+        buffer << target->GetTitle() << "_RESCOMP=" << compilerSet->GetPrograms().WINDRES << '\n';
+    }
 	
     buffer << '\n';
 }
@@ -717,6 +730,7 @@ void MakefileGenerator::DoAddMakefileObjs(wxString& buffer)
 		// create target's options only if it has at least one linkable file
 		if (!IsTargetValid(target))
 			continue;
+        UpdateCompiler(target);
 
         wxString deps;
         wxString tmp;
@@ -784,47 +798,51 @@ void MakefileGenerator::DoAddMakefileObjs(wxString& buffer)
 void MakefileGenerator::DoAddMakefileOptions(wxString& buffer)
 {
     buffer << "### Compiler/linker options" << '\n';
+    for (int i = 0; i < m_Project->GetBuildTargetsCount(); ++i)
+    {
+        ProjectBuildTarget* target = m_Project->GetBuildTarget(i);
+        UpdateCompiler(target);
 
-	buffer << "GLOBAL_CFLAGS=";
-	DoAppendCompilerOptions(buffer, 0L, true);
-	buffer << '\n';
-	
-	buffer << "PROJECT_CFLAGS=";
-	DoAppendCompilerOptions(buffer, 0L);
-    buffer << '\n';
-
-	buffer << "GLOBAL_LDFLAGS=";
-	DoAppendLinkerOptions(buffer, 0L, true);
-	buffer << '\n';
-	
-	buffer << "PROJECT_LDFLAGS=";
-	DoAppendLinkerOptions(buffer, 0L);
-    buffer << '\n';
-
-	buffer << "GLOBAL_INCS=";
-	DoAppendIncludeDirs(buffer, 0L, m_CompilerSet->GetSwitches().includeDirs, true);
-	buffer << '\n';
-	
-	buffer << "PROJECT_INCS=";
-	DoAppendIncludeDirs(buffer, 0L, m_CompilerSet->GetSwitches().includeDirs);
-    buffer << '\n';
-
-	buffer << "GLOBAL_LIBDIRS=";
-	DoAppendLibDirs(buffer, 0L, m_CompilerSet->GetSwitches().libDirs, true);
-	buffer << '\n';
-	
-	buffer << "PROJECT_LIBDIRS=";
-	DoAppendLibDirs(buffer, 0L, m_CompilerSet->GetSwitches().libDirs);
-    buffer << '\n';
-
-	buffer << "GLOBAL_LIBS=";
-	DoAppendLinkerLibs(buffer, 0L, true);
-	buffer << '\n';
-	
-	buffer << "PROJECT_LIBS=";
-	DoAppendLinkerLibs(buffer, 0L);
-    buffer << '\n';
-
+        buffer << target->GetTitle() + "_GLOBAL_CFLAGS=";
+        DoAppendCompilerOptions(buffer, 0L, true);
+        buffer << '\n';
+        
+        buffer << target->GetTitle() + "_PROJECT_CFLAGS=";
+        DoAppendCompilerOptions(buffer, 0L);
+        buffer << '\n';
+    
+        buffer << target->GetTitle() + "_GLOBAL_LDFLAGS=";
+        DoAppendLinkerOptions(buffer, 0L, true);
+        buffer << '\n';
+        
+        buffer << target->GetTitle() + "_PROJECT_LDFLAGS=";
+        DoAppendLinkerOptions(buffer, 0L);
+        buffer << '\n';
+    
+        buffer << target->GetTitle() + "_GLOBAL_INCS=";
+        DoAppendIncludeDirs(buffer, 0L, m_CompilerSet->GetSwitches().includeDirs, true);
+        buffer << '\n';
+        
+        buffer << target->GetTitle() + "_PROJECT_INCS=";
+        DoAppendIncludeDirs(buffer, 0L, m_CompilerSet->GetSwitches().includeDirs);
+        buffer << '\n';
+    
+        buffer << target->GetTitle() + "_GLOBAL_LIBDIRS=";
+        DoAppendLibDirs(buffer, 0L, m_CompilerSet->GetSwitches().libDirs, true);
+        buffer << '\n';
+        
+        buffer << target->GetTitle() + "_PROJECT_LIBDIRS=";
+        DoAppendLibDirs(buffer, 0L, m_CompilerSet->GetSwitches().libDirs);
+        buffer << '\n';
+    
+        buffer << target->GetTitle() + "_GLOBAL_LIBS=";
+        DoAppendLinkerLibs(buffer, 0L, true);
+        buffer << '\n';
+        
+        buffer << target->GetTitle() + "_PROJECT_LIBS=";
+        DoAppendLinkerLibs(buffer, 0L);
+        buffer << '\n';
+    }
 	buffer << '\n';
 }
 
@@ -958,6 +976,7 @@ void MakefileGenerator::DoAddMakefileTargets(wxString& buffer)
 		// create target's options only if it has at least one linkable file
 		if (!IsTargetValid(target))
 			continue;
+        UpdateCompiler(target);
 
         // the filename is already adapted based on the project type
         wxString out = UnixFilename(target->GetOutputFilename());
@@ -1013,6 +1032,7 @@ void MakefileGenerator::DoAddMakefileTarget_All(wxString& buffer)
         ProjectBuildTarget* target = m_Project->GetBuildTarget(x);
         if (!target)
             break;
+        UpdateCompiler(target);
 
 		if (target->GetIncludeInTargetAll())
 		{
@@ -1091,6 +1111,7 @@ void MakefileGenerator::DoAddMakefileTarget_Clean(wxString& buffer)
 		// create target's options only if it has at least one linkable file
 		if (!IsTargetValid(target))
 			continue;
+        UpdateCompiler(target);
 
         buffer << "clean_" << target->GetTitle() << ":" << '\n';
 		if (m_CompilerSet->GetSwitches().logging == clogSimple)
@@ -1140,9 +1161,6 @@ void MakefileGenerator::DoAddMakefileTarget_Dist(wxString& buffer)
 
 void MakefileGenerator::DoAddMakefileTarget_Depend(wxString& buffer)
 {
-    if (!m_CompilerSet->GetSwitches().needDependencies)
-        return;
-
     wxString tmp;
     int targetsCount = m_Project->GetBuildTargetsCount();
     for (int x = 0; x < targetsCount; ++x)
@@ -1154,6 +1172,9 @@ void MakefileGenerator::DoAddMakefileTarget_Depend(wxString& buffer)
 		// create target's options only if it has at least one linkable file
 		if (!IsTargetValid(target))
 			continue;
+        UpdateCompiler(target);
+        if (!m_CompilerSet->GetSwitches().needDependencies)
+            continue;
 
         buffer << "depend_" << target->GetTitle() << "_DIRS:" << '\n';
         DoAddMakefileCreateDirs(buffer, target, false, true, false);
@@ -1176,6 +1197,7 @@ void MakefileGenerator::DoAddMakefileTarget_Link(wxString& buffer)
         ProjectBuildTarget* target = m_Project->GetBuildTarget(x);
         if (!target)
             break;
+        UpdateCompiler(target);
 
 		buffer << target->GetTitle() << "_DIRS:" << '\n';
         DoAddMakefileCreateDirs(buffer, target, true, false, true);
@@ -1216,9 +1238,10 @@ void MakefileGenerator::DoAddMakefileTarget_Link(wxString& buffer)
 			case ttConsoleOnly:
 			case ttExecutable:
             {
+                CommandType ct = target->GetTargetType() == ttConsoleOnly ? ctLinkConsoleExeCmd : ctLinkExeCmd;
                 if (m_CompilerSet->GetSwitches().logging == clogSimple)
 					buffer << '\t' << "@echo Linking executable \"" << target->GetOutputFilename() << "\"..." << '\n';
-				wxString compilerCmd = ReplaceCompilerMacros(ctLinkExeCmd, "", target, "", "", "");
+				wxString compilerCmd = ReplaceCompilerMacros(ct, "", target, "", "", "");
 				buffer << '\t' << m_Quiet << compilerCmd<< '\n';
 				break;
 			}
@@ -1276,21 +1299,49 @@ void MakefileGenerator::QuoteStringIfNeeded(wxString& str)
     }
 }
 
+wxString MakefileGenerator::GetObjectFile(ProjectFile* pf, ProjectBuildTarget* target)
+{
+    wxFileName o_filename_tmp = UnixFilename(pf->GetObjName());
+    wxFileName o_filename = target->GetObjectOutput() + wxFILE_SEP_PATH + o_filename_tmp.GetFullPath();
+    // vars to make easier reading the following code
+    wxString o_file = UnixFilename(o_filename.GetFullPath());
+    ConvertToMakefileFriendly(o_file);
+    QuoteStringIfNeeded(o_file);
+    return o_file;
+}
+
+wxString MakefileGenerator::GetDependencyFile(ProjectFile* pf, ProjectBuildTarget* target)
+{
+    wxFileName d_filename_tmp = UnixFilename(pf->GetObjName());
+    wxFileName d_filename = target->GetDepsOutput() + wxFILE_SEP_PATH + d_filename_tmp.GetFullPath();
+    d_filename.SetExt("d");
+    wxString d_file;
+    UpdateCompiler(target);
+    if (m_CompilerSet->GetSwitches().needDependencies)
+    {
+        d_file = UnixFilename(d_filename.GetFullPath());
+        ConvertToMakefileFriendly(d_file);
+        QuoteStringIfNeeded(d_file);
+    }
+    return d_file;
+}
+
 void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
 {
     m_ObjectFiles.Clear();
     wxString tmp;
+    wxArrayString depfiles; // one occurrence per dep (case where the same file is used in more than one target)
     int targetsCount = m_Project->GetBuildTargetsCount();
     for (int x = 0; x < targetsCount; ++x)
     {
         ProjectBuildTarget* target = m_Project->GetBuildTarget(x);
         if (!target)
             break;
+        UpdateCompiler(target);
 
 #ifdef __WXMSW__
         wxString resources;
 #endif // __WXMSW__
-        wxChar sep = wxFileName::GetPathSeparator();
         int filesCount = (int)m_Files.GetCount();
         for (int i = 0; i < filesCount; ++i)
         {
@@ -1299,22 +1350,9 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
                 !pf->compilerVar.IsEmpty() &&
                 pf->buildTargets.Index(target->GetTitle()) >= 0)
             {
-                wxFileName d_filename_tmp = UnixFilename(pf->GetObjName());
-				wxFileName d_filename = target->GetDepsOutput() + sep + d_filename_tmp.GetFullPath();
-                d_filename.SetExt("d");
-                wxFileName o_filename_tmp = UnixFilename(pf->GetObjName());
-				wxFileName o_filename = target->GetObjectOutput() + sep + o_filename_tmp.GetFullPath();
                 // vars to make easier reading the following code
-                wxString o_file = UnixFilename(o_filename.GetFullPath());
-                ConvertToMakefileFriendly(o_file);
-                QuoteStringIfNeeded(o_file);
-                wxString d_file;
-                if (m_CompilerSet->GetSwitches().needDependencies)
-                {
-                    d_file = UnixFilename(d_filename.GetFullPath());
-                    ConvertToMakefileFriendly(d_file);
-                    QuoteStringIfNeeded(d_file);
-                }
+                wxString o_file = GetObjectFile(pf, target);
+                wxString d_file = GetDependencyFile(pf, target);
                 wxString c_file = UnixFilename(pf->relativeFilename);
                 ConvertToMakefileFriendly(c_file);
                 QuoteStringIfNeeded(c_file);
@@ -1323,16 +1361,27 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
                 bool isResource = FileTypeOf(pf->relativeFilename) == ftResource;
                 if (!isResource)
                 {
-                    if (m_CompilerSet->GetSwitches().needDependencies)
+                    if (m_CompilerSet->GetSwitches().needDependencies &&
+                        depfiles.Index(d_file) == wxNOT_FOUND)
                     {
+                        depfiles.Add(d_file);
                         if (pf->autoDeps)
                         {
                             // depend rule
                             buffer << d_file << ": " << c_file << '\n';
                             if (m_CompilerSet->GetSwitches().logging == clogSimple)
                                 buffer << '\t' << "@echo Calculating dependencies for \"" << pf->relativeFilename << "\"..." << '\n';
-//                            AddCreateSubdir(buffer, target->GetBasePath(), pf->GetObjName(), target->GetDepsOutput());
-                            wxString compilerCmd = ReplaceCompilerMacros(ctGenDependenciesCmd, pf->compilerVar, target, c_file, o_file, d_file);
+                            // gather all object files generated from this source file (multiple targets case)
+                            wxString tmpdep;
+                            for (unsigned int i = 0; i < pf->buildTargets.GetCount(); ++i)
+                            {
+                                ProjectBuildTarget* tmptarget = m_Project->GetBuildTarget(pf->buildTargets[i]);
+                                if (tmptarget)
+                                    tmpdep << GetObjectFile(pf, tmptarget) << ',';
+                            }
+                            if (tmpdep.Last() == ',')
+                                tmpdep.RemoveLast();
+                            wxString compilerCmd = ReplaceCompilerMacros(ctGenDependenciesCmd, pf->compilerVar, target, c_file, tmpdep, d_file);
                             if (!compilerCmd.IsEmpty())
                                 buffer << '\t' << m_Quiet << compilerCmd << '\n';
                             buffer << '\n';

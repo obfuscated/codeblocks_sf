@@ -458,10 +458,6 @@ void CompilerGCC::SetupEnvironment()
 	wxPathList pathList;
 	wxString path;
 //	Manager::Get()->GetMessageManager()->DebugLog(_("Setting up compiler environment..."));
-    wxString masterPath = CompilerFactory::Compilers[m_CompilerIdx]->GetMasterPath();
-    wxString gcc = CompilerFactory::Compilers[m_CompilerIdx]->GetPrograms().C;
-    const wxArrayString& extraPaths = CompilerFactory::Compilers[m_CompilerIdx]->GetExtraPaths();
-//	Manager::Get()->GetMessageManager()->DebugLog("Checking in " + masterPath + sep + "bin for " + gcc);
 
     // reset PATH to original value
     if (!m_OriginalPath.IsEmpty())
@@ -472,48 +468,71 @@ void CompilerGCC::SetupEnvironment()
 	{
         if (m_OriginalPath.IsEmpty())
             m_OriginalPath = path;
-        pathList.Add(masterPath + sep + "bin");
-        for (unsigned int i = 0; i < extraPaths.GetCount(); ++i)
+
+        wxArrayInt compilers;
+        for (int x = 0; x < m_Project->GetBuildTargetsCount(); ++x)
         {
-            if (!extraPaths[i].IsEmpty())
-                pathList.Add(extraPaths[i]);
-        }
-		pathList.AddEnvList("PATH");
-		wxString binPath = pathList.FindAbsoluteValidPath(gcc);
-        // it seems, under Win32, the above command doesn't search in paths with spaces...
-        // look directly for the file in question in masterPath
-		if (binPath.IsEmpty() || !pathList.Member(wxPathOnly(binPath)))
-		{
-            if (wxFileExists(masterPath + sep + "bin" + sep + gcc))
-                binPath = masterPath + sep + "bin";
-		}
-        
-		if (binPath.IsEmpty() || !pathList.Member(wxPathOnly(binPath)))
-		{
-			m_EnvironmentMsg = _("Can't find compiler executable in your search path. "
-								"Most probably, you will not be able to compile anything...");
-			Manager::Get()->GetMessageManager()->DebugLog(_("Can't find compiler executable in your search path..."));
-		}
-		else
-		{
-            m_EnvironmentMsg.Clear();
+            ProjectBuildTarget* target = m_Project->GetBuildTarget(x);
+            int idx = target->GetCompilerIndex();
+            
+            // one time per compiler
+            if (compilers.Index(idx) != wxNOT_FOUND)
+                continue;
+            compilers.Add(idx);
+
+            wxString masterPath = CompilerFactory::Compilers[idx]->GetMasterPath();
+            wxString gcc = CompilerFactory::Compilers[idx]->GetPrograms().C;
+            const wxArrayString& extraPaths = CompilerFactory::Compilers[idx]->GetExtraPaths();
+    
+            pathList.Add(masterPath + sep + "bin");
+            for (unsigned int i = 0; i < extraPaths.GetCount(); ++i)
+            {
+                if (!extraPaths[i].IsEmpty())
+                    pathList.Add(extraPaths[i]);
+            }
+            pathList.AddEnvList("PATH");
+            wxString binPath = pathList.FindAbsoluteValidPath(gcc);
+            // it seems, under Win32, the above command doesn't search in paths with spaces...
+            // look directly for the file in question in masterPath
+            if (binPath.IsEmpty() || !pathList.Member(wxPathOnly(binPath)))
+            {
+                if (wxFileExists(masterPath + sep + "bin" + sep + gcc))
+                    binPath = masterPath + sep + "bin";
+                else if (wxFileExists(masterPath + sep + gcc))
+                    binPath = masterPath;
+            }
+            
+            if (binPath.IsEmpty() || !pathList.Member(wxPathOnly(binPath)))
+            {
+                m_EnvironmentMsg = _("Can't find compiler executable in your search path. "
+                                    "Most probably, you will not be able to compile anything...");
+                Manager::Get()->GetMessageManager()->DebugLog(_("Can't find compiler executable in your search path..."));
+            }
+            else
+            {
+                m_EnvironmentMsg.Clear();
 #ifdef __WXMSW__
 	#define PATH_SEP ";"
 #else
 	#define PATH_SEP ":"
 #endif
-			// add bin path to PATH env. var.
-			wxSetEnv("PATH", masterPath + sep + "bin" + PATH_SEP + path);
-//			wxGetEnv("PATH", &path);
-//            Manager::Get()->GetMessageManager()->DebugLog("$PATH=" + path);
+                // add bin path to PATH env. var.
+                if (wxFileExists(masterPath + sep + "bin" + sep + gcc))
+                    path = masterPath + sep + "bin" + PATH_SEP + path;
+                else if (wxFileExists(masterPath + sep + gcc))
+                    path = masterPath + PATH_SEP + path;
+                wxSetEnv("PATH", path);
 #undef PATH_SEP
-		}
+            }
+        }
 	}
 	else
 		m_EnvironmentMsg = _("Could not read the PATH environment variable!\n"
 					"This can't be good. There may be problems running "
 					"system commands and the application might not behave "
 					"the way it was designed to...");
+//    wxGetEnv("PATH", &path);
+//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, "PATH set to: %s", path.c_str());
 }
 
 void CompilerGCC::SaveOptions()
@@ -597,7 +616,9 @@ int CompilerGCC::DoRunQueue()
     msgMan->SwitchTo(m_PageIndex);
     
 	// leave if no active project
-    if (!CheckProject())
+//    if (!CheckProject())
+    AskForActiveProject();
+    if (!m_Project)
         return -1;
         
     // make sure all project files are saved
@@ -856,6 +877,16 @@ void CompilerGCC::DoDeleteTempMakefile()
     m_LastTempMakefile = "";
 }
 
+bool CompilerGCC::UseMake(ProjectBuildTarget* target)
+{
+    int idx = m_CompilerIdx;
+    if (target)
+        idx = target->GetCompilerIndex();
+    else if (m_Project)
+        idx = m_Project->GetCompilerIndex();
+    return CompilerFactory::Compilers[idx]->GetSwitches().buildMethod == cbmUseMake;
+}
+
 bool CompilerGCC::DoCreateMakefile(bool temporary, const wxString& makefile)
 {
     DoDeleteTempMakefile();
@@ -872,7 +903,7 @@ bool CompilerGCC::DoCreateMakefile(bool temporary, const wxString& makefile)
     if (!m_Project)
         return false;
 
-    if (CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches().buildMethod == cbmUseMake)
+    if (UseMake())
     {
         // if the project has a custom makefile, use that (i.e. don't create makefile)
         if (temporary && m_Project->IsMakefileCustom())
@@ -900,7 +931,7 @@ bool CompilerGCC::DoCreateMakefile(bool temporary, const wxString& makefile)
     PrintBanner();
 	wxSetWorkingDirectory(m_Project->GetBasePath());
 
-    if (CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches().buildMethod == cbmUseMake)
+    if (UseMake())
     {
         MakefileGenerator generator(this, m_Project, m_LastTempMakefile, m_PageIndex);
         bool ret = generator.CreateMakefile();
@@ -1034,7 +1065,7 @@ int CompilerGCC::Clean(ProjectBuildTarget* target)
 	DoPrepareQueue();
 
     wxSetWorkingDirectory(m_Project->GetBasePath());
-    if (CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches().buildMethod == cbmUseMake)
+    if (UseMake(target))
     {
         wxString cmd;
         wxString make = CompilerFactory::Compilers[m_CompilerIdx]->GetPrograms().MAKE;
@@ -1064,7 +1095,7 @@ int CompilerGCC::DistClean(ProjectBuildTarget* target)
 	DoPrepareQueue();
 
     wxSetWorkingDirectory(m_Project->GetBasePath());
-    if (CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches().buildMethod == cbmUseMake)
+    if (UseMake(target))
     {
         wxString cmd;
         wxString make = CompilerFactory::Compilers[m_CompilerIdx]->GetPrograms().MAKE;
@@ -1094,7 +1125,7 @@ int CompilerGCC::CreateDist()
 	DoPrepareQueue();
 
     wxString cmd;
-    if (CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches().buildMethod == cbmUseMake)
+    if (UseMake())
     {
         wxString make = CompilerFactory::Compilers[m_CompilerIdx]->GetPrograms().MAKE;
         cmd << make << " -f " << m_LastTempMakefile << " dist";
@@ -1114,7 +1145,7 @@ void CompilerGCC::OnExportMakefile(wxCommandEvent& event)
 		return;
     
     wxSetWorkingDirectory(m_Project->GetBasePath());
-    if (CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches().buildMethod == cbmUseMake)
+    if (UseMake())
     {
         DoCreateMakefile(false, makefile);
     }
@@ -1137,7 +1168,7 @@ int CompilerGCC::Compile(ProjectBuildTarget* target)
 
     wxString cmd;
     wxSetWorkingDirectory(m_Project->GetBasePath());
-    if (CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches().buildMethod == cbmUseMake)
+    if (UseMake(target))
     {
         wxString make = CompilerFactory::Compilers[m_CompilerIdx]->GetPrograms().MAKE;
         if (target)
@@ -1159,7 +1190,7 @@ int CompilerGCC::Rebuild(ProjectBuildTarget* target)
 {
 	DoPrepareQueue();
 
-    if (CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches().buildMethod == cbmUseMake)
+    if (UseMake(target))
     {
         wxString cmd;
         wxString make = CompilerFactory::Compilers[m_CompilerIdx]->GetPrograms().MAKE;
@@ -1211,7 +1242,7 @@ int CompilerGCC::KillProcess()
     if (!m_Process || !m_Pid)
         return -1;
     wxKillError ret;
-    bool isdirect=(CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches().buildMethod == cbmDirect);
+    bool isdirect=(!UseMake());
         
     m_Queue.Clear();
     
@@ -1241,7 +1272,7 @@ int CompilerGCC::CompileFile(const wxString& file)
 	DoPrepareQueue();
 
     wxSetWorkingDirectory(m_Project->GetBasePath());
-    if (CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches().buildMethod == cbmUseMake)
+    if (UseMake())
     {
         wxFileName f(file);
 // TODO (mandrav#1#): Fix this to take into account the obj output dir
@@ -1815,7 +1846,7 @@ void CompilerGCC::OnJobEnd()
                     prjMan->SetProject(projects->Item(++m_ProjectIndex), false);
                     CheckProject();
                     m_QueueIndex = 0;
-                    if (CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches().buildMethod == cbmUseMake)
+                    if (UseMake())
                     {
                         wxString oldMK = m_LastTempMakefile;
                         DoCreateMakefile();

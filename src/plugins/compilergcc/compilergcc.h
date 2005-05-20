@@ -122,7 +122,8 @@ class CompilerGCC : public cbCompilerPlugin
         wxString ProjectMakefile();
         void AddOutputLine(const wxString& output, bool forceErrorColor = false);
         void PrintBanner();
-        
+        bool UseMake(ProjectBuildTarget* target = 0);
+
 		// programs
 		int m_CompilerIdx;
 		CompilerPrograms m_EmptyCompilerPrograms; // always empty; returned on invalid compiler index

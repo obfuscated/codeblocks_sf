@@ -66,6 +66,9 @@ class MakefileGenerator
         void DoGetMakefileCFlags(wxString& buffer, ProjectBuildTarget* target);
         void DoGetMakefileLDFlags(wxString& buffer, ProjectBuildTarget* target);
 
+        wxString GetObjectFile(ProjectFile* pf, ProjectBuildTarget* target);
+        wxString GetDependencyFile(ProjectFile* pf, ProjectBuildTarget* target);
+        void UpdateCompiler(ProjectBuildTarget* target = 0);
 		void DoPrepareFiles();
 		void DoPrepareValidTargets();
 		bool IsTargetValid(ProjectBuildTarget* target);
