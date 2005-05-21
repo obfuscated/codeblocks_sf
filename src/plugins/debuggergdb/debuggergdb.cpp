@@ -368,6 +368,14 @@ int DebuggerGDB::Debug()
 	msgMan->Log(m_PageIndex, target->GetTitle());
 
 	Compiler* actualCompiler = CompilerFactory::Compilers[target ? target->GetCompilerIndex() : project->GetCompilerIndex()];
+	if (!actualCompiler)
+	{
+		wxString msg;
+		msg.Printf(_("This %s is configured to use an invalid debugger.\nThe operation failed..."), target ? _("target") : _("project"));
+		wxMessageBox(msg, _("Error"), wxICON_ERROR);
+		return 9;
+	}
+
 	if (actualCompiler->GetPrograms().DBG.IsEmpty() ||
         !wxFileExists(actualCompiler->GetMasterPath() + wxFileName::GetPathSeparator() + "bin" + wxFileName::GetPathSeparator() + actualCompiler->GetPrograms().DBG))
 	{
