@@ -123,6 +123,7 @@ class CompilerGCC : public cbCompilerPlugin
         void AddOutputLine(const wxString& output, bool forceErrorColor = false);
         void PrintBanner();
         bool UseMake(ProjectBuildTarget* target = 0);
+		bool CompilerValid(ProjectBuildTarget* target = 0);
 
 		// programs
 		int m_CompilerIdx;

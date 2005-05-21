@@ -476,7 +476,7 @@ void CompilerGCC::SetupEnvironment()
             int idx = target->GetCompilerIndex();
             
             // one time per compiler
-            if (compilers.Index(idx) != wxNOT_FOUND)
+            if (compilers.Index(idx) != wxNOT_FOUND || !CompilerFactory::CompilerIndexOK(idx))
                 continue;
             compilers.Add(idx);
 
@@ -887,6 +887,19 @@ bool CompilerGCC::UseMake(ProjectBuildTarget* target)
     return CompilerFactory::Compilers[idx]->GetSwitches().buildMethod == cbmUseMake;
 }
 
+bool CompilerGCC::CompilerValid(ProjectBuildTarget* target)
+{
+	int idx = target ? target->GetCompilerIndex() : (m_Project ? m_Project->GetCompilerIndex() : CompilerFactory::GetDefaultCompilerIndex());
+	bool ret = CompilerFactory::CompilerIndexOK(idx);
+	if (!ret)
+	{
+		wxString msg;
+		msg.Printf(_("This %s is configured to use an invalid compiler.\nThe operation failed..."), target ? _("target") : _("project"));
+		wxMessageBox(msg, _("Error"), wxICON_ERROR);
+	}
+	return ret;
+}
+
 bool CompilerGCC::DoCreateMakefile(bool temporary, const wxString& makefile)
 {
     DoDeleteTempMakefile();
@@ -949,6 +962,8 @@ bool CompilerGCC::DoCreateMakefile(bool temporary, const wxString& makefile)
 
 void CompilerGCC::PrintBanner()
 {
+	if (!CompilerValid())
+		return;
     if (!m_Project)
         return;
     Manager::Get()->GetMessageManager()->SwitchTo(m_PageIndex);
@@ -982,6 +997,8 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     if (!CheckProject())
         return -1;
 	DoPrepareQueue();
+	if (!CompilerValid(target))
+		return -1;
 
 	if (!target)
 	{
@@ -1063,6 +1080,8 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 int CompilerGCC::Clean(ProjectBuildTarget* target)
 {
 	DoPrepareQueue();
+	if (!CompilerValid(target))
+		return -1;
 
     wxSetWorkingDirectory(m_Project->GetBasePath());
     if (UseMake(target))
@@ -1093,6 +1112,8 @@ int CompilerGCC::Clean(ProjectBuildTarget* target)
 int CompilerGCC::DistClean(ProjectBuildTarget* target)
 {
 	DoPrepareQueue();
+	if (!CompilerValid(target))
+		return -1;
 
     wxSetWorkingDirectory(m_Project->GetBasePath());
     if (UseMake(target))
@@ -1123,6 +1144,8 @@ int CompilerGCC::DistClean(ProjectBuildTarget* target)
 int CompilerGCC::CreateDist()
 {
 	DoPrepareQueue();
+	if (!CompilerValid())
+		return -1;
 
     wxString cmd;
     if (UseMake())
@@ -1140,6 +1163,8 @@ int CompilerGCC::CreateDist()
 
 void CompilerGCC::OnExportMakefile(wxCommandEvent& event)
 {
+	if (!CompilerValid())
+		return;
 	wxString makefile = wxGetTextFromUser(_("Please enter the \"Makefile\" name:"), _("Export Makefile"), ProjectMakefile());
 	if (makefile.IsEmpty())
 		return;
@@ -1163,7 +1188,7 @@ int CompilerGCC::Compile(ProjectBuildTarget* target)
 {
     DoClearErrors();
 	DoPrepareQueue();
-	if (!m_Project)
+	if (!m_Project || !CompilerValid(target))
         return -2;
 
     wxString cmd;
@@ -1189,6 +1214,8 @@ int CompilerGCC::Compile(ProjectBuildTarget* target)
 int CompilerGCC::Rebuild(ProjectBuildTarget* target)
 {
 	DoPrepareQueue();
+	if (!CompilerValid(target))
+		return -1;
 
     if (UseMake(target))
     {
@@ -1270,6 +1297,8 @@ int CompilerGCC::KillProcess()
 int CompilerGCC::CompileFile(const wxString& file)
 {
 	DoPrepareQueue();
+	if (!CompilerValid())
+		return -1;
 
     wxSetWorkingDirectory(m_Project->GetBasePath());
     if (UseMake())
