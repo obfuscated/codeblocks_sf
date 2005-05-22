@@ -710,6 +710,9 @@ void MainFrame::LoadWindowState()
     // maximized?
     if (ConfigManager::Get()->Read(personalityKey + "/main_frame/maximized", 0L))
         Maximize();
+
+    // close message manager (if auto-hiding)
+    m_pMsgMan->Close();
 }
 
 void MainFrame::SaveWindowState()
@@ -730,7 +733,7 @@ void MainFrame::SaveWindowState()
 
 	// save block sizes
 	ConfigManager::Get()->Write(personalityKey + "/main_frame/layout/left_block_width", m_pLeftSash->GetSize().GetWidth());
-	ConfigManager::Get()->Write(personalityKey + "/main_frame/layout/bottom_block_height", m_pBottomSash->GetSize().GetHeight());
+    ConfigManager::Get()->Write(personalityKey + "/main_frame/layout/bottom_block_height", m_pMsgMan->GetOpenSize());
 
 	// save manager and messages selected page
 	ConfigManager::Get()->Write(personalityKey + "/main_frame/layout/left_block_selection", Manager::Get()->GetNotebook()->GetSelection());
@@ -948,6 +951,7 @@ void MainFrame::RePositionManagerTree(bool left)
     if (!m_pLeftSash)
         return;
     
+    m_pLeftSash->Hide();
     if (left)
     {
         m_pLeftSash->SetAlignment(wxLAYOUT_LEFT);
@@ -958,6 +962,7 @@ void MainFrame::RePositionManagerTree(bool left)
         m_pLeftSash->SetAlignment(wxLAYOUT_RIGHT);
         m_pLeftSash->SetSashVisible(wxSASH_LEFT, true);
     }
+    m_pLeftSash->Show();
     DoUpdateLayout();
 }
 
@@ -1857,6 +1862,7 @@ void MainFrame::OnSettingsEnvironment(wxCommandEvent& event)
         m_SmallToolBar = ConfigManager::Get()->Read("/environment/toolbar_size", (long int)0) == 1;
         if (m_SmallToolBar != tbarsmall)
             CreateToolbars();
+        m_pMsgMan->EnableAutoHide(ConfigManager::Get()->Read("/message_manager/auto_hide", 0L));
 	}
 }
 

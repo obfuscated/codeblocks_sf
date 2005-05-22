@@ -225,6 +225,9 @@ void cbEditor::SetProjectFile(ProjectFile* project_file,bool preserve_modified)
 
 		m_pProjectFile->editorOpen = true;
 		SetBreakpoints();
+		
+		m_Shortname = m_pProjectFile->relativeToCommonTopLevelPath;
+		SetEditorTitle(m_Shortname);
 	}
 #if 0
 	wxString dbg;
@@ -1053,6 +1056,9 @@ void cbEditor::OnEditorChange(wxStyledTextEvent& event)
 
 void cbEditor::OnEditorCharAdded(wxStyledTextEvent& event)
 {
+    // if message manager is auto-hiding, this will close it if not needed open
+    Manager::Get()->GetMessageManager()->Close();
+
     m_timerWait.Stop();
 	int pos = m_pControl->GetCurrentPos();
 	char ch = event.GetKey();

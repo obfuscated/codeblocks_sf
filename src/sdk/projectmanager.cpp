@@ -818,6 +818,11 @@ bool ProjectManager::QueryCloseWorkspace()
     SANITY_CHECK(true);
     if(!m_pWorkspace)
         return true;
+
+    // don't ask to save the default workspace, if blank workspace is used on app startup
+    if (m_pWorkspace->IsDefault() && ConfigManager::Get()->Read("/environment/blank_workspace", 0L) == 1)
+        return true;
+
     if (m_pWorkspace->GetModified())
     {
         // workspace needs save

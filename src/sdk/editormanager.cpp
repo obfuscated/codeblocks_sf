@@ -27,6 +27,7 @@
 #include <wx/menu.h>
 #include <wx/splitter.h>
 #include <wx/imaglist.h>
+#include <wx/file.h>
 
 #include "editormanager.h" // class's header file
 #include "configmanager.h"
@@ -704,13 +705,19 @@ void EditorManager::Print(PrintScope ps, PrintColorMode pcm)
 void EditorManager::CheckForExternallyModifiedFiles()
 {
     SANITY_CHECK();
+    wxLogNull ln;
     bool reloadAll = false; // flag to stop bugging the user
     wxArrayString failedFiles; // list of files failed to reload
 	for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext())
 	{
         cbEditor* ed = InternalGetBuiltinEditor(node);
-        if (!ed)
+        if (!ed || // no editor open
+            !wxFileExists(ed->GetFilename()) || // non-existent file
+            ed->GetControl()->GetReadOnly() || // read-only
+            !wxFile::Access(ed->GetFilename().c_str(), wxFile::write))
+        {
             continue;
+        }
         wxFileName fname(ed->GetFilename());
         wxDateTime last = fname.GetModificationTime();
         if (!last.IsEqualTo(ed->GetLastModificationTime()))

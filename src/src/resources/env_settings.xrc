@@ -62,48 +62,66 @@
               <object class="wxBoxSizer">
                 <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
-                  <object class="wxRadioBox" name="rbProjectOpen">
-                    <label>On project open...</label>
-                    <content>
-                      <item>Open all project files</item>
-                      <item>Remember last open files</item>
-                      <item>Do not open any files</item>
-                    </content>
-                    <selection>1</selection>
+                  <object class="wxFlexGridSizer">
+                    <object class="sizeritem">
+                      <object class="wxRadioBox" name="rbAppStart">
+                        <label>On application start-up</label>
+                        <content>
+                          <item>Open default workspace</item>
+                          <item>Open blank workspace</item>
+                        </content>
+                        <selection>1</selection>
+                      </object>
+                      <flag>wxGROW</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxRadioBox" name="rbProjectOpen">
+                        <label>On project load</label>
+                        <content>
+                          <item>Open all project files</item>
+                          <item>Open last open files</item>
+                          <item>Do not open any files</item>
+                        </content>
+                        <selection>1</selection>
+                      </object>
+                      <flag>wxGROW</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxRadioBox" name="rbToolbarSize">
+                        <label>Toolbar icons size</label>
+                        <content>
+                          <item>32 x 32 - Large</item>
+                          <item>16 x 16 - Small</item>
+                        </content>
+                        <selection>0</selection>
+                      </object>
+                      <flag>wxGROW</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxRadioBox" name="rbEditorInterface">
+                        <label>Default editor interface (Windows only)</label>
+                        <content>
+                          <item>MDI windows</item>
+                          <item>Tabbed windows (not implemented)</item>
+                        </content>
+                        <selection>0</selection>
+                      </object>
+                      <flag>wxGROW</flag>
+                    </object>
+                    <cols>2</cols>
+                    <vgap>8</vgap>
+                    <hgap>8</hgap>
                   </object>
-                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <option>1</option>
+                  <flag>wxALL|wxGROW</flag>
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
-                  <object class="wxRadioBox" name="rbToolbarSize">
-                    <label>Toolbar icons size</label>
-                    <content>
-                      <item>32 x 32 - Large</item>
-                      <item>16 x 16 - Small</item>
-                    </content>
-                    <selection>0</selection>
-                  </object>
-                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
-                  <border>8</border>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxRadioBox" name="rbEditorInterface">
-                    <label>Default editor interface (Windows only)</label>
-                    <content>
-                      <item>MDI windows</item>
-                      <item>Tabbed windows (not implemented)</item>
-                    </content>
-                    <selection>0</selection>
-                  </object>
-                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
-                  <border>8</border>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxCheckBox" name="chkAutoMaxWindows">
-                    <label>By default, maximize new editors</label>
+                  <object class="wxCheckBox" name="chkAutoHideMessages">
+                    <label>Auto-hide message pane</label>
                     <checked>1</checked>
                   </object>
-                  <flag>wxALL|wxEXPAND</flag>
+                  <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
                   <border>8</border>
                 </object>
               </object>

@@ -17,9 +17,11 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent)
 	XRCCTRL(*this, "chkAssociations", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/environment/check_associations", 1));
 	XRCCTRL(*this, "chkModifiedFiles", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/environment/check_modified_files", 1));
 	XRCCTRL(*this, "chkDebugLog", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/message_manager/has_debug_log", (long int)0));
+	XRCCTRL(*this, "rbAppStart", wxRadioBox)->SetSelection(ConfigManager::Get()->Read("/environment/blank_workspace", (long int)0));
 	XRCCTRL(*this, "rbProjectOpen", wxRadioBox)->SetSelection(ConfigManager::Get()->Read("/project_manager/open_files", (long int)1));
 	XRCCTRL(*this, "rbToolbarSize", wxRadioBox)->SetSelection(ConfigManager::Get()->Read("/environment/toolbar_size", (long int)0));
 	XRCCTRL(*this, "rbEditorInterface", wxRadioBox)->Enable(false); // not implemented
+	XRCCTRL(*this, "chkAutoHideMessages", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/message_manager/auto_hide", 0L));
 }
 
 EnvironmentSettingsDlg::~EnvironmentSettingsDlg()
@@ -37,8 +39,10 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
 		ConfigManager::Get()->Write("/environment/check_associations", XRCCTRL(*this, "chkAssociations", wxCheckBox)->GetValue());
 		ConfigManager::Get()->Write("/environment/check_modified_files", XRCCTRL(*this, "chkModifiedFiles", wxCheckBox)->GetValue());
         ConfigManager::Get()->Write("/message_manager/has_debug_log", XRCCTRL(*this, "chkDebugLog", wxCheckBox)->GetValue());
+        ConfigManager::Get()->Write("/environment/blank_workspace", XRCCTRL(*this, "rbAppStart", wxRadioBox)->GetSelection());
         ConfigManager::Get()->Write("/project_manager/open_files", XRCCTRL(*this, "rbProjectOpen", wxRadioBox)->GetSelection());
         ConfigManager::Get()->Write("/environment/toolbar_size", XRCCTRL(*this, "rbToolbarSize", wxRadioBox)->GetSelection());
+        ConfigManager::Get()->Write("/message_manager/auto_hide", XRCCTRL(*this, "chkAutoHideMessages", wxCheckBox)->GetValue());
 	}
 
 	wxDialog::EndModal(retCode);

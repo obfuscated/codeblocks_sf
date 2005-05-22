@@ -28,6 +28,8 @@
 #include <wx/menu.h>
 #include <wx/imaglist.h>
 #include <wx/log.h>
+#include <wx/laywin.h>
+#include <wx/settings.h>
 
 #include "manager.h"
 #include "messagemanager.h" // class's header file
@@ -56,9 +58,17 @@ void MessageManager::Free()
 	}
 }
 
+BEGIN_EVENT_TABLE(MessageManager, wxNotebook)
+    EVT_NOTEBOOK_PAGE_CHANGED(-1, MessageManager::OnSelChange)
+END_EVENT_TABLE()
+
 // class constructor
 MessageManager::MessageManager(wxWindow* parent)
-    : wxNotebook(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxCLIP_CHILDREN | wxNB_BOTTOM | wxNB_MULTILINE)
+    : wxNotebook(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxCLIP_CHILDREN | wxNB_BOTTOM | wxNB_MULTILINE),
+    m_LockCounter(0),
+    m_OpenSize(150),
+    m_AutoHide(false),
+    m_Open(false)
 {
     SC_CONSTRUCTOR_BEGIN
     
@@ -86,6 +96,11 @@ MessageManager::MessageManager(wxWindow* parent)
     }
 
     ConfigManager::AddConfiguration(_("Message Manager"), "/message_manager");
+    
+    m_OpenSize = ConfigManager::Get()->Read("/main_frame/layout/bottom_block_height", 150);
+    Open();
+    m_AutoHide = ConfigManager::Get()->Read("/message_manager/auto_hide", 0L);
+    LogPage(mltDebug); // default logging page for stream operator
 }
 
 // class destructor
@@ -264,6 +279,31 @@ void MessageManager::SwitchTo(int id)
     DoSwitchTo(m_LogIDs[id]);
 }
 
+MessageLogType MessageManager::LogPage(MessageLogType lt)
+{
+    switch (lt)
+    {
+        case mltDebug:
+            if (m_HasDebugLog && CheckLogType(lt))
+                m_OtherPageLogTarget = m_Logs[lt]->GetPageIndex();
+            else
+                m_OtherPageLogTarget = m_Logs[lt]->GetPageIndex();
+            break;
+        case mltLog:
+            m_OtherPageLogTarget = m_Logs[lt]->GetPageIndex();
+            break;
+        default:
+            break;
+    }
+    return lt;
+}
+
+MessageLogType MessageManager::LogPage(int pageIndex)
+{
+    m_OtherPageLogTarget = pageIndex;
+    return mltOther;
+}
+
 void MessageManager::DoSwitchTo(MessageLog* ml)
 {
     SANITY_CHECK();
@@ -294,4 +334,82 @@ void MessageManager::SetLogImage(MessageLog* log, const wxBitmap& bitmap)
 
     int idx = GetImageList()->Add(bitmap);
     SetPageImage(log->GetPageIndex(), idx);
+}
+
+void MessageManager::EnableAutoHide(bool enable)
+{
+    m_AutoHide = enable;
+    if (m_AutoHide)
+        Close();
+}
+
+bool MessageManager::IsAutoHiding()
+{
+    return m_AutoHide;
+}
+
+int MessageManager::GetOpenSize()
+{
+    return m_Open ? GetSize().y : m_OpenSize;
+}
+
+void MessageManager::Open()
+{
+    if (!m_AutoHide || m_Open)
+        return;
+    m_Open = true;
+    wxSashLayoutWindow* sash = (wxSashLayoutWindow*)GetParent();
+    sash->SetDefaultSize(wxSize(1, m_OpenSize));
+
+	wxLayoutAlgorithm layout;
+    layout.LayoutMDIFrame(Manager::Get()->GetAppWindow());
+}
+
+void MessageManager::Close(bool force)
+{
+    if (!m_AutoHide || !m_Open)
+        return;
+    if (!force && m_LockCounter > 0)
+        return;
+
+    m_LockCounter = 0;
+    wxSashLayoutWindow* sash = (wxSashLayoutWindow*)GetParent();
+    DebugLog("before m_OpenSize=%d", m_OpenSize);
+    m_OpenSize = sash->GetSize().y;
+    sash->SetDefaultSize(wxSize(1, m_OpenSize - m_Logs[mltLog]->GetSize().y));
+    DebugLog("after m_OpenSize=%d, actual=%d", m_OpenSize, m_OpenSize - m_Logs[mltLog]->GetSize().y);
+    m_Open = false;
+
+	wxLayoutAlgorithm layout;
+    layout.LayoutMDIFrame(Manager::Get()->GetAppWindow());
+}
+
+void MessageManager::LockOpen()
+{
+    if (!m_AutoHide)
+        return;
+    Open();
+    ++m_LockCounter;
+}
+
+void MessageManager::Unlock(bool force)
+{
+    if (!m_AutoHide)
+        return;
+    --m_LockCounter;
+    if (force || m_LockCounter <= 0)
+    {
+        m_LockCounter = 0;
+        Close(true);
+    }
+}
+
+void MessageManager::OnSelChange(wxNotebookEvent& event)
+{
+    if (m_AutoHide && event.GetEventObject() == this)
+    {
+        Open();
+    }
+    
+    event.Skip();
 }

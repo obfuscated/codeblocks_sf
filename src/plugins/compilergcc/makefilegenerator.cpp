@@ -244,7 +244,8 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
 void MakefileGenerator::DoAppendCompilerOptions(wxString& cmd, ProjectBuildTarget* target, bool useGlobalOptions)
 {
     wxArrayString opts;
-//    UpdateCompiler(target);
+    if (!m_CompilerSet)
+        return;
 	if (useGlobalOptions)
 		opts = m_CompilerSet->GetCompilerOptions();
 	else
@@ -262,7 +263,8 @@ void MakefileGenerator::DoAppendCompilerOptions(wxString& cmd, ProjectBuildTarge
 void MakefileGenerator::DoAppendLinkerOptions(wxString& cmd, ProjectBuildTarget* target, bool useGlobalOptions)
 {
     CompileOptionsBase* obj;
-//    UpdateCompiler(target);
+    if (!m_CompilerSet)
+        return;
 	if (useGlobalOptions)
         obj = m_CompilerSet;
 	else
@@ -275,6 +277,8 @@ void MakefileGenerator::DoAppendLinkerOptions(wxString& cmd, ProjectBuildTarget*
 
 void MakefileGenerator::DoAppendLinkerLibs(wxString& cmd, ProjectBuildTarget* target, bool useGlobalOptions)
 {
+    if (!m_CompilerSet)
+        return;
     CompileOptionsBase* obj;
 	if (useGlobalOptions)
         obj = m_CompilerSet;
@@ -326,7 +330,8 @@ void MakefileGenerator::DoAppendLinkerLibs(wxString& cmd, ProjectBuildTarget* ta
 void MakefileGenerator::DoAppendIncludeDirs(wxString& cmd, ProjectBuildTarget* target, const wxString& prefix, bool useGlobalOptions)
 {
     wxArrayString opts;
-//    UpdateCompiler(target);
+    if (!m_CompilerSet)
+        return;
 	if (useGlobalOptions)
 		opts = m_CompilerSet->GetIncludeDirs();
 	else
@@ -351,7 +356,8 @@ void MakefileGenerator::DoAppendIncludeDirs(wxString& cmd, ProjectBuildTarget* t
 void MakefileGenerator::DoAppendResourceIncludeDirs(wxString& cmd, ProjectBuildTarget* target, const wxString& prefix, bool useGlobalOptions)
 {
     wxArrayString opts;
-//    UpdateCompiler(target);
+    if (!m_CompilerSet)
+        return;
 	if (useGlobalOptions)
 		opts = m_CompilerSet->GetResourceIncludeDirs();
 	else
@@ -376,7 +382,8 @@ void MakefileGenerator::DoAppendResourceIncludeDirs(wxString& cmd, ProjectBuildT
 void MakefileGenerator::DoAppendLibDirs(wxString& cmd, ProjectBuildTarget* target, const wxString& prefix, bool useGlobalOptions)
 {
     wxArrayString opts;
-//    UpdateCompiler(target);
+    if (!m_CompilerSet)
+        return;
 	if (useGlobalOptions)
 		opts = m_CompilerSet->GetLibDirs();
 	else
@@ -401,6 +408,8 @@ void MakefileGenerator::DoAppendLibDirs(wxString& cmd, ProjectBuildTarget* targe
 void MakefileGenerator::DoGetMakefileIncludes(wxString& buffer, ProjectBuildTarget* target)
 {
     UpdateCompiler(target);
+    if (!m_CompilerSet)
+        return;
     wxString prefix = m_CompilerSet->GetSwitches().includeDirs;
     OptionsRelation relation = target->GetOptionRelation(ortIncludeDirs);
     switch (relation)
@@ -425,6 +434,8 @@ void MakefileGenerator::DoGetMakefileIncludes(wxString& buffer, ProjectBuildTarg
 
 void MakefileGenerator::DoGetMakefileLibs(wxString& buffer, ProjectBuildTarget* target)
 {
+    if (!m_CompilerSet)
+        return;
     OptionsRelation relation = target->GetOptionRelation(ortLinkerOptions);
     switch (relation)
     {
@@ -449,6 +460,8 @@ void MakefileGenerator::DoGetMakefileLibs(wxString& buffer, ProjectBuildTarget* 
 void MakefileGenerator::DoGetMakefileLibDirs(wxString& buffer, ProjectBuildTarget* target)
 {
     UpdateCompiler(target);
+    if (!m_CompilerSet)
+        return;
     wxString prefix = m_CompilerSet->GetSwitches().libDirs;
     OptionsRelation relation = target->GetOptionRelation(ortLibDirs);
     switch (relation)
@@ -473,6 +486,8 @@ void MakefileGenerator::DoGetMakefileLibDirs(wxString& buffer, ProjectBuildTarge
 
 void MakefileGenerator::DoGetMakefileCFlags(wxString& buffer, ProjectBuildTarget* target)
 {
+    if (!m_CompilerSet)
+        return;
     OptionsRelation relation = target->GetOptionRelation(ortCompilerOptions);
     switch (relation)
     {
@@ -496,6 +511,8 @@ void MakefileGenerator::DoGetMakefileCFlags(wxString& buffer, ProjectBuildTarget
 
 void MakefileGenerator::DoGetMakefileLDFlags(wxString& buffer, ProjectBuildTarget* target)
 {
+    if (!m_CompilerSet)
+        return;
 	OptionsRelation relation = target->GetOptionRelation(ortLinkerOptions);
     switch (relation)
     {
@@ -535,6 +552,8 @@ void MakefileGenerator::DoAddMakefileVars(wxString& buffer)
     for (int x = 0; x < targetsCount; ++x)
     {
         ProjectBuildTarget* target = m_Project->GetBuildTarget(x);
+        if (!IsTargetValid(target))
+            continue;
         Compiler* compilerSet = CompilerFactory::Compilers[target->GetCompilerIndex()];
         buffer << target->GetTitle() << "_CC=" << compilerSet->GetPrograms().C << '\n';
         buffer << target->GetTitle() << "_CPP=" << compilerSet->GetPrograms().CPP << '\n';
@@ -802,6 +821,8 @@ void MakefileGenerator::DoAddMakefileOptions(wxString& buffer)
     {
         ProjectBuildTarget* target = m_Project->GetBuildTarget(i);
         UpdateCompiler(target);
+        if (!m_CompilerSet)
+            continue;
 
         buffer << target->GetTitle() + "_GLOBAL_CFLAGS=";
         DoAppendCompilerOptions(buffer, 0L, true);
@@ -1011,8 +1032,8 @@ void MakefileGenerator::DoAddPhonyTargets(wxString& buffer)
     for (int x = 0; x < targetsCount; ++x)
     {
         ProjectBuildTarget* target = m_Project->GetBuildTarget(x);
-        if (!target)
-            break;
+        if (!IsTargetValid(target))
+            continue;
 
         tmp << "depend_" << target->GetTitle() << " "
             << target->GetTitle() << "-before "
@@ -1031,7 +1052,7 @@ void MakefileGenerator::DoAddMakefileTarget_All(wxString& buffer)
     {
         ProjectBuildTarget* target = m_Project->GetBuildTarget(x);
         if (!target)
-            break;
+            continue;
         UpdateCompiler(target);
 
 		if (target->GetIncludeInTargetAll())
@@ -1057,6 +1078,8 @@ void MakefileGenerator::DoAddMakefileTarget_All(wxString& buffer)
 
 void MakefileGenerator::DoAddMakefileCommands(const wxString& desc, const wxString& prefix, const wxArrayString& commands, wxString& buffer)
 {
+    if (!m_CompilerSet)
+        return;
 	if (commands.GetCount())
 	{
 		// run any user-defined commands *before* build
@@ -1167,7 +1190,7 @@ void MakefileGenerator::DoAddMakefileTarget_Depend(wxString& buffer)
     {
         ProjectBuildTarget* target = m_Project->GetBuildTarget(x);
         if (!target)
-            break;
+            continue;
 
 		// create target's options only if it has at least one linkable file
 		if (!IsTargetValid(target))
@@ -1195,9 +1218,9 @@ void MakefileGenerator::DoAddMakefileTarget_Link(wxString& buffer)
     for (int x = 0; x < targetsCount; ++x)
     {
         ProjectBuildTarget* target = m_Project->GetBuildTarget(x);
-        if (!target)
-            break;
         UpdateCompiler(target);
+        if (!IsTargetValid(target))
+            continue;
 
 		buffer << target->GetTitle() << "_DIRS:" << '\n';
         DoAddMakefileCreateDirs(buffer, target, true, false, true);
@@ -1317,6 +1340,8 @@ wxString MakefileGenerator::GetDependencyFile(ProjectFile* pf, ProjectBuildTarge
     d_filename.SetExt("d");
     wxString d_file;
     UpdateCompiler(target);
+    if (!m_CompilerSet)
+        return d_file;
     if (m_CompilerSet->GetSwitches().needDependencies)
     {
         d_file = UnixFilename(d_filename.GetFullPath());
@@ -1338,6 +1363,8 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
         if (!target)
             break;
         UpdateCompiler(target);
+        if (!IsTargetValid(target))
+            continue;
 
 #ifdef __WXMSW__
         wxString resources;
@@ -1514,6 +1541,9 @@ void MakefileGenerator::DoPrepareValidTargets()
 
 bool MakefileGenerator::IsTargetValid(ProjectBuildTarget* target)
 {
+    UpdateCompiler(target);
+    if (!m_CompilerSet || !target)
+        return false;
     bool hasBin = target->GetTargetType() != ttCommandsOnly; // is not "commands-only" target
     bool hasCmds = !target->GetCommandsAfterBuild().IsEmpty() ||
                     !target->GetCommandsBeforeBuild().IsEmpty();

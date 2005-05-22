@@ -132,6 +132,7 @@ void ProjectOptionsDlg::DoTargetChange()
     if (cmb && txt && browse && txtDeps && btnDeps)
     {
         cmb->SetSelection(target->GetTargetType());
+        Compiler* compiler = CompilerFactory::Compilers[target->GetCompilerIndex()];
         switch ((TargetType)cmb->GetSelection())
         {
             case ttConsoleOnly:
@@ -147,13 +148,13 @@ void ProjectOptionsDlg::DoTargetChange()
                 txtO->SetValue(target->GetObjectOutput());
                 txtO->Enable(true);
                 txtD->SetValue(target->GetDepsOutput());
-                txtD->Enable(CompilerFactory::Compilers[target->GetCompilerIndex()]->GetSwitches().buildMethod == cbmUseMake);
+                txtD->Enable(compiler && compiler->GetSwitches().buildMethod == cbmUseMake);
                 browse->Enable(true);
                 browseW->Enable((TargetType)cmb->GetSelection() == ttExecutable ||
                                 (TargetType)cmb->GetSelection() == ttConsoleOnly ||
                                 (TargetType)cmb->GetSelection() == ttDynamicLib);
                 browseO->Enable(true);
-                browseD->Enable(CompilerFactory::Compilers[target->GetCompilerIndex()]->GetSwitches().buildMethod == cbmUseMake);
+                browseD->Enable(compiler && compiler->GetSwitches().buildMethod == cbmUseMake);
                 txtDeps->SetValue(target->GetExternalDeps());
                 btnDeps->Enable(true);
                 break;

@@ -454,6 +454,7 @@ void CompilerGCC::SetupEnvironment()
         return;
 
     wxString sep = wxFileName::GetPathSeparator();
+    m_EnvironmentMsg.Clear();
     
 	wxPathList pathList;
 	wxString path;
@@ -479,10 +480,13 @@ void CompilerGCC::SetupEnvironment()
             if (compilers.Index(idx) != wxNOT_FOUND || !CompilerFactory::CompilerIndexOK(idx))
                 continue;
             compilers.Add(idx);
+            Compiler* compiler = CompilerFactory::Compilers[idx];
 
-            wxString masterPath = CompilerFactory::Compilers[idx]->GetMasterPath();
-            wxString gcc = CompilerFactory::Compilers[idx]->GetPrograms().C;
-            const wxArrayString& extraPaths = CompilerFactory::Compilers[idx]->GetExtraPaths();
+            wxString masterPath = compiler->GetMasterPath();
+            while (masterPath.Last() == '\\' || masterPath.Last() == '/')
+                masterPath.RemoveLast();
+            wxString gcc = compiler->GetPrograms().C;
+            const wxArrayString& extraPaths = compiler->GetExtraPaths();
     
             pathList.Add(masterPath + sep + "bin");
             for (unsigned int i = 0; i < extraPaths.GetCount(); ++i)
@@ -501,12 +505,11 @@ void CompilerGCC::SetupEnvironment()
                 else if (wxFileExists(masterPath + sep + gcc))
                     binPath = masterPath;
             }
-            
+
             if (binPath.IsEmpty() || !pathList.Member(wxPathOnly(binPath)))
             {
-                m_EnvironmentMsg = _("Can't find compiler executable in your search path. "
-                                    "Most probably, you will not be able to compile anything...");
-                Manager::Get()->GetMessageManager()->DebugLog(_("Can't find compiler executable in your search path..."));
+                m_EnvironmentMsg << _("Can't find compiler executable in your search path for ") << compiler->GetName() << '\n';
+                Manager::Get()->GetMessageManager()->DebugLog(_("Can't find compiler executable in your search path (%s)..."), compiler->GetName().c_str());
             }
             else
             {
@@ -684,6 +687,9 @@ int CompilerGCC::DoRunQueue()
             return 0;
         }
     }
+
+    // if message manager is auto-hiding, this will lock it open
+    Manager::Get()->GetMessageManager()->LockOpen();
 
 	bool pipe = true;
 	int flags = wxEXEC_ASYNC;
@@ -1000,6 +1006,8 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 	if (!CompilerValid(target))
 		return -1;
 
+    Manager::Get()->GetMessageManager()->Open();
+
 	if (!target)
 	{
 		if (m_TargetIndex == -1) // only ask for target if target 'all' is selected
@@ -1083,6 +1091,8 @@ int CompilerGCC::Clean(ProjectBuildTarget* target)
 	if (!CompilerValid(target))
 		return -1;
 
+    Manager::Get()->GetMessageManager()->Open();
+
     wxSetWorkingDirectory(m_Project->GetBasePath());
     if (UseMake(target))
     {
@@ -1105,6 +1115,7 @@ int CompilerGCC::Clean(ProjectBuildTarget* target)
             wxRemoveFile(clean[i]);
         }
         Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Done."));
+        Manager::Get()->GetMessageManager()->Close();
     }
     return 0;
 }
@@ -1114,6 +1125,8 @@ int CompilerGCC::DistClean(ProjectBuildTarget* target)
 	DoPrepareQueue();
 	if (!CompilerValid(target))
 		return -1;
+
+    Manager::Get()->GetMessageManager()->Open();
 
     wxSetWorkingDirectory(m_Project->GetBasePath());
     if (UseMake(target))
@@ -1137,6 +1150,7 @@ int CompilerGCC::DistClean(ProjectBuildTarget* target)
             wxRemoveFile(clean[i]);
         }
         Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Done."));
+        Manager::Get()->GetMessageManager()->Close();
     }
     return 0;
 }
@@ -1146,6 +1160,8 @@ int CompilerGCC::CreateDist()
 	DoPrepareQueue();
 	if (!CompilerValid())
 		return -1;
+
+    Manager::Get()->GetMessageManager()->Open();
 
     wxString cmd;
     if (UseMake())
@@ -1169,6 +1185,8 @@ void CompilerGCC::OnExportMakefile(wxCommandEvent& event)
 	if (makefile.IsEmpty())
 		return;
     
+    Manager::Get()->GetMessageManager()->Open();
+
     wxSetWorkingDirectory(m_Project->GetBasePath());
     if (UseMake())
     {
@@ -1190,6 +1208,8 @@ int CompilerGCC::Compile(ProjectBuildTarget* target)
 	DoPrepareQueue();
 	if (!m_Project || !CompilerValid(target))
         return -2;
+
+    Manager::Get()->GetMessageManager()->Open();
 
     wxString cmd;
     wxSetWorkingDirectory(m_Project->GetBasePath());
@@ -1216,6 +1236,8 @@ int CompilerGCC::Rebuild(ProjectBuildTarget* target)
 	DoPrepareQueue();
 	if (!CompilerValid(target))
 		return -1;
+
+    Manager::Get()->GetMessageManager()->Open();
 
     if (UseMake(target))
     {
@@ -1248,6 +1270,7 @@ int CompilerGCC::Rebuild(ProjectBuildTarget* target)
 
 int CompilerGCC::CompileAll()
 {
+    Manager::Get()->GetMessageManager()->Open();
     DoPrepareMultiProjectCommand(mpjCompile);
     DoPrepareQueue();
     ClearLog();
@@ -1257,6 +1280,7 @@ int CompilerGCC::CompileAll()
 
 int CompilerGCC::RebuildAll()
 {
+    Manager::Get()->GetMessageManager()->Open();
     DoPrepareMultiProjectCommand(mpjRebuild);
     DoPrepareQueue();
     ClearLog();
@@ -1299,6 +1323,8 @@ int CompilerGCC::CompileFile(const wxString& file)
 	DoPrepareQueue();
 	if (!CompilerValid())
 		return -1;
+
+    Manager::Get()->GetMessageManager()->Open();
 
     wxSetWorkingDirectory(m_Project->GetBasePath());
     if (UseMake())
@@ -1903,6 +1929,8 @@ void CompilerGCC::OnJobEnd()
                     prjMan->SetProject(m_BackupActiveProject, false);
                     AskForActiveProject();
                     DoDeleteTempMakefile();
+                    // if message manager is auto-hiding, this will unlock it
+                    Manager::Get()->GetMessageManager()->Close(true);
                 }
             }
             else
@@ -1910,6 +1938,9 @@ void CompilerGCC::OnJobEnd()
                 m_Queue.Clear();
                 m_QueueIndex = 0;
                 DoDeleteTempMakefile();
+
+                // if message manager is auto-hiding, this will unlock it
+                Manager::Get()->GetMessageManager()->Close(true);
             }
         }
         else
@@ -1919,6 +1950,7 @@ void CompilerGCC::OnJobEnd()
             m_QueueIndex = 0;
             if (m_Errors.GetCount())
             {
+                Manager::Get()->GetMessageManager()->Open();
                 Manager::Get()->GetMessageManager()->SwitchTo(m_ListPageIndex);
                 DoGotoNextError();
             }

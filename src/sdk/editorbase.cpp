@@ -25,6 +25,7 @@ const wxString& EditorBase::GetTitle()
 void EditorBase::SetTitle(const wxString& newTitle)
 {
     m_WinTitle = newTitle;
+    wxMDIChildFrame::SetTitle(newTitle);
 }
 
 wxMDIParentFrame* EditorBase::GetParent()

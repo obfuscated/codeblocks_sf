@@ -180,7 +180,10 @@ void CodeBlocksApp::InitFrame()
     frame->Show(TRUE);
     SetTopWindow(frame);
     if (ParseCmdLine(frame) == 0)
-		Manager::Get()->GetProjectManager()->LoadWorkspace();
+    {
+        if (ConfigManager::Get()->Read("/environment/blank_workspace", 0L) == 0)
+            Manager::Get()->GetProjectManager()->LoadWorkspace();
+    }
 
     frame->ShowTips(); // this func checks if the user wants tips, so no need to check here
 }
