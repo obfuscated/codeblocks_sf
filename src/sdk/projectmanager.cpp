@@ -855,6 +855,8 @@ bool ProjectManager::CloseWorkspace()
         delete m_pWorkspace;
         m_pWorkspace = 0;
     }
+    else
+        return CloseAllProjects(false);
     return true;
 }
 

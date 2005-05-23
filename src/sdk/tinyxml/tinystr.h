@@ -23,7 +23,7 @@ distribution.
 */
 
 #include "tinyxml.h"
-
+#include "../settings.h"
 
 #ifndef TIXML_USE_STL
 
@@ -42,7 +42,7 @@ distribution.
    The buffer allocation is made by a simplistic power of 2 like mechanism : if we increase
    a string and there's no more room, we allocate a buffer twice as big as we need.
 */
-class TiXmlString
+class DLLIMPORT TiXmlString
 {
   public :
     // TiXmlString constructor, based on a string
@@ -213,7 +213,7 @@ class TiXmlString
    TiXmlOutStream is an emulation of std::ostream. It is based on TiXmlString.
    Only the operators that we need for TinyXML have been developped.
 */
-class TiXmlOutStream : public TiXmlString
+class DLLIMPORT TiXmlOutStream : public TiXmlString
 {
 public :
     TiXmlOutStream () : TiXmlString () {}

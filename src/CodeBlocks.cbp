@@ -18,6 +18,10 @@
 				<Option type="2"/>
 				<Option compiler="0"/>
 				<Option projectResourceIncludeDirsRelation="2"/>
+				<Compiler>
+					<Add option="-DEXPORT_LIB"/>
+					<Add option="-D_USRDLL"/>
+				</Compiler>
 			</Target>
 			<Target title="sdk">
 				<Option output="devel\codeblocks.dll"/>
