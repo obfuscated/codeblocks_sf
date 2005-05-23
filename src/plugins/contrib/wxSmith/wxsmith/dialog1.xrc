@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxDialog" name="dlgNewClass">
+    <title>Create new class</title>
+    <centered>1</centered>
+    <object class="wxGridSizer" name="MainSizer">
+    <cols>2</cols>
+       <object class="wxButton" name="TestButton">
+         <label>Button no.1</Label>
+       </object>
+       <object class="wxButton" name="TestButton">
+         <label>Button no.2</Label>
+       </object>
+       <object class="wxButton" name="TestButton">
+         <label>Button no.3</Label>
+       </object>
+    <object class="wxGridSizer" name="MainSizer">
+       <object class="wxButton" name="TestButton">
+         <label>Button no.4</Label>
+       </object>
+       <object class="wxButton" name="TestButton">
+         <label>Button no.4</Label>
+       </object>
+    </object>
+    </object>
+  </object>
+</resource>
