@@ -62,7 +62,6 @@ class wxSmith : public cbPlugin
         wxTreeCtrl* ResourceBrowser;
         wxScrolledWindow* PropertiesPanel;
         wxScrolledWindow* EventsPanel;
-        wxPanel* Palette;
 
         /* Here's bridge between current C::B project and wxSmith projects */
         

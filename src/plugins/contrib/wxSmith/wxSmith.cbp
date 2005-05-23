@@ -10,18 +10,19 @@
 		<Build>
 			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\wxsmith.dll"/>
-				<Option working_dir="..\..\..\devel\share\CodeBlocks\plugins"/>
-				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmith"/>
-				<Option deps_output="..\..\..\.deps\plugins\contrib\wxSmith"/>
+				<Option working_dir="..\..\..\devel"/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option compiler="0"/>
-				<Option host_application="..\..\..\codeblocks.exe"/>
+				<Option host_application="./codeblocks.exe"/>
 			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall"/>
 			<Add option="-g"/>
+			<Add option="-ggdb"/>
 			<Add option="-D__GNUWIN32__"/>
 			<Add option="-DWXUSINGDLL"/>
 			<Add option="-DBUILDING_PLUGIN"/>
@@ -30,7 +31,6 @@
 		<Linker>
 			<Add library="codeblocks"/>
 			<Add library="wxmsw26"/>
-			<Add directory="..\..\..\devel"/>
 		</Linker>
 		<Unit filename="defwidgets\wxsbutton.cpp">
 			<Option compilerVar="CPP"/>
@@ -239,6 +239,16 @@
 			<Option target="default"/>
 		</Unit>
 		<Unit filename="wxsmith\maindialog.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="wxspalette.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="wxspalette.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

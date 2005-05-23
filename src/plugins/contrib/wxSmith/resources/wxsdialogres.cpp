@@ -5,8 +5,8 @@
 #include <manager.h>
 
 
-wxsDialogRes::wxsDialogRes(wxSmith* Plugin,const wxString& Class, const wxString& Xrc, const wxString& Src,const wxString& Head):
-    wxsResource(Plugin),
+wxsDialogRes::wxsDialogRes(wxsProject* Project,const wxString& Class, const wxString& Xrc, const wxString& Src,const wxString& Head):
+    wxsResource(Project),
     ClassName(Class),
     XrcFile(Xrc),
     SrcFile(Src),
@@ -17,7 +17,9 @@ wxsDialogRes::wxsDialogRes(wxSmith* Plugin,const wxString& Class, const wxString
 
 wxsDialogRes::~wxsDialogRes()
 {
-    wxsWidgetFactory::Get()->Kill(Dialog);
+// TODO (SpOoN#1#): Need to kill dialog but this caused crashes
+//    wxsWidgetFactory::Get()->Kill(Dialog);
+    GetProject()->DeleteDialog(this);
 }
 
 wxsEditor* wxsDialogRes::CreateEditor()

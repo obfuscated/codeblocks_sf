@@ -1,11 +1,16 @@
 #include "wxsresource.h"
 
-wxsResource::wxsResource(wxSmith* _Plugin):  Editor(NULL), Plugin(_Plugin)
+#include "wxsproject.h"
+
+#include <wx/msgdlg.h>
+
+wxsResource::wxsResource(wxsProject* _Project):  Editor(NULL), Project(_Project)
 {
 }
 
 wxsResource::~wxsResource()
 {
+    EditClose();
 }
 
 void wxsResource::EditOpen()
@@ -25,7 +30,7 @@ void wxsResource::EditOpen()
 void wxsResource::EditClose()
 {
     if ( !Editor ) return;
-    if ( Editor->QueryClose() ) Editor->Close();
+    Editor->Close();
 }
 
 void wxsResource::EditorSaysHeIsClosing()
@@ -33,4 +38,9 @@ void wxsResource::EditorSaysHeIsClosing()
     assert ( Editor != NULL );
     assert ( Editor->GetResource() == NULL || Editor->GetResource() == this );
     Editor = NULL;
+}
+
+wxSmith* wxsResource::GetPlugin()
+{
+    return Project ? Project->GetPlugin() : NULL;
 }

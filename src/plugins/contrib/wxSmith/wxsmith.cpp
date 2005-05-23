@@ -27,7 +27,7 @@
 #include "wxspropertiesman.h"
 #include "wxsproject.h"
 #include "wxswidgetfactory.h"
-
+#include "wxspalette.h"
 
 
 class wxsResourceTree: public wxTreeCtrl
@@ -116,8 +116,7 @@ void wxSmith::OnAttach()
 
         wxSizer* Sizer = new wxGridSizer(1);
         ResourceBrowser = new wxsResourceTree(ResourcesContainer,this);
-        ResourceBrowser->AddRoot("Resources");
-        ResourceBrowser->AppendItem(ResourceBrowser->GetRootItem(),"Resources");
+        ResourceBrowser->AddRoot(wxT("Resources"));
         Sizer->Add(ResourceBrowser,0,wxGROW);
         ResourcesContainer->SetSizer(Sizer);
         // Adding notebook and two pages at the left-bottom part
@@ -127,11 +126,11 @@ void wxSmith::OnAttach()
         PropertiesPanel->SetScrollRate(0,1);
         EventsPanel = new wxScrolledWindow(LDNotebook);
         EventsPanel->SetScrollRate(0,1);
-        LDNotebook->AddPage(PropertiesPanel,"Properties");
-        LDNotebook->AddPage(EventsPanel,"Events");
+        LDNotebook->AddPage(PropertiesPanel,wxT("Properties"));
+        LDNotebook->AddPage(EventsPanel,wxT("Events"));
         Sizer->Add(LDNotebook,0,wxGROW);
         PropertiesContainer->SetSizer(Sizer);
-        Notebook->AddPage(LeftSplitter,"Resources");
+        Notebook->AddPage(LeftSplitter,wxT("Resources"));
         
         wxsPropertiesMan::Get().PropertiesPanel = PropertiesPanel;
         
@@ -139,14 +138,16 @@ void wxSmith::OnAttach()
 
         MessageManager* Messages = Manager::Get()->GetMessageManager();
         
+        if ( ! wxsStdManager.RegisterInFactory() )
+        {
+            DebLog("Couldn't register standard widget's factory - this plugin will be useless");
+        }
+        // TODO (SpOoN#1#): Add other widgets
+        
         if ( Messages )
         {
-            Palette = new wxPanel(Messages,-1);
-            Messages->AddPage(Palette,"Widgets");
-        }
-        else
-        {
-            Palette = NULL;
+            wxWindow* Palette = new wxsPalette((wxWindow*)Messages,this);
+            Messages->AddPage(Palette,wxT("Widgets"));
         }
 	}
 	else
@@ -159,33 +160,18 @@ void wxSmith::OnAttach()
 	
 	// Registering widget factories
 	
-	if ( ! wxsStdManager.RegisterInFactory() )
-	{
-        DebLog("Couldn't register standard widget's factory - this plugin will be useless");
-	}
 	
-	// Dumping registered widgets
-	
-	DebLog("Found following widgets in factory:");
-	
-	for ( const wxsWidgetInfo* Info = wxsWidgetFactory::Get()->GetFirstInfo();
-          Info;
-          Info = wxsWidgetFactory::Get()->GetNextInfo() )
-    {
-        DebLog(" * %s",Info->Name);
-    }
 }
 
 void wxSmith::OnRelease(bool appShutDown)
 {
-// TODO (SpOoN#1#): Following code makes crash wile exiting C::B, find out why
-/*
+    /*
     for ( ProjectMapI i = ProjectMap.begin(); i!=ProjectMap.end(); ++i )
     {
         delete (*i).second;
     }
+    */
   
-*/
     ProjectMap.clear();
 }
 
@@ -217,7 +203,7 @@ void wxSmith::BuildToolBar(wxToolBar* toolBar)
 
 void wxSmith::OnProjectClose(CodeBlocksEvent& event)
 {
-    DebLog("Closing project");
+    DebLog("Closing project : %s",event.GetProject()->GetTitle().c_str());
     cbProject* Proj = event.GetProject();
     ProjectMapI i = ProjectMap.find(Proj);
     if ( i == ProjectMap.end() ) return;
@@ -227,7 +213,7 @@ void wxSmith::OnProjectClose(CodeBlocksEvent& event)
 
 void wxSmith::OnProjectOpen(CodeBlocksEvent& event)
 {
-    DebLog("Opening project");
+    DebLog("Opening project : %s",event.GetProject()->GetTitle().c_str());
     wxsProject* NewProj = new wxsProject(this);
     NewProj->BindProject(event.GetProject());
     ProjectMap[event.GetProject()] = NewProj;
@@ -254,7 +240,7 @@ void wxSmith::OnSelectResource(wxsResourceTreeData* Data)
 
 void wxSmith::OnSelectWidget(wxsResourceTreeData* Data)
 {
-    DebLog("Widget selected");
+    wxsPropertiesMan::Get().SetActiveWidget(Data->Widget);
 }
 
 void wxSmith::OnSelectDialog(wxsResourceTreeData* Data)

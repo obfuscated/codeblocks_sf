@@ -100,6 +100,12 @@ class wxsProject
         
 	private:
 	
+        /** Deleting dialog resource from project
+         *
+         * This should be called from Resource's destructor
+         */
+        void DeleteDialog(wxsDialogRes* Resource);
+        
         /** Function building tree for resources in this project */
         void BuildTree(wxTreeCtrl* Tree,wxTreeItemId WhereToAdd);        
         
@@ -137,6 +143,10 @@ class wxsProject
         DialogListT Dialogs;
         FrameListT Frames;
         PanelListT Panels;
+        
+        bool DuringClear;               ///< Set to true wneh inside Clear call
+        
+        friend class wxsDialogRes;
 };
 
 

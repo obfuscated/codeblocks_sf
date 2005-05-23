@@ -10,7 +10,7 @@ class wxsDialogRes : public wxsResource
 	public:
 	
         /** Ctor */
-		wxsDialogRes(wxSmith* Plugin,const wxString& Class, const wxString& Xrc, const wxString& Src,const wxString& Head);
+		wxsDialogRes(wxsProject* Project,const wxString& Class, const wxString& Xrc, const wxString& Src,const wxString& Head);
 		
 		/** Dctor */
 		virtual ~wxsDialogRes();

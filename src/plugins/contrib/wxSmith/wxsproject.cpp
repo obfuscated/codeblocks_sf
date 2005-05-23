@@ -17,7 +17,7 @@
 #define XML_HFILE_STR    "header_file"
 
 
-wxsProject::wxsProject(wxSmith* _Plugin):  Integration(NotBinded), Project(NULL), Plugin(_Plugin)
+wxsProject::wxsProject(wxSmith* _Plugin):  Integration(NotBinded), Project(NULL), Plugin(_Plugin), DuringClear(false)
 {}
 
 wxsProject::~wxsProject()
@@ -84,7 +84,9 @@ wxsProject::IntegrationState wxsProject::BindProject(cbProject* Proj)
 
 inline void wxsProject::Clear()
 {
-    //Plugin->GetResourceTree()->Delete(TreeItem);
+    DuringClear = true;
+    
+    if ( Project ) Plugin->GetResourceTree()->Delete(TreeItem);
     
     Integration = NotBinded;
     Project = NULL;
@@ -111,6 +113,8 @@ inline void wxsProject::Clear()
     Dialogs.clear();
     Frames.clear();
     Panels.clear();
+    
+    DuringClear = false;
 }
 
 void wxsProject::BuildTree(wxTreeCtrl* Tree,wxTreeItemId WhereToAdd)
@@ -260,7 +264,7 @@ void wxsProject::AddDialogResource(
     
     /* Creating dialog */
 
-    wxsDialogRes* Res = new wxsDialogRes(GetPlugin(),ClassName,FileName,SourceName,HeaderName);
+    wxsDialogRes* Res = new wxsDialogRes(this,ClassName,FileName,SourceName,HeaderName);
 
     
     if ( ! (Res->GetDialog().XmlLoad(Dialog))  )
@@ -323,7 +327,7 @@ TiXmlDocument* wxsProject::GenerateXml()
 
 void wxsProject::SaveProject()
 {
-    TiXmlDocument* Doc = GenerateXml();
+//    TiXmlDocument* Doc = GenerateXml();
 /*
     if ( Doc )
     {
@@ -347,4 +351,16 @@ void wxsProject::BuildWidgetTree(wxTreeCtrl* Tree,wxTreeItemId Id,wxsWidget* Wid
     {
         BuildWidgetTree(Tree,SubId,Widget->GetChild(i));
     }
+}
+
+void wxsProject::DeleteDialog(wxsDialogRes* Resource)
+{
+    if ( DuringClear ) return;
+    
+    DialogListI i;
+    for ( i=Dialogs.begin(); i!=Dialogs.end(); ++i ) if ( *i == Resource ) break;
+    
+    if ( i == Dialogs.end() ) return;
+    
+    Dialogs.erase(i);
 }

@@ -5,6 +5,12 @@
 #include "properties/wxsstyleproperty.h"
 #include "wxswidgetfactory.h"
 
+wxsWidget::~wxsWidget()
+{
+    if ( Preview    ) KillPreview();
+    if ( Properties ) KillProperties();
+}
+
 void wxsWidget::AddDefaultProperties(BasePropertiesType pType)
 {
     // Adding standard items

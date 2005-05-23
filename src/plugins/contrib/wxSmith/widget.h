@@ -190,11 +190,7 @@ class wxsWidget
             
         
         /** Destructor */
-        virtual ~wxsWidget() 
-        {
-            if ( Preview    ) KillPreview();
-            if ( Properties ) KillProperties();
-        }
+        virtual ~wxsWidget(); 
         
         /** Gettign widget's info */
         virtual const wxsWidgetInfo& GetInfo() = 0;

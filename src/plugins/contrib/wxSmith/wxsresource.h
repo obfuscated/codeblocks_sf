@@ -3,6 +3,7 @@
 
 #include "wxseditor.h"
 
+class wxsProject;
 class wxSmith;
 
 class wxsResource
@@ -10,13 +11,16 @@ class wxsResource
 	public:
 	
         /** Ctor */
-		wxsResource(wxSmith* Plugin);
+		wxsResource(wxsProject* Project);
 		
 		/** Dctor */
 		virtual ~wxsResource();
 		
+		/** Getting current project */
+		inline wxsProject* GetProject() { return Project; }
+		
 		/** Getting current wxSmith plugin */
-		inline wxSmith* GetPlugin() { return Plugin; }
+		wxSmith* GetPlugin();
 		
         /** Function opening this resource in eeditor window,
          *  if editor window already exists, it must be activated
@@ -42,7 +46,7 @@ class wxsResource
         friend class wxsEditor;
     
         wxsEditor* Editor;
-        wxSmith* Plugin;
+        wxsProject* Project;
 };
 
 #endif // WXSRESOURCE_H
