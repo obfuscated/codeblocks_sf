@@ -1900,7 +1900,14 @@ void MainFrame::OnDragSash(wxSashEvent& event)
 
 	wxRect rect = event.GetDragRect();
 	if (event.GetId() == idLeftSash)
-		m_pLeftSash->SetDefaultSize(wxSize(rect.x, 0)); // resize left sash
+	{
+        // resize left sash
+        // take into account the position (left or right)
+        if (m_pLeftSash->GetAlignment() == wxLAYOUT_LEFT)
+            m_pLeftSash->SetDefaultSize(wxSize(rect.x, 0));
+        else
+            m_pLeftSash->SetDefaultSize(wxSize(GetClientSize().GetWidth() - rect.x, 0));
+    }
 	else if (event.GetId() == idBottomSash)
 		m_pBottomSash->SetDefaultSize(wxSize(0, GetClientSize().GetHeight() - rect.y)); // resize bottom sash
 	DoUpdateLayout();
