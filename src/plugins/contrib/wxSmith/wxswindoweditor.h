@@ -30,13 +30,15 @@ class wxsWindowEditor : public wxsEditor
          *  sizers because given widget changed it's size
          */
         void PreviewReshaped();
-		
+
     protected:
     
         /** Unbinding from resource - this function is killing preview objects */
         virtual void MyUnbind();
 
 	private:
+	
+        wxScrolledWindow* DrawArea;
 	
         void OnMouseClick(wxMouseEvent& event);
         

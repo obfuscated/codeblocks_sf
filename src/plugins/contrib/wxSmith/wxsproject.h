@@ -109,9 +109,6 @@ class wxsProject
         /** Function building tree for resources in this project */
         void BuildTree(wxTreeCtrl* Tree,wxTreeItemId WhereToAdd);        
         
-        /** Function Building tree from given widget */
-        static void BuildWidgetTree(wxTreeCtrl* Tree,wxTreeItemId WhereToAdd,wxsWidget* Widget);
-        
         /** Diagnostic function dumping structure of given xml tree to wxTreeCtrl */
         static void DumpXml(const TiXmlNode* Elem, wxTreeCtrl* Tree,wxTreeItemId id);
 

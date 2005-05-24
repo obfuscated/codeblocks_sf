@@ -1,5 +1,7 @@
 #include "wxspropertiesman.h"
 
+#include "wxspalette.h"
+
 wxsPropertiesMan::wxsPropertiesMan():
     CurrentWidget(NULL),
     PropertiesPanel(NULL)
@@ -17,6 +19,8 @@ void wxsPropertiesMan::SetActiveWidget(wxsWidget* Widget)
     
     if ( CurrentWidget == Widget ) return;
 
+    PropertiesPanel->Freeze();
+    
     if ( CurrentWidget )
     {
         CurrentWidget->KillProperties();
@@ -36,11 +40,28 @@ void wxsPropertiesMan::SetActiveWidget(wxsWidget* Widget)
         NewSizer->Add(Wnd,0,wxGROW);
         PropertiesPanel->SetSizer(NewSizer);
         PropertiesPanel->Layout();
-     }
+        
+        int itMask = 0;
+        
+        if ( CurrentWidget->GetParent() )
+        {
+            itMask |= wxsPalette::itBefore | wxsPalette::itAfter;
+        }
+        
+        if ( CurrentWidget->IsContainer() )
+        {
+            itMask |= wxsPalette::itInto;
+        }
+        
+        wxsPalette::Get()->SetInsertionTypeMask(itMask);
+    }
+    else
+    {
+        wxsPalette::Get()->SetInsertionTypeMask(0);
+    }
+    
+    PropertiesPanel->Thaw();
 }
 
 /** Singleton definition */
-
 wxsPropertiesMan wxsPropertiesMan::Singleton;
-
-

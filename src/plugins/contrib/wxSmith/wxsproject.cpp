@@ -125,15 +125,13 @@ void wxsProject::BuildTree(wxTreeCtrl* Tree,wxTreeItemId WhereToAdd)
 
     for ( DialogListI i = Dialogs.begin(); i!=Dialogs.end(); ++i )
     {
-        BuildWidgetTree (
+        (*i)->GetDialog().BuildTree(
             Tree,
             Tree->AppendItem(
                 DialogId,
                 (*i)->GetClassName(),
                 -1, -1,
-                new wxsResourceTreeData(*i) ),
-            &(*i)->GetDialog()
-            );
+                new wxsResourceTreeData(*i) ) );
     }
 
 }
@@ -335,22 +333,6 @@ void wxsProject::SaveProject()
         delete Doc;
     }
 */
-}
-
-void wxsProject::BuildWidgetTree(wxTreeCtrl* Tree,wxTreeItemId Id,wxsWidget* Widget)
-{
-    if ( !Widget ) return;
-    
-    wxString Name = Widget->GetInfo().Name;
-
-    // TODO (SpOoN#1#): Add icons
-    wxTreeItemId SubId = Tree->AppendItem(Id,Name,-1,-1,new wxsResourceTreeData(Widget));
-    
-    int SubCnt = Widget->GetChildCount();
-    for ( int i=0; i<SubCnt; i++ )
-    {
-        BuildWidgetTree(Tree,SubId,Widget->GetChild(i));
-    }
 }
 
 void wxsProject::DeleteDialog(wxsDialogRes* Resource)

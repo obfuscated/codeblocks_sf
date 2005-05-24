@@ -6,6 +6,7 @@
 
 
 class wxSmith;
+class wxsWidget;
 
 class wxsPalette : public wxPanel
 {
@@ -54,6 +55,18 @@ class wxsPalette : public wxPanel
         
         /** Function inserting widget with giwen name */
         void InsertRequest(const char* Name);
+        
+        /** Function adding new widget before given one */
+        void InsertBefore(wxsWidget* NewWidget,wxsWidget* Reference);
+        
+        /** Function adding new widget after given one */
+        void InsertAfter(wxsWidget* NewWidget,wxsWidget* Reference);
+        
+        /** Function adding new widget into given one */
+        void InsertInto(wxsWidget* NewWidget,wxsWidget* Reference);
+        
+        /** Function deleting currently selected widget */
+        void DeleteRequest();
         
         /* Event-processing functions */
         void OnRadio(wxCommandEvent& event);

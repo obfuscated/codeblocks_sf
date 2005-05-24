@@ -34,6 +34,9 @@ class wxsGridSizer : public wxsContainer
         /** Updating preview */
         virtual void MyUpdatePreview();
         
+        /** Properties loading codee */
+        virtual void CreateObjectProperties();
+        
 	private:
 	
         int Cols;

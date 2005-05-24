@@ -49,7 +49,7 @@ class wxsFramePreview:
         wxsFrame* Frame;
         void OnMouse(wxMouseEvent& event)
         {
-            wxsPropertiesMan::Get().SetActiveWidget(Frame);
+            wxsPropertiesMan::Get()->SetActiveWidget(Frame);
             event.Skip();
         }
         

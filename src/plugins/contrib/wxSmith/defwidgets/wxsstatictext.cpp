@@ -42,7 +42,7 @@ class wxsStaticTextPreview: public wxStaticText
     
         void OnLClick(wxMouseEvent& event)
         {
-            wxsPropertiesMan::Get().SetActiveWidget(Object);
+            wxsPropertiesMan::Get()->SetActiveWidget(Object);
             event.Skip();
         }
         

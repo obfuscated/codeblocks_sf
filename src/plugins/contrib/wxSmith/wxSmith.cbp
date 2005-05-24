@@ -17,6 +17,9 @@
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option host_application="./codeblocks.exe"/>
+				<Compiler>
+					<Add option="-g"/>
+				</Compiler>
 			</Target>
 		</Build>
 		<Compiler>
@@ -31,6 +34,7 @@
 		<Linker>
 			<Add library="codeblocks"/>
 			<Add library="wxmsw26"/>
+			<Add directory="..\..\..\devel"/>
 		</Linker>
 		<Unit filename="defwidgets\wxsbutton.cpp">
 			<Option compilerVar="CPP"/>

@@ -8,10 +8,11 @@ class wxsContainer : public wxsWidget
 {
 	public:
 		wxsContainer(wxsWidgetManager* Manager,bool IsWindow = false,int MaxChildren = -1,BasePropertiesType pType=propNone):
-             wxsWidget(Manager,IsWindow,MaxChildren,pType)
+             wxsWidget(Manager,IsWindow,MaxChildren,pType),
+             DeletingAll(false)
         {};
         
-		virtual ~wxsContainer() {};
+		virtual ~wxsContainer();
 		
         /** Getting number of internal widgets */
         virtual int GetChildCount() { return (int)Widgets.size(); }
@@ -44,6 +45,7 @@ class wxsContainer : public wxsWidget
          */
         virtual bool DelChildId(int Id)
         {
+            if ( DeletingAll ) return false;
             if ( Id<0 || Id>=(int)Widgets.size() ) return false;
             Widgets.erase(Widgets.begin()+Id);
             return true;
@@ -56,6 +58,7 @@ class wxsContainer : public wxsWidget
          */
         virtual bool DelChild(wxsWidget* Widget)
         {
+            if ( DeletingAll ) return false;
             for ( WidgetsI i = Widgets.begin(); i!=Widgets.end(); ++i )
                 if ( (*i)==Widget ) 
                 {
@@ -108,6 +111,7 @@ class wxsContainer : public wxsWidget
         typedef WidgetsT::iterator WidgetsI;
         
         WidgetsT Widgets;
+        bool DeletingAll;
 };
 
 #endif // WXSCONTAINER_H

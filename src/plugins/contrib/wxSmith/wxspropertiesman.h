@@ -10,9 +10,11 @@ class wxsPropertiesMan
 	public:
 		wxsPropertiesMan();
 		virtual ~wxsPropertiesMan();
-		static wxsPropertiesMan& Get() { return Singleton; }
+		static wxsPropertiesMan* Get() { return &Singleton; }
 		
 		virtual void SetActiveWidget(wxsWidget* NewActive);
+		
+		inline wxsWidget* GetActiveWidget() { return CurrentWidget; }
 		
 	private:
         wxsWidget* CurrentWidget;

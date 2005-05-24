@@ -601,6 +601,9 @@ protected:
             return CurEditor;
         }
         
+        /** Function building tree for this widget */
+        void BuildTree(wxTreeCtrl* Tree,wxTreeItemId WhereToAdd,int InsertIndex=-1);
+        
         wxsWidgetManager* Manager;  ///< Widget's manager
         wxWindow* Preview;          ///< Currently opened preview window (NULL if there's no one)
         wxsWindowEditor* CurEditor; ///< Currently associated editor
@@ -621,10 +624,13 @@ protected:
         
         CodeDefines CDefines;       ///< Will be filled and returned inside GetCodedeDefines
         
+        wxTreeItemId TreeId;        ///< Id of item in resource tree
+        
         friend class wxBaseParamsPanel;
         friend class wxsWindowEditor;
         friend class wxsContainer;
         friend class wxsProject;
+        friend class wxsPalette;
 };
 
 

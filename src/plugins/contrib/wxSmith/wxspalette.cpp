@@ -7,6 +7,10 @@
 #include <map>
 #include "widget.h"
 #include "wxswidgetfactory.h"
+#include "wxspropertiesman.h"
+#include "wxsmith.h"
+
+static const int DeleteId = wxNewId();
 
 wxsPalette* wxsPalette::Singleton = NULL;
 
@@ -20,9 +24,10 @@ wxsPalette::wxsPalette(wxWindow* Parent,wxSmith* _Plugin):
 	Sizer->AddGrowableRow(1);
 	
 	wxFlexGridSizer* Sizer2 = new wxFlexGridSizer(2,0,5,15);
-	Sizer2->AddGrowableCol(1);
+	Sizer2->AddGrowableCol(2);
 	
 	Sizer2->Add(new wxStaticText(this,-1,wxT("Insertion type")));
+	Sizer2->Add(new wxStaticText(this,-1,wxT("Delete")));
 	Sizer2->Add(new wxStaticText(this,-1,wxT("Top list")));
 	
 	wxGridSizer* Sizer3 = new wxGridSizer(1,0,5,5);
@@ -31,6 +36,8 @@ wxsPalette::wxsPalette(wxWindow* Parent,wxSmith* _Plugin):
 	Sizer3->Add(AddInto   = new wxRadioButton(this,-1,wxT("Into")));
 	
 	Sizer2->Add(Sizer3);
+	
+	Sizer2->Add(new wxButton(this,DeleteId,wxT("Delete")));
 	
 	Sizer->Add(Sizer2,0,wxALL|wxGROW,10);
 	
@@ -44,6 +51,8 @@ wxsPalette::wxsPalette(wxWindow* Parent,wxSmith* _Plugin):
 	Sizer->SetSizeHints(this);
 	
 	Singleton = this;
+	
+	SetInsertionTypeMask(0);
 }
 
 wxsPalette::~wxsPalette()
@@ -68,6 +77,10 @@ int wxsPalette::GetInsertionType()
 void wxsPalette::SetInsertionTypeMask(int Mask)
 {
     InsTypeMask = Mask;
+    
+    AddBefore->Enable( (Mask & itBefore) != 0 );
+    AddAfter->Enable( (Mask & itAfter) != 0 );
+    AddInto->Enable( (Mask & itInto) != 0 );
     
     int CurrentIT = GetInsertionType();
     
@@ -111,18 +124,28 @@ void wxsPalette::CreateWidgetsPalette(wxWindow* Wnd)
     
     for ( MapI i = Map.begin(); i != Map.end(); ++i )
     {
-        if ( strcasecmp(PreviousGroup,(*i).first) )
+        if ( !(*i).first || strcasecmp(PreviousGroup,(*i).first) )
         {
             if ( RowSizer ) Sizer->Add(RowSizer,0,wxALL|wxGROW,5);
             Sizer->Add(new wxStaticLine(Wnd),0,wxGROW);
             
-            // Need to create new group
-            RowSizer = new wxFlexGridSizer(1,0,5,5);
-            RowSizer->Add(new wxStaticText(Wnd,-1,(*i).first));
-            PreviousGroup = (*i).first;
+            if ( (*i).first && (*i).first[0] )
+            {
+                // Need to create new group
+                RowSizer = new wxFlexGridSizer(1,0,5,5);
+                RowSizer->Add(new wxStaticText(Wnd,-1,(*i).first));
+                PreviousGroup = (*i).first;
+            }
+            else
+            {
+                RowSizer = NULL;
+            }
         }
-        
-        RowSizer->Add(new wxButton(Wnd,-1,(*i).second->Name));
+
+        if ( RowSizer )
+        {
+            RowSizer->Add(new wxButton(Wnd,-1,(*i).second->Name));
+        }
     }
     
     if ( RowSizer ) Sizer->Add(RowSizer,0,wxALL|wxGROW,5);
@@ -133,16 +156,137 @@ void wxsPalette::CreateWidgetsPalette(wxWindow* Wnd)
 
 void wxsPalette::OnButton(wxCommandEvent& event)
 {
-    wxButton* Btn = (wxButton*)event.GetEventObject();
-    
-    if ( Btn )
+    wxWindowID Id = event.GetId();
+    if ( Id == DeleteId )
     {
-        InsertRequest(Btn->GetLabel().c_str());
+        DeleteRequest();
+    }
+    else
+    {
+        wxButton* Btn = (wxButton*)event.GetEventObject();
+        if ( Btn )
+        {
+            InsertRequest(Btn->GetLabel().c_str());
+        }
     }
 }
 
 void wxsPalette::InsertRequest(const char* Name)
 {
+    wxsWidget* Current = wxsPropertiesMan::Get()->GetActiveWidget();
+    if ( Current == NULL )
+    {
+        DebLog("wxSmith: No widget selecteed - couldn't create new widget");
+        return;
+    }
+
+    if ( !GetInsertionType() )
+    {
+        return;
+    }
+    
+    wxsWindowEditor* Edit = (wxsWindowEditor*)Current->CurEditor;
+    
+    if ( Edit )
+    {
+        Edit->Freeze();
+    }
+    
+    
+    wxsWidget* NewWidget = wxsWidgetFactory::Get()->Generate(Name);
+    if ( NewWidget == NULL )
+    {
+        DebLog("wxSmith: Culdn't generate widget inside factory");
+        return;
+    }
+    
+    switch ( GetInsertionType() )
+    {
+        case itBefore:
+            InsertBefore(NewWidget,Current);
+            break;
+            
+        case itAfter:
+            InsertAfter(NewWidget,Current);
+            break;
+            
+        case itInto:
+            InsertInto(NewWidget,Current);
+            break;
+            
+        default:
+            wxsWidgetFactory::Get()->Kill(NewWidget);
+            DebLog("Something gone wrong");
+            break;
+    }
+    
+    
+    if ( Edit )
+    {
+        Edit->RecreatePreview();
+        Edit->Thaw();
+    }
+}
+
+void wxsPalette::InsertBefore(wxsWidget* New,wxsWidget* Ref)
+{
+    wxsWidget* Parent = Ref->GetParent();
+    
+    int Index;
+    
+    if ( !Parent || (Index=Parent->FindChild(Ref)) < 0 || Parent->AddChild(New,Index) < 0 )
+    {
+        wxsWidgetFactory::Get()->Kill(New);
+        return;
+    }
+
+    // Adding this new item into resource tree
+    
+    New->BuildTree(Plugin->GetResourceTree(),Parent->TreeId,Index);
+}   
+
+void wxsPalette::InsertAfter(wxsWidget* New,wxsWidget* Ref)
+{
+    wxsWidget* Parent = Ref->GetParent();
+    
+    int Index;
+    
+    if ( !Parent || (Index=Parent->FindChild(Ref)) < 0 || Parent->AddChild(New,Index+1) < 0 )
+    {
+        wxsWidgetFactory::Get()->Kill(New);
+        return;
+    }
+    New->BuildTree(Plugin->GetResourceTree(),Parent->TreeId,Index+1);
+}   
+
+void wxsPalette::InsertInto(wxsWidget* New,wxsWidget* Ref)
+{
+    if ( Ref->AddChild(New) < 0 )
+    {
+        wxsWidgetFactory::Get()->Kill(New);
+        return;
+    }
+    New->BuildTree(Plugin->GetResourceTree(),Ref->TreeId);
+}   
+
+void wxsPalette::DeleteRequest()
+{
+    wxsWidget* Current = wxsPropertiesMan::Get()->GetActiveWidget();
+    if ( Current == NULL )
+    {
+        DebLog("wxSmith: No widget selecteed - couldn't delete");
+        return;
+    }
+
+    wxsWidget* Parent = Current->GetParent();
+    
+    if ( !Parent )
+    {
+        wxMessageBox("Can not delete main widget (for now ;)");
+        return;
+    }
+    
+    wxsWidgetFactory::Get()->Kill(Current);
 }
 
 BEGIN_EVENT_TABLE(wxsPalette,wxPanel)

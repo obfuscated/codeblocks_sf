@@ -105,6 +105,8 @@ void wxsWidget::UpdatePreview(bool IsReshaped,bool NeedRecreate)
     
     Updating = true;
     
+    CurEditor->Freeze();
+    
     if ( NeedRecreate )
     {
         IsReshaped = true;
@@ -129,6 +131,7 @@ void wxsWidget::UpdatePreview(bool IsReshaped,bool NeedRecreate)
         }
     }
     
+    CurEditor->Thaw();
     Updating = false;
 }
 
@@ -382,4 +385,27 @@ const wxString& wxsWidget::GetCString(const wxString& Source)
 
     Result.Append('\"');
     return Result;
+}
+
+void wxsWidget::BuildTree(wxTreeCtrl* Tree,wxTreeItemId Id,int Index)
+{
+    wxString Name = GetInfo().Name;
+
+    // TODO (SpOoN#1#): Add icons
+    wxTreeItemId SubId;
+    if ( Index < 0 || Index >= (int)Tree->GetCount() )
+    {
+        SubId = Tree->AppendItem(Id,Name,-1,-1,new wxsResourceTreeData(this));
+    }
+    else
+    {
+        SubId = Tree->InsertItem(Id,Index,Name,-1,-1,new wxsResourceTreeData(this));
+    }
+    TreeId = SubId;
+    
+    int SubCnt = GetChildCount();
+    for ( int i=0; i<SubCnt; i++ )
+    {
+        GetChild(i)->BuildTree(Tree,SubId);
+    }
 }

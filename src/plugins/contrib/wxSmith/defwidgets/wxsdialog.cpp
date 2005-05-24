@@ -61,7 +61,7 @@ class wxsDialogPreview:  public wxPanel
         wxsDialog* Dialog;
         void OnMouse(wxMouseEvent& event)
         {
-            wxsPropertiesMan::Get().SetActiveWidget(Dialog);
+            wxsPropertiesMan::Get()->SetActiveWidget(Dialog);
             event.Skip();
         }
         

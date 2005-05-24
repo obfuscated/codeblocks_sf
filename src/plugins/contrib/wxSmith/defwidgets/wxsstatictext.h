@@ -11,7 +11,7 @@ class wxsStaticText: public wxsWidget
     public:
         
         /** Default constructor */
-        wxsStaticText(wxsWidgetManager* Man): wxsWidget(Man,propWidget), Text("Alamakota")
+        wxsStaticText(wxsWidgetManager* Man): wxsWidget(Man,propWidget), Text("StaticText")
         {
             PropertiesObject.AddProperty("Label:",Text,0);
         }

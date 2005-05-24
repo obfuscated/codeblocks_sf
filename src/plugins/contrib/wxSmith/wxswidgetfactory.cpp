@@ -29,8 +29,30 @@ void wxsWidgetFactory::Kill(wxsWidget* Widget)
 {
     if ( Widget )
     {
-// TODO (SpOoN#1#): Check if manager exists, if not, try to delete this widget manually
-        Widget->GetInfo().Manager->KillWidget(Widget);
+        // First unbinding it from parent
+        
+        wxsWidget* Parent = Widget->GetParent();
+        if ( Parent )
+        {
+            Parent->DelChild(Widget);
+        }
+        
+        // Deleting widget
+        if ( Widget->GetInfo().Manager )
+        {
+            Widget->GetInfo().Manager->KillWidget(Widget);
+        }
+        else
+        {
+            // Possibly unsafe
+            delete Widget;
+        }
+        
+        // Need to rearrange parent
+        if ( Parent )
+        {
+            Parent->UpdatePreview(true,true);
+        }
     }
 }
 

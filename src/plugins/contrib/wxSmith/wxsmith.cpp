@@ -78,9 +78,9 @@ wxSmith::wxSmith()
 	m_PluginInfo.version = "1.0";
 	m_PluginInfo.description = "RAD tool used to create wxWidgets forms";
 	m_PluginInfo.author = "BYO";
-	m_PluginInfo.authorEmail = "byo@o2.pl";
+	m_PluginInfo.authorEmail = "byo.spoon@gmail.com";
 	m_PluginInfo.authorWebsite = "";
-	m_PluginInfo.thanksTo = "";
+	m_PluginInfo.thanksTo = "Gigi for Faworki";
 	m_PluginInfo.license = LICENSE_GPL;
 	m_PluginInfo.hasConfigure = true;
 }
@@ -132,7 +132,7 @@ void wxSmith::OnAttach()
         PropertiesContainer->SetSizer(Sizer);
         Notebook->AddPage(LeftSplitter,wxT("Resources"));
         
-        wxsPropertiesMan::Get().PropertiesPanel = PropertiesPanel;
+        wxsPropertiesMan::Get()->PropertiesPanel = PropertiesPanel;
         
         // Adding palette at the bottom
 
@@ -158,9 +158,7 @@ void wxSmith::OnAttach()
         ResourceBrowser = NULL;
 	}
 	
-	// Registering widget factories
-	
-	
+    // Registering widget factories
 }
 
 void wxSmith::OnRelease(bool appShutDown)
@@ -203,7 +201,6 @@ void wxSmith::BuildToolBar(wxToolBar* toolBar)
 
 void wxSmith::OnProjectClose(CodeBlocksEvent& event)
 {
-    DebLog("Closing project : %s",event.GetProject()->GetTitle().c_str());
     cbProject* Proj = event.GetProject();
     ProjectMapI i = ProjectMap.find(Proj);
     if ( i == ProjectMap.end() ) return;
@@ -213,7 +210,6 @@ void wxSmith::OnProjectClose(CodeBlocksEvent& event)
 
 void wxSmith::OnProjectOpen(CodeBlocksEvent& event)
 {
-    DebLog("Opening project : %s",event.GetProject()->GetTitle().c_str());
     wxsProject* NewProj = new wxsProject(this);
     NewProj->BindProject(event.GetProject());
     ProjectMap[event.GetProject()] = NewProj;
@@ -240,7 +236,7 @@ void wxSmith::OnSelectResource(wxsResourceTreeData* Data)
 
 void wxSmith::OnSelectWidget(wxsResourceTreeData* Data)
 {
-    wxsPropertiesMan::Get().SetActiveWidget(Data->Widget);
+    wxsPropertiesMan::Get()->SetActiveWidget(Data->Widget);
 }
 
 void wxSmith::OnSelectDialog(wxsResourceTreeData* Data)

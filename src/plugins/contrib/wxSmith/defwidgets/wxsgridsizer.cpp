@@ -24,7 +24,6 @@ class wxsGridSizerPreview: public wxPanel
         {
             assert ( sSizer != NULL );
             wxGridSizer* NewSizer = new wxGridSizer(sSizer->Rows,sSizer->Cols,sSizer->VGap,sSizer->HGap);
-            DebLog("Cols: %d, Rows : %d",sSizer->Cols,sSizer->Rows);
             
             int Cnt = sSizer->GetChildCount();
             for ( int i=0; i<Cnt; i++ )
@@ -84,7 +83,7 @@ class wxsGridSizerPreview: public wxPanel
         
         void OnClick(wxMouseEvent& event)
         {
-            wxsPropertiesMan::Get().SetActiveWidget(sSizer);
+            wxsPropertiesMan::Get()->SetActiveWidget(sSizer);
         }
         
         DECLARE_EVENT_TABLE()
@@ -165,3 +164,11 @@ bool wxsGridSizer::MyXmlLoad(TiXmlElement* Element)
     
     return true;
 }
+
+void wxsGridSizer::CreateObjectProperties()
+{
+    wxsWidget::CreateObjectProperties();
+    PropertiesObject.Add2IProperty(wxT("Cols x rows:"),Cols,Rows,0);
+    PropertiesObject.Add2IProperty(wxT("VGap x HGap:"),VGap,HGap,1);
+}
+

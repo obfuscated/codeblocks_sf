@@ -2,13 +2,20 @@
 
 #include "widget.h"
 #include <wx/settings.h>
+#include <wx/scrolwin.h>
 #include "defwidgets/wxsdialog.h"
 
 wxsWindowEditor::wxsWindowEditor(wxMDIParentFrame* parent, const wxString& title,wxsResource* Resource):
     wxsEditor(parent,title,Resource),
     CurrentWidget(NULL)
 {
+    DrawArea = new wxScrolledWindow(this);
+    wxSizer* Sizer = new wxBoxSizer(wxVERTICAL);
+    Sizer->Add(DrawArea,0,wxGROW);
+    SetSizer(Sizer);
+    DrawArea->SetScrollRate(4,4);
     SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
+    DrawArea->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
 }
 
 wxsWindowEditor::~wxsWindowEditor()
@@ -23,16 +30,16 @@ void wxsWindowEditor::BuildPreview(wxsWidget* TopWidget)
 
     // Creating new sizer
 
-    wxWindow* TopPreviewWindow = TopWidget ? TopWidget->CreatePreview(this,this) : NULL;
+    wxWindow* TopPreviewWindow = TopWidget ? TopWidget->CreatePreview(DrawArea,this) : NULL;
     CurrentWidget = TopWidget;
     
     if ( TopPreviewWindow )
     {
         wxSizer* NewSizer = new wxGridSizer(1);
-        NewSizer->Add(TopPreviewWindow,0,wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL);
-        SetSizer(NewSizer);
-        Layout();
-        NewSizer->SetSizeHints(this);
+        NewSizer->Add(TopPreviewWindow,0,wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL|wxALL,10);
+        DrawArea->SetSizer(NewSizer);
+        DrawArea->Layout();
+        NewSizer->SetVirtualSizeHints(DrawArea);
         TopPreviewWindow->Refresh();
     }
 }

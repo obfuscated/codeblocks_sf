@@ -13,7 +13,7 @@ class wxsButton: public wxsWidget
         /** Default constructor */
         wxsButton(wxsWidgetManager* Man):
             wxsWidget(Man,propWidget),
-            Text("To jest Przycisk Anusi"),
+            Text("Button"),
             Default(false)
         {
         }
