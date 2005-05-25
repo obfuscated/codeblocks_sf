@@ -1,0 +1,172 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxDialog" name="MainFrame">
+    <title>Dev-C++ DevPaks updater / installer</title>
+    <centered>1</centered>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxFlexGridSizer">
+          <object class="sizeritem">
+            <object class="wxStaticText" name="">
+              <label>Update server:</label>
+            </object>
+            <flag>wxGROW</flag>
+          </object>
+          <object class="sizeritem">
+            <object class="wxStaticText" name="lblStatus">
+              <label>Status</label>
+            </object>
+            <flag>wxGROW</flag>
+          </object>
+          <object class="sizeritem">
+            <object class="wxComboBox" name="cmbServer">
+              <content/>
+              <style>wxCB_READONLY</style>
+            </object>
+            <flag>wxGROW</flag>
+            <minsize>240,-1</minsize>
+          </object>
+          <object class="sizeritem">
+            <object class="wxGauge" name="gauProgress">
+              <size>-1,20</size>
+            </object>
+            <flag>wxGROW</flag>
+          </object>
+          <object class="sizeritem">
+            <object class="wxCheckBox" name="chkCache">
+              <label>Use cache</label>
+              <checked>1</checked>
+            </object>
+            <flag>wxTOP|wxGROW</flag>
+            <border>4</border>
+          </object>
+          <cols>2</cols>
+          <hgap>8</hgap>
+          <growablecols>1</growablecols>
+          <object class="sizeritem">
+            <object class="wxStaticText" name="lblProgress">
+              <label></label>
+            </object>
+            <flag>wxGROW</flag>
+          </object>
+        </object>
+        <flag>wxALL|wxGROW</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticLine"/>
+        <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticBoxSizer">
+          <label>Filtering</label>
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxStaticText">
+              <label>Global filter:</label>
+            </object>
+            <flag>wxTOP|wxLEFT|wxGROW</flag>
+            <border>4</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxComboBox" name="cmbFilter">
+              <content>
+                <item>All files</item>
+                <item>Installed</item>
+                <item>Installed with update available</item>
+                <item>Downloaded but not installed</item>
+                <item>Not installed</item>
+              </content>
+              <selection>0</selection>
+              <style>wxCB_READONLY</style>
+            </object>
+            <option>1</option>
+            <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+            <border>8</border>
+          </object>
+        </object>
+        <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxBoxSizer">
+              <orient>wxVERTICAL</orient>
+              <object class="sizeritem">
+                <object class="wxStaticText">
+                  <label>Categories:</label>
+                </object>
+                <flag>wxGROW</flag>
+              </object>
+              <object class="sizeritem">
+                <object class="wxTreeCtrl" name="tvCategories"/>
+                <option>1</option>
+                <flag>wxGROW</flag>
+                <minsize>192,-1</minsize>
+              </object>
+            </object>
+            <flag>wxGROW</flag>
+          </object>
+          <object class="sizeritem">
+            <object class="wxBoxSizer">
+              <orient>wxVERTICAL</orient>
+              <object class="sizeritem">
+                <object class="wxStaticText">
+                  <label>DevPaks in category (right-click for options):</label>
+                </object>
+                <flag>wxGROW</flag>
+              </object>
+              <object class="sizeritem">
+                <object class="wxListCtrl" name="lvFiles">
+                  <style>wxLC_REPORT|wxLC_SINGLE_SEL</style>
+                </object>
+                <option>1</option>
+                <flag>wxGROW</flag>
+              </object>
+              <object class="sizeritem">
+                <object class="wxStaticText" name="">
+                  <label>Selected DevPak's details:</label>
+                </object>
+                <flag>wxTOP|wxGROW</flag>
+                <border>8</border>
+              </object>
+              <object class="sizeritem">
+                <object class="wxTextCtrl" name="txtInfo">
+                  <style>wxTE_MULTILINE|wxTE_READONLY</style>
+                </object>
+                <option>1</option>
+                <flag>wxGROW</flag>
+                <minsize>-1, 128</minsize>
+              </object>
+            </object>
+            <option>1</option>
+            <flag>wxLEFT|wxGROW</flag>
+            <border>8</border>
+          </object>
+          <label>DevPaks</label>
+        </object>
+        <option>1</option>
+        <flag>wxALL|wxGROW</flag>
+        <border>8</border>
+        <minsize>576,-1</minsize>
+      </object>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_CANCEL">
+              <label>&amp;Close</label>
+            </object>
+          </object>
+        </object>
+        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <border>8</border>
+      </object>
+    </object>
+    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxRESIZE_BOX</style>
+  </object>
+</resource>

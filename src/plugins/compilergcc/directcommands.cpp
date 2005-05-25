@@ -348,7 +348,7 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
     }
 
     // add link command
-    wxArrayString link = GetLinkCommands(target);
+    wxArrayString link = GetLinkCommands(target, ret.GetCount() != counter);
     AppendArray(link, ret);
 
     if (ret.GetCount() == counter && !target->GetAlwaysRunPreBuildSteps())
