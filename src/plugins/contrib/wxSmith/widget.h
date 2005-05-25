@@ -143,12 +143,25 @@ class wxsWidget
     public:
     
         /** Type representing base properties set while creating widget */
-        enum BasePropertiesType
-        {
-            propNone = 0,
-            propWidget,
-            propSizer,
-        };
+        typedef unsigned long BasePropertiesType;
+        
+        static const BasePropertiesType bptPosition  = 0x0001;  ///< this widget is using position
+        static const BasePropertiesType bptSize      = 0x0002;  ///< this widget is using size
+        static const BasePropertiesType bptId        = 0x0004;  ///< this widget is using identifier
+        static const BasePropertiesType bptVariable  = 0x0008;  ///< this widget is using variable
+        static const BasePropertiesType bptStyle     = 0x0010;  ///< this widget is using style
+        
+        /** BasePropertiesType with no default properties */
+        static const BasePropertiesType propNone     = 0;        
+        
+        /** VasePropertiesTyue usede by common windows */
+        static const BasePropertiesType propWindow   = bptStyle;
+        
+        /** BasePropertiesType used by common widgets */
+        static const BasePropertiesType propWidget   = bptPosition | bptSize | bptId | bptVariable | bptStyle;
+        
+        /** BasePropertiesType used by common sizers */
+        static const BasePropertiesType propSizer    = bptVariable;
     
         /** Default constructor */
         wxsWidget(wxsWidgetManager* Man,BasePropertiesType pType = propNone):
@@ -508,12 +521,13 @@ class wxsWidget
 /* XML Operations                                                             */
 /******************************************************************************/
      
-public:
+    public:
         /** Loading widget from xml source */
         inline bool XmlLoad(TiXmlElement* Element)
         {
             XmlAssignElement(Element);
-            bool Result = MyXmlLoad(Element);
+            bool Result = MyXmlLoad();
+            if ( !XmlLoadDefaults() ) Result = false;
             XmlAssignElement(NULL);
             return Result;
         }
@@ -521,50 +535,40 @@ public:
         inline bool XmlSave(TiXmlElement* Element)
         {
             XmlAssignElement(Element);
-            bool Result = MyXmlLoad(Element);
+            bool Result = MyXmlSave();
+            if ( !XmlSaveDefaults() ) Result = false;
             XmlAssignElement(NULL);
             return Result;
         }
         
-protected:
+    protected:
 
         /** Internal function loading data from xml tree
-         *  deefault behaviour just load all defaults so it can
-         *  be called from overriden function
+         *
+         * This functino can be overriden inside derivedd classes
+         * to allow loading additional data. This data should be loadedd
+         * from node returned by XmlElem function (all XmlGet... functions
+         * are also using this one). See bptxxx and propxxx to find out which
+         * settings are loaded automatically.
          */
-        virtual bool MyXmlLoad(TiXmlElement* Element)
-        {
-            XmlReadDefaults();
-            if ( IsContainer() ) XmlLoadChildren();
-            return true;
-        }
+        virtual bool MyXmlLoad() { return true; }
         
         /** Internal function saving xml tree.
-         *  Currently not implemented by default.
+         *
+         * This function can be overriden inside derived classes
+         * to allow saving additional data. This data should be saved
+         * from node returned by XmlElem function (all XmlSet... functions
+         * are also using this one). See bptxxx and propxxx to find out which
+         * settings are saved automatically.
          */
-        virtual bool MyXmlSave(TiXmlElement* Element) { return false; }
+        virtual bool MyXmlSave() { return true; }
 
+        /** Getting currenlty associated xml element */
+        inline TiXmlElement* XmlElem() { return XmlElement; }
+        
 /**********************************************************************/
 /* Helpful functions which could be used while operating on resources */
 /**********************************************************************/
-        
-        /** Function assigning element which will be used while processing
-         *  xml resources. Usually this function is calleed automatically
-         *  from outside so there's no need to care about currently
-         *  associateed Xml element. This functino should be called when
-         *  there's need to parse external xml elements using functions
-         *  inside wxsWidget class.
-         */
-        void XmlAssignElement(TiXmlElement* Element);
-        
-        /** Getting currenlty associated element */
-        inline TiXmlElement* XmlElem() { return XmlElement; }
-        
-        /** Reading all default values for widget */
-        inline void XmlReadDefaults() { XmlReadDefaultsT(BPType); }
-        
-        /** Rading default values for widget using given ste of base properties */
-        virtual void XmlReadDefaultsT(BasePropertiesType pType);
         
         /** Getting value from given name */
         virtual const char* XmlGetVariable(const char* name);
@@ -580,31 +584,64 @@ protected:
          */
         virtual int XmlGetInteger(const char* Name,bool& IsInvalid,int DefaultValue=0);
         
+        /** Getting integer from given name without returning error */
+        inline int XmlGetInteger(const char* Name,int DefaultValue=0)
+        {
+            bool Temp;
+            return XmlGetInteger(Name,Temp,DefaultValue);
+        }
+        
         /** Getting size/position from given name */
         virtual bool XmlGetIntPair(const char* Name,int& P1,int& P2,int DefP1=-1,int DefP2=-1);
         
         /** Setting string value */
-        virtual void XmlSetVariable(const char* Name,const char* Value);
+        virtual bool XmlSetVariable(const char* Name,const char* Value);
+        
+        /** Setting wxStrting value */
+        inline bool XmlSetVariable(const char* Name,const wxString& Value)
+        {
+            return XmlSetVariable(Name,Value.c_str());
+        }
         
         /** Setting integer value */
-        virtual void XmlSetInteger(const char* Name,int Value);
+        virtual bool XmlSetInteger(const char* Name,int Value);
         
         /** Setting 2 integers */
-        virtual void XmlSetIntPair(const char* Name,int Val1,int Val2);
+        virtual bool XmlSetIntPair(const char* Name,int Val1,int Val2);
+        
+        /** Function assigning element which will be used while processing
+         *  xml resources. Usually this function is calleed automatically
+         *  from outside so there's no need to care about currently
+         *  associateed Xml element. This functino should be called when
+         *  there's need to parse external xml elements using functions
+         *  inside wxsWidget class.
+         */
+        void XmlAssignElement(TiXmlElement* Element);
+        
+        /** Reading all default values for widget */
+        inline bool XmlLoadDefaults() { return XmlLoadDefaultsT(BPType); }
+        
+        /** Reading default values for widget using given set of base properties */
+        virtual bool XmlLoadDefaultsT(BasePropertiesType pType);
+        
+        /** Saving all default values for widget */
+        inline bool XmlSaveDefaults() { return XmlSaveDefaultsT(BPType); }
+        
+        /** Saving default values for widget using given set of base properties */
+        virtual bool XmlSaveDefaultsT(BasePropertiesType pType);
         
         /** Loading all children
          *
          *  Valid for compound objects only
          */
-        virtual void XmlLoadChildren();
+        virtual bool XmlLoadChildren();
         
         /** Saving all children
          *
          * Valid for compouund objects only, if current widget is a sizer,
          * additional "sizeritem" object will be created
          */
-        virtual void XmlSaveChildren();
-        
+        virtual bool XmlSaveChildren();
         
     private:
     
@@ -613,9 +650,8 @@ protected:
         
         /** Saving sizer element to given node */
         virtual void XmlSaveSizerStuff(TiXmlElement* Elem);
-       
+         
         /** Adding default properties to properties manager */
-        
         virtual void AddDefaultProperties(BasePropertiesType Props);
         
         /** Getting preview window from parent widget

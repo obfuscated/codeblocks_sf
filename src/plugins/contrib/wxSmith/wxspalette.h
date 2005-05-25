@@ -4,9 +4,9 @@
 #include <wx/panel.h>
 #include <wx/radiobut.h>
 
-
 class wxSmith;
 class wxsWidget;
+class wxsResource;
 
 class wxsPalette : public wxPanel
 {
@@ -17,7 +17,7 @@ class wxsPalette : public wxPanel
         static const int itInto   = 0x04;
 	
         /** Constructor */
-		wxsPalette(wxWindow* Parent,wxSmith* Plugin);
+		wxsPalette(wxWindow* Parent,wxSmith* Plugin,int PageNum);
 		
 		/** Destructor */
 		virtual ~wxsPalette();
@@ -30,22 +30,34 @@ class wxsPalette : public wxPanel
         
         /** Setting mask for insertion type */
         void SetInsertionTypeMask(int Mask);
+        
+        /** Selecting given resource */
+        void SelectResource(wxsResource* Res);
+        
+        /** Notifying that given resource was closed */
+        void ResourceClosed(wxsResource* Res);
 		
 	private:
 	
         /** Plugin object */
         wxSmith* Plugin;
         
+        /** Currently selected resource */
+        wxsResource* SelectedRes;
+        
         /* Checkboxes */
         wxRadioButton* AddBefore;
         wxRadioButton* AddAfter;
         wxRadioButton* AddInto;
         
-        /* Current insertion type */
+        /** Current insertion type */
         int InsType;
         
-        /* Current insertion type mask */
+        /** Current insertion type mask */
         int InsTypeMask;
+        
+        /** Page number */
+        int PageNum;
         
         /** Singleton object */
         static wxsPalette* Singleton;
@@ -67,6 +79,9 @@ class wxsPalette : public wxPanel
         
         /** Function deleting currently selected widget */
         void DeleteRequest();
+        
+        /** Function showing preview of currently selected resource */
+        void PreviewRequest();
         
         /* Event-processing functions */
         void OnRadio(wxCommandEvent& event);

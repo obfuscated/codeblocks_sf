@@ -149,7 +149,7 @@ void wxSmith::OnAttach()
         
         if ( Messages )
         {
-            wxWindow* Palette = new wxsPalette((wxWindow*)Messages,this);
+            wxWindow* Palette = new wxsPalette((wxWindow*)Messages,this,Messages->GetPageCount());
             Messages->AddPage(Palette,wxT("Widgets"));
         }
 	}

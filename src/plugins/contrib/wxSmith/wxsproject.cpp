@@ -343,7 +343,7 @@ void wxsProject::SaveProject()
 
     for ( DialogListI i = Dialogs.begin(); i!=Dialogs.end(); ++i )
     {
-    
+        (*i)->Save();
     }
 }
 
@@ -357,4 +357,20 @@ void wxsProject::DeleteDialog(wxsDialogRes* Resource)
     if ( i == Dialogs.end() ) return;
     
     Dialogs.erase(i);
+}
+
+wxString wxsProject::GetInternalFileName(const wxString& FileName)
+{
+    WorkingPath.SetName(FileName);
+    WorkingPath.SetExt(wxT(""));
+    WorkingPath.Assign(WorkingPath.GetFullPath());  // Reparsing path
+    return WorkingPath.GetFullPath();
+}
+
+wxString wxsProject::GetProjectFileName(const wxString& FileName)
+{
+    ProjectPath.SetName(FileName);
+    ProjectPath.SetExt(wxT(""));
+    ProjectPath.Assign(ProjectPath.GetFullPath());
+    return ProjectPath.GetFullPath();
 }

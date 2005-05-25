@@ -4,6 +4,7 @@
 #include <wx/settings.h>
 #include <wx/scrolwin.h>
 #include "wxspropertiesman.h"
+#include "wxspalette.h"
 
 wxsWindowEditor::wxsWindowEditor(wxMDIParentFrame* parent, const wxString& title,wxsResource* Resource):
     wxsEditor(parent,title,Resource),
@@ -16,6 +17,7 @@ wxsWindowEditor::wxsWindowEditor(wxMDIParentFrame* parent, const wxString& title
     DrawArea->SetScrollRate(4,4);
     SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
     DrawArea->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
+    wxsPalette::Get()->SelectResource(GetResource());
 }
 
 wxsWindowEditor::~wxsWindowEditor()
@@ -77,6 +79,13 @@ void wxsWindowEditor::OnMouseClick(wxMouseEvent& event)
     }
 }
 
+void wxsWindowEditor::OnActivate(wxActivateEvent& event)
+{
+    if ( event.GetActive() )
+    {
+        wxsPalette::Get()->SelectResource(GetResource());
+    }
+}
 
 void wxsWindowEditor::PreviewReshaped()
 {
@@ -97,6 +106,15 @@ void wxsWindowEditor::MyUnbind()
     KillCurrentPreview();
 }
 
+void wxsWindowEditor::OnClose(wxCloseEvent& event)
+{
+    wxsPalette::Get()->ResourceClosed(GetResource());
+    event.Skip();
+}
+
+
 BEGIN_EVENT_TABLE(wxsWindowEditor,wxsEditor)
     EVT_LEFT_DOWN(wxsWindowEditor::OnMouseClick)
+    EVT_ACTIVATE(wxsWindowEditor::OnActivate)
+    EVT_CLOSE(wxsWindowEditor::OnClose)
 END_EVENT_TABLE()

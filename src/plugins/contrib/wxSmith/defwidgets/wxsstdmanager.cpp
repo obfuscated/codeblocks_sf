@@ -37,8 +37,7 @@ static wxsWidgetInfo StdInfos[] =
         NULL
     },
     
-    { 
-        "wxButton",
+    {   "wxButton",
         DefLicence,
         DefAuthor,
         DefAuthorEmail,
@@ -54,8 +53,7 @@ static wxsWidgetInfo StdInfos[] =
         wxsButtonStyles
     },
 
-    { 
-        "wxStaticText",
+    {   "wxStaticText",
         DefLicence,
         DefAuthor,
         DefAuthorEmail,
@@ -71,8 +69,7 @@ static wxsWidgetInfo StdInfos[] =
         wxsStaticTextStyles
     },
 
-    { 
-        "wxDialog",
+    {   "wxDialog",
         DefLicence,
         DefAuthor,
         DefAuthorEmail,
@@ -88,8 +85,7 @@ static wxsWidgetInfo StdInfos[] =
         wxsDialogStyles
     },
 
-    { 
-        "wxFrame",
+    {   "wxFrame",
         DefLicence,
         DefAuthor,
         DefAuthorEmail,
@@ -105,8 +101,7 @@ static wxsWidgetInfo StdInfos[] =
         // TODO (SpOoN#1#): Add styles
     },
     
-    { 
-        "wxPanel",
+    {   "wxPanel",
         DefLicence,
         DefAuthor,
         DefAuthorEmail,

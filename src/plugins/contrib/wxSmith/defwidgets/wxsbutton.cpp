@@ -121,9 +121,14 @@ void wxsButton::CreateObjectProperties()
 }
 
 
-bool wxsButton::MyXmlLoad(TiXmlElement* Element)
+bool wxsButton::MyXmlLoad()
 {
-    wxsWidget::MyXmlLoad(Element);
     Text = XmlGetVariable("label");
+    return true;
+}
+
+bool wxsButton::MyXmlSave()
+{
+    XmlSetVariable("label",Text.c_str());
     return true;
 }

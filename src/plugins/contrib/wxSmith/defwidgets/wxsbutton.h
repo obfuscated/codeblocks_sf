@@ -41,7 +41,10 @@ class wxsButton: public wxsWidget
         virtual void MyUpdatePreview();
         
         /** Loading xml data */
-        virtual bool MyXmlLoad(TiXmlElement* Element);
+        virtual bool MyXmlLoad();
+        
+        /** Saving xml data */
+        virtual bool MyXmlSave();
         
         /** Properties loading codee */
         virtual void CreateObjectProperties();

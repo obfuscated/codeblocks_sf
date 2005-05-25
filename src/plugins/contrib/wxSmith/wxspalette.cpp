@@ -9,25 +9,31 @@
 #include "wxswidgetfactory.h"
 #include "wxspropertiesman.h"
 #include "wxsmith.h"
+#include "wxsresource.h"
 
 static const int DeleteId = wxNewId();
+static const int PreviewId = wxNewId();
 
 wxsPalette* wxsPalette::Singleton = NULL;
 
-wxsPalette::wxsPalette(wxWindow* Parent,wxSmith* _Plugin):
+wxsPalette::wxsPalette(wxWindow* Parent,wxSmith* _Plugin,int PN):
     wxPanel(Parent),
     Plugin(_Plugin),
-    InsType(itBefore)
+    SelectedRes(NULL),
+    InsType(itBefore),
+    InsTypeMask(0),
+    PageNum(PN)
 {
 	wxFlexGridSizer* Sizer = new wxFlexGridSizer(0,1,5,5);
 	Sizer->AddGrowableCol(0);
 	Sizer->AddGrowableRow(1);
 	
 	wxFlexGridSizer* Sizer2 = new wxFlexGridSizer(2,0,5,15);
-	Sizer2->AddGrowableCol(2);
+	Sizer2->AddGrowableCol(3);
 	
 	Sizer2->Add(new wxStaticText(this,-1,wxT("Insertion type")));
 	Sizer2->Add(new wxStaticText(this,-1,wxT("Delete")));
+	Sizer2->Add(new wxStaticText(this,-1,wxT("Preview")));
 	Sizer2->Add(new wxStaticText(this,-1,wxT("Top list")));
 	
 	wxGridSizer* Sizer3 = new wxGridSizer(1,0,5,5);
@@ -38,6 +44,7 @@ wxsPalette::wxsPalette(wxWindow* Parent,wxSmith* _Plugin):
 	Sizer2->Add(Sizer3);
 	
 	Sizer2->Add(new wxButton(this,DeleteId,wxT("Delete")));
+	Sizer2->Add(new wxButton(this,PreviewId,wxT("Preview")));
 	
 	Sizer->Add(Sizer2,0,wxALL|wxGROW,10);
 	
@@ -53,6 +60,8 @@ wxsPalette::wxsPalette(wxWindow* Parent,wxSmith* _Plugin):
 	Singleton = this;
 	
 	SetInsertionTypeMask(0);
+	
+	SelectResource(NULL);
 }
 
 wxsPalette::~wxsPalette()
@@ -161,6 +170,10 @@ void wxsPalette::OnButton(wxCommandEvent& event)
     if ( Id == DeleteId )
     {
         DeleteRequest();
+    }
+    else if ( Id == PreviewId )
+    {
+        PreviewRequest();
     }
     else
     {
@@ -281,6 +294,38 @@ void wxsPalette::DeleteRequest()
     }
     
     wxsWidgetFactory::Get()->Kill(Current);
+}
+
+void wxsPalette::PreviewRequest()
+{
+    if ( SelectedRes ) SelectedRes->ShowPreview();
+}
+
+void wxsPalette::SelectResource(wxsResource* Res)
+{
+    if ( Res )
+    {
+        Manager::Get()->GetMessageManager()->SetSelection(PageNum);
+    }
+    
+    SelectedRes = Res;
+    
+    if ( Res && Res->CanPreview() )
+    {
+        FindWindow(PreviewId)->Enable(true);
+    }
+    else
+    {
+        FindWindow(PreviewId)->Enable(false);
+    }
+}
+
+void wxsPalette::ResourceClosed(wxsResource* Res)
+{
+    if ( Res == SelectedRes )
+    {
+        SelectResource(NULL);
+    }
 }
 
 BEGIN_EVENT_TABLE(wxsPalette,wxPanel)

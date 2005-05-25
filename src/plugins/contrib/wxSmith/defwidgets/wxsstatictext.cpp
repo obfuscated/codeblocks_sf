@@ -103,3 +103,14 @@ void wxsStaticText::MyUpdatePreview()
     }
 }
 
+bool wxsStaticText::MyXmlLoad()
+{
+    Text = XmlGetVariable("label");
+    return true;
+}
+
+bool wxsStaticText::MyXmlSave()
+{
+    XmlSetVariable("label",Text.c_str());
+    return true;
+}

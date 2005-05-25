@@ -41,6 +41,8 @@ class wxsWindowEditor : public wxsEditor
         wxScrolledWindow* DrawArea;
 	
         void OnMouseClick(wxMouseEvent& event);
+        void OnActivate(wxActivateEvent& event);
+        void OnClose(wxCloseEvent& event);
         
         wxsWidget* CurrentWidget;
 	

@@ -1,6 +1,7 @@
 #include "wxswidgetfactory.h"
 
 #include "wxsmith.h"
+#include "wxspropertiesman.h"
 
 wxsWidgetFactory* wxsWidgetFactory::Singleton = new wxsWidgetFactory;
 
@@ -43,6 +44,12 @@ void wxsWidgetFactory::Kill(wxsWidget* Widget)
         if ( Tree )
         {
             Tree->Delete(Widget->TreeId);
+        }
+        
+        // Closing properties if are set to given widget
+        if ( wxsPropertiesMan::Get()->GetActiveWidget() == Widget )
+        {
+            wxsPropertiesMan::Get()->SetActiveWidget(NULL);
         }
         
         // Deleting widget
@@ -104,10 +111,10 @@ static const char* DeadNames[] =
     "extern", "false", "float", "for", "friend", "goto", "if", "inline",
     "int", "long", "mutable", "namespace", "new", "operator", "private",
     "protected", "public", "register", "reinterpret_cast", "return",
-    "short", "signed", "sizeof", "static", "static_cast", "struct",
-    "switch", "template", "this", "throw", "true", "try", "typedef",
-    "typeid", "typename", "union", "unsigned", "using", "virtual", "void",
-    "volatile", "wchar_t", "while"
+    "short", "signed", "sizeof", "sizeritem", "static", "static_cast",
+    "struct", "switch", "template", "this", "throw", "true", "try",
+    "typedef", "typeid", "typename", "union", "unsigned",
+    "using", "virtual", "void", "volatile", "wchar_t", "while"
 };
 
 static const int DeadNamesLen = sizeof(DeadNames) / sizeof(DeadNames[0]);

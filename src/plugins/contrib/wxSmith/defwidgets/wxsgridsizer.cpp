@@ -152,18 +152,24 @@ void wxsGridSizer::MyUpdatePreview()
     }
 }
 
-bool wxsGridSizer::MyXmlLoad(TiXmlElement* Element)
+bool wxsGridSizer::MyXmlLoad()
 {
-    wxsWidget::MyXmlLoad(Element);
-
-    bool Temp;
-    Rows = XmlGetInteger("rows",Temp,0);
-    Cols = XmlGetInteger("cols",Temp,0);
-    VGap = XmlGetInteger("vgap",Temp,0);
-    HGap = XmlGetInteger("hgap",Temp,0);
-    
+    Rows = XmlGetInteger("rows");
+    Cols = XmlGetInteger("cols");
+    VGap = XmlGetInteger("vgap");
+    HGap = XmlGetInteger("hgap");
     return true;
 }
+
+bool wxsGridSizer::MyXmlSave()
+{
+    XmlSetInteger("rows",Rows);
+    XmlSetInteger("cols",Cols);
+    XmlSetInteger("vgap",VGap);
+    XmlSetInteger("hgap",HGap);
+    return true;
+}
+
 
 void wxsGridSizer::CreateObjectProperties()
 {

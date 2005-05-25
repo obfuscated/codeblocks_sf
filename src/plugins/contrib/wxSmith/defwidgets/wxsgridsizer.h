@@ -26,7 +26,10 @@ class wxsGridSizer : public wxsContainer
     protected:
     
         /** Loading content */
-        virtual bool MyXmlLoad(TiXmlElement* Element);
+        virtual bool MyXmlLoad();
+        
+        /** Loading content */
+        virtual bool MyXmlSave();
         
         /** This function should create preview window for widget */
         virtual wxWindow* MyCreatePreview(wxWindow* Parent);

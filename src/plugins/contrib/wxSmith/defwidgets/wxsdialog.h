@@ -31,15 +31,18 @@ class wxsDialog : public wxsContainer
         /** This function should create preview window for widget */
         virtual wxWindow* MyCreatePreview(wxWindow* Parent);
         
-        /** Loading data from XML tree */
-        virtual bool MyXmlLoad(TiXmlElement* Element);
-
         /** Function shich should update content of current widget */
         virtual void MyUpdatePreview();
   
         /** Creating dedefault properties */
         void CreateObjectProperties();
   
+        /** Loading xml data */
+        virtual bool MyXmlLoad();
+        
+        /** Saving xml data */
+        virtual bool MyXmlSave();
+        
   private:
   
         wxString Title;

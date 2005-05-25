@@ -17,64 +17,53 @@ wxsWidget::~wxsWidget()
 void wxsWidget::AddDefaultProperties(BasePropertiesType pType)
 {
     // Adding standard items
-    
-    switch ( pType )
+
+    if ( pType & bptVariable )
     {
-        case propSizer:
-            PropertiesObject.AddProperty(wxT("Variable Name:"),BaseParams.VarName);
-            PropertiesObject.AddProperty(wxT("Local Variable:"),BaseParams.VarNotStored);
-            break;
-            
-        case propWidget:
-            PropertiesObject.AddProperty(wxT("Variable Name:"),BaseParams.VarName);
-            PropertiesObject.AddProperty(wxT("Local Variable:"),BaseParams.VarNotStored);
-            PropertiesObject.AddProperty(wxT("Identifier:"),BaseParams.IdName);
-            PropertiesObject.Add2IProperty(wxT("Position:"),BaseParams.PosX,BaseParams.PosY);
-            PropertiesObject.AddProperty(wxT("Default pos.:"),BaseParams.DefaultPosition);
-            PropertiesObject.Add2IProperty(wxT("Size:"),BaseParams.SizeX,BaseParams.SizeY);
-            PropertiesObject.AddProperty(wxT("Default size:"),BaseParams.DefaultSize);
-            break;
-            
-        default:;
+        PropertiesObject.AddProperty(wxT("Variable Name:"),BaseParams.VarName);
+        PropertiesObject.AddProperty(wxT("Local Variable:"),BaseParams.VarNotStored);
+    }
+    
+    if ( pType & bptId )
+    {
+        PropertiesObject.AddProperty(wxT("Identifier:"),BaseParams.IdName);
+    }
+    
+    if ( pType & bptPosition )
+    {
+        PropertiesObject.Add2IProperty(wxT("Position:"),BaseParams.PosX,BaseParams.PosY);
+        PropertiesObject.AddProperty(wxT("Default pos.:"),BaseParams.DefaultPosition);
+    }
+    
+    if ( pType & bptSize )
+    {
+        PropertiesObject.Add2IProperty(wxT("Size:"),BaseParams.SizeX,BaseParams.SizeY);
+        PropertiesObject.AddProperty(wxT("Default size:"),BaseParams.DefaultSize);
     }
     
     // Adding sizer configuration
 
-    switch ( pType )
-    {
-        case propSizer:
-        case propWidget:
-            PropertiesObject.AddProperty(wxT("Proportion:"),BaseParams.Proportion);
-            PropertiesObject.AddProperty(wxT("Border:"),new wxsBorderProperty(&PropertiesObject,BaseParams.BorderFlags));
-            //PropertiesObject.AddProperty(wxT("Border:"),BaseParams.BorderFlags);
-            PropertiesObject.AddProperty(wxT("Border size:"),BaseParams.Border);
-            //PropertiesObject.AddProperty(wxT("Placement:"),BaseParams.Placement);
-            PropertiesObject.AddProperty(wxT("Placement:"),new wxsPlacementProperty(&PropertiesObject,BaseParams.Placement,BaseParams.Expand,BaseParams.Shaped));
-            break;
-            
-        default:;
-    }
+    PropertiesObject.AddProperty(wxT("Proportion:"),BaseParams.Proportion);
+    PropertiesObject.AddProperty(wxT("Border:"),new wxsBorderProperty(&PropertiesObject,BaseParams.BorderFlags));
+    PropertiesObject.AddProperty(wxT("Border size:"),BaseParams.Border);
+    PropertiesObject.AddProperty(wxT("Placement:"),new wxsPlacementProperty(&PropertiesObject,BaseParams.Placement,BaseParams.Expand,BaseParams.Shaped));
 
     // Adding style property
 
-    switch ( pType )
+    if ( pType & bptStyle )
     {
-        case propWidget:
-            if ( GetInfo().Styles != NULL )
-            {
-                PropertiesObject.AddProperty(
-                    wxT("Style:"),
-                    new wxsStyleProperty(
-                        &PropertiesObject,
-                        BaseParams.Style,
-                        GetInfo().Styles),
-                    -1,
-                    true, true
-                    );
-            }
-            break;
-            
-        default:;
+        if ( GetInfo().Styles != NULL )
+        {
+            PropertiesObject.AddProperty(
+                wxT("Style:"),
+                new wxsStyleProperty(
+                    &PropertiesObject,
+                    BaseParams.Style,
+                    GetInfo().Styles),
+                -1,
+                true, true
+                );
+        }
     }
 
 }
@@ -168,49 +157,136 @@ void wxsWidget::XmlAssignElement(TiXmlElement* Elem)
     XmlElement = Elem;
 }
 
-void wxsWidget::XmlReadDefaultsT(BasePropertiesType pType)
+bool wxsWidget::XmlLoadDefaultsT(BasePropertiesType pType)
 {
     assert ( XmlElem() != NULL );
-    
-/*
-    if ( IsSizer )
+
+    /* Processing position */
+    if ( pType & bptPosition )
     {
-    }
-    else
-    */
-    {
-        /* Processing styles */
-        {
-            wxString StyleStr = XmlGetVariable("style");
-            wxsStyle* Styles = GetInfo().Styles;
-            BaseParams.Style = 0;
-            if ( Styles )
-            {
-                for ( ; Styles->Name != NULL; Styles++ )
-                {
-                    int Pos = StyleStr.Find(Styles->Name);
-                    int Len = (int)strlen(Styles->Name);
-                    if ( Pos < 0 ) continue;
-                    
-                    // One character after style in StyleStr should be checked - it
-                    // must be '|'. Same for character before.
-                    
-                    if ( ( Pos + Len >= (int)StyleStr.Len() || StyleStr.GetChar(Pos+Len) == '|' ) &&
-                         ( Pos == 0 || StyleStr.GetChar(Pos-1) == '|' ) )
-                    {
-                        BaseParams.Style |= Styles->Value;
-                    }
-                }
-            }
-        }
-        
-        /* Processing position */
         BaseParams.DefaultPosition = !XmlGetIntPair("pos",BaseParams.PosX,BaseParams.PosY);
+    }
         
-        /* Processing size */
+    /* Processing size */
+    if ( pType & bptSize )
+    {
         BaseParams.DefaultSize = !XmlGetIntPair("size",BaseParams.SizeX,BaseParams.SizeY);
     }
     
+    /* Processing id */
+    if ( pType & bptId )
+    {
+        const char* IdName = XmlElem()->Attribute("name");
+        BaseParams.IdName = IdName ? IdName : wxT("");
+    }
+    
+    /* Processing variable name and locality */
+    if ( pType & bptVariable )
+    {
+        const char* VarName = XmlElem()->Attribute("variable");
+        BaseParams.VarName = VarName ? VarName : wxT("");
+        const char* IsLocal = XmlElem()->Attribute("varlocal");
+        BaseParams.VarNotStored = IsLocal ? ( strcasecmp(IsLocal,"yes") == 0 ) : false;
+    }
+
+    /* Processing style */
+    if ( pType & bptStyle )
+    {
+        wxString StyleStr = XmlGetVariable("style");
+        wxsStyle* Styles = GetInfo().Styles;
+        BaseParams.Style = 0;
+        if ( Styles )
+        {
+            for ( ; Styles->Name != NULL; Styles++ )
+            {
+                int Pos = StyleStr.Find(Styles->Name);
+                int Len = (int)strlen(Styles->Name);
+                if ( Pos < 0 ) continue;
+                
+                // One character after style in StyleStr should be checked - it
+                // must be '|'. Same for character before.
+                
+                if ( ( Pos + Len >= (int)StyleStr.Len() || StyleStr.GetChar(Pos+Len) == '|' ) &&
+                     ( Pos == 0 || StyleStr.GetChar(Pos-1) == '|' ) )
+                {
+                    BaseParams.Style |= Styles->Value;
+                }
+            }
+        }
+    }
+    
+    if ( IsContainer() )
+    {
+        if ( !XmlLoadChildren() ) return false;
+    }
+    
+    
+    return true;
+}
+
+bool wxsWidget::XmlSaveDefaultsT(BasePropertiesType pType)
+{
+    assert ( XmlElem() != NULL );
+   
+   
+    if ( pType & bptPosition )
+    {
+        if ( !BaseParams.DefaultPosition )
+        {
+            XmlSetIntPair("pos",BaseParams.PosX,BaseParams.PosY);
+        }
+    }
+    
+    if ( pType & bptSize )
+    {
+        if ( !BaseParams.DefaultSize )
+        {
+            XmlSetIntPair("size",BaseParams.SizeX,BaseParams.SizeY);
+        }
+    }
+
+    if ( pType & bptId )
+    {
+        XmlElem()->SetAttribute("name",BaseParams.IdName.c_str());
+    }
+    
+    if ( pType & bptVariable )
+    {
+        XmlElem()->SetAttribute("variable",BaseParams.VarName.c_str());
+        XmlElem()->SetAttribute("varlocal",BaseParams.VarNotStored?"yes":"no");
+    }
+
+    if ( pType & bptStyle )
+    {
+        int StyleBits = BaseParams.Style;
+        
+        wxString StyleString;
+        
+        // Warning: This may cause some data los if styles are not
+        //          configured properly
+        
+        for ( wxsStyle* Style = GetInfo().Styles; Style->Name; Style++ )
+        {
+            if ( ( Style->Value != 0 ) && ( ( StyleBits & Style->Value ) == Style->Value ) )
+            {
+                StyleString.Append('|');
+                StyleString.Append(Style->Name);
+                StyleBits &= ~Style->Value;
+            }
+        }
+        
+        if ( StyleString.Len() != 0 )
+        {
+            XmlSetVariable("style",StyleString.c_str()+1);
+        }
+    }
+    
+    if ( IsContainer() )
+    {
+        if ( !XmlSaveChildren() ) return false;
+    }
+    
+    return true;
 }
 
 const char* wxsWidget::XmlGetVariable(const char* name)
@@ -266,26 +342,33 @@ bool wxsWidget::XmlGetIntPair(const char* Name,int& P1,int& P2,int DefP1,int Def
     return false;
 }
  
-void wxsWidget::XmlSetVariable(const char* Name,const char* Value)
+bool wxsWidget::XmlSetVariable(const char* Name,const char* Value)
 {
     assert ( XmlElem() != NULL );
     TiXmlNode * NewNode = XmlElem()->InsertEndChild(TiXmlElement(Name));
-    if ( NewNode ) NewNode->InsertEndChild(TiXmlText(Value));
+    if ( NewNode )
+    {
+        NewNode->InsertEndChild(TiXmlText(Value));
+        return true;
+    }
+    return false;
 }
 
-void wxsWidget::XmlSetInteger(const char* Name,int Value)
+bool wxsWidget::XmlSetInteger(const char* Name,int Value)
 {
-    XmlSetVariable(Name,wxString::Format("%d",Value).c_str());
+    return XmlSetVariable(Name,wxString::Format("%d",Value).c_str());
 }
 
-void wxsWidget::XmlSetIntPair(const char* Name,int Val1,int Val2)
+bool wxsWidget::XmlSetIntPair(const char* Name,int Val1,int Val2)
 {
-    XmlSetVariable(Name,wxString::Format("%d,%d",Val1,Val2).c_str());
+    return XmlSetVariable(Name,wxString::Format("%d,%d",Val1,Val2).c_str());
 }
 
-void wxsWidget::XmlLoadChildren()
+bool wxsWidget::XmlLoadChildren()
 {
     assert ( XmlElem() != NULL );
+    
+    bool Ret = true;
     
     for ( TiXmlElement* Element = XmlElem()->FirstChildElement("object");
           Element != NULL;
@@ -308,27 +391,63 @@ void wxsWidget::XmlLoadChildren()
             wxsWidget* Child = wxsWidgetFactory::Get()->Generate(Name);
             if ( !Child )
             {
+                Ret = false;
                 DebLog("Unknown object : '%s'",Name);
             }
             else
             {
-                if ( Child->XmlLoad(RealObject) )
-                {
-                    Child->XmlLoadSizerStuff(Element);
-                    AddChild(Child);
-                }
-                else
-                {
-                    wxsWidgetFactory::Get()->Kill(Child);
-                }
+                if ( !Child->XmlLoad(RealObject) ) Ret = false;
+                Child->XmlLoadSizerStuff(Element);
+                AddChild(Child);
             }
         }
     }
+    return Ret;
 }
 
-void wxsWidget::XmlSaveChildren()
+bool wxsWidget::XmlSaveChildren()
 {
+    bool IsSizer = GetInfo().Sizer;
+    bool Return = true;
     
+    int Count = GetChildCount();
+    
+    for ( int i=0; i<Count; i++ )
+    {
+        wxsWidget* W = GetChild(i);
+        
+        if ( W )
+        {
+            TiXmlNode* AddChildToThis = XmlElem();
+            const char* ClassName = W->GetInfo().Name;
+            
+            if ( IsSizer && strcmp(ClassName,"spacer") )
+            {
+               // Adding sizeritem object
+               AddChildToThis = XmlElem()->InsertEndChild(TiXmlElement("object"));
+               AddChildToThis->ToElement()->SetAttribute("class","sizeritem");
+            }
+            
+            TiXmlElement* SaveTo = AddChildToThis->InsertEndChild(TiXmlElement("object"))->ToElement();
+            
+            if ( SaveTo )
+            {
+                SaveTo->SetAttribute("class",ClassName);
+                if ( !W->XmlSave(SaveTo) ) Return = false;
+            }
+            else
+            {
+                Return = false;
+            }
+            
+            if ( IsSizer )
+            {
+                W->XmlSaveSizerStuff(AddChildToThis->ToElement());
+            }
+        }
+    }
+    
+    return Return;
 }
 
 void wxsWidget::XmlLoadSizerStuff(TiXmlElement* Elem)
@@ -353,9 +472,8 @@ void wxsWidget::XmlLoadSizerStuff(TiXmlElement* Elem)
         #define BFItem(a,b)  else if ( Token == wxT(#a) ) BaseParams.BorderFlags |= wxsWidgetBaseParams::b
         #define Begin() if (false)
         #define Match(a) else if ( Token == wxT(#a) )
-        #define PlaceH(a) Match(a) HorizPos = a
-        #define PlaceV(a) Match(a) VertPos = a
-        
+        #define PlaceH(a) Match(a) HorizPos = a;
+        #define PlaceV(a) Match(a) VertPos = a;
         
         Begin();
         BFItem(wxLEFT,Left);
@@ -379,35 +497,36 @@ void wxsWidget::XmlLoadSizerStuff(TiXmlElement* Elem)
         Match(wxSHAPED) BaseParams.Shaped = true;
         Match(wxALIGN_CENTER) { HorizPos = wxALIGN_CENTER_HORIZONTAL; VertPos = wxALIGN_CENTER_VERTICAL; }
         Match(wxALIGN_CENTRE) { HorizPos = wxALIGN_CENTER_HORIZONTAL; VertPos = wxALIGN_CENTER_VERTICAL; }
-        PlaceH(wxALIGN_LEFT);
-        PlaceH(wxALIGN_RIGHT);
-        PlaceV(wxALIGN_TOP);
-        PlaceV(wxALIGN_BOTTOM);
-        PlaceH(wxALIGN_CENTER_HORIZONTAL);
-        PlaceH(wxALIGN_CENTRE_HORIZONTAL);
-        PlaceV(wxALIGN_CENTER_VERTICAL);
-        PlaceV(wxALIGN_CENTRE_VERTICAL);
+        PlaceH(wxALIGN_RIGHT)
+        PlaceV(wxALIGN_TOP)
+        PlaceV(wxALIGN_BOTTOM)
+        PlaceH(wxALIGN_CENTER_HORIZONTAL)
+        PlaceH(wxALIGN_CENTRE_HORIZONTAL)
+        PlaceV(wxALIGN_CENTER_VERTICAL)
+        PlaceV(wxALIGN_CENTRE_VERTICAL)
+
 
 // TODO (SpOoN#1#): Check other flags
 
-        if ( HorizPos==wxALIGN_RIGHT )
-        {
-            if ( VertPos==wxALIGN_BOTTOM ) BaseParams.Placement = wxsWidgetBaseParams::RightBottom;
-            else if ( VertPos==wxALIGN_CENTER_VERTICAL ) BaseParams.Placement = wxsWidgetBaseParams::RightCenter;
-            else BaseParams.Placement = wxsWidgetBaseParams::RightTop;
-        }
-        else if ( HorizPos==wxALIGN_CENTER_HORIZONTAL )
-        {
-            if ( VertPos==wxALIGN_BOTTOM ) BaseParams.Placement = wxsWidgetBaseParams::CenterBottom;
-            else if ( VertPos==wxALIGN_CENTER_VERTICAL ) BaseParams.Placement = wxsWidgetBaseParams::Center;
-            else BaseParams.Placement = wxsWidgetBaseParams::LeftTop;
-        }
-        else
-        {
-            if ( VertPos==wxALIGN_BOTTOM ) BaseParams.Placement = wxsWidgetBaseParams::LeftBottom;
-            else if ( VertPos==wxALIGN_CENTER_VERTICAL ) BaseParams.Placement = wxsWidgetBaseParams::LeftCenter;
-            else BaseParams.Placement = wxsWidgetBaseParams::LeftTop;
-        }
+    }
+
+    if ( HorizPos==wxALIGN_RIGHT )
+    {
+        if ( VertPos==wxALIGN_BOTTOM ) BaseParams.Placement = wxsWidgetBaseParams::RightBottom;
+        else if ( VertPos==wxALIGN_CENTER_VERTICAL ) BaseParams.Placement = wxsWidgetBaseParams::RightCenter;
+        else BaseParams.Placement = wxsWidgetBaseParams::RightTop;
+    }
+    else if ( HorizPos==wxALIGN_CENTER_HORIZONTAL )
+    {
+        if ( VertPos==wxALIGN_BOTTOM ) BaseParams.Placement = wxsWidgetBaseParams::CenterBottom;
+        else if ( VertPos==wxALIGN_CENTER_VERTICAL ) BaseParams.Placement = wxsWidgetBaseParams::Center;
+        else BaseParams.Placement = wxsWidgetBaseParams::CenterTop;
+    }
+    else
+    {
+        if ( VertPos==wxALIGN_BOTTOM ) BaseParams.Placement = wxsWidgetBaseParams::LeftBottom;
+        else if ( VertPos==wxALIGN_CENTER_VERTICAL ) BaseParams.Placement = wxsWidgetBaseParams::LeftCenter;
+        else BaseParams.Placement = wxsWidgetBaseParams::LeftTop;
     }
         
     XmlElement = Store;
@@ -442,15 +561,15 @@ void wxsWidget::XmlSaveSizerStuff(TiXmlElement* Elem)
     
     switch ( BaseParams.Placement )
     {
-        case wxsWidgetBaseParams::LeftTop:      Flags.Append("|wxALIGN_LEFT|wxALIGH_TOP"); break;
-        case wxsWidgetBaseParams::CenterTop:    Flags.Append("|wxALIGN_CENTER_HORIZONTAL|wxALIGH_TOP"); break;
-        case wxsWidgetBaseParams::RightTop:     Flags.Append("|wxALIGN_RIGHT|wxALIGH_TOP"); break;
-        case wxsWidgetBaseParams::LeftCenter:   Flags.Append("|wxALIGN_LEFT|wxALIGH_CENTER_VERTICAL"); break;
+        case wxsWidgetBaseParams::LeftTop:      Flags.Append("|wxALIGN_LEFT|wxALIGN_TOP"); break;
+        case wxsWidgetBaseParams::CenterTop:    Flags.Append("|wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP"); break;
+        case wxsWidgetBaseParams::RightTop:     Flags.Append("|wxALIGN_RIGHT|wxALIGN_TOP"); break;
+        case wxsWidgetBaseParams::LeftCenter:   Flags.Append("|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL"); break;
         case wxsWidgetBaseParams::Center:       Flags.Append("|wxALIGN_CENTER"); break;
-        case wxsWidgetBaseParams::RightCenter:  Flags.Append("|wxALIGN_RIGHT|wxALIGH_CENTER_VERTICAL"); break;
-        case wxsWidgetBaseParams::LeftBottom:   Flags.Append("|wxALIGN_LEFT|wxALIGH_BOTTOM"); break;
-        case wxsWidgetBaseParams::CenterBottom: Flags.Append("|wxALIGN_CENTER_HORIZONTAL|wxALIGH_BOTTOM"); break;
-        case wxsWidgetBaseParams::RightBottom:  Flags.Append("|wxALIGN_RIGHT|wxALIGH_BOTTOM"); break;
+        case wxsWidgetBaseParams::RightCenter:  Flags.Append("|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL"); break;
+        case wxsWidgetBaseParams::LeftBottom:   Flags.Append("|wxALIGN_LEFT|wxALIGN_BOTTOM"); break;
+        case wxsWidgetBaseParams::CenterBottom: Flags.Append("|wxALIGN_CENTER_HORIZONTAL|wxALIGN_BOTTOM"); break;
+        case wxsWidgetBaseParams::RightBottom:  Flags.Append("|wxALIGN_RIGHT|wxALIGN_BOTTOM"); break;
     }
     
     if ( BaseParams.Expand ) Flags.Append("|wxEXPAND");
@@ -458,7 +577,7 @@ void wxsWidget::XmlSaveSizerStuff(TiXmlElement* Elem)
     
     if ( Flags.Len() )
     {
-        XmlSetVariable("flags",Flags.c_str()+1);
+        XmlSetVariable("flag",Flags.c_str()+1);
     }
     
     XmlElement = Store;

@@ -33,6 +33,12 @@ class wxsDialogRes : public wxsResource
 		/** Saving current dialog to xml file */
 		void Save();
 		
+        /** Ckecking if this resource ecan be Previewed */
+        virtual bool CanPreview() { return true; }
+        
+        /** This function should show preview in modal */
+        virtual void ShowPreview();
+        
     protected:
     
         /** Creating editor object */

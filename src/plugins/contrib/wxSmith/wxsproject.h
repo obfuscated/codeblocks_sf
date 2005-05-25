@@ -68,6 +68,12 @@ class wxsProject
         
         /** Getting C::B project */
         inline cbProject* GetCBProject() { return Project; }
+        
+        /** Generating full name of internal wxSmith file */
+        virtual wxString GetInternalFileName(const wxString& FileName);
+        
+        /** Getting full name of project's file */
+        virtual wxString GetProjectFileName(const wxString& FileName);
 		
     protected:
         

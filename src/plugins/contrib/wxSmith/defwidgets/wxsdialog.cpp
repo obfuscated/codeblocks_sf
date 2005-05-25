@@ -81,7 +81,7 @@ END_EVENT_TABLE()
 
 
 wxsDialog::wxsDialog(wxsWidgetManager* Man):
-    wxsContainer(Man,true),
+    wxsContainer(Man,true,0,propWindow),
     Centered(false)
 {
 }
@@ -132,11 +132,6 @@ wxWindow* wxsDialog::MyCreatePreview(wxWindow* Parent)
    return new wxsDialogPreview(Parent,this);
 }
 
-bool wxsDialog::MyXmlLoad(TiXmlElement* Element)
-{
-    return wxsWidget::MyXmlLoad(Element);
-}
-
 void wxsDialog::CreateObjectProperties()
 {
     wxsWidget::CreateObjectProperties();
@@ -144,3 +139,13 @@ void wxsDialog::CreateObjectProperties()
 	PropertiesObject.AddProperty("Centered:",Centered,1,false,false);
 }
 
+bool wxsDialog::MyXmlLoad()
+{
+    return true;
+}
+        
+bool wxsDialog::MyXmlSave()
+{
+    return true;
+}
+        

@@ -3,6 +3,7 @@
 #include "../wxswidgetfactory.h"
 #include "../wxswindoweditor.h"
 #include <manager.h>
+#include <wx/xrc/xmlres.h>
 
 
 wxsDialogRes::wxsDialogRes(wxsProject* Project,const wxString& Class, const wxString& Xrc, const wxString& Src,const wxString& Head):
@@ -17,8 +18,8 @@ wxsDialogRes::wxsDialogRes(wxsProject* Project,const wxString& Class, const wxSt
 
 wxsDialogRes::~wxsDialogRes()
 {
-// TODO (SpOoN#1#): Need to kill dialog but this caused crashes
-//    wxsWidgetFactory::Get()->Kill(Dialog);
+    EditClose();
+    wxsWidgetFactory::Get()->Kill(Dialog);
     GetProject()->DeleteDialog(this);
 }
 
@@ -35,7 +36,9 @@ void wxsDialogRes::Save()
     
     if ( Doc )
     {
-        Doc->SaveFile(XrcFile);
+        wxString FullFileName = GetProject()->GetInternalFileName(XrcFile);
+        DebLog("Saving result to %s",FullFileName.c_str());
+        Doc->SaveFile(FullFileName);
         delete Doc;
     }
 }
@@ -44,10 +47,28 @@ TiXmlDocument* wxsDialogRes::GenerateXml()
 {
     TiXmlDocument* NewDoc = new TiXmlDocument;
     TiXmlElement* Resource = NewDoc->InsertEndChild(TiXmlElement("resource"))->ToElement();
-    if ( !Dialog->XmlSave(Resource) )
+    TiXmlElement* XmlDialog = Resource->InsertEndChild(TiXmlElement("object"))->ToElement();
+    XmlDialog->SetAttribute("class","wxDialog");
+    XmlDialog->SetAttribute("name",ClassName.c_str());
+    if ( !Dialog->XmlSave(XmlDialog) )
     {
         delete NewDoc;
         return NULL;
     }
     return NewDoc;
+}
+
+void wxsDialogRes::ShowPreview()
+{
+    Save();
+    
+    wxXmlResource Res(GetProject()->GetInternalFileName(XrcFile));
+    Res.InitAllHandlers();
+    
+    wxDialog* Dlg = Res.LoadDialog(NULL,ClassName);
+    if ( Dlg )
+    {
+        Dlg->ShowModal();
+        delete Dlg;
+    }
 }

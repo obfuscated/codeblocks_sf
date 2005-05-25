@@ -41,7 +41,6 @@ void wxsPropertiesMan::SetActiveWidget(wxsWidget* Widget)
         NewSizer->Add(Wnd,0,wxGROW);
         PropertiesPanel->SetSizer(NewSizer);
         NewSizer->SetVirtualSizeHints(PropertiesPanel);
-        PropertiesPanel->Refresh();
         
         int itMask = 0;
         
@@ -63,6 +62,7 @@ void wxsPropertiesMan::SetActiveWidget(wxsWidget* Widget)
         wxsPalette::Get()->SetInsertionTypeMask(0);
     }
     
+    PropertiesPanel->Refresh();
     PropertiesPanel->Thaw();
 }
 

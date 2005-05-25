@@ -35,6 +35,13 @@ class wxsStaticText: public wxsWidget
         /** Fucntion updating current preview */
         virtual void MyUpdatePreview();
         
+        /** Loading xml data */
+        virtual bool MyXmlLoad();
+        
+        /** Saving xml data */
+        virtual bool MyXmlSave();
+        
+        
     private:
         /** Button's text */
         wxString Text;

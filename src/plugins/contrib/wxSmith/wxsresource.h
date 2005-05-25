@@ -32,6 +32,12 @@ class wxsResource
          */
         void EditClose();
         
+        /** Ckecking if this resource ecan be Previewed */
+        virtual bool CanPreview() { return false; }
+        
+        /** This function should show preview in modal */
+        virtual void ShowPreview() { }
+        
     protected:
     
         /** Function shich should create editor window.
