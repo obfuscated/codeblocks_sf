@@ -37,7 +37,7 @@ BacktraceDlg::~BacktraceDlg()
 void BacktraceDlg::Clear()
 {
     wxListCtrl* lst = XRCCTRL(*this, "lstTrace", wxListCtrl);
-    lst->Clear();
+    lst->ClearAll();
 	lst->Freeze();
 	lst->DeleteAllItems();
 	lst->Thaw();
