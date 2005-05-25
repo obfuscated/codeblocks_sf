@@ -321,7 +321,7 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
     DepsSearchStart(target);
 
     // iterate all files of the project/target and add them to the build process
-    int filesCounter = 0;
+    size_t counter = ret.GetCount();
     MyFilesArray files = GetProjectFilesSortedByWeight(target, true, false);
     for (unsigned int i = 0; i < files.GetCount(); ++i)
     {
@@ -343,25 +343,19 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
         {
             // compile file
             wxArrayString filecmd = GetCompileFileCommand(target, pf);
-            ++filesCounter;
             AppendArray(filecmd, ret);
         }
     }
 
-    if (filesCounter != 0)
-    {
-        // add link command
-        wxArrayString link = GetLinkCommands(target, true);
-        AppendArray(link, ret);
-    }
-    else
-    {
-        if (!target->GetAlwaysRunPreBuildSteps())
-            ret.Clear();
-    }
+    // add link command
+    wxArrayString link = GetLinkCommands(target);
+    AppendArray(link, ret);
+
+    if (ret.GetCount() == counter && !target->GetAlwaysRunPreBuildSteps())
+        ret.Clear();
 
     // add post-build commands
-    if (filesCounter != 0 || target->GetAlwaysRunPostBuildSteps())
+    if (ret.GetCount() != counter || target->GetAlwaysRunPostBuildSteps())
         AppendArray(GetPostBuildCommands(target), ret);
 
     return ret;
