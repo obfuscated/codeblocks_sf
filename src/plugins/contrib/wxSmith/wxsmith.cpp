@@ -63,6 +63,7 @@ cbPlugin* GetPlugin()
 {
 	return new wxSmith;
 }
+wxSmith* wxSmith::Singleton = NULL;
 
 BEGIN_EVENT_TABLE(wxSmith, cbPlugin)
 	EVT_PROJECT_CLOSE(wxSmith::OnProjectClose)
@@ -83,11 +84,13 @@ wxSmith::wxSmith()
 	m_PluginInfo.thanksTo = "Gigi for Faworki";
 	m_PluginInfo.license = LICENSE_GPL;
 	m_PluginInfo.hasConfigure = true;
+	
+	if ( Singleton == NULL ) Singleton = this;
 }
 
 wxSmith::~wxSmith()
 {
-	//dtor
+	if ( Singleton == this ) Singleton = NULL;
 }
 
 void FillTreeCtlReq(wxTreeCtrl* Tree,wxTreeItemId Parent,TiXmlElement* El)

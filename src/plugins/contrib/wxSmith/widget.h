@@ -200,6 +200,9 @@ class wxsWidget
         
         /** Taking parent widget of this one */
         inline wxsWidget* GetParent() { return Parent; }
+        
+        /** Taking resource tree of this widget */
+        wxTreeItemId GetTreeId() { return TreeId; }
 
 /******************************************************************************/
 /* Preview                                                                    */
@@ -654,6 +657,8 @@ protected:
         friend class wxsContainer;
         friend class wxsProject;
         friend class wxsPalette;
+        friend class wxsWidgetFactory;
+
 };
 
 

@@ -3,7 +3,7 @@
 #include "widget.h"
 #include <wx/settings.h>
 #include <wx/scrolwin.h>
-#include "defwidgets/wxsdialog.h"
+#include "wxspropertiesman.h"
 
 wxsWindowEditor::wxsWindowEditor(wxMDIParentFrame* parent, const wxString& title,wxsResource* Resource):
     wxsEditor(parent,title,Resource),
@@ -23,9 +23,25 @@ wxsWindowEditor::~wxsWindowEditor()
 	KillCurrentPreview();
 }
 
+static void WidgetRefreshReq(wxWindow* Wnd)
+{
+    if ( !Wnd ) return;
+    Wnd->Refresh(true);
+    
+    wxWindowList& List = Wnd->GetChildren();
+    for ( wxWindowListNode* Node = List.GetFirst(); Node; Node = Node->GetNext() )
+    {
+        wxWindow* Win = Node->GetData();
+        WidgetRefreshReq(Win);
+    }
+}
+
 void wxsWindowEditor::BuildPreview(wxsWidget* TopWidget)
 {
     SetSizer(NULL);
+    
+    Freeze();
+    
     KillCurrentPreview();
 
     // Creating new sizer
@@ -38,10 +54,12 @@ void wxsWindowEditor::BuildPreview(wxsWidget* TopWidget)
         wxSizer* NewSizer = new wxGridSizer(1);
         NewSizer->Add(TopPreviewWindow,0,wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL|wxALL,10);
         DrawArea->SetSizer(NewSizer);
-        DrawArea->Layout();
         NewSizer->SetVirtualSizeHints(DrawArea);
         TopPreviewWindow->Refresh();
     }
+    
+    Thaw();
+    WidgetRefreshReq(this);
 }
 
 void wxsWindowEditor::KillCurrentPreview()
@@ -53,9 +71,9 @@ void wxsWindowEditor::KillCurrentPreview()
 
 void wxsWindowEditor::OnMouseClick(wxMouseEvent& event)
 {
-    if ( CurrentWidget && CurrentWidget->GetPreview() )
+    if ( CurrentWidget )
     {
-        CurrentWidget->GetPreview()->ProcessEvent(event);
+        wxsPropertiesMan::Get()->SetActiveWidget(CurrentWidget);
     }
 }
 

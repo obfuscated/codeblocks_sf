@@ -116,7 +116,8 @@ void wxsPalette::CreateWidgetsPalette(wxWindow* Wnd)
         Map.insert(std::pair<const char*,const wxsWidgetInfo*>(Info->Category,Info));
         
     // Creatign main sizer inside window
-    wxBoxSizer* Sizer = new wxBoxSizer(wxVERTICAL);
+    wxFlexGridSizer* Sizer = new wxFlexGridSizer(0,1,0,0);
+    Sizer->AddGrowableCol(0);
     
     wxFlexGridSizer* RowSizer = NULL;
     
@@ -176,7 +177,7 @@ void wxsPalette::InsertRequest(const char* Name)
     wxsWidget* Current = wxsPropertiesMan::Get()->GetActiveWidget();
     if ( Current == NULL )
     {
-        DebLog("wxSmith: No widget selecteed - couldn't create new widget");
+        DebLog("wxSmith: No widget selected - couldn't create new widget");
         return;
     }
 
@@ -186,12 +187,6 @@ void wxsPalette::InsertRequest(const char* Name)
     }
     
     wxsWindowEditor* Edit = (wxsWindowEditor*)Current->CurEditor;
-    
-    if ( Edit )
-    {
-        Edit->Freeze();
-    }
-    
     
     wxsWidget* NewWidget = wxsWidgetFactory::Get()->Generate(Name);
     if ( NewWidget == NULL )
@@ -224,7 +219,6 @@ void wxsPalette::InsertRequest(const char* Name)
     if ( Edit )
     {
         Edit->RecreatePreview();
-        Edit->Thaw();
     }
 }
 

@@ -42,6 +42,9 @@ class wxSmith : public cbPlugin
 	public:
 		wxSmith();
 		~wxSmith();
+		
+		static wxSmith* Get() { return Singleton; }
+		
 		int Configure();
 		void BuildMenu(wxMenuBar* menuBar);
 		void BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg);
@@ -82,6 +85,8 @@ class wxSmith : public cbPlugin
         /* Selecting given objects */
         void OnSelectWidget(wxsResourceTreeData* Data);
         void OnSelectDialog(wxsResourceTreeData* Data);
+        
+        static wxSmith* Singleton;
                 
 		DECLARE_EVENT_TABLE()
 };

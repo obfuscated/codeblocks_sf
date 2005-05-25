@@ -46,7 +46,7 @@ wxs2IntPropertyWindow::wxs2IntPropertyWindow(wxWindow* Parent,wxs2IntProperty* P
     Text2 = new wxTextCtrl(this,-1,wxT("")/*wxString::Format("%d",Property->Value2)*/,wxDefaultPosition,wxDefaultSize,wxTE_PROCESS_ENTER);
     
     wxSize Size = Text1->GetSize();
-    Size.SetWidth(Size.GetWidth()/2);
+    Size.SetWidth(Size.GetHeight()*2);  // TODO: This seem to be useless
     Text1->SetSize(Size);
     Text2->SetSize(Size);
 
@@ -57,7 +57,6 @@ wxs2IntPropertyWindow::wxs2IntPropertyWindow(wxWindow* Parent,wxs2IntProperty* P
     Sizer->Add(new wxStaticText(this,-1,wxT("x")),0,wxLEFT|wxRIGHT|wxALIGN_CENTRE_VERTICAL,5);
     Sizer->Add(Text2,0,wxGROW);
     SetSizer(Sizer);
-    Layout();
     Sizer->SetSizeHints(this);
 }
 

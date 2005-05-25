@@ -1,5 +1,7 @@
 #include "wxswidgetfactory.h"
 
+#include "wxsmith.h"
+
 wxsWidgetFactory* wxsWidgetFactory::Singleton = new wxsWidgetFactory;
 
 wxsWidgetFactory::wxsWidgetFactory()
@@ -30,11 +32,17 @@ void wxsWidgetFactory::Kill(wxsWidget* Widget)
     if ( Widget )
     {
         // First unbinding it from parent
-        
         wxsWidget* Parent = Widget->GetParent();
         if ( Parent )
         {
             Parent->DelChild(Widget);
+        }
+        
+        // Deleting resource tree entrry
+        wxTreeCtrl* Tree = wxSmith::Get()->GetResourceTree();
+        if ( Tree )
+        {
+            Tree->Delete(Widget->TreeId);
         }
         
         // Deleting widget

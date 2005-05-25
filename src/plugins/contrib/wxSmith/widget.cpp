@@ -6,6 +6,7 @@
 #include "wxswidgetfactory.h"
 
 #include <wx/tokenzr.h>
+#include <wx/list.h>
 
 wxsWidget::~wxsWidget()
 {
@@ -107,10 +108,11 @@ void wxsWidget::UpdatePreview(bool IsReshaped,bool NeedRecreate)
     
     Updating = true;
     
-    CurEditor->Freeze();
+    CurEditor->RecreatePreview();
+
+    /*
     
-// TODO (SpOoN#1#): Addeed this here to always recreate preview
-    NeedRecreate = true;
+    
     
     if ( NeedRecreate )
     {
@@ -119,10 +121,8 @@ void wxsWidget::UpdatePreview(bool IsReshaped,bool NeedRecreate)
         KillPreview();
         CreatePreview(GetParentPreview(),Editor);
     }
-    else
-    {
-        MyUpdatePreview();
-    }
+
+    MyUpdatePreview();
     
     if ( IsReshaped )
     {
@@ -136,7 +136,8 @@ void wxsWidget::UpdatePreview(bool IsReshaped,bool NeedRecreate)
         }
     }
     
-    CurEditor->Thaw();
+    */
+    
     Updating = false;
 }
 
@@ -342,6 +343,9 @@ void wxsWidget::XmlLoadSizerStuff(TiXmlElement* Elem)
     
     wxStringTokenizer tokens(XmlGetVariable("flag"),wxT("|"));
     
+    int HorizPos = 0;
+    int VertPos = 0;
+    
     while ( tokens.HasMoreTokens() )
     {
         wxString Token = tokens.GetNextToken().Trim(true).Trim(false);
@@ -352,8 +356,6 @@ void wxsWidget::XmlLoadSizerStuff(TiXmlElement* Elem)
         #define PlaceH(a) Match(a) HorizPos = a
         #define PlaceV(a) Match(a) VertPos = a
         
-        int HorizPos = 0;
-        int VertPos = 0;
         
         Begin();
         BFItem(wxLEFT,Left);

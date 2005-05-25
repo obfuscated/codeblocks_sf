@@ -52,6 +52,7 @@ class wxsDialogPreview:  public wxPanel
                     wxSizer* Sizer = new wxGridSizer(1);
                     Sizer->Add(Widget->GetPreview(),0,wxGROW);
                     SetSizer(Sizer);
+                    Sizer->SetSizeHints(this);
                 }
             }
         }

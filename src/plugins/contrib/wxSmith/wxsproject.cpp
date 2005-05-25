@@ -113,7 +113,7 @@ inline void wxsProject::Clear()
     Dialogs.clear();
     Frames.clear();
     Panels.clear();
-    
+    Plugin->GetResourceTree()->Refresh();
     DuringClear = false;
 }
 
@@ -134,6 +134,7 @@ void wxsProject::BuildTree(wxTreeCtrl* Tree,wxTreeItemId WhereToAdd)
                 new wxsResourceTreeData(*i) ) );
     }
 
+    Tree->Refresh();
 }
 
 void wxsProject::DumpXml(const TiXmlNode* Elem,wxTreeCtrl* Tree,wxTreeItemId id)

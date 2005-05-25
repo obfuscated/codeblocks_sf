@@ -1,6 +1,7 @@
 #include "wxspropertiesman.h"
 
 #include "wxspalette.h"
+#include "wxsmith.h"
 
 wxsPropertiesMan::wxsPropertiesMan():
     CurrentWidget(NULL),
@@ -39,7 +40,8 @@ void wxsPropertiesMan::SetActiveWidget(wxsWidget* Widget)
         CurrentWidget->UpdateProperties();
         NewSizer->Add(Wnd,0,wxGROW);
         PropertiesPanel->SetSizer(NewSizer);
-        PropertiesPanel->Layout();
+        NewSizer->SetVirtualSizeHints(PropertiesPanel);
+        PropertiesPanel->Refresh();
         
         int itMask = 0;
         
@@ -54,6 +56,7 @@ void wxsPropertiesMan::SetActiveWidget(wxsWidget* Widget)
         }
         
         wxsPalette::Get()->SetInsertionTypeMask(itMask);
+        wxSmith::Get()->GetResourceTree()->SelectItem(Widget->GetTreeId());
     }
     else
     {
