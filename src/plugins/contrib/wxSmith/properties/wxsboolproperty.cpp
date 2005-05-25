@@ -25,7 +25,7 @@ wxsBoolPropertyWindow::wxsBoolPropertyWindow(wxWindow* Parent,wxsBoolProperty* P
     wxCheckBox(Parent,-1,wxT("")),
     Prop(Property)
 {
-}
+}   
 
 wxsBoolPropertyWindow::~wxsBoolPropertyWindow()
 {

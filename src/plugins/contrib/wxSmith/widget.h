@@ -580,14 +580,37 @@ protected:
         /** Getting size/position from given name */
         virtual bool XmlGetIntPair(const char* Name,int& P1,int& P2,int DefP1=-1,int DefP2=-1);
         
+        /** Setting string value */
+        virtual void XmlSetVariable(const char* Name,const char* Value);
+        
+        /** Setting integer value */
+        virtual void XmlSetInteger(const char* Name,int Value);
+        
+        /** Setting 2 integers */
+        virtual void XmlSetIntPair(const char* Name,int Val1,int Val2);
+        
         /** Loading all children
          *
          *  Valid for compound objects only
          */
         virtual void XmlLoadChildren();
         
+        /** Saving all children
+         *
+         * Valid for compouund objects only, if current widget is a sizer,
+         * additional "sizeritem" object will be created
+         */
+        virtual void XmlSaveChildren();
+        
+        
     private:
     
+        /** Loading sizer elements from given node */
+        virtual void XmlLoadSizerStuff(TiXmlElement* Elem);
+        
+        /** Saving sizer element to given node */
+        virtual void XmlSaveSizerStuff(TiXmlElement* Elem);
+       
         /** Adding default properties to properties manager */
         
         virtual void AddDefaultProperties(BasePropertiesType Props);

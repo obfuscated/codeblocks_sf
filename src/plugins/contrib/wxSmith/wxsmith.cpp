@@ -205,6 +205,8 @@ void wxSmith::OnProjectClose(CodeBlocksEvent& event)
     ProjectMapI i = ProjectMap.find(Proj);
     if ( i == ProjectMap.end() ) return;
     
+    (*i).second->SaveProject();
+    
     delete (*i).second;
 }
 

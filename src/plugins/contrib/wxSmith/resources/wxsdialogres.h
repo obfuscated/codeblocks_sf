@@ -30,12 +30,18 @@ class wxsDialogRes : public wxsResource
 		/** Getting main dialog widget */
 		inline wxsDialog& GetDialog() { return *Dialog; }
 		
+		/** Saving current dialog to xml file */
+		void Save();
+		
     protected:
     
         /** Creating editor object */
         virtual wxsEditor* CreateEditor();
 		
 	private:
+	
+        /** Creating xml tree for current widget */
+        TiXmlDocument* GenerateXml();
 	
         wxString   ClassName;
         wxString   XrcFile;

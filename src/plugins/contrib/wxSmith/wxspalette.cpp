@@ -127,7 +127,7 @@ void wxsPalette::CreateWidgetsPalette(wxWindow* Wnd)
         if ( !(*i).first || strcasecmp(PreviousGroup,(*i).first) )
         {
             if ( RowSizer ) Sizer->Add(RowSizer,0,wxALL|wxGROW,5);
-            Sizer->Add(new wxStaticLine(Wnd),0,wxGROW);
+            Sizer->Add(new wxStaticLine(Wnd,-1),0,wxGROW);
             
             if ( (*i).first && (*i).first[0] )
             {

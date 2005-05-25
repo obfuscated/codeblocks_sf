@@ -325,14 +325,25 @@ TiXmlDocument* wxsProject::GenerateXml()
 
 void wxsProject::SaveProject()
 {
-//    TiXmlDocument* Doc = GenerateXml();
-/*
+    
+    if ( Integration != Integrated ) return;
+    
+    WorkingPath.SetName(wxSmithMainConfigFile);
+    WorkingPath.SetExt(wxT(""));
+    WorkingPath.Assign(WorkingPath.GetFullPath());  // Reparsing path
+
+    TiXmlDocument* Doc = GenerateXml();
+
     if ( Doc )
     {
-        Doc->SaveFile("c:/test.txt");
+        Doc->SaveFile(WorkingPath.GetFullPath());
         delete Doc;
     }
-*/
+
+    for ( DialogListI i = Dialogs.begin(); i!=Dialogs.end(); ++i )
+    {
+    
+    }
 }
 
 void wxsProject::DeleteDialog(wxsDialogRes* Resource)

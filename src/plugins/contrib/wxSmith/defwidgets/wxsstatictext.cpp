@@ -77,11 +77,11 @@ const char* wxsStaticText::GetProducingCode(wxsCodeParams& Params)
     static wxString Code;
     
     Code = wxString::Format(
-        "%s = new wxStaticText(%s,%s,wxT(\"%s\"));",
+        "%s = new wxStaticText(%s,%s,wxT(%s));",
         Params.ParentName,
         BaseParams.VarName.c_str(),
         BaseParams.IdName.c_str(),
-        Text.c_str()   // TODO (SpOoN#1#): Create some function which wuold add slashes to some uncommon characters
+        GetCString(Text).c_str()
     );
     
     return Code.c_str();

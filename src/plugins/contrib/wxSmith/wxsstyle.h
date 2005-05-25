@@ -52,7 +52,7 @@ struct wxsStyle
     WXS_ST(wxHSCROLL)                           \
     WXS_ST(wxALWAYS_SHOW_SB)                    \
     WXS_ST(wxCLIP_CHILDREN)                     \
-    WXS_ST(wxFULL_REPAINT_ON_RESIZE)
+    /*WXS_ST(wxFULL_REPAINT_ON_RESIZE)*/
     
 
 #endif

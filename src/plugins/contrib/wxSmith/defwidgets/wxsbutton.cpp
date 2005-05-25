@@ -32,7 +32,7 @@ class wxsButtonPreview: public wxButton
         void UpdateContent()
         {
             assert ( Object != NULL );
-            SetPosition(Object->GetPosition());
+            Move(Object->GetPosition());
             SetSize(Object->GetSize());
             SetLabel(Object->GetLabel());
             SetWindowStyle(Object->GetStyle());

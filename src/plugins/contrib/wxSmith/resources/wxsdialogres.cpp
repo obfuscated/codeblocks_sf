@@ -28,3 +28,26 @@ wxsEditor* wxsDialogRes::CreateEditor()
     Edit->BuildPreview(Dialog);
     return Edit;
 }
+
+void wxsDialogRes::Save()
+{
+    TiXmlDocument* Doc = GenerateXml();
+    
+    if ( Doc )
+    {
+        Doc->SaveFile(XrcFile);
+        delete Doc;
+    }
+}
+
+TiXmlDocument* wxsDialogRes::GenerateXml()
+{
+    TiXmlDocument* NewDoc = new TiXmlDocument;
+    TiXmlElement* Resource = NewDoc->InsertEndChild(TiXmlElement("resource"))->ToElement();
+    if ( !Dialog->XmlSave(Resource) )
+    {
+        delete NewDoc;
+        return NULL;
+    }
+    return NewDoc;
+}
