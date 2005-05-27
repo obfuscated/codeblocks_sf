@@ -44,7 +44,6 @@
             wxDefaultSize :                                                 \
             wxSize(BaseParams.SizeX,BaseParams.SizeY);                      \
         long style = BaseParams.Style;                                      \
-        DebLog("%s",#Code);                                                 \
         Code;                                                               \
         ThisWidget->PushEventHandler(new wxsDefEvtHandler(this));           \
         return ThisWidget;                                                  \

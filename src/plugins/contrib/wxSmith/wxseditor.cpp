@@ -12,7 +12,6 @@ wxsEditor::wxsEditor(wxWindow* parent, const wxString& title,wxsResource* _Resou
 
 wxsEditor::~wxsEditor()
 {
-    Unbind();
 }
 
 bool wxsEditor::Close()
@@ -32,12 +31,3 @@ void wxsEditor::Unbind()
         ResStore->EditorSaysHeIsClosing();
     }
 }
-
-void wxsEditor::OnClose(wxCloseEvent& event)
-{
-    if ( !QueryClose() || ! Close() ) event.Veto();
-}
-
-BEGIN_EVENT_TABLE(wxsEditor,EditorBase)
-    EVT_CLOSE(wxsEditor::OnClose)
-END_EVENT_TABLE()

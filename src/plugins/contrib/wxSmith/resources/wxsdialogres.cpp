@@ -4,6 +4,7 @@
 #include "../wxswindoweditor.h"
 #include <manager.h>
 #include <wx/xrc/xmlres.h>
+#include <editormanager.h>
 
 
 wxsDialogRes::wxsDialogRes(wxsProject* Project,const wxString& Class, const wxString& Xrc, const wxString& Src,const wxString& Head):
@@ -25,7 +26,7 @@ wxsDialogRes::~wxsDialogRes()
 
 wxsEditor* wxsDialogRes::CreateEditor()
 {
-    wxsWindowEditor* Edit = new wxsWindowEditor(Manager::Get()->GetAppWindow(),XrcFile,this);
+    wxsWindowEditor* Edit = new wxsWindowEditor(Manager::Get()->GetEditorManager()->GetNotebook() ,XrcFile,this);
     Edit->BuildPreview(Dialog);
     return Edit;
 }

@@ -34,13 +34,8 @@ class wxsEditor : public EditorBase
         /** Function unbinding from current resurce if any */
         void Unbind();
         
-        /** Handler for Close evnt - will uunnbind from resurce */
-        void OnClose(wxCloseEvent& event);
-        
         /** Currently associated resource */
         wxsResource* Resource;
-        
-        DECLARE_EVENT_TABLE()
 };
 
 #endif // WXSEDITOR_H

@@ -25,7 +25,6 @@ wxsWidget * wxsWidgetFactory::Generate(const char* Name)
     WidgetsMapI i = Widgets.find(Name);
     if ( i == Widgets.end() ) return NULL;
     const wxsWidgetInfo* Info = (*i).second;
-    DebLog("Found : %s %d",Info->Name,Info->Id);
     return Info->Manager->ProduceWidget(Info->Id);
 }
 

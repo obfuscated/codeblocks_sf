@@ -45,7 +45,6 @@ class wxsWindowEditor : public wxsEditor
 	
         void OnMouseClick(wxMouseEvent& event);
         void OnActivate(wxActivateEvent& event);
-        void OnClose(wxCloseEvent& event);
         
         wxsWidget* CurrentWidget;
 	

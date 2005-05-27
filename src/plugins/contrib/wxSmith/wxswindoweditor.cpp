@@ -66,6 +66,7 @@ void wxsWindowEditor::BuildPreview(wxsWidget* TopWidget)
     }
     
     Thaw();
+    Layout();
     WidgetRefreshReq(this);
 }
 
@@ -108,18 +109,11 @@ void wxsWindowEditor::PreviewReshaped()
 
 void wxsWindowEditor::MyUnbind()
 {
+    wxsPalette::Get()->ResourceClosed(GetResource());
     KillCurrentPreview();
 }
-
-void wxsWindowEditor::OnClose(wxCloseEvent& event)
-{
-    wxsPalette::Get()->ResourceClosed(GetResource());
-    event.Skip();
-}
-
 
 BEGIN_EVENT_TABLE(wxsWindowEditor,wxsEditor)
     EVT_LEFT_DOWN(wxsWindowEditor::OnMouseClick)
     EVT_ACTIVATE(wxsWindowEditor::OnActivate)
-    EVT_CLOSE(wxsWindowEditor::OnClose)
 END_EVENT_TABLE()
