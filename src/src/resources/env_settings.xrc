@@ -117,6 +117,14 @@
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
+                  <object class="wxCheckBox" name="chkShowStartPage">
+                    <label>Show &quot;Start here&quot; page (shown only when there are no open projects)</label>
+                    <checked>1</checked>
+                  </object>
+                  <flag>wxALL|wxGROW</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
                   <object class="wxCheckBox" name="chkAutoHideMessages">
                     <label>Auto-hide message pane</label>
                     <checked>1</checked>

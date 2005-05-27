@@ -53,6 +53,7 @@
 
 #include "dlgaboutplugin.h"
 #include "dlgabout.h"
+#include "startherepage.h"
 #include "printdlg.h"
 #include <wx/printdlg.h>
 
@@ -295,13 +296,15 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_SASH_DRAGGED(-1, MainFrame::OnDragSash)
 	
 	EVT_PROJECT_ACTIVATE(MainFrame::OnProjectActivated)
+	EVT_PROJECT_OPEN(MainFrame::OnProjectOpened)
+	EVT_PROJECT_CLOSE(MainFrame::OnProjectClosed)
 	
 	/// CloseFullScreen event handling
 	EVT_BUTTON( idCloseFullScreen, MainFrame::OnToggleFullScreen )
 END_EVENT_TABLE()
 
 MainFrame::MainFrame(wxWindow* parent)
-       : wxMDIParentFrame(parent, -1, "MainWin", wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE),
+       : wxFrame(parent, -1, "MainWin", wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE),
 	   m_pCloseFullScreenBtn(0L),
        m_pNotebook(0L),
 	   m_pLeftSash(0L),
@@ -353,6 +356,7 @@ MainFrame::MainFrame(wxWindow* parent)
 #endif // __WXMSW__
 
     InitPrinting();
+    ShowHideStartPage();
 
     ConfigManager::AddConfiguration(_("Application"), "/main_frame");
     ConfigManager::AddConfiguration(_("Environment"), "/environment");
@@ -413,7 +417,7 @@ void MainFrame::CreateIDE()
 	m_pEdMan = Manager::Get()->GetEditorManager();
 	m_pPrjMan = Manager::Get()->GetProjectManager();
 	m_pMsgMan = Manager::Get()->GetMessageManager();
- 
+
 	if (ConfigManager::Get()->Read("/main_frame/layout/toolbar_show", 1))
         CreateToolbars();
 }
@@ -919,8 +923,10 @@ void MainFrame::DoUpdateStatusBar()
 
 void MainFrame::DoUpdateLayout()
 {
+    if (!m_pEdMan)
+        return;
 	wxLayoutAlgorithm layout;
-    layout.LayoutMDIFrame(this);
+    layout.LayoutFrame(this, m_pEdMan->GetNotebook());
 
 #if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)	
 	/**
@@ -964,6 +970,47 @@ void MainFrame::RePositionManagerTree(bool left)
     }
     m_pLeftSash->Show();
     DoUpdateLayout();
+}
+
+void MainFrame::ShowHideStartPage(bool forceHasProject)
+{
+    // we use the 'forceHasProject' param because when a project is opened
+    // the EVT_PROJECT_OPEN event is fired *before* ProjectManager::GetProjects()
+    // and ProjectManager::GetActiveProject() are updated...
+    bool show = !forceHasProject &&
+                m_pPrjMan->GetProjects()->GetCount() == 0 &&
+                ConfigManager::Get()->Read("/environment/start_here_page", 1);
+
+    EditorBase* sh = m_pEdMan->GetEditor(g_StartHereTitle);
+    if (show && !sh)
+        sh = new StartHerePage(this, m_pEdMan->GetNotebook());
+    else if (sh)
+        sh->Destroy();
+}
+
+bool MainFrame::HandleStartHereLink(const wxString& link)
+{
+    wxCommandEvent evt;
+    if (link.Matches(_("CB_CMD_NEW_PROJECT")))
+        TemplateManager::Get()->NewProject();
+    else if (link.Matches(_("CB_CMD_OPEN_PROJECT")))
+        OnFileOpen(evt);
+    else if (link.Matches(_("CB_CMD_CONF_ENVIRONMENT")))
+        OnSettingsEnvironment(evt);
+    else if (link.Matches(_("CB_CMD_CONF_EDITOR")))
+        Manager::Get()->GetEditorManager()->Configure();
+    else if (link.Matches(_("CB_CMD_CONF_COMPILER")))
+    {
+        PluginsArray arr = Manager::Get()->GetPluginManager()->GetCompilerOffers();
+        if (arr.GetCount() != 0)
+            arr[0]->Configure();
+    }
+    else
+    {
+        // open normal URL links
+        return false;
+    }
+    return true;
 }
 
 void MainFrame::InitializeRecentFilesHistory()
@@ -1105,7 +1152,7 @@ bool MainFrame::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& files)
     return true;
 }
 
-void MainFrame::OnFileOpen(wxCommandEvent& WXUNUSED(event))
+void MainFrame::OnFileOpen(wxCommandEvent& event)
 {
     wxFileDialog* dlg = new wxFileDialog(this,
                             _("Open file"),
@@ -1863,6 +1910,7 @@ void MainFrame::OnSettingsEnvironment(wxCommandEvent& event)
         if (m_SmallToolBar != tbarsmall)
             CreateToolbars();
         m_pMsgMan->EnableAutoHide(ConfigManager::Get()->Read("/message_manager/auto_hide", 0L));
+        ShowHideStartPage();
 	}
 }
 
@@ -1917,4 +1965,14 @@ void MainFrame::OnProjectActivated(CodeBlocksEvent& event)
 {
 	DoUpdateAppTitle();
 	event.Skip();
+}
+
+void MainFrame::OnProjectOpened(CodeBlocksEvent& event)
+{
+    ShowHideStartPage(true);
+}
+
+void MainFrame::OnProjectClosed(CodeBlocksEvent& event)
+{
+    ShowHideStartPage();
 }

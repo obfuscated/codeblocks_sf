@@ -455,11 +455,6 @@ cbProject* ProjectManager::LoadProject(const wxString& filename)
     s_CanShutdown = false;
 	cbProject* project = IsOpen(filename);
 	
-	// wxMDIClientWindow* mywin =  Manager::Get()->GetAppWindow()->GetClientWindow();
-	// if(mywin)
-    //    mywin->Hide();
-	// Freeze child windows' flickery display
-	
 	// "Try" block (loop which only gets executed once)
 	// These blocks are extremely useful in constructs that need 
 	// premature exits. Instead of having multiple return points,
@@ -793,9 +788,6 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
     if(m_pTopEditor)
         m_pTopEditor->Activate();
     Manager::Get()->GetEditorManager()->RefreshOpenedFilesTree(true);
-    wxMDIChildFrame* child=Manager::Get()->GetAppWindow()->GetActiveChild();
-    if(child)
-        child->Maximize(true);
     return m_pWorkspace->IsOK();
 }
 
@@ -1054,12 +1046,6 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
 {
     SANITY_CHECK();
 	FileType ft = FileTypeOf(filename);
-	bool wasmaximized = false;
-	if(!IsLoading())
-	{
-        if(Manager::Get()->GetAppWindow()->GetActiveChild())
-            wasmaximized = Manager::Get()->GetAppWindow()->GetActiveChild()->IsMaximized();
-    }
 	
 	if (ft == ftHeader ||
 		ft == ftSource)
@@ -1068,8 +1054,6 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
         cbEditor* ed = Manager::Get()->GetEditorManager()->Open(filename);
         if (ed)
         {
-            if(wasmaximized)
-                ed->Maximize(true);
             ed->SetProjectFile(pf);
             ed->Show(true);
             
@@ -1090,8 +1074,6 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
 		{
             // custom editors just get activated
             eb->Activate();
-            if(wasmaximized)
-                eb->Maximize(true);
             return;
         }
 

@@ -17,13 +17,12 @@
 
 extern int ID_EditorManager;
 
-
 WX_DECLARE_LIST(EditorBase, EditorsList);
 WX_DECLARE_STRING_HASH_MAP(wxString, AutoCompleteMap);
 
 // forward decls
-class wxMenuBar;
 class wxNotebook;
+class wxMenuBar;
 class EditorColorSet;
 class cbProject;
 class cbEditor;
@@ -68,6 +67,7 @@ class DLLIMPORT EditorManager : public wxEvtHandler
     public:
         friend class Manager; // give Manager access to our private members
         static bool CanShutdown(){ return s_CanShutdown; }
+        wxNotebook* GetNotebook(){ return m_pNotebook; }
         void CreateMenu(wxMenuBar* menuBar);
         void ReleaseMenu(wxMenuBar* menuBar);
         void Configure();        
@@ -80,6 +80,7 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         EditorBase* GetEditor(const wxString& filename){ return IsOpen(filename); } // synonym of IsOpen()
         EditorBase* GetActiveEditor();
         cbEditor* GetBuiltinEditor(EditorBase* eb);
+        int FindPageFromEditor(EditorBase* eb);
 
         // "overloaded" functions for easier access
         // they all return a cbEditor pointer if the editor is builtin, or NULL
@@ -88,6 +89,8 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         cbEditor* GetBuiltinEditor(const wxString& filename){ return IsBuiltinOpen(filename); } // synonym of IsBuiltinOpen()
         cbEditor* GetBuiltinActiveEditor(){ return GetBuiltinEditor(GetActiveEditor()); }
 
+        void ActivateNext();
+        void ActivatePrevious();
         void SetActiveEditor(EditorBase* ed);
         EditorColorSet* GetColorSet(){ return (this==NULL) ? 0 : m_Theme; }
         void SetColorSet(EditorColorSet* theme);
@@ -120,7 +123,7 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         int Find(cbEditor* editor, cbFindReplaceData* data);
         int Replace(cbEditor* editor, cbFindReplaceData* data);
         int FindNext(bool goingDown);
-        
+
         void Print(PrintScope ps, PrintColorMode pcm);
 
         /** Check if one of the open files has been modified outside the IDE. If so, ask to reload it. */
@@ -144,6 +147,10 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         void RefreshOpenedFilesTree(bool force = false);
         #endif
         
+        void OnPageChanged(wxCommandEvent& event);
+        void OnPageChanging(wxCommandEvent& event);
+        void OnAppDoneStartup(wxCommandEvent& event);
+        void OnAppStartShutdown(wxCommandEvent& event);
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnTreeItemSelected(wxTreeEvent &event);
         void OnTreeItemActivated(wxTreeEvent &event);
@@ -152,7 +159,7 @@ class DLLIMPORT EditorManager : public wxEvtHandler
     protected:
         // m_EditorsList access
         void AddEditorBase(EditorBase* eb);
-        void RemoveEditorBase(EditorBase* eb);
+        void RemoveEditorBase(EditorBase* eb, bool deleteObject = true);
         cbEditor* InternalGetBuiltinEditor(EditorsList::Node* node);
         
         void LoadAutoComplete();
@@ -173,6 +180,8 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         EditorManager(wxWindow* parent);
         ~EditorManager();
         void CalculateFindReplaceStartEnd(cbEditor* editor, cbFindReplaceData* data);
+        
+        wxNotebook* m_pNotebook;
         EditorsList m_EditorsList;
         cbFindReplaceData* m_LastFindReplaceData;
         EditorColorSet* m_Theme;

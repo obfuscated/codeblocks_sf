@@ -93,7 +93,7 @@ const int idSwitchTo = wxNewId();
 const int idInsert = wxNewId();
 const int idEmptyMenu = wxNewId();
 
-BEGIN_EVENT_TABLE(cbEditor, wxMDIChildFrame)
+BEGIN_EVENT_TABLE(cbEditor, EditorBase)
     EVT_CLOSE(cbEditor::OnClose)
     EVT_TIMER(-1, cbEditor::OnTimer)
     // we got dynamic events; look in CreateEditor()
@@ -122,7 +122,7 @@ BEGIN_EVENT_TABLE(cbEditor, wxMDIChildFrame)
 END_EVENT_TABLE()
 
 // class constructor
-cbEditor::cbEditor(wxMDIParentFrame* parent, const wxString& filename, EditorColorSet* theme)
+cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColorSet* theme)
     : EditorBase(parent, filename),
 	m_pControl(0L),
 	m_Modified(false),
@@ -169,7 +169,8 @@ cbEditor::~cbEditor()
 	{
 		if (m_pProjectFile)
 			m_pProjectFile->editorOpen = false;
-        delete m_pControl;
+        m_pControl->Destroy();
+        m_pControl = 0;
 	}
 }
 
@@ -271,12 +272,12 @@ void cbEditor::CreateEditor()
 {
 	m_ID = wxNewId();
 
-    //wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
-    m_pControl = new cbStyledTextCtrl(this, m_ID);
+    wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
+    m_pControl = new cbStyledTextCtrl(this, m_ID, wxPoint(0, 0), GetSize());
 	m_pControl->UsePopUp(false);
-    //bs->Add(m_pControl, 1, wxEXPAND);
-    //SetAutoLayout(true);
-    //SetSizer(bs);
+    bs->Add(m_pControl, 1, wxEXPAND);
+    SetSizer(bs);
+    SetAutoLayout(true);
 
     // dynamic events
     Connect( m_ID,  -1, wxEVT_STC_MARGINCLICK,
@@ -1011,7 +1012,7 @@ void cbEditor::OnContextMenuEntry(wxCommandEvent& event)
         // probably a "Switch to..." item
         cbEditor* ed = m_SwitchTo[id];
         if (ed)
-            ed->Activate();
+            Manager::Get()->GetEditorManager()->SetActiveEditor(ed);
         m_SwitchTo.clear();
     }
 	//Manager::Get()->GetMessageManager()->DebugLog("Leaving OnContextMenuEntry");

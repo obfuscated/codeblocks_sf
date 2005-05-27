@@ -2701,6 +2701,28 @@
 			<Option objectName="src\resources\resources.res"/>
 			<Option target="src"/>
 		</Unit>
+		<Unit filename="src\resources\start_here\cb_logo.jpg">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\start_here\start_here.html">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\startherepage.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\startherepage.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
 		<Unit filename="templates\console-main-c.cpp">
 			<Option compilerVar="CPP"/>
 			<Option compile="0"/>

@@ -3,9 +3,10 @@
 
 #include <wx/event.h>
 #include "settings.h"
+#include "sdk_events.h"
 
 // forward decls
-class wxMDIParentFrame;
+class wxFrame;
 class wxNotebook;
 class ProjectManager;
 class EditorManager;
@@ -24,10 +25,11 @@ class wxToolBar;
 class DLLIMPORT Manager
 {
 	public:
-        static Manager* Get(wxMDIParentFrame* appWindow = 0L, wxNotebook* notebook = 0L);
+        static Manager* Get(wxFrame* appWindow = 0L, wxNotebook* notebook = 0L);
 		static void Free();
-		wxMDIParentFrame* GetAppWindow();
+		wxFrame* GetAppWindow();
 		wxNotebook* GetNotebook();
+		bool ProcessEvent(CodeBlocksEvent& event);
 		ProjectManager* GetProjectManager();
 		EditorManager* GetEditorManager();
 		MessageManager* GetMessageManager();
@@ -60,11 +62,12 @@ class DLLIMPORT Manager
         static bool isToolBar16x16(wxToolBar* toolBar);
 
     private:
-		Manager(wxMDIParentFrame* appWindow, wxNotebook* notebook);
+		Manager(wxFrame* appWindow, wxNotebook* notebook);
 		~Manager();
 
+        bool SendEventTo(wxEvtHandler* handler, CodeBlocksEvent& event);
 		void OnMenu(wxCommandEvent& event);
-        wxMDIParentFrame* m_pAppWindow;
+        wxFrame* m_pAppWindow;
         wxNotebook* m_pNotebook;
 };
 

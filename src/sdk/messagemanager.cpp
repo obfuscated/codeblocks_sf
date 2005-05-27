@@ -33,6 +33,7 @@
 
 #include "manager.h"
 #include "messagemanager.h" // class's header file
+#include "editormanager.h"
 #include "configmanager.h"
 #include "simpletextlog.h"
 #include "managerproxy.h"
@@ -359,10 +360,14 @@ void MessageManager::Open()
         return;
     m_Open = true;
     wxSashLayoutWindow* sash = (wxSashLayoutWindow*)GetParent();
+    if (!sash)
+        return;
+    if (!sash->IsShown())
+        sash->Show(true);
     sash->SetDefaultSize(wxSize(1, m_OpenSize));
 
 	wxLayoutAlgorithm layout;
-    layout.LayoutMDIFrame(Manager::Get()->GetAppWindow());
+    layout.LayoutFrame(Manager::Get()->GetAppWindow(), Manager::Get()->GetEditorManager()->GetNotebook());
 }
 
 void MessageManager::Close(bool force)
@@ -374,14 +379,16 @@ void MessageManager::Close(bool force)
 
     m_LockCounter = 0;
     wxSashLayoutWindow* sash = (wxSashLayoutWindow*)GetParent();
-    DebugLog("before m_OpenSize=%d", m_OpenSize);
+    if (!sash)
+        return;
+//    DebugLog("before m_OpenSize=%d", m_OpenSize);
     m_OpenSize = sash->GetSize().y;
     sash->SetDefaultSize(wxSize(1, m_OpenSize - m_Logs[mltLog]->GetSize().y));
-    DebugLog("after m_OpenSize=%d, actual=%d", m_OpenSize, m_OpenSize - m_Logs[mltLog]->GetSize().y);
+//    DebugLog("after m_OpenSize=%d, actual=%d", m_OpenSize, m_OpenSize - m_Logs[mltLog]->GetSize().y);
     m_Open = false;
 
 	wxLayoutAlgorithm layout;
-    layout.LayoutMDIFrame(Manager::Get()->GetAppWindow());
+    layout.LayoutFrame(Manager::Get()->GetAppWindow(), Manager::Get()->GetEditorManager()->GetNotebook());
 }
 
 void MessageManager::LockOpen()

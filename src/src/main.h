@@ -3,7 +3,7 @@
 
 #include <wx/toolbar.h>
 #include <wx/laywin.h>
-#include <wx/docview.h>
+#include <wx/docview.h> // for wxFileHistory
 #include <wx/stc/stc.h>
 #include "../sdk/manager.h"
 #include "../sdk/cbplugin.h"
@@ -13,7 +13,7 @@ WX_DECLARE_HASH_MAP(int, wxString, wxIntegerHash, wxIntegerEqual, WindowIDsMap);
 WX_DECLARE_HASH_MAP(int, wxString, wxIntegerHash, wxIntegerEqual, PluginIDsMap);
 WX_DECLARE_HASH_MAP(cbPlugin*, wxToolBar*, wxPointerHash, wxPointerEqual, PluginToolbarsMap);
 
-class MainFrame : public wxMDIParentFrame
+class MainFrame : public wxFrame
 {
     public:
         MainFrame(wxWindow* parent = (wxWindow*)NULL);
@@ -22,7 +22,8 @@ class MainFrame : public wxMDIParentFrame
         bool Open(const wxString& filename, bool addToHistory = true);
         bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames);
         void ShowTips(bool forceShow = false);
-        
+        bool HandleStartHereLink(const wxString& link);
+
         // show a file-open dialog and return the selection
         wxString ShowOpenFileDialog(const wxString& caption, const wxString& filter);
         // open the filename (based on what it is)
@@ -124,6 +125,8 @@ class MainFrame : public wxMDIParentFrame
 		
 		// project events
 		void OnProjectActivated(CodeBlocksEvent& event);
+		void OnProjectOpened(CodeBlocksEvent& event);
+		void OnProjectClosed(CodeBlocksEvent& event);
     protected:
         void CreateIDE();
 		void CreateMenubar();
@@ -153,6 +156,7 @@ class MainFrame : public wxMDIParentFrame
 		void DoUpdateLayout();
 
         void RePositionManagerTree(bool left);
+        void ShowHideStartPage(bool forceHasProject = false);
 		
         void LoadWindowState();
         void SaveWindowState();

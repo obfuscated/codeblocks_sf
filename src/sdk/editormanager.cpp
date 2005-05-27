@@ -45,6 +45,7 @@
 #include "globals.h"
 #include "managerproxy.h"
 #include "xtra_classes.h"
+#include "sdk_events.h"
 #include <wx/listimpl.cpp>
 WX_DEFINE_LIST(EditorsList);
 
@@ -53,11 +54,16 @@ WX_DEFINE_LIST(EditorsList);
 
 //#define DONT_USE_OPENFILES_TREE
 
+int ID_NBEditorManager = wxNewId();
 int ID_EditorManager = wxNewId();
 
-BEGIN_EVENT_TABLE(EditorManager,wxEvtHandler)
+BEGIN_EVENT_TABLE(EditorManager, wxEvtHandler)
+    EVT_APP_STARTUP_DONE(EditorManager::OnAppDoneStartup)
+    EVT_APP_START_SHUTDOWN(EditorManager::OnAppStartShutdown)
+    EVT_NOTEBOOK_PAGE_CHANGED(ID_NBEditorManager, EditorManager::OnPageChanged)
+    EVT_NOTEBOOK_PAGE_CHANGING(ID_NBEditorManager, EditorManager::OnPageChanging)
 #ifdef USE_OPENFILES_TREE
-    EVT_UPDATE_UI(ID_EditorManager,EditorManager::OnUpdateUI)
+    EVT_UPDATE_UI(ID_EditorManager, EditorManager::OnUpdateUI)
     EVT_TREE_SEL_CHANGING(ID_EditorManager, EditorManager::OnTreeItemActivated)
     EVT_TREE_ITEM_ACTIVATED(ID_EditorManager, EditorManager::OnTreeItemActivated)
     EVT_TREE_ITEM_RIGHT_CLICK(ID_EditorManager, EditorManager::OnTreeItemRightClick)
@@ -91,8 +97,7 @@ void EditorManager::Free()
 
 // class constructor
 EditorManager::EditorManager(wxWindow* parent)
-    : //wxNotebook(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize,  wxNO_FULL_REPAINT_ON_RESIZE | wxNB_MULTILINE | wxCLIP_CHILDREN),
-	m_LastFindReplaceData(0L),
+    : m_LastFindReplaceData(0L),
     m_pImages(0L),
     m_pTree(0L),
     m_LastActiveFile(""),
@@ -100,15 +105,18 @@ EditorManager::EditorManager(wxWindow* parent)
 {
 	SC_CONSTRUCTOR_BEGIN
 	EditorManagerProxy::Set(this);
+	m_pNotebook = new wxNotebook(parent, ID_NBEditorManager, wxDefaultPosition, wxDefaultSize,  wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);
 	m_EditorsList.Clear();
     #ifdef USE_OPENFILES_TREE
 	ShowOpenFilesTree(ConfigManager::Get()->Read("/editor/show_opened_files_tree", true));
 	#endif
 	m_Theme = new EditorColorSet(ConfigManager::Get()->Read("/editor/color_sets/active_color_set", COLORSET_DEFAULT));
 	ConfigManager::AddConfiguration(_("Editor"), "/editor");
-	Manager::Get()->GetAppWindow()->PushEventHandler(this);
-	
+	parent->PushEventHandler(this);
+
 	LoadAutoComplete();
+	
+	/*wxNotebookSizer* nbs =*/ new wxNotebookSizer(m_pNotebook);
 }
 
 // class destructor
@@ -124,18 +132,20 @@ EditorManager::~EditorManager()
 	if (m_LastFindReplaceData)
 		delete m_LastFindReplaceData;
     if (m_pTree)
-    { 
-            delete m_pTree;
-            m_pTree = 0L;
+    {
+        m_pTree->Destroy();
+        m_pTree = 0L;
     }
     if (m_pImages)
     {
-            delete m_pImages;
-            m_pImages = 0L;
+        delete m_pImages;
+        m_pImages = 0L;
     }
     // free-up any memory used for editors
     m_EditorsList.DeleteContents(true); // Set this to false to preserve
     m_EditorsList.Clear();              // linked data.
+
+    m_pNotebook->Destroy();
 
     SC_DESTRUCTOR_END
 }
@@ -293,12 +303,6 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos,ProjectFile* dat
     // disallow application shutdown while opening files
     // WARNING: remember to set it to true, when exiting this function!!!
     s_CanShutdown = false;
-    bool domaximize = false;
-    if(!Manager::Get()->GetProjectManager()->IsLoading())
-    {
-        wxMDIChildFrame* frame = Manager::Get()->GetAppWindow()->GetActiveChild();
-        if(!frame || frame->IsMaximized()) domaximize = true;
-    }
 
     EditorBase* eb = IsOpen(fname);
     cbEditor* ed = 0;
@@ -312,7 +316,7 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos,ProjectFile* dat
 
     if (!ed)
     {
-        ed = new cbEditor(Manager::Get()->GetAppWindow(), fname, m_Theme);
+        ed = new cbEditor(m_pNotebook, fname, m_Theme);
         if (ed->IsOK())
             AddEditorBase(ed);
         else
@@ -326,9 +330,7 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos,ProjectFile* dat
     {
         if (ed)
         {
-            ed->Activate();
-            if(domaximize)
-                ed->Maximize(true);
+            SetActiveEditor(ed);
             ed->GetControl()->SetFocus();
         }
     }
@@ -374,22 +376,51 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos,ProjectFile* dat
 EditorBase* EditorManager::GetActiveEditor()
 {
     SANITY_CHECK(0L);
-    wxMDIParentFrame *appwindow =Manager::Get()->GetAppWindow();
-    if(!appwindow) return 0; // prevents segfault
-    return static_cast<EditorBase*>(appwindow->GetActiveChild());
+    int sel = m_pNotebook->GetSelection();
+    if (sel == -1)
+        return 0;
+    // get the wxNotebookPage object
+    wxNotebookPage* page = m_pNotebook->GetPage(sel);
+    if (!page)
+        return 0;
+    // now see if it's a managed editor
+    if (!m_EditorsList.Find(static_cast<EditorBase*>(page)))
+        return 0;
+    return static_cast<EditorBase*>(page);
+}
+
+void EditorManager::ActivateNext()
+{
+    int sel = m_pNotebook->GetSelection();
+    if (sel < m_pNotebook->GetPageCount() - 1)
+        ++sel;
+    else
+        sel = 0;
+    m_pNotebook->SetSelection(sel);
+}
+
+void EditorManager::ActivatePrevious()
+{
+    int sel = m_pNotebook->GetSelection();
+    if (sel > 0)
+        --sel;
+    else
+        sel = m_pNotebook->GetPageCount() - 1;
+    m_pNotebook->SetSelection(sel);
 }
 
 void EditorManager::SetActiveEditor(EditorBase* ed)
 {
     SANITY_CHECK();
-    if (ed)
-        ed->Activate();
+    int page = FindPageFromEditor(ed);
+    if (page != -1)
+        m_pNotebook->SetSelection(page);
 }
 
 cbEditor* EditorManager::New()
 {
     SANITY_CHECK(0L);
-    cbEditor* ed = new cbEditor(Manager::Get()->GetAppWindow(), wxEmptyString);
+    cbEditor* ed = new cbEditor(m_pNotebook, wxEmptyString);
 	if (!ed->SaveAs())
 	{
 		//DeletePage(ed->GetPageIndex());
@@ -409,7 +440,7 @@ cbEditor* EditorManager::New()
     AddFiletoTree(ed);
     #endif
 	ed->Show(true);
-    //SetSelection(ed->GetPageIndex());
+	SetActiveEditor(ed);
     return ed;
 }
 
@@ -429,14 +460,24 @@ void EditorManager::AddEditorBase(EditorBase* eb)
 {
     SANITY_CHECK();
     if (!m_EditorsList.Find(eb))
+    {
+        int page = FindPageFromEditor(eb);
+        if (page == -1)
+            m_pNotebook->AddPage(eb, eb->GetTitle(), true);
         m_EditorsList.Append(eb);
+    }
 }
 
-void EditorManager::RemoveEditorBase(EditorBase* eb)
+void EditorManager::RemoveEditorBase(EditorBase* eb, bool deleteObject)
 {
     SANITY_CHECK();
     if (m_EditorsList.Find(eb))
+    {
+        int page = FindPageFromEditor(eb);
+        if (page != -1)
+            m_pNotebook->RemovePage(page);
         m_EditorsList.DeleteObject(eb);
+    }
 }
 
 bool EditorManager::UpdateProjectFiles(cbProject* project)
@@ -550,6 +591,16 @@ bool EditorManager::QueryClose(EditorBase *editor)
     return true;
 }
 
+int EditorManager::FindPageFromEditor(EditorBase* eb)
+{
+    for (int i = 0; i < m_pNotebook->GetPageCount(); ++i)
+    {
+        if (m_pNotebook->GetPage(i) == eb)
+            return i;
+    }
+    return -1;
+}
+
 bool EditorManager::Close(const wxString& filename,bool dontsave)
 {
     SANITY_CHECK(false);
@@ -573,12 +624,11 @@ bool EditorManager::Close(EditorBase* editor,bool dontsave)
                 #ifdef USE_OPENFILES_TREE
                 DeleteFilefromTree(ed->GetFilename());
                 #endif
-                ed->Destroy();
-                m_EditorsList.DeleteNode(node);			
-                return true;
 			}
-			else
-                return editor->Close();
+            int edpage = FindPageFromEditor(editor);
+            if (edpage != -1)
+                m_pNotebook->DeletePage(edpage);
+            m_EditorsList.DeleteNode(node);
 		}
 	}
     return true;
@@ -1179,6 +1229,32 @@ int EditorManager::FindNext(bool goingDown)
 	return Find(ed, m_LastFindReplaceData);
 }
 
+void EditorManager::OnPageChanged(wxCommandEvent& event)
+{
+    if (event.GetEventObject() == this)
+    {
+    }
+    event.Skip(); // allow others to process it too
+}
+
+void EditorManager::OnPageChanging(wxCommandEvent& event)
+{
+    if (event.GetEventObject() == this)
+    {
+    }
+    event.Skip(); // allow others to process it too
+}
+
+void EditorManager::OnAppDoneStartup(wxCommandEvent& event)
+{
+    event.Skip(); // allow others to process it too
+}
+
+void EditorManager::OnAppStartShutdown(wxCommandEvent& event)
+{
+    event.Skip(); // allow others to process it too
+}
+
 #ifdef USE_OPENFILES_TREE
 bool EditorManager::OpenFilesTreeSupported()
 {
@@ -1365,9 +1441,9 @@ bool EditorManager::RenameTreeFile(const wxString& oldname, const wxString& newn
 
 void EditorManager::InitPane()
 {
-    #if defined(__WXGTK__) || defined(DONT_USE_OPENFILES_TREE)
-        return; // wxGTK uses Tabs, no need for the tree
-    #endif
+#if defined(DONT_USE_OPENFILES_TREE)
+    return;
+#endif
 
     SANITY_CHECK();
     if(Manager::isappShuttingDown())
@@ -1383,9 +1459,9 @@ void EditorManager::InitPane()
 
 void EditorManager::BuildOpenedFilesTree(wxWindow* parent)
 {
-    #if defined(__WXGTK__) || defined(DONT_USE_OPENFILES_TREE)
-        return; // wxGTK uses Tabs, no need for the tree
-    #endif
+#if defined(DONT_USE_OPENFILES_TREE)
+    return;
+#endif
     SANITY_CHECK();
     if(m_pTree)
         return;
@@ -1410,9 +1486,9 @@ void EditorManager::BuildOpenedFilesTree(wxWindow* parent)
 
 void EditorManager::RebuildOpenedFilesTree(wxTreeCtrl *tree)
 {    
-    #if defined(__WXGTK__) || defined(DONT_USE_OPENFILES_TREE)
-        return; // wxGTK uses Tabs, no need for the tree
-    #endif
+#if defined(DONT_USE_OPENFILES_TREE)
+    return;
+#endif
     SANITY_CHECK();
 
     if(Manager::isappShuttingDown())
@@ -1443,9 +1519,9 @@ void EditorManager::RebuildOpenedFilesTree(wxTreeCtrl *tree)
 
 void EditorManager::RefreshOpenedFilesTree(bool force)
 {
-    #if defined(__WXGTK__) || defined(DONT_USE_OPENFILES_TREE)
-        return; // wxGTK uses Tabs, no need for the tree
-    #endif
+#if defined(DONT_USE_OPENFILES_TREE)
+    return;
+#endif
     SANITY_CHECK();
     if(Manager::isappShuttingDown())
         return;
@@ -1540,10 +1616,12 @@ void EditorManager::OnTreeItemActivated(wxTreeEvent &event)
 {
     event.Skip();
 }
+
 void EditorManager::OnTreeItemRightClick(wxTreeEvent &event) 
 {
     event.Skip();
 }
+
 void EditorManager::OnUpdateUI(wxUpdateUIEvent& event)
 {
     event.Skip();

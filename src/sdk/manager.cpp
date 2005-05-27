@@ -25,7 +25,6 @@
 
 #include <wx/xrc/xmlres.h>
 #include <wx/fs_zip.h>
-#include <wx/mdi.h>
 #include <wx/notebook.h>
 #include <wx/menu.h>
 #include <wx/toolbar.h>
@@ -47,7 +46,7 @@
 
 static bool appShutingDown = false;
 
-Manager* Manager::Get(wxMDIParentFrame* appWindow, wxNotebook* notebook)
+Manager* Manager::Get(wxFrame* appWindow, wxNotebook* notebook)
 {
     if (!ManagerProxy::Get() && appWindow)
 	{
@@ -86,6 +85,29 @@ void Manager::Free()
 	}
 }
 
+bool Manager::SendEventTo(wxEvtHandler* handler, CodeBlocksEvent& event)
+{
+    return handler && handler->ProcessEvent(event);
+}
+
+bool Manager::ProcessEvent(CodeBlocksEvent& event)
+{
+//    if (SendEventTo(GetMessageManager(), event) ||
+//        SendEventTo(GetEditorManager(), event) ||
+//        SendEventTo(GetProjectManager(), event) ||
+//        SendEventTo(GetToolsManager(), event))
+//    {
+//        return true;
+//    }
+    
+    // send it to plugins
+    if (GetPluginManager())
+    {
+        GetPluginManager()->NotifyPlugins(event);
+    }
+    return false;
+}
+
 bool Manager::isappShutingDown()
 {
     return(appShutingDown);
@@ -97,7 +119,7 @@ bool Manager::isappShuttingDown()
 }
 
 // class constructor
-Manager::Manager(wxMDIParentFrame* appWindow, wxNotebook* notebook)
+Manager::Manager(wxFrame* appWindow, wxNotebook* notebook)
 	: m_pAppWindow(appWindow),
 	m_pNotebook(notebook)
 {
@@ -184,7 +206,7 @@ bool Manager::isToolBar16x16(wxToolBar* toolBar)
     return (mysize.GetWidth()<=16 && mysize.GetHeight()<=16);
 }
 
-wxMDIParentFrame* Manager::GetAppWindow()
+wxFrame* Manager::GetAppWindow()
 {
 	if(!this) return 0; // Fixes early-shutdown segfault
 	return m_pAppWindow;

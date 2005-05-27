@@ -1,14 +1,15 @@
+#include <wx/notebook.h>
 #include "editorbase.h"
 #include "manager.h"
 #include "editormanager.h"
 
-EditorBase::EditorBase(wxMDIParentFrame* parent, const wxString& title)
-    : wxMDIChildFrame(parent, -1, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE | wxMAXIMIZE),
+EditorBase::EditorBase(wxWindow* parent, const wxString& title)
+    : wxPanel(parent, -1),
     m_IsBuiltinEditor(false),
-    m_pParent(parent),
     m_WinTitle(title)
 {
     Manager::Get()->GetEditorManager()->AddCustomEditor(this);
+    SetTitle(title);
 }
 
 EditorBase::~EditorBase()
@@ -25,12 +26,14 @@ const wxString& EditorBase::GetTitle()
 void EditorBase::SetTitle(const wxString& newTitle)
 {
     m_WinTitle = newTitle;
-    wxMDIChildFrame::SetTitle(newTitle);
+    int mypage = Manager::Get()->GetEditorManager()->FindPageFromEditor(this);
+    if (mypage != -1)
+        Manager::Get()->GetEditorManager()->GetNotebook()->SetPageText(mypage, newTitle);
 }
 
-wxMDIParentFrame* EditorBase::GetParent()
+void EditorBase::Activate()
 {
-    return m_pParent;
+    Manager::Get()->GetEditorManager()->SetActiveEditor(this);
 }
 
 bool EditorBase::Close()

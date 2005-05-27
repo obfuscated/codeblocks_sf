@@ -35,6 +35,7 @@
 #include <editormanager.h>
 #include <projectmanager.h>
 #include <personalitymanager.h>
+#include <sdk_events.h>
 
 #ifdef __WXMSW__
 	#include <wx/msw/registry.h>
@@ -227,6 +228,11 @@ bool CodeBlocksApp::OnInit()
         return false;
     InitFrame();
     CheckVersion();
+    
+    CodeBlocksEvent event(cbEVT_APP_STARTUP_DONE);
+    Manager::Get()->ProcessEvent(event);
+    wxYield();
+
 	return TRUE;
 }
 
