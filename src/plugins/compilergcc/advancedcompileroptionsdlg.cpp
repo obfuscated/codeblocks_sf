@@ -294,6 +294,7 @@ void AdvancedCompilerOptionsDlg::EndModal(int retCode)
         // write options
         WriteCompilerOptions();
         // save regexes
+        SaveRegexDetails(m_SelectedRegex);
         CompilerFactory::Compilers[m_CompilerIdx]->SetRegExArray(m_Regexes);
     }
     wxDialog::EndModal(retCode);
