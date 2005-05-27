@@ -1,13 +1,14 @@
 <resource>
     <object class="wxDialog" name="dlgNewClass">
         <object class="wxGridSizer" variable="Unknown" varlocal="no">
-            <rows>3</rows>
+            <rows>0</rows>
             <cols>3</cols>
             <vgap>0</vgap>
             <hgap>0</hgap>
             <object class="sizeritem">
-                <object class="wxButton" name="ID_COMMON" variable="Unknown" varlocal="no">
-                    <label>Button</label>
+                <object class="wxCheckBox" name="ID_COMMON" variable="Unknown" varlocal="no">
+                    <label>Test</label>
+                    <checked>1</checked>
                 </object>
                 <border>5</border>
                 <flag>wxALL|wxALIGN_CENTER</flag>
@@ -20,9 +21,7 @@
                 <flag>wxALL|wxALIGN_CENTER</flag>
             </object>
             <object class="sizeritem">
-                <object class="wxButton" name="ID_COMMON" variable="Unknown" varlocal="no">
-                    <label>Button</label>
-                </object>
+                <object class="wxCheckBox" name="ID_COMMON" variable="Unknown" varlocal="no" />
                 <border>5</border>
                 <flag>wxALL|wxALIGN_CENTER</flag>
             </object>
@@ -34,9 +33,7 @@
                 <flag>wxALL|wxALIGN_CENTER</flag>
             </object>
             <object class="sizeritem">
-                <object class="wxButton" name="ID_COMMON" variable="Unknown" varlocal="no">
-                    <label>Button</label>
-                </object>
+                <object class="wxCheckBox" name="ID_COMMON" variable="Unknown" varlocal="no" />
                 <border>5</border>
                 <flag>wxALL|wxALIGN_CENTER</flag>
             </object>
@@ -48,9 +45,7 @@
                 <flag>wxALL|wxALIGN_CENTER</flag>
             </object>
             <object class="sizeritem">
-                <object class="wxButton" name="ID_COMMON" variable="Unknown" varlocal="no">
-                    <label>Button</label>
-                </object>
+                <object class="wxCheckBox" name="ID_COMMON" variable="Unknown" varlocal="no" />
                 <border>5</border>
                 <flag>wxALL|wxALIGN_CENTER</flag>
             </object>
@@ -62,9 +57,7 @@
                 <flag>wxALL|wxALIGN_CENTER</flag>
             </object>
             <object class="sizeritem">
-                <object class="wxButton" name="ID_COMMON" variable="Unknown" varlocal="no">
-                    <label>Button</label>
-                </object>
+                <object class="wxCheckBox" name="ID_COMMON" variable="Unknown" varlocal="no" />
                 <border>5</border>
                 <flag>wxALL|wxALIGN_CENTER</flag>
             </object>

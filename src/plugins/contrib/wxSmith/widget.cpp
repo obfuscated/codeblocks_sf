@@ -228,7 +228,6 @@ bool wxsWidget::XmlSaveDefaultsT(BasePropertiesType pType)
 {
     assert ( XmlElem() != NULL );
    
-   
     if ( pType & bptPosition )
     {
         if ( !BaseParams.DefaultPosition )
@@ -265,13 +264,17 @@ bool wxsWidget::XmlSaveDefaultsT(BasePropertiesType pType)
         // Warning: This may cause some data los if styles are not
         //          configured properly
         
-        for ( wxsStyle* Style = GetInfo().Styles; Style->Name; Style++ )
+        wxsStyle* Style = GetInfo().Styles;
+        if ( Style )
         {
-            if ( ( Style->Value != 0 ) && ( ( StyleBits & Style->Value ) == Style->Value ) )
+            for ( ; Style->Name; Style++ )
             {
-                StyleString.Append('|');
-                StyleString.Append(Style->Name);
-                StyleBits &= ~Style->Value;
+                if ( ( Style->Value != 0 ) && ( ( StyleBits & Style->Value ) == Style->Value ) )
+                {
+                    StyleString.Append('|');
+                    StyleString.Append(Style->Name);
+                    StyleBits &= ~Style->Value;
+                }
             }
         }
         
@@ -416,7 +419,7 @@ bool wxsWidget::XmlSaveChildren()
     {
         wxsWidget* W = GetChild(i);
         
-        if ( W )
+        if ( W && W->GetInfo().Name )
         {
             TiXmlNode* AddChildToThis = XmlElem();
             const char* ClassName = W->GetInfo().Name;

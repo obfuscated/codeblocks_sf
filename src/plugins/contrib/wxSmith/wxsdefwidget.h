@@ -2,6 +2,7 @@
 #define WXSDEFWIDGET_H
 
 #include "widget.h"
+#include "wxsdefevthandler.h"
 
 #include <vector>
 
@@ -10,7 +11,11 @@
     class Name : public wxsDefWidget                                        \
     {                                                                       \
         public:                                                             \
-            Name(wxsWidgetManager* Man): wxsDefWidget(Man,pType) {}         \
+            Name(wxsWidgetManager* Man): wxsDefWidget(Man,pType)            \
+            { evInit(); }                                                   \
+            virtual ~Name()                                                 \
+            {                                                               \
+            }                                                               \
             virtual const wxsWidgetInfo& GetInfo()                          \
             {                                                               \
                 return *GetManager()->GetWidgetInfo(WidgetId);              \
@@ -41,6 +46,7 @@
         long style = BaseParams.Style;                                      \
         DebLog("%s",#Code);                                                 \
         Code;                                                               \
+        ThisWidget->PushEventHandler(new wxsDefEvtHandler(this));           \
         return ThisWidget;                                                  \
     }                                                                       \
     void Name::BuildExtVars()                                               \
@@ -102,6 +108,8 @@ class wxsDefWidget: public wxsWidget
         virtual const char* GetGeneratingCodeStr() = 0;
         virtual const char* GetWidgetNameStr() = 0;
         
+        void evInit();
+        
     private:
     
         enum evUseType { Init, XmlL, XmlS, Code, Props };
@@ -110,7 +118,6 @@ class wxsDefWidget: public wxsWidget
         bool Return;
         wxString CodeResult;
         
-        void evInit();
         void evXmlL();
         void evXmlS();
         void evCode();

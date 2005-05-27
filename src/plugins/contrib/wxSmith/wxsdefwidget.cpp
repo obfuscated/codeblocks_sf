@@ -3,7 +3,6 @@
 wxsDefWidget::wxsDefWidget(wxsWidgetManager* Man,BasePropertiesType pType):
     wxsWidget(Man,pType)
 {
-    evInit();
 }
 
 wxsDefWidget::~wxsDefWidget()
@@ -107,9 +106,7 @@ void wxsDefWidget::evBool(bool& Val,char* Name,char* PropName,bool DefValue)
         
         case XmlL:
         {
-            const char* Var = XmlGetVariable(Name);
-            if ( Var ) Val = strcasecmp(Var,"false") ? true : false;
-            else Val = DefValue;
+            Val = XmlGetInteger(Name,DefValue?1:0) != 0;
             break;
         }
         
@@ -117,7 +114,7 @@ void wxsDefWidget::evBool(bool& Val,char* Name,char* PropName,bool DefValue)
         {
             if ( Val != DefValue )
             {
-                XmlSetVariable(Name,Val?"true":"false");
+                XmlSetInteger(Name,Val?1:0);
             }
             break;
         }

@@ -67,7 +67,7 @@ static wxsWidgetInfo StdInfos[] =
         NULL,
         &wxsStdManager,
         wxsCheckBoxId,
-        NULL
+        wxsCheckBoxStyles
     },
 
     {   "wxStaticText",
@@ -174,8 +174,8 @@ wxsWidget* wxsStdManagerT::ProduceWidget(int Id)
         case wxsButtonId:
             return new wxsButton(this);
             
-//        case wxsCheckBoxId:
-//            return new wxsCheckBox(this);
+        case wxsCheckBoxId:
+            return new wxsCheckBox(this);
             
         case wxsStaticTextId:
             return new wxsStaticText(this);
