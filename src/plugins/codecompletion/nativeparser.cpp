@@ -188,7 +188,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
     }
 
     // add compiler include dirs
-	if (CompilerFactory::Compilers.GetCount() > 0)
+	if (CompilerFactory::Compilers.GetCount() > 0 && CompilerFactory::CompilerIndexOK(project->GetCompilerIndex()))
 	{
 		Compiler* compiler = CompilerFactory::Compilers[project->GetCompilerIndex()];
 		const wxArrayString& dirs = compiler->GetIncludeDirs();
