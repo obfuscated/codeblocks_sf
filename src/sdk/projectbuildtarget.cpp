@@ -196,6 +196,11 @@ void ProjectFile::SetObjName(const wxString& name)
     if (ft == ftResource || ft == ftResourceBin)
         fname.SetExt(RESOURCEBIN_EXT);
     else
-        fname.SetExt(CompilerFactory::Compilers[project->GetCompilerIndex()]->GetSwitches().objectExtension);
+    {
+        if (project && CompilerFactory::CompilerIndexOK(project->GetCompilerIndex()))
+            fname.SetExt(CompilerFactory::Compilers[project->GetCompilerIndex()]->GetSwitches().objectExtension);
+        else
+            fname.SetExt(".o"); // fallback?
+    }
     m_ObjName = fname.GetFullPath();
 }

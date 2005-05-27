@@ -282,20 +282,7 @@ void MessageManager::SwitchTo(int id)
 
 MessageLogType MessageManager::LogPage(MessageLogType lt)
 {
-    switch (lt)
-    {
-        case mltDebug:
-            if (m_HasDebugLog && CheckLogType(lt))
-                m_OtherPageLogTarget = m_Logs[lt]->GetPageIndex();
-            else
-                m_OtherPageLogTarget = m_Logs[lt]->GetPageIndex();
-            break;
-        case mltLog:
-            m_OtherPageLogTarget = m_Logs[lt]->GetPageIndex();
-            break;
-        default:
-            break;
-    }
+    m_OtherPageLogTarget = m_Logs[lt] ? m_Logs[lt]->GetPageIndex() : 0;
     return lt;
 }
 
