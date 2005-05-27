@@ -6,18 +6,24 @@
 #include "wxspropertiesman.h"
 #include "wxspalette.h"
 
-wxsWindowEditor::wxsWindowEditor(wxMDIParentFrame* parent, const wxString& title,wxsResource* Resource):
+wxsWindowEditor::wxsWindowEditor(wxWindow* parent, const wxString& title,wxsResource* Resource):
     wxsEditor(parent,title,Resource),
     CurrentWidget(NULL)
 {
-    DrawArea = new wxScrolledWindow(this);
     wxSizer* Sizer = new wxBoxSizer(wxVERTICAL);
-    Sizer->Add(DrawArea,0,wxGROW);
-    SetSizer(Sizer);
-    DrawArea->SetScrollRate(4,4);
+
+    Scroll = new wxScrolledWindow(this);
+    Scroll->SetScrollRate(4,4);
+    
+    Sizer->Add(Scroll,1,wxGROW);
+    Scroll->SetScrollRate(4,4);
+    
     SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
-    DrawArea->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
+    Scroll->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
     wxsPalette::Get()->SelectResource(GetResource());
+    
+    SetSizer(Sizer);
+    SetAutoLayout(true);
 }
 
 wxsWindowEditor::~wxsWindowEditor()
@@ -40,23 +46,22 @@ static void WidgetRefreshReq(wxWindow* Wnd)
 
 void wxsWindowEditor::BuildPreview(wxsWidget* TopWidget)
 {
-    SetSizer(NULL);
-    
+    Scroll->SetSizer(NULL);
     Freeze();
     
     KillCurrentPreview();
 
     // Creating new sizer
 
-    wxWindow* TopPreviewWindow = TopWidget ? TopWidget->CreatePreview(DrawArea,this) : NULL;
+    wxWindow* TopPreviewWindow = TopWidget ? TopWidget->CreatePreview(Scroll,this) : NULL;
     CurrentWidget = TopWidget;
     
     if ( TopPreviewWindow )
     {
         wxSizer* NewSizer = new wxGridSizer(1);
         NewSizer->Add(TopPreviewWindow,0,wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL|wxALL,10);
-        DrawArea->SetSizer(NewSizer);
-        NewSizer->SetVirtualSizeHints(DrawArea);
+        Scroll->SetSizer(NewSizer);
+        NewSizer->SetVirtualSizeHints(Scroll);
         TopPreviewWindow->Refresh();
     }
     

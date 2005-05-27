@@ -211,6 +211,8 @@ void wxSmith::OnProjectClose(CodeBlocksEvent& event)
     (*i).second->SaveProject();
     
     delete (*i).second;
+    
+    event.Skip();
 }
 
 void wxSmith::OnProjectOpen(CodeBlocksEvent& event)
@@ -218,10 +220,13 @@ void wxSmith::OnProjectOpen(CodeBlocksEvent& event)
     wxsProject* NewProj = new wxsProject(this);
     NewProj->BindProject(event.GetProject());
     ProjectMap[event.GetProject()] = NewProj;
+    event.Skip();
 }
 
 void wxSmith::OnProjectActivated(CodeBlocksEvent& event)
-{}
+{
+    event.Skip();
+}
 
 void wxSmith::OnSelectResource(wxsResourceTreeData* Data)
 {

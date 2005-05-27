@@ -11,7 +11,7 @@ class wxsWidget;
 class wxsWindowEditor : public wxsEditor
 {
 	public:
-		wxsWindowEditor(wxMDIParentFrame* parent, const wxString& title,wxsResource* Resource);
+		wxsWindowEditor(wxWindow* parent, const wxString& title,wxsResource* Resource);
 		
 		virtual ~wxsWindowEditor();
 		
@@ -41,7 +41,7 @@ class wxsWindowEditor : public wxsEditor
 
 	private:
 	
-        wxScrolledWindow* DrawArea;
+        wxScrolledWindow* Scroll;
 	
         void OnMouseClick(wxMouseEvent& event);
         void OnActivate(wxActivateEvent& event);

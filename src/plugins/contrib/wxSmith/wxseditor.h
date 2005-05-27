@@ -11,7 +11,7 @@ class wxsEditor : public EditorBase
 	public:
 	
         /** Ctor */
-		wxsEditor(wxMDIParentFrame* parent, const wxString& title,wxsResource* Resource);
+		wxsEditor(wxWindow* parent, const wxString& title,wxsResource* Resource);
 		
 		/** Dctor */
 		virtual ~wxsEditor();
