@@ -46,6 +46,16 @@
 			<Option link="0"/>
 			<Option target="default"/>
 		</Unit>
+		<Unit filename="defwidgets\wxscheckbox.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="defwidgets\wxscheckbox.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
 		<Unit filename="defwidgets\wxsdialog.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="default"/>
@@ -211,6 +221,16 @@
 			<Option target="default"/>
 		</Unit>
 		<Unit filename="wxscontainer.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="wxsdefwidget.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="wxsdefwidget.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

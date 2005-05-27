@@ -126,9 +126,9 @@ void wxSmith::OnAttach()
         Sizer = new wxGridSizer(1);
         wxNotebook* LDNotebook = new wxNotebook(PropertiesContainer,-1,wxDefaultPosition,wxDefaultSize,wxSUNKEN_BORDER);
         PropertiesPanel = new wxScrolledWindow(LDNotebook);
-        PropertiesPanel->SetScrollRate(0,1);
+        PropertiesPanel->SetScrollRate(1,1);
         EventsPanel = new wxScrolledWindow(LDNotebook);
-        EventsPanel->SetScrollRate(0,1);
+        EventsPanel->SetScrollRate(1,1);
         LDNotebook->AddPage(PropertiesPanel,wxT("Properties"));
         LDNotebook->AddPage(EventsPanel,wxT("Events"));
         Sizer->Add(LDNotebook,0,wxGROW);

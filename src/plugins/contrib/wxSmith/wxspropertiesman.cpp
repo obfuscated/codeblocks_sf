@@ -32,9 +32,12 @@ void wxsPropertiesMan::SetActiveWidget(wxsWidget* Widget)
     
     CurrentWidget = Widget;
     
+    wxSize Size = PropertiesPanel->GetSize();
     if ( CurrentWidget )
     {
         wxFlexGridSizer* NewSizer = new wxFlexGridSizer(1);
+        PropertiesPanel->SetVirtualSizeHints(1,1);
+        PropertiesPanel->SetSize(1,1);
         NewSizer->AddGrowableCol(0);
         wxWindow* Wnd = CurrentWidget->GetProperties(PropertiesPanel);
         CurrentWidget->UpdateProperties();
@@ -64,6 +67,7 @@ void wxsPropertiesMan::SetActiveWidget(wxsWidget* Widget)
     
     PropertiesPanel->Refresh();
     PropertiesPanel->Thaw();
+    PropertiesPanel->SetSize(Size);
 }
 
 /** Singleton definition */

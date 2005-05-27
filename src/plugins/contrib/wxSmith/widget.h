@@ -263,6 +263,9 @@ class wxsWidget
 
     public:
     
+        /** Function returning base configuration params for this widget */
+        inline const wxsWidgetBaseParams& GetBaseParams() { return BaseParams; }
+
         /** Getting properties window for this widget */
         inline wxWindow* GetProperties(wxWindow* Parent)
         {
@@ -371,9 +374,6 @@ class wxsWidget
          *  return empty string
          */
         virtual const char* GetDeclarationCode(wxsCodeParams& Params) { return ""; }
-
-        /** Function returning base configuration params for this widget */
-        inline const wxsWidgetBaseParams& GetBaseParams() { return BaseParams; }
 
         /** Structure deeclaring some code-defines which could be usefull while
          *  creating widget's code

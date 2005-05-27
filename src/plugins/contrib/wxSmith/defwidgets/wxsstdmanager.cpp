@@ -6,6 +6,7 @@
 #include "wxsdialog.h"
 #include "wxsgridsizer.h"
 #include "wxsstatictext.h"
+#include "wxscheckbox.h"
 
 /******************************************************************************/
 /* Infos for standard widgets                                                 */
@@ -51,6 +52,22 @@ static wxsWidgetInfo StdInfos[] =
         &wxsStdManager,
         wxsButtonId,
         wxsButtonStyles
+    },
+
+    {   "wxCheckBox",
+        DefLicence,
+        DefAuthor,
+        DefAuthorEmail,
+        DefAuthorSite,
+        "http://www.wxwidgets.org/manuals/2.4.2/wx52.htm#wxcheckbox",
+        DefCategory,
+        false,
+        false,
+        2, 42,
+        NULL,
+        &wxsStdManager,
+        wxsCheckBoxId,
+        NULL
     },
 
     {   "wxStaticText",
@@ -156,6 +173,9 @@ wxsWidget* wxsStdManagerT::ProduceWidget(int Id)
             
         case wxsButtonId:
             return new wxsButton(this);
+            
+//        case wxsCheckBoxId:
+//            return new wxsCheckBox(this);
             
         case wxsStaticTextId:
             return new wxsStaticText(this);

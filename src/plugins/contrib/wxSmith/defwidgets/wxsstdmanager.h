@@ -13,6 +13,7 @@ enum std_widgets
     
     /* Controls */
     wxsButtonId,
+    wxsCheckBoxId,
     wxsStaticTextId,
     
     /* Windows */

@@ -57,6 +57,9 @@ class wxSmith : public cbPlugin
         
         /* Getting current resourcec tree */
         wxTreeCtrl* GetResourceTree() { return ResourceBrowser; }
+
+        wxsProject* GetSmithProject(cbProject* Proj);
+        cbProject* GetCBProject(wxsProject* Proj);
         
 	protected:
 	
@@ -72,9 +75,6 @@ class wxSmith : public cbPlugin
         typedef ProjectMapT::iterator ProjectMapI;
         
         ProjectMapT ProjectMap;
-        
-        wxsProject* GetSmithProject(cbProject* Proj);
-        cbProject* GetCBProject(wxsProject* Proj);
         
         /* Event processing functions */
         

@@ -20,25 +20,25 @@ void wxsWidget::AddDefaultProperties(BasePropertiesType pType)
 
     if ( pType & bptVariable )
     {
-        PropertiesObject.AddProperty(wxT("Variable Name:"),BaseParams.VarName);
-        PropertiesObject.AddProperty(wxT("Local Variable:"),BaseParams.VarNotStored);
+        PropertiesObject.AddProperty(wxT("Var Name:"),BaseParams.VarName);
+        PropertiesObject.AddProperty(wxT("Local Var:"),BaseParams.VarNotStored);
     }
     
     if ( pType & bptId )
     {
-        PropertiesObject.AddProperty(wxT("Identifier:"),BaseParams.IdName);
+        PropertiesObject.AddProperty(wxT("Id:"),BaseParams.IdName);
     }
     
     if ( pType & bptPosition )
     {
         PropertiesObject.Add2IProperty(wxT("Position:"),BaseParams.PosX,BaseParams.PosY);
-        PropertiesObject.AddProperty(wxT("Default pos.:"),BaseParams.DefaultPosition);
+        PropertiesObject.AddProperty(wxT(" Default:"),BaseParams.DefaultPosition);
     }
     
     if ( pType & bptSize )
     {
         PropertiesObject.Add2IProperty(wxT("Size:"),BaseParams.SizeX,BaseParams.SizeY);
-        PropertiesObject.AddProperty(wxT("Default size:"),BaseParams.DefaultSize);
+        PropertiesObject.AddProperty(wxT(" Default:"),BaseParams.DefaultSize);
     }
     
     // Adding sizer configuration

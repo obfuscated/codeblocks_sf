@@ -30,6 +30,9 @@ class wxsWindowEditor : public wxsEditor
          *  sizers because given widget changed it's size
          */
         void PreviewReshaped();
+        
+        /** Getting top widget of current preview */
+        wxsWidget* GetTopWidget() { return CurrentWidget; }
 
     protected:
     

@@ -293,7 +293,20 @@ void wxsPalette::DeleteRequest()
         return;
     }
     
+    wxsWindowEditor* Edit = (wxsWindowEditor*)Current->CurEditor;
+    
+    if ( Edit )
+    {
+        Parent = Edit->GetTopWidget();
+        Edit->KillCurrentPreview();
+    }
+    
     wxsWidgetFactory::Get()->Kill(Current);
+    
+    if ( Edit )
+    {
+        Edit->BuildPreview(Parent);
+    }
 }
 
 void wxsPalette::PreviewRequest()

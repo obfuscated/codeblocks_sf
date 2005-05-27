@@ -4,7 +4,7 @@
 #include <wx/stattext.h>
 #include <vector>
 
-
+#define WXS_MAX_STYLE_LEN   15
 #define WXSSPW_FIRST_ID     0x1010
 
 class wxsStylePropertyWindow: public wxPanel
@@ -36,8 +36,17 @@ class wxsStylePropertyWindow: public wxPanel
                     else
                     {
                         IdToStyleMaps.push_back(Styles->Value);
-                        wxCheckBox* CB = new wxCheckBox(this,CurrentId++,Styles->Name);
+                        char* Name = strdup(Styles->Name);
+                        if ( strlen(Name) > WXS_MAX_STYLE_LEN )
+                        {
+                            Name[WXS_MAX_STYLE_LEN-3] =
+                            Name[WXS_MAX_STYLE_LEN-2] =
+                            Name[WXS_MAX_STYLE_LEN-1] = '.';
+                            Name[WXS_MAX_STYLE_LEN-0] = 0;
+                        }
+                        wxCheckBox* CB = new wxCheckBox(this,CurrentId++,Name);
                         Sizer->Add(CB);
+                        free(Name);
                     }
                 }
             }
