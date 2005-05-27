@@ -4,7 +4,6 @@
 #include "properties/wxsplacementproperty.h"
 #include "properties/wxsstyleproperty.h"
 #include "wxswidgetfactory.h"
-
 #include <wx/tokenzr.h>
 #include <wx/list.h>
 
@@ -12,6 +11,11 @@ wxsWidget::~wxsWidget()
 {
     if ( Preview    ) KillPreview();
     if ( Properties ) KillProperties();
+
+    while ( GetChildCount() )
+    {
+        wxsWidgetFactory::Get()->Kill(GetChild(GetChildCount()-1));
+    }
 }
 
 void wxsWidget::AddDefaultProperties(BasePropertiesType pType)
@@ -75,6 +79,9 @@ wxWindow* wxsWidget::CreatePreview(wxWindow* Parent,wxsWindowEditor* Editor)
     /* Creating widget */
     CurEditor = Editor;
     Preview = MyCreatePreview(Parent);
+    if ( !Preview ) return NULL;
+    
+    Preview->PushEventHandler(Handler = new wxsDefEvtHandler(this));
 
     /* Creating preview of child widgets */
     int Cnt = IsContainer() ? GetChildCount() : 0;
@@ -133,18 +140,21 @@ void wxsWidget::UpdatePreview(bool IsReshaped,bool NeedRecreate)
 void wxsWidget::KillPreview()
 {
     /* Killing child windows */
-    if ( IsContainer() )
+    int Cnt = GetChildCount();
+    for ( int i=0; i<Cnt; i++ )
     {
-        int Cnt = GetChildCount();
-        for ( int i=0; i<Cnt; i++ )
-        {
-            GetChild(i)->KillPreview();
-        }
+        GetChild(i)->KillPreview();
     }
     
     /* Killing this one */
     if ( Preview != NULL )
     {
+        if ( Handler )
+        {
+            Preview->RemoveEventHandler(Handler);
+            delete Handler;
+            Handler = NULL;
+        }
         MyDeletePreview(Preview);
         Preview = NULL;
     }

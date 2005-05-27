@@ -13,6 +13,7 @@
 #include "wxsproperties.h"
 #include "wxswindoweditor.h"
 #include "wxsstyle.h"
+#include "wxsdefevthandler.h"
 
 #define DebLog Manager::Get()->GetMessageManager()->DebugLog
 
@@ -168,6 +169,7 @@ class wxsWidget
             PropertiesObject(this),
             Manager(Man),
             Preview(NULL),
+            Handler(NULL),
             Properties(NULL),
             Parent(NULL),
             MaxChildren(0),
@@ -190,6 +192,7 @@ class wxsWidget
             PropertiesObject(this),
             Manager(Man),
             Preview(NULL),
+            Handler(NULL),
             Properties(NULL),
             Parent(NULL),
             MaxChildren(MaxChild),
@@ -668,6 +671,7 @@ class wxsWidget
         
         wxsWidgetManager* Manager;  ///< Widget's manager
         wxWindow* Preview;          ///< Currently opened preview window (NULL if there's no one)
+        wxsDefEvtHandler* Handler;  ///< Handler added to current preview
         wxsWindowEditor* CurEditor; ///< Currently associated editor
         wxWindow* Properties;       ///< Currently opened properties window (NULL if there's no one)
         wxsWidget* Parent;          ///< Parent widget of this one

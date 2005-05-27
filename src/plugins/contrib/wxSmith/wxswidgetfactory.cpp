@@ -62,12 +62,6 @@ void wxsWidgetFactory::Kill(wxsWidget* Widget)
             // Possibly unsafe
             delete Widget;
         }
-        
-        // Need to rearrange parent
-        if ( Parent )
-        {
-            Parent->UpdatePreview(true,true);
-        }
     }
 }
 

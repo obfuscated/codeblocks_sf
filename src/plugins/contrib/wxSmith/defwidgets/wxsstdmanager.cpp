@@ -7,6 +7,7 @@
 #include "wxsgridsizer.h"
 #include "wxsstatictext.h"
 #include "wxscheckbox.h"
+#include "wxstogglebutton.h"
 
 /******************************************************************************/
 /* Infos for standard widgets                                                 */
@@ -17,6 +18,42 @@ static const char* DefAuthor      = "wxWidgets Team";
 static const char* DefAuthorEmail = "";
 static const char* DefAuthorSite  = "www.wxwidgets.org";
 static const char* DefCategory    = "Standard";
+
+
+#define Entry(Name,Widget,Link)    \
+    {   #Widget,            \
+        DefLicence,         \
+        DefAuthor,          \
+        DefAuthorEmail,     \
+        DefAuthorSite,      \
+        Link,               \
+        DefCategory,        \
+        false,              \
+        false,              \
+        2, 42,              \
+        NULL,               \
+        &wxsStdManager,     \
+        Name##Id,           \
+        Name##Styles        \
+    },
+
+#define EntryNoStyles(Name,Widget,Link)    \
+    {   #Widget,            \
+        DefLicence,         \
+        DefAuthor,          \
+        DefAuthorEmail,     \
+        DefAuthorSite,      \
+        Link,               \
+        DefCategory,        \
+        false,              \
+        false,              \
+        2, 42,              \
+        NULL,               \
+        &wxsStdManager,     \
+        Name##Id,           \
+        NULL                \
+    },
+
 
 static wxsWidgetInfo StdInfos[] =
 {
@@ -37,54 +74,11 @@ static wxsWidgetInfo StdInfos[] =
         wxsGridSizerId,
         NULL
     },
-    
-    {   "wxButton",
-        DefLicence,
-        DefAuthor,
-        DefAuthorEmail,
-        DefAuthorSite,
-        "http://www.wxwidgets.org/manuals/2.4.2/wx46.htm#wxbutton",
-        DefCategory,
-        false,
-        false,
-        2, 42,
-        NULL,
-        &wxsStdManager,
-        wxsButtonId,
-        wxsButtonStyles
-    },
-
-    {   "wxCheckBox",
-        DefLicence,
-        DefAuthor,
-        DefAuthorEmail,
-        DefAuthorSite,
-        "http://www.wxwidgets.org/manuals/2.4.2/wx52.htm#wxcheckbox",
-        DefCategory,
-        false,
-        false,
-        2, 42,
-        NULL,
-        &wxsStdManager,
-        wxsCheckBoxId,
-        wxsCheckBoxStyles
-    },
-
-    {   "wxStaticText",
-        DefLicence,
-        DefAuthor,
-        DefAuthorEmail,
-        DefAuthorSite,
-        "http://www.wxwidgets.org/manuals/2.4.2/wx362.htm#wxstatictext",
-        DefCategory,
-        false,
-        false,
-        2, 42,
-        NULL,
-        &wxsStdManager,
-        wxsStaticTextId,
-        wxsStaticTextStyles
-    },
+ 
+    Entry(wxsButton,wxButton,"http://www.wxwidgets.org/manuals/2.4.2/wx46.htm#wxbutton")
+    Entry(wxsToggleButton,wxToggleButton,"http://www.wxwidgets.org/manuals/2.4.2/wx396.htm#wxtogglebutton")
+    Entry(wxsCheckBox,wxCheckBox,"http://www.wxwidgets.org/manuals/2.4.2/wx52.htm#wxcheckbox")
+    Entry(wxsStaticText,wxStaticText,"http://www.wxwidgets.org/manuals/2.4.2/wx362.htm#wxstatictext")
 
     {   "wxDialog",
         DefLicence,
@@ -168,28 +162,14 @@ wxsWidget* wxsStdManagerT::ProduceWidget(int Id)
 {
     switch ( Id )
     {
-        case wxsGridSizerId:
-            return new wxsGridSizer(this);
-            
-        case wxsButtonId:
-            return new wxsButton(this);
-            
-        case wxsCheckBoxId:
-            return new wxsCheckBox(this);
-            
-        case wxsStaticTextId:
-            return new wxsStaticText(this);
-            
-        case wxsPanelId:
-            return new wxsPanel(this);
-            
-        case wxsFrameId:
-            return new wxsFrame(this);
-            
-        case wxsDialogId:
-            return new wxsDialog(this);
-            
-        
+        case wxsGridSizerId:    return new wxsGridSizer(this);
+        case wxsButtonId:       return new wxsButton(this);
+        case wxsCheckBoxId:     return new wxsCheckBox(this);
+        case wxsStaticTextId:   return new wxsStaticText(this);
+        case wxsPanelId:        return new wxsPanel(this);
+        case wxsFrameId:        return new wxsFrame(this);
+        case wxsDialogId:       return new wxsDialog(this);
+        case wxsToggleButtonId: return new wxsToggleButton(this);
     }
     
     return NULL;

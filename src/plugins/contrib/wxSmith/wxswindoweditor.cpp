@@ -56,6 +56,7 @@ void wxsWindowEditor::BuildPreview(wxsWidget* TopWidget)
     wxWindow* TopPreviewWindow = TopWidget ? TopWidget->CreatePreview(Scroll,this) : NULL;
     CurrentWidget = TopWidget;
     
+    SetVirtualSizeHints(1,1);
     if ( TopPreviewWindow )
     {
         wxSizer* NewSizer = new wxGridSizer(1);

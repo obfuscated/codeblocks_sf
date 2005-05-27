@@ -24,6 +24,9 @@ wxsPalette::wxsPalette(wxWindow* Parent,wxSmith* _Plugin,int PN):
     InsTypeMask(0),
     PageNum(PN)
 {
+	wxScrolledWindow* Scroll = new wxScrolledWindow(this,-1);
+	Scroll->SetScrollRate(5,5);
+	
 	wxFlexGridSizer* Sizer = new wxFlexGridSizer(0,1,5,5);
 	Sizer->AddGrowableCol(0);
 	Sizer->AddGrowableRow(1);
@@ -31,31 +34,36 @@ wxsPalette::wxsPalette(wxWindow* Parent,wxSmith* _Plugin,int PN):
 	wxFlexGridSizer* Sizer2 = new wxFlexGridSizer(2,0,5,15);
 	Sizer2->AddGrowableCol(3);
 	
-	Sizer2->Add(new wxStaticText(this,-1,wxT("Insertion type")));
-	Sizer2->Add(new wxStaticText(this,-1,wxT("Delete")));
-	Sizer2->Add(new wxStaticText(this,-1,wxT("Preview")));
-	Sizer2->Add(new wxStaticText(this,-1,wxT("Top list")));
+	Sizer2->Add(new wxStaticText(Scroll,-1,wxT("Insertion type")));
+	Sizer2->Add(new wxStaticText(Scroll,-1,wxT("Delete")));
+	Sizer2->Add(new wxStaticText(Scroll,-1,wxT("Preview")));
+	Sizer2->Add(new wxStaticText(Scroll,-1,wxT("Top list")));
 	
 	wxGridSizer* Sizer3 = new wxGridSizer(1,0,5,5);
-	Sizer3->Add(AddBefore = new wxRadioButton(this,-1,wxT("Before")));
-	Sizer3->Add(AddAfter  = new wxRadioButton(this,-1,wxT("After")));
-	Sizer3->Add(AddInto   = new wxRadioButton(this,-1,wxT("Into")));
+	Sizer3->Add(AddBefore = new wxRadioButton(Scroll,-1,wxT("Before")));
+	Sizer3->Add(AddAfter  = new wxRadioButton(Scroll,-1,wxT("After")));
+	Sizer3->Add(AddInto   = new wxRadioButton(Scroll,-1,wxT("Into")));
 	
 	Sizer2->Add(Sizer3);
 	
-	Sizer2->Add(new wxButton(this,DeleteId,wxT("Delete")));
-	Sizer2->Add(new wxButton(this,PreviewId,wxT("Preview")));
+	Sizer2->Add(new wxButton(Scroll,DeleteId,wxT("Delete")));
+	Sizer2->Add(new wxButton(Scroll,PreviewId,wxT("Preview")));
 	
 	Sizer->Add(Sizer2,0,wxALL|wxGROW,10);
 	
-	wxScrolledWindow* WidgetsSpace = new wxScrolledWindow(this,-1);
+	wxPanel* WidgetsSpace = new wxPanel(Scroll,-1);
 	
 	CreateWidgetsPalette(WidgetsSpace);
 	
 	Sizer->Add(WidgetsSpace,0,wxALL|wxGROW,10);
 	
-	SetSizer(Sizer);
-	Sizer->SetSizeHints(this);
+	Scroll->SetSizer(Sizer);
+	Sizer->SetVirtualSizeHints(Scroll);
+	
+	wxSizer* TopSizer = new wxBoxSizer(wxVERTICAL);
+	
+	TopSizer->Add(Scroll,1,wxGROW);
+	SetSizer(TopSizer);
 	
 	Singleton = this;
 	
@@ -161,7 +169,7 @@ void wxsPalette::CreateWidgetsPalette(wxWindow* Wnd)
     if ( RowSizer ) Sizer->Add(RowSizer,0,wxALL|wxGROW,5);
     
     Wnd->SetSizer(Sizer);
-    Sizer->SetVirtualSizeHints(Wnd);
+    Sizer->SetSizeHints(Wnd);
 }
 
 void wxsPalette::OnButton(wxCommandEvent& event)

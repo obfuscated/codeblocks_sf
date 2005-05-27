@@ -13,6 +13,7 @@ enum std_widgets
     
     /* Controls */
     wxsButtonId,
+    wxsToggleButtonId,      /* Warning - not compatible with XRC 2.4 */
     wxsCheckBoxId,
     wxsStaticTextId,
     

@@ -2,7 +2,6 @@
 #define WXSDEFWIDGET_H
 
 #include "widget.h"
-#include "wxsdefevthandler.h"
 
 #include <vector>
 
@@ -45,35 +44,34 @@
             wxSize(BaseParams.SizeX,BaseParams.SizeY);                      \
         long style = BaseParams.Style;                                      \
         Code;                                                               \
-        ThisWidget->PushEventHandler(new wxsDefEvtHandler(this));           \
         return ThisWidget;                                                  \
     }                                                                       \
     void Name::BuildExtVars()                                               \
     {
 
-#define wxsDWDefBool(Name,Default)                                          \
-        evBool(Name,#Name,#Name,Default);                                     
+#define wxsDWDefBool(Name,PropName,Default)                                 \
+        evBool(Name,#Name,#Name,PropName,Default);
 
-#define wxsDWDefBoolP(Name,PropName,Default)                                \
-        evBool(Name,#Name,PropName,Default);
+#define wxsDWDefBoolX(Name,XrcName,PropName,Default)                        \
+        evBool(Name,#Name,XrcName,PropName,Default);
 
-#define wxsDWDefInt(Name,Default)                                           \
-        evInt(Name,#Name,#Name,Default);                                     
+#define wxsDWDefInt(Name,PropName,Default)                                  \
+        evInt(Name,#Name,#Name,PropName,Default);
 
-#define wxsDWDefIntP(Name,PropName,Default)                                 \
-        evInt(Name,#Name,PropName,Default);
+#define wxsDWDefIntX(Name,XrcName,PropName,Default)                         \
+        evInt(Name,#Name,XrcName,PropName,Default);
 
-#define wxsDWDef2Int(V1,V2,Name,Def1,Def2)                                  \
-        evInt(V1,V2,#Name,#Name,Def1,Def2);                                   
+#define wxsDWDef2Int(V1,V2,Name,PropName,Def1,Def2)                         \
+        evInt(V1,V2,#Name,#Name,PropName,Def1,Def2);
 
-#define wxsDWDef2IntP(V1,V2,Name,PropName,Def1,Def2)                        \
-        evInt(V1,V2,#Name,PropName,Def1,Def2);
+#define wxsDWDef2IntX(V1,V2,Name,XrcName,PropName,Def1,Def2)                \
+        evInt(V1,V2,#Name,XrcName,PropName,Def1,Def2);
 
-#define wxsDWDefStr(Name,Default)                                           \
-        evStr(Name,#Name,#Name,Default);                                     
+#define wxsDWDefStr(Name,PropName,Default)                                  \
+        evStr(Name,#Name,#Name,PropName,Default);
         
-#define wxsDWDefStrP(Name,PropName,Default)                                 \
-        evStr(Name,#Name,PropName,Default);
+#define wxsDWDefStrX(Name,XrcName,PropName,Default)                         \
+        evStr(Name,#Name,XrcName,PropName,Default);
         
 #define wxsDWDefineEnd()                                                    \
     }
@@ -98,10 +96,10 @@ class wxsDefWidget: public wxsWidget
         virtual bool MyXmlSave();
         virtual void CreateObjectProperties();
 
-        void evBool(bool& Val,char* Name,char* PropName,bool DefValue);
-        void evInt(int& Val,char* Name,char* PropName,int DefValue);
-        void ev2Int(int& Val1,int& Val2,char* Name,char* PropName,int DefValue1,int DefValue2);
-        void evStr(wxString& Val,char* Name,char* PropName,wxString DefValue);
+        void evBool(bool& Val,char* Name,char* XrcName,char* PropName,bool DefValue);
+        void evInt(int& Val,char* Name,char* XrcName,char* PropName,int DefValue);
+        void ev2Int(int& Val1,int& Val2,char* XrcName,char* Name,char* PropName,int DefValue1,int DefValue2);
+        void evStr(wxString& Val,char* Name,char* XrcName,char* PropName,wxString DefValue);
         
         virtual void BuildExtVars() = 0;
         virtual const char* GetGeneratingCodeStr() = 0;

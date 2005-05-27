@@ -94,7 +94,7 @@ const char* wxsDefWidget::GetDeclarationCode(wxsCodeParams& Params)
 }
 
 
-void wxsDefWidget::evBool(bool& Val,char* Name,char* PropName,bool DefValue)
+void wxsDefWidget::evBool(bool& Val,char* Name,char* XrcName,char* PropName,bool DefValue)
 {
     switch ( evUse )
     {
@@ -106,7 +106,7 @@ void wxsDefWidget::evBool(bool& Val,char* Name,char* PropName,bool DefValue)
         
         case XmlL:
         {
-            Val = XmlGetInteger(Name,DefValue?1:0) != 0;
+            Val = XmlGetInteger(XrcName,DefValue?1:0) != 0;
             break;
         }
         
@@ -114,7 +114,7 @@ void wxsDefWidget::evBool(bool& Val,char* Name,char* PropName,bool DefValue)
         {
             if ( Val != DefValue )
             {
-                XmlSetInteger(Name,Val?1:0);
+                XmlSetInteger(XrcName,Val?1:0);
             }
             break;
         }
@@ -127,13 +127,13 @@ void wxsDefWidget::evBool(bool& Val,char* Name,char* PropName,bool DefValue)
         
         case Props:
         {
-            PropertiesObject.AddProperty(Name,Val);
+            PropertiesObject.AddProperty(PropName,Val);
             break;
         }
     }
 }
 
-void wxsDefWidget::evInt(int& Val,char* Name,char* PropName,int DefValue)
+void wxsDefWidget::evInt(int& Val,char* Name,char* XrcName,char* PropName,int DefValue)
 {
     switch ( evUse )
     {
@@ -145,7 +145,7 @@ void wxsDefWidget::evInt(int& Val,char* Name,char* PropName,int DefValue)
         
         case XmlL:
         {
-            Val = XmlGetInteger(Name,DefValue);
+            Val = XmlGetInteger(XrcName,DefValue);
             break;
         }
         
@@ -153,7 +153,7 @@ void wxsDefWidget::evInt(int& Val,char* Name,char* PropName,int DefValue)
         {
             if ( Val != DefValue )
             {
-                XmlSetInteger(Name,Val);
+                XmlSetInteger(XrcName,Val);
             }
             break;
         }
@@ -166,13 +166,13 @@ void wxsDefWidget::evInt(int& Val,char* Name,char* PropName,int DefValue)
         
         case Props:
         {
-            PropertiesObject.AddProperty(Name,Val);
+            PropertiesObject.AddProperty(PropName,Val);
             break;
         }
     }
 }
 
-void wxsDefWidget::ev2Int(int& Val1,int& Val2,char* Name,char* PropName,int DefValue1,int DefValue2)
+void wxsDefWidget::ev2Int(int& Val1,int& Val2,char* Name,char* XrcName,char* PropName,int DefValue1,int DefValue2)
 {
     switch ( evUse )
     {
@@ -185,7 +185,7 @@ void wxsDefWidget::ev2Int(int& Val1,int& Val2,char* Name,char* PropName,int DefV
         
         case XmlL:
         {
-            XmlGetIntPair(Name,Val1,Val2,DefValue1,DefValue2);
+            XmlGetIntPair(XrcName,Val1,Val2,DefValue1,DefValue2);
             break;
         }
         
@@ -193,7 +193,7 @@ void wxsDefWidget::ev2Int(int& Val1,int& Val2,char* Name,char* PropName,int DefV
         {
             if ( Val1!=DefValue1 || Val2!=DefValue2 )
             {
-                XmlSetIntPair(Name,Val1,Val2);
+                XmlSetIntPair(XrcName,Val1,Val2);
             }
             break;
         }
@@ -206,13 +206,13 @@ void wxsDefWidget::ev2Int(int& Val1,int& Val2,char* Name,char* PropName,int DefV
         
         case Props:
         {
-            PropertiesObject.Add2IProperty(Name,Val1,Val2);
+            PropertiesObject.Add2IProperty(PropName,Val1,Val2);
             break;
         }
     }
 }
 
-void wxsDefWidget::evStr(wxString& Val,char* Name,char* PropName,wxString DefValue)
+void wxsDefWidget::evStr(wxString& Val,char* Name,char* XrcName,char* PropName,wxString DefValue)
 {
     switch ( evUse )
     {
@@ -224,7 +224,7 @@ void wxsDefWidget::evStr(wxString& Val,char* Name,char* PropName,wxString DefVal
         
         case XmlL:
         {
-            const char* Value = XmlGetVariable(Name);
+            const char* Value = XmlGetVariable(XrcName);
             if ( Value ) Val = Value;
             else Val = DefValue;
             break;
@@ -234,7 +234,7 @@ void wxsDefWidget::evStr(wxString& Val,char* Name,char* PropName,wxString DefVal
         {
             if ( Val != DefValue )
             {
-                XmlSetVariable(Name,Val);
+                XmlSetVariable(XrcName,Val);
             }
             break;
         }
@@ -247,7 +247,7 @@ void wxsDefWidget::evStr(wxString& Val,char* Name,char* PropName,wxString DefVal
         
         case Props:
         {
-            PropertiesObject.AddProperty(Name,Val);
+            PropertiesObject.AddProperty(PropName,Val);
         }
     }
 }
