@@ -181,6 +181,18 @@
                   <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
                   <border>8</border>
                 </object>
+                <object class="sizeritem">
+                  <object class="wxRadioBox" name="rbTabText">
+                    <label>Editor title is the file's</label>
+                    <content>
+                      <item>name only (no path information)</item>
+                      <item>relative filename (to the project file)</item>
+                    </content>
+                    <selection>0</selection>
+                  </object>
+                  <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                  <border>8</border>
+                </object>
               </object>
             </object>
           </object>

@@ -227,7 +227,10 @@ void cbEditor::SetProjectFile(ProjectFile* project_file,bool preserve_modified)
 		m_pProjectFile->editorOpen = true;
 		SetBreakpoints();
 		
-		m_Shortname = m_pProjectFile->relativeToCommonTopLevelPath;
+		if (ConfigManager::Get()->Read("/editor/tab_text_relative", 1) == 1)
+            m_Shortname = m_pProjectFile->relativeToCommonTopLevelPath;
+        else
+            m_Shortname = m_pProjectFile->file.GetFullName();
 		SetEditorTitle(m_Shortname);
 	}
 #if 0
@@ -321,6 +324,16 @@ void cbEditor::SetEditorStyle()
         wxNativeFontInfo nfi;
         nfi.FromString(fontstring);
         font.SetNativeFontInfo(nfi);
+    }
+
+    // update the tab text based on preferences
+    if (m_pProjectFile)
+    {
+		if (ConfigManager::Get()->Read("/editor/tab_text_relative", 1) == 1)
+            m_Shortname = m_pProjectFile->relativeToCommonTopLevelPath;
+        else
+            m_Shortname = m_pProjectFile->file.GetFullName();
+		SetEditorTitle(m_Shortname);
     }
 
 	m_pControl->SetMouseDwellTime(1000);

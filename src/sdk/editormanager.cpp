@@ -173,6 +173,7 @@ void EditorManager::Configure()
         	if (ed)
                 ed->SetEditorStyle();
         }
+        RebuildOpenedFilesTree(0); // maybe the tab text naming changed
     }
 }
 

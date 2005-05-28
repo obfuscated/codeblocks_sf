@@ -136,7 +136,7 @@
             </object>
           </object>
         </object>
-        <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+        <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
         <border>8</border>
       </object>
       <object class="sizeritem">
