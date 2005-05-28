@@ -45,6 +45,7 @@ int idCBViewModeStructured = wxNewId();
 int idMenuForceReparse = wxNewId();
 
 BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
+	EVT_TREE_ITEM_ACTIVATED(ID_ClassBrowser, ClassBrowser::OnTreeItemDoubleClick)
     EVT_TREE_ITEM_RIGHT_CLICK(ID_ClassBrowser, ClassBrowser::OnTreeItemRightClick)
     EVT_MENU(idMenuJumpToDeclaration, ClassBrowser::OnJumpTo)
     EVT_MENU(idMenuJumpToImplementation, ClassBrowser::OnJumpTo)
@@ -197,6 +198,54 @@ void ClassBrowser::OnJumpTo(wxCommandEvent& event)
                     line = ctd->GetToken()->m_Line - 1;
 				int pos = ed->GetControl()->PositionFromLine(line);
 				ed->GetControl()->GotoPos(pos);
+			}
+        }
+    }
+}
+
+void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
+{
+	int id = m_Tree->GetSelection();
+	ClassTreeData* ctd = (ClassTreeData*)m_Tree->GetItemData(id);
+    if (ctd)
+    {
+        cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+        if (prj)
+        {
+			bool toImp = false;
+			switch (ctd->GetToken()->m_TokenKind)
+			{
+			case tkConstructor:
+            case tkDestructor:
+            case tkFunction:
+                if (ctd->GetToken()->m_ImplLine != 0 && !ctd->GetToken()->m_ImplFilename.IsEmpty())
+                    toImp = true;
+				break;
+			default:
+				break;
+			}
+                    
+            wxString base = prj->GetBasePath();
+            wxFileName fname;
+            if (toImp)
+                fname.Assign(ctd->GetToken()->m_ImplFilename);
+            else
+                fname.Assign(ctd->GetToken()->m_Filename);
+            fname.Normalize(wxPATH_NORM_ALL, base);
+        	cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname.GetFullPath());
+			if (ed)
+			{
+				int line;
+                if (toImp)
+                    line = ctd->GetToken()->m_ImplLine - 1;
+                else
+                    line = ctd->GetToken()->m_Line - 1;
+				int pos = ed->GetControl()->PositionFromLine(line);
+				ed->GetControl()->GotoPos(pos);
+				
+				wxFocusEvent ev(wxEVT_SET_FOCUS);
+				ev.SetWindow(this);
+				ed->GetControl()->AddPendingEvent(ev);
 			}
         }
     }

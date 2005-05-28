@@ -24,6 +24,7 @@ class ClassBrowser : public wxPanel
 		const Parser& GetParser(){ return *m_pParser; }
 		void Update();
     private:
+		void OnTreeItemDoubleClick(wxTreeEvent& event);
     	void OnTreeItemRightClick(wxTreeEvent& event);
         void OnJumpTo(wxCommandEvent& event);
         void OnRefreshTree(wxCommandEvent& event);
