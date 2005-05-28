@@ -84,6 +84,8 @@ int idFileCloseAll = XRCID("idFileCloseAll");
 int idFilePrintSetup = XRCID("idFilePrintSetup");
 int idFilePrint = XRCID("idFilePrint");
 int idFileExit = XRCID("idFileExit");
+int idFileNext = wxNewId();
+int idFilePrev = wxNewId();
 
 int idEditUndo = XRCID("idEditUndo");
 int idEditRedo = XRCID("idEditRedo");
@@ -231,6 +233,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idFilePrintSetup,  MainFrame::OnFilePrintSetup)
     EVT_MENU(idFilePrint,  MainFrame::OnFilePrint)
     EVT_MENU(idFileExit,  MainFrame::OnFileQuit)
+    EVT_MENU(idFileNext,  MainFrame::OnFileNext)
+    EVT_MENU(idFilePrev,  MainFrame::OnFilePrev)
 
     EVT_MENU(idEditUndo,  MainFrame::OnEditUndo)
     EVT_MENU(idEditRedo,  MainFrame::OnEditRedo)
@@ -301,10 +305,12 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	
 	/// CloseFullScreen event handling
 	EVT_BUTTON( idCloseFullScreen, MainFrame::OnToggleFullScreen )
+	
 END_EVENT_TABLE()
 
 MainFrame::MainFrame(wxWindow* parent)
        : wxFrame(parent, -1, "MainWin", wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE),
+	   m_pAccel(0L),
 	   m_pCloseFullScreenBtn(0L),
        m_pNotebook(0L),
 	   m_pLeftSash(0L),
@@ -316,7 +322,7 @@ MainFrame::MainFrame(wxWindow* parent)
        m_ToolsMenu(0L),
        m_SettingsMenu(0L),
        m_HelpPluginsMenu(0L),
-       m_ReconfiguringPlugins(false)
+       m_ReconfiguringPlugins(false)       
 {
 #if defined( _MSC_VER ) && defined( _DEBUG )
 	int tmpFlag = _CrtSetDbgFlag( _CRTDBG_REPORT_FLAG );
@@ -326,6 +332,19 @@ MainFrame::MainFrame(wxWindow* parent)
     
     // New: Allow drag and drop of files into the editor
     SetDropTarget(new wxMyFileDropTarget(this));
+    
+    // Accelerator table
+    wxAcceleratorEntry entries[6];
+    
+    entries[0].Set(wxACCEL_CTRL | wxACCEL_SHIFT,  (int) 'W', idFileCloseAll);
+    entries[1].Set(wxACCEL_CTRL | wxACCEL_SHIFT,  WXK_F4, idFileCloseAll);
+    entries[2].Set(wxACCEL_CTRL,  (int) 'W', idFileClose);
+    entries[3].Set(wxACCEL_CTRL,  WXK_F4, idFileClose);
+    entries[4].Set(wxACCEL_CTRL,  WXK_F6, idFileNext);
+    entries[5].Set(wxACCEL_CTRL | wxACCEL_SHIFT,  WXK_F6, idFilePrev);
+    m_pAccel = new wxAcceleratorTable(6, entries);
+    
+    this->SetAcceleratorTable(*m_pAccel);
     
     m_SmallToolBar = ConfigManager::Get()->Read("/environment/toolbar_size", (long int)0) == 1;
 	CreateIDE();
@@ -364,6 +383,9 @@ MainFrame::MainFrame(wxWindow* parent)
 
 MainFrame::~MainFrame()
 {
+    this->SetAcceleratorTable(wxNullAcceleratorTable);
+    delete m_pAccel;
+
     DeInitPrinting();
 	//Manager::Get()->Free();
 }
@@ -1236,6 +1258,18 @@ void MainFrame::OnFileClose(wxCommandEvent& WXUNUSED(event))
 void MainFrame::OnFileCloseAll(wxCommandEvent& WXUNUSED(event))
 {
     m_pEdMan->CloseAll();
+    DoUpdateStatusBar();
+}
+
+void MainFrame::OnFileNext(wxCommandEvent& event)
+{
+    m_pEdMan->ActivateNext();
+    DoUpdateStatusBar();
+}
+
+void MainFrame::OnFilePrev(wxCommandEvent& event)
+{
+    m_pEdMan->ActivatePrevious();
     DoUpdateStatusBar();
 }
 

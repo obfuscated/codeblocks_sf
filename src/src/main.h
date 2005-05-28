@@ -16,6 +16,7 @@ WX_DECLARE_HASH_MAP(cbPlugin*, wxToolBar*, wxPointerHash, wxPointerEqual, Plugin
 class MainFrame : public wxFrame
 {
     public:
+        wxAcceleratorTable* m_pAccel;
         MainFrame(wxWindow* parent = (wxWindow*)NULL);
         ~MainFrame();
 
@@ -46,6 +47,8 @@ class MainFrame : public wxFrame
         void OnFilePrintSetup(wxCommandEvent& event);
         void OnFilePrint(wxCommandEvent& event);
         void OnFileQuit(wxCommandEvent& event);
+        void OnFileNext(wxCommandEvent& event);
+        void OnFilePrev(wxCommandEvent& event);
 
         void OnEditUndo(wxCommandEvent& event);
         void OnEditRedo(wxCommandEvent& event);
