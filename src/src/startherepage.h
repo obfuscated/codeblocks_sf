@@ -4,20 +4,20 @@
 #include "editorbase.h"
 
 extern wxString g_StartHereTitle;
+extern int idStartHerePageLink; // used to message the main frame
 
-class MainFrame;
 class wxHtmlWindow;
 class wxHtmlLinkInfo;
 
 class StartHerePage : public EditorBase
 {
 	public:
-		StartHerePage(MainFrame* owner, wxWindow* parent);
+		StartHerePage(wxEvtHandler* owner, wxWindow* parent);
 		virtual ~StartHerePage();
 		
 		bool LinkClicked(const wxHtmlLinkInfo& link);
 	protected:
-        MainFrame* m_pOwner;
+        wxEvtHandler* m_pOwner;
         wxHtmlWindow* m_pWin;
 	private:
         DECLARE_EVENT_TABLE()

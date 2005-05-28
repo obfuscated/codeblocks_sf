@@ -23,7 +23,6 @@ class MainFrame : public wxFrame
         bool Open(const wxString& filename, bool addToHistory = true);
         bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames);
         void ShowTips(bool forceShow = false);
-        bool HandleStartHereLink(const wxString& link);
 
         // show a file-open dialog and return the selection
         wxString ShowOpenFileDialog(const wxString& caption, const wxString& filter);
@@ -32,6 +31,7 @@ class MainFrame : public wxFrame
 
         // event handlers
         void OnApplicationClose(wxCloseEvent& event);
+        void OnStartHereLink(wxCommandEvent& event);
 
         void OnFileNewEmpty(wxCommandEvent& event);
         void OnFileOpen(wxCommandEvent& event);

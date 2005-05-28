@@ -37,6 +37,7 @@
 #include "compilerMSVC.h"
 #include "compilerBCC.h"
 #include "compilerDMC.h"
+#include "compilerOW.h"
 #include "directcommands.h"
 #include <wx/xrc/xmlres.h>
 
@@ -202,6 +203,7 @@ CompilerGCC::CompilerGCC()
 	CompilerFactory::RegisterCompiler(new CompilerMSVC);
 	CompilerFactory::RegisterCompiler(new CompilerBCC);
 	CompilerFactory::RegisterCompiler(new CompilerDMC);
+	CompilerFactory::RegisterCompiler(new CompilerOW);
 #endif
 	// register (if any) user-copies of built-in compilers
 	CompilerFactory::RegisterUserCompilers();
@@ -475,7 +477,7 @@ void CompilerGCC::SetupEnvironment()
         {
             ProjectBuildTarget* target = m_Project->GetBuildTarget(x);
             int idx = target->GetCompilerIndex();
-            
+
             // one time per compiler
             if (compilers.Index(idx) != wxNOT_FOUND || !CompilerFactory::CompilerIndexOK(idx))
                 continue;
@@ -504,6 +506,20 @@ void CompilerGCC::SetupEnvironment()
                     binPath = masterPath + sep + "bin";
                 else if (wxFileExists(masterPath + sep + gcc))
                     binPath = masterPath;
+                else
+                {
+                    for (unsigned int i = 0; i < extraPaths.GetCount(); ++i)
+                    {
+                        if (!extraPaths[i].IsEmpty())
+                        {
+                            if (wxFileExists(extraPaths[i] + sep + gcc))
+                            {
+                                binPath = extraPaths[i];
+                                break;
+                            }
+                        }
+                    }
+                }
             }
 
             if (binPath.IsEmpty() || !pathList.Member(wxPathOnly(binPath)))
@@ -519,6 +535,18 @@ void CompilerGCC::SetupEnvironment()
 #else
 	#define PATH_SEP ":"
 #endif
+                // add extra compiler paths in PATH
+                wxString oldpath = path;
+                path.Clear();
+                for (unsigned int i = 0; i < extraPaths.GetCount(); ++i)
+                {
+                    if (!extraPaths[i].IsEmpty())
+                    {
+                        path += extraPaths[i] + PATH_SEP;
+                    }
+                }
+                path = path + oldpath;
+
                 // add bin path to PATH env. var.
                 if (wxFileExists(masterPath + sep + "bin" + sep + gcc))
                     path = masterPath + sep + "bin" + PATH_SEP + path;

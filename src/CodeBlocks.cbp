@@ -830,6 +830,16 @@
 			<Option link="0"/>
 			<Option target="plugin_CompilerGCC"/>
 		</Unit>
+		<Unit filename="plugins\compilergcc\compilerOW.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerOW.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
 		<Unit filename="plugins\compilergcc\compilererrors.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="plugin_CompilerGCC"/>
@@ -2255,7 +2265,6 @@
 		<Unit filename="src\app.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="src"/>
-			<Breakpoint line="233" enabled="1" pass="0" />
 		</Unit>
 		<Unit filename="src\app.h">
 			<Option compilerVar=""/>

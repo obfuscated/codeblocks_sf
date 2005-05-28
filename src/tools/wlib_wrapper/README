@@ -1,0 +1,10 @@
+This is a simple wrapper for wlib.exe of OpenWatcom compiler.
+
+IF YOU 'RE NOT USING OPENWATCOM, STOP READING. THIS IS NOT FOR YOU.
+
+wlib.exe general syntax is "wlib.exe lib_name.lib +obj1.obj +obj2.obj ..."
+Currently, Code::Blocks can't add the plus (+) sign in front of every object file. Until this is possible, you can use this wrapper as linker for static libraries.
+
+Copy this wrapper to the same dir wlib.exe resides.
+
+Thanks to an anonymous poster on the forums.

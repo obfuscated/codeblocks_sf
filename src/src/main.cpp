@@ -297,6 +297,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(wxID_ABOUT, MainFrame::OnHelpAbout)
     EVT_MENU(idHelpTips, MainFrame::OnHelpTips)
 	
+	EVT_MENU(idStartHerePageLink, MainFrame::OnStartHereLink)
+
 	EVT_SASH_DRAGGED(-1, MainFrame::OnDragSash)
 	
 	EVT_PROJECT_ACTIVATE(MainFrame::OnProjectActivated)
@@ -1010,9 +1012,10 @@ void MainFrame::ShowHideStartPage(bool forceHasProject)
         sh->Destroy();
 }
 
-bool MainFrame::HandleStartHereLink(const wxString& link)
+void MainFrame::OnStartHereLink(wxCommandEvent& event)
 {
     wxCommandEvent evt;
+    wxString link = event.GetString();
     if (link.Matches(_("CB_CMD_NEW_PROJECT")))
         TemplateManager::Get()->NewProject();
     else if (link.Matches(_("CB_CMD_OPEN_PROJECT")))
@@ -1027,12 +1030,6 @@ bool MainFrame::HandleStartHereLink(const wxString& link)
         if (arr.GetCount() != 0)
             arr[0]->Configure();
     }
-    else
-    {
-        // open normal URL links
-        return false;
-    }
-    return true;
 }
 
 void MainFrame::InitializeRecentFilesHistory()

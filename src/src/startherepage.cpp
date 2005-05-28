@@ -10,9 +10,9 @@
 #include <pluginmanager.h>
 #include <editormanager.h>
 #include <configmanager.h>
-#include "main.h"
 
 wxString g_StartHereTitle = _("Start here");
+int idStartHerePageLink = wxNewId();
 int idWin = wxNewId();
 
 class DLLIMPORT MyHtmlWin : public wxHtmlWindow
@@ -45,7 +45,7 @@ class DLLIMPORT MyHtmlWin : public wxHtmlWindow
 BEGIN_EVENT_TABLE(StartHerePage, EditorBase)
 END_EVENT_TABLE()
 
-StartHerePage::StartHerePage(MainFrame* owner, wxWindow* parent)
+StartHerePage::StartHerePage(wxEvtHandler* owner, wxWindow* parent)
     : EditorBase(parent, g_StartHereTitle),
     m_pOwner(owner)
 {
@@ -72,5 +72,13 @@ bool StartHerePage::LinkClicked(const wxHtmlLinkInfo& link)
 {
     if (!m_pOwner)
         return true;
-    return m_pOwner->HandleStartHereLink(link.GetHref());
+    
+    if (link.GetHref().StartsWith("CB_CMD_"))
+    {
+        wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, idStartHerePageLink);
+        evt.SetString(link.GetHref());
+        wxPostEvent(m_pOwner, evt);
+        return true;
+    }
+    return false;
 }
