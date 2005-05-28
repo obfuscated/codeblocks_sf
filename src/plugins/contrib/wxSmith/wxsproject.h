@@ -43,7 +43,7 @@ class wxsProject
 
         /* Some strructures which could be used publically */
         
-		wxsProject(wxSmith* Plugin);
+		wxsProject();
 		virtual ~wxsProject();
 
         /** Type defining current state of integration with C::B project */
@@ -63,9 +63,6 @@ class wxsProject
         /** Forcing project to save it's main configuration file */
         virtual void SaveProject();
         
-        /** Getting plugin associated with this project */
-        inline wxSmith* GetPlugin() { return Plugin; }
-        
         /** Getting C::B project */
         inline cbProject* GetCBProject() { return Project; }
         
@@ -74,6 +71,15 @@ class wxsProject
         
         /** Getting full name of project's file */
         virtual wxString GetProjectFileName(const wxString& FileName);
+        
+        /** Adding wxSmith configuration to this project */
+        virtual bool AddSmithConfig();
+        
+        /** Searching for resource with given name */
+        wxsResource* FindResource(const wxString& Name);
+        
+        /** Adding previously created dialog resource */
+        void AddDialog(wxsDialogRes* Dialog);
 		
     protected:
         
@@ -129,9 +135,11 @@ class wxsProject
         wxFileName ProjectPath;         ///< Base Directory of C::B project (where project filr is stored)
         wxFileName WorkingPath;         ///< Directory where wxSmith's private data will be stored
         cbProject* Project;             ///< Project associated with project
-        wxSmith* Plugin;                ///< Current wxSmith plugin
         wxTreeItemId TreeItem;          ///< Tree item where project's resources are kept
-        
+        wxTreeItemId DialogId;          ///< Tree item for dialog resourcecs
+        wxTreeItemId FrameId;           ///< Tree item for frame resources
+        wxTreeItemId PanelId;           ///< Tree item for panel resources
+            
         /* Resources */
         
         typedef std::vector<wxsDialogRes*> DialogListT;
@@ -147,7 +155,7 @@ class wxsProject
         FrameListT Frames;
         PanelListT Panels;
         
-        bool DuringClear;               ///< Set to true wneh inside Clear call
+        bool DuringClear;               ///< Set to true when inside Clear call
         
         friend class wxsDialogRes;
 };

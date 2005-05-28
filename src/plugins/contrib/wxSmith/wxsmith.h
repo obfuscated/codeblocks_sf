@@ -77,11 +77,14 @@ class wxSmith : public cbPlugin
         
         ProjectMapT ProjectMap;
         
+        bool AddSmithToProject(wxsProject* Project);
+        
         /* Event processing functions */
         
         void OnProjectClose(CodeBlocksEvent& event);
         void OnProjectOpen(CodeBlocksEvent& event);
         void OnProjectActivated(CodeBlocksEvent& event);
+        void OnNewDialog(wxCommandEvent& event);
         
         /* Internal event-processing functions */
         void OnSpreadEvent(wxsEvent& event);

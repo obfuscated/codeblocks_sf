@@ -59,6 +59,7 @@ struct wxsWidgetInfo
     wxImage* Icon;                  ///< Icon used in pallette
     wxsWidgetManager* Manager;      ///< Manager handling this widget
     int Id;                         ///< Identifier used inside manager to handle this widget, must be same as 'Number' in GetWidgetInfo call
+    int TreeIconId;
     wxsStyle* Styles;               ///< Set of available styles, ending with NULL-named style
 };
 
@@ -67,7 +68,7 @@ struct wxsWidgetBaseParams
 {
     wxString IdName;                ///< Widget's identifier
     wxString VarName;               ///< Widget's variable used inside main window
-    bool VarNotStored;              ///< True if widget's variable won't be stored inside main window
+    bool IsMember;                  ///< True if widget's variable won't be stored inside main window
     int PosX, PosY;                 ///< Widget's position
     bool DefaultPosition;           ///< Widget has default position
     int SizeX, SizeY;               ///< Widget's size
@@ -113,7 +114,7 @@ struct wxsWidgetBaseParams
     wxsWidgetBaseParams():
         IdName("ID_COMMON"),
         VarName("Unknown"),
-        VarNotStored(false),
+        IsMember(true),
         PosX(-1), PosY(-1),
         DefaultPosition(true),
         SizeX(-1), SizeY(-1),

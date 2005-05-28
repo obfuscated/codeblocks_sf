@@ -39,8 +39,3 @@ void wxsResource::EditorSaysHeIsClosing()
     assert ( Editor->GetResource() == NULL || Editor->GetResource() == this );
     Editor = NULL;
 }
-
-wxSmith* wxsResource::GetPlugin()
-{
-    return Project ? Project->GetPlugin() : NULL;
-}

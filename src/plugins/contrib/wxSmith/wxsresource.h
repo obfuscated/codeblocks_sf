@@ -37,6 +37,9 @@ class wxsResource
         
         /** This function should show preview in modal */
         virtual void ShowPreview() { }
+
+        /** Getting resource name */
+        virtual const wxString& GetResourceName() = 0;
         
     protected:
     

@@ -25,7 +25,7 @@ void wxsWidget::AddDefaultProperties(BasePropertiesType pType)
     if ( pType & bptVariable )
     {
         PropertiesObject.AddProperty(wxT("Var Name:"),BaseParams.VarName);
-        PropertiesObject.AddProperty(wxT("Local Var:"),BaseParams.VarNotStored);
+        PropertiesObject.AddProperty(wxT("Is Member:"),BaseParams.IsMember);
     }
     
     if ( pType & bptId )
@@ -195,8 +195,8 @@ bool wxsWidget::XmlLoadDefaultsT(BasePropertiesType pType)
     {
         const char* VarName = XmlElem()->Attribute("variable");
         BaseParams.VarName = VarName ? VarName : wxT("");
-        const char* IsLocal = XmlElem()->Attribute("varlocal");
-        BaseParams.VarNotStored = IsLocal ? ( strcasecmp(IsLocal,"yes") == 0 ) : false;
+        const char* IsMember = XmlElem()->Attribute("member");
+        BaseParams.IsMember = IsMember ? ( strcasecmp(IsMember,"no") != 0 ) : true;
     }
 
     /* Processing style */
@@ -262,7 +262,7 @@ bool wxsWidget::XmlSaveDefaultsT(BasePropertiesType pType)
     if ( pType & bptVariable )
     {
         XmlElem()->SetAttribute("variable",BaseParams.VarName.c_str());
-        XmlElem()->SetAttribute("varlocal",BaseParams.VarNotStored?"yes":"no");
+        XmlElem()->SetAttribute("member",BaseParams.IsMember?"yes":"no");
     }
 
     if ( pType & bptStyle )

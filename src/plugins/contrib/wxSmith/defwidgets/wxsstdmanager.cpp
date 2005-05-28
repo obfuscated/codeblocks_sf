@@ -20,8 +20,8 @@ static const char* DefAuthorSite  = "www.wxwidgets.org";
 static const char* DefCategory    = "Standard";
 
 
-#define Entry(Name,Widget,Link)    \
-    {   #Widget,            \
+#define Entry(Name,Link)    \
+    {   "wx"#Name,          \
         DefLicence,         \
         DefAuthor,          \
         DefAuthorEmail,     \
@@ -33,12 +33,13 @@ static const char* DefCategory    = "Standard";
         2, 42,              \
         NULL,               \
         &wxsStdManager,     \
-        Name##Id,           \
-        Name##Styles        \
+        wxs##Name##Id,      \
+        0,                  \
+        wxs##Name##Styles   \
     },
 
-#define EntryNoStyles(Name,Widget,Link)    \
-    {   #Widget,            \
+#define EntryNoStyles(Name,Link)    \
+    {   "wx"#Name,          \
         DefLicence,         \
         DefAuthor,          \
         DefAuthorEmail,     \
@@ -50,7 +51,8 @@ static const char* DefCategory    = "Standard";
         2, 42,              \
         NULL,               \
         &wxsStdManager,     \
-        Name##Id,           \
+        wxs##Name##Id,      \
+        0,                  \
         NULL                \
     },
 
@@ -72,13 +74,14 @@ static wxsWidgetInfo StdInfos[] =
         NULL,
         &wxsStdManager,
         wxsGridSizerId,
+        0,
         NULL
     },
  
-    Entry(wxsButton,wxButton,"http://www.wxwidgets.org/manuals/2.4.2/wx46.htm#wxbutton")
-    Entry(wxsToggleButton,wxToggleButton,"http://www.wxwidgets.org/manuals/2.4.2/wx396.htm#wxtogglebutton")
-    Entry(wxsCheckBox,wxCheckBox,"http://www.wxwidgets.org/manuals/2.4.2/wx52.htm#wxcheckbox")
-    Entry(wxsStaticText,wxStaticText,"http://www.wxwidgets.org/manuals/2.4.2/wx362.htm#wxstatictext")
+    Entry(Button,      "http://www.wxwidgets.org/manuals/2.4.2/wx46.htm#wxbutton")
+    Entry(ToggleButton,"http://www.wxwidgets.org/manuals/2.4.2/wx396.htm#wxtogglebutton")
+    Entry(CheckBox,    "http://www.wxwidgets.org/manuals/2.4.2/wx52.htm#wxcheckbox")
+    Entry(StaticText,  "http://www.wxwidgets.org/manuals/2.4.2/wx362.htm#wxstatictext")
 
     {   "wxDialog",
         DefLicence,
@@ -93,6 +96,7 @@ static wxsWidgetInfo StdInfos[] =
         NULL,
         &wxsStdManager,
         wxsDialogId,
+        0,
         wxsDialogStyles
     },
 
@@ -108,7 +112,8 @@ static wxsWidgetInfo StdInfos[] =
         2, 42,
         NULL,
         &wxsStdManager,
-        wxsFrameId
+        wxsFrameId,
+        0,
         // TODO (SpOoN#1#): Add styles
     },
     
@@ -124,7 +129,8 @@ static wxsWidgetInfo StdInfos[] =
         2, 42,
         NULL,
         &wxsStdManager,
-        wxsPanelId
+        wxsPanelId,
+        0
         // TODO (SpOoN#1#): Add styles
     },
 };

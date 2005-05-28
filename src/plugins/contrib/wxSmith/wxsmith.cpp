@@ -19,6 +19,7 @@
 #include <tinyxml/tinyxml.h>
 #include <messagemanager.h>
 #include <cbeditor.h>
+#include <projectmanager.h>
 #include <wx/sashwin.h>
 
 #include "resources/wxsdialogres.h"
@@ -29,7 +30,9 @@
 #include "wxswidgetfactory.h"
 #include "wxspalette.h"
 #include "wxsevent.h"
+#include "wxsnewdialogdlg.h"
 
+static int NewDialogId = wxNewId();
 
 class wxsResourceTree: public wxTreeCtrl
 {
@@ -87,6 +90,7 @@ BEGIN_EVENT_TABLE(wxSmith, cbPlugin)
 	EVT_UNSELECT_RES(wxSmith::OnSpreadEvent)
 	EVT_SELECT_WIDGET(wxSmith::OnSpreadEvent)
 	EVT_UNSELECT_WIDGET(wxSmith::OnSpreadEvent)
+	EVT_MENU(NewDialogId,wxSmith::OnNewDialog)
 END_EVENT_TABLE()
 
 wxSmith::wxSmith()
@@ -179,7 +183,7 @@ void wxSmith::OnAttach()
         ResourceBrowser = NULL;
 	}
 	
-    // Registering widget factories
+    Manager::Get()->Loadxrc("/wxsmith.zip#zip:*.xrc");
 }
 
 void wxSmith::OnRelease(bool appShutDown)
@@ -205,7 +209,19 @@ int wxSmith::Configure()
 
 void wxSmith::BuildMenu(wxMenuBar* menuBar)
 {
-	NotImplemented("wxSmith::OfferMenuSpace()");
+	wxMenu* Menu = new wxMenu;
+	Menu->Append(NewDialogId,"Add Dialog");
+	
+	int ToolsPos = menuBar->FindMenu("&Tools");
+	
+	if  ( ToolsPos == wxNOT_FOUND )
+	{
+        menuBar->Append(Menu,wxT("wxSmith"));
+	}
+	else
+	{
+        menuBar->Insert(ToolsPos,Menu,wxT("wxSmith"));
+	}
 }
 
 void wxSmith::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg)
@@ -240,7 +256,7 @@ void wxSmith::OnProjectClose(CodeBlocksEvent& event)
 
 void wxSmith::OnProjectOpen(CodeBlocksEvent& event)
 {
-    wxsProject* NewProj = new wxsProject(this);
+    wxsProject* NewProj = new wxsProject;
     NewProj->BindProject(event.GetProject());
     ProjectMap[event.GetProject()] = NewProj;
     event.Skip();
@@ -257,7 +273,6 @@ void wxSmith::OnSpreadEvent(wxsEvent& event)
     wxPostEvent(wxsPalette::Get(),event);
 }
 
-
 cbProject* wxSmith::GetCBProject(wxsProject* Proj)
 {
     return Proj->GetCBProject();
@@ -270,5 +285,49 @@ wxsProject* wxSmith::GetSmithProject(cbProject* Proj)
     if ( i == ProjectMap.end() ) return NULL;
     
     return (*i).second;
+}
+
+void wxSmith::OnNewDialog(wxCommandEvent& event)
+{
+    cbProject* Project = Manager::Get()->GetProjectManager()->GetActiveProject();
+    
+    if ( !Project )
+    {
+        wxMessageBox(wxT("Please open project first"),wxT("Error"),wxOK|wxICON_ERROR);
+        return;
+    }
+    
+    wxsProject* Proj = GetSmithProject(Project);
+    
+    if ( !Proj )
+    {
+        DebLog("Something wrong - couldn't find assciated wxsProject");
+        return;
+    }
+    
+    switch ( Proj->GetIntegration() )
+    {
+        case wxsProject::NotBinded:
+            return;
+            
+        case wxsProject::NotWxsProject:
+            if ( wxMessageBox(wxT("Active project doesn't use wxSmith.\nShould I change it ?"),
+                              wxT("Not wxSmith project"),wxYES_NO|wxICON_EXCLAMATION ) == wxYES )
+            {
+                if ( !Proj->AddSmithConfig() ) return;
+            }
+            else
+            {
+                return;
+            }
+            break;
+        
+        default:
+            break;
+    }
+    
+    wxsNewDialogDlg Dlg(Manager::Get()->GetAppWindow());
+    Dlg.ShowModal();
+    event.Skip();
 }
 

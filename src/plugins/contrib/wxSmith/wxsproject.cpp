@@ -17,7 +17,7 @@
 #define XML_HFILE_STR    "header_file"
 
 
-wxsProject::wxsProject(wxSmith* _Plugin):  Integration(NotBinded), Project(NULL), Plugin(_Plugin), DuringClear(false)
+wxsProject::wxsProject():  Integration(NotBinded), Project(NULL), DuringClear(false)
 {}
 
 wxsProject::~wxsProject()
@@ -32,7 +32,7 @@ wxsProject::IntegrationState wxsProject::BindProject(cbProject* Proj)
 
     /* creating new node in resource tree */
     
-    wxTreeCtrl* ResTree = Plugin->GetResourceTree();
+    wxTreeCtrl* ResTree = wxSmith::Get()->GetResourceTree();
     
     TreeItem = ResTree->AppendItem(ResTree->GetRootItem(),Proj->GetTitle());
     
@@ -86,7 +86,7 @@ inline void wxsProject::Clear()
 {
     DuringClear = true;
     
-    if ( Project ) Plugin->GetResourceTree()->Delete(TreeItem);
+    if ( Project ) wxSmith::Get()->GetResourceTree()->Delete(TreeItem);
     
     Integration = NotBinded;
     Project = NULL;
@@ -95,7 +95,11 @@ inline void wxsProject::Clear()
 
     for ( DialogListI i = Dialogs.begin(); i!=Dialogs.end(); ++i )
     {
-        delete *i;
+        if ( *i )
+        {
+            delete *i;
+            *i = NULL;
+        }
     }
 
     for ( FrameListI i = Frames.begin(); i!=Frames.end(); ++i )
@@ -113,15 +117,15 @@ inline void wxsProject::Clear()
     Dialogs.clear();
     Frames.clear();
     Panels.clear();
-    Plugin->GetResourceTree()->Refresh();
+    wxSmith::Get()->GetResourceTree()->Refresh();
     DuringClear = false;
 }
 
 void wxsProject::BuildTree(wxTreeCtrl* Tree,wxTreeItemId WhereToAdd)
 {
-    wxTreeItemId DialogId = Tree->AppendItem(WhereToAdd,"Dialog resources");
-    wxTreeItemId FrameId  = Tree->AppendItem(WhereToAdd,"Frame resources");
-    wxTreeItemId PanelId  = Tree->AppendItem(WhereToAdd,"Panel resources");
+    DialogId = Tree->AppendItem(WhereToAdd,"Dialog resources");
+    FrameId  = Tree->AppendItem(WhereToAdd,"Frame resources");
+    PanelId  = Tree->AppendItem(WhereToAdd,"Panel resources");
 
     for ( DialogListI i = Dialogs.begin(); i!=Dialogs.end(); ++i )
     {
@@ -373,4 +377,54 @@ wxString wxsProject::GetProjectFileName(const wxString& FileName)
     ProjectPath.SetExt(wxT(""));
     ProjectPath.Assign(ProjectPath.GetFullPath());
     return ProjectPath.GetFullPath();
+}
+
+bool wxsProject::AddSmithConfig()
+{
+    if ( GetIntegration() != NotWxsProject ) return false;
+    
+    if ( ! wxFileName::Mkdir(WorkingPath.GetPath(wxPATH_GET_VOLUME),0744,wxPATH_MKDIR_FULL) )
+    {
+        wxMessageBox(wxT("Couldn't create wxsmith directory in main projet's path"),wxT("Error"),wxOK|wxICON_ERROR);
+        return false;
+    }
+    
+    Integration = Integrated;
+    
+    SaveProject();
+    
+    BuildTree(wxSmith::Get()->GetResourceTree(),TreeItem);
+    
+    return true;
+}
+
+void wxsProject::AddDialog(wxsDialogRes* Dialog)
+{
+    if ( !Dialog ) return;
+    Dialogs.push_back(Dialog);
+    wxTreeCtrl* Tree = wxSmith::Get()->GetResourceTree();
+    BuildTree(Tree, Tree->AppendItem( DialogId, Dialog->GetClassName(), -1, -1, new wxsResourceTreeData(Dialog) ) );
+}
+
+wxsResource* wxsProject::FindResource(const wxString& Name)
+{
+    for ( DialogListI i = Dialogs.begin(); i!=Dialogs.end(); ++i )
+    {
+        if ( (*i)->GetResourceName() == Name ) return *i;
+    }
+
+    for ( FrameListI i = Frames.begin(); i!=Frames.end(); ++i )
+    {
+        // TODO (SpOoN#1#): Uncommend when frames done
+        //delete *i;
+    }
+
+    for ( PanelListI i = Panels.begin(); i!=Panels.end(); ++i )
+    {
+        // TODO (SpOoN#1#): Uncomment when panel done
+        //delete *i;
+    }
+    
+    return NULL;
+    
 }

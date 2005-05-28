@@ -1,0 +1,90 @@
+<resource>
+<object class="wxDialog" name="wxsNewDialogDlg">
+    <title>New Dialog</title>
+    <object class="wxBoxSizer">
+        <orient>wxVERTICAL</orient>
+        <object class="sizeritem">
+            <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
+            <border>5</border>
+            <object class="wxStaticBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <label>Text</label>
+                <object class="sizeritem">
+                    <flag>wxGROW|wxALIGN_CENTER_VERTICAL</flag>
+                    <border>5</border>
+                    <object class="wxFlexGridSizer">
+                        <cols>2</cols>
+                        <rows>0</rows>
+                        <vgap>5</vgap>
+                        <hgap>5</hgap>
+                        <growablecols>1</growablecols>
+                        <object class="sizeritem">
+                            <flag>wxALIGN_CENTER</flag>
+                            <border>5</border>
+                            <object class="wxStaticText" name="">
+                                <label>Class Name:</label>
+                            </object>
+                        </object>
+                        <object class="sizeritem">
+                            <flag>wxGROW|wxALIGN_CENTER_VERTICAL</flag>
+                            <border>5</border>
+                            <object class="wxTextCtrl" name="ClassName">
+                                <size>80,-1</size>
+                            </object>
+                        </object>
+                        <object class="sizeritem">
+                            <flag>wxALIGN_CENTER</flag>
+                            <border>5</border>
+                            <object class="wxStaticText" name="">
+                                <label>Header file:</label>
+                            </object>
+                        </object>
+                        <object class="sizeritem">
+                            <flag>wxGROW|wxALIGN_CENTER_VERTICAL</flag>
+                            <border>5</border>
+                            <object class="wxTextCtrl" name="HeaderFile">
+                                <size>80,-1</size>
+                            </object>
+                        </object>
+                        <object class="sizeritem">
+                            <flag>wxALIGN_CENTER</flag>
+                            <border>5</border>
+                            <object class="wxStaticText" name="">
+                                <label>Source file:</label>
+                            </object>
+                        </object>
+                        <object class="sizeritem">
+                            <flag>wxGROW|wxALIGN_CENTER_VERTICAL</flag>
+                            <border>5</border>
+                            <object class="wxTextCtrl" name="SourceFile">
+                                <size>80,-1</size>
+                            </object>
+                        </object>
+                    </object>
+                </object>
+            </object>
+        </object>
+        <object class="sizeritem">
+            <flag>wxALIGN_CENTER|wxALL</flag>
+            <border>5</border>
+            <object class="wxBoxSizer">
+                <orient>wxHORIZONTAL</orient>
+                <object class="sizeritem">
+                    <flag>wxALIGN_CENTER|wxALL</flag>
+                    <border>5</border>
+                    <object class="wxButton" name="Cancel">
+                        <label>Cancel</label>
+                    </object>
+                </object>
+                <object class="sizeritem">
+                    <flag>wxALIGN_CENTER|wxALL</flag>
+                    <border>5</border>
+                    <object class="wxButton" name="Create">
+                        <label>Create</label>
+                    </object>
+                </object>
+            </object>
+        </object>
+    </object>
+</object>
+</resource>

@@ -39,6 +39,15 @@ class wxsDialogRes : public wxsResource
         /** This function should show preview in modal */
         virtual void ShowPreview();
         
+        /** Getting resource name */
+        virtual const wxString& GetResourceName();
+        
+        /** Generating empty sourcec and header file.
+          *
+          * WARNING: Not checking if files exist
+          */
+        bool GenerateEmptySources();
+        
     protected:
     
         /** Creating editor object */
