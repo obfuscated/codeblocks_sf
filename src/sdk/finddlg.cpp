@@ -53,7 +53,10 @@ FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection)
 	for (unsigned int i = 0; i < previous.GetCount(); ++i)
 	{
 		if (!previous[i].IsEmpty())
+		{
 			XRCCTRL(*this, "cmbFind1", wxComboBox)->Append(previous[i]);
+			XRCCTRL(*this, "cmbFind2", wxComboBox)->Append(previous[i]);
+        }
 	}
 
 	// find options
@@ -111,7 +114,10 @@ FindDlg::~FindDlg()
 
 wxString FindDlg::GetFindString()
 {
-	return XRCCTRL(*this, "cmbFind1", wxComboBox)->GetValue();
+	if (IsFindInFiles())
+        return XRCCTRL(*this, "cmbFind2", wxComboBox)->GetValue();
+    else
+        return XRCCTRL(*this, "cmbFind1", wxComboBox)->GetValue();
 }
 
 bool FindDlg::IsFindInFiles()
@@ -153,12 +159,18 @@ bool FindDlg::GetRegEx()
 
 int FindDlg::GetDirection()
 {
-	return XRCCTRL(*this, "rbDirection", wxRadioBox)->GetSelection();
+	if (IsFindInFiles())
+        return 1;
+    else
+        return XRCCTRL(*this, "rbDirection", wxRadioBox)->GetSelection();
 }
 
 int FindDlg::GetOrigin()
 {
-	return XRCCTRL(*this, "rbOrigin", wxRadioBox)->GetSelection();
+	if (IsFindInFiles())
+        return 1;
+    else
+        return XRCCTRL(*this, "rbOrigin", wxRadioBox)->GetSelection();
 }
 
 int FindDlg::GetScope()
@@ -173,19 +185,15 @@ int FindDlg::GetScope()
 
 void FindDlg::OnFindChange(wxCommandEvent& event)
 {
-/* FIXME (mandrav#1#): Disabled it because it segfaults under Linux.
-    No problem for now, because the find in files functionality is
-    not implemented yet, but it must be fixed... */
+    wxComboBox* cmbFind1 = XRCCTRL(*this, "cmbFind1", wxComboBox);
+    wxComboBox* cmbFind2 = XRCCTRL(*this, "cmbFind2", wxComboBox);
+    if (!cmbFind1 || !cmbFind2)
+        return;
 
-//    wxComboBox* cmbFind1 = XRCCTRL(*this, "cmbFind1", wxComboBox);
-//    wxComboBox* cmbFind2 = XRCCTRL(*this, "cmbFind2", wxComboBox);
-//    if (!cmbFind1 || !cmbFind2)
-//        return;
-//
-//	if (event.GetId() == XRCID("cmbFind1"))
-//		cmbFind2->SetValue(cmbFind1->GetValue());
-//	else
-//		cmbFind1->SetValue(cmbFind2->GetValue());
+	if (event.GetId() == XRCID("cmbFind1"))
+		cmbFind2->SetValue(cmbFind1->GetValue());
+	else
+		cmbFind1->SetValue(cmbFind2->GetValue());
 }
 
 void FindDlg::OnRegEx(wxCommandEvent& event)

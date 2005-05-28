@@ -27,6 +27,8 @@ class wxMenuBar;
 class EditorColorSet;
 class cbProject;
 class cbEditor;
+class wxStyledTextCtrl;
+class SimpleListLog;
 
 #ifdef USE_OPENFILES_TREE
 class MiscTreeItemData;
@@ -121,9 +123,10 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         bool SaveActiveAs();
         bool SaveAll();
         int ShowFindDialog(bool replace);
-        int Find(cbEditor* editor, cbFindReplaceData* data);
-        int Replace(cbEditor* editor, cbFindReplaceData* data);
-        int FindNext(bool goingDown);
+        int Find(wxStyledTextCtrl* control, cbFindReplaceData* data);
+        int FindInFiles(cbFindReplaceData* data);
+        int Replace(wxStyledTextCtrl* control, cbFindReplaceData* data);
+        int FindNext(bool goingDown, wxStyledTextCtrl* control = 0, cbFindReplaceData* data = 0);
 
         void Print(PrintScope ps, PrintColorMode pcm);
 
@@ -163,6 +166,9 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         void RemoveEditorBase(EditorBase* eb, bool deleteObject = true);
         cbEditor* InternalGetBuiltinEditor(EditorsList::Node* node);
         
+        void CreateSearchLog();
+        void LogSearch(const wxString& file, int line, const wxString& lineText);
+
         void LoadAutoComplete();
         void SaveAutoComplete();
 
@@ -180,8 +186,8 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         static void Free();
         EditorManager(wxWindow* parent);
         ~EditorManager();
-        void CalculateFindReplaceStartEnd(cbEditor* editor, cbFindReplaceData* data);
-        
+        void CalculateFindReplaceStartEnd(wxStyledTextCtrl* control, cbFindReplaceData* data);
+
         wxNotebook* m_pNotebook;
         EditorsList m_EditorsList;
         cbFindReplaceData* m_LastFindReplaceData;
@@ -193,6 +199,8 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         #endif
         wxString m_LastActiveFile;
         bool m_LastModifiedflag;
+        SimpleListLog* m_pSearchLog;
+        int m_SearchLogIndex;
     DECLARE_EVENT_TABLE()
     DECLARE_SANITY_CHECK
 

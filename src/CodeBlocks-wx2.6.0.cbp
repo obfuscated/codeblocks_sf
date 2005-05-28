@@ -307,7 +307,7 @@
 			</Target>
 			<Target title="update">
 				<Option output="codeblocks-wx2.6.0.dll"/>
-				<Option working_dir=""/>
+				<Option working_dir="."/>
 				<Option object_output=".objs\2.6.0"/>
 				<Option deps_output="C:\Devel\codeblocks\src\.deps"/>
 				<Option external_deps=""/>
@@ -336,7 +336,7 @@
 			</Target>
 			<Target title="doc">
 				<Option output="codeblocks-wx2.6.0.exe"/>
-				<Option working_dir=""/>
+				<Option working_dir="."/>
 				<Option object_output=".objs\2.6.0"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -2125,6 +2125,16 @@
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk\sdk_events.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\searchresultslog.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\searchresultslog.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
