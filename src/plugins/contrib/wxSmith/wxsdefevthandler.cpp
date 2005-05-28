@@ -3,6 +3,8 @@
 #include "wxspropertiesman.h"
 
 #include "widget.h"
+#include "wxsevent.h"
+#include "wxsmith.h"
 
 wxsDefEvtHandler::wxsDefEvtHandler(wxsWidget* Wdg):
     Widget(Wdg)
@@ -15,7 +17,9 @@ wxsDefEvtHandler::~wxsDefEvtHandler()
 
 void wxsDefEvtHandler::OnLClick(wxMouseEvent& event)
 {
-    wxsPropertiesMan::Get()->SetActiveWidget(Widget);
+    wxsEvent SelectEvent(wxEVT_SELECT_WIDGET,0,NULL,Widget);
+    wxPostEvent(wxSmith::Get(),SelectEvent);
+    // wxsPropertiesMan::Get()->SetActiveWidget(Widget);
 }
 
 void wxsDefEvtHandler::OnLDClick(wxMouseEvent& event)

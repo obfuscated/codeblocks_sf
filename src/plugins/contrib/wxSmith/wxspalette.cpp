@@ -20,6 +20,7 @@ wxsPalette::wxsPalette(wxWindow* Parent,wxSmith* _Plugin,int PN):
     wxPanel(Parent),
     Plugin(_Plugin),
     SelectedRes(NULL),
+    SelectedWidget(NULL),
     InsType(itBefore),
     InsTypeMask(0),
     PageNum(PN)
@@ -69,7 +70,8 @@ wxsPalette::wxsPalette(wxWindow* Parent,wxSmith* _Plugin,int PN):
 	
 	SetInsertionTypeMask(0);
 	
-	SelectResource(NULL);
+	SelectedRes = NULL;
+	FindWindow(PreviewId)->Disable();
 }
 
 wxsPalette::~wxsPalette()
@@ -322,34 +324,69 @@ void wxsPalette::PreviewRequest()
     if ( SelectedRes ) SelectedRes->ShowPreview();
 }
 
-void wxsPalette::SelectResource(wxsResource* Res)
+void wxsPalette::OnSelectWidget(wxsEvent& event)
 {
+    int itMask = 0;
+    
+    if ( event.GetWidget()->GetParent() )
+    {
+        itMask |= wxsPalette::itBefore | wxsPalette::itAfter;
+    }
+    
+    if ( event.GetWidget()->IsContainer() )
+    {
+        itMask |= wxsPalette::itInto;
+    }
+    
+    SetInsertionTypeMask(itMask);
+    SelectedWidget = event.GetWidget();
+}
+
+void wxsPalette::OnUnselectWidget(wxsEvent& event)
+{
+    if ( event.GetWidget() == SelectedWidget )
+    {
+        SetInsertionTypeMask(0);
+        SelectedWidget = NULL;
+    }
+}
+
+void wxsPalette::OnSelectRes(wxsEvent& event)
+{
+    wxsResource* Res = event.GetResource();
+    
     if ( Res )
     {
         Manager::Get()->GetMessageManager()->SetSelection(PageNum);
+        Res->EditOpen();
     }
     
     SelectedRes = Res;
     
     if ( Res && Res->CanPreview() )
     {
-        FindWindow(PreviewId)->Enable(true);
+        FindWindow(PreviewId)->Enable();
     }
     else
     {
-        FindWindow(PreviewId)->Enable(false);
+        FindWindow(PreviewId)->Disable();
     }
 }
 
-void wxsPalette::ResourceClosed(wxsResource* Res)
+void wxsPalette::OnUnselectRes(wxsEvent& event)
 {
-    if ( Res == SelectedRes )
+    if ( event.GetResource() == SelectedRes )
     {
-        SelectResource(NULL);
+        SelectedRes = NULL;
+        FindWindow(PreviewId)->Disable();
     }
 }
 
 BEGIN_EVENT_TABLE(wxsPalette,wxPanel)
     EVT_RADIOBUTTON(-1,wxsPalette::OnRadio)
     EVT_BUTTON(-1,wxsPalette::OnButton)
+    EVT_SELECT_RES(wxsPalette::OnSelectRes)
+    EVT_UNSELECT_RES(wxsPalette::OnUnselectRes)
+    EVT_SELECT_WIDGET(wxsPalette::OnSelectWidget)
+    EVT_UNSELECT_WIDGET(wxsPalette::OnUnselectWidget)
 END_EVENT_TABLE()

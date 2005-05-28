@@ -2,10 +2,12 @@
 #define WXSPROPERTIESMAN_H
 
 #include "widget.h"
+#include "wxsevent.h"
 #include <wx/panel.h>
 #include <wx/scrolwin.h>
+#include <wx/event.h>
 
-class wxsPropertiesMan
+class wxsPropertiesMan: public wxEvtHandler
 {
 	public:
 		wxsPropertiesMan();
@@ -22,6 +24,11 @@ class wxsPropertiesMan
         static wxsPropertiesMan Singleton;
 		
 		friend class wxSmith;
+		
+		void OnSelectWidget(wxsEvent& event);
+		void OnUnselectWidget(wxsEvent& event);
+		
+		DECLARE_EVENT_TABLE()
 };
 
 #endif // WXSPROPERTIES_H

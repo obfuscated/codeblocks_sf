@@ -42,9 +42,9 @@ extern const wxEventType wxEVT_UNSELECT_RES;    // Sent when given resourcee is 
 extern const wxEventType wxEVT_SELECT_WIDGET;   // Sent when selecting given widget
 extern const wxEventType wxEVT_UNSELECT_WIDGET; // Send when given widget is no longer valid
 
-#define EVT_SELECT_RES(fn) DECLARE_EVENT_TABLE_ENTRY( wxEVT_SELECT_RES, -1, -1, (wxObjectEventFunction)(wxEventFunction)(wxsEventFunnction)&fn, (wxObject *) NULL ),
-#define EVT_UNSELECT_RES(fn) DECLARE_EVENT_TABLE_ENTRY( wxEVT_UNSELECT_RES, -1, -1, (wxObjectEventFunction)(wxEventFunction)(wxsEventFunnction)&fn, (wxObject *) NULL ),
-#define EVT_SELECT_WIDGET(fn) DECLARE_EVENT_TABLE_ENTRY( wxEVT_SELECT_WIDGET, -1, -1, (wxObjectEventFunction)(wxEventFunction)(wxsEventFunnction)&fn, (wxObject *) NULL ),
-#define EVT_UNSELECT_WIDGET(fn) DECLARE_EVENT_TABLE_ENTRY( wxEVT_UNSELECT_WIDGET, -1, -1, (wxObjectEventFunction)(wxEventFunction)(wxsEventFunnction)&fn, (wxObject *) NULL ),
+#define EVT_SELECT_RES(fn) DECLARE_EVENT_TABLE_ENTRY( wxEVT_SELECT_RES, -1, -1, (wxObjectEventFunction)(wxEventFunction)(wxsEventFunction)&fn, (wxObject *) NULL ),
+#define EVT_UNSELECT_RES(fn) DECLARE_EVENT_TABLE_ENTRY( wxEVT_UNSELECT_RES, -1, -1, (wxObjectEventFunction)(wxEventFunction)(wxsEventFunction)&fn, (wxObject *) NULL ),
+#define EVT_SELECT_WIDGET(fn) DECLARE_EVENT_TABLE_ENTRY( wxEVT_SELECT_WIDGET, -1, -1, (wxObjectEventFunction)(wxEventFunction)(wxsEventFunction)&fn, (wxObject *) NULL ),
+#define EVT_UNSELECT_WIDGET(fn) DECLARE_EVENT_TABLE_ENTRY( wxEVT_UNSELECT_WIDGET, -1, -1, (wxObjectEventFunction)(wxEventFunction)(wxsEventFunction)&fn, (wxObject *) NULL ),
     
 #endif

@@ -45,30 +45,32 @@ void wxsPropertiesMan::SetActiveWidget(wxsWidget* Widget)
         PropertiesPanel->SetSizer(NewSizer);
         NewSizer->SetVirtualSizeHints(PropertiesPanel);
         
-        int itMask = 0;
-        
-        if ( CurrentWidget->GetParent() )
-        {
-            itMask |= wxsPalette::itBefore | wxsPalette::itAfter;
-        }
-        
-        if ( CurrentWidget->IsContainer() )
-        {
-            itMask |= wxsPalette::itInto;
-        }
-        
-        wxsPalette::Get()->SetInsertionTypeMask(itMask);
         wxSmith::Get()->GetResourceTree()->SelectItem(Widget->GetTreeId());
-    }
-    else
-    {
-        wxsPalette::Get()->SetInsertionTypeMask(0);
     }
     
     PropertiesPanel->Refresh();
     PropertiesPanel->Thaw();
     PropertiesPanel->SetSize(Size);
 }
+
+void wxsPropertiesMan::OnSelectWidget(wxsEvent& event)
+{
+    SetActiveWidget(event.GetWidget());
+}
+
+void wxsPropertiesMan::OnUnselectWidget(wxsEvent& event)
+{
+    if ( event.GetWidget() == CurrentWidget )
+    {
+        SetActiveWidget(NULL);
+    }
+}
+
+BEGIN_EVENT_TABLE(wxsPropertiesMan,wxEvtHandler)
+    EVT_SELECT_WIDGET(wxsPropertiesMan::OnSelectWidget)
+    EVT_UNSELECT_WIDGET(wxsPropertiesMan::OnUnselectWidget)
+END_EVENT_TABLE()
+
 
 /** Singleton definition */
 wxsPropertiesMan wxsPropertiesMan::Singleton;

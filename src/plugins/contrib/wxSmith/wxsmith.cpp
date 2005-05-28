@@ -28,29 +28,43 @@
 #include "wxsproject.h"
 #include "wxswidgetfactory.h"
 #include "wxspalette.h"
+#include "wxsevent.h"
 
 
 class wxsResourceTree: public wxTreeCtrl
 {
     public:
     
-        wxsResourceTree(wxWindow* Parent, wxSmith* _Smith):
-            wxTreeCtrl(Parent,-1),
-            Smith(_Smith)
+        wxsResourceTree(wxWindow* Parent):
+            wxTreeCtrl(Parent,-1)
         {}
         
         void OnSelectResource(wxTreeEvent& event)
         {
             wxsResourceTreeData* Data = dynamic_cast<wxsResourceTreeData*> (GetItemData(event.GetItem()));
-            if ( Data && Smith )
+            if ( Data )
             {
-                Smith->OnSelectResource(Data);
+                switch ( Data->Type )
+                {
+                    case wxsResourceTreeData::tWidget:
+                        {
+                            wxsEvent SelectEvent(wxEVT_SELECT_WIDGET,0,NULL,Data->Widget);
+                            wxPostEvent(wxSmith::Get(),SelectEvent);
+                        }
+                        break;
+                        
+                    case wxsResourceTreeData::tResource:
+                        {
+                            wxsEvent SelectEvent(wxEVT_SELECT_RES,0,Data->Resource);
+                            wxPostEvent(wxSmith::Get(),SelectEvent);
+                        }
+                        break;
+                        
+                    default:;
+                }
             }
         }
     
-    private:
-        wxSmith* Smith;
-        
         DECLARE_EVENT_TABLE()
 };
 
@@ -69,6 +83,10 @@ BEGIN_EVENT_TABLE(wxSmith, cbPlugin)
 	EVT_PROJECT_CLOSE(wxSmith::OnProjectClose)
 	EVT_PROJECT_OPEN(wxSmith::OnProjectOpen)
 	EVT_PROJECT_ACTIVATE(wxSmith::OnProjectActivated)
+	EVT_SELECT_RES(wxSmith::OnSpreadEvent)
+	EVT_UNSELECT_RES(wxSmith::OnSpreadEvent)
+	EVT_SELECT_WIDGET(wxSmith::OnSpreadEvent)
+	EVT_UNSELECT_WIDGET(wxSmith::OnSpreadEvent)
 END_EVENT_TABLE()
 
 wxSmith::wxSmith()
@@ -118,7 +136,7 @@ void wxSmith::OnAttach()
         // Adding resource browser
 
         wxSizer* Sizer = new wxGridSizer(1);
-        ResourceBrowser = new wxsResourceTree(ResourcesContainer,this);
+        ResourceBrowser = new wxsResourceTree(ResourcesContainer);
         ResourceBrowser->AddRoot(wxT("Resources"));
         Sizer->Add(ResourceBrowser,0,wxGROW);
         ResourcesContainer->SetSizer(Sizer);
@@ -166,12 +184,14 @@ void wxSmith::OnAttach()
 
 void wxSmith::OnRelease(bool appShutDown)
 {
-    /*
     for ( ProjectMapI i = ProjectMap.begin(); i!=ProjectMap.end(); ++i )
     {
-        delete (*i).second;
+        if ( (*i).second )
+        {
+            delete (*i).second;
+            (*i).second = NULL;
+        }
     }
-    */
   
     ProjectMap.clear();
 }
@@ -208,9 +228,12 @@ void wxSmith::OnProjectClose(CodeBlocksEvent& event)
     ProjectMapI i = ProjectMap.find(Proj);
     if ( i == ProjectMap.end() ) return;
     
-    (*i).second->SaveProject();
-    
-    delete (*i).second;
+    if ( (*i).second )
+    {
+        (*i).second->SaveProject();
+        delete (*i).second;
+        (*i).second = NULL;
+    }
     
     event.Skip();
 }
@@ -228,31 +251,12 @@ void wxSmith::OnProjectActivated(CodeBlocksEvent& event)
     event.Skip();
 }
 
-void wxSmith::OnSelectResource(wxsResourceTreeData* Data)
+void wxSmith::OnSpreadEvent(wxsEvent& event)
 {
-    switch ( Data->Type )
-    {
-        case wxsResourceTreeData::tWidget:
-            OnSelectWidget(Data);
-            break;
-            
-        case wxsResourceTreeData::tDialog:
-            OnSelectDialog(Data);
-            break;
-            
-        default:;
-    }
+    wxPostEvent(wxsPropertiesMan::Get(),event);
+    wxPostEvent(wxsPalette::Get(),event);
 }
 
-void wxSmith::OnSelectWidget(wxsResourceTreeData* Data)
-{
-    wxsPropertiesMan::Get()->SetActiveWidget(Data->Widget);
-}
-
-void wxSmith::OnSelectDialog(wxsResourceTreeData* Data)
-{
-    Data->Dialog->EditOpen();
-}
 
 cbProject* wxSmith::GetCBProject(wxsProject* Proj)
 {

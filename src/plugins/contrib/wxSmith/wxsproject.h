@@ -8,6 +8,7 @@
 class wxSmith;
 class wxsWidget;
 class wxsWindowEditor;
+class wxsResource;
 class wxsDialogRes;
 class wxsFrameRes;
 class wxsPanelRes;
@@ -17,7 +18,6 @@ class wxsPanelRes;
 #include <cbproject.h>
 #include <vector>
 #include <tinyxml/tinyxml.h>
-
 
 /** Directory relative to project's main file where wxSmith internal
  *  data should be stored.
@@ -159,18 +159,14 @@ class wxsResourceTreeData: public wxTreeItemData
 {
     public: 
         
-        wxsResourceTreeData(wxsWidget* _Widget):    Type(tWidget) { Widget = _Widget; }
-        wxsResourceTreeData(wxsDialogRes* _Dialog): Type(tDialog) { Dialog = _Dialog; }
-        wxsResourceTreeData(wxsFrameRes* _Frame):   Type(tFrame)  { Frame  = _Frame;  }
-        wxsResourceTreeData(wxsPanelRes* _Panel):   Type(tPanel)  { Panel  = _Panel;  }
+        wxsResourceTreeData(wxsWidget* _Widget):     Type(tWidget)   { Widget = _Widget; }
+        wxsResourceTreeData(wxsResource* _Resource): Type(tResource) { Resource = _Resource; }
         
         enum TypeT
         {
             None,
             tWidget,
-            tDialog,
-            tFrame,
-            tPanel
+            tResource
         };
         
         TypeT Type;
@@ -178,9 +174,7 @@ class wxsResourceTreeData: public wxTreeItemData
         union
         {
             wxsWidget* Widget;
-            wxsDialogRes* Dialog;
-            wxsFrameRes* Frame;
-            wxsPanelRes* Panel;
+            wxsResource* Resource;
         };
 };
 

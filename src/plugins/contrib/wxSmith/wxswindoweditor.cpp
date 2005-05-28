@@ -5,6 +5,7 @@
 #include <wx/scrolwin.h>
 #include "wxspropertiesman.h"
 #include "wxspalette.h"
+#include "wxsmith.h"
 
 wxsWindowEditor::wxsWindowEditor(wxWindow* parent, const wxString& title,wxsResource* Resource):
     wxsEditor(parent,title,Resource),
@@ -20,10 +21,12 @@ wxsWindowEditor::wxsWindowEditor(wxWindow* parent, const wxString& title,wxsReso
     
     SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
     Scroll->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
-    wxsPalette::Get()->SelectResource(GetResource());
     
     SetSizer(Sizer);
     SetAutoLayout(true);
+    
+    wxsEvent SelectEvent(wxEVT_SELECT_RES,0,Resource);
+    wxPostEvent(wxSmith::Get(),SelectEvent);
 }
 
 wxsWindowEditor::~wxsWindowEditor()
@@ -90,7 +93,8 @@ void wxsWindowEditor::OnActivate(wxActivateEvent& event)
 {
     if ( event.GetActive() )
     {
-        wxsPalette::Get()->SelectResource(GetResource());
+        wxsEvent Select(wxEVT_SELECT_RES,0,GetResource());
+        wxPostEvent(wxSmith::Get(),Select);
     }
 }
 
@@ -110,7 +114,8 @@ void wxsWindowEditor::PreviewReshaped()
 
 void wxsWindowEditor::MyUnbind()
 {
-    wxsPalette::Get()->ResourceClosed(GetResource());
+    wxsEvent Unselect(wxEVT_UNSELECT_RES,0,GetResource());
+    wxPostEvent(wxSmith::Get(),Unselect);
     KillCurrentPreview();
 }
 

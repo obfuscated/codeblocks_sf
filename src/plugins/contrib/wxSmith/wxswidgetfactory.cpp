@@ -47,10 +47,9 @@ void wxsWidgetFactory::Kill(wxsWidget* Widget)
         }
         
         // Closing properties if are set to given widget
-        if ( wxsPropertiesMan::Get()->GetActiveWidget() == Widget )
-        {
-            wxsPropertiesMan::Get()->SetActiveWidget(NULL);
-        }
+        wxsEvent Unselect(wxEVT_UNSELECT_WIDGET,0,NULL,Widget);
+        wxPostEvent(wxSmith::Get(),Unselect);
+        
         
         // Deleting widget
         if ( Widget->GetInfo().Manager )

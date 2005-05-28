@@ -33,7 +33,8 @@
 
 #include <map>
 
-#include "wxsProject.h"
+#include "wxsproject.h"
+#include "wxsevent.h"
 
 class wxsProject;
 
@@ -82,9 +83,8 @@ class wxSmith : public cbPlugin
         void OnProjectOpen(CodeBlocksEvent& event);
         void OnProjectActivated(CodeBlocksEvent& event);
         
-        /* Selecting given objects */
-        void OnSelectWidget(wxsResourceTreeData* Data);
-        void OnSelectDialog(wxsResourceTreeData* Data);
+        /* Internal event-processing functions */
+        void OnSpreadEvent(wxsEvent& event);
         
         static wxSmith* Singleton;
                 

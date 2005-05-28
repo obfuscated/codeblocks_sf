@@ -4,6 +4,8 @@
 #include <wx/panel.h>
 #include <wx/radiobut.h>
 
+#include "wxsevent.h"
+
 class wxSmith;
 class wxsWidget;
 class wxsResource;
@@ -28,15 +30,6 @@ class wxsPalette : public wxPanel
         /** Getting current insertion type */
         int GetInsertionType();
         
-        /** Setting mask for insertion type */
-        void SetInsertionTypeMask(int Mask);
-        
-        /** Selecting given resource */
-        void SelectResource(wxsResource* Res);
-        
-        /** Notifying that given resource was closed */
-        void ResourceClosed(wxsResource* Res);
-		
 	private:
 	
         /** Plugin object */
@@ -44,6 +37,9 @@ class wxsPalette : public wxPanel
         
         /** Currently selected resource */
         wxsResource* SelectedRes;
+        
+        /** Currently selected widget */
+        wxsWidget* SelectedWidget;
         
         /* Checkboxes */
         wxRadioButton* AddBefore;
@@ -83,10 +79,16 @@ class wxsPalette : public wxPanel
         /** Function showing preview of currently selected resource */
         void PreviewRequest();
         
+        /** Setting mask for insertion type */
+        void SetInsertionTypeMask(int Mask);
+        
         /* Event-processing functions */
         void OnRadio(wxCommandEvent& event);
         void OnButton(wxCommandEvent& event);
-        
+		void OnSelectRes(wxsEvent& event);
+		void OnUnselectRes(wxsEvent& event);
+		void OnSelectWidget(wxsEvent& event);
+		void OnUnselectWidget(wxsEvent& event);
         
         DECLARE_EVENT_TABLE()
         
