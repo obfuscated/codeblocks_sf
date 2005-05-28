@@ -1229,7 +1229,7 @@ int EditorManager::FindNext(bool goingDown)
 	return Find(ed, m_LastFindReplaceData);
 }
 
-void EditorManager::OnPageChanged(wxCommandEvent& event)
+void EditorManager::OnPageChanged(wxNotebookEvent& event)
 {
     if (event.GetEventObject() == this)
     {
@@ -1237,7 +1237,7 @@ void EditorManager::OnPageChanged(wxCommandEvent& event)
     event.Skip(); // allow others to process it too
 }
 
-void EditorManager::OnPageChanging(wxCommandEvent& event)
+void EditorManager::OnPageChanging(wxNotebookEvent& event)
 {
     if (event.GetEventObject() == this)
     {

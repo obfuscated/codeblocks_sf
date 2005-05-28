@@ -22,6 +22,7 @@ WX_DECLARE_STRING_HASH_MAP(wxString, AutoCompleteMap);
 
 // forward decls
 class wxNotebook;
+class wxNotebookEvent;
 class wxMenuBar;
 class EditorColorSet;
 class cbProject;
@@ -147,8 +148,8 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         void RefreshOpenedFilesTree(bool force = false);
         #endif
         
-        void OnPageChanged(wxCommandEvent& event);
-        void OnPageChanging(wxCommandEvent& event);
+        void OnPageChanged(wxNotebookEvent& event);
+        void OnPageChanging(wxNotebookEvent& event);
         void OnAppDoneStartup(wxCommandEvent& event);
         void OnAppStartShutdown(wxCommandEvent& event);
         void OnUpdateUI(wxUpdateUIEvent& event);
