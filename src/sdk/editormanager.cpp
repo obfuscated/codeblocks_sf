@@ -1266,11 +1266,17 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
         cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
         if (!prj)
             return 0;
+        
+        wxString fullpath = "";            
         for (int i = 0; i < prj->GetFilesCount(); ++i)
         {
             ProjectFile* pf = prj->GetFile(i);
             if (pf)
-                filesList.Add(pf->file.GetFullPath());
+            {
+                fullpath = pf->file.GetFullPath();
+                if(wxFileExists(fullpath))  // Does the file exist?
+                    filesList.Add(fullpath);
+            }
         }
     }
     
