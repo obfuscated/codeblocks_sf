@@ -88,7 +88,7 @@ bool CodeBlocksApp::LoadConfig()
     ConfigManager::Init(wxConfigBase::Get());
     ConfigManager::Get()->Write("app_path", GetAppPath());
     ConfigManager::Get()->Write("data_path", GetAppPath() + "/share/CodeBlocks");
-    m_HasDebugLog = ConfigManager::Get()->Read("/message_manager/has_debug_log", (long int)0) | m_HasDebugLog;
+    m_HasDebugLog = ConfigManager::Get()->Read("/message_manager/has_debug_log", (long int)0) || m_HasDebugLog;
     ConfigManager::Get()->Write("/message_manager/has_debug_log", m_HasDebugLog);
     if (ParseCmdLine(0L) != 0)
         return false;

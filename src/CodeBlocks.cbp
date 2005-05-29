@@ -2265,6 +2265,7 @@
 		<Unit filename="src\app.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="src"/>
+			<Breakpoint line="233" enabled="1" pass="0" />
 		</Unit>
 		<Unit filename="src\app.h">
 			<Option compilerVar=""/>
@@ -2321,6 +2322,8 @@
 		<Unit filename="src\main.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="src"/>
+			<Breakpoint line="1249" enabled="1" pass="0" />
+			<Breakpoint line="1243" enabled="1" pass="0" />
 		</Unit>
 		<Unit filename="src\main.h">
 			<Option compilerVar=""/>
