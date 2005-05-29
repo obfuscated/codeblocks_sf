@@ -156,6 +156,7 @@ int idHelpPlugins = XRCID("idHelpPlugins");
 int idLeftSash = XRCID("idLeftSash");
 int idBottomSash = XRCID("idBottomSash");
 int idCloseFullScreen = XRCID("idCloseFullScreen");
+int idShiftTab = wxNewId();
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_SIZE(MainFrame::OnSize)
@@ -308,6 +309,9 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	/// CloseFullScreen event handling
 	EVT_BUTTON( idCloseFullScreen, MainFrame::OnToggleFullScreen )
 	
+	/// Shift-Tab bug workaround
+	EVT_MENU(idShiftTab,MainFrame::OnShiftTab)
+	
 END_EVENT_TABLE()
 
 MainFrame::MainFrame(wxWindow* parent)
@@ -336,7 +340,7 @@ MainFrame::MainFrame(wxWindow* parent)
     SetDropTarget(new wxMyFileDropTarget(this));
     
     // Accelerator table
-    wxAcceleratorEntry entries[6];
+    wxAcceleratorEntry entries[7];
     
     entries[0].Set(wxACCEL_CTRL | wxACCEL_SHIFT,  (int) 'W', idFileCloseAll);
     entries[1].Set(wxACCEL_CTRL | wxACCEL_SHIFT,  WXK_F4, idFileCloseAll);
@@ -344,7 +348,8 @@ MainFrame::MainFrame(wxWindow* parent)
     entries[3].Set(wxACCEL_CTRL,  WXK_F4, idFileClose);
     entries[4].Set(wxACCEL_CTRL,  WXK_F6, idFileNext);
     entries[5].Set(wxACCEL_CTRL | wxACCEL_SHIFT,  WXK_F6, idFilePrev);
-    m_pAccel = new wxAcceleratorTable(6, entries);
+    entries[6].Set(wxACCEL_SHIFT,  WXK_TAB, idShiftTab);
+    m_pAccel = new wxAcceleratorTable(7, entries);
     
     this->SetAcceleratorTable(*m_pAccel);
     
@@ -2006,4 +2011,11 @@ void MainFrame::OnProjectOpened(CodeBlocksEvent& event)
 void MainFrame::OnProjectClosed(CodeBlocksEvent& event)
 {
     ShowHideStartPage();
+}
+
+void MainFrame::OnShiftTab(wxCommandEvent& event)
+{
+    cbEditor* ed = m_pEdMan->GetBuiltinActiveEditor(); // Must make sure it's cbEditor and not EditorBase
+    if(ed)
+        ed->DoUnIndent();
 }

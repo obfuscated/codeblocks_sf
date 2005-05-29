@@ -130,6 +130,7 @@ class MainFrame : public wxFrame
 		void OnProjectActivated(CodeBlocksEvent& event);
 		void OnProjectOpened(CodeBlocksEvent& event);
 		void OnProjectClosed(CodeBlocksEvent& event);
+        void OnShiftTab(wxCommandEvent& event);
     protected:
         void CreateIDE();
 		void CreateMenubar();

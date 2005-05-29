@@ -187,6 +187,11 @@ class DLLIMPORT cbEditor : public EditorBase
           * dialog.
           */
 		void AutoComplete();
+
+		// Workaround for shift-tab bug in wx2.4.2
+		void DoIndent(); /// Indents current line/block
+		void DoUnIndent(); /// UnIndents current line/block
+
     private:
         // functions
 		void DoFoldAll(int fold); // 0=unfold, 1=fold, 2=toggle
@@ -214,7 +219,7 @@ class DLLIMPORT cbEditor : public EditorBase
 
 		// one event handler for all popup menu entries
 		void OnContextMenuEntry(wxCommandEvent& event);
-
+		
         // variables
         bool m_IsOK;
         cbStyledTextCtrl* m_pControl;

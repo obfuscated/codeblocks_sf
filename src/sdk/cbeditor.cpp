@@ -1158,3 +1158,15 @@ void cbEditor::OnClose(wxCloseEvent& event)
 {
 	Manager::Get()->GetEditorManager()->Close(this);
 }
+
+void cbEditor::DoIndent()
+{
+    if(m_pControl)
+        m_pControl->SendMsg(2327); // wxSTC_CMD_TAB
+}
+
+void cbEditor::DoUnIndent()
+{
+    if(m_pControl)
+        m_pControl->SendMsg(2328); // wxSTC_CMD_BACKTAB
+}
