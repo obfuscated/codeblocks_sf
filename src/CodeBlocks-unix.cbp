@@ -21,7 +21,7 @@
 			</Target>
 			<Target title="sdk">
 				<Option output="devel/libcodeblocks.so"/>
-				<Option working_dir=""/>
+				<Option working_dir="."/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -65,7 +65,7 @@
 			</Target>
 			<Target title="plugin_Astyle">
 				<Option output="devel/share/CodeBlocks/plugins/libastyle.so"/>
-				<Option working_dir=""/>
+				<Option working_dir="."/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -87,7 +87,7 @@
 			</Target>
 			<Target title="plugin_CompilerGCC">
 				<Option output="devel/share/CodeBlocks/plugins/libcompilergcc.so"/>
-				<Option working_dir=""/>
+				<Option working_dir="."/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -112,7 +112,7 @@
 			</Target>
 			<Target title="plugin_DebuggerGDB">
 				<Option output="devel/share/CodeBlocks/plugins/libdebuggergdb.so"/>
-				<Option working_dir=""/>
+				<Option working_dir="."/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -135,7 +135,7 @@
 			</Target>
 			<Target title="plugin_CodeCompletion">
 				<Option output="devel/share/CodeBlocks/plugins/libcodecompletion.so"/>
-				<Option working_dir=""/>
+				<Option working_dir="."/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -158,7 +158,7 @@
 			</Target>
 			<Target title="plugin_ClassWizard">
 				<Option output="devel/share/CodeBlocks/plugins/libclasswizard.so"/>
-				<Option working_dir=""/>
+				<Option working_dir="."/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -181,7 +181,7 @@
 			</Target>
 			<Target title="plugin_DefMimeHandler">
 				<Option output="devel/share/CodeBlocks/plugins/libdefaultmimehandler.so"/>
-				<Option working_dir=""/>
+				<Option working_dir="."/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -203,7 +203,7 @@
 			</Target>
 			<Target title="plugin_PluginsWizard">
 				<Option output="devel/share/CodeBlocks/plugins/libpluginwizard.so"/>
-				<Option working_dir=""/>
+				<Option working_dir="."/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -226,7 +226,7 @@
 			</Target>
 			<Target title="plugin_ToDo">
 				<Option output="devel/share/CodeBlocks/plugins/libtodo.so"/>
-				<Option working_dir=""/>
+				<Option working_dir="."/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -245,7 +245,7 @@
 			</Target>
 			<Target title="plugin_XPManifest">
 				<Option output="devel/share/CodeBlocks/plugins/libxpmanifest.so"/>
-				<Option working_dir=""/>
+				<Option working_dir="."/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
@@ -777,6 +777,16 @@
 			<Option target="plugin_CompilerGCC"/>
 		</Unit>
 		<Unit filename="plugins/compilergcc/compilerMSVC.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/compilerOW.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins/compilergcc/compilerOW.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -1936,6 +1946,16 @@
 			<Option link="0"/>
 			<Option target="sdk"/>
 		</Unit>
+		<Unit filename="sdk/searchresultslog.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk/searchresultslog.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
 		<Unit filename="sdk/selecttargetdlg.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="sdk"/>
@@ -2402,6 +2422,28 @@
 		</Unit>
 		<Unit filename="src/resources/resources.rc">
 			<Option compilerVar="WINDRES"/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src/resources/start_here/cb_logo.jpg">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src/resources/start_here/start_here.html">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src/startherepage.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src/startherepage.h">
+			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
 			<Option target="src"/>

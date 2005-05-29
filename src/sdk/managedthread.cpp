@@ -28,10 +28,11 @@ m_pAbort(abortflag)
 
 ManagedThread::~ManagedThread()
 {
-    wxMutexLocker* lock;
-    lock = new wxMutexLocker(s_list_mutex);
+//    wxMutexLocker* lock;
+//    lock = new wxMutexLocker(s_list_mutex);
+// NOTE: DeleteThreadFromList() locks the mutex by itself
     DeleteThreadFromList(this); // Deletes thread from list
-    delete lock;
+//    delete lock;
 }
 
 unsigned long ManagedThread::count_running()
