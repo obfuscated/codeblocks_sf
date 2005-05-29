@@ -12,6 +12,7 @@
     #include <wx/filename.h>
 #endif
 
+#include "settings.h"
 #include "sanitycheck.h"
 
 /**
@@ -34,7 +35,7 @@ class cbWorkspace
           * @param filename The file from which to load the workspace. If this
           *        parameter is empty, the default workspace is loaded.
           */
-		cbWorkspace(const wxString& filename = "");
+		cbWorkspace(const wxString& filename = DEFAULT_WORKSPACE);
 
         /** @brief Destructor */
 		virtual ~cbWorkspace();

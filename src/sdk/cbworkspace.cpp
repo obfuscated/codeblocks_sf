@@ -37,7 +37,7 @@ cbWorkspace::cbWorkspace(const wxString& filename)
 {
 	SC_CONSTRUCTOR_BEGIN
 	//ctor
-    if (filename.IsEmpty())
+    if (filename.Matches(DEFAULT_WORKSPACE))
 	{
         wxString tmp;
         // if no filename given, use the default workspace
@@ -68,6 +68,8 @@ void cbWorkspace::Load()
 {
     SANITY_CHECK();
     wxString fname = m_Filename.GetFullPath();
+    if (fname.IsEmpty())
+        return;
 	Manager::Get()->GetMessageManager()->DebugLog("Loading workspace \"%s\"", fname.c_str());
 	
 	bool modified = false;
@@ -95,6 +97,10 @@ void cbWorkspace::Load()
 bool cbWorkspace::Save(bool force)
 {
     SANITY_CHECK(false);
+
+    if (m_Filename.GetFullPath().IsEmpty())
+        return SaveAs("");
+
     if (!force && !m_Modified)
         return true;
 
@@ -118,6 +124,7 @@ bool cbWorkspace::SaveAs(const wxString& filename)
         return false;
     SANITY_CHECK(false);
     m_Filename = dlg->GetPath();
+    m_IsDefault = false;
     return Save(true);
 }
 

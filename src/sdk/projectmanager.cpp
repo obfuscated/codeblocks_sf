@@ -757,7 +757,11 @@ cbWorkspace* ProjectManager::GetWorkspace()
 {
     SANITY_CHECK(0L);
     if (!m_pWorkspace)
-        LoadWorkspace(); // the "default" workspace
+    {
+        m_pWorkspace = new cbWorkspace("");
+        m_pWorkspace->SetTitle(_("Workspace"));
+        m_pWorkspace->SetModified(false);
+    }
     return m_pWorkspace;
 }
 
@@ -793,16 +797,12 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
 
 bool ProjectManager::SaveWorkspace()
 {
-    if (m_pWorkspace)
-        return m_pWorkspace->Save();
-    return true;
+    return GetWorkspace()->Save();
 }
 
 bool ProjectManager::SaveWorkspaceAs(const wxString& filename)
 {
-    if (m_pWorkspace)
-        return m_pWorkspace->SaveAs(filename);
-    return true;
+    return GetWorkspace()->SaveAs(filename);
 }
 
 bool ProjectManager::QueryCloseWorkspace()
