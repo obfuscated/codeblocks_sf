@@ -252,6 +252,12 @@ void CompilerOptionsDlg::DoFillOthers()
         txt->Enable(false);
 #endif
     }
+    wxSpinCtrl* spn = XRCCTRL(*this, "spnMaxErrors", wxSpinCtrl);
+    if (spn)
+    {
+        spn->SetRange(0, 1000);
+        spn->SetValue(ConfigManager::Get()->Read("/compiler_gcc/max_reported_errors", 50));
+    }
 }
 
 void CompilerOptionsDlg::DoFillTree(cbProject* focusProject, ProjectBuildTarget* focusTarget)
@@ -1472,6 +1478,10 @@ void CompilerOptionsDlg::EndModal(int retCode)
     wxTextCtrl* txt = XRCCTRL(*this, "txtConsoleShell", wxTextCtrl);
     if (txt)
         ConfigManager::Get()->Write("/compiler_gcc/console_shell", txt->GetValue());
+    wxSpinCtrl* spn = XRCCTRL(*this, "spnMaxErrors", wxSpinCtrl);
+    if (spn)
+        ConfigManager::Get()->Write("/compiler_gcc/max_reported_errors", spn->GetValue());
+
 	wxDialog::EndModal(retCode);
 }
 

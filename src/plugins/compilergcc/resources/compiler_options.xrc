@@ -988,6 +988,19 @@
                                 <vgap>8</vgap>
                                 <hgap>8</hgap>
                                 <growablecols>1</growablecols>
+                                <object class="sizeritem">
+                                  <object class="wxStaticText">
+                                    <label>Max nr. of errors to log (0=unlimited):</label>
+                                  </object>
+                                  <flag>wxTOP|wxRIGHT</flag>
+                                  <border>4</border>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxSpinCtrl" name="spnMaxErrors">
+                                    <value>50</value>
+                                    <min>0</min>
+                                  </object>
+                                </object>
                               </object>
                               <option>1</option>
                               <flag>wxALL|wxGROW</flag>

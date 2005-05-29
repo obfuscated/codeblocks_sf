@@ -1808,20 +1808,18 @@ void CompilerGCC::OnGCCOutput(CodeBlocksEvent& event)
 	}
 }
 
-static int errcnt = 0;
-
 void CompilerGCC::OnGCCError(CodeBlocksEvent& event)
 {
-	++errcnt;
-// FIXME (mandrav#1#): Don't harcode max nr of errors reported by compiler
-	if (errcnt > 150)
-		return;
 	wxString msg = event.GetString();
 	AddOutputLine(msg);
 }
 
 void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColor)
 {
+    size_t maxErrors = ConfigManager::Get()->Read("/compiler_gcc/max_reported_errors", 50);
+    if (maxErrors > 0 && m_Errors.GetErrorsCount() > maxErrors)
+        return;
+
 	Compiler* compiler = CompilerFactory::Compilers[m_CompilerIdx];
 	CompilerLineType clt = compiler->CheckForWarningsAndErrors(output);
 
@@ -1876,7 +1874,6 @@ void CompilerGCC::OnGCCTerminated(CodeBlocksEvent& event)
 
 void CompilerGCC::OnJobEnd()
 {
-	errcnt = 0;
     m_timerIdleWakeUp.Stop();
     m_Pid = 0;
 
