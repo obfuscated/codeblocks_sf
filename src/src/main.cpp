@@ -1018,7 +1018,7 @@ void MainFrame::ShowHideStartPage(bool forceHasProject)
     EditorBase* sh = m_pEdMan->GetEditor(g_StartHereTitle);
     if (show && !sh)
         sh = new StartHerePage(this, m_pEdMan->GetNotebook());
-    else if (sh)
+    else if (!show && sh)
         sh->Destroy();
 }
 
@@ -2011,11 +2011,13 @@ void MainFrame::OnProjectActivated(CodeBlocksEvent& event)
 void MainFrame::OnProjectOpened(CodeBlocksEvent& event)
 {
     ShowHideStartPage(true);
+    event.Skip();
 }
 
 void MainFrame::OnProjectClosed(CodeBlocksEvent& event)
 {
     ShowHideStartPage();
+    event.Skip();
 }
 
 void MainFrame::OnShiftTab(wxCommandEvent& event)
