@@ -152,8 +152,8 @@ void wxsPalette::CreateWidgetsPalette(wxWindow* Wnd)
             if ( (*i).first && (*i).first[0] )
             {
                 // Need to create new group
-                RowSizer = new wxFlexGridSizer(1,0,5,5);
-                RowSizer->Add(new wxStaticText(Wnd,-1,(*i).first));
+                RowSizer = new wxFlexGridSizer(1,0,5,0);
+                RowSizer->Add(new wxStaticText(Wnd,-1,(*i).first),0,wxALIGN_CENTER|wxALL,5);
                 PreviousGroup = (*i).first;
             }
             else
@@ -164,7 +164,23 @@ void wxsPalette::CreateWidgetsPalette(wxWindow* Wnd)
 
         if ( RowSizer )
         {
-            RowSizer->Add(new wxButton(Wnd,-1,(*i).second->Name));
+            if ( (*i).second->Icon )
+            {
+                wxBitmapButton* Btn = 
+                    new wxBitmapButton(Wnd,-1,*(*i).second->Icon,
+                        wxDefaultPosition,wxDefaultSize,wxBU_AUTODRAW,
+                        wxDefaultValidator, (*i).second->Name);
+                RowSizer->Add(Btn,0,wxGROW);
+                Btn->SetToolTip((*i).second->Name);
+            }
+            else
+            {
+                wxButton* Btn = new wxButton(Wnd,-1,(*i).second->Name,
+                    wxDefaultPosition,wxDefaultSize,0,
+                    wxDefaultValidator,(*i).second->Name);
+                RowSizer->Add(Btn,0,wxGROW);
+                Btn->SetToolTip((*i).second->Name);
+            }
         }
     }
     
@@ -187,10 +203,10 @@ void wxsPalette::OnButton(wxCommandEvent& event)
     }
     else
     {
-        wxButton* Btn = (wxButton*)event.GetEventObject();
+        wxWindow* Btn = (wxWindow*)event.GetEventObject();
         if ( Btn )
         {
-            InsertRequest(Btn->GetLabel().c_str());
+            InsertRequest(Btn->GetName().c_str());
         }
     }
 }

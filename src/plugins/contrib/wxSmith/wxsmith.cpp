@@ -103,7 +103,7 @@ wxSmith::wxSmith()
 	m_PluginInfo.author = "BYO";
 	m_PluginInfo.authorEmail = "byo.spoon@gmail.com";
 	m_PluginInfo.authorWebsite = "";
-	m_PluginInfo.thanksTo = "Gigi for Faworki";
+	m_PluginInfo.thanksTo = "Ann for Being\nGigi for Faworki\n\nGod for Love";
 	m_PluginInfo.license = LICENSE_GPL;
 	m_PluginInfo.hasConfigure = true;
 	
@@ -163,6 +163,12 @@ void wxSmith::OnAttach()
 
         MessageManager* Messages = Manager::Get()->GetMessageManager();
         
+        Manager::Get()->Loadxrc("/wxsmith.zip#zip:*");
+        
+        // Initializing standard manager
+        
+        wxsStdManager.Initialize();
+        
         if ( ! wxsStdManager.RegisterInFactory() )
         {
             DebLog("Couldn't register standard widget's factory - this plugin will be useless");
@@ -183,7 +189,6 @@ void wxSmith::OnAttach()
         ResourceBrowser = NULL;
 	}
 	
-    Manager::Get()->Loadxrc("/wxsmith.zip#zip:*.xrc");
 }
 
 void wxSmith::OnRelease(bool appShutDown)

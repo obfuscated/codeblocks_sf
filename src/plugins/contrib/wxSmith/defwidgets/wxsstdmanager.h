@@ -32,6 +32,9 @@ class wxsStdManagerT : public wxsWidgetManager
 		wxsStdManagerT();
 		virtual ~wxsStdManagerT();
 		
+		/** Initializing manager */
+		virtual bool Initialize();
+		
 		/** Getting number of handled widgets */
         virtual int GetCount(); 
         

@@ -20,6 +20,12 @@
 				<Compiler>
 					<Add option="-g"/>
 				</Compiler>
+				<Linker>
+					<Add option="-i"/>
+				</Linker>
+				<ExtraCommands>
+					<Add after="update.bat"/>
+				</ExtraCommands>
 			</Target>
 		</Build>
 		<Compiler>

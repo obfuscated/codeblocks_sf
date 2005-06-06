@@ -56,7 +56,7 @@ struct wxsWidgetInfo
     bool Sizer;                     ///< True if this widget is a sizer (Container must also be true)
     unsigned short VerHi;           ///< Lower number of version
     unsigned short VerLo;           ///< Higher number of version
-    wxImage* Icon;                  ///< Icon used in pallette
+    wxBitmap* Icon;                 ///< Icon used in pallette
     wxsWidgetManager* Manager;      ///< Manager handling this widget
     int Id;                         ///< Identifier used inside manager to handle this widget, must be same as 'Number' in GetWidgetInfo call
     int TreeIconId;
@@ -709,6 +709,9 @@ class wxsWidgetManager
     public:
         wxsWidgetManager() {}
         virtual ~wxsWidgetManager() {}
+        
+        /** Funcntion initializing manager */
+        virtual bool Initialize() { return true; }
         
         /** Returns number of handled widgets */
         virtual int GetCount() = 0;

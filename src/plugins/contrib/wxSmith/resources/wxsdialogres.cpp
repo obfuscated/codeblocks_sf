@@ -45,6 +45,8 @@ class $(ClassName): public wxDialog\n\
 \n\
     protected:\n\
 \n\
+        //(*Handlers\n\
+        //*)\n\
         //(*Declarations($(ClassName))\n\
         //*)\n\
 \n\

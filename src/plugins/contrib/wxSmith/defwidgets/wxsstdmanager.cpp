@@ -9,6 +9,10 @@
 #include "wxscheckbox.h"
 #include "wxstogglebutton.h"
 
+#include <wx/xrc/xmlres.h>
+#include <configmanager.h>
+#include <wx/fs_zip.h>
+
 /******************************************************************************/
 /* Infos for standard widgets                                                 */
 /******************************************************************************/
@@ -20,40 +24,40 @@ static const char* DefAuthorSite  = "www.wxwidgets.org";
 static const char* DefCategory    = "Standard";
 
 
-#define Entry(Name,Link)    \
-    {   "wx"#Name,          \
-        DefLicence,         \
-        DefAuthor,          \
-        DefAuthorEmail,     \
-        DefAuthorSite,      \
-        Link,               \
-        DefCategory,        \
-        false,              \
-        false,              \
-        2, 42,              \
-        NULL,               \
-        &wxsStdManager,     \
-        wxs##Name##Id,      \
-        0,                  \
-        wxs##Name##Styles   \
+#define Entry(Name,Link)                                \
+    {   "wx"#Name,                                      \
+        DefLicence,                                     \
+        DefAuthor,                                      \
+        DefAuthorEmail,                                 \
+        DefAuthorSite,                                  \
+        "http://www.wxwidgets.org/manuals/2.4.2/"Link,  \
+        DefCategory,                                    \
+        false,                                          \
+        false,                                          \
+        2, 42,                                          \
+        NULL,                                           \
+        &wxsStdManager,                                 \
+        wxs##Name##Id,                                  \
+        0,                                              \
+        wxs##Name##Styles                               \
     },
 
-#define EntryNoStyles(Name,Link)    \
-    {   "wx"#Name,          \
-        DefLicence,         \
-        DefAuthor,          \
-        DefAuthorEmail,     \
-        DefAuthorSite,      \
-        Link,               \
-        DefCategory,        \
-        false,              \
-        false,              \
-        2, 42,              \
-        NULL,               \
-        &wxsStdManager,     \
-        wxs##Name##Id,      \
-        0,                  \
-        NULL                \
+#define EntryNoStyles(Name,Link)                        \
+    {   "wx"#Name,                                      \
+        DefLicence,                                     \
+        DefAuthor,                                      \
+        DefAuthorEmail,                                 \
+        DefAuthorSite,                                  \
+        "http://www.wxwidgets.org/manuals/2.4.2/"Link,  \
+        DefCategory,                                    \
+        false,                                          \
+        false,                                          \
+        2, 42,                                          \
+        NULL,                                           \
+        &wxsStdManager,                                 \
+        wxs##Name##Id,                                  \
+        0,                                              \
+        NULL                                            \
     },
 
 
@@ -78,10 +82,10 @@ static wxsWidgetInfo StdInfos[] =
         NULL
     },
  
-    Entry(Button,      "http://www.wxwidgets.org/manuals/2.4.2/wx46.htm#wxbutton")
-    Entry(ToggleButton,"http://www.wxwidgets.org/manuals/2.4.2/wx396.htm#wxtogglebutton")
-    Entry(CheckBox,    "http://www.wxwidgets.org/manuals/2.4.2/wx52.htm#wxcheckbox")
-    Entry(StaticText,  "http://www.wxwidgets.org/manuals/2.4.2/wx362.htm#wxstatictext")
+    Entry(Button,      "wx46.htm#wxbutton")
+    Entry(ToggleButton,"wx396.htm#wxtogglebutton")
+    Entry(CheckBox,    "wx52.htm#wxcheckbox")
+    Entry(StaticText,  "wx362.htm#wxstatictext")
 
     {   "wxDialog",
         DefLicence,
@@ -140,12 +144,47 @@ static const int StdInfosCnt = sizeof(StdInfos) / sizeof(StdInfos[0]);
 
 wxsStdManagerT::wxsStdManagerT()
 {
-	//ctor
 }
 
 wxsStdManagerT::~wxsStdManagerT()
 {
-	//dtor
+    for ( int i=0; i<StdInfosCnt; i++ )
+    {
+        if ( StdInfos[i].Icon )
+        {
+            delete StdInfos[i].Icon;
+            StdInfos[i].Icon = NULL;
+        }
+    }
+}
+
+bool wxsStdManagerT::Initialize()
+{
+    wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
+    for ( int i=1; i<StdInfosCnt; i++ )
+    {
+        wxString FileName = resPath + wxT("/images/wxsmith/") + StdInfos[i].Name + wxT(".png");
+        wxBitmap* Bmp = new wxBitmap;
+        if ( wxFileName::FileExists(FileName) )
+        {
+            Bmp->LoadFile(FileName,wxBITMAP_TYPE_PNG);
+                
+            if ( Bmp->Ok() )
+            {
+                StdInfos[i].Icon = Bmp;
+            }
+            else
+            {
+                StdInfos[i].Icon = NULL;
+                delete Bmp;
+            }
+        }
+        else
+        {
+            StdInfos[i].Icon = NULL;
+        }
+    }
+    return true;
 }
 
 int wxsStdManagerT::GetCount()
@@ -157,9 +196,7 @@ int wxsStdManagerT::GetCount()
 const wxsWidgetInfo* wxsStdManagerT::GetWidgetInfo(int Number)
 {
     if ( Number < 0 || Number >= StdInfosCnt ) Number = wxsNoneId;
-    
     assert ( StdInfos[Number].Id == Number );
-    
     return &StdInfos[Number];
 }
 
