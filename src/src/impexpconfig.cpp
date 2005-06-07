@@ -54,6 +54,8 @@ void ImpExpConfig::OnToggle(wxCommandEvent& event)
 
 void ImpExpConfig::OnImport(wxCommandEvent& event)
 {
+    wxMessageBox(_("This is not implemented yet.\nSORRY..."), _("Lame excuse"), wxICON_WARNING);
+    return;
     wxString filename = AskForFile(_("Choose a file to import"), wxOPEN);
     if (filename.IsEmpty())
         return;
