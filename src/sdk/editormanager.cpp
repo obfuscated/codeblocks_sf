@@ -1725,7 +1725,12 @@ void EditorManager::OnTreeItemRightClick(wxTreeEvent &event)
         return;
     if(!MiscTreeItemData::OwnerCheck(event,GetTree(),this,true))
         return;
-    Manager::Get()->GetMessageManager()->DebugLog("(Editor Tree Popup menu not implemented yet)");
+    wxString filename=GetTreeItemFilename(event.GetItem());
+    if(filename.IsEmpty())
+        return;
+    cbEditor* ed = GetBuiltinEditor(filename);
+    wxPoint pt = m_pTree->ClientToScreen(event.GetPoint());
+    ed->DisplayContextMenu(pt);
 }
 
 void EditorManager::OnUpdateUI(wxUpdateUIEvent& event)
