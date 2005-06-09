@@ -1730,7 +1730,7 @@ void EditorManager::OnTreeItemRightClick(wxTreeEvent &event)
         return;
     cbEditor* ed = GetBuiltinEditor(filename);
     wxPoint pt = m_pTree->ClientToScreen(event.GetPoint());
-    ed->DisplayContextMenu(pt);
+    ed->DisplayContextMenu(pt,true);
 }
 
 void EditorManager::OnUpdateUI(wxUpdateUIEvent& event)

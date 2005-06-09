@@ -160,7 +160,7 @@ class DLLIMPORT cbEditor : public EditorBase
 		/** Highlights the brace pair (one of the braces must be under the cursor) */
 		void HighlightBraces();
 		/** Displays the editor's context menu (usually invoked by the user right-clicking in the editor) */
-		void DisplayContextMenu(const wxPoint& position);
+		void DisplayContextMenu(const wxPoint& position,bool noeditor = false);
         /** Returns the specified line's (0-based) indentation (whitespace) in spaces. If line is -1, it uses the current line */
         int GetLineIndentInSpaces(int line = -1);
         /** Returns the specified line's (0-based) indentation (whitespace) string. If line is -1, it uses the current line */
