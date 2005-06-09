@@ -17,7 +17,7 @@ bool ManagedThread::s_abort_all = false;
 static ManagedThreadsArray s_threadslist;
 
 ManagedThread::ManagedThread(bool* abortflag) : 
-wxThread::wxThread(wxTHREAD_JOINABLE),
+wxThread(wxTHREAD_JOINABLE),
 m_pAbort(abortflag)
 {
     wxMutexLocker* lock;
