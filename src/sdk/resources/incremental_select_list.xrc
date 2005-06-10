@@ -30,5 +30,6 @@
         <minsize>320,160</minsize>
       </object>
     </object>
+    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxRESIZE_BOX</style>
   </object>
 </resource>

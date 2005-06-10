@@ -102,6 +102,11 @@ wxString IncrementalSelectListDlg::GetStringSelection()
 	return m_List->GetStringSelection();
 }
 
+int IncrementalSelectListDlg::GetSelection()
+{
+	return m_List->GetSelection();
+}
+
 void IncrementalSelectListDlg::FillList()
 {
 	wxString search = m_Text->GetValue().Lower();

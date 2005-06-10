@@ -14,6 +14,7 @@ class DLLIMPORT IncrementalSelectListDlg : public wxDialog
 		IncrementalSelectListDlg(wxWindow* parent, const wxArrayString& items, const wxString& caption = wxEmptyString, const wxString& message = wxEmptyString);
 		virtual ~IncrementalSelectListDlg();
 		wxString GetStringSelection();
+		int GetSelection();
 	protected:
 		void FillList();
 		void OnSearch(wxCommandEvent& event);

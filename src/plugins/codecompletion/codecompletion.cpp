@@ -562,7 +562,7 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
 	const TokensArray& tokens = parser.GetTokens();
 	for (unsigned int i = 0; i < tokens.GetCount(); ++i)
 	{
-		funcs.Add(tokens[i]->m_Name);
+		funcs.Add(tokens[i]->m_DisplayName);// token->m_Name);
 	}
 	if (!funcs.GetCount())
 	{
@@ -572,12 +572,16 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
 	IncrementalSelectListDlg dlg(Manager::Get()->GetAppWindow(), funcs, _("Select function..."), _("Please select function to go to:"));
 	if (dlg.ShowModal() == wxID_OK)
 	{
-		Token* token = parser.FindTokenByName(dlg.GetStringSelection());
-		if (token)
-		{
-			Manager::Get()->GetMessageManager()->DebugLog("Token found at line %d", token->m_Line);
-			ed->GetControl()->GotoLine(token->m_Line - 1);
-		}
+        int sel = dlg.GetSelection();
+        if (sel >= 0 && sel < (int)tokens.GetCount())
+        {
+            Token* token = tokens[sel];
+            if (token)
+            {
+                Manager::Get()->GetMessageManager()->DebugLog("Token found at line %d", token->m_Line);
+                ed->GetControl()->GotoLine(token->m_Line - 1);
+            }
+        }
 	}
 }
 
