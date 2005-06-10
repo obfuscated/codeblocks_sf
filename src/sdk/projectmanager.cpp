@@ -306,7 +306,7 @@ void ProjectManager::CreateMenu(wxMenuBar* menuBar)
             menu->AppendSeparator();
             menu->Append(idMenuProjectTreeProps, _("Project tree"), treeprops);
 
-            menu->Append(idMenuExecParams, _("Set execution &parameters..."), _("Set execution parameters for the targets of this project"));
+            menu->Append(idMenuExecParams, _("Set &programs' arguments..."), _("Set execution parameters for the targets of this project"));
             menu->Append(idMenuProjectProperties, _("Properties"));
         }
 	}
