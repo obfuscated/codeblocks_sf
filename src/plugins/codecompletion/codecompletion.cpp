@@ -572,11 +572,11 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
 	IncrementalSelectListDlg dlg(Manager::Get()->GetAppWindow(), funcs, _("Select function..."), _("Please select function to go to:"));
 	if (dlg.ShowModal() == wxID_OK)
 	{
-        int sel = dlg.GetSelection();
-        if (sel >= 0 && sel < (int)tokens.GetCount())
+        wxString sel = dlg.GetStringSelection();
+        for (unsigned int i = 0; i < tokens.GetCount(); ++i)
         {
-            Token* token = tokens[sel];
-            if (token)
+            Token* token = tokens[i];
+            if (token && token->m_DisplayName.Matches(sel))
             {
                 Manager::Get()->GetMessageManager()->DebugLog("Token found at line %d", token->m_Line);
                 ed->GetControl()->GotoLine(token->m_Line - 1);
