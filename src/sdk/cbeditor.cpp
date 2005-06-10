@@ -65,6 +65,18 @@ void cbStyledTextCtrl::OnContextMenu(wxContextMenuEvent& event)
 		m_pParent->DisplayContextMenu(event.GetPosition());
 }
 
+// needed for initialization of variables
+long cbeditor_RegisterId(long id)
+{
+    wxRegisterId(id);
+    return id;
+}
+
+// The following lines reserve 255 consecutive id's
+const int EditorMaxSwitchTo = 255;
+const int idSwitchFile1 = wxNewId();
+const int idSwitchFileMax = cbeditor_RegisterId(idSwitchFile1 + EditorMaxSwitchTo -1);
+
 const int idUndo = wxNewId();
 const int idRedo = wxNewId();
 const int idCut = wxNewId();
@@ -87,6 +99,8 @@ const int idFoldingToggleCurrent = wxNewId();
 const int idCloseMe = wxNewId();
 const int idCloseAll = wxNewId();
 const int idCloseAllOthers = wxNewId();
+const int idSaveMe = wxNewId();
+const int idSaveAll = wxNewId();
 const int idConfigureEditor = wxNewId();
 const int idProperties = wxNewId();
 const int idSwitchTo = wxNewId();
@@ -97,6 +111,8 @@ BEGIN_EVENT_TABLE(cbEditor, EditorBase)
     EVT_CLOSE(cbEditor::OnClose)
     EVT_TIMER(-1, cbEditor::OnTimer)
     // we got dynamic events; look in CreateEditor()
+	
+	EVT_MENU_RANGE(idSwitchFile1, idSwitchFile1+254,cbEditor::OnContextMenuEntry)
 	EVT_MENU(idUndo, cbEditor::OnContextMenuEntry)
 	EVT_MENU(idRedo, cbEditor::OnContextMenuEntry)
 	EVT_MENU(idCut, cbEditor::OnContextMenuEntry)
@@ -117,6 +133,9 @@ BEGIN_EVENT_TABLE(cbEditor, EditorBase)
 	EVT_MENU(idCloseMe, cbEditor::OnContextMenuEntry)
 	EVT_MENU(idCloseAll, cbEditor::OnContextMenuEntry)
 	EVT_MENU(idCloseAllOthers, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idSaveMe, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idSaveAll, cbEditor::OnContextMenuEntry)
+	
 	EVT_MENU(idConfigureEditor, cbEditor::OnContextMenuEntry)
 	EVT_MENU(idProperties, cbEditor::OnContextMenuEntry)
 END_EVENT_TABLE()
@@ -854,22 +873,20 @@ void cbEditor::DisplayContextMenu(const wxPoint& position,bool noeditor)
     }
         // create submenu items
     m_SwitchTo.clear();
-    for (int i = 0; i < Manager::Get()->GetEditorManager()->GetEditorsCount(); ++i)
+    for (int i = 0; i < EditorMaxSwitchTo && i < Manager::Get()->GetEditorManager()->GetEditorsCount(); ++i)
     {
         cbEditor* other = Manager::Get()->GetEditorManager()->GetBuiltinEditor(i);
         if (!other || other == this)
             continue;
         
-        int id = wxNewId();
-        if(!noeditor)
-        {
-            switchto->Append(id, other->GetShortName());
-        }
+        int id = idSwitchFile1+i;
         m_SwitchTo[id] = other;
+        if(!noeditor)
+            switchto->Append(id, other->GetShortName());
 
-        Connect( id, -1, wxEVT_COMMAND_MENU_SELECTED,
-                (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                &cbEditor::OnContextMenuEntry );
+//        Connect( id, -1, wxEVT_COMMAND_MENU_SELECTED,
+//                (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+//                &cbEditor::OnContextMenuEntry );
     }
     
     if(!noeditor)
@@ -919,6 +936,11 @@ void cbEditor::DisplayContextMenu(const wxPoint& position,bool noeditor)
 	Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtEditorManager, popup, m_Filename);
 
 	// add more options here
+	popup->AppendSeparator();
+
+	popup->Append(idSaveMe, _("Save"));
+    popup->Append(idSaveAll, _("Save all"));
+
 	popup->AppendSeparator();
 
 	popup->Append(idCloseMe, _("Close"));
@@ -1041,6 +1063,10 @@ void cbEditor::OnContextMenuEntry(wxCommandEvent& event)
 		Manager::Get()->GetEditorManager()->CloseAll();
 	else if (id == idCloseAllOthers)
 		Manager::Get()->GetEditorManager()->CloseAllExcept(this);
+	else if (id == idSaveMe)
+        Save();
+    else if (id == idSaveAll)
+        Manager::Get()->GetEditorManager()->SaveAll();
 	else if (id == idConfigureEditor)
 		Manager::Get()->GetEditorManager()->Configure();
 	else if (id == idProperties)
@@ -1048,14 +1074,16 @@ void cbEditor::OnContextMenuEntry(wxCommandEvent& event)
         if (m_pProjectFile)
             m_pProjectFile->ShowOptions(this);
     }
-    else
+    else if (id >= idSwitchFile1 && id <= idSwitchFileMax)
     {
-        // probably a "Switch to..." item
+        // "Switch to..." item
         cbEditor* ed = m_SwitchTo[id];
         if (ed)
             Manager::Get()->GetEditorManager()->SetActiveEditor(ed);
         m_SwitchTo.clear();
     }
+    else
+        event.Skip();
 	//Manager::Get()->GetMessageManager()->DebugLog("Leaving OnContextMenuEntry");
 }
 
