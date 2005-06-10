@@ -771,7 +771,9 @@ bool EditorManager::SaveAll()
 		}
         node = node->GetNext();
     }
-
+#ifdef USE_OPENFILES_TREE
+    RefreshOpenedFilesTree(true);
+#endif
     return true;
 }
 
@@ -1525,8 +1527,8 @@ void EditorManager::AddFiletoTree(cbEditor* ed)
         return;
     if(!m_TreeOpenedFiles)
         return;
-    if(ed->GetModified()) shortname=wxString("*")+shortname;
-    tree->AppendItem(m_TreeOpenedFiles,shortname,2,2,
+    int mod = ed->GetModified() ? 2 : 1;
+    tree->AppendItem(m_TreeOpenedFiles,shortname,mod,mod,
         new EditorTreeData(this,filename));
     tree->SortChildren(m_TreeOpenedFiles);
     RefreshOpenedFilesTree(true);
@@ -1562,9 +1564,14 @@ bool EditorManager::RenameTreeFile(const wxString& oldname, const wxString& newn
         if(ed)
         {
             shortname=ed->GetShortName();
-            if(ed->GetModified()) shortname=wxString("*")+shortname;
+            int mod = ed->GetModified() ? 2 : 1;
             if(tree->GetItemText(item)!=shortname)
                 tree->SetItemText(item,shortname);
+            if (tree->GetItemImage(item) != mod)
+            {
+                tree->SetItemImage(item, mod, wxTreeItemIcon_Normal);
+                tree->SetItemImage(item, mod, wxTreeItemIcon_Selected);
+            }
             if(ed==GetActiveEditor())
                 tree->SelectItem(item);
         }
@@ -1604,16 +1611,14 @@ void EditorManager::BuildOpenedFilesTree(wxWindow* parent)
     wxBitmap bmp;
     m_pImages = new wxImageList(16, 16);
     wxString prefix = ConfigManager::Get()->Read("data_path") + "/images/";
-    bmp.LoadFile(prefix + "gohome.png", wxBITMAP_TYPE_PNG); // workspace
-    m_pImages->Add(bmp);
-    bmp.LoadFile(prefix + "codeblocks.png", wxBITMAP_TYPE_PNG); // project
+    bmp.LoadFile(prefix + "folder_open.png", wxBITMAP_TYPE_PNG); // folder
     m_pImages->Add(bmp);
     bmp.LoadFile(prefix + "ascii.png", wxBITMAP_TYPE_PNG); // file
     m_pImages->Add(bmp);
-    bmp.LoadFile(prefix + "folder_open.png", wxBITMAP_TYPE_PNG); // folder
+    bmp.LoadFile(prefix + "modified_file.png", wxBITMAP_TYPE_PNG); // modified file
     m_pImages->Add(bmp);
     m_pTree->SetImageList(m_pImages);
-    m_TreeOpenedFiles=m_pTree->AddRoot("Opened Files", 3, 3);
+    m_TreeOpenedFiles=m_pTree->AddRoot("Opened Files", 0, 0);
     m_pTree->SetItemBold(m_TreeOpenedFiles);
     RebuildOpenedFilesTree(m_pTree);
 }
@@ -1641,8 +1646,8 @@ void EditorManager::RebuildOpenedFilesTree(wxTreeCtrl *tree)
         if(!ed)
             continue;
         wxString shortname=ed->GetShortName();
-        if(ed->GetModified()) shortname=wxString("*")+shortname;
-        wxTreeItemId item=tree->AppendItem(m_TreeOpenedFiles,shortname,2,2,
+        int mod = ed->GetModified() ? 2 : 1;
+        wxTreeItemId item=tree->AppendItem(m_TreeOpenedFiles,shortname,mod,mod,
           new EditorTreeData(this,ed->GetFilename()));
         if(GetActiveEditor()==ed)
             tree->SelectItem(item);
@@ -1663,7 +1668,7 @@ void EditorManager::RefreshOpenedFilesTree(bool force)
     if(!tree)
         return;
     wxString fname;
-    cbEditor *aed=GetBuiltinEditor(GetActiveEditor());
+    cbEditor *aed=GetBuiltinActiveEditor();
     if(!aed)
         return;
     bool ismodif=aed->GetModified();
@@ -1671,7 +1676,7 @@ void EditorManager::RefreshOpenedFilesTree(bool force)
     
     if(!force && m_LastActiveFile==fname && m_LastModifiedflag==ismodif)
         return; // Nothing to do
-    
+
     m_LastActiveFile=fname;
     m_LastModifiedflag=ismodif;
     Manager::Get()->GetProjectManager()->FreezeTree();
@@ -1692,9 +1697,14 @@ void EditorManager::RefreshOpenedFilesTree(bool force)
             if(ed)
             {
                 shortname=ed->GetShortName();
-                if(ed->GetModified()) shortname=wxString("*")+shortname;
+                int mod = ed->GetModified() ? 2 : 1;
                 if(tree->GetItemText(item)!=shortname)
                     tree->SetItemText(item,shortname);
+                if (tree->GetItemImage(item) != mod)
+                {
+                    tree->SetItemImage(item, mod, wxTreeItemIcon_Normal);
+                    tree->SetItemImage(item, mod, wxTreeItemIcon_Selected);
+                }
                 if(ed==aed)
                     tree->SelectItem(item);
                 // tree->SetItemBold(item,(ed==aed));

@@ -938,7 +938,8 @@ void cbEditor::DisplayContextMenu(const wxPoint& position,bool noeditor)
 	// add more options here
 	popup->AppendSeparator();
 
-	popup->Append(idSaveMe, _("Save"));
+    if (GetModified())
+        popup->Append(idSaveMe, _("Save"));
     popup->Append(idSaveAll, _("Save all"));
 
 	popup->AppendSeparator();
