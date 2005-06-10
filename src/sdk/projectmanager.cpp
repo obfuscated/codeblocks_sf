@@ -97,6 +97,7 @@ int idMenuProjectDown = wxNewId();
 int idMenuViewCategorizePopup = wxNewId();
 int idMenuViewUseFoldersPopup = wxNewId();
 int idMenuTreeRenameWorkspace = wxNewId();
+// TODO (mandrav#1#): Add "save workspace" context menu entry
 
 #ifndef __WXMSW__
 /*  
@@ -291,6 +292,8 @@ void ProjectManager::CreateMenu(wxMenuBar* menuBar)
             menu->Append(idMenuAddFile, _("Add files..."), _("Add files to the project"));
             menu->Append(idMenuRemoveFile, _("Remove files..."), _("Remove files from the project"));
 
+/* FIXME (mandrav#1#): Move this submenu creation in a function.
+It is duplicated in ShowMenu() */
             wxMenu* treeprops = new wxMenu;
             treeprops->Append(idMenuProjectUp, _("Move project up\tCtrl-Shift-Up"), _("Move project up in project tree"));
             treeprops->Append(idMenuProjectDown, _("Move project down\tCtrl-Shift-Down"), _("Move project down in project tree"));
@@ -362,6 +365,7 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
     		menu.Append(idMenuCloseProject, _("Close project"));
     		menu.AppendSeparator();
     	    menu.Append(idMenuAddFilePopup, _("Add files to project..."));
+            menu.Append(idMenuRemoveFile, _("Remove files from project..."), _("Remove files from the project"));
         }
         // if it is a file...
         else
@@ -399,7 +403,26 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
 
         menu.AppendSeparator();
         if (ftd->GetFileIndex() == -1)
+        {
+            // project
+/* FIXME (mandrav#1#): Move this submenu creation in a function.
+It is duplicated in CreateMenu() */
+            wxMenu* treeprops = new wxMenu;
+            treeprops->Append(idMenuProjectUp, _("Move project up\tCtrl-Shift-Up"), _("Move project up in project tree"));
+            treeprops->Append(idMenuProjectDown, _("Move project down\tCtrl-Shift-Down"), _("Move project down in project tree"));
+            treeprops->AppendSeparator();
+            treeprops->Append(idMenuPriorProject, _("Activate prior project\tAlt-F5"), _("Activate prior project in open projects list"));
+            treeprops->Append(idMenuNextProject, _("Activate next project\tAlt-F6"), _("Activate next project in open projects list"));
+            treeprops->AppendSeparator();
+            treeprops->AppendCheckItem(idMenuViewCategorize, _("Categorize by file types"));
+            treeprops->AppendCheckItem(idMenuViewUseFolders, _("Display folders as on disk"));
+            treeprops->Check(idMenuViewCategorize, ConfigManager::Get()->Read("/project_manager/categorize_tree", 1));
+            treeprops->Check(idMenuViewUseFolders, ConfigManager::Get()->Read("/project_manager/use_folders", 1));
+            treeprops->Append(idMenuViewFileMasks, _("Edit file types && categories..."));
+
+            menu.Append(idMenuProjectTreeProps, _("Project tree"), treeprops);
             menu.Append(idMenuTreeProjectProperties, _("Properties"));
+        }
         else
             menu.Append(idMenuTreeFileProperties, _("Properties"));
     }
