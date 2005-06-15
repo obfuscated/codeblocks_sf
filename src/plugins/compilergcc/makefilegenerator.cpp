@@ -623,8 +623,7 @@ void MakefileGenerator::DoAddMakefileResources(wxString& buffer)
             QuoteStringIfNeeded(out);
             buffer << out << '\n';
             // write private resource file to disk
-            resFile.Normalize(wxPATH_NORM_ALL, m_Project->GetBasePath());
-            resFile.Normalize(wxPATH_NORM_ALL, m_Project->GetBasePath());
+            resFile.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
             resFile.SetExt(RESOURCE_EXT);
             wxFile file(resFile.GetFullPath(), wxFile::write);
             file.Write(resBuf, resBuf.Length());

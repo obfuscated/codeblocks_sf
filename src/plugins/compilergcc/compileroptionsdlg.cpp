@@ -938,7 +938,7 @@ void CompilerOptionsDlg::OnEditDirClick(wxCommandEvent& event)
         
     wxFileName dir(control->GetString(control->GetSelection()) + wxFileName::GetPathSeparator());
     if (m_pProject)
-        dir.Normalize(wxPATH_NORM_ALL, m_pProject->GetBasePath());
+        dir.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_pProject->GetBasePath());
 //    Manager::Get()->GetMessageManager()->DebugLog(dir.GetFullPath());
     wxString initial = _("");
     if (dir.DirExists())

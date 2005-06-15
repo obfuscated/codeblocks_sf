@@ -219,22 +219,22 @@ void ProjectOptionsDlg::DoBeforeTargetChange(bool force)
 		// global project options
 		target->SetTargetType(TargetType(XRCCTRL(*this, "cmbProjectType", wxComboBox)->GetSelection()));
 		wxFileName fname(XRCCTRL(*this, "txtOutputFilename", wxTextCtrl)->GetValue());
-		fname.Normalize(wxPATH_NORM_ALL, m_Project->GetBasePath());
-		fname.MakeRelativeTo(m_Project->GetBasePath());
+//		fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
+//		fname.MakeRelativeTo(m_Project->GetBasePath());
 		target->SetOutputFilename(fname.GetFullPath());
 		
 		fname.Assign(XRCCTRL(*this, "txtWorkingDir", wxTextCtrl)->GetValue());
-//		fname.Normalize(wxPATH_NORM_ALL, m_Project->GetBasePath());
+//		fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
 //		fname.MakeRelativeTo(m_Project->GetBasePath());
         target->SetWorkingDir(fname.GetFullPath());
 
 		fname.Assign(XRCCTRL(*this, "txtObjectDir", wxTextCtrl)->GetValue());
-//		fname.Normalize(wxPATH_NORM_ALL, m_Project->GetBasePath());
+//		fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
 //		fname.MakeRelativeTo(m_Project->GetBasePath());
 		target->SetObjectOutput(fname.GetFullPath());
 		
 		fname.Assign(XRCCTRL(*this, "txtDepsDir", wxTextCtrl)->GetValue());
-//		fname.Normalize(wxPATH_NORM_ALL, m_Project->GetBasePath());
+//		fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
 //		fname.MakeRelativeTo(m_Project->GetBasePath());
 		target->SetDepsOutput(fname.GetFullPath());
 
@@ -481,7 +481,7 @@ void ProjectOptionsDlg::OnBrowseDirClick(wxCommandEvent& event)
         return;
     
     wxFileName fname(targettext->GetValue() + wxFileName::GetPathSeparator());
-    fname.Normalize(wxPATH_NORM_ALL, m_Project->GetBasePath());
+    fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
 
     wxString path = ChooseDirectory(this,
                                     _("Select directory"),
@@ -500,7 +500,7 @@ void ProjectOptionsDlg::OnBrowseOutputFilenameClick(wxCommandEvent& event)
 {
     wxFileName fname;
     fname.Assign(XRCCTRL(*this, "txtOutputFilename", wxTextCtrl)->GetValue());
-    fname.Normalize(wxPATH_NORM_ALL, m_Project->GetBasePath());
+    fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
     wxFileDialog dlg(this,
                     _("Select output filename"),
                     fname.GetPath(),

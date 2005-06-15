@@ -336,7 +336,7 @@ void cbProject::CalculateCommonTopLevelPath()
             while (!tmp.IsEmpty() &&  (tmp.GetChar(0) == '/' || tmp.GetChar(0) == '\\'))
                 tmp.Remove(0, 1);
         }
-        tmpbase.Normalize(wxPATH_NORM_ALL);
+        tmpbase.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE);
 
         if (tmpbase.GetDirCount() < base.GetDirCount())
             base = tmpbase;

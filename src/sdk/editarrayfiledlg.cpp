@@ -29,7 +29,7 @@ EditArrayFileDlg::EditArrayFileDlg(wxWindow* parent, wxArrayString& array, bool 
         wxFileName fname;
         fname.Assign(m_Array[i]);
         if (!m_UseRelativePaths && fname.IsRelative())
-            fname.Normalize(wxPATH_NORM_ALL, m_BasePath);
+            fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_BasePath);
         else if (m_UseRelativePaths && fname.IsAbsolute())
             fname.MakeRelativeTo(m_BasePath);
         m_Array[i] = fname.GetFullPath();
@@ -72,7 +72,7 @@ void EditArrayFileDlg::OnAdd(wxCommandEvent& event)
     wxFileName fname;
     fname.Assign(dlg.GetPath());
     if (!m_UseRelativePaths)
-        fname.Normalize(wxPATH_NORM_ALL, m_BasePath);
+        fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_BasePath);
     else
         fname.MakeRelativeTo(m_BasePath);
     XRCCTRL(*this, "lstItems", wxListBox)->Append(fname.GetFullName());
@@ -93,7 +93,7 @@ void EditArrayFileDlg::OnEdit(wxCommandEvent& event)
     wxFileName fname;
     fname.Assign(dlg.GetPath());
     if (!m_UseRelativePaths)
-        fname.Normalize(wxPATH_NORM_ALL, m_BasePath);
+        fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_BasePath);
     else
         fname.MakeRelativeTo(m_BasePath);
 	list->SetString(list->GetSelection(), fname.GetFullPath());

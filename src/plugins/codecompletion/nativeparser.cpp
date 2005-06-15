@@ -159,7 +159,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
     {
         wxFileName dir(project->GetIncludeDirs()[i]);
         if (!dir.IsAbsolute())
-            dir.Normalize(wxPATH_NORM_ALL, base);
+            dir.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
         if (dir.IsOk() && parser->IncludeDirs().Index(dir.GetFullPath()) == wxNOT_FOUND)
         {
             parser->IncludeDirs().Add(dir.GetFullPath());
@@ -177,7 +177,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
             {
                 wxFileName dir(target->GetIncludeDirs()[ti]);
                 if (!dir.IsAbsolute())
-                    dir.Normalize(wxPATH_NORM_ALL, base);
+                    dir.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
                 if (dir.IsOk() && parser->IncludeDirs().Index(dir.GetFullPath()) == wxNOT_FOUND)
                 {
                     parser->IncludeDirs().Add(dir.GetFullPath());
@@ -197,7 +197,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
 			//Manager::Get()->GetMessageManager()->Log(mltDevDebug, "Adding %s", dirs[i].c_str());
             wxFileName dir(dirs[i]);
             if (!dir.IsAbsolute())
-                dir.Normalize(wxPATH_NORM_ALL, base);
+                dir.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
             if (dir.IsOk() && parser->IncludeDirs().Index(dir.GetFullPath()) == wxNOT_FOUND)
             {
                 parser->IncludeDirs().Add(dir.GetFullPath());

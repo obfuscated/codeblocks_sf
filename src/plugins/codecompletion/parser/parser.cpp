@@ -925,14 +925,13 @@ void Parser::OnParseFile(wxCommandEvent& event)
 		{
 			base = m_IncludeDirs[i];
 			wxFileName tmp = fname;
-			tmp.Normalize(wxPATH_NORM_ALL, base);
+			tmp.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
 			if (wxFileExists(tmp.GetFullPath()))
 				break;
 		}
 	}
 
-	fname.Normalize(wxPATH_NORM_ALL, base);
-	//fname.Normalize(wxPATH_NORM_ALL, base); // the known wxWindows bug :(
+	fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
 	filename = fname.GetFullPath();
 
 	/*wxMutexLocker* lock = new wxMutexLocker(s_mutexListProtection);

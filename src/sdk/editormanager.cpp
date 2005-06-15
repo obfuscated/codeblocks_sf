@@ -909,7 +909,7 @@ bool EditorManager::SwapActiveHeaderSource()
         fname.Assign(dirs[i] + wxFileName::GetPathSeparator() + fn.GetFullName());
         if (!fname.IsAbsolute() && project)
         {
-            fname.Normalize(wxPATH_NORM_ALL, project->GetBasePath());
+            fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, project->GetBasePath());
         }
         //Manager::Get()->GetMessageManager()->DebugLog("Looking for '%s'", fname.GetFullPath().c_str());
         if (ft == ftHeader)

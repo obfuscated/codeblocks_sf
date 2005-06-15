@@ -187,7 +187,7 @@ void ClassBrowser::OnJumpTo(wxCommandEvent& event)
                 fname.Assign(ctd->GetToken()->m_ImplFilename);
             else
                 fname.Assign(ctd->GetToken()->m_Filename);
-            fname.Normalize(wxPATH_NORM_ALL, base);
+            fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
         	cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname.GetFullPath());
 			if (ed)
 			{
@@ -231,7 +231,7 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
                 fname.Assign(ctd->GetToken()->m_ImplFilename);
             else
                 fname.Assign(ctd->GetToken()->m_Filename);
-            fname.Normalize(wxPATH_NORM_ALL, base);
+            fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
         	cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname.GetFullPath());
 			if (ed)
 			{
