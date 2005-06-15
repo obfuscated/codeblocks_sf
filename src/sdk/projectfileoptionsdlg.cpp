@@ -67,7 +67,7 @@ ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf)
 		
 		SetTitle(_("Options for ") + wxString("\"") + pf->relativeFilename + wxString("\""));
 	}
-	// FIXME: support more than one target per file
+    XRCCTRL(*this, "txtObjName", wxTextCtrl)->Enable(false);
 }
 
 ProjectFileOptionsDlg::~ProjectFileOptionsDlg()
@@ -110,7 +110,7 @@ void ProjectFileOptionsDlg::OnOKClick(wxCommandEvent& event)
 	m_ProjectFile->compile = XRCCTRL(*this, "chkCompile", wxCheckBox)->GetValue();
 	m_ProjectFile->link = XRCCTRL(*this, "chkLink", wxCheckBox)->GetValue();
 	m_ProjectFile->weight = XRCCTRL(*this, "sliderWeight", wxSlider)->GetValue();
-	m_ProjectFile->SetObjName(XRCCTRL(*this, "txtObjName", wxTextCtrl)->GetValue());
+//	m_ProjectFile->SetObjName(XRCCTRL(*this, "txtObjName", wxTextCtrl)->GetValue());
 	m_ProjectFile->useCustomBuildCommand = XRCCTRL(*this, "chkBuildStage", wxCheckBox)->GetValue();
 	m_ProjectFile->buildCommand = XRCCTRL(*this, "txtBuildStage", wxTextCtrl)->GetValue();
 	m_ProjectFile->autoDeps = !XRCCTRL(*this, "chkCustomDeps", wxCheckBox)->GetValue();
