@@ -464,40 +464,41 @@ void ProjectLoader::DoLibsOptions(TiXmlElement* parentNode, ProjectBuildTarget* 
 void ProjectLoader::DoExtraCommands(TiXmlElement* parentNode, ProjectBuildTarget* target)
 {
     TiXmlElement* node = parentNode->FirstChildElement("ExtraCommands");
-    if (!node)
-        return; // no options
-
-    CompileOptionsBase* base = target ? target : (CompileOptionsBase*)m_pProject;
-    TiXmlElement* child = node->FirstChildElement("Mode");
-    while (child)
+    while (node)
     {
-        wxString mode = child->Attribute("before");
-        if (mode == "always")
-            base->SetAlwaysRunPreBuildSteps(true);
-        mode = child->Attribute("after");
-        if (mode == "always")
-            base->SetAlwaysRunPostBuildSteps(true);
-
-        child = child->NextSiblingElement("Mode");
-    }
-
-    child = node->FirstChildElement("Add");
-    while (child)
-    {
-        wxString before;
-        wxString after;
-        
-        if (child->Attribute("before"))
-            before = child->Attribute("before");
-        if (child->Attribute("after"))
-            after = child->Attribute("after");
-
-        if (!before.IsEmpty())
-            base->AddCommandsBeforeBuild(before);
-        if (!after.IsEmpty())
-            base->AddCommandsAfterBuild(after);
-
-        child = child->NextSiblingElement("Add");
+        CompileOptionsBase* base = target ? target : (CompileOptionsBase*)m_pProject;
+        TiXmlElement* child = node->FirstChildElement("Mode");
+        while (child)
+        {
+            wxString mode = child->Attribute("before");
+            if (mode == "always")
+                base->SetAlwaysRunPreBuildSteps(true);
+            mode = child->Attribute("after");
+            if (mode == "always")
+                base->SetAlwaysRunPostBuildSteps(true);
+    
+            child = child->NextSiblingElement("Mode");
+        }
+    
+        child = node->FirstChildElement("Add");
+        while (child)
+        {
+            wxString before;
+            wxString after;
+            
+            if (child->Attribute("before"))
+                before = child->Attribute("before");
+            if (child->Attribute("after"))
+                after = child->Attribute("after");
+    
+            if (!before.IsEmpty())
+                base->AddCommandsBeforeBuild(before);
+            if (!after.IsEmpty())
+                base->AddCommandsAfterBuild(after);
+    
+            child = child->NextSiblingElement("Add");
+        }
+        node = node->NextSiblingElement("ExtraCommands");
     }
 }
 
