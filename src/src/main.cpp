@@ -448,8 +448,7 @@ void MainFrame::CreateIDE()
 	m_pPrjMan = Manager::Get()->GetProjectManager();
 	m_pMsgMan = Manager::Get()->GetMessageManager();
 
-	if (ConfigManager::Get()->Read("/main_frame/layout/toolbar_show", 1))
-        CreateToolbars();
+    CreateToolbars();
 }
 
 wxMenu* MainFrame::RecreateMenu(wxMenuBar* mbar, const wxString& name)
@@ -724,6 +723,10 @@ void MainFrame::LoadWindowState()
             ConfigManager::Get()->Read(personalityKey + "/main_frame/width", 640),
             ConfigManager::Get()->Read(personalityKey + "/main_frame/height", 480));
 
+    // toolbar visibility
+	if (m_pToolbar)
+        m_pToolbar->Show(ConfigManager::Get()->Read(personalityKey + "/main_frame/layout/toolbar_show", 1));
+
 	// sash sizes are set on creation in CreateIDE()
 	DoUpdateLayout();
 
@@ -738,8 +741,6 @@ void MainFrame::LoadWindowState()
 	// load manager and messages visibility state
 	m_pLeftSash->Show(ConfigManager::Get()->Read(personalityKey + "/main_frame/layout/left_block_show", 1));
 	m_pBottomSash->Show(ConfigManager::Get()->Read(personalityKey + "/main_frame/layout/bottom_block_show", 1));
-
-    // the toolbar visibility is handled in CreateIDE
 
     // maximized?
     if (ConfigManager::Get()->Read(personalityKey + "/main_frame/maximized", 0L))
@@ -783,7 +784,7 @@ void MainFrame::SaveWindowState()
 	}
 
     // toolbar visibility
-	ConfigManager::Get()->Write(personalityKey + "/main_frame/layout/toolbar_show", m_pToolbar != 0);
+	ConfigManager::Get()->Write(personalityKey + "/main_frame/layout/toolbar_show", m_pToolbar->IsShown());
 }
 
 void MainFrame::DoAddPlugin(cbPlugin* plugin)
