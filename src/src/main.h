@@ -78,7 +78,7 @@ class MainFrame : public wxFrame
 
         void OnProjectNew(wxCommandEvent& event);
         void OnProjectNewEmpty(wxCommandEvent& event);
-		// project/open is handled in OnFileOpen
+        void OnProjectOpen(wxCommandEvent& event);
         void OnProjectSaveProject(wxCommandEvent& event);
         void OnProjectSaveProjectAs(wxCommandEvent& event);
         void OnProjectSaveAllProjects(wxCommandEvent& event);

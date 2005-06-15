@@ -278,7 +278,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
     EVT_MENU(idProjectNewEmptyProject, MainFrame::OnProjectNewEmpty)
     EVT_MENU(idProjectNew, MainFrame::OnProjectNew)
-    EVT_MENU(idProjectOpen,  MainFrame::OnFileOpen)
+    EVT_MENU(idProjectOpen,  MainFrame::OnProjectOpen)
     EVT_MENU(idProjectSaveProject,  MainFrame::OnProjectSaveProject)
     EVT_MENU(idProjectSaveProjectAs,  MainFrame::OnProjectSaveProjectAs)
     EVT_MENU(idProjectSaveAllProjects,  MainFrame::OnProjectSaveAllProjects)
@@ -1583,6 +1583,25 @@ void MainFrame::OnProjectNewEmpty(wxCommandEvent& event)
 void MainFrame::OnProjectNew(wxCommandEvent& event)
 {
     TemplateManager::Get()->NewProject();
+}
+
+void MainFrame::OnProjectOpen(wxCommandEvent& event)
+{
+    wxFileDialog* dlg = new wxFileDialog(this,
+                            _("Open project"),
+                            wxEmptyString,
+                            wxEmptyString,
+                            CODEBLOCKS_FILES_FILTER,
+                            wxOPEN | wxMULTIPLE);
+
+    if (dlg->ShowModal() == wxID_OK)
+    {
+        wxArrayString files;
+        dlg->GetPaths(files);
+        OnDropFiles(0,0,files);
+    }
+
+    delete dlg;
 }
 
 void MainFrame::OnProjectSaveProject(wxCommandEvent& event)
