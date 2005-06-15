@@ -65,18 +65,8 @@ void cbStyledTextCtrl::OnContextMenu(wxContextMenuEvent& event)
 		m_pParent->DisplayContextMenu(event.GetPosition());
 }
 
-// needed for initialization of variables
-long cbeditor_RegisterId(long id)
-{
-    wxRegisterId(id);
-    return id;
-}
-
-// The following lines reserve 255 consecutive id's
-const int EditorMaxSwitchTo = 255;
-const int idSwitchFile1 = wxNewId();
-const int idSwitchFileMax = cbeditor_RegisterId(idSwitchFile1 + EditorMaxSwitchTo -1);
-
+const int idEmptyMenu = wxNewId();
+const int idEdit = wxNewId();
 const int idUndo = wxNewId();
 const int idRedo = wxNewId();
 const int idCut = wxNewId();
@@ -96,23 +86,15 @@ const int idFoldingToggleAll = wxNewId();
 const int idFoldingFoldCurrent = wxNewId();
 const int idFoldingUnfoldCurrent = wxNewId();
 const int idFoldingToggleCurrent = wxNewId();
-const int idCloseMe = wxNewId();
-const int idCloseAll = wxNewId();
-const int idCloseAllOthers = wxNewId();
-const int idSaveMe = wxNewId();
-const int idSaveAll = wxNewId();
+const int idInsert = wxNewId();
 const int idConfigureEditor = wxNewId();
 const int idProperties = wxNewId();
-const int idSwitchTo = wxNewId();
-const int idInsert = wxNewId();
-const int idEmptyMenu = wxNewId();
 
 BEGIN_EVENT_TABLE(cbEditor, EditorBase)
     EVT_CLOSE(cbEditor::OnClose)
     EVT_TIMER(-1, cbEditor::OnTimer)
     // we got dynamic events; look in CreateEditor()
 	
-	EVT_MENU_RANGE(idSwitchFile1, idSwitchFile1+254,cbEditor::OnContextMenuEntry)
 	EVT_MENU(idUndo, cbEditor::OnContextMenuEntry)
 	EVT_MENU(idRedo, cbEditor::OnContextMenuEntry)
 	EVT_MENU(idCut, cbEditor::OnContextMenuEntry)
@@ -130,12 +112,6 @@ BEGIN_EVENT_TABLE(cbEditor, EditorBase)
 	EVT_MENU(idFoldingFoldCurrent, cbEditor::OnContextMenuEntry)
 	EVT_MENU(idFoldingUnfoldCurrent, cbEditor::OnContextMenuEntry)
 	EVT_MENU(idFoldingToggleCurrent, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idCloseMe, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idCloseAll, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idCloseAllOthers, cbEditor::OnContextMenuEntry)
-    EVT_MENU(idSaveMe, cbEditor::OnContextMenuEntry)
-    EVT_MENU(idSaveAll, cbEditor::OnContextMenuEntry)
-	
 	EVT_MENU(idConfigureEditor, cbEditor::OnContextMenuEntry)
 	EVT_MENU(idProperties, cbEditor::OnContextMenuEntry)
 END_EVENT_TABLE()
@@ -155,14 +131,8 @@ cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColorSet* t
     m_IsBuiltinEditor = true;
 
     m_timerWait.SetOwner(this);
-    if (filename.IsEmpty())
-    	m_Filename = wxGetCwd() + wxFileName::GetPathSeparator() + CreateUniqueFilename();
-    else
-    	m_Filename = filename;
-
-    wxFileName fname;
-    fname.Assign(m_Filename);
-    m_Shortname = fname.GetFullName();
+    
+    InitFilename(filename);
 //    Manager::Get()->GetMessageManager()->DebugLog("ctor: Filename=%s\nShort=%s", m_Filename.c_str(), m_Shortname.c_str());
 
 	CreateEditor();
@@ -205,6 +175,11 @@ void cbEditor::NotifyPlugins(wxEventType type, int intArg, const wxString& strAr
 	event.SetY(yArg);
 	//wxPostEvent(Manager::Get()->GetAppWindow(), event);
 	Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+}
+
+bool cbEditor::GetModified()
+{ 
+    return m_Modified || m_pControl->GetModify(); 
 }
 
 void cbEditor::SetModified(bool modified)
@@ -273,21 +248,6 @@ void cbEditor::UpdateProjectFile()
 		m_pProjectFile->editorTopLine = m_pControl->GetFirstVisibleLine();
 		m_pProjectFile->editorOpen = true;
 	}
-}
-
-wxString cbEditor::CreateUniqueFilename()
-{
-    const wxString prefix = _("Untitled");
-    wxString tmp;
-    int iter = 1;
-    while (true)
-    {
-        tmp.Clear();
-        tmp << prefix << iter;
-        if (!Manager::Get()->GetEditorManager()->GetEditor(tmp))
-            return tmp;
-        ++iter;
-    }
 }
 
 void cbEditor::CreateEditor()
@@ -851,137 +811,108 @@ wxString cbEditor::GetLineIndentString(int line)
     return indent;
 }
 
-void cbEditor::DisplayContextMenu(const wxPoint& position,bool noeditor)
+// Creates a submenu for a Context Menu based on the submenu's specific Id
+wxMenu* cbEditor::CreateContextSubMenu(long id)
 {
-	// noeditor: 
-	// True if context menu belongs to open files tree;
-	// False if belongs to cbEditor 
-	
-	// build menu
-	wxMenu* popup = new wxMenu;
-    wxMenu* switchto = 0; // new wxMenu;
-    wxMenu* insert = 0; // new wxMenu;
-	wxMenu* bookmarks = 0; // bookmarks submenu
-	wxMenu* folding = 0; // folding submenu
-
-    if(!noeditor)
+    wxMenu* menu = 0;
+    if(id == idInsert)
     {
-        switchto = new wxMenu;
-        insert = new wxMenu;
-        bookmarks = new wxMenu;
-        folding = new wxMenu;
+        menu = new wxMenu;
+        menu->Append(idEmptyMenu, _("Empty"));
+        menu->Enable(idEmptyMenu, false);
     }
-        // create submenu items
-    m_SwitchTo.clear();
-    for (int i = 0; i < EditorMaxSwitchTo && i < Manager::Get()->GetEditorManager()->GetEditorsCount(); ++i)
+    else if(id == idEdit)
     {
-        cbEditor* other = Manager::Get()->GetEditorManager()->GetBuiltinEditor(i);
-        if (!other || other == this)
-            continue;
-        
-        int id = idSwitchFile1+i;
-        m_SwitchTo[id] = other;
+        menu = new wxMenu;
+        menu->Append(idUndo, _("Undo"));
+        menu->Append(idRedo, _("Redo"));
+        menu->AppendSeparator();
+        menu->Append(idCut, _("Cut"));
+        menu->Append(idCopy, _("Copy"));
+        menu->Append(idPaste, _("Paste"));
+        menu->Append(idDelete, _("Delete"));
+        menu->AppendSeparator();
+        menu->Append(idSelectAll, _("Select All"));
+    
+        bool hasSel = m_pControl->GetSelectionEnd() - m_pControl->GetSelectionStart() != 0;
+    
+        menu->Enable(idUndo, m_pControl->CanUndo());
+        menu->Enable(idRedo, m_pControl->CanRedo());
+        menu->Enable(idCut, hasSel);
+        menu->Enable(idCopy, hasSel);
+        menu->Enable(idPaste, m_pControl->CanPaste());
+        menu->Enable(idDelete, hasSel);
+    }
+    else if(id == idBookmarks)
+    {
+        menu = new wxMenu;
+        menu->Append(idBookmarksToggle, _("Toggle bookmark"));
+        menu->Append(idBookmarksPrevious, _("Previous bookmark"));
+        menu->Append(idBookmarksNext, _("Next bookmark"));
+    }
+    else if(id == idFolding)
+    {
+        menu = new wxMenu;
+        menu->Append(idFoldingFoldAll, _("Fold all"));
+        menu->Append(idFoldingUnfoldAll, _("Unfold all"));
+        menu->Append(idFoldingToggleAll, _("Toggle all folds"));
+        menu->AppendSeparator();
+        menu->Append(idFoldingFoldCurrent, _("Fold current block"));
+        menu->Append(idFoldingUnfoldCurrent, _("Unfold current block"));
+        menu->Append(idFoldingToggleCurrent, _("Toggle current block"));
+    }
+    else
+        menu = EditorBase::CreateContextSubMenu(id);
+    
+    return menu;
+}
+
+// Adds menu items to context menu (both before and after loading plugins' items)
+void cbEditor::AddToContextMenu(wxMenu* popup,bool noeditor,bool pluginsdone)
+{
+    if(!pluginsdone)
+    {
+        wxMenu *bookmarks = 0, *folding = 0, *editsubmenu = 0, *insert = 0;
         if(!noeditor)
-            switchto->Append(id, other->GetShortName());
+        {
+            insert = CreateContextSubMenu(idInsert);
+            editsubmenu = CreateContextSubMenu(idEdit);
+            bookmarks = CreateContextSubMenu(idBookmarks);
+            folding = CreateContextSubMenu(idFolding);
+        }
+        if(insert)
+        {
+            popup->Append(idInsert, _("Insert..."), insert);
+            popup->AppendSeparator();
+        }
+        popup->Append(idSwapHeaderSource, _("Swap header/source"));
+        if(!noeditor)
+            popup->AppendSeparator();
 
-//        Connect( id, -1, wxEVT_COMMAND_MENU_SELECTED,
-//                (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-//                &cbEditor::OnContextMenuEntry );
+        if(editsubmenu)
+            popup->Append(idEdit, _("Edit"), editsubmenu);
+        if(bookmarks)
+            popup->Append(idBookmarks, _("Bookmarks"), bookmarks);
+        if(folding)
+            popup->Append(idFolding, _("Folding"), folding);
     }
-    
-    if(!noeditor)
+    else
     {
-        popup->Append(idSwitchTo, _("Switch to..."), switchto);
-
-        insert->Append(idEmptyMenu, _("Empty"));
-        insert->Enable(idEmptyMenu, false);
-        popup->Append(idInsert, _("Insert..."), insert);
-
-        popup->AppendSeparator();
+        if(!noeditor)
+            popup->Append(idConfigureEditor, _("Configure editor"));
+        popup->Append(idProperties, _("Properties"));
         
-        popup->Append(idUndo, _("Undo"));
-        popup->Append(idRedo, _("Redo"));
-        popup->AppendSeparator();
-    
-        popup->Append(idCut, _("Cut"));
-        popup->Append(idCopy, _("Copy"));
-        popup->Append(idPaste, _("Paste"));
-        popup->Append(idDelete, _("Delete"));
-        popup->AppendSeparator();
-    
-        popup->Append(idSelectAll, _("Select All"));
-        popup->AppendSeparator();
-    }
-    
-	popup->Append(idSwapHeaderSource, _("Swap header/source"));
-	
-	if(!noeditor)
-	{
-        bookmarks->Append(idBookmarksToggle, _("Toggle bookmark"));
-        bookmarks->Append(idBookmarksPrevious, _("Previous bookmark"));
-        bookmarks->Append(idBookmarksNext, _("Next bookmark"));
-        folding->Append(idFoldingFoldAll, _("Fold all"));
-        folding->Append(idFoldingUnfoldAll, _("Unfold all"));
-        folding->Append(idFoldingToggleAll, _("Toggle all folds"));
-        folding->AppendSeparator();
-        folding->Append(idFoldingFoldCurrent, _("Fold current block"));
-        folding->Append(idFoldingUnfoldCurrent, _("Unfold current block"));
-        folding->Append(idFoldingToggleCurrent, _("Toggle current block"));
-
-        popup->Append(idBookmarks, _("Bookmarks"), bookmarks);
-        popup->Append(idFolding, _("Folding"), folding);
-    }
-
-	// ask other plugins if they need to add any entries in this menu...
-	Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtEditorManager, popup, m_Filename);
-
-	// add more options here
-	popup->AppendSeparator();
-
-    if (GetModified())
-        popup->Append(idSaveMe, _("Save"));
-    popup->Append(idSaveAll, _("Save all"));
-
-	popup->AppendSeparator();
-
-	popup->Append(idCloseMe, _("Close"));
-    popup->Append(idCloseAll, _("Close all"));
-    popup->Append(idCloseAllOthers, _("Close all others"));
-	popup->AppendSeparator();
-
-    if(!noeditor)
-        popup->Append(idConfigureEditor, _("Configure editor"));
-	popup->Append(idProperties, _("Properties"));
-	
-	// enable/disable some items, based on state
-	bool hasSel = m_pControl->GetSelectionEnd() - m_pControl->GetSelectionStart() != 0;
-    bool hasOthers = m_SwitchTo.size() != 0;
-
-	if(!noeditor)
-	{
-        popup->Enable(idSwitchTo, hasOthers);
-        popup->Enable(idUndo, m_pControl->CanUndo());
-        popup->Enable(idRedo, m_pControl->CanRedo());
-        popup->Enable(idCut, hasSel);
-        popup->Enable(idCopy, hasSel);
-        popup->Enable(idPaste, m_pControl->CanPaste());
-        popup->Enable(idDelete, hasSel);
-    }    
-	popup->Enable(idCloseAll, hasOthers);
-	popup->Enable(idCloseAllOthers, hasOthers);
-
-	if(!noeditor)
-	{
         // remove "Insert/Empty" if more than one entry
-        if (insert->GetMenuItemCount() > 1)
-            insert->Delete(idEmptyMenu);
+        wxMenu* insert = 0;
+        wxMenuItem* insertitem = popup->FindItem(idInsert);
+        if(insertitem)
+            insert = insertitem->GetSubMenu();
+        if(insert)
+        {
+            if (insert->GetMenuItemCount() > 1)
+                insert->Delete(idEmptyMenu);
+        }
     }
-
-	// display menu
-	wxPoint pos = ScreenToClient(position);
-	PopupMenu(popup, pos.x, pos.y);
-	
- 	delete popup;
 }
 
 void cbEditor::Print(bool selectionOnly, PrintColorMode pcm)
@@ -1058,30 +989,12 @@ void cbEditor::OnContextMenuEntry(wxCommandEvent& event)
 		UnfoldBlockFromLine();
 	else if (id == idFoldingToggleCurrent)
 		ToggleFoldBlockFromLine();
-	else if (id == idCloseMe)
-		Manager::Get()->GetEditorManager()->Close(this);
-	else if (id == idCloseAll)
-		Manager::Get()->GetEditorManager()->CloseAll();
-	else if (id == idCloseAllOthers)
-		Manager::Get()->GetEditorManager()->CloseAllExcept(this);
-	else if (id == idSaveMe)
-        Save();
-    else if (id == idSaveAll)
-        Manager::Get()->GetEditorManager()->SaveAll();
 	else if (id == idConfigureEditor)
 		Manager::Get()->GetEditorManager()->Configure();
 	else if (id == idProperties)
 	{
         if (m_pProjectFile)
             m_pProjectFile->ShowOptions(this);
-    }
-    else if (id >= idSwitchFile1 && id <= idSwitchFileMax)
-    {
-        // "Switch to..." item
-        cbEditor* ed = m_SwitchTo[id];
-        if (ed)
-            Manager::Get()->GetEditorManager()->SetActiveEditor(ed);
-        m_SwitchTo.clear();
     }
     else
         event.Skip();

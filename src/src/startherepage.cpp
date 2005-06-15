@@ -1,4 +1,3 @@
-#include "startherepage.h"
 #include <wx/wxhtml.h>
 #include <wx/intl.h>
 #include <wx/utils.h>
@@ -10,6 +9,7 @@
 #include <pluginmanager.h>
 #include <editormanager.h>
 #include <configmanager.h>
+#include "startherepage.h"
 
 wxString g_StartHereTitle = _("Start here");
 int idStartHerePageLink = wxNewId();

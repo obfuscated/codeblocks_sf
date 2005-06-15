@@ -26,8 +26,6 @@ class ProjectFile;
 class EditorColorSet;
 class wxNotebook;
 
-WX_DECLARE_HASH_MAP(int, cbEditor*, wxIntegerHash, wxIntegerEqual, SwitchToMap);
-
 class cbStyledTextCtrl : public wxStyledTextCtrl
 {
 	public:
@@ -83,16 +81,8 @@ class DLLIMPORT cbEditor : public EditorBase
 		  * tab text, while for MDI interface it sets the MDI window title...
 		  */
 		void SetEditorTitle(const wxString& title);
-		/** <b>What is it doing here?</b> */
-		void SetFilename(const wxString& x){ m_Filename = x; }
-		/** Returns the editor's filename */
-		const wxString& GetFilename(){ return m_Filename; }
-		/** Returns the editor's short name. It is the name displayed on the 
-		  * editor's tab...
-		  */
-		const wxString& GetShortName(){ return m_Shortname; }
 		/** Returns true if editor is modified, false otherwise */
-		bool GetModified(){ return m_Modified || m_pControl->GetModify(); }
+		bool GetModified();
 		/** Set the editor's modification state to \c modified. */
 		void SetModified(bool modified = true);
 		/** Set the ProjectFile pointer associated with this editor. All editors
@@ -159,8 +149,6 @@ class DLLIMPORT cbEditor : public EditorBase
 		void SetColorSet(EditorColorSet* theme);
 		/** Highlights the brace pair (one of the braces must be under the cursor) */
 		void HighlightBraces();
-		/** Displays the editor's context menu (usually invoked by the user right-clicking in the editor) */
-		void DisplayContextMenu(const wxPoint& position,bool noeditor = false);
         /** Returns the specified line's (0-based) indentation (whitespace) in spaces. If line is -1, it uses the current line */
         int GetLineIndentInSpaces(int line = -1);
         /** Returns the specified line's (0-based) indentation (whitespace) string. If line is -1, it uses the current line */
@@ -192,6 +180,10 @@ class DLLIMPORT cbEditor : public EditorBase
 		void DoIndent(); /// Indents current line/block
 		void DoUnIndent(); /// UnIndents current line/block
 
+        // misc. functions
+        virtual wxMenu* CreateContextSubMenu(long id);
+        virtual void AddToContextMenu(wxMenu* popup,bool noeditor,bool pluginsdone);
+
     private:
         // functions
 		void DoFoldAll(int fold); // 0=unfold, 1=fold, 2=toggle
@@ -200,7 +192,6 @@ class DLLIMPORT cbEditor : public EditorBase
         void CreateEditor();
         void SetEditorStyle();
         bool Open();
-        wxString CreateUniqueFilename();
         void DoAskForCodeCompletion(); // relevant to code-completion plugins
 		bool LineHasMarker(int marker, int line = -1);
 		wxColour GetOptionColour(const wxString& option, const wxColour _default);
@@ -224,15 +215,12 @@ class DLLIMPORT cbEditor : public EditorBase
         bool m_IsOK;
         cbStyledTextCtrl* m_pControl;
         int m_ID;
-		wxString m_Filename;
-		wxString m_Shortname;
 		bool m_Modified;
 		int m_Index;
         wxTimer m_timerWait;
 		ProjectFile* m_pProjectFile;
 		EditorColorSet* m_pTheme;
 		short int m_ActiveCalltipsNest;
-        SwitchToMap m_SwitchTo;
         wxDateTime m_LastModified; // to check if the file was modified outside the editor
 };
 
