@@ -459,6 +459,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     wxArrayString ret;
 
     MakefileGenerator mg(m_pCompilerPlugin, m_pProject, "", 0); // don't worry! we just need a couple of utility funcs from it
+    wxFileName out = UnixFilename(target->GetOutputFilename());
 
     wxString output = target->GetOutputFilename();
     wxString linkfiles;
@@ -467,6 +468,8 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     time_t outputtime;
     depsTimeStamp(output.c_str(), &outputtime);
     if (!outputtime)
+        force = true;
+    if (AreExternalDepsOutdated(out.GetFullPath(), target->GetExternalDeps()))
         force = true;
 
     // get all the linkable objects for the target
@@ -495,7 +498,6 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
         return ret;
 
     // create output dir
-    wxFileName out = UnixFilename(target->GetOutputFilename());
     out.MakeAbsolute(m_pProject->GetBasePath());
     wxString dstname = out.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
     if (!dstname.IsEmpty() && !wxDirExists(dstname))
@@ -605,6 +607,38 @@ wxArrayString DirectCommands::GetTargetCleanCommands(ProjectBuildTarget* target,
     }
 
     return ret;
+}
+
+/** external deps are manualy set by the user
+  * e.g. a static library linked to the project is an external dep (if set as such by the user)
+  * so that a re-linking is forced if the static lib is updated
+  */
+bool DirectCommands::AreExternalDepsOutdated(const wxString& buildOutput, const wxString& externalDeps)
+{
+    // array is separated by ;
+    wxArrayString deps = GetArrayFromString(externalDeps, ";");
+    for (size_t i = 0; i < deps.GetCount(); ++i)
+    {
+        if (deps[i].IsEmpty())
+            continue;
+
+        time_t timeSrc;
+        depsTimeStamp(deps[i].c_str(), &timeSrc);
+        // if external dep doesn't exist, no need to relink
+        if (!timeSrc)
+            return false;
+
+        time_t timeExe;
+        depsTimeStamp(buildOutput.c_str(), &timeExe);
+        // if build output doesn't exist, relink
+        if (!timeExe)
+            return false;
+        
+        // if external dep is newer than build output, relink
+        if (timeSrc > timeExe)
+            return true;
+    }
+    return false; // no force relink
 }
 
 bool DirectCommands::IsObjectOutdated(const pfDetails& pfd)
