@@ -20,7 +20,6 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent)
 	XRCCTRL(*this, "rbAppStart", wxRadioBox)->SetSelection(ConfigManager::Get()->Read("/environment/blank_workspace", (long int)0));
 	XRCCTRL(*this, "rbProjectOpen", wxRadioBox)->SetSelection(ConfigManager::Get()->Read("/project_manager/open_files", (long int)1));
 	XRCCTRL(*this, "rbToolbarSize", wxRadioBox)->SetSelection(ConfigManager::Get()->Read("/environment/toolbar_size", (long int)0));
-	XRCCTRL(*this, "rbEditorInterface", wxRadioBox)->Enable(false); // not implemented
 	XRCCTRL(*this, "chkAutoHideMessages", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/message_manager/auto_hide", 0L));
 	XRCCTRL(*this, "chkShowStartPage", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/environment/start_here_page", 1));
 }
