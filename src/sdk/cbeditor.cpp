@@ -41,6 +41,38 @@
 #include "cbplugin.h"
 #include "cbeditorprintout.h"
 
+/* This struct holds private data for the cbEditor class.
+ * It's a paradigm to avoid rebuilding the entire project (as cbEditor is a basic dependency)
+ * for just adding a private var or method.
+ * What happens is that we 've declared a cbEditorInternalData* private member in cbEditor
+ * and define it in the .cpp file (here). Effectively, this means that we can now add/remove
+ * elements from cbEditorInternalData without needing to rebuild the project :)
+ * The cbEditor::m_pData is the variable to use in code. It's the very first thing
+ * constructed and the very last destructed.
+ *
+ * So, if we want to add a new private member in cbEditor, we add it here instead
+ * and access it with m_pData->
+ * e.g. m_pData->lastPosForCodeCompletion
+ * and of course you can add member functions here ;)
+ *
+ * cbEditorInternalData also contains a pointer to the owner cbEditor (named m_pOwner).
+ * Using m_pOwner the struct's member functions can access cbEditor functions
+ * (even private ones - it's a friend).
+ *
+ * The same logic should be used all around the project's classes, gradually.
+ */
+struct cbEditorInternalData
+{
+    cbEditorInternalData(cbEditor* owner)
+        : m_pOwner(owner),
+        lastPosForCodeCompletion(0)
+    {}
+    cbEditor* m_pOwner;
+    // add member vars/funcs below
+    int lastPosForCodeCompletion;
+};
+////////////////////////////////////////////////////////////////////////////////
+
 BEGIN_EVENT_TABLE(cbStyledTextCtrl, wxStyledTextCtrl)
 	EVT_CONTEXT_MENU(cbStyledTextCtrl::OnContextMenu)
 END_EVENT_TABLE()
@@ -128,6 +160,7 @@ cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColorSet* t
 {
     // first thing to do!
     // if we add more constructors in the future, don't forget to set this!
+    m_pData = new cbEditorInternalData(this);
     m_IsBuiltinEditor = true;
 
     m_timerWait.SetOwner(this);
@@ -161,6 +194,7 @@ cbEditor::~cbEditor()
         m_pControl->Destroy();
         m_pControl = 0;
 	}
+	delete m_pData;
 }
 
 void cbEditor::NotifyPlugins(wxEventType type, int intArg, const wxString& strArg, int xArg, int yArg)
@@ -1098,7 +1132,10 @@ void cbEditor::OnEditorCharAdded(wxStyledTextEvent& event)
 		if (timerDelay == 0)
 			DoAskForCodeCompletion();
 		else
+		{
+            m_pData->lastPosForCodeCompletion = pos;
 			m_timerWait.Start(timerDelay);
+        }
     }
 }
 
@@ -1121,7 +1158,9 @@ void cbEditor::OnUserListSelection(wxStyledTextEvent& event)
 
 void cbEditor::OnTimer(wxTimerEvent& event)
 {
-    DoAskForCodeCompletion();
+    // ask for code-completion *only* if the editor is still after the "." or "->" operator
+    if (m_pControl->GetCurrentPos() == m_pData->lastPosForCodeCompletion)
+        DoAskForCodeCompletion();
 }
 
 void cbEditor::OnClose(wxCloseEvent& event)

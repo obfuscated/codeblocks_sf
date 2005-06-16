@@ -20,6 +20,7 @@
 #include "printing_types.h"
 
 // forward decls
+struct cbEditorInternalData; // this is the private data struct used by the editor.
 class cbEditor;
 class cbStyledTextCtrl;
 class ProjectFile;
@@ -222,6 +223,12 @@ class DLLIMPORT cbEditor : public EditorBase
 		EditorColorSet* m_pTheme;
 		short int m_ActiveCalltipsNest;
         wxDateTime m_LastModified; // to check if the file was modified outside the editor
+
+        // DO NOT ADD ANY MORE VARIABLES HERE!
+        // ADD THEM IN cbEditorInternalData INSTEAD!
+
+        friend struct cbEditorInternalData; // allow cbEditorInternalData to access cbEditor
+        cbEditorInternalData* m_pData;
 };
 
 #endif // EDITOR_H
