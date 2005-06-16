@@ -11,11 +11,13 @@
 // New Feature: Opened Files tree in Projects tab
 #define USE_OPENFILES_TREE
 
-#include "editorbase.h"
+// #include "editorbase.h"
 #include "cbproject.h"
 #include "printing_types.h"
 
 extern int ID_EditorManager;
+
+class EditorBase;
 
 WX_DECLARE_LIST(EditorBase, EditorsList);
 WX_DECLARE_STRING_HASH_MAP(wxString, AutoCompleteMap);
