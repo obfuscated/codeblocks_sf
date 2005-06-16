@@ -414,10 +414,12 @@ It is duplicated in CreateMenu() */
             treeprops->Append(idMenuPriorProject, _("Activate prior project\tAlt-F5"), _("Activate prior project in open projects list"));
             treeprops->Append(idMenuNextProject, _("Activate next project\tAlt-F6"), _("Activate next project in open projects list"));
             treeprops->AppendSeparator();
-            treeprops->AppendCheckItem(idMenuViewCategorize, _("Categorize by file types"));
-            treeprops->AppendCheckItem(idMenuViewUseFolders, _("Display folders as on disk"));
-            treeprops->Check(idMenuViewCategorize, ConfigManager::Get()->Read("/project_manager/categorize_tree", 1));
-            treeprops->Check(idMenuViewUseFolders, ConfigManager::Get()->Read("/project_manager/use_folders", 1));
+/* NOTE (mandrav#1#): If this is moved in a new function,\
+it differs from the block currently in CreateMenu() by the following two IDs */
+            treeprops->AppendCheckItem(idMenuViewCategorizePopup, _("Categorize by file types"));
+            treeprops->AppendCheckItem(idMenuViewUseFoldersPopup, _("Display folders as on disk"));
+            treeprops->Check(idMenuViewCategorizePopup, ConfigManager::Get()->Read("/project_manager/categorize_tree", 1));
+            treeprops->Check(idMenuViewUseFoldersPopup, ConfigManager::Get()->Read("/project_manager/use_folders", 1));
             treeprops->Append(idMenuViewFileMasks, _("Edit file types && categories..."));
 
             menu.Append(idMenuProjectTreeProps, _("Project tree"), treeprops);
