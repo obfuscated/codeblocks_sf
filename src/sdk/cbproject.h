@@ -6,6 +6,7 @@
 #include <wx/treectrl.h>
 
 #include "settings.h"
+#include "openfilestree.h"
 #include "compiletargetbase.h"
 #include "projectbuildtarget.h"
 
@@ -18,24 +19,6 @@ class FilesGroupsAndMasks;
 WX_DEFINE_ARRAY(ProjectBuildTarget*, BuildTargets);
 // hashmap for fast searches in cbProject::GetFileByFilename()
 WX_DECLARE_STRING_HASH_MAP(ProjectFile*, ProjectFiles);
-
-/* New class: MiscTreeItemData.
- * This class allows a TreeData to be created specifying 
- * which Event Handler should process its related events.
- */
-
-class DLLIMPORT MiscTreeItemData : public wxTreeItemData
-{
-    public:
-        MiscTreeItemData():m_owner(0L) {}
-        wxEvtHandler *GetOwner() { if(!this) return 0L;return m_owner; }
-        static bool OwnerCheck(wxTreeEvent& event,wxTreeCtrl *tree,wxEvtHandler *handler,bool strict=false);
-        virtual ~MiscTreeItemData() { m_owner=0L; }
-    protected:    
-        void SetOwner(wxEvtHandler *owner) { if(!this) return; m_owner=owner; }
-    private:
-        wxEvtHandler *m_owner;
-};
 
 class DLLIMPORT FileTreeData : public MiscTreeItemData
 {

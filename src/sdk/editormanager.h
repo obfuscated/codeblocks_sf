@@ -8,11 +8,10 @@
 #include "settings.h"
 #include "sanitycheck.h"
 
-// New Feature: Opened Files tree in Projects tab
-#define USE_OPENFILES_TREE
+#include "openfilestree.h"
 
 // #include "editorbase.h"
-#include "cbproject.h"
+// #include "cbproject.h"
 #include "printing_types.h"
 
 extern int ID_EditorManager;
@@ -28,24 +27,10 @@ class wxNotebookEvent;
 class wxMenuBar;
 class EditorColorSet;
 class cbProject;
+class ProjectFile;
 class cbEditor;
 class wxStyledTextCtrl;
 class SimpleListLog;
-
-#ifdef USE_OPENFILES_TREE
-class MiscTreeItemData;
-
-class DLLIMPORT EditorTreeData : public MiscTreeItemData
-{
-    public:
-        EditorTreeData(wxEvtHandler *owner,const wxString &fullname)
-        { SetOwner(owner);m_fullname = fullname; }
-        wxString GetFullName(){ return m_fullname; }
-        void SetFullName(const wxString &fullname){ m_fullname = fullname; }
-    private:
-        wxString m_fullname;
-};
-#endif
 
 struct cbFindReplaceData
 {
