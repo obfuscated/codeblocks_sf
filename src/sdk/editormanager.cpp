@@ -1327,10 +1327,19 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
         }
     }
     delete control; // done with it
-    
-    Manager::Get()->GetMessageManager()->SwitchTo(m_SearchLogIndex);
-    Manager::Get()->GetMessageManager()->Open();
-    reinterpret_cast<SearchResultsLog*>(m_pSearchLog)->FocusEntry(0);
+
+    if (count > 0)
+    {
+        Manager::Get()->GetMessageManager()->SwitchTo(m_SearchLogIndex);
+        Manager::Get()->GetMessageManager()->Open();
+        reinterpret_cast<SearchResultsLog*>(m_pSearchLog)->FocusEntry(0);
+    }
+    else
+    {
+        wxString msg;
+        msg.Printf(_("Not found: %s"), data->findText.c_str());
+        wxMessageBox(msg, _("Result"), wxICON_INFORMATION);
+    }
 
     return count;
 }

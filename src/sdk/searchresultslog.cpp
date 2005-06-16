@@ -26,7 +26,7 @@ SearchResultsLog::~SearchResultsLog()
 
 void SearchResultsLog::FocusEntry(size_t index)
 {
-    if (index < (size_t)m_pList->GetItemCount() - 1)
+    if (index >= 0 && index < (size_t)m_pList->GetItemCount())
     {
         m_pList->SetItemState(index, wxLIST_STATE_FOCUSED | wxLIST_STATE_SELECTED, wxLIST_STATE_FOCUSED | wxLIST_STATE_SELECTED);
         m_pList->EnsureVisible(index);
@@ -45,6 +45,8 @@ void SearchResultsLog::SyncEditor(int selIndex)
     int line = atol(li.m_text.c_str());
 
     cbEditor* ed = Manager::Get()->GetEditorManager()->Open(file);
+    if (!ed)
+        return;
     // make sure we can see some context...
     ed->GetControl()->GotoLine(line - 10);
     ed->GetControl()->GotoLine(line + 10);
