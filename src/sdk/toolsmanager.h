@@ -6,8 +6,9 @@
 #include "menuitemsmanager.h"
 #include "sanitycheck.h"
 
-struct Tool
+class Tool
 {
+    public:
 	Tool(){ menuId = -1; }
 	wxString name;
 	wxString command;
