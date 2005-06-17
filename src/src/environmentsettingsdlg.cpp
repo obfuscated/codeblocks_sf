@@ -14,6 +14,7 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent)
 	// tab "General"
 	XRCCTRL(*this, "chkShowSplash", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/environment/show_splash", 1));
 	XRCCTRL(*this, "chkDDE", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/environment/use_dde", 1));
+	XRCCTRL(*this, "chkSingleInstance", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/environment/single_instance", 1));
 	XRCCTRL(*this, "chkAssociations", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/environment/check_associations", 1));
 	XRCCTRL(*this, "chkModifiedFiles", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/environment/check_modified_files", 1));
 	XRCCTRL(*this, "chkDebugLog", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/message_manager/has_debug_log", (long int)0));
@@ -36,6 +37,7 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
 		// tab "General"
 		ConfigManager::Get()->Write("/environment/show_splash", XRCCTRL(*this, "chkShowSplash", wxCheckBox)->GetValue());
 		ConfigManager::Get()->Write("/environment/use_dde", XRCCTRL(*this, "chkDDE", wxCheckBox)->GetValue());
+		ConfigManager::Get()->Write("/environment/single_instance", XRCCTRL(*this, "chkSingleInstance", wxCheckBox)->GetValue());
 		ConfigManager::Get()->Write("/environment/check_associations", XRCCTRL(*this, "chkAssociations", wxCheckBox)->GetValue());
 		ConfigManager::Get()->Write("/environment/check_modified_files", XRCCTRL(*this, "chkModifiedFiles", wxCheckBox)->GetValue());
         ConfigManager::Get()->Write("/message_manager/has_debug_log", XRCCTRL(*this, "chkDebugLog", wxCheckBox)->GetValue());

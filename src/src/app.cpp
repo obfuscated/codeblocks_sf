@@ -211,18 +211,23 @@ void CodeBlocksApp::CheckVersion()
 bool CodeBlocksApp::OnInit()
 {
     m_pSplash = 0;
-//    wxHandleFatalExceptions(true);
-
-    const wxString name = wxString::Format("Code::Blocks-%s", wxGetUserId().c_str());
-    m_pSingleInstance = new wxSingleInstanceChecker(name);
-    if (m_pSingleInstance->IsAnotherRunning())
-    {
-        wxLogError(_("Another program instance is already running, aborting."));
-        return false;
-    }
+    wxHandleFatalExceptions(true);
 
     if(!LoadConfig())
         return false;
+
+	m_pSingleInstance = 0;
+    if (ConfigManager::Get()->Read("/environment/single_instance", 1))
+    {
+        const wxString name = wxString::Format("Code::Blocks-%s", wxGetUserId().c_str());
+        m_pSingleInstance = new wxSingleInstanceChecker(name);
+        if (m_pSingleInstance->IsAnotherRunning())
+        {
+            wxLogError(_("Another program instance is already running, aborting."));
+            return false;
+        }
+    }
+
     InitAssociations();
     InitDebugConsole();
     InitExceptionHandler();
@@ -253,7 +258,8 @@ int CodeBlocksApp::OnExit()
     if (m_ExceptionHandlerLib)
         FreeLibrary(m_ExceptionHandlerLib);
 #endif
-    delete m_pSingleInstance;
+    if (m_pSingleInstance)
+        delete m_pSingleInstance;
     return 0;
 }
 

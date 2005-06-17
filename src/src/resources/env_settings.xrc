@@ -30,6 +30,14 @@
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
+                  <object class="wxCheckBox" name="chkSingleInstance">
+                    <label>Allow only one running instance (needs application restart to take effect)</label>
+                    <checked>1</checked>
+                  </object>
+                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
                   <object class="wxCheckBox" name="chkAssociations">
                     <label>Check &amp;&amp; set file associations (Windows only)</label>
                     <checked>1</checked>
