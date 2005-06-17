@@ -321,9 +321,9 @@ void CompilerOW::Reset()
         = wxT("$lib_linker $static_output $link_objects");
 
     m_RegExes.Clear();
-    m_RegExes.Add(RegExStruct(_("Note"), cltError, wxT("([A-Za-z0-9_:/\\.]+)\\(([0-9]+)\\): Note! (.+)"), 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, wxT("([A-Za-z0-9_:/\\.]+)\\(([0-9]+)\\): Error! (.+)"), 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Compiler warning"), cltWarning, wxT("([A-Za-z0-9_:/\\.]+)\\(([0-9]+)\\): Warning! (.+)"), 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Note"), cltError, wxT("([A-Za-z0-9_:/\\.-]+)\\(([0-9]+)\\): Note! (.+)"), 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, wxT("([A-Za-z0-9_:/\\.-]+)\\(([0-9]+)\\): Error! (.+)"), 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Compiler warning"), cltWarning, wxT("([A-Za-z0-9_:/\\.-]+)\\(([0-9]+)\\): Warning! (.+)"), 3, 1, 2));
 
     m_CompilerOptions.Clear();
     m_LinkerOptions.Clear();

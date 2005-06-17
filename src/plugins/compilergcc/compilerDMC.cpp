@@ -153,8 +153,8 @@ void CompilerDMC::Reset()
     m_Commands[(int)ctLinkStaticCmd] = "$lib_linker $link_options $link_objects, $static_output, , $libs, , $link_resobjects";
 
     m_RegExes.Clear();
-    m_RegExes.Add(RegExStruct(_("Linker error"), cltError, "([ \tA-Za-z0-9_:\\-\\+/\\.\\(\\)]*)[ \t]+:[ \t]+(.*error LNK[0-9]+.*)", 2, 1));
-    m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, "([ \tA-Za-z0-9_:\\-\\+/\\.]+)\\(([0-9]+)\\) :[ \t](.*)", 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Linker error"), cltError, "([ \tA-Za-z0-9_:\\-\\+/\\.\\(\\)-]*)[ \t]+:[ \t]+(.*error LNK[0-9]+.*)", 2, 1));
+    m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, "([ \tA-Za-z0-9_:\\-\\+/\\.-]+)\\(([0-9]+)\\) :[ \t](.*)", 3, 1, 2));
     m_RegExes.Add(RegExStruct(_("Fatal error"), cltError, "Fatal error:[ \t](.*)", 1));
 
     m_CompilerOptions.Clear();

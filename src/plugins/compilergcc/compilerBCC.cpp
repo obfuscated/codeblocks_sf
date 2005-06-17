@@ -63,8 +63,8 @@ void CompilerBCC::Reset()
     m_Commands[(int)ctLinkStaticCmd] = "$lib_linker /C $static_output +$link_objects,$def_output";
 
     m_RegExes.Clear();
-    m_RegExes.Add(RegExStruct(_("Compiler warning"), cltWarning, "(^Warning[ \t]W[0-9]+)[ \t]([A-Za-z0-9_:/\\.]+)[ \t]([0-9]+)(:[ \t].*)", 1, 2, 3, 4));
-    m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, "(^Error[ \t]E[0-9]+)[ \t]([A-Za-z0-9_:/\\.]+)[ \t]([0-9]+)(:[ \t].*)", 1, 2, 3, 4));
+    m_RegExes.Add(RegExStruct(_("Compiler warning"), cltWarning, "(^Warning[ \t]W[0-9]+)[ \t]([A-Za-z0-9_:/\\.-]+)[ \t]([0-9]+)(:[ \t].*)", 1, 2, 3, 4));
+    m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, "(^Error[ \t]E[0-9]+)[ \t]([A-Za-z0-9_:/\\.-]+)[ \t]([0-9]+)(:[ \t].*)", 1, 2, 3, 4));
     m_RegExes.Add(RegExStruct(_("Unknown error"), cltError, "(^Error[ \t]+E[0-9]+:.*)", 1));
     m_RegExes.Add(RegExStruct(_("Fatal error"), cltError, "Fatal:[ \t]+(.*)", 1));
 

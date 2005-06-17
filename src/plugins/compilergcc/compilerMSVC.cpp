@@ -94,10 +94,10 @@ void CompilerMSVC::Reset()
     m_Commands[(int)ctLinkStaticCmd] = "$lib_linker /lib /nologo $libdirs /out:$static_output $libs $link_objects $link_options";
 
     m_RegExes.Clear();
-    m_RegExes.Add(RegExStruct(_("Compiler warning"), cltWarning, "([ \tA-Za-z0-9_:\\-\\+/\\.]+)\\(([0-9]+)\\) :[ \t]([Ww]arning[ \t].*)", 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, "([ \tA-Za-z0-9_:\\-\\+/\\.]+)\\(([0-9]+)\\) :[ \t](.*[Ee]rror[ \t].*)", 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Linker warning"), cltWarning, "([ \tA-Za-z0-9_:\\-\\+/\\.\\(\\)]*)[ \t]+:[ \t]+(.*warning LNK[0-9]+.*)", 2, 1, 0));
-    m_RegExes.Add(RegExStruct(_("Linker error"), cltError, "([ \tA-Za-z0-9_:\\-\\+/\\.\\(\\)]*)[ \t]+:[ \t]+(.*error LNK[0-9]+.*)", 2, 1, 0));
+    m_RegExes.Add(RegExStruct(_("Compiler warning"), cltWarning, "([ \tA-Za-z0-9_:\\-\\+/\\.-]+)\\(([0-9]+)\\) :[ \t]([Ww]arning[ \t].*)", 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, "([ \tA-Za-z0-9_:\\-\\+/\\.-]+)\\(([0-9]+)\\) :[ \t](.*[Ee]rror[ \t].*)", 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Linker warning"), cltWarning, "([ \tA-Za-z0-9_:\\-\\+/\\.\\(\\)-]*)[ \t]+:[ \t]+(.*warning LNK[0-9]+.*)", 2, 1, 0));
+    m_RegExes.Add(RegExStruct(_("Linker error"), cltError, "([ \tA-Za-z0-9_:\\-\\+/\\.\\(\\)-]*)[ \t]+:[ \t]+(.*error LNK[0-9]+.*)", 2, 1, 0));
 
     m_CompilerOptions.Clear();
     m_LinkerOptions.Clear();
