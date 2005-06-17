@@ -125,10 +125,10 @@ int DefaultMimeHandler::Configure()
 
 bool DefaultMimeHandler::CanHandleFile(const wxString& filename)
 {
-    // always return true (except if no extension - that is how we distinguish it)
+    // always return true
     // even if we don't know how to handle the file,
     // we 'll ask the user what to do when we are requested to open it...
-	return !wxFileName(filename).GetExt().IsEmpty();
+	return true;
 }
 
 int DefaultMimeHandler::OpenFile(const wxString& filename)
@@ -150,7 +150,10 @@ int DefaultMimeHandler::OpenFile(const wxString& filename)
         dlg.SetSelection(0);
         if (dlg.ShowModal() == wxID_OK)
         {
-            wxString wild = "*." + wxFileName(filename).GetExt().Lower();
+            wxString ext = wxFileName(filename).GetExt().Lower();
+            wxString wild = ext.IsEmpty()
+                            ? wxFileName(filename).GetName().Lower()
+                            : "*." + ext;
             switch (dlg.GetSelection())
             {
                 case 0: // choose external program
@@ -186,7 +189,7 @@ int DefaultMimeHandler::OpenFile(const wxString& filename)
 
 cbMimeType* DefaultMimeHandler::FindMimeTypeFor(const wxString& filename)
 {
-    wxString tmp = filename.Lower();
+    wxString tmp = wxFileName(filename).GetFullName().Lower();
 
     // look for a registered type
     for (size_t i = 0; i < m_MimeTypes.GetCount(); ++i)
