@@ -57,7 +57,24 @@ bool DevCppLoader::Open(const wxString& filename)
     {
         if (array[i].StartsWith("-l"))
         {
-            m_pProject->AddLinkLib(array[i].Right(array[i].Length() - 2));
+            wxString tmplib = array[i].Right(array[i].Length() - 2);
+            // there might be multiple libs defined in a single line, like:
+            // -lmingw32 -lscrnsave -lcomctl32 -lpng -lz -mwindows
+            // we got to split by "-l" too...
+            if (tmplib.Find(' ') != wxNOT_FOUND)
+            {
+                wxArrayString tmparr = GetArrayFromString(array[i], " ");
+                while (tmparr.GetCount())
+                {
+                    if (tmparr[0].StartsWith("-l"))
+                        m_pProject->AddLinkLib(tmparr[0].Right(tmparr[0].Length() - 2));
+                    else
+                        array.Add(tmparr[0]);
+                    tmparr.RemoveAt(0, 1);
+                }
+            }
+            else
+                m_pProject->AddLinkLib(tmplib);
             array.RemoveAt(i, 1);
         }
         else
@@ -101,6 +118,12 @@ bool DevCppLoader::Open(const wxString& filename)
         dev->Read("Compile", &compile, false);
         dev->Read("CompileCpp", &compileCpp, true);
         dev->Read("Link", &link, true);
+
+        // .dev files set Link=0 for resources which is plain wrong for C::B.
+        // correct this...
+        if (!link && FileTypeOf(tmp) == ftResource)
+            link = true;
+
         ProjectFile* pf = m_pProject->AddFile(0, tmp, compile || compileCpp, link);
         if (pf)
             pf->compilerVar = compileCpp ? "CPP" : "CC";
