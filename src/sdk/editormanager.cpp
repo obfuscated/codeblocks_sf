@@ -1747,9 +1747,12 @@ void EditorManager::OnTreeItemRightClick(wxTreeEvent &event)
     wxString filename=GetTreeItemFilename(event.GetItem());
     if(filename.IsEmpty())
         return;
-    cbEditor* ed = GetBuiltinEditor(filename);
-    wxPoint pt = m_pTree->ClientToScreen(event.GetPoint());
-    ed->DisplayContextMenu(pt,true);
+    EditorBase* ed = GetEditor(filename);
+    if(ed)
+    {
+        wxPoint pt = m_pTree->ClientToScreen(event.GetPoint());
+        ed->DisplayContextMenu(pt,true);
+    }
 }
 
 void EditorManager::OnUpdateUI(wxUpdateUIEvent& event)
