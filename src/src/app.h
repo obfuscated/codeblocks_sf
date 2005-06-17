@@ -29,6 +29,7 @@
 
 #include <wx/stc/stc.h>
 #include <wx/splash.h>
+#include <wx/snglinst.h>
 #include "../sdk/manager.h"
 #include "main.h"
 
@@ -72,6 +73,7 @@ class CodeBlocksApp : public wxApp
         HINSTANCE m_ExceptionHandlerLib;
 #endif
         wxSplashScreen* m_pSplash;
+		wxSingleInstanceChecker* m_pSingleInstance;
         DECLARE_EVENT_TABLE()
 };
 DECLARE_APP(CodeBlocksApp);
