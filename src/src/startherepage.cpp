@@ -15,7 +15,7 @@ wxString g_StartHereTitle = _("Start here");
 int idStartHerePageLink = wxNewId();
 int idWin = wxNewId();
 
-class DLLIMPORT MyHtmlWin : public wxHtmlWindow
+class MyHtmlWin : public wxHtmlWindow
 {
     public:
         MyHtmlWin(StartHerePage* parent, int id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxHW_SCROLLBAR_AUTO)
