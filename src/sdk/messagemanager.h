@@ -39,7 +39,7 @@ class wxMenuBar;
 /*
  * No description
  */
-class MessageManager : public wxNotebook
+class DLLIMPORT MessageManager : public wxNotebook
 {
 	public:
         typedef short int LockToken;
