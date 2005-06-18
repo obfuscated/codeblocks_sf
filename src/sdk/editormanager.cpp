@@ -613,14 +613,13 @@ bool EditorManager::CloseActive(bool dontsave)
     return Close(GetActiveEditor(),dontsave);
 }
 
-bool EditorManager::QueryClose(EditorBase *editor)
+bool EditorManager::QueryClose(EditorBase *ed)
 {
-    if(!editor) 
+    if(!ed) 
         return true;
-    cbEditor* ed = editor->IsBuiltinEditor() ? (cbEditor*)editor : 0;
-    if (ed && ed->GetModified())
+    if (ed->GetModified())
     {
-// TODO (mandrav#1#): Move this in cbEditor
+// TODO (mandrav#1#): Move this in EditorBase
         wxString msg;
         msg.Printf(_("File %s is modified...\nDo you want to save the changes?"), ed->GetFilename().c_str());
         switch (wxMessageBox(msg, _("Save file"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
@@ -634,7 +633,7 @@ bool EditorManager::QueryClose(EditorBase *editor)
     }
     else
     {
-        return editor->QueryClose();
+        return ed->QueryClose();
     }
     return true;
 }
