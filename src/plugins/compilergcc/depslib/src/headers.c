@@ -40,12 +40,12 @@ LIST *headers1(const char *file)
 	    printf("header scan %s\n", file);
 
 	if (!hdrre)
-		hdrre = regcomp("^[ 	]*#[ 	]*include[ 	]*([<\"])([^\">]*)([\">]).*$");
+		hdrre = my_regcomp("^[ 	]*#[ 	]*include[ 	]*([<\"])([^\">]*)([\">]).*$");
 	re = hdrre;
 
 	while (fgets(buf, sizeof(buf), f))
 	{
-		if (regexec(re, buf) && re->startp[3])
+		if (my_regexec(re, buf) && re->startp[3])
 		{
 			char buf2[MAXSYM];
 
@@ -147,7 +147,7 @@ void headernewest(HEADER *h)
 
 void donehdrs(void)
 {
-	redone(hdrre);
+	my_redone(hdrre);
 	hdrre = 0;
 	hashdone(headerhash);
 	headerhash = 0;

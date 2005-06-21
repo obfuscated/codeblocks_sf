@@ -156,7 +156,7 @@
 #define	UCHARAT(p)	((int)*(p)&CHARBITS)
 #endif
 
-#define	FAIL(m)	{ regerror(m); return(NULL); }
+#define	FAIL(m)	{ my_regerror(m); return(NULL); }
 #define	ISMULT(c)	((c) == '*' || (c) == '+' || (c) == '?')
 
 /*
@@ -212,7 +212,7 @@ STATIC int strcspn();
  * of the structure of the compiled regexp.
  */
 regexp *
-regcomp( const char *exp )
+my_regcomp( const char *exp )
 {
 	register regexp *r;
 	register char *scan;
@@ -791,7 +791,7 @@ STATIC char *regprop();
  - regexec - match a regexp against a string
  */
 int
-regexec(
+my_regexec(
 	register regexp *prog,
 	register const char *string )
 {
@@ -799,13 +799,13 @@ regexec(
 
 	/* Be paranoid... */
 	if (prog == NULL || string == NULL) {
-		regerror("NULL parameter");
+		my_regerror("NULL parameter");
 		return(0);
 	}
 
 	/* Check validity of program. */
 	if (UCHARAT(prog->program) != MAGIC) {
-		regerror("corrupted program");
+		my_regerror("corrupted program");
 		return(0);
 	}
 
@@ -1070,7 +1070,7 @@ regmatch( char *prog )
 			return(1);	/* Success! */
 			break;
 		default:
-			regerror("memory corruption");
+			my_regerror("memory corruption");
 			return(0);
 			break;
 		}
@@ -1082,7 +1082,7 @@ regmatch( char *prog )
 	 * We get here only if there's trouble -- normally "case END" is
 	 * the terminating point.
 	 */
-	regerror("corrupted pointers");
+	my_regerror("corrupted pointers");
 	return(0);
 }
 
@@ -1122,7 +1122,7 @@ regrepeat( char *p )
 		}
 		break;
 	default:		/* Oh dear.  Called inappropriately. */
-		regerror("internal foulup");
+		my_regerror("internal foulup");
 		count = 0;	/* Best compromise. */
 		break;
 	}
@@ -1277,7 +1277,7 @@ regprop( char *op )
 		p = "WORDZ";
 		break;
 	default:
-		regerror("corrupted opcode");
+		my_regerror("corrupted opcode");
 		break;
 	}
 	if (p != NULL)
@@ -1319,14 +1319,14 @@ strcspn(
 #endif
 
 void
-regerror( const char *s )
+my_regerror( const char *s )
 {
 	printf( "re error %s\n", s );
 }
 
 /* TNB */
 void
-redone(regexp *re)
+my_redone(regexp *re)
 {
 	if (re)
 		free((char *) re);

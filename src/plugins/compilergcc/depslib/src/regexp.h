@@ -18,10 +18,10 @@ typedef struct regexp {
 	char program[1];	/* Unwarranted chumminess with compiler. */
 } regexp;
 
-regexp *regcomp( const char *exp );
-int regexec( regexp *prog, const char *string );
-void regerror( const char *s );
-void redone( regexp *prog ); /* TNB */
+regexp *my_regcomp( const char *exp );
+int my_regexec( regexp *prog, const char *string );
+void my_regerror( const char *s );
+void my_redone( regexp *prog ); /* TNB */
 
 /*
  * The first byte of the regexp internal "program" is actually this magic
