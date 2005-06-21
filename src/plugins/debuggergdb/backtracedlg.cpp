@@ -22,11 +22,7 @@ BacktraceDlg::BacktraceDlg(wxWindow* parent, DebuggerGDB* debugger)
 
 	wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL); 
     lst->SetFont(font);
-    lst->InsertColumn(0, _("Nr"), wxLIST_FORMAT_LEFT);
-    lst->InsertColumn(1, _("Address"), wxLIST_FORMAT_LEFT);
-    lst->InsertColumn(2, _("Function"), wxLIST_FORMAT_LEFT);
-    lst->InsertColumn(3, _("File"), wxLIST_FORMAT_LEFT, 128);
-    lst->InsertColumn(4, _("Line"), wxLIST_FORMAT_RIGHT, 64);
+    Clear();
 }
 
 BacktraceDlg::~BacktraceDlg()
@@ -40,6 +36,11 @@ void BacktraceDlg::Clear()
     lst->ClearAll();
 	lst->Freeze();
 	lst->DeleteAllItems();
+    lst->InsertColumn(0, _("Nr"), wxLIST_FORMAT_LEFT);
+    lst->InsertColumn(1, _("Address"), wxLIST_FORMAT_LEFT);
+    lst->InsertColumn(2, _("Function"), wxLIST_FORMAT_LEFT);
+    lst->InsertColumn(3, _("File"), wxLIST_FORMAT_LEFT, 128);
+    lst->InsertColumn(4, _("Line"), wxLIST_FORMAT_RIGHT, 64);
 	lst->Thaw();
 }
 
