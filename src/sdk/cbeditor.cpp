@@ -68,7 +68,47 @@ struct cbEditorInternalData
         lastPosForCodeCompletion(0)
     {}
     cbEditor* m_pOwner;
+
     // add member vars/funcs below
+    
+    // funcs
+    /** Get the last non-whitespace character before position */
+    wxChar GetLastNonWhitespaceChar(int position = -1)
+    {
+        wxStyledTextCtrl* control = m_pOwner->GetControl();
+        if (position == -1)
+            position = control->GetCurrentPos();
+        while (position)
+        {
+            wxChar c = control->GetCharAt(position--);
+            if (c != ' ' && c != '\t' && c != '\n' && c != '\r')
+                return c;
+        }
+        return 0;
+    }
+
+    int FindBlockStart(int position, wxChar blockStart, wxChar blockEnd, bool skipNested = true)
+    {
+        wxStyledTextCtrl* control = m_pOwner->GetControl();
+        int lvl = 0;
+        wxChar b = control->GetCharAt(position);
+        while (b)
+        {
+            if (b == blockEnd)
+                ++lvl;
+            else if (b == blockStart)
+            {
+                if (lvl == 0)
+                    return position;
+                --lvl;
+            }
+            --position;
+            b = control->GetCharAt(position);
+        }
+        return -1;
+    }
+
+    //vars
     int lastPosForCodeCompletion;
 };
 ////////////////////////////////////////////////////////////////////////////////
@@ -238,7 +278,7 @@ void cbEditor::SetProjectFile(ProjectFile* project_file,bool preserve_modified)
 	if (m_pProjectFile == project_file)
 		return; // we 've been here before ;)
 
-	bool wasmodified;
+	bool wasmodified = false;
 	if(preserve_modified)
         wasmodified = GetModified();
 		
@@ -1098,15 +1138,56 @@ void cbEditor::OnEditorCharAdded(wxStyledTextEvent& event)
 	}
 	else if (ch == '\n')
 	{
+        m_pControl->BeginUndoAction();
 		// new-line: adjust indentation
 		bool autoIndent = ConfigManager::Get()->Read("/editor/auto_indent", true);
+		bool smartIndent = ConfigManager::Get()->Read("/editor/smart_indent", true);
 		int currLine = m_pControl->LineFromPosition(pos);
 		if (autoIndent && currLine > 0)
 		{
             wxString indent = GetLineIndentString(currLine - 1);
+            if (smartIndent)
+            {
+                // if the last entered char before newline was an opening curly brace,
+                // increase indentation level (the closing brace is handled in another block)
+                wxChar b = m_pData->GetLastNonWhitespaceChar();
+                if (b == '{')
+                    indent << '\t'; // TODO: decide between spaces/tabs
+            }
 			m_pControl->InsertText(pos, indent);
 			m_pControl->GotoPos(pos + indent.Length());
 		}
+		m_pControl->EndUndoAction();
+	}
+	else if (ch == '}')
+	{
+		bool smartIndent = ConfigManager::Get()->Read("/editor/smart_indent", true);
+		if (smartIndent)
+		{
+            m_pControl->BeginUndoAction();
+            // undo block indentation, if needed
+            wxString str = m_pControl->GetLine(m_pControl->GetCurrentLine());
+            str.Trim(false);
+            str.Trim(true);
+            if (str.Matches(_("}")))
+            {
+                // just the brace here; unindent
+                // find opening brace (skipping nested blocks)
+                int pos = m_pControl->GetCurrentPos() - 2;
+                pos = m_pData->FindBlockStart(pos, '{', '}');
+                if (pos != -1)
+                {
+                    wxString indent = GetLineIndentString(m_pControl->LineFromPosition(pos));
+                    indent << '}';
+                    m_pControl->DelLineLeft();
+                    m_pControl->DelLineRight();
+                    pos = m_pControl->GetCurrentPos();
+                    m_pControl->InsertText(pos, indent);
+                    m_pControl->GotoPos(pos + indent.Length());
+                }
+            }
+            m_pControl->EndUndoAction();
+        }
 	}
 	// we use -2 because the char has already been added and Pos is ahead of it...
 	else if ((ch == '"') || // this and the next one are for #include's completion

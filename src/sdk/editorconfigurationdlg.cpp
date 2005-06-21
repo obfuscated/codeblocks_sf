@@ -85,6 +85,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
 	UpdateSampleFont(false);
 
    	XRCCTRL(*this, "chkAutoIndent", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/editor/auto_indent", true));
+   	XRCCTRL(*this, "chkSmartIndent", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/editor/smart_indent", true));
    	XRCCTRL(*this, "chkUseTab", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/editor/use_tab", 0l));
    	XRCCTRL(*this, "chkShowIndentGuides", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/editor/show_indent_guides", 0l));
    	XRCCTRL(*this, "chkTabIndents", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/editor/tab_indents", 1));
@@ -653,6 +654,7 @@ void EditorConfigurationDlg::OnOK(wxCommandEvent& event)
     ConfigManager::Get()->Write("/editor/font", XRCCTRL(*this, "lblEditorFont", wxStaticText)->GetFont().GetNativeFontInfoDesc());
 
     ConfigManager::Get()->Write("/editor/auto_indent",			XRCCTRL(*this, "chkAutoIndent", wxCheckBox)->GetValue());
+    ConfigManager::Get()->Write("/editor/smart_indent",			XRCCTRL(*this, "chkSmartIndent", wxCheckBox)->GetValue());
     ConfigManager::Get()->Write("/editor/use_tab", 				XRCCTRL(*this, "chkUseTab", wxCheckBox)->GetValue());
     ConfigManager::Get()->Write("/editor/show_indent_guides", 	XRCCTRL(*this, "chkShowIndentGuides", wxCheckBox)->GetValue());
    	ConfigManager::Get()->Write("/editor/tab_indents", 			XRCCTRL(*this, "chkTabIndents", wxCheckBox)->GetValue());
