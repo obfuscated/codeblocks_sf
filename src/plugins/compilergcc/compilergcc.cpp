@@ -1817,8 +1817,18 @@ void CompilerGCC::OnGCCError(CodeBlocksEvent& event)
 void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColor)
 {
     size_t maxErrors = ConfigManager::Get()->Read("/compiler_gcc/max_reported_errors", 50);
-    if (maxErrors > 0 && m_Errors.GetErrorsCount() > maxErrors)
-        return;
+    if (maxErrors > 0)
+    {
+        if (m_Errors.GetErrorsCount() > maxErrors)
+            return;
+        else if (m_Errors.GetErrorsCount() == maxErrors)
+        {
+            // if we reached the max errors count, notify about it
+            m_Errors.AddError(_T(""), 0, _("More errors follow but not being shown."), false);
+            m_Errors.AddError(_T(""), 0, _("Edit the max errors limit in compiler options..."), false);
+            return;
+        }
+    }
 
 	Compiler* compiler = CompilerFactory::Compilers[m_CompilerIdx];
 	CompilerLineType clt = compiler->CheckForWarningsAndErrors(output);

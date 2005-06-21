@@ -1098,7 +1098,7 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
         mbar->Enable(idMenuContinue, m_pProcess && prj && m_ProgramIsStopped);
         mbar->Enable(idMenuNext, m_pProcess && prj && m_ProgramIsStopped);
         mbar->Enable(idMenuStep, m_pProcess && prj && m_ProgramIsStopped);
-		mbar->Enable(idMenuRunToCursor, !m_pProcess && prj && ed);
+ 		mbar->Enable(idMenuRunToCursor, prj && ed && m_ProgramIsStopped);
 		mbar->Enable(idMenuToggleBreakpoint, ed && m_ProgramIsStopped);
 		mbar->Enable(idMenuSendCommandToGDB, m_pProcess && m_ProgramIsStopped);
  		mbar->Enable(idMenuAddSymbolFile, m_pProcess && m_ProgramIsStopped);
@@ -1124,7 +1124,7 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
 	if (tbar)
 	{
         tmpflags[0]=((!m_pProcess || m_ProgramIsStopped) && prj);
-        tmpflags[1]=(!m_pProcess && prj && ed);
+        tmpflags[1]=(prj && ed && m_ProgramIsStopped);
         tmpflags[2]=(m_pProcess && prj && m_ProgramIsStopped);
         if(!init_flag ||
            toolflags[0]!=tmpflags[0] ||
