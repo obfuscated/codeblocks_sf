@@ -44,8 +44,8 @@ copy /y setup\exchndl.dll output > nul
 copy /y setup\exchndl.dll devel > nul
 echo Copying files
 copy /y %RESDIR%\*.zip output\share\codeblocks > nul
-copy /y sdk\resources\lexers\lexer_*.xml %RESDIR%\lexers > nul
-copy /y sdk\resources\lexers\lexer_*.xml output\share\codeblocks\lexers > nul
+copy /y sdk\resources\lexers\lexer_* %RESDIR%\lexers > nul
+copy /y sdk\resources\lexers\lexer_* output\share\codeblocks\lexers > nul
 copy /y src\resources\images\*.png %RESDIR%\images > nul
 copy /y src\resources\images\*.png output\share\codeblocks\images > nul
 copy /y plugins\codecompletion\resources\images\*.png %RESDIR%\images\codecompletion > nul

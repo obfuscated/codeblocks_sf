@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE Code::Blocks_lexer_properties>
 <Code::Blocks_lexer_properties>
-		<Lexer name="Lua"
-				index="15"
-				filemasks="*.lua">
+		<Lexer name="Windows resource"
+				index="3"
+				filemasks="*.rc">
 				<Style name="Default"
 						index="0"
 						fg="0,0,0"
@@ -12,18 +12,27 @@
 						italics="0"
 						underlined="0"/>
 				<Style name="Comment"
-						index="1,2,3"
+						index="1,2,3,15,17,18"
 						fg="160,160,160"/>
 				<Style name="Number"
 						index="4"
 						fg="240,0,240"/>
 				<Style name="Keyword"
-						index="5,13,14,15,16,17,18,19"
+						index="5,16"
 						fg="0,0,160"
 						bold="1"/>
 				<Style name="String"
-						index="6,8,12"
+						index="6,12"
 						fg="0,0,255"/>
+				<Style name="Character"
+						index="7"
+						fg="224,160,0"/>
+				<Style name="UUID"
+						index="8"
+						fg="0,0,0"/>
+				<Style name="Preprocessor"
+						index="9"
+						fg="0,160,0"/>
 				<Style name="Operator"
 						index="10"
 						fg="255,0,0"/>
@@ -44,9 +53,14 @@
 				<Style name="No matching brace highlight"
 						index="35"
 						bg="255,0,0"/>
-				<Keywords value="if elseif else then end do while nil true false 
-						in for and or function local not repeat return until "/>
-				<SampleCode value="lexer_lua.sample"
+				<Keywords value="ACCELERATORS ALT AUTO3STATE AUTOCHECKBOX AUTORADIOBUTTON 
+						BEGIN BITMAP BLOCK BUTTON CAPTION CHARACTERISTICS CHECKBOX CLASS 
+						COMBOBOX CONTROL CTEXT CURSOR DEFPUSHBUTTON DIALOG DIALOGEX DISCARDABLE 
+						EDITTEXT END EXSTYLE FONT GROUPBOX ICON LANGUAGE LISTBOX LTEXT 
+						MENU MENUEX MENUITEM MESSAGETABLE POPUP 
+						PUSHBUTTON RADIOBUTTON RCDATA RTEXT SCROLLBAR SEPARATOR SHIFT STATE3 
+						STRINGTABLE STYLE TEXTINCLUDE VALUE VERSION VERSIONINFO VIRTKEY"/>
+				<SampleCode value="lexer_rc.sample"
 						error_line="9"/>
 		</Lexer>
 </Code::Blocks_lexer_properties>

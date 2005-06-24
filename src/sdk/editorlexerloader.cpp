@@ -55,12 +55,15 @@ void EditorLexerLoader::DoLexer(TiXmlElement* node)
     }
 
     wxString name = node->Attribute("name");
-    int style = atol(node->Attribute("index"));
-    m_pTarget->AddHighlightLanguage(style, name);
+    int lexer = atol(node->Attribute("index"));
+    wxString masks = node->Attribute("filemasks");
+    int style = m_pTarget->AddHighlightLanguage(lexer, name);
+    m_pTarget->SetFileMasks(style, masks);
 //    LOGSTREAM << "Found lexer: " << name << " (" << style << ")\n";
 
     DoStyles(style, node);
     DoKeywords(style, node);
+    DoSampleCode(style, node);
 }
 
 void EditorLexerLoader::DoStyles(int language, TiXmlElement* node)
@@ -115,4 +118,18 @@ void EditorLexerLoader::DoKeywords(int language, TiXmlElement* node)
     if (!keywords)
         return;
     m_pTarget->SetKeywords(language, keywords->Attribute("value"));
+}
+
+void EditorLexerLoader::DoSampleCode(int language, TiXmlElement* node)
+{
+    TiXmlElement* sample = node->FirstChildElement("SampleCode");
+    if (!sample)
+        return;
+    wxString code = sample->Attribute("value");
+    if (code.IsEmpty())
+        return;
+    int breakLine = sample->Attribute("breakpoint_line") ? atol(sample->Attribute("breakpoint_line")) : -1;
+    int debugLine = sample->Attribute("debug_line") ? atol(sample->Attribute("debug_line")) : -1;
+    int errorLine = sample->Attribute("error_line") ? atol(sample->Attribute("error_line")) : -1;
+    m_pTarget->SetSampleCode(language, code, breakLine, debugLine, errorLine);
 }

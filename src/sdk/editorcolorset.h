@@ -13,8 +13,8 @@ class wxStyledTextCtrl;
 #define COLORSET_DEFAULT	_("default")
 
 typedef short int HighlightLanguage;
-#define HL_NONE     0
-#define HL_LAST     45
+#define HL_NONE     -1
+#define HL_LAST     100
 
 struct OptionColor
 {
@@ -36,7 +36,7 @@ class EditorColorSet
 		EditorColorSet(const EditorColorSet& other); // copy ctor
 		~EditorColorSet();
 		
-		void AddHighlightLanguage(HighlightLanguage lang, const wxString& name);
+		HighlightLanguage AddHighlightLanguage(int lexer, const wxString& name);
 		HighlightLanguage GetHighlightLanguage(const wxString& name);
 		wxArrayString GetAllHighlightLanguages();
 
@@ -65,6 +65,10 @@ class EditorColorSet
 		void Reset(HighlightLanguage lang);
 		wxString& GetKeywords(HighlightLanguage lang);
 		void SetKeywords(HighlightLanguage lang, const wxString& keywords);
+		const wxArrayString& GetFileMasks(HighlightLanguage lang);
+		void SetFileMasks(HighlightLanguage lang, const wxString& masks, const wxString& = _(","));
+		wxString GetSampleCode(HighlightLanguage lang, int* breakLine, int* debugLine, int* errorLine);
+		void SetSampleCode(HighlightLanguage lang, const wxString& sample, int breakLine, int debugLine, int errorLine);
 	protected:
 	private:
 		void DoApplyStyle(wxStyledTextCtrl* control, int value, OptionColor* option);
@@ -72,9 +76,16 @@ class EditorColorSet
 		void Load();
 		void ClearAllOptionColors();
 		
+		int m_LanguageID;
 		wxString m_Langs[HL_LAST];
 		OptionColors m_Colors[HL_LAST];
 		wxString m_Keywords[HL_LAST];
+		wxArrayString m_FileMasks[HL_LAST];
+		int m_Lexers[HL_LAST];
+		wxString m_SampleCode[HL_LAST];
+		int m_BreakLine[HL_LAST];
+		int m_DebugLine[HL_LAST];
+		int m_ErrorLine[HL_LAST];
 		wxString m_Name;
 };
 

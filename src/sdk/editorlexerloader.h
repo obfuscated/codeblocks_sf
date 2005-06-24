@@ -17,6 +17,7 @@ class EditorLexerLoader
         void DoLexer(TiXmlElement* node);
         void DoStyles(int language, TiXmlElement* node);
         void DoKeywords(int language, TiXmlElement* node);
+        void DoSampleCode(int language, TiXmlElement* node);
         EditorColorSet* m_pTarget;
 	private:
 };

@@ -74,7 +74,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
 	: m_TextColorControl(0L),
 	m_AutoCompTextControl(0L),
 	m_Theme(0L),
-	m_Lang(wxSTC_LEX_CPP),
+	m_Lang(-1),
 	m_DefCodeFileType(0),
 	m_ThemeModified(false),
 	m_LastAutoCompKeyword(-1)
@@ -158,61 +158,69 @@ void EditorConfigurationDlg::CreateColorsSample()
 		delete m_TextColorControl;
 	m_TextColorControl = new wxStyledTextCtrl(this, wxID_ANY);
 	m_TextColorControl->SetTabWidth(4);
-	wxString buffer;
-	if (m_Lang == wxSTC_LEX_CPP)
-	{
-		buffer << "/*" << '\n';
-		buffer << " * Sample preview code" << '\n';
-		buffer << " * This is a block comment" << '\n';
-		buffer << " */" << '\n';
-		buffer << "" << '\n';
-		buffer << "#include <iostream> // this is a line comment" << '\n';
-		buffer << "#include <cstdio>" << '\n';
-		buffer << "" << '\n';
-		buffer << "/**" << '\n';
-		buffer << "  * This is a documentation comment block" << '\n';
-		buffer << "  * @param xxx does this (this is the documentation keyword)" << '\n';
-		buffer << "  * @author some user (this is the documentation keyword error)" << '\n';
-		buffer << "  */" << '\n';
-		buffer << "" << '\n';
-		buffer << "int main(int argc, char **argv)" << '\n';
-		buffer << "{" << '\n';
-		buffer << '\t' << "/// This is a documentation comment line" << '\n';
-		buffer << '\t' << "int numbers[20];" << '\n';
-		buffer << '\t' << "int average = 0;" << '\n';
-		buffer << '\t' << "char ch = '\\n';" << '\n';
-		buffer << '\t' << "for (int i = 0; i < 20; ++i) // a breakpoint is set" << '\n';
-		buffer << '\t' << "{" << '\n';
-		buffer << '\t' << '\t' << "numbers[i] = i; // active line (during debugging)" << '\n';
-		buffer << '\t' << '\t' << "total += i; // error line" << '\n';
-		buffer << '\t' << "}" << '\n';
-		buffer << '\t' << "average = total / 20;" << '\n';
-		buffer << '\t' << "std::cout << numbers[0] << '\\n' << numbers[19] << '\\n';" << '\n';
-		buffer << '\t' << "std::cout << \"total:\" << total << \"average:\" << average << '\\n';" << '\n';
-		buffer << '\t' << "std::cout << \"Press any key...\" << '\\n';" << '\n';
-		buffer << '\t' << "getch();" << '\n';
-		buffer << "}" << '\n';
-	}
-	else if (m_Lang == wxSTC_LEX_LUA)
-	{
-		buffer << "-- LUA sample script" << '\n';
-		buffer << "-- comments start with --" << '\n';
-		buffer << "--[[ and this is a multi-line" << '\n';
-		buffer << "     comment]]" << '\n';
-		buffer << "" << '\n';
-		buffer << "print(\"Hello world\")" << '\n';
-		buffer << "" << '\n';
-		buffer << "function SomeFunction(a, b)" << '\n';
-		buffer << '\t' << "local x = a" << '\n';
-		buffer << '\t' << "x = x + 1" << '\n';
-		buffer << '\t' << "print(a,b,'x='..x)" << '\n';
-		buffer << "end" << '\n';
-		buffer << "" << '\n';
-		buffer << "SomeFunction(1, 2)" << '\n';
-		buffer << "var = {x = 0, y = 0)" << '\n';
-		buffer << "print(var, var.x, var.y)" << '\n';
-	}
-	m_TextColorControl->SetText(buffer);
+//	wxString buffer;
+//	if (m_Lang == wxSTC_LEX_CPP)
+//	{
+//		buffer << "/*" << '\n';
+//		buffer << " * Sample preview code" << '\n';
+//		buffer << " * This is a block comment" << '\n';
+//		buffer << " */" << '\n';
+//		buffer << "" << '\n';
+//		buffer << "#include <iostream> // this is a line comment" << '\n';
+//		buffer << "#include <cstdio>" << '\n';
+//		buffer << "" << '\n';
+//		buffer << "/**" << '\n';
+//		buffer << "  * This is a documentation comment block" << '\n';
+//		buffer << "  * @param xxx does this (this is the documentation keyword)" << '\n';
+//		buffer << "  * @author some user (this is the documentation keyword error)" << '\n';
+//		buffer << "  */" << '\n';
+//		buffer << "" << '\n';
+//		buffer << "int main(int argc, char **argv)" << '\n';
+//		buffer << "{" << '\n';
+//		buffer << '\t' << "/// This is a documentation comment line" << '\n';
+//		buffer << '\t' << "int numbers[20];" << '\n';
+//		buffer << '\t' << "int average = 0;" << '\n';
+//		buffer << '\t' << "char ch = '\\n';" << '\n';
+//		buffer << '\t' << "for (int i = 0; i < 20; ++i) // a breakpoint is set" << '\n';
+//		buffer << '\t' << "{" << '\n';
+//		buffer << '\t' << '\t' << "numbers[i] = i; // active line (during debugging)" << '\n';
+//		buffer << '\t' << '\t' << "total += i; // error line" << '\n';
+//		buffer << '\t' << "}" << '\n';
+//		buffer << '\t' << "average = total / 20;" << '\n';
+//		buffer << '\t' << "std::cout << numbers[0] << '\\n' << numbers[19] << '\\n';" << '\n';
+//		buffer << '\t' << "std::cout << \"total:\" << total << \"average:\" << average << '\\n';" << '\n';
+//		buffer << '\t' << "std::cout << \"Press any key...\" << '\\n';" << '\n';
+//		buffer << '\t' << "getch();" << '\n';
+//		buffer << "}" << '\n';
+//	}
+//	else if (m_Lang == wxSTC_LEX_LUA)
+//	{
+//		buffer << "-- LUA sample script" << '\n';
+//		buffer << "-- comments start with --" << '\n';
+//		buffer << "--[[ and this is a multi-line" << '\n';
+//		buffer << "     comment]]" << '\n';
+//		buffer << "" << '\n';
+//		buffer << "print(\"Hello world\")" << '\n';
+//		buffer << "" << '\n';
+//		buffer << "function SomeFunction(a, b)" << '\n';
+//		buffer << '\t' << "local x = a" << '\n';
+//		buffer << '\t' << "x = x + 1" << '\n';
+//		buffer << '\t' << "print(a,b,'x='..x)" << '\n';
+//		buffer << "end" << '\n';
+//		buffer << "" << '\n';
+//		buffer << "SomeFunction(1, 2)" << '\n';
+//		buffer << "var = {x = 0, y = 0)" << '\n';
+//		buffer << "print(var, var.x, var.y)" << '\n';
+//	}
+//	m_TextColorControl->SetText(buffer);
+
+    int breakLine = -1;
+    int debugLine = -1;
+    int errorLine = -1;
+    wxString code = m_Theme->GetSampleCode(m_Lang, &breakLine, &debugLine, &errorLine);
+    if (!code.IsEmpty())
+        m_TextColorControl->LoadFile(code);
+
 	m_TextColorControl->SetReadOnly(true);
 	m_TextColorControl->SetCaretWidth(0);
     m_TextColorControl->SetMarginType(0, wxSTC_MARGIN_NUMBER);
@@ -220,9 +228,9 @@ void EditorConfigurationDlg::CreateColorsSample()
 	ApplyColors();
 
     m_TextColorControl->SetMarginWidth(1, 0);
-	m_TextColorControl->MarkerAdd(20, 2); // breakpoint line
-	m_TextColorControl->MarkerAdd(22, 3); // active line
-	m_TextColorControl->MarkerAdd(23, 4); // error line
+	if (breakLine != -1) m_TextColorControl->MarkerAdd(breakLine, 2); // breakpoint line
+	if (debugLine != -1) m_TextColorControl->MarkerAdd(debugLine, 3); // active line
+	if (errorLine != -1) m_TextColorControl->MarkerAdd(errorLine, 4); // error line
 
 	FillColorComponents();
     wxXmlResource::Get()->AttachUnknownControl("txtColorsSample", m_TextColorControl);

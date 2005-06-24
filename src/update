@@ -34,8 +34,8 @@ cd ../../..
 
 echo Copying files
 cp -f ${RESDIR}/*.zip output/share/CodeBlocks > /dev/null
-cp -f sdk/resources/lexers/lexer_*.xml ${RESDIR}/lexers > /dev/null
-cp -f sdk/resources/lexers/lexer_*.xml output/share/CodeBlocks/lexers > /dev/null
+cp -f sdk/resources/lexers/lexer_* ${RESDIR}/lexers > /dev/null
+cp -f sdk/resources/lexers/lexer_* output/share/CodeBlocks/lexers > /dev/null
 cp -f src/resources/images/*.png ${RESDIR}/images > /dev/null
 cp -f src/resources/images/*.png output/share/CodeBlocks/images > /dev/null
 cp -f plugins/codecompletion/resources/images/*.png ${RESDIR}/images/codecompletion > /dev/null

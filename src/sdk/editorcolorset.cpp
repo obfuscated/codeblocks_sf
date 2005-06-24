@@ -39,7 +39,8 @@
 #define cbSELECTION      -99 // selection virtual style
 
 EditorColorSet::EditorColorSet(const wxString& setName)
-	: m_Name(setName)
+	: m_LanguageID(0),
+	m_Name(setName)
 {
 	LoadAvailableSets();
 
@@ -56,7 +57,13 @@ EditorColorSet::EditorColorSet(const EditorColorSet& other) // copy ctor
 	for (int x = 0; x < HL_LAST; ++x)
 	{
 		m_Langs[x] = other.m_Langs[x];
+		m_Lexers[x] = other.m_Lexers[x];
 		m_Keywords[x] = other.m_Keywords[x];
+		m_FileMasks[x] = other.m_FileMasks[x];
+		m_SampleCode[x] = other.m_SampleCode[x];
+		m_BreakLine[x] = other.m_BreakLine[x];
+		m_DebugLine[x] = other.m_DebugLine[x];
+		m_ErrorLine[x] = other.m_ErrorLine[x];
 		const OptionColors& value = other.m_Colors[x];
 		for (unsigned int i = 0; i < value.GetCount(); ++i)
 		{
@@ -77,11 +84,19 @@ void EditorColorSet::ClearAllOptionColors()
         WX_CLEAR_ARRAY(m_Colors[i]);
 		m_Colors[i].Clear();
 		m_Langs[i].Clear();
+		m_Lexers[i] = wxSTC_LEX_NULL;
+		m_Keywords[i].Clear();
+		m_FileMasks[i].Clear();
+		m_SampleCode[i].Clear();
+		m_BreakLine[i] = -1;
+		m_DebugLine[i] = -1;
+		m_ErrorLine[i] = -1;
 	}
 }
 
 void EditorColorSet::LoadAvailableSets()
 {
+    m_LanguageID = 0;
 	wxString path = ConfigManager::Get()->Read("data_path") + "/lexers";
     wxDir dir(path);
 
@@ -98,11 +113,20 @@ void EditorColorSet::LoadAvailableSets()
     }
 }
 
-void EditorColorSet::AddHighlightLanguage(HighlightLanguage lang, const wxString& name)
+HighlightLanguage EditorColorSet::AddHighlightLanguage(int lexer, const wxString& name)
 {
-	if (lang < HL_NONE || lang > HL_LAST || name.IsEmpty() || !m_Langs[lang].IsEmpty())
-        return;
-    m_Langs[lang] = name;
+	if (m_LanguageID == HL_LAST ||
+        lexer <= wxSTC_LEX_NULL ||
+        lexer > wxSTC_LEX_MMIXAL ||
+        name.IsEmpty() ||
+        GetHighlightLanguage(name) != HL_NONE)
+    {
+        return HL_NONE;
+    }
+    m_Langs[m_LanguageID] = name;
+    m_Lexers[m_LanguageID] = lexer;
+    ++m_LanguageID;
+    return m_LanguageID - 1;
 }
 
 HighlightLanguage EditorColorSet::GetHighlightLanguage(const wxString& name)
@@ -223,17 +247,29 @@ OptionColor* EditorColorSet::GetOptionByIndex(HighlightLanguage lang, int index)
 
 HighlightLanguage EditorColorSet::GetLanguageForFilename(const wxString& filename)
 {
-	FileType ft = FileTypeOf(filename);
-	switch (ft)
+	// first search in filemasks
+	for (int i = 0; i < HL_LAST; ++i)
 	{
-		case ftResource: // resource files are highlighted like C/C++ files (rfe #1184765)
-		case ftSource:
-		case ftHeader: return wxSTC_LEX_CPP;
-		
-		case ftLua: return wxSTC_LEX_LUA;
-		
-		default: return HL_NONE;
+		for (unsigned int x = 0; x < m_FileMasks[i].GetCount(); ++x)
+		{
+			if (filename.Matches(m_FileMasks[i].Item(x)))
+                return i;
+		}
 	}
+	
+	// if nothing found, check a couple of common-types
+//	FileType ft = FileTypeOf(filename);
+//	switch (ft)
+//	{
+//		case ftResource: // resource files are highlighted like C/C++ files (rfe #1184765)
+//		case ftSource:
+//		case ftHeader: return wxSTC_LEX_CPP;
+//		
+//		case ftLua: return wxSTC_LEX_LUA;
+//		
+//		default: break;
+//	}
+    return HL_NONE;
 }
 
 wxString EditorColorSet::GetLanguageName(HighlightLanguage lang)
@@ -322,7 +358,7 @@ void EditorColorSet::Apply(HighlightLanguage lang, wxStyledTextCtrl* control)
                 control->MarkerDefine(-opt->value, 1, wxNullColour, opt->back);
 		}
 	}
-	control->SetLexer(lang);
+	control->SetLexer(m_Lexers[lang]);
     control->SetKeyWords(0, m_Keywords[lang]);
     control->Colourise(0, -1); // the *most* important part!
 }
@@ -434,4 +470,36 @@ wxString& EditorColorSet::GetKeywords(HighlightLanguage lang)
 void EditorColorSet::SetKeywords(HighlightLanguage lang, const wxString& keywords)
 {
     if (lang != HL_NONE) m_Keywords[lang] = keywords;
+}
+
+const wxArrayString& EditorColorSet::GetFileMasks(HighlightLanguage lang)
+{
+	return m_FileMasks[lang];
+}
+
+void EditorColorSet::SetFileMasks(HighlightLanguage lang, const wxString& masks, const wxString& separator)
+{
+	m_FileMasks[lang] = GetArrayFromString(masks.Lower(), separator);
+}
+
+wxString EditorColorSet::GetSampleCode(HighlightLanguage lang, int* breakLine, int* debugLine, int* errorLine)
+{
+    if (breakLine)
+        *breakLine = m_BreakLine[lang];
+    if (debugLine)
+        *debugLine = m_DebugLine[lang];
+    if (errorLine)
+        *errorLine = m_ErrorLine[lang];
+	wxString path = ConfigManager::Get()->Read("data_path") + "/lexers/";
+    if (!m_SampleCode[lang].IsEmpty())
+        return path + m_SampleCode[lang];
+    return wxEmptyString;
+}
+
+void EditorColorSet::SetSampleCode(HighlightLanguage lang, const wxString& sample, int breakLine, int debugLine, int errorLine)
+{
+    m_SampleCode[lang] = sample;
+    m_BreakLine[lang] = breakLine;
+    m_DebugLine[lang] = debugLine;
+    m_ErrorLine[lang] = errorLine;
 }
