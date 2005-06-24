@@ -12,12 +12,9 @@ class wxStyledTextCtrl;
 
 #define COLORSET_DEFAULT	_("default")
 
-enum HighlightLanguage
-{
-	hlNone = 0,
-	hlCpp,
-	hlLua
-};
+typedef short int HighlightLanguage;
+#define HL_NONE     0
+#define HL_LAST     45
 
 struct OptionColor
 {
@@ -30,10 +27,7 @@ struct OptionColor
 	bool underlined;
 	bool isStyle;
 };
-
 WX_DEFINE_ARRAY(OptionColor*, OptionColors);
-WX_DECLARE_HASH_MAP(HighlightLanguage, OptionColors, wxIntegerHash, wxIntegerEqual, ColorsMap);
-WX_DECLARE_HASH_MAP(HighlightLanguage, wxString, wxIntegerHash, wxIntegerEqual, KeywordsMap);
 
 class EditorColorSet
 {
@@ -42,6 +36,10 @@ class EditorColorSet
 		EditorColorSet(const EditorColorSet& other); // copy ctor
 		~EditorColorSet();
 		
+		void AddHighlightLanguage(HighlightLanguage lang, const wxString& name);
+		HighlightLanguage GetHighlightLanguage(const wxString& name);
+		wxArrayString GetAllHighlightLanguages();
+
 		void AddOption(HighlightLanguage lang,
 						const wxString& name,
 						int value,
@@ -55,6 +53,7 @@ class EditorColorSet
 		OptionColor* GetOptionByName(HighlightLanguage lang, const wxString& name);
 		OptionColor* GetOptionByValue(HighlightLanguage lang, int value);
 		OptionColor* GetOptionByIndex(HighlightLanguage lang, int index);
+		void UpdateOptionsWithSameName(HighlightLanguage lang, OptionColor* base);
 		int GetOptionCount(HighlightLanguage lang){ return m_Colors[lang].GetCount(); }
 		HighlightLanguage GetLanguageForFilename(const wxString& filename);
 		wxString GetLanguageName(HighlightLanguage lang);
@@ -64,17 +63,18 @@ class EditorColorSet
 		void Apply(HighlightLanguage lang, wxStyledTextCtrl* control);
 		void Save();
 		void Reset(HighlightLanguage lang);
-		wxString& GetKeywords(HighlightLanguage lang){ return m_Keywords[lang]; }
-		void SetKeywords(HighlightLanguage lang, const wxString& keywords){ if (lang != hlNone) m_Keywords[lang] = keywords; }
+		wxString& GetKeywords(HighlightLanguage lang);
+		void SetKeywords(HighlightLanguage lang, const wxString& keywords);
 	protected:
 	private:
 		void DoApplyStyle(wxStyledTextCtrl* control, int value, OptionColor* option);
-		void LoadBuiltInSet(HighlightLanguage lang);
+		void LoadAvailableSets();
 		void Load();
 		void ClearAllOptionColors();
 		
-		ColorsMap m_Colors;
-		KeywordsMap m_Keywords;
+		wxString m_Langs[HL_LAST];
+		OptionColors m_Colors[HL_LAST];
+		wxString m_Keywords[HL_LAST];
 		wxString m_Name;
 };
 

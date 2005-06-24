@@ -74,7 +74,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
 	: m_TextColorControl(0L),
 	m_AutoCompTextControl(0L),
 	m_Theme(0L),
-	m_Lang(hlCpp),
+	m_Lang(wxSTC_LEX_CPP),
 	m_DefCodeFileType(0),
 	m_ThemeModified(false),
 	m_LastAutoCompKeyword(-1)
@@ -159,7 +159,7 @@ void EditorConfigurationDlg::CreateColorsSample()
 	m_TextColorControl = new wxStyledTextCtrl(this, wxID_ANY);
 	m_TextColorControl->SetTabWidth(4);
 	wxString buffer;
-	if (m_Lang == hlCpp)
+	if (m_Lang == wxSTC_LEX_CPP)
 	{
 		buffer << "/*" << '\n';
 		buffer << " * Sample preview code" << '\n';
@@ -193,7 +193,7 @@ void EditorConfigurationDlg::CreateColorsSample()
 		buffer << '\t' << "getch();" << '\n';
 		buffer << "}" << '\n';
 	}
-	else if (m_Lang == hlLua)
+	else if (m_Lang == wxSTC_LEX_LUA)
 	{
 		buffer << "-- LUA sample script" << '\n';
 		buffer << "-- comments start with --" << '\n';
@@ -245,11 +245,11 @@ void EditorConfigurationDlg::FillColorComponents()
 {
 	wxListBox* colors = XRCCTRL(*this, "lstComponents", wxListBox);
 	colors->Clear();
-/* TODO (mandrav#1#): FIXME!!! */
 	for (int i = 0; i < m_Theme->GetOptionCount(m_Lang); ++i)
 	{
 		OptionColor* opt = m_Theme->GetOptionByIndex(m_Lang, i);
-		colors->Append(opt->name);
+		if (colors->FindString(opt->name) == -1)
+            colors->Append(opt->name);
 	}
 	colors->SetSelection(0);
 	ReadColors();
@@ -268,7 +268,7 @@ void EditorConfigurationDlg::ApplyColors()
 		if (m_AutoCompTextControl)
 		{
             m_AutoCompTextControl->StyleSetFont(wxSTC_STYLE_DEFAULT,fnt); 
-            m_Theme->Apply(hlCpp, m_AutoCompTextControl);
+            m_Theme->Apply(wxSTC_LEX_CPP, m_AutoCompTextControl);
         }
 	}
 }
@@ -336,6 +336,7 @@ void EditorConfigurationDlg::WriteColors()
 			opt->bold = XRCCTRL(*this, "chkColorsBold", wxCheckBox)->GetValue();
 			opt->italics = XRCCTRL(*this, "chkColorsItalics", wxCheckBox)->GetValue();
 			opt->underlined = XRCCTRL(*this, "chkColorsUnderlined", wxCheckBox)->GetValue();
+			m_Theme->UpdateOptionsWithSameName(m_Lang, opt);
 		}
 	}
 	ApplyColors();
@@ -433,9 +434,22 @@ void EditorConfigurationDlg::ChangeTheme()
     m_Theme = new EditorColorSet(key);
 
    	XRCCTRL(*this, "btnKeywords", wxButton)->Enable(m_Theme);
-   	XRCCTRL(*this, "cmbLangs", wxComboBox)->Enable(m_Theme);
+
+	wxComboBox* cmbLangs = XRCCTRL(*this, "cmbLangs", wxComboBox);
+    cmbLangs->Clear();
+    wxArrayString langs = m_Theme->GetAllHighlightLanguages();
+    for (unsigned int i = 0; i < langs.GetCount(); ++i)
+    {
+    	cmbLangs->Append(langs[i]);
+    }
+    cmbLangs->SetSelection(0);
+    cmbLangs->Enable(langs.GetCount() != 0);
 	if (m_Theme)
-		m_Lang = HighlightLanguage(XRCCTRL(*this, "cmbLangs", wxComboBox)->GetSelection() + 1); // +1 because 0 would mean hlNone
+	{
+		wxString sel = cmbLangs->GetStringSelection();
+		m_Lang = m_Theme->GetHighlightLanguage(sel);
+	}
+
 	CreateColorsSample();
 	m_ThemeModified = false;
 }
@@ -501,7 +515,7 @@ void EditorConfigurationDlg::OnRenameColorTheme(wxCommandEvent& event)
 
 void EditorConfigurationDlg::OnEditKeywords(wxCommandEvent& event)
 {
-	if (m_Theme && m_Lang != hlNone)
+	if (m_Theme && m_Lang != HL_NONE)
 	{
 		wxString keyw = wxGetTextFromUser(_("Edit keywords:"),
 										m_Theme->GetLanguageName(m_Lang),
@@ -525,7 +539,11 @@ void EditorConfigurationDlg::OnColorsReset(wxCommandEvent& event)
 
 void EditorConfigurationDlg::OnChangeLang(wxCommandEvent& event)
 {
-	m_Lang = HighlightLanguage(XRCCTRL(*this, "cmbLangs", wxComboBox)->GetSelection() + 1); // +1 because 0 would mean hlNone
+	if (m_Theme)
+	{
+		wxString sel = XRCCTRL(*this, "cmbLangs", wxComboBox)->GetStringSelection();
+		m_Lang = m_Theme->GetHighlightLanguage(sel);
+	}
 	FillColorComponents();
 	CreateColorsSample();
 }

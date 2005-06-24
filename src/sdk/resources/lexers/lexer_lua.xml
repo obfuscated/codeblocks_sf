@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE Code::Blocks_lexer_properties>
+<Code::Blocks_lexer_properties>
+		<Lexer name="Lua" index="15">
+				<Style name="Default"
+						index="0"
+						fg="0,0,0"
+						bg="255,255,255"
+						bold="0"
+						italics="0"
+						underlined="0"/>
+				<Style name="Comment"
+						index="1,2,3"
+						fg="160,160,160"/>
+				<Style name="Number"
+						index="4"
+						fg="240,0,240"/>
+				<Style name="Keyword"
+						index="5,13,14,15,16,17,18,19"
+						fg="0,0,160"
+						bold="1"/>
+				<Style name="String"
+						index="6,8,12"
+						fg="0,0,255"/>
+				<Style name="Operator"
+						index="10"
+						fg="255,0,0"/>
+				<Style name="Selection"
+						index="-99"
+						bg="192,192,192"/>
+				<Style name="Active line"
+						index="-98"
+						bg="255,255,160"/>
+				<Style name="Breakpoint line"
+						index="-2"
+						bg="255,160,160"/>
+				<Style name="Debugger active line"
+						index="-3"
+						bg="160,160,255"/>
+				<Style name="Compiler error line"
+						index="-4"
+						bg="255,128,0"/>
+				<Style name="Matching brace highlight"
+						index="34"
+						fg="255,0,0"
+						bold="1"
+						underlined="1"/>
+				<Style name="No matching brace highlight"
+						index="35"
+						bg="255,0,0"/>
+				<Keywords value="if elseif else then end do while nil true false 
+						in for and or function local not repeat return until "/>
+		</Lexer>
+</Code::Blocks_lexer_properties>

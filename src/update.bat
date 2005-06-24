@@ -4,6 +4,7 @@ echo Creating output directory tree
 if not exist output md output
 if not exist output\share md output\share
 if not exist output\share\CodeBlocks md output\share\CodeBlocks
+if not exist output\share\CodeBlocks\lexers md output\share\CodeBlocks\lexers
 if not exist output\share\CodeBlocks\images md output\share\CodeBlocks\images
 if not exist output\share\CodeBlocks\images\codecompletion md output\share\CodeBlocks\images\codecompletion
 if not exist output\share\CodeBlocks\plugins md output\share\CodeBlocks\plugins
@@ -43,6 +44,8 @@ copy /y setup\exchndl.dll output > nul
 copy /y setup\exchndl.dll devel > nul
 echo Copying files
 copy /y %RESDIR%\*.zip output\share\codeblocks > nul
+copy /y sdk\resources\lexers\lexer_*.xml %RESDIR%\lexers > nul
+copy /y sdk\resources\lexers\lexer_*.xml output\share\codeblocks\lexers > nul
 copy /y src\resources\images\*.png %RESDIR%\images > nul
 copy /y src\resources\images\*.png output\share\codeblocks\images > nul
 copy /y plugins\codecompletion\resources\images\*.png %RESDIR%\images\codecompletion > nul

@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!DOCTYPE Code::Blocks_lexer_properties>
+<Code::Blocks_lexer_properties>
+		<Lexer name="C/C++" index="3">
+				<Style name="Default"
+						index="0"
+						fg="0,0,0"
+						bg="255,255,255"
+						bold="0"
+						italics="0"
+						underlined="0"/>
+				<Style name="Comment"
+						index="1,2,3,15,17,18"
+						fg="160,160,160"/>
+				<Style name="Number"
+						index="4"
+						fg="240,0,240"/>
+				<Style name="Keyword"
+						index="5,16"
+						fg="0,0,160"
+						bold="1"/>
+				<Style name="String"
+						index="6,12"
+						fg="0,0,255"/>
+				<Style name="Character"
+						index="7"
+						fg="224,160,0"/>
+				<Style name="UUID"
+						index="8"
+						fg="0,0,0"/>
+				<Style name="Preprocessor"
+						index="9"
+						fg="0,160,0"/>
+				<Style name="Operator"
+						index="10"
+						fg="255,0,0"/>
+				<Style name="Selection"
+						index="-99"
+						bg="192,192,192"/>
+				<Style name="Active line"
+						index="-98"
+						bg="255,255,160"/>
+				<Style name="Breakpoint line"
+						index="-2"
+						bg="255,160,160"/>
+				<Style name="Debugger active line"
+						index="-3"
+						bg="160,160,255"/>
+				<Style name="Compiler error line"
+						index="-4"
+						bg="255,128,0"/>
+				<Style name="Matching brace highlight"
+						index="34"
+						fg="255,0,0"
+						bold="1"
+						underlined="1"/>
+				<Style name="No matching brace highlight"
+						index="35"
+						bg="255,0,0"/>
+				<Keywords value="asm auto bool break case catch char class const 
+						const_cast continue default delete do double 
+						dynamic_cast else enum explicit export extern 
+						false float for friend goto if inline int long 
+						mutable namespace new operator private protected 
+						public register reinterpret_cast return short signed 
+						sizeof static static_cast struct switch template this 
+						throw true try typedef typeid typename union unsigned 
+						using virtual void volatile wchar_t while "/>
+		</Lexer>
+</Code::Blocks_lexer_properties>
