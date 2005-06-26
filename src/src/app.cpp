@@ -601,6 +601,12 @@ void CodeBlocksApp::OnAppActivate(wxActivateEvent& event)
     if (!Manager::Get())
         return;
 
+    // if C::B is minimized, restore it first to avoid the "dead-lock"
+    // when a file is changed
+    wxFrame* win = (wxFrame*)GetTopWindow();
+    if (win && win->IsIconized())
+        win->Restore();
+
     if (ConfigManager::Get()->Read("/environment/check_modified_files", 1))
         Manager::Get()->GetEditorManager()->CheckForExternallyModifiedFiles();
     cbEditor* ed = Manager::Get()->GetEditorManager()
