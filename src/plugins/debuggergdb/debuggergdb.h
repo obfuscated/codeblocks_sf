@@ -121,7 +121,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 		wxTimer m_TimerPollDebugger;
 		DebuggerTree* m_pTree;
 		bool m_NoDebugInfo;
-		
+		bool m_BreakOnEntry;
 		// current frame info
 		StackFrame m_CurrentFrame;
 		

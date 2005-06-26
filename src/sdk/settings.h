@@ -77,20 +77,20 @@ from DLLs. Instead, we build "sdk" as a static library
 
 #define ALL_FILES_FILTER            "All files (*.*)|*.*"
 
-#define SOURCE_FILES_DIALOG_FILTER  WORKSPACES_FILES_FILTER"|" \
-									CODEBLOCKS_FILES_FILTER"|" \
-                                    C_FILES_FILTER"|" \
-                                    SOURCE_FILES_FILTER"|" \
-                                    HEADER_FILES_FILTER"|" \
-                                    RESOURCE_FILES_FILTER"|" \
-                                    ALL_KNOWN_FILES_FILTER"|" \
+#define SOURCE_FILES_DIALOG_FILTER  WORKSPACES_FILES_FILTER "|" \
+									CODEBLOCKS_FILES_FILTER "|" \
+                                    C_FILES_FILTER "|" \
+                                    SOURCE_FILES_FILTER "|" \
+                                    HEADER_FILES_FILTER "|" \
+                                    RESOURCE_FILES_FILTER "|" \
+                                    ALL_KNOWN_FILES_FILTER "|" \
                                     ALL_FILES_FILTER
 #define SOURCE_FILES_FILTER_INDEX   6
 
-#define KNOWN_SOURCES_DIALOG_FILTER C_FILES_FILTER"|" \
-                                    SOURCE_FILES_FILTER"|" \
-                                    HEADER_FILES_FILTER"|" \
-                                    RESOURCE_FILES_FILTER"|" \
+#define KNOWN_SOURCES_DIALOG_FILTER C_FILES_FILTER "|" \
+                                    SOURCE_FILES_FILTER "|" \
+                                    HEADER_FILES_FILTER "|" \
+                                    RESOURCE_FILES_FILTER "|" \
                                     ALL_FILES_FILTER
 #define KNOWN_SOURCES_FILTER_INDEX  4
 
@@ -109,7 +109,6 @@ from DLLs. Instead, we build "sdk" as a static library
 #define H_EXT				"h"
 #define HH_EXT				"hh"
 #define HXX_EXT				"hxx"
-#define LUA_EXT				"lua"
 #define OBJECT_EXT			"o"
 #define XRCRESOURCE_EXT		"xrc"
 #define STATICLIB_EXT		"a"

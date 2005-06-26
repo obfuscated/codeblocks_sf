@@ -809,9 +809,7 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
     if (!CloseWorkspace())
         return false; // didn't close
     m_IsLoadingWorkspace=true;    
-// TODO (mandrav#1#): Change default value for 'filename' to DEFAULT_WORKSPACE and
-//                    remove the ternary operator in "new cbWorkspace()" below
-    m_pWorkspace = new cbWorkspace(filename.IsEmpty() ? DEFAULT_WORKSPACE : filename);
+    m_pWorkspace = new cbWorkspace(filename);
     m_IsLoadingWorkspace=false;
     Manager::Get()->GetEditorManager()->RebuildOpenedFilesTree();
     SANITY_CHECK(false);

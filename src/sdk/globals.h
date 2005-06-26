@@ -32,6 +32,7 @@ struct DebuggerBreakpoint
 	int line;
 	int ignoreCount;
 	bool enabled;
+	wxString func;
 };
 
 enum FileType
@@ -52,7 +53,6 @@ enum FileType
 	ftStaticLib,
 	ftDynamicLib,
 	ftExecutable,
-	ftLua,
 	ftOther
 };
 

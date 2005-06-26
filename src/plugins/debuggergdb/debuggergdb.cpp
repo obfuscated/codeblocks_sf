@@ -138,6 +138,7 @@ DebuggerGDB::DebuggerGDB()
 	m_EvalWin(0L),
 	m_pTree(0L),
 	m_NoDebugInfo(false),
+	m_BreakOnEntry(false),
 	m_pDisassembly(0),
 	m_pBacktrace(0)
 {
@@ -199,6 +200,16 @@ void DebuggerGDB::OnRelease(bool appShutDown)
 	{
 		delete m_pTree;
 		m_pTree = 0L;
+	}
+    
+    //Close debug session when appShutDown
+	if (m_pProcess && m_Pid)
+    { 
+		m_pProcess->CloseOutput();
+		if (m_ProgramIsStopped)
+            RunCommand(CMD_STOP);
+		else
+			m_pProcess->Kill(m_Pid, wxSIGKILL);
 	}
 
     if (Manager::Get()->GetMessageManager())
@@ -321,9 +332,22 @@ void DebuggerGDB::SetBreakpoints()
 				wxString filename = pf->file.GetFullName();
 				wxString cmd;
 				if (bp->enabled)
-					cmd << "break " << filename << ":" << bp->line + 1;
-			
-				SendCommand(cmd);
+                {
+					if (bp->func.IsEmpty())
+					{
+                        cmd << "break " << filename << ":" << bp->line + 1;
+                        SendCommand(cmd);
+                    }
+                    //GDB workaround
+                    //Use function name if this is C++ constructor/destructor						
+					else
+					{
+						cmd << "break " << bp->func;
+						GetInfoFor(cmd);
+					}
+                    //end GDB workaround					
+				}
+				//SendCommand(cmd);
 			}
 		}
 	}
@@ -568,7 +592,13 @@ int DebuggerGDB::Debug()
     }
 
     // finally, run the process
-	SendCommand("run");
+    if (m_BreakOnEntry)
+    {
+    	m_BreakOnEntry = false;
+    	SendCommand("start");
+	}
+	else
+        SendCommand("run");
 	return 0;
 }
 
@@ -777,6 +807,12 @@ void DebuggerGDB::CmdBacktrace()
 
 void DebuggerGDB::CmdContinue()
 {
+	SetBreakpoints();
+	if (!m_Tbreak.IsEmpty())
+	{
+		SendCommand(m_Tbreak);
+		m_Tbreak.Clear();
+	}
     RunCommand(CMD_CONTINUE);
 }
 
@@ -801,15 +837,13 @@ void DebuggerGDB::CmdRunToCursor()
 		return;
 	wxString cmd;
 	cmd << "tbreak " << pf->relativeFilename << ":" << ed->GetControl()->GetCurrentLine() + 1;
+	m_Tbreak = cmd;
 	if (m_pProcess)
 	{
-		m_Tbreak.Clear();
-		SendCommand(cmd);
 		CmdContinue();
 	}
 	else
 	{
-		m_Tbreak = cmd;
 		Debug();
 	}
 }
@@ -821,7 +855,7 @@ void DebuggerGDB::CmdToggleBreakpoint()
 	if (!ed)
 		return;
 	ed->MarkerToggle(BREAKPOINT_MARKER);
-	SetBreakpoints();
+//	SetBreakpoints();
 }
 
 void DebuggerGDB::CmdStop()
@@ -1028,6 +1062,8 @@ void DebuggerGDB::BringAppToFront()
 void DebuggerGDB::ClearActiveMarkFromAllEditors()
 {
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
+	if (!edMan)
+        return;
 	for (int i = 0; i < edMan->GetEditorsCount(); ++i)
 	{
         cbEditor* ed = edMan->GetBuiltinEditor(i);
@@ -1086,8 +1122,8 @@ wxString DebuggerGDB::GetEditorWordAtCaret()
 void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
 {
     static bool init_flag=false;
-    static bool toolflags[3];
-    bool tmpflags[3];
+    static bool toolflags[4];
+    bool tmpflags[4];
 
 	cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
@@ -1097,7 +1133,7 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
         mbar->Enable(idMenuDebug, !m_pProcess && prj);
         mbar->Enable(idMenuContinue, m_pProcess && prj && m_ProgramIsStopped);
         mbar->Enable(idMenuNext, m_pProcess && prj && m_ProgramIsStopped);
-        mbar->Enable(idMenuStep, m_pProcess && prj && m_ProgramIsStopped);
+        mbar->Enable(idMenuStep, prj && m_ProgramIsStopped);
  		mbar->Enable(idMenuRunToCursor, prj && ed && m_ProgramIsStopped);
 		mbar->Enable(idMenuToggleBreakpoint, ed && m_ProgramIsStopped);
 		mbar->Enable(idMenuSendCommandToGDB, m_pProcess && m_ProgramIsStopped);
@@ -1126,20 +1162,23 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
         tmpflags[0]=((!m_pProcess || m_ProgramIsStopped) && prj);
         tmpflags[1]=(prj && ed && m_ProgramIsStopped);
         tmpflags[2]=(m_pProcess && prj && m_ProgramIsStopped);
+        tmpflags[3]=(prj && m_ProgramIsStopped);
         if(!init_flag ||
            toolflags[0]!=tmpflags[0] ||
            toolflags[1]!=tmpflags[1] ||
-           toolflags[2]!=tmpflags[2])
+           toolflags[2]!=tmpflags[2] ||
+           toolflags[3]!=tmpflags[3])
         {
             if(!init_flag) init_flag=true;
             toolflags[0]=tmpflags[0];
             toolflags[1]=tmpflags[1];
             toolflags[2]=tmpflags[2];
+            toolflags[3]=tmpflags[3];
 
             tbar->EnableTool(idMenuDebug,toolflags[0]);
             tbar->EnableTool(idMenuRunToCursor,toolflags[1]);
             tbar->EnableTool(idMenuNext,toolflags[2]);
-            tbar->EnableTool(idMenuStep,toolflags[2]);
+            tbar->EnableTool(idMenuStep,toolflags[3]);
             tbar->EnableTool(idMenuStop,toolflags[2]);
             // This creates a recursive call but since we're checking the flags
             // it only happens once.
@@ -1176,7 +1215,13 @@ void DebuggerGDB::OnNext(wxCommandEvent& event)
 
 void DebuggerGDB::OnStep(wxCommandEvent& event)
 {
-	CmdStep();
+	if (!m_pProcess)
+	{
+		m_BreakOnEntry = true;
+		Debug();
+	}
+	else
+        CmdStep();
 }
 
 void DebuggerGDB::OnRunToCursor(wxCommandEvent& event)
@@ -1276,6 +1321,17 @@ wxString DebuggerGDB::GetInfoFor(const wxString& dbgCmd)
 	while (!buf.IsEmpty() && i < 500)
 	{
 		buf = GetNextOutputLine();
+        //GDB workaround
+        //If overloaded C++ constructor/destructor, break on all.
+		if (buf.StartsWith(g_EscapeChars))
+		{
+			buf.Remove(0,2);
+			if (buf.Matches("overload-choice"))
+			{
+				SendCommand("1");
+			}
+		}
+        //end GDB workaround		
 		#if wxVERSION_NUMBER < 2500
             wxUsleep(5);
         #else
@@ -1374,6 +1430,7 @@ void DebuggerGDB::OnBreakpointAdded(CodeBlocksEvent& event)
 	if (ed)
 	{
 		Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Breakpoint added: file %s, line %d"), ed->GetFilename().c_str(), event.GetInt() + 1);
+/*		
 		ProjectFile* pf = ed->GetProjectFile();
 		if (!pf)
 			return;
@@ -1383,6 +1440,7 @@ void DebuggerGDB::OnBreakpointAdded(CodeBlocksEvent& event)
 		wxString cmd;
 		cmd << "break " << filename << ":" << event.GetInt() + 1;
 		SendCommand(cmd);
+*/		
 	}
 	else
 		Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("OnBreakpointAdded(): No editor defined!"));
@@ -1397,6 +1455,7 @@ void DebuggerGDB::OnBreakpointDeleted(CodeBlocksEvent& event)
 	if (ed)
 	{
 		Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Breakpoint deleted: file %s, line %d"), ed->GetFilename().c_str(), event.GetInt() + 1);
+/*		
 		ProjectFile* pf = ed->GetProjectFile();
 		if (!pf)
 			return;
@@ -1406,6 +1465,7 @@ void DebuggerGDB::OnBreakpointDeleted(CodeBlocksEvent& event)
 		wxString cmd;
 		cmd << "clear " << filename << ":" << event.GetInt() + 1;
 		SendCommand(cmd);
+*/		
 	}
 	else
 		Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("OnBreakpointDeleted(): No editor defined!"));

@@ -51,6 +51,7 @@ void SearchResultsLog::SyncEditor(int selIndex)
     ed->GetControl()->GotoLine(line - 10);
     ed->GetControl()->GotoLine(line + 10);
     ed->GetControl()->GotoLine(line - 1);
+    ed->Activate();
 }
 
 void SearchResultsLog::OnClick(wxCommandEvent& event)

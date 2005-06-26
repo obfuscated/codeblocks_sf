@@ -157,9 +157,6 @@ FileType FileTypeOf(const wxString& filename)
 	else if (ext.Matches(EXECUTABLE_EXT))
 		return ftExecutable;
 
-	else if (ext.Matches(LUA_EXT))
-		return ftLua;
-
 	return ftOther;
 }
 

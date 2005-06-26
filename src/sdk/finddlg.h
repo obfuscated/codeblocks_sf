@@ -6,7 +6,7 @@
 class FindDlg : public FindReplaceBase
 {
 	public:
-		FindDlg(wxWindow* parent, const wxString& initial = wxEmptyString, bool hasSelection = false);
+		FindDlg(wxWindow* parent, const wxString& initial = wxEmptyString, bool hasSelection = false, bool findInFilesOnly = false);
 		~FindDlg();
 		wxString GetFindString();
 		wxString GetReplaceString(){ return wxEmptyString; }
@@ -22,6 +22,7 @@ class FindDlg : public FindReplaceBase
 		void OnFindChange(wxCommandEvent& event);
 		void OnRegEx(wxCommandEvent& event);
 	private:
+        bool m_Complete;
 		DECLARE_EVENT_TABLE()
 };
 

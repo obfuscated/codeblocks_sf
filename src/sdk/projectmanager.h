@@ -199,7 +199,7 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
 		  * @param filename The workspace to open.
 		  * @return True if the workspace loads succefully, false if not.
 		  */
-		bool LoadWorkspace(const wxString& filename = "");
+		bool LoadWorkspace(const wxString& filename = DEFAULT_WORKSPACE);
 		/** Save the open workspace.
 		  * @return True if the workspace is saved succefully, false if not.
 		  */

@@ -766,6 +766,23 @@ void cbEditor::MarkerToggle(int marker, int line)
 			m_pControl->MarkerAdd(line, BREAKPOINT_MARKER);
 			m_pControl->MarkerAdd(line, BREAKPOINT_LINE);
 			NotifyPlugins(cbEVT_EDITOR_BREAKPOINT_ADDED, line);
+
+            //Workaround for GDB to break on C++ constructor/destructor
+			wxString lb = m_pControl->GetLine(line);
+			wxString cppClassName;
+            wxString cppDestructor = _("~");
+			char bufBase[40], bufMethod[40];
+			int i = sscanf((const char *)lb, _("%[0-9A-Za-z_~]::%[0-9A-Za-z_~]("), bufBase, bufMethod);
+			if (i == 2)
+            {
+				cppClassName << bufBase;
+				cppDestructor << cppClassName;
+				if (cppClassName.Matches(bufMethod) || cppDestructor.Matches(bufMethod))
+					bp->func << cppClassName << "::" << bufMethod;
+				else
+                    bp->func.Empty();
+			}
+            //end GDB workaround
 		}
 		else
 		{
