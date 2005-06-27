@@ -479,6 +479,11 @@ bool cbEditor::Reload()
     return true;
 }
 
+void cbEditor::Touch()
+{
+	m_LastModified = wxDateTime::Now();
+}
+
 bool cbEditor::Open()
 {
     if (!wxFileExists(m_Filename))

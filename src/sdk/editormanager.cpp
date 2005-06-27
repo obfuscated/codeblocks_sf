@@ -819,7 +819,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
         }
         wxFileName fname(ed->GetFilename());
         wxDateTime last = fname.GetModificationTime();
-        if (!last.IsEqualTo(ed->GetLastModificationTime()))
+        if (last.IsLaterThan(ed->GetLastModificationTime()))
         {
             // modified; ask to reload
             int ret = -1;
@@ -838,8 +838,10 @@ void EditorManager::CheckForExternallyModifiedFiles()
                 if (!ed->Reload())
                     failedFiles.Add(ed->GetFilename());
             }
-            if (ret == crCancel)
+            else if (ret == crCancel)
                 break;
+            else if (ret == crNo)
+                ed->Touch();
         }
     }
     

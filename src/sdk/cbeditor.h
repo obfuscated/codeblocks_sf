@@ -156,6 +156,8 @@ class DLLIMPORT cbEditor : public EditorBase
         wxString GetLineIndentString(int line = -1);
         /** Returns the last modification time for the file. Used to detect modifications outside the editor. */
         wxDateTime GetLastModificationTime(){ return m_LastModified; }
+        /** Sets the last modification time for the file to 'now'. Used to detect modifications outside the editor. */
+        void Touch();
         /** Reloads the file from disk. @return True on success, False on failure. */
         bool Reload();
         /** Print the file.
