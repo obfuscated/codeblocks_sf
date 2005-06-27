@@ -3,7 +3,7 @@
 <Code::Blocks_lexer_properties>
 		<Lexer name="C/C++"
 				index="3"
-				filemasks="*.c,*.cpp,*.cc,*.cxx,*.h,*.hpp,*.hh,*.hxx,*.inc">
+				filemasks="*.c,*.cpp,*.cc,*.cxx,*.h,*.hpp,*.hh,*.hxx,*.inl">
 				<Style name="Default"
 						index="0"
 						fg="0,0,0"
@@ -11,15 +11,29 @@
 						bold="0"
 						italics="0"
 						underlined="0"/>
-				<Style name="Comment"
-						index="1,2,3,15,17,18"
+				<Style name="Comment (normal)"
+						index="1,2"
 						fg="160,160,160"/>
+				<Style name="Comment (documentation)"
+						index="3,15"
+						fg="128,128,255"
+						bold="1"/>
+				<Style name="Comment keyword (documentation)"
+						index="17"
+						fg="0,128,128"/>
+				<Style name="Comment keyword error (documentation)"
+						index="18"
+						fg="128,0,0"/>
 				<Style name="Number"
 						index="4"
 						fg="240,0,240"/>
 				<Style name="Keyword"
-						index="5,16"
+						index="5"
 						fg="0,0,160"
+						bold="1"/>
+				<Style name="User keyword"
+						index="16"
+						fg="0,160,0"
 						bold="1"/>
 				<Style name="String"
 						index="6,12"
@@ -59,15 +73,30 @@
 				<Style name="No matching brace highlight"
 						index="35"
 						bg="255,0,0"/>
-				<Keywords value="asm auto bool break case catch char class const 
-						const_cast continue default delete do double 
-						dynamic_cast else enum explicit export extern 
-						false float for friend goto if inline int long 
-						mutable namespace new operator private protected 
-						public register reinterpret_cast return short signed 
-						sizeof static static_cast struct switch template this 
-						throw true try typedef typeid typename union unsigned 
-						using virtual void volatile wchar_t while "/>
+				<Keywords>
+						<Language index="0"
+								value="asm auto bool break case catch char class const 
+								const_cast continue default delete do double 
+								dynamic_cast else enum explicit export extern 
+								false float for friend goto if inline int long 
+								mutable namespace new operator private protected 
+								public register reinterpret_cast return short signed 
+								sizeof static static_cast struct switch template this 
+								throw true try typedef typeid typename union unsigned 
+								using virtual void volatile wchar_t while "/>
+						<User index="1"/>
+						<Documentation index="2"
+								value="a addindex addtogroup anchor arg attention
+								author b brief bug c class code date def defgroup deprecated dontinclude
+								e em endcode endhtmlonly endif endlatexonly endlink endverbatim enum example exception
+								f$ f[ f] file fn hideinitializer htmlinclude htmlonly
+								if image include ingroup internal invariant interface latexonly li line link
+								mainpage name namespace nosubgrouping note overload
+								p page par param post pre ref relates remarks return retval
+								sa section see showinitializer since skip skipline struct subsection
+								test throw todo typedef union until
+								var verbatim verbinclude version warning weakgroup $ @ \ & < > # { }"/>
+				</Keywords>
 				<SampleCode value="lexer_cpp.sample"
 						breakpoint_line="20"
 						debug_line="22"

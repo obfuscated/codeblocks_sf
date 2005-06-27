@@ -9,7 +9,7 @@
 /**
   * This is a documentation comment block
   * @param xxx does this (this is the documentation keyword)
-  * @author some user (this is the documentation keyword error)
+  * @authr some user (this is the documentation keyword error)
   */
 
 int main(int argc, char **argv)

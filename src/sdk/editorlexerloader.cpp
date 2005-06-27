@@ -117,7 +117,21 @@ void EditorLexerLoader::DoKeywords(int language, TiXmlElement* node)
     TiXmlElement* keywords = node->FirstChildElement("Keywords");
     if (!keywords)
         return;
-    m_pTarget->SetKeywords(language, keywords->Attribute("value"));
+    DoSingleKeywordNode(language, keywords, _("Language"));
+    DoSingleKeywordNode(language, keywords, _("Documentation"));
+    DoSingleKeywordNode(language, keywords, _("User"));
+}
+
+void EditorLexerLoader::DoSingleKeywordNode(int language, TiXmlElement* node, const wxString& nodename)
+{
+    TiXmlElement* keywords = node->FirstChildElement(nodename);
+    if (!keywords)
+        return;
+    LOGSTREAM << "Found " << nodename << '\n';
+    int keyidx = keywords->Attribute(_("index")) ? atol(keywords->Attribute(_("index"))) : -1;
+    LOGSTREAM << "keyidx=" << keyidx << '\n';
+    if (keyidx != -1)
+        m_pTarget->SetKeywords(language, keyidx, keywords->Attribute("value"));
 }
 
 void EditorLexerLoader::DoSampleCode(int language, TiXmlElement* node)

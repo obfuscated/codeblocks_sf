@@ -527,9 +527,9 @@ void EditorConfigurationDlg::OnEditKeywords(wxCommandEvent& event)
 	{
 		wxString keyw = wxGetTextFromUser(_("Edit keywords:"),
 										m_Theme->GetLanguageName(m_Lang),
-										m_Theme->GetKeywords(m_Lang));
+										m_Theme->GetKeywords(m_Lang, 0));
 		if (!keyw.IsEmpty())
-			m_Theme->SetKeywords(m_Lang, keyw);
+			m_Theme->SetKeywords(m_Lang, 0, keyw);
 	}
 }
 
