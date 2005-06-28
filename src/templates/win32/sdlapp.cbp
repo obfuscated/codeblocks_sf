@@ -20,8 +20,9 @@
 			</Target>
 		</Build>
 		<Linker>
-			<Add library="SDL"/>
+			<Add library="mingw32"/>
 			<Add library="SDLmain"/>
+			<Add library="SDL"/>
 		</Linker>
 	</Project>
 </Code::Blocks_project_file>
