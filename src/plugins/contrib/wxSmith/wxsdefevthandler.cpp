@@ -19,11 +19,12 @@ void wxsDefEvtHandler::OnLClick(wxMouseEvent& event)
 {
     wxsEvent SelectEvent(wxEVT_SELECT_WIDGET,0,NULL,Widget);
     wxPostEvent(wxSmith::Get(),SelectEvent);
-    // wxsPropertiesMan::Get()->SetActiveWidget(Widget);
+	event.Skip();
 }
 
 void wxsDefEvtHandler::OnLDClick(wxMouseEvent& event)
 {
+	event.Skip();
 }
 
 BEGIN_EVENT_TABLE(wxsDefEvtHandler,wxEvtHandler)

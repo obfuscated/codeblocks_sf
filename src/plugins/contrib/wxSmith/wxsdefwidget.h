@@ -4,6 +4,7 @@
 #include "widget.h"
 
 #include <vector>
+#include <wx/event.h>
 
 
 #define wxsDWDeclareBegin(Name,pType,WidgetId)                              \
@@ -29,7 +30,7 @@
 #define wxsDWDeclareEnd()                                                   \
     };
 
-#define wxsDWDefineBegin(Name,WidgetName,Code)                              \
+#define wxsDWDefineBeginExt(Name,WidgetName,Code,SkipEvents)                \
     const char* Name::GetGeneratingCodeStr() { return #Code; }              \
     const char* Name::GetWidgetNameStr() { return #WidgetName; }            \
     wxWindow* Name::MyCreatePreview(wxWindow* parent)                       \
@@ -44,6 +45,10 @@
             wxSize(BaseParams.SizeX,BaseParams.SizeY);                      \
         long style = BaseParams.Style;                                      \
         Code;                                                               \
+        if ( SkipEvents )													\
+        {																	\
+			ThisWidget->PushEventHandler(&wxsStopMouseEvents::GetObject());	\
+        }																	\
         return ThisWidget;                                                  \
     }                                                                       \
     void Name::BuildExtVars()                                               \
@@ -72,9 +77,18 @@
         
 #define wxsDWDefStrX(Name,XrcName,PropName,Default)                         \
         evStr(Name,#Name,XrcName,PropName,Default);
+
+#define wxsDWDefStrArray(Name,PropName,Default)                             \
+        evStrArray(Name,#Name,#Name,#Name,PropName,Default);
+
+#define wxsDWDefStrArrayX(Name,XrcParentName,XrcChildName,PropName,Default) \
+        evStrArray(Name,#Name,XrcParentName,XrcChildName,PropName,Default);
         
 #define wxsDWDefineEnd()                                                    \
     }
+
+#define wxsDWDefineBegin(Name,WidgetName,Code)                				\
+	wxsDWDefineBeginExt(Name,WidgetName,Code,false)
 
 class wxsDefWidget: public wxsWidget
 {
@@ -100,6 +114,7 @@ class wxsDefWidget: public wxsWidget
         void evInt(int& Val,char* Name,char* XrcName,char* PropName,int DefValue);
         void ev2Int(int& Val1,int& Val2,char* XrcName,char* Name,char* PropName,int DefValue1,int DefValue2);
         void evStr(wxString& Val,char* Name,char* XrcName,char* PropName,wxString DefValue);
+        void evStrArray(wxArrayString& Val,char* Name,char* XrcParentName,char* XrcChildName,char* PropName, int DefValue);
         
         virtual void BuildExtVars() = 0;
         virtual const char* GetGeneratingCodeStr() = 0;
@@ -124,6 +139,23 @@ class wxsDefWidget: public wxsWidget
         void CodeReplace(const wxString& Old,const wxString& New);
         
 };
+
+
+/** Declaration of class which stops processing mouse events */
+class wxsStopMouseEvents: public wxEvtHandler
+{
+	public:
+	
+		virtual ~wxsStopMouseEvents() {}
+		inline static wxsStopMouseEvents& GetObject() { return Object; }
+		
+	private:
+		
+		static wxsStopMouseEvents Object;
+        void SkipEvent(wxEvent& event);
+		DECLARE_EVENT_TABLE()
+};
+
 
 
 

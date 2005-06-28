@@ -713,3 +713,89 @@ void wxsWidget::BuildTree(wxTreeCtrl* Tree,wxTreeItemId Id,int Index)
         GetChild(i)->BuildTree(Tree,SubId);
     }
 }
+
+//Added by cyberkoa 
+/* ======================================================================
+    Function Name : XmlSetStringArray
+   ======================================================================
+
+ Description : To write a series of strings from XRC with ParentName as 
+               parent element and ChildName as child element
+  Example :  ParentName = "content" , ChildName="item"
+              <content>
+                   <item>Item 1</item>
+                   <item>Option 2</item>
+                   <item>3rd choice</item>
+              </content>
+              
+*/              
+
+bool wxsWidget::XmlSetStringArray(const char* ParentName,const char* ChildName,wxArrayString& stringArray)
+{
+    assert ( XmlElem() != NULL );
+ 
+    int Count = stringArray.GetCount();
+    // No item, return without writing <content> and <item> elements 
+    if(Count==0) return false;
+    
+    // Adding <ParentName>  element
+    TiXmlElement* ParentElement;
+    TiXmlElement* ChildElement;
+    ParentElement = XmlElem()->InsertEndChild(TiXmlElement(ParentName))->ToElement();
+    
+    for ( int i=0; i<Count; i++ )
+    {
+      ChildElement = ParentElement->InsertEndChild(TiXmlElement(ChildName))->ToElement();
+      
+      if (ChildElement)
+        ChildElement->InsertEndChild(TiXmlText(stringArray[i].c_str()));
+    }   
+    return true;      
+}
+//End added
+
+//Added by cyberkoa 
+/* ======================================================================
+    Function Name : XmlGetStringArray
+   ======================================================================
+
+ Description : To read a series of strings from XRC with ParentName as 
+               parent element and ChildName as child element
+  Example :  ParentName = "content" , ChildName="item"
+              <content>
+                   <item>Item 1</item>
+                   <item>Option 2</item>
+                   <item>3rd choice</item>
+              </content>
+              
+*/              
+bool wxsWidget::XmlGetStringArray(const char* ParentName,const char* ChildName,wxArrayString& stringArray)
+{
+    assert ( XmlElem() != NULL );
+    
+     // Empty it to make sure element added in an empty wxArrayString
+      stringArray.Empty(); 
+     
+    TiXmlElement* ParentElement = XmlElem()->FirstChildElement(ParentName);
+    if(!ParentElement) return false;
+    
+    for (TiXmlElement* ChildElement= ParentElement->FirstChildElement(ChildName);
+          ChildElement != NULL;
+          ChildElement = ChildElement->NextSiblingElement(ChildName))
+          {
+       
+           TiXmlNode* Node = ChildElement->FirstChild();
+           
+			while(Node)
+			{
+			 if(Node->ToText())
+              stringArray.Add(wxString::Format("%s",(Node->ToText()->Value())));
+
+              Node=Node->NextSibling();
+            } 
+          }
+       
+      if(stringArray.GetCount() > 0)return true; else return false;
+      
+}
+//End added

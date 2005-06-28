@@ -62,6 +62,16 @@
 			<Option link="0"/>
 			<Option target="default"/>
 		</Unit>
+		<Unit filename="defwidgets\wxscombobox.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="defwidgets\wxscombobox.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
 		<Unit filename="defwidgets\wxsdialog.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="default"/>

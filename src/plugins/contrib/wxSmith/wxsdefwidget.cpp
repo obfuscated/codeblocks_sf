@@ -252,3 +252,55 @@ void wxsDefWidget::evStr(wxString& Val,char* Name,char* XrcName,char* PropName,w
     }
 }
 
+void wxsDefWidget::evStrArray(wxArrayString& Val,char* Name,char* XrcParentName,char* XrcChildName,char* PropName, int DefValue)
+{
+    switch ( evUse )
+    {
+        case Init:
+        {
+           // Val = {};
+            break;
+        }
+        
+        case XmlL:
+        {
+             if(XmlGetStringArray(XrcParentName,XrcChildName,Val))
+             {
+              // Put something useful after loading
+             }             
+            break;
+        }
+        
+        case XmlS:
+        {
+             if(XmlSetStringArray(XrcParentName,XrcChildName,Val))
+             {
+               // Put something useful after saving
+             }           
+            break;
+        }
+        
+        case Code:
+        {
+          // cyberkoa : Not ready yet.
+           // CodeReplace(Name,wxString::Format("wxT(%s)",GetCString(Val).c_str()));
+            break;
+        }
+        
+        case Props:
+        {
+           // cyberkoa : Not ready yet.
+            //PropertiesObject.AddProperty(PropName,Val);
+        }
+    }
+}
+
+void wxsStopMouseEvents::SkipEvent(wxEvent& event)
+{}
+
+wxsStopMouseEvents wxsStopMouseEvents::Object;
+
+BEGIN_EVENT_TABLE(wxsStopMouseEvents,wxEvtHandler)
+    EVT_LEFT_DOWN(wxsStopMouseEvents::SkipEvent)
+    EVT_LEFT_DCLICK(wxsStopMouseEvents::SkipEvent)
+END_EVENT_TABLE()

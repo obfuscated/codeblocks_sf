@@ -7,6 +7,7 @@
 #include <wx/panel.h>
 #include <wx/sizer.h>
 #include <tinyxml/tinyxml.h>
+#include <settings.h>
 #include <manager.h>
 #include <messagemanager.h>
 
@@ -598,6 +599,11 @@ class wxsWidget
         /** Getting size/position from given name */
         virtual bool XmlGetIntPair(const char* Name,int& P1,int& P2,int DefP1=-1,int DefP2=-1);
         
+        // Added by cyberkoa
+        /** Getting a series of string with given parent element and child element name */
+        virtual bool wxsWidget::XmlGetStringArray(const char* ParentName,const char* ChildName, wxArrayString& stringArray);
+        //End Add
+        
         /** Setting string value */
         virtual bool XmlSetVariable(const char* Name,const char* Value);
         
@@ -621,6 +627,11 @@ class wxsWidget
          *  inside wxsWidget class.
          */
         void XmlAssignElement(TiXmlElement* Element);
+        
+        // Added by cyberkoa
+        /** Set a series of string with the same given element name */
+        virtual bool wxsWidget::XmlSetStringArray(const char* ParentName,const char* ChildName, wxArrayString& stringArray);
+        //End Add
         
         /** Reading all default values for widget */
         inline bool XmlLoadDefaults() { return XmlLoadDefaultsT(BPType); }

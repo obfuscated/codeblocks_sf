@@ -16,6 +16,7 @@ enum std_widgets
     wxsToggleButtonId,      /* Warning - not compatible with XRC 2.4 */
     wxsCheckBoxId,
     wxsStaticTextId,
+    wxsComboBoxId,
     
     /* Windows */
     wxsDialogId,

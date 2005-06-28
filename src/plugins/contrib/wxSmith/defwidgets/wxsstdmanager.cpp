@@ -8,6 +8,7 @@
 #include "wxsstatictext.h"
 #include "wxscheckbox.h"
 #include "wxstogglebutton.h"
+#include "wxscombobox.h"
 
 #include <wx/xrc/xmlres.h>
 #include <configmanager.h>
@@ -86,6 +87,8 @@ static wxsWidgetInfo StdInfos[] =
     Entry(ToggleButton,"wx396.htm#wxtogglebutton")
     Entry(CheckBox,    "wx52.htm#wxcheckbox")
     Entry(StaticText,  "wx362.htm#wxstatictext")
+    Entry(ComboBox,    "wx362.htm#wxcombobox")
+    
 
     {   "wxDialog",
         DefLicence,
@@ -213,6 +216,8 @@ wxsWidget* wxsStdManagerT::ProduceWidget(int Id)
         case wxsFrameId:        return new wxsFrame(this);
         case wxsDialogId:       return new wxsDialog(this);
         case wxsToggleButtonId: return new wxsToggleButton(this);
+        case wxsComboBoxId:     return new wxsComboBox(this);
+       
     }
     
     return NULL;

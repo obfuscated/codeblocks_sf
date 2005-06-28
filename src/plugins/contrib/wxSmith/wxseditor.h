@@ -1,8 +1,8 @@
 #ifndef WXSEDITOR_H
 #define WXSEDITOR_H
 
+#include <settings.h>
 #include <editorbase.h>
-#include <wx/mdi.h>
 
 class wxsResource;
 
