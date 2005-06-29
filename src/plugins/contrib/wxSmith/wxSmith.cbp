@@ -192,6 +192,16 @@
 			<Option link="0"/>
 			<Option target="default"/>
 		</Unit>
+		<Unit filename="properties\wxsstringlistproperty.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="properties\wxsstringlistproperty.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
 		<Unit filename="properties\wxsstringproperty.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="default"/>

@@ -69,7 +69,13 @@
                 <flag>wxALL|wxALIGN_CENTER</flag>
             </object>
             <object class="sizeritem">
-                <object class="wxComboBox" name="ID_COMMON" variable="Unknown" member="yes" />
+                <object class="wxComboBox" name="ID_COMMON" variable="Unknown" member="yes">
+                    <content>
+                        <item>First</item>
+                        <item>Second</item>
+                        <item>Third</item>
+                    </content>
+                </object>
                 <border>5</border>
                 <flag>wxALL|wxALIGN_CENTER</flag>
             </object>

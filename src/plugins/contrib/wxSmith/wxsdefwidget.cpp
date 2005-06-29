@@ -264,33 +264,32 @@ void wxsDefWidget::evStrArray(wxArrayString& Val,char* Name,char* XrcParentName,
         
         case XmlL:
         {
-             if(XmlGetStringArray(XrcParentName,XrcChildName,Val))
-             {
-              // Put something useful after loading
-             }             
+			if(XmlGetStringArray(XrcParentName,XrcChildName,Val))
+			{
+				// Put something useful after loading
+			}             
             break;
         }
         
         case XmlS:
         {
-             if(XmlSetStringArray(XrcParentName,XrcChildName,Val))
-             {
-               // Put something useful after saving
-             }           
+			if(XmlSetStringArray(XrcParentName,XrcChildName,Val))
+			{
+				// Put something useful after saving
+			}           
             break;
         }
         
         case Code:
         {
-          // cyberkoa : Not ready yet.
-           // CodeReplace(Name,wxString::Format("wxT(%s)",GetCString(Val).c_str()));
+			// cyberkoa : Not ready yet.
+			// CodeReplace(Name,wxString::Format("wxT(%s)",GetCString(Val).c_str()));
             break;
         }
         
         case Props:
         {
-           // cyberkoa : Not ready yet.
-            //PropertiesObject.AddProperty(PropName,Val);
+           PropertiesObject.AddProperty(wxT("Items"),Val);
         }
     }
 }

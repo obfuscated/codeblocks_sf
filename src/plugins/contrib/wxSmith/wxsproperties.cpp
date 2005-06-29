@@ -4,6 +4,7 @@
 #include "properties/wxsintproperty.h"
 #include "properties/wxsboolproperty.h"
 #include "properties/wxs2intproperty.h"
+#include "properties/wxsstringlistproperty.h"
 #include "widget.h"
 
 #include <wx/stattext.h>
@@ -42,6 +43,16 @@ void wxsProperties::AddProperty(const wxString& Name,bool& Value,int Position,bo
 void wxsProperties::Add2IProperty(const wxString& Name,int& Value1,int& Value2,int Position,bool Rs,bool Rc)
 {
     AddProperty(Name,new wxs2IntProperty(this,Value1,Value2),Position,Rs,Rc);
+}
+		
+void wxsProperties::AddProperty(const wxString& Name,wxArrayString& Array,int Position,bool Rs,bool Rc)
+{
+	AddProperty(Name,new wxsStringListProperty(this,Array),Position,Rs,Rc);
+}
+
+void wxsProperties::AddProperty(const wxString& Name,wxArrayString& Array,int& Selected,int Position,bool Rs,bool Rc)
+{
+	AddProperty(Name,new wxsStringListProperty(this,Array,Selected),Position,Rs,Rc);
 }
 		
 void wxsProperties::AddProperty(const wxString& Name,wxsProperty* Prop,int Position,bool Rs,bool Rc)

@@ -89,7 +89,13 @@ class wxsProperties
 		/** Adding new 2xinteger property */
 		virtual void Add2IProperty(const wxString& Name,int& Value1,int& Value2,int Position=-1,bool Reshape=true,bool Recreate=false);
 		
-		/** Adding custon property */
+		/** Adding new wxArrayStrting property */
+		virtual void AddProperty(const wxString& Name,wxArrayString& Array,int Position=-1,bool Reshape=true,bool Recreate=false);
+		
+		/** Adding new wxArrayStrting property with additional "selected" flag */
+		virtual void AddProperty(const wxString& Name,wxArrayString& Array,int& Selected,int Position=-1,bool Reshape=true,bool Recreate=false);
+		
+		/** Adding custom property */
 		virtual void AddProperty(const wxString& Name,wxsProperty* Property,int Position=-1,bool Reshape=true,bool Recreate=false);
 		
 		/** Generating properties window for this properties */
