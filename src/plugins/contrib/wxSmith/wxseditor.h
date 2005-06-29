@@ -1,7 +1,6 @@
 #ifndef WXSEDITOR_H
 #define WXSEDITOR_H
 
-#include <settings.h>
 #include <editorbase.h>
 
 class wxsResource;

@@ -60,14 +60,6 @@
                 <flag>wxALL|wxALIGN_CENTER</flag>
             </object>
             <object class="sizeritem">
-                <object class="wxToggleButton" name="ID_COMMON" variable="Unknown" member="yes">
-                    <label>test</label>
-                    <checked>1</checked>
-                </object>
-                <border>5</border>
-                <flag>wxALL|wxALIGN_CENTER</flag>
-            </object>
-            <object class="sizeritem">
                 <object class="wxStaticText" name="ID_COMMON" variable="Unknown" member="yes">
                     <label>Abc</label>
                     <size>100,30</size>
