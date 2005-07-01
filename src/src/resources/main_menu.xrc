@@ -192,9 +192,18 @@
         <help>Selects the entire text range</help>
       </object>
       <object class="wxMenuItem" name="idEditCommentSelected">
-        <label>Comme&amp;nt / uncomment</label>
+        <label>Comme&amp;nt</label>
         <accel>Shift-Ctrl-C</accel>
-        <help>Comments / uncomments the selected block of code</help>
+        <help>Comments the selected block of code</help>
+      </object>
+      <object class="wxMenuItem" name="idEditUncommentSelected">
+        <label>Un&amp;comment</label>
+        <accel>Shift-Ctrl-X</accel>
+        <help>Uncomments the selected block of code</help>
+      </object>
+      <object class="wxMenuItem" name="idEditToggleCommentSelected">
+        <label>Toggle Comme&amp;nt</label>
+        <help>Toggles the commentation of the selected block of code</help>
       </object>
       <object class="wxMenuItem" name="idEditAutoComplete">
         <label>Auto-complete</label>

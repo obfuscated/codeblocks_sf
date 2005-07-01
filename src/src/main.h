@@ -65,6 +65,8 @@ class MainFrame : public wxFrame
         void OnEditEOLMode(wxCommandEvent& event);
         void OnEditSelectAll(wxCommandEvent& event);
         void OnEditCommentSelected(wxCommandEvent& event);
+        void OnEditUncommentSelected(wxCommandEvent& event);
+        void OnEditToggleCommentSelected(wxCommandEvent & event);
         void OnEditAutoComplete(wxCommandEvent& event);
 		
 		void OnEditBookmarksToggle(wxCommandEvent& event);

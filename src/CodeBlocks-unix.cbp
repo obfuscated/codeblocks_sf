@@ -30,6 +30,7 @@
 				<Option parameters="--debug-log --no-check-associations"/>
 				<Option projectLinkerOptionsRelation="2"/>
 				<Compiler>
+					<Add option="-fPIC"/>
 					<Add option="-DEXPORT_LIB"/>
 					<Add option="-DEXPORT_EVENTS"/>
 					<Add option="-D_USRDLL"/>
@@ -73,8 +74,10 @@
 				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="2"/>
 				<Compiler>
+					<Add option="-fPIC"/>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
+					<Add option="-DNDEBUG"/>
 					<Add directory="sdk"/>
 					<Add directory="plugins/astyle/astyle"/>
 				</Compiler>
@@ -97,6 +100,7 @@
 				<Option projectIncludeDirsRelation="2"/>
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
+					<Add option="-fPIC"/>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
 					<Add option="-DDEPSLIB_UNIX"/>
@@ -122,6 +126,7 @@
 				<Option projectIncludeDirsRelation="2"/>
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
+					<Add option="-fPIC"/>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
 					<Add directory="sdk"/>
@@ -145,6 +150,7 @@
 				<Option projectIncludeDirsRelation="2"/>
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
+					<Add option="-fPIC"/>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
 					<Add directory="sdk"/>
@@ -168,6 +174,7 @@
 				<Option projectIncludeDirsRelation="2"/>
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
+					<Add option="-fPIC"/>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
 					<Add directory="sdk"/>
@@ -191,6 +198,7 @@
 				<Option projectIncludeDirsRelation="2"/>
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
+					<Add option="-fPIC"/>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
 					<Add directory="sdk"/>
@@ -213,6 +221,7 @@
 				<Option projectIncludeDirsRelation="2"/>
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
+					<Add option="-fPIC"/>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
 					<Add directory="sdk"/>
@@ -234,6 +243,7 @@
 				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="2"/>
 				<Compiler>
+					<Add option="-fPIC"/>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
 					<Add directory="sdk"/>
@@ -255,6 +265,7 @@
 				<Option projectIncludeDirsRelation="2"/>
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
+					<Add option="-fPIC"/>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
 					<Add directory="sdk"/>
@@ -335,25 +346,11 @@
 			<Option link="0"/>
 			<Option target="src"/>
 		</Unit>
-		<Unit filename="plugins/astyle/asstreamiterator.cpp">
-			<Option compilerVar="CPP"/>
-			<Option target="plugin_Astyle"/>
-		</Unit>
-		<Unit filename="plugins/astyle/asstreamiterator.h">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="plugin_Astyle"/>
-		</Unit>
 		<Unit filename="plugins/astyle/astyle/ASBeautifier.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="plugin_Astyle"/>
 		</Unit>
 		<Unit filename="plugins/astyle/astyle/ASFormatter.cpp">
-			<Option compilerVar="CPP"/>
-			<Option target="plugin_Astyle"/>
-		</Unit>
-		<Unit filename="plugins/astyle/astyle/ASResource.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="plugin_Astyle"/>
 		</Unit>

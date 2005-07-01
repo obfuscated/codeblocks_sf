@@ -110,6 +110,8 @@ int idEditEOLCR = XRCID("idEditEOLCR");
 int idEditEOLLF = XRCID("idEditEOLLF");
 int idEditSelectAll = XRCID("idEditSelectAll");
 int idEditCommentSelected = XRCID("idEditCommentSelected");
+int idEditUncommentSelected = XRCID("idEditUncommentSelected");
+int idEditToggleCommentSelected = XRCID("idEditToggleCommentSelected");
 int idEditAutoComplete = XRCID("idEditAutoComplete");
 
 int idViewToolMain = XRCID("idViewToolMain");
@@ -200,6 +202,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idEditBookmarksPrevious, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditCommentSelected, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditAutoComplete, MainFrame::OnEditMenuUpdateUI)
+    EVT_UPDATE_UI(idEditUncommentSelected, MainFrame::OnEditMenuUpdateUI)
+    EVT_UPDATE_UI(idEditToggleCommentSelected, MainFrame::OnEditMenuUpdateUI)
 
     EVT_UPDATE_UI(idSearchFind, MainFrame::OnSearchMenuUpdateUI)
     EVT_UPDATE_UI(idSearchFindNext, MainFrame::OnSearchMenuUpdateUI)
@@ -259,6 +263,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idEditBookmarksPrevious,  MainFrame::OnEditBookmarksPrevious)
     EVT_MENU(idEditCommentSelected, MainFrame::OnEditCommentSelected)
     EVT_MENU(idEditAutoComplete, MainFrame::OnEditAutoComplete)
+    EVT_MENU(idEditUncommentSelected, MainFrame::OnEditUncommentSelected)
+    EVT_MENU(idEditToggleCommentSelected, MainFrame::OnEditToggleCommentSelected)
 
     EVT_MENU(idSearchFind,  MainFrame::OnSearchFind)
     EVT_MENU(idSearchFindNext,  MainFrame::OnSearchFindNext)
@@ -1401,7 +1407,108 @@ void MainFrame::OnEditSelectAll(wxCommandEvent& event)
         ed->GetControl()->SelectAll();
 }
 
+/* This is a shameless rip-off of the original OnEditCommentSelected function,
+ * now more suitingly named OnEditToggleCommentSelected (because that's what
+ * it does :)
+ */
 void MainFrame::OnEditCommentSelected(wxCommandEvent& event)
+{
+    cbEditor* ed = m_pEdMan->GetBuiltinActiveEditor();
+	if( ed )
+	{
+        ed->GetControl()->BeginUndoAction();
+		cbStyledTextCtrl *stc = ed->GetControl();
+		if( wxSTC_INVALID_POSITION != stc->GetSelectionStart() )
+		{
+			int startLine = stc->LineFromPosition( stc->GetSelectionStart() );
+			int endLine   = stc->LineFromPosition( stc->GetSelectionEnd() );
+			wxString strLine, str;
+
+            /**
+                Fix a glitch: when selecting multiple lines and the caret
+                is at the start of the line after the last line selected,
+                the code would, wrongly, (un)comment that line too.
+                This fixes it.
+            */
+            if (startLine != endLine && // selection is more than one line
+                stc->GetColumn( stc->GetSelectionEnd() ) == 0) // and the caret is at the start of the line
+            {
+                // don't take into account the line the caret is on,
+                // because it contains no selection (caret_column == 0)...
+                --endLine;
+            }
+            
+			while( startLine <= endLine )
+			{
+				// For each line: comment.
+				strLine = stc->GetLine( startLine );
+				
+                // Comment
+                /// @todo This should be language-dependent. We're currently assuming C++
+                stc->InsertText( stc->PositionFromLine( startLine ), _( "//" ) );
+				
+				startLine++;
+			}
+		}
+		ed->GetControl()->EndUndoAction();
+	}
+}
+
+/* See above (OnEditCommentSelected) for details. */
+void MainFrame::OnEditUncommentSelected(wxCommandEvent& event)
+{
+    cbEditor* ed = m_pEdMan->GetBuiltinActiveEditor();
+	if( ed )
+	{
+        ed->GetControl()->BeginUndoAction();
+		cbStyledTextCtrl *stc = ed->GetControl();
+		if( wxSTC_INVALID_POSITION != stc->GetSelectionStart() )
+		{
+			int startLine = stc->LineFromPosition( stc->GetSelectionStart() );
+			int endLine   = stc->LineFromPosition( stc->GetSelectionEnd() );
+			wxString strLine, str;
+
+            /**
+                Fix a glitch: when selecting multiple lines and the caret
+                is at the start of the line after the last line selected,
+                the code would, wrongly, (un)comment that line too.
+                This fixes it.
+            */
+            if (startLine != endLine && // selection is more than one line
+                stc->GetColumn( stc->GetSelectionEnd() ) == 0) // and the caret is at the start of the line
+            {
+                // don't take into account the line the caret is on,
+                // because it contains no selection (caret_column == 0)...
+                --endLine;
+            }
+            
+			while( startLine <= endLine )
+			{
+				// For each line: if it is commented, uncomment.
+				strLine = stc->GetLine( startLine );
+				int commentPos = strLine.Strip( wxString::leading ).Find( _( "//" ) );
+				
+				if( commentPos ==0 )
+				{
+					// Uncomment
+					strLine.Replace( _( "//" ), _( "" ), false );
+						
+					// Update
+					int start = stc->PositionFromLine( startLine );
+					stc->SetTargetStart( start );
+					// The +2 is for the '//' we erased
+					stc->SetTargetEnd( start + strLine.Length() + 2 );
+					stc->ReplaceTarget( strLine );
+				}
+				
+				startLine++;
+			}
+		}
+		ed->GetControl()->EndUndoAction();
+	}
+}
+
+void MainFrame::OnEditToggleCommentSelected(wxCommandEvent& event)
 {
     cbEditor* ed = m_pEdMan->GetBuiltinActiveEditor();
 	if( ed )
@@ -1751,6 +1858,8 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
 	mbar->Check(idEditEOLLF, eolMode == wxSTC_EOL_LF);
 	mbar->Enable(idEditCommentSelected, ed);
 	mbar->Enable(idEditAutoComplete, ed);
+	mbar->Enable(idEditUncommentSelected, ed);
+	mbar->Enable(idEditToggleCommentSelected, ed);
 
 	if (m_pToolbar)
 	{
