@@ -370,11 +370,7 @@
                         <orient>wxHORIZONTAL</orient>
                         <object class="sizeritem">
                           <object class="wxComboBox" name="cmbLangs">
-                            <content>
-                              <item>C++</item>
-                              <item>LUA</item>
-                            </content>
-                            <selection>0</selection>
+                            <content/>
                             <style>wxCB_READONLY</style>
                           </object>
                           <option>1</option>
