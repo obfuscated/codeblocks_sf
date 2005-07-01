@@ -6,6 +6,7 @@
 #include <wx/radiobut.h>
 #include <wx/checkbox.h>
 #include <wx/textctrl.h>
+#include <wx/combobox.h>
 #include <wx/spinctrl.h>
 
 BEGIN_EVENT_TABLE(AstyleConfigDlg, wxDialog)
@@ -80,6 +81,7 @@ void AstyleConfigDlg::SetStyle(AStylePredefinedStyle style)
     XRCCTRL(*this, "chkIndentNamespaces", wxCheckBox)->Enable(!en);
     XRCCTRL(*this, "chkIndentLabels", wxCheckBox)->Enable(!en);
     XRCCTRL(*this, "chkIndentPreprocessor", wxCheckBox)->Enable(!en);
+    XRCCTRL(*this, "cmbBreakType", wxComboBox)->Enable(!en);
     XRCCTRL(*this, "chkBreakBlocks", wxCheckBox)->Enable(!en);
     XRCCTRL(*this, "chkBreakElseIfs", wxCheckBox)->Enable(!en);
     XRCCTRL(*this, "chkPadOperators", wxCheckBox)->Enable(!en);
@@ -120,6 +122,7 @@ void AstyleConfigDlg::LoadSettings()
     XRCCTRL(*this, "chkIndentNamespaces", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/astyle/indent_namespaces", 0L));
     XRCCTRL(*this, "chkIndentLabels", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/astyle/indent_labels", 0L));
     XRCCTRL(*this, "chkIndentPreprocessor", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/astyle/indent_preprocessor", 0L));
+    XRCCTRL(*this, "cmbBreakType", wxComboBox)->SetValue(ConfigManager::Get()->Read("/astyle/break_type", "None"));
     XRCCTRL(*this, "chkBreakBlocks", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/astyle/break_blocks", 0L));
     XRCCTRL(*this, "chkBreakElseIfs", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/astyle/break_elseifs", 0L));
     XRCCTRL(*this, "chkPadOperators", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/astyle/pad_operators", 0L));
@@ -159,6 +162,7 @@ void AstyleConfigDlg::SaveSettings()
     ConfigManager::Get()->Write("/astyle/indent_namespaces", XRCCTRL(*this, "chkIndentNamespaces", wxCheckBox)->GetValue());
     ConfigManager::Get()->Write("/astyle/indent_labels", XRCCTRL(*this, "chkIndentLabels", wxCheckBox)->GetValue());
     ConfigManager::Get()->Write("/astyle/indent_preprocessor", XRCCTRL(*this, "chkIndentPreprocessor", wxCheckBox)->GetValue());
+    ConfigManager::Get()->Write("/astyle/break_type", XRCCTRL(*this, "cmbBreakType", wxComboBox)->GetValue());
     ConfigManager::Get()->Write("/astyle/break_blocks", XRCCTRL(*this, "chkBreakBlocks", wxCheckBox)->GetValue());
     ConfigManager::Get()->Write("/astyle/break_elseifs", XRCCTRL(*this, "chkBreakElseIfs", wxCheckBox)->GetValue());
     ConfigManager::Get()->Write("/astyle/pad_operators", XRCCTRL(*this, "chkPadOperators", wxCheckBox)->GetValue());

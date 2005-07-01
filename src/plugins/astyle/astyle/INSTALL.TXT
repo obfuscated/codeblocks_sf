@@ -1,48 +1,23 @@
-Welcome to Artistic Style!
+To compile under Linux / Unix / Cygwin:
+---------------------------------------
 
+Simply type "make". This should create an executable file
+called "astyle" (or, under cygwin, "astyle.exe"). Use the
+executable as-is, or put it somewhere in your command path.
 
-Precompiled STABLE versions:
-----------------------------
-These contain, in addition to the sources, an astyle executable.
+If you want an executable printing trace information on
+standard error and having debug information compiled in,
+type "make CXXFLAGS=-g".
 
-astyle_x.y.z_glibc.tar.gz contains the file astyle .
-astyle_x.y.z_win32.zip contains file astyle.exe .
+To compile under VisualC++:
+---------------------------
 
-To use these files, simply add them to you PATH system variable
-(or copy them to a directory that is included in your PATH variable)
-and run from the console.
-
-
-Source version:
-===============
-To compile under linux/unix/cygwin:
------------------------------------
-
-
-1. The file compiler_defines.h contains several options regarding the
-   compiler to be used.
-
-   - if your compiler does not recognize "namespace"s, then COMMENT OUT
-
-     the line:
-     #define USES_NAMESPACE
-
-2. After the above is set, type 'make'.
-   This should create an executable file called 'astyle'.
-
-
-To compile under Win95/NT:
---------------------------
-
-1. Create a project under Visual C++ (or another compiler) and import
-   all the .cpp and .h files.
+1. Create a project and import all the .cpp and .h files.
 2. In order to have Artistic Style expand wildcards (such as "*.cpp"),
-   insert "setargv.obj" to the list of files to link Artistic-Style
-   to. This at least works under Visual C++. I do not know if it works
-   under other compilers. (Nat, thanks for the info on wildcard expanding!)
-3. Compile...
+   insert "setargv.obj" to the list of files to link. (Thanks to
+   Nat for the info!)
+3. Compile as Release version.
 
+If you want an executable printing trace information on
+standard error, simply compile as Debug version.
 
-Enjoy!
-Tal Davidson
-davidsont@bigfoot.com

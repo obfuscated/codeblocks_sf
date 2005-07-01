@@ -17,90 +17,151 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
     switch(style)
     {
         case 0: // ansi
-            formatter.setBracketIndent(false);
-            formatter.setSpaceIndentation(4);
-            formatter.setBracketFormatMode(BREAK_MODE);
-            formatter.setClassIndent(false);
-            formatter.setSwitchIndent(false);
-            formatter.setNamespaceIndent(false); 
+            formatter.bracketIndent = false;
+            formatter.indentLength = 4;
+            formatter.indentString = "    ";
+            formatter.bracketFormatMode = astyle::BREAK_MODE;
+            formatter.classIndent = false;
+            formatter.switchIndent = false;
+            formatter.namespaceIndent = false; 
             break;
         
         case 1: // K&R
-            formatter.setBracketIndent(false);
-            formatter.setSpaceIndentation(4);
-            formatter.setBracketFormatMode(ATTACH_MODE);
-            formatter.setClassIndent(false);
-            formatter.setSwitchIndent(false);
-            formatter.setNamespaceIndent(false);
+            formatter.bracketIndent = false;
+            formatter.indentLength = 4;
+            formatter.indentString = "    ";
+            formatter.bracketFormatMode = astyle::ATTACH_MODE;
+            formatter.classIndent = false;
+            formatter.switchIndent = false;
+            formatter.namespaceIndent = false;
             break;
             
         case 2: // Linux
-            formatter.setBracketIndent(false);
-            formatter.setSpaceIndentation(8);
-            formatter.setBracketFormatMode(BDAC_MODE);
-            formatter.setClassIndent(false);
-            formatter.setSwitchIndent(false);
-            formatter.setNamespaceIndent(false);
+            formatter.bracketIndent = false;
+            formatter.indentLength = 8;
+            formatter.indentString = "        ";
+            formatter.bracketFormatMode = astyle::BDAC_MODE;
+            formatter.classIndent = false;
+            formatter.switchIndent = false;
+            formatter.namespaceIndent = false;
             break;
             
         case 3: // GNU
-            formatter.setBlockIndent(true);
-            formatter.setSpaceIndentation(2);
-            formatter.setBracketFormatMode(BREAK_MODE);
-            formatter.setClassIndent(false);
-            formatter.setSwitchIndent(false);
-            formatter.setNamespaceIndent(false);
+            formatter.blockIndent = true;
+            formatter.bracketIndent = false;
+            formatter.indentLength = 2;
+            formatter.indentString = "  ";
+            formatter.bracketFormatMode = astyle::BREAK_MODE;
+            formatter.classIndent = false;
+            formatter.switchIndent = false;
+            formatter.namespaceIndent = false;
             break;
             
         case 4: // Java
-            formatter.setJavaStyle();
-            formatter.setBracketIndent(false);
-            formatter.setSpaceIndentation(4);
-            formatter.setBracketFormatMode(ATTACH_MODE);
-            formatter.setSwitchIndent(false);
+            formatter.sourceStyle = astyle::STYLE_JAVA;
+            formatter.modeSetManually = true;
+            formatter.bracketIndent = false;
+            formatter.indentLength = 4;
+            formatter.indentString = "    ";
+            formatter.bracketFormatMode = astyle::ATTACH_MODE;
+            formatter.switchIndent = false;
             break;
             
         default: // Custom
         {
             int spaceNum = ConfigManager::Get()->Read("/astyle/indentation", 4);
-            if (ConfigManager::Get()->Read("/astyle/use_tabs"))
-                formatter.setTabIndentation(spaceNum, false);
+            bool value;
+
+            formatter.modeSetManually = false;
+            formatter.indentLength = spaceNum;
+            formatter.bracketFormatMode = astyle::BREAK_MODE; // Add control
+            
+            ConfigManager::Get()->Read("/astyle/use_tabs", &value);
+            if (value)
+            {
+                formatter.indentString = '\t';
+            }
             else
-                formatter.setSpaceIndentation(spaceNum);
-            if (ConfigManager::Get()->Read("/astyle/force_tabs"))
-                formatter.setTabIndentation(spaceNum, true);
-            if (ConfigManager::Get()->Read("/astyle/convert_tabs"))
-                formatter.setTabSpaceConversionMode(true); 
-            if (ConfigManager::Get()->Read("/astyle/fill_empty_lines"))
-                formatter.setEmptyLineFill(true);
-            if (ConfigManager::Get()->Read("/astyle/indent_classes"))
-                formatter.setClassIndent(true);
-            if (ConfigManager::Get()->Read("/astyle/indent_switches"))
-                formatter.setSwitchIndent(true);
-            if (ConfigManager::Get()->Read("/astyle/indent_case"))
-                formatter.setCaseIndent(true);
-            if (ConfigManager::Get()->Read("/astyle/indent_brackets"))
-                formatter.setBracketIndent(true); 
-            if (ConfigManager::Get()->Read("/astyle/indent_blocks"))
-                formatter.setBlockIndent(true);
-            if (ConfigManager::Get()->Read("/astyle/indent_namespaces"))
-                formatter.setNamespaceIndent(true);
-            if (ConfigManager::Get()->Read("/astyle/indent_labels"))
-                formatter.setLabelIndent(true);
-            if (ConfigManager::Get()->Read("/astyle/indent_preprocessor"))
-                formatter.setPreprocessorIndent(true);
-            if (ConfigManager::Get()->Read("/astyle/break_blocks"))
-                formatter.setBreakBlocksMode(true);
-            if (ConfigManager::Get()->Read("/astyle/break_elseifs"))
-                formatter.setBreakElseIfsMode(true);
-            if (ConfigManager::Get()->Read("/astyle/pad_operators"))
-                formatter.setOperatorPaddingMode(true);
-            if (ConfigManager::Get()->Read("/astyle/pad_parentheses"))
-                formatter.setParenthesisPaddingMode(true);
-            if (ConfigManager::Get()->Read("/astyle/keep_complex"))
-                formatter.setSingleStatementsMode(false);
-            if (ConfigManager::Get()->Read("/astyle/keep_blocks"))
-                formatter.setBreakOneLineBlocksMode(false);
+            {
+                formatter.indentString = string(spaceNum, ' ');
+            }
+
+            ConfigManager::Get()->Read("/astyle/force_tabs", &value);
+            if (value)
+            {
+                formatter.indentString = '\t';
+                formatter.forceTabIndent = true;
+            }
+            else
+            {
+                formatter.forceTabIndent = false;
+            }
+
+            ConfigManager::Get()->Read("/astyle/convert_tabs", &value);
+            formatter.convertTabs2Space = value;
+            
+            ConfigManager::Get()->Read("/astyle/fill_empty_lines", &value);
+            formatter.emptyLineIndent = value;
+            
+            ConfigManager::Get()->Read("/astyle/indent_classes", &value);
+            formatter.classIndent = value;
+            
+            ConfigManager::Get()->Read("/astyle/indent_switches", &value);
+            formatter.switchIndent = value;
+            
+            ConfigManager::Get()->Read("/astyle/indent_case", &value);
+            formatter.caseIndent = value;
+            
+            ConfigManager::Get()->Read("/astyle/indent_brackets", &value);
+            formatter.bracketIndent = value;
+            
+            ConfigManager::Get()->Read("/astyle/indent_blocks", &value);
+            formatter.blockIndent = value;
+            
+            ConfigManager::Get()->Read("/astyle/indent_namespaces", &value);
+            formatter.namespaceIndent = value;
+            
+            ConfigManager::Get()->Read("/astyle/indent_labels", &value);
+            formatter.labelIndent = value;
+            
+            ConfigManager::Get()->Read("/astyle/indent_preprocessor", &value);
+            formatter.preprocessorIndent = value;
+            
+            wxString breakType = ConfigManager::Get()->Read("/astyle/break_type");
+            if (breakType == "Break")
+            {
+            	formatter.bracketFormatMode = astyle::BREAK_MODE;
+            }
+            else if (breakType == "Attach")
+            {
+            	formatter.bracketFormatMode = astyle::ATTACH_MODE;
+            }
+            else if (breakType == "Linux")
+            {
+            	formatter.bracketFormatMode = astyle::BDAC_MODE;
+            }
+            else
+            {
+            	formatter.bracketFormatMode = astyle::NONE_MODE;
+            }
+            
+            ConfigManager::Get()->Read("/astyle/break_blocks", &value);
+            formatter.breakBlocks = value;
+            
+            ConfigManager::Get()->Read("/astyle/break_elseifs", &value);
+            formatter.breakElseIfs = value;
+            
+            ConfigManager::Get()->Read("/astyle/pad_operators", &value);
+            formatter.padOperators = value;
+            
+            ConfigManager::Get()->Read("/astyle/pad_parentheses", &value);
+            formatter.padParen = value;
+            
+            ConfigManager::Get()->Read("/astyle/keep_complex", &value);
+            formatter.breakOneLineStatements = !value;
+            
+            ConfigManager::Get()->Read("/astyle/keep_blocks", &value);
+            formatter.breakOneLineBlocks = !value;
             break;
         }
     }

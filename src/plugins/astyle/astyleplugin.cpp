@@ -14,7 +14,9 @@
 #include "astyleplugin.h"
 #include <licenses.h>
 #include "astyleconfigdlg.h"
-#include "asstreamiterator.h"
+//#include "asstreamiterator.h"
+#include <sstream>
+#include <string>
 #include "formattersettings.h"
 #include <manager.h>
 #include <editormanager.h>
@@ -23,6 +25,9 @@
 #include <wx/msgdlg.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/fs_zip.h>
+
+using std::istringstream;
+using std::string;
 
 cbPlugin* GetPlugin()
 {
@@ -39,8 +44,8 @@ AStylePlugin::AStylePlugin()
 
 	m_PluginInfo.name = "AStylePlugin";
 	m_PluginInfo.title = "Source code formatter (AStyle)";
-	m_PluginInfo.version = "1.0";
-	m_PluginInfo.description = "Uses AStyle 1.15.3 to reformat your sources. Useful when copying code from the net or if you just want to reformat your sources based on a specific style.";
+	m_PluginInfo.version = "1.1";
+	m_PluginInfo.description = "Uses AStyle 1.17.0-dev to reformat your sources. Useful when copying code from the net or if you just want to reformat your sources based on a specific style.";
 	m_PluginInfo.author = "Yiannis Mandravellos";
 	m_PluginInfo.authorEmail = "mandrav@codeblocks.org";
 	m_PluginInfo.authorWebsite = "http://www.codeblocks.org";
@@ -76,9 +81,8 @@ void AStylePlugin::OnRelease(bool appShutDown)
 int AStylePlugin::Configure()
 {
     AstyleConfigDlg dlg(Manager::Get()->GetAppWindow());
-    if (dlg.ShowModal() == wxID_OK)
-    {
-    }
+    dlg.ShowModal();
+
     return 0;
 }
 
@@ -89,7 +93,7 @@ int AStylePlugin::Execute()
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (!ed)
         return 0;
-    wxString edText = ed->GetControl()->GetText();
+    string edText(ed->GetControl()->GetText().c_str());
     wxString formattedText;
 
     astyle::ASFormatter formatter;
@@ -106,7 +110,9 @@ int AStylePlugin::Execute()
         case wxSTC_EOL_LF: eolChars = "\n"; break;
     }
     
-    formatter.init(new ASStreamIterator(edText, eolChars));
+    //ASStreamIterator iter(edText, eolChars);
+    istringstream iter(edText);
+    formatter.init(iter);
     while (formatter.hasMoreLines())
     {
         formattedText << formatter.nextLine().c_str();

@@ -101,6 +101,7 @@
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
+					<Add option="-DNDEBUG"/>
 					<Add directory="sdk"/>
 					<Add directory="plugins\astyle\astyle"/>
 				</Compiler>
@@ -384,16 +385,6 @@
 			<Option link="0"/>
 			<Option target="src"/>
 		</Unit>
-		<Unit filename="plugins\astyle\asstreamiterator.cpp">
-			<Option compilerVar="CPP"/>
-			<Option target="plugin_Astyle"/>
-		</Unit>
-		<Unit filename="plugins\astyle\asstreamiterator.h">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="plugin_Astyle"/>
-		</Unit>
 		<Unit filename="plugins\astyle\astyle\ASBeautifier.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="plugin_Astyle"/>
@@ -402,11 +393,7 @@
 			<Option compilerVar="CPP"/>
 			<Option target="plugin_Astyle"/>
 		</Unit>
-		<Unit filename="plugins\astyle\astyle\ASResource.cpp">
-			<Option compilerVar="CPP"/>
-			<Option target="plugin_Astyle"/>
-		</Unit>
-		<Unit filename="plugins\astyle\astyle\INSTALL.TXT">
+		<Unit filename="plugins\astyle\astyle\INSTALL.txt">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
