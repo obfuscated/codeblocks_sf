@@ -43,19 +43,19 @@ void AstyleConfigDlg::SetStyle(AStylePredefinedStyle style)
             XRCCTRL(*this, "rbAnsi", wxRadioButton)->SetValue(true);
             break;
         case aspsKr:
-            sample = "namespace foospace {\n    int Foo() {\n        if (isBar) {\n            bar();\n            return 1;\n         else\n            return 0;\n    }\n}";
+            sample = "namespace foospace {\n    int Foo() {\n        if (isBar) {\n            bar();\n            return 1;\n         }\n         else\n            return 0;\n    }\n}";
             XRCCTRL(*this, "rbKr", wxRadioButton)->SetValue(true);
             break;
         case aspsLinux:
-            sample = "namespace foospace\n{\n        int Foo()\n        {\n                if (isBar) {\n                        bar();\n                        return 1;\n                 else\n                        return 0;\n        }\n}";
+            sample = "namespace foospace\n{\n        int Foo()\n        {\n                if (isBar) {\n                        bar();\n                        return 1;\n                 }\n                 else\n                        return 0;\n        }\n}";
             XRCCTRL(*this, "rbLinux", wxRadioButton)->SetValue(true);
             break;
         case aspsGnu:
-            sample = "namespace foospace\n  {\n    int Foo()\n      {\n        if (isBar)\n          {\n            bar();\n            return 1;\n          }\n        else\n          return 0;\n      }\n}";
+            sample = "namespace foospace\n  {\n  int Foo()\n  {\n    if (isBar)\n      {\n        bar();\n        return 1;\n      }\n    else\n      return 0;\n  }\n}";
             XRCCTRL(*this, "rbGNU", wxRadioButton)->SetValue(true);
             break;
         case aspsJava:
-            sample = "class foospace {\n    int Foo() {\n        if (isBar) {\n            bar();\n            return 1;\n         else\n            return 0;\n    }\n}";    
+            sample = "namespace foospace {\n    int Foo() {\n        if (isBar) {\n            bar();\n            return 1;\n         }\n         else\n            return 0;\n    }\n}";
             XRCCTRL(*this, "rbJava", wxRadioButton)->SetValue(true);
             break;
         default:

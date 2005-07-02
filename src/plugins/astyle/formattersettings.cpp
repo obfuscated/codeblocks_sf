@@ -23,7 +23,14 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
             formatter.bracketFormatMode = astyle::BREAK_MODE;
             formatter.classIndent = false;
             formatter.switchIndent = false;
-            formatter.namespaceIndent = false; 
+            formatter.namespaceIndent = true;
+            formatter.blockIndent = false;
+            formatter.breakBlocks = false;
+            formatter.breakElseIfs = false;
+            formatter.padOperators = false;
+            formatter.padParen = false;
+            formatter.breakOneLineStatements = true;
+            formatter.breakOneLineBlocks = true;
             break;
         
         case 1: // K&R
@@ -33,7 +40,14 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
             formatter.bracketFormatMode = astyle::ATTACH_MODE;
             formatter.classIndent = false;
             formatter.switchIndent = false;
-            formatter.namespaceIndent = false;
+            formatter.namespaceIndent = true;
+            formatter.blockIndent = false;
+            formatter.breakBlocks = false;
+            formatter.breakElseIfs = false;
+            formatter.padOperators = false;
+            formatter.padParen = false;
+            formatter.breakOneLineStatements = true;
+            formatter.breakOneLineBlocks = true;
             break;
             
         case 2: // Linux
@@ -43,7 +57,14 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
             formatter.bracketFormatMode = astyle::BDAC_MODE;
             formatter.classIndent = false;
             formatter.switchIndent = false;
-            formatter.namespaceIndent = false;
+            formatter.namespaceIndent = true;
+            formatter.blockIndent = false;
+            formatter.breakBlocks = false;
+            formatter.breakElseIfs = false;
+            formatter.padOperators = false;
+            formatter.padParen = false;
+            formatter.breakOneLineStatements = true;
+            formatter.breakOneLineBlocks = true;
             break;
             
         case 3: // GNU
@@ -55,6 +76,12 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
             formatter.classIndent = false;
             formatter.switchIndent = false;
             formatter.namespaceIndent = false;
+            formatter.breakBlocks = false;
+            formatter.breakElseIfs = false;
+            formatter.padOperators = false;
+            formatter.padParen = false;
+            formatter.breakOneLineStatements = true;
+            formatter.breakOneLineBlocks = true;
             break;
             
         case 4: // Java
@@ -65,6 +92,13 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
             formatter.indentString = "    ";
             formatter.bracketFormatMode = astyle::ATTACH_MODE;
             formatter.switchIndent = false;
+            formatter.blockIndent = false;
+            formatter.breakBlocks = false;
+            formatter.breakElseIfs = false;
+            formatter.padOperators = false;
+            formatter.padParen = false;
+            formatter.breakOneLineStatements = true;
+            formatter.breakOneLineBlocks = true;
             break;
             
         default: // Custom
@@ -74,7 +108,6 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
 
             formatter.modeSetManually = false;
             formatter.indentLength = spaceNum;
-            formatter.bracketFormatMode = astyle::BREAK_MODE; // Add control
             
             ConfigManager::Get()->Read("/astyle/use_tabs", &value);
             if (value)

@@ -243,6 +243,8 @@
                       <object class="wxCheckBox" name="chkBreakBlocks">
                         <label>Pad empty lines around header blocks (e.g. 'if', 'while'...)</label>
                       </object>
+                      <flag>wxTOP</flag>
+                      <border>8</border>
                     </object>
                     <object class="sizeritem">
                       <object class="wxCheckBox" name="chkBreakElseIfs">
