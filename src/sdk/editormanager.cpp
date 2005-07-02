@@ -668,14 +668,15 @@ bool EditorManager::Close(EditorBase* editor,bool dontsave)
                 if(!dontsave)
                     if(!QueryClose(ed))
                         return false;
-                #ifdef USE_OPENFILES_TREE
-                DeleteFilefromTree(ed->GetFilename());
-                #endif
 			}
+            wxString filename = editor->GetFilename();
             int edpage = FindPageFromEditor(editor);
             if (edpage != -1)
                 m_pNotebook->DeletePage(edpage);
             m_EditorsList.DeleteNode(node);
+            #ifdef USE_OPENFILES_TREE
+            DeleteFilefromTree(filename);
+            #endif
 		}
 	}
     return true;
