@@ -473,6 +473,7 @@ void CompilerGCC::SetupEnvironment()
             m_OriginalPath = path;
 
         wxArrayInt compilers;
+        if(m_Project)
         for (int x = 0; x < m_Project->GetBuildTargetsCount(); ++x)
         {
             ProjectBuildTarget* target = m_Project->GetBuildTarget(x);
