@@ -51,16 +51,19 @@ class DLLIMPORT EditorBase : public wxPanel
         bool IsBuiltinEditor();
         /** Are there other editors besides this? */
         bool ThereAreOthers(); 
-
+        
 		/** Displays the editor's context menu (usually invoked by the user right-clicking in the editor) */
 		void DisplayContextMenu(const wxPoint& position,bool noeditor = false);
+
+        /** Should this kind of editor be visible from the open files tree? */
+        virtual bool VisibleToTree() { return true; }
         
     protected:
         /** Initializes filename data */
         void InitFilename(const wxString& filename);
         /** Creates context submenus. See cbEditor code for details */
         virtual wxMenu* CreateContextSubMenu(int id); // For context menus
-       
+
         /** Creates context menu items, both before and after creating plugins menu items */
         virtual void AddToContextMenu(wxMenu* popup,bool noeditor,bool pluginsdone) {}
         /** Creates unique filename when asking to save the file */

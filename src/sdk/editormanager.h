@@ -162,7 +162,7 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         #ifdef USE_OPENFILES_TREE
         void DeleteItemfromTree(wxTreeItemId item);
         void DeleteFilefromTree(const wxString& filename);
-        void AddFiletoTree(cbEditor* ed);
+        void AddFiletoTree(EditorBase* ed);
         bool RenameTreeFile(const wxString& oldname, const wxString& newname);
         void InitPane();
         #endif

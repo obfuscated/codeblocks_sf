@@ -1522,12 +1522,14 @@ void EditorManager::DeleteFilefromTree(const wxString& filename)
     RefreshOpenedFilesTree();    
 }
 
-void EditorManager::AddFiletoTree(cbEditor* ed)
+void EditorManager::AddFiletoTree(EditorBase* ed)
 {
     SANITY_CHECK();
     if(Manager::isappShuttingDown())
         return;
     if(!ed)
+        return;
+    if(!ed->VisibleToTree())
         return;
     wxString shortname=ed->GetShortName();
     wxString filename=ed->GetFilename();
@@ -1572,7 +1574,7 @@ bool EditorManager::RenameTreeFile(const wxString& oldname, const wxString& newn
         if(filename!=oldname)
             continue;
         data->SetFullName(newname);
-        cbEditor *ed=GetBuiltinEditor(GetEditor(filename));
+        EditorBase *ed=GetEditor(filename);
         if(ed)
         {
             shortname=ed->GetShortName();
@@ -1654,8 +1656,10 @@ void EditorManager::RebuildOpenedFilesTree(wxTreeCtrl *tree)
     tree->Freeze();
     for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext())
     {
-        cbEditor* ed = InternalGetBuiltinEditor(node);
+        EditorBase* ed = node->GetData();
         if(!ed)
+            continue;
+        if(!ed->VisibleToTree())
             continue;
         wxString shortname=ed->GetShortName();
         int mod = ed->GetModified() ? 2 : 1;
@@ -1680,8 +1684,10 @@ void EditorManager::RefreshOpenedFilesTree(bool force)
     if(!tree)
         return;
     wxString fname;
-    cbEditor *aed=GetBuiltinActiveEditor();
+    EditorBase *aed=GetActiveEditor();
     if(!aed)
+        return;
+    if(!aed->VisibleToTree())
         return;
     bool ismodif=aed->GetModified();
     fname=aed->GetFilename();
@@ -1705,7 +1711,7 @@ void EditorManager::RefreshOpenedFilesTree(bool force)
         if(data)
         {
             filename=data->GetFullName();
-            cbEditor *ed=GetBuiltinEditor(GetEditor(filename));
+            EditorBase *ed=GetEditor(filename);
             if(ed)
             {
                 shortname=ed->GetShortName();

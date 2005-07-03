@@ -16,7 +16,9 @@ class StartHerePage : public EditorBase
 		virtual ~StartHerePage();
 		
 		bool LinkClicked(const wxHtmlLinkInfo& link);
+        virtual bool VisibleToTree() { return false; }
 	protected:
+
         wxEvtHandler* m_pOwner;
         wxHtmlWindow* m_pWin;
 	private:
