@@ -662,13 +662,9 @@ bool EditorManager::Close(EditorBase* editor,bool dontsave)
 		EditorsList::Node* node = m_EditorsList.Find(editor);
 		if (node)
 		{
-            if (editor->IsBuiltinEditor())
-            {
-                cbEditor* ed = (cbEditor*)editor;
-                if(!dontsave)
-                    if(!QueryClose(ed))
-                        return false;
-			}
+            if(!dontsave)
+                if(!QueryClose(editor))
+                    return false;
             wxString filename = editor->GetFilename();
             int edpage = FindPageFromEditor(editor);
             if (edpage != -1)
