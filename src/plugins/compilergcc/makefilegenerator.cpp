@@ -304,6 +304,7 @@ void MakefileGenerator::DoAppendLinkerLibs(wxString& cmd, ProjectBuildTarget* ta
         if (lib.Find('/') == -1 && lib.Find('\\') == -1)
         {
             if (!m_CompilerSet->GetSwitches().linkerNeedsLibPrefix &&
+                !libPrefix.IsEmpty() &&
                 lib.StartsWith(libPrefix))
             {
                 lib.Remove(0, libPrefix.Length());
@@ -315,11 +316,13 @@ void MakefileGenerator::DoAppendLinkerLibs(wxString& cmd, ProjectBuildTarget* ta
                 lib.RemoveLast(libExt.Length() + 1);
             }
             else if (m_CompilerSet->GetSwitches().linkerNeedsLibExtension &&
-                    !libExt.IsEmpty() &&
-                    lib.Length() > libExt.Length())
+                    !libExt.IsEmpty())
             {
-                if (lib.Right(libExt.Length() + 1) != "." + libExt)
+                if (lib.Length() <= libExt.Length() ||
+                    lib.Right(libExt.Length() + 1) != "." + libExt)
+                {
                     lib << "." << libExt;
+                }
             }
             lib = m_CompilerSet->GetSwitches().linkLibs + lib;
         }
