@@ -910,9 +910,9 @@ int NativeParser::AI(cbEditor* editor, Parser* parser, const wxString& lineText,
 						// we can access private/protected members of current scope only
 						scopeToken == parentToken; 
 
-			token->m_Bool = textCondition && scopeCondition &&
-							token->m_TokenKind != tkConstructor && // ignore constructors
-							token->m_TokenKind != tkDestructor; // and destructors too
+			token->m_Bool = textCondition && scopeCondition;// &&
+//							token->m_TokenKind != tkConstructor && // ignore constructors
+//							token->m_TokenKind != tkDestructor; // and destructors too
 			if (token->m_Bool)
 				++count;
 		}
