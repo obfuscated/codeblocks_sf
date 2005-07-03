@@ -1160,6 +1160,9 @@ void MainFrame::OnFileNewEmpty(wxCommandEvent& event)
 			m_pPrjMan->RebuildTree();
 		}
 	}
+	// verify that the open files are still in sync
+	// the new file might have overwritten an existing one)
+	m_pEdMan->CheckForExternallyModifiedFiles();
 }
 
 bool MainFrame::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& files)
@@ -1685,11 +1688,17 @@ void MainFrame::OnSearchGotoLine(wxCommandEvent& event)
 void MainFrame::OnProjectNewEmpty(wxCommandEvent& event)
 {
     m_pPrjMan->NewProject();
+	// verify that the open files are still in sync
+	// the new file might have overwritten an existing one)
+	m_pEdMan->CheckForExternallyModifiedFiles();
 }
 
 void MainFrame::OnProjectNew(wxCommandEvent& event)
 {
     TemplateManager::Get()->NewProject();
+	// verify that the open files are still in sync
+	// the new file might have overwritten an existing one)
+	m_pEdMan->CheckForExternallyModifiedFiles();
 }
 
 void MainFrame::OnProjectOpen(wxCommandEvent& event)
