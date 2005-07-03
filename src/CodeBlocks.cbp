@@ -393,7 +393,7 @@
 			<Option compilerVar="CPP"/>
 			<Option target="plugin_Astyle"/>
 		</Unit>
-		<Unit filename="plugins\astyle\astyle\INSTALL.txt">
+		<Unit filename="plugins\astyle\astyle\INSTALL.TXT">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

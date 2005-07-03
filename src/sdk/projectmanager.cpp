@@ -77,7 +77,9 @@ int idMenuOpenFile = wxNewId();
 int idMenuCloseProject = wxNewId();
 int idMenuCloseFile = wxNewId();
 int idMenuAddFilePopup = wxNewId();
+int idMenuAddFilesRecursivelyPopup = wxNewId();
 int idMenuAddFile = wxNewId();
+int idMenuAddFilesRecursively = wxNewId();
 int idMenuRemoveFilePopup = wxNewId();
 int idMenuRemoveFile = wxNewId();
 int idMenuProjectProperties = wxNewId();
@@ -145,8 +147,10 @@ BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
     EVT_MENU(idMenuProjectDown, ProjectManager::OnSetActiveProject)
     EVT_MENU(idMenuTreeRenameWorkspace, ProjectManager::OnRenameWorkspace)
     EVT_MENU(idMenuAddFile, ProjectManager::OnAddFileToProject)
+    EVT_MENU(idMenuAddFilesRecursively, ProjectManager::OnAddFilesToProjectRecursively)
     EVT_MENU(idMenuRemoveFile, ProjectManager::OnRemoveFileFromProject)
     EVT_MENU(idMenuAddFilePopup, ProjectManager::OnAddFileToProject)
+    EVT_MENU(idMenuAddFilesRecursivelyPopup, ProjectManager::OnAddFilesToProjectRecursively)
     EVT_MENU(idMenuRemoveFilePopup, ProjectManager::OnRemoveFileFromProject)
     EVT_MENU(idMenuCloseProject, ProjectManager::OnCloseProject)
     EVT_MENU(idMenuCloseFile, ProjectManager::OnCloseFile)
@@ -290,6 +294,7 @@ void ProjectManager::CreateMenu(wxMenuBar* menuBar)
         {
             menu->AppendSeparator();
             menu->Append(idMenuAddFile, _("Add files..."), _("Add files to the project"));
+            menu->Append(idMenuAddFilesRecursively, _("Add files recursively..."), _("Add files recursively to the project"));
             menu->Append(idMenuRemoveFile, _("Remove files..."), _("Remove files from the project"));
 
 /* FIXME (mandrav#1#): Move this submenu creation in a function.
@@ -364,8 +369,9 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
 				menu.Append(idMenuSetActiveProject, _("Activate project"));
     		menu.Append(idMenuCloseProject, _("Close project"));
     		menu.AppendSeparator();
-    	    menu.Append(idMenuAddFilePopup, _("Add files to project..."));
-            menu.Append(idMenuRemoveFile, _("Remove files from project..."), _("Remove files from the project"));
+    	    menu.Append(idMenuAddFilePopup, _("Add files..."));
+    	    menu.Append(idMenuAddFilesRecursivelyPopup, _("Add files recursively..."));
+            menu.Append(idMenuRemoveFile, _("Remove files..."));
         }
         // if it is a file...
         else
@@ -943,59 +949,22 @@ void ProjectManager::RebuildTree()
     UnfreezeTree();
 }
 
-int ProjectManager::AddFileToProject(const wxString& filename, cbProject* project, int target)
-{
-    SANITY_CHECK(-1);
-	cbProject* prj = project;
-	if (!prj)
-		prj = GetActiveProject();
-	if (!prj)
-		return -1;
-
-	// do we have to ask for target?
-	if (target == -1)
-	{
-		// if project has only one target, use this
-		if (prj->GetBuildTargetsCount() == 1)
-			target = 0;
-		// else display target selection dialog
-		else
-		{
-			target = AskForBuildTargetIndex(prj);
-			if (target == -1)
-				return -1;
-		}
-	}
-    SANITY_CHECK(-1); // In some dial
-	prj->AddFile(target, filename);
-
-	CodeBlocksEvent event(cbEVT_PROJECT_FILE_ADDED);
-	event.SetProject(prj);
-	event.SetString(filename);
-	Manager::Get()->GetPluginManager()->NotifyPlugins(event);
-
-	return target;
-}
-
-int ProjectManager::AddFileToProject(const wxString& filename, cbProject* project, wxArrayInt& targets)
+int ProjectManager::DoAddFileToProject(const wxString& filename, cbProject* project, wxArrayInt& targets)
 {
     SANITY_CHECK(0);
-	cbProject* prj = project;
-	if (!prj)
-		prj = GetActiveProject();
-	if (!prj)
+	if (!project)
 		return 0;
 
 	// do we have to ask for target?
 	if (targets.GetCount() == 0)
 	{
 		// if project has only one target, use this
-		if (prj->GetBuildTargetsCount() == 1)
+		if (project->GetBuildTargetsCount() == 1)
 			targets.Add(0);
 		// else display multiple target selection dialog
 		else
 		{
-			targets = AskForMultiBuildTargetIndex(prj);
+			targets = AskForMultiBuildTargetIndex(project);
 			if (targets.GetCount() == 0)
 				return 0;
 		}
@@ -1003,25 +972,91 @@ int ProjectManager::AddFileToProject(const wxString& filename, cbProject* projec
 
     // add the file to the first selected target
     SANITY_CHECK(0);
-    ProjectFile* pf = prj->AddFile(targets[0], filename);
+    ProjectFile* pf = project->AddFile(targets[0], filename);
     if (pf)
     {
         // if the file was added succesfully,
         // add to this file the rest of the selected targets...
         for (size_t i = 0; i < targets.GetCount(); ++i)
         {
-            ProjectBuildTarget* target = prj->GetBuildTarget(targets[i]);
+            ProjectBuildTarget* target = project->GetBuildTarget(targets[i]);
             if (target)
                 pf->AddBuildTarget(target->GetTitle());
         }
     }
+    return targets.GetCount();
+}
 
+int ProjectManager::AddFileToProject(const wxString& filename, cbProject* project, int target)
+{
+    SANITY_CHECK(-1);
+
+	if (!project)
+		project = GetActiveProject();
+
+    wxArrayInt targets;
+    targets.Add(target);
+    if (AddFileToProject(filename, project, targets) == 1)
+        return targets[0];
+    return -1;
+}
+
+int ProjectManager::AddFileToProject(const wxString& filename, cbProject* project, wxArrayInt& targets)
+{
     SANITY_CHECK(0);
-	CodeBlocksEvent event(cbEVT_PROJECT_FILE_ADDED);
-	event.SetProject(prj);
-	event.SetString(filename);
-	Manager::Get()->GetPluginManager()->NotifyPlugins(event);
 
+	if (!project)
+		project = GetActiveProject();
+
+    int ret = DoAddFileToProject(filename, project, targets);
+    if (ret > 0)
+    {
+        CodeBlocksEvent event(cbEVT_PROJECT_FILE_ADDED);
+        event.SetProject(project);
+        event.SetString(filename);
+        Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+    }
+	return ret;
+}
+
+int ProjectManager::AddMultipleFilesToProject(const wxArrayString& filelist, cbProject* project, int target)
+{
+    SANITY_CHECK(-1);
+
+	if (!project)
+		project = GetActiveProject();
+
+    wxArrayInt targets;
+    targets.Add(target);
+    if (AddMultipleFilesToProject(filelist, project, targets) == 1)
+        return targets[0];
+    return -1;
+}
+
+int ProjectManager::AddMultipleFilesToProject(const wxArrayString& filelist, cbProject* project, wxArrayInt& targets)
+{
+    SANITY_CHECK(0);
+
+	if (!project)
+		project = GetActiveProject();
+
+    wxArrayString addedFiles; // to know which files were added succesfully
+    for (unsigned int i = 0; i < filelist.GetCount(); ++i)
+    {
+    	if (DoAddFileToProject(filelist[i], project, targets) != 0)
+            addedFiles.Add(filelist[i]);
+    }
+
+    if (addedFiles.GetCount() != 0)
+    {
+        for (unsigned int i = 0; i < addedFiles.GetCount(); ++i)
+        {
+            CodeBlocksEvent event(cbEVT_PROJECT_FILE_ADDED);
+            event.SetProject(project);
+            event.SetString(addedFiles[i]);
+            Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+        }
+    }
 	return targets.GetCount();
 }
 
@@ -1250,6 +1285,74 @@ void ProjectManager::OnSetActiveProject(wxCommandEvent& event)
     }
 }
 
+void ProjectManager::OnAddFilesToProjectRecursively(wxCommandEvent& event)
+{
+    SANITY_CHECK();
+    cbProject* prj = 0;
+    if (event.GetId() == idMenuAddFilesRecursively)
+        prj = GetActiveProject();
+    else
+    {
+        wxTreeItemId sel = m_pTree->GetSelection();
+        FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
+        if (ftd)
+            prj = ftd->GetProject();
+    }
+    if (!prj)
+        return;
+
+    wxString dir = ChooseDirectory(m_pPanel,
+                                    _("Add files recursively..."),
+                                    prj->GetBasePath(),
+                                    wxEmptyString,
+                                    false,
+                                    false);
+    if (dir.IsEmpty())
+        return;
+
+    wxArrayInt targets;
+    // ask for target only if more than one
+    if (prj->GetBuildTargetsCount() == 1)
+         targets.Add(0);
+    
+    // generate list of files to add
+    wxArrayString array;
+    wxDir::GetAllFiles(dir, &array, wxEmptyString, wxDIR_FILES | wxDIR_DIRS);
+    if (array.GetCount() == 0)
+        return;
+    
+    // for usability reasons, remove any directory entries from the list...
+    unsigned int i = 0;
+    while (i < array.GetCount())
+    {
+    	// discard directories, as well as some well known SCMs control folders ;)
+    	// also discard C::B project files
+    	if (wxDirExists(array[i]) ||
+            array[i].Contains(_T("\\.svn\\")) ||
+            array[i].Contains(_T("/.svn/")) ||
+            array[i].Contains(_T("\\CVS\\")) ||
+            array[i].Contains(_T("/CVS/")) ||
+            array[i].Lower().Matches(_T("*.cbp")))
+        {
+            array.RemoveAt(i);
+        }
+        else
+            ++i;
+    }
+
+    // ask the user which files to add
+// TODO (mandrav#1#): Make these masks configurable
+    wxString wild = _T("*.c;*.cc;*.cpp;*.cxx;*.h;*.hh;*.hpp;*.hxx;*.inl;*.rc;*.xrc");
+    MultiSelectDlg dlg(0, array, wild, _("Select the files to add to the project:"));
+    if (dlg.ShowModal() != wxID_OK)
+        return;
+    array = dlg.GetSelectedStrings();
+
+    // finally add the files
+    AddMultipleFilesToProject(array, prj, targets);
+    RebuildTree();
+}
+
 void ProjectManager::OnAddFileToProject(wxCommandEvent& event)
 {
     SANITY_CHECK();
@@ -1283,12 +1386,7 @@ void ProjectManager::OnAddFileToProject(wxCommandEvent& event)
 		
 		wxArrayString array;
         dlg.GetPaths(array);
-        for (unsigned int i = 0; i < array.GetCount(); ++i)
-		{
-            AddFileToProject(array[i], prj, targets);
-			if (targets.GetCount() == 0)
-				break;
-		}
+        AddMultipleFilesToProject(array, prj, targets);
         RebuildTree();
     }
 }

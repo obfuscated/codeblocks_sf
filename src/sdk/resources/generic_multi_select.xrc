@@ -38,13 +38,20 @@
                 </object>
                 <flag>wxGROW</flag>
               </object>
+              <object class="sizeritem">
+                <object class="wxStaticText" name="lblStatus">
+                  <label>Selected: 0</label>
+                </object>
+                <flag>wxTOP|wxGROW</flag>
+                <border>8</border>
+              </object>
             </object>
             <flag>wxLEFT|wxGROW</flag>
             <border>8</border>
           </object>
         </object>
         <option>1</option>
-        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
         <border>8</border>
       </object>
       <object class="sizeritem">
@@ -73,5 +80,6 @@
         <border>8</border>
       </object>
     </object>
+    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxRESIZE_BOX</style>
   </object>
 </resource>

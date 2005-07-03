@@ -157,12 +157,12 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
           */
         cbProject* NewProject();
         /** Add a file to a project. This function comes in two versions. This version,
-          * expects a single build target indx for the added file to belong to.
+          * expects a single build target index for the added file to belong to.
           * @param filename The file to add to the project.
           * @param project The project to add this file to. If NULL, the active project is used.
           * @param target The index of the project's build target to add this file.
           * @return The build target's index that this file was added to.
-          * @note If the index supplied is -1 then, if the project has exactly
+          * @note If the target index supplied is -1 then, if the project has exactly
           * one build target, the file is added to this single build target.
           * If the project has more than one build targets, a dialog appears so
           * that the user can select which build target this file should belong to.
@@ -182,6 +182,32 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
           * the user-selected build targets.
           */
 		int AddFileToProject(const wxString& filename, cbProject* project, wxArrayInt& targets);
+        /** Add multiple files to a project. This function comes in two versions. This version,
+          * expects a single build target index for the added files to belong to.
+          * @param filelist The files to add to the project.
+          * @param project The project to add these files to. If NULL, the active project is used.
+          * @param target The index of the project's build target to add these files.
+          * @return The build target's index that these files were added to.
+          * @note If the target index supplied is -1 then, if the project has exactly
+          * one build target, the files are added to this single build target.
+          * If the project has more than one build targets, a dialog appears so
+          * that the user can select which build target these files should belong to.
+          */
+		int AddMultipleFilesToProject(const wxArrayString& filelist, cbProject* project, int target = -1);
+        /** Add multiple files to a project. This function comes in two versions. This version,
+          * expects an array of build target indices for the added files to belong to.
+          * @param filelist The files to add to the project.
+          * @param project The project to add this file to. If NULL, the active project is used.
+          * @param targets The array of the project's build targets indices to add this file.
+          * @return The number of build targets these files were added to.
+          * @note If the targets array is empty then, if the project has exactly
+          * one build target, the files are added to this single build target.
+          * If the project has more than one build targets, a dialog appears so
+          * that the user can select which build targets (multiple) these files should belong to.\n
+          * Also note than when this function returns, the targets array will contain
+          * the user-selected build targets.
+          */
+		int AddMultipleFilesToProject(const wxArrayString& filelist, cbProject* project, wxArrayInt& targets);
 		/** Utility function. Displays a single selection list of a project's
 		  * build targets to choose from.
 		  * @param project The project to use. If NULL, the active project is used.
@@ -268,6 +294,7 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
         void OnRightClick(wxCommandEvent& event);
         void OnRenameWorkspace(wxCommandEvent& event);
         void OnSetActiveProject(wxCommandEvent& event);
+        void OnAddFilesToProjectRecursively(wxCommandEvent& event);
         void OnAddFileToProject(wxCommandEvent& event);
         void OnRemoveFileFromProject(wxCommandEvent& event);
         void OnCloseProject(wxCommandEvent& event);
@@ -280,6 +307,7 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
         void OnViewFileMasks(wxCommandEvent& event);
         void DoOpenSelectedFile();
 		void DoOpenFile(ProjectFile* pf, const wxString& filename);
+		int DoAddFileToProject(const wxString& filename, cbProject* project, wxArrayInt& targets);
 
         wxNotebook* m_pParent;
         wxTreeCtrl* m_pTree;
