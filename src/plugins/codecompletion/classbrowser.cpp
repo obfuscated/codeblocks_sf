@@ -76,7 +76,7 @@ ClassBrowser::ClassBrowser(wxNotebook* parent, NativeParser* np)
 // class destructor
 ClassBrowser::~ClassBrowser()
 {
-	m_Parent->RemovePage(m_PageIndex);
+//	m_Parent->RemovePage(m_PageIndex);
 }
 
 void ClassBrowser::SetParser(Parser* parser)
