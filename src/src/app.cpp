@@ -334,6 +334,8 @@ wxString CodeBlocksApp::GetAppPath() const
     // it returns the absolute filename of us
     // similar to win32 GetModuleFileName()...
     base = wxFileName(SELFPATH).GetPath();
+	if (base.IsEmpty())
+		base = ".";
 #endif
     return base;
 }
