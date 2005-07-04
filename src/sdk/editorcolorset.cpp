@@ -189,6 +189,8 @@ void EditorColorSet::UpdateOptionsWithSameName(HighlightLanguage lang, OptionCol
 
 bool EditorColorSet::AddOption(HighlightLanguage lang, OptionColor* option, bool checkIfExists)
 {
+    if (lang == HL_NONE)
+        return false;
 	if (checkIfExists && GetOptionByValue(lang, option->value))
         return false;
 
@@ -207,6 +209,8 @@ void EditorColorSet::AddOption(HighlightLanguage lang,
 								bool underlined,
 								bool isStyle)
 {
+    if (lang == HL_NONE)
+        return;
 	OptionColor* opt = new OptionColor;
 	opt->name = name;
 	opt->value = value;
@@ -223,6 +227,8 @@ void EditorColorSet::AddOption(HighlightLanguage lang,
 
 OptionColor* EditorColorSet::GetOptionByName(HighlightLanguage lang, const wxString& name)
 {
+    if (lang == HL_NONE)
+        return 0L;
 	for (unsigned int i = 0; i < m_Sets[lang].m_Colors.GetCount(); ++i)
 	{
 		OptionColor* opt = m_Sets[lang].m_Colors.Item(i);
@@ -234,6 +240,8 @@ OptionColor* EditorColorSet::GetOptionByName(HighlightLanguage lang, const wxStr
 
 OptionColor* EditorColorSet::GetOptionByValue(HighlightLanguage lang, int value)
 {
+    if (lang == HL_NONE)
+        return 0L;
 	for (unsigned int i = 0; i < m_Sets[lang].m_Colors.GetCount(); ++i)
 	{
 		OptionColor* opt = m_Sets[lang].m_Colors.Item(i);
@@ -245,6 +253,8 @@ OptionColor* EditorColorSet::GetOptionByValue(HighlightLanguage lang, int value)
 
 OptionColor* EditorColorSet::GetOptionByIndex(HighlightLanguage lang, int index)
 {
+    if (lang == HL_NONE)
+        return 0L;
 	return m_Sets[lang].m_Colors.Item(index);
 }
 
@@ -269,6 +279,8 @@ HighlightLanguage EditorColorSet::GetLanguageForFilename(const wxString& filenam
 
 wxString EditorColorSet::GetLanguageName(HighlightLanguage lang)
 {
+    if (lang == HL_NONE)
+        return _("Unknown");
 	wxString name = m_Sets[lang].m_Langs;
     if (!name.IsEmpty())
         return name;
@@ -493,11 +505,14 @@ const wxArrayString& EditorColorSet::GetFileMasks(HighlightLanguage lang)
 
 void EditorColorSet::SetFileMasks(HighlightLanguage lang, const wxString& masks, const wxString& separator)
 {
-	m_Sets[lang].m_FileMasks = GetArrayFromString(masks.Lower(), separator);
+    if (lang != HL_NONE)
+        m_Sets[lang].m_FileMasks = GetArrayFromString(masks.Lower(), separator);
 }
 
 wxString EditorColorSet::GetSampleCode(HighlightLanguage lang, int* breakLine, int* debugLine, int* errorLine)
 {
+	if (lang == HL_NONE)
+        return wxEmptyString;
     if (breakLine)
         *breakLine = m_Sets[lang].m_BreakLine;
     if (debugLine)
@@ -512,6 +527,8 @@ wxString EditorColorSet::GetSampleCode(HighlightLanguage lang, int* breakLine, i
 
 void EditorColorSet::SetSampleCode(HighlightLanguage lang, const wxString& sample, int breakLine, int debugLine, int errorLine)
 {
+	if (lang == HL_NONE)
+        return;
     m_Sets[lang].m_SampleCode = sample;
     m_Sets[lang].m_BreakLine = breakLine;
     m_Sets[lang].m_DebugLine = debugLine;

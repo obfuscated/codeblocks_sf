@@ -58,6 +58,8 @@ void EditorLexerLoader::DoLexer(TiXmlElement* node)
     int lexer = atol(node->Attribute("index"));
     wxString masks = node->Attribute("filemasks");
     int style = m_pTarget->AddHighlightLanguage(lexer, name);
+    if (style == HL_NONE)
+        return; // wasn't added
     m_pTarget->SetFileMasks(style, masks);
 //    LOGSTREAM << "Found lexer: " << name << " (" << style << ")\n";
 
