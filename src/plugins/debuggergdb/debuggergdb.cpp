@@ -68,6 +68,7 @@ int idMenuDebug = XRCID("idDebuggerMenuDebug");
 int idMenuRunToCursor = XRCID("idDebuggerMenuRunToCursor");
 int idMenuNext = XRCID("idDebuggerMenuNext");
 int idMenuStep = XRCID("idDebuggerMenuStep");
+int idMenuStepOut = XRCID("idDebuggerMenuStepOut");
 int idMenuStop = XRCID("idDebuggerMenuStop");
 int idMenuContinue = XRCID("idDebuggerMenuContinue");
 int idMenuToggleBreakpoint = XRCID("idDebuggerMenuToggleBreakpoint");
@@ -93,12 +94,14 @@ BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
 	EVT_UPDATE_UI(XRCID("idDebuggerMenuRunToCursor"), DebuggerGDB::OnUpdateUI)
 	EVT_UPDATE_UI(XRCID("idDebuggerMenuNext"), DebuggerGDB::OnUpdateUI)
 	EVT_UPDATE_UI(XRCID("idDebuggerMenuStep"), DebuggerGDB::OnUpdateUI)
+	EVT_UPDATE_UI(XRCID("idDebuggerMenuStepOut"), DebuggerGDB::OnUpdateUI)
 	EVT_UPDATE_UI(XRCID("idDebuggerMenuStop"), DebuggerGDB::OnUpdateUI)
 
 	EVT_MENU(idMenuDebug, DebuggerGDB::OnDebug)
 	EVT_MENU(idMenuContinue, DebuggerGDB::OnContinue)
 	EVT_MENU(idMenuNext, DebuggerGDB::OnNext)
 	EVT_MENU(idMenuStep, DebuggerGDB::OnStep)
+	EVT_MENU(idMenuStepOut, DebuggerGDB::OnStepOut)
 	EVT_MENU(idMenuToggleBreakpoint, DebuggerGDB::OnToggleBreakpoint)
 	EVT_MENU(idMenuRunToCursor, DebuggerGDB::OnRunToCursor)
 	EVT_MENU(idMenuStop, DebuggerGDB::OnStop)
@@ -139,6 +142,7 @@ DebuggerGDB::DebuggerGDB()
 	m_pTree(0L),
 	m_NoDebugInfo(false),
 	m_BreakOnEntry(false),
+	m_HaltAtLine(0),
 	m_pDisassembly(0),
 	m_pBacktrace(0)
 {
@@ -203,14 +207,7 @@ void DebuggerGDB::OnRelease(bool appShutDown)
 	}
     
     //Close debug session when appShutDown
-	if (m_pProcess && m_Pid)
-    { 
-		m_pProcess->CloseOutput();
-		if (m_ProgramIsStopped)
-            RunCommand(CMD_STOP);
-		else
-			m_pProcess->Kill(m_Pid, wxSIGKILL);
-	}
+	CmdStop();
 
     if (Manager::Get()->GetMessageManager())
     {
@@ -261,9 +258,14 @@ void DebuggerGDB::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxS
 		return;
     // we 're only interested in editor menus
     // we 'll add a "debug watches" entry only when the debugger is running...
-    if (type != mtEditorManager || !menu || !m_pProcess)
-        return;
+    if (type != mtEditorManager || !menu) return;
+    // Insert toggle breakpoint
+    menu->Insert(0,idMenuToggleBreakpoint, _("Toggle breakpoint"));
+	// Insert Run to Cursor
+	menu->Insert(1,idMenuRunToCursor, _("Run to cursor"));
+	menu->Insert(2,-1, "-");
     
+    if (!m_pProcess) return;
     // has to have a word under the caret...
     wxString w = GetEditorWordAtCaret();
     if (w.IsEmpty())
@@ -271,8 +273,7 @@ void DebuggerGDB::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxS
 
     wxString s;
     s.Printf(_("Watch '%s'"), w.c_str());
-    menu->Insert(0, idMenuDebuggerAddWatch,  s);
-    menu->Insert(1, -1, "-");
+	menu->Insert(2, idMenuDebuggerAddWatch,  s);
 }
 
 void DebuggerGDB::BuildToolBar(wxToolBar* toolBar)
@@ -826,6 +827,54 @@ void DebuggerGDB::CmdStep()
     RunCommand(CMD_STEPIN);
 }
 
+bool DebuggerGDB::Validate(const wxString& line, const char cb)
+{
+	bool bResult = false;
+	
+	int bep = line.Find(cb)+1;
+	int scs = line.Find('\'')+1; 
+	int sce = line.Find('\'',true)+1;
+	int dcs = line.Find('"')+1;  
+	int dce = line.Find('"',true)+1;
+	//No single and double quote	
+	if(!scs && !sce && !dcs && !dce) bResult = true;
+	//No single/double quote in pair
+	if(!(sce-scs) && !(dce-dcs)) bResult = true;
+	//Outside of single quote	
+	if((sce-scs) && ((bep < scs)||(bep >sce))) bResult = true;
+	//Outside of double quote
+	if((dce-dcs) && ((bep < dcs)||(bep >dce))) bResult = true;
+	
+	return bResult;
+}
+
+void DebuggerGDB::CmdStepOut()
+{
+	cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+	if (!ed) return;
+	ProjectFile* pf = ed->GetProjectFile();
+	if (!pf) return;
+	wxString filename = pf->file.GetFullName(), lineBuf, cmd;
+	cbStyledTextCtrl* stc = ed->GetControl();
+	int line = m_HaltAtLine;
+	lineBuf = stc->GetLine(line);
+	
+	unsigned int nLevel = 1;
+	while(nLevel){
+		 if ((lineBuf.Find('{')+1) && Validate(lineBuf, '{') &&
+			 (line > m_HaltAtLine)) nLevel++;
+		 if ((lineBuf.Find('}')+1) && Validate(lineBuf, '}')) nLevel--;
+		 if (nLevel) lineBuf = stc->GetLine(++line);
+	}
+	if (line == stc->GetCurrentLine())
+		CmdNext();
+	else {
+		cmd << "tbreak " << filename << ":" << line+1;
+		m_Tbreak = cmd;
+		CmdContinue();
+	}
+}
+
 void DebuggerGDB::CmdRunToCursor()
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
@@ -835,8 +884,8 @@ void DebuggerGDB::CmdRunToCursor()
 	ProjectFile* pf = ed->GetProjectFile();
 	if (!pf)
 		return;
-	wxString cmd;
-	cmd << "tbreak " << pf->relativeFilename << ":" << ed->GetControl()->GetCurrentLine() + 1;
+	wxString cmd, filename = pf->file.GetFullName();
+	cmd << "tbreak " << filename << ":" << ed->GetControl()->GetCurrentLine()+1;
 	m_Tbreak = cmd;
 	if (m_pProcess)
 	{
@@ -860,7 +909,20 @@ void DebuggerGDB::CmdToggleBreakpoint()
 
 void DebuggerGDB::CmdStop()
 {
-    RunCommand(CMD_STOP);
+	if (m_pProcess && m_Pid){ 
+		m_pProcess->CloseOutput();
+		if (m_ProgramIsStopped)	RunCommand(CMD_STOP);
+		else {
+			wxKillError err = m_pProcess->Kill(m_Pid, wxSIGKILL);
+			if (err == wxKILL_OK){
+/*				
+				wxMessageBox(_("Debug session terminated!"),
+					_("Debug"), wxOK | wxICON_EXCLAMATION);
+*/					
+			}
+			m_ProgramIsStopped = true;
+		}
+	}
 }
 
 void DebuggerGDB::ParseOutput(const wxString& output)
@@ -1015,6 +1077,7 @@ void DebuggerGDB::ParseOutput(const wxString& output)
 				lineStr.ToLong(&line);
 //				Manager::Get()->GetMessageManager()->DebugLog("file %s, line %ld", file.c_str(), line);
 				SyncEditor(file, line);
+				m_HaltAtLine = line-1;
 				BringAppToFront();
 			}
 		}
@@ -1122,8 +1185,8 @@ wxString DebuggerGDB::GetEditorWordAtCaret()
 void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
 {
     static bool init_flag=false;
-    static bool toolflags[4];
-    bool tmpflags[4];
+    static bool toolflags[5];
+    bool tmpflags[5];
 
 	cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
@@ -1134,6 +1197,7 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
         mbar->Enable(idMenuContinue, m_pProcess && prj && m_ProgramIsStopped);
         mbar->Enable(idMenuNext, m_pProcess && prj && m_ProgramIsStopped);
         mbar->Enable(idMenuStep, prj && m_ProgramIsStopped);
+        mbar->Enable(idMenuStepOut, m_pProcess && prj && m_ProgramIsStopped);
  		mbar->Enable(idMenuRunToCursor, prj && ed && m_ProgramIsStopped);
 		mbar->Enable(idMenuToggleBreakpoint, ed && m_ProgramIsStopped);
 		mbar->Enable(idMenuSendCommandToGDB, m_pProcess && m_ProgramIsStopped);
@@ -1141,7 +1205,7 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
  		mbar->Enable(idMenuBacktrace, m_pProcess && m_ProgramIsStopped);
  		mbar->Enable(idMenuDisassemble, m_pProcess && m_ProgramIsStopped);
  		mbar->Enable(idMenuEditWatches, prj && m_ProgramIsStopped);
-        mbar->Enable(idMenuStop, m_pProcess && prj && m_ProgramIsStopped);
+        mbar->Enable(idMenuStop, m_pProcess && prj);
 	}
 /*  NOTE (Rick#1#): The disappearing combobox bug happens due to interference 
     between the different UpdateUI handlers in plugins. Apparently after 
@@ -1163,23 +1227,27 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
         tmpflags[1]=(prj && ed && m_ProgramIsStopped);
         tmpflags[2]=(m_pProcess && prj && m_ProgramIsStopped);
         tmpflags[3]=(prj && m_ProgramIsStopped);
+        tmpflags[4]=(m_pProcess && prj);
         if(!init_flag ||
            toolflags[0]!=tmpflags[0] ||
            toolflags[1]!=tmpflags[1] ||
            toolflags[2]!=tmpflags[2] ||
-           toolflags[3]!=tmpflags[3])
+           toolflags[3]!=tmpflags[3] ||
+           toolflags[4]!=tmpflags[4] )
         {
             if(!init_flag) init_flag=true;
             toolflags[0]=tmpflags[0];
             toolflags[1]=tmpflags[1];
             toolflags[2]=tmpflags[2];
             toolflags[3]=tmpflags[3];
+            toolflags[4]=tmpflags[4];
 
             tbar->EnableTool(idMenuDebug,toolflags[0]);
             tbar->EnableTool(idMenuRunToCursor,toolflags[1]);
             tbar->EnableTool(idMenuNext,toolflags[2]);
             tbar->EnableTool(idMenuStep,toolflags[3]);
-            tbar->EnableTool(idMenuStop,toolflags[2]);
+            tbar->EnableTool(idMenuStepOut,toolflags[2]);
+            tbar->EnableTool(idMenuStop,toolflags[4]);
             // This creates a recursive call but since we're checking the flags
             // it only happens once.
             tbar->Refresh(); 
@@ -1220,8 +1288,12 @@ void DebuggerGDB::OnStep(wxCommandEvent& event)
 		m_BreakOnEntry = true;
 		Debug();
 	}
-	else
-        CmdStep();
+	else CmdStep();
+}
+
+void DebuggerGDB::OnStepOut(wxCommandEvent& event)
+{
+	CmdStepOut();
 }
 
 void DebuggerGDB::OnRunToCursor(wxCommandEvent& event)

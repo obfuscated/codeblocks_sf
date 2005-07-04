@@ -53,9 +53,11 @@ class DebuggerGDB : public cbDebuggerPlugin
 		void CmdContinue();
 		void CmdNext();
 		void CmdStep();
+		void CmdStepOut();
 		void CmdRunToCursor();
 		void CmdToggleBreakpoint();
 		void CmdStop();
+		bool DebuggerGDB::Validate(const wxString& line, const char cb);
 		bool IsRunning(){ return m_pProcess; }
 		int GetExitCode(){ return m_LastExitCode; }
 
@@ -87,6 +89,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 		void OnContinue(wxCommandEvent& event);
 		void OnNext(wxCommandEvent& event);
 		void OnStep(wxCommandEvent& event);
+		void OnStepOut(wxCommandEvent& event);
 		void OnToggleBreakpoint(wxCommandEvent& event);
 		void OnRunToCursor(wxCommandEvent& event);
 		void OnBreakpointAdded(CodeBlocksEvent& event);
@@ -122,6 +125,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 		DebuggerTree* m_pTree;
 		bool m_NoDebugInfo;
 		bool m_BreakOnEntry;
+		int m_HaltAtLine;
 		// current frame info
 		StackFrame m_CurrentFrame;
 		

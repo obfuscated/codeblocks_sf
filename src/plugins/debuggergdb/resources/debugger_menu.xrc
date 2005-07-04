@@ -13,14 +13,19 @@
       <help>Continue execution</help>
     </object>
     <object class="wxMenuItem" name="idDebuggerMenuNext">
-      <label>Next</label>
+      <label>Step over</label>
       <accel>F7</accel>
       <help>Execute the next line of code</help>
     </object>
     <object class="wxMenuItem" name="idDebuggerMenuStep">
-      <label>Step in</label>
+      <label>Step into</label>
       <accel>Shift-F7</accel>
       <help>Execute the next instruction, stepping into functions</help>
+    </object>
+    <object class="wxMenuItem" name="idDebuggerMenuStepOut">
+      <label>Step out</label>
+	  <accel>Shift-Ctrl-F7</accel>
+      <help>Execute until the current block exit</help>
     </object>
     <object class="separator"/>
     <object class="wxMenuItem" name="idDebuggerMenuToggleBreakpoint">
