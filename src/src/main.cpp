@@ -507,9 +507,9 @@ void MainFrame::CreateMenubar()
     if(tmpidx!=wxNOT_FOUND)
         plugs = mbar->GetMenu(tmpidx);
         
-    if(tmpitem = mbar->FindItem(idSettingsConfigurePlugins,NULL))
+    if((tmpitem = mbar->FindItem(idSettingsConfigurePlugins,NULL)))
         settingsPlugins = tmpitem->GetSubMenu();
-    if(tmpitem = mbar->FindItem(idHelpPlugins,NULL))
+    if((tmpitem = mbar->FindItem(idHelpPlugins,NULL)))
         pluginsM = tmpitem->GetSubMenu();
     
 	m_ToolsMenu = tools ? tools : new wxMenu();
@@ -1011,10 +1011,6 @@ void MainFrame::RePositionManagerTree(bool left)
 
 void MainFrame::ShowHideStartPage(bool forceHasProject)
 {
-#ifndef __WXMSW__
-	// not working under linux yet
-	return;
-#endif
     // we use the 'forceHasProject' param because when a project is opened
     // the EVT_PROJECT_OPEN event is fired *before* ProjectManager::GetProjects()
     // and ProjectManager::GetActiveProject() are updated...
