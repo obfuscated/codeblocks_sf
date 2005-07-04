@@ -1239,6 +1239,12 @@
 			<Option link="0"/>
 			<Option target="plugin_DebuggerGDB"/>
 		</Unit>
+		<Unit filename="plugins\debuggergdb\resources\images\16x16\dbgstepout.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
 		<Unit filename="plugins\debuggergdb\resources\images\16x16\stop.png">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
@@ -1264,6 +1270,12 @@
 			<Option target="plugin_DebuggerGDB"/>
 		</Unit>
 		<Unit filename="plugins\debuggergdb\resources\images\dbgstep.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\resources\images\dbgstepout.png">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
