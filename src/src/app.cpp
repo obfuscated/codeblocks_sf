@@ -211,7 +211,9 @@ void CodeBlocksApp::CheckVersion()
 bool CodeBlocksApp::OnInit()
 {
     m_pSplash = 0;
+#ifdef wxUSE_ON_FATAL_EXCEPTION
     wxHandleFatalExceptions(true);
+#endif
 
     if(!LoadConfig())
         return false;

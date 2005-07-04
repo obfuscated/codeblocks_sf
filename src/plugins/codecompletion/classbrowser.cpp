@@ -174,7 +174,7 @@ void ClassBrowser::OnTreeItemRightClick(wxTreeEvent& event)
 
 void ClassBrowser::OnJumpTo(wxCommandEvent& event)
 {
-	int id = m_Tree->GetSelection();
+	wxTreeItemId id = m_Tree->GetSelection();
 	ClassTreeData* ctd = (ClassTreeData*)m_Tree->GetItemData(id);
     if (ctd)
     {
@@ -205,7 +205,7 @@ void ClassBrowser::OnJumpTo(wxCommandEvent& event)
 
 void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
 {
-	int id = m_Tree->GetSelection();
+	wxTreeItemId id = m_Tree->GetSelection();
 	ClassTreeData* ctd = (ClassTreeData*)m_Tree->GetItemData(id);
     if (ctd)
     {

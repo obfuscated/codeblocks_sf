@@ -7,10 +7,8 @@
     #pragma hdrstop
 #endif
 
-#if !defined(WX_PRECOMP) || defined(_MSC_VER)
-    #include <wx/string.h>
-    #include <wx/filename.h>
-#endif
+#include <wx/string.h>
+#include <wx/filename.h>
 
 #include "settings.h"
 #include "sanitycheck.h"

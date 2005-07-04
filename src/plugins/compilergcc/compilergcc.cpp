@@ -1076,9 +1076,13 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         shell.Replace("$TITLE", "'" + m_Project->GetTitle() + "'");
         cmd << shell << " ";
 #endif
-		wxString baseDir = ConfigManager::Get()->Read("/app_path");
-		if (wxFileExists(baseDir + "/console_runner.exe"))
-            cmd << baseDir << "/console_runner.exe ";
+        // should console runner be used?
+        if (target->GetUseConsoleRunner())
+        {
+            wxString baseDir = ConfigManager::Get()->Read("/app_path");
+            if (wxFileExists(baseDir + "/console_runner.exe"))
+                cmd << baseDir << "/console_runner.exe ";
+        }
     }
 
 	if (target->GetTargetType() == ttDynamicLib ||

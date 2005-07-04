@@ -233,6 +233,7 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
     if (!node)
         return; // no options
     
+    bool use_console_runner = true;
     wxString output;
     wxString working_dir;
     wxString obj_output;
@@ -252,6 +253,9 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
     
     while (node)
     {
+        if (node->Attribute("use_console_runner"))
+            use_console_runner = strncmp(node->Attribute("use_console_runner"), "0", 1) != 0;
+
         if (node->Attribute("output"))
             output = node->Attribute("output");
 
@@ -307,6 +311,7 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
     {
         target->SetTargetType((TargetType)type); // type *must* come before output filename!
         target->SetOutputFilename(output); // because if no filename defined, one will be suggested based on target type...
+        target->SetUseConsoleRunner(use_console_runner);
         if (!working_dir.IsEmpty())
             target->SetWorkingDir(working_dir);
         if (!obj_output.IsEmpty())
@@ -611,6 +616,8 @@ bool ProjectLoader::Save(const wxString& filename)
         }
         buffer << '\t' << '\t' << '\t' << '\t' << "<Option type=\"" << target->GetTargetType() << "\"/>" << '\n';
         buffer << '\t' << '\t' << '\t' << '\t' << "<Option compiler=\"" << target->GetCompilerIndex() << "\"/>" << '\n';
+        if (target->GetTargetType() == ttConsoleOnly && !target->GetUseConsoleRunner())
+            buffer << '\t' << '\t' << '\t' << '\t' << "<Option use_console_runner=\"0\"/>" << '\n';
         if (!target->GetExecutionParameters().IsEmpty())
             buffer << '\t' << '\t' << '\t' << '\t' << "<Option parameters=\"" << FixEntities(target->GetExecutionParameters()) << "\"/>" << '\n';
         if (!target->GetHostApplication().IsEmpty())

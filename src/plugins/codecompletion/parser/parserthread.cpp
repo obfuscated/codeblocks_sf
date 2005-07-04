@@ -538,7 +538,7 @@ bool ParserThread::Parse()
 //					Log("m_Str='"+m_Str+"'");
 //					Log("token='"+token+"'");
 //					Log("peek='"+peek+"'");
-					if (!m_Str.IsEmpty() && isalpha(token.GetChar(0)))
+					if (!m_Str.IsEmpty() && (isalpha(token.GetChar(0)) || token.GetChar(0) == '_'))
 					{
                         DoAddToken(tkVariable, token);
                     }

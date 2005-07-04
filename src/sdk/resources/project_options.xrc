@@ -21,7 +21,7 @@
                     <growablecols>1</growablecols>
                     <object class="sizeritem">
                       <object class="wxStaticText">
-                        <label>Name:</label>
+                        <label>Title:</label>
                       </object>
                       <flag>wxTOP</flag>
                       <border>4</border>
@@ -122,7 +122,7 @@
                         </object>
                         <object class="sizeritem">
                           <object class="wxButton" name="btnEditBuildTarget">
-                            <label>Edit</label>
+                            <label>Rename</label>
                           </object>
                           <flag>wxRIGHT</flag>
                           <border>4</border>
@@ -170,17 +170,33 @@
                           <border>4</border>
                         </object>
                         <object class="sizeritem">
-                          <object class="wxComboBox" name="cmbProjectType">
-                            <content>
-                              <item>GUI application</item>
-                              <item>Console application</item>
-                              <item>Static library</item>
-                              <item>Dynamic library</item>
-                              <item>Commands only</item>
-                            </content>
-                            <selection>0</selection>
-                            <style>wxCB_READONLY|wxCB_DROPDOWN</style>
+                          <object class="wxBoxSizer">
+                            <orient>wxVERTICAL</orient>
+                            <object class="sizeritem">
+                              <object class="wxComboBox" name="cmbProjectType">
+                                <content>
+                                  <item>GUI application</item>
+                                  <item>Console application</item>
+                                  <item>Static library</item>
+                                  <item>Dynamic library</item>
+                                  <item>Commands only</item>
+                                </content>
+                                <selection>0</selection>
+                                <style>wxCB_READONLY|wxCB_DROPDOWN</style>
+                              </object>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxCheckBox" name="chkUseConsoleRunner">
+                                <label>Pause when execution ends</label>
+                                <tooltip>Pause with &quot;Press any key&quot; when execution ends (only when executed from inside Code::Blocks)</tooltip>
+                              </object>
+                              <flag>wxTOP|wxEXPAND</flag>
+                              <border>2</border>
+                            </object>
                           </object>
+                          <option>1</option>
+                          <flag>wxBOTTOM|wxEXPAND</flag>
+                          <border>4</border>
                         </object>
                         <object class="sizeritem">
                           <object class="wxStaticText">
@@ -322,13 +338,14 @@
                         </object>
                         <object class="sizeritem">
                           <object class="wxCheckBox" name="chkBuildThisTarget">
-                            <label>Build this target when building the whole project</label>
+                            <label>Build this target with &quot;All&quot;</label>
+                            <tooltip>Build this target when building the whole project.\nIf no target is marked to be built, the targets resemble MSVC configurations.</tooltip>
                           </object>
                           <flag>wxEXPAND</flag>
                         </object>
                         <cols>2</cols>
-                        <vgap>8</vgap>
-                        <hgap>8</hgap>
+                        <vgap>4</vgap>
+                        <hgap>4</hgap>
                         <growablecols>1</growablecols>
                         <object class="spacer">
                           <size>0,0</size>
@@ -344,7 +361,7 @@
                         </object>
                         <object class="sizeritem">
                           <object class="wxCheckBox" name="chkCreateStaticLib">
-                            <label>Create static library too</label>
+                            <label>Create static library</label>
                           </object>
                           <flag>wxEXPAND</flag>
                         </object>
@@ -361,7 +378,7 @@
                           </object>
                           <option>1</option>
                           <flag>wxALL|wxEXPAND</flag>
-                          <border>8</border>
+                          <border>4</border>
                         </object>
                         <object class="sizeritem">
                           <object class="wxBoxSizer">
@@ -382,7 +399,7 @@
                             </object>
                           </object>
                           <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
-                          <border>8</border>
+                          <border>4</border>
                         </object>
                       </object>
                       <option>1</option>
@@ -419,7 +436,7 @@
             </object>
           </object>
         </object>
-        <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
         <border>8</border>
       </object>
     </object>

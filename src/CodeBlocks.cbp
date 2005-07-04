@@ -1642,6 +1642,7 @@
 		<Unit filename="sdk\editorcolorset.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="sdk"/>
+			<Breakpoint line="496" enabled="1" pass="0" />
 		</Unit>
 		<Unit filename="sdk\editorcolorset.h">
 			<Option compilerVar=""/>

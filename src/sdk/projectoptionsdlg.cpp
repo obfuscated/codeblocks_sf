@@ -115,6 +115,7 @@ void ProjectOptionsDlg::DoTargetChange()
 
 	// global project options
 	wxComboBox* cmb = XRCCTRL(*this, "cmbProjectType", wxComboBox);
+	wxCheckBox* chkCR = XRCCTRL(*this, "chkUseConsoleRunner", wxCheckBox);
     wxTextCtrl* txt = XRCCTRL(*this, "txtOutputFilename", wxTextCtrl);
     wxTextCtrl* txtW = XRCCTRL(*this, "txtWorkingDir", wxTextCtrl);
     wxTextCtrl* txtO = XRCCTRL(*this, "txtObjectDir", wxTextCtrl);
@@ -129,7 +130,7 @@ void ProjectOptionsDlg::DoTargetChange()
     XRCCTRL(*this, "chkCreateDefFile", wxCheckBox)->Enable(target->GetTargetType() == ttStaticLib ||
                                                             target->GetTargetType() == ttDynamicLib);
     XRCCTRL(*this, "chkCreateStaticLib", wxCheckBox)->Enable(target->GetTargetType() == ttDynamicLib);
-    if (cmb && txt && browse && txtDeps && btnDeps)
+    if (cmb && chkCR && txt && browse && txtDeps && btnDeps)
     {
         cmb->SetSelection(target->GetTargetType());
         Compiler* compiler = CompilerFactory::Compilers[target->GetCompilerIndex()];
@@ -139,6 +140,8 @@ void ProjectOptionsDlg::DoTargetChange()
             case ttExecutable:
             case ttDynamicLib:
             case ttStaticLib:
+                chkCR->Enable((TargetType)cmb->GetSelection() == ttConsoleOnly);
+                chkCR->SetValue(target->GetUseConsoleRunner());
                 txt->SetValue(target->GetOutputFilename());
                 txt->Enable(true);
                 txtW->SetValue(target->GetWorkingDir());
@@ -212,6 +215,7 @@ void ProjectOptionsDlg::DoBeforeTargetChange(bool force)
 		if (!target)
 			return;
 
+        target->SetUseConsoleRunner(XRCCTRL(*this, "chkUseConsoleRunner", wxCheckBox)->GetValue());
 		target->SetIncludeInTargetAll(XRCCTRL(*this, "chkBuildThisTarget", wxCheckBox)->GetValue());
         target->SetCreateDefFile(XRCCTRL(*this, "chkCreateDefFile", wxCheckBox)->GetValue());
         target->SetCreateStaticLib(XRCCTRL(*this, "chkCreateStaticLib", wxCheckBox)->GetValue());

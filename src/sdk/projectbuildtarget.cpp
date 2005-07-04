@@ -37,6 +37,7 @@ ProjectBuildTarget::ProjectBuildTarget()
     m_BuildWithAll = true;
     m_CreateStaticLib = true;
     m_CreateDefFile = true;
+    m_UseConsoleRunner = true;
 }
 
 // class destructor
@@ -51,8 +52,11 @@ const wxString & ProjectBuildTarget::GetExternalDeps()
 
 void ProjectBuildTarget::SetExternalDeps(const wxString& deps)
 {
-    m_ExternalDeps = deps;
-    SetModified(true);
+    if (m_ExternalDeps != deps)
+    {
+        m_ExternalDeps = deps;
+        SetModified(true);
+    }
 }
 
 bool ProjectBuildTarget::GetIncludeInTargetAll()
@@ -62,8 +66,11 @@ bool ProjectBuildTarget::GetIncludeInTargetAll()
 
 void ProjectBuildTarget::SetIncludeInTargetAll(bool buildIt)
 {
-	m_BuildWithAll = buildIt;
-	SetModified(true);
+	if (m_BuildWithAll != buildIt)
+	{
+        m_BuildWithAll = buildIt;
+        SetModified(true);
+	}
 }
 
 bool ProjectBuildTarget::GetCreateDefFile()
@@ -73,8 +80,11 @@ bool ProjectBuildTarget::GetCreateDefFile()
 
 void ProjectBuildTarget::SetCreateDefFile(bool createIt)
 {
-    m_CreateDefFile = createIt;
-    SetModified(true);
+    if (m_CreateDefFile != createIt)
+    {
+        m_CreateDefFile = createIt;
+        SetModified(true);
+    }
 }
 
 bool ProjectBuildTarget::GetCreateStaticLib()
@@ -84,8 +94,33 @@ bool ProjectBuildTarget::GetCreateStaticLib()
 
 void ProjectBuildTarget::SetCreateStaticLib(bool createIt)
 {
-    m_CreateStaticLib = createIt;
-    SetModified(true);
+    if (m_CreateStaticLib != createIt)
+    {
+        m_CreateStaticLib = createIt;
+        SetModified(true);
+    }
+}
+
+bool ProjectBuildTarget::GetUseConsoleRunner()
+{
+    return GetTargetType() == ttConsoleOnly ? m_UseConsoleRunner : false;
+}
+
+void ProjectBuildTarget::SetUseConsoleRunner(bool useIt)
+{
+    if (GetTargetType() == ttConsoleOnly && useIt != m_UseConsoleRunner)
+    {
+        m_UseConsoleRunner = useIt;
+        SetModified(true);
+    }
+}
+
+void ProjectBuildTarget::SetTargetType(const TargetType& pt)
+{
+	TargetType ttold = GetTargetType();
+	CompileTargetBase::SetTargetType(pt);
+	if (ttold != GetTargetType() && GetTargetType() == ttConsoleOnly)
+        SetUseConsoleRunner(true); // by default, use console runner
 }
 
 //// PROJECTFILE //////////////////////

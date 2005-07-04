@@ -54,6 +54,9 @@ from DLLs. Instead, we build "sdk" as a static library
 
 #include <wx/string.h>
 #include <wx/dynarray.h>
+#if wxCHECK_VERSION(2, 5, 0)
+    #include <wx/arrstr.h>
+#endif
 
 #define DECLARE_CB_EVENT_TYPE(type) \
 	extern EVTIMPORT const wxEventType type;

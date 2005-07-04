@@ -76,11 +76,16 @@ class DLLIMPORT ProjectBuildTarget : public CompileTargetBase
         virtual void SetCreateDefFile(bool createIt);
         virtual bool GetCreateStaticLib();
         virtual void SetCreateStaticLib(bool createIt);
+        virtual bool GetUseConsoleRunner();
+        virtual void SetUseConsoleRunner(bool useIt);
+
+        virtual void SetTargetType(const TargetType& pt); // overriden
     private:
         wxString m_ExternalDeps;
         bool m_BuildWithAll;
         bool m_CreateStaticLib;
         bool m_CreateDefFile;
+        bool m_UseConsoleRunner;
 };
 
 #endif // PROJECTBUILDTARGET_H
