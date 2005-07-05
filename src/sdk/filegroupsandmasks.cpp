@@ -59,12 +59,27 @@ void FilesGroupsAndMasks::Load()
 	wxConfigBase* conf = ConfigManager::Get();
 	wxString oldPath = conf->GetPath();
 	conf->SetPath(CONF_GROUP);
-	bool cont = conf->GetFirstEntry(entry, cookie);
-	while (cont)
+	if (conf->GetNumberOfGroups(false) == 0)
 	{
-		unsigned int group = AddGroup(entry);
-		SetFileMasks(group, conf->Read(entry));
-		cont = conf->GetNextEntry(entry, cookie);
+		// old way (reading keys)
+        bool cont = conf->GetFirstEntry(entry, cookie);
+        while (cont)
+        {
+            unsigned int group = AddGroup(entry);
+            SetFileMasks(group, conf->Read(entry));
+            cont = conf->GetNextEntry(entry, cookie);
+        }
+	}
+	else
+	{
+		// new way (reading groups)
+        bool cont = conf->GetFirstGroup(entry, cookie);
+        while (cont)
+        {
+            unsigned int group = AddGroup(conf->Read(entry + "/Name"));
+            SetFileMasks(group, conf->Read(entry + "/Mask"));
+            cont = conf->GetNextGroup(entry, cookie);
+        }
 	}
 	conf->SetPath(oldPath);
 }
@@ -78,7 +93,12 @@ void FilesGroupsAndMasks::Save()
 	for (unsigned int i = 0; i < m_Groups.GetCount(); ++i)
 	{
         FileGroups* fg = m_Groups[i];
-		conf->Write(fg->groupName, GetStringFromArray(fg->fileMasks, ";"));
+        wxString key;
+        key << i << "/" << "Name";
+		conf->Write(key, fg->groupName);
+        key.Clear();
+        key << i << "/" << "Mask";
+		conf->Write(key, GetStringFromArray(fg->fileMasks, ";"));
 	}
 	conf->SetPath(oldPath);
 }

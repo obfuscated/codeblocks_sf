@@ -129,9 +129,9 @@ void EditorLexerLoader::DoSingleKeywordNode(int language, TiXmlElement* node, co
     TiXmlElement* keywords = node->FirstChildElement(nodename);
     if (!keywords)
         return;
-    LOGSTREAM << "Found " << nodename << '\n';
+//    LOGSTREAM << "Found " << nodename << '\n';
     int keyidx = keywords->Attribute(_("index")) ? atol(keywords->Attribute(_("index"))) : -1;
-    LOGSTREAM << "keyidx=" << keyidx << '\n';
+//    LOGSTREAM << "keyidx=" << keyidx << '\n';
     if (keyidx != -1)
         m_pTarget->SetKeywords(language, keyidx, keywords->Attribute("value"));
 }

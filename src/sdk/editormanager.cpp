@@ -1293,7 +1293,7 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
 
     // now that are list is filled, we 'll search
     // but first we 'll create a hidden wxStyledTextCtrl to do the search for us ;)
-    wxStyledTextCtrl* control = new wxStyledTextCtrl(0, -1);
+    wxStyledTextCtrl* control = new wxStyledTextCtrl(m_pNotebook, -1);
     control->Show(false); //hidden
 
     // keep a copy of the find struct
