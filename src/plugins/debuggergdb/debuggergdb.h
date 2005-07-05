@@ -57,7 +57,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 		void CmdRunToCursor();
 		void CmdToggleBreakpoint();
 		void CmdStop();
-		bool DebuggerGDB::Validate(const wxString& line, const char cb);
+		bool Validate(const wxString& line, const char cb);
 		bool IsRunning(){ return m_pProcess; }
 		int GetExitCode(){ return m_LastExitCode; }
 

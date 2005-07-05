@@ -31,7 +31,7 @@
 #include <configmanager.h>
 #include <messagemanager.h>
 #include <projectmanager.h>
-#include "linklibdlg.h"
+#include "editpathdlg.h"
 
 BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxDialog)
     EVT_UPDATE_UI(			XRCID("btnEditDir"),	    CompilerOptionsDlg::OnUpdateUI)
@@ -493,8 +493,7 @@ void CompilerOptionsDlg::DoGetCompileOptions(wxArrayString& array, wxTextCtrl* c
 {
 /* NOTE (mandrav#1#): Under Gnome2, wxTextCtrl::GetLineLength() returns always 0,
                       so wxTextCtrl::GetLineText() is always empty...
-                      Now, we 're breaking up by newlines. */
-    array.Clear();
+                      Now, we 're breaking up by newlines. */    array.Clear();
 #if 1
     wxString tmp = control->GetValue();
     int nl = tmp.Find('\n');
@@ -916,18 +915,26 @@ void CompilerOptionsDlg::OnOptionToggled(wxCommandEvent& event)
 
 void CompilerOptionsDlg::OnAddDirClick(wxCommandEvent& event)
 {
-    wxString path = ChooseDirectory(this,
+    /*wxString path = ChooseDirectory(this,
                                     _("Select directory"),
                                     m_pProject ? m_pProject->GetBasePath() : "",
                                     m_pProject ? m_pProject->GetBasePath() : "",
                                     true,
-                                    true);
-    if (path.IsEmpty())
-        return;
+                                    true);*/
 
-    wxListBox* control = GetDirsListBox();
-    if (control)
-        control->Append(path);
+    EditPathDlg dlg(this,
+            m_pProject ? m_pProject->GetBasePath() : "",
+            m_pProject ? m_pProject->GetBasePath() : "",
+            _("Add directory"));
+
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        wxString path = dlg.GetPath();
+    
+        wxListBox* control = GetDirsListBox();
+        if (control)
+            control->Append(path);
+    }
 }
 
 void CompilerOptionsDlg::OnEditDirClick(wxCommandEvent& event)
@@ -946,16 +953,24 @@ void CompilerOptionsDlg::OnEditDirClick(wxCommandEvent& event)
     else if (m_pProject)
         initial = m_pProject->GetBasePath();
 
-    wxString path = ChooseDirectory(this,
+    /*wxString path = ChooseDirectory(this,
                                     _("Select directory"),
                                     initial,
                                     m_pProject ? m_pProject->GetBasePath() : "",
                                     true,
-                                    true);
-    if (path.IsEmpty())
-        return;
+                                    true);*/
 
-    control->SetString(control->GetSelection(), path);
+    EditPathDlg dlg(this,
+            initial,
+            m_pProject ? m_pProject->GetBasePath() : "",
+            _("Edit directory"));
+        
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        wxString path = dlg.GetPath();
+        
+        control->SetString(control->GetSelection(), path);
+    }
 }
 
 void CompilerOptionsDlg::OnRemoveDirClick(wxCommandEvent& event)
@@ -1123,27 +1138,48 @@ void CompilerOptionsDlg::OnResetCompilerClick(wxCommandEvent& event)
 
 void CompilerOptionsDlg::OnAddLibClick(wxCommandEvent& event)
 {
-    int compilerIdx = m_pTarget ? m_pTarget->GetCompilerIndex()
+    /*int compilerIdx = m_pTarget ? m_pTarget->GetCompilerIndex()
                                 : (m_pProject ? m_pProject->GetCompilerIndex() 
-                                              : XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection());
+                                              : XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection());*/
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
-    LinkLibDlg dlg(this, m_pProject, m_pTarget, CompilerFactory::Compilers[compilerIdx], "");
+    /*LinkLibDlg dlg(this, m_pProject, m_pTarget, CompilerFactory::Compilers[compilerIdx], "");*/
+    
+    EditPathDlg dlg(this,
+            "",
+            m_pProject ? m_pProject->GetBasePath() : "",
+            _("Add library"),
+            _("Chose library to link"),
+            false,
+            _("Library files (*.a, *.lib)|*.a;*.lib|All files (*)|*"));
+            
     if (dlg.ShowModal() == wxID_OK)
     {
-        lstLibs->Append(dlg.GetLib());
+        /*lstLibs->Append(dlg.GetLib());*/
+        lstLibs->Append(dlg.GetPath());
     }
 }
 
 void CompilerOptionsDlg::OnEditLibClick(wxCommandEvent& event)
 {
-    int compilerIdx = m_pTarget ? m_pTarget->GetCompilerIndex()
+    /*int compilerIdx = m_pTarget ? m_pTarget->GetCompilerIndex()
                                 : (m_pProject ? m_pProject->GetCompilerIndex() 
-                                              : XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection());
+                                              : XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection());*/
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
-    LinkLibDlg dlg(this, m_pProject, m_pTarget, CompilerFactory::Compilers[compilerIdx], lstLibs->GetStringSelection());
+    
+    /*LinkLibDlg dlg(this, m_pProject, m_pTarget, CompilerFactory::Compilers[compilerIdx], lstLibs->GetStringSelection());*/
+ 
+    EditPathDlg dlg(this,
+            lstLibs->GetStringSelection(),
+            m_pProject ? m_pProject->GetBasePath() : "",
+            _("Add library"),
+            _("Chose library to link"),
+            false,
+            _("Library files (*.a, *.lib)|*.a;*.lib|All files (*)|*"));
+               
     if (dlg.ShowModal() == wxID_OK)
     {
-        lstLibs->SetString(lstLibs->GetSelection(), dlg.GetLib());
+        /*lstLibs->SetString(lstLibs->GetSelection(), dlg.GetLib());*/
+        lstLibs->SetString(lstLibs->GetSelection(), dlg.GetPath());
     }
 }
 

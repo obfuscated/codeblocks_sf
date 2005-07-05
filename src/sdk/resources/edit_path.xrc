@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <resource>
-  <object class="wxDialog" name="dlgLinkLib">
-    <title>Link library</title>
+  <object class="wxDialog" name="dlgEditPath">
+    <title>Edit path</title>
     <centered>1</centered>
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
@@ -9,14 +9,14 @@
         <object class="wxBoxSizer">
           <orient>wxHORIZONTAL</orient>
           <object class="sizeritem">
-            <object class="wxStaticText">
-              <label>Library:</label>
+            <object class="wxStaticText" name="lblText">
+              <label>Directory:</label>
             </object>
             <flag>wxTOP</flag>
             <border>4</border>
           </object>
           <object class="sizeritem">
-            <object class="wxTextCtrl" name="txtLib"/>
+            <object class="wxTextCtrl" name="txtPath"/>
             <option>1</option>
             <flag>wxLEFT|wxRIGHT|wxGROW</flag>
             <border>8</border>
@@ -25,6 +25,7 @@
           <object class="sizeritem">
             <object class="wxButton" name="btnBrowse">
               <label>...</label>
+              <tooltip>Browse</tooltip>
             </object>
             <minsize>24,24</minsize>
           </object>
