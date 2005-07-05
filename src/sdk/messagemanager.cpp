@@ -99,8 +99,8 @@ MessageManager::MessageManager(wxWindow* parent)
     ConfigManager::AddConfiguration(_("Message Manager"), "/message_manager");
     
     m_OpenSize = ConfigManager::Get()->Read("/main_frame/layout/bottom_block_height", 150);
-    Open();
     m_AutoHide = ConfigManager::Get()->Read("/message_manager/auto_hide", 0L);
+    Open();
     LogPage(mltDebug); // default logging page for stream operator
 }
 
@@ -338,7 +338,7 @@ bool MessageManager::IsAutoHiding()
 
 int MessageManager::GetOpenSize()
 {
-    return m_Open ? GetSize().y : m_OpenSize;
+    return (m_Open || !m_AutoHide) ? GetSize().y : m_OpenSize;
 }
 
 void MessageManager::Open()
