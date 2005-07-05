@@ -1427,7 +1427,8 @@ void EditorManager::ShowOpenFilesTree(bool show)
         return;
     if(Manager::isappShuttingDown())
         return;
-    wxSplitPanel* mypanel = (wxSplitPanel*)(Manager::Get()->GetNotebookPage("Projects",wxTAB_TRAVERSAL | wxCLIP_CHILDREN,true));
+    wxWindow* win = Manager::Get()->GetNotebookPage(_("Projects"),wxTAB_TRAVERSAL | wxCLIP_CHILDREN,true);
+    wxSplitPanel* mypanel = (wxSplitPanel*)(win);
     wxSplitterWindow* mysplitter = mypanel->GetSplitter();
     if (show && !IsOpenFilesTreeVisible())
     {
@@ -1607,7 +1608,9 @@ void EditorManager::InitPane()
         return;
     if(m_pTree)
         return;
-    wxSplitPanel* mypanel = (wxSplitPanel*)(Manager::Get()->GetNotebookPage("Projects",wxTAB_TRAVERSAL | wxCLIP_CHILDREN,true));
+    Manager* man = Manager::Get();
+    wxWindow* win = man->GetNotebookPage(_("Projects"),wxTAB_TRAVERSAL | wxCLIP_CHILDREN,true);
+    wxSplitPanel* mypanel = (wxSplitPanel*)(win);
     wxSplitterWindow* mysplitter = mypanel->GetSplitter();
     BuildOpenedFilesTree(mysplitter);
     mypanel->SetAutoLayout(true);

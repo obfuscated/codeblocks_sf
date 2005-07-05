@@ -155,10 +155,14 @@ void HelpConfigDialog::UpdateUI(wxUpdateUIEvent& event)
     XRCCTRL(*this, "btnDelete", wxButton)->Enable(sel != -1);
 }
 
-void HelpConfigDialog::Ok()
+void HelpConfigDialog::Ok(wxCommandEvent& event)
 {
     wxListBox* lst = XRCCTRL(*this, "lstHelp", wxListBox);
     UpdateEntry(lst->GetSelection());
     SaveHelpFilesMap(m_Map);
     wxDialog::EndModal(wxID_OK);
+}
+
+void HelpConfigDialog::Cancel(wxCommandEvent& event)
+{
 }

@@ -16,8 +16,8 @@ class HelpConfigDialog : public wxDialog
 	    void Browse(wxCommandEvent& event);
 	    void ListChange(wxCommandEvent& event);
 	    void UpdateUI(wxUpdateUIEvent& event);
-        void Ok();
-		void Cancel();
+        void Ok(wxCommandEvent& event);
+		void Cancel(wxCommandEvent& event);
 	private:
         void UpdateEntry(int index);
         void ChooseFile();

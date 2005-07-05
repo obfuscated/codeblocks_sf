@@ -3,7 +3,7 @@
 <Code::Blocks_project_file>
 	<FileVersion major="1" minor="1"/>
 	<Project>
-		<Option title="Code::Blocks (wx2.6.0)"/>
+		<Option title="Code::Blocks (wx2.6)"/>
 		<Option makefile="Makefile.wx2.6"/>
 		<Option makefile_is_custom="0"/>
 		<Option default_target="2"/>
@@ -350,16 +350,17 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-Wall"/>
+			<Add option="-w"/>
 			<Add option="-g"/>
 			<Add option="-pipe"/>
 			<Add option="-mthreads"/>
 			<Add option="-fno-pcc-struct-return"/>
 			<Add option="-fno-rtti"/>
 			<Add option="-fmessage-length=0"/>
-			<Add option="-D__GNUWIN32__"/>
+			<Add option="-DHAVE_W32API_H"/>
 			<Add option="-D__WXMSW__"/>
 			<Add option="-DWXUSINGDLL"/>
+			<Add option="-DNOPCH"/>
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="C:\MinGW\include"/>
@@ -386,25 +387,11 @@
 			<Option link="0"/>
 			<Option target="src"/>
 		</Unit>
-		<Unit filename="plugins\astyle\asstreamiterator.cpp">
-			<Option compilerVar="CPP"/>
-			<Option target="plugin_Astyle"/>
-		</Unit>
-		<Unit filename="plugins\astyle\asstreamiterator.h">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="plugin_Astyle"/>
-		</Unit>
 		<Unit filename="plugins\astyle\astyle\ASBeautifier.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="plugin_Astyle"/>
 		</Unit>
 		<Unit filename="plugins\astyle\astyle\ASFormatter.cpp">
-			<Option compilerVar="CPP"/>
-			<Option target="plugin_Astyle"/>
-		</Unit>
-		<Unit filename="plugins\astyle\astyle\ASResource.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="plugin_Astyle"/>
 		</Unit>
@@ -832,6 +819,16 @@
 			<Option link="0"/>
 			<Option target="plugin_CompilerGCC"/>
 		</Unit>
+		<Unit filename="plugins\compilergcc\compilerOW.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerOW.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
 		<Unit filename="plugins\compilergcc\compilererrors.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="plugin_CompilerGCC"/>
@@ -1031,16 +1028,6 @@
 			<Option target="plugin_CompilerGCC"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\directcommands.h">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
-		</Unit>
-		<Unit filename="plugins\compilergcc\linklibdlg.cpp">
-			<Option compilerVar="CPP"/>
-			<Option target="plugin_CompilerGCC"/>
-		</Unit>
-		<Unit filename="plugins\compilergcc\linklibdlg.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -1652,11 +1639,31 @@
 			<Option link="0"/>
 			<Option target="sdk"/>
 		</Unit>
+		<Unit filename="sdk\editorlexerloader.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\editorlexerloader.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
 		<Unit filename="sdk\editormanager.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk\editormanager.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\editpathdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\editpathdlg.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -2042,6 +2049,12 @@
 			<Option link="0"/>
 			<Option target="sdk"/>
 		</Unit>
+		<Unit filename="sdk\resources\edit_path.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
 		<Unit filename="sdk\resources\edit_tool.xrc">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
@@ -2067,6 +2080,66 @@
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk\resources\incremental_select_list.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_cpp.sample">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_cpp.xml">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_gm.sample">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_gm.xml">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_hitasm.sample">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_hitasm.xml">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_lua.sample">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_lua.xml">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_rc.sample">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_rc.xml">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -2713,6 +2786,18 @@
 			<Option compile="0"/>
 			<Option link="0"/>
 			<Option objectName="src\resources\resources.res"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\start_here\cb_logo.jpg">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\start_here\start_here.html">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
 			<Option target="src"/>
 		</Unit>
 		<Unit filename="src\startherepage.cpp">
