@@ -808,10 +808,17 @@ int NativeParser::AI(cbEditor* editor, Parser* parser, const wxString& lineText,
 		}
 		else
 		{
-			Manager::Get()->GetMessageManager()->DebugLog("Looking for %s under %s", tok.c_str(), parentToken ? parentToken->m_Name.c_str() : "Unknown");
 			Token* token = 0L;
-			//if (parentToken)
-			token = parser->FindChildTokenByName(parentToken, tok, true);
+			if (tok.Matches("this")) // <-- special case
+			{
+                token = scopeToken;
+                parentToken = scopeToken;
+			}
+            else
+            {
+                Manager::Get()->GetMessageManager()->DebugLog("Looking for %s under %s", tok.c_str(), parentToken ? parentToken->m_Name.c_str() : "Unknown");
+                token = parser->FindChildTokenByName(parentToken, tok, true);
+            }
 			if (!token)
 			{
                 Manager::Get()->GetMessageManager()->DebugLog("Looking for %s under %s", tok.c_str(), scopeToken ? scopeToken->m_Name.c_str() : "Unknown");
