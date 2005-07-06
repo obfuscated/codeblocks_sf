@@ -96,6 +96,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
         void SaveTreeState(wxTreeCtrl* tree);
         void RestoreTreeState(wxTreeCtrl* tree);
 		int SelectTarget(int initial = -1, bool evenIfOne = false);
+        void RenameInTree(const wxString &newname);
     private:
         void Open();
         void AddTreeNode(wxTreeCtrl* tree, const wxString& text, const wxTreeItemId& parent, bool useFolders, bool compiles, FileTreeData* data = 0L);

@@ -741,6 +741,14 @@ void cbProject::AddTreeNode(wxTreeCtrl* tree, const wxString& text, const wxTree
 	}
 }
 
+void cbProject::RenameInTree(const wxString &newname)
+{
+    wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
+    if(!tree || !m_ProjectNode)
+        return;
+    tree->SetItemText(m_ProjectNode, newname);
+}
+
 void cbProject::SaveTreeState(wxTreeCtrl* tree)
 {
 	::SaveTreeState(tree, m_ProjectNode, m_ExpandedNodes);
