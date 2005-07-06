@@ -338,7 +338,18 @@ bool MessageManager::IsAutoHiding()
 
 int MessageManager::GetOpenSize()
 {
-    return (m_Open || !m_AutoHide) ? GetSize().y : m_OpenSize;
+    int y = m_OpenSize;
+    if(m_Open || !m_AutoHide)
+    {
+        wxSashLayoutWindow* sash = (wxSashLayoutWindow*)GetParent();
+        if(sash)
+            y = sash->GetSize().y;
+        else
+            y = GetSize().y + 3; // Shouldn't happen. Added for safety.
+            // 3 is the difference between both sizes (found empirically).
+    }
+    return y; 
+    // return (m_Open || !m_AutoHide) ? (GetSize().y + 3) : m_OpenSize;
 }
 
 void MessageManager::Open()
