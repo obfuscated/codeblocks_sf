@@ -608,8 +608,12 @@ void CodeBlocksApp::OnAppActivate(wxActivateEvent& event)
     if (!Manager::Get())
         return;
 
-    if (ConfigManager::Get()->Read("/environment/check_modified_files", 1))
-        Manager::Get()->GetEditorManager()->CheckForExternallyModifiedFiles();
+    if (Manager::Get()->GetEditorManager() && ConfigManager::Get()->Read("/environment/check_modified_files", 1))
+    {
+        wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, idEditorManagerCheckFiles);
+        wxPostEvent(Manager::Get()->GetEditorManager(), evt);
+//        Manager::Get()->GetEditorManager()->CheckForExternallyModifiedFiles();
+    }
     cbEditor* ed = Manager::Get()->GetEditorManager()
                     ? Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()
                     : 0;

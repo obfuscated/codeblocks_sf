@@ -15,7 +15,7 @@
 #include "printing_types.h"
 
 extern int ID_EditorManager;
-
+extern int idEditorManagerCheckFiles;
 class EditorBase;
 
 WX_DECLARE_LIST(EditorBase, EditorsList);
@@ -174,6 +174,7 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         EditorManager(wxWindow* parent);
         ~EditorManager();
         void CalculateFindReplaceStartEnd(wxStyledTextCtrl* control, cbFindReplaceData* data);
+        void OnCheckForModifiedFiles(wxCommandEvent& event);
 
         wxNotebook* m_pNotebook;
         EditorsList m_EditorsList;

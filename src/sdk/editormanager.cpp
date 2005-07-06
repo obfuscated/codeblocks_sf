@@ -58,12 +58,14 @@ WX_DEFINE_LIST(EditorsList);
 
 int ID_NBEditorManager = wxNewId();
 int ID_EditorManager = wxNewId();
+int idEditorManagerCheckFiles = wxNewId();
 
 BEGIN_EVENT_TABLE(EditorManager, wxEvtHandler)
     EVT_APP_STARTUP_DONE(EditorManager::OnAppDoneStartup)
     EVT_APP_START_SHUTDOWN(EditorManager::OnAppStartShutdown)
     EVT_NOTEBOOK_PAGE_CHANGED(ID_NBEditorManager, EditorManager::OnPageChanged)
     EVT_NOTEBOOK_PAGE_CHANGING(ID_NBEditorManager, EditorManager::OnPageChanging)
+    EVT_MENU(idEditorManagerCheckFiles, EditorManager::OnCheckForModifiedFiles)   
 #ifdef USE_OPENFILES_TREE
     EVT_UPDATE_UI(ID_EditorManager, EditorManager::OnUpdateUI)
     EVT_TREE_SEL_CHANGING(ID_EditorManager, EditorManager::OnTreeItemActivated)
@@ -1403,6 +1405,14 @@ void EditorManager::OnAppDoneStartup(wxCommandEvent& event)
 void EditorManager::OnAppStartShutdown(wxCommandEvent& event)
 {
     event.Skip(); // allow others to process it too
+}
+
+void EditorManager::OnCheckForModifiedFiles(wxCommandEvent& event)
+{
+    CheckForExternallyModifiedFiles();
+    cbEditor* ed = GetBuiltinActiveEditor();
+	if (ed)
+		ed->GetControl()->SetFocus();
 }
 
 #ifdef USE_OPENFILES_TREE
