@@ -993,16 +993,6 @@
 			<Option link="0"/>
 			<Option target="plugin_CompilerGCC"/>
 		</Unit>
-		<Unit filename="plugins/compilergcc/linklibdlg.cpp">
-			<Option compilerVar="CPP"/>
-			<Option target="plugin_CompilerGCC"/>
-		</Unit>
-		<Unit filename="plugins/compilergcc/linklibdlg.h">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
-		</Unit>
 		<Unit filename="plugins/compilergcc/makefilegenerator.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="plugin_CompilerGCC"/>
@@ -1497,6 +1487,16 @@
 			<Option link="0"/>
 			<Option target="sdk"/>
 		</Unit>
+		<Unit filename="sdk/editpathdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk/editpathdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
 		<Unit filename="sdk/edittooldlg.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="sdk"/>
@@ -1866,6 +1866,12 @@
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk/resources/edit_array_string.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk/resources/edit_path.xrc">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
