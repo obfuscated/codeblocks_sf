@@ -365,18 +365,20 @@ void wxsProject::DeleteDialog(wxsDialogRes* Resource)
 
 wxString wxsProject::GetInternalFileName(const wxString& FileName)
 {
-    WorkingPath.SetName(FileName);
-    WorkingPath.SetExt(wxT(""));
-    WorkingPath.Assign(WorkingPath.GetFullPath());  // Reparsing path
-    return WorkingPath.GetFullPath();
+	wxFileName Path = WorkingPath;
+    Path.SetName(FileName);
+    Path.SetExt(wxT(""));
+    Path.Assign(Path.GetFullPath());  // Reparsing path
+    return Path.GetFullPath();
 }
 
 wxString wxsProject::GetProjectFileName(const wxString& FileName)
 {
-    ProjectPath.SetName(FileName);
-    ProjectPath.SetExt(wxT(""));
-    ProjectPath.Assign(ProjectPath.GetFullPath());
-    return ProjectPath.GetFullPath();
+	wxFileName Path = ProjectPath;
+    Path.SetName(FileName);
+    Path.SetExt(wxT(""));
+    Path.Assign(Path.GetFullPath());
+    return Path.GetFullPath();
 }
 
 bool wxsProject::AddSmithConfig()

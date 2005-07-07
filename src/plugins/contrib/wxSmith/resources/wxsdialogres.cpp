@@ -2,6 +2,7 @@
 
 #include "../wxswidgetfactory.h"
 #include "../wxswindoweditor.h"
+#include "../wxscodegen.h"
 #include <manager.h>
 #include <wx/xrc/xmlres.h>
 #include <editormanager.h>
@@ -166,3 +167,65 @@ bool wxsDialogRes::GenerateEmptySources()
     fclose(Fl);
     return true;
 }
+
+void wxsDialogRes::NotifyChange()
+{
+	assert ( GetProject() != NULL );
+	
+	int TabSize = 4;
+	int GlobalTabSize = 2 * TabSize;
+	
+	// Generating producing code
+	wxsCodeGen Gen(Dialog,TabSize,TabSize);
+	
+	// Creating code header
+	
+	wxString CodeHeader = wxString::Format(wxT("//(*Initialize(%s)"),GetClassName().c_str());
+	wxString Code = CodeHeader + wxT("\n");
+	
+	// Creating local and global declarations
+	
+	wxString GlobalCode;
+	bool WasDeclaration = false;
+	AddDeclarationsReq(Dialog,Code,GlobalCode,TabSize,GlobalTabSize,WasDeclaration);
+	if ( WasDeclaration )
+	{
+		Code.Append('\n');
+	}
+		
+	// Creating window-generating code
+	
+	Code.Append(Gen.GetCode());
+	Code.Append(' ',TabSize);
+	
+	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(SrcFile),CodeHeader,Code);
+	
+	// Creating global declarations
+	
+	CodeHeader = wxString::Format(wxT("//(*Declarations(%s)"),GetClassName().c_str());
+	Code = CodeHeader + wxT("\n") + GlobalCode;
+	Code.Append(' ',GlobalTabSize);
+	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(HFile),CodeHeader,Code);
+}
+
+void wxsDialogRes::AddDeclarationsReq(wxsWidget* Widget,wxString& LocalCode,wxString& GlobalCode,int LocalTabSize,int GlobalTabSize,bool& WasLocal)
+{
+	static wxsCodeParams EmptyParams;
+	
+	if ( !Widget ) return;
+	int Count = Widget->GetChildCount();
+	for ( int i=0; i<Count; i++ )
+	{
+		wxsWidget* Child = Widget->GetChild(i);
+		bool Member = Child->GetBaseParams().IsMember;
+		wxString& Code = Member ? GlobalCode : LocalCode;
+		
+		Code.Append(' ',Member ? GlobalTabSize : LocalTabSize);
+		Code.Append(Child->GetDeclarationCode(EmptyParams));
+		Code.Append('\n');
+		
+		WasLocal |= !Member;
+		AddDeclarationsReq(Child,LocalCode,GlobalCode,LocalTabSize,GlobalTabSize,WasLocal);
+	}
+}
+

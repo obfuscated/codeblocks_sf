@@ -10,10 +10,21 @@ class wxsWndDialog
 		wxsWndDialog();
 		virtual ~wxsWndDialog();
 		
-		inline wxsDialog* GetDialog() { return Dialog; }
-		
+	protected:
+	
+		//(*Declarations(wxsWndDialog)
+        wxCheckBox* CheckBox1;
+        wxButton* Button2;
+        wxCheckBox* CheckBox3;
+        wxCheckBox* CheckBox4;
+        wxGridSizer* GridSizer1
+        wxStaticText* StaticText1;
+        wxComboBox* ComboBox1;
+        //*)
+
     private:
-        wxsDialog* Dialog;
+    
+		DECLARE_EVENT_TABLE()
 };
 
 #endif // WXSWNDDIALOG_H

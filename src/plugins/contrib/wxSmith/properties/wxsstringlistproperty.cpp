@@ -61,7 +61,7 @@ namespace {
 			
 				CenterOnScreen();
 				
-				for ( int i=0; i<Array.Count(); i++ )
+				for ( int i=0; i<(int)Array.Count(); i++ )
 				{
 					List->AppendText(Array[i]);
 					List->AppendText(wxT("\n"));

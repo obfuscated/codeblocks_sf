@@ -87,7 +87,7 @@ const char* wxsDefWidget::GetDeclarationCode(wxsCodeParams& Params)
 {
     static wxString Tmp;
     Tmp = wxT(GetWidgetNameStr());
-    Tmp.Append(' ');
+    Tmp.Append(wxT("* "));
     Tmp += BaseParams.VarName;
     Tmp.Append(';');
     return Tmp.c_str();

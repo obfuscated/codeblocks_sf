@@ -5,6 +5,7 @@
 
 #include "wxsproject.h"
 #include "wxseditor.h"
+#include "wxscoder.h"
 
 class wxsWidget;
 
@@ -33,7 +34,10 @@ class wxsWindowEditor : public wxsEditor
         
         /** Getting top widget of current preview */
         wxsWidget* GetTopWidget() { return CurrentWidget; }
-
+        
+		/** Closing action will store code changes */
+		virtual bool Close();
+		
     protected:
     
         /** Unbinding from resource - this function is killing preview objects */
@@ -41,13 +45,16 @@ class wxsWindowEditor : public wxsEditor
 
 	private:
 	
+		/** Scrolled window, parent for preview */
         wxScrolledWindow* Scroll;
 	
+		/* Event handlers */
         void OnMouseClick(wxMouseEvent& event);
         void OnActivate(wxActivateEvent& event);
         
+        /** Root widget of currently edited window */
         wxsWidget* CurrentWidget;
-	
+        
         DECLARE_EVENT_TABLE()
 };
 

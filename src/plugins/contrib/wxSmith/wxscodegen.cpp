@@ -1,14 +1,32 @@
 #include "wxscodegen.h"
 
-wxsCodeGen::wxsCodeGen(wxsWidget* Widget,int InitialSpaces,int TabSize)
+wxsCodeGen::wxsCodeGen(wxsWidget* Widget,int InitialSpaces,int TabSize,bool DontCreateRoot)
 {
-    wxsCodeParams Params;
 
-    Params.ParentName = "Parent";
-    Params.IsDirectParent = true;
-    Params.UniqueNumber = 1;
+	if ( DontCreateRoot )
+	{
+		int Cnt = Widget->GetChildCount();
 
-    AppendCodeReq(Widget,Params);
+		wxsCodeParams Params;
+		Params.UniqueNumber = 1;
+        Params.ParentName = "this";
+        Params.IsDirectParent = true;
+
+		for ( int i=0; i<Cnt; i++ )
+		{
+			AppendCodeReq(Widget->GetChild(i),Params);
+			Params.UniqueNumber++;
+		}
+	}
+	else
+	{
+		wxsCodeParams Params;
+		Params.ParentName = "Parent";
+		Params.IsDirectParent = true;
+		Params.UniqueNumber = 1;
+		AppendCodeReq(Widget,Params);
+	}
+	
     BeautyCode(Code,InitialSpaces,TabSize);
 }
 
@@ -72,7 +90,7 @@ void wxsCodeGen::BeautyCode(wxString& Code,int Spaces,int TabSize)
         
         // Adding characters till the end of line or till some other circumstances
         
-        while ( *Ptr && *Ptr!='{' && *Ptr!='}' && *Ptr != '\n' && *Ptr != '\r' )
+        while ( *Ptr && *Ptr!='{' && *Ptr!='}' && *Ptr != '\n' && *Ptr != '\r' && *Ptr != ';' )
             NewCode.Append(*Ptr++);
             
         if ( !*Ptr )
@@ -83,6 +101,12 @@ void wxsCodeGen::BeautyCode(wxString& Code,int Spaces,int TabSize)
         
         switch ( *Ptr )
         {
+			case ';':
+				Ptr++;
+				NewCode.Append(';');
+				NewCode.Append('\n');
+				break;
+				
             case '\n':
             case '\r':
                 NewCode.Append('\n');

@@ -6,6 +6,7 @@
 #include "wxspropertiesman.h"
 #include "wxspalette.h"
 #include "wxsmith.h"
+#include "wxsresource.h"
 
 wxsWindowEditor::wxsWindowEditor(wxWindow* parent, const wxString& title,wxsResource* Resource):
     wxsEditor(parent,title,Resource),
@@ -27,6 +28,7 @@ wxsWindowEditor::wxsWindowEditor(wxWindow* parent, const wxString& title,wxsReso
     
     wxsEvent SelectEvent(wxEVT_SELECT_RES,0,Resource);
     wxPostEvent(wxSmith::Get(),SelectEvent);
+
 }
 
 wxsWindowEditor::~wxsWindowEditor()
@@ -64,6 +66,7 @@ void wxsWindowEditor::BuildPreview(wxsWidget* TopWidget)
     {
         wxSizer* NewSizer = new wxGridSizer(1);
         NewSizer->Add(TopPreviewWindow,0,wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL|wxALL,10);
+        Scroll->SetVirtualSizeHints(1,1);
         Scroll->SetSizer(NewSizer);
         NewSizer->SetVirtualSizeHints(Scroll);
         TopPreviewWindow->Refresh();
@@ -117,6 +120,16 @@ void wxsWindowEditor::MyUnbind()
     wxsEvent Unselect(wxEVT_UNSELECT_RES,0,GetResource());
     wxPostEvent(wxSmith::Get(),Unselect);
     KillCurrentPreview();
+}
+
+bool wxsWindowEditor::Close()
+{
+	if ( GetResource() )
+	{
+		GetResource()->NotifyChange();
+	}
+	
+	return wxsEditor::Close();
 }
 
 BEGIN_EVENT_TABLE(wxsWindowEditor,wxsEditor)

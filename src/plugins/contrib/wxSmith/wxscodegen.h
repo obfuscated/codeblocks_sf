@@ -8,7 +8,7 @@ class wxsCodeGen
 {
     public:
     
-        wxsCodeGen(wxsWidget* Widget,int InitialSpaces=0,int TabSize=4);
+        wxsCodeGen(wxsWidget* Widget,int InitialSpaces=0,int TabSize=4,bool DontCreateRoot = true);
         virtual ~wxsCodeGen();
     
         inline const wxString& GetCode()

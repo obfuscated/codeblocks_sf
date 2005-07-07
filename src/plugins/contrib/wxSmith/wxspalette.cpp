@@ -72,6 +72,10 @@ wxsPalette::wxsPalette(wxWindow* Parent,wxSmith* _Plugin,int PN):
 	
 	SelectedRes = NULL;
 	FindWindow(PreviewId)->Disable();
+	
+	Timer.SetOwner(this);
+	
+	Timer.Start(100,false);
 }
 
 wxsPalette::~wxsPalette()
@@ -261,6 +265,11 @@ void wxsPalette::InsertRequest(const char* Name)
     {
         Edit->RecreatePreview();
     }
+    
+    if ( SelectedRes )
+    {
+		SelectedRes->NotifyChange();
+    }
 }
 
 void wxsPalette::InsertBefore(wxsWidget* New,wxsWidget* Ref)
@@ -335,6 +344,11 @@ void wxsPalette::DeleteRequest()
     {
         Edit->BuildPreview(Parent);
     }
+    
+    if ( SelectedRes )
+    {
+		SelectedRes->NotifyChange();
+    }
 }
 
 void wxsPalette::PreviewRequest()
@@ -400,6 +414,11 @@ void wxsPalette::OnUnselectRes(wxsEvent& event)
     }
 }
 
+void wxsPalette::OnTimer(wxTimerEvent& event)
+{
+	wxsCoder::Get()->ProcessCodeQueue();
+}
+
 BEGIN_EVENT_TABLE(wxsPalette,wxPanel)
     EVT_RADIOBUTTON(-1,wxsPalette::OnRadio)
     EVT_BUTTON(-1,wxsPalette::OnButton)
@@ -407,4 +426,5 @@ BEGIN_EVENT_TABLE(wxsPalette,wxPanel)
     EVT_UNSELECT_RES(wxsPalette::OnUnselectRes)
     EVT_SELECT_WIDGET(wxsPalette::OnSelectWidget)
     EVT_UNSELECT_WIDGET(wxsPalette::OnUnselectWidget)
+    EVT_TIMER(-1,wxsPalette::OnTimer)
 END_EVENT_TABLE()

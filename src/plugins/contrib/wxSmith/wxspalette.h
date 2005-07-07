@@ -3,6 +3,7 @@
 
 #include <wx/panel.h>
 #include <wx/radiobut.h>
+#include <wx/timer.h>
 
 #include "wxsevent.h"
 
@@ -55,6 +56,9 @@ class wxsPalette : public wxPanel
         /** Page number */
         int PageNum;
         
+        /** Timer object used to flush code changes */
+        wxTimer Timer;
+        
         /** Singleton object */
         static wxsPalette* Singleton;
         
@@ -89,6 +93,7 @@ class wxsPalette : public wxPanel
 		void OnUnselectRes(wxsEvent& event);
 		void OnSelectWidget(wxsEvent& event);
 		void OnUnselectWidget(wxsEvent& event);
+		void OnTimer(wxTimerEvent& event);
         
         DECLARE_EVENT_TABLE()
         

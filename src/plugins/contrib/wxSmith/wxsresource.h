@@ -32,6 +32,9 @@ class wxsResource
          */
         void EditClose();
         
+        /** Function returning currently openeditor, NULL if there's no one */
+        inline wxsEditor* GetEditor() { return Editor; }
+        
         /** Ckecking if this resource ecan be Previewed */
         virtual bool CanPreview() { return false; }
         
@@ -40,6 +43,9 @@ class wxsResource
 
         /** Getting resource name */
         virtual const wxString& GetResourceName() = 0;
+        
+        /** Notifying resource about content change */
+        virtual void NotifyChange() { }
         
     protected:
     

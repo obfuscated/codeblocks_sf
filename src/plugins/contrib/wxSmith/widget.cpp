@@ -4,6 +4,7 @@
 #include "properties/wxsplacementproperty.h"
 #include "properties/wxsstyleproperty.h"
 #include "wxswidgetfactory.h"
+#include "wxsresource.h"
 #include <wx/tokenzr.h>
 #include <wx/list.h>
 
@@ -105,11 +106,9 @@ void wxsWidget::UpdatePreview(bool IsReshaped,bool NeedRecreate)
     Updating = true;
     
     CurEditor->RecreatePreview();
+    CurEditor->GetResource()->NotifyChange();
 
     /*
-    
-    
-    
     if ( NeedRecreate )
     {
         IsReshaped = true;
@@ -622,6 +621,8 @@ const wxsWidget::CodeDefines& wxsWidget::GetCodeDefines()
         }
     }
     
+    if ( CDefines.Style.Len() == 0 ) CDefines.Style = wxT("0");
+    
     // Creating position
     
     if ( BaseParams.DefaultPosition ) CDefines.Pos = wxT("wxDefaultPosition");
@@ -629,7 +630,7 @@ const wxsWidget::CodeDefines& wxsWidget::GetCodeDefines()
     
     // Creating size
     
-    if ( BaseParams.DefaultSize ) CDefines.Size = wxT("wwxDefaultSize");
+    if ( BaseParams.DefaultSize ) CDefines.Size = wxT("wxDefaultSize");
     else CDefines.Size = wxString::Format(wxT("wxSize(%d,%d)"),BaseParams.SizeX,BaseParams.SizeY);
     
     return CDefines;

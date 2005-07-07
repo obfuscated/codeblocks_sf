@@ -23,6 +23,9 @@ class wxsGridSizer : public wxsContainer
         /** Function generating code finalizing widget's creation process */
         virtual const char* GetFinalizingCode(wxsCodeParams& Params);
         
+        /** Generating sizer's declaration */
+		virtual const char * GetDeclarationCode(wxsCodeParams& Params);
+        
     protected:
     
         /** Loading content */

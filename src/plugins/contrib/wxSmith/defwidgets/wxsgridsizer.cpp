@@ -118,7 +118,7 @@ const char* wxsGridSizer::GetProducingCode(wxsCodeParams& Params)
     static wxString Str;
     
     Str = wxString::Format("%s = new wxGridSizer(1);",
-        BaseParams.IdName.c_str());
+        BaseParams.VarName.c_str());
         
     return Str.c_str();
 }
@@ -176,5 +176,12 @@ void wxsGridSizer::CreateObjectProperties()
     wxsWidget::CreateObjectProperties();
     PropertiesObject.Add2IProperty(wxT("Cols x rows:"),Cols,Rows,0);
     PropertiesObject.Add2IProperty(wxT("VGap x HGap:"),VGap,HGap,1);
+}
+
+const char * wxsGridSizer::GetDeclarationCode(wxsCodeParams& Params)
+{
+	static wxString Temp;
+	Temp.Printf(wxT("wxGridSizer* %s"),GetBaseParams().VarName.c_str());
+	return Temp.c_str();
 }
 

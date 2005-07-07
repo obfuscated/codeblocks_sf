@@ -1,19 +1,19 @@
 <resource>
-    <object class="wxDialog" name="dlgNewClass">
-        <object class="wxGridSizer" variable="Unknown" member="no">
+    <object class="wxDialog" name="wxsWndDialog">
+        <object class="wxGridSizer" variable="MainSizer" member="no">
             <rows>0</rows>
             <cols>3</cols>
             <vgap>0</vgap>
             <hgap>0</hgap>
             <object class="sizeritem">
-                <object class="wxCheckBox" name="ID_COMMON" variable="Unknown" member="yes">
+                <object class="wxCheckBox" name="ID_COMMON" variable="CheckBox1" member="yes">
                     <checked>1</checked>
                 </object>
                 <border>5</border>
                 <flag>wxALL|wxALIGN_CENTER</flag>
             </object>
             <object class="sizeritem">
-                <object class="wxButton" name="ID_COMMON" variable="Unknown" member="no">
+                <object class="wxButton" name="ID_COMMON" variable="Button1" member="no">
                     <label>OK</label>
                     <default>1</default>
                 </object>
@@ -21,38 +21,38 @@
                 <flag>wxALL|wxALIGN_CENTER</flag>
             </object>
             <object class="sizeritem">
-                <object class="wxCheckBox" name="ID_COMMON" variable="Unknown" member="no" />
-                <border>5</border>
+                <object class="wxCheckBox" name="ID_COMMON" variable="CheckBox2" member="no" />
+                <border>10</border>
                 <flag>wxALL|wxALIGN_CENTER</flag>
             </object>
             <object class="sizeritem">
-                <object class="wxButton" name="ID_COMMON" variable="Unknown" member="yes">
+                <object class="wxButton" name="ID_COMMON" variable="Button2" member="yes">
                     <label>Button</label>
                 </object>
                 <border>5</border>
                 <flag>wxALL|wxALIGN_CENTER</flag>
             </object>
             <object class="sizeritem">
-                <object class="wxCheckBox" name="ID_COMMON" variable="Unknown" member="yes" />
+                <object class="wxCheckBox" name="ID_COMMON" variable="CheckBox3" member="yes" />
                 <border>5</border>
                 <flag>wxALL|wxALIGN_CENTER</flag>
             </object>
             <object class="sizeritem">
-                <object class="wxButton" name="ID_COMMON" variable="Unknown" member="no">
+                <object class="wxButton" name="ID_COMMON" variable="Button3" member="no">
                     <label>Button</label>
                 </object>
                 <border>5</border>
                 <flag>wxALL|wxALIGN_CENTER</flag>
             </object>
             <object class="sizeritem">
-                <object class="wxCheckBox" name="ID_COMMON" variable="Unknown" member="yes" />
+                <object class="wxCheckBox" name="ID_COMMON" variable="CheckBox4" member="yes" />
                 <border>5</border>
                 <flag>wxALL|wxALIGN_CENTER</flag>
             </object>
             <object class="sizeritem">
-                <object class="wxGridSizer" variable="Unknown" member="yes">
+                <object class="wxGridSizer" variable="GridSizer1" member="yes">
                     <rows>0</rows>
-                    <cols>0</cols>
+                    <cols>2</cols>
                     <vgap>0</vgap>
                     <hgap>0</hgap>
                 </object>
@@ -60,7 +60,7 @@
                 <flag>wxALL|wxALIGN_CENTER</flag>
             </object>
             <object class="sizeritem">
-                <object class="wxStaticText" name="ID_COMMON" variable="Unknown" member="yes">
+                <object class="wxStaticText" name="ID_COMMON" variable="StaticText1" member="yes">
                     <label>Abc</label>
                     <size>100,30</size>
                     <style>wxALIGN_CENTRE</style>
@@ -69,7 +69,7 @@
                 <flag>wxALL|wxALIGN_CENTER</flag>
             </object>
             <object class="sizeritem">
-                <object class="wxComboBox" name="ID_COMMON" variable="Unknown" member="yes">
+                <object class="wxComboBox" name="ID_COMMON" variable="ComboBox1" member="yes">
                     <content>
                         <item>First</item>
                         <item>Second</item>
@@ -80,9 +80,7 @@
                 <flag>wxALL|wxALIGN_CENTER</flag>
             </object>
             <object class="sizeritem">
-                <object class="wxButton" name="ID_COMMON" variable="Unknown" member="yes">
-                    <label>Button</label>
-                </object>
+                <object class="wxCheckBox" name="ID_COMMON" variable="CheckBox5" member="no" />
                 <border>5</border>
                 <flag>wxALL|wxALIGN_CENTER</flag>
             </object>

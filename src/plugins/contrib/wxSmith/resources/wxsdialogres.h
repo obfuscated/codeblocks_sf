@@ -42,11 +42,14 @@ class wxsDialogRes : public wxsResource
         /** Getting resource name */
         virtual const wxString& GetResourceName();
         
-        /** Generating empty sourcec and header file.
+        /** Generating empty source and header file.
           *
           * WARNING: Not checking if files exist
           */
         bool GenerateEmptySources();
+        
+        /** This will be used to shedule code rebuilds */
+        virtual void NotifyChange();
         
     protected:
     
@@ -57,6 +60,9 @@ class wxsDialogRes : public wxsResource
 	
         /** Creating xml tree for current widget */
         TiXmlDocument* GenerateXml();
+        
+        /** Adding declaration codes for locally stored widgets */
+        void AddDeclarationsReq(wxsWidget* Widget,wxString& LocalCode,wxString& GlobalCode,int LocalTabSize,int GlobalTabSize,bool& WasLocal);
 	
         wxString   ClassName;
         wxString   XrcFile;
