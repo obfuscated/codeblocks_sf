@@ -7,6 +7,7 @@
 #include "manager.h"
 #include "projectmanager.h"
 #include "messagemanager.h"
+#include "macrosmanager.h"
 #include "cbproject.h"
 #include "projectloader.h"
 #include "compilerfactory.h"

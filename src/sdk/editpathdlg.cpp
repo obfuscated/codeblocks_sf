@@ -48,46 +48,38 @@ EditPathDlg::~EditPathDlg()
 
 void EditPathDlg::OnBrowse(wxCommandEvent& event)
 {
+    wxFileName path;
+    
     wxFileName fname(XRCCTRL(*this, "txtPath", wxTextCtrl)->GetValue());
         
     if (m_WantDir)
     {
-        wxFileName path(ChooseDirectory(this, m_Message, m_Path,
-                m_Basepath, m_AskMakeRelative, m_ShowCreateDirButton));
+        path = ChooseDirectory(this, m_Message, m_Path,
+                m_Basepath, false, m_ShowCreateDirButton);
         
         if (path.GetFullPath().IsEmpty())
             return;
-            
-        if (m_AskMakeRelative && !m_Basepath.IsEmpty())
-        {
-            // ask the user if he wants it to be kept as relative
-            if (wxMessageBox(_("Keep this as a relative path?"),
-                            _("Question"),
-                            wxICON_QUESTION | wxYES_NO) == wxYES)
-            {
-                path.MakeRelativeTo(m_Basepath);
-            }
-        }
-        
-        XRCCTRL(*this, "txtPath", wxTextCtrl)->SetValue(path.GetFullPath());
     } else {
         wxFileDialog dlg(this, m_Message, fname.GetPath(), fname.GetFullName(),
                  m_Filter, wxCHANGE_DIR);
+                 
         if (dlg.ShowModal() == wxID_OK) {
-            wxFileName path(dlg.GetPath());
-            if (m_AskMakeRelative && !m_Basepath.IsEmpty())
-            {
-                // ask the user if he wants it to be kept as relative
-                if (wxMessageBox(_("Keep this as a relative path?"),
-                                _("Question"),
-                                wxICON_QUESTION | wxYES_NO) == wxYES)
-                {
-                    path.MakeRelativeTo(m_Basepath);
-                }
-            }
-            XRCCTRL(*this, "txtPath", wxTextCtrl)->SetValue(path.GetFullPath());
+            path = dlg.GetPath();
         }
     }
+    
+    if (m_AskMakeRelative && !m_Basepath.IsEmpty())
+    {
+        // ask the user if he wants it to be kept as relative
+        if (wxMessageBox(_("Keep this as a relative path?"),
+                        _("Question"),
+                        wxICON_QUESTION | wxYES_NO) == wxYES)
+        {
+            path.MakeRelativeTo(m_Basepath);
+        }
+    }
+    
+    XRCCTRL(*this, "txtPath", wxTextCtrl)->SetValue(path.GetFullPath());
         
 }
 

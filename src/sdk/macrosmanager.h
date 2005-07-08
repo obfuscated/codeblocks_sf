@@ -12,8 +12,9 @@ class DLLIMPORT MacrosManager
 		friend class Manager;
 		void CreateMenu(wxMenuBar* menuBar);
 		void ReleaseMenu(wxMenuBar* menuBar);
-		void ReplaceMacros(wxString& buffer);
-		wxString ReplaceMacros(const wxString& buffer);
+		void ReplaceMacros(wxString& buffer, bool envVarsToo = false);
+		wxString ReplaceMacros(const wxString& buffer, bool envVarsToo = false);
+		void ReplaceEnvVars(wxString& buffer);
 	protected:
 	private:
         static MacrosManager* Get();

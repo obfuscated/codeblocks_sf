@@ -24,6 +24,7 @@
 */
 
 #include <wx/menu.h>
+#include <wx/regex.h>
 
 #include "projectmanager.h"
 #include "editormanager.h"
@@ -79,15 +80,15 @@ void MacrosManager::ReleaseMenu(wxMenuBar* menuBar)
     SANITY_CHECK();
 }
 
-wxString MacrosManager::ReplaceMacros(const wxString& buffer)
+wxString MacrosManager::ReplaceMacros(const wxString& buffer, bool envVarsToo)
 {
     SANITY_CHECK("");
 	wxString tmp = buffer;
-	ReplaceMacros(tmp);
+	ReplaceMacros(tmp, envVarsToo);
 	return tmp;
 }
 
-void MacrosManager::ReplaceMacros(wxString& buffer)
+void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo)
 {
     SANITY_CHECK();
 	/*
@@ -104,7 +105,9 @@ void MacrosManager::ReplaceMacros(wxString& buffer)
 	*/
 	if (buffer.IsEmpty())
 		return;
-	
+	if (envVarsToo)
+        ReplaceEnvVars(buffer);
+
 	buffer.Replace("${AMP}", "&");
 
 	cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
@@ -135,4 +138,32 @@ void MacrosManager::ReplaceMacros(wxString& buffer)
 		buffer.Replace("${ACTIVE_EDITOR_FILENAME}", UnixFilename(editor->GetFilename()));
 	else
 		buffer.Replace("${ACTIVE_EDITOR_FILENAME}", wxEmptyString);
+}
+
+void MacrosManager::ReplaceEnvVars(wxString& buffer)
+{
+	SANITY_CHECK();
+
+	wxRegEx re[2];
+	re[0].Compile("(\\$[({]?)([A-Za-z_0-9]+)([)}]?)"); // $HOME, $(HOME) and ${HOME}
+	re[1].Compile("(%)([A-Za-z_0-9]+)(%)"); // %HOME%
+
+    int count = 1;
+	while (count)
+	{
+        count = 0;
+        for (int i = 0; i < 2; ++i)
+        {
+            if (re[i].Matches(buffer))
+            {
+                wxString env = re[i].GetMatch(buffer, 2);
+                wxString envactual;
+                wxGetEnv(env, &envactual);
+                wxString before = re[i].GetMatch(buffer, 1) + env + re[i].GetMatch(buffer, 3);
+//                LOGSTREAM << "Converting " << before << " to " << envactual << '\n';
+                buffer.Replace(before, envactual);
+                ++count;
+            }
+        }
+	}
 }

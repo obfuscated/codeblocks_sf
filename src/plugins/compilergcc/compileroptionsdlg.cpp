@@ -948,10 +948,10 @@ void CompilerOptionsDlg::OnEditDirClick(wxCommandEvent& event)
         dir.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_pProject->GetBasePath());
 //    Manager::Get()->GetMessageManager()->DebugLog(dir.GetFullPath());
     wxString initial = _("");
-    if (dir.DirExists())
-        initial = dir.GetPath(wxPATH_GET_VOLUME);
-    else if (m_pProject)
-        initial = m_pProject->GetBasePath();
+    
+    // This path may not exist, but if using EditPathDlg, you still want it
+    // displayed
+    initial = dir.GetPath(wxPATH_GET_VOLUME);
 
     /*wxString path = ChooseDirectory(this,
                                     _("Select directory"),
