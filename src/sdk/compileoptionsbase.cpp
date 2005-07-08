@@ -110,7 +110,6 @@ void CompileOptionsBase::SetIncludeDirs(const wxArrayString& includeDirs)
     for (size_t i = 0; i < includeDirs.GetCount(); ++i)
     {
         wxString entry = UnixFilename(includeDirs[i]);
-        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(entry);
         if (m_IncludeDirs.Index(entry, casesens) == wxNOT_FOUND)
             m_IncludeDirs.Add(entry);
     }
@@ -137,7 +136,6 @@ void CompileOptionsBase::SetResourceIncludeDirs(const wxArrayString& resIncludeD
     for (size_t i = 0; i < resIncludeDirs.GetCount(); ++i)
     {
         wxString entry = UnixFilename(resIncludeDirs[i]);
-        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(entry);
         if (m_ResIncludeDirs.Index(entry, casesens) == wxNOT_FOUND)
             m_ResIncludeDirs.Add(entry);
     }
@@ -164,7 +162,6 @@ void CompileOptionsBase::SetLibDirs(const wxArrayString& libDirs)
     for (size_t i = 0; i < libDirs.GetCount(); ++i)
     {
         wxString entry = UnixFilename(libDirs[i]);
-        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(entry);
         if (m_LibDirs.Index(entry, casesens) == wxNOT_FOUND)
             m_LibDirs.Add(entry);
     }
@@ -219,7 +216,6 @@ void CompileOptionsBase::AddLinkerOption(const wxString& option)
     casesens = false;
 #endif
     wxString envopt = option;
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(envopt);
     if (m_LinkerOptions.Index(envopt, casesens) == wxNOT_FOUND)
     {
         m_LinkerOptions.Add(envopt);
@@ -234,7 +230,6 @@ void CompileOptionsBase::AddLinkLib(const wxString& lib)
     casesens = false;
 #endif
     wxString envopt = lib;
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(envopt);
     if (m_LinkLibs.Index(envopt, casesens) == wxNOT_FOUND)
     {
         m_LinkLibs.Add(envopt);
@@ -249,7 +244,6 @@ void CompileOptionsBase::AddCompilerOption(const wxString& option)
     casesens = false;
 #endif
     wxString envopt = option;
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(envopt);
     if (m_CompilerOptions.Index(envopt, casesens) == wxNOT_FOUND)
     {
         m_CompilerOptions.Add(envopt);
@@ -264,7 +258,6 @@ void CompileOptionsBase::AddIncludeDir(const wxString& option)
     casesens = false;
 #endif
     wxString entry = UnixFilename(option);
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(entry);
     if (m_IncludeDirs.Index(entry, casesens) == wxNOT_FOUND)
     {
         m_IncludeDirs.Add(entry);
@@ -279,7 +272,6 @@ void CompileOptionsBase::AddResourceIncludeDir(const wxString& option)
     casesens = false;
 #endif
     wxString entry = UnixFilename(option);
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(entry);
     if (m_ResIncludeDirs.Index(entry, casesens) == wxNOT_FOUND)
     {
         m_ResIncludeDirs.Add(entry);
@@ -294,7 +286,6 @@ void CompileOptionsBase::AddLibDir(const wxString& option)
     casesens = false;
 #endif
     wxString entry = UnixFilename(option);
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(entry);
     if (m_LibDirs.Index(entry, casesens) == wxNOT_FOUND)
     {
         m_LibDirs.Add(entry);
@@ -305,7 +296,6 @@ void CompileOptionsBase::AddLibDir(const wxString& option)
 void CompileOptionsBase::AddCommandsBeforeBuild(const wxString& command)
 {
     wxString envopt = command;
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(envopt);
 	m_CmdsBefore.Add(envopt);
 	SetModified(true);
 }
@@ -313,7 +303,6 @@ void CompileOptionsBase::AddCommandsBeforeBuild(const wxString& command)
 void CompileOptionsBase::AddCommandsAfterBuild(const wxString& command)
 {
     wxString envopt = command;
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(envopt);
 	m_CmdsAfter.Add(envopt);
 	SetModified(true);
 }

@@ -125,7 +125,7 @@ void DirectCommands::AddCommandsToArray(const wxString& cmds, wxArrayString& arr
         Var& var = vars[i];
         cmd.Replace("$(" + var.name + ")", var.value);
     }
-    Manager::Get()->GetMacrosManager()->ReplaceMacros(cmd);
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(cmd, true);
     
     while (!cmd.IsEmpty())
     {
