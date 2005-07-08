@@ -102,6 +102,16 @@
 			<Option link="0"/>
 			<Option target="default"/>
 		</Unit>
+		<Unit filename="defwidgets\wxslistbox.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="defwidgets\wxslistbox.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
 		<Unit filename="defwidgets\wxspanel.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="default"/>
@@ -225,7 +235,6 @@
 		<Unit filename="resources\wxsdialogres.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="default"/>
-			<Breakpoint line="181" enabled="1" pass="0" />
 		</Unit>
 		<Unit filename="resources\wxsdialogres.h">
 			<Option compilerVar=""/>

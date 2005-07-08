@@ -3,7 +3,7 @@
 <Code::Blocks_project_file>
 	<FileVersion major="1" minor="1"/>
 	<Project>
-		<Option title="wxSmith"/>
+		<Option title="wxSmith for wx 2.6"/>
 		<Option makefile="Makefile"/>
 		<Option makefile_is_custom="0"/>
 		<Option compiler="0"/>
@@ -46,6 +46,16 @@
 			<Option link="0"/>
 			<Option target="default"/>
 		</Unit>
+		<Unit filename="defwidgets\wxscombobox.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="defwidgets\wxscombobox.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
 		<Unit filename="defwidgets\wxsdialog.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="default"/>
@@ -71,6 +81,16 @@
 			<Option target="default"/>
 		</Unit>
 		<Unit filename="defwidgets\wxsgridsizer.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="defwidgets\wxslistbox.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="defwidgets\wxslistbox.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

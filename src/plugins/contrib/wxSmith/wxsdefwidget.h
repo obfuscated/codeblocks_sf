@@ -15,6 +15,7 @@
             { evInit(); }                                                   \
             virtual ~Name()                                                 \
             {                                                               \
+              evDestroy();                                                  \
             }                                                               \
             virtual const wxsWidgetInfo& GetInfo()                          \
             {                                                               \
@@ -121,10 +122,13 @@ class wxsDefWidget: public wxsWidget
         virtual const char* GetWidgetNameStr() = 0;
         
         void evInit();
-        
+        // Added by cyberkoa
+        void evDestroy();
+        // End Added
     private:
-    
-        enum evUseType { Init, XmlL, XmlS, Code, Props };
+        // Modified by cyberkoa
+        enum evUseType { Init, XmlL, XmlS, Code, Props, Destroy };
+        // End Modified
         
         evUseType evUse;
         bool Return;
@@ -134,6 +138,7 @@ class wxsDefWidget: public wxsWidget
         void evXmlS();
         void evCode();
         void evProps();
+        
         
         /** This function does replace the Old identifier with New content */
         void CodeReplace(const wxString& Old,const wxString& New);

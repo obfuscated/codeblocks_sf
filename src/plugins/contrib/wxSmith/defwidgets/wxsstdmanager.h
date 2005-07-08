@@ -17,6 +17,7 @@ enum std_widgets
     wxsCheckBoxId,
     wxsStaticTextId,
     wxsComboBoxId,
+    wxsListBoxId,
     
     /* Windows */
     wxsDialogId,

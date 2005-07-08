@@ -9,10 +9,10 @@ wxsWndDialog::wxsWndDialog(wxWidnow* parent,wxWindowID id = -1)
 {
     //(*Initialize(wxsWndDialog)
     wxGridSizer* MainSizer
-    wxButton* Button1;
-    wxCheckBox* CheckBox2;
-    wxButton* Button3;
-    wxCheckBox* CheckBox5;
+    wxButton Button1;
+    wxCheckBox CheckBox2;
+    wxButton Button3;
+    wxCheckBox CheckBox5;
 
     MainSizer = new wxGridSizer(1);
     CheckBox1 = new wxCheckBox(this,ID_COMMON,wxT(""),wxDefaultPosition,wxDefaultSize,0);

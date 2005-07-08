@@ -76,7 +76,13 @@ void wxsDefWidget::evProps()
     evUse = Props;
     BuildExtVars();
 }
-
+// Added by cyberkoa
+void wxsDefWidget::evDestroy()
+{
+    evUse = Destroy;
+    BuildExtVars();
+}
+// End Added
 void wxsDefWidget::CodeReplace(const wxString& Old,const wxString& New)
 {
 // TODO (SpOoN#1#): Create something more intelligent
@@ -87,7 +93,7 @@ const char* wxsDefWidget::GetDeclarationCode(wxsCodeParams& Params)
 {
     static wxString Tmp;
     Tmp = wxT(GetWidgetNameStr());
-    Tmp.Append(wxT("* "));
+    Tmp.Append(' ');
     Tmp += BaseParams.VarName;
     Tmp.Append(';');
     return Tmp.c_str();
@@ -118,7 +124,14 @@ void wxsDefWidget::evBool(bool& Val,char* Name,char* XrcName,char* PropName,bool
             }
             break;
         }
-        
+
+        case Destroy:
+        {
+          // Add destructor codes here
+			
+            break;
+        }
+                
         case Code:
         {
             CodeReplace(Name,wxString::Format("%s",Val?"true":"false"));
@@ -157,7 +170,12 @@ void wxsDefWidget::evInt(int& Val,char* Name,char* XrcName,char* PropName,int De
             }
             break;
         }
-        
+
+        case Destroy:
+        {
+            break;
+        }
+                
         case Code:
         {
             CodeReplace(Name,wxString::Format("%d",Val));
@@ -197,7 +215,12 @@ void wxsDefWidget::ev2Int(int& Val1,int& Val2,char* Name,char* XrcName,char* Pro
             }
             break;
         }
-        
+
+        case Destroy:
+        {
+            break;
+        }
+                
         case Code:
         {
             CodeReplace(Name,wxString::Format("wxPoint(%d,%d)",Val1,Val2));
@@ -236,6 +259,11 @@ void wxsDefWidget::evStr(wxString& Val,char* Name,char* XrcName,char* PropName,w
             {
                 XmlSetVariable(XrcName,Val);
             }
+            break;
+        }
+        
+        case Destroy:
+        {
             break;
         }
         
@@ -279,7 +307,15 @@ void wxsDefWidget::evStrArray(wxArrayString& Val,char* Name,char* XrcParentName,
 			}           
             break;
         }
-        
+
+        case Destroy:
+        {
+            // Release the memory usage of wxArrayString
+			Val.Clear();
+			
+            break;
+        }
+
         case Code:
         {
 			// cyberkoa : Not ready yet.
