@@ -5,8 +5,8 @@
   <tag attribute1="value" attribute2="value">
   Some text with &quot;special entities&quot;
   </tag>
-  <tag attribute1="value" attribute2="value">
-  <tag attribute1="value" attribute2="value">
+  <tag attribute1="value" attribute2="value"/>
+  <tag attribute1="value" attribute2="value"/>
   <something>
     <![CDATA[ 
       This is a CDATA section
