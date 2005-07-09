@@ -102,6 +102,8 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
    	XRCCTRL(*this, "chkFoldOnOpen", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/editor/folding/fold_all_on_open", 0L));
    	XRCCTRL(*this, "chkFoldPreprocessor", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/editor/folding/fold_preprocessor", 0L));
    	XRCCTRL(*this, "chkFoldComments", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/editor/folding/fold_comments", 1));
+   	XRCCTRL(*this, "chkFoldXml", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/editor/folding/fold_xml", 1));
+   	
 	//gutter
     wxColour color(ConfigManager::Get()->Read("/editor/gutter/color/red", 0l),
     				ConfigManager::Get()->Read("/editor/gutter/color/green", 0l),
@@ -697,6 +699,8 @@ void EditorConfigurationDlg::OnOK(wxCommandEvent& event)
    	ConfigManager::Get()->Write("/editor/folding/fold_all_on_open", 	XRCCTRL(*this, "chkFoldOnOpen", wxCheckBox)->GetValue());
    	ConfigManager::Get()->Write("/editor/folding/fold_preprocessor", 	XRCCTRL(*this, "chkFoldPreprocessor", wxCheckBox)->GetValue());
    	ConfigManager::Get()->Write("/editor/folding/fold_comments", 		XRCCTRL(*this, "chkFoldComments", wxCheckBox)->GetValue());
+   	ConfigManager::Get()->Write("/editor/folding/fold_xml", 		    XRCCTRL(*this, "chkFoldXml", wxCheckBox)->GetValue());
+
 	//gutter
     ConfigManager::Get()->Write("/editor/gutter/mode", 			XRCCTRL(*this, "lstGutterMode", wxChoice)->GetSelection());
     ConfigManager::Get()->Write("/editor/gutter/color/red",		XRCCTRL(*this, "btnGutterColor", wxButton)->GetBackgroundColour().Red());

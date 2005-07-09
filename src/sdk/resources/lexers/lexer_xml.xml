@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE Code::Blocks_lexer_properties>
+<Code::Blocks_lexer_properties>
+		<Lexer name="XML"
+				index="5"
+				filemasks="*.xml,*.html,*.xsl,*.xrc">
+				<Style name="Default"
+						index="0"
+						fg="0,0,0"
+						bg="255,255,255"
+						bold="0"
+						italics="0"
+						underlined="0"/>
+                <Style name="Tag"
+                        index="1,2"
+                        fg="0,0,255"
+                        bold="1"/>
+                <Style name="Attribute name"
+                        index="3,4"
+                        fg="0,0,0"
+                        bold="1"/>
+                <Style name="Attribute value"
+                        index="5,6,7,8"
+                        fg="0,128,255"/>
+                <Style name="Comment"
+                        index="9"
+                        fg="160,160,160"/>
+                <Style name="Entity"
+                        index="10"
+                        fg="160,0,0"
+                        bold="1"/>
+                <Style name="CDATA Section"
+                        index="17"
+                        fg="0,0,0"
+                        italics="1"
+                        underlined="0"/>
+				<SampleCode value="lexer_xml.sample"/>
+        </Lexer>
+</Code::Blocks_lexer_properties>

@@ -431,6 +431,7 @@ void cbEditor::SetEditorStyle()
 
     // folding margin
     m_pControl->SetProperty("fold", ConfigManager::Get()->Read("/editor/folding/show_folds", 1) ? "1" : "0");
+    m_pControl->SetProperty("fold.html", ConfigManager::Get()->Read("/editor/folding/fold_xml", 1) ? "1" : "0");
     m_pControl->SetProperty("fold.comment", ConfigManager::Get()->Read("/editor/folding/fold_comments", 0L) ? "1" : "0");
     m_pControl->SetProperty("fold.compact", "0");
     m_pControl->SetProperty("fold.preprocessor", ConfigManager::Get()->Read("/editor/folding/fold_preprocessor", 0L) ? "1" : "0");
