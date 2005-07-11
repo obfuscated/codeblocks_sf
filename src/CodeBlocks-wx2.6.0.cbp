@@ -331,10 +331,14 @@
 				</Linker>
 			</Target>
 			<Target title="update">
-				<Option type="4"/>
+				<Option output="C:\Devel\codeblocks\src\CodeBlocks-wx2.6.0.dll"/>
+				<Option working_dir="."/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option includeInTargetAll="0"/>
-				<Option projectResourceIncludeDirsRelation="4"/>
 				<ExtraCommands>
 					<Add before="update.bat"/>
 				</ExtraCommands>
