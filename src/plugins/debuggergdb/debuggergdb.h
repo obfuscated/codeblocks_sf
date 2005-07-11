@@ -41,7 +41,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 		int Configure();
 		void BuildMenu(wxMenuBar* menuBar);
 		void BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg);
-		void BuildToolBar(wxToolBar* toolBar);
+		bool BuildToolBar(wxToolBar* toolBar);
 		void OnAttach(); // fires when the plugin is attached to the application
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
 
@@ -107,6 +107,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         SimpleTextLog* m_pLog;
         SimpleTextLog* m_pDbgLog;
 		PipedProcess* m_pProcess;
+		wxToolBar* m_pTbar;
         int m_PageIndex;
         int m_DbgPageIndex;
 		wxRegEx reSource;

@@ -6,13 +6,13 @@
 		<Option title="Code::Blocks (wx2.6)"/>
 		<Option makefile="Makefile.wx2.6"/>
 		<Option makefile_is_custom="0"/>
-		<Option default_target="2"/>
+		<Option default_target="3"/>
 		<Option compiler="0"/>
 		<Build>
 			<Target title="tinyXML">
 				<Option output="sdk\tinyxml\libtxml.a"/>
 				<Option working_dir=""/>
-				<Option object_output=".objs\2.6.0"/>
+				<Option object_output=".objs\2.6"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="2"/>
@@ -26,9 +26,9 @@
 			<Target title="sdk">
 				<Option output="devel\codeblocks.dll"/>
 				<Option working_dir="devel"/>
-				<Option object_output=".objs\2.6.0"/>
+				<Option object_output=".objs\2.6"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
+				<Option external_deps="sdk\tinyxml\libtxml.a;"/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option parameters="--debug-log --no-check-associations"/>
@@ -47,12 +47,34 @@
 					<Add library="wxmsw26_stc"/>
 				</Linker>
 			</Target>
+			<Target title="wxDockIt">
+				<Option output="src\wxDockit\lib\libwxDockIt.a"/>
+				<Option working_dir=""/>
+				<Option object_output=".objs\2.6"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option type="2"/>
+				<Option compiler="0"/>
+				<Option projectResourceIncludeDirsRelation="2"/>
+				<Compiler>
+					<Add option="-D__GNUWIN32__"/>
+					<Add option="-DWIN32"/>
+					<Add option="-DWINVER=0x400"/>
+					<Add option="-DPANE_AWARE"/>
+					<Add option="-D_WIN32_IE=0x0500"/>
+					<Add option="-DWXUSINGDLL"/>
+					<Add directory="src\wxDockit\include"/>
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="src\wxDockit\include"/>
+				</ResourceCompiler>
+			</Target>
 			<Target title="src">
 				<Option output="devel\codeblocks.exe"/>
 				<Option working_dir="devel"/>
-				<Option object_output=".objs\2.6.0"/>
+				<Option object_output=".objs\2.6"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
+				<Option external_deps="..\wxDockit\lib\libwxdockit.a;"/>
 				<Option type="0"/>
 				<Option compiler="0"/>
 				<Option parameters="--debug-log --no-check-associations -ns"/>
@@ -62,12 +84,14 @@
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
 					<Add directory="sdk"/>
+					<Add directory="src\wxDockit\include"/>
 				</Compiler>
 				<ResourceCompiler>
 					<Add directory="..\..\..\MinGW\include"/>
 				</ResourceCompiler>
 				<Linker>
 					<Add library="libcodeblocks.a"/>
+					<Add library="wxDockIt"/>
 					<Add library="wxmsw26_stc"/>
 					<Add library="libkernel32.a"/>
 					<Add library="libuser32.a"/>
@@ -85,12 +109,13 @@
 					<Add library="libadvapi32.a"/>
 					<Add library="libwsock32.a"/>
 					<Add directory="devel"/>
+					<Add directory="src\wxDockit\lib"/>
 				</Linker>
 			</Target>
 			<Target title="plugin_Astyle">
 				<Option output="devel\share\CodeBlocks\plugins\astyle.dll"/>
 				<Option working_dir="devel\share\CodeBlocks\plugins"/>
-				<Option object_output=".objs\2.6.0"/>
+				<Option object_output=".objs\2.6"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
@@ -114,7 +139,7 @@
 			<Target title="plugin_CompilerGCC">
 				<Option output="devel\share\CodeBlocks\plugins\compilergcc.dll"/>
 				<Option working_dir="devel\share\CodeBlocks\plugins"/>
-				<Option object_output=".objs\2.6.0"/>
+				<Option object_output=".objs\2.6"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
@@ -141,7 +166,7 @@
 			<Target title="plugin_DebuggerGDB">
 				<Option output="devel\share\CodeBlocks\plugins\debuggergdb.dll"/>
 				<Option working_dir="devel\share\CodeBlocks\plugins"/>
-				<Option object_output=".objs\2.6.0"/>
+				<Option object_output=".objs\2.6"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
@@ -166,7 +191,7 @@
 			<Target title="plugin_CodeCompletion">
 				<Option output="devel\share\CodeBlocks\plugins\codecompletion.dll"/>
 				<Option working_dir="devel\share\CodeBlocks\plugins"/>
-				<Option object_output=".objs\2.6.0"/>
+				<Option object_output=".objs\2.6"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
@@ -191,7 +216,7 @@
 			<Target title="plugin_ClassWizard">
 				<Option output="devel\share\CodeBlocks\plugins\classwizard.dll"/>
 				<Option working_dir="devel\share\CodeBlocks\plugins"/>
-				<Option object_output=".objs\2.6.0"/>
+				<Option object_output=".objs\2.6"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
@@ -216,7 +241,7 @@
 			<Target title="plugin_DefMimeHandler">
 				<Option output="devel\share\CodeBlocks\plugins\defaultmimehandler.dll"/>
 				<Option working_dir="devel\share\CodeBlocks\plugins"/>
-				<Option object_output=".objs\2.6.0"/>
+				<Option object_output=".objs\2.6"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
@@ -240,7 +265,7 @@
 			<Target title="plugin_PluginsWizard">
 				<Option output="devel\share\CodeBlocks\plugins\pluginwizard.dll"/>
 				<Option working_dir="devel\share\CodeBlocks\plugins"/>
-				<Option object_output=".objs\2.6.0"/>
+				<Option object_output=".objs\2.6"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
@@ -265,7 +290,7 @@
 			<Target title="plugin_ToDo">
 				<Option output="devel\share\CodeBlocks\plugins\todo.dll"/>
 				<Option working_dir="devel\share\CodeBlocks\plugins"/>
-				<Option object_output=".objs\2.6.0"/>
+				<Option object_output=".objs\2.6"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
@@ -286,7 +311,7 @@
 			<Target title="plugin_XPManifest">
 				<Option output="devel\share\CodeBlocks\plugins\xpmanifest.dll"/>
 				<Option working_dir="devel\share\CodeBlocks\plugins"/>
-				<Option object_output=".objs\2.6.0"/>
+				<Option object_output=".objs\2.6"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="3"/>
@@ -306,14 +331,10 @@
 				</Linker>
 			</Target>
 			<Target title="update">
-				<Option output="codeblocks-wx2.6.0.dll"/>
-				<Option working_dir="."/>
-				<Option object_output=".objs\2.6.0"/>
-				<Option deps_output="C:\Devel\codeblocks\src\.deps"/>
-				<Option external_deps=""/>
-				<Option type="3"/>
+				<Option type="4"/>
 				<Option compiler="0"/>
 				<Option includeInTargetAll="0"/>
+				<Option projectResourceIncludeDirsRelation="4"/>
 				<ExtraCommands>
 					<Add before="update.bat"/>
 				</ExtraCommands>
@@ -321,7 +342,7 @@
 			<Target title="console_runner">
 				<Option output="tools\ConsoleRunner\console_runner.exe"/>
 				<Option working_dir="tools\ConsoleRunner"/>
-				<Option object_output=".objs\2.6.0"/>
+				<Option object_output=".objs\2.6"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="1"/>
@@ -337,7 +358,7 @@
 			<Target title="doc">
 				<Option output="codeblocks-wx2.6.0.exe"/>
 				<Option working_dir="."/>
-				<Option object_output=".objs\2.6.0"/>
+				<Option object_output=".objs\2.6"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
 				<Option type="1"/>
@@ -360,7 +381,6 @@
 			<Add option="-DHAVE_W32API_H"/>
 			<Add option="-D__WXMSW__"/>
 			<Add option="-DWXUSINGDLL"/>
-			<Add option="-DNOPCH"/>
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="C:\MinGW\include"/>
@@ -1879,6 +1899,12 @@
 			<Option link="0"/>
 			<Option target="sdk"/>
 		</Unit>
+		<Unit filename="sdk\openfilestree.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
 		<Unit filename="sdk\personalitymanager.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="sdk"/>
@@ -2140,6 +2166,18 @@
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_rc.xml">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_xml.sample">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_xml.xml">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -2783,8 +2821,6 @@
 		</Unit>
 		<Unit filename="src\resources\resources.rc">
 			<Option compilerVar="WINDRES"/>
-			<Option compile="0"/>
-			<Option link="0"/>
 			<Option objectName="src\resources\resources.res"/>
 			<Option target="src"/>
 		</Unit>
@@ -2809,6 +2845,237 @@
 			<Option compile="0"/>
 			<Option link="0"/>
 			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\barholder.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\dockhost.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\dockit_defs.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\dockpanel.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\dockwindow.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\exsplitter.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\gdi.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\generic\toolbutton.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\gripper.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\gtk\dockwindow.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\gtk\gdi.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\gtk\pane.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\layoutmanager.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\msw\dockwindow.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\msw\gdi.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\msw\pane.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\msw\resources\HSPLITBAR.cur">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\msw\resources\SMALLARROWS.cur">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\msw\resources\VSPLITBAR.cur">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\msw\toolbutton.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\msw\wxdockit.rc">
+			<Option compilerVar="WINDRES"/>
+			<Option objectName="src\wxDockit\include\wx\msw\wxdockit.res"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\pane.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\slidebar.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\toolbutton.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\util.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\lib\readme.txt">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\readme.txt">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\releaseNotes.txt">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\src\generic\barholder.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\src\generic\dockhost.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\src\generic\dockpanel.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\src\generic\dockwindow.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\src\generic\exsplitter.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\src\generic\gdi.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\src\generic\gripper.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\src\generic\layoutmanager.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\src\generic\pane.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\src\generic\slidebar.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\src\generic\toolbutton.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\src\generic\util.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\src\msw\dockwindow_msw.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\src\msw\gdi_msw.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\src\msw\pane_msw.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\src\msw\toolbutton_msw.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="templates\console-main-c.cpp">
 			<Option compilerVar="CPP"/>

@@ -19,7 +19,7 @@ class CodeCompletion : public cbCodeCompletionPlugin
         virtual int Configure();
         virtual void BuildMenu(wxMenuBar* menuBar); // offer for menu space by host
 		virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg);
-		virtual void BuildToolBar(wxToolBar* toolBar);
+		virtual bool BuildToolBar(wxToolBar* toolBar);
 		virtual wxArrayString GetCallTips();
 		virtual int CodeComplete();
 		virtual void ShowCallTip();

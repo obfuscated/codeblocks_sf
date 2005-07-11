@@ -65,7 +65,7 @@ END_EVENT_TABLE()
 
 // class constructor
 MessageManager::MessageManager(wxWindow* parent)
-    : wxNotebook(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxCLIP_CHILDREN | wxNB_BOTTOM | wxNB_MULTILINE),
+    : wxNotebook(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxCLIP_CHILDREN | wxNB_BOTTOM),// | wxNB_MULTILINE),
     m_LockCounter(0),
     m_OpenSize(150),
     m_AutoHide(false),
@@ -158,8 +158,9 @@ void MessageManager::DebugLog(const wxChar* msg, ...)
     tmp = wxString::FormatV(msg, arg_list);
     va_end(arg_list);
 
-	wxDateTime timestamp = wxDateTime::UNow();
-    m_Logs[mltDebug]->AddLog("[" + timestamp.Format("%X.%l") + "]: " + tmp);
+//	wxDateTime timestamp = wxDateTime::UNow();
+//    m_Logs[mltDebug]->AddLog("[" + timestamp.Format("%X.%l") + "]: " + tmp);
+    m_Logs[mltDebug]->AddLog(tmp);
 	wxYield(); //wxSafeYield(this,true);
 }
 

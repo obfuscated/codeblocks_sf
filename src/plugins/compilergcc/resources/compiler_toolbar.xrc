@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <resource>
   <object class="wxToolBarAddOn" name="compiler_toolbar">
-    <object class="separator" />
+    <object class="separator"/>
     <object class="tool" name="idCompilerMenuCompile">
       <tooltip>Compile</tooltip>
       <longhelp>Compile the active project</longhelp>
@@ -28,14 +28,14 @@
       <bitmap>images/stop.png</bitmap>
       <disabled>1</disabled>
     </object>
-    <object class="separator" />
+    <object class="separator"/>
     <object class="wxStaticText" name="idToolTargetLabel">
       <label>Build target:</label>
     </object>
     <object class="wxComboBox" name="idToolTarget">
-		<content/>
-		<style>wxCB_READONLY</style>
+      <content/>
+      <size>256,-1</size>
+      <style>wxCB_READONLY</style>
     </object>
-    <object class="separator" />
   </object>
 </resource>

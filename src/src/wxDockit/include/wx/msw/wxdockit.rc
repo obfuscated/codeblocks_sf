@@ -1,0 +1,20 @@
+/////////////////////////////////////////////////////////////////////////////
+// File:     wxDockit.rc
+// Purpose:  wxDockit resource definitions.
+/////////////////////////////////////////////////////////////////////////////
+
+#if (defined( __GNUWIN32__ ) && !defined(__TWIN32__)) || defined(__MWERKS__)
+	#include <wx/msw/gnuwin32/winresrc.h>
+#else
+	#include <windows.h>
+#endif
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// Standard wxDockIt Cursors
+//
+
+IDC_SMALLARROWS         CURSOR  DISCARDABLE     "wx/msw/resources/SMALLARROWS.cur"
+IDC_HSPLITBAR           CURSOR  DISCARDABLE     "wx/msw/resources/HSPLITBAR.cur"
+IDC_VSPLITBAR           CURSOR  DISCARDABLE     "wx/msw/resources/VSPLITBAR.cur"
+

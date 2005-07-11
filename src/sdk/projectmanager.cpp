@@ -215,7 +215,7 @@ void ProjectManager::InitPane()
     wxSplitterWindow* mysplitter = mypanel->GetSplitter();
     BuildTree(mysplitter);
     mypanel->SetAutoLayout(true);
-    mypanel->RefreshSplitter(ID_EditorManager,ID_ProjectManager,200);
+    mypanel->RefreshSplitter(ID_EditorManager,ID_ProjectManager,150);
 }
 
 void ProjectManager::BuildTree(wxWindow* parent)

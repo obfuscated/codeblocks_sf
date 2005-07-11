@@ -226,19 +226,6 @@
         <checkable>1</checkable>
         <enabled>1</enabled>
       </object>
-      <object class="wxMenu" name="idViewManagerPosition">
-        <label>Manager position</label>
-        <object class="wxMenuItem" name="idViewManagerPositionLeft">
-          <label>Left</label>
-          <help>Position the manager tree on the left side of the IDE</help>
-          <checkable>1</checkable>
-        </object>
-        <object class="wxMenuItem" name="idViewManagerPositionRight">
-          <label>Right</label>
-          <help>Position the manager tree on the right side of the IDE</help>
-          <checkable>1</checkable>
-        </object>
-      </object>
       <object class="wxMenuItem" name="idViewOpenFilesTree">
         <label>&amp;Open files list</label>
         <help>Show/hide open files list</help>

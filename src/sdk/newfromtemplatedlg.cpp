@@ -26,6 +26,7 @@
 #include <wx/intl.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/combobox.h>
+#include <wx/checkbox.h>
 #include <wx/button.h>
 #include <wx/listbox.h>
 #include <wx/notebook.h>
@@ -145,6 +146,11 @@ void NewFromTemplateDlg::FillTemplate(ProjectTemplateLoader* pt)
 
 	XRCCTRL(*this, "wxID_OK", wxButton)->Enable(pt->m_TemplateOptions.GetCount() && pt->m_FileSets.GetCount() ||
                                                 XRCCTRL(*this, "lstUser", wxListBox)->GetSelection() != -1);
+}
+
+bool NewFromTemplateDlg::DoNotCreateFiles()
+{
+    return XRCCTRL(*this, "chkDoNotCreateFiles", wxCheckBox)->IsChecked();
 }
 
 bool NewFromTemplateDlg::SelectedUserTemplate()

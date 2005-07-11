@@ -56,6 +56,8 @@
 #include "startherepage.h"
 #include "printdlg.h"
 #include <wx/printdlg.h>
+#include <wx/util.h>
+#include <wx/dockpanel.h>
 
 class wxMyFileDropTarget : public wxFileDropTarget
 {
@@ -116,8 +118,6 @@ int idEditAutoComplete = XRCID("idEditAutoComplete");
 
 int idViewToolMain = XRCID("idViewToolMain");
 int idViewManager = XRCID("idViewManager");
-int idViewManagerPositionLeft = XRCID("idViewManagerPositionLeft");
-int idViewManagerPositionRight = XRCID("idViewManagerPositionRight");
 int idViewOpenFilesTree = XRCID("idViewOpenFilesTree");
 int idViewMessageManager = XRCID("idViewMessageManager");
 int idViewStatusbar = XRCID("idViewStatusbar");
@@ -161,7 +161,6 @@ int idCloseFullScreen = XRCID("idCloseFullScreen");
 int idShiftTab = wxNewId();
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
-    EVT_SIZE(MainFrame::OnSize)
     EVT_CLOSE(MainFrame::OnApplicationClose)
 
     EVT_UPDATE_UI(idFileOpenRecentClearHistory, MainFrame::OnFileMenuUpdateUI)
@@ -214,8 +213,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idViewToolMain, MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewMessageManager, MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewManager, MainFrame::OnViewMenuUpdateUI)
-    EVT_UPDATE_UI(idViewManagerPositionLeft, MainFrame::OnViewMenuUpdateUI)
-    EVT_UPDATE_UI(idViewManagerPositionRight, MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewStatusbar, MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewFocusEditor, MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewFullScreen, MainFrame::OnViewMenuUpdateUI)
@@ -275,8 +272,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idViewToolMain, MainFrame::OnToggleBar)
     EVT_MENU(idViewMessageManager, MainFrame::OnToggleBar)
     EVT_MENU(idViewManager, MainFrame::OnToggleBar)
-    EVT_MENU(idViewManagerPositionLeft, MainFrame::OnPositionManagerTree)
-    EVT_MENU(idViewManagerPositionRight, MainFrame::OnPositionManagerTree)
     EVT_MENU(idViewOpenFilesTree, MainFrame::OnToggleOpenFilesTree)
     EVT_MENU(idViewStatusbar, MainFrame::OnToggleStatusBar)
     EVT_MENU(idViewFocusEditor, MainFrame::OnFocusEditor)
@@ -307,7 +302,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	
 	EVT_MENU(idStartHerePageLink, MainFrame::OnStartHereLink)
 
-	EVT_SASH_DRAGGED(-1, MainFrame::OnDragSash)
+	EVT_LAYOUT_CHANGED(MainFrame::OnLayoutChanged)
 	
 	EVT_PROJECT_ACTIVATE(MainFrame::OnProjectActivated)
 	EVT_PROJECT_OPEN(MainFrame::OnProjectOpened)
@@ -322,12 +317,15 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 END_EVENT_TABLE()
 
 MainFrame::MainFrame(wxWindow* parent)
-       : wxFrame(parent, -1, "MainWin", wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE),
+       : wxFrame(parent, -1, "MainWin", wxDefaultPosition, wxSize(800, 600), wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE),
+	   pLayoutManager(0),
+	   pSlideBar(0),
+	   pPane(0),
+	   pDockWindow1(0),
+	   pDockWindow2(0),
 	   m_pAccel(0L),
 	   m_pCloseFullScreenBtn(0L),
        m_pNotebook(0L),
-	   m_pLeftSash(0L),
-	   m_pBottomSash(0L),
 	   m_pEdMan(0L),
 	   m_pPrjMan(0L),
 	   m_pMsgMan(0L),
@@ -379,15 +377,6 @@ MainFrame::MainFrame(wxWindow* parent)
     ScanForPlugins();
     LoadWindowState();
 	
-#ifdef __WXMSW__
-    SendSizeEvent(); // make sure everything is laid out properly
-	wxSafeYield();
-	// Make deliberately huge - it will be resized by m_pBottomSash.
-	// This is to avoid a nasty UI glitch where the MessageManager logs would
-	// not be correctly laid out until *manually* resizing m_pBottomSash...
-	m_pMsgMan->SetSize(wxSize(2048, 2048));
-#endif // __WXMSW__
-
     InitPrinting();
     ShowHideStartPage();
 
@@ -397,6 +386,8 @@ MainFrame::MainFrame(wxWindow* parent)
 
 MainFrame::~MainFrame()
 {
+	delete pLayoutManager;
+
     this->SetAcceleratorTable(wxNullAcceleratorTable);
     delete m_pAccel;
 
@@ -424,29 +415,44 @@ void MainFrame::CreateIDE()
 {
 	int leftW = ConfigManager::Get()->Read("/main_frame/layout/left_block_width", 200);
 	int bottomH = ConfigManager::Get()->Read("/main_frame/layout/bottom_block_height", 150);
+	wxSize clientsize = GetClientSize();
 
 	// Create CloseFullScreen Button, and hide it initially
 	m_pCloseFullScreenBtn = new wxButton(this, idCloseFullScreen, _( "Close Fullscreen" ), wxDefaultPosition );
 	m_pCloseFullScreenBtn->Show( false );
-	
-	wxSize clientsize = GetClientSize();
-	m_pLeftSash = new wxSashLayoutWindow(this, idLeftSash, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxSW_3D | wxCLIP_CHILDREN);
-	m_pLeftSash->SetDefaultSize(wxSize(leftW, clientsize.GetHeight()));
-	m_pLeftSash->SetOrientation(wxLAYOUT_VERTICAL);
-	m_pLeftSash->SetAlignment(wxLAYOUT_LEFT);
-	m_pLeftSash->SetSashVisible(wxSASH_RIGHT, true);
 
-	m_pNotebook = new wxNotebook(m_pLeftSash, wxID_ANY, wxDefaultPosition, wxDefaultSize, /*wxNB_LEFT | */wxCLIP_CHILDREN/* | wxNB_MULTILINE*/);
+    pSlideBar = new wxSlideBar( this, 0 );
+    pPane = new wxPane( this, 0, "Client Pane" );
+    pPane->ShowHeader(false);
+    pPane->ShowCloseButton( false );
+	m_pNotebook = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, /*wxNB_LEFT | */wxCLIP_CHILDREN/* | wxNB_MULTILINE*/);
+	Manager::Get(this, m_pNotebook, 0);//pPane);
 
-	m_pBottomSash = new wxSashLayoutWindow(this, idBottomSash, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxSW_3D | wxCLIP_CHILDREN);
-	m_pBottomSash->SetDefaultSize(wxSize(1000 - leftW, bottomH));
-	m_pBottomSash->SetOrientation(wxLAYOUT_HORIZONTAL);
-	m_pBottomSash->SetAlignment(wxLAYOUT_BOTTOM);
-	m_pBottomSash->SetSashVisible(wxSASH_TOP, true);
+    pDockWindow1 = new wxDockWindow( this, 0, "Management", wxPoint( 64, 64 ), wxSize( leftW, clientsize.GetHeight() ) );
+    pDockWindow1->SetClient( m_pNotebook );
 
-	Manager::Get(this, m_pNotebook);
-	Manager::Get()->GetMessageManager()->Reparent(m_pBottomSash);
-	Manager::Get()->GetMessageManager()->SetSize(wxSize(200, 30));
+    pDockWindow2 = new wxDockWindow( this, 0, "Messages", wxPoint( 96, 96 ), wxSize( clientsize.GetWidth(), bottomH ), "d1" );
+    pDockWindow2->SetClient( Manager::Get()->GetMessageManager() );
+
+    // setup dockmanager
+	pLayoutManager = new wxLayoutManager( this );
+    pLayoutManager->AddDefaultHosts();
+    pLayoutManager->AddDockWindow( pDockWindow1 );
+    pLayoutManager->AddDockWindow( pDockWindow2 );
+    pLayoutManager->SetLayout( wxDWF_SPLITTER_BORDERS, pPane );
+
+    // auto-dock some dockwindows
+    HostInfo hi;
+    hi = pLayoutManager->GetDockHost( wxDEFAULT_LEFT_HOST );
+    hi.pHost->SetAreaSize(leftW);
+    pLayoutManager->DockWindow( pDockWindow1, hi );
+    hi = pLayoutManager->GetDockHost( wxDEFAULT_RIGHT_HOST );
+    hi.pHost->SetAreaSize(leftW);
+    hi = pLayoutManager->GetDockHost( wxDEFAULT_TOP_HOST );
+    hi.pHost->SetAreaSize(bottomH);
+    hi = pLayoutManager->GetDockHost( wxDEFAULT_BOTTOM_HOST );
+    hi.pHost->SetAreaSize(bottomH);
+    pLayoutManager->DockWindow( pDockWindow2, hi );
 
 	CreateMenubar();
 
@@ -455,6 +461,10 @@ void MainFrame::CreateIDE()
 	m_pMsgMan = Manager::Get()->GetMessageManager();
 
     CreateToolbars();
+    SetToolBar(0);
+
+    pSlideBar->SetMode( wxSLIDE_MODE_COMPACT );
+    pPane->SetClient(m_pEdMan->GetNotebook());
 }
 
 wxMenu* MainFrame::RecreateMenu(wxMenuBar* mbar, const wxString& name)
@@ -554,9 +564,10 @@ void MainFrame::CreateToolbars()
 	if (m_pToolbar)
 	{
 		SetToolBar(0L);
-		delete m_pToolbar;
+//		delete m_pToolbar;
 		m_pToolbar = 0L;
 	}
+
     // *** Begin new Toolbar routine ***
     wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
     wxString xrcToolbarName = "main_toolbar";
@@ -584,8 +595,11 @@ void MainFrame::CreateToolbars()
     }
     
     m_pToolbar=mytoolbar;
-    SetToolBar(m_pToolbar);
+	m_pToolbar->Realize();
+    SetToolBar(0);
     // *** End new Toolbar routine ***
+
+    pSlideBar->AddWindow( m_pToolbar, "Main" );
 
 //    wxString res = ConfigManager::Get()->Read("data_path") + "/images/";
 	// ask all plugins to rebuild their toolbars
@@ -595,14 +609,11 @@ void MainFrame::CreateToolbars()
 		cbPlugin* plug = plugins[i]->plugin;
 		if (plug && plug->IsAttached())
 		{
-			if (plug->GetType() != ptTool)
-				plug->BuildToolBar(m_pToolbar);
+            DoAddPluginToolbar(plug);
 		}
 	}
 
 	wxSafeYield();
-//	m_pToolbar->SetRows(2);
-	m_pToolbar->Realize();
 }
 
 void MainFrame::AddToolbarItem(int id, const wxString& title, const wxString& shortHelp, const wxString& longHelp, const wxString& image)
@@ -722,35 +733,28 @@ void MainFrame::RemovePluginFromMenus(const wxString& pluginName)
 
 void MainFrame::LoadWindowState()
 {
+	wxLogNull ln; // no logging needed
+
     const wxString& personalityKey = Manager::Get()->GetPersonalityManager()->GetPersonalityKey();
 
-    SetSize(ConfigManager::Get()->Read(personalityKey + "/main_frame/left", 0L),
-            ConfigManager::Get()->Read(personalityKey + "/main_frame/top", 0L),
-            ConfigManager::Get()->Read(personalityKey + "/main_frame/width", 640),
-            ConfigManager::Get()->Read(personalityKey + "/main_frame/height", 480));
+    wxString path = ConfigManager::Get()->Read("app_path");
+    path << "/" << personalityKey;
+    path << "layout.bin";
+    wxFileInputStream fi( path );
+    if (fi.Ok())
+    {
+        wxUtil::ReadWindowLayout( fi, this );
+        pLayoutManager->LoadFromStream( fi );
+        pSlideBar->LoadFromStream( fi );
+    }
 
     // toolbar visibility
 	if (m_pToolbar)
         m_pToolbar->Show(ConfigManager::Get()->Read(personalityKey + "/main_frame/layout/toolbar_show", 1));
 
-	// sash sizes are set on creation in CreateIDE()
-	DoUpdateLayout();
-
-    // position manager tree left or right
-    bool left = ConfigManager::Get()->Read(personalityKey + "/main_frame/layout/left_block_is_left", true);
-    RePositionManagerTree(left);
-
 	// load manager and messages selected page
 	Manager::Get()->GetNotebook()->SetSelection(ConfigManager::Get()->Read(personalityKey + "/main_frame/layout/left_block_selection", 0L));
 	m_pMsgMan->SetSelection(ConfigManager::Get()->Read(personalityKey + "/main_frame/layout/bottom_block_selection", 0L));
-
-	// load manager and messages visibility state
-	m_pLeftSash->Show(ConfigManager::Get()->Read(personalityKey + "/main_frame/layout/left_block_show", 1));
-	m_pBottomSash->Show(ConfigManager::Get()->Read(personalityKey + "/main_frame/layout/bottom_block_show", 1));
-
-    // maximized?
-    if (ConfigManager::Get()->Read(personalityKey + "/main_frame/maximized", 0L))
-        Maximize();
 
     // close message manager (if auto-hiding)
     m_pMsgMan->Close();
@@ -758,39 +762,34 @@ void MainFrame::LoadWindowState()
 
 void MainFrame::SaveWindowState()
 {
+	wxLogNull ln; // no logging needed
+
     const wxString& personalityKey = Manager::Get()->GetPersonalityManager()->GetPersonalityKey();
 
-    ConfigManager::Get()->Write(personalityKey + "/main_frame/maximized", IsMaximized());
-    if (!IsMaximized() && !IsIconized())
-    {
-        ConfigManager::Get()->Write(personalityKey + "/main_frame/left", GetPosition().x);
-        ConfigManager::Get()->Write(personalityKey + "/main_frame/top", GetPosition().y);
-        ConfigManager::Get()->Write(personalityKey + "/main_frame/width", GetSize().x);
-        ConfigManager::Get()->Write(personalityKey + "/main_frame/height", GetSize().y);
-    }
-
-    // save manager tree position
-    ConfigManager::Get()->Write(personalityKey + "/main_frame/layout/left_block_is_left", m_pLeftSash->GetAlignment() == wxLAYOUT_LEFT);
-
-	// save block sizes
-	ConfigManager::Get()->Write(personalityKey + "/main_frame/layout/left_block_width", m_pLeftSash->GetSize().GetWidth());
-    ConfigManager::Get()->Write(personalityKey + "/main_frame/layout/bottom_block_height", m_pMsgMan->GetOpenSize());
+    wxString path = ConfigManager::Get()->Read("app_path");
+    path << "/" << personalityKey;
+    path << "layout.bin";
+    wxFileOutputStream fo( path );
+    wxUtil::WriteWindowLayout( fo, this );
+    pLayoutManager->SaveToStream( fo );
+    pSlideBar->SaveToStream( fo );
 
 	// save manager and messages selected page
 	ConfigManager::Get()->Write(personalityKey + "/main_frame/layout/left_block_selection", Manager::Get()->GetNotebook()->GetSelection());
 	ConfigManager::Get()->Write(personalityKey + "/main_frame/layout/bottom_block_selection", m_pMsgMan->GetSelection());
+}
 
-    // save manager and messages visibility state
-    // only if *not* in fullscreen mode (in this case the values were saved
-    // before going fullscreen)
-    if (!IsFullScreen())
+void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
+{
+    wxToolBar* tb = new wxToolBar(this, 0);
+    tb->SetToolBitmapSize(m_SmallToolBar ? wxSize(16, 16) : wxSize(22, 22));
+    if (plugin->BuildToolBar(tb))
     {
-        ConfigManager::Get()->Write(personalityKey + "/main_frame/layout/left_block_show", m_pLeftSash->IsShown());
-        ConfigManager::Get()->Write(personalityKey + "/main_frame/layout/bottom_block_show", m_pBottomSash->IsShown());
-	}
-
-    // toolbar visibility
-	ConfigManager::Get()->Write(personalityKey + "/main_frame/layout/toolbar_show", m_pToolbar->IsShown());
+        SetToolBar(0);
+        pSlideBar->AddWindow( tb, plugin->GetInfo()->name, wxBF_EXPAND_X );
+    }
+    else
+        delete tb;
 }
 
 void MainFrame::DoAddPlugin(cbPlugin* plugin)
@@ -808,14 +807,13 @@ void MainFrame::DoAddPlugin(cbPlugin* plugin)
         // menu
         plugin->BuildMenu(GetMenuBar());
         // toolbar
-        plugin->BuildToolBar(GetToolBar());
+        DoAddPluginToolbar(plugin);
     }
 }
 
 bool MainFrame::Open(const wxString& filename, bool addToHistory)
 {
     bool ret = OpenGeneric(filename, addToHistory);
-    DoUpdateLayout();
 	return ret;
 }
 
@@ -958,28 +956,6 @@ void MainFrame::DoUpdateStatusBar()
 #endif // wxUSE_STATUSBAR
 }
 
-void MainFrame::DoUpdateLayout()
-{
-    if (!m_pEdMan)
-        return;
-	wxLayoutAlgorithm layout;
-    layout.LayoutFrame(this, m_pEdMan->GetNotebook());
-
-#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)	
-	/**
-	@attention Hack for fixing wxSashWindow oddness...Resize with 'height-1'.
-	This fixes the oddness. However, we resize again to 'height' to retain the
-	original height.
-	We resize here so that the bottom sash gets fixed both on startup, and when
-	it's hidden/shown later.
-	*/
-	int w, h;
-	m_pBottomSash->GetSize( &w, &h );
-	m_pBottomSash->SetSize( w, h-1 );
-	m_pBottomSash->SetSize( w, h );
-#endif
-}
-
 void MainFrame::DoUpdateAppTitle()
 {
 	cbProject* prj = m_pPrjMan ? m_pPrjMan->GetActiveProject() : 0L;
@@ -987,26 +963,6 @@ void MainFrame::DoUpdateAppTitle()
 	    SetTitle(APP_NAME" - " + prj->GetTitle());
 	else
 		SetTitle(_(APP_NAME" v"APP_VERSION));
-}
-
-void MainFrame::RePositionManagerTree(bool left)
-{
-    if (!m_pLeftSash)
-        return;
-    
-    m_pLeftSash->Hide();
-    if (left)
-    {
-        m_pLeftSash->SetAlignment(wxLAYOUT_LEFT);
-        m_pLeftSash->SetSashVisible(wxSASH_RIGHT, true);
-    }
-    else
-    {
-        m_pLeftSash->SetAlignment(wxLAYOUT_RIGHT);
-        m_pLeftSash->SetSashVisible(wxSASH_LEFT, true);
-    }
-    m_pLeftSash->Show();
-    DoUpdateLayout();
 }
 
 void MainFrame::ShowHideStartPage(bool forceHasProject)
@@ -1127,11 +1083,6 @@ void MainFrame::OnHelpPluginMenu(wxCommandEvent& event)
     }
     else
         m_pMsgMan->DebugLog(_("No plugin found for ID %d"), event.GetId());
-}
-
-void MainFrame::OnSize(wxSizeEvent& event)
-{
-	DoUpdateLayout();
 }
 
 void MainFrame::OnFileNewEmpty(wxCommandEvent& event)
@@ -1327,6 +1278,9 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     SaveWindowState();
     TerminateRecentFilesHistory();
     
+    // unhook editor manager's notebook from the layout, or else bad things happen ;)
+    pPane->SetClient(0);
+
     // remove all other event handlers from this window
     // this stops it from crashing, when no plugins are loaded
     while (GetEventHandler() != this)
@@ -1882,13 +1836,13 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
 {
     wxMenuBar* mbar = GetMenuBar();
     cbEditor* ed = m_pEdMan ? m_pEdMan->GetBuiltinEditor(m_pEdMan->GetActiveEditor()) : 0;
+    bool manVis = pDockWindow1->GetDockPanel()->IsDocked() || pDockWindow1->IsShown();
 
-    mbar->Check(idViewToolMain, m_pToolbar && m_pToolbar->IsShown());
-    mbar->Check(idViewManager, m_pLeftSash && m_pLeftSash->IsShown());
-    mbar->Check(idViewManagerPositionLeft, m_pLeftSash && m_pLeftSash->GetAlignment() == wxLAYOUT_LEFT);
-    mbar->Check(idViewManagerPositionRight, m_pLeftSash && m_pLeftSash->GetAlignment() != wxLAYOUT_LEFT);
+    mbar->Check(idViewToolMain, pSlideBar->IsShown());
+    mbar->Check(idViewManager, manVis);
     mbar->Check(idViewOpenFilesTree, m_pEdMan && m_pEdMan->IsOpenFilesTreeVisible());
-    mbar->Check(idViewMessageManager, m_pBottomSash && m_pBottomSash->IsShown());
+    mbar->Enable(idViewOpenFilesTree, manVis && m_pEdMan && m_pEdMan->IsOpenFilesTreeVisible());
+    mbar->Check(idViewMessageManager, pDockWindow2->GetDockPanel()->IsDocked() || pDockWindow2->IsShown());
     mbar->Check(idViewStatusbar, GetStatusBar() && GetStatusBar()->IsShown());
     mbar->Check(idViewFullScreen, IsFullScreen());
     mbar->Enable(idViewFocusEditor, ed);
@@ -1952,19 +1906,21 @@ void MainFrame::OnToggleBar(wxCommandEvent& event)
 {
 	if (event.GetId() == idViewManager)
     {
-        m_pLeftSash->Show(!m_pLeftSash->IsShown());
-        m_pLeftSash->SetSize( m_pLeftSash->GetSize() );
+        pDockWindow1->Show(!(pDockWindow1->GetDockPanel()->IsDocked() || pDockWindow1->IsShown()));
     }
 	else if (event.GetId() == idViewMessageManager)
 	{
-		m_pBottomSash->Show(!m_pBottomSash->IsShown());
+        pDockWindow2->Show(!(pDockWindow2->GetDockPanel()->IsDocked() || pDockWindow2->IsShown()));
     }
 	else if (event.GetId() == idViewToolMain)
 	{
-        m_pToolbar->Show(event.IsChecked());
+		pSlideBar->Show(!pSlideBar->IsShown());
+// under Windows, the toolbar doesn't disappear immediately...
+#ifdef __WXMSW__
+        SendSizeEvent(); // make sure everything is laid out properly
+        wxSafeYield();
+#endif // __WXMSW__
 	}
-
-	DoUpdateLayout();
 }
 
 void MainFrame::OnToggleStatusBar(wxCommandEvent& event)
@@ -1995,14 +1951,6 @@ void MainFrame::OnFocusEditor(wxCommandEvent& event)
 
 void MainFrame::OnToggleFullScreen(wxCommandEvent& event)
 {
-    if (!IsFullScreen())
-    {
-        // we are going to toggle to fullscreen: save current sashes state
-        // so that we can restore it when leaving fullscreen...
-        ConfigManager::Get()->Write("/main_frame/layout/left_block_show", m_pLeftSash->IsShown());
-        ConfigManager::Get()->Write("/main_frame/layout/bottom_block_show", m_pBottomSash->IsShown());
-	}
-
     ShowFullScreen( !IsFullScreen(), wxFULLSCREEN_NOTOOLBAR | wxFULLSCREEN_NOSTATUSBAR 
                     | wxFULLSCREEN_NOBORDER | wxFULLSCREEN_NOCAPTION );
                     
@@ -2019,30 +1967,13 @@ void MainFrame::OnToggleFullScreen(wxCommandEvent& event)
         m_pCloseFullScreenBtn->Move( containerSize.GetWidth() - buttonSize.GetWidth(),
                     containerSize.GetHeight() - buttonSize.GetHeight() );
         
-        m_pLeftSash->Show(false);
-        m_pBottomSash->Show(false);
-
         m_pCloseFullScreenBtn->Show( true );
         m_pCloseFullScreenBtn->Raise();
     }
     else
     {
         m_pCloseFullScreenBtn->Show( false );
-        
-        // leaving fullscreen: restore sashes state
-        m_pLeftSash->Show(ConfigManager::Get()->Read("/main_frame/layout/left_block_show", 1));
-        m_pBottomSash->Show(ConfigManager::Get()->Read("/main_frame/layout/bottom_block_show", 1));
     }
-    /// @todo Check whether hiding all panes is desirable.
-    /// Perhaps make it customizable?
-    
-    // Update layout
-    DoUpdateLayout();
-}
-
-void MainFrame::OnPositionManagerTree(wxCommandEvent& event)
-{
-    RePositionManagerTree(event.GetId() == idViewManagerPositionLeft);
 }
 
 void MainFrame::OnPluginLoaded(CodeBlocksEvent& event)
@@ -2066,7 +1997,7 @@ void MainFrame::OnPluginUnloaded(CodeBlocksEvent& event)
         if (!m_ReconfiguringPlugins)
         {
             RemovePluginFromMenus(plug->GetInfo()->name);
-            CreateToolbars();
+//            CreateToolbars();
             CreateMenubar();
 		}
         wxString msg = plug->GetInfo()->title;
@@ -2078,16 +2009,18 @@ void MainFrame::OnPluginUnloaded(CodeBlocksEvent& event)
 void MainFrame::OnSettingsEnvironment(wxCommandEvent& event)
 {
     bool tbarsmall = m_SmallToolBar;
+    bool needRestart = false;
 
 	EnvironmentSettingsDlg dlg(this);
 	if (dlg.ShowModal() == wxID_OK)
 	{
         m_SmallToolBar = ConfigManager::Get()->Read("/environment/toolbar_size", (long int)0) == 1;
-        if (m_SmallToolBar != tbarsmall)
-            CreateToolbars();
+        needRestart = m_SmallToolBar != tbarsmall;
         m_pMsgMan->EnableAutoHide(ConfigManager::Get()->Read("/message_manager/auto_hide", 0L));
         ShowHideStartPage();
 	}
+	if (needRestart)
+        wxMessageBox(_("Code::Blocks needs to be restarted for the changes to take effect."), _("Information"), wxICON_INFORMATION);
 }
 
 void MainFrame::OnSettingsEditor(wxCommandEvent& event)
@@ -2117,24 +2050,11 @@ void MainFrame::OnSettingsImpExpConfig(wxCommandEvent& event)
     dlg.ShowModal();
 }
 
-void MainFrame::OnDragSash(wxSashEvent& event)
+void MainFrame::OnLayoutChanged(wxEvent& event)
 {
-	if (event.GetDragStatus() == wxSASH_STATUS_OUT_OF_RANGE)
-		return;
-
-	wxRect rect = event.GetDragRect();
-	if (event.GetId() == idLeftSash)
-	{
-        // resize left sash
-        // take into account the position (left or right)
-        if (m_pLeftSash->GetAlignment() == wxLAYOUT_LEFT)
-            m_pLeftSash->SetDefaultSize(wxSize(rect.x, 0));
-        else
-            m_pLeftSash->SetDefaultSize(wxSize(GetClientSize().GetWidth() - rect.x, 0));
-    }
-	else if (event.GetId() == idBottomSash)
-		m_pBottomSash->SetDefaultSize(wxSize(0, GetClientSize().GetHeight() - rect.y)); // resize bottom sash
-	DoUpdateLayout();
+	if (!m_pEdMan || event.GetEventObject() != pLayoutManager)
+        return;
+    m_pEdMan->RefreshOpenFilesTree();
 }
 
 void MainFrame::OnProjectActivated(CodeBlocksEvent& event)

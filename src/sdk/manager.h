@@ -25,10 +25,11 @@ class wxToolBar;
 class DLLIMPORT Manager
 {
 	public:
-        static Manager* Get(wxFrame* appWindow = 0L, wxNotebook* notebook = 0L);
+        static Manager* Get(wxFrame* appWindow = 0L, wxNotebook* prjNB = 0L, wxWindow* clientWin = 0L);
 		static void Free();
 		wxFrame* GetAppWindow();
 		wxNotebook* GetNotebook();
+		wxWindow* GetClientWindow();
 		bool ProcessEvent(CodeBlocksEvent& event);
 		ProjectManager* GetProjectManager();
 		EditorManager* GetEditorManager();
@@ -62,13 +63,14 @@ class DLLIMPORT Manager
         static bool isToolBar16x16(wxToolBar* toolBar);
 
     private:
-		Manager(wxFrame* appWindow, wxNotebook* notebook);
+		Manager(wxFrame* appWindow, wxNotebook* notebook, wxWindow* clientWin = 0L);
 		~Manager();
 
         bool SendEventTo(wxEvtHandler* handler, CodeBlocksEvent& event);
 		void OnMenu(wxCommandEvent& event);
         wxFrame* m_pAppWindow;
         wxNotebook* m_pNotebook;
+        wxWindow* m_pClientWin;
 };
 
 #endif // MANAGER_H

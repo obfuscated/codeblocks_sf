@@ -212,8 +212,8 @@ bool CodeBlocksApp::OnInit()
 {
     m_pSplash = 0;
     
-// NOTE (mandrav#1#): My wx2.6.1 build has define wxUSE_ON_FATAL_EXCEPTION \
-                        but still I get errors compiling with it...
+// NOTE (mandrav#1#): My wx2.6.1 build has define wxUSE_ON_FATAL_EXCEPTION 
+//                    but still I get errors compiling with it...
 //#ifdef wxUSE_ON_FATAL_EXCEPTION
 //    wxHandleFatalExceptions(true);
 //#endif

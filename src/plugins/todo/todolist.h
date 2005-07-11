@@ -40,7 +40,7 @@ class ToDoList : public cbPlugin
 		int Configure();
 		void BuildMenu(wxMenuBar* menuBar);
 		void BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg);
-		void BuildToolBar(wxToolBar* toolBar);
+		bool BuildToolBar(wxToolBar* toolBar);
 		void OnAttach(); // fires when the plugin is attached to the application
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
 	protected:

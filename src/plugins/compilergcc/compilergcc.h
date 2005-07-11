@@ -46,7 +46,7 @@ class CompilerGCC : public cbCompilerPlugin
         virtual void OnRelease(bool appShutDown);
         virtual void BuildMenu(wxMenuBar* menuBar); // offer for menu space by host
         virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg); // offer for menu space by a module
-        virtual void BuildToolBar(wxToolBar* toolBar);
+        virtual bool BuildToolBar(wxToolBar* toolBar);
 
         virtual int Run(ProjectBuildTarget* target = 0L);
         virtual int Clean(ProjectBuildTarget* target = 0L);
@@ -139,6 +139,7 @@ class CompilerGCC : public cbCompilerPlugin
         wxMenu* m_ErrorsMenu;
         cbProject* m_Project;
         wxProcess* m_Process;
+        wxToolBar* m_pTbar;
         long int m_Pid;
         wxTimer m_timerIdleWakeUp;
         SimpleTextLog* m_Log;
