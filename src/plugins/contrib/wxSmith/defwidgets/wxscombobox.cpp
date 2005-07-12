@@ -20,15 +20,12 @@ WXS_ST_END(wxsComboBoxStyles)
 
 
 wxsDWDefineBegin(wxsComboBox,wxComboBox,
-        ThisWidget = new wxComboBox(parent,id,_(""),pos,size,0,NULL,style);
-         
-     for(size_t i=0;i<arrayChoices.GetCount();i++)
-         ThisWidget->Append(arrayChoices[i].c_str());
-     if(defaultChoice>=0)    
-        ThisWidget->SetValue(arrayChoices[defaultChoice].c_str());
-   )
+	ThisWidget = new wxComboBox(parent,id,_(""),pos,size,0,NULL,style);
+    wxsDWAddStrings(arrayChoices,ThisWidget->Append);
+    wxsDWSelectString(arrayChoices,defaultChoice,ThisWidget->SetValue);
+	)
    
     wxsDWDefIntX(defaultChoice,"selection","Default",-1)
-    wxsDWDefStrArrayX(arrayChoices,"content","item","choices",defaultChoice)
+    wxsDWDefStrArrayX(arrayChoices,"content","item","Choices",defaultChoice)
 
 wxsDWDefineEnd()

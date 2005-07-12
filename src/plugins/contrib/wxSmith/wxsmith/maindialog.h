@@ -1,4 +1,4 @@
-21#ifndef WXSWNDDIALOG_H
+#ifndef WXSWNDDIALOG_H
 #define WXSWNDDIALOG_H
 
 #include "defwidgets/wxsdialog.h"
@@ -20,6 +20,7 @@ class wxsWndDialog
         wxGridSizer* GridSizer1
         wxStaticText StaticText1;
         wxComboBox ComboBox1;
+        wxListBox Unknown;
         //*)
 
     private:

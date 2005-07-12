@@ -7,6 +7,7 @@ wxsDefWidget::wxsDefWidget(wxsWidgetManager* Man,BasePropertiesType pType):
 
 wxsDefWidget::~wxsDefWidget()
 {
+	evDestroy();
 }
 
 bool wxsDefWidget::MyXmlLoad()
@@ -280,7 +281,7 @@ void wxsDefWidget::evStr(wxString& Val,char* Name,char* XrcName,char* PropName,w
     }
 }
 
-void wxsDefWidget::evStrArray(wxArrayString& Val,char* Name,char* XrcParentName,char* XrcChildName,char* PropName, int DefValue)
+void wxsDefWidget::evStrArray(wxArrayString& Val,char* Name,char* XrcParentName,char* XrcChildName,char* PropName, int& DefValue)
 {
     switch ( evUse )
     {
@@ -325,12 +326,12 @@ void wxsDefWidget::evStrArray(wxArrayString& Val,char* Name,char* XrcParentName,
         
         case Props:
         {
-           PropertiesObject.AddProperty(wxT("Items"),Val);
+           PropertiesObject.AddProperty(PropName,Val,DefValue,-1);
         }
     }
 }
 
-void wxsStopMouseEvents::SkipEvent(wxEvent& event)
+void wxsStopMouseEvents::SkipEvent(wxMouseEvent& event)
 {}
 
 wxsStopMouseEvents wxsStopMouseEvents::Object;

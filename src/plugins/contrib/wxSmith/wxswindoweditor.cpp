@@ -55,13 +55,12 @@ void wxsWindowEditor::BuildPreview(wxsWidget* TopWidget)
     Freeze();
     
     KillCurrentPreview();
-
+    
     // Creating new sizer
 
     wxWindow* TopPreviewWindow = TopWidget ? TopWidget->CreatePreview(Scroll,this) : NULL;
     CurrentWidget = TopWidget;
     
-    SetVirtualSizeHints(1,1);
     if ( TopPreviewWindow )
     {
         wxSizer* NewSizer = new wxGridSizer(1);
@@ -74,7 +73,10 @@ void wxsWindowEditor::BuildPreview(wxsWidget* TopWidget)
     
     Thaw();
     Layout();
-    WidgetRefreshReq(this);
+
+    #if !wxCHECK_VERSION(2,6,0)
+        WidgetRefreshReq(this);
+    #endif
 }
 
 void wxsWindowEditor::KillCurrentPreview()
@@ -124,11 +126,6 @@ void wxsWindowEditor::MyUnbind()
 
 bool wxsWindowEditor::Close()
 {
-	if ( GetResource() )
-	{
-		GetResource()->NotifyChange();
-	}
-	
 	return wxsEditor::Close();
 }
 

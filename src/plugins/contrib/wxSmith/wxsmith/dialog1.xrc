@@ -33,7 +33,9 @@
                 <flag>wxALL|wxALIGN_CENTER</flag>
             </object>
             <object class="sizeritem">
-                <object class="wxCheckBox" name="ID_COMMON" variable="CheckBox3" member="yes" />
+                <object class="wxCheckBox" name="ID_COMMON" variable="CheckBox3" member="yes">
+                    <checked>1</checked>
+                </object>
                 <border>5</border>
                 <flag>wxALL|wxALIGN_CENTER</flag>
             </object>
@@ -70,6 +72,7 @@
             </object>
             <object class="sizeritem">
                 <object class="wxComboBox" name="ID_COMMON" variable="ComboBox1" member="yes">
+                    <selection>1</selection>
                     <content>
                         <item>First</item>
                         <item>Second</item>
@@ -81,6 +84,18 @@
             </object>
             <object class="sizeritem">
                 <object class="wxCheckBox" name="ID_COMMON" variable="CheckBox5" member="no" />
+                <border>5</border>
+                <flag>wxALL|wxALIGN_CENTER</flag>
+            </object>
+            <object class="sizeritem">
+                <object class="wxListBox" name="ID_COMMON" variable="Unknown" member="yes">
+                    <selection>1</selection>
+                    <content>
+                        <item>First</item>
+                        <item>Second</item>
+                    </content>
+                    <size>-1,50</size>
+                </object>
                 <border>5</border>
                 <flag>wxALL|wxALIGN_CENTER</flag>
             </object>

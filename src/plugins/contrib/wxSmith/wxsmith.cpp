@@ -132,11 +132,12 @@ void wxSmith::OnAttach()
 	{
         // Creating main splitting objects 
         LeftSplitter = new wxSplitterWindow(Notebook,-1,wxDefaultPosition,wxDefaultSize,0);
+        Notebook->AddPage(LeftSplitter,wxT("Resources"));
         wxPanel* ResourcesContainer = new wxPanel(LeftSplitter,-1,wxDefaultPosition,wxDefaultSize,0);
         wxPanel* PropertiesContainer = new wxPanel(LeftSplitter,-1,wxDefaultPosition,wxDefaultSize,wxSTATIC_BORDER);
         
-        // TODO (SpOoN#1#): Find in configuration where to split
-        LeftSplitter->SplitHorizontally(ResourcesContainer,PropertiesContainer,400);
+        LeftSplitter->SplitHorizontally(ResourcesContainer,PropertiesContainer,100);
+
         // Adding resource browser
 
         wxSizer* Sizer = new wxGridSizer(1);
@@ -155,14 +156,15 @@ void wxSmith::OnAttach()
         LDNotebook->AddPage(EventsPanel,wxT("Events"));
         Sizer->Add(LDNotebook,0,wxGROW);
         PropertiesContainer->SetSizer(Sizer);
-        Notebook->AddPage(LeftSplitter,wxT("Resources"));
+
+        // TODO (SpOoN#1#): Find in configuration where to split
+        LeftSplitter->SetSashPosition(50);
+        LeftSplitter->SetSashGravity(0.5);
+
         
         wxsPropertiesMan::Get()->PropertiesPanel = PropertiesPanel;
         
-        // Adding palette at the bottom
-
         MessageManager* Messages = Manager::Get()->GetMessageManager();
-        
         Manager::Get()->Loadxrc("/wxsmith.zip#zip:*");
         
         // Initializing standard manager
@@ -177,6 +179,7 @@ void wxSmith::OnAttach()
         
         if ( Messages )
         {
+            // Creating widgets palette ad the messages Notebook
             wxWindow* Palette = new wxsPalette((wxWindow*)Messages,this,Messages->GetPageCount());
             Messages->AddPage(Palette,wxT("Widgets"));
         }
@@ -234,13 +237,13 @@ void wxSmith::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxStrin
 	NotImplemented("wxSmith::OfferModuleMenuSpace()");
 }
 
-void wxSmith::BuildToolBar(wxToolBar* toolBar)
+bool wxSmith::BuildToolBar(wxToolBar* toolBar)
 {
 	//The application is offering its toolbar for your plugin,
 	//to add any toolbar items you want...
 	//Append any items you need on the toolbar...
 	NotImplemented("wxSmith::BuildToolBar()");
-	return;
+	return false;
 }
 
 void wxSmith::OnProjectClose(CodeBlocksEvent& event)
