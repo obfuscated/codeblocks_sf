@@ -161,6 +161,9 @@
 
 /** Macro assigning given wxArrayString variable with property of widget
  *
+ * WARNING: Current implementation require using wxsDWDefInt with Default variable
+ *          defined in ordeer to use wxsDWSelectString call while building widget
+ *
  * \param Name - name of Variable
  * \param PropName - name of property in properties manager
  * \param Default - default value (currently not used)
@@ -169,6 +172,9 @@
         evStrArray(Name,#Name,#Name,#Name,PropName,Default);
 
 /** Extended macro assigning given wxArrayString variable with property of widget
+ *
+ * WARNING: Current implementation require using wxsDWDefInt with Default variable
+ *          defined in ordeer to use wxsDWSelectString call while building widget
  *
  * \param Name - name of Variable
  * \param XrcParentName - name of Xml element handling all items in Xrc file
@@ -191,31 +197,29 @@
 	wxsDWDefineBeginExt(Name,WidgetName,Code,false)
 
 
-/** Macro used to insert all items from wxString variable into widget
+/** Inline function used to insert all items from wxString variable into widget
+ *  dedrived from wxControllWithItems
  *
- * \param Array - name of wxArrayStrings varaible
- * \param Procedure - procedure adding items, usualy will be 'ThisWidget->Append'
+ * \param Array - array of strings
+ * \param Ctrl - control into which strings will be addeed
  */
-#define wxsDWAddStrings(Array,Procedure)									\
-	{																		\
-		for ( size_t i=0; i<Array.GetCount(); i++ )							\
-			Procedure(Array[i]);											\
-	}
+inline void wxsDWAddStrings(const wxArrayString& Array,wxControlWithItems* Ctrl)
+{
+    for ( size_t i=0; i<Array.GetCount(); i++ )
+        Ctrl->Append(Array[i]);
+}
 
-/** Macro used to select one item from wxString variable
+/** Inline procedure used to select one item from wxString variable
  *
  * \param Array - array of strings
  * \param Index - index of item to use
- * \param Procedure - procedure using string
+ * \param Ctrl - control which will be used
  */
  
-#define wxsDWSelectString(Array,Index,Procedure)							\
-	{																		\
-		if ( (Index >= 0) && ((size_t)Index < Array.GetCount()) )			\
-		{																	\
-			Procedure(Array[Index]);										\
-		}																	\
-	}
+inline void wxsDWSelectString(const wxArrayString& Array,size_t Index,wxControlWithItems* Ctrl)
+{
+    Ctrl->SetSelection(Index);
+}
 
 
 /** Base class for all default widgets */

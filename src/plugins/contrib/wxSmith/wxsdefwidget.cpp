@@ -94,7 +94,7 @@ const char* wxsDefWidget::GetDeclarationCode(wxsCodeParams& Params)
 {
     static wxString Tmp;
     Tmp = wxT(GetWidgetNameStr());
-    Tmp.Append(' ');
+    Tmp.Append(wxT("* "));
     Tmp += BaseParams.VarName;
     Tmp.Append(';');
     return Tmp.c_str();
@@ -313,14 +313,29 @@ void wxsDefWidget::evStrArray(wxArrayString& Val,char* Name,char* XrcParentName,
         {
             // Release the memory usage of wxArrayString
 			Val.Clear();
-			
             break;
         }
 
         case Code:
         {
-			// cyberkoa : Not ready yet.
-			// CodeReplace(Name,wxString::Format("wxT(%s)",GetCString(Val).c_str()));
+            // Replacing wxsDWAddStrings
+            
+            wxString CodeToSearch = wxString::Format(wxT("wxsDWAddStrings(%s,%s);"),Name,GetBaseParams().VarName.c_str());
+            wxString ReplaceWith;
+            for ( size_t i = 0; i<Val.GetCount(); i++ )
+            {
+            	ReplaceWith.Append(GetBaseParams().VarName);
+            	ReplaceWith.Append(wxT("->Append(wxT("));
+            	ReplaceWith.Append(GetCString(Val[i].c_str()));
+            	ReplaceWith.Append(wxT("));\n"));
+            }
+            CodeReplace(CodeToSearch,ReplaceWith);
+            
+            // Replacing wxsDWSelectString
+            CodeToSearch.Printf(wxT("wxsDWSelectString(%s,%d,%s)"),Name,DefValue,GetBaseParams().VarName.c_str());
+            ReplaceWith.Printf(wxT("%s->SetSelection(%d)"),GetBaseParams().VarName.c_str(),DefValue);
+            CodeReplace(CodeToSearch,ReplaceWith);
+            
             break;
         }
         

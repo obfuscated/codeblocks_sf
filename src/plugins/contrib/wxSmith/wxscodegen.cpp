@@ -90,8 +90,15 @@ void wxsCodeGen::BeautyCode(wxString& Code,int Spaces,int TabSize)
         
         // Adding characters till the end of line or till some other circumstances
         
-        while ( *Ptr && *Ptr!='{' && *Ptr!='}' && *Ptr != '\n' && *Ptr != '\r' /*&& *Ptr != ';'*/ )
+        int BracketsCnt = 0;
+        while ( *Ptr && *Ptr!='{' && *Ptr!='}' && *Ptr != '\n' && *Ptr != '\r' )
+        {
+            // Additional brackets counting will avoid line splitting inside for statement
+            if ( *Ptr == '(' ) BracketsCnt++;
+            else if ( *Ptr == ')' ) BracketsCnt--;
+            else if ( *Ptr != ';' && !BracketsCnt ) break;    
             NewCode.Append(*Ptr++);
+        }
             
         if ( !*Ptr )
         {
