@@ -29,6 +29,8 @@ class CustomVars
 		const VarsArray& GetVars(){ return m_Vars; }
 		bool DeleteVar(const wxString& name);
 		bool DeleteVar(Var* var);
+		
+		void ApplyVarsToEnvironment();
 	protected:
 		Var* VarExists(const wxString& name);
 		void DoAddDefaults();

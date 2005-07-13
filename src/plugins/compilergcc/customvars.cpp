@@ -163,3 +163,12 @@ Var* CustomVars::GetVarByName(const wxString& name)
 	}
 	return 0L;
 }
+
+void CustomVars::ApplyVarsToEnvironment()
+{
+	for (unsigned int i = 0; i < m_Vars.GetCount(); ++i)
+	{
+		Var& v = m_Vars[i];
+		wxSetEnv(v.name, v.value);
+	}
+}

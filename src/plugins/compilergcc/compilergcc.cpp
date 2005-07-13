@@ -458,6 +458,9 @@ void CompilerGCC::SetupEnvironment()
     if (!CompilerFactory::CompilerIndexOK(m_CompilerIdx))
         return;
 
+    // let's set the custom vars as environment vars
+    m_Vars.ApplyVarsToEnvironment();
+
     wxString sep = wxFileName::GetPathSeparator();
     m_EnvironmentMsg.Clear();
     
