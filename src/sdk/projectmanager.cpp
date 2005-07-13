@@ -238,6 +238,9 @@ void ProjectManager::BuildTree(wxWindow* parent)
     bmp.LoadFile(prefix + "folder_open.png", wxBITMAP_TYPE_PNG); // folder
     m_pImages->Add(bmp);
     m_pTree->SetImageList(m_pImages);
+    
+    // make sure tree is not "frozen"
+    UnfreezeTree(true);
 }
 // class destructor
 ProjectManager::~ProjectManager()
@@ -615,7 +618,10 @@ bool ProjectManager::CloseAllProjects(bool dontsave)
     while (m_pProjects->GetCount() != 0)
     {
         if (!CloseActiveProject(true))
+        {
+            UnfreezeTree(true);
             return false;
+        }
     }
     RebuildTree();
     UnfreezeTree(true);
