@@ -25,7 +25,7 @@
     <object class="tool" name="idDebuggerMenuStepOut">
       <tooltip>Step out</tooltip>
       <longhelp>Execute until the current block exit</longhelp>
-      <bitmap>images/dbgstepout.png</bitmap>
+	  <bitmap>images/16x16/dbgstepout.png</bitmap>
     </object>
     <object class="tool" name="idDebuggerMenuStop">
       <tooltip>Stop debugger</tooltip>
