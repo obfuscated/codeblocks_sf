@@ -7,7 +7,6 @@
 #include <wx/xrc/xmlres.h>
 #include <editormanager.h>
 
-
 const char* EmptySource =
 "\
 #include \"$(Include)\"\n\
@@ -172,6 +171,8 @@ void wxsDialogRes::NotifyChange()
 {
 	assert ( GetProject() != NULL );
 	
+	#if 1
+	
 	int TabSize = 4;
 	int GlobalTabSize = 2 * TabSize;
 	
@@ -206,6 +207,8 @@ void wxsDialogRes::NotifyChange()
 	Code = CodeHeader + wxT("\n") + GlobalCode;
 	Code.Append(' ',GlobalTabSize);
 	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(HFile),CodeHeader,Code);
+	
+	#endif
 }
 
 void wxsDialogRes::AddDeclarationsReq(wxsWidget* Widget,wxString& LocalCode,wxString& GlobalCode,int LocalTabSize,int GlobalTabSize,bool& WasLocal)

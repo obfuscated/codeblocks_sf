@@ -37,6 +37,9 @@
 			<Add library="wxmsw26_stc"/>
 			<Add directory="..\..\..\devel"/>
 		</Linker>
+		<ExtraCommands>
+			<Add after="update.bat"/>
+		</ExtraCommands>
 		<Unit filename="defwidgets\wxsbutton.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="default"/>

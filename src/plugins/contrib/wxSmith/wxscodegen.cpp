@@ -96,7 +96,7 @@ void wxsCodeGen::BeautyCode(wxString& Code,int Spaces,int TabSize)
             // Additional brackets counting will avoid line splitting inside for statement
             if ( *Ptr == '(' ) BracketsCnt++;
             else if ( *Ptr == ')' ) BracketsCnt--;
-            else if ( *Ptr != ';' && !BracketsCnt ) break;    
+            else if ( *Ptr == ';' && !BracketsCnt ) break;    
             NewCode.Append(*Ptr++);
         }
             

@@ -131,20 +131,20 @@ void wxSmith::OnAttach()
 	if ( Notebook )
 	{
         // Creating main splitting objects 
+        
         LeftSplitter = new wxSplitterWindow(Notebook,-1,wxDefaultPosition,wxDefaultSize,0);
         Notebook->AddPage(LeftSplitter,wxT("Resources"));
         wxPanel* ResourcesContainer = new wxPanel(LeftSplitter,-1,wxDefaultPosition,wxDefaultSize,0);
         wxPanel* PropertiesContainer = new wxPanel(LeftSplitter,-1,wxDefaultPosition,wxDefaultSize,wxSTATIC_BORDER);
-        
-        LeftSplitter->SplitHorizontally(ResourcesContainer,PropertiesContainer,100);
 
         // Adding resource browser
 
         wxSizer* Sizer = new wxGridSizer(1);
         ResourceBrowser = new wxsResourceTree(ResourcesContainer);
         ResourceBrowser->AddRoot(wxT("Resources"));
-        Sizer->Add(ResourceBrowser,0,wxGROW);
+        Sizer->Add(ResourceBrowser,1,wxGROW|wxALL);
         ResourcesContainer->SetSizer(Sizer);
+
         // Adding notebook and two pages at the left-bottom part
         Sizer = new wxGridSizer(1);
         wxNotebook* LDNotebook = new wxNotebook(PropertiesContainer,-1,wxDefaultPosition,wxDefaultSize,wxSUNKEN_BORDER);
@@ -154,15 +154,14 @@ void wxSmith::OnAttach()
         EventsPanel->SetScrollRate(5,5);
         LDNotebook->AddPage(PropertiesPanel,wxT("Properties"));
         LDNotebook->AddPage(EventsPanel,wxT("Events"));
-        Sizer->Add(LDNotebook,0,wxGROW);
+        Sizer->Add(LDNotebook,1,wxGROW);
         PropertiesContainer->SetSizer(Sizer);
-
-        // TODO (SpOoN#1#): Find in configuration where to split
-        LeftSplitter->SetSashPosition(50);
-        LeftSplitter->SetSashGravity(0.5);
-
         
         wxsPropertiesMan::Get()->PropertiesPanel = PropertiesPanel;
+        
+        LeftSplitter->SplitHorizontally(ResourcesContainer,PropertiesContainer);
+        LeftSplitter->SetSashPosition(100);
+        LeftSplitter->SetSashGravity(0.5);
         
         MessageManager* Messages = Manager::Get()->GetMessageManager();
         Manager::Get()->Loadxrc("/wxsmith.zip#zip:*");
@@ -210,8 +209,6 @@ void wxSmith::OnRelease(bool appShutDown)
 
 int wxSmith::Configure()
 {
-	//create and display the configuration dialog for your plugin
-	NotImplemented("wxSmith::Configure()");
 	return -1;
 }
 
@@ -234,15 +231,10 @@ void wxSmith::BuildMenu(wxMenuBar* menuBar)
 
 void wxSmith::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg)
 {
-	NotImplemented("wxSmith::OfferModuleMenuSpace()");
 }
 
 bool wxSmith::BuildToolBar(wxToolBar* toolBar)
 {
-	//The application is offering its toolbar for your plugin,
-	//to add any toolbar items you want...
-	//Append any items you need on the toolbar...
-	NotImplemented("wxSmith::BuildToolBar()");
 	return false;
 }
 

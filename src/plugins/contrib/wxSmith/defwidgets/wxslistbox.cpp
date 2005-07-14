@@ -30,6 +30,6 @@ wxsDWDefineBeginExt(wxsListBox,wxListBox,
     )
    
     wxsDWDefIntX(defaultChoice,"selection","Default",-1)
-    wxsDWDefStrArrayX(arrayChoices,"content","item","choices",defaultChoice)
+    wxsDWDefStrArrayX(arrayChoices,"content","item","Choices",defaultChoice)
 
 wxsDWDefineEnd()

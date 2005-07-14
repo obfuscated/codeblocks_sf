@@ -77,16 +77,15 @@ void wxsDefWidget::evProps()
     evUse = Props;
     BuildExtVars();
 }
-// Added by cyberkoa
+
 void wxsDefWidget::evDestroy()
 {
     evUse = Destroy;
     BuildExtVars();
 }
-// End Added
+
 void wxsDefWidget::CodeReplace(const wxString& Old,const wxString& New)
 {
-// TODO (SpOoN#1#): Create something more intelligent
     CodeResult.Replace(Old,New,true);
 }
 
@@ -128,8 +127,6 @@ void wxsDefWidget::evBool(bool& Val,char* Name,char* XrcName,char* PropName,bool
 
         case Destroy:
         {
-          // Add destructor codes here
-			
             break;
         }
                 
@@ -287,38 +284,37 @@ void wxsDefWidget::evStrArray(wxArrayString& Val,char* Name,char* XrcParentName,
     {
         case Init:
         {
-           // Val = {};
+            Val.Clear();
             break;
         }
         
         case XmlL:
         {
-			if(XmlGetStringArray(XrcParentName,XrcChildName,Val))
+			if( !XmlGetStringArray(XrcParentName,XrcChildName,Val) )
 			{
-				// Put something useful after loading
+				Val.Clear();
 			}             
             break;
         }
         
         case XmlS:
         {
-			if(XmlSetStringArray(XrcParentName,XrcChildName,Val))
+			if( !XmlSetStringArray(XrcParentName,XrcChildName,Val) )
 			{
-				// Put something useful after saving
+				Val.Clear();
 			}           
             break;
         }
 
         case Destroy:
         {
-            // Release the memory usage of wxArrayString
 			Val.Clear();
             break;
         }
 
         case Code:
         {
-            // Replacing wxsDWAddStrings
+            // Replacing wxsDWAddStrings function calls
             
             wxString CodeToSearch = wxString::Format(wxT("wxsDWAddStrings(%s,%s);"),Name,GetBaseParams().VarName.c_str());
             wxString ReplaceWith;
@@ -331,7 +327,8 @@ void wxsDefWidget::evStrArray(wxArrayString& Val,char* Name,char* XrcParentName,
             }
             CodeReplace(CodeToSearch,ReplaceWith);
             
-            // Replacing wxsDWSelectString
+            // Replacing wxsDWSelectString function calls
+            
             CodeToSearch.Printf(wxT("wxsDWSelectString(%s,%d,%s)"),Name,DefValue,GetBaseParams().VarName.c_str());
             ReplaceWith.Printf(wxT("%s->SetSelection(%d)"),GetBaseParams().VarName.c_str(),DefValue);
             CodeReplace(CodeToSearch,ReplaceWith);

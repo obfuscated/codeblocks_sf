@@ -196,7 +196,6 @@
 #define wxsDWDefineBegin(Name,WidgetName,Code)                				\
 	wxsDWDefineBeginExt(Name,WidgetName,Code,false)
 
-
 /** Inline function used to insert all items from wxString variable into widget
  *  dedrived from wxControllWithItems
  *
@@ -209,18 +208,16 @@ inline void wxsDWAddStrings(const wxArrayString& Array,wxControlWithItems* Ctrl)
         Ctrl->Append(Array[i]);
 }
 
-/** Inline procedure used to select one item from wxString variable
+/** Inline function used to select one item from wxString variable
  *
  * \param Array - array of strings
  * \param Index - index of item to use
  * \param Ctrl - control which will be used
  */
- 
 inline void wxsDWSelectString(const wxArrayString& Array,size_t Index,wxControlWithItems* Ctrl)
 {
     Ctrl->SetSelection(Index);
 }
-
 
 /** Base class for all default widgets */
 class wxsDefWidget: public wxsWidget
@@ -254,14 +251,12 @@ class wxsDefWidget: public wxsWidget
         virtual const char* GetWidgetNameStr() = 0;
         
         void evInit();
-        // Added by cyberkoa
         void evDestroy();
-        // End Added
-    private:
-        // Modified by cyberkoa
-        enum evUseType { Init, XmlL, XmlS, Code, Props, Destroy };
-        // End Modified
         
+    private:
+
+        enum evUseType { Init, XmlL, XmlS, Code, Props, Destroy };
+       
         evUseType evUse;
         bool Return;
         wxString CodeResult;
@@ -270,9 +265,15 @@ class wxsDefWidget: public wxsWidget
         void evXmlS();
         void evCode();
         void evProps();
+            
         
-        
-        /** This function does replace the Old identifier with New content */
+        /** This function does replace the Old identifier with New content
+         *
+         * Currently it does only replace strings.
+         *
+         * \param Old - Old string
+         * \param New - New string
+         */
         void CodeReplace(const wxString& Old,const wxString& New);
         
 };

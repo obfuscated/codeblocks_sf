@@ -56,9 +56,6 @@ namespace {
 
 				Sizer->Add(Internal,0,wxGROW|wxLEFT|wxRIGHT|wxBOTTOM,5);
 				
-				SetSizer(Sizer);
-				Sizer->SetSizeHints(this);
-			
 				CenterOnScreen();
 				
 				for ( int i=0; i<(int)Array.Count(); i++ )
@@ -79,6 +76,9 @@ namespace {
                         Selected->SetSelection(*Selection+1);
        				}
                 }
+                
+				SetSizer(Sizer);
+				Sizer->SetSizeHints(this);
 			}
 			
 		private:
