@@ -331,14 +331,10 @@
 				</Linker>
 			</Target>
 			<Target title="update">
-				<Option output="C:\Devel\codeblocks\src\CodeBlocks-wx2.6.0.dll"/>
-				<Option working_dir="."/>
-				<Option object_output=".objs"/>
-				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
-				<Option type="3"/>
+				<Option type="4"/>
 				<Option compiler="0"/>
 				<Option includeInTargetAll="0"/>
+				<Option projectResourceIncludeDirsRelation="4"/>
 				<ExtraCommands>
 					<Add before="update.bat"/>
 				</ExtraCommands>
@@ -360,15 +356,10 @@
 				</Compiler>
 			</Target>
 			<Target title="doc">
-				<Option output="codeblocks-wx2.6.0.exe"/>
-				<Option working_dir="."/>
-				<Option object_output=".objs\2.6"/>
-				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
-				<Option type="1"/>
+				<Option type="4"/>
 				<Option compiler="0"/>
 				<Option includeInTargetAll="0"/>
-				<Option projectResourceIncludeDirsRelation="1"/>
+				<Option projectResourceIncludeDirsRelation="4"/>
 				<ExtraCommands>
 					<Add before="doxygen sdk.doxy"/>
 				</ExtraCommands>

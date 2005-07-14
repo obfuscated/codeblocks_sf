@@ -80,7 +80,7 @@ struct cbEditorInternalData
             position = control->GetCurrentPos();
         while (position)
         {
-            wxChar c = control->GetCharAt(position--);
+            wxChar c = control->GetCharAt(--position);
             if (c != ' ' && c != '\t' && c != '\n' && c != '\r')
                 return c;
         }
