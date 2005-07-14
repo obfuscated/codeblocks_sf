@@ -39,7 +39,6 @@ MakefileGenerator::MakefileGenerator(CompilerGCC* compiler, cbProject* project, 
 	m_Project(project),
     m_Makefile(makefile),
     m_LogIndex(logIndex),
-    m_Vars(compiler),
     m_GeneratingMakefile(false)
 {
 }
@@ -542,11 +541,11 @@ void MakefileGenerator::DoAddMakefileVars(wxString& buffer)
     buffer << "### Variables used in this Makefile" << '\n';
 
     // user vars
-	const VarsArray& vars = m_Vars.GetVars();
-	for (unsigned int i = 0; i < vars.GetCount(); ++i)
-	{
-		buffer << vars[i].name << "=" << vars[i].value << '\n';
-	}
+//	const VarsArray& vars = m_Vars.GetVars();
+//	for (unsigned int i = 0; i < vars.GetCount(); ++i)
+//	{
+//		buffer << vars[i].name << "=" << vars[i].value << '\n';
+//	}
 
     // compiler vars
     // defined last so even if the user sets custom vars

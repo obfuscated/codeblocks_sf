@@ -12,6 +12,7 @@
 #include "projectloader.h"
 #include "compilerfactory.h"
 #include "globals.h"
+#include "customvars.h"
 
 ProjectLoader::ProjectLoader(cbProject* project)
     : m_pProject(project),
@@ -195,6 +196,7 @@ void ProjectLoader::DoBuild(TiXmlElement* parentNode)
     while (node)
     {
         DoBuildTarget(node);
+        DoEnvironment(node, m_pProject);
         node = node->NextSiblingElement("Build");
     }
 }
@@ -222,6 +224,7 @@ void ProjectLoader::DoBuildTarget(TiXmlElement* parentNode)
             DoIncludesOptions(node, target);
             DoLibsOptions(node, target);
             DoExtraCommands(node, target);
+            DoEnvironment(node, target);
         }
 
         node = node->NextSiblingElement("Target");
@@ -508,6 +511,29 @@ void ProjectLoader::DoExtraCommands(TiXmlElement* parentNode, ProjectBuildTarget
     }
 }
 
+void ProjectLoader::DoEnvironment(TiXmlElement* parentNode, CompileOptionsBase* base)
+{
+	if (!base)
+        return;
+    CustomVars& vars = base->GetCustomVars();
+
+    TiXmlElement* node = parentNode->FirstChildElement("Environment");
+    while (node)
+    {
+        TiXmlElement* child = node->FirstChildElement("Variable");
+        while (child)
+        {
+            wxString name = child->Attribute("name");
+            wxString value = child->Attribute("value");
+            if (!name.IsEmpty())
+            	vars.Add(name, value);
+    
+            child = child->NextSiblingElement("Variable");
+        }
+        node = node->NextSiblingElement("Environment");
+    }
+}
+
 void ProjectLoader::DoUnits(TiXmlElement* parentNode)
 {
     Manager::Get()->GetMessageManager()->DebugLog("Generating project tree...");
@@ -584,6 +610,7 @@ bool ProjectLoader::Save(const wxString& filename)
 {
     wxString buffer;
     wxArrayString array;
+    CustomVars* vars = 0;
 
     buffer << "<?xml version=\"1.0\"?>" << '\n';
     buffer << "<!DOCTYPE Code::Blocks_project_file>" << '\n';
@@ -644,8 +671,14 @@ bool ProjectLoader::Save(const wxString& filename)
         SaveLinkerOptions(buffer, target, 4);
         SaveOptions(buffer, target->GetCommandsBeforeBuild(), "ExtraCommands", 4, "before", target->GetAlwaysRunPreBuildSteps() ? "<Mode before=\"always\" />" : "");
         SaveOptions(buffer, target->GetCommandsAfterBuild(), "ExtraCommands", 4, "after", target->GetAlwaysRunPostBuildSteps() ? "<Mode after=\"always\" />" : "");
+
+        vars = &target->GetCustomVars();
+        SaveEnvironment(buffer, vars, 4);
+
         buffer << '\t' << '\t' << '\t' << "</Target>" << '\n';
     }
+    vars = &m_pProject->GetCustomVars();
+    SaveEnvironment(buffer, vars, 3);
     buffer << '\t' << '\t' << "</Build>" << '\n';
 
     SaveCompilerOptions(buffer, m_pProject, 2);
@@ -749,6 +782,25 @@ void ProjectLoader::SaveLinkerOptions(wxString& buffer, CompileOptionsBase* obje
         EndOptionSection(linkopts, "Linker", nrOfTabs);
         buffer << linkopts;
     }
+}
+
+void ProjectLoader::SaveEnvironment(wxString& buffer, CustomVars* vars, int nrOfTabs)
+{
+    if (!vars)
+        return;
+    const VarsArray& v = vars->GetVars();
+    if (v.GetCount() == 0)
+        return;
+    for (int x = 0; x < nrOfTabs; ++x) buffer << '\t';
+    buffer << "<Environment>" << '\n';
+    for (unsigned int i = 0; i < v.GetCount(); ++i)
+    {
+        Var& var = v[i];
+        for (int x = 0; x <= nrOfTabs; ++x) buffer << '\t';
+        buffer << "<Variable name=\"" << var.name << "\" value=\"" << var.value << "\"/>" << '\n';
+    }
+    for (int x = 0; x < nrOfTabs; ++x) buffer << '\t';
+    buffer << "</Environment>" << '\n';
 }
 
 void ProjectLoader::BeginOptionSection(wxString& buffer, const wxString& sectionName, int nrOfTabs)

@@ -27,6 +27,7 @@
 #include "sdk_events.h"
 #include "manager.h"
 #include "macrosmanager.h"
+#include "customvars.h"
 
 CompileOptionsBase::CompileOptionsBase()
 	: m_BuildConfiguration(bcDebug),
@@ -36,11 +37,31 @@ CompileOptionsBase::CompileOptionsBase()
 	m_AlwaysRunPostCmds(false)
 {
 	//ctor
+	m_pCustomVars = new CustomVars;
+}
+
+CompileOptionsBase::CompileOptionsBase(const CompileOptionsBase& other)
+{
+    m_BuildConfiguration = other.m_BuildConfiguration;
+    m_LinkerOptions = m_LinkerOptions;
+    m_LinkLibs = m_LinkLibs;
+    m_CompilerOptions = m_CompilerOptions;
+    m_IncludeDirs = m_IncludeDirs;
+    m_ResIncludeDirs = m_ResIncludeDirs;
+    m_LibDirs = m_LibDirs;
+    m_CmdsBefore = m_CmdsBefore;
+    m_CmdsAfter = m_CmdsAfter;
+    m_Modified = m_Modified;
+    m_Cpp = m_Cpp;
+    m_AlwaysRunPreCmds = m_AlwaysRunPreCmds;
+    m_AlwaysRunPostCmds = m_AlwaysRunPostCmds;
+    m_pCustomVars = new CustomVars(*other.m_pCustomVars);
 }
 
 CompileOptionsBase::~CompileOptionsBase()
 {
 	//dtor
+	delete m_pCustomVars;
 }
 
 void CompileOptionsBase::SetBuildConfiguration(const BuildConfiguration& bc)
@@ -201,12 +222,14 @@ const wxArrayString& CompileOptionsBase::GetCommandsAfterBuild()
 
 bool CompileOptionsBase::GetModified()
 {
-	return m_Modified;
+	return m_Modified || m_pCustomVars->GetModified();
 }
 
 void CompileOptionsBase::SetModified(bool modified)
 {
 	m_Modified = modified;
+	if (!modified)
+        m_pCustomVars->SetModified(modified);
 }
 
 void CompileOptionsBase::AddLinkerOption(const wxString& option)
@@ -344,4 +367,15 @@ void CompileOptionsBase::SetAlwaysRunPostBuildSteps(bool always)
         return;
     m_AlwaysRunPostCmds = always;
     SetModified(true);
+}
+
+void CompileOptionsBase::SetCustomVars(const CustomVars& vars)
+{
+	*m_pCustomVars = vars;
+    SetModified(true);
+}
+
+CustomVars& CompileOptionsBase::GetCustomVars()
+{
+	return *m_pCustomVars;
 }

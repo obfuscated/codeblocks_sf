@@ -31,6 +31,7 @@
 #include <messagemanager.h>
 #include <projectmanager.h>
 #include <editormanager.h>
+#include <customvars.h>
 #include "makefilegenerator.h"
 #include "compileroptionsdlg.h"
 #include "compilerMINGW.h"
@@ -169,7 +170,6 @@ CompilerGCC::CompilerGCC()
 	m_BackupActiveProject(0L),
 	m_ProjectIndex(0),
 	m_LastExitCode(0),
-	m_Vars(this),
 	m_HasTargetAll(false),
 	m_QueueIndex(0),
 	m_DeleteTempMakefile(true)
@@ -459,7 +459,7 @@ void CompilerGCC::SetupEnvironment()
         return;
 
     // let's set the custom vars as environment vars
-    m_Vars.ApplyVarsToEnvironment();
+    m_Project->GetCustomVars().ApplyVarsToEnvironment();
 
     wxString sep = wxFileName::GetPathSeparator();
     m_EnvironmentMsg.Clear();
@@ -490,6 +490,8 @@ void CompilerGCC::SetupEnvironment()
                 continue;
             compilers.Add(idx);
             Compiler* compiler = CompilerFactory::Compilers[idx];
+            compiler->GetCustomVars().ApplyVarsToEnvironment();
+            target->GetCustomVars().ApplyVarsToEnvironment();
 
             wxString masterPath = compiler->GetMasterPath();
             while (masterPath.Last() == '\\' || masterPath.Last() == '/')

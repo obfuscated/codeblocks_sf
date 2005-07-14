@@ -32,6 +32,8 @@ class DLLIMPORT ProjectLoader : public IBaseLoader
         void DoBuildTarget(TiXmlElement* parentNode);
         void DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildTarget* target);
 
+        void DoEnvironment(TiXmlElement* parentNode, CompileOptionsBase* base);
+
         void DoUnits(TiXmlElement* parentNode);
         void DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file);
         
@@ -45,6 +47,7 @@ class DLLIMPORT ProjectLoader : public IBaseLoader
         void SaveCompilerOptions(wxString& buffer, CompileOptionsBase* object, int nrOfTabs);
         void SaveResourceCompilerOptions(wxString& buffer, CompileOptionsBase* object, int nrOfTabs);
         void SaveLinkerOptions(wxString& buffer, CompileOptionsBase* object, int nrOfTabs);
+        void SaveEnvironment(wxString& buffer, CustomVars* vars, int nrOfTabs);
 
         void ConvertVersion_Pre_1_1();
         void ConvertLibraries(CompileTargetBase* object);

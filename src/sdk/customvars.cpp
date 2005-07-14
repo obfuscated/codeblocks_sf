@@ -24,20 +24,18 @@
 */
 
 #include "customvars.h"
-#include "compilergcc.h"
-#include <configmanager.h>
+#include "configmanager.h"
+#include "manager.h"
+#include "messagemanager.h"
 #include <wx/log.h>
+#include <wx/utils.h>
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(VarsArray);
 
-#define CONF_GROUP "/compiler_gcc/custom_variables"
-
-CustomVars::CustomVars(CompilerGCC* compiler)
-    : m_pCompiler(compiler)
+CustomVars::CustomVars()
+    : m_Modified(false)
 {
 	//ctor
-	Load();
-	DoAddDefaults();
 }
 
 CustomVars::~CustomVars()
@@ -45,14 +43,14 @@ CustomVars::~CustomVars()
 	//dtor
 }
 
-void CustomVars::Load()
+void CustomVars::Load(const wxString& configpath)
 {
 	m_Vars.Clear();
 	long cookie;
 	wxString entry;
 	wxConfigBase* conf = ConfigManager::Get();
 	wxString oldPath = conf->GetPath();
-	conf->SetPath(CONF_GROUP);
+	conf->SetPath(configpath);
 	bool cont = conf->GetFirstEntry(entry, cookie);
 	while (cont)
 	{
@@ -60,32 +58,27 @@ void CustomVars::Load()
 		cont = conf->GetNextEntry(entry, cookie);
 	}
 	conf->SetPath(oldPath);
+	SetModified(false);
 }
 
-void CustomVars::Save()
+void CustomVars::Save(const wxString& configpath)
 {
 	wxConfigBase* conf = ConfigManager::Get();
-	conf->DeleteGroup(CONF_GROUP);
+	conf->DeleteGroup(configpath);
 	wxString oldPath = conf->GetPath();
-	conf->SetPath(CONF_GROUP);
+	conf->SetPath(configpath);
 	for (unsigned int i = 0; i < m_Vars.GetCount(); ++i)
 	{
 		conf->Write(m_Vars[i].name, m_Vars[i].value);
 	}
 	conf->SetPath(oldPath);
+	SetModified(false);
 }
 
 void CustomVars::Clear()
 {
 	m_Vars.Clear();
-	DoAddDefaults();
-}
-
-void CustomVars::DoAddDefaults()
-{
-	DoAdd("RM", "rm -f", false);			// delete command (for clean target mostly)
-	DoAdd("ZIP", "zip.exe -a", false);		// zip (compression program)
-	DoAdd("ZIP_EXT", "zip", false);			// .zip (compressed program extension)
+	SetModified();
 }
 
 void CustomVars::Add(const wxString& name, const wxString& value)
@@ -121,10 +114,12 @@ void CustomVars::DoAdd(const Var& newvar)
         {
             DoDeleteVar(v, true);
             m_Vars.Add(Var(newvar));
+            SetModified();
         }
 		return;
 	}
 	m_Vars.Add(Var(newvar));
+	SetModified();
 }
 
 bool CustomVars::DoDeleteVar(Var* var, bool deleteIfBuiltin)
@@ -133,6 +128,7 @@ bool CustomVars::DoDeleteVar(Var* var, bool deleteIfBuiltin)
 	{
 		int idx = m_Vars.Index(*var);
 		m_Vars.RemoveAt(idx);
+        SetModified();
 		return true;
 	}
     return false;
@@ -169,6 +165,8 @@ void CustomVars::ApplyVarsToEnvironment()
 	for (unsigned int i = 0; i < m_Vars.GetCount(); ++i)
 	{
 		Var& v = m_Vars[i];
-		wxSetEnv(v.name, v.value);
+		LOGSTREAM << "Setting env var: " << v.name << "=" << v.value << " ";
+		bool suc = wxSetEnv(v.name, v.value);
+		LOGSTREAM << (suc ? "(OK)" : "(FAILED)") << '\n'; 
 	}
 }

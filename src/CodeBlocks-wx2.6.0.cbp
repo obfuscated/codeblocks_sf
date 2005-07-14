@@ -373,6 +373,10 @@
 					<Add before="doxygen sdk.doxy"/>
 				</ExtraCommands>
 			</Target>
+			<Environment>
+				<Variable name="WX_DIR" value="C:\Devel\wxWidgets-2.6.1"/>
+				<Variable name="WX_CFG" value="NonUnicode"/>
+			</Environment>
 		</Build>
 		<Compiler>
 			<Add option="-w"/>
@@ -395,7 +399,7 @@
 		<Linker>
 			<Add library="wxmsw26"/>
 			<Add directory="sdk\tinyxml"/>
-			<Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)\msw"/>
+			<Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)"/>
 		</Linker>
 		<Unit filename="devel\share\CodeBlocks\images\codecompletion\README.txt">
 			<Option compilerVar=""/>
@@ -892,16 +896,6 @@
 			<Option target="plugin_CompilerGCC"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\compileroptionsdlg.h">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
-		</Unit>
-		<Unit filename="plugins\compilergcc\customvars.cpp">
-			<Option compilerVar="CPP"/>
-			<Option target="plugin_CompilerGCC"/>
-		</Unit>
-		<Unit filename="plugins\compilergcc\customvars.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -1592,6 +1586,16 @@
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk\confirmreplacedlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\customvars.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\customvars.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

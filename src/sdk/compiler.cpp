@@ -3,6 +3,7 @@
 #include "messagemanager.h"
 #include "configmanager.h"
 #include "globals.h"
+#include "customvars.h"
 #include <wx/intl.h>
 #include <wx/regex.h>
 
@@ -34,7 +35,8 @@ Compiler::Compiler(const wxString& name)
 }
 
 Compiler::Compiler(const Compiler& other)
-    : m_ID(++UserCompilerIDCounter),
+    : CompileOptionsBase(other),
+    m_ID(++UserCompilerIDCounter),
     m_ParentID(other.m_ID)
 {
     m_Name = "Copy of " + other.m_Name;
@@ -133,6 +135,9 @@ void Compiler::SaveSettings(const wxString& baseKey)
         ConfigManager::Get()->Write(group + "/filename", rs.filename);
         ConfigManager::Get()->Write(group + "/line", rs.line);
     }
+    
+    // custom vars
+    m_pCustomVars->Save(tmp + _T("/custom_variables"));
 }
 
 void Compiler::LoadSettings(const wxString& baseKey)
@@ -212,6 +217,10 @@ void Compiler::LoadSettings(const wxString& baseKey)
         rs.line = ConfigManager::Get()->Read(group + "/line", 0L);
         m_RegExes.Add(rs);
     }
+
+    // custom vars
+    m_pCustomVars->Load(tmp + _T("/custom_variables"));
+    m_pCustomVars->SetModified(false);
 }
 
 CompilerLineType Compiler::CheckForWarningsAndErrors(const wxString& line)

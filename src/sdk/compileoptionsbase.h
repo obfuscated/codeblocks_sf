@@ -11,6 +11,9 @@ enum BuildConfiguration
 	bcDebug /**< "Debug" build configuration */
 };
 
+// Forward decls
+class CustomVars;
+
 /**
   * This is a base class for all classes needing compilation parameters. It
   * offers functions to get/set the following:\n
@@ -29,6 +32,7 @@ class DLLIMPORT CompileOptionsBase
 {
 	public:
 		CompileOptionsBase();
+		CompileOptionsBase(const CompileOptionsBase& other);
 		virtual ~CompileOptionsBase();
 		
 		virtual void SetBuildConfiguration(const BuildConfiguration& bc);
@@ -65,6 +69,8 @@ class DLLIMPORT CompileOptionsBase
 		virtual bool GetAlwaysRunPostBuildSteps();
 		virtual void SetAlwaysRunPreBuildSteps(bool always);
 		virtual void SetAlwaysRunPostBuildSteps(bool always);
+        virtual void SetCustomVars(const CustomVars& vars); ///< Set the target's custom variables
+        virtual CustomVars& GetCustomVars(); ///< Read the target's custom variables
 	protected:
 		BuildConfiguration m_BuildConfiguration;
 		wxArrayString m_LinkerOptions;
@@ -79,6 +85,7 @@ class DLLIMPORT CompileOptionsBase
 		bool m_Cpp;
 		bool m_AlwaysRunPreCmds;
 		bool m_AlwaysRunPostCmds;
+        CustomVars* m_pCustomVars;
 	private:
 };
 

@@ -118,15 +118,8 @@ void DirectCommands::AddCommandsToArray(const wxString& cmds, wxArrayString& arr
     wxString cmd = cmds;
 
     // macros and custom vars substitution
-    CustomVars customvars(m_pCompilerPlugin);
-    const VarsArray& vars = customvars.GetVars();
-    for (unsigned int i = 0; i < vars.GetCount(); ++i)
-    {
-        Var& var = vars[i];
-        cmd.Replace("$(" + var.name + ")", var.value);
-    }
     Manager::Get()->GetMacrosManager()->ReplaceMacros(cmd, true);
-    
+
     while (!cmd.IsEmpty())
     {
         int idx = cmd.Find("\n");

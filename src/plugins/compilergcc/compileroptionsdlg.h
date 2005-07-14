@@ -34,7 +34,7 @@ class CompilerOptionsDlg : public wxDialog
 		void OptionsToText();
 		void DoFillCompilerSets();
 		void DoFillCompilerPrograms();
-		void DoFillPrograms();
+		void DoFillVars(CustomVars* vars = 0);
 		void DoFillOthers();
 		void DoFillCategories();
 		void DoFillOptions();
@@ -51,6 +51,8 @@ class CompilerOptionsDlg : public wxDialog
 		void UpdateCompilerForTargets(int compilerIdx);
 		void AutoDetectCompiler();
 		wxListBox* GetDirsListBox();
+        CustomVars* GetCustomVars();
+        CustomVars* GetCustomVars(CompileOptionsBase* base);
 
 		void OnTreeSelectionChange(wxTreeEvent& event);
 		void OnTreeSelectionChanging(wxTreeEvent& event);

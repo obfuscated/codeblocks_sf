@@ -4,7 +4,6 @@
 #include <settings.h>
 #include <cbproject.h>
 #include "compilergcc.h"
-#include "customvars.h"
 #include <compiler.h>
 
 WX_DEFINE_ARRAY(ProjectBuildTarget*, TargetsArray);
@@ -88,7 +87,6 @@ class MakefileGenerator
         FilesArray m_Files;
         ObjectFilesArray m_ObjectFiles;
         int m_LogIndex;
-		CustomVars m_Vars;
 		
 		wxString m_Quiet; // used for compiler simple log
     private:
