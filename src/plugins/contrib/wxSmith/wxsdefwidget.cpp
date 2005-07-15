@@ -3,11 +3,12 @@
 wxsDefWidget::wxsDefWidget(wxsWidgetManager* Man,BasePropertiesType pType):
     wxsWidget(Man,pType)
 {
+    // evInit();
 }
 
 wxsDefWidget::~wxsDefWidget()
 {
-	evDestroy();
+	// evDestroy();
 }
 
 bool wxsDefWidget::MyXmlLoad()

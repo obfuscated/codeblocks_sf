@@ -35,6 +35,7 @@
 
 #include "wxsproject.h"
 #include "wxsevent.h"
+#include "wxssplitterwindow.h"
 
 class wxsProject;
 
@@ -65,10 +66,10 @@ class wxSmith : public cbPlugin
 	protected:
 	
 	private:
-        wxSplitterWindow* LeftSplitter;
         wxTreeCtrl* ResourceBrowser;
         wxScrolledWindow* PropertiesPanel;
         wxScrolledWindow* EventsPanel;
+        wxsSplitterWindow* LeftSplitter;
 
         /* Here's bridge between current C::B project and wxSmith projects */
         
@@ -88,7 +89,8 @@ class wxSmith : public cbPlugin
         
         /* Internal event-processing functions */
         void OnSpreadEvent(wxsEvent& event);
-        
+
+        /* Singleton object */
         static wxSmith* Singleton;
                 
 		DECLARE_EVENT_TABLE()

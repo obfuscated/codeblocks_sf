@@ -1,7 +1,7 @@
 /***************************************************************
  * Name:      wxsmith.cpp
  * Purpose:   Code::Blocks plugin
- * Author:    BYO<byo@o2.pl>
+ * Author:    BYO<byo.spoon@gmail.com>
  * Created:   04/10/05 01:05:08
  * Copyright: (c) BYO
  * License:   GPL
@@ -11,17 +11,17 @@
 	#pragma implementation "wxsmith.h"
 #endif
 
-#include "wxsmith.h"
-#include "wxswindoweditor.h"
-#include <licenses.h> // defines some common licenses (like the GPL)
+#include <licenses.h>
 #include <manager.h>
-#include <wx/notebook.h>
 #include <tinyxml/tinyxml.h>
 #include <messagemanager.h>
 #include <cbeditor.h>
 #include <projectmanager.h>
+#include <wx/notebook.h>
 #include <wx/sashwin.h>
 
+#include "wxsmith.h"
+#include "wxswindoweditor.h"
 #include "resources/wxsdialogres.h"
 #include "defwidgets/wxsstdmanager.h"
 #include "wxscodegen.h"
@@ -132,10 +132,11 @@ void wxSmith::OnAttach()
 	{
         // Creating main splitting objects 
         
-        LeftSplitter = new wxSplitterWindow(Notebook,-1,wxDefaultPosition,wxDefaultSize,0);
+        LeftSplitter = new wxsSplitterWindow(Notebook);
         Notebook->AddPage(LeftSplitter,wxT("Resources"));
-        wxPanel* ResourcesContainer = new wxPanel(LeftSplitter,-1,wxDefaultPosition,wxDefaultSize,0);
-        wxPanel* PropertiesContainer = new wxPanel(LeftSplitter,-1,wxDefaultPosition,wxDefaultSize,wxSTATIC_BORDER);
+        
+        wxPanel* ResourcesContainer = new wxPanel(LeftSplitter->GetSplitter(),-1,wxDefaultPosition,wxDefaultSize,0);
+        wxPanel* PropertiesContainer = new wxPanel(LeftSplitter->GetSplitter(),-1,wxDefaultPosition,wxDefaultSize,0);
 
         // Adding resource browser
 
@@ -145,7 +146,7 @@ void wxSmith::OnAttach()
         Sizer->Add(ResourceBrowser,1,wxGROW|wxALL);
         ResourcesContainer->SetSizer(Sizer);
 
-        // Adding notebook and two pages at the left-bottom part
+        // Adding new page into Manager
         Sizer = new wxGridSizer(1);
         wxNotebook* LDNotebook = new wxNotebook(PropertiesContainer,-1,wxDefaultPosition,wxDefaultSize,wxSUNKEN_BORDER);
         PropertiesPanel = new wxScrolledWindow(LDNotebook);
@@ -158,10 +159,8 @@ void wxSmith::OnAttach()
         PropertiesContainer->SetSizer(Sizer);
         
         wxsPropertiesMan::Get()->PropertiesPanel = PropertiesPanel;
-        
-        LeftSplitter->SplitHorizontally(ResourcesContainer,PropertiesContainer);
-        LeftSplitter->SetSashPosition(100);
-        LeftSplitter->SetSashGravity(0.5);
+
+        LeftSplitter->Split(ResourcesContainer,PropertiesContainer);
         
         MessageManager* Messages = Manager::Get()->GetMessageManager();
         Manager::Get()->Loadxrc("/wxsmith.zip#zip:*");
@@ -203,7 +202,7 @@ void wxSmith::OnRelease(bool appShutDown)
             (*i).second = NULL;
         }
     }
-  
+
     ProjectMap.clear();
 }
 
@@ -215,9 +214,9 @@ int wxSmith::Configure()
 void wxSmith::BuildMenu(wxMenuBar* menuBar)
 {
 	wxMenu* Menu = new wxMenu;
-	Menu->Append(NewDialogId,"Add Dialog");
+	Menu->Append(NewDialogId,wxT("Add Dialog"));
 	
-	int ToolsPos = menuBar->FindMenu("&Tools");
+	int ToolsPos = menuBar->FindMenu(wxT("&Tools"));
 	
 	if  ( ToolsPos == wxNOT_FOUND )
 	{
@@ -244,11 +243,12 @@ void wxSmith::OnProjectClose(CodeBlocksEvent& event)
     ProjectMapI i = ProjectMap.find(Proj);
     if ( i == ProjectMap.end() ) return;
     
-    if ( (*i).second )
+    wxsProject* SmithProj = (*i).second;
+    ProjectMap.erase(i);
+    if ( SmithProj )
     {
-        (*i).second->SaveProject();
-        delete (*i).second;
-        (*i).second = NULL;
+        SmithProj->SaveProject();
+        delete SmithProj;
     }
     
     event.Skip();

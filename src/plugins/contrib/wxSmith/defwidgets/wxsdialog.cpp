@@ -16,14 +16,14 @@ WXS_ST_BEGIN(wxsDialogStyles)
     WXS_ST(wxRESIZE_BORDER)
     WXS_ST(wxRESIZE_BOX)
 //    WXS_ST(wxCLOSE_BOX)
-    WXS_ST(wxDIALOG_MODAL)
-    WXS_ST(wxDIALOG_MODELESS)
+//    WXS_ST(wxDIALOG_MODAL)
+//    WXS_ST(wxDIALOG_MODELESS)
     WXS_ST(wxDIALOG_NO_PARENT)
 
-    WXS_ST(wxNO_3D)
+//    WXS_ST(wxNO_3D)
     WXS_ST(wxTAB_TRAVERSAL)
-//    WXS_ST(wxWS_EX_VALIDATE_RECURSIVELY)
-//    WXS_ST(wxDIALOG_EX_METAL)
+    WXS_ST(wxWS_EX_VALIDATE_RECURSIVELY)
+    WXS_ST(wxDIALOG_EX_METAL)
     WXS_ST(wxMAXIMIZE_BOX)
     WXS_ST(wxMINIMIZE_BOX)
     WXS_ST(wxFRAME_SHAPED)
@@ -38,7 +38,9 @@ class wxsDialogPreview:  public wxPanel
         wxsDialogPreview(wxWindow* Parent,wxsDialog* _Dialog):
             wxPanel(Parent,-1,wxPoint(10,10),wxSize(150,150), wxRAISED_BORDER),
             Dialog(_Dialog)
-        {}
+        {
+            SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));        	
+        }
         
         void UpdatePreview()
         {

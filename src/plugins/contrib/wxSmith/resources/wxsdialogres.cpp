@@ -30,8 +30,8 @@ $(ClassName)::~$(ClassName)()\n\
 
 const char* EmptyHeader =
 "\
-#ifndef __$(Guard)\n\
-#define __$(Guard)\n\
+#ifndef $(Guard)\n\
+#define $(Guard)\n\
 \n\
 //(*Headers($(ClassName))\n\
 //*)\n\
@@ -43,10 +43,14 @@ class $(ClassName): public wxDialog\n\
         $(ClassName)(wxWidnow* parent,wxWindowID id = -1);\n\
         virtual ~$(ClassName);\n\
 \n\
+        //(*Identifiers($(ClassName))\n\
+        //*)\n\
+\n\
     protected:\n\
 \n\
-        //(*Handlers\n\
+        //(*Handlers($(ClassName))\n\
         //*)\n\
+\n\
         //(*Declarations($(ClassName))\n\
         //*)\n\
 \n\

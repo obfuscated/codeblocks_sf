@@ -30,12 +30,16 @@
 			<Add option="-DWXUSINGDLL"/>
 			<Add option="-DBUILDING_PLUGIN"/>
 			<Add directory="..\..\..\sdk"/>
+			<Add directory="$(WX_DIR)\include"/>
+			<Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)\msw"/>
+			<Add directory="$(WX_DIR)\contrib\include"/>
 		</Compiler>
 		<Linker>
 			<Add library="codeblocks"/>
 			<Add library="wxmsw26"/>
 			<Add library="wxmsw26_stc"/>
 			<Add directory="..\..\..\devel"/>
+			<Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)"/>
 		</Linker>
 		<ExtraCommands>
 			<Add after="update.bat"/>
@@ -397,6 +401,16 @@
 			<Option target="default"/>
 		</Unit>
 		<Unit filename="wxsresource.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="wxssplitterwindow.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="wxssplitterwindow.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

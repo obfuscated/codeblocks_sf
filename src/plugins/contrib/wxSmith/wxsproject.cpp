@@ -405,7 +405,7 @@ void wxsProject::AddDialog(wxsDialogRes* Dialog)
     if ( !Dialog ) return;
     Dialogs.push_back(Dialog);
     wxTreeCtrl* Tree = wxSmith::Get()->GetResourceTree();
-    BuildTree(Tree, Tree->AppendItem( DialogId, Dialog->GetClassName(), -1, -1, new wxsResourceTreeData(Dialog) ) );
+    Dialog->GetDialog().BuildTree(Tree, Tree->AppendItem( DialogId, Dialog->GetClassName(), -1, -1, new wxsResourceTreeData(Dialog) ) );
 }
 
 wxsResource* wxsProject::FindResource(const wxString& Name)
