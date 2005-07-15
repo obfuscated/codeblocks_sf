@@ -18,19 +18,16 @@ AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString& types)
     // load types
     wxComboBox* cmb = XRCCTRL(*this, "cmbType", wxComboBox);
     cmb->Clear();
-    if (m_Types.GetCount() == 0)
+    for (unsigned int i = 0; i < m_Types.GetCount(); ++i)
     {
+        cmb->Append(m_Types[i]);
+    }
+    if (m_Types.Index(_T("TODO")) == wxNOT_FOUND)
         cmb->Append("TODO");
-        cmb->Append("FIXME");
-        cmb->Append("NOTE");
-    }
-    else
-    {
-        for (unsigned int i = 0; i < m_Types.GetCount(); ++i)
-        {
-            cmb->Append(m_Types[i]);
-        }
-    }
+    if (m_Types.Index(_T("FIXME")) == wxNOT_FOUND)
+        cmb->Append(_T("FIXME"));
+    if (m_Types.Index(_T("NOTE")) == wxNOT_FOUND)
+        cmb->Append(_T("NOTE"));
     
     wxString sels = ConfigManager::Get()->Read("/todo/last_used_type", "");
     if (!sels.IsEmpty())
