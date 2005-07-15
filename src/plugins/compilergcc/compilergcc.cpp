@@ -1494,7 +1494,7 @@ void CompilerGCC::OnCompileFile(wxCommandEvent& event)
         }
     }
 
-    file.MakeRelativeTo(m_Project->GetFilename());
+    file.MakeRelativeTo(m_Project->GetBasePath());
 #ifdef ALWAYS_USE_MAKEFILE
 	file.SetExt(OBJECT_EXT);
 #endif
