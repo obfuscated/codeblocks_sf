@@ -47,6 +47,10 @@ class DLLIMPORT MessageManager : public wxNotebook
         friend class Manager; // give Manager access to our private members
 		void CreateMenu(wxMenuBar* menuBar);
 		void ReleaseMenu(wxMenuBar* menuBar);
+		
+		wxWindow* GetContainerWindow(){ return m_pContainerWin; }
+		void SetContainerWindow(wxWindow* win){ m_pContainerWin = win; }
+
         int AddLog(MessageLog* log);
 		void Log(const wxChar* msg, ...);
 		void DebugLog(const wxChar* msg, ...);
@@ -126,6 +130,7 @@ class DLLIMPORT MessageManager : public wxNotebook
 		int m_OpenSize; // the size when open
 		bool m_AutoHide; // auto-hide?
 		bool m_Open; // is open?
+		wxWindow* m_pContainerWin;
 		DECLARE_EVENT_TABLE();
 		DECLARE_SANITY_CHECK
 };

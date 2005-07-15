@@ -460,6 +460,8 @@ void MainFrame::CreateIDE()
 	m_pPrjMan = Manager::Get()->GetProjectManager();
 	m_pMsgMan = Manager::Get()->GetMessageManager();
 
+    m_pMsgMan->SetContainerWindow(pDockWindow2);
+
     CreateToolbars();
     SetToolBar(0);
 
