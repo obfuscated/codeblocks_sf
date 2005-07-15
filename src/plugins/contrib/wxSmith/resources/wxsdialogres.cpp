@@ -137,19 +137,20 @@ bool wxsDialogRes::GenerateEmptySources()
 {
     // Generating file variables
     
-    wxString FName = wxFileName(HFile).GetName();
+    wxString FName = wxFileName(HFile).GetFullName();
     FName.MakeUpper();
     wxString Guard(wxT("__"));
     
     for ( int i=0; i<(int)FName.Length(); i++ )
     {
         char ch = FName.GetChar(i);
-        if ( ch < 'A' || ch > 'Z' ) Guard.Append('_');
+        if ( ( ch < 'A' || ch > 'Z' ) && ( ch < '0' || ch > '9' ) ) Guard.Append('_');
         else Guard.Append(ch);
     }
     
     wxFileName IncludeFN(GetProject()->GetProjectFileName(HFile));
-    IncludeFN.MakeRelativeTo(GetProject()->GetProjectFileName(SrcFile));
+    IncludeFN.MakeRelativeTo(
+        wxFileName(GetProject()->GetProjectFileName(SrcFile)).GetPath() );
     wxString Include = IncludeFN.GetFullPath();
     
 
