@@ -16,6 +16,7 @@
             <option>1</option>
             <flag>wxALL|wxGROW</flag>
             <border>8</border>
+            <minsize>240,128</minsize>
           </object>
           <object class="sizeritem">
             <object class="wxStaticText">
@@ -49,6 +50,12 @@
           <object class="sizeritem">
             <object class="wxCheckBox" name="chkTooltipEval">
               <label>Evaluate expression under cursor</label>
+              <tooltip>While debugging, leaving the mouse over a variable (or the selection) evaluates it in a tooltip</tooltip>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxCheckBox" name="chkDebugLog">
+              <label>Display debugger's  log</label>
               <tooltip>While debugging, leaving the mouse over a variable (or the selection) evaluates it in a tooltip</tooltip>
             </object>
           </object>

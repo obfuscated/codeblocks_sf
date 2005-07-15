@@ -39,6 +39,7 @@ DebuggerOptionsDlg::DebuggerOptionsDlg(wxWindow* parent)
 	XRCCTRL(*this, "chkWatchArgs", wxCheckBox)->SetValue(ConfigManager::Get()->Read("debugger_gdb/watch_args", 0L));
 	XRCCTRL(*this, "chkWatchLocals", wxCheckBox)->SetValue(ConfigManager::Get()->Read("debugger_gdb/watch_locals", 0L));
 	XRCCTRL(*this, "chkTooltipEval", wxCheckBox)->SetValue(ConfigManager::Get()->Read("debugger_gdb/eval_tooltip", 0L));
+	XRCCTRL(*this, "chkDebugLog", wxCheckBox)->SetValue(ConfigManager::Get()->Read("debugger_gdb/debug_log", 0L));
 }
 
 DebuggerOptionsDlg::~DebuggerOptionsDlg()
@@ -54,6 +55,7 @@ void DebuggerOptionsDlg::EndModal(int retCode)
         ConfigManager::Get()->Write("debugger_gdb/watch_args", XRCCTRL(*this, "chkWatchArgs", wxCheckBox)->GetValue());
         ConfigManager::Get()->Write("debugger_gdb/watch_locals", XRCCTRL(*this, "chkWatchLocals", wxCheckBox)->GetValue());
         ConfigManager::Get()->Write("debugger_gdb/eval_tooltip", XRCCTRL(*this, "chkTooltipEval", wxCheckBox)->GetValue());
+        ConfigManager::Get()->Write("debugger_gdb/debug_log", XRCCTRL(*this, "chkDebugLog", wxCheckBox)->GetValue());
     }
     
     wxDialog::EndModal(retCode);

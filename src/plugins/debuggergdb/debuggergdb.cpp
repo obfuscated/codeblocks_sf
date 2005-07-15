@@ -50,8 +50,6 @@
     #include <winbase.h> //For GetShortPathName()...only for windows systems
 #endif
 
-#define USE_DEBUG_LOG 0 // set it to 1, to enable the debugger's debug log
-
 #define implement_debugger_toolbar
 
 // valid debugger command constants
@@ -144,6 +142,7 @@ DebuggerGDB::DebuggerGDB()
 	m_NoDebugInfo(false),
 	m_BreakOnEntry(false),
 	m_HaltAtLine(0),
+	m_HasDebugLog(false),
 	m_pDisassembly(0),
 	m_pBacktrace(0)
 {
@@ -178,14 +177,16 @@ void DebuggerGDB::OnAttach()
     bmp.LoadFile(prefix + "misc_16x16.png", wxBITMAP_TYPE_PNG);
     Manager::Get()->GetMessageManager()->SetLogImage(m_pLog, bmp);
 
-#if USE_DEBUG_LOG
-    m_pDbgLog = new SimpleTextLog(msgMan, m_PluginInfo.title + _(" (debug)"));
-    m_pDbgLog->GetTextControl()->SetFont(font);
-    m_DbgPageIndex = msgMan->AddLog(m_pDbgLog);
-    // set log image
-    bmp.LoadFile(prefix + "contents_16x16.png", wxBITMAP_TYPE_PNG);
-    Manager::Get()->GetMessageManager()->SetLogImage(m_pDbgLog, bmp);
-#endif
+    m_HasDebugLog = ConfigManager::Get()->Read("debugger_gdb/debug_log", (long int)0L);
+    if (m_HasDebugLog)
+    {
+        m_pDbgLog = new SimpleTextLog(msgMan, m_PluginInfo.title + _(" (debug)"));
+        m_pDbgLog->GetTextControl()->SetFont(font);
+        m_DbgPageIndex = msgMan->AddLog(m_pDbgLog);
+        // set log image
+        bmp.LoadFile(prefix + "contents_16x16.png", wxBITMAP_TYPE_PNG);
+        Manager::Get()->GetMessageManager()->SetLogImage(m_pDbgLog, bmp);
+    }
 
 	if (!m_pTree)
 		m_pTree = new DebuggerTree(this, Manager::Get()->GetNotebook());
@@ -212,9 +213,8 @@ void DebuggerGDB::OnRelease(bool appShutDown)
 
     if (Manager::Get()->GetMessageManager())
     {
-#if USE_DEBUG_LOG
-        Manager::Get()->GetMessageManager()->DeletePage(m_DbgPageIndex);
-#endif
+        if (m_HasDebugLog)
+            Manager::Get()->GetMessageManager()->DeletePage(m_DbgPageIndex);
         Manager::Get()->GetMessageManager()->DeletePage(m_PageIndex);
     }
 }
@@ -226,7 +226,13 @@ DebuggerGDB::~DebuggerGDB()
 int DebuggerGDB::Configure()
 {
 	DebuggerOptionsDlg dlg(Manager::Get()->GetAppWindow());
-	return dlg.ShowModal();
+	int ret = dlg.ShowModal();
+	
+	bool needsRestart = ConfigManager::Get()->Read("debugger_gdb/debug_log", (long int)0L) != m_HasDebugLog;
+	if (needsRestart)
+        wxMessageBox(_("Code::Blocks needs to be restarted for the changes to take effect."), _("Information"), wxICON_INFORMATION);
+	
+	return ret;
 }
 
 void DebuggerGDB::BuildMenu(wxMenuBar* menuBar)
@@ -707,9 +713,8 @@ void DebuggerGDB::SendCommand(const wxString& cmd)
 {
     if (!m_pProcess || !m_ProgramIsStopped)
         return;
-#if USE_DEBUG_LOG
-	Manager::Get()->GetMessageManager()->Log(m_DbgPageIndex, "> " + cmd);
-#endif
+    if (m_HasDebugLog)
+        Manager::Get()->GetMessageManager()->Log(m_DbgPageIndex, "> " + cmd);
 	m_pProcess->SendString(cmd);
 }
 
@@ -739,10 +744,11 @@ wxString DebuggerGDB::GetNextOutputLine(bool useStdErr)
 			bufferOut << ch;
 	}
 
-#if USE_DEBUG_LOG
-	if (!bufferOut.IsEmpty())
-		m_pDbgLog->AddLog(bufferOut);
-#endif
+    if (m_HasDebugLog)
+    {
+        if (!bufferOut.IsEmpty())
+            m_pDbgLog->AddLog(bufferOut);
+    }
 	return bufferOut;
 }
 
@@ -936,9 +942,8 @@ void DebuggerGDB::ParseOutput(const wxString& output)
 	if (buffer.StartsWith(g_EscapeChars)) // ->->
 	{
 		buffer.Remove(0, 2); // remove ->->
-#if USE_DEBUG_LOG
-		m_pDbgLog->AddLog(buffer); // write it in the full debugger log
-#endif		
+        if (m_HasDebugLog)
+            m_pDbgLog->AddLog(buffer); // write it in the full debugger log
 		// Is the program running?
 		if (buffer.Matches("starting"))
 			m_ProgramIsStopped = false;
@@ -1189,10 +1194,6 @@ wxString DebuggerGDB::GetEditorWordAtCaret()
 
 void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
 {
-    static bool init_flag=false;
-    static bool toolflags[5];
-    bool tmpflags[5];
-
 	cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     wxMenuBar* mbar = Manager::Get()->GetAppWindow()->GetMenuBar();
@@ -1423,9 +1424,8 @@ void DebuggerGDB::OnGDBOutput(wxCommandEvent& event)
 	wxString msg = event.GetString();
 	if (!msg.IsEmpty())
 	{
-#if USE_DEBUG_LOG
-		//m_pDbgLog->AddLog(msg); // write it in the full debugger log
-#endif
+        if (m_HasDebugLog)
+            //m_pDbgLog->AddLog(msg); // write it in the full debugger log
 		ParseOutput(msg);
 	}
 }
@@ -1435,9 +1435,8 @@ void DebuggerGDB::OnGDBError(wxCommandEvent& event)
 	wxString msg = event.GetString();
 	if (!msg.IsEmpty())
 	{
-#if USE_DEBUG_LOG
-		//m_pDbgLog->AddLog(msg); // write it in the full debugger log
-#endif
+        if (m_HasDebugLog)
+            //m_pDbgLog->AddLog(msg); // write it in the full debugger log
 		ParseOutput(msg);
 	}
 }

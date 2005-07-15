@@ -127,6 +127,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 		bool m_NoDebugInfo;
 		bool m_BreakOnEntry;
 		int m_HaltAtLine;
+		bool m_HasDebugLog;
 		// current frame info
 		StackFrame m_CurrentFrame;
 		
