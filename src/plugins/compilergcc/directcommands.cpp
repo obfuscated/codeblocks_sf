@@ -69,6 +69,8 @@ DirectCommands::DirectCommands(CompilerGCC* compilerPlugin, Compiler* compiler, 
     m_pCurrTarget(0)
 {
     //ctor
+    if (!m_pProject)
+        return; // probably a compile file cmd without a project
     depsStart();
     wxFileName cwd;
     cwd.Assign(m_pProject->GetBasePath());
@@ -82,6 +84,9 @@ DirectCommands::DirectCommands(CompilerGCC* compilerPlugin, Compiler* compiler, 
 DirectCommands::~DirectCommands()
 {
     //dtor
+    if (!m_pProject)
+        return; // probably a compile file cmd without a project
+
     struct depsStats stats;
     depsGetStats(&stats);
     if (stats.cache_updated)
@@ -242,6 +247,75 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
                 break;
         }
         AddCommandsToArray(compilerCmd, ret);
+    }
+    return ret;
+}
+
+/// This is to be used *only* for files not belonging to a project!!!
+wxArrayString DirectCommands::GetCompileSingleFileCommand(const wxString& filename)
+{
+    wxLogNull ln;
+    wxArrayString ret;
+
+    // lookup file's type
+    FileType ft = FileTypeOf(filename);
+
+    // is it compilable?
+    if (ft != ftSource)
+        return ret;
+
+    wxFileName fname(filename);
+    fname.SetExt(m_pCompiler->GetSwitches().objectExtension);
+    wxString o_filename = fname.GetFullPath();
+    fname.SetExt(EXECUTABLE_EXT);
+    wxString exe_filename = fname.GetFullPath();
+
+    MakefileGenerator mg(m_pCompilerPlugin, 0, "", 0); // don't worry! we just need a couple of utility funcs from it
+
+    wxString compilerCmd = mg.CreateSingleFileCompileCmd(ctCompileObjectCmd,
+                                                         0,
+                                                         0,
+                                                         filename,
+                                                         o_filename,
+                                                         wxEmptyString);
+    wxString linkerCmd = mg.CreateSingleFileCompileCmd(ctLinkConsoleExeCmd,
+                                                         0,
+                                                         0,
+                                                         wxEmptyString,
+                                                         o_filename,
+                                                         wxEmptyString);
+
+    if (!compilerCmd.IsEmpty())
+    {
+        switch (m_pCompiler->GetSwitches().logging)
+        {
+            case clogFull:
+                ret.Add(wxString(COMPILER_SIMPLE_LOG) + compilerCmd);
+                break;
+            
+            case clogSimple:
+                ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Compiling: ") + filename);
+                break;
+            
+            default:
+                break;
+        }
+        AddCommandsToArray(compilerCmd, ret);
+    }
+    
+    if (!linkerCmd.IsEmpty())
+    {
+        switch (m_pCompiler->GetSwitches().logging)
+        {
+            case clogFull:
+                ret.Add(wxString(COMPILER_SIMPLE_LOG) + linkerCmd);
+                break;
+
+            default:
+                ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Linking console executable: ") + exe_filename);
+                break;
+        }
+        AddCommandsToArray(linkerCmd, ret);
     }
     return ret;
 }

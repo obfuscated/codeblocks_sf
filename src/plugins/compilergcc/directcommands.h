@@ -24,6 +24,7 @@ class DirectCommands
 		
 		wxArrayString CompileFile(ProjectBuildTarget* target, ProjectFile* pf, bool force = false);
 		wxArrayString GetCompileFileCommand(ProjectBuildTarget* target, ProjectFile* pf);
+		wxArrayString GetCompileSingleFileCommand(const wxString& filename);
 		wxArrayString GetCompileCommands(ProjectBuildTarget* target, bool force = false);
 		wxArrayString GetTargetCompileCommands(ProjectBuildTarget* target, bool force = false);
 		wxArrayString GetLinkCommands(ProjectBuildTarget* target, bool force = false);

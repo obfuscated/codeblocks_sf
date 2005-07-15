@@ -652,13 +652,10 @@ int CompilerGCC::DoRunQueue()
     msgMan->SwitchTo(m_PageIndex);
     
 	// leave if no active project
-//    if (!CheckProject())
     AskForActiveProject();
-    if (!m_Project)
-        return -1;
         
     // make sure all project files are saved
-    if (!Manager::Get()->GetProjectManager()->GetActiveProject()->SaveAllFiles())
+    if (m_Project && !m_Project->SaveAllFiles())
         msgMan->Log(_("Could not save all files..."));
 
     if (m_Queue.GetCount() == 0)
@@ -931,7 +928,9 @@ bool CompilerGCC::UseMake(ProjectBuildTarget* target)
         idx = target->GetCompilerIndex();
     else if (m_Project)
         idx = m_Project->GetCompilerIndex();
-    return CompilerFactory::Compilers[idx]->GetSwitches().buildMethod == cbmUseMake;
+    if (CompilerFactory::CompilerIndexOK(idx))
+        CompilerFactory::Compilers[idx]->GetSwitches().buildMethod == cbmUseMake;
+    return false;
 }
 
 bool CompilerGCC::CompilerValid(ProjectBuildTarget* target)
@@ -1371,7 +1370,8 @@ int CompilerGCC::CompileFile(const wxString& file)
 
     Manager::Get()->GetMessageManager()->Open();
 
-    wxSetWorkingDirectory(m_Project->GetBasePath());
+    if (m_Project)
+        wxSetWorkingDirectory(m_Project->GetBasePath());
     if (UseMake())
     {
         wxFileName f(file);
@@ -1385,12 +1385,20 @@ int CompilerGCC::CompileFile(const wxString& file)
     }
     else
     {
-        ProjectFile* pf = m_Project->GetFileByFilename(file, true, false);
+        ProjectFile* pf = m_Project ? m_Project->GetFileByFilename(file, true, false) : 0;
         if (!pf)
         {
-            wxMessageBox(_("Only files that belong to the active project can be compiled..."),
-                        _("Information"), wxICON_INFORMATION);
-            return -1;
+            DirectCommands dc(this, CompilerFactory::GetDefaultCompiler(), 0, m_PageIndex);
+            wxArrayString compile = dc.GetCompileSingleFileCommand(file);
+            dc.AppendArray(compile, m_Queue);
+
+            // apply global custom vars
+            CompilerFactory::GetDefaultCompiler()->GetCustomVars().ApplyVarsToEnvironment();
+
+            return DoRunQueue();
+//            wxMessageBox(_("Only files that belong to the active project can be compiled..."),
+//                        _("Information"), wxICON_INFORMATION);
+//            return -1;
         }
 		if (!pf->buildTargets.GetCount())
 		{
@@ -1494,7 +1502,8 @@ void CompilerGCC::OnCompileFile(wxCommandEvent& event)
         }
     }
 
-    file.MakeRelativeTo(m_Project->GetBasePath());
+    if (m_Project)
+        file.MakeRelativeTo(m_Project->GetBasePath());
 #ifdef ALWAYS_USE_MAKEFILE
 	file.SetExt(OBJECT_EXT);
 #endif
@@ -1739,7 +1748,7 @@ void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
         mbar->Enable(idMenuCompileAll, !m_Process && prj);
         mbar->Enable(idMenuCompileFromProjectManager, !m_Process && prj);
         mbar->Enable(idMenuCompileTargetFromProjectManager, !m_Process && prj);
-        mbar->Enable(idMenuCompileFile, !m_Process && prj && ed);
+        mbar->Enable(idMenuCompileFile, !m_Process && ed);
         mbar->Enable(idMenuCompileFileFromProjectManager, !m_Process && prj);
         mbar->Enable(idMenuRebuild, !m_Process && prj);
         mbar->Enable(idMenuRebuildAll, !m_Process && prj);
