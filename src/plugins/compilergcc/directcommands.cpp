@@ -116,10 +116,6 @@ void DirectCommands::AppendArray(const wxArrayString& from, wxArrayString& to)
 void DirectCommands::AddCommandsToArray(const wxString& cmds, wxArrayString& array)
 {
     wxString cmd = cmds;
-
-    // macros and custom vars substitution
-    Manager::Get()->GetMacrosManager()->ReplaceMacros(cmd, true);
-
     while (!cmd.IsEmpty())
     {
         int idx = cmd.Find("\n");

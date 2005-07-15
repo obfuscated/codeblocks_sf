@@ -29,6 +29,7 @@
 #include <pipedprocess.h>
 #include <configmanager.h>
 #include <messagemanager.h>
+#include <macrosmanager.h>
 #include <projectmanager.h>
 #include <editormanager.h>
 #include <customvars.h>
@@ -458,9 +459,6 @@ void CompilerGCC::SetupEnvironment()
     if (!CompilerFactory::CompilerIndexOK(m_CompilerIdx))
         return;
 
-    // let's set the custom vars as environment vars
-    m_Project->GetCustomVars().ApplyVarsToEnvironment();
-
     wxString sep = wxFileName::GetPathSeparator();
     m_EnvironmentMsg.Clear();
     
@@ -490,8 +488,6 @@ void CompilerGCC::SetupEnvironment()
                 continue;
             compilers.Add(idx);
             Compiler* compiler = CompilerFactory::Compilers[idx];
-            compiler->GetCustomVars().ApplyVarsToEnvironment();
-            target->GetCustomVars().ApplyVarsToEnvironment();
 
             wxString masterPath = compiler->GetMasterPath();
             while (masterPath.Last() == '\\' || masterPath.Last() == '/')
@@ -706,14 +702,22 @@ int CompilerGCC::DoRunQueue()
             ProjectBuildTarget* bt = m_Project->GetBuildTarget(cmd);
             if (bt)
             {
-//                msgMan->Log(m_PageIndex, _("Switching compiler to: %s"), CompilerFactory::Compilers[bt->GetCompilerIndex()]->GetName().c_str());
                 SwitchCompiler(bt->GetCompilerIndex());
+                // re-apply the env vars for this target
+                if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
+                    CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
+                m_Project->GetCustomVars().ApplyVarsToEnvironment();
+                bt->GetCustomVars().ApplyVarsToEnvironment();
             }
             else
                 msgMan->Log(m_PageIndex, _("Can't locate target '%s'!"), cmd.c_str());
         }
         else
+        {
+        	// compile command; apply custom vars
+        	Manager::Get()->GetMacrosManager()->ReplaceEnvVars(cmd);
             break;
+        }
 
         ++m_QueueIndex;
         if (m_QueueIndex >= m_Queue.GetCount())
