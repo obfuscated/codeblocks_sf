@@ -270,12 +270,16 @@ wxArrayString DirectCommands::GetCompileSingleFileCommand(const wxString& filena
     fname.SetExt(EXECUTABLE_EXT);
     wxString exe_filename = fname.GetFullPath();
 
+    wxString s_filename = filename;
+    QuoteStringIfNeeded(s_filename);
+    QuoteStringIfNeeded(o_filename);
+
     MakefileGenerator mg(m_pCompilerPlugin, 0, "", 0); // don't worry! we just need a couple of utility funcs from it
 
     wxString compilerCmd = mg.CreateSingleFileCompileCmd(ctCompileObjectCmd,
                                                          0,
                                                          0,
-                                                         filename,
+                                                         s_filename,
                                                          o_filename,
                                                          wxEmptyString);
     wxString linkerCmd = mg.CreateSingleFileCompileCmd(ctLinkConsoleExeCmd,

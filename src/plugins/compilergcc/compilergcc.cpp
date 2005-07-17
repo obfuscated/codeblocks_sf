@@ -1388,6 +1388,12 @@ int CompilerGCC::CompileFile(const wxString& file)
         ProjectFile* pf = m_Project ? m_Project->GetFileByFilename(file, true, false) : 0;
         if (!pf)
         {
+        	// compile single file not belonging to a project
+        	
+        	// switch to the default compiler
+        	SwitchCompiler(CompilerFactory::GetDefaultCompilerIndex());
+
+        	// get compile commands for file (always linked as console-executable)
             DirectCommands dc(this, CompilerFactory::GetDefaultCompiler(), 0, m_PageIndex);
             wxArrayString compile = dc.GetCompileSingleFileCommand(file);
             dc.AppendArray(compile, m_Queue);
@@ -1396,9 +1402,6 @@ int CompilerGCC::CompileFile(const wxString& file)
             CompilerFactory::GetDefaultCompiler()->GetCustomVars().ApplyVarsToEnvironment();
 
             return DoRunQueue();
-//            wxMessageBox(_("Only files that belong to the active project can be compiled..."),
-//                        _("Information"), wxICON_INFORMATION);
-//            return -1;
         }
 		if (!pf->buildTargets.GetCount())
 		{

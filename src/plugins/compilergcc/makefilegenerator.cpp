@@ -215,13 +215,16 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
         output = UnixFilename(target->GetOutputFilename());
     else
     {
-    	wxFileName fname(object);
+        wxString object_unquoted(object);
+        if (!object_unquoted.IsEmpty() && object_unquoted[0] == '"')
+            object_unquoted.Replace("\"", "");
+        wxFileName fname(object_unquoted); 
         fname.SetExt(EXECUTABLE_EXT);
         output = fname.GetFullPath();
     }
     ConvertToMakefileFriendly(output);
     QuoteStringIfNeeded(output);
-    
+
     wxString linkobjs;
 
     wxString compilerCmd = m_CompilerSet->GetCommand(et);
