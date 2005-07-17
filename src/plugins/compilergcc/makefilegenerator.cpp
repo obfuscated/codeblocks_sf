@@ -216,7 +216,7 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
     else
     {
         wxString object_unquoted(object);
-        if (!object_unquoted.IsEmpty() && object_unquoted[0] == '"')
+        if (!object_unquoted.IsEmpty() && object_unquoted.GetChar(0) == '"')
             object_unquoted.Replace("\"", "");
         wxFileName fname(object_unquoted); 
         fname.SetExt(EXECUTABLE_EXT);
