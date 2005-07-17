@@ -155,7 +155,15 @@ You could *really* mess-up Code::Blocks' Build System...</label>
     $$NAME : returns just the file's name (no path, no extension)
     $$BASE : returns the relative filename without extension
     $$OBJECT : returns the link object filename
-    $$FILENAME : returns the relative filename as-is</label>
+    $$DEPEND: returns the dependencies file
+    $$FILENAME : returns the relative filename as-is
+    $$INCLUDES: returns the include dirs
+    $$CFLAGS: returns the compiler options
+    $$LDFLAGS: returns the linker options
+    $$LIBS: returns the link libraries
+    $$LIBDIRS: returns the linker dirs
+    $$DEPEND_DIR: returns the dependencies dir
+    $$OBJECT_DIR: returns the object output dir</label>
                   </object>
                   <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
                   <border>8</border>
@@ -199,7 +207,15 @@ You could *really* mess-up Code::Blocks' Build System...</label>
     $$NAME : returns just the file's name (no path, no extension)
     $$BASE : returns the relative filename without extension
     $$OBJECT : returns the link object filename
-    $$FILENAME : returns the relative filename as-is</label>
+    $$DEPEND: returns the dependencies file
+    $$FILENAME : returns the relative filename as-is
+    $$INCLUDES: returns the include dirs
+    $$CFLAGS: returns the compiler options
+    $$LDFLAGS: returns the linker options
+    $$LIBS: returns the link libraries
+    $$LIBDIRS: returns the linker dirs
+    $$DEPEND_DIR: returns the dependencies dir
+    $$OBJECT_DIR: returns the object output dir</label>
                   </object>
                   <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
                   <border>8</border>
@@ -220,7 +236,6 @@ You could *really* mess-up Code::Blocks' Build System...</label>
         <option>1</option>
         <flag>wxALL|wxEXPAND</flag>
         <border>8</border>
-        <minsize>320,320</minsize>
       </object>
       <object class="sizeritem">
         <object class="wxBoxSizer">

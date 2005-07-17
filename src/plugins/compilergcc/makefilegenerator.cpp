@@ -29,6 +29,7 @@
 #include <messagemanager.h>
 #include <wx/file.h>
 #include <compilerfactory.h>
+#include <customvars.h>
 
 // TODO (mandrav#1#): Fix Makefile for targets using different compilers
 
@@ -578,20 +579,23 @@ void MakefileGenerator::DoGetMakefileLDFlags(wxString& buffer, ProjectBuildTarge
 	buffer << " $(" + target->GetTitle() + "_GLOBAL_LDFLAGS)";
 }
 
+void MakefileGenerator::DoAddVarsSet(wxString& buffer, CustomVars& vars)
+{
+    const VarsArray& v = vars.GetVars();
+    for (unsigned int i = 0; i < v.GetCount(); ++i)
+    {
+        buffer << v[i].name << "=" << v[i].value << '\n';
+    }
+}
+
 void MakefileGenerator::DoAddMakefileVars(wxString& buffer)
 {
     buffer << "### Variables used in this Makefile" << '\n';
 
-    // user vars
-//	const VarsArray& vars = m_Vars.GetVars();
-//	for (unsigned int i = 0; i < vars.GetCount(); ++i)
-//	{
-//		buffer << vars[i].name << "=" << vars[i].value << '\n';
-//	}
-
-    // compiler vars
-    // defined last so even if the user sets custom vars
-    // by these names, ours will have precedence...
+    // compiler global vars
+    DoAddVarsSet(buffer, CompilerFactory::Compilers[m_Project->GetCompilerIndex()]->GetCustomVars());
+    // project vars
+    DoAddVarsSet(buffer, m_Project->GetCustomVars());
     int targetsCount = m_Project->GetBuildTargetsCount();
     for (int x = 0; x < targetsCount; ++x)
     {
@@ -599,6 +603,13 @@ void MakefileGenerator::DoAddMakefileVars(wxString& buffer)
         if (!IsTargetValid(target))
             continue;
         Compiler* compilerSet = CompilerFactory::Compilers[target->GetCompilerIndex()];
+
+        // target vars
+        DoAddVarsSet(buffer, compilerSet->GetCustomVars());
+
+        // compiler vars
+        // defined last so even if the user sets custom vars
+        // by these names, ours will have precedence...
         buffer << target->GetTitle() << "_CC=" << compilerSet->GetPrograms().C << '\n';
         buffer << target->GetTitle() << "_CPP=" << compilerSet->GetPrograms().CPP << '\n';
         buffer << target->GetTitle() << "_LD=" << compilerSet->GetPrograms().LD << '\n';
@@ -1336,9 +1347,9 @@ void MakefileGenerator::DoAddMakefileTarget_Link(wxString& buffer)
     buffer << '\n';
 }
 
-void MakefileGenerator::ConvertToMakefileFriendly(wxString& str)
+void MakefileGenerator::ConvertToMakefileFriendly(wxString& str, bool force)
 {
-    if (!m_GeneratingMakefile)
+    if (!force && !m_GeneratingMakefile)
         return;
 
     if (str.IsEmpty())
@@ -1460,7 +1471,7 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
                         {
                             // custom depend rule
                             wxString customDeps = pf->customDeps;
-                            ReplaceMacros(pf, customDeps);
+                            ReplaceMacros(target, pf, customDeps);
     
                             buffer << d_file << ": " << c_file << '\n';
                             if (m_CompilerSet->GetSwitches().logging == clogSimple)
@@ -1476,8 +1487,10 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
 					{
 						// custom build command
                         wxString customBuild = pf->buildCommand;
-                        ReplaceMacros(pf, customBuild);
-						buffer << pf->GetObjName() << d_file << '\n';
+                        ReplaceMacros(target, pf, customBuild);
+                        wxString obj_file = target->GetObjectOutput() + wxFILE_SEP_PATH + pf->GetObjName();
+                        ConvertToMakefileFriendly(obj_file);
+						buffer << obj_file << ": " << d_file << '\n';
                         if (m_CompilerSet->GetSwitches().logging == clogSimple)
 							buffer << '\t' << "@echo Compiling \"" << pf->relativeFilename << "\" (custom command)..." << '\n';
 						buffer << '\t' << m_Quiet << customBuild << '\n';
@@ -1593,16 +1606,39 @@ bool MakefileGenerator::IsTargetValid(ProjectBuildTarget* target)
 	return hasBin && (hasCmds || m_LinkableTargets.Index(target) != -1);
 }
 
-// WARNING: similar function in DirectCommands too.
-// If you change this, change that too
-void MakefileGenerator::ReplaceMacros(ProjectFile* pf, wxString& text)
+void MakefileGenerator::ReplaceMacros(ProjectBuildTarget* bt, ProjectFile* pf, wxString& text)
 {
+	wxString o_dir = bt ? bt->GetObjectOutput() + wxFILE_SEP_PATH : "";
+	wxString d_dir = bt ? bt->GetDepsOutput() + wxFILE_SEP_PATH : "";
+	wxFileName d_filename = d_dir + pf->GetObjName();
+	d_filename.SetExt("d");
+	wxString d_file = d_filename.GetFullPath();
+	ConvertToMakefileFriendly(o_dir);
+	ConvertToMakefileFriendly(d_dir);
+	ConvertToMakefileFriendly(d_file);
+	QuoteStringIfNeeded(o_dir);
+	QuoteStringIfNeeded(d_dir);
+	QuoteStringIfNeeded(d_file);
+
     wxFileName fname(pf->relativeFilename);
     text.Replace("$DIR", UnixFilename(fname.GetPath(wxPATH_GET_VOLUME)));
+    if (bt)
+        text.Replace("$INCLUDES", "$(" + bt->GetTitle() + "_INCS)");
+    if (bt)
+        text.Replace("$CFLAGS", "$(" + bt->GetTitle() + "_CFLAGS)");
+    if (bt)
+        text.Replace("$LDFLAGS", "$(" + bt->GetTitle() + "_LDFLAGS)");
+    if (bt)
+        text.Replace("$LIBS", "$(" + bt->GetTitle() + "_LIBS)");
+    if (bt)
+        text.Replace("$LIBDIRS", "$(" + bt->GetTitle() + "_LIBDIRS)");
     text.Replace("$NAME", UnixFilename(fname.GetName()));
     text.Replace("$BASE", pf->GetBaseName());
-    text.Replace("$OBJECT", pf->GetObjName());
-    text.Replace("$FILENAME", pf->relativeFilename);
+    text.Replace("$DEPEND_DIR", d_dir);
+    text.Replace("$OBJECT_DIR", o_dir);
+    text.Replace("$DEPEND", d_file);
+    text.Replace("$OBJECT", o_dir + pf->GetObjName());
+    text.Replace("$FILENAME", UnixFilename(pf->relativeFilename));
     text.Replace("\n", "\n\t" + m_Quiet);
 }
 
@@ -1624,7 +1660,7 @@ bool MakefileGenerator::CreateMakefile()
     buffer << '\n';
     buffer << "# Project:          " << m_Project->GetTitle() << '\n';
     buffer << "# Project filename: " << m_Project->GetFilename() << '\n';
-    buffer << "# Date:             " << wxDateTime::Now().Format("%c", wxDateTime::Local) << '\n';
+//    buffer << "# Date:             " << wxDateTime::Now().Format("%c", wxDateTime::Local) << '\n';
     buffer << "# Compiler used:    " << m_CompilerSet->GetName() << '\n';
     buffer << '\n';
 

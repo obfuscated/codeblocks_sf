@@ -929,7 +929,7 @@ bool CompilerGCC::UseMake(ProjectBuildTarget* target)
     else if (m_Project)
         idx = m_Project->GetCompilerIndex();
     if (CompilerFactory::CompilerIndexOK(idx))
-        CompilerFactory::Compilers[idx]->GetSwitches().buildMethod == cbmUseMake;
+        return CompilerFactory::Compilers[idx]->GetSwitches().buildMethod == cbmUseMake;
     return false;
 }
 
@@ -1362,6 +1362,41 @@ int CompilerGCC::KillProcess()
     return ret;
 }
 
+ProjectBuildTarget* CompilerGCC::GetBuildTargetForFile(ProjectFile* pf)
+{
+    if (!pf)
+        return 0;
+
+    if (!pf->buildTargets.GetCount())
+    {
+        wxMessageBox(_("That file isn't assigned to any target."),
+                    _("Information"), wxICON_INFORMATION);
+        return 0;
+    }
+    else if (pf->buildTargets.GetCount() == 1)
+        return m_Project->GetBuildTarget(pf->buildTargets[0]);
+    // belongs to two or more build targets
+    ProjectBuildTarget* bt = 0;
+    // if "All" is selected, ask for build target
+    if (m_HasTargetAll && m_TargetIndex == -1)
+    {
+        int idx = DoGUIAskForTarget();
+        if (idx == -1)
+            return 0;
+        bt = m_Project->GetBuildTarget(idx);
+    }
+    else // use the currently selected build target
+        bt = m_Project->GetBuildTarget(m_TargetIndex); // pick the selected target
+
+    return bt;
+}
+
+ProjectBuildTarget* CompilerGCC::GetBuildTargetForFile(const wxString& file)
+{
+    ProjectFile* pf = m_Project ? m_Project->GetFileByFilename(file, true, false) : 0;
+    return GetBuildTargetForFile(pf);
+}
+
 int CompilerGCC::CompileFile(const wxString& file)
 {
 	DoPrepareQueue();
@@ -1372,50 +1407,57 @@ int CompilerGCC::CompileFile(const wxString& file)
 
     if (m_Project)
         wxSetWorkingDirectory(m_Project->GetBasePath());
-    if (UseMake())
+
+    ProjectFile* pf = m_Project ? m_Project->GetFileByFilename(file, true, false) : 0;
+    ProjectBuildTarget* bt = GetBuildTargetForFile(pf);
+    bool useMake = UseMake(bt);
+
+    if (!pf)
     {
-        wxFileName f(file);
-// TODO (mandrav#1#): Fix this to take into account the obj output dir
-        wxString fname = UnixFilename(f.GetPath() + ".objs/" + f.GetFullName());
-        MakefileGenerator mg(this, 0, "", 0);
-        mg.ConvertToMakefileFriendly(fname);
+        // compile single file not belonging to a project
+        
+        // switch to the default compiler
+        SwitchCompiler(CompilerFactory::GetDefaultCompilerIndex());
+
+        if (useMake)
+        {
+            wxMessageBox(_("That file doesn't belong to a project.\n"
+                            "If you want to compile it as stand-alone, please use the \"Invoke compiler directly\" build method\n"
+                            "(Settings->Compiler->Other->Build method)"),
+                        _("Information"), wxICON_INFORMATION);
+        }
+        else
+        {
+            // get compile commands for file (always linked as console-executable)
+            DirectCommands dc(this, CompilerFactory::GetDefaultCompiler(), 0, m_PageIndex);
+            wxArrayString compile = dc.GetCompileSingleFileCommand(file);
+            dc.AppendArray(compile, m_Queue);
     
+            // apply global custom vars
+            CompilerFactory::GetDefaultCompiler()->GetCustomVars().ApplyVarsToEnvironment();
+        }
+        return DoRunQueue();
+    }
+
+    if (!bt)
+        return -2;
+    if (useMake)
+    {
+        wxFileName tmp = pf->GetObjName();
+        wxFileName o_file(bt->GetObjectOutput() + wxFILE_SEP_PATH + tmp.GetFullPath());
+        wxString fname = UnixFilename(o_file.GetFullPath());
+        MakefileGenerator mg(this, 0, "", 0);
+        mg.ConvertToMakefileFriendly(fname, true);
+
+        // apply global custom vars
+        CompilerFactory::Compilers[bt->GetCompilerIndex()]->GetCustomVars().ApplyVarsToEnvironment();
+
         wxString make = CompilerFactory::Compilers[m_CompilerIdx]->GetPrograms().MAKE;
+        m_Queue.Add(make + " -f " + m_LastTempMakefile + " depend_" + bt->GetTitle() + "_DIRS"); // make the output dir
         m_Queue.Add(make + " -f " + m_LastTempMakefile + " " + fname);
     }
     else
     {
-        ProjectFile* pf = m_Project ? m_Project->GetFileByFilename(file, true, false) : 0;
-        if (!pf)
-        {
-        	// compile single file not belonging to a project
-        	
-        	// switch to the default compiler
-        	SwitchCompiler(CompilerFactory::GetDefaultCompilerIndex());
-
-        	// get compile commands for file (always linked as console-executable)
-            DirectCommands dc(this, CompilerFactory::GetDefaultCompiler(), 0, m_PageIndex);
-            wxArrayString compile = dc.GetCompileSingleFileCommand(file);
-            dc.AppendArray(compile, m_Queue);
-
-            // apply global custom vars
-            CompilerFactory::GetDefaultCompiler()->GetCustomVars().ApplyVarsToEnvironment();
-
-            return DoRunQueue();
-        }
-		if (!pf->buildTargets.GetCount())
-		{
-            wxMessageBox(_("That file isn't assigned to any target."),
-                        _("Information"), wxICON_INFORMATION);
-			return -2;
-		}
-        ProjectBuildTarget* bt = 0;
-        if (m_HasTargetAll && m_TargetIndex == -1)
-            bt = m_Project->GetBuildTarget(pf->buildTargets[0]); // pick the first target
-        else
-            bt = m_Project->GetBuildTarget(m_TargetIndex); // pick the selected target
-        if (!bt)
-            return -2;
         DirectCommands dc(this, CompilerFactory::Compilers[bt->GetCompilerIndex()], m_Project, m_PageIndex);
         wxArrayString compile = dc.CompileFile(bt, pf);
         dc.AppendArray(compile, m_Queue);

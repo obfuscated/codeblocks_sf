@@ -121,6 +121,8 @@ class CompilerGCC : public cbCompilerPlugin
         void PrintBanner();
         bool UseMake(ProjectBuildTarget* target = 0);
 		bool CompilerValid(ProjectBuildTarget* target = 0);
+		ProjectBuildTarget* GetBuildTargetForFile(ProjectFile* pf);
+		ProjectBuildTarget* GetBuildTargetForFile(const wxString& file);
 
 		// programs
 		int m_CompilerIdx;
