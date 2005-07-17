@@ -1761,7 +1761,7 @@ void MainFrame::OnHelpTips(wxCommandEvent& event)
 
 void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
 {
-    cbEditor* ed = m_pEdMan ? m_pEdMan->GetBuiltinEditor(m_pEdMan->GetActiveEditor()) : 0;
+    EditorBase* ed = m_pEdMan ? m_pEdMan->GetActiveEditor() : 0;
     wxMenuBar* mbar = GetMenuBar();
 
     bool canCloseProject = (ProjectManager::CanShutdown() && EditorManager::CanShutdown());
