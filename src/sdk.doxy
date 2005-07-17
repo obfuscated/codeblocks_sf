@@ -1,11 +1,11 @@
-# Doxyfile 1.4.1
+# Doxyfile 1.4.3
 
 #---------------------------------------------------------------------------
 # Project related configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = Code::Blocks
 PROJECT_NUMBER         = "version 1.0"
-OUTPUT_DIRECTORY       = C:/Devel/codeblocks/src/docs
+OUTPUT_DIRECTORY       = ./docs
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
 USE_WINDOWS_ENCODING   = YES
@@ -25,7 +25,7 @@ ABBREVIATE_BRIEF       = "The $name class" \
 ALWAYS_DETAILED_SEC    = NO
 INLINE_INHERITED_MEMB  = NO
 FULL_PATH_NAMES        = NO
-STRIP_FROM_PATH        = c:/Devel/codeblocks/src/
+STRIP_FROM_PATH        = 
 STRIP_FROM_INC_PATH    = 
 SHORT_NAMES            = NO
 JAVADOC_AUTOBRIEF      = NO
@@ -80,7 +80,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = c:/Devel/codeblocks/src/sdk
+INPUT                  = ./sdk
 FILE_PATTERNS          = *.c \
                          *.cc \
                          *.cxx \
@@ -106,8 +106,8 @@ FILE_PATTERNS          = *.c \
                          *.m \
                          *.mm \
                          *.dox
-RECURSIVE              = NO
-EXCLUDE                = 
+RECURSIVE              = YES
+EXCLUDE                = ./sdk/tinyxml/
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = 
 EXAMPLE_PATH           = 
