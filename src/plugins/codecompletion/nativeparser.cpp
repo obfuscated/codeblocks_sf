@@ -30,6 +30,7 @@
 #include <pluginmanager.h>
 #include <messagemanager.h>
 #include <editormanager.h>
+#include <customvars.h>
 #include <cbeditor.h>
 #include <cbproject.h>
 #include "classbrowser.h"
@@ -154,6 +155,16 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
     parser->IncludeDirs().Clear();
     wxString base = project->GetBasePath();
 
+    Compiler* compiler = 0;
+    // apply compiler global vars
+	if (CompilerFactory::Compilers.GetCount() > 0 && CompilerFactory::CompilerIndexOK(project->GetCompilerIndex()))
+	{
+		compiler = CompilerFactory::Compilers[project->GetCompilerIndex()];
+        compiler->GetCustomVars().ApplyVarsToEnvironment();
+	}
+    // apply project vars
+    project->GetCustomVars().ApplyVarsToEnvironment();
+
     // get project include dirs
     for (unsigned int i = 0; i < project->GetIncludeDirs().GetCount(); ++i)
     {
@@ -173,6 +184,8 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
         ProjectBuildTarget* target = project->GetBuildTarget(i);
         if (target)
         {
+        	// apply target vars
+            target->GetCustomVars().ApplyVarsToEnvironment();
             for (unsigned int ti = 0; ti < target->GetIncludeDirs().GetCount(); ++ti)
             {
                 wxFileName dir(target->GetIncludeDirs()[ti]);
@@ -188,9 +201,8 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
     }
 
     // add compiler include dirs
-	if (CompilerFactory::Compilers.GetCount() > 0 && CompilerFactory::CompilerIndexOK(project->GetCompilerIndex()))
+	if (compiler)
 	{
-		Compiler* compiler = CompilerFactory::Compilers[project->GetCompilerIndex()];
 		const wxArrayString& dirs = compiler->GetIncludeDirs();
 		for (unsigned int i = 0; i < dirs.GetCount(); ++i)
 		{
