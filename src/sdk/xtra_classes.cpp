@@ -4,6 +4,7 @@
   */
 
 #include "xtra_classes.h"
+#include "configmanager.h"
 
 /** A simple panel with included wxSplitterWindow and sizer. Nothing more
   *
@@ -29,6 +30,7 @@ void wxSplitPanel::RefreshSplitter(int idtop,int idbottom,int sashPosition)
 {
     wxWindow *topwin = m_splitter->FindWindowById(idtop);
     wxWindow *bottomwin = m_splitter->FindWindowById(idbottom);
+    int oldsash = m_splitter->GetSashPosition();
     m_splitter->Freeze();
     if(topwin && topwin->IsShown() && bottomwin && bottomwin->IsShown())
     {
@@ -43,15 +45,24 @@ void wxSplitPanel::RefreshSplitter(int idtop,int idbottom,int sashPosition)
             thewin = bottomwin;
         m_splitter->Initialize(thewin);
     }
-    if(sashPosition)
+    if (sashPosition)
     {
         m_splitter->SetSashPosition(sashPosition);
+    }
+    else
+    {
+        if (!m_SplitterConfig.IsEmpty())
+            m_splitter->SetSashPosition(ConfigManager::Get()->Read(m_SplitterConfig, (long int)150));
+        else
+            m_splitter->SetSashPosition(oldsash);
     }
     m_splitter->Thaw();
 }
 
 wxSplitPanel::~wxSplitPanel()
 {
+	if (!m_SplitterConfig.IsEmpty())
+        ConfigManager::Get()->Write(m_SplitterConfig, m_splitter->GetSashPosition());
     delete m_splitter;
     m_splitter=0;
     SetSizer(0L);

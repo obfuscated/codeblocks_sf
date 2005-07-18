@@ -108,7 +108,7 @@ EditorManager::EditorManager(wxWindow* parent)
     m_LastModifiedflag(false),
     m_pSearchLog(0),
     m_SearchLogIndex(-1),
-    m_SashPosition(150)
+    m_SashPosition(150) // no longer used
 {
 	SC_CONSTRUCTOR_BEGIN
 	EditorManagerProxy::Set(this);
@@ -133,7 +133,7 @@ EditorManager::EditorManager(wxWindow* parent)
 EditorManager::~EditorManager()
 {
 	SC_DESTRUCTOR_BEGIN
-	
+
 	SaveAutoComplete();
 
 	if (m_Theme)
@@ -1439,14 +1439,7 @@ void EditorManager::RefreshOpenFilesTree()
     wxWindow* win = Manager::Get()->GetNotebookPage(_("Projects"),wxTAB_TRAVERSAL | wxCLIP_CHILDREN,true);
     wxSplitPanel* mypanel = (wxSplitPanel*)(win);
     wxSplitterWindow* mysplitter = mypanel->GetSplitter();
-    bool shown = IsOpenFilesTreeVisible();
-    if (shown)
-    {
-    	int splitterpos = mysplitter->GetSashPosition();
-    	if (splitterpos > 0)
-            m_SashPosition = splitterpos;
-    }
-    mypanel->RefreshSplitter(ID_EditorManager,ID_ProjectManager,m_SashPosition);
+    mypanel->RefreshSplitter(ID_EditorManager,ID_ProjectManager);
 }
 
 void EditorManager::ShowOpenFilesTree(bool show)
@@ -1637,7 +1630,8 @@ void EditorManager::InitPane()
     wxSplitterWindow* mysplitter = mypanel->GetSplitter();
     BuildOpenedFilesTree(mysplitter);
     mypanel->SetAutoLayout(true);
-    mypanel->RefreshSplitter(ID_EditorManager,ID_ProjectManager,200);
+    mypanel->SetConfigEntryForSplitter("/editor/opened_files_tree_height");
+    mypanel->RefreshSplitter(ID_EditorManager,ID_ProjectManager);
 }
 
 void EditorManager::BuildOpenedFilesTree(wxWindow* parent)

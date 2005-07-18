@@ -37,9 +37,11 @@ public:
 
     virtual wxSplitPanel::~wxSplitPanel();
     wxSplitterWindow* GetSplitter() { return (this) ? m_splitter : 0L; }
+    void SetConfigEntryForSplitter(const wxString& splitterconfig){ m_SplitterConfig = splitterconfig; }
 private:
     wxSplitterWindow* m_splitter;
     wxBoxSizer* m_sizer;
+    wxString m_SplitterConfig;
     DECLARE_DYNAMIC_CLASS(wxSplitPanel)
 };
 
