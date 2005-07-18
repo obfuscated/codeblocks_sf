@@ -1161,8 +1161,8 @@ void MakefileGenerator::DoAddMakefileTargets_BeforeAfter(wxString& buffer)
     for (int x = 0; x < targetsCount; ++x)
     {
         ProjectBuildTarget* target = m_Project->GetBuildTarget(x);
-        if (!target)
-            break;
+        if (!target || !IsTargetValid(target))
+            continue;
 
 		tmp.Clear();
 		tmp << target->GetTitle() << "-before";

@@ -346,11 +346,14 @@ wxArrayString DirectCommands::GetCompileCommands(ProjectBuildTarget* target, boo
             }
         }
 
+        bool needPost = ret.GetCount() != counter;
+
+        // remove pre-build commands if no compile needed and not always run pre-build commands
         if (ret.GetCount() == counter  && !m_pProject->GetAlwaysRunPreBuildSteps())
             ret.Clear();
 
         // add post-build commands
-        if (ret.GetCount() != 0 || m_pProject->GetAlwaysRunPostBuildSteps())
+        if (needPost || m_pProject->GetAlwaysRunPostBuildSteps())
             AppendArray(GetPostBuildCommands(0L), ret);
     }
     return ret;
@@ -418,11 +421,14 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
     wxArrayString link = GetLinkCommands(target, ret.GetCount() != counter);
     AppendArray(link, ret);
 
+    bool needPost = ret.GetCount() != counter;
+
+    // remove pre-build commands if no compile needed and not always run pre-build commands
     if (ret.GetCount() == counter && !target->GetAlwaysRunPreBuildSteps())
         ret.Clear();
 
     // add post-build commands
-    if (ret.GetCount() != counter || target->GetAlwaysRunPostBuildSteps())
+    if (needPost || target->GetAlwaysRunPostBuildSteps())
         AppendArray(GetPostBuildCommands(target), ret);
 
     return ret;
