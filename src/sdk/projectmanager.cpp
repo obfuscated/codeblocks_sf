@@ -829,6 +829,7 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
     if(m_pTopEditor)
         m_pTopEditor->Activate();
     Manager::Get()->GetEditorManager()->RefreshOpenedFilesTree(true);
+    UnfreezeTree(true);
     return m_pWorkspace->IsOK();
 }
 
