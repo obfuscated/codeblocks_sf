@@ -16,6 +16,7 @@ class AdvancedCompilerOptionsDlg : public wxDialog
         void OnRegexTest(wxCommandEvent& event);
         void OnRegexAdd(wxCommandEvent& event);
         void OnRegexDelete(wxCommandEvent& event);
+        void OnRegexDefaults(wxCommandEvent& event);
         void OnRegexUp(wxSpinEvent& event);
         void OnRegexDown(wxSpinEvent& event);
         

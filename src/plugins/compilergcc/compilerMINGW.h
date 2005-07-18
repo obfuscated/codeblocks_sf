@@ -9,6 +9,7 @@ class CompilerMINGW : public Compiler
 		CompilerMINGW();
 		virtual ~CompilerMINGW();
         virtual void Reset();
+		virtual void LoadDefaultRegExArray();
         virtual AutoDetectResult AutoDetectInstallationDir();
     protected:
         virtual Compiler* CreateCopy();

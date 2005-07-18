@@ -14,6 +14,7 @@ BEGIN_EVENT_TABLE(AdvancedCompilerOptionsDlg, wxDialog)
     EVT_BUTTON(XRCID("btnRegexTest"),       AdvancedCompilerOptionsDlg::OnRegexTest)
     EVT_BUTTON(XRCID("btnRegexAdd"),        AdvancedCompilerOptionsDlg::OnRegexAdd)
     EVT_BUTTON(XRCID("btnRegexDelete"),     AdvancedCompilerOptionsDlg::OnRegexDelete)
+    EVT_BUTTON(XRCID("btnRegexDefaults"),   AdvancedCompilerOptionsDlg::OnRegexDefaults)
     EVT_SPIN_UP(XRCID("spnRegexOrder"),     AdvancedCompilerOptionsDlg::OnRegexUp)
     EVT_SPIN_DOWN(XRCID("spnRegexOrder"),   AdvancedCompilerOptionsDlg::OnRegexDown)
 END_EVENT_TABLE()
@@ -194,6 +195,22 @@ void AdvancedCompilerOptionsDlg::OnRegexDelete(wxCommandEvent& event)
     {
         m_Regexes.RemoveAt(m_SelectedRegex);
         if (m_SelectedRegex >= (int)m_Regexes.Count())
+            --m_SelectedRegex;
+        FillRegexes();
+    }
+}
+
+void AdvancedCompilerOptionsDlg::OnRegexDefaults(wxCommandEvent& event)
+{
+    if (wxMessageBox(_("Are you sure you want to load the default regular expressions "
+                    "for this compiler?\n"
+                    "ALL regular expressions will be erased and replaced with their default "
+                    "counterparts!\n\n"
+                    "Are you REALLY sure?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxYES)
+    {
+        CompilerFactory::Compilers[m_CompilerIdx]->LoadDefaultRegExArray();
+        m_Regexes = CompilerFactory::Compilers[m_CompilerIdx]->GetRegExArray();
+        while (m_SelectedRegex >= (int)m_Regexes.Count())
             --m_SelectedRegex;
         FillRegexes();
     }

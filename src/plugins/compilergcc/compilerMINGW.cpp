@@ -136,21 +136,28 @@ void CompilerMINGW::Reset()
 #endif
     m_Commands[(int)ctLinkStaticCmd] = "$lib_linker -r $static_output $link_objects\n\tranlib $exe_output";
 
-    m_RegExes.Clear();
-    m_RegExes.Add(RegExStruct(_("Fatal error"), cltError, "FATAL:[ \t]*(.*)", 1));
-    m_RegExes.Add(RegExStruct(_("Preprocessor error"), cltError, "([ \tA-Za-z0-9_:+/\\.-]+):([0-9]+):[0-9]+:[ \t](.*)", 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Compiler warning"), cltWarning, "([ \tA-Za-z0-9_:+/\\.-]+):([0-9]+):[ \t][Ww]arning:[ \t](.*)", 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, "([ \tA-Za-z0-9_:+/\\.-]+):([0-9]+):[ \t](.*)", 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Linker error"), cltError, "([ \tA-Za-z0-9_:+/\\.-]+):([0-9]+):[0-9]+:[ \t](.*)", 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Linker error (2)"), cltError, "[ \tA-Za-z0-9_:+/\\.-]+\\(.text\\+[0-9A-Za-z]+\\):([ \tA-Za-z0-9_:+/\\.-]+):[ \t](.*)", 2, 1));
-    m_RegExes.Add(RegExStruct(_("Undefined reference"), cltError, "([ \tA-Za-z0-9_:+/\\.-]+):[ \t](undefined reference.*)", 2, 1));
-    m_RegExes.Add(RegExStruct(_("Resource compiler error"), cltError, "windres.exe:[ \t](.*)", 1));
+    LoadDefaultRegExArray();
 
     m_CompilerOptions.Clear();
     m_LinkerOptions.Clear();
     m_LinkLibs.Clear();
     m_CmdsBefore.Clear();
     m_CmdsAfter.Clear();
+}
+
+void CompilerMINGW::LoadDefaultRegExArray()
+{
+    m_RegExes.Clear();
+    m_RegExes.Add(RegExStruct(_("Fatal error"), cltError, "FATAL:[ \t]*(.*)", 1));
+    m_RegExes.Add(RegExStruct(_("Preprocessor warning"), cltWarning, "([ \tA-Za-z0-9_:+/\\.-]+):([0-9]+):([0-9]+):[ \t]([Ww]arning:[ \t].*)", 4, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Preprocessor error"), cltError, "([ \tA-Za-z0-9_:+/\\.-]+):([0-9]+):[0-9]+:[ \t](.*)", 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Compiler warning"), cltWarning, "([ \tA-Za-z0-9_:+/\\.-]+):([0-9]+):[ \t]([Ww]arning:[ \t].*)", 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, "([ \tA-Za-z0-9_:+/\\.-]+):([0-9]+):[ \t](.*)", 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Linker error"), cltError, "([ \tA-Za-z0-9_:+/\\.-]+):([0-9]+):[0-9]+:[ \t](.*)", 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Linker error (2)"), cltError, "[ \tA-Za-z0-9_:+/\\.-]+\(.text\+[0-9A-Za-z]+\):([ \tA-Za-z0-9_:+/\\.-]+):[ \t](.*)", 2, 1));
+    m_RegExes.Add(RegExStruct(_("Linker error (lib not found)"), cltError, ".*(ld.exe):[ \t](cannot find.*)", 2, 1));
+    m_RegExes.Add(RegExStruct(_("Undefined reference"), cltError, "([ \tA-Za-z0-9_:+/\\.-]+):[ \t](undefined reference.*)", 2, 1));
+    m_RegExes.Add(RegExStruct(_("Resource compiler error"), cltError, "windres.exe:[ \t](.*)", 1));
 }
 
 AutoDetectResult CompilerMINGW::AutoDetectInstallationDir()

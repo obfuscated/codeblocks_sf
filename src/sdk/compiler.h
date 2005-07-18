@@ -186,6 +186,8 @@ class DLLIMPORT Compiler : public CompileOptionsBase
 		virtual const wxString& GetCommand(CommandType ct) const { return m_Commands[(int)ct]; }
 		/** @brief Get the array of regexes used in errors/warnings recognition */
 		virtual const RegExArray& GetRegExArray(){ return m_RegExes; }
+		/** @brief Load the default (preset) array of regexes used in errors/warnings recognition */
+		virtual void LoadDefaultRegExArray() = 0;
 
         /** @brief Set the compiler's name */
 		virtual void SetName(const wxString& name){ m_Name = name; }

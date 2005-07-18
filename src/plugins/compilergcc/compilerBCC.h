@@ -9,6 +9,7 @@ class CompilerBCC : public Compiler
 		CompilerBCC();
 		virtual ~CompilerBCC();
         virtual void Reset();
+		virtual void LoadDefaultRegExArray();
         virtual AutoDetectResult AutoDetectInstallationDir();
 	protected:
         Compiler * CreateCopy();

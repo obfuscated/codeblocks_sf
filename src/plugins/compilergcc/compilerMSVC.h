@@ -9,6 +9,7 @@ class CompilerMSVC : public Compiler
 		CompilerMSVC();
 		virtual ~CompilerMSVC();
         virtual void Reset();
+		virtual void LoadDefaultRegExArray();
         virtual AutoDetectResult AutoDetectInstallationDir();
 	protected:
         Compiler * CreateCopy();
