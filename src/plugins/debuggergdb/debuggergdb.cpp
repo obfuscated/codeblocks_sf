@@ -920,10 +920,16 @@ void DebuggerGDB::CmdToggleBreakpoint()
 
 void DebuggerGDB::CmdStop()
 {
-	if (m_pProcess && m_Pid){ 
-		m_pProcess->CloseOutput();
-		if (m_ProgramIsStopped)	RunCommand(CMD_STOP);
-		else {
+	if (m_pProcess && m_Pid)
+	{
+		if (m_ProgramIsStopped)
+		{
+            RunCommand(CMD_STOP);
+            m_pProcess->CloseOutput();
+		}
+		else
+		{
+            m_pProcess->CloseOutput();
 			wxKillError err = m_pProcess->Kill(m_Pid, wxSIGKILL);
 			if (err == wxKILL_OK){
 /*				
@@ -1424,8 +1430,6 @@ void DebuggerGDB::OnGDBOutput(wxCommandEvent& event)
 	wxString msg = event.GetString();
 	if (!msg.IsEmpty())
 	{
-        if (m_HasDebugLog)
-            //m_pDbgLog->AddLog(msg); // write it in the full debugger log
 		ParseOutput(msg);
 	}
 }
@@ -1435,8 +1439,6 @@ void DebuggerGDB::OnGDBError(wxCommandEvent& event)
 	wxString msg = event.GetString();
 	if (!msg.IsEmpty())
 	{
-        if (m_HasDebugLog)
-            //m_pDbgLog->AddLog(msg); // write it in the full debugger log
 		ParseOutput(msg);
 	}
 }
@@ -1542,7 +1544,7 @@ void DebuggerGDB::OnValueTooltip(CodeBlocksEvent& event)
 	
 	if (!token.IsEmpty())
 	{
-//		Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Value of %s:"), token.c_str());
+		Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Value of %s:"), token.c_str());
 		pt = ed->GetControl()->PointFromPosition(start);
 		pt = ed->GetControl()->ClientToScreen(pt);
 		m_EvalRect.x = pt.x;
@@ -1560,14 +1562,21 @@ void DebuggerGDB::OnValueTooltip(CodeBlocksEvent& event)
         tip = token + " = " + tip;
 		if (m_EvalWin)
             m_EvalWin->Destroy();
-		m_EvalWin = new wxTipWindow(ed->GetControl(), tip, 640, &m_EvalWin);
+		m_EvalWin = new wxTipWindow(Manager::Get()->GetAppWindow(), tip, 640, &m_EvalWin);
 		// set the rect that when the cursor gets out of, the tip window closes
 		// just use the tipwindow's rect, a little bit enlarged vertically
 		// (because it displays below the cursor)
+		int fontsize = ed->GetControl()->GetFont().GetPointSize();
 		wxRect r = m_EvalWin->GetRect();
-		r.Inflate(0, 32);
-		r.Offset(0, -16);
+		wxPoint pt2(r.x, r.y);
+		pt2 = Manager::Get()->GetAppWindow()->ClientToScreen(pt2);
+		pt2 = ed->GetControl()->ScreenToClient(pt2);
+		r.x = pt2.x;
+		r.y = pt2.y - fontsize;
+		int diffy = r.y - pt.y + fontsize;
+		r.height += diffy;
 		m_EvalWin->SetBoundingRect(r);
+//		Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("fontsize: %d - diffy: %d - Pt: %d,%d - Rect: %d,%d,%d,%d"), fontsize, diffy, pt.x, pt.y, r.x, r.y, r.width, r.height);
 	}
 }
 

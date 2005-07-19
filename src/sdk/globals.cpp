@@ -242,9 +242,9 @@ void SaveTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& 
     nodePaths.Clear();
     if (!tree->ItemHasChildren(parent) || !tree->IsExpanded(parent))
         return;
-    wxString tmp = "/" + tree->GetItemText(parent);
+    wxString tmp;
     if (!DoRememberExpandedNodes(tree, parent, nodePaths, tmp))
-        nodePaths.Add(tmp); // just the project root
+        nodePaths.Add(tmp); // just the tree root
 }
 
 void RestoreTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& nodePaths)
@@ -255,7 +255,7 @@ void RestoreTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayStrin
         return;
     }
     for (unsigned int i = 0; i < nodePaths.GetCount(); ++i)
-        DoExpandRememberedNode(tree, tree->GetItemParent(parent), nodePaths[i]);
+        DoExpandRememberedNode(tree, parent, nodePaths[i]);
     nodePaths.Clear();
 }
 
