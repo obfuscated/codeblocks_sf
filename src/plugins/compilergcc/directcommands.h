@@ -36,7 +36,7 @@ class DirectCommands
         static void AppendArray(const wxArrayString& from, wxArrayString& to);
 	protected:
         friend class pfDetails;
-        bool AreExternalDepsOutdated(const wxString& buildOutput, const wxString& externalDeps);
+        bool AreExternalDepsOutdated(const wxString& buildOutput, const wxString& additionalFiles, const wxString& externalDeps);
         bool IsObjectOutdated(const pfDetails& pfd);
         void DepsSearchStart(ProjectBuildTarget* target);
         wxArrayString GetPreBuildCommands(ProjectBuildTarget* target);

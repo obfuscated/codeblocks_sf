@@ -59,6 +59,20 @@ void ProjectBuildTarget::SetExternalDeps(const wxString& deps)
     }
 }
 
+const wxString & ProjectBuildTarget::GetAdditionalOutputFiles()
+{
+    return m_AdditionalOutputFiles;
+}
+
+void ProjectBuildTarget::SetAdditionalOutputFiles(const wxString& files)
+{
+    if (m_AdditionalOutputFiles != files)
+    {
+        m_AdditionalOutputFiles = files;
+        SetModified(true);
+    }
+}
+
 bool ProjectBuildTarget::GetIncludeInTargetAll()
 {
 	return m_BuildWithAll;

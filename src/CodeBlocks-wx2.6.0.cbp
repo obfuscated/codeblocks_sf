@@ -1702,6 +1702,16 @@
 			<Option link="0"/>
 			<Option target="sdk"/>
 		</Unit>
+		<Unit filename="sdk\externaldepsdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\externaldepsdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
 		<Unit filename="sdk\filegroupsandmasks.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="sdk"/>
@@ -2091,6 +2101,12 @@
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk\resources\editor_configuration.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\external_deps.xrc">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

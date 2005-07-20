@@ -349,7 +349,7 @@ wxArrayString DirectCommands::GetCompileCommands(ProjectBuildTarget* target, boo
         bool needPost = ret.GetCount() != counter;
 
         // remove pre-build commands if no compile needed and not always run pre-build commands
-        if (ret.GetCount() == counter  && !m_pProject->GetAlwaysRunPreBuildSteps())
+        if (!needPost  && !m_pProject->GetAlwaysRunPreBuildSteps())
             ret.Clear();
 
         // add post-build commands
@@ -383,7 +383,13 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
     if (target->GetTargetType() == ttCommandsOnly)
     {
         // commands-only target
-        AppendArray(GetPostBuildCommands(target), ret);
+        wxString added = target->GetAdditionalOutputFiles();
+        if (added.IsEmpty() || // no additional output files assigned
+            target->GetAlwaysRunPostBuildSteps() || // or always run post-build steps
+            AreExternalDepsOutdated(wxEmptyString, added, target->GetExternalDeps())) // or external dependencies say relink
+        {
+            AppendArray(GetPostBuildCommands(target), ret);
+        }
         return ret;
     }
 
@@ -542,7 +548,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     depsTimeStamp(output.c_str(), &outputtime);
     if (!outputtime)
         force = true;
-    if (AreExternalDepsOutdated(out.GetFullPath(), target->GetExternalDeps()))
+    if (AreExternalDepsOutdated(out.GetFullPath(), target->GetAdditionalOutputFiles(), target->GetExternalDeps()))
         force = true;
 
     // get all the linkable objects for the target
@@ -686,30 +692,52 @@ wxArrayString DirectCommands::GetTargetCleanCommands(ProjectBuildTarget* target,
   * e.g. a static library linked to the project is an external dep (if set as such by the user)
   * so that a re-linking is forced if the static lib is updated
   */
-bool DirectCommands::AreExternalDepsOutdated(const wxString& buildOutput, const wxString& externalDeps)
+bool DirectCommands::AreExternalDepsOutdated(const wxString& buildOutput, const wxString& additionalFiles, const wxString& externalDeps)
 {
     // array is separated by ;
     wxArrayString deps = GetArrayFromString(externalDeps, ";");
+    wxArrayString files = GetArrayFromString(additionalFiles, ";");
     for (size_t i = 0; i < deps.GetCount(); ++i)
     {
         if (deps[i].IsEmpty())
             continue;
 
+        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(deps[i]);
         time_t timeSrc;
         depsTimeStamp(deps[i].c_str(), &timeSrc);
         // if external dep doesn't exist, no need to relink
         if (!timeSrc)
             return false;
 
+        wxString output = buildOutput;
+        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(output);
         time_t timeExe;
-        depsTimeStamp(buildOutput.c_str(), &timeExe);
+        depsTimeStamp(output.c_str(), &timeExe);
         // if build output doesn't exist, relink
         if (!timeExe)
-            return false;
+            return true;
         
         // if external dep is newer than build output, relink
         if (timeSrc > timeExe)
             return true;
+        
+        // if we reached here, let's check the additional output files
+        for (size_t x = 0; x < files.GetCount(); ++x)
+        {
+        	if (files[i].IsEmpty())
+                continue;
+            
+            Manager::Get()->GetMacrosManager()->ReplaceEnvVars(files[i]);
+            time_t addT;
+            depsTimeStamp(files[i].c_str(), &addT);
+            // if additional file doesn't exist, we can skip it
+            if (!addT)
+                continue;
+            
+            // if external dep is newer than additional file, relink
+            if (timeSrc > addT)
+                return true;
+        }
     }
     return false; // no force relink
 }

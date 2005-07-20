@@ -31,6 +31,7 @@
 #include "pluginmanager.h"
 #include "compilerfactory.h"
 #include <wx/xrc/xmlres.h>
+#include "externaldepsdlg.h"
 
 BEGIN_EVENT_TABLE(ProjectOptionsDlg, wxDialog)
     EVT_UPDATE_UI( -1,                                 ProjectOptionsDlg::OnUpdateUI)
@@ -45,7 +46,7 @@ BEGIN_EVENT_TABLE(ProjectOptionsDlg, wxDialog)
 	EVT_BUTTON(    XRCID("btnBrowseWorkingDir"),       ProjectOptionsDlg::OnBrowseDirClick)
 	EVT_BUTTON(    XRCID("btnBrowseObjectDir"),        ProjectOptionsDlg::OnBrowseDirClick)
 	EVT_BUTTON(    XRCID("btnBrowseDepsDir"),          ProjectOptionsDlg::OnBrowseDirClick)
-	EVT_BUTTON(    XRCID("btnEditDeps"),               ProjectOptionsDlg::OnEditDepsClick)
+	EVT_BUTTON(    XRCID("btnExternalDeps"),           ProjectOptionsDlg::OnEditDepsClick)
 	EVT_LISTBOX_DCLICK(XRCID("lstFiles"),              ProjectOptionsDlg::OnFileOptionsClick)
 	EVT_BUTTON(    XRCID("btnFileOptions"),            ProjectOptionsDlg::OnFileOptionsClick)
 	EVT_BUTTON(    XRCID("btnToggleCheckmarks"),       ProjectOptionsDlg::OnFileToggleMarkClick)
@@ -124,24 +125,24 @@ void ProjectOptionsDlg::DoTargetChange()
     wxButton* browseW = XRCCTRL(*this, "btnBrowseWorkingDir", wxButton);
     wxButton* browseO = XRCCTRL(*this, "btnBrowseObjectDir", wxButton);
     wxButton* browseD = XRCCTRL(*this, "btnBrowseDepsDir", wxButton);
-    wxTextCtrl* txtDeps = XRCCTRL(*this, "txtExternalDeps", wxTextCtrl);
-    wxButton* btnDeps = XRCCTRL(*this, "btnEditDeps", wxButton);
-    txtDeps->Enable(false);
     XRCCTRL(*this, "chkCreateDefFile", wxCheckBox)->Enable(target->GetTargetType() == ttStaticLib ||
                                                             target->GetTargetType() == ttDynamicLib);
+    chkCR->Enable(false);
     XRCCTRL(*this, "chkCreateStaticLib", wxCheckBox)->Enable(target->GetTargetType() == ttDynamicLib);
-    if (cmb && chkCR && txt && browse && txtDeps && btnDeps)
+    if (cmb && chkCR && txt && browse)
     {
         cmb->SetSelection(target->GetTargetType());
         Compiler* compiler = CompilerFactory::Compilers[target->GetCompilerIndex()];
         switch ((TargetType)cmb->GetSelection())
         {
             case ttConsoleOnly:
+                chkCR->Enable(true);
+                chkCR->SetValue(target->GetUseConsoleRunner());
+                // purposely fall-through
+
             case ttExecutable:
             case ttDynamicLib:
             case ttStaticLib:
-                chkCR->Enable((TargetType)cmb->GetSelection() == ttConsoleOnly);
-                chkCR->SetValue(target->GetUseConsoleRunner());
                 txt->SetValue(target->GetOutputFilename());
                 txt->Enable(true);
                 txtW->SetValue(target->GetWorkingDir());
@@ -151,15 +152,13 @@ void ProjectOptionsDlg::DoTargetChange()
                 txtO->SetValue(target->GetObjectOutput());
                 txtO->Enable(true);
                 txtD->SetValue(target->GetDepsOutput());
-                txtD->Enable(compiler && compiler->GetSwitches().buildMethod == cbmUseMake);
+                txtD->Enable(true);
                 browse->Enable(true);
                 browseW->Enable((TargetType)cmb->GetSelection() == ttExecutable ||
                                 (TargetType)cmb->GetSelection() == ttConsoleOnly ||
                                 (TargetType)cmb->GetSelection() == ttDynamicLib);
                 browseO->Enable(true);
-                browseD->Enable(compiler && compiler->GetSwitches().buildMethod == cbmUseMake);
-                txtDeps->SetValue(target->GetExternalDeps());
-                btnDeps->Enable(true);
+                browseD->Enable(true);
                 break;
                 
             default: // for commands-only targets
@@ -175,8 +174,6 @@ void ProjectOptionsDlg::DoTargetChange()
                 browseW->Enable(false);
                 browseO->Enable(false);
                 browseD->Enable(false);
-                txtDeps->SetValue("");
-                btnDeps->Enable(false);
                 break;
         }
     }
@@ -242,8 +239,6 @@ void ProjectOptionsDlg::DoBeforeTargetChange(bool force)
 //		fname.MakeRelativeTo(m_Project->GetBasePath());
 		target->SetDepsOutput(fname.GetFullPath());
 
-        target->SetExternalDeps(XRCCTRL(*this, "txtExternalDeps", wxTextCtrl)->GetValue());
-
 		// files options
 		wxCheckListBox* list = XRCCTRL(*this, "lstFiles", wxCheckListBox);
 		int count = list->GetCount();
@@ -277,17 +272,13 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
     wxButton* browseW = XRCCTRL(*this, "btnBrowseWorkingDir", wxButton);
     wxButton* browseO = XRCCTRL(*this, "btnBrowseObjectDir", wxButton);
     wxButton* browseD = XRCCTRL(*this, "btnBrowseDepsDir", wxButton);
-    wxTextCtrl* txtDeps = XRCCTRL(*this, "txtExternalDeps", wxTextCtrl);
-    wxButton* btnDeps = XRCCTRL(*this, "btnEditDeps", wxButton);
-    if (!cmb || !txt || !txtDeps || !btnDeps || !browse)
+    if (!cmb || !txt || !browse)
         return;
 
     XRCCTRL(*this, "chkCreateDefFile", wxCheckBox)->Enable(cmb->GetSelection() == ttStaticLib ||
                                                             cmb->GetSelection() == ttDynamicLib);
     XRCCTRL(*this, "chkCreateStaticLib", wxCheckBox)->Enable(cmb->GetSelection() == ttDynamicLib);
 
-    txtDeps->SetValue(target->GetExternalDeps());
-    btnDeps->Enable(true);
     txt->Enable(true);
     txtW->SetValue(target->GetWorkingDir());
     txtW->Enable((TargetType)cmb->GetSelection() == ttExecutable ||
@@ -295,14 +286,14 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
                 (TargetType)cmb->GetSelection() == ttDynamicLib);
     txtO->Enable(true);
     txtO->SetValue(target->GetObjectOutput());
-    txtD->Enable(CompilerFactory::Compilers[target->GetCompilerIndex()]->GetSwitches().buildMethod == cbmUseMake);
+    txtD->Enable(true);
     txtD->SetValue(target->GetDepsOutput());
     browse->Enable(true);
     browseW->Enable((TargetType)cmb->GetSelection() == ttExecutable ||
                     (TargetType)cmb->GetSelection() == ttConsoleOnly ||
                     (TargetType)cmb->GetSelection() == ttDynamicLib);
     browseO->Enable(true);
-    browseD->Enable(CompilerFactory::Compilers[target->GetCompilerIndex()]->GetSwitches().buildMethod == cbmUseMake);
+    browseD->Enable(true);
 
     wxFileName fname;
     switch ((TargetType)cmb->GetSelection())
@@ -322,14 +313,12 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
             fname.Assign(m_Project->GetStaticLibFilename());
             fname.MakeRelativeTo(m_Project->GetBasePath());
             txt->SetValue(fname.GetFullPath());
-            txtDeps->SetValue(target->GetExternalDeps());
             break;
         case ttCommandsOnly:
             txt->SetValue("");
             txtW->SetValue("");
             txtO->SetValue("");
             txtD->SetValue("");
-            txtDeps->SetValue("");
             txt->Enable(false);
             txtW->Enable(false);
             txtO->Enable(false);
@@ -338,8 +327,6 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
             browseW->Enable(false);
             browseO->Enable(false);
             browseD->Enable(false);
-            txtDeps->Enable(false);
-            btnDeps->Enable(false);
     }
 }
 
@@ -462,14 +449,13 @@ void ProjectOptionsDlg::OnRemoveBuildTargetClick(wxCommandEvent& event)
 
 void ProjectOptionsDlg::OnEditDepsClick(wxCommandEvent& event)
 {
-    wxTextCtrl* txtDeps = XRCCTRL(*this, "txtExternalDeps", wxTextCtrl);
-    wxArrayString array = GetArrayFromString(txtDeps->GetValue());
-    EditArrayFileDlg dlg(this, array, true, m_Project->GetBasePath());
-    if (dlg.ShowModal() == wxID_OK)
-    {
-        wxString deps = GetStringFromArray(array);
-        txtDeps->SetValue(deps);
-    }
+    wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
+	ProjectBuildTarget* target = m_Project->GetBuildTarget(lstTargets->GetSelection());
+	if (!target)
+		return;
+
+	ExternalDepsDlg dlg(this, m_Project, target);
+	dlg.ShowModal();
 }
 
 void ProjectOptionsDlg::OnBrowseDirClick(wxCommandEvent& event)

@@ -243,6 +243,7 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
     wxString obj_output;
     wxString deps_output;
     wxString deps;
+    wxString added;
     int type = -1;
     int compilerIdx = m_pProject->GetCompilerIndex();
     wxString parameters;
@@ -274,6 +275,9 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
             
         if (node->Attribute("external_deps"))
             deps = node->Attribute("external_deps");
+
+        if (node->Attribute("additional_depfiles"))
+            added = node->Attribute("additional_depfiles");
             
         if (node->Attribute("type"))
             type = atoi(node->Attribute("type"));
@@ -323,6 +327,7 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
         if (!deps_output.IsEmpty())
             target->SetDepsOutput(deps_output);
         target->SetExternalDeps(deps);
+        target->SetAdditionalOutputFiles(added);
         target->SetCompilerIndex(compilerIdx);
         target->SetExecutionParameters(parameters);
         target->SetHostApplication(hostApplication);
@@ -641,6 +646,7 @@ bool ProjectLoader::Save(const wxString& filename)
             buffer << '\t' << '\t' << '\t' << '\t' << "<Option object_output=\"" << FixEntities(target->GetObjectOutput()) << "\"/>" << '\n';
             buffer << '\t' << '\t' << '\t' << '\t' << "<Option deps_output=\"" << FixEntities(target->GetDepsOutput()) << "\"/>" << '\n';
             buffer << '\t' << '\t' << '\t' << '\t' << "<Option external_deps=\"" << FixEntities(target->GetExternalDeps()) << "\"/>" << '\n';
+            buffer << '\t' << '\t' << '\t' << '\t' << "<Option additional_depfiles=\"" << FixEntities(target->GetAdditionalOutputFiles()) << "\"/>" << '\n';
         }
         buffer << '\t' << '\t' << '\t' << '\t' << "<Option type=\"" << target->GetTargetType() << "\"/>" << '\n';
         buffer << '\t' << '\t' << '\t' << '\t' << "<Option compiler=\"" << target->GetCompilerIndex() << "\"/>" << '\n';
