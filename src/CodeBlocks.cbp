@@ -365,7 +365,6 @@
 			<Add option="-D__GNUWIN32__"/>
 			<Add option="-D__WXMSW__"/>
 			<Add option="-DWXUSINGDLL"/>
-			<Add directory="..\..\wxDockit\include"/>
 			<Add directory="$(WX_DIR)\include"/>
 			<Add directory="$(WX_DIR)\lib\mswdll"/>
 			<Add directory="$(WX_DIR)\contrib\include"/>
@@ -376,7 +375,6 @@
 		<Linker>
 			<Add library="wxmsw242"/>
 			<Add directory="sdk\tinyxml"/>
-			<Add directory="..\..\wxDockit\lib"/>
 			<Add directory="$(WX_DIR)\lib"/>
 		</Linker>
 		<Unit filename="devel\share\CodeBlocks\images\codecompletion\README.txt">
@@ -1701,6 +1699,16 @@
 			<Option link="0"/>
 			<Option target="sdk"/>
 		</Unit>
+		<Unit filename="sdk\externaldepsdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\externaldepsdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
 		<Unit filename="sdk\filegroupsandmasks.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="sdk"/>
@@ -2090,6 +2098,12 @@
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk\resources\editor_configuration.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\external_deps.xrc">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
