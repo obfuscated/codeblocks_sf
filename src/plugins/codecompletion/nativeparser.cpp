@@ -169,6 +169,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
     for (unsigned int i = 0; i < project->GetIncludeDirs().GetCount(); ++i)
     {
         wxFileName dir(project->GetIncludeDirs()[i]);
+        wxLogNull ln; // hide the error log about "too many ..", if the relative path is invalid
         if (!dir.IsAbsolute())
             dir.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
         if (dir.IsOk() && parser->IncludeDirs().Index(dir.GetFullPath()) == wxNOT_FOUND)
@@ -189,6 +190,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
             for (unsigned int ti = 0; ti < target->GetIncludeDirs().GetCount(); ++ti)
             {
                 wxFileName dir(target->GetIncludeDirs()[ti]);
+                wxLogNull ln; // hide the error log about "too many ..", if the relative path is invalid
                 if (!dir.IsAbsolute())
                     dir.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
                 if (dir.IsOk() && parser->IncludeDirs().Index(dir.GetFullPath()) == wxNOT_FOUND)
@@ -208,6 +210,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
 		{
 			//Manager::Get()->GetMessageManager()->Log(mltDevDebug, "Adding %s", dirs[i].c_str());
             wxFileName dir(dirs[i]);
+            wxLogNull ln; // hide the error log about "too many ..", if the relative path is invalid
             if (!dir.IsAbsolute())
                 dir.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
             if (dir.IsOk() && parser->IncludeDirs().Index(dir.GetFullPath()) == wxNOT_FOUND)

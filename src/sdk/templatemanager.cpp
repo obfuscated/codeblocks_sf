@@ -307,7 +307,18 @@ void TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg)
         if (project_filename.IsEmpty())
             wxMessageBox(_("User-template saved succesfuly but no project file exists in it!"));
         else
+        {
+        	// ask to rename the project file, if need be
+        	wxFileName fname(project_filename);
+        	wxString newname = wxGetTextFromUser(_("If you want, you can change the project's filename here (without extension):"), _("Change project's filename"), fname.GetName());
+        	if (!newname.IsEmpty() && newname != fname.GetName())
+        	{
+        		fname.SetName(newname);
+        		wxRenameFile(project_filename, fname.GetFullPath());
+        		project_filename = fname.GetFullPath();
+        	}
             Manager::Get()->GetProjectManager()->LoadProject(project_filename);
+        }
     }
 }
 
