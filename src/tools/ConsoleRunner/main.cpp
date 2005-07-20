@@ -8,6 +8,18 @@
 #endif
 #include <string.h>
 
+bool hasSpaces(const char* str)
+{
+	char last = 0;
+	while (str && *str)
+	{
+		if ((*str == ' ' || *str == '\t') && last != '\\')
+            return true;
+        last = *str++;
+	}
+	return false;
+}
+
 int main(int argc, char** argv)
 {
 	if (argc < 2)
@@ -29,13 +41,22 @@ int main(int argc, char** argv)
     memset(cmdline, 0, fullsize);
 
     // 1st arg (executable) enclosed in quotes to support filenames with spaces
-    strcat(cmdline, "\"");
+    bool sp = hasSpaces(argv[1]);
+    if (sp)
+        strcat(cmdline, "\"");
     strcat(cmdline, argv[1]);
-    strcat(cmdline, "\" ");
+    if (sp)
+        strcat(cmdline, "\"");
+    strcat(cmdline, " ");
 
     for (int i = 2; i < argc; ++i)
     {
+        sp = hasSpaces(argv[i]);
+        if (sp)
+            strcat(cmdline, "\"");
         strcat(cmdline, argv[i]);
+        if (sp)
+            strcat(cmdline, "\"");
         strcat(cmdline, " ");
     }
     
