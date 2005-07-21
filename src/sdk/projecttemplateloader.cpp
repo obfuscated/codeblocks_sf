@@ -92,6 +92,8 @@ void ProjectTemplateLoader::DoFileSetFile(TiXmlElement* parentNode, FileSet& fs)
             fsf.source = node->Attribute("source");
         if (node->Attribute("destination"))
             fsf.destination = node->Attribute("destination");
+        if (node->Attribute("targets"))
+            fsf.targets = node->Attribute("targets");
         
         if (!fsf.source.IsEmpty() && !fsf.destination.IsEmpty())
             fs.files.Add(fsf);
@@ -124,8 +126,7 @@ void ProjectTemplateLoader::DoOption(TiXmlElement* parentNode)
 void ProjectTemplateLoader::DoOptionProject(TiXmlElement* parentNode, TemplateOption& to)
 {
     TiXmlElement* node = parentNode->FirstChildElement("Project");
-
-    if (node->Attribute("file"))
+    if (node && node->Attribute("file"))
         to.file = node->Attribute("file");
 }
 

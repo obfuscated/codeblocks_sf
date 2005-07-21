@@ -152,6 +152,19 @@ void TemplateManager::LoadUserTemplates()
 
 void TemplateManager::NewProject()
 {
+	// one-time warning message
+    if (ConfigManager::Get()->Read("/template_manager/notification", 1L) == 1)
+    {
+    	wxMessageBox(_("These templates are only provided for your convenience.\n"
+                        "Many of the available templates need extra libraries "
+                        "in order to be compiled succesfuly.\n\n"
+                        "Extra libraries which Code::Blocks does *NOT* provide..."),
+                    _("One-time information"),
+                    wxICON_INFORMATION);
+    	// don't warn the user again
+        ConfigManager::Get()->Write("/template_manager/notification", 0L);
+    }
+
 	LoadTemplates();
 	LoadUserTemplates();
 	NewFromTemplateDlg dlg(m_Templates, m_UserTemplates);
@@ -200,12 +213,24 @@ void TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
     cbProject* prj = Manager::Get()->GetProjectManager()->LoadProject(filename);
     if (prj)
     {
-        prj->SetCompilerIndex(CompilerFactory::GetDefaultCompilerIndex());
-        for (int i = 0; i < prj->GetBuildTargetsCount(); ++i)
-        {
-            ProjectBuildTarget* target = prj->GetBuildTarget(i);
-            target->SetCompilerIndex(CompilerFactory::GetDefaultCompilerIndex());
-        }
+    	if (prj->GetCompilerIndex() != CompilerFactory::GetDefaultCompilerIndex())
+    	{
+    		if (wxMessageBox(_("This template project was built for a different compiler "
+                                "than the one you 've set as default.\n"
+                                "Do you want to try and convert it for use with your default "
+                                "compiler?\n"
+                                "(conversion might not be 100% accurate)"),
+                            _("Question"),
+                            wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxYES)
+            {
+                prj->SetCompilerIndex(CompilerFactory::GetDefaultCompilerIndex());
+                for (int i = 0; i < prj->GetBuildTargetsCount(); ++i)
+                {
+                    ProjectBuildTarget* target = prj->GetBuildTarget(i);
+                    target->SetCompilerIndex(CompilerFactory::GetDefaultCompilerIndex());
+                }
+            }
+    	}
         
         if (!dlg.DoNotCreateFiles())
         {
@@ -238,7 +263,14 @@ void TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
                 if (skipped)
                     continue;
                 wxCopyFile(baseDir + sep + fsf.source, dst);
-                prj->AddFile(0, dst);
+                ProjectFile* pf = prj->AddFile(0, dst);
+                if (pf)
+                {
+                	// add it to all build targets it belongs
+                	wxArrayString tgt = GetArrayFromString(fsf.targets, _T(";"));
+                	if (tgt.GetCount() != 0)
+                        pf->buildTargets = tgt;
+                }
             }
         }
     

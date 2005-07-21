@@ -28,7 +28,7 @@
 			<Add option="-D__WINDOWS__"/>
 		</Compiler>
 		<Linker>
-			<Add library="wxmsw"/>
+			<Add library="wxmsw242"/>
 			<Add library="winspool"/>
 			<Add library="winmm"/>
 			<Add library="shell32"/>

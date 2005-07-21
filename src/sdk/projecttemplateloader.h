@@ -8,6 +8,7 @@ struct FileSetFile
 {
 	wxString source;
 	wxString destination;
+	wxString targets;
 };
 WX_DECLARE_OBJARRAY(FileSetFile, FileSetFileArray);
 
