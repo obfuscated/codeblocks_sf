@@ -165,8 +165,6 @@ void CustomVars::ApplyVarsToEnvironment()
 	for (unsigned int i = 0; i < m_Vars.GetCount(); ++i)
 	{
 		Var& v = m_Vars[i];
-		LOGSTREAM << "Setting env var: " << v.name << "=" << v.value << " ";
-		bool suc = wxSetEnv(v.name, v.value);
-		LOGSTREAM << (suc ? "(OK)" : "(FAILED)") << '\n'; 
+		wxSetEnv(v.name, v.value);
 	}
 }
