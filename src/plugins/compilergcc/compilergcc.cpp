@@ -1122,6 +1122,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     }
 
     Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Executing: %s (in %s)"), cmd.c_str(), m_CdRun.c_str());
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(m_CdRun);
 	m_Queue.Add(cmd);
 
 	m_IsRun = true;
