@@ -535,6 +535,8 @@ void CodeCompletion::OnUpdateUI(wxUpdateUIEvent& event)
 
 void CodeCompletion::OnCodeComplete(wxCommandEvent& event)
 {
+    if (ConfigManager::Get()->Read("/code_completion/use_code_completion", 1L) == 0)
+        return;
     if (m_IsAttached)
 		DoCodeComplete();
     event.Skip();

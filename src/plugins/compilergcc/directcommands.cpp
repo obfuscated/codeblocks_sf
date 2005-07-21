@@ -709,19 +709,7 @@ bool DirectCommands::AreExternalDepsOutdated(const wxString& buildOutput, const 
         if (!timeSrc)
             return false;
 
-        wxString output = buildOutput;
-        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(output);
-        time_t timeExe;
-        depsTimeStamp(output.c_str(), &timeExe);
-        // if build output doesn't exist, relink
-        if (!timeExe)
-            return true;
-        
-        // if external dep is newer than build output, relink
-        if (timeSrc > timeExe)
-            return true;
-        
-        // if we reached here, let's check the additional output files
+        // let's check the additional output files
         for (size_t x = 0; x < files.GetCount(); ++x)
         {
         	if (files[i].IsEmpty())
@@ -738,6 +726,22 @@ bool DirectCommands::AreExternalDepsOutdated(const wxString& buildOutput, const 
             if (timeSrc > addT)
                 return true;
         }
+
+        // now check the target's output
+        // this is moved last because, for "commands only" targets,
+        // it would return before we had a chance to check the
+        // additional output files (above)
+        wxString output = buildOutput;
+        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(output);
+        time_t timeExe;
+        depsTimeStamp(output.c_str(), &timeExe);
+        // if build output doesn't exist, relink
+        if (!timeExe)
+            return true;
+        
+        // if external dep is newer than build output, relink
+        if (timeSrc > timeExe)
+            return true;
     }
     return false; // no force relink
 }
