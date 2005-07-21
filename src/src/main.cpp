@@ -358,7 +358,7 @@ MainFrame::MainFrame(wxWindow* parent)
     
     this->SetAcceleratorTable(*m_pAccel);
     
-    m_SmallToolBar = ConfigManager::Get()->Read("/environment/toolbar_size", (long int)0) == 1;
+    m_SmallToolBar = ConfigManager::Get()->Read("/environment/toolbar_size", 1L) == 1;
 	CreateIDE();
 
 #ifdef __WXMSW__
