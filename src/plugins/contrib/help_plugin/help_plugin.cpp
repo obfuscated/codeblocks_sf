@@ -48,239 +48,304 @@
 
 // max 20 help items (it should be sufficient)
 #define MAX_HELP_ITEMS 20
+
 int idHelpMenus[MAX_HELP_ITEMS];
 int idPopupMenus[MAX_HELP_ITEMS];
 
-cbPlugin* GetPlugin()
+cbPlugin *GetPlugin()
 {
-    return new HelpPlugin;
+  return new HelpPlugin;
 }
 
 BEGIN_EVENT_TABLE(HelpPlugin, cbPlugin)
-    // we hook the menus dynamically
+  // we hook the menus dynamically
 END_EVENT_TABLE()
 
 HelpPlugin::HelpPlugin()
-    : m_pMenuBar(0),
-    m_LastId(0)
+: m_pMenuBar(0), m_LastId(0)
 {
-    //ctor
-    wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
-    wxXmlResource::Get()->Load(resPath + "/help_plugin.zip#zip:*.xrc");
-
-    m_PluginInfo.name = "HelpPlugin";
-    m_PluginInfo.title = "Help plugin";
-    m_PluginInfo.version = "0.01";
-    m_PluginInfo.description = "Code::Blocks Help plugin";
-    m_PluginInfo.author = "Bourricot";
-    m_PluginInfo.authorEmail = "titi37fr@yahoo.fr";
-    m_PluginInfo.authorWebsite = "www.codeblocks.org";
-    m_PluginInfo.thanksTo = "Codeblocks dev team !";
-    m_PluginInfo.license = LICENSE_GPL;
-    m_PluginInfo.hasConfigure = true;
-
-    ConfigManager::AddConfiguration(m_PluginInfo.title, "/help_plugin");
-
-    // initialize IDs for Help and popup menu
-    for (int i = 0; i < MAX_HELP_ITEMS; ++i)
-    {
-        idHelpMenus[i] = wxNewId();
-        idPopupMenus[i] = wxNewId();
-
-        // dynamically connect the events
-        Connect(idHelpMenus[i],  -1, wxEVT_COMMAND_MENU_SELECTED,
-                      (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                      &HelpPlugin::OnHelp);
-        Connect(idPopupMenus[i],  -1, wxEVT_COMMAND_MENU_SELECTED,
-                      (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                      &HelpPlugin::OnFindItem);
-    }
-    m_LastId = idHelpMenus[0];
+  //ctor
+  wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
+  wxXmlResource::Get()->Load(resPath + "/help_plugin.zip#zip:*.xrc");
+  
+  m_PluginInfo.name = "HelpPlugin";
+  m_PluginInfo.title = "Help plugin";
+  m_PluginInfo.version = "0.1";
+  m_PluginInfo.description = "Code::Blocks Help plugin";
+  m_PluginInfo.author = "Bourricot | Ceniza (maintainer)";
+  m_PluginInfo.authorEmail = "titi37fr@yahoo.fr | ceniza@gda.utp.edu.co";
+  m_PluginInfo.authorWebsite = "www.codeblocks.org";
+  m_PluginInfo.thanksTo = "Codeblocks dev team !\nBourricot for the initial version";
+  m_PluginInfo.license = LICENSE_GPL;
+  m_PluginInfo.hasConfigure = true;
+  
+  ConfigManager::AddConfiguration(m_PluginInfo.title, "/help_plugin");
+  
+  // initialize IDs for Help and popup menu
+  for (int i = 0; i < MAX_HELP_ITEMS; ++i)
+  {
+    idHelpMenus[i] = wxNewId();
+    idPopupMenus[i] = wxNewId();
+    
+    // dynamically connect the events
+    Connect(idHelpMenus[i], -1, wxEVT_COMMAND_MENU_SELECTED,
+            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+            &HelpPlugin::OnHelp);
+    Connect(idPopupMenus[i], -1, wxEVT_COMMAND_MENU_SELECTED,
+            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+            &HelpPlugin::OnFindItem);
+  }
+  
+  m_LastId = idHelpMenus[0];
 }
 
 HelpPlugin::~HelpPlugin()
 {
-    //dtor
+  //dtor
 }
 
 void HelpPlugin::OnAttach()
 {
-    // load configuration (only saved in our config dialog)
-    LoadHelpFilesMap(m_Map);
+  // load configuration (only saved in our config dialog)
+  LoadHelpFilesMap(m_Map);
 }
 
 int HelpPlugin::Configure()
 {
-    HelpConfigDialog dlg;
-    if (dlg.ShowModal() == wxID_OK)
+  HelpConfigDialog dlg;
+  
+  if (dlg.ShowModal() == wxID_OK)
+  {
+    // remove entries from help menu
+    int counter = m_LastId - idHelpMenus[0];
+    HelpFilesMap::iterator it;
+    
+    for (it = m_Map.begin(); it != m_Map.end(); ++it)
     {
-        // remove entries from help menu
-        int counter = m_LastId - idHelpMenus[0];
-        HelpFilesMap::iterator it;
-        for (it = m_Map.begin(); it != m_Map.end(); ++it)
-        {
-            RemoveFromHelpMenu(idHelpMenus[--counter], it->first);
-        }
-
-        // reload configuration (saved in the config dialog)
-        LoadHelpFilesMap(m_Map);
-        BuildMenu(m_pMenuBar);
-        return 0;
+      RemoveFromHelpMenu(idHelpMenus[--counter], it->first);
     }
-    return -1;
+    
+    // reload configuration (saved in the config dialog)
+    LoadHelpFilesMap(m_Map);
+    BuildMenu(m_pMenuBar);
+    return 0;
+  }
+  
+  return -1;
 }
 
 void HelpPlugin::OnRelease(bool appShutDown)
 {
+	//empty
 }
 
-void HelpPlugin::BuildMenu(wxMenuBar* menuBar)
+void HelpPlugin::BuildMenu(wxMenuBar *menuBar)
 {
-    if (!m_IsAttached)
-        return;
+  if (!m_IsAttached)
+  {
+    return;
+  }
+    
+  m_pMenuBar = menuBar;
+  
+  // add entries in help menu
+  int counter = 0;
+  HelpFilesMap::iterator it;
+  
+  for (it = m_Map.begin(); it != m_Map.end(); ++it, ++counter)
+  {
+    if (counter == g_DefaultHelpIndex)
+    {
+      AddToHelpMenu(idHelpMenus[counter], it->first + _("\tF1"));
+    }
+    else
+    {
+      AddToHelpMenu(idHelpMenus[counter], it->first);
+    }
+  }
+  
+  m_LastId = idHelpMenus[0] + counter;
+}
 
-    m_pMenuBar = menuBar;
-
-    // add entries in help menu
+void HelpPlugin::BuildModuleMenu(const ModuleType type, wxMenu *menu, const wxString &arg)
+{
+  if (!menu || !m_IsAttached)
+  {
+    return;
+  }
+  
+  if (type == mtEditorManager)
+  {
+    if (m_Map.size() != 0)
+    {
+      menu->AppendSeparator();
+    }
+      
+    // add entries in popup menu
     int counter = 0;
     HelpFilesMap::iterator it;
+    
     for (it = m_Map.begin(); it != m_Map.end(); ++it)
     {
-        if (counter == g_DefaultHelpIndex)
-            AddToHelpMenu(idHelpMenus[counter++], it->first + _("\tF1"));
-        else
-            AddToHelpMenu(idHelpMenus[counter++], it->first);
+      AddToPopupMenu(menu, idPopupMenus[counter++], it->first);
     }
-    m_LastId = idHelpMenus[0] + counter;
+  }
 }
 
-void HelpPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg)
+bool HelpPlugin::BuildToolBar(wxToolBar *toolBar)
 {
-    if (!menu || !m_IsAttached)
-        return;
-    if (type == mtEditorManager)
-    {
-        if (m_Map.size() != 0)
-            menu->AppendSeparator();
-
-        // add entries in popup menu
-        int counter = 0;
-        HelpFilesMap::iterator it;
-        for (it = m_Map.begin(); it != m_Map.end(); ++it)
-        {
-            AddToPopupMenu(menu, idPopupMenus[counter++], it->first);
-        }
-    }
+	return false;
 }
 
 void HelpPlugin::AddToHelpMenu(int id, const wxString &help)
 {
-    if (!m_pMenuBar)
-        return;
-    int pos = m_pMenuBar->FindMenu(_("Help"));
-    if (pos != wxNOT_FOUND)
+  if (!m_pMenuBar)
+  {
+    return;
+  }
+  
+  int pos = m_pMenuBar->FindMenu(_("Help"));
+  
+  if (pos != wxNOT_FOUND)
+  {
+    wxMenu *helpMenu = m_pMenuBar->GetMenu(pos);
+    
+    if (id == idHelpMenus[0])
     {
-		wxMenu* helpMenu = m_pMenuBar->GetMenu(pos);
-		if (id == idHelpMenus[0])
-            helpMenu->AppendSeparator();
-		helpMenu->Append(id, help);
+      helpMenu->AppendSeparator();
     }
+    
+    helpMenu->Append(id, help);
+  }
 }
 
-void HelpPlugin::RemoveFromHelpMenu(int id,const wxString &help)
+void HelpPlugin::RemoveFromHelpMenu(int id, const wxString &help)
 {
-    if (!m_pMenuBar)
-        return;
-    int pos = m_pMenuBar->FindMenu(_("Help"));
-    if (pos != wxNOT_FOUND)
+  if (!m_pMenuBar)
+  {
+    return;
+  }
+  
+  int pos = m_pMenuBar->FindMenu(_("Help"));
+  
+  if (pos != wxNOT_FOUND)
+  {
+    wxMenu *helpMenu = m_pMenuBar->GetMenu(pos);
+    wxMenuItem *mi = helpMenu->Remove(id);
+    
+    if (id)
     {
-		wxMenu* helpMenu = m_pMenuBar->GetMenu(pos);
-		wxMenuItem* mi = helpMenu->Remove(id);
-		if (id)
-            delete mi;
-        
-        // remove separator too (if it's the last thing left)
-        mi = helpMenu->FindItemByPosition(helpMenu->GetMenuItemCount() - 1);
-        if (mi && (mi->GetKind() == wxITEM_SEPARATOR || mi->GetText().IsEmpty()))
-        {
-            helpMenu->Remove(mi);
-            delete mi;
-        }
+      delete mi;
     }
+      
+    // remove separator too (if it's the last thing left)
+    mi = helpMenu->FindItemByPosition(helpMenu->GetMenuItemCount() - 1);
+    
+    if (mi && (mi->GetKind() == wxITEM_SEPARATOR || mi->GetText().IsEmpty()))
+    {
+      helpMenu->Remove(mi);
+      delete mi;
+    }
+  }
 }
 
-void HelpPlugin::AddToPopupMenu(wxMenu* menu,int id,const wxString &help)
+void HelpPlugin::AddToPopupMenu(wxMenu *menu, int id, const wxString &help)
 {
-    wxString tmp;
-    if ( ! help.IsEmpty() )
-    {
-        tmp.Append(_("Locate in "));
-        tmp.Append(help);
-        menu->Append(id, tmp.c_str());
-    }
+  wxString tmp;
+  
+  if (!help.IsEmpty())
+  {
+    tmp.Append(_("Locate in "));
+    tmp.Append(help);
+    menu->Append(id, tmp);
+  }
 }
 
 wxString HelpPlugin::HelpFileFromId(int id)
 {
-    int counter = 0;
-    HelpFilesMap::iterator it;
-    for (it = m_Map.begin(); it != m_Map.end(); ++it)
+  int counter = 0;
+  HelpFilesMap::iterator it;
+  
+  for (it = m_Map.begin(); it != m_Map.end(); ++it, ++counter)
+  {
+    if (idHelpMenus[counter] == id || idPopupMenus[counter] == id)
     {
-        if (idHelpMenus[counter] == id || idPopupMenus[counter] == id)
-            return it->second;
-        ++counter;
+      return it->second;
     }
-    return wxEmptyString;
+  }
+
+  return wxEmptyString;
 }
 
-void HelpPlugin::LaunchHelp(const wxString& helpfile, const wxString& keyword)
+void HelpPlugin::LaunchHelp(const wxString &helpfile, const wxString &keyword)
 {
-    wxString ext = helpfile.AfterLast('.');
-    Manager::Get()->GetMessageManager()->DebugLog(_("Help File is %s"),helpfile.c_str());
-    if (ext.CmpNoCase("hlp")==0 )
+  wxString ext = helpfile.AfterLast('.');
+  Manager::Get()->GetMessageManager()->DebugLog(_("Help File is %s"), helpfile.c_str());
+  
+  if (ext.CmpNoCase("hlp") == 0)
+  {
+    // if there'sn't a keyword, launch the help file with the associated program
+    if (keyword.IsEmpty())
     {
-        wxHelpController HelpCtl;
-        HelpCtl.Initialize(helpfile);
-        if (!keyword.IsEmpty())
-            HelpCtl.KeywordSearch(keyword);
-        else
-            HelpCtl.DisplayContents();
+      wxExecute(_("winhlp32 \"") + helpfile + _("\""));
     }
     else
     {
-        wxCHMHelpController HelpCtl;
-        HelpCtl.Initialize(helpfile);
-        if (!keyword.IsEmpty())
-            HelpCtl.KeywordSearch(keyword);
-        else
-            HelpCtl.DisplayContents();
+      wxWinHelpController HelpCtl;
+      HelpCtl.Initialize(helpfile);
+      HelpCtl.KeywordSearch(keyword);
     }
+  }
+  else if (ext.CmpNoCase("chm") == 0)
+  {
+    // if there'sn't a keyword, launch the help file with the associated program
+    if (keyword.IsEmpty())
+    {
+      wxExecute(_("hh \"") + helpfile + _("\""));
+    }
+    else
+    {
+      wxCHMHelpController HelpCtl;
+      HelpCtl.Initialize(helpfile);
+      HelpCtl.KeywordSearch(keyword);
+    }
+  }
+  else // unknown extension
+  {
+  	// we could just launch it whatever it is, show a message box or do nothing
+  	// do nothing in the meanwhile
+  }
 }
 
 // events
-void HelpPlugin::OnHelp(wxCommandEvent& event)
+void HelpPlugin::OnHelp(wxCommandEvent &event)
 {
-    int id = event.GetId();
-    wxString help = HelpFileFromId(id);
-    LaunchHelp(help);
+  int id = event.GetId();
+  wxString help = HelpFileFromId(id);
+  LaunchHelp(help);
 }
 
-void HelpPlugin::OnFindItem(wxCommandEvent& event)
+void HelpPlugin::OnFindItem(wxCommandEvent &event)
 {
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (!ed)
-        return;
-
-    cbStyledTextCtrl* control = ed->GetControl();
-    wxString text= control->GetSelectedText();
-    if ( text.IsEmpty() )
-    {
-        int origPos = control->GetCurrentPos();
-        int start = control->WordStartPosition(origPos, true);
-        int end = control->WordEndPosition(origPos, true);
-        text = control->GetTextRange(start, end);
-    }
-    int id=event.GetId();
-    wxString help = HelpFileFromId(id);
-    LaunchHelp(help, text);
+  cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+  
+  if (!ed)
+  {
+    return;
+  }
+    
+  cbStyledTextCtrl *control = ed->GetControl();
+  wxString text = control->GetSelectedText();
+  
+  if (text.IsEmpty())
+  {
+    int origPos = control->GetCurrentPos();
+    int start = control->WordStartPosition(origPos, true);
+    int end = control->WordEndPosition(origPos, true);
+    text = control->GetTextRange(start, end);
+  }
+  
+  int id = event.GetId();
+  wxString help = HelpFileFromId(id);
+  LaunchHelp(help, text);
 }

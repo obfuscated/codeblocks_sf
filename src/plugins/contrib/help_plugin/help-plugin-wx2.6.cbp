@@ -6,6 +6,7 @@
 		<Option title="Help Plugin (wx2.6)"/>
 		<Option makefile="Makefile"/>
 		<Option makefile_is_custom="0"/>
+		<Option active_target="0"/>
 		<Option compiler="0"/>
 		<Build>
 			<Target title="help_plugin">
@@ -14,6 +15,7 @@
 				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\help_plugin"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
+				<Option additional_depfiles=""/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option host_application="..\..\..\devel\codeblocks.exe"/>

@@ -1,9 +1,9 @@
 *******************************
 * Help plugin for codeblocks. *
-* Version : 0.01              *
+* Version : 0.1               *
 * tested on Windows XP2       *
 *******************************
 
 Original code: bourricot.
-Maintainer: bourricot
+Maintainer: ceniza
 
