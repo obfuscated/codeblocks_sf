@@ -223,6 +223,7 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
         fname.SetExt(EXECUTABLE_EXT);
         output = fname.GetFullPath();
     }
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(output);
     ConvertToMakefileFriendly(output);
     QuoteStringIfNeeded(output);
 
@@ -296,7 +297,11 @@ void MakefileGenerator::DoAppendCompilerOptions(wxString& cmd, ProjectBuildTarge
 	}
 	
     for (unsigned int x = 0; x < opts.GetCount(); ++x)
+    {
+    	if (!m_GeneratingMakefile)
+            Manager::Get()->GetMacrosManager()->ReplaceEnvVars(opts[x]);
         cmd << " " << opts[x];
+    }
 }
 
 void MakefileGenerator::DoAppendLinkerOptions(wxString& cmd, ProjectBuildTarget* target, bool useGlobalOptions)
@@ -311,7 +316,11 @@ void MakefileGenerator::DoAppendLinkerOptions(wxString& cmd, ProjectBuildTarget*
 
     wxArrayString opts = obj->GetLinkerOptions();
     for (unsigned int x = 0; x < opts.GetCount(); ++x)
+    {
+    	if (!m_GeneratingMakefile)
+            Manager::Get()->GetMacrosManager()->ReplaceEnvVars(opts[x]);
         cmd << " " << opts[x];
+    }
 }
 
 void MakefileGenerator::DoAppendLinkerLibs(wxString& cmd, ProjectBuildTarget* target, bool useGlobalOptions)
@@ -365,6 +374,8 @@ void MakefileGenerator::DoAppendLinkerLibs(wxString& cmd, ProjectBuildTarget* ta
             }
             lib = m_CompilerSet->GetSwitches().linkLibs + lib;
         }
+    	if (!m_GeneratingMakefile)
+            Manager::Get()->GetMacrosManager()->ReplaceEnvVars(lib);
         cmd << " " << lib;
     }
 }
@@ -389,6 +400,8 @@ void MakefileGenerator::DoAppendIncludeDirs(wxString& cmd, ProjectBuildTarget* t
         if (opts[x].IsEmpty())
             continue;
         wxString out = UnixFilename(opts[x]);
+    	if (!m_GeneratingMakefile)
+            Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out);
         ConvertToMakefileFriendly(out);
         QuoteStringIfNeeded(out);
         cmd << " " << prefix << out;
@@ -415,6 +428,8 @@ void MakefileGenerator::DoAppendResourceIncludeDirs(wxString& cmd, ProjectBuildT
         if (opts[x].IsEmpty())
             continue;
         wxString out = UnixFilename(opts[x]);
+    	if (!m_GeneratingMakefile)
+            Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out);
         ConvertToMakefileFriendly(out);
         QuoteStringIfNeeded(out);
         cmd << " " << prefix << out;
@@ -441,6 +456,8 @@ void MakefileGenerator::DoAppendLibDirs(wxString& cmd, ProjectBuildTarget* targe
         if (opts[x].IsEmpty())
             continue;
         wxString out = UnixFilename(opts[x]);
+    	if (!m_GeneratingMakefile)
+            Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out);
         ConvertToMakefileFriendly(out);
         QuoteStringIfNeeded(out);
         cmd << " " << prefix << out;
@@ -584,7 +601,11 @@ void MakefileGenerator::DoAddVarsSet(wxString& buffer, CustomVars& vars)
     const VarsArray& v = vars.GetVars();
     for (unsigned int i = 0; i < v.GetCount(); ++i)
     {
-        buffer << v[i].name << "=" << v[i].value << '\n';
+    	wxString out = v[i].value;
+        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out);
+        ConvertToMakefileFriendly(out);
+        QuoteStringIfNeeded(out);
+        buffer << v[i].name << "=" << out << '\n';
     }
 }
 
@@ -752,7 +773,8 @@ void MakefileGenerator::DoAddMakefileCreateDirs(wxString& buffer, ProjectBuildTa
         // add output dir also
         addedDirs.Clear();
         wxFileName fname(target->GetOutputFilename());
-        fname.MakeRelativeTo(m_Project->GetBasePath());
+        if (fname.IsAbsolute())
+            fname.MakeRelativeTo(m_Project->GetBasePath());
         wxString out = UnixFilename(fname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
         if (!out.IsEmpty())
         {
@@ -770,7 +792,20 @@ void MakefileGenerator::RecursiveCreateDir(wxString& buffer, const wxArrayString
     wxString currdir;
     for (size_t i = 0; i < subdirs.GetCount(); ++i)
     {
-        currdir << subdirs[i];
+    	wxString sub = subdirs[i];
+#ifdef __WXMSW__
+    	if (m_GeneratingMakefile)
+    	{
+            // Can't do it differently here...
+            // We *must* replace the env vars if we 're running under windows
+            // because the windows command shell is *really* dumb...
+            // If we use an env. var in output and this env. var contains
+            // path separators, it breaks under windows...
+            Manager::Get()->GetMacrosManager()->ReplaceEnvVars(sub);
+    	}
+#endif
+
+        currdir << sub;
         if (guardList.Index(currdir) != wxNOT_FOUND)
         {
             currdir << wxFileName::GetPathSeparator();
@@ -1055,6 +1090,8 @@ void MakefileGenerator::DoAddMakefileTargets(wxString& buffer)
 
         // the filename is already adapted based on the project type
         wxString out = UnixFilename(target->GetOutputFilename());
+    	if (!m_GeneratingMakefile)
+            Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out);
         ConvertToMakefileFriendly(out);
 //        QuoteStringIfNeeded(out);
 		buffer << target->GetTitle() << "_BIN=" << out << '\n';
@@ -1065,11 +1102,13 @@ void MakefileGenerator::DoAddMakefileTargets(wxString& buffer)
                 fname.SetName(m_CompilerSet->GetSwitches().libPrefix + fname.GetName());
             fname.SetExt(m_CompilerSet->GetSwitches().libExtension);
             out = UnixFilename(fname.GetFullPath());
+            Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out);
             ConvertToMakefileFriendly(out);
             QuoteStringIfNeeded(out);
             buffer << target->GetTitle() << "_STATIC_LIB=" << out << '\n';
             fname.SetExt("def");
             out = UnixFilename(fname.GetFullPath());
+            Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out);
             ConvertToMakefileFriendly(out);
             QuoteStringIfNeeded(out);
             buffer << target->GetTitle() << "_LIB_DEF=" << out << '\n';
@@ -1229,10 +1268,15 @@ void MakefileGenerator::DoAddMakefileTarget_Dist(wxString& buffer)
 {
     wxString tmp = "${PROJECT_FILENAME} ${MAKEFILE} ${ALL_PROJECT_FILES}";
     Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp);
+
     wxFileName fname(m_Project->GetFilename());
+    wxString projname = UnixFilename(fname.GetFullName());
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(projname);
+    ConvertToMakefileFriendly(projname);
+    QuoteStringIfNeeded(projname);
     
     buffer << "dist:" << '\n';
-    buffer << '\t' << "@$(ZIP) " << UnixFilename(fname.GetFullName()) << ".$(ZIP_EXT) " << tmp << '\n';
+    buffer << '\t' << "@zip " << projname << ".zip " << tmp << '\n';
     buffer << '\n';
 }
 
@@ -1364,9 +1408,9 @@ void MakefileGenerator::ConvertToMakefileFriendly(wxString& str, bool force)
 //    str.Replace("\\\\", "/");
 }
 
-void MakefileGenerator::QuoteStringIfNeeded(wxString& str)
+void MakefileGenerator::QuoteStringIfNeeded(wxString& str, bool force)
 {
-    if (m_GeneratingMakefile)
+    if (!force && m_GeneratingMakefile)
         return;
     if (m_CompilerSet->GetSwitches().forceCompilerUseQuotes ||
         m_CompilerSet->GetSwitches().forceLinkerUseQuotes ||

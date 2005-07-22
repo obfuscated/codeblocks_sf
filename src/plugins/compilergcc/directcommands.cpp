@@ -44,21 +44,33 @@ pfDetails::pfDetails(DirectCommands* cmds, ProjectBuildTarget* target, ProjectFi
     d_file.MakeAbsolute(prjbase.GetFullPath());
     dep_dir_native = d_file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
     dep_file_absolute_native = o_file.GetFullPath();
-    
+
     source_file = UnixFilename(source_file_native);
     cmds->QuoteStringIfNeeded(source_file);
-    
+
     object_file = UnixFilename(object_file_native);
     cmds->QuoteStringIfNeeded(object_file);
-    
+
     dep_file = UnixFilename(dep_file_native);
     cmds->QuoteStringIfNeeded(dep_file);
-    
+
     object_dir = UnixFilename(object_dir_native);
     cmds->QuoteStringIfNeeded(object_dir);
 
     dep_dir = UnixFilename(dep_dir_native);
     cmds->QuoteStringIfNeeded(dep_dir);
+
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(object_file_native);
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(object_dir_native);
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(object_file_absolute_native);
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(dep_file_native);
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(dep_dir_native);
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(dep_file_absolute_native);
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(dep_dir);
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(object_dir);
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(dep_file);
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(object_file);
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(source_file);
 }
 
 DirectCommands::DirectCommands(CompilerGCC* compilerPlugin, Compiler* compiler, cbProject* project, int logPageIndex)
@@ -579,6 +591,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     // create output dir
     out.MakeAbsolute(m_pProject->GetBasePath());
     wxString dstname = out.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(dstname);
     if (!dstname.IsEmpty() && !wxDirExists(dstname))
     {
         if (!CreateDirRecursively(dstname, 0755))

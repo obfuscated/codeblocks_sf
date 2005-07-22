@@ -24,7 +24,7 @@ class MakefileGenerator
 		~MakefileGenerator();
         bool CreateMakefile();
         void ReplaceMacros(ProjectBuildTarget* bt, ProjectFile* pf, wxString& text);
-        void QuoteStringIfNeeded(wxString& str);
+        void QuoteStringIfNeeded(wxString& str, bool force = false);
         wxString CreateSingleFileCompileCmd(CommandType et,
                                             ProjectBuildTarget* target,
                                             ProjectFile* pf,
