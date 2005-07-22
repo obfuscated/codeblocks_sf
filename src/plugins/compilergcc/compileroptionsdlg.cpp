@@ -1046,9 +1046,12 @@ void CompilerOptionsDlg::OnEditVarClick(wxCommandEvent& event)
 		return;
 		
 	wxString value = wxGetTextFromUser(_("Please edit the variable value:"), title, var->value);
-	if (!value.IsEmpty())
+	if (!value.IsEmpty() && value != var->value)
 	{
 		var->value = value;
+        CustomVars* vars = GetCustomVars();
+        if (vars)
+            vars->SetModified(true);
 		XRCCTRL(*this, "lstVars", wxListBox)->SetString(sel, var->name + " = " + var->value);
 	}
 }

@@ -553,6 +553,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     wxFileName out = UnixFilename(target->GetOutputFilename());
 
     wxString output = target->GetOutputFilename();
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(output);
     wxString linkfiles;
     wxString resfiles;
 
@@ -799,8 +800,14 @@ void DirectCommands::DepsSearchStart(ProjectBuildTarget* target)
 {
     depsSearchStart();
 
-    const wxArrayString& prj_incs = m_pProject->GetIncludeDirs();
-    const wxArrayString& tgt_incs = target->GetIncludeDirs();
+    wxArrayString prj_incs = m_pProject->GetIncludeDirs();
+    wxArrayString tgt_incs = target->GetIncludeDirs();
+
+    // replace custom vars in include dirs
+    for (unsigned int i = 0; i < prj_incs.GetCount(); ++i)
+        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(prj_incs[i]);
+    for (unsigned int i = 0; i < tgt_incs.GetCount(); ++i)
+        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(tgt_incs[i]);
 
     OptionsRelation relation = target->GetOptionRelation(ortIncludeDirs);
     switch (relation)

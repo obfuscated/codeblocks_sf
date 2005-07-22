@@ -1136,6 +1136,10 @@ int CompilerGCC::Clean(ProjectBuildTarget* target)
 	if (!CompilerValid(target))
 		return -1;
 
+    if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
+        CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
+    m_Project->GetCustomVars().ApplyVarsToEnvironment();
+
     Manager::Get()->GetMessageManager()->Open();
 
     wxSetWorkingDirectory(m_Project->GetBasePath());
@@ -1170,6 +1174,10 @@ int CompilerGCC::DistClean(ProjectBuildTarget* target)
 	DoPrepareQueue();
 	if (!CompilerValid(target))
 		return -1;
+
+    if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
+        CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
+    m_Project->GetCustomVars().ApplyVarsToEnvironment();
 
     Manager::Get()->GetMessageManager()->Open();
 
@@ -1254,6 +1262,10 @@ int CompilerGCC::Compile(ProjectBuildTarget* target)
 	if (!m_Project || !CompilerValid(target))
         return -2;
 
+    if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
+        CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
+    m_Project->GetCustomVars().ApplyVarsToEnvironment();
+
     Manager::Get()->GetMessageManager()->Open();
 
     wxString cmd;
@@ -1281,6 +1293,10 @@ int CompilerGCC::Rebuild(ProjectBuildTarget* target)
 	DoPrepareQueue();
 	if (!CompilerValid(target))
 		return -1;
+
+    if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
+        CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
+    m_Project->GetCustomVars().ApplyVarsToEnvironment();
 
     Manager::Get()->GetMessageManager()->Open();
 
