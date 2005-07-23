@@ -7,7 +7,7 @@
 class HelpConfigDialog : public wxDialog
 {
   private:
-    HelpFilesMap m_Map;
+    HelpCommon::HelpFilesVector m_Vector;
     int m_LastSel;
   
   public:
@@ -19,6 +19,8 @@ class HelpConfigDialog : public wxDialog
     void Rename(wxCommandEvent &event);
     void Delete(wxCommandEvent &event);
     void Browse(wxCommandEvent &event);
+    void OnUp(wxCommandEvent &event);
+    void OnDown(wxCommandEvent &event);
     void ListChange(wxCommandEvent &event);
     void UpdateUI(wxUpdateUIEvent &event);
     void Ok(wxCommandEvent &event);
@@ -27,7 +29,7 @@ class HelpConfigDialog : public wxDialog
   private:
     void UpdateEntry(int index);
     void ChooseFile();
-    
+  
     DECLARE_EVENT_TABLE()
 };
 

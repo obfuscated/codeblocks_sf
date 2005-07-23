@@ -1,22 +1,49 @@
 #ifndef HELP_COMMON_H
 #define HELP_COMMON_H
 
-#include <wx/hashmap.h>
+#include <wx/string.h>
+#include <vector>
+#include <utility>
 
-/* A hashmap is defined in this file.
- * This is equivalent to STL's std::map<wxString, wxString>
- *
- * The key is the help file's description and the value is the actual help file
- */
+using std::vector;
+using std::pair;
 
-WX_DECLARE_STRING_HASH_MAP(wxString, HelpFilesMap);
+class HelpCommon
+{
+  public:
+    typedef pair<wxString, wxString> wxStringPair;
+    typedef vector<wxStringPair> HelpFilesVector;
+  
+  private:
+    static int m_DefaultHelpIndex;
+  
+  public:
+    static int getDefaultHelpIndex();
+    static void setDefaultHelpIndex(int index);
+    static void LoadHelpFilesVector(HelpFilesVector &vect);
+    static void SaveHelpFilesVector(HelpFilesVector &vect);
+  
+	private:
+	  // Block instantiation
+    HelpCommon();
+    ~HelpCommon();
+};
 
-// the map index of the default file (F1 and Shift-F1 shortcuts are assigned to it automatically)
+// Inline member functions
 
-extern int g_DefaultHelpIndex;
+inline int HelpCommon::getDefaultHelpIndex()
+{
+	return m_DefaultHelpIndex;
+}
 
-// auxiliary functions to load/save the hashmap
-void LoadHelpFilesMap(HelpFilesMap &map);
-void SaveHelpFilesMap(HelpFilesMap &map);
+inline void HelpCommon::setDefaultHelpIndex(int index)
+{
+	m_DefaultHelpIndex = index;
+}
+
+inline bool operator == (const HelpCommon::wxStringPair &str_pair, const wxString &value)
+{
+	return str_pair.first.CmpNoCase(value) == 0;
+}
 
 #endif // HELP_COMMON_H

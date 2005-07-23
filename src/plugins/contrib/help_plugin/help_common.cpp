@@ -2,11 +2,13 @@
 #include <configmanager.h>
 #include <wx/intl.h>
 
-int g_DefaultHelpIndex = -1;
+using std::make_pair;
 
-void LoadHelpFilesMap(HelpFilesMap &map)
+int HelpCommon::m_DefaultHelpIndex = -1;
+
+void HelpCommon::LoadHelpFilesVector(HelpCommon::HelpFilesVector &vect)
 {
-  map.clear();
+	vect.clear();
   long cookie;
   wxString entry;
   wxConfigBase *conf = ConfigManager::Get();
@@ -18,7 +20,7 @@ void LoadHelpFilesMap(HelpFilesMap &map)
   {
     if (entry == _("default"))
     {
-      g_DefaultHelpIndex = conf->Read(entry, (int) - 1);
+      m_DefaultHelpIndex = conf->Read(entry, -1);
     }
     else
     {
@@ -26,7 +28,7 @@ void LoadHelpFilesMap(HelpFilesMap &map)
       
       if (!file.IsEmpty())
       {
-        map[entry] = file;
+        vect.push_back(make_pair(entry, file));
       }
     }
     
@@ -36,23 +38,24 @@ void LoadHelpFilesMap(HelpFilesMap &map)
   conf->SetPath(oldPath);
 }
 
-void SaveHelpFilesMap(HelpFilesMap &map)
+void HelpCommon::SaveHelpFilesVector(HelpCommon::HelpFilesVector &vect)
 {
   wxConfigBase *conf = ConfigManager::Get();
   conf->DeleteGroup(_("/help_plugin"));
   wxString oldPath = conf->GetPath();
   conf->SetPath(_("/help_plugin"));
-  HelpFilesMap::iterator it;
+  HelpFilesVector::iterator it;
   
-  for (it = map.begin(); it != map.end(); ++it)
+  for (it = vect.begin(); it != vect.end(); ++it)
   {
     wxString file = it->second;
+    
     if (!file.IsEmpty())
     {
       conf->Write(it->first, file);
     }
   }
   
-  conf->Write(_("default"), g_DefaultHelpIndex);
+  conf->Write(_("default"), m_DefaultHelpIndex);
   conf->SetPath(oldPath);
 }

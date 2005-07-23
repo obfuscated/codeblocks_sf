@@ -1,3 +1,7 @@
+#ifndef __WXMSW__
+  #error "This plugin is Windows only at the moment."
+#endif
+
 #ifndef HELP_PLUGIN_H
 #define HELP_PLUGIN_H
 
@@ -6,13 +10,11 @@
 #include <cbproject.h>
 #include <simpletextlog.h>
 #include <sdk_events.h>
-
 #include <settings.h> // much of the SDK is here
 #include <sdk_events.h>
 #include <cbplugin.h> // the base class we're inheriting
 #include <wx/dynarray.h>
-
-#include "help_common.h"
+#include "HelpConfigDialog.h"
 
 class HelpPlugin : public cbPlugin
 {
@@ -38,7 +40,7 @@ class HelpPlugin : public cbPlugin
   
   private:
     wxMenuBar *m_pMenuBar;
-    HelpFilesMap m_Map;
+    HelpCommon::HelpFilesVector m_Vector;
     int m_LastId;
     
     DECLARE_EVENT_TABLE()

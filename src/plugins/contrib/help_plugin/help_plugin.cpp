@@ -25,6 +25,7 @@
 
 #include "help_plugin.h"
 
+#include <wx/process.h>
 #include <wx/intl.h>
 #include <wx/textdlg.h>
 #include <wx/xrc/xmlres.h>
@@ -44,7 +45,6 @@
 #include <wx/msw/helpchm.h> //(MS HTML Help controller)
 #include <wx/generic/helpext.h> //(external HTML browser controller)
 #include <wx/html/helpctrl.h> //(wxHTML based help controller: wxHtmlHelpController)
-#include "HelpConfigDialog.h"
 
 // max 20 help items (it should be sufficient)
 #define MAX_HELP_ITEMS 20
@@ -107,7 +107,7 @@ HelpPlugin::~HelpPlugin()
 void HelpPlugin::OnAttach()
 {
   // load configuration (only saved in our config dialog)
-  LoadHelpFilesMap(m_Map);
+  HelpCommon::LoadHelpFilesVector(m_Vector);
 }
 
 int HelpPlugin::Configure()
@@ -118,15 +118,15 @@ int HelpPlugin::Configure()
   {
     // remove entries from help menu
     int counter = m_LastId - idHelpMenus[0];
-    HelpFilesMap::iterator it;
+    HelpCommon::HelpFilesVector::iterator it;
     
-    for (it = m_Map.begin(); it != m_Map.end(); ++it)
+    for (it = m_Vector.begin(); it != m_Vector.end(); ++it)
     {
       RemoveFromHelpMenu(idHelpMenus[--counter], it->first);
     }
     
     // reload configuration (saved in the config dialog)
-    LoadHelpFilesMap(m_Map);
+    HelpCommon::LoadHelpFilesVector(m_Vector);
     BuildMenu(m_pMenuBar);
     return 0;
   }
@@ -150,11 +150,11 @@ void HelpPlugin::BuildMenu(wxMenuBar *menuBar)
   
   // add entries in help menu
   int counter = 0;
-  HelpFilesMap::iterator it;
+  HelpCommon::HelpFilesVector::iterator it;
   
-  for (it = m_Map.begin(); it != m_Map.end(); ++it, ++counter)
+  for (it = m_Vector.begin(); it != m_Vector.end(); ++it, ++counter)
   {
-    if (counter == g_DefaultHelpIndex)
+    if (counter == HelpCommon::getDefaultHelpIndex())
     {
       AddToHelpMenu(idHelpMenus[counter], it->first + _("\tF1"));
     }
@@ -176,16 +176,16 @@ void HelpPlugin::BuildModuleMenu(const ModuleType type, wxMenu *menu, const wxSt
   
   if (type == mtEditorManager)
   {
-    if (m_Map.size() != 0)
+    if (m_Vector.size() != 0)
     {
       menu->AppendSeparator();
     }
       
     // add entries in popup menu
     int counter = 0;
-    HelpFilesMap::iterator it;
+    HelpCommon::HelpFilesVector::iterator it;
     
-    for (it = m_Map.begin(); it != m_Map.end(); ++it)
+    for (it = m_Vector.begin(); it != m_Vector.end(); ++it)
     {
       AddToPopupMenu(menu, idPopupMenus[counter++], it->first);
     }
@@ -264,9 +264,9 @@ void HelpPlugin::AddToPopupMenu(wxMenu *menu, int id, const wxString &help)
 wxString HelpPlugin::HelpFileFromId(int id)
 {
   int counter = 0;
-  HelpFilesMap::iterator it;
+  HelpCommon::HelpFilesVector::iterator it;
   
-  for (it = m_Map.begin(); it != m_Map.end(); ++it, ++counter)
+  for (it = m_Vector.begin(); it != m_Vector.end(); ++it, ++counter)
   {
     if (idHelpMenus[counter] == id || idPopupMenus[counter] == id)
     {
@@ -287,7 +287,10 @@ void HelpPlugin::LaunchHelp(const wxString &helpfile, const wxString &keyword)
     // if there'sn't a keyword, launch the help file with the associated program
     if (keyword.IsEmpty())
     {
-      wxExecute(_("winhlp32 \"") + helpfile + _("\""));
+    	wxProcess *help_process = new wxProcess;
+    	help_process->Redirect();
+    	help_process->Detach();
+      wxExecute(_("start \"") + helpfile + _("\""), wxEXEC_ASYNC, help_process);
     }
     else
     {
@@ -301,7 +304,10 @@ void HelpPlugin::LaunchHelp(const wxString &helpfile, const wxString &keyword)
     // if there'sn't a keyword, launch the help file with the associated program
     if (keyword.IsEmpty())
     {
-      wxExecute(_("hh \"") + helpfile + _("\""));
+    	wxProcess *help_process = new wxProcess;
+    	help_process->Redirect();
+    	help_process->Detach();
+      wxExecute(_("start \"") + helpfile + _("\""), wxEXEC_ASYNC, help_process);
     }
     else
     {
