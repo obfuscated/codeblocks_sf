@@ -115,8 +115,25 @@
                 </object>
                 <object class="sizeritem">
                   <object class="wxStaticText">
-                    <label>To create a user template, create a project the way you want it
-and click &quot;Project/Save project as user-template&quot; in main menu bar.</label>
+                    <label>* To create a user template, create a project the way you want it
+   and click &quot;Project/Save project as user-template&quot; in main menu bar.</label>
+                  </object>
+                  <flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>* To delete a user template, delete the similarly named folder created
+   in %USER_HOME%\.CodeBlocks (for Windows)
+   or $$(HOME)\.CodeBlocks (for other platforms).</label>
+                  </object>
+                  <flag>wxLEFT|wxRIGHT</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>   Please note the dot (.) in front of &quot;CodeBlocks&quot;!</label>
+                    <fg>#800000</fg>
                   </object>
                   <flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
                   <border>8</border>

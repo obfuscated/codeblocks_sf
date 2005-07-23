@@ -37,6 +37,7 @@
 
 
 BEGIN_EVENT_TABLE(NewFromTemplateDlg, wxDialog)
+    EVT_UPDATE_UI(-1, NewFromTemplateDlg::OnUpdateUI)
 	EVT_LIST_ITEM_SELECTED(XRCID("listTemplates"), NewFromTemplateDlg::OnListSelection)
 	EVT_COMBOBOX(XRCID("cmbCategories"), NewFromTemplateDlg::OnCategoryChanged)
 END_EVENT_TABLE()
@@ -143,14 +144,17 @@ void NewFromTemplateDlg::FillTemplate(ProjectTemplateLoader* pt)
 	XRCCTRL(*this, "cmbOptions", wxComboBox)->SetSelection(0);
 	XRCCTRL(*this, "cmbFileSets", wxComboBox)->Enable(pt->m_FileSets.GetCount());
 	XRCCTRL(*this, "cmbFileSets", wxComboBox)->SetSelection(0);
-
-	XRCCTRL(*this, "wxID_OK", wxButton)->Enable(pt->m_TemplateOptions.GetCount() && pt->m_FileSets.GetCount() ||
-                                                XRCCTRL(*this, "lstUser", wxListBox)->GetSelection() != -1);
 }
 
 bool NewFromTemplateDlg::DoNotCreateFiles()
 {
     return XRCCTRL(*this, "chkDoNotCreateFiles", wxCheckBox)->IsChecked();
+}
+
+bool NewFromTemplateDlg::SelectedTemplate()
+{
+    return  XRCCTRL(*this, "nbMain", wxNotebook)->GetSelection() == 0 &&
+            XRCCTRL(*this, "listTemplates", wxListCtrl)->GetSelectedItemCount() != 0;
 }
 
 bool NewFromTemplateDlg::SelectedUserTemplate()
@@ -168,7 +172,6 @@ wxString NewFromTemplateDlg::GetSelectedUserTemplate()
 void NewFromTemplateDlg::OnListSelection(wxListEvent& event)
 {
 	ProjectTemplateLoader* data = (ProjectTemplateLoader*)event.GetData();
-	XRCCTRL(*this, "wxID_OK", wxButton)->Enable(false);
 	XRCCTRL(*this, "cmbOptions", wxComboBox)->Enable(event.GetIndex() != -1 && data);
 	XRCCTRL(*this, "cmbFileSets", wxComboBox)->Enable(event.GetIndex() != -1 && data);
 	
@@ -178,4 +181,9 @@ void NewFromTemplateDlg::OnListSelection(wxListEvent& event)
 void NewFromTemplateDlg::OnCategoryChanged(wxCommandEvent& event)
 {
 	BuildList();
+}
+
+void NewFromTemplateDlg::OnUpdateUI(wxUpdateUIEvent& event)
+{
+	XRCCTRL(*this, "wxID_OK", wxButton)->Enable(SelectedTemplate() || SelectedUserTemplate());
 }
