@@ -444,7 +444,7 @@ EditorBase* EditorManager::GetActiveEditor()
 
 void EditorManager::ActivateNext()
 {
-    int sel = m_pNotebook->GetSelection();
+    unsigned int sel = m_pNotebook->GetSelection();
     if (sel < m_pNotebook->GetPageCount() - 1)
         ++sel;
     else
@@ -645,7 +645,7 @@ bool EditorManager::QueryClose(EditorBase *ed)
 
 int EditorManager::FindPageFromEditor(EditorBase* eb)
 {
-    for (int i = 0; i < m_pNotebook->GetPageCount(); ++i)
+    for (unsigned int i = 0; i < m_pNotebook->GetPageCount(); ++i)
     {
         if (m_pNotebook->GetPage(i) == eb)
             return i;
@@ -1438,7 +1438,6 @@ void EditorManager::RefreshOpenFilesTree()
         return;
     wxWindow* win = Manager::Get()->GetNotebookPage(_("Projects"),wxTAB_TRAVERSAL | wxCLIP_CHILDREN,true);
     wxSplitPanel* mypanel = (wxSplitPanel*)(win);
-    wxSplitterWindow* mysplitter = mypanel->GetSplitter();
     mypanel->RefreshSplitter(ID_EditorManager,ID_ProjectManager);
 }
 

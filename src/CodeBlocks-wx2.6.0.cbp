@@ -129,6 +129,7 @@
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
+					<Add option="-DNDEBUG"/>
 					<Add directory="sdk"/>
 					<Add directory="plugins\astyle\astyle"/>
 				</Compiler>
@@ -395,6 +396,7 @@
 			<Add option="-D__WXMSW__"/>
 			<Add option="-DWXUSINGDLL"/>
 			<Add directory="$(WX_DIR)\include"/>
+			<Add directory="$(WX_DIR)\lib\gcc_dll\msw"/>
 			<Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)\msw"/>
 			<Add directory="$(WX_DIR)\contrib\include"/>
 		</Compiler>
@@ -404,6 +406,7 @@
 		<Linker>
 			<Add library="wxmsw26"/>
 			<Add directory="sdk\tinyxml"/>
+			<Add directory="$(WX_DIR)\lib\gcc_dll\msw"/>
 			<Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)"/>
 		</Linker>
 		<Unit filename="devel\share\CodeBlocks\images\codecompletion\README.txt">

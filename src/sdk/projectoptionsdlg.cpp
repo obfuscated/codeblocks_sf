@@ -132,7 +132,7 @@ void ProjectOptionsDlg::DoTargetChange()
     if (cmb && chkCR && txt && browse)
     {
         cmb->SetSelection(target->GetTargetType());
-        Compiler* compiler = CompilerFactory::Compilers[target->GetCompilerIndex()];
+//        Compiler* compiler = CompilerFactory::Compilers[target->GetCompilerIndex()];
         switch ((TargetType)cmb->GetSelection())
         {
             case ttConsoleOnly:

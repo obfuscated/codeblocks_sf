@@ -58,7 +58,7 @@ void ExternalDepsDlg::EndModal(int retCode)
 {
 	wxString deps;
 	wxListBox* lst = XRCCTRL(*this, _T("lstExternalFiles"), wxListBox);
-    for (unsigned int i = 0; i < lst->GetCount(); ++i)
+    for (int i = 0; i < lst->GetCount(); ++i)
     {
     	deps << lst->GetString(i) << ';';
     }
@@ -66,7 +66,7 @@ void ExternalDepsDlg::EndModal(int retCode)
 
 	wxString files;
 	lst = XRCCTRL(*this, _T("lstAdditionalFiles"), wxListBox);
-    for (unsigned int i = 0; i < lst->GetCount(); ++i)
+    for (int i = 0; i < lst->GetCount(); ++i)
     {
     	files << lst->GetString(i) << ';';
     }
