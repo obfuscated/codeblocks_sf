@@ -85,7 +85,7 @@ void HelpConfigDialog::UpdateEntry(int index)
 
 void HelpConfigDialog::ChooseFile()
 {
-  wxString filename = wxFileSelector("Choose a help file", "", "", "", "Help files (*.chm;*.hlp)|*.hlp;*.chm");
+  wxString filename = wxFileSelector("Choose a help file", wxEmptyString, wxEmptyString, wxEmptyString, "Help files (*.chm;*.hlp)|*.hlp;*.chm");
   
   if (!filename.IsEmpty())
   {
@@ -135,6 +135,12 @@ void HelpConfigDialog::Add(wxCommandEvent &event)
       return;
     }
     
+    if (text.CmpNoCase(_("default")) == 0)
+    {
+    	wxMessageBox(_("This is a key for internal use of the plugin and cannot be assigned to a help file"), _("Warning"), wxICON_WARNING);
+    	return;
+    }
+    
     lst->Append(text);
     lst->SetSelection(lst->GetCount() - 1);
     XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(false);
@@ -158,6 +164,12 @@ void HelpConfigDialog::Rename(wxCommandEvent &event)
     {
       wxMessageBox(_("This title is already in use"), _("Warning"), wxICON_WARNING);
       return;
+    }
+    
+    if (text.CmpNoCase(_("default")) == 0)
+    {
+    	wxMessageBox(_("This is a key for internal use of the plugin and cannot be assigned to a help file"), _("Warning"), wxICON_WARNING);
+    	return;
     }
     
     m_Vector[lst->GetSelection()].first = text;

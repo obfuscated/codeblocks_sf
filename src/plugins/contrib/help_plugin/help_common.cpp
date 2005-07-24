@@ -24,7 +24,7 @@ void HelpCommon::LoadHelpFilesVector(HelpCommon::HelpFilesVector &vect)
     }
     else
     {
-      wxString file = conf->Read(entry, _(""));
+      wxString file = conf->Read(entry, wxEmptyString);
       
       if (!file.IsEmpty())
       {
