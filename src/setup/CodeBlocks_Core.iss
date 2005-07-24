@@ -67,6 +67,7 @@ Source: ..\output\share\CodeBlocks\defaultmimehandler.zip; DestDir: {app}\share\
 Source: ..\output\share\CodeBlocks\manager_resources.zip; DestDir: {app}\share\CodeBlocks; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\plugin_wizard.zip; DestDir: {app}\share\CodeBlocks; Components: PluginWizard
 Source: ..\output\share\CodeBlocks\todo.zip; DestDir: {app}\share\CodeBlocks; Components: ToDo
+Source: ..\output\share\CodeBlocks\devpakupdater.zip; DestDir: {app}\share\CodeBlocks; Components: DevPak
 Source: ..\output\share\CodeBlocks\plugins\astyle.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: AStyleFormatter
 Source: ..\output\share\CodeBlocks\plugins\classwizard.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: ClassWizard
 Source: ..\output\share\CodeBlocks\plugins\codecompletion.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: CodeCompletion
@@ -76,6 +77,7 @@ Source: ..\output\share\CodeBlocks\plugins\defaultmimehandler.dll; DestDir: {app
 Source: ..\output\share\CodeBlocks\plugins\pluginwizard.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: PluginWizard
 Source: ..\output\share\CodeBlocks\plugins\xpmanifest.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: XPManifest
 Source: ..\output\share\CodeBlocks\plugins\todo.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: ToDo
+Source: ..\output\share\CodeBlocks\plugins\devpakupdater.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: DevPak
 Source: ..\output\share\CodeBlocks\images\ascii.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\images\codeblocks.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\images\compile.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
@@ -222,6 +224,7 @@ Name: XPManifest; Description: WindowsXP Manifest plugin; Types: custom full
 Name: Templates; Description: Project templates; Types: custom full
 Name: AStyleFormatter; Description: Astyle code formatter plugin; Types: custom full
 Name: DefMimeHandler; Description: Default MIME handler; Types: custom compact full
+Name: DevPak; Description: DevPaks support plugin; Types: custom
 
 [UninstallRun]
 Filename: {app}\codeblocks.exe; Parameters: --clear-configuration; WorkingDir: {app}

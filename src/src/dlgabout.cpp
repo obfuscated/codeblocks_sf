@@ -49,8 +49,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
 	XRCCTRL(*this, "lblBuildTimestamp", wxStaticText)->SetLabel("Build: "APP_BUILD_TIMESTAMP);
 	XRCCTRL(*this, "txtDescription", wxTextCtrl)->SetValue(DESCR);
 	XRCCTRL(*this, "txtThanksTo", wxTextCtrl)->SetValue(
-        _("My wife and family\n"
-        "The wxWidgets project (http://www.wxwidgets.org)\n"
+        _("The wxWidgets project (http://www.wxwidgets.org)\n"
         "TinyXML parser (http://http://www.grinninglizard.com/tinyxml)\n"
         "The GNU Software Foundation (http://www.gnu.org)\n"
         "Last, but not least, the open-source community\n\n"
@@ -60,12 +59,13 @@ dlgAbout::dlgAbout(wxWindow* parent)
         "\n"
         "Contributors (in no special order):\n"
         "-----------------------------------\n"
+        "byo, cyberkoa : wxSmith RAD plugin (WIP)\n"
+        "P. A. Jimenez : Help and AStyle plugins\n"
         "Hakki Dogusan : DigitalMars compiler support\n"
+        "ybx           : OpenWatcom compiler support\n"
         "Tim Baker     : Patches for the direct-compile-mode\n"
         "                dependencies generation system\n"
-        "Eric Burnett  : GDB debugger patch correcting filenames\n"
-        "                sent to the debugger plus allowing debugging\n"
-        "                of filenames with spaces\n"
+        "Eric Burnett  : GDB debugger plugin patches\n"
         "Chris Raschko : Design of the 3D logo for Code::Blocks\n"
         "J.A. Ortega   : 3D Icon based on the above"
         ));
