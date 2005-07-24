@@ -30,6 +30,7 @@ BEGIN_EVENT_TABLE(HelpConfigDialog, wxDialog)
   EVT_BUTTON(XRCID("btnDown"), HelpConfigDialog::OnDown)
   EVT_BUTTON(XRCID("btnOK"), HelpConfigDialog::Ok)
   EVT_LISTBOX(XRCID("lstHelp"), HelpConfigDialog::ListChange)
+  EVT_CHECKBOX(XRCID("chkDefault"), HelpConfigDialog::OnCheckbox)
 END_EVENT_TABLE()
 
 
@@ -71,20 +72,14 @@ void HelpConfigDialog::UpdateEntry(int index)
   }
   
   wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
-  HelpCommon::HelpFilesVector::iterator it = find(m_Vector.begin(), m_Vector.end(), lst->GetString(index));
   
-  if (it != m_Vector.end())
+  if (index < static_cast<int>(m_Vector.size()))
   {
-  	it->second = XRCCTRL(*this, "txtHelp", wxTextCtrl)->GetValue();
+  	m_Vector[index].second = XRCCTRL(*this, "txtHelp", wxTextCtrl)->GetValue();
   }
   else
   {
   	m_Vector.push_back(make_pair(lst->GetString(index), XRCCTRL(*this, "txtHelp", wxTextCtrl)->GetValue()));
-  }
-  
-  if (XRCCTRL(*this, "chkDefault", wxCheckBox)->GetValue())
-  {
-    HelpCommon::setDefaultHelpIndex(index);
   }
 }
 
@@ -107,9 +102,15 @@ void HelpConfigDialog::ListChange(wxCommandEvent& event)
     UpdateEntry(m_LastSel);
   }
   
-  m_LastSel = lst->GetSelection();
-  XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(find(m_Vector.begin(), m_Vector.end(), lst->GetString(lst->GetSelection()))->second);
-  XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(HelpCommon::getDefaultHelpIndex() == lst->GetSelection());
+  if ((m_LastSel = lst->GetSelection()) != -1)
+  {
+    XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(m_Vector[lst->GetSelection()].second);
+    XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(HelpCommon::getDefaultHelpIndex() == lst->GetSelection());
+  }
+  else
+  {
+  	XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(false);
+  }
 }
 
 void HelpConfigDialog::Browse(wxCommandEvent &event)
@@ -159,13 +160,8 @@ void HelpConfigDialog::Rename(wxCommandEvent &event)
       return;
     }
     
-    it = find(m_Vector.begin(), m_Vector.end(), orig);
-    
-    if (it != m_Vector.end())
-    {
-      it->first = text;
-      lst->SetString(lst->GetSelection(), text);
-    }
+    m_Vector[lst->GetSelection()].first = text;
+    lst->SetString(lst->GetSelection(), text);
   }
 }
 
@@ -177,22 +173,23 @@ void HelpConfigDialog::Delete(wxCommandEvent &event)
   }
   
   wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
-  wxString orig = lst->GetString(lst->GetSelection());
-  HelpCommon::HelpFilesVector::iterator it = find(m_Vector.begin(), m_Vector.end(), orig);
   
-  if (it != m_Vector.end())
+  if (HelpCommon::getDefaultHelpIndex() >= lst->GetSelection())
   {
-    lst->Delete(lst->GetSelection());
-    m_Vector.erase(it);
-    
-    if (lst->GetSelection() != -1)
-    {
-      XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(find(m_Vector.begin(), m_Vector.end(), lst->GetString(lst->GetSelection()))->first);
-    }
-    else
-    {
-      XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(_(""));
-    }
+  	HelpCommon::setDefaultHelpIndex(HelpCommon::getDefaultHelpIndex() - 1);
+  }
+  
+  m_Vector.erase(m_Vector.begin() + lst->GetSelection());
+  lst->Delete(lst->GetSelection());
+  
+  if (lst->GetSelection() != -1)
+  {
+    XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(m_Vector[lst->GetSelection()].first);
+  }
+  else
+  {
+    XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(_(""));
+    XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(false);
   }
 }
 
@@ -244,11 +241,26 @@ void HelpConfigDialog::OnDown(wxCommandEvent &event)
 	m_LastSel = current;
 }
 
+void HelpConfigDialog::OnCheckbox(wxCommandEvent &event)
+{
+	if (event.IsChecked())
+	{
+		HelpCommon::setDefaultHelpIndex(XRCCTRL(*this, "lstHelp", wxListBox)->GetSelection());
+	}
+	else
+	{
+		HelpCommon::setDefaultHelpIndex(-1);
+	}
+}
+
 void HelpConfigDialog::UpdateUI(wxUpdateUIEvent &event)
 {
   int sel = XRCCTRL(*this, "lstHelp", wxListBox)->GetSelection();
   XRCCTRL(*this, "btnRename", wxButton)->Enable(sel != -1);
   XRCCTRL(*this, "btnDelete", wxButton)->Enable(sel != -1);
+  XRCCTRL(*this, "btnBrowse", wxButton)->Enable(sel != -1);
+  XRCCTRL(*this, "txtHelp", wxTextCtrl)->Enable(sel != -1);
+  XRCCTRL(*this, "chkDefault", wxCheckBox)->Enable(sel != -1);
 
   if (sel == -1)
   {
@@ -278,9 +290,4 @@ void HelpConfigDialog::Ok(wxCommandEvent &event)
   UpdateEntry(lst->GetSelection());
   HelpCommon::SaveHelpFilesVector(m_Vector);
   wxDialog::EndModal(wxID_OK);
-}
-
-void HelpConfigDialog::Cancel(wxCommandEvent &event)
-{
-	//empty
 }

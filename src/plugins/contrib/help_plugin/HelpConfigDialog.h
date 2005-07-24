@@ -22,9 +22,9 @@ class HelpConfigDialog : public wxDialog
     void OnUp(wxCommandEvent &event);
     void OnDown(wxCommandEvent &event);
     void ListChange(wxCommandEvent &event);
+    void OnCheckbox(wxCommandEvent &event);
     void UpdateUI(wxUpdateUIEvent &event);
     void Ok(wxCommandEvent &event);
-    void Cancel(wxCommandEvent &event);
   
   private:
     void UpdateEntry(int index);
