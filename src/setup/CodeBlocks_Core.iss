@@ -3,21 +3,21 @@
 
 [Setup]
 AppName=Code::Blocks
-AppVerName=Code::Blocks 1.0-finalbeta
+AppVerName=Code::Blocks 1.0-RC1 (HEAD)
 AppPublisher=Code::Blocks
 DefaultDirName={pf}\CodeBlocks
 DefaultGroupName=CodeBlocks
 LicenseFile=..\COPYING
-OutputBaseFilename=CodeBlocks-1.0-finalbeta
+OutputBaseFilename=CodeBlocks-1.0-RC1_HEAD
 AppPublisherURL=www.codeblocks.org
-AppVersion=1.0-finalbeta
+AppVersion=1.0-RC1_HEAD
 UninstallDisplayIcon={app}\codeblocks.exe
 UninstallDisplayName=Code::Blocks
 ShowLanguageDialog=no
 AppSupportURL=www.codeblocks.org
 AppUpdatesURL=www.codeblocks.org
 VersionInfoVersion=1.0
-VersionInfoDescription=Code::Blocks IDE
+VersionInfoDescription=Code::Blocks IDE (HEAD)
 WizardImageFile=setup.bmp
 WizardSmallImageFile=setupsmall.bmp
 InfoAfterFile=COMPILERS_win32.rtf
@@ -37,7 +37,8 @@ Source: ..\output\codeblocks.exe; DestDir: {app}; Flags: ignoreversion; Componen
 Source: ..\output\codeblocks.dll; DestDir: {app}; Components: ProgramFiles
 Source: codeblocks.exe.manifest; DestDir: {app}; Components: ProgramFiles
 Source: mingwm10.dll; DestDir: {app}; Components: ProgramFiles
-Source: wxmsw242.dll; DestDir: {app}; Components: ProgramFiles
+Source: wxmsw26_gcc_cb.dll; DestDir: {app}; Components: ProgramFiles
+Source: wxmsw26_stc_gcc_cb.dll; DestDir: {app}; Components: ProgramFiles
 Source: ..\output\exchndl.dll; DestDir: {app}; Components: ProgramFiles
 Source: ..\output\console_runner.exe; DestDir: {app}; Components: ProgramFiles
 Source: ..\AUTHORS; DestDir: {app}; DestName: AUTHORS.txt; Components: ProgramFiles
@@ -47,13 +48,16 @@ Source: ..\tips.txt; DestDir: {app}; Components: ProgramFiles
 Source: ..\ChangeLog; DestDir: {app}; Components: ProgramFiles
 Source: WebSite.url; DestDir: {app}; Components: ProgramFiles
 Source: Forums.url; DestDir: {app}; Components: ProgramFiles
+Source: WiKi.url; DestDir: {app}; Components: ProgramFiles
 Source: ReportBugs.url; DestDir: {app}; Components: ProgramFiles
 Source: Download_BCC55.url; DestDir: {app}; Components: ProgramFiles
 Source: Download_DMC.url; DestDir: {app}; Components: ProgramFiles
 Source: Download_MSVC2003.url; DestDir: {app}; Components: ProgramFiles
 Source: Download_MINGW.url; DestDir: {app}; Components: ProgramFiles
+Source: Download_OW.url; DestDir: {app}; Components: ProgramFiles
 Source: COMPILERS_win32.rtf; DestDir: {app}; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\resources.zip; DestDir: {app}\share\CodeBlocks; Components: ProgramFiles
+Source: ..\output\share\CodeBlocks\start_here.zip; DestDir: {app}\share\CodeBlocks; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\astyle.zip; DestDir: {app}\share\CodeBlocks; Components: AStyleFormatter
 Source: ..\output\share\CodeBlocks\class_wizard.zip; DestDir: {app}\share\CodeBlocks; Components: ClassWizard
 Source: ..\output\share\CodeBlocks\code_completion.zip; DestDir: {app}\share\CodeBlocks; Components: CodeCompletion
@@ -72,41 +76,6 @@ Source: ..\output\share\CodeBlocks\plugins\defaultmimehandler.dll; DestDir: {app
 Source: ..\output\share\CodeBlocks\plugins\pluginwizard.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: PluginWizard
 Source: ..\output\share\CodeBlocks\plugins\xpmanifest.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: XPManifest
 Source: ..\output\share\CodeBlocks\plugins\todo.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: ToDo
-Source: ..\output\share\CodeBlocks\templates\console.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\console.png; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\console.template; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\console-main-c.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\console-main-cpp.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\gui.png; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\dll-main.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\staticlib.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\staticlib.template; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\staticlib-sample.c; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\dll.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\dll.png; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\dll.template; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\opengl.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\opengl.png; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\opengl.template; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\opengl-main.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\sdl-main.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\sdl.png; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\sdlapp.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\sdlapp.template; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\sdl-cb.bmp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\win32.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\win32gui.template; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\win32-main.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\wx-app-ash.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\wx-app-ash.h; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\wx-main-ash.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\wx-main-ash.h; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\wx-main-s.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\wx-main-sh.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\wx-main-sh.h; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\wxwindows.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\wxwindows.png; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\wxwindows.template; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
 Source: ..\output\share\CodeBlocks\images\ascii.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\images\codeblocks.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\images\compile.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
@@ -163,6 +132,63 @@ Source: ..\plugins\codecompletion\resources\images\symbols_folder.png; DestDir: 
 Source: ..\plugins\codecompletion\resources\images\var_private.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
 Source: ..\plugins\codecompletion\resources\images\var_protected.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
 Source: ..\plugins\codecompletion\resources\images\var_public.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
+Source: ..\templates\common\console.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\console.png; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\console.template; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\console-main-c.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\console-main-cpp.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\dll.png; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\ogre_gcc.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\ogre_vctk.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\ogrelogo.png; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\ogre-main.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\qt.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\qt.template; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\qtlogo32.png; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\qt-main.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\sdl.png; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\sdlapp.template; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\sdl-cb.bmp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\sdl-main.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\staticlib.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\staticlib.template; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\staticlib-sample.c; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\wx-app-ash.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\wx-app-ash.h; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\wx-main-ash.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\wx-main-ash.h; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\wx-main-s.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\wx-main-sh.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\wx-main-sh.h; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\common\wxwidgets.png; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\win32\dll.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\win32\dll.template; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\win32\dll-main.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\win32\gui.png; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\win32\ogre.template; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\win32\opengl.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\win32\opengl.png; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\win32\opengl.template; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\win32\opengl-main.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\win32\sdlapp.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\win32\win32.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\win32\win32gui.template; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\win32\win32-main.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\win32\wxwidgets.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\win32\wxwidgets.template; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\templates\win32\wxwidgets_static.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\sdk\resources\lexers\lexer_cpp.sample; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
+Source: ..\sdk\resources\lexers\lexer_cpp.xml; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
+Source: ..\sdk\resources\lexers\lexer_gm.sample; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
+Source: ..\sdk\resources\lexers\lexer_gm.xml; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
+Source: ..\sdk\resources\lexers\lexer_hitasm.sample; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
+Source: ..\sdk\resources\lexers\lexer_hitasm.xml; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
+Source: ..\sdk\resources\lexers\lexer_lua.sample; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
+Source: ..\sdk\resources\lexers\lexer_lua.xml; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
+Source: ..\sdk\resources\lexers\lexer_rc.sample; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
+Source: ..\sdk\resources\lexers\lexer_rc.xml; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
+Source: ..\sdk\resources\lexers\lexer_xml.sample; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
+Source: ..\sdk\resources\lexers\lexer_xml.xml; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
 
 [Icons]
 Name: {group}\CodeBlocks; Filename: {app}\codeblocks.exe; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Components: ProgramFiles
@@ -170,12 +196,14 @@ Name: {userdesktop}\CodeBlocks; Filename: {app}\codeblocks.exe; Tasks: desktopic
 Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\CodeBlocks; Filename: {app}\codeblocks.exe; Tasks: quicklaunchicon; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Components: ProgramFiles
 Name: {group}\Links\CodeBlocks on-line; Filename: {app}\WebSite.url; Comment: Go to Code::Blocks IDE website; Components: ProgramFiles
 Name: {group}\Links\CodeBlocks forums; Filename: {app}\Forums.url; Comment: Go to Code::Blocks IDE discussion forums; Components: ProgramFiles
+Name: {group}\Links\CodeBlocks WiKi; Filename: {app}\WiKi.url; Comment: Go to Code::Blocks IDE WiKi site; Components: ProgramFiles
 Name: {group}\Docs\License; Filename: {app}\COPYING.txt; Components: ProgramFiles
 Name: {group}\Links\Report a bug; Filename: {app}\ReportBugs.url; Comment: Report bugs you 've found in Code::Blocks; Components: ProgramFiles
 Name: {group}\Links\Download MinGW Compiler & Debugger; Filename: {app}\Download_MINGW.url; Comment: Download the MinGW distribution which contains the GNU GCC compiler and GDB debugger; Components: ProgramFiles
 Name: {group}\Links\Download Microsoft Visual C++ Free Toolkit 2003; Filename: {app}\Download_MSVC2003.url; Comment: Download the Microsoft Visual C++ Free Toolkit 2003; Components: ProgramFiles
 Name: {group}\Links\Download Borland C++ Compiler 5.5; Filename: {app}\Download_BCC55.url; Comment: Download the Borland C++ Compiler 5.5; Components: ProgramFiles
 Name: {group}\Links\Download Digital Mars Compiler; Filename: {app}\Download_DMC.url; Comment: Download the Digital Mars free compiler; Components: ProgramFiles
+Name: {group}\Links\Download OpenWatcom; Filename: {app}\Download_OW.url; Comment: Download the OpenWatcom portable compiler; Components: ProgramFiles
 Name: {group}\Docs\How to install a compiler; Filename: {app}\COMPILERS_win32.rtf
 
 [Run]

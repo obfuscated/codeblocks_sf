@@ -3113,143 +3113,204 @@
 			<Option compilerVar="CPP"/>
 			<Option target="wxDockIt"/>
 		</Unit>
-		<Unit filename="templates\console-main-c.cpp">
+		<Unit filename="templates\common\console-main-c.cpp">
 			<Option compilerVar="CPP"/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\console-main-cpp.cpp">
+		<Unit filename="templates\common\console-main-cpp.cpp">
 			<Option compilerVar="CPP"/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\console.cbp">
+		<Unit filename="templates\common\console.cbp">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\console.png">
+		<Unit filename="templates\common\console.png">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\console.template">
+		<Unit filename="templates\common\console.template">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\gui.png">
+		<Unit filename="templates\common\dll.png">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\opengl-main.cpp">
+		<Unit filename="templates\common\ogre-main.cpp">
 			<Option compilerVar="CPP"/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\opengl.cbp">
+		<Unit filename="templates\common\ogre_gcc.cbp">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\opengl.png">
+		<Unit filename="templates\common\ogre_vctk.cbp">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\opengl.template">
+		<Unit filename="templates\common\ogrelogo.png">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\win32-main.cpp">
+		<Unit filename="templates\common\qt-main.cpp">
 			<Option compilerVar="CPP"/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\win32.cbp">
+		<Unit filename="templates\common\qt.cbp">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\win32gui.template">
+		<Unit filename="templates\common\qt.template">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\wx-app-ash.cpp">
+		<Unit filename="templates\common\qtlogo32.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\sdl-cb.bmp">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\sdl-main.cpp">
 			<Option compilerVar="CPP"/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\wx-app-ash.h">
+		<Unit filename="templates\common\sdl.png">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\wx-main-ash.cpp">
+		<Unit filename="templates\common\sdlapp.template">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\staticlib-sample.c">
+			<Option compilerVar="CC"/>
+		</Unit>
+		<Unit filename="templates\common\staticlib.cbp">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\staticlib.template">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\wx-app-ash.cpp">
 			<Option compilerVar="CPP"/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\wx-main-ash.h">
+		<Unit filename="templates\common\wx-app-ash.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\wx-main-s.cpp">
+		<Unit filename="templates\common\wx-main-ash.cpp">
 			<Option compilerVar="CPP"/>
+		</Unit>
+		<Unit filename="templates\common\wx-main-ash.h">
+			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\wx-main-sh.cpp">
+		<Unit filename="templates\common\wx-main-s.cpp">
 			<Option compilerVar="CPP"/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\wx-main-sh.h">
+		<Unit filename="templates\common\wx-main-sh.cpp">
+			<Option compilerVar="CPP"/>
+		</Unit>
+		<Unit filename="templates\common\wx-main-sh.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\wxwindows.cbp">
+		<Unit filename="templates\common\wxwidgets.png">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\wxwindows.png">
+		<Unit filename="templates\win32\dll-main.cpp">
+			<Option compilerVar="CPP"/>
+		</Unit>
+		<Unit filename="templates\win32\dll.cbp">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\wxwindows.template">
+		<Unit filename="templates\win32\dll.template">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="templates\win32\gui.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\win32\ogre.template">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\win32\opengl-main.cpp">
+			<Option compilerVar="CPP"/>
+		</Unit>
+		<Unit filename="templates\win32\opengl.cbp">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\win32\opengl.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\win32\opengl.template">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\win32\sdlapp.cbp">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\win32\win32-main.cpp">
+			<Option compilerVar="CPP"/>
+		</Unit>
+		<Unit filename="templates\win32\win32.cbp">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\win32\win32gui.template">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\win32\wxwidgets.cbp">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\win32\wxwidgets.template">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\win32\wxwidgets_static.cbp">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
 		</Unit>
 		<Unit filename="tips.txt">
 			<Option compilerVar=""/>
