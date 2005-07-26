@@ -27,7 +27,9 @@ class wxsPropertiesMan: public wxEvtHandler
 		
 		void OnSelectWidget(wxsEvent& event);
 		void OnUnselectWidget(wxsEvent& event);
-		
+		void OnSelectRes(wxsEvent& event);
+		void OnUnselectRes(wxsEvent& event);
+
 		DECLARE_EVENT_TABLE()
 };
 

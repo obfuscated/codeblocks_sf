@@ -37,14 +37,20 @@ class wxsStylePropertyWindow: public wxPanel
                     {
                         IdToStyleMaps.push_back(Styles->Value);
                         char* Name = strdup(Styles->Name);
+                        bool IsToolTip = false;
                         if ( strlen(Name) > WXS_MAX_STYLE_LEN )
                         {
                             Name[WXS_MAX_STYLE_LEN-3] =
                             Name[WXS_MAX_STYLE_LEN-2] =
                             Name[WXS_MAX_STYLE_LEN-1] = '.';
                             Name[WXS_MAX_STYLE_LEN-0] = 0;
+                            IsToolTip = true;
                         }
                         wxCheckBox* CB = new wxCheckBox(this,CurrentId++,Name);
+                        if ( IsToolTip )
+                        {
+                            CB->SetToolTip(Styles->Name);
+                        }
                         Sizer->Add(CB);
                         free(Name);
                     }

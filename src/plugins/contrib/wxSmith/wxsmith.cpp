@@ -142,7 +142,7 @@ void wxSmith::OnAttach()
 
         wxSizer* Sizer = new wxGridSizer(1);
         ResourceBrowser = new wxsResourceTree(ResourcesContainer);
-        ResourceBrowser->AddRoot(wxT("Resources"));
+        ResourceBrowser->Expand(ResourceBrowser->AddRoot(wxT("Resources")));
         Sizer->Add(ResourceBrowser,1,wxGROW|wxALL);
         ResourcesContainer->SetSizer(Sizer);
 

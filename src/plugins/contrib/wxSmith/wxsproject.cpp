@@ -33,7 +33,7 @@ wxsProject::IntegrationState wxsProject::BindProject(cbProject* Proj)
     /* creating new node in resource tree */
     
     wxTreeCtrl* ResTree = wxSmith::Get()->GetResourceTree();
-    
+    ResTree->Expand(ResTree->GetRootItem());
     TreeItem = ResTree->AppendItem(ResTree->GetRootItem(),Proj->GetTitle());
     
     /* Binding project object */

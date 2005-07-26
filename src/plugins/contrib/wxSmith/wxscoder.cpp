@@ -67,8 +67,8 @@ bool wxsCoder::ProcessCodeQueue()
 	BlockProcess = true;
 	
 	EditorManager* EM = Manager::Get()->GetEditorManager();
+	if ( EM == NULL ) return false;
 	
-	assert ( EM != NULL );
 	bool Result = true;
 	time_t now;
 	time(&now);
