@@ -53,8 +53,7 @@ HelpConfigDialog::HelpConfigDialog()
   {
     lst->SetSelection(0);
     m_LastSel = 0;
-    it = m_Vector.begin();
-    XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(it->second);
+    XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(m_Vector[0].second);
     XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(HelpCommon::getDefaultHelpIndex() == 0);
   }
 }
@@ -85,11 +84,11 @@ void HelpConfigDialog::UpdateEntry(int index)
 
 void HelpConfigDialog::ChooseFile()
 {
-  wxString filename = wxFileSelector("Choose a help file", wxEmptyString, wxEmptyString, wxEmptyString, "Help files (*.chm;*.hlp)|*.hlp;*.chm");
+  wxString filename = wxFileSelector("Choose a help file", wxEmptyString, wxEmptyString, wxEmptyString, _("Help files (*.chm;*.hlp)|*.hlp;*.chm|All files (*.*)|*.*"));
   
   if (!filename.IsEmpty())
   {
-    XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(filename.GetData());
+    XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(filename);
   }
 }
 
@@ -121,7 +120,6 @@ void HelpConfigDialog::Browse(wxCommandEvent &event)
 void HelpConfigDialog::Add(wxCommandEvent &event)
 {
   wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
-  wxString orig = lst->GetString(lst->GetSelection());
   UpdateEntry(lst->GetSelection());
   wxString text = wxGetTextFromUser(_("Please enter new help file title:"), _("Add title"));
   
@@ -146,7 +144,8 @@ void HelpConfigDialog::Add(wxCommandEvent &event)
     XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(false);
     XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(_(""));
     ChooseFile();
-    UpdateEntry(lst->GetCount() - 1);
+    UpdateEntry(lst->GetSelection());
+    m_LastSel = lst->GetSelection();
   }
 }
 
@@ -203,6 +202,8 @@ void HelpConfigDialog::Delete(wxCommandEvent &event)
     XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(_(""));
     XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(false);
   }
+  
+  m_LastSel = lst->GetSelection();
 }
 
 void HelpConfigDialog::OnUp(wxCommandEvent &event)

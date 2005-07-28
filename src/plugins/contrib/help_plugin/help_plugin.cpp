@@ -30,6 +30,8 @@
 #include <wx/textdlg.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/fs_zip.h>
+#include <wx/mimetype.h>
+#include <wx/filename.h>
 #include <manager.h>
 #include <configmanager.h>
 #include <editormanager.h>
@@ -279,47 +281,42 @@ wxString HelpPlugin::HelpFileFromId(int id)
 
 void HelpPlugin::LaunchHelp(const wxString &helpfile, const wxString &keyword)
 {
-  wxString ext = helpfile.AfterLast('.');
+  wxString ext = wxFileName(helpfile).GetExt();
   Manager::Get()->GetMessageManager()->DebugLog(_("Help File is %s"), helpfile.c_str());
   
-  if (ext.CmpNoCase("hlp") == 0)
+  if (!keyword.IsEmpty())
   {
-    // if there'sn't a keyword, launch the help file with the associated program
-    if (keyword.IsEmpty())
-    {
-    	wxProcess *help_process = new wxProcess;
-    	help_process->Redirect();
-    	help_process->Detach();
-      wxExecute(_("start \"") + helpfile + _("\""), wxEXEC_ASYNC, help_process);
-    }
-    else
-    {
+  	/* TODO (Ceniza666#7#): Extension checking must be made platform dependent so HLP and CHM would exist only for Windows. */
+  	if (ext.CmpNoCase(_("hlp")) == 0)
+  	{
       wxWinHelpController HelpCtl;
       HelpCtl.Initialize(helpfile);
       HelpCtl.KeywordSearch(keyword);
-    }
-  }
-  else if (ext.CmpNoCase("chm") == 0)
-  {
-    // if there'sn't a keyword, launch the help file with the associated program
-    if (keyword.IsEmpty())
-    {
-    	wxProcess *help_process = new wxProcess;
-    	help_process->Redirect();
-    	help_process->Detach();
-      wxExecute(_("start \"") + helpfile + _("\""), wxEXEC_ASYNC, help_process);
-    }
-    else
-    {
+  	}
+  	else if (ext.CmpNoCase(_("chm")) == 0)
+  	{
       wxCHMHelpController HelpCtl;
       HelpCtl.Initialize(helpfile);
       HelpCtl.KeywordSearch(keyword);
-    }
+  	}
+  	else
+  	{
+  		// What is it supposed to do here?
+  	}
   }
-  else // unknown extension
+  else
   {
-  	// we could just launch it whatever it is, show a message box or do nothing
-  	// do nothing in the meanwhile
+  	// Just call it with the associated program
+  	wxFileType *filetype = wxTheMimeTypesManager->GetFileTypeFromExtension(ext);
+  	
+  	if (!filetype)
+  	{
+      wxMessageBox(_("Couldn't find an associated program to open ") + wxFileName(helpfile).GetFullName(), _("Warning"), wxOK | wxICON_EXCLAMATION);
+  		return;
+  	}
+  	
+    wxExecute(filetype->GetOpenCommand(helpfile));
+    delete filetype;
   }
 }
 

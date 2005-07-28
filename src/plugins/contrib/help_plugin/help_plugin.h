@@ -1,5 +1,5 @@
 #ifndef __WXMSW__
-  #error "This plugin is Windows only at the moment."
+  #warning "This plugin has only been fully tested on Windows."
 #endif
 
 #ifndef HELP_PLUGIN_H
