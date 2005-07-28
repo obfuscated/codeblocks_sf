@@ -35,6 +35,7 @@
 			<Add directory="$(WX_DIR)\contrib\include"/>
 		</Compiler>
 		<Linker>
+			<Add option="-i"/>
 			<Add library="codeblocks"/>
 			<Add library="wxmsw26"/>
 			<Add library="wxmsw26_stc"/>
@@ -299,6 +300,16 @@
 			<Option target="default"/>
 		</Unit>
 		<Unit filename="wxsdefwidget.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="wxsdragwindow.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="wxsdragwindow.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

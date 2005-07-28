@@ -5,6 +5,7 @@
 #include "properties/wxsstyleproperty.h"
 #include "wxswidgetfactory.h"
 #include "wxsresource.h"
+#include "wxsdefevthandler.h"
 #include <wx/tokenzr.h>
 #include <wx/list.h>
 

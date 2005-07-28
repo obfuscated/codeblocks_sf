@@ -14,13 +14,13 @@
 #include "wxsproperties.h"
 #include "wxswindoweditor.h"
 #include "wxsstyle.h"
-#include "wxsdefevthandler.h"
 
 #define DebLog Manager::Get()->GetMessageManager()->DebugLog
 
 class wxsWidgetManager;
 class wxsEventDesc;
 class wxsWidget;
+class wxsDefEvtHandler;
 
 /** Class representing one event */
 class wxsEventDesc

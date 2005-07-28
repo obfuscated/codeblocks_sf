@@ -72,12 +72,12 @@
             </object>
             <object class="sizeritem">
                 <object class="wxComboBox" name="ID_COMMON" variable="ComboBox1" member="no">
+                    <selection>1</selection>
                     <content>
                         <item>First</item>
                         <item>Second</item>
                         <item>Third</item>
                     </content>
-                    <style>wxCB_READONLY</style>
                 </object>
                 <border>5</border>
                 <flag>wxALL|wxALIGN_CENTER</flag>
@@ -89,6 +89,7 @@
             </object>
             <object class="sizeritem">
                 <object class="wxListBox" name="ID_COMMON" variable="ListBox1" member="no">
+                    <selection>2</selection>
                     <content>
                         <item>First</item>
                         <item>Second</item>

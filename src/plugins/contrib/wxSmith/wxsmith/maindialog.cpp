@@ -33,11 +33,11 @@ wxsWndDialog::wxsWndDialog(wxWidnow* parent,wxWindowID id = -1)
     CheckBox4->SetValue(false);
     GridSizer1 = new wxGridSizer(1);
     StaticText1 = new wxStaticText(this,ID_COMMON,wxT("Abc"),wxDefaultPosition,wxSize(100,30),wxALIGN_CENTRE);
-    ComboBox1 = new wxComboBox(this,ID_COMMON,wxGetTranslation(""),wxDefaultPosition,wxDefaultSize,0,0,wxCB_READONLY);
+    ComboBox1 = new wxComboBox(this,ID_COMMON,wxGetTranslation(""),wxDefaultPosition,wxDefaultSize,0,0,0);
     ComboBox1->Append(wxT("First"));
     ComboBox1->Append(wxT("Second"));
     ComboBox1->Append(wxT("Third"));
-    ComboBox1->SetSelection(-1);
+    ComboBox1->SetSelection(1);
     CheckBox5 = new wxCheckBox(this,ID_COMMON,wxT(""),wxDefaultPosition,wxDefaultSize,0);
     CheckBox5->SetValue(false);
     ListBox1 = new wxListBox(this,ID_COMMON,wxDefaultPosition,wxSize(-1,50),0,0,0);
@@ -45,7 +45,7 @@ wxsWndDialog::wxsWndDialog(wxWidnow* parent,wxWindowID id = -1)
     ListBox1->Append(wxT("Second"));
     ListBox1->Append(wxT("Third"));
     ListBox1->Append(wxT("Fourth"));
-    ListBox1->SetSelection(-1);
+    ListBox1->SetSelection(2);
     this->SetSizer(MainSizer);
     //*)
 }
