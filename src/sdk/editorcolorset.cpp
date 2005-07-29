@@ -321,7 +321,7 @@ void EditorColorSet::Apply(HighlightLanguage lang, wxStyledTextCtrl* control)
     {
         for (int i = 0; i < wxSTC_STYLE_MAX; ++i)
         {
-            if (i < 32 || i > 39)
+            if (i < 33 || i > 39)
                 DoApplyStyle(control, i, defaults);
         }
         // also set the caret color, same as the default foreground

@@ -1544,7 +1544,7 @@ void DebuggerGDB::OnValueTooltip(CodeBlocksEvent& event)
 	
 	if (!token.IsEmpty())
 	{
-		Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Value of %s:"), token.c_str());
+		Manager::Get()->GetMessageManager()->AppendLog(m_PageIndex, _("Value of %s:"), token.c_str());
 		pt = ed->GetControl()->PointFromPosition(start);
 		pt = ed->GetControl()->ClientToScreen(pt);
 		m_EvalRect.x = pt.x;
@@ -1559,6 +1559,7 @@ void DebuggerGDB::OnValueTooltip(CodeBlocksEvent& event)
         int pos = tip.First('\n'); // tip is e.g. "$1 = \n<value>"
         if (pos != -1)
             tip.Remove(0, pos + 1); // discard first line
+		Manager::Get()->GetMessageManager()->AppendLog(m_PageIndex, _("%s\n"), tip.c_str());
         tip = token + " = " + tip;
 		if (m_EvalWin)
             m_EvalWin->Destroy();
@@ -1566,8 +1567,12 @@ void DebuggerGDB::OnValueTooltip(CodeBlocksEvent& event)
 		// set the rect that when the cursor gets out of, the tip window closes
 		// just use the tipwindow's rect, a little bit enlarged vertically
 		// (because it displays below the cursor)
-		int fontsize = ed->GetControl()->GetFont().GetPointSize();
 		wxRect r = m_EvalWin->GetRect();
+#if !(wxCHECK_VERSION(2,5,0))
+		r.Inflate(0, 32);
+		r.Offset(0, -16);
+#else
+		int fontsize = ed->GetControl()->GetFont().GetPointSize() * 2;
 		wxPoint pt2(r.x, r.y);
 		pt2 = Manager::Get()->GetAppWindow()->ClientToScreen(pt2);
 		pt2 = ed->GetControl()->ScreenToClient(pt2);
@@ -1575,6 +1580,7 @@ void DebuggerGDB::OnValueTooltip(CodeBlocksEvent& event)
 		r.y = pt2.y - fontsize;
 		int diffy = r.y - pt.y + fontsize;
 		r.height += diffy;
+#endif
 		m_EvalWin->SetBoundingRect(r);
 //		Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("fontsize: %d - diffy: %d - Pt: %d,%d - Rect: %d,%d,%d,%d"), fontsize, diffy, pt.x, pt.y, r.x, r.y, r.width, r.height);
 	}

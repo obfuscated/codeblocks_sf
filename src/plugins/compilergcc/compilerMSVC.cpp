@@ -66,6 +66,7 @@ void CompilerMSVC::Reset()
 	m_Options.AddOption(_("Treat warnings as errors"), "/WX", _("Warnings"));
 	m_Options.AddOption(_("Enable global optimization"), "/Og", _("Optimization"));
 	m_Options.AddOption(_("Maximum optimization (no need for other options)"), "/Ox", _("Optimization"));
+	m_Options.AddOption(_("Disable optimizations"), "/Od", _("Optimization")); //added no optimization
 	m_Options.AddOption(_("Minimize space"), "/O1", _("Optimization"));
 	m_Options.AddOption(_("Maximize speed"), "/O2", _("Optimization"));
 	m_Options.AddOption(_("Favor code space"), "/Os", _("Optimization"));
@@ -85,6 +86,14 @@ void CompilerMSVC::Reset()
 	m_Options.AddOption(_("__cdecl calling convention"), "/Gd", _("Others"));
 	m_Options.AddOption(_("__fastcall calling convention"), "/Gr", _("Others"));
 	m_Options.AddOption(_("__stdcall calling convention"), "/Gz", _("Others"));
+    // Added Runtime options for cl.exe, that is the runtime library selection
+    m_Options.AddOption(_("Single-threaded Runtime Library"), "/ML", _("Runtime"));
+    m_Options.AddOption(_("Single-threaded Debug Runtime Library"), "/MLd", _("Runtime"));
+    m_Options.AddOption(_("Multi-threaded Runtime Library"), "/MT", _("Runtime"), "", true);
+    m_Options.AddOption(_("Multi-threaded Debug Runtime Library"), "/MTd", _("Runtime"));
+    m_Options.AddOption(_("Multi-threaded DLL Runtime Library"), "/MD", _("Runtime"));
+    m_Options.AddOption(_("Multi-threaded DLL Debug Runtime Library"), "/MDd", _("Runtime"));
+
 
     m_Commands[(int)ctCompileObjectCmd] = "$compiler /nologo $options $includes /c $file /Fo$object";
     m_Commands[(int)ctCompileResourceCmd] = "$rescomp $res_includes -fo$resource_output $file";
