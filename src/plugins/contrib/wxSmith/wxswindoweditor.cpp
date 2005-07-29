@@ -7,6 +7,7 @@
 #include "wxspalette.h"
 #include "wxsmith.h"
 #include "wxsresource.h"
+#include "wxsdragwindow.h"
 
 wxsWindowEditor::wxsWindowEditor(wxWindow* parent, const wxString& title,wxsResource* Resource):
     wxsEditor(parent,title,Resource),
@@ -25,10 +26,11 @@ wxsWindowEditor::wxsWindowEditor(wxWindow* parent, const wxString& title,wxsReso
     
     SetSizer(Sizer);
     SetAutoLayout(true);
+
+    DragWnd = new wxsDragWindow(Scroll,NULL,Scroll->GetSize());
     
     wxsEvent SelectEvent(wxEVT_SELECT_RES,0,Resource);
     wxPostEvent(wxSmith::Get(),SelectEvent);
-
 }
 
 wxsWindowEditor::~wxsWindowEditor()
@@ -69,10 +71,14 @@ void wxsWindowEditor::BuildPreview(wxsWidget* TopWidget)
         Scroll->SetSizer(NewSizer);
         NewSizer->SetVirtualSizeHints(Scroll);
         TopPreviewWindow->Refresh();
+        DragWnd->SetSize(Scroll->GetVirtualSize());
+        DragWnd->SetWidget(CurrentWidget);
+        DragWnd->Raise();
     }
     
     Thaw();
     Layout();
+    Refresh();
 
     #if !wxCHECK_VERSION(2,6,0)
         WidgetRefreshReq(this);

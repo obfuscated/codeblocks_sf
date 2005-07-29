@@ -11,10 +11,6 @@
 wxsDefEvtHandler::wxsDefEvtHandler(wxsWidget* Wdg):
     Widget(Wdg), DragWindow(NULL), DragBoxSize(5), DragBoxVisible(true), DragBoxGray(false)
 {
-    if ( Wdg->GetPreview() )
-    {
-//        DragWindow = new wxsDragWindow(Wdg->GetPreview(),Wdg);
-    }
 }
 
 wxsDefEvtHandler::~wxsDefEvtHandler()
@@ -70,19 +66,11 @@ void wxsDefEvtHandler::OnPaint(wxPaintEvent& event)
 
 void wxsDefEvtHandler::OnSize(wxSizeEvent& event)
 {
-    if ( DragWindow )
-    {
-    	DragWindow->SetSize(event.GetSize());
-    }
     event.Skip();
 }
 
 void wxsDefEvtHandler::OnMove(wxMoveEvent& event)
 {
-    if ( DragWindow )
-    {
-    	DragWindow->Move(event.GetPosition());
-    }
     event.Skip();
 }
 
