@@ -420,6 +420,7 @@ bool cbProject::LoadLayout()
     {
         case 0: // open all files
             {
+                Manager::Get()->GetAppWindow()->Freeze();
                 FilesList::Node* node = m_Files.GetFirst();
                 while(node)
                 {
@@ -427,6 +428,15 @@ bool cbProject::LoadLayout()
                     Manager::Get()->GetEditorManager()->Open(f->file.GetFullPath(),0,f);
                     node = node->GetNext();
                 }
+                Manager::Get()->GetAppWindow()->Thaw();
+#if !wxCHECK_VERSION(2,5,0)
+                // this is the only way I 've found to correctly refresh
+                // under wx2.4.2
+                if (Manager::Get()->GetEditorManager()->GetNotebook())
+                    Manager::Get()->GetEditorManager()->GetNotebook()->Refresh();
+                if (Manager::Get()->GetEditorManager()->GetActiveEditor())
+                    Manager::Get()->GetEditorManager()->GetActiveEditor()->Refresh();
+#endif
             }
             break;
         
@@ -438,6 +448,7 @@ bool cbProject::LoadLayout()
                 if (loader.Open(fname.GetFullPath()))
                 {
                     FilesList::Node* node = m_Files.GetFirst();
+                    Manager::Get()->GetAppWindow()->Freeze();
                     while(node)
                     {
                         ProjectFile* f = node->GetData();
@@ -460,6 +471,15 @@ bool cbProject::LoadLayout()
                             eb->Activate();
                         }
                     }
+                    Manager::Get()->GetAppWindow()->Thaw();
+#if !wxCHECK_VERSION(2,5,0)
+                    // this is the only way I 've found to correctly refresh
+                    // under wx2.4.2
+                    if (Manager::Get()->GetEditorManager()->GetNotebook())
+                        Manager::Get()->GetEditorManager()->GetNotebook()->Refresh();
+                    if (Manager::Get()->GetEditorManager()->GetActiveEditor())
+                        Manager::Get()->GetEditorManager()->GetActiveEditor()->Refresh();
+#endif
                     return true;
                 }
             }
@@ -838,6 +858,7 @@ bool cbProject::CloseAllFiles(bool dontsave)
 
 	// now free the rest of the project files
     int count = m_Files.GetCount();
+Manager::Get()->GetAppWindow()->Freeze();
     FilesList::Node* node = m_Files.GetFirst();
     while(node)
     {
@@ -852,6 +873,7 @@ bool cbProject::CloseAllFiles(bool dontsave)
         else
             node = node->GetNext();
     }
+Manager::Get()->GetAppWindow()->Thaw();
     return count == 0;
 }
 
