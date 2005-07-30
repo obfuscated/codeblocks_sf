@@ -27,7 +27,7 @@ wxsWindowEditor::wxsWindowEditor(wxWindow* parent, const wxString& title,wxsReso
     SetSizer(Sizer);
     SetAutoLayout(true);
 
-    DragWnd = new wxsDragWindow(Scroll,NULL,Scroll->GetSize());
+    DragWnd = NULL;
     
     wxsEvent SelectEvent(wxEVT_SELECT_RES,0,Resource);
     wxPostEvent(wxSmith::Get(),SelectEvent);
@@ -57,6 +57,11 @@ void wxsWindowEditor::BuildPreview(wxsWidget* TopWidget)
     Freeze();
     
     KillCurrentPreview();
+    if ( DragWnd )
+    {
+    	delete DragWnd;
+    	DragWnd = NULL;
+    }
     
     // Creating new sizer
 
@@ -70,15 +75,13 @@ void wxsWindowEditor::BuildPreview(wxsWidget* TopWidget)
         Scroll->SetVirtualSizeHints(1,1);
         Scroll->SetSizer(NewSizer);
         NewSizer->SetVirtualSizeHints(Scroll);
-        TopPreviewWindow->Refresh();
-        DragWnd->SetSize(Scroll->GetVirtualSize());
-        DragWnd->SetWidget(CurrentWidget);
+        Layout();
+        DragWnd = new wxsDragWindow(Scroll,TopWidget,Scroll->GetVirtualSize());
         DragWnd->Raise();
+        Refresh();
     }
     
     Thaw();
-    Layout();
-    Refresh();
 
     #if !wxCHECK_VERSION(2,6,0)
         WidgetRefreshReq(this);

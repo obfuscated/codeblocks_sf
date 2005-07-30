@@ -39,8 +39,8 @@ class wxsDragWindow : public wxControl
         
         /** Erasing background will do nothing */
         void OnEraseBack(wxEraseEvent& event);
-        
-        /** Processing all mouse events */
+
+        /** Event handler for all mouse events */
         void OnMouse(wxMouseEvent& event);
         
         /** Size of boxes used to drag borders of widgets */
@@ -66,6 +66,7 @@ class wxsDragWindow : public wxControl
         {
         	wxsWidget* Widget;                              ///< Widget associated with this box
         	DragBoxType Type;                               ///< Type of this drag box
+        	bool Invisible;                                 ///< IF true, this point is hidden
         	bool Inactive;                                  ///< If true, this drag point will be drawn gray
         	int PosX;                                       ///< X position of this drag point
         	int PosY;                                       ///< Y position of this drag point
@@ -82,10 +83,23 @@ class wxsDragWindow : public wxControl
         /** Root widget for this resource */
         wxsWidget* RootWidget;
         
+        /** Drag Point which is currently dragged */
+        DragPointData* CurDragPoint;
+        
+        /** Widget which is currently dragged */
+        wxsWidget* CurDragWidget;
+        
+        /** Mouse position at the beginning of dragging */
+        int DragMouseBegX, DragMouseBegY;
+        
+        /** Position of dragged item at the beginning of dragging */
+        int DragItemBegX, DragItemBegY;
         
         // Mics functions
         
         void ClearDragPoints();
+        void RebuildDragPoints(wxsWidget* Widget);
+        wxsWidget* FindWidgetAtPos(int PosX,int PosY,wxsWidget* Widget);
         
         DECLARE_EVENT_TABLE()
 };

@@ -221,6 +221,9 @@ class wxsWidget
         
         /** Taking resource tree of this widget */
         wxTreeItemId GetTreeId() { return TreeId; }
+        
+        /** Taking BasePropertiesType for this widget */
+        BasePropertiesType GetBPType() { return BPType; }
 
 /******************************************************************************/
 /* Preview                                                                    */
