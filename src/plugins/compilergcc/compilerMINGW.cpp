@@ -9,6 +9,8 @@
 #include <wx/fileconf.h>
 #include <wx/msgdlg.h>
 #include <wx/log.h>
+#include "manager.h"
+#include "messagemanager.h"
 
 #include <configmanager.h>
 
@@ -180,9 +182,28 @@ AutoDetectResult CompilerMINGW::AutoDetectInstallationDir()
             wxLogNull ln;
             wxRegKey key; // defaults to HKCR
             key.SetName("HKEY_LOCAL_MACHINE\\Software\\Dev-C++");
-            if (key.Open())
+            if (key.Open()) {
                 // found; read it
                 key.QueryValue("Install_Dir", m_MasterPath);
+            }
+            else {
+                // installed by inno-setup
+                // HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Minimalist GNU for Windows 4.1_is1
+            	wxString name;
+            	long index;
+            	key.SetName("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall");                               
+            	//key.SetName("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion");                               
+                bool ok = key.GetFirstKey(name, index);
+                while (ok && !name.StartsWith("Minimalist GNU for Windows")) {
+                    ok = key.GetNextKey(name, index);
+                }
+                if (ok) {
+                	name = key.GetName() + "\\" + name;
+                    key.SetName(name);
+                    Manager::Get()->GetMessageManager()->DebugLog("name: %s", name.c_str());
+                    if (key.Exists()) key.QueryValue("InstallLocation", m_MasterPath);
+                }
+            }
         }
     }
     else
