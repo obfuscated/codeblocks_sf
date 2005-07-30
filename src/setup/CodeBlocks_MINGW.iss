@@ -3,14 +3,14 @@
 
 [Setup]
 AppName=Code::Blocks
-AppVerName=Code::Blocks 1.0-finalbeta
+AppVerName=Code::Blocks 1.0-RC1
 AppPublisher=Code::Blocks
 DefaultDirName={pf}\CodeBlocks
 DefaultGroupName=CodeBlocks
 LicenseFile=..\COPYING
-OutputBaseFilename=CodeBlocks-1.0-finalbeta_MinGW
+OutputBaseFilename=CodeBlocks-1.0-RC1_MINGW
 AppPublisherURL=www.codeblocks.org
-AppVersion=1.0-finalbeta
+AppVersion=1.0-RC1
 UninstallDisplayIcon={app}\codeblocks.exe
 UninstallDisplayName=Code::Blocks
 ShowLanguageDialog=no
@@ -20,7 +20,7 @@ VersionInfoVersion=1.0
 VersionInfoDescription=Code::Blocks IDE with MinGW compiler
 WizardImageFile=setup.bmp
 WizardSmallImageFile=setupsmall.bmp
-InfoAfterFile=
+InfoAfterFile=COMPILERS_win32.rtf
 InternalCompressLevel=ultra
 SolidCompression=true
 Compression=lzma/ultra
@@ -104,9 +104,10 @@ Source: ..\output\share\CodeBlocks\templates\wx-main-ash.h; DestDir: {app}\share
 Source: ..\output\share\CodeBlocks\templates\wx-main-s.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
 Source: ..\output\share\CodeBlocks\templates\wx-main-sh.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
 Source: ..\output\share\CodeBlocks\templates\wx-main-sh.h; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\wxwindows.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\wxwindows.png; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
-Source: ..\output\share\CodeBlocks\templates\wxwindows.template; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\output\share\CodeBlocks\templates\wxwidgets_static.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\output\share\CodeBlocks\templates\wxwidgets.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\output\share\CodeBlocks\templates\wxwidgets.png; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
+Source: ..\output\share\CodeBlocks\templates\wxwidgets.template; DestDir: {app}\share\CodeBlocks\templates; Components: Templates
 Source: ..\output\share\CodeBlocks\images\ascii.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\images\codeblocks.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\images\compile.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
@@ -131,6 +132,7 @@ Source: ..\output\share\CodeBlocks\images\folder_new.png; DestDir: {app}\share\C
 Source: ..\output\share\CodeBlocks\images\folder_open.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\images\gohome.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\images\misc_16x16.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
+Source: ..\output\share\CodeBlocks\images\modified_file.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\images\newproject.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\images\rebuild.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\images\redo.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
@@ -162,7 +164,7 @@ Source: ..\plugins\codecompletion\resources\images\symbols_folder.png; DestDir: 
 Source: ..\plugins\codecompletion\resources\images\var_private.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
 Source: ..\plugins\codecompletion\resources\images\var_protected.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
 Source: ..\plugins\codecompletion\resources\images\var_public.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: CodeCompletion
-Source: ..\..\..\..\MinGW-pristine\*; DestDir: {app}; Components: CompilerMINGW; Flags: recursesubdirs
+Source: ..\..\..\..\MinGW\*; DestDir: {app}; Components: CompilerMINGW; Flags: recursesubdirs
 
 [Icons]
 Name: {group}\CodeBlocks; Filename: {app}\codeblocks.exe; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Components: ProgramFiles
@@ -189,12 +191,12 @@ Name: ClassWizard; Description: Class wizard plugin; Types: custom full
 Name: CodeCompletion; Description: Code completion / Class browser plugin; Types: custom full
 Name: CompilerGCC; Description: Compiler plugin; Types: custom compact full
 Name: DebuggerGDB; Description: GDB debugger plugin; Types: custom compact full
-Name: DefMimeHandler; Description: Default MIME handler; Types: custom compact full
 Name: PluginWizard; Description: Code::Blocks Plugin wizard plugin; Types: custom full
 Name: ToDo; Description: To-Do List plugin; Types: custom full
 Name: XPManifest; Description: WindowsXP Manifest plugin; Types: custom full
 Name: Templates; Description: Project templates; Types: custom full
 Name: AStyleFormatter; Description: Astyle code formatter plugin; Types: custom full
+Name: DefMimeHandler; Description: Default MIME handler; Types: custom compact full
 
 [UninstallRun]
 Filename: {app}\codeblocks.exe; Parameters: --clear-configuration; WorkingDir: {app}

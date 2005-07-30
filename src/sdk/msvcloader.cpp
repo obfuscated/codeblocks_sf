@@ -26,7 +26,7 @@ MSVCLoader::MSVCLoader(cbProject* project)
     m_ConvertSwitches(true)
 {
 	//ctor
-}
+} 
 
 MSVCLoader::~MSVCLoader()
 {
@@ -89,7 +89,6 @@ bool MSVCLoader::ReadConfigurations()
 {
     m_Configurations.Clear();
     m_ConfigurationsLineIndex.Clear();
-    m_Type = ttExecutable;
     m_BeginTargetLine = -1;
 
     wxFileInputStream file(m_Filename.GetFullPath());
@@ -109,23 +108,46 @@ bool MSVCLoader::ReadConfigurations()
         int size = -1;
         if (line.StartsWith("# TARGTYPE"))
         {
+          	// # TARGTYPE "Win32 (x86) Application" 0x0103
             int idx = line.Find(' ', true);
             if (idx != -1)
             {
-                int typ = atoi(line.Mid(idx + 3, 4));
-                switch (typ)
-                {
-                    case 101: m_Type = ttExecutable; break;
-                    case 102: m_Type = ttDynamicLib; break;
-                    case 103: m_Type = ttConsoleOnly; break;
-                    case 104: m_Type = ttStaticLib; break;
-                    // I 've seen 0x010a "Generic project" which was empty.
-                    // don't know what to do with it...
-                    default: break;
+            	TargetType type;
+                wxString targtype = line.Mid(12, idx-1-12);
+                wxString projcode = line.Mid(idx+3, 4);
+                if      (projcode.Matches("0101")) type = ttExecutable;
+                else if (projcode.Matches("0102")) type = ttDynamicLib;
+                else if (projcode.Matches("0103")) type = ttConsoleOnly;
+                else if (projcode.Matches("0104")) type = ttStaticLib; 
+                else if (projcode.Matches("010a")) type = ttCommandsOnly;
+                else {
+                  type = ttCommandsOnly;
+                  Manager::Get()->GetMessageManager()->DebugLog("unrecognized target type");                
                 }
-                Manager::Get()->GetMessageManager()->DebugLog("Project type set to %d", typ);
+
+                Manager::Get()->GetMessageManager()->DebugLog("TargType '%s' -> %d", targtype.c_str(), type);            
+                m_TargType[targtype] = type;
             }
             continue;
+        }
+        else if (line.StartsWith("!MESSAGE \"")) {
+        //  !MESSAGE "anothertest - Win32 Release" (based on "Win32 (x86) Application")
+            //line.
+            int pos;
+            pos = line.Find('\"');
+            line.Remove(0, pos+1);
+            pos = line.Find('\"');
+            wxString target = line.Left(pos);
+            line.Remove(0, pos+1);
+            pos = line.Find('\"');
+            line.Remove(0, pos+1);
+            pos = line.Find('\"');
+            wxString basedOn = line.Left(pos);
+            TargetType type = ttCommandsOnly;
+            HashTargetType::iterator it = m_TargType.find(basedOn);
+            if (it != m_TargType.end()) type = it->second;
+            m_TargetBasedOn[target] = type;
+            Manager::Get()->GetMessageManager()->DebugLog("Target '%s' is of type %d", target.c_str(), type);            
         }
         else if (line.StartsWith("!IF  \"$(CFG)\" =="))
             size = 16;
@@ -166,6 +188,9 @@ bool MSVCLoader::ParseConfiguration(int index)
     if (!bt)
         return false;
     bt->SetCompilerIndex(m_pProject->GetCompilerIndex());
+    m_Type = ttCommandsOnly;
+    HashTargetType::iterator it = m_TargetBasedOn.find(m_Configurations[index]);
+    if (it != m_TargetBasedOn.end()) m_Type = it->second;
     bt->SetTargetType(m_Type);
     bt->SetOutputFilename(bt->SuggestOutputFilename());
 
@@ -203,7 +228,9 @@ bool MSVCLoader::ParseConfiguration(int index)
             if (!line.IsEmpty())
             {
                 wxFileName out = bt->GetOutputFilename();
-                out.SetPath(out.GetPath() + wxFileName::GetPathSeparator() + tmp);
+                out.SetPath(tmp); // out could be a full path name and not only a relative one !
+                if (out.IsRelative())
+                    out.MakeAbsolute(m_Filename.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
                 bt->SetOutputFilename(out.GetFullPath());
             }
         }
@@ -352,8 +379,8 @@ void MSVCLoader::ProcessCompilerOptions(ProjectBuildTarget* target, const wxStri
             {
                 // do nothing (ignore silently)
             }
-            else
-                Manager::Get()->GetMessageManager()->DebugLog("Unhandled compiler option: " + opt);
+            else if (opt.Matches("/c")) {} // do nothing
+            //else Manager::Get()->GetMessageManager()->DebugLog("Unhandled compiler option: " + opt);
         }
         else // !m_ConvertSwitches
         {
@@ -366,6 +393,7 @@ void MSVCLoader::ProcessCompilerOptions(ProjectBuildTarget* target, const wxStri
                 target->AddCompilerOption("/U" + RemoveQuotes(array[++i]));
             else if (opt.StartsWith("/Yu"))
                 Manager::Get()->GetMessageManager()->DebugLog("Ignoring precompiled headers option (/Yu)");
+            else if (opt.Matches("/c") || opt.Matches("/nologo")) {} // do nothing
             else
                 target->AddCompilerOption(opt);
         }
@@ -422,6 +450,7 @@ void MSVCLoader::ProcessLinkerOptions(ProjectBuildTarget* target, const wxString
                 opt.Remove(0, 9);
                 target->AddLibDir(RemoveQuotes(opt));
             }
+            else if (opt.Matches("/nologo")) {} // ignore silently
             else
             {
                 // don't add linking lib (added below, in common options)
@@ -448,7 +477,7 @@ void MSVCLoader::ProcessLinkerOptions(ProjectBuildTarget* target, const wxString
             opt = RemoveQuotes(opt);
             if (m_Type == ttStaticLib)
             {
-                // convert lib filename based on compiler
+              // convert lib filename based on compiler
 /* NOTE (mandrav#1#): I think I should move this code somewhere more accessible...
 I need it here and there... */
                 wxFileName orig = target->GetOutputFilename();

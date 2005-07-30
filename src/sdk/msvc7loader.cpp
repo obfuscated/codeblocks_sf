@@ -8,11 +8,13 @@
 #include "msvc7loader.h"
 #include "multiselectdlg.h"
 #include "importers_globals.h"
+#include "compilerfactory.h"
+#include "compiler.h"
 
 MSVC7Loader::MSVC7Loader(cbProject* project)
     : m_pProject(project),
     m_ConvertSwitches(false),
-    m_Version(vcOther)
+    m_Version(0)
 {
 	//ctor
 }
@@ -26,15 +28,14 @@ wxString MSVC7Loader::ReplaceMSVCMacros(const wxString& str)
 {
     wxString ret = str;
     ret.Replace("$(OutDir)", m_OutDir);
+    ret.Replace("$(IntDir)", m_IntDir); 
+    ret.Replace("$(INTDIR)", m_IntDir);
     ret.Replace("$(ConfigurationName)", m_ConfigurationName);
     ret.Replace("$(ProjectName)", m_ProjectName);
     ret.Replace("$(TargetPath)", m_TargetPath);
     ret.Replace("$(TargetFileName)", m_TargetFilename);
-    if (ret.StartsWith("\""))
-    {
-        ret.Remove(0, 1);
-        ret.Remove(ret.Length() - 1);
-    }
+    ret.Replace("\"", "");
+    //ret.Replace("&quot;", "\"");
 
     // search for other $(...) occurences (env.vars)
     while (true)
@@ -105,13 +106,14 @@ bool MSVC7Loader::Open(const wxString& filename)
         pMsg->DebugLog("Project is not Visual C++...");
         return false;
     }
-    if (strncmp(root->Attribute("Version"), "7.0", 3) == 0)
-        m_Version = vc70;
-    else if (strncmp(root->Attribute("Version"), "7.1", 3) == 0)
-        m_Version = vc71;
-    else
+
+    wxString ver = root->Attribute("Version");
+    if (ver.IsSameAs("7.0") || ver.IsSameAs("7.00")) m_Version = 70;
+    if (ver.IsSameAs("7.1") || ver.IsSameAs("7.10")) m_Version = 71;
+    if ((m_Version!=70) && (m_Version!=71))
     {
-        pMsg->DebugLog(_("Project version is '%s'. Although this loader was designed for version 7.xx, will try to import..."), root->Attribute("Version"));
+        // seems to work with visual 8 too ;)
+        pMsg->DebugLog(_("Project version is '%s'. Although this loader was designed for version 7.xx, will try to import..."), ver.c_str());
     }
 
     m_pProject->ClearAllProperties();
@@ -211,21 +213,28 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
         bt = m_pProject->AddBuildTarget(m_ConfigurationName);
     bt->SetCompilerIndex(m_pProject->GetCompilerIndex());
 
-    m_OutDir = ReplaceMSVCMacros(conf->Attribute("OutputDirectory"));
-    bt->SetObjectOutput(ReplaceMSVCMacros(conf->Attribute("IntermediateDirectory")));
-    
-    wxString conftype = conf->Attribute("ConfigurationType");
-    if (conftype.Matches("1"))
-        bt->SetTargetType(ttConsoleOnly);
-    else if (conftype.Matches("2"))
-        bt->SetTargetType(ttDynamicLib);
-    else if (conftype.Matches("3"))
-        bt->SetTargetType(ttExecutable); // FIXME: is this correct???
-    else if (conftype.Matches("4"))
-        bt->SetTargetType(ttStaticLib);
+    // See http://msdn.microsoft.com/library/default.asp?url=/library/en-us/vcext/html/vxlrfvcprojectenginelibraryruntimelibraryoption.asp
 
-    if (!m_ConvertSwitches)
-        m_pProject->AddCompilerOption("/GX"); // add C++ exception handling (by default)
+
+    m_OutDir = ReplaceMSVCMacros(conf->Attribute("OutputDirectory"));
+    m_IntDir = ReplaceMSVCMacros(conf->Attribute("IntermediateDirectory"));
+    if (m_IntDir.StartsWith(".\\")) m_IntDir.Remove(0,2);
+    bt->SetObjectOutput(m_IntDir);
+    
+    // see MSDN: ConfigurationTypes Enumeration
+    wxString conftype = conf->Attribute("ConfigurationType");
+    if (conftype.IsSameAs("1")) // typeApplication 1, no difference between console or gui here, we must check the subsystem property of the linker
+        bt->SetTargetType(ttExecutable);
+    else if (conftype.IsSameAs("2")) // typeDynamicLibrary 2 
+        bt->SetTargetType(ttDynamicLib);
+    else if (conftype.IsSameAs("4")) // typeStaticLibrary 4 
+        bt->SetTargetType(ttStaticLib);
+    else if (conftype.IsSameAs("10")) // typeGeneric 10 
+        bt->SetTargetType(ttCommandsOnly);
+    else { // typeUnknown 0 
+        bt->SetTargetType(ttCommandsOnly);
+        Manager::Get()->GetMessageManager()->DebugLog("unrecognized project type");                
+    }
 
     TiXmlElement* tool = conf->FirstChildElement("Tool");
     if (!tool)
@@ -239,15 +248,40 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
         if (strcmp(tool->Attribute("Name"), "VCLinkerTool") == 0 ||
             strcmp(tool->Attribute("Name"), "VCLibrarianTool") == 0)
         {
-            // linker
-            wxString tmp = ReplaceMSVCMacros(tool->Attribute("OutputFile"));
+		    // linker
+            wxString tmp;
+                        
+            if (bt->GetTargetType()==ttExecutable) {
+                tmp = tool->Attribute("SubSystem");
+                //subSystemNotSet 0 
+                //subSystemConsole 1 
+                //subSystemWindows 2 
+                if (tmp.IsSameAs("1")) {
+                    bt->SetTargetType(ttConsoleOnly); 
+                    //bt->AddLinkerOption("/SUBSYSTEM:CONSOLE"); // don't know if it is necessary
+                }
+            } // else we keep executable
+    	
+            tmp = ReplaceMSVCMacros(tool->Attribute("OutputFile"));
             tmp = UnixFilename(tmp);
+            if (tmp.Last() == '.') tmp.RemoveLast();
+            if (bt->GetTargetType() == ttStaticLib) {
+                // convert the lib name
+                Compiler* compiler = CompilerFactory::Compilers[m_pProject->GetCompilerIndex()];
+                wxString prefix = compiler->GetSwitches().libPrefix;                        
+                wxString suffix = compiler->GetSwitches().libExtension;
+                wxFileName fname = tmp;
+                if (!fname.GetName().StartsWith(prefix)) fname.SetName(prefix + fname.GetName());
+                fname.SetExt(suffix);                        
+                tmp = fname.GetFullPath();
+            }
             bt->SetOutputFilename(tmp);
             m_TargetPath = wxFileName(tmp).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
             m_TargetFilename = wxFileName(tmp).GetFullName();
 
-            wxString libs = tool->Attribute("AdditionalLibraryDirectories");
-            wxArrayString arr = GetArrayFromString(libs, ";");
+            tmp = tool->Attribute("AdditionalLibraryDirectories");
+            wxArrayString arr = GetArrayFromString(tmp, ";");
+            if (arr.GetCount()==1) arr = GetArrayFromString(tmp, ",");
             for (unsigned int i = 0; i < arr.GetCount(); ++i)
             {
                 bt->AddLibDir(ReplaceMSVCMacros(arr[i]));
@@ -255,32 +289,42 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
 
             if (!m_ConvertSwitches) // no point importing this option, if converting to GCC
             {
-                libs = tool->Attribute("IgnoreDefaultLibraryNames");
-                arr = GetArrayFromString(libs, ",");
+                tmp = tool->Attribute("IgnoreDefaultLibraryNames");
+                arr = GetArrayFromString(tmp, ";");
+                if (arr.GetCount()==1) arr = GetArrayFromString(tmp, ",");
                 for (unsigned int i = 0; i < arr.GetCount(); ++i)
                 {
                     bt->AddLinkerOption("/NODEFAULTLIB:" + arr[i]);
                 }
             }
 
-            tmp = tool->Attribute("GenerateDebugInformation");
-            if (tmp.Matches("TRUE"))
-            {
-                bt->AddCompilerOption(m_ConvertSwitches ? "-g" : "/Zi");
-                if (!m_ConvertSwitches)
-                    bt->AddLinkerOption("/debug");
-            }
-
+#if 0
+            // no need since "/nologo" appear on the invocation commands of compilers/linkers
             if (!m_ConvertSwitches)
             {
                 tmp = tool->Attribute("SuppressStartupBanner");
-                if (tmp.Matches("TRUE"))
+                if (tmp.IsSameAs("TRUE"))
                     bt->AddLinkerOption("/nologo");
             }
+#endif
+
+            tmp = tool->Attribute("GenerateDebugInformation");
+            if (tmp.IsSameAs("TRUE"))
+            {
+                //bt->AddCompilerOption(m_ConvertSwitches ? "-g" : "/Zi"); // no !
+                if (!m_ConvertSwitches)
+                    bt->AddLinkerOption("/debug");
+            }
             
-            m_pProject->AddLinkerOption(ReplaceMSVCMacros(tool->Attribute("AdditionalOptions")));
-            libs = ReplaceMSVCMacros(tool->Attribute("AdditionalDependencies"));
-            arr = GetArrayFromString(libs, " ");
+            // other options: /MACHINE:I386, /INCREMENTAL:YES, /STACK:10000000
+            if (!m_ConvertSwitches) {
+                arr = GetArrayFromString(ReplaceMSVCMacros(tool->Attribute("AdditionalOptions")), " ");
+                for (unsigned int i = 0; i < arr.GetCount(); ++i) bt->AddLinkerOption(arr[i]);
+            }
+            // else ignore all options
+            
+            tmp = ReplaceMSVCMacros(tool->Attribute("AdditionalDependencies"));
+            arr = GetArrayFromString(tmp, " ");
             for (unsigned int i = 0; i < arr.GetCount(); ++i)
             {
                 tmp = arr[i];
@@ -288,15 +332,14 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
                     tmp.Remove(tmp.Length() - 4);
                 bt->AddLinkLib(tmp);
             }
-//            m_pProject->AddLinkLib(ReplaceMSVCMacros(tool->Attribute("ImportLibrary")));
             
             if (!m_ConvertSwitches)
             {
                 tmp = tool->Attribute("LinkIncremental");
-                if (!tmp.Matches("0")) // is this correct???
-                    bt->AddLinkerOption("/incremental");
+                if (tmp.IsSameAs("1")) // 1 -> no, default is yes
+                    bt->AddLinkerOption("/INCREMENTAL:NO");
             }
-            
+
             if (!m_ConvertSwitches)
             {
                 tmp = ReplaceMSVCMacros(tool->Attribute("ProgramDatabaseFile"));
@@ -306,21 +349,27 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
         }
         else if (strcmp(tool->Attribute("Name"), "VCCLCompilerTool") == 0)
         {
+        	unsigned int i;
+        	wxString tmp;
+        	wxArrayString arr;
+        	
             // compiler
-            wxString incs = tool->Attribute("AdditionalIncludeDirectories");
+            tmp = tool->Attribute("AdditionalIncludeDirectories");
             // vc70 uses ";" while vc71 uses "," separators
             // NOTE (mandrav#1#): No, that is *not* the case (what were they thinking at MS?)
             // try with comma (,) which is the newest I believe
-            wxArrayString arr = GetArrayFromString(incs, ",");
+            arr = GetArrayFromString(tmp, ",");
             if (arr.GetCount() == 1) // if it fails, try with semicolon
-                arr = GetArrayFromString(incs, ";");
-            for (unsigned int i = 0; i < arr.GetCount(); ++i)
+                arr = GetArrayFromString(tmp, ";");
+            for (i = 0; i < arr.GetCount(); ++i)
             {
                 bt->AddIncludeDir(ReplaceMSVCMacros(arr[i]));
             }
             
-            wxString defs = tool->Attribute("PreprocessorDefinitions");
-            arr = GetArrayFromString(defs, ";");
+            tmp = tool->Attribute("PreprocessorDefinitions");
+            arr = GetArrayFromString(tmp, ",");
+            if (arr.GetCount() == 1) // if it fails, try with semicolon
+                arr = GetArrayFromString(tmp, ";");
             for (unsigned int i = 0; i < arr.GetCount(); ++i)
             {
                 if (m_ConvertSwitches)
@@ -329,42 +378,125 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
                     bt->AddCompilerOption("/D" + arr[i]);
             }
             
-            wxString tmp = tool->Attribute("WarningLevel");
+            tmp = tool->Attribute("WarningLevel");
             if (m_ConvertSwitches)
             {
-                if (tmp.Matches("0"))
+                if (tmp.IsSameAs("0"))
                     bt->AddCompilerOption("-w");
-                else if (tmp.Matches("1") || tmp.Matches("2") || tmp.Matches("3"))
+                else if (tmp.IsSameAs("1") || tmp.IsSameAs("2") || tmp.IsSameAs("3"))
                     bt->AddCompilerOption("-W");
-                else if (tmp.Matches("4"))
+                else if (tmp.IsSameAs("4"))
                     bt->AddCompilerOption("-Wall");
             }
             else
             {
-                m_pProject->AddCompilerOption("/W" + tmp);
+                bt->AddCompilerOption("/W" + tmp);
+            }
+
+            tmp = tool->Attribute("DebugInformationFormat");
+            if (tmp.IsSameAs("3"))
+              bt->AddCompilerOption(m_ConvertSwitches ? "-g" : "/Zi"); // no !
+
+
+            tmp = tool->Attribute("InlineFunctionExpansion");
+            if (!m_ConvertSwitches && tmp.IsSameAs("1")) bt->AddCompilerOption("/Ob1");
+
+            /* Optimization :
+            optimizeDisabled 0 
+            optimizeMinSpace 1 
+            optimizeMaxSpeed 2 
+            optimizeFull 3 
+            optimizeCustom 4 
+            */
+            tmp = tool->Attribute("Optimization");
+            if (m_ConvertSwitches) {
+                if      (tmp.IsSameAs("0")) bt->AddCompilerOption("-O0");
+                else if (tmp.IsSameAs("1")) bt->AddCompilerOption("-O1");
+                else if (tmp.IsSameAs("2")) bt->AddCompilerOption("-O2");
+                else if (tmp.IsSameAs("3")) bt->AddCompilerOption("-O3");
+                //else if (tmp.IsSameAs("4")) bt->AddCompilerOption("-O1"); // nothing to do ?
+            }
+            else {
+                if      (tmp.IsSameAs("0")) bt->AddCompilerOption("/Od");
+                else if (tmp.IsSameAs("1")) bt->AddCompilerOption("/O1");
+                else if (tmp.IsSameAs("2")) bt->AddCompilerOption("/O2");
+                else if (tmp.IsSameAs("3")) bt->AddCompilerOption("/Ox");
+                //else if (tmp.IsSameAs("4")) bt->AddCompilerOption("/O1"); // nothing to do ?
             }
 
             if (!m_ConvertSwitches)
             {
                 tmp = tool->Attribute("Detect64BitPortabilityProblems");
-                if (tmp.Matches("TRUE"))
+                if (tmp.IsSameAs("TRUE"))
                     bt->AddCompilerOption("/Wp64");
 
                 tmp = tool->Attribute("MinimalRebuild");
-                if (tmp.Matches("TRUE"))
+                if (tmp.IsSameAs("TRUE"))
                     bt->AddCompilerOption("/Gm");
+                    
+                /*
+                RuntimeLibrary :
+                rtMultiThreaded          0 --> /MT
+                rtMultiThreadedDebug     1 --> /MTd
+                rtMultiThreadedDLL       2 --> /MD 
+                rtMultiThreadedDebugDLL  3 --> /MDd
+                rtSingleThreaded         4 --> /ML
+                rtSingleThreadedDebug    5 --> /MLd
+                */
+                tmp = tool->Attribute("RuntimeLibrary");                
+                if      (tmp.IsSameAs("0")) bt->AddCompilerOption("/MT");
+                else if (tmp.IsSameAs("1")) bt->AddCompilerOption("/MTd");
+                else if (tmp.IsSameAs("2")) bt->AddCompilerOption("/MD");
+                else if (tmp.IsSameAs("3")) bt->AddCompilerOption("/MDd");
+                else if (tmp.IsSameAs("4")) bt->AddCompilerOption("/ML");
+                else if (tmp.IsSameAs("5")) bt->AddCompilerOption("/MLd");                               
+
+#if 0
+                tmp = tool->Attribute("SuppressStartupBanner");
+                if (tmp.IsSameAs("TRUE")) bt->AddCompilerOption("/nologo");
+#endif
+
+/*
+runtimeBasicCheckNone 0 
+runtimeCheckStackFrame 1  --> /RTCs or /GZ
+runtimeCheckUninitVariables 2 
+runtimeBasicCheckAll 3 
+*/
+
+                tmp = tool->Attribute("BasicRuntimeChecks");
+                if (tmp.IsSameAs("1"))
+                    bt->AddCompilerOption("/GZ");
+  
+                tmp = tool->Attribute("ExceptionHandling");
+                if (tmp.IsSameAs("TRUE")) bt->AddCompilerOption("EHsc"); // add C++ exception handling
+
             }
 
             tmp = tool->Attribute("RuntimeTypeInfo");
-            if (tmp.Matches("TRUE"))
+            if (tmp.IsSameAs("TRUE"))
                 bt->AddCompilerOption(m_ConvertSwitches ? "-frtti" : "/GR");
 
-            if (!m_ConvertSwitches)
-            {
-                tmp = tool->Attribute("SuppressStartupBanner");
-                if (tmp.Matches("TRUE"))
-                    bt->AddCompilerOption("/nologo");
+/*
+AdditionalOptions=" /Zm1000 /GR  -DCMAKE_INTDIR=\&quot;Debug\&quot;"
+ObjectFile="Debug\"
+/Zm<n> max memory alloc (% of default)
+*/
+        	  tmp = tool->Attribute("AdditionalOptions");        	
+          	//tmp = ReplaceMSVCMacros(tmp);
+            arr = GetArrayFromString(tmp, " ");
+            for (i=0; i<arr.GetCount(); ++i) {
+              if (arr[i].IsSameAs("/D") || arr[i].IsSameAs("-D")) {
+                  bt->AddCompilerOption((m_ConvertSwitches?"-D":"/D") + arr[i+1]);
+                  ++i;
+              }
+              else if (arr[i].StartsWith("/D") || arr[i].StartsWith("-D"))
+                	bt->AddCompilerOption((m_ConvertSwitches?"-D":"/D") + arr[i].Mid(2));
+              else if (arr[i].IsSameAs("/Zi"))
+                	bt->AddCompilerOption(m_ConvertSwitches?"-g":"/Zi");
+              else if (!m_ConvertSwitches) 
+                  bt->AddCompilerOption(arr[i]);
             }
+
         }
         else if (strcmp(tool->Attribute("Name"), "VCPreBuildEventTool") == 0)
         {
@@ -444,7 +576,7 @@ void MSVC7Loader::HandleFileConfiguration(TiXmlElement* file, ProjectFile* pf)
         if (const char* s = fconf->Attribute("ExcludedFromBuild"))
         {
             wxString exclude = s; // can you initialize wxString from NULL?
-            if (exclude.Matches("TRUE"))
+            if (exclude.IsSameAs("TRUE"))
             {
                 wxString name = fconf->Attribute("Name");
                 int pos = name.Find('|');

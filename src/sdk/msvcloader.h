@@ -4,6 +4,7 @@
 #include "ibaseloader.h"
 #include <wx/dynarray.h>
 #include <wx/filename.h>
+#include <wx/hashmap.h>
 #include "compiletargetbase.h" // for target type
 
 // forward decls
@@ -30,8 +31,11 @@ class MSVCLoader : public IBaseLoader
         bool m_ConvertSwitches;
         wxArrayString m_Configurations;
         wxArrayInt m_ConfigurationsLineIndex;
-        TargetType m_Type;
         wxFileName m_Filename;
+        TargetType m_Type;
+        WX_DECLARE_STRING_HASH_MAP(TargetType, HashTargetType);
+        HashTargetType m_TargType;
+        HashTargetType m_TargetBasedOn;
         int m_BeginTargetLine;
 	private:
 };

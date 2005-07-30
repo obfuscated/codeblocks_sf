@@ -12,6 +12,10 @@
 #include "manager.h"
 #include "messagemanager.h"
 #include "projectmanager.h"
+#include "compilerfactory.h"
+#include "compiler.h"
+
+#include <cassert>
 
 MSVCWorkspaceLoader::MSVCWorkspaceLoader()
 {
@@ -19,9 +23,9 @@ MSVCWorkspaceLoader::MSVCWorkspaceLoader()
 }
 
 MSVCWorkspaceLoader::~MSVCWorkspaceLoader()
-{
+{ 
 	//dtor
-}
+} 
 
 bool MSVCWorkspaceLoader::Open(const wxString& filename)
 {
@@ -81,60 +85,79 @@ bool MSVCWorkspaceLoader::Open(const wxString& filename)
     ImportersGlobals::ImportAllTargets = !askForTargets;
 
     int count = 0;
+
+    cbProject* currentProject = 0;
     while (!file.Eof())
     {
         wxString line = input.ReadLine();
 
-// example wanted line:
-//Project: "Demo_BSP"=.\Samples\BSP\scripts\Demo_BSP.dsp - Package Owner=<4>
         line.Trim(true);
         line.Trim(false);
-        if (!line.StartsWith("Project:"))
-            continue;
-        line.Remove(0, 8); // remove "Project:"
+            
+        /*
+        * exemple wanted line:
+        * Project_Dep_Name VstSDK
+        * and add the dependency/link of the VstSDK project to the current project
+        * be carefull, the dependent projects could not have already been read, so we have to remember them
+        */
+        if (line.StartsWith("Project_Dep_Name")) {
+          line.Remove(0, 16);
+          line.Trim(false);
+          if (currentProject) addDependency(currentProject, line);
+          continue;
+        }
 
-        // now we need to find the equal sign (=) that separates the
-        // project title from the filename, and the minus sign (-)
-        // that separates the filename from junk info - at least to this importer ;)
-        int equal = line.Find('=');
-        int minus = line.Find('-', true); // search from end
-        
-        if (equal == -1 || minus == -1)
+// example wanted line:
+//Project: "Demo_BSP"=.\Samples\BSP\scripts\Demo_BSP.dsp - Package Owner=<4>
+        //if (!line.StartsWith("Project:"))
+        //    continue;
+        if (line.StartsWith("Project:")) {
+          line.Remove(0, 8); // remove "Project:"
+          // now we need to find the equal sign (=) that separates the
+          // project title from the filename, and the minus sign (-)
+          // that separates the filename from junk info - at least to this importer ;)
+          int equal = line.Find('=');
+          int minus = line.Find('-', true); // search from end
+
+          if (equal == -1 || minus == -1)
             continue;
-        
-        // read project title and trim quotes
-        wxString prjTitle = line.Left(equal);
-        prjTitle.Trim(true);
-        prjTitle.Trim(false);
-        if (prjTitle.IsEmpty())
+
+          // read project title and trim quotes
+          wxString prjTitle = line.Left(equal);
+          prjTitle.Trim(true);
+          prjTitle.Trim(false);
+          if (prjTitle.IsEmpty())
             continue;
-        if (prjTitle.GetChar(0) == '\"')
-        {
+          if (prjTitle.GetChar(0) == '\"')
+          {
             prjTitle.Truncate(prjTitle.Length() - 1);
             prjTitle.Remove(0, 1);
-        }
+          }
 
-        // read project filename and trim quotes
-        ++equal;
-        wxString prjFile = line.Mid(equal, minus - equal);
-        prjFile.Trim(true);
-        prjFile.Trim(false);
-        if (prjFile.IsEmpty())
+          // read project filename and trim quotes
+          ++equal;
+          wxString prjFile = line.Mid(equal, minus - equal);
+          prjFile.Trim(true);
+          prjFile.Trim(false);
+          if (prjFile.IsEmpty())
             continue;
-        if (prjFile.GetChar(0) == '\"')
-        {
+          if (prjFile.GetChar(0) == '\"')
+          {
             prjFile.Truncate(prjFile.Length() - 1);
             prjFile.Remove(0, 1);
-        }
+          }
 
-        ++count;
-        wxFileName wfname = filename;
-        wxFileName fname = prjFile;
-        fname.MakeAbsolute(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
-        Manager::Get()->GetMessageManager()->DebugLog("Found project '%s' in '%s'", prjTitle.c_str(), fname.GetFullPath().c_str());
-        Manager::Get()->GetProjectManager()->LoadProject(fname.GetFullPath());
+          ++count;
+          wxFileName wfname = filename;
+          wxFileName fname = prjFile;
+          fname.MakeAbsolute(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
+          Manager::Get()->GetMessageManager()->DebugLog("Found project '%s' in '%s'", prjTitle.c_str(), fname.GetFullPath().c_str());
+          currentProject = Manager::Get()->GetProjectManager()->LoadProject(fname.GetFullPath());
+          if (currentProject) initDependencies(currentProject);
+        }
     }
 
+    resolveDependencies();
     ImportersGlobals::ResetDefaults();
 
     m_Title = wxFileName(filename).GetName() + _(" workspace");
@@ -146,3 +169,59 @@ bool MSVCWorkspaceLoader::Save(const wxString& title, const wxString& filename)
     // no support for saving workspace files (.dsw)
     return false;
 }
+
+void MSVCWorkspaceLoader::initDependencies(cbProject* project) {
+    // just set the initial project dependencies as empty
+    //_projdeps.insert(HashProjdeps::value_type(project->GetTitle(), ProjDeps(project)));
+    _projdeps[project->GetTitle()] = ProjDeps(project);
+}
+
+void MSVCWorkspaceLoader::addDependency(cbProject* project, const wxString& depProject) {
+    // add the dependency to the last project
+    HashProjdeps::iterator it = _projdeps.find(project->GetTitle());
+    if (it != _projdeps.end()) it->second._deps.Add(depProject);
+}
+
+void MSVCWorkspaceLoader::resolveDependencies() {
+    HashProjdeps::iterator pIt;
+    HashProjdeps::iterator sIt;
+    ProjectBuildTarget* target1;
+    ProjectBuildTarget* target2;
+    ProjDeps p;
+    unsigned int i;
+    int j;
+    // assign dependencies to projects
+    // quick hack: we add the library targets of the dependent projects to the current project only
+    // a real project/target dependency feature should be implemented in the sdk
+    for (pIt = _projdeps.begin(); pIt != _projdeps.end(); ++pIt) {
+        p = pIt->second;
+        for (i=0; i<p._deps.GetCount(); ++i) {
+            sIt = _projdeps.find(p._deps[i]);
+            if (sIt != _projdeps.end()) {
+                assert(p._project->GetBuildTargetsCount() == sIt->second._project->GetBuildTargetsCount());
+                for (j=0; j<p._project->GetBuildTargetsCount(); ++j) {
+                    target1 = sIt->second._project->GetBuildTarget(j);
+                    target2 = p._project->GetBuildTarget(j);
+                    wxString deps = target2->GetExternalDeps();
+                    deps <<target1->GetOutputFilename() << ';';
+                    target2->SetExternalDeps(deps);
+                    TargetType type = target1->GetTargetType();
+                    if (type==ttDynamicLib) {
+                        // target1->GetStaticLibFilename() do not work since it uses the filename instead of output filename
+                        Compiler* compiler = CompilerFactory::Compilers[sIt->second._project->GetCompilerIndex()];
+                        wxString prefix = compiler->GetSwitches().libPrefix;                        
+                        wxString suffix = compiler->GetSwitches().libExtension;
+                        wxFileName fname = target1->GetOutputFilename();
+                        if (!fname.GetName().StartsWith(prefix)) fname.SetName(prefix + fname.GetName());
+                        fname.SetExt(suffix);                        
+                        target2->AddLinkLib(fname.GetFullPath());
+                    }
+                    else if (type==ttStaticLib) target2->AddLinkLib(target1->GetOutputFilename());
+               }                    
+            }
+        }        
+    }
+    
+    //target->AddCommandsBeforeBuild(const wxString& command);
+}
+

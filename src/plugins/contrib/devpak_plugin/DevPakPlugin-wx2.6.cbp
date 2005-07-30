@@ -15,6 +15,7 @@
 				<Option object_output="..\..\..\.objs\plugins\contrib\devpak_plugin\bzip2"/>
 				<Option deps_output="..\..\..\.deps\plugins\devpak_plugin\bzip2"/>
 				<Option external_deps=""/>
+				<Option additional_depfiles=""/>
 				<Option type="2"/>
 				<Option compiler="0"/>
 				<Option createDefFile="1"/>
@@ -26,6 +27,7 @@
 				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\devpak_plugin"/>
 				<Option deps_output="..\..\..\.deps\plugins\devpak_plugin"/>
 				<Option external_deps=""/>
+				<Option additional_depfiles=""/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option host_application="..\..\..\devel\codeblocks.exe"/>
@@ -45,14 +47,27 @@
 					<Add after="zip ..\..\..\devel\share\CodeBlocks\devpakupdater.zip *.xrc"/>
 				</ExtraCommands>
 			</Target>
+			<Environment>
+				<Variable name="WX_DIR" value="C:\Devel\wxWidgets-2.6.1"/>
+				<Variable name="WX_CFG" value="NonUnicode"/>
+			</Environment>
 		</Build>
 		<Compiler>
 			<Add directory="bzip2"/>
+			<Add directory="$(WX_DIR)\include"/>
+			<Add directory="$(WX_DIR)\lib\gcc_dll\msw"/>
+			<Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)\msw"/>
+			<Add directory="$(WX_DIR)\contrib\include"/>
 		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(WX_DIR)\include"/>
+		</ResourceCompiler>
 		<Linker>
 			<Add library="codeblocks"/>
 			<Add library="wxmsw26"/>
 			<Add directory="bzip2"/>
+			<Add directory="$(WX_DIR)\lib\gcc_dll"/>
+			<Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)"/>
 		</Linker>
 		<Unit filename="bzip2\blocksort.c">
 			<Option compilerVar="CC"/>
