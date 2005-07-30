@@ -214,9 +214,9 @@ bool CodeBlocksApp::OnInit()
     
 // NOTE (mandrav#1#): My wx2.6.1 build has define wxUSE_ON_FATAL_EXCEPTION 
 //                    but still I get errors compiling with it...
-//#ifdef wxUSE_ON_FATAL_EXCEPTION
-//    wxHandleFatalExceptions(true);
-//#endif
+#ifdef wxHandleFatalExceptions
+    wxHandleFatalExceptions(true);
+#endif
 
     if(!LoadConfig())
         return false;
