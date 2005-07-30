@@ -1121,8 +1121,29 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         return -1;
     }
 
-    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Executing: %s (in %s)"), cmd.c_str(), m_CdRun.c_str());
+//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Checking for existence: %s"), f.GetFullPath().c_str());
+    if (!wxFileExists(f.GetFullPath()))
+    {
+    	int ret = wxMessageBox(_("It seems that this project has not been built yet.\n"
+                                "Do you want to build it now?"),
+                                _("Information"),
+                                wxYES | wxNO | wxCANCEL | wxICON_QUESTION);
+        switch (ret)
+        {
+        	case wxYES:
+        	{
+        		Compile(target);
+        		return -1;
+        	}
+            case wxNO:
+                break;
+            default:
+                return -1;
+        }
+    }
+
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(m_CdRun);
+    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Executing: %s (in %s)"), cmd.c_str(), m_CdRun.c_str());
 	m_Queue.Add(cmd);
 
 	m_IsRun = true;
