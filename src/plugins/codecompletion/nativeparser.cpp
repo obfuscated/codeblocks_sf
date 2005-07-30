@@ -30,6 +30,7 @@
 #include <pluginmanager.h>
 #include <messagemanager.h>
 #include <editormanager.h>
+#include <macrosmanager.h>
 #include <customvars.h>
 #include <cbeditor.h>
 #include <cbproject.h>
@@ -168,7 +169,9 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
     // get project include dirs
     for (unsigned int i = 0; i < project->GetIncludeDirs().GetCount(); ++i)
     {
-        wxFileName dir(project->GetIncludeDirs()[i]);
+    	wxString out = project->GetIncludeDirs()[i];
+    	Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out);
+        wxFileName dir(out);
         wxLogNull ln; // hide the error log about "too many ..", if the relative path is invalid
         if (!dir.IsAbsolute())
             dir.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
@@ -189,7 +192,9 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
             target->GetCustomVars().ApplyVarsToEnvironment();
             for (unsigned int ti = 0; ti < target->GetIncludeDirs().GetCount(); ++ti)
             {
-                wxFileName dir(target->GetIncludeDirs()[ti]);
+                wxString out = target->GetIncludeDirs()[ti];
+                Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out);
+                wxFileName dir(out);
                 wxLogNull ln; // hide the error log about "too many ..", if the relative path is invalid
                 if (!dir.IsAbsolute())
                     dir.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
@@ -209,7 +214,9 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
 		for (unsigned int i = 0; i < dirs.GetCount(); ++i)
 		{
 			//Manager::Get()->GetMessageManager()->Log(mltDevDebug, "Adding %s", dirs[i].c_str());
-            wxFileName dir(dirs[i]);
+            wxString out = dirs[i];
+            Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out);
+            wxFileName dir(out);
             wxLogNull ln; // hide the error log about "too many ..", if the relative path is invalid
             if (!dir.IsAbsolute())
                 dir.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
