@@ -831,21 +831,28 @@ int NativeParser::AI(cbEditor* editor, Parser* parser, const wxString& lineText,
 		else
 		{
 			Token* token = 0L;
+			// try #1 - special case
 			if (tok.Matches("this")) // <-- special case
 			{
                 token = scopeToken;
                 parentToken = scopeToken;
 			}
-            else
-            {
-                Manager::Get()->GetMessageManager()->DebugLog("Looking for %s under %s", tok.c_str(), parentToken ? parentToken->m_Name.c_str() : "Unknown");
-                token = parser->FindChildTokenByName(parentToken, tok, true);
-            }
+			// try #2 - function's class member
 			if (!token)
 			{
                 Manager::Get()->GetMessageManager()->DebugLog("Looking for %s under %s", tok.c_str(), scopeToken ? scopeToken->m_Name.c_str() : "Unknown");
 				token = parser->FindChildTokenByName(scopeToken, tok, true); // try local scope
             }
+            // try #3 - everything else
+            if (!token)
+            {
+                Manager::Get()->GetMessageManager()->DebugLog("Looking for %s under %s", tok.c_str(), parentToken ? parentToken->m_Name.c_str() : "Unknown");
+                token = parser->FindChildTokenByName(parentToken, tok, true);
+            }
+            // NOTE: Now that #2 is checked before #3, class member supersedes similarly named
+            //       function argument (if any). But if we put #3 before #2, we 'll be checking
+            //       global tokens first, which is not what we want...
+
 			if (token)
                 Manager::Get()->GetMessageManager()->DebugLog("Token found %s, type '%s'", token->m_Name.c_str(), token->m_ActualType.c_str());
 			if (token && !token->m_ActualType.IsEmpty())

@@ -150,7 +150,13 @@ void ParserThread::SkipAngleBraces()
             ++nestLvl;
         else if (tmp.Matches(">"))
             --nestLvl;
-        else if (tmp.IsEmpty() || tmp.Matches(";"))
+        else if (tmp.Matches(";"))
+        {
+        	// unget token - leave ; on the stack
+        	m_Tokens.UngetToken();
+            break;
+        }
+        else if (tmp.IsEmpty())
             break;
         if (nestLvl <= 0)
             break;
