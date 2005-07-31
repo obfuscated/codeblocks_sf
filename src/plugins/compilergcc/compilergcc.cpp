@@ -304,12 +304,14 @@ void CompilerGCC::OnRelease(bool appShutDown)
 
 int CompilerGCC::Configure(cbProject* project, ProjectBuildTarget* target)
 {
-	CompilerOptionsDlg dlg(Manager::Get()->GetAppWindow(), this, project, target);
-	dlg.ShowModal();
-	m_ConsoleShell = ConfigManager::Get()->Read("/compiler_gcc/console_shell", DEFAULT_CONSOLE_SHELL);
-	SaveOptions();
-	SetupEnvironment();
-	return 0;
+    CompilerOptionsDlg dlg(Manager::Get()->GetAppWindow(), this, project, target);
+    if(dlg.ShowModal()==wxID_OK)
+    {
+      m_ConsoleShell = ConfigManager::Get()->Read("/compiler_gcc/console_shell", DEFAULT_CONSOLE_SHELL);
+      SaveOptions();
+      SetupEnvironment();
+    }
+    return 0;
 }
 
 void CompilerGCC::OnConfig(wxCommandEvent& event)
@@ -368,7 +370,7 @@ void CompilerGCC::BuildMenu(wxMenuBar* menuBar)
     if (settingsMenuPos != wxNOT_FOUND)
     {
         wxMenu* settingsmenu = menuBar->GetMenu(settingsMenuPos);
-        settingsmenu->Insert(2,idMenuSettings,_("C&ompiler"),_T("Global Compiler Options"));
+        settingsmenu->Insert(2,idMenuSettings,_("&Compiler"),_T("Global Compiler Options"));
     }
 }
 

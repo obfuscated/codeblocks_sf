@@ -226,6 +226,19 @@
         <checkable>1</checkable>
         <enabled>1</enabled>
       </object>
+      <object class="wxMenu" name="idViewManagerPosition">
+        <label>Manager position</label>
+        <object class="wxMenuItem" name="idViewManagerPositionLeft">
+          <label>Left</label>
+          <help>Position the manager tree on the left side of the IDE</help>
+          <checkable>1</checkable>
+        </object>
+        <object class="wxMenuItem" name="idViewManagerPositionRight">
+          <label>Right</label>
+          <help>Position the manager tree on the right side of the IDE</help>
+          <checkable>1</checkable>
+        </object>
+      </object>
       <object class="wxMenuItem" name="idViewOpenFilesTree">
         <label>&amp;Open files list</label>
         <help>Show/hide open files list</help>
@@ -260,7 +273,7 @@
       </object>
     </object>
     <object class="wxMenu" name="menu_search">
-      <label>&amp;Search</label>
+      <label>Sea&amp;rch</label>
       <object class="wxMenuItem" name="idSearchFind">
         <label>&amp;Find...</label>
         <accel>Ctrl-F</accel>
@@ -369,7 +382,7 @@
       </object>
     </object>
     <object class="wxMenu" name="menu_settings">
-      <label>Sett&amp;ings</label>
+      <label>&amp;Settings</label>
       <object class="wxMenuItem" name="idSettingsEnvironment">
         <label>&amp;Environment</label>
         <help>Change environment settings</help>
@@ -379,7 +392,7 @@
         <help>Change editor's settings</help>
       </object>
       <object class="wxMenu" name="idSettingsConfigurePlugins">
-        <label>&amp;Configure plugins</label>
+        <label>&amp;Plugins' settings</label>
       </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idSettingsImpExpConfig">

@@ -121,7 +121,7 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
 	m_BuildingTree(false)
 {
 	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgCompilerOptions"));
-	
+
 	DoFillCompilerSets();
 	DoFillCompilerPrograms();
 	DoFillOthers();
@@ -134,9 +134,9 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
     if (!project)
     {
         // global settings
-        SetTitle(_("Global compiler options"));
+        SetTitle(_("Compiler Settings"));
+        sizer->Show(tree,false);
         sizer->Remove(tree);
-        tree->Show(false);
         wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook);
         nb->DeletePage(3); // remove "Commands" page
 	}
@@ -144,7 +144,7 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
 	{
         m_InitialCompilerIdx = project->GetCompilerIndex();
         // project settings
-        SetTitle(_("Project's compiler options"));
+        SetTitle(_("Project's Build options"));
 
         wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook);
         nb->DeletePage(6); // remove "Other" page
@@ -159,6 +159,10 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
     }
     sizer->Layout();
     Layout();
+    GetSizer()->Layout();
+    GetSizer()->SetSizeHints(this);
+    this->SetSize(-1, -1, 0, 0);
+    this->CenterOnScreen();
 }
 
 CompilerOptionsDlg::~CompilerOptionsDlg()
