@@ -1123,8 +1123,10 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         return -1;
     }
 
-//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Checking for existence: %s"), f.GetFullPath().c_str());
-    if (!wxFileExists(f.GetFullPath()))
+    wxString out = f.GetFullPath();
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out);
+//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Checking for existence: %s"), out.c_str());
+    if (!wxFileExists(out))
     {
     	int ret = wxMessageBox(_("It seems that this project has not been built yet.\n"
                                 "Do you want to build it now?"),
