@@ -1072,9 +1072,11 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     if (!target)
 		return -1;
 
+    wxString out = UnixFilename(target->GetOutputFilename());
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out);
 
     wxString cmd;
-    wxFileName f(UnixFilename(target->GetOutputFilename()));
+    wxFileName f(out);
     f.MakeAbsolute(m_Project->GetBasePath());
 //    m_CdRun = f.GetPath(wxPATH_GET_VOLUME);
     m_CdRun = target->GetWorkingDir();
@@ -1107,7 +1109,9 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 			wxMessageBox(_("You must select a host application to \"run\" a library..."));
 			return -1;
 		}
-		cmd << "\"" << target->GetHostApplication() << "\" " << target->GetExecutionParameters();
+		wxString tmp = target->GetHostApplication();
+        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(tmp);
+		cmd << "\"" << tmp << "\" " << target->GetExecutionParameters();
 	}
 	else if (target->GetTargetType() != ttCommandsOnly)
     {
@@ -1123,9 +1127,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         return -1;
     }
 
-    wxString out = f.GetFullPath();
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out);
-//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Checking for existence: %s"), out.c_str());
+    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Checking for existence: %s"), out.c_str());
     if (!wxFileExists(out))
     {
     	int ret = wxMessageBox(_("It seems that this project has not been built yet.\n"
