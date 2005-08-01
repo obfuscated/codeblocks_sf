@@ -186,15 +186,15 @@ bool wxDockWindow::BlockDocking() {
 
 void wxDockWindow::addBorder() {
     // move the windows contents in by an amount
-    wxSizer * sizer = GetSizer();
-    wxSizerItemList& sizerList = sizer->GetChildren();
-    wxwxSizerItemListNode * pNode = sizerList.GetFirst();
-    wxASSERT(pNode);
-    wxSizerItem * pSizerItem = pNode->GetData();
-    wxASSERT(pSizerItem);
-    pSizerItem->SetBorder( BORDER_SIZE );
-    pSizerItem->SetFlag( pSizerItem->GetFlag() | wxALL );
-    Layout();
+//    wxSizer * sizer = GetSizer();
+//    wxSizerItemList& sizerList = sizer->GetChildren();
+//    wxwxSizerItemListNode * pNode = sizerList.GetFirst();
+//    wxASSERT(pNode);
+//    wxSizerItem * pSizerItem = pNode->GetData();
+//    wxASSERT(pSizerItem);
+//    pSizerItem->SetBorder( BORDER_SIZE );
+//    pSizerItem->SetFlag( pSizerItem->GetFlag() | wxALL );
+//    Layout();
 }
 
 wxDockWindow::eDragHandle wxDockWindow::findHandle( int x, int y ) {

@@ -251,7 +251,11 @@ void RestoreTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayStrin
 {
     if (nodePaths.GetCount() == 0)
     {
+#ifdef __WXMSW__
+	// currently crashes under linux, on project open
+	// will investigate...
         tree->Collapse(parent);
+#endif
         return;
     }
     for (unsigned int i = 0; i < nodePaths.GetCount(); ++i)

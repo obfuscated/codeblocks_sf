@@ -415,6 +415,7 @@ void MainFrame::CreateIDE()
 {
 	int leftW = ConfigManager::Get()->Read("/main_frame/layout/left_block_width", 200);
 	int bottomH = ConfigManager::Get()->Read("/main_frame/layout/bottom_block_height", 150);
+SetSize(800,600);
 	wxSize clientsize = GetClientSize();
 
 	// Create CloseFullScreen Button, and hide it initially

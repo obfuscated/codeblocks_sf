@@ -48,7 +48,7 @@ bool wxToolButton::Create( wxWindow *parent,
     if( !wxControl::Create( parent, id, pos, size, style, wxDefaultValidator, name ) ) {
         return FALSE;
     }
-    SetSizeHints(size);
+    //SetSizeHints(size);
     
     return TRUE;
 }

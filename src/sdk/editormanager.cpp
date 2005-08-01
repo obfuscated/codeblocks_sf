@@ -155,7 +155,7 @@ EditorManager::~EditorManager()
     m_EditorsList.DeleteContents(true); // Set this to false to preserve
     m_EditorsList.Clear();              // linked data.
 
-    m_pNotebook->Destroy();
+//    m_pNotebook->Destroy();
 
     SC_DESTRUCTOR_END
 }
@@ -444,7 +444,7 @@ EditorBase* EditorManager::GetActiveEditor()
 
 void EditorManager::ActivateNext()
 {
-    unsigned int sel = m_pNotebook->GetSelection();
+    int sel = m_pNotebook->GetSelection();
     if (sel < m_pNotebook->GetPageCount() - 1)
         ++sel;
     else
@@ -645,7 +645,7 @@ bool EditorManager::QueryClose(EditorBase *ed)
 
 int EditorManager::FindPageFromEditor(EditorBase* eb)
 {
-    for (unsigned int i = 0; i < m_pNotebook->GetPageCount(); ++i)
+    for (int i = 0; i < m_pNotebook->GetPageCount(); ++i)
     {
         if (m_pNotebook->GetPage(i) == eb)
             return i;
@@ -1419,7 +1419,7 @@ void EditorManager::OnCheckForModifiedFiles(wxCommandEvent& event)
 #ifdef USE_OPENFILES_TREE
 bool EditorManager::OpenFilesTreeSupported()
 {
-    #if defined(__WXGTK__) || defined(DONT_USE_OPENFILES_TREE)
+    #ifdef DONT_USE_OPENFILES_TREE
     return false;
     #else
     return true;
