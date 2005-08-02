@@ -118,6 +118,7 @@ class wxsDragWindow : public wxControl
         void UpdateDragPointData(wxsWidget* Widget,DragPointData** WidgetPoints);
         void RecalculateDragPoints();
         void RecalculateDragPointsReq(wxsWidget* Widget,int& HintIndex);
+        void SetCur(int Cur);
         wxsWidget* FindWidgetAtPos(int PosX,int PosY,wxsWidget* Widget);
         
         DECLARE_EVENT_TABLE()

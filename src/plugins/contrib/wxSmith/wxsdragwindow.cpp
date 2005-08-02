@@ -23,7 +23,6 @@ void wxsDragWindow::OnPaint(wxPaintEvent& event)
 {
 	wxWindow* Wnd = this;
 	wxPaintDC DC(Wnd);
-	DC.SetDeviceOrigin(0,0);
 	AddGraphics(DC);
 }
 
@@ -128,7 +127,6 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
         }
     }
     
-	
 	// Processing Left Down event
 	
     if ( event.LeftDown() )
@@ -157,6 +155,7 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
                 		break;
                 	}
                 }
+                
     		}
     		else
     		{
@@ -276,16 +275,7 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
             WidgetPoints[Btm]->PosX = ( WidgetPoints[LeftBtm]->PosX +  WidgetPoints[RightBtm]->PosX ) / 2;
             WidgetPoints[Btm]->PosY = WidgetPoints[LeftBtm]->PosY;
             
-            // Refreshing
-            
-            if ( RootWidget->GetPreview() )
-            {
-                RootWidget->GetPreview()->Refresh();
-                RootWidget->GetPreview()->Update();
-            }
-            
-            wxClientDC DC(this);
-            AddGraphics(DC);
+            GetParent()->Refresh();
         }
     }
     
@@ -323,7 +313,6 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
             {
                 CurDragPoint = NULL;
                 CurDragWidget = NULL;
-                
                 Widget->UpdatePreview();
             }
         }
@@ -332,6 +321,45 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
         {
         	ReleaseMouse();
         }
+    }
+
+    if ( !event.Dragging() )
+    {
+    	if ( NewDragWidget )
+    	{
+    		SetCur(event.LeftDown() ? wxCURSOR_SIZING : wxCURSOR_ARROW);
+    	}
+    	else if ( NewDragPoint )
+    	{
+    		switch ( NewDragPoint->Type )
+    		{
+                case LeftTop:
+                case RightBtm:
+                    SetCur(wxCURSOR_SIZENWSE);
+                    break;
+                    
+                case Top:
+                case Btm:
+                    SetCur(wxCURSOR_SIZENS);
+                    break;
+                    
+                case RightTop:
+                case LeftBtm:
+                    SetCur(wxCURSOR_SIZENESW);
+                    break;
+                    
+                case Left:
+                case Right:
+                    SetCur(wxCURSOR_SIZEWE);
+                    break;
+                    
+                default:;
+    		}
+    	}
+    	else
+    	{
+    		SetCur(wxCURSOR_ARROW);
+    	}
     }
 }
 
@@ -574,17 +602,24 @@ void wxsDragWindow::ActivateWidget(wxsWidget* Widget,bool GrayTheRest)
         }
     }
 
-    assert ( RootWidget->GetPreview() );
-    
-    RootWidget->GetPreview()->Refresh();
-    RootWidget->GetPreview()->Update();
-    
+    GetParent()->Refresh();
     wxClientDC DC(this);
     AddGraphics(DC);
 }
 
+void wxsDragWindow::SetCur(int Cur)
+{
+	SetCursor(wxCursor(Cur));
+	if ( RootWidget && RootWidget->GetPreview() )
+	{
+        RootWidget->GetPreview()->SetCursor(wxCursor(Cur));
+	}
+}
+
+
 BEGIN_EVENT_TABLE(wxsDragWindow,wxControl)
-//    EVT_PAINT(wxsDragWindow::OnPaint)
+    EVT_PAINT(wxsDragWindow::OnPaint)
     EVT_MOUSE_EVENTS(wxsDragWindow::OnMouse)
+    EVT_ERASE_BACKGROUND(wxsDragWindow::OnEraseBack)
     EVT_TIMER(1,wxsDragWindow::TimerRefresh)
 END_EVENT_TABLE()
