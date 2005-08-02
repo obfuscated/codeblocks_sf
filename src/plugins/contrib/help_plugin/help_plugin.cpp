@@ -44,7 +44,11 @@
 #include <wx/help.h> //(wxWindows chooses the appropriate help controller class)
 #include <wx/helpbase.h> //(wxHelpControllerBase class)
 #include <wx/helpwin.h> //(Windows Help controller)
+
+#ifdef __WXMSW__
 #include <wx/msw/helpchm.h> //(MS HTML Help controller)
+#endif
+
 #include <wx/generic/helpext.h> //(external HTML browser controller)
 #include <wx/html/helpctrl.h> //(wxHTML based help controller: wxHtmlHelpController)
 
@@ -286,38 +290,36 @@ void HelpPlugin::LaunchHelp(const wxString &helpfile, const wxString &keyword)
   
   if (!keyword.IsEmpty())
   {
-  	/* TODO (Ceniza666#7#): Extension checking must be made platform dependent so HLP and CHM would exist only for Windows. */
+#ifdef __WXMSW__
   	if (ext.CmpNoCase(_("hlp")) == 0)
   	{
       wxWinHelpController HelpCtl;
       HelpCtl.Initialize(helpfile);
       HelpCtl.KeywordSearch(keyword);
+      return;
   	}
-  	else if (ext.CmpNoCase(_("chm")) == 0)
+  	
+  	if (ext.CmpNoCase(_("chm")) == 0)
   	{
       wxCHMHelpController HelpCtl;
       HelpCtl.Initialize(helpfile);
       HelpCtl.KeywordSearch(keyword);
+      return;
   	}
-  	else
-  	{
-  		// What is it supposed to do here?
-  	}
+#endif
   }
-  else
+  
+  // Just call it with the associated program
+  wxFileType *filetype = wxTheMimeTypesManager->GetFileTypeFromExtension(ext);
+  
+  if (!filetype)
   {
-  	// Just call it with the associated program
-  	wxFileType *filetype = wxTheMimeTypesManager->GetFileTypeFromExtension(ext);
-  	
-  	if (!filetype)
-  	{
-      wxMessageBox(_("Couldn't find an associated program to open ") + wxFileName(helpfile).GetFullName(), _("Warning"), wxOK | wxICON_EXCLAMATION);
-  		return;
-  	}
-  	
-    wxExecute(filetype->GetOpenCommand(helpfile));
-    delete filetype;
+    wxMessageBox(_("Couldn't find an associated program to open ") + wxFileName(helpfile).GetFullName(), _("Warning"), wxOK | wxICON_EXCLAMATION);
+    return;
   }
+  
+  wxExecute(filetype->GetOpenCommand(helpfile));
+  delete filetype;
 }
 
 // events

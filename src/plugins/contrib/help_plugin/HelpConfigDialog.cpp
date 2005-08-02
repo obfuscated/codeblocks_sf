@@ -84,7 +84,19 @@ void HelpConfigDialog::UpdateEntry(int index)
 
 void HelpConfigDialog::ChooseFile()
 {
-  wxString filename = wxFileSelector("Choose a help file", wxEmptyString, wxEmptyString, wxEmptyString, _("Help files (*.chm;*.hlp)|*.hlp;*.chm|All files (*.*)|*.*"));
+  wxString filename = wxFileSelector
+  (
+    "Choose a help file",
+    wxEmptyString,
+    wxEmptyString,
+    wxEmptyString,
+    _(
+#ifdef __WXMSW__
+      "Windows help files (*.chm;*.hlp)|*.hlp;*.chm|"
+#endif
+      "All files (*.*)|*.*"
+    )
+  );
   
   if (!filename.IsEmpty())
   {

@@ -1,7 +1,3 @@
-#ifndef __WXMSW__
-  #warning "This plugin has only been fully tested on Windows."
-#endif
-
 #ifndef HELP_PLUGIN_H
 #define HELP_PLUGIN_H
 
