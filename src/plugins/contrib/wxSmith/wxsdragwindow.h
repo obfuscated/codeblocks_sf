@@ -2,6 +2,7 @@
 #define WXSDRAGWINDOW_H
 
 #include <wx/control.h>
+#include <wx/timer.h>
 #include <vector>
 
 class wxsWidget;
@@ -31,11 +32,11 @@ class wxsDragWindow : public wxControl
 		
 	private:
 	
-        /** Painting event
-         *
-         * During painting process, all additional graphic items are drawn.
-         */
+        /** Painting event - currently do nothing, all drawing is done inside timer event */
         void OnPaint(wxPaintEvent& evt);
+        
+        /** Function drawing all additional graphic items */
+        void AddGraphics(wxDC& DC);
         
         /** Erasing background will do nothing */
         void OnEraseBack(wxEraseEvent& event);
@@ -43,8 +44,17 @@ class wxsDragWindow : public wxControl
         /** Event handler for all mouse events */
         void OnMouse(wxMouseEvent& event);
         
+        /** Fuunction activating one widget */
+        void ActivateWidget(wxsWidget* Widget,bool GrayTheRest=false);
+        
+        /** Timer fuunction refreshing additional graphics */
+        void TimerRefresh(wxTimerEvent& event);
+        
         /** Size of boxes used to drag borders of widgets */
-        static const int DragBoxSize = 5;
+        static const int DragBoxSize = 6;
+        
+        /** Minimal distace which must be done to apply dragging */
+        static const int MinDragDistance = 8;
 
         /** Enum type describing placement of drag box */
         enum DragBoxType
@@ -57,7 +67,7 @@ class wxsDragWindow : public wxControl
             LeftBtm,
             Btm,
             RightBtm,
-            /*******/
+            /*************/
             DragBoxTypeCnt
         };
         
@@ -70,6 +80,9 @@ class wxsDragWindow : public wxControl
         	bool Inactive;                                  ///< If true, this drag point will be drawn gray
         	int PosX;                                       ///< X position of this drag point
         	int PosY;                                       ///< Y position of this drag point
+        	int DragInitPosX;                               ///< X position before dragging
+        	int DragInitPosY;                               ///< Y position before dragging
+        	bool KillMe;                                    ///< Used while refreshing drag points list to find invalid points
         	DragPointData* WidgetPoints[DragBoxTypeCnt];    ///< Pointers to all drag points for this widget
         };
         
@@ -92,13 +105,19 @@ class wxsDragWindow : public wxControl
         /** Mouse position at the beginning of dragging */
         int DragMouseBegX, DragMouseBegY;
         
-        /** Position of dragged item at the beginning of dragging */
-        int DragItemBegX, DragItemBegY;
+        /** Set to true if distance while dragging was too small and will be discarded */
+        bool DragDistanceSmall;
+        
+        /** Timer responsible for refreshing additional data */
+        wxTimer RefreshTimer;
         
         // Mics functions
         
         void ClearDragPoints();
-        void RebuildDragPoints(wxsWidget* Widget);
+        void BuildDragPoints(wxsWidget* Widget);
+        void UpdateDragPointData(wxsWidget* Widget,DragPointData** WidgetPoints);
+        void RecalculateDragPoints();
+        void RecalculateDragPointsReq(wxsWidget* Widget,int& HintIndex);
         wxsWidget* FindWidgetAtPos(int PosX,int PosY,wxsWidget* Widget);
         
         DECLARE_EVENT_TABLE()

@@ -20,7 +20,7 @@ WXS_ST_END(wxsComboBoxStyles)
 
 
 wxsDWDefineBegin(wxsComboBox,wxComboBox,
-        ThisWidget = new wxComboBox(parent,id,_(""),pos,size,0,0,style);
+        ThisWidget = new wxComboBox(parent,id,wxT(""),pos,size,0,0,style);
         wxsDWAddStrings(arrayChoices,ThisWidget);
         wxsDWSelectString(arrayChoices,defaultChoice,ThisWidget);
 	)

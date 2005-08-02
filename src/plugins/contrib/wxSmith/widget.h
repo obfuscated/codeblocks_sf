@@ -78,7 +78,7 @@ struct wxsWidgetBaseParams
     
     /* Used by sizers */
     
-    int Proportion;                 ///< Proportion param (see wxW documentastion for details)
+    int Proportion;                 ///< Proportion param (see wxW documentation for details)
     
     enum BorderFlagsValues          ///< Values which can be used in BorderFlags (ored values)
     {
@@ -272,7 +272,7 @@ class wxsWidget
     public:
     
         /** Function returning base configuration params for this widget */
-        inline const wxsWidgetBaseParams& GetBaseParams() { return BaseParams; }
+        inline wxsWidgetBaseParams& GetBaseParams() { return BaseParams; }
 
         /** Getting properties window for this widget */
         inline wxWindow* GetProperties(wxWindow* Parent)

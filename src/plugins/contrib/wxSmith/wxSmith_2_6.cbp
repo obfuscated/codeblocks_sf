@@ -20,6 +20,9 @@
 				<Compiler>
 					<Add option="-g"/>
 				</Compiler>
+				<Linker>
+					<Add option="-ggdb"/>
+				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
