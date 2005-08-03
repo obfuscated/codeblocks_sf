@@ -43,7 +43,7 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
     bool FoundDragging = false;
     int MouseX = event.GetX();
     int MouseY = event.GetY();
-    ClientToScreen(&MouseX,&MouseY);
+    //ClientToScreen(&MouseX,&MouseY);
         
     // Searching for item covered by mouse
     
@@ -78,6 +78,7 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
                     {
                         int PosX1 = 0, PosX2 = 0;
                         DPD->Widget->GetPreview()->ClientToScreen(&PosX1,&PosX2);
+                        ScreenToClient(&PosX1,&PosX2);
                         PosX2 = PosX1 + DPD->Widget->GetPreview()->GetSize().GetWidth();
                         int PosY = DPD->PosY - DragBoxSize / 2;
                         
@@ -97,6 +98,7 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
                     {
                         int PosY1 = 0, PosY2 = 0;
                         DPD->Widget->GetPreview()->ClientToScreen(&PosY1,&PosY2);
+                        ScreenToClient(&PosY1,&PosY2);
                         PosY2 = PosY1 + DPD->Widget->GetPreview()->GetSize().GetHeight();
                         int PosX = DPD->PosX - DragBoxSize / 2;
                         
@@ -141,8 +143,7 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
     		if ( NewDragWidget )
     		{
     			CurDragWidget = NewDragWidget;
-                wxsEvent SelectEvent(wxEVT_SELECT_WIDGET,0,NULL,CurDragWidget);
-                wxPostEvent(wxSmith::Get(),SelectEvent);
+                wxsSelectWidget(CurDragWidget);
                 ActivateWidget(CurDragWidget);
                 
                 // Searchign for any drag point for this widget - it will be used
@@ -276,6 +277,7 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
             WidgetPoints[Btm]->PosY = WidgetPoints[LeftBtm]->PosY;
             
             GetParent()->Refresh();
+            Refresh();
         }
     }
     
@@ -311,19 +313,19 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
     
             if ( event.LeftUp() )
             {
-                CurDragPoint = NULL;
-                CurDragWidget = NULL;
                 Widget->UpdatePreview();
             }
         }
         
         if ( event.LeftUp() && HasCapture() )
         {
+            CurDragPoint = NULL;
+            CurDragWidget = NULL;
         	ReleaseMouse();
         }
     }
 
-    if ( !event.Dragging() )
+    if ( !event.Dragging() && !event.LeftDown() )
     {
     	if ( NewDragWidget )
     	{
@@ -409,6 +411,7 @@ void wxsDragWindow::UpdateDragPointData(wxsWidget* Widget,DragPointData** Widget
     int PosX=0, PosY=0;
     int SizeX=0, SizeY=0;
     Widget->GetPreview()->ClientToScreen(&PosX,&PosY);
+    ScreenToClient(&PosX,&PosY);
     Widget->GetPreview()->GetSize(&SizeX,&SizeY);
     
     for ( int i=0; i<DragBoxTypeCnt; ++i )
@@ -554,6 +557,7 @@ wxsWidget* wxsDragWindow::FindWidgetAtPos(int PosX,int PosY,wxsWidget* Widget)
     int WdgX = 0, WdgY = 0;
     int WdgSX, WdgSY;
     Widget->GetPreview()->ClientToScreen(&WdgX,&WdgY);
+    ScreenToClient(&WdgX,&WdgY);
     Widget->GetPreview()->GetSize(&WdgSX,&WdgSY);
     
     if ( PosX >= WdgX && PosY >= WdgY && PosX < WdgX + WdgSX && PosY < WdgY + WdgSY )
@@ -577,7 +581,7 @@ void wxsDragWindow::AddGraphics(wxDC& DC)
         int PosX = DPD->PosX - DragBoxSize/2;
         int PosY = DPD->PosY - DragBoxSize/2;
         
-        ScreenToClient(&PosX,&PosY);        
+//        ScreenToClient(&PosX,&PosY);        
     	DC.DrawRectangle(PosX , PosY, DragBoxSize, DragBoxSize );
     }
 }

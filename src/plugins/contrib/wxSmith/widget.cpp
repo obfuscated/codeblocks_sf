@@ -11,8 +11,8 @@
 
 wxsWidget::~wxsWidget()
 {
-    if ( Preview    ) KillPreview();
-    if ( Properties ) KillProperties();
+	assert ( Preview == NULL );
+	assert ( Properties == NULL );
 
     while ( GetChildCount() )
     {

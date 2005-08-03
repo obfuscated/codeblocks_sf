@@ -131,9 +131,8 @@ void wxsNewDialogDlg::OnCreate(wxCommandEvent& event)
     // Adding dialog to project and opening editor for it
     
     Proj->AddDialog(NewDialog);    
-    wxsEvent SelectEvent(wxEVT_SELECT_RES,0,NewDialog,NULL);
-    wxPostEvent(wxSmith::Get(),SelectEvent);
-    
+    wxsSelectRes(NewDialog);
+   
     Close();
 }
 

@@ -430,3 +430,26 @@ wxsResource* wxsProject::FindResource(const wxString& Name)
     return NULL;
     
 }
+
+void wxsProject::SendEventToEditors(wxEvent& event)
+{
+    for ( DialogListI i = Dialogs.begin(); i!=Dialogs.end(); ++i )
+    {
+    	/*
+        if ( (*i)->GetEditor() )
+        {
+        	(*i)->GetEditor()->ProcessEvent(event);
+        }
+        */
+    }
+
+    for ( FrameListI i = Frames.begin(); i!=Frames.end(); ++i )
+    {
+        // TODO (SpOoN#1#): Implement when frames done
+    }
+
+    for ( PanelListI i = Panels.begin(); i!=Panels.end(); ++i )
+    {
+        // TODO (SpOoN#1#): Implement when panels done
+    }
+}

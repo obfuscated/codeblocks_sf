@@ -34,15 +34,16 @@
 			<Add option="-DBUILDING_PLUGIN"/>
 			<Add directory="..\..\..\sdk"/>
 			<Add directory="$(WX_DIR)\include"/>
+			<Add directory="$(WX_DIR)\lib\gcc_dll\msw"/>
 			<Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)\msw"/>
 			<Add directory="$(WX_DIR)\contrib\include"/>
 		</Compiler>
 		<Linker>
-			<Add option="-i"/>
 			<Add library="codeblocks"/>
 			<Add library="wxmsw26"/>
 			<Add library="wxmsw26_stc"/>
 			<Add directory="..\..\..\devel"/>
+			<Add directory="$(WX_DIR)\lib\gcc_dll"/>
 			<Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)"/>
 		</Linker>
 		<ExtraCommands>

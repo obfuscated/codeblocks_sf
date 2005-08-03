@@ -185,7 +185,7 @@ void wxsDialogRes::NotifyChange()
 	wxsCodeGen Gen(Dialog,TabSize,TabSize);
 	
 	// Creating code header
-	
+
 	wxString CodeHeader = wxString::Format(wxT("//(*Initialize(%s)"),GetClassName().c_str());
 	wxString Code = CodeHeader + wxT("\n");
 	

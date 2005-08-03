@@ -339,12 +339,13 @@ void wxsPalette::DeleteRequest()
     }
     
     wxsWidgetFactory::Get()->Kill(Current);
-    
+
     if ( Edit )
     {
+//    	Edit->Close();
         Edit->BuildPreview(Parent);
     }
-    
+
     if ( SelectedRes )
     {
 		SelectedRes->NotifyChange();

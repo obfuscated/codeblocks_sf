@@ -32,6 +32,9 @@ void wxsWidgetFactory::Kill(wxsWidget* Widget)
 {
     if ( Widget )
     {
+        // Closing properties if are set to given widget
+        wxsUnselectWidget(Widget);
+        
         // First unbinding it from parent
         wxsWidget* Parent = Widget->GetParent();
         if ( Parent )
@@ -45,11 +48,9 @@ void wxsWidgetFactory::Kill(wxsWidget* Widget)
         {
             Tree->Delete(Widget->TreeId);
         }
-        
-        // Closing properties if are set to given widget
-        wxsEvent Unselect(wxEVT_UNSELECT_WIDGET,0,NULL,Widget);
-        wxPostEvent(wxSmith::Get(),Unselect);
-        
+
+        if ( Widget->GetPreview() ) Widget->KillPreview();
+        if ( Widget->GetCurrentProperties() ) Widget->KillProperties();
         
         // Deleting widget
         if ( Widget->GetInfo().Manager )

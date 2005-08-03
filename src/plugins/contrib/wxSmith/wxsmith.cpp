@@ -51,15 +51,13 @@ class wxsResourceTree: public wxTreeCtrl
                 {
                     case wxsResourceTreeData::tWidget:
                         {
-                            wxsEvent SelectEvent(wxEVT_SELECT_WIDGET,0,NULL,Data->Widget);
-                            wxPostEvent(wxSmith::Get(),SelectEvent);
+                        	wxsSelectWidget(Data->Widget);
                         }
                         break;
                         
                     case wxsResourceTreeData::tResource:
                         {
-                            wxsEvent SelectEvent(wxEVT_SELECT_RES,0,Data->Resource);
-                            wxPostEvent(wxSmith::Get(),SelectEvent);
+                        	wxsSelectRes(Data->Resource);
                         }
                         break;
                         
@@ -269,8 +267,12 @@ void wxSmith::OnProjectActivated(CodeBlocksEvent& event)
 
 void wxSmith::OnSpreadEvent(wxsEvent& event)
 {
-    wxPostEvent(wxsPropertiesMan::Get(),event);
-    wxPostEvent(wxsPalette::Get(),event);
+    wxsPropertiesMan::Get()->ProcessEvent(event);
+    wxsPalette::Get()->ProcessEvent(event);
+    for ( ProjectMapI i = ProjectMap.begin(); i != ProjectMap.end(); ++i )
+    {
+    	(*i).second->SendEventToEditors(event);
+    }
 }
 
 cbProject* wxSmith::GetCBProject(wxsProject* Proj)

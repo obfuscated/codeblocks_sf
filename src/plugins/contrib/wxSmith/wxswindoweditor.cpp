@@ -25,9 +25,9 @@ wxsWindowEditor::wxsWindowEditor(wxWindow* parent, const wxString& title,wxsReso
     Scroll->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
     
     SetSizer(Sizer);
-    SetAutoLayout(true);
 
     DragWnd = new wxsDragWindow(Scroll,NULL,Scroll->GetSize());
+    DragWnd->Hide();
 }
 
 wxsWindowEditor::~wxsWindowEditor()
@@ -74,6 +74,7 @@ void wxsWindowEditor::BuildPreview(wxsWidget* TopWidget)
                     Virtual.GetHeight() > Real.GetHeight() ? Virtual.GetHeight() : Real.GetHeight());
         DragWnd->SetSize(Drag);
         DragWnd->SetWidget(TopWidget);
+        DragWnd->Show();
     }
     
     Thaw();
@@ -85,9 +86,10 @@ void wxsWindowEditor::BuildPreview(wxsWidget* TopWidget)
 
 void wxsWindowEditor::KillCurrentPreview()
 {
+    Scroll->SetSizer(NULL);
     if ( CurrentWidget ) CurrentWidget->KillPreview();
     CurrentWidget = NULL;
-   
+    DragWnd->Hide();
 }
 
 void wxsWindowEditor::OnMouseClick(wxMouseEvent& event)
@@ -102,8 +104,7 @@ void wxsWindowEditor::OnActivate(wxActivateEvent& event)
 {
     if ( event.GetActive() )
     {
-        wxsEvent Select(wxEVT_SELECT_RES,0,GetResource());
-        wxPostEvent(wxSmith::Get(),Select);
+    	wxsSelectRes(GetResource());
     }
 }
 
@@ -123,8 +124,7 @@ void wxsWindowEditor::PreviewReshaped()
 
 void wxsWindowEditor::MyUnbind()
 {
-    wxsEvent Unselect(wxEVT_UNSELECT_RES,0,GetResource());
-    wxPostEvent(wxSmith::Get(),Unselect);
+	wxsUnselectRes(GetResource());
     KillCurrentPreview();
 }
 

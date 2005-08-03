@@ -46,5 +46,13 @@ extern const wxEventType wxEVT_UNSELECT_WIDGET; // Send when given widget is no 
 #define EVT_UNSELECT_RES(fn) DECLARE_EVENT_TABLE_ENTRY( wxEVT_UNSELECT_RES, -1, -1, (wxObjectEventFunction)(wxEventFunction)(wxsEventFunction)&fn, (wxObject *) NULL ),
 #define EVT_SELECT_WIDGET(fn) DECLARE_EVENT_TABLE_ENTRY( wxEVT_SELECT_WIDGET, -1, -1, (wxObjectEventFunction)(wxEventFunction)(wxsEventFunction)&fn, (wxObject *) NULL ),
 #define EVT_UNSELECT_WIDGET(fn) DECLARE_EVENT_TABLE_ENTRY( wxEVT_UNSELECT_WIDGET, -1, -1, (wxObjectEventFunction)(wxEventFunction)(wxsEventFunction)&fn, (wxObject *) NULL ),
-    
+
+void wxsSelectWidget(wxsWidget* Widget);
+
+void wxsUnselectWidget(wxsWidget* Widget);
+
+void wxsSelectRes(wxsResource* Res);
+
+void wxsUnselectRes(wxsResource* Res);
+
 #endif

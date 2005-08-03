@@ -2,7 +2,6 @@
 
 wxsCodeGen::wxsCodeGen(wxsWidget* Widget,int InitialSpaces,int TabSize,bool DontCreateRoot)
 {
-
 	if ( DontCreateRoot )
 	{
 		int Cnt = Widget->GetChildCount();

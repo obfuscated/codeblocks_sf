@@ -25,6 +25,7 @@ void wxsPropertiesMan::SetActiveWidget(wxsWidget* Widget)
     if ( CurrentWidget )
     {
         CurrentWidget->KillProperties();
+        CurrentWidget = NULL;
     }
 
     PropertiesPanel->SetSizer(NULL);
