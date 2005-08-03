@@ -435,12 +435,10 @@ void wxsProject::SendEventToEditors(wxEvent& event)
 {
     for ( DialogListI i = Dialogs.begin(); i!=Dialogs.end(); ++i )
     {
-    	/*
         if ( (*i)->GetEditor() )
         {
         	(*i)->GetEditor()->ProcessEvent(event);
         }
-        */
     }
 
     for ( FrameListI i = Frames.begin(); i!=Frames.end(); ++i )

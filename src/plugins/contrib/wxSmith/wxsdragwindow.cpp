@@ -144,7 +144,6 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
     		{
     			CurDragWidget = NewDragWidget;
                 wxsSelectWidget(CurDragWidget);
-                ActivateWidget(CurDragWidget);
                 
                 // Searchign for any drag point for this widget - it will be used
                 // to shift all drag points for it
@@ -163,7 +162,6 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
     			CurDragPoint = NewDragPoint;
                 wxsEvent SelectEvent(wxEVT_SELECT_WIDGET,0,NULL,CurDragPoint->Widget);
                 wxPostEvent(wxSmith::Get(),SelectEvent);
-                ActivateWidget(CurDragPoint->Widget);
     		}
     		
             for ( DragPointsI i = DragPoints.begin(); i!=DragPoints.end(); ++i )
@@ -325,7 +323,7 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
         }
     }
 
-    if ( !event.Dragging() && !event.LeftDown() )
+    if ( !event.Dragging() )
     {
     	if ( NewDragWidget )
     	{
@@ -363,6 +361,11 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
     		SetCur(wxCURSOR_ARROW);
     	}
     }
+}
+
+void wxsDragWindow::OnSelectWidget(wxsEvent& event)
+{
+	ActivateWidget(event.GetWidget(),::wxGetKeyState(WXK_CONTROL));
 }
 
 void wxsDragWindow::ClearDragPoints()
@@ -620,10 +623,10 @@ void wxsDragWindow::SetCur(int Cur)
 	}
 }
 
-
 BEGIN_EVENT_TABLE(wxsDragWindow,wxControl)
     EVT_PAINT(wxsDragWindow::OnPaint)
     EVT_MOUSE_EVENTS(wxsDragWindow::OnMouse)
     EVT_ERASE_BACKGROUND(wxsDragWindow::OnEraseBack)
     EVT_TIMER(1,wxsDragWindow::TimerRefresh)
+    EVT_SELECT_WIDGET(wxsDragWindow::OnSelectWidget)
 END_EVENT_TABLE()

@@ -1,5 +1,5 @@
-#ifndef WXSSTYLEPROPERTY_H
-#define WXSSTYLEPROPERTY_H
+#ifndef WXSSTRINGLISTPROPERTY_H
+#define WXSSTRINGLISTPROPERTY_H
 
 #include "../wxsproperties.h"
 #include "../widget.h"

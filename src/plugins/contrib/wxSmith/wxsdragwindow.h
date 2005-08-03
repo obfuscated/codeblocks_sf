@@ -4,6 +4,7 @@
 #include <wx/control.h>
 #include <wx/timer.h>
 #include <vector>
+#include "wxsevent.h"
 
 class wxsWidget;
 
@@ -43,6 +44,9 @@ class wxsDragWindow : public wxControl
 
         /** Event handler for all mouse events */
         void OnMouse(wxMouseEvent& event);
+        
+        /** Event handler for EVT_SELECT_WIDGET event */
+        void OnSelectWidget(wxsEvent& event);
         
         /** Fuunction activating one widget */
         void ActivateWidget(wxsWidget* Widget,bool GrayTheRest=false);

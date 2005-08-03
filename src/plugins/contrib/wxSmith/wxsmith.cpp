@@ -7,7 +7,7 @@
  * License:   GPL
  **************************************************************/
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(__APPLE__) && !defined(FASTCOMPILE)
 	#pragma implementation "wxsmith.h"
 #endif
 

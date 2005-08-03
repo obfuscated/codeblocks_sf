@@ -108,6 +108,14 @@ void wxsWindowEditor::OnActivate(wxActivateEvent& event)
     }
 }
 
+void wxsWindowEditor::OnSelectWidget(wxsEvent& event)
+{
+	if ( DragWnd )
+	{
+		DragWnd->ProcessEvent(event);
+	}
+}
+
 void wxsWindowEditor::PreviewReshaped()
 {
     SetSizer(NULL);
@@ -136,4 +144,5 @@ bool wxsWindowEditor::Close()
 BEGIN_EVENT_TABLE(wxsWindowEditor,wxsEditor)
     EVT_LEFT_DOWN(wxsWindowEditor::OnMouseClick)
     EVT_ACTIVATE(wxsWindowEditor::OnActivate)
+    EVT_SELECT_WIDGET(wxsWindowEditor::OnSelectWidget)
 END_EVENT_TABLE()
