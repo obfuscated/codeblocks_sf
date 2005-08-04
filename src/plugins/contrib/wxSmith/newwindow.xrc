@@ -1,6 +1,6 @@
 <resource>
-<object class="wxDialog" name="wxsNewDialogDlg">
-    <title>New Dialog</title>
+<object class="wxDialog" name="wxsNewWindowDlg">
+    <title>New Window</title>
     <object class="wxBoxSizer">
         <orient>wxVERTICAL</orient>
         <object class="sizeritem">

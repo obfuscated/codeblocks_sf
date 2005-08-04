@@ -18,11 +18,12 @@ enum std_widgets
     wxsStaticTextId,
     wxsComboBoxId,
     wxsListBoxId,
+    wxsPanelId,
     
     /* Windows */
     wxsDialogId,
     wxsFrameId,
-    wxsPanelId,
+    wxsPanelrId,
     
     /* Count */
     wxsStdIdCount

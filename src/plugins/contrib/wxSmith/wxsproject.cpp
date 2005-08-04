@@ -3,7 +3,7 @@
 #include "widget.h"
 #include "defwidgets/wxsstdmanager.h"
 #include "defwidgets/wxsdialog.h"
-#include "resources/wxsdialogres.h"
+#include "resources/wxswindowres.h"
 #include "wxswidgetfactory.h"
 #include "wxsmith.h"
 #include <wx/string.h>
@@ -104,14 +104,20 @@ inline void wxsProject::Clear()
 
     for ( FrameListI i = Frames.begin(); i!=Frames.end(); ++i )
     {
-        // TODO (SpOoN#1#): Uncommend when frames done
-        //delete *i;
+        if ( *i )
+        {
+            delete *i;
+            *i = NULL;
+        }
     }
 
     for ( PanelListI i = Panels.begin(); i!=Panels.end(); ++i )
     {
-        // TODO (SpOoN#1#): Uncomment when panel done
-        //delete *i;
+        if ( *i )
+        {
+            delete *i;
+            *i = NULL;
+        }
     }
 
     Dialogs.clear();
@@ -138,30 +144,29 @@ void wxsProject::BuildTree(wxTreeCtrl* Tree,wxTreeItemId WhereToAdd)
                 new wxsResourceTreeData(*i) ) );
     }
 
-    Tree->Refresh();
-}
-
-void wxsProject::DumpXml(const TiXmlNode* Elem,wxTreeCtrl* Tree,wxTreeItemId id)
-{
-    while ( Elem )
+    for ( FrameListI i = Frames.begin(); i!=Frames.end(); ++i )
     {
-        wxTreeItemId NewId = Tree->AppendItem(id,Elem->Value());
-        // Dumping attributes
-        TiXmlElement* ToElem = Elem->ToElement();
-        TiXmlAttribute* Attr = ToElem ? ToElem->FirstAttribute() : NULL;
-        if ( Attr )
-        {
-            while ( Attr )
-            {
-                wxString Str = Attr->Name() + wxString(wxT(" = ")) + Attr->Value();
-                Tree->AppendItem(NewId,Str);
-                Attr = Attr->Next();
-            }
-            Tree->AppendItem(NewId,wxT("-----------------------"));
-        }
-        DumpXml(Elem->FirstChildElement(),Tree,NewId);
-        Elem = Elem->NextSiblingElement();
+        (*i)->GetFrame().BuildTree(
+            Tree,
+            Tree->AppendItem(
+                FrameId,
+                (*i)->GetClassName(),
+                -1, -1,
+                new wxsResourceTreeData(*i) ) );
     }
+
+    for ( PanelListI i = Panels.begin(); i!=Panels.end(); ++i )
+    {
+        (*i)->GetPanel().BuildTree(
+            Tree,
+            Tree->AppendItem(
+                PanelId,
+                (*i)->GetClassName(),
+                -1, -1,
+                new wxsResourceTreeData(*i) ) );
+    }
+
+    Tree->Refresh();
 }
 
 bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
@@ -210,11 +215,27 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
     return true;
 }
 
-void wxsProject::AddDialogResource(
+void wxsProject::AddDialogResource( const char* FileName, const char* ClassName, const char* SourceName, const char* HeaderName)
+{
+	AddWindowResource(FileName,ClassName,SourceName,HeaderName,wxsWindowRes::Dialog);
+}
+
+void wxsProject::AddFrameResource( const char* FileName, const char* ClassName, const char* SourceName, const char* HeaderName)
+{
+	AddWindowResource(FileName,ClassName,SourceName,HeaderName,wxsWindowRes::Frame);
+}
+
+void wxsProject::AddPanelResource(const char* FileName, const char* ClassName, const char* SourceName, const char* HeaderName)
+{
+	AddWindowResource(FileName,ClassName,SourceName,HeaderName,wxsWindowRes::Panel);
+}
+
+void wxsProject::AddWindowResource(
     const char* FileName,
     const char* ClassName,
     const char* SourceName,
-    const char* HeaderName)
+    const char* HeaderName,
+    int Type)
 {
     if ( !FileName   || !*FileName   || !ClassName  || !*ClassName ||
          !SourceName || !*SourceName || !HeaderName || !*HeaderName )
@@ -251,53 +272,57 @@ void wxsProject::AddDialogResource(
     
     /* Finding dialog object */
     
-    TiXmlElement* Dialog = Resource->FirstChildElement("object");
-    while ( Dialog )
+    TiXmlElement* XmlDialog = Resource->FirstChildElement("object");
+    while ( XmlDialog )
     {
-        if ( !strcmp(Dialog->Attribute("class"),"wxDialog") &&
-             !strcmp(Dialog->Attribute("name"),ClassName) )
+    	const char* TypeName = "";
+    	switch ( Type )
+    	{
+    		case wxsWindowRes::Dialog: TypeName = "wxDialog"; break;
+    		case wxsWindowRes::Panel:  TypeName = "wxPanel" ; break;
+    		case wxsWindowRes::Frame:  TypeName = "wxFrame" ; break;
+    	}
+        if ( !strcmp(XmlDialog->Attribute("class"),TypeName) &&
+             !strcmp(XmlDialog->Attribute("name"),ClassName) )
         {
             break;
         }
         
-        Dialog = Dialog->NextSiblingElement("object");
+        XmlDialog = Resource->NextSiblingElement("object");
     }
     
-    if ( !Dialog ) return;
+    if ( !XmlDialog ) return;
     
     /* Creating dialog */
 
-    wxsDialogRes* Res = new wxsDialogRes(this,ClassName,FileName,SourceName,HeaderName);
-
+    wxsWindowRes* Res = NULL;
     
-    if ( ! (Res->GetDialog().XmlLoad(Dialog))  )
+    switch ( Type )
+    {
+        case wxsWindowRes::Dialog: Res = new wxsDialogRes(this,ClassName,FileName,SourceName,HeaderName); break;
+        case wxsWindowRes::Panel:  Res = new wxsPanelRes(this,ClassName,FileName,SourceName,HeaderName); break;
+        case wxsWindowRes::Frame:  Res = new wxsFrameRes(this,ClassName,FileName,SourceName,HeaderName); break;
+    }
+    
+    if ( !Res )
+    {
+        Manager::Get()->GetMessageManager()->Log("Couldn't create new resource");
+        return;
+    }
+    
+    if ( ! (Res->GetRootWidget()->XmlLoad(XmlDialog))  )
     {
         Manager::Get()->GetMessageManager()->Log("Couldn't load xrc data");
         delete Res;
         return;
     }
     
-    Dialogs.push_back(Res);
-}
-
-void wxsProject::AddFrameResource( const char* FileName, const char* ClassName, const char* SourceName, const char* HeaderName)
-{
-    if ( !FileName   || !*FileName   || !ClassName  || !*ClassName ||
-         !SourceName || !*SourceName || !HeaderName || !*HeaderName )
-        return;
-
-// TODO (SpOoN#1#): Implement frames
-    assert(!"Not implemented yet - this is not an official version\n");
-}
-
-void wxsProject::AddPanelResource(const char* FileName, const char* ClassName, const char* SourceName, const char* HeaderName)
-{
-    if ( !FileName   || !*FileName   || !ClassName  || !*ClassName ||
-            !SourceName || !*SourceName || !HeaderName || !*HeaderName )
-        return;
-        
-// TODO (SpOoN#1#): Implement panels
-    assert(!"Not implemented yet - this is not an official version\n");
+    switch ( Type )
+    {
+        case wxsWindowRes::Dialog: Dialogs.push_back((wxsDialogRes*)Res); break;
+        case wxsWindowRes::Panel:  Panels.push_back((wxsPanelRes*)Res); break;
+        case wxsWindowRes::Frame:  Frames.push_back((wxsFrameRes*)Res); break;
+    }
 }
 
 bool wxsProject::CheckProjFileExists(const char* FileName)
@@ -325,6 +350,28 @@ TiXmlDocument* wxsProject::GenerateXml()
         Elem->InsertEndChild(Dlg);
     }
     
+    for ( FrameListI i = Frames.begin(); i!=Frames.end(); ++i )
+    {
+        TiXmlElement Frm(XML_FRAME_STR);
+        wxsFrameRes* Sett = *i;
+        Frm.SetAttribute(XML_FNAME_STR,Sett->GetXrcFile());
+        Frm.SetAttribute(XML_CNAME_STR,Sett->GetClassName());
+        Frm.SetAttribute(XML_SFILE_STR,Sett->GetSourceFile());
+        Frm.SetAttribute(XML_HFILE_STR,Sett->GetHeaderFile());
+        Elem->InsertEndChild(Frm);
+    }
+    
+    for ( PanelListI i = Panels.begin(); i!=Panels.end(); ++i )
+    {
+        TiXmlElement Pan(XML_PANEL_STR);
+        wxsPanelRes* Sett = *i;
+        Pan.SetAttribute(XML_FNAME_STR,Sett->GetXrcFile());
+        Pan.SetAttribute(XML_CNAME_STR,Sett->GetClassName());
+        Pan.SetAttribute(XML_SFILE_STR,Sett->GetSourceFile());
+        Pan.SetAttribute(XML_HFILE_STR,Sett->GetHeaderFile());
+        Elem->InsertEndChild(Pan);
+    }
+    
     return Doc;
 }
 
@@ -349,18 +396,46 @@ void wxsProject::SaveProject()
     {
         (*i)->Save();
     }
+
+    for ( FrameListI i = Frames.begin(); i!=Frames.end(); ++i )
+    {
+        (*i)->Save();
+    }
+
+    for ( PanelListI i = Panels.begin(); i!=Panels.end(); ++i )
+    {
+        (*i)->Save();
+    }
 }
 
 void wxsProject::DeleteDialog(wxsDialogRes* Resource)
 {
     if ( DuringClear ) return;
-    
+
     DialogListI i;
     for ( i=Dialogs.begin(); i!=Dialogs.end(); ++i ) if ( *i == Resource ) break;
-    
     if ( i == Dialogs.end() ) return;
-    
     Dialogs.erase(i);
+}
+
+void wxsProject::DeleteFrame(wxsFrameRes* Resource)
+{
+    if ( DuringClear ) return;
+    
+    FrameListI i;
+    for ( i=Frames.begin(); i!=Frames.end(); ++i ) if ( *i == Resource ) break;
+    if ( i == Frames.end() ) return;
+    Frames.erase(i);
+}
+
+void wxsProject::DeletePanel(wxsPanelRes* Resource)
+{
+    if ( DuringClear ) return;
+    
+    PanelListI i;
+    for ( i=Panels.begin(); i!=Panels.end(); ++i ) if ( *i == Resource ) break;
+    if ( i == Panels.end() ) return;
+    Panels.erase(i);
 }
 
 wxString wxsProject::GetInternalFileName(const wxString& FileName)
@@ -408,6 +483,22 @@ void wxsProject::AddDialog(wxsDialogRes* Dialog)
     Dialog->GetDialog().BuildTree(Tree, Tree->AppendItem( DialogId, Dialog->GetClassName(), -1, -1, new wxsResourceTreeData(Dialog) ) );
 }
 
+void wxsProject::AddFrame(wxsFrameRes* Frame)
+{
+    if ( !Frame ) return;
+    Frames.push_back(Frame);
+    wxTreeCtrl* Tree = wxSmith::Get()->GetResourceTree();
+    Frame->GetFrame().BuildTree(Tree, Tree->AppendItem( FrameId, Frame->GetClassName(), -1, -1, new wxsResourceTreeData(Frame) ) );
+}
+
+void wxsProject::AddPanel(wxsPanelRes* Panel)
+{
+    if ( !Panel ) return;
+    Panels.push_back(Panel);
+    wxTreeCtrl* Tree = wxSmith::Get()->GetResourceTree();
+    Panel->GetPanel().BuildTree(Tree, Tree->AppendItem( PanelId, Panel->GetClassName(), -1, -1, new wxsResourceTreeData(Panel) ) );
+}
+
 wxsResource* wxsProject::FindResource(const wxString& Name)
 {
     for ( DialogListI i = Dialogs.begin(); i!=Dialogs.end(); ++i )
@@ -417,14 +508,12 @@ wxsResource* wxsProject::FindResource(const wxString& Name)
 
     for ( FrameListI i = Frames.begin(); i!=Frames.end(); ++i )
     {
-        // TODO (SpOoN#1#): Uncommend when frames done
-        //delete *i;
+        if ( (*i)->GetResourceName() == Name ) return *i;
     }
 
     for ( PanelListI i = Panels.begin(); i!=Panels.end(); ++i )
     {
-        // TODO (SpOoN#1#): Uncomment when panel done
-        //delete *i;
+        if ( (*i)->GetResourceName() == Name ) return *i;
     }
     
     return NULL;
@@ -443,11 +532,17 @@ void wxsProject::SendEventToEditors(wxEvent& event)
 
     for ( FrameListI i = Frames.begin(); i!=Frames.end(); ++i )
     {
-        // TODO (SpOoN#1#): Implement when frames done
+        if ( (*i)->GetEditor() )
+        {
+        	(*i)->GetEditor()->ProcessEvent(event);
+        }
     }
 
     for ( PanelListI i = Panels.begin(); i!=Panels.end(); ++i )
     {
-        // TODO (SpOoN#1#): Implement when panels done
+        if ( (*i)->GetEditor() )
+        {
+        	(*i)->GetEditor()->ProcessEvent(event);
+        }
     }
 }

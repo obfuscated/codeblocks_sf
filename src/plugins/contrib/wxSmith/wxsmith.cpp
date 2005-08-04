@@ -22,7 +22,7 @@
 
 #include "wxsmith.h"
 #include "wxswindoweditor.h"
-#include "resources/wxsdialogres.h"
+//#include "resources/wxsdialogres.h"
 #include "defwidgets/wxsstdmanager.h"
 #include "wxscodegen.h"
 #include "wxspropertiesman.h"
@@ -30,9 +30,11 @@
 #include "wxswidgetfactory.h"
 #include "wxspalette.h"
 #include "wxsevent.h"
-#include "wxsnewdialogdlg.h"
+#include "wxsnewwindowdlg.h"
 
 static int NewDialogId = wxNewId();
+static int NewFrameId = wxNewId();
+static int NewPanelId = wxNewId();
 
 class wxsResourceTree: public wxTreeCtrl
 {
@@ -88,7 +90,9 @@ BEGIN_EVENT_TABLE(wxSmith, cbPlugin)
 	EVT_UNSELECT_RES(wxSmith::OnSpreadEvent)
 	EVT_SELECT_WIDGET(wxSmith::OnSpreadEvent)
 	EVT_UNSELECT_WIDGET(wxSmith::OnSpreadEvent)
-	EVT_MENU(NewDialogId,wxSmith::OnNewDialog)
+	EVT_MENU(NewDialogId,wxSmith::OnNewWindow)
+	EVT_MENU(NewFrameId,wxSmith::OnNewWindow)
+	EVT_MENU(NewPanelId,wxSmith::OnNewWindow)
 END_EVENT_TABLE()
 
 wxSmith::wxSmith()
@@ -213,6 +217,8 @@ void wxSmith::BuildMenu(wxMenuBar* menuBar)
 {
 	wxMenu* Menu = new wxMenu;
 	Menu->Append(NewDialogId,wxT("Add Dialog"));
+	Menu->Append(NewFrameId,wxT("Add Frame"));
+	Menu->Append(NewPanelId,wxT("Add Panel"));
 	
 	int ToolsPos = menuBar->FindMenu(wxT("&Tools"));
 	
@@ -289,7 +295,7 @@ wxsProject* wxSmith::GetSmithProject(cbProject* Proj)
     return (*i).second;
 }
 
-void wxSmith::OnNewDialog(wxCommandEvent& event)
+void wxSmith::OnNewWindow(wxCommandEvent& event)
 {
     cbProject* Project = Manager::Get()->GetProjectManager()->GetActiveProject();
     
@@ -328,8 +334,18 @@ void wxSmith::OnNewDialog(wxCommandEvent& event)
             break;
     }
     
-    wxsNewDialogDlg Dlg(Manager::Get()->GetAppWindow());
+    wxsWindowRes::WindowResType Type = wxsWindowRes::Dialog;
+    
+    if ( event.GetId() == NewDialogId ) Type = wxsWindowRes::Dialog;
+    else if ( event.GetId() == NewFrameId  ) Type = wxsWindowRes::Frame;
+    else if ( event.GetId() == NewPanelId  ) Type = wxsWindowRes::Panel;
+    else
+    {
+    	wxMessageBox(wxT("Internal error - invalid resource type"));
+    	return;
+    }
+    
+    wxsNewWindowDlg Dlg(Manager::Get()->GetAppWindow(),Type);
     Dlg.ShowModal();
-    event.Skip();
 }
 

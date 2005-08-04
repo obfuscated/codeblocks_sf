@@ -80,8 +80,9 @@ class wxsDragWindow : public wxControl
         {
         	wxsWidget* Widget;                              ///< Widget associated with this box
         	DragBoxType Type;                               ///< Type of this drag box
-        	bool Invisible;                                 ///< IF true, this point is hidden
+        	bool Invisible;                                 ///< If true, this point is hidden
         	bool Inactive;                                  ///< If true, this drag point will be drawn gray
+        	bool NoAction;                                  ///< If true, thiss drag point is used to show placement of object only, not for moving or sizing
         	int PosX;                                       ///< X position of this drag point
         	int PosY;                                       ///< Y position of this drag point
         	int DragInitPosX;                               ///< X position before dragging

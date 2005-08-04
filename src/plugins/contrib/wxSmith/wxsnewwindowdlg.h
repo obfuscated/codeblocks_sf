@@ -1,14 +1,15 @@
-#ifndef WXSNEWDIALOGDLG_H
-#define WXSNEWDIALOGDLG_H
+#ifndef WXSNEWWINDOWDLG_H
+#define WXSNEWWINDOWDLG_H
 
 #include <wx/dialog.h>
 #include <wx/textctrl.h>
+#include "resources/wxswindowres.h"
 
-class wxsNewDialogDlg : public wxDialog
+class wxsNewWindowDlg : public wxDialog
 {
 	public:
-		wxsNewDialogDlg(wxWindow* parent);
-		virtual ~wxsNewDialogDlg();
+		wxsNewWindowDlg(wxWindow* parent,wxsWindowRes::WindowResType Type);
+		virtual ~wxsNewWindowDlg();
 		
 	protected:
 	
@@ -25,6 +26,7 @@ class wxsNewDialogDlg : public wxDialog
         bool SourceNotTouched;
         bool HeaderNotTouched;
         bool BlockText;
+        wxsWindowRes::WindowResType Type;
         
         DECLARE_EVENT_TABLE()
 };

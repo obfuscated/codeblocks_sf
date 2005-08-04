@@ -1,4 +1,4 @@
-#include "wxsdialogres.h"
+#include "wxswindowres.h"
 
 #include "../wxswidgetfactory.h"
 #include "../wxswindoweditor.h"
@@ -11,12 +11,13 @@ const char* EmptySource =
 "\
 #include \"$(Include)\"\n\
 \n\
+BEGIN_EVENT_TABLE($(ClassName),$(BaseClassName))\n\
 //(*EventTable($(ClassName))\n\
-BEGIN_EVENT_TABLE($(ClassName),wxDialog)\n\
-END_EVENT_TABLE()\n\
 //*)\n\
+END_EVENT_TABLE()\n\
 \n\
-$(ClassName)::$(ClassName)(wxWidnow* parent,wxWindowID id = -1)\n\
+$(ClassName)::$(ClassName)(wxWidnow* parent,wxWindowID id):\
+    $(BaseClassCtor)\n\
 {\n\
     //(*Initialize($(ClassName))\n\
     //*)\n\
@@ -36,7 +37,7 @@ const char* EmptyHeader =
 //(*Headers($(ClassName))\n\
 //*)\n\
 \n\
-class $(ClassName): public wxDialog\n\
+class $(ClassName): public $(BaseClassName)\n\
 {\n\
     public:\n\
 \n\
@@ -62,31 +63,54 @@ class $(ClassName): public wxDialog\n\
 #endif\n\
 ";
 
-wxsDialogRes::wxsDialogRes(wxsProject* Project,const wxString& Class, const wxString& Xrc, const wxString& Src,const wxString& Head):
-    wxsResource(Project),
-    ClassName(Class),
-    XrcFile(Xrc),
-    SrcFile(Src),
-    HFile(Head)
+
+wxsWindowRes::wxsWindowRes(
+    wxsProject* Project,
+    const wxString& Class, 
+    const wxString& Xrc, 
+    const wxString& Src,
+    const wxString& Head,
+    WindowResType _Type):
+        wxsResource(Project),
+        ClassName(Class),
+        XrcFile(Xrc),
+        SrcFile(Src),
+        HFile(Head),
+        Type(_Type)
 {
-    Dialog = dynamic_cast<wxsDialog*>(wxsWidgetFactory::Get()->Generate("wxDialog"));
+    RootWidget = wxsWidgetFactory::Get()->Generate(GetWidgetClass(true));
 }
 
-wxsDialogRes::~wxsDialogRes()
+wxsWindowRes::~wxsWindowRes()
 {
     EditClose();
-    wxsWidgetFactory::Get()->Kill(Dialog);
-    GetProject()->DeleteDialog(this);
+    wxsWidgetFactory::Get()->Kill(RootWidget);
+    switch ( Type )
+    {
+    	case Dialog:
+            GetProject()->DeleteDialog(dynamic_cast<wxsDialogRes*>(this));
+            break;
+            
+        case Frame:
+            GetProject()->DeleteFrame(dynamic_cast<wxsFrameRes*>(this));
+            break;
+            
+        case Panel:
+            GetProject()->DeletePanel(dynamic_cast<wxsPanelRes*>(this));
+            break;
+            
+        default:;
+    }
 }
 
-wxsEditor* wxsDialogRes::CreateEditor()
+wxsEditor* wxsWindowRes::CreateEditor()
 {
-    wxsWindowEditor* Edit = new wxsWindowEditor(Manager::Get()->GetEditorManager()->GetNotebook() ,XrcFile,this);
-    Edit->BuildPreview(Dialog);
+    wxsWindowEditor* Edit = new wxsWindowEditor(Manager::Get()->GetEditorManager()->GetNotebook(),XrcFile,this);
+    Edit->BuildPreview(RootWidget);
     return Edit;
 }
 
-void wxsDialogRes::Save()
+void wxsWindowRes::Save()
 {
     TiXmlDocument* Doc = GenerateXml();
     
@@ -98,14 +122,14 @@ void wxsDialogRes::Save()
     }
 }
 
-TiXmlDocument* wxsDialogRes::GenerateXml()
+TiXmlDocument* wxsWindowRes::GenerateXml()
 {
     TiXmlDocument* NewDoc = new TiXmlDocument;
     TiXmlElement* Resource = NewDoc->InsertEndChild(TiXmlElement("resource"))->ToElement();
     TiXmlElement* XmlDialog = Resource->InsertEndChild(TiXmlElement("object"))->ToElement();
-    XmlDialog->SetAttribute("class","wxDialog");
+    XmlDialog->SetAttribute("class",GetWidgetClass());
     XmlDialog->SetAttribute("name",ClassName.c_str());
-    if ( !Dialog->XmlSave(XmlDialog) )
+    if ( !RootWidget->XmlSave(XmlDialog) )
     {
         delete NewDoc;
         return NULL;
@@ -113,27 +137,58 @@ TiXmlDocument* wxsDialogRes::GenerateXml()
     return NewDoc;
 }
 
-void wxsDialogRes::ShowPreview()
+void wxsWindowRes::ShowPreview()
 {
     Save();
     
     wxXmlResource Res(GetProject()->GetInternalFileName(XrcFile));
     Res.InitAllHandlers();
     
-    wxDialog* Dlg = Res.LoadDialog(NULL,ClassName);
-    if ( Dlg )
+    switch ( Type )
     {
-        Dlg->ShowModal();
-        delete Dlg;
+    	case Dialog:
+    	{
+            wxDialog Dlg;
+            
+            if ( Res.LoadDialog(&Dlg,NULL,ClassName) )
+            {
+                Dlg.ShowModal();
+            }
+            break;
+    	}
+            
+        case Frame:
+        {
+            wxFrame* Frm = new wxFrame;
+            if ( Res.LoadFrame(Frm,NULL,ClassName) )
+            {
+            	Frm->Show();
+            }
+            break;
+        }
+            
+        case Panel:
+        {
+        	wxDialog Dlg(NULL,-1,wxString::Format(wxT("Frame preview: %s"),ClassName.c_str()));
+        	wxPanel* Panel = Res.LoadPanel(&Dlg,ClassName);
+        	if ( Panel )
+        	{
+        		Dlg.Fit();
+        		Dlg.ShowModal();
+        	}
+        	break;
+        }
+        
+        default:;
     }
 }
 
-const wxString& wxsDialogRes::GetResourceName()
+const wxString& wxsWindowRes::GetResourceName()
 {
     return GetClassName();
 }
 
-bool wxsDialogRes::GenerateEmptySources()
+bool wxsWindowRes::GenerateEmptySources()
 {
     // Generating file variables
     
@@ -159,6 +214,23 @@ bool wxsDialogRes::GenerateEmptySources()
     wxString Content = EmptyHeader;
     Content.Replace("$(Guard)",Guard,true);
     Content.Replace("$(ClassName)",ClassName,true);
+    Content.Replace("$(BaseClassName)",GetWidgetClass());
+    switch ( Type )
+    {
+    	case Dialog:
+            Content.Replace("$(BaseClassCtor)","wxDialog(parent,id,wxT(\"\"))");
+            break;
+            
+        case Frame:
+            Content.Replace("$(BaseClassCtor)","wxFrame(parent,id,wxT(\"\"))");
+            break;
+            
+        case Panel:
+            Content.Replace("$(BaseClassCtor)","wxPanel(parent,id)");
+            break;
+            
+        default:;
+    }
     fprintf(Fl,"%s",Content.c_str());
     fclose(Fl);
     
@@ -167,12 +239,13 @@ bool wxsDialogRes::GenerateEmptySources()
     Content = EmptySource;
     Content.Replace("$(Include)",Include,true);
     Content.Replace("$(ClassName)",ClassName,true);
+    Content.Replace("$(BaseClassName)",GetWidgetClass());
     fprintf(Fl,"%s",Content.c_str());
     fclose(Fl);
     return true;
 }
 
-void wxsDialogRes::NotifyChange()
+void wxsWindowRes::NotifyChange()
 {
 	assert ( GetProject() != NULL );
 	
@@ -182,7 +255,7 @@ void wxsDialogRes::NotifyChange()
 	int GlobalTabSize = 2 * TabSize;
 	
 	// Generating producing code
-	wxsCodeGen Gen(Dialog,TabSize,TabSize);
+	wxsCodeGen Gen(RootWidget,TabSize,TabSize);
 	
 	// Creating code header
 
@@ -193,7 +266,7 @@ void wxsDialogRes::NotifyChange()
 	
 	wxString GlobalCode;
 	bool WasDeclaration = false;
-	AddDeclarationsReq(Dialog,Code,GlobalCode,TabSize,GlobalTabSize,WasDeclaration);
+	AddDeclarationsReq(RootWidget,Code,GlobalCode,TabSize,GlobalTabSize,WasDeclaration);
 	if ( WasDeclaration )
 	{
 		Code.Append('\n');
@@ -204,6 +277,9 @@ void wxsDialogRes::NotifyChange()
 	Code.Append(Gen.GetCode());
 	Code.Append(' ',TabSize);
 	
+// TODO (SpOoN#1#): Apply title and centered properties for frame and dialog
+	
+
 	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(SrcFile),CodeHeader,Code);
 	
 	// Creating global declarations
@@ -216,7 +292,7 @@ void wxsDialogRes::NotifyChange()
 	#endif
 }
 
-void wxsDialogRes::AddDeclarationsReq(wxsWidget* Widget,wxString& LocalCode,wxString& GlobalCode,int LocalTabSize,int GlobalTabSize,bool& WasLocal)
+void wxsWindowRes::AddDeclarationsReq(wxsWidget* Widget,wxString& LocalCode,wxString& GlobalCode,int LocalTabSize,int GlobalTabSize,bool& WasLocal)
 {
 	static wxsCodeParams EmptyParams;
 	
@@ -237,3 +313,14 @@ void wxsDialogRes::AddDeclarationsReq(wxsWidget* Widget,wxString& LocalCode,wxSt
 	}
 }
 
+inline const char* wxsWindowRes::GetWidgetClass(bool UseRes)
+{
+	switch ( Type )
+	{
+		case Dialog: return "wxDialog";
+		case Frame: return "wxFrame";
+		case Panel: return UseRes ? "wxPanelr" : "wxPanel";
+	}
+	
+	return "";
+}

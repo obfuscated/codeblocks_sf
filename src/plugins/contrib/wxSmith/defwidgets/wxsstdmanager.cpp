@@ -32,11 +32,11 @@ static const char* DefCategory    = "Standard";
         DefAuthor,                                      \
         DefAuthorEmail,                                 \
         DefAuthorSite,                                  \
-        "http://www.wxwidgets.org/manuals/2.4.2/"Link,  \
+        "http://www.wxwidgets.org/manuals/2.6.1/"Link,  \
         DefCategory,                                    \
         false,                                          \
         false,                                          \
-        2, 42,                                          \
+        2, 6,                                          \
         NULL,                                           \
         &wxsStdManager,                                 \
         wxs##Name##Id,                                  \
@@ -50,16 +50,34 @@ static const char* DefCategory    = "Standard";
         DefAuthor,                                      \
         DefAuthorEmail,                                 \
         DefAuthorSite,                                  \
-        "http://www.wxwidgets.org/manuals/2.4.2/"Link,  \
+        "http://www.wxwidgets.org/manuals/2.6.1/"Link,  \
         DefCategory,                                    \
         false,                                          \
         false,                                          \
-        2, 42,                                          \
+        2, 6,                                           \
         NULL,                                           \
         &wxsStdManager,                                 \
         wxs##Name##Id,                                  \
         0,                                              \
         NULL                                            \
+    },
+
+#define WindowEntry(Name,Link)                          \
+    {   "wx"#Name,                                      \
+        DefLicence,                                     \
+        DefAuthor,                                      \
+        DefAuthorEmail,                                 \
+        DefAuthorSite,                                  \
+        "http://www.wxwidgets.org/manuals/2.6.1/"Link,  \
+        "",                                             \
+        false,                                          \
+        false,                                          \
+        2, 6,                                           \
+        NULL,                                           \
+        &wxsStdManager,                                 \
+        wxs##Name##Id,                                  \
+        0,                                              \
+        wxs##Name##Styles                               \
     },
 
 
@@ -84,63 +102,18 @@ static wxsWidgetInfo StdInfos[] =
         NULL
     },
  
-    Entry(Button,      "wx46.htm#wxbutton")
-    Entry(ToggleButton,"wx396.htm#wxtogglebutton")
-    Entry(CheckBox,    "wx52.htm#wxcheckbox")
-    Entry(StaticText,  "wx362.htm#wxstatictext")
-    Entry(ComboBox,    "wx67.htm#wxcombobox")
-    Entry(ListBox,     "wx233.htm#wxlistbox")    
-
-    {   "wxDialog",
-        DefLicence,
-        DefAuthor,
-        DefAuthorEmail,
-        DefAuthorSite,
-        "http://www.wxwidgets.org/manuals/2.4.2/wx109.htm#wxdialog",
-        "",
-        true,
-        false,
-        2, 42,
-        NULL,
-        &wxsStdManager,
-        wxsDialogId,
-        0,
-        wxsDialogStyles
-    },
-
-    {   "wxFrame",
-        DefLicence,
-        DefAuthor,
-        DefAuthorEmail,
-        DefAuthorSite,
-        "http://www.wxwidgets.org/manuals/2.4.2/wx163.htm#wxframe",
-        "",
-        true,
-        false,
-        2, 42,
-        NULL,
-        &wxsStdManager,
-        wxsFrameId,
-        0,
-        // TODO (SpOoN#1#): Add styles
-    },
+    Entry(Button,      "wx_wxbutton.htm#wxbutton")
+    Entry(ToggleButton,"wx_wxtogglebutton.html#wxtogglebutton")
+    Entry(CheckBox,    "wx_wxcheckbox.html#wxcheckbox")
+    Entry(StaticText,  "wx_wxstatictext.html#wxstatictext")
+    Entry(ComboBox,    "wx_wxcombobox.html#wxcombobox")
+    Entry(ListBox,     "wx_wxlistbox.html#wxlistbox")    
+    Entry(Panel,       "wx_wxpanel.html#wxpanel")    
     
-    {   "wxPanel",
-        DefLicence,
-        DefAuthor,
-        DefAuthorEmail,
-        DefAuthorSite,
-        "http://www.wxwidgets.org/manuals/2.4.2/wx291.htm#wxpanel",
-        DefCategory,
-        true,
-        false,
-        2, 42,
-        NULL,
-        &wxsStdManager,
-        wxsPanelId,
-        0
-        // TODO (SpOoN#1#): Add styles
-    },
+    WindowEntry(Dialog,"wx_wxdialog.html#wxdialog")
+    WindowEntry(Frame, "wx_wxframe.html#wxframe")
+    WindowEntry(Panelr,"wx_wxpanel.html#wxpanel")
+    
 };
 
 static const int StdInfosCnt = sizeof(StdInfos) / sizeof(StdInfos[0]);
@@ -213,12 +186,13 @@ wxsWidget* wxsStdManagerT::ProduceWidget(int Id)
         case wxsButtonId:       return new wxsButton(this);
         case wxsCheckBoxId:     return new wxsCheckBox(this);
         case wxsStaticTextId:   return new wxsStaticText(this);
-        case wxsPanelId:        return new wxsPanel(this);
-        case wxsFrameId:        return new wxsFrame(this);
-        case wxsDialogId:       return new wxsDialog(this);
         case wxsToggleButtonId: return new wxsToggleButton(this);
         case wxsComboBoxId:     return new wxsComboBox(this);
         case wxsListBoxId:      return new wxsListBox(this);
+        case wxsPanelId:        return new wxsPanel(this);
+        case wxsDialogId:       return new wxsDialog(this);
+        case wxsFrameId:        return new wxsFrame(this);
+        case wxsPanelrId:       return new wxsPanelr(this);
     }
     
     return NULL;

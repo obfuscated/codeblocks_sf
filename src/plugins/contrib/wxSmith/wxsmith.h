@@ -85,7 +85,7 @@ class wxSmith : public cbPlugin
         void OnProjectClose(CodeBlocksEvent& event);
         void OnProjectOpen(CodeBlocksEvent& event);
         void OnProjectActivated(CodeBlocksEvent& event);
-        void OnNewDialog(wxCommandEvent& event);
+        void OnNewWindow(wxCommandEvent& event);
         
         /* Internal event-processing functions */
         void OnSpreadEvent(wxsEvent& event);

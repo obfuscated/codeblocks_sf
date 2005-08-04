@@ -1,13 +1,15 @@
 #ifndef WXSPANEL_H
 #define WXSPANEL_H
 
-#include "../wxscontainer.h"
+#include "wxswindow.h"
 
-class wxsPanel : public wxsContainer
+WXS_ST_DECLARE(wxsPanelStyles)
+
+/** Standard panel - it may be used as a widget */
+class wxsPanel : public wxsWindow
 {
 	public:
-	
-		wxsPanel(wxsWidgetManager* Manager);
+		wxsPanel(wxsWidgetManager* Man);
 		
 		virtual ~wxsPanel();
 		
@@ -16,13 +18,17 @@ class wxsPanel : public wxsContainer
         
         /** Function generating code which should produce widget */
         virtual const char* GetProducingCode(wxsCodeParams& Params);
-        
-    protected:
-        
-        /** This function should create preview window for widget */
-        virtual wxWindow* MyCreatePreview(wxWindow* Parent);
-        
-    private:
+};
+
+WXS_ST_DECLARE(wxsPanelrStyles)
+
+/** Resource panel - may be used as a resourcec */
+class wxsPanelr : public wxsWindow
+{
+	public:
+		wxsPanelr(wxsWidgetManager* Man);
+		virtual ~wxsPanelr();
+        virtual const wxsWidgetInfo& GetInfo();
 };
 
 #endif // WXSPANEL_H

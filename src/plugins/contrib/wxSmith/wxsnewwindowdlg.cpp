@@ -1,16 +1,17 @@
-#include "wxsnewdialogdlg.h"
-#include "resources/wxsdialogres.h"
+#include "wxsnewwindowdlg.h"
+#include "resources/wxswindowres.h"
 #include "wxsmith.h"
 
 #include <wx/xrc/xmlres.h>
 #include <projectmanager.h>
 
-wxsNewDialogDlg::wxsNewDialogDlg(wxWindow* parent):
+wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,wxsWindowRes::WindowResType _Type):
     SourceNotTouched(true),
     HeaderNotTouched(true),
-    BlockText(false)
+    BlockText(false),
+    Type(_Type)
 {
-    wxXmlResource::Get()->LoadDialog(this, parent, "wxsNewDialogDlg");
+    wxXmlResource::Get()->LoadDialog(this, parent, "wxsNewWindowDlg");
     
     Class  = XRCCTRL(*this, "ClassName", wxTextCtrl);
     Source = XRCCTRL(*this, "SourceFile", wxTextCtrl);
@@ -22,22 +23,44 @@ wxsNewDialogDlg::wxsNewDialogDlg(wxWindow* parent):
     }
     else
     {
-        Class->SetValue(wxT("MyDialog"));
-        Source->SetValue(wxT("mydialog.cpp"));
-        Header->SetValue(wxT("mydialog.h"));
+    	BlockText = true;
+    	switch ( Type )
+    	{
+    		case wxsWindowRes::Dialog:
+                Class->SetValue(wxT("MyDialog"));
+                Source->SetValue(wxT("mydialog.cpp"));
+                Header->SetValue(wxT("mydialog.h"));
+                SetTitle(wxT("New Dialog resource"));
+                break;
+                
+            case wxsWindowRes::Frame:
+                Class->SetValue(wxT("MyFrame"));
+                Source->SetValue(wxT("myframe.cpp"));
+                Header->SetValue(wxT("myframe.h"));
+                SetTitle(wxT("New Frame resource"));
+                break;
+            
+            case wxsWindowRes::Panel:
+                Class->SetValue(wxT("MyPanel"));
+                Source->SetValue(wxT("mypanel.cpp"));
+                Header->SetValue(wxT("mypanel.h"));
+                SetTitle(wxT("New Panel resource"));
+                break;
+    	}
+        BlockText = false;
     }
 }
 
-wxsNewDialogDlg::~wxsNewDialogDlg()
+wxsNewWindowDlg::~wxsNewWindowDlg()
 {
 }
 
-void wxsNewDialogDlg::OnCancel(wxCommandEvent& event)
+void wxsNewWindowDlg::OnCancel(wxCommandEvent& event)
 {
     Close();
 }
 
-void wxsNewDialogDlg::OnCreate(wxCommandEvent& event)
+void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
 {
     // Need to do some checks
     
@@ -81,7 +104,7 @@ void wxsNewDialogDlg::OnCreate(wxCommandEvent& event)
         return;
     }
     
-    // Third - checking if file already exist
+    // Third - checking if files already exist
 
     if ( wxFileName::FileExists(Proj->GetProjectFileName(Header->GetValue())) )
     {
@@ -108,12 +131,27 @@ void wxsNewDialogDlg::OnCreate(wxCommandEvent& event)
     // Creating dialog
 
     wxString XrcFile = Class->GetValue() + wxT(".xrc");
-    wxsDialogRes* NewDialog = new wxsDialogRes(Proj,Class->GetValue(),XrcFile,Source->GetValue(),Header->GetValue());
+    wxsWindowRes* NewWindow = NULL;
     
-    if ( !NewDialog->GenerateEmptySources() )
+    switch ( Type )
+    {
+        case wxsWindowRes::Dialog:
+            NewWindow = new wxsDialogRes(Proj,Class->GetValue(),XrcFile,Source->GetValue(),Header->GetValue());
+            break;
+            
+        case wxsWindowRes::Frame:
+            NewWindow = new wxsFrameRes(Proj,Class->GetValue(),XrcFile,Source->GetValue(),Header->GetValue());
+            break;
+        
+        case wxsWindowRes::Panel:
+            NewWindow = new wxsPanelRes(Proj,Class->GetValue(),XrcFile,Source->GetValue(),Header->GetValue());
+            break;
+    }
+    
+    if ( !NewWindow->GenerateEmptySources() )
     {
         wxMessageBox(wxT("Couldn't generate sources"),wxT("Error"),wxOK|wxICON_ERROR);
-        delete NewDialog;
+        delete NewWindow;
         return;
     }
     
@@ -129,14 +167,27 @@ void wxsNewDialogDlg::OnCreate(wxCommandEvent& event)
     
     
     // Adding dialog to project and opening editor for it
+
+    switch ( Type )
+    {
+        case wxsWindowRes::Dialog:
+            Proj->AddDialog((wxsDialogRes*)NewWindow);
+            break;
+            
+        case wxsWindowRes::Frame:
+            Proj->AddFrame((wxsFrameRes*)NewWindow);
+            break;
+        
+        case wxsWindowRes::Panel:
+            Proj->AddPanel((wxsPanelRes*)NewWindow);
+            break;
+    }
     
-    Proj->AddDialog(NewDialog);    
-    wxsSelectRes(NewDialog);
-   
+    wxsSelectRes(NewWindow);
     Close();
 }
 
-void wxsNewDialogDlg::OnClassChanged(wxCommandEvent& event)
+void wxsNewWindowDlg::OnClassChanged(wxCommandEvent& event)
 {
     if ( BlockText ) return;
     BlockText = true;
@@ -145,7 +196,7 @@ void wxsNewDialogDlg::OnClassChanged(wxCommandEvent& event)
     BlockText = false;
 }
 
-void wxsNewDialogDlg::OnSourceChanged(wxCommandEvent& event)
+void wxsNewWindowDlg::OnSourceChanged(wxCommandEvent& event)
 {
     if ( BlockText ) return;
     BlockText = true;
@@ -153,7 +204,7 @@ void wxsNewDialogDlg::OnSourceChanged(wxCommandEvent& event)
     BlockText = false;
 }
 
-void wxsNewDialogDlg::OnHeaderChanged(wxCommandEvent& event)
+void wxsNewWindowDlg::OnHeaderChanged(wxCommandEvent& event)
 {
     if ( BlockText ) return;
     BlockText = true;
@@ -167,10 +218,10 @@ void wxsNewDialogDlg::OnHeaderChanged(wxCommandEvent& event)
     BlockText = false;
 }
     
-BEGIN_EVENT_TABLE(wxsNewDialogDlg,wxDialog)
-    EVT_BUTTON(XRCID("Cancel"),wxsNewDialogDlg::OnCancel)
-    EVT_BUTTON(XRCID("Create"),wxsNewDialogDlg::OnCreate)
-    EVT_TEXT(XRCID("ClassName"),wxsNewDialogDlg::OnClassChanged)
-    EVT_TEXT(XRCID("SourceFile"),wxsNewDialogDlg::OnSourceChanged)
-    EVT_TEXT(XRCID("HeaderFile"),wxsNewDialogDlg::OnHeaderChanged)
+BEGIN_EVENT_TABLE(wxsNewWindowDlg,wxDialog)
+    EVT_BUTTON(XRCID("Cancel"),wxsNewWindowDlg::OnCancel)
+    EVT_BUTTON(XRCID("Create"),wxsNewWindowDlg::OnCreate)
+    EVT_TEXT(XRCID("ClassName"),wxsNewWindowDlg::OnClassChanged)
+    EVT_TEXT(XRCID("SourceFile"),wxsNewWindowDlg::OnSourceChanged)
+    EVT_TEXT(XRCID("HeaderFile"),wxsNewWindowDlg::OnHeaderChanged)
 END_EVENT_TABLE()

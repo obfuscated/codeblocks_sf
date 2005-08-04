@@ -28,7 +28,7 @@ struct wxsStyle
     
 /** Beginning new  category */    
 #define WXS_ST_CATEGORY(name)                   \
-    { name, 0 },
+    { name, ((unsigned int)-1) },
     
 /** Ending creation of list */    
 #define WXS_ST_END(name)                        \
@@ -47,12 +47,12 @@ struct wxsStyle
     WXS_ST(wxTRANSPARENT_WINDOW)                \
     WXS_ST(wxTAB_TRAVERSAL)                     \
     WXS_ST(wxWANTS_CHARS)                       \
-    /*WXS_ST(wxNO_FULL_REPAINT_ON_RESIZE)*/     \
+    WXS_ST(wxNO_FULL_REPAINT_ON_RESIZE)         \
     WXS_ST(wxVSCROLL)                           \
     WXS_ST(wxHSCROLL)                           \
     WXS_ST(wxALWAYS_SHOW_SB)                    \
     WXS_ST(wxCLIP_CHILDREN)                     \
-    /*WXS_ST(wxFULL_REPAINT_ON_RESIZE)*/
+    WXS_ST(wxFULL_REPAINT_ON_RESIZE)
     
 
 #endif

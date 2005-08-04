@@ -159,6 +159,16 @@
 			<Option link="0"/>
 			<Option target="default"/>
 		</Unit>
+		<Unit filename="defwidgets\wxswindow.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="defwidgets\wxswindow.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
 		<Unit filename="properties\wxs2intproperty.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="default"/>
@@ -239,11 +249,11 @@
 			<Option link="0"/>
 			<Option target="default"/>
 		</Unit>
-		<Unit filename="resources\wxsdialogres.cpp">
+		<Unit filename="resources\wxswindowres.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="default"/>
 		</Unit>
-		<Unit filename="resources\wxsdialogres.h">
+		<Unit filename="resources\wxswindowres.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -361,11 +371,11 @@
 			<Option link="0"/>
 			<Option target="default"/>
 		</Unit>
-		<Unit filename="wxsnewdialogdlg.cpp">
+		<Unit filename="wxsnewwindowdlg.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="default"/>
 		</Unit>
-		<Unit filename="wxsnewdialogdlg.h">
+		<Unit filename="wxsnewwindowdlg.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

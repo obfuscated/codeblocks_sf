@@ -69,6 +69,7 @@ class wxsGridSizerPreview: public wxPanel
             SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
         }
         
+//        virtual bool HasTransparentBackground() const { return true; }
     private:
     
         void OnPaint(wxPaintEvent& event)
@@ -86,11 +87,15 @@ class wxsGridSizerPreview: public wxPanel
             wxsPropertiesMan::Get()->SetActiveWidget(sSizer);
         }
         
+        void OnEraseBack(wxEraseEvent& event)
+        { }
+        
         DECLARE_EVENT_TABLE()
 };
 
 BEGIN_EVENT_TABLE(wxsGridSizerPreview,wxPanel)
     EVT_PAINT(wxsGridSizerPreview::OnPaint)
+//    EVT_ERASE_BACKGROUND(wxsGridSizerPreview::OnEraseBack)
     EVT_LEFT_DOWN(wxsGridSizerPreview::OnClick)
 END_EVENT_TABLE()
 

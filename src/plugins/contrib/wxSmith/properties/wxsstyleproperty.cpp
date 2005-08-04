@@ -23,7 +23,7 @@ class wxsStylePropertyWindow: public wxPanel
             {
                 for ( ; Styles->Name; Styles++ )
                 {
-                    if ( !Styles->Value )
+                    if ( Styles->Value == ((unsigned int)-1) )
                     {
                         // Adding dividing text
                         wxStaticText* ST = new wxStaticText(this,-1,Styles->Name);
@@ -33,7 +33,7 @@ class wxsStylePropertyWindow: public wxPanel
                         ST->SetFont(Font);
                         Sizer->Add(ST);
                     }
-                    else
+                    else if ( Styles->Value )
                     {
                         IdToStyleMaps.push_back(Styles->Value);
                         char* Name = strdup(Styles->Name);
