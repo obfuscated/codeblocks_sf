@@ -71,21 +71,21 @@ HelpPlugin::HelpPlugin()
 : m_pMenuBar(0), m_LastId(0)
 {
   //ctor
-  wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
-  wxXmlResource::Get()->Load(resPath + "/help_plugin.zip#zip:*.xrc");
+  wxString resPath = ConfigManager::Get()->Read(_T("data_path"), wxEmptyString);
+  wxXmlResource::Get()->Load(resPath + _T("/help_plugin.zip#zip:*.xrc"));
   
-  m_PluginInfo.name = "HelpPlugin";
-  m_PluginInfo.title = "Help plugin";
-  m_PluginInfo.version = "0.1";
-  m_PluginInfo.description = "Code::Blocks Help plugin";
-  m_PluginInfo.author = "Bourricot | Ceniza (maintainer)";
-  m_PluginInfo.authorEmail = "titi37fr@yahoo.fr | ceniza@gda.utp.edu.co";
-  m_PluginInfo.authorWebsite = "www.codeblocks.org";
-  m_PluginInfo.thanksTo = "Codeblocks dev team !\nBourricot for the initial version";
+  m_PluginInfo.name = _T("HelpPlugin");
+  m_PluginInfo.title = _T("Help plugin");
+  m_PluginInfo.version = _T("0.1");
+  m_PluginInfo.description = _T("Code::Blocks Help plugin");
+  m_PluginInfo.author = _T("Bourricot | Ceniza (maintainer)");
+  m_PluginInfo.authorEmail = _T("titi37fr@yahoo.fr | ceniza@gda.utp.edu.co");
+  m_PluginInfo.authorWebsite = _T("www.codeblocks.org");
+  m_PluginInfo.thanksTo = _T("Codeblocks dev team !\nBourricot for the initial version");
   m_PluginInfo.license = LICENSE_GPL;
   m_PluginInfo.hasConfigure = true;
   
-  ConfigManager::AddConfiguration(m_PluginInfo.title, "/help_plugin");
+  ConfigManager::AddConfiguration(m_PluginInfo.title, _T("/help_plugin"));
   
   // initialize IDs for Help and popup menu
   for (int i = 0; i < MAX_HELP_ITEMS; ++i)
@@ -162,7 +162,7 @@ void HelpPlugin::BuildMenu(wxMenuBar *menuBar)
   {
     if (counter == HelpCommon::getDefaultHelpIndex())
     {
-      AddToHelpMenu(idHelpMenus[counter], it->first + _("\tF1"));
+      AddToHelpMenu(idHelpMenus[counter], it->first + _T("\tF1"));
     }
     else
     {
@@ -291,7 +291,7 @@ void HelpPlugin::LaunchHelp(const wxString &helpfile, const wxString &keyword)
   if (!keyword.IsEmpty())
   {
 #ifdef __WXMSW__
-  	if (ext.CmpNoCase(_("hlp")) == 0)
+  	if (ext.CmpNoCase(_T("hlp")) == 0)
   	{
       wxWinHelpController HelpCtl;
       HelpCtl.Initialize(helpfile);
@@ -299,7 +299,7 @@ void HelpPlugin::LaunchHelp(const wxString &helpfile, const wxString &keyword)
       return;
   	}
   	
-  	if (ext.CmpNoCase(_("chm")) == 0)
+  	if (ext.CmpNoCase(_T("chm")) == 0)
   	{
       wxCHMHelpController HelpCtl;
       HelpCtl.Initialize(helpfile);

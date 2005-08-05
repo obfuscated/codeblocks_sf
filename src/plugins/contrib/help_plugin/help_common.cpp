@@ -13,12 +13,12 @@ void HelpCommon::LoadHelpFilesVector(HelpCommon::HelpFilesVector &vect)
   wxString entry;
   wxConfigBase *conf = ConfigManager::Get();
   wxString oldPath = conf->GetPath();
-  conf->SetPath(_("/help_plugin"));
+  conf->SetPath(_T("/help_plugin"));
   bool cont = conf->GetFirstEntry(entry, cookie);
   
   while (cont)
   {
-    if (entry == _("default"))
+    if (entry == _T("default"))
     {
       m_DefaultHelpIndex = conf->Read(entry, -1);
     }
@@ -41,9 +41,9 @@ void HelpCommon::LoadHelpFilesVector(HelpCommon::HelpFilesVector &vect)
 void HelpCommon::SaveHelpFilesVector(HelpCommon::HelpFilesVector &vect)
 {
   wxConfigBase *conf = ConfigManager::Get();
-  conf->DeleteGroup(_("/help_plugin"));
+  conf->DeleteGroup(_T("/help_plugin"));
   wxString oldPath = conf->GetPath();
-  conf->SetPath(_("/help_plugin"));
+  conf->SetPath(_T("/help_plugin"));
   HelpFilesVector::iterator it;
   
   for (it = vect.begin(); it != vect.end(); ++it)
@@ -56,6 +56,6 @@ void HelpCommon::SaveHelpFilesVector(HelpCommon::HelpFilesVector &vect)
     }
   }
   
-  conf->Write(_("default"), m_DefaultHelpIndex);
+  conf->Write(_T("default"), m_DefaultHelpIndex);
   conf->SetPath(oldPath);
 }

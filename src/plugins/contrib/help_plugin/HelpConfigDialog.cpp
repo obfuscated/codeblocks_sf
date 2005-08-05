@@ -37,7 +37,7 @@ END_EVENT_TABLE()
 HelpConfigDialog::HelpConfigDialog()
 : m_LastSel(0)
 {
-  wxXmlResource::Get()->LoadDialog(this, 0L, "HelpConfigDialog");
+  wxXmlResource::Get()->LoadDialog(this, 0L, _T("HelpConfigDialog"));
   HelpCommon::LoadHelpFilesVector(m_Vector);
   
   wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
@@ -86,11 +86,11 @@ void HelpConfigDialog::ChooseFile()
 {
   wxString filename = wxFileSelector
   (
-    "Choose a help file",
+    _T("Choose a help file"),
     wxEmptyString,
     wxEmptyString,
     wxEmptyString,
-    _(
+    _T(
 #ifdef __WXMSW__
       "Windows help files (*.chm;*.hlp)|*.hlp;*.chm|"
 #endif
@@ -145,7 +145,7 @@ void HelpConfigDialog::Add(wxCommandEvent &event)
       return;
     }
     
-    if (text.CmpNoCase(_("default")) == 0)
+    if (text.CmpNoCase(_T("default")) == 0)
     {
     	wxMessageBox(_("This is a key for internal use of the plugin and cannot be assigned to a help file"), _("Warning"), wxICON_WARNING);
     	return;
@@ -177,7 +177,7 @@ void HelpConfigDialog::Rename(wxCommandEvent &event)
       return;
     }
     
-    if (text.CmpNoCase(_("default")) == 0)
+    if (text.CmpNoCase(_T("default")) == 0)
     {
     	wxMessageBox(_("This is a key for internal use of the plugin and cannot be assigned to a help file"), _("Warning"), wxICON_WARNING);
     	return;
