@@ -101,33 +101,33 @@ class wxsProject
         
         /** Function loading dialog resource from xml tree */
         void AddDialogResource(
-            const char* FileName,
-            const char* ClassName,
-            const char* SourceName,
-            const char* HeaderName);
+            const wxString& FileName,
+            const wxString& ClassName,
+            const wxString& SourceName,
+            const wxString& HeaderName);
         
         /** Function loading frame resource from xml tree */
         void AddFrameResource(
-            const char* FileName,
-            const char* ClassName,
-            const char* SourceName,
-            const char* HeaderName);
+            const wxString& FileName,
+            const wxString& ClassName,
+            const wxString& SourceName,
+            const wxString& HeaderName);
         
         /** Function loading panel resource from xml tree */
         void AddPanelResource(
-            const char* FileName,
-            const char* ClassName,
-            const char* SourceName,
-            const char* HeaderName);
+            const wxString& FileName,
+            const wxString& ClassName,
+            const wxString& SourceName,
+            const wxString& HeaderName);
         
 	private:
 	
         /** Adding resourcee of given type */
         void AddWindowResource(            
-            const char* FileName,
-            const char* ClassName,
-            const char* SourceName,
-            const char* HeaderName,
+            const wxString& FileName,
+            const wxString& ClassName,
+            const wxString& SourceName,
+            const wxString& HeaderName,
             int Type);
 	
         /** Deleting dialog resource from project */
@@ -143,7 +143,7 @@ class wxsProject
         void BuildTree(wxTreeCtrl* Tree,wxTreeItemId WhereToAdd);        
         
         /** checling if given file is insided current project */
-        bool CheckProjFileExists(const char* FileName);
+        bool CheckProjFileExists(const wxString& FileName);
 
         /** Function clearing project structures */
         inline void Clear();            

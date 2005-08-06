@@ -13,16 +13,16 @@ wxsWidgetFactory::~wxsWidgetFactory()
 {
 }
 
-const wxsWidgetInfo * wxsWidgetFactory::GetInfo(const char* Name)
+const wxsWidgetInfo * wxsWidgetFactory::GetInfo(const wxString& Name)
 {
-    WidgetsMapI i = Widgets.find(Name);
+    WidgetsMapI i = Widgets.find(&Name);
     if ( i == Widgets.end() ) return NULL;
     return (*i).second;
 }
 
-wxsWidget * wxsWidgetFactory::Generate(const char* Name)
+wxsWidget * wxsWidgetFactory::Generate(const wxString& Name)
 {
-    WidgetsMapI i = Widgets.find(Name);
+    WidgetsMapI i = Widgets.find(&Name);
     if ( i == Widgets.end() ) return NULL;
     const wxsWidgetInfo* Info = (*i).second;
     return Info->Manager->ProduceWidget(Info->Id);
@@ -88,7 +88,7 @@ void wxsWidgetFactory::RegisterManager(wxsWidgetManager* Manager)
         const wxsWidgetInfo* Info = Manager->GetWidgetInfo(i);
         if ( Info && ValidateName(Info->Name) )
         {
-            Widgets[Info->Name] = Info;
+            Widgets[&Info->Name] = Info;
         }
     }
 }
@@ -97,41 +97,43 @@ void wxsWidgetFactory::RegisterManager(wxsWidgetManager* Manager)
  *
  * This names must be placed in alphabetical order
  */
-static const char* DeadNames[] = 
+static const wxChar* DeadNames[] = 
 {
-    "asm", "auto", "bool", "break", "case", "catch", "char", "class",
-    "const", "const_cast", "continue", "default", "delete", "do",
-    "double", "dynamic_cast", "else", "enum", "explicit", "export",
-    "extern", "false", "float", "for", "friend", "goto", "if", "inline",
-    "int", "long", "mutable", "namespace", "new", "operator", "private",
-    "protected", "public", "register", "reinterpret_cast", "return",
-    "short", "signed", "sizeof", "sizeritem", "static", "static_cast",
-    "struct", "switch", "template", "this", "throw", "true", "try",
-    "typedef", "typeid", "typename", "union", "unsigned",
-    "using", "virtual", "void", "volatile", "wchar_t", "while"
+    _T("asm"), _T("auto"), _T("bool"), _T("break"), _T("case"), _T("catch"), 
+    _T("char"), _T("class"), _T("const"), _T("const_cast"), _T("continue"), 
+    _T("default"), _T("delete"), _T("do"), _T("double"), _T("dynamic_cast"), 
+    _T("else"), _T("enum"), _T("explicit"), _T("export"), _T("extern"), 
+    _T("false"), _T("float"), _T("for"), _T("friend"), _T("goto"), _T("if"),
+    _T("inline"), _T("int"), _T("long"), _T("mutable"), _T("namespace"), 
+    _T("new"), _T("operator"), _T("private"), _T("protected"), _T("public"), 
+    _T("register"), _T("reinterpret_cast"), _T("return"), _T("short"), 
+    _T("signed"), _T("sizeof"), _T("sizeritem"), _T("static"), 
+    _T("static_cast"), _T("struct"), _T("switch"), _T("template"), _T("this"), 
+    _T("throw"), _T("true"), _T("try"), _T("typedef"), _T("typeid"), 
+    _T("typename"), _T("union"), _T("unsigned"), _T("using"), _T("virtual"), 
+    _T("void"), _T("volatile"), _T("wchar_t"), _T("while")
 };
 
 static const int DeadNamesLen = sizeof(DeadNames) / sizeof(DeadNames[0]);
 
-bool wxsWidgetFactory::ValidateName(const char* Name)
+bool wxsWidgetFactory::ValidateName(const wxString& NameStr)
 {
+    const wxChar* Name = NameStr.c_str();
     if ( !Name ) return false;
     
-    if (( *Name < 'a' || *Name > 'z' ) &&
-        ( *Name < 'A' || *Name > 'Z' ) &&
-        ( *Name != '_' ))
+    if (( *Name < _T('a') || *Name > _T('z') ) &&
+        ( *Name < _T('A') || *Name > _T('Z') ) &&
+        ( *Name != _T('_') ))
     {
         return false;
     }
     
-    const char* NameStore = Name;
-    
     while ( *++Name )
     {
-        if (( *Name < 'a' || *Name > 'z' ) &&
-            ( *Name < 'A' || *Name > 'Z' ) &&
-            ( *Name < '0' || *Name > '9' ) &&
-            ( *Name != '_' ))
+        if (( *Name < _T('a') || *Name > _T('z') ) &&
+            ( *Name < _T('A') || *Name > _T('Z') ) &&
+            ( *Name < _T('0') || *Name > _T('9') ) &&
+            ( *Name != _T('_') ))
         {
             return false;
         }
@@ -140,13 +142,13 @@ bool wxsWidgetFactory::ValidateName(const char* Name)
     int Begin = 0;
     int End = DeadNamesLen-1;
     
-    Name = NameStore;
+    Name = NameStr.c_str();
     
     while ( Begin <= End )
     {
         int Middle = ( Begin + End ) >> 1;
         
-        int Res = strcmp(DeadNames[Middle],Name);
+        int Res = wxStrcmp(DeadNames[Middle],Name);
         
         if ( Res < 0 )
         {

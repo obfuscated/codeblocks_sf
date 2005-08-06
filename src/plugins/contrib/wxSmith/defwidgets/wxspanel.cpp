@@ -29,17 +29,17 @@ const wxsWidgetInfo& wxsPanel::GetInfo()
 }
 
 
-const char* wxsPanel::GetProducingCode(wxsCodeParams& Params)
+wxString wxsPanel::GetProducingCode(wxsCodeParams& Params)
 {
     static wxString Result;
-    Result.Format("%s = new wxPanel(wxT(%s),%s,%s,%s,%s);",
+    Result.Format(_T("%s = new wxPanel(wxT(%s),%s,%s,%s,%s);"),
         BaseParams.VarName.c_str(),
-        Params.ParentName,
+        Params.ParentName.c_str(),
         BaseParams.IdName.c_str(),
         GetCodeDefines().Pos.c_str(),
         GetCodeDefines().Size.c_str(),
         GetCodeDefines().Style.c_str());
-    return Result.c_str();
+    return Result;
 }
 
 WXS_ST_BEGIN(wxsPanelrStyles)

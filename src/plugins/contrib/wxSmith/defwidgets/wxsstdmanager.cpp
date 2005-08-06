@@ -19,24 +19,24 @@
 /* Infos for standard widgets                                                 */
 /******************************************************************************/
 
-static const char* DefLicence     = "wxWidgets License";
-static const char* DefAuthor      = "wxWidgets Team";
-static const char* DefAuthorEmail = "";
-static const char* DefAuthorSite  = "www.wxwidgets.org";
-static const char* DefCategory    = "Standard";
+static const wxString DefLicence     = _("wxWidgets License");
+static const wxString DefAuthor      = _("wxWidgets Team");
+static const wxString DefAuthorEmail = _T("");
+static const wxString DefAuthorSite  = _("www.wxwidgets.org");
+static const wxString DefCategory    = _("Standard");
 
 
 #define Entry(Name,Link)                                \
-    {   "wx"#Name,                                      \
+    {   _T("wx") _T(#Name),                             \
         DefLicence,                                     \
         DefAuthor,                                      \
         DefAuthorEmail,                                 \
         DefAuthorSite,                                  \
-        "http://www.wxwidgets.org/manuals/2.6.1/"Link,  \
+        _T("http://www.wxwidgets.org/manuals/2.6.1/") _T(Link),  \
         DefCategory,                                    \
         false,                                          \
         false,                                          \
-        2, 6,                                          \
+        2, 6,                                           \
         NULL,                                           \
         &wxsStdManager,                                 \
         wxs##Name##Id,                                  \
@@ -45,12 +45,12 @@ static const char* DefCategory    = "Standard";
     },
 
 #define EntryNoStyles(Name,Link)                        \
-    {   "wx"#Name,                                      \
+    {   _T("wx") _T(#Name),                             \
         DefLicence,                                     \
         DefAuthor,                                      \
         DefAuthorEmail,                                 \
         DefAuthorSite,                                  \
-        "http://www.wxwidgets.org/manuals/2.6.1/"Link,  \
+        _T("http://www.wxwidgets.org/manuals/2.6.1/") _T(Link),  \
         DefCategory,                                    \
         false,                                          \
         false,                                          \
@@ -63,13 +63,13 @@ static const char* DefCategory    = "Standard";
     },
 
 #define WindowEntry(Name,Link)                          \
-    {   "wx"#Name,                                      \
+    {   _T("wx") _T(#Name),                             \
         DefLicence,                                     \
         DefAuthor,                                      \
         DefAuthorEmail,                                 \
         DefAuthorSite,                                  \
-        "http://www.wxwidgets.org/manuals/2.6.1/"Link,  \
-        "",                                             \
+        _T("http://www.wxwidgets.org/manuals/2.6.1/") _T(Link),  \
+        _T(""),                                         \
         false,                                          \
         false,                                          \
         2, 6,                                           \
@@ -83,14 +83,14 @@ static const char* DefCategory    = "Standard";
 
 static wxsWidgetInfo StdInfos[] =
 {
-    { "", "", "", "", "", "", "", false, false, 0, 0, NULL, NULL, wxsNoneId },  // NONE
+    { _T(""), _T(""), _T(""), _T(""), _T(""), _T(""), _T(""), false, false, 0, 0, NULL, NULL, wxsNoneId },  // NONE
     
-    {   "wxGridSizer",
+    {   _T("wxGridSizer"),
         DefLicence,
         DefAuthor,
         DefAuthorEmail,
         DefAuthorSite,
-        "http://www.wxwidgets.org/manuals/2.4.2/wx189.htm#wxgridsizer",
+        _T("http://www.wxwidgets.org/manuals/2.4.2/wx189.htm#wxgridsizer"),
         DefCategory,
         true,
         true,
@@ -137,10 +137,10 @@ wxsStdManagerT::~wxsStdManagerT()
 
 bool wxsStdManagerT::Initialize()
 {
-    wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
+    wxString resPath = ConfigManager::Get()->Read(_T("data_path"), wxEmptyString);
     for ( int i=1; i<StdInfosCnt; i++ )
     {
-        wxString FileName = resPath + wxT("/images/wxsmith/") + StdInfos[i].Name + wxT(".png");
+        wxString FileName = resPath + _T("/images/wxsmith/") + StdInfos[i].Name + _T(".png");
         wxBitmap* Bmp = new wxBitmap;
         if ( wxFileName::FileExists(FileName) )
         {

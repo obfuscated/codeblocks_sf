@@ -98,14 +98,14 @@ END_EVENT_TABLE()
 wxSmith::wxSmith()
 {
 	//ctor
-	m_PluginInfo.name = "wxSmith";
-	m_PluginInfo.title = "wxSmith";
-	m_PluginInfo.version = "1.0";
-	m_PluginInfo.description = "RAD tool used to create wxWidgets forms";
-	m_PluginInfo.author = "BYO";
-	m_PluginInfo.authorEmail = "byo.spoon@gmail.com";
-	m_PluginInfo.authorWebsite = "";
-	m_PluginInfo.thanksTo = "Ann for Being\nGigi for Faworki\n\nGod for Love";
+	m_PluginInfo.name = _("wxSmith");
+	m_PluginInfo.title = _("wxSmith");
+	m_PluginInfo.version = _("1.0");
+	m_PluginInfo.description = _("RAD tool used to create wxWidgets forms");
+	m_PluginInfo.author = _("BYO");
+	m_PluginInfo.authorEmail = _("byo.spoon@gmail.com");
+	m_PluginInfo.authorWebsite = _("");
+	m_PluginInfo.thanksTo = _("Ann for Being\nGigi for Faworki\n\nGod for Love");
 	m_PluginInfo.license = LICENSE_GPL;
 	m_PluginInfo.hasConfigure = true;
 	
@@ -117,16 +117,6 @@ wxSmith::~wxSmith()
 	if ( Singleton == this ) Singleton = NULL;
 }
 
-void FillTreeCtlReq(wxTreeCtrl* Tree,wxTreeItemId Parent,TiXmlElement* El)
-{
-    while ( El )
-    {
-        wxTreeItemId New = Tree->AppendItem(Parent,El->Value());
-        FillTreeCtlReq(Tree,New,El->FirstChildElement());
-        El = El->NextSiblingElement();
-    }
-}
-
 void wxSmith::OnAttach()
 {
     wxNotebook* Notebook = Manager::Get()->GetNotebook();
@@ -135,7 +125,7 @@ void wxSmith::OnAttach()
         // Creating main splitting objects 
         
         LeftSplitter = new wxsSplitterWindow(Notebook);
-        Notebook->AddPage(LeftSplitter,wxT("Resources"));
+        Notebook->AddPage(LeftSplitter,_("Resources"));
         
         wxPanel* ResourcesContainer = new wxPanel(LeftSplitter->GetSplitter(),-1,wxDefaultPosition,wxDefaultSize,0);
         wxPanel* PropertiesContainer = new wxPanel(LeftSplitter->GetSplitter(),-1,wxDefaultPosition,wxDefaultSize,0);
@@ -144,7 +134,7 @@ void wxSmith::OnAttach()
 
         wxSizer* Sizer = new wxGridSizer(1);
         ResourceBrowser = new wxsResourceTree(ResourcesContainer);
-        ResourceBrowser->Expand(ResourceBrowser->AddRoot(wxT("Resources")));
+        ResourceBrowser->Expand(ResourceBrowser->AddRoot(_("Resources")));
         Sizer->Add(ResourceBrowser,1,wxGROW|wxALL);
         ResourcesContainer->SetSizer(Sizer);
 
@@ -155,8 +145,8 @@ void wxSmith::OnAttach()
         PropertiesPanel->SetScrollRate(5,5);
         EventsPanel = new wxScrolledWindow(LDNotebook);
         EventsPanel->SetScrollRate(5,5);
-        LDNotebook->AddPage(PropertiesPanel,wxT("Properties"));
-        LDNotebook->AddPage(EventsPanel,wxT("Events"));
+        LDNotebook->AddPage(PropertiesPanel,_("Properties"));
+        LDNotebook->AddPage(EventsPanel,_("Events"));
         Sizer->Add(LDNotebook,1,wxGROW);
         PropertiesContainer->SetSizer(Sizer);
         
@@ -165,7 +155,7 @@ void wxSmith::OnAttach()
         LeftSplitter->Split(ResourcesContainer,PropertiesContainer);
         
         MessageManager* Messages = Manager::Get()->GetMessageManager();
-        Manager::Get()->Loadxrc("/wxsmith.zip#zip:*");
+        Manager::Get()->Loadxrc(_T("/wxsmith.zip#zip:*"));
         
         // Initializing standard manager
         
@@ -173,7 +163,7 @@ void wxSmith::OnAttach()
         
         if ( ! wxsStdManager.RegisterInFactory() )
         {
-            DebLog("Couldn't register standard widget's factory - this plugin will be useless");
+            //DebLog("Couldn't register standard widget's factory - this plugin will be useless");
         }
         // TODO (SpOoN#1#): Add other widgets
         
@@ -181,7 +171,7 @@ void wxSmith::OnAttach()
         {
             // Creating widgets palette ad the messages Notebook
             wxWindow* Palette = new wxsPalette((wxWindow*)Messages,this,Messages->GetPageCount());
-            Messages->AddPage(Palette,wxT("Widgets"));
+            Messages->AddPage(Palette,_("Widgets"));
         }
 	}
 	else
@@ -216,19 +206,19 @@ int wxSmith::Configure()
 void wxSmith::BuildMenu(wxMenuBar* menuBar)
 {
 	wxMenu* Menu = new wxMenu;
-	Menu->Append(NewDialogId,wxT("Add Dialog"));
-	Menu->Append(NewFrameId,wxT("Add Frame"));
-	Menu->Append(NewPanelId,wxT("Add Panel"));
+	Menu->Append(NewDialogId,_("Add Dialog"));
+	Menu->Append(NewFrameId,_("Add Frame"));
+	Menu->Append(NewPanelId,_("Add Panel"));
 	
-	int ToolsPos = menuBar->FindMenu(wxT("&Tools"));
+	int ToolsPos = menuBar->FindMenu(_("&Tools"));
 	
 	if  ( ToolsPos == wxNOT_FOUND )
 	{
-        menuBar->Append(Menu,wxT("wxSmith"));
+        menuBar->Append(Menu,_("wxSmith"));
 	}
 	else
 	{
-        menuBar->Insert(ToolsPos,Menu,wxT("wxSmith"));
+        menuBar->Insert(ToolsPos,Menu,_("wxSmith"));
 	}
 }
 
@@ -301,7 +291,7 @@ void wxSmith::OnNewWindow(wxCommandEvent& event)
     
     if ( !Project )
     {
-        wxMessageBox(wxT("Please open project first"),wxT("Error"),wxOK|wxICON_ERROR);
+        wxMessageBox(_("Please open project first"),_("Error"),wxOK|wxICON_ERROR);
         return;
     }
     
@@ -309,7 +299,7 @@ void wxSmith::OnNewWindow(wxCommandEvent& event)
     
     if ( !Proj )
     {
-        DebLog("Something wrong - couldn't find assciated wxsProject");
+        DebLog(_("Something wrong - couldn't find assciated wxsProject"));
         return;
     }
     
@@ -319,8 +309,8 @@ void wxSmith::OnNewWindow(wxCommandEvent& event)
             return;
             
         case wxsProject::NotWxsProject:
-            if ( wxMessageBox(wxT("Active project doesn't use wxSmith.\nShould I change it ?"),
-                              wxT("Not wxSmith project"),wxYES_NO|wxICON_EXCLAMATION ) == wxYES )
+            if ( wxMessageBox(_("Active project doesn't use wxSmith.\nShould I change it ?"),
+                              _("Not wxSmith project"),wxYES_NO|wxICON_EXCLAMATION ) == wxYES )
             {
                 if ( !Proj->AddSmithConfig() ) return;
             }
@@ -341,7 +331,7 @@ void wxSmith::OnNewWindow(wxCommandEvent& event)
     else if ( event.GetId() == NewPanelId  ) Type = wxsWindowRes::Panel;
     else
     {
-    	wxMessageBox(wxT("Internal error - invalid resource type"));
+    	wxMessageBox(_("Internal error - invalid resource type"));
     	return;
     }
     

@@ -75,7 +75,7 @@ wxsStringProperty::~wxsStringProperty()
 
 const wxString& wxsStringProperty::GetTypeName()
 {
-    static wxString Name(wxT("wxString"));
+    static wxString Name(_T("wxString"));
     return Name;
 }
 

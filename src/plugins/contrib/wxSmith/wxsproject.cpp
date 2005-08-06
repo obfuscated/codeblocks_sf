@@ -63,7 +63,7 @@ wxsProject::IntegrationState wxsProject::BindProject(cbProject* Proj)
 
     /* Trying to read configuration data */
 
-    TiXmlDocument Doc(WorkingPath.GetFullPath());
+    TiXmlDocument Doc(WorkingPath.GetFullPath().mb_str());
 
     if ( !Doc.LoadFile() )
     {
@@ -129,9 +129,9 @@ inline void wxsProject::Clear()
 
 void wxsProject::BuildTree(wxTreeCtrl* Tree,wxTreeItemId WhereToAdd)
 {
-    DialogId = Tree->AppendItem(WhereToAdd,"Dialog resources");
-    FrameId  = Tree->AppendItem(WhereToAdd,"Frame resources");
-    PanelId  = Tree->AppendItem(WhereToAdd,"Panel resources");
+    DialogId = Tree->AppendItem(WhereToAdd,_("Dialog resources"));
+    FrameId  = Tree->AppendItem(WhereToAdd,_("Frame resources"));
+    PanelId  = Tree->AppendItem(WhereToAdd,_("Panel resources"));
 
     for ( DialogListI i = Dialogs.begin(); i!=Dialogs.end(); ++i )
     {
@@ -180,10 +180,10 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
             Elem = Elem->NextSiblingElement(XML_DIALOG_STR) )
     {
         AddDialogResource(
-            Elem->Attribute(XML_FNAME_STR),
-            Elem->Attribute(XML_CNAME_STR),
-            Elem->Attribute(XML_SFILE_STR),
-            Elem->Attribute(XML_HFILE_STR) );
+            wxString ( Elem->Attribute(XML_FNAME_STR), wxConvUTF8 ),
+            wxString ( Elem->Attribute(XML_CNAME_STR), wxConvUTF8 ),
+            wxString ( Elem->Attribute(XML_SFILE_STR), wxConvUTF8 ),
+            wxString ( Elem->Attribute(XML_HFILE_STR), wxConvUTF8 ) );
     }
 
     // Loading frame resources
@@ -193,10 +193,10 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
             Elem = Elem->NextSiblingElement(XML_FRAME_STR) )
     {
         AddFrameResource(
-            Elem->Attribute(XML_FNAME_STR),
-            Elem->Attribute(XML_CNAME_STR),
-            Elem->Attribute(XML_SFILE_STR),
-            Elem->Attribute(XML_HFILE_STR) );
+            wxString ( Elem->Attribute(XML_FNAME_STR), wxConvUTF8 ),
+            wxString ( Elem->Attribute(XML_CNAME_STR), wxConvUTF8 ),
+            wxString ( Elem->Attribute(XML_SFILE_STR), wxConvUTF8 ),
+            wxString ( Elem->Attribute(XML_HFILE_STR), wxConvUTF8 ) );
     }
 
     // Loading panel resources
@@ -206,35 +206,35 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
             Elem = Elem->NextSiblingElement(XML_PANEL_STR) )
     {
         AddPanelResource(
-            Elem->Attribute(XML_FNAME_STR),
-            Elem->Attribute(XML_CNAME_STR),
-            Elem->Attribute(XML_SFILE_STR),
-            Elem->Attribute(XML_HFILE_STR) );
+            wxString ( Elem->Attribute(XML_FNAME_STR), wxConvUTF8 ),
+            wxString ( Elem->Attribute(XML_CNAME_STR), wxConvUTF8 ),
+            wxString ( Elem->Attribute(XML_SFILE_STR), wxConvUTF8 ),
+            wxString ( Elem->Attribute(XML_HFILE_STR), wxConvUTF8 ) );
     }
     
     return true;
 }
 
-void wxsProject::AddDialogResource( const char* FileName, const char* ClassName, const char* SourceName, const char* HeaderName)
+void wxsProject::AddDialogResource( const wxString& FileName, const wxString& ClassName, const wxString& SourceName, const wxString& HeaderName)
 {
 	AddWindowResource(FileName,ClassName,SourceName,HeaderName,wxsWindowRes::Dialog);
 }
 
-void wxsProject::AddFrameResource( const char* FileName, const char* ClassName, const char* SourceName, const char* HeaderName)
+void wxsProject::AddFrameResource( const wxString& FileName, const wxString& ClassName, const wxString& SourceName, const wxString& HeaderName)
 {
 	AddWindowResource(FileName,ClassName,SourceName,HeaderName,wxsWindowRes::Frame);
 }
 
-void wxsProject::AddPanelResource(const char* FileName, const char* ClassName, const char* SourceName, const char* HeaderName)
+void wxsProject::AddPanelResource(const wxString& FileName, const wxString& ClassName, const wxString& SourceName, const wxString& HeaderName)
 {
 	AddWindowResource(FileName,ClassName,SourceName,HeaderName,wxsWindowRes::Panel);
 }
 
 void wxsProject::AddWindowResource(
-    const char* FileName,
-    const char* ClassName,
-    const char* SourceName,
-    const char* HeaderName,
+    const wxString& FileName,
+    const wxString& ClassName,
+    const wxString& SourceName,
+    const wxString& HeaderName,
     int Type)
 {
     if ( !FileName   || !*FileName   || !ClassName  || !*ClassName ||
@@ -243,15 +243,15 @@ void wxsProject::AddWindowResource(
         
     if ( !CheckProjFileExists(SourceName) )
     {
-        Manager::Get()->GetMessageManager()->Log("Couldn't find source file '%s'",SourceName);
-        Manager::Get()->GetMessageManager()->Log("Not all resources will be loaded");
+        Manager::Get()->GetMessageManager()->Log(_("Couldn't find source file '%s'"),SourceName.c_str());
+        Manager::Get()->GetMessageManager()->Log(_("Not all resources will be loaded"));
         return;
     }
     
     if ( !CheckProjFileExists(HeaderName) )
     {
-        Manager::Get()->GetMessageManager()->Log("Couldn't find header file '%s'",HeaderName);
-        Manager::Get()->GetMessageManager()->Log("Not all resources will be loaded");
+        Manager::Get()->GetMessageManager()->Log(_("Couldn't find header file '%s'"),HeaderName.c_str());
+        Manager::Get()->GetMessageManager()->Log(_("Not all resources will be loaded"));
         return;
     }
 
@@ -260,13 +260,13 @@ void wxsProject::AddWindowResource(
     wxFileName Name;
     Name.Assign(WorkingPath.GetPath(),wxString(FileName));
     
-    TiXmlDocument Doc(Name.GetFullPath());
+    TiXmlDocument Doc(Name.GetFullPath().mb_str());
     TiXmlElement* Resource;
     
     if ( !  Doc.LoadFile() ||
          ! (Resource = Doc.FirstChildElement("resource")) )
     {
-        Manager::Get()->GetMessageManager()->Log("Couldn't load xrc data");
+        Manager::Get()->GetMessageManager()->Log(_("Couldn't load xrc data"));
         return;
     }
     
@@ -283,7 +283,7 @@ void wxsProject::AddWindowResource(
     		case wxsWindowRes::Frame:  TypeName = "wxFrame" ; break;
     	}
         if ( !strcmp(XmlDialog->Attribute("class"),TypeName) &&
-             !strcmp(XmlDialog->Attribute("name"),ClassName) )
+             !strcmp(XmlDialog->Attribute("name"),ClassName.mb_str()) )
         {
             break;
         }
@@ -306,13 +306,13 @@ void wxsProject::AddWindowResource(
     
     if ( !Res )
     {
-        Manager::Get()->GetMessageManager()->Log("Couldn't create new resource");
+        Manager::Get()->GetMessageManager()->Log(_("Couldn't create new resource"));
         return;
     }
     
     if ( ! (Res->GetRootWidget()->XmlLoad(XmlDialog))  )
     {
-        Manager::Get()->GetMessageManager()->Log("Couldn't load xrc data");
+        Manager::Get()->GetMessageManager()->Log(_("Couldn't load xrc data"));
         delete Res;
         return;
     }
@@ -325,7 +325,7 @@ void wxsProject::AddWindowResource(
     }
 }
 
-bool wxsProject::CheckProjFileExists(const char* FileName)
+bool wxsProject::CheckProjFileExists(const wxString& FileName)
 {
     if ( !Project ) return false;
     return Project->GetFileByFilename(FileName) != NULL;
@@ -343,10 +343,10 @@ TiXmlDocument* wxsProject::GenerateXml()
     {
         TiXmlElement Dlg(XML_DIALOG_STR);
         wxsDialogRes* Sett = *i;
-        Dlg.SetAttribute(XML_FNAME_STR,Sett->GetXrcFile());
-        Dlg.SetAttribute(XML_CNAME_STR,Sett->GetClassName());
-        Dlg.SetAttribute(XML_SFILE_STR,Sett->GetSourceFile());
-        Dlg.SetAttribute(XML_HFILE_STR,Sett->GetHeaderFile());
+        Dlg.SetAttribute(XML_FNAME_STR,Sett->GetXrcFile().mb_str());
+        Dlg.SetAttribute(XML_CNAME_STR,Sett->GetClassName().mb_str());
+        Dlg.SetAttribute(XML_SFILE_STR,Sett->GetSourceFile().mb_str());
+        Dlg.SetAttribute(XML_HFILE_STR,Sett->GetHeaderFile().mb_str());
         Elem->InsertEndChild(Dlg);
     }
     
@@ -354,10 +354,10 @@ TiXmlDocument* wxsProject::GenerateXml()
     {
         TiXmlElement Frm(XML_FRAME_STR);
         wxsFrameRes* Sett = *i;
-        Frm.SetAttribute(XML_FNAME_STR,Sett->GetXrcFile());
-        Frm.SetAttribute(XML_CNAME_STR,Sett->GetClassName());
-        Frm.SetAttribute(XML_SFILE_STR,Sett->GetSourceFile());
-        Frm.SetAttribute(XML_HFILE_STR,Sett->GetHeaderFile());
+        Frm.SetAttribute(XML_FNAME_STR,Sett->GetXrcFile().mb_str());
+        Frm.SetAttribute(XML_CNAME_STR,Sett->GetClassName().mb_str());
+        Frm.SetAttribute(XML_SFILE_STR,Sett->GetSourceFile().mb_str());
+        Frm.SetAttribute(XML_HFILE_STR,Sett->GetHeaderFile().mb_str());
         Elem->InsertEndChild(Frm);
     }
     
@@ -365,10 +365,10 @@ TiXmlDocument* wxsProject::GenerateXml()
     {
         TiXmlElement Pan(XML_PANEL_STR);
         wxsPanelRes* Sett = *i;
-        Pan.SetAttribute(XML_FNAME_STR,Sett->GetXrcFile());
-        Pan.SetAttribute(XML_CNAME_STR,Sett->GetClassName());
-        Pan.SetAttribute(XML_SFILE_STR,Sett->GetSourceFile());
-        Pan.SetAttribute(XML_HFILE_STR,Sett->GetHeaderFile());
+        Pan.SetAttribute(XML_FNAME_STR,Sett->GetXrcFile().mb_str());
+        Pan.SetAttribute(XML_CNAME_STR,Sett->GetClassName().mb_str());
+        Pan.SetAttribute(XML_SFILE_STR,Sett->GetSourceFile().mb_str());
+        Pan.SetAttribute(XML_HFILE_STR,Sett->GetHeaderFile().mb_str());
         Elem->InsertEndChild(Pan);
     }
     
@@ -388,7 +388,7 @@ void wxsProject::SaveProject()
 
     if ( Doc )
     {
-        Doc->SaveFile(WorkingPath.GetFullPath());
+        Doc->SaveFile(WorkingPath.GetFullPath().mb_str());
         delete Doc;
     }
 
@@ -442,7 +442,7 @@ wxString wxsProject::GetInternalFileName(const wxString& FileName)
 {
 	wxFileName Path = WorkingPath;
     Path.SetName(FileName);
-    Path.SetExt(wxT(""));
+    Path.SetExt(_T(""));
     Path.Assign(Path.GetFullPath());  // Reparsing path
     return Path.GetFullPath();
 }
@@ -451,7 +451,7 @@ wxString wxsProject::GetProjectFileName(const wxString& FileName)
 {
 	wxFileName Path = ProjectPath;
     Path.SetName(FileName);
-    Path.SetExt(wxT(""));
+    Path.SetExt(_T(""));
     Path.Assign(Path.GetFullPath());
     return Path.GetFullPath();
 }
@@ -462,7 +462,7 @@ bool wxsProject::AddSmithConfig()
     
     if ( ! wxFileName::Mkdir(WorkingPath.GetPath(wxPATH_GET_VOLUME),0744,wxPATH_MKDIR_FULL) )
     {
-        wxMessageBox(wxT("Couldn't create wxsmith directory in main projet's path"),wxT("Error"),wxOK|wxICON_ERROR);
+        wxMessageBox(_("Couldn't create wxsmith directory in main projet's path"),_("Error"),wxOK|wxICON_ERROR);
         return false;
     }
     

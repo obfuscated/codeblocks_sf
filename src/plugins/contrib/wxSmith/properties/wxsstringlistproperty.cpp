@@ -7,7 +7,7 @@ class wxsStringListPropertyWindow: public wxButton
 {
 	public:
 		wxsStringListPropertyWindow(wxWindow* Parent,wxsStringListProperty* Property):
-			wxButton(Parent,-1,wxT("Edit"),wxDefaultPosition,wxDefaultSize),
+			wxButton(Parent,-1,_("Edit"),wxDefaultPosition,wxDefaultSize),
 			Prop(Property)
 		{}
 
@@ -34,25 +34,25 @@ namespace {
 	{
 		public:
 			ListEditor(wxWindow* Parent,wxArrayString& _Array,int* _Selection):
-				wxDialog(Parent,-1,wxT("List editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER),
+				wxDialog(Parent,-1,_("List editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER),
 				Array(_Array),
 				Selection(_Selection)
 			{
 				wxFlexGridSizer* Sizer = new wxFlexGridSizer(1,5,5);
 				Sizer->AddGrowableCol(0);
 				Sizer->AddGrowableRow(1);
-				Sizer->Add(new wxStaticText(this,-1,wxT("List items")),0,wxLEFT|wxRIGHT,5);
-				Sizer->Add(List = new wxTextCtrl(this,-1,wxT(""),wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE),0,wxLEFT|wxRIGHT|wxGROW,5);
+				Sizer->Add(new wxStaticText(this,-1,_("List items")),0,wxLEFT|wxRIGHT,5);
+				Sizer->Add(List = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE),0,wxLEFT|wxRIGHT|wxGROW,5);
 				
 				if ( Selection )
 				{
-					Sizer->Add(new wxStaticText(this,-1,wxT("Selection")),0,wxLEFT|wxRIGHT,5);
+					Sizer->Add(new wxStaticText(this,-1,_("Selection")),0,wxLEFT|wxRIGHT,5);
 					Sizer->Add(Selected = new wxChoice(this,-1),0,wxLEFT|wxRIGHT|wxGROW,5);
 				}
 				
 				wxBoxSizer* Internal = new wxBoxSizer(wxHORIZONTAL);
-				Internal->Add(new wxButton(this,wxID_OK,wxT("OK")),1,wxLEFT|wxRIGHT,5);
-				Internal->Add(new wxButton(this,wxID_CANCEL,wxT("Cancel")),1,wxLEFT|wxRIGHT,5);
+				Internal->Add(new wxButton(this,wxID_OK,_("OK")),1,wxLEFT|wxRIGHT,5);
+				Internal->Add(new wxButton(this,wxID_CANCEL,_("Cancel")),1,wxLEFT|wxRIGHT,5);
 
 				Sizer->Add(Internal,0,wxGROW|wxLEFT|wxRIGHT|wxBOTTOM,5);
 				
@@ -61,7 +61,7 @@ namespace {
 				for ( int i=0; i<(int)Array.Count(); i++ )
 				{
 					List->AppendText(Array[i]);
-					List->AppendText(wxT("\n"));
+					List->AppendText(_T("\n"));
 				}
 				
 				BuildSelection();
@@ -97,7 +97,7 @@ namespace {
 			
 			void OnStore(wxCommandEvent& event)
 			{
-				wxStringTokenizer Tokenizer(List->GetValue(),wxT("\n"));
+				wxStringTokenizer Tokenizer(List->GetValue(),_T("\n"));
 				Array.Clear();
 				while ( Tokenizer.HasMoreTokens() )
 				{
@@ -113,8 +113,8 @@ namespace {
 			void BuildSelection()
 			{
                 Selected->Clear();
-                Selected->Append("--- NONE ---");
-                wxStringTokenizer Tokenizer(List->GetValue(),wxT("\n"));
+                Selected->Append(_("--- NONE ---"));
+                wxStringTokenizer Tokenizer(List->GetValue(),_T("\n"));
 				while ( Tokenizer.HasMoreTokens() )
 				{
 					Selected->Append(Tokenizer.GetNextToken());
@@ -155,7 +155,7 @@ wxsStringListProperty::~wxsStringListProperty()
 
 const wxString& wxsStringListProperty::GetTypeName()
 {
-    static wxString Name(wxT("wxArrayString"));
+    static wxString Name(_T("wxArrayString"));
     return Name;
 }
 

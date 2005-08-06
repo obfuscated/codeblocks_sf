@@ -21,7 +21,7 @@ class wxsStylePropertyWindow: public wxPanel
             
             if ( Styles )
             {
-                for ( ; Styles->Name; Styles++ )
+                for ( ; Styles->Name != _T(""); Styles++ )
                 {
                     if ( Styles->Value == ((unsigned int)-1) )
                     {
@@ -36,14 +36,11 @@ class wxsStylePropertyWindow: public wxPanel
                     else if ( Styles->Value )
                     {
                         IdToStyleMaps.push_back(Styles->Value);
-                        char* Name = strdup(Styles->Name);
+                        wxString Name = Styles->Name;
                         bool IsToolTip = false;
-                        if ( strlen(Name) > WXS_MAX_STYLE_LEN )
+                        if ( Name.Length() > WXS_MAX_STYLE_LEN )
                         {
-                            Name[WXS_MAX_STYLE_LEN-3] =
-                            Name[WXS_MAX_STYLE_LEN-2] =
-                            Name[WXS_MAX_STYLE_LEN-1] = '.';
-                            Name[WXS_MAX_STYLE_LEN-0] = 0;
+                        	Name = Name.Mid(0,WXS_MAX_STYLE_LEN-3) + _T("...");
                             IsToolTip = true;
                         }
                         wxCheckBox* CB = new wxCheckBox(this,CurrentId++,Name);
@@ -52,7 +49,6 @@ class wxsStylePropertyWindow: public wxPanel
                             CB->SetToolTip(Styles->Name);
                         }
                         Sizer->Add(CB);
-                        free(Name);
                     }
                 }
             }
@@ -122,7 +118,7 @@ wxsStyleProperty::~wxsStyleProperty()
 
 const wxString& wxsStyleProperty::GetTypeName()
 {
-    static wxString Name(wxT("widget style"));
+    static wxString Name(_T("widget style"));
     return Name;
 }
 

@@ -35,20 +35,20 @@ wxsPalette::wxsPalette(wxWindow* Parent,wxSmith* _Plugin,int PN):
 	wxFlexGridSizer* Sizer2 = new wxFlexGridSizer(2,0,5,15);
 	Sizer2->AddGrowableCol(3);
 	
-	Sizer2->Add(new wxStaticText(Scroll,-1,wxT("Insertion type")));
-	Sizer2->Add(new wxStaticText(Scroll,-1,wxT("Delete")));
-	Sizer2->Add(new wxStaticText(Scroll,-1,wxT("Preview")));
-	Sizer2->Add(new wxStaticText(Scroll,-1,wxT("Top list")));
+	Sizer2->Add(new wxStaticText(Scroll,-1,_("Insertion type")));
+	Sizer2->Add(new wxStaticText(Scroll,-1,_("Delete")));
+	Sizer2->Add(new wxStaticText(Scroll,-1,_("Preview")));
+	Sizer2->Add(new wxStaticText(Scroll,-1,_("Top list")));
 	
 	wxGridSizer* Sizer3 = new wxGridSizer(1,0,5,5);
-	Sizer3->Add(AddBefore = new wxRadioButton(Scroll,-1,wxT("Before")));
-	Sizer3->Add(AddAfter  = new wxRadioButton(Scroll,-1,wxT("After")));
-	Sizer3->Add(AddInto   = new wxRadioButton(Scroll,-1,wxT("Into")));
+	Sizer3->Add(AddBefore = new wxRadioButton(Scroll,-1,_("Before")));
+	Sizer3->Add(AddAfter  = new wxRadioButton(Scroll,-1,_("After")));
+	Sizer3->Add(AddInto   = new wxRadioButton(Scroll,-1,_("Into")));
 	
 	Sizer2->Add(Sizer3);
 	
-	Sizer2->Add(new wxButton(Scroll,DeleteId,wxT("Delete")));
-	Sizer2->Add(new wxButton(Scroll,PreviewId,wxT("Preview")));
+	Sizer2->Add(new wxButton(Scroll,DeleteId,_("Delete")));
+	Sizer2->Add(new wxButton(Scroll,PreviewId,_("Preview")));
 	
 	Sizer->Add(Sizer2,0,wxALL|wxGROW,10);
 	
@@ -123,7 +123,7 @@ void wxsPalette::OnRadio(wxCommandEvent& event)
 }
 
 namespace {
-struct ltstr {  bool operator()(const char* s1, const char* s2) const { return strcasecmp(s1, s2) < 0; } };
+struct ltstr {  bool operator()(const wxChar* s1, const wxChar* s2) const { return wxStricmp(s1, s2) < 0; } };
 };
 
 void wxsPalette::CreateWidgetsPalette(wxWindow* Wnd)
@@ -132,13 +132,13 @@ void wxsPalette::CreateWidgetsPalette(wxWindow* Wnd)
     // it will be done using multimap
  
  
-    typedef std::multimap<const char*,const wxsWidgetInfo*,ltstr> MapT;
+    typedef std::multimap<const wxChar*,const wxsWidgetInfo*,ltstr> MapT;
     typedef MapT::iterator MapI;
     
     MapT Map;
     
     for ( const wxsWidgetInfo* Info = wxsWidgetFactory::Get()->GetFirstInfo(); Info; Info = wxsWidgetFactory::Get()->GetNextInfo() )
-        Map.insert(std::pair<const char*,const wxsWidgetInfo*>(Info->Category,Info));
+        Map.insert(std::pair<const wxChar*,const wxsWidgetInfo*>(Info->Category,Info));
         
     // Creatign main sizer inside window
     wxFlexGridSizer* Sizer = new wxFlexGridSizer(0,1,0,0);
@@ -146,11 +146,11 @@ void wxsPalette::CreateWidgetsPalette(wxWindow* Wnd)
     
     wxFlexGridSizer* RowSizer = NULL;
     
-    const char* PreviousGroup = "";
+    const wxChar* PreviousGroup = _T("");
     
     for ( MapI i = Map.begin(); i != Map.end(); ++i )
     {
-        if ( !(*i).first || strcasecmp(PreviousGroup,(*i).first) )
+        if ( !(*i).first || wxStricmp(PreviousGroup,(*i).first) )
         {
             if ( RowSizer ) Sizer->Add(RowSizer,0,wxALL|wxGROW,5);
             Sizer->Add(new wxStaticLine(Wnd,-1),0,wxGROW);
@@ -212,17 +212,17 @@ void wxsPalette::OnButton(wxCommandEvent& event)
         wxWindow* Btn = (wxWindow*)event.GetEventObject();
         if ( Btn )
         {
-            InsertRequest(Btn->GetName().c_str());
+            InsertRequest(Btn->GetName());
         }
     }
 }
 
-void wxsPalette::InsertRequest(const char* Name)
+void wxsPalette::InsertRequest(const wxString& Name)
 {
     wxsWidget* Current = wxsPropertiesMan::Get()->GetActiveWidget();
     if ( Current == NULL )
     {
-        DebLog("wxSmith: No widget selected - couldn't create new widget");
+        DebLog(_("wxSmith: No widget selected - couldn't create new widget"));
         return;
     }
 
@@ -236,7 +236,7 @@ void wxsPalette::InsertRequest(const char* Name)
     wxsWidget* NewWidget = wxsWidgetFactory::Get()->Generate(Name);
     if ( NewWidget == NULL )
     {
-        DebLog("wxSmith: Culdn't generate widget inside factory");
+        DebLog(_("wxSmith: Culdn't generate widget inside factory"));
         return;
     }
     
@@ -256,7 +256,7 @@ void wxsPalette::InsertRequest(const char* Name)
             
         default:
             wxsWidgetFactory::Get()->Kill(NewWidget);
-            DebLog("Something gone wrong");
+            DebLog(_("Something went wrong"));
             break;
     }
     
@@ -318,7 +318,7 @@ void wxsPalette::DeleteRequest()
     wxsWidget* Current = wxsPropertiesMan::Get()->GetActiveWidget();
     if ( Current == NULL )
     {
-        DebLog("wxSmith: No widget selecteed - couldn't delete");
+        DebLog(_("wxSmith: No widget selecteed - couldn't delete"));
         return;
     }
 
@@ -326,7 +326,7 @@ void wxsPalette::DeleteRequest()
     
     if ( !Parent )
     {
-        wxMessageBox("Can not delete main widget (for now ;)");
+        wxMessageBox(_("Can not delete main widget (for now ;)"));
         return;
     }
     
@@ -342,7 +342,6 @@ void wxsPalette::DeleteRequest()
 
     if ( Edit )
     {
-//    	Edit->Close();
         Edit->BuildPreview(Parent);
     }
 

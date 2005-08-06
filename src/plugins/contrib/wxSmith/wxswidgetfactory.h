@@ -18,10 +18,10 @@ class wxsWidgetFactory
         static inline wxsWidgetFactory* Get() { return Singleton; }
 		
         /** Returning info for widget with given name */
-        virtual const wxsWidgetInfo* GetInfo(const char* Name);
+        virtual const wxsWidgetInfo* GetInfo(const wxString& Name);
         
         /** Creating widget with given name */
-        virtual wxsWidget* Generate(const char* Name);
+        virtual wxsWidget* Generate(const wxString& Name);
         
         /** Destroying given widget */
         virtual void Kill(wxsWidget* Widget);
@@ -37,19 +37,19 @@ class wxsWidgetFactory
         
 	private:
 	
-        bool ValidateName(const char* Name);
+        bool ValidateName(const wxString& Name);
 	
         /* Structure comparing strings, used in map */
         struct ltstr
         {
-            bool operator()(const char* s1, const char* s2) const
+            bool operator()(const wxString* s1, const wxString* s2) const
             {
-                return strcmp(s1, s2) < 0;
+                return *s1 < *s2;
             }
         };
         
         /** Map used to handle all types of widgets */
-        typedef std::map<const char*,const wxsWidgetInfo*,ltstr> WidgetsMapT;
+        typedef std::map<const wxString*,const wxsWidgetInfo*,ltstr> WidgetsMapT;
         
         /** Iterator for map */
         typedef WidgetsMapT::iterator WidgetsMapI;

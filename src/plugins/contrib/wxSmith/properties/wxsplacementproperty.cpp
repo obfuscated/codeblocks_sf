@@ -35,14 +35,14 @@ wxsPlacementPropertyWindow::wxsPlacementPropertyWindow(wxWindow* Parent,wxsPlace
     wxPanel(Parent,-1),
     Object(_Object)
 {
-    Pos[0] = new wxRadioButton(this,-1,"",wxDefaultPosition,wxDefaultSize,wxRB_GROUP);
+    Pos[0] = new wxRadioButton(this,-1,_T(""),wxDefaultPosition,wxDefaultSize,wxRB_GROUP);
     for (int i=1; i<9; i++ )
     {
-        Pos[i] = new wxRadioButton(this,-1,"");
+        Pos[i] = new wxRadioButton(this,-1,_T(""));
     }
 
-    Exp = new wxCheckBox(this,-1,"Expand");
-    Shap = new wxCheckBox(this,-1,"Shaped");
+    Exp = new wxCheckBox(this,-1,_("Expand"));
+    Shap = new wxCheckBox(this,-1,_("Shaped"));
 
     wxFlexGridSizer* Sizer1 = new wxFlexGridSizer(3,1,1);
     for ( int i=0; i<9; i++ )
@@ -112,7 +112,7 @@ wxsPlacementProperty::~wxsPlacementProperty()
 
 const wxString& wxsPlacementProperty::GetTypeName()
 {
-    static wxString Type("Widget Placement");
+    static wxString Type(_T("Widget Placement"));
     return Type;
 }
 

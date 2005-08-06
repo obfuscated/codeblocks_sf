@@ -31,22 +31,22 @@ void wxsDefWidget::CreateObjectProperties()
     wxsWidget::CreateObjectProperties();
 }
 
-const char* wxsDefWidget::GetProducingCode(wxsCodeParams& Params)
+wxString wxsDefWidget::GetProducingCode(wxsCodeParams& Params)
 {
     CodeResult = GetGeneratingCodeStr();
     
-    CodeReplace(wxT("ThisWidget"),BaseParams.VarName);
-    CodeReplace(wxT("parent"),Params.ParentName);
-    CodeReplace(wxT("id"),BaseParams.IdName);
-    CodeReplace(wxT("pos"),GetCodeDefines().Pos);
-    CodeReplace(wxT("size"),GetCodeDefines().Size);
-    CodeReplace(wxT("style"),GetCodeDefines().Style);
-    CodeReplace(wxT("font"),GetCodeDefines().Font);
-    CodeReplace(wxT("fcolour"),GetCodeDefines().FColour);
-    CodeReplace(wxT("bcolour"),GetCodeDefines().BColour);
+    CodeReplace(_T("ThisWidget"),BaseParams.VarName);
+    CodeReplace(_T("parent"),Params.ParentName);
+    CodeReplace(_T("id"),BaseParams.IdName);
+    CodeReplace(_T("pos"),GetCodeDefines().Pos);
+    CodeReplace(_T("size"),GetCodeDefines().Size);
+    CodeReplace(_T("style"),GetCodeDefines().Style);
+    CodeReplace(_T("font"),GetCodeDefines().Font);
+    CodeReplace(_T("fcolour"),GetCodeDefines().FColour);
+    CodeReplace(_T("bcolour"),GetCodeDefines().BColour);
     
     evCode();
-    return CodeResult.c_str();
+    return CodeResult;
 }
 
 void wxsDefWidget::evInit()
@@ -90,18 +90,18 @@ void wxsDefWidget::CodeReplace(const wxString& Old,const wxString& New)
     CodeResult.Replace(Old,New,true);
 }
 
-const char* wxsDefWidget::GetDeclarationCode(wxsCodeParams& Params)
+wxString wxsDefWidget::GetDeclarationCode(wxsCodeParams& Params)
 {
     static wxString Tmp;
-    Tmp = wxT(GetWidgetNameStr());
-    Tmp.Append(wxT("* "));
+    Tmp = GetWidgetNameStr();
+    Tmp.Append(_T("* "));
     Tmp += BaseParams.VarName;
-    Tmp.Append(';');
-    return Tmp.c_str();
+    Tmp.Append(_T(';'));
+    return Tmp;
 }
 
 
-void wxsDefWidget::evBool(bool& Val,char* Name,char* XrcName,char* PropName,bool DefValue)
+void wxsDefWidget::evBool(bool& Val,const wxString& Name,const wxString& XrcName,const wxString& PropName,bool DefValue)
 {
     switch ( evUse )
     {
@@ -133,7 +133,7 @@ void wxsDefWidget::evBool(bool& Val,char* Name,char* XrcName,char* PropName,bool
                 
         case Code:
         {
-            CodeReplace(Name,wxString::Format("%s",Val?"true":"false"));
+            CodeReplace(Name,Val?_T("true"):_T("false"));
             break;
         }
         
@@ -145,7 +145,7 @@ void wxsDefWidget::evBool(bool& Val,char* Name,char* XrcName,char* PropName,bool
     }
 }
 
-void wxsDefWidget::evInt(int& Val,char* Name,char* XrcName,char* PropName,int DefValue)
+void wxsDefWidget::evInt(int& Val,const wxString& Name,const wxString& XrcName,const wxString& PropName,int DefValue)
 {
     switch ( evUse )
     {
@@ -177,7 +177,7 @@ void wxsDefWidget::evInt(int& Val,char* Name,char* XrcName,char* PropName,int De
                 
         case Code:
         {
-            CodeReplace(Name,wxString::Format("%d",Val));
+            CodeReplace(Name,wxString::Format(_T("%d"),Val));
             break;
         }
         
@@ -189,7 +189,7 @@ void wxsDefWidget::evInt(int& Val,char* Name,char* XrcName,char* PropName,int De
     }
 }
 
-void wxsDefWidget::ev2Int(int& Val1,int& Val2,char* Name,char* XrcName,char* PropName,int DefValue1,int DefValue2)
+void wxsDefWidget::ev2Int(int& Val1,int& Val2,const wxString& Name,const wxString& XrcName,const wxString& PropName,int DefValue1,int DefValue2)
 {
     switch ( evUse )
     {
@@ -222,7 +222,7 @@ void wxsDefWidget::ev2Int(int& Val1,int& Val2,char* Name,char* XrcName,char* Pro
                 
         case Code:
         {
-            CodeReplace(Name,wxString::Format("wxPoint(%d,%d)",Val1,Val2));
+            CodeReplace(Name,wxString::Format(_T("wxPoint(%d,%d)"),Val1,Val2));
             break;
         }
         
@@ -234,7 +234,7 @@ void wxsDefWidget::ev2Int(int& Val1,int& Val2,char* Name,char* XrcName,char* Pro
     }
 }
 
-void wxsDefWidget::evStr(wxString& Val,char* Name,char* XrcName,char* PropName,wxString DefValue)
+void wxsDefWidget::evStr(wxString& Val,const wxString& Name,const wxString& XrcName,const wxString& PropName,wxString DefValue)
 {
     switch ( evUse )
     {
@@ -246,8 +246,8 @@ void wxsDefWidget::evStr(wxString& Val,char* Name,char* XrcName,char* PropName,w
         
         case XmlL:
         {
-            const char* Value = XmlGetVariable(XrcName);
-            if ( Value ) Val = Value;
+            const wxString& Value = XmlGetVariable(XrcName);
+            if ( Value.Length() ) Val = Value;
             else Val = DefValue;
             break;
         }
@@ -268,7 +268,7 @@ void wxsDefWidget::evStr(wxString& Val,char* Name,char* XrcName,char* PropName,w
         
         case Code:
         {
-            CodeReplace(Name,wxString::Format("wxT(%s)",GetCString(Val).c_str()));
+            CodeReplace(Name,wxString::Format(_T("wxT(%s)"),GetCString(Val).c_str()));
             break;
         }
         
@@ -279,7 +279,7 @@ void wxsDefWidget::evStr(wxString& Val,char* Name,char* XrcName,char* PropName,w
     }
 }
 
-void wxsDefWidget::evStrArray(wxArrayString& Val,char* Name,char* XrcParentName,char* XrcChildName,char* PropName, int& DefValue)
+void wxsDefWidget::evStrArray(wxArrayString& Val,const wxString& Name,const wxString& XrcParentName,const wxString& XrcChildName,const wxString& PropName, int& DefValue)
 {
     switch ( evUse )
     {
@@ -317,21 +317,21 @@ void wxsDefWidget::evStrArray(wxArrayString& Val,char* Name,char* XrcParentName,
         {
             // Replacing wxsDWAddStrings function calls
             
-            wxString CodeToSearch = wxString::Format(wxT("wxsDWAddStrings(%s,%s);"),Name,GetBaseParams().VarName.c_str());
+            wxString CodeToSearch = wxString::Format(_T("wxsDWAddStrings(%s,%s);"),Name.c_str(),GetBaseParams().VarName.c_str());
             wxString ReplaceWith;
             for ( size_t i = 0; i<Val.GetCount(); i++ )
             {
             	ReplaceWith.Append(GetBaseParams().VarName);
-            	ReplaceWith.Append(wxT("->Append(wxT("));
-            	ReplaceWith.Append(GetCString(Val[i].c_str()));
-            	ReplaceWith.Append(wxT("));\n"));
+            	ReplaceWith.Append(_T("->Append(wxT("));
+            	ReplaceWith.Append(GetCString(Val[i]));
+            	ReplaceWith.Append(_T("));\n"));
             }
             CodeReplace(CodeToSearch,ReplaceWith);
             
             // Replacing wxsDWSelectString function calls
             
-            CodeToSearch.Printf(wxT("wxsDWSelectString(%s,%d,%s)"),Name,DefValue,GetBaseParams().VarName.c_str());
-            ReplaceWith.Printf(wxT("%s->SetSelection(%d)"),GetBaseParams().VarName.c_str(),DefValue);
+            CodeToSearch.Printf(_T("wxsDWSelectString(%s,%d,%s)"),Name.c_str(),DefValue,GetBaseParams().VarName.c_str());
+            ReplaceWith.Printf(_T("%s->SetSelection(%d)"),GetBaseParams().VarName.c_str(),DefValue);
             CodeReplace(CodeToSearch,ReplaceWith);
             
             break;
@@ -343,13 +343,3 @@ void wxsDefWidget::evStrArray(wxArrayString& Val,char* Name,char* XrcParentName,
         }
     }
 }
-
-void wxsStopMouseEvents::SkipEvent(wxMouseEvent& event)
-{}
-
-wxsStopMouseEvents wxsStopMouseEvents::Object;
-
-BEGIN_EVENT_TABLE(wxsStopMouseEvents,wxEvtHandler)
-    EVT_LEFT_DOWN(wxsStopMouseEvents::SkipEvent)
-    EVT_LEFT_DCLICK(wxsStopMouseEvents::SkipEvent)
-END_EVENT_TABLE()

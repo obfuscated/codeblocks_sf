@@ -22,7 +22,7 @@ BEGIN_EVENT_TABLE(wxsBoolPropertyWindow,wxCheckBox)
 END_EVENT_TABLE()
 
 wxsBoolPropertyWindow::wxsBoolPropertyWindow(wxWindow* Parent,wxsBoolProperty* Property):
-    wxCheckBox(Parent,-1,wxT("")),
+    wxCheckBox(Parent,-1,_T("")),
     Prop(Property)
 {
 }   
@@ -50,7 +50,7 @@ wxsBoolProperty::~wxsBoolProperty()
 
 const wxString& wxsBoolProperty::GetTypeName()
 {
-    static wxString Name(wxT("bool"));
+    static wxString Name(_T("bool"));
     return Name;
 }
 

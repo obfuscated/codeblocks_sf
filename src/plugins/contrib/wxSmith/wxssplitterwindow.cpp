@@ -16,7 +16,7 @@ wxsSplitterWindow::wxsSplitterWindow(wxWindow* Parent):
     wxBoxSizer* Sizer = new wxBoxSizer(wxVERTICAL);
     Sizer->Add( Splitter = new wxSplitterWindow(this,SplitterId), 1, wxGROW|wxALL );
     SetSizer(Sizer);
-    SplitPosition = ConfigManager::Get()->Read("/wxsmith/res_panel_split",Splitter->GetSize().GetHeight()/2);
+    SplitPosition = ConfigManager::Get()->Read(_T("/wxsmith/res_panel_split"),Splitter->GetSize().GetHeight()/2);
 }
 
 wxsSplitterWindow::~wxsSplitterWindow()
@@ -49,7 +49,7 @@ void wxsSplitterWindow::OnSplitterChanged(wxSplitterEvent& event)
     // We use value which was previously set through OnSplitterChanging()
     // This will avoid hiding top panel when docking managment window
     event.SetSashPosition(SplitterFixup(SplitPosition));
-    ConfigManager::Get()->Write("/wxsmith/res_panel_split",SplitPosition);
+    ConfigManager::Get()->Write(_T("/wxsmith/res_panel_split"),SplitPosition);
 }
 
 int wxsSplitterWindow::SplitterFixup(int Position)

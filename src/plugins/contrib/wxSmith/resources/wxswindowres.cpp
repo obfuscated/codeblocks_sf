@@ -7,8 +7,8 @@
 #include <wx/xrc/xmlres.h>
 #include <editormanager.h>
 
-const char* EmptySource =
-"\
+const wxChar* EmptySource =
+_T("\
 #include \"$(Include)\"\n\
 \n\
 BEGIN_EVENT_TABLE($(ClassName),$(BaseClassName))\n\
@@ -27,10 +27,10 @@ $(ClassName)::~$(ClassName)()\n\
 {\n\
 }\n\
 \n\
-";
+");
 
-const char* EmptyHeader =
-"\
+const wxChar* EmptyHeader =
+_T("\
 #ifndef $(Guard)\n\
 #define $(Guard)\n\
 \n\
@@ -61,7 +61,7 @@ class $(ClassName): public $(BaseClassName)\n\
 };\n\
 \n\
 #endif\n\
-";
+");
 
 
 wxsWindowRes::wxsWindowRes(
@@ -117,7 +117,7 @@ void wxsWindowRes::Save()
     if ( Doc )
     {
         wxString FullFileName = GetProject()->GetInternalFileName(XrcFile);
-        Doc->SaveFile(FullFileName);
+        Doc->SaveFile(FullFileName.mb_str());
         delete Doc;
     }
 }
@@ -127,8 +127,8 @@ TiXmlDocument* wxsWindowRes::GenerateXml()
     TiXmlDocument* NewDoc = new TiXmlDocument;
     TiXmlElement* Resource = NewDoc->InsertEndChild(TiXmlElement("resource"))->ToElement();
     TiXmlElement* XmlDialog = Resource->InsertEndChild(TiXmlElement("object"))->ToElement();
-    XmlDialog->SetAttribute("class",GetWidgetClass());
-    XmlDialog->SetAttribute("name",ClassName.c_str());
+    XmlDialog->SetAttribute("class",wxString(GetWidgetClass()).mb_str());
+    XmlDialog->SetAttribute("name",ClassName.mb_str());
     if ( !RootWidget->XmlSave(XmlDialog) )
     {
         delete NewDoc;
@@ -169,7 +169,7 @@ void wxsWindowRes::ShowPreview()
             
         case Panel:
         {
-        	wxDialog Dlg(NULL,-1,wxString::Format(wxT("Frame preview: %s"),ClassName.c_str()));
+        	wxDialog Dlg(NULL,-1,wxString::Format(_("Frame preview: %s"),ClassName.c_str()));
         	wxPanel* Panel = Res.LoadPanel(&Dlg,ClassName);
         	if ( Panel )
         	{
@@ -194,7 +194,7 @@ bool wxsWindowRes::GenerateEmptySources()
     
     wxString FName = wxFileName(HFile).GetFullName();
     FName.MakeUpper();
-    wxString Guard(wxT("__"));
+    wxString Guard(_T("__"));
     
     for ( int i=0; i<(int)FName.Length(); i++ )
     {
@@ -209,38 +209,38 @@ bool wxsWindowRes::GenerateEmptySources()
     wxString Include = IncludeFN.GetFullPath();
     
 
-    FILE* Fl = fopen(GetProject()->GetProjectFileName(HFile),"wt");
+    FILE* Fl = fopen(GetProject()->GetProjectFileName(HFile).mb_str(),"wt");
     if ( !Fl ) return false;
     wxString Content = EmptyHeader;
-    Content.Replace("$(Guard)",Guard,true);
-    Content.Replace("$(ClassName)",ClassName,true);
-    Content.Replace("$(BaseClassName)",GetWidgetClass());
+    Content.Replace(_T("$(Guard)"),Guard,true);
+    Content.Replace(_T("$(ClassName)"),ClassName,true);
+    Content.Replace(_T("$(BaseClassName)"),GetWidgetClass(),true);
     switch ( Type )
     {
     	case Dialog:
-            Content.Replace("$(BaseClassCtor)","wxDialog(parent,id,wxT(\"\"))");
+            Content.Replace(_T("$(BaseClassCtor)"),_T("wxDialog(parent,id,wxT(\"\"))"),true);
             break;
             
         case Frame:
-            Content.Replace("$(BaseClassCtor)","wxFrame(parent,id,wxT(\"\"))");
+            Content.Replace(_T("$(BaseClassCtor)"),_T("wxFrame(parent,id,wxT(\"\"))"),true);
             break;
             
         case Panel:
-            Content.Replace("$(BaseClassCtor)","wxPanel(parent,id)");
+            Content.Replace(_T("$(BaseClassCtor)"),_T("wxPanel(parent,id)"),true);
             break;
             
         default:;
     }
-    fprintf(Fl,"%s",Content.c_str());
+    fprintf(Fl,"%s",(const char*)Content.mb_str());
     fclose(Fl);
     
-    Fl = fopen(GetProject()->GetProjectFileName(SrcFile),"wt");
+    Fl = fopen(GetProject()->GetProjectFileName(SrcFile).mb_str(),"wt");
     if ( !Fl ) return false;
     Content = EmptySource;
-    Content.Replace("$(Include)",Include,true);
-    Content.Replace("$(ClassName)",ClassName,true);
-    Content.Replace("$(BaseClassName)",GetWidgetClass());
-    fprintf(Fl,"%s",Content.c_str());
+    Content.Replace(_T("$(Include)"),Include,true);
+    Content.Replace(_T("$(ClassName)"),ClassName,true);
+    Content.Replace(_T("$(BaseClassName)"),GetWidgetClass(),true);
+    fprintf(Fl,"%s",(const char*)Content.mb_str());
     fclose(Fl);
     return true;
 }
@@ -259,8 +259,8 @@ void wxsWindowRes::NotifyChange()
 	
 	// Creating code header
 
-	wxString CodeHeader = wxString::Format(wxT("//(*Initialize(%s)"),GetClassName().c_str());
-	wxString Code = CodeHeader + wxT("\n");
+	wxString CodeHeader = wxString::Format(_T("//(*Initialize(%s)"),GetClassName().c_str());
+	wxString Code = CodeHeader + _T("\n");
 	
 	// Creating local and global declarations
 	
@@ -284,8 +284,8 @@ void wxsWindowRes::NotifyChange()
 	
 	// Creating global declarations
 	
-	CodeHeader = wxString::Format(wxT("//(*Declarations(%s)"),GetClassName().c_str());
-	Code = CodeHeader + wxT("\n") + GlobalCode;
+	CodeHeader = wxString::Format(_T("//(*Declarations(%s)"),GetClassName().c_str());
+	Code = CodeHeader + _T("\n") + GlobalCode;
 	Code.Append(' ',GlobalTabSize);
 	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(HFile),CodeHeader,Code);
 	
@@ -313,14 +313,14 @@ void wxsWindowRes::AddDeclarationsReq(wxsWidget* Widget,wxString& LocalCode,wxSt
 	}
 }
 
-inline const char* wxsWindowRes::GetWidgetClass(bool UseRes)
+inline const wxChar* wxsWindowRes::GetWidgetClass(bool UseRes)
 {
 	switch ( Type )
 	{
-		case Dialog: return "wxDialog";
-		case Frame: return "wxFrame";
-		case Panel: return UseRes ? "wxPanelr" : "wxPanel";
+		case Dialog: return _T("wxDialog");
+		case Frame:  return _T("wxFrame");
+		case Panel:  return UseRes ? _T("wxPanelr") : _T("wxPanel");
 	}
 	
-	return "";
+	return _T("");
 }

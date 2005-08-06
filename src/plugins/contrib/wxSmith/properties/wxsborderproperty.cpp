@@ -35,19 +35,11 @@ wxsBorderPropertyWindow::wxsBorderPropertyWindow(wxWindow* Parent,wxsBorderPrope
     wxPanel(Parent,-1),
     Object(_Object)
 {
-/*
-    Left = new wxToggleButton(this,-1,"L");
-    Right = new wxToggleButton(this,-1,"R");
-    Top = new wxToggleButton(this,-1,"T");
-    Bottom = new wxToggleButton(this,-1,"B");
-  */  
-    Left = new wxCheckBox(this,-1,"");
-    Right = new wxCheckBox(this,-1,"");
-    Top = new wxCheckBox(this,-1,"");
-    Bottom = new wxCheckBox(this,-1,"");
+    Left = new wxCheckBox(this,-1,_T(""));
+    Right = new wxCheckBox(this,-1,_T(""));
+    Top = new wxCheckBox(this,-1,_T(""));
+    Bottom = new wxCheckBox(this,-1,_T(""));
     
-    
-//    wxGridSizer* Sizer = new wxGridSizer(4,2,2);
     wxFlexGridSizer* Sizer = new wxFlexGridSizer(3,1,1);
     
     Sizer->Add(1,1);
@@ -59,14 +51,6 @@ wxsBorderPropertyWindow::wxsBorderPropertyWindow(wxWindow* Parent,wxsBorderPrope
     Sizer->Add(1,1);
     Sizer->Add(Bottom);
     Sizer->Add(1,1);
-    
-    /*
-    
-    Sizer->Add(Left);
-    Sizer->Add(Top);
-    Sizer->Add(Bottom);
-    Sizer->Add(Right);
-    */
     
     SetSizer(Sizer);
     Sizer->SetSizeHints(this);
@@ -115,7 +99,7 @@ wxsBorderProperty::~wxsBorderProperty()
 
 const wxString& wxsBorderProperty::GetTypeName()
 {
-    static wxString Type("Widget Border");
+    static wxString Type(_T("Widget Border"));
     return Type;
 }
 

@@ -66,7 +66,7 @@ class wxsPalette : public wxPanel
         void CreateWidgetsPalette(wxWindow* Wnd);
         
         /** Function inserting widget with giwen name */
-        void InsertRequest(const char* Name);
+        void InsertRequest(const wxString& Name);
         
         /** Function adding new widget before given one */
         void InsertBefore(wxsWidget* NewWidget,wxsWidget* Reference);

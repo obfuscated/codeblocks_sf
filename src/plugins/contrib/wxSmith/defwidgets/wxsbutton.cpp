@@ -11,12 +11,12 @@ WXS_ST_BEGIN(wxsButtonStyles)
     WXS_ST_DEFAULTS()
 WXS_ST_END(wxsButtonStyles)
 
-wxsDWDefineBeginExt(wxsButton,wxButton,
+wxsDWDefineBegin(wxsButton,wxButton,
 
     ThisWidget = new wxButton(parent,id,label,pos,size,style);
     if (def) ThisWidget->SetDefault();
     
-    ,true)
+    )
 
     wxsDWDefStr(label,"Label:","");
     wxsDWDefBoolX(def,"default","Default:",false);

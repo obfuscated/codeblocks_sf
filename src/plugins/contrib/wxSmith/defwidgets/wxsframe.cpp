@@ -51,7 +51,7 @@ const wxsWidgetInfo& wxsFrame::GetInfo()
 void wxsFrame::CreateObjectProperties()
 {
     wxsWidget::CreateObjectProperties();
-	PropertiesObject.AddProperty("Title:",Title,0,false,false);
-	PropertiesObject.AddProperty("Centered:",Centered,1,false,false);
+	PropertiesObject.AddProperty(_("Title:"),Title,0,false,false);
+	PropertiesObject.AddProperty(_("Centered:"),Centered,1,false,false);
 }
 

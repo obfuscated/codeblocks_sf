@@ -79,7 +79,7 @@ class wxsWindowRes : public wxsResource
         TiXmlDocument* GenerateXml();
         
         /** Helper fuunction giving name of resource from current window type */
-        inline const char* GetWidgetClass(bool UseRes = false);
+        inline const wxChar* GetWidgetClass(bool UseRes = false);
         
         /** Adding declaration codes for locally stored widgets */
         void AddDeclarationsReq(wxsWidget* Widget,wxString& LocalCode,wxString& GlobalCode,int LocalTabSize,int GlobalTabSize,bool& WasLocal);
