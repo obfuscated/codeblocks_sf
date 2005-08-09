@@ -13,11 +13,11 @@ class wxsWndDialog
 	protected:
 	
 		//(*Declarations(wxsWndDialog)
-        wxGridSizer* MainSizer
+        wxGridSizer* GridSizer1
         wxCheckBox* CheckBox1;
         wxButton* Button1;
         wxCheckBox* CheckBox2;
-        wxGridSizer* GridSizer1
+        wxGridSizer* GridSizer4
         wxStaticText* StaticText1;
         //*)
 

@@ -25,22 +25,26 @@ class wxsStringProperty : public wxsProperty
         
     protected:
         
-        /** This function must create window which will be responsible for
-         *  editing property's value */
-        virtual wxWindow* BuildEditWindow(wxWindow* Parent);
-        
-        /** This funcytion must update content of currently created editor window
-         *  taking it's value prop current property
-         */
-        virtual void UpdateEditWindow();
+        #ifdef __NO_PROPGRGID
+            virtual wxWindow* BuildEditWindow(wxWindow* Parent);
+            virtual void UpdateEditWindow();
+        #else
+            virtual void AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name);
+            virtual void PropGridChanged(wxPropertyGrid* Grid,wxPGId Id);
+            virtual void UpdatePropGrid(wxPropertyGrid* Grid);
+        #endif
         
 	private:
 	
         wxString& Value;
         bool AlwUpd;
-        wxsStringPropertyWindow* Window;
         
-        friend class wxsStringPropertyWindow;
+        #ifdef __NO_PROPGRGID
+            wxsStringPropertyWindow* Window;
+            friend class wxsStringPropertyWindow;
+        #else
+            wxPGId PGId;
+        #endif
 };
 
 #endif // WXSSTRINGPROPERTY_H

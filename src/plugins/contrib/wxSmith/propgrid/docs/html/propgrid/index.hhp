@@ -1,0 +1,70 @@
+[OPTIONS]
+Compiled file=propgrid.chm
+Compatibility=1.1
+Full-text search=Yes
+Contents file=index.hhc
+Default Window=main
+Default topic=index.htm
+Index file=index.hhk
+Language=0x409 English (United States)
+Binary TOC=YES
+Create CHI file=YES
+Title=wxPropertyGrid
+
+[WINDOWS]
+main="wxPropertyGrid","index.hhc","index.hhk","index.htm","index.htm",,,,,0x23520,,0x387e,,,,,,,,0
+
+[FILES]
+index.htm
+files.htm
+advprops_8h-source.htm
+custctrl_8h-source.htm
+manager_8h-source.htm
+odcombo_8h-source.htm
+pg__dox__mainpage_8h-source.htm
+propdev_8h-source.htm
+propgrid_8h-source.htm
+annotated.htm
+hierarchy.htm
+functions.htm
+functions_func.htm
+functions_vars.htm
+classwxColourPropertyValue.htm
+classwxColourPropertyValue-members.htm
+classwxPGConstants.htm
+classwxPGConstants-members.htm
+classwxPGEditor.htm
+classwxPGEditor-members.htm
+structwxPGPaintData.htm
+structwxPGPaintData-members.htm
+classwxPGProperty.htm
+classwxPGProperty-members.htm
+structwxPGPropertyClassInfo.htm
+structwxPGPropertyClassInfo-members.htm
+classwxPGPropertyWithChildren.htm
+classwxPGPropertyWithChildren-members.htm
+classwxPGRootPropertyClass.htm
+classwxPGRootPropertyClass-members.htm
+classwxPGValueType.htm
+classwxPGValueType-members.htm
+classwxPGVariantDataWxObj.htm
+classwxPGVariantDataWxObj-members.htm
+classwxPropertyCategoryClass.htm
+classwxPropertyCategoryClass-members.htm
+classwxPropertyContainerMethods.htm
+classwxPropertyContainerMethods-members.htm
+classwxPropertyGrid.htm
+classwxPropertyGrid-members.htm
+classwxPropertyGridEvent.htm
+classwxPropertyGridEvent-members.htm
+classwxPropertyGridManager.htm
+classwxPropertyGridManager-members.htm
+classwxPropertyGridPopulator.htm
+classwxPropertyGridPopulator-members.htm
+classwxPropertyGridState.htm
+classwxPropertyGridState-members.htm
+group__miscellaneous.htm
+group__wndflags.htm
+group__propflags.htm
+group__attrids.htm
+modules.htm

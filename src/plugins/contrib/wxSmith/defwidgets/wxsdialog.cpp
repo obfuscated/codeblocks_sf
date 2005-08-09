@@ -30,8 +30,8 @@ WXS_ST_BEGIN(wxsDialogStyles)
 
 WXS_ST_END(wxsDialogStyles)
 
-wxsDialog::wxsDialog(wxsWidgetManager* Man):
-    wxsWindow(Man,propWindow),
+wxsDialog::wxsDialog(wxsWidgetManager* Man,wxsWindowRes* Res):
+    wxsWindow(Man,Res,propWindow),
     Centered(false)
 {
 }
@@ -48,7 +48,7 @@ const wxsWidgetInfo& wxsDialog::GetInfo()
 void wxsDialog::CreateObjectProperties()
 {
     wxsWidget::CreateObjectProperties();
-	PropertiesObject.AddProperty(_("Title:"),Title,0,false,false);
-	PropertiesObject.AddProperty(_("Centered:"),Centered,1,false,false);
+	PropertiesObject.AddProperty(_("Title:"),Title,0);
+	PropertiesObject.AddProperty(_("Centered:"),Centered,1);
 }
 

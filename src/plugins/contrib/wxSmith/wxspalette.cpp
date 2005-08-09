@@ -231,9 +231,9 @@ void wxsPalette::InsertRequest(const wxString& Name)
         return;
     }
     
-    wxsWindowEditor* Edit = (wxsWindowEditor*)Current->CurEditor;
+    wxsWindowEditor* Edit = Current->GetEditor();
     
-    wxsWidget* NewWidget = wxsWidgetFactory::Get()->Generate(Name);
+    wxsWidget* NewWidget = wxsWidgetFactory::Get()->Generate(Name,Current->GetResource());
     if ( NewWidget == NULL )
     {
         DebLog(_("wxSmith: Culdn't generate widget inside factory"));
@@ -330,7 +330,7 @@ void wxsPalette::DeleteRequest()
         return;
     }
     
-    wxsWindowEditor* Edit = (wxsWindowEditor*)Current->CurEditor;
+    wxsWindowEditor* Edit = Current->GetEditor();
     
     if ( Edit )
     {

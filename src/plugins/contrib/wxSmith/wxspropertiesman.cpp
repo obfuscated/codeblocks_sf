@@ -40,7 +40,8 @@ void wxsPropertiesMan::SetActiveWidget(wxsWidget* Widget)
         PropertiesPanel->SetVirtualSizeHints(1,1);
         PropertiesPanel->SetSize(1,1);
         NewSizer->AddGrowableCol(0);
-        wxWindow* Wnd = CurrentWidget->GetProperties(PropertiesPanel);
+        NewSizer->AddGrowableRow(0);
+        wxWindow* Wnd = CurrentWidget->CreatePropertiesWindow(PropertiesPanel);
         CurrentWidget->UpdateProperties();
         NewSizer->Add(Wnd,0,wxGROW);
         PropertiesPanel->SetSizer(NewSizer);

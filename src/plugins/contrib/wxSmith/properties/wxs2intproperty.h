@@ -25,29 +25,35 @@ class wxs2IntProperty : public wxsProperty
         
     protected:
         
-        /** This function must create window which will be responsible for
-         *  editing property's value */
-        virtual wxWindow* BuildEditWindow(wxWindow* Parent);
+        #ifdef __NO_PROPGRGID
+            virtual wxWindow* BuildEditWindow(wxWindow* Parent);
+            virtual void UpdateEditWindow();
+        #else
+            virtual void AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name);
+            virtual void PropGridChanged(wxPropertyGrid* Grid,wxPGId Id);
+            virtual void UpdatePropGrid(wxPropertyGrid* Grid);
+        #endif
         
         /** This function makes additional correction for value, must always
          *  return acceptable one. It can be declared inside derived classes
          *  to extend abilities of IntProperty (f.ex. inly odd numbers)
          */
         virtual void CorrectValues(int &Value1, int &Value2) { }
-        
-        /** This funcytion must update content of currently created editor window
-         *  taking it's value prop current property
-         */
-        virtual void UpdateEditWindow();
-        
+    
 	private:
 	
         int& Value1;
         int& Value2;
         bool AlwUpd;
-        wxs2IntPropertyWindow* Window;
         
-        friend class wxs2IntPropertyWindow;
+        #ifdef __NO_PROPGRGID
+            wxs2IntPropertyWindow* Window;
+            friend class wxs2IntPropertyWindow;
+        #else
+            wxPGId Val1Id;
+            wxPGId Val2Id;
+        #endif
+        
 };
 
 #endif // WXS2INTPROPERTY_H

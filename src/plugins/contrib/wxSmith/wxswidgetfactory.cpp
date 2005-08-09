@@ -20,12 +20,12 @@ const wxsWidgetInfo * wxsWidgetFactory::GetInfo(const wxString& Name)
     return (*i).second;
 }
 
-wxsWidget * wxsWidgetFactory::Generate(const wxString& Name)
+wxsWidget * wxsWidgetFactory::Generate(const wxString& Name,wxsWindowRes* Res)
 {
     WidgetsMapI i = Widgets.find(&Name);
     if ( i == Widgets.end() ) return NULL;
     const wxsWidgetInfo* Info = (*i).second;
-    return Info->Manager->ProduceWidget(Info->Id);
+    return Info->Manager->ProduceWidget(Info->Id,Res);
 }
 
 void wxsWidgetFactory::Kill(wxsWidget* Widget)
@@ -50,7 +50,7 @@ void wxsWidgetFactory::Kill(wxsWidget* Widget)
         }
 
         if ( Widget->GetPreview() ) Widget->KillPreview();
-        if ( Widget->GetCurrentProperties() ) Widget->KillProperties();
+        if ( Widget->GetProperties() ) Widget->KillProperties();
         
         // Deleting widget
         if ( Widget->GetInfo().Manager )

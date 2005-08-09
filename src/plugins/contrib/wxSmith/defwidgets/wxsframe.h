@@ -8,7 +8,7 @@ WXS_ST_DECLARE(wxsFrameStyles)
 class wxsFrame : public wxsWindow
 {
 	public:
-		wxsFrame(wxsWidgetManager* Man);
+		wxsFrame(wxsWidgetManager* Man,wxsWindowRes* Res);
 		
 		virtual ~wxsFrame();
 		

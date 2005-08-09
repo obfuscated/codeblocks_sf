@@ -47,8 +47,8 @@ class wxsWindowPreview: public wxPanel
         wxsWindow* Window;
 };
 
-wxsWindow::wxsWindow(wxsWidgetManager* Man,wxsWidget::BasePropertiesType pType):
-    wxsContainer(Man,true,0,pType)
+wxsWindow::wxsWindow(wxsWidgetManager* Man,wxsWindowRes* Res,wxsWidget::BasePropertiesType pType):
+    wxsContainer(Man,Res,true,0,pType)
 {
 }
 
@@ -61,13 +61,10 @@ wxsWindow::~wxsWindow()
  * This function should update current content of widget if it's created
  * to keep it's content up to date
  */
-void wxsWindow::MyUpdatePreview()
+void wxsWindow::MyFinalUpdatePreview(wxWindow* Preview)
 {
-    if ( GetPreview() )
-    {
-        dynamic_cast<wxsWindowPreview*>
-            (GetPreview()) -> UpdatePreview();
-    }
+    dynamic_cast<wxsWindowPreview*>
+        (Preview) -> UpdatePreview();
 }
 
 /** This function should create preview window for widget */

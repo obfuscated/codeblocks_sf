@@ -1,3 +1,14 @@
+/*
+
+!!! Due to changes in wxsWindowEditor, additional event handler
+!!! is no longer needeed - wxsdefevthandler.h and wxsdevevthandler.cpp
+!!! files will soon be removed
+
+*/
+
+
+
+/*
 #ifndef WXSDEFEVTHANDLER_H
 #define WXSDEFEVTHANDLER_H
 
@@ -36,3 +47,4 @@ class wxsDefEvtHandler: public wxEvtHandler
 };
 
 #endif // WXSDEFEVTHANDLER_H
+*/

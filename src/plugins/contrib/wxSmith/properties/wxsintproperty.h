@@ -23,29 +23,35 @@ class wxsIntProperty : public wxsProperty
         virtual const wxString& GetTypeName();
         
     protected:
+
+        #ifdef __NO_PROPGRGID
+            virtual wxWindow* BuildEditWindow(wxWindow* Parent);
+            virtual void UpdateEditWindow();
+        #else
+            virtual void AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name);
+            virtual void PropGridChanged(wxPropertyGrid* Grid,wxPGId Id);
+            virtual void UpdatePropGrid(wxPropertyGrid* Grid);
+        #endif
         
-        /** This function must create window which will be responsible for
-         *  editing property's value */
-        virtual wxWindow* BuildEditWindow(wxWindow* Parent);
-        
+            
         /** This function makes additional correction for value, must always
          *  return acceptable one. It can be declared inside derived classes
          *  to extend abilities of IntProperty (f.ex. inly odd numbers)
          */
         virtual int CorrectValue(int Value) { return Value; }
         
-        /** This funcytion must update content of currently created editor window
-         *  taking it's value prop current property
-         */
-        virtual void UpdateEditWindow();
-        
 	private:
 	
         int& Value;
         bool AlwUpd;
-        wxsIntPropertyWindow* Window;
         
-        friend class wxsIntPropertyWindow;
+        #ifdef __NO_PROPGRGID
+            wxsIntPropertyWindow* Window;
+            friend class wxsIntPropertyWindow;
+        #else
+            wxPGId PGId;
+        #endif
+        
 };
 
 #endif // WXSINTPROPERTY_H

@@ -9,7 +9,7 @@ class wxsGridSizer : public wxsContainer
 {
 	public:
 	
-		wxsGridSizer(wxsWidgetManager* Man);
+		wxsGridSizer(wxsWidgetManager* Man,wxsWindowRes* Res);
 		
 		virtual ~wxsGridSizer();
 		
@@ -38,7 +38,7 @@ class wxsGridSizer : public wxsContainer
         virtual wxWindow* MyCreatePreview(wxWindow* Parent);
         
         /** Updating preview */
-        virtual void MyUpdatePreview();
+        virtual void MyFinalUpdatePreview(wxWindow* Preview);
         
         /** Properties loading codee */
         virtual void CreateObjectProperties();

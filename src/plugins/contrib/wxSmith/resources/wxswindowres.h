@@ -50,7 +50,7 @@ class wxsWindowRes : public wxsResource
         /** Ckecking if this resource ecan be Previewed */
         virtual bool CanPreview() { return true; }
         
-        /** This function should show preview in modal */
+        /** This function should show preview in modal window */
         virtual void ShowPreview();
         
         /** Getting resource name */
@@ -61,6 +61,9 @@ class wxsWindowRes : public wxsResource
           * WARNING: Not checking if files exist
           */
         bool GenerateEmptySources();
+        
+        /** Function which should check and (if necessary) correct widget's base properties */
+        bool CheckBaseProperties(bool Correct,wxsWidget* Changed=NULL);
         
         /** This will be used to shedule code rebuilds */
         virtual void NotifyChange();
@@ -83,6 +86,22 @@ class wxsWindowRes : public wxsResource
         
         /** Adding declaration codes for locally stored widgets */
         void AddDeclarationsReq(wxsWidget* Widget,wxString& LocalCode,wxString& GlobalCode,int LocalTabSize,int GlobalTabSize,bool& WasLocal);
+        
+        /** Setting default variable names and identifiers for widgets with empty ones */
+        void UpdateWidgetsVarNameId();
+        
+        /** Function used internally by SetNewWidgetsIdVarName */
+        void UpdateWidgetsVarNameIdReq(
+            std::map<wxString,wxsWidget*>& NamesMap,
+            std::map<wxString,wxsWidget*>& IdsMap,
+            wxsWidget* Widget);
+            
+        /** Function craeting set of used names and ids for this resource */
+        void CreateSetsReq(
+            std::map<wxString,wxsWidget*>& NamesMap,
+            std::map<wxString,wxsWidget*>& IdsMap,
+            wxsWidget* Widget);
+        
 	
         wxString      ClassName;
         wxString      XrcFile;

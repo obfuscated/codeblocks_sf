@@ -34,6 +34,7 @@ static const wxString DefCategory    = _("Standard");
         DefAuthorSite,                                  \
         _T("http://www.wxwidgets.org/manuals/2.6.1/") _T(Link),  \
         DefCategory,                                    \
+        _T(#Name),                                      \
         false,                                          \
         false,                                          \
         2, 6,                                           \
@@ -52,6 +53,7 @@ static const wxString DefCategory    = _("Standard");
         DefAuthorSite,                                  \
         _T("http://www.wxwidgets.org/manuals/2.6.1/") _T(Link),  \
         DefCategory,                                    \
+        _T(#Name),                                      \
         false,                                          \
         false,                                          \
         2, 6,                                           \
@@ -70,6 +72,7 @@ static const wxString DefCategory    = _("Standard");
         DefAuthorSite,                                  \
         _T("http://www.wxwidgets.org/manuals/2.6.1/") _T(Link),  \
         _T(""),                                         \
+        _T(""),                                         \
         false,                                          \
         false,                                          \
         2, 6,                                           \
@@ -83,7 +86,7 @@ static const wxString DefCategory    = _("Standard");
 
 static wxsWidgetInfo StdInfos[] =
 {
-    { _T(""), _T(""), _T(""), _T(""), _T(""), _T(""), _T(""), false, false, 0, 0, NULL, NULL, wxsNoneId },  // NONE
+    { _T(""), _T(""), _T(""), _T(""), _T(""), _T(""), _T(""), _T(""), false, false, 0, 0, NULL, NULL, wxsNoneId },  // NONE
     
     {   _T("wxGridSizer"),
         DefLicence,
@@ -92,6 +95,7 @@ static wxsWidgetInfo StdInfos[] =
         DefAuthorSite,
         _T("http://www.wxwidgets.org/manuals/2.4.2/wx189.htm#wxgridsizer"),
         DefCategory,
+        _T("GridSizer"),
         true,
         true,
         2, 42,
@@ -178,21 +182,21 @@ const wxsWidgetInfo* wxsStdManagerT::GetWidgetInfo(int Number)
 }
 
 /** Getting new widget */
-wxsWidget* wxsStdManagerT::ProduceWidget(int Id)
+wxsWidget* wxsStdManagerT::ProduceWidget(int Id,wxsWindowRes* Res)
 {
     switch ( Id )
     {
-        case wxsGridSizerId:    return new wxsGridSizer(this);
-        case wxsButtonId:       return new wxsButton(this);
-        case wxsCheckBoxId:     return new wxsCheckBox(this);
-        case wxsStaticTextId:   return new wxsStaticText(this);
-        case wxsToggleButtonId: return new wxsToggleButton(this);
-        case wxsComboBoxId:     return new wxsComboBox(this);
-        case wxsListBoxId:      return new wxsListBox(this);
-        case wxsPanelId:        return new wxsPanel(this);
-        case wxsDialogId:       return new wxsDialog(this);
-        case wxsFrameId:        return new wxsFrame(this);
-        case wxsPanelrId:       return new wxsPanelr(this);
+        case wxsGridSizerId:    return new wxsGridSizer(this,Res);
+        case wxsButtonId:       return new wxsButton(this,Res);
+        case wxsCheckBoxId:     return new wxsCheckBox(this,Res);
+        case wxsStaticTextId:   return new wxsStaticText(this,Res);
+        case wxsToggleButtonId: return new wxsToggleButton(this,Res);
+        case wxsComboBoxId:     return new wxsComboBox(this,Res);
+        case wxsListBoxId:      return new wxsListBox(this,Res);
+        case wxsPanelId:        return new wxsPanel(this,Res);
+        case wxsDialogId:       return new wxsDialog(this,Res);
+        case wxsFrameId:        return new wxsFrame(this,Res);
+        case wxsPanelrId:       return new wxsPanelr(this,Res);
     }
     
     return NULL;

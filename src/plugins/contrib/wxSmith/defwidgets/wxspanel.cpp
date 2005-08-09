@@ -14,8 +14,8 @@ WXS_ST_BEGIN(wxsPanelStyles)
 
 WXS_ST_END(wxsPanelStyles)
 
-wxsPanel::wxsPanel(wxsWidgetManager* Man):
-    wxsWindow(Man,propWidget)
+wxsPanel::wxsPanel(wxsWidgetManager* Man,wxsWindowRes* Res):
+    wxsWindow(Man,Res,propWidget)
 {
 }
 
@@ -50,8 +50,8 @@ WXS_ST_BEGIN(wxsPanelrStyles)
 
 WXS_ST_END(wxsPanelrStyles)
 
-wxsPanelr::wxsPanelr(wxsWidgetManager* Man):
-    wxsWindow(Man,propWindow)
+wxsPanelr::wxsPanelr(wxsWidgetManager* Man,wxsWindowRes* Res):
+    wxsWindow(Man,Res,propWindow)
 {
 }
 

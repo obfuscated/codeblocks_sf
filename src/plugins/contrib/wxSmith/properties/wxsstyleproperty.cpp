@@ -4,111 +4,119 @@
 #include <wx/stattext.h>
 #include <vector>
 
-#define WXS_MAX_STYLE_LEN   15
-#define WXSSPW_FIRST_ID     0x1010
+#ifdef __NO_PROPGRGID
 
-class wxsStylePropertyWindow: public wxPanel
-{
-    public:
-        wxsStylePropertyWindow(wxWindow* Parent,wxsStyleProperty* Property,wxsStyle* Styles):
-            wxPanel(Parent,-1),
-            Prop(Property),
-            StopUpdate(true)
-        {
-            wxSizer* Sizer = new wxFlexGridSizer(1,2,2);
-            
-            wxWindowID CurrentId = WXSSPW_FIRST_ID; 
-            
-            if ( Styles )
+    #define WXS_MAX_STYLE_LEN   15
+    #define WXSSPW_FIRST_ID     0x1010
+    
+    class wxsStylePropertyWindow: public wxPanel
+    {
+        public:
+            wxsStylePropertyWindow(wxWindow* Parent,wxsStyleProperty* Property,wxsStyle* Styles):
+                wxPanel(Parent,-1),
+                Prop(Property),
+                StopUpdate(true)
             {
-                for ( ; Styles->Name != _T(""); Styles++ )
+                wxSizer* Sizer = new wxFlexGridSizer(1,2,2);
+                
+                wxWindowID CurrentId = WXSSPW_FIRST_ID; 
+                
+                if ( Styles )
                 {
-                    if ( Styles->Value == ((unsigned int)-1) )
+                    for ( ; Styles->Name.Length(); Styles++ )
                     {
-                        // Adding dividing text
-                        wxStaticText* ST = new wxStaticText(this,-1,Styles->Name);
-                        wxFont Font = ST->GetFont();
-                        Font.SetWeight(wxBOLD);
-                        Font.SetUnderlined(true);
-                        ST->SetFont(Font);
-                        Sizer->Add(ST);
-                    }
-                    else if ( Styles->Value )
-                    {
-                        IdToStyleMaps.push_back(Styles->Value);
-                        wxString Name = Styles->Name;
-                        bool IsToolTip = false;
-                        if ( Name.Length() > WXS_MAX_STYLE_LEN )
+                        if ( Styles->Value == ((unsigned int)-1) )
                         {
-                        	Name = Name.Mid(0,WXS_MAX_STYLE_LEN-3) + _T("...");
-                            IsToolTip = true;
+                            // Adding dividing text
+                            wxStaticText* ST = new wxStaticText(this,-1,Styles->Name);
+                            wxFont Font = ST->GetFont();
+                            Font.SetWeight(wxBOLD);
+                            Font.SetUnderlined(true);
+                            ST->SetFont(Font);
+                            Sizer->Add(ST);
                         }
-                        wxCheckBox* CB = new wxCheckBox(this,CurrentId++,Name);
-                        if ( IsToolTip )
+                        else if ( Styles->Value )
                         {
-                            CB->SetToolTip(Styles->Name);
+                            IdToStyleMaps.push_back(Styles->Value);
+                            wxString Name = Styles->Name;
+                            bool IsToolTip = false;
+                            if ( Name.Length() > WXS_MAX_STYLE_LEN )
+                            {
+                                Name = Name.Mid(0,WXS_MAX_STYLE_LEN-3) + _T("...");
+                                IsToolTip = true;
+                            }
+                            wxCheckBox* CB = new wxCheckBox(this,CurrentId++,Name);
+                            if ( IsToolTip )
+                            {
+                                CB->SetToolTip(Styles->Name);
+                            }
+                            Sizer->Add(CB);
                         }
-                        Sizer->Add(CB);
                     }
+                }
+                
+                SetSizer(Sizer);
+                Sizer->SetSizeHints(this);
+                
+                UpdateValues();
+                
+                StopUpdate = false;
+            }
+            
+            void UpdateValues()
+            {
+                for ( int i=IdToStyleMaps.size(); --i >= 0; )
+                {
+                    wxCheckBox* CP = (wxCheckBox*)FindWindow(WXSSPW_FIRST_ID+i);
+                    if ( !CP ) continue;
+                    int StyleVal = IdToStyleMaps[i];
+                    CP->SetValue( (Prop->Style&StyleVal) == StyleVal );
                 }
             }
             
-            SetSizer(Sizer);
-            Sizer->SetSizeHints(this);
-            
-            UpdateValues();
-            
-            StopUpdate = false;
-        }
+        private:
         
-        void UpdateValues()
-        {
-            for ( int i=IdToStyleMaps.size(); --i >= 0; )
+            void OnChange(wxCommandEvent& event)
             {
-                wxCheckBox* CP = (wxCheckBox*)FindWindow(WXSSPW_FIRST_ID+i);
-                if ( !CP ) continue;
-                int StyleVal = IdToStyleMaps[i];
-                CP->SetValue( (Prop->Style&StyleVal) == StyleVal );
-            }
-        }
-        
-    private:
-    
-        void OnChange(wxCommandEvent& event)
-        {
-            if ( StopUpdate ) return;
-            StopUpdate = true;
-            int NewStyle = 0;
-            for ( int i=IdToStyleMaps.size(); --i >= 0; )
-            {
-                wxCheckBox* CP = (wxCheckBox*)FindWindow(WXSSPW_FIRST_ID+i);
-                if ( !CP ) continue;
-                if ( CP->GetValue() )
+                if ( StopUpdate ) return;
+                StopUpdate = true;
+                int NewStyle = 0;
+                for ( int i=IdToStyleMaps.size(); --i >= 0; )
                 {
-                    NewStyle |= IdToStyleMaps[i];
+                    wxCheckBox* CP = (wxCheckBox*)FindWindow(WXSSPW_FIRST_ID+i);
+                    if ( !CP ) continue;
+                    if ( CP->GetValue() )
+                    {
+                        NewStyle |= IdToStyleMaps[i];
+                    }
                 }
+                Prop->Style = NewStyle;
+                Prop->ValueChanged(true);
+                StopUpdate = false;
             }
-            Prop->Style = NewStyle;
-            Prop->ValueChanged();
-            StopUpdate = false;
-        }
-    
-        wxsStyleProperty* Prop;
-        std::vector<int> IdToStyleMaps;
-        bool StopUpdate;
         
-        DECLARE_EVENT_TABLE()
-};
-
-BEGIN_EVENT_TABLE(wxsStylePropertyWindow,wxPanel)
-    EVT_CHECKBOX(wxID_ANY,wxsStylePropertyWindow::OnChange)
-END_EVENT_TABLE()
+            wxsStyleProperty* Prop;
+            std::vector<int> IdToStyleMaps;
+            bool StopUpdate;
+            
+            DECLARE_EVENT_TABLE()
+    };
+    
+    BEGIN_EVENT_TABLE(wxsStylePropertyWindow,wxPanel)
+        EVT_CHECKBOX(wxID_ANY,wxsStylePropertyWindow::OnChange)
+    END_EVENT_TABLE()
+    
+#endif
 
 wxsStyleProperty::wxsStyleProperty(wxsProperties* Properties,int &_Style,wxsStyle *_Styles):
     wxsProperty(Properties),
     Style(_Style),
     Styles(_Styles),
-    Window(NULL)
+    #ifdef __NO_PROPGRGID
+        Window(NULL)
+    #else
+        PGId(0)
+    #endif
 {
 }
 
@@ -122,13 +130,48 @@ const wxString& wxsStyleProperty::GetTypeName()
     return Name;
 }
 
-wxWindow* wxsStyleProperty::BuildEditWindow(wxWindow* Parent)
-{
-    return Window = new wxsStylePropertyWindow(Parent,this,Styles);
-}
+#ifdef __NO_PROPGRGID
 
-void wxsStyleProperty::UpdateEditWindow()
-{
-    if ( Window ) Window->UpdateValues();
-}
-        
+    wxWindow* wxsStyleProperty::BuildEditWindow(wxWindow* Parent)
+    {
+        return Window = new wxsStylePropertyWindow(Parent,this,Styles);
+    }
+    
+    void wxsStyleProperty::UpdateEditWindow()
+    {
+        if ( Window ) Window->UpdateValues();
+    }
+            
+#else
+
+    void wxsStyleProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)
+    {
+    	wxPGConstants Consts;
+    	
+    	for ( wxsStyle* St = Styles; St->Name.Length(); ++St )
+    	{
+    		if ( St->Value != ((unsigned int)-1) )
+    		{
+    			Consts.Add(St->Name,St->Value);
+    		}
+    	}
+    	
+    	PGId = Grid->Append( wxFlagsProperty(Name,wxPG_LABEL,Consts,Style) );
+        Grid->SetPropertyAttribute(PGId,wxPG_BOOL_USE_CHECKBOX,(long)1,wxRECURSE);
+    }
+    
+    void wxsStyleProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)
+    {
+    	if ( Id == PGId )
+    	{
+    		Style = Grid->GetPropertyValue(Id).GetLong();
+    		ValueChanged(true);
+    	}
+    }
+    
+    void wxsStyleProperty::UpdatePropGrid(wxPropertyGrid* Grid)
+    {
+    	Grid->SetPropertyValue(PGId,Style);
+    }
+
+#endif

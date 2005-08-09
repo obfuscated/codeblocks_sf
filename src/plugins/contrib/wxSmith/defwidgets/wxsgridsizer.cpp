@@ -100,8 +100,8 @@ BEGIN_EVENT_TABLE(wxsGridSizerPreview,wxPanel)
 END_EVENT_TABLE()
 
 
-wxsGridSizer::wxsGridSizer(wxsWidgetManager* Man):
-    wxsContainer(Man,false,-1,propSizer),
+wxsGridSizer::wxsGridSizer(wxsWidgetManager* Man,wxsWindowRes* Res):
+    wxsContainer(Man,Res,false,-1,propSizer),
     Cols(0),
     Rows(0),
     VGap(0),
@@ -149,12 +149,9 @@ wxWindow* wxsGridSizer::MyCreatePreview(wxWindow* Parent)
     return new wxsGridSizerPreview(Parent,this);
 }
 
-void wxsGridSizer::MyUpdatePreview()
+void wxsGridSizer::MyFinalUpdatePreview(wxWindow* Window)
 {
-    if ( GetPreview() )
-    {
-        dynamic_cast<wxsGridSizerPreview*> (GetPreview()) -> UpdatePreview();
-    }
+    dynamic_cast<wxsGridSizerPreview*> (Window) -> UpdatePreview();
 }
 
 bool wxsGridSizer::MyXmlLoad()

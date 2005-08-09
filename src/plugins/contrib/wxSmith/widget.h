@@ -20,7 +20,6 @@
 class wxsWidgetManager;
 class wxsEventDesc;
 class wxsWidget;
-class wxsDefEvtHandler;
 
 /** Class representing one event */
 class wxsEventDesc
@@ -46,13 +45,14 @@ class wxsEventDesc
 /** Structure containing info aboul widget */
 struct wxsWidgetInfo
 {
-    wxString Name;               ///< Widget's name
-    wxString License;            ///< Widget's license
-    wxString Author;             ///< Widget's author
-    wxString AuthorEmail;        ///< Widget's authos's email
-    wxString AuthorSite;         ///< Widget's author's site
-    wxString WidgetsSite;        ///< Site about this widget
-    wxString Category;           ///< Widget's category
+    wxString Name;                  ///< Widget's name
+    wxString License;               ///< Widget's license
+    wxString Author;                ///< Widget's author
+    wxString AuthorEmail;           ///< Widget's authos's email
+    wxString AuthorSite;            ///< Widget's author's site
+    wxString WidgetsSite;           ///< Site about this widget
+    wxString Category;              ///< Widget's category
+    wxString DefaultVarName;        ///< Prefix for default variable name
     bool Container;                 ///< True if this widget can have other widgets inside
     bool Sizer;                     ///< True if this widget is a sizer (Container must also be true)
     unsigned short VerHi;           ///< Lower number of version
@@ -167,11 +167,11 @@ class wxsWidget
         static const BasePropertiesType propSizer    = bptVariable;
     
         /** Default constructor */
-        wxsWidget(wxsWidgetManager* Man,BasePropertiesType pType = propNone):
+        wxsWidget(wxsWidgetManager* Man,wxsWindowRes* Res,BasePropertiesType pType = propNone):
             PropertiesObject(this),
             Manager(Man),
             Preview(NULL),
-            Handler(NULL),
+            Resource(Res),
             Properties(NULL),
             Parent(NULL),
             MaxChildren(0),
@@ -190,11 +190,11 @@ class wxsWidget
          *                      false otherwise (usually for wxSizer objects
          *  \param MaxChildren - maximal number of children which can be handled by this container
          */
-        wxsWidget(wxsWidgetManager* Man, bool ISwxWindow, int MaxChild,BasePropertiesType pType = propNone):
+        wxsWidget(wxsWidgetManager* Man, wxsWindowRes* Res, bool ISwxWindow, int MaxChild,BasePropertiesType pType = propNone):
             PropertiesObject(this),
             Manager(Man),
             Preview(NULL),
-            Handler(NULL),
+            Resource(Res),
             Properties(NULL),
             Parent(NULL),
             MaxChildren(MaxChild),
@@ -210,20 +210,26 @@ class wxsWidget
         /** Destructor */
         virtual ~wxsWidget(); 
         
-        /** Gettign widget's info */
+        /** Getting widget's info */
         virtual const wxsWidgetInfo& GetInfo() = 0;
         
-        /** Taking manager of this widget */
+        /** Getting manager of this widget */
         inline wxsWidgetManager* GetManager() { return Manager; }
         
-        /** Taking parent widget of this one */
+        /** Getting parent widget of this one */
         inline wxsWidget* GetParent() { return Parent; }
         
-        /** Taking resource tree of this widget */
-        wxTreeItemId GetTreeId() { return TreeId; }
+        /** Getting resource tree of this widget */
+        inline wxTreeItemId GetTreeId() { return TreeId; }
         
-        /** Taking BasePropertiesType for this widget */
-        BasePropertiesType GetBPType() { return BPType; }
+        /** Getting BasePropertiesType for this widget */
+        inline BasePropertiesType GetBPType() { return BPType; }
+        
+        /** Getting resource owning this widget */
+        inline wxsWindowRes* GetResource() { return Resource; }
+        
+        /** Getting editor for this widget (or NULL if there's no editor) */
+        wxsWindowEditor* GetEditor();
 
 /******************************************************************************/
 /* Preview                                                                    */
@@ -236,9 +242,6 @@ class wxsWidget
         
         /** This should kill preview object */
         void KillPreview();
-        
-        /** Function shich should update content of current widget's */
-        void UpdatePreview(bool IsReshaped=true,bool NeedRecreate=false);
         
         /** Function returning current pereview window */
         inline wxWindow* GetPreview() { return Preview; }
@@ -257,13 +260,10 @@ class wxsWidget
          */
         virtual void MyDeletePreview(wxWindow* Preview) { delete Preview; }
         
-        /** Function shich should update content of current widget's preview
-         *
-         * This function should update current content of widget if it's created
-         * to keep it's content up to date. It should be also called when window's
-         * child object has been added or deleted.
+        /** This fuunction can be used to update all properties for preview
+         *  after creating it's children.
          */
-        virtual void MyUpdatePreview() {}
+        virtual void MyFinalUpdatePreview(wxWindow* Preview) {}
         
 /******************************************************************************/
 /* Properties                                                                 */
@@ -275,19 +275,19 @@ class wxsWidget
         inline wxsWidgetBaseParams& GetBaseParams() { return BaseParams; }
 
         /** Getting properties window for this widget */
-        inline wxWindow* GetProperties(wxWindow* Parent)
+        inline wxWindow* CreatePropertiesWindow(wxWindow* Parent)
         {
             if ( !PropertiesCreated )
             {
                 CreateObjectProperties();
                 PropertiesCreated = true;
             }
-            if ( !Properties ) Properties = CreateProperties(Parent);
+            if ( !Properties ) Properties = MyCreatePropertiesWindow(Parent);
             return Properties;
         }
         
         /** getting properties which are currently used */
-        inline wxWindow* GetCurrentProperties() { return Properties; }
+        inline wxWindow* GetProperties() { return Properties; }
         
         /** This should kill properties window */
         inline void KillProperties()
@@ -307,13 +307,21 @@ class wxsWidget
             MyUpdateProperties();
             Updating = false;
         }
+        
+        /** Function notifying that properties were changed inside properties editor
+         *  \param Validate - if true, changed properties should be validated
+         *  \param Correct  - if true, invalid properties should be automatically corrected
+         *  \return true - properties valid, false - properties invalid (before correction)
+         *          always returns true if Validate == false
+         */
+        bool PropertiesUpdated(bool Validate,bool Correct);
 
     protected:
     
         /** This function should create properties view for widget. It is granted
          *  that there are no properties created yet.
          */
-        virtual wxWindow* CreateProperties(wxWindow* Parent)
+        virtual wxWindow* MyCreatePropertiesWindow(wxWindow* Parent)
         { 
             return GenBaseParamsConfig(Parent);
         }
@@ -327,11 +335,13 @@ class wxsWidget
         /** Function which should update content of current properties window */
         virtual void MyUpdateProperties()
         {
-            if ( GetCurrentProperties() ) PropertiesObject.UpdateProperties();
+            if ( GetProperties() ) PropertiesObject.UpdateProperties();
         }
         
         /** Function initializing properties for this widget.
-         *  This should 
+         *  This should add all properties.
+         *  Call to this function is made when properties window is created for the
+         *  first time
          */
         virtual void CreateObjectProperties()
         {
@@ -504,9 +514,9 @@ class wxsWidget
         /** Function creating wxPanel object which contains panel with
          * configuration of base widget's properties
          */
-        inline wxWindow* GenBaseParamsConfig(wxWindow* Parent,wxSizer** Sizer = NULL)
+        inline wxWindow* GenBaseParamsConfig(wxWindow* Parent)
         {
-            return PropertiesObject.GenerateWindow(Parent,Sizer);
+            return PropertiesObject.GenerateWindow(Parent);
         }
         
         /** This function updates content of given base properties panel,
@@ -666,22 +676,12 @@ class wxsWidget
         /** Adding default properties to properties manager */
         virtual void AddDefaultProperties(BasePropertiesType Props);
         
-        /** Getting preview window from parent widget
-         *  If there's no parent widget, WindowEditor's object is returned
-         */
-        inline wxWindow* GetParentPreview()
-        {
-            if ( Parent ) return Parent->Preview;
-            return CurEditor;
-        }
-        
         /** Function building tree for this widget */
         void BuildTree(wxTreeCtrl* Tree,wxTreeItemId WhereToAdd,int InsertIndex=-1);
         
         wxsWidgetManager* Manager;  ///< Widget's manager
         wxWindow* Preview;          ///< Currently opened preview window (NULL if there's no one)
-        wxsDefEvtHandler* Handler;  ///< Handler added to current preview
-        wxsWindowEditor* CurEditor; ///< Currently associated editor
+        wxsWindowRes* Resource;     ///< Resource owning this widget
         wxWindow* Properties;       ///< Currently opened properties window (NULL if there's no one)
         wxsWidget* Parent;          ///< Parent widget of this one
         int MaxChildren;            ///< Num of max. Childs, -1 if no limit, valid for containers only
@@ -728,7 +728,7 @@ class wxsWidgetManager
         virtual const wxsWidgetInfo* GetWidgetInfo(int Number) = 0;
         
         /** Getting new widget */
-        virtual wxsWidget* ProduceWidget(int Id) = 0;
+        virtual wxsWidget* ProduceWidget(int Id,wxsWindowRes* Res) = 0;
         
         /** Killing widget */
         virtual void KillWidget(wxsWidget* Widget) = 0;

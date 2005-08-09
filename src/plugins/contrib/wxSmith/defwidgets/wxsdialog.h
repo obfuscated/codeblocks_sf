@@ -8,7 +8,7 @@ WXS_ST_DECLARE(wxsDialogStyles)
 class wxsDialog : public wxsWindow
 {
 	public:
-		wxsDialog(wxsWidgetManager* Man);
+		wxsDialog(wxsWidgetManager* Man,wxsWindowRes* Res);
 		
 		virtual ~wxsDialog();
 		

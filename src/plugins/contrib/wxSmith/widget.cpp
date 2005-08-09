@@ -3,9 +3,10 @@
 #include "properties/wxsborderproperty.h"
 #include "properties/wxsplacementproperty.h"
 #include "properties/wxsstyleproperty.h"
+#include "resources/wxswindowres.h"
 #include "wxswidgetfactory.h"
 #include "wxsresource.h"
-#include "wxsdefevthandler.h"
+#include "wxswindoweditor.h"
 #include <wx/tokenzr.h>
 #include <wx/list.h>
 
@@ -66,9 +67,7 @@ void wxsWidget::AddDefaultProperties(BasePropertiesType pType)
                     &PropertiesObject,
                     BaseParams.Style,
                     GetInfo().Styles),
-                -1,
-                true, true
-                );
+                -1);
         }
     }
 
@@ -79,62 +78,37 @@ wxWindow* wxsWidget::CreatePreview(wxWindow* Parent,wxsWindowEditor* Editor)
     if ( Preview ) KillPreview();
     
     /* Creating widget */
-    CurEditor = Editor;
     Preview = MyCreatePreview(Parent);
     if ( !Preview ) return NULL;
     
-    Preview->PushEventHandler(Handler = new wxsDefEvtHandler(this));
-
     /* Creating preview of child widgets */
     int Cnt = IsContainer() ? GetChildCount() : 0;
     for ( int i=0; i<Cnt; i++ )
     {
-        GetChild(i)->CreatePreview(Preview,CurEditor);
+        GetChild(i)->CreatePreview(Preview,Editor);
     }
     
-    /* Updating content of preview */
-    MyUpdatePreview();
+    MyFinalUpdatePreview(Preview);
     
     return Preview;
 }
 
-void wxsWidget::UpdatePreview(bool IsReshaped,bool NeedRecreate)
+bool wxsWidget::PropertiesUpdated(bool Validate,bool Correct)
 {
-    if ( Updating ) return;
-    if ( !Preview ) return;
-    assert ( CurEditor != NULL );
-    
+    if ( Updating ) return true;
+    bool Result = true;
     Updating = true;
-    
-    CurEditor->RecreatePreview();
-    CurEditor->GetResource()->NotifyChange();
-
-    /*
-    if ( NeedRecreate )
+    if ( GetEditor() )
     {
-        IsReshaped = true;
-        wxsWindowEditor* Editor = CurEditor;
-        KillPreview();
-        CreatePreview(GetParentPreview(),Editor);
+    	GetEditor()->RecreatePreview();
     }
-
-    MyUpdatePreview();
-    
-    if ( IsReshaped )
+    if ( Validate )
     {
-        if ( GetParent() )
-        {
-            GetParent()->UpdatePreview(true,false);
-        }
-        else
-        {
-            CurEditor->PreviewReshaped();
-        }
+    	Result = GetResource()->CheckBaseProperties(Correct,this);
     }
-    
-    */
-    
+    GetResource()->NotifyChange();
     Updating = false;
+    return Result;
 }
 
 void wxsWidget::KillPreview()
@@ -149,17 +123,9 @@ void wxsWidget::KillPreview()
     /* Killing this one */
     if ( Preview != NULL )
     {
-        if ( Handler )
-        {
-            Preview->RemoveEventHandler(Handler);
-            delete Handler;
-            Handler = NULL;
-        }
         MyDeletePreview(Preview);
         Preview = NULL;
     }
-    
-    CurEditor = NULL;
 }
 
 void wxsWidget::XmlAssignElement(TiXmlElement* Elem)
@@ -401,7 +367,7 @@ bool wxsWidget::XmlLoadChildren()
                 if ( !Name || !*Name ) continue;
             }
                 
-            wxsWidget* Child = wxsWidgetFactory::Get()->Generate(wxString(Name,wxConvUTF8));
+            wxsWidget* Child = wxsWidgetFactory::Get()->Generate(wxString(Name,wxConvUTF8),GetResource());
             if ( !Child )
             {
                 Ret = false;
@@ -800,3 +766,8 @@ bool wxsWidget::XmlGetStringArray(const wxString& ParentName,const wxString& Chi
       
 }
 //End added
+
+wxsWindowEditor* wxsWidget::GetEditor()
+{
+	return Resource ? (wxsWindowEditor*)Resource->GetEditor() : NULL;
+}

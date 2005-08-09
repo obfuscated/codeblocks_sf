@@ -21,7 +21,7 @@ class wxsWidgetFactory
         virtual const wxsWidgetInfo* GetInfo(const wxString& Name);
         
         /** Creating widget with given name */
-        virtual wxsWidget* Generate(const wxString& Name);
+        virtual wxsWidget* Generate(const wxString& Name,wxsWindowRes* Res);
         
         /** Destroying given widget */
         virtual void Kill(wxsWidget* Widget);

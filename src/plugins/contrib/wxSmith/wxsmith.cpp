@@ -105,7 +105,7 @@ wxSmith::wxSmith()
 	m_PluginInfo.author = _("BYO");
 	m_PluginInfo.authorEmail = _("byo.spoon@gmail.com");
 	m_PluginInfo.authorWebsite = _("");
-	m_PluginInfo.thanksTo = _("Ann for Being\nGigi for Faworki\n\nGod for Love");
+	m_PluginInfo.thanksTo = _("Ann for Being\nGigi for Faworki\n\nGod for Love\n\nJaakko Salli for wxPropertyGrid");
 	m_PluginInfo.license = LICENSE_GPL;
 	m_PluginInfo.hasConfigure = true;
 	

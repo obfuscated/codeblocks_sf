@@ -6,88 +6,97 @@
 
 #include "../widget.h"
 
-class wxsBorderPropertyWindow: public wxPanel
-{
-    public:
-        wxsBorderPropertyWindow(wxWindow* Parent,wxsBorderProperty* Object);
-        virtual ~wxsBorderPropertyWindow();
+#ifdef __NO_PROPGRGID
+
+    class wxsBorderPropertyWindow: public wxPanel
+    {
+        public:
+            wxsBorderPropertyWindow(wxWindow* Parent,wxsBorderProperty* Object);
+            virtual ~wxsBorderPropertyWindow();
+            
+            void UpdateData();
+            
+        private:
+    
+            void OnButtonChanged(wxCommandEvent& event);
+            
+            //wxToggleButton 
+            wxCheckBox
+                *Left, *Right, *Top, *Bottom;
         
-        void UpdateData();
+            wxsBorderProperty* Object;
+            DECLARE_EVENT_TABLE()
+    };
+
+    BEGIN_EVENT_TABLE(wxsBorderPropertyWindow,wxPanel)
+        EVT_TOGGLEBUTTON(wxID_ANY,wxsBorderPropertyWindow::OnButtonChanged)
+        EVT_CHECKBOX(wxID_ANY,wxsBorderPropertyWindow::OnButtonChanged)
+    END_EVENT_TABLE()
+    
+    wxsBorderPropertyWindow::wxsBorderPropertyWindow(wxWindow* Parent,wxsBorderProperty* _Object):
+        wxPanel(Parent,-1),
+        Object(_Object)
+    {
+        Left = new wxCheckBox(this,-1,_T(""));
+        Right = new wxCheckBox(this,-1,_T(""));
+        Top = new wxCheckBox(this,-1,_T(""));
+        Bottom = new wxCheckBox(this,-1,_T(""));
         
-    private:
-
-        void OnButtonChanged(wxCommandEvent& event);
+        wxFlexGridSizer* Sizer = new wxFlexGridSizer(3,1,1);
         
-        //wxToggleButton 
-        wxCheckBox
-            *Left, *Right, *Top, *Bottom;
-    
-        wxsBorderProperty* Object;
-        DECLARE_EVENT_TABLE()
-};
-
-BEGIN_EVENT_TABLE(wxsBorderPropertyWindow,wxPanel)
-    EVT_TOGGLEBUTTON(wxID_ANY,wxsBorderPropertyWindow::OnButtonChanged)
-    EVT_CHECKBOX(wxID_ANY,wxsBorderPropertyWindow::OnButtonChanged)
-END_EVENT_TABLE()
-
-wxsBorderPropertyWindow::wxsBorderPropertyWindow(wxWindow* Parent,wxsBorderProperty* _Object):
-    wxPanel(Parent,-1),
-    Object(_Object)
-{
-    Left = new wxCheckBox(this,-1,_T(""));
-    Right = new wxCheckBox(this,-1,_T(""));
-    Top = new wxCheckBox(this,-1,_T(""));
-    Bottom = new wxCheckBox(this,-1,_T(""));
-    
-    wxFlexGridSizer* Sizer = new wxFlexGridSizer(3,1,1);
-    
-    Sizer->Add(1,1);
-    Sizer->Add(Top);
-    Sizer->Add(1,1);
-    Sizer->Add(Left);
-    Sizer->Add(1,1);
-    Sizer->Add(Right);
-    Sizer->Add(1,1);
-    Sizer->Add(Bottom);
-    Sizer->Add(1,1);
-    
-    SetSizer(Sizer);
-    Sizer->SetSizeHints(this);
-}
-
-wxsBorderPropertyWindow::~wxsBorderPropertyWindow()
-{}
-
-void wxsBorderPropertyWindow::OnButtonChanged(wxCommandEvent& event)
-{
-    int NewFlags = 
-        ( Left->GetValue()   ? wxsWidgetBaseParams::Left   :  wxsWidgetBaseParams::None ) |
-        ( Right->GetValue()  ? wxsWidgetBaseParams::Right  :  wxsWidgetBaseParams::None ) |
-        ( Top->GetValue()    ? wxsWidgetBaseParams::Top    :  wxsWidgetBaseParams::None ) |
-        ( Bottom->GetValue() ? wxsWidgetBaseParams::Bottom :  wxsWidgetBaseParams::None );
+        Sizer->Add(1,1);
+        Sizer->Add(Top);
+        Sizer->Add(1,1);
+        Sizer->Add(Left);
+        Sizer->Add(1,1);
+        Sizer->Add(Right);
+        Sizer->Add(1,1);
+        Sizer->Add(Bottom);
+        Sizer->Add(1,1);
         
-    assert(Object != NULL);
+        SetSizer(Sizer);
+        Sizer->SetSizeHints(this);
+    }
     
-    Object->BorderFlags = NewFlags;
-    Object->ValueChanged();
-}
-
-void wxsBorderPropertyWindow::UpdateData()
-{
-    assert ( Object != NULL );
-    int Flags = Object->BorderFlags;
-   
-    Left->SetValue( (Flags&wxsWidgetBaseParams::Left) != 0 );
-    Right->SetValue( (Flags&wxsWidgetBaseParams::Right) != 0 );
-    Top->SetValue( (Flags&wxsWidgetBaseParams::Top) != 0 );
-    Bottom->SetValue( (Flags&wxsWidgetBaseParams::Bottom) != 0 );
-
-}
-
+    wxsBorderPropertyWindow::~wxsBorderPropertyWindow()
+    {}
+    
+    void wxsBorderPropertyWindow::OnButtonChanged(wxCommandEvent& event)
+    {
+        int NewFlags = 
+            ( Left->GetValue()   ? wxsWidgetBaseParams::Left   :  wxsWidgetBaseParams::None ) |
+            ( Right->GetValue()  ? wxsWidgetBaseParams::Right  :  wxsWidgetBaseParams::None ) |
+            ( Top->GetValue()    ? wxsWidgetBaseParams::Top    :  wxsWidgetBaseParams::None ) |
+            ( Bottom->GetValue() ? wxsWidgetBaseParams::Bottom :  wxsWidgetBaseParams::None );
+            
+        assert(Object != NULL);
+        
+        Object->BorderFlags = NewFlags;
+        Object->ValueChanged(true);
+    }
+    
+    void wxsBorderPropertyWindow::UpdateData()
+    {
+        assert ( Object != NULL );
+        int Flags = Object->BorderFlags;
+       
+        Left->SetValue( (Flags&wxsWidgetBaseParams::Left) != 0 );
+        Right->SetValue( (Flags&wxsWidgetBaseParams::Right) != 0 );
+        Top->SetValue( (Flags&wxsWidgetBaseParams::Top) != 0 );
+        Bottom->SetValue( (Flags&wxsWidgetBaseParams::Bottom) != 0 );
+    
+    }
+    
+#endif
+    
 wxsBorderProperty::wxsBorderProperty(wxsProperties* Properties,int& Flag):
     wxsProperty(Properties),
-    BorderFlags(Flag)
+    BorderFlags(Flag),
+    #ifdef __NO_PROPGRGID
+        Window(NULL)
+    #else
+        PGId(0)
+    #endif
 {
 	//ctor
 }
@@ -103,15 +112,58 @@ const wxString& wxsBorderProperty::GetTypeName()
     return Type;
 }
 
-wxWindow* wxsBorderProperty::BuildEditWindow(wxWindow* Parent)
-{
-    return Window = new wxsBorderPropertyWindow(Parent,this);
-}
+#ifdef __NO_PROPGRGID
 
-void wxsBorderProperty::UpdateEditWindow()
-{
-    if ( Window )
+    wxWindow* wxsBorderProperty::BuildEditWindow(wxWindow* Parent)
     {
-        Window->UpdateData();
+        return Window = new wxsBorderPropertyWindow(Parent,this);
     }
-}
+    
+    void wxsBorderProperty::UpdateEditWindow()
+    {
+        if ( Window )
+        {
+            Window->UpdateData();
+        }
+    }
+
+#else
+
+    void wxsBorderProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)
+    {
+    	static const wxChar* Borders[] = 
+    	{
+    		_("Left"),
+    		_("Right"),
+    		_("Top"),
+    		_("Bottom"),
+    		NULL
+    	};
+    	
+    	static long Values[] =
+    	{
+    		wxsWidgetBaseParams::Left,
+    		wxsWidgetBaseParams::Right,
+    		wxsWidgetBaseParams::Top,
+    		wxsWidgetBaseParams::Bottom
+    	};
+    	
+    	PGId = Grid->Append(wxFlagsProperty(Name,wxPG_LABEL,Borders,Values,0,BorderFlags));
+        Grid->SetPropertyAttribute(PGId,wxPG_BOOL_USE_CHECKBOX,(long)1,wxRECURSE);
+    }
+    
+    void wxsBorderProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)
+    {
+        if ( Id == PGId )
+        {
+        	BorderFlags = Grid->GetPropertyValue(Id).GetBool();
+        	ValueChanged(true);
+        }
+    }
+    
+    void wxsBorderProperty::UpdatePropGrid(wxPropertyGrid* Grid)
+    {
+        Grid->SetPropertyValue(PGId,BorderFlags);
+    }
+    
+#endif

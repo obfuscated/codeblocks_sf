@@ -1,14 +1,12 @@
 #include "wxsdefwidget.h"
 
-wxsDefWidget::wxsDefWidget(wxsWidgetManager* Man,BasePropertiesType pType):
-    wxsWidget(Man,pType)
+wxsDefWidget::wxsDefWidget(wxsWidgetManager* Man,wxsWindowRes* Res,BasePropertiesType pType):
+    wxsWidget(Man,Res,pType)
 {
-    // evInit();
 }
 
 wxsDefWidget::~wxsDefWidget()
 {
-	// evDestroy();
 }
 
 bool wxsDefWidget::MyXmlLoad()

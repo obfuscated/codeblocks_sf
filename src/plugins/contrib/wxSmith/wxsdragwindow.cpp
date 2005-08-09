@@ -311,7 +311,7 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
     
             if ( event.LeftUp() )
             {
-                Widget->UpdatePreview();
+                Widget->PropertiesUpdated(false,false);
             }
         }
         

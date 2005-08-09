@@ -7,8 +7,8 @@
 class wxsContainer : public wxsWidget
 {
 	public:
-		wxsContainer(wxsWidgetManager* Manager,bool IsWindow = false,int MaxChildren = -1,BasePropertiesType pType=propNone):
-             wxsWidget(Manager,IsWindow,MaxChildren,pType),
+		wxsContainer(wxsWidgetManager* Manager,wxsWindowRes* Res,bool IsWindow = false,int MaxChildren = -1,BasePropertiesType pType=propNone):
+             wxsWidget(Manager,Res,IsWindow,MaxChildren,pType),
              DeletingAll(false)
         {};
         

@@ -78,7 +78,7 @@ wxsWindowRes::wxsWindowRes(
         HFile(Head),
         Type(_Type)
 {
-    RootWidget = wxsWidgetFactory::Get()->Generate(GetWidgetClass(true));
+    RootWidget = wxsWidgetFactory::Get()->Generate(GetWidgetClass(true),this);
 }
 
 wxsWindowRes::~wxsWindowRes()
@@ -249,6 +249,8 @@ void wxsWindowRes::NotifyChange()
 {
 	assert ( GetProject() != NULL );
 	
+	UpdateWidgetsVarNameId();
+	
 	#if 1
 	
 	int TabSize = 4;
@@ -323,4 +325,85 @@ inline const wxChar* wxsWindowRes::GetWidgetClass(bool UseRes)
 	}
 	
 	return _T("");
+}
+
+void wxsWindowRes::UpdateWidgetsVarNameId()
+{
+    std::map<wxString,wxsWidget*> NamesMap;
+    std::map<wxString,wxsWidget*> IdsMap;
+    
+    int Cnt = RootWidget->GetChildCount();
+    for ( int i=0; i<Cnt; i++ )
+    {
+    	CreateSetsReq(NamesMap,IdsMap,RootWidget->GetChild(i));
+    }
+    
+    for ( int i=0; i<Cnt; i++ )
+    {
+    	UpdateWidgetsVarNameIdReq(NamesMap,IdsMap,RootWidget->GetChild(i));
+    }
+}
+
+void wxsWindowRes::UpdateWidgetsVarNameIdReq(
+    std::map<wxString,wxsWidget*>& NamesMap, 
+    std::map<wxString,wxsWidget*>& IdsMap, 
+    wxsWidget* Widget)
+{
+    wxsWidgetBaseParams& Params = Widget->GetBaseParams();
+    
+    if ( Params.VarName.Length() == 0 || Params.IdName.Length() == 0 )
+    {
+    	wxString NameBase = Widget->GetInfo().DefaultVarName;
+    	wxString Name;
+    	wxString IdBase = Widget->GetInfo().DefaultVarName;
+    	IdBase.MakeUpper();
+    	wxString Id;
+        int Index = 1;
+        do
+        {
+        	Name.Printf(_T("%s%d"),NameBase.c_str(),Index);
+        	Id.Printf(_T("%s%d_ID"),IdBase.c_str(),Index++);
+        }
+        while ( NamesMap.find(Name) != NamesMap.end() ||
+                IdsMap.find(Id)     != IdsMap.end() );
+        
+        Params.VarName = Name;
+        NamesMap[Name] = Widget;
+        Params.IdName = Id;
+        IdsMap[Id] = Widget;
+    }
+
+	int Cnt = Widget->GetChildCount();
+	for ( int i=0; i<Cnt; i++ )
+	{
+		UpdateWidgetsVarNameIdReq(NamesMap,IdsMap,Widget->GetChild(i));
+	}
+}
+
+void wxsWindowRes::CreateSetsReq(
+    std::map<wxString,wxsWidget*>& NamesMap, 
+    std::map<wxString,wxsWidget*>& IdsMap, 
+    wxsWidget* Widget)
+{
+	if ( Widget->GetBaseParams().VarName.Length() )
+	{
+		NamesMap[Widget->GetBaseParams().VarName] = Widget;
+	}
+	
+	if ( Widget->GetBaseParams().VarName.Length() )
+	{
+		IdsMap[Widget->GetBaseParams().VarName] = Widget;
+	}
+	
+	int Cnt = Widget->GetChildCount();
+	for ( int i=0; i<Cnt; i++ )
+	{
+		CreateSetsReq(NamesMap,IdsMap,Widget->GetChild(i));
+	}
+}
+
+bool wxsWindowRes::CheckBaseProperties(bool Correct,wxsWidget* Changed)
+{
+// TODO (SpOoN#1#): Check variable names - must be unique
+	return true;
 }

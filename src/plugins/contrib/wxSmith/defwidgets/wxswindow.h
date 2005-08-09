@@ -9,7 +9,7 @@ class wxsWindow : public wxsContainer
 	public:
 	
         /** Ctor */
-		wxsWindow(wxsWidgetManager* Man,BasePropertiesType pType);
+		wxsWindow(wxsWidgetManager* Man,wxsWindowRes* Res, BasePropertiesType pType);
 		
 		/** Dctor */
 		virtual ~wxsWindow();
@@ -22,7 +22,7 @@ class wxsWindow : public wxsContainer
         virtual wxWindow* MyCreatePreview(wxWindow* Parent);
         
         /** Function shich should update content of current widget */
-        virtual void MyUpdatePreview();
+        virtual void MyFinalUpdatePreview(wxWindow* Preview);
 };
 
 #endif

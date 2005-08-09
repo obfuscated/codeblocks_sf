@@ -9,7 +9,7 @@ WXS_ST_DECLARE(wxsPanelStyles)
 class wxsPanel : public wxsWindow
 {
 	public:
-		wxsPanel(wxsWidgetManager* Man);
+		wxsPanel(wxsWidgetManager* Man,wxsWindowRes* Res);
 		
 		virtual ~wxsPanel();
 		
@@ -26,7 +26,7 @@ WXS_ST_DECLARE(wxsPanelrStyles)
 class wxsPanelr : public wxsWindow
 {
 	public:
-		wxsPanelr(wxsWidgetManager* Man);
+		wxsPanelr(wxsWidgetManager* Man,wxsWindowRes* Res);
 		virtual ~wxsPanelr();
         virtual const wxsWidgetInfo& GetInfo();
 };

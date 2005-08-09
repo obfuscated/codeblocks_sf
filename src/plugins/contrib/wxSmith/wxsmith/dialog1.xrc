@@ -1,6 +1,6 @@
 <resource>
     <object class="wxDialog" name="wxsWndDialog">
-        <object class="wxGridSizer" variable="MainSizer" member="yes">
+        <object class="wxGridSizer" variable="GridSizer1" member="yes">
             <rows>0</rows>
             <cols>3</cols>
             <vgap>0</vgap>
@@ -28,6 +28,8 @@
             <object class="sizeritem">
                 <object class="wxButton" name="ID_COMMON" variable="Button2" member="no">
                     <label>Button</label>
+                    <pos>16,82</pos>
+                    <size>79,26</size>
                 </object>
                 <border>5</border>
                 <flag>wxALL|wxALIGN_CENTER</flag>
@@ -52,7 +54,7 @@
                 <flag>wxALL|wxALIGN_CENTER</flag>
             </object>
             <object class="sizeritem">
-                <object class="wxGridSizer" variable="GridSizer1" member="yes">
+                <object class="wxGridSizer" variable="GridSizer4" member="yes">
                     <rows>0</rows>
                     <cols>2</cols>
                     <vgap>0</vgap>

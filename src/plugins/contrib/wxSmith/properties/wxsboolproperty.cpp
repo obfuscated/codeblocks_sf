@@ -2,43 +2,51 @@
 
 #include <wx/checkbox.h>
 
-class wxsBoolPropertyWindow: public wxCheckBox
-{
-    public:
-    
-        wxsBoolPropertyWindow(wxWindow* Parent,wxsBoolProperty* Property);
-        virtual ~wxsBoolPropertyWindow();
+#ifdef __NO_PROPGRGID
+
+    class wxsBoolPropertyWindow: public wxCheckBox
+    {
+        public:
         
-    private:
-    
-        void OnChange(wxCommandEvent& event);
-        wxsBoolProperty* Prop;
+            wxsBoolPropertyWindow(wxWindow* Parent,wxsBoolProperty* Property);
+            virtual ~wxsBoolPropertyWindow();
+            
+        private:
         
-        DECLARE_EVENT_TABLE()
-};
-
-BEGIN_EVENT_TABLE(wxsBoolPropertyWindow,wxCheckBox)
-    EVT_CHECKBOX(-1,wxsBoolPropertyWindow::OnChange)
-END_EVENT_TABLE()
-
-wxsBoolPropertyWindow::wxsBoolPropertyWindow(wxWindow* Parent,wxsBoolProperty* Property):
-    wxCheckBox(Parent,-1,_T("")),
-    Prop(Property)
-{
-}   
-
-wxsBoolPropertyWindow::~wxsBoolPropertyWindow()
-{
-}
-
-void wxsBoolPropertyWindow::OnChange(wxCommandEvent& event)
-{
-    Prop->Value = GetValue();
-    Prop->ValueChanged();
-}
-
+            void OnChange(wxCommandEvent& event);
+            wxsBoolProperty* Prop;
+            
+            DECLARE_EVENT_TABLE()
+    };
+    
+    BEGIN_EVENT_TABLE(wxsBoolPropertyWindow,wxCheckBox)
+        EVT_CHECKBOX(-1,wxsBoolPropertyWindow::OnChange)
+    END_EVENT_TABLE()
+    
+    wxsBoolPropertyWindow::wxsBoolPropertyWindow(wxWindow* Parent,wxsBoolProperty* Property):
+        wxCheckBox(Parent,-1,_T("")),
+        Prop(Property)
+    {
+    }   
+    
+    wxsBoolPropertyWindow::~wxsBoolPropertyWindow()
+    {
+    }
+    
+    void wxsBoolPropertyWindow::OnChange(wxCommandEvent& event)
+    {
+        Prop->Value = GetValue();
+        Prop->ValueChanged(true);
+    }
+#endif
+    
 wxsBoolProperty::wxsBoolProperty(wxsProperties* Properties,bool& Bool):
-    wxsProperty(Properties), Value(Bool), Window(NULL)
+    wxsProperty(Properties), Value(Bool), 
+    #ifdef __NO_PROPGRGID
+        Window(NULL)
+    #else
+        PGId(0)
+    #endif
 {
 	//ctor
 }
@@ -54,12 +62,38 @@ const wxString& wxsBoolProperty::GetTypeName()
     return Name;
 }
 
-wxWindow* wxsBoolProperty::BuildEditWindow(wxWindow* Parent)
-{
-    return Window = new wxsBoolPropertyWindow(Parent,this);
-}
+#ifdef __NO_PROPGRGID
 
-void wxsBoolProperty::UpdateEditWindow()
-{
-    if ( Window ) Window->SetValue(Value);
-}
+    wxWindow* wxsBoolProperty::BuildEditWindow(wxWindow* Parent)
+    {
+        return Window = new wxsBoolPropertyWindow(Parent,this);
+    }
+    
+    void wxsBoolProperty::UpdateEditWindow()
+    {
+        if ( Window ) Window->SetValue(Value);
+    }
+
+#else
+
+    void wxsBoolProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)
+    {
+        PGId = Grid->Append(Name,wxPG_LABEL,Value);
+        Grid->SetPropertyAttribute(PGId,wxPG_BOOL_USE_CHECKBOX,(long)1,wxRECURSE);    
+    }
+    
+    void wxsBoolProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)
+    {
+        if ( Id == PGId )
+        {
+        	Value = Grid->GetPropertyValue(Id).GetBool();
+        	ValueChanged(true);
+        }
+    }
+    
+    void wxsBoolProperty::UpdatePropGrid(wxPropertyGrid* Grid)
+    {
+        Grid->SetPropertyValue(PGId,Value);
+    }
+    
+#endif

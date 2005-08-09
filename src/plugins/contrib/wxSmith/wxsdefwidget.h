@@ -17,12 +17,11 @@
     class Name : public wxsDefWidget                                        \
     {                                                                       \
         public:                                                             \
-            Name(wxsWidgetManager* Man): wxsDefWidget(Man,pType)            \
+            Name(wxsWidgetManager* Man,wxsWindowRes* Res):                  \
+                wxsDefWidget(Man,Res,pType)                                 \
             { evInit(); }                                                   \
             virtual ~Name()                                                 \
-            {                                                               \
-              evDestroy();                                                  \
-            }                                                               \
+            { evDestroy(); }                                                \
             virtual const wxsWidgetInfo& GetInfo()                          \
             {                                                               \
                 return *GetManager()->GetWidgetInfo(WidgetId);              \
@@ -214,7 +213,7 @@ class wxsDefWidget: public wxsWidget
 	public:
 	
         /** Default costroctor, arguments are passed directly to wxsWidget */
-		wxsDefWidget(wxsWidgetManager* Man,BasePropertiesType pType = propWidget);
+		wxsDefWidget(wxsWidgetManager* Man,wxsWindowRes* Res,BasePropertiesType pType = propWidget);
             
         /** Destructor - it calls evDestroy() alowing all variables to be released */
 		virtual ~wxsDefWidget();

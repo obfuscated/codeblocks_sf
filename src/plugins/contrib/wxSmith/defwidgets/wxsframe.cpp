@@ -33,8 +33,8 @@ WXS_ST_BEGIN(wxsFrameStyles)
 
 WXS_ST_END(wxsFrameStyles)
 
-wxsFrame::wxsFrame(wxsWidgetManager* Man):
-    wxsWindow(Man,propWindow),
+wxsFrame::wxsFrame(wxsWidgetManager* Man,wxsWindowRes* Res):
+    wxsWindow(Man,Res,propWindow),
     Centered(false)
 {
 }
@@ -51,7 +51,7 @@ const wxsWidgetInfo& wxsFrame::GetInfo()
 void wxsFrame::CreateObjectProperties()
 {
     wxsWidget::CreateObjectProperties();
-	PropertiesObject.AddProperty(_("Title:"),Title,0,false,false);
-	PropertiesObject.AddProperty(_("Centered:"),Centered,1,false,false);
+	PropertiesObject.AddProperty(_("Title:"),Title,0);
+	PropertiesObject.AddProperty(_("Centered:"),Centered,1);
 }
 

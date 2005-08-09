@@ -1,3 +1,4 @@
+/*
 #include "wxsdefevthandler.h"
 
 #include "wxspropertiesman.h"
@@ -73,8 +74,6 @@ void wxsDefEvtHandler::OnMove(wxMoveEvent& event)
     event.Skip();
 }
 
-
-
 BEGIN_EVENT_TABLE(wxsDefEvtHandler,wxEvtHandler)
     EVT_LEFT_DOWN(wxsDefEvtHandler::OnLClick)
     EVT_LEFT_DCLICK(wxsDefEvtHandler::OnLDClick)
@@ -89,3 +88,5 @@ BEGIN_EVENT_TABLE(wxsDefEvtHandler,wxEvtHandler)
     EVT_MOVE(wxsDefEvtHandler::OnMove)
     EVT_SIZE(wxsDefEvtHandler::OnSize)
 END_EVENT_TABLE()
+
+*/
