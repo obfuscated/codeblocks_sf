@@ -24,8 +24,12 @@ wxsDWDefineBegin(wxsComboBox,wxComboBox,
         wxsDWAddStrings(arrayChoices,ThisWidget);
         wxsDWSelectString(arrayChoices,defaultChoice,ThisWidget);
 	)
-   
-    wxsDWDefIntX(defaultChoice,"selection","Default",-1)
-    wxsDWDefStrArrayX(arrayChoices,"content","item","Choices",defaultChoice)
+
+    #ifdef __NO_PROPGRID
+        wxsDWDefIntX(defaultChoice,"selection","Default",-1)
+    #else
+        wxsDWDefIntX(defaultChoice,"selection","",-1)
+    #endif
+    wxsDWDefStrArrayX(arrayChoices,"content","item","Choices",defaultChoice,wxCB_SORT)
 
 wxsDWDefineEnd()

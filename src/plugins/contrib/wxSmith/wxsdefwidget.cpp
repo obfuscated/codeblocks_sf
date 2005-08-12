@@ -1,5 +1,7 @@
 #include "wxsdefwidget.h"
 
+#include "properties/wxsstringlistproperty.h"
+
 wxsDefWidget::wxsDefWidget(wxsWidgetManager* Man,wxsWindowRes* Res,BasePropertiesType pType):
     wxsWidget(Man,Res,pType)
 {
@@ -137,7 +139,10 @@ void wxsDefWidget::evBool(bool& Val,const wxString& Name,const wxString& XrcName
         
         case Props:
         {
-            PropertiesObject.AddProperty(PropName,Val);
+        	if ( PropName.Length() )
+        	{
+                PropertiesObject.AddProperty(PropName,Val);
+        	}
             break;
         }
     }
@@ -181,7 +186,10 @@ void wxsDefWidget::evInt(int& Val,const wxString& Name,const wxString& XrcName,c
         
         case Props:
         {
-            PropertiesObject.AddProperty(PropName,Val);
+        	if ( PropName.Length() )
+        	{
+                PropertiesObject.AddProperty(PropName,Val);
+        	}
             break;
         }
     }
@@ -226,7 +234,10 @@ void wxsDefWidget::ev2Int(int& Val1,int& Val2,const wxString& Name,const wxStrin
         
         case Props:
         {
-            PropertiesObject.Add2IProperty(PropName,Val1,Val2);
+        	if ( PropName.Length() )
+        	{
+                PropertiesObject.Add2IProperty(PropName,Val1,Val2);
+        	}
             break;
         }
     }
@@ -272,12 +283,15 @@ void wxsDefWidget::evStr(wxString& Val,const wxString& Name,const wxString& XrcN
         
         case Props:
         {
-            PropertiesObject.AddProperty(PropName,Val);
+        	if ( PropName.Length() )
+        	{
+                PropertiesObject.AddProperty(PropName,Val);
+        	}
         }
     }
 }
 
-void wxsDefWidget::evStrArray(wxArrayString& Val,const wxString& Name,const wxString& XrcParentName,const wxString& XrcChildName,const wxString& PropName, int& DefValue)
+void wxsDefWidget::evStrArray(wxArrayString& Val,const wxString& Name,const wxString& XrcParentName,const wxString& XrcChildName,const wxString& PropName, int& DefValue,int SortFlag)
 {
     switch ( evUse )
     {
@@ -337,7 +351,10 @@ void wxsDefWidget::evStrArray(wxArrayString& Val,const wxString& Name,const wxSt
         
         case Props:
         {
-           PropertiesObject.AddProperty(PropName,Val,DefValue,-1);
+        	if ( PropName.Length() )
+        	{
+                PropertiesObject.AddProperty(PropName,Val,DefValue,SortFlag,-1);
+        	}
         }
     }
 }

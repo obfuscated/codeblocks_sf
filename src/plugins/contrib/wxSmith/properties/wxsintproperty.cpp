@@ -106,9 +106,7 @@ const wxString& wxsIntProperty::GetTypeName()
 
     void wxsIntProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)
     {
-    	/*
     	PGId = Grid->Append(Name,wxPG_LABEL,Value);
-    	*/
     }
     
     /** Function notifying about property change */

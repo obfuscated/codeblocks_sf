@@ -13,7 +13,7 @@ class wxsStringListProperty : public wxsProperty
 		wxsStringListProperty(wxsProperties* Properties,wxArrayString& Array);
 		
         /** Ctor */
-		wxsStringListProperty(wxsProperties* Properties,wxArrayString& Array,int& Selected);
+		wxsStringListProperty(wxsProperties* Properties,wxArrayString& Array,int& Selected,int SortedFlag=0);
 		
 		/** DCtor */
 		virtual ~wxsStringListProperty();
@@ -37,11 +37,17 @@ class wxsStringListProperty : public wxsProperty
 
 		wxArrayString& Array;
 		int* Selected;
+		int SortedFlag;
 		
 		#ifdef __NO_PROPGRGID
             friend class wxsStringListPropertyWindow;
         #else
             wxPGId PGId;
+            wxPGId SelId;
+            
+            void BuildChoices(wxPropertyGrid* Grid);
+            void RebuildChoices(wxPropertyGrid* Grid);
+            bool IsSorted();
         #endif
 };
 

@@ -9,6 +9,8 @@
 
 #include <wx/stattext.h>
 
+#ifndef __NO_PROPGRGID
+
 class wxsPropertyGrid: public wxPropertyGrid
 {
 	public:
@@ -32,6 +34,7 @@ END_EVENT_TABLE()
 
 void wxsPropertyGrid::OnChange(wxPropertyGridEvent& event)
 {
+	bool Refresh = false;
 	for ( wxsProperties::VectorI i = Props->Properties.begin(); i != Props->Properties.end(); ++i )
 	{
 		if ( !(*i)->Property->PropGridChanged(this,event.GetProperty()) )
@@ -39,8 +42,19 @@ void wxsPropertyGrid::OnChange(wxPropertyGridEvent& event)
 			SetPropertyAttribute(event.GetProperty(),wxPG_PROP_MODIFIED,(long)1);
 			SelectProperty(event.GetProperty(),true);
 		}
+		else
+		{
+			Refresh = true;
+		}
+	}
+	
+	if ( Refresh )
+	{
+		Props->UpdateProperties();
 	}
 }
+
+#endif
 
 bool wxsProperty::ValueChanged(bool Change)
 {
@@ -84,9 +98,9 @@ void wxsProperties::AddProperty(const wxString& Name,wxArrayString& Array,int Po
 	AddProperty(Name,new wxsStringListProperty(this,Array),Position);
 }
 
-void wxsProperties::AddProperty(const wxString& Name,wxArrayString& Array,int& Selected,int Position)
+void wxsProperties::AddProperty(const wxString& Name,wxArrayString& Array,int& Selected,int SortedFlag,int Position)
 {
-	AddProperty(Name,new wxsStringListProperty(this,Array,Selected),Position);
+	AddProperty(Name,new wxsStringListProperty(this,Array,Selected,SortedFlag),Position);
 }
 		
 void wxsProperties::AddProperty(const wxString& Name,wxsProperty* Prop,int Position)
