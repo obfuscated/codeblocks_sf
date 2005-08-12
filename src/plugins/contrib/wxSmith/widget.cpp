@@ -376,7 +376,11 @@ bool wxsWidget::XmlLoadChildren()
             {
                 if ( !Child->XmlLoad(RealObject) ) Ret = false;
                 Child->XmlLoadSizerStuff(Element);
-                AddChild(Child);
+                if ( AddChild(Child) < 0 )
+                {
+                	Ret = false;
+                	delete Child;
+                }
             }
         }
     }
@@ -673,6 +677,7 @@ void wxsWidget::BuildTree(wxTreeCtrl* Tree,wxTreeItemId Id,int Index)
         SubId = Tree->InsertItem(Id,Index,Name,-1,-1,new wxsResourceTreeData(this));
     }
     TreeId = SubId;
+    AssignedToTree = true;
     
     int SubCnt = GetChildCount();
     for ( int i=0; i<SubCnt; i++ )

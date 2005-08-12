@@ -436,18 +436,6 @@
 			<Option link="0"/>
 			<Option target="wxSmith"/>
 		</Unit>
-		<Unit filename="wxsmith\maindialog.cpp">
-			<Option compilerVar="CPP"/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="wxSmith"/>
-		</Unit>
-		<Unit filename="wxsmith\maindialog.h">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="wxSmith"/>
-		</Unit>
 		<Unit filename="wxsnewwindowdlg.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="wxSmith"/>

@@ -13,6 +13,9 @@ class wxsWindow : public wxsContainer
 		
 		/** Dctor */
 		virtual ~wxsWindow();
+		
+		/** Own handler for adding children */
+		virtual int AddChild(wxsWidget* NewWidget,int InsertBeforeThis);
 
    protected:
    

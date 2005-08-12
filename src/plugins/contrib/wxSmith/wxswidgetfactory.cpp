@@ -44,7 +44,7 @@ void wxsWidgetFactory::Kill(wxsWidget* Widget)
         
         // Deleting resource tree entrry
         wxTreeCtrl* Tree = wxSmith::Get()->GetResourceTree();
-        if ( Tree )
+        if ( Tree && Widget->AssignedToTree )
         {
             Tree->Delete(Widget->TreeId);
         }

@@ -37,6 +37,7 @@ static const wxString DefCategory    = _("Standard");
         _T(#Name),                                      \
         false,                                          \
         false,                                          \
+        false,                                          \
         2, 6,                                           \
         NULL,                                           \
         &wxsStdManager,                                 \
@@ -54,6 +55,7 @@ static const wxString DefCategory    = _("Standard");
         _T("http://www.wxwidgets.org/manuals/2.6.1/") _T(Link),  \
         DefCategory,                                    \
         _T(#Name),                                      \
+        false,                                          \
         false,                                          \
         false,                                          \
         2, 6,                                           \
@@ -75,6 +77,7 @@ static const wxString DefCategory    = _("Standard");
         _T(""),                                         \
         false,                                          \
         false,                                          \
+        false,                                          \
         2, 6,                                           \
         NULL,                                           \
         &wxsStdManager,                                 \
@@ -86,7 +89,7 @@ static const wxString DefCategory    = _("Standard");
 
 static wxsWidgetInfo StdInfos[] =
 {
-    { _T(""), _T(""), _T(""), _T(""), _T(""), _T(""), _T(""), _T(""), false, false, 0, 0, NULL, NULL, wxsNoneId },  // NONE
+    { _T(""), _T(""), _T(""), _T(""), _T(""), _T(""), _T(""), _T(""), false, false, false, 0, 0, NULL, NULL, wxsNoneId },  // NONE
     
     {   _T("wxGridSizer"),
         DefLicence,
@@ -98,6 +101,7 @@ static wxsWidgetInfo StdInfos[] =
         _T("GridSizer"),
         true,
         true,
+        false,
         2, 42,
         NULL,
         &wxsStdManager,

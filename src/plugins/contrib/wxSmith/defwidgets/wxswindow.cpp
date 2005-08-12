@@ -72,3 +72,41 @@ wxWindow* wxsWindow::MyCreatePreview(wxWindow* Parent)
 {
    return new wxsWindowPreview(Parent,this);
 }
+
+int wxsWindow::AddChild(wxsWidget* NewWidget,int InsertBeforeThis)
+{
+	if ( NewWidget->GetInfo().Sizer )
+	{
+		// We're adding sizer to this container - it must be empty
+		// we will check some more properties to give better error
+		// explanation
+		
+		if ( GetChildCount() )
+		{
+            if ( GetChild(0)->GetInfo().Sizer )
+            {
+                wxMessageBox(_("This item has sizer already. Can not add other one"));
+            }
+            else
+            {
+                wxMessageBox(_("There are widgets on this item. Sizer can be added to empty item only"));
+            }
+            return -1;
+		}
+	}
+	else
+	{
+		// We're adding widget into this item - if there's any sizer inside we can not add
+		int Cnt = GetChildCount();
+		for ( int i=0; i<Cnt; i++ )
+		{
+			if ( GetChild(i)->GetInfo().Sizer )
+			{
+                wxMessageBox(_("This item contains sizer. Please add new items into this sizer."));
+                return -1;
+			}
+		}
+	}
+	
+	return wxsContainer::AddChild(NewWidget,InsertBeforeThis);
+}

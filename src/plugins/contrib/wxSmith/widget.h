@@ -55,6 +55,7 @@ struct wxsWidgetInfo
     wxString DefaultVarName;        ///< Prefix for default variable name
     bool Container;                 ///< True if this widget can have other widgets inside
     bool Sizer;                     ///< True if this widget is a sizer (Container must also be true)
+    bool SizerChild;                ///< True if this widget can be child of sizer only
     unsigned short VerHi;           ///< Lower number of version
     unsigned short VerLo;           ///< Higher number of version
     wxBitmap* Icon;                 ///< Icon used in pallette
@@ -179,7 +180,8 @@ class wxsWidget
             ContainerType(NoContainer),
             Updating(false),
             PropertiesCreated(false),
-            BPType(pType)
+            BPType(pType),
+            AssignedToTree(false)
         {
         }
         
@@ -202,7 +204,8 @@ class wxsWidget
             ContainerType(ISwxWindow ? ContainerWindow : ContainerSizer ),
             Updating(false),
             PropertiesCreated(false),
-            BPType(pType)
+            BPType(pType),
+            AssignedToTree(false)
         {
         }
             
@@ -700,6 +703,7 @@ class wxsWidget
         CodeDefines CDefines;       ///< Will be filled and returned inside GetCodedeDefines
         
         wxTreeItemId TreeId;        ///< Id of item in resource tree
+        bool AssignedToTree;        ///< True if this widget has it's entry inside resource tree
         
         friend class wxBaseParamsPanel;
         friend class wxsWindowEditor;
