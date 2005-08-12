@@ -34,13 +34,18 @@ void wxsPropertyGrid::OnChange(wxPropertyGridEvent& event)
 {
 	for ( wxsProperties::VectorI i = Props->Properties.begin(); i != Props->Properties.end(); ++i )
 	{
-		(*i)->Property->PropGridChanged(this,event.GetProperty());
+		if ( !(*i)->Property->PropGridChanged(this,event.GetProperty()) )
+		{
+			SetPropertyAttribute(event.GetProperty(),wxPG_PROP_MODIFIED,(long)1);
+			SelectProperty(event.GetProperty(),true);
+		}
 	}
 }
 
-void wxsProperty::ValueChanged(bool Change)
+bool wxsProperty::ValueChanged(bool Change)
 {
-    if ( Props ) Props->NotifyChange(Change);
+    if ( Props ) return Props->NotifyChange(Change);
+    return true;
 }
 
 wxsProperties::wxsProperties(wxsWidget* _Widget):

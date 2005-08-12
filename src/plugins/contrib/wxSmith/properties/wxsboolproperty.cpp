@@ -82,13 +82,14 @@ const wxString& wxsBoolProperty::GetTypeName()
         Grid->SetPropertyAttribute(PGId,wxPG_BOOL_USE_CHECKBOX,(long)1,wxRECURSE);    
     }
     
-    void wxsBoolProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)
+    bool wxsBoolProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)
     {
         if ( Id == PGId )
         {
         	Value = Grid->GetPropertyValue(Id).GetBool();
-        	ValueChanged(true);
+        	return ValueChanged(true);
         }
+        return true;
     }
     
     void wxsBoolProperty::UpdatePropGrid(wxPropertyGrid* Grid)

@@ -16,7 +16,7 @@ BEGIN_EVENT_TABLE($(ClassName),$(BaseClassName))\n\
 //*)\n\
 END_EVENT_TABLE()\n\
 \n\
-$(ClassName)::$(ClassName)(wxWidnow* parent,wxWindowID id):\
+$(ClassName)::$(ClassName)(wxWidnow* parent,wxWindowID id):\n\
     $(BaseClassCtor)\n\
 {\n\
     //(*Initialize($(ClassName))\n\
@@ -215,6 +215,15 @@ bool wxsWindowRes::GenerateEmptySources()
     Content.Replace(_T("$(Guard)"),Guard,true);
     Content.Replace(_T("$(ClassName)"),ClassName,true);
     Content.Replace(_T("$(BaseClassName)"),GetWidgetClass(),true);
+    fprintf(Fl,"%s",(const char*)Content.mb_str());
+    fclose(Fl);
+    
+    Fl = fopen(GetProject()->GetProjectFileName(SrcFile).mb_str(),"wt");
+    if ( !Fl ) return false;
+    Content = EmptySource;
+    Content.Replace(_T("$(Include)"),Include,true);
+    Content.Replace(_T("$(ClassName)"),ClassName,true);
+    Content.Replace(_T("$(BaseClassName)"),GetWidgetClass(),true);
     switch ( Type )
     {
     	case Dialog:
@@ -231,15 +240,6 @@ bool wxsWindowRes::GenerateEmptySources()
             
         default:;
     }
-    fprintf(Fl,"%s",(const char*)Content.mb_str());
-    fclose(Fl);
-    
-    Fl = fopen(GetProject()->GetProjectFileName(SrcFile).mb_str(),"wt");
-    if ( !Fl ) return false;
-    Content = EmptySource;
-    Content.Replace(_T("$(Include)"),Include,true);
-    Content.Replace(_T("$(ClassName)"),ClassName,true);
-    Content.Replace(_T("$(BaseClassName)"),GetWidgetClass(),true);
     fprintf(Fl,"%s",(const char*)Content.mb_str());
     fclose(Fl);
     return true;
@@ -329,81 +329,315 @@ inline const wxChar* wxsWindowRes::GetWidgetClass(bool UseRes)
 
 void wxsWindowRes::UpdateWidgetsVarNameId()
 {
-    std::map<wxString,wxsWidget*> NamesMap;
-    std::map<wxString,wxsWidget*> IdsMap;
+    StrMap NamesMap;
+    StrMap IdsMap;
     
-    int Cnt = RootWidget->GetChildCount();
-    for ( int i=0; i<Cnt; i++ )
-    {
-    	CreateSetsReq(NamesMap,IdsMap,RootWidget->GetChild(i));
-    }
-    
-    for ( int i=0; i<Cnt; i++ )
-    {
-    	UpdateWidgetsVarNameIdReq(NamesMap,IdsMap,RootWidget->GetChild(i));
-    }
+    CreateSetsReq(NamesMap,IdsMap,RootWidget);
+   	UpdateWidgetsVarNameIdReq(NamesMap,IdsMap,RootWidget);
 }
 
-void wxsWindowRes::UpdateWidgetsVarNameIdReq(
-    std::map<wxString,wxsWidget*>& NamesMap, 
-    std::map<wxString,wxsWidget*>& IdsMap, 
-    wxsWidget* Widget)
+void wxsWindowRes::UpdateWidgetsVarNameIdReq(StrMap& NamesMap, StrMap& IdsMap, wxsWidget* Widget)
 {
-    wxsWidgetBaseParams& Params = Widget->GetBaseParams();
-    
-    if ( Params.VarName.Length() == 0 || Params.IdName.Length() == 0 )
-    {
-    	wxString NameBase = Widget->GetInfo().DefaultVarName;
-    	wxString Name;
-    	wxString IdBase = Widget->GetInfo().DefaultVarName;
-    	IdBase.MakeUpper();
-    	wxString Id;
-        int Index = 1;
-        do
-        {
-        	Name.Printf(_T("%s%d"),NameBase.c_str(),Index);
-        	Id.Printf(_T("%s%d_ID"),IdBase.c_str(),Index++);
-        }
-        while ( NamesMap.find(Name) != NamesMap.end() ||
-                IdsMap.find(Id)     != IdsMap.end() );
+	int Cnt = Widget->GetChildCount();
+	for ( int i=0; i<Cnt; i++ )
+	{
+		wxsWidget* Child = Widget->GetChild(i);
+		
+        wxsWidgetBaseParams& Params = Child->GetBaseParams();
         
-        Params.VarName = Name;
-        NamesMap[Name] = Widget;
-        Params.IdName = Id;
-        IdsMap[Id] = Widget;
-    }
-
-	int Cnt = Widget->GetChildCount();
-	for ( int i=0; i<Cnt; i++ )
-	{
-		UpdateWidgetsVarNameIdReq(NamesMap,IdsMap,Widget->GetChild(i));
+        if ( Params.VarName.Length() == 0 || Params.IdName.Length() == 0 )
+        {
+            wxString NameBase = Child->GetInfo().DefaultVarName;
+            wxString Name;
+            wxString IdBase = Child->GetInfo().DefaultVarName;
+            IdBase.MakeUpper();
+            wxString Id;
+            int Index = 1;
+            do
+            {
+                Name.Printf(_T("%s%d"),NameBase.c_str(),Index);
+                Id.Printf(_T("%s%d_ID"),IdBase.c_str(),Index++);
+            }
+            while ( NamesMap.find(Name) != NamesMap.end() ||
+                    IdsMap.find(Id)     != IdsMap.end() );
+            
+            Params.VarName = Name;
+            NamesMap[Name] = Child;
+            Params.IdName = Id;
+            IdsMap[Id] = Child;
+        }
+    
+		UpdateWidgetsVarNameIdReq(NamesMap,IdsMap,Child);
 	}
 }
 
-void wxsWindowRes::CreateSetsReq(
-    std::map<wxString,wxsWidget*>& NamesMap, 
-    std::map<wxString,wxsWidget*>& IdsMap, 
-    wxsWidget* Widget)
+void wxsWindowRes::CreateSetsReq(StrMap& NamesMap, StrMap& IdsMap, wxsWidget* Widget, wxsWidget* Without)
 {
-	if ( Widget->GetBaseParams().VarName.Length() )
-	{
-		NamesMap[Widget->GetBaseParams().VarName] = Widget;
-	}
-	
-	if ( Widget->GetBaseParams().VarName.Length() )
-	{
-		IdsMap[Widget->GetBaseParams().VarName] = Widget;
-	}
-	
 	int Cnt = Widget->GetChildCount();
 	for ( int i=0; i<Cnt; i++ )
 	{
-		CreateSetsReq(NamesMap,IdsMap,Widget->GetChild(i));
+		wxsWidget* Child = Widget->GetChild(i);
+		
+		if ( Child != Without )
+		{
+            if ( Child->GetBaseParams().VarName.Length() )
+            {
+                NamesMap[Child->GetBaseParams().VarName.c_str()] = Child;
+            }
+            
+            if ( Child->GetBaseParams().VarName.Length() )
+            {
+                IdsMap[Child->GetBaseParams().VarName.c_str()] = Child;
+            }
+		}
+		
+		CreateSetsReq(NamesMap,IdsMap,Child,Without);
 	}
 }
 
 bool wxsWindowRes::CheckBaseProperties(bool Correct,wxsWidget* Changed)
 {
-// TODO (SpOoN#1#): Check variable names - must be unique
-	return true;
+    StrMap NamesMap;
+    StrMap IdsMap;
+    
+    if ( Changed == NULL )
+    {
+    	// Will check all widgets
+    	return CheckBasePropertiesReq(RootWidget,Correct,NamesMap,IdsMap);
+    }
+    
+    // Creating sets of names and ids
+   	CreateSetsReq(NamesMap,IdsMap,RootWidget,Changed);
+   	
+   	// Checkign and correcting changed widget
+   	return CorrectOneWidget(NamesMap,IdsMap,Changed,Correct);
+}
+
+bool wxsWindowRes::CheckBasePropertiesReq(wxsWidget* Widget,bool Correct,StrMap& NamesMap,StrMap& IdsMap)
+{
+	bool Result = true;
+	int Cnt = Widget->GetChildCount();
+	for ( int i=0; i<Cnt; ++i )
+	{
+		wxsWidget* Child = Widget->GetChild(i);
+		
+		if ( !CorrectOneWidget(NamesMap,IdsMap,Child,Correct) )
+		{
+			if ( !Correct ) return false;
+			Result = false;
+		}
+		
+		NamesMap[Child->GetBaseParams().VarName] = Child;
+		IdsMap[Child->GetBaseParams().IdName] = Child;
+		
+		if ( ! CheckBasePropertiesReq(Child,Correct,NamesMap,IdsMap) )
+		{
+			if ( !Correct ) return false;
+			Result = false;
+		}
+	}
+	
+	return Result;
+}
+
+bool wxsWindowRes::CorrectOneWidget(StrMap& NamesMap,StrMap& IdsMap,wxsWidget* Changed,bool Correct)
+{
+	bool Valid = true;
+
+    // Validating variable name
+	
+    if ( Changed->GetBPType() & wxsWidget::bptVariable )
+    {
+    	wxString& VarName = Changed->GetBaseParams().VarName;
+    	wxString Corrected;
+    	VarName.Trim(true);
+    	VarName.Trim(false);
+    	
+    	// first validating produced name
+    	
+    	if ( VarName.Length() == 0 )
+    	{
+    		if ( !Correct )
+    		{
+    			wxMessageBox(_("Item must have variable name"));
+    			return false;
+    		}
+
+   			// Creating new unique name
+    			
+   			const wxString& Prefix = Changed->GetInfo().DefaultVarName;
+   			for ( int i=1;; ++i )
+   			{
+   				Corrected.Printf(_T("%s%d"),Prefix.c_str(),i);
+   				if ( NamesMap.find(Corrected) == NamesMap.end() ) break;
+   			}
+
+    		Valid = false;
+    	}
+    	else
+    	{
+    		// Validating name as C++ ideentifier
+            if ( wxString(_T("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+                          _T("abcdefghijklmnopqrstuvwxyz")
+                          _T("_") ).Find(VarName.GetChar(0)) == -1 )
+            {
+            	if ( !Correct )
+            	{
+            		wxMessageBox(wxString::Format(_("Invalid character: '%c' in variable name"),VarName.GetChar(0)));
+            		return false;
+            	}
+                Valid = false;
+            }
+            else
+            {
+            	Corrected.Append(VarName.GetChar(0));
+            }
+            
+            for ( size_t i=1; i<VarName.Length(); ++i )
+            {
+                if ( wxString(_T("0123456789")
+                              _T("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+                              _T("abcdefghijklmnopqrstuvwxyz")
+                              _T("_") ).Find(VarName.GetChar(i)) == -1 )
+                {
+                    if ( !Correct )
+                    {
+                        wxMessageBox(wxString::Format(_("Invalid character: '%c' in variable name"),VarName.GetChar(i)));
+                        return false;
+                    }
+                    Valid = false;
+                }
+                else
+                {
+                    Corrected.Append(VarName.GetChar(i));
+                }
+            }
+
+            // Searching for another widget with same name
+            if ( NamesMap.find(Corrected) != NamesMap.end() )
+            {
+            	if ( !Correct )
+            	{
+            		wxMessageBox(wxString::Format(_("Item with variable name '%s' already exists"),Corrected.c_str()));
+            		return false;
+            	}
+            	
+            	// Generating new unique name
+
+                const wxString& Prefix = Changed->GetInfo().DefaultVarName;
+                for ( int i=1;; ++i )
+                {
+                    Corrected.Printf(_T("%s%d"),Prefix.c_str(),i);
+                    if ( NamesMap.find(Corrected) == NamesMap.end() ) break;
+                }
+
+            	Valid = false;
+            }
+    	}
+    
+        if ( Correct )
+        {
+        	VarName = Corrected;
+        }
+    }
+    
+    if ( Changed->GetBPType() & wxsWidget::bptId )
+    {
+    	wxString& IdName = Changed->GetBaseParams().IdName;
+    	wxString Corrected;
+    	IdName.Trim(true);
+    	IdName.Trim(false);
+    	
+    	// first validating produced name
+    	
+    	if ( IdName.Length() == 0 )
+    	{
+    		if ( !Correct )
+    		{
+    			wxMessageBox(_("Item must have identifier"));
+    			return false;
+    		}
+
+   			// Creating new unique name
+    			
+   			wxString Prefix = Changed->GetInfo().DefaultVarName;
+   			Prefix.UpperCase();
+   			for ( int i=1;; ++i )
+   			{
+   				Corrected.Printf(_T("%s%d_ID"),Prefix.c_str(),i);
+   				if ( IdsMap.find(Corrected) == IdsMap.end() ) break;
+   			}
+
+    		Valid = false;
+    	}
+    	else
+    	{
+    		// Validating name as C++ ideentifier
+            if ( wxString(_T("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+                          _T("abcdefghijklmnopqrstuvwxyz")
+                          _T("_") ).Find(IdName.GetChar(0)) == -1 )
+            {
+            	if ( !Correct )
+            	{
+            		wxMessageBox(wxString::Format(_("Invalid character: '%c' in variable name"),IdName.GetChar(0)));
+            		return false;
+            	}
+                Valid = false;
+            }
+            else
+            {
+            	Corrected.Append(IdName.GetChar(0));
+            }
+            
+            for ( size_t i=1; i<IdName.Length(); ++i )
+            {
+                if ( wxString(_T("0123456789")
+                              _T("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+                              _T("abcdefghijklmnopqrstuvwxyz")
+                              _T("_") ).Find(IdName.GetChar(i)) == -1 )
+                {
+                    if ( !Correct )
+                    {
+                        wxMessageBox(wxString::Format(_("Invalid character: '%c' in variable name"),IdName.GetChar(i)));
+                        return false;
+                    }
+                    Valid = false;
+                }
+                else
+                {
+                    Corrected.Append(IdName.GetChar(i));
+                }
+            }
+
+            // Searching for another widget with same name
+            
+            if ( IdsMap.find(Corrected) != IdsMap.end() && Corrected != _T("ID_COMMON") )
+            {
+            	if ( !Correct )
+            	{
+            		wxMessageBox(wxString::Format(_("Item with identifier '%s' already exists"),Corrected.c_str()));
+            		return false;
+            	}
+            	
+            	// Generating new unique name
+
+                wxString Prefix = Changed->GetInfo().DefaultVarName;
+                Prefix.UpperCase();
+                for ( int i=1;; ++i )
+                {
+                    Corrected.Printf(_T("%s%d"),Prefix.c_str(),i);
+                    if ( IdsMap.find(Corrected) == IdsMap.end() ) break;
+                }
+
+            	Valid = false;
+            }
+    	}
+    	
+    	if ( Correct )
+    	{
+    		IdName = Corrected;
+    	}
+    }
+    
+	return Valid;
 }

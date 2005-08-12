@@ -152,13 +152,14 @@ const wxString& wxsBorderProperty::GetTypeName()
         Grid->SetPropertyAttribute(PGId,wxPG_BOOL_USE_CHECKBOX,(long)1,wxRECURSE);
     }
     
-    void wxsBorderProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)
+    bool wxsBorderProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)
     {
         if ( Id == PGId )
         {
         	BorderFlags = Grid->GetPropertyValue(Id).GetBool();
-        	ValueChanged(true);
+        	return ValueChanged(true);
         }
+        return true;
     }
     
     void wxsBorderProperty::UpdatePropGrid(wxPropertyGrid* Grid)

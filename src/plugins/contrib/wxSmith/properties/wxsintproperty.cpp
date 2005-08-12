@@ -112,7 +112,7 @@ const wxString& wxsIntProperty::GetTypeName()
     }
     
     /** Function notifying about property change */
-    void wxsIntProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)
+    bool wxsIntProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)
     {
     	if ( Id == PGId )
     	{
@@ -123,8 +123,9 @@ const wxString& wxsIntProperty::GetTypeName()
     		{
     			Grid->SetPropertyValue(Id,Value);
     		}
-    		ValueChanged(true);
+    		return ValueChanged(true);
     	}
+    	return true;
     }
     
     /** Function updating value of this property insided property grid */

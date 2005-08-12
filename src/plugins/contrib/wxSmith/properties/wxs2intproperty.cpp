@@ -148,7 +148,7 @@ const wxString& wxs2IntProperty::GetTypeName()
         Val2Id = Grid->AppendIn(Id, wxIntProperty(_("Y"), wxPG_LABEL, Value2) );
     }
     
-    void wxs2IntProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)
+    bool wxs2IntProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)
     {
         if ( Id == Val1Id || Id == Val2Id )
         {
@@ -165,8 +165,9 @@ const wxString& wxs2IntProperty::GetTypeName()
         	{
         		Grid->SetPropertyValue(Val2Id,Value2);
         	}
-        	ValueChanged(true);
+        	return ValueChanged(true);
         }
+        return true;
     }
     
     void wxs2IntProperty::UpdatePropGrid(wxPropertyGrid* Grid)

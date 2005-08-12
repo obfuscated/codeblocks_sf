@@ -41,7 +41,7 @@ class wxsProperty
          *  has changed, it must be called every time we need to notice other
          *  components that the value has changed
          */
-        virtual void ValueChanged(bool Check);
+        virtual bool ValueChanged(bool Check);
         
     protected:
         
@@ -61,8 +61,11 @@ class wxsProperty
             /** Function adding entry for this property inside wxPropertyGrid class */
             virtual void AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name) = 0;
             
-            /** Function notifying about property change */
-            virtual void PropGridChanged(wxPropertyGrid* Grid,wxPGId Id) = 0;
+            /** Function notifying about property change
+             *
+             * \return If false, changed property has invalid value
+             */
+            virtual bool PropGridChanged(wxPropertyGrid* Grid,wxPGId Id) = 0;
             
             /** Function updating value of this property insided property grid */
             virtual void UpdatePropGrid(wxPropertyGrid* Grid) = 0;

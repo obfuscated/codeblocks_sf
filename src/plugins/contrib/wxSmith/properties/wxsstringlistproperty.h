@@ -29,7 +29,7 @@ class wxsStringListProperty : public wxsProperty
             void EditList();
         #else
             virtual void AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name);
-            virtual void PropGridChanged(wxPropertyGrid* Grid,wxPGId Id);
+            virtual bool PropGridChanged(wxPropertyGrid* Grid,wxPGId Id);
             virtual void UpdatePropGrid(wxPropertyGrid* Grid);
         #endif
         

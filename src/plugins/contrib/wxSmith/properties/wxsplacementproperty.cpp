@@ -180,15 +180,16 @@ const wxString& wxsPlacementProperty::GetTypeName()
         Grid->SetPropertyAttribute(ShapedId,wxPG_BOOL_USE_CHECKBOX,(long)1,wxRECURSE);
     }
             
-    void wxsPlacementProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)
+    bool wxsPlacementProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)
     {
     	if ( Id == PGId || Id == ExpandId || Id == ShapedId )
     	{
     		PlacementType = Grid->GetPropertyValue(PGId).GetLong();
     		Expand = Grid->GetPropertyValue(ExpandId).GetBool();
     		Shaped = Grid->GetPropertyValue(ShapedId).GetBool();
-    		ValueChanged(true);
+    		return ValueChanged(true);
     	}
+    	return true;
     }
             
     void wxsPlacementProperty::UpdatePropGrid(wxPropertyGrid* Grid)

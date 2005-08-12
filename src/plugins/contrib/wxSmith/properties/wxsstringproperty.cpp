@@ -108,13 +108,14 @@ const wxString& wxsStringProperty::GetTypeName()
     	PGId = Grid->Append(Name,wxPG_LABEL,Value);
     }
     
-    void wxsStringProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)
+    bool wxsStringProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)
     {
     	if ( Id == PGId )
     	{
     		Value = Grid->GetPropertyValue(Id).GetString();
-    		ValueChanged(true);
+    		return ValueChanged(true);
     	}
+    	return true;
     }
     
     void wxsStringProperty::UpdatePropGrid(wxPropertyGrid* Grid)

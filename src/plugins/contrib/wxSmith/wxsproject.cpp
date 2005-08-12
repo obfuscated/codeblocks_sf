@@ -317,6 +317,15 @@ void wxsProject::AddWindowResource(
         return;
     }
     
+    // Validating and correcting resource
+    
+    Res->UpdateWidgetsVarNameId();
+    if ( !Res->CheckBaseProperties(true) )
+    {
+    	wxMessageBox(wxString::Format(_("Some properties for resource '%s' had invalid values and were corrected.\n"),Res->GetResourceName().c_str()));
+    	Res->NotifyChange();
+    }
+    
     switch ( Type )
     {
         case wxsWindowRes::Dialog: Dialogs.push_back((wxsDialogRes*)Res); break;

@@ -71,12 +71,22 @@ class wxsWindowRes : public wxsResource
 		/** Getting main dialog widget */
 		inline wxsWidget* GetRootWidget() { return RootWidget; }
 		
+        /** Setting default variable names and identifiers for widgets with empty ones */
+        void UpdateWidgetsVarNameId();
+        
     protected:
     
         /** Creating editor object */
         virtual wxsEditor* CreateEditor();
 		
 	private:
+
+        /** Structure used for comparing strings */
+        struct ltstr {  bool operator()(const wxChar* s1, const wxChar* s2) const { return wxStrcmp(s1, s2) < 0; } };
+        
+        /** Map string->widget used when validating variable names and identifiers */
+        typedef std::map<const wxChar*,wxsWidget*,ltstr> StrMap;
+        typedef StrMap::iterator StrMapI;
 	
         /** Creating xml tree for current widget */
         TiXmlDocument* GenerateXml();
@@ -87,22 +97,18 @@ class wxsWindowRes : public wxsResource
         /** Adding declaration codes for locally stored widgets */
         void AddDeclarationsReq(wxsWidget* Widget,wxString& LocalCode,wxString& GlobalCode,int LocalTabSize,int GlobalTabSize,bool& WasLocal);
         
-        /** Setting default variable names and identifiers for widgets with empty ones */
-        void UpdateWidgetsVarNameId();
-        
         /** Function used internally by SetNewWidgetsIdVarName */
-        void UpdateWidgetsVarNameIdReq(
-            std::map<wxString,wxsWidget*>& NamesMap,
-            std::map<wxString,wxsWidget*>& IdsMap,
-            wxsWidget* Widget);
+        void UpdateWidgetsVarNameIdReq(StrMap& NamesMap,StrMap& IdsMap,wxsWidget* Widget);
             
         /** Function craeting set of used names and ids for this resource */
-        void CreateSetsReq(
-            std::map<wxString,wxsWidget*>& NamesMap,
-            std::map<wxString,wxsWidget*>& IdsMap,
-            wxsWidget* Widget);
+        void CreateSetsReq(StrMap& NamesMap, StrMap& IdsMap, wxsWidget* Widget, wxsWidget* Without = NULL);
         
-	
+        /** Function checking and correcting base params for one widget */
+        bool CorrectOneWidget(StrMap& NamesMap,StrMap& IdsMap,wxsWidget* Changed,bool Correct);
+        
+        /** Helper function used inside CkeckBaseProperties function */
+        bool CheckBasePropertiesReq(wxsWidget* Widget,bool Correct,StrMap& NamesMap,StrMap& IdsMap);
+            
         wxString      ClassName;
         wxString      XrcFile;
         wxString      SrcFile;

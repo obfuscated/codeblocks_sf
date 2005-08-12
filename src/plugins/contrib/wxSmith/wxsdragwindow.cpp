@@ -43,7 +43,6 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
     bool FoundDragging = false;
     int MouseX = event.GetX();
     int MouseY = event.GetY();
-    //ClientToScreen(&MouseX,&MouseY);
         
     // Searching for item covered by mouse
     
@@ -419,10 +418,23 @@ void wxsDragWindow::BuildDragPoints(wxsWidget* Widget)
 
 void wxsDragWindow::UpdateDragPointData(wxsWidget* Widget,DragPointData** WidgetPoints)
 {
-    int PosX=0, PosY=0;
-    int SizeX=0, SizeY=0;
+    int PosX, PosY;
+    int SizeX, SizeY;
     bool NoAction = ! ( Widget->GetBPType() & ( wxsWidget::bptSize | wxsWidget::bptPosition ) );
-    Widget->GetPreview()->ClientToScreen(&PosX,&PosY);
+    wxWindow* Preview = Widget->GetPreview();
+    
+    /*
+    Preview->GetPosition(&PosX,&PosY);
+    if ( Preview->GetParent() )
+    {
+        Preview->GetParent()->ClientToScreen(&PosX,&PosY);
+    }
+    */
+    PosX = 0;
+    PosY = 0;
+    Preview->ClientToScreen(&PosX,&PosY);
+    // TODO (SpOoN#1#): Find a way to calculate valid positon for widgets with borders
+    
     ScreenToClient(&PosX,&PosY);
     Widget->GetPreview()->GetSize(&SizeX,&SizeY);
     

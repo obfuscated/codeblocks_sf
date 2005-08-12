@@ -198,13 +198,14 @@ const wxString& wxsStringListProperty::GetTypeName()
     	PGId = Grid->Append(wxArrayStringProperty(Name,wxPG_LABEL,Array));
     }
             
-    void wxsStringListProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)
+    bool wxsStringListProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)
     {
     	if ( Id == PGId )
     	{
     		Array = Grid->GetPropertyValue(Id).GetArrayString();
-    		ValueChanged(true);
-    	}
+    		return ValueChanged(true);
+        }
+        return true;
     }
             
     void wxsStringListProperty::UpdatePropGrid(wxPropertyGrid* Grid)
