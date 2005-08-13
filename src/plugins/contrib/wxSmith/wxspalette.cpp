@@ -360,7 +360,9 @@ void wxsPalette::OnSelectWidget(wxsEvent& event)
 {
     int itMask = 0;
     
-    if ( event.GetWidget()->GetParent() )
+    if ( event.GetWidget()->GetParent() && 
+         ( !event.GetWidget()->GetInfo().Sizer ||
+            event.GetWidget()->GetParent()->GetInfo().Sizer ) )
     {
         itMask |= wxsPalette::itBefore | wxsPalette::itAfter;
     }

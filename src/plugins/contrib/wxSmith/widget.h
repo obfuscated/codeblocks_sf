@@ -121,7 +121,7 @@ struct wxsWidgetBaseParams
         DefaultPosition(true),
         SizeX(-1), SizeY(-1),
         DefaultSize(true),
-        Proportion(0),
+        Proportion(1),
         BorderFlags(Top|Bottom|Left|Right),
         Expand(false),
         Shaped(false),

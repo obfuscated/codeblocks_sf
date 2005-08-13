@@ -108,6 +108,9 @@ class wxsWindowRes : public wxsResource
         
         /** Helper function used inside CkeckBaseProperties function */
         bool CheckBasePropertiesReq(wxsWidget* Widget,bool Correct,StrMap& NamesMap,StrMap& IdsMap);
+        
+        /** Function building array of identifiers */
+        void BuildIdsArray(wxsWidget* Widget,wxArrayString& Array);
             
         wxString      ClassName;
         wxString      XrcFile;

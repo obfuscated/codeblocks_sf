@@ -16,7 +16,7 @@ BEGIN_EVENT_TABLE($(ClassName),$(BaseClassName))\n\
 //*)\n\
 END_EVENT_TABLE()\n\
 \n\
-$(ClassName)::$(ClassName)(wxWidnow* parent,wxWindowID id):\n\
+$(ClassName)::$(ClassName)(wxWindow* parent,wxWindowID id):\n\
     $(BaseClassCtor)\n\
 {\n\
     //(*Initialize($(ClassName))\n\
@@ -35,14 +35,15 @@ _T("\
 #define $(Guard)\n\
 \n\
 //(*Headers($(ClassName))\n\
+#include <wx/wx.h>\n\
 //*)\n\
 \n\
 class $(ClassName): public $(BaseClassName)\n\
 {\n\
     public:\n\
 \n\
-        $(ClassName)(wxWidnow* parent,wxWindowID id = -1);\n\
-        virtual ~$(ClassName);\n\
+        $(ClassName)(wxWindow* parent,wxWindowID id = -1);\n\
+        virtual ~$(ClassName)();\n\
 \n\
         //(*Identifiers($(ClassName))\n\
         //*)\n\
@@ -227,7 +228,7 @@ bool wxsWindowRes::GenerateEmptySources()
     switch ( Type )
     {
     	case Dialog:
-            Content.Replace(_T("$(BaseClassCtor)"),_T("wxDialog(parent,id,wxT(\"\"))"),true);
+            Content.Replace(_T("$(BaseClassCtor)"),_T("wxDialog(parent,id,wxT(\"\"),wxDefaultPosition,wxDefaultSize)"),true);
             break;
             
         case Frame:
@@ -286,9 +287,43 @@ void wxsWindowRes::NotifyChange()
 	
 	// Creating global declarations
 	
-	CodeHeader = wxString::Format(_T("//(*Declarations(%s)"),GetClassName().c_str());
+	CodeHeader.Printf(_T("//(*Declarations(%s)"),GetClassName().c_str());
 	Code = CodeHeader + _T("\n") + GlobalCode;
 	Code.Append(' ',GlobalTabSize);
+	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(HFile),CodeHeader,Code);
+	
+	// Creating set of ids
+	wxArrayString IdsArray;
+	BuildIdsArray(RootWidget,IdsArray);
+	CodeHeader.Printf(_T("//(*Identifiers(%s)"),GetClassName().c_str());
+	Code = CodeHeader;
+	Code.Append(_T('\n'));
+	Code.Append(_T(' '),GlobalTabSize);
+	Code.Append(_T("enum Identifiers\n"));
+	Code.Append(_T(' '),GlobalTabSize);
+	Code.Append(_T('{'));
+	IdsArray.Sort();
+	wxString Previous = _T("");
+	bool First = true;
+	for ( size_t i = 0; i<IdsArray.Count(); ++i )
+	{
+		if ( IdsArray[i] != Previous )
+		{
+			Previous = IdsArray[i];
+			Code.Append( _T('\n') );
+			Code.Append( _T(' '), GlobalTabSize + TabSize );
+			Code.Append( Previous );
+			if ( First )
+			{
+				Code.Append( _T(" = 0x1000") );
+			}
+			Code.Append( _T(',') );
+		}
+	}
+	Code.Append( _T('\n') );
+	Code.Append( _T(' '), GlobalTabSize );
+	Code.Append( _T("};\n") );
+	Code.Append( _T(' '), GlobalTabSize );
 	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(HFile),CodeHeader,Code);
 	
 	#endif
@@ -356,7 +391,7 @@ void wxsWindowRes::UpdateWidgetsVarNameIdReq(StrMap& NamesMap, StrMap& IdsMap, w
             do
             {
                 Name.Printf(_T("%s%d"),NameBase.c_str(),Index);
-                Id.Printf(_T("%s%d_ID"),IdBase.c_str(),Index++);
+                Id.Printf(_T("ID_%s%d"),IdBase.c_str(),Index++);
             }
             while ( NamesMap.find(Name) != NamesMap.end() ||
                     IdsMap.find(Id)     != IdsMap.end() );
@@ -564,7 +599,7 @@ bool wxsWindowRes::CorrectOneWidget(StrMap& NamesMap,StrMap& IdsMap,wxsWidget* C
    			Prefix.UpperCase();
    			for ( int i=1;; ++i )
    			{
-   				Corrected.Printf(_T("%s%d_ID"),Prefix.c_str(),i);
+   				Corrected.Printf(_T("ID_%s%d"),Prefix.c_str(),i);
    				if ( IdsMap.find(Corrected) == IdsMap.end() ) break;
    			}
 
@@ -625,7 +660,7 @@ bool wxsWindowRes::CorrectOneWidget(StrMap& NamesMap,StrMap& IdsMap,wxsWidget* C
                 Prefix.UpperCase();
                 for ( int i=1;; ++i )
                 {
-                    Corrected.Printf(_T("%s%d"),Prefix.c_str(),i);
+                    Corrected.Printf(_T("ID_%s%d"),Prefix.c_str(),i);
                     if ( IdsMap.find(Corrected) == IdsMap.end() ) break;
                 }
 
@@ -640,4 +675,18 @@ bool wxsWindowRes::CorrectOneWidget(StrMap& NamesMap,StrMap& IdsMap,wxsWidget* C
     }
     
 	return Valid;
+}
+
+void wxsWindowRes::BuildIdsArray(wxsWidget* Widget,wxArrayString& Array)
+{
+	int Cnt = Widget->GetChildCount();
+	for ( int i=0; i<Cnt; i++ )
+	{
+		wxsWidget* Child = Widget->GetChild(i);
+		if ( Child->GetBPType() & wxsWidget::bptId )
+		{
+			Array.Add(Child->GetBaseParams().IdName);
+		}
+		BuildIdsArray(Child,Array);
+	}
 }

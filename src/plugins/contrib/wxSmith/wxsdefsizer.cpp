@@ -100,9 +100,9 @@ wxString wxsDefSizer::GetFinalizingCode(wxsCodeParams& Params)
             wxString::Format(_T("%s->Add(%s,%d,%s,%d);\n"),
                 GetBaseParams().VarName.c_str(),
                 Child->GetBaseParams().VarName.c_str(),
-                GetBaseParams().Proportion,
+                Child->GetBaseParams().Proportion,
                 FlagsToSizer.c_str(),
-                GetBaseParams().Border));
+                Child->GetBaseParams().Border));
 	}
 	
     if ( Params.IsDirectParent )

@@ -447,11 +447,16 @@ void wxsWidget::XmlLoadSizerStuff(TiXmlElement* Elem)
 {
     TiXmlElement* Store = XmlElem();
     XmlElement = Elem;
-    
+ 
     bool Temp;
     
     BaseParams.Proportion = XmlGetInteger(_T("option"),Temp,0);
     BaseParams.Border = XmlGetInteger(_T("border"),Temp,0);
+    BaseParams.BorderFlags = 0;
+    BaseParams.Placement = wxsWidgetBaseParams::Center;
+    BaseParams.Expand = false;
+    BaseParams.Shaped = false;
+    BaseParams.FixedMinSize = false;
     
     wxStringTokenizer tokens(XmlGetVariable(_T("flag")),_T("|"));
     
@@ -521,7 +526,7 @@ void wxsWidget::XmlLoadSizerStuff(TiXmlElement* Elem)
         else if ( VertPos==wxALIGN_CENTER_VERTICAL ) BaseParams.Placement = wxsWidgetBaseParams::LeftCenter;
         else BaseParams.Placement = wxsWidgetBaseParams::LeftTop;
     }
-        
+    
     XmlElement = Store;
 }
 

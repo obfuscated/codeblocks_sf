@@ -74,7 +74,7 @@ bool wxsFlexGridSizer::MyXmlSave()
     FixupList(GrowableRows);
     if ( GrowableCols.Length() )
     {
-        XmlSetVariable(_T("glowablecols"),GrowableCols);
+        XmlSetVariable(_T("growablecols"),GrowableCols);
     }
     if ( GrowableRows.Length() )
     {
