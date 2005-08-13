@@ -217,7 +217,7 @@ class wxsDefWidget: public wxsWidget
         /** Default costroctor, arguments are passed directly to wxsWidget */
 		wxsDefWidget(wxsWidgetManager* Man,wxsWindowRes* Res,BasePropertiesType pType = propWidget);
             
-        /** Destructor - it calls evDestroy() alowing all variables to be released */
+        /** Destructor */
 		virtual ~wxsDefWidget();
 		
         virtual wxString GetProducingCode(wxsCodeParams& Params);

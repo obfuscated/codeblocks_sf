@@ -10,6 +10,9 @@ enum std_widgets
     
     /* Sizers */
     wxsGridSizerId,
+    wxsBoxSizerId,
+    wxsStaticBoxSizerId,
+    wxsFlexGridSizerId,
     
     /* Controls */
     wxsButtonId,

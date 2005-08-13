@@ -156,8 +156,8 @@ const wxString& wxsBorderProperty::GetTypeName()
     {
         if ( Id == PGId )
         {
-        	BorderFlags = Grid->GetPropertyValue(Id).GetBool();
-        	return ValueChanged(true);
+        	BorderFlags = Grid->GetPropertyValue(Id).GetLong();
+        	return ValueChanged(false);
         }
         return true;
     }

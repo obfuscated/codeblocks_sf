@@ -50,6 +50,7 @@ class wxs2IntProperty : public wxsProperty
             wxs2IntPropertyWindow* Window;
             friend class wxs2IntPropertyWindow;
         #else
+            wxPGId PGId;
             wxPGId Val1Id;
             wxPGId Val2Id;
         #endif

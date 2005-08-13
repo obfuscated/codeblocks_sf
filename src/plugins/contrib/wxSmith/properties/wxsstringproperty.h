@@ -24,6 +24,8 @@ class wxsStringProperty : public wxsProperty
         virtual const wxString& GetTypeName();
         
     protected:
+    
+        virtual wxString CorrectValue(const wxString& Value) { return Value; }
         
         #ifdef __NO_PROPGRGID
             virtual wxWindow* BuildEditWindow(wxWindow* Parent);

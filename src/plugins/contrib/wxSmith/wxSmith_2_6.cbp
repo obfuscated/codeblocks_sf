@@ -68,8 +68,19 @@
 			<Add directory="propgrid"/>
 		</Linker>
 		<ExtraCommands>
+			<Mode after="always" />
 			<Add after="update.bat"/>
 		</ExtraCommands>
+		<Unit filename="defwidgets\wxsboxsizer.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="defwidgets\wxsboxsizer.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
 		<Unit filename="defwidgets\wxsbutton.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="wxSmith"/>
@@ -105,6 +116,16 @@
 			<Option target="wxSmith"/>
 		</Unit>
 		<Unit filename="defwidgets\wxsdialog.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="defwidgets\wxsflexgridsizer.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="defwidgets\wxsflexgridsizer.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -155,6 +176,16 @@
 			<Option target="wxSmith"/>
 		</Unit>
 		<Unit filename="defwidgets\wxsspacer.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="defwidgets\wxsstaticboxsizer.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="defwidgets\wxsstaticboxsizer.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -225,6 +256,16 @@
 			<Option target="wxSmith"/>
 		</Unit>
 		<Unit filename="properties\wxsborderproperty.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="properties\wxsenumproperty.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="properties\wxsenumproperty.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -391,6 +432,16 @@
 			<Option target="wxSmith"/>
 		</Unit>
 		<Unit filename="wxsdefevthandler.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="wxsdefsizer.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="wxsdefsizer.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

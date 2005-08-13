@@ -11,6 +11,9 @@
 #include "wxscombobox.h"
 #include "wxslistbox.h"
 #include "wxsspacer.h"
+#include "wxsboxsizer.h"
+#include "wxsstaticboxsizer.h"
+#include "wxsflexgridsizer.h"
 
 #include <wx/xrc/xmlres.h>
 #include <configmanager.h>
@@ -25,6 +28,7 @@ static const wxString DefAuthor      = _("wxWidgets Team");
 static const wxString DefAuthorEmail = _T("");
 static const wxString DefAuthorSite  = _("www.wxwidgets.org");
 static const wxString DefCategory    = _("Standard");
+static const wxString DefSizerCat    = _("Layout");
 
 
 #define Entry(Name,Link)                                \
@@ -94,7 +98,7 @@ static const wxString DefCategory    = _("Standard");
         DefAuthorEmail,                                 \
         DefAuthorSite,                                  \
         _T("http://www.wxwidgets.org/manuals/2.6.1/wx_wxsizer.html#wxsizeradd"),    \
-        DefCategory,                                    \
+        DefSizerCat,                                    \
         _T(""),                                         \
         false,                                          \
         false,                                          \
@@ -108,28 +112,35 @@ static const wxString DefCategory    = _("Standard");
     },
         
 
+#define SizerEntry(Name,Link)                                   \
+    {   _T("wx") _T(#Name),                                     \
+        DefLicence,                                             \
+        DefAuthor,                                              \
+        DefAuthorEmail,                                         \
+        DefAuthorSite,                                          \
+        _T("http://www.wxwidgets.org/manuals/2.6.1/") _T(Link), \
+        DefSizerCat,                                            \
+        _T(#Name),                                              \
+        true,                                                   \
+        true,                                                   \
+        false,                                                  \
+        2, 6,                                                   \
+        NULL,                                                   \
+        &wxsStdManager,                                         \
+        wxs##Name##Id,                                          \
+        0,                                                      \
+        NULL                                                    \
+    },
+        
+
 static wxsWidgetInfo StdInfos[] =
 {
     { _T(""), _T(""), _T(""), _T(""), _T(""), _T(""), _T(""), _T(""), false, false, false, 0, 0, NULL, NULL, wxsNoneId },  // NONE
     
-    {   _T("wxGridSizer"),
-        DefLicence,
-        DefAuthor,
-        DefAuthorEmail,
-        DefAuthorSite,
-        _T("http://www.wxwidgets.org/manuals/2.4.2/wx189.htm#wxgridsizer"),
-        DefCategory,
-        _T("GridSizer"),
-        true,
-        true,
-        false,
-        2, 42,
-        NULL,
-        &wxsStdManager,
-        wxsGridSizerId,
-        0,
-        NULL
-    },
+    SizerEntry(GridSizer,"wx_wxgridsizer.html#wxgridsizer")
+    SizerEntry(BoxSizer,"wx_wxboxsizer.html#wxboxsizer")
+    SizerEntry(StaticBoxSizer,"wx_wxstaticboxsizer.html#wxstaticboxsizer")
+    SizerEntry(FlexGridSizer,"wx_wxflexgridsizer.html#wxflexgridsizer")
  
     Entry(Button,      "wx_wxbutton.htm#wxbutton")
     Entry(ToggleButton,"wx_wxtogglebutton.html#wxtogglebutton")
@@ -213,18 +224,21 @@ wxsWidget* wxsStdManagerT::ProduceWidget(int Id,wxsWindowRes* Res)
 {
     switch ( Id )
     {
-        case wxsGridSizerId:    return new wxsGridSizer(this,Res);
-        case wxsButtonId:       return new wxsButton(this,Res);
-        case wxsCheckBoxId:     return new wxsCheckBox(this,Res);
-        case wxsStaticTextId:   return new wxsStaticText(this,Res);
-        case wxsToggleButtonId: return new wxsToggleButton(this,Res);
-        case wxsComboBoxId:     return new wxsComboBox(this,Res);
-        case wxsListBoxId:      return new wxsListBox(this,Res);
-        case wxsPanelId:        return new wxsPanel(this,Res);
-        case wxsSpacerId:       return new wxsSpacer(this,Res);
-        case wxsDialogId:       return new wxsDialog(this,Res);
-        case wxsFrameId:        return new wxsFrame(this,Res);
-        case wxsPanelrId:       return new wxsPanelr(this,Res);
+        case wxsGridSizerId:        return new wxsGridSizer(this,Res);
+        case wxsBoxSizerId:         return new wxsBoxSizer(this,Res);
+        case wxsStaticBoxSizerId:   return new wxsStaticBoxSizer(this,Res);
+        case wxsFlexGridSizerId:    return new wxsFlexGridSizer(this,Res);
+        case wxsButtonId:           return new wxsButton(this,Res);
+        case wxsCheckBoxId:         return new wxsCheckBox(this,Res);
+        case wxsStaticTextId:       return new wxsStaticText(this,Res);
+        case wxsToggleButtonId:     return new wxsToggleButton(this,Res);
+        case wxsComboBoxId:         return new wxsComboBox(this,Res);
+        case wxsListBoxId:          return new wxsListBox(this,Res);
+        case wxsPanelId:            return new wxsPanel(this,Res);
+        case wxsSpacerId:           return new wxsSpacer(this,Res);
+        case wxsDialogId:           return new wxsDialog(this,Res);
+        case wxsFrameId:            return new wxsFrame(this,Res);
+        case wxsPanelrId:           return new wxsPanelr(this,Res);
     }
     
     return NULL;

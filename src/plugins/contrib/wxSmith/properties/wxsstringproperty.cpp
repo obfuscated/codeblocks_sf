@@ -48,20 +48,24 @@
     
     void wxsStringPropertyWindow::OnTextEnter(wxCommandEvent& event)
     {
-        if ( !Prop->AlwUpd )
+        wxStrting Cor = GetValue();
+        Prop->Value = CorrectString(Cor);
+        if ( Cor != Prop->Value )
         {
-            Prop->Value = GetValue();
-            Prop->ValueChanged(true);
+            SetValue(Prop->Value);
         }
+        Prop->ValueChanged(true);
     }
     
     void wxsStringPropertyWindow::OnKillFocus(wxFocusEvent& event)
     {
-        if ( !Prop->AlwUpd )
+        wxStrting Cor = GetValue();
+        Prop->Value = CorrectString(Cor);
+        if ( Cor != Prop->Value )
         {
-            Prop->Value = GetValue();
-            Prop->ValueChanged(true);
+            SetValue(Prop->Value);
         }
+        Prop->ValueChanged(true);
     }
 
 #endif
@@ -112,7 +116,12 @@ const wxString& wxsStringProperty::GetTypeName()
     {
     	if ( Id == PGId )
     	{
-    		Value = Grid->GetPropertyValue(Id).GetString();
+    		wxString Cor = Grid->GetPropertyValue(Id).GetString();
+    		Value = CorrectValue(Cor);
+    		if ( Value != Cor )
+    		{
+    			Grid->SetPropertyValue(Id,Value);
+    		}
     		return ValueChanged(true);
     	}
     	return true;

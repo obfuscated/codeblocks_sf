@@ -146,7 +146,7 @@ wxsStringListProperty::wxsStringListProperty(wxsProperties* Properties,wxArraySt
 	Array(_Array),
 	Selected(NULL),
 	SortedFlag(0)
-    #ifdef __NO_PROPGRGID	
+    #ifndef __NO_PROPGRGID	
         , PGId(0), SelId(0)
     #endif
 {}
@@ -156,7 +156,7 @@ wxsStringListProperty::wxsStringListProperty(wxsProperties* Properties,wxArraySt
 	Array(_Array),
 	Selected(&_Selected),
 	SortedFlag(_SortedFlag)
-    #ifdef __NO_PROPGRGID	
+    #ifndef __NO_PROPGRGID	
         , PGId(0), SelId(0)
     #endif
 {}

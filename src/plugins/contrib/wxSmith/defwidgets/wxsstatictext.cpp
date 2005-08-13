@@ -20,6 +20,6 @@ WXS_ST_END(wxsStaticTextStyles)
 wxsDWDefineBegin(wxsStaticText,wxStaticText,
     ThisWidget = new wxStaticText(parent,id,label,pos,size,style);
     )
-    wxsDWDefStr(label,"Label:","");
+    wxsDWDefStr(label,"Label:","Label");
 wxsDWDefineEnd()
 

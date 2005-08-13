@@ -514,10 +514,6 @@ class wxsWidget
         /** Changing position of widget in child list */
         virtual bool ChangeChildPos(int PrevPos, int NewPos) { return false; }
         
-        /** Generating code which will bind children to this window */
-        virtual const wxString& GetBindingCode(const wxString* Children, int Count) { static wxString Str(wxT("")); return Str; }
-        
-        
 /**********************************************************************/
 /* Support for base widget's parameters                               */
 /**********************************************************************/

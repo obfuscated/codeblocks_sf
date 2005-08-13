@@ -58,7 +58,7 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
         {
             NewDragPoint = *i;
             FoundDragging = true;
-            break;
+            if ( !NewDragPoint->NoAction ) break;
         }
     }
     
@@ -116,7 +116,7 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
                     break;
             }
             
-            if ( FoundDragging ) break;
+            if ( FoundDragging && !NewDragPoint->NoAction ) break;
         }
         
         if ( !FoundDragging )

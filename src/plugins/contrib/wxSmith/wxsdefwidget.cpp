@@ -256,17 +256,13 @@ void wxsDefWidget::evStr(wxString& Val,const wxString& Name,const wxString& XrcN
         case XmlL:
         {
             const wxString& Value = XmlGetVariable(XrcName);
-            if ( Value.Length() ) Val = Value;
-            else Val = DefValue;
+            Val = Value;
             break;
         }
         
         case XmlS:
         {
-            if ( Val != DefValue )
-            {
-                XmlSetVariable(XrcName,Val);
-            }
+            XmlSetVariable(XrcName,Val);
             break;
         }
         
