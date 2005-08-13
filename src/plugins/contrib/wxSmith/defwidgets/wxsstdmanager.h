@@ -20,6 +20,9 @@ enum std_widgets
     wxsListBoxId,
     wxsPanelId,
     
+    /* Spacer */
+    wxsSpacerId,
+    
     /* Windows */
     wxsDialogId,
     wxsFrameId,

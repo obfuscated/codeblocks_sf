@@ -10,6 +10,7 @@
 #include "wxstogglebutton.h"
 #include "wxscombobox.h"
 #include "wxslistbox.h"
+#include "wxsspacer.h"
 
 #include <wx/xrc/xmlres.h>
 #include <configmanager.h>
@@ -86,6 +87,26 @@ static const wxString DefCategory    = _("Standard");
         wxs##Name##Styles                               \
     },
 
+#define SpacerEntry()                                   \
+    {   _T("Spacer"),                                   \
+        DefLicence,                                     \
+        DefAuthor,                                      \
+        DefAuthorEmail,                                 \
+        DefAuthorSite,                                  \
+        _T("http://www.wxwidgets.org/manuals/2.6.1/wx_wxsizer.html#wxsizeradd"),    \
+        DefCategory,                                    \
+        _T(""),                                         \
+        false,                                          \
+        false,                                          \
+        true,                                           \
+        2, 6,                                           \
+        NULL,                                           \
+        &wxsStdManager,                                 \
+        wxsSpacerId,                                    \
+        0,                                              \
+        NULL                                            \
+    },
+        
 
 static wxsWidgetInfo StdInfos[] =
 {
@@ -117,6 +138,8 @@ static wxsWidgetInfo StdInfos[] =
     Entry(ComboBox,    "wx_wxcombobox.html#wxcombobox")
     Entry(ListBox,     "wx_wxlistbox.html#wxlistbox")    
     Entry(Panel,       "wx_wxpanel.html#wxpanel")    
+    
+    SpacerEntry()
     
     WindowEntry(Dialog,"wx_wxdialog.html#wxdialog")
     WindowEntry(Frame, "wx_wxframe.html#wxframe")
@@ -198,6 +221,7 @@ wxsWidget* wxsStdManagerT::ProduceWidget(int Id,wxsWindowRes* Res)
         case wxsComboBoxId:     return new wxsComboBox(this,Res);
         case wxsListBoxId:      return new wxsListBox(this,Res);
         case wxsPanelId:        return new wxsPanel(this,Res);
+        case wxsSpacerId:       return new wxsSpacer(this,Res);
         case wxsDialogId:       return new wxsDialog(this,Res);
         case wxsFrameId:        return new wxsFrame(this,Res);
         case wxsPanelrId:       return new wxsPanelr(this,Res);

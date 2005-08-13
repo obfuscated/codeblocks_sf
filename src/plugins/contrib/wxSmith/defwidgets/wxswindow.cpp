@@ -11,8 +11,8 @@ class wxsWindowPreview: public wxPanel
     
         // Need to check Window->GetParent() before setting style -
         // - if this is wxPanel which has parent, it is not a resource
-        wxsWindowPreview(wxWindow* Parent,wxsWindow* _Window):
-            wxPanel(Parent,-1,wxDefaultPosition,wxDefaultSize,
+        wxsWindowPreview(wxWindow* Parent,wxsWindow* _Window,const wxPoint& Position,const wxSize& Size):
+            wxPanel(Parent,-1,Position,Size,
                 _Window->GetParent() ? _Window->GetBaseParams().Style : wxRAISED_BORDER ),
             Window(_Window)
         {
@@ -70,11 +70,18 @@ void wxsWindow::MyFinalUpdatePreview(wxWindow* Preview)
 /** This function should create preview window for widget */
 wxWindow* wxsWindow::MyCreatePreview(wxWindow* Parent)
 {
-   return new wxsWindowPreview(Parent,this);
+    return new wxsWindowPreview(Parent,this, GetParent() ? GetPosition() : wxDefaultPosition, GetSize());
 }
 
 int wxsWindow::AddChild(wxsWidget* NewWidget,int InsertBeforeThis)
 {
+	if ( NewWidget->GetInfo().Spacer )
+	{
+		// ITem must be a child of sizer - cannot add it here
+		wxMessageBox(_("This item can be added into sizer only"));
+		return -1;
+	}
+	
 	if ( NewWidget->GetInfo().Sizer )
 	{
 		// We're adding sizer to this container - it must be empty

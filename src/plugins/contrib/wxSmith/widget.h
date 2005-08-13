@@ -55,7 +55,7 @@ struct wxsWidgetInfo
     wxString DefaultVarName;        ///< Prefix for default variable name
     bool Container;                 ///< True if this widget can have other widgets inside
     bool Sizer;                     ///< True if this widget is a sizer (Container must also be true)
-    bool SizerChild;                ///< True if this widget can be child of sizer only
+    bool Spacer;                    ///< True if this is a spacer
     unsigned short VerHi;           ///< Lower number of version
     unsigned short VerLo;           ///< Higher number of version
     wxBitmap* Icon;                 ///< Icon used in pallette
@@ -166,6 +166,9 @@ class wxsWidget
         
         /** BasePropertiesType used by common sizers */
         static const BasePropertiesType propSizer    = bptVariable;
+        
+        /** BasePropertiesType used by spacer */
+        static const BasePropertiesType propSpacer   = bptSize;
     
         /** Default constructor */
         wxsWidget(wxsWidgetManager* Man,wxsWindowRes* Res,BasePropertiesType pType = propNone):
@@ -417,6 +420,13 @@ class wxsWidget
          *  Could be used when need to throw some string to generated code
          */
         static const wxString& GetCString(const wxString& Source);
+        
+        /** Util function - generating string used when adding item to sizer as flag
+         *
+         * Not included insidee CodedDefines because it would generally be used inside
+         * sizer's code generating functions.
+         */
+        wxString GetFlagToSizer();
         
 /**********************************************************************/
 /* Used for extended widgets                                          */
