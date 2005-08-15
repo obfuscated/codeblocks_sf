@@ -40,24 +40,6 @@ const wxsWidgetInfo& wxsSpacer::GetInfo()
 	return *wxsStdManager.GetWidgetInfo(wxsSpacerId);
 }
 
-wxString wxsSpacer::GetProducingCode(wxsCodeParams& Params)
-{
-	assert ( GetParent() );
-	
-	wxString Flag = GetFlagToSizer();
-	if ( !Flag.Length() )
-	{
-		Flag = _T("0");
-	}
-	
-	return wxString::Format(
-        _T("%s->Add(%d,%d,%d);"),
-            GetParent()->GetBaseParams().VarName.c_str(),
-            GetBaseParams().SizeX,
-            GetBaseParams().SizeY,
-            GetBaseParams().Proportion);
-}
-
 wxWindow* wxsSpacer::MyCreatePreview(wxWindow* Parent)
 {
 	return new wxsSpacerPreview(Parent,GetSize());

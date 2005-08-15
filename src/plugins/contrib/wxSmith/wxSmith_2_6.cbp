@@ -141,6 +141,16 @@
 			<Option link="0"/>
 			<Option target="wxSmith"/>
 		</Unit>
+		<Unit filename="defwidgets\wxsgauge.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="defwidgets\wxsgauge.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
 		<Unit filename="defwidgets\wxsgridsizer.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="wxSmith"/>
@@ -206,6 +216,16 @@
 			<Option target="wxSmith"/>
 		</Unit>
 		<Unit filename="defwidgets\wxsstdmanager.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="defwidgets\wxstextctrl.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="defwidgets\wxstextctrl.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

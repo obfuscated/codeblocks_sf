@@ -595,10 +595,9 @@ bool wxsWidgetManager::RegisterInFactory()
     return true;
 }
 
-const wxString& wxsWidget::GetCString(const wxString& Source)
+wxString wxsWidget::GetCString(const wxString& Source)
 {
-    static wxString Result;
-    Result = _T("\"");
+    wxString Result = _T("\"");
     
     int Len = Source.Length();
     
@@ -642,6 +641,11 @@ const wxString& wxsWidget::GetCString(const wxString& Source)
 
     Result.Append(_T('\"'));
     return Result;
+}
+
+wxString wxsWidget::GetWxString(const wxString& Source)
+{
+	return wxString::Format(_T("_(%s)"),GetCString(Source).c_str());
 }
 
 void wxsWidget::BuildTree(wxTreeCtrl* Tree,wxTreeItemId Id,int Index)

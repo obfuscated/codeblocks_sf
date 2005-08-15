@@ -273,7 +273,7 @@ void wxsDefWidget::evStr(wxString& Val,const wxString& Name,const wxString& XrcN
         
         case Code:
         {
-            CodeReplace(Name,wxString::Format(_T("wxT(%s)"),GetCString(Val).c_str()));
+            CodeReplace(Name,GetWxString(Val));
             break;
         }
         
@@ -330,9 +330,9 @@ void wxsDefWidget::evStrArray(wxArrayString& Val,const wxString& Name,const wxSt
             for ( size_t i = 0; i<Val.GetCount(); i++ )
             {
             	ReplaceWith.Append(GetBaseParams().VarName);
-            	ReplaceWith.Append(_T("->Append(wxT("));
-            	ReplaceWith.Append(GetCString(Val[i]));
-            	ReplaceWith.Append(_T("));\n"));
+            	ReplaceWith.Append(_T("->Append("));
+            	ReplaceWith.Append(GetWxString(Val[i]));
+            	ReplaceWith.Append(_T(");\n"));
             }
             CodeReplace(CodeToSearch,ReplaceWith);
             

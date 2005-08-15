@@ -10,7 +10,6 @@ class wxsSpacer : public wxsWidget
 		virtual ~wxsSpacer();
 		
         virtual const wxsWidgetInfo& GetInfo();
-        virtual wxString GetProducingCode(wxsCodeParams& Params);
         
     protected:
     

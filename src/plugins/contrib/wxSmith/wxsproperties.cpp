@@ -39,18 +39,12 @@ void wxsPropertyGrid::OnChange(wxPropertyGridEvent& event)
 	{
 		if ( !(*i)->Property->PropGridChanged(this,event.GetProperty()) )
 		{
-			SetPropertyAttribute(event.GetProperty(),wxPG_PROP_MODIFIED,(long)1);
 			SelectProperty(event.GetProperty(),true);
 		}
 		else
 		{
 			Refresh = true;
 		}
-	}
-	
-	if ( Refresh )
-	{
-		Props->UpdateProperties();
 	}
 }
 

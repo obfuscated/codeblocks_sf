@@ -111,6 +111,9 @@ class wxsWindowRes : public wxsResource
         
         /** Function building array of identifiers */
         void BuildIdsArray(wxsWidget* Widget,wxArrayString& Array);
+        
+        /** Function building array of header files */
+        void BuildHeadersArray(wxsWidget* Widget,wxArrayString& Array);
             
         wxString      ClassName;
         wxString      XrcFile;

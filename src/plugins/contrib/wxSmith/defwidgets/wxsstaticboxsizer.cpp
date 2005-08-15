@@ -4,11 +4,11 @@
 
 wxString wxsStaticBoxSizer::GetProducingCode(wxsCodeParams& Params)
 {
-    return wxString::Format(_T("%s = new wxStaticBoxSizer(%s,%s,wxT(%s));"),
+    return wxString::Format(_T("%s = new wxStaticBoxSizer(%s,%s,%s);"),
         BaseParams.VarName.c_str(),
         (Orient == wxVERTICAL) ? _T("wxVERTICAL") : _T("wxHORIZONTAL"),
         Params.ParentName.c_str(),
-        GetCString(Label).c_str() );
+        GetWxString(Label).c_str() );
 }
 
 bool wxsStaticBoxSizer::MyXmlLoad()

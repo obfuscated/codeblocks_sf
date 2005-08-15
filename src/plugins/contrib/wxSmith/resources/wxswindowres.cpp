@@ -228,11 +228,11 @@ bool wxsWindowRes::GenerateEmptySources()
     switch ( Type )
     {
     	case Dialog:
-            Content.Replace(_T("$(BaseClassCtor)"),_T("wxDialog(parent,id,wxT(\"\"),wxDefaultPosition,wxDefaultSize)"),true);
+            Content.Replace(_T("$(BaseClassCtor)"),_T("wxDialog(parent,id,_T(\"\"),wxDefaultPosition,wxDefaultSize)"),true);
             break;
             
         case Frame:
-            Content.Replace(_T("$(BaseClassCtor)"),_T("wxFrame(parent,id,wxT(\"\"))"),true);
+            Content.Replace(_T("$(BaseClassCtor)"),_T("wxFrame(parent,id,_T(\"\"))"),true);
             break;
             
         case Panel:
@@ -316,14 +316,38 @@ void wxsWindowRes::NotifyChange()
 			if ( First )
 			{
 				Code.Append( _T(" = 0x1000") );
+				First = false;
 			}
-			Code.Append( _T(',') );
+			if ( i < IdsArray.Count() - 1 )
+			{
+                Code.Append( _T(',') );
+			}
 		}
 	}
 	Code.Append( _T('\n') );
 	Code.Append( _T(' '), GlobalTabSize );
 	Code.Append( _T("};\n") );
 	Code.Append( _T(' '), GlobalTabSize );
+	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(HFile),CodeHeader,Code);
+	
+	// Collecting all include files
+	wxArrayString HeadersArray;
+	BuildHeadersArray(RootWidget,HeadersArray);
+	HeadersArray.Add(_T("<wx/intl.h>"));
+	HeadersArray.Sort();
+	CodeHeader.Printf(_T("//(*Headers(%s)"),GetClassName().c_str());
+	Code = CodeHeader;
+	Previous = _T("");
+	for ( size_t i = 0; i<HeadersArray.Count(); i++ )
+	{
+		if ( HeadersArray[i] != Previous )
+        {
+        	Previous = HeadersArray[i];
+            Code.Append(_T("\n#include "));
+            Code.Append(Previous);
+        }
+	}
+	Code.Append(_T('\n'));
 	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(HFile),CodeHeader,Code);
 	
 	#endif
@@ -338,14 +362,16 @@ void wxsWindowRes::AddDeclarationsReq(wxsWidget* Widget,wxString& LocalCode,wxSt
 	for ( int i=0; i<Count; i++ )
 	{
 		wxsWidget* Child = Widget->GetChild(i);
-		bool Member = Child->GetBaseParams().IsMember;
-		wxString& Code = Member ? GlobalCode : LocalCode;
-		
-		Code.Append(' ',Member ? GlobalTabSize : LocalTabSize);
-		Code.Append(Child->GetDeclarationCode(EmptyParams));
-		Code.Append('\n');
-		
-		WasLocal |= !Member;
+		wxString Decl = Child->GetDeclarationCode(EmptyParams);
+		if ( Decl.Length() )
+		{
+            bool Member = Child->GetBaseParams().IsMember;
+            wxString& Code = Member ? GlobalCode : LocalCode;
+            Code.Append(' ',Member ? GlobalTabSize : LocalTabSize);
+            Code.Append(Decl);
+            Code.Append('\n');
+            WasLocal |= !Member;
+		}
 		AddDeclarationsReq(Child,LocalCode,GlobalCode,LocalTabSize,GlobalTabSize,WasLocal);
 	}
 }
@@ -688,5 +714,16 @@ void wxsWindowRes::BuildIdsArray(wxsWidget* Widget,wxArrayString& Array)
 			Array.Add(Child->GetBaseParams().IdName);
 		}
 		BuildIdsArray(Child,Array);
+	}
+}
+
+void wxsWindowRes::BuildHeadersArray(wxsWidget* Widget,wxArrayString& Array)
+{
+	Array.Add(Widget->GetInfo().HeaderFile);
+	int Cnt = Widget->GetChildCount();
+	for ( int i=0; i<Cnt; i++ )
+	{
+		wxsWidget* Child = Widget->GetChild(i);
+		BuildHeadersArray(Child,Array);
 	}
 }

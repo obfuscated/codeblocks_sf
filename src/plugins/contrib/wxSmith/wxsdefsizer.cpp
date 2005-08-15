@@ -94,15 +94,27 @@ wxString wxsDefSizer::GetFinalizingCode(wxsCodeParams& Params)
 	for ( int i=0; i<Cnt; i++ )
 	{
 		wxsWidget* Child = GetChild(i);
-		wxString FlagsToSizer = Child->GetFlagToSizer();
-		if ( !FlagsToSizer.Length() ) FlagsToSizer = _T("0");
-		Code.Append(
-            wxString::Format(_T("%s->Add(%s,%d,%s,%d);\n"),
+		if ( Child->GetInfo().Spacer )
+		{
+			// Spacer class is threated as a special case
+			Code.Append(wxString::Format(_T("%s->Add(%d,%d,%d);"),
                 GetBaseParams().VarName.c_str(),
-                Child->GetBaseParams().VarName.c_str(),
-                Child->GetBaseParams().Proportion,
-                FlagsToSizer.c_str(),
-                Child->GetBaseParams().Border));
+                Child->GetBaseParams().SizeX,
+                Child->GetBaseParams().SizeY,
+                Child->GetBaseParams().Proportion));
+		}
+		else
+		{
+            wxString FlagsToSizer = Child->GetFlagToSizer();
+            if ( !FlagsToSizer.Length() ) FlagsToSizer = _T("0");
+            Code.Append(
+                wxString::Format(_T("%s->Add(%s,%d,%s,%d);\n"),
+                    GetBaseParams().VarName.c_str(),
+                    Child->GetBaseParams().VarName.c_str(),
+                    Child->GetBaseParams().Proportion,
+                    FlagsToSizer.c_str(),
+                    Child->GetBaseParams().Border));
+		}
 	}
 	
     if ( Params.IsDirectParent )

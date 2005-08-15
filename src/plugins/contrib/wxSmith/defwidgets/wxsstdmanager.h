@@ -14,6 +14,9 @@ enum std_widgets
     wxsStaticBoxSizerId,
     wxsFlexGridSizerId,
     
+    /* Spacer */
+    wxsSpacerId,
+    
     /* Controls */
     wxsButtonId,
     wxsToggleButtonId,      /* Warning - not compatible with XRC 2.4 */
@@ -22,9 +25,8 @@ enum std_widgets
     wxsComboBoxId,
     wxsListBoxId,
     wxsPanelId,
-    
-    /* Spacer */
-    wxsSpacerId,
+    wxsTextCtrlId,
+    wxsGaugeId,
     
     /* Windows */
     wxsDialogId,

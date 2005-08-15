@@ -23,10 +23,10 @@ class wxsWindowRes;
 /** Directory relative to project's main file where wxSmith internal
  *  data should be stored.
  */
-static const wxString wxSmithSubDirectory(wxT("wxsmith"));
+static const wxString wxSmithSubDirectory(_T("wxsmith"));
 
 /** Name of main configuration for wxSmith */
-static const wxString wxSmithMainConfigFile(wxT("wxsmith.cfg"));
+static const wxString wxSmithMainConfigFile(_T("wxsmith.cfg"));
 
 /** This class integrates current project with wxsmith.
  *

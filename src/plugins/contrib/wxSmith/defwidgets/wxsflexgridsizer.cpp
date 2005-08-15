@@ -158,7 +158,7 @@ bool wxsFlexGridSizer::FixupList(wxString& List)
 		List.Append(wxString::Format(_T("%d"),Array[i]));
 		if ( i < Array.Count() - 1 )
 		{
-			List.Append(wxT(','));
+			List.Append(_T(','));
 		}
 	}
 	return Ret;

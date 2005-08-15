@@ -63,6 +63,20 @@ struct wxsWidgetInfo
     int Id;                         ///< Identifier used inside manager to handle this widget, must be same as 'Number' in GetWidgetInfo call
     int TreeIconId;
     wxsStyle* Styles;               ///< Set of available styles, ending with NULL-named style
+    wxString HeaderFile;            ///< Header file (including '<' and '>' or '"') for this file
+    
+    /** Types of extended widgets */
+    enum ExTypeT
+    {
+        exNone = 0,                 ///< This is widget from standard set (no new coded nor additional library needed)
+        exCode,                     ///< This widget provides it's source code, currently not supported
+        exLibrary                   ///< This widget is provided in additional library, currently not supported
+    };
+    
+    ExTypeT ExType;                 ///< Type of extended widget
+    wxString WidgetCodeDefinition;  ///< Code with definition of class for this widget
+    wxString WidgetCodeDeclaration; ///< Code with declaration of class for this widget
+    wxString WidgetLibrary;         ///< Library including this widget (empty for no library)
 };
 
 /** Structure describing default widget's options */
@@ -419,7 +433,10 @@ class wxsWidget
          *
          *  Could be used when need to throw some string to generated code
          */
-        static const wxString& GetCString(const wxString& Source);
+        static wxString GetCString(const wxString& Source);
+        
+        /** Util function - changing given string to it's representation in wxWidgets */
+        static wxString GetWxString(const wxString& Source);
         
         /** Util function - generating string used when adding item to sizer as flag
          *
@@ -427,41 +444,6 @@ class wxsWidget
          * sizer's code generating functions.
          */
         wxString GetFlagToSizer();
-        
-/**********************************************************************/
-/* Used for extended widgets                                          */
-/**********************************************************************/
-        
-        /** Types of extended widgets */
-        enum ExType
-        {
-            exNone = 0,     ///< This is widget from standard set
-            exCode,         ///< This widget provides it's source code
-            exLibrary       ///< This widget is provided in additional library, currently not supported
-        };
-        
-        /** Checking type of extendet widget */
-        virtual ExType GetExtended() { return exNone; }
-        
-        /** Takign declaration of class using widget's implementation,
-         *  this is valid for wxCode widgets only 
-         */
-        virtual const wxString& GetWidgetCodeDefinition() { static wxString Str(wxT("")); return Str; }
-        
-        /** Taking defition of widget's members
-         *  this is valid for wxCode widgets only 
-         */
-        virtual const wxString& GetWidgetCodeDeclaration() { static wxString Str(wxT("")); return Str; }
-
-        /** Taking name of library in which this widget is defined
-         *  this is valid for wxLibrary widgets only, currently not supported
-         */
-        virtual const wxString& GetWidgetLibrary() { static wxString Str(wxT("")); return Str; }
-        
-        /** Taking name of header file which should be included in order to use this widget
-         *  valid for exLibrary or exNone widgets only, currently exNone widgets are only supported
-         */
-        virtual const wxString& GetWidgetHeader() { static wxString Str(wxT("")); return Str; }
         
 /**********************************************************************/
 /* Support for containers                                             */

@@ -18,6 +18,9 @@ class wxsPanel : public wxsWindow
         
         /** Function generating code which should produce widget */
         virtual wxString GetProducingCode(wxsCodeParams& Params);
+        
+        /** Function generating code which generates variable containing this widget. */
+        virtual wxString GetDeclarationCode(wxsCodeParams& Params);
 };
 
 WXS_ST_DECLARE(wxsPanelrStyles)

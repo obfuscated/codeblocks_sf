@@ -53,7 +53,7 @@ wxsProject::IntegrationState wxsProject::BindProject(cbProject* Proj)
     WorkingPath = ProjectPath;
     WorkingPath.AppendDir(wxSmithSubDirectory);
     WorkingPath.SetName(wxSmithMainConfigFile);
-    WorkingPath.SetExt(wxT(""));
+    WorkingPath.SetExt(_T(""));
     WorkingPath.Assign(WorkingPath.GetFullPath());  // Reparsing path
 
     if ( ! WorkingPath.FileExists() )
@@ -390,7 +390,7 @@ void wxsProject::SaveProject()
     if ( Integration != Integrated ) return;
     
     WorkingPath.SetName(wxSmithMainConfigFile);
-    WorkingPath.SetExt(wxT(""));
+    WorkingPath.SetExt(_T(""));
     WorkingPath.Assign(WorkingPath.GetFullPath());  // Reparsing path
 
     TiXmlDocument* Doc = GenerateXml();
