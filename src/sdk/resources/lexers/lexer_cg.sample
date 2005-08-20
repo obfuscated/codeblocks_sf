@@ -1,0 +1,41 @@
+/*
+ * This is a block comment
+ */
+
+/**
+  * This is a documentation comment block
+  * @param xxx does this (this is the documentation keyword)
+  * @authr some user (this is the documentation keyword error)
+  */
+
+struct input	{
+				float3 Position : POSITION;
+				float3 Normal	: NORMAL;
+				};
+
+struct out_to_fp{
+				float4 Hposition	: POSITION;
+				float4 Color0		: COLOR0;
+				float4 TexCoord0	: TEXCOORD0;
+				float4 TexCoord1	: TEXCOORD1;
+				};
+
+// a vertex program
+out_to_fp	main(	input IN,
+				uniform float4x4 WorldViewProj,
+				uniform float4x4 TexTransform,
+				uniform float3x3 WorldIT,
+				uniform float3 LightVec	)
+	{
+	out_to_fp OUT;
+	float3 worldNormal = normalize(mul(WorldIT, IN.Normal));
+	float ldotn = max(dot(LightVec, worldNormal), 0.0);
+	OUT.Color0.xyz = ldotn.xxx;
+	float4 tempPos;
+	tempPos.xyz = IN.Position.xyz;
+	tempPos.w = 1.0;
+	OUT.TexCoord0 = mul(TexTransform, tempPos);
+	OUT.TexCoord1 = mul(TexTransform, tempPos);
+	OUT.Hposition = mul(WorldViewProj, tempPos);
+	return OUT;
+	}
