@@ -212,15 +212,14 @@ class cbCompilerPlugin: public cbPlugin
 		  * Cleaning a project means deleting any files created by building it.
 		  * This includes any object files, the binary output file, etc.
 		  *
-		  * @param target The specific build target to "clean". If NULL, the plugin
-		  * should ask the user which target to "clean" (except maybe if there is
-		  * only one build target in the project).
+		  * @param target The specific build target to "clean". If NULL, it 
+		  * cleans all the build targets of the current project. 
 		  */
         virtual int Clean(ProjectBuildTarget* target = 0L) = 0;
 		/** @brief Compile the project/target.
 		  *
-		  * @param target The specific build target to compile. If NULL, all the
-		  * build targets should be compiled.
+		  * @param target The specific build target to compile. If NULL, it
+		  * compiles all the build targets of the current project.
 		  */
         virtual int Compile(ProjectBuildTarget* target = 0L) = 0;
 		/** @brief Rebuild the project/target.
@@ -229,13 +228,13 @@ class cbCompilerPlugin: public cbPlugin
 		  * This makes sure that all compilable files in the project will be
 		  * compiled again.
 		  *
-		  * @param target The specific build target to rebuild. If NULL, all the
-		  * build targets should be rebuilt.
+		  * @param target The specific build target to rebuild. If NULL, it 
+		  * rebuilds all the build targets of the current project.
 		  */
         virtual int Rebuild(ProjectBuildTarget* target = 0L) = 0;
-		/** @brief Compile all open projects. */
+		/** @brief Compile all open projects, i.e. all targets in all projects. */
         virtual int CompileAll() = 0;
-		/** @brief Rebuild all open projects. */
+		/** @brief Rebuild all open projects, i.e. all targets in all projects. */
         virtual int RebuildAll() = 0;
         /** @brief Compile a specific file.
           *

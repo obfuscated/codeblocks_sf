@@ -32,7 +32,7 @@
 WX_DEFINE_LIST(FilesList);
 
 // class constructor
-ProjectBuildTarget::ProjectBuildTarget()
+ProjectBuildTarget::ProjectBuildTarget(cbProject* parentProject) : m_Project(parentProject)
 {
     m_BuildWithAll = true;
     m_CreateStaticLib = true;
@@ -43,6 +43,14 @@ ProjectBuildTarget::ProjectBuildTarget()
 // class destructor
 ProjectBuildTarget::~ProjectBuildTarget()
 {
+}
+
+cbProject* ProjectBuildTarget::GetParentProject() {
+    return m_Project;
+}
+
+wxString ProjectBuildTarget::GetFullTitle() {
+    return m_Project->GetTitle() + " - " + GetTitle();
 }
 
 const wxString & ProjectBuildTarget::GetExternalDeps()
@@ -136,6 +144,17 @@ void ProjectBuildTarget::SetTargetType(const TargetType& pt)
 	if (ttold != GetTargetType() && GetTargetType() == ttConsoleOnly)
         SetUseConsoleRunner(true); // by default, use console runner
 }
+
+// target dependencies: targets to be compiled (if necessary) before this one
+void ProjectBuildTarget::AddTargetDep(ProjectBuildTarget* target) {
+	m_TargetDeps.Add(target);
+}
+
+// get the list of dependency targets of this target
+BuildTargets& ProjectBuildTarget::GetTargetDeps() {
+	return m_TargetDeps;
+}
+
 
 //// PROJECTFILE //////////////////////
 
@@ -253,3 +272,4 @@ void ProjectFile::SetObjName(const wxString& name)
     }
     m_ObjName = fname.GetFullPath();
 }
+

@@ -6,10 +6,13 @@
 #include "compiletargetbase.h"
 #include <wx/dynarray.h>
 #include <wx/filename.h>
+#include <wx/list.h>
 
 class cbProject;
+class ProjectBuildTarget;
 
 WX_DEFINE_ARRAY(DebuggerBreakpoint*, BreakpointsList);
+WX_DEFINE_ARRAY(ProjectBuildTarget*, BuildTargets);
 
 class ProjectFile
 {
@@ -63,9 +66,12 @@ class DLLIMPORT ProjectBuildTarget : public CompileTargetBase
 {
 	public:
 		// class constructor
-		ProjectBuildTarget();
+		ProjectBuildTarget(cbProject* parentProject);
 		// class destructor
 		~ProjectBuildTarget();
+
+        virtual cbProject* GetParentProject();
+        virtual wxString GetFullTitle(); // returns "projectname - targetname"
 
         //properties
         virtual const wxString& GetExternalDeps();
@@ -82,9 +88,19 @@ class DLLIMPORT ProjectBuildTarget : public CompileTargetBase
         virtual void SetUseConsoleRunner(bool useIt);
 
         virtual void SetTargetType(const TargetType& pt); // overriden
+
+        // target dependencies: targets to be compiled (if necessary) before this one
+        // add a target to the list of dependencies of this target. Be careful 
+        // not to add a target more than once
+        virtual void AddTargetDep(ProjectBuildTarget* target);
+        // get the list of dependency targets of this target
+        virtual BuildTargets& GetTargetDeps();
+
     private:
+        cbProject* m_Project;
         wxString m_ExternalDeps;
         wxString m_AdditionalOutputFiles;
+        BuildTargets m_TargetDeps;
         bool m_BuildWithAll;
         bool m_CreateStaticLib;
         bool m_CreateDefFile;

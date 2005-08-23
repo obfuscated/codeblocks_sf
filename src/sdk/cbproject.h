@@ -16,7 +16,6 @@ class ProjectBuildTarget;
 class ProjectFile;
 class FilesGroupsAndMasks;
 
-WX_DEFINE_ARRAY(ProjectBuildTarget*, BuildTargets);
 // hashmap for fast searches in cbProject::GetFileByFilename()
 WX_DECLARE_STRING_HASH_MAP(ProjectFile*, ProjectFiles);
 
