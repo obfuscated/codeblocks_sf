@@ -112,7 +112,7 @@ bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry,cbEditor* Editor)
 	cbStyledTextCtrl* Ctrl = Editor->GetControl();
 	assert ( Ctrl != NULL );
 	
-	Ctrl->SetSearchFlags(wxSTC_FIND_MATCHCASE);
+	Ctrl->SetSearchFlags(wxSCI_FIND_MATCHCASE);
 	
 	Ctrl->SetTargetStart(0);
 	Ctrl->SetTargetEnd(Ctrl->GetLength());

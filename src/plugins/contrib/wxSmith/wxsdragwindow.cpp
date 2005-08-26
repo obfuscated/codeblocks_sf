@@ -301,11 +301,14 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
     
             wxsWidgetBaseParams& Params = Widget->GetBaseParams();
             Params.DefaultPosition = false;
-            Params.DefaultSize = false;
             Params.PosX = PosX;
             Params.PosY = PosY;
-            Params.SizeX = SizeX;
-            Params.SizeY = SizeY;
+            if ( !CurDragWidget )
+            {
+                Params.DefaultSize = false;
+                Params.SizeX = SizeX;
+                Params.SizeY = SizeY;
+            }
             Widget->UpdateProperties();
     
             if ( event.LeftUp() )
