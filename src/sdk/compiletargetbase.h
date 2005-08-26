@@ -74,8 +74,8 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         virtual void SetExecutionParameters(const wxString& params); ///< Set the target's execution parameters to \c params
 		virtual const wxString& GetHostApplication(); ///< Read the target's host application
 		virtual void SetHostApplication(const wxString& app); ///< Set the target's host application to \c app
-        virtual void SetCompilerIndex(int compilerIdx);
-        virtual int GetCompilerIndex(){ return m_CompilerIdx; }
+        virtual void SetCompilerIndex(int compilerIdx); ///< Set the target's compiler index
+        virtual int GetCompilerIndex(){ return m_CompilerIdx; } ///< Read the target's compiler index
 	protected:
         friend class cbProject;
         wxString m_Filename;

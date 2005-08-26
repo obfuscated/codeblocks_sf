@@ -102,8 +102,8 @@ void TemplateManager::LoadTemplates()
 {
     wxLogNull zero; // disable error logging
 
-    wxString baseDir = ConfigManager::Get()->Read("/data_path");
-	baseDir << "/templates";
+    wxString baseDir = ConfigManager::Get()->Read(_T("/data_path"));
+	baseDir << _T("/templates");
 
     wxDir dir(baseDir);
 
@@ -112,11 +112,11 @@ void TemplateManager::LoadTemplates()
 
 	WX_CLEAR_ARRAY(m_Templates);
     wxString filename;
-    bool ok = dir.GetFirst(&filename, "*.template", wxDIR_FILES);
+    bool ok = dir.GetFirst(&filename, _T("*.template"), wxDIR_FILES);
     while (ok)
     {
         ProjectTemplateLoader* pt = new ProjectTemplateLoader();
-		if (pt->Open(baseDir + "/" + filename))
+		if (pt->Open(baseDir + _T("/") + filename))
 			m_Templates.Add(pt);
 		else
 			delete pt;
@@ -132,7 +132,7 @@ void TemplateManager::LoadUserTemplates()
 
     m_UserTemplates.Clear();
     wxString baseDir = wxGetHomeDir();
-	baseDir << "/.CodeBlocks";
+	baseDir << _T("/.CodeBlocks");
 
     wxDir dir(baseDir);
 
@@ -140,7 +140,7 @@ void TemplateManager::LoadUserTemplates()
         return;
 
     wxString filename;
-    bool ok = dir.GetFirst(&filename, "*", wxDIR_DIRS);
+    bool ok = dir.GetFirst(&filename, _T("*"), wxDIR_DIRS);
     while (ok)
     {
         m_UserTemplates.Add(filename);
@@ -153,7 +153,7 @@ void TemplateManager::LoadUserTemplates()
 void TemplateManager::NewProject()
 {
 	// one-time warning message
-    if (ConfigManager::Get()->Read("/template_manager/notification", 1L) == 1)
+    if (ConfigManager::Get()->Read(_T("/template_manager/notification"), 1L) == 1)
     {
     	wxMessageBox(_("These templates are only provided for your convenience.\n"
                         "Many of the available templates need extra libraries "
@@ -162,7 +162,7 @@ void TemplateManager::NewProject()
                     _("One-time information"),
                     wxICON_INFORMATION);
     	// don't warn the user again
-        ConfigManager::Get()->Write("/template_manager/notification", 0L);
+        ConfigManager::Get()->Write(_T("/template_manager/notification"), 0L);
     }
 
 	LoadTemplates();
@@ -190,7 +190,7 @@ void TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
     TemplateOption& option = pt->m_TemplateOptions[optidx];
     FileSet& fileset = pt->m_FileSets[filesetidx];
 
-    wxString baseDir = ConfigManager::Get()->Read("/data_path");
+    wxString baseDir = ConfigManager::Get()->Read(_T("/data_path"));
     wxFileDialog fdlg(0L,
                         _("Save project"),
                         wxEmptyString,
@@ -207,23 +207,23 @@ void TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
     wxString filename = fname.GetFullPath();
     wxString sep = wxFileName::GetPathSeparator();
 
-    baseDir << sep << "templates";
+    baseDir << sep << _T("templates");
     wxCopyFile(baseDir + sep + option.file, filename);
 
     cbProject* prj = Manager::Get()->GetProjectManager()->LoadProject(filename);
     if (prj)
     {
-    	if (prj->GetCompilerIndex() != CompilerFactory::GetDefaultCompilerIndex())
-    	{
-    		if (wxMessageBox(_("This template project was built for a different compiler "
-                                "than the one you 've set as default.\n"
-                                "Do you want to try and convert it for use with your default "
-                                "compiler?\n"
-                                "(conversion might not be 100% accurate)"),
-                            _("Question"),
-                            wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxYES)
-            {
-                prj->SetCompilerIndex(CompilerFactory::GetDefaultCompilerIndex());
+      if (prj->GetCompilerIndex() != CompilerFactory::GetDefaultCompilerIndex())
+      {
+    	if (wxMessageBox(_("This template project was built for a different compiler "
+                               "than the one you 've set as default.\n"
+                               "Do you want to try and convert it for use with your default "
+                               "compiler?\n"
+                               "(conversion might not be 100% accurate)"),
+                           _("Question"),
+                           wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxYES)
+           {
+               prj->SetCompilerIndex(CompilerFactory::GetDefaultCompilerIndex());
                 for (int i = 0; i < prj->GetBuildTargetsCount(); ++i)
                 {
                     ProjectBuildTarget* target = prj->GetBuildTarget(i);
@@ -263,14 +263,7 @@ void TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
                 if (skipped)
                     continue;
                 wxCopyFile(baseDir + sep + fsf.source, dst);
-                ProjectFile* pf = prj->AddFile(0, dst);
-                if (pf)
-                {
-                	// add it to all build targets it belongs
-                	wxArrayString tgt = GetArrayFromString(fsf.targets, _T(";"));
-                	if (tgt.GetCount() != 0)
-                        pf->buildTargets = tgt;
-                }
+                prj->AddFile(0, dst);
             }
         }
     
@@ -300,7 +293,7 @@ void TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg)
     wxBusyCursor busy;
 
     wxString templ = wxGetHomeDir();
-    templ << sep << ".CodeBlocks" << sep << dlg.GetSelectedUserTemplate();
+    templ << sep << _T(".CodeBlocks") << sep << dlg.GetSelectedUserTemplate();
     if (!wxDirExists(templ))
     {
         Manager::Get()->GetMessageManager()->DebugLog(_("Cannot open user-template source path '%s'!"), templ.c_str());
@@ -321,7 +314,7 @@ void TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg)
         wxString dst = path + sep + dstname.GetFullPath();
 //        Manager::Get()->GetMessageManager()->DebugLog("dst=%s, dstname=%s", dst.c_str(), dstname.GetFullPath().c_str());
         if (!CreateDirRecursively(dst))
-            Manager::Get()->GetMessageManager()->DebugLog("Failed creating directory for %s", dst.c_str());
+            Manager::Get()->GetMessageManager()->DebugLog(_("Failed creating directory for %s"), dst.c_str());
         if (wxCopyFile(src, dst, true))
         {
             if (FileTypeOf(dst) == ftCodeBlocksProject)
@@ -329,7 +322,7 @@ void TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg)
             ++count;
         }
         else
-            Manager::Get()->GetMessageManager()->DebugLog("Failed copying %s to %s", src.c_str(), dst.c_str());
+            Manager::Get()->GetMessageManager()->DebugLog(_("Failed copying %s to %s"), src.c_str(), dst.c_str());
     }
     if (count != total_count)
         wxMessageBox(_("Some files could not be loaded with the template..."), _("Error"), wxICON_ERROR);
@@ -369,7 +362,7 @@ void TemplateManager::SaveUserTemplate(cbProject* prj)
 
     // create destination dir
     wxString templ = wxGetHomeDir();
-    templ << "/.CodeBlocks";
+    templ << _T("/.CodeBlocks");
     if (!wxDirExists(templ))
         wxMkdir(templ, 0755);
 
@@ -383,9 +376,9 @@ void TemplateManager::SaveUserTemplate(cbProject* prj)
             return;
 
         title = dlg.GetValue();
-        if (!wxDirExists(templ + "/" + title))
+        if (!wxDirExists(templ + _T("/") + title))
         {
-            templ << "/" << title;
+            templ << _T("/") << title;
             wxMkdir(templ, 0755);
             break;
         }
@@ -398,19 +391,19 @@ void TemplateManager::SaveUserTemplate(cbProject* prj)
     // copy project and all files to destination dir
     int count = 0;
     int total_count = prj->GetFilesCount();
-    templ << "/";
+    templ << _T("/");
     wxFileName fname;
     for (int i = 0; i < total_count; ++i)
     {
         wxString src = prj->GetFile(i)->file.GetFullPath();
         wxString dst = templ + prj->GetFile(i)->relativeFilename;
-//        Manager::Get()->GetMessageManager()->DebugLog("Copying %s to %s", src.c_str(), dst.c_str());
+//        Manager::Get()->GetMessageManager()->DebugLog(_("Copying %s to %s"), src.c_str(), dst.c_str());
         if (!CreateDirRecursively(dst))
-            Manager::Get()->GetMessageManager()->DebugLog("Failed creating directory for %s", dst.c_str());
+            Manager::Get()->GetMessageManager()->DebugLog(_("Failed creating directory for %s"), dst.c_str());
         if (wxCopyFile(src, dst, true))
             ++count;
         else
-            Manager::Get()->GetMessageManager()->DebugLog("Failed copying %s to %s", src.c_str(), dst.c_str());
+            Manager::Get()->GetMessageManager()->DebugLog(_("Failed copying %s to %s"), src.c_str(), dst.c_str());
     }
     fname.Assign(prj->GetFilename());
     if (!wxCopyFile(prj->GetFilename(), templ + fname.GetFullName()))

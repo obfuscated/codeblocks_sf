@@ -33,7 +33,7 @@ SimpleTextLog::SimpleTextLog(wxNotebook* parent, const wxString& title)
     : MessageLog(parent)
 {
     wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
-	m_Text = new wxTextCtrl(this, ID_Text, "", wxDefaultPosition, wxDefaultSize, wxTE_READONLY | wxTE_MULTILINE | wxTE_RICH2);
+	m_Text = new wxTextCtrl(this, ID_Text, _T(""), wxDefaultPosition, wxDefaultSize, wxTE_READONLY | wxTE_MULTILINE | wxTE_RICH2);
     bs->Add(m_Text, 1, wxEXPAND | wxALL);
     SetAutoLayout(TRUE);
     SetSizer(bs);
@@ -50,7 +50,7 @@ void SimpleTextLog::AddLog(const wxString& msg, bool addNewLine)
 {
     m_Text->AppendText(msg);
     if (addNewLine)
-        m_Text->AppendText('\n');
+        m_Text->AppendText(_T('\n'));
     // there's a small glitch in wxTextCtrl
     // this is a hack to always show some text...
 	// (thanks to Kevin Altis's message in wx-users mailing list)

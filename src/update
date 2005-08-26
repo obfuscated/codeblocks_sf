@@ -11,7 +11,7 @@ ZIPCMD="zip"
 RESDIR="devel/share/CodeBlocks"
 echo Compressing core UI resources
 ${ZIPCMD} -j9 ${RESDIR}/resources.zip src/resources/*.xrc > /dev/null
-${ZIPCMD} -j9 ${RESDIR}/manager_resources.zip sdk/resources/*.xrc > /dev/null
+${ZIPCMD} -j9 ${RESDIR}/manager_resources.zip sdk/resources/*.xrc sdk/resources/images/*.png > /dev/null
 ${ZIPCMD} -j9 ${RESDIR}/start_here.zip src/resources/start_here/* > /dev/null
 echo Compressing plugins UI resources
 ${ZIPCMD} -j9 ${RESDIR}/astyle.zip plugins/astyle/resources/*.xrc > /dev/null
@@ -25,6 +25,8 @@ ${ZIPCMD} -j9 ${RESDIR}/todo.zip plugins/todo/resources/*.xrc > /dev/null
 echo Packing core UI bitmaps
 cd src/resources
 ${ZIPCMD} -0 ../../${RESDIR}/resources.zip images/*.png images/16x16/*.png > /dev/null
+#cd ../../sdk/resources
+#${ZIPCMD} -0 ../../${RESDIR}/manager_resources.zip images/*.png > /dev/null
 echo Packing plugins UI bitmaps
 cd ../../plugins/compilergcc/resources
 ${ZIPCMD} -0 ../../../${RESDIR}/compiler_gcc.zip images/*.png images/16x16/*.png > /dev/null

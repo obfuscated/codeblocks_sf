@@ -62,31 +62,31 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename)
         wxString line = input.ReadLine();
         if (line.IsEmpty())
         {
-            Manager::Get()->GetMessageManager()->DebugLog("Unsupported format.");
+            Manager::Get()->GetMessageManager()->DebugLog(_("Unsupported format."));
             return false;
         }
-        comps = GetArrayFromString(line, ",");
+        comps = GetArrayFromString(line, _T(","));
         line = comps[0];
         line.Trim(true);
         line.Trim(false);
-        if (line != "Microsoft Visual Studio Solution File")
+        if (line != _T("Microsoft Visual Studio Solution File"))
         {
-            Manager::Get()->GetMessageManager()->DebugLog("Unsupported format.");
+            Manager::Get()->GetMessageManager()->DebugLog(_("Unsupported format."));
             return false;
         }
         line = comps.GetCount() > 1 ? comps[1] : wxString(wxEmptyString);
         line.Trim(true);
         line.Trim(false);
-        if (line != "Format Version 7.00")
-            Manager::Get()->GetMessageManager()->DebugLog("Format not recognized. Will try to parse though...");
+        if (line != _T("Format Version 7.00"))
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Format not recognized. Will try to parse though..."));
     }
-    
+
     ImportersGlobals::UseDefaultCompiler = !askForCompiler;
     ImportersGlobals::ImportAllTargets = !askForTargets;
 
     int count = 0;
     cbProject* currentProject = 0;
-    wxString currentIdcode = "";
+    wxString currentIdcode = _T("");
     bool depSection = false;  // dependencies section
     bool globalDeps = false;  // global dependencies or project dependencies
     while (!file.Eof())
@@ -95,25 +95,25 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename)
         line.Trim(true);
         line.Trim(false);
 
-        if (line.StartsWith("Project(")) {
+        if (line.StartsWith(_T("Project("))) {
 // example wanted line:
 //Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OgreMain", "OgreMain\scripts\OgreMain.vcproj", "{35AFBABB-DF05-43DE-91A7-BB828A874015}"
-            wxArrayString keyvalue = GetArrayFromString(line, "=");
+            wxArrayString keyvalue = GetArrayFromString(line, _T("="));
             if (keyvalue.GetCount() != 2)
                 continue;
-        
+
             // the second part contains the project title and filename
-            comps = GetArrayFromString(keyvalue[1], ",");
+            comps = GetArrayFromString(keyvalue[1], _T(","));
             if (comps.GetCount() < 3)
                 continue;
-        
+
             // read project title and trim quotes
             wxString prjTitle = comps[0];
             prjTitle.Trim(true);
             prjTitle.Trim(false);
             if (prjTitle.IsEmpty())
                 continue;
-            if (prjTitle.GetChar(0) == '\"')
+            if (prjTitle.GetChar(0) == _T('\"'))
             {
                 prjTitle.Truncate(prjTitle.Length() - 1);
                 prjTitle.Remove(0, 1);
@@ -125,7 +125,7 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename)
             prjFile.Trim(false);
             if (prjFile.IsEmpty())
                 continue;
-            if (prjFile.GetChar(0) == '\"')
+            if (prjFile.GetChar(0) == _T('\"'))
             {
                 prjFile.Truncate(prjFile.Length() - 1);
                 prjFile.Remove(0, 1);
@@ -133,46 +133,46 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename)
 
             // read project idcode, i.e. "{35AFBABB-DF05-43DE-91A7-BB828A874015}"
             currentIdcode = comps[2];
-            currentIdcode.Replace("\"", "");
-            currentIdcode.Replace("{", "");
-            currentIdcode.Replace("}", "");
+            currentIdcode.Replace(_T("\""), _T(""));
+            currentIdcode.Replace(_T("{"), _T(""));
+            currentIdcode.Replace(_T("}"), _T(""));
 
             ++count;
             wxFileName wfname = filename;
             wxFileName fname = prjFile;
             fname.MakeAbsolute(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
-            Manager::Get()->GetMessageManager()->DebugLog("Found project '%s' in '%s'", prjTitle.c_str(), fname.GetFullPath().c_str());
+            Manager::Get()->GetMessageManager()->DebugLog(_("Found project '%s' in '%s'"), prjTitle.c_str(), fname.GetFullPath().c_str());
             currentProject = Manager::Get()->GetProjectManager()->LoadProject(fname.GetFullPath());
             if (currentProject) initDependencies(currentProject, currentIdcode);
         }
-        else if (line.StartsWith("GlobalSection(ProjectDependencies)")) {
+        else if (line.StartsWith(_T("GlobalSection(ProjectDependencies)"))) {
         	depSection = true;
         	globalDeps = true;
         }
-        else if (line.StartsWith("ProjectSection(ProjectDependencies)")) {
+        else if (line.StartsWith(_T("ProjectSection(ProjectDependencies)"))) {
         	depSection = true;
         	globalDeps = false;
         }
-        else if (depSection && (line.StartsWith("EndGlobalSection") || line.StartsWith("EndProjectSection"))) {
+        else if (depSection && (line.StartsWith(_T("EndGlobalSection")) || line.StartsWith(_T("EndProjectSection")))) {
         	depSection = false;
-        }        
-        else if (depSection && line.StartsWith("{")) { // start reading a dependency
-        	wxArrayString idx = GetArrayFromString(line, "=");
+        }
+        else if (depSection && line.StartsWith(_T("{"))) { // start reading a dependency
+        	wxArrayString idx = GetArrayFromString(line, _T("="));
         	if (idx.GetCount() != 2) continue;
         	if (globalDeps) {
 // {31635C8-67BF-4808-A918-0FBF822771BD}.0 = {658BFA12-8417-49E5-872A-33F0973544DC}
-// i.e. project on the left of '=' depend on the project on the right        		
-                idx[0]= idx[0].BeforeFirst('}');
-                idx[0].Replace("{", "");
-                idx[1].Replace("{", "");
-                idx[1].Replace("}", "");
+// i.e. project on the left of '=' depend on the project on the right
+                idx[0]= idx[0].BeforeFirst(_T('}'));
+                idx[0].Replace(_T("{"), _T(""));
+                idx[1].Replace(_T("{"), _T(""));
+                idx[1].Replace(_T("}"), _T(""));
                 addDependency(idx[0], idx[1]);
             }
             else {
 // {F87429BF-4583-4A67-BD6F-6CA8AA27702A} = {F87429BF-4583-4A67-BD6F-6CA8AA27702A}
 // i.e. both idcodes are the dependency
-                idx[1].Replace("{", "");
-                idx[1].Replace("}", "");
+                idx[1].Replace(_T("{"), _T(""));
+                idx[1].Replace(_T("}"), _T(""));
                 addDependency(currentIdcode, idx[1]);
             }
         }
@@ -223,25 +223,24 @@ void MSVC7WorkspaceLoader::resolveDependencies() {
                     target1 = sIt->second._project->GetBuildTarget(j);
                     target2 = p._project->GetBuildTarget(j);
                     wxString deps = target2->GetExternalDeps();
-                    deps <<target1->GetOutputFilename() << ';';
+                    deps <<target1->GetOutputFilename() << _T(';');
                     target2->SetExternalDeps(deps);
                     TargetType type = target1->GetTargetType();
                     if (type==ttDynamicLib) {
                         // target1->GetStaticLibFilename() do not work since it uses the filename instead of output filename
                         Compiler* compiler = CompilerFactory::Compilers[sIt->second._project->GetCompilerIndex()];
-                        wxString prefix = compiler->GetSwitches().libPrefix;                        
+                        wxString prefix = compiler->GetSwitches().libPrefix;
                         wxString suffix = compiler->GetSwitches().libExtension;
                         wxFileName fname = target1->GetOutputFilename();
                         if (!fname.GetName().StartsWith(prefix)) fname.SetName(prefix + fname.GetName());
-                        fname.SetExt(suffix);                        
+                        fname.SetExt(suffix);
                         target2->AddLinkLib(fname.GetFullPath());
                     }
                     else if (type==ttStaticLib) target2->AddLinkLib(target1->GetOutputFilename());
-               }                    
+               }
             }
-        }        
+        }
     }
-    
+
     //target->AddCommandsBeforeBuild(const wxString& command);
 }
-

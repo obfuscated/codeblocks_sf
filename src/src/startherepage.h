@@ -5,6 +5,7 @@
 
 extern wxString g_StartHereTitle;
 extern int idStartHerePageLink; // used to message the main frame
+extern int idStartHerePageVarSubst; // used to message the main frame
 
 class wxHtmlWindow;
 class wxHtmlLinkInfo;
@@ -16,6 +17,7 @@ class StartHerePage : public EditorBase
 		virtual ~StartHerePage();
 		
 		bool LinkClicked(const wxHtmlLinkInfo& link);
+		void SetPageContent(const wxString& buffer); // set the HTML content
         virtual bool VisibleToTree() { return false; }
 	protected:
 

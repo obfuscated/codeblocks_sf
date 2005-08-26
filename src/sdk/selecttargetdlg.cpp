@@ -42,7 +42,7 @@ SelectTargetDlg::SelectTargetDlg(wxWindow* parent, cbProject* project, int selec
 	m_Selected(selected)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgSelectTarget"));
+	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgSelectTarget"));
 	
 	wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
 	list->Clear();

@@ -65,6 +65,8 @@
                     <item>launch an external program</item>
                     <item>open it inside Code::Blocks editor</item>
                   </content>
+                  <dimension>1</dimension>
+                  <style>wxRA_SPECIFY_COLS</style>
                 </object>
                 <flag>wxLEFT|wxRIGHT|wxGROW</flag>
                 <border>8</border>

@@ -38,7 +38,7 @@ END_EVENT_TABLE()
 EnterInfoDlg::EnterInfoDlg(const PluginInfo& info)
 {
 	m_Info = info;
-	wxXmlResource::Get()->LoadDialog(this, Manager::Get()->GetAppWindow(), _("dlgPluginInfo"));
+	wxXmlResource::Get()->LoadDialog(this, Manager::Get()->GetAppWindow(), _T("dlgPluginInfo"));
 }
 
 EnterInfoDlg::~EnterInfoDlg()

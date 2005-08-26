@@ -41,7 +41,7 @@ END_EVENT_TABLE()
 ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf)
 	: m_ProjectFile(pf)
 {
-	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgProjectFileOptionsWRK"));
+	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgProjectFileOptionsWRK"));
 	
 	if (pf)
 	{
@@ -65,7 +65,7 @@ ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf)
 		XRCCTRL(*this, "chkCustomDeps", wxCheckBox)->SetValue(!pf->autoDeps);
 		XRCCTRL(*this, "txtCustomDeps", wxTextCtrl)->SetValue(pf->customDeps);
 		
-		SetTitle(_("Options for ") + wxString("\"") + pf->relativeFilename + wxString("\""));
+		SetTitle(_("Options for ") + wxString(_("\"")) + pf->relativeFilename + wxString(_("\"")));
 	}
     XRCCTRL(*this, "txtObjName", wxTextCtrl)->Enable(false);
 }

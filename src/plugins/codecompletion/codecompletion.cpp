@@ -63,18 +63,18 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
 	EVT_MENU(idMenuShowCallTip, CodeCompletion::OnShowCallTip)
 	EVT_MENU(idMenuGotoFunction, CodeCompletion::OnGotoFunction)
 	EVT_MENU(idClassMethod, CodeCompletion::OnClassMethod)
-	
+
 	EVT_EDITOR_AUTOCOMPLETE(CodeCompletion::OnCodeComplete)
 	EVT_EDITOR_CALLTIP(CodeCompletion::OnShowCallTip)
 	EVT_EDITOR_USERLIST_SELECTION(CodeCompletion::OnUserListSelection)
 	EVT_EDITOR_SAVE(CodeCompletion::OnReparseActiveEditor)
-	
+
 	EVT_PROJECT_OPEN(CodeCompletion::OnProjectOpened)
 	EVT_PROJECT_ACTIVATE(CodeCompletion::OnProjectActivated)
 	EVT_PROJECT_CLOSE(CodeCompletion::OnProjectClosed)
 	EVT_PROJECT_FILE_ADDED(CodeCompletion::OnProjectFileAdded)
 	EVT_PROJECT_FILE_REMOVED(CodeCompletion::OnProjectFileRemoved)
-	
+
 	EVT_CCLIST_CODECOMPLETE(CodeCompletion::OnCodeComplete)
 END_EVENT_TABLE()
 
@@ -82,26 +82,26 @@ CodeCompletion::CodeCompletion()
 {
     wxFileSystem::AddHandler(new wxZipFSHandler);
     wxXmlResource::Get()->InitAllHandlers();
-    wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
-    wxXmlResource::Get()->Load(resPath + "/code_completion.zip#zip:*.xrc");
+    wxString resPath = ConfigManager::Get()->Read(_T("data_path"), wxEmptyString);
+    wxXmlResource::Get()->Load(resPath + _T("/code_completion.zip#zip:*.xrc"));
 
-    m_PluginInfo.name = "CodeCompletion";
-    m_PluginInfo.title = "Code completion";
-    m_PluginInfo.version = "0.1";
-    m_PluginInfo.description = "This plugin provides a class browser for your projects "
+    m_PluginInfo.name = _T("CodeCompletion");
+    m_PluginInfo.title = _("Code completion");
+    m_PluginInfo.version = _T("0.1");
+    m_PluginInfo.description = _("This plugin provides a class browser for your projects "
                                "and code-completion inside the editor\n\n"
-                               "Note: Only C/C++ language is supported by this plugin...";
-    m_PluginInfo.author = "Yiannis An. Mandravellos";
-    m_PluginInfo.authorEmail = "info@codeblocks.org";
-    m_PluginInfo.authorWebsite = "www.codeblocks.org";
-    m_PluginInfo.thanksTo = "";
+                               "Note: Only C/C++ language is supported by this plugin...");
+    m_PluginInfo.author = _T("Yiannis An. Mandravellos");
+    m_PluginInfo.authorEmail = _T("info@codeblocks.org");
+    m_PluginInfo.authorWebsite = _T("www.codeblocks.org");
+    m_PluginInfo.thanksTo = _T("");
 	m_PluginInfo.hasConfigure = true;
 
     m_PageIndex = -1;
     m_EditMenu = 0L;
 	m_SearchMenu = 0L;
 
-	ConfigManager::AddConfiguration(m_PluginInfo.title, "/code_completion");
+	ConfigManager::AddConfiguration(m_PluginInfo.title, _T("/code_completion"));
 }
 
 CodeCompletion::~CodeCompletion()
@@ -127,7 +127,7 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
 //	if (m_EditMenu)
 //    	return; // already set-up
 
-    int pos = menuBar->FindMenu(_("Edit"));
+    int pos = menuBar->FindMenu(_("&Edit"));
     if (pos != wxNOT_FOUND)
     {
 		m_EditMenu = menuBar->GetMenu(pos);
@@ -137,7 +137,7 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
     }
     else
     	Manager::Get()->GetMessageManager()->DebugLog(_("Could not find Edit menu!"));
-    pos = menuBar->FindMenu(_("Search"));
+    pos = menuBar->FindMenu(_("Sea&rch"));
     if (pos != wxNOT_FOUND)
     {
 		m_SearchMenu = menuBar->GetMenu(pos);
@@ -155,7 +155,7 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
 
 	if (type == mtEditorManager)
 	{
-        int insertId = menu->FindItem("Insert...");
+        int insertId = menu->FindItem(_("Insert..."));
         if (insertId != wxNOT_FOUND)
         {
             wxMenuItem* insertMenu = menu->FindItem(insertId, NULL);
@@ -186,7 +186,7 @@ bool CodeCompletion::BuildToolBar(wxToolBar* toolBar)
 void CodeCompletion::OnAttach()
 {
 	m_NativeParsers.CreateClassBrowser();
-	
+
 	// parse all active projects
 	ProjectManager* prjMan = Manager::Get()->GetProjectManager();
 	for (unsigned int i = 0; i < prjMan->GetProjects()->GetCount(); ++i)
@@ -198,7 +198,7 @@ void CodeCompletion::OnRelease(bool appShutDown)
 	m_NativeParsers.RemoveClassBrowser(appShutDown);
 	m_NativeParsers.ClearParsers();
 	CCList::Free();
-	
+
 /* TODO (mandrav#1#): Delete separator line too... */
 	if (m_EditMenu)
 	{
@@ -213,7 +213,7 @@ int CodeCompletion::CodeComplete()
 {
 	if (!m_IsAttached)
 		return -1;
-	
+
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
     if (!edMan)
 		return -2;
@@ -231,7 +231,7 @@ int CodeCompletion::CodeComplete()
 		Manager::Get()->GetMessageManager()->DebugLog(_("Active editor has no associated parser ?!?"));
 		return -4;
 	}
-	
+
     if (m_NativeParsers.MarkItemsByAI(parser->Options().useSmartSense))
     {
         CCList::Free(); // free any previously open cc list
@@ -245,7 +245,7 @@ void CodeCompletion::CodeCompleteIncludes()
 {
 	if (!m_IsAttached)
 		return;
-	
+
     cbProject* pPrj = Manager::Get()->GetProjectManager()->GetActiveProject();
     if (!pPrj)
         return;
@@ -263,15 +263,15 @@ void CodeCompletion::CodeCompleteIncludes()
 	FileType ft = FileTypeOf(ed->GetShortName());
 	if ( ft != ftHeader && ft != ftSource) // only parse source/header files
 		return;
-    
+
     int pos = ed->GetControl()->GetCurrentPos();
     int lineStartPos = ed->GetControl()->PositionFromLine(ed->GetControl()->GetCurrentLine());
     wxString line = ed->GetControl()->GetLine(ed->GetControl()->GetCurrentLine());
     //Manager::Get()->GetMessageManager()->DebugLog("#include cc for \"%s\"", line.c_str());
     line.Trim();
-    if (line.IsEmpty() || !line.StartsWith("#include"))
+    if (line.IsEmpty() || !line.StartsWith(_T("#include")))
         return;
-    
+
     // find opening quote (" or <)
     int idx = pos - lineStartPos;
     int found = -1;
@@ -279,15 +279,15 @@ void CodeCompletion::CodeCompleteIncludes()
     while (idx > 0)
     {
         wxChar c = line.GetChar(idx);
-        if (c == '>')
+        if (c == _T('>'))
             return; // the quote is closed already...
-        else if (c == '"' || c == '<')
+        else if (c == _T('"') || c == _T('<'))
         {
             if (found != -1)
                 return; // the already found quote was the closing one...
             found = idx + 1;
         }
-        else if (c != ' ' && c != '\t' && !found)
+        else if (c != _T(' ') && c != _T('\t') && !found)
             filename << c;
         --idx;
     }
@@ -297,7 +297,7 @@ void CodeCompletion::CodeCompleteIncludes()
     //Manager::Get()->GetMessageManager()->DebugLog("#include using \"%s\" (starting at %d)", filename.c_str(), found);
     if (found == -1)
         return;
-    
+
     // fill a list of matching project files
     wxArrayString files;
     for (int i = 0; i < pPrj->GetFilesCount(); ++i)
@@ -310,12 +310,12 @@ void CodeCompletion::CodeCompleteIncludes()
             files.Add(fname.GetFullName());
         }
     }
-    
+
     if (files.GetCount() != 0)
     {
         files.Sort();
         ed->GetControl()->AutoCompSetIgnoreCase(caseSens);
-        ed->GetControl()->AutoCompShow(pos - lineStartPos - found, GetStringFromArray(files, " "));
+        ed->GetControl()->AutoCompShow(pos - lineStartPos - found, GetStringFromArray(files, _T(" ")));
     }
 }
 
@@ -336,11 +336,11 @@ void CodeCompletion::ShowCallTip()
 
 	if (!Manager::Get()->GetEditorManager())
 		return;
-		
+
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 	if (!ed)
 		return;
-	
+
 	wxArrayString items = GetCallTips();
 	wxString definition;
 	for (unsigned int i = 0; i < items.GetCount(); ++i)
@@ -348,7 +348,7 @@ void CodeCompletion::ShowCallTip()
 		if (!items[i].IsEmpty())
 		{
 			if (i != 0)
-				definition << '\n'; // add new-line, except for the first line
+				definition << _T('\n'); // add new-line, except for the first line
 			definition << items[i];
 		}
 	}
@@ -360,7 +360,7 @@ int CodeCompletion::DoClassMethodDeclImpl()
 {
 	if (!m_IsAttached)
 		return -1;
-	
+
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
     if (!edMan)
 		return -2;
@@ -415,14 +415,14 @@ void CodeCompletion::DoCodeComplete()
 
     int style = ed->GetControl()->GetStyleAt(ed->GetControl()->GetCurrentPos());
 //	Manager::Get()->GetMessageManager()->DebugLog(_("Style at %d is %d"), ed->GetControl()->GetCurrentPos(), style);
-//	Manager::Get()->GetMessageManager()->DebugLog(_("wxSTC_C_PREPROCESSOR is %d"), wxSTC_C_PREPROCESSOR);
-    if (style == wxSTC_C_PREPROCESSOR)
+//	Manager::Get()->GetMessageManager()->DebugLog(_("wxSCI_C_PREPROCESSOR is %d"), wxSCI_C_PREPROCESSOR);
+    if (style == wxSCI_C_PREPROCESSOR)
     {
         CodeCompleteIncludes();
         return;
     }
-    
-    if (style != wxSTC_C_DEFAULT && style != wxSTC_C_OPERATOR && style != wxSTC_C_IDENTIFIER)
+
+    if (style != wxSCI_C_DEFAULT && style != wxSCI_C_OPERATOR && style != wxSCI_C_IDENTIFIER)
         return;
 
 	CodeComplete();
@@ -431,10 +431,10 @@ void CodeCompletion::DoCodeComplete()
 void CodeCompletion::DoInsertCodeCompleteToken(wxString tokName)
 {
 	// remove arguments
-	int pos = tokName.Find("(");
+	int pos = tokName.Find(_T("("));
 	if (pos != wxNOT_FOUND)
 		tokName.Remove(pos);
-		
+
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
     if (!edMan)
     	return;
@@ -444,7 +444,7 @@ void CodeCompletion::DoInsertCodeCompleteToken(wxString tokName)
 
 	int end = ed->GetControl()->GetCurrentPos() > m_NativeParsers.GetEditorEndWord() ? ed->GetControl()->GetCurrentPos() : m_NativeParsers.GetEditorEndWord();
 	ed->GetControl()->SetSelection(m_NativeParsers.GetEditorStartWord(), end);
-	ed->GetControl()->ReplaceSelection("");
+	ed->GetControl()->ReplaceSelection(_T(""));
 	ed->GetControl()->InsertText(m_NativeParsers.GetEditorStartWord(), tokName);
 	ed->GetControl()->GotoPos(m_NativeParsers.GetEditorStartWord() + tokName.Length());
 }
@@ -523,7 +523,7 @@ void CodeCompletion::OnUpdateUI(wxUpdateUIEvent& event)
 	    m_EditMenu->Enable(idMenuCodeComplete, hasEd);
 	    m_EditMenu->Enable(idMenuShowCallTip, hasEd);
 	}
-	
+
 	if (m_SearchMenu)
 	{
 	    m_SearchMenu->Enable(idMenuGotoFunction, hasEd);
@@ -535,7 +535,7 @@ void CodeCompletion::OnUpdateUI(wxUpdateUIEvent& event)
 
 void CodeCompletion::OnCodeComplete(wxCommandEvent& event)
 {
-    if (ConfigManager::Get()->Read("/code_completion/use_code_completion", 1L) == 0)
+    if (ConfigManager::Get()->Read(_T("/code_completion/use_code_completion"), 1L) == 0)
         return;
     if (m_IsAttached)
 		DoCodeComplete();
@@ -560,7 +560,7 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
 
 	Parser parser(this);
 	parser.ParseBufferForFunctions(ed->GetControl()->GetText());
-	
+
 	wxArrayString funcs;
 	const TokensArray& tokens = parser.GetTokens();
 	for (unsigned int i = 0; i < tokens.GetCount(); ++i)
@@ -581,7 +581,7 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
             Token* token = tokens[i];
             if (token && token->m_DisplayName.Matches(sel))
             {
-                Manager::Get()->GetMessageManager()->DebugLog("Token found at line %d", token->m_Line);
+                Manager::Get()->GetMessageManager()->DebugLog(_("Token found at line %d"), token->m_Line);
                 ed->GetControl()->GotoLine(token->m_Line - 1);
             }
         }

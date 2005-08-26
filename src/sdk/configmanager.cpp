@@ -117,9 +117,9 @@ static void ExportGroup(wxConfigBase* conf, wxConfigBase* file, const wxString& 
     bool cont_group = conf->GetFirstGroup(group, group_cookie);
     while (cont_group)
     {
-        if (group != "*")
+        if (group != _T("*"))
         {
-            wxString path = (groupName != "/" ? groupName : "" ) + "/" + group;
+            wxString path = (groupName != _T("/") ? groupName : _T("")) + _T("/") + group;
     
             conf->SetPath(path);
             file->SetPath(path);
@@ -146,7 +146,7 @@ bool ConfigManager::ExportToFile(const wxString& filename, const ConfigurationPa
         return false;
     wxString oldpath = conf->GetPath();
 
-    wxFileConfig* file = new wxFileConfig("", "", filename, "", wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_NO_ESCAPE_CHARACTERS);
+    wxFileConfig* file = new wxFileConfig(_T(""), _T(""), filename, _T(""), wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_NO_ESCAPE_CHARACTERS);
     if (!file)
         return false;
 

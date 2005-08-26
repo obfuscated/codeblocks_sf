@@ -15,6 +15,7 @@
 				<Option object_output="..\..\..\.objs\plugins\contrib\devpak_plugin\bzip2"/>
 				<Option deps_output="..\..\..\.deps\plugins\devpak_plugin\bzip2"/>
 				<Option external_deps=""/>
+				<Option additional_depfiles=""/>
 				<Option type="2"/>
 				<Option compiler="0"/>
 				<Option createDefFile="1"/>
@@ -26,6 +27,7 @@
 				<Option object_output="..\..\..\.objs\plugins\contrib\devpak_plugin"/>
 				<Option deps_output="..\..\..\.deps\plugins\devpak_plugin"/>
 				<Option external_deps=""/>
+				<Option additional_depfiles=""/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option host_application="..\..\..\devel\codeblocks.exe"/>
@@ -45,14 +47,24 @@
 					<Add after="zip ..\..\..\devel\share\CodeBlocks\devpakupdater.zip *.xrc"/>
 				</ExtraCommands>
 			</Target>
+			<Environment>
+				<Variable name="WX_DIR" value="C:\Devel\wxWindows-2.4.2"/>
+			</Environment>
 		</Build>
 		<Compiler>
 			<Add directory="bzip2"/>
+			<Add directory="$(WX_DIR)\include"/>
+			<Add directory="$(WX_DIR)\contrib\include"/>
+			<Add directory="$(WX_DIR)\lib\mswdll"/>
 		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(WX_DIR)\include"/>
+		</ResourceCompiler>
 		<Linker>
 			<Add library="codeblocks"/>
 			<Add library="wxmsw242"/>
 			<Add directory="bzip2"/>
+			<Add directory="$(WX_DIR)\lib"/>
 		</Linker>
 		<Unit filename="bzip2\blocksort.c">
 			<Option compilerVar="CC"/>

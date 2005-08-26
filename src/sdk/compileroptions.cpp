@@ -79,7 +79,15 @@ void CompilerOptions::AddOption(const wxString& name,
 	if (name.IsEmpty() || (option.IsEmpty() && additionalLibs.IsEmpty()))
 		return;
 	CompOption* coption = new CompOption;
-	coption->name = name;
+	
+	wxString listboxname = name + _T("  [");
+	if (option.IsEmpty())
+        listboxname += additionalLibs;
+    else 
+        listboxname += option; 
+    listboxname += _T("]");
+
+	coption->name = listboxname;
 	coption->option = option;
 	coption->additionalLibs = additionalLibs;
 	coption->enabled = false;

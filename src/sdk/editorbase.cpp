@@ -66,8 +66,8 @@ wxString EditorBase::CreateUniqueFilename()
 EditorBase::EditorBase(wxWindow* parent, const wxString& filename)
     : wxPanel(parent, -1),
     m_IsBuiltinEditor(false),
-    m_Shortname(_("")),
-    m_Filename(_("")),
+    m_Shortname(_T("")),
+    m_Filename(_T("")),
     m_WinTitle(filename)
 {
     Manager::Get()->GetEditorManager()->AddCustomEditor(this);

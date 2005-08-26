@@ -42,10 +42,10 @@ cbWorkspace::cbWorkspace(const wxString& filename)
         wxString tmp;
         // if no filename given, use the default workspace
         tmp = wxGetHomeDir();
-        tmp << "/.CodeBlocks";
+        tmp << _T("/.CodeBlocks");
         if (!wxDirExists(tmp))
             wxMkdir(tmp, 0755);
-        tmp << "/" << DEFAULT_WORKSPACE;
+        tmp << _T("/") << DEFAULT_WORKSPACE;
         m_Filename = tmp;
         m_IsDefault = true;
 	}
@@ -70,7 +70,7 @@ void cbWorkspace::Load()
     wxString fname = m_Filename.GetFullPath();
     if (fname.IsEmpty())
         return;
-	Manager::Get()->GetMessageManager()->DebugLog("Loading workspace \"%s\"", fname.c_str());
+	Manager::Get()->GetMessageManager()->DebugLog(_("Loading workspace \"%s\""), fname.c_str());
 	
 	bool modified = false;
 	IBaseWorkspaceLoader* pWsp = 0;
@@ -99,12 +99,12 @@ bool cbWorkspace::Save(bool force)
     SANITY_CHECK(false);
 
     if (m_Filename.GetFullPath().IsEmpty())
-        return SaveAs("");
+        return SaveAs(_T(""));
 
     if (!force && !m_Modified)
         return true;
 
-	Manager::Get()->GetMessageManager()->DebugLog("Saving workspace \"%s\"", m_Filename.GetFullPath().c_str());
+	Manager::Get()->GetMessageManager()->DebugLog(_("Saving workspace \"%s\""), m_Filename.GetFullPath().c_str());
 	WorkspaceLoader wsp;
 	bool ret = wsp.Save(m_Title, m_Filename.GetFullPath());
     SetModified(!ret);

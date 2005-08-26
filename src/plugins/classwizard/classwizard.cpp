@@ -46,19 +46,19 @@ ClassWizard::ClassWizard()
 {
     wxFileSystem::AddHandler(new wxZipFSHandler);
     wxXmlResource::Get()->InitAllHandlers();
-    wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
-    wxXmlResource::Get()->Load(resPath + "/class_wizard.zip#zip:*.xrc");
+    wxString resPath = ConfigManager::Get()->Read(_T("data_path"), wxEmptyString);
+    wxXmlResource::Get()->Load(resPath + _T("/class_wizard.zip#zip:*.xrc"));
 
-    m_PluginInfo.name = "ClassWizard";
-    m_PluginInfo.title = "Class wizard";
-    m_PluginInfo.version = "0.1";
-    m_PluginInfo.description = "This plugin provides an easy way to create a "
-                               "new C++ class file pair. It's by no means "
-                               "complete yet but it's here nevertheless;)";
-    m_PluginInfo.author = "Yiannis An. Mandravellos";
-    m_PluginInfo.authorEmail = "info@codeblocks.org";
-    m_PluginInfo.authorWebsite = "www.codeblocks.org";
-    m_PluginInfo.thanksTo = "";
+    m_PluginInfo.name = _T("ClassWizard");
+    m_PluginInfo.title = _("Class wizard");
+    m_PluginInfo.version = _("0.2");
+    m_PluginInfo.description = _("This plugin provides an easy way to create a " \
+                               "new C++ class file pair. It's by no means " \
+                               "complete yet but it's here nevertheless;)");
+    m_PluginInfo.author = _("Yiannis An. Mandravellos");
+    m_PluginInfo.authorEmail = _("info@codeblocks.org");
+    m_PluginInfo.authorWebsite = _("www.codeblocks.org");
+    m_PluginInfo.thanksTo = _T("");
 	m_PluginInfo.hasConfigure = false;
 }
 

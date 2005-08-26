@@ -20,7 +20,7 @@ ProjectsFileMasksDlg::ProjectsFileMasksDlg(wxWindow* parent, FilesGroupsAndMasks
 	m_pOrigFileGroups(fgam),
 	m_LastListSelection(0)
 {
-	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgProjectsFileMasks"));
+	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgProjectsFileMasks"));
 
 	RebuildList();
 }
@@ -32,7 +32,7 @@ ProjectsFileMasksDlg::~ProjectsFileMasksDlg()
 
 void ProjectsFileMasksDlg::RebuildList()
 {
-	wxListBox* pList = XRCCTRL(*this, _("lstCategories"), wxListBox);
+	wxListBox* pList = XRCCTRL(*this, "lstCategories", wxListBox);
 	pList->Clear();
 	for (unsigned int i = 0; i < m_FileGroups.GetGroupsCount(); ++i)
 	{
@@ -47,8 +47,8 @@ void ProjectsFileMasksDlg::RebuildList()
 
 void ProjectsFileMasksDlg::ListChange()
 {
-	wxTextCtrl* pText = XRCCTRL(*this, _("txtFileMasks"), wxTextCtrl);
-	int sel = XRCCTRL(*this, _("lstCategories"), wxListBox)->GetSelection();
+	wxTextCtrl* pText = XRCCTRL(*this, "txtFileMasks", wxTextCtrl);
+	int sel = XRCCTRL(*this, "lstCategories", wxListBox)->GetSelection();
 	
 	if (sel != m_LastListSelection)
 	{
@@ -63,10 +63,10 @@ void ProjectsFileMasksDlg::ListChange()
 
 void ProjectsFileMasksDlg::OnUpdateUI(wxUpdateUIEvent& event)
 {
-	int sel = XRCCTRL(*this, _("lstCategories"), wxListBox)->GetSelection();
+	int sel = XRCCTRL(*this, "lstCategories", wxListBox)->GetSelection();
 
-	XRCCTRL(*this, _("btnEdit"), wxButton)->Enable(sel >= 0);
-	XRCCTRL(*this, _("btnDelete"), wxButton)->Enable(sel >= 0);
+	XRCCTRL(*this, "btnEdit", wxButton)->Enable(sel >= 0);
+	XRCCTRL(*this, "btnDelete", wxButton)->Enable(sel >= 0);
 }
 
 void ProjectsFileMasksDlg::OnAdd(wxCommandEvent& event)
@@ -76,16 +76,16 @@ void ProjectsFileMasksDlg::OnAdd(wxCommandEvent& event)
 	if (groupName.IsEmpty())
 		return;
 	m_FileGroups.AddGroup(groupName);
-	wxListBox* pList = XRCCTRL(*this, _("lstCategories"), wxListBox);
+	wxListBox* pList = XRCCTRL(*this, "lstCategories", wxListBox);
 	pList->Append(groupName);
 	pList->SetSelection(pList->GetCount() - 1);
 	ListChange();
-	XRCCTRL(*this, _("txtFileMasks"), wxTextCtrl)->SetFocus();
+	XRCCTRL(*this, "txtFileMasks", wxTextCtrl)->SetFocus();
 }
 
 void ProjectsFileMasksDlg::OnEdit(wxCommandEvent& event)
 {
-	wxListBox* pList = XRCCTRL(*this, _("lstCategories"), wxListBox);
+	wxListBox* pList = XRCCTRL(*this, "lstCategories", wxListBox);
 	wxString oldName = pList->GetStringSelection();
     wxString groupName = wxGetTextFromUser(_("Rename the group:"),
                                             _("Edit group"), oldName);
@@ -98,7 +98,7 @@ void ProjectsFileMasksDlg::OnEdit(wxCommandEvent& event)
 
 void ProjectsFileMasksDlg::OnDelete(wxCommandEvent& event)
 {
-	wxListBox* pList = XRCCTRL(*this, _("lstCategories"), wxListBox);
+	wxListBox* pList = XRCCTRL(*this, "lstCategories", wxListBox);
 	wxString name = pList->GetStringSelection();
     wxString caption;
     caption.Printf(_("Are you sure you want to delete the group \"%s\"?"), name.c_str());
@@ -121,7 +121,7 @@ void ProjectsFileMasksDlg::EndModal(int retCode)
 {
 	if (retCode == wxID_OK)
 	{
-		wxTextCtrl* pText = XRCCTRL(*this, _("txtFileMasks"), wxTextCtrl);
+		wxTextCtrl* pText = XRCCTRL(*this, "txtFileMasks", wxTextCtrl);
 		if (pText->GetValue() != m_FileGroups.GetFileMasks(m_LastListSelection))
 			m_FileGroups.SetFileMasks(m_LastListSelection, pText->GetValue());
 

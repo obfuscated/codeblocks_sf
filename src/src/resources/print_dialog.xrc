@@ -16,6 +16,8 @@
                 <item>Active editor</item>
                 <item>All open files</item>
               </content>
+              <dimension>1</dimension>
+              <style>wxRA_SPECIFY_COLS</style>
             </object>
             <flag>wxGROW</flag>
             <border>8</border>
@@ -30,6 +32,8 @@
                 <item>As on screen</item>
               </content>
               <selection>1</selection>
+              <dimension>1</dimension>
+              <style>wxRA_SPECIFY_COLS</style>
             </object>
             <flag>wxLEFT|wxGROW</flag>
             <border>8</border>

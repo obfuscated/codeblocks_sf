@@ -45,7 +45,7 @@ END_EVENT_TABLE()
 
 ConfigureToolsDlg::ConfigureToolsDlg(wxWindow* parent)
 {
-	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgConfigureTools"));
+	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgConfigureTools"));
 	DoFillList();
 }
 

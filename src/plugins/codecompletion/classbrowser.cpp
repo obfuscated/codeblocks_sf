@@ -140,7 +140,7 @@ void ClassBrowser::ShowMenu(wxTreeItemId id, const wxPoint& pt)
     if (menu->GetMenuItemCount() != 0)
 		menu->AppendSeparator();
 
-	wxMenu *sub = new wxMenu("");
+	wxMenu *sub = new wxMenu(_T(""));
     sub->AppendCheckItem(idCBViewInheritance, _("Show inherited members"));
     sub->AppendSeparator();
     sub->AppendRadioItem(idCBViewModeFlat, _("Flat"));

@@ -2,6 +2,7 @@
 #include <wx/txtstrm.h>
 #include <wx/wfstream.h>
 #include <wx/app.h> // wxPostEvent
+#include <wx/msgdlg.h>
 #include <wx/filename.h>
 
 DECLARE_EVT_CBNET(cbEVT_CBNET_CONNECT);
@@ -17,7 +18,8 @@ cbNetwork::cbNetwork(wxEvtHandler* parent, int id, const wxString& serverUrl)
     m_ServerURL(serverUrl),
     m_pStream(0),
     m_pURL(0),
-    m_Abort(false)
+    m_Abort(false),
+    m_Busy(false)
 {
 }
 
@@ -43,6 +45,11 @@ bool cbNetwork::IsConnected()
     return m_pStream != 0;
 }
 
+bool cbNetwork::IsBusy()
+{
+    return m_Busy;
+}
+
 void cbNetwork::Abort()
 {
     m_Abort = true;
@@ -55,7 +62,7 @@ void cbNetwork::SetServer(const wxString& serverUrl)
 
 void cbNetwork::Disconnect()
 {
-    Notify(cbEVT_CBNET_DISCONNECT, "Disconnected");
+    Notify(cbEVT_CBNET_DISCONNECT, _("Disconnected"));
     m_Abort = false;
     if (m_pStream)
         delete m_pStream;
@@ -70,14 +77,17 @@ bool cbNetwork::Connect(const wxString& remote)
 {
     Disconnect();
 
-    m_pURL = new wxURL(m_ServerURL + "/" + remote);
+    wxString sep = _T("/");
+    if (m_ServerURL.Last() == sep.GetChar(0) || remote.StartsWith(sep))
+        sep.Clear();
+    m_pURL = new wxURL(m_ServerURL + sep + remote);
     if (m_pURL->GetError() != wxURL_NOERR)
         return false;
     
     m_pStream = m_pURL->GetInputStream();
     if (m_pStream && m_pStream->IsOk())
     {
-        Notify(cbEVT_CBNET_CONNECT, "Connected");
+        Notify(cbEVT_CBNET_CONNECT, _("Connected"));
         return true;
     }
     return false;
@@ -104,6 +114,7 @@ bool cbNetwork::ReadFileContents(const wxString& remote, wxString& buffer)
 {
     if (!Connect(remote))
         return false;
+    m_Busy = true;
     wxString name = wxFileName(remote).GetFullName();
     FileInfo* info = PrivateGetFileInfo(remote);
     Notify(cbEVT_CBNET_START_DOWNLOAD, name, info ? info->size : 0);
@@ -112,17 +123,18 @@ bool cbNetwork::ReadFileContents(const wxString& remote, wxString& buffer)
     wxTextInputStream tis(*m_pStream);
     while (!m_Abort && !m_pStream->Eof())
     {
-        buffer += tis.ReadLine() + '\n';
+        buffer += tis.ReadLine() + _T('\n');
         Notify(cbEVT_CBNET_PROGRESS, name, buffer.Length());
     }
 
     if (m_Abort)
     {
-        Notify(cbEVT_CBNET_ABORTED, "Aborted");
+        Notify(cbEVT_CBNET_ABORTED, _("Aborted"));
         buffer.Clear();
     }
     Notify(cbEVT_CBNET_END_DOWNLOAD, name, m_Abort ? -1 : 0);
 
+    m_Busy = false;
     Disconnect();
     return true;
 }
@@ -131,6 +143,7 @@ bool cbNetwork::DownloadFile(const wxString& remote, const wxString& local)
 {
     if (!Connect(remote))
         return false;
+    m_Busy = true;
     wxString name = wxFileName(remote).GetFullName();
     
     // block to limit scope of "fos"
@@ -138,6 +151,7 @@ bool cbNetwork::DownloadFile(const wxString& remote, const wxString& local)
         wxFileOutputStream fos(local);
         if (!fos.Ok())
         {
+            m_Busy = false;
             Disconnect();
             return false;
         }
@@ -167,6 +181,7 @@ bool cbNetwork::DownloadFile(const wxString& remote, const wxString& local)
     }
     Notify(cbEVT_CBNET_END_DOWNLOAD, name, m_Abort ? -1 : 0);
 
+    m_Busy = false;
     Disconnect();
     return true;
 }

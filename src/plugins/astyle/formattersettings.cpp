@@ -13,7 +13,7 @@ FormatterSettings::~FormatterSettings()
 
 void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
 {
-    int style = ConfigManager::Get()->Read("/astyle/style", 0L);
+    int style = ConfigManager::Get()->Read(_T("/astyle/style"), 0L);
     switch(style)
     {
         case 0: // ansi
@@ -103,13 +103,13 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
             
         default: // Custom
         {
-            int spaceNum = ConfigManager::Get()->Read("/astyle/indentation", 4);
+            int spaceNum = ConfigManager::Get()->Read(_T("/astyle/indentation"), 4);
             bool value;
 
             formatter.modeSetManually = false;
             formatter.indentLength = spaceNum;
             
-            ConfigManager::Get()->Read("/astyle/use_tabs", &value);
+            ConfigManager::Get()->Read(_T("/astyle/use_tabs"), &value);
             if (value)
             {
                 formatter.indentString = '\t';
@@ -119,7 +119,7 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
                 formatter.indentString = string(spaceNum, ' ');
             }
 
-            ConfigManager::Get()->Read("/astyle/force_tabs", &value);
+            ConfigManager::Get()->Read(_T("/astyle/force_tabs"), &value);
             if (value)
             {
                 formatter.indentString = '\t';
@@ -130,46 +130,46 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
                 formatter.forceTabIndent = false;
             }
 
-            ConfigManager::Get()->Read("/astyle/convert_tabs", &value);
+            ConfigManager::Get()->Read(_T("/astyle/convert_tabs"), &value);
             formatter.convertTabs2Space = value;
             
-            ConfigManager::Get()->Read("/astyle/fill_empty_lines", &value);
+            ConfigManager::Get()->Read(_T("/astyle/fill_empty_lines"), &value);
             formatter.emptyLineIndent = value;
             
-            ConfigManager::Get()->Read("/astyle/indent_classes", &value);
+            ConfigManager::Get()->Read(_T("/astyle/indent_classes"), &value);
             formatter.classIndent = value;
             
-            ConfigManager::Get()->Read("/astyle/indent_switches", &value);
+            ConfigManager::Get()->Read(_T("/astyle/indent_switches"), &value);
             formatter.switchIndent = value;
             
-            ConfigManager::Get()->Read("/astyle/indent_case", &value);
+            ConfigManager::Get()->Read(_T("/astyle/indent_case"), &value);
             formatter.caseIndent = value;
             
-            ConfigManager::Get()->Read("/astyle/indent_brackets", &value);
+            ConfigManager::Get()->Read(_T("/astyle/indent_brackets"), &value);
             formatter.bracketIndent = value;
             
-            ConfigManager::Get()->Read("/astyle/indent_blocks", &value);
+            ConfigManager::Get()->Read(_T("/astyle/indent_blocks"), &value);
             formatter.blockIndent = value;
             
-            ConfigManager::Get()->Read("/astyle/indent_namespaces", &value);
+            ConfigManager::Get()->Read(_T("/astyle/indent_namespaces"), &value);
             formatter.namespaceIndent = value;
             
-            ConfigManager::Get()->Read("/astyle/indent_labels", &value);
+            ConfigManager::Get()->Read(_T("/astyle/indent_labels"), &value);
             formatter.labelIndent = value;
             
-            ConfigManager::Get()->Read("/astyle/indent_preprocessor", &value);
+            ConfigManager::Get()->Read(_T("/astyle/indent_preprocessor"), &value);
             formatter.preprocessorIndent = value;
             
-            wxString breakType = ConfigManager::Get()->Read("/astyle/break_type");
-            if (breakType == "Break")
+            wxString breakType = ConfigManager::Get()->Read(_T("/astyle/break_type"));
+            if (breakType == _T("Break"))
             {
             	formatter.bracketFormatMode = astyle::BREAK_MODE;
             }
-            else if (breakType == "Attach")
+            else if (breakType == _T("Attach"))
             {
             	formatter.bracketFormatMode = astyle::ATTACH_MODE;
             }
-            else if (breakType == "Linux")
+            else if (breakType == _T("Linux"))
             {
             	formatter.bracketFormatMode = astyle::BDAC_MODE;
             }
@@ -178,22 +178,22 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
             	formatter.bracketFormatMode = astyle::NONE_MODE;
             }
             
-            ConfigManager::Get()->Read("/astyle/break_blocks", &value);
+            ConfigManager::Get()->Read(_T("/astyle/break_blocks"), &value);
             formatter.breakBlocks = value;
             
-            ConfigManager::Get()->Read("/astyle/break_elseifs", &value);
+            ConfigManager::Get()->Read(_T("/astyle/break_elseifs"), &value);
             formatter.breakElseIfs = value;
             
-            ConfigManager::Get()->Read("/astyle/pad_operators", &value);
+            ConfigManager::Get()->Read(_T("/astyle/pad_operators"), &value);
             formatter.padOperators = value;
             
-            ConfigManager::Get()->Read("/astyle/pad_parentheses", &value);
+            ConfigManager::Get()->Read(_T("/astyle/pad_parentheses"), &value);
             formatter.padParen = value;
             
-            ConfigManager::Get()->Read("/astyle/keep_complex", &value);
+            ConfigManager::Get()->Read(_T("/astyle/keep_complex"), &value);
             formatter.breakOneLineStatements = !value;
             
-            ConfigManager::Get()->Read("/astyle/keep_blocks", &value);
+            ConfigManager::Get()->Read(_T("/astyle/keep_blocks"), &value);
             formatter.breakOneLineBlocks = !value;
             break;
         }

@@ -19,7 +19,7 @@ class PluginWizardDlg : public wxDialog
 		void OnOKClick(wxCommandEvent& event);
 		void OnNameChange(wxCommandEvent& event);
 		void DoGuardBlock();
-		void DoAddHeaderOption(wxString& buffer, bool has, const wxString& retVal = " -1");
+        void DoAddHeaderOption(wxString& buffer, bool has, const wxString& retVal = _T(" -1"));
 		void DoAddHeaderTool(wxString& buffer);
 		void DoAddHeaderCompiler(wxString& buffer);
 		void DoAddHeaderDebugger(wxString& buffer);
@@ -34,7 +34,7 @@ class PluginWizardDlg : public wxDialog
 		PluginInfo m_Info;
 		wxString m_Header;
 		wxString m_Implementation;
-		
+
         DECLARE_EVENT_TABLE()
 };
 

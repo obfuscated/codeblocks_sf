@@ -82,7 +82,7 @@ void MacrosManager::ReleaseMenu(wxMenuBar* menuBar)
 
 wxString MacrosManager::ReplaceMacros(const wxString& buffer, bool envVarsToo)
 {
-    SANITY_CHECK("");
+    SANITY_CHECK(_T(""));
 	wxString tmp = buffer;
 	ReplaceMacros(tmp, envVarsToo);
 	return tmp;
@@ -108,36 +108,36 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo)
 	if (envVarsToo)
         ReplaceEnvVars(buffer);
 
-	buffer.Replace("${AMP}", "&");
+	buffer.Replace(_T("${AMP}"), _T("&"));
 
 	cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
 	if (project)
 	{
 		wxFileName fname(project->GetFilename());
-		buffer.Replace("${PROJECT_FILENAME}", UnixFilename(fname.GetFullName()));
-		buffer.Replace("${PROJECT_NAME}", project->GetTitle());
-		buffer.Replace("${PROJECT_DIR}", UnixFilename(project->GetBasePath()));
-		buffer.Replace("${MAKEFILE}", UnixFilename(project->GetMakefile()));
+		buffer.Replace(_T("${PROJECT_FILENAME}"), UnixFilename(fname.GetFullName()));
+		buffer.Replace(_T("${PROJECT_NAME}"), project->GetTitle());
+		buffer.Replace(_T("${PROJECT_DIR}"), UnixFilename(project->GetBasePath()));
+		buffer.Replace(_T("${MAKEFILE}"), UnixFilename(project->GetMakefile()));
 		
 		wxString files;
 		for (int i = 0; i < project->GetFilesCount(); ++i)
-			files << UnixFilename(project->GetFile(i)->relativeFilename) << " ";
-		buffer.Replace("${ALL_PROJECT_FILES}", files);
+			files << UnixFilename(project->GetFile(i)->relativeFilename) << _T(" ");
+		buffer.Replace(_T("${ALL_PROJECT_FILES}"), files);
 	}
 	else
 	{
-		buffer.Replace("${PROJECT_FILENAME}", wxEmptyString);
-		buffer.Replace("${PROJECT_NAME}", wxEmptyString);
-		buffer.Replace("${PROJECT_DIR}", wxEmptyString);
-		buffer.Replace("${MAKEFILE}", wxEmptyString);
-		buffer.Replace("${ALL_PROJECT_FILES}", wxEmptyString);
+		buffer.Replace(_T("${PROJECT_FILENAME}"), wxEmptyString);
+		buffer.Replace(_T("${PROJECT_NAME}"), wxEmptyString);
+		buffer.Replace(_T("${PROJECT_DIR}"), wxEmptyString);
+		buffer.Replace(_T("${MAKEFILE}"), wxEmptyString);
+		buffer.Replace(_T("${ALL_PROJECT_FILES}"), wxEmptyString);
 	}
 
 	EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
 	if (editor)
-		buffer.Replace("${ACTIVE_EDITOR_FILENAME}", UnixFilename(editor->GetFilename()));
+		buffer.Replace(_T("${ACTIVE_EDITOR_FILENAME}"), UnixFilename(editor->GetFilename()));
 	else
-		buffer.Replace("${ACTIVE_EDITOR_FILENAME}", wxEmptyString);
+		buffer.Replace(_T("${ACTIVE_EDITOR_FILENAME}"), wxEmptyString);
 }
 
 void MacrosManager::ReplaceEnvVars(wxString& buffer)
@@ -145,8 +145,8 @@ void MacrosManager::ReplaceEnvVars(wxString& buffer)
 	SANITY_CHECK();
 
 	wxRegEx re[2];
-	re[0].Compile("(\\$[({]?)([A-Za-z_0-9]+)([)}]?)"); // $HOME, $(HOME) and ${HOME}
-	re[1].Compile("(%)([A-Za-z_0-9]+)(%)"); // %HOME%
+	re[0].Compile(_T("(\\$[({]?)([A-Za-z_0-9]+)([)}]?)")); // $HOME, $(HOME) and ${HOME}
+	re[1].Compile(_T("(%)([A-Za-z_0-9]+)(%)")); // %HOME%
 
     int count = 1;
 	while (count)
@@ -160,7 +160,7 @@ void MacrosManager::ReplaceEnvVars(wxString& buffer)
                 wxString envactual;
                 wxGetEnv(env, &envactual);
                 wxString before = re[i].GetMatch(buffer, 1) + env + re[i].GetMatch(buffer, 3);
-//                LOGSTREAM << "Converting " << before << " to " << envactual << '\n';
+//                LOGSTREAM << _("Converting ") << before << _(" to ") << envactual << _('\n');
                 buffer.Replace(before, envactual);
                 ++count;
             }

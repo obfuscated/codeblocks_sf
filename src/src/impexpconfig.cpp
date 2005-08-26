@@ -17,7 +17,7 @@ END_EVENT_TABLE()
 ImpExpConfig::ImpExpConfig(wxWindow* parent)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgImpExpConfig"));
+	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgImpExpConfig"));
 	
 	// fill list
 	wxCheckListBox* list = XRCCTRL(*this, "lstConf", wxCheckListBox);
@@ -37,7 +37,7 @@ ImpExpConfig::~ImpExpConfig()
 
 wxString ImpExpConfig::AskForFile(const wxString& msg, int flags)
 {
-    wxFileDialog dlg(this, msg, "", "", "*.*", flags);
+    wxFileDialog dlg(this, msg, _T(""), _T(""), _T("*.*"), flags);
     if (dlg.ShowModal() == wxID_OK)
         return dlg.GetPath();
     return wxEmptyString;

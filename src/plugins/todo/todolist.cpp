@@ -52,21 +52,21 @@ ToDoList::ToDoList()
 	//ctor
     wxFileSystem::AddHandler(new wxZipFSHandler);
     wxXmlResource::Get()->InitAllHandlers();
-    wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
-    wxXmlResource::Get()->Load(resPath + "/todo.zip#zip:*.xrc");
+    wxString resPath = ConfigManager::Get()->Read(_T("data_path"), wxEmptyString);
+    wxXmlResource::Get()->Load(resPath + _T("/todo.zip#zip:*.xrc"));
 
-	m_PluginInfo.name = "ToDoList";
-	m_PluginInfo.title = "To-Do List";
-	m_PluginInfo.version = "0.1";
-	m_PluginInfo.description = "Code::Blocks To-Do List plugin";
-    m_PluginInfo.author = "Yiannis An. Mandravellos";
-    m_PluginInfo.authorEmail = "info@codeblocks.org";
-    m_PluginInfo.authorWebsite = "www.codeblocks.org";
-	m_PluginInfo.thanksTo = "";
+	m_PluginInfo.name = _T("ToDoList");
+	m_PluginInfo.title = _("To-Do List");
+	m_PluginInfo.version = _T("0.1");
+	m_PluginInfo.description = _("Code::Blocks To-Do List plugin");
+    m_PluginInfo.author = _T("Yiannis An. Mandravellos");
+    m_PluginInfo.authorEmail = _T("info@codeblocks.org");
+    m_PluginInfo.authorWebsite = _T("www.codeblocks.org");
+	m_PluginInfo.thanksTo = _T("");
 	m_PluginInfo.license = LICENSE_GPL;
 	m_PluginInfo.hasConfigure = true;
 
-	ConfigManager::AddConfiguration(m_PluginInfo.title, "/todo_list");
+	ConfigManager::AddConfiguration(m_PluginInfo.title, _T("/todo_list"));
 }
 
 ToDoList::~ToDoList()
@@ -90,7 +90,7 @@ void ToDoList::OnAttach()
 	m_pListLog = new ToDoListView(msgMan, m_PluginInfo.title, 6, widths, titles, m_Types);
 	m_ListPageIndex = msgMan->AddLog(m_pListLog);
 
-    m_AutoRefresh = ConfigManager::Get()->Read("todo_list/auto_refresh", true);
+    m_AutoRefresh = ConfigManager::Get()->Read(_T("todo_list/auto_refresh"), true);
     LoadTypes();
 }
 
@@ -126,7 +126,7 @@ int ToDoList::Configure()
 {
     ToDoSettingsDlg dlg;
     if (dlg.ShowModal() == wxID_OK)
-        m_AutoRefresh = ConfigManager::Get()->Read("todo_list/auto_refresh", true);
+        m_AutoRefresh = ConfigManager::Get()->Read(_T("todo_list/auto_refresh"), true);
 	return 0;
 }
 
@@ -137,7 +137,7 @@ void ToDoList::LoadTypes()
 	wxString entry;
 	wxConfigBase* conf = ConfigManager::Get();
 	wxString oldPath = conf->GetPath();
-	conf->SetPath("/todo/types");
+	conf->SetPath(_T("/todo/types"));
 	bool cont = conf->GetFirstEntry(entry, cookie);
 	while (cont)
 	{
@@ -145,14 +145,21 @@ void ToDoList::LoadTypes()
 		cont = conf->GetNextEntry(entry, cookie);
 	}
 	conf->SetPath(oldPath);
+	if(m_Types.GetCount()==0)
+	{
+        m_Types.Add(_T("TODO"));
+        m_Types.Add(_T("FIXME"));
+        m_Types.Add(_T("NOTE"));
+	}
+    SaveTypes();
 }
 
 void ToDoList::SaveTypes()
 {
 	wxConfigBase* conf = ConfigManager::Get();
-	conf->DeleteGroup("/todo/types");
+	conf->DeleteGroup(_T("/todo/types"));
 	wxString oldPath = conf->GetPath();
-	conf->SetPath("/todo/types");
+	conf->SetPath(_T("/todo/types"));
 	for (unsigned int i = 0; i < m_Types.GetCount(); ++i)
 	{
 		conf->Write(m_Types[i], wxEmptyString);
@@ -192,9 +199,9 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
 		// calculate insertion point by skipping next newline
 		switch (control->GetEOLMode())
 		{
-			case wxSTC_EOL_CR:
-			case wxSTC_EOL_LF: crlfLen = 1; break;
-			case wxSTC_EOL_CRLF: crlfLen = 2; break;
+			case wxSCI_EOL_CR:
+			case wxSCI_EOL_LF: crlfLen = 1; break;
+			case wxSCI_EOL_CRLF: crlfLen = 2; break;
 		}
 		idx += crlfLen;
 	}
@@ -205,42 +212,42 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
     
 	// start with the comment
     if (dlg.GetCommentType() == tdctCpp && dlg.GetPosition() != tdpCurrent)
-		buffer << "// "; // if tdpCurrent we can't use this type of comment...
+		buffer << _T("// "); // if tdpCurrent we can't use this type of comment...
 	else
     {
         if (dlg.GetCommentType() == tdctWarning)
-            buffer << "#warning ";
+            buffer << _T("#warning ");
         else if (dlg.GetCommentType() == tdctError)
-            buffer << "#error ";
+            buffer << _T("#error ");
         else
-            buffer << "/* ";
+            buffer << _T("/* ");
     }
 
     // continue with the type
-	buffer << dlg.GetType() << " ";
+	buffer << dlg.GetType() << _T(" ");
 
 	// now do the () part
-	buffer << "(" << dlg.GetUser() << "#" << dlg.GetPriority() << "#): ";
+	buffer << _T("(") << dlg.GetUser() << _T("#") << dlg.GetPriority() << _T("#): ");
 
     wxString text = dlg.GetText();
     if (dlg.GetCommentType() != tdctC)
     {
         // make sure that multi-line notes, don't break the to-do
-        if (text.Replace("\r\n", "\\\r\n") == 0)
-            text.Replace("\n", "\\\n");
+        if (text.Replace(_T("\r\n"), _T("\\\r\n")) == 0)
+            text.Replace(_T("\n"), _T("\\\n"));
         // now see if there were already a backslash before newline
-        if (text.Replace("\\\\\r\n", "\\\r\n") == 0)
-            text.Replace("\\\\\n", "\\\n");
+        if (text.Replace(_T("\\\\\r\n"), _T("\\\r\n")) == 0)
+            text.Replace(_T("\\\\\n"), _T("\\\n"));
     }
 
 	// add the actual text
 	buffer << text;
 	
     if (dlg.GetCommentType() == tdctWarning || dlg.GetCommentType() == tdctError)
-        buffer << "";
+        buffer << _T("");
 
     else if (dlg.GetCommentType() == tdctC || dlg.GetPosition() == tdpCurrent)
-		buffer << " */";
+		buffer << _T(" */");
 
 	// add newline char(s), only if dlg.GetPosition() != tdpCurrent
 	if (dlg.GetPosition() != tdpCurrent)
@@ -248,9 +255,9 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
 		switch (control->GetEOLMode())
 		{
 			// NOTE: maybe this switch, should make it in the SDK (maybe as cbStyledTextCtrl::GetEOLString())???
-			case wxSTC_EOL_CR: buffer << '\n'; break;
-			case wxSTC_EOL_CRLF: buffer << "\r\n"; break;
-			case wxSTC_EOL_LF: buffer << '\r'; break;
+			case wxSCI_EOL_CR: buffer << _T("\n"); break;
+			case wxSCI_EOL_CRLF: buffer << _T("\r\n"); break;
+			case wxSCI_EOL_LF: buffer << _T("\r"); break;
 		}
 	}
 

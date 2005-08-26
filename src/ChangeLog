@@ -1,3 +1,1164 @@
+Changes for version 1.0-RC1-1
+-------------------------------
+
+2005-08-02 22:11  mandrav
+
+	* Updated win32 Makefile and setup file for 1.0-RC1-1
+
+2005-08-02 04:14  rickg22
+
+	* 	Moved "Close button" to the left
+
+2005-08-01 14:28  mandrav
+
+	* Updated unix project file and Makefile.unix
+	* Fixed editor caret and focus line disappearing under linux
+	* Fixed all dialogs to appear correctly under linux
+	* Enabled opened files tree under linux
+
+2005-08-01 14:23  mandrav
+
+	* Fixed editor caret and focus line disappearing under linux
+	* Fixed all dialogs to appear correctly under linux
+	* Enabled opened files tree under linux
+
+2005-08-01 12:45  mandrav
+
+	* Added configuration for editor's new close-button (disabled by
+	  default)
+
+2005-08-01 07:41  rickg22
+
+	* 	Added "close button" a-la Firefox to close tabs
+
+2005-07-31 13:28  mandrav
+
+	* Fixed more bugs in compiler "Run" command when the target's output
+	  or host application used environment variables. Should be OK now.
+
+2005-07-31 12:03  mandrav
+
+	* Fixed bug in compiler "Run" command when the target's output used
+	  environment variables
+
+2005-07-31 11:37  mandrav
+
+	* Merged latest change from VERSION_1_0, mainly regarding compiler
+	  options dialog
+
+2005-07-31 02:10  rickg22
+
+	* 	Revamped the design of the compiler settings to make it more
+	  user-friendly. Added "cancel button" for Compiler Settings and
+	  Project's Build Options.
+
+2005-07-31 02:03  rickg22
+
+	* 	Search and Settings menus were given more common shortcuts
+
+2005-07-31 01:44  byo_spoon
+
+	* 	Working on dragging layer
+
+2005-07-30 22:18  mandrav
+
+	* When pressing "Run" it checks if the project isn't built and
+	  displays a message (bug #1245691)
+
+2005-07-30 15:35  mandrav
+
+	* Enabled "Find" function for files without project (bug #1247438)
+
+2005-07-30 15:30  mandrav
+
+	* Fixed code-completion wrong type recognition when type was close
+	  to << (bug #1243639)
+
+2005-07-30 13:57  mandrav
+
+	* Improved MinGW detection from registry (patch #1247912 by zieQ)
+
+2005-07-30 13:48  mandrav
+
+	* Fixed notebook flickering while opening project files (thanks to
+	  Thomas).
+
+2005-07-30 13:20  mandrav
+
+	* Fixed wrong expanding of environment variables in the
+	  code-completion parser, resulting to innacurate parsing
+
+2005-07-30 12:56  mandrav
+
+	* Added patch for wxHandleFatalExceptions (patch #1236036 by
+	  orfanik)
+
+2005-07-30 12:49  mandrav
+
+	* Updated setup files to use a treeview for plugins selection
+	  (thanks to Julien Lecomte)
+	* Applied msvc loader patches from zieQ
+	* Applied elegant debugger tooltip fix from kjliew (along with a
+	  couple of improvements)
+
+2005-07-30 12:47  mandrav
+
+	* Updated setup files to use a treeview for plugins selection
+	  (thanks to Julien Lecomte)
+
+2005-07-30 12:35  mandrav
+
+	* Merged last updates from VERSION_1_0 branch
+
+2005-07-30 11:57  mandrav
+
+	* Fixed GCC commands for non-win32 platforms
+	* Debugger is now aware of environment variables
+
+2005-07-29 12:25  mandrav
+
+	* Fixed debugger tooltip evaluation not shown (bug #1240575)
+	* Added more options for the MSVC compiler (patch #1247085 by zieQ)
+	* When creating new file, do not default to .rc extension. Does not
+	  append an extension anymore.
+	* Fixed setting for default editor background color.
+
+2005-07-29 12:24  mandrav
+
+	* Fixed a small wx2.6 calculation error in debugger tooltip
+	  evaluation not shown (bug #1240575)
+
+2005-07-29 12:04  mandrav
+
+	* Fixed debugger tooltip evaluation not shown (bug #1240575)
+
+2005-07-29 11:55  mandrav
+
+	* Added more options for the MSVC compiler (patch #1247085 by zieQ)
+
+2005-07-29 11:41  mandrav
+
+	* When creating new file, do not default to .rc extension. Does not
+	  append an extension anymore.
+
+2005-07-29 03:45  byo_spoon
+
+	* 	Started working on size/position change using mouse
+
+2005-07-29 02:34  byo_spoon
+
+	* 	Minor bug fixes
+
+2005-07-28 10:32  ceniza
+
+	* 	Bugfix when adding a new help file. Any file can be added as help
+	  file and it'll run with the associated program. The beginning of
+	  crossplatform.
+
+2005-07-26 23:43  byo_spoon
+
+	* 	Minor bug fixes
+
+2005-07-26 21:00  mandrav
+
+	* Fix for correctly applying the editor background color.
+
+2005-07-25 22:28  mandrav
+
+	* Updated ChangeLog
+
+Changes for version 1.0-RC1
+-------------------------------
+
+2005-07-25 22:26  mandrav
+
+	* Fixed error, under certain circumstances, in output filename when
+	  importing MSVC projects (patch #1244692 by zieQ).
+	* Updated setup file (mingw bundle).
+	* Removed a compiler warning from editormanager.cpp.
+
+2005-07-25 22:05  mandrav
+
+	* Updated unix project files and makefiles
+	* Removed deletion of notebook in EditorManager's dtor (not owned)
+
+2005-07-25 02:26  rickg22
+
+	* 	Replaced wxmsw242 for wxmsw
+
+2005-07-25 00:28  mandrav
+
+	* Updated credits in about dialog
+	* Updated devpak plugin project file
+	* Updated setup file
+
+2005-07-24 23:59  mandrav
+
+	* Updated setup files and program version number
+	* Fixed some compiler warnings
+
+2005-07-24 23:58  mandrav
+
+	* 	file Download_OW.url was added on branch VERSION_1_0 on 2005-07-24
+	  20:59:49 +0000
+
+2005-07-24 23:58  mandrav
+
+	* 	file WiKi.url was added on branch VERSION_1_0 on 2005-07-24 20:59:49
+	  +0000
+
+2005-07-24 23:58  mandrav
+
+	* Updated setup files and program version number
+
+2005-07-23 12:16  mandrav
+
+	* Polished the "New project from template dialog" a bit.
+	* Updated the "Start here" page to display the app version
+	  (hardcoded for now).
+
+2005-07-22 12:19  mandrav
+
+	* Fixed more issues with custom vars in target's output and
+	  dependencies checking in direct-mode.
+	* When editing a custom variable the project is now marked dirty.
+
+2005-07-22 11:51  mandrav
+
+	* Fixed various issues with custom variables and paths-with-spaces
+	  handling.
+	* Custom variables can be used now in target's output, object output
+	  and dependencies output.
+
+2005-07-21 13:38  mandrav
+
+	* Updated templates to support targets-per-file added.
+	* Added OGRE project template.
+	* Added custom vars support in target's working dir.
+
+2005-07-21 13:33  mandrav
+
+	* 	file ogre_gcc.cbp was added on branch VERSION_1_0 on 2005-07-21
+	  10:38:35 +0000
+
+2005-07-21 13:33  mandrav
+
+	* 	file ogre_vctk.cbp was added on branch VERSION_1_0 on 2005-07-21
+	  10:38:35 +0000
+
+2005-07-21 13:33  mandrav
+
+	* 	file ogrelogo.png was added on branch VERSION_1_0 on 2005-07-21
+	  10:38:35 +0000
+
+2005-07-21 13:33  mandrav
+
+	* Updated templates to support targets-per-file added.
+	* Added OGRE project template.
+
+2005-07-21 13:33  mandrav
+
+	* 	file ogre-main.cpp was added on branch VERSION_1_0 on 2005-07-21
+	  10:38:35 +0000
+
+2005-07-21 13:33  mandrav
+
+	* 	file ogre.template was added on branch VERSION_1_0 on 2005-07-21
+	  10:38:35 +0000
+
+2005-07-21 12:21  mandrav
+
+	* Fixed deaded bug that would crash the app when loading the
+	  project's code-completion cache (under certain circumstances).
+	* Removed forgotten debugging logs from custom vars.
+
+2005-07-21 11:51  mandrav
+
+	* Fixed wrong handling of arguments with spaces in console_runner
+	  (bug #1241253).
+
+2005-07-21 11:31  mandrav
+
+	* Merged latest changes and bug-fixes from HEAD.
+	* Made small toolbar size (16x16) the default for new installations.
+
+2005-07-21 11:29  mandrav
+
+	* Reverted build target combobox in compiler's toolbar to its
+	  original size.
+
+2005-07-20 22:56  mandrav
+
+	* Merged latest fixes and updates from HEAD
+
+2005-07-20 20:53  mandrav
+
+	* 	file external_deps.xrc was added on branch VERSION_1_0 on 2005-07-20
+	  19:56:01 +0000
+
+2005-07-20 20:53  mandrav
+
+	* 	file externaldepsdlg.cpp was added on branch VERSION_1_0 on
+	  2005-07-20 19:56:01 +0000
+
+2005-07-20 20:53  mandrav
+
+	* 	file externaldepsdlg.h was added on branch VERSION_1_0 on 2005-07-20
+	  19:56:01 +0000
+
+2005-07-20 20:53  mandrav
+
+	* Added "additional output files" property in build targets. If the
+	  target's output or andy of these files are older than the external
+	  dependencies, the target is relinked. Useful especially for
+	  "commands only" targets where the target has unknown output (without
+	  this property).
+
+2005-07-19 12:53  mandrav
+
+	* Finally really fixed freezing (disappearing) workspace.
+
+2005-07-19 12:19  mandrav
+
+	* Fixed debugger not working when the debugger's log is not enabled
+	  (bug #1240575).
+	* Fixed debugger tooltip evaluation to stay open (bug #1240575).
+	* Fixed debugger's watches tree to remember it's open state after
+	  each refresh (bug #1240575).
+
+2005-07-18 14:51  mandrav
+
+	* Made code-completion custom variables aware (in include dirs)
+
+2005-07-18 13:30  mandrav
+
+	* Fixed issue with "disappearing" workspace on certain
+	  circumstances.
+
+2005-07-18 13:18  mandrav
+
+	* Fixed todo plugin not counting lines correctly in mixed
+	  line-endings files (bug #1207611)
+
+2005-07-18 13:03  mandrav
+
+	* Fixed some issues with pre-build and post-build steps (bug
+	  #1236730)
+
+2005-07-18 12:32  mandrav
+
+	* Open files tree splitter position is now saved (bug #1239862)
+
+2005-07-18 11:40  mandrav
+
+	* Updated GCC regexes (patch #1235978 by tiwag)
+	* Added "Defaults" button in compiler regexes configuration, to
+	  revert to factory-defaults
+
+2005-07-17 23:31  mandrav
+
+	* Fixed single-file compiling with GNU make.
+	* Fixed custom build commands issue when compiling with GNU make.
+	* Added more macros in custom build commands.
+	* Updated sdk.doxy for VERSION_1_0 branch.
+
+2005-07-17 21:04  mandrav
+
+	* Enabled File/Close and File/Save menu entries for editors other
+	  than builtin (i.e. cbEditor).
+
+2005-07-17 19:30  mandrav
+
+	* Fixed special issues when compiling single file not belonging in a
+	  project (not handling paths with spaces and crashing sometimes).
+	  Thanks to ceniza for pointing it out.
+
+2005-07-15 16:47  mandrav
+
+	* Added debugger option to display the debugger's raw output log
+	  (bug #1237624)
+
+2005-07-15 16:18  mandrav
+
+	* Fixed TODO entry lost and not recreated bug (Bug #1234517)
+
+2005-07-15 15:25  mandrav
+
+	* Added ability to compile single file not belonging to a project
+	  (rfe #1187697)
+
+2005-07-15 14:16  mandrav
+
+	* Fixed bug that wouldn't compile single file in a project
+
+2005-07-15 11:47  mandrav
+
+	* Fixed environment variables applying order (only tested with
+	  direct-build-mode)
+
+2005-07-14 23:46  mandrav
+
+	* Fixed the target type for "update" and "doc" in the wx2.6 project
+	  file.
+	* Fixed smart indent not working when typing at the end of file.
+
+2005-07-14 19:17  mandrav
+
+	* Fixed error in small debugger toolbar using one large icon
+
+2005-07-14 14:52  mandrav
+
+	* Updated wx2.6 project file
+
+2005-07-14 13:57  mandrav
+
+	* Changed signature of "void cbPlugin::BuiltToolbar()" to "bool
+	  cbPlugin::BuildToolbar()". Plugins should return true if they built
+	  a toolbar, false if not. (merged from HEAD)
+	* Moved plugins/compilergcc/customvars.(cpp/h) to sdk/
+	* Compiler's custom variables are now part of the SDK and can be
+	  configured in per-target level
+
+2005-07-13 11:32  mandrav
+
+	* Fixed "disappearing workspace" bug (merged in VERSION_1_0 branch)
+
+2005-07-12 08:58  rickg22
+
+	* 	Added more code to secure against "phantom lines" bug
+
+2005-07-09 07:49  rickg22
+
+	* 	Corrected minor details in the xml lexer
+
+2005-07-09 07:37  rickg22
+
+	* 	Implemented Lexer and Code folding for XML
+
+2005-07-08 20:47  byo_spoon
+
+	* 	Added new icons for wxListBox and wxComboBox
+
+2005-07-08 20:31  byo_spoon
+
+	* 	Added wxListBox maintained by cyberkoa
+
+2005-07-08 14:44  mandrav
+
+	* Minor bug-fix in compiler options dialog, regarding editing
+	  directories.
+
+2005-07-08 14:37  mandrav
+
+	* Fixed bug with the early env. vars substitution. Now they 're
+	  substituted before compilation.
+
+2005-07-08 12:49  mandrav
+
+	* Added MacrosManager::ReplaceEnvVars()
+	* All compiler options/directories support environment vars now
+	  (yes, templates too :) )
+	* Fixed "Make relative" dialog popped up twice when editing
+	  paths/filenames (patch #1234455 by CrayzeeIvan)
+	* Added template for QT-4.0.0 applications, provided by Martin
+	  Migasiewicz (patch #1234295)
+
+2005-07-08 01:03  byo_spoon
+
+	* 	Started working on code generation on-the-fly
+
+2005-07-07 10:37  mandrav
+
+	* Updated unix project file and Makefile.unix
+
+2005-07-07 02:06  rickg22
+
+	* 	Fixed bug #1208287 - unable to rename project
+
+2005-07-07 00:57  rickg22
+
+	* 	Finished fixing bug # 1232661 Message window height (size) is not
+	  stored
+
+2005-07-06 21:03  rickg22
+
+	* 	Fixed bug #1211251 - "select text mode" after source code updated
+	  outside C::B
+
+2005-07-05 16:57  mandrav
+
+	* Fixed bug with file groups and masks containing slashes or
+	  backslashes (bug #1232658).
+	* Removed some debugging statements in lexer loading.
+
+2005-07-05 16:28  mandrav
+
+	* Added support for the "this" keyword in code-completion (bug
+	  #1232372).
+
+2005-07-05 16:11  mandrav
+
+	* Fixed message window size not stored (bug #1232661) - at least
+	  when not set to auto-open
+
+2005-07-05 15:05  mandrav
+
+	* Updated all win32 wx2.6 build files :)
+
+2005-07-05 10:45  mandrav
+
+	* Added functionality to manually edit paths (patch #1232379 by
+	  CrayzeeIvan)
+	* Removed LinkLibDlg from compiler plugin (functionality provided by
+	  the above patch)
+	* Updated win32 project file and Makefile
+
+2005-07-04 23:53  mandrav
+
+	* Fixed StartHere page to work under linux
+
+2005-07-04 13:57  mandrav
+
+	* Added the target option to *not* use console_runner.exe for
+	  console projects (rfe #1209057).
+	* Bug fix in class parser not recognizing tokens starting with
+	  underscores (fix by Ceniza).
+	* Applied wx2.6.1 compatibility changes (patch #1230781 by orfanik)
+
+2005-07-04 12:27  mandrav
+
+	* Fixed crash bug when a duplicate lexer is loaded.
+
+2005-07-04 10:48  mandrav
+
+	* Added missing image files for patch #1231979 (debugger step-out)
+
+2005-07-04 10:44  mandrav
+
+	* Debugger: Added Step Out feature to enable quick exit of current {
+	  } block. Useful for bypassing for() and while() loop. (patch
+	  #1231979 by kjliew)
+	* Debugger: Stop can be used to kill hung debug session. (patch
+	  #1231979 by kjliew)
+	* Debugger: Added "Toggle breakpoint" and "Run to Cursor" to editor
+	  right-click menu. (patch #1231979 by kjliew)
+	* Debugger: Fixed "Run To Cursor" breakpoint not to use relative
+	  pathname, but only the filename. (patch #1231979 by kjliew)
+
+2005-07-04 00:15  mandrav
+
+	* Helped issue with FreeBSD build not finding the current app dir
+	  (binreloc error/bug?). If the base path is found to be empty, return
+	  the current dir (".")
+
+2005-07-03 17:52  mandrav
+
+	* Make sure all open files have valid content, after creating a new
+	  file/project becuase some of the new files might overwrite existing
+	  ones (bug #1225895)
+
+2005-07-03 13:50  mandrav
+
+	* Fixed bug with VCTK where libraries with 3 or less chars didn't
+	  get the ".lib" appended (bug #1218054)
+
+2005-07-03 13:26  mandrav
+
+	* Enabled contructors/destructors to appear in code-completion (bug
+	  #1229078)
+
+2005-07-03 13:12  mandrav
+
+	* Fixed "adding files too  slow" (bug #1231537)
+	* Added "add files recursively" option (rfe #1231603)
+	* Added MultiSelectDlg::SelectWildcard() function
+	* Updated win32 Makefile
+
+2005-07-03 10:58  mandrav
+
+	* Removed code that could lead to crash from the ClassBrowser
+	  destructor.
+
+2005-07-03 03:53  rickg22
+
+	* 	Completed support for custom editors in the Open Files Tree. Added
+	  virtual bool VisibleToTree() in editorbase.
+
+2005-07-03 03:05  rickg22
+
+	* 	Updated EditorManager to allow "queryclosing" of custom editors (was
+	  implemented, but not enabled)
+
+2005-07-03 02:56  rickg22
+
+	* 	Fix for bug #1231566: "Phantom" editor lines when closing file. (Fix
+	  attempt #1)
+
+2005-07-02 22:04  mandrav
+
+	* Bug-fix on styles not being set properly in AStyle plugin (by
+	  Ceniza)
+
+2005-07-02 20:48  rickg22
+
+	* 	Fixed bug [ 1231461 ] "Global compiler options" cause crash
+
+2005-07-01 23:11  mandrav
+
+	* Added comment/uncomment to overcome the limited functionality of
+	  "toggle comment" that was implemented (patch by CrayzeeIvan).
+	* Updated unix project file and Makefile.unix
+
+2005-07-01 21:58  mandrav
+
+	* Updated AStyle plugin to use aStyle-1.17.0-dev. Also fixed some
+	  settings not being applied. Contributed by Ceniza.
+
+2005-07-01 17:04  mandrav
+
+	* Added lexer files for "Hitachi H8 Assembler", provided by tiwag
+	* Added lexer files for GameMonkey scripts
+	* Fixed combobox drop-down size in language selection for editor
+	  colors
+
+2005-06-29 19:11  byo_spoon
+
+	* 	Added property for wxArrayString
+
+2005-06-29 15:40  byo_spoon
+
+	* 	Added mouse-blocking event handler for default widget preview
+
+2005-06-28 23:34  byo_spoon
+
+	* 	wxsComboBox base addeed by cyberkoa
+
+2005-06-28 16:45  mandrav
+
+	* Fixed win32 SDL template linker libs (thanks to
+	  Former_Drill_Instructor from the forums)
+
+2005-06-27 23:31  mandrav
+
+	* Updated lexers keywords specification.
+	* Added separate documentation comments configuration for C/C++
+	  lexer.
+
+2005-06-27 14:25  mandrav
+
+	* Correct fix for the "deadlock on file changed outside the IDE"
+	  (added cbEditor::Touch()).
+
+2005-06-27 11:08  mandrav
+
+	* Updated unix project file and Makefile.unix
+
+2005-06-26 20:17  mandrav
+
+	* Fixed workspace unfolding on every update (bug #1214926)
+
+2005-06-26 19:32  mandrav
+
+	* Fixed "dead-lock" when a file is modified outside the IDE and the
+	  IDE is minimized (bug #1222697)
+
+2005-06-26 19:06  mandrav
+
+	* Enable GDB breakpoints on constructors/destructors. Works with GDB
+	  6.3.1 (patch #1227446 by kjliew)
+	* Allow using "Step into" to start a debugging session (patch
+	  #1227446 by kjliew)
+	* Close/kill a debug session if C::B is shutting down (patch
+	  #1227446 by kjliew)
+	* Breakpoints fix for DLL source files (patch #1227446 by kjliew)
+	* Enabled "Find in files" when no editor is open
+	* Added README.txt in lexers dir with *rough* comments on usage.
+
+2005-06-25 00:53  mandrav
+
+	* Updates to the new editor color sets (themes) XML system.
+	* Added theme for win32 resources (*.rc)
+
+2005-06-24 16:56  mandrav
+
+	* Re-designed the editor color sets (themes). Configuration is now
+	  loaded from XML files, one file per-language. Two languages are
+	  currently provided: C/C++ and Lua. More languages can be added by
+	  merely adding XML files :)
+
+2005-06-21 12:17  mandrav
+
+	* Included "settings.h" in editorbase.h (or all derived editors
+	  should)
+
+2005-06-21 12:12  mandrav
+
+	* Fixed bug in debugger's backtrace window (when cleared, the
+	  columns weren't recreated rendering it useless).
+
+2005-06-21 12:08  mandrav
+
+	* When the max compiler errors limit is reached, a message stating
+	  it is being added in the compiler log, so that the user knows that
+	  there are more errors with his code but are not shown.
+	* Applied patch for "Debug->Run to cursor" to be enabled during
+	  debugging too (patch submitted by kjliew in bug #1223029)
+
+2005-06-21 11:49  mandrav
+
+	* Applied regex patch for compiler's depslib (patch #1224472
+	  submitted by joaander)
+
+2005-06-21 11:30  mandrav
+
+	* Added smart as-you-type indentation in editor
+	* Added editor configuration option to enable/disable smart
+	  indentation
+
+2005-06-18 18:52  rickg22
+
+	* 	Added DLLIMPORT clause to messagemanager.h
+
+2005-06-18 18:40  rickg22
+
+	* 	Removed conflicting DLLIMPORT from startherepage.cpp
+
+2005-06-18 18:40  rickg22
+
+	* 	Editormanager's Queryclose now works with EditorBase
+
+2005-06-17 12:30  mandrav
+
+	* Fixed output parsing for all compilers to "understand" the "-"
+	  character in filenames (bug #1206508).
+
+2005-06-17 12:22  mandrav
+
+	* Fixed handling of files without extension by the default MIME
+	  handler plugin (bug #1205788).
+
+2005-06-17 11:46  mandrav
+
+	* Fixed recognition of linker libraries when importing Dev-Cpp
+	  projects (bug #1213209).
+	* Fixed resource files linking setting when importing Dev-Cpp
+	  projects (bug #1213209).
+
+2005-06-17 11:25  mandrav
+
+	* Made "single-instance-check" configurable in environment settings
+	  (need to be disabled to develop C::B!)
+	* Updated win32 Makefile
+
+2005-06-17 11:07  mandrav
+
+	* Implemented running instances check and allow only one instance
+	  running (bug #1214922).
+
+2005-06-17 09:47  rickg22
+
+	* 	Added support for context menu's in EditorBase class.
+
+2005-06-16 21:21  mandrav
+
+	* Fixed code-completion popping up after the "." or "->" operators
+	  even when it shouldn't - like pressing shortcut keys like Ctrl-C
+	  (bug #1221020)
+
+2005-06-16 20:44  mandrav
+
+	* Fixed "Categorize by file types" not working in the project tree
+	  submenu (bug #1221458)
+
+2005-06-16 20:38  mandrav
+
+	* Fixed crash when search-in-files returned no results (bug
+	  #1221560)
+
+2005-06-16 08:18  rickg22
+
+	* 	Fixed incompatibility with VC++ (changed struct Tool to class Tool)
+
+2005-06-16 07:23  rickg22
+
+	* 	Added "openfilestree.h" which contains wxTreeItemData definitions
+	  (used by cbProject and EditorManager)
+
+2005-06-16 06:18  rickg22
+
+	* 	Removed useless editor interface option from the environment
+	  settings dialog (bug #1221373)
+
+2005-06-16 06:17  rickg22
+
+	* 	Replaced include "editorbase.h" for a class declaration to speed up
+	  compile times
+
+2005-06-15 16:24  mandrav
+
+	* Fixed force re-linking when external dependencies are updated (bug
+	  #1215105). External dependencies are set in project properties.
+
+2005-06-15 15:32  mandrav
+
+	* Fixed default file filter for Project->Open (bug #1213466).
+
+2005-06-15 15:26  mandrav
+
+	* Made object filename (in project file properties) read-only (bug
+	  #1216213).
+
+2005-06-15 15:21  mandrav
+
+	* Fixed output filename always converted to lowercse (bug #1216213).
+	  Also fixed it project-wide...
+
+2005-06-15 13:58  mandrav
+
+	* Fixed bug with post-build commands not loaded when pre-build
+	  commands exist (bug #1218938)
+
+2005-06-15 13:53  mandrav
+
+	* Fixed toolbar visibility not saved (bug #1215013)
+
+2005-06-15 07:22  rickg22
+
+	* 	Revamped Editorbase class. Filenames, customizable context menus
+	  available for all subclasses. Default context menu includes all
+	  "save" and "close" items.
+
+2005-06-10 16:05  mandrav
+
+	* Fixed bug in "Search->Goto function" (introduced earlier)
+
+2005-06-10 13:11  mandrav
+
+	* Fixed wrong static library linker command line for DigitalMars
+	  (bug #1209395)
+
+2005-06-10 12:50  mandrav
+
+	* Fixed "save-all doesn't refresh open files tree" (bug #1216529)
+	* Modified files in open files tree use different icon now instead
+	  of '*' (rfe #1216535) * "Save" menu item in open files tree context
+	  menu doesn't display now, if the file is not modified
+
+2005-06-10 11:44  mandrav
+
+	* Display full info on file's functions (instead of just the name)
+	  in "Search->Goto function" (bug #1217442)
+
+2005-06-10 11:41  mandrav
+
+	* Added "Remove files" and "Project tree" menu items in project tree
+	  context menu (rfe #1211361)
+
+2005-06-10 09:37  rickg22
+
+	* 	Changed "Execution Parameters" to "Program Arguments"
+
+2005-06-10 09:24  rickg22
+
+	* 	Added "Save, Save All" to cbEditor's context menu entry
+
+2005-06-09 08:42  rickg22
+
+	* 	Fixed memory leak in editor context menu.
+	* Simplified context menu for open files tree
+
+2005-06-09 08:42  rickg22
+
+	* 	Fixed redundant class selector in constructor
+
+2005-06-07 22:03  mandrav
+
+	* Added editor's context menu in the open files tree (rfe #1216570)
+
+2005-06-07 12:16  mandrav
+
+	* Added "not implemented" message in "import configuration"
+	  function... (bug #1215460)
+
+2005-06-07 01:30  byo_spoon
+
+	* 	Added icons for widgets
+
+2005-06-01 14:09  mandrav
+
+	* Minor bug fix
+
+2005-05-31 22:37  mandrav
+
+	* Updated OpenWatcom support (patch #1211424 from Carl Young)
+	* Removed wlib_wrapper OpenWatcom static lib wrapper (no longer
+	  needed)
+
+2005-05-30 00:56  mandrav
+
+	* Updated linux project file for wx2.6 and Makefile.unix.wx2.6
+
+2005-05-29 20:30  mandrav
+
+	* Updated linux project file and Makefile.unix
+
+2005-05-29 19:54  mandrav
+
+	* Fixed "default workspace" bug, introduced in last commit
+
+2005-05-29 12:05  mandrav
+
+	* Removed forgotten hard-coded limit of 50 max logged compiler
+	  errors and made it configurable (bug #1210561)
+
+2005-05-29 11:50  mandrav
+
+	* Fixed saving workspace
+
+2005-05-29 05:39  rickg22
+
+	* 	Fixed Notebook+Shift-Tab bug
+
+2005-05-29 02:49  byo_spoon
+
+	* 	Can add new dialogs now
+
+2005-05-29 01:04  rickg22
+
+	* 	Fixed bug in FindInFiles which showed report for unexistent files in
+	  project
+
+2005-05-29 00:48  mandrav
+
+	* Fixed crash bug with some links of the "Start here" page (bug
+	  #1210471)
+	* Added rudimentary compiler support for OpenWatcom thanks to an
+	  anonymous user who provided me the details (no compiler options yet)
+	* Added wlib_wrapper project for building static libs with
+	  OpenWatcom
+
+2005-05-28 23:04  mandrav
+
+	* Added patch #1210465: Jump to definition on double-click in class
+	  browser
+
+2005-05-28 22:44  rickg22
+
+	* 	Added more tips
+
+2005-05-28 19:26  mandrav
+
+	* Implemented "Find In Files" ;)
+
+2005-05-28 15:08  byo_spoon
+
+	* 	Added event system to handle global events
+
+2005-05-28 13:24  mandrav
+
+	* Added editor configuration for the tab text displaying file's name
+	  only or relative filename from project file
+
+2005-05-28 12:55  mandrav
+
+	* Updated files for wx2.6
+
+2005-05-28 10:55  byo_spoon
+
+	* 	Added some missing files
+
+2005-05-28 08:10  rickg22
+
+	* 	Added shortcuts to emulate MDI behavior:
+	  Ctrl-F4,Ctrl-Shift-F4,Ctrl-F6,Ctrl-Shift-F6.
+
+2005-05-28 01:32  byo_spoon
+
+	* 	Unified event handling for previewed widgets, added wxToggleButton,
+	  fixed scrollbars bug for widgets palette
+
+2005-05-27 22:34  mandrav
+
+	* Fixed bug that wouldn't save regex's in advanced compiler options,
+	  if edited a regex and pressed OK directly.
+
+2005-05-27 19:53  mandrav
+
+	* Fixed crash bug when opening a project using an invalid compiler
+	  (bug #1209789)
+
+2005-05-27 19:26  mandrav
+
+	* Fixed crashes when launching for the first time and there is no
+	  C::B configuration stored.
+
+2005-05-27 18:03  byo_spoon
+
+	* 	Fixed bug with editor's placement
+
+2005-05-27 16:53  byo_spoon
+
+	* 	First attempt to fix incompatibilities with new editor system
+
+2005-05-27 14:43  mandrav
+
+	* Updated Makefile with the latest changes
+
+2005-05-27 14:41  mandrav
+
+	* Converted from MDI to wxNotebook :)
+	* Note to plugin developers: Manager::Get()->GetAppWindow() now
+	  returns a wxFrame as opposed to wxMDIParentFrame. Also, EditorBase
+	  is now a wxPanel instead of wxMDIChildFrame.
+	* Added two new SDK events: EVT_APP_STARTUP_DONE (fires when app
+	  finished loading) and EVT_APP_START_SHUTDOWN (fires just before app
+	  starts shutting down).
+	* Added "Start here" page with common tasks (can be disabled in env.
+	  settings).
+
+2005-05-27 11:51  byo_spoon
+
+	* 	Removes dome bugs
+
+2005-05-27 03:41  byo_spoon
+
+	* 	Fixed dbugs with properties panel, added easy widget deefinition
+	  system
+
+2005-05-26 02:35  byo_spoon
+
+	* 	Xrc-saving system is working now, rededsigned xml generation system
+	  a little bit
+
+2005-05-25 22:46  mandrav
+
+	* Used wxListCtrl::ClearAll() instead of wrongly used
+	  wxListCtrl::Clear() in debuggergdb/backtracedlg.cpp
+
+2005-05-25 19:39  byo_spoon
+
+	* 	Fixed bugs with wx 2.4 sizers
+
+2005-05-25 12:54  byo_spoon
+
+	* 	Switched to wxWidgets 2.4
+
+2005-05-25 12:52  mandrav
+
+	* Correct fix for link command bug
+	* Added DevPak plugin
+
+2005-05-25 11:09  mandrav
+
+	* Fixed recently introduced compiler bug that wouldn't link the
+	  output file if no objects needed to be compiled.
+
+2005-05-24 12:56  byo_spoon
+
+	* 	Added ability to create and delete widgets inside form
+
+2005-05-23 23:27  mandrav
+
+	* Fixed bug in resizing the manager tree when it was on the right
+	  side of the app
+
+2005-05-23 23:17  byo_spoon
+
+	* 	First Update
+
+2005-05-23 15:51  mandrav
+
+	* Updated included TinyXML to export its classes.
+	* Fixed "Close all projects" which was not working.
+
+2005-05-23 12:12  mandrav
+
+	* Added wxSmith (RAD editor) plugin in plugins/contrib/wxSmith.
+	  Maintainer: byo
+
+2005-05-23 00:07  mandrav
+
+	* Added stream logging (e.g. LOGSTREAM << "Hello world\n") - look
+	  documentation in messagemanager.h
+	* Fixed bugs occuring when using projects/targets with invalid
+	  compiler (e.g. from another machine/OS)
+	* Fixed UI glitch when repositioning the manager tree in an empty
+	  workspace
+	* Added "auto-hide" operation for message pane (experimental)
+	* Added environment configuration for message pane "auto-hide"
+	  functionality and default/blank workspace loading on startup
+	* Don't ask to save the default workspace, if it is not loaded at
+	  start-up (new configuration option)
+	* Ignore read-only files when checking for modifications outside the
+	  IDE (bug #1206222)
+
+2005-05-21 14:09  mandrav
+
+	* Fixed crash when debugging a project/target configured to use an
+	  invalid debugger
+
+2005-05-21 14:09  mandrav
+
+	* Fixed crash when compiling a project/target configured to use an
+	  invalid compiler
+
+2005-05-20 16:37  mandrav
+
+	* Fixed compiling projects with different compilers per target, when
+	  using GNU "make".
+
+2005-05-20 10:37  mandrav
+
+	* Made manager tree dockable on the left *or* right side of the IDE
+	  (View->Manager position).
+
+2005-05-19 16:53  mandrav
+
+	* Removed "Commands" compiler options page when showing global
+	  options (it's not a global option)
+	* Removed "Custom vars" compiler options page when showing
+	  non-global options (it's a global option)
+
+2005-05-19 16:43  mandrav
+
+	* Fixed "some compiler messages wrongly colored as errors" issue
+	  (bug #1198732)
+
+2005-05-19 16:16  mandrav
+
+	* Added 'strip' option to GCC
+
+2005-05-19 16:03  mandrav
+
+	* Added "always run" checkbox for pre/post-build commands.
+
+2005-05-18 15:09  mandrav
+
+	* Fixed compiler bug that would use the project-wide compiler for
+	  all targets. This was clearly wrong, as we can configure the
+	  compiler per-target... (still needs work for Makefiles though)
+	* Made pre/post build steps run no matter if the linking phase runs
+	  or not (as per the relevant forums discussion).
+
+2005-05-16 16:59  mandrav
+
+	* Fixed code-completion to correctly understand what function the
+	  cursor is in (didn't work for functions not under a
+	  class/namespace).
+	* Added folder plugins/contrib for hosting third-party plugins,
+	  maintained by their authors. All contributed plugins will have their
+	  own project file and will not be included in the normal Code::Blocks
+	  build.
+	* Added the first third-party contributed plugin: HelpPlugin. It was
+	  contributed by bourricot and will be maintained by him. Located in
+	  plugins/contrib/help_plugin.
+
+2005-05-16 10:35  mandrav
+
+	* Changed version to 1.0-cvs
+	* Updated (not officially supported) linux build files for
+	  wxWidgets-2.6.0
+
 Changes for version 1.0-finalbeta
 -------------------------------
 

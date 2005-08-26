@@ -3,8 +3,8 @@
 
 #include <wx/string.h>
 
-#define COMPILER_SIMPLE_LOG     "CB_SLOG:"
-#define COMPILER_TARGET_CHANGE  "TARGET:"
+#define COMPILER_SIMPLE_LOG _T("CB_SLOG:")
+#define COMPILER_TARGET_CHANGE  _T("TARGET:")
 
 WX_DEFINE_ARRAY(ProjectFile*, MyFilesArray); // keep our own copy, to sort it by file weight (priority)
 

@@ -29,15 +29,15 @@ pfDetails::pfDetails(DirectCommands* cmds, ProjectBuildTarget* target, ProjectFi
     source_file_absolute_native = pf->file.GetFullPath();
 
     tmp = pf->GetObjName();
-    object_file_native = (target ? target->GetObjectOutput() : ".") +
+    object_file_native = (target ? target->GetObjectOutput() : _T(".")) +
                           sep +
                           tmp.GetFullPath();
     wxFileName o_file(object_file_native);
     o_file.MakeAbsolute(prjbase.GetFullPath());
     object_dir_native = o_file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
     object_file_absolute_native = o_file.GetFullPath();
-    tmp.SetExt("depend");
-    dep_file_native = (target ? target->GetDepsOutput() : ".") +
+    tmp.SetExt(_T("depend"));
+    dep_file_native = (target ? target->GetDepsOutput() : _T(".")) +
                       sep +
                       tmp.GetFullPath();
     wxFileName d_file(dep_file_native);
@@ -86,11 +86,11 @@ DirectCommands::DirectCommands(CompilerGCC* compilerPlugin, Compiler* compiler, 
     depsStart();
     wxFileName cwd;
     cwd.Assign(m_pProject->GetBasePath());
-    depsSetCWD(cwd.GetPath(wxPATH_GET_VOLUME).c_str());
+    depsSetCWD(cwd.GetPath(wxPATH_GET_VOLUME).mb_str());
 
     wxFileName fname(m_pProject->GetFilename());
-    fname.SetExt("depend");
-    depsCacheRead(fname.GetFullPath().c_str());
+    fname.SetExt(_T("depend"));
+    depsCacheRead(fname.GetFullPath().mb_str());
 }
 
 DirectCommands::~DirectCommands()
@@ -104,8 +104,8 @@ DirectCommands::~DirectCommands()
     if (stats.cache_updated)
     {
         wxFileName fname(m_pProject->GetFilename());
-        fname.SetExt("depend");
-        depsCacheWrite(fname.GetFullPath().c_str());
+        fname.SetExt(_T("depend"));
+        depsCacheWrite(fname.GetFullPath().mb_str());
     }
     Manager::Get()->GetMessageManager()->DebugLog(
         _("Scanned %d files for #includes, cache used %d, cache updated %d"),
@@ -117,8 +117,8 @@ DirectCommands::~DirectCommands()
 // static
 void DirectCommands::QuoteStringIfNeeded(wxString& str)
 {
-    if (!str.IsEmpty() && str.Find(' ') != -1 && str.GetChar(0) != '"')
-        str = "\"" + str + "\"";
+    if (!str.IsEmpty() && str.Find(_T(' ')) != -1 && str.GetChar(0) != _T('"'))
+        str = wxString(_T("\"")) + str + _T("\"");
 }
 
 // static
@@ -135,7 +135,7 @@ void DirectCommands::AddCommandsToArray(const wxString& cmds, wxArrayString& arr
     wxString cmd = cmds;
     while (!cmd.IsEmpty())
     {
-        int idx = cmd.Find("\n");
+        int idx = cmd.Find(_T("\n"));
         wxString cmdpart = idx != -1 ? cmd.Left(idx) : cmd;
         cmdpart.Trim(false);
         cmdpart.Trim(true);
@@ -207,7 +207,7 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
 
     pfDetails pfd(this, target, pf);
     
-    MakefileGenerator mg(m_pCompilerPlugin, m_pProject, "", 0); // don't worry! we just need a couple of utility funcs from it
+    MakefileGenerator mg(m_pCompilerPlugin, m_pProject, _T(""), 0); // don't worry! we just need a couple of utility funcs from it
     
     // lookup file's type
     FileType ft = FileTypeOf(pf->relativeFilename);
@@ -286,7 +286,7 @@ wxArrayString DirectCommands::GetCompileSingleFileCommand(const wxString& filena
     QuoteStringIfNeeded(s_filename);
     QuoteStringIfNeeded(o_filename);
 
-    MakefileGenerator mg(m_pCompilerPlugin, 0, "", 0); // don't worry! we just need a couple of utility funcs from it
+    MakefileGenerator mg(m_pCompilerPlugin, 0, _T(""), 0); // don't worry! we just need a couple of utility funcs from it
 
     wxString compilerCmd = mg.CreateSingleFileCompileCmd(ctCompileObjectCmd,
                                                          0,
@@ -549,7 +549,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     wxLogNull ln;
     wxArrayString ret;
 
-    MakefileGenerator mg(m_pCompilerPlugin, m_pProject, "", 0); // don't worry! we just need a couple of utility funcs from it
+    MakefileGenerator mg(m_pCompilerPlugin, m_pProject, _T(""), 0); // don't worry! we just need a couple of utility funcs from it
     wxFileName out = UnixFilename(target->GetOutputFilename());
 
     wxString output = target->GetOutputFilename();
@@ -558,7 +558,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     wxString resfiles;
 
     time_t outputtime;
-    depsTimeStamp(output.c_str(), &outputtime);
+    depsTimeStamp(output.mb_str(), &outputtime);
     if (!outputtime)
         force = true;
     if (AreExternalDepsOutdated(out.GetFullPath(), target->GetAdditionalOutputFiles(), target->GetExternalDeps()))
@@ -572,15 +572,15 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
         pfDetails pfd(this, target, pf);
 
         if (FileTypeOf(pf->relativeFilename) == ftResource)
-            resfiles << pfd.object_file << " ";
+            resfiles << pfd.object_file << _T(" ");
         else
-            linkfiles << pfd.object_file << " ";
+            linkfiles << pfd.object_file << _T(" ");
 
         // timestamp check
         if (!force)
         {
             time_t objtime;
-            depsTimeStamp(pfd.object_file_native.c_str(), &objtime);
+            depsTimeStamp(pfd.object_file_native.mb_str(), &objtime);
             if (objtime > outputtime)
                 force = true;
         }
@@ -625,7 +625,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
             break;
         default: break;
     }
-    wxString compilerCmd = mg.CreateSingleFileCompileCmd(ct, target, 0, "", linkfiles, resfiles);
+    wxString compilerCmd = mg.CreateSingleFileCompileCmd(ct, target, 0, _T(""), linkfiles, resfiles);
     if (!compilerCmd.IsEmpty())
     {
         Compiler* compiler = target ? CompilerFactory::Compilers[target->GetCompilerIndex()] : m_pCompiler;
@@ -636,7 +636,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
                 break;
             
             default: // linker always simple log (if not full)
-                ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Linking ") + kind_of_output + ": " + target->GetOutputFilename());
+                ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Linking ") + kind_of_output + _T(": ") + target->GetOutputFilename());
                 break;
         }
 
@@ -709,8 +709,8 @@ wxArrayString DirectCommands::GetTargetCleanCommands(ProjectBuildTarget* target,
 bool DirectCommands::AreExternalDepsOutdated(const wxString& buildOutput, const wxString& additionalFiles, const wxString& externalDeps)
 {
     // array is separated by ;
-    wxArrayString deps = GetArrayFromString(externalDeps, ";");
-    wxArrayString files = GetArrayFromString(additionalFiles, ";");
+    wxArrayString deps = GetArrayFromString(externalDeps, _T(";"));
+    wxArrayString files = GetArrayFromString(additionalFiles, _T(";"));
     for (size_t i = 0; i < deps.GetCount(); ++i)
     {
         if (deps[i].IsEmpty())
@@ -718,7 +718,7 @@ bool DirectCommands::AreExternalDepsOutdated(const wxString& buildOutput, const 
 
         Manager::Get()->GetMacrosManager()->ReplaceEnvVars(deps[i]);
         time_t timeSrc;
-        depsTimeStamp(deps[i].c_str(), &timeSrc);
+        depsTimeStamp(deps[i].mb_str(), &timeSrc);
         // if external dep doesn't exist, no need to relink
         if (!timeSrc)
             return false;
@@ -731,7 +731,7 @@ bool DirectCommands::AreExternalDepsOutdated(const wxString& buildOutput, const 
             
             Manager::Get()->GetMacrosManager()->ReplaceEnvVars(files[i]);
             time_t addT;
-            depsTimeStamp(files[i].c_str(), &addT);
+            depsTimeStamp(files[i].mb_str(), &addT);
             // if additional file doesn't exist, we can skip it
             if (!addT)
                 continue;
@@ -748,7 +748,7 @@ bool DirectCommands::AreExternalDepsOutdated(const wxString& buildOutput, const 
         wxString output = buildOutput;
         Manager::Get()->GetMacrosManager()->ReplaceEnvVars(output);
         time_t timeExe;
-        depsTimeStamp(output.c_str(), &timeExe);
+        depsTimeStamp(output.mb_str(), &timeExe);
         // if build output doesn't exist, relink
         if (!timeExe)
             return true;
@@ -764,14 +764,14 @@ bool DirectCommands::IsObjectOutdated(const pfDetails& pfd)
 {
     // If the source file does not exist, then do not compile.
     time_t timeSrc;
-    depsTimeStamp(pfd.source_file_native.c_str(), &timeSrc);
+    depsTimeStamp(pfd.source_file_native.mb_str(), &timeSrc);
     if (!timeSrc)
         return false;
 
     // If the object file does not exist, then it must be built. In this case
     // there is no need to scan the source file for headers.
     time_t timeObj;
-    depsTimeStamp(pfd.object_file_native.c_str(), &timeObj);
+    depsTimeStamp(pfd.object_file_native.mb_str(), &timeObj);
     if (!timeObj)
         return true;
 
@@ -784,7 +784,7 @@ bool DirectCommands::IsObjectOutdated(const pfDetails& pfd)
     // Scan the source file for headers. Result is NULL if the file does
     // not exist. If one of the descendent header files is newer than the
     // object file, then the object file must be built.
-    depsRef ref = depsScanForHeaders(pfd.source_file_native.c_str());
+    depsRef ref = depsScanForHeaders(pfd.source_file_native.mb_str());
     if (ref)
     {
         time_t timeNewest;
@@ -814,23 +814,23 @@ void DirectCommands::DepsSearchStart(ProjectBuildTarget* target)
     {
         case orUseParentOptionsOnly:
             for (unsigned int i = 0; i < prj_incs.GetCount(); ++i)
-                depsAddSearchDir(prj_incs[i].c_str());
+                depsAddSearchDir(prj_incs[i].mb_str());
             break;
         case orUseTargetOptionsOnly:
             for (unsigned int i = 0; i < tgt_incs.GetCount(); ++i)
-                depsAddSearchDir(tgt_incs[i].c_str());
+                depsAddSearchDir(tgt_incs[i].mb_str());
             break;
         case orPrependToParentOptions:
             for (unsigned int i = 0; i < tgt_incs.GetCount(); ++i)
-                depsAddSearchDir(tgt_incs[i].c_str());
+                depsAddSearchDir(tgt_incs[i].mb_str());
             for (unsigned int i = 0; i < prj_incs.GetCount(); ++i)
-                depsAddSearchDir(prj_incs[i].c_str());
+                depsAddSearchDir(prj_incs[i].mb_str());
             break;
         case orAppendToParentOptions:
             for (unsigned int i = 0; i < prj_incs.GetCount(); ++i)
-                depsAddSearchDir(prj_incs[i].c_str());
+                depsAddSearchDir(prj_incs[i].mb_str());
             for (unsigned int i = 0; i < tgt_incs.GetCount(); ++i)
-                depsAddSearchDir(tgt_incs[i].c_str());
+                depsAddSearchDir(tgt_incs[i].mb_str());
             break;
     }
 

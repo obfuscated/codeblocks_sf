@@ -3,7 +3,8 @@
 
 #include <wx/toolbar.h>
 #include <wx/docview.h> // for wxFileHistory
-#include <wx/stc/stc.h>
+#include <wx/notebook.h>
+#include <../sdk/cbeditor.h>
 #include "../sdk/manager.h"
 #include "../sdk/cbplugin.h"
 #include "../sdk/sdk_events.h"
@@ -27,8 +28,10 @@ class MainFrame : public wxFrame
         wxDockWindow * pDockWindow2;
     public:
         wxAcceleratorTable* m_pAccel;
-        MainFrame(wxWindow* parent = (wxWindow*)NULL);
+        MainFrame(wxLocale& locale, wxWindow* parent = (wxWindow*)NULL);
         ~MainFrame();
+
+        wxLocale& m_locale;
 
         bool Open(const wxString& filename, bool addToHistory = true);
         bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames);
@@ -42,6 +45,7 @@ class MainFrame : public wxFrame
         // event handlers
         void OnApplicationClose(wxCloseEvent& event);
         void OnStartHereLink(wxCommandEvent& event);
+        void OnStartHereVarSubst(wxCommandEvent& event);
 
         void OnFileNewEmpty(wxCommandEvent& event);
         void OnFileOpen(wxCommandEvent& event);
@@ -78,7 +82,7 @@ class MainFrame : public wxFrame
         void OnEditUncommentSelected(wxCommandEvent& event);
         void OnEditToggleCommentSelected(wxCommandEvent & event);
         void OnEditAutoComplete(wxCommandEvent& event);
-		
+
 		void OnEditBookmarksToggle(wxCommandEvent& event);
 		void OnEditBookmarksNext(wxCommandEvent& event);
 		void OnEditBookmarksPrevious(wxCommandEvent& event);
@@ -124,7 +128,7 @@ class MainFrame : public wxFrame
         // plugin events
         void OnPluginLoaded(CodeBlocksEvent& event);
         void OnPluginUnloaded(CodeBlocksEvent& event);
-		
+
 		// general UpdateUI events
         void OnEditorUpdateUI(CodeBlocksEvent& event);
 		void OnFileMenuUpdateUI(wxUpdateUIEvent& event);
@@ -139,6 +143,12 @@ class MainFrame : public wxFrame
 		void OnProjectActivated(CodeBlocksEvent& event);
 		void OnProjectOpened(CodeBlocksEvent& event);
 		void OnProjectClosed(CodeBlocksEvent& event);
+
+		// editor changed events
+		void OnEditorOpened(CodeBlocksEvent& event);
+		void OnEditorClosed(CodeBlocksEvent& event);
+		void OnEditorSaved(CodeBlocksEvent& event);
+		void OnPageChanged(wxNotebookEvent& event);
         void OnShiftTab(wxCommandEvent& event);
     protected:
         void CreateIDE();
@@ -155,7 +165,7 @@ class MainFrame : public wxFrame
         void AddPluginInHelpPluginsMenu(cbPlugin* plugin);
         void AddPluginInMenus(wxMenu* menu, cbPlugin* plugin, wxObjectEventFunction callback, int pos = -1);
         void RemovePluginFromMenus(const wxString& pluginName);
-		
+
 		void AddEditorInWindowMenu(const wxString& filename, const wxString& title);
 		void RemoveEditorFromWindowMenu(const wxString& filename);
 		int IsEditorInWindowMenu(const wxString& filename);
@@ -169,18 +179,18 @@ class MainFrame : public wxFrame
 		void DoUpdateAppTitle();
 
         void ShowHideStartPage(bool forceHasProject = false);
-		
+
         void LoadWindowState();
         void SaveWindowState();
 
         void InitializeRecentFilesHistory();
         void TerminateRecentFilesHistory();
-        
+
         wxFileHistory m_FilesHistory;
 
         /// "Close FullScreen" button. Only shown when in FullScreen view
         wxButton* m_pCloseFullScreenBtn;
-        
+
         wxNotebook* m_pNotebook;
 		EditorManager* m_pEdMan;
 		ProjectManager* m_pPrjMan;
@@ -195,10 +205,10 @@ class MainFrame : public wxFrame
 		wxMenu* m_PluginsMenu;
         wxMenu* m_SettingsMenu;
         wxMenu* m_HelpPluginsMenu;
-        
+
         bool m_ReconfiguringPlugins;
         bool m_SmallToolBar;
-		
+
         DECLARE_EVENT_TABLE()
 };
 

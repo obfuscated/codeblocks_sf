@@ -18,7 +18,7 @@ class DLLIMPORT IBaseLoader
         {
             // replace double quotes (") with &quot; entities
             wxString ret = str;
-            ret.Replace("\"", "&quot;");
+            ret.Replace(_T("\""), _T("&quot;"));
             return ret;
         }
 };

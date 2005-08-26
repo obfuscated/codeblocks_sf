@@ -64,7 +64,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 		void SyncEditor(const wxString& filename, int line);
 	protected:
         void ConvertToGDBFriendly(wxString& str);
-        void ConvertToGDBDirectory(wxString& str, wxString base = "", bool relative = true);
+        void ConvertToGDBDirectory(wxString& str, wxString base = _T(""), bool relative = true);
         void StripQuotes(wxString& str);
 	private:
 		void ParseOutput(const wxString& output);

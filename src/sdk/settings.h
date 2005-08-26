@@ -1,7 +1,16 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+#if wxUSE_UNICODE
+    #define _UU(x,y) wxString((x),(y))
+    #define _CC(x,y) (x).mb_str((y))
+#else
+    #define _UU(x,y) (x)
+    #define _CC(x,y) (x)
+#endif
 
+#define _U(x) _UU((x),wxConvUTF8)
+#define _C(x) _CC((x),wxConvUTF8)
 
 #if defined(_MSC_VER)
 	/*
@@ -14,14 +23,14 @@
 
 	/*
 	Disable the warning:
-	"<Unknown>' has C-linkage specified, but returns UDT 'wxString' which is 
+	"<Unknown>' has C-linkage specified, but returns UDT 'wxString' which is
 	incompatible with C"
 	This is Ok, because we're always using the returned UDT from within C++
 	*/
 	#pragma warning(disable:4190)
 
 	// Fix 'for loop scoping' for visual C++ 6
-	/// @todo Fix this version number...My SP5 VC++6 is version 1200, but what about 
+	/// @todo Fix this version number...My SP5 VC++6 is version 1200, but what about
 	/// other SPs? (1-4,6)
 	#if _MSC_VER <= 1200
 		#define for if(0); else for
@@ -63,69 +72,81 @@ from DLLs. Instead, we build "sdk" as a static library
 #define DEFINE_CB_EVENT_TYPE(type) \
 	const wxEventType type = wxNewEventType();
 
-#define DEFAULT_WORKSPACE			"default.workspace"
+#define DEFAULT_WORKSPACE			_T("default.workspace")
 
-#define WORKSPACES_FILES_FILTER		"Code::Blocks workspace files (*.workspace)|*.workspace"
-#define CODEBLOCKS_FILES_FILTER		"Code::Blocks project files (*.cbp)|*.cbp"
-#define DEVCPP_FILES_FILTER         "Bloodshed Dev-C++ project files (*.dev)|*.dev"
-#define MSVC_FILES_FILTER           "MS Visual C++ project files (*.dsp)|*.dsp"
-#define MSVS_FILES_FILTER           "MS Visual Studio project files (*.vcproj)|*.vcproj"
-#define MSVC_WORKSPACE_FILES_FILTER "MS Visual C++ workspace files (*.dsw)|*.dsw"
-#define MSVS_WORKSPACE_FILES_FILTER "MS Visual Studio solution files (*.sln)|*.sln"
-#define C_FILES_FILTER              "C/C++ files (*.c;*.cpp;*.cc;*.cxx;*.h;*.hpp;*.hh;*.hxx)|*.c;*.cpp;*.cc;*.cxx;*.h;*.hpp;*.hh;*.hxx"
-#define SOURCE_FILES_FILTER         "C/C++ source files (*.c;*.cpp;*.cc;*.cxx)|*.c;*.cpp;*.cc;*.cxx"
-#define HEADER_FILES_FILTER         "C/C++ header files (*.h;*.hpp;*.hh;*.hxx)|*.h;*.hpp;*.hh;*.hxx"
-#define RESOURCE_FILES_FILTER       "Resource files (*.xrc;*.rc)|*.xrc;*.rc"
-#define ALL_KNOWN_FILES_FILTER      "All known files|*.workspace;*.cbp;*.c;*.cpp;*.cc;*.cxx;*.h;*.hpp;*.hh;*.hxx;*.xrc;*.rc"
+#define WORKSPACES_FILES_FILTER		_("Code::Blocks workspace files (*.workspace)|*.workspace")
+#define CODEBLOCKS_FILES_FILTER		_("Code::Blocks project files (*.cbp)|*.cbp")
+#define DEVCPP_FILES_FILTER         _("Bloodshed Dev-C++ project files (*.dev)|*.dev")
+#define MSVC_FILES_FILTER           _("MS Visual C++ project files (*.dsp)|*.dsp")
+#define MSVS_FILES_FILTER           _("MS Visual Studio project files (*.vcproj)|*.vcproj")
+#define MSVC_WORKSPACE_FILES_FILTER _("MS Visual C++ workspace files (*.dsw)|*.dsw")
+#define MSVS_WORKSPACE_FILES_FILTER _("MS Visual Studio solution files (*.sln)|*.sln")
+#define C_FILES_FILTER              _("C/C++ files (*.c;*.cpp;*.cc;*.cxx;*.h;*.hpp;*.hh;*.hxx)|*.c;*.cpp;*.cc;*.cxx;*.h;*.hpp;*.hh;*.hxx")
+#define SOURCE_FILES_FILTER         _("C/C++ source files (*.c;*.cpp;*.cc;*.cxx)|*.c;*.cpp;*.cc;*.cxx")
+#define HEADER_FILES_FILTER         _("C/C++ header files (*.h;*.hpp;*.hh;*.hxx)|*.h;*.hpp;*.hh;*.hxx")
+#define RESOURCE_FILES_FILTER       _("Resource files (*.xrc;*.rc)|*.xrc;*.rc")
+#define ALL_KNOWN_FILES_FILTER      _("All known files|*.workspace;*.cbp;*.c;*.cpp;*.cc;*.cxx;*.h;*.hpp;*.hh;*.hxx;*.xrc;*.rc")
 
-#define ALL_FILES_FILTER            "All files (*.*)|*.*"
+#define ALL_FILES_FILTER            _("All files (*.*)|*.*")
 
-#define SOURCE_FILES_DIALOG_FILTER  WORKSPACES_FILES_FILTER "|" \
-									CODEBLOCKS_FILES_FILTER "|" \
-                                    C_FILES_FILTER "|" \
-                                    SOURCE_FILES_FILTER "|" \
-                                    HEADER_FILES_FILTER "|" \
-                                    RESOURCE_FILES_FILTER "|" \
-                                    ALL_KNOWN_FILES_FILTER "|" \
-                                    ALL_FILES_FILTER
+#define SOURCE_FILES_DIALOG_FILTER  wxString(WORKSPACES_FILES_FILTER) + _T("|") + \
+									         CODEBLOCKS_FILES_FILTER + _T("|") + \
+                                             C_FILES_FILTER + _T("|") + \
+                                             SOURCE_FILES_FILTER + _T("|") + \
+                                             HEADER_FILES_FILTER + _T("|") + \
+                                             RESOURCE_FILES_FILTER + _T("|") + \
+                                             ALL_KNOWN_FILES_FILTER + _T("|") + \
+                                             ALL_FILES_FILTER
 #define SOURCE_FILES_FILTER_INDEX   6
 
-#define KNOWN_SOURCES_DIALOG_FILTER C_FILES_FILTER "|" \
-                                    SOURCE_FILES_FILTER "|" \
-                                    HEADER_FILES_FILTER "|" \
-                                    RESOURCE_FILES_FILTER "|" \
-                                    ALL_FILES_FILTER
+#define KNOWN_SOURCES_DIALOG_FILTER wxString(C_FILES_FILTER) + _T("|") + \
+                                             SOURCE_FILES_FILTER + _T("|") + \
+                                             HEADER_FILES_FILTER + _T("|") + \
+                                             RESOURCE_FILES_FILTER + _T("|") + \
+                                             ALL_FILES_FILTER
 #define KNOWN_SOURCES_FILTER_INDEX  4
 
-#define WORKSPACE_EXT		"workspace"
-#define CODEBLOCKS_EXT		"cbp"
-#define DEVCPP_EXT			"dev"
-#define MSVC_EXT			"dsp"
-#define MSVS_EXT			"vcproj"
-#define MSVC_WORKSPACE_EXT  "dsw"
-#define MSVS_WORKSPACE_EXT	"sln"
-#define CPP_EXT				"cpp"
-#define C_EXT				"c"
-#define CC_EXT				"cc"
-#define CXX_EXT				"cxx"
-#define HPP_EXT				"hpp"
-#define H_EXT				"h"
-#define HH_EXT				"hh"
-#define HXX_EXT				"hxx"
-#define OBJECT_EXT			"o"
-#define XRCRESOURCE_EXT		"xrc"
-#define STATICLIB_EXT		"a"
+#define WORKSPACE_EXT		_T("workspace")
+#define CODEBLOCKS_EXT		_T("cbp")
+#define DEVCPP_EXT			_T("dev")
+#define MSVC_EXT			_T("dsp")
+#define MSVS_EXT			_T("vcproj")
+#define MSVC_WORKSPACE_EXT  _T("dsw")
+#define MSVS_WORKSPACE_EXT	_T("sln")
+#define CPP_EXT				_T("cpp")
+#define C_EXT				_T("c")
+#define CC_EXT				_T("cc")
+#define CXX_EXT				_T("cxx")
+#define HPP_EXT				_T("hpp")
+#define H_EXT				_T("h")
+#define HH_EXT				_T("hh")
+#define HXX_EXT				_T("hxx")
+#define OBJECT_EXT			_T("o")
+#define XRCRESOURCE_EXT		_T("xrc")
+#define STATICLIB_EXT		_T("a")
 #ifdef __WXMSW__
-	#define DYNAMICLIB_EXT	"dll"
-	#define EXECUTABLE_EXT	"exe"
-	#define RESOURCE_EXT	"rc"
-	#define RESOURCEBIN_EXT	"res"
+	#define DYNAMICLIB_EXT	_T("dll")
+	#define EXECUTABLE_EXT	_T("exe")
+	#define RESOURCE_EXT	_T("rc")
+	#define RESOURCEBIN_EXT	_T("res")
 #else
-	#define DYNAMICLIB_EXT	"so"
-	#define EXECUTABLE_EXT	""
-	#define RESOURCE_EXT	""
-	#define RESOURCEBIN_EXT	""
+	#define DYNAMICLIB_EXT	_T("so")
+	#define EXECUTABLE_EXT	_T("")
+	#define RESOURCE_EXT	_T("")
+	#define RESOURCEBIN_EXT	_T("")
 #endif
+
+// Convenience Macros for the SDK
+#define  EDMAN() Manager::Get()->GetEditorManager()
+#define PRJMAN() Manager::Get()->GetProjectManager()
+#define MSGMAN() Manager::Get()->GetMessageManager()
+#define TLSMAN() Manager::Get()->GetToolsManager()
+#define MACMAN() Manager::Get()->GetMacrosManager()
+#define PRSMAN() Manager::Get()->GetPersonalityManager()
+
+#define CFGMAN() ConfigManager::Get()
+#define CFG_READ(...)    ConfigManager::Get()->Read(__VA_ARGS__)
+#define CFG_WRITE(...) ConfigManager::Get()->Write(__VA_ARGS__)
 
 #endif // SETTINGS_H
 

@@ -79,6 +79,8 @@
                           <item>Open blank workspace</item>
                         </content>
                         <selection>1</selection>
+                        <dimension>1</dimension>
+                        <style>wxRA_SPECIFY_COLS</style>
                       </object>
                       <flag>wxGROW</flag>
                     </object>
@@ -91,6 +93,8 @@
                           <item>Do not open any files</item>
                         </content>
                         <selection>1</selection>
+                        <dimension>1</dimension>
+                        <style>wxRA_SPECIFY_COLS</style>
                       </object>
                       <flag>wxGROW</flag>
                     </object>
@@ -102,6 +106,8 @@
                           <item>16 x 16 - Small</item>
                         </content>
                         <selection>0</selection>
+                        <dimension>1</dimension>
+                        <style>wxRA_SPECIFY_COLS</style>
                       </object>
                       <flag>wxGROW</flag>
                     </object>
@@ -122,11 +128,35 @@
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
+                  <object class="wxCheckBox" name="chkShowEditorCloseButton">
+                    <label>Show &quot;close button&quot; near editors</label>
+                    <checked>0</checked>
+                  </object>
+                  <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
                   <object class="wxCheckBox" name="chkAutoHideMessages">
                     <label>Auto-hide message pane</label>
                     <checked>1</checked>
                   </object>
                   <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                  <border>8</border>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object class="notebookpage">
+            <label>Tweaks</label>
+            <object class="wxPanel" name="tabTweaks">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxCheckBox" name="chkSafebutSlow">
+                    <label>Crash protection (experimental; use it only if C::B crashes on your machine)</label>
+                    <checked>0</checked>
+                  </object>
+                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
                   <border>8</border>
                 </object>
               </object>

@@ -6,7 +6,7 @@
 #include "editormanager.h"
 
 // forward decls
-class wxStyledTextCtrl;
+class cbStyledTextCtrl;
 class EditorColorSet;
 
 class EditorConfigurationDlg : public wxDialog
@@ -43,8 +43,8 @@ class EditorConfigurationDlg : public wxDialog
 		void LoadThemes();
 		void ChangeTheme();
 		bool AskToSaveTheme();
-		wxStyledTextCtrl* m_TextColorControl;
-		wxStyledTextCtrl* m_AutoCompTextControl;
+		cbStyledTextCtrl* m_TextColorControl;
+		cbStyledTextCtrl* m_AutoCompTextControl;
 		EditorColorSet* m_Theme;
 		HighlightLanguage m_Lang;
 		int m_DefCodeFileType;

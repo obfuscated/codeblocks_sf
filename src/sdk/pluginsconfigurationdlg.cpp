@@ -40,7 +40,7 @@ END_EVENT_TABLE()
 // class constructor
 PluginsConfigurationDlg::PluginsConfigurationDlg(wxWindow* parent)
 {
-	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgConfigurePlugins"));
+	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgConfigurePlugins"));
 
     wxCheckListBox* list = XRCCTRL(*this, "lstPlugins", wxCheckListBox);
     PluginManager* man = Manager::Get()->GetPluginManager();
@@ -52,10 +52,10 @@ PluginsConfigurationDlg::PluginsConfigurationDlg(wxWindow* parent)
     for (unsigned int i = 0; i < plugins.GetCount(); ++i)
     {
         PluginElement* elem = plugins[i];
-        list->Append(elem->plugin->GetInfo()->title + ", v" + elem->plugin->GetInfo()->version);
+        list->Append(elem->plugin->GetInfo()->title + _(", v") + elem->plugin->GetInfo()->version);
 
         wxString baseKey;
-        baseKey << personalityKey << "/plugins/" << elem->name;
+        baseKey << personalityKey << _T("/plugins/") << elem->name;
         list->Check(list->GetCount()-1, ConfigManager::Get()->Read(baseKey, true));
     }
 }
@@ -78,7 +78,7 @@ void PluginsConfigurationDlg::OnOK(wxCommandEvent& event)
     {
         PluginElement* elem = plugins[i];
         wxString baseKey;
-        baseKey << personalityKey << "/plugins/" << elem->name;
+        baseKey << personalityKey << _T("/plugins/") << elem->name;
         bool checked = list->IsChecked(i);
         ConfigManager::Get()->Write(baseKey, checked);
     }

@@ -49,7 +49,7 @@ void CCRenderer::Draw(wxGrid& grid, wxGridCellAttr& attr, wxDC& dc, const wxRect
 	wxRect myrect = rect;
 	int w = 0;
 	int h = 0;
-	dc.GetTextExtent("preprocessor  ", &w, &h);
+	dc.GetTextExtent(_T("preprocessor  "), &w, &h);
 
 	// shrink rect by one pixel from all sides, so that grid's highlight cursor
 	// doesn't interfere with cell contents...
@@ -59,18 +59,18 @@ void CCRenderer::Draw(wxGrid& grid, wxGridCellAttr& attr, wxDC& dc, const wxRect
 	myrect.height -= 2;
 
 	// token kind string, e.g. "constructor"
-	str = token->GetTokenKindString() + " ";
+	str = token->GetTokenKindString() + _T(" ");
 	DoDrawText(grid, dc, myrect, str, *wxBLUE, wxNORMAL, w);
 	
 	// token namespace, e.g. "SomeClass::"
 	if (!token->GetNamespace().IsEmpty())
 	{
-		str = token->GetNamespace() + " ";
+		str = token->GetNamespace() + _T(" ");
 		DoDrawText(grid, dc, myrect, str, wxColour(0x80, 0x80, 0x80), wxNORMAL);
 	}
 
 	// token name, e.g. "SetThisValue"
-	str = token->m_Name + " ";
+	str = token->m_Name + _T(" ");
 	DoDrawText(grid, dc, myrect, str, *wxBLACK, wxBOLD);
 
 	// token args, e.g. "(int x, int y)"
@@ -83,7 +83,7 @@ void CCRenderer::Draw(wxGrid& grid, wxGridCellAttr& attr, wxDC& dc, const wxRect
 	// token actual return type, e.g. "void"
 	if (!token->m_ActualType.IsEmpty())
 	{
-		str = " : " + token->m_ActualType;
+		str = _T(" : ") + token->m_ActualType;
 		DoDrawText(grid, dc, myrect, str, *wxRED, wxNORMAL);
 	}
 }

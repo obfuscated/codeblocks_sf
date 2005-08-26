@@ -6,7 +6,7 @@
 		<Option title="Code::Blocks"/>
 		<Option makefile="Makefile"/>
 		<Option makefile_is_custom="0"/>
-		<Option default_target="2"/>
+		<Option default_target="3"/>
 		<Option compiler="0"/>
 		<Build>
 			<Target title="tinyXML">
@@ -23,6 +23,29 @@
 					<Add option="-DEXPORT_LIB"/>
 					<Add option="-D_USRDLL"/>
 				</Compiler>
+			</Target>
+			<Target title="scintilla">
+				<Option output="devel\wxscintilla.dll"/>
+				<Option working_dir="."/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option type="3"/>
+				<Option compiler="0"/>
+				<Option createStaticLib="1"/>
+				<Compiler>
+					<Add option="-D__WX__"/>
+					<Add option="-DWINVER=0x0400"/>
+					<Add option="-DSCI_LEXER"/>
+					<Add option="-DLINK_LEXERS"/>
+					<Add option="-DWXMAKINGDLL_SCI"/>
+					<Add directory="sdk\wxscintilla\include"/>
+					<Add directory="sdk\wxscintilla\src\scintilla\include"/>
+					<Add directory="sdk\wxscintilla\src\scintilla\src"/>
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="sdk\wxscintilla\include"/>
+				</ResourceCompiler>
 			</Target>
 			<Target title="sdk">
 				<Option output="devel\codeblocks.dll"/>
@@ -47,7 +70,8 @@
 					<Add option="-Wl,--add-stdcall-alias"/>
 					<Add library="libtxml.a"/>
 					<Add library="libwxxrc.a"/>
-					<Add library="libstc.a"/>
+					<Add library="libwxscintilla.a"/>
+					<Add directory="devel"/>
 				</Linker>
 			</Target>
 			<Target title="src">
@@ -72,7 +96,7 @@
 				</ResourceCompiler>
 				<Linker>
 					<Add library="libcodeblocks.a"/>
-					<Add library="libstc.a"/>
+					<Add library="libwxscintilla.a"/>
 					<Add library="libwxxrc.a"/>
 					<Add library="libkernel32.a"/>
 					<Add library="libuser32.a"/>
@@ -114,7 +138,7 @@
 					<Add option="-Wl,--enable-auto-image-base"/>
 					<Add option="-Wl,--add-stdcall-alias"/>
 					<Add library="libcodeblocks.a"/>
-					<Add library="libstc.a"/>
+					<Add library="libwxscintilla.a"/>
 					<Add library="libwxxrc.a"/>
 					<Add library="wxmsw242"/>
 					<Add directory="devel"/>
@@ -143,7 +167,7 @@
 					<Add option="-Wl,--enable-auto-image-base"/>
 					<Add option="-Wl,--add-stdcall-alias"/>
 					<Add library="libcodeblocks.a"/>
-					<Add library="libstc.a"/>
+					<Add library="libwxscintilla.a"/>
 					<Add library="libwxxrc.a"/>
 					<Add library="wxmsw242"/>
 					<Add directory="devel"/>
@@ -170,7 +194,7 @@
 					<Add option="-Wl,--enable-auto-image-base"/>
 					<Add option="-Wl,--add-stdcall-alias"/>
 					<Add library="libcodeblocks.a"/>
-					<Add library="libstc.a"/>
+					<Add library="libwxscintilla.a"/>
 					<Add library="libwxxrc.a"/>
 					<Add library="wxmsw242"/>
 					<Add directory="devel"/>
@@ -197,7 +221,7 @@
 					<Add option="-Wl,--enable-auto-image-base"/>
 					<Add option="-Wl,--add-stdcall-alias"/>
 					<Add library="libcodeblocks.a"/>
-					<Add library="libstc.a"/>
+					<Add library="libwxscintilla.a"/>
 					<Add library="libwxxrc.a"/>
 					<Add library="wxmsw242"/>
 					<Add directory="devel"/>
@@ -224,7 +248,7 @@
 					<Add option="-Wl,--enable-auto-image-base"/>
 					<Add option="-Wl,--add-stdcall-alias"/>
 					<Add library="libcodeblocks.a"/>
-					<Add library="libstc.a"/>
+					<Add library="libwxscintilla.a"/>
 					<Add library="libwxxrc.a"/>
 					<Add library="wxmsw242"/>
 					<Add directory="devel"/>
@@ -277,7 +301,7 @@
 					<Add option="-Wl,--enable-auto-image-base"/>
 					<Add option="-Wl,--add-stdcall-alias"/>
 					<Add library="libcodeblocks.a"/>
-					<Add library="libstc.a"/>
+					<Add library="libwxscintilla.a"/>
 					<Add library="libwxxrc.a"/>
 					<Add library="wxmsw242"/>
 					<Add directory="devel"/>
@@ -301,6 +325,7 @@
 					<Add option="-Wl,--enable-auto-image-base"/>
 					<Add option="-Wl,--add-stdcall-alias"/>
 					<Add library="libcodeblocks.a"/>
+					<Add library="libwxscintilla.a"/>
 					<Add library="wxmsw242"/>
 					<Add directory="devel"/>
 				</Linker>
@@ -330,10 +355,14 @@
 				</Linker>
 			</Target>
 			<Target title="update">
-				<Option type="4"/>
+				<Option output="C:\Devel\codeblocks-VERSION_1_0\src\CodeBlocks.dll"/>
+				<Option working_dir="."/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option includeInTargetAll="0"/>
-				<Option projectResourceIncludeDirsRelation="4"/>
 				<ExtraCommands>
 					<Add before="update.bat"/>
 				</ExtraCommands>
@@ -353,13 +382,19 @@
 				<Option projectResourceIncludeDirsRelation="1"/>
 				<Compiler>
 					<Add option="-Os"/>
+					<Add option="-D__WXMSW__"/>
 				</Compiler>
 			</Target>
 			<Target title="doc">
-				<Option type="4"/>
+				<Option output="C:\Devel\codeblocks-VERSION_1_0\src\CodeBlocks.exe"/>
+				<Option working_dir="."/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option type="1"/>
 				<Option compiler="0"/>
 				<Option includeInTargetAll="0"/>
-				<Option projectResourceIncludeDirsRelation="4"/>
+				<Option projectResourceIncludeDirsRelation="1"/>
 				<ExtraCommands>
 					<Add before="doxygen sdk.doxy"/>
 				</ExtraCommands>
@@ -382,6 +417,7 @@
 			<Add directory="$(WX_DIR)\include"/>
 			<Add directory="$(WX_DIR)\lib\mswdll"/>
 			<Add directory="$(WX_DIR)\contrib\include"/>
+			<Add directory="sdk\wxscintilla\include"/>
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(WX_DIR)\include"/>
@@ -846,6 +882,16 @@
 			<Option target="plugin_CompilerGCC"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\compilerOW.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerSDCC.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerSDCC.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -2117,6 +2163,12 @@
 			<Option link="0"/>
 			<Option target="sdk"/>
 		</Unit>
+		<Unit filename="sdk\resources\editor_manager.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
 		<Unit filename="sdk\resources\external_deps.xrc">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
@@ -2184,6 +2236,18 @@
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_lua.xml">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_prg.sample">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_prg.xml">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -2374,6 +2438,508 @@
 			<Option compile="0"/>
 			<Option link="0"/>
 			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\include\wx\wxscintilla.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\PlatWX.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\PlatWX.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\ScintillaWX.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\ScintillaWX.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\include\Accessor.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\include\KeyWords.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\include\Platform.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\include\PropSet.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\include\SString.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\include\SciLexer.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\include\Scintilla.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\include\ScintillaWidget.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\include\WindowAccessor.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\AutoComplete.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\AutoComplete.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\CallTip.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\CallTip.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\CellBuffer.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\CellBuffer.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\ContractionState.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\ContractionState.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Document.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Document.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\DocumentAccessor.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\DocumentAccessor.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Editor.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Editor.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\ExternalLexer.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\ExternalLexer.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Indicator.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Indicator.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\KeyMap.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\KeyMap.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\KeyWords.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexAPDL.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexAU3.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexAVE.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexAda.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexAsm.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexAsn1.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexBaan.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexBash.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexBasic.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexBullant.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexCLW.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexCPP.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexCSS.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexCaml.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexConf.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexCrontab.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexCsound.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexEScript.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexEiffel.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexErlang.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexFlagship.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexForth.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexFortran.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexGui4Cli.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexHTML.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexHaskell.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexKix.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexLisp.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexLout.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexLua.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexMMIXAL.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexMPT.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexMSSQL.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexMatlab.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexMetapost.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexNsis.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexOthers.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexPB.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexPOV.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexPS.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexPascal.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexPerl.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexPython.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexRebol.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexRuby.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexSQL.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexScriptol.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexSmalltalk.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexSpecman.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexTADS3.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexTeX.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexVB.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexVHDL.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexVerilog.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexYAML.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LineMarker.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LineMarker.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\PropSet.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\RESearch.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\RESearch.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\SVector.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\ScintillaBase.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\ScintillaBase.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Style.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Style.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\StyleContext.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\StyleContext.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\UniConversion.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\UniConversion.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\ViewStyle.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\ViewStyle.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\WindowAccessor.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\XPM.cxx">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\XPM.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="scintilla"/>
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\wxscintilla.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="scintilla"/>
 		</Unit>
 		<Unit filename="sdk\xtra_classes.cpp">
 			<Option compilerVar="CPP"/>

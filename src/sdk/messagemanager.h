@@ -112,6 +112,9 @@ class DLLIMPORT MessageManager : public wxNotebook
             // "eat" input. the actual job is carried out in LogPage()
             return *this;
 		}
+
+		bool GetSafebutSlow();
+		void SetSafebutSlow(bool flag, bool dosave = false);
     private:
 		static MessageManager* Get(wxWindow* parent);
 		static void Free();
@@ -131,6 +134,8 @@ class DLLIMPORT MessageManager : public wxNotebook
 		bool m_AutoHide; // auto-hide?
 		bool m_Open; // is open?
 		wxWindow* m_pContainerWin;
+		bool m_SafebutSlow; // Adds extra stability against crashes, but
+                            // the application becomes a bit unresponsive
 		DECLARE_EVENT_TABLE();
 		DECLARE_SANITY_CHECK
 };

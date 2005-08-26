@@ -2,7 +2,7 @@
 #define PIPEDPROCESS_H
 
 #include "settings.h"
-#include <wx/process.h> // inheriting class's header file
+#include <wx/process.h> // inheriting class' header file
 #include <wx/txtstrm.h>
 #include <wx/timer.h>
 

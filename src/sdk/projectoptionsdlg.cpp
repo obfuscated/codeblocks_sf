@@ -60,7 +60,7 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
     m_Current_Sel(-1),
 	m_pCompiler(0L)
 {
-	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgProjectOptions"));
+	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgProjectOptions"));
 
     wxCheckListBox* list = XRCCTRL(*this, "lstFiles", wxCheckListBox);
     int count = m_Project->GetFilesCount();
@@ -162,13 +162,13 @@ void ProjectOptionsDlg::DoTargetChange()
                 break;
                 
             default: // for commands-only targets
-                txt->SetValue("");
+                txt->SetValue(_T(""));
                 txt->Enable(false);
-                txtW->SetValue("");
+                txtW->SetValue(_T(""));
                 txtW->Enable(false);
-                txtO->SetValue("");
+                txtO->SetValue(_T(""));
                 txtO->Enable(false);
-                txtD->SetValue("");
+                txtD->SetValue(_T(""));
                 txtD->Enable(false);
                 browse->Enable(false);
                 browseW->Enable(false);
@@ -315,10 +315,10 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
             txt->SetValue(fname.GetFullPath());
             break;
         case ttCommandsOnly:
-            txt->SetValue("");
-            txtW->SetValue("");
-            txtO->SetValue("");
-            txtD->SetValue("");
+            txt->SetValue(_T(""));
+            txtW->SetValue(_T(""));
+            txtO->SetValue(_T(""));
+            txtD->SetValue(_T(""));
             txt->Enable(false);
             txtW->Enable(false);
             txtO->Enable(false);

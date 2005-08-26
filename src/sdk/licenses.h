@@ -2,7 +2,7 @@
 #define LICENSES_H
 
 // license macros
-#define LICENSE_GPL "This program is distributed under the GNU General Public License.\n" \
+#define LICENSE_GPL _("This program is distributed under the GNU General Public License.\n" \
         "Be sure to read it before using it.\n" \
         "\n" \
         "		   GNU GENERAL PUBLIC LICENSE\n" \
@@ -373,7 +373,7 @@
         "proprietary programs.  If your program is a subroutine library, you may\n" \
         "consider it more useful to permit linking proprietary applications with the\n" \
         "library.  If this is what you want to do, use the GNU Library General\n" \
-        "Public License instead of this License."
+        "Public License instead of this License.")
 
 #endif // LICENSES_H
 

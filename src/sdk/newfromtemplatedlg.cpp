@@ -48,7 +48,7 @@ NewFromTemplateDlg::NewFromTemplateDlg(const ProjectTemplateArray& templates, co
 	m_Templates(templates)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, 0L, _("dlgNewFromTemplate"));
+	wxXmlResource::Get()->LoadDialog(this, 0L, _T("dlgNewFromTemplate"));
 	BuildCategories();
 	BuildList();
 
@@ -99,8 +99,8 @@ void NewFromTemplateDlg::BuildList()
 
 	wxBitmap bmp;
 	bool all = cat->GetSelection() == 0;
-	wxString baseDir = ConfigManager::Get()->Read("/data_path");
-	baseDir << "/templates/";
+	wxString baseDir = ConfigManager::Get()->Read(_T("/data_path"));
+	baseDir << _T("/templates/");
 	for (unsigned int x = 0; x < m_Templates.GetCount(); ++x)
 	{
 		ProjectTemplateLoader* pt = m_Templates[x];
@@ -166,7 +166,7 @@ bool NewFromTemplateDlg::SelectedUserTemplate()
 wxString NewFromTemplateDlg::GetSelectedUserTemplate()
 {
     int sel = XRCCTRL(*this, "lstUser", wxListBox)->GetSelection();
-    return sel != -1 ? XRCCTRL(*this, "lstUser", wxListBox)->GetString(sel) : "";
+    return sel != -1 ? XRCCTRL(*this, "lstUser", wxListBox)->GetString(sel) : _T("");
 }
 
 void NewFromTemplateDlg::OnListSelection(wxListEvent& event)

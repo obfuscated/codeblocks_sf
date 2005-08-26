@@ -8,9 +8,9 @@
 
 // forward decls
 class cbEditor;
-class wxStyledTextCtrl;
+class cbStyledTextCtrl;
 
-#define COLORSET_DEFAULT	_("default")
+#define COLORSET_DEFAULT	_T("default")
 
 typedef short int HighlightLanguage;
 #define HL_NONE     -1
@@ -74,7 +74,7 @@ class EditorColorSet
 		wxString GetName(){ return m_Name; }
 		void SetName(const wxString& name){ m_Name = name; }
 		void Apply(cbEditor* editor);
-		void Apply(HighlightLanguage lang, wxStyledTextCtrl* control);
+		void Apply(HighlightLanguage lang, cbStyledTextCtrl* control);
 		void Save();
 		void Reset(HighlightLanguage lang);
 		wxString& GetKeywords(HighlightLanguage lang, int idx);
@@ -85,7 +85,7 @@ class EditorColorSet
 		void SetSampleCode(HighlightLanguage lang, const wxString& sample, int breakLine, int debugLine, int errorLine);
 	protected:
 	private:
-		void DoApplyStyle(wxStyledTextCtrl* control, int value, OptionColor* option);
+		void DoApplyStyle(cbStyledTextCtrl* control, int value, OptionColor* option);
 		void LoadAvailableSets();
 		void Load();
 		void ClearAllOptionColors();

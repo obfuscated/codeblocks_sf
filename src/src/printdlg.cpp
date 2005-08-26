@@ -6,7 +6,7 @@
 PrintDialog::PrintDialog(wxWindow* parent)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, "dlgPrint");
+	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgPrint"));
 }
 
 PrintDialog::~PrintDialog()

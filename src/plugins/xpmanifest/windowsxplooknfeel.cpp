@@ -41,18 +41,18 @@ cbPlugin* GetPlugin()
 WindowsXPLookNFeel::WindowsXPLookNFeel()
 {
 	//ctor
-	m_PluginInfo.name = "WindowsXPLookNFeel";
-	m_PluginInfo.title = "Windows XP Look'n'Feel";
-	m_PluginInfo.version = "1.0";
-	m_PluginInfo.description = "This plugin creates a manifest file that makes "
-                               "use of common controls 6.0 under Windows XP. "
-                               "You must copy this manifest file in the same "
-                               "path as your app's main executable in order for "
-                               "your application to use common controls version 6.0...";
-    m_PluginInfo.author = "Yiannis An. Mandravellos";
-    m_PluginInfo.authorEmail = "info@codeblocks.org";
-    m_PluginInfo.authorWebsite = "www.codeblocks.org";
-	m_PluginInfo.thanksTo = "";
+	m_PluginInfo.name = _T("WindowsXPLookNFeel");
+	m_PluginInfo.title = _T("Windows XP Look'n'Feel");
+	m_PluginInfo.version = _T("1.0");
+	m_PluginInfo.description = _("This plugin creates a manifest file that makes " \
+                               "use of common controls 6.0 under Windows XP. " \
+                               "You must copy this manifest file in the same " \
+                               "path as your app's main executable in order for " \
+                               "your application to use common controls version 6.0...");
+    m_PluginInfo.author = _T("Yiannis An. Mandravellos");
+    m_PluginInfo.authorEmail = _T("info@codeblocks.org");
+    m_PluginInfo.authorWebsite = _T("www.codeblocks.org");
+	m_PluginInfo.thanksTo = _T("");
 	m_PluginInfo.license = LICENSE_GPL;
 	m_PluginInfo.hasConfigure = false;
 }
@@ -96,7 +96,7 @@ int WindowsXPLookNFeel::Execute()
 		Manager::Get()->GetMessageManager()->DebugLog(msg);
 		return -1;
 	}
-	
+
 	wxArrayString targetNames;
 	ProjectBuildTarget* target = 0L;
 	for (int i = 0; i < project->GetBuildTargetsCount(); ++i)
@@ -113,7 +113,7 @@ int WindowsXPLookNFeel::Execute()
 			target = tgt;
 		}
 	}
-	
+
 	if (!target)
 	{
 		// not even one executable target...
@@ -128,8 +128,8 @@ int WindowsXPLookNFeel::Execute()
 		if (targetIndex > -1)
 			target = project->GetBuildTarget(targetIndex);
 	}
-	
-	
+
+
 	if (target)
 	{
 		if (wxMessageBox(_("Do you want to create the manifest file?"),
@@ -137,45 +137,45 @@ int WindowsXPLookNFeel::Execute()
 						wxYES_NO | wxICON_QUESTION) == wxNO)
 			return -2;
 		wxString filename = target->GetOutputFilename();
-		filename << ".Manifest";
+		filename << _T(".Manifest");
 		wxFileName fname(filename);
 		fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, project->GetBasePath());
 		filename = fname.GetFullPath();
 		Manager::Get()->GetMessageManager()->DebugLog(_("WindowsXPLookNFeel: Creating Manifest '%s'"), filename.c_str());
-		
+
 		wxString buffer;
-		buffer << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" << '\n';
-		buffer << "<assembly" << '\n';
-		buffer << "  xmlns=\"urn:schemas-microsoft-com:asm.v1\"" << '\n';
-		buffer << "  manifestVersion=\"1.0\">" << '\n';
-		buffer << "<assemblyIdentity" << '\n';
-		buffer << "    name=\"";
-		buffer << project->GetTitle() << "." << target->GetTitle() << ".App";
-		buffer << "\"" << '\n';
-		buffer << "    processorArchitecture=\"x86\"" << '\n';
-		buffer << "    version=\"1.0.0.0\"" << '\n';
-		buffer << "    type=\"win32\"/>" << '\n';
-		buffer << "<description>Executable</description>" << '\n';
-		buffer << "<dependency>" << '\n';
-		buffer << "    <dependentAssembly>" << '\n';
-		buffer << "        <assemblyIdentity" << '\n';
-		buffer << "            type=\"win32\"" << '\n';
-		buffer << "            name=\"Microsoft.Windows.Common-Controls\"" << '\n';
-		buffer << "            version=\"6.0.0.0\"" << '\n';
-		buffer << "            processorArchitecture=\"x86\"" << '\n';
-		buffer << "            publicKeyToken=\"6595b64144ccf1df\"" << '\n';
-		buffer << "            language=\"*\"" << '\n';
-		buffer << "        />" << '\n';
-		buffer << "    </dependentAssembly>" << '\n';
-		buffer << "</dependency>" << '\n';
-		buffer << "</assembly>" << '\n';
-		
+		buffer << _T("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>") << _T('\n');
+		buffer << _T("<assembly") << _T('\n');
+		buffer << _T("  xmlns=\"urn:schemas-microsoft-com:asm.v1\"") << _T('\n');
+		buffer << _T("  manifestVersion=\"1.0\">") << _T('\n');
+		buffer << _T("<assemblyIdentity") << _T('\n');
+		buffer << _T("    name=\"");
+		buffer << project->GetTitle() << _T(".") << target->GetTitle() << _T(".App");
+		buffer << _T("\"") << _T('\n');
+		buffer << _T("    processorArchitecture=\"x86\"") << _T('\n');
+		buffer << _T("    version=\"1.0.0.0\"") << _T('\n');
+		buffer << _T("    type=\"win32\"/>") << _T('\n');
+		buffer << _T("<description>Executable</description>") << _T('\n');
+		buffer << _T("<dependency>") << _T('\n');
+		buffer << _T("    <dependentAssembly>") << _T('\n');
+		buffer << _T("        <assemblyIdentity") << _T('\n');
+		buffer << _T("            type=\"win32\"") << _T('\n');
+		buffer << _T("            name=\"Microsoft.Windows.Common-Controls\"") << _T('\n');
+		buffer << _T("            version=\"6.0.0.0\"") << _T('\n');
+		buffer << _T("            processorArchitecture=\"x86\"") << _T('\n');
+		buffer << _T("            publicKeyToken=\"6595b64144ccf1df\"") << _T('\n');
+		buffer << _T("            language=\"*\"") << _T('\n');
+		buffer << _T("        />") << _T('\n');
+		buffer << _T("    </dependentAssembly>") << _T('\n');
+		buffer << _T("</dependency>") << _T('\n');
+		buffer << _T("</assembly>") << _T('\n');
+
 		wxFile file(filename, wxFile::write);
-		file.Write(buffer);
+		cbWrite(file,buffer);
 
 		wxMessageBox(_("Manifest file created"));
 	}
-	
+
 	return 0;
 }
 

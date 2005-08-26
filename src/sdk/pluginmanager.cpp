@@ -67,9 +67,9 @@ PluginManager::PluginManager()
 
     const wxString& personalityKey = Manager::Get()->GetPersonalityManager()->GetPersonalityKey();
 
-	ConfigManager::AddConfiguration(_("Plugin Manager"), "/plugins");
+	ConfigManager::AddConfiguration(_("Plugin Manager"), _T("/plugins"));
 	if (!personalityKey.IsEmpty())
-        ConfigManager::AddConfiguration(_("Plugin Manager"), personalityKey + "/plugins");
+        ConfigManager::AddConfiguration(_("Plugin Manager"), personalityKey + _T("/plugins"));
 }
 
 // class destructor
@@ -94,9 +94,9 @@ int PluginManager::ScanForPlugins(const wxString& path)
 {
     SANITY_CHECK(0);
 #ifdef __WXMSW__
-	#define PLUGINS_MASK "*.dll"
+	#define PLUGINS_MASK _T("*.dll")
 #else
-	#define PLUGINS_MASK "*.so"
+	#define PLUGINS_MASK _T("*.so")
 #endif
 
     int count = 0;
@@ -110,7 +110,7 @@ int PluginManager::ScanForPlugins(const wxString& path)
     while (ok)
     {
 //		Manager::Get()->GetMessageManager()->AppendDebugLog(_("Trying %s: "), filename.c_str());
-        if (LoadPlugin(path + '/' + filename))
+        if (LoadPlugin(path + _T('/') + filename))
             ++count;
         ok = dir.GetNext(&filename);
     }
@@ -133,7 +133,7 @@ cbPlugin* PluginManager::LoadPlugin(const wxString& pluginName)
         return 0L;
     }
 
-    GetPluginProc proc = (GetPluginProc)lib->GetSymbol("GetPlugin");
+    GetPluginProc proc = (GetPluginProc)lib->GetSymbol(_T("GetPlugin"));
     if (!proc)
     {
         lib->Unload();
@@ -169,14 +169,14 @@ void PluginManager::LoadAllPlugins()
     const wxString& personalityKey = Manager::Get()->GetPersonalityManager()->GetPersonalityKey();
 
     // check if a plugin crashed the app last time
-    wxString probPlugin = ConfigManager::Get()->Read(personalityKey + "/plugins/try_to_activate", wxEmptyString);
+    wxString probPlugin = ConfigManager::Get()->Read(personalityKey + _T("/plugins/try_to_activate"), wxEmptyString);
     if (!probPlugin.IsEmpty())
     {
         wxString msg;
         msg.Printf(_("Plugin \"%s\" failed to load last time Code::Blocks was executed.\n"
                     "Do you want to disable this plugin from loading?"), probPlugin.c_str());
         if (wxMessageBox(msg, _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxNO)
-            probPlugin = "";
+            probPlugin = _T("");
     }
 
     for (unsigned int i = 0; i < m_Plugins.GetCount(); ++i)
@@ -185,7 +185,7 @@ void PluginManager::LoadAllPlugins()
 
         // do not load it if the user has explicitly asked not to...
         wxString baseKey;
-        baseKey << personalityKey << "/plugins/" << m_Plugins[i]->name;
+        baseKey << personalityKey << _T("/plugins/") << m_Plugins[i]->name;
         bool loadIt = ConfigManager::Get()->Read(baseKey, true);
         
         // if we have a problematic plugin, check if this is it
@@ -199,15 +199,15 @@ void PluginManager::LoadAllPlugins()
 
         if (loadIt && !plug->IsAttached())
 		{
-            ConfigManager::Get()->Write(personalityKey + "/plugins/try_to_activate", plug->GetInfo()->title);
+            ConfigManager::Get()->Write(personalityKey + _T("/plugins/try_to_activate"), plug->GetInfo()->title);
 			Manager::Get()->GetMessageManager()->AppendLog(_("%s "), m_Plugins[i]->name.c_str());
             plug->Attach();
 		}
     }
-	Manager::Get()->GetMessageManager()->Log("");
+	Manager::Get()->GetMessageManager()->Log(_T(""));
 
     wxLogNull ln;
-    ConfigManager::Get()->DeleteEntry(personalityKey + "/plugins/try_to_activate");
+    ConfigManager::Get()->DeleteEntry(personalityKey + _T("/plugins/try_to_activate"));
 }
 
 void PluginManager::UnloadAllPlugins()
@@ -219,14 +219,14 @@ void PluginManager::UnloadAllPlugins()
     while (i > 0)
     {
 		--i;
-//		Manager::Get()->GetMessageManager()->DebugLog("At %d", i);
+//		Manager::Get()->GetMessageManager()->DebugLog(_("At %d"), i);
         cbPlugin* plug = m_Plugins[i]->plugin;
 		if (!plug)
 			continue;
-//        Manager::Get()->GetMessageManager()->DebugLog("Doing '%s'", m_Plugins[i]->name.c_str());
+//        Manager::Get()->GetMessageManager()->DebugLog(_("Doing '%s'"), m_Plugins[i]->name.c_str());
         plug->Release(true);
         //it->first->library->Unload();
-//        Manager::Get()->GetMessageManager()->DebugLog("Plugin '%s' unloaded", m_Plugins[i]->name.c_str());
+//        Manager::Get()->GetMessageManager()->DebugLog(_("Plugin '%s' unloaded"), m_Plugins[i]->name.c_str());
         // FIXME: find a way to delete the toolbars too...
     }
 }
@@ -416,19 +416,19 @@ int PluginManager::Configure()
 
         // do not load it if the user has explicitely asked not to...
         wxString baseKey;
-        baseKey << "/plugins/" << m_Plugins[i]->name;
+        baseKey << _T("/plugins/") << m_Plugins[i]->name;
         bool loadIt = ConfigManager::Get()->Read(baseKey, true);
 
         if (!loadIt && plug->IsAttached())
             plug->Release(false);
         else if (loadIt && !plug->IsAttached())
         {
-            ConfigManager::Get()->Write("/plugins/try_to_activate", plug->GetInfo()->title);
+            ConfigManager::Get()->Write(_("/plugins/try_to_activate"), plug->GetInfo()->title);
             plug->Attach();
         }
     }
     wxLogNull ln;
-    ConfigManager::Get()->DeleteEntry("/plugins/try_to_activate");
+    ConfigManager::Get()->DeleteEntry(_T("/plugins/try_to_activate"));
 */
     return wxID_OK;
 }

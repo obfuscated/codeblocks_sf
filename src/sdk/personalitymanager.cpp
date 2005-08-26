@@ -76,7 +76,7 @@ void PersonalityManager::ReadPersonalities()
         m_Personalities.Add(str);
 		cont = ConfigManager::Get()->GetNextGroup(str, cookie);
 	}
-	ConfigManager::Get()->SetPath("/");
+	ConfigManager::Get()->SetPath(_T("/"));
 }
 
 void PersonalityManager::SetPersonality(const wxString& personality, bool createIfNotExist)
@@ -116,7 +116,7 @@ const wxArrayString& PersonalityManager::GetPersonalitiesList()
 
 const wxString& PersonalityManager::GetPersonalitiesRoot()
 {
-    static wxString root = _("/personalities");
+    static wxString root = _T("/personalities");
     return root;
 }
 
@@ -125,6 +125,6 @@ const wxString& PersonalityManager::GetPersonalityKey()
     static wxString key;
     key = m_CurrentPersonalityIdx <= 0
             ? wxT("") // default personality
-            : GetPersonalitiesRoot() + "/" + GetPersonality();
+            : GetPersonalitiesRoot() + _T("/") + GetPersonality();
     return key;
 }

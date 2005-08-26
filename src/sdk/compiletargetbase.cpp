@@ -157,10 +157,10 @@ wxString CompileTargetBase::GetObjectOutput()
     if (m_ObjectOutput.IsEmpty())
     {
         out = GetBasePath();
-        if (out.IsEmpty() || out.Matches("."))
-             return ".objs";
+        if (out.IsEmpty() || out.Matches(_T(".")))
+             return _T(".objs");
         else
-            return out + wxFileName::GetPathSeparator() + ".objs";
+            return out + wxFileName::GetPathSeparator() + _T(".objs");
     }
     return m_ObjectOutput;
 }
@@ -173,10 +173,10 @@ wxString CompileTargetBase::GetDepsOutput()
     if (m_DepsOutput.IsEmpty())
     {
         out = GetBasePath();
-        if (out.IsEmpty() || out.Matches("."))
-             return ".deps";
+        if (out.IsEmpty() || out.Matches(_T(".")))
+             return _T(".deps");
         else
-            return out + wxFileName::GetPathSeparator() + ".deps";
+            return out + wxFileName::GetPathSeparator() + _T(".deps");
     }
     return m_DepsOutput;
 }
@@ -189,7 +189,7 @@ wxString CompileTargetBase::GetExecutableFilename()
 #ifdef __WXMSW__
     fname.SetExt(EXECUTABLE_EXT); 
 #else
-    fname.SetExt("");
+    fname.SetExt(_T(""));
 #endif
     return fname.GetFullPath();
 }
@@ -214,14 +214,14 @@ wxString CompileTargetBase::GetDynamicLibDefFilename()
         m_Filename = m_OutputFilename;
     wxFileName fname(m_Filename);
     
-    wxString prefix = "lib";
+    wxString prefix = _T("lib");
     if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
     {
         Compiler* compiler = CompilerFactory::Compilers[m_CompilerIdx];
         prefix = compiler->GetSwitches().libPrefix;
     }
     fname.SetName(prefix + fname.GetName());
-    fname.SetExt("def");
+    fname.SetExt(_T("def"));
     return fname.GetFullPath();
 }
 
@@ -233,7 +233,7 @@ wxString CompileTargetBase::GetStaticLibFilename()
         m_Filename = m_OutputFilename;
     wxFileName fname(m_Filename);
 
-    wxString prefix = "lib";
+    wxString prefix = _T("lib");
     wxString suffix = STATICLIB_EXT;
     if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
     {
@@ -250,11 +250,11 @@ wxString CompileTargetBase::GetStaticLibFilename()
 wxString CompileTargetBase::GetBasePath()
 {
     if (m_Filename.IsEmpty())
-        return ".";
+        return _T(".");
         
     wxFileName basePath(m_Filename);
     wxString base = basePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-    return !base.IsEmpty() ? base : ".";
+    return !base.IsEmpty() ? base : _T(".");
 }
 
 void CompileTargetBase::SetTargetType(const TargetType& pt)

@@ -100,14 +100,14 @@ void DebuggerTree::BuildTree(const wxString& infoText)
 	bool inQuotes = false;
 	for (int i = 0; i < len; ++i)
 	{
-        if (buffer.GetChar(i) == '"' && (i == 0 || (i > 0 && buffer.GetChar(i - 1) != '\\')))
+        if (buffer.GetChar(i) == _T('"') && (i == 0 || (i > 0 && buffer.GetChar(i - 1) != _T('\\'))))
             inQuotes = !inQuotes;
         if (!inQuotes)
         {
-            if (buffer.GetChar(i) == '\r')
-                buffer.SetChar(i, ' ');
-            else if (buffer.GetChar(i) == '\n')
-                buffer.SetChar(i, ',');
+            if (buffer.GetChar(i) == _T('\r'))
+                buffer.SetChar(i, _T(' '));
+            else if (buffer.GetChar(i) == _T('\n'))
+                buffer.SetChar(i, _T(','));
         }
 	}
 	ParseEntry(parent, buffer);
@@ -126,7 +126,7 @@ int DebuggerTree::FindCharOutsideQuotes(const wxString& str, wxChar ch)
     {
         if (!inQuotes && str.GetChar(i) == ch)
             return i;
-        else if (str.GetChar(i) == '"' && (i == 0 || (i > 0 && str.GetChar(i - 1) != '\\')))
+        else if (str.GetChar(i) == _T('"') && (i == 0 || (i > 0 && str.GetChar(i - 1) != _T('\\'))))
             inQuotes = !inQuotes;
         ++i;
     }
@@ -153,15 +153,15 @@ int DebuggerTree::FindCommaPos(const wxString& str)
     bool inQuotes = false;
     while (i < len)
     {
-        if (str.GetChar(i) == '(' && (i == 0 || (i > 0 && str.GetChar(i - 1) != '\\')))
+        if (str.GetChar(i) == _T('(') && (i == 0 || (i > 0 && str.GetChar(i - 1) != '\\')))
             ++parCount; // increment on opening parenthesis
         else if (str.GetChar(i) == ')' && (i == 0 || (i > 0 && str.GetChar(i - 1) != '\\')))
             --parCount; // decrement on opening parenthesis
 
         // if it's not inside quotes *and* we have parCount == 0, it's a field separator
-        if (!inQuotes && parCount == 0 && str.GetChar(i) == ',')
+        if (!inQuotes && parCount == 0 && str.GetChar(i) == _T(','))
             return i;
-        else if (str.GetChar(i) == '"' && (i == 0 || (i > 0 && str.GetChar(i - 1) != '\\')))
+        else if (str.GetChar(i) == _T('"') && (i == 0 || (i > 0 && str.GetChar(i - 1) != _T('\\'))))
             inQuotes = !inQuotes;
         ++i;
     }
@@ -182,9 +182,9 @@ void DebuggerTree::ParseEntry(const wxTreeItemId& parent, wxString& text)
 		
 		// find position of '{', '}' and ',' ***outside*** of any quotes.
 		// decide which is nearer to the start
-		int braceOpenPos = FindCharOutsideQuotes(text, '{');
+		int braceOpenPos = FindCharOutsideQuotes(text, _T('{'));
 		if (braceOpenPos == -1)	braceOpenPos = 0xFFFFFE;
-		int braceClosePos = FindCharOutsideQuotes(text, '}');
+		int braceClosePos = FindCharOutsideQuotes(text, _T('}'));
 		if (braceClosePos == -1) braceClosePos = 0xFFFFFE;
         int commaPos = FindCommaPos(text);
 		if (commaPos == -1) commaPos = 0xFFFFFE;
@@ -192,7 +192,7 @@ void DebuggerTree::ParseEntry(const wxTreeItemId& parent, wxString& text)
 		
 		if (pos == 0xFFFFFE)
 		{
-			if (text.Right(3).Matches(" = "))
+			if (text.Right(3).Matches(_T(" = ")))
 				text.Truncate(text.Length() - 3);
 			if (!text.IsEmpty())
 			{
@@ -206,7 +206,7 @@ void DebuggerTree::ParseEntry(const wxTreeItemId& parent, wxString& text)
 			wxTreeItemId newParent = parent;
 			wxString tmp = text.Left(pos);
 			
-			if (tmp.Right(3).Matches(" = "))
+			if (tmp.Right(3).Matches(_T(" = ")))
 				tmp.Truncate(tmp.Length() - 3); // remove " = " if last in string
 			if (!tmp.IsEmpty())
 				newParent = m_pTree->AppendItem(parent, tmp); // add entry

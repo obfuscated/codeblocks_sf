@@ -38,7 +38,7 @@
 #include <manager.h>
 
 static const wxString g_SampleClasses = 
-	"class A_class"
+	_T("class A_class"
 	"{"
 	"	public:"
 	"		int someInt_A;"
@@ -74,7 +74,7 @@ static const wxString g_SampleClasses =
 	"int x;"
 	"int y;"
 	"#define SOME_DEFINITION\n"
-	"#define SOME_DEFINITION_2\n\n";
+	"#define SOME_DEFINITION_2\n\n");
 
 BEGIN_EVENT_TABLE(CCOptionsDlg, wxDialog)
 	EVT_BUTTON(XRCID("wxID_OK"), CCOptionsDlg::OnOK)
@@ -87,7 +87,7 @@ END_EVENT_TABLE()
 CCOptionsDlg::CCOptionsDlg(wxWindow* parent)
 	: m_Parser(this)
 {
-	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgCCSettings"));
+	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgCCSettings"));
 	XRCCTRL(*this, "spnThreads", wxSpinCtrl)->SetValue(m_Parser.GetMaxThreads());
 	XRCCTRL(*this, "chkLocals", wxCheckBox)->SetValue(m_Parser.Options().followLocalIncludes);
 	XRCCTRL(*this, "chkGlobals", wxCheckBox)->SetValue(m_Parser.Options().followGlobalIncludes);
@@ -97,16 +97,16 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent)
 	XRCCTRL(*this, "chkCaseSensitive", wxCheckBox)->SetValue(m_Parser.Options().caseSensitive);
 	XRCCTRL(*this, "chkInheritance", wxCheckBox)->SetValue(m_Parser.ClassBrowserOptions().showInheritance);
 	XRCCTRL(*this, "cmbCBView", wxComboBox)->SetSelection(m_Parser.ClassBrowserOptions().viewFlat ? 0 : 1);
-	XRCCTRL(*this, "chkUseCache", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/code_completion/use_cache", 0L));
-	XRCCTRL(*this, "chkAlwaysUpdateCache", wxCheckBox)->SetValue(ConfigManager::Get()->Read("/code_completion/update_cache_always", 0L));
+	XRCCTRL(*this, "chkUseCache", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/code_completion/use_cache"), 0L));
+	XRCCTRL(*this, "chkAlwaysUpdateCache", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/code_completion/update_cache_always"), 0L));
 
-    wxColour color(ConfigManager::Get()->Read("/code_completion/color/red", 0xFF),
-    				ConfigManager::Get()->Read("/code_completion/color/green", 0xFF),
-    				ConfigManager::Get()->Read("/code_completion/color/blue", 0xFF)
+    wxColour color(ConfigManager::Get()->Read(_T("/code_completion/color/red"), 0xFF),
+    				ConfigManager::Get()->Read(_T("/code_completion/color/green"), 0xFF),
+    				ConfigManager::Get()->Read(_T("/code_completion/color/blue"), 0xFF)
 					);
     XRCCTRL(*this, "btnColor", wxButton)->SetBackgroundColour(color);
 
-	int timerDelay = ConfigManager::Get()->Read("/editor/cc_delay", 500);
+	int timerDelay = ConfigManager::Get()->Read(_T("/editor/cc_delay"), 500);
 	XRCCTRL(*this, "sliderDelay", wxSlider)->SetValue(timerDelay / 100);
 	UpdateSliderLabel();
 	
@@ -169,15 +169,15 @@ void CCOptionsDlg::OnOK(wxCommandEvent& event)
 	m_Parser.ClassBrowserOptions().viewFlat = XRCCTRL(*this, "cmbCBView", wxComboBox)->GetSelection() == 0;
 	m_Parser.WriteOptions();
 
-	ConfigManager::Get()->Write("/code_completion/use_cache", XRCCTRL(*this, "chkUseCache", wxCheckBox)->GetValue());
-	ConfigManager::Get()->Write("/code_completion/update_cache_always", XRCCTRL(*this, "chkAlwaysUpdateCache", wxCheckBox)->GetValue());
+	ConfigManager::Get()->Write(_T("/code_completion/use_cache"), XRCCTRL(*this, "chkUseCache", wxCheckBox)->GetValue());
+	ConfigManager::Get()->Write(_T("/code_completion/update_cache_always"), XRCCTRL(*this, "chkAlwaysUpdateCache", wxCheckBox)->GetValue());
 
-    ConfigManager::Get()->Write("/code_completion/color/red",		XRCCTRL(*this, "btnColor", wxButton)->GetBackgroundColour().Red());
-    ConfigManager::Get()->Write("/code_completion/color/green",	XRCCTRL(*this, "btnColor", wxButton)->GetBackgroundColour().Green());
-    ConfigManager::Get()->Write("/code_completion/color/blue",	XRCCTRL(*this, "btnColor", wxButton)->GetBackgroundColour().Blue());
+    ConfigManager::Get()->Write(_T("/code_completion/color/red"),		XRCCTRL(*this, "btnColor", wxButton)->GetBackgroundColour().Red());
+    ConfigManager::Get()->Write(_T("/code_completion/color/green"),	XRCCTRL(*this, "btnColor", wxButton)->GetBackgroundColour().Green());
+    ConfigManager::Get()->Write(_T("/code_completion/color/blue"),	XRCCTRL(*this, "btnColor", wxButton)->GetBackgroundColour().Blue());
 
 	int timerDelay = XRCCTRL(*this, "sliderDelay", wxSlider)->GetValue() * 100;
-	ConfigManager::Get()->Write("/editor/cc_delay", timerDelay);
+	ConfigManager::Get()->Write(_T("/editor/cc_delay"), timerDelay);
 
 	wxDialog::OnOK(event);
 }

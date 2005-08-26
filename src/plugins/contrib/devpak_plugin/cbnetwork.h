@@ -4,6 +4,7 @@
 #include <wx/event.h>
 #include <wx/string.h>
 #include <wx/stream.h>
+#include <wx/intl.h>
 #include <wx/url.h>
 
 typedef const int cbNetEvent;
@@ -37,7 +38,7 @@ class cbNetwork : public wxEvtHandler
         /** Constructor
           * @param serverUrl The remote server's top-level URL.
           */
-        cbNetwork(wxEvtHandler* parent, int id, const wxString& serverUrl = "");
+        cbNetwork(wxEvtHandler* parent, int id, const wxString& serverUrl = _T(""));
         ~cbNetwork();
         
         /** Set the server to connect to.
@@ -63,6 +64,8 @@ class cbNetwork : public wxEvtHandler
         bool DownloadFile(const wxString& remote, const wxString& local);
         /** Is it connected? */
         bool IsConnected();
+        /** Is it busy (downloading)? */
+        bool IsBusy();
     protected:
         void Disconnect();
         bool Connect(const wxString& remote);
@@ -75,6 +78,7 @@ class cbNetwork : public wxEvtHandler
         wxInputStream* m_pStream;
         wxURL* m_pURL;
         bool m_Abort;
+        bool m_Busy;
 };
 
 #define DEFINE_EVT_CBNET(e) extern cbNetEvent e;

@@ -120,7 +120,7 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
 	m_pTarget(target),
 	m_BuildingTree(false)
 {
-	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgCompilerOptions"));
+	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgCompilerOptions"));
 
 	DoFillCompilerSets();
 	DoFillCompilerPrograms();
@@ -243,7 +243,7 @@ void CompilerOptionsDlg::DoFillVars(CustomVars* vars)
 		Var* v = &varsarr[i];
 		if (!v->builtin)
 		{
-            wxString text = v->name + " = " + v->value;
+            wxString text = v->name + _T(" = ") + v->value;
             lst->Append(text, static_cast<void*>(v));
 		}
 	}
@@ -254,7 +254,7 @@ void CompilerOptionsDlg::DoFillOthers()
     wxTextCtrl* txt = XRCCTRL(*this, "txtConsoleShell", wxTextCtrl);
     if (txt)
     {
-        txt->SetValue(ConfigManager::Get()->Read("/compiler_gcc/console_shell", DEFAULT_CONSOLE_SHELL));
+        txt->SetValue(ConfigManager::Get()->Read(_T("/compiler_gcc/console_shell"), DEFAULT_CONSOLE_SHELL));
 #ifdef __WXMSW__
         // under win32, this option is not needed, so disable it
         txt->Enable(false);
@@ -264,7 +264,7 @@ void CompilerOptionsDlg::DoFillOthers()
     if (spn)
     {
         spn->SetRange(0, 1000);
-        spn->SetValue(ConfigManager::Get()->Read("/compiler_gcc/max_reported_errors", 50));
+        spn->SetValue(ConfigManager::Get()->Read(_T("/compiler_gcc/max_reported_errors"), 50));
     }
 }
 
@@ -386,7 +386,7 @@ void CompilerOptionsDlg::TextToOptions()
 		{
 			// definition
 			XRCCTRL(*this, "txtCompilerDefines", wxTextCtrl)->AppendText(rest);
-			XRCCTRL(*this, "txtCompilerDefines", wxTextCtrl)->AppendText("\n");
+			XRCCTRL(*this, "txtCompilerDefines", wxTextCtrl)->AppendText(_T("\n"));
 			m_CompilerOptions.RemoveAt(i, 1);
 		}
 		else
@@ -428,7 +428,7 @@ void CompilerOptionsDlg::OptionsToText()
 	{
 		if (!array[i].IsEmpty())
 		{
-			if (array[i].StartsWith("-"))
+			if (array[i].StartsWith(_T("-")))
 			{
                 if (m_CompilerOptions.Index(array[i]) == wxNOT_FOUND)
                     m_CompilerOptions.Add(array[i]);
@@ -481,7 +481,7 @@ void CompilerOptionsDlg::DoFillCompileOptions(const wxArrayString& array, wxText
         if (!array[i].IsEmpty())
         {
             control->AppendText(array[i]);
-            control->AppendText('\n');
+            control->AppendText(_T('\n'));
         }
     }
 }
@@ -504,12 +504,12 @@ void CompilerOptionsDlg::DoGetCompileOptions(wxArrayString& array, wxTextCtrl* c
                       Now, we 're breaking up by newlines. */    array.Clear();
 #if 1
     wxString tmp = control->GetValue();
-    int nl = tmp.Find('\n');
+    int nl = tmp.Find(_T('\n'));
     wxString line;
     if (nl == -1)
     {
         line = tmp;
-        tmp = "";
+        tmp = _T("");
     }
     else
         line = tmp.Left(nl);
@@ -519,16 +519,16 @@ void CompilerOptionsDlg::DoGetCompileOptions(wxArrayString& array, wxTextCtrl* c
         if (!line.IsEmpty())
         {
             // just to make sure..
-            line.Replace("\r", " ", true); // remove CRs
-            line.Replace("\n", " ", true); // remove LFs
+            line.Replace(_T("\r"), _T(" "), true); // remove CRs
+            line.Replace(_T("\n"), _T(" "), true); // remove LFs
             array.Add(line.Strip(wxString::both));
         }
         tmp.Remove(0, nl + 1);
-        nl = tmp.Find('\n');
+        nl = tmp.Find(_T('\n'));
         if (nl == -1)
         {
             line = tmp;
-            tmp = "";
+            tmp = _T("");
         }
         else
             line = tmp.Left(nl);
@@ -540,8 +540,8 @@ void CompilerOptionsDlg::DoGetCompileOptions(wxArrayString& array, wxTextCtrl* c
         wxString tmp = control->GetLineText(i);
         if (!tmp.IsEmpty())
         {
-            tmp.Replace("\r", " ", true); // remove CRs
-            tmp.Replace("\n", " ", true); // remove LFs
+            tmp.Replace(_T("\r"), _T(" "), true); // remove CRs
+            tmp.Replace(_T("\n"), _T(" "), true); // remove LFs
             array.Add(tmp.Strip(wxString::both));
         }
     }
@@ -957,8 +957,8 @@ void CompilerOptionsDlg::OnAddDirClick(wxCommandEvent& event)
                                     true);*/
 
     EditPathDlg dlg(this,
-            m_pProject ? m_pProject->GetBasePath() : "",
-            m_pProject ? m_pProject->GetBasePath() : "",
+            m_pProject ? m_pProject->GetBasePath() : _T(""),
+            m_pProject ? m_pProject->GetBasePath() : _T(""),
             _("Add directory"));
 
     if (dlg.ShowModal() == wxID_OK)
@@ -981,7 +981,7 @@ void CompilerOptionsDlg::OnEditDirClick(wxCommandEvent& event)
 //    if (m_pProject)
 //        dir.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_pProject->GetBasePath());
 //    Manager::Get()->GetMessageManager()->DebugLog(dir.GetFullPath());
-    wxString initial = _("");
+    wxString initial = _T("");
     
     // This path may not exist, but if using EditPathDlg, you still want it
     // displayed
@@ -996,7 +996,7 @@ void CompilerOptionsDlg::OnEditDirClick(wxCommandEvent& event)
 
     EditPathDlg dlg(this,
             initial,
-            m_pProject ? m_pProject->GetBasePath() : "",
+            m_pProject ? m_pProject->GetBasePath() : _T(""),
             _("Edit directory"));
         
     if (dlg.ShowModal() == wxID_OK)
@@ -1012,7 +1012,7 @@ void CompilerOptionsDlg::OnRemoveDirClick(wxCommandEvent& event)
     wxListBox* control = GetDirsListBox();
     if (!control || control->GetSelection() < 0)
         return;
-	if (wxMessageBox(_("Remove '"+control->GetStringSelection()+"' from the list?"),
+	if (wxMessageBox(_("Remove '")+control->GetStringSelection()+_("' from the list?"),
 					_("Confirmation"),
 					wxOK | wxCANCEL | wxICON_QUESTION) == wxOK)
 	{
@@ -1056,7 +1056,7 @@ void CompilerOptionsDlg::OnEditVarClick(wxCommandEvent& event)
         CustomVars* vars = GetCustomVars();
         if (vars)
             vars->SetModified(true);
-		XRCCTRL(*this, "lstVars", wxListBox)->SetString(sel, var->name + " = " + var->value);
+		XRCCTRL(*this, "lstVars", wxListBox)->SetString(sel, var->name + _T(" = ") + var->value);
 	}
 }
 
@@ -1189,10 +1189,10 @@ void CompilerOptionsDlg::OnAddLibClick(wxCommandEvent& event)
     /*LinkLibDlg dlg(this, m_pProject, m_pTarget, CompilerFactory::Compilers[compilerIdx], "");*/
     
     EditPathDlg dlg(this,
-            "",
-            m_pProject ? m_pProject->GetBasePath() : "",
+            _T(""),
+            m_pProject ? m_pProject->GetBasePath() : _T(""),
             _("Add library"),
-            _("Chose library to link"),
+            _("Choose library to link"),
             false,
             _("Library files (*.a, *.lib)|*.a;*.lib|All files (*)|*"));
             
@@ -1214,9 +1214,9 @@ void CompilerOptionsDlg::OnEditLibClick(wxCommandEvent& event)
  
     EditPathDlg dlg(this,
             lstLibs->GetStringSelection(),
-            m_pProject ? m_pProject->GetBasePath() : "",
-            _("Add library"),
-            _("Chose library to link"),
+            m_pProject ? m_pProject->GetBasePath() : _T(""),
+            _("Edit library"),
+            _("Choose library to link"),
             false,
             _("Library files (*.a, *.lib)|*.a;*.lib|All files (*)|*"));
                
@@ -1232,7 +1232,7 @@ void CompilerOptionsDlg::OnRemoveLibClick(wxCommandEvent& event)
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
     if (!lstLibs || lstLibs->GetSelection() < 0)
         return;
-    if (wxMessageBox(_("Remove library '"+lstLibs->GetStringSelection()+"' from the list?"), _("Confirmation"), wxICON_QUESTION | wxOK | wxCANCEL) == wxOK)
+    if (wxMessageBox(_("Remove library '")+lstLibs->GetStringSelection()+_("' from the list?"), _("Confirmation"), wxICON_QUESTION | wxOK | wxCANCEL) == wxOK)
         lstLibs->Delete(lstLibs->GetSelection());
 }
 
@@ -1240,8 +1240,8 @@ void CompilerOptionsDlg::OnAddExtraPathClick(wxCommandEvent& event)
 {
     wxString path = ChooseDirectory(this,
                                     _("Select directory"),
-                                    "",
-                                    "",
+                                    _T(""),
+                                    _T(""),
                                     true,
                                     true);
     if (path.IsEmpty())
@@ -1271,14 +1271,14 @@ void CompilerOptionsDlg::OnEditExtraPathClick(wxCommandEvent& event)
         return;
         
     wxFileName dir(control->GetString(control->GetSelection()) + wxFileName::GetPathSeparator());
-    wxString initial = _("");
+    wxString initial = _T("");
     if (dir.DirExists())
         initial = dir.GetPath(wxPATH_GET_VOLUME);
 
     wxString path = ChooseDirectory(this,
                                     _("Select directory"),
                                     initial,
-                                    "",
+                                    _T(""),
                                     true,
                                     true);
     if (path.IsEmpty())
@@ -1412,9 +1412,9 @@ void CompilerOptionsDlg::OnSelectProgramClick(wxCommandEvent& event)
     // common part follows
     wxFileDialog* dlg = new wxFileDialog(this,
                             _("Select file"),
-                            XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->GetValue() + "/bin",
+                            XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->GetValue() + _T("/bin"),
                             obj->GetValue(),
-                            "Executable files (*.exe)|*.exe",
+                            _("Executable files (*.exe)|*.exe"),
                             wxOPEN | wxFILE_MUST_EXIST);
     dlg->SetFilterIndex(0);
 
@@ -1557,10 +1557,10 @@ void CompilerOptionsDlg::EndModal(int retCode)
 	//others
     wxTextCtrl* txt = XRCCTRL(*this, "txtConsoleShell", wxTextCtrl);
     if (txt)
-        ConfigManager::Get()->Write("/compiler_gcc/console_shell", txt->GetValue());
+        ConfigManager::Get()->Write(_T("/compiler_gcc/console_shell"), txt->GetValue());
     wxSpinCtrl* spn = XRCCTRL(*this, "spnMaxErrors", wxSpinCtrl);
     if (spn)
-        ConfigManager::Get()->Write("/compiler_gcc/max_reported_errors", spn->GetValue());
+        ConfigManager::Get()->Write(_T("/compiler_gcc/max_reported_errors"), spn->GetValue());
 
 	wxDialog::EndModal(retCode);
 }
@@ -1576,10 +1576,10 @@ void CompilerOptionsDlg::OnMyCharHook(wxKeyEvent& event)
     int myid = 0;
     unsigned int myidx = 0;
     
-    const wxChar* str_libs[3] = { _("btnEditLib"),_("btnAddLib"),_("btnDelLib") };
-    const wxChar* str_dirs[3] = { _("btnEditDir"),_("btnAddDir"),_("btnDelDir") };
-    const wxChar* str_vars[3] = { _("btnEditVar"),_("btnAddVar"),_("btnDeleteVar") };
-    const wxChar* str_xtra[3] = { _("btnExtraEdit"),_("btnExtraAdd"),_("btnExtraDelete") };
+    const wxChar* str_libs[3] = { _T("btnEditLib"),_T("btnAddLib"),_T("btnDelLib") };
+    const wxChar* str_dirs[3] = { _T("btnEditDir"),_T("btnAddDir"),_T("btnDelDir") };
+    const wxChar* str_vars[3] = { _T("btnEditVar"),_T("btnAddVar"),_T("btnDeleteVar") };
+    const wxChar* str_xtra[3] = { _T("btnExtraEdit"),_T("btnExtraAdd"),_T("btnExtraDelete") };
     
     if(keycode == WXK_RETURN || keycode == WXK_NUMPAD_ENTER)
         { myidx = 0; } // Edit
@@ -1591,13 +1591,13 @@ void CompilerOptionsDlg::OnMyCharHook(wxKeyEvent& event)
         { event.Skip();return; }
         
     if(     id == XRCID("lstLibs")) // Link libraries
-        { myid =  XRCID(str_libs[myidx]); }
+        { myid =  wxXmlResource::GetXRCID(str_libs[myidx]); }
     else if(id == XRCID("lstIncludeDirs") || id == XRCID("lstLibDirs") || id == XRCID("lstResDirs")) // Directories
-        { myid =  XRCID(str_dirs[myidx]); }
+        { myid =  wxXmlResource::GetXRCID(str_dirs[myidx]); }
     else if(id == XRCID("lstVars")) // Custom Vars
-        { myid =  XRCID(str_vars[myidx]); }
+        { myid =  wxXmlResource::GetXRCID(str_vars[myidx]); }
     else if(id == XRCID("lstExtraPaths")) // Extra Paths
-        { myid =  XRCID(str_xtra[myidx]); }
+        { myid =  wxXmlResource::GetXRCID(str_xtra[myidx]); }
     else
         myid = 0;
         

@@ -14,7 +14,7 @@ DisassemblyDlg::DisassemblyDlg(wxWindow* parent, DebuggerGDB* debugger)
     : m_pDbg(debugger)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgDisassembly"));
+	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgDisassembly"));
 	SetWindowStyle(GetWindowStyle() | wxFRAME_FLOAT_ON_PARENT);
 	wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL); 
     XRCCTRL(*this, "txtCode", wxTextCtrl)->SetFont(font);
@@ -28,17 +28,17 @@ DisassemblyDlg::~DisassemblyDlg()
 void DisassemblyDlg::Clear(const StackFrame& frame)
 {
     XRCCTRL(*this, "txtCode", wxTextCtrl)->Clear();
-    XRCCTRL(*this, "lblFunction", wxStaticText)->SetLabel(frame.valid ? frame.function : "??");
-    wxString addr = "??";
+    XRCCTRL(*this, "lblFunction", wxStaticText)->SetLabel(frame.valid ? frame.function : _T("??"));
+    wxString addr = _T("??");
     if (frame.valid)
-        addr.Printf("0x%8.8x", frame.address);
+        addr.Printf(_T("0x%8.8x"), frame.address);
     XRCCTRL(*this, "lblAddress", wxStaticText)->SetLabel(addr);
 }
 
 void DisassemblyDlg::AddAssemblerLine(const wxString& line)
 {
     wxTextCtrl* txt = XRCCTRL(*this, "txtCode", wxTextCtrl);
-    txt->AppendText(line + '\n');
+    txt->AppendText(line + _T('\n'));
     txt->SetSelection(0, 0);
     txt->SetInsertionPoint(0);
 }
@@ -54,9 +54,9 @@ void DisassemblyDlg::OnSave(wxCommandEvent& event)
     if (dlg.ShowModal() != wxID_OK)
         return;
     if (XRCCTRL(*this, "txtCode", wxTextCtrl)->SaveFile(dlg.GetPath()))
-        wxMessageBox("File saved", "Result", wxICON_INFORMATION);
+        wxMessageBox(_("File saved"), _("Result"), wxICON_INFORMATION);
     else
-        wxMessageBox("File could not be saved...", "Result", wxICON_ERROR);
+        wxMessageBox(_("File could not be saved..."), _("Result"), wxICON_ERROR);
 }
 
 void DisassemblyDlg::OnRefresh(wxCommandEvent& event)

@@ -42,7 +42,8 @@ void SearchResultsLog::SyncEditor(int selIndex)
     li.m_col = 1;
     li.m_mask = wxLIST_MASK_TEXT;
     m_pList->GetItem(li);
-    int line = atol(li.m_text.c_str());
+    long line = 0;
+    li.m_text.ToLong(&line);
 
     cbEditor* ed = Manager::Get()->GetEditorManager()->Open(file);
     if (!ed)

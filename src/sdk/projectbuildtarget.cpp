@@ -50,7 +50,7 @@ cbProject* ProjectBuildTarget::GetParentProject() {
 }
 
 wxString ProjectBuildTarget::GetFullTitle() {
-    return m_Project->GetTitle() + " - " + GetTitle();
+    return m_Project->GetTitle() + _T(" - ") + GetTitle();
 }
 
 const wxString & ProjectBuildTarget::GetExternalDeps()
@@ -246,7 +246,7 @@ void ProjectFile::ToggleBreakpoint(int line)
 wxString ProjectFile::GetBaseName()
 {
     wxFileName fname(relativeFilename);
-    fname.SetExt("");
+    fname.SetExt(wxEmptyString);
     return fname.GetFullPath();
 }
 
@@ -268,7 +268,7 @@ void ProjectFile::SetObjName(const wxString& name)
         if (project && CompilerFactory::CompilerIndexOK(project->GetCompilerIndex()))
             fname.SetExt(CompilerFactory::Compilers[project->GetCompilerIndex()]->GetSwitches().objectExtension);
         else
-            fname.SetExt(".o"); // fallback?
+            fname.SetExt(_T(".o")); // fallback?
     }
     m_ObjName = fname.GetFullPath();
 }

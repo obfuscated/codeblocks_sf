@@ -70,6 +70,8 @@
                           <item>&amp;Up</item>
                           <item>&amp;Down</item>
                         </content>
+                        <dimension>1</dimension>
+                        <style>wxRA_SPECIFY_COLS</style>
                       </object>
                       <flag>wxGROW</flag>
                     </object>
@@ -80,6 +82,8 @@
                           <item>&amp;From cursor</item>
                           <item>&amp;Entire scope</item>
                         </content>
+                        <dimension>1</dimension>
+                        <style>wxRA_SPECIFY_COLS</style>
                       </object>
                       <flag>wxEXPAND</flag>
                     </object>
@@ -90,6 +94,8 @@
                           <item>&amp;Global</item>
                           <item>&amp;Selected text</item>
                         </content>
+                        <dimension>1</dimension>
+                        <style>wxRA_SPECIFY_COLS</style>
                       </object>
                       <flag>wxEXPAND</flag>
                     </object>
@@ -174,6 +180,8 @@
                           <item>&amp;Project files</item>
                           <item>&amp;Open files</item>
                         </content>
+                        <dimension>1</dimension>
+                        <style>wxRA_SPECIFY_COLS</style>
                       </object>
                       <flag>wxEXPAND</flag>
                     </object>

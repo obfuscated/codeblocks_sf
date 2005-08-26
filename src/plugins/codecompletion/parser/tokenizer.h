@@ -29,7 +29,7 @@ class Tokenizer
 		wxString DoGetToken();
 		bool ReadFile();
 		bool SkipWhiteSpace();
-		bool SkipToChar(const char& ch);
+		bool SkipToChar(const wxChar& ch);
 		bool SkipToOneOfChars(const char* chars, bool supportNesting = false);
 		bool SkipToEOL();
 		bool SkipBlock(const wxChar& ch);

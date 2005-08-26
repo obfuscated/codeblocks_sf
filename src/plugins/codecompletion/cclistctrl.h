@@ -3,7 +3,7 @@
 
 #include <wx/wx.h>
 #include <wx/grid.h>
-#include <wx/stc/stc.h>
+#include <cbeditor.h>
 #include "parser/parser.h"
 #include "ccrenderer.h"
 
@@ -24,7 +24,7 @@ class CCListCtrl : public wxGrid
 	private:
 		wxWindow* m_pParent;
 		Parser* m_pParser;
-		wxStyledTextCtrl* m_pEditor;
+		cbStyledTextCtrl* m_pEditor;
 		int m_Id;
 		wxString m_Initial;
 		TokensArray m_CCTokens;

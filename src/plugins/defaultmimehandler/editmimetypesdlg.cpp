@@ -33,7 +33,7 @@ EditMimeTypesDlg::EditMimeTypesDlg(wxWindow* parent, MimeTypesArray& array)
     m_LastSelection(-1)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, "dlgEditFilesHandling");
+	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgEditFilesHandling"));
 	FillList();
 	UpdateDisplay();
 }
@@ -129,7 +129,7 @@ void EditMimeTypesDlg::OnNew(wxCommandEvent& event)
     cbMimeType* mt = new cbMimeType;
     mt->wildcard = wild;
     mt->useEditor = true;
-    mt->program = "";
+    mt->program = _T("");
     mt->programIsModal = false;
     m_Array.Add(mt);
 

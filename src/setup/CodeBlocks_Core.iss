@@ -3,14 +3,14 @@
 
 [Setup]
 AppName=Code::Blocks
-AppVerName=Code::Blocks 1.0-RC1
+AppVerName=Code::Blocks 1.0-RC1-1
 AppPublisher=Code::Blocks
 DefaultDirName={pf}\CodeBlocks
 DefaultGroupName=CodeBlocks
 LicenseFile=..\COPYING
-OutputBaseFilename=CodeBlocks-1.0-RC1
+OutputBaseFilename=CodeBlocks-1.0-RC1-1
 AppPublisherURL=www.codeblocks.org
-AppVersion=1.0-RC1
+AppVersion=1.0-RC1-1
 UninstallDisplayIcon={app}\codeblocks.exe
 UninstallDisplayName=Code::Blocks
 ShowLanguageDialog=no

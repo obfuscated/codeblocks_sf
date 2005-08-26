@@ -60,7 +60,7 @@ class cbWorkspace
           * @return The name of the file this workspace was loaded from.
           */
 		virtual wxString GetFilename()
-		{ SANITY_CHECK("");
+		{ SANITY_CHECK(_T(""));
           return m_Filename.GetFullPath(); 
         }
 
@@ -70,7 +70,7 @@ class cbWorkspace
           */
 		virtual wxString GetTitle()
 		{ 
-		  SANITY_CHECK("");
+		  SANITY_CHECK(_T(""));
 		  return m_Title; 
         }
 

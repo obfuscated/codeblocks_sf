@@ -24,7 +24,7 @@ AdvancedCompilerOptionsDlg::AdvancedCompilerOptionsDlg(wxWindow* parent, int com
     m_LastCmdIndex(-1)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgAdvancedCompilerOptions"));
+	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgAdvancedCompilerOptions"));
 	ReadCompilerOptions();
 }
 
@@ -40,7 +40,7 @@ void AdvancedCompilerOptionsDlg::ReadCompilerOptions()
     for (int i = 0; i < COMPILER_COMMAND_TYPES_COUNT; ++i)
     {
         m_Commands[i] = CompilerFactory::Compilers[m_CompilerIdx]->GetCommand((CommandType)i);
-        m_Commands[i].Replace("\t", "");
+        m_Commands[i].Replace(_T("\t"), _T(""));
         lst->Append(Compiler::CommandTypeDescriptions[i]);
     }
     lst->SetSelection(0);
@@ -71,7 +71,7 @@ void AdvancedCompilerOptionsDlg::WriteCompilerOptions()
 {
     for (int i = 0; i < COMPILER_COMMAND_TYPES_COUNT; ++i)
     {
-        m_Commands[i].Replace("\n", "\n\t");
+        m_Commands[i].Replace(_T("\n"), _T("\n\t"));
         CompilerFactory::Compilers[m_CompilerIdx]->SetCommand((CommandType)i, m_Commands[i]);
     }
 
@@ -127,9 +127,9 @@ void AdvancedCompilerOptionsDlg::FillRegexDetails(int index)
 {
     if (index == -1)
     {
-        XRCCTRL(*this, "txtRegexDesc", wxTextCtrl)->SetValue("");
+        XRCCTRL(*this, "txtRegexDesc", wxTextCtrl)->SetValue(_T(""));
         XRCCTRL(*this, "cmbRegexType", wxComboBox)->SetSelection(-1);
-        XRCCTRL(*this, "txtRegex", wxTextCtrl)->SetValue("");
+        XRCCTRL(*this, "txtRegex", wxTextCtrl)->SetValue(_T(""));
         XRCCTRL(*this, "spnRegexMsg1", wxSpinCtrl)->SetValue(0);
         XRCCTRL(*this, "spnRegexMsg2", wxSpinCtrl)->SetValue(0);
         XRCCTRL(*this, "spnRegexMsg3", wxSpinCtrl)->SetValue(0);
@@ -184,7 +184,7 @@ void AdvancedCompilerOptionsDlg::OnRegexChange(wxCommandEvent& event)
 void AdvancedCompilerOptionsDlg::OnRegexAdd(wxCommandEvent& event)
 {
     SaveRegexDetails(m_SelectedRegex);
-    m_Regexes.Add(RegExStruct(_("New regular expression"), cltError, "", 0));
+    m_Regexes.Add(RegExStruct(_("New regular expression"), cltError, _T(""), 0));
     m_SelectedRegex = m_Regexes.Count() - 1;
     FillRegexes();
 }
@@ -271,7 +271,7 @@ void AdvancedCompilerOptionsDlg::OnRegexTest(wxCommandEvent& event)
                 "Filename: %s\n"
                 "Line number: %s\n"
                 "Message: %s"),
-                clt == cltNormal ? "Normal" : (clt == cltError ? "Error" : "Warning"),
+                clt == cltNormal ? _("Normal") : (clt == cltError ? _("Error") : _("Warning")),
                 compiler->GetLastErrorFilename().c_str(),
                 compiler->GetLastErrorLine().c_str(),
                 compiler->GetLastError().c_str()
@@ -283,22 +283,22 @@ void AdvancedCompilerOptionsDlg::OnRegexTest(wxCommandEvent& event)
 wxString AdvancedCompilerOptionsDlg::ControlCharsToString(const wxString& src)
 {
     wxString ret = src;
-    ret.Replace("\t", "\\t");
-    ret.Replace("\n", "\\n");
-    ret.Replace("\r", "\\r");
-    ret.Replace("\a", "\\a");
-    ret.Replace("\b", "\\b");
+    ret.Replace(_T("\t"), _T("\\t"));
+    ret.Replace(_T("\n"), _T("\\n"));
+    ret.Replace(_T("\r"), _T("\\r"));
+    ret.Replace(_T("\a"), _T("\\a"));
+    ret.Replace(_T("\b"), _T("\\b"));
     return ret;
 }
 
 wxString AdvancedCompilerOptionsDlg::StringToControlChars(const wxString& src)
 {
     wxString ret = src;
-    ret.Replace("\\t", "\t");
-    ret.Replace("\\n", "\n");
-    ret.Replace("\\r", "\r");
-    ret.Replace("\\a", "\a");
-    ret.Replace("\\b", "\b");
+    ret.Replace(_T("\\t"), _T("\t"));
+    ret.Replace(_T("\\n"), _T("\n"));
+    ret.Replace(_T("\\r"), _T("\r"));
+    ret.Replace(_T("\\a"), _T("\a"));
+    ret.Replace(_T("\\b"), _T("\b"));
     return ret;
 }
 

@@ -11,7 +11,7 @@ class EditPathDlg : public wxDialog
                 const wxString& path,       // initial path
                 const wxString& basepath,   // for relative pathes
                 const wxString& title = _("Edit Path"),      // title of the dialog
-                const wxString& message = _(""),    // message displayed in the dialogs
+                const wxString& message = _T(""),    // message displayed in the dialogs
                 const bool wantDir = true,  // whether to open a dir or a file dialog
                 const wxString& filter = _("All files(*)|*"));  // wildcard for files
                 

@@ -26,11 +26,19 @@ bool IniParser::ParseFile(const wxString& filename)
     wxFile file(filename);
     if (!file.IsOpened())
         return false;
+    int len = file.Length();
 
-    char* buff = buffer.GetWriteBuf(file.Length());
-    file.Read(buff, file.Length());
+    if(len==0)
+        buffer.Clear();
+    else
+    {
+        char* buff = new char[len+1];
+        file.Read(buff, len);
+        buff[len]='\0';
+        buffer = wxString(buff,wxConvUTF8);
+        delete[] buff;
+    }
     file.Close();
-    buffer.UngetWriteBuf();
 
     return ParseBuffer(buffer);
 }
@@ -47,7 +55,7 @@ bool IniParser::ParseBuffer(wxString& buffer)
         if (line.IsEmpty())
             continue;
 
-        if (line.GetChar(0) == '[')
+        if (line.GetChar(0) == _T('['))
         {
             // new group
             IniGroup newgroup;
@@ -60,7 +68,7 @@ bool IniParser::ParseBuffer(wxString& buffer)
         }
         else
         {
-            int pos = line.Find('=');
+            int pos = line.Find(_T('='));
             if (pos == -1)
                 pos = line.Length();
             IniKeyValuePair newpair;
@@ -70,7 +78,7 @@ bool IniParser::ParseBuffer(wxString& buffer)
             newpair.key.Trim(true);
             newpair.value.Trim(false);
             newpair.value.Trim(true);
-            if (newpair.key.IsEmpty() || newpair.key.GetChar(0) < 'A' || newpair.key.GetChar(0) > 'z')
+            if (newpair.key.IsEmpty() || newpair.key.GetChar(0) < _T('A') || newpair.key.GetChar(0) > _T('z'))
                 continue;
             if (m_Array.GetCount() == 0)
             {
@@ -81,7 +89,7 @@ bool IniParser::ParseBuffer(wxString& buffer)
             m_Array[m_Array.GetCount() - 1].pairs.Add(newpair);
         }
     }
-    
+
     return true;
 }
 
@@ -89,10 +97,10 @@ wxString IniParser::ReadLineFromBuffer(wxString& buffer)
 {
     int len = buffer.Length();
     int i = 0;
-    while (i < len && buffer.GetChar(i) != '\n')
+    while (i < len && buffer.GetChar(i) != _T('\n'))
         ++i;
     wxString str = buffer.Left(i);
-    while (i < len && (buffer.GetChar(i) == '\n' || buffer.GetChar(i) == '\r'))
+    while (i < len && (buffer.GetChar(i) == _T('\n') || buffer.GetChar(i) == _T('\r')))
         ++i;
     buffer.Remove(0, i);
     buffer.Trim();
@@ -165,7 +173,7 @@ const wxString & IniParser::GetValue(const wxString& group, const wxString& key,
 {
     static wxString ret;
     ret.Clear();
-    
+
     int g = FindGroupByName(group, caseSensitive);
     int k = FindKeyByName(g, key, caseSensitive);
     if (g != -1 && k != -1)

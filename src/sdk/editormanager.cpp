@@ -27,11 +27,12 @@
 #include <wx/menu.h>
 #include <wx/splitter.h>
 #include <wx/imaglist.h>
+#include <wx/bmpbuttn.h>
 #include <wx/file.h>
-#include <wx/stc/stc.h>
 
 #include "editormanager.h" // class's header file
 #include "configmanager.h"
+#include <wx/xrc/xmlres.h>
 #include "messagemanager.h"
 #include "projectmanager.h"
 #include "manager.h"
@@ -58,6 +59,8 @@ WX_DEFINE_LIST(EditorsList);
 
 int ID_NBEditorManager = wxNewId();
 int ID_EditorManager = wxNewId();
+int ID_EditorManagerCloseButton = XRCID("ID_EditorManagerCloseButton");
+int ID_EditorManagerPanel = XRCID("ID_EditorManagerPanel");
 int idEditorManagerCheckFiles = wxNewId();
 
 BEGIN_EVENT_TABLE(EditorManager, wxEvtHandler)
@@ -65,7 +68,7 @@ BEGIN_EVENT_TABLE(EditorManager, wxEvtHandler)
     EVT_APP_START_SHUTDOWN(EditorManager::OnAppStartShutdown)
     EVT_NOTEBOOK_PAGE_CHANGED(ID_NBEditorManager, EditorManager::OnPageChanged)
     EVT_NOTEBOOK_PAGE_CHANGING(ID_NBEditorManager, EditorManager::OnPageChanging)
-    EVT_MENU(idEditorManagerCheckFiles, EditorManager::OnCheckForModifiedFiles)   
+    EVT_MENU(idEditorManagerCheckFiles, EditorManager::OnCheckForModifiedFiles)
 #ifdef USE_OPENFILES_TREE
     EVT_UPDATE_UI(ID_EditorManager, EditorManager::OnUpdateUI)
     EVT_TREE_SEL_CHANGING(ID_EditorManager, EditorManager::OnTreeItemActivated)
@@ -76,12 +79,65 @@ END_EVENT_TABLE()
 
 // static
 bool EditorManager::s_CanShutdown = true;
+wxButton *edman_closebutton = NULL; // for private use
+
+
+/** *******************************************************
+  * struct EditorManagerInternalData                      *
+  * This is the private data holder for the EditorManager *
+  * All data not relevant to other classes should go here *
+  ********************************************************* */
+
+struct EditorManagerInternalData
+{
+    /* Methods */
+
+    EditorManagerInternalData(EditorManager* owner)
+        : m_pOwner(owner),
+        m_NeedsRefresh(false),
+        m_TreeNeedsRefresh(false),
+        m_pImages(NULL)
+    {}
+
+    void BuildTree(wxTreeCtrl* pTree)
+    {
+        wxBitmap bmp;
+        m_pImages = new wxImageList(16, 16);
+        wxString prefix = ConfigManager::Get()->Read(_T("data_path")) + _T("/images/");
+        bmp.LoadFile(prefix + _T("folder_open.png"), wxBITMAP_TYPE_PNG); // folder
+        m_pImages->Add(bmp);
+        bmp.LoadFile(prefix + _T("ascii.png"), wxBITMAP_TYPE_PNG); // file
+        m_pImages->Add(bmp);
+        bmp.LoadFile(prefix + _T("modified_file.png"), wxBITMAP_TYPE_PNG); // modified file
+        m_pImages->Add(bmp);
+        pTree->SetImageList(m_pImages);
+        m_TreeOpenedFiles=pTree->AddRoot(_T("Opened Files"), 0, 0);
+        pTree->SetItemBold(m_TreeOpenedFiles);
+    }
+
+    void InvalidateTree() { m_TreeNeedsRefresh = true; }
+
+    /* Static data */
+
+    EditorManager* m_pOwner;
+
+    /* Used for refreshing the notebook if necessary */
+    bool m_NeedsRefresh;
+    bool m_TreeNeedsRefresh;
+    wxImageList* m_pImages;
+    wxTreeItemId m_TreeOpenedFiles;
+
+
+};
+
+// *********** End of EditorManagerInternalData **********
+
 
 EditorManager* EditorManager::Get(wxWindow* parent)
 {
     if(Manager::isappShuttingDown()) // The mother of all sanity checks
         EditorManager::Free();
-    else 
+    else
     if (!EditorManagerProxy::Get())
 	{
 		EditorManagerProxy::Set( new EditorManager(parent) );
@@ -101,10 +157,12 @@ void EditorManager::Free()
 
 // class constructor
 EditorManager::EditorManager(wxWindow* parent)
-    : m_LastFindReplaceData(0L),
-    m_pImages(0L),
+    :
+    m_pNotebook(0L),
+    m_pPanel(0L),
+    m_LastFindReplaceData(0L),
     m_pTree(0L),
-    m_LastActiveFile(""),
+    m_LastActiveFile(_T("")),
     m_LastModifiedflag(false),
     m_pSearchLog(0),
     m_SearchLogIndex(-1),
@@ -112,50 +170,86 @@ EditorManager::EditorManager(wxWindow* parent)
 {
 	SC_CONSTRUCTOR_BEGIN
 	EditorManagerProxy::Set(this);
-	m_pNotebook = new wxNotebook(parent, ID_NBEditorManager, wxDefaultPosition, wxDefaultSize,  wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);
+    m_pData = new EditorManagerInternalData(this);
+	// *** Load Panel and close button from XRC ***
+	m_pPanel = wxXmlResource::Get()->LoadPanel(parent,_T("ID_EditorManagerPanel"));
+	wxBitmapButton* myclosebutton = XRCCTRL(*m_pPanel,"ID_EditorManagerCloseButton",wxBitmapButton);
+	edman_closebutton = (wxButton*)myclosebutton;
+	m_pNotebook = new wxNotebook(m_pPanel, ID_NBEditorManager, wxDefaultPosition, wxDefaultSize,  wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);
+	m_pPanel->GetSizer()->Add(m_pNotebook,1,wxGROW);
+
+    // remove the ugly close-button, if not enabled in configuration
+    if (ConfigManager::Get()->Read(_T("/editor/show_close_button"), 0L) == 0)
+    {
+        m_pPanel->GetSizer()->Remove(edman_closebutton);
+        delete edman_closebutton;
+        edman_closebutton = 0;
+    }
+	// ***
+
 	m_EditorsList.Clear();
     #ifdef USE_OPENFILES_TREE
-	ShowOpenFilesTree(ConfigManager::Get()->Read("/editor/show_opened_files_tree", true));
+    m_pData->m_TreeNeedsRefresh = false;
+	ShowOpenFilesTree(ConfigManager::Get()->Read(_T("/editor/show_opened_files_tree"), true));
 	#endif
-	m_Theme = new EditorColorSet(ConfigManager::Get()->Read("/editor/color_sets/active_color_set", COLORSET_DEFAULT));
-	ConfigManager::AddConfiguration(_("Editor"), "/editor");
+	m_Theme = new EditorColorSet(ConfigManager::Get()->Read(_T("/editor/color_sets/active_color_set"), COLORSET_DEFAULT));
+	ConfigManager::AddConfiguration(_("Editor"), _T("/editor"));
 	parent->PushEventHandler(this);
 
     CreateSearchLog();
 	LoadAutoComplete();
-	
+
 #if !wxCHECK_VERSION(2, 5, 0)
 	/*wxNotebookSizer* nbs =*/ new wxNotebookSizer(m_pNotebook);
-#endif	
+#endif
 }
 
 // class destructor
 EditorManager::~EditorManager()
 {
 	SC_DESTRUCTOR_BEGIN
-
 	SaveAutoComplete();
+
+    // Clean up the notebook to prevent segfaults later
+    if(m_pNotebook)
+    {
+        m_pNotebook->Freeze(); // To prevent UpdateUI events
+        while(m_pNotebook->GetPageCount())
+            m_pNotebook->RemovePage(0); // Deletes the page, not the object
+    }
+
+    // Clean up editor list. The notebook is empty, we're free to wipe them out
+    // with no fear of segfaults! :)
+    m_EditorsList.DeleteContents(true);
+    m_EditorsList.Clear();
+
+    if(m_pNotebook)
+        m_pNotebook->Thaw();
+
 
 	if (m_Theme)
 		delete m_Theme;
-		
+
 	if (m_LastFindReplaceData)
 		delete m_LastFindReplaceData;
     if (m_pTree)
     {
         m_pTree->Destroy();
-        m_pTree = 0L;
+        m_pTree = NULL;
     }
-    if (m_pImages)
-    {
-        delete m_pImages;
-        m_pImages = 0L;
-    }
-    // free-up any memory used for editors
-    m_EditorsList.DeleteContents(true); // Set this to false to preserve
-    m_EditorsList.Clear();              // linked data.
 
-//    m_pNotebook->Destroy();
+    if (m_pData->m_pImages)
+    {
+        delete m_pData->m_pImages;
+        m_pData->m_pImages = NULL;
+    }
+
+    if (m_pData)
+    {
+        delete m_pData;
+        m_pData = NULL;
+    }
+    edman_closebutton = NULL; // will be deleted by the window
 
     SC_DESTRUCTOR_END
 }
@@ -203,8 +297,8 @@ void EditorManager::CreateSearchLog()
 
     // set log image
     wxBitmap bmp;
-	wxString prefix = ConfigManager::Get()->Read("data_path") + "/images/";
-    bmp.LoadFile(prefix + "filefind.png", wxBITMAP_TYPE_PNG);
+	wxString prefix = ConfigManager::Get()->Read(_T("data_path")) + _T("/images/");
+    bmp.LoadFile(prefix + _T("filefind.png"), wxBITMAP_TYPE_PNG);
     Manager::Get()->GetMessageManager()->SetLogImage(m_pSearchLog, bmp);
 }
 
@@ -214,10 +308,10 @@ void EditorManager::LogSearch(const wxString& file, int line, const wxString& li
     wxString lineTextL;
     wxString lineStr;
 
-    lineStr.Printf("%d", line);
+    lineStr.Printf(_T("%d"), line);
     lineTextL = lineText;
-    lineTextL.Replace("\r", " ");
-    lineTextL.Replace("\n", " ");
+    lineTextL.Replace(_T("\r"), _T(" "));
+    lineTextL.Replace(_T("\n"), _T(" "));
     lineTextL.Trim(false);
     lineTextL.Trim(true);
 
@@ -236,16 +330,16 @@ void EditorManager::LoadAutoComplete()
 	wxString entry;
 	wxConfigBase* conf = ConfigManager::Get();
 	wxString oldPath = conf->GetPath();
-	conf->SetPath(_("/editor/auto_complete"));
+	conf->SetPath(_T("/editor/auto_complete"));
 	conf->SetExpandEnvVars(false);
 	bool cont = conf->GetFirstEntry(entry, cookie);
 	while (cont)
 	{
-        wxString code = conf->Read(entry, _(""));
+        wxString code = conf->Read(entry, _T(""));
         // convert non-printable chars to printable
-        code.Replace(_("\\n"), _("\n"));
-        code.Replace(_("\\r"), _("\r"));
-        code.Replace(_("\\t"), _("\t"));
+        code.Replace(_T("\\n"), _T("\n"));
+        code.Replace(_T("\\r"), _T("\r"));
+        code.Replace(_T("\\t"), _T("\t"));
         m_AutoCompleteMap[entry] = code;
 		cont = conf->GetNextEntry(entry, cookie);
 	}
@@ -255,34 +349,34 @@ void EditorManager::LoadAutoComplete()
     if (m_AutoCompleteMap.size() == 0)
     {
         // default auto-complete items
-        m_AutoCompleteMap[_("if")] = _("if (|)\n\t;");
-        m_AutoCompleteMap[_("ifb")] = _("if (|)\n{\n\t\n}");
-        m_AutoCompleteMap[_("ife")] = _("if (|)\n{\n\t\n}\nelse\n{\n\t\n}");
-        m_AutoCompleteMap[_("ifei")] = _("if (|)\n{\n\t\n}\nelse if ()\n{\n\t\n}\nelse\n{\n\t\n}");
-        m_AutoCompleteMap[_("while")] = _("while (|)\n\t;");
-        m_AutoCompleteMap[_("whileb")] = _("while (|)\n{\n\t\n}");
-        m_AutoCompleteMap[_("for")] = _("for (|; ; )\n\t;");
-        m_AutoCompleteMap[_("forb")] = _("for (|; ; )\n{\n\t\n}");
-        m_AutoCompleteMap[_("class")] = _("class $(Class name)|\n{\n\tpublic:\n\t\t$(Class name)();\n\t\t~$(Class name)();\n\tprotected:\n\t\t\n\tprivate:\n\t\t\n};\n");
-        m_AutoCompleteMap[_("struct")] = _("struct |\n{\n\t\n};\n");
+        m_AutoCompleteMap[_T("if")] = _T("if (|)\n\t;");
+        m_AutoCompleteMap[_T("ifb")] = _T("if (|)\n{\n\t\n}");
+        m_AutoCompleteMap[_T("ife")] = _T("if (|)\n{\n\t\n}\nelse\n{\n\t\n}");
+        m_AutoCompleteMap[_T("ifei")] = _T("if (|)\n{\n\t\n}\nelse if ()\n{\n\t\n}\nelse\n{\n\t\n}");
+        m_AutoCompleteMap[_T("while")] = _T("while (|)\n\t;");
+        m_AutoCompleteMap[_T("whileb")] = _T("while (|)\n{\n\t\n}");
+        m_AutoCompleteMap[_T("for")] = _T("for (|; ; )\n\t;");
+        m_AutoCompleteMap[_T("forb")] = _T("for (|; ; )\n{\n\t\n}");
+        m_AutoCompleteMap[_T("class")] = _T("class $(Class name)|\n{\n\tpublic:\n\t\t$(Class name)();\n\t\t~$(Class name)();\n\tprotected:\n\t\t\n\tprivate:\n\t\t\n};\n");
+        m_AutoCompleteMap[_T("struct")] = _T("struct |\n{\n\t\n};\n");
     }
 }
 
 void EditorManager::SaveAutoComplete()
 {
 	wxConfigBase* conf = ConfigManager::Get();
-	conf->DeleteGroup(_("/editor/auto_complete"));
+	conf->DeleteGroup(_T("/editor/auto_complete"));
 	wxString oldPath = conf->GetPath();
-	conf->SetPath(_("/editor/auto_complete"));
+	conf->SetPath(_T("/editor/auto_complete"));
 	conf->SetExpandEnvVars(false);
 	AutoCompleteMap::iterator it;
 	for (it = m_AutoCompleteMap.begin(); it != m_AutoCompleteMap.end(); ++it)
 	{
         wxString code = it->second;
         // convert non-printable chars to printable
-        code.Replace(_("\n"), _("\\n"));
-        code.Replace(_("\r"), _("\\r"));
-        code.Replace(_("\t"), _("\\t"));
+        code.Replace(_T("\n"), _T("\\n"));
+        code.Replace(_T("\r"), _T("\\r"));
+        code.Replace(_T("\t"), _T("\\t"));
 		conf->Write(it->first, code);
 	}
 	conf->SetExpandEnvVars(true);
@@ -310,8 +404,14 @@ EditorBase* EditorManager::IsOpen(const wxString& filename)
 	{
         EditorBase* eb = node->GetData();
         wxString fname = eb->GetFilename();
+#ifdef __WXMSW__
+        // MSW must use case-insensitive comparison
+        if (fname.IsSameAs(uFilename,false) || fname.IsSameAs(EDITOR_MODIFIED + uFilename,false))
+            return eb;
+#else
         if (fname.IsSameAs(uFilename) || fname.IsSameAs(EDITOR_MODIFIED + uFilename))
             return eb;
+#endif
 	}
 
 	return NULL;
@@ -331,7 +431,7 @@ void EditorManager::SetColorSet(EditorColorSet* theme)
     SANITY_CHECK();
 	if (m_Theme)
 		delete m_Theme;
-	
+
 	// copy locally
 	m_Theme = new EditorColorSet(*theme);
 
@@ -387,15 +487,15 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos,ProjectFile* dat
             ed->GetControl()->SetFocus();
         }
     }
-    
+
     // check for ProjectFile
     if (ed && !ed->GetProjectFile())
     {
         // First checks if we're already being passed a ProjectFile
         // as a parameter
-        if(data) 
+        if(data)
         {
-            Manager::Get()->GetMessageManager()->DebugLog("project data set for %s", data->file.GetFullPath().c_str());
+            Manager::Get()->GetMessageManager()->DebugLog(_("project data set for %s"), data->file.GetFullPath().c_str());
         }
         else
         {
@@ -406,7 +506,7 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos,ProjectFile* dat
                 ProjectFile* pf = prj->GetFileByFilename(ed->GetFilename(), false);
                 if (pf)
                 {
-                    Manager::Get()->GetMessageManager()->DebugLog("found %s", pf->file.GetFullPath().c_str());
+                    Manager::Get()->GetMessageManager()->DebugLog(_("found %s"), pf->file.GetFullPath().c_str());
                     data = pf;
                     break;
                 }
@@ -483,7 +583,7 @@ cbEditor* EditorManager::New()
 
     // add default text
     wxString key;
-    key.Printf("/editor/default_code/%d", (int)FileTypeOf(ed->GetFilename()));
+    key.Printf(_T("/editor/default_code/%d"), (int)FileTypeOf(ed->GetFilename()));
     wxString code = ConfigManager::Get()->Read(key, wxEmptyString);
     ed->GetControl()->SetText(code);
 
@@ -578,7 +678,7 @@ bool EditorManager::CloseAllExcept(EditorBase* editor,bool dontsave)
     if(!editor)
         SANITY_CHECK(true);
     SANITY_CHECK(false);
-    
+
     int count = m_EditorsList.GetCount();
 	EditorsList::Node* node = m_EditorsList.GetFirst();
     if(!dontsave)
@@ -591,9 +691,10 @@ bool EditorManager::CloseAllExcept(EditorBase* editor,bool dontsave)
             node = node->GetNext();
         }
     }
-    
+
     count = m_EditorsList.GetCount();
     node = m_EditorsList.GetFirst();
+    m_pNotebook->Hide();
     while (node)
 	{
         EditorBase* eb = node->GetData();
@@ -606,6 +707,7 @@ bool EditorManager::CloseAllExcept(EditorBase* editor,bool dontsave)
         else
             node = node->GetNext();
     }
+    m_pNotebook->Show();
     #ifdef USE_OPENFILES_TREE
     RebuildOpenedFilesTree();
     #endif
@@ -620,7 +722,7 @@ bool EditorManager::CloseActive(bool dontsave)
 
 bool EditorManager::QueryClose(EditorBase *ed)
 {
-    if(!ed) 
+    if(!ed)
         return true;
     if (ed->GetModified())
     {
@@ -671,15 +773,19 @@ bool EditorManager::Close(EditorBase* editor,bool dontsave)
                 if(!QueryClose(editor))
                     return false;
             wxString filename = editor->GetFilename();
+            // WARNING! The DeleteObject must be BEFORE DeletePage!
+            // Also, do NOT use DeleteNode. Doing so can result
+            // in a segfault (bug #1247249, confirmed several times).
+            m_EditorsList.DeleteObject(editor); // deletes the node, but not the editor
             int edpage = FindPageFromEditor(editor);
             if (edpage != -1)
                 m_pNotebook->DeletePage(edpage);
-            m_EditorsList.DeleteNode(node);
             #ifdef USE_OPENFILES_TREE
             DeleteFilefromTree(filename);
             #endif
 		}
 	}
+    m_pData->m_NeedsRefresh = true;
     return true;
 }
 
@@ -789,7 +895,7 @@ void EditorManager::Print(PrintScope ps, PrintColorMode pcm)
                 cbEditor* ed = InternalGetBuiltinEditor(node);
                 if (ed)
                     ed->Print(false, pcm);
-                    
+
             }
             break;
         }
@@ -846,11 +952,11 @@ void EditorManager::CheckForExternallyModifiedFiles()
                 ed->Touch();
         }
     }
-    
+
     if (failedFiles.GetCount())
     {
         wxString msg;
-        msg.Printf(_("Could not reload all files:\n\n%s"), GetStringFromArray(failedFiles, "\n").c_str());
+        msg.Printf(_("Could not reload all files:\n\n%s"), GetStringFromArray(failedFiles, _T("\n")).c_str());
         wxMessageBox(msg, _("Error"), wxICON_ERROR);
     }
 }
@@ -868,7 +974,7 @@ bool EditorManager::SwapActiveHeaderSource()
 
     // create a list of search dirs
     wxArrayString dirs;
-    
+
     // get project's include dirs
     cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
     if (project)
@@ -886,7 +992,7 @@ bool EditorManager::SwapActiveHeaderSource()
                     dirs.Add(dir);
             }
         }
-        
+
         // get targets include dirs
         for (int i = 0; i < project->GetBuildTargetsCount(); ++i)
         {
@@ -964,13 +1070,13 @@ int EditorManager::ShowFindDialog(bool replace)
 
 	wxString wordAtCursor;
 	bool hasSelection = false;
-	wxStyledTextCtrl* control = 0;
+	cbStyledTextCtrl* control = 0;
 
 	cbEditor* ed = GetBuiltinEditor(GetActiveEditor());
 	if (ed)
 	{
         control = ed->GetControl();
-    
+
         int wordStart = control->WordStartPosition(control->GetCurrentPos(), true);
         int wordEnd = control->WordEndPosition(control->GetCurrentPos(), true);
         wordAtCursor = control->GetTextRange(wordStart, wordEnd);
@@ -995,10 +1101,10 @@ int EditorManager::ShowFindDialog(bool replace)
 		delete dlg;
 		return -2;
 	}
-	
+
 	if (!m_LastFindReplaceData)
 		m_LastFindReplaceData = new cbFindReplaceData;
-		
+
 	m_LastFindReplaceData->start = 0;
 	m_LastFindReplaceData->end = 0;
 	m_LastFindReplaceData->findText = dlg->GetFindString();
@@ -1011,9 +1117,9 @@ int EditorManager::ShowFindDialog(bool replace)
 	m_LastFindReplaceData->directionDown = dlg->GetDirection() == 1;
 	m_LastFindReplaceData->originEntireScope = dlg->GetOrigin() == 1;
 	m_LastFindReplaceData->scopeSelectedText = dlg->GetScope() == 1;
-	
+
 	delete dlg;
-	
+
 	if (!replace)
 	{
         if (m_LastFindReplaceData->findInFiles)
@@ -1025,7 +1131,7 @@ int EditorManager::ShowFindDialog(bool replace)
 		return Replace(control, m_LastFindReplaceData);
 }
 
-void EditorManager::CalculateFindReplaceStartEnd(wxStyledTextCtrl* control, cbFindReplaceData* data)
+void EditorManager::CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFindReplaceData* data)
 {
     SANITY_CHECK();
 	if (!control || !data)
@@ -1033,7 +1139,7 @@ void EditorManager::CalculateFindReplaceStartEnd(wxStyledTextCtrl* control, cbFi
 
 	data->start = 0;
 	data->end = control->GetLength();
-		
+
 	if (!data->findInFiles)
 	{
 		if (!data->originEntireScope) // from pos
@@ -1063,7 +1169,7 @@ void EditorManager::CalculateFindReplaceStartEnd(wxStyledTextCtrl* control, cbFi
 	}
 }
 
-int EditorManager::Replace(wxStyledTextCtrl* control, cbFindReplaceData* data)
+int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
 {
     SANITY_CHECK(-1);
 	if (!control || !data)
@@ -1073,23 +1179,23 @@ int EditorManager::Replace(wxStyledTextCtrl* control, cbFindReplaceData* data)
 	int start = data->start;
 	int end = data->end;
 	CalculateFindReplaceStartEnd(control, data);
-	
+
 	if ((data->directionDown && (data->start < start)) ||
 		(!data->directionDown && (data->start > start)))
 		data->start = start;
 	if ((data->directionDown && (data->end < end)) ||
 		(!data->directionDown && (data->end > end)))
 		data->end = end;
-	
+
 	if (data->matchWord)
-		flags |= wxSTC_FIND_WHOLEWORD;
+		flags |= wxSCI_FIND_WHOLEWORD;
 	if (data->startWord)
-		flags |= wxSTC_FIND_WORDSTART;
+		flags |= wxSCI_FIND_WORDSTART;
 	if (data->matchCase)
-		flags |= wxSTC_FIND_MATCHCASE;
+		flags |= wxSCI_FIND_MATCHCASE;
 	if (data->regEx)
-		flags |= wxSTC_FIND_REGEXP;
-	
+		flags |= wxSCI_FIND_REGEXP;
+
 	control->BeginUndoAction();
 	int pos = -1;
 	bool replace = false;
@@ -1107,10 +1213,11 @@ int EditorManager::Replace(wxStyledTextCtrl* control, cbFindReplaceData* data)
 		control->SetSelection(pos, pos + lengthFound);
 		data->start = pos;
 		//Manager::Get()->GetMessageManager()->DebugLog("pos=%d, selLen=%d, length=%d", pos, data->end - data->start, lengthFound);
-		
+
 		if (confirm)
 		{
 			ConfirmReplaceDlg dlg(Manager::Get()->GetAppWindow());
+            dlg.CalcPosition(control);
 			switch (dlg.ShowModal())
 			{
 				case crYes:
@@ -1128,7 +1235,7 @@ int EditorManager::Replace(wxStyledTextCtrl* control, cbFindReplaceData* data)
 					break;
 			}
 		}
-		
+
 		if (!stop)
 		{
 			if (replace)
@@ -1159,11 +1266,11 @@ int EditorManager::Replace(wxStyledTextCtrl* control, cbFindReplaceData* data)
 		}
 	}
 	control->EndUndoAction();
-	
+
 	return pos;
 }
 
-int EditorManager::Find(wxStyledTextCtrl* control, cbFindReplaceData* data)
+int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
 {
     SANITY_CHECK(-1);
 	if (!control || !data)
@@ -1173,23 +1280,23 @@ int EditorManager::Find(wxStyledTextCtrl* control, cbFindReplaceData* data)
 	int start = data->start;
 	int end = data->end;
 	CalculateFindReplaceStartEnd(control, data);
-	
+
 	if ((data->directionDown && (data->start < start)) ||
 		(!data->directionDown && (data->start > start)))
 		data->start = start;
 	if ((data->directionDown && (data->end < end)) ||
 		(!data->directionDown && (data->end > end)))
 		data->end = end;
-	
+
 	if (data->matchWord)
-		flags |= wxSTC_FIND_WHOLEWORD;
+		flags |= wxSCI_FIND_WHOLEWORD;
 	if (data->startWord)
-		flags |= wxSTC_FIND_WORDSTART;
+		flags |= wxSCI_FIND_WORDSTART;
 	if (data->matchCase)
-		flags |= wxSTC_FIND_MATCHCASE;
+		flags |= wxSCI_FIND_MATCHCASE;
 	if (data->regEx)
-		flags |= wxSTC_FIND_REGEXP;
-	
+		flags |= wxSCI_FIND_REGEXP;
+
 	int pos = -1;
 	while (true) // loop while not found and user selects to start again from the top
 	{
@@ -1243,7 +1350,7 @@ int EditorManager::Find(wxStyledTextCtrl* control, cbFindReplaceData* data)
         else
             break; // done
     }
-	
+
 	return pos;
 }
 
@@ -1256,7 +1363,7 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
         return 0;
 
     bool findInOpenFiles = data->scopeSelectedText; // i.e. find in open files
-    
+
     // let's make a list of all the files to search in
     wxArrayString filesList;
 
@@ -1276,8 +1383,8 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
         cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
         if (!prj)
             return 0;
-        
-        wxString fullpath = "";            
+
+        wxString fullpath = _T("");
         for (int i = 0; i < prj->GetFilesCount(); ++i)
         {
             ProjectFile* pf = prj->GetFile(i);
@@ -1289,14 +1396,14 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
             }
         }
     }
-    
+
     // if the list is empty, leave
     if (filesList.GetCount() == 0)
         return 0;
 
     // now that are list is filled, we 'll search
-    // but first we 'll create a hidden wxStyledTextCtrl to do the search for us ;)
-    wxStyledTextCtrl* control = new wxStyledTextCtrl(m_pNotebook, -1);
+    // but first we 'll create a hidden cbStyledTextCtrl to do the search for us ;)
+    cbStyledTextCtrl* control = new cbStyledTextCtrl(m_pNotebook, -1);
     control->Show(false); //hidden
 
     // keep a copy of the find struct
@@ -1311,10 +1418,10 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
         // first load the file in the control
         if (!control->LoadFile(filesList[i]))
         {
-            LOGSTREAM << "Failed opening " << filesList[i] << '\n';
+            LOGSTREAM << _("Failed opening ") << filesList[i] << wxT('\n');
             continue; // failed
         }
-        
+
         // now search for first occurence
         if (Find(control, data) == -1)
             continue; // none
@@ -1352,7 +1459,7 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
     return count;
 }
 
-int EditorManager::FindNext(bool goingDown, wxStyledTextCtrl* control, cbFindReplaceData* data)
+int EditorManager::FindNext(bool goingDown, cbStyledTextCtrl* control, cbFindReplaceData* data)
 {
     SANITY_CHECK(-1);
 //    if (m_LastFindReplaceData->findInFiles) // no "find next" for find in files
@@ -1367,7 +1474,7 @@ int EditorManager::FindNext(bool goingDown, wxStyledTextCtrl* control, cbFindRep
         data = m_LastFindReplaceData;
 	if (!data || !control)
 		return -1;
-	
+
 	if (!goingDown && data->directionDown)
 		data->end = 0;
 	else if (goingDown && !data->directionDown)
@@ -1416,7 +1523,7 @@ void EditorManager::OnCheckForModifiedFiles(wxCommandEvent& event)
 		ed->GetControl()->SetFocus();
 }
 
-#ifdef USE_OPENFILES_TREE
+
 bool EditorManager::OpenFilesTreeSupported()
 {
     #ifdef DONT_USE_OPENFILES_TREE
@@ -1439,6 +1546,8 @@ void EditorManager::RefreshOpenFilesTree()
     wxWindow* win = Manager::Get()->GetNotebookPage(_("Projects"),wxTAB_TRAVERSAL | wxCLIP_CHILDREN,true);
     wxSplitPanel* mypanel = (wxSplitPanel*)(win);
     mypanel->RefreshSplitter(ID_EditorManager,ID_ProjectManager);
+    mypanel->Refresh();
+    m_pTree->Refresh();
 }
 
 void EditorManager::ShowOpenFilesTree(bool show)
@@ -1457,7 +1566,7 @@ void EditorManager::ShowOpenFilesTree(bool show)
         m_pTree->Show(false);
     RefreshOpenFilesTree();
     // update user prefs
-    ConfigManager::Get()->Write("/editor/show_opened_files_tree", show);
+    ConfigManager::Get()->Write(_T("/editor/show_opened_files_tree"), show);
 }
 
 bool EditorManager::IsOpenFilesTreeVisible()
@@ -1480,19 +1589,19 @@ wxTreeItemId EditorManager::FindTreeFile(const wxString& filename)
     {
         if(Manager::isappShuttingDown())
             break;
-        if(filename=="")
+        if(filename==_T(""))
             break;
         wxTreeCtrl *tree=GetTree();
-        if(!tree || !m_TreeOpenedFiles)
+        if(!tree || !m_pData->m_TreeOpenedFiles)
             break;
-#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)	
+#if !wxCHECK_VERSION(2,5,0)
         long int cookie = 0;
 #else
         wxTreeItemIdValue cookie; //2.6.0
 #endif
-        for(item = tree->GetFirstChild(m_TreeOpenedFiles,cookie);
+        for(item = tree->GetFirstChild(m_pData->m_TreeOpenedFiles,cookie);
             item;
-            item = tree->GetNextChild(m_TreeOpenedFiles, cookie))
+            item = tree->GetNextChild(m_pData->m_TreeOpenedFiles, cookie))
         {
             if(GetTreeItemFilename(item)==filename)
                 break;
@@ -1503,17 +1612,17 @@ wxTreeItemId EditorManager::FindTreeFile(const wxString& filename)
 
 wxString EditorManager::GetTreeItemFilename(wxTreeItemId item)
 {
-    SANITY_CHECK("");
+    SANITY_CHECK(_T(""));
     if(Manager::isappShuttingDown())
-        return "";
+        return _T("");
     wxTreeCtrl *tree=GetTree();
-    if(!tree || !m_TreeOpenedFiles || !item)
-        return "";
+    if(!tree || !m_pData->m_TreeOpenedFiles || !item)
+        return _T("");
     MiscTreeItemData *data=(MiscTreeItemData*)tree->GetItemData(item);
     if(!data)
-        return "";
+        return _T("");
     if(data->GetOwner()!=this)
-        return "";
+        return _T("");
     return ((EditorTreeData*)data)->GetFullName();
 }
 
@@ -1523,12 +1632,12 @@ void EditorManager::DeleteItemfromTree(wxTreeItemId item)
     if(Manager::isappShuttingDown())
         return;
     wxTreeCtrl *tree=GetTree();
-    if(!tree || !m_TreeOpenedFiles || !item)
+    if(!tree || !m_pData->m_TreeOpenedFiles || !item)
         return;
     wxTreeItemId itemparent=tree->GetItemParent(item);
-    if(itemparent!=m_TreeOpenedFiles)
+    if(itemparent!=m_pData->m_TreeOpenedFiles)
         return;
-    tree->Delete(item);    
+    tree->Delete(item);
 }
 
 void EditorManager::DeleteFilefromTree(const wxString& filename)
@@ -1537,7 +1646,7 @@ void EditorManager::DeleteFilefromTree(const wxString& filename)
     if(Manager::isappShuttingDown())
         return;
     DeleteItemfromTree(FindTreeFile(filename));
-    RefreshOpenedFilesTree();    
+    RefreshOpenedFilesTree();
 }
 
 void EditorManager::AddFiletoTree(EditorBase* ed)
@@ -1557,13 +1666,36 @@ void EditorManager::AddFiletoTree(EditorBase* ed)
     wxTreeCtrl *tree=GetTree();
     if(!tree)
         return;
-    if(!m_TreeOpenedFiles)
+    if(!m_pData->m_TreeOpenedFiles)
         return;
     int mod = ed->GetModified() ? 2 : 1;
-    tree->AppendItem(m_TreeOpenedFiles,shortname,mod,mod,
+    tree->AppendItem(m_pData->m_TreeOpenedFiles,shortname,mod,mod,
         new EditorTreeData(this,filename));
-    tree->SortChildren(m_TreeOpenedFiles);
+    tree->SortChildren(m_pData->m_TreeOpenedFiles);
     RefreshOpenedFilesTree(true);
+}
+
+void EditorManager::HideNotebook()
+{
+    if(!this)
+        return;
+    if(m_pNotebook)
+        m_pNotebook->Hide();
+    if(m_pPanel)
+        m_pPanel->Refresh();
+    m_pData->m_NeedsRefresh = false;
+    return;
+}
+
+void EditorManager::ShowNotebook()
+{
+    if(!this)
+        return;
+    if(m_pNotebook)
+        m_pNotebook->Show();
+    m_pData->m_NeedsRefresh = true;
+    m_pData->InvalidateTree();
+    return;
 }
 
 bool EditorManager::RenameTreeFile(const wxString& oldname, const wxString& newname)
@@ -1574,16 +1706,16 @@ bool EditorManager::RenameTreeFile(const wxString& oldname, const wxString& newn
     wxTreeCtrl *tree = GetTree();
     if(!tree)
         return false;
-#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)	
+#if !wxCHECK_VERSION(2,5,0)
     long int cookie = 0;
 #else
     wxTreeItemIdValue cookie; //2.6.0
 #endif
     wxTreeItemId item;
     wxString filename,shortname;
-    for(item=tree->GetFirstChild(m_TreeOpenedFiles,cookie);
+    for(item=tree->GetFirstChild(m_pData->m_TreeOpenedFiles,cookie);
         item;
-        item = tree->GetNextChild(m_TreeOpenedFiles, cookie))
+        item = tree->GetNextChild(m_pData->m_TreeOpenedFiles, cookie))
     {
         EditorTreeData *data=(EditorTreeData*)tree->GetItemData(item);
         if(!data)
@@ -1629,7 +1761,7 @@ void EditorManager::InitPane()
     wxSplitterWindow* mysplitter = mypanel->GetSplitter();
     BuildOpenedFilesTree(mysplitter);
     mypanel->SetAutoLayout(true);
-    mypanel->SetConfigEntryForSplitter("/editor/opened_files_tree_height");
+    mypanel->SetConfigEntryForSplitter(_T("/editor/opened_files_tree_height"));
     mypanel->RefreshSplitter(ID_EditorManager,ID_ProjectManager);
 }
 
@@ -1642,24 +1774,12 @@ void EditorManager::BuildOpenedFilesTree(wxWindow* parent)
     if(m_pTree)
         return;
     m_pTree = new wxTreeCtrl(parent, ID_EditorManager,wxDefaultPosition,wxDefaultSize,wxTR_HAS_BUTTONS | wxNO_BORDER);
-
-    wxBitmap bmp;
-    m_pImages = new wxImageList(16, 16);
-    wxString prefix = ConfigManager::Get()->Read("data_path") + "/images/";
-    bmp.LoadFile(prefix + "folder_open.png", wxBITMAP_TYPE_PNG); // folder
-    m_pImages->Add(bmp);
-    bmp.LoadFile(prefix + "ascii.png", wxBITMAP_TYPE_PNG); // file
-    m_pImages->Add(bmp);
-    bmp.LoadFile(prefix + "modified_file.png", wxBITMAP_TYPE_PNG); // modified file
-    m_pImages->Add(bmp);
-    m_pTree->SetImageList(m_pImages);
-    m_TreeOpenedFiles=m_pTree->AddRoot("Opened Files", 0, 0);
-    m_pTree->SetItemBold(m_TreeOpenedFiles);
+    m_pData->BuildTree(m_pTree);
     RebuildOpenedFilesTree(m_pTree);
 }
 
 void EditorManager::RebuildOpenedFilesTree(wxTreeCtrl *tree)
-{    
+{
 #if defined(DONT_USE_OPENFILES_TREE)
     return;
 #endif
@@ -1671,7 +1791,7 @@ void EditorManager::RebuildOpenedFilesTree(wxTreeCtrl *tree)
         tree=GetTree();
     if(!tree)
         return;
-    tree->DeleteChildren(m_TreeOpenedFiles);
+    tree->DeleteChildren(m_pData->m_TreeOpenedFiles);
     if(!GetEditorsCount())
         return;
     tree->Freeze();
@@ -1684,13 +1804,14 @@ void EditorManager::RebuildOpenedFilesTree(wxTreeCtrl *tree)
             continue;
         wxString shortname=ed->GetShortName();
         int mod = ed->GetModified() ? 2 : 1;
-        wxTreeItemId item=tree->AppendItem(m_TreeOpenedFiles,shortname,mod,mod,
+        wxTreeItemId item=tree->AppendItem(m_pData->m_TreeOpenedFiles,shortname,mod,mod,
           new EditorTreeData(this,ed->GetFilename()));
         if(GetActiveEditor()==ed)
             tree->SelectItem(item);
     }
-    tree->Expand(m_TreeOpenedFiles);    
+    tree->Expand(m_pData->m_TreeOpenedFiles);
     tree->Thaw();
+    m_pData->InvalidateTree();
 }
 
 void EditorManager::RefreshOpenedFilesTree(bool force)
@@ -1712,19 +1833,19 @@ void EditorManager::RefreshOpenedFilesTree(bool force)
         return;
     bool ismodif=aed->GetModified();
     fname=aed->GetFilename();
-    
+
     if(!force && m_LastActiveFile==fname && m_LastModifiedflag==ismodif)
         return; // Nothing to do
 
     m_LastActiveFile=fname;
     m_LastModifiedflag=ismodif;
     Manager::Get()->GetProjectManager()->FreezeTree();
-#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)	
+#if !wxCHECK_VERSION(2,5,0)
     long int cookie = 0;
 #else
     wxTreeItemIdValue cookie; //2.6.0
 #endif
-    wxTreeItemId item = tree->GetFirstChild(m_TreeOpenedFiles,cookie);
+    wxTreeItemId item = tree->GetFirstChild(m_pData->m_TreeOpenedFiles,cookie);
     wxString filename,shortname;
     while (item)
     {
@@ -1749,7 +1870,7 @@ void EditorManager::RefreshOpenedFilesTree(bool force)
                 // tree->SetItemBold(item,(ed==aed));
             }
         }
-        item = tree->GetNextChild(m_TreeOpenedFiles, cookie);
+        item = tree->GetNextChild(m_pData->m_TreeOpenedFiles, cookie);
     }
     Manager::Get()->GetProjectManager()->UnfreezeTree();
 }
@@ -1762,7 +1883,7 @@ void EditorManager::OnTreeItemActivated(wxTreeEvent &event)
     if(!MiscTreeItemData::OwnerCheck(event,GetTree(),this,true))
         return;
     wxString filename=GetTreeItemFilename(event.GetItem());
-    if(filename=="")
+    if(filename==_T(""))
         return;
     Open(filename);
 }
@@ -1792,30 +1913,25 @@ void EditorManager::OnUpdateUI(wxUpdateUIEvent& event)
     if(!Manager::isappShuttingDown())
         RefreshOpenedFilesTree();
 
+    if(m_pTree && m_pData->m_TreeNeedsRefresh && m_pTree->IsShown())
+    {
+        m_pTree->Refresh();
+        m_pData->m_TreeNeedsRefresh=false;
+    }
+
+    if(edman_closebutton)
+        edman_closebutton->Show(GetActiveEditor()!=NULL);
+    if(m_pData->m_NeedsRefresh && m_pNotebook->IsShown())
+    {
+        if(m_pNotebook)
+            m_pNotebook->Refresh();
+        if(GetActiveEditor())
+            GetActiveEditor()->Refresh();
+        m_pData->m_NeedsRefresh=false;
+    }
+
     // allow other UpdateUI handlers to process this event
     // *very* important! don't forget it...
+
     event.Skip();
 }
-
-#else
-void EditorManager::OnTreeItemSelected(wxTreeEvent &event)
-{
-    event.Skip();
-}
-
-void EditorManager::OnTreeItemActivated(wxTreeEvent &event) 
-{
-    event.Skip();
-}
-
-void EditorManager::OnTreeItemRightClick(wxTreeEvent &event) 
-{
-    event.Skip();
-}
-
-void EditorManager::OnUpdateUI(wxUpdateUIEvent& event)
-{
-    event.Skip();
-}
-
-#endif

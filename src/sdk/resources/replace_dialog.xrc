@@ -78,6 +78,8 @@
                 <item>&amp;Up</item>
                 <item>&amp;Down</item>
               </content>
+              <dimension>1</dimension>
+              <style>wxRA_SPECIFY_COLS</style>
             </object>
             <flag>wxTOP|wxBOTTOM|wxLEFT|wxEXPAND</flag>
             <border>4</border>
@@ -89,6 +91,8 @@
                 <item>&amp;From cursor</item>
                 <item>&amp;Entire scope</item>
               </content>
+              <dimension>1</dimension>
+              <style>wxRA_SPECIFY_COLS</style>
             </object>
             <flag>wxTOP|wxBOTTOM|wxRIGHT|wxEXPAND</flag>
             <border>4</border>
@@ -100,6 +104,8 @@
                 <item>&amp;Global</item>
                 <item>&amp;Selected text</item>
               </content>
+              <dimension>1</dimension>
+              <style>wxRA_SPECIFY_COLS</style>
             </object>
             <flag>wxTOP|wxBOTTOM|wxLEFT|wxEXPAND</flag>
             <border>4</border>

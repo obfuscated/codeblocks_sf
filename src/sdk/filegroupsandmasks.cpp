@@ -5,7 +5,7 @@
 #include "manager.h"
 #include "messagemanager.h"
 
-#define CONF_GROUP "/project_manager/file_groups/"
+#define CONF_GROUP _T("/project_manager/file_groups/")
 
 FilesGroupsAndMasks::FilesGroupsAndMasks()
 {
@@ -16,11 +16,11 @@ FilesGroupsAndMasks::FilesGroupsAndMasks()
 	{
 		// only add default groups if none were loaded...
 		unsigned int group = AddGroup(_("Sources"));
-		SetFileMasks(group, "*.c;*.cpp;*.cc;*.cxx;*.C;*.CPP;*.CC;*.CXX");
+		SetFileMasks(group, _T("*.c;*.cpp;*.cc;*.cxx;*.C;*.CPP;*.CC;*.CXX") );
 		group = AddGroup(_("Headers"));
-		SetFileMasks(group, "*.h;*.hpp;*.hh;*.hxx;*.H;*.HPP;*.HH;*.HXX");
+		SetFileMasks(group, _T("*.h;*.hpp;*.hh;*.hxx;*.H;*.HPP;*.HH;*.HXX") );
 		group = AddGroup(_("Resources"));
-		SetFileMasks(group, "*.res;*.xrc;*.RES;*.XRC");
+		SetFileMasks(group, _T("*.res;*.xrc;*.RES;*.XRC") );
 	}
 }
 
@@ -76,8 +76,8 @@ void FilesGroupsAndMasks::Load()
         bool cont = conf->GetFirstGroup(entry, cookie);
         while (cont)
         {
-            unsigned int group = AddGroup(conf->Read(entry + "/Name"));
-            SetFileMasks(group, conf->Read(entry + "/Mask"));
+            unsigned int group = AddGroup(conf->Read(entry + _T("/Name")));
+            SetFileMasks(group, conf->Read(entry + _T("/Mask")));
             cont = conf->GetNextGroup(entry, cookie);
         }
 	}
@@ -94,11 +94,11 @@ void FilesGroupsAndMasks::Save()
 	{
         FileGroups* fg = m_Groups[i];
         wxString key;
-        key << i << "/" << "Name";
+        key << i << _T("/") << _T("Name");
 		conf->Write(key, fg->groupName);
         key.Clear();
-        key << i << "/" << "Mask";
-		conf->Write(key, GetStringFromArray(fg->fileMasks, ";"));
+        key << i << _T("/") << _T("Mask");
+		conf->Write(key, GetStringFromArray(fg->fileMasks, _T(";")));
 	}
 	conf->SetPath(oldPath);
 }
@@ -147,7 +147,7 @@ void FilesGroupsAndMasks::SetFileMasks(unsigned int group, const wxString& masks
         return;
 
     FileGroups* fg = m_Groups[group];
-    fg->fileMasks = GetArrayFromString(masks, ";");
+    fg->fileMasks = GetArrayFromString(masks, _T(";"));
 }
 
 unsigned int FilesGroupsAndMasks::GetGroupsCount() const

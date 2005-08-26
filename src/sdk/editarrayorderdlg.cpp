@@ -40,7 +40,7 @@ END_EVENT_TABLE()
 EditArrayOrderDlg::EditArrayOrderDlg(wxWindow* parent, const wxArrayString& array)
     : m_Array(array)
 {
-	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgEditArrayOrder"));
+	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgEditArrayOrder"));
 	DoFillList();
 }
 

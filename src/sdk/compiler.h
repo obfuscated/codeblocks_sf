@@ -49,7 +49,7 @@ enum CompilerLineType
 struct RegExStruct
 {
     RegExStruct()
-        : desc("Unknown"), lt(cltError), regex(""), filename(0), line(0)
+        : desc(_("Unknown")), lt(cltError), regex(_T("")), filename(0), line(0)
     {
         memset(msg, 0, sizeof(msg));
     }

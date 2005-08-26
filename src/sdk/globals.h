@@ -60,8 +60,8 @@ enum FileType
 extern "C" {
 #endif
 // global helper funcs
-extern DLLIMPORT wxString GetStringFromArray(const wxArrayString& array, const wxString& separator = ";");
-extern DLLIMPORT wxArrayString GetArrayFromString(const wxString& text, const wxString& separator = ";");
+extern DLLIMPORT wxString GetStringFromArray(const wxArrayString& array, const wxString& separator = _T(";"));
+extern DLLIMPORT wxArrayString GetArrayFromString(const wxString& text, const wxString& separator = _T(";"));
 extern DLLIMPORT bool CreateDirRecursively(const wxString& full_path, int perms = 0755);
 extern DLLIMPORT wxString UnixFilename(const wxString& filename);
 extern DLLIMPORT FileType FileTypeOf(const wxString& filename);
@@ -69,8 +69,8 @@ extern DLLIMPORT void SaveTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent
 extern DLLIMPORT void RestoreTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& nodePaths);
 extern DLLIMPORT wxString ChooseDirectory(wxWindow* parent,
                                           const wxString& message = _("Select directory"),
-                                          const wxString& initialPath = _(""),
-                                          const wxString& basePath = _(""),
+                                          const wxString& initialPath = _T(""),
+                                          const wxString& basePath = _T(""),
                                           bool askToMakeRelative = false, // relative to basePath
                                           bool showCreateDirButton = false); // where supported
 #ifdef __cplusplus

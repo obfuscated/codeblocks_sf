@@ -24,8 +24,8 @@ InsertClassMethodDlg::InsertClassMethodDlg(wxWindow* parent, Parser* parser, con
     m_Filename(filename)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgInsertClassMethod"));
-    XRCCTRL(*this, _("rbCode"), wxRadioBox)->SetSelection(0);
+	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgInsertClassMethod"));
+    XRCCTRL(*this, "rbCode", wxRadioBox)->SetSelection(0);
     FillClasses();
 }
 
@@ -37,21 +37,21 @@ InsertClassMethodDlg::~InsertClassMethodDlg()
 wxArrayString InsertClassMethodDlg::GetCode()
 {
     wxArrayString array;
-    wxCheckListBox* clb = XRCCTRL(*this, _("chklstMethods"), wxCheckListBox);
+    wxCheckListBox* clb = XRCCTRL(*this, "chklstMethods", wxCheckListBox);
 
     for (int i = 0; i < clb->GetCount(); ++i)
     {
         if (clb->IsChecked(i))
         {
             wxString str;
-            if (XRCCTRL(*this, _("chkAddDoc"), wxCheckBox)->IsChecked())
+            if (XRCCTRL(*this, "chkAddDoc", wxCheckBox)->IsChecked())
             {
                 // add doc block
-                str << "/** @brief (one liner)\n  *\n  * (documentation goes here)\n  */\n";
+                str << _("/** @brief (one liner)\n  *\n  * (documentation goes here)\n  */\n");
             }
             str << clb->GetString(i);
-            str.Replace("&&", "&");
-            array.Add(str + (m_Decl ? ";\n" : "\n{\n\n}\n\n"));
+            str.Replace(_T("&&"), _T("&"));
+            array.Add(str + (m_Decl ? _T(";\n") : _T("\n{\n\n}\n\n")));
         }
     }
     
@@ -63,7 +63,7 @@ void InsertClassMethodDlg::FillClasses()
     if (!m_pParser || !m_pParser->Done())
         return;
     
-    wxListBox* lb = XRCCTRL(*this, _("lstClasses"), wxListBox);
+    wxListBox* lb = XRCCTRL(*this, "lstClasses", wxListBox);
     lb->Freeze();
     lb->Clear();
     for (unsigned int i = 0; i < m_pParser->GetTokens().GetCount(); ++i)
@@ -84,23 +84,23 @@ void InsertClassMethodDlg::FillMethods()
     if (!m_pParser || !m_pParser->Done())
         return;
     
-    wxListBox* lb = XRCCTRL(*this, _("lstClasses"), wxListBox);
-    wxCheckListBox* clb = XRCCTRL(*this, _("chklstMethods"), wxCheckListBox);
+    wxListBox* lb = XRCCTRL(*this, "lstClasses", wxListBox);
+    wxCheckListBox* clb = XRCCTRL(*this, "chklstMethods", wxCheckListBox);
     clb->Clear();
     
     if (lb->GetSelection() == -1)
         return;
         
-    bool includePrivate = XRCCTRL(*this, _("chkPrivate"), wxCheckBox)->IsChecked();
-    bool includeProtected = XRCCTRL(*this, _("chkProtected"), wxCheckBox)->IsChecked();
-    bool includePublic = XRCCTRL(*this, _("chkPublic"), wxCheckBox)->IsChecked();
+    bool includePrivate = XRCCTRL(*this, "chkPrivate", wxCheckBox)->IsChecked();
+    bool includeProtected = XRCCTRL(*this, "chkProtected", wxCheckBox)->IsChecked();
+    bool includePublic = XRCCTRL(*this, "chkPublic", wxCheckBox)->IsChecked();
 
     Token* parentToken = reinterpret_cast<Token*>(lb->GetClientData(lb->GetSelection()));
     
     clb->Freeze();
     DoFillMethodsFor(clb,
                     parentToken,
-                    parentToken ? parentToken->m_Name + "::" : "",
+                    parentToken ? parentToken->m_Name + _T("::") : _T(""),
                     includePrivate,
                     includeProtected,
                     includePublic);
@@ -137,8 +137,8 @@ void InsertClassMethodDlg::DoFillMethodsFor(wxCheckListBox* clb,
             // BUG IN WXWIDGETS: wxCheckListBox::Append(string, data) crashes...
             //                   wxCheckListBox::Append(string) does not...
             wxString str;
-            str << token->m_Type << " " << (!m_Decl ? ns : "") << token->m_Name << token->m_Args;
-            str.Replace("&", "&&");
+            str << token->m_Type << _T(" ") << (!m_Decl ? ns : _T("")) << token->m_Name << token->m_Args;
+            str.Replace(_T("&"), _T("&&"));
             if (clb->FindString(str) == wxNOT_FOUND)
                 clb->Append(str);
         }
@@ -160,7 +160,7 @@ void InsertClassMethodDlg::OnClassesChange(wxCommandEvent& event)
 
 void InsertClassMethodDlg::OnCodeChange(wxCommandEvent& event)
 {
-    m_Decl = XRCCTRL(*this, _("rbCode"), wxRadioBox)->GetSelection() == 0;
+    m_Decl = XRCCTRL(*this, "rbCode", wxRadioBox)->GetSelection() == 0;
     FillMethods();
 }
 

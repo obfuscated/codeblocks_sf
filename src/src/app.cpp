@@ -41,8 +41,8 @@
 #ifdef __WXMSW__
 	#include <wx/msw/registry.h>
 	#include <shlobj.h> // for SHChangeNotify()
-	#define DDE_SERVICE	"CODEBLOCKS"
-	#define DDE_TOPIC	"CodeBlocksDDEServer"
+	#define DDE_SERVICE	_T("CODEBLOCKS")
+	#define DDE_TOPIC	_T("CodeBlocksDDEServer")
 	#ifdef __CBDEBUG__
 	#include <windows.h>
 	#include <wincon.h>
@@ -87,10 +87,10 @@ bool CodeBlocksApp::LoadConfig()
     SetVendorName(APP_VENDOR);
     SetAppName(APP_NAME" v"APP_VERSION);
     ConfigManager::Init(wxConfigBase::Get());
-    ConfigManager::Get()->Write("app_path", GetAppPath());
-    ConfigManager::Get()->Write("data_path", GetAppPath() + "/share/CodeBlocks");
-    m_HasDebugLog = ConfigManager::Get()->Read("/message_manager/has_debug_log", (long int)0) || m_HasDebugLog;
-    ConfigManager::Get()->Write("/message_manager/has_debug_log", m_HasDebugLog);
+    ConfigManager::Get()->Write(_T("app_path"), GetAppPath());
+    ConfigManager::Get()->Write(_T("data_path"), GetAppPath() + _T("/share/CodeBlocks"));
+    m_HasDebugLog = ConfigManager::Get()->Read(_T("/message_manager/has_debug_log"), (long int)0) || m_HasDebugLog;
+    ConfigManager::Get()->Write(_T("/message_manager/has_debug_log"), m_HasDebugLog);
     if (ParseCmdLine(0L) != 0)
         return false;
     return true;
@@ -99,17 +99,17 @@ bool CodeBlocksApp::LoadConfig()
 void CodeBlocksApp::InitAssociations()
 {
 #ifdef __WXMSW__
-	if (!m_NoAssocs && ConfigManager::Get()->Read("/environment/check_associations", 1) == 1)
+	if (!m_NoAssocs && ConfigManager::Get()->Read(_T("/environment/check_associations"), 1) == 1)
 		CheckAssociations();
 
-	if (!m_NoDDE && ConfigManager::Get()->Read("/environment/use_dde", 1) == 1)
+	if (!m_NoDDE && ConfigManager::Get()->Read(_T("/environment/use_dde"), 1) == 1)
 	{
 		g_DDEServer = new DDEServer(0);
 		g_DDEServer->Create(DDE_SERVICE);
 	}
 #endif
 }
-    
+
 void CodeBlocksApp::InitDebugConsole()
 {
 #ifdef __WXMSW__
@@ -128,12 +128,12 @@ void CodeBlocksApp::InitDebugConsole()
 void CodeBlocksApp::InitExceptionHandler()
 {
 #ifdef __WXMSW__
-    m_ExceptionHandlerLib = LoadLibrary("exchndl.dll");
+    m_ExceptionHandlerLib = LoadLibrary(_T("exchndl.dll"));
 #endif
 }
 
 void CodeBlocksApp::InitImageHandlers()
-{    
+{
     wxImage::AddHandler(new wxBMPHandler);
     wxImage::AddHandler(new wxPNGHandler);
 	wxInitAllImageHandlers();
@@ -162,20 +162,20 @@ bool CodeBlocksApp::InitXRCStuff()
     wxFileSystem::AddHandler(new wxZipFSHandler);
     wxXmlResource::Get()->InitAllHandlers();
 
-    wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
-    wxString res = resPath + "/resources.zip";
+    wxString resPath = ConfigManager::Get()->Read(_T("data_path"), wxEmptyString);
+    wxString res = resPath + _T("/resources.zip");
     if (!CheckResource(res))
     	return false;
     /// @todo Checkout why it doesn't work with VC++ unless "#zip:*.xrc" appended
-	wxXmlResource::Get()->Load(res+"#zip:*.xrc");
+	wxXmlResource::Get()->Load(res+_T("#zip:*.xrc"));
 	return true;
 }
 
 void CodeBlocksApp::InitFrame()
 {
-    MainFrame *frame = new MainFrame((wxFrame*)0L);
+    MainFrame *frame = new MainFrame(m_locale, (wxFrame*)0L);
     #ifdef __WXMSW__
-        if(g_DDEServer) 
+        if(g_DDEServer)
             g_DDEServer->SetFrame(frame);
     #endif
     HideSplashScreen();
@@ -183,7 +183,7 @@ void CodeBlocksApp::InitFrame()
     SetTopWindow(frame);
     if (ParseCmdLine(frame) == 0)
     {
-        if (ConfigManager::Get()->Read("/environment/blank_workspace", 0L) == 0)
+        if (ConfigManager::Get()->Read(_T("/environment/blank_workspace"), 0L) == 0)
             Manager::Get()->GetProjectManager()->LoadWorkspace();
     }
 
@@ -194,38 +194,90 @@ void CodeBlocksApp::CheckVersion()
 {
 #ifdef __WXMSW__
     // for windows users only, display a message that no compiler is provided
-    if (ConfigManager::Get()->Read("version", "") != APP_ACTUAL_VERSION)
+    if (ConfigManager::Get()->Read(_T("version"), _T("")) != APP_ACTUAL_VERSION)
     {
         // this is a (probably) newer version; show a message box with
         // important notes
-        
+
         // NOTE:
         // the info box, has moved to the installer, because now there are
         // setup files including a compiler...
-        
+
         // update the version
-        ConfigManager::Get()->Write("version", APP_ACTUAL_VERSION);
+        ConfigManager::Get()->Write(_T("version"), APP_ACTUAL_VERSION);
     }
 #endif
+}
+
+void CodeBlocksApp::InitLocale()
+{
+    const wxString langs[] =
+    {
+        _T("(System default)"),
+//        _T("English (U.S.)")
+//        _T("English"),
+//        _T("Chinese (Simplified)"),
+//        _T("German"),
+//        _T("Russian"),
+    };
+
+    // Must have the same order than the above
+    const long int locales[] =
+    {
+        wxLANGUAGE_DEFAULT,
+        wxLANGUAGE_ENGLISH_US,
+        wxLANGUAGE_ENGLISH,
+        wxLANGUAGE_CHINESE_SIMPLIFIED,
+        wxLANGUAGE_GERMAN,
+        wxLANGUAGE_RUSSIAN
+    };
+
+    long int lng = CFG_READ(_T("/locale/language"),(long int)-2);
+
+    if(lng==-2) // -2 = Undefined / ask
+    {
+        lng = -1;
+        if(WXSIZEOF(langs)>=2)
+            lng = wxGetSingleChoiceIndex(_T("Please choose language:"), _T("Language"),
+                                           WXSIZEOF(langs), langs);
+
+        if(lng >= 0 && abs(lng) < WXSIZEOF(locales))
+            lng = locales[lng];
+        else
+            lng = -1; // -1 = Don't use locale
+    }
+
+
+    if(lng>=0)
+    {
+        m_locale.Init(lng);
+        wxLocale::AddCatalogLookupPathPrefix(GetAppPath() + _T("/share/CodeBlocks/locale"));
+        wxLocale::AddCatalogLookupPathPrefix(wxT("."));
+        wxLocale::AddCatalogLookupPathPrefix(wxT(".."));
+        m_locale.AddCatalog(wxT("codeblocks"));
+        CFG_WRITE(_T("/locale/language"),lng);
+    }
+    else
+        CFG_WRITE(_T("/locale/language"),(long int)-1);
 }
 
 bool CodeBlocksApp::OnInit()
 {
     m_pSplash = 0;
-    
-// NOTE (mandrav#1#): My wx2.6.1 build has define wxUSE_ON_FATAL_EXCEPTION 
+
+// NOTE (mandrav#1#): My wx2.6.1 build has define wxUSE_ON_FATAL_EXCEPTION
 //                    but still I get errors compiling with it...
 #ifdef wxHandleFatalExceptions
     wxHandleFatalExceptions(true);
 #endif
-
     if(!LoadConfig())
         return false;
 
+    InitLocale();
 	m_pSingleInstance = 0;
-    if (ConfigManager::Get()->Read("/environment/single_instance", 1))
+    if (ConfigManager::Get()->Read(_T("/environment/single_instance"), 1))
     {
-        const wxString name = wxString::Format("Code::Blocks-%s", wxGetUserId().c_str());
+        const wxString name = wxString::Format(_T("Code::Blocks-%s"), wxGetUserId().c_str());
         m_pSingleInstance = new wxSingleInstanceChecker(name);
         if (m_pSingleInstance->IsAnotherRunning())
         {
@@ -248,7 +300,7 @@ bool CodeBlocksApp::OnInit()
         return false;
     InitFrame();
     CheckVersion();
-    
+
     CodeBlocksEvent event(cbEVT_APP_STARTUP_DONE);
     Manager::Get()->ProcessEvent(event);
     wxYield();
@@ -285,10 +337,10 @@ void CodeBlocksApp::ShowSplashScreen()
 {
     HideSplashScreen();
 
-	if (!m_NoSplash && ConfigManager::Get()->Read("/environment/show_splash", 1) == 1)
+	if (!m_NoSplash && ConfigManager::Get()->Read(_T("/environment/show_splash"), 1) == 1)
 	{
 		wxBitmap bitmap;
-		if (bitmap.LoadFile(GetAppPath() + "/share/CodeBlocks/images/splash.png", wxBITMAP_TYPE_PNG))
+		if (bitmap.LoadFile(GetAppPath() + _T("/share/CodeBlocks/images/splash.png"), wxBITMAP_TYPE_PNG))
 		{
 			m_pSplash = new wxSplashScreen(bitmap,
 										wxSPLASH_CENTRE_ON_SCREEN,// | wxSPLASH_TIMEOUT,
@@ -319,7 +371,7 @@ bool CodeBlocksApp::CheckResource(const wxString& res)
     		"to point where "APP_NAME" is installed,\n"
     		"or try re-installing the application...",
     		res.c_str(),
-    		ConfigManager::Get()->Read("app_path", wxEmptyString).c_str());
+    		ConfigManager::Get()->Read(_T("app_path"), wxEmptyString).c_str());
     	wxMessageBox(msg);
     	return false;
     }
@@ -339,9 +391,10 @@ wxString CodeBlocksApp::GetAppPath() const
     // SELFPATH is a macro from prefix.h (binreloc)
     // it returns the absolute filename of us
     // similar to win32 GetModuleFileName()...
-    base = wxFileName(SELFPATH).GetPath();
+    base = wxString(SELFPATH,wxConvUTF8);
+    base = wxFileName(base).GetPath();
 	if (base.IsEmpty())
-		base = ".";
+		base = _T(".");
 #endif
     return base;
 }
@@ -352,32 +405,8 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
 	bool filesInCmdLine = false;
 
 #if wxUSE_CMDLINE_PARSER
-#if wxUSE_UNICODE
-    wxChar **wargv = new wxChar *[argc + 1];
-
-    {
-        for ( int n = 0; n < argc; n++ )
-        {
-            wxMB2WXbuf warg = wxConvertMB2WX(argv[n]);
-            wargv[n] = wxStrdup(warg);
-        }
-
-        wargv[n] = NULL;
-    }
-
-    #define argv wargv
-#endif // wxUSE_UNICODE
-
     wxCmdLineParser parser(cmdLineDesc, argc, argv);
-
-#if wxUSE_UNICODE
-    {
-        for ( int n = 0; n < argc; n++ )
-            free(wargv[n]);
-
-        delete [] wargv;
-    }
-#endif // wxUSE_UNICODE
+    // wxApp::argc is a wxChar**
 
     switch ( parser.Parse() )
     {
@@ -396,14 +425,14 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                 else
                 {
                     wxString val;
-                    if (parser.Found(_("prefix"), &val))
-                        wxSetEnv("DATA_PREFIX", val);
-					m_NoDDE = parser.Found(_("no-dde"), &val);
-					m_NoAssocs = parser.Found(_("no-check-associations"), &val);
-					m_NoSplash = parser.Found(_("no-splash-screen"), &val);
-					m_ClearConf = parser.Found(_("clear-configuration"), &val);
-					m_HasDebugLog = parser.Found(_("debug-log"), &val);
-					if (parser.Found(_("personality"), &val))
+                    if (parser.Found(_T("prefix"), &val))
+                        wxSetEnv(_T("DATA_PREFIX"), val);
+					m_NoDDE = parser.Found(_T("no-dde"), &val);
+					m_NoAssocs = parser.Found(_T("no-check-associations"), &val);
+					m_NoSplash = parser.Found(_T("no-splash-screen"), &val);
+					m_ClearConf = parser.Found(_T("clear-configuration"), &val);
+					m_HasDebugLog = parser.Found(_T("debug-log"), &val);
+					if (parser.Found(_T("personality"), &val))
                         SetupPersonality(val);
                 }
             }
@@ -418,7 +447,7 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
 
 void CodeBlocksApp::SetupPersonality(const wxString& personality)
 {
-    if (personality.CmpNoCase("ask") == 0)
+    if (personality.CmpNoCase(_T("ask")) == 0)
     {
 #if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)
         // wx < 2.5.x single choice dialog wants wxString*
@@ -451,50 +480,50 @@ void CodeBlocksApp::SetAssociations()
 {
 	wxChar name[MAX_PATH] = {0};
 	GetModuleFileName(0L, name, MAX_PATH);
-	
-	DoSetAssociation(CODEBLOCKS_EXT, APP_NAME" project file", name, "1");
-	DoSetAssociation(WORKSPACE_EXT, APP_NAME" workspace file", name, "1");
-	DoSetAssociation(C_EXT, "C source file", name, "2");
-	DoSetAssociation(CPP_EXT, "C++ source file", name, "3");
-	DoSetAssociation(CC_EXT, "C++ source file", name, "3");
-	DoSetAssociation(CXX_EXT, "C++ source file", name, "3");
-	DoSetAssociation(H_EXT, "C/C++ header file", name, "4");
-	DoSetAssociation(HPP_EXT, "C/C++ header file", name, "4");
-	DoSetAssociation(HH_EXT, "C/C++ header file", name, "4");
-	DoSetAssociation(HXX_EXT, "C/C++ header file", name, "4");
-	
+
+	DoSetAssociation(CODEBLOCKS_EXT, wxString(APP_NAME) + _(" project file"), name, _T("1"));
+	DoSetAssociation(WORKSPACE_EXT, wxString(APP_NAME) +  _("workspace file"), name, _T("1"));
+	DoSetAssociation(C_EXT, _("C source file"), name, _T("2"));
+	DoSetAssociation(CPP_EXT, _("C++ source file"), name, _T("3"));
+	DoSetAssociation(CC_EXT, _("C++ source file"), name, _T("3"));
+	DoSetAssociation(CXX_EXT, _("C++ source file"), name, _T("3"));
+	DoSetAssociation(H_EXT, _("C/C++ header file"), name, _T("4"));
+	DoSetAssociation(HPP_EXT, _("C/C++ header file"), name, _T("4"));
+	DoSetAssociation(HH_EXT, _("C/C++ header file"), name, _T("4"));
+	DoSetAssociation(HXX_EXT, _("C/C++ header file"), name, _T("4"));
+
 	SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, 0L, 0L);
 }
 
 void CodeBlocksApp::DoSetAssociation(const wxString& ext, const wxString& descr, const wxString& exe, const wxString& icoNum)
 {
 	wxRegKey key; // defaults to HKCR
-	
-	key.SetName("HKEY_CLASSES_ROOT\\." + ext);
+
+	key.SetName(_T("HKEY_CLASSES_ROOT\\.") + ext);
 	key.Create();
-	key = "CodeBlocks." + ext;
-	
-	key.SetName("HKEY_CLASSES_ROOT\\CodeBlocks." + ext);
+	key = _T("CodeBlocks.") + ext;
+
+	key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext);
 	key.Create();
 	key = descr;
 
-	key.SetName("HKEY_CLASSES_ROOT\\CodeBlocks." + ext + "\\DefaultIcon");
+	key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext + _T("\\DefaultIcon"));
 	key.Create();
-	key = exe + "," + icoNum;
+	key = exe + _T(",") + icoNum;
 
-	key.SetName("HKEY_CLASSES_ROOT\\CodeBlocks." + ext + "\\shell\\open\\command");
+	key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext + _T("\\shell\\open\\command"));
 	key.Create();
-	key = "\"" + exe + "\" \"%1\"";
+	key = _T("\"") + exe + _T("\" \"%1\"");
 
-	key.SetName("HKEY_CLASSES_ROOT\\CodeBlocks." + ext + "\\shell\\open\\ddeexec");
+	key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext + _T("\\shell\\open\\ddeexec"));
 	key.Create();
-	key = "[Open(\"%1\")]";
+	key = _T("[Open(\"%1\")]");
 
-	key.SetName("HKEY_CLASSES_ROOT\\CodeBlocks." + ext + "\\shell\\open\\ddeexec\\Application");
+	key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext + _T("\\shell\\open\\ddeexec\\Application"));
 	key.Create();
 	key = DDE_SERVICE;
 
-	key.SetName("HKEY_CLASSES_ROOT\\CodeBlocks." + ext + "\\shell\\open\\ddeexec\\topic");
+	key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext + _T("\\shell\\open\\ddeexec\\topic"));
 	key.Create();
 	key = DDE_TOPIC;
 }
@@ -504,17 +533,17 @@ void CodeBlocksApp::CheckAssociations()
 {
 	wxChar name[MAX_PATH] = {0};
 	GetModuleFileName(0L, name, MAX_PATH);
-	
-	if (!DoCheckAssociation(CODEBLOCKS_EXT, APP_NAME" project file", name, "1") ||
-        !DoCheckAssociation(WORKSPACE_EXT, APP_NAME" workspace file", name, "1") ||
-        !DoCheckAssociation(C_EXT, "C source file", name, "2") ||
-        !DoCheckAssociation(CPP_EXT, "C++ source file", name, "3") ||
-        !DoCheckAssociation(CC_EXT, "C++ source file", name, "3") ||
-        !DoCheckAssociation(CXX_EXT, "C++ source file", name, "3") ||
-        !DoCheckAssociation(H_EXT, "C/C++ header file", name, "4") ||
-        !DoCheckAssociation(HPP_EXT, "C/C++ header file", name, "4") ||
-        !DoCheckAssociation(HH_EXT, "C/C++ header file", name, "4") ||
-        !DoCheckAssociation(HXX_EXT, "C/C++ header file", name, "4"))
+
+	if (!DoCheckAssociation(CODEBLOCKS_EXT, wxString(APP_NAME) + _(" project file"), name, _T("1")) ||
+        !DoCheckAssociation(WORKSPACE_EXT, wxString(APP_NAME) + _(" workspace file"), name, _T("1")) ||
+        !DoCheckAssociation(C_EXT, _T("C source file"), name, _T("2")) ||
+        !DoCheckAssociation(CPP_EXT, _T("C++ source file"), name, _T("3")) ||
+        !DoCheckAssociation(CC_EXT, _T("C++ source file"), name, _T("3")) ||
+        !DoCheckAssociation(CXX_EXT, _T("C++ source file"), name, _T("3")) ||
+        !DoCheckAssociation(H_EXT, _T("C/C++ header file"), name, _T("4")) ||
+        !DoCheckAssociation(HPP_EXT, _T("C/C++ header file"), name, _T("4")) ||
+        !DoCheckAssociation(HH_EXT, _T("C/C++ header file"), name, _T("4")) ||
+        !DoCheckAssociation(HXX_EXT, _T("C/C++ header file"), name, _T("4")))
     {
         HideSplashScreen();
         wxString msg;
@@ -530,7 +559,7 @@ void CodeBlocksApp::CheckAssociations()
                            "If you want to enable the check, go to \"Settings/Environment\" and check \"Check & set file associations\"..."),
                          _("Information"),
                          wxICON_INFORMATION);
-            ConfigManager::Get()->Write("/environment/check_associations", 0L);
+            ConfigManager::Get()->Write(_T("/environment/check_associations"), 0L);
         }
     }
 }
@@ -540,35 +569,35 @@ bool CodeBlocksApp::DoCheckAssociation(const wxString& ext, const wxString& desc
 {
     wxLogNull no_log_here;
 	wxRegKey key; // defaults to HKCR
-	
-	key.SetName("HKEY_CLASSES_ROOT\\." + ext);
-	if (!key.Open())
-        return false;
-	
-	key.SetName("HKEY_CLASSES_ROOT\\CodeBlocks." + ext);
+
+	key.SetName(wxString(_T("HKEY_CLASSES_ROOT\\.")) + ext);
 	if (!key.Open())
         return false;
 
-	key.SetName("HKEY_CLASSES_ROOT\\CodeBlocks." + ext + "\\DefaultIcon");
+	key.SetName(wxString(_T("HKEY_CLASSES_ROOT\\CodeBlocks.")) + ext);
 	if (!key.Open())
         return false;
 
-	key.SetName("HKEY_CLASSES_ROOT\\CodeBlocks." + ext + "\\shell\\open\\command");
+	key.SetName(wxString(_T("HKEY_CLASSES_ROOT\\CodeBlocks.")) + ext + _T("\\DefaultIcon"));
 	if (!key.Open())
         return false;
 
-	key.SetName("HKEY_CLASSES_ROOT\\CodeBlocks." + ext + "\\shell\\open\\ddeexec");
+	key.SetName(wxString(_T("HKEY_CLASSES_ROOT\\CodeBlocks.")) + ext + _T("\\shell\\open\\command"));
 	if (!key.Open())
         return false;
 
-	key.SetName("HKEY_CLASSES_ROOT\\CodeBlocks." + ext + "\\shell\\open\\ddeexec\\application");
+	key.SetName(wxString(_T("HKEY_CLASSES_ROOT\\CodeBlocks.")) + ext + _T("\\shell\\open\\ddeexec"));
 	if (!key.Open())
         return false;
 
-	key.SetName("HKEY_CLASSES_ROOT\\CodeBlocks." + ext + "\\shell\\open\\ddeexec\\topic");
+	key.SetName(wxString(_T("HKEY_CLASSES_ROOT\\CodeBlocks.")) + ext + _T("\\shell\\open\\ddeexec\\application"));
 	if (!key.Open())
         return false;
-    
+
+	key.SetName(wxString(_T("HKEY_CLASSES_ROOT\\CodeBlocks.")) + ext + _T("\\shell\\open\\ddeexec\\topic"));
+	if (!key.Open())
+        return false;
+
     return true;
 }
 
@@ -586,10 +615,10 @@ wxConnectionBase* DDEServer::OnAcceptConnection(const wxString& topic)
 bool DDEConnection::OnExecute(const wxString& topic, wxChar *data, int size, wxIPCFormat format)
 {
 	wxString strData = data;
-	if (!strData.StartsWith("[Open(\""))
+	if (!strData.StartsWith(_T("[Open(\"")))
 		return false;
 
-	wxRegEx reCmd("\"(.*)\"");
+	wxRegEx reCmd(_T("\"(.*)\""));
 	if (reCmd.Matches(strData))
 	{
 		wxString file = reCmd.GetMatch(strData, 1);
@@ -609,7 +638,7 @@ void CodeBlocksApp::OnAppActivate(wxActivateEvent& event)
     if (!Manager::Get())
         return;
 
-    if (Manager::Get()->GetEditorManager() && ConfigManager::Get()->Read("/environment/check_modified_files", 1))
+    if (Manager::Get()->GetEditorManager() && ConfigManager::Get()->Read(_T("/environment/check_modified_files"), 1))
     {
         wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, idEditorManagerCheckFiles);
         wxPostEvent(Manager::Get()->GetEditorManager(), evt);

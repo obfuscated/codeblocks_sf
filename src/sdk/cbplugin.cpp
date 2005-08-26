@@ -39,14 +39,14 @@ cbPlugin::cbPlugin()
     m_IsAttached(false)
 {
 	SetEvtHandlerEnabled(false);
-    m_PluginInfo.name = "";
-    m_PluginInfo.title = "";
-    m_PluginInfo.version = "";
-    m_PluginInfo.description = "";
-    m_PluginInfo.author = "";
-    m_PluginInfo.authorEmail = "";
-    m_PluginInfo.authorWebsite = "";
-    m_PluginInfo.thanksTo = "";
+    m_PluginInfo.name = _T("");
+    m_PluginInfo.title = _T("");
+    m_PluginInfo.version = _T("");
+    m_PluginInfo.description = _T("");
+    m_PluginInfo.author = _T("");
+    m_PluginInfo.authorEmail = _T("");
+    m_PluginInfo.authorWebsite = _T("");
+    m_PluginInfo.thanksTo = _T("");
     m_PluginInfo.license = LICENSE_GPL;
 	m_PluginInfo.hasConfigure = false;
 }

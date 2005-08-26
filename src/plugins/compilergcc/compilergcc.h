@@ -13,7 +13,7 @@
 #include <compilerfactory.h>
 
 #define MAX_TARGETS 64
-#define DEFAULT_CONSOLE_SHELL "xterm -T $TITLE -e"
+#define DEFAULT_CONSOLE_SHELL _T("xterm -T $TITLE -e")
 
 enum CompilerOptionsType
 {
@@ -102,7 +102,7 @@ class CompilerGCC : public cbCompilerPlugin
 		bool DoPrepareMultiProjectCommand(MultiProjectJob job);
 		void DoPrepareQueue();
         int DoRunQueue();
-        bool DoCreateMakefile(bool temporary = true, const wxString& makefile = "");
+        bool DoCreateMakefile(bool temporary = true, const wxString& makefile = _T(""));
         void DoDeleteTempMakefile();
 		void DoClearTargetMenu();
 		void DoRecreateTargetMenu();

@@ -4,7 +4,7 @@
 #include <wx/frame.h>
 #include <wx/string.h>
 #include <wx/grid.h>
-#include <wx/stc/stc.h>
+#include <cbeditor.h>
 #include <sdk_events.h>
 #include "parser/parser.h"
 #include "parser/token.h"
@@ -13,12 +13,12 @@
 class CCList : public wxFrame
 {
 	public:
-		static CCList* Get(wxEvtHandler* parent, wxStyledTextCtrl* editor, Parser* parser);
+		static CCList* Get(wxEvtHandler* parent, cbStyledTextCtrl* editor, Parser* parser);
 		static void Free();
-		void SelectCurrent(wxChar ch = '\0');
+		void SelectCurrent(wxChar ch = _T('\0'));
 		int GetStartPos(){ return m_StartPos; }
 	protected:
-		CCList(wxEvtHandler* parent, wxStyledTextCtrl* editor, Parser* parser);
+		CCList(wxEvtHandler* parent, cbStyledTextCtrl* editor, Parser* parser);
 		virtual ~CCList();
 
 		void PositionMe();
@@ -30,9 +30,9 @@ class CCList : public wxFrame
 		void OnLeftDClick(wxGridEvent& event);
 		void OnChar(wxKeyEvent& event);
 		void OnCellChanged(wxGridEvent& event);
-		
+
 		wxEvtHandler* m_pParent;
-		wxStyledTextCtrl* m_pEditor;
+		cbStyledTextCtrl* m_pEditor;
 		Parser* m_pParser;
 		CCListCtrl* m_pList;
 		int m_StartPos;

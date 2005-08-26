@@ -14,7 +14,6 @@
 #include "astyleplugin.h"
 #include <licenses.h>
 #include "astyleconfigdlg.h"
-//#include "asstreamiterator.h"
 #include <sstream>
 #include <string>
 #include "formattersettings.h"
@@ -25,6 +24,7 @@
 #include <wx/msgdlg.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/fs_zip.h>
+#include <wx/strconv.h>
 
 using std::istringstream;
 using std::string;
@@ -39,21 +39,21 @@ AStylePlugin::AStylePlugin()
 	//ctor
     wxFileSystem::AddHandler(new wxZipFSHandler);
     wxXmlResource::Get()->InitAllHandlers();
-    wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
-    wxXmlResource::Get()->Load(resPath + "/astyle.zip#zip:*.xrc");
+    wxString resPath = ConfigManager::Get()->Read(_T("data_path"), wxEmptyString);
+    wxXmlResource::Get()->Load(resPath + _T("/astyle.zip#zip:*.xrc"));
 
-	m_PluginInfo.name = "AStylePlugin";
-	m_PluginInfo.title = "Source code formatter (AStyle)";
-	m_PluginInfo.version = "1.1";
-	m_PluginInfo.description = "Uses AStyle 1.17.0-dev to reformat your sources. Useful when copying code from the net or if you just want to reformat your sources based on a specific style.";
-	m_PluginInfo.author = "Yiannis Mandravellos";
-	m_PluginInfo.authorEmail = "mandrav@codeblocks.org";
-	m_PluginInfo.authorWebsite = "http://www.codeblocks.org";
-	m_PluginInfo.thanksTo = "AStyle team for the useful library.\nSee http://astyle.sourceforge.net";
+	m_PluginInfo.name = _T("AStylePlugin");
+	m_PluginInfo.title = _T("Source code formatter (AStyle)");
+	m_PluginInfo.version = _T("1.1");
+	m_PluginInfo.description = _T("Uses AStyle 1.17.0-dev to reformat your sources. Useful when copying code from the net or if you just want to reformat your sources based on a specific style.");
+	m_PluginInfo.author = _T("Yiannis Mandravellos");
+	m_PluginInfo.authorEmail = _T("mandrav@codeblocks.org");
+	m_PluginInfo.authorWebsite = _T("http://www.codeblocks.org");
+	m_PluginInfo.thanksTo = _T("AStyle team for the useful library.\nSee http://astyle.sourceforge.net");
 	m_PluginInfo.license = LICENSE_GPL;
 	m_PluginInfo.hasConfigure = true;
 	
-	ConfigManager::AddConfiguration(m_PluginInfo.title, "/astyle");
+	ConfigManager::AddConfiguration(m_PluginInfo.title, _T("/astyle"));
 }
 
 AStylePlugin::~AStylePlugin()
@@ -93,7 +93,7 @@ int AStylePlugin::Execute()
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (!ed)
         return 0;
-    string edText(ed->GetControl()->GetText().c_str());
+    string edText(ed->GetControl()->GetText().mb_str());
     wxString formattedText;
 
     astyle::ASFormatter formatter;
@@ -105,9 +105,9 @@ int AStylePlugin::Execute()
     wxString eolChars;
     switch (ed->GetControl()->GetEOLMode())
     {
-        case wxSTC_EOL_CRLF: eolChars = "\r\n"; break;
-        case wxSTC_EOL_CR: eolChars = "\r"; break;
-        case wxSTC_EOL_LF: eolChars = "\n"; break;
+        case wxSCI_EOL_CRLF: eolChars = _T("\r\n"); break;
+        case wxSCI_EOL_CR: eolChars = _T("\r"); break;
+        case wxSCI_EOL_LF: eolChars = _T("\n"); break;
     }
     
     //ASStreamIterator iter(edText, eolChars);
@@ -115,7 +115,7 @@ int AStylePlugin::Execute()
     formatter.init(iter);
     while (formatter.hasMoreLines())
     {
-        formattedText << formatter.nextLine().c_str();
+        formattedText << _U(formatter.nextLine().c_str());
         if (formatter.hasMoreLines())
             formattedText << eolChars;
     }

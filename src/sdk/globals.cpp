@@ -83,14 +83,14 @@ wxString UnixFilename(const wxString& filename)
 {
     wxString result = filename;
 #ifdef __WXMSW__
-    while (result.Replace("/", "\\"))
+    while (result.Replace(_T("/"), _T("\\")))
         ;
-    while (result.Replace("\\\\", "\\"))
+    while (result.Replace(_T("\\\\"), _T("\\")))
         ;
 #else
-    while (result.Replace("\\", "/"))
+    while (result.Replace(_T("\\"), _T("/")))
         ;
-    while (result.Replace("//", "/"))
+    while (result.Replace(_T("//"), _T("/")))
         ;
 #endif
     return result;
@@ -179,7 +179,7 @@ bool DoRememberExpandedNodes(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArr
         if (tree->ItemHasChildren(child) && tree->IsExpanded(child))
         {
             found = true;
-            path << "/" << tree->GetItemText(child);
+            path << _T("/") << tree->GetItemText(child);
             DoRememberExpandedNodes(tree, child, nodePaths, path);
             nodePaths.Add(path);
             path = originalPath;
@@ -197,11 +197,11 @@ void DoExpandRememberedNode(wxTreeCtrl* tree, const wxTreeItemId& parent, const 
         wxString tmpPath;
         tmpPath = path;
         wxString folder;
-        int pos = tmpPath.Find('/');
+        int pos = tmpPath.Find(_T('/'));
         while (pos == 0)
         {
             tmpPath = tmpPath.Right(tmpPath.Length() - pos - 1);
-            pos = tmpPath.Find('/');
+            pos = tmpPath.Find(_T('/'));
         }
         
         if (pos < 0) // no '/'
@@ -270,7 +270,7 @@ wxString ChooseDirectory(wxWindow* parent,
                          bool askToMakeRelative, // relative to initialPath
                          bool showCreateDirButton) // where supported
 {
-    wxDirDialog dlg(parent, message, "", showCreateDirButton ? wxDD_NEW_DIR_BUTTON : 0);
+    wxDirDialog dlg(parent, message, _T(""), showCreateDirButton ? wxDD_NEW_DIR_BUTTON : 0);
     dlg.SetPath(initialPath);
     if (dlg.ShowModal() != wxID_OK)
         return wxEmptyString;

@@ -17,9 +17,13 @@ class DLLIMPORT ExternalDepsDlg : public wxDialog
 	protected:
         void FillAdditional();
         void FillExternal();
-        void DoAdd(const wxString& listbox, const wxString& message);
-        void DoEdit(const wxString& listbox, const wxString& message);
-        void DoDel(const wxString& listbox);
+        
+        // BYO: Do___ functions xhanged to defines in .cpp because of incompatibilities
+        // with unicode build
+        
+        //void DoAdd(const wxString& listbox, const wxString& message);
+        //void DoEdit(const wxString& listbox, const wxString& message);
+        //void DoDel(const wxString& listbox);
 
         void OnAddAdditional(wxCommandEvent& event);
         void OnEditAdditional(wxCommandEvent& event);

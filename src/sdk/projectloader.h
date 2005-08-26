@@ -3,8 +3,8 @@
 
 #include "ibaseloader.h"
 
-#define PROJECT_FILE_VERSION_MAJOR "1"
-#define PROJECT_FILE_VERSION_MINOR "1"
+#define PROJECT_FILE_VERSION_MAJOR _T("1")
+#define PROJECT_FILE_VERSION_MINOR _T("1")
 
 class cbProject;
 class ProjectBuildTarget;
@@ -27,7 +27,7 @@ class DLLIMPORT ProjectLoader : public IBaseLoader
         void DoIncludesOptions(TiXmlElement* parentNode, ProjectBuildTarget* target = 0L);
         void DoLibsOptions(TiXmlElement* parentNode, ProjectBuildTarget* target = 0L);
         void DoExtraCommands(TiXmlElement* parentNode, ProjectBuildTarget* target = 0L);
-        
+
         void DoBuild(TiXmlElement* parentNode);
         void DoBuildTarget(TiXmlElement* parentNode);
         void DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildTarget* target);
@@ -36,13 +36,13 @@ class DLLIMPORT ProjectLoader : public IBaseLoader
 
         void DoUnits(TiXmlElement* parentNode);
         void DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file);
-        
+
         void BeginOptionSection(wxString& buffer, const wxString& sectionName, int nrOfTabs);
-        bool DoOptionSection(wxString& buffer, const wxArrayString& array, int nrOfTabs, const wxString& optionName = "option");
+        bool DoOptionSection(wxString& buffer, const wxArrayString& array, int nrOfTabs, const wxString& optionName = _("option"));
         void EndOptionSection(wxString& buffer, const wxString& sectionName, int nrOfTabs);
 
         // shortcut that calls BeginOptionSection(), DoOptionSection() and EndOptionSection()
-        void SaveOptions(wxString& buffer, const wxArrayString& array, const wxString& sectionName, int nrOfTabs, const wxString& optionName = "option", const wxString& extra = "");
+        void SaveOptions(wxString& buffer, const wxArrayString& array, const wxString& sectionName, int nrOfTabs, const wxString& optionName = _("option"), const wxString& extra = wxEmptyString);
 	private:
         void SaveCompilerOptions(wxString& buffer, CompileOptionsBase* object, int nrOfTabs);
         void SaveResourceCompilerOptions(wxString& buffer, CompileOptionsBase* object, int nrOfTabs);

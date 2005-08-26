@@ -1,17 +1,17 @@
 #ifndef EDITOR_H
 #define EDITOR_H
 
-#define EDITOR_MODIFIED             "*"
+#define EDITOR_MODIFIED             _T("*")
 
 #define BOOKMARK_MARKER					0
-#define BOOKMARK_STYLE 					wxSTC_MARK_ARROW
+#define BOOKMARK_STYLE 					wxSCI_MARK_ARROW
 #define BREAKPOINT_MARKER				1
-#define BREAKPOINT_STYLE 				wxSTC_MARK_CIRCLE
+#define BREAKPOINT_STYLE 				wxSCI_MARK_CIRCLE
 #define BREAKPOINT_LINE					2
 #define ACTIVE_LINE						3
 #define ERROR_LINE						4
 
-#include <wx/stc/stc.h>
+#include <wx/wxscintilla.h>
 #include <wx/hashmap.h>
 #include <wx/datetime.h>
 
@@ -22,20 +22,19 @@
 // forward decls
 struct cbEditorInternalData; // this is the private data struct used by the editor.
 class cbEditor;
-class cbStyledTextCtrl;
 class ProjectFile;
 class EditorColorSet;
 class wxNotebook;
 
-class cbStyledTextCtrl : public wxStyledTextCtrl
+class cbStyledTextCtrl : public wxScintilla
 {
 	public:
-		cbStyledTextCtrl(cbEditor* pParent, int id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0);
+		cbStyledTextCtrl(wxWindow* pParent, int id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0);
 		virtual ~cbStyledTextCtrl();
 	protected:
 		void OnContextMenu(wxContextMenuEvent& event);
 	private:
-		cbEditor* m_pParent;
+		wxWindow* m_pParent;
 		DECLARE_EVENT_TABLE()
 };
 
@@ -201,13 +200,13 @@ class DLLIMPORT cbEditor : public EditorBase
 		void NotifyPlugins(wxEventType type, int intArg = 0, const wxString& strArg = wxEmptyString, int xArg = 0, int yArg = 0);
         
         // events
-        void OnMarginClick(wxStyledTextEvent& event);
-        void OnEditorUpdateUI(wxStyledTextEvent& event);
-        void OnEditorChange(wxStyledTextEvent& event);
-        void OnEditorCharAdded(wxStyledTextEvent& event);
-		void OnEditorDwellStart(wxStyledTextEvent& event);
-		void OnEditorDwellEnd(wxStyledTextEvent& event);
-		void OnUserListSelection(wxStyledTextEvent& event);
+        void OnMarginClick(wxScintillaEvent& event);
+        void OnEditorUpdateUI(wxScintillaEvent& event);
+        void OnEditorChange(wxScintillaEvent& event);
+        void OnEditorCharAdded(wxScintillaEvent& event);
+		void OnEditorDwellStart(wxScintillaEvent& event);
+		void OnEditorDwellEnd(wxScintillaEvent& event);
+		void OnUserListSelection(wxScintillaEvent& event);
         void OnTimer(wxTimerEvent& event);
 		void OnClose(wxCloseEvent& event);
 

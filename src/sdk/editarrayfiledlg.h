@@ -8,7 +8,7 @@
 class DLLIMPORT EditArrayFileDlg : public wxDialog
 {
 	public:
-		EditArrayFileDlg(wxWindow* parent, wxArrayString& array, bool useRelativePaths = false, const wxString& basePath = _(""));
+		EditArrayFileDlg(wxWindow* parent, wxArrayString& array, bool useRelativePaths = false, const wxString& basePath = _T(""));
 		virtual ~EditArrayFileDlg();
 		virtual void EndModal(int retCode);
 	protected:

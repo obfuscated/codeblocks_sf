@@ -18,11 +18,11 @@ EditorLexerLoader::~EditorLexerLoader()
 
 void EditorLexerLoader::Load(const wxString& filename)
 {
-    LOGSTREAM << "Loading lexer file " << filename << '\n';
-    TiXmlDocument doc(filename.c_str());
+    LOGSTREAM << _("Loading ") << wxFileName(filename).GetFullName() << _T('\n');
+    TiXmlDocument doc(filename.mb_str());
     if (!doc.LoadFile())
     {
-        LOGSTREAM << "Failed loading " << filename << '\n';
+        LOGSTREAM << _("Failed loading ") << filename << _T('\n');
         return;
     }
 
@@ -33,13 +33,13 @@ void EditorLexerLoader::Load(const wxString& filename)
     root = doc.FirstChildElement("Code::Blocks_lexer_properties");
     if (!root)
     {
-        LOGSTREAM << "Not a valid Code::Blocks lexer file...\n";
+        LOGSTREAM << _("Not a valid Code::Blocks lexer file...\n");
         return;
     }
     lexer = root->FirstChildElement("Lexer");
     if (!lexer)
     {
-        LOGSTREAM << "No 'Lexer' element in file...\n";
+        LOGSTREAM << _("No 'Lexer' element in file...\n");
         return;
     }
     
@@ -50,13 +50,13 @@ void EditorLexerLoader::DoLexer(TiXmlElement* node)
 {
     if (!node->Attribute("name") || !node->Attribute("index"))
     {
-    	LOGSTREAM << "No name or index...\n";
+    	LOGSTREAM << _("No name or index...\n");
         return;
     }
 
-    wxString name = node->Attribute("name");
+    wxString name = wxString( node->Attribute("name"), wxConvUTF8 );
     int lexer = atol(node->Attribute("index"));
-    wxString masks = node->Attribute("filemasks");
+    wxString masks = wxString ( node->Attribute("filemasks"), wxConvUTF8 );
     int style = m_pTarget->AddHighlightLanguage(lexer, name);
     if (style == HL_NONE)
         return; // wasn't added
@@ -75,32 +75,45 @@ void EditorLexerLoader::DoStyles(int language, TiXmlElement* node)
     {
         if (style->Attribute("name") && style->Attribute("index"))
         {
-            wxString name = style->Attribute("name");
-            wxString index = style->Attribute("index"); // comma-separated indices
-            wxString fg = style->Attribute("fg");
-            wxString bg = style->Attribute("bg");
+            wxString name = wxString ( style->Attribute("name"), wxConvUTF8 );
+            wxString index = wxString ( style->Attribute("index"), wxConvUTF8 ); // comma-separated indices
+            wxString fg = wxString ( style->Attribute("fg"), wxConvUTF8 );
+            wxString bg = wxString ( style->Attribute("bg"), wxConvUTF8 );
             bool bold = style->Attribute("bold") ? atol(style->Attribute("bold")) != 0 : false;
             bool italics = style->Attribute("italics") ? atol(style->Attribute("italics")) != 0 : false;
             bool underlined = style->Attribute("underlined") ? atol(style->Attribute("underlined")) != 0 : false;
 
             // break-up arrays
-            wxArrayString indices = GetArrayFromString(index, ",");
-            wxArrayString fgarray = GetArrayFromString(fg, ",");
-            wxArrayString bgarray = GetArrayFromString(bg, ",");
+            wxArrayString indices = GetArrayFromString(index, _T(","));
+            wxArrayString fgarray = GetArrayFromString(fg, _T(","));
+            wxArrayString bgarray = GetArrayFromString(bg, _T(","));
             
             wxColour fgcolor = wxNullColour;
             if (fgarray.GetCount() == 3)
-                fgcolor.Set(atoi(fgarray[0]), atoi(fgarray[1]), atoi(fgarray[2]));
+            {
+                long R=0, G=0, B=0;
+                fgarray[0].ToLong(&R);
+                fgarray[1].ToLong(&G);
+                fgarray[2].ToLong(&B);
+                fgcolor.Set((unsigned char)R,(unsigned char)G,(unsigned char)B);
+            }
             wxColour bgcolor = wxNullColour;
             if (bgarray.GetCount() == 3)
-                bgcolor.Set(atoi(bgarray[0]), atoi(bgarray[1]), atoi(bgarray[2]));
+            {
+                long R=0, G=0, B=0;
+                bgarray[0].ToLong(&R);
+                bgarray[1].ToLong(&G);
+                bgarray[2].ToLong(&B);
+                bgcolor.Set((unsigned char)R,(unsigned char)G,(unsigned char)B);
+            }
 
             for (size_t i = 0; i < indices.GetCount(); ++i)
             {
             	if (indices[i].IsEmpty())
                     continue;
-                int value = atol(indices[i]);
-//                LOGSTREAM << "Adding style: " << name << "(" << value << ")\n";
+                long value = 0;
+                indices[i].ToLong(&value);
+//                LOGSTREAM << _("Adding style: ") << name << _T("(") << value << _T(")\n");
                 m_pTarget->AddOption(language, name, value,
                                     fgcolor,
                                     bgcolor,
@@ -119,21 +132,21 @@ void EditorLexerLoader::DoKeywords(int language, TiXmlElement* node)
     TiXmlElement* keywords = node->FirstChildElement("Keywords");
     if (!keywords)
         return;
-    DoSingleKeywordNode(language, keywords, _("Language"));
-    DoSingleKeywordNode(language, keywords, _("Documentation"));
-    DoSingleKeywordNode(language, keywords, _("User"));
+    DoSingleKeywordNode(language, keywords, _T("Language"));
+    DoSingleKeywordNode(language, keywords, _T("Documentation"));
+    DoSingleKeywordNode(language, keywords, _T("User"));
 }
 
 void EditorLexerLoader::DoSingleKeywordNode(int language, TiXmlElement* node, const wxString& nodename)
 {
-    TiXmlElement* keywords = node->FirstChildElement(nodename);
+    TiXmlElement* keywords = node->FirstChildElement(nodename.mb_str());
     if (!keywords)
         return;
 //    LOGSTREAM << "Found " << nodename << '\n';
-    int keyidx = keywords->Attribute(_("index")) ? atol(keywords->Attribute(_("index"))) : -1;
+    int keyidx = keywords->Attribute("index") ? atol(keywords->Attribute("index")) : -1;
 //    LOGSTREAM << "keyidx=" << keyidx << '\n';
     if (keyidx != -1)
-        m_pTarget->SetKeywords(language, keyidx, keywords->Attribute("value"));
+        m_pTarget->SetKeywords(language, keyidx, wxString ( keywords->Attribute("value"), wxConvUTF8 ) );
 }
 
 void EditorLexerLoader::DoSampleCode(int language, TiXmlElement* node)
@@ -141,7 +154,7 @@ void EditorLexerLoader::DoSampleCode(int language, TiXmlElement* node)
     TiXmlElement* sample = node->FirstChildElement("SampleCode");
     if (!sample)
         return;
-    wxString code = sample->Attribute("value");
+    wxString code = wxString ( sample->Attribute("value"), wxConvUTF8 );
     if (code.IsEmpty())
         return;
     int breakLine = sample->Attribute("breakpoint_line") ? atol(sample->Attribute("breakpoint_line")) : -1;

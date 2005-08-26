@@ -72,7 +72,7 @@ ToolsManager::ToolsManager()
 {
     SC_CONSTRUCTOR_BEGIN
 	LoadTools();
-	ConfigManager::AddConfiguration(_("Tools"), "/tools");
+	ConfigManager::AddConfiguration(_("Tools"), _T("/tools"));
 	Manager::Get()->GetAppWindow()->PushEventHandler(this);
 }
 
@@ -117,7 +117,7 @@ bool ToolsManager::Execute(Tool* tool)
 	Manager::Get()->GetMacrosManager()->ReplaceMacros(params);
 	Manager::Get()->GetMacrosManager()->ReplaceMacros(dir);
 
-	cmdline << cmd << " " << params;
+	cmdline << cmd << _T(" ") << params;
     SANITY_CHECK(false);
     if(!(Manager::Get()->GetMacrosManager())) 
         return false; // We cannot afford the Macros Manager to fail here!
@@ -227,14 +227,14 @@ void ToolsManager::LoadTools()
 	wxString str;
 	long cookie;
 	
-	ConfigManager::Get()->SetPath("/tools");
+	ConfigManager::Get()->SetPath(_T("/tools"));
 	bool cont = ConfigManager::Get()->GetFirstGroup(str, cookie);
 	while (cont)
 	{
 		Tool tool;
-		ConfigManager::Get()->Read("/tools/" + str + "/command", &tool.command);
-		ConfigManager::Get()->Read("/tools/" + str + "/params", &tool.params);
-		ConfigManager::Get()->Read("/tools/" + str + "/workingDir", &tool.workingDir);
+		ConfigManager::Get()->Read(_T("/tools/") + str + _T("/command"), &tool.command);
+		ConfigManager::Get()->Read(_T("/tools/") + str + _T("/params"), &tool.params);
+		ConfigManager::Get()->Read(_T("/tools/") + str + _T("/workingDir"), &tool.workingDir);
 
 		// remove ordering number
 		if (str.GetChar(2) == ' ' && str.Left(2).IsNumber())
@@ -244,15 +244,15 @@ void ToolsManager::LoadTools()
 		AddTool(&tool, false);
 		cont = ConfigManager::Get()->GetNextGroup(str, cookie);
 	}
-	ConfigManager::Get()->SetPath("/");
-	Manager::Get()->GetMessageManager()->Log("Configured %d tools", m_Tools.GetCount());
+	ConfigManager::Get()->SetPath(_T("/"));
+	Manager::Get()->GetMessageManager()->Log(_("Configured %d tools"), m_Tools.GetCount());
 }
 
 void ToolsManager::SaveTools()
 {
     SANITY_CHECK();
 	int count = 0;
-	ConfigManager::Get()->DeleteGroup("/tools");
+	ConfigManager::Get()->DeleteGroup(_T("/tools"));
 	for (ToolsList::Node* node = m_Tools.GetFirst(); node; node = node->GetNext())
 	{
 		Tool* tool = node->GetData();
@@ -260,12 +260,12 @@ void ToolsManager::SaveTools()
 		
 		// prepend a 0-padded 2-digit number to keep ordering
 		wxString tmp;
-		tmp.Printf("%2.2d", count++);
+		tmp.Printf(_("%2.2d"), count++);
 		
-		elem << "/tools/" << tmp << " " << tool->name << "/";
-		ConfigManager::Get()->Write(elem + "command", tool->command);
-		ConfigManager::Get()->Write(elem + "params", tool->params);
-		ConfigManager::Get()->Write(elem + "workingDir", tool->workingDir);
+		elem << _T("/tools/") << tmp << _T(" ") << tool->name << _T("/");
+		ConfigManager::Get()->Write(elem + _T("command"), tool->command);
+		ConfigManager::Get()->Write(elem + _T("params"), tool->params);
+		ConfigManager::Get()->Write(elem + _T("workingDir"), tool->workingDir);
 	}
 }
 
@@ -279,7 +279,7 @@ void ToolsManager::BuildToolsMenu(wxMenu* menu)
 	m_Menu = menu;
 	if (m_Menu->GetMenuItemCount() > 0)
 	{
-        m_ItemsManager.Add(menu, wxID_SEPARATOR, "", "");
+        m_ItemsManager.Add(menu, wxID_SEPARATOR, _T(""), _T(""));
 	}
 
 	for (ToolsList::Node* node = m_Tools.GetFirst(); node; node = node->GetNext())
@@ -295,7 +295,7 @@ void ToolsManager::BuildToolsMenu(wxMenu* menu)
 
 	if (m_Tools.GetCount() > 0)
 	{
-        m_ItemsManager.Add(menu, wxID_SEPARATOR, "", "");
+        m_ItemsManager.Add(menu, wxID_SEPARATOR, _T(""), _T(""));
 	}
     m_ItemsManager.Add(menu, idToolsConfigure, _("&Configure tools..."), _("Add/remove user-defined tools"));
 }

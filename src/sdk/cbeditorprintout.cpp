@@ -1,7 +1,7 @@
 #include "cbeditorprintout.h"
 #include "printing_types.h"
 
-cbEditorPrintout::cbEditorPrintout(const wxString& title, wxStyledTextCtrl* control, bool selectionOnly)
+cbEditorPrintout::cbEditorPrintout(const wxString& title, cbStyledTextCtrl* control, bool selectionOnly)
         : wxPrintout(title),
         m_TextControl(control)
 {

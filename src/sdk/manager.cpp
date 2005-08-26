@@ -28,6 +28,7 @@
 #include <wx/notebook.h>
 #include <wx/menu.h>
 #include <wx/toolbar.h>
+#include <wx/file.h>
 
 #include "manager.h" // class's header file
 #include "projectmanager.h"
@@ -45,6 +46,61 @@
 
 
 static bool appShutingDown = false;
+
+/// Reads a wxString from a non-unicode file. File must be open. File is closed automatically.
+bool cbRead(wxFile& file,wxString& st)
+{
+    st.Empty();
+    if (!file.IsOpened())
+        return false;
+    int len = file.Length();
+    if(!len)
+    {
+        file.Close();
+        return true;
+    }
+#if wxUSE_UNICODE
+    char* buff = new char[len+1];
+    if (!buff)
+    {
+        file.Close();
+        return false;
+    }
+    file.Read((void*)buff, len);
+    file.Close();
+    buff[len]='\0';
+    st = wxString((const char *)buff, wxConvUTF8);
+    delete[] buff;
+#else
+    char* buff = st.GetWriteBuf(len); // GetWriteBuf already handles the extra '\0'.
+    file.Read((void*)buff, len);
+    file.Close();
+    st.UngetWriteBuf();
+#endif
+    return true;
+}
+
+const wxString cbRead(wxFile& file)
+{
+    wxString st;
+    cbRead(file,st);
+    return st;
+}
+
+/// Writes a wxString to a non-unicode file. File must be open. File is closed automatically.
+bool cbWrite(wxFile& file, const wxString& buff)
+{
+    bool result = false;
+    if (file.IsOpened())
+    {
+        result = file.Write(buff,wxConvUTF8);
+        if(result)
+            file.Flush();
+        file.Close();
+    }
+    return result;
+}
+
 
 Manager* Manager::Get(wxFrame* appWindow, wxNotebook* notebook, wxWindow* clientWin)
 {
@@ -99,7 +155,7 @@ bool Manager::ProcessEvent(CodeBlocksEvent& event)
 //    {
 //        return true;
 //    }
-    
+
     // send it to plugins
     if (GetPluginManager())
     {
@@ -112,7 +168,7 @@ bool Manager::isappShutingDown()
 {
     return(appShutingDown);
 }
-// stupid typo ;-P		
+// stupid typo ;-P
 bool Manager::isappShuttingDown()
 {
     return(appShutingDown);
@@ -124,15 +180,15 @@ Manager::Manager(wxFrame* appWindow, wxNotebook* prjNB, wxWindow* clientWin)
 	m_pNotebook(prjNB),
 	m_pClientWin(clientWin)
 {
+    if (!m_pClientWin)
+        m_pClientWin = appWindow;
+
     // Basically, this is the very first place that will be called in the lib
     // (through Manager::Get()), so it's a very good place to load and initialize
     // any resources we 'll be using...
-    
-    if (!m_pClientWin)
-        m_pClientWin = m_pAppWindow;
 
     Initxrc(true);
-    Loadxrc("/manager_resources.zip#zip:*.xrc");
+    Loadxrc(_T("/manager_resources.zip#zip:*.xrc"));
 }
 
 // class destructor
@@ -149,7 +205,7 @@ void Manager::Initxrc(bool force)
         wxFileSystem::AddHandler(new wxZipFSHandler);
         wxXmlResource::Get()->InitAllHandlers();
         wxXmlResource::Get()->InsertHandler(new wxToolBarAddOnXmlHandler);
-        
+
         xrcok=true;
     }
 }
@@ -157,7 +213,7 @@ void Manager::Initxrc(bool force)
 void Manager::Loadxrc(wxString relpath)
 {
     Manager::Initxrc();
-    wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
+    wxString resPath = ConfigManager::Get()->Read(_T("data_path"), wxEmptyString);
     wxXmlResource::Get()->Load(resPath + relpath);
 }
 
@@ -171,13 +227,13 @@ wxMenuBar *Manager::LoadMenuBar(wxString resid,bool createonfailure)
 wxMenu *Manager::LoadMenu(wxString menu_id,bool createonfailure)
 {
     wxMenu *m = wxXmlResource::Get()->LoadMenu(menu_id);
-    if(!m && createonfailure) m=new wxMenu("");
+    if(!m && createonfailure) m=new wxMenu(_T(""));
     return m;
 }
 
 wxToolBar *Manager::LoadToolBar(wxFrame *parent,wxString resid,bool defaultsmall)
 {
-    if(!parent) 
+    if(!parent)
         return 0L;
     wxToolBar *tb = wxXmlResource::Get()->LoadToolBar(parent,resid);
     if(!tb)
@@ -189,10 +245,10 @@ wxToolBar *Manager::LoadToolBar(wxFrame *parent,wxString resid,bool defaultsmall
         bool isXP = wxGetOsVersion(&major, &minor) == wxWINDOWS_NT && major == 5 && minor == 1;
         if (!isXP)
             flags |= wxTB_FLAT;
-        tb = parent->CreateToolBar(flags, wxID_ANY);  
+        tb = parent->CreateToolBar(flags, wxID_ANY);
         tb->SetToolBitmapSize(defaultsmall ? wxSize(16, 16) : wxSize(22, 22));
     }
-        
+
     return tb;
 }
 
@@ -200,7 +256,7 @@ void Manager::AddonToolBar(wxToolBar* toolBar,wxString resid)
 {
     if(!toolBar)
         return;
-    wxXmlResource::Get()->LoadObject(toolBar,NULL,resid,"wxToolBarAddOn");    
+    wxXmlResource::Get()->LoadObject(toolBar,NULL,resid,_T("wxToolBarAddOn"));
 }
 
 bool Manager::isToolBar16x16(wxToolBar* toolBar)
@@ -279,7 +335,7 @@ wxWindow* Manager::GetNotebookPage(const wxString &name, long style,bool issplit
     {
         if (m_pNotebook->GetPageText(i) == name)
         {
-            return m_pNotebook->GetPage(i); 
+            return m_pNotebook->GetPage(i);
         }
     }
     // Not found. Let's create it.

@@ -23,7 +23,7 @@ EditPathDlg::EditPathDlg(wxWindow* parent,
         const wxString& filter)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgEditPath"));
+	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgEditPath"));
 
 	XRCCTRL(*this, "txtPath", wxTextCtrl)->SetValue(path);
 	XRCCTRL(*this, "dlgEditPath", wxDialog)->SetTitle(title);
@@ -66,6 +66,8 @@ void EditPathDlg::OnBrowse(wxCommandEvent& event)
         if (dlg.ShowModal() == wxID_OK) {
             path = dlg.GetPath();
         }
+        else
+            return;
     }
     
     if (m_AskMakeRelative && !m_Basepath.IsEmpty())

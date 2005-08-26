@@ -42,7 +42,7 @@ END_EVENT_TABLE()
 EditToolDlg::EditToolDlg(wxWindow* parent, Tool* tool)
 	: m_Tool(tool)
 {
-	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgEditTool"));
+	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgEditTool"));
 	XRCCTRL(*this, "txtName", wxTextCtrl)->SetValue(m_Tool->name);
 	XRCCTRL(*this, "txtCommand", wxTextCtrl)->SetValue(m_Tool->command);
 	XRCCTRL(*this, "txtParams", wxTextCtrl)->SetValue(m_Tool->params);

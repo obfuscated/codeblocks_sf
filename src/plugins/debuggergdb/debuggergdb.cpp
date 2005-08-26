@@ -61,7 +61,7 @@
 #define CMD_BACKTRACE   5
 #define CMD_DISASSEMBLE 6
 
-static const wxString g_EscapeChars = char(26);
+static const wxString g_EscapeChars = wxChar(26);
 
 int idMenuDebug = XRCID("idDebuggerMenuDebug");
 int idMenuRunToCursor = XRCID("idDebuggerMenuRunToCursor");
@@ -147,22 +147,22 @@ DebuggerGDB::DebuggerGDB()
 	m_pDisassembly(0),
 	m_pBacktrace(0)
 {
-    Manager::Get()->Loadxrc("/debugger_gdb.zip#zip:*.xrc");
+    Manager::Get()->Loadxrc(_T("/debugger_gdb.zip#zip:*.xrc"));
 
-	m_PluginInfo.name = "DebuggerGDB";
-	m_PluginInfo.title = "GDB Debugger";
-	m_PluginInfo.version = "0.1";
-	m_PluginInfo.description = "Plugin that interfaces the GNU GDB debugger.";
-    m_PluginInfo.author = "Yiannis An. Mandravellos";
-    m_PluginInfo.authorEmail = "info@codeblocks.org";
-    m_PluginInfo.authorWebsite = "www.codeblocks.org";
-	m_PluginInfo.thanksTo = "";
+	m_PluginInfo.name = _T("DebuggerGDB");
+	m_PluginInfo.title = _("GDB Debugger");
+	m_PluginInfo.version = _T("0.1");
+	m_PluginInfo.description = _("Plugin that interfaces the GNU GDB debugger.");
+    m_PluginInfo.author = _T("Yiannis An. Mandravellos");
+    m_PluginInfo.authorEmail = _T("info@codeblocks.org");
+    m_PluginInfo.authorWebsite = _T("www.codeblocks.org");
+	m_PluginInfo.thanksTo = _T("");
 	m_PluginInfo.license = LICENSE_GPL;
 	m_PluginInfo.hasConfigure = true;
 	
 	m_TimerPollDebugger.SetOwner(this, idTimerPollDebugger);
 
-	ConfigManager::AddConfiguration(m_PluginInfo.title, "/debugger_gdb");
+	ConfigManager::AddConfiguration(m_PluginInfo.title, _T("/debugger_gdb"));
 }
 
 void DebuggerGDB::OnAttach()
@@ -174,18 +174,18 @@ void DebuggerGDB::OnAttach()
     m_PageIndex = msgMan->AddLog(m_pLog);
     // set log image
 	wxBitmap bmp;
-	wxString prefix = ConfigManager::Get()->Read("data_path") + "/images/";
-    bmp.LoadFile(prefix + "misc_16x16.png", wxBITMAP_TYPE_PNG);
+	wxString prefix = ConfigManager::Get()->Read(_T("data_path")) + _T("/images/");
+    bmp.LoadFile(prefix + _T("misc_16x16.png"), wxBITMAP_TYPE_PNG);
     Manager::Get()->GetMessageManager()->SetLogImage(m_pLog, bmp);
 
-    m_HasDebugLog = ConfigManager::Get()->Read("debugger_gdb/debug_log", (long int)0L);
+    m_HasDebugLog = ConfigManager::Get()->Read(_T("debugger_gdb/debug_log"), (long int)0L);
     if (m_HasDebugLog)
     {
         m_pDbgLog = new SimpleTextLog(msgMan, m_PluginInfo.title + _(" (debug)"));
         m_pDbgLog->GetTextControl()->SetFont(font);
         m_DbgPageIndex = msgMan->AddLog(m_pDbgLog);
         // set log image
-        bmp.LoadFile(prefix + "contents_16x16.png", wxBITMAP_TYPE_PNG);
+        bmp.LoadFile(prefix + _T("contents_16x16.png"), wxBITMAP_TYPE_PNG);
         Manager::Get()->GetMessageManager()->SetLogImage(m_pDbgLog, bmp);
     }
 
@@ -229,7 +229,7 @@ int DebuggerGDB::Configure()
 	DebuggerOptionsDlg dlg(Manager::Get()->GetAppWindow());
 	int ret = dlg.ShowModal();
 	
-	bool needsRestart = ConfigManager::Get()->Read("debugger_gdb/debug_log", (long int)0L) != m_HasDebugLog;
+	bool needsRestart = ConfigManager::Get()->Read(_T("debugger_gdb/debug_log"), (long int)0L) != m_HasDebugLog;
 	if (needsRestart)
         wxMessageBox(_("Code::Blocks needs to be restarted for the changes to take effect."), _("Information"), wxICON_INFORMATION);
 	
@@ -240,7 +240,7 @@ void DebuggerGDB::BuildMenu(wxMenuBar* menuBar)
 {
 	if (!m_IsAttached)
 		return;
-    m_pMenu=Manager::Get()->LoadMenu("debugger_menu",true);
+    m_pMenu=Manager::Get()->LoadMenu(_T("debugger_menu"),true);
 
 	// ok, now, where do we insert?
 	// three possibilities here:
@@ -248,12 +248,12 @@ void DebuggerGDB::BuildMenu(wxMenuBar* menuBar)
 	// b) locate "Project" menu and insert after it
 	// c) if not found (?), insert at pos 5
 	int finalPos = 5;
-	int projcompMenuPos = menuBar->FindMenu("Compile");
+	int projcompMenuPos = menuBar->FindMenu(_("&Compile"));
 	if (projcompMenuPos != wxNOT_FOUND)
 		finalPos = projcompMenuPos + 1;
 	else
 	{
-		projcompMenuPos = menuBar->FindMenu("Project");
+		projcompMenuPos = menuBar->FindMenu(_("&Project"));
 		if (projcompMenuPos != wxNOT_FOUND)
 			finalPos = projcompMenuPos + 1;
 	}
@@ -293,8 +293,8 @@ bool DebuggerGDB::BuildToolBar(wxToolBar* toolBar)
 #ifdef implement_debugger_toolbar
     if (!m_IsAttached || !toolBar)
 		return false;
-    wxString my_16x16=Manager::isToolBar16x16(toolBar) ? "_16x16" : "";
-    Manager::AddonToolBar(toolBar,wxString("debugger_toolbar")+my_16x16);
+    wxString my_16x16=Manager::isToolBar16x16(toolBar) ? _T("_16x16") : _T("");
+    Manager::AddonToolBar(toolBar,wxString(_T("debugger_toolbar"))+my_16x16);
     toolBar->Realize();
     return true;
 #else
@@ -307,14 +307,14 @@ void DebuggerGDB::DoWatches()
 	wxString info;
 	if (m_pProcess)
 	{
-        if (ConfigManager::Get()->Read("debugger_gdb/watch_args", 0L))
-            info << "Function Arguments = {" << GetInfoFor("info args") << "}" << '\n';
-        if (ConfigManager::Get()->Read("debugger_gdb/watch_locals", 0L))
-    		info << "Local variables = {" << GetInfoFor("info locals") << "}" << '\n';
+        if (ConfigManager::Get()->Read(_T("debugger_gdb/watch_args"), 0L))
+            info << _T("Function Arguments = {") << GetInfoFor(_T("info args")) << _T("}") << _T('\n');
+        if (ConfigManager::Get()->Read(_T("debugger_gdb/watch_locals"), 0L))
+    		info << _T("Local variables = {") << GetInfoFor(_T("info locals")) << _T("}") << _T('\n');
 		for (unsigned int i = 0; i < m_pTree->GetWatches().GetCount(); ++i)
 		{
 			wxString watch = m_pTree->GetWatches()[i];
-			info << watch << "{" << GetInfoFor("output " + watch) << "}" << '\n';
+			info << watch << _T("{") << GetInfoFor(_T("output ") + watch) << _T("}") << _T('\n');
 		}
 	}
 	else
@@ -323,7 +323,7 @@ void DebuggerGDB::DoWatches()
 		// the not-evaluated user-watches, just for feedback ;)
 		for (unsigned int i = 0; i < m_pTree->GetWatches().GetCount(); ++i)
 		{
-			info << m_pTree->GetWatches()[i] << ',';
+			info << m_pTree->GetWatches()[i] << _T(',');
 		}
 	}
 	//m_pLog->AddLog(info);
@@ -332,7 +332,7 @@ void DebuggerGDB::DoWatches()
 
 void DebuggerGDB::SetBreakpoints()
 {
-	SendCommand("delete"); // clear all breakpoints
+	SendCommand(_T("delete")); // clear all breakpoints
 	
 	cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
 	if (prj)
@@ -350,14 +350,14 @@ void DebuggerGDB::SetBreakpoints()
                 {
 					if (bp->func.IsEmpty())
 					{
-                        cmd << "break " << filename << ":" << bp->line + 1;
+                        cmd << _T("break ") << filename << _T(":") << bp->line + 1;
                         SendCommand(cmd);
                     }
                     //GDB workaround
                     //Use function name if this is C++ constructor/destructor						
 					else
 					{
-						cmd << "break " << bp->func;
+						cmd << _T("break ") << bp->func;
 						GetInfoFor(cmd);
 					}
                     //end GDB workaround					
@@ -416,7 +416,7 @@ int DebuggerGDB::Debug()
 	}
 
 	if (actualCompiler->GetPrograms().DBG.IsEmpty() ||
-        !wxFileExists(actualCompiler->GetMasterPath() + wxFileName::GetPathSeparator() + "bin" + wxFileName::GetPathSeparator() + actualCompiler->GetPrograms().DBG))
+        !wxFileExists(actualCompiler->GetMasterPath() + wxFileName::GetPathSeparator() + _T("bin") + wxFileName::GetPathSeparator() + actualCompiler->GetPrograms().DBG))
 	{
         wxMessageBox(_("The debugger executable is not set.\n"
                     "To set it, go to \"Settings/Configure plugins/Compiler\", switch to the \"Programs\" tab\n"
@@ -461,7 +461,7 @@ int DebuggerGDB::Debug()
 
 	wxString cmd;
 	wxString sep = wxFileName::GetPathSeparator();
-	cmd << actualCompiler->GetMasterPath() << sep << "bin" << sep << cmdexe << " -nw -annotate=2 -silent";
+	cmd << actualCompiler->GetMasterPath() << sep << _T("bin") << sep << cmdexe << _T(" -nw -annotate=2 -silent");
 	
 	wxLogNull ln; // we perform our own error handling and logging
     m_pProcess = new PipedProcess((void**)&m_pProcess, this, idGDBProcess, true, project->GetBasePath());
@@ -514,8 +514,8 @@ int DebuggerGDB::Debug()
         wxString filename = it->GetBasePath();
         Manager::Get()->GetMacrosManager()->ReplaceEnvVars(filename); // apply env vars
         msgMan->Log(m_PageIndex, _("Adding source dir: %s"), filename.c_str());
-        ConvertToGDBDirectory(filename, "", false);//project->GetBasePath(), true);
-        SendCommand("directory " + filename);
+        ConvertToGDBDirectory(filename, _T(""), false);//project->GetBasePath(), true);
+        SendCommand(_T("directory ") + filename);
 	}
 //    msgMan->Log(m_PageIndex, cmd);
 
@@ -529,7 +529,7 @@ int DebuggerGDB::Debug()
             Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out); // apply env vars
 			msgMan->Log(m_PageIndex, _("Adding file: %s"), out.c_str());
             ConvertToGDBDirectory(out);
-			cmd << "file " << out;
+			cmd << _T("file ") << out;
 			// dll debugging steps:
 			// gdb <hostapp>
 			// (gdb) add-symbol-file <dllname> (and any other dlls the same way)
@@ -549,7 +549,7 @@ int DebuggerGDB::Debug()
             Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out); // apply env vars
 			msgMan->Log(m_PageIndex, _("Adding file: %s"), out.c_str());
 			ConvertToGDBDirectory(out);
-			cmd << "file " << out;
+			cmd << _T("file ") << out;
 			SendCommand(cmd);
 			if (target->GetTargetType() == ttDynamicLib)
 			{
@@ -558,7 +558,7 @@ int DebuggerGDB::Debug()
                 Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out); // apply env vars
 				msgMan->Log(m_PageIndex, _("Adding symbol file: %s"), out.c_str());
                 ConvertToGDBDirectory(out);
-				symbols << "add-symbol-file " << out;
+				symbols << _T("add-symbol-file ") << out;
 				SendCommand(symbols);
 			}
 			break;
@@ -567,7 +567,7 @@ int DebuggerGDB::Debug()
 	}
 
 	if (!target->GetExecutionParameters().IsEmpty())
-		SendCommand("set args " + target->GetExecutionParameters());
+		SendCommand(wxString(_T("set args ")) + target->GetExecutionParameters());
 
     // switch to output dir
 	// wxFileName dir(target->GetOutputFilename());
@@ -578,10 +578,10 @@ int DebuggerGDB::Debug()
         Manager::Get()->GetMacrosManager()->ReplaceEnvVars(path); // apply env vars
         cmd.Clear();
         ConvertToGDBDirectory(path);
-        if (path != _(".")) // avoid silly message "changing to ."
+        if (path != _T(".")) // avoid silly message "changing to ."
         {
             msgMan->Log(m_PageIndex, _("Changing directory to: %s"), path.c_str());
-            cmd << "cd " << path;
+            cmd << _T("cd ") << path;
             SendCommand(cmd);
         }
     }
@@ -594,18 +594,18 @@ int DebuggerGDB::Debug()
 	}
 
     // send built-in init commands
-	SendCommand("set confirm off");
+	SendCommand(_T("set confirm off"));
 	if (target->GetTargetType() == ttConsoleOnly)
-        SendCommand("set new-console on");
+        SendCommand(_T("set new-console on"));
 #ifndef __WXMSW__
-    SendCommand("set disassembly-flavor att");
+    SendCommand(_T("set disassembly-flavor att"));
 #else
-    SendCommand("set disassembly-flavor intel");
+    SendCommand(_T("set disassembly-flavor intel"));
 #endif
 
     // pass user init-commands
-    wxString init = ConfigManager::Get()->Read("debugger_gdb/init_commands", "");
-    wxArrayString initCmds = GetArrayFromString(init, '\n');
+    wxString init = ConfigManager::Get()->Read(_T("debugger_gdb/init_commands"), _T(""));
+    wxArrayString initCmds = GetArrayFromString(init, _T('\n'));
     for (unsigned int i = 0; i < initCmds.GetCount(); ++i)
     {
         SendCommand(initCmds[i]);
@@ -615,16 +615,16 @@ int DebuggerGDB::Debug()
     if (m_BreakOnEntry)
     {
     	m_BreakOnEntry = false;
-    	SendCommand("start");
+    	SendCommand(_T("start"));
 	}
 	else
-        SendCommand("run");
+        SendCommand(_T("run"));
 	return 0;
 }
 
 void DebuggerGDB::StripQuotes(wxString& str)
 {
-	if (str.GetChar(0) == '\"' && str.GetChar(str.Length() - 1) == '\"') 
+	if (str.GetChar(0) == _T('\"') && str.GetChar(str.Length() - 1) == _T('\"')) 
 			str = str.Mid(1, str.Length() - 2);
 }
 
@@ -634,13 +634,13 @@ void DebuggerGDB::ConvertToGDBFriendly(wxString& str)
         return;
 
     str = UnixFilename(str);
-    while (str.Replace("\\", "/"))
+    while (str.Replace(_T("\\"), _T("/")))
         ;
-    while (str.Replace("//", "/"))
+    while (str.Replace(_T("//"), _T("/")))
         ;
 //    str.Replace("/", "//");
-    if (str.Find(' ') != -1 && str.GetChar(0) != '"')
-        str = "\"" + str + "\"";
+    if (str.Find(_T(' ')) != -1 && str.GetChar(0) != _T('"'))
+        str = _T("\"") + str + _T("\"");
 }
 
 //if relative == false, try to leave as an absolute path
@@ -655,21 +655,21 @@ void DebuggerGDB::ConvertToGDBDirectory(wxString& str, wxString base, bool relat
 	StripQuotes(base);
 
 	#ifdef __WXMSW__
-		int ColonLocation = str.Find(':');
-		char buf[255];
+		int ColonLocation = str.Find(_T(':'));
+		wxChar buf[255];
 		if(ColonLocation != -1)
 		{
 			//If can, get 8.3 name for path (Windows only)
 			GetShortPathName(str.c_str(), buf, 255);
 			str = buf;
 		} 
-		else if(!base.IsEmpty() && str.GetChar(0) != '/') 
+		else if(!base.IsEmpty() && str.GetChar(0) != _T('/'))
 		{
-			if(base.GetChar(base.Length()) == '/') base = base.Mid(0, base.Length() - 2);
+			if(base.GetChar(base.Length()) == _T('/')) base = base.Mid(0, base.Length() - 2);
 			while(!str.IsEmpty())
 			{
-				base += "/" + str.BeforeFirst('/');
-				if(str.Find('/') != -1) str = str.AfterFirst('/');
+				base += _T("/") + str.BeforeFirst(_T('/'));
+				if(str.Find(_T('/')) != -1) str = str.AfterFirst(_T('/'));
 				else str.Clear();
 			}
 			GetShortPathName(base.c_str(), buf, 255);
@@ -679,39 +679,39 @@ void DebuggerGDB::ConvertToGDBDirectory(wxString& str, wxString base, bool relat
 		if(ColonLocation == -1 || base.IsEmpty())
 			relative = false;		//Can't do it
 	#else
-		if((str.GetChar(0) != '/' && str.GetChar(0) != '~') || base.IsEmpty())
+		if((str.GetChar(0) != _T('/') && str.GetChar(0) != _T('~')) || base.IsEmpty())
 			relative = false;	
 	#endif
 	
 	if(relative)
 	{
 		#ifdef __WXMSW__
-			if(str.Find(':') != -1) str = str.Mid(str.Find(':') + 2, str.Length());
-			if(base.Find(':') != -1) base = base.Mid(base.Find(':') + 2, base.Length());
+			if(str.Find(_T(':')) != -1) str = str.Mid(str.Find(_T(':')) + 2, str.Length());
+			if(base.Find(_T(':')) != -1) base = base.Mid(base.Find(_T(':')) + 2, base.Length());
 		#else
-			if(str.GetChar(0) == '/') str = str.Mid(1, str.Length());
-			else if(str.GetChar(0) == '~') str = str.Mid(2, str.Length());
-			if(base.GetChar(0) == '/') base = base.Mid(1, base.Length());
-			else if(base.GetChar(0) == '~') base = base.Mid(2, base.Length());
+			if(str.GetChar(0) == _T('/')) str = str.Mid(1, str.Length());
+			else if(str.GetChar(0) == _T('~')) str = str.Mid(2, str.Length());
+			if(base.GetChar(0) == _T('/')) base = base.Mid(1, base.Length());
+			else if(base.GetChar(0) == _T('~')) base = base.Mid(2, base.Length());
 		#endif
 		
 		while(!base.IsEmpty() && !str.IsEmpty())
 		{
-			if(str.BeforeFirst('/') == base.BeforeFirst('/'))
+			if(str.BeforeFirst(_T('/')) == base.BeforeFirst(_T('/')))
 			{
-				if(str.Find('/') == -1) str.Clear();
-				else str = str.AfterFirst('/');
+				if(str.Find(_T('/')) == -1) str.Clear();
+				else str = str.AfterFirst(_T('/'));
 				
-				if(base.Find('/') == -1) base.Clear();
-				else base = base.AfterFirst('/');
+				if(base.Find(_T('/')) == -1) base.Clear();
+				else base = base.AfterFirst(_T('/'));
 			}
 			else break;
 		}
 		while (!base.IsEmpty())
 		{
-			str = "../" + str;
-			if(base.Find('/') == -1) base.Clear();
-			else base = base.AfterFirst('/');
+			str = _T("../") + str;
+			if(base.Find(_T('/')) == -1) base.Clear();
+			else base = base.AfterFirst(_T('/'));
 		}
 	}
 	ConvertToGDBFriendly(str);
@@ -722,7 +722,7 @@ void DebuggerGDB::SendCommand(const wxString& cmd)
     if (!m_pProcess || !m_ProgramIsStopped)
         return;
     if (m_HasDebugLog)
-        Manager::Get()->GetMessageManager()->Log(m_DbgPageIndex, "> " + cmd);
+        Manager::Get()->GetMessageManager()->Log(m_DbgPageIndex, _T("> ") + cmd);
 	m_pProcess->SendString(cmd);
 }
 
@@ -739,11 +739,11 @@ wxString DebuggerGDB::GetNextOutputLine(bool useStdErr)
 			!m_pOut->Eof())
 	{
 		char ch = m_pOut->GetC();
-		if (ch == '\n' || ch == '\r')
+		if (ch == _T('\n') || ch == _T('\r'))
 		{
 			while (useStdErr ? m_pProcess->IsErrorAvailable() : m_pProcess->IsInputAvailable() &&
 					!m_pOut->Eof() &&
-					(m_pOut->Peek() == '\n' || m_pOut->Peek() == '\r')
+					(m_pOut->Peek() == _T('\n') || m_pOut->Peek() == _T('\r'))
 				)
 				ch = m_pOut->GetC();
 			break;
@@ -776,32 +776,32 @@ void DebuggerGDB::RunCommand(int cmd)
         case CMD_CONTINUE:
             ClearActiveMarkFromAllEditors();
             Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Continuing..."));
-            SendCommand("cont");
+            SendCommand(_T("cont"));
             break;
 
         case CMD_STEP:
             ClearActiveMarkFromAllEditors();
-            SendCommand("next");
+            SendCommand(_T("next"));
             break;
 
         case CMD_STEPIN:
             ClearActiveMarkFromAllEditors();
-            SendCommand("step");
+            SendCommand(_T("step"));
             break;
 
         case CMD_STOP:
             ClearActiveMarkFromAllEditors();
-            SendCommand("quit");
+            SendCommand(_T("quit"));
             break;
 
         case CMD_BACKTRACE:
 //            Manager::Get()->GetMessageManager()->Log(m_PageIndex, "Running back-trace...");
-            SendCommand("bt");
+            SendCommand(_T("bt"));
             break;
 
         case CMD_DISASSEMBLE:
 //            Manager::Get()->GetMessageManager()->Log(m_PageIndex, "Disassembling...");
-            SendCommand("disassemble");
+            SendCommand(_T("disassemble"));
             break;
 
         default: break;
@@ -851,10 +851,10 @@ bool DebuggerGDB::Validate(const wxString& line, const char cb)
 	bool bResult = false;
 	
 	int bep = line.Find(cb)+1;
-	int scs = line.Find('\'')+1; 
-	int sce = line.Find('\'',true)+1;
-	int dcs = line.Find('"')+1;  
-	int dce = line.Find('"',true)+1;
+	int scs = line.Find(_T('\''))+1; 
+	int sce = line.Find(_T('\''),true)+1;
+	int dcs = line.Find(_T('"'))+1;  
+	int dce = line.Find(_T('"'),true)+1;
 	//No single and double quote	
 	if(!scs && !sce && !dcs && !dce) bResult = true;
 	//No single/double quote in pair
@@ -880,15 +880,15 @@ void DebuggerGDB::CmdStepOut()
 	
 	unsigned int nLevel = 1;
 	while(nLevel){
-		 if ((lineBuf.Find('{')+1) && Validate(lineBuf, '{') &&
+		 if ((lineBuf.Find(_T('{'))+1) && Validate(lineBuf, _T('{')) &&
 			 (line > m_HaltAtLine)) nLevel++;
-		 if ((lineBuf.Find('}')+1) && Validate(lineBuf, '}')) nLevel--;
+		 if ((lineBuf.Find(_T('}'))+1) && Validate(lineBuf, _T('}'))) nLevel--;
 		 if (nLevel) lineBuf = stc->GetLine(++line);
 	}
 	if (line == stc->GetCurrentLine())
 		CmdNext();
 	else {
-		cmd << "tbreak " << filename << ":" << line+1;
+		cmd << _T("tbreak ") << filename << _T(":") << line+1;
 		m_Tbreak = cmd;
 		CmdContinue();
 	}
@@ -904,7 +904,7 @@ void DebuggerGDB::CmdRunToCursor()
 	if (!pf)
 		return;
 	wxString cmd, filename = pf->file.GetFullName();
-	cmd << "tbreak " << filename << ":" << ed->GetControl()->GetCurrentLine()+1;
+	cmd << _T("tbreak ") << filename << _T(":") << ed->GetControl()->GetCurrentLine()+1;
 	m_Tbreak = cmd;
 	if (m_pProcess)
 	{
@@ -959,11 +959,11 @@ void DebuggerGDB::ParseOutput(const wxString& output)
         if (m_HasDebugLog)
             m_pDbgLog->AddLog(buffer); // write it in the full debugger log
 		// Is the program running?
-		if (buffer.Matches("starting"))
+		if (buffer.Matches(_T("starting")))
 			m_ProgramIsStopped = false;
 		
 		// Is the program stopped?
-		else if (buffer.Matches("stopped"))
+		else if (buffer.Matches(_T("stopped")))
 		{
 			bool already = m_ProgramIsStopped;
 			m_ProgramIsStopped = true;
@@ -972,7 +972,7 @@ void DebuggerGDB::ParseOutput(const wxString& output)
 		}
 
 		// Is the program exited?
-		else if (buffer.StartsWith("exited "))
+		else if (buffer.StartsWith(_T("exited ")))
 		{
 			m_ProgramIsStopped = true;
 			Manager::Get()->GetMessageManager()->Log(m_PageIndex, buffer);
@@ -980,52 +980,52 @@ void DebuggerGDB::ParseOutput(const wxString& output)
 		}
 
 		// error
-		else if (buffer.Matches("error"))
+		else if (buffer.Matches(_T("error")))
 		{
 			Manager::Get()->GetMessageManager()->Log(m_PageIndex, buffer);
 			//CmdStop();
 		}
-		else if (buffer.StartsWith("error-begin"))
+		else if (buffer.StartsWith(_T("error-begin")))
 		{
             wxString error = GetNextOutputLineClean(true);
 			Manager::Get()->GetMessageManager()->Log(m_PageIndex, error);
-			if (error.StartsWith("No symbol table is loaded."))
+			if (error.StartsWith(_T("No symbol table is loaded.")))
                 m_NoDebugInfo = true;
 			//CmdStop();
 		}
 
 		// signal
-		else if (buffer.Matches("signal-name"))
+		else if (buffer.Matches(_T("signal-name")))
 		{
 			BringAppToFront();
 			wxString sig = GetNextOutputLineClean();
 			Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Program received signal (%s)"), sig.c_str());
 		}
-		else if (buffer.Matches("signal-string"))
+		else if (buffer.Matches(_T("signal-string")))
 		{
 			wxString sig = GetNextOutputLineClean();
 			Manager::Get()->GetMessageManager()->Log(m_PageIndex, sig);
 		}
 
 		// Stack-frame info
-		else if (buffer.Matches("frames-invalid"))
+		else if (buffer.Matches(_T("frames-invalid")))
             m_CurrentFrame.Clear();
-		else if (buffer.StartsWith("frame-begin "))
+		else if (buffer.StartsWith(_T("frame-begin ")))
 		{
             m_CurrentFrame.Clear();
-            sscanf(buffer.c_str(), "frame-begin %d %x", &m_CurrentFrame.number, &m_CurrentFrame.address);
+            sscanf(buffer.mb_str(), "frame-begin %d %x", &m_CurrentFrame.number, &m_CurrentFrame.address);
             m_CurrentFrame.valid = true;
         }
-		else if (buffer.Matches("frame-function-name"))
+		else if (buffer.Matches(_T("frame-function-name")))
 		{
             m_CurrentFrame.function = GetNextOutputLineClean();
 //			Manager::Get()->GetMessageManager()->Log(m_PageIndex, "m_FrameFunction=%s", m_FrameFunction.c_str());
         }
-		else if (buffer.Matches("frame-source-file"))
+		else if (buffer.Matches(_T("frame-source-file")))
 			m_CurrentFrame.file = GetNextOutputLineClean();
-		else if (buffer.Matches("frame-source-line"))
+		else if (buffer.Matches(_T("frame-source-line")))
 			m_CurrentFrame.line = GetNextOutputLineClean();
-		else if (buffer.Matches("frame-end") && m_CurrentFrame.valid)
+		else if (buffer.Matches(_T("frame-end")) && m_CurrentFrame.valid)
 		{
             if (m_pBacktrace)
                 m_pBacktrace->AddFrame(m_CurrentFrame);
@@ -1048,12 +1048,12 @@ void DebuggerGDB::ParseOutput(const wxString& output)
 		{
 			wxString tmp = GetNextOutputLineClean();
 			m_Variable << tmp;
-			if (tmp.Contains('{'))
-				m_Variable << '\n';
+			if (tmp.Contains(_T('{')))
+				m_Variable << _T('\n');
 		}
 		else if (buffer.Matches("field-end"))
 		{
-			m_Variable << '\n';
+			m_Variable << _T('\n');
 			wxString tmp = GetNextOutputLineClean();
 			if (!tmp.StartsWith(","))
 				m_Variable << tmp;
@@ -1077,16 +1077,16 @@ void DebuggerGDB::ParseOutput(const wxString& output)
 		}*/
 		
 		// source d:/wx2.4/samples/exec/exec.cpp:753:22811:beg:0x403e39
-		else if (buffer.StartsWith("source "))
+		else if (buffer.StartsWith(_T("source ")))
 		{
 			Manager::Get()->GetMessageManager()->DebugLog(buffer);
 			buffer.Remove(0, 7); // remove "source "
 
 			if (!reSource.IsValid())
 			#ifdef __WXMSW__
-				reSource.Compile("([A-Za-z]:)([ A-Za-z0-9_/\\.~-]*):([0-9]*)");
+				reSource.Compile(_T("([A-Za-z]:)([ A-Za-z0-9_/\\.~-]*):([0-9]*)"));
 			#else
-				reSource.Compile("([ A-Za-z0-9_/\\.~-]*):([0-9]*)");
+				reSource.Compile(_T("([ A-Za-z0-9_/\\.~-]*):([0-9]*)"));
 			#endif
 			if ( reSource.Matches(buffer) )
 			{
@@ -1108,7 +1108,7 @@ void DebuggerGDB::ParseOutput(const wxString& output)
 	}
 	else
 	{
-        if (buffer.StartsWith("Dump of assembler code"))
+        if (buffer.StartsWith(_T("Dump of assembler code")))
         {
 //            Manager::Get()->GetMessageManager()->Log(m_PageIndex,
 //                                                    "Starting disassembly of %s (starting address: 0x%8.8x)",
@@ -1117,18 +1117,18 @@ void DebuggerGDB::ParseOutput(const wxString& output)
             if (m_pDisassembly)
                 m_pDisassembly->Clear(m_CurrentFrame);
             //0x00403977 <_ZN7MyFrame11OnLocalTestER14wxCommandEvent+521>:	ret
-            wxRegEx re("(0x[0-9A-Za-z]+)[ \t]+<.*>:[ \t]+(.*)");
+            wxRegEx re(_T("(0x[0-9A-Za-z]+)[ \t]+<.*>:[ \t]+(.*)"));
             wxString tmp;
             do
             {
                 tmp = GetNextOutputLine();
-                if (tmp.Matches("End of assembler dump."))
+                if (tmp.Matches(_T("End of assembler dump.")))
                 {
 //                    Manager::Get()->GetMessageManager()->Log(m_PageIndex, "Disassembly end");
                     break;
                 }
                 if (re.Matches(tmp))
-                    m_pDisassembly->AddAssemblerLine(re.GetMatch(tmp, 1) + ": " + re.GetMatch(tmp, 2));
+                    m_pDisassembly->AddAssemblerLine(re.GetMatch(tmp, 1) + _T(": ") + re.GetMatch(tmp, 2));
 //                    Manager::Get()->GetMessageManager()->Log(m_PageIndex, "%s: %s", re.GetMatch(tmp, 1).c_str(), re.GetMatch(tmp, 2).c_str());
             }
             while (!tmp.IsEmpty());
@@ -1198,7 +1198,7 @@ wxString DebuggerGDB::GetEditorWordAtCaret()
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (!ed)
-        return "";
+        return _T("");
     int start = ed->GetControl()->WordStartPosition(ed->GetControl()->GetCurrentPos(), true);
     int end = ed->GetControl()->WordEndPosition(ed->GetControl()->GetCurrentPos(), true);
     return ed->GetControl()->GetTextRange(start, end);
@@ -1340,7 +1340,7 @@ wxString DebuggerGDB::GetInfoFor(const wxString& dbgCmd)
 		{
 			// buffer holds an escaped output
 			buf.Remove(0, 2); // clear it
-			if (buf.Matches("post-prompt"))
+			if (buf.Matches(_T("post-prompt")))
 			{
 				// our command has been parsed by gdb, so we start receiving data
 				buf = GetNextOutputLine();
@@ -1350,7 +1350,7 @@ wxString DebuggerGDB::GetInfoFor(const wxString& dbgCmd)
 					{
 						// escaped output
 						buf.Remove(0, 2);
-						if (buf.Matches("pre-prompt")) // if we encounter this, we 're done
+						if (buf.Matches(_T("pre-prompt"))) // if we encounter this, we 're done
 							break;
 					}
 					else if (!buf.IsEmpty())
@@ -1358,8 +1358,8 @@ wxString DebuggerGDB::GetInfoFor(const wxString& dbgCmd)
 						// clean output
 						output << buf;
 						// append new-line when needed, to separate vars
-						if (!buf.Matches(" = ") && buf.Find('=') != -1 && buf.GetChar(buf.Length() - 2) != ',')
-							output << '\n';
+						if (!buf.Matches(_T(" = ")) && buf.Find(_T('=')) != -1 && buf.GetChar(buf.Length() - 2) != _T(','))
+							output << _T('\n');
 					}
 					buf = GetNextOutputLine();
 				}
@@ -1381,9 +1381,9 @@ wxString DebuggerGDB::GetInfoFor(const wxString& dbgCmd)
 		if (buf.StartsWith(g_EscapeChars))
 		{
 			buf.Remove(0,2);
-			if (buf.Matches("overload-choice"))
+			if (buf.Matches(_T("overload-choice")))
 			{
-				SendCommand("1");
+				SendCommand(_T("1"));
 			}
 		}
         //end GDB workaround		
@@ -1401,16 +1401,16 @@ wxString DebuggerGDB::GetInfoFor(const wxString& dbgCmd)
 void DebuggerGDB::OnAddSymbolFile(wxCommandEvent& event)
 {
 	wxString file = wxFileSelector(_("Choose file to read symbols from"),
-									"",
-									"",
-									"",
+									_T(""),
+									_T(""),
+									_T(""),
 									_("Executables and libraries|*.exe;*.dll"),
 									wxOPEN | wxFILE_MUST_EXIST);
 	if (file.IsEmpty())
 		return;
     Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Adding symbol file: %s"), file.c_str());
     ConvertToGDBDirectory(file);
-	SendCommand("add-symbol-file " + file);
+	SendCommand(_T("add-symbol-file ") + file);
 }
 
 void DebuggerGDB::OnBacktrace(wxCommandEvent& event)
@@ -1524,7 +1524,7 @@ void DebuggerGDB::OnValueTooltip(CodeBlocksEvent& event)
 {
 	if (!m_pProcess || !m_ProgramIsStopped)
 		return;
-    if (!ConfigManager::Get()->Read("debugger_gdb/eval_tooltip", 0L))
+    if (!ConfigManager::Get()->Read(_T("debugger_gdb/eval_tooltip"), 0L))
         return;
 
 	cbEditor* ed = event.GetEditor();
@@ -1532,7 +1532,7 @@ void DebuggerGDB::OnValueTooltip(CodeBlocksEvent& event)
 		return;
 
     int style = event.GetInt();
-    if (style != wxSTC_C_DEFAULT && style != wxSTC_C_OPERATOR && style != wxSTC_C_IDENTIFIER)
+    if (style != wxSCI_C_DEFAULT && style != wxSCI_C_OPERATOR && style != wxSCI_C_IDENTIFIER)
         return;
 
 	wxPoint pt;
@@ -1552,7 +1552,7 @@ void DebuggerGDB::OnValueTooltip(CodeBlocksEvent& event)
 	
 	if (!token.IsEmpty())
 	{
-		Manager::Get()->GetMessageManager()->AppendLog(m_PageIndex, _("Value of %s:"), token.c_str());
+		Manager::Get()->GetMessageManager()->AppendLog(m_PageIndex, _("Value of %s: "), token.c_str());
 		pt = ed->GetControl()->PointFromPosition(start);
 		pt = ed->GetControl()->ClientToScreen(pt);
 		m_EvalRect.x = pt.x;
@@ -1563,12 +1563,12 @@ void DebuggerGDB::OnValueTooltip(CodeBlocksEvent& event)
 		m_EvalRect.height = (pt.y + ed->GetControl()->GetCharHeight()) - m_EvalRect.y;
 		m_LastEval = token;
 		wxString tip;
-        tip = GetInfoFor("p " + m_LastEval);
-        int pos = tip.First('\n'); // tip is e.g. "$1 = \n<value>"
+        tip = GetInfoFor(_T("p ") + m_LastEval);
+        int pos = tip.First(_T('\n')); // tip is e.g. "$1 = \n<value>"
         if (pos != -1)
             tip.Remove(0, pos + 1); // discard first line
-		Manager::Get()->GetMessageManager()->AppendLog(m_PageIndex, _("%s\n"), tip.c_str());
-        tip = token + " = " + tip;
+		Manager::Get()->GetMessageManager()->AppendLog(m_PageIndex, _T("%s\n"), tip.c_str());
+        tip = token + _T(" = ") + tip;
 		if (m_EvalWin)
             m_EvalWin->Destroy();
 		m_EvalWin = new wxTipWindow(Manager::Get()->GetAppWindow(), tip, 640, &m_EvalWin, &m_EvalRect);

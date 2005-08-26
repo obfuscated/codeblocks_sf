@@ -34,8 +34,8 @@
     </object>
     <object class="wxComboBox" name="idToolTarget">
       <content/>
-      <size>256,-1</size>
       <style>wxCB_READONLY</style>
+	  <size>256,-1</size>
     </object>
   </object>
 </resource>

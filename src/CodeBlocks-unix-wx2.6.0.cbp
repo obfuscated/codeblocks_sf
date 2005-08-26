@@ -92,6 +92,7 @@
 				<Option projectLinkerOptionsRelation="1"/>
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
+					<Add option="-DNDEBUG"/>
 					<Add directory="sdk"/>
 					<Add directory="plugins/astyle/astyle"/>
 				</Compiler>
@@ -267,15 +268,8 @@
 				</Linker>
 			</Target>
 			<Target title="update">
-				<Option output=""/>
-				<Option working_dir=""/>
-				<Option object_output="/home/mandrav/devel/codeblocks/codeblocks/src//.objs"/>
-				<Option deps_output="/home/mandrav/devel/codeblocks/codeblocks/src//.deps"/>
-				<Option external_deps=""/>
-				<Option type="-1"/>
-				<Option compiler="0"/>
-				<Option includeInTargetAll="0"/>
-				<Option projectResourceIncludeDirsRelation="-1"/>
+				<Option type="4"/>
+				<Option projectResourceIncludeDirsRelation="4"/>
 				<ExtraCommands>
 					<Mode before="always" />
 					<Add before="update"/>
@@ -298,15 +292,9 @@
 				</Compiler>
 			</Target>
 			<Target title="doc">
-				<Option output=""/>
-				<Option working_dir=""/>
-				<Option object_output="/home/mandrav/devel/codeblocks/codeblocks/src//.objs"/>
-				<Option deps_output="/home/mandrav/devel/codeblocks/codeblocks/src//.deps"/>
-				<Option external_deps=""/>
-				<Option type="-1"/>
+				<Option type="4"/>
 				<Option compiler="0"/>
-				<Option includeInTargetAll="0"/>
-				<Option projectResourceIncludeDirsRelation="-1"/>
+				<Option projectResourceIncludeDirsRelation="4"/>
 				<ExtraCommands>
 					<Mode before="always" />
 					<Add before="doxygen sdk.doxy"/>

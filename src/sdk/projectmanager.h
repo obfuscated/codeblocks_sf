@@ -133,7 +133,7 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
           * After this function is called and returns true, it
           * is safe to close the workspace, all files and projects
           * without asking the user later.
-          */  
+          */
         bool QueryCloseWorkspace();
 
         /** Move a project up in the project manager tree. This effectively
@@ -248,12 +248,12 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
 		  * @return The current workspace filename.
 		  */
         cbWorkspace* GetWorkspace();
-		
+
 		/// Rebuild the project manager's tree.
         void RebuildTree();
 		/** Stop the tree control from updating.
 		  * @note This operation is accumulative. This means you have to call
-		  * UnfreezeTree() as many times as you 've called FreezeTree() for the 
+		  * UnfreezeTree() as many times as you 've called FreezeTree() for the
 		  * tree control to un-freeze (except if you call UnfreezeTree(true)).
 		  */
         void FreezeTree();
@@ -261,7 +261,7 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
 		  * @param force If true the tree control is forced to un-freeze. Else it
 		  * depends on freeze-unfreeze balance (see note).
 		  * @note This operation is accumulative. This means you have to call
-		  * UnfreezeTree() as many times as you 've called FreezeTree() for the 
+		  * UnfreezeTree() as many times as you 've called FreezeTree() for the
 		  * tree control to un-freeze (except if you call UnfreezeTree(true)).
 		  */
         void UnfreezeTree(bool force = false);
@@ -305,6 +305,7 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
         void OnViewCategorize(wxCommandEvent& event);
         void OnViewUseFolders(wxCommandEvent& event);
         void OnViewFileMasks(wxCommandEvent& event);
+        void OnIdle(wxIdleEvent& event);
         void DoOpenSelectedFile();
 		void DoOpenFile(ProjectFile* pf, const wxString& filename);
 		int DoAddFileToProject(const wxString& filename, cbProject* project, wxArrayInt& targets);
@@ -323,8 +324,9 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
 		FilesGroupsAndMasks* m_pFileGroups;
 		int m_TreeFreezeCounter;
 		bool m_IsLoadingProject;
-		bool m_IsLoadingWorkspace;		
-		
+		bool m_IsLoadingWorkspace;
+        wxString m_InitialDir;
+
         DECLARE_EVENT_TABLE()
         DECLARE_SANITY_CHECK
 };

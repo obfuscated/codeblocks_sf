@@ -25,10 +25,10 @@ inline MessageManager* GetpMsg() { return Manager::Get()->GetMessageManager(); }
 
 bool WorkspaceLoader::Open(const wxString& filename)
 {
-    TiXmlDocument doc(filename.c_str());
+    TiXmlDocument doc(filename.mb_str());
     if (!doc.LoadFile())
         return false;
-    
+
 //    ProjectManager* pMan = Manager::Get()->GetProjectManager();
 //    MessageManager* pMsg = Manager::Get()->GetMessageManager();
 
@@ -39,7 +39,7 @@ bool WorkspaceLoader::Open(const wxString& filename)
     // If I click close AFTER pMan and pMsg are calculated,
     // I get a segfault.
     // I modified classes projectmanager and messagemanager,
-    // so that when self==NULL, they do nothing 
+    // so that when self==NULL, they do nothing
     // (constructors, destructors and static functions excempted from this)
     // This way, we'll use the *manager::Get() functions to check for nulls.
 
@@ -48,38 +48,39 @@ bool WorkspaceLoader::Open(const wxString& filename)
     TiXmlElement* proj;
     cbProject* loadedProject;
     wxString projectFilename;
-    
+
     root = doc.FirstChildElement("Code::Blocks_workspace_file");
     if (!root)
     {
-        GetpMsg()->DebugLog("Not a valid Code::Blocks workspace file...");
+        GetpMsg()->DebugLog(_("Not a valid Code::Blocks workspace file..."));
         return false;
     }
     wksp = root->FirstChildElement("Workspace");
     if (!wksp)
     {
-        GetpMsg()->DebugLog("No 'Workspace' element in file...");
+        GetpMsg()->DebugLog(_("No 'Workspace' element in file..."));
         return false;
     }
-    m_Title = wksp->Attribute("title");
+
+    m_Title = _U(wksp->Attribute("title")); // Conversion to unicode is automatic (see wxString::operator= )
     if (m_Title.IsEmpty())
         m_Title = _("Default workspace");
 
     proj = wksp->FirstChildElement("Project");
     if (!proj)
     {
-        GetpMsg()->DebugLog("Workspace file contains no projects...");
+        GetpMsg()->DebugLog(_("Workspace file contains no projects..."));
         return false;
     }
-    
+
     while (proj)
     {
         if(Manager::isappShuttingDown() || !GetpMan() || !GetpMsg())
             return false;
-        projectFilename = proj->Attribute("filename");
+        projectFilename = _U(proj->Attribute("filename"));
         if (projectFilename.IsEmpty())
         {
-            GetpMsg()->DebugLog("'Project' node exists, but no filename?!?");
+            GetpMsg()->DebugLog(_("'Project' node exists, but no filename?!?"));
             loadedProject = 0L;
         }
         else
@@ -100,8 +101,8 @@ bool WorkspaceLoader::Open(const wxString& filename)
                         m_pActiveProj = loadedProject;
                     break;
                 case TIXML_WRONG_TYPE:
-                    GetpMsg()->DebugLog("Error %s: %s", doc.Value(), doc.ErrorDesc());
-                    GetpMsg()->DebugLog("Wrong attribute type (expected 'int')");
+                    GetpMsg()->DebugLog(_("Error %s: %s"), doc.Value(), doc.ErrorDesc());
+                    GetpMsg()->DebugLog(_("Wrong attribute type (expected 'int')"));
                     break;
                 default:
                     break;
@@ -109,10 +110,10 @@ bool WorkspaceLoader::Open(const wxString& filename)
         }
         proj = proj->NextSiblingElement();
     }
-    
+
     if (m_pActiveProj)
         GetpMan()->SetProject(m_pActiveProj);
-    
+
     return true;
 }
 
@@ -123,11 +124,11 @@ bool WorkspaceLoader::Save(const wxString& title, const wxString& filename)
 
     ProjectsArray* arr = Manager::Get()->GetProjectManager()->GetProjects();
 
-    buffer << "<?xml version=\"1.0\"?>" << '\n';
-    buffer << "<!DOCTYPE Code::Blocks_workspace_file>" << '\n';
-    buffer << "<Code::Blocks_workspace_file>" << '\n';
-    buffer << '\t' << "<Workspace title=\"" << title << "\">" << '\n';
-    
+    buffer << _T("<?xml version=\"1.0\"?>") << _T("\n");
+    buffer << _T("<!DOCTYPE Code::Blocks_workspace_file>") << _T("\n");
+    buffer << _T("<Code::Blocks_workspace_file>") << _T("\n");
+    buffer << _T("\t") << _T("<Workspace title=\"") << title << _T("\">") << _T("\n");
+
     for (unsigned int i = 0; i < arr->GetCount(); ++i)
     {
         cbProject* prj = arr->Item(i);
@@ -136,15 +137,15 @@ bool WorkspaceLoader::Save(const wxString& title, const wxString& filename)
         wxFileName fname(prj->GetFilename());
         fname.MakeRelativeTo(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
 
-        buffer << '\t' << '\t' << "<Project filename=\"" << fname.GetFullPath() << "\"";
+        buffer << _T("\t\t") << _T("<Project filename=\"") << fname.GetFullPath() << _T("\"");
         if (prj == Manager::Get()->GetProjectManager()->GetActiveProject())
-            buffer << " active=\"1\"";
-        buffer << "/>" << '\n';
+            buffer << _T(" active=\"1\"");
+        buffer << _T("/>") << _T("\n");
     }
 
-    buffer << '\t' << "</Workspace>" << '\n';
-    buffer << "</Code::Blocks_workspace_file>" << '\n';
+    buffer << _T("\t") << _T("</Workspace>") << _T("\n");
+    buffer << _T("</Code::Blocks_workspace_file>") << _T("\n");
 
     wxFile file(filename, wxFile::write);
-    return file.Write(buffer, buffer.Length()) == buffer.Length();
+    return cbWrite(file,buffer);
 }

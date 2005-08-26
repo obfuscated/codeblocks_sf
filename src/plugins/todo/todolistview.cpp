@@ -55,7 +55,7 @@ ToDoListView::ToDoListView(wxNotebook* parent, const wxString& title, int numCol
         m_pUser->Append(_("<All users>"));
         m_pUser->SetSelection(0);
         hbs->Add(m_pUser, 0, wxLEFT, 8);
-        
+
         m_pRefresh = new wxButton(this, idRefresh, _("Refresh list"));
         hbs->Add(m_pRefresh, 0, wxLEFT, 8);
 
@@ -111,18 +111,16 @@ void ToDoListView::FillList()
 			GetListControl()->SetItem(idx, 5, item.filename);
 		}
 	}
-
 	GetListControl()->Thaw();
-
 }
 
 void ToDoListView::Parse()
 {
-    wxBusyCursor busy;
+//    wxBusyCursor busy;
 
 	// based on user prefs, parse files for todo items
 	m_Items.Clear();
-	
+
 	switch (m_pSource->GetSelection())
 	{
 		case 0: // current file only
@@ -171,10 +169,10 @@ int ToDoListView::CalculateLineNumber(const wxString& buffer, int upTo)
 	int line = 0;
 	for (int i = 0; i < upTo; ++i)
 	{
-		if (buffer.GetChar(i) == '\r' && buffer.GetChar(i + 1) == '\n') // CR+LF
+		if (buffer.GetChar(i) == _T('\r') && buffer.GetChar(i + 1) == _T('\n')) // CR+LF
 			continue; // we 'll count on \n (next loop)
-		else if (buffer.GetChar(i) == '\r' || // CR only
-                buffer.GetChar(i) == '\n') // lf only
+		else if (buffer.GetChar(i) == _T('\r') || // CR only
+                buffer.GetChar(i) == _T('\n')) // lf only
 			++line;
 	}
 	return line;
@@ -196,29 +194,26 @@ void ToDoListView::ParseFile(const wxString& filename)
 	// open file
 	wxString st;
 	wxFile file(filename);
-	if (!file.IsOpened())
-		return;
-	char* buff = st.GetWriteBuf(file.Length());
-	file.Read(buff, file.Length());
-	st.UngetWriteBuf();
+    if(!cbRead(file,st))
+        return;
 	ParseBuffer(st, filename);
 }
 
 void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
 {
 	// this is the actual workhorse...
-	
+
 	// ok, we look for two basic kinds of todo entries in the text
 	// our version...
     // TODO (mandrav#0#): Implement code to do this and the other...
 	// and a generic version...
     // TODO: Implement code to do this and the other...
-	
+
 	for (unsigned int i = 0; i < m_Types.GetCount(); ++i)
 	{
 //Manager::Get()->GetMessageManager()->DebugLog("Looking for %s", m_Types[i].c_str());
 		int pos = buffer.find(m_Types[i], 0);
-		
+
 		while (pos > 0)
 		{
 			// ok, start parsing now...
@@ -226,21 +221,21 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
 			int idx = pos;
 			bool isValid = false; // found it in a comment?
 			bool isC = false; // C or C++ style comment?
-			
+
 //#warning TODO (mandrav#1#): Make viewtododlg understand and display todo notes that are compiler warnings/errors...
 
 			// first check what type of comment we have
-			wxString allowedChars = " \t/*";
-			wxChar lastChar = '\0';
+			wxString allowedChars = _T(" \t/*");
+			wxChar lastChar = _T('\0');
 			while (idx >= 0)
 			{
 				wxChar c = buffer.GetChar(--idx);
 				if ((int)allowedChars.Index(c) != wxNOT_FOUND)
 				{
-					if (c == '/' && (lastChar == '/' || lastChar == '*'))
+					if (c == _T('/') && (lastChar == _T('/') || lastChar == _T('*')))
 					{
 						isValid = true;
-						isC = lastChar == '*';
+						isC = lastChar == _T('*');
 						break;
 					}
 				}
@@ -248,60 +243,60 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
 					break;
 				lastChar = c;
 			}
-			
+
 //Manager::Get()->GetMessageManager()->DebugLog("Found %s %s style %s at %d", isValid ? "valid" : "invalid", isC ? "C" : "C++", m_Types[i].c_str(), pos);
 			if (isValid)
 			{
 				ToDoItem item;
 				item.type = m_Types[i];
 				item.filename = filename;
-				
+
 				idx = pos + m_Types[i].Length();
-				wxChar c = '\0';
-				
+				wxChar c = _T('\0');
+
 //Manager::Get()->GetMessageManager()->DebugLog("1");
 				// skip to next non-blank char
 				while (idx < (int)buffer.Length())
 				{
 					c = buffer.GetChar(idx);
-					if (c != ' ' && c != '\t')
+					if (c != _T(' ') && c != _T('\t'))
 						break;
 					++idx;
 				}
 //Manager::Get()->GetMessageManager()->DebugLog("2");
 				// is it ours or generic todo?
-				if (c == '(')
+				if (c == _T('('))
 				{
 					// it's ours, find user and/or priority
 					++idx; // skip (
 					while (idx < (int)buffer.Length())
 					{
 						wxChar c1 = buffer.GetChar(idx);
-						if (c1 != '#' && c1 != ')')
+						if (c1 != _T('#') && c1 != _T(')'))
 						{
 							// a little logic doesn't hurt ;)
-							
-							if (c1 == ' ' || c1 == '\t' || c1 == '\r' || c1 == '\n')
+
+							if (c1 == _T(' ') || c1 == _T('\t') || c1 == _T('\r') || c1 == _T('\n'))
 							{
 								// allow one consecutive space
-								if (item.user.Last() != ' ')
-									item.user << ' ';
+								if (item.user.Last() != _T(' '))
+									item.user << _T(' ');
 							}
 							else
 								item.user << c1;
 						}
-						else if (c1 == '#')
+						else if (c1 == _T('#'))
 						{
 							// look for priority
 							c1 = buffer.GetChar(++idx);
-							allowedChars = "0123456789";
+							allowedChars = _T("0123456789");
 							if ((int)allowedChars.Index(c1) != wxNOT_FOUND)
 								item.priorityStr << c1;
 							// skip to start of text
 							while (idx < (int)buffer.Length())
 							{
 								wxChar c2 = buffer.GetChar(idx++);
-								if (c2 == ')' || c2 == '\r' || c2 == '\n')
+								if (c2 == _T(')') || c2 == _T('\r') || c2 == _T('\n'))
 									break;
 							}
 							break;
@@ -314,25 +309,25 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
 //Manager::Get()->GetMessageManager()->DebugLog("3");
 				// ok, we 've reached the actual todo text :)
 				// take everything up to the end of line or end of comment (if isC)
-				wxChar lastChar = '\0';
-				if (buffer.GetChar(idx) == ':')
+				wxChar lastChar = _T('\0');
+				if (buffer.GetChar(idx) == _T(':'))
 					++idx;
 				while (idx < (int)buffer.Length())
 				{
 					wxChar c1 = buffer.GetChar(idx++);
-					if (c1 == '\r' || c1 == '\n')
+					if (c1 == _T('\r') || c1 == _T('\n'))
 						break;
-					if (isC && c1 == '/' && lastChar == '*')
+					if (isC && c1 == _T('/') && lastChar == _T('*'))
 					{
                         // remove last char '*'
                         item.text.RemoveLast();
 						break;
                     }
-					if (c1 == ' ' || c1 == '\t')
+					if (c1 == _T(' ') || c1 == _T('\t'))
 					{
 						// allow one consecutive space
-						if (item.text.Last() != ' ')
-							item.text << ' ';
+						if (item.text.Last() != _T(' '))
+							item.text << _T(' ');
 					}
 					else
 						item.text << c1;
@@ -368,7 +363,7 @@ void ToDoListView::OnListItemSelected(wxListEvent& event)
         return;
     wxString file = m_Items[event.GetIndex()].filename;
     long int line = m_Items[event.GetIndex()].line;
-    
+
     if (file.IsEmpty() || line <= 0)
         return;
 

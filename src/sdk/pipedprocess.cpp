@@ -23,7 +23,7 @@
 * $Date$
 */
 
-#include "pipedprocess.h" // class's header file
+#include "pipedprocess.h" // class' header file
 #include "sdk_events.h"
 
 int idTimerPollProcess = wxNewId();
@@ -70,7 +70,7 @@ void PipedProcess::SendString(const wxString& text)
 	if (pOut)
 	{
 		wxTextOutputStream sin(*pOut);
-		wxString msg = text + '\n';
+		wxString msg = text + _T('\n');
 		sin.WriteString(msg);
 	}
 }

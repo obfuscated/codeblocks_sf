@@ -43,7 +43,7 @@ BEGIN_EVENT_TABLE(CCList, wxFrame)
 	EVT_GRID_SELECT_CELL(CCList::OnCellChanged)
 END_EVENT_TABLE()
 
-CCList* CCList::Get(wxEvtHandler* parent, wxStyledTextCtrl* editor, Parser* parser)
+CCList* CCList::Get(wxEvtHandler* parent, cbStyledTextCtrl* editor, Parser* parser)
 {
 	if (!g_CCList)
 		g_CCList = new CCList(parent, editor, parser);
@@ -59,8 +59,8 @@ void CCList::Free()
 	}
 }
 
-CCList::CCList(wxEvtHandler* parent, wxStyledTextCtrl* editor, Parser* parser)
-	: wxFrame(editor, -1, "CC", wxDefaultPosition, wxDefaultSize,
+CCList::CCList(wxEvtHandler* parent, cbStyledTextCtrl* editor, Parser* parser)
+	: wxFrame(editor, -1, _T("CC"), wxDefaultPosition, wxDefaultSize,
 			wxFRAME_NO_TASKBAR | wxRESIZE_BORDER | wxNO_FULL_REPAINT_ON_RESIZE),
 	m_pParent(parent),
 	m_pEditor(editor),
@@ -80,8 +80,8 @@ CCList::CCList(wxEvtHandler* parent, wxStyledTextCtrl* editor, Parser* parser)
 
 CCList::~CCList()
 {
-	ConfigManager::Get()->Write("/code_completion/size/width", GetSize().GetWidth());
-	ConfigManager::Get()->Write("/code_completion/size/height", GetSize().GetHeight());
+	ConfigManager::Get()->Write(_T("/code_completion/size/width"), GetSize().GetWidth());
+	ConfigManager::Get()->Write(_T("/code_completion/size/height"), GetSize().GetHeight());
 	m_pEditor->SetFocus();
 	delete m_pList;
 	g_CCList = 0L;
@@ -93,9 +93,9 @@ void CCList::PositionMe()
 	pt = m_pEditor->ClientToScreen(pt);
 	int lineHeight = m_pEditor->TextHeight(m_pEditor->GetCurrentLine());
 	pt.y += lineHeight;
-	
-	int w = ConfigManager::Get()->Read("/code_completion/size/width", 320);
-	int h = ConfigManager::Get()->Read("/code_completion/size/height", 160);
+
+	int w = ConfigManager::Get()->Read(_T("/code_completion/size/width"), 320);
+	int h = ConfigManager::Get()->Read(_T("/code_completion/size/height"), 160);
 	int screenW = wxSystemSettings::GetMetric(wxSYS_SCREEN_X);
 	int screenH = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y);
 	// sanity check
@@ -103,10 +103,10 @@ void CCList::PositionMe()
 		w = screenW;
 	if (h > screenH)
 		h = screenH;
-	
+
 	// now we 're where we want to be, but check that the whole window is visible...
 	// the main goal here is that the caret *should* be visible...
-	
+
 	// for the horizontal axis, easy stuff
 	if (pt.x + w > screenW)
 		pt.x = screenW - w;
@@ -153,15 +153,15 @@ void CCList::SelectCurrent(wxChar ch)
 		if (token->m_TokenKind == tkFunction)
 		{
 			// if token is a function, add ()
-			replace << "()";
-			funcHasArgs = !token->m_Args.Matches("()") && !token->m_Args.Matches("(void)");
+			replace << _T("()");
+			funcHasArgs = !token->m_Args.Matches(_T("()")) && !token->m_Args.Matches(_T("(void)"));
 			if (funcHasArgs)
 				offset = 1; // adjust cursor position inside parentheses, only if func takes args
 		}
 
 		if (ch == '-' || ch == '>')
 		{
-			replace << "->";
+			replace << _T("->");
 			codeCompleteAgain = true;
 			if (funcHasArgs)
 				offset += 2; // adjust cursor position inside parentheses, only if func takes args
@@ -215,15 +215,15 @@ void CCList::OnLeftClick(wxGridEvent& event)
 	if (token)
 	{
 		wxString msg;
-		msg << "\"" << token->m_Name << "\" breaks down to:\n\n";
-		msg << "Kind: " << token->GetTokenKindString() << '\n';
-		msg << "Namespace: " << token->GetNamespace() << '\n';
-		msg << "Name: " << token->m_Name << '\n';
-		msg << "Arguments: " << token->m_Args << '\n';
-		msg << "Return value: " << token->m_Type << '\n';
-		msg << "Actual return value: " << token->m_ActualType << '\n';
-		msg << "Scope: " << token->GetTokenScopeString() << "\n\n";
-		msg << "and is met in " << token->m_Filename << ", at line " << token->m_Line;
+		msg << _T("\"") << token->m_Name << _T("\" breaks down to:\n\n");
+		msg << _T("Kind: ") << token->GetTokenKindString() << _T('\n');
+		msg << _T("Namespace: ") << token->GetNamespace() << _T('\n');
+		msg << _T("Name: ") << token->m_Name << _T('\n');
+		msg << _T("Arguments: ") << token->m_Args << _T('\n');
+		msg << _T("Return value: ") << token->m_Type << _T('\n');
+		msg << _T("Actual return value: ") << token->m_ActualType << _T('\n');
+		msg << _T("Scope: ") << token->GetTokenScopeString() << _T("\n\n");
+		msg << _T("and is met in ") << token->m_Filename << _T(", at line ") << token->m_Line;
 		wxMessageBox(msg);
 	}
 }
@@ -291,7 +291,7 @@ void CCList::OnKeyDown(wxKeyEvent& event)
 			SelectCurrent();
 			break;
 		}
-		
+
 		case WXK_BACK:
 		{
 			if (m_pEditor->GetCurrentPos() <= m_StartPos)
@@ -311,7 +311,7 @@ void CCList::OnKeyDown(wxKeyEvent& event)
 			m_pList->AddChar(c);
 			break;
 		}
-		
+
 		case '~':
 		{
 			if (event.ShiftDown())
@@ -327,7 +327,7 @@ void CCList::OnKeyDown(wxKeyEvent& event)
 				SelectCurrent(c);
 			break;
 		}
-		
+
 		case '0': case '1': case '2': case '3':
 		case '4': case '5': case '6': case '7':
 		case '8':

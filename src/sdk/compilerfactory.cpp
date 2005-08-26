@@ -18,12 +18,12 @@ void CompilerFactory::RegisterUserCompilers()
 	wxString str;
 	long cookie;
 	
-	ConfigManager::Get()->SetPath("/compiler_gcc/compiler_sets");
+	ConfigManager::Get()->SetPath(_T("/compiler_gcc/compiler_sets"));
 	bool cont = ConfigManager::Get()->GetFirstGroup(str, cookie);
 	while (cont)
 	{
 		int parent = -1;
-		parent = ConfigManager::Get()->Read("/compiler_gcc/compiler_sets/" + str + "/_parent", -1);
+		parent = ConfigManager::Get()->Read(_T("/compiler_gcc/compiler_sets/") + str + _T("/_parent"), -1);
 
         if (CompilerIndexOK(parent - 1))
         {
@@ -32,15 +32,15 @@ void CompilerFactory::RegisterUserCompilers()
 
 		cont = ConfigManager::Get()->GetNextGroup(str, cookie);
 	}
-	ConfigManager::Get()->SetPath("/");
+	ConfigManager::Get()->SetPath(_T("/"));
 }
 
 int CompilerFactory::CreateCompilerCopy(Compiler* compiler)
 {
     Compiler* newC = compiler->CreateCopy();
     RegisterCompiler(newC);
-    newC->LoadSettings("/compiler_gcc/compiler_sets");
-    Manager::Get()->GetMessageManager()->DebugLog("Added compiler \"%s\"", newC->GetName().c_str());
+    newC->LoadSettings(_T("/compiler_gcc/compiler_sets"));
+    Manager::Get()->GetMessageManager()->DebugLog(_("Added compiler \"%s\""), newC->GetName().c_str());
     return Compilers.GetCount() - 1; // return the index for the new compiler
 }
 
@@ -66,7 +66,7 @@ void CompilerFactory::RemoveCompiler(Compiler* compiler)
         tmp->m_ID -= 1;
     }
     Compilers.Remove(compiler);
-    Manager::Get()->GetMessageManager()->DebugLog("Compiler \"%s\" removed", compiler->GetName().c_str());
+    Manager::Get()->GetMessageManager()->DebugLog(_("Compiler \"%s\" removed"), compiler->GetName().c_str());
     delete compiler;
     
     SaveSettings();
@@ -115,7 +115,7 @@ void CompilerFactory::SetDefaultCompiler(Compiler* compiler)
 
 void CompilerFactory::SaveSettings()
 {
-    wxString baseKey = "/compiler_gcc/compiler_sets";
+    wxString baseKey = _T("/compiler_gcc/compiler_sets");
     ConfigManager::Get()->DeleteGroup(baseKey);
     for (unsigned int i = 0; i < Compilers.GetCount(); ++i)
     {
@@ -126,7 +126,7 @@ void CompilerFactory::SaveSettings()
 void CompilerFactory::LoadSettings()
 {
     bool needAutoDetection = false;
-    wxString baseKey = "/compiler_gcc/compiler_sets";
+    wxString baseKey = _T("/compiler_gcc/compiler_sets");
     for (unsigned int i = 0; i < Compilers.GetCount(); ++i)
     {
         Compilers[i]->LoadSettings(baseKey);

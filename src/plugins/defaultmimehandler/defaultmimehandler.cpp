@@ -27,7 +27,7 @@
 #include <wx/filename.h>
 #include "editmimetypesdlg.h"
 
-#define CONF_GROUP "/mime_types"
+#define CONF_GROUP _T("/mime_types")
 
 cbPlugin* GetPlugin()
 {
@@ -37,21 +37,21 @@ cbPlugin* GetPlugin()
 DefaultMimeHandler::DefaultMimeHandler()
 {
 	//ctor
-	m_PluginInfo.name = "DefaultMimeHandler";
-	m_PluginInfo.title = "Default MIME handler";
-	m_PluginInfo.version = "1.0";
-	m_PluginInfo.description = "This is the default MIME handler for Code::Blocks";
-	m_PluginInfo.author = "Yiannis An. Mandravellos";
-	m_PluginInfo.authorEmail = "mandrav@codeblocks.org";
-	m_PluginInfo.authorWebsite = "http://www.codeblocks.org";
-	m_PluginInfo.thanksTo = "Code::Blocks";
+	m_PluginInfo.name = _T("DefaultMimeHandler");
+	m_PluginInfo.title = _("Default MIME handler");
+	m_PluginInfo.version = _T("1.0");
+	m_PluginInfo.description = _("This is the default MIME handler for Code::Blocks");
+	m_PluginInfo.author = _T("Yiannis An. Mandravellos");
+	m_PluginInfo.authorEmail = _T("mandrav@codeblocks.org");
+	m_PluginInfo.authorWebsite = _("http://www.codeblocks.org");
+	m_PluginInfo.thanksTo = _T("Code::Blocks");
 	m_PluginInfo.license = LICENSE_GPL;
 	m_PluginInfo.hasConfigure = true;
 
     wxFileSystem::AddHandler(new wxZipFSHandler);
     wxXmlResource::Get()->InitAllHandlers();
-    wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
-    wxXmlResource::Get()->Load(resPath + "/defaultmimehandler.zip#zip:*.xrc");
+    wxString resPath = ConfigManager::Get()->Read(_T("data_path"), wxEmptyString);
+    wxXmlResource::Get()->Load(resPath + _T("/defaultmimehandler.zip#zip:*.xrc"));
 
 	ConfigManager::AddConfiguration(_("MIME types handling"), CONF_GROUP);
 }
@@ -77,10 +77,10 @@ void DefaultMimeHandler::OnAttach()
         if (array.GetCount() == 3 || array.GetCount() == 4)
         {
             cbMimeType* mt = new cbMimeType;
-            mt->useEditor = array[0] == "true";
-            mt->programIsModal = array[1] == "true";
+            mt->useEditor = array[0] == _T("true");
+            mt->programIsModal = array[1] == _T("true");
             mt->wildcard = array[2];
-            mt->program = array.GetCount() == 4 ? array[3] : "";
+            mt->program = array.GetCount() == 4 ? array[3] : _T("");
             
             if (!mt->useEditor && mt->program.IsEmpty())
                 delete mt;
@@ -104,12 +104,12 @@ void DefaultMimeHandler::OnRelease(bool appShutDown)
 	{
         cbMimeType* mt = m_MimeTypes[i];
         wxString txt;
-        txt << (mt->useEditor ? "true" : "false") << ";";
-        txt << (mt->programIsModal ? "true" : "false") << ";";
-        txt << mt->wildcard << ";";
+        txt << (mt->useEditor ? _T("true") : _T("false")) << _T(";");
+        txt << (mt->programIsModal ? _T("true") : _T("false")) << _T(";");
+        txt << mt->wildcard << _T(";");
         txt << mt->program;
         wxString key;
-        key.Printf("MimeType%d", i);
+        key.Printf(_T("MimeType%d"), i);
 		conf->Write(key, txt);
 	}
 	conf->SetPath(oldPath);
@@ -153,7 +153,7 @@ int DefaultMimeHandler::OpenFile(const wxString& filename)
             wxString ext = wxFileName(filename).GetExt().Lower();
             wxString wild = ext.IsEmpty()
                             ? wxFileName(filename).GetName().Lower()
-                            : "*." + ext;
+                            : wxString(_T("*.")) + ext;
             switch (dlg.GetSelection())
             {
                 case 0: // choose external program
@@ -236,10 +236,10 @@ int DefaultMimeHandler::DoOpenFile(cbMimeType* mt, const wxString& filename)
 
         // create command line
         wxString external = mt->program;
-        if (external.Find("$(FILE)") != -1)
-            external.Replace("$(FILE)", filename);
+        if (external.Find(_T("$(FILE)")) != -1)
+            external.Replace(_T("$(FILE)"), filename);
         else
-            external << " \"" << filename << "\""; // file args wrapped in quotes (bug #1187231)
+            external << _T(" \"") << filename << _T("\""); // file args wrapped in quotes (bug #1187231)
 
         // launch external program
         int ret = 0;

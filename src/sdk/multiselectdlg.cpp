@@ -20,7 +20,7 @@ MultiSelectDlg::MultiSelectDlg(wxWindow* parent,
                                 const wxString& title)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgGenericMultiSelect"));
+	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgGenericMultiSelect"));
 
 	SetTitle(title);
 	XRCCTRL(*this, "lblLabel", wxStaticText)->SetLabel(label);
@@ -34,7 +34,7 @@ MultiSelectDlg::MultiSelectDlg(wxWindow* parent,
                                 const wxString& title)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, _("dlgGenericMultiSelect"));
+	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgGenericMultiSelect"));
 
 	SetTitle(title);
 	XRCCTRL(*this, "lblLabel", wxStaticText)->SetLabel(label);
@@ -66,8 +66,8 @@ void MultiSelectDlg::UpdateStatus()
             ++count;
 	}
 	wxString msg;
-	msg << "Selected: " << count;
-	XRCCTRL(*this, _T("lblStatus"), wxStaticText)->SetLabel(msg);
+	msg << _("Selected: ") << count;
+	XRCCTRL(*this, "lblStatus", wxStaticText)->SetLabel(msg);
 }
 
 wxArrayString MultiSelectDlg::GetSelectedStrings()
