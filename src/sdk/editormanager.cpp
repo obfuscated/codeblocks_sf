@@ -884,6 +884,7 @@ bool EditorManager::SaveAll()
     return true;
 }
 
+
 void EditorManager::Print(PrintScope ps, PrintColorMode pcm)
 {
     switch (ps)
@@ -1165,7 +1166,7 @@ void EditorManager::CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFi
 				data->start = MIN(control->GetSelectionStart(), control->GetSelectionEnd());
 				data->end = MAX(control->GetSelectionStart(), control->GetSelectionEnd());
 			}
-		}
+        }
 	}
 }
 
@@ -1323,6 +1324,7 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
                     msg = _("Text not found.\nSearch from the start of the document?");
                 else
                     msg = _("Text not found.\nSearch from the end of the document?");
+
                 if (wxMessageBox(msg, _("Result"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK)
                 {
                     if (data->directionDown)
@@ -1932,6 +1934,5 @@ void EditorManager::OnUpdateUI(wxUpdateUIEvent& event)
 
     // allow other UpdateUI handlers to process this event
     // *very* important! don't forget it...
-
     event.Skip();
 }

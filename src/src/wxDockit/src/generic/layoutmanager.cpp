@@ -4,8 +4,8 @@
 // Author:      Mark McCormack
 // Modified by:
 // Created:     23/02/04
-// RCS-ID:  
-// Copyright:   
+// RCS-ID:
+// Copyright:
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
@@ -77,7 +77,7 @@ WX_DEFINE_LIST( DockHostList );
 wxLayoutManager::wxLayoutManager( wxWindow * pOwnerFrame )
     : pOwnerWindow_( pOwnerFrame ) {
     Init();
-    
+
     // install event handler
     frameEventHandler_.SetOwner( this );
     pOwnerWindow_->PushEventHandler( &frameEventHandler_ );
@@ -106,7 +106,7 @@ void wxLayoutManager::SetLayout( unsigned int flags, wxWindow * pAutoLayoutClien
     flags_ = flags;
     pAutoLayoutClientWindow_ = pAutoLayoutClientWindow;
 
-    // generate internal event    
+    // generate internal event
     settingsChanged();
 }
 
@@ -153,7 +153,7 @@ void wxLayoutManager::AddDockHost( wxDirection dir, int initialSize, const wxStr
     wxDockHost * pDockHost = new wxDockHost( pOwnerWindow_, 0, dir, dockName );
     pDockHost->SetLayoutManager( this );
     pDockHost->SetAreaSize( initialSize );
-    
+
     // add a host
     dockHosts_.Append( pDockHost );
 }
@@ -166,7 +166,7 @@ wxDockHost * wxLayoutManager::GetDockHost( const wxString& name ) {
             return pDockHost;
         }
     }
-    
+
     return NULL;
 }
 
@@ -194,7 +194,7 @@ void wxLayoutManager::AddDockWindow( wxDockWindowBase * pDockWindow ) {
             wxASSERT_MSG( false, "AddDockWindow() - name already used" );
         }
     }
-    
+
     // add a window
     dockWindows_.Append( pDockWindow );
     pDockWindow->SetDockingManager( this );
@@ -295,7 +295,7 @@ wxRect wxLayoutManager::GetDockArea() {
 void wxLayoutManager::DockWindow( wxDockWindowBase * pDockWindow, HostInfo &hi, bool noHideOperation ) {
     wxASSERT(hi.valid);
     wxASSERT(pDockWindow);
-    
+
     wxDockPanel * pClient = pDockWindow->GetDockPanel();
     wxASSERT(pClient);
 
@@ -355,13 +355,7 @@ void wxLayoutManager::OnUpdateLayout() {
 }
 
 void wxLayoutManager::UpdateAllHosts( bool WXUNUSED(sizeChange), wxDockHost * WXUNUSED(pIgnoreHost) ) {
-    // generate an event
-    wxCommandEvent e( wxEVT_LAYOUT_CHANGED );
-    e.SetEventObject( this );
-    wxEvtHandler * pFrameEventHandler = pOwnerWindow_->GetEventHandler();
-    wxASSERT( pFrameEventHandler );
-    pFrameEventHandler->ProcessEvent( e );
-
+// NOTE (mandrav#1#): Moved event firing at the end of this function
     wxLayoutAlgorithm layout;
     wxMDIParentFrame * pMDIFrame = wxDynamicCast( pOwnerWindow_, wxMDIParentFrame );
 	if( pMDIFrame ) {
@@ -372,6 +366,13 @@ void wxLayoutManager::UpdateAllHosts( bool WXUNUSED(sizeChange), wxDockHost * WX
 		// layout within an normal frame/or standard wxWindow
 		layout.LayoutWindow( pOwnerWindow_, pAutoLayoutClientWindow_ );
     }
+
+    // generate an event
+    wxCommandEvent e( wxEVT_LAYOUT_CHANGED );
+    e.SetEventObject( this );
+    wxEvtHandler * pFrameEventHandler = pOwnerWindow_->GetEventHandler();
+    wxASSERT( pFrameEventHandler );
+    pFrameEventHandler->ProcessEvent( e );
 }
 
 wxDockHost * wxLayoutManager::findDockHost( const wxString& name ) {
@@ -436,7 +437,7 @@ bool wxLayoutManager::SaveToStream( wxOutputStream &stream ) {
         stream.Write( &isShown, sizeof( isShown ) );
         bool isDocked = pDockWindow->IsDocked();
         stream.Write( &isDocked, sizeof( isDocked ) );
-        
+
         // area taken
         wxDockPanel * pDockPanel = pDockWindow->GetDockPanel();
         wxASSERT(pDockPanel);
@@ -480,7 +481,7 @@ bool wxLayoutManager::SaveToStream( wxOutputStream &stream ) {
             // name
             WriteString( stream, pDockWindow->GetName() );
         }
-    }    
+    }
 
     return true;
 }
@@ -496,7 +497,7 @@ bool wxLayoutManager::LoadFromStream( wxInputStream &stream ) {
     wxString layoutTag = ReadString( stream );
     if( layoutTag == "<layout>" ) {
         DockPanelList lockedPanels;
-        
+
         // undock all windows
         for( DockWindowList::Node *node = dockWindows_.GetFirst(); node; node = node->GetNext() ) {
             wxDockWindowBase * pDockWindow = node->GetData();
@@ -523,7 +524,7 @@ bool wxLayoutManager::LoadFromStream( wxInputStream &stream ) {
             stream.Read( &isShown, sizeof( isShown ) );
             bool isDocked = false;
             stream.Read( &isDocked, sizeof( isDocked ) );
-            
+
             // area taken
             int area = 0;
             stream.Read( &area, sizeof( area ) );
@@ -604,7 +605,7 @@ bool wxLayoutManager::LoadFromStream( wxInputStream &stream ) {
                     if( pDockWindow ) {
                         HostInfo hi;
                         hi = pDockHost;
-                        DockWindow( pDockWindow, hi ); 
+                        DockWindow( pDockWindow, hi );
                     }
                     else {
                         // could not find window
