@@ -3,7 +3,7 @@
 ###############################################################################
 
 # Project:          Code::Blocks
-# Project filename: C:\Devel\codeblocks-VERSION_1_0\src\CodeBlocks.cbp
+# Project filename: C:\Devel\codeblocks\src\CodeBlocks.cbp
 # Compiler used:    GNU GCC Compiler
 
 ### Variables used in this Makefile
@@ -31,6 +31,13 @@ sdk_CPP=mingw32-g++.exe
 sdk_LD=mingw32-g++.exe
 sdk_LIB=ar.exe
 sdk_RESCOMP=windres.exe
+ZIP=zip
+ZIP_EXT=zip
+wxDockit_CC=mingw32-gcc.exe
+wxDockit_CPP=mingw32-g++.exe
+wxDockit_LD=mingw32-g++.exe
+wxDockit_LIB=ar.exe
+wxDockit_RESCOMP=windres.exe
 ZIP=zip
 ZIP_EXT=zip
 src_CC=mingw32-gcc.exe
@@ -103,25 +110,11 @@ plugin_XPManifest_LIB=ar.exe
 plugin_XPManifest_RESCOMP=windres.exe
 ZIP=zip
 ZIP_EXT=zip
-update_CC=mingw32-gcc.exe
-update_CPP=mingw32-g++.exe
-update_LD=mingw32-g++.exe
-update_LIB=ar.exe
-update_RESCOMP=windres.exe
-ZIP=zip
-ZIP_EXT=zip
 console_runner_CC=mingw32-gcc.exe
 console_runner_CPP=mingw32-g++.exe
 console_runner_LD=mingw32-g++.exe
 console_runner_LIB=ar.exe
 console_runner_RESCOMP=windres.exe
-ZIP=zip
-ZIP_EXT=zip
-doc_CC=mingw32-gcc.exe
-doc_CPP=mingw32-g++.exe
-doc_LD=mingw32-g++.exe
-doc_LIB=ar.exe
-doc_RESCOMP=windres.exe
 
 ### Compiler/linker options
 tinyXML_GLOBAL_CFLAGS=
@@ -154,6 +147,16 @@ sdk_GLOBAL_LIBDIRS= -LC:/MinGW/lib -LC:/Devel/codeblocks/src/devel/DevPaks/lib
 sdk_PROJECT_LIBDIRS= -Lsdk/tinyxml -L$(WX_DIR)/lib
 sdk_GLOBAL_LIBS=
 sdk_PROJECT_LIBS= -lwxmsw242
+wxDockit_GLOBAL_CFLAGS=
+wxDockit_PROJECT_CFLAGS= -Wall -g -pipe -mthreads -fno-pcc-struct-return -fno-rtti -fmessage-length=0 -D__GNUWIN32__ -D__WXMSW__ -DWXUSINGDLL
+wxDockit_GLOBAL_LDFLAGS=
+wxDockit_PROJECT_LDFLAGS=
+wxDockit_GLOBAL_INCS= -IC:/MinGW/include -IC:/Devel/codeblocks/src/devel/DevPaks/include
+wxDockit_PROJECT_INCS= -I$(WX_DIR)/include -I$(WX_DIR)/lib/mswdll -I$(WX_DIR)/contrib/include -Isdk/wxscintilla/include
+wxDockit_GLOBAL_LIBDIRS= -LC:/MinGW/lib -LC:/Devel/codeblocks/src/devel/DevPaks/lib
+wxDockit_PROJECT_LIBDIRS= -Lsdk/tinyxml -L$(WX_DIR)/lib
+wxDockit_GLOBAL_LIBS=
+wxDockit_PROJECT_LIBS= -lwxmsw242
 src_GLOBAL_CFLAGS=
 src_PROJECT_CFLAGS= -Wall -g -pipe -mthreads -fno-pcc-struct-return -fno-rtti -fmessage-length=0 -D__GNUWIN32__ -D__WXMSW__ -DWXUSINGDLL
 src_GLOBAL_LDFLAGS=
@@ -289,6 +292,7 @@ doc_PROJECT_LIBS= -lwxmsw242
 tinyXML_CFLAGS= $(tinyXML_PROJECT_CFLAGS) -DEXPORT_LIB -D_USRDLL $(tinyXML_GLOBAL_CFLAGS)
 scintilla_CFLAGS= $(scintilla_PROJECT_CFLAGS) -D__WX__ -DWINVER=0x0400 -DSCI_LEXER -DLINK_LEXERS -DWXMAKINGDLL_SCI $(scintilla_GLOBAL_CFLAGS)
 sdk_CFLAGS= $(sdk_PROJECT_CFLAGS) -DEXPORT_LIB -DEXPORT_EVENTS -D_USRDLL $(sdk_GLOBAL_CFLAGS)
+wxDockit_CFLAGS= $(wxDockit_PROJECT_CFLAGS) -DwxUSE_WX24 -DPANE_AWARE -D_WIN32_IE=0x300 $(wxDockit_GLOBAL_CFLAGS)
 src_CFLAGS= $(src_PROJECT_CFLAGS) $(src_GLOBAL_CFLAGS)
 plugin_Astyle_CFLAGS= $(plugin_Astyle_PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL -DNDEBUG $(plugin_Astyle_GLOBAL_CFLAGS)
 plugin_CompilerGCC_CFLAGS= $(plugin_CompilerGCC_PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL -DDEPSLIB_WINDOWS $(plugin_CompilerGCC_GLOBAL_CFLAGS)
@@ -299,14 +303,13 @@ plugin_DefMimeHandler_CFLAGS= $(plugin_DefMimeHandler_PROJECT_CFLAGS) -DBUILDING
 plugin_PluginsWizard_CFLAGS= $(plugin_PluginsWizard_PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL $(plugin_PluginsWizard_GLOBAL_CFLAGS)
 plugin_ToDo_CFLAGS= $(plugin_ToDo_PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL $(plugin_ToDo_GLOBAL_CFLAGS)
 plugin_XPManifest_CFLAGS= $(plugin_XPManifest_PROJECT_CFLAGS) -DBUILDING_PLUGIN -D_WINDLL $(plugin_XPManifest_GLOBAL_CFLAGS)
-update_CFLAGS= $(update_PROJECT_CFLAGS) $(update_GLOBAL_CFLAGS)
 console_runner_CFLAGS= $(console_runner_PROJECT_CFLAGS) $(console_runner_GLOBAL_CFLAGS)
-doc_CFLAGS= $(doc_PROJECT_CFLAGS) $(doc_GLOBAL_CFLAGS)
 
 ### Targets linker flags
 tinyXML_LDFLAGS= $(tinyXML_PROJECT_LDFLAGS) $(tinyXML_GLOBAL_LDFLAGS)
 scintilla_LDFLAGS= $(scintilla_PROJECT_LDFLAGS) $(scintilla_GLOBAL_LDFLAGS)
 sdk_LDFLAGS= -Wl,--enable-auto-image-base -Wl,--export-all-symbols -Wl,--add-stdcall-alias $(sdk_PROJECT_LDFLAGS) $(sdk_GLOBAL_LDFLAGS)
+wxDockit_LDFLAGS= $(wxDockit_PROJECT_LDFLAGS) $(wxDockit_GLOBAL_LDFLAGS)
 src_LDFLAGS= $(src_PROJECT_LDFLAGS) $(src_GLOBAL_LDFLAGS)
 plugin_Astyle_LDFLAGS= -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias $(plugin_Astyle_GLOBAL_LDFLAGS)
 plugin_CompilerGCC_LDFLAGS= -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias $(plugin_CompilerGCC_GLOBAL_LDFLAGS)
@@ -317,15 +320,14 @@ plugin_DefMimeHandler_LDFLAGS= -Wl,--enable-auto-image-base -Wl,--add-stdcall-al
 plugin_PluginsWizard_LDFLAGS= -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias $(plugin_PluginsWizard_GLOBAL_LDFLAGS)
 plugin_ToDo_LDFLAGS= $(plugin_ToDo_PROJECT_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias $(plugin_ToDo_GLOBAL_LDFLAGS)
 plugin_XPManifest_LDFLAGS= $(plugin_XPManifest_PROJECT_LDFLAGS) -Wl,--enable-auto-image-base -Wl,--add-stdcall-alias $(plugin_XPManifest_GLOBAL_LDFLAGS)
-update_LDFLAGS= $(update_PROJECT_LDFLAGS) $(update_GLOBAL_LDFLAGS)
 console_runner_LDFLAGS= $(console_runner_GLOBAL_LDFLAGS)
-doc_LDFLAGS= $(doc_PROJECT_LDFLAGS) $(doc_GLOBAL_LDFLAGS)
 
 ### Targets include directories
 tinyXML_INCS= $(tinyXML_PROJECT_INCS) $(tinyXML_GLOBAL_INCS)
 scintilla_INCS= $(scintilla_PROJECT_INCS) -Isdk/wxscintilla/include -Isdk/wxscintilla/src/scintilla/include -Isdk/wxscintilla/src/scintilla/src $(scintilla_GLOBAL_INCS)
 sdk_INCS= $(sdk_PROJECT_INCS) $(sdk_GLOBAL_INCS)
-src_INCS= -Isdk $(src_PROJECT_INCS) $(src_GLOBAL_INCS)
+wxDockit_INCS= $(wxDockit_PROJECT_INCS) -Isrc/wxDockit/include $(wxDockit_GLOBAL_INCS)
+src_INCS= -Isdk -Isrc/wxDockit/include $(src_PROJECT_INCS) $(src_GLOBAL_INCS)
 plugin_Astyle_INCS= $(plugin_Astyle_PROJECT_INCS) -Isdk -Iplugins/astyle/astyle $(plugin_Astyle_GLOBAL_INCS)
 plugin_CompilerGCC_INCS= -Isdk -Iplugins/compilergcc/depslib/src $(plugin_CompilerGCC_PROJECT_INCS) $(plugin_CompilerGCC_GLOBAL_INCS)
 plugin_DebuggerGDB_INCS= -Isdk $(plugin_DebuggerGDB_PROJECT_INCS) $(plugin_DebuggerGDB_GLOBAL_INCS)
@@ -335,15 +337,14 @@ plugin_DefMimeHandler_INCS= -Isdk $(plugin_DefMimeHandler_PROJECT_INCS) $(plugin
 plugin_PluginsWizard_INCS= -Isdk $(plugin_PluginsWizard_PROJECT_INCS) $(plugin_PluginsWizard_GLOBAL_INCS)
 plugin_ToDo_INCS= $(plugin_ToDo_PROJECT_INCS) -Isdk $(plugin_ToDo_GLOBAL_INCS)
 plugin_XPManifest_INCS= -Isdk $(plugin_XPManifest_PROJECT_INCS) $(plugin_XPManifest_GLOBAL_INCS)
-update_INCS= $(update_PROJECT_INCS) $(update_GLOBAL_INCS)
 console_runner_INCS= $(console_runner_PROJECT_INCS) $(console_runner_GLOBAL_INCS)
-doc_INCS= $(doc_PROJECT_INCS) $(doc_GLOBAL_INCS)
 
 ### Targets library directories
 tinyXML_LIBDIRS= $(tinyXML_PROJECT_LIBDIRS) $(tinyXML_GLOBAL_LIBDIRS)
 scintilla_LIBDIRS= $(scintilla_PROJECT_LIBDIRS) $(scintilla_GLOBAL_LIBDIRS)
 sdk_LIBDIRS= $(sdk_PROJECT_LIBDIRS) -Ldevel $(sdk_GLOBAL_LIBDIRS)
-src_LIBDIRS= -Ldevel $(src_PROJECT_LIBDIRS) $(src_GLOBAL_LIBDIRS)
+wxDockit_LIBDIRS= $(wxDockit_PROJECT_LIBDIRS) $(wxDockit_GLOBAL_LIBDIRS)
+src_LIBDIRS= -Ldevel -Lsrc/wxDockit/lib $(src_PROJECT_LIBDIRS) $(src_GLOBAL_LIBDIRS)
 plugin_Astyle_LIBDIRS= $(plugin_Astyle_PROJECT_LIBDIRS) -Ldevel $(plugin_Astyle_GLOBAL_LIBDIRS)
 plugin_CompilerGCC_LIBDIRS= -Ldevel $(plugin_CompilerGCC_PROJECT_LIBDIRS) $(plugin_CompilerGCC_GLOBAL_LIBDIRS)
 plugin_DebuggerGDB_LIBDIRS= -Ldevel $(plugin_DebuggerGDB_PROJECT_LIBDIRS) $(plugin_DebuggerGDB_GLOBAL_LIBDIRS)
@@ -353,15 +354,14 @@ plugin_DefMimeHandler_LIBDIRS= -Ldevel $(plugin_DefMimeHandler_PROJECT_LIBDIRS) 
 plugin_PluginsWizard_LIBDIRS= -Ldevel $(plugin_PluginsWizard_PROJECT_LIBDIRS) $(plugin_PluginsWizard_GLOBAL_LIBDIRS)
 plugin_ToDo_LIBDIRS= $(plugin_ToDo_PROJECT_LIBDIRS) -Ldevel $(plugin_ToDo_GLOBAL_LIBDIRS)
 plugin_XPManifest_LIBDIRS= -Ldevel $(plugin_XPManifest_PROJECT_LIBDIRS) $(plugin_XPManifest_GLOBAL_LIBDIRS)
-update_LIBDIRS= $(update_PROJECT_LIBDIRS) $(update_GLOBAL_LIBDIRS)
 console_runner_LIBDIRS= $(console_runner_PROJECT_LIBDIRS) $(console_runner_GLOBAL_LIBDIRS)
-doc_LIBDIRS= $(doc_PROJECT_LIBDIRS) $(doc_GLOBAL_LIBDIRS)
 
 ### Targets libraries
 tinyXML_LIBS= $(tinyXML_PROJECT_LIBS) $(tinyXML_GLOBAL_LIBS)
 scintilla_LIBS= $(scintilla_PROJECT_LIBS) $(scintilla_GLOBAL_LIBS)
 sdk_LIBS= -ltxml -lwxxrc -lwxscintilla $(sdk_PROJECT_LIBS) $(sdk_GLOBAL_LIBS)
-src_LIBS= -lcodeblocks -lwxscintilla -lwxxrc -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lodbc32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32 $(src_PROJECT_LIBS) $(src_GLOBAL_LIBS)
+wxDockit_LIBS= $(wxDockit_PROJECT_LIBS) $(wxDockit_GLOBAL_LIBS)
+src_LIBS= -lcodeblocks -lwxscintilla -lwxxrc -lwxDockit -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lodbc32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32 $(src_PROJECT_LIBS) $(src_GLOBAL_LIBS)
 plugin_Astyle_LIBS= -lcodeblocks -lwxscintilla -lwxxrc -lwxmsw242 $(plugin_Astyle_GLOBAL_LIBS)
 plugin_CompilerGCC_LIBS= -lcodeblocks -lwxscintilla -lwxxrc -lwxmsw242 $(plugin_CompilerGCC_GLOBAL_LIBS)
 plugin_DebuggerGDB_LIBS= -lcodeblocks -lwxscintilla -lwxxrc -lwxmsw242 $(plugin_DebuggerGDB_GLOBAL_LIBS)
@@ -371,9 +371,7 @@ plugin_DefMimeHandler_LIBS= -lcodeblocks -lwxxrc -lwxmsw242 $(plugin_DefMimeHand
 plugin_PluginsWizard_LIBS= -lcodeblocks -lwxscintilla -lwxxrc -lwxmsw242 $(plugin_PluginsWizard_GLOBAL_LIBS)
 plugin_ToDo_LIBS= $(plugin_ToDo_PROJECT_LIBS) -lcodeblocks -lwxscintilla -lwxmsw242 $(plugin_ToDo_GLOBAL_LIBS)
 plugin_XPManifest_LIBS= $(plugin_XPManifest_PROJECT_LIBS) -lcodeblocks -lwxmsw242 $(plugin_XPManifest_GLOBAL_LIBS)
-update_LIBS= $(update_PROJECT_LIBS) $(update_GLOBAL_LIBS)
 console_runner_LIBS= $(console_runner_GLOBAL_LIBS)
-doc_LIBS= $(doc_PROJECT_LIBS) $(doc_GLOBAL_LIBS)
 
 ###############################################################################
 #         You shouldn't need to modify anything beyond this point             #
@@ -383,6 +381,7 @@ doc_LIBS= $(doc_PROJECT_LIBS) $(doc_GLOBAL_LIBS)
 tinyXML_RESOURCE=
 scintilla_RESOURCE=
 sdk_RESOURCE=
+wxDockit_RESOURCE=wxDockit_private.res
 src_RESOURCE=src_private.res
 plugin_Astyle_RESOURCE=
 plugin_CompilerGCC_RESOURCE=
@@ -393,7 +392,6 @@ plugin_DefMimeHandler_RESOURCE=
 plugin_PluginsWizard_RESOURCE=
 plugin_ToDo_RESOURCE=
 plugin_XPManifest_RESOURCE=
-update_RESOURCE=
 console_runner_RESOURCE=
 
 ### Objects used in this Makefile
@@ -406,6 +404,9 @@ scintilla_DEPS=.deps/sdk/wxscintilla/src/PlatWX.d .deps/sdk/wxscintilla/src/Scin
 sdk_OBJS=.objs/sdk/Managers/Managers.o .objs/sdk/Managers/StdAfx.o .objs/sdk/autodetectcompilers.o .objs/sdk/cbeditor.o .objs/sdk/cbeditorprintout.o .objs/sdk/cbplugin.o .objs/sdk/cbproject.o .objs/sdk/cbworkspace.o .objs/sdk/compileoptionsbase.o .objs/sdk/compiler.o .objs/sdk/compilerfactory.o .objs/sdk/compileroptions.o .objs/sdk/compiletargetbase.o .objs/sdk/configmanager.o .objs/sdk/configuretoolsdlg.o .objs/sdk/confirmreplacedlg.o .objs/sdk/customvars.o .objs/sdk/devcpploader.o .objs/sdk/editarrayfiledlg.o .objs/sdk/editarrayorderdlg.o .objs/sdk/editarraystringdlg.o .objs/sdk/editorbase.o .objs/sdk/editorcolorset.o .objs/sdk/editorconfigurationdlg.o .objs/sdk/editorlexerloader.o .objs/sdk/editormanager.o .objs/sdk/editpathdlg.o .objs/sdk/edittooldlg.o .objs/sdk/externaldepsdlg.o .objs/sdk/filegroupsandmasks.o .objs/sdk/finddlg.o .objs/sdk/globals.o .objs/sdk/importers_globals.o .objs/sdk/incrementalselectlistdlg.o .objs/sdk/macrosmanager.o .objs/sdk/managedthread.o .objs/sdk/manager.o .objs/sdk/menuitemsmanager.o .objs/sdk/messagelog.o .objs/sdk/messagemanager.o .objs/sdk/msvc7loader.o .objs/sdk/msvc7workspaceloader.o .objs/sdk/msvcloader.o .objs/sdk/msvcworkspaceloader.o .objs/sdk/multiselectdlg.o .objs/sdk/newfromtemplatedlg.o .objs/sdk/personalitymanager.o .objs/sdk/pipedprocess.o .objs/sdk/pluginmanager.o .objs/sdk/pluginsconfigurationdlg.o .objs/sdk/printing_types.o .objs/sdk/projectbuildtarget.o .objs/sdk/projectfileoptionsdlg.o .objs/sdk/projectlayoutloader.o .objs/sdk/projectloader.o .objs/sdk/projectmanager.o .objs/sdk/projectoptionsdlg.o .objs/sdk/projectsfilemasksdlg.o .objs/sdk/projecttemplateloader.o .objs/sdk/replacedlg.o .objs/sdk/sdk_events.o .objs/sdk/searchresultslog.o .objs/sdk/selecttargetdlg.o .objs/sdk/simplelistlog.o .objs/sdk/simpletextlog.o .objs/sdk/templatemanager.o .objs/sdk/toolsmanager.o .objs/sdk/workspaceloader.o .objs/sdk/xtra_classes.o .objs/sdk/xtra_res.o 
 sdk_LINKOBJS=$(sdk_OBJS)
 sdk_DEPS=.deps/sdk/Managers/Managers.d .deps/sdk/Managers/StdAfx.d .deps/sdk/autodetectcompilers.d .deps/sdk/cbeditor.d .deps/sdk/cbeditorprintout.d .deps/sdk/cbplugin.d .deps/sdk/cbproject.d .deps/sdk/cbworkspace.d .deps/sdk/compileoptionsbase.d .deps/sdk/compiler.d .deps/sdk/compilerfactory.d .deps/sdk/compileroptions.d .deps/sdk/compiletargetbase.d .deps/sdk/configmanager.d .deps/sdk/configuretoolsdlg.d .deps/sdk/confirmreplacedlg.d .deps/sdk/customvars.d .deps/sdk/devcpploader.d .deps/sdk/editarrayfiledlg.d .deps/sdk/editarrayorderdlg.d .deps/sdk/editarraystringdlg.d .deps/sdk/editorbase.d .deps/sdk/editorcolorset.d .deps/sdk/editorconfigurationdlg.d .deps/sdk/editorlexerloader.d .deps/sdk/editormanager.d .deps/sdk/editpathdlg.d .deps/sdk/edittooldlg.d .deps/sdk/externaldepsdlg.d .deps/sdk/filegroupsandmasks.d .deps/sdk/finddlg.d .deps/sdk/globals.d .deps/sdk/importers_globals.d .deps/sdk/incrementalselectlistdlg.d .deps/sdk/macrosmanager.d .deps/sdk/managedthread.d .deps/sdk/manager.d .deps/sdk/menuitemsmanager.d .deps/sdk/messagelog.d .deps/sdk/messagemanager.d .deps/sdk/msvc7loader.d .deps/sdk/msvc7workspaceloader.d .deps/sdk/msvcloader.d .deps/sdk/msvcworkspaceloader.d .deps/sdk/multiselectdlg.d .deps/sdk/newfromtemplatedlg.d .deps/sdk/personalitymanager.d .deps/sdk/pipedprocess.d .deps/sdk/pluginmanager.d .deps/sdk/pluginsconfigurationdlg.d .deps/sdk/printing_types.d .deps/sdk/projectbuildtarget.d .deps/sdk/projectfileoptionsdlg.d .deps/sdk/projectlayoutloader.d .deps/sdk/projectloader.d .deps/sdk/projectmanager.d .deps/sdk/projectoptionsdlg.d .deps/sdk/projectsfilemasksdlg.d .deps/sdk/projecttemplateloader.d .deps/sdk/replacedlg.d .deps/sdk/sdk_events.d .deps/sdk/searchresultslog.d .deps/sdk/selecttargetdlg.d .deps/sdk/simplelistlog.d .deps/sdk/simpletextlog.d .deps/sdk/templatemanager.d .deps/sdk/toolsmanager.d .deps/sdk/workspaceloader.d .deps/sdk/xtra_classes.d .deps/sdk/xtra_res.d 
+wxDockit_OBJS=.objs/src/wxDockit/src/generic/barholder.o .objs/src/wxDockit/src/generic/dockhost.o .objs/src/wxDockit/src/generic/dockpanel.o .objs/src/wxDockit/src/generic/dockwindow.o .objs/src/wxDockit/src/generic/exsplitter.o .objs/src/wxDockit/src/generic/gdi.o .objs/src/wxDockit/src/generic/gripper.o .objs/src/wxDockit/src/generic/layoutmanager.o .objs/src/wxDockit/src/generic/pane.o .objs/src/wxDockit/src/generic/slidebar.o .objs/src/wxDockit/src/generic/toolbutton.o .objs/src/wxDockit/src/generic/util.o .objs/src/wxDockit/src/msw/dockwindow_msw.o .objs/src/wxDockit/src/msw/gdi_msw.o .objs/src/wxDockit/src/msw/pane_msw.o .objs/src/wxDockit/src/msw/toolbutton_msw.o 
+wxDockit_LINKOBJS=$(wxDockit_OBJS)
+wxDockit_DEPS=.deps/src/wxDockit/src/generic/barholder.d .deps/src/wxDockit/src/generic/dockhost.d .deps/src/wxDockit/src/generic/dockpanel.d .deps/src/wxDockit/src/generic/dockwindow.d .deps/src/wxDockit/src/generic/exsplitter.d .deps/src/wxDockit/src/generic/gdi.d .deps/src/wxDockit/src/generic/gripper.d .deps/src/wxDockit/src/generic/layoutmanager.d .deps/src/wxDockit/src/generic/pane.d .deps/src/wxDockit/src/generic/slidebar.d .deps/src/wxDockit/src/generic/toolbutton.d .deps/src/wxDockit/src/generic/util.d .deps/src/wxDockit/src/msw/dockwindow_msw.d .deps/src/wxDockit/src/msw/gdi_msw.d .deps/src/wxDockit/src/msw/pane_msw.d .deps/src/wxDockit/src/msw/toolbutton_msw.d 
 src_OBJS=.objs/src/app.o .objs/src/dlgabout.o .objs/src/dlgaboutplugin.o .objs/src/environmentsettingsdlg.o .objs/src/impexpconfig.o .objs/src/main.o .objs/src/printdlg.o .objs/src/startherepage.o 
 src_LINKOBJS=$(src_OBJS)
 src_DEPS=.deps/src/app.d .deps/src/dlgabout.d .deps/src/dlgaboutplugin.d .deps/src/environmentsettingsdlg.d .deps/src/impexpconfig.d .deps/src/main.d .deps/src/printdlg.d .deps/src/startherepage.d 
@@ -436,15 +437,9 @@ plugin_ToDo_DEPS=.deps/plugins/todo/addtododlg.d .deps/plugins/todo/todolist.d .
 plugin_XPManifest_OBJS=.objs/plugins/xpmanifest/windowsxplooknfeel.o 
 plugin_XPManifest_LINKOBJS=$(plugin_XPManifest_OBJS)
 plugin_XPManifest_DEPS=.deps/plugins/xpmanifest/windowsxplooknfeel.d 
-update_OBJS=
-update_LINKOBJS=$(update_OBJS)
-update_DEPS=
 console_runner_OBJS=.objs/tools/ConsoleRunner/main.o 
 console_runner_LINKOBJS=$(console_runner_OBJS)
 console_runner_DEPS=.deps/tools/ConsoleRunner/main.d 
-doc_OBJS=
-doc_LINKOBJS=$(doc_OBJS)
-doc_DEPS=
 
 ### The targets of this project
 tinyXML_BIN=sdk/tinyxml/libtxml.a
@@ -454,6 +449,7 @@ scintilla_LIB_DEF=devel/libwxscintilla.def
 sdk_BIN=devel/codeblocks.dll
 sdk_STATIC_LIB=devel/libcodeblocks.a
 sdk_LIB_DEF=devel/libcodeblocks.def
+wxDockit_BIN=src/wxDockit/lib/libwxDockit.a
 src_BIN=devel/codeblocks.exe
 plugin_Astyle_BIN=devel/share/CodeBlocks/plugins/astyle.dll
 plugin_Astyle_STATIC_LIB=devel/share/CodeBlocks/plugins/libastyle.a
@@ -482,27 +478,15 @@ plugin_ToDo_LIB_DEF=devel/share/CodeBlocks/plugins/libtodo.def
 plugin_XPManifest_BIN=devel/share/CodeBlocks/plugins/xpmanifest.dll
 plugin_XPManifest_STATIC_LIB=devel/share/CodeBlocks/plugins/libxpmanifest.a
 plugin_XPManifest_LIB_DEF=devel/share/CodeBlocks/plugins/libxpmanifest.def
-update_BIN=C:/Devel/codeblocks-VERSION_1_0/src/CodeBlocks.dll
-update_STATIC_LIB=C:/Devel/codeblocks-VERSION_1_0/src/libCodeBlocks.a
-update_LIB_DEF=C:/Devel/codeblocks-VERSION_1_0/src/libCodeBlocks.def
 console_runner_BIN=tools/ConsoleRunner/console_runner.exe
-doc_BIN=C:/Devel/codeblocks-VERSION_1_0/src/CodeBlocks.exe
 
-.PHONY: all all-before all-custom all-after clean clean-custom distclean distclean-custom depend_tinyXML tinyXML-before tinyXML-after depend_scintilla scintilla-before scintilla-after depend_sdk sdk-before sdk-after depend_src src-before src-after depend_plugin_Astyle plugin_Astyle-before plugin_Astyle-after depend_plugin_CompilerGCC plugin_CompilerGCC-before plugin_CompilerGCC-after depend_plugin_DebuggerGDB plugin_DebuggerGDB-before plugin_DebuggerGDB-after depend_plugin_CodeCompletion plugin_CodeCompletion-before plugin_CodeCompletion-after depend_plugin_ClassWizard plugin_ClassWizard-before plugin_ClassWizard-after depend_plugin_DefMimeHandler plugin_DefMimeHandler-before plugin_DefMimeHandler-after depend_plugin_PluginsWizard plugin_PluginsWizard-before plugin_PluginsWizard-after depend_plugin_ToDo plugin_ToDo-before plugin_ToDo-after depend_plugin_XPManifest plugin_XPManifest-before plugin_XPManifest-after depend_update update-before update-after depend_console_runner console_runner-before console_runner-after depend_doc doc-before doc-after 
+.PHONY: all all-before all-custom all-after clean clean-custom distclean distclean-custom depend_tinyXML tinyXML-before tinyXML-after depend_scintilla scintilla-before scintilla-after depend_sdk sdk-before sdk-after depend_wxDockit wxDockit-before wxDockit-after depend_src src-before src-after depend_plugin_Astyle plugin_Astyle-before plugin_Astyle-after depend_plugin_CompilerGCC plugin_CompilerGCC-before plugin_CompilerGCC-after depend_plugin_DebuggerGDB plugin_DebuggerGDB-before plugin_DebuggerGDB-after depend_plugin_CodeCompletion plugin_CodeCompletion-before plugin_CodeCompletion-after depend_plugin_ClassWizard plugin_ClassWizard-before plugin_ClassWizard-after depend_plugin_DefMimeHandler plugin_DefMimeHandler-before plugin_DefMimeHandler-after depend_plugin_PluginsWizard plugin_PluginsWizard-before plugin_PluginsWizard-after depend_plugin_ToDo plugin_ToDo-before plugin_ToDo-after depend_plugin_XPManifest plugin_XPManifest-before plugin_XPManifest-after depend_console_runner console_runner-before console_runner-after 
 
-all: all-before tinyXML scintilla sdk src plugin_Astyle plugin_CompilerGCC plugin_DebuggerGDB plugin_CodeCompletion plugin_ClassWizard plugin_DefMimeHandler plugin_PluginsWizard plugin_ToDo plugin_XPManifest console_runner all-after
-
-update-before: 
-	@echo Running pre-build step
-	@update.bat
-
-doc-before: 
-	@echo Running pre-build step
-	@doxygen sdk.doxy
+all: all-before tinyXML scintilla sdk wxDockit src plugin_Astyle plugin_CompilerGCC plugin_DebuggerGDB plugin_CodeCompletion plugin_ClassWizard plugin_DefMimeHandler plugin_PluginsWizard plugin_ToDo plugin_XPManifest console_runner all-after
 
 
 dist:
-	@zip CodeBlocks.cbp.zip CodeBlocks.cbp Makefile devel\share\CodeBlocks\images\codecompletion\README.txt devel\share\CodeBlocks\plugins\README.txt devel\share\CodeBlocks\templates\README.txt plugins\astyle\astyle\ASBeautifier.cpp plugins\astyle\astyle\ASFormatter.cpp plugins\astyle\astyle\INSTALL.TXT plugins\astyle\astyle\Makefile plugins\astyle\astyle\astyle.h plugins\astyle\astyle\astyle.html plugins\astyle\astyle\astyle_main.cpp plugins\astyle\astyle\astyle_release_notes.html plugins\astyle\astyle\compiler_defines.h plugins\astyle\astyle\license.html plugins\astyle\astyleconfigdlg.cpp plugins\astyle\astyleconfigdlg.h plugins\astyle\astyleplugin.cpp plugins\astyle\astyleplugin.h plugins\astyle\formattersettings.cpp plugins\astyle\formattersettings.h plugins\astyle\resources\configuration.xrc plugins\classwizard\classwizard.cpp plugins\classwizard\classwizard.h plugins\classwizard\classwizarddlg.cpp plugins\classwizard\classwizarddlg.h plugins\classwizard\resources\new_class.xrc plugins\codecompletion\cclist.cpp plugins\codecompletion\cclist.h plugins\codecompletion\cclistctrl.cpp plugins\codecompletion\cclistctrl.h plugins\codecompletion\ccoptionsdlg.cpp plugins\codecompletion\ccoptionsdlg.h plugins\codecompletion\ccrenderer.cpp plugins\codecompletion\ccrenderer.h plugins\codecompletion\classbrowser.cpp plugins\codecompletion\classbrowser.h plugins\codecompletion\codecompletion.cpp plugins\codecompletion\codecompletion.h plugins\codecompletion\insertclassmethoddlg.cpp plugins\codecompletion\insertclassmethoddlg.h plugins\codecompletion\nativeparser.cpp plugins\codecompletion\nativeparser.h plugins\codecompletion\parser\parser.cpp plugins\codecompletion\parser\parser.h plugins\codecompletion\parser\parserthread.cpp plugins\codecompletion\parser\parserthread.h plugins\codecompletion\parser\token.cpp plugins\codecompletion\parser\token.h plugins\codecompletion\parser\tokenizer.cpp plugins\codecompletion\parser\tokenizer.h plugins\codecompletion\resources\images\class.png plugins\codecompletion\resources\images\class_folder.png plugins\codecompletion\resources\images\ctor_private.png plugins\codecompletion\resources\images\ctor_protected.png plugins\codecompletion\resources\images\ctor_public.png plugins\codecompletion\resources\images\dtor_private.png plugins\codecompletion\resources\images\dtor_protected.png plugins\codecompletion\resources\images\dtor_public.png plugins\codecompletion\resources\images\enum.png plugins\codecompletion\resources\images\enumerator.png plugins\codecompletion\resources\images\enums_folder.png plugins\codecompletion\resources\images\method_private.png plugins\codecompletion\resources\images\method_protected.png plugins\codecompletion\resources\images\method_public.png plugins\codecompletion\resources\images\namespace.png plugins\codecompletion\resources\images\others_folder.png plugins\codecompletion\resources\images\preproc.png plugins\codecompletion\resources\images\preproc_folder.png plugins\codecompletion\resources\images\symbols_folder.png plugins\codecompletion\resources\images\var_private.png plugins\codecompletion\resources\images\var_protected.png plugins\codecompletion\resources\images\var_public.png plugins\codecompletion\resources\insert_class_method.xrc plugins\codecompletion\resources\settings.xrc plugins\compilergcc\advancedcompileroptionsdlg.cpp plugins\compilergcc\advancedcompileroptionsdlg.h plugins\compilergcc\compilerBCC.cpp plugins\compilergcc\compilerBCC.h plugins\compilergcc\compilerDMC.cpp plugins\compilergcc\compilerDMC.h plugins\compilergcc\compilerMINGW.cpp plugins\compilergcc\compilerMINGW.h plugins\compilergcc\compilerMSVC.cpp plugins\compilergcc\compilerMSVC.h plugins\compilergcc\compilerOW.cpp plugins\compilergcc\compilerOW.h plugins\compilergcc\compilerSDCC.cpp plugins\compilergcc\compilerSDCC.h plugins\compilergcc\compilererrors.cpp plugins\compilergcc\compilererrors.h plugins\compilergcc\compilergcc.cpp plugins\compilergcc\compilergcc.h plugins\compilergcc\compilermessages.cpp plugins\compilergcc\compilermessages.h plugins\compilergcc\compileroptionsdlg.cpp plugins\compilergcc\compileroptionsdlg.h plugins\compilergcc\depslib\src\alloc.c plugins\compilergcc\depslib\src\alloc.h plugins\compilergcc\depslib\src\cache.c plugins\compilergcc\depslib\src\cache.h plugins\compilergcc\depslib\src\depslib.c plugins\compilergcc\depslib\src\depslib.h plugins\compilergcc\depslib\src\filent.c plugins\compilergcc\depslib\src\filesys.h plugins\compilergcc\depslib\src\fileunix.c plugins\compilergcc\depslib\src\hash.c plugins\compilergcc\depslib\src\hash.h plugins\compilergcc\depslib\src\headers.c plugins\compilergcc\depslib\src\headers.h plugins\compilergcc\depslib\src\jam.h plugins\compilergcc\depslib\src\lists.c plugins\compilergcc\depslib\src\lists.h plugins\compilergcc\depslib\src\main.c plugins\compilergcc\depslib\src\newstr.c plugins\compilergcc\depslib\src\newstr.h plugins\compilergcc\depslib\src\pathsplit.c plugins\compilergcc\depslib\src\pathsplit.h plugins\compilergcc\depslib\src\pathsys.h plugins\compilergcc\depslib\src\pathunix.c plugins\compilergcc\depslib\src\regexp.c plugins\compilergcc\depslib\src\regexp.h plugins\compilergcc\depslib\src\search.c plugins\compilergcc\depslib\src\search.h plugins\compilergcc\depslib\src\timestamp.c plugins\compilergcc\depslib\src\timestamp.h plugins\compilergcc\directcommands.cpp plugins\compilergcc\directcommands.h plugins\compilergcc\makefilegenerator.cpp plugins\compilergcc\makefilegenerator.h plugins\compilergcc\resources\advanced_compiler_options.xrc plugins\compilergcc\resources\compiler_menu.xrc plugins\compilergcc\resources\compiler_options.xrc plugins\compilergcc\resources\compiler_toolbar.xrc plugins\compilergcc\resources\compiler_toolbar_16x16.xrc plugins\compilergcc\resources\images\16x16\compile.png plugins\compilergcc\resources\images\16x16\compilerun.png plugins\compilergcc\resources\images\16x16\rebuild.png plugins\compilergcc\resources\images\16x16\run.png plugins\compilergcc\resources\images\compile.png plugins\compilergcc\resources\images\compilerun.png plugins\compilergcc\resources\images\rebuild.png plugins\compilergcc\resources\images\run.png plugins\debuggergdb\backtracedlg.cpp plugins\debuggergdb\backtracedlg.h plugins\debuggergdb\debuggergdb.cpp plugins\debuggergdb\debuggergdb.h plugins\debuggergdb\debuggeroptionsdlg.cpp plugins\debuggergdb\debuggeroptionsdlg.h plugins\debuggergdb\debuggertree.cpp plugins\debuggergdb\debuggertree.h plugins\debuggergdb\disassemblydlg.cpp plugins\debuggergdb\disassemblydlg.h plugins\debuggergdb\resources\backtrace.xrc plugins\debuggergdb\resources\debugger_menu.xrc plugins\debuggergdb\resources\debugger_options_dlg.xrc plugins\debuggergdb\resources\debugger_toolbar.xrc plugins\debuggergdb\resources\debugger_toolbar_16x16.xrc plugins\debuggergdb\resources\disassembly.xrc plugins\debuggergdb\resources\images\16x16\dbgnext.png plugins\debuggergdb\resources\images\16x16\dbgrun.png plugins\debuggergdb\resources\images\16x16\dbgrunto.png plugins\debuggergdb\resources\images\16x16\dbgstep.png plugins\debuggergdb\resources\images\16x16\dbgstepout.png plugins\debuggergdb\resources\images\16x16\stop.png plugins\debuggergdb\resources\images\dbgnext.png plugins\debuggergdb\resources\images\dbgrun.png plugins\debuggergdb\resources\images\dbgrunto.png plugins\debuggergdb\resources\images\dbgstep.png plugins\debuggergdb\resources\images\dbgstepout.png plugins\debuggergdb\resources\images\stop.png plugins\defaultmimehandler\defaultmimehandler.cpp plugins\defaultmimehandler\defaultmimehandler.h plugins\defaultmimehandler\editmimetypesdlg.cpp plugins\defaultmimehandler\editmimetypesdlg.h plugins\defaultmimehandler\mimetypesarray.h plugins\defaultmimehandler\resources\edit_files_handling.xrc plugins\pluginwizard\enterinfodlg.cpp plugins\pluginwizard\enterinfodlg.h plugins\pluginwizard\pluginwizard.cpp plugins\pluginwizard\pluginwizard.h plugins\pluginwizard\pluginwizarddlg.cpp plugins\pluginwizard\pluginwizarddlg.h plugins\pluginwizard\resources\new_plugin.xrc plugins\pluginwizard\resources\plugin_info.xrc plugins\todo\addtododlg.cpp plugins\todo\addtododlg.h plugins\todo\resources\add_todo.xrc plugins\todo\resources\settings.xrc plugins\todo\todolist.cpp plugins\todo\todolist.h plugins\todo\todolistview.cpp plugins\todo\todolistview.h plugins\todo\todosettingsdlg.cpp plugins\todo\todosettingsdlg.h plugins\xpmanifest\windowsxplooknfeel.cpp plugins\xpmanifest\windowsxplooknfeel.h sdk.doxy sdk\Managers\Managers.cpp sdk\Managers\Managers.h sdk\Managers\StdAfx.cpp sdk\Managers\StdAfx.h sdk\autodetectcompilers.cpp sdk\autodetectcompilers.h sdk\cbeditor.cpp sdk\cbeditor.h sdk\cbeditorprintout.cpp sdk\cbeditorprintout.h sdk\cbplugin.cpp sdk\cbplugin.h sdk\cbproject.cpp sdk\cbproject.h sdk\cbworkspace.cpp sdk\cbworkspace.h sdk\compileoptionsbase.cpp sdk\compileoptionsbase.h sdk\compiler.cpp sdk\compiler.h sdk\compilerfactory.cpp sdk\compilerfactory.h sdk\compileroptions.cpp sdk\compileroptions.h sdk\compiletargetbase.cpp sdk\compiletargetbase.h sdk\configmanager.cpp sdk\configmanager.h sdk\configuretoolsdlg.cpp sdk\configuretoolsdlg.h sdk\confirmreplacedlg.cpp sdk\confirmreplacedlg.h sdk\customvars.cpp sdk\customvars.h sdk\devcpploader.cpp sdk\devcpploader.h sdk\editarrayfiledlg.cpp sdk\editarrayfiledlg.h sdk\editarrayorderdlg.cpp sdk\editarrayorderdlg.h sdk\editarraystringdlg.cpp sdk\editarraystringdlg.h sdk\editorbase.cpp sdk\editorbase.h sdk\editorcolorset.cpp sdk\editorcolorset.h sdk\editorconfigurationdlg.cpp sdk\editorconfigurationdlg.h sdk\editorlexerloader.cpp sdk\editorlexerloader.h sdk\editormanager.cpp sdk\editormanager.h sdk\editpathdlg.cpp sdk\editpathdlg.h sdk\edittooldlg.cpp sdk\edittooldlg.h sdk\externaldepsdlg.cpp sdk\externaldepsdlg.h sdk\filegroupsandmasks.cpp sdk\filegroupsandmasks.h sdk\finddlg.cpp sdk\finddlg.h sdk\findreplacebase.h sdk\globals.cpp sdk\globals.h sdk\ibaseloader.h sdk\ibaseworkspaceloader.h sdk\importers_globals.cpp sdk\importers_globals.h sdk\incrementalselectlistdlg.cpp sdk\incrementalselectlistdlg.h sdk\licenses.h sdk\macrosmanager.cpp sdk\macrosmanager.h sdk\managedthread.cpp sdk\managedthread.h sdk\manager.cpp sdk\manager.h sdk\managerproxy.h sdk\menuitemsmanager.cpp sdk\menuitemsmanager.h sdk\messagelog.cpp sdk\messagelog.h sdk\messagemanager.cpp sdk\messagemanager.h sdk\msvc7loader.cpp sdk\msvc7loader.h sdk\msvc7workspaceloader.cpp sdk\msvc7workspaceloader.h sdk\msvcloader.cpp sdk\msvcloader.h sdk\msvcworkspaceloader.cpp sdk\msvcworkspaceloader.h sdk\multiselectdlg.cpp sdk\multiselectdlg.h sdk\newfromtemplatedlg.cpp sdk\newfromtemplatedlg.h sdk\openfilestree.h sdk\personalitymanager.cpp sdk\personalitymanager.h sdk\pipedprocess.cpp sdk\pipedprocess.h sdk\pluginmanager.cpp sdk\pluginmanager.h sdk\pluginsconfigurationdlg.cpp sdk\pluginsconfigurationdlg.h sdk\printing_types.cpp sdk\printing_types.h sdk\projectbuildtarget.cpp sdk\projectbuildtarget.h sdk\projectfileoptionsdlg.cpp sdk\projectfileoptionsdlg.h sdk\projectlayoutloader.cpp sdk\projectlayoutloader.h sdk\projectloader.cpp sdk\projectloader.h sdk\projectmanager.cpp sdk\projectmanager.h sdk\projectoptionsdlg.cpp sdk\projectoptionsdlg.h sdk\projectsfilemasksdlg.cpp sdk\projectsfilemasksdlg.h sdk\projecttemplateloader.cpp sdk\projecttemplateloader.h sdk\replacedlg.cpp sdk\replacedlg.h sdk\resources\auto_detect_compilers.xrc sdk\resources\configure_tools.xrc sdk\resources\confirm_replace.xrc sdk\resources\edit_array_order.xrc sdk\resources\edit_array_string.xrc sdk\resources\edit_path.xrc sdk\resources\edit_tool.xrc sdk\resources\editor_configuration.xrc sdk\resources\editor_manager.xrc sdk\resources\external_deps.xrc sdk\resources\find_dialog.xrc sdk\resources\generic_multi_select.xrc sdk\resources\incremental_select_list.xrc sdk\resources\lexers\lexer_cpp.sample sdk\resources\lexers\lexer_cpp.xml sdk\resources\lexers\lexer_gm.sample sdk\resources\lexers\lexer_gm.xml sdk\resources\lexers\lexer_hitasm.sample sdk\resources\lexers\lexer_hitasm.xml sdk\resources\lexers\lexer_lua.sample sdk\resources\lexers\lexer_lua.xml sdk\resources\lexers\lexer_rc.sample sdk\resources\lexers\lexer_rc.xml sdk\resources\lexers\lexer_xml.sample sdk\resources\lexers\lexer_xml.xml sdk\resources\new_from_template.xrc sdk\resources\plugins_configuration.xrc sdk\resources\project_manager_file_types.xrc sdk\resources\project_options.xrc sdk\resources\projectfile_options.xrc sdk\resources\replace_dialog.xrc sdk\resources\select_target.xrc sdk\sanitycheck.h sdk\sdk_events.cpp sdk\sdk_events.h sdk\searchresultslog.cpp sdk\searchresultslog.h sdk\selecttargetdlg.cpp sdk\selecttargetdlg.h sdk\settings.h sdk\simplelistlog.cpp sdk\simplelistlog.h sdk\simpletextlog.cpp sdk\simpletextlog.h sdk\templatemanager.cpp sdk\templatemanager.h sdk\tinyxml\tinystr.cpp sdk\tinyxml\tinystr.h sdk\tinyxml\tinyxml.cpp sdk\tinyxml\tinyxml.h sdk\tinyxml\tinyxmlerror.cpp sdk\tinyxml\tinyxmlparser.cpp sdk\toolsmanager.cpp sdk\toolsmanager.h sdk\workspaceloader.cpp sdk\workspaceloader.h sdk\wxscintilla\include\wx\wxscintilla.h sdk\wxscintilla\src\PlatWX.cpp sdk\wxscintilla\src\PlatWX.h sdk\wxscintilla\src\ScintillaWX.cpp sdk\wxscintilla\src\ScintillaWX.h sdk\wxscintilla\src\scintilla\include\Accessor.h sdk\wxscintilla\src\scintilla\include\KeyWords.h sdk\wxscintilla\src\scintilla\include\Platform.h sdk\wxscintilla\src\scintilla\include\PropSet.h sdk\wxscintilla\src\scintilla\include\SString.h sdk\wxscintilla\src\scintilla\include\SciLexer.h sdk\wxscintilla\src\scintilla\include\Scintilla.h sdk\wxscintilla\src\scintilla\include\ScintillaWidget.h sdk\wxscintilla\src\scintilla\include\WindowAccessor.h sdk\wxscintilla\src\scintilla\src\AutoComplete.cxx sdk\wxscintilla\src\scintilla\src\AutoComplete.h sdk\wxscintilla\src\scintilla\src\CallTip.cxx sdk\wxscintilla\src\scintilla\src\CallTip.h sdk\wxscintilla\src\scintilla\src\CellBuffer.cxx sdk\wxscintilla\src\scintilla\src\CellBuffer.h sdk\wxscintilla\src\scintilla\src\ContractionState.cxx sdk\wxscintilla\src\scintilla\src\ContractionState.h sdk\wxscintilla\src\scintilla\src\Document.cxx sdk\wxscintilla\src\scintilla\src\Document.h sdk\wxscintilla\src\scintilla\src\DocumentAccessor.cxx sdk\wxscintilla\src\scintilla\src\DocumentAccessor.h sdk\wxscintilla\src\scintilla\src\Editor.cxx sdk\wxscintilla\src\scintilla\src\Editor.h sdk\wxscintilla\src\scintilla\src\ExternalLexer.cxx sdk\wxscintilla\src\scintilla\src\ExternalLexer.h sdk\wxscintilla\src\scintilla\src\Indicator.cxx sdk\wxscintilla\src\scintilla\src\Indicator.h sdk\wxscintilla\src\scintilla\src\KeyMap.cxx sdk\wxscintilla\src\scintilla\src\KeyMap.h sdk\wxscintilla\src\scintilla\src\KeyWords.cxx sdk\wxscintilla\src\scintilla\src\LexAPDL.cxx sdk\wxscintilla\src\scintilla\src\LexAU3.cxx sdk\wxscintilla\src\scintilla\src\LexAVE.cxx sdk\wxscintilla\src\scintilla\src\LexAda.cxx sdk\wxscintilla\src\scintilla\src\LexAsm.cxx sdk\wxscintilla\src\scintilla\src\LexAsn1.cxx sdk\wxscintilla\src\scintilla\src\LexBaan.cxx sdk\wxscintilla\src\scintilla\src\LexBash.cxx sdk\wxscintilla\src\scintilla\src\LexBasic.cxx sdk\wxscintilla\src\scintilla\src\LexBullant.cxx sdk\wxscintilla\src\scintilla\src\LexCLW.cxx sdk\wxscintilla\src\scintilla\src\LexCPP.cxx sdk\wxscintilla\src\scintilla\src\LexCSS.cxx sdk\wxscintilla\src\scintilla\src\LexCaml.cxx sdk\wxscintilla\src\scintilla\src\LexConf.cxx sdk\wxscintilla\src\scintilla\src\LexCrontab.cxx sdk\wxscintilla\src\scintilla\src\LexCsound.cxx sdk\wxscintilla\src\scintilla\src\LexEScript.cxx sdk\wxscintilla\src\scintilla\src\LexEiffel.cxx sdk\wxscintilla\src\scintilla\src\LexErlang.cxx sdk\wxscintilla\src\scintilla\src\LexFlagship.cxx sdk\wxscintilla\src\scintilla\src\LexForth.cxx sdk\wxscintilla\src\scintilla\src\LexFortran.cxx sdk\wxscintilla\src\scintilla\src\LexGui4Cli.cxx sdk\wxscintilla\src\scintilla\src\LexHTML.cxx sdk\wxscintilla\src\scintilla\src\LexHaskell.cxx sdk\wxscintilla\src\scintilla\src\LexKix.cxx sdk\wxscintilla\src\scintilla\src\LexLisp.cxx sdk\wxscintilla\src\scintilla\src\LexLout.cxx sdk\wxscintilla\src\scintilla\src\LexLua.cxx sdk\wxscintilla\src\scintilla\src\LexMMIXAL.cxx sdk\wxscintilla\src\scintilla\src\LexMPT.cxx sdk\wxscintilla\src\scintilla\src\LexMSSQL.cxx sdk\wxscintilla\src\scintilla\src\LexMatlab.cxx sdk\wxscintilla\src\scintilla\src\LexMetapost.cxx sdk\wxscintilla\src\scintilla\src\LexNsis.cxx sdk\wxscintilla\src\scintilla\src\LexOthers.cxx sdk\wxscintilla\src\scintilla\src\LexPB.cxx sdk\wxscintilla\src\scintilla\src\LexPOV.cxx sdk\wxscintilla\src\scintilla\src\LexPS.cxx sdk\wxscintilla\src\scintilla\src\LexPascal.cxx sdk\wxscintilla\src\scintilla\src\LexPerl.cxx sdk\wxscintilla\src\scintilla\src\LexPython.cxx sdk\wxscintilla\src\scintilla\src\LexRebol.cxx sdk\wxscintilla\src\scintilla\src\LexRuby.cxx sdk\wxscintilla\src\scintilla\src\LexSQL.cxx sdk\wxscintilla\src\scintilla\src\LexScriptol.cxx sdk\wxscintilla\src\scintilla\src\LexSmalltalk.cxx sdk\wxscintilla\src\scintilla\src\LexSpecman.cxx sdk\wxscintilla\src\scintilla\src\LexTADS3.cxx sdk\wxscintilla\src\scintilla\src\LexTeX.cxx sdk\wxscintilla\src\scintilla\src\LexVB.cxx sdk\wxscintilla\src\scintilla\src\LexVHDL.cxx sdk\wxscintilla\src\scintilla\src\LexVerilog.cxx sdk\wxscintilla\src\scintilla\src\LexYAML.cxx sdk\wxscintilla\src\scintilla\src\LineMarker.cxx sdk\wxscintilla\src\scintilla\src\LineMarker.h sdk\wxscintilla\src\scintilla\src\PropSet.cxx sdk\wxscintilla\src\scintilla\src\RESearch.cxx sdk\wxscintilla\src\scintilla\src\RESearch.h sdk\wxscintilla\src\scintilla\src\SVector.h sdk\wxscintilla\src\scintilla\src\ScintillaBase.cxx sdk\wxscintilla\src\scintilla\src\ScintillaBase.h sdk\wxscintilla\src\scintilla\src\Style.cxx sdk\wxscintilla\src\scintilla\src\Style.h sdk\wxscintilla\src\scintilla\src\StyleContext.cxx sdk\wxscintilla\src\scintilla\src\StyleContext.h sdk\wxscintilla\src\scintilla\src\UniConversion.cxx sdk\wxscintilla\src\scintilla\src\UniConversion.h sdk\wxscintilla\src\scintilla\src\ViewStyle.cxx sdk\wxscintilla\src\scintilla\src\ViewStyle.h sdk\wxscintilla\src\scintilla\src\WindowAccessor.cxx sdk\wxscintilla\src\scintilla\src\XPM.cxx sdk\wxscintilla\src\scintilla\src\XPM.h sdk\wxscintilla\src\wxscintilla.cpp sdk\xtra_classes.cpp sdk\xtra_classes.h sdk\xtra_res.cpp sdk\xtra_res.h src\app.cpp src\app.h src\dlgabout.cpp src\dlgabout.h src\dlgaboutplugin.cpp src\dlgaboutplugin.h src\environmentsettingsdlg.cpp src\environmentsettingsdlg.h src\globals.h src\impexpconfig.cpp src\impexpconfig.h src\main.cpp src\main.h src\printdlg.cpp src\printdlg.h src\resources\dlg_about.xrc src\resources\dlg_about_plugin.xrc src\resources\env_settings.xrc src\resources\icons\app.ico src\resources\icons\app.xpm src\resources\icons\c.ico src\resources\icons\cpp.ico src\resources\icons\csd.ico src\resources\icons\filetempl.ico src\resources\icons\h.ico src\resources\images\16x16\editcopy.png src\resources\images\16x16\editcut.png src\resources\images\16x16\editpaste.png src\resources\images\16x16\filefind.png src\resources\images\16x16\filenew.png src\resources\images\16x16\fileopen.png src\resources\images\16x16\filesave.png src\resources\images\16x16\folder.png src\resources\images\16x16\folder_new.png src\resources\images\16x16\folder_open.png src\resources\images\16x16\newproject.png src\resources\images\16x16\redo.png src\resources\images\16x16\searchreplace.png src\resources\images\16x16\undo.png src\resources\images\ascii.png src\resources\images\codeblocks.png src\resources\images\compile.png src\resources\images\compilerun.png src\resources\images\contents_16x16.png src\resources\images\dbgnext.png src\resources\images\dbgrun.png src\resources\images\dbgrunto.png src\resources\images\dbgstep.png src\resources\images\edit_16x16.png src\resources\images\editcopy.png src\resources\images\editcut.png src\resources\images\editpaste.png src\resources\images\filefind.png src\resources\images\filenew.png src\resources\images\fileopen.png src\resources\images\filesave.png src\resources\images\filesaveas.png src\resources\images\flag_16x16.png src\resources\images\folder.png src\resources\images\folder_new.png src\resources\images\folder_open.png src\resources\images\gohome.png src\resources\images\misc_16x16.png src\resources\images\newproject.png src\resources\images\rebuild.png src\resources\images\redo.png src\resources\images\run.png src\resources\images\searchreplace.png src\resources\images\source.png src\resources\images\splash.png src\resources\images\stop.png src\resources\images\undo.png src\resources\imp_exp_config.xrc src\resources\main_frame.xrc src\resources\main_menu.xrc src\resources\main_toolbar.xrc src\resources\main_toolbar_16x16.xrc src\resources\print_dialog.xrc src\resources\resources.rc src\resources\start_here\cb_logo.jpg src\resources\start_here\start_here.html src\startherepage.cpp src\startherepage.h templates\console-main-c.cpp templates\console-main-cpp.cpp templates\console.cbp templates\console.png templates\console.template templates\gui.png templates\opengl-main.cpp templates\opengl.cbp templates\opengl.png templates\opengl.template templates\win32-main.cpp templates\win32.cbp templates\win32gui.template templates\wx-app-ash.cpp templates\wx-app-ash.h templates\wx-main-ash.cpp templates\wx-main-ash.h templates\wx-main-s.cpp templates\wx-main-sh.cpp templates\wx-main-sh.h templates\wxwindows.cbp templates\wxwindows.png templates\wxwindows.template tips.txt tools\ConsoleRunner\main.cpp 
+	@zip CodeBlocks.cbp.zip CodeBlocks.cbp Makefile devel\share\CodeBlocks\images\codecompletion\README.txt devel\share\CodeBlocks\plugins\README.txt devel\share\CodeBlocks\templates\README.txt plugins\astyle\astyle\ASBeautifier.cpp plugins\astyle\astyle\ASFormatter.cpp plugins\astyle\astyle\INSTALL.TXT plugins\astyle\astyle\Makefile plugins\astyle\astyle\astyle.h plugins\astyle\astyle\astyle.html plugins\astyle\astyle\astyle_main.cpp plugins\astyle\astyle\astyle_release_notes.html plugins\astyle\astyle\compiler_defines.h plugins\astyle\astyle\license.html plugins\astyle\astyleconfigdlg.cpp plugins\astyle\astyleconfigdlg.h plugins\astyle\astyleplugin.cpp plugins\astyle\astyleplugin.h plugins\astyle\formattersettings.cpp plugins\astyle\formattersettings.h plugins\astyle\resources\configuration.xrc plugins\classwizard\classwizard.cpp plugins\classwizard\classwizard.h plugins\classwizard\classwizarddlg.cpp plugins\classwizard\classwizarddlg.h plugins\classwizard\resources\new_class.xrc plugins\codecompletion\cclist.cpp plugins\codecompletion\cclist.h plugins\codecompletion\cclistctrl.cpp plugins\codecompletion\cclistctrl.h plugins\codecompletion\ccoptionsdlg.cpp plugins\codecompletion\ccoptionsdlg.h plugins\codecompletion\ccrenderer.cpp plugins\codecompletion\ccrenderer.h plugins\codecompletion\classbrowser.cpp plugins\codecompletion\classbrowser.h plugins\codecompletion\codecompletion.cpp plugins\codecompletion\codecompletion.h plugins\codecompletion\insertclassmethoddlg.cpp plugins\codecompletion\insertclassmethoddlg.h plugins\codecompletion\nativeparser.cpp plugins\codecompletion\nativeparser.h plugins\codecompletion\parser\parser.cpp plugins\codecompletion\parser\parser.h plugins\codecompletion\parser\parserthread.cpp plugins\codecompletion\parser\parserthread.h plugins\codecompletion\parser\token.cpp plugins\codecompletion\parser\token.h plugins\codecompletion\parser\tokenizer.cpp plugins\codecompletion\parser\tokenizer.h plugins\codecompletion\resources\images\class.png plugins\codecompletion\resources\images\class_folder.png plugins\codecompletion\resources\images\ctor_private.png plugins\codecompletion\resources\images\ctor_protected.png plugins\codecompletion\resources\images\ctor_public.png plugins\codecompletion\resources\images\dtor_private.png plugins\codecompletion\resources\images\dtor_protected.png plugins\codecompletion\resources\images\dtor_public.png plugins\codecompletion\resources\images\enum.png plugins\codecompletion\resources\images\enumerator.png plugins\codecompletion\resources\images\enums_folder.png plugins\codecompletion\resources\images\method_private.png plugins\codecompletion\resources\images\method_protected.png plugins\codecompletion\resources\images\method_public.png plugins\codecompletion\resources\images\namespace.png plugins\codecompletion\resources\images\others_folder.png plugins\codecompletion\resources\images\preproc.png plugins\codecompletion\resources\images\preproc_folder.png plugins\codecompletion\resources\images\symbols_folder.png plugins\codecompletion\resources\images\var_private.png plugins\codecompletion\resources\images\var_protected.png plugins\codecompletion\resources\images\var_public.png plugins\codecompletion\resources\insert_class_method.xrc plugins\codecompletion\resources\settings.xrc plugins\compilergcc\advancedcompileroptionsdlg.cpp plugins\compilergcc\advancedcompileroptionsdlg.h plugins\compilergcc\compilerBCC.cpp plugins\compilergcc\compilerBCC.h plugins\compilergcc\compilerDMC.cpp plugins\compilergcc\compilerDMC.h plugins\compilergcc\compilerMINGW.cpp plugins\compilergcc\compilerMINGW.h plugins\compilergcc\compilerMSVC.cpp plugins\compilergcc\compilerMSVC.h plugins\compilergcc\compilerOW.cpp plugins\compilergcc\compilerOW.h plugins\compilergcc\compilerSDCC.cpp plugins\compilergcc\compilerSDCC.h plugins\compilergcc\compilererrors.cpp plugins\compilergcc\compilererrors.h plugins\compilergcc\compilergcc.cpp plugins\compilergcc\compilergcc.h plugins\compilergcc\compilermessages.cpp plugins\compilergcc\compilermessages.h plugins\compilergcc\compileroptionsdlg.cpp plugins\compilergcc\compileroptionsdlg.h plugins\compilergcc\depslib\src\alloc.c plugins\compilergcc\depslib\src\alloc.h plugins\compilergcc\depslib\src\cache.c plugins\compilergcc\depslib\src\cache.h plugins\compilergcc\depslib\src\depslib.c plugins\compilergcc\depslib\src\depslib.h plugins\compilergcc\depslib\src\filent.c plugins\compilergcc\depslib\src\filesys.h plugins\compilergcc\depslib\src\fileunix.c plugins\compilergcc\depslib\src\hash.c plugins\compilergcc\depslib\src\hash.h plugins\compilergcc\depslib\src\headers.c plugins\compilergcc\depslib\src\headers.h plugins\compilergcc\depslib\src\jam.h plugins\compilergcc\depslib\src\lists.c plugins\compilergcc\depslib\src\lists.h plugins\compilergcc\depslib\src\main.c plugins\compilergcc\depslib\src\newstr.c plugins\compilergcc\depslib\src\newstr.h plugins\compilergcc\depslib\src\pathsplit.c plugins\compilergcc\depslib\src\pathsplit.h plugins\compilergcc\depslib\src\pathsys.h plugins\compilergcc\depslib\src\pathunix.c plugins\compilergcc\depslib\src\regexp.c plugins\compilergcc\depslib\src\regexp.h plugins\compilergcc\depslib\src\search.c plugins\compilergcc\depslib\src\search.h plugins\compilergcc\depslib\src\timestamp.c plugins\compilergcc\depslib\src\timestamp.h plugins\compilergcc\directcommands.cpp plugins\compilergcc\directcommands.h plugins\compilergcc\makefilegenerator.cpp plugins\compilergcc\makefilegenerator.h plugins\compilergcc\resources\advanced_compiler_options.xrc plugins\compilergcc\resources\compiler_menu.xrc plugins\compilergcc\resources\compiler_options.xrc plugins\compilergcc\resources\compiler_toolbar.xrc plugins\compilergcc\resources\compiler_toolbar_16x16.xrc plugins\compilergcc\resources\images\16x16\compile.png plugins\compilergcc\resources\images\16x16\compilerun.png plugins\compilergcc\resources\images\16x16\rebuild.png plugins\compilergcc\resources\images\16x16\run.png plugins\compilergcc\resources\images\compile.png plugins\compilergcc\resources\images\compilerun.png plugins\compilergcc\resources\images\rebuild.png plugins\compilergcc\resources\images\run.png plugins\debuggergdb\backtracedlg.cpp plugins\debuggergdb\backtracedlg.h plugins\debuggergdb\debuggergdb.cpp plugins\debuggergdb\debuggergdb.h plugins\debuggergdb\debuggeroptionsdlg.cpp plugins\debuggergdb\debuggeroptionsdlg.h plugins\debuggergdb\debuggertree.cpp plugins\debuggergdb\debuggertree.h plugins\debuggergdb\disassemblydlg.cpp plugins\debuggergdb\disassemblydlg.h plugins\debuggergdb\resources\backtrace.xrc plugins\debuggergdb\resources\debugger_menu.xrc plugins\debuggergdb\resources\debugger_options_dlg.xrc plugins\debuggergdb\resources\debugger_toolbar.xrc plugins\debuggergdb\resources\debugger_toolbar_16x16.xrc plugins\debuggergdb\resources\disassembly.xrc plugins\debuggergdb\resources\images\16x16\dbgnext.png plugins\debuggergdb\resources\images\16x16\dbgrun.png plugins\debuggergdb\resources\images\16x16\dbgrunto.png plugins\debuggergdb\resources\images\16x16\dbgstep.png plugins\debuggergdb\resources\images\16x16\dbgstepout.png plugins\debuggergdb\resources\images\16x16\stop.png plugins\debuggergdb\resources\images\dbgnext.png plugins\debuggergdb\resources\images\dbgrun.png plugins\debuggergdb\resources\images\dbgrunto.png plugins\debuggergdb\resources\images\dbgstep.png plugins\debuggergdb\resources\images\dbgstepout.png plugins\debuggergdb\resources\images\stop.png plugins\defaultmimehandler\defaultmimehandler.cpp plugins\defaultmimehandler\defaultmimehandler.h plugins\defaultmimehandler\editmimetypesdlg.cpp plugins\defaultmimehandler\editmimetypesdlg.h plugins\defaultmimehandler\mimetypesarray.h plugins\defaultmimehandler\resources\edit_files_handling.xrc plugins\pluginwizard\enterinfodlg.cpp plugins\pluginwizard\enterinfodlg.h plugins\pluginwizard\pluginwizard.cpp plugins\pluginwizard\pluginwizard.h plugins\pluginwizard\pluginwizarddlg.cpp plugins\pluginwizard\pluginwizarddlg.h plugins\pluginwizard\resources\new_plugin.xrc plugins\pluginwizard\resources\plugin_info.xrc plugins\todo\addtododlg.cpp plugins\todo\addtododlg.h plugins\todo\resources\add_todo.xrc plugins\todo\resources\settings.xrc plugins\todo\todolist.cpp plugins\todo\todolist.h plugins\todo\todolistview.cpp plugins\todo\todolistview.h plugins\todo\todosettingsdlg.cpp plugins\todo\todosettingsdlg.h plugins\xpmanifest\windowsxplooknfeel.cpp plugins\xpmanifest\windowsxplooknfeel.h sdk.doxy sdk\Managers\Managers.cpp sdk\Managers\Managers.h sdk\Managers\StdAfx.cpp sdk\Managers\StdAfx.h sdk\autodetectcompilers.cpp sdk\autodetectcompilers.h sdk\cbeditor.cpp sdk\cbeditor.h sdk\cbeditorprintout.cpp sdk\cbeditorprintout.h sdk\cbplugin.cpp sdk\cbplugin.h sdk\cbproject.cpp sdk\cbproject.h sdk\cbworkspace.cpp sdk\cbworkspace.h sdk\compileoptionsbase.cpp sdk\compileoptionsbase.h sdk\compiler.cpp sdk\compiler.h sdk\compilerfactory.cpp sdk\compilerfactory.h sdk\compileroptions.cpp sdk\compileroptions.h sdk\compiletargetbase.cpp sdk\compiletargetbase.h sdk\configmanager.cpp sdk\configmanager.h sdk\configuretoolsdlg.cpp sdk\configuretoolsdlg.h sdk\confirmreplacedlg.cpp sdk\confirmreplacedlg.h sdk\customvars.cpp sdk\customvars.h sdk\devcpploader.cpp sdk\devcpploader.h sdk\editarrayfiledlg.cpp sdk\editarrayfiledlg.h sdk\editarrayorderdlg.cpp sdk\editarrayorderdlg.h sdk\editarraystringdlg.cpp sdk\editarraystringdlg.h sdk\editorbase.cpp sdk\editorbase.h sdk\editorcolorset.cpp sdk\editorcolorset.h sdk\editorconfigurationdlg.cpp sdk\editorconfigurationdlg.h sdk\editorlexerloader.cpp sdk\editorlexerloader.h sdk\editormanager.cpp sdk\editormanager.h sdk\editpathdlg.cpp sdk\editpathdlg.h sdk\edittooldlg.cpp sdk\edittooldlg.h sdk\externaldepsdlg.cpp sdk\externaldepsdlg.h sdk\filegroupsandmasks.cpp sdk\filegroupsandmasks.h sdk\finddlg.cpp sdk\finddlg.h sdk\findreplacebase.h sdk\globals.cpp sdk\globals.h sdk\ibaseloader.h sdk\ibaseworkspaceloader.h sdk\importers_globals.cpp sdk\importers_globals.h sdk\incrementalselectlistdlg.cpp sdk\incrementalselectlistdlg.h sdk\licenses.h sdk\macrosmanager.cpp sdk\macrosmanager.h sdk\managedthread.cpp sdk\managedthread.h sdk\manager.cpp sdk\manager.h sdk\managerproxy.h sdk\menuitemsmanager.cpp sdk\menuitemsmanager.h sdk\messagelog.cpp sdk\messagelog.h sdk\messagemanager.cpp sdk\messagemanager.h sdk\msvc7loader.cpp sdk\msvc7loader.h sdk\msvc7workspaceloader.cpp sdk\msvc7workspaceloader.h sdk\msvcloader.cpp sdk\msvcloader.h sdk\msvcworkspaceloader.cpp sdk\msvcworkspaceloader.h sdk\multiselectdlg.cpp sdk\multiselectdlg.h sdk\newfromtemplatedlg.cpp sdk\newfromtemplatedlg.h sdk\openfilestree.h sdk\personalitymanager.cpp sdk\personalitymanager.h sdk\pipedprocess.cpp sdk\pipedprocess.h sdk\pluginmanager.cpp sdk\pluginmanager.h sdk\pluginsconfigurationdlg.cpp sdk\pluginsconfigurationdlg.h sdk\printing_types.cpp sdk\printing_types.h sdk\projectbuildtarget.cpp sdk\projectbuildtarget.h sdk\projectfileoptionsdlg.cpp sdk\projectfileoptionsdlg.h sdk\projectlayoutloader.cpp sdk\projectlayoutloader.h sdk\projectloader.cpp sdk\projectloader.h sdk\projectmanager.cpp sdk\projectmanager.h sdk\projectoptionsdlg.cpp sdk\projectoptionsdlg.h sdk\projectsfilemasksdlg.cpp sdk\projectsfilemasksdlg.h sdk\projecttemplateloader.cpp sdk\projecttemplateloader.h sdk\replacedlg.cpp sdk\replacedlg.h sdk\resources\auto_detect_compilers.xrc sdk\resources\configure_tools.xrc sdk\resources\confirm_replace.xrc sdk\resources\edit_array_order.xrc sdk\resources\edit_array_string.xrc sdk\resources\edit_path.xrc sdk\resources\edit_tool.xrc sdk\resources\editor_configuration.xrc sdk\resources\editor_manager.xrc sdk\resources\external_deps.xrc sdk\resources\find_dialog.xrc sdk\resources\generic_multi_select.xrc sdk\resources\incremental_select_list.xrc sdk\resources\lexers\lexer_cpp.sample sdk\resources\lexers\lexer_cpp.xml sdk\resources\lexers\lexer_gm.sample sdk\resources\lexers\lexer_gm.xml sdk\resources\lexers\lexer_hitasm.sample sdk\resources\lexers\lexer_hitasm.xml sdk\resources\lexers\lexer_lua.sample sdk\resources\lexers\lexer_lua.xml sdk\resources\lexers\lexer_prg.sample sdk\resources\lexers\lexer_prg.xml sdk\resources\lexers\lexer_rc.sample sdk\resources\lexers\lexer_rc.xml sdk\resources\lexers\lexer_xml.sample sdk\resources\lexers\lexer_xml.xml sdk\resources\new_from_template.xrc sdk\resources\plugins_configuration.xrc sdk\resources\project_manager_file_types.xrc sdk\resources\project_options.xrc sdk\resources\projectfile_options.xrc sdk\resources\replace_dialog.xrc sdk\resources\select_target.xrc sdk\sanitycheck.h sdk\sdk_events.cpp sdk\sdk_events.h sdk\searchresultslog.cpp sdk\searchresultslog.h sdk\selecttargetdlg.cpp sdk\selecttargetdlg.h sdk\settings.h sdk\simplelistlog.cpp sdk\simplelistlog.h sdk\simpletextlog.cpp sdk\simpletextlog.h sdk\templatemanager.cpp sdk\templatemanager.h sdk\tinyxml\tinystr.cpp sdk\tinyxml\tinystr.h sdk\tinyxml\tinyxml.cpp sdk\tinyxml\tinyxml.h sdk\tinyxml\tinyxmlerror.cpp sdk\tinyxml\tinyxmlparser.cpp sdk\toolsmanager.cpp sdk\toolsmanager.h sdk\workspaceloader.cpp sdk\workspaceloader.h sdk\wxscintilla\include\wx\wxscintilla.h sdk\wxscintilla\src\PlatWX.cpp sdk\wxscintilla\src\PlatWX.h sdk\wxscintilla\src\ScintillaWX.cpp sdk\wxscintilla\src\ScintillaWX.h sdk\wxscintilla\src\scintilla\include\Accessor.h sdk\wxscintilla\src\scintilla\include\KeyWords.h sdk\wxscintilla\src\scintilla\include\Platform.h sdk\wxscintilla\src\scintilla\include\PropSet.h sdk\wxscintilla\src\scintilla\include\SString.h sdk\wxscintilla\src\scintilla\include\SciLexer.h sdk\wxscintilla\src\scintilla\include\Scintilla.h sdk\wxscintilla\src\scintilla\include\ScintillaWidget.h sdk\wxscintilla\src\scintilla\include\WindowAccessor.h sdk\wxscintilla\src\scintilla\src\AutoComplete.cxx sdk\wxscintilla\src\scintilla\src\AutoComplete.h sdk\wxscintilla\src\scintilla\src\CallTip.cxx sdk\wxscintilla\src\scintilla\src\CallTip.h sdk\wxscintilla\src\scintilla\src\CellBuffer.cxx sdk\wxscintilla\src\scintilla\src\CellBuffer.h sdk\wxscintilla\src\scintilla\src\ContractionState.cxx sdk\wxscintilla\src\scintilla\src\ContractionState.h sdk\wxscintilla\src\scintilla\src\Document.cxx sdk\wxscintilla\src\scintilla\src\Document.h sdk\wxscintilla\src\scintilla\src\DocumentAccessor.cxx sdk\wxscintilla\src\scintilla\src\DocumentAccessor.h sdk\wxscintilla\src\scintilla\src\Editor.cxx sdk\wxscintilla\src\scintilla\src\Editor.h sdk\wxscintilla\src\scintilla\src\ExternalLexer.cxx sdk\wxscintilla\src\scintilla\src\ExternalLexer.h sdk\wxscintilla\src\scintilla\src\Indicator.cxx sdk\wxscintilla\src\scintilla\src\Indicator.h sdk\wxscintilla\src\scintilla\src\KeyMap.cxx sdk\wxscintilla\src\scintilla\src\KeyMap.h sdk\wxscintilla\src\scintilla\src\KeyWords.cxx sdk\wxscintilla\src\scintilla\src\LexAPDL.cxx sdk\wxscintilla\src\scintilla\src\LexAU3.cxx sdk\wxscintilla\src\scintilla\src\LexAVE.cxx sdk\wxscintilla\src\scintilla\src\LexAda.cxx sdk\wxscintilla\src\scintilla\src\LexAsm.cxx sdk\wxscintilla\src\scintilla\src\LexAsn1.cxx sdk\wxscintilla\src\scintilla\src\LexBaan.cxx sdk\wxscintilla\src\scintilla\src\LexBash.cxx sdk\wxscintilla\src\scintilla\src\LexBasic.cxx sdk\wxscintilla\src\scintilla\src\LexBullant.cxx sdk\wxscintilla\src\scintilla\src\LexCLW.cxx sdk\wxscintilla\src\scintilla\src\LexCPP.cxx sdk\wxscintilla\src\scintilla\src\LexCSS.cxx sdk\wxscintilla\src\scintilla\src\LexCaml.cxx sdk\wxscintilla\src\scintilla\src\LexConf.cxx sdk\wxscintilla\src\scintilla\src\LexCrontab.cxx sdk\wxscintilla\src\scintilla\src\LexCsound.cxx sdk\wxscintilla\src\scintilla\src\LexEScript.cxx sdk\wxscintilla\src\scintilla\src\LexEiffel.cxx sdk\wxscintilla\src\scintilla\src\LexErlang.cxx sdk\wxscintilla\src\scintilla\src\LexFlagship.cxx sdk\wxscintilla\src\scintilla\src\LexForth.cxx sdk\wxscintilla\src\scintilla\src\LexFortran.cxx sdk\wxscintilla\src\scintilla\src\LexGui4Cli.cxx sdk\wxscintilla\src\scintilla\src\LexHTML.cxx sdk\wxscintilla\src\scintilla\src\LexHaskell.cxx sdk\wxscintilla\src\scintilla\src\LexKix.cxx sdk\wxscintilla\src\scintilla\src\LexLisp.cxx sdk\wxscintilla\src\scintilla\src\LexLout.cxx sdk\wxscintilla\src\scintilla\src\LexLua.cxx sdk\wxscintilla\src\scintilla\src\LexMMIXAL.cxx sdk\wxscintilla\src\scintilla\src\LexMPT.cxx sdk\wxscintilla\src\scintilla\src\LexMSSQL.cxx sdk\wxscintilla\src\scintilla\src\LexMatlab.cxx sdk\wxscintilla\src\scintilla\src\LexMetapost.cxx sdk\wxscintilla\src\scintilla\src\LexNsis.cxx sdk\wxscintilla\src\scintilla\src\LexOthers.cxx sdk\wxscintilla\src\scintilla\src\LexPB.cxx sdk\wxscintilla\src\scintilla\src\LexPOV.cxx sdk\wxscintilla\src\scintilla\src\LexPS.cxx sdk\wxscintilla\src\scintilla\src\LexPascal.cxx sdk\wxscintilla\src\scintilla\src\LexPerl.cxx sdk\wxscintilla\src\scintilla\src\LexPython.cxx sdk\wxscintilla\src\scintilla\src\LexRebol.cxx sdk\wxscintilla\src\scintilla\src\LexRuby.cxx sdk\wxscintilla\src\scintilla\src\LexSQL.cxx sdk\wxscintilla\src\scintilla\src\LexScriptol.cxx sdk\wxscintilla\src\scintilla\src\LexSmalltalk.cxx sdk\wxscintilla\src\scintilla\src\LexSpecman.cxx sdk\wxscintilla\src\scintilla\src\LexTADS3.cxx sdk\wxscintilla\src\scintilla\src\LexTeX.cxx sdk\wxscintilla\src\scintilla\src\LexVB.cxx sdk\wxscintilla\src\scintilla\src\LexVHDL.cxx sdk\wxscintilla\src\scintilla\src\LexVerilog.cxx sdk\wxscintilla\src\scintilla\src\LexYAML.cxx sdk\wxscintilla\src\scintilla\src\LineMarker.cxx sdk\wxscintilla\src\scintilla\src\LineMarker.h sdk\wxscintilla\src\scintilla\src\PropSet.cxx sdk\wxscintilla\src\scintilla\src\RESearch.cxx sdk\wxscintilla\src\scintilla\src\RESearch.h sdk\wxscintilla\src\scintilla\src\SVector.h sdk\wxscintilla\src\scintilla\src\ScintillaBase.cxx sdk\wxscintilla\src\scintilla\src\ScintillaBase.h sdk\wxscintilla\src\scintilla\src\Style.cxx sdk\wxscintilla\src\scintilla\src\Style.h sdk\wxscintilla\src\scintilla\src\StyleContext.cxx sdk\wxscintilla\src\scintilla\src\StyleContext.h sdk\wxscintilla\src\scintilla\src\UniConversion.cxx sdk\wxscintilla\src\scintilla\src\UniConversion.h sdk\wxscintilla\src\scintilla\src\ViewStyle.cxx sdk\wxscintilla\src\scintilla\src\ViewStyle.h sdk\wxscintilla\src\scintilla\src\WindowAccessor.cxx sdk\wxscintilla\src\scintilla\src\XPM.cxx sdk\wxscintilla\src\scintilla\src\XPM.h sdk\wxscintilla\src\wxscintilla.cpp sdk\xtra_classes.cpp sdk\xtra_classes.h sdk\xtra_res.cpp sdk\xtra_res.h src\app.cpp src\app.h src\dlgabout.cpp src\dlgabout.h src\dlgaboutplugin.cpp src\dlgaboutplugin.h src\environmentsettingsdlg.cpp src\environmentsettingsdlg.h src\globals.h src\impexpconfig.cpp src\impexpconfig.h src\main.cpp src\main.h src\printdlg.cpp src\printdlg.h src\resources\dlg_about.xrc src\resources\dlg_about_plugin.xrc src\resources\env_settings.xrc src\resources\icons\app.ico src\resources\icons\app.xpm src\resources\icons\c.ico src\resources\icons\cpp.ico src\resources\icons\csd.ico src\resources\icons\filetempl.ico src\resources\icons\h.ico src\resources\images\16x16\editcopy.png src\resources\images\16x16\editcut.png src\resources\images\16x16\editpaste.png src\resources\images\16x16\filefind.png src\resources\images\16x16\filenew.png src\resources\images\16x16\fileopen.png src\resources\images\16x16\filesave.png src\resources\images\16x16\folder.png src\resources\images\16x16\folder_new.png src\resources\images\16x16\folder_open.png src\resources\images\16x16\newproject.png src\resources\images\16x16\redo.png src\resources\images\16x16\searchreplace.png src\resources\images\16x16\undo.png src\resources\images\ascii.png src\resources\images\codeblocks.png src\resources\images\compile.png src\resources\images\compilerun.png src\resources\images\contents_16x16.png src\resources\images\dbgnext.png src\resources\images\dbgrun.png src\resources\images\dbgrunto.png src\resources\images\dbgstep.png src\resources\images\edit_16x16.png src\resources\images\editcopy.png src\resources\images\editcut.png src\resources\images\editpaste.png src\resources\images\filefind.png src\resources\images\filenew.png src\resources\images\fileopen.png src\resources\images\filesave.png src\resources\images\filesaveas.png src\resources\images\flag_16x16.png src\resources\images\folder.png src\resources\images\folder_new.png src\resources\images\folder_open.png src\resources\images\gohome.png src\resources\images\misc_16x16.png src\resources\images\newproject.png src\resources\images\rebuild.png src\resources\images\redo.png src\resources\images\run.png src\resources\images\searchreplace.png src\resources\images\source.png src\resources\images\splash.png src\resources\images\stop.png src\resources\images\undo.png src\resources\imp_exp_config.xrc src\resources\main_frame.xrc src\resources\main_menu.xrc src\resources\main_toolbar.xrc src\resources\main_toolbar_16x16.xrc src\resources\print_dialog.xrc src\resources\resources.rc src\resources\start_here\cb_logo.jpg src\resources\start_here\start_here.html src\startherepage.cpp src\startherepage.h src\wxDockit\include\wx\barholder.h src\wxDockit\include\wx\dockhost.h src\wxDockit\include\wx\dockit_defs.h src\wxDockit\include\wx\dockpanel.h src\wxDockit\include\wx\dockwindow.h src\wxDockit\include\wx\exsplitter.h src\wxDockit\include\wx\gdi.h src\wxDockit\include\wx\generic\toolbutton.h src\wxDockit\include\wx\gripper.h src\wxDockit\include\wx\layoutmanager.h src\wxDockit\include\wx\msw\dockwindow.h src\wxDockit\include\wx\msw\gdi.h src\wxDockit\include\wx\msw\pane.h src\wxDockit\include\wx\msw\toolbutton.h src\wxDockit\include\wx\msw\wxdockit.rc src\wxDockit\include\wx\pane.h src\wxDockit\include\wx\slidebar.h src\wxDockit\include\wx\toolbutton.h src\wxDockit\include\wx\util.h src\wxDockit\src\generic\barholder.cpp src\wxDockit\src\generic\dockhost.cpp src\wxDockit\src\generic\dockpanel.cpp src\wxDockit\src\generic\dockwindow.cpp src\wxDockit\src\generic\exsplitter.cpp src\wxDockit\src\generic\gdi.cpp src\wxDockit\src\generic\gripper.cpp src\wxDockit\src\generic\layoutmanager.cpp src\wxDockit\src\generic\pane.cpp src\wxDockit\src\generic\slidebar.cpp src\wxDockit\src\generic\toolbutton.cpp src\wxDockit\src\generic\util.cpp src\wxDockit\src\msw\dockwindow_msw.cpp src\wxDockit\src\msw\gdi_msw.cpp src\wxDockit\src\msw\pane_msw.cpp src\wxDockit\src\msw\toolbutton_msw.cpp templates\console-main-c.cpp templates\console-main-cpp.cpp templates\console.cbp templates\console.png templates\console.template templates\gui.png templates\opengl-main.cpp templates\opengl.cbp templates\opengl.png templates\opengl.template templates\win32-main.cpp templates\win32.cbp templates\win32gui.template templates\wx-app-ash.cpp templates\wx-app-ash.h templates\wx-main-ash.cpp templates\wx-main-ash.h templates\wx-main-s.cpp templates\wx-main-sh.cpp templates\wx-main-sh.h templates\wxwindows.cbp templates\wxwindows.png templates\wxwindows.template tips.txt tools\ConsoleRunner\main.cpp 
 
 clean_tinyXML:
 	@echo Cleaning target "tinyXML"...
@@ -527,6 +511,14 @@ clean_sdk:
 distclean_sdk:
 	@echo Dist-cleaning target "sdk"...
 	@$(RM) $(sdk_BIN) $(sdk_OBJS) $(sdk_DEPS) $(sdk_RESOURCE) $(sdk_STATIC_LIB) $(sdk_LIB_DEF) 
+
+clean_wxDockit:
+	@echo Cleaning target "wxDockit"...
+	@$(RM) $(wxDockit_BIN) $(wxDockit_OBJS) $(wxDockit_RESOURCE) 
+
+distclean_wxDockit:
+	@echo Dist-cleaning target "wxDockit"...
+	@$(RM) $(wxDockit_BIN) $(wxDockit_OBJS) $(wxDockit_DEPS) $(wxDockit_RESOURCE) 
 
 clean_src:
 	@echo Cleaning target "src"...
@@ -608,14 +600,6 @@ distclean_plugin_XPManifest:
 	@echo Dist-cleaning target "plugin_XPManifest"...
 	@$(RM) $(plugin_XPManifest_BIN) $(plugin_XPManifest_OBJS) $(plugin_XPManifest_DEPS) $(plugin_XPManifest_RESOURCE) $(plugin_XPManifest_STATIC_LIB) $(plugin_XPManifest_LIB_DEF) 
 
-clean_update:
-	@echo Cleaning target "update"...
-	@$(RM) $(update_BIN) $(update_OBJS) $(update_RESOURCE) $(update_STATIC_LIB) $(update_LIB_DEF) 
-
-distclean_update:
-	@echo Dist-cleaning target "update"...
-	@$(RM) $(update_BIN) $(update_OBJS) $(update_DEPS) $(update_RESOURCE) $(update_STATIC_LIB) $(update_LIB_DEF) 
-
 clean_console_runner:
 	@echo Cleaning target "console_runner"...
 	@$(RM) $(console_runner_BIN) $(console_runner_OBJS) $(console_runner_RESOURCE) 
@@ -624,17 +608,9 @@ distclean_console_runner:
 	@echo Dist-cleaning target "console_runner"...
 	@$(RM) $(console_runner_BIN) $(console_runner_OBJS) $(console_runner_DEPS) $(console_runner_RESOURCE) 
 
-clean_doc:
-	@echo Cleaning target "doc"...
-	@$(RM) $(doc_BIN) $(doc_OBJS) $(doc_RESOURCE) 
+clean: clean_tinyXML clean_scintilla clean_sdk clean_wxDockit clean_src clean_plugin_Astyle clean_plugin_CompilerGCC clean_plugin_DebuggerGDB clean_plugin_CodeCompletion clean_plugin_ClassWizard clean_plugin_DefMimeHandler clean_plugin_PluginsWizard clean_plugin_ToDo clean_plugin_XPManifest clean_console_runner 
 
-distclean_doc:
-	@echo Dist-cleaning target "doc"...
-	@$(RM) $(doc_BIN) $(doc_OBJS) $(doc_DEPS) $(doc_RESOURCE) 
-
-clean: clean_tinyXML clean_scintilla clean_sdk clean_src clean_plugin_Astyle clean_plugin_CompilerGCC clean_plugin_DebuggerGDB clean_plugin_CodeCompletion clean_plugin_ClassWizard clean_plugin_DefMimeHandler clean_plugin_PluginsWizard clean_plugin_ToDo clean_plugin_XPManifest clean_update clean_console_runner clean_doc 
-
-distclean: distclean_tinyXML distclean_scintilla distclean_sdk distclean_src distclean_plugin_Astyle distclean_plugin_CompilerGCC distclean_plugin_DebuggerGDB distclean_plugin_CodeCompletion distclean_plugin_ClassWizard distclean_plugin_DefMimeHandler distclean_plugin_PluginsWizard distclean_plugin_ToDo distclean_plugin_XPManifest distclean_update distclean_console_runner distclean_doc 
+distclean: distclean_tinyXML distclean_scintilla distclean_sdk distclean_wxDockit distclean_src distclean_plugin_Astyle distclean_plugin_CompilerGCC distclean_plugin_DebuggerGDB distclean_plugin_CodeCompletion distclean_plugin_ClassWizard distclean_plugin_DefMimeHandler distclean_plugin_PluginsWizard distclean_plugin_ToDo distclean_plugin_XPManifest distclean_console_runner 
 
 depend_tinyXML_DIRS:
 	-@if not exist ".deps\." mkdir ".deps"
@@ -665,6 +641,20 @@ depend_sdk_DIRS:
 	-@if not exist ".deps\templates\." mkdir ".deps\templates"
 
 depend_sdk: depend_sdk_DIRS $(sdk_DEPS)
+
+depend_wxDockit_DIRS:
+	-@if not exist ".deps\." mkdir ".deps"
+	-@if not exist ".deps\src\." mkdir ".deps\src"
+	-@if not exist ".deps\src\wxDockit\." mkdir ".deps\src\wxDockit"
+	-@if not exist ".deps\src\wxDockit\include\." mkdir ".deps\src\wxDockit\include"
+	-@if not exist ".deps\src\wxDockit\include\wx\." mkdir ".deps\src\wxDockit\include\wx"
+	-@if not exist ".deps\src\wxDockit\include\wx\generic\." mkdir ".deps\src\wxDockit\include\wx\generic"
+	-@if not exist ".deps\src\wxDockit\include\wx\msw\." mkdir ".deps\src\wxDockit\include\wx\msw"
+	-@if not exist ".deps\src\wxDockit\src\." mkdir ".deps\src\wxDockit\src"
+	-@if not exist ".deps\src\wxDockit\src\generic\." mkdir ".deps\src\wxDockit\src\generic"
+	-@if not exist ".deps\src\wxDockit\src\msw\." mkdir ".deps\src\wxDockit\src\msw"
+
+depend_wxDockit: depend_wxDockit_DIRS $(wxDockit_DEPS)
 
 depend_src_DIRS:
 	-@if not exist ".deps\." mkdir ".deps"
@@ -764,10 +754,6 @@ depend_plugin_XPManifest_DIRS:
 
 depend_plugin_XPManifest: depend_plugin_XPManifest_DIRS $(plugin_XPManifest_DEPS)
 
-depend_update_DIRS:
-
-depend_update: depend_update_DIRS $(update_DEPS)
-
 depend_console_runner_DIRS:
 	-@if not exist ".deps\." mkdir ".deps"
 	-@if not exist ".deps\tools\." mkdir ".deps\tools"
@@ -775,12 +761,7 @@ depend_console_runner_DIRS:
 
 depend_console_runner: depend_console_runner_DIRS $(console_runner_DEPS)
 
-depend_doc_DIRS:
-	-@if not exist ".deps\." mkdir ".deps"
-
-depend_doc: depend_doc_DIRS $(doc_DEPS)
-
-depend: depend_tinyXML depend_scintilla depend_sdk depend_src depend_plugin_Astyle depend_plugin_CompilerGCC depend_plugin_DebuggerGDB depend_plugin_CodeCompletion depend_plugin_ClassWizard depend_plugin_DefMimeHandler depend_plugin_PluginsWizard depend_plugin_ToDo depend_plugin_XPManifest depend_update depend_console_runner depend_doc
+depend: depend_tinyXML depend_scintilla depend_sdk depend_wxDockit depend_src depend_plugin_Astyle depend_plugin_CompilerGCC depend_plugin_DebuggerGDB depend_plugin_CodeCompletion depend_plugin_ClassWizard depend_plugin_DefMimeHandler depend_plugin_PluginsWizard depend_plugin_ToDo depend_plugin_XPManifest depend_console_runner
 
 tinyXML_DIRS:
 	-@if not exist ".objs\." mkdir ".objs"
@@ -828,6 +809,28 @@ sdk: depend_sdk sdk_DIRS sdk-before $(sdk_BIN) sdk-after
 $(sdk_BIN): $(sdk_LINKOBJS) $(sdk_RESOURCE)
 	@echo Linking shared library "devel\codeblocks.dll"...
 	@$(sdk_LD) -shared -Wl,--output-def=$(sdk_LIB_DEF) -Wl,--out-implib=$(sdk_STATIC_LIB) -Wl,--dll $(sdk_LIBDIRS) $(sdk_LINKOBJS) $(sdk_RESOURCE) -o $(sdk_BIN) $(sdk_LDFLAGS) $(sdk_LIBS)
+
+wxDockit_DIRS:
+	-@if not exist ".objs\." mkdir ".objs"
+	-@if not exist ".objs\src\." mkdir ".objs\src"
+	-@if not exist ".objs\src\wxDockit\." mkdir ".objs\src\wxDockit"
+	-@if not exist ".objs\src\wxDockit\include\." mkdir ".objs\src\wxDockit\include"
+	-@if not exist ".objs\src\wxDockit\include\wx\." mkdir ".objs\src\wxDockit\include\wx"
+	-@if not exist ".objs\src\wxDockit\include\wx\generic\." mkdir ".objs\src\wxDockit\include\wx\generic"
+	-@if not exist ".objs\src\wxDockit\include\wx\msw\." mkdir ".objs\src\wxDockit\include\wx\msw"
+	-@if not exist ".objs\src\wxDockit\src\." mkdir ".objs\src\wxDockit\src"
+	-@if not exist ".objs\src\wxDockit\src\generic\." mkdir ".objs\src\wxDockit\src\generic"
+	-@if not exist ".objs\src\wxDockit\src\msw\." mkdir ".objs\src\wxDockit\src\msw"
+	-@if not exist "src\." mkdir "src"
+	-@if not exist "src\wxDockit\." mkdir "src\wxDockit"
+	-@if not exist "src\wxDockit\lib\." mkdir "src\wxDockit\lib"
+
+wxDockit: depend_wxDockit wxDockit_DIRS wxDockit-before $(wxDockit_BIN) wxDockit-after
+
+$(wxDockit_BIN): $(wxDockit_LINKOBJS) $(wxDockit_RESOURCE)
+	@echo Linking static library "src\wxDockit\lib\libwxDockit.a"...
+	@ar -r $(wxDockit_BIN) $(wxDockit_LINKOBJS)
+	ranlib $(wxDockit_BIN)
 
 src_DIRS:
 	-@if not exist ".objs\." mkdir ".objs"
@@ -1004,14 +1007,6 @@ $(plugin_XPManifest_BIN): $(plugin_XPManifest_LINKOBJS) $(plugin_XPManifest_RESO
 	@echo Linking shared library "devel\share\CodeBlocks\plugins\xpmanifest.dll"...
 	@$(plugin_XPManifest_LD) -shared   -Wl,--dll $(plugin_XPManifest_LIBDIRS) $(plugin_XPManifest_LINKOBJS) $(plugin_XPManifest_RESOURCE) -o $(plugin_XPManifest_BIN) $(plugin_XPManifest_LDFLAGS) $(plugin_XPManifest_LIBS)
 
-update_DIRS:
-
-update: depend_update update_DIRS update-before $(update_BIN) update-after
-
-$(update_BIN): $(update_LINKOBJS) $(update_RESOURCE)
-	@echo Linking shared library "C:\Devel\codeblocks-VERSION_1_0\src\CodeBlocks.dll"...
-	@$(update_LD) -shared   -Wl,--dll $(update_LIBDIRS) $(update_LINKOBJS) $(update_RESOURCE) -o $(update_BIN) $(update_LDFLAGS) $(update_LIBS)
-
 console_runner_DIRS:
 	-@if not exist ".objs\." mkdir ".objs"
 	-@if not exist ".objs\tools\." mkdir ".objs\tools"
@@ -1024,15 +1019,6 @@ console_runner: depend_console_runner console_runner_DIRS console_runner-before 
 $(console_runner_BIN): $(console_runner_LINKOBJS) $(console_runner_RESOURCE)
 	@echo Linking executable "tools\ConsoleRunner\console_runner.exe"...
 	@$(console_runner_LD) $(console_runner_LIBDIRS) -o $(console_runner_BIN) $(console_runner_LINKOBJS) $(console_runner_RESOURCE) $(console_runner_LDFLAGS) $(console_runner_LIBS)
-
-doc_DIRS:
-	-@if not exist ".objs\." mkdir ".objs"
-
-doc: depend_doc doc_DIRS doc-before $(doc_BIN) doc-after
-
-$(doc_BIN): $(doc_LINKOBJS) $(doc_RESOURCE)
-	@echo Linking executable "C:\Devel\codeblocks-VERSION_1_0\src\CodeBlocks.exe"...
-	@$(doc_LD) $(doc_LIBDIRS) -o $(doc_BIN) $(doc_LINKOBJS) $(doc_RESOURCE) $(doc_LDFLAGS) $(doc_LIBS)
 
 
 .deps/sdk/tinyxml/tinystr.d: sdk/tinyxml/tinystr.cpp
@@ -2262,6 +2248,139 @@ $(doc_BIN): $(doc_LINKOBJS) $(doc_RESOURCE)
 	@$(sdk_CPP) $(sdk_CFLAGS) $(sdk_INCS) -c sdk/xtra_res.cpp -o .objs/sdk/xtra_res.o
 
 
+.deps/src/wxDockit/src/generic/barholder.d: src/wxDockit/src/generic/barholder.cpp
+	@echo Calculating dependencies for "src\wxDockit\src\generic\barholder.cpp"...
+	@$(wxDockit_CPP) -MM $(wxDockit_CFLAGS) -MF .deps/src/wxDockit/src/generic/barholder.d -MT .objs/src/wxDockit/src/generic/barholder.o $(wxDockit_INCS) src/wxDockit/src/generic/barholder.cpp
+
+.objs/src/wxDockit/src/generic/barholder.o: .deps/src/wxDockit/src/generic/barholder.d
+	@echo Compiling "src\wxDockit\src\generic\barholder.cpp"...
+	@$(wxDockit_CPP) $(wxDockit_CFLAGS) $(wxDockit_INCS) -c src/wxDockit/src/generic/barholder.cpp -o .objs/src/wxDockit/src/generic/barholder.o
+
+.deps/src/wxDockit/src/generic/dockhost.d: src/wxDockit/src/generic/dockhost.cpp
+	@echo Calculating dependencies for "src\wxDockit\src\generic\dockhost.cpp"...
+	@$(wxDockit_CPP) -MM $(wxDockit_CFLAGS) -MF .deps/src/wxDockit/src/generic/dockhost.d -MT .objs/src/wxDockit/src/generic/dockhost.o $(wxDockit_INCS) src/wxDockit/src/generic/dockhost.cpp
+
+.objs/src/wxDockit/src/generic/dockhost.o: .deps/src/wxDockit/src/generic/dockhost.d
+	@echo Compiling "src\wxDockit\src\generic\dockhost.cpp"...
+	@$(wxDockit_CPP) $(wxDockit_CFLAGS) $(wxDockit_INCS) -c src/wxDockit/src/generic/dockhost.cpp -o .objs/src/wxDockit/src/generic/dockhost.o
+
+.deps/src/wxDockit/src/generic/dockpanel.d: src/wxDockit/src/generic/dockpanel.cpp
+	@echo Calculating dependencies for "src\wxDockit\src\generic\dockpanel.cpp"...
+	@$(wxDockit_CPP) -MM $(wxDockit_CFLAGS) -MF .deps/src/wxDockit/src/generic/dockpanel.d -MT .objs/src/wxDockit/src/generic/dockpanel.o $(wxDockit_INCS) src/wxDockit/src/generic/dockpanel.cpp
+
+.objs/src/wxDockit/src/generic/dockpanel.o: .deps/src/wxDockit/src/generic/dockpanel.d
+	@echo Compiling "src\wxDockit\src\generic\dockpanel.cpp"...
+	@$(wxDockit_CPP) $(wxDockit_CFLAGS) $(wxDockit_INCS) -c src/wxDockit/src/generic/dockpanel.cpp -o .objs/src/wxDockit/src/generic/dockpanel.o
+
+.deps/src/wxDockit/src/generic/dockwindow.d: src/wxDockit/src/generic/dockwindow.cpp
+	@echo Calculating dependencies for "src\wxDockit\src\generic\dockwindow.cpp"...
+	@$(wxDockit_CPP) -MM $(wxDockit_CFLAGS) -MF .deps/src/wxDockit/src/generic/dockwindow.d -MT .objs/src/wxDockit/src/generic/dockwindow.o $(wxDockit_INCS) src/wxDockit/src/generic/dockwindow.cpp
+
+.objs/src/wxDockit/src/generic/dockwindow.o: .deps/src/wxDockit/src/generic/dockwindow.d
+	@echo Compiling "src\wxDockit\src\generic\dockwindow.cpp"...
+	@$(wxDockit_CPP) $(wxDockit_CFLAGS) $(wxDockit_INCS) -c src/wxDockit/src/generic/dockwindow.cpp -o .objs/src/wxDockit/src/generic/dockwindow.o
+
+.deps/src/wxDockit/src/generic/exsplitter.d: src/wxDockit/src/generic/exsplitter.cpp
+	@echo Calculating dependencies for "src\wxDockit\src\generic\exsplitter.cpp"...
+	@$(wxDockit_CPP) -MM $(wxDockit_CFLAGS) -MF .deps/src/wxDockit/src/generic/exsplitter.d -MT .objs/src/wxDockit/src/generic/exsplitter.o $(wxDockit_INCS) src/wxDockit/src/generic/exsplitter.cpp
+
+.objs/src/wxDockit/src/generic/exsplitter.o: .deps/src/wxDockit/src/generic/exsplitter.d
+	@echo Compiling "src\wxDockit\src\generic\exsplitter.cpp"...
+	@$(wxDockit_CPP) $(wxDockit_CFLAGS) $(wxDockit_INCS) -c src/wxDockit/src/generic/exsplitter.cpp -o .objs/src/wxDockit/src/generic/exsplitter.o
+
+.deps/src/wxDockit/src/generic/gdi.d: src/wxDockit/src/generic/gdi.cpp
+	@echo Calculating dependencies for "src\wxDockit\src\generic\gdi.cpp"...
+	@$(wxDockit_CPP) -MM $(wxDockit_CFLAGS) -MF .deps/src/wxDockit/src/generic/gdi.d -MT .objs/src/wxDockit/src/generic/gdi.o $(wxDockit_INCS) src/wxDockit/src/generic/gdi.cpp
+
+.objs/src/wxDockit/src/generic/gdi.o: .deps/src/wxDockit/src/generic/gdi.d
+	@echo Compiling "src\wxDockit\src\generic\gdi.cpp"...
+	@$(wxDockit_CPP) $(wxDockit_CFLAGS) $(wxDockit_INCS) -c src/wxDockit/src/generic/gdi.cpp -o .objs/src/wxDockit/src/generic/gdi.o
+
+.deps/src/wxDockit/src/generic/gripper.d: src/wxDockit/src/generic/gripper.cpp
+	@echo Calculating dependencies for "src\wxDockit\src\generic\gripper.cpp"...
+	@$(wxDockit_CPP) -MM $(wxDockit_CFLAGS) -MF .deps/src/wxDockit/src/generic/gripper.d -MT .objs/src/wxDockit/src/generic/gripper.o $(wxDockit_INCS) src/wxDockit/src/generic/gripper.cpp
+
+.objs/src/wxDockit/src/generic/gripper.o: .deps/src/wxDockit/src/generic/gripper.d
+	@echo Compiling "src\wxDockit\src\generic\gripper.cpp"...
+	@$(wxDockit_CPP) $(wxDockit_CFLAGS) $(wxDockit_INCS) -c src/wxDockit/src/generic/gripper.cpp -o .objs/src/wxDockit/src/generic/gripper.o
+
+.deps/src/wxDockit/src/generic/layoutmanager.d: src/wxDockit/src/generic/layoutmanager.cpp
+	@echo Calculating dependencies for "src\wxDockit\src\generic\layoutmanager.cpp"...
+	@$(wxDockit_CPP) -MM $(wxDockit_CFLAGS) -MF .deps/src/wxDockit/src/generic/layoutmanager.d -MT .objs/src/wxDockit/src/generic/layoutmanager.o $(wxDockit_INCS) src/wxDockit/src/generic/layoutmanager.cpp
+
+.objs/src/wxDockit/src/generic/layoutmanager.o: .deps/src/wxDockit/src/generic/layoutmanager.d
+	@echo Compiling "src\wxDockit\src\generic\layoutmanager.cpp"...
+	@$(wxDockit_CPP) $(wxDockit_CFLAGS) $(wxDockit_INCS) -c src/wxDockit/src/generic/layoutmanager.cpp -o .objs/src/wxDockit/src/generic/layoutmanager.o
+
+.deps/src/wxDockit/src/generic/pane.d: src/wxDockit/src/generic/pane.cpp
+	@echo Calculating dependencies for "src\wxDockit\src\generic\pane.cpp"...
+	@$(wxDockit_CPP) -MM $(wxDockit_CFLAGS) -MF .deps/src/wxDockit/src/generic/pane.d -MT .objs/src/wxDockit/src/generic/pane.o $(wxDockit_INCS) src/wxDockit/src/generic/pane.cpp
+
+.objs/src/wxDockit/src/generic/pane.o: .deps/src/wxDockit/src/generic/pane.d
+	@echo Compiling "src\wxDockit\src\generic\pane.cpp"...
+	@$(wxDockit_CPP) $(wxDockit_CFLAGS) $(wxDockit_INCS) -c src/wxDockit/src/generic/pane.cpp -o .objs/src/wxDockit/src/generic/pane.o
+
+.deps/src/wxDockit/src/generic/slidebar.d: src/wxDockit/src/generic/slidebar.cpp
+	@echo Calculating dependencies for "src\wxDockit\src\generic\slidebar.cpp"...
+	@$(wxDockit_CPP) -MM $(wxDockit_CFLAGS) -MF .deps/src/wxDockit/src/generic/slidebar.d -MT .objs/src/wxDockit/src/generic/slidebar.o $(wxDockit_INCS) src/wxDockit/src/generic/slidebar.cpp
+
+.objs/src/wxDockit/src/generic/slidebar.o: .deps/src/wxDockit/src/generic/slidebar.d
+	@echo Compiling "src\wxDockit\src\generic\slidebar.cpp"...
+	@$(wxDockit_CPP) $(wxDockit_CFLAGS) $(wxDockit_INCS) -c src/wxDockit/src/generic/slidebar.cpp -o .objs/src/wxDockit/src/generic/slidebar.o
+
+.deps/src/wxDockit/src/generic/toolbutton.d: src/wxDockit/src/generic/toolbutton.cpp
+	@echo Calculating dependencies for "src\wxDockit\src\generic\toolbutton.cpp"...
+	@$(wxDockit_CPP) -MM $(wxDockit_CFLAGS) -MF .deps/src/wxDockit/src/generic/toolbutton.d -MT .objs/src/wxDockit/src/generic/toolbutton.o $(wxDockit_INCS) src/wxDockit/src/generic/toolbutton.cpp
+
+.objs/src/wxDockit/src/generic/toolbutton.o: .deps/src/wxDockit/src/generic/toolbutton.d
+	@echo Compiling "src\wxDockit\src\generic\toolbutton.cpp"...
+	@$(wxDockit_CPP) $(wxDockit_CFLAGS) $(wxDockit_INCS) -c src/wxDockit/src/generic/toolbutton.cpp -o .objs/src/wxDockit/src/generic/toolbutton.o
+
+.deps/src/wxDockit/src/generic/util.d: src/wxDockit/src/generic/util.cpp
+	@echo Calculating dependencies for "src\wxDockit\src\generic\util.cpp"...
+	@$(wxDockit_CPP) -MM $(wxDockit_CFLAGS) -MF .deps/src/wxDockit/src/generic/util.d -MT .objs/src/wxDockit/src/generic/util.o $(wxDockit_INCS) src/wxDockit/src/generic/util.cpp
+
+.objs/src/wxDockit/src/generic/util.o: .deps/src/wxDockit/src/generic/util.d
+	@echo Compiling "src\wxDockit\src\generic\util.cpp"...
+	@$(wxDockit_CPP) $(wxDockit_CFLAGS) $(wxDockit_INCS) -c src/wxDockit/src/generic/util.cpp -o .objs/src/wxDockit/src/generic/util.o
+
+.deps/src/wxDockit/src/msw/dockwindow_msw.d: src/wxDockit/src/msw/dockwindow_msw.cpp
+	@echo Calculating dependencies for "src\wxDockit\src\msw\dockwindow_msw.cpp"...
+	@$(wxDockit_CPP) -MM $(wxDockit_CFLAGS) -MF .deps/src/wxDockit/src/msw/dockwindow_msw.d -MT .objs/src/wxDockit/src/msw/dockwindow_msw.o $(wxDockit_INCS) src/wxDockit/src/msw/dockwindow_msw.cpp
+
+.objs/src/wxDockit/src/msw/dockwindow_msw.o: .deps/src/wxDockit/src/msw/dockwindow_msw.d
+	@echo Compiling "src\wxDockit\src\msw\dockwindow_msw.cpp"...
+	@$(wxDockit_CPP) $(wxDockit_CFLAGS) $(wxDockit_INCS) -c src/wxDockit/src/msw/dockwindow_msw.cpp -o .objs/src/wxDockit/src/msw/dockwindow_msw.o
+
+.deps/src/wxDockit/src/msw/gdi_msw.d: src/wxDockit/src/msw/gdi_msw.cpp
+	@echo Calculating dependencies for "src\wxDockit\src\msw\gdi_msw.cpp"...
+	@$(wxDockit_CPP) -MM $(wxDockit_CFLAGS) -MF .deps/src/wxDockit/src/msw/gdi_msw.d -MT .objs/src/wxDockit/src/msw/gdi_msw.o $(wxDockit_INCS) src/wxDockit/src/msw/gdi_msw.cpp
+
+.objs/src/wxDockit/src/msw/gdi_msw.o: .deps/src/wxDockit/src/msw/gdi_msw.d
+	@echo Compiling "src\wxDockit\src\msw\gdi_msw.cpp"...
+	@$(wxDockit_CPP) $(wxDockit_CFLAGS) $(wxDockit_INCS) -c src/wxDockit/src/msw/gdi_msw.cpp -o .objs/src/wxDockit/src/msw/gdi_msw.o
+
+.deps/src/wxDockit/src/msw/pane_msw.d: src/wxDockit/src/msw/pane_msw.cpp
+	@echo Calculating dependencies for "src\wxDockit\src\msw\pane_msw.cpp"...
+	@$(wxDockit_CPP) -MM $(wxDockit_CFLAGS) -MF .deps/src/wxDockit/src/msw/pane_msw.d -MT .objs/src/wxDockit/src/msw/pane_msw.o $(wxDockit_INCS) src/wxDockit/src/msw/pane_msw.cpp
+
+.objs/src/wxDockit/src/msw/pane_msw.o: .deps/src/wxDockit/src/msw/pane_msw.d
+	@echo Compiling "src\wxDockit\src\msw\pane_msw.cpp"...
+	@$(wxDockit_CPP) $(wxDockit_CFLAGS) $(wxDockit_INCS) -c src/wxDockit/src/msw/pane_msw.cpp -o .objs/src/wxDockit/src/msw/pane_msw.o
+
+.deps/src/wxDockit/src/msw/toolbutton_msw.d: src/wxDockit/src/msw/toolbutton_msw.cpp
+	@echo Calculating dependencies for "src\wxDockit\src\msw\toolbutton_msw.cpp"...
+	@$(wxDockit_CPP) -MM $(wxDockit_CFLAGS) -MF .deps/src/wxDockit/src/msw/toolbutton_msw.d -MT .objs/src/wxDockit/src/msw/toolbutton_msw.o $(wxDockit_INCS) src/wxDockit/src/msw/toolbutton_msw.cpp
+
+.objs/src/wxDockit/src/msw/toolbutton_msw.o: .deps/src/wxDockit/src/msw/toolbutton_msw.d
+	@echo Compiling "src\wxDockit\src\msw\toolbutton_msw.cpp"...
+	@$(wxDockit_CPP) $(wxDockit_CFLAGS) $(wxDockit_INCS) -c src/wxDockit/src/msw/toolbutton_msw.cpp -o .objs/src/wxDockit/src/msw/toolbutton_msw.o
+
+$(wxDockit_RESOURCE): src/wxDockit/include/wx/msw/wxdockit.rc 
+	@echo Compiling resources...
+	@$(wxDockit_RESCOMP) -i wxDockit_private.rc -J rc -o $(wxDockit_RESOURCE) -O coff  -IC:/MinGW/include -IC:/Devel/codeblocks/src/devel/DevPaks/include -I$(WX_DIR)/include -Isrc/wxDockit/include
+
+
 .deps/src/app.d: src/app.cpp
 	@echo Calculating dependencies for "src\app.cpp"...
 	@$(src_CPP) -MM $(src_CFLAGS) -MF .deps/src/app.d -MT .objs/src/app.o $(src_INCS) src/app.cpp
@@ -2328,7 +2447,7 @@ $(doc_BIN): $(doc_LINKOBJS) $(doc_RESOURCE)
 
 $(src_RESOURCE): src/resources/resources.rc 
 	@echo Compiling resources...
-	@$(src_RESCOMP) -i src_private.rc -J rc -o $(src_RESOURCE) -O coff  -IC:/MinGW/include -IC:/Devel/codeblocks/src/devel/DevPaks/include -I$(WX_DIR)/include -I../../../MinGW/include
+	@$(src_RESCOMP) -i src_private.rc -J rc -o $(src_RESOURCE) -O coff  -IC:/MinGW/include -IC:/Devel/codeblocks/src/devel/DevPaks/include -I$(WX_DIR)/include -Isrc/wxDockit/include
 
 
 .deps/plugins/astyle/astyle/ASBeautifier.d: plugins/astyle/astyle/ASBeautifier.cpp
@@ -2836,7 +2955,6 @@ $(src_RESOURCE): src/resources/resources.rc
 	@$(plugin_XPManifest_CPP) $(plugin_XPManifest_CFLAGS) $(plugin_XPManifest_INCS) -c plugins/xpmanifest/windowsxplooknfeel.cpp -o .objs/plugins/xpmanifest/windowsxplooknfeel.o
 
 
-
 .deps/tools/ConsoleRunner/main.d: tools/ConsoleRunner/main.cpp
 	@echo Calculating dependencies for "tools\ConsoleRunner\main.cpp"...
 	@$(console_runner_CPP) -MM $(console_runner_CFLAGS) -MF .deps/tools/ConsoleRunner/main.d -MT .objs/tools/ConsoleRunner/main.o $(console_runner_INCS) tools/ConsoleRunner/main.cpp
@@ -2844,7 +2962,6 @@ $(src_RESOURCE): src/resources/resources.rc
 .objs/tools/ConsoleRunner/main.o: .deps/tools/ConsoleRunner/main.d
 	@echo Compiling "tools\ConsoleRunner\main.cpp"...
 	@$(console_runner_CPP) $(console_runner_CFLAGS) $(console_runner_INCS) -c tools/ConsoleRunner/main.cpp -o .objs/tools/ConsoleRunner/main.o
-
 
 
 
