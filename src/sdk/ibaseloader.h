@@ -12,8 +12,7 @@ class DLLIMPORT IBaseLoader
 		virtual ~IBaseLoader(){}
 
         virtual bool Open(const wxString& filename) = 0;
-        virtual bool Save(const wxString& filename) = 0;
-    protected:
+        virtual bool Save(const wxString& filename) = 0;    protected:
         wxString FixEntities(const wxString& str)
         {
             // replace double quotes (") with &quot; entities
