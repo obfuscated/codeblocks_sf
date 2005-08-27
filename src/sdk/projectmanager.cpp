@@ -215,11 +215,12 @@ void ProjectManager::InitPane()
     if(m_pTree)
         return;
     wxSplitPanel* mypanel = (wxSplitPanel*)(Manager::Get()->GetNotebookPage(_("Projects"),wxTAB_TRAVERSAL | wxCLIP_CHILDREN,true));
+    mypanel->SetConfigEntryForSplitter(_T("/editor/opened_files_tree_height"));
     m_pPanel = mypanel;
     wxSplitterWindow* mysplitter = mypanel->GetSplitter();
     BuildTree(mysplitter);
     mypanel->SetAutoLayout(true);
-    mypanel->RefreshSplitter(ID_EditorManager,ID_ProjectManager,150);
+    mypanel->RefreshSplitter(ID_EditorManager,ID_ProjectManager);
 }
 
 void ProjectManager::BuildTree(wxWindow* parent)

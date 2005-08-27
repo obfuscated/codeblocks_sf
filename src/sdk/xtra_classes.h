@@ -21,28 +21,32 @@ public:
     wxSplitPanel::wxSplitPanel() { /*nothing to init, really */ }
     wxSplitPanel::wxSplitPanel(wxWindow* parent, wxWindowID id = -1,
                                const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
-                               long style = wxTAB_TRAVERSAL, const wxString& name = _T("splitpanel"))
+                               long style = wxTAB_TRAVERSAL, const wxString& name = _T("splitpanel"),const wxString configname = wxEmptyString,int defaultsashposition = 150)
     {
-        Create(parent, id, pos, size, style, name);
+        Create(parent, id, pos, size, style, name,configname,defaultsashposition);
     }
     bool Create(wxWindow* parent, wxWindowID id = -1,
                 const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
-                long style = wxTAB_TRAVERSAL, const wxString& name = _T("splitpanel"));
+                long style = wxTAB_TRAVERSAL, const wxString& name = _T("splitpanel"),const wxString configname = wxEmptyString,int defaultsashposition = 150);
 
     /** Refreshes the splitter. Windows displayed are searched by Id.
       * If only one is found, the panel is not split.
       *
       */
-    void wxSplitPanel::RefreshSplitter(int idtop,int idbottom,int sashPosition = 0);
+    void wxSplitPanel::RefreshSplitter(int idtop,int idbottom);
 
     virtual wxSplitPanel::~wxSplitPanel();
     wxSplitterWindow* GetSplitter() { return (this) ? m_splitter : 0L; }
     void SetConfigEntryForSplitter(const wxString& splitterconfig){ m_SplitterConfig = splitterconfig; }
+protected:
+    int m_IniSashPos,m_defaultsashposition,m_lastsashposition;
+    wxString m_SplitterConfig;
 private:
+    virtual void OnUpdateUI(wxUpdateUIEvent& event);
     wxSplitterWindow* m_splitter;
     wxBoxSizer* m_sizer;
-    wxString m_SplitterConfig;
     DECLARE_DYNAMIC_CLASS(wxSplitPanel)
+    DECLARE_EVENT_TABLE()
 };
 
 #endif

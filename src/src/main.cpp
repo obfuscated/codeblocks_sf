@@ -1961,7 +1961,7 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Check(idViewToolMain, pSlideBar->IsShown());
     mbar->Check(idViewManager, manVis);
     mbar->Check(idViewOpenFilesTree, m_pEdMan && m_pEdMan->IsOpenFilesTreeVisible());
-    mbar->Enable(idViewOpenFilesTree, manVis && m_pEdMan && m_pEdMan->IsOpenFilesTreeVisible());
+    mbar->Enable(idViewOpenFilesTree, manVis && m_pEdMan);
     mbar->Check(idViewMessageManager, pDockWindow2->GetDockPanel()->IsDocked() || pDockWindow2->IsShown());
     mbar->Check(idViewStatusbar, GetStatusBar() && GetStatusBar()->IsShown());
     mbar->Check(idViewFullScreen, IsFullScreen());
