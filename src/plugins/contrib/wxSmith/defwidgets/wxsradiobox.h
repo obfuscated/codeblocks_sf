@@ -6,12 +6,24 @@
 
 WXS_ST_DECLARE(wxsRadioBoxStyles)
 
-wxsDWDeclareBegin(wxsRadioBox,propWidget,wxsRadioBoxId)
+wxsDWDeclareBegin(wxsRadioBoxBase,propWidget,wxsRadioBoxId)
     wxString label;
     wxArrayString arrayChoices;
-    int defaultChoice;    
+    int defaultChoice;
+    int dimension;
 wxsDWDeclareEnd()
 
+class wxsRadioBox: public wxsRadioBoxBase
+{
+	public:
+        wxsRadioBox(wxsWidgetManager* Man,wxsWindowRes* Res):
+            wxsRadioBoxBase(Man,Res)
+        {}
 
+    protected:
+    
+        virtual wxWindow* MyCreatePreview(wxWindow* Parent);
+        virtual wxString GetProducingCode(wxsCodeParams& Params);
+};
 
 #endif

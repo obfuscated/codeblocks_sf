@@ -30,8 +30,7 @@
             virtual void BuildExtVars();                                    \
             virtual wxWindow* MyCreatePreview(wxWindow* Parent);            \
             virtual wxString GetGeneratingCodeStr();                        \
-            virtual wxString GetWidgetNameStr();                            \
-        private:;
+            virtual wxString GetWidgetNameStr();
  
 /** This macro finishes declaration of new class handling one of default widgets
  *

@@ -75,8 +75,9 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
                 case Top:
                 case Btm:
                     {
-                        int PosX1 = 0, PosX2 = 0;
-                        DPD->Widget->GetPreview()->ClientToScreen(&PosX1,&PosX2);
+                        int PosX1, PosX2;
+                        DPD->Widget->GetPreview()->GetPosition(&PosX1,&PosX2);
+                        DPD->Widget->GetPreview()->GetParent()->ClientToScreen(&PosX1,&PosX2);
                         ScreenToClient(&PosX1,&PosX2);
                         PosX2 = PosX1 + DPD->Widget->GetPreview()->GetSize().GetWidth();
                         int PosY = DPD->PosY - DragBoxSize / 2;
@@ -95,9 +96,11 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
                 case Left:
                 case Right:
                     {
-                        int PosY1 = 0, PosY2 = 0;
-                        DPD->Widget->GetPreview()->ClientToScreen(&PosY1,&PosY2);
+                        int PosY1, PosY2;
+                        DPD->Widget->GetPreview()->GetPosition(&PosY1,&PosY2);
+                        DPD->Widget->GetPreview()->GetParent()->ClientToScreen(&PosY1,&PosY2);
                         ScreenToClient(&PosY1,&PosY2);
+                        PosY1 = PosY2;
                         PosY2 = PosY1 + DPD->Widget->GetPreview()->GetSize().GetHeight();
                         int PosX = DPD->PosX - DragBoxSize / 2;
                         
@@ -426,17 +429,11 @@ void wxsDragWindow::UpdateDragPointData(wxsWidget* Widget,DragPointData** Widget
     bool NoAction = ! ( Widget->GetBPType() & ( wxsWidget::bptSize | wxsWidget::bptPosition ) );
     wxWindow* Preview = Widget->GetPreview();
     
-    /*
     Preview->GetPosition(&PosX,&PosY);
     if ( Preview->GetParent() )
     {
         Preview->GetParent()->ClientToScreen(&PosX,&PosY);
     }
-    */
-    PosX = 0;
-    PosY = 0;
-    Preview->ClientToScreen(&PosX,&PosY);
-    // TODO (SpOoN#1#): Find a way to calculate valid positon for widgets with borders
     
     ScreenToClient(&PosX,&PosY);
     Widget->GetPreview()->GetSize(&SizeX,&SizeY);
@@ -578,9 +575,13 @@ wxsWidget* wxsDragWindow::FindWidgetAtPos(int PosX,int PosY,wxsWidget* Widget)
     	if ( Wdg ) return Wdg;
     }
     
-    int WdgX = 0, WdgY = 0;
+    int WdgX, WdgY;
     int WdgSX, WdgSY;
-    Widget->GetPreview()->ClientToScreen(&WdgX,&WdgY);
+    Widget->GetPreview()->GetPosition(&WdgX,&WdgY);
+    if ( Widget->GetPreview()->GetParent() )
+    {
+        Widget->GetPreview()->GetParent()->ClientToScreen(&WdgX,&WdgY);
+    }
     ScreenToClient(&WdgX,&WdgY);
     Widget->GetPreview()->GetSize(&WdgSX,&WdgSY);
     
