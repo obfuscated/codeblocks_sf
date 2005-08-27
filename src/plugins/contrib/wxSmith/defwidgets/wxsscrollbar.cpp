@@ -14,6 +14,10 @@ WXS_ST_END(wxsScrollBarStyles)
 wxsDWDefineBegin(wxsScrollBar,wxScrollBar,
 
     ThisWidget = new wxScrollBar(parent,id,pos,size,style);
+    ThisWidget->SetScrollbar(value,thumbsize,range,pagesize);
     )
-
+    wxsDWDefInt(value,"Value:",0);
+    wxsDWDefInt(thumbsize,"Thumb size:",1);
+    wxsDWDefInt(range,"Range:",10);
+    wxsDWDefInt(pagesize,"Page size:",1);
 wxsDWDefineEnd()

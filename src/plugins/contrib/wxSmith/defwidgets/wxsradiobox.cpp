@@ -16,33 +16,34 @@ WXS_ST_END(wxsRadioBoxStyles)
 wxsDWDefineBegin(wxsRadioBoxBase,wxRadioBox,
     )
 
+    wxsDWDefStr(label,"Label:","");
     #ifdef __NO_PROPGRID
-        wxsDWDefIntX(defaultChoice,"selection","Default",-1)
+        wxsDWDefIntX(defaultChoice,"selection","Default:",-1)
     #else
         wxsDWDefIntX(defaultChoice,"selection","",-1)
     #endif
-    wxsDWDefStrArrayX(arrayChoices,"content","item","Choices",defaultChoice,0)
-    wxsDWDefInt(dimension,"Dimension",0)
+    wxsDWDefStrArrayX(arrayChoices,"content","item","Choices:",defaultChoice,-1)
+    wxsDWDefInt(dimension,"Dimension:",1)
 wxsDWDefineEnd()
 
 wxWindow* wxsRadioBox::MyCreatePreview(wxWindow* Parent)
 {
-    wxArrayString Arr = arrayChoices;
-    Arr.Add(_T(""));
+	if ( dimension < 1 ) dimension = 1;
     wxRadioBox* Preview =  new wxRadioBox(Parent,-1,label,
-        GetPosition(),GetSize(),Arr,dimension,GetStyle());
-	if ( defaultChoice ) Preview->SetSelection(defaultChoice);
+        GetPosition(),GetSize(),arrayChoices,dimension,GetStyle());
+	if ( defaultChoice >= 0 ) Preview->SetSelection(defaultChoice);
 	return Preview;
 }
 
 wxString wxsRadioBox::GetProducingCode(wxsCodeParams& Params)
 {
+	if ( dimension < 1 ) dimension = 1;
     const CodeDefines& CDefs = GetCodeDefines();
 	if ( arrayChoices.Count() == 0 )
 	{
-		return wxString::Format(_T("%s = new wxRadioBox(%s,%s,%s,%s,%s,0,NULL,%d,%s)"),
-            Params.ParentName.c_str(),
+		return wxString::Format(_T("%s = new wxRadioBox(%s,%s,%s,%s,%s,0,NULL,%d,%s);"),
             GetBaseParams().VarName.c_str(),
+            Params.ParentName.c_str(),
             GetBaseParams().IdName.c_str(),
             GetWxString(label).c_str(),
             CDefs.Pos.c_str(),
@@ -52,22 +53,28 @@ wxString wxsRadioBox::GetProducingCode(wxsCodeParams& Params)
 	}
 	
 	wxString Code;
-	Code.Printf(_T("wxStringArray wxRadioBoxChoices%d;\n"),Params.UniqueNumber);
+	Code.Printf(_T("wxString wxRadioBoxChoices%d[%d];\n"),Params.UniqueNumber,arrayChoices.Count());
 	for ( size_t i = 0; i < arrayChoices.Count(); ++i )
 	{
-		Code.Append( wxString::Format(_T("wxRadioBoxChoices%d.Append(%s);\n"),Params.UniqueNumber,i,GetWxString(arrayChoices[i]).c_str()) );
+		Code.Append( wxString::Format(_T("wxRadioBoxChoices%d[%d] = %s;\n"),Params.UniqueNumber,i,GetWxString(arrayChoices[i]).c_str()) );
 	}
 	
-    Code.Append ( wxString::Format(_T("%s = new wxRadioBox(%s,%s,%s,%s,%s,wxRadioBoxChoices%d,%d,%s)"),
-        Params.ParentName.c_str(),
+    Code.Append ( wxString::Format(_T("%s = new wxRadioBox(%s,%s,%s,%s,%s,%d,wxRadioBoxChoices%d,%d,%s);"),
         GetBaseParams().VarName.c_str(),
+        Params.ParentName.c_str(),
         GetBaseParams().IdName.c_str(),
         GetWxString(label).c_str(),
         CDefs.Pos.c_str(),
         CDefs.Size.c_str(),
+        arrayChoices.Count(),
         Params.UniqueNumber,
         dimension,
         CDefs.Style.c_str()) );
+        
+    if ( defaultChoice >= 0 )
+    {
+    	Code.Append( wxString::Format(_T("%s->SetSelection(%d);"),GetBaseParams().VarName.c_str(),defaultChoice) );
+    }
     
     return Code;
 }

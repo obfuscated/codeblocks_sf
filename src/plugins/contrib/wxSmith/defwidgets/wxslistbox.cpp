@@ -29,10 +29,10 @@ wxsDWDefineBegin(wxsListBox,wxListBox,
     )
    
     #ifdef __NO_PROPGRID
-        wxsDWDefIntX(defaultChoice,"selection","Default",-1)
+        wxsDWDefIntX(defaultChoice,"selection","Default:",-1)
     #else
         wxsDWDefIntX(defaultChoice,"selection","",-1)
     #endif
-    wxsDWDefStrArrayX(arrayChoices,"content","item","Choices",defaultChoice,wxLB_SORT)
+    wxsDWDefStrArrayX(arrayChoices,"content","item","Choices:",defaultChoice,wxLB_SORT)
 
 wxsDWDefineEnd()

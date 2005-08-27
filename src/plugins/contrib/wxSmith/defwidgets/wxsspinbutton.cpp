@@ -17,8 +17,12 @@ WXS_ST_END(wxsSpinButtonStyles)
 //wxSpinButton(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxSP_HORIZONTAL, const wxString& name = "spinButton")
 
 wxsDWDefineBegin(wxsSpinButton,wxSpinButton,
-
-    ThisWidget = new wxSpinButton(parent,id,pos,size,style);
+        ThisWidget = new wxSpinButton(parent,id,pos,size,style);
+        ThisWidget->SetRange(min,max);
+        ThisWidget->SetValue(value);
     )
+    wxsDWDefInt(value,"Default:",0);
+    wxsDWDefInt(min,"Min:",0)
+    wxsDWDefInt(max,"Max:",100)
 
 wxsDWDefineEnd()

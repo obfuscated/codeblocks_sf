@@ -26,7 +26,7 @@ wxsDWDefineBegin(wxsComboBox,wxComboBox,
 	)
 
     #ifdef __NO_PROPGRID
-        wxsDWDefIntX(defaultChoice,"selection","Default",-1)
+        wxsDWDefIntX(defaultChoice,"selection","Default:",-1)
     #else
         wxsDWDefIntX(defaultChoice,"selection","",-1)
     #endif

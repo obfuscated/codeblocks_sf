@@ -13,16 +13,9 @@ WXS_ST_END(wxsSpinCtrlStyles)
 
 
 wxsDWDefineBegin(wxsSpinCtrl,wxSpinCtrl,
-
-    ThisWidget = new wxSpinCtrl(parent,id,value,pos,size,style, min ,max);
+        ThisWidget = new wxSpinCtrl(parent,id,value,pos,size,style, min ,max);
     )
-    wxsDWDefStr(value,_("Default :"),_T(""));
-     
-    #ifdef __NO_PROPGRID
-        wxsDWDefIntX(min,"Min","Min",-1)
-        wxsDWDefIntX(max,"Max","Max",-1)
-    #else
-        wxsDWDefIntX(min,"Min","",-1)
-        wxsDWDefIntX(max,"Max","",-1)
-    #endif 
+    wxsDWDefStr(value,"Default:",_T("0"));
+    wxsDWDefInt(min,"Min:",0)
+    wxsDWDefInt(max,"Max:",100)
 wxsDWDefineEnd()

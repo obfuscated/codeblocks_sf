@@ -28,11 +28,11 @@ WXS_ST_END(wxsRadioButtonStyles)
 wxsDWDefineBegin(wxsRadioButton,wxRadioButton,
 
     ThisWidget = new wxRadioButton(parent,id,label,pos,size,style);
-    if (selected) ThisWidget->SetValue(selected);
+    ThisWidget->SetValue(selected);
     
     )
 
     wxsDWDefStr(label,"Label:","Label");
-    wxsDWDefBoolX(selected,"Selected","Selected:",false);
+    wxsDWDefBoolX(selected,"value","Selected:",false);
 
 wxsDWDefineEnd()
