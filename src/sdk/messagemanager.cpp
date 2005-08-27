@@ -116,7 +116,7 @@ MessageManager::MessageManager(wxWindow* parent)
 
     m_OpenSize = ConfigManager::Get()->Read(_T("/main_frame/layout/bottom_block_height"), 150);
     m_AutoHide = ConfigManager::Get()->Read(_T("/message_manager/auto_hide"), 0L);
-    Open();
+//    Open();
     LogPage(mltDebug); // default logging page for stream operator
 }
 
@@ -386,18 +386,7 @@ bool MessageManager::IsAutoHiding()
 
 int MessageManager::GetOpenSize()
 {
-    int y = m_OpenSize;
-    if(m_Open || !m_AutoHide)
-    {
-        wxSashLayoutWindow* sash = (wxSashLayoutWindow*)GetParent();
-        if(sash)
-            y = sash->GetSize().y;
-        else
-            y = GetSize().y + 3; // Shouldn't happen. Added for safety.
-            // 3 is the difference between both sizes (found empirically).
-    }
-    return y;
-    // return (m_Open || !m_AutoHide) ? (GetSize().y + 3) : m_OpenSize;
+    return m_OpenSize;
 }
 
 void MessageManager::Open()
@@ -408,15 +397,6 @@ void MessageManager::Open()
     if (m_pContainerWin)
         m_pContainerWin->Show(true);
     m_Open = true;
-    wxSashLayoutWindow* sash = (wxSashLayoutWindow*)GetParent();
-    if (!sash)
-        return;
-    if (!sash->IsShown())
-        sash->Show(true);
-    sash->SetDefaultSize(wxSize(1, m_OpenSize));
-
-	wxLayoutAlgorithm layout;
-    layout.LayoutFrame(Manager::Get()->GetAppWindow(), Manager::Get()->GetEditorManager()->GetPanel());
 }
 
 void MessageManager::Close(bool force)
@@ -427,17 +407,9 @@ void MessageManager::Close(bool force)
         return;
 
     m_LockCounter = 0;
-    wxSashLayoutWindow* sash = (wxSashLayoutWindow*)GetParent();
-    if (!sash)
-        return;
-//    DebugLog(_("before m_OpenSize=%d"), m_OpenSize);
-    m_OpenSize = sash->GetSize().y;
-    sash->SetDefaultSize(wxSize(1, m_OpenSize - m_Logs[mltLog]->GetSize().y));
-//    DebugLog(_("after m_OpenSize=%d, actual=%d"), m_OpenSize, m_OpenSize - m_Logs[mltLog]->GetSize().y);
+    if (m_pContainerWin)
+        m_pContainerWin->Show(false);
     m_Open = false;
-
-	wxLayoutAlgorithm layout;
-    layout.LayoutFrame(Manager::Get()->GetAppWindow(), Manager::Get()->GetEditorManager()->GetPanel());
 }
 
 void MessageManager::LockOpen()
