@@ -415,7 +415,7 @@ bool cbProject::SaveLayout()
 
 bool cbProject::LoadLayout()
 {
-    if (m_Filename.IsEmpty())
+   if (m_Filename.IsEmpty())
         return false;
     int openmode = ConfigManager::Get()->Read(_T("/project_manager/open_files"), (long int)1);
     bool result = false;
@@ -446,7 +446,6 @@ bool cbProject::LoadLayout()
             ProjectLayoutLoader loader(this);
             if (loader.Open(fname.GetFullPath()))
             {
-                Manager::Get()->GetAppWindow()->Freeze();
                 FilesList::Node* node = m_Files.GetFirst();
                 while(node)
                 {
