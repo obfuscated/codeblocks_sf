@@ -485,7 +485,7 @@ void MainFrame::CreateIDE()
     SetToolBar(0);
 
     pSlideBar->SetMode( wxSLIDE_MODE_COMPACT );
-    pPane->SetClient(m_pEdMan->GetNotebook());
+    pPane->SetClient(m_pEdMan->GetPanel());
 }
 
 wxMenu* MainFrame::RecreateMenu(wxMenuBar* mbar, const wxString& name)
