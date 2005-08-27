@@ -16,6 +16,13 @@
 #include "wxsflexgridsizer.h"
 #include "wxstextctrl.h"
 #include "wxsgauge.h"
+#include "wxsradiobutton.h"
+#include "wxsscrollbar.h"
+#include "wxsspinbutton.h"
+#include "wxsspinctrl.h"
+#include "wxstreectrl.h"
+#include "wxsradiobox.h"
+#include "wxsdatepickerctrl.h"
 
 #include <wx/xrc/xmlres.h>
 #include <configmanager.h>
@@ -144,6 +151,13 @@ static wxsWidgetInfo StdInfos[] =
     Entry(Panel,       "wx_wxpanel.html#wxpanel","<wx/panel.h>")
     Entry(TextCtrl,    "wx_wxtextctrl.html#wxtextctrl","<wx/textctrl.h>")
     Entry(Gauge,       "wx_wxgauge.html#wxgauge","<wx/gauge.h>")
+    Entry(RadioButton,   "wx_wxradiobutton.html#wxradiobutton","<wx/radiobut.h>")   
+    Entry(ScrollBar,     "wx_wxscrollbar.html#wxscrollbar","<wx/scrolbar.h>")
+    Entry(SpinButton,    "wx_wxspinbutton.html#wxspinbutton","<wx/spinbutt.h>")
+    Entry(SpinCtrl,      "wx_wxspinctrl.html#wxspinctrl","<wx/spinctrl.h>")
+    Entry(TreeCtrl,      "wx_wxtreectrl.html#wxtreectrl","<wx/treectrl.h>")
+    Entry(RadioBox,      "wx_wxradiobox.html#wxradiobox","<wx/radiobox.h>")
+    Entry(DatePickerCtrl,"wx_wxdatepickerctrl.html#wxdatepickerctrl","<wx/datectrl.h>")
     
     WindowEntry(Dialog,"wx_wxdialog.html#wxdialog","<wx/dialog.h>")
     WindowEntry(Frame, "wx_wxframe.html#wxframe","<wx/frame.h>")
@@ -234,6 +248,13 @@ wxsWidget* wxsStdManagerT::ProduceWidget(int Id,wxsWindowRes* Res)
         case wxsDialogId:           return new wxsDialog(this,Res);
         case wxsFrameId:            return new wxsFrame(this,Res);
         case wxsPanelrId:           return new wxsPanelr(this,Res);
+        case wxsRadioButtonId:      return new wxsRadioButton(this,Res);
+        case wxsScrollBarId:        return new wxsScrollBar(this,Res);
+        case wxsSpinButtonId:       return new wxsSpinButton(this,Res);
+        case wxsSpinCtrlId:         return new wxsSpinCtrl(this,Res);
+        case wxsTreeCtrlId:         return new wxsTreeCtrl(this,Res);
+        case wxsRadioBoxId:         return new wxsRadioBox(this,Res);
+        case wxsDatePickerCtrlId:   return new wxsDatePickerCtrl(this,Res);
     }
     
     return NULL;

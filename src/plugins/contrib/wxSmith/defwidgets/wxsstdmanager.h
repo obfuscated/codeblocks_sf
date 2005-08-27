@@ -27,6 +27,13 @@ enum std_widgets
     wxsPanelId,
     wxsTextCtrlId,
     wxsGaugeId,
+    wxsRadioButtonId,
+    wxsScrollBarId,
+    wxsSpinButtonId,
+    wxsSpinCtrlId,
+    wxsTreeCtrlId,
+    wxsRadioBoxId,
+    wxsDatePickerCtrlId,
     
     /* Windows */
     wxsDialogId,
