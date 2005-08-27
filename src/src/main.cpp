@@ -1054,7 +1054,7 @@ void MainFrame::OnStartHereLink(wxCommandEvent& event)
 //                    displays only 5.
 //                    Things could be done better though...
     	wxChar num = link.Last();
-        for (int i = 0; i < m_FilesHistory.GetCount(); ++i)
+        for (unsigned int i = 0; i < m_FilesHistory.GetCount(); ++i)
         {
         	if (num - _T('1') == i)
         	{
@@ -1074,7 +1074,7 @@ void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
 	{
 		wxString base;
 		base.Printf(_T("CB_VAR_HISTORY_FILE_%d"), i + 1);
-		if (i < m_FilesHistory.GetCount())
+		if (i < (int)m_FilesHistory.GetCount())
             buf.Replace(base, m_FilesHistory.GetHistoryFile(i));
         else
             buf.Replace(base, _T(""));
@@ -1360,8 +1360,9 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     SaveWindowState();
     TerminateRecentFilesHistory();
 
-    Hide(); // Hide the window
-    Refresh();
+// NOTE (mandrav#1#): The following two lines, make the app crash on exit with wx2.6.1-ansi...
+//    Hide(); // Hide the window
+//    Refresh();
 
     // unhook editor manager's notebook from the layout, or else bad things happen ;)
     pPane->SetClient(0);
