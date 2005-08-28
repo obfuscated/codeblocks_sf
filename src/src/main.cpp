@@ -1054,7 +1054,7 @@ void MainFrame::OnStartHereLink(wxCommandEvent& event)
 //                    displays only 5.
 //                    Things could be done better though...
     	wxChar num = link.Last();
-        for (unsigned int i = 0; i < m_FilesHistory.GetCount(); ++i)
+        for (int i = 0; i < (int)m_FilesHistory.GetCount(); ++i)
         {
         	if (num - _T('1') == i)
         	{
