@@ -15,7 +15,6 @@
 				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\help_plugin"/>
 				<Option deps_output=".deps"/>
 				<Option external_deps=""/>
-				<Option additional_depfiles=""/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option host_application="..\..\..\devel\codeblocks.exe"/>
@@ -34,12 +33,13 @@
 					<Add option="-DBUILDING_PLUGIN"/>
 					<Add option="-D_WINDLL"/>
 					<Add directory="..\..\..\sdk"/>
+					<Add directory="..\..\..\sdk\wxscintilla\include"/>
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base"/>
 					<Add option="-Wl,--add-stdcall-alias"/>
 					<Add library="libcodeblocks.a"/>
-					<Add library="libwxmsw26_stc.a"/>
+					<Add library="libwxscintilla.a"/>
 					<Add library="libwxmsw26.a"/>
 					<Add directory="..\..\..\devel"/>
 				</Linker>
