@@ -15,17 +15,15 @@
 #include "compilerfactory.h"
 #include "compiler.h"
 
-#include <cassert>
-
 MSVCWorkspaceLoader::MSVCWorkspaceLoader()
 {
 	//ctor
 }
 
 MSVCWorkspaceLoader::~MSVCWorkspaceLoader()
-{ 
+{
 	//dtor
-} 
+}
 
 bool MSVCWorkspaceLoader::Open(const wxString& filename)
 {
@@ -85,8 +83,7 @@ bool MSVCWorkspaceLoader::Open(const wxString& filename)
     ImportersGlobals::ImportAllTargets = !askForTargets;
 
     int count = 0;
-
-    cbProject* currentProject = 0;
+    cbProject* project = 0;
     while (!file.Eof())
     {
         wxString line = input.ReadLine();
@@ -94,23 +91,8 @@ bool MSVCWorkspaceLoader::Open(const wxString& filename)
         line.Trim(true);
         line.Trim(false);
 
-        /*
-        * exemple wanted line:
-        * Project_Dep_Name VstSDK
-        * and add the dependency/link of the VstSDK project to the current project
-        * be carefull, the dependent projects could not have already been read, so we have to remember them
-        */
-        if (line.StartsWith(_T("Project_Dep_Name"))) {
-          line.Remove(0, 16);
-          line.Trim(false);
-          if (currentProject) addDependency(currentProject, line);
-          continue;
-        }
-
-// example wanted line:
-//Project: "Demo_BSP"=.\Samples\BSP\scripts\Demo_BSP.dsp - Package Owner=<4>
-        //if (!line.StartsWith("Project:"))
-        //    continue;
+        // example wanted line:
+        //Project: "Demo_BSP"=.\Samples\BSP\scripts\Demo_BSP.dsp - Package Owner=<4>
         if (line.StartsWith(_T("Project:"))) {
           line.Remove(0, 8); // remove "Project:"
           // now we need to find the equal sign (=) that separates the
@@ -152,12 +134,23 @@ bool MSVCWorkspaceLoader::Open(const wxString& filename)
           wxFileName fname = prjFile;
           fname.MakeAbsolute(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
           Manager::Get()->GetMessageManager()->DebugLog(_("Found project '%s' in '%s'"), prjTitle.c_str(), fname.GetFullPath().c_str());
-          currentProject = Manager::Get()->GetProjectManager()->LoadProject(fname.GetFullPath());
-          if (currentProject) initDependencies(currentProject);
+          project = Manager::Get()->GetProjectManager()->LoadProject(fname.GetFullPath());
+          if (project) registerProject(project->GetTitle(), project);
+        }
+        /*
+        * exemple wanted line:
+        * Project_Dep_Name VstSDK
+        * and add the dependency/link of the VstSDK project to the current project
+        * be carefull, the dependent projects could not have already been read, so we have to remember them
+        */
+        else if (line.StartsWith(_T("Project_Dep_Name"))) {
+          line.Remove(0, 16);
+          line.Trim(false);
+          if (project) addDependency(project->GetTitle(), line);
         }
     }
 
-    resolveDependencies();
+    updateProjects();
     ImportersGlobals::ResetDefaults();
 
     m_Title = wxFileName(filename).GetName() + _(" workspace");
@@ -168,59 +161,4 @@ bool MSVCWorkspaceLoader::Save(const wxString& title, const wxString& filename)
 {
     // no support for saving workspace files (.dsw)
     return false;
-}
-
-void MSVCWorkspaceLoader::initDependencies(cbProject* project) {
-    // just set the initial project dependencies as empty
-    //_projdeps.insert(HashProjdeps::value_type(project->GetTitle(), ProjDeps(project)));
-    _projdeps[project->GetTitle()] = ProjDeps(project);
-}
-
-void MSVCWorkspaceLoader::addDependency(cbProject* project, const wxString& depProject) {
-    // add the dependency to the last project
-    HashProjdeps::iterator it = _projdeps.find(project->GetTitle());
-    if (it != _projdeps.end()) it->second._deps.Add(depProject);
-}
-
-void MSVCWorkspaceLoader::resolveDependencies() {
-    HashProjdeps::iterator pIt;
-    HashProjdeps::iterator sIt;
-    ProjectBuildTarget* target1;
-    ProjectBuildTarget* target2;
-    ProjDeps p;
-    unsigned int i;
-    int j;
-    // assign dependencies to projects
-    // quick hack: we add the library targets of the dependent projects to the current project only
-    // a real project/target dependency feature should be implemented in the sdk
-    for (pIt = _projdeps.begin(); pIt != _projdeps.end(); ++pIt) {
-        p = pIt->second;
-        for (i=0; i<p._deps.GetCount(); ++i) {
-            sIt = _projdeps.find(p._deps[i]);
-            if (sIt != _projdeps.end()) {
-                assert(p._project->GetBuildTargetsCount() == sIt->second._project->GetBuildTargetsCount());
-                for (j=0; j<p._project->GetBuildTargetsCount(); ++j) {
-                    target1 = sIt->second._project->GetBuildTarget(j);
-                    target2 = p._project->GetBuildTarget(j);
-                    wxString deps = target2->GetExternalDeps();
-                    deps <<target1->GetOutputFilename() << _T(';');
-                    target2->SetExternalDeps(deps);
-                    TargetType type = target1->GetTargetType();
-                    if (type==ttDynamicLib) {
-                        // target1->GetStaticLibFilename() do not work since it uses the filename instead of output filename
-                        Compiler* compiler = CompilerFactory::Compilers[sIt->second._project->GetCompilerIndex()];
-                        wxString prefix = compiler->GetSwitches().libPrefix;
-                        wxString suffix = compiler->GetSwitches().libExtension;
-                        wxFileName fname = target1->GetOutputFilename();
-                        if (!fname.GetName().StartsWith(prefix)) fname.SetName(prefix + fname.GetName());
-                        fname.SetExt(suffix);
-                        target2->AddLinkLib(fname.GetFullPath());
-                    }
-                    else if (type==ttStaticLib) target2->AddLinkLib(target1->GetOutputFilename());
-               }
-            }
-        }
-    }
-
-    //target->AddCommandsBeforeBuild(const wxString& command);
 }

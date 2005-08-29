@@ -9,6 +9,7 @@
 #include <wx/stream.h>
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
+#include <wx/dynarray.h>
 
 #include "manager.h"
 #include "projectmanager.h"
@@ -26,7 +27,7 @@ MSVCLoader::MSVCLoader(cbProject* project)
     m_ConvertSwitches(true)
 {
 	//ctor
-} 
+}
 
 MSVCLoader::~MSVCLoader()
 {
@@ -74,7 +75,7 @@ bool MSVCLoader::Open(const wxString& filename)
         if (!ParseConfiguration(selected_indices[i]))
             return false;
     }
-    
+
     m_pProject->SetTitle(m_Filename.GetName());
     return ParseSourceFiles();
 }
@@ -118,36 +119,44 @@ bool MSVCLoader::ReadConfigurations()
                 if      (projcode.Matches(_T("0101"))) type = ttExecutable;
                 else if (projcode.Matches(_T("0102"))) type = ttDynamicLib;
                 else if (projcode.Matches(_T("0103"))) type = ttConsoleOnly;
-                else if (projcode.Matches(_T("0104"))) type = ttStaticLib; 
+                else if (projcode.Matches(_T("0104"))) type = ttStaticLib;
                 else if (projcode.Matches(_T("010a"))) type = ttCommandsOnly;
                 else {
                   type = ttCommandsOnly;
                   Manager::Get()->GetMessageManager()->DebugLog(_("unrecognized target type"));
                 }
 
-                Manager::Get()->GetMessageManager()->DebugLog(_("TargType '%s' -> %d"), targtype.c_str(), type);            
+                //Manager::Get()->GetMessageManager()->DebugLog(_("TargType '%s' is %d"), targtype.c_str(), type);
                 m_TargType[targtype] = type;
             }
             continue;
         }
         else if (line.StartsWith(_T("!MESSAGE \""))) {
         //  !MESSAGE "anothertest - Win32 Release" (based on "Win32 (x86) Application")
-            //line.
             int pos;
             pos = line.Find('\"');
             line.Remove(0, pos+1);
             pos = line.Find('\"');
-            wxString target = line.Left(pos);
+            wxArrayString projectTarget = GetArrayFromString(line.Left(pos), _T("-"));
+            wxString target = projectTarget[1];
+            if (projectTarget.GetCount() != 2) {
+                Manager::Get()->GetMessageManager()->DebugLog(_("ERROR: bad target format"));
+                return false;
+            }
             line.Remove(0, pos+1);
             pos = line.Find('\"');
             line.Remove(0, pos+1);
             pos = line.Find('\"');
-            wxString basedOn = line.Left(pos);
+            wxString basedon = line.Left(pos);
             TargetType type = ttCommandsOnly;
-            HashTargetType::iterator it = m_TargType.find(basedOn);
+            HashTargetType::iterator it = m_TargType.find(basedon);
             if (it != m_TargType.end()) type = it->second;
+            else {
+                Manager::Get()->GetMessageManager()->DebugLog(_("ERROR: target type not found"));
+                return false;
+            }
             m_TargetBasedOn[target] = type;
-            Manager::Get()->GetMessageManager()->DebugLog(_("Target '%s' is of type %d"), target.c_str(), type);            
+            //Manager::Get()->GetMessageManager()->DebugLog(_("Target '%s' type %d"), target.c_str(), type);
         }
         else if (line.StartsWith(_T("!IF  \"$(CFG)\" ==")))
             size = 16;
@@ -166,6 +175,12 @@ bool MSVCLoader::ReadConfigurations()
             line.Trim(true);
             line.Trim(false);
             wxString tmp = RemoveQuotes(line);
+            // remove the project name part, i.e "anothertest - "
+            int idx = tmp.Find('-');
+            if (idx != -1) {
+              tmp.Remove(0, idx+1);
+              tmp.Trim(false);
+            }
             if (m_Configurations.Index(tmp) == wxNOT_FOUND)
             {
                 m_Configurations.Add(tmp);
@@ -191,6 +206,7 @@ bool MSVCLoader::ParseConfiguration(int index)
     m_Type = ttCommandsOnly;
     HashTargetType::iterator it = m_TargetBasedOn.find(m_Configurations[index]);
     if (it != m_TargetBasedOn.end()) m_Type = it->second;
+    else Manager::Get()->GetMessageManager()->DebugLog(_T("ERROR: could not find the target type of %s"), m_Configurations[index].c_str());
     bt->SetTargetType(m_Type);
     bt->SetOutputFilename(bt->SuggestOutputFilename());
 
@@ -210,14 +226,14 @@ bool MSVCLoader::ParseConfiguration(int index)
         wxString line = input.ReadLine();
         line.Trim(true);
         line.Trim(false);
-        
+
         // we want empty lines (skipped) or lines starting with #
         // if we encounter a line starting with !, we break out of here
         if (line.GetChar(0) == '!')
             break;
         if (line.IsEmpty() || line.GetChar(0) != '#')
             continue;
-        
+
 //        if (line.StartsWith("# PROP BASE Output_Dir "))
         if (line.StartsWith(_T("# PROP Output_Dir ")))
         {
@@ -303,11 +319,11 @@ bool MSVCLoader::ParseSourceFiles()
         // we 're only interested in lines starting with SOURCE=
         if (!line.StartsWith(_T("SOURCE=")))
             continue;
-        
+
         line.Remove(0, 7);
         line.Trim(true);
         line.Trim(false);
-        
+
         ProjectFile* pf = m_pProject->AddFile(0, RemoveQuotes(line));
         if (pf)
         {
@@ -323,7 +339,7 @@ void MSVCLoader::ProcessCompilerOptions(ProjectBuildTarget* target, const wxStri
 {
     wxArrayString array;
     array = GetArrayFromString(opts, _T(" "));
-    
+
     for (unsigned int i = 0; i < array.GetCount(); ++i)
     {
         wxString opt = array[i];
@@ -404,12 +420,12 @@ void MSVCLoader::ProcessLinkerOptions(ProjectBuildTarget* target, const wxString
 {
     wxArrayString array;
     array = GetArrayFromString(opts, _T(" "));
-    
+
     for (unsigned int i = 0; i < array.GetCount(); ++i)
     {
         wxString opt = array[i];
         opt.Trim();
-        
+
         if (m_ConvertSwitches)
         {
             if (opt.StartsWith(_T("/libpath:")))

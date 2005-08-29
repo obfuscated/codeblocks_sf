@@ -1948,6 +1948,16 @@
 			<Option link="0"/>
 			<Option target="sdk"/>
 		</Unit>
+		<Unit filename="sdk\msvcworkspacebase.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\msvcworkspacebase.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
 		<Unit filename="sdk\multiselectdlg.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="sdk"/>

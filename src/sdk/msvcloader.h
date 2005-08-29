@@ -16,7 +16,7 @@ class MSVCLoader : public IBaseLoader
 	public:
 		MSVCLoader(cbProject* project);
 		virtual ~MSVCLoader();
-		
+
 		bool Open(const wxString& filename);
 		bool Save(const wxString& filename);
 	protected:
