@@ -91,16 +91,17 @@ void wxSplitPanel::OnUpdateUI(wxUpdateUIEvent& event)
     }
     wxWindow *w1 = m_splitter->GetWindow1();
     wxWindow *w2 = m_splitter->GetWindow2();
-    if(w1 && w2 && w1->IsShown() && w2->IsShown())
-    {
-        int sashpos = m_splitter->GetSashPosition();
-        if(sashpos > 0)
+    if(w1 && w2)
+        if(w1->IsShown() && w2->IsShown())
         {
-            m_lastsashposition = sashpos;
-            if(m_lastsashposition < 20)
-                m_lastsashposition = 20;
+            int sashpos = m_splitter->GetSashPosition();
+            if(sashpos > 0)
+            {
+                m_lastsashposition = sashpos;
+                if(m_lastsashposition < 20)
+                    m_lastsashposition = 20;
+            }
         }
-    }
     event.Skip();
 }
 
