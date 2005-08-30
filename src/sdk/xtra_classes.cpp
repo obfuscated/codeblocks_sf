@@ -46,7 +46,6 @@ void wxSplitPanel::RefreshSplitter(int idtop,int idbottom)
     wxWindow *bottomwin = m_splitter->FindWindowById(idbottom);
 
     m_splitter->Freeze();
-
     {
         wxUpdateUIEvent tmpevent;
         this->OnUpdateUI(tmpevent); // Refresh the recorded splitter position
@@ -55,7 +54,9 @@ void wxSplitPanel::RefreshSplitter(int idtop,int idbottom)
     if(topwin && topwin->IsShown() && bottomwin && bottomwin->IsShown())
     {
         w1 = m_splitter->GetWindow1();
-        w2 = m_splitter->GetWindow2();
+        w2 = 0;
+        if(m_splitter->IsSplit())
+            w2 = m_splitter->GetWindow2();
 
         sashPosition = m_lastsashposition;
         if(sashPosition <= 0)
@@ -89,28 +90,26 @@ void wxSplitPanel::OnUpdateUI(wxUpdateUIEvent& event)
         event.Skip();
         return;
     }
-    wxWindow *w1 = m_splitter->GetWindow1();
-    wxWindow *w2 = m_splitter->GetWindow2();
-    if(w1 && w2)
-        if(w1->IsShown() && w2->IsShown())
-        {
-            int sashpos = m_splitter->GetSashPosition();
-            if(sashpos > 0)
-            {
-                m_lastsashposition = sashpos;
-                if(m_lastsashposition < 20)
-                    m_lastsashposition = 20;
-            }
-        }
+    if(!m_splitter->IsSplit())
+    {
+        event.Skip();
+        return;
+    }
+    int sashpos = m_splitter->GetSashPosition();
+    if(sashpos > 0)
+    {
+        if (sashpos > 20)
+            m_lastsashposition = sashpos;
+        else
+            m_lastsashposition = 20;
+    }
     event.Skip();
 }
 
 wxSplitPanel::~wxSplitPanel()
 {
-
 	if (!m_SplitterConfig.IsEmpty())
         ConfigManager::Get()->Write(m_SplitterConfig, m_lastsashposition);
-    delete m_splitter;
     m_splitter=0;
     SetSizer(0L);
 }
