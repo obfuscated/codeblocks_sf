@@ -18,8 +18,6 @@ C     program code
 C
       i = 1;
 C
-hehe
-      .not.
       do             ! a breakpoint is set
           write(*,*) 'Counting endless...'
           number = i ! active line (during debugging)
