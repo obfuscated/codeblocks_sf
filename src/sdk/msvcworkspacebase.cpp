@@ -64,7 +64,7 @@ void MSVCWorkspaceBase::updateProjects() {
                 dep = depIt->second;
 
                 // no per-workspace config for msvc6, so build a fake one ;)
-                if (_workspaceConfigurations.empty()) {
+                if (_workspaceConfigurations.IsEmpty()) {
                     Manager::Get()->GetMessageManager()->DebugLog(_T("Workspace configurations will be generated from those of project %s"), proj._project->GetTitle().c_str());
                     for (k=0; k<proj._project->GetBuildTargetsCount(); ++k) {
                         // should be the configurations, not the build target title
