@@ -38,12 +38,14 @@
 
 static wxMutex s_mutexListProtection;
 int PARSER_END = wxNewId();
+static int idPool = wxNewId();
 
 BEGIN_EVENT_TABLE(Parser, wxEvtHandler)
-//	EVT_MENU(THREAD_START, Parser::OnStartThread)
-//	EVT_MENU(THREAD_END, Parser::OnEndThread)
 //	EVT_MENU(NEW_TOKEN, Parser::OnNewToken)
 //	EVT_MENU(FILE_NEEDS_PARSING, Parser::OnParseFile)
+	EVT_THREADTASK_STARTED(idPool, Parser::OnStartThread)
+	EVT_THREADTASK_ENDED(idPool, Parser::OnEndThread)
+    EVT_THREADTASK_ALLDONE(idPool, Parser::OnAllThreadsDone)
 END_EVENT_TABLE()
 
 Parser::Parser(wxEvtHandler* parent)
@@ -55,7 +57,8 @@ Parser::Parser(wxEvtHandler* parent)
     ,m_abort_flag(false),
     m_UsingCache(false),
     m_CacheFilesCount(0),
-    m_CacheTokensCount(0)
+    m_CacheTokensCount(0),
+    m_Pool(this, idPool)
 {
 	ReadOptions();
 #ifndef STANDALONE
@@ -123,12 +126,12 @@ Parser::~Parser()
 
 void Parser::ConnectEvents()
 {
-    Connect(THREAD_START, -1, wxEVT_COMMAND_MENU_SELECTED,
-            (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
-            &Parser::OnStartThread);
-    Connect(THREAD_END, -1, wxEVT_COMMAND_MENU_SELECTED,
-            (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
-            &Parser::OnEndThread);
+//    Connect(EVT_THREADTASK_STARTED, -1, cbEVT_THREADTASK_STARTED,
+//            (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
+//            &Parser::OnStartThread);
+//    Connect(EVT_THREADTASK_ENDED, -1, cbEVT_THREADTASK_ENDED,
+//            (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
+//            &Parser::OnEndThread);
     Connect(NEW_TOKEN, -1, wxEVT_COMMAND_MENU_SELECTED,
             (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
             &Parser::OnNewToken);
@@ -139,8 +142,8 @@ void Parser::ConnectEvents()
 
 void Parser::DisconnectEvents()
 {
-    Disconnect(THREAD_START, -1, wxEVT_COMMAND_MENU_SELECTED);//,
-    Disconnect(THREAD_END, -1, wxEVT_COMMAND_MENU_SELECTED);//,
+//    Disconnect(EVT_THREADTASK_STARTED, -1, cbEVT_THREADTASK_STARTED);//,
+//    Disconnect(EVT_THREADTASK_ENDED, -1, cbEVT_THREADTASK_ENDED);//,
     Disconnect(NEW_TOKEN, -1, wxEVT_COMMAND_MENU_SELECTED);//,
     Disconnect(FILE_NEEDS_PARSING, -1, wxEVT_COMMAND_MENU_SELECTED);//,
 }
@@ -399,28 +402,16 @@ inline bool Parser::LoadIntFromFile(wxFile* f, int* i)
     return true;
 }
 
-unsigned int Parser::GetThreadsCount()
-{
-	wxMutexLocker lock(s_mutexListProtection);
-	return m_Threads.GetCount();
-}
-
 unsigned int Parser::GetFilesCount()
 {
 	wxMutexLocker lock(s_mutexListProtection);
 	return m_ParsedFiles.GetCount();
 }
 
-unsigned int Parser::GetLeftThreadsCount()
-{
-	wxMutexLocker lock(s_mutexListProtection);
-	return m_ThreadsStore.GetCount();
-}
-
 bool Parser::Done()
 {
-	wxMutexLocker lock(s_mutexListProtection);
-	return !m_ThreadsStore.GetCount() && !m_Threads.GetCount();
+    wxMutexLocker lock(s_mutexListProtection);
+	return m_Pool.Done();
 }
 
 #ifndef STANDALONE
@@ -554,37 +545,6 @@ Token* Parser::FindTokenByDisplayName(const wxString& name)
 			return token;
 	}
 	return 0L;
-}
-
-void Parser::ScheduleThreads()
-{
-/*#ifndef STANDALONE
-	Manager::Get()->GetMessageManager()->DebugLog("Parser: Scheduling threads");
-	Manager::Get()->GetMessageManager()->DebugLog("Parser: Running thread count: %d", m_Threads.GetCount());
-	Manager::Get()->GetMessageManager()->DebugLog("Parser: Max running thread count: %d", m_MaxThreadsCount);
-	Manager::Get()->GetMessageManager()->DebugLog("Parser: Threads-in-store count: %d", m_ThreadsStore.GetCount());
-#endif*/
-	wxMutexLocker* lock = new wxMutexLocker(s_mutexListProtection);
-	if (m_Threads.GetCount() < m_MaxThreadsCount && m_ThreadsStore.GetCount())
-	{
-        wxLogNull ln; // no other logging
-		ParserThread* thread = m_ThreadsStore[0];
-		m_ThreadsStore.RemoveAt(0);
-		m_Threads.Add(thread);
-		thread->Run();
-	}
-	delete lock;
-
-	if (Done())
-	{
-        lock = new wxMutexLocker(s_mutexListProtection);
-		LinkInheritance();
-		SortAllTokens();
-		delete lock;
-		wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, PARSER_END);
-		event.SetInt((int)this);
-		wxPostEvent(m_pParent, event);
-	}
 }
 
 int TokensSortProc(Token** first, Token** second)
@@ -724,30 +684,17 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
 											&m_Tokens);
 	if (!opts.useBuffer)
 	{
-		wxLogNull ln; // no other logging
-		int ret = thread->Create();
-        if (ret != wxTHREAD_NO_ERROR)
-        {
-            #ifndef STANDALONE
-            Manager::Get()->GetMessageManager()->DebugLog(_("Can't create new thread: [%d] %s"), ret, opts.useBuffer ? _("<buffer>") : buffOrFile.c_str());
-            #endif
-            thread->Delete();
-            return false;
-        }
-		lock = new wxMutexLocker(s_mutexListProtection);
-		m_ThreadsStore.Add(thread);
+//		lock = new wxMutexLocker(s_mutexListProtection);
 		m_ParsedFiles.Add(buffOrFile);
-		delete lock;
-
-		ScheduleThreads();
+//	    LOGSTREAM << "Adding task for: " << buffOrFile << '\n';
+		m_Pool.AddTask(thread, true);
+//		delete lock;
 		return true;
 	}
 	else
 	{
-        wxLogNull ln; // no other logging
 		bool ret = thread->Parse();
 		LinkInheritance(true);
-		thread->Delete();
 		delete thread;
 		return ret;
 	}
@@ -850,71 +797,41 @@ void Parser::ClearTemporaries()
 
 void Parser::TerminateAllThreads()
 {
-    wxLogNull ln; // no other logging
-	wxMutexLocker lock(s_mutexListProtection);
-	ParserThread::abort(&this->m_abort_flag,false); // Quickly abort all threads
-	while (m_Threads.GetCount())
-	{
-        ParserThread* pt = m_Threads.Item(0);
-        if (pt)
-        {
-            pt->SetTokens(0);
-            delete pt;
-        }
-        m_Threads.RemoveAt(0);
-	}
-
-	while (m_ThreadsStore.GetCount())
-	{
-        ParserThread* pt = m_ThreadsStore.Item(0);
-        if (pt)
-            pt->SetTokens(0);
-        m_ThreadsStore.RemoveAt(0);
-	}
+    wxMutexLocker lock(s_mutexListProtection);
+    m_Pool.AbortAllTasks();
 }
 
 void Parser::PauseAllThreads()
 {
-    wxLogNull ln; // no other logging
-	wxMutexLocker lock(s_mutexListProtection);
-	for (unsigned int i = 0; i < m_Threads.GetCount(); ++i)
-		m_Threads[i]->Pause();
+//    wxLogNull ln; // no other logging
+//	wxMutexLocker lock(s_mutexListProtection);
+//	for (unsigned int i = 0; i < m_Threads.GetCount(); ++i)
+//		m_Threads[i]->Pause();
 }
 
 void Parser::ResumeAllThreads()
 {
-    wxLogNull ln; // no other logging
-	wxMutexLocker lock(s_mutexListProtection);
-	for (unsigned int i = 0; i < m_Threads.GetCount(); ++i)
-		m_Threads[i]->Resume();
+//    wxLogNull ln; // no other logging
+//	wxMutexLocker lock(s_mutexListProtection);
+//	for (unsigned int i = 0; i < m_Threads.GetCount(); ++i)
+//		m_Threads[i]->Resume();
 }
 
-wxString Parser::ThreadFilename(unsigned int idx)
+void Parser::OnStartThread(CodeBlocksEvent& event)
 {
-	wxMutexLocker lock(s_mutexListProtection);
-	return m_Threads[idx]->GetFilename();
+    event.Skip();
 }
 
-void Parser::OnStartThread(wxCommandEvent& event)
+void Parser::OnEndThread(CodeBlocksEvent& event)
 {
-	event.SetInt(0L);
-	wxPostEvent(m_pParent, event);
+    event.Skip();
 }
 
-void Parser::OnEndThread(wxCommandEvent& event)
+void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
 {
-	wxMutexLocker* lock = new wxMutexLocker(s_mutexListProtection);
-	m_ReparsedFiles.Remove(event.GetString());
-	ParserThread* thread = (ParserThread*)event.GetInt();
-	m_Threads.Remove(thread);
-	delete lock;
-	ScheduleThreads();
-
-	if (!Done())
-	{
-		event.SetInt((int)this);
-		wxPostEvent(m_pParent, event);
-	}
+    wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, PARSER_END);
+    evt.SetInt((int)this);
+	wxPostEvent(m_pParent, evt);
 }
 
 void Parser::OnNewToken(wxCommandEvent& event)
@@ -926,6 +843,7 @@ void Parser::OnNewToken(wxCommandEvent& event)
 
 void Parser::OnParseFile(wxCommandEvent& event)
 {
+//    LOGSTREAM << "Parser::OnParseFile: " << event.GetString() << "\n";
 	// a ParserThread ran into an #include directive
 	// it's up to us to decide to parse this file...
 

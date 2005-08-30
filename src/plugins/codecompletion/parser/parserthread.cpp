@@ -48,7 +48,7 @@ ParserThread::ParserThread(wxEvtHandler* parent,bool* abortflag,
 	m_StartBlockIndex(0),
 	m_Options(options)
 {
-	m_pAbort=abortflag;
+//	m_pAbort=abortflag;
 	//ctor
 	m_Tokens.m_Options.wantPreprocessor = options.wantPreprocessor;
 
@@ -86,18 +86,18 @@ void ParserThread::SetTokens(TokensArray* tokens)
 
 void* ParserThread::DoRun()
 {
-	wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, THREAD_START);
-    event.SetString(m_Filename);
-	event.SetInt((int)this);
-	wxPostEvent(m_pParent, event);
-
-//    Log("ParserThread running for " + m_Filename);
-	Parse();
-
-	wxCommandEvent event1(wxEVT_COMMAND_MENU_SELECTED, THREAD_END);
-	event1.SetString(m_Filename);
-	event1.SetInt((int)this);
-	wxPostEvent(m_pParent, event1);
+//	wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, THREAD_START);
+//    event.SetString(m_Filename);
+//	event.SetInt((int)this);
+//	wxPostEvent(m_pParent, event);
+//
+////    Log("ParserThread running for " + m_Filename);
+//	Parse();
+//
+//	wxCommandEvent event1(wxEVT_COMMAND_MENU_SELECTED, THREAD_END);
+//	event1.SetString(m_Filename);
+//	event1.SetInt((int)this);
+//	wxPostEvent(m_pParent, event1);
 
 	return 0L;
 }

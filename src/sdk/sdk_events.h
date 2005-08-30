@@ -14,7 +14,9 @@ class EVTIMPORT CodeBlocksEvent : public wxCommandEvent
 			: wxCommandEvent(commandType, id),
 			m_pProject(project),
 			m_pEditor(editor),
-			m_pPlugin(plugin) {}
+			m_pPlugin(plugin),
+			m_X(0),
+			m_Y(0) {}
 		CodeBlocksEvent(const CodeBlocksEvent& event)
 			: wxCommandEvent(event),
 			m_pProject(event.m_pProject),
@@ -106,5 +108,13 @@ DECLARE_CB_EVENT_TYPE(cbEVT_PIPEDPROCESS_STDERR)
 #define EVT_PIPEDPROCESS_STDERR(id, fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PIPEDPROCESS_STDERR, id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) & fn, (wxObject *) NULL ),
 DECLARE_CB_EVENT_TYPE(cbEVT_PIPEDPROCESS_TERMINATED)
 #define EVT_PIPEDPROCESS_TERMINATED(id, fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PIPEDPROCESS_TERMINATED, id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) & fn, (wxObject *) NULL ),
+
+// thread-pool events
+DECLARE_CB_EVENT_TYPE(cbEVT_THREADTASK_STARTED)
+#define EVT_THREADTASK_STARTED(id, fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_THREADTASK_STARTED, id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) & fn, (wxObject *) NULL ),
+DECLARE_CB_EVENT_TYPE(cbEVT_THREADTASK_ENDED)
+#define EVT_THREADTASK_ENDED(id, fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_THREADTASK_ENDED, id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) & fn, (wxObject *) NULL ),
+DECLARE_CB_EVENT_TYPE(cbEVT_THREADTASK_ALLDONE)
+#define EVT_THREADTASK_ALLDONE(id, fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_THREADTASK_ALLDONE, id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) & fn, (wxObject *) NULL ),
 
 #endif // SDK_EVENTS_H

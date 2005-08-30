@@ -37,7 +37,7 @@
 #include <configmanager.h>
 #include <manager.h>
 
-static const wxString g_SampleClasses = 
+static const wxString g_SampleClasses =
 	_T("class A_class"
 	"{"
 	"	public:"
@@ -88,7 +88,6 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent)
 	: m_Parser(this)
 {
 	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgCCSettings"));
-	XRCCTRL(*this, "spnThreads", wxSpinCtrl)->SetValue(m_Parser.GetMaxThreads());
 	XRCCTRL(*this, "chkLocals", wxCheckBox)->SetValue(m_Parser.Options().followLocalIncludes);
 	XRCCTRL(*this, "chkGlobals", wxCheckBox)->SetValue(m_Parser.Options().followGlobalIncludes);
 	XRCCTRL(*this, "chkPreprocessor", wxCheckBox)->SetValue(m_Parser.Options().wantPreprocessor);
@@ -109,7 +108,7 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent)
 	int timerDelay = ConfigManager::Get()->Read(_T("/editor/cc_delay"), 500);
 	XRCCTRL(*this, "sliderDelay", wxSlider)->SetValue(timerDelay / 100);
 	UpdateSliderLabel();
-	
+
 	m_Parser.ParseBuffer(g_SampleClasses, true);
 	m_Parser.BuildTree(*XRCCTRL(*this, "treeClasses", wxTreeCtrl));
 }
@@ -158,7 +157,6 @@ void CCOptionsDlg::OnSliderScroll(wxScrollEvent& event)
 
 void CCOptionsDlg::OnOK(wxCommandEvent& event)
 {
-	m_Parser.SetMaxThreads(XRCCTRL(*this, "spnThreads", wxSpinCtrl)->GetValue());
 	m_Parser.Options().followLocalIncludes = XRCCTRL(*this, "chkLocals", wxCheckBox)->GetValue();
 	m_Parser.Options().followGlobalIncludes = XRCCTRL(*this, "chkGlobals", wxCheckBox)->GetValue();
 	m_Parser.Options().wantPreprocessor = XRCCTRL(*this, "chkPreprocessor", wxCheckBox)->GetValue();

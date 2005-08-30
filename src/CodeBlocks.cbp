@@ -1548,6 +1548,16 @@
 			<Option link="0"/>
 			<Option target="sdk"/>
 		</Unit>
+		<Unit filename="sdk\cbthreadpool.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\cbthreadpool.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
 		<Unit filename="sdk\cbworkspace.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="sdk"/>
@@ -1938,21 +1948,21 @@
 			<Option link="0"/>
 			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="sdk\msvcworkspaceloader.cpp">
-			<Option compilerVar="CPP"/>
-			<Option target="sdk"/>
-		</Unit>
-		<Unit filename="sdk\msvcworkspaceloader.h">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="sdk"/>
-		</Unit>
 		<Unit filename="sdk\msvcworkspacebase.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk\msvcworkspacebase.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\msvcworkspaceloader.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\msvcworkspaceloader.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

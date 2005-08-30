@@ -41,8 +41,8 @@
 #include <cctype>
 
 BEGIN_EVENT_TABLE(NativeParser, wxEvtHandler)
-	EVT_MENU(THREAD_START, NativeParser::OnThreadStart)
-	EVT_MENU(THREAD_END, NativeParser::OnThreadEnd)
+//	EVT_MENU(THREAD_START, NativeParser::OnThreadStart)
+//	EVT_MENU(THREAD_END, NativeParser::OnThreadEnd)
 	EVT_MENU(PARSER_END, NativeParser::OnParserEnd)
 END_EVENT_TABLE()
 
@@ -279,7 +279,7 @@ void NativeParser::AddParser(cbProject* project, bool useCache)
         }
 	}
 	if (fcount == 0)
-        Manager::Get()->GetMessageManager()->DebugLog(_("End parsing project %s (no header files found)"), project->GetTitle().c_str());
+        Manager::Get()->GetMessageManager()->DebugLog(_("End parsing project %s (no files found?)"), project->GetTitle().c_str());
 }
 
 void NativeParser::RemoveParser(cbProject* project, bool useCache)
@@ -1168,7 +1168,7 @@ void NativeParser::OnThreadEnd(wxCommandEvent& event)
 void NativeParser::OnParserEnd(wxCommandEvent& event)
 {
 	Parser* parser = (Parser*)event.GetInt();
-	if (parser && parser->Done())
+	if (parser)// && parser->Done())
 	{
 		cbProject* project = FindProjectFromParser(parser);
 		if (project)

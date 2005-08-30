@@ -5,9 +5,10 @@
 #include <wx/treectrl.h>
 #include <wx/event.h>
 #include <wx/timer.h>
-#include <wx/dynarray.h>
 #include <wx/file.h>
 #include "parserthread.h"
+#include <cbthreadpool.h>
+#include <sdk_events.h>
 
 #ifndef STANDALONE
 	#include <wx/imaglist.h>
@@ -40,7 +41,6 @@
 #define PARSER_IMG_MIN PARSER_IMG_CLASS_FOLDER
 #define PARSER_IMG_MAX PARSER_IMG_OTHERS_FOLDER
 
-WX_DEFINE_ARRAY(ParserThread*, ThreadsArray);
 extern int PARSER_END;
 
 class ClassTreeData : public wxTreeItemData
@@ -105,12 +105,10 @@ class Parser : public wxEvtHandler
 		wxArrayString& IncludeDirs(){ return m_IncludeDirs; }
 
 		const TokensArray& GetTokens(){ return m_Tokens; }
-		unsigned int GetThreadsCount();
 		unsigned int GetFilesCount();
-		unsigned int GetLeftThreadsCount();
-		
+
 		bool Done();
-		
+
 		unsigned int GetMaxThreads(){ return m_MaxThreadsCount; }
 		void SetMaxThreads(unsigned int max){ m_MaxThreadsCount = max; }
 
@@ -120,12 +118,12 @@ class Parser : public wxEvtHandler
 		void TerminateAllThreads();
 		void PauseAllThreads();
 		void ResumeAllThreads();
-		wxString ThreadFilename(unsigned int idx);
 		void ClearTemporaries();
 		void SortAllTokens();
 	protected:
-		void OnStartThread(wxCommandEvent& event);
-		void OnEndThread(wxCommandEvent& event);
+		void OnStartThread(CodeBlocksEvent& event);
+		void OnEndThread(CodeBlocksEvent& event);
+        void OnAllThreadsDone(CodeBlocksEvent& event);
 		void OnNewToken(wxCommandEvent& event);
 		void OnParseFile(wxCommandEvent& event);
 	private:
@@ -134,7 +132,6 @@ class Parser : public wxEvtHandler
         void BuildTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* parent);
         void AddTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* parent);
 		void AddTreeNode(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* token, bool childrenOnly = false);
-		void ScheduleThreads();
 		void LinkInheritance(bool tempsOnly = false);
 		Token* LoadTokenFromCache(wxFile* f, Token* parent);
 		void SaveTokenToCache(wxFile* f, Token* token);
@@ -146,8 +143,6 @@ class Parser : public wxEvtHandler
 		BrowserOptions m_BrowserOptions;
 		unsigned int m_MaxThreadsCount;
 		TokensArray m_Tokens;
-		ThreadsArray m_Threads;
-		ThreadsArray m_ThreadsStore;
 		wxArrayString m_ParsedFiles;
 		wxArrayString m_ReparsedFiles;
 		wxArrayString m_IncludeDirs;
@@ -163,8 +158,10 @@ class Parser : public wxEvtHandler
         int m_CacheFilesCount; // m_ParsedFiles.GetCount() when (if) loaded from cache
         int m_CacheTokensCount; // m_Tokens.GetCount() when (if) loaded from cache
 
+        cbThreadPool m_Pool;
+
 #endif // STANDALONE
-		
+
 		DECLARE_EVENT_TABLE()
 };
 
