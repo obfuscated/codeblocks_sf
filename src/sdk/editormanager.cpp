@@ -545,7 +545,7 @@ EditorBase* EditorManager::GetActiveEditor()
 void EditorManager::ActivateNext()
 {
     int sel = m_pNotebook->GetSelection();
-    if (sel < m_pNotebook->GetPageCount() - 1)
+    if (sel < (int)m_pNotebook->GetPageCount() - 1)
         ++sel;
     else
         sel = 0;
@@ -747,7 +747,7 @@ bool EditorManager::QueryClose(EditorBase *ed)
 
 int EditorManager::FindPageFromEditor(EditorBase* eb)
 {
-    for (int i = 0; i < m_pNotebook->GetPageCount(); ++i)
+    for (int i = 0; i < (int)m_pNotebook->GetPageCount(); ++i)
     {
         if (m_pNotebook->GetPage(i) == eb)
             return i;

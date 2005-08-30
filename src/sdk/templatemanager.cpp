@@ -146,7 +146,7 @@ void TemplateManager::LoadUserTemplates()
         m_UserTemplates.Add(filename);
         ok = dir.GetNext(&filename);
     }
-	
+
 	Manager::Get()->GetMessageManager()->DebugLog(_("%d user templates loaded"), m_UserTemplates.GetCount());
 }
 
@@ -213,25 +213,25 @@ void TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
     cbProject* prj = Manager::Get()->GetProjectManager()->LoadProject(filename);
     if (prj)
     {
-      if (prj->GetCompilerIndex() != CompilerFactory::GetDefaultCompilerIndex())
-      {
-    	if (wxMessageBox(_("This template project was built for a different compiler "
-                               "than the one you 've set as default.\n"
-                               "Do you want to try and convert it for use with your default "
-                               "compiler?\n"
-                               "(conversion might not be 100% accurate)"),
-                           _("Question"),
-                           wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxYES)
-           {
-               prj->SetCompilerIndex(CompilerFactory::GetDefaultCompilerIndex());
-                for (int i = 0; i < prj->GetBuildTargetsCount(); ++i)
-                {
-                    ProjectBuildTarget* target = prj->GetBuildTarget(i);
-                    target->SetCompilerIndex(CompilerFactory::GetDefaultCompilerIndex());
-                }
-            }
-    	}
-        
+//      if (prj->GetCompilerIndex() != CompilerFactory::GetDefaultCompilerIndex())
+//      {
+//    	if (wxMessageBox(_("This template project was built for a different compiler "
+//                               "than the one you 've set as default.\n"
+//                               "Do you want to try and convert it for use with your default "
+//                               "compiler?\n"
+//                               "(conversion might not be 100% accurate)"),
+//                           _("Question"),
+//                           wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxYES)
+//           {
+//               prj->SetCompilerIndex(CompilerFactory::GetDefaultCompilerIndex());
+//                for (int i = 0; i < prj->GetBuildTargetsCount(); ++i)
+//                {
+//                    ProjectBuildTarget* target = prj->GetBuildTarget(i);
+//                    target->SetCompilerIndex(CompilerFactory::GetDefaultCompilerIndex());
+//                }
+//            }
+//    	}
+
         if (!dlg.DoNotCreateFiles())
         {
             for (unsigned int i = 0; i < fileset.files.GetCount(); ++i)
@@ -266,13 +266,18 @@ void TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
                 prj->AddFile(0, dst);
             }
         }
-    
+
         for (unsigned int i = 0; i < option.extraCFlags.GetCount(); ++i)
             prj->AddCompilerOption(option.extraCFlags[i]);
         for (unsigned int i = 0; i < option.extraLDFlags.GetCount(); ++i)
             prj->AddLinkerOption(option.extraLDFlags[i]);
-        
+
         Manager::Get()->GetProjectManager()->RebuildTree();
+
+        if (!pt->m_Notice.IsEmpty())
+            wxMessageBox(pt->m_Notice, _("Notice"), pt->m_NoticeMsgType);
+        if (!option.notice.IsEmpty())
+            wxMessageBox(option.notice, _("Notice"), option.noticeMsgType);
     }
 }
 

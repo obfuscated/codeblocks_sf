@@ -23,6 +23,8 @@ WX_DECLARE_OBJARRAY(FileSet, FileSetArray);
 struct TemplateOption
 {
 	wxString name;
+	wxString notice;
+	int noticeMsgType;
 	wxString file;
 	wxArrayString extraCFlags;
 	wxArrayString extraLDFlags;
@@ -38,6 +40,8 @@ class DLLIMPORT ProjectTemplateLoader
         bool Open(const wxString& filename);
 
 		wxString m_Name;
+		wxString m_Notice;
+		int m_NoticeMsgType;
 		wxString m_Title;
 		wxString m_Category;
 		wxString m_Bitmap;
@@ -45,6 +49,7 @@ class DLLIMPORT ProjectTemplateLoader
 		TemplateOptionArray m_TemplateOptions;
 	protected:
         void DoTemplate(TiXmlElement* parentNode);
+        void DoTemplateNotice(TiXmlElement* parentNode);
         void DoFileSet(TiXmlElement* parentNode);
         void DoFileSetFile(TiXmlElement* parentNode, FileSet& fs);
         void DoOption(TiXmlElement* parentNode);

@@ -187,7 +187,6 @@ struct cbEditorInternalData
                 control->ReplaceTarget(_T(""));
             }
         }
-
     }
 
     /** Add extra blank line to the file */
@@ -645,12 +644,18 @@ bool cbEditor::Save()
 	if (!GetModified())
 		return true;
 
-    if(m_pData->m_strip_trailing_spaces)
-        m_pData->StripTrailingSpaces();
-    if(m_pData->m_ensure_consistent_line_ends)
-        m_pData->EnsureConsistentLineEnds();
-    if(m_pData->m_ensure_final_line_end)
-        m_pData->EnsureFinalLineEnd();
+    // one undo action for all modifications in this context
+    // (angled braces added for clarity)
+    m_pControl->BeginUndoAction();
+    {
+        if(m_pData->m_strip_trailing_spaces)
+            m_pData->StripTrailingSpaces();
+        if(m_pData->m_ensure_consistent_line_ends)
+            m_pData->EnsureConsistentLineEnds();
+        if(m_pData->m_ensure_final_line_end)
+            m_pData->EnsureFinalLineEnd();
+    }
+    m_pControl->EndUndoAction();
 
     if (!m_IsOK)
     {
