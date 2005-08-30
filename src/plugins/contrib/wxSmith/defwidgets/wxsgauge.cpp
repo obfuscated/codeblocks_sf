@@ -6,6 +6,10 @@ WXS_ST_BEGIN(wxsGaugeStyles)
     WXS_ST(wxGA_SMOOTH)
 WXS_ST_END(wxsGaugeStyles)
 
+WXS_EV_BEGIN(wxsGaugeEvents)
+    WXS_EV_DEFAULTS()
+WXS_EV_END(wxsGaugeEvents)
+
 wxsDWDefineBegin(wxsGauge,wxGauge,
     ThisWidget = new wxGauge(parent,id,range,pos,size,style);
     if ( value ) ThisWidget->SetValue(value);

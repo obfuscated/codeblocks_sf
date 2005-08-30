@@ -5,6 +5,7 @@
 #include "wxsstdmanager.h"
 
 WXS_ST_DECLARE(wxsSpinCtrlStyles)
+WXS_EV_DECLARE(wxsSpinCtrlEvents)
 
 wxsDWDeclareBegin(wxsSpinCtrl,propWidget,wxsSpinCtrlId)
     wxString value;

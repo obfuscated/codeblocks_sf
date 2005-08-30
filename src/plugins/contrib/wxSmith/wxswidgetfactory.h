@@ -37,8 +37,6 @@ class wxsWidgetFactory
         
 	private:
 	
-        bool ValidateName(const wxString& Name);
-	
         /* Structure comparing strings, used in map */
         struct ltstr
         {

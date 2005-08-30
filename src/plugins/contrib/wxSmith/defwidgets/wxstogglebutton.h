@@ -5,6 +5,7 @@
 #include "wxsstdmanager.h"
 
 WXS_ST_DECLARE(wxsToggleButtonStyles)
+WXS_EV_DECLARE(wxsToggleButtonEvents)
 
 wxsDWDeclareBegin(wxsToggleButton,propWidget,wxsToggleButtonId)
     wxString label;

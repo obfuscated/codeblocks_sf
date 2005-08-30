@@ -5,6 +5,7 @@
 #include "wxsstdmanager.h"
 
 WXS_ST_DECLARE(wxsButtonStyles)
+WXS_EV_DECLARE(wxsButtonEvents)
 
 wxsDWDeclareBegin(wxsButton,propWidget,wxsButtonId)
     wxString label;

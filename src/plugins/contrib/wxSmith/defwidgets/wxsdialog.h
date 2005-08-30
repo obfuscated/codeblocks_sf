@@ -4,6 +4,7 @@
 #include "wxswindow.h"
 
 WXS_ST_DECLARE(wxsDialogStyles)
+WXS_EV_DECLARE(wxsDialogEvents)
 
 class wxsDialog : public wxsWindow
 {

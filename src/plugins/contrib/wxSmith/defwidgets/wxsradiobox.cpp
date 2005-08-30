@@ -1,5 +1,7 @@
 #include "wxsradiobox.h"
 
+#include "../wxsglobals.h"
+
 WXS_ST_BEGIN(wxsRadioBoxStyles)
     WXS_ST_CATEGORY("wxRadioBox")
     WXS_ST(wxRA_SPECIFY_ROWS)
@@ -10,10 +12,17 @@ WXS_ST_BEGIN(wxsRadioBoxStyles)
     WXS_ST_DEFAULTS()
 WXS_ST_END(wxsRadioBoxStyles)
 
+WXS_EV_BEGIN(wxsRadioBoxEvents)
+    WXS_EVI(EVT_RADIOBOX,wxCommandEvent,Change)
+    WXS_EV_DEFAULTS()
+WXS_EV_END(wxsRadioBoxEvents)
+
 // Constructor
 //wxRadioBox(wxWindow* parent, wxWindowID id, const wxString& label, const wxPoint& point = wxDefaultPosition, const wxSize& size = wxDefaultSize, int n = 0, const wxString choices[] = NULL, int majorDimension = 0, long style = wxRA_SPECIFY_COLS, const wxValidator& validator = wxDefaultValidator, const wxString& name = "radioBox")
 
 wxsDWDefineBegin(wxsRadioBoxBase,wxRadioBox,
+    /* This code only avoids generating some warnings - it won't be used anywhere */
+    ThisWidget = new wxRadioBox(parent,id,_T(""),pos,size,0,NULL,1,style);
     )
 
     wxsDWDefStr(label,"Label:","");

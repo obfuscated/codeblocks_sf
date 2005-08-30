@@ -288,7 +288,7 @@ void wxsProject::AddWindowResource(
             break;
         }
         
-        XmlDialog = Resource->NextSiblingElement("object");
+        XmlDialog = XmlDialog->NextSiblingElement("object");
     }
     
     if ( !XmlDialog ) return;

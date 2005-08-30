@@ -17,6 +17,10 @@ WXS_ST_BEGIN(wxsStaticTextStyles)
     WXS_ST_DEFAULTS()
 WXS_ST_END(wxsStaticTextStyles)
 
+WXS_EV_BEGIN(wxsStaticTextEvents)
+    WXS_EV_DEFAULTS()
+WXS_EV_END(wxsStaticTextEvents)
+
 wxsDWDefineBegin(wxsStaticText,wxStaticText,
     ThisWidget = new wxStaticText(parent,id,label,pos,size,style);
     )

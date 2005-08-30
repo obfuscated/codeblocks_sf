@@ -4,6 +4,7 @@
 #include "wxswindow.h"
 
 WXS_ST_DECLARE(wxsFrameStyles)
+WXS_EV_DECLARE(wxsFrameEvents)
 
 class wxsFrame : public wxsWindow
 {

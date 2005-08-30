@@ -5,6 +5,7 @@
 #include "wxsstdmanager.h"
 
 WXS_ST_DECLARE(wxsRadioBoxStyles)
+WXS_EV_DECLARE(wxsRadioBoxEvents)
 
 wxsDWDeclareBegin(wxsRadioBoxBase,propWidget,wxsRadioBoxId)
     wxString label;

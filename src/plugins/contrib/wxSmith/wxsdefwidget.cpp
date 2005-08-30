@@ -1,6 +1,7 @@
 #include "wxsdefwidget.h"
 
 #include "properties/wxsstringlistproperty.h"
+#include "wxsglobals.h"
 
 wxsDefWidget::wxsDefWidget(wxsWidgetManager* Man,wxsWindowRes* Res,BasePropertiesType pType):
     wxsWidget(Man,Res,pType)

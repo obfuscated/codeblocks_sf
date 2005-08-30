@@ -5,6 +5,7 @@
 #include "wxsstdmanager.h"
 
 WXS_ST_DECLARE(wxsDatePickerCtrlStyles)
+WXS_EV_DECLARE(wxsDatePickerCtrlEvents)
 
 wxsDWDeclareBegin(wxsDatePickerCtrl,propWidget,wxsDatePickerCtrlId)
  // Temporary commented

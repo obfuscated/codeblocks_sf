@@ -2,6 +2,7 @@
 #define WXSWINDOW_H
 
 #include "../wxscontainer.h"
+#include "../wxswidgetevents.h"
 
 /** This class is a base for wxsDialog, wxsFrame and wxsPanel classes */
 class wxsWindow : public wxsContainer

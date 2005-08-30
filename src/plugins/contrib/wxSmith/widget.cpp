@@ -7,8 +7,46 @@
 #include "wxswidgetfactory.h"
 #include "wxsresource.h"
 #include "wxswindoweditor.h"
+#include "wxswidgetevents.h"
 #include <wx/tokenzr.h>
 #include <wx/list.h>
+
+wxsWidget::wxsWidget(wxsWidgetManager* Man,wxsWindowRes* Res,BasePropertiesType pType):
+    PropertiesObject(this),
+    Manager(Man),
+    Preview(NULL),
+    Resource(Res),
+    Properties(NULL),
+    Parent(NULL),
+    MaxChildren(0),
+    XmlElement(NULL),
+    ContainerType(NoContainer),
+    Updating(false),
+    PropertiesCreated(false),
+    BPType(pType),
+    AssignedToTree(false),
+    Events(NULL)
+{
+}
+
+wxsWidget::wxsWidget(wxsWidgetManager* Man, wxsWindowRes* Res, bool ISwxWindow, int MaxChild,BasePropertiesType pType):
+    PropertiesObject(this),
+    Manager(Man),
+    Preview(NULL),
+    Resource(Res),
+    Properties(NULL),
+    Parent(NULL),
+    MaxChildren(MaxChild),
+    XmlElement(NULL),
+    ContainerType(ISwxWindow ? ContainerWindow : ContainerSizer ),
+    Updating(false),
+    PropertiesCreated(false),
+    BPType(pType),
+    AssignedToTree(false),
+    Events(NULL)
+{
+}
+
 
 wxsWidget::~wxsWidget()
 {
@@ -18,6 +56,12 @@ wxsWidget::~wxsWidget()
     while ( GetChildCount() )
     {
         wxsWidgetFactory::Get()->Kill(GetChild(GetChildCount()-1));
+    }
+    
+    if ( Events )
+    {
+    	delete Events;
+    	Events = NULL;
     }
 }
 
@@ -137,6 +181,9 @@ bool wxsWidget::XmlLoadDefaultsT(BasePropertiesType pType)
 {
     assert ( XmlElem() != NULL );
 
+    // Loading event handler enteries
+    GetEvents()->XmlLoadFunctions(XmlElem());
+
     /* Processing position */
     if ( pType & bptPosition )
     {
@@ -203,6 +250,8 @@ bool wxsWidget::XmlLoadDefaultsT(BasePropertiesType pType)
 bool wxsWidget::XmlSaveDefaultsT(BasePropertiesType pType)
 {
     assert ( XmlElem() != NULL );
+    
+    GetEvents()->XmlSaveFunctions(XmlElem());
    
     if ( pType & bptPosition )
     {
@@ -595,59 +644,6 @@ bool wxsWidgetManager::RegisterInFactory()
     return true;
 }
 
-wxString wxsWidget::GetCString(const wxString& Source)
-{
-    wxString Result = _T("\"");
-    
-    int Len = Source.Length();
-    
-    for ( int i=0; i<Len; i++ )
-    {
-        wxChar ch = Source.GetChar(i);
-
-        if ( ch < _T(' ') )
-        {
-            switch ( ch )
-            {
-                case _T('\n') : Result.Append(_T("\\n")); break;
-                case _T('\t') : Result.Append(_T("\\t")); break;
-                case _T('\v') : Result.Append(_T("\\v")); break;
-                case _T('\b') : Result.Append(_T("\\b")); break;
-                case _T('\r') : Result.Append(_T("\\r")); break;
-                case _T('\f') : Result.Append(_T("\\f")); break;
-                case _T('\a') : Result.Append(_T("\\a")); break;
-                default   :
-                    {
-                        wxString Formater = wxString::Format(_T("\\%d%d%d"),
-                            ( ch >> 6 ) & 7,
-                            ( ch >> 3 ) & 7,
-                            ( ch >> 0 ) & 7 );
-                        Result.Append(Formater.c_str());
-                    }
-            }
-        }
-        else 
-        {
-            switch ( ch )
-            {
-                case _T('\\'): Result.Append(_T("\\\\")); break;
-                case _T('\?'): Result.Append(_T("\\\?")); break;
-                case _T('\''): Result.Append(_T("\\\'")); break;
-                case _T('\"'): Result.Append(_T("\\\"")); break;
-                default  : Result.Append(ch);
-            }
-        }
-    }
-
-    Result.Append(_T('\"'));
-    return Result;
-}
-
-wxString wxsWidget::GetWxString(const wxString& Source)
-{
-	return wxString::Format(_T("_(%s)"),GetCString(Source).c_str());
-}
-
 void wxsWidget::BuildTree(wxTreeCtrl* Tree,wxTreeItemId Id,int Index)
 {
     wxString Name = GetInfo().Name;
@@ -802,4 +798,26 @@ wxString wxsWidget::GetFlagToSizer()
 wxsWindowEditor* wxsWidget::GetEditor()
 {
 	return Resource ? (wxsWindowEditor*)Resource->GetEditor() : NULL;
+}
+
+wxsWidgetEvents* wxsWidget::GetEvents()
+{
+	if ( !Events )
+	{
+		 Events = new wxsWidgetEvents(this);
+		 // Filling up with events from info
+		 wxsEventDesc* Desc = GetInfo().Events;
+		 if ( Desc )
+		 {
+		 	while ( Desc->EventTypeName.Length() )
+		 	{
+		 		if ( Desc->EventEntry.Length() )
+		 		{
+		 			Events->AddEvent(*Desc,true);
+		 		}
+		 		Desc++;
+		 	}
+		 }
+	}
+	return Events;
 }

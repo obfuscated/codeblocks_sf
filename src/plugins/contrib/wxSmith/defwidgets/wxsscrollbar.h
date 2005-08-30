@@ -5,12 +5,13 @@
 #include "wxsstdmanager.h"
 
 WXS_ST_DECLARE(wxsScrollBarStyles)
+WXS_EV_DECLARE(wxsScrollBarEvents)
 
 wxsDWDeclareBegin(wxsScrollBar,propWidget,wxsScrollBarId)
     int value;
-    int thumbsize;
+    int thumbsz;
     int range;
-    int pagesize;
+    int pagesz;
 wxsDWDeclareEnd()
 
 

@@ -4,6 +4,7 @@
 #include "wxswindow.h"
 
 WXS_ST_DECLARE(wxsPanelStyles)
+WXS_EV_DECLARE(wxsPanelEvents)
 
 /** Standard panel - it may be used as a widget */
 class wxsPanel : public wxsWindow
@@ -24,6 +25,7 @@ class wxsPanel : public wxsWindow
 };
 
 WXS_ST_DECLARE(wxsPanelrStyles)
+WXS_EV_DECLARE(wxsPanelrEvents)
 
 /** Resource panel - may be used as a resourcec */
 class wxsPanelr : public wxsWindow

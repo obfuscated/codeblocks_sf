@@ -40,7 +40,7 @@ static const wxString DefCategory    = _("Standard");
 static const wxString DefSizerCat    = _("Layout");
 
 
-#define Entry(Name,Link,Header)                         \
+#define Entry2Headers(Name,Link,Header1,Header2)        \
     {   _T("wx") _T(#Name),                             \
         DefLicence,                                     \
         DefAuthor,                                      \
@@ -58,9 +58,14 @@ static const wxString DefSizerCat    = _("Layout");
         wxs##Name##Id,                                  \
         0,                                              \
         wxs##Name##Styles,                              \
-        _T(Header),                                         \
+        wxs##Name##Events,                              \
+        _T(Header1),                                    \
+        _T(Header2),                                    \
         wxsWidgetInfo::exNone                           \
     },
+
+#define Entry(Name,Link,Header)                         \
+    Entry2Headers(Name,Link,Header,"")
 
 #define WindowEntry(Name,Link,Header)                   \
     {   _T("wx") _T(#Name),                             \
@@ -80,7 +85,9 @@ static const wxString DefSizerCat    = _("Layout");
         wxs##Name##Id,                                  \
         0,                                              \
         wxs##Name##Styles,                              \
-        _T(Header),                                         \
+        wxs##Name##Events,                              \
+        _T(Header),                                     \
+        _T(""),                                         \
         wxsWidgetInfo::exNone                           \
     },
 
@@ -102,7 +109,9 @@ static const wxString DefSizerCat    = _("Layout");
         wxsSpacerId,                                    \
         0,                                              \
         NULL,                                           \
+        NULL,                                           \
         _T("<wx/sizer.h>"),                             \
+        _T(""),                                         \
         wxsWidgetInfo::exNone                           \
     },
         
@@ -125,7 +134,9 @@ static const wxString DefSizerCat    = _("Layout");
         wxs##Name##Id,                                          \
         0,                                                      \
         NULL,                                                   \
-        _T(Header),                                                 \
+        NULL,                                                   \
+        _T(Header),                                             \
+        _T(""),                                                 \
         wxsWidgetInfo::exNone                                   \
     },
         
@@ -133,7 +144,7 @@ static const wxString DefSizerCat    = _("Layout");
 static wxsWidgetInfo StdInfos[] =
 {
     { _T(""), _T(""), _T(""), _T(""), _T(""), _T(""), _T(""), _T(""), false,
-      false, false, 0, 0, NULL, NULL, wxsNoneId, 0, NULL, _T(""), 
+      false, false, 0, 0, NULL, NULL, wxsNoneId, 0, NULL, NULL, _T(""), _T(""), 
       wxsWidgetInfo::exNone },  // NONE
     
     SizerEntry(GridSizer,"wx_wxgridsizer.html#wxgridsizer","<wx/sizer.h>")
@@ -157,7 +168,7 @@ static wxsWidgetInfo StdInfos[] =
     Entry(SpinCtrl,      "wx_wxspinctrl.html#wxspinctrl","<wx/spinctrl.h>")
     Entry(TreeCtrl,      "wx_wxtreectrl.html#wxtreectrl","<wx/treectrl.h>")
     Entry(RadioBox,      "wx_wxradiobox.html#wxradiobox","<wx/radiobox.h>")
-    Entry(DatePickerCtrl,"wx_wxdatepickerctrl.html#wxdatepickerctrl","<wx/datectrl.h>")
+    Entry2Headers(DatePickerCtrl,"wx_wxdatepickerctrl.html#wxdatepickerctrl","<wx/datectrl.h>","<wx/dateevt.h>")
     
     WindowEntry(Dialog,"wx_wxdialog.html#wxdialog","<wx/dialog.h>")
     WindowEntry(Frame, "wx_wxframe.html#wxframe","<wx/frame.h>")

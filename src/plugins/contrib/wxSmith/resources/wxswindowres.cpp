@@ -350,6 +350,8 @@ void wxsWindowRes::NotifyChange()
 	Code.Append(_T('\n'));
 	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(HFile),CodeHeader,Code);
 	
+	UpdateEventTable();
+	
 	#endif
 }
 
@@ -720,10 +722,35 @@ void wxsWindowRes::BuildIdsArray(wxsWidget* Widget,wxArrayString& Array)
 void wxsWindowRes::BuildHeadersArray(wxsWidget* Widget,wxArrayString& Array)
 {
 	Array.Add(Widget->GetInfo().HeaderFile);
+	if ( Widget->GetInfo().ExtHeaderFile.Length() )
+	{
+        Array.Add(Widget->GetInfo().ExtHeaderFile);
+	}
 	int Cnt = Widget->GetChildCount();
 	for ( int i=0; i<Cnt; i++ )
 	{
 		wxsWidget* Child = Widget->GetChild(i);
 		BuildHeadersArray(Child,Array);
+	}
+}
+
+void wxsWindowRes::UpdateEventTable()
+{
+	wxString CodeHeader;
+	CodeHeader.Printf(_T("//(*EventTable(%s)"),ClassName.c_str());
+	wxString Code = CodeHeader;
+	Code.Append(_T('\n'));
+	CollectEventTableEnteries(Code,RootWidget);
+	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(GetSourceFile()),CodeHeader,Code);
+}
+
+void wxsWindowRes::CollectEventTableEnteries(wxString& Code,wxsWidget* Widget)
+{
+	int Cnt = Widget->GetChildCount();
+	for ( int i=0; i<Cnt; i++ )
+	{
+		wxsWidget* Child = Widget->GetChild(i);
+		Code += Child->GetEvents()->GetArrayEnteries(4);
+		CollectEventTableEnteries(Code,Child);
 	}
 }

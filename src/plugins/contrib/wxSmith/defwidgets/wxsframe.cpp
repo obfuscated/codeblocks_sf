@@ -33,6 +33,11 @@ WXS_ST_BEGIN(wxsFrameStyles)
 
 WXS_ST_END(wxsFrameStyles)
 
+WXS_EV_BEGIN(wxsFrameEvents)
+    WXS_EV_DEFAULTS()
+WXS_EV_END(wxsFrameEvents)
+
+
 wxsFrame::wxsFrame(wxsWidgetManager* Man,wxsWindowRes* Res):
     wxsWindow(Man,Res,propWindow),
     Centered(false)

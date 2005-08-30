@@ -12,6 +12,13 @@ WXS_ST_BEGIN(wxsComboBoxStyles)
     WXS_ST_DEFAULTS()
 WXS_ST_END(wxsComboBoxStyles)
 
+WXS_EV_BEGIN(wxsComboBoxEvents)
+    WXS_EVI(EVT_COMBOBOX,wxCommandEvent,Select)
+    WXS_EVI(EVT_TEXT,wxCommandEvent,Text)
+    WXS_EVI(EVT_TEXT_ENTER,wxCommandEvent,TextEnter)
+    WXS_EV_DEFAULTS()
+WXS_EV_END(wxsComboBoxEvents)
+
 // default constructor for wxCombobox
 //wxComboBox(wxWindow* parent, wxWindowID id, const wxString& value = "", const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, int n, const wxString choices[], long style = 0, const wxValidator& validator = wxDefaultValidator, const wxString& name = "comboBox")
 

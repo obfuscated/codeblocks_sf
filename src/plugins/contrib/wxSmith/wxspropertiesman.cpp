@@ -2,6 +2,7 @@
 
 #include "wxspalette.h"
 #include "wxsmith.h"
+#include "wxseventseditor.h"
 
 wxsPropertiesMan::wxsPropertiesMan():
     CurrentWidget(NULL),
@@ -16,8 +17,10 @@ wxsPropertiesMan::~wxsPropertiesMan()
 
 void wxsPropertiesMan::SetActiveWidget(wxsWidget* Widget)
 {
-    if ( !PropertiesPanel ) return;
+    if ( !PropertiesPanel || !EventsPanel ) return;
     
+	/** Rebuilding properties panel */
+
     if ( CurrentWidget == Widget ) return;
 
     PropertiesPanel->Freeze();
@@ -43,16 +46,38 @@ void wxsPropertiesMan::SetActiveWidget(wxsWidget* Widget)
         NewSizer->AddGrowableRow(0);
         wxWindow* Wnd = CurrentWidget->CreatePropertiesWindow(PropertiesPanel);
         CurrentWidget->UpdateProperties();
-        NewSizer->Add(Wnd,0,wxGROW);
+        NewSizer->Add(Wnd,1,wxGROW);
         PropertiesPanel->SetSizer(NewSizer);
         NewSizer->SetVirtualSizeHints(PropertiesPanel);
         
         wxSmith::Get()->GetResourceTree()->SelectItem(Widget->GetTreeId());
     }
     
+    PropertiesPanel->SetSize(Size);
     PropertiesPanel->Refresh();
     PropertiesPanel->Thaw();
-    PropertiesPanel->SetSize(Size);
+    
+    /** Rebuilding events panel */
+    
+    EventsPanel->Freeze();
+    EventsPanel->SetSizer(NULL);
+    EventsPanel->DestroyChildren();
+    Size = EventsPanel->GetSize();
+    
+    if ( CurrentWidget )
+    {
+        wxFlexGridSizer* NewSizer = new wxFlexGridSizer(1);
+        EventsPanel->SetSize(1,1);
+        NewSizer->AddGrowableCol(0);
+        NewSizer->AddGrowableRow(0);
+        wxWindow* Wnd = new wxsEventsEditor(EventsPanel,CurrentWidget);
+        NewSizer->Add(Wnd,1,wxGROW);
+        EventsPanel->SetSizer(NewSizer);
+        NewSizer->SetVirtualSizeHints(EventsPanel);
+    }
+    EventsPanel->SetSize(Size);
+    EventsPanel->Refresh();
+    EventsPanel->Thaw();
 }
 
 void wxsPropertiesMan::OnSelectWidget(wxsEvent& event)

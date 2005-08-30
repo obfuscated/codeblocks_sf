@@ -2,6 +2,7 @@
 #define WXSDEFWIDGET_H
 
 #include "widget.h"
+#include "wxswidgetevents.h"
 
 #include <vector>
 #include <wx/event.h>

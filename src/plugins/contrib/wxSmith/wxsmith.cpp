@@ -151,6 +151,7 @@ void wxSmith::OnAttach()
         PropertiesContainer->SetSizer(Sizer);
         
         wxsPropertiesMan::Get()->PropertiesPanel = PropertiesPanel;
+        wxsPropertiesMan::Get()->EventsPanel = EventsPanel;
 
         LeftSplitter->Split(ResourcesContainer,PropertiesContainer);
         

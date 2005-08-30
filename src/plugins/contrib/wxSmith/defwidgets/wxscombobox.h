@@ -5,6 +5,7 @@
 #include "wxsstdmanager.h"
 
 WXS_ST_DECLARE(wxsComboBoxStyles)
+WXS_EV_DECLARE(wxsComboBoxEvents)
 
 wxsDWDeclareBegin(wxsComboBox,propWidget,wxsComboBoxId)
 

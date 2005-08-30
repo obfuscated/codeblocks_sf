@@ -11,6 +11,7 @@
 #include <manager.h>
 #include <messagemanager.h>
 
+#include "wxsglobals.h"
 #include "wxsproperties.h"
 #include "wxswindoweditor.h"
 #include "wxsstyle.h"
@@ -18,29 +19,9 @@
 #define DebLog Manager::Get()->GetMessageManager()->DebugLog
 
 class wxsWidgetManager;
-class wxsEventDesc;
 class wxsWidget;
-
-/** Class representing one event */
-class wxsEventDesc
-{
-    public:
-        wxsEventDesc() {};
-        virtual ~wxsEventDesc() {};
-        
-        /** Function which should giveevent's name */
-        virtual wxString EventName() = 0;
-        
-        /** Function which should produce content of ( ) in event handler 
-         *  including braces.
-         */
-        virtual wxString GetFunctionParams() = 0;
-        
-        /** Function which should produce entry in event array for
-         * specified function
-         */
-        virtual wxString GetETEntry(const wxString& FunctionName) = 0;
-};
+class wxsWidgetEvents;
+class wxsEventDesc;
 
 /** Structure containing info aboul widget */
 struct wxsWidgetInfo
@@ -63,7 +44,9 @@ struct wxsWidgetInfo
     int Id;                         ///< Identifier used inside manager to handle this widget, must be same as 'Number' in GetWidgetInfo call
     int TreeIconId;
     wxsStyle* Styles;               ///< Set of available styles, ending with NULL-named style
+    wxsEventDesc *Events;           ///< Set of events supported by this widget, enging with NULL-named entry
     wxString HeaderFile;            ///< Header file (including '<' and '>' or '"') for this file
+    wxString ExtHeaderFile;         ///< Additional header file
     
     /** Types of extended widgets */
     enum ExTypeT
@@ -185,22 +168,7 @@ class wxsWidget
         static const BasePropertiesType propSpacer   = bptSize;
     
         /** Default constructor */
-        wxsWidget(wxsWidgetManager* Man,wxsWindowRes* Res,BasePropertiesType pType = propNone):
-            PropertiesObject(this),
-            Manager(Man),
-            Preview(NULL),
-            Resource(Res),
-            Properties(NULL),
-            Parent(NULL),
-            MaxChildren(0),
-            XmlElement(NULL),
-            ContainerType(NoContainer),
-            Updating(false),
-            PropertiesCreated(false),
-            BPType(pType),
-            AssignedToTree(false)
-        {
-        }
+        wxsWidget(wxsWidgetManager* Man,wxsWindowRes* Res,BasePropertiesType pType = propNone);
         
         /** Constructor used by containers 
          *
@@ -209,23 +177,7 @@ class wxsWidget
          *                      false otherwise (usually for wxSizer objects
          *  \param MaxChildren - maximal number of children which can be handled by this container
          */
-        wxsWidget(wxsWidgetManager* Man, wxsWindowRes* Res, bool ISwxWindow, int MaxChild,BasePropertiesType pType = propNone):
-            PropertiesObject(this),
-            Manager(Man),
-            Preview(NULL),
-            Resource(Res),
-            Properties(NULL),
-            Parent(NULL),
-            MaxChildren(MaxChild),
-            XmlElement(NULL),
-            ContainerType(ISwxWindow ? ContainerWindow : ContainerSizer ),
-            Updating(false),
-            PropertiesCreated(false),
-            BPType(pType),
-            AssignedToTree(false)
-        {
-        }
-            
+        wxsWidget(wxsWidgetManager* Man, wxsWindowRes* Res, bool ISwxWindow, int MaxChild,BasePropertiesType pType = propNone);
         
         /** Destructor */
         virtual ~wxsWidget(); 
@@ -250,6 +202,9 @@ class wxsWidget
         
         /** Getting editor for this widget (or NULL if there's no editor) */
         wxsWindowEditor* GetEditor();
+        
+        /** Getting events object */
+        wxsWidgetEvents* GetEvents();
 
 /******************************************************************************/
 /* Preview                                                                    */
@@ -428,15 +383,6 @@ class wxsWidget
         
         /** Function creating current coded defines */
         virtual const CodeDefines& GetCodeDefines();
-        
-        /** Util function - changing given string to it's representation in C++.
-         *
-         *  Could be used when need to throw some string to generated code
-         */
-        static wxString GetCString(const wxString& Source);
-        
-        /** Util function - changing given string to it's representation in wxWidgets */
-        static wxString GetWxString(const wxString& Source);
         
         /** Util function - generating string used when adding item to sizer as flag
          *
@@ -692,6 +638,8 @@ class wxsWidget
         
         wxTreeItemId TreeId;        ///< Id of item in resource tree
         bool AssignedToTree;        ///< True if this widget has it's entry inside resource tree
+        
+        wxsWidgetEvents* Events;    ///< Events used for this widget
         
         friend class wxBaseParamsPanel;
         friend class wxsWindowEditor;

@@ -11,6 +11,12 @@ WXS_ST_BEGIN(wxsButtonStyles)
     WXS_ST_DEFAULTS()
 WXS_ST_END(wxsButtonStyles)
 
+WXS_EV_BEGIN(wxsButtonEvents)
+    WXS_EVI(EVT_BUTTON,wxCommandEvent,Click)
+    WXS_EV_DEFAULTS()
+WXS_EV_END(wxsButtonEvents)
+
+
 wxsDWDefineBegin(wxsButton,wxButton,
 
     ThisWidget = new wxButton(parent,id,label,pos,size,style);

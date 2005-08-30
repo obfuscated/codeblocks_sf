@@ -1,6 +1,7 @@
 #include "wxsstaticboxsizer.h"
 
 #include "../properties/wxsenumproperty.h"
+#include "../wxsglobals.h"
 
 wxString wxsStaticBoxSizer::GetProducingCode(wxsCodeParams& Params)
 {

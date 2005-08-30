@@ -21,6 +21,7 @@ class wxsPropertiesMan: public wxEvtHandler
 	private:
         wxsWidget* CurrentWidget;
         wxScrolledWindow* PropertiesPanel;
+        wxScrolledWindow* EventsPanel;
         static wxsPropertiesMan Singleton;
 		
 		friend class wxSmith;

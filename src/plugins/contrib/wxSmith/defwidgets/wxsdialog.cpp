@@ -30,6 +30,10 @@ WXS_ST_BEGIN(wxsDialogStyles)
 
 WXS_ST_END(wxsDialogStyles)
 
+WXS_EV_BEGIN(wxsDialogEvents)
+    WXS_EV_DEFAULTS()
+WXS_EV_END(wxsDialogEvents)
+
 wxsDialog::wxsDialog(wxsWidgetManager* Man,wxsWindowRes* Res):
     wxsWindow(Man,Res,propWindow),
     Centered(false)

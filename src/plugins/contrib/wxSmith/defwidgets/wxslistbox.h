@@ -5,6 +5,7 @@
 #include "wxsstdmanager.h"
 
 WXS_ST_DECLARE(wxsListBoxStyles)
+WXS_EV_DECLARE(wxsListBoxEvents)
 
 wxsDWDeclareBegin(wxsListBox,propWidget,wxsListBoxId)
 

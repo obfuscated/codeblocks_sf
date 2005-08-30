@@ -13,6 +13,13 @@ WXS_ST_BEGIN(wxsSpinButtonStyles)
     WXS_ST_DEFAULTS()
 WXS_ST_END(wxsSpinButtonStyles)
 
+WXS_EV_BEGIN(wxsSpinButtonEvents)
+    WXS_EVI(EVT_SPIN,wxSpinEvent,Change)
+    WXS_EVI(EVT_SPIN_UP,wxSpinEvent,ChangeUp)
+    WXS_EVI(EVT_SPIN_DOWN,wxSpinEvent,ChangeDown)
+    WXS_EV_DEFAULTS()
+WXS_EV_END(wxsSpinButtonEvents)
+
 
 //wxSpinButton(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxSP_HORIZONTAL, const wxString& name = "spinButton")
 

@@ -5,6 +5,7 @@
 #include "wxsstdmanager.h"
 
 WXS_ST_DECLARE(wxsTextCtrlStyles)
+WXS_EV_DECLARE(wxsTextCtrlEvents)
 
 wxsDWDeclareBegin(wxsTextCtrl,propWidget,wxsTextCtrlId)
     wxString value;

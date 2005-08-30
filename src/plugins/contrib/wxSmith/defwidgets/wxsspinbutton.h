@@ -5,6 +5,7 @@
 #include "wxsstdmanager.h"
 
 WXS_ST_DECLARE(wxsSpinButtonStyles)
+WXS_EV_DECLARE(wxsSpinButtonEvents)
 
 wxsDWDeclareBegin(wxsSpinButton,propWidget,wxsSpinButtonId)
     int value;

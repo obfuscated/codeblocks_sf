@@ -27,7 +27,10 @@ class wxsCoder
 		virtual ~wxsCoder();
 		
 		/** Function adding block of code to processing queue */
-		void AddCode(const wxString& FileName,const wxString& BlockHeader,const wxString& Code);
+		void AddCode(const wxString& FileName,const wxString& BlockHeader,const wxString& Code,bool Immediately = true);
+		
+		/** Function reading block of code from given source file */
+		wxString GetCode(const wxString& FileName,const wxString& BlockHeader);
 		
 		/** Function processing all code requests waiting insided queue */
 		bool ProcessCodeQueue();
@@ -56,7 +59,15 @@ class wxsCoder
 		/** List of all enteries */
 		CodeEntry* Enteries;
 		
-		/** Function applying all coded changes to currently opened editor */
+		/** Function applying changed to project file.
+		 *
+		 * If the file is opened inside editor, editor's buffer will be modified
+		 * and midified flag will be set. If file is not open, the real file will
+		 * be changed
+		 */
+        bool ApplyChanges(CodeEntry* Entry);
+        
+		/** Function applying hanges to currently opened editor */
 		bool ApplyChanges(CodeEntry* Entry, cbEditor* Editor);
 		
 		/** Function applying changes to file which is not open inside editor */

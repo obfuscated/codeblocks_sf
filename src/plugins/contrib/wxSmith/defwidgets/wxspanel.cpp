@@ -12,6 +12,10 @@ WXS_ST_BEGIN(wxsPanelStyles)
     WXS_ST(wxWS_EX_VALIDATE_RECURSIVELY)
 WXS_ST_END(wxsPanelStyles)
 
+WXS_EV_BEGIN(wxsPanelEvents)
+    WXS_EV_DEFAULTS()
+WXS_EV_END(wxsPanelEvents)
+
 wxsPanel::wxsPanel(wxsWidgetManager* Man,wxsWindowRes* Res):
     wxsWindow(Man,Res,propWidget)
 {
@@ -49,6 +53,10 @@ WXS_ST_BEGIN(wxsPanelrStyles)
     WXS_ST(wxTAB_TRAVERSAL)
     WXS_ST(wxWS_EX_VALIDATE_RECURSIVELY)
 WXS_ST_END(wxsPanelrStyles)
+
+WXS_EV_BEGIN(wxsPanelrEvents)
+    WXS_EV_DEFAULTS()
+WXS_EV_END(wxsPanelrEvents)
 
 wxsPanelr::wxsPanelr(wxsWidgetManager* Man,wxsWindowRes* Res):
     wxsWindow(Man,Res,propWindow)

@@ -16,6 +16,12 @@ WXS_ST_BEGIN(wxsListBoxStyles)
     WXS_ST_DEFAULTS()
 WXS_ST_END(wxsListBoxStyles)
 
+WXS_EV_BEGIN(wxsListBoxEvents)
+    WXS_EVI(EVT_LISTBOX,wxCommandEvent,Select)
+    WXS_EVI(EVT_LISTBOX_DCLICK,wxCommandEvent,DClick)
+    WXS_EV_DEFAULTS()
+WXS_EV_END(wxsListBoxEvents)
+
 // default constructor for wxListBox
 //wxListBox(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, int n, const wxString choices[] = NULL, long style = 0, const wxValidator& validator = wxDefaultValidator, const wxString& name = "listBox")
 

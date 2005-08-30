@@ -74,6 +74,9 @@ class wxsWindowRes : public wxsResource
         /** Setting default variable names and identifiers for widgets with empty ones */
         void UpdateWidgetsVarNameId();
         
+        /** Function rebuilding definition of event table */
+        void UpdateEventTable();
+        
     protected:
     
         /** Creating editor object */
@@ -114,6 +117,9 @@ class wxsWindowRes : public wxsResource
         
         /** Function building array of header files */
         void BuildHeadersArray(wxsWidget* Widget,wxArrayString& Array);
+        
+        /** Fuunction collecting code for event table for given widget */
+        static void CollectEventTableEnteries(wxString& Code,wxsWidget* Widget);
             
         wxString      ClassName;
         wxString      XrcFile;

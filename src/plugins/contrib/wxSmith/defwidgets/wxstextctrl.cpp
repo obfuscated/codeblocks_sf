@@ -22,6 +22,14 @@ WXS_ST_BEGIN(wxsTextCtrlStyles)
     WXS_ST(wxTE_WORDWRAP)
 WXS_ST_END(wxsTextCtrlStyles)
 
+WXS_EV_BEGIN(wxsTextCtrlEvents)
+    WXS_EVI(EVT_TEXT,wxCommandEvent,Text)
+    WXS_EVI(EVT_TEXT_ENTER,wxCommandEvent,TextEnter)
+    WXS_EVI(EVT_TEXT_URL,wxTextUrlEvent,TextUrl)
+    WXS_EVI(EVT_TEXT_MAXLEN,wxCommandEvent,TextMaxLen)
+    WXS_EV_DEFAULTS()
+WXS_EV_END(wxsTextCtrlEvents)
+
 wxsDWDefineBegin(wxsTextCtrl,wxTextCtrl,
     ThisWidget = new wxTextCtrl(parent,id,value,pos,size,style);
     if ( maxlength ) ThisWidget->SetMaxLength(maxlength);

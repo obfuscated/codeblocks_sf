@@ -18,11 +18,11 @@ wxsCoder::~wxsCoder()
 	ProcessCodeQueue();
 }
 
-void wxsCoder::AddCode(const wxString& FileName,const wxString& BlockHeader,const wxString& Code)
+void wxsCoder::AddCode(const wxString& FileName,const wxString& BlockHeader,const wxString& Code,bool Immediately)
 {
 	DataMutex.Lock();
 	
-	// iterating through all enteries searching for currently associated code
+	// Iterating through all enteries searching for currently associated code
 
 	CodeEntry* Entry;
 	CodeEntry* Previous;
@@ -48,11 +48,19 @@ void wxsCoder::AddCode(const wxString& FileName,const wxString& BlockHeader,cons
 	}
 
 	Entry->Code = Code;
-	time(&Entry->TimeStamp);
-	Entry->Next = NULL;
-	( Previous ? Previous->Next : Enteries ) = Entry;
-	DataMutex.Unlock();
 	
+	if ( Immediately )
+	{
+		ApplyChanges(Entry);
+		delete Entry;
+	}
+	else
+	{
+        time(&Entry->TimeStamp);
+        Entry->Next = NULL;
+        ( Previous ? Previous->Next : Enteries ) = Entry;
+	}
+	DataMutex.Unlock();
 	
 // TODO (SpOoN#1#): Add sheduling and replace direct processing
 	
@@ -66,9 +74,6 @@ bool wxsCoder::ProcessCodeQueue()
 	if ( BlockProcess ) return false;
 	BlockProcess = true;
 	
-	EditorManager* EM = Manager::Get()->GetEditorManager();
-	if ( EM == NULL ) return false;
-	
 	bool Result = true;
 	time_t now;
 	time(&now);
@@ -77,16 +82,7 @@ bool wxsCoder::ProcessCodeQueue()
 	while ( Enteries )
 	{
 		CodeEntry* Entry = Enteries;
-		cbEditor* Editor = EM->GetBuiltinEditor(Entry->FileName);
-		if ( Editor )
-		{
-			if ( !ApplyChanges(Entry,Editor) ) Result = false;
-		}
-		else
-		{
-			if ( !ApplyChanges(Entry,Entry->FileName) ) Result = false;
-		}
-
+		ApplyChanges(Entry);
 		Enteries = Enteries->Next;
 		delete Entry;
 	}
@@ -104,6 +100,20 @@ void wxsCoder::DropQueue()
 		Next = Entry->Next;
 		delete Entry;
 	}
+}
+
+bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry)
+{
+	EditorManager* EM = Manager::Get()->GetEditorManager();
+	assert ( EM != NULL );
+	
+    cbEditor* Editor = EM->GetBuiltinEditor(Entry->FileName);
+    if ( Editor )
+    {
+        return ApplyChanges(Entry,Editor);
+    }
+    
+    return ApplyChanges(Entry,Entry->FileName);
 }
 
 bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry,cbEditor* Editor)
@@ -223,25 +233,13 @@ bool wxsCoder::ProcessCodeForFile(const wxString& FileName)
 {
 	wxMutexLocker Locker(DataMutex);
 
-	EditorManager* EM = Manager::Get()->GetEditorManager();
-	assert ( EM != NULL );
-	
 	bool Result = true;
 	
 	for ( CodeEntry* Entry = Enteries, *Previous = NULL; Entry; )
 	{
 		if ( Entry->FileName == FileName )
 		{
-			cbEditor* Editor = EM->GetBuiltinEditor(Entry->FileName);
-			if ( Editor )
-			{
-				if ( !ApplyChanges(Entry,Editor) ) Result = false;
-			}
-			else
-			{
-				if ( !ApplyChanges(Entry,Entry->FileName) ) Result = false;
-			}
-			
+			ApplyChanges(Entry);
 			CodeEntry* Next = ( Previous ? Previous->Next : Enteries ) = Entry->Next;
 			delete Entry;
 			Entry = Next;
@@ -259,3 +257,35 @@ bool wxsCoder::ProcessCodeForFile(const wxString& FileName)
 static wxsCoder SingletonObject;
 wxsCoder* wxsCoder::Singleton = &SingletonObject;
 
+wxString wxsCoder::GetCode(const wxString& FileName,const wxString& BlockHeader)
+{
+	EditorManager* EM = Manager::Get()->GetEditorManager();
+	assert ( EM != NULL );
+    cbEditor* Editor = EM->GetBuiltinEditor(FileName);
+    if ( Editor )
+    {
+        cbStyledTextCtrl* Ctrl = Editor->GetControl();
+        Ctrl->SetSearchFlags(wxSCI_FIND_MATCHCASE);
+        Ctrl->SetTargetStart(0);
+        Ctrl->SetTargetEnd(Ctrl->GetLength());
+        int Position = Ctrl->SearchInTarget(BlockHeader);
+        if ( Position == -1 ) return _T("");
+        Ctrl->SetTargetStart(Position);
+        Ctrl->SetTargetEnd(Ctrl->GetLength());
+        int End = Ctrl->SearchInTarget(_T("//*)"));
+        if ( End == -1 ) return _T("");
+        return Ctrl->GetTextRange(Position,End);
+    }
+		
+    wxFFile File(FileName,_T("r"));
+    wxString Content;
+    if ( !File.IsOpened() ) return _T("");
+    if ( !File.ReadAll(&Content) ) return _T("");
+    int Position = Content.First(BlockHeader);
+    if ( Position == -1 ) return _T("");
+    Content.Remove(0,Position);
+    Position = Content.First(_T("//*)"));
+    if ( Position == -1 ) return _T("");
+    Content.Remove(Position);
+	return Content;
+}
