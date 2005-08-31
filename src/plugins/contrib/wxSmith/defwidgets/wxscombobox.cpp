@@ -4,9 +4,9 @@
 
 WXS_ST_BEGIN(wxsComboBoxStyles)
     WXS_ST_CATEGORY("wxComboBox")
-#ifdef __WIN32__    
+#ifdef __WIN32__
     WXS_ST(wxCB_SIMPLE) // Windows ONLY
-#endif    
+#endif
     WXS_ST(wxCB_READONLY)
     WXS_ST(wxCB_SORT)
     WXS_ST_DEFAULTS()
@@ -26,10 +26,8 @@ WXS_EV_END(wxsComboBoxEvents)
 //wxComboBox(wxWindow* parent, wxWindowID id, const wxString& value, const wxPoint& pos, const wxSize& size, const wxArrayString& choices, long style = 0, const wxValidator& validator = wxDefaultValidator, const wxString& name = "comboBox")
 
 
-wxsDWDefineBegin(wxsComboBox,wxComboBox,
+wxsDWDefineBegin(wxsComboBoxBase,wxComboBox,
         ThisWidget = new wxComboBox(parent,id,_T(""),pos,size,0,0,style);
-        wxsDWAddStrings(arrayChoices,ThisWidget);
-        wxsDWSelectString(arrayChoices,defaultChoice,ThisWidget);
 	)
 
     #ifdef __NO_PROPGRID
@@ -40,3 +38,42 @@ wxsDWDefineBegin(wxsComboBox,wxComboBox,
     wxsDWDefStrArrayX(arrayChoices,"content","item","Choices",defaultChoice,wxCB_SORT)
 
 wxsDWDefineEnd()
+
+wxWindow* wxsComboBox::MyCreatePreview(wxWindow* Parent)
+{
+    wxComboBox* Combo = new wxComboBox(Parent,-1,_T(""),GetPosition(),GetSize(),arrayChoices,GetStyle());
+    if ( defaultChoice >= 0 && defaultChoice < (int)arrayChoices.Count() )
+    {
+        Combo->SetSelection(defaultChoice);
+    }
+    return Combo;
+}
+
+wxString wxsComboBox::GetProducingCode(wxsCodeParams& Params)
+{
+    wxString Code;
+    const CodeDefines& CDefs = GetCodeDefines();
+    Code.Printf(_T("%s = new wxComboBox(%s,%s,_T(""),%s,%s,0,NULL,%s);\n"),
+            GetBaseParams().VarName.c_str(),
+            Params.ParentName.c_str(),
+            GetBaseParams().IdName.c_str(),
+            CDefs.Pos.c_str(),
+            CDefs.Size.c_str(),
+            CDefs.Style.c_str());
+
+    for ( size_t i = 0; i <  arrayChoices.Count(); ++i )
+    {
+        Code << wxString::Format(_T("%s->Append(%s);\n"),
+            GetBaseParams().VarName.c_str(),
+            GetWxString(arrayChoices[i]).c_str());
+    }
+
+    if ( defaultChoice >= 0 && defaultChoice < (int)arrayChoices.Count() )
+    {
+        Code << wxString::Format(_T("%s->SetSelection(%d);\n"),
+            GetBaseParams().VarName.c_str(),
+            defaultChoice);
+    }
+
+    return Code;
+}

@@ -1,7 +1,7 @@
 #include "wxswidgetevents.h"
 
 #include "widget.h"
-#include "resources\wxswindowres.h"
+#include "resources/wxswindowres.h"
 #include <editormanager.h>
 
 #define HandlerXmlElementName   "handler"
@@ -48,7 +48,7 @@ wxsEventDesc * wxsWidgetEvents::GetEventByFunction(const wxString& Name)
     		return *i;
     	}
     }
-    
+
     return NULL;
 }
 
@@ -61,7 +61,7 @@ wxsEventDesc * wxsWidgetEvents::GetEventByEntry(const wxString& Entry)
     		return *i;
     	}
     }
-    
+
     return NULL;
 }
 
@@ -87,7 +87,7 @@ wxString wxsWidgetEvents::GetArrayEnteries(int TabSize)
     		Code.Append(_T(")\n"));
     	}
     }
-    
+
     return Code;
 }
 

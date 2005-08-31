@@ -1,4 +1,4 @@
-#include "Widget.h"
+#include "widget.h"
 
 #include "properties/wxsborderproperty.h"
 #include "properties/wxsplacementproperty.h"
@@ -57,7 +57,7 @@ wxsWidget::~wxsWidget()
     {
         wxsWidgetFactory::Get()->Kill(GetChild(GetChildCount()-1));
     }
-    
+
     if ( Events )
     {
     	delete Events;
@@ -74,24 +74,24 @@ void wxsWidget::AddDefaultProperties(BasePropertiesType pType)
         PropertiesObject.AddProperty(_("Var Name:"),BaseParams.VarName);
         PropertiesObject.AddProperty(_("Is Member:"),BaseParams.IsMember);
     }
-    
+
     if ( pType & bptId )
     {
         PropertiesObject.AddProperty(_("Id:"),BaseParams.IdName);
     }
-    
+
     if ( pType & bptPosition )
     {
         PropertiesObject.Add2IProperty(_("Position:"),BaseParams.PosX,BaseParams.PosY);
         PropertiesObject.AddProperty(_(" Default:"),BaseParams.DefaultPosition);
     }
-    
+
     if ( pType & bptSize )
     {
         PropertiesObject.Add2IProperty(_("Size:"),BaseParams.SizeX,BaseParams.SizeY);
         PropertiesObject.AddProperty(_(" Default:"),BaseParams.DefaultSize);
     }
-    
+
     // Adding sizer configuration
 
     PropertiesObject.AddProperty(_("Proportion:"),BaseParams.Proportion);
@@ -120,20 +120,20 @@ void wxsWidget::AddDefaultProperties(BasePropertiesType pType)
 wxWindow* wxsWidget::CreatePreview(wxWindow* Parent,wxsWindowEditor* Editor)
 {
     if ( Preview ) KillPreview();
-    
+
     /* Creating widget */
     Preview = MyCreatePreview(Parent);
     if ( !Preview ) return NULL;
-    
+
     /* Creating preview of child widgets */
     int Cnt = IsContainer() ? GetChildCount() : 0;
     for ( int i=0; i<Cnt; i++ )
     {
         GetChild(i)->CreatePreview(Preview,Editor);
     }
-    
+
     MyFinalUpdatePreview(Preview);
-    
+
     return Preview;
 }
 
@@ -163,7 +163,7 @@ void wxsWidget::KillPreview()
     {
         GetChild(i)->KillPreview();
     }
-    
+
     /* Killing this one */
     if ( Preview != NULL )
     {
@@ -189,20 +189,20 @@ bool wxsWidget::XmlLoadDefaultsT(BasePropertiesType pType)
     {
         BaseParams.DefaultPosition = !XmlGetIntPair(_T("pos"),BaseParams.PosX,BaseParams.PosY);
     }
-        
+
     /* Processing size */
     if ( pType & bptSize )
     {
         BaseParams.DefaultSize = !XmlGetIntPair(_T("size"),BaseParams.SizeX,BaseParams.SizeY);
     }
-    
+
     /* Processing id */
     if ( pType & bptId )
     {
         const char* IdName = XmlElem()->Attribute("name");
         BaseParams.IdName = IdName ? wxString ( IdName, wxConvLocal ) : _T("");
     }
-    
+
     /* Processing variable name and locality */
     if ( pType & bptVariable )
     {
@@ -225,10 +225,10 @@ bool wxsWidget::XmlLoadDefaultsT(BasePropertiesType pType)
                 int Pos = StyleStr.Find(Styles->Name);
                 int Len = (int)Styles->Name.Length();
                 if ( Pos < 0 ) continue;
-                
+
                 // One character after style in StyleStr should be checked - it
                 // must be '|'. Same for character before.
-                
+
                 if ( ( Pos + Len >= (int)StyleStr.Len() || StyleStr.GetChar(Pos+Len) == _T('|') ) &&
                      ( Pos == 0 || StyleStr.GetChar(Pos-1) == _T('|') ) )
                 {
@@ -237,22 +237,22 @@ bool wxsWidget::XmlLoadDefaultsT(BasePropertiesType pType)
             }
         }
     }
-    
+
     if ( IsContainer() )
     {
         if ( !XmlLoadChildren() ) return false;
     }
-    
-    
+
+
     return true;
 }
 
 bool wxsWidget::XmlSaveDefaultsT(BasePropertiesType pType)
 {
     assert ( XmlElem() != NULL );
-    
+
     GetEvents()->XmlSaveFunctions(XmlElem());
-   
+
     if ( pType & bptPosition )
     {
         if ( !BaseParams.DefaultPosition )
@@ -260,7 +260,7 @@ bool wxsWidget::XmlSaveDefaultsT(BasePropertiesType pType)
             XmlSetIntPair(_T("pos"),BaseParams.PosX,BaseParams.PosY);
         }
     }
-    
+
     if ( pType & bptSize )
     {
         if ( !BaseParams.DefaultSize )
@@ -273,7 +273,7 @@ bool wxsWidget::XmlSaveDefaultsT(BasePropertiesType pType)
     {
         XmlElem()->SetAttribute("name",BaseParams.IdName.mb_str());
     }
-    
+
     if ( pType & bptVariable )
     {
         XmlElem()->SetAttribute("variable",BaseParams.VarName.mb_str());
@@ -283,12 +283,12 @@ bool wxsWidget::XmlSaveDefaultsT(BasePropertiesType pType)
     if ( pType & bptStyle )
     {
         int StyleBits = BaseParams.Style;
-        
+
         wxString StyleString;
-        
+
         // Warning: This may cause some data los if styles are not
         //          configured properly
-        
+
         wxsStyle* Style = GetInfo().Styles;
         if ( Style )
         {
@@ -302,25 +302,25 @@ bool wxsWidget::XmlSaveDefaultsT(BasePropertiesType pType)
                 }
             }
         }
-        
+
         if ( StyleString.Len() != 0 )
         {
             XmlSetVariable(_T("style"),StyleString.c_str()+1);
         }
     }
-    
+
     if ( IsContainer() )
     {
         if ( !XmlSaveChildren() ) return false;
     }
-    
+
     return true;
 }
 
 wxString wxsWidget::XmlGetVariable(const wxString& name)
 {
     assert ( XmlElem() != NULL );
-    
+
     if ( !name || !*name ) return _T("");
     TiXmlElement* Elem = XmlElem()->FirstChildElement(name.mb_str());
     if ( !Elem ) return _T("");
@@ -335,7 +335,7 @@ wxString wxsWidget::XmlGetVariable(const wxString& name)
         }
         Node = Node->NextSibling();
     }
-    
+
     return _T("");
 }
 
@@ -357,19 +357,19 @@ bool wxsWidget::XmlGetIntPair(const wxString& Name,int& P1,int& P2,int DefP1,int
     long _P1, _P2;
     wxString Tmp = XmlGetVariable(Name);
     if ( Tmp.Length() &&
-         Tmp.BeforeFirst(_T(',')).ToLong(&_P1) && 
+         Tmp.BeforeFirst(_T(',')).ToLong(&_P1) &&
          Tmp.AfterLast(_T(',')).ToLong(&_P2) )
     {
         P1 = (int)_P1;
         P2 = (int)_P2;
         return true;
     }
-    
+
     P1 = DefP1;
     P2 = DefP2;
     return false;
 }
- 
+
 bool wxsWidget::XmlSetVariable(const wxString& Name,const wxString& Value)
 {
     assert ( XmlElem() != NULL );
@@ -395,19 +395,19 @@ bool wxsWidget::XmlSetIntPair(const wxString& Name,int Val1,int Val2)
 bool wxsWidget::XmlLoadChildren()
 {
     assert ( XmlElem() != NULL );
-    
+
     bool Ret = true;
-    
+
     for ( TiXmlElement* Element = XmlElem()->FirstChildElement("object");
           Element != NULL;
           Element = Element->NextSiblingElement("object") )
     {
         const char* Name = Element->Attribute("class");
-        
+
         if ( Name && *Name )
         {
             TiXmlElement* RealObject = Element;
-            
+
             if ( !strcmp(Name,"sizeritem") )
             {
                 RealObject = Element->FirstChildElement("object");
@@ -420,7 +420,7 @@ bool wxsWidget::XmlLoadChildren()
             	// Small fixup
             	Name = "Spacer";
             }
-                
+
             wxsWidget* Child = wxsWidgetFactory::Get()->Generate(wxString(Name,wxConvUTF8),GetResource());
             if ( !Child )
             {
@@ -445,33 +445,33 @@ bool wxsWidget::XmlSaveChildren()
 {
     bool IsSizer = GetInfo().Sizer;
     bool Return = true;
-    
+
     int Count = GetChildCount();
-    
+
     for ( int i=0; i<Count; i++ )
     {
         wxsWidget* W = GetChild(i);
-        
+
         if ( W && W->GetInfo().Name )
         {
             TiXmlNode* AddChildToThis = XmlElem();
             wxString ClassName = W->GetInfo().Name;
             bool ChildSpacer = W->GetInfo().Spacer;
-            
+
             if ( ChildSpacer )
             {
             	ClassName = _T("spacer");
             }
-            
+
             if ( IsSizer && ClassName != _T("spacer") )
             {
                // Adding sizeritem object
                AddChildToThis = XmlElem()->InsertEndChild(TiXmlElement("object"));
                AddChildToThis->ToElement()->SetAttribute("class","sizeritem");
             }
-            
+
             TiXmlElement* SaveTo = AddChildToThis->InsertEndChild(TiXmlElement("object"))->ToElement();
-            
+
             if ( SaveTo )
             {
                 SaveTo->SetAttribute("class",ClassName.mb_str());
@@ -481,14 +481,14 @@ bool wxsWidget::XmlSaveChildren()
             {
                 Return = false;
             }
-            
+
             if ( IsSizer )
             {
                 W->XmlSaveSizerStuff(AddChildToThis->ToElement());
             }
         }
     }
-    
+
     return Return;
 }
 
@@ -496,9 +496,9 @@ void wxsWidget::XmlLoadSizerStuff(TiXmlElement* Elem)
 {
     TiXmlElement* Store = XmlElem();
     XmlElement = Elem;
- 
+
     bool Temp;
-    
+
     BaseParams.Proportion = XmlGetInteger(_T("option"),Temp,0);
     BaseParams.Border = XmlGetInteger(_T("border"),Temp,0);
     BaseParams.BorderFlags = 0;
@@ -506,12 +506,12 @@ void wxsWidget::XmlLoadSizerStuff(TiXmlElement* Elem)
     BaseParams.Expand = false;
     BaseParams.Shaped = false;
     BaseParams.FixedMinSize = false;
-    
+
     wxStringTokenizer tokens(XmlGetVariable(_T("flag")),_T("|"));
-    
+
     int HorizPos = 0;
     int VertPos = 0;
-    
+
     while ( tokens.HasMoreTokens() )
     {
         wxString Token = tokens.GetNextToken().Trim(true).Trim(false);
@@ -521,7 +521,7 @@ void wxsWidget::XmlLoadSizerStuff(TiXmlElement* Elem)
         #define Match(a) else if ( Token == _T(#a) )
         #define PlaceH(a) Match(a) HorizPos = a;
         #define PlaceV(a) Match(a) VertPos = a;
-        
+
         Begin();
         BFItem(wxLEFT,Left);
         BFItem(wxRIGHT,Right);
@@ -531,9 +531,9 @@ void wxsWidget::XmlLoadSizerStuff(TiXmlElement* Elem)
         BFItem(wxSOUTH,Bottom);
         BFItem(wxEAST,Right);
         BFItem(wxWEST,Left);
-        Match(wxALL) 
+        Match(wxALL)
         {
-            BaseParams.BorderFlags |= 
+            BaseParams.BorderFlags |=
                 wxsWidgetBaseParams::Left |
                 wxsWidgetBaseParams::Right |
                 wxsWidgetBaseParams::Top |
@@ -575,7 +575,7 @@ void wxsWidget::XmlLoadSizerStuff(TiXmlElement* Elem)
         else if ( VertPos==wxALIGN_CENTER_VERTICAL ) BaseParams.Placement = wxsWidgetBaseParams::LeftCenter;
         else BaseParams.Placement = wxsWidgetBaseParams::LeftTop;
     }
-    
+
     XmlElement = Store;
 }
 
@@ -583,16 +583,16 @@ void wxsWidget::XmlSaveSizerStuff(TiXmlElement* Elem)
 {
     TiXmlElement* Store = XmlElem();
     XmlElement = Elem;
-    
+
     if ( BaseParams.Proportion ) XmlSetInteger(_T("option"),BaseParams.Proportion);
     if ( BaseParams.Border ) XmlSetInteger(_T("border"),BaseParams.Border);
-    
-    wxString Flags = GetFlagToSizer(); 
+
+    wxString Flags = GetFlagToSizer();
     if ( Flags.Len() )
     {
         XmlSetVariable(_T("flag"),Flags);
     }
-    
+
     XmlElement = Store;
 }
 
@@ -603,9 +603,9 @@ const wxsWidget::CodeDefines& wxsWidget::GetCodeDefines()
     CDefines.BColour = _T("");
     CDefines.Font = _T("");
     CDefines.Style = _T("");
-    
+
     // Filling up styles
-    
+
     wxsStyle* Style = GetInfo().Styles;
     int StyleV = BaseParams.Style;
     if ( Style )
@@ -615,25 +615,25 @@ const wxsWidget::CodeDefines& wxsWidget::GetCodeDefines()
             if ( Style->Value && ( ( StyleV & Style->Value ) == Style->Value ) )
             {
                 StyleV &= ~Style->Value;
-                
+
                 if ( CDefines.Style.Length() ) CDefines.Style.Append('|');
                 CDefines.Style.Append(Style->Name);
             }
         }
     }
-    
+
     if ( CDefines.Style.Len() == 0 ) CDefines.Style = _T("0");
-    
+
     // Creating position
-    
+
     if ( BaseParams.DefaultPosition ) CDefines.Pos = _T("wxDefaultPosition");
     else CDefines.Pos = wxString::Format(_T("wxPoint(%d,%d)"),BaseParams.PosX,BaseParams.PosY);
-    
+
     // Creating size
-    
+
     if ( BaseParams.DefaultSize ) CDefines.Size = _T("wxDefaultSize");
     else CDefines.Size = wxString::Format(_T("wxSize(%d,%d)"),BaseParams.SizeX,BaseParams.SizeY);
-    
+
     return CDefines;
 }
 
@@ -660,7 +660,7 @@ void wxsWidget::BuildTree(wxTreeCtrl* Tree,wxTreeItemId Id,int Index)
     }
     TreeId = SubId;
     AssignedToTree = true;
-    
+
     int SubCnt = GetChildCount();
     for ( int i=0; i<SubCnt; i++ )
     {
@@ -668,12 +668,12 @@ void wxsWidget::BuildTree(wxTreeCtrl* Tree,wxTreeItemId Id,int Index)
     }
 }
 
-//Added by cyberkoa 
+//Added by cyberkoa
 /* ======================================================================
     Function Name : XmlSetStringArray
    ======================================================================
 
- Description : To write a series of strings from XRC with ParentName as 
+ Description : To write a series of strings from XRC with ParentName as
                parent element and ChildName as child element
   Example :  ParentName = "content" , ChildName="item"
               <content>
@@ -681,39 +681,39 @@ void wxsWidget::BuildTree(wxTreeCtrl* Tree,wxTreeItemId Id,int Index)
                    <item>Option 2</item>
                    <item>3rd choice</item>
               </content>
-              
-*/              
+
+*/
 
 bool wxsWidget::XmlSetStringArray(const wxString& ParentName,const wxString& ChildName,wxArrayString& stringArray)
 {
     assert ( XmlElem() != NULL );
- 
+
     int Count = stringArray.GetCount();
-    // No item, return without writing <content> and <item> elements 
+    // No item, return without writing <content> and <item> elements
     if(Count==0) return false;
-    
+
     // Adding <ParentName>  element
     TiXmlElement* ParentElement;
     TiXmlElement* ChildElement;
     ParentElement = XmlElem()->InsertEndChild(TiXmlElement(ParentName.mb_str()))->ToElement();
-    
+
     for ( int i=0; i<Count; i++ )
     {
       ChildElement = ParentElement->InsertEndChild(TiXmlElement(ChildName.mb_str()))->ToElement();
-      
+
       if (ChildElement)
         ChildElement->InsertEndChild(TiXmlText(stringArray[i].mb_str()));
-    }   
-    return true;      
+    }
+    return true;
 }
 //End added
 
-//Added by cyberkoa 
+//Added by cyberkoa
 /* ======================================================================
     Function Name : XmlGetStringArray
    ======================================================================
 
- Description : To read a series of strings from XRC with ParentName as 
+ Description : To read a series of strings from XRC with ParentName as
                parent element and ChildName as child element
   Example :  ParentName = "content" , ChildName="item"
               <content>
@@ -721,43 +721,43 @@ bool wxsWidget::XmlSetStringArray(const wxString& ParentName,const wxString& Chi
                    <item>Option 2</item>
                    <item>3rd choice</item>
               </content>
-              
-*/              
+
+*/
 bool wxsWidget::XmlGetStringArray(const wxString& ParentName,const wxString& ChildName,wxArrayString& stringArray)
 {
     assert ( XmlElem() != NULL );
-    
+
      // Empty it to make sure element added in an empty wxArrayString
-      stringArray.Empty(); 
-     
+      stringArray.Empty();
+
     TiXmlElement* ParentElement = XmlElem()->FirstChildElement(ParentName.mb_str());
     if(!ParentElement) return false;
-    
+
     for (TiXmlElement* ChildElement= ParentElement->FirstChildElement(ChildName.mb_str());
           ChildElement != NULL;
           ChildElement = ChildElement->NextSiblingElement(ChildName.mb_str()))
           {
-       
+
            TiXmlNode* Node = ChildElement->FirstChild();
-           
+
 			while(Node)
 			{
 			 if(Node->ToText())
               stringArray.Add(wxString(Node->ToText()->Value(),wxConvUTF8));
 
               Node=Node->NextSibling();
-            } 
+            }
           }
-       
+
       if(stringArray.GetCount() > 0)return true; else return false;
-      
+
 }
 //End added
 
 wxString wxsWidget::GetFlagToSizer()
 {
     wxString Flags = _T("");
-    
+
     int BF = BaseParams.BorderFlags;
 
     if ( ( BF & wxsWidgetBaseParams::Left ) &&
@@ -774,7 +774,7 @@ wxString wxsWidget::GetFlagToSizer()
         if ( ( BF & wxsWidgetBaseParams::Top    ) ) Flags.Append(_T("|wxTOP"));
         if ( ( BF & wxsWidgetBaseParams::Bottom ) ) Flags.Append(_T("|wxBOTTOM"));
     }
-    
+
     switch ( BaseParams.Placement )
     {
         case wxsWidgetBaseParams::LeftTop:      Flags.Append(_T("|wxALIGN_LEFT|wxALIGN_TOP")); break;
@@ -787,10 +787,10 @@ wxString wxsWidget::GetFlagToSizer()
         case wxsWidgetBaseParams::CenterBottom: Flags.Append(_T("|wxALIGN_CENTER_HORIZONTAL|wxALIGN_BOTTOM")); break;
         case wxsWidgetBaseParams::RightBottom:  Flags.Append(_T("|wxALIGN_RIGHT|wxALIGN_BOTTOM")); break;
     }
-    
+
     if ( BaseParams.Expand ) Flags.Append(_T("|wxEXPAND"));
     if ( BaseParams.Shaped ) Flags.Append(_T("|wxSHAPED"));
-    
+
 
     return Flags.Length() ? Flags.Mid(1) : _T("");
 }

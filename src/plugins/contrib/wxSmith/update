@@ -1,0 +1,5 @@
+#!/bin/bash
+zip ../../../devel/share/CodeBlocks/wxsmith.zip *.xrc
+mkdir -p ../../../devel/share/CodeBlocks/images/wxsmith > /dev/null 2> /dev/null
+cp ./smithicons/* ../../../devel/share/CodeBlocks/images/wxsmith\ > /dev/null 2> /dev/null
+exit 0
