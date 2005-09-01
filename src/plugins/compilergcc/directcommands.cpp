@@ -206,9 +206,9 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
         return ret;
 
     pfDetails pfd(this, target, pf);
-    
+
     MakefileGenerator mg(m_pCompilerPlugin, m_pProject, _T(""), 0); // don't worry! we just need a couple of utility funcs from it
-    
+
     // lookup file's type
     FileType ft = FileTypeOf(pf->relativeFilename);
 
@@ -250,11 +250,11 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
             case clogFull:
                 ret.Add(wxString(COMPILER_SIMPLE_LOG) + compilerCmd);
                 break;
-            
+
             case clogSimple:
                 ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Compiling: ") + pfd.source_file_native);
                 break;
-            
+
             default:
                 break;
         }
@@ -308,17 +308,17 @@ wxArrayString DirectCommands::GetCompileSingleFileCommand(const wxString& filena
             case clogFull:
                 ret.Add(wxString(COMPILER_SIMPLE_LOG) + compilerCmd);
                 break;
-            
+
             case clogSimple:
                 ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Compiling: ") + filename);
                 break;
-            
+
             default:
                 break;
         }
         AddCommandsToArray(compilerCmd, ret);
     }
-    
+
     if (!linkerCmd.IsEmpty())
     {
         switch (m_pCompiler->GetSwitches().logging)
@@ -477,7 +477,7 @@ wxArrayString DirectCommands::GetPreBuildCommands(ProjectBuildTarget* target)
                     buildcmds = tmp;
                 }
                 break;
-            
+
             case clogSimple:
                 buildcmds.Insert(wxString(COMPILER_SIMPLE_LOG) + _("Running pre-build step: ") + title, 0);
 
@@ -512,7 +512,7 @@ wxArrayString DirectCommands::GetPostBuildCommands(ProjectBuildTarget* target)
                     buildcmds = tmp;
                 }
                 break;
-            
+
             case clogSimple:
                 buildcmds.Insert(wxString(COMPILER_SIMPLE_LOG) + _("Running post-build step: ") + title, 0);
 
@@ -613,12 +613,12 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
             ct = ctLinkExeCmd;
             kind_of_output = _("executable");
             break;
-        
+
         case ttDynamicLib:
             ct = ctLinkDynamicCmd;
             kind_of_output = _("dynamic library");
             break;
-        
+
         case ttStaticLib:
             ct = ctLinkStaticCmd;
             kind_of_output = _("static library");
@@ -634,7 +634,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
             case clogFull:
                 ret.Add(wxString(COMPILER_SIMPLE_LOG) + compilerCmd);
                 break;
-            
+
             default: // linker always simple log (if not full)
                 ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Linking ") + kind_of_output + _T(": ") + target->GetOutputFilename());
                 break;
@@ -646,14 +646,14 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
 
         AddCommandsToArray(compilerCmd, ret);
     }
-    
+
     return ret;
 }
 
 wxArrayString DirectCommands::GetCleanCommands(ProjectBuildTarget* target, bool distclean)
 {
     wxArrayString ret;
-    
+
     if (target)
         ret = GetTargetCleanCommands(target);
     else
@@ -685,12 +685,12 @@ wxArrayString DirectCommands::GetTargetCleanCommands(ProjectBuildTarget* target,
 
     // add target output
     wxString outputfilename = target->GetOutputFilename();
-    
+
     if (target->GetTargetType() != ttCommandsOnly)
     {
         ret.Add(outputfilename);
     }
-    
+
     if (target->GetTargetType() == ttDynamicLib)
     {
         // for dynamic libs, delete static lib
@@ -728,14 +728,14 @@ bool DirectCommands::AreExternalDepsOutdated(const wxString& buildOutput, const 
         {
         	if (files[i].IsEmpty())
                 continue;
-            
+
             Manager::Get()->GetMacrosManager()->ReplaceEnvVars(files[i]);
             time_t addT;
             depsTimeStamp(files[i].mb_str(), &addT);
             // if additional file doesn't exist, we can skip it
             if (!addT)
                 continue;
-            
+
             // if external dep is newer than additional file, relink
             if (timeSrc > addT)
                 return true;
@@ -752,7 +752,7 @@ bool DirectCommands::AreExternalDepsOutdated(const wxString& buildOutput, const 
         // if build output doesn't exist, relink
         if (!timeExe)
             return true;
-        
+
         // if external dep is newer than build output, relink
         if (timeSrc > timeExe)
             return true;
@@ -764,14 +764,14 @@ bool DirectCommands::IsObjectOutdated(const pfDetails& pfd)
 {
     // If the source file does not exist, then do not compile.
     time_t timeSrc;
-    depsTimeStamp(pfd.source_file_native.mb_str(), &timeSrc);
+    depsTimeStamp(pfd.source_file_absolute_native.mb_str(), &timeSrc);
     if (!timeSrc)
         return false;
 
     // If the object file does not exist, then it must be built. In this case
     // there is no need to scan the source file for headers.
     time_t timeObj;
-    depsTimeStamp(pfd.object_file_native.mb_str(), &timeObj);
+    depsTimeStamp(pfd.object_file_absolute_native.mb_str(), &timeObj);
     if (!timeObj)
         return true;
 
@@ -784,7 +784,7 @@ bool DirectCommands::IsObjectOutdated(const pfDetails& pfd)
     // Scan the source file for headers. Result is NULL if the file does
     // not exist. If one of the descendent header files is newer than the
     // object file, then the object file must be built.
-    depsRef ref = depsScanForHeaders(pfd.source_file_native.mb_str());
+    depsRef ref = depsScanForHeaders(pfd.source_file_absolute_native.mb_str());
     if (ref)
     {
         time_t timeNewest;
