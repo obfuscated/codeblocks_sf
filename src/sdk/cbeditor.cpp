@@ -622,6 +622,7 @@ bool cbEditor::Open()
     bool read_only = !wxFile::Access(m_Filename.c_str(), wxFile::write);
     m_pControl->SetReadOnly(read_only);
     // if editor is read-only, override bg color for *all* styles...
+    m_pTheme->Apply(this); //Apply default theme 1st
     if (read_only)
     {
         for (int i = 0; i < wxSCI_STYLE_MAX; ++i)

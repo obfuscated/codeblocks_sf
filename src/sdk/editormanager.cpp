@@ -918,17 +918,44 @@ void EditorManager::CheckForExternallyModifiedFiles()
     wxArrayString failedFiles; // list of files failed to reload
 	for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext())
 	{
+		bool b_modified = false;
         cbEditor* ed = InternalGetBuiltinEditor(node);
-        if (!ed || // no editor open
-            !wxFileExists(ed->GetFilename()) || // non-existent file
-            ed->GetControl()->GetReadOnly() || // read-only
-            !wxFile::Access(ed->GetFilename().c_str(), wxFile::write))
+
+        if (!ed) continue;
+        //File was deleted?
+        if (!wxFileExists(ed->GetFilename()))
         {
+        	wxString msg;
+        	msg.Printf(_("%s has been deleted, or is no longer available.\n"
+				"Do you wish to keep the file open?\n"
+				"Yes to keep the file, No to close it."), ed->GetFilename().c_str());
+        	if (wxMessageBox(msg, _("File changed!"), wxYES_NO) == wxYES)
+				ed->SetModified(true);
+			else
+                ed->Close();
             continue;
         }
+
         wxFileName fname(ed->GetFilename());
         wxDateTime last = fname.GetModificationTime();
+
+		//File changed from RO -> RW?
+        if (ed->GetControl()->GetReadOnly() &&
+			wxFile::Access(ed->GetFilename().c_str(), wxFile::write))
+        {
+			b_modified = true;
+        }
+		//File changed from RW -> RO?
+		if (!ed->GetControl()->GetReadOnly() &&
+			!wxFile::Access(ed->GetFilename().c_str(), wxFile::write))
+        {
+            b_modified = true;
+        }
+		//File content changed?
         if (last.IsLaterThan(ed->GetLastModificationTime()))
+            b_modified = true;
+
+        if (b_modified)
         {
             // modified; ask to reload
             int ret = -1;
