@@ -1078,10 +1078,14 @@ int EditorManager::ShowFindDialog(bool replace)
 	{
         control = ed->GetControl();
 
-        int wordStart = control->WordStartPosition(control->GetCurrentPos(), true);
-        int wordEnd = control->WordEndPosition(control->GetCurrentPos(), true);
-        wordAtCursor = control->GetTextRange(wordStart, wordEnd);
         hasSelection = control->GetSelectionStart() != control->GetSelectionEnd();
+        int wordStart = hasSelection
+                        ? control->GetSelectionStart()
+                        : control->WordStartPosition(control->GetCurrentPos(), true);
+        int wordEnd = hasSelection
+                        ? control->GetSelectionEnd()
+                        : control->WordEndPosition(control->GetCurrentPos(), true);
+        wordAtCursor = control->GetTextRange(wordStart, wordEnd);
         // if selected text is the last searched text, don't suggest "search in selection"
         if ((m_LastFindReplaceData &&
             !control->GetSelectedText().IsEmpty() &&
