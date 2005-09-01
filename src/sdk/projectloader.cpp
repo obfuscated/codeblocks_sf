@@ -16,7 +16,8 @@
 
 ProjectLoader::ProjectLoader(cbProject* project)
     : m_pProject(project),
-    m_Upgraded(false)
+    m_Upgraded(false),
+    m_OpenDirty(false)
 {
 	//ctor
 }
@@ -177,7 +178,7 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
             activeTarget = atoi(node->Attribute("active_target"));
 
         if (node->Attribute("compiler"))
-            compilerIdx = atoi(node->Attribute("compiler"));
+            compilerIdx = GetValidCompilerIndex(atoi(node->Attribute("compiler")), _("project"));
 
         node = node->NextSiblingElement("Option");
     }
@@ -280,7 +281,7 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
             type = atoi(node->Attribute("type"));
 
         if (node->Attribute("compiler"))
-            compilerIdx = atoi(node->Attribute("compiler"));
+            compilerIdx = GetValidCompilerIndex(atoi(node->Attribute("compiler")), _("build target"));
 
         if (node->Attribute("parameters"))
             parameters = _U(node->Attribute("parameters"));
@@ -863,4 +864,29 @@ void ProjectLoader::SaveOptions(wxString& buffer, const wxArrayString& array, co
         EndOptionSection(local, sectionName, nrOfTabs);
         buffer << local;
     }
+}
+
+int ProjectLoader::GetValidCompilerIndex(int proposal, const wxString& scope)
+{
+    if (CompilerFactory::CompilerIndexOK(proposal))
+        return proposal;
+
+    m_OpenDirty = true;
+
+    wxArrayString compilers;
+    for (unsigned int i = 0; i < CompilerFactory::Compilers.GetCount(); ++i)
+    {
+        compilers.Add(CompilerFactory::Compilers[i]->GetName());
+    }
+
+    wxString msg;
+    msg.Printf(_("The specified compiler does not exist.\nPlease select the compiler to use for the %s:"), scope.mb_str());
+    proposal = wxGetSingleChoiceIndex(msg, _("Select compiler"), compilers);
+
+    if (proposal == -1)
+    {
+        wxMessageBox(_("Setting to default compiler..."), _("Warning"), wxICON_WARNING);
+        return CompilerFactory::GetDefaultCompilerIndex();
+    }
+    return proposal;
 }

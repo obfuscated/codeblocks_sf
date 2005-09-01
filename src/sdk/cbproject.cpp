@@ -229,6 +229,7 @@ void cbProject::Open()
     }
 
 	bool fileUpgraded = false;
+	bool fileModified = false;
     wxFileName fname(m_Filename);
 	FileType ft = FileTypeOf(m_Filename);
     if (ft == ftCodeBlocksProject)
@@ -238,6 +239,7 @@ void cbProject::Open()
         ProjectLoader loader(this);
         m_Loaded = loader.Open(m_Filename);
         fileUpgraded = loader.FileUpgraded();
+        fileModified = loader.FileModified();
         m_CurrentlyLoading = false;
     }
     else
@@ -301,7 +303,7 @@ void cbProject::Open()
 		Manager::Get()->GetMessageManager()->Log(_("done"));
 		if (!m_Targets.GetCount())
 			AddDefaultBuildTarget();
-		SetModified(ft != ftCodeBlocksProject || fileUpgraded);
+		SetModified(ft != ftCodeBlocksProject || fileUpgraded || fileModified);
 		NotifyPlugins(cbEVT_PROJECT_OPEN);
 
 		if (fileUpgraded)

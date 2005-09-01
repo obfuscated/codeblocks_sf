@@ -19,6 +19,7 @@ class DLLIMPORT ProjectLoader : public IBaseLoader
         bool Open(const wxString& filename);
         bool Save(const wxString& filename);
         bool FileUpgraded(){ return m_Upgraded; }
+        bool FileModified(){ return m_OpenDirty; }
 	protected:
         void DoProjectOptions(TiXmlElement* parentNode);
         void DoCompilerOptions(TiXmlElement* parentNode, ProjectBuildTarget* target = 0L);
@@ -52,10 +53,15 @@ class DLLIMPORT ProjectLoader : public IBaseLoader
         void ConvertVersion_Pre_1_1();
         void ConvertLibraries(CompileTargetBase* object);
 
+        // accepts a questionable compiler index and returns a valid compiler index
+        // (popping up a selection dialog if needed)
+        int GetValidCompilerIndex(int proposal, const wxString& scope);
+
         ProjectLoader(){} // no default ctor
 
         cbProject* m_pProject;
         bool m_Upgraded;
+        bool m_OpenDirty; // set this to true if the project is loaded but modified (like the case when setting another compiler, if invalid)
 };
 
 #endif // PROJECTLOADER_H
