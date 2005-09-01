@@ -58,6 +58,7 @@
 #include <wx/printdlg.h>
 #include <wx/util.h>
 #include <wx/dockpanel.h>
+#include <wx/filename.h>
 
 class wxMyFileDropTarget : public wxFileDropTarget
 {
@@ -824,7 +825,12 @@ void MainFrame::DoAddPlugin(cbPlugin* plugin)
 
 bool MainFrame::Open(const wxString& filename, bool addToHistory)
 {
-    bool ret = OpenGeneric(filename, addToHistory);
+    wxFileName fn(filename);
+    fn.Normalize(); // really important so that two same files with different names are not loaded twice
+    wxString name = fn.GetFullPath();
+    //MSGMAN()->DebugLog(_("Opening file '%s'"), sname.c_str());
+    MSGMAN()->DebugLog(_("Opening file %s"), name.c_str());
+    bool ret = OpenGeneric(name, addToHistory);
 	return ret;
 }
 
@@ -915,7 +921,6 @@ bool MainFrame::DoOpenProject(const wxString& filename, bool addToHistory)
 
 bool MainFrame::DoOpenFile(const wxString& filename, bool addToHistory)
 {
-    //MSGMAN()->DebugLog(_("Opening file '%s'"), filename.c_str());
     if (EDMAN()->Open(filename))
     {
 		if (addToHistory)
