@@ -907,6 +907,7 @@ ProjectBuildTarget* cbProject::AddBuildTarget(const wxString& targetName)
     ProjectBuildTarget* target = new ProjectBuildTarget(this);
     target->m_Filename = m_Filename; // really important
     target->SetTitle(targetName);
+    target->SetCompilerIndex(GetCompilerIndex()); // same compiler as project's
     target->SetOutputFilename(GetOutputFilename());
     target->SetWorkingDir(_T("."));
     target->SetObjectOutput(_T(".objs"));
