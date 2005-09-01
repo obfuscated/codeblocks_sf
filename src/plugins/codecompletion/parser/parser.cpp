@@ -28,6 +28,7 @@
 #include <wx/filename.h>
 #include <wx/tokenzr.h>
 #include <wx/intl.h>
+#include <wx/progdlg.h>
 #include "parser.h"
 #ifndef STANDALONE
 	#include <configmanager.h>
@@ -191,6 +192,10 @@ bool Parser::ReadFromCache(wxFile* f)
 {
     Clear();
 
+    unsigned int counter = 0;
+    unsigned int length = f->Length();
+    wxProgressDialog progress(_("Code-completion plugin"), _("Please wait while loading code-completion cache..."), length);
+
     // m_Tokens
     while (!f->Eof())
     {
@@ -199,6 +204,7 @@ bool Parser::ReadFromCache(wxFile* f)
             break;
         if (!LoadTokenFromCache(f, 0))
             break;
+        progress.Update(f->Tell());
     }
 
     // m_ParsedFiles
@@ -208,6 +214,7 @@ bool Parser::ReadFromCache(wxFile* f)
         if (!LoadStringFromFile(f, file))
             break;
         m_ParsedFiles.Add(file);
+        progress.Update(f->Tell());
     }
 
     LinkInheritance(); // fix ancestors relationships
@@ -238,8 +245,13 @@ bool Parser::CacheNeedsUpdate()
 
 bool Parser::WriteToCache(wxFile* f)
 {
-    // m_Tokens
     unsigned int tcount = m_Tokens.GetCount();
+    unsigned int fcount = m_ParsedFiles.GetCount();
+    unsigned int counter = 0;
+
+    wxProgressDialog progress(_("Code-completion plugin"), _("Please wait while saving code-completion cache..."), tcount + fcount);
+
+    // m_Tokens
     for (unsigned int i = 0; i < tcount; ++i)
     {
         Token* token = m_Tokens[i];
@@ -249,15 +261,16 @@ bool Parser::WriteToCache(wxFile* f)
             SaveIntToFile(f, TOKEN_REC);
             SaveTokenToCache(f, token);
         }
+        progress.Update(++counter);
     }
 
     SaveIntToFile(f, FILE_REC);
 
     // m_ParsedFiles
-    tcount = m_ParsedFiles.GetCount();
-    for (unsigned int i = 0; i < tcount; ++i)
+    for (unsigned int i = 0; i < fcount; ++i)
     {
         SaveStringToFile(f, m_ParsedFiles[i]);
+        progress.Update(++counter);
     }
 
     return true;

@@ -30,6 +30,7 @@
 #include <wx/textdlg.h>
 #include <wx/splitter.h>
 #include <wx/filename.h>
+#include <wx/progdlg.h>
 
 #include "projectmanager.h" // class's header file
 #include "sdk_events.h"
@@ -1073,6 +1074,8 @@ int ProjectManager::AddMultipleFilesToProject(const wxArrayString& filelist, cbP
 {
     SANITY_CHECK(0);
 
+    wxProgressDialog progress(_("Project Manager"), _("Please wait while adding files to project..."), filelist.GetCount());
+
 	if (!project)
 		project = GetActiveProject();
 
@@ -1081,6 +1084,7 @@ int ProjectManager::AddMultipleFilesToProject(const wxArrayString& filelist, cbP
     {
     	if (DoAddFileToProject(filelist[i], project, targets) != 0)
             addedFiles.Add(filelist[i]);
+        progress.Update(i);
     }
 
     if (addedFiles.GetCount() != 0)
