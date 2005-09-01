@@ -192,7 +192,6 @@ bool Parser::ReadFromCache(wxFile* f)
 {
     Clear();
 
-    unsigned int counter = 0;
     unsigned int length = f->Length();
     wxProgressDialog progress(_("Code-completion plugin"), _("Please wait while loading code-completion cache..."), length);
 
