@@ -243,7 +243,6 @@ void NativeParser::AddParser(cbProject* project, bool useCache)
 		return;
 
 	Manager::Get()->GetMessageManager()->DebugLog(_("Start parsing project %s"), project->GetTitle().c_str());
-	int fcount = 0;
 	Parser* parser = new Parser(this);
 	m_Parsers[project] = parser;
 	m_ParsersFilenames[project] = project->GetFilename();
@@ -256,6 +255,8 @@ void NativeParser::AddParser(cbProject* project, bool useCache)
             return;
     }
 
+    wxArrayString files;
+
 	// parse header files first
 	for (int i = 0; i < project->GetFilesCount(); ++i)
 	{
@@ -263,8 +264,7 @@ void NativeParser::AddParser(cbProject* project, bool useCache)
 		FileType ft = FileTypeOf(pf->relativeFilename);
 		if (ft == ftHeader) // only parse header files
 		{
-            ++fcount;
-			parser->Parse(pf->file.GetFullPath());
+			files.Add(pf->file.GetFullPath());
         }
 	}
 	// next, parse source files
@@ -274,12 +274,15 @@ void NativeParser::AddParser(cbProject* project, bool useCache)
 		FileType ft = FileTypeOf(pf->relativeFilename);
 		if (ft == ftSource) // only parse source files
 		{
-            ++fcount;
-			parser->Parse(pf->file.GetFullPath());
+			files.Add(pf->file.GetFullPath());
         }
 	}
-	if (fcount == 0)
+	if (files.IsEmpty())
         Manager::Get()->GetMessageManager()->DebugLog(_("End parsing project %s (no files found?)"), project->GetTitle().c_str());
+    else
+    {
+        parser->BatchParse(files);
+    }
 }
 
 void NativeParser::RemoveParser(cbProject* project, bool useCache)

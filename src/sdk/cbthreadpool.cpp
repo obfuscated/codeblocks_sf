@@ -5,9 +5,11 @@
 #include <wx/listimpl.cpp>
 WX_DEFINE_LIST(cbTaskList);
 
-static int idThreadMsg = wxNewId();
 static wxSemaphore s_Semaphore;
 static wxCriticalSection s_CriticalSection;
+
+static int s_Counter = 0;
+static wxCriticalSection s_CounterCriticalSection;
 
 /// Base thread class
 class PrivateThread : public wxThread
@@ -20,14 +22,12 @@ class PrivateThread : public wxThread
         };
 		PrivateThread(cbThreadPool* pool)
         : m_pPool(pool),
-        m_Abort(false),
-        m_State(Idle)
+        m_Abort(false)
         {
         }
 		~PrivateThread(){}
 
 		void Abort(bool abort = true){ m_Abort = abort; }
-		State GetState(){ return m_State; }
 
 		virtual ExitCode Entry()
         {
@@ -47,26 +47,38 @@ class PrivateThread : public wxThread
                 // this is our main iteration:
                 // if we have a task assigned, launch it
                 // else wait again for signal...
-                m_State = Busy;
+                bool doneWork = false;
                 cbTaskElement elem;
                 m_pPool->GetNextElement(elem);
                 if (elem.task)
+                {
+                    // increment the "busy" counter
+                    s_CounterCriticalSection.Enter();
+                    ++s_Counter;
+                    s_CounterCriticalSection.Leave();
+
                     elem.task->Execute();
+                    doneWork = true;
+
+                    // decrement the "busy" counter
+                    s_CounterCriticalSection.Enter();
+                    --s_Counter;
+                    s_CounterCriticalSection.Leave();
+                }
                 if (elem.autoDelete)
                     delete elem.task;
-                m_State = Idle;
 
-                // tell the pool we 're done
-                CodeBlocksEvent evt(wxEVT_COMMAND_MENU_SELECTED, idThreadMsg);
-                evt.SetClientData(elem.autoDelete ? 0 : elem.task);
-                wxPostEvent(m_pPool, evt);
+                if (doneWork)
+                {
+                    // tell the pool we 're done
+                    m_pPool->OnThreadTaskDone(this);
+                }
             }
             return 0;
         }
 
         cbThreadPool* m_pPool;
 		bool m_Abort;
-		State m_State;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -74,14 +86,11 @@ class PrivateThread : public wxThread
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-BEGIN_EVENT_TABLE(cbThreadPool, wxEvtHandler)
-    EVT_MENU(idThreadMsg, cbThreadPool::OnThreadTaskDone)
-END_EVENT_TABLE()
-
 cbThreadPool::cbThreadPool(wxEvtHandler* owner, int id, int concurrentThreads)
     : m_pOwner(owner),
     m_ID(id),
-    m_Done(true)
+    m_Done(true),
+    m_Batching(false)
 {
     SetConcurrentThreads(concurrentThreads);
 }
@@ -108,27 +117,21 @@ void cbThreadPool::SetConcurrentThreads(int concurrentThreads)
     AllocThreads();
 }
 
-void cbThreadPool::OnThreadTaskDone(wxCommandEvent& event)
+// called by PrivateThread when it's done running a task
+void cbThreadPool::OnThreadTaskDone(PrivateThread* thread)
 {
     s_CriticalSection.Enter();
 
     // notify the owner that the task has ended
     CodeBlocksEvent evt(cbEVT_THREADTASK_ENDED, m_ID);
-    evt.SetClientData(event.GetClientData());
     wxPostEvent(m_pOwner, evt);
 
     if (m_TaskQueue.IsEmpty())
     {
-        // check running threads too
-        bool reallyDone = true;
-        for (int i = 0; i < (int)m_Threads.GetCount(); ++i)
-        {
-            if (m_Threads[i]->GetState() == PrivateThread::Busy)
-            {
-                reallyDone = false;
-                break;
-            }
-        }
+        // check no running threads are busy
+        s_CounterCriticalSection.Enter();
+        bool reallyDone = s_Counter == 0;
+        s_CounterCriticalSection.Leave();
 
         if (reallyDone)
         {
@@ -136,11 +139,25 @@ void cbThreadPool::OnThreadTaskDone(wxCommandEvent& event)
 
             // notify the owner that all tasks are done
             CodeBlocksEvent evt(cbEVT_THREADTASK_ALLDONE, m_ID);
-            evt.SetClientData(0);
             wxPostEvent(m_pOwner, evt);
         }
     }
     s_CriticalSection.Leave();
+
+    // make sure any waiting threads "wake-up"
+    s_Semaphore.Post();
+}
+
+void cbThreadPool::BatchBegin()
+{
+    m_Batching = true;
+}
+
+void cbThreadPool::BatchEnd()
+{
+    m_Batching = false;
+    // launch the thread (if there's room in the pool)
+    s_Semaphore.Post();
 }
 
 bool cbThreadPool::AddTask(cbThreadPoolTask* task, bool autoDelete)
@@ -153,8 +170,11 @@ bool cbThreadPool::AddTask(cbThreadPoolTask* task, bool autoDelete)
     m_Done = false;
     s_CriticalSection.Leave();
 
-    // launch the thread (if there's room in the pool)
-    s_Semaphore.Post();
+    if (!m_Batching)
+    {
+        // launch the thread (if there's room in the pool)
+        s_Semaphore.Post();
+    }
 
     return true;
 }

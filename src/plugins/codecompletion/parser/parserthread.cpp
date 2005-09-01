@@ -753,7 +753,12 @@ void ParserThread::HandleIncludes()
 		// setting all #includes as global
 		// it's amazing how many projects use #include "..." for global headers (MSVC mainly - booh)
 		event.SetInt(1);//isGlobal);
-		wxPostEvent(m_pParent, event);
+//		wxPostEvent(m_pParent, event);
+
+        // since we 'll be calling directly the parser's method, let's make it thread-safe
+		static wxMutex lock;
+		wxMutexLocker l(lock);
+		m_pParent->ProcessEvent(event);
 	}
 }
 

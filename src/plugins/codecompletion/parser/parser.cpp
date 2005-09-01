@@ -653,6 +653,14 @@ bool Parser::ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBl
 	return Parse(buffer, isLocal, opts);
 }
 
+void Parser::BatchParse(const wxArrayString& filenames)
+{
+    m_Pool.BatchBegin();
+    for (unsigned int i = 0; i < filenames.GetCount(); ++i)
+        Parse(filenames[i]);
+    m_Pool.BatchEnd();
+}
+
 bool Parser::Parse(const wxString& filename, bool isLocal)
 {
 	ParserThreadOptions opts;

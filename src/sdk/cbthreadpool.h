@@ -41,12 +41,14 @@ WX_DEFINE_ARRAY(PrivateThread*, cbThreadsArray);
 
 /// The main thread pool object.
 /// If you set concurrent threads to -1, it will use the number of CPUs present ;)
-class DLLIMPORT cbThreadPool : public wxEvtHandler
+class DLLIMPORT cbThreadPool
 {
     public:
         cbThreadPool(wxEvtHandler* owner, int id = -1, int concurrentThreads = -1);
         virtual ~cbThreadPool();
 
+        virtual void BatchBegin(); ///< When adding a task, it will not start until calling BatchEnd()
+        virtual void BatchEnd();
         virtual bool AddTask(cbThreadPoolTask* task, bool autoDelete = true);
         virtual void AbortAllTasks();
         virtual bool Done(){ return m_Done; }
@@ -57,7 +59,7 @@ class DLLIMPORT cbThreadPool : public wxEvtHandler
         virtual void ClearTaskQueue();
         virtual void AllocThreads();
         virtual void FreeThreads();
-        virtual void OnThreadTaskDone(wxCommandEvent& event);
+        virtual void OnThreadTaskDone(PrivateThread* thread);
 
         wxEvtHandler* m_pOwner;
         int m_ID;
@@ -66,8 +68,7 @@ class DLLIMPORT cbThreadPool : public wxEvtHandler
         int m_ConcurrentThreads;
         int m_MaxThreads;
         bool m_Done;
-
-        DECLARE_EVENT_TABLE();
+        bool m_Batching;
 };
 
 #endif // CBTHREADPOOL_H
