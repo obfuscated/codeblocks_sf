@@ -77,7 +77,7 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
 	XRCCTRL(*this, "chkCustomMakefile", wxCheckBox)->SetValue(m_Project->IsMakefileCustom());
 
     FillBuildTargets();
-	
+
 	PluginsArray plugins = Manager::Get()->GetPluginManager()->GetCompilerOffers();
 	if (plugins.GetCount())
 		m_pCompiler = (cbCompilerPlugin*)plugins[0];
@@ -103,9 +103,11 @@ void ProjectOptionsDlg::FillBuildTargets()
 void ProjectOptionsDlg::DoTargetChange()
 {
     DoBeforeTargetChange();
-    
+
     wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
 
+    if (lstTargets->GetSelection() == -1)
+        lstTargets->SetSelection(0);
 	ProjectBuildTarget* target = m_Project->GetBuildTarget(lstTargets->GetSelection());
 	if (!target)
 		return;
@@ -160,7 +162,7 @@ void ProjectOptionsDlg::DoTargetChange()
                 browseO->Enable(true);
                 browseD->Enable(true);
                 break;
-                
+
             default: // for commands-only targets
                 txt->SetValue(_T(""));
                 txt->Enable(false);
@@ -202,7 +204,7 @@ void ProjectOptionsDlg::DoBeforeTargetChange(bool force)
     // if no previously selected target, exit
     if (m_Current_Sel == -1)
         return;
-        
+
     if (force || lstTargets->GetSelection() != m_Current_Sel)
     {
         // selected another build target
@@ -223,7 +225,7 @@ void ProjectOptionsDlg::DoBeforeTargetChange(bool force)
 //		fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
 //		fname.MakeRelativeTo(m_Project->GetBasePath());
 		target->SetOutputFilename(fname.GetFullPath());
-		
+
 		fname.Assign(XRCCTRL(*this, "txtWorkingDir", wxTextCtrl)->GetValue());
 //		fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
 //		fname.MakeRelativeTo(m_Project->GetBasePath());
@@ -233,7 +235,7 @@ void ProjectOptionsDlg::DoBeforeTargetChange(bool force)
 //		fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
 //		fname.MakeRelativeTo(m_Project->GetBasePath());
 		target->SetObjectOutput(fname.GetFullPath());
-		
+
 		fname.Assign(XRCCTRL(*this, "txtDepsDir", wxTextCtrl)->GetValue());
 //		fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
 //		fname.MakeRelativeTo(m_Project->GetBasePath());
@@ -247,7 +249,7 @@ void ProjectOptionsDlg::DoBeforeTargetChange(bool force)
 			ProjectFile* pf = m_Project->GetFile(i);
 			if (!pf)
 				break;
-				
+
 			if (list->IsChecked(i))
 				pf->AddBuildTarget(target->GetTitle());
 			else
@@ -363,7 +365,7 @@ void ProjectOptionsDlg::OnTargetBuildOptionsClick(wxCommandEvent& event)
 	{
 		wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
 		int targetIdx = lstTargets->GetSelection();
-		
+
 		ProjectBuildTarget* target = m_Project->GetBuildTarget(targetIdx);
 		if (target)
 			m_pCompiler->Configure(m_Project, target);
@@ -383,7 +385,7 @@ void ProjectOptionsDlg::OnAddBuildTargetClick(wxCommandEvent& event)
                                 wxOK | wxCENTRE | wxICON_ERROR);
         return;
     }
-    
+
     ProjectBuildTarget* target = m_Project->AddBuildTarget(targetName);
     if (!target)
     {
@@ -392,7 +394,7 @@ void ProjectOptionsDlg::OnAddBuildTargetClick(wxCommandEvent& event)
                                 wxOK | wxCENTRE | wxICON_ERROR);
         return;
     }
-    
+
     // add target to targets combo
     wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
     lstTargets->Append(targetName);
@@ -404,7 +406,7 @@ void ProjectOptionsDlg::OnEditBuildTargetClick(wxCommandEvent& event)
 {
     wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
     int targetIdx = lstTargets->GetSelection();
-    
+
     ProjectBuildTarget* target = m_Project->GetBuildTarget(targetIdx);
     if (!target)
     {
@@ -413,7 +415,7 @@ void ProjectOptionsDlg::OnEditBuildTargetClick(wxCommandEvent& event)
                                 wxOK | wxCENTRE | wxICON_ERROR);
         return;
     }
-    
+
     wxString oldTargetName = target->GetTitle();
     wxString newTargetName = wxGetTextFromUser(_("Change the build target name:"),
                                                _("Rename build target"),
@@ -469,7 +471,7 @@ void ProjectOptionsDlg::OnBrowseDirClick(wxCommandEvent& event)
         targettext = XRCCTRL(*this, "txtDepsDir", wxTextCtrl);
     else
         return;
-    
+
     wxFileName fname(targettext->GetValue() + wxFileName::GetPathSeparator());
     fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
 
@@ -558,7 +560,7 @@ void ProjectOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
 
 void ProjectOptionsDlg::OnOK(wxCommandEvent& event)
 {
-	
+
 	m_Project->SetTitle(XRCCTRL(*this, "txtProjectName", wxTextCtrl)->GetValue());
 	m_Project->RenameInTree(m_Project->GetTitle());
 	m_Project->SetMakefile(XRCCTRL(*this, "txtProjectMakefile", wxTextCtrl)->GetValue());
@@ -570,7 +572,7 @@ void ProjectOptionsDlg::OnOK(wxCommandEvent& event)
         m_Current_Sel = 0; // force update of global options
     DoBeforeTargetChange(true);
 #endif
-    
+
     EndModal(wxID_OK);
 }
 
