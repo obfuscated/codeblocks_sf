@@ -68,8 +68,7 @@ wxsWindow::~wxsWindow()
  */
 void wxsWindow::MyFinalUpdatePreview(wxWindow* Preview)
 {
-    dynamic_cast<wxsWindowPreview*>
-        (Preview) -> UpdatePreview();
+    ((wxsWindowPreview*)Preview) -> UpdatePreview();
 }
 
 /** This function should create preview window for widget */

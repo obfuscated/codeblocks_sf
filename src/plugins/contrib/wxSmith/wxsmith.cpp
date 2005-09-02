@@ -46,7 +46,7 @@ class wxsResourceTree: public wxTreeCtrl
         
         void OnSelectResource(wxTreeEvent& event)
         {
-            wxsResourceTreeData* Data = dynamic_cast<wxsResourceTreeData*> (GetItemData(event.GetItem()));
+            wxsResourceTreeData* Data = ((wxsResourceTreeData*)GetItemData(event.GetItem()));
             if ( Data )
             {
                 switch ( Data->Type )

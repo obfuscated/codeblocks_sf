@@ -135,5 +135,5 @@ wxWindow* wxsDefSizer::MyCreatePreview(wxWindow* Parent)
 
 void wxsDefSizer::MyFinalUpdatePreview(wxWindow* Window)
 {
-    dynamic_cast<wxsDefSizerPreview*> (Window) -> UpdatePreview();
+    ((wxsDefSizerPreview*)Window) -> UpdatePreview();
 }

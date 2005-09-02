@@ -89,15 +89,15 @@ wxsWindowRes::~wxsWindowRes()
     switch ( Type )
     {
     	case Dialog:
-            GetProject()->DeleteDialog(dynamic_cast<wxsDialogRes*>(this));
+            GetProject()->DeleteDialog((wxsDialogRes*)this);
             break;
             
         case Frame:
-            GetProject()->DeleteFrame(dynamic_cast<wxsFrameRes*>(this));
+            GetProject()->DeleteFrame((wxsFrameRes*)this);
             break;
             
         case Panel:
-            GetProject()->DeletePanel(dynamic_cast<wxsPanelRes*>(this));
+            GetProject()->DeletePanel((wxsPanelRes*)this);
             break;
             
         default:;
