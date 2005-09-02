@@ -37,6 +37,7 @@ Configurations ConfigManager::s_Configurations;
 
 void ConfigManager::Init(wxConfigBase* config)
 {
+    config->SetExpandEnvVars(false);
 	ConfigBaseProxy::Set( config );
 //    if (!g_Config)
 //        g_Config = new wxConfig(appName, vendorName);
@@ -120,11 +121,11 @@ static void ExportGroup(wxConfigBase* conf, wxConfigBase* file, const wxString& 
         if (group != _T("*"))
         {
             wxString path = (groupName != _T("/") ? groupName : _T("")) + _T("/") + group;
-    
+
             conf->SetPath(path);
             file->SetPath(path);
             ExportGroup(conf, file, path);
-    
+
             conf->SetPath(groupName);
             file->SetPath(groupName);
         }
