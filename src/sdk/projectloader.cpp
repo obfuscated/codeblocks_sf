@@ -539,7 +539,7 @@ void ProjectLoader::DoEnvironment(TiXmlElement* parentNode, CompileOptionsBase* 
 
 void ProjectLoader::DoUnits(TiXmlElement* parentNode)
 {
-    Manager::Get()->GetMessageManager()->DebugLog(_U("Generating project tree..."));
+    Manager::Get()->GetMessageManager()->DebugLog(_U("Loading project files..."));
     TiXmlElement* unit = parentNode->FirstChildElement("Unit");
     while (unit)
     {
@@ -548,7 +548,7 @@ void ProjectLoader::DoUnits(TiXmlElement* parentNode)
         {
             ProjectFile* file = m_pProject->AddFile(-1, filename);
             if (!file)
-                Manager::Get()->GetMessageManager()->DebugLog(_("Can't add file '%s'"), filename.c_str());
+                Manager::Get()->GetMessageManager()->DebugLog(_("Can't load file '%s'"), filename.c_str());
             else
                 DoUnitOptions(unit, file);
         }

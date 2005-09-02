@@ -565,12 +565,14 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 
     f->compile = localCompile;
     f->link = localLink;
-    fname.Assign(UnixFilename(filename));
+    wxString fullFilename = UnixFilename(filename);
+    fname.Assign(fullFilename);
     if(!m_CurrentlyLoading || m_BasePath.IsEmpty())
         m_BasePath = GetBasePath();
     fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_BasePath);
+    fullFilename = fname.GetFullPath();
 
-    fname.Assign(fname.GetFullPath());
+    fname.Assign(fullFilename);
     f->file.Assign(fname);
 	//Manager::Get()->GetMessageManager()->Log(_T("Adding %s"), f->file.GetFullPath().c_str());
     fname.MakeRelativeTo(m_BasePath);
@@ -579,7 +581,9 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     m_Files.Append(f);
     if (!m_CurrentlyLoading)
     {
-        CalculateCommonTopLevelPath();
+        // check if we really need to recalculate the common top-level path for the project
+        if (!fullFilename.StartsWith(m_CommonTopLevelPath))
+            CalculateCommonTopLevelPath();
     }
     SetModified(true);
     m_ProjectFilesMap[UnixFilename(f->relativeFilename)] = f; // add to hashmap
