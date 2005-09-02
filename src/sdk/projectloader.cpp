@@ -880,7 +880,7 @@ int ProjectLoader::GetValidCompilerIndex(int proposal, const wxString& scope)
     }
 
     wxString msg;
-    msg.Printf(_("The specified compiler does not exist.\nPlease select the compiler to use for the %s:"), scope.mb_str());
+    msg.Printf(_("The specified compiler does not exist.\nPlease select the compiler to use for the %s:"), scope.c_str());
     proposal = wxGetSingleChoiceIndex(msg, _("Select compiler"), compilers);
 
     if (proposal == -1)
