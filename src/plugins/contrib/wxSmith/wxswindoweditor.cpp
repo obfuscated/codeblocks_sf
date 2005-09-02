@@ -17,13 +17,13 @@ wxsWindowEditor::wxsWindowEditor(wxWindow* parent, const wxString& title,wxsReso
 
     Scroll = new wxScrolledWindow(this);
     Scroll->SetScrollRate(4,4);
-    
+
     Sizer->Add(Scroll,1,wxGROW);
     Scroll->SetScrollRate(4,4);
-    
+
     SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
     Scroll->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
-    
+
     SetSizer(Sizer);
 
     DragWnd = new wxsDragWindow(Scroll,NULL,Scroll->GetSize());
@@ -39,7 +39,7 @@ static void WidgetRefreshReq(wxWindow* Wnd)
 {
     if ( !Wnd ) return;
     Wnd->Refresh(true);
-    
+
     wxWindowList& List = Wnd->GetChildren();
     for ( wxWindowListNode* Node = List.GetFirst(); Node; Node = Node->GetNext() )
     {
@@ -51,15 +51,15 @@ static void WidgetRefreshReq(wxWindow* Wnd)
 void wxsWindowEditor::BuildPreview(wxsWidget* TopWidget)
 {
     Scroll->SetSizer(NULL);
-    Freeze();
-    
+//    Freeze();
+
     KillCurrentPreview();
-   
+
     // Creating new sizer
 
     wxWindow* TopPreviewWindow = TopWidget ? TopWidget->CreatePreview(Scroll,this) : NULL;
     CurrentWidget = TopWidget;
-    
+
     if ( TopPreviewWindow )
     {
         wxSizer* NewSizer = new wxGridSizer(1);
@@ -73,11 +73,12 @@ void wxsWindowEditor::BuildPreview(wxsWidget* TopWidget)
         wxSize Drag(Virtual.GetWidth() > Real.GetWidth() ? Virtual.GetWidth() : Real.GetWidth(),
                     Virtual.GetHeight() > Real.GetHeight() ? Virtual.GetHeight() : Real.GetHeight());
         DragWnd->SetSize(Drag);
+        DragWnd->NotifySizeChange(Drag);
         DragWnd->SetWidget(TopWidget);
         DragWnd->Show();
     }
-    
-    Thaw();
+
+  //  Thaw();
 
     #if !wxCHECK_VERSION(2,6,0)
         WidgetRefreshReq(this);
@@ -119,7 +120,7 @@ void wxsWindowEditor::OnSelectWidget(wxsEvent& event)
 void wxsWindowEditor::PreviewReshaped()
 {
     SetSizer(NULL);
-    
+
     if ( CurrentWidget && CurrentWidget->GetPreview() )
     {
         wxSizer* NewSizer = new wxGridSizer(1);

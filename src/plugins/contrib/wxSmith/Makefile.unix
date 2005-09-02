@@ -7,17 +7,11 @@
 # Compiler used:    GNU GCC Compiler
 
 ### Variables used in this Makefile
-LIB_WXSTC=wx_gtk2u_stc-2.4
-LIB_WXXRC=wx_gtk2u_xrc-2.4
-LIB_WXSTC=wx_gtk2u_stc-2.4
-LIB_WXXRC=wx_gtk2u_xrc-2.4
 PropGrid_CC=gcc
 PropGrid_CPP=g++
 PropGrid_LD=g++
 PropGrid_LIB=ar
 PropGrid_RESCOMP=
-LIB_WXSTC=wx_gtk2u_stc-2.4
-LIB_WXXRC=wx_gtk2u_xrc-2.4
 wxSmith_CC=gcc
 wxSmith_CPP=g++
 wxSmith_LD=g++
@@ -26,7 +20,7 @@ wxSmith_RESCOMP=
 
 ### Compiler/linker options
 PropGrid_GLOBAL_CFLAGS= -DGTK_NO_CHECK_CASTS -D__WXGTK__ -D_FILE_OFFSET_BITS=64 -D_LARGE_FILES -D_LARGEFILE_SOURCE=1
-PropGrid_PROJECT_CFLAGS= -Wall -g `wx-config --cflags` -DBUILDING_PLUGIN
+PropGrid_PROJECT_CFLAGS= -Wall -g -pipe -fno-rtti -fmessage-length=0 `wx-config --cflags` -DBUILDING_PLUGIN
 PropGrid_GLOBAL_LDFLAGS=
 PropGrid_PROJECT_LDFLAGS=
 PropGrid_GLOBAL_INCS= -I/usr/include
@@ -36,7 +30,7 @@ PropGrid_PROJECT_LIBDIRS= -L../../../devel -Lpropgrid
 PropGrid_GLOBAL_LIBS=
 PropGrid_PROJECT_LIBS=
 wxSmith_GLOBAL_CFLAGS= -DGTK_NO_CHECK_CASTS -D__WXGTK__ -D_FILE_OFFSET_BITS=64 -D_LARGE_FILES -D_LARGEFILE_SOURCE=1
-wxSmith_PROJECT_CFLAGS= -Wall -g `wx-config --cflags` -DBUILDING_PLUGIN
+wxSmith_PROJECT_CFLAGS= -Wall -g -pipe -fno-rtti -fmessage-length=0 `wx-config --cflags` -DBUILDING_PLUGIN
 wxSmith_GLOBAL_LDFLAGS=
 wxSmith_PROJECT_LDFLAGS=
 wxSmith_GLOBAL_INCS= -I/usr/include

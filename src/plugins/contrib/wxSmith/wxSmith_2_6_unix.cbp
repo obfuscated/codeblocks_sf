@@ -42,6 +42,9 @@
 		<Compiler>
 			<Add option="-Wall"/>
 			<Add option="-g"/>
+			<Add option="-pipe"/>
+			<Add option="-fno-rtti"/>
+			<Add option="-fmessage-length=0"/>
 			<Add option="`wx-config --cflags`"/>
 			<Add option="-DBUILDING_PLUGIN"/>
 			<Add directory="../../../sdk"/>
