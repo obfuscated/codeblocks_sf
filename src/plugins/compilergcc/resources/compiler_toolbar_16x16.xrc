@@ -3,8 +3,8 @@
   <object class="wxToolBarAddOn" name="compiler_toolbar_16x16">
     <object class="separator" />
     <object class="tool" name="idCompilerMenuCompile">
-      <tooltip>Compile</tooltip>
-      <longhelp>Compile the active project</longhelp>
+      <tooltip>Build</tooltip>
+      <longhelp>Build the active project</longhelp>
       <bitmap>images/16x16/compile.png</bitmap>
     </object>
     <object class="tool" name="idCompilerMenuRun">
@@ -13,13 +13,13 @@
       <bitmap>images/16x16/run.png</bitmap>
     </object>
     <object class="tool" name="idCompilerMenuCompileAndRun">
-      <tooltip>Compile and run</tooltip>
-      <longhelp>Compile and run the active project</longhelp>
+      <tooltip>Build and run</tooltip>
+      <longhelp>Build and run the active project</longhelp>
       <bitmap>images/16x16/compilerun.png</bitmap>
     </object>
     <object class="tool" name="idCompilerMenuRebuild">
       <tooltip>Rebuild</tooltip>
-      <longhelp>Recompile all modules in the active project</longhelp>
+      <longhelp>Rebuild all modules in the active project</longhelp>
       <bitmap>images/16x16/rebuild.png</bitmap>
     </object>
     <object class="tool" name="idCompilerMenuKillProcess">

@@ -352,7 +352,7 @@ void CompilerGCC::BuildMenu(wxMenuBar* menuBar)
 		if (projMenuPos != wxNOT_FOUND)
 			finalPos = projMenuPos + 1;
 	}
-    menuBar->Insert(finalPos, m_Menu, _("&Compile"));
+    menuBar->Insert(finalPos, m_Menu, _("&Build"));
 
     // now add some entries in Project menu
 	projMenuPos = menuBar->FindMenu(_("&Project"));
@@ -393,7 +393,7 @@ void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxS
     if (arg.IsEmpty())
     {
         // popup menu in empty space in ProjectManager
-        menu->Append(idMenuCompileAll, _("Compile all projects"));
+        menu->Append(idMenuCompileAll, _("Build all projects"));
         menu->Append(idMenuRebuildAll, _("Rebuild all projects"));
     }
     else
@@ -418,15 +418,15 @@ void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxS
         {
             // popup menu on a project
             menu->AppendSeparator();
-            menu->Append(idMenuCompileFromProjectManager, _("&Compile\tCtrl-F9"));
-            menu->Append(idMenuRebuildFromProjectManager, _("Re&build\tCtrl-F11"));
-            menu->Append(idMenuCleanFromProjectManager, _("C&lean"));
-            menu->Append(idMenuDistCleanFromProjectManager, _("Di&st clean"));
+            menu->Append(idMenuCompileFromProjectManager, _("Build\tCtrl-F9"));
+            menu->Append(idMenuRebuildFromProjectManager, _("Rebuild\tCtrl-F11"));
+            menu->Append(idMenuCleanFromProjectManager, _("Clean"));
+            menu->Append(idMenuDistCleanFromProjectManager, _("Dist-clean"));
             wxMenu* subMenu = new wxMenu();
-            subMenu->Append(idMenuCompileTargetFromProjectManager, _("Compile"));
+            subMenu->Append(idMenuCompileTargetFromProjectManager, _("Build"));
             subMenu->Append(idMenuRebuildTargetFromProjectManager, _("Rebuild"));
             subMenu->Append(idMenuCleanTargetFromProjectManager, _("Clean"));
-            subMenu->Append(idMenuDistCleanTargetFromProjectManager, _("Dist clean"));
+            subMenu->Append(idMenuDistCleanTargetFromProjectManager, _("Dist-clean"));
             subMenu->AppendSeparator();
             subMenu->Append(idMenuTargetCompilerOptions, _("Build options"));
             menu->Append(idMenuTargetCompilerOptionsSub, _("Specific build target..."), subMenu);

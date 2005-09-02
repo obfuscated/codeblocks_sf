@@ -1,32 +1,89 @@
-<?xml version="1.0"?>
+<?xml version="1.0" ?>
 <resource>
-<object class="wxMenu" name="compiler_menu">
-    <object class="wxMenuItem" name="idCompilerMenuCompile"><label>&amp;Compile</label><accel>Ctrl-F9</accel><help>Compile current project</help></object>
-    <object class="wxMenuItem" name="idCompilerMenuCompileFile"><label>Compile current &amp;file</label><accel>Ctrl-Shift-F9</accel><help>Compile current file</help></object>
-    <object class="wxMenuItem" name="idCompilerMenuRun"><label>&amp;Run</label><accel>Ctrl-F10</accel><help>Run current project</help></object>
-    <object class="wxMenuItem" name="idCompilerMenuCompileAndRun"><label>Com&amp;pile &amp;&amp; run</label><accel>F9</accel><help>Compile and run current project</help></object>
-    <object class="wxMenuItem" name="idCompilerMenuRebuild"><label>Re&amp;build</label><accel>Ctrl-F11</accel><help>Rebuild current project</help></object>
-    <object class="separator"/>
-    <object class="wxMenuItem" name="idCompilerMenuClean"><label>C&amp;lean</label><help>Clean current project</help></object>
-    <object class="wxMenuItem" name="idCompilerMenuDistClean"><label>Di&amp;st clean</label><help>Clean current project (dependencies too)</help></object>
-    <object class="separator"/>
-    <object class="wxMenuItem" name="idCompilerMenuCompileAll"><label>Compile all pro&amp;jects</label><help>Compile all projects</help></object>
-    <object class="wxMenuItem" name="idCompilerMenuRebuildAll"><label>Reb&amp;uild all projects</label><help>Rebuild all projects</help></object>
-    <object class="separator"/>
-    <object class="wxMenuItem" name="idCompilerMenuKillProcess"><label>&amp;Abort</label><help>Abort the running build process</help></object>
-    <object class="separator"/>
-
-    <object class="wxMenu" name="idCompilerMenuErrors"><label>&amp;Errors</label>
-        <object class="wxMenuItem" name="idCompilerMenuPreviousError"><label>&amp;Previous error</label><accel>Alt-F1</accel><help>Go to previous compilation error</help></object>
-        <object class="wxMenuItem" name="idCompilerMenuNextError"><label>&amp;Next error</label><accel>Alt-F2</accel><help>Go to next compilation error</help></object>
-        <object class="separator"/>
-        <object class="wxMenuItem" name="idCompilerMenuClearErrors"><label>&amp;Clear all errors</label><help>Clear all compilation errors</help></object>
+  <object class="wxMenu" name="compiler_menu">
+    <object class="wxMenuItem" name="idCompilerMenuCompile">
+      <label>&amp;Build</label>
+      <accel>Ctrl-F9</accel>
+      <help>Build current project</help>
     </object>
-    <object class="wxMenu" name="idCompilerMenuSelectTarget"><label>Select target...</label></object>
+    <object class="wxMenuItem" name="idCompilerMenuCompileFile">
+      <label>Compile current &amp;file</label>
+      <accel>Ctrl-Shift-F9</accel>
+      <help>Compile current file</help>
+    </object>
+    <object class="wxMenuItem" name="idCompilerMenuRun">
+      <label>&amp;Run</label>
+      <accel>Ctrl-F10</accel>
+      <help>Run current project</help>
+    </object>
+    <object class="wxMenuItem" name="idCompilerMenuCompileAndRun">
+      <label>Bui&amp;ld &amp;&amp; run</label>
+      <accel>F9</accel>
+      <help>Build and run current project</help>
+    </object>
+    <object class="wxMenuItem" name="idCompilerMenuRebuild">
+      <label>Rebuil&amp;d</label>
+      <accel>Ctrl-F11</accel>
+      <help>Rebuild current project</help>
+    </object>
     <object class="separator"/>
-    <object class="wxMenuItem" name="idCompilerMenuCreateDist"><label>Create &amp;distribution</label><help>Create a source distribution package</help></object>
-    <object class="wxMenuItem" name="idCompilerMenuExportMakefile"><label>E&amp;xport Makefile</label><help>Export Makefile so that you can build the program from the command line</help></object>
+    <object class="wxMenuItem" name="idCompilerMenuClean">
+      <label>&amp;Clean</label>
+      <help>Clean current project</help>
+    </object>
+    <object class="wxMenuItem" name="idCompilerMenuDistClean">
+      <label>Di&amp;st-clean</label>
+      <help>Clean current project (dependencies too)</help>
+    </object>
     <object class="separator"/>
-    <object class="wxMenuItem" name="idCompilerMenuSettings"><label>Compiler &amp;Options</label><help>Global Compiler Options</help></object>
-</object>
+    <object class="wxMenuItem" name="idCompilerMenuCompileAll">
+      <label>Build &amp;workspace</label>
+      <help>Build all projects in workspace</help>
+    </object>
+    <object class="wxMenuItem" name="idCompilerMenuRebuildAll">
+      <label>Reb&amp;uild workspace</label>
+      <help>Rebuild all projects in workspace</help>
+    </object>
+    <object class="separator"/>
+    <object class="wxMenuItem" name="idCompilerMenuKillProcess">
+      <label>&amp;Abort</label>
+      <help>Abort the running build process</help>
+    </object>
+    <object class="separator"/>
+    <object class="wxMenu" name="idCompilerMenuErrors">
+      <label>&amp;Errors</label>
+      <object class="wxMenuItem" name="idCompilerMenuPreviousError">
+        <label>&amp;Previous error</label>
+        <accel>Alt-F1</accel>
+        <help>Go to previous compilation error</help>
+      </object>
+      <object class="wxMenuItem" name="idCompilerMenuNextError">
+        <label>&amp;Next error</label>
+        <accel>Alt-F2</accel>
+        <help>Go to next compilation error</help>
+      </object>
+      <object class="separator"/>
+      <object class="wxMenuItem" name="idCompilerMenuClearErrors">
+        <label>&amp;Clear all errors</label>
+        <help>Clear all compilation errors</help>
+      </object>
+    </object>
+    <object class="wxMenu" name="idCompilerMenuSelectTarget">
+      <label>Select target...</label>
+    </object>
+    <object class="separator"/>
+    <object class="wxMenuItem" name="idCompilerMenuCreateDist">
+      <label>Create distribution</label>
+      <help>Create a source distribution package</help>
+    </object>
+    <object class="wxMenuItem" name="idCompilerMenuExportMakefile">
+      <label>E&amp;xport Makefile</label>
+      <help>Export Makefile so that you can build the program from the command line</help>
+    </object>
+    <object class="separator"/>
+    <object class="wxMenuItem" name="idCompilerMenuSettings">
+      <label>Compiler &amp;options</label>
+      <help>Global Compiler Options</help>
+    </object>
+  </object>
 </resource>
