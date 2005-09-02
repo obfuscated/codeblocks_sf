@@ -593,6 +593,11 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
         // check if we really need to recalculate the common top-level path for the project
         if (!fullFilename.StartsWith(m_CommonTopLevelPath))
             CalculateCommonTopLevelPath();
+        else
+        {
+            // set f->relativeToCommonTopLevelPath
+            f->relativeToCommonTopLevelPath = fullFilename.Right(fullFilename.Length() - m_CommonTopLevelPath.Length());
+        }
     }
     SetModified(true);
     m_ProjectFilesMap[UnixFilename(f->relativeFilename)] = f; // add to hashmap
