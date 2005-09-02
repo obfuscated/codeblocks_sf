@@ -32,7 +32,7 @@ void CompilerMSVC::Reset()
 	m_Programs.LIB = _T("link.exe");
 	m_Programs.WINDRES = _T("rc.exe"); // platform SDK is needed for this
 	m_Programs.MAKE = _T("mingw32-make.exe");
-	
+
 	m_Switches.includeDirs = _T("/I");
 	m_Switches.libDirs = _T("/LIBPATH:");
 	m_Switches.linkLibs = _T("");
@@ -53,9 +53,9 @@ void CompilerMSVC::Reset()
 	m_Options.AddOption(_("Produce debugging symbols"),
 				_T("/Zi"),
 				_("Debugging"),
-				_T(""),
-				true, 
-				_T("/Og /O1 /O2 /Os /Ot /Ox"), 
+				_T("/DEBUG"),
+				true,
+				_T("/Og /O1 /O2 /Os /Ot /Ox"),
 				_("You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."));
 	m_Options.AddOption(_("Enable all compiler warnings"), _T("/Wall"), _("Warnings"));
 	m_Options.AddOption(_("Enable warnings level 1"), _T("/W1"), _("Warnings"));
@@ -125,11 +125,9 @@ AutoDetectResult CompilerMSVC::AutoDetectInstallationDir()
     wxString sep = wxFileName::GetPathSeparator();
 #ifdef __WXMSW__
     wxLogNull ln;
-    wxRegKey key; // defaults to HKCR
-    key.SetName(_T("HKEY_CURRENT_USER\\Environment"));
-    if (key.Open())
-        // found; read it
-        key.QueryValue(_T("VCToolkitInstallDir"), m_MasterPath);
+
+    // Read the VCToolkitInstallDir environment variable
+    wxGetEnv(_T("VCToolkitInstallDir"), &m_MasterPath);
 
     if (m_MasterPath.IsEmpty())
         // just a guess; the default installation dir
@@ -139,7 +137,7 @@ AutoDetectResult CompilerMSVC::AutoDetectInstallationDir()
     {
         AddIncludeDir(m_MasterPath + sep + _T("include"));
         AddLibDir(m_MasterPath + sep + _T("lib"));
-    
+
         // add include dirs for MS Platform SDK too
         wxLogNull no_log_here;
         wxRegKey key; // defaults to HKCR
@@ -157,7 +155,7 @@ AutoDetectResult CompilerMSVC::AutoDetectInstallationDir()
                 m_ExtraPaths.Add(dir + _T("bin"));
             }
         }
-        
+
         // add extra paths for "Debugging tools" too
         key.SetName(_T("HKEY_CURRENT_USER\\Software\\Microsoft\\DebuggingTools"));
         if (key.Open())
