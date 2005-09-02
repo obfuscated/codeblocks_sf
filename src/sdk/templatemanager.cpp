@@ -203,6 +203,15 @@ void TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
 
     wxFileName fname;
     fname.Assign(fdlg.GetPath());
+
+    // make sure the project file uses the correct extension
+    // we don't use wxFileName::SetExt() because if the user has added a dot
+    // in the filename, the part after it would be interpeted as extension
+    // (and it might not be)
+    // so we just append the correct extension
+    if (!fname.GetExt().Matches(CODEBLOCKS_EXT))
+        fname.Assign(fdlg.GetPath() + _T('.') + CODEBLOCKS_EXT);
+
     wxString path = fname.GetPath(wxPATH_GET_VOLUME);
     wxString filename = fname.GetFullPath();
     wxString sep = wxFileName::GetPathSeparator();
@@ -213,25 +222,6 @@ void TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
     cbProject* prj = Manager::Get()->GetProjectManager()->LoadProject(filename);
     if (prj)
     {
-//      if (prj->GetCompilerIndex() != CompilerFactory::GetDefaultCompilerIndex())
-//      {
-//    	if (wxMessageBox(_("This template project was built for a different compiler "
-//                               "than the one you 've set as default.\n"
-//                               "Do you want to try and convert it for use with your default "
-//                               "compiler?\n"
-//                               "(conversion might not be 100% accurate)"),
-//                           _("Question"),
-//                           wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxYES)
-//           {
-//               prj->SetCompilerIndex(CompilerFactory::GetDefaultCompilerIndex());
-//                for (int i = 0; i < prj->GetBuildTargetsCount(); ++i)
-//                {
-//                    ProjectBuildTarget* target = prj->GetBuildTarget(i);
-//                    target->SetCompilerIndex(CompilerFactory::GetDefaultCompilerIndex());
-//                }
-//            }
-//    	}
-
         if (!dlg.DoNotCreateFiles())
         {
             for (unsigned int i = 0; i < fileset.files.GetCount(); ++i)

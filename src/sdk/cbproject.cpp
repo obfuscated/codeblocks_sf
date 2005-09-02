@@ -379,7 +379,16 @@ bool cbProject::SaveAs()
         return false;
     m_Filename = dlg.GetPath();
     fname.Assign(m_Filename);
-    Manager::Get()->GetProjectManager()->GetTree()->SetItemText(m_ProjectNode, fname.GetFullName());
+
+    // make sure the project file uses the correct extension
+    // we don't use wxFileName::SetExt() because if the user has added a dot
+    // in the filename, the part after it would be interpeted as extension
+    // (and it might not be)
+    // so we just append the correct extension
+    if (!fname.GetExt().Matches(CODEBLOCKS_EXT))
+        fname.Assign(m_Filename + _T('.') + CODEBLOCKS_EXT);
+
+//    Manager::Get()->GetProjectManager()->GetTree()->SetItemText(m_ProjectNode, fname.GetFullName());
     if (!m_Loaded)
         AddDefaultBuildTarget();
     ProjectLoader loader(this);
