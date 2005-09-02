@@ -1,4 +1,5 @@
 #include "compilerMSVC.h"
+#include <wx/wx.h>
 #include <wx/log.h>
 #include <wx/intl.h>
 #include <wx/regex.h>
