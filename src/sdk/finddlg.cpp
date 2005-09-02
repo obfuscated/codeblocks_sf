@@ -79,9 +79,14 @@ FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection, b
 	XRCCTRL(*this, "chkMatchCase2", wxCheckBox)->SetValue(ConfigManager::Get()->Read(CONF_GROUP _T("/match_case2"), 0L));
 	XRCCTRL(*this, "chkRegEx2", wxCheckBox)->SetValue(ConfigManager::Get()->Read(CONF_GROUP _T("/regex2"), 0L));
 	XRCCTRL(*this, "rbScope2", wxRadioBox)->SetSelection(ConfigManager::Get()->Read(CONF_GROUP _T("/scope2"), 0L));
-	
+
 	if (!m_Complete)
+    {
         XRCCTRL(*this, "nbFind", wxNotebook)->DeletePage(0); // no active editor, so only find-in-files
+        XRCCTRL(*this, "cmbFind2", wxComboBox)->SetFocus();
+    }
+    else
+        XRCCTRL(*this, "cmbFind1", wxComboBox)->SetFocus();
 }
 
 FindDlg::~FindDlg()
@@ -118,7 +123,7 @@ FindDlg::~FindDlg()
 	ConfigManager::Get()->Write(CONF_GROUP _T("/start_word2"), XRCCTRL(*this, "chkStartWord2", wxCheckBox)->GetValue());
 	ConfigManager::Get()->Write(CONF_GROUP _T("/match_case2"), XRCCTRL(*this, "chkMatchCase2", wxCheckBox)->GetValue());
 	ConfigManager::Get()->Write(CONF_GROUP _T("/regex2"), XRCCTRL(*this, "chkRegEx2", wxCheckBox)->GetValue());
-	ConfigManager::Get()->Write(CONF_GROUP _T("/scope2"), XRCCTRL(*this, "rbScope2", wxRadioBox)->GetSelection());	
+	ConfigManager::Get()->Write(CONF_GROUP _T("/scope2"), XRCCTRL(*this, "rbScope2", wxRadioBox)->GetSelection());
 }
 
 wxString FindDlg::GetFindString()

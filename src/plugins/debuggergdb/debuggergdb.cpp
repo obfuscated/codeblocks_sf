@@ -110,18 +110,18 @@ BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
 	EVT_MENU(idMenuDisassemble, DebuggerGDB::OnDisassemble)
 	EVT_MENU(idMenuEditWatches, DebuggerGDB::OnEditWatches)
     EVT_MENU(idMenuDebuggerAddWatch, DebuggerGDB::OnAddWatch)
-	
+
 	EVT_EDITOR_BREAKPOINT_ADDED(DebuggerGDB::OnBreakpointAdded)
 	EVT_EDITOR_BREAKPOINT_DELETED(DebuggerGDB::OnBreakpointDeleted)
 	EVT_EDITOR_TOOLTIP(DebuggerGDB::OnValueTooltip)
-	
+
 	EVT_PIPEDPROCESS_STDOUT(idGDBProcess, DebuggerGDB::OnGDBOutput)
 	EVT_PIPEDPROCESS_STDERR(idGDBProcess, DebuggerGDB::OnGDBError)
 	EVT_PIPEDPROCESS_TERMINATED(idGDBProcess, DebuggerGDB::OnGDBTerminated)
-	
+
 	EVT_IDLE(DebuggerGDB::OnIdle)
 	EVT_TIMER(idTimerPollDebugger, DebuggerGDB::OnTimer)
-	
+
 	EVT_COMMAND(-1, cbCustom_WATCHES_CHANGED, DebuggerGDB::OnWatchesChanged)
 END_EVENT_TABLE()
 
@@ -159,7 +159,7 @@ DebuggerGDB::DebuggerGDB()
 	m_PluginInfo.thanksTo = _T("");
 	m_PluginInfo.license = LICENSE_GPL;
 	m_PluginInfo.hasConfigure = true;
-	
+
 	m_TimerPollDebugger.SetOwner(this, idTimerPollDebugger);
 
 	ConfigManager::AddConfiguration(m_PluginInfo.title, _T("/debugger_gdb"));
@@ -208,7 +208,7 @@ void DebuggerGDB::OnRelease(bool appShutDown)
 		delete m_pTree;
 		m_pTree = 0L;
 	}
-    
+
     //Close debug session when appShutDown
 	CmdStop();
 
@@ -228,11 +228,11 @@ int DebuggerGDB::Configure()
 {
 	DebuggerOptionsDlg dlg(Manager::Get()->GetAppWindow());
 	int ret = dlg.ShowModal();
-	
+
 	bool needsRestart = ConfigManager::Get()->Read(_T("debugger_gdb/debug_log"), (long int)0L) != m_HasDebugLog;
 	if (needsRestart)
         wxMessageBox(_("Code::Blocks needs to be restarted for the changes to take effect."), _("Information"), wxICON_INFORMATION);
-	
+
 	return ret;
 }
 
@@ -274,7 +274,7 @@ void DebuggerGDB::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxS
 	// Insert Run to Cursor
 	menu->Insert(1,idMenuRunToCursor, _("Run to cursor"));
 	menu->Insert(2,wxID_SEPARATOR, _T("-"));
-    
+
     if (!m_pProcess) return;
     // has to have a word under the caret...
     wxString w = GetEditorWordAtCaret();
@@ -333,7 +333,7 @@ void DebuggerGDB::DoWatches()
 void DebuggerGDB::SetBreakpoints()
 {
 	SendCommand(_T("delete")); // clear all breakpoints
-	
+
 	cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
 	if (prj)
 	{
@@ -354,13 +354,13 @@ void DebuggerGDB::SetBreakpoints()
                         SendCommand(cmd);
                     }
                     //GDB workaround
-                    //Use function name if this is C++ constructor/destructor						
+                    //Use function name if this is C++ constructor/destructor
 					else
 					{
 						cmd << _T("break ") << bp->func;
 						GetInfoFor(cmd);
 					}
-                    //end GDB workaround					
+                    //end GDB workaround
 				}
 				//SendCommand(cmd);
 			}
@@ -425,12 +425,21 @@ int DebuggerGDB::Debug()
         return 4;
 	}
 
+    // make sure it is compiled
 	PluginsArray plugins = Manager::Get()->GetPluginManager()->GetCompilerOffers();
 	if (plugins.GetCount())
 		m_pCompiler = (cbCompilerPlugin*)plugins[0];
 	if (m_pCompiler)
 	{
 		msgMan->AppendLog(m_PageIndex, _("Compiling: "));
+	    // is the compiler already running?
+	    if (m_pCompiler->IsRunning())
+        {
+            msgMan->Log(m_PageIndex, _("compiler in use..."));
+			msgMan->Log(m_PageIndex, _("Aborting debugging session"));
+			return -1;
+        }
+
 		m_pCompiler->Compile(target);
 		while (m_pCompiler->IsRunning())
 			wxYield();
@@ -462,7 +471,7 @@ int DebuggerGDB::Debug()
 	wxString cmd;
 	wxString sep = wxFileName::GetPathSeparator();
 	cmd << actualCompiler->GetMasterPath() << sep << _T("bin") << sep << cmdexe << _T(" -nw -annotate=2 -silent");
-	
+
 	wxLogNull ln; // we perform our own error handling and logging
     m_pProcess = new PipedProcess((void**)&m_pProcess, this, idGDBProcess, true, project->GetBasePath());
 	msgMan->AppendLog(m_PageIndex, _("Starting debugger: "));
@@ -500,7 +509,7 @@ int DebuggerGDB::Debug()
     }
 	else
 		msgMan->Log(m_PageIndex, _("done"));
-	
+
 	wxString out;
 	m_TimerPollDebugger.Start(100);
 
@@ -624,7 +633,7 @@ int DebuggerGDB::Debug()
 
 void DebuggerGDB::StripQuotes(wxString& str)
 {
-	if (str.GetChar(0) == _T('\"') && str.GetChar(str.Length() - 1) == _T('\"')) 
+	if (str.GetChar(0) == _T('\"') && str.GetChar(str.Length() - 1) == _T('\"'))
 			str = str.Mid(1, str.Length() - 2);
 }
 
@@ -648,7 +657,7 @@ void DebuggerGDB::ConvertToGDBDirectory(wxString& str, wxString base, bool relat
 {
     if (str.IsEmpty())
         return;
-        
+
 	ConvertToGDBFriendly(str);
 	ConvertToGDBFriendly(base);
 	StripQuotes(str);
@@ -662,7 +671,7 @@ void DebuggerGDB::ConvertToGDBDirectory(wxString& str, wxString base, bool relat
 			//If can, get 8.3 name for path (Windows only)
 			GetShortPathName(str.c_str(), buf, 255);
 			str = buf;
-		} 
+		}
 		else if(!base.IsEmpty() && str.GetChar(0) != _T('/'))
 		{
 			if(base.GetChar(base.Length()) == _T('/')) base = base.Mid(0, base.Length() - 2);
@@ -675,14 +684,14 @@ void DebuggerGDB::ConvertToGDBDirectory(wxString& str, wxString base, bool relat
 			GetShortPathName(base.c_str(), buf, 255);
 			str = buf;
 		}
-		
+
 		if(ColonLocation == -1 || base.IsEmpty())
 			relative = false;		//Can't do it
 	#else
 		if((str.GetChar(0) != _T('/') && str.GetChar(0) != _T('~')) || base.IsEmpty())
-			relative = false;	
+			relative = false;
 	#endif
-	
+
 	if(relative)
 	{
 		#ifdef __WXMSW__
@@ -694,14 +703,14 @@ void DebuggerGDB::ConvertToGDBDirectory(wxString& str, wxString base, bool relat
 			if(base.GetChar(0) == _T('/')) base = base.Mid(1, base.Length());
 			else if(base.GetChar(0) == _T('~')) base = base.Mid(2, base.Length());
 		#endif
-		
+
 		while(!base.IsEmpty() && !str.IsEmpty())
 		{
 			if(str.BeforeFirst(_T('/')) == base.BeforeFirst(_T('/')))
 			{
 				if(str.Find(_T('/')) == -1) str.Clear();
 				else str = str.AfterFirst(_T('/'));
-				
+
 				if(base.Find(_T('/')) == -1) base.Clear();
 				else base = base.AfterFirst(_T('/'));
 			}
@@ -849,21 +858,21 @@ void DebuggerGDB::CmdStep()
 bool DebuggerGDB::Validate(const wxString& line, const char cb)
 {
 	bool bResult = false;
-	
+
 	int bep = line.Find(cb)+1;
-	int scs = line.Find(_T('\''))+1; 
+	int scs = line.Find(_T('\''))+1;
 	int sce = line.Find(_T('\''),true)+1;
-	int dcs = line.Find(_T('"'))+1;  
+	int dcs = line.Find(_T('"'))+1;
 	int dce = line.Find(_T('"'),true)+1;
-	//No single and double quote	
+	//No single and double quote
 	if(!scs && !sce && !dcs && !dce) bResult = true;
 	//No single/double quote in pair
 	if(!(sce-scs) && !(dce-dcs)) bResult = true;
-	//Outside of single quote	
+	//Outside of single quote
 	if((sce-scs) && ((bep < scs)||(bep >sce))) bResult = true;
 	//Outside of double quote
 	if((dce-dcs) && ((bep < dcs)||(bep >dce))) bResult = true;
-	
+
 	return bResult;
 }
 
@@ -877,7 +886,7 @@ void DebuggerGDB::CmdStepOut()
 	cbStyledTextCtrl* stc = ed->GetControl();
 	int line = m_HaltAtLine;
 	lineBuf = stc->GetLine(line);
-	
+
 	unsigned int nLevel = 1;
 	while(nLevel){
 		 if ((lineBuf.Find(_T('{'))+1) && Validate(lineBuf, _T('{')) &&
@@ -899,7 +908,7 @@ void DebuggerGDB::CmdRunToCursor()
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 	if (!ed)
 		return;
-	
+
 	ProjectFile* pf = ed->GetProjectFile();
 	if (!pf)
 		return;
@@ -940,10 +949,10 @@ void DebuggerGDB::CmdStop()
             m_pProcess->CloseOutput();
 			wxKillError err = m_pProcess->Kill(m_Pid, wxSIGKILL);
 			if (err == wxKILL_OK){
-/*				
+/*
 				wxMessageBox(_("Debug session terminated!"),
 					_("Debug"), wxOK | wxICON_EXCLAMATION);
-*/					
+*/
 			}
 			m_ProgramIsStopped = true;
 		}
@@ -961,7 +970,7 @@ void DebuggerGDB::ParseOutput(const wxString& output)
 		// Is the program running?
 		if (buffer.Matches(_T("starting")))
 			m_ProgramIsStopped = false;
-		
+
 		// Is the program stopped?
 		else if (buffer.Matches(_T("stopped")))
 		{
@@ -1075,7 +1084,7 @@ void DebuggerGDB::ParseOutput(const wxString& output)
 				Manager::Get()->GetMessageManager()->Log(m_PageIndex, m_Variable);
 			m_Variable.Clear();
 		}*/
-		
+
 		// source d:/wx2.4/samples/exec/exec.cpp:753:22811:beg:0x403e39
 		else if (buffer.StartsWith(_T("source ")))
 		{
@@ -1315,7 +1324,7 @@ wxString DebuggerGDB::GetInfoFor(const wxString& dbgCmd)
 	SendCommand(dbgCmd);
 	wxString buf = GetNextOutputLine();
 	wxString output;
-	
+
 	// delay until gdb starts sending output
 	// (with 0.5 second timeout - approximately)
 	int i = 0;
@@ -1329,7 +1338,7 @@ wxString DebuggerGDB::GetInfoFor(const wxString& dbgCmd)
         #endif
 		i += 5;
 	}
-	
+
 	if (buf.IsEmpty())
 		m_pLog->AddLog(_("Timeout expired waiting for info..."));
 
@@ -1386,7 +1395,7 @@ wxString DebuggerGDB::GetInfoFor(const wxString& dbgCmd)
 				SendCommand(_T("1"));
 			}
 		}
-        //end GDB workaround		
+        //end GDB workaround
 		#if wxVERSION_NUMBER < 2500
             wxUsleep(5);
         #else
@@ -1460,7 +1469,7 @@ void DebuggerGDB::OnGDBTerminated(wxCommandEvent& event)
 
 	ClearActiveMarkFromAllEditors();
 	Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Debugger finished with status %d"), m_LastExitCode);
-	
+
 	if (m_NoDebugInfo)
 	{
         wxMessageBox(_("This project/target has no debugging info."
@@ -1479,7 +1488,7 @@ void DebuggerGDB::OnBreakpointAdded(CodeBlocksEvent& event)
 	if (ed)
 	{
 		Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Breakpoint added: file %s, line %d"), ed->GetFilename().c_str(), event.GetInt() + 1);
-/*		
+/*
 		ProjectFile* pf = ed->GetProjectFile();
 		if (!pf)
 			return;
@@ -1489,7 +1498,7 @@ void DebuggerGDB::OnBreakpointAdded(CodeBlocksEvent& event)
 		wxString cmd;
 		cmd << "break " << filename << ":" << event.GetInt() + 1;
 		SendCommand(cmd);
-*/		
+*/
 	}
 	else
 		Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("OnBreakpointAdded(): No editor defined!"));
@@ -1504,7 +1513,7 @@ void DebuggerGDB::OnBreakpointDeleted(CodeBlocksEvent& event)
 	if (ed)
 	{
 		Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Breakpoint deleted: file %s, line %d"), ed->GetFilename().c_str(), event.GetInt() + 1);
-/*		
+/*
 		ProjectFile* pf = ed->GetProjectFile();
 		if (!pf)
 			return;
@@ -1514,7 +1523,7 @@ void DebuggerGDB::OnBreakpointDeleted(CodeBlocksEvent& event)
 		wxString cmd;
 		cmd << "clear " << filename << ":" << event.GetInt() + 1;
 		SendCommand(cmd);
-*/		
+*/
 	}
 	else
 		Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("OnBreakpointDeleted(): No editor defined!"));
@@ -1549,7 +1558,7 @@ void DebuggerGDB::OnValueTooltip(CodeBlocksEvent& event)
 	}
 	else
 		token = ed->GetControl()->GetTextRange(start,end);
-	
+
 	if (!token.IsEmpty())
 	{
 		Manager::Get()->GetMessageManager()->AppendLog(m_PageIndex, _("Value of %s: "), token.c_str());

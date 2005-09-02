@@ -467,8 +467,7 @@ void CompilerGCC::SetupEnvironment()
     m_EnvironmentMsg.Clear();
 
 	wxString path;
-//	Manager::Get()->GetMessageManager()->DebugLog(_("Setting up compiler environment..."));
-	Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Setting up compiler environment..."));
+	Manager::Get()->GetMessageManager()->DebugLog(_("Setting up compiler environment..."));
 
     // reset PATH to original value
     if (!m_OriginalPath.IsEmpty())

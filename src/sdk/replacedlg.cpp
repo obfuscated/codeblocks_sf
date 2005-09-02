@@ -47,7 +47,7 @@ ReplaceDlg::ReplaceDlg(wxWindow* parent, const wxString& initial, bool hasSelect
 	// load last searches
 	FillComboWithLastValues(XRCCTRL(*this, "cmbFind", wxComboBox), CONF_GROUP _T("/last"));
 	FillComboWithLastValues(XRCCTRL(*this, "cmbReplace", wxComboBox), CONF_GROUP _T("/lastReplace"));
-	
+
 	// find options
 	XRCCTRL(*this, "cmbFind", wxComboBox)->SetValue(initial);
 	XRCCTRL(*this, "chkWholeWord", wxCheckBox)->SetValue(ConfigManager::Get()->Read(CONF_GROUP _T("/match_word"), 0L));
@@ -59,6 +59,8 @@ ReplaceDlg::ReplaceDlg(wxWindow* parent, const wxString& initial, bool hasSelect
 	XRCCTRL(*this, "rbOrigin", wxRadioBox)->SetSelection(ConfigManager::Get()->Read(CONF_GROUP _T("/origin"), 0L));
 	XRCCTRL(*this, "rbScope", wxRadioBox)->SetSelection(hasSelection);
 	XRCCTRL(*this, "rbScope", wxRadioBox)->Enable(hasSelection);
+
+	XRCCTRL(*this, "cmbFind", wxComboBox)->SetFocus();
 }
 
 ReplaceDlg::~ReplaceDlg()
@@ -66,7 +68,7 @@ ReplaceDlg::~ReplaceDlg()
 	// save last searches (up to 10)
 	SaveComboValues(XRCCTRL(*this, "cmbFind", wxComboBox), CONF_GROUP _T("/last"));
 	SaveComboValues(XRCCTRL(*this, "cmbReplace", wxComboBox), CONF_GROUP _T("/lastReplace"));
-	
+
 	// find options
 	ConfigManager::Get()->Write(CONF_GROUP _T("/match_word"), XRCCTRL(*this, "chkWholeWord", wxCheckBox)->GetValue());
 	ConfigManager::Get()->Write(CONF_GROUP _T("/start_word"), XRCCTRL(*this, "chkStartWord", wxCheckBox)->GetValue());

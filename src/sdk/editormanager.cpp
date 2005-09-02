@@ -1097,6 +1097,7 @@ int EditorManager::ShowFindDialog(bool replace)
     SANITY_CHECK(-1);
 
 	wxString wordAtCursor;
+	wxString phraseAtCursor;
 	bool hasSelection = false;
 	cbStyledTextCtrl* control = 0;
 
@@ -1106,28 +1107,27 @@ int EditorManager::ShowFindDialog(bool replace)
         control = ed->GetControl();
 
         hasSelection = control->GetSelectionStart() != control->GetSelectionEnd();
-        int wordStart = hasSelection
-                        ? control->GetSelectionStart()
-                        : control->WordStartPosition(control->GetCurrentPos(), true);
-        int wordEnd = hasSelection
-                        ? control->GetSelectionEnd()
-                        : control->WordEndPosition(control->GetCurrentPos(), true);
+        int wordStart = control->WordStartPosition(control->GetCurrentPos(), true);
+        int wordEnd = control->WordEndPosition(control->GetCurrentPos(), true);
         wordAtCursor = control->GetTextRange(wordStart, wordEnd);
+        phraseAtCursor = control->GetSelectedText();
         // if selected text is the last searched text, don't suggest "search in selection"
         if ((m_LastFindReplaceData &&
-            !control->GetSelectedText().IsEmpty() &&
-            control->GetSelectedText() == m_LastFindReplaceData->findText)
-            || control->GetSelectedText() == wordAtCursor)
+            !phraseAtCursor.IsEmpty() &&
+            phraseAtCursor == m_LastFindReplaceData->findText)
+            || phraseAtCursor == wordAtCursor)
         {
             hasSelection = false;
         }
+        if (phraseAtCursor.IsEmpty())
+            phraseAtCursor = wordAtCursor;
 	}
 
 	FindReplaceBase* dlg;
 	if (!replace)
-		dlg = new FindDlg(Manager::Get()->GetAppWindow(), wordAtCursor, hasSelection, !ed);
+		dlg = new FindDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection, !ed);
 	else
-		dlg = new ReplaceDlg(Manager::Get()->GetAppWindow(), wordAtCursor, hasSelection);
+		dlg = new ReplaceDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection);
 	if (dlg->ShowModal() == wxID_CANCEL)
 	{
 		delete dlg;
