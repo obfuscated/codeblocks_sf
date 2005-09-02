@@ -154,6 +154,8 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
         cflags.Replace(_T("$(") + target->GetTitle() + _T("_GLOBAL_CFLAGS)"), global_cflags);
         cflags.Replace(_T("$(") + target->GetTitle() + _T("_PROJECT_CFLAGS)"), prj_cflags);
     }
+    else if (!target && !pf) // probably single file compilation
+        cflags = global_cflags;
 
     wxString ldflags;
 	wxString global_ldflags;
@@ -166,6 +168,8 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
         ldflags.Replace(_T("$(") + target->GetTitle() + _T("_GLOBAL_LDFLAGS)"), global_ldflags);
         ldflags.Replace(_T("$(") + target->GetTitle() + _T("_PROJECT_LDFLAGS)"), prj_ldflags);
     }
+    else if (!target && !pf) // probably single file compilation
+        ldflags = global_ldflags;
 
     wxString ldadd;
 	wxString global_ldadd;
@@ -178,6 +182,8 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
         ldadd.Replace(_T("$(") + target->GetTitle() + _T("_GLOBAL_LIBS)"), global_ldadd);
         ldadd.Replace(_T("$(") + target->GetTitle() + _T("_PROJECT_LIBS)"), prj_ldadd);
     }
+    else if (!target && !pf) // probably single file compilation
+        ldadd = global_ldadd;
 
 	wxString global_res_incs;
 	wxString prj_res_incs;
@@ -198,6 +204,8 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
         incs.Replace(_T("$(") + target->GetTitle() + _T("_GLOBAL_INCS)"), global_incs);
         incs.Replace(_T("$(") + target->GetTitle() + _T("_PROJECT_INCS)"), prj_incs);
     }
+    else if (!target && !pf) // probably single file compilation
+        incs = global_incs;
 
     wxString libs;
 	wxString global_libs;
@@ -210,6 +218,8 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
         libs.Replace(_T("$(") + target->GetTitle() + _T("_GLOBAL_LIBDIRS)"), global_libs);
         libs.Replace(_T("$(") + target->GetTitle() + _T("_PROJECT_LIBDIRS)"), prj_libs);
     }
+    else if (!target && !pf) // probably single file compilation
+        libs = global_libs;
 
     wxString output;
     if (target)

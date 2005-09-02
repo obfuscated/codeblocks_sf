@@ -60,7 +60,7 @@ class CompilerGCC : public cbCompilerPlugin
 		virtual bool IsRunning(){ return m_Process; }
 		virtual int GetExitCode(){ return m_LastExitCode; }
 		virtual int Configure(cbProject* project, ProjectBuildTarget* target = 0L);
-		
+
 		void SwitchCompiler(int compilerIdx);
 		int GetCurrentCompilerIndex();
 
@@ -90,6 +90,7 @@ class CompilerGCC : public cbCompilerPlugin
         void OnConfig(wxCommandEvent& event);
     private:
 		void SetupEnvironment();
+		void SetEnvironmentForCompilerIndex(int idx, wxString& envPath);
 		void OnProjectActivated(CodeBlocksEvent& event);
 		/*void OnProjectPopupMenu(wxNotifyEvent& event);*/
 		void OnGCCOutput(CodeBlocksEvent& event);
@@ -127,7 +128,7 @@ class CompilerGCC : public cbCompilerPlugin
 		// programs
 		int m_CompilerIdx;
 		CompilerPrograms m_EmptyCompilerPrograms; // always empty; returned on invalid compiler index
-		
+
 		wxString m_EnvironmentMsg;
         int m_PageIndex;
 		int m_ListPageIndex;

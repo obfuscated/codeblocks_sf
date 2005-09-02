@@ -464,12 +464,11 @@ void CompilerGCC::SetupEnvironment()
     if (!CompilerFactory::CompilerIndexOK(m_CompilerIdx))
         return;
 
-    wxString sep = wxFileName::GetPathSeparator();
     m_EnvironmentMsg.Clear();
 
-	wxPathList pathList;
 	wxString path;
 //	Manager::Get()->GetMessageManager()->DebugLog(_("Setting up compiler environment..."));
+	Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Setting up compiler environment..."));
 
     // reset PATH to original value
     if (!m_OriginalPath.IsEmpty())
@@ -483,89 +482,21 @@ void CompilerGCC::SetupEnvironment()
 
         wxArrayInt compilers;
         if(m_Project)
-        for (int x = 0; x < m_Project->GetBuildTargetsCount(); ++x)
         {
-            ProjectBuildTarget* target = m_Project->GetBuildTarget(x);
-            int idx = target->GetCompilerIndex();
-
-            // one time per compiler
-            if (compilers.Index(idx) != wxNOT_FOUND || !CompilerFactory::CompilerIndexOK(idx))
-                continue;
-            compilers.Add(idx);
-            Compiler* compiler = CompilerFactory::Compilers[idx];
-
-            wxString masterPath = compiler->GetMasterPath();
-            while (masterPath.Last() == '\\' || masterPath.Last() == '/')
-                masterPath.RemoveLast();
-            wxString gcc = compiler->GetPrograms().C;
-            const wxArrayString& extraPaths = compiler->GetExtraPaths();
-
-            pathList.Add(masterPath + sep + _T("bin"));
-            for (unsigned int i = 0; i < extraPaths.GetCount(); ++i)
+            for (int x = 0; x < m_Project->GetBuildTargetsCount(); ++x)
             {
-                if (!extraPaths[i].IsEmpty())
-                    pathList.Add(extraPaths[i]);
-            }
-            pathList.AddEnvList(_T("PATH"));
-            wxString binPath = pathList.FindAbsoluteValidPath(gcc);
-            // it seems, under Win32, the above command doesn't search in paths with spaces...
-            // look directly for the file in question in masterPath
-            if (binPath.IsEmpty() || !pathList.Member(wxPathOnly(binPath)))
-            {
-                if (wxFileExists(masterPath + sep + _T("bin") + sep + gcc))
-                    binPath = masterPath + sep + _T("bin");
-                else if (wxFileExists(masterPath + sep + gcc))
-                    binPath = masterPath;
-                else
-                {
-                    for (unsigned int i = 0; i < extraPaths.GetCount(); ++i)
-                    {
-                        if (!extraPaths[i].IsEmpty())
-                        {
-                            if (wxFileExists(extraPaths[i] + sep + gcc))
-                            {
-                                binPath = extraPaths[i];
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
+                ProjectBuildTarget* target = m_Project->GetBuildTarget(x);
+                int idx = target->GetCompilerIndex();
 
-            if (binPath.IsEmpty() || !pathList.Member(wxPathOnly(binPath)))
-            {
-                m_EnvironmentMsg << _("Can't find compiler executable in your search path for ") << compiler->GetName() << _T('\n');
-                Manager::Get()->GetMessageManager()->DebugLog(_("Can't find compiler executable in your search path (%s)..."), compiler->GetName().c_str());
-            }
-            else
-            {
-                m_EnvironmentMsg.Clear();
-#ifdef __WXMSW__
-	#define PATH_SEP _T(";")
-#else
-	#define PATH_SEP _T(":")
-#endif
-                // add extra compiler paths in PATH
-                wxString oldpath = path;
-                path.Clear();
-                for (unsigned int i = 0; i < extraPaths.GetCount(); ++i)
-                {
-                    if (!extraPaths[i].IsEmpty())
-                    {
-                        path += extraPaths[i] + PATH_SEP;
-                    }
-                }
-                path = path + oldpath;
-
-                // add bin path to PATH env. var.
-                if (wxFileExists(masterPath + sep + _T("bin") + sep + gcc))
-                    path = masterPath + sep + _T("bin") + PATH_SEP + path;
-                else if (wxFileExists(masterPath + sep + gcc))
-                    path = masterPath + PATH_SEP + path;
-                wxSetEnv(_T("PATH"), path);
-#undef PATH_SEP
+                // one time per compiler
+                if (compilers.Index(idx) != wxNOT_FOUND || !CompilerFactory::CompilerIndexOK(idx))
+                    continue;
+                compilers.Add(idx);
+                SetEnvironmentForCompilerIndex(idx, path);
             }
         }
+        else
+            SetEnvironmentForCompilerIndex(CompilerFactory::GetDefaultCompilerIndex(), path);
 	}
 	else
 		m_EnvironmentMsg = _("Could not read the PATH environment variable!\n"
@@ -574,6 +505,88 @@ void CompilerGCC::SetupEnvironment()
 					"the way it was designed to...");
 //    wxGetEnv("PATH", &path);
 //    Manager::Get()->GetMessageManager()->Log(m_PageIndex, "PATH set to: %s", path.c_str());
+}
+
+void CompilerGCC::SetEnvironmentForCompilerIndex(int idx, wxString& envPath)
+{
+    if (!CompilerFactory::CompilerIndexOK(idx))
+        return;
+
+    Compiler* compiler = CompilerFactory::Compilers[idx];
+    wxString sep = wxFileName::GetPathSeparator();
+
+    wxString masterPath = compiler->GetMasterPath();
+    while (masterPath.Last() == '\\' || masterPath.Last() == '/')
+        masterPath.RemoveLast();
+    wxString gcc = compiler->GetPrograms().C;
+    const wxArrayString& extraPaths = compiler->GetExtraPaths();
+
+    wxPathList pathList;
+    pathList.Add(masterPath + sep + _T("bin"));
+    for (unsigned int i = 0; i < extraPaths.GetCount(); ++i)
+    {
+        if (!extraPaths[i].IsEmpty())
+            pathList.Add(extraPaths[i]);
+    }
+    pathList.AddEnvList(_T("PATH"));
+    wxString binPath = pathList.FindAbsoluteValidPath(gcc);
+    // it seems, under Win32, the above command doesn't search in paths with spaces...
+    // look directly for the file in question in masterPath
+    if (binPath.IsEmpty() || !pathList.Member(wxPathOnly(binPath)))
+    {
+        if (wxFileExists(masterPath + sep + _T("bin") + sep + gcc))
+            binPath = masterPath + sep + _T("bin");
+        else if (wxFileExists(masterPath + sep + gcc))
+            binPath = masterPath;
+        else
+        {
+            for (unsigned int i = 0; i < extraPaths.GetCount(); ++i)
+            {
+                if (!extraPaths[i].IsEmpty())
+                {
+                    if (wxFileExists(extraPaths[i] + sep + gcc))
+                    {
+                        binPath = extraPaths[i];
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    if (binPath.IsEmpty() || !pathList.Member(wxPathOnly(binPath)))
+    {
+        m_EnvironmentMsg << _("Can't find compiler executable in your search path for ") << compiler->GetName() << _T('\n');
+        Manager::Get()->GetMessageManager()->DebugLog(_("Can't find compiler executable in your search path (%s)..."), compiler->GetName().c_str());
+    }
+    else
+    {
+        m_EnvironmentMsg.Clear();
+#ifdef __WXMSW__
+#define PATH_SEP _T(";")
+#else
+#define PATH_SEP _T(":")
+#endif
+        // add extra compiler paths in PATH
+        wxString oldpath = envPath;
+        envPath.Clear();
+        for (unsigned int i = 0; i < extraPaths.GetCount(); ++i)
+        {
+            if (!extraPaths[i].IsEmpty())
+            {
+                envPath += extraPaths[i] + PATH_SEP;
+            }
+        }
+        envPath = envPath + oldpath;
+
+        // add bin path to PATH env. var.
+        if (wxFileExists(masterPath + sep + _T("bin") + sep + gcc))
+            envPath = masterPath + sep + _T("bin") + PATH_SEP + envPath;
+        else if (wxFileExists(masterPath + sep + gcc))
+            envPath = masterPath + PATH_SEP + envPath;
+        wxSetEnv(_T("PATH"), envPath);
+#undef PATH_SEP
+    }
 }
 
 void CompilerGCC::SaveOptions()
@@ -753,9 +766,8 @@ int CompilerGCC::DoRunQueue()
     m_Pid = wxExecute(cmd, flags, m_Process);
     if ( !m_Pid )
     {
-        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxWHITE, *wxRED));
-        msgMan->Log(m_PageIndex, _("Command execution failed..."));
-        msgMan->DebugLog(_("Execution of '%s' in '%s' failed."), m_Queue[m_QueueIndex].c_str(), wxGetCwd().c_str());
+        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxRED, *wxWHITE));
+        msgMan->Log(m_PageIndex, _("Execution of '%s' in '%s' failed."), m_Queue[m_QueueIndex].c_str(), wxGetCwd().c_str());
 		m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLACK, *wxWHITE));
         delete m_Process;
         m_Process = NULL;
