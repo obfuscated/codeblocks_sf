@@ -1,3 +1,6 @@
+#ifdef __WXMSW__
+// this compiler is valid only in windows
+
 #include "compilerBCC.h"
 #include <wx/intl.h>
 #include <wx/regex.h>
@@ -26,7 +29,7 @@ void CompilerBCC::Reset()
 	m_Programs.LIB = _T("tlib.exe");
 	m_Programs.WINDRES = _T("brcc32.exe"); // platform SDK is needed for this
 	m_Programs.MAKE = _T("mingw32-make.exe");
-	
+
 	m_Switches.includeDirs = _T("-I");
 	m_Switches.libDirs = _T("-L");
 	m_Switches.linkLibs = _T("");
@@ -93,3 +96,5 @@ AutoDetectResult CompilerBCC::AutoDetectInstallationDir()
 
     return wxFileExists(m_MasterPath + sep + _T("bin") + sep + m_Programs.C) ? adrDetected : adrGuessed;
 }
+
+#endif // __WXMSW__

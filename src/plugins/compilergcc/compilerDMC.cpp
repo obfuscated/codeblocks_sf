@@ -1,3 +1,6 @@
+#ifdef __WXMSW__
+// this compiler is valid only in windows
+
 #include "compilerDMC.h"
 #include <wx/log.h>
 #include <wx/intl.h>
@@ -32,7 +35,7 @@ void CompilerDMC::Reset()
 	m_Programs.LIB = _T("link.exe");
 	m_Programs.WINDRES = _T("rcc.exe");
 	m_Programs.MAKE = _T("mingw32-make.exe");
-	
+
 	m_Switches.includeDirs = _T("-I");
 	m_Switches.libDirs = _T("");
 	m_Switches.linkLibs = _T("");
@@ -54,8 +57,8 @@ void CompilerDMC::Reset()
 				_T("-g"),
 				_("Debugging"),
 				_T(""),
-				true, 
-				_T("-o -o+space"), 
+				true,
+				_T("-o -o+space"),
 				_("You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."));
 
     //
@@ -185,3 +188,5 @@ AutoDetectResult CompilerDMC::AutoDetectInstallationDir()
 
     return wxFileExists(m_MasterPath + sep + _T("bin") + sep + m_Programs.C) ? adrDetected : adrGuessed;
 }
+
+#endif // __WXMSW__

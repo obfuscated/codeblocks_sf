@@ -1,3 +1,6 @@
+#ifdef __WXMSW__
+// this compiler is valid only in windows
+
 #ifndef COMPILERDMC_H
 #define COMPILERDMC_H
 
@@ -18,3 +21,4 @@ class CompilerDMC : public Compiler
 
 #endif // COMPILERDMC_H
 
+#endif // __WXMSW__

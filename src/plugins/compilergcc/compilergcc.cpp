@@ -33,16 +33,20 @@
 #include <projectmanager.h>
 #include <editormanager.h>
 #include <customvars.h>
+#include <wx/xrc/xmlres.h>
 #include "makefilegenerator.h"
 #include "compileroptionsdlg.h"
-#include "compilerMINGW.h"
-#include "compilerMSVC.h"
-#include "compilerBCC.h"
-#include "compilerDMC.h"
-#include "compilerOW.h"
-#include "compilerSDCC.h"
 #include "directcommands.h"
-#include <wx/xrc/xmlres.h>
+
+#include "compilerMINGW.h"
+// TODO (mandrav#1#): Find out which compilers exist for linux and adapt this
+#ifdef __WXMSW__
+    #include "compilerMSVC.h"
+    #include "compilerBCC.h"
+    #include "compilerDMC.h"
+    #include "compilerOW.h"
+#endif
+#include "compilerSDCC.h"
 
 #define COLOUR_MAROON wxColour(0xa0, 0x00, 0x00)
 #define COLOUR_NAVY   wxColour(0x00, 0x00, 0xa0)

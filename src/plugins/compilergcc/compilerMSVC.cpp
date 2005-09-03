@@ -1,3 +1,6 @@
+#ifdef __WXMSW__
+// this compiler is valid only in windows
+
 #include "compilerMSVC.h"
 #include <wx/wx.h>
 #include <wx/log.h>
@@ -177,3 +180,5 @@ AutoDetectResult CompilerMSVC::AutoDetectInstallationDir()
 
     return wxFileExists(m_MasterPath + sep + _T("bin") + sep + m_Programs.C) ? adrDetected : adrGuessed;
 }
+
+#endif // __WXMSW__

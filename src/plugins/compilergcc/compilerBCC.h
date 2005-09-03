@@ -1,3 +1,6 @@
+#ifdef __WXMSW__
+// this compiler is valid only in windows
+
 #ifndef COMPILERBCC_H
 #define COMPILERBCC_H
 
@@ -17,3 +20,5 @@ class CompilerBCC : public Compiler
 };
 
 #endif // COMPILERBCC_H
+
+#endif // __WXMSW__

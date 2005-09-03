@@ -1,3 +1,6 @@
+#ifdef __WXMSW__
+// this compiler is valid only in windows
+
 #ifndef COMPILERMSVC_H
 #define COMPILERMSVC_H
 
@@ -18,3 +21,4 @@ class CompilerMSVC : public Compiler
 
 #endif // COMPILERMSVC_H
 
+#endif // __WXMSW__

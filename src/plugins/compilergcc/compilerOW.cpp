@@ -1,3 +1,6 @@
+#ifdef __WXMSW__
+// this compiler is valid only in windows
+
 #include "compilerOW.h"
 #include <wx/log.h>
 #include <wx/intl.h>
@@ -45,7 +48,7 @@ void CompilerOW::Reset()
 	m_Programs.LIB              = wxT("wlib.exe");
 	m_Programs.WINDRES          = wxT("wrc.exe");
 	m_Programs.MAKE             = wxT("mingw32-make.exe");
-	
+
 	m_Switches.includeDirs      = wxT("-i");
 	m_Switches.libDirs          = wxT("-L");
 	m_Switches.linkLibs         = wxT("");
@@ -54,7 +57,7 @@ void CompilerOW::Reset()
 	m_Switches.defines          = wxT("-d");
 	m_Switches.genericSwitch    = wxT("-");
 	m_Switches.objectExtension  = wxT("obj");
-	
+
 	m_Switches.needDependencies = false;
 	m_Switches.forceCompilerUseQuotes = false;
 	m_Switches.forceLinkerUseQuotes = false;
@@ -68,18 +71,18 @@ void CompilerOW::Reset()
 //				"-g",
 //				_("Debugging"),
 //				"",
-//				true, 
-//				"-o -o+space", 
+//				true,
+//				"-o -o+space",
 //				_("You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."));
 
 
     wxString   category = wxT("General");
-    
+
     m_Options.AddOption(wxT("treat source files as C code"), wxT("-cc"), category);
     m_Options.AddOption(wxT("treat source files as C++ code"), wxT("-cc++"), category);
     m_Options.AddOption(wxT("ignore the WCL386 environment variable"), wxT("-y"), category);
-    
-    
+
+
     category = wxT("Processor options");
     m_Options.AddOption(wxT("386 register calling conventions"), wxT("-3r"), category);
     m_Options.AddOption(wxT("386 stack calling conventions"), wxT("-3s"), category);
@@ -89,9 +92,9 @@ void CompilerOW::Reset()
     m_Options.AddOption(wxT("Pentium stack calling conventions"), wxT("-5s"), category);
     m_Options.AddOption(wxT("Pentium Pro register call conventions"), wxT("-6r"), category);
     m_Options.AddOption(wxT("Pentium Pro stack call conventions"), wxT("-6s"), category);
-    
+
     category = wxT("Floating-point processor options");
-        
+
     m_Options.AddOption(wxT("calls to floating-point library"), wxT("-fpc"), category);
     m_Options.AddOption(wxT("enable Pentium FDIV check"), wxT("-fpd"), category);
     m_Options.AddOption(wxT("inline 80x87 with emulation"), wxT("-fpi"), category);
@@ -101,9 +104,9 @@ void CompilerOW::Reset()
     m_Options.AddOption(wxT("generate 387 floating-point code"), wxT("-fp3"), category);
     m_Options.AddOption(wxT("optimize floating-point for Pentium"), wxT("-fp5"), category);
     m_Options.AddOption(wxT("optimize floating-point for Pentium Pro"), wxT("-fp6"), category);
-    
+
     category = wxT("Compiler options");
-    
+
     m_Options.AddOption(wxT("compile and link for DOS"), wxT("-bcl=dos"), category);
     m_Options.AddOption(wxT("compile and link for Linux"), wxT("-bcl=linux"), category);
     m_Options.AddOption(wxT("compile and link for NT (includes Win32)"), wxT("-bcl=nt"), category);
@@ -138,9 +141,9 @@ void CompilerOW::Reset()
     m_Options.AddOption(wxT("(C++) only read PCH"), wxT("-fhr"), category);
     m_Options.AddOption(wxT("(C++) only write PCH"), wxT("-fhw"), category);
     m_Options.AddOption(wxT("(C++) don't count PCH warnings"), wxT("-fhwe"), category);
-    
+
     // This should be a multiple option. We can define multiple force includes
-    m_Options.AddOption(wxT("force include of file (define FORCE_INCLUDE in custom variables)"), wxT("-fi=$(FORCE_INCLUDE)"), category); 
+    m_Options.AddOption(wxT("force include of file (define FORCE_INCLUDE in custom variables)"), wxT("-fi=$(FORCE_INCLUDE)"), category);
     // This one is mandatory in the ctCompileObjectCmd
     //m_Options.AddOption(wxT("set object file name"), wxT("-fo=<file>"), category);
     m_Options.AddOption(wxT("set error file name (define ERROR_FILE in custom variables)"), wxT("-fr=$(ERROR_FILE)"), category);
@@ -214,9 +217,9 @@ void CompilerOW::Reset()
     m_Options.AddOption(wxT("(C++) enable virt. fun. removal opt"), wxT("-zv"), category);
     m_Options.AddOption(wxT("generate code for MS Windows"), wxT("-zw"), category);
     m_Options.AddOption(wxT("remove @size from __stdcall func."), wxT("-zz"), category);
-    
+
     category = wxT("Debugging options");
-    
+
     m_Options.AddOption(wxT("no debugging information"), wxT("-d0"), category);
     m_Options.AddOption(wxT("line number debugging information"), wxT("-d1"), category);
     m_Options.AddOption(wxT("(C) line number debugging information plus typing information for global symbols and local structs and arrays"), wxT("-d1+"), category);
@@ -227,9 +230,9 @@ void CompilerOW::Reset()
     m_Options.AddOption(wxT("full symbolic debugging with unreferenced type names"), wxT("-d3"), category);
     m_Options.AddOption(wxT("(C++) d3 plus debug inlines; emit inlines as external out-of-line functions"), wxT("-d3i"), category);
     m_Options.AddOption(wxT("(C++) d3 plus debug inlines; emit inlines as static out-of-line functions"), wxT("-d3s"), category);
-    
+
     category = wxT("Optimization options");
-    
+
     m_Options.AddOption(wxT("relax alias checking"), wxT("-oa"), category);
     m_Options.AddOption(wxT("branch prediction"), wxT("-ob"), category);
     m_Options.AddOption(wxT("disable call/ret optimization"), wxT("-oc"), category);
@@ -252,9 +255,9 @@ void CompilerOW::Reset()
     m_Options.AddOption(wxT("optimize for time"), wxT("-ot"), category);
     m_Options.AddOption(wxT("ensure unique addresses for functions"), wxT("-ou"), category);
     m_Options.AddOption(wxT("maximum optimization (-obmiler -s)"), wxT("-ox"), category);
-    
+
     category = wxT("C++ exception handling options");
-    
+
     m_Options.AddOption(wxT("no exception handling"), wxT("-xd"), category);
     m_Options.AddOption(wxT("no exception handling: space"), wxT("-xds"), category);
     // duplicate to -xd
@@ -262,16 +265,16 @@ void CompilerOW::Reset()
     m_Options.AddOption(wxT("exception handling: balanced"), wxT("-xs"), category);
     m_Options.AddOption(wxT("exception handling: space"), wxT("-xss"), category);
     m_Options.AddOption(wxT("exception handling: time"), wxT("-xst"), category);
-    
+
     category = wxT("Preprocessor options");
-    
+
     //  defined in m_Switches.defines
     //  m_Options.AddOption(wxT("Define macro"), wxT("-d"), category);
     // difficult to support
     //  m_Options.AddOption(wxT("Extend -d syntax"), wxT(""), category);
     //  This one is mandatory in the ctCompileObjectCmd
     //  m_Options.AddOption(wxT("set object file name"), wxT("-fo=<file>"), category);
-    //  Specified by m_Switches.includeDirs 
+    //  Specified by m_Switches.includeDirs
     //  m_Options.AddOption(wxT("include directory"), wxT("-i"), category);
     m_Options.AddOption(wxT("number of spaces in tab stop (set TAB_STOP in custom variables)"), wxT("-t=$(TAB_STOP)"), category);
     // multi-option
@@ -286,9 +289,9 @@ void CompilerOW::Reset()
     m_Options.AddOption(wxT("preprocess source file (insert #line directives)"), wxT("-pl"), category);
     m_Options.AddOption(wxT("(C++) preprocess file (encrypt identifiers)"), wxT("-pe"), category);
     //
-    
+
     category = wxT("Linker options");
-     
+
     m_Options.AddOption(wxT("build Dynamic link library"), wxT("-bd"), category);
     m_Options.AddOption(wxT("build Multi-thread application"), wxT("-bm"), category);
     m_Options.AddOption(wxT("build with dll run-time library"), wxT("-br"), category);
@@ -305,19 +308,19 @@ void CompilerOW::Reset()
     m_Options.AddOption(wxT("additional directive file (specify LINK_DIRECTIVES in custom variables)"), wxT("@$(LINK_VARIABLES)"), category);
     // ????
     // m_Options.AddOption(wxT("following parameters are linker options"), wxT("-"), category);
-    
+
 
     m_Commands[(int)ctCompileObjectCmd]
         = wxT("$compiler -c $options $includes -fo=$object $file");
-    m_Commands[(int)ctCompileResourceCmd]   
+    m_Commands[(int)ctCompileResourceCmd]
         = wxT("$rescomp -fo=$resource_output $res_includes $file");
-    m_Commands[(int)ctLinkExeCmd]           
+    m_Commands[(int)ctLinkExeCmd]
         = wxT("$linker $link_options $libdirs $link_objects -fe=$exe_output $libs $link_resobjects");
-    m_Commands[(int)ctLinkConsoleExeCmd]    
+    m_Commands[(int)ctLinkConsoleExeCmd]
         = wxT("$linker $link_options $libdirs $link_objects -fe=$exe_output $libs $link_resobjects");
-    m_Commands[(int)ctLinkDynamicCmd]       
+    m_Commands[(int)ctLinkDynamicCmd]
         = wxT("$linker -$libdirs -fe=$exe_output $libs $link_objects $link_options");
-    m_Commands[(int)ctLinkStaticCmd]        
+    m_Commands[(int)ctLinkStaticCmd]
         = wxT("$lib_linker $static_output $link_objects");
 
     LoadDefaultRegExArray();
@@ -375,3 +378,5 @@ void CompilerOW::SetMasterPath(const wxString& path)
     Compiler::SetMasterPath(path);
     wxSetEnv(wxT("WATCOM"), m_MasterPath);
 }
+
+#endif // __WXMSW__
