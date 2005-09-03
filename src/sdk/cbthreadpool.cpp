@@ -21,7 +21,8 @@ class PrivateThread : public wxThread
             Busy
         };
 		PrivateThread(cbThreadPool* pool)
-        : m_pPool(pool),
+        : wxThread(wxTHREAD_JOINABLE),
+          m_pPool(pool),
         m_Abort(false)
         {
         }
@@ -200,7 +201,6 @@ void cbThreadPool::GetNextElement(cbTaskElement& element)
 void cbThreadPool::AbortAllTasks()
 {
     ClearTaskQueue();
-
     for (unsigned int i = 0; i < m_Threads.GetCount(); ++i)
     {
         PrivateThread* thread = m_Threads[i];
@@ -239,10 +239,18 @@ void cbThreadPool::AllocThreads()
 void cbThreadPool::FreeThreads()
 {
     // delete allocated threads
-    for (unsigned int i = 0; i < m_Threads.GetCount(); ++i)
+    unsigned int i;
+    for (i = 0; i < m_Threads.GetCount(); ++i)
     {
         PrivateThread* thread = m_Threads[i];
         thread->Abort();
+    }
+    wxLogNull logNo;
+    for (i = 0; i < m_Threads.GetCount(); ++i)
+    {
+        PrivateThread* thread = m_Threads[i];
+        while(thread->IsRunning()) { wxUsleep(10); }
+        thread->Delete();
     }
     m_Threads.Clear();
 }
