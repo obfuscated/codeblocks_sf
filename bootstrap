@@ -3,5 +3,6 @@
 libtoolize --force --copy
 aclocal -I /usr/local/share/aclocal
 autoconf
+autoheader
 automake -a
 

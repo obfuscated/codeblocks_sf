@@ -1,2 +1,40 @@
-SUBDIRS = astyle classwizard codecompletion compilergcc debuggergdb defaultmimehandler pluginwizard todo
+if BUILD_ASTYLE
+MAYBE_ASTYLE=astyle
+endif
 
+if BUILD_CLASSWIZARD
+MAYBE_CLASSWIZARD=classwizard
+endif
+
+if BUILD_CODECOMPLETION
+MAYBE_CODECOMPLETION=codecompletion
+endif
+
+if BUILD_COMPILER
+MAYBE_COMPILER=compilergcc
+endif
+
+if BUILD_DEBUGGER
+MAYBE_DEBUGGER=debuggergdb
+endif
+
+if BUILD_MIMEHANDLER
+MAYBE_MIMEHANDLER=defaultmimehandler
+endif
+
+if BUILD_PLUGINWIZARD
+MAYBE_PLUGINWIZARD=pluginwizard
+endif
+
+if BUILD_TODO
+MAYBE_TODO=todo
+endif
+
+SUBDIRS=$(MAYBE_ASTYLE) \
+$(MAYBE_CLASSWIZARD) \
+$(MAYBE_CODECOMPLETION) \
+$(MAYBE_COMPILER) \
+$(MAYBE_DEBUGGER) \
+$(MAYBE_MIMEHANDLER) \
+$(MAYBE_PLUGINWIZARD) \
+$(MAYBE_TODO)

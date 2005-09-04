@@ -3,9 +3,9 @@ SUBDIRS = depslib resources
 INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/sdk \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include \
-		-Idepslib/src
+		-I$(top_srcdir)/src/plugins/compilergcc/depslib/src
 
-AM_CXXFLAGS = -Wall -g -DDEPSLIB_UNIX
+AM_CXXFLAGS = -DDEPSLIB_UNIX
 
 libdir = $(pkgdatadir)/plugins
 
@@ -13,8 +13,8 @@ lib_LTLIBRARIES = libcompiler.la
 
 libcompiler_la_LDFLAGS = -module
 
-libcompiler_la_LIBADD = $(top_srcdir)/src/sdk/libcodeblocks.la \
-				$(top_srcdir)/src/sdk/wxscintilla/libwxscintilla.la \
+libcompiler_la_LIBADD = ../../sdk/libcodeblocks.la \
+				../../sdk/wxscintilla/libwxscintilla.la \
 				depslib/src/libdepslib.la
 
 libcompiler_la_SOURCES = advancedcompileroptionsdlg.cpp \

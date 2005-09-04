@@ -1,6 +1,4 @@
-INCLUDES = $(WX_CXXFLAGS) -Iinclude
-
-AM_CXXFLAGS = -Wall -g
+INCLUDES = $(WX_CXXFLAGS) -I$(top_srcdir)/src/src/wxDockit/include
 
 lib_LTLIBRARIES = libwxdockit.la
 

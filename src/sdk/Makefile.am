@@ -1,10 +1,8 @@
 SUBDIRS = tinyxml wxscintilla resources
 
 INCLUDES = $(WX_CXXFLAGS) \
-			-Iwxscintilla/include \
-			-Itinyxml
-
-AM_CXXFLAGS = -Wall -g
+			-I$(top_srcdir)/src/sdk/wxscintilla/include \
+			-I$(top_srcdir)/src/sdk/tinyxml
 
 lib_LTLIBRARIES = libcodeblocks.la
 
