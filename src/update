@@ -6,6 +6,10 @@ mkdir -p output/share/CodeBlocks/lexers
 mkdir -p output/share/CodeBlocks/images/codecompletion
 mkdir -p output/share/CodeBlocks/plugins
 mkdir -p output/share/CodeBlocks/templates
+mkdir -p devel/share/CodeBlocks/lexers
+mkdir -p devel/share/CodeBlocks/images/codecompletion
+mkdir -p devel/share/CodeBlocks/plugins
+mkdir -p devel/share/CodeBlocks/templates
 
 ZIPCMD="zip"
 RESDIR="devel/share/CodeBlocks"

@@ -749,9 +749,9 @@ void MainFrame::LoadWindowState()
 
     const wxString& personalityKey = Manager::Get()->GetPersonalityManager()->GetPersonalityKey();
 
-    wxString path = CFG_READ("app_path");
+    wxString path = wxGetUserHome();
     path << _T("/") << personalityKey;
-    path << _T("layout.bin");
+    path << _T(".cb_layout.bin");
     wxFileInputStream fi( path );
     if (fi.Ok())
     {
@@ -778,9 +778,9 @@ void MainFrame::SaveWindowState()
 
     const wxString& personalityKey = Manager::Get()->GetPersonalityManager()->GetPersonalityKey();
 
-    wxString path = CFG_READ("app_path");
+    wxString path = wxGetUserHome();
     path << _T("/") << personalityKey;
-    path << _T("layout.bin");
+    path << _T(".cb_layout.bin");
     wxFileOutputStream fo( path );
     wxUtil::WriteWindowLayout( fo, this );
     pLayoutManager->SaveToStream( fo );

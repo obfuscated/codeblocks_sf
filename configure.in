@@ -1,0 +1,93 @@
+AC_INIT(configure.in)
+
+AC_CANONICAL_SYSTEM
+
+AM_INIT_AUTOMAKE(codeblocks,1.0-RC2)
+dnl AM_CONFIG_HEADER(config.h)
+
+AC_ISC_POSIX
+CXXFLAGS=""
+AC_SUBST(CXXFLAGS)
+AC_PROG_CXX
+AM_PROG_CC_STDC
+AC_HEADER_STDC
+AM_PROG_LIBTOOL
+
+dnl AM_OPTIONS_WXCONFIG
+AM_PATH_WXCONFIG(2.4.2, wxWin=1)
+        if test "$wxWin" != 1; then
+        AC_MSG_ERROR([
+                wxWidgets must be installed on your system.
+
+                Please check that wx-config is in path, the directory
+                where wxWidgets libraries are installed (returned by
+                'wx-config --libs' or 'wx-config --static --libs' command)
+                is in LD_LIBRARY_PATH or equivalent variable and
+                wxWindows version is 2.4.2 or above.
+                ])
+        else
+               dnl Quick hack until wx-config does it
+               ac_save_LIBS=$LIBS
+               ac_save_CXXFLAGS=$CXXFLAGS
+               LIBS=$WX_LIBS
+               CXXFLAGS=$WX_CXXFLAGS
+               AC_LANG_SAVE
+               AC_LANG_CPLUSPLUS
+               AC_TRY_LINK([#include <wx/wx.h>],
+               [wxString test=""],
+               ,[WX_LIBS=$WX_LIBS_STATIC])
+               AC_LANG_RESTORE
+               LIBS=$ac_save_LIBS
+               CXXFLAGS=$ac_save_CXXFLAGS
+        fi
+
+AM_PATH_WXCONFIG(2.4.2, wxXrc=1)
+        if test "$wxXrc" != 1; then
+		WX_XRC=
+	else
+		WX_XRC=-l`wx-config --basename`_xrc-`wx-config --release`
+	fi
+AC_SUBST(WX_XRC)
+
+dnl AM_PATH_GTK(1.2.7, ,
+dnl             AC_MSG_ERROR(Cannot find GTK: Is gtk-config in path?),
+dnl             gthread)
+
+AM_CONDITIONAL(LINUX, test `uname` = "Linux")
+
+dnl Checks for programs.
+dnl Checks for libraries.
+dnl Checks for header files.
+dnl Checks for typedefs, structures, and compiler characteristics.
+dnl Checks for library functions.
+dnl Checks for Additional stuffs.
+
+AC_OUTPUT([Makefile
+	src/Makefile
+	src/sdk/Makefile
+	src/sdk/tinyxml/Makefile
+	src/sdk/wxscintilla/Makefile
+	src/sdk/resources/Makefile
+	src/src/wxDockit/Makefile
+	src/src/resources/Makefile
+	src/src/Makefile
+	src/plugins/Makefile
+	src/plugins/astyle/Makefile
+	src/plugins/astyle/resources/Makefile
+	src/plugins/classwizard/Makefile
+	src/plugins/classwizard/resources/Makefile
+	src/plugins/codecompletion/Makefile
+	src/plugins/codecompletion/resources/Makefile
+	src/plugins/compilergcc/Makefile
+	src/plugins/compilergcc/depslib/Makefile
+	src/plugins/compilergcc/depslib/src/Makefile
+	src/plugins/compilergcc/resources/Makefile
+	src/plugins/debuggergdb/Makefile
+	src/plugins/debuggergdb/resources/Makefile
+	src/plugins/defaultmimehandler/Makefile
+	src/plugins/defaultmimehandler/resources/Makefile
+	src/plugins/pluginwizard/Makefile
+	src/plugins/pluginwizard/resources/Makefile
+	src/plugins/todo/Makefile
+	src/plugins/todo/resources/Makefile
+])

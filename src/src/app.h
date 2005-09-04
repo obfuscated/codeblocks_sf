@@ -71,6 +71,7 @@ class CodeBlocksApp : public wxApp
 		bool m_NoSplash; // no splash screen
 		bool m_HasDebugLog; // display debug log
 		bool m_ClearConf; // clear configuration
+		wxString m_Prefix; // --prefix switch
 #ifdef __WXMSW__
         HINSTANCE m_ExceptionHandlerLib;
 #endif

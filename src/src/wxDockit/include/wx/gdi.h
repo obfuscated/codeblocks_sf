@@ -68,7 +68,9 @@ public:
 // define wxUSE_WX24 when compiling with wxWidgets 2.4.x, otherwise default to wxWidgets 2.5.x
 // ----------------------------------------------------------------------------
 
-//#define wxUSE_WX24
+#if !wxCHECK_VERSION(2,5,0)
+	#define wxUSE_WX24
+#endif // !wxCHECK_VERSION(2,5,0)
 
 #endif
     // _WX_WXGDI_BASE_H_

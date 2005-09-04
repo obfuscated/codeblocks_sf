@@ -88,7 +88,14 @@ bool CodeBlocksApp::LoadConfig()
     SetAppName(APP_NAME" v"APP_VERSION);
     ConfigManager::Init(wxConfigBase::Get());
     ConfigManager::Get()->Write(_T("app_path"), GetAppPath());
-    ConfigManager::Get()->Write(_T("data_path"), GetAppPath() + _T("/share/CodeBlocks"));
+    wxString data = GetAppPath() + _T("/share/codeblocks");
+#ifndef __WXMSW__
+    if (!wxDirExists(data))
+        data = _T("/usr/local/share/codeblocks");
+    if (!wxDirExists(data))
+        data = _T("/usr/share/codeblocks");
+#endif
+    ConfigManager::Get()->Write(_T("data_path"), data);
     m_HasDebugLog = ConfigManager::Get()->Read(_T("/message_manager/has_debug_log"), (long int)0) || m_HasDebugLog;
     ConfigManager::Get()->Write(_T("/message_manager/has_debug_log"), m_HasDebugLog);
     if (ParseCmdLine(0L) != 0)
@@ -251,7 +258,7 @@ void CodeBlocksApp::InitLocale()
     if(lng>=0)
     {
         m_locale.Init(lng);
-        wxLocale::AddCatalogLookupPathPrefix(GetAppPath() + _T("/share/CodeBlocks/locale"));
+        wxLocale::AddCatalogLookupPathPrefix(CFG_READ(_T("/data_path")) + _T("/locale"));
         wxLocale::AddCatalogLookupPathPrefix(wxT("."));
         wxLocale::AddCatalogLookupPathPrefix(wxT(".."));
         m_locale.AddCatalog(wxT("codeblocks"));
@@ -340,7 +347,7 @@ void CodeBlocksApp::ShowSplashScreen()
 	if (!m_NoSplash && ConfigManager::Get()->Read(_T("/environment/show_splash"), 1) == 1)
 	{
 		wxBitmap bitmap;
-		if (bitmap.LoadFile(GetAppPath() + _T("/share/CodeBlocks/images/splash.png"), wxBITMAP_TYPE_PNG))
+		if (bitmap.LoadFile(CFG_READ(_T("/data_path")) + _T("/images/splash.png"), wxBITMAP_TYPE_PNG))
 		{
 			m_pSplash = new wxSplashScreen(bitmap,
 										wxSPLASH_CENTRE_ON_SCREEN,// | wxSPLASH_TIMEOUT,
@@ -371,7 +378,7 @@ bool CodeBlocksApp::CheckResource(const wxString& res)
     		"to point where "APP_NAME" is installed,\n"
     		"or try re-installing the application...",
     		res.c_str(),
-    		ConfigManager::Get()->Read(_T("app_path"), wxEmptyString).c_str());
+    		ConfigManager::Get()->Read(_T("data_path"), wxEmptyString).c_str());
     	wxMessageBox(msg);
     	return false;
     }
@@ -388,6 +395,9 @@ wxString CodeBlocksApp::GetAppPath() const
     wxFileName fname(name);
     base = fname.GetPath(wxPATH_GET_VOLUME);
 #else
+    if (!m_Prefix.IsEmpty())
+        return m_Prefix;
+
     // SELFPATH is a macro from prefix.h (binreloc)
     // it returns the absolute filename of us
     // similar to win32 GetModuleFileName()...
@@ -425,8 +435,10 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                 else
                 {
                     wxString val;
-                    if (parser.Found(_T("prefix"), &val))
-                        wxSetEnv(_T("DATA_PREFIX"), val);
+                    if (parser.Found(_T("prefix"), &m_Prefix))
+                        wxSetEnv(_T("DATA_PREFIX"), m_Prefix);
+                    else
+                        wxGetEnv(_T("DATA_PREFIX"), &m_Prefix);
 					m_NoDDE = parser.Found(_T("no-dde"), &val);
 					m_NoAssocs = parser.Found(_T("no-check-associations"), &val);
 					m_NoSplash = parser.Found(_T("no-splash-screen"), &val);
