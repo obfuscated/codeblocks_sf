@@ -832,7 +832,8 @@ void CompilerGCC::DoRecreateTargetMenu()
     m_TargetIndex = m_Project->GetActiveBuildTarget();
     if (atLeastOneBuildableTarget)
     {
-        m_TargetMenu->AppendCheckItem(idMenuSelectTargetAll, _("All"), _("Compile target 'all' in current project"));
+        if (m_TargetMenu)
+            m_TargetMenu->AppendCheckItem(idMenuSelectTargetAll, _("All"), _("Compile target 'all' in current project"));
         if (m_ToolTarget)
             m_ToolTarget->Append(_("All"));
     }
@@ -852,7 +853,8 @@ void CompilerGCC::DoRecreateTargetMenu()
 
 		wxString caption;
 		caption.Printf(_("Compile target '%s' in current project"), target->GetTitle().c_str());
-		m_TargetMenu->AppendCheckItem(idMenuSelectTargetOther[x], target->GetTitle(), caption);
+		if (m_TargetMenu)
+            m_TargetMenu->AppendCheckItem(idMenuSelectTargetOther[x], target->GetTitle(), caption);
 		if (m_ToolTarget)
 			m_ToolTarget->Append(target->GetTitle());
 	}

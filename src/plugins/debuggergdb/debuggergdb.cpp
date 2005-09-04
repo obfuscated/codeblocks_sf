@@ -248,7 +248,10 @@ void DebuggerGDB::BuildMenu(wxMenuBar* menuBar)
 	// b) locate "Project" menu and insert after it
 	// c) if not found (?), insert at pos 5
 	int finalPos = 5;
-	int projcompMenuPos = menuBar->FindMenu(_("&Compile"));
+	int projcompMenuPos = menuBar->FindMenu(_("&Build"));
+	if (projcompMenuPos == wxNOT_FOUND)
+        projcompMenuPos = menuBar->FindMenu(_("&Compile"));
+
 	if (projcompMenuPos != wxNOT_FOUND)
 		finalPos = projcompMenuPos + 1;
 	else
