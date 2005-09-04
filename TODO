@@ -1,0 +1,14 @@
+PROGRAM:
+
+* Rewrite loading/saving of code-completion cache (change the format too) for faster times
+* Check dependencies generation when using "make". I think they 're not correct...
+* Add "Set file associations now" button to the settings
+* Ctrl+click'ing include file
+* Allow running program as parameter of external exe(cross platform development)
+
+DOCS:
+
+* Create tutorial and how-to on installation. Preferred windows html-help format.
+
+-------------------
+LONG TERM STUFF (move items from above)

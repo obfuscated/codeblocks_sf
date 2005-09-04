@@ -2734,8 +2734,8 @@
 			<Option link="0"/>
 			<Option target="src"/>
 		</Unit>
-		<Unit filename="src/prefix.c">
-			<Option compilerVar="CC"/>
+		<Unit filename="src/prefix.cpp">
+			<Option compilerVar="CPP"/>
 			<Option target="src"/>
 		</Unit>
 		<Unit filename="src/prefix.h">

@@ -1,14 +1,22 @@
-@echo off
+rem @echo off
 echo Creating output directory tree
 
-if not exist output md output
-if not exist output\share md output\share
-if not exist output\share\CodeBlocks md output\share\CodeBlocks
-if not exist output\share\CodeBlocks\lexers md output\share\CodeBlocks\lexers
-if not exist output\share\CodeBlocks\images md output\share\CodeBlocks\images
-if not exist output\share\CodeBlocks\images\codecompletion md output\share\CodeBlocks\images\codecompletion
-if not exist output\share\CodeBlocks\plugins md output\share\CodeBlocks\plugins
-if not exist output\share\CodeBlocks\templates md output\share\CodeBlocks\templates
+if not exist output md output\
+if not exist output\share md output\share\
+if not exist output\share\CodeBlocks md output\share\CodeBlocks\
+if not exist output\share\CodeBlocks\lexers md output\share\CodeBlocks\lexers\
+if not exist output\share\CodeBlocks\images md output\share\CodeBlocks\images\
+if not exist output\share\CodeBlocks\images\codecompletion md output\share\CodeBlocks\images\codecompletion\
+if not exist output\share\CodeBlocks\plugins md output\share\CodeBlocks\plugins\
+if not exist output\share\CodeBlocks\templates md output\share\CodeBlocks\templates\
+if not exist devel md devel\
+if not exist devel\share md devel\share\
+if not exist devel\share\CodeBlocks md devel\share\CodeBlocks\
+if not exist devel\share\CodeBlocks\lexers md devel\share\CodeBlocks\lexers\
+if not exist devel\share\CodeBlocks\images md devel\share\CodeBlocks\images\
+if not exist devel\share\CodeBlocks\images\codecompletion md devel\share\CodeBlocks\images\codecompletion\
+if not exist devel\share\CodeBlocks\plugins md devel\share\CodeBlocks\plugins\
+if not exist devel\share\CodeBlocks\templates md devel\share\CodeBlocks\templates\
 
 set ZIPCMD=zip
 set RESDIR=devel\share\CodeBlocks
