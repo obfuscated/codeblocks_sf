@@ -1115,8 +1115,13 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         if (target->GetUseConsoleRunner())
         {
             wxString baseDir = ConfigManager::Get()->Read(_T("/app_path"));
-            if (wxFileExists(baseDir + _T("/console_runner.exe")))
-                cmd << baseDir << _T("/console_runner.exe ");
+#ifdef __WXMSW__
+	#define CONSOLE_RUNNER "console_runner.exe"
+#else
+	#define CONSOLE_RUNNER "console_runner"
+#endif
+            if (wxFileExists(baseDir + _T("/" CONSOLE_RUNNER)))
+                cmd << baseDir << _T("/" CONSOLE_RUNNER " ");
         }
     }
 
