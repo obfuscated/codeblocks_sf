@@ -1,4 +1,4 @@
-rem @echo off
+@echo off
 echo Creating output directory tree
 
 if not exist output md output\

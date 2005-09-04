@@ -214,7 +214,11 @@ void cbThreadPool::AbortAllTasks()
     {
         PrivateThread* thread = m_Threads[i];
         if(thread->IsRunning())
+        {
+            thread->Abort();
+            s_Semaphore.Post();
             thread->Wait();
+        }
     }
 }
 
@@ -258,7 +262,12 @@ void cbThreadPool::FreeThreads()
     for (i = 0; i < m_Threads.GetCount(); ++i)
     {
         PrivateThread* thread = m_Threads[i];
-        while(thread->IsRunning()) { wxUsleep(10); }
+        while(thread->IsRunning())
+        {
+            thread->Abort();
+            s_Semaphore.Post();
+            thread->Wait();
+        }
         thread->Delete();
     }
     m_Threads.Clear();
