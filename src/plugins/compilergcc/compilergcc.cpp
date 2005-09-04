@@ -1120,8 +1120,8 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 #else
 	#define CONSOLE_RUNNER "console_runner"
 #endif
-            if (wxFileExists(baseDir + _T("/" CONSOLE_RUNNER)))
-                cmd << baseDir << _T("/" CONSOLE_RUNNER " ");
+            if (wxFileExists(baseDir + wxT("/" CONSOLE_RUNNER)))
+                cmd << baseDir << wxT("/" CONSOLE_RUNNER " ");
         }
     }
 
