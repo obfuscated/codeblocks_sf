@@ -153,7 +153,7 @@
                 <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
                   <object class="wxCheckBox" name="chkSafebutSlow">
-                    <label>Crash protection (experimental; use it only if C::B crashes on your machine)</label>
+                    <label>Improved stability (experimental; use it only if C::B crashes on your machine)</label>
                     <checked>0</checked>
                   </object>
                   <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
