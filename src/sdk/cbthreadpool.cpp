@@ -201,12 +201,21 @@ void cbThreadPool::GetNextElement(cbTaskElement& element)
 void cbThreadPool::AbortAllTasks()
 {
     ClearTaskQueue();
-    for (unsigned int i = 0; i < m_Threads.GetCount(); ++i)
+    unsigned int i;
+    for (i = 0; i < m_Threads.GetCount(); ++i)
     {
         PrivateThread* thread = m_Threads[i];
         thread->Abort();
     }
     s_Semaphore.Post();
+
+    // Wait for all threads to terminate
+    for (i = 0; i < m_Threads.GetCount(); ++i)
+    {
+        PrivateThread* thread = m_Threads[i];
+        if(thread->IsRunning())
+            thread->Wait();
+    }
 }
 
 void cbThreadPool::ClearTaskQueue()
