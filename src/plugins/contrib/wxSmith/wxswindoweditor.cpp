@@ -8,9 +8,10 @@
 #include "wxsmith.h"
 #include "wxsresource.h"
 #include "wxsdragwindow.h"
+#include "resources/wxswindowres.h"
 
-wxsWindowEditor::wxsWindowEditor(wxWindow* parent, const wxString& title,wxsResource* Resource):
-    wxsEditor(parent,title,Resource),
+wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsWindowRes* Resource):
+    wxsEditor(parent,Resource->GetWxsFile(),Resource),
     CurrentWidget(NULL)
 {
     wxSizer* Sizer = new wxBoxSizer(wxVERTICAL);
@@ -28,6 +29,8 @@ wxsWindowEditor::wxsWindowEditor(wxWindow* parent, const wxString& title,wxsReso
 
     DragWnd = new wxsDragWindow(Scroll,NULL,Scroll->GetSize());
     DragWnd->Hide();
+    wxFileName Name(Resource->GetWxsFile());
+    SetTitle(Name.GetFullName());
 }
 
 wxsWindowEditor::~wxsWindowEditor()
@@ -51,7 +54,7 @@ static void WidgetRefreshReq(wxWindow* Wnd)
 void wxsWindowEditor::BuildPreview(wxsWidget* TopWidget)
 {
     Scroll->SetSizer(NULL);
-//    Freeze();
+    Freeze();
 
     KillCurrentPreview();
 
@@ -78,11 +81,7 @@ void wxsWindowEditor::BuildPreview(wxsWidget* TopWidget)
         DragWnd->Show();
     }
 
-  //  Thaw();
-
-    #if !wxCHECK_VERSION(2,6,0)
-        WidgetRefreshReq(this);
-    #endif
+    Thaw();
 }
 
 void wxsWindowEditor::KillCurrentPreview()

@@ -68,6 +68,7 @@ wxsEventDesc * wxsWidgetEvents::GetEventByEntry(const wxString& Entry)
 wxString wxsWidgetEvents::GetArrayEnteries(int TabSize)
 {
     wxString Code;
+    wxsResource* Res = GetWidget()->GetResource();
     for ( EventsI i = Events.begin(); i!=Events.end(); ++i )
     {
     	wxsEventDesc* Event = *i;
@@ -78,7 +79,15 @@ wxString wxsWidgetEvents::GetArrayEnteries(int TabSize)
     		Code.Append(_T('('));
     		if ( Event->WithId )
     		{
+    			if ( Res->GetEditMode() == wxsResSource | wxsResFile )
+    			{
+    				Code.Append(_T("XRCID(\""));
+    			}
     			Code.Append(Widget->GetBaseParams().IdName);
+    			if ( Res->GetEditMode() == wxsResSource | wxsResFile )
+    			{
+    				Code.Append(_T("\")"));
+    			}
     			Code.Append(_T(','));
     		}
     		Code.Append(Widget->GetResource()->GetClassName());
@@ -141,4 +150,3 @@ void wxsWidgetEvents::XmlSaveFunctions(TiXmlElement* Element)
     	}
     }
 }
-

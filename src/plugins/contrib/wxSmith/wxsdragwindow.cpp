@@ -11,7 +11,7 @@ DEFINE_EVENT_TYPE(wxEVT_FETCH_BACK)
 
 
 wxsDragWindow::wxsDragWindow(wxWindow* Cover,wxsWidget* Wdg,const wxSize& Size):
-    wxControl(Cover,-1,wxDefaultPosition,Size,wxNO_BORDER|wxTRANSPARENT_WINDOW|wxSTAY_ON_TOP),
+    wxControl(Cover,-1,wxDefaultPosition,Size,wxNO_BORDER/*|wxTRANSPARENT_WINDOW*/|wxSTAY_ON_TOP),
     RootWidget(Wdg), CurDragPoint(NULL), CurDragWidget(NULL), RefreshTimer(this,1),
     Background(NULL), BackFetchMode(true), PaintAfterFetch(false)
 {
@@ -48,18 +48,8 @@ void wxsDragWindow::OnPaint(wxPaintEvent& event)
 
 void wxsDragWindow::TimerRefresh(wxTimerEvent& event)
 {
-/*	wxClientDC DC(this);
-	DC.DrawBitmap(Background,0,0);
+    wxClientDC DC(this);
 	AddGraphics(DC);
-	    if ( Background.Ok() )
-	    {
-	        DebLog("Size : %d %d",Background.GetWidth(),Background.GetHeight());
-	    }
-	    else
-	    {
-	        wxMessageBox("Invalid background");
-	    }
-*/
 }
 
 void wxsDragWindow::OnEraseBack(wxEraseEvent& event)
@@ -136,6 +126,7 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
                         int PosY1, PosY2;
                         FindAbsolutePosition(DPD->Widget,&PosY1,&PosY2);
                         ScreenToClient(&PosY1,&PosY2);
+
                         PosY1 = PosY2;
                         PosY2 = PosY1 + DPD->Widget->GetPreview()->GetSize().GetHeight();
                         int PosX = DPD->PosX - DragBoxSize / 2;
@@ -222,7 +213,6 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
 
         if ( !DragDistanceSmall )
         {
-
             DragPointData* WidgetPoints[DragBoxTypeCnt];
             memcpy(WidgetPoints,CurDragPoint->WidgetPoints,sizeof(WidgetPoints));
 
@@ -315,8 +305,10 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
             //GetParent()->Refresh();
             Refresh();
             Update();
+
         }
     }
+
 
     // Updating widget's properties
     if ( event.LeftUp() || event.Dragging() )
@@ -405,7 +397,7 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
     	{
     		SetCur( CurDragPoint->NoAction ? wxCURSOR_NO_ENTRY : wxCURSOR_SIZING );
     	}
-    	else if ( CurDragPoint )
+        else if ( CurDragPoint )
     	{
     		if ( CurDragPoint->NoAction ) SetCur(wxCURSOR_NO_ENTRY);
     	}
@@ -531,7 +523,7 @@ void wxsDragWindow::RecalculateDragPoints()
     	else
     	{
     		i++;
-    	}
+       	}
     }
 }
 
@@ -596,6 +588,7 @@ void wxsDragWindow::SetWidget(wxsWidget* _RootWidget)
         BuildDragPoints(RootWidget);
 	}
 }
+
 
 wxsWidget* wxsDragWindow::FindWidgetAtPos(int PosX,int PosY,wxsWidget* Widget)
 {
@@ -714,25 +707,16 @@ void wxsDragWindow::FindAbsolutePosition(wxsWidget* Widget,int* X,int* Y)
     *X = 0;
     *Y = 0;
     wxWindow* Wnd = Widget->GetPreview();
-    wxWindow* StopAt = GetParent()->GetParent();
 
-    while ( Wnd != StopAt )
-    {
-        int PosX, PosY;
-        Wnd->GetPosition(&PosX,&PosY);
-        *X += PosX;
-        *Y += PosY;
-        Wnd = Wnd->GetParent();
-    }
-
-    StopAt->ClientToScreen(X,Y);
+    Wnd->GetPosition(X,Y);
+    Wnd->GetParent()->ClientToScreen(X,Y);
 }
 
 BEGIN_EVENT_TABLE(wxsDragWindow,wxControl)
     EVT_PAINT(wxsDragWindow::OnPaint)
     EVT_MOUSE_EVENTS(wxsDragWindow::OnMouse)
     EVT_ERASE_BACKGROUND(wxsDragWindow::OnEraseBack)
-//    EVT_TIMER(1,wxsDragWindow::TimerRefresh)
+    EVT_TIMER(1,wxsDragWindow::TimerRefresh)
     EVT_SELECT_WIDGET(wxsDragWindow::OnSelectWidget)
     EVT_SIZE(wxsDragWindow::OnSize)
     EVT_COMMAND(wxID_ANY,wxEVT_FETCH_BACK,wxsDragWindow::OnFetchBackground)

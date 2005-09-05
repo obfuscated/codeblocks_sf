@@ -27,7 +27,7 @@ class wxsPanel : public wxsWindow
 WXS_ST_DECLARE(wxsPanelrStyles)
 WXS_EV_DECLARE(wxsPanelrEvents)
 
-/** Resource panel - may be used as a resourcec */
+/** Resource panel - may be used as a resource */
 class wxsPanelr : public wxsWindow
 {
 	public:

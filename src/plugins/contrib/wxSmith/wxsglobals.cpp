@@ -53,7 +53,7 @@ wxString GetWxString(const wxString& Source)
 	return wxString::Format(_T("_(%s)"),GetCString(Source).c_str());
 }
 
-/** \brief set of names which can not be used as widget names
+/** Set of names which can not be used as widget names
  *
  * This names must be placed in alphabetical order
  */
@@ -74,6 +74,7 @@ static const wxChar* DeadNames[] =
     _T("void"), _T("volatile"), _T("wchar_t"), _T("while")
 };
 
+/** Numbe of enteries in array of dead names */
 static const int DeadNamesLen = sizeof(DeadNames) / sizeof(DeadNames[0]);
 
 bool ValidateIdentifier(const wxString& NameStr)

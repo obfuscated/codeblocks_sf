@@ -91,6 +91,15 @@ class wxsProject
         /** Spreading eventg to all resource editors opened inside this project */
         void SendEventToEditors(wxEvent& event);
 		
+        /** Deleting dialog resource from project */
+        void DeleteDialog(wxsDialogRes* Resource);
+        
+        /** Deleting frame resource from project */
+        void DeleteFrame(wxsFrameRes* Resource);
+        
+        /** Deleting panel resource from project */
+        void DeletePanel(wxsPanelRes* Resource);
+        
     protected:
         
         /** Function loading all data from xml source */
@@ -104,21 +113,24 @@ class wxsProject
             const wxString& FileName,
             const wxString& ClassName,
             const wxString& SourceName,
-            const wxString& HeaderName);
+            const wxString& HeaderName,
+            const wxString& XrcName);
         
         /** Function loading frame resource from xml tree */
         void AddFrameResource(
             const wxString& FileName,
             const wxString& ClassName,
             const wxString& SourceName,
-            const wxString& HeaderName);
+            const wxString& HeaderName,
+            const wxString& XrcName);
         
         /** Function loading panel resource from xml tree */
         void AddPanelResource(
             const wxString& FileName,
             const wxString& ClassName,
             const wxString& SourceName,
-            const wxString& HeaderName);
+            const wxString& HeaderName,
+            const wxString& XrcName);
         
 	private:
 	
@@ -128,17 +140,9 @@ class wxsProject
             const wxString& ClassName,
             const wxString& SourceName,
             const wxString& HeaderName,
-            int Type);
+            const wxString& XrcName,
+            const wxString& Type);
 	
-        /** Deleting dialog resource from project */
-        void DeleteDialog(wxsDialogRes* Resource);
-        
-        /** Deleting frame resource from project */
-        void DeleteFrame(wxsFrameRes* Resource);
-        
-        /** Deleting panel resource from project */
-        void DeletePanel(wxsPanelRes* Resource);
-        
         /** Function building tree for resources in this project */
         void BuildTree(wxTreeCtrl* Tree,wxTreeItemId WhereToAdd);        
         
@@ -187,6 +191,8 @@ class wxsResourceTreeData: public wxTreeItemData
         
         wxsResourceTreeData(wxsWidget* _Widget):     Type(tWidget)   { Widget = _Widget; }
         wxsResourceTreeData(wxsResource* _Resource): Type(tResource) { Resource = _Resource; }
+        
+        virtual ~wxsResourceTreeData() {}
         
         enum TypeT
         {

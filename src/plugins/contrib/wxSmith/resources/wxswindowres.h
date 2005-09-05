@@ -6,28 +6,35 @@
 #include "../defwidgets/wxspanel.h"
 #include "../defwidgets/wxsframe.h"
 #include <wx/string.h>
+#include <wx/xrc/xmlres.h>
 
-/** Base class for all window resources (Dialog, Frame and Panel) */
+/** Base class for all window resources (Dialog, Frame and Panel).
+ *
+ *  This resource can be edited in three modes:
+ *   - wxsResFile - this mode is used to edit separate xrc file
+ *     not st as resource in any project. path for this xrc file is set inside
+ *     WxsFile variable (not XrcFile), additional things like variable name are
+ *     not used here.
+ *   - wxsResFile | wxsResSource - in this mode two things are changed - additional
+ *     Xrc file (it's name is in XrcFile variable) is created and there's dynamically
+ *     changing source code loading this resource, fetching it's members and mamaning
+ *     events.
+ *   - wxsResSource - in this mode, resource is stored inside source code, no XrcFile is
+ *     needed
+ */
 class wxsWindowRes : public wxsResource
 {
 	public:
 	
-        enum WindowResType
-        {
-        	Dialog,
-        	Frame,
-        	Panel
-        };
-	
         /** Ctor */
 		wxsWindowRes(
             wxsProject* Project,
+            int EditMode,
             const wxString& Class,
-            const wxString& Xrc,
+            const wxString& Wxs,
             const wxString& Src,
             const wxString& Head,
-            WindowResType Type
-            );
+            const wxString& Xrc );
 		
 		/** Dctor */
 		virtual ~wxsWindowRes();
@@ -35,14 +42,22 @@ class wxsWindowRes : public wxsResource
 		/** Getting name of class implementing this dialog */
 		inline const wxString& GetClassName() { return ClassName; }
 		
-		/** Getting name of xrc file containing structire of dialog */
-		inline const wxString& GetXrcFile() { return XrcFile; }
+		/** Getting name of internal wxsmith's file containing structire
+		 *  of resource. The file name uses global path */
+		inline const wxString& GetWxsFile() { return WxsFile; }
 		
-		/** Getting name of source file implementing dialog */
+		/** Getting name of source file implementing dialog
+		 *  File name is relative to path of project's .cbp file
+		 */
 		inline const wxString& GetSourceFile() { return SrcFile; }
 		
-		/** Getting name of header file declaring dialog */
+		/** Getting name of header file declaring dialog
+		 *  File name is relative to path of project's .cbp file
+		 */
 		inline const wxString& GetHeaderFile() { return HFile; }
+		
+		/** Getting name of xrc file */
+		inline const wxString& GetXrcFile() { return XrcFile; }
 		
 		/** Saving current dialog to xml file */
 		void Save();
@@ -77,11 +92,35 @@ class wxsWindowRes : public wxsResource
         /** Function rebuilding definition of event table */
         void UpdateEventTable();
         
+        /** Generating Xml document compatible with XRC structure (without additional
+         *  parameters */
+        TiXmlDocument* GenerateXrc();
+        
     protected:
     
         /** Creating editor object */
         virtual wxsEditor* CreateEditor();
-		
+        
+        /** Function initializing this class - it must be called in constructor
+         *  of derived class since virtual functinos can be used from top
+         *  constrructor only */
+        void Initialize();
+        
+        /** Function showing resource */
+        virtual void ShowResource(wxXmlResource& Res) = 0;
+        
+        /** Getting string added as constructor code for base widget */
+        virtual wxString GetConstructor() = 0;
+        
+        /** Helper function giving name of resource from current window type */
+        virtual const wxChar* GetWidgetClass(bool UseRes = false) = 0;
+        
+        /** Function creating code which will set up resource */
+        virtual wxString ResSetUpCode(int TabSize) = 0;
+        
+        /** Function generating code loading this resource from xrc file */
+        virtual wxString GetXrcLoadingCode(int TabSize) = 0;
+        
 	private:
 
         /** Structure used for comparing strings */
@@ -93,9 +132,6 @@ class wxsWindowRes : public wxsResource
 	
         /** Creating xml tree for current widget */
         TiXmlDocument* GenerateXml();
-        
-        /** Helper fuunction giving name of resource from current window type */
-        inline const wxChar* GetWidgetClass(bool UseRes = false);
         
         /** Adding declaration codes for locally stored widgets */
         void AddDeclarationsReq(wxsWidget* Widget,wxString& LocalCode,wxString& GlobalCode,int LocalTabSize,int GlobalTabSize,bool& WasLocal);
@@ -119,44 +155,131 @@ class wxsWindowRes : public wxsResource
         void BuildHeadersArray(wxsWidget* Widget,wxArrayString& Array);
         
         /** Fuunction collecting code for event table for given widget */
-        static void CollectEventTableEnteries(wxString& Code,wxsWidget* Widget);
-            
+        static void CollectEventTableEnteries(wxString& Code,wxsWidget* Widget,int TabSize);
+        
+        /** Function generating code fetching controls from xrc structure */
+        static void GenXrcFetchingCode(wxString& Code,wxsWidget* Widget,int TabSize);
+        
         wxString      ClassName;
-        wxString      XrcFile;
+        wxString      WxsFile;
         wxString      SrcFile;
         wxString      HFile;
-        WindowResType Type;
+        wxString      XrcFile;
         wxsWidget*    RootWidget;
 };
 
-/** Resource defining wxDialog class */
+
+#define wxsGenericWindowResourceBody(Name,ClassR,CtorText,ShowCode)         \
+	public:                                                                 \
+        wxs##Name##Res( wxsProject* Project,                                \
+                        int EditMode,                                       \
+                        const wxString& ClassS,                             \
+                        const wxString& Wxs,                                \
+                        const wxString& Src,                                \
+                        const wxString& Head,                               \
+                        const wxString& Xrc ):                              \
+            wxsWindowRes(Project,EditMode,ClassS,Wxs,Src,Head,Xrc)          \
+        { Initialize(); }                                                   \
+                                                                            \
+        virtual ~wxs##Name##Res()                                           \
+        {                                                                   \
+            if ( GetProject() )                                             \
+            {                                                               \
+                GetProject()->Delete##Name                                  \
+                ((wxs##Name##Res*)this);                                    \
+            }                                                               \
+        }                                                                   \
+                                                                            \
+        inline wxs##Name& Get##Name()                                       \
+        { return *((wxs##Name*)GetRootWidget()); }                          \
+                                                                            \
+    protected:                                                              \
+                                                                            \
+        virtual wxString GetConstructor()                                   \
+        {                                                                   \
+        	return _T(CtorText);                                            \
+        }                                                                   \
+                                                                            \
+        virtual void ShowResource(wxXmlResource& Res)                       \
+        {                                                                   \
+            ShowCode;                                                       \
+        }                                                                   \
+                                                                            \
+        virtual const wxChar* GetWidgetClass(bool UseRes)                   \
+        {                                                                   \
+            return UseRes ? _T(#ClassR) : _T("wx") _T(#Name);               \
+        }                                                                   \
+                                                                            \
+        virtual wxString GetXrcLoadingCode(int TabSize)                     \
+        {                                                                   \
+            wxString Code;                                                  \
+            Code.Append(_T(' '),TabSize);                                   \
+            Code.Append(wxString::Format(                                   \
+                _T("wxXmlResource::Get()->Load%s(this,parent,_T(%s));"),    \
+                _T(#Name), GetCString(GetClassName()).c_str() ));           \
+            return Code;                                                    \
+        }                                                                   \
+        
+
+/* Generic resources */
+
 class wxsDialogRes: public wxsWindowRes
 {
-	public:
-        wxsDialogRes( wxsProject* Project, const wxString& Class, const wxString& Xrc, const wxString& Src, const wxString& Head ):
-            wxsWindowRes(Project,Class,Xrc,Src,Head,wxsWindowRes::Dialog) {}
+    wxsGenericWindowResourceBody(
+        Dialog,
+        wxDialog,
+        "wxDialog(parent,id,_T(\"\"),wxDefaultPosition,wxDefaultSize)",
+            wxDialog Dlg;
+            if ( Res.LoadDialog(&Dlg,NULL,GetClassName()) )
+            {
+                Dlg.ShowModal();
+            }
+        )
         
-        inline wxsDialog& GetDialog() { return *((wxsDialog*)GetRootWidget()); }
+    virtual wxString ResSetUpCode(int TabSize)
+    {
+        // TODO (SpOoN#1#): Apply title and centered properties for dialog
+        return _T("");
+    }
 };
 
-/** Resource defining wxFrame class */
 class wxsFrameRes: public wxsWindowRes
 {
-	public:
-        wxsFrameRes( wxsProject* Project, const wxString& Class, const wxString& Xrc, const wxString& Src, const wxString& Head ):
-            wxsWindowRes(Project,Class,Xrc,Src,Head,wxsWindowRes::Frame) {}
-        
-        inline wxsFrame& GetFrame() { return *((wxsFrame*)GetRootWidget()); }
+    wxsGenericWindowResourceBody(
+        Frame,
+        wxFrame,
+        "wxFrame(parent,id,_T(\"\"))",
+            wxFrame* Frm = new wxFrame;
+            if ( Res.LoadFrame(Frm,NULL,GetClassName()) )
+            {
+                Frm->Show();
+                //Frm->MakeModal();
+            }
+        )
+
+    virtual wxString ResSetUpCode(int TabSize)
+    {
+        // TODO (SpOoN#1#): Apply title and centered properties for frame
+        return _T("");
+    }
 };
 
-/** Resource defining wxPanel class */
 class wxsPanelRes: public wxsWindowRes
 {
-	public:
-        wxsPanelRes( wxsProject* Project, const wxString& Class, const wxString& Xrc, const wxString& Src, const wxString& Head ):
-            wxsWindowRes(Project,Class,Xrc,Src,Head,wxsWindowRes::Panel) {}
+    wxsGenericWindowResourceBody(
+        Panel,
+        wxPanelr,
+        "wxPanel(parent,id)",
+        	wxDialog Dlg(NULL,-1,wxString::Format(_("Frame preview: %s"),GetClassName().c_str()));
+        	wxPanel* Panel = Res.LoadPanel(&Dlg,GetClassName());
+        	if ( Panel )
+        	{
+        		Dlg.Fit();
+        		Dlg.ShowModal();
+        	}
+        )
         
-        inline wxsPanel& GetPanel() { return *((wxsPanel*)GetRootWidget()); }
+    virtual wxString ResSetUpCode(int TabSize) { return _T(""); }
 };
 
 #endif

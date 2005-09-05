@@ -8,7 +8,6 @@
 #include "wxsevent.h"
 
 class wxsWidget;
-
 /** This class is used as an additional layer between window's preview
  *  and user input.
  *

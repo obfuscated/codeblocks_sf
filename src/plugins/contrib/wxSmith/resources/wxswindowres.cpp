@@ -4,7 +4,6 @@
 #include "../wxswindoweditor.h"
 #include "../wxscodegen.h"
 #include <manager.h>
-#include <wx/xrc/xmlres.h>
 #include <editormanager.h>
 
 const wxChar* EmptySource =
@@ -67,46 +66,40 @@ class $(ClassName): public $(BaseClassName)\n\
 
 wxsWindowRes::wxsWindowRes(
     wxsProject* Project,
+    int EditMode,
     const wxString& Class, 
-    const wxString& Xrc, 
+    const wxString& Wxs, 
     const wxString& Src,
     const wxString& Head,
-    WindowResType _Type):
-        wxsResource(Project),
+    const wxString& Xrc):
+        wxsResource(Project,EditMode),
         ClassName(Class),
-        XrcFile(Xrc),
+        WxsFile(Wxs),
         SrcFile(Src),
         HFile(Head),
-        Type(_Type)
+        XrcFile(Xrc)
+
+{
+}
+
+void wxsWindowRes::Initialize()
 {
     RootWidget = wxsWidgetFactory::Get()->Generate(GetWidgetClass(true),this);
+    if ( !RootWidget )
+    {
+    	wxMessageBox(GetWidgetClass(true));
+    }
 }
 
 wxsWindowRes::~wxsWindowRes()
 {
     EditClose();
     wxsWidgetFactory::Get()->Kill(RootWidget);
-    switch ( Type )
-    {
-    	case Dialog:
-            GetProject()->DeleteDialog((wxsDialogRes*)this);
-            break;
-            
-        case Frame:
-            GetProject()->DeleteFrame((wxsFrameRes*)this);
-            break;
-            
-        case Panel:
-            GetProject()->DeletePanel((wxsPanelRes*)this);
-            break;
-            
-        default:;
-    }
 }
 
 wxsEditor* wxsWindowRes::CreateEditor()
 {
-    wxsWindowEditor* Edit = new wxsWindowEditor(Manager::Get()->GetEditorManager()->GetNotebook(),XrcFile,this);
+    wxsWindowEditor* Edit = new wxsWindowEditor(Manager::Get()->GetEditorManager()->GetNotebook(),this);
     Edit->BuildPreview(RootWidget);
     return Edit;
 }
@@ -117,8 +110,7 @@ void wxsWindowRes::Save()
     
     if ( Doc )
     {
-        wxString FullFileName = GetProject()->GetInternalFileName(XrcFile);
-        Doc->SaveFile(FullFileName.mb_str());
+        Doc->SaveFile(WxsFile.mb_str());
         delete Doc;
     }
 }
@@ -140,48 +132,12 @@ TiXmlDocument* wxsWindowRes::GenerateXml()
 
 void wxsWindowRes::ShowPreview()
 {
+// TODO (SpOoN#1#): Save in temporary file
     Save();
     
-    wxXmlResource Res(GetProject()->GetInternalFileName(XrcFile));
+    wxXmlResource Res(WxsFile);
     Res.InitAllHandlers();
-    
-    switch ( Type )
-    {
-    	case Dialog:
-    	{
-            wxDialog Dlg;
-            
-            if ( Res.LoadDialog(&Dlg,NULL,ClassName) )
-            {
-                Dlg.ShowModal();
-            }
-            break;
-    	}
-            
-        case Frame:
-        {
-            wxFrame* Frm = new wxFrame;
-            if ( Res.LoadFrame(Frm,NULL,ClassName) )
-            {
-            	Frm->Show();
-            }
-            break;
-        }
-            
-        case Panel:
-        {
-        	wxDialog Dlg(NULL,-1,wxString::Format(_("Frame preview: %s"),ClassName.c_str()));
-        	wxPanel* Panel = Res.LoadPanel(&Dlg,ClassName);
-        	if ( Panel )
-        	{
-        		Dlg.Fit();
-        		Dlg.ShowModal();
-        	}
-        	break;
-        }
-        
-        default:;
-    }
+    ShowResource(Res);
 }
 
 const wxString& wxsWindowRes::GetResourceName()
@@ -195,12 +151,13 @@ bool wxsWindowRes::GenerateEmptySources()
     
     wxString FName = wxFileName(HFile).GetFullName();
     FName.MakeUpper();
-    wxString Guard(_T("__"));
+    wxString Guard;
     
     for ( int i=0; i<(int)FName.Length(); i++ )
     {
-        char ch = FName.GetChar(i);
-        if ( ( ch < 'A' || ch > 'Z' ) && ( ch < '0' || ch > '9' ) ) Guard.Append('_');
+        wxChar ch = FName.GetChar(i);
+        if ( ( ch < _T('A') || ch > _T('Z') ) &&
+             ( ch < _T('0') || ch > _T('9') ) ) Guard.Append(_T('_'));
         else Guard.Append(ch);
     }
     
@@ -216,7 +173,7 @@ bool wxsWindowRes::GenerateEmptySources()
     Content.Replace(_T("$(Guard)"),Guard,true);
     Content.Replace(_T("$(ClassName)"),ClassName,true);
     Content.Replace(_T("$(BaseClassName)"),GetWidgetClass(),true);
-    fprintf(Fl,"%s",(const char*)Content.mb_str());
+    fprintf(Fl,"%s",Content.mb_str());
     fclose(Fl);
     
     Fl = fopen(GetProject()->GetProjectFileName(SrcFile).mb_str(),"wt");
@@ -225,22 +182,7 @@ bool wxsWindowRes::GenerateEmptySources()
     Content.Replace(_T("$(Include)"),Include,true);
     Content.Replace(_T("$(ClassName)"),ClassName,true);
     Content.Replace(_T("$(BaseClassName)"),GetWidgetClass(),true);
-    switch ( Type )
-    {
-    	case Dialog:
-            Content.Replace(_T("$(BaseClassCtor)"),_T("wxDialog(parent,id,_T(\"\"),wxDefaultPosition,wxDefaultSize)"),true);
-            break;
-            
-        case Frame:
-            Content.Replace(_T("$(BaseClassCtor)"),_T("wxFrame(parent,id,_T(\"\"))"),true);
-            break;
-            
-        case Panel:
-            Content.Replace(_T("$(BaseClassCtor)"),_T("wxPanel(parent,id)"),true);
-            break;
-            
-        default:;
-    }
+    Content.Replace(_T("$(BaseClassCtor)"),GetConstructor(),true);
     fprintf(Fl,"%s",(const char*)Content.mb_str());
     fclose(Fl);
     return true;
@@ -248,96 +190,136 @@ bool wxsWindowRes::GenerateEmptySources()
 
 void wxsWindowRes::NotifyChange()
 {
+	// Nothing to be done when edit xrc file only
+	if ( GetEditMode() == wxsResFile ) return;
+
+    // Regenerating source code
+    
 	assert ( GetProject() != NULL );
-	
 	UpdateWidgetsVarNameId();
 	
-	#if 1
-	
+    // TODO (SpOoN#1#): find tab size in settings
 	int TabSize = 4;
 	int GlobalTabSize = 2 * TabSize;
-	
-	// Generating producing code
-	wxsCodeGen Gen(RootWidget,TabSize,TabSize);
-	
-	// Creating code header
 
-	wxString CodeHeader = wxString::Format(_T("//(*Initialize(%s)"),GetClassName().c_str());
+//------------------------------
+// Generating initializing code
+//------------------------------
+	
+	wxString CodeHeader = wxString::Format(wxsBHeaderF("Initialize"),GetClassName().c_str());
 	wxString Code = CodeHeader + _T("\n");
 	
 	// Creating local and global declarations
-	
 	wxString GlobalCode;
 	bool WasDeclaration = false;
 	AddDeclarationsReq(RootWidget,Code,GlobalCode,TabSize,GlobalTabSize,WasDeclaration);
 	if ( WasDeclaration )
 	{
-		Code.Append('\n');
+		Code.Append(_T('\n'));
 	}
 		
 	// Creating window-generating code
-	
-	Code.Append(Gen.GetCode());
-	Code.Append(' ',TabSize);
-	
-// TODO (SpOoN#1#): Apply title and centered properties for frame and dialog
+
+    if ( GetEditMode() == wxsResSource )
+    {
+        // Generating producing code
+        wxsCodeGen Gen(RootWidget,TabSize,TabSize);
+        Code.Append(Gen.GetCode());
+        Code.Append(ResSetUpCode(TabSize));
+        Code.Append(_T(' '),TabSize);
+    }
+    else if ( GetEditMode() == wxsResFile | wxsResSource )
+    {
+    	// Writing new Xrc file
+        TiXmlDocument* Doc = GenerateXrc();
+        if ( Doc )
+        {
+            Doc->SaveFile(GetProject()->GetProjectFileName(XrcFile).mb_str());
+            delete Doc;
+        }
+        
+        // No local variables - clearing the code
+        Code = CodeHeader;
+        Code.Append(_T('\n'));
+        Code.Append(GetXrcLoadingCode(TabSize));
+        Code.Append(_T('\n'));
+        Code.Append(_T(' '),TabSize);
+    	
+    	// Loading all controls
+    	GenXrcFetchingCode(Code,RootWidget,TabSize);
+    }
 	
 
 	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(SrcFile),CodeHeader,Code);
 	
-	// Creating global declarations
+//---------------------------------
+// Generating variable declarations
+//---------------------------------
 	
-	CodeHeader.Printf(_T("//(*Declarations(%s)"),GetClassName().c_str());
+	CodeHeader.Printf(wxsBHeaderF("Declarations"),GetClassName().c_str());
 	Code = CodeHeader + _T("\n") + GlobalCode;
 	Code.Append(' ',GlobalTabSize);
 	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(HFile),CodeHeader,Code);
 	
-	// Creating set of ids
-	wxArrayString IdsArray;
-	BuildIdsArray(RootWidget,IdsArray);
-	CodeHeader.Printf(_T("//(*Identifiers(%s)"),GetClassName().c_str());
-	Code = CodeHeader;
-	Code.Append(_T('\n'));
-	Code.Append(_T(' '),GlobalTabSize);
-	Code.Append(_T("enum Identifiers\n"));
-	Code.Append(_T(' '),GlobalTabSize);
-	Code.Append(_T('{'));
-	IdsArray.Sort();
-	wxString Previous = _T("");
-	bool First = true;
-	for ( size_t i = 0; i<IdsArray.Count(); ++i )
-	{
-		if ( IdsArray[i] != Previous )
-		{
-			Previous = IdsArray[i];
-			Code.Append( _T('\n') );
-			Code.Append( _T(' '), GlobalTabSize + TabSize );
-			Code.Append( Previous );
-			if ( First )
-			{
-				Code.Append( _T(" = 0x1000") );
-				First = false;
-			}
-			if ( i < IdsArray.Count() - 1 )
-			{
-                Code.Append( _T(',') );
-			}
-		}
-	}
-	Code.Append( _T('\n') );
-	Code.Append( _T(' '), GlobalTabSize );
-	Code.Append( _T("};\n") );
-	Code.Append( _T(' '), GlobalTabSize );
-	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(HFile),CodeHeader,Code);
+//---------------------------------
+// Generating Identifiers
+//---------------------------------
+
+    CodeHeader.Printf(wxsBHeaderF("Identifiers"),GetClassName().c_str());
+    Code = CodeHeader;
+    Code.Append(_T('\n'));
+    Code.Append(_T(' '),GlobalTabSize);
+    if ( GetEditMode() == wxsResSource )
+    {
+        wxArrayString IdsArray;
+        BuildIdsArray(RootWidget,IdsArray);
+        Code.Append(_T("enum Identifiers\n"));
+        Code.Append(_T(' '),GlobalTabSize);
+        Code.Append(_T('{'));
+        IdsArray.Sort();
+        wxString Previous = _T("");
+        bool First = true;
+        for ( size_t i = 0; i<IdsArray.Count(); ++i )
+        {
+            if ( IdsArray[i] != Previous )
+            {
+                Previous = IdsArray[i];
+                Code.Append( _T('\n') );
+                Code.Append( _T(' '), GlobalTabSize + TabSize );
+                Code.Append( Previous );
+                if ( First )
+                {
+                    Code.Append( _T(" = 0x1000") );
+                    First = false;
+                }
+                if ( i < IdsArray.Count() - 1 )
+                {
+                    Code.Append( _T(',') );
+                }
+            }
+        }
+        Code.Append( _T('\n') );
+        Code.Append( _T(' '), GlobalTabSize );
+        Code.Append( _T("};\n") );
+        Code.Append( _T(' '), GlobalTabSize );
+    }
+    wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(HFile),CodeHeader,Code);
 	
-	// Collecting all include files
+//---------------------------------
+// Generating Includes
+//---------------------------------
+
 	wxArrayString HeadersArray;
 	BuildHeadersArray(RootWidget,HeadersArray);
 	HeadersArray.Add(_T("<wx/intl.h>"));
+	if ( GetEditMode() == wxsResSource | wxsResFile )
+	{
+		HeadersArray.Add(_T("<wx/xrc/xmlres.h>"));
+	}
 	HeadersArray.Sort();
-	CodeHeader.Printf(_T("//(*Headers(%s)"),GetClassName().c_str());
+	CodeHeader.Printf(wxsBHeaderF("Headers"),GetClassName().c_str());
 	Code = CodeHeader;
-	Previous = _T("");
+	wxString Previous = _T("");
 	for ( size_t i = 0; i<HeadersArray.Count(); i++ )
 	{
 		if ( HeadersArray[i] != Previous )
@@ -349,10 +331,7 @@ void wxsWindowRes::NotifyChange()
 	}
 	Code.Append(_T('\n'));
 	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(HFile),CodeHeader,Code);
-	
 	UpdateEventTable();
-	
-	#endif
 }
 
 void wxsWindowRes::AddDeclarationsReq(wxsWidget* Widget,wxString& LocalCode,wxString& GlobalCode,int LocalTabSize,int GlobalTabSize,bool& WasLocal)
@@ -376,18 +355,6 @@ void wxsWindowRes::AddDeclarationsReq(wxsWidget* Widget,wxString& LocalCode,wxSt
 		}
 		AddDeclarationsReq(Child,LocalCode,GlobalCode,LocalTabSize,GlobalTabSize,WasLocal);
 	}
-}
-
-inline const wxChar* wxsWindowRes::GetWidgetClass(bool UseRes)
-{
-	switch ( Type )
-	{
-		case Dialog: return _T("wxDialog");
-		case Frame:  return _T("wxFrame");
-		case Panel:  return UseRes ? _T("wxPanelr") : _T("wxPanel");
-	}
-	
-	return _T("");
 }
 
 void wxsWindowRes::UpdateWidgetsVarNameId()
@@ -736,21 +703,51 @@ void wxsWindowRes::BuildHeadersArray(wxsWidget* Widget,wxArrayString& Array)
 
 void wxsWindowRes::UpdateEventTable()
 {
+	int TabSize = 4;
 	wxString CodeHeader;
 	CodeHeader.Printf(_T("//(*EventTable(%s)"),ClassName.c_str());
 	wxString Code = CodeHeader;
 	Code.Append(_T('\n'));
-	CollectEventTableEnteries(Code,RootWidget);
+	CollectEventTableEnteries(Code,RootWidget,TabSize);
 	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(GetSourceFile()),CodeHeader,Code);
 }
 
-void wxsWindowRes::CollectEventTableEnteries(wxString& Code,wxsWidget* Widget)
+void wxsWindowRes::CollectEventTableEnteries(wxString& Code,wxsWidget* Widget,int TabSize)
 {
 	int Cnt = Widget->GetChildCount();
 	for ( int i=0; i<Cnt; i++ )
 	{
 		wxsWidget* Child = Widget->GetChild(i);
-		Code += Child->GetEvents()->GetArrayEnteries(4);
-		CollectEventTableEnteries(Code,Child);
+		Code += Child->GetEvents()->GetArrayEnteries(TabSize);
+		CollectEventTableEnteries(Code,Child,TabSize);
 	}
+}
+
+void wxsWindowRes::GenXrcFetchingCode(wxString& Code,wxsWidget* Widget,int TabSize)
+{
+	int Cnt = Widget->GetChildCount();
+	for ( int i=0; i<Cnt; i++ )
+	{
+		wxsWidget* Child = Widget->GetChild(i);
+		if ( Child->GetBaseParams().IsMember )
+		{
+			Code.Append(Child->GetBaseParams().VarName);
+			Code.Append(_T(" = XRCCTRL(*this,\""));
+			Code.Append(Child->GetBaseParams().IdName);
+			Code.Append(_T("\","));
+			Code.Append(Child->GetInfo().Name);
+			Code.Append(_T(");\n"));
+			Code.Append(_T(' '),TabSize);
+		}
+		GenXrcFetchingCode(Code,Child,TabSize);
+	}
+}
+
+TiXmlDocument* wxsWindowRes::GenerateXrc()
+{
+	int EMStore = GetEditMode();
+	SetEditMode(wxsResFile);
+	TiXmlDocument* Generated = GenerateXml();
+	SetEditMode(EMStore);
+	return Generated;
 }

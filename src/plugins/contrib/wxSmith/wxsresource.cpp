@@ -4,7 +4,10 @@
 
 #include <wx/msgdlg.h>
 
-wxsResource::wxsResource(wxsProject* _Project):  Editor(NULL), Project(_Project)
+wxsResource::wxsResource(wxsProject* _Project,int _EditMode):  
+    Editor(NULL), 
+    Project(_Project),
+    EditMode(_EditMode)
 {
 }
 

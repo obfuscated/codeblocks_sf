@@ -11,10 +11,12 @@
 #define XML_DIALOG_STR   "dialog"
 #define XML_FRAME_STR    "frame"
 #define XML_PANEL_STR    "panel"
-#define XML_FNAME_STR    "xrc_file"
+#define XML_FNAME_STR    "wxs_file"
 #define XML_CNAME_STR    "class"
 #define XML_SFILE_STR    "src_file"
 #define XML_HFILE_STR    "header_file"
+#define XML_XRCFILE_STR  "xrc_file"
+#define XML_EDITMODE_STR "edit_mode"
 
 
 wxsProject::wxsProject():  Integration(NotBinded), Project(NULL), DuringClear(false)
@@ -179,11 +181,14 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
             Elem;
             Elem = Elem->NextSiblingElement(XML_DIALOG_STR) )
     {
+    	wxString Mode = Elem->Attribute(XML_EDITMODE_STR);
+    	wxString Xrc = ( Mode == _T("Source") ) ? _T("") : wxString ( Elem->Attribute(XML_XRCFILE_STR), wxConvUTF8 );
         AddDialogResource(
             wxString ( Elem->Attribute(XML_FNAME_STR), wxConvUTF8 ),
             wxString ( Elem->Attribute(XML_CNAME_STR), wxConvUTF8 ),
             wxString ( Elem->Attribute(XML_SFILE_STR), wxConvUTF8 ),
-            wxString ( Elem->Attribute(XML_HFILE_STR), wxConvUTF8 ) );
+            wxString ( Elem->Attribute(XML_HFILE_STR), wxConvUTF8 ),
+            Xrc );
     }
 
     // Loading frame resources
@@ -192,11 +197,14 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
             Elem;
             Elem = Elem->NextSiblingElement(XML_FRAME_STR) )
     {
+    	wxString Mode = Elem->Attribute(XML_EDITMODE_STR);
+    	wxString Xrc = ( Mode == _T("Source") ) ? _T("") : wxString ( Elem->Attribute(XML_XRCFILE_STR), wxConvUTF8 );
         AddFrameResource(
             wxString ( Elem->Attribute(XML_FNAME_STR), wxConvUTF8 ),
             wxString ( Elem->Attribute(XML_CNAME_STR), wxConvUTF8 ),
             wxString ( Elem->Attribute(XML_SFILE_STR), wxConvUTF8 ),
-            wxString ( Elem->Attribute(XML_HFILE_STR), wxConvUTF8 ) );
+            wxString ( Elem->Attribute(XML_HFILE_STR), wxConvUTF8 ),
+            Xrc );
     }
 
     // Loading panel resources
@@ -205,29 +213,32 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
             Elem;
             Elem = Elem->NextSiblingElement(XML_PANEL_STR) )
     {
+    	wxString Mode = Elem->Attribute(XML_EDITMODE_STR);
+    	wxString Xrc = ( Mode == _T("Source") ) ? _T("") : wxString ( Elem->Attribute(XML_XRCFILE_STR), wxConvUTF8 );
         AddPanelResource(
             wxString ( Elem->Attribute(XML_FNAME_STR), wxConvUTF8 ),
             wxString ( Elem->Attribute(XML_CNAME_STR), wxConvUTF8 ),
             wxString ( Elem->Attribute(XML_SFILE_STR), wxConvUTF8 ),
-            wxString ( Elem->Attribute(XML_HFILE_STR), wxConvUTF8 ) );
+            wxString ( Elem->Attribute(XML_HFILE_STR), wxConvUTF8 ),
+            Xrc );
     }
     
     return true;
 }
 
-void wxsProject::AddDialogResource( const wxString& FileName, const wxString& ClassName, const wxString& SourceName, const wxString& HeaderName)
+void wxsProject::AddDialogResource( const wxString& FileName, const wxString& ClassName, const wxString& SourceName, const wxString& HeaderName, const wxString& XrcName)
 {
-	AddWindowResource(FileName,ClassName,SourceName,HeaderName,wxsWindowRes::Dialog);
+	AddWindowResource(FileName,ClassName,SourceName,HeaderName,XrcName,_T("Dialog"));
 }
 
-void wxsProject::AddFrameResource( const wxString& FileName, const wxString& ClassName, const wxString& SourceName, const wxString& HeaderName)
+void wxsProject::AddFrameResource( const wxString& FileName, const wxString& ClassName, const wxString& SourceName, const wxString& HeaderName, const wxString& XrcName)
 {
-	AddWindowResource(FileName,ClassName,SourceName,HeaderName,wxsWindowRes::Frame);
+	AddWindowResource(FileName,ClassName,SourceName,HeaderName,XrcName,_T("Frame"));
 }
 
-void wxsProject::AddPanelResource(const wxString& FileName, const wxString& ClassName, const wxString& SourceName, const wxString& HeaderName)
+void wxsProject::AddPanelResource(const wxString& FileName, const wxString& ClassName, const wxString& SourceName, const wxString& HeaderName, const wxString& XrcName)
 {
-	AddWindowResource(FileName,ClassName,SourceName,HeaderName,wxsWindowRes::Panel);
+	AddWindowResource(FileName,ClassName,SourceName,HeaderName,XrcName,_T("Panel"));
 }
 
 void wxsProject::AddWindowResource(
@@ -235,10 +246,10 @@ void wxsProject::AddWindowResource(
     const wxString& ClassName,
     const wxString& SourceName,
     const wxString& HeaderName,
-    int Type)
+    const wxString& XrcName,
+    const wxString& Type)
 {
-    if ( !FileName   || !*FileName   || !ClassName  || !*ClassName ||
-         !SourceName || !*SourceName || !HeaderName || !*HeaderName )
+    if ( !FileName   || !ClassName  || !SourceName || !HeaderName )
         return;
         
     if ( !CheckProjFileExists(SourceName) )
@@ -255,53 +266,53 @@ void wxsProject::AddWindowResource(
         return;
     }
 
-    /* Opening xrc data */
+    /* Opening wxs data */
 
-    wxFileName Name;
-    Name.Assign(WorkingPath.GetPath(),wxString(FileName));
+    wxString RealFileName = GetInternalFileName(FileName);
     
-    TiXmlDocument Doc(Name.GetFullPath().mb_str());
+    TiXmlDocument Doc(RealFileName.mb_str());
     TiXmlElement* Resource;
     
     if ( !  Doc.LoadFile() ||
          ! (Resource = Doc.FirstChildElement("resource")) )
     {
-        Manager::Get()->GetMessageManager()->Log(_("Couldn't load xrc data"));
+        Manager::Get()->GetMessageManager()->Log(_("Couldn't load resource data"));
         return;
     }
     
     /* Finding dialog object */
     
-    TiXmlElement* XmlDialog = Resource->FirstChildElement("object");
-    while ( XmlDialog )
+    TiXmlElement* XmlWindow = Resource->FirstChildElement("object");
+    while ( XmlWindow )
     {
-    	const char* TypeName = "";
-    	switch ( Type )
-    	{
-    		case wxsWindowRes::Dialog: TypeName = "wxDialog"; break;
-    		case wxsWindowRes::Panel:  TypeName = "wxPanel" ; break;
-    		case wxsWindowRes::Frame:  TypeName = "wxFrame" ; break;
-    	}
-        if ( !strcmp(XmlDialog->Attribute("class"),TypeName) &&
-             !strcmp(XmlDialog->Attribute("name"),ClassName.mb_str()) )
+    	wxString TypeName = _T("wx") + Type;
+        if ( !strcmp(XmlWindow->Attribute("class"),TypeName.mb_str()) &&
+             !strcmp(XmlWindow->Attribute("name"),ClassName.mb_str()) )
         {
             break;
         }
         
-        XmlDialog = XmlDialog->NextSiblingElement("object");
+        XmlWindow = XmlWindow->NextSiblingElement("object");
     }
     
-    if ( !XmlDialog ) return;
+    if ( !XmlWindow ) return;
     
     /* Creating dialog */
 
     wxsWindowRes* Res = NULL;
+    int EditMode = !XrcName ? wxsResSource : wxsResSource | wxsResFile;
     
-    switch ( Type )
+    if ( Type == _T("Dialog") )
     {
-        case wxsWindowRes::Dialog: Res = new wxsDialogRes(this,ClassName,FileName,SourceName,HeaderName); break;
-        case wxsWindowRes::Panel:  Res = new wxsPanelRes(this,ClassName,FileName,SourceName,HeaderName); break;
-        case wxsWindowRes::Frame:  Res = new wxsFrameRes(this,ClassName,FileName,SourceName,HeaderName); break;
+        Res = new wxsDialogRes(this,EditMode,ClassName,RealFileName,SourceName,HeaderName,XrcName);
+    }
+    else if ( Type == _T("Panel") )
+    {
+        Res = new wxsPanelRes(this,EditMode,ClassName,RealFileName,SourceName,HeaderName,XrcName);
+    }
+    else if ( Type == _T("Frame") )
+    {
+        Res = new wxsFrameRes(this,EditMode,ClassName,RealFileName,SourceName,HeaderName,XrcName);
     }
     
     if ( !Res )
@@ -310,7 +321,7 @@ void wxsProject::AddWindowResource(
         return;
     }
     
-    if ( ! (Res->GetRootWidget()->XmlLoad(XmlDialog))  )
+    if ( ! (Res->GetRootWidget()->XmlLoad(XmlWindow))  )
     {
         Manager::Get()->GetMessageManager()->Log(_("Couldn't load xrc data"));
         delete Res;
@@ -322,15 +333,21 @@ void wxsProject::AddWindowResource(
     Res->UpdateWidgetsVarNameId();
     if ( !Res->CheckBaseProperties(true) )
     {
-    	wxMessageBox(wxString::Format(_("Some properties for resource '%s' had invalid values and were corrected.\n"),Res->GetResourceName().c_str()));
+    	wxMessageBox(wxString::Format(_("Corrected some invalid properties for resource '%s'.\n"),Res->GetResourceName().c_str()));
     	Res->NotifyChange();
     }
     
-    switch ( Type )
+    if ( Type == _T("Dialog") )
     {
-        case wxsWindowRes::Dialog: Dialogs.push_back((wxsDialogRes*)Res); break;
-        case wxsWindowRes::Panel:  Panels.push_back((wxsPanelRes*)Res); break;
-        case wxsWindowRes::Frame:  Frames.push_back((wxsFrameRes*)Res); break;
+        Dialogs.push_back((wxsDialogRes*)Res);
+    }
+    else if ( Type == _T("Panel") )
+    {
+        Panels.push_back((wxsPanelRes*)Res);
+    }
+    else if ( Type == _T("Frame") )
+    {
+        Frames.push_back((wxsFrameRes*)Res);
     }
 }
 
@@ -352,10 +369,14 @@ TiXmlDocument* wxsProject::GenerateXml()
     {
         TiXmlElement Dlg(XML_DIALOG_STR);
         wxsDialogRes* Sett = *i;
-        Dlg.SetAttribute(XML_FNAME_STR,Sett->GetXrcFile().mb_str());
+        wxFileName WxsFile(Sett->GetWxsFile());
+        WxsFile.MakeRelativeTo(WorkingPath.GetPath());
+        Dlg.SetAttribute(XML_FNAME_STR,WxsFile.GetFullPath().mb_str());
         Dlg.SetAttribute(XML_CNAME_STR,Sett->GetClassName().mb_str());
         Dlg.SetAttribute(XML_SFILE_STR,Sett->GetSourceFile().mb_str());
         Dlg.SetAttribute(XML_HFILE_STR,Sett->GetHeaderFile().mb_str());
+        Dlg.SetAttribute(XML_XRCFILE_STR,Sett->GetXrcFile().mb_str());
+        Dlg.SetAttribute(XML_EDITMODE_STR,Sett->GetEditMode()==wxsResSource?"Source":"Xrc");
         Elem->InsertEndChild(Dlg);
     }
     
@@ -363,10 +384,14 @@ TiXmlDocument* wxsProject::GenerateXml()
     {
         TiXmlElement Frm(XML_FRAME_STR);
         wxsFrameRes* Sett = *i;
-        Frm.SetAttribute(XML_FNAME_STR,Sett->GetXrcFile().mb_str());
+        wxFileName WxsFile(Sett->GetWxsFile());
+        WxsFile.MakeRelativeTo(WorkingPath.GetPath());
+        Frm.SetAttribute(XML_FNAME_STR,WxsFile.GetFullPath().mb_str());
         Frm.SetAttribute(XML_CNAME_STR,Sett->GetClassName().mb_str());
         Frm.SetAttribute(XML_SFILE_STR,Sett->GetSourceFile().mb_str());
         Frm.SetAttribute(XML_HFILE_STR,Sett->GetHeaderFile().mb_str());
+        Frm.SetAttribute(XML_XRCFILE_STR,Sett->GetWxsFile().mb_str());
+        Frm.SetAttribute(XML_EDITMODE_STR,Sett->GetEditMode()==wxsResSource?"Source":"Xrc");
         Elem->InsertEndChild(Frm);
     }
     
@@ -374,10 +399,14 @@ TiXmlDocument* wxsProject::GenerateXml()
     {
         TiXmlElement Pan(XML_PANEL_STR);
         wxsPanelRes* Sett = *i;
-        Pan.SetAttribute(XML_FNAME_STR,Sett->GetXrcFile().mb_str());
+        wxFileName WxsFile(Sett->GetWxsFile());
+        WxsFile.MakeRelativeTo(WorkingPath.GetPath());
+        Pan.SetAttribute(XML_FNAME_STR,WxsFile.GetFullPath().mb_str());
         Pan.SetAttribute(XML_CNAME_STR,Sett->GetClassName().mb_str());
         Pan.SetAttribute(XML_SFILE_STR,Sett->GetSourceFile().mb_str());
         Pan.SetAttribute(XML_HFILE_STR,Sett->GetHeaderFile().mb_str());
+        Pan.SetAttribute(XML_XRCFILE_STR,Sett->GetWxsFile().mb_str());
+        Pan.SetAttribute(XML_EDITMODE_STR,Sett->GetEditMode()==wxsResSource?"Source":"Xrc");
         Elem->InsertEndChild(Pan);
     }
     

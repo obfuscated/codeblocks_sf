@@ -180,7 +180,6 @@ void wxsWidget::XmlAssignElement(TiXmlElement* Elem)
 bool wxsWidget::XmlLoadDefaultsT(BasePropertiesType pType)
 {
     assert ( XmlElem() != NULL );
-
     // Loading event handler enteries
     GetEvents()->XmlLoadFunctions(XmlElem());
 
@@ -250,8 +249,10 @@ bool wxsWidget::XmlLoadDefaultsT(BasePropertiesType pType)
 bool wxsWidget::XmlSaveDefaultsT(BasePropertiesType pType)
 {
     assert ( XmlElem() != NULL );
-
-    GetEvents()->XmlSaveFunctions(XmlElem());
+    if ( GetResource()->GetEditMode() != wxsResFile )
+    {
+        GetEvents()->XmlSaveFunctions(XmlElem());
+    }
 
     if ( pType & bptPosition )
     {
@@ -445,9 +446,7 @@ bool wxsWidget::XmlSaveChildren()
 {
     bool IsSizer = GetInfo().Sizer;
     bool Return = true;
-
     int Count = GetChildCount();
-
     for ( int i=0; i<Count; i++ )
     {
         wxsWidget* W = GetChild(i);

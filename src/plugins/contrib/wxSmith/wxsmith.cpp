@@ -325,18 +325,18 @@ void wxSmith::OnNewWindow(wxCommandEvent& event)
             break;
     }
     
-    wxsWindowRes::WindowResType Type = wxsWindowRes::Dialog;
+    wxString ResType = _T("Dialog");
     
-    if ( event.GetId() == NewDialogId ) Type = wxsWindowRes::Dialog;
-    else if ( event.GetId() == NewFrameId  ) Type = wxsWindowRes::Frame;
-    else if ( event.GetId() == NewPanelId  ) Type = wxsWindowRes::Panel;
+    if ( event.GetId() == NewDialogId )      ResType = _T("Dialog");
+    else if ( event.GetId() == NewFrameId  ) ResType = _T("Frame");
+    else if ( event.GetId() == NewPanelId  ) ResType = _T("Panel");
     else
     {
     	wxMessageBox(_("Internal error - invalid resource type"));
     	return;
     }
     
-    wxsNewWindowDlg Dlg(Manager::Get()->GetAppWindow(),Type);
+    wxsNewWindowDlg Dlg(Manager::Get()->GetAppWindow(),ResType);
     Dlg.ShowModal();
 }
 

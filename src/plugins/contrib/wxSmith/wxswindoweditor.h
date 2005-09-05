@@ -10,11 +10,12 @@
 
 class wxsWidget;
 class wxsDragWindow;
+class wxsWindowRes;
 
 class wxsWindowEditor : public wxsEditor
 {
 	public:
-		wxsWindowEditor(wxWindow* parent, const wxString& title,wxsResource* Resource);
+		wxsWindowEditor(wxWindow* parent, wxsWindowRes* Resource);
 		
 		virtual ~wxsWindowEditor();
 		

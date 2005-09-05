@@ -166,18 +166,22 @@ bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry,const wxString& FileName)
     wxFFile File(FileName,_T("r"));
     if ( !File.IsOpened() )
     {
+    	/*
 		wxMessageBox(wxString::Format(
 			_("Couldn't open file '%s' for reading"),
 			FileName.c_str()));
+        */
     	return false;
     }
     
     wxString Content;
     if ( !File.ReadAll(&Content) )
     {
+    	/*
 		wxMessageBox(wxString::Format(
 			_("Couldn't read from file '%s'"),
 			FileName.c_str()));
+        */
     	return false;
     }
 
@@ -185,10 +189,12 @@ bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry,const wxString& FileName)
     
     if ( Position == -1 )   
     {
+    	/*
 		wxMessageBox(wxString::Format(
 			_("Couldn't find code with header:\n\t\"%s\"\nin file '%s'"),
 			Entry->BlockHeader.c_str(),
 			FileName.c_str()));
+        */
 		return false;
     }
     
@@ -197,10 +203,12 @@ bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry,const wxString& FileName)
     Position = Content.First(_T("//*)"));
     if ( Position == -1 )
     {
+    	/*
         wxMessageBox(wxString::Format(
             _("Unfinished block of auto-generated code with header:\n\t\"%s\"\nin file '%s'"),
             Entry->BlockHeader.c_str(),
             FileName.c_str()));
+        */
         return false;
     }
     
@@ -212,17 +220,21 @@ bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry,const wxString& FileName)
     
     if ( !File.Open(FileName,_T("w")) )
     {
+    	/*
 		wxMessageBox(wxString::Format(
 			_("Couldn't open file '%s' for writing"),
 			FileName.c_str()));
+        */
     	return false;
     }
     
     if ( !File.Write(Result) )
     {
+    	/*
 		wxMessageBox(wxString::Format(
 			_("Couldn't write to file '%s'"),
 			FileName.c_str()));
+        */
     	return false;
     }
     

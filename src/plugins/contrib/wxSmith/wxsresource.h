@@ -2,6 +2,7 @@
 #define WXSRESOURCE_H
 
 #include "wxseditor.h"
+#include "wxsglobals.h"
 
 class wxsProject;
 class wxSmith;
@@ -11,7 +12,7 @@ class wxsResource
 	public:
 	
         /** Ctor */
-		wxsResource(wxsProject* Project);
+		wxsResource(wxsProject* Project,int EditMode);
 		
 		/** Dctor */
 		virtual ~wxsResource();
@@ -47,14 +48,27 @@ class wxsResource
         /** Notifying resource about content change */
         virtual void NotifyChange() { }
         
+        /** Getting current edit mode */
+        inline int GetEditMode() { return (int)EditMode & ~(int)wxsResBroken; }
+        
+        /** Setting Edit mode */
+        inline void SetEditMode(int Mode) { EditMode = Mode; }
+
+        /** Checking if this resource is broken */
+        inline bool IsResBroken() { return (EditMode & wxsResBroken) != 0; }
+        
+        /** Changing broken flag */
+        inline void SetResBroken(bool Broken) { EditMode = GetEditMode() | Broken ? wxsResBroken : 0; }
+        
+		
     protected:
     
-        /** Function shich should create editor window.
+        /** Function which should create editor window.
          *
          *  Editor window shouldn't be created when call to this function is made
          */
         virtual wxsEditor* CreateEditor() = 0;
-		
+        
     private:
     
         void EditorSaysHeIsClosing();
@@ -62,6 +76,7 @@ class wxsResource
     
         wxsEditor* Editor;
         wxsProject* Project;
+        int EditMode;
 };
 
 #endif // WXSRESOURCE_H

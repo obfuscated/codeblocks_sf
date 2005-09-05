@@ -29,4 +29,13 @@ bool ValidateIdentifier(const wxString& Name);
     _T("//**)")
 
 
+/** Flags defining type of resource edit mode */
+enum wxsResEditMode
+{
+	wxsResFile   = 0x0001,  ///< Setting this flag tells that resource will be loaded from external file (f.ex xrc)
+	wxsResSource = 0x0002,  ///< Setting this flag tells that this resource is integrated with source code
+	/*-----------------*/
+	wxsResBroken = 0x8000   ///< Setting this flag tells that resource was broken (f.ex. errors in code integration)
+};
+
 #endif
