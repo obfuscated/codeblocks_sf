@@ -15,7 +15,7 @@ class wxsStringProperty : public wxsProperty
          *                       reported, if false, update will be made only after enter
          *                       or after loosing focus
          */
-		wxsStringProperty(wxsProperties* Properties,wxString& String, bool AlwaysUpdate);
+		wxsStringProperty(wxsProperties* Properties,wxString& String, bool AlwaysUpdate,bool Long=false);
 		
 		/** Dctor */
 		virtual ~wxsStringProperty();
@@ -40,6 +40,7 @@ class wxsStringProperty : public wxsProperty
 	
         wxString& Value;
         bool AlwUpd;
+        bool IsLong;
         
         #ifdef __NO_PROPGRGID
             wxsStringPropertyWindow* Window;

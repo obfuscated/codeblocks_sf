@@ -1,6 +1,7 @@
 #include "wxsdefwidget.h"
 
 #include "properties/wxsstringlistproperty.h"
+#include "properties/wxsstringproperty.h"
 #include "wxsglobals.h"
 
 wxsDefWidget::wxsDefWidget(wxsWidgetManager* Man,wxsWindowRes* Res,BasePropertiesType pType):
@@ -244,7 +245,7 @@ void wxsDefWidget::ev2Int(int& Val1,int& Val2,const wxString& Name,const wxStrin
     }
 }
 
-void wxsDefWidget::evStr(wxString& Val,const wxString& Name,const wxString& XrcName,const wxString& PropName,wxString DefValue)
+void wxsDefWidget::evStr(wxString& Val,const wxString& Name,const wxString& XrcName,const wxString& PropName,wxString DefValue,bool Long)
 {
     switch ( evUse )
     {
@@ -282,7 +283,7 @@ void wxsDefWidget::evStr(wxString& Val,const wxString& Name,const wxString& XrcN
         {
         	if ( PropName.Length() )
         	{
-                PropertiesObject.AddProperty(PropName,Val);
+                PropertiesObject.AddProperty(PropName, new wxsStringProperty(&PropertiesObject,Val,true,Long) );
         	}
         }
     }

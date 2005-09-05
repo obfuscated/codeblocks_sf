@@ -70,8 +70,8 @@
 
 #endif
     
-wxsStringProperty::wxsStringProperty(wxsProperties* Properties,wxString& String, bool AlwaysUpdate):
-    wxsProperty(Properties), Value(String), AlwUpd(AlwaysUpdate), 
+wxsStringProperty::wxsStringProperty(wxsProperties* Properties,wxString& String, bool AlwaysUpdate,bool Long):
+    wxsProperty(Properties), Value(String), AlwUpd(AlwaysUpdate), IsLong(Long),
     #ifdef __NO_PROPGRGID
         Window(NULL)
     #else
@@ -109,7 +109,16 @@ const wxString& wxsStringProperty::GetTypeName()
 
     void wxsStringProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)
     {
-    	PGId = Grid->Append(Name,wxPG_LABEL,Value);
+    	if ( IsLong )
+    	{
+    		wxString Str = Value;
+    		Str.Replace(_T("\n"),_T("\\n"));
+    		PGId = Grid->Append( wxLongStringProperty(Name,wxPG_LABEL,Str) );
+    	}
+    	else
+    	{
+            PGId = Grid->Append(Name,wxPG_LABEL,Value);
+    	}
     }
     
     bool wxsStringProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)
@@ -117,6 +126,11 @@ const wxString& wxsStringProperty::GetTypeName()
     	if ( Id == PGId )
     	{
     		wxString Cor = Grid->GetPropertyValue(Id).GetString();
+    		if ( IsLong )
+    		{
+// FIXME (SpOoN#1#): This won't work properly when using '\n' in entered text but this is in fact bug in wxPropertyGrid
+    			Cor.Replace(_T("\\n"),_T("\n"));
+    		}
     		Value = CorrectValue(Cor);
     		if ( Value != Cor )
     		{
@@ -129,7 +143,12 @@ const wxString& wxsStringProperty::GetTypeName()
     
     void wxsStringProperty::UpdatePropGrid(wxPropertyGrid* Grid)
     {
-        Grid->SetPropertyValue(PGId,Value);
+        wxString Str = Value;
+        if ( IsLong )
+        {
+             Str.Replace(_T("\n"),_T("\\n"));
+        }
+        Grid->SetPropertyValue(PGId,Str);
     }
     
 #endif

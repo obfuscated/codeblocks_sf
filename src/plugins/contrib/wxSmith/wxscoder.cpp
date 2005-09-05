@@ -5,6 +5,8 @@
 #include <messagemanager.h>
 #include <wx/ffile.h>
 
+#include "wxsglobals.h"
+
 #define DebLog Manager::Get()->GetMessageManager()->DebugLog
 
 wxsCoder::wxsCoder():
@@ -141,7 +143,7 @@ bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry,cbEditor* Editor)
     // Beginning of this code block is in Position, now searching for end
     Ctrl->SetTargetStart(Position);
     Ctrl->SetTargetEnd(Ctrl->GetLength());
-    int End = Ctrl->SearchInTarget(_T("//*)"));
+    int End = Ctrl->SearchInTarget(wxsBEnd());
     if ( End == -1 )
     {
         wxMessageBox(wxString::Format(
@@ -200,7 +202,7 @@ bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry,const wxString& FileName)
     
     wxString Result = Content.Left(Position);
     Content.Remove(0,Position);
-    Position = Content.First(_T("//*)"));
+    Position = Content.First(wxsBEnd());
     if ( Position == -1 )
     {
     	/*
@@ -284,7 +286,7 @@ wxString wxsCoder::GetCode(const wxString& FileName,const wxString& BlockHeader)
         if ( Position == -1 ) return _T("");
         Ctrl->SetTargetStart(Position);
         Ctrl->SetTargetEnd(Ctrl->GetLength());
-        int End = Ctrl->SearchInTarget(_T("//*)"));
+        int End = Ctrl->SearchInTarget(wxsBEnd());
         if ( End == -1 ) return _T("");
         return Ctrl->GetTextRange(Position,End);
     }
@@ -296,7 +298,7 @@ wxString wxsCoder::GetCode(const wxString& FileName,const wxString& BlockHeader)
     int Position = Content.First(BlockHeader);
     if ( Position == -1 ) return _T("");
     Content.Remove(0,Position);
-    Position = Content.First(_T("//*)"));
+    Position = Content.First(wxsBEnd());
     if ( Position == -1 ) return _T("");
     Content.Remove(Position);
 	return Content;

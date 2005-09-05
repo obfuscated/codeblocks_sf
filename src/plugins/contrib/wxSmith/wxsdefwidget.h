@@ -141,7 +141,7 @@
  * \param Default - default value
  */
 #define wxsDWDefStr(Name,PropName,Default)                                  \
-        evStr(Name,_T(#Name),_T(#Name),_T(PropName),_T(Default));
+        evStr(Name,_T(#Name),_T(#Name),_T(PropName),_T(Default),false);
         
 /** Extendeed macro assigning given wxString variable with property of widget
  *
@@ -151,6 +151,26 @@
  * \param Default - default value
  */
 #define wxsDWDefStrX(Name,XrcName,PropName,Default)                         \
+        evStr(Name,_T(#Name),_T(XrcName),_T(PropName),_T(Default),false);
+
+/** Macro assigning given wxString variable with property of widget
+ *  String will be edited in long-string mode
+ *
+ * \param Name - name of Variable
+ * \param _T(PropName) - name of property in properties manager
+ * \param Default - default value
+ */
+#define wxsDWDefLongStr(Name,PropName,Default)                              \
+        evStr(Name,_T(#Name),_T(#Name),_T(PropName),_T(Default),true);
+        
+/** Extendeed macro assigning given wxString variable with property of widget
+ *
+ * \param Name - name of Variable
+ * \param _T(XrcName) - name of field used inside Xrc file
+ * \param _T(PropName) - name of property in properties manager
+ * \param Default - default value
+ */
+#define wxsDWDefLongStrX(Name,XrcName,PropName,Default)                     \
         evStr(Name,_T(#Name),_T(XrcName),_T(PropName),_T(Default));
 
 /** Macro assigning given wxArrayString variable with property of widget
@@ -233,7 +253,7 @@ class wxsDefWidget: public wxsWidget
         void evBool(bool& Val,const wxString& Name,const wxString& XrcName,const wxString& PropName,bool DefValue);
         void evInt(int& Val,const wxString& Name,const wxString& XrcName,const wxString& PropName,int DefValue);
         void ev2Int(int& Val1,int& Val2,const wxString& XrcName,const wxString& Name,const wxString& PropName,int DefValue1,int DefValue2);
-        void evStr(wxString& Val,const wxString& Name,const wxString& XrcName,const wxString& PropName,wxString DefValue);
+        void evStr(wxString& Val,const wxString& Name,const wxString& XrcName,const wxString& PropName,wxString DefValue,bool Long);
         void evStrArray(wxArrayString& Val,const wxString& Name,const wxString& XrcParentName,const wxString& XrcChildName,const wxString& PropName, int& DefValue,int SortFlag);
         
         virtual void BuildExtVars() = 0;

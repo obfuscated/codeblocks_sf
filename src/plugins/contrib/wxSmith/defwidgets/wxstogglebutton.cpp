@@ -15,6 +15,6 @@ wxsDWDefineBegin(wxsToggleButton,wxToggleButton,
     ThisWidget = new wxToggleButton(parent,id,label,pos,size,style);
     ThisWidget->SetValue(checked);
     )
-    wxsDWDefStr(label,"Label:","Label");
+    wxsDWDefLongStr(label,"Label:","Label");
     wxsDWDefBool(checked,"Checked:",false);
 wxsDWDefineEnd()

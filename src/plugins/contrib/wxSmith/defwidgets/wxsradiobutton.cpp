@@ -37,7 +37,7 @@ wxsDWDefineBegin(wxsRadioButton,wxRadioButton,
     
     )
 
-    wxsDWDefStr(label,"Label:","Label");
+    wxsDWDefLongStr(label,"Label:","Label");
     wxsDWDefBoolX(selected,"value","Selected:",false);
 
 wxsDWDefineEnd()

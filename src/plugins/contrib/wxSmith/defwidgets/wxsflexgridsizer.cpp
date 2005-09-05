@@ -56,8 +56,8 @@ bool wxsFlexGridSizer::MyXmlLoad()
     Cols = XmlGetInteger(_T("cols"));
     VGap = XmlGetInteger(_T("vgap"));
     HGap = XmlGetInteger(_T("hgap"));
-    GrowableCols = XmlGetVariable(_T("growablerows"));
-    GrowableRows = XmlGetVariable(_T("growablecols"));
+    GrowableRows = XmlGetVariable(_T("growablerows"));
+    GrowableCols = XmlGetVariable(_T("growablecols"));
     bool Ret = true;
     if ( !FixupList(GrowableCols) ) Ret = false;
     if ( !FixupList(GrowableRows) ) Ret = false;

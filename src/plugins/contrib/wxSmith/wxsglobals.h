@@ -26,7 +26,7 @@ bool ValidateIdentifier(const wxString& Name);
     
 /** Macro containing end of code block */
 #define wxsBEnd()   \
-    _T("//**)")
+    _T("//*)")
 
 
 /** Flags defining type of resource edit mode */

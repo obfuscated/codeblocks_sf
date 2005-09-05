@@ -34,7 +34,7 @@ wxsDWDefineBegin(wxsTextCtrl,wxTextCtrl,
     ThisWidget = new wxTextCtrl(parent,id,value,pos,size,style);
     if ( maxlength ) ThisWidget->SetMaxLength(maxlength);
     )
-    wxsDWDefStr(value,"Value:","Text");
+    wxsDWDefLongStr(value,"Value:","Text");
     wxsDWDefInt(maxlength,"Max length:",0);
 wxsDWDefineEnd()
 

@@ -7,61 +7,57 @@
 #include <editormanager.h>
 
 const wxChar* EmptySource =
-_T("\
-#include \"$(Include)\"\n\
-\n\
-BEGIN_EVENT_TABLE($(ClassName),$(BaseClassName))\n\
-//(*EventTable($(ClassName))\n\
-//*)\n\
-END_EVENT_TABLE()\n\
-\n\
-$(ClassName)::$(ClassName)(wxWindow* parent,wxWindowID id):\n\
-    $(BaseClassCtor)\n\
-{\n\
-    //(*Initialize($(ClassName))\n\
-    //*)\n\
-}\n\
-\n\
-$(ClassName)::~$(ClassName)()\n\
-{\n\
-}\n\
-\n\
-");
+_T("#include \"$(Include)\"\n")
+_T("\n")
+_T("BEGIN_EVENT_TABLE($(ClassName),$(BaseClassName))\n")
+wxsBHeader("EventTable","$(ClassName)") _T("\n")
+wxsBEnd() _T("\n")
+_T("END_EVENT_TABLE()\n")
+_T("\n")
+_T("$(ClassName)::$(ClassName)(wxWindow* parent,wxWindowID id):\n")
+_T("    $(BaseClassCtor)\n")
+_T("{\n")
+_T("    ") wxsBHeader("Initialize","$(ClassName)") _T("\n")
+_T("    ") wxsBEnd() _T("\n")
+_T("}\n")
+_T("\n")
+_T("$(ClassName)::~$(ClassName)()\n")
+_T("{\n")
+_T("}\n")
+_T("\n");
 
 const wxChar* EmptyHeader =
-_T("\
-#ifndef $(Guard)\n\
-#define $(Guard)\n\
-\n\
-//(*Headers($(ClassName))\n\
-#include <wx/wx.h>\n\
-//*)\n\
-\n\
-class $(ClassName): public $(BaseClassName)\n\
-{\n\
-    public:\n\
-\n\
-        $(ClassName)(wxWindow* parent,wxWindowID id = -1);\n\
-        virtual ~$(ClassName)();\n\
-\n\
-        //(*Identifiers($(ClassName))\n\
-        //*)\n\
-\n\
-    protected:\n\
-\n\
-        //(*Handlers($(ClassName))\n\
-        //*)\n\
-\n\
-        //(*Declarations($(ClassName))\n\
-        //*)\n\
-\n\
-    private:\n\
-\n\
-        DECLARE_EVENT_TABLE()\n\
-};\n\
-\n\
-#endif\n\
-");
+_T("#ifndef $(Guard)\n")
+_T("#define $(Guard)\n")
+_T("\n")
+wxsBHeader("Headers","$(ClassName)") _T("\n")
+_T("#include <wx/wx.h>\n")
+wxsBEnd() _T("\n")
+_T("\n")
+_T("class $(ClassName): public $(BaseClassName)\n")
+_T("{\n")
+_T("    public:\n")
+_T("\n")
+_T("        $(ClassName)(wxWindow* parent,wxWindowID id = -1);\n")
+_T("        virtual ~$(ClassName)();\n")
+_T("\n")
+_T("        ") wxsBHeader("Identifiers","$(ClassName)") _T("\n")
+_T("        ") wxsBEnd() _T("\n")
+_T("\n")
+_T("    protected:\n")
+_T("\n")
+_T("        ") wxsBHeader("Handlers","$(ClassName)") _T("\n")
+_T("        ") wxsBEnd() _T("\n")
+_T("\n")
+_T("        ") wxsBHeader("Declarations","$(ClassName)") _T("\n")
+_T("        ") wxsBEnd() _T("\n")
+_T("\n")
+_T("    private:\n")
+_T("\n")
+_T("        DECLARE_EVENT_TABLE()\n")
+_T("};\n")
+_T("\n")
+_T("#endif\n");
 
 
 wxsWindowRes::wxsWindowRes(
@@ -705,7 +701,7 @@ void wxsWindowRes::UpdateEventTable()
 {
 	int TabSize = 4;
 	wxString CodeHeader;
-	CodeHeader.Printf(_T("//(*EventTable(%s)"),ClassName.c_str());
+	CodeHeader.Printf(wxsBHeaderF("EventTable"),ClassName.c_str());
 	wxString Code = CodeHeader;
 	Code.Append(_T('\n'));
 	CollectEventTableEnteries(Code,RootWidget,TabSize);

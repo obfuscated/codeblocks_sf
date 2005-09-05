@@ -24,6 +24,6 @@ WXS_EV_END(wxsStaticTextEvents)
 wxsDWDefineBegin(wxsStaticText,wxStaticText,
     ThisWidget = new wxStaticText(parent,id,label,pos,size,style);
     )
-    wxsDWDefStr(label,"Label:","Label");
+    wxsDWDefLongStr(label,"Label:","Label");
 wxsDWDefineEnd()
 
