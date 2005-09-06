@@ -5,12 +5,6 @@
 #include <wx/listimpl.cpp>
 WX_DEFINE_LIST(cbTaskList);
 
-static wxSemaphore s_Semaphore;
-static wxCriticalSection s_CriticalSection;
-
-static int s_Counter = 0;
-static wxCriticalSection s_CounterCriticalSection;
-
 /// Base thread class
 class PrivateThread : public wxThread
 {
@@ -39,7 +33,7 @@ class PrivateThread : public wxThread
                     break;
 
                 // wait for signal from pool
-                s_Semaphore.Wait();
+                m_pPool->m_Semaphore.Wait();
 
                 // should we abort?
                 if (m_Abort)
@@ -54,17 +48,17 @@ class PrivateThread : public wxThread
                 if (elem.task)
                 {
                     // increment the "busy" counter
-                    s_CounterCriticalSection.Enter();
-                    ++s_Counter;
-                    s_CounterCriticalSection.Leave();
+                    m_pPool->m_CounterCriticalSection.Enter();
+                    ++m_pPool->m_Counter;
+                    m_pPool->m_CounterCriticalSection.Leave();
 
                     elem.task->Execute();
                     doneWork = true;
 
                     // decrement the "busy" counter
-                    s_CounterCriticalSection.Enter();
-                    --s_Counter;
-                    s_CounterCriticalSection.Leave();
+                    m_pPool->m_CounterCriticalSection.Enter();
+                    --m_pPool->m_Counter;
+                    m_pPool->m_CounterCriticalSection.Leave();
                 }
                 if (elem.autoDelete)
                     delete elem.task;
@@ -91,14 +85,14 @@ cbThreadPool::cbThreadPool(wxEvtHandler* owner, int id, int concurrentThreads)
     : m_pOwner(owner),
     m_ID(id),
     m_Done(true),
-    m_Batching(false)
+    m_Batching(false),
+    m_Counter(0)
 {
     SetConcurrentThreads(concurrentThreads);
 }
 
 cbThreadPool::~cbThreadPool()
 {
-    AbortAllTasks();
 	FreeThreads();
 }
 
@@ -121,7 +115,7 @@ void cbThreadPool::SetConcurrentThreads(int concurrentThreads)
 // called by PrivateThread when it's done running a task
 void cbThreadPool::OnThreadTaskDone(PrivateThread* thread)
 {
-    s_CriticalSection.Enter();
+    m_CriticalSection.Enter();
 
     // notify the owner that the task has ended
     CodeBlocksEvent evt(cbEVT_THREADTASK_ENDED, m_ID);
@@ -130,9 +124,9 @@ void cbThreadPool::OnThreadTaskDone(PrivateThread* thread)
     if (m_TaskQueue.IsEmpty())
     {
         // check no running threads are busy
-        s_CounterCriticalSection.Enter();
-        bool reallyDone = s_Counter == 0;
-        s_CounterCriticalSection.Leave();
+        m_CounterCriticalSection.Enter();
+        bool reallyDone = m_Counter == 0;
+        m_CounterCriticalSection.Leave();
 
         if (reallyDone)
         {
@@ -143,10 +137,10 @@ void cbThreadPool::OnThreadTaskDone(PrivateThread* thread)
             wxPostEvent(m_pOwner, evt);
         }
     }
-    s_CriticalSection.Leave();
+    m_CriticalSection.Leave();
 
     // make sure any waiting threads "wake-up"
-    s_Semaphore.Post();
+    m_Semaphore.Post();
 }
 
 void cbThreadPool::BatchBegin()
@@ -158,7 +152,7 @@ void cbThreadPool::BatchEnd()
 {
     m_Batching = false;
     // launch the thread (if there's room in the pool)
-    s_Semaphore.Post();
+    m_Semaphore.Post();
 }
 
 bool cbThreadPool::AddTask(cbThreadPoolTask* task, bool autoDelete)
@@ -166,15 +160,15 @@ bool cbThreadPool::AddTask(cbThreadPoolTask* task, bool autoDelete)
     // add task to the pool
     cbTaskElement* elem = new cbTaskElement(task, autoDelete);
 
-    s_CriticalSection.Enter();
+    m_CriticalSection.Enter();
     m_TaskQueue.Append(elem);
     m_Done = false;
-    s_CriticalSection.Leave();
+    m_CriticalSection.Leave();
 
     if (!m_Batching)
     {
         // launch the thread (if there's room in the pool)
-        s_Semaphore.Post();
+        m_Semaphore.Post();
     }
 
     return true;
@@ -184,7 +178,7 @@ bool cbThreadPool::AddTask(cbThreadPoolTask* task, bool autoDelete)
 // picks the first waiting cbTaskElement and removes it from the queue
 void cbThreadPool::GetNextElement(cbTaskElement& element)
 {
-    s_CriticalSection.Enter();
+    m_CriticalSection.Enter();
 
     cbTaskList::Node* node = m_TaskQueue.GetFirst();
     if (node)
@@ -195,37 +189,20 @@ void cbThreadPool::GetNextElement(cbTaskElement& element)
         m_TaskQueue.DeleteNode(node);
     }
 
-    s_CriticalSection.Leave();
+    m_CriticalSection.Leave();
 }
 
 void cbThreadPool::AbortAllTasks()
 {
     ClearTaskQueue();
-    unsigned int i;
-    for (i = 0; i < m_Threads.GetCount(); ++i)
-    {
-        PrivateThread* thread = m_Threads[i];
-        thread->Abort();
-    }
-    s_Semaphore.Post();
-
-    // Wait for all threads to terminate
-    for (i = 0; i < m_Threads.GetCount(); ++i)
-    {
-        PrivateThread* thread = m_Threads[i];
-        if(thread->IsRunning())
-        {
-            thread->Abort();
-            s_Semaphore.Post();
-            thread->Wait();
-        }
-    }
+	FreeThreads();
+	AllocThreads();
 }
 
 void cbThreadPool::ClearTaskQueue()
 {
     // delete all pending tasks set to autoDelete
-    s_CriticalSection.Enter();
+    m_CriticalSection.Enter();
     for (cbTaskList::Node* node = m_TaskQueue.GetFirst(); node; node = node->GetNext())
     {
         cbTaskElement* elem = node->GetData();
@@ -233,7 +210,7 @@ void cbThreadPool::ClearTaskQueue()
             delete elem->task;
     }
     m_TaskQueue.Clear();
-    s_CriticalSection.Leave();
+    m_CriticalSection.Leave();
 }
 
 void cbThreadPool::AllocThreads()
@@ -257,7 +234,9 @@ void cbThreadPool::FreeThreads()
     {
         PrivateThread* thread = m_Threads[i];
         thread->Abort();
+        m_Semaphore.Post();
     }
+
     wxLogNull logNo;
     for (i = 0; i < m_Threads.GetCount(); ++i)
     {
@@ -265,7 +244,7 @@ void cbThreadPool::FreeThreads()
         while(thread->IsRunning())
         {
             thread->Abort();
-            s_Semaphore.Post();
+            m_Semaphore.Post();
             thread->Wait();
         }
         thread->Delete();

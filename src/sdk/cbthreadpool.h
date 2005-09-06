@@ -69,6 +69,12 @@ class DLLIMPORT cbThreadPool
         int m_MaxThreads;
         bool m_Done;
         bool m_Batching;
+
+    private:
+        wxSemaphore m_Semaphore;
+        wxCriticalSection m_CriticalSection;
+        int m_Counter;
+        wxCriticalSection m_CounterCriticalSection;
 };
 
 #endif // CBTHREADPOOL_H
