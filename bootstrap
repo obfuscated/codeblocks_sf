@@ -5,7 +5,7 @@
 # Check for proper versions of autotools
 # We require:
 #  - autoconf 2.50+
-#  - automake 1.6+
+#  - automake 1.7+
 #  - libtool 1.4+
 
 # Deal with some gentoo-specific issues
@@ -19,8 +19,8 @@ if test -z "`autoconf --version 2>&1|head -n 1|egrep '2.5'`"; then
     exit 1;
 fi
 
-if test -z "`automake --version 2>&1|head -n 1|egrep '1.[6-9]'`"; then
-	echo "Automake 1.6 or above is required. Aborting build...";
+if test -z "`automake --version 2>&1|head -n 1|egrep '1.[7-9]'`"; then
+	echo "Automake 1.7 or above is required. Aborting build...";
 	exit 1;
 fi
 

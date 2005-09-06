@@ -16,12 +16,8 @@ AC_DEFUN([CODEBLOCKS_GET_PLATFORM],
   dnl Do the extra checks per type here
   case $CODEBLOCKS_PLATFORM in 
     gtk)
-      PKG_CHECK_MODULES(PLATFORM, gtkglextmm-1.0 libglademm-2.0);;
-      AC_CHECK_HEADERS([X11/Intrinsic.h],, [AC_MSG_ERROR("libxt headers not found")])
-      AC_CHECK_HEADERS([X11/Xaw/Command.h],, [AC_MSG_ERROR("libxaw headers not found")])
-      AC_CHECK_HEADERS([X11/extensions/Xrandr.h],, [AC_MSG_ERROR("libxrandr headers not found")],[#include <X11/Xlib.h>])
       PLATFORM_CFLAGS="-I/usr/X11R6/include"
-      PLATFORM_LIBS="-L/usr/X11R6/lib -lX11 -lXaw"
+      PLATFORM_LIBS="-L/usr/X11R6/lib -lX11"
     ;;
     Win32)
       PLATFORM_CFLAGS=""
