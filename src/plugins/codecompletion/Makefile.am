@@ -8,7 +8,7 @@ libdir = $(pkgdatadir)/plugins
 
 lib_LTLIBRARIES = libcodecompletion.la
 
-libcodecompletion_la_LDFLAGS = -module
+libcodecompletion_la_LDFLAGS = -module -version-info 0:1:0
 
 libcodecompletion_la_LIBADD = ../../sdk/libcodeblocks.la \
 				../../sdk/wxscintilla/libwxscintilla.la
@@ -25,3 +25,16 @@ libcodecompletion_la_SOURCES = cclist.cpp \
 			parser/parserthread.cpp \
 			parser/token.cpp \
 			parser/tokenizer.cpp
+
+noinst_HEADERS = cclist.h \
+			cclistctrl.h \
+			ccoptionsdlg.h \
+			ccrenderer.h \
+			classbrowser.h \
+			codecompletion.h \
+			insertclassmethoddlg.h \
+			nativeparser.h \
+			parser/parser.h \
+			parser/parserthread.h \
+			parser/token.h \
+			parser/tokenizer.h

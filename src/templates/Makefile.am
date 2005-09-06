@@ -1,4 +1,4 @@
-if LINUX
+if CODEBLOCKS_LINUX
 PLATFORM=unix
 else
 PLATFORM=win32

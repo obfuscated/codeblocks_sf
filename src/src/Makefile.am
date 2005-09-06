@@ -5,13 +5,11 @@ INCLUDES = $(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/sdk \
 			-I$(top_srcdir)/src/src/wxDockit/include
 
-if LINUX
+if CODEBLOCKS_LINUX
 AM_CPPFLAGS = -DENABLE_BINRELOC
 endif
 
 bin_PROGRAMS = codeblocks
-
-codeblocks_SOURCES = app.cpp dlgabout.cpp dlgaboutplugin.cpp environmentsettingsdlg.cpp impexpconfig.cpp main.cpp prefix.cpp printdlg.cpp startherepage.cpp
 
 codeblocks_LDFLAGS = 
 
@@ -20,3 +18,23 @@ codeblocks_LDADD =  $(WX_LIBS) \
 			-L../sdk -lcodeblocks \
 			$(WX_XRC)
 
+codeblocks_SOURCES = app.cpp \
+			dlgabout.cpp \
+			dlgaboutplugin.cpp \
+			environmentsettingsdlg.cpp \
+			impexpconfig.cpp \
+			main.cpp \
+			prefix.cpp \
+			printdlg.cpp \
+			startherepage.cpp
+
+noinst_HEADERS = app.h \
+			dlgabout.h \
+			dlgaboutplugin.h \
+			environmentsettingsdlg.h \
+			globals.h \
+			impexpconfig.h \
+			main.h \
+			prefix.h \
+			printdlg.h \
+			startherepage.h

@@ -5,7 +5,7 @@ AC_DEFUN([CODEBLOCKS_GET_PLATFORM],
 [CODEBLOCKS_PLATFORM=gtk
  AC_ARG_WITH(platform, 
              AC_HELP_STRING([--with-platform=PLATFORM],
-                            [the platform to build, Win32 or gtk(default)]),
+                            [the platform to build, win32 or gtk(default)]),
              CODEBLOCKS_PLATFORM=$withval,
              CODEBLOCKS_PLATFORM=gtk)
 
@@ -19,7 +19,7 @@ AC_DEFUN([CODEBLOCKS_GET_PLATFORM],
       PLATFORM_CFLAGS="-I/usr/X11R6/include"
       PLATFORM_LIBS="-L/usr/X11R6/lib -lX11"
     ;;
-    Win32)
+    win32)
       PLATFORM_CFLAGS=""
       PLATFORM_LIBS="-lgdi32"
     ;;

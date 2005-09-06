@@ -2,6 +2,8 @@ INCLUDES = $(WX_CXXFLAGS) -I$(top_srcdir)/src/src/wxDockit/include
 
 lib_LTLIBRARIES = libwxdockit.la
 
+libwxdockit_la_LDFLAGS = -version-info @CODEBLOCKS_VERSION_INFO@
+
 libwxdockit_la_SOURCES = src/generic/barholder.cpp \
 				src/generic/dockhost.cpp \
 				src/generic/dockpanel.cpp \
@@ -14,7 +16,7 @@ libwxdockit_la_SOURCES = src/generic/barholder.cpp \
 				src/generic/slidebar.cpp \
 				src/generic/toolbutton.cpp \
 				src/generic/util.cpp
-if LINUX
+if CODEBLOCKS_LINUX
 libwxdockit_la_SOURCES += src/gtk/dockwindow_gtk.cpp \
 				src/gtk/gdi_gtk.cpp \
 				src/gtk/pane_gtk.cpp

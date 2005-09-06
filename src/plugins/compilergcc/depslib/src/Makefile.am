@@ -16,3 +16,18 @@ libdepslib_la_SOURCES = alloc.c \
 			regexp.c \
 			search.c \
 			timestamp.c
+
+noinst_HEADERS = alloc.h \
+			cache.h \
+			depslib.h \
+			filesys.h \
+			hash.h \
+			headers.h \
+			jam.h \
+			lists.h \
+			newstr.h \
+			pathsplit.h \
+			pathsys.h \
+			regexp.h \
+			search.h \
+			timestamp.h

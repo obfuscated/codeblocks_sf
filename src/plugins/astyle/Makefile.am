@@ -9,7 +9,7 @@ libdir = $(pkgdatadir)/plugins
 
 lib_LTLIBRARIES = libastyle.la
 
-libastyle_la_LDFLAGS = -module
+libastyle_la_LDFLAGS = -module -version-info 0:1:0
 
 libastyle_la_LIBADD = ../../sdk/libcodeblocks.la \
 				../../sdk/wxscintilla/libwxscintilla.la
@@ -19,3 +19,9 @@ libastyle_la_SOURCES = astyleconfigdlg.cpp \
 			formattersettings.cpp \
 			astyle/ASBeautifier.cpp \
 			astyle/ASFormatter.cpp
+
+noinst_HEADERS = astyleconfigdlg.h \
+			astyleplugin.h \
+			formattersettings.h \
+			astyle/astyle.h \
+			astyle/compiler_defines.h

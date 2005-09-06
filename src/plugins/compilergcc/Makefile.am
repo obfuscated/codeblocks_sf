@@ -11,7 +11,7 @@ libdir = $(pkgdatadir)/plugins
 
 lib_LTLIBRARIES = libcompiler.la
 
-libcompiler_la_LDFLAGS = -module
+libcompiler_la_LDFLAGS = -module -version-info 0:1:0
 
 libcompiler_la_LIBADD = ../../sdk/libcodeblocks.la \
 				../../sdk/wxscintilla/libwxscintilla.la \
@@ -30,3 +30,17 @@ libcompiler_la_SOURCES = advancedcompileroptionsdlg.cpp \
 			compilerSDCC.cpp \
 			directcommands.cpp \
 			makefilegenerator.cpp
+
+noinst_HEADERS = advancedcompileroptionsdlg.h \
+			compilerBCC.h \
+			compilerDMC.h \
+			compilererrors.h \
+			compilergcc.h \
+			compilermessages.h \
+			compilerMINGW.h \
+			compilerMSVC.h \
+			compileroptionsdlg.h \
+			compilerOW.h \
+			compilerSDCC.h \
+			directcommands.h \
+			makefilegenerator.h

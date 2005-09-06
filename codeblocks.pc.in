@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+plugindir=@datadir@/@PACKAGE@/plugins
+sharedir=@datadir@
+
+Name: codeblocks
+Description: Code::Blocks IDE
+Version: @VERSION@
+Libs: -L${libdir} -lcodeblocks -lwxscintilla
+Cflags: -I${includedir}/@PACKAGE@

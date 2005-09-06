@@ -7,6 +7,8 @@ AM_CPPFLAGS = -DSCI_LEXER -DLINK_LEXERS -DGTK
 
 lib_LTLIBRARIES = libwxscintilla.la
 
+libwxscintilla_la_LDFLAGS = -version-info @CODEBLOCKS_VERSION_INFO@
+
 libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 src/ScintillaWX.cpp \
 src/wxscintilla.cpp \
@@ -86,3 +88,35 @@ src/scintilla/src/UniConversion.cxx \
 src/scintilla/src/ViewStyle.cxx \
 src/scintilla/src/WindowAccessor.cxx \
 src/scintilla/src/XPM.cxx
+
+pkginclude_HEADERS = include/wx/wxscintilla.h \
+src/scintilla/include/Accessor.h \
+src/scintilla/include/KeyWords.h \
+src/scintilla/include/Platform.h \
+src/scintilla/include/PropSet.h \
+src/scintilla/include/SString.h \
+src/scintilla/include/SciLexer.h \
+src/scintilla/include/Scintilla.h \
+src/scintilla/include/ScintillaWidget.h \
+src/scintilla/include/WindowAccessor.h \
+src/scintilla/src/AutoComplete.h \
+src/scintilla/src/CallTip.h \
+src/scintilla/src/CellBuffer.h \
+src/scintilla/src/ContractionState.h \
+src/scintilla/src/Document.h \
+src/scintilla/src/DocumentAccessor.h \
+src/scintilla/src/Editor.h \
+src/scintilla/src/ExternalLexer.h \
+src/scintilla/src/Indicator.h \
+src/scintilla/src/KeyMap.h \
+src/scintilla/src/LineMarker.h \
+src/scintilla/src/RESearch.h \
+src/scintilla/src/SVector.h \
+src/scintilla/src/ScintillaBase.h \
+src/scintilla/src/Style.h \
+src/scintilla/src/StyleContext.h \
+src/scintilla/src/UniConversion.h \
+src/scintilla/src/ViewStyle.h \
+src/scintilla/src/XPM.h \
+src/PlatWX.h \
+src/ScintillaWX.h

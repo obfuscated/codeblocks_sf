@@ -51,7 +51,7 @@ dnl versioning info for libtool
 dnl Note this is the ABI version which is not the same as our actual library version
 CODEBLOCKS_CURRENT=0
 CODEBLOCKS_REVISION=1
-CODEBLOCKS_AGE=1
+CODEBLOCKS_AGE=0
 CODEBLOCKS_VERSION_INFO=$CODEBLOCKS_CURRENT:$CODEBLOCKS_REVISION:$CODEBLOCKS_AGE
 AC_SUBST(CODEBLOCKS_VERSION_INFO)
 
@@ -138,6 +138,7 @@ AC_CONFIG_FILES([Makefile
 	src/tools/Makefile
 	src/tools/ConsoleRunner/Makefile
 	src/templates/Makefile
+	codeblocks.pc
 ])
 
 AC_OUTPUT
