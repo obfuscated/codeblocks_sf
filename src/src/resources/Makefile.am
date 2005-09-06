@@ -1,3 +1,12 @@
+noinst_DATA = $(srcdir)/*.xrc \
+				$(srcdir)/*.rc \
+				$(srcdir)/icons/*.xpm \
+				$(srcdir)/icons/*.ico \
+				$(srcdir)/images/*.png \
+				$(srcdir)/images/16x16/*.png \
+				$(srcdir)/start_here/*.jpg \
+				$(srcdir)/start_here/*.htm*
+
 nobase_pkgdata_DATA = resources.zip \
 				start_here.zip \
 				$(top_srcdir)/src/src/resources/icons/app_64.xpm \

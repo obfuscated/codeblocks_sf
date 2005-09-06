@@ -26,3 +26,25 @@ libwxdockit_la_SOURCES += src/msw/dockwindow_msw.cpp \
 				src/msw/pane_msw.cpp \
 				src/msw/toolbutton_msw.cpp
 endif
+
+noinst_HEADERS = include/wx/generic/toolbutton.h \
+				include/wx/barholder.h \
+				include/wx/dockhost.h \
+				include/wx/dockit_defs.h \
+				include/wx/dockpanel.h \
+				include/wx/dockwindow.h \
+				include/wx/exsplitter.h \
+				include/wx/gdi.h \
+				include/wx/gripper.h \
+				include/wx/layoutmanager.h \
+				include/wx/pane.h \
+				include/wx/slidebar.h \
+				include/wx/toolbutton.h \
+				include/wx/util.h \
+				include/wx/gtk/dockwindow.h \
+				include/wx/gtk/gdi.h \
+				include/wx/gtk/pane.h \
+				include/wx/msw/dockwindow.h \
+				include/wx/msw/gdi.h \
+				include/wx/msw/pane.h \
+				include/wx/msw/toolbutton.h
