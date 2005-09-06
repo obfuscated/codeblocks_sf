@@ -57,9 +57,6 @@ class wxsDragWindow : public wxControl
         /** Event handler for EVT_SELECT_WIDGET event */
         void OnSelectWidget(wxsEvent& event);
 
-        /** Fuunction activating one widget */
-        //void ActivateWidget(wxsWidget* Widget,bool GrayTheRest=false);
-
         /** Timer fuunction refreshing additional graphics */
         void TimerRefresh(wxTimerEvent& event);
 
@@ -136,6 +133,9 @@ class wxsDragWindow : public wxControl
         /** Flag set when repainting control after fetching background */
         bool PaintAfterFetch;
 
+        /** Flag blocking incomming widget select events */
+        bool BlockWidgetSelect;
+
         /** Updated region - will be used to fetch background */
         wxRegion FetchArea;
 
@@ -152,7 +152,14 @@ class wxsDragWindow : public wxControl
         /** Updating drag points for given widget */
         void UpdateDragPointData(wxsWidget* Widget,DragPointData** WidgetPoints);
 
+        /** Updating content of current drag points
+         *
+         * This functions updates coordinates for drag points and removes
+         * points for widgets which were removed.
+         */
         void RecalculateDragPoints();
+
+        /** Additional function used inside RecalculateDragPoints()  */
         void RecalculateDragPointsReq(wxsWidget* Widget,int& HintIndex);
 
         /** Changing cursor to one of defaults */
