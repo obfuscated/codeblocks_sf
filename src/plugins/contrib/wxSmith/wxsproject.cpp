@@ -33,11 +33,11 @@ wxsProject::IntegrationState wxsProject::BindProject(cbProject* Proj)
     Clear();
 
     /* creating new node in resource tree */
-    
+
     wxTreeCtrl* ResTree = wxSmith::Get()->GetResourceTree();
     ResTree->Expand(ResTree->GetRootItem());
     TreeItem = ResTree->AppendItem(ResTree->GetRootItem(),Proj->GetTitle());
-    
+
     /* Binding project object */
     if ( Proj && !Proj->IsLoaded() )
     {
@@ -80,18 +80,15 @@ wxsProject::IntegrationState wxsProject::BindProject(cbProject* Proj)
     }
 
     BuildTree(ResTree,TreeItem);
-    
+
     return Integration = Integrated;
 }
 
 inline void wxsProject::Clear()
 {
     DuringClear = true;
-    
-    if ( Project ) wxSmith::Get()->GetResourceTree()->Delete(TreeItem);
-    
+
     Integration = NotBinded;
-    Project = NULL;
     WorkingPath.Clear();
     ProjectPath.Clear();
 
@@ -125,6 +122,8 @@ inline void wxsProject::Clear()
     Dialogs.clear();
     Frames.clear();
     Panels.clear();
+    if ( Project ) wxSmith::Get()->GetResourceTree()->Delete(TreeItem);
+    Project = NULL;
     wxSmith::Get()->GetResourceTree()->Refresh();
     DuringClear = false;
 }
@@ -222,7 +221,7 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
             wxString ( Elem->Attribute(XML_HFILE_STR), wxConvUTF8 ),
             Xrc );
     }
-    
+
     return true;
 }
 
@@ -251,14 +250,14 @@ void wxsProject::AddWindowResource(
 {
     if ( !FileName   || !ClassName  || !SourceName || !HeaderName )
         return;
-        
+
     if ( !CheckProjFileExists(SourceName) )
     {
         Manager::Get()->GetMessageManager()->Log(_("Couldn't find source file '%s'"),SourceName.c_str());
         Manager::Get()->GetMessageManager()->Log(_("Not all resources will be loaded"));
         return;
     }
-    
+
     if ( !CheckProjFileExists(HeaderName) )
     {
         Manager::Get()->GetMessageManager()->Log(_("Couldn't find header file '%s'"),HeaderName.c_str());
@@ -269,19 +268,19 @@ void wxsProject::AddWindowResource(
     /* Opening wxs data */
 
     wxString RealFileName = GetInternalFileName(FileName);
-    
+
     TiXmlDocument Doc(RealFileName.mb_str());
     TiXmlElement* Resource;
-    
+
     if ( !  Doc.LoadFile() ||
          ! (Resource = Doc.FirstChildElement("resource")) )
     {
         Manager::Get()->GetMessageManager()->Log(_("Couldn't load resource data"));
         return;
     }
-    
+
     /* Finding dialog object */
-    
+
     TiXmlElement* XmlWindow = Resource->FirstChildElement("object");
     while ( XmlWindow )
     {
@@ -291,17 +290,17 @@ void wxsProject::AddWindowResource(
         {
             break;
         }
-        
+
         XmlWindow = XmlWindow->NextSiblingElement("object");
     }
-    
+
     if ( !XmlWindow ) return;
-    
+
     /* Creating dialog */
 
     wxsWindowRes* Res = NULL;
     int EditMode = !XrcName ? wxsResSource : wxsResSource | wxsResFile;
-    
+
     if ( Type == _T("Dialog") )
     {
         Res = new wxsDialogRes(this,EditMode,ClassName,RealFileName,SourceName,HeaderName,XrcName);
@@ -314,29 +313,29 @@ void wxsProject::AddWindowResource(
     {
         Res = new wxsFrameRes(this,EditMode,ClassName,RealFileName,SourceName,HeaderName,XrcName);
     }
-    
+
     if ( !Res )
     {
         Manager::Get()->GetMessageManager()->Log(_("Couldn't create new resource"));
         return;
     }
-    
+
     if ( ! (Res->GetRootWidget()->XmlLoad(XmlWindow))  )
     {
         Manager::Get()->GetMessageManager()->Log(_("Couldn't load xrc data"));
         delete Res;
         return;
     }
-    
+
     // Validating and correcting resource
-    
+
     Res->UpdateWidgetsVarNameId();
     if ( !Res->CheckBaseProperties(true) )
     {
     	wxMessageBox(wxString::Format(_("Corrected some invalid properties for resource '%s'.\n"),Res->GetResourceName().c_str()));
     	Res->NotifyChange();
     }
-    
+
     if ( Type == _T("Dialog") )
     {
         Dialogs.push_back((wxsDialogRes*)Res);
@@ -361,10 +360,10 @@ TiXmlDocument* wxsProject::GenerateXml()
 {
     if ( !Project ) return NULL;
     if ( Integration != Integrated ) return NULL;
-    
+
     TiXmlDocument* Doc = new TiXmlDocument();
     TiXmlNode* Elem = Doc->InsertEndChild(TiXmlElement("wxsmith"));
-    
+
     for ( DialogListI i = Dialogs.begin(); i!=Dialogs.end(); ++i )
     {
         TiXmlElement Dlg(XML_DIALOG_STR);
@@ -379,7 +378,7 @@ TiXmlDocument* wxsProject::GenerateXml()
         Dlg.SetAttribute(XML_EDITMODE_STR,Sett->GetEditMode()==wxsResSource?"Source":"Xrc");
         Elem->InsertEndChild(Dlg);
     }
-    
+
     for ( FrameListI i = Frames.begin(); i!=Frames.end(); ++i )
     {
         TiXmlElement Frm(XML_FRAME_STR);
@@ -394,7 +393,7 @@ TiXmlDocument* wxsProject::GenerateXml()
         Frm.SetAttribute(XML_EDITMODE_STR,Sett->GetEditMode()==wxsResSource?"Source":"Xrc");
         Elem->InsertEndChild(Frm);
     }
-    
+
     for ( PanelListI i = Panels.begin(); i!=Panels.end(); ++i )
     {
         TiXmlElement Pan(XML_PANEL_STR);
@@ -409,15 +408,15 @@ TiXmlDocument* wxsProject::GenerateXml()
         Pan.SetAttribute(XML_EDITMODE_STR,Sett->GetEditMode()==wxsResSource?"Source":"Xrc");
         Elem->InsertEndChild(Pan);
     }
-    
+
     return Doc;
 }
 
 void wxsProject::SaveProject()
 {
-    
+
     if ( Integration != Integrated ) return;
-    
+
     WorkingPath.SetName(wxSmithMainConfigFile);
     WorkingPath.SetExt(_T(""));
     WorkingPath.Assign(WorkingPath.GetFullPath());  // Reparsing path
@@ -459,7 +458,7 @@ void wxsProject::DeleteDialog(wxsDialogRes* Resource)
 void wxsProject::DeleteFrame(wxsFrameRes* Resource)
 {
     if ( DuringClear ) return;
-    
+
     FrameListI i;
     for ( i=Frames.begin(); i!=Frames.end(); ++i ) if ( *i == Resource ) break;
     if ( i == Frames.end() ) return;
@@ -469,7 +468,7 @@ void wxsProject::DeleteFrame(wxsFrameRes* Resource)
 void wxsProject::DeletePanel(wxsPanelRes* Resource)
 {
     if ( DuringClear ) return;
-    
+
     PanelListI i;
     for ( i=Panels.begin(); i!=Panels.end(); ++i ) if ( *i == Resource ) break;
     if ( i == Panels.end() ) return;
@@ -497,19 +496,19 @@ wxString wxsProject::GetProjectFileName(const wxString& FileName)
 bool wxsProject::AddSmithConfig()
 {
     if ( GetIntegration() != NotWxsProject ) return false;
-    
+
     if ( ! wxFileName::Mkdir(WorkingPath.GetPath(wxPATH_GET_VOLUME),0744,wxPATH_MKDIR_FULL) )
     {
         wxMessageBox(_("Couldn't create wxsmith directory in main projet's path"),_("Error"),wxOK|wxICON_ERROR);
         return false;
     }
-    
+
     Integration = Integrated;
-    
+
     SaveProject();
-    
+
     BuildTree(wxSmith::Get()->GetResourceTree(),TreeItem);
-    
+
     return true;
 }
 
@@ -553,9 +552,9 @@ wxsResource* wxsProject::FindResource(const wxString& Name)
     {
         if ( (*i)->GetResourceName() == Name ) return *i;
     }
-    
+
     return NULL;
-    
+
 }
 
 void wxsProject::SendEventToEditors(wxEvent& event)
@@ -583,4 +582,8 @@ void wxsProject::SendEventToEditors(wxEvent& event)
         	(*i)->GetEditor()->ProcessEvent(event);
         }
     }
+}
+
+wxsResourceTreeData::~wxsResourceTreeData()
+{
 }

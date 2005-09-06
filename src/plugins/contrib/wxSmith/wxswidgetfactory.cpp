@@ -34,24 +34,24 @@ void wxsWidgetFactory::Kill(wxsWidget* Widget)
     {
         // Closing properties if are set to given widget
         wxsUnselectWidget(Widget);
-        
+
         // First unbinding it from parent
         wxsWidget* Parent = Widget->GetParent();
         if ( Parent )
         {
             Parent->DelChild(Widget);
         }
-        
-        // Deleting resource tree entrry
+
         wxTreeCtrl* Tree = wxSmith::Get()->GetResourceTree();
-        if ( Tree && Widget->AssignedToTree )
+        wxTreeItemId TreeId = Widget->TreeId;
+        if ( ! Widget->AssignedToTree )
         {
-            Tree->Delete(Widget->TreeId);
+            Tree = NULL;
         }
 
         if ( Widget->GetPreview() ) Widget->KillPreview();
         if ( Widget->GetProperties() ) Widget->KillProperties();
-        
+
         // Deleting widget
         if ( Widget->GetInfo().Manager )
         {
@@ -62,6 +62,14 @@ void wxsWidgetFactory::Kill(wxsWidget* Widget)
             // Possibly unsafe
             delete Widget;
         }
+
+        // Deleting tree node at the end - when all child nodes has been already deleted
+        if ( Tree )
+        {
+            // There's something wrong when deleting TreeItemData - will do it manually
+            Tree->Delete(TreeId);
+        }
+
     }
 }
 
@@ -81,7 +89,7 @@ const wxsWidgetInfo* wxsWidgetFactory::GetNextInfo()
 void wxsWidgetFactory::RegisterManager(wxsWidgetManager* Manager)
 {
     if ( !Manager ) return;
-    
+
     int Count = Manager->GetCount();
     for ( int i = 0; i<Count; i++ )
     {

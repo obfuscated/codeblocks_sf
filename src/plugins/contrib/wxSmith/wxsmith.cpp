@@ -39,11 +39,11 @@ static int NewPanelId = wxNewId();
 class wxsResourceTree: public wxTreeCtrl
 {
     public:
-    
+
         wxsResourceTree(wxWindow* Parent):
             wxTreeCtrl(Parent,-1)
         {}
-        
+
         void OnSelectResource(wxTreeEvent& event)
         {
             wxsResourceTreeData* Data = ((wxsResourceTreeData*)GetItemData(event.GetItem()));
@@ -56,18 +56,18 @@ class wxsResourceTree: public wxTreeCtrl
                         	wxsSelectWidget(Data->Widget);
                         }
                         break;
-                        
+
                     case wxsResourceTreeData::tResource:
                         {
                         	wxsSelectRes(Data->Resource);
                         }
                         break;
-                        
+
                     default:;
                 }
             }
         }
-    
+
         DECLARE_EVENT_TABLE()
 };
 
@@ -108,7 +108,7 @@ wxSmith::wxSmith()
 	m_PluginInfo.thanksTo = _("Ann for Being\nGigi for Faworki\n\nGod for Love\n\nJaakko Salli for wxPropertyGrid");
 	m_PluginInfo.license = LICENSE_GPL;
 	m_PluginInfo.hasConfigure = true;
-	
+
 	if ( Singleton == NULL ) Singleton = this;
 }
 
@@ -122,11 +122,11 @@ void wxSmith::OnAttach()
     wxNotebook* Notebook = Manager::Get()->GetNotebook();
 	if ( Notebook )
 	{
-        // Creating main splitting objects 
-        
+        // Creating main splitting objects
+
         LeftSplitter = new wxsSplitterWindow(Notebook);
         Notebook->AddPage(LeftSplitter,_("Resources"));
-        
+
         wxPanel* ResourcesContainer = new wxPanel(LeftSplitter->GetSplitter(),-1,wxDefaultPosition,wxDefaultSize,0);
         wxPanel* PropertiesContainer = new wxPanel(LeftSplitter->GetSplitter(),-1,wxDefaultPosition,wxDefaultSize,0);
 
@@ -149,25 +149,25 @@ void wxSmith::OnAttach()
         LDNotebook->AddPage(EventsPanel,_("Events"));
         Sizer->Add(LDNotebook,1,wxGROW);
         PropertiesContainer->SetSizer(Sizer);
-        
+
         wxsPropertiesMan::Get()->PropertiesPanel = PropertiesPanel;
         wxsPropertiesMan::Get()->EventsPanel = EventsPanel;
 
         LeftSplitter->Split(ResourcesContainer,PropertiesContainer);
-        
+
         MessageManager* Messages = Manager::Get()->GetMessageManager();
         Manager::Get()->Loadxrc(_T("/wxsmith.zip#zip:*"));
-        
+
         // Initializing standard manager
-        
+
         wxsStdManager.Initialize();
-        
+
         if ( ! wxsStdManager.RegisterInFactory() )
         {
             //DebLog("Couldn't register standard widget's factory - this plugin will be useless");
         }
         // TODO (SpOoN#1#): Add other widgets
-        
+
         if ( Messages )
         {
             // Creating widgets palette ad the messages Notebook
@@ -182,7 +182,7 @@ void wxSmith::OnAttach()
         EventsPanel = NULL;
         ResourceBrowser = NULL;
 	}
-	
+
 }
 
 void wxSmith::OnRelease(bool appShutDown)
@@ -210,9 +210,9 @@ void wxSmith::BuildMenu(wxMenuBar* menuBar)
 	Menu->Append(NewDialogId,_("Add Dialog"));
 	Menu->Append(NewFrameId,_("Add Frame"));
 	Menu->Append(NewPanelId,_("Add Panel"));
-	
+
 	int ToolsPos = menuBar->FindMenu(_("&Tools"));
-	
+
 	if  ( ToolsPos == wxNOT_FOUND )
 	{
         menuBar->Append(Menu,_("wxSmith"));
@@ -237,7 +237,7 @@ void wxSmith::OnProjectClose(CodeBlocksEvent& event)
     cbProject* Proj = event.GetProject();
     ProjectMapI i = ProjectMap.find(Proj);
     if ( i == ProjectMap.end() ) return;
-    
+
     wxsProject* SmithProj = (*i).second;
     ProjectMap.erase(i);
     if ( SmithProj )
@@ -245,7 +245,7 @@ void wxSmith::OnProjectClose(CodeBlocksEvent& event)
         SmithProj->SaveProject();
         delete SmithProj;
     }
-    
+
     event.Skip();
 }
 
@@ -280,35 +280,35 @@ cbProject* wxSmith::GetCBProject(wxsProject* Proj)
 wxsProject* wxSmith::GetSmithProject(cbProject* Proj)
 {
     ProjectMapI i = ProjectMap.find(Proj);
-    
+
     if ( i == ProjectMap.end() ) return NULL;
-    
+
     return (*i).second;
 }
 
 void wxSmith::OnNewWindow(wxCommandEvent& event)
 {
     cbProject* Project = Manager::Get()->GetProjectManager()->GetActiveProject();
-    
+
     if ( !Project )
     {
         wxMessageBox(_("Please open project first"),_("Error"),wxOK|wxICON_ERROR);
         return;
     }
-    
+
     wxsProject* Proj = GetSmithProject(Project);
-    
+
     if ( !Proj )
     {
         DebLog(_("Something wrong - couldn't find assciated wxsProject"));
         return;
     }
-    
+
     switch ( Proj->GetIntegration() )
     {
         case wxsProject::NotBinded:
             return;
-            
+
         case wxsProject::NotWxsProject:
             if ( wxMessageBox(_("Active project doesn't use wxSmith.\nShould I change it ?"),
                               _("Not wxSmith project"),wxYES_NO|wxICON_EXCLAMATION ) == wxYES )
@@ -320,13 +320,13 @@ void wxSmith::OnNewWindow(wxCommandEvent& event)
                 return;
             }
             break;
-        
+
         default:
             break;
     }
-    
+
     wxString ResType = _T("Dialog");
-    
+
     if ( event.GetId() == NewDialogId )      ResType = _T("Dialog");
     else if ( event.GetId() == NewFrameId  ) ResType = _T("Frame");
     else if ( event.GetId() == NewPanelId  ) ResType = _T("Panel");
@@ -335,7 +335,7 @@ void wxSmith::OnNewWindow(wxCommandEvent& event)
     	wxMessageBox(_("Internal error - invalid resource type"));
     	return;
     }
-    
+
     wxsNewWindowDlg Dlg(Manager::Get()->GetAppWindow(),ResType);
     Dlg.ShowModal();
 }
