@@ -15,7 +15,6 @@ wxsDragWindow::wxsDragWindow(wxWindow* Cover,wxsWidget* Wdg,const wxSize& Size):
     RootWidget(Wdg), CurDragPoint(NULL), CurDragWidget(NULL), RefreshTimer(this,1),
     Background(NULL), BackFetchMode(true), PaintAfterFetch(false)
 {
-	BuildDragPoints(Wdg);
 	RefreshTimer.Start(50);
 	Background = new wxBitmap(GetSize().GetWidth(),GetSize().GetHeight());
 }
@@ -176,21 +175,48 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
 
                 // Searchign for any drag point for this widget - it will be used
                 // to shift all drag points for it
+                NewDragPoint = NULL;
                 for ( DragPointsI i = DragPoints.begin(); i!=DragPoints.end(); ++i )
                 {
                 	if ( (*i)->Widget == CurDragWidget )
                 	{
-                		NewDragPoint = CurDragPoint = *i;
+                		NewDragPoint = *i;
                 		break;
                 	}
                 }
 
+                // Haven't found drag point for this widget - new points will be
+                // added
+
+                if ( !NewDragPoint )
+                {
+                    if ( event.ControlDown() )
+                    {
+                        GrayDragPoints();
+                    }
+                    else
+                    {
+                        ClearDragPoints();
+                    }
+
+                    NewDragPoint = BuildDragPoints(CurDragWidget);
+                    BlackDragPoints(CurDragWidget);
+
+                }
+                else
+                {
+                    GrayDragPoints();
+                    BlackDragPoints(CurDragWidget);
+
+                }
+
+                CurDragPoint = NewDragPoint;
     		}
     		else
     		{
     			CurDragPoint = NewDragPoint;
-                wxsEvent SelectEvent(wxEVT_SELECT_WIDGET,0,NULL,CurDragPoint->Widget);
-                wxPostEvent(wxSmith::Get(),SelectEvent);
+    			CurDragWidget = NULL;
+                wxsSelectWidget(NewDragPoint->Widget);
     		}
 
             for ( DragPointsI i = DragPoints.begin(); i!=DragPoints.end(); ++i )
@@ -302,10 +328,8 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
             WidgetPoints[Btm]->PosX = ( WidgetPoints[LeftBtm]->PosX +  WidgetPoints[RightBtm]->PosX ) / 2;
             WidgetPoints[Btm]->PosY = WidgetPoints[LeftBtm]->PosY;
 
-            //GetParent()->Refresh();
             Refresh();
             Update();
-
         }
     }
 
@@ -349,11 +373,14 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
             }
         }
 
-        if ( event.LeftUp() && HasCapture() )
+        if ( event.LeftUp() )
         {
             CurDragPoint = NULL;
             CurDragWidget = NULL;
-        	ReleaseMouse();
+        	if ( HasCapture() )
+        	{
+        	    ReleaseMouse();
+        	}
         }
     }
 
@@ -410,7 +437,29 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
 
 void wxsDragWindow::OnSelectWidget(wxsEvent& event)
 {
-	ActivateWidget(event.GetWidget(),::wxGetKeyState(WXK_CONTROL));
+    if ( !IsInside(event.GetWidget(),RootWidget) )
+    {
+        ClearDragPoints();
+    }
+    else
+    {
+
+        if ( ::wxGetKeyState(WXK_CONTROL) )
+        {
+            GrayDragPoints();
+            BlackDragPoints(event.GetWidget());
+        }
+        else
+        {
+            ClearDragPoints();
+            BuildDragPoints(event.GetWidget());
+            BlackDragPoints(event.GetWidget());
+        }
+    }
+    BackFetchMode = true;
+    Refresh();
+    Update();
+    BackFetchMode = false;
 }
 
 void wxsDragWindow::ClearDragPoints()
@@ -422,14 +471,9 @@ void wxsDragWindow::ClearDragPoints()
     DragPoints.clear();
 }
 
-void wxsDragWindow::BuildDragPoints(wxsWidget* Widget)
+wxsDragWindow::DragPointData* wxsDragWindow::BuildDragPoints(wxsWidget* Widget)
 {
-	if ( !Widget ) return;
-
-    for ( int i = 0; i<Widget->GetChildCount(); i++ )
-    {
-    	BuildDragPoints(Widget->GetChild(i));
-    }
+	if ( !Widget ) return NULL;
 
     if ( Widget->GetPreview() )
     {
@@ -438,7 +482,6 @@ void wxsDragWindow::BuildDragPoints(wxsWidget* Widget)
         for ( int i=0; i<DragBoxTypeCnt; ++i )
         {
             WidgetPoints[i] = new DragPointData;
-            WidgetPoints[i]->Invisible = true;
             WidgetPoints[i]->Inactive = false;
         }
 
@@ -448,7 +491,11 @@ void wxsDragWindow::BuildDragPoints(wxsWidget* Widget)
         {
             DragPoints.push_back(WidgetPoints[i]);
         }
+
+        return WidgetPoints[0];
     }
+
+    return NULL;
 }
 
 void wxsDragWindow::UpdateDragPointData(wxsWidget* Widget,DragPointData** WidgetPoints)
@@ -496,11 +543,7 @@ void wxsDragWindow::UpdateDragPointData(wxsWidget* Widget,DragPointData** Widget
 void wxsDragWindow::RecalculateDragPoints()
 {
     // If there are no dragpoints we jujst build new array
-	if ( DragPoints.empty() )
-	{
-		BuildDragPoints(RootWidget);
-		return;
-	}
+	if ( DragPoints.empty() ) return;
 
 	// Setting KillMe flag for all points
 	for ( DragPointsI i = DragPoints.begin(); i != DragPoints.end(); ++i )
@@ -547,27 +590,7 @@ void wxsDragWindow::RecalculateDragPointsReq(wxsWidget* Widget,int& HintIndex)
             }
         }
 
-        if ( Index == -1 )
-        {
-            // There's new widget in this window - we create new
-            // drag points for it
-            DragPointData* WidgetPoints[DragBoxTypeCnt];
-
-            for ( int i=0; i<DragBoxTypeCnt; ++i )
-            {
-                WidgetPoints[i] = new DragPointData;
-                WidgetPoints[i]->Invisible = true;
-                WidgetPoints[i]->Inactive = false;
-            }
-
-            UpdateDragPointData(Widget,WidgetPoints);
-
-            for ( int i=0; i<DragBoxTypeCnt; ++i )
-            {
-                DragPoints.push_back(WidgetPoints[i]);
-            }
-        }
-        else
+        if ( Index != -1 )
         {
             UpdateDragPointData(Widget,DragPoints[Index]->WidgetPoints);
             HintIndex = ( Index + 1 ) % DragPoints.size();
@@ -587,18 +610,13 @@ void wxsDragWindow::SetWidget(wxsWidget* _RootWidget)
         RootWidget = _RootWidget;
         BuildDragPoints(RootWidget);
 	}
+	Refresh();
 }
 
 
 wxsWidget* wxsDragWindow::FindWidgetAtPos(int PosX,int PosY,wxsWidget* Widget)
 {
     if ( !Widget ) return NULL;
-
-    for ( int i=0; i<Widget->GetChildCount(); ++i )
-    {
-    	wxsWidget* Wdg = FindWidgetAtPos(PosX,PosY,Widget->GetChild(i));
-    	if ( Wdg ) return Wdg;
-    }
 
     int WdgX, WdgY;
     int WdgSX, WdgSY;
@@ -608,6 +626,12 @@ wxsWidget* wxsDragWindow::FindWidgetAtPos(int PosX,int PosY,wxsWidget* Widget)
 
     if ( PosX >= WdgX && PosY >= WdgY && PosX < WdgX + WdgSX && PosY < WdgY + WdgSY )
     {
+        for ( int i=0; i<Widget->GetChildCount(); ++i )
+        {
+            wxsWidget* Wdg = FindWidgetAtPos(PosX,PosY,Widget->GetChild(i));
+            if ( Wdg ) return Wdg;
+        }
+
     	return Widget;
     }
 
@@ -619,7 +643,7 @@ void wxsDragWindow::AddGraphics(wxDC& DC)
     for ( DragPointsI i = DragPoints.begin(); i != DragPoints.end(); ++i )
     {
     	DragPointData* DPD = *i;
-    	if ( (*i)->Invisible ) continue;
+//    	if ( (*i)->Invisible ) continue;
         wxColor DrawColor( DPD->Inactive ? wxColor(0x80,0x80,0x80) : wxColor(0,0,0) );
         DC.SetPen( wxPen(DrawColor,1) );
         DC.SetBrush( wxBrush(DrawColor) );
@@ -631,6 +655,7 @@ void wxsDragWindow::AddGraphics(wxDC& DC)
     }
 }
 
+/*
 void wxsDragWindow::ActivateWidget(wxsWidget* Widget,bool GrayTheRest)
 {
     for ( DragPointsI i = DragPoints.begin(); i != DragPoints.end(); ++i )
@@ -655,6 +680,7 @@ void wxsDragWindow::ActivateWidget(wxsWidget* Widget,bool GrayTheRest)
     wxClientDC DC(this);
     AddGraphics(DC);
 }
+*/
 
 void wxsDragWindow::SetCur(int Cur)
 {
@@ -710,6 +736,38 @@ void wxsDragWindow::FindAbsolutePosition(wxsWidget* Widget,int* X,int* Y)
 
     Wnd->GetPosition(X,Y);
     Wnd->GetParent()->ClientToScreen(X,Y);
+}
+
+void wxsDragWindow::GrayDragPoints()
+{
+    for ( DragPointsI i = DragPoints.begin(); i != DragPoints.end(); ++i )
+    {
+    	(*i)->Inactive = true;
+    }
+}
+
+void wxsDragWindow::BlackDragPoints(wxsWidget* Widget)
+{
+    for ( DragPointsI i = DragPoints.begin(); i != DragPoints.end(); ++i )
+    {
+        DragPointData* DPD = *i;
+        if ( DPD->Widget == Widget )
+        {
+            (*i)->Inactive = false;
+        }
+    }
+}
+
+bool wxsDragWindow::IsInside(wxsWidget* What,wxsWidget* Where )
+{
+    if ( What == Where ) return true;
+
+    int Cnt = Where->GetChildCount();
+    for ( int i=0; i<Cnt; i++ )
+    {
+        if ( IsInside(What,Where->GetChild(i)) ) return true;
+    }
+    return false;
 }
 
 BEGIN_EVENT_TABLE(wxsDragWindow,wxControl)

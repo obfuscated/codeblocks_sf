@@ -66,7 +66,7 @@ void wxsWindowEditor::BuildPreview(wxsWidget* TopWidget)
     if ( TopPreviewWindow )
     {
         wxSizer* NewSizer = new wxGridSizer(1);
-        NewSizer->Add(TopPreviewWindow,0,/*wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL|*/wxALL,50);
+        NewSizer->Add(TopPreviewWindow,0,/*wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL|*/wxALL,10);
         Scroll->SetVirtualSizeHints(1,1);
         Scroll->SetSizer(NewSizer);
         NewSizer->SetVirtualSizeHints(Scroll);
@@ -75,6 +75,8 @@ void wxsWindowEditor::BuildPreview(wxsWidget* TopWidget)
         wxSize Real = Scroll->GetSize();
         wxSize Drag(Virtual.GetWidth() > Real.GetWidth() ? Virtual.GetWidth() : Real.GetWidth(),
                     Virtual.GetHeight() > Real.GetHeight() ? Virtual.GetHeight() : Real.GetHeight());
+        // Waiting to reposition and resize all widgets
+        ::wxYield();
         DragWnd->SetSize(Drag);
         DragWnd->NotifySizeChange(Drag);
         DragWnd->SetWidget(TopWidget);

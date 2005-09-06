@@ -58,7 +58,7 @@ class wxsDragWindow : public wxControl
         void OnSelectWidget(wxsEvent& event);
 
         /** Fuunction activating one widget */
-        void ActivateWidget(wxsWidget* Widget,bool GrayTheRest=false);
+        //void ActivateWidget(wxsWidget* Widget,bool GrayTheRest=false);
 
         /** Timer fuunction refreshing additional graphics */
         void TimerRefresh(wxTimerEvent& event);
@@ -89,7 +89,7 @@ class wxsDragWindow : public wxControl
         {
         	wxsWidget* Widget;                              ///< Widget associated with this box
         	DragBoxType Type;                               ///< Type of this drag box
-        	bool Invisible;                                 ///< If true, this point is hidden
+        	//bool Invisible;                                 ///< If true, this point is hidden
         	bool Inactive;                                  ///< If true, this drag point will be drawn gray
         	bool NoAction;                                  ///< If true, thiss drag point is used to show placement of object only, not for moving or sizing
         	int PosX;                                       ///< X position of this drag point
@@ -141,14 +141,37 @@ class wxsDragWindow : public wxControl
 
         // Mics functions
 
+        /** Removing all drag points */
         void ClearDragPoints();
-        void BuildDragPoints(wxsWidget* Widget);
+
+        /** Adding drag points for given widget
+         *  \return first drag point for this widget
+         */
+        DragPointData* BuildDragPoints(wxsWidget* Widget);
+
+        /** Updating drag points for given widget */
         void UpdateDragPointData(wxsWidget* Widget,DragPointData** WidgetPoints);
+
         void RecalculateDragPoints();
         void RecalculateDragPointsReq(wxsWidget* Widget,int& HintIndex);
-        void SetCur(int Cur);
+
+        /** Changing cursor to one of defaults */
+        inline void SetCur(int Cur);
+
+        /** Finding absolute (screen-related) position of given widget */
         void FindAbsolutePosition(wxsWidget* Widget,int* X,int* Y);
+
+        /** Searching for widget at given position */
         wxsWidget* FindWidgetAtPos(int PosX,int PosY,wxsWidget* Widget);
+
+        /** Setting all current drag points to inactive (gray) */
+        void GrayDragPoints();
+
+        /** Setting drag points for given widget to active (black) */
+        void BlackDragPoints(wxsWidget* Widget);
+
+        /** Checking if given widget is inside widget tree */
+        bool IsInside(wxsWidget* What,wxsWidget* Where);
 
         DECLARE_EVENT_TABLE()
 };
