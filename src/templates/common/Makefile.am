@@ -1,0 +1,37 @@
+pkgdatadir = $(datadir)/@PACKAGE@/templates
+
+dist_pkgdata_DATA = console.cbp \
+		console-main-c.cpp \
+		console-main-cpp.cpp \
+		console.png \
+		console.template \
+		dll.png \
+		irrlicht.png \
+		irr_main.cpp \
+		ogre_gcc.cbp \
+		ogrelogo.png \
+		ogre-main.cpp \
+		ogre_vctk.cbp \
+		qt.cbp \
+		qtlogo32.png \
+		qt-main.cpp \
+		qt.template \
+		sdccapp.cbp \
+		sdccapp-main.c \
+		sdccapp.png \
+		sdccapp.template \
+		sdlapp.template \
+		sdl-cb.bmp \
+		sdl-main.cpp \
+		sdl.png \
+		staticlib.cbp \
+		staticlib-sample.c \
+		staticlib.template \
+		wx-app-ash.cpp \
+		wx-app-ash.h \
+		wx-main-ash.cpp \
+		wx-main-ash.h \
+		wx-main-s.cpp \
+		wx-main-sh.cpp \
+		wx-main-sh.h \
+		wxwidgets.png
