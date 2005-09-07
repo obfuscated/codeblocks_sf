@@ -74,12 +74,17 @@ void CompilerMINGW::Reset()
     m_Options.ClearOptions();
 	m_Options.AddOption(_("Produce debugging symbols"),
 				_T("-g"),
-				_("Debugging"), 
+				_("Debugging"),
 				_T(""),
-				true, 
-				_T("-O -O1 -O2 -O3 -Os"), 
+				true,
+				_T("-O -O1 -O2 -O3 -Os"),
 				_("You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."));
-	m_Options.AddOption(_("Profile code when executed"), _T("-pg"), _("Profiling"), _T("-pg -lgmon"));
+#ifdef __WXMSW__
+    #define GPROF_LINK "-pg -lgmon"
+#else
+    #define GPROF_LINK "-pg"
+#endif
+	m_Options.AddOption(_("Profile code when executed"), _T("-pg"), _("Profiling"), _T(GPROF_LINK));
 
     wxString category = _("Warnings");
 
@@ -191,8 +196,8 @@ AutoDetectResult CompilerMINGW::AutoDetectInstallationDir()
                 // HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Minimalist GNU for Windows 4.1_is1
             	wxString name;
             	long index;
-            	key.SetName(_T("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall"));                               
-            	//key.SetName("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion");                               
+            	key.SetName(_T("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall"));
+            	//key.SetName("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion");
                 bool ok = key.GetFirstKey(name, index);
                 while (ok && !name.StartsWith(_T("Minimalist GNU for Windows"))) {
                     ok = key.GetNextKey(name, index);

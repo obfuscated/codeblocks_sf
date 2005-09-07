@@ -24,7 +24,7 @@ AstyleConfigDlg::AstyleConfigDlg(wxWindow* parent)
 	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgAstyleConfig"));
 	wxFont font(10, wxMODERN, wxNORMAL, wxNORMAL);
 	XRCCTRL(*this, "txtSample", wxTextCtrl)->SetFont(font);
-    
+
     LoadSettings();
 }
 
@@ -43,7 +43,7 @@ void AstyleConfigDlg::SetStyle(AStylePredefinedStyle style)
             XRCCTRL(*this, "rbAnsi", wxRadioButton)->SetValue(true);
             break;
         case aspsKr:
-            sample = _T("namespace foospace {\n    int Foo() {\n        if (isBar) {\n            bar();\n            return 1;\n         }\n         else\n            return 0;\n    }\n}");
+            sample = _T("namespace foospace {\n    int Foo() {\n        if (isBar) {\n            bar();\n            return 1;\n         } else\n            return 0;\n    }\n}");
             XRCCTRL(*this, "rbKr", wxRadioButton)->SetValue(true);
             break;
         case aspsLinux:
@@ -66,7 +66,7 @@ void AstyleConfigDlg::SetStyle(AStylePredefinedStyle style)
     bool en = style != aspsCustom;
     XRCCTRL(*this, "txtSample", wxTextCtrl)->SetValue(sample);
     XRCCTRL(*this, "txtSample", wxTextCtrl)->Enable(en);
-    
+
     // disable/enable checkboxes based on style
     XRCCTRL(*this, "spnIndentation", wxSpinCtrl)->Enable(!en);
     XRCCTRL(*this, "chkUseTab", wxCheckBox)->Enable(!en);
@@ -178,6 +178,6 @@ void AstyleConfigDlg::EndModal(int retCode)
         // user pressed OK; save settings
         SaveSettings();
     }
-    
+
     wxDialog::EndModal(retCode);
 }
