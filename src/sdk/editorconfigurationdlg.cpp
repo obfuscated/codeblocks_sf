@@ -100,6 +100,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
    	XRCCTRL(*this, "chkShowEOL", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/editor/show_eol"), 0l));
    	XRCCTRL(*this, "chkStripTrailings", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/editor/eol/strip_trailing_spaces"), 1));
    	XRCCTRL(*this, "chkEnsureFinalEOL", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/editor/eol/ensure_final_line_end"), 0l));
+   	XRCCTRL(*this, "chkEnsureConsistentEOL", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/editor/eol/ensure_consistent_line_ends"), 0l));
     XRCCTRL(*this, "cmbEOLMode", wxComboBox)->SetSelection(ConfigManager::Get()->Read(_T("/editor/eol/eolmode"),0L));
 
    	
@@ -630,8 +631,6 @@ void EditorConfigurationDlg::OnAutoCompKeyword(wxCommandEvent& event)
 
 void EditorConfigurationDlg::OnOK(wxCommandEvent& event)
 {
-// TODO (rickg22#9#): Implement EOL Mode configuration
-
     ConfigManager::Get()->Write(_T("/editor/font"), XRCCTRL(*this, "lblEditorFont", wxStaticText)->GetFont().GetNativeFontInfoDesc());
 
     ConfigManager::Get()->Write(_T("/editor/auto_indent"),			XRCCTRL(*this, "chkAutoIndent", wxCheckBox)->GetValue());
@@ -653,9 +652,11 @@ void EditorConfigurationDlg::OnOK(wxCommandEvent& event)
    	ConfigManager::Get()->Write(_T("/editor/folding/fold_comments"), 		XRCCTRL(*this, "chkFoldComments", wxCheckBox)->GetValue());
    	ConfigManager::Get()->Write(_T("/editor/folding/fold_xml"), 		    XRCCTRL(*this, "chkFoldXml", wxCheckBox)->GetValue());
 
+	//eol
    	ConfigManager::Get()->Write(_T("/editor/show_eol"), 			        XRCCTRL(*this, "chkShowEOL", wxCheckBox)->GetValue());
    	ConfigManager::Get()->Write(_T("/editor/eol/strip_trailing_spaces"),    XRCCTRL(*this, "chkStripTrailings", wxCheckBox)->GetValue());
    	ConfigManager::Get()->Write(_T("/editor/eol/ensure_final_line_end"),    XRCCTRL(*this, "chkEnsureFinalEOL", wxCheckBox)->GetValue());
+   	ConfigManager::Get()->Write(_T("/editor/eol/ensure_consistent_line_ends"), XRCCTRL(*this, "chkEnsureConsistentEOL", wxCheckBox)->GetValue());
     ConfigManager::Get()->Write(_T("/editor/eol/eolmode"),                  XRCCTRL(*this, "cmbEOLMode", wxComboBox)->GetSelection());
 
 	//gutter

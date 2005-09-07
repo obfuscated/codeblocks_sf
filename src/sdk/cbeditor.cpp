@@ -514,7 +514,7 @@ void cbEditor::SetEditorStyle()
     // EOL properties
     m_pData->m_strip_trailing_spaces = ConfigManager::Get()->Read(_T("/editor/eol/strip_trailing_spaces"), 1) ? true : false;
     m_pData->m_ensure_final_line_end = ConfigManager::Get()->Read(_T("/editor/eol/ensure_final_line_end"), 0L) ? true : false;
-    m_pData->m_ensure_consistent_line_ends = true;
+    m_pData->m_ensure_consistent_line_ends = ConfigManager::Get()->Read(_T("/editor/eol/ensure_consistent_line_ends"), 0L) ? true : false;
 
     switch(ConfigManager::Get()->Read(_T("/editor/eol/eolmode"), 0L))
     {

@@ -125,6 +125,11 @@
                                   </object>
                                 </object>
                                 <object class="sizeritem">
+                                  <object class="wxCheckBox" name="chkEnsureConsistentEOL">
+                                    <label>Ensure consistent EOLs</label>
+                                  </object>
+                                </object>
+                                <object class="sizeritem">
                                     <object class="wxBoxSizer">
                                         <orient>wxHORIZONTAL</orient>
                                         <object class="sizeritem">
