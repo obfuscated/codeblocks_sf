@@ -113,8 +113,12 @@ AC_CONFIG_FILES([Makefile
 	src/sdk/tinyxml/Makefile
 	src/sdk/wxscintilla/Makefile
 	src/sdk/resources/Makefile
+	src/sdk/resources/lexers/Makefile
 	src/src/wxDockit/Makefile
 	src/src/resources/Makefile
+	src/src/resources/icons/Makefile
+	src/src/resources/images/Makefile
+	src/src/resources/images/16x16/Makefile
 	src/src/Makefile
 	src/plugins/Makefile
 	src/plugins/astyle/Makefile
@@ -138,6 +142,9 @@ AC_CONFIG_FILES([Makefile
 	src/tools/Makefile
 	src/tools/ConsoleRunner/Makefile
 	src/templates/Makefile
+	src/templates/common/Makefile
+	src/templates/unix/Makefile
+	src/templates/win32/Makefile
 	codeblocks.pc
 ])
 

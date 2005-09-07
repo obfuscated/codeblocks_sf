@@ -48,3 +48,7 @@ noinst_HEADERS = include/wx/generic/toolbutton.h \
 				include/wx/msw/gdi.h \
 				include/wx/msw/pane.h \
 				include/wx/msw/toolbutton.h
+
+EXTRA_DIST = $(srcdir)/*.txt \
+				$(srcdir)/lib/readme.txt \
+				$(srcdir)/src

@@ -1,9 +1,10 @@
-noinst_DATA = $(srcdir)/*.xrc \
-			$(srcdir)/lexers/lexer_* \
+SUBDIRS = lexers
+
+dist_noinst_DATA = $(srcdir)/*.xrc \
 			$(srcdir)/images/*.png
 
-nobase_pkgdata_DATA = manager_resources.zip $(srcdir)/lexers/lexer_*
-CLEANFILES = $(nobase_pkgdata_DATA)
+pkgdata_DATA = manager_resources.zip
+CLEANFILES = $(pkgdata_DATA)
 
 manager_resources.zip:
 	cd $(srcdir) && zip -j @builddir@/manager_resources.zip *.xrc images/*.png > /dev/null

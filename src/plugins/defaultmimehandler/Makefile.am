@@ -17,4 +17,5 @@ libdefaultmimehandler_la_SOURCES = defaultmimehandler.cpp \
 			editmimetypesdlg.cpp
 
 noinst_HEADERS = defaultmimehandler.h \
-			editmimetypesdlg.h
+			editmimetypesdlg.h \
+			mimetypesarray.h

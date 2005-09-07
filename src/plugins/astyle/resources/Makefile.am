@@ -1,3 +1,5 @@
+EXTRA_DIST = configuration.xrc
+
 pkgdata_DATA = astyle.zip
 CLEANFILES = $(pkgdata_DATA)
 

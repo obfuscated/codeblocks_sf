@@ -85,7 +85,7 @@ workspaceloader.cpp \
 xtra_classes.cpp \
 xtra_res.cpp
 
-pkginclude_HEADERS = Managers/Managers.h \
+noinst_HEADERS = Managers/Managers.h \
 Managers/StdAfx.h \
 autodetectcompilers.h \
 cbeditor.h \

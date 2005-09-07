@@ -31,3 +31,5 @@ noinst_HEADERS = alloc.h \
 			regexp.h \
 			search.h \
 			timestamp.h
+
+EXTRA_INST = main.c

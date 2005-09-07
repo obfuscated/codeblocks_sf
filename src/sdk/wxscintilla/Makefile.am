@@ -89,7 +89,7 @@ src/scintilla/src/ViewStyle.cxx \
 src/scintilla/src/WindowAccessor.cxx \
 src/scintilla/src/XPM.cxx
 
-pkginclude_HEADERS = include/wx/wxscintilla.h \
+noinst_HEADERS = include/wx/wxscintilla.h \
 src/scintilla/include/Accessor.h \
 src/scintilla/include/KeyWords.h \
 src/scintilla/include/Platform.h \
@@ -120,3 +120,27 @@ src/scintilla/src/ViewStyle.h \
 src/scintilla/src/XPM.h \
 src/PlatWX.h \
 src/ScintillaWX.h
+
+EXTRA_DIST = $(srcdir)/Readme \
+	$(srcdir)/build/BuildInfo.txt \
+	$(srcdir)/build/Makefile \
+	$(srcdir)/build/wxscintilla.* \
+	$(srcdir)/lib/dummy \
+	$(srcdir)/samples/test/*.h \
+	$(srcdir)/samples/test/*.cpp \
+	$(srcdir)/samples/test/*.cbp \
+	$(srcdir)/samples/test/*.ds* \
+	$(srcdir)/samples/test/*.rc \
+	$(srcdir)/samples/test/*.rc \
+	$(srcdir)/samples/test/*.ico \
+	$(srcdir)/website/*.css \
+	$(srcdir)/website/*.png \
+	$(srcdir)/website/*.php \
+	$(srcdir)/website/*.txt \
+	$(srcdir)/website/*.htm* \
+	$(srcdir)/website/images/*.png \
+	$(srcdir)/src/scintilla/*.txt \
+	$(srcdir)/src/scintilla/include/*.py \
+	$(srcdir)/src/scintilla/include/*.iface \
+	$(srcdir)/src/scintilla/src/*.py \
+	$(srcdir)/src/scintilla/src/*.properties

@@ -25,3 +25,9 @@ noinst_HEADERS = astyleconfigdlg.h \
 			formattersettings.h \
 			astyle/astyle.h \
 			astyle/compiler_defines.h
+
+EXTRA_DIST = astyle/astyle.html \
+			astyle/astyle_main.cpp \
+			astyle/astyle_release_notes.html \
+			astyle/INSTALL.TXT \
+			astyle/license.html
