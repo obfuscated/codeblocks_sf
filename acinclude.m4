@@ -161,4 +161,24 @@ if test "x$enable_todo" = "xyes"; then
 else
 	AC_MSG_RESULT(no)
 fi
+
+
+case $host in
+	*-*-cygwin* | *-*-mingw*)
+		AC_MSG_CHECKING(whether to build the xp-manifest plugin)
+		xpmanifest_default="yes"
+		AC_ARG_ENABLE(todo, [AC_HELP_STRING([--enable-xpmanifest], [build the xp-manifest plugin (default YES)])],,
+                       enable_xpmanifest=$xpmanifest_default)
+		AM_CONDITIONAL([BUILD_MANIFEST], [test "x$enable_xpmanifest" = "xyes"])
+		if test "x$enable_xpmanifest" = "xyes"; then
+			AC_MSG_RESULT(yes)
+		else
+			AC_MSG_RESULT(no)
+		fi
+		;;
+	*)
+		AM_CONDITIONAL([BUILD_MANIFEST], [false])
+		;;
+esac
+
 ])

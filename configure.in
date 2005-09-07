@@ -139,6 +139,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/pluginwizard/resources/Makefile
 	src/plugins/todo/Makefile
 	src/plugins/todo/resources/Makefile
+	src/plugins/xpmanifest/Makefile
 	src/tools/Makefile
 	src/tools/ConsoleRunner/Makefile
 	src/templates/Makefile
