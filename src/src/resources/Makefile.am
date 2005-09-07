@@ -17,11 +17,8 @@ nobase_pkgdata_DATA = resources.zip \
 CLEANFILES = $(nobase_pkgdata_DATA)
 
 resources.zip:
-	cd $(top_srcdir)/src/src/resources && \
-		zip  resources.zip *.xrc images/*.png images/16x16/*.png > /dev/null
+	cd $(srcdir) && zip @builddir@/resources.zip *.xrc images/*.png images/16x16/*.png > /dev/null
 	mv $(top_srcdir)/src/src/resources/resources.zip .
 
 start_here.zip:
-	cd $(top_srcdir)/src/src/resources/start_here && \
-		zip start_here.zip *.htm* *.jpg > /dev/null
-	mv $(top_srcdir)/src/src/resources/start_here/start_here.zip .
+	cd $(srcdir)/start_here && zip @builddir@/start_here.zip *.htm* *.jpg > /dev/null
