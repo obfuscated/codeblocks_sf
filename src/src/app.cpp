@@ -84,22 +84,37 @@ END_EVENT_TABLE()
 
 bool CodeBlocksApp::LoadConfig()
 {
+    if (ParseCmdLine(0L) != 0)
+        return false;
+
     SetVendorName(APP_VENDOR);
     SetAppName(APP_NAME" v"APP_VERSION);
     ConfigManager::Init(wxConfigBase::Get());
     ConfigManager::Get()->Write(_T("app_path"), GetAppPath());
-    wxString data = GetAppPath() + _T("/share/codeblocks");
-#ifndef __WXMSW__
-    if (!wxDirExists(data))
-        data = _T("/usr/local/share/codeblocks");
-    if (!wxDirExists(data))
-        data = _T("/usr/share/codeblocks");
+
+    // find out about data path
+#ifdef __WXMSW__
+    wxString data = GetAppPath(); // under windows it is under the exe dir
+#else
+    wxString data = wxT(APP_PREFIX); // under linux, get the preprocessor value
 #endif
+    data << _T("/share/codeblocks");
+    printf("data=%s, m_Prefix=%s\n", data.c_str(), m_Prefix.c_str());
+    // check if the user has passed --prefix in the command line
+    if (!m_Prefix.IsEmpty())
+        data = m_Prefix;
+    else
+    {
+        // if no --prefix passed, check for the environment variable
+        wxString env;
+        wxGetEnv(_T("CODEBLOCKS_DATA_DIR"), &env);
+        if (!env.IsEmpty())
+            data = env;
+    }
+
     ConfigManager::Get()->Write(_T("data_path"), data);
     m_HasDebugLog = ConfigManager::Get()->Read(_T("/message_manager/has_debug_log"), (long int)0) || m_HasDebugLog;
     ConfigManager::Get()->Write(_T("/message_manager/has_debug_log"), m_HasDebugLog);
-    if (ParseCmdLine(0L) != 0)
-        return false;
     return true;
 }
 
@@ -374,7 +389,7 @@ bool CodeBlocksApp::CheckResource(const wxString& res)
     	msg.Printf("Cannot find %s...\n"
     		APP_NAME" was configured to be installed in '%s'.\n"
     		"Please use the command-line switch '--prefix' or "
-            "set the DATA_PREFIX environment variable "
+            "set the CODEBLOCKS_DATA_DIR environment variable "
     		"to point where "APP_NAME" is installed,\n"
     		"or try re-installing the application...",
     		res.c_str(),
@@ -435,10 +450,7 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                 else
                 {
                     wxString val;
-                    if (parser.Found(_T("prefix"), &m_Prefix))
-                        wxSetEnv(_T("DATA_PREFIX"), m_Prefix);
-                    else
-                        wxGetEnv(_T("DATA_PREFIX"), &m_Prefix);
+                    parser.Found(_T("prefix"), &m_Prefix);
 					m_NoDDE = parser.Found(_T("no-dde"), &val);
 					m_NoAssocs = parser.Found(_T("no-check-associations"), &val);
 					m_NoSplash = parser.Found(_T("no-splash-screen"), &val);

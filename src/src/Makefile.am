@@ -6,7 +6,7 @@ INCLUDES = $(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/src/wxDockit/include
 
 if CODEBLOCKS_LINUX
-AM_CPPFLAGS = -DENABLE_BINRELOC
+AM_CPPFLAGS = -DENABLE_BINRELOC -DAPP_PREFIX="\"@prefix@\""
 endif
 
 bin_PROGRAMS = codeblocks

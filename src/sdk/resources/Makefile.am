@@ -7,4 +7,4 @@ pkgdata_DATA = manager_resources.zip
 CLEANFILES = $(pkgdata_DATA)
 
 manager_resources.zip:
-	cd $(srcdir) && zip -j @builddir@/manager_resources.zip *.xrc images/*.png > /dev/null
+	PWD=`pwd` cd $(srcdir) && zip -j $(PWD)/manager_resources.zip *.xrc images/*.png > /dev/null

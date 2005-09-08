@@ -1,0 +1,14 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Code::Blocks IDE
+Comment=Configurable and extensible IDE
+Exec=codeblocks %F
+Icon=codeblocks.png
+Terminal=false
+X-MultipleArgs=false
+Type=Application
+Categories=Application;Development;
+StartupNotify=false
+MimeType=application/x-codeblocks
+

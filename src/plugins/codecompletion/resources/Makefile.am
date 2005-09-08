@@ -2,7 +2,7 @@ pkgdata_DATA = code_completion.zip
 CLEANFILES = $(pkgdata_DATA)
 
 code_completion.zip:
-	cd $(srcdir) && zip @builddir@/code_completion.zip *.xrc > /dev/null
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/code_completion.zip *.xrc > /dev/null
 
 install-exec-local:
 	mkdir -p $(pkgdatadir)/images/codecompletion
