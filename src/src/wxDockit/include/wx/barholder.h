@@ -4,8 +4,8 @@
 // Author:      Mark McCormack
 // Modified by:
 // Created:     25/05/05
-// RCS-ID:      
-// Copyright:   
+// RCS-ID:
+// Copyright:
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -37,7 +37,7 @@ public:
     wxBarHolder() {
         Init();
     }
-    
+
     // Normal constructor
     wxBarHolder::wxBarHolder( wxWindow *parent, wxWindowID id = -1, const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize, long style = wxTAB_TRAVERSAL, const wxString& name = wxT("barholder") ) {
@@ -54,7 +54,7 @@ public:
     virtual ~wxBarHolder();
 
     // interface
-    void AddWindow( wxWindow * pWindow, const wxString & label = "", unsigned int flags = wxBF_DEFAULT );
+    void AddWindow( wxWindow * pWindow, const wxString & label = wxT(""), unsigned int flags = wxBF_DEFAULT );
     void SetSlideBar( wxSlideBar * pSlideBar );
     void ShowGripper( bool state );
     void SetHeightOverride( int override );
@@ -72,7 +72,7 @@ public:
     void OnGripBegin( wxMouseEvent &event );
     void OnGripEnd( wxMouseEvent &event );
     void OnGripMotion( wxMouseEvent &event );
-	
+
 private:
     wxSize getNonClientSize() const;
     wxSize getClientBestSize( wxWindow * pClient ) const;

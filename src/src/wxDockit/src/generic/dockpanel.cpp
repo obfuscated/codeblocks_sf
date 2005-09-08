@@ -4,11 +4,12 @@
 // Author:      Mark McCormack
 // Modified by:
 // Created:     23/02/04
-// RCS-ID:  
-// Copyright:   
+// RCS-ID:
+// Copyright:
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
+#include <wx/intl.h>
 #include <wx/dockpanel.h>
 #include <wx/dockhost.h>
 #include <wx/dockwindow.h>
@@ -35,9 +36,9 @@ BEGIN_EVENT_TABLE( wxDockPanel, wxPanel )
     EVT_GRIP_LEFTDOWN( wxDockPanel::OnGripLeftDown )
     EVT_GRIP_LEFTUP( wxDockPanel::OnGripLeftUp )
 #ifdef __WXGTK__
-	EVT_LEFT_UP( wxDockPanel::OnLeftUp )  
+	EVT_LEFT_UP( wxDockPanel::OnLeftUp )
 	EVT_MOTION( wxDockPanel::OnMouseMove )
-#endif	
+#endif
 END_EVENT_TABLE()
 
 const unsigned int gripperSize = 14;
@@ -69,26 +70,26 @@ bool wxDockPanel::Create( wxWindow *parent, wxWindowID id, const wxString& name,
     // create ourselves
     bool r =  wxPanel::Create( parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxFULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN, name );
     flags_ = flags;
-    
+
     // create default client area
     pClient_ = new wxPanel( this, 0, wxDefaultPosition, wxDefaultSize, wxCLIP_CHILDREN );
     pStockClient_ = pClient_;
-    
+
     // create grip window
     pGripWindow_ = new wxGripWindow( this, GetOrientation(), wxGdi::wxGRIP_STYLE_HEADER );
     pGripWindow_->SetLabel( parent->GetTitle() );
-    
+
     // create close window
     pCloseButton_ = new wxToolButton( this, 0 );
     pCloseButton_->SetDrawMargin( 1 );
-    pCloseButton_->SetToolTip( "Close" );
+    pCloseButton_->SetToolTip( _("Close") );
 
     return r;
 }
 
 void wxDockPanel::SetDockWindow( wxDockWindowBase * pOwner ) {
     pDockWindow_ = pOwner;
-    
+
     // assign the cursor for hover over the gripper
     pGripWindow_->SetCursor( g_gdi.GetMoveCursor() );
 }
@@ -103,7 +104,7 @@ void wxDockPanel::SetDockedHost( wxDockHost * pDockHost ) {
         pDockHost_->UpdateSize();
     }
     pDockHost_ = pDockHost;
-    
+
     // internal update
     docked_ = pDockHost ? true : false;
 
@@ -128,18 +129,18 @@ void wxDockPanel::OnPaneClose( wxCommandEvent& WXUNUSED(event) ) {
     pDockWindow_->Remove();
 }
 
-void wxDockPanel::OnGripDblClick( wxMouseEvent& WXUNUSED(event) ) { 
+void wxDockPanel::OnGripDblClick( wxMouseEvent& WXUNUSED(event) ) {
     // in gripper area
     wxDockWindow * pDockWindow = static_cast<wxDockWindow *>(GetDockWindow());
     wxASSERT(pDockWindow);
     wxLayoutManager * pLayoutManager = pDockWindow->GetLayoutManager();
     wxASSERT(pLayoutManager);
-    
+
     // undock the panel back onto the owner window
     pLayoutManager->UndockWindow( GetDockWindow() );
 }
 
-void wxDockPanel::OnGripLeftDown( wxMouseEvent& event ) { 
+void wxDockPanel::OnGripLeftDown( wxMouseEvent& event ) {
     wxDockWindow * pDockWindow = static_cast<wxDockWindow *>(GetDockWindow());
     wxASSERT(pDockWindow);
 
@@ -152,11 +153,11 @@ void wxDockPanel::OnGripLeftDown( wxMouseEvent& event ) {
 		CaptureMouse();
 	}
 	else
-#endif	
+#endif
     pDockWindow->StartDragging( curPoint.x, curPoint.y );
 }
 
-void wxDockPanel::OnGripLeftUp( wxMouseEvent& WXUNUSED(event) ) { 
+void wxDockPanel::OnGripLeftUp( wxMouseEvent& WXUNUSED(event) ) {
     wxDockWindowBase * pDockWindow = GetDockWindow();
     wxASSERT(pDockWindow);
 
@@ -166,7 +167,7 @@ void wxDockPanel::OnGripLeftUp( wxMouseEvent& WXUNUSED(event) ) {
 		pDockWindow->StopDragging( false );
 	}
 	else
-#endif	
+#endif
     pDockWindow->StopDragging();
 }
 
@@ -182,14 +183,14 @@ void wxDockPanel::OnLeftUp( wxMouseEvent& event ) {
 	// stopping any dragging
 	pDockWindow_->StopDragging();
 }
-#endif	
+#endif
 
 void wxDockPanel::UpdateSize() {
     wxWindowList & children = GetChildren();
     if( children.GetCount() == 0 ) {
         return;
     }
-   
+
     int tGripperSize = gripperSize;
     int tCloseSize = closeSize;
 
@@ -291,12 +292,12 @@ wxWindow * wxDockPanel::GetClient() {
 
 void wxDockPanel::AutoFitSingleChild() {
     if( pClientSizer_ ) return;    // already done
-    
+
     // create simple 'expand all' sizer
     pClientSizer_ = new wxBoxSizer( wxHORIZONTAL );
     pClient_->SetSizer( pClientSizer_ );
     pClient_->SetAutoLayout( true );
-    
+
     // apply to client child
     wxWindowList & children = pClient_->GetChildren();
     if( children.GetCount() != 1 ) {
@@ -315,7 +316,7 @@ wxOrientation wxDockPanel::GetOrientation() {
     if( pDockHost_ ) {
         return pDockHost_->GetOrientation();
     }
-    
+
     // getOrientation() makes no sense when panel is not docked!
     return wxHORIZONTAL;
 }
@@ -324,7 +325,7 @@ wxRect wxDockPanel::GetScreenArea() {
     // get the screen area for this panel
     wxASSERT(pDockHost_);
     wxRect r = GetRect();
-    
+
     return pDockHost_->RectToScreen( r );
 }
 
@@ -334,7 +335,7 @@ wxRect wxDockPanel::GetScreenArea( HostInfo &hi ) {
         // return all panel area
         return screenRect;
     }
-    
+
     if( GetOrientation() == wxHORIZONTAL ) {
         // return a horizontal area
         screenRect.width /= 2;
@@ -355,7 +356,7 @@ wxRect wxDockPanel::GetScreenArea( HostInfo &hi ) {
 ePlacement wxDockPanel::TestForPlacement( int sx, int sy ) {
     ePlacement placement = HIP_NONE;
     wxRect screenRect = GetScreenArea();
-    
+
     // work out which half of the panel a screen point is in
     if( GetOrientation() == wxHORIZONTAL ) {
         screenRect.width /= 2;

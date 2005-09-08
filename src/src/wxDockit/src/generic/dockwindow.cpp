@@ -4,8 +4,8 @@
 // Author:      Mark McCormack
 // Modified by:
 // Created:     23/02/04
-// RCS-ID:  
-// Copyright:   
+// RCS-ID:
+// Copyright:
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
@@ -28,7 +28,7 @@ IMPLEMENT_CLASS( wxDockWindowBase, wxMiniFrame )
 
 BEGIN_EVENT_TABLE( wxDockWindowBase, wxMiniFrame )
     EVT_MOTION( wxDockWindowBase::OnMouseMove )
-    EVT_CLOSE( wxDockWindowBase::OnClose )  
+    EVT_CLOSE( wxDockWindowBase::OnClose )
 END_EVENT_TABLE()
 
 // ----------------------------------------------------------------------------
@@ -80,7 +80,7 @@ void wxDockWindowBase::Appear() {
         if( pClientPanel_->IsDocked() ) {
             return;
         }
-        
+
         // re-dock the panel from the owner window back onto the host
         if( !applyLastDock( true ) ) {
             // could not re-dock, so just show the window floating
@@ -192,14 +192,14 @@ void wxDockWindowBase::StartDragging( int x, int y, bool needMouseCapture ) {
 
     dragging_ = true;
     haveMoved_ = false;
-    
+
     // take snapshot of starting rectangle
     startRect_ = GetRect();
-    
+
     // take account of starting mouse
     startPoint_.x = x;
     startPoint_.y = y;
-    
+
     // draw the initial drag frame (only when window is already floating)
     if( IsShown() ) {
         wxScreenDC dc;
@@ -216,13 +216,13 @@ void wxDockWindowBase::StartDragging( int x, int y, bool needMouseCapture ) {
 void wxDockWindowBase::StopDragging( bool needMouseRelease ) {
     if( !dragging_ ) return;
     dragging_ = false;
-    
+
     // clear the last drag frame
     if( prevRect_.valid ) {
         wxScreenDC dc;
         g_gdi.DrawFrame( (wxDC &)dc, prevRect_.rect, false );
     }
-    
+
     // move window?
     if( dragRect_.valid ) {
         if( newHost_.valid ) {
@@ -238,7 +238,7 @@ void wxDockWindowBase::StopDragging( bool needMouseRelease ) {
             }
         }
     }
-    
+
     // clean-up
     startRect_.Reset();
     prevRect_.Reset();
@@ -247,7 +247,7 @@ void wxDockWindowBase::StopDragging( bool needMouseRelease ) {
     	ReleaseMouse();
 	}
     newHost_.Reset();
-    
+
     // re-enables tool-tips
     wxToolTip::Enable( true );
 
@@ -284,31 +284,31 @@ void wxDockWindowBase::OnMouseMove( wxMouseEvent &e ) {
             newHost_ = pLayoutManager_->TestForHost( mx, my );
             newHost_.valid &= !BlockDocking();
         }
-        
+
         if( newHost_.valid  ) {
             // docking
             dragRect_ = newHost_.pHost->GetScreenArea( newHost_ );
         }
         else {
-            // no docking 
+            // no docking
             dragRect_ = GetRect();
             if( !IsShown() ) {
                 // if dragging whilst docked, auto-adjust window position
                 dragRect_ = GetClientRect();
-                
+
                 // account for offset within pane
                 wxPoint point( wxPoint( startPoint_.x, startPoint_.y ) );
                 dragRect_.rect.SetPosition( pLayoutManager_->PointFromScreen( point ) );
-                
+
                 // centre around cursor
                 dragRect_.rect.Offset( -(dragRect_.rect.width/2), -(dragRect_.rect.height/2) );
-                
+
                 // transpose to screen
                 dragRect_.rect = pLayoutManager_->RectToScreen( dragRect_.rect );
             }
             dragRect_.rect.Offset( mx-startPoint_.x, my-startPoint_.y );
         }
-        
+
         // draw updated drag frame
         if( prevRect_.valid ) {
             wxScreenDC dc;
@@ -316,7 +316,7 @@ void wxDockWindowBase::OnMouseMove( wxMouseEvent &e ) {
         }
         g_gdi.DrawFrame( (wxDC &)dc, dragRect_.rect, false );
 
-        // update previous        
+        // update previous
         prevRect_ = dragRect_;
     }
 }
@@ -331,14 +331,14 @@ void wxDockWindowBase::createClient() {
     // make a client sizer
     pClientSizer_ = new wxBoxSizer( wxHORIZONTAL );
     SetSizer( pClientSizer_ );
-    
+
     // auto-create our docking client
     unsigned int flags = 0x0000;
     (flags_ & wxDWC_NO_CONTROLS) ? flags |= wxDPC_NO_CONTROLS : 0;
-    pClientPanel_ = new wxDockPanel( this, 0, "dockpanel", flags );
+    pClientPanel_ = new wxDockPanel( this, 0, wxT("dockpanel"), flags );
     pClientPanel_->Show();
     pClientPanel_->SetDockWindow( this );
-    
+
     // init. the sizer
     pClientSizer_->Add( pClientPanel_, 1, wxGROW );
     Layout();

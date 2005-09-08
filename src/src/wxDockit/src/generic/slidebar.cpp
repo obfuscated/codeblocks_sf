@@ -4,11 +4,12 @@
 // Author:      Mark McCormack
 // Modified by:
 // Created:     25/05/04
-// RCS-ID:  
-// Copyright:   
+// RCS-ID:
+// Copyright:
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
+#include <wx/intl.h>
 #include <wx/slidebar.h>
 #include <wx/barholder.h>
 #include <wx/util.h>
@@ -28,7 +29,7 @@ enum eContextMenu {
 
 #define MINIMUM_HEIGHT 4    // if we are empty, this is our minimum presence
 
-#define STREAM_VERSION  "wxSlideBar-Stream-v1.0"
+#define STREAM_VERSION  wxT("wxSlideBar-Stream-v1.0")
 
 // ----------------------------------------------------------------------------
 // wxSlideBar constants & wx-macros
@@ -95,7 +96,7 @@ void wxSlideBar::OnCalculateLayout( wxCalculateLayoutEvent& event ) {
 	}
 
     wxRect areaRect = event.GetRect();
-    
+
 	// position ourselves
     int width = areaRect.GetWidth();
     int height = 0;
@@ -122,7 +123,7 @@ eSlideBarMode wxSlideBar::GetMode() {
 }
 
 void wxSlideBar::SetBarLock( bool enable ) {
-	// enable/disable bar lock 
+	// enable/disable bar lock
 	barLock_ = enable;
 
     // for all bars we own
@@ -166,7 +167,7 @@ void wxSlideBar::UpdateLayout() {
         pFrame->SendSizeEvent();
     }
     refreshBars();
-*/	
+*/
 }
 
 void wxSlideBar::DoGetSize( int * x, int * y ) const {
@@ -220,7 +221,7 @@ void wxSlideBar::OnContextItem( wxCommandEvent &event ) {
 
 	bool visible = pBarHolder->IsShown();
 	pBarHolder->Show( visible ^ true );
-	
+
     UpdateLayout();
 }
 
@@ -327,7 +328,7 @@ BarPlacementArray & wxSlideBar::CalcBarPlacement( int width, int * pAreaHeight )
             // no
             noFit = true;
         }
-        
+
         // do a 'end-of-row'
         if( finished || noFit || (mode_ == wxSLIDE_MODE_SIMPLE)  ) {
             for( unsigned int c = 0; c<rowHolders.GetCount(); c++ ) {
@@ -370,7 +371,7 @@ bool wxSlideBar::SaveToStream( wxOutputStream &stream ) {
     stream.Write( &barLock_, sizeof( barLock_ ) );
 
     // bars
-    WriteString( stream, "<layout>" );
+    WriteString( stream, wxT("<layout>") );
 
     int barCount = barList_.GetCount();
     stream.Write( &barCount, sizeof( barCount ) );
@@ -403,7 +404,7 @@ bool wxSlideBar::LoadFromStream( wxInputStream &stream ) {
     SetBarLock( barLock );
 
     wxString layoutTag = ReadString( stream );
-    if( layoutTag == "<layout>" ) {
+    if( layoutTag == wxT("<layout>") ) {
         // create a copy of the bar list
         BarHolderList tmpBarList( wxKEY_STRING );
         for( BarHolderList::Node *node = barList_.GetFirst(); node; node = node->GetNext() ) {
@@ -478,7 +479,7 @@ void wxSlideBar::createContextMenu() {
 			// add item
 			int itemId = IDM_ITEMS + c;
 			pContextMenu_->AppendCheckItem( itemId, label );
-			
+
 			// set current state
 			bool check = pBarHolder->IsShown();
 			pContextMenu_->Check( itemId, check );
@@ -495,7 +496,7 @@ void wxSlideBar::createContextMenu() {
 	if( c ) {
 		pContextMenu_->AppendSeparator();
 	}
-	pContextMenu_->AppendCheckItem( IDM_LOCK_BARS, "&Lock the bars" );
+	pContextMenu_->AppendCheckItem( IDM_LOCK_BARS, _("&Lock the bars") );
 	pContextMenu_->Check( IDM_LOCK_BARS, barLock_ );
 }
 

@@ -69,7 +69,7 @@ WX_DEFINE_LIST( DockPanelList );
 
 WX_DEFINE_LIST( DockHostList );
 
-#define STREAM_VERSION "wxDocking-Stream-v1.0"
+#define STREAM_VERSION wxT("wxDocking-Stream-v1.0")
 
 // ----------------------------------------------------------------------------
 // wxLayoutManager implementation
@@ -121,7 +121,7 @@ void wxLayoutManager::AddDefaultHosts() {
 void wxLayoutManager::AddDockHost( wxDirection dir, int initialSize, const wxString& name ) {
     // fill in name?
     wxString dockName = name;
-    if( dockName == "guessname" ) {
+    if( dockName == wxT("guessname") ) {
         switch( dir ) {
         case wxLEFT:
             dockName = wxDEFAULT_LEFT_HOST;
@@ -415,7 +415,7 @@ bool wxLayoutManager::SaveToStream( wxOutputStream &stream ) {
     WriteString( stream, STREAM_VERSION );
 
     // windows
-    WriteString( stream, "<layout>" );
+    WriteString( stream, wxT("<layout>") );
 
     int winCount = dockWindows_.GetCount();
     stream.Write( &winCount, sizeof( winCount ) );
@@ -450,7 +450,7 @@ bool wxLayoutManager::SaveToStream( wxOutputStream &stream ) {
             WriteString( stream, hi.pHost->GetName() );
         }
         else {
-            WriteString( stream, "<nohost>" );
+            WriteString( stream, wxT("<nohost>") );
         }
     }
 
@@ -495,7 +495,7 @@ bool wxLayoutManager::LoadFromStream( wxInputStream &stream ) {
     }
 
     wxString layoutTag = ReadString( stream );
-    if( layoutTag == "<layout>" ) {
+    if( layoutTag == wxT("<layout>") ) {
         DockPanelList lockedPanels;
 
         // undock all windows

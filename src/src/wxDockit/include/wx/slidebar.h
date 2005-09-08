@@ -4,8 +4,8 @@
 // Author:      Mark McCormack
 // Modified by:
 // Created:     25/05/05
-// RCS-ID:      
-// Copyright:   
+// RCS-ID:
+// Copyright:
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -40,11 +40,11 @@ class WXDOCKIT_DECLSPEC wxSlideBar : public wxWindow
 {
 public:
     // Default constructor
-    wxSlideBar() 
+    wxSlideBar()
         : barList_( wxKEY_STRING ) {
         Init();
     }
-    
+
     // Normal constructor
     wxSlideBar( wxWindow *parent, wxWindowID id = -1, const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize, long style = wxTAB_TRAVERSAL, const wxString& name = wxT("slidebar") )
@@ -62,7 +62,7 @@ public:
     virtual ~wxSlideBar();
 
     // standard interface
-    wxBarHolder * AddWindow( wxWindow * pWindow, const wxString & label = "", unsigned int flags = wxBF_DEFAULT );
+    wxBarHolder * AddWindow( wxWindow * pWindow, const wxString & label = wxT(""), unsigned int flags = wxBF_DEFAULT );
     void UpdateLayout();
 
 	// extended interface
@@ -110,7 +110,7 @@ private:
     BarHolderList barList_;
 	bool barLock_;
 	wxMenu * pContextMenu_;
-	
+
 	int contextIdStart_;
 	int contextIdEnd_;
 };

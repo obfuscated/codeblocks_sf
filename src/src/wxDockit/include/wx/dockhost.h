@@ -4,8 +4,8 @@
 // Author:      Mark McCormack
 // Modified by:
 // Created:     23/02/04
-// RCS-ID:      
-// Copyright:   
+// RCS-ID:
+// Copyright:
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -43,20 +43,20 @@ public:
         Init();
     }
     ~wxDockHost();
-    
+
     void Init();
-    
-    wxDockHost( wxWindow *parent, wxWindowID id, wxDirection dir, const wxString& name = "dockhost" ) {
+
+    wxDockHost( wxWindow *parent, wxWindowID id, wxDirection dir, const wxString& name = wxT("dockhost") ) {
         Init();
         Create( parent, id, dir, name );
     }
 
     // basic interface
-    bool Create( wxWindow * parent, wxWindowID id, wxDirection dir, const wxString& name = "dockhost" );
-    
+    bool Create( wxWindow * parent, wxWindowID id, wxDirection dir, const wxString& name = wxT("dockhost") );
+
     void SetLayoutManager( wxLayoutManager * pLayoutManager );
     wxLayoutManager * GetLayoutManager();
-    
+
     void SetAreaSize( int size );
     int GetAreaSize();
 
@@ -66,10 +66,10 @@ public:
     void LockPanelValue( bool state ){ lockPanelValue_ = state; }
 
     DockWindowList & GetDockWindowList();
-    
+
     void DockPanel( wxDockPanel * pDockPanel, HostInfo &hi );
     void UndockPanel( wxDockPanel * pDockPanel );
-    
+
     // access
     wxRect GetScreenArea();
     wxRect GetScreenArea( HostInfo &hi );
@@ -91,7 +91,7 @@ public:
     void OnSize( wxSizeEvent &event );
     void OnSplitterMoved( wxCommandEvent &event );
     void OnCalculateLayout( wxCalculateLayoutEvent &event );
-    
+
     // internal event
     void SettingsChanged();
 
@@ -112,10 +112,10 @@ private:
     int panelArea_;     // area available to panels
     bool lockPanelValue_;
 	bool internalSizeEvent_;
-    
+
     wxPoint pos_;
     wxSize size_;
-    
+
     wxLayoutManager * pLayoutManager_; // our layout manager
 
     int numPanels_;

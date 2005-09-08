@@ -4,8 +4,8 @@
 // Author:      Mark McCormack
 // Modified by:
 // Created:     23/02/04
-// RCS-ID:      
-// Copyright:   
+// RCS-ID:
+// Copyright:
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -48,50 +48,50 @@ public:
         Init();
     }
     void Init();
-    
-    wxDockPanel( wxWindow *parent, wxWindowID id, const wxString& name = "dockpanel", unsigned int flags = wxDPC_DEFAULT ) {
+
+    wxDockPanel( wxWindow *parent, wxWindowID id, const wxString& name = wxT("dockpanel"), unsigned int flags = wxDPC_DEFAULT ) {
         Init();
         Create( parent, id, name, flags );
     }
-    
+
     // basic interface
-    bool Create( wxWindow * parent, wxWindowID id, const wxString& name = "dockpanel", unsigned int flags = wxDPC_DEFAULT );
+    bool Create( wxWindow * parent, wxWindowID id, const wxString& name = wxT("dockpanel"), unsigned int flags = wxDPC_DEFAULT );
 
     void UpdateSize();
-    
+
     void SetDockWindow( wxDockWindowBase * pOwner );
     wxDockWindowBase * GetDockWindow();
-    
+
     void SetDockedHost( wxDockHost * pDockHost );
     wxDockHost * GetDockedHost();
-    
+
     void SetClient( wxWindow * pClient, bool autoPane = false );
     wxWindow * GetClient();
 
     void AutoFitSingleChild();
-    
+
     // access
     wxOrientation GetOrientation();
     wxRect GetScreenArea();
     wxRect GetScreenArea( HostInfo &hi );
     ePlacement TestForPlacement( int sx, int sy );
-    
+
     int GetArea();
     void SetArea( int area );
     void LockAreaValue( bool state );
-    
+
     bool IsDocked();
-    
+
     // event handlers
     void OnSize( wxSizeEvent& event );
     void OnPaneClose( wxCommandEvent& event );
     void OnGripDblClick( wxMouseEvent& event );
     void OnGripLeftDown( wxMouseEvent& event );
     void OnGripLeftUp( wxMouseEvent& event );
-#ifdef __WXGTK__    
+#ifdef __WXGTK__
 	void OnMouseMove( wxMouseEvent& event );
     void OnLeftUp( wxMouseEvent& event );
-#endif	
+#endif
 
 private:
     void childUpdate();
@@ -104,12 +104,12 @@ private:
 
     wxGripWindow * pGripWindow_;   // the grip window
     wxToolButton * pCloseButton_;  // the close button
-    
+
     wxWindow * pClient_;           // the actual user area
     wxWindow * pStockClient_;      // the initial user area (default)
     wxPane * pPane_;               // pane client (only if client is a pane)
     wxBoxSizer * pClientSizer_;    // the sizer for the client panel
-    
+
     wxDockWindowBase * pDockWindow_; // our dock window
     wxDockHost * pDockHost_;    // the host (when docked)
 

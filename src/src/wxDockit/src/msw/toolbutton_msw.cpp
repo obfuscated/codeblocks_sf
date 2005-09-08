@@ -4,8 +4,8 @@
 // Author:      Mark McCormack
 // Modified by:
 // Created:     20/05/04
-// RCS-ID:  
-// Copyright:   
+// RCS-ID:
+// Copyright:
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
@@ -44,11 +44,11 @@ END_EVENT_TABLE()
 // wxPane implementation
 // ----------------------------------------------------------------------------
 
-bool wxToolButton::Create( wxWindow *parent, 
+bool wxToolButton::Create( wxWindow *parent,
                            wxWindowID id,
                            const wxPoint& pos,
                            const wxSize& size,
-                           long style, 
+                           long style,
                            const wxString& name ) {
     // common initialisation
     if( !CreateControl( parent, id, pos, size, style, wxDefaultValidator, name ) ) {
@@ -106,7 +106,7 @@ bool wxToolButton::MSWOnNotify( int WXUNUSED(idCtrl), WXLPARAM lParam, WXLPARAM 
                         ::OffsetRect( &rcDraw, 1, 1 );
                     }
 
-                    // draw the item 
+                    // draw the item
                     wxDC dc;
                     dc.SetHDC( (WXHDC)hdc );
                     wxRect cr( wxPoint( rcDraw.left, rcDraw.top ), wxPoint( rcDraw.right, rcDraw.bottom ) );
@@ -114,11 +114,11 @@ bool wxToolButton::MSWOnNotify( int WXUNUSED(idCtrl), WXLPARAM lParam, WXLPARAM 
 
                     *result = CDRF_DODEFAULT;    // continue with the default item painting
                 }
-            }    
+            }
             return true;
         }
         break;
-        
+
 #if wxUSE_TOOLTIPS
         case TTN_NEEDTEXTA:
         case TTN_NEEDTEXTW:
@@ -140,7 +140,7 @@ bool wxToolButton::MSWCommand( WXUINT WXUNUSED(param), WXWORD WXUNUSED(id) ) {
     // create button event
     sendClickEvent();
 
-    return true;    
+    return true;
 }
 
 void wxToolButton::createToolbar( const wxPoint& pos, const wxSize& size, long style, wxWindowID id ) {

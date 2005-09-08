@@ -433,16 +433,16 @@ void MainFrame::CreateIDE()
 	m_pCloseFullScreenBtn->Show( false );
 
     pSlideBar = new wxSlideBar( this, 0 );
-    pPane = new wxPane( this, 0, "Client Pane" );
+    pPane = new wxPane( this, 0, wxT("Client Pane") );
     pPane->ShowHeader(false);
     pPane->ShowCloseButton( false );
 	m_pNotebook = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, /*wxNB_LEFT | */wxCLIP_CHILDREN/* | wxNB_MULTILINE*/);
 	Manager::Get(this, m_pNotebook, 0);//pPane);
 
-    pDockWindow1 = new wxDockWindow( this, 0, "Management", wxPoint( 64, 64 ), wxSize( leftW, clientsize.GetHeight() ) );
+    pDockWindow1 = new wxDockWindow( this, 0, _("Management"), wxPoint( 64, 64 ), wxSize( leftW, clientsize.GetHeight() ) );
     pDockWindow1->SetClient( m_pNotebook );
 
-    pDockWindow2 = new wxDockWindow( this, 0, "Messages", wxPoint( 96, 96 ), wxSize( clientsize.GetWidth(), bottomH ), "d1" );
+    pDockWindow2 = new wxDockWindow( this, 0, _("Messages"), wxPoint( 96, 96 ), wxSize( clientsize.GetWidth(), bottomH ), "d1" );
     pDockWindow2->SetClient( Manager::Get()->GetMessageManager() );
 
     // setup dockmanager
@@ -612,7 +612,7 @@ void MainFrame::CreateToolbars()
     SetToolBar(0);
     // *** End new Toolbar routine ***
 
-    pSlideBar->AddWindow( m_pToolbar, "Main" );
+    pSlideBar->AddWindow( m_pToolbar, _("Main") );
 
 	// ask all plugins to rebuild their toolbars
 	PluginElementsArray plugins = Manager::Get()->GetPluginManager()->GetPlugins();

@@ -4,11 +4,12 @@
 // Author:      Mark McCormack
 // Modified by:
 // Created:     28/12/03
-// RCS-ID:  
-// Copyright:   
+// RCS-ID:
+// Copyright:
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
+#include <wx/intl.h>
 #include <wx/pane.h>
 #include <wx/toolbutton.h>
 #include <wx/settings.h>
@@ -56,7 +57,7 @@ bool wxPaneBase::Create( wxWindow *parent, wxWindowID id, const wxString& name, 
     m_toolButtonSize = DEFAULT_BUTTON_SIZE;
     m_pCloseButton = new wxToolButton( this, 0, wxDefaultPosition, m_toolButtonSize );
     m_pCloseButton->SetDrawSize( DEFAULT_BUTTON_IMAGE_SIZE );
-    m_pCloseButton->SetToolTip( "Close" );
+    m_pCloseButton->SetToolTip( _("Close") );
     wxASSERT(m_pCloseButton);
 
     CalcHeaderSize();

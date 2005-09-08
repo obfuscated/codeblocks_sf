@@ -4,8 +4,8 @@
 // Author:      Mark McCormack
 // Modified by:
 // Created:     23/02/04
-// RCS-ID:      
-// Copyright:   
+// RCS-ID:
+// Copyright:
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -28,10 +28,10 @@ class wxDockHost;
 class wxDockPanel;
 class wxDockWindowBase;
 
-#define wxDEFAULT_LEFT_HOST   "LeftHost"
-#define wxDEFAULT_RIGHT_HOST  "RightHost"
-#define wxDEFAULT_TOP_HOST    "TopHost"
-#define wxDEFAULT_BOTTOM_HOST "BottomHost"
+#define wxDEFAULT_LEFT_HOST   wxT("LeftHost")
+#define wxDEFAULT_RIGHT_HOST  wxT("RightHost")
+#define wxDEFAULT_TOP_HOST    wxT("TopHost")
+#define wxDEFAULT_BOTTOM_HOST wxT("BottomHost")
 
 #define INITIAL_HOST_SIZE 64
 
@@ -39,7 +39,7 @@ class wxDockWindowBase;
 // wxOwnerEventHandler
 // ----------------------------------------------------------------------------
 
-class wxOwnerEventHandler : public wxEvtHandler 
+class wxOwnerEventHandler : public wxEvtHandler
 {
     DECLARE_CLASS( wxOwnerEventHandler )
     DECLARE_EVENT_TABLE()
@@ -54,7 +54,7 @@ public:
     void OnSize( wxSizeEvent &WXUNUSED(event) );
     void OnMove( wxMoveEvent &WXUNUSED(event) );
 	void OnUpdateLayout( wxCommandEvent &WXUNUSED(event) );
-	
+
 private:
     class wxLayoutManager * pOwner_;
 };
@@ -108,13 +108,13 @@ class WXDOCKIT_DECLSPEC wxLayoutManager : public wxObject
 public:
     wxLayoutManager( wxWindow * pOwnerWindow );
     ~wxLayoutManager();
-    
+
     void Init();
     void SetLayout( unsigned int flags, wxWindow * pAutoLayoutClientWindow = NULL );
 
     // dockhost
     void AddDefaultHosts();
-    void AddDockHost( wxDirection dir, int initialSize = INITIAL_HOST_SIZE, const wxString& name = "guessname" );
+    void AddDockHost( wxDirection dir, int initialSize = INITIAL_HOST_SIZE, const wxString& name = wxT("guessname") );
     wxDockHost * GetDockHost( const wxString& name );
     wxDockHost * GetDockHost( const wxDirection  &_dir );
 
@@ -126,7 +126,7 @@ public:
     // load/save
     bool SaveToStream( wxOutputStream &stream );
     bool LoadFromStream( wxInputStream &stream );
-    
+
     // access
     HostInfo TestForHost( int sx, int sy );
     wxRect TrimDockArea( wxDockHost * pDockHost, wxRect &dockArea );
@@ -138,12 +138,12 @@ public:
     unsigned int GetFlags();
 
     void UpdateAllHosts( bool sizeChange, wxDockHost * pIgnoreHost = NULL );
-    
+
     // event handers
     void OnSize();
     void OnMove();
 	void OnUpdateLayout();
-	
+
 private:
     wxDockHost * findDockHost( const wxString& name );
     wxDockWindowBase * findDockWindow( const wxString& name );
@@ -153,10 +153,10 @@ private:
 private:
     DockHostList dockHosts_;
     DockWindowList dockWindows_;
-    
+
     wxWindow * pOwnerWindow_;
     wxOwnerEventHandler frameEventHandler_;
-    
+
     unsigned int flags_;
     wxWindow * pAutoLayoutClientWindow_;
 	wxRect dockArea_;

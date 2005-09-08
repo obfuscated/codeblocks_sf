@@ -4,8 +4,8 @@
 // Author:      Mark McCormack
 // Modified by:
 // Created:     23/02/04
-// RCS-ID:  
-// Copyright:   
+// RCS-ID:
+// Copyright:
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
@@ -52,7 +52,7 @@ static LRESULT CALLBACK DragHookProc( int code, WPARAM wParam, LPARAM lParam )
 void wxDockWindow::StartDragging( int x, int y ) {
     // enable the keyboard hook
     dragHwnd = GetHwndOf(this);
-    draghook = SetWindowsHookEx( WH_KEYBOARD, DragHookProc, GetModuleHandle(0), 0 ); 
+    draghook = SetWindowsHookEx( WH_KEYBOARD, DragHookProc, GetModuleHandle(0), 0 );
 
     wxDockWindowBase::StartDragging( x, y );
 }
@@ -79,14 +79,14 @@ long wxDockWindow::MSWWindowProc( WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam 
 		    // prevent standard double-click on the caption area
 		    applyLastDock();
             return 0;
-            
+
         case WM_NCLBUTTONDOWN:
         {
 		    // prevent standard dragging by the caption area
 		    if( wParam == HTCAPTION ) {
 		        // make the window activate
 		        SetWindowPos( GetHwndOf(this), HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE );
-		        
+
 		        // start dragging
 		        PPOINTS pPoint = (PPOINTS)&lParam;
 		        int x = pPoint->x;
@@ -103,7 +103,7 @@ long wxDockWindow::MSWWindowProc( WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam 
             RepeatLastMouseEvent();
             break;
         }
-        
+
         case WM_NCLBUTTONUP:
         case WM_LBUTTONUP:
         case WM_CANCELMODE:
@@ -115,7 +115,7 @@ long wxDockWindow::MSWWindowProc( WXUINT nMsg, WXWPARAM wParam, WXLPARAM lParam 
         }
         break;
     }
-    
+
     // as normal
-    return wxDockWindowBase::MSWWindowProc( nMsg, wParam, lParam );    
+    return wxDockWindowBase::MSWWindowProc( nMsg, wParam, lParam );
 }

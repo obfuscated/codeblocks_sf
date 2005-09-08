@@ -4,8 +4,8 @@
 // Author:      Mark McCormack
 // Modified by:
 // Created:     04/03/04
-// RCS-ID:  
-// Copyright:   
+// RCS-ID:
+// Copyright:
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
@@ -85,7 +85,7 @@ void wxGdi::DrawFrame( wxDC &dc, wxRect r, bool fDocked ) {
 		border = 3;
 		bitmap = _dotPatternBmp1;
 	}
-	
+
 	x = r.GetLeft();
 	y = r.GetTop();
 	width  = r.width;
@@ -122,7 +122,7 @@ void wxGdi::DrawPattern( wxDC &dc, wxRect r ) {
 
     HDC hdc = GetHdcOf( dc );
 	bitmap = _dotPatternBmp;
-	
+
 	x = r.GetLeft();
 	y = r.GetTop();
 	width  = r.width;
@@ -157,7 +157,7 @@ void wxGdi::DrawEmptyWorkspace( wxDC &dc, wxRect r, bool edge ) {
     if( edge) {
         ::DrawEdge( hdc, &rect, EDGE_SUNKEN, BF_RECT | BF_ADJUST );
     }
-    ::FillRect( hdc, &rect, (HBRUSH)LongToPtr(COLOR_APPWORKSPACE + 1) ); 
+    ::FillRect( hdc, &rect, (HBRUSH)LongToPtr(COLOR_APPWORKSPACE + 1) );
 }
 
 void wxGdi::DrawHeader( wxDC &dc, wxRect r, wxOrientation orientation, const wxString &label, const wxFont &font ) {

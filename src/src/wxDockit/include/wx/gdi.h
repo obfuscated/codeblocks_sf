@@ -4,8 +4,8 @@
 // Author:      Mark McCormack
 // Modified by:
 // Created:     04/03/04
-// RCS-ID:      
-// Copyright:   
+// RCS-ID:
+// Copyright:
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -35,7 +35,7 @@ public:
     };
 
     // drawing
-    virtual void DrawGripper( wxDC &dc, wxRect r, wxOrientation orientation, eGripperStyle style, const wxString &label = "" ) = 0;
+    virtual void DrawGripper( wxDC &dc, wxRect r, wxOrientation orientation, eGripperStyle style, const wxString &label = wxT("") ) = 0;
     virtual void DrawFrame( wxDC &dc, wxRect r, bool fDocked ) = 0;
     virtual void DrawPattern( wxDC &dc, wxRect r ) = 0;
     virtual void DrawSplitter( wxDC &dc, wxRect r, wxOrientation orientation ) = 0;
@@ -45,7 +45,7 @@ public:
     virtual void DrawBackground( wxDC &dc, wxRect &r );
     virtual void DrawEdge( wxDC &dc, wxRect r, bool invert = false );
     virtual void DrawLabel( wxDC &dc, wxRect r, wxOrientation orientation, const wxString &label, const wxFont &font );
-    
+
     // cursors
     virtual wxCursor GetMoveCursor() = 0;
     virtual wxCursor GetHSplitCursor() = 0;

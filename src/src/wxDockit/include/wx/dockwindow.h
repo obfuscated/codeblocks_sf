@@ -4,8 +4,8 @@
 // Author:      Mark McCormack
 // Modified by:
 // Created:     23/02/04
-// RCS-ID:      
-// Copyright:   
+// RCS-ID:
+// Copyright:
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -66,15 +66,15 @@ public:
     ~wxDockWindowBase() {
     }
     void Init();
-    
-    wxDockWindowBase( wxWindow * parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, const wxString& name = "dockwindow", unsigned int flags = wxDWC_DEFAULT ) {
+
+    wxDockWindowBase( wxWindow * parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, const wxString& name = wxT("dockwindow"), unsigned int flags = wxDWC_DEFAULT ) {
         Init();
         Create( parent, id, title, pos, size, name, flags );
     }
-    
+
     // basic interface
-    bool Create( wxWindow * parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, const wxString& name = "dockwindow", unsigned int flags = wxDWC_DEFAULT );
-    
+    bool Create( wxWindow * parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, const wxString& name = wxT("dockwindow"), unsigned int flags = wxDWC_DEFAULT );
+
     void Appear();
     void Remove();
 
@@ -86,10 +86,10 @@ public:
     wxWindow * RemoveClient( wxWindow * pNewParent = NULL );
 
     void AutoFitSingleChild();
-    
+
     // access
     wxDockPanel * GetDockPanel();
-    
+
     void SetDocked( bool state );
     bool IsDocked();
 
@@ -99,7 +99,7 @@ public:
 
     bool ActualShow( bool show = true );
     void DisableShowOverride();
-    
+
     void RepeatLastMouseEvent();
 
     // overrides
@@ -109,7 +109,7 @@ public:
     virtual void StartDragging( int x, int y, bool needMouseCapture = true );
     virtual void StopDragging( bool needMouseRelease = true );
     virtual bool BlockDocking();
-    
+
     // events
     void OnMouseMove( wxMouseEvent &e );
     void OnClose( wxCloseEvent &e );
@@ -126,21 +126,21 @@ protected:
     bool dragging_;
     bool haveMoved_;
     wxMouseEvent lastMouseEvent_;
-    
+
     DockRect startRect_;    // starting rectangle
     DockRect prevRect_;     // erase rectangle
     DockRect dragRect_;     // draw rectangle
-    
+
     wxPoint startPoint_;    // starting mouse x & y
-    
+
     wxLayoutManager * pLayoutManager_;    // our layout manager
-    
+
     wxDockPanel * pClientPanel_;      // the contents
     wxBoxSizer * pClientSizer_;       // the contents' sizer
-    
+
     HostInfo newHost_;          // host upon dragging finish
     HostInfo prevHost_;         // last applied host
-    
+
     bool docked_;   // are we docked
 };
 

@@ -4,8 +4,8 @@
 // Author:      Mark McCormack
 // Modified by:
 // Created:     07/06/04
-// RCS-ID:  
-// Copyright:   
+// RCS-ID:
+// Copyright:
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
@@ -52,7 +52,7 @@ void WriteWindowLayout( wxOutputStream& stream, wxWindow * pWindow ) {
     wxASSERT(pWindow);
 
     // frame/window
-    WriteString( stream, "<window>" );
+    WriteString( stream, wxT("<window>") );
 
     wxRect size = pWindow->GetRect();
     wxFrame * pFrame = wxDynamicCast( pWindow, wxFrame );
@@ -90,7 +90,7 @@ void ReadWindowLayout( wxInputStream& stream, wxWindow * pWindow ) {
 
     // frame/window
     wxString windowTag = ReadString( stream );
-    if( windowTag == "<window>" ) {
+    if( windowTag == wxT("<window>") ) {
         // frame
         bool maximized = false;
         stream.Read( &maximized, sizeof( maximized ) );

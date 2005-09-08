@@ -4,8 +4,8 @@
 // Author:      Mark McCormack
 // Modified by:
 // Created:     03/06/04
-// RCS-ID:  
-// Copyright:   
+// RCS-ID:
+// Copyright:
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
@@ -43,7 +43,7 @@ void wxGdiBase::DrawLabel( wxDC &dc, wxRect r, wxOrientation orientation, const 
     dc.SetFont( font );
     wxCoord w = 0, h = 0;
     dc.GetTextExtent( label, &w, &h );
-    if( orientation == wxHORIZONTAL ) { 
+    if( orientation == wxHORIZONTAL ) {
         // horizontal text
         r.y += (r.height - h)/2;
         r.x += HEADER_TEXT_INDENT;
@@ -66,14 +66,14 @@ void wxGdiBase::DrawEdge( wxDC &dc, wxRect r, bool invert ) {
         light = wxSystemSettings::GetColour( wxSYS_COLOUR_3DDKSHADOW );
         shadow = wxSystemSettings::GetColour( wxSYS_COLOUR_3DHIGHLIGHT );
     }
-    
+
 #ifdef wxUSE_WX24
-    wxBrush backBrush( back, wxSOLID );  
+    wxBrush backBrush( back, wxSOLID );
 #else
-    wxBrush backBrush( back );  
+    wxBrush backBrush( back );
 #endif
     dc.SetBrush( backBrush );
-    
+
 #ifdef wxUSE_WX24
     wxPen lightPen( light, 1, wxSOLID );
 #else
