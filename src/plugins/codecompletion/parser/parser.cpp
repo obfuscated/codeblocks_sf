@@ -193,7 +193,15 @@ bool Parser::ReadFromCache(wxFile* f)
     Clear();
 
     unsigned int length = f->Length();
-    wxProgressDialog progress(_("Code-completion plugin"), _("Please wait while loading code-completion cache..."), length);
+    wxProgressDialog* progress = 0;
+
+    // display cache progress?
+    if (ConfigManager::Get()->Read(_T("/code_completion/show_cache_progress"), 1L))
+    {
+        progress = new wxProgressDialog(_("Code-completion plugin"),
+                                        _("Please wait while loading code-completion cache..."),
+                                        length);
+    }
 
     // m_Tokens
     while (!f->Eof())
@@ -203,7 +211,8 @@ bool Parser::ReadFromCache(wxFile* f)
             break;
         if (!LoadTokenFromCache(f, 0))
             break;
-        progress.Update(f->Tell());
+        if (progress)
+            progress->Update(f->Tell());
     }
 
     // m_ParsedFiles
@@ -213,7 +222,8 @@ bool Parser::ReadFromCache(wxFile* f)
         if (!LoadStringFromFile(f, file))
             break;
         m_ParsedFiles.Add(file);
-        progress.Update(f->Tell());
+        if (progress)
+            progress->Update(f->Tell());
     }
 
     LinkInheritance(); // fix ancestors relationships
@@ -221,6 +231,9 @@ bool Parser::ReadFromCache(wxFile* f)
     m_UsingCache = true;
     m_CacheFilesCount = m_ParsedFiles.GetCount();
     m_CacheTokensCount = m_Tokens.GetCount();
+
+    if (progress)
+        delete progress;
 
     return true;
 }
@@ -248,7 +261,15 @@ bool Parser::WriteToCache(wxFile* f)
     unsigned int fcount = m_ParsedFiles.GetCount();
     unsigned int counter = 0;
 
-    wxProgressDialog progress(_("Code-completion plugin"), _("Please wait while saving code-completion cache..."), tcount + fcount);
+    wxProgressDialog* progress = 0;
+
+    // display cache progress?
+    if (ConfigManager::Get()->Read(_T("/code_completion/show_cache_progress"), 1L))
+    {
+        progress = new wxProgressDialog(_("Code-completion plugin"),
+                                        _("Please wait while saving code-completion cache..."),
+                                        tcount + fcount);
+    }
 
     // m_Tokens
     for (unsigned int i = 0; i < tcount; ++i)
@@ -260,7 +281,8 @@ bool Parser::WriteToCache(wxFile* f)
             SaveIntToFile(f, TOKEN_REC);
             SaveTokenToCache(f, token);
         }
-        progress.Update(++counter);
+        if (progress)
+            progress->Update(++counter);
     }
 
     SaveIntToFile(f, FILE_REC);
@@ -269,8 +291,12 @@ bool Parser::WriteToCache(wxFile* f)
     for (unsigned int i = 0; i < fcount; ++i)
     {
         SaveStringToFile(f, m_ParsedFiles[i]);
-        progress.Update(++counter);
+        if (progress)
+            progress->Update(++counter);
     }
+
+    if (progress)
+        delete progress;
 
     return true;
 }

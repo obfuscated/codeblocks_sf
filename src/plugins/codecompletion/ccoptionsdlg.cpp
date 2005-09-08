@@ -98,6 +98,7 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent)
 	XRCCTRL(*this, "cmbCBView", wxComboBox)->SetSelection(m_Parser.ClassBrowserOptions().viewFlat ? 0 : 1);
 	XRCCTRL(*this, "chkUseCache", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/code_completion/use_cache"), 0L));
 	XRCCTRL(*this, "chkAlwaysUpdateCache", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/code_completion/update_cache_always"), 0L));
+	XRCCTRL(*this, "chkShowCacheProgress", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/code_completion/show_cache_progress"), 1L));
 
     wxColour color(ConfigManager::Get()->Read(_T("/code_completion/color/red"), 0xFF),
     				ConfigManager::Get()->Read(_T("/code_completion/color/green"), 0xFF),
@@ -169,6 +170,7 @@ void CCOptionsDlg::OnOK(wxCommandEvent& event)
 
 	ConfigManager::Get()->Write(_T("/code_completion/use_cache"), XRCCTRL(*this, "chkUseCache", wxCheckBox)->GetValue());
 	ConfigManager::Get()->Write(_T("/code_completion/update_cache_always"), XRCCTRL(*this, "chkAlwaysUpdateCache", wxCheckBox)->GetValue());
+	ConfigManager::Get()->Write(_T("/code_completion/show_cache_progress"), XRCCTRL(*this, "chkShowCacheProgress", wxCheckBox)->GetValue());
 
     ConfigManager::Get()->Write(_T("/code_completion/color/red"),		XRCCTRL(*this, "btnColor", wxButton)->GetBackgroundColour().Red());
     ConfigManager::Get()->Write(_T("/code_completion/color/green"),	XRCCTRL(*this, "btnColor", wxButton)->GetBackgroundColour().Green());
