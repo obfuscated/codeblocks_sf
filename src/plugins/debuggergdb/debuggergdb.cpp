@@ -310,9 +310,9 @@ void DebuggerGDB::DoWatches()
 	wxString info;
 	if (m_pProcess)
 	{
-        if (ConfigManager::Get()->Read(_T("debugger_gdb/watch_args"), 0L))
+        if (ConfigManager::Get()->Read(_T("debugger_gdb/watch_args"), 1))
             info << _T("Function Arguments = {") << GetInfoFor(_T("info args")) << _T("}") << _T('\n');
-        if (ConfigManager::Get()->Read(_T("debugger_gdb/watch_locals"), 0L))
+        if (ConfigManager::Get()->Read(_T("debugger_gdb/watch_locals"), 1))
     		info << _T("Local variables = {") << GetInfoFor(_T("info locals")) << _T("}") << _T('\n');
 		for (unsigned int i = 0; i < m_pTree->GetWatches().GetCount(); ++i)
 		{
