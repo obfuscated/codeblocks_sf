@@ -516,7 +516,13 @@ void cbEditor::SetEditorStyle()
     m_pData->m_ensure_final_line_end = ConfigManager::Get()->Read(_T("/editor/eol/ensure_final_line_end"), 0L) ? true : false;
     m_pData->m_ensure_consistent_line_ends = ConfigManager::Get()->Read(_T("/editor/eol/ensure_consistent_line_ends"), 0L) ? true : false;
 
-    switch(ConfigManager::Get()->Read(_T("/editor/eol/eolmode"), 0L))
+#ifdef __WXMSW__
+	#define DEFAULT_EOL 0 //CR&LF
+#else
+	#define DEFAULT_EOL 2 //LF
+	// TODO: find out the macro to discover if it is a MAC and change it to CR (I think)
+#endif
+    switch(ConfigManager::Get()->Read(_T("/editor/eol/eolmode"), (long int)DEFAULT_EOL))
     {
     	case 0:
         default:

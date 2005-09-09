@@ -86,7 +86,6 @@ bool CodeBlocksApp::LoadConfig()
 {
     if (ParseCmdLine(0L) != 0)
         return false;
-
     SetVendorName(APP_VENDOR);
     SetAppName(APP_NAME" v"APP_VERSION);
     ConfigManager::Init(wxConfigBase::Get());
@@ -99,7 +98,6 @@ bool CodeBlocksApp::LoadConfig()
     wxString data = wxT(APP_PREFIX); // under linux, get the preprocessor value
 #endif
     data << _T("/share/codeblocks");
-    printf("data=%s, m_Prefix=%s\n", data.c_str(), m_Prefix.c_str());
     // check if the user has passed --prefix in the command line
     if (!m_Prefix.IsEmpty())
         data = m_Prefix;
@@ -111,7 +109,6 @@ bool CodeBlocksApp::LoadConfig()
         if (!env.IsEmpty())
             data = env;
     }
-
     ConfigManager::Get()->Write(_T("data_path"), data);
     m_HasDebugLog = ConfigManager::Get()->Read(_T("/message_manager/has_debug_log"), (long int)0) || m_HasDebugLog;
     ConfigManager::Get()->Write(_T("/message_manager/has_debug_log"), m_HasDebugLog);
