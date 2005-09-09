@@ -4,8 +4,8 @@
 // Author:      Mark McCormack
 // Modified by:
 // Created:     23/10/04
-// RCS-ID:      
-// Copyright:   
+// RCS-ID:
+// Copyright:
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -29,15 +29,15 @@ public:
     wxDockWindow() {
         Init();
     }
-    
-    wxDockWindow( wxWindow * parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, const wxString& name = "frame", unsigned int flags = wxDWC_DEFAULT ) {
+
+    wxDockWindow( wxWindow * parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, const wxString& name = wxT("frame"), unsigned int flags = wxDWC_DEFAULT ) {
         Init();
         Create( parent, id, title, pos, size, name, flags );
     }
 
     // basic interface
-    bool Create( wxWindow * parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, const wxString& name = "dockwindow", unsigned int flags = wxDWC_DEFAULT );
-	
+    bool Create( wxWindow * parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, const wxString& name = wxT("dockwindow"), unsigned int flags = wxDWC_DEFAULT );
+
 	// events
 	void OnLeftDown( wxMouseEvent& event );
 	void OnLeftUp( wxMouseEvent& event );
@@ -45,7 +45,7 @@ public:
     void OnMouseLeave( wxMouseEvent& event );
 	void OnKeyDown( wxKeyEvent& event );
 	void OnKeyUp( wxKeyEvent& event );
-    
+
     // platform
     virtual bool BlockDocking();
 
@@ -79,7 +79,7 @@ private:
 	bool hInvert_;
 	bool vInvert_;
 	bool blockDocking_;
-	
+
     DECLARE_CLASS( wxDockWindow )
     DECLARE_EVENT_TABLE()
 };

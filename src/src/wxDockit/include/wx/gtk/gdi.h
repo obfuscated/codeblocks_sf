@@ -4,8 +4,8 @@
 // Author:      Mark McCormack
 // Modified by:
 // Created:     23/10/04
-// RCS-ID:      
-// Copyright:   
+// RCS-ID:
+// Copyright:
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -26,7 +26,7 @@
 class wxGdi : public wxGdiBase {
 public:
     // drawing
-    virtual void DrawGripper( wxDC &dc, wxRect r, wxOrientation orientation, eGripperStyle style, const wxString &label = "" );
+    virtual void DrawGripper( wxDC &dc, wxRect r, wxOrientation orientation, eGripperStyle style, const wxString &label = wxT("") );
     virtual void DrawFrame( wxDC &dc, wxRect r, bool fDocked );
     virtual void DrawPattern( wxDC &dc, wxRect r );
     virtual void DrawSplitter( wxDC &dc, wxRect r, wxOrientation orientation );

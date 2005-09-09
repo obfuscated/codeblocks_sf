@@ -58,9 +58,6 @@ AC_SUBST(CODEBLOCKS_VERSION_INFO)
 CODEBLOCKS_GET_PLATFORM
 CODEBLOCKS_ENABLE_SETTINGS
 
-AC_SUBST(CXXFLAGS)
-AC_SUBST(CFLAGS)
-
 AM_OPTIONS_WXCONFIG
 AM_PATH_WXCONFIG(2.4.2, wxWin=1)
         if test "$wxWin" != 1; then
@@ -73,21 +70,12 @@ AM_PATH_WXCONFIG(2.4.2, wxWin=1)
                 is in LD_LIBRARY_PATH or equivalent variable and
                 wxWindows version is 2.4.2 or above.
                 ])
-        else
-               dnl Quick hack until wx-config does it
-               ac_save_LIBS=$LIBS
-               ac_save_CXXFLAGS=$CXXFLAGS
-               LIBS=$WX_LIBS
-               CXXFLAGS=$WX_CXXFLAGS
-               AC_LANG_SAVE
-               AC_LANG_CPLUSPLUS
-               AC_TRY_LINK([#include <wx/wx.h>],
-               [wxString test=""],
-               ,[WX_LIBS=$WX_LIBS_STATIC])
-               AC_LANG_RESTORE
-               LIBS=$ac_save_LIBS
-               CXXFLAGS=$ac_save_CXXFLAGS
         fi
+
+		CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS"
+		CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS_ONLY"
+		CFLAGS="$CFLAGS $WX_CFLAGS_ONLY"
+		LIBS="$LIBS $WX_LIBS"
 
 		wx_config_minor_version=`echo $WX_VERSION | \
            sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
@@ -97,7 +85,12 @@ AM_PATH_WXCONFIG(2.4.2, wxWin=1)
 	else
 		WX_XRC=-l`wx-config --basename`_xrc-`wx-config --release`
 	fi
+
 AC_SUBST(WX_XRC)
+AC_SUBST(CPPFLAGS)
+AC_SUBST(CXXFLAGS)
+AC_SUBST(CFLAGS)
+AC_SUBST(LIBS)
 
 dnl AM_PATH_GTK(1.2.7, ,
 dnl             AC_MSG_ERROR(Cannot find GTK: Is gtk-config in path?),

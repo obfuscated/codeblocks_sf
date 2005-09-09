@@ -1,6 +1,6 @@
 INCLUDES = $(WX_CXXFLAGS) -I$(top_srcdir)/src/src/wxDockit/include
 
-lib_LTLIBRARIES = libwxdockit.la
+noinst_LTLIBRARIES = libwxdockit.la
 
 libwxdockit_la_LDFLAGS = -version-info @CODEBLOCKS_VERSION_INFO@
 
