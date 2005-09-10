@@ -169,7 +169,7 @@ void EditorColorSet::UpdateOptionsWithSameName(HighlightLanguage lang, OptionCol
 	}
 	if (idx == -1)
         return;
-    
+
     // now loop again, but update the other options with the same name
 	for (unsigned int i = 0; i < m_Sets[lang].m_Colors.GetCount(); ++i)
 	{
@@ -264,12 +264,16 @@ int EditorColorSet::GetOptionCount(HighlightLanguage lang)
 
 HighlightLanguage EditorColorSet::GetLanguageForFilename(const wxString& filename)
 {
+    // convert filename to lowercase first (m_FileMasks already contains
+    // lowercase-only strings)
+    wxString lfname = filename.Lower();
+
 	// first search in filemasks
 	for (int i = 0; i < HL_LAST; ++i)
 	{
 		for (unsigned int x = 0; x < m_Sets[i].m_FileMasks.GetCount(); ++x)
 		{
-			if (filename.Matches(m_Sets[i].m_FileMasks.Item(x)))
+			if (lfname.Matches(m_Sets[i].m_FileMasks.Item(x)))
                 return i;
 		}
 	}
@@ -334,7 +338,7 @@ void EditorColorSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control)
 	for (unsigned int i = 0; i < m_Sets[lang].m_Colors.GetCount(); ++i)
 	{
 		OptionColor* opt = m_Sets[lang].m_Colors.Item(i);
-		
+
 		if (opt->isStyle)
 		{
 			DoApplyStyle(control, opt->value, opt);
@@ -376,7 +380,7 @@ void EditorColorSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control)
 void EditorColorSet::Save()
 {
 	wxString key;
-	
+
 	for (int x = 0; x < HL_LAST; ++x)
 	{
 		wxString lang = m_Sets[x].m_Langs;
@@ -391,7 +395,7 @@ void EditorColorSet::Save()
 			OptionColor* opt = m_Sets[x].m_Colors.Item(i);
 			wxString tmpKey;
 			tmpKey << key << _T("/") << opt->name;
-			
+
 			if (opt->fore != wxNullColour)
 			{
                 ConfigManager::Get()->Write(tmpKey + _T("/fore/red"),   opt->fore.Red());
@@ -404,11 +408,11 @@ void EditorColorSet::Save()
                 ConfigManager::Get()->Write(tmpKey + _T("/back/green"), opt->back.Green());
                 ConfigManager::Get()->Write(tmpKey + _T("/back/blue"),  opt->back.Blue());
             }
-	
+
 			ConfigManager::Get()->Write(tmpKey + _T("/bold"),       opt->bold);
 			ConfigManager::Get()->Write(tmpKey + _T("/italics"),    opt->italics);
 			ConfigManager::Get()->Write(tmpKey + _T("/underlined"), opt->underlined);
-	
+
 			ConfigManager::Get()->Write(tmpKey + _T("/isStyle"), opt->isStyle);
 		}
 		for (int i = 0; i < 3; ++i)
@@ -423,7 +427,7 @@ void EditorColorSet::Save()
 void EditorColorSet::Load()
 {
 	wxString key;
-	
+
 	for (int x = 0; x < HL_LAST; ++x)
 	{
 		wxString lang = m_Sets[x].m_Langs;
@@ -440,7 +444,7 @@ void EditorColorSet::Load()
 			OptionColor* opt = m_Sets[x].m_Colors.Item(i);
 			wxString tmpKey;
 			tmpKey << key << _T("/") << opt->name;
-			
+
 			if (ConfigManager::Get()->HasGroup(tmpKey + _T("/fore")))
 			{
                 opt->fore = wxColour(ConfigManager::Get()->Read(tmpKey + _T("/fore/red"),  opt->fore.Red()),
@@ -458,7 +462,7 @@ void EditorColorSet::Load()
 			opt->bold = ConfigManager::Get()->Read(tmpKey + _T("/bold"), opt->bold);
 			opt->italics = ConfigManager::Get()->Read(tmpKey + _T("/italics"), opt->italics);
 			opt->underlined = ConfigManager::Get()->Read(tmpKey + _T("/underlined"), opt->underlined);
-	
+
 			opt->isStyle = ConfigManager::Get()->Read(tmpKey + _T("/isStyle"), opt->underlined);
 		}
         for (int i = 0; i < 3; ++i)
