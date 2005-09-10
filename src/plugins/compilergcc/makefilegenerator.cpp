@@ -361,17 +361,23 @@ void MakefileGenerator::DoAppendLinkerLibs(wxString& cmd, ProjectBuildTarget* ta
         // run replacements on libs only if no slashes in name (which means it's a relative or absolute path)
         if (lib.Find('/') == -1 && lib.Find('\\') == -1)
         {
+            // 'lib' prefix
+            bool hadLibPrefix = false;
             if (!m_CompilerSet->GetSwitches().linkerNeedsLibPrefix &&
                 !libPrefix.IsEmpty() &&
                 lib.StartsWith(libPrefix))
             {
                 lib.Remove(0, libPrefix.Length());
+                hadLibPrefix = true;
             }
+            // extension
             if (!m_CompilerSet->GetSwitches().linkerNeedsLibExtension &&
                 lib.Length() > libExt.Length() &&
                 lib.Right(libExt.Length() + 1) == _T(".") + libExt)
             {
-                lib.RemoveLast(libExt.Length() + 1);
+                // remove the extension only if we had a lib prefix
+                if (hadLibPrefix)
+                    lib.RemoveLast(libExt.Length() + 1);
             }
             else if (m_CompilerSet->GetSwitches().linkerNeedsLibExtension &&
                     !libExt.IsEmpty())
