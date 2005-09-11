@@ -395,10 +395,16 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
     if (target->GetTargetType() == ttCommandsOnly)
     {
         // commands-only target
+
+        // we just have to run the post-build step
+        // runs *only* when:
+        // 1) "always run post-build step" is checked
+        // or
+        // 2) we have specified additional output files and the external-dep check fails
         wxString added = target->GetAdditionalOutputFiles();
-        if (added.IsEmpty() || // no additional output files assigned
-            target->GetAlwaysRunPostBuildSteps() || // or always run post-build steps
-            AreExternalDepsOutdated(wxEmptyString, added, target->GetExternalDeps())) // or external dependencies say relink
+        if (target->GetAlwaysRunPostBuildSteps() || // or always run post-build steps
+            (!added.IsEmpty() && // additional output files assigned
+            AreExternalDepsOutdated(wxEmptyString, added, target->GetExternalDeps()))) // or external dependencies say relink
         {
             AppendArray(GetPostBuildCommands(target), ret);
         }
@@ -740,6 +746,10 @@ bool DirectCommands::AreExternalDepsOutdated(const wxString& buildOutput, const 
             if (timeSrc > addT)
                 return true;
         }
+
+        // if no output, probably a commands-only target; nothing to relink
+        if (buildOutput.IsEmpty())
+            return false;
 
         // now check the target's output
         // this is moved last because, for "commands only" targets,
