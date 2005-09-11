@@ -97,17 +97,18 @@ bool CodeBlocksApp::LoadConfig()
 #else
     wxString data = wxT(APP_PREFIX); // under linux, get the preprocessor value
 #endif
-    data << _T("/share/codeblocks");
+    wxString actualData = _T("/share/codeblocks");
+    data << actualData;
     // check if the user has passed --prefix in the command line
     if (!m_Prefix.IsEmpty())
-        data = m_Prefix;
+        data = m_Prefix + actualData;
     else
     {
         // if no --prefix passed, check for the environment variable
         wxString env;
         wxGetEnv(_T("CODEBLOCKS_DATA_DIR"), &env);
         if (!env.IsEmpty())
-            data = env;
+            data = env + actualData;
     }
     ConfigManager::Get()->Write(_T("data_path"), data);
     m_HasDebugLog = ConfigManager::Get()->Read(_T("/message_manager/has_debug_log"), (long int)0) || m_HasDebugLog;
