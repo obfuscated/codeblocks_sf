@@ -277,6 +277,9 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
         if (node->Attribute("external_deps"))
             deps = _U(node->Attribute("external_deps"));
 
+        if (node->Attribute("additional_output"))
+            added = _U(node->Attribute("additional_output"));
+
         if (node->Attribute("type"))
             type = atoi(node->Attribute("type"));
 
@@ -643,8 +646,11 @@ bool ProjectLoader::Save(const wxString& filename)
             buffer << _T('\t') << _T('\t') << _T('\t') << _T('\t') << _T("<Option working_dir=\"") << FixEntities(target->GetWorkingDir()) << _T("\"/>") << _T('\n');
             buffer << _T('\t') << _T('\t') << _T('\t') << _T('\t') << _T("<Option object_output=\"") << FixEntities(target->GetObjectOutput()) << _T("\"/>") << _T('\n');
             buffer << _T('\t') << _T('\t') << _T('\t') << _T('\t') << _T("<Option deps_output=\"") << FixEntities(target->GetDepsOutput()) << _T("\"/>") << _T('\n');
-            buffer << _T('\t') << _T('\t') << _T('\t') << _T('\t') << _T("<Option external_deps=\"") << FixEntities(target->GetExternalDeps()) << _T("\"/>") << _T('\n');
         }
+        if (!target->GetExternalDeps().IsEmpty())
+            buffer << _T('\t') << _T('\t') << _T('\t') << _T('\t') << _T("<Option external_deps=\"") << FixEntities(target->GetExternalDeps()) << _T("\"/>") << _T('\n');
+        if (!target->GetAdditionalOutputFiles().IsEmpty())
+            buffer << _T('\t') << _T('\t') << _T('\t') << _T('\t') << _T("<Option additional_output=\"") << FixEntities(target->GetAdditionalOutputFiles()) << _T("\"/>") << _T('\n');
         buffer << _T('\t') << _T('\t') << _T('\t') << _T('\t') << _T("<Option type=\"") << target->GetTargetType() << _T("\"/>") << _T('\n');
         buffer << _T('\t') << _T('\t') << _T('\t') << _T('\t') << _T("<Option compiler=\"") << target->GetCompilerIndex() << _T("\"/>") << _T('\n');
         if (target->GetTargetType() == ttConsoleOnly && !target->GetUseConsoleRunner())
