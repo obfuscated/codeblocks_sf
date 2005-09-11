@@ -106,7 +106,7 @@ void cbThreadPool::SetConcurrentThreads(int concurrentThreads)
 
     // if still == -1, something's wrong; reset to 1
     if (m_ConcurrentThreads == -1)
-        concurrentThreads = 1;
+        m_ConcurrentThreads = 1;
 
     // alloc (or dealloc) based on new thread count
     AllocThreads();
