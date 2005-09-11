@@ -2,7 +2,7 @@
 <!DOCTYPE Code::Blocks_template_file>
 <Code::Blocks_template_file>
 	<Template name="Irrlicht" title="Irrlicht Project" category="Multimedia" bitmap="irrlicht.png">
-		<Notice value="This template expects Irrlicht to be located at C:\Irrlicht.
+		<Notice value="This template expects Irrlicht to be located at /opt/irrlicht.
 						If this is not the case, you will have to update the relevant 
 						custom variable accordingly.
 						

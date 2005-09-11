@@ -8,10 +8,8 @@ dist_pkgdata_DATA = console.cbp \
 		dll.png \
 		irrlicht.png \
 		irr_main.cpp \
-		ogre_gcc.cbp \
 		ogrelogo.png \
 		ogre-main.cpp \
-		ogre_vctk.cbp \
 		qt.cbp \
 		qtlogo32.png \
 		qt-main.cpp \

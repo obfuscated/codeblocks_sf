@@ -8,6 +8,8 @@ dist_pkgdata_DATA = dll.cbp \
 		irrlicht.template \
 		irr_vctk.cbp \
 		ogre.template \
+		ogre_gcc.cbp \
+		ogre_vctk.cbp \
 		opengl.cbp \
 		opengl-main.cpp \
 		opengl.png \

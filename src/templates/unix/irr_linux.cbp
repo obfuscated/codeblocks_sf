@@ -25,8 +25,14 @@
 			<Add directory="$(IRR_BASE)/include"/>
 		</ResourceCompiler>
 		<Linker>
-			<Add library="irrlicht"/>
-			<Add directory="$(IRR_BASE)/lib/Win32-gcc"/>
+			<Add library="Irrlicht"/>
+			<Add library="GL"/>
+			<Add library="GLU"/>
+			<Add library="X11"/>
+			<Add library="Xext"/>
+			<Add library="Xxf86vm"/>
+			<Add directory="$(IRR_BASE)/lib/Linux"/>
+			<Add directory="/usr/X11R6/lib"/>
 		</Linker>
 	</Project>
 </Code::Blocks_project_file>
