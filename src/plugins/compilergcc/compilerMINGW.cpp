@@ -80,11 +80,11 @@ void CompilerMINGW::Reset()
 				_T("-O -O1 -O2 -O3 -Os"),
 				_("You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."));
 #ifdef __WXMSW__
-    #define GPROF_LINK "-pg -lgmon"
+    #define GPROF_LINK _T("-pg -lgmon")
 #else
-    #define GPROF_LINK "-pg"
+    #define GPROF_LINK _T("-pg")
 #endif
-	m_Options.AddOption(_("Profile code when executed"), _T("-pg"), _("Profiling"), _T(GPROF_LINK));
+	m_Options.AddOption(_("Profile code when executed"), _T("-pg"), _("Profiling"), GPROF_LINK);
 
     wxString category = _("Warnings");
 

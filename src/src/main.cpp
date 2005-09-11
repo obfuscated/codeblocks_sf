@@ -442,7 +442,7 @@ void MainFrame::CreateIDE()
     pDockWindow1 = new wxDockWindow( this, 0, _("Management"), wxPoint( 64, 64 ), wxSize( leftW, clientsize.GetHeight() ) );
     pDockWindow1->SetClient( m_pNotebook );
 
-    pDockWindow2 = new wxDockWindow( this, 0, _("Messages"), wxPoint( 96, 96 ), wxSize( clientsize.GetWidth(), bottomH ), "d1" );
+    pDockWindow2 = new wxDockWindow( this, 0, _("Messages"), wxPoint( 96, 96 ), wxSize( clientsize.GetWidth(), bottomH ), wxT("d1") );
     pDockWindow2->SetClient( Manager::Get()->GetMessageManager() );
 
     // setup dockmanager
