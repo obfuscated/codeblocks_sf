@@ -34,8 +34,6 @@ class wxsNewWindowDlg : public wxDialog
         void OnXrcChanged(wxCommandEvent& event);
         //*)
 
-	private:
-
         //(*Declarations(wxsNewWindowDlg)
         wxTextCtrl* Class;
         wxTextCtrl* Header;
@@ -43,7 +41,11 @@ class wxsNewWindowDlg : public wxDialog
         wxCheckBox* UseXrc;
         wxTextCtrl* Xrc;
         //*)
+        
+        virtual bool PrepareResource(wxsWindowRes* Res) { return true; }
 
+	private:
+	
         bool SourceNotTouched;
         bool HeaderNotTouched;
         bool XrcNotTouched;

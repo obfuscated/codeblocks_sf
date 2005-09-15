@@ -1,13 +1,13 @@
 <resource>
     <object class="wxDialog" name="wxsNewWindowDlg">
-        <object class="wxBoxSizer" variable="BoxSizer1" member="no">
+        <object class="wxBoxSizer" variable="BoxSizer3" member="no">
             <orient>wxVERTICAL</orient>
             <object class="sizeritem">
                 <object class="wxStaticBoxSizer" variable="StaticBoxSizer2" member="no">
                     <orient>wxVERTICAL</orient>
                     <label>Options</label>
                     <object class="sizeritem">
-                        <object class="wxFlexGridSizer" variable="FlexGridSizer2" member="no">
+                        <object class="wxFlexGridSizer" variable="FlexGridSizer1" member="no">
                             <rows>0</rows>
                             <cols>2</cols>
                             <vgap>5</vgap>
@@ -96,7 +96,7 @@
                 <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
             </object>
             <object class="sizeritem">
-                <object class="wxBoxSizer" variable="BoxSizer2" member="no">
+                <object class="wxBoxSizer" variable="BoxSizer1" member="no">
                     <orient>wxHORIZONTAL</orient>
                     <object class="sizeritem">
                         <object class="wxButton" name="ID_BUTTON1" variable="Button1" member="no">

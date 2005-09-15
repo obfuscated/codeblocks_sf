@@ -22,7 +22,6 @@
 
 #include "wxsmith.h"
 #include "wxswindoweditor.h"
-//#include "resources/wxsdialogres.h"
 #include "defwidgets/wxsstdmanager.h"
 #include "wxscodegen.h"
 #include "wxspropertiesman.h"
@@ -31,10 +30,12 @@
 #include "wxspalette.h"
 #include "wxsevent.h"
 #include "wxsnewwindowdlg.h"
+#include "wxsimportxrcdlg.h"
 
 static int NewDialogId = wxNewId();
 static int NewFrameId = wxNewId();
 static int NewPanelId = wxNewId();
+static int ImportXrcId = wxNewId();
 
 class wxsResourceTree: public wxTreeCtrl
 {
@@ -93,6 +94,7 @@ BEGIN_EVENT_TABLE(wxSmith, cbPlugin)
 	EVT_MENU(NewDialogId,wxSmith::OnNewWindow)
 	EVT_MENU(NewFrameId,wxSmith::OnNewWindow)
 	EVT_MENU(NewPanelId,wxSmith::OnNewWindow)
+	EVT_MENU(ImportXrcId,wxSmith::OnImportXrc)
 END_EVENT_TABLE()
 
 wxSmith::wxSmith()
@@ -210,6 +212,8 @@ void wxSmith::BuildMenu(wxMenuBar* menuBar)
 	Menu->Append(NewDialogId,_("Add Dialog"));
 	Menu->Append(NewFrameId,_("Add Frame"));
 	Menu->Append(NewPanelId,_("Add Panel"));
+	Menu->AppendSeparator();
+	Menu->Append(ImportXrcId,_("Import XRC file"));
 
 	int ToolsPos = menuBar->FindMenu(_("&Tools"));
 
@@ -288,42 +292,7 @@ wxsProject* wxSmith::GetSmithProject(cbProject* Proj)
 
 void wxSmith::OnNewWindow(wxCommandEvent& event)
 {
-    cbProject* Project = Manager::Get()->GetProjectManager()->GetActiveProject();
-
-    if ( !Project )
-    {
-        wxMessageBox(_("Please open project first"),_("Error"),wxOK|wxICON_ERROR);
-        return;
-    }
-
-    wxsProject* Proj = GetSmithProject(Project);
-
-    if ( !Proj )
-    {
-        DebLog(_("Something wrong - couldn't find assciated wxsProject"));
-        return;
-    }
-
-    switch ( Proj->GetIntegration() )
-    {
-        case wxsProject::NotBinded:
-            return;
-
-        case wxsProject::NotWxsProject:
-            if ( wxMessageBox(_("Active project doesn't use wxSmith.\nShould I change it ?"),
-                              _("Not wxSmith project"),wxYES_NO|wxICON_EXCLAMATION ) == wxYES )
-            {
-                if ( !Proj->AddSmithConfig() ) return;
-            }
-            else
-            {
-                return;
-            }
-            break;
-
-        default:
-            break;
-    }
+    if ( !CheckIntegration() ) return;
 
     wxString ResType = _T("Dialog");
 
@@ -338,5 +307,152 @@ void wxSmith::OnNewWindow(wxCommandEvent& event)
 
     wxsNewWindowDlg Dlg(Manager::Get()->GetAppWindow(),ResType);
     Dlg.ShowModal();
+}
+
+void wxSmith::OnImportXrc(wxCommandEvent& event)
+{
+    if ( !CheckIntegration() ) return;
+    
+	wxString FileName = ::wxFileSelector(
+        _("Select XRC file"),
+        _T(""),
+        _T(""),
+        _T("xrc"),
+        _("XRC files (*.xrc)|*.xrc"),
+        wxOPEN|wxFILE_MUST_EXIST);
+        
+    if ( FileName.empty() ) return;
+    
+    // Loading xrc file into xml document
+    
+    TiXmlDocument Doc(FileName.mb_str());
+    TiXmlElement* Resource;
+    if (! Doc.LoadFile() ||
+        ! (Resource = Doc.FirstChildElement("resource")) )
+    {
+    	wxMessageBox(_("Couldn't load XRC file."));
+        return;
+    }
+    // Generating list of objects
+    wxArrayString Resources;
+    TiXmlElement* Element = Resource->FirstChildElement("object");
+    while ( Element )
+    {
+    	const char* Class = Element->Attribute("class");
+    	const char* Name = Element->Attribute("name");
+    	if ( !Class || !Name ) continue;
+    	
+    	if ( !strcmp(Class,"wxDialog") ||
+    	     !strcmp(Class,"wxPanel") ||
+    	     !strcmp(Class,"wxFrame") )
+        {
+        	Resources.Add(Name);
+        }
+        
+        Element = Element->NextSiblingElement("object");
+    }
+    
+    if ( Resources.Count() == 0 )
+    {
+    	wxMessageBox(_("Didn't find any editable resources"));
+    	return;
+    }
+
+    // Selecting resource to edit
+    
+    wxString Name;
+    
+    if ( Resources.Count() == 1 )
+    {
+    	Name = Resources[0];
+    }
+    else
+    {
+        int Index = ::wxGetSingleChoiceIndex(
+            _("Select resource to import"),
+            _("Importing XRC"),
+            Resources );
+        if ( Index == -1 ) return;
+        Name = Resources[Index];
+    }
+    
+    Element = Resource->FirstChildElement("object");
+    while ( Element )
+    {
+        if ( !strcmp(Element->Attribute("name"),Name.mb_str()) )
+        {
+            break;
+        }
+        Element = Element->NextSiblingElement("object");
+    }
+    if ( !Element ) return;
+    
+    // Creating fake resource and testing if xrc can be loaded without any errors
+    wxsWidget* Test = wxsWidgetFactory::Get()->Generate(wxString(Element->Attribute("class"),wxConvUTF8),NULL);
+    if ( !Test )
+    {
+    	// Something went wrong - default factory is not working ?
+    	wxMessageBox(_("Internal error"));
+    	return;
+    }
+
+    if ( !Test->XmlLoad(Element) )
+    {
+		if ( wxMessageBox(_("Resource was not loaded properly. Some widgets may be\n"
+                            "damaged or will be removed. Continue ?"),
+                          _("XRC Load error"),
+                          wxYES_NO|wxICON_QUESTION) == wxNO )
+        {
+        	delete Test;
+        	return;
+        }
+    }
+    delete Test;
+    
+    // Displaying configuration dialog - it will handle adding resource to project
+    wxsImportXrcDlg Dlg(Manager::Get()->GetAppWindow(),Element);
+    Dlg.ShowModal();
+}
+
+bool wxSmith::CheckIntegration()
+{
+    cbProject* Project = Manager::Get()->GetProjectManager()->GetActiveProject();
+
+    if ( !Project )
+    {
+        wxMessageBox(_("Please open project first"),_("Error"),wxOK|wxICON_ERROR);
+        return false;
+    }
+
+    wxsProject* Proj = GetSmithProject(Project);
+
+    if ( !Proj )
+    {
+        DebLog(_("Something wrong - couldn't find assciated wxsProject"));
+        return false;
+    }
+
+    switch ( Proj->GetIntegration() )
+    {
+        case wxsProject::NotBinded:
+            return false;
+
+        case wxsProject::NotWxsProject:
+            if ( wxMessageBox(_("Active project doesn't use wxSmith.\nShould I change it ?"),
+                              _("Not wxSmith project"),wxYES_NO|wxICON_EXCLAMATION ) == wxYES )
+            {
+                if ( !Proj->AddSmithConfig() ) return false;
+            }
+            else
+            {
+                return false;
+            }
+            break;
+
+        default:
+            break;
+    }
+    
+    return true;
 }
 

@@ -179,6 +179,12 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
     }
     Manager::Get()->GetProjectManager()->RebuildTree();
 
+    if ( !PrepareResource(NewWindow) )
+    {
+        delete NewWindow;
+        Close();
+    }
+		
     // Adding dialog to project and opening editor for it
 
     if ( Type == _T("Dialog") )

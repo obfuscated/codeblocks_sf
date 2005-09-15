@@ -86,9 +86,13 @@ class wxSmith : public cbPlugin
         void OnProjectOpen(CodeBlocksEvent& event);
         void OnProjectActivated(CodeBlocksEvent& event);
         void OnNewWindow(wxCommandEvent& event);
+        void OnImportXrc(wxCommandEvent& event);
         
         /* Internal event-processing functions */
         void OnSpreadEvent(wxsEvent& event);
+        
+        /** Function checking and adding wxSmith support for current project */
+        bool CheckIntegration();
 
         /* Singleton object */
         static wxSmith* Singleton;
