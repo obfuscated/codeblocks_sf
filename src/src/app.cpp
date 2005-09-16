@@ -32,6 +32,9 @@
 #include <wx/msgdlg.h>
 #include <wx/choicdlg.h>
 #include <wx/notebook.h>
+#if wxCHECK_VERSION(2,6,0)
+    #include <wx/debugrpt.h>
+#endif
 #include <configmanager.h>
 #include <editormanager.h>
 #include <projectmanager.h>
@@ -285,11 +288,10 @@ bool CodeBlocksApp::OnInit()
 {
     m_pSplash = 0;
 
-// NOTE (mandrav#1#): My wx2.6.1 build has define wxUSE_ON_FATAL_EXCEPTION
-//                    but still I get errors compiling with it...
-#ifdef wxHandleFatalExceptions
+#if (wxUSE_ON_FATAL_EXCEPTION == 1)
     wxHandleFatalExceptions(true);
 #endif
+
     if(!LoadConfig())
         return false;
 
@@ -348,9 +350,18 @@ bool CodeBlocksApp::OnCmdLineParsed(wxCmdLineParser& parser)
 
 void CodeBlocksApp::OnFatalException()
 {
+#if wxCHECK_VERSION(2,6,0)
+    wxDebugReport report;
+    wxDebugReportPreviewStd preview;
+
+    report.AddAll();
+    if ( preview.Show(report) )
+        report.Process();
+#else
     wxMessageBox(_("Something has gone wrong inside " APP_NAME " and it "
                     "will terminate immediately.\n"
                     "We are sorry for the inconvenience..."));
+#endif
 }
 
 void CodeBlocksApp::ShowSplashScreen()
@@ -449,8 +460,13 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                 {
                     wxString val;
                     parser.Found(_T("prefix"), &m_Prefix);
+#ifdef __WXMSW__
 					m_NoDDE = parser.Found(_T("no-dde"), &val);
 					m_NoAssocs = parser.Found(_T("no-check-associations"), &val);
+#else
+                    m_NoDDE = false;
+                    m_NoAssocs = false;
+#endif
 					m_NoSplash = parser.Found(_T("no-splash-screen"), &val);
 					m_ClearConf = parser.Found(_T("clear-configuration"), &val);
 					m_HasDebugLog = parser.Found(_T("debug-log"), &val);
