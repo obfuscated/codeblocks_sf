@@ -35,19 +35,23 @@ void wxsDefWidget::CreateObjectProperties()
 
 wxString wxsDefWidget::GetProducingCode(wxsCodeParams& Params)
 {
+    const CodeDefines& CD = GetCodeDefines();
+    
     CodeResult = GetGeneratingCodeStr();
     
     CodeReplace(_T("ThisWidget"),BaseParams.VarName);
     CodeReplace(_T("parent"),Params.ParentName);
     CodeReplace(_T("id"),BaseParams.IdName);
-    CodeReplace(_T("pos"),GetCodeDefines().Pos);
-    CodeReplace(_T("size"),GetCodeDefines().Size);
-    CodeReplace(_T("style"),GetCodeDefines().Style);
-    CodeReplace(_T("font"),GetCodeDefines().Font);
-    CodeReplace(_T("fcolour"),GetCodeDefines().FColour);
-    CodeReplace(_T("bcolour"),GetCodeDefines().BColour);
+    CodeReplace(_T("pos"),CD.Pos);
+    CodeReplace(_T("size"),CD.Size);
+    CodeReplace(_T("style"),CD.Style);
     
     evCode();
+    
+    // Applying default initializing code
+    
+    CodeResult << CD.InitCode;
+    
     return CodeResult;
 }
 

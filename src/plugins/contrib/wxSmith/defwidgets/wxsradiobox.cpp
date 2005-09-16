@@ -41,6 +41,7 @@ wxWindow* wxsRadioBox::MyCreatePreview(wxWindow* Parent)
     wxRadioBox* Preview =  new wxRadioBox(Parent,-1,label,
         GetPosition(),GetSize(),arrayChoices,dimension,GetStyle());
 	if ( defaultChoice >= 0 ) Preview->SetSelection(defaultChoice);
+	PreviewApplyDefaults(Preview);
 	return Preview;
 }
 
@@ -84,6 +85,8 @@ wxString wxsRadioBox::GetProducingCode(wxsCodeParams& Params)
     {
     	Code.Append( wxString::Format(_T("%s->SetSelection(%d);"),GetBaseParams().VarName.c_str(),defaultChoice) );
     }
+    
+    Code << CDefs.InitCode;
     
     return Code;
 }

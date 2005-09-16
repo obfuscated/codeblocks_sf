@@ -3,6 +3,8 @@
 #include "properties/wxsborderproperty.h"
 #include "properties/wxsplacementproperty.h"
 #include "properties/wxsstyleproperty.h"
+#include "properties/wxscolourproperty.h"
+#include "properties/wxsfontproperty.h"
 #include "resources/wxswindowres.h"
 #include "wxswidgetfactory.h"
 #include "wxsresource.h"
@@ -10,6 +12,55 @@
 #include "wxswidgetevents.h"
 #include <wx/tokenzr.h>
 #include <wx/list.h>
+
+#define COLOUR_ENTRY(Name) { _T(#Name), Name },
+
+/** All system colours */
+static struct { wxChar* Name; wxUint32 Value; } wxsSystemColours[] =
+{
+    COLOUR_ENTRY(wxSYS_COLOUR_SCROLLBAR)
+    COLOUR_ENTRY(wxSYS_COLOUR_BACKGROUND)
+    COLOUR_ENTRY(wxSYS_COLOUR_DESKTOP)
+    COLOUR_ENTRY(wxSYS_COLOUR_ACTIVECAPTION)
+    COLOUR_ENTRY(wxSYS_COLOUR_INACTIVECAPTION)
+    COLOUR_ENTRY(wxSYS_COLOUR_MENU)
+    COLOUR_ENTRY(wxSYS_COLOUR_WINDOW)
+    COLOUR_ENTRY(wxSYS_COLOUR_WINDOWFRAME)
+    COLOUR_ENTRY(wxSYS_COLOUR_MENUTEXT)
+    COLOUR_ENTRY(wxSYS_COLOUR_WINDOWTEXT)
+    COLOUR_ENTRY(wxSYS_COLOUR_CAPTIONTEXT)
+    COLOUR_ENTRY(wxSYS_COLOUR_ACTIVEBORDER)
+    COLOUR_ENTRY(wxSYS_COLOUR_INACTIVEBORDER)
+    COLOUR_ENTRY(wxSYS_COLOUR_APPWORKSPACE)
+    COLOUR_ENTRY(wxSYS_COLOUR_HIGHLIGHT)
+    COLOUR_ENTRY(wxSYS_COLOUR_HIGHLIGHTTEXT)
+    COLOUR_ENTRY(wxSYS_COLOUR_BTNFACE)
+    COLOUR_ENTRY(wxSYS_COLOUR_3DFACE)
+    COLOUR_ENTRY(wxSYS_COLOUR_BTNSHADOW)
+    COLOUR_ENTRY(wxSYS_COLOUR_3DSHADOW)
+    COLOUR_ENTRY(wxSYS_COLOUR_GRAYTEXT)
+    COLOUR_ENTRY(wxSYS_COLOUR_BTNTEXT)
+    COLOUR_ENTRY(wxSYS_COLOUR_INACTIVECAPTIONTEXT)
+    COLOUR_ENTRY(wxSYS_COLOUR_BTNHIGHLIGHT)
+    COLOUR_ENTRY(wxSYS_COLOUR_BTNHILIGHT)
+    COLOUR_ENTRY(wxSYS_COLOUR_3DHIGHLIGHT)
+    COLOUR_ENTRY(wxSYS_COLOUR_3DHILIGHT)
+    COLOUR_ENTRY(wxSYS_COLOUR_3DDKSHADOW)
+    COLOUR_ENTRY(wxSYS_COLOUR_3DLIGHT)
+    COLOUR_ENTRY(wxSYS_COLOUR_INFOTEXT)
+    COLOUR_ENTRY(wxSYS_COLOUR_INFOBK)
+    COLOUR_ENTRY(wxSYS_COLOUR_LISTBOX)
+    COLOUR_ENTRY(wxSYS_COLOUR_HOTLIGHT)
+    COLOUR_ENTRY(wxSYS_COLOUR_GRADIENTACTIVECAPTION)
+    COLOUR_ENTRY(wxSYS_COLOUR_GRADIENTINACTIVECAPTION)
+    COLOUR_ENTRY(wxSYS_COLOUR_MENUHILIGHT)
+    COLOUR_ENTRY(wxSYS_COLOUR_MENUBAR)
+    { NULL, 0 }
+};
+
+/** Number of items in system colours array */
+static const int wxsSystemColoursCount = sizeof(wxsSystemColours) / sizeof(wxsSystemColours[0]);
+
 
 wxsWidget::wxsWidget(wxsWidgetManager* Man,wxsWindowRes* Res,BasePropertiesType pType):
     PropertiesObject(this),
@@ -91,7 +142,41 @@ void wxsWidget::AddDefaultProperties(BasePropertiesType pType)
         PropertiesObject.Add2IProperty(_("Size:"),BaseParams.SizeX,BaseParams.SizeY);
         PropertiesObject.AddProperty(_(" Default:"),BaseParams.DefaultSize);
     }
-
+    
+    if ( pType & bptEnabled )
+    {
+    	PropertiesObject.AddProperty(_("Enabled:"),BaseParams.Enabled);
+    }
+    
+    if ( pType & bptFocused )
+    {
+    	PropertiesObject.AddProperty(_("Focused:"),BaseParams.Focused);
+    }
+    
+    if ( pType & bptHidden )
+    {
+    	PropertiesObject.AddProperty(_("Hidden:"),BaseParams.Hidden);
+    }
+    
+    if ( pType & bptColours )
+    {
+    	PropertiesObject.AddProperty(_("Foreground colour:"),
+            new wxsColourProperty(&PropertiesObject,BaseParams.FgType,BaseParams.Fg) );
+    	PropertiesObject.AddProperty(_("Background colour:"),
+            new wxsColourProperty(&PropertiesObject,BaseParams.BgType,BaseParams.Bg) );
+    }
+    
+    if ( pType & bptFont )
+    {
+    	PropertiesObject.AddProperty(_("Font:"),
+            new wxsFontProperty(&PropertiesObject,BaseParams.UseFont,BaseParams.Font) );
+    }
+    
+    if ( pType & bptToolTip )
+    {
+    	PropertiesObject.AddProperty(_("Tool tip:"),BaseParams.ToolTip);
+    }
+    
     // Adding sizer configuration
 
     PropertiesObject.AddProperty(_("Proportion:"),BaseParams.Proportion);
@@ -172,6 +257,63 @@ void wxsWidget::KillPreview()
     }
 }
 
+void wxsWidget::PreviewApplyDefaults(wxWindow* Wnd)
+{
+	BasePropertiesType pType = GetBPType();
+	if ( pType & bptEnabled && !BaseParams.Enabled )
+	{
+		Wnd->Disable();
+	}
+	
+	if ( pType & bptFocused && BaseParams.Focused )
+	{
+		Wnd->SetFocus();
+	}
+	
+	if ( pType & bptHidden && BaseParams.Hidden )
+	{
+		Wnd->Hide();
+	}
+	
+	if ( pType & bptColours )
+	{
+		if ( BaseParams.FgType != wxsNO_COLOUR )
+		{
+			if ( BaseParams.FgType == wxsCUSTOM_COLOUR )
+			{
+				Wnd->SetForegroundColour(BaseParams.Fg);
+			}
+			else
+			{
+				Wnd->SetForegroundColour(wxSystemSettings::GetColour((wxSystemColour)BaseParams.FgType));
+			}
+		}
+		
+		if ( BaseParams.BgType != wxsNO_COLOUR )
+		{
+			if ( BaseParams.BgType == wxsCUSTOM_COLOUR )
+			{
+				Wnd->SetBackgroundColour(BaseParams.Bg);
+			}
+			else
+			{
+				Wnd->SetBackgroundColour(wxSystemSettings::GetColour((wxSystemColour)BaseParams.BgType));
+			}
+		}
+	}
+
+    if ( pType & bptToolTip && BaseParams.ToolTip )
+    {
+    	Wnd->SetToolTip(BaseParams.ToolTip);
+    }
+
+    if ( pType & bptFont && BaseParams.UseFont )
+    {
+    	Wnd->SetFont(BaseParams.Font);
+    }
+
+}
+
 void wxsWidget::XmlAssignElement(TiXmlElement* Elem)
 {
     XmlElement = Elem;
@@ -237,6 +379,134 @@ bool wxsWidget::XmlLoadDefaultsT(BasePropertiesType pType)
         }
     }
 
+    if ( pType & bptEnabled )
+    {
+    	BaseParams.Enabled = XmlGetInteger(_T("enabled"),1) != 0;
+    }
+    
+    if ( pType & bptFocused )
+    {
+    	BaseParams.Focused = XmlGetInteger(_T("focused"),0) != 0;
+    }
+    
+    if ( pType & bptHidden )
+    {
+    	BaseParams.Hidden = XmlGetInteger(_T("hiddedn"),0) != 0;
+    }
+    
+    if ( pType & bptColours )
+    {
+    	wxString Colour = XmlGetVariable(_T("fg"));
+    	Colour.Trim(true).Trim(false);
+        BaseParams.FgType = wxsNO_COLOUR;
+    	if ( !Colour.empty() )
+    	{
+    		if ( Colour[0] == _T('#') )
+    		{
+    			// Got web colour
+    			long Value = 0;
+    			if ( Colour.Mid(1).ToLong(&Value,0x10) )
+    			{
+    				BaseParams.FgType = wxsCUSTOM_COLOUR;
+    				BaseParams.Fg = wxColour(
+                        ( Value >> 16 ) & 0xFF,
+                        ( Value >> 8 ) & 0xFF,
+                        Value & 0xFF );
+    			}
+    		}
+    		else
+    		{
+    			for ( int i=0; i<wxsSystemColoursCount; i++ )
+    			{
+    				if ( Colour == wxsSystemColours[i].Name )
+    				{
+    					BaseParams.FgType = wxsSystemColours[i].Value;
+    					BaseParams.Fg = wxSystemSettings::GetColour((wxSystemColour)BaseParams.FgType);
+    					break;
+    				}
+    			}
+    		}
+    	}
+    	
+    	Colour = XmlGetVariable(_T("bg"));
+    	Colour.Trim(true).Trim(false);
+        BaseParams.BgType = wxsNO_COLOUR;
+    	if ( !Colour.empty() )
+    	{
+    		if ( Colour[0] == _T('#') )
+    		{
+    			// Got web colour
+    			long Value = 0;
+    			if ( Colour.Mid(1).ToLong(&Value,0x10) )
+    			{
+    				BaseParams.BgType = wxsCUSTOM_COLOUR;
+    				BaseParams.Bg = wxColour(
+                        ( Value >> 16 ) & 0xFF,
+                        ( Value >> 8 ) & 0xFF,
+                        Value & 0xFF );
+    			}
+    		}
+    		else
+    		{
+    			for ( int i=0; i<wxsSystemColoursCount; i++ )
+    			{
+    				if ( Colour == wxsSystemColours[i].Name )
+    				{
+    					BaseParams.BgType = wxsSystemColours[i].Value;
+    					BaseParams.Bg = wxSystemSettings::GetColour((wxSystemColour)BaseParams.BgType);
+    					break;
+    				}
+    			}
+    		}
+    	}
+    }
+    
+    if ( pType & bptFont )
+    {
+    	TiXmlElement* Store = XmlElem();
+    	TiXmlElement* Font = Store->FirstChildElement("font");
+    	if ( Font != NULL )
+    	{
+    		XmlAssignElement(Font);
+    		
+    		// Loading font stuff
+    		
+    		int Size = XmlGetInteger(_T("size"),wxDEFAULT);
+    		
+    		wxString Str = XmlGetVariable(_T("style"));
+    		int Style = wxFONTSTYLE_NORMAL;
+    		if ( Str == _T("italic") ) Style = wxFONTSTYLE_ITALIC;
+    		else if ( Str == _T("slant") ) Style = wxFONTSTYLE_SLANT ;
+    		
+    		Str = XmlGetVariable(_T("weight"));
+    		int Weight = wxNORMAL;
+    		if ( Str == _T("bold") ) Weight = wxBOLD;
+    		else if ( Str == _T("light") ) Weight = wxLIGHT;
+    		
+    		bool Underlined = XmlGetInteger(_T("underlined"),0) != 0;
+    		
+    		int Family = wxDEFAULT;
+            Str = XmlGetVariable(_T("family"));
+            if (Str == _T("decorative")) Family = wxDECORATIVE;
+            else if (Str == _T("roman")) Family = wxROMAN;
+            else if (Str == _T("script")) Family = wxSCRIPT;
+            else if (Str == _T("swiss")) Family = wxSWISS;
+            else if (Str == _T("modern")) Family = wxMODERN;
+            else if (Str == _T("teletype")) Family = wxTELETYPE;
+            
+            wxString Face = XmlGetVariable(_T("face"));
+    		
+    		BaseParams.UseFont = true;
+    		BaseParams.Font = wxFont(Size,Family,Style,Weight,Underlined,Face);
+    	}
+    	else
+    	{
+    		BaseParams.UseFont = false;
+    		BaseParams.Font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+    	}
+    	XmlAssignElement(Store);
+    }
+    
     if ( IsContainer() )
     {
         if ( !XmlLoadChildren() ) return false;
@@ -310,6 +580,100 @@ bool wxsWidget::XmlSaveDefaultsT(BasePropertiesType pType)
         }
     }
 
+    if ( pType & bptEnabled )
+    {
+    	if ( !BaseParams.Enabled ) XmlSetInteger(_T("enabled"),0);
+    }
+    
+    if ( pType & bptFocused )
+    {
+    	if ( BaseParams.Focused ) XmlSetInteger(_T("focused"),1);
+    }
+    
+    if ( pType & bptHidden )
+    {
+    	if ( BaseParams.Hidden ) XmlSetInteger(_T("hiddedn"),1);
+    }
+    
+    if ( pType & bptColours )
+    {
+    	if ( BaseParams.FgType == wxsCUSTOM_COLOUR )
+    	{
+    		XmlSetVariable( _T("fg"),
+                wxString::Format(_T("#%02X%02X%02X"),
+                    BaseParams.Fg.Red(),
+                    BaseParams.Fg.Green(),
+                    BaseParams.Fg.Blue() ) );
+    	}
+    	else
+    	{
+    		for ( int i=0; i<wxsSystemColoursCount; i++ )
+    		{
+    			if ( BaseParams.FgType == wxsSystemColours[i].Value )
+    			{
+    				XmlSetVariable( _T("fg"), wxsSystemColours[i].Name );
+    				break;
+    			}
+    		}
+    	}
+
+    	if ( BaseParams.BgType == wxsCUSTOM_COLOUR )
+    	{
+    		XmlSetVariable( _T("bg"),
+                wxString::Format(_T("#%02X%02X%02X"),
+                    BaseParams.Bg.Red(),
+                    BaseParams.Bg.Green(),
+                    BaseParams.Bg.Blue() ) );
+    	}
+    	else
+    	{
+    		for ( int i=0; i<wxsSystemColoursCount; i++ )
+    		{
+    			if ( BaseParams.BgType == wxsSystemColours[i].Value )
+    			{
+    				XmlSetVariable( _T("bg"), wxsSystemColours[i].Name );
+    				break;
+    			}
+    		}
+    	}
+    }
+    
+    if ( pType & bptFont && BaseParams.UseFont )
+    {
+    	TiXmlElement* Store = XmlElem();
+    	XmlAssignElement(Store->InsertEndChild(TiXmlElement("font"))->ToElement());
+    	wxFont& Font = BaseParams.Font;
+    	XmlSetInteger(_T("size"),Font.GetPointSize());
+    	
+    	switch ( Font.GetStyle() )
+    	{
+            case wxFONTSTYLE_ITALIC: XmlSetVariable(_T("style"),_T("italic")); break;
+            case wxFONTSTYLE_SLANT : XmlSetVariable(_T("style"),_T("slant")); break;
+            default:;
+    	}
+    	
+    	switch ( Font.GetWeight() )
+    	{
+    		case wxFONTWEIGHT_LIGHT: XmlSetVariable(_T("weight"),_T("light")); break;
+            case wxFONTWEIGHT_BOLD : XmlSetVariable(_T("weight"),_T("bold")); break;
+            default:;
+    	}
+    	
+    	switch ( Font.GetFamily() )
+    	{
+    		case wxFONTFAMILY_DECORATIVE: XmlSetVariable(_T("family"),_T("decorative")); break;
+    		case wxFONTFAMILY_ROMAN     : XmlSetVariable(_T("family"),_T("roman")); break;
+    		case wxFONTFAMILY_SCRIPT    : XmlSetVariable(_T("family"),_T("script")); break;
+    		case wxFONTFAMILY_SWISS     : XmlSetVariable(_T("family"),_T("swiss")); break;
+    		case wxFONTFAMILY_MODERN    : XmlSetVariable(_T("family"),_T("modern")); break;
+    		case wxFONTFAMILY_TELETYPE  : XmlSetVariable(_T("family"),_T("teletype")); break;
+    		default:;
+    	}
+    	if ( Font.GetUnderlined() ) XmlSetInteger(_T("underlined"),1);
+    	if ( !Font.GetFaceName().empty() ) XmlSetVariable(_T("face"),Font.GetFaceName());
+    	XmlAssignElement(Store);
+    }
+    
     if ( IsContainer() )
     {
         if ( !XmlSaveChildren() ) return false;
@@ -597,11 +961,9 @@ void wxsWidget::XmlSaveSizerStuff(TiXmlElement* Elem)
 
 const wxsWidget::CodeDefines& wxsWidget::GetCodeDefines()
 {
-// TODO (SpOoN#1#): Support for font and colours
-    CDefines.FColour = _T("");
-    CDefines.BColour = _T("");
-    CDefines.Font = _T("");
+// TODO (SpOoN#1#): Support font
     CDefines.Style = _T("");
+    CDefines.InitCode = _T("");
 
     // Filling up styles
 
@@ -626,13 +988,149 @@ const wxsWidget::CodeDefines& wxsWidget::GetCodeDefines()
     // Creating position
 
     if ( BaseParams.DefaultPosition ) CDefines.Pos = _T("wxDefaultPosition");
-    else CDefines.Pos = wxString::Format(_T("wxPoint(%d,%d)"),BaseParams.PosX,BaseParams.PosY);
+    else CDefines.Pos.Printf(_T("wxPoint(%d,%d)"),BaseParams.PosX,BaseParams.PosY);
 
     // Creating size
 
     if ( BaseParams.DefaultSize ) CDefines.Size = _T("wxDefaultSize");
-    else CDefines.Size = wxString::Format(_T("wxSize(%d,%d)"),BaseParams.SizeX,BaseParams.SizeY);
+    else CDefines.Size.Printf(_T("wxSize(%d,%d)"),BaseParams.SizeX,BaseParams.SizeY);
+    
+    // Creating colours
 
+    BasePropertiesType pType = GetBPType();
+
+    if ( pType & bptColours )
+    {
+        wxString FColour;
+        wxString BColour;
+        
+        if ( BaseParams.FgType == wxsCUSTOM_COLOUR )
+        {
+        	FColour.Printf(_T("wxColour(%d,%d,%d)"),
+                BaseParams.Fg.Red(),
+                BaseParams.Fg.Green(),
+                BaseParams.Fg.Blue());
+        }
+        else
+        {
+        	for ( int i=0; i<wxsSystemColoursCount; i++ )
+        	{
+        		if ( BaseParams.FgType == wxsSystemColours[i].Value )
+        		{
+        			FColour.Printf(_T("wxSystemSettings::GetColour(%s)"),wxsSystemColours[i].Name);
+        			break;
+        		}
+        	}
+        }
+        
+        if ( BaseParams.BgType == wxsCUSTOM_COLOUR )
+        {
+        	FColour.Printf(_T("wxColour(%d,%d,%d)"),
+                BaseParams.Bg.Red(),
+                BaseParams.Bg.Green(),
+                BaseParams.Bg.Blue());
+        }
+        else
+        {
+        	for ( int i=0; i<wxsSystemColoursCount; i++ )
+        	{
+        		if ( BaseParams.BgType == wxsSystemColours[i].Value )
+        		{
+        			BColour.Printf(_T("wxSystemSettings::GetColour(%s)"),wxsSystemColours[i].Name);
+        			break;
+        		}
+        	}
+        }
+        
+        
+        if ( !FColour.empty() )
+        {
+            CDefines.InitCode << BaseParams.VarName << _T("->SetForegroundColour(")
+                              << FColour << _T(");");
+        }
+        
+        if ( !BColour.empty() )
+        {
+            CDefines.InitCode << BaseParams.VarName << _T("->SetBackgroundColour(")
+                              << BColour << _T(");");
+        }
+    }
+    
+    if ( pType & bptFont && BaseParams.UseFont )
+    {
+    	wxFont& Font = BaseParams.Font;
+    	CDefines.InitCode << BaseParams.VarName << _T("->SetFont(wxFont(") <<
+                             Font.GetPointSize() << _T(',');
+                             
+    	switch ( Font.GetFamily() )
+    	{
+    		case wxFONTFAMILY_DECORATIVE: CDefines.InitCode << _T("wxFONTFAMILY_DECORATIVE,"); break;
+    		case wxFONTFAMILY_ROMAN     : CDefines.InitCode << _T("wxFONTFAMILY_ROMAN,"); break;
+    		case wxFONTFAMILY_SCRIPT    : CDefines.InitCode << _T("wxFONTFAMILY_SCRIPT,"); break;
+    		case wxFONTFAMILY_SWISS     : CDefines.InitCode << _T("wxFONTFAMILY_SWISS,"); break;
+    		case wxFONTFAMILY_MODERN    : CDefines.InitCode << _T("wxFONTFAMILY_MODERN,"); break;
+    		case wxFONTFAMILY_TELETYPE  : CDefines.InitCode << _T("wxFONTFAMILY_TELETYPE,"); break;
+    		default                     : CDefines.InitCode << _T("wxFONTFAMILY_DEFAULT,");
+    	}
+    	
+    	switch ( Font.GetStyle() )
+        {
+    		case wxFONTSTYLE_SLANT  : CDefines.InitCode << _T("wxFONTSTYLE_SLANT,"); break;
+    		case wxFONTSTYLE_ITALIC : CDefines.InitCode << _T("wxFONTSTYLE_ITALIC,"); break;
+    		default                 : CDefines.InitCode << _T("wxFONTSTYLE_NORMAL,");
+    	}
+        
+        switch ( Font.GetWeight() )
+        {
+        	case wxFONTWEIGHT_BOLD : CDefines.InitCode << _T("wxFONTWEIGHT_BOLD,"); break;
+        	case wxFONTWEIGHT_LIGHT: CDefines.InitCode << _T("wxFONTWEIGHT_LIGHT,"); break;
+        	default                : CDefines.InitCode << _T("wxFONTWEIGHT_NORMAL,");
+        }
+        
+        if ( Font.GetUnderlined() )
+        {
+        	CDefines.InitCode << _T("true,");
+        }
+        else
+        {
+        	CDefines.InitCode << _T("false,");
+        }
+        
+        if ( Font.GetFaceName().empty() )
+        {
+        	CDefines.InitCode << _T("_T(\"\")");
+        }
+        else
+        {
+            CDefines.InitCode << GetWxString(Font.GetFaceName());
+        }
+    	
+        CDefines.InitCode << _T("));");
+    }
+    
+    if ( pType & bptEnabled && !BaseParams.Enabled )
+    {
+    	CDefines.InitCode <<  BaseParams.VarName << _T("->Disable();");
+    }
+    
+    if ( pType & bptFocused && BaseParams.Focused )
+    {
+        CDefines.InitCode <<  BaseParams.VarName << _T("->SetFocus();");
+    }
+    
+    if ( pType & bptHidden && BaseParams.Hidden )
+    {
+    	CDefines.InitCode <<  BaseParams.VarName << _T("->Hide();");
+    }
+    
+    if ( pType & bptToolTip && !BaseParams.ToolTip.empty() )
+    {
+    	CDefines.InitCode << BaseParams.VarName << _T("->SetToolTop(")
+    	                  << GetWxString(BaseParams.ToolTip) << _T(");");
+    }
+        
+    
+    
     return CDefines;
 }
 

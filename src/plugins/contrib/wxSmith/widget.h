@@ -110,6 +110,20 @@ struct wxsWidgetBaseParams
     int Border;                     ///< Size of additional border (in pixels)
     int Style;                      ///< Current style
     
+    bool Enabled;                   ///< If false, widget is disabled (true by deefault)
+    bool Focused;                   ///< If true, widget is focused (false by default)
+    bool Hidden;                    ///< If true, widget is hidden (false by default)
+    
+    wxUint32 FgType;                ///< Type of Fg colour (wxSYS_COLOUR_XXX or wxsCUSTOM_COLOUR or wxsNO_COLOUR)
+    wxColour Fg;                    ///< Foreground colour when using custom colour
+    wxUint32 BgType;                ///< Type of Bg colour (wxSYS_COLOUR_XXX or wxsCUSTOM_COLOUR or wxsNO_COLOUR)
+    wxColour Bg;                    ///< Background colour when using custom colour
+
+    bool UseFont;                   ///< Must be true to allow using font
+    wxFont Font;                    ///< Font
+    
+    wxString ToolTip;               ///< Tooltip
+    
     wxsWidgetBaseParams():
         IdName(_T("")),
         VarName(_T("")),
@@ -125,7 +139,17 @@ struct wxsWidgetBaseParams
         FixedMinSize(false),
         Placement(Center),
         Border(5),
-        Style(0)
+        Style(0),
+        Enabled(true),
+        Focused(false),
+        Hidden(false),
+        FgType(wxsNO_COLOUR),
+        Fg(0,0,0),
+        BgType(wxsNO_COLOUR),
+        Bg(0,0,0),
+        UseFont(false),
+        Font(wxNullFont),
+        ToolTip(_T(""))
         {}
 };
 
@@ -151,6 +175,12 @@ class wxsWidget
         static const BasePropertiesType bptId        = 0x0004;  ///< this widget is using identifier
         static const BasePropertiesType bptVariable  = 0x0008;  ///< this widget is using variable
         static const BasePropertiesType bptStyle     = 0x0010;  ///< this widget is using style
+        static const BasePropertiesType bptEnabled   = 0x0020;  ///< this widget uses Enabled property
+        static const BasePropertiesType bptFocused   = 0x0040;  ///< this widget uses Focused property
+        static const BasePropertiesType bptHidden    = 0x0080;  ///< this widget uses Hidden property
+        static const BasePropertiesType bptColours   = 0x0100;  ///< this widget uses colour properties (Fg and Bg)
+        static const BasePropertiesType bptToolTip   = 0x0200;  ///< this widget uses tooltips
+        static const BasePropertiesType bptFont      = 0x0400;  ///< this widget uses font
         
         /** BasePropertiesType with no default properties */
         static const BasePropertiesType propNone     = 0;        
@@ -159,7 +189,7 @@ class wxsWidget
         static const BasePropertiesType propWindow   = bptStyle;
         
         /** BasePropertiesType used by common widgets */
-        static const BasePropertiesType propWidget   = bptPosition | bptSize | bptId | bptVariable | bptStyle;
+        static const BasePropertiesType propWidget   = bptPosition | bptSize | bptId | bptVariable | bptStyle | bptEnabled | bptFocused | bptHidden | bptColours | bptToolTip | bptFont;
         
         /** BasePropertiesType used by common sizers */
         static const BasePropertiesType propSizer    = bptVariable;
@@ -220,6 +250,12 @@ class wxsWidget
         
         /** Function returning current pereview window */
         inline wxWindow* GetPreview() { return Preview; }
+        
+        /** Function applying some default properties to preview
+         *
+         * Properties applied: Enabled, Focused, Hidden, Colours, Font and ToolTip
+         */
+        void PreviewApplyDefaults(wxWindow* Preview);
             
     protected:
     
@@ -373,12 +409,10 @@ class wxsWidget
          */
         struct CodeDefines
         {
-            wxString FColour;   ///< Foreground colour, in form 'wxColour(...)'
-            wxString BColour;   ///< Background colour, in form 'wxColour(...)'
-            wxString Font;      ///< Font, in form 'wxFont(...)'
-            wxString Style;     ///< Widget's style in form 'wxSTYLE1|wxSTYLE2'
-            wxString Pos;       ///< Widget's position
-            wxString Size;      ///< Widget's size
+            wxString Style;         ///< Widget's style in form 'wxSTYLE1|wxSTYLE2'
+            wxString Pos;           ///< Widget's position
+            wxString Size;          ///< Widget's size
+            wxString InitCode;      ///< Code initializing Enabled / Focused / Hidden flags, Colours, ToolTip and Font
         };
         
         /** Function creating current coded defines */

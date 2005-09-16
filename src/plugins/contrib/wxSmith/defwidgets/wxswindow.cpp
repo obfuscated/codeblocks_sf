@@ -74,7 +74,9 @@ void wxsWindow::MyFinalUpdatePreview(wxWindow* Preview)
 /** This function should create preview window for widget */
 wxWindow* wxsWindow::MyCreatePreview(wxWindow* Parent)
 {
-    return new wxsWindowPreview(Parent,this, GetParent() ? GetPosition() : wxDefaultPosition, GetSize());
+    wxWindow* Wnd = new wxsWindowPreview(Parent,this, GetParent() ? GetPosition() : wxDefaultPosition, GetSize());
+    PreviewApplyDefaults(Wnd);
+    return Wnd;
 }
 
 int wxsWindow::AddChild(wxsWidget* NewWidget,int InsertBeforeThis)

@@ -65,6 +65,7 @@
             wxSize(BaseParams.SizeX,BaseParams.SizeY);                      \
         long style = BaseParams.Style;                                      \
         Code;                                                               \
+        PreviewApplyDefaults(ThisWidget);                                   \
         return ThisWidget;                                                  \
     }                                                                       \
     void Name::BuildExtVars()                                               \

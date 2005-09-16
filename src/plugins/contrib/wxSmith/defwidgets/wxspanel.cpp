@@ -33,13 +33,16 @@ const wxsWidgetInfo& wxsPanel::GetInfo()
 
 wxString wxsPanel::GetProducingCode(wxsCodeParams& Params)
 {
-    return wxString::Format(_T("%s = new wxPanel(%s,%s,%s,%s,%s);"),
+	const CodeDefines& CDefs = GetCodeDefines();
+    return wxString::Format(_T("%s = new wxPanel(%s,%s,%s,%s,%s);\n%s"),
         BaseParams.VarName.c_str(),
         Params.ParentName.c_str(),
         BaseParams.IdName.c_str(),
-        GetCodeDefines().Pos.c_str(),
-        GetCodeDefines().Size.c_str(),
-        GetCodeDefines().Style.c_str());
+        CDefs.Pos.c_str(),
+        CDefs.Size.c_str(),
+        CDefs.Style.c_str(),
+        CDefs.InitCode.c_str()
+        );
 }
 
 wxString wxsPanel::GetDeclarationCode(wxsCodeParams& Params)

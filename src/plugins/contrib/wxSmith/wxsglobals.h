@@ -2,6 +2,10 @@
 #define __WXSGLOBALS_H
 
 #include <wx/string.h>
+#include <wx/settings.h>
+#include <wx/scrolwin.h>
+#include <wx/propgrid/propgrid.h>
+#include <wx/propgrid/advprops.h>
 
 /** Changing given string to it's representation in C++.
  *
@@ -37,5 +41,11 @@ enum wxsResEditMode
 	/*-----------------*/
 	wxsResBroken = 0x8000   ///< Setting this flag tells that resource was broken (f.ex. errors in code integration)
 };
+
+/** Constant used to notify that there's no colour used */
+const wxUint32 wxsNO_COLOUR = wxSYS_COLOUR_MAX + 1;
+
+/** Constant used to notify that custom colour (not system) is used */
+const wxUint32 wxsCUSTOM_COLOUR = wxPG_COLOUR_CUSTOM;
 
 #endif

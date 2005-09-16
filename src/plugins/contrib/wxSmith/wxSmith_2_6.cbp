@@ -352,11 +352,31 @@
 			<Option link="0"/>
 			<Option target="wxSmith"/>
 		</Unit>
+		<Unit filename="properties\wxscolourproperty.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="properties\wxscolourproperty.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
 		<Unit filename="properties\wxsenumproperty.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="wxSmith"/>
 		</Unit>
 		<Unit filename="properties\wxsenumproperty.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="properties\wxsfontproperty.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="properties\wxsfontproperty.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

@@ -7,7 +7,9 @@ class wxsDefSizerPreview: public wxPanel
             wxPanel(Parent,-1,wxDefaultPosition,wxDefaultSize, wxTAB_TRAVERSAL),
             Sizer(_Sizer),
             sSizer(wxsSizer)
-        {}
+        {
+        	InheritAttributes();
+        }
         
         
         wxSizer* Sizer;
@@ -54,7 +56,8 @@ class wxsDefSizerPreview: public wxPanel
             SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
         }
         
-//        virtual bool HasTransparentBackground() const { return true; }
+        virtual bool HasTransparentBackground() const { return true; }
+        
     private:
     
         void OnPaint(wxPaintEvent& event)
@@ -62,13 +65,10 @@ class wxsDefSizerPreview: public wxPanel
             wxPaintDC DC(this);
             int W, H;
             GetSize(&W,&H);
-            DC.SetBrush(*wxTRANSPARENT_BRUSH);
+            DC.SetBrush(GetParent()->GetBackgroundColour());
             DC.SetPen(*wxRED_PEN);
             DC.DrawRectangle(0,0,W,H);
         }
-        
-        void OnEraseBack(wxEraseEvent& event)
-        { }
         
         DECLARE_EVENT_TABLE()
 };

@@ -44,6 +44,7 @@ wxWindow* wxsComboBox::MyCreatePreview(wxWindow* Parent)
     {
         Combo->SetSelection(defaultChoice);
     }
+    PreviewApplyDefaults(Combo);
     return Combo;
 }
 
@@ -71,6 +72,8 @@ wxString wxsComboBox::GetProducingCode(wxsCodeParams& Params)
             GetBaseParams().VarName.c_str(),
             defaultChoice);
     }
+    
+    Code << CDefs.InitCode;
 
     return Code;
 }
