@@ -12,11 +12,11 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
 	: wxFrame(frame, -1, title)
 {
 	wxMenuBar* mbar = new wxMenuBar();
-	wxMenu* fileMenu = new wxMenu("");
+	wxMenu* fileMenu = new wxMenu(_(""));
 	fileMenu->Append(idMenuQuit, _("&Quit\tAlt-F4"), _("Quit the application"));
 	mbar->Append(fileMenu, _("&File"));
 
-	wxMenu* helpMenu = new wxMenu("");
+	wxMenu* helpMenu = new wxMenu(_(""));
 	helpMenu->Append(idMenuAbout, _("&About\tF1"), _("Show info about this application"));
 	mbar->Append(helpMenu, _("&Help"));
 	
