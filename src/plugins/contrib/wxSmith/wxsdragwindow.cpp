@@ -213,7 +213,6 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
     			CurDragWidget = NULL;
     		}
             CurDragPoint = NewDragPoint;
-            DebLog("Change to %d",CurDragPoint->Type);
             BlockWidgetSelect = true;
             wxsSelectWidget(NewDragPoint->Widget);
             BlockWidgetSelect = false;

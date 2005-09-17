@@ -9,5 +9,9 @@ wxsContainer::~wxsContainer()
     {
         wxsWidgetFactory::Get()->Kill(*i);
     }
+    for ( ExtraI i = Extra.begin(); i!=Extra.end(); ++i )
+    {
+    	DelExtra(*i);
+    }
     DeletingAll = false;
 }

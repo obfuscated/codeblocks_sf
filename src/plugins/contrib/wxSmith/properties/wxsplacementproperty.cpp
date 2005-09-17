@@ -4,7 +4,7 @@
 #include <wx/tglbtn.h>
 #include <wx/checkbox.h>
 
-#include "../widget.h"
+#include "../wxsdefsizer.h"
 
 #ifdef __NO_PROPGRGID
 
@@ -73,7 +73,7 @@
         {
             if ( Pos[i]->GetValue() )
             {
-                NewPlacement = wxsWidgetBaseParams::LeftTop + i;
+                NewPlacement = wxsSizerExtraParams::LeftTop + i;
             }
         }
         
@@ -92,7 +92,7 @@
         int Placement = Object->PlacementType;
     
         for ( int i=0; i<9; i++ )
-            Pos[i]->SetValue(Placement == wxsWidgetBaseParams::LeftTop + i );
+            Pos[i]->SetValue(Placement == wxsSizerExtraParams::LeftTop + i );
             
         Exp->SetValue(Object->Expand);
         Shap->SetValue(Object->Shaped);
@@ -162,15 +162,15 @@ const wxString& wxsPlacementProperty::GetTypeName()
     	
     	static long Values[] =
     	{
-    		wxsWidgetBaseParams::LeftTop,
-    		wxsWidgetBaseParams::Top,
-            wxsWidgetBaseParams::RightTop,
-            wxsWidgetBaseParams::Right,
-            wxsWidgetBaseParams::RightBottom,
-            wxsWidgetBaseParams::Bottom,
-            wxsWidgetBaseParams::LeftBottom,
-            wxsWidgetBaseParams::Left,
-            wxsWidgetBaseParams::Center
+    		wxsSizerExtraParams::LeftTop,
+    		wxsSizerExtraParams::Top,
+            wxsSizerExtraParams::RightTop,
+            wxsSizerExtraParams::Right,
+            wxsSizerExtraParams::RightBottom,
+            wxsSizerExtraParams::Bottom,
+            wxsSizerExtraParams::LeftBottom,
+            wxsSizerExtraParams::Left,
+            wxsSizerExtraParams::Center
     	};
     	
     	PGId = Grid->Append( wxEnumProperty(Name,wxPG_LABEL,Placements,Values,0,PlacementType) );

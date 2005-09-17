@@ -4,7 +4,7 @@
 #include <wx/tglbtn.h>
 #include <wx/checkbox.h>
 
-#include "../widget.h"
+#include "../wxsdefsizer.h"
 
 #ifdef __NO_PROPGRGID
 
@@ -64,10 +64,10 @@
     void wxsBorderPropertyWindow::OnButtonChanged(wxCommandEvent& event)
     {
         int NewFlags = 
-            ( Left->GetValue()   ? wxsWidgetBaseParams::Left   :  wxsWidgetBaseParams::None ) |
-            ( Right->GetValue()  ? wxsWidgetBaseParams::Right  :  wxsWidgetBaseParams::None ) |
-            ( Top->GetValue()    ? wxsWidgetBaseParams::Top    :  wxsWidgetBaseParams::None ) |
-            ( Bottom->GetValue() ? wxsWidgetBaseParams::Bottom :  wxsWidgetBaseParams::None );
+            ( Left->GetValue()   ? wxsSizerExtraParams::Left   :  wxsSizerExtraParams::None ) |
+            ( Right->GetValue()  ? wxsSizerExtraParams::Right  :  wxsSizerExtraParams::None ) |
+            ( Top->GetValue()    ? wxsSizerExtraParams::Top    :  wxsSizerExtraParams::None ) |
+            ( Bottom->GetValue() ? wxsSizerExtraParams::Bottom :  wxsSizerExtraParams::None );
             
         assert(Object != NULL);
         
@@ -80,10 +80,10 @@
         assert ( Object != NULL );
         int Flags = Object->BorderFlags;
        
-        Left->SetValue( (Flags&wxsWidgetBaseParams::Left) != 0 );
-        Right->SetValue( (Flags&wxsWidgetBaseParams::Right) != 0 );
-        Top->SetValue( (Flags&wxsWidgetBaseParams::Top) != 0 );
-        Bottom->SetValue( (Flags&wxsWidgetBaseParams::Bottom) != 0 );
+        Left->SetValue( (Flags&wxsSizerExtraParams::Left) != 0 );
+        Right->SetValue( (Flags&wxsSizerExtraParams::Right) != 0 );
+        Top->SetValue( (Flags&wxsSizerExtraParams::Top) != 0 );
+        Bottom->SetValue( (Flags&wxsSizerExtraParams::Bottom) != 0 );
     
     }
     
@@ -142,10 +142,10 @@ const wxString& wxsBorderProperty::GetTypeName()
     	
     	static long Values[] =
     	{
-    		wxsWidgetBaseParams::Left,
-    		wxsWidgetBaseParams::Right,
-    		wxsWidgetBaseParams::Top,
-    		wxsWidgetBaseParams::Bottom
+    		wxsSizerExtraParams::Left,
+    		wxsSizerExtraParams::Right,
+    		wxsSizerExtraParams::Top,
+    		wxsSizerExtraParams::Bottom
     	};
     	
     	PGId = Grid->Append(wxFlagsProperty(Name,wxPG_LABEL,Borders,Values,0,BorderFlags));

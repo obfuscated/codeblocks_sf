@@ -72,42 +72,6 @@ struct wxsWidgetBaseParams
     bool DefaultPosition;           ///< Widget has default position
     int SizeX, SizeY;               ///< Widget's size
     bool DefaultSize;               ///< Widget has default size
-    
-    
-    /* Used by sizers */
-    
-    int Proportion;                 ///< Proportion param (see wxW documentation for details)
-    
-    enum BorderFlagsValues          ///< Values which can be used in BorderFlags (ored values)
-    {
-        None   = 0,
-        Top    = 1,
-        Bottom = 2,
-        Left   = 4,
-        Right  = 8
-    };
-    
-    int BorderFlags;                ///< Which sides should use additional bordeer ?
-    
-    enum PlacementType              ///< Type of border
-    {
-        LeftTop = 0,
-        CenterTop,
-        RightTop,
-        LeftCenter,
-        Center,
-        RightCenter,
-        LeftBottom,
-        CenterBottom,
-        RightBottom
-    };
-    
-    bool Expand;
-    bool Shaped;
-    bool FixedMinSize;
-    
-    int Placement;                  ///< Placement of this element
-    int Border;                     ///< Size of additional border (in pixels)
     int Style;                      ///< Current style
     
     bool Enabled;                   ///< If false, widget is disabled (true by deefault)
@@ -132,13 +96,6 @@ struct wxsWidgetBaseParams
         DefaultPosition(true),
         SizeX(-1), SizeY(-1),
         DefaultSize(true),
-        Proportion(1),
-        BorderFlags(Top|Bottom|Left|Right),
-        Expand(false),
-        Shaped(false),
-        FixedMinSize(false),
-        Placement(Center),
-        Border(5),
         Style(0),
         Enabled(true),
         Focused(false),
@@ -229,6 +186,9 @@ class wxsWidget
         
         /** Getting resource owning this widget */
         inline wxsWindowRes* GetResource() { return Resource; }
+
+        /** Getting default properties object */
+        inline wxsProperties& GetPropertiesObj() { return PropertiesObject; }
         
         /** Getting editor for this widget (or NULL if there's no editor) */
         wxsWindowEditor* GetEditor();
@@ -291,6 +251,7 @@ class wxsWidget
             if ( !PropertiesCreated )
             {
                 CreateObjectProperties();
+                AddParentProperties();
                 PropertiesCreated = true;
             }
             if ( !Properties ) Properties = MyCreatePropertiesWindow(Parent);
@@ -377,6 +338,16 @@ class wxsWidget
                 wxDefaultSize :
                 wxSize(BaseParams.SizeX,BaseParams.SizeY);
         }
+        
+    private:
+        
+        inline void AddParentProperties()
+        {
+        	if ( GetParent() )
+        	{
+        		GetParent()->AddChildProperties(GetParent()->FindChild(this));
+        	}
+        }
 
 /******************************************************************************/
 /* Code generation                                                            */
@@ -417,13 +388,6 @@ class wxsWidget
         
         /** Function creating current coded defines */
         virtual const CodeDefines& GetCodeDefines();
-        
-        /** Util function - generating string used when adding item to sizer as flag
-         *
-         * Not included insidee CodedDefines because it would generally be used inside
-         * sizer's code generating functions.
-         */
-        wxString GetFlagToSizer();
         
 /**********************************************************************/
 /* Support for containers                                             */
@@ -475,6 +439,26 @@ class wxsWidget
         
         /** Changing position of widget in child list */
         virtual bool ChangeChildPos(int PrevPos, int NewPos) { return false; }
+        
+    protected:
+    
+        /** Adding additional properties to child object */
+        virtual void AddChildProperties(int ChildIndex) { }
+        
+        /** Loading child object from xml node
+         *
+         *  Note that node passed to this function may contain different
+         *  data. In such case this funcntino should return and only real
+         *  children should be processed.
+         *  Default implementation process <object> Xml elements.
+         */
+        virtual bool XmlLoadChild(TiXmlElement* Element);
+        
+        /** Saving child to Xml node
+         *
+         * Default implementation save <object> Xml element
+         */
+        virtual bool XmlSaveChild(int ChildIndex,TiXmlElement* AddHere);
         
 /**********************************************************************/
 /* Support for base widget's parameters                               */
@@ -638,12 +622,6 @@ class wxsWidget
         
     private:
     
-        /** Loading sizer elements from given node */
-        virtual void XmlLoadSizerStuff(TiXmlElement* Elem);
-        
-        /** Saving sizer element to given node */
-        virtual void XmlSaveSizerStuff(TiXmlElement* Elem);
-         
         /** Adding default properties to properties manager */
         virtual void AddDefaultProperties(BasePropertiesType Props);
         
@@ -683,7 +661,6 @@ class wxsWidget
         friend class wxsWidgetFactory;
 
 };
-
 
 /** Class managing widget */
 class wxsWidgetManager

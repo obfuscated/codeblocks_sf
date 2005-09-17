@@ -69,7 +69,7 @@ class wxSmith : public cbPlugin
         wxTreeCtrl* ResourceBrowser;
         wxScrolledWindow* PropertiesPanel;
         wxScrolledWindow* EventsPanel;
-        wxsSplitterWindow* LeftSplitter;
+        wxsSplitterWindowEx* LeftSplitter;
 
         /* Here's bridge between current C::B project and wxSmith projects */
         

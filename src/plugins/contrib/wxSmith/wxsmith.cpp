@@ -126,7 +126,7 @@ void wxSmith::OnAttach()
 	{
         // Creating main splitting objects
 
-        LeftSplitter = new wxsSplitterWindow(Notebook);
+        LeftSplitter = new wxsSplitterWindowEx(Notebook);
         Notebook->AddPage(LeftSplitter,_("Resources"));
 
         wxPanel* ResourcesContainer = new wxPanel(LeftSplitter->GetSplitter(),-1,wxDefaultPosition,wxDefaultSize,0);

@@ -32,9 +32,11 @@ class wxsContainer : public wxsWidget
             if ( InsertBeforeThis < 0 || InsertBeforeThis >= (int)Widgets.size() )
             {
                 Widgets.push_back(NewWidget);
+                Extra.push_back(NewExtra());
                 return Widgets.size() - 1;
             }
             Widgets.insert(Widgets.begin() + InsertBeforeThis,NewWidget);
+            Extra.insert(Extra.begin() + InsertBeforeThis,NewExtra());
             return InsertBeforeThis;
         }
         
@@ -48,6 +50,8 @@ class wxsContainer : public wxsWidget
             if ( DeletingAll ) return false;
             if ( Id<0 || Id>=(int)Widgets.size() ) return false;
             Widgets.erase(Widgets.begin()+Id);
+            DelExtra(Extra[Id]);
+            Extra.erase(Extra.begin()+Id);
             return true;
         }
 
@@ -59,10 +63,14 @@ class wxsContainer : public wxsWidget
         virtual bool DelChild(wxsWidget* Widget)
         {
             if ( DeletingAll ) return false;
-            for ( WidgetsI i = Widgets.begin(); i!=Widgets.end(); ++i )
+            WidgetsI i = Widgets.begin();
+            ExtraI ie = Extra.begin();
+            for ( ; i!=Widgets.end(); ++i, ++ie )
                 if ( (*i)==Widget ) 
                 {
                     Widgets.erase(i);
+                    DelExtra(*ie);
+                    Extra.erase(ie);
                     return true;
                 }
             return false;
@@ -91,26 +99,52 @@ class wxsContainer : public wxsWidget
             if ( PrevPos == NewPos ) return true;
             
             wxsWidget* Changing = Widgets[PrevPos];
+            void* eChanging = Extra[PrevPos];
             
             if ( PrevPos < NewPos )
             {
                 while ( PrevPos++ < NewPos )
+                {
                     Widgets[PrevPos-1] = Widgets[PrevPos];
+                    Extra[PrevPos-1] = Extra[PrevPos];
+                }
             }
             else
             {
                 while ( PrevPos-- > NewPos )
+                {
                     Widgets[PrevPos+1] = Widgets[PrevPos];
+                    Extra[PrevPos+1] = Extra[PrevPos];
+                }
             }
             Widgets[NewPos] = Changing;
+            Extra[NewPos] = eChanging;
             return true;
         }
+        
+    protected:
+    
+        /** Function returning extra data at given position */
+        inline void* GetExtra(int Pos) { return ( (Pos >= 0) && (Pos < (int)Extra.size()) ) ? Extra[Pos] : NULL; }
+    
+        /** Function which should be overridden in derived classes - returns
+         *  pointer to new extra data
+         */
+        virtual void* NewExtra() { return NULL; }
+        
+        /** Fuunction which should be overridden in dedrived classes - destroys
+         *  previously created extra data
+         */
+        virtual void DelExtra(void*) { }
         
 	private:
         typedef std::vector<wxsWidget*> WidgetsT;
         typedef WidgetsT::iterator WidgetsI;
+        typedef std::vector<void*> ExtraT;
+        typedef ExtraT::iterator ExtraI;
         
         WidgetsT Widgets;
+        ExtraT Extra;
         bool DeletingAll;
 };
 

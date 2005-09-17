@@ -1,5 +1,5 @@
-#ifndef WXSSPLITTERWINDOW_H
-#define WXSSPLITTERWINDOW_H
+#ifndef WXSSPLITTERWINDOWEX_H
+#define WXSSPLITTERWINDOWEX_H
 
 #include <wx/panel.h>
 #include <wx/splitter.h>
@@ -8,15 +8,15 @@
 /** This class extends behaviour of standard splitter window
  *  which fixes some bugs with them when using wxDockIt
  */
-class wxsSplitterWindow : public wxPanel
+class wxsSplitterWindowEx : public wxPanel
 {
 	public:
 	
         /** Ctor */
-		wxsSplitterWindow(wxWindow* Parent);
+		wxsSplitterWindowEx(wxWindow* Parent);
 		
 		/** Dctor */
-		virtual ~wxsSplitterWindow();
+		virtual ~wxsSplitterWindowEx();
 		
 		/** Function splitting window */
 		void Split(wxWindow* Top,wxWindow* Bottom,int SashPosition = 0);

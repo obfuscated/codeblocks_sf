@@ -322,9 +322,7 @@ void wxsProject::AddWindowResource(
 
     if ( ! (Res->GetRootWidget()->XmlLoad(XmlWindow))  )
     {
-        Manager::Get()->GetMessageManager()->Log(_("Couldn't load xrc data"));
-        delete Res;
-        return;
+        Manager::Get()->GetMessageManager()->Log(_("Couldn't load xrc data, some resources may be damaged"));
     }
 
     // Validating and correcting resource

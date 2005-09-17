@@ -10,7 +10,7 @@
 
 static const wxWindowID SplitterId = wxNewId();
 
-wxsSplitterWindow::wxsSplitterWindow(wxWindow* Parent):
+wxsSplitterWindowEx::wxsSplitterWindowEx(wxWindow* Parent):
     wxPanel(Parent)
 {
     wxBoxSizer* Sizer = new wxBoxSizer(wxVERTICAL);
@@ -19,11 +19,11 @@ wxsSplitterWindow::wxsSplitterWindow(wxWindow* Parent):
     SplitPosition = ConfigManager::Get()->Read(_T("/wxsmith/res_panel_split"),Splitter->GetSize().GetHeight()/2);
 }
 
-wxsSplitterWindow::~wxsSplitterWindow()
+wxsSplitterWindowEx::~wxsSplitterWindowEx()
 {
 }
 
-void wxsSplitterWindow::Split(wxWindow* Top,wxWindow* Bottom,int SashPosition)
+void wxsSplitterWindowEx::Split(wxWindow* Top,wxWindow* Bottom,int SashPosition)
 {
     if ( Top ) Top->SetParent(Splitter);
     if ( Bottom ) Bottom->SetParent(Splitter);
@@ -32,19 +32,19 @@ void wxsSplitterWindow::Split(wxWindow* Top,wxWindow* Bottom,int SashPosition)
     Splitter->SplitHorizontally(Top,Bottom,SplitterFixup(SplitPosition));
 }
 
-void wxsSplitterWindow::OnSize(wxSizeEvent& event)
+void wxsSplitterWindowEx::OnSize(wxSizeEvent& event)
 {
 	Splitter->SetSashPosition(SplitterFixup(SplitPosition));
 	event.Skip();
 }
 
-void wxsSplitterWindow::OnSplitterChanging(wxSplitterEvent& event)
+void wxsSplitterWindowEx::OnSplitterChanging(wxSplitterEvent& event)
 {
 	SplitPosition = event.GetSashPosition();
 	event.SetSashPosition(SplitterFixup(SplitPosition));
 }
 
-void wxsSplitterWindow::OnSplitterChanged(wxSplitterEvent& event)
+void wxsSplitterWindowEx::OnSplitterChanged(wxSplitterEvent& event)
 {
     // We use value which was previously set through OnSplitterChanging()
     // This will avoid hiding top panel when docking managment window
@@ -52,7 +52,7 @@ void wxsSplitterWindow::OnSplitterChanged(wxSplitterEvent& event)
     ConfigManager::Get()->Write(_T("/wxsmith/res_panel_split"),SplitPosition);
 }
 
-int wxsSplitterWindow::SplitterFixup(int Position)
+int wxsSplitterWindowEx::SplitterFixup(int Position)
 {
     int Height = GetSize().GetHeight();
 	int MinMargin = Height / 2;
@@ -64,8 +64,8 @@ int wxsSplitterWindow::SplitterFixup(int Position)
 	return Position;
 }
 
-BEGIN_EVENT_TABLE(wxsSplitterWindow,wxPanel)
-    EVT_SIZE(wxsSplitterWindow::OnSize)
-    EVT_SPLITTER_SASH_POS_CHANGING(SplitterId,wxsSplitterWindow::OnSplitterChanging)
-    EVT_SPLITTER_SASH_POS_CHANGED(SplitterId,wxsSplitterWindow::OnSplitterChanged)
+BEGIN_EVENT_TABLE(wxsSplitterWindowEx,wxPanel)
+    EVT_SIZE(wxsSplitterWindowEx::OnSize)
+    EVT_SPLITTER_SASH_POS_CHANGING(SplitterId,wxsSplitterWindowEx::OnSplitterChanging)
+    EVT_SPLITTER_SASH_POS_CHANGED(SplitterId,wxsSplitterWindowEx::OnSplitterChanged)
 END_EVENT_TABLE()
