@@ -238,8 +238,19 @@ class wxsDialogRes: public wxsWindowRes
         
     virtual wxString ResSetUpCode(int TabSize)
     {
-        // TODO (SpOoN#1#): Apply title and centered properties for dialog
-        return _T("");
+    	wxString Code;
+    	wxsDialog& Dlg = GetDialog();
+    	Code.Append(_T(' '),TabSize);
+    	Code << _T("SetWindowStyle(") << Dlg.GetCodeDefines().Style.c_str() << _T(");\n");
+    	Code.Append(_T(' '),TabSize);
+    	Code << _T("SetTitle(") << GetWxString(Dlg.Title) << _T(");\n");
+        if ( Dlg.Centered )
+        {
+            Code.Append(_T(' '),TabSize);
+        	Code << _T("Centre();\n");
+        }
+        
+    	return Code;
     }
 };
 
@@ -259,8 +270,19 @@ class wxsFrameRes: public wxsWindowRes
 
     virtual wxString ResSetUpCode(int TabSize)
     {
-        // TODO (SpOoN#1#): Apply title and centered properties for frame
-        return _T("");
+    	wxString Code;
+    	wxsFrame& Frm = GetFrame();
+    	Code.Append(_T(' '),TabSize);
+    	Code << _T("SetWindowStyle(") << Frm.GetCodeDefines().Style.c_str() << _T(");\n");
+    	Code.Append(_T(' '),TabSize);
+    	Code << _T("SetTitle(") << GetWxString(Frm.Title) << _T(");\n");
+        if ( Frm.Centered )
+        {
+            Code.Append(_T(' '),TabSize);
+        	Code << _T("Centre();\n");
+        }
+    	
+        return Code;
     }
 };
 
@@ -279,7 +301,13 @@ class wxsPanelRes: public wxsWindowRes
         	}
         )
         
-    virtual wxString ResSetUpCode(int TabSize) { return _T(""); }
+    virtual wxString ResSetUpCode(int TabSize)
+    {
+    	wxString Code;
+    	Code.Append(_T(' '),TabSize);
+    	Code << _T("SetWindowStyle(") << GetPanel().GetCodeDefines().Style.c_str() << _T(");\n");
+    	return Code;
+    }
 };
 
 #endif

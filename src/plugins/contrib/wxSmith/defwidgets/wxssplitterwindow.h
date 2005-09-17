@@ -19,7 +19,9 @@ class wxsSplitterWindow : public wxsContainer
             return *GetManager()->GetWidgetInfo(wxsSplitterWindowId);
         }
 		virtual int AddChild(wxsWidget* NewWidget,int InsertBeforeThis);
+		virtual wxString GetProducingCode(wxsCodeParams& Params);
         virtual wxString GetFinalizingCode(wxsCodeParams& Params);
+        virtual wxString GetDeclarationCode(wxsCodeParams& Params);
 
    protected:
    

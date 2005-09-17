@@ -22,14 +22,18 @@ class wxsFrame : public wxsWindow
         /** Checking if it's centered */
         inline bool GetCentered() { return Centered; }
 
-   protected:
+    protected:
   
         void CreateObjectProperties();
+        virtual bool MyXmlLoad();
+        virtual bool MyXmlSave();
 
-  private:
+    private:
   
         wxString Title;
         bool Centered;
+        
+        friend class wxsFrameRes;
 };
 
 #endif

@@ -35,6 +35,8 @@ enum std_widgets
     wxsRadioBoxId,
     wxsDatePickerCtrlId,
     wxsSplitterWindowId,
+    wxsNotebookId,
+    wxsListbookId,
     
     /* Windows */
     wxsDialogId,

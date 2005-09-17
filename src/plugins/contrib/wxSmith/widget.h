@@ -216,6 +216,17 @@ class wxsWidget
          * Properties applied: Enabled, Focused, Hidden, Colours, Font and ToolTip
          */
         void PreviewApplyDefaults(wxWindow* Preview);
+        
+        /** Function processing mouse event passed from preview */
+        virtual void PreviewMouseEvent(wxMouseEvent& event) { }
+        
+        /** Function ensuring that given child widget is visible
+         *
+         *  This function should be propagated into root widget, the easiest
+         *  way is to call wxsWidget::EnsurePreviewVisible at the end of masking
+         *  function.
+         */
+        virtual void EnsurePreviewVisible(wxsWidget* Child) { if ( GetParent() ) GetParent()->EnsurePreviewVisible(this); }
             
     protected:
     

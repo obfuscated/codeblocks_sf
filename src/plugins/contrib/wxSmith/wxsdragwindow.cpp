@@ -67,7 +67,20 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
     bool FoundDragging = false;
     int MouseX = event.GetX();
     int MouseY = event.GetY();
-
+    wxsWidget* UnderCursor = FindWidgetAtPos(MouseX,MouseY,RootWidget);
+    
+    // Posting this event to previews
+    if ( UnderCursor )
+    {
+    	int WidgetRelativeX = MouseX;
+    	int WidgetRelativeY = MouseY;
+    	ClientToScreen(&WidgetRelativeX,&WidgetRelativeY);
+    	UnderCursor->GetPreview()->ScreenToClient(&WidgetRelativeX,&WidgetRelativeY);
+    	event.m_x = WidgetRelativeX;
+    	event.m_y = WidgetRelativeY;
+    	UnderCursor->PreviewMouseEvent(event);
+    }
+    
     // Disabling background fetch mode when dragging
     BackFetchMode = !event.Dragging();
 
@@ -75,6 +88,7 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
 
     for ( DragPointsI i = DragPoints.begin(); i!=DragPoints.end(); ++i )
     {
+    	if ( !IsVisible((*i)->Widget) ) continue;
         int PosX = (*i)->PosX - DragBoxSize/2;
         int PosY = (*i)->PosY - DragBoxSize/2;
 
@@ -96,6 +110,8 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
         for ( DragPointsI i = DragPoints.begin(); i!=DragPoints.end(); ++i )
         {
             DragPointData* DPD = *i;
+            
+            if ( !IsVisible(DPD->Widget) ) continue;
 
             switch ( DPD->Type )
             {
@@ -152,7 +168,7 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
         {
             // Checking if we started to drag widget
 
-            NewDragWidget = FindWidgetAtPos(MouseX,MouseY,RootWidget);
+            NewDragWidget = UnderCursor;
             FoundDragging = NewDragWidget != NULL;
         }
     }
@@ -470,17 +486,18 @@ void wxsDragWindow::OnSelectWidget(wxsEvent& event)
     }
     else
     {
-
+        wxsWidget* Wdg = event.GetWidget();
+        if ( Wdg->GetParent() ) Wdg->GetParent()->EnsurePreviewVisible(Wdg);
         if ( ::wxGetKeyState(WXK_CONTROL) )
         {
             GrayDragPoints();
-            BlackDragPoints(event.GetWidget());
+            BlackDragPoints(Wdg);
         }
         else
         {
             ClearDragPoints();
-            BuildDragPoints(event.GetWidget());
-            BlackDragPoints(event.GetWidget());
+            BuildDragPoints(Wdg);
+            BlackDragPoints(Wdg);
         }
     }
     BackFetchMode = true;
@@ -640,10 +657,9 @@ void wxsDragWindow::SetWidget(wxsWidget* _RootWidget)
 	Refresh();
 }
 
-
 wxsWidget* wxsDragWindow::FindWidgetAtPos(int PosX,int PosY,wxsWidget* Widget)
 {
-    if ( !Widget ) return NULL;
+    if ( !Widget || !Widget->GetPreview() || !Widget->GetPreview()->IsShown() ) return NULL;
 
     int WdgX, WdgY;
     int WdgSX, WdgSY;
@@ -673,7 +689,8 @@ void wxsDragWindow::AddGraphics(wxDC& DC)
 //    	if ( (*i)->Invisible ) continue;
         wxColor DrawColor( DPD->Inactive ? wxColor(0x80,0x80,0x80) : wxColor(0,0,0) );
         DC.SetPen( wxPen(DrawColor,1) );
-        DC.SetBrush( wxBrush(DrawColor) );
+        int Style = IsVisible(DPD->Widget) ? wxSOLID : wxTRANSPARENT;
+        DC.SetBrush( wxBrush(DrawColor,Style) );
 
         int PosX = DPD->PosX - DragBoxSize/2;
         int PosY = DPD->PosY - DragBoxSize/2;
@@ -768,6 +785,14 @@ bool wxsDragWindow::IsInside(wxsWidget* What,wxsWidget* Where )
         if ( IsInside(What,Where->GetChild(i)) ) return true;
     }
     return false;
+}
+
+bool wxsDragWindow::IsVisible(wxsWidget* Widget)
+{
+	if ( !Widget ) return true;
+	if ( !Widget->GetPreview() ) return false;
+	if ( !Widget->GetPreview()->IsShown() ) return false;
+	return IsVisible(Widget->GetParent());
 }
 
 BEGIN_EVENT_TABLE(wxsDragWindow,wxControl)

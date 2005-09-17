@@ -84,6 +84,19 @@ void wxsSplitterWindow::MyFinalUpdatePreview(wxWindow* Preview)
 	}
 }
 
+wxString wxsSplitterWindow::GetProducingCode(wxsCodeParams& Params)
+{
+	const CodeDefines& CD = GetCodeDefines();
+	return wxString::Format(
+        _T("%s = new wxSplitterWindow(%s,%s,%s,%s,%s);"),
+        BaseParams.VarName.c_str(),
+        Params.ParentName.c_str(),
+        BaseParams.IdName.c_str(),
+        CD.Pos.c_str(),
+        CD.Size.c_str(),
+        CD.Style.c_str());
+}
+
 wxString wxsSplitterWindow::GetFinalizingCode(wxsCodeParams& Params)
 {
 	wxString Code;
@@ -113,6 +126,11 @@ wxString wxsSplitterWindow::GetFinalizingCode(wxsCodeParams& Params)
         GetChild(0)->GetBaseParams().VarName.c_str(),
         GetChild(1)->GetBaseParams().VarName.c_str(),
         SashPos);
+}
+
+wxString wxsSplitterWindow::GetDeclarationCode(wxsCodeParams& Params)
+{
+	return wxString::Format(_T("wxSplitterWindow* %s;"),BaseParams.VarName.c_str());
 }
 
 bool wxsSplitterWindow::MyXmlLoad()

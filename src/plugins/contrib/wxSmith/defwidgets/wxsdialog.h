@@ -22,14 +22,18 @@ class wxsDialog : public wxsWindow
         /** Checking if it's centered */
         inline bool GetCentered() { return Centered; }
 
-   protected:
-  
+    protected:
+    
         void CreateObjectProperties();
-
-  private:
+        virtual bool MyXmlLoad();
+        virtual bool MyXmlSave();
+    
+    private:
   
         wxString Title;
         bool Centered;
+        
+        friend class wxsDialogRes;
 };
 
 #endif

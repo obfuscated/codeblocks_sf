@@ -60,3 +60,16 @@ void wxsFrame::CreateObjectProperties()
 	PropertiesObject.AddProperty(_("Centered:"),Centered,1);
 }
 
+bool wxsFrame::MyXmlLoad()
+{
+	Title = XmlGetVariable(_T("title"));
+	Centered = XmlGetInteger(_T("centered"),0) != 0;
+	return true;
+}
+
+bool wxsFrame::MyXmlSave()
+{
+	if ( !Title.empty() ) XmlSetVariable(_T("title"),Title);
+	if ( Centered ) XmlSetInteger(_T("centered"),1);
+	return true;
+}

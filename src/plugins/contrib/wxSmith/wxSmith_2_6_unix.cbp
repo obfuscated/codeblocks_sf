@@ -156,11 +156,31 @@
 			<Option link="0"/>
 			<Option target="wxSmith"/>
 		</Unit>
+		<Unit filename="defwidgets\wxslistbook.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="defwidgets\wxslistbook.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
 		<Unit filename="defwidgets\wxslistbox.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="wxSmith"/>
 		</Unit>
 		<Unit filename="defwidgets\wxslistbox.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="defwidgets\wxsnotebook.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="defwidgets\wxsnotebook.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

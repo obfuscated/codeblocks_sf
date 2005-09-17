@@ -179,6 +179,9 @@ class wxsDragWindow : public wxControl
 
         /** Checking if given widget is inside widget tree */
         bool IsInside(wxsWidget* What,wxsWidget* Where);
+        
+        /** Checking if widget is truthly visible (it and all of it's parents must be shown) */
+        bool IsVisible(wxsWidget* Wdg);
 
         DECLARE_EVENT_TABLE()
 };
