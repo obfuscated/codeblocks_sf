@@ -252,6 +252,16 @@
 			<Option link="0"/>
 			<Option target="wxSmith"/>
 		</Unit>
+		<Unit filename="defwidgets\wxssplitterwindow.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="defwidgets\wxssplitterwindow.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
 		<Unit filename="defwidgets\wxsstaticboxsizer.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="wxSmith"/>
