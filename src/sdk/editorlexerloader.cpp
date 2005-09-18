@@ -29,12 +29,17 @@ void EditorLexerLoader::Load(const wxString& filename)
 //    LOGSTREAM << "Parsing lexer file...\n";
     TiXmlElement* root;
     TiXmlElement* lexer;
-    
-    root = doc.FirstChildElement("Code::Blocks_lexer_properties");
+
+    root = doc.FirstChildElement("CodeBlocks_lexer_properties");
     if (!root)
     {
-        LOGSTREAM << _("Not a valid Code::Blocks lexer file...\n");
-        return;
+        // old tag
+        root = doc.FirstChildElement("Code::Blocks_lexer_properties");
+        if (!root)
+        {
+            LOGSTREAM << _("Not a valid Code::Blocks lexer file...\n");
+            return;
+        }
     }
     lexer = root->FirstChildElement("Lexer");
     if (!lexer)
@@ -42,7 +47,7 @@ void EditorLexerLoader::Load(const wxString& filename)
         LOGSTREAM << _("No 'Lexer' element in file...\n");
         return;
     }
-    
+
     DoLexer(lexer);
 }
 
@@ -87,7 +92,7 @@ void EditorLexerLoader::DoStyles(int language, TiXmlElement* node)
             wxArrayString indices = GetArrayFromString(index, _T(","));
             wxArrayString fgarray = GetArrayFromString(fg, _T(","));
             wxArrayString bgarray = GetArrayFromString(bg, _T(","));
-            
+
             wxColour fgcolor = wxNullColour;
             if (fgarray.GetCount() == 3)
             {

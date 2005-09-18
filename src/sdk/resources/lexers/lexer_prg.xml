@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<!DOCTYPE Code::Blocks_lexer_properties>
-<Code::Blocks_lexer_properties>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
 		<Lexer name="XBase"
 				index="73"
 				filemasks="*.prg,*.spr">
@@ -96,4 +96,4 @@
 				<SampleCode value="lexer_prg.sample"
 						error_line="25"/>
 		</Lexer>
-</Code::Blocks_lexer_properties>
+</CodeBlocks_lexer_properties>

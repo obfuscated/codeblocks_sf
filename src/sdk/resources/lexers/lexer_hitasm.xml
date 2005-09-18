@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<!DOCTYPE Code::Blocks_lexer_properties>
-<Code::Blocks_lexer_properties>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
         <Lexer name="Hitachi asm"
                 index="3"
                 filemasks="*.s20">
@@ -78,4 +78,4 @@
                 <SampleCode value="lexer_hitasm.sample"
                         error_line="50"/>
         </Lexer>
-</Code::Blocks_lexer_properties>
+</CodeBlocks_lexer_properties>

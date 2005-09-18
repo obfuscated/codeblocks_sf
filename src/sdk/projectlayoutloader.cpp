@@ -46,11 +46,16 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
     wxString fname;
     ProjectFile* pf;
 
-    root = doc.FirstChildElement("Code::Blocks_layout_file");
+    root = doc.FirstChildElement("CodeBlocks_layout_file");
     if (!root)
     {
-        pMsg->DebugLog(_("Not a valid Code::Blocks layout file..."));
-        return false;
+        // old tag
+        root = doc.FirstChildElement("Code::Blocks_layout_file");
+        if (!root)
+        {
+            pMsg->DebugLog(_("Not a valid Code::Blocks layout file..."));
+            return false;
+        }
     }
     elem = root->FirstChildElement("File");
     if (!elem)
@@ -111,8 +116,8 @@ bool ProjectLayoutLoader::Save(const wxString& filename)
 
 
     buffer << _T("<?xml version=\"1.0\"?>") << _T('\n');
-    buffer << _T("<!DOCTYPE Code::Blocks_layout_file>") << _T('\n');
-    buffer << _T("<Code::Blocks_layout_file>") << _T('\n');
+    buffer << _T("<!DOCTYPE CodeBlocks_layout_file>") << _T('\n');
+    buffer << _T("<CodeBlocks_layout_file>") << _T('\n');
 
 	ProjectFile* active = 0L;
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
@@ -140,7 +145,7 @@ bool ProjectLayoutLoader::Save(const wxString& filename)
 			buffer << _T('\t') << _T("<Expand folder=\"") << en[i] << _T("\"/>") << _T('\n');
 	}
 
-    buffer << _T("</Code::Blocks_layout_file>") << _T('\n');
+    buffer << _T("</CodeBlocks_layout_file>") << _T('\n');
 
     wxFile file(filename, wxFile::write);
     return cbWrite(file,buffer);

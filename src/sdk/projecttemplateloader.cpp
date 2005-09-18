@@ -28,11 +28,16 @@ bool ProjectTemplateLoader::Open(const wxString& filename)
 
     TiXmlElement* root;
 
-    root = doc.FirstChildElement("Code::Blocks_template_file");
+    root = doc.FirstChildElement("CodeBlocks_template_file");
     if (!root)
     {
-        pMsg->DebugLog(_("Not a valid Code::Blocks template file..."));
-        return false;
+        // old tag
+        root = doc.FirstChildElement("Code::Blocks_template_file");
+        if (!root)
+        {
+            pMsg->DebugLog(_("Not a valid Code::Blocks template file..."));
+            return false;
+        }
     }
 
     DoTemplate(root);

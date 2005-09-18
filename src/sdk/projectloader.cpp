@@ -42,11 +42,16 @@ bool ProjectLoader::Open(const wxString& filename)
     TiXmlElement* root;
     TiXmlElement* proj;
 
-    root = doc.FirstChildElement("Code::Blocks_project_file");
+    root = doc.FirstChildElement("CodeBlocks_project_file");
     if (!root)
     {
-        pMsg->DebugLog(_("Not a valid Code::Blocks project file..."));
-        return false;
+        // old tag
+        root = doc.FirstChildElement("Code::Blocks_project_file");
+        if (!root)
+        {
+            pMsg->DebugLog(_("Not a valid Code::Blocks project file..."));
+            return false;
+        }
     }
     proj = root->FirstChildElement("Project");
     if (!proj)
@@ -619,8 +624,8 @@ bool ProjectLoader::Save(const wxString& filename)
     CustomVars* vars = 0;
 
     buffer << _T("<?xml version=\"1.0\"?>") << _T('\n');
-    buffer << _T("<!DOCTYPE Code::Blocks_project_file>") << _T('\n');
-    buffer << _T("<Code::Blocks_project_file>") << _T('\n');
+    buffer << _T("<!DOCTYPE CodeBlocks_project_file>") << _T('\n');
+    buffer << _T("<CodeBlocks_project_file>") << _T('\n');
     buffer << _T('\t') << _T("<FileVersion major=\"") << PROJECT_FILE_VERSION_MAJOR << _T("\" minor=\"") << PROJECT_FILE_VERSION_MINOR << _T("\"/>") << _T('\n');
     buffer << _T('\t') << _T("<Project>") << _T('\n');
     buffer << _T('\t') << _T('\t') << _T("<Option title=\"") << FixEntities(m_pProject->GetTitle()) << _T("\"/>") << _T('\n');
@@ -743,7 +748,7 @@ bool ProjectLoader::Save(const wxString& filename)
     }
 
     buffer << _T('\t') << _T("</Project>") << _T('\n');
-    buffer << _T("</Code::Blocks_project_file>") << _T('\n');
+    buffer << _T("</CodeBlocks_project_file>") << _T('\n');
 
     wxFile file(filename, wxFile::write);
     if (cbWrite(file,buffer))

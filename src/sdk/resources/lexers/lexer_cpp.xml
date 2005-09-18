@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<!DOCTYPE Code::Blocks_lexer_properties>
-<Code::Blocks_lexer_properties>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
 		<Lexer name="C/C++"
 				index="3"
 				filemasks="*.c,*.cpp,*.cc,*.cxx,*.h,*.hpp,*.hh,*.hxx,*.inl">
@@ -102,4 +102,4 @@
 						debug_line="22"
 						error_line="23"/>
 		</Lexer>
-</Code::Blocks_lexer_properties>
+</CodeBlocks_lexer_properties>

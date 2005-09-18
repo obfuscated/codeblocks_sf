@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<!DOCTYPE Code::Blocks_lexer_properties>
-<Code::Blocks_lexer_properties>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
 		<Lexer name="GameMonkey script"
 				index="3"
 				filemasks="*.gm">
@@ -68,4 +68,4 @@
 				<SampleCode value="lexer_gm.sample"
 						error_line="9"/>
 		</Lexer>
-</Code::Blocks_lexer_properties>
+</CodeBlocks_lexer_properties>

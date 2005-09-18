@@ -49,11 +49,16 @@ bool WorkspaceLoader::Open(const wxString& filename)
     cbProject* loadedProject;
     wxString projectFilename;
 
-    root = doc.FirstChildElement("Code::Blocks_workspace_file");
+    root = doc.FirstChildElement("CodeBlocks_workspace_file");
     if (!root)
     {
-        GetpMsg()->DebugLog(_("Not a valid Code::Blocks workspace file..."));
-        return false;
+        // old tag
+        root = doc.FirstChildElement("Code::Blocks_workspace_file");
+        if (!root)
+        {
+            GetpMsg()->DebugLog(_("Not a valid Code::Blocks workspace file..."));
+            return false;
+        }
     }
     wksp = root->FirstChildElement("Workspace");
     if (!wksp)
@@ -125,8 +130,8 @@ bool WorkspaceLoader::Save(const wxString& title, const wxString& filename)
     ProjectsArray* arr = Manager::Get()->GetProjectManager()->GetProjects();
 
     buffer << _T("<?xml version=\"1.0\"?>") << _T("\n");
-    buffer << _T("<!DOCTYPE Code::Blocks_workspace_file>") << _T("\n");
-    buffer << _T("<Code::Blocks_workspace_file>") << _T("\n");
+    buffer << _T("<!DOCTYPE CodeBlocks_workspace_file>") << _T("\n");
+    buffer << _T("<CodeBlocks_workspace_file>") << _T("\n");
     buffer << _T("\t") << _T("<Workspace title=\"") << title << _T("\">") << _T("\n");
 
     for (unsigned int i = 0; i < arr->GetCount(); ++i)
@@ -144,7 +149,7 @@ bool WorkspaceLoader::Save(const wxString& title, const wxString& filename)
     }
 
     buffer << _T("\t") << _T("</Workspace>") << _T("\n");
-    buffer << _T("</Code::Blocks_workspace_file>") << _T("\n");
+    buffer << _T("</CodeBlocks_workspace_file>") << _T("\n");
 
     wxFile file(filename, wxFile::write);
     return cbWrite(file,buffer);

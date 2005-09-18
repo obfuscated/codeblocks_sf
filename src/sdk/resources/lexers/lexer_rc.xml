@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<!DOCTYPE Code::Blocks_lexer_properties>
-<Code::Blocks_lexer_properties>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
 		<Lexer name="Windows resource"
 				index="3"
 				filemasks="*.rc">
@@ -66,4 +66,4 @@
 				<SampleCode value="lexer_rc.sample"
 						error_line="9"/>
 		</Lexer>
-</Code::Blocks_lexer_properties>
+</CodeBlocks_lexer_properties>

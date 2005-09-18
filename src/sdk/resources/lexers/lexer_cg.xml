@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<!DOCTYPE Code::Blocks_lexer_properties>
-<Code::Blocks_lexer_properties>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
 		<Lexer name="nVidia cg"
 				index="3"
 				filemasks="*.cg,*.cgfx">
@@ -154,14 +154,4 @@
 								author b brief bug c class code date def defgroup deprecated dontinclude
 								e em endcode endhtmlonly endif endlatexonly endlink endverbatim enum example exception
 								f$ f[ f] file fn hideinitializer htmlinclude htmlonly
-								if image include ingroup internal invariant interface latexonly li line link
-								mainpage name namespace nosubgrouping note overload
-								p page par param post pre ref relates remarks return retval
-								sa section see showinitializer since skip skipline struct subsection
-								test throw todo typedef union until
-								var verbatim verbinclude version warning weakgroup $ @ \ & < > # { }"/>
-				</Keywords>
-				<SampleCode value="lexer_cg.sample"
-						error_line="23"/>
-		</Lexer>
-</Code::Blocks_lexer_properties>
+								if image include ingroup inte

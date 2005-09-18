@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<!DOCTYPE Code::Blocks_lexer_properties>
-<Code::Blocks_lexer_properties>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
 		<Lexer name="XML"
 				index="5"
 				filemasks="*.xml,*.html,*.xsl,*.xrc">
@@ -36,4 +36,4 @@
                         underlined="0"/>
 				<SampleCode value="lexer_xml.sample"/>
         </Lexer>
-</Code::Blocks_lexer_properties>
+</CodeBlocks_lexer_properties>
