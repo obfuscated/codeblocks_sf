@@ -100,7 +100,7 @@ FileType FileTypeOf(const wxString& filename)
 {
 	wxFileName fname(filename);
 	wxString ext = fname.GetExt().Lower();
-	
+
 	if (ext.Matches(CODEBLOCKS_EXT))
 		return ftCodeBlocksProject;
 
@@ -163,18 +163,18 @@ FileType FileTypeOf(const wxString& filename)
 bool DoRememberExpandedNodes(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& nodePaths, wxString& path)
 {
     // remember expanded tree nodes of this tree
-    if (!parent)
+    if (!tree || !parent.IsOk())
         return false;
-        
+
     wxString originalPath = path;
     bool found = false;
-#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)	
+#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)
     long int cookie = 0;
 #else
     wxTreeItemIdValue cookie; //2.6.0
 #endif
     wxTreeItemId child = tree->GetFirstChild(parent, cookie);
-    while (child)
+    while (child.IsOk())
     {
         if (tree->ItemHasChildren(child) && tree->IsExpanded(child))
         {
@@ -203,7 +203,7 @@ void DoExpandRememberedNode(wxTreeCtrl* tree, const wxTreeItemId& parent, const 
             tmpPath = tmpPath.Right(tmpPath.Length() - pos - 1);
             pos = tmpPath.Find(_T('/'));
         }
-        
+
         if (pos < 0) // no '/'
         {
             folder = tmpPath;
@@ -217,13 +217,13 @@ void DoExpandRememberedNode(wxTreeCtrl* tree, const wxTreeItemId& parent, const 
 
         //Manager::Get()->GetMessageManager()->Log(mltDevDebug, "%s, %s", folder.c_str(), tmpPath.c_str());
 
-#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)	
+#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)
 	    long int cookie = 0;
 #else
 	    wxTreeItemIdValue cookie; //2.6.0
 #endif
         wxTreeItemId child = tree->GetFirstChild(parent, cookie);
-        while (child)
+        while (child.IsOk())
         {
             wxString itemText = tree->GetItemText(child);
             if (itemText.Matches(folder))
@@ -240,7 +240,7 @@ void DoExpandRememberedNode(wxTreeCtrl* tree, const wxTreeItemId& parent, const 
 void SaveTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& nodePaths)
 {
     nodePaths.Clear();
-    if (!tree->ItemHasChildren(parent) || !tree->IsExpanded(parent))
+    if (!parent.IsOk() || !tree || !tree->ItemHasChildren(parent) || !tree->IsExpanded(parent))
         return;
     wxString tmp;
     if (!DoRememberExpandedNodes(tree, parent, nodePaths, tmp))
@@ -249,13 +249,11 @@ void SaveTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& 
 
 void RestoreTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& nodePaths)
 {
+    if (!parent.IsOk() || !tree)
+        return;
     if (nodePaths.GetCount() == 0)
     {
-#ifdef __WXMSW__
-	// currently crashes under linux, on project open
-	// will investigate...
         tree->Collapse(parent);
-#endif
         return;
     }
     for (unsigned int i = 0; i < nodePaths.GetCount(); ++i)
@@ -274,7 +272,7 @@ wxString ChooseDirectory(wxWindow* parent,
     dlg.SetPath(initialPath);
     if (dlg.ShowModal() != wxID_OK)
         return wxEmptyString;
-        
+
     wxFileName path(dlg.GetPath());
     if (askToMakeRelative && !basePath.IsEmpty())
     {

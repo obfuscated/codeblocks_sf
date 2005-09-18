@@ -224,7 +224,7 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
 			default:
 				break;
 			}
-                    
+
             wxString base = prj->GetBasePath();
             wxFileName fname;
             if (toImp)
@@ -242,7 +242,7 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
                     line = ctd->GetToken()->m_Line - 1;
 				int pos = ed->GetControl()->PositionFromLine(line);
 				ed->GetControl()->GotoPos(pos);
-				
+
 				wxFocusEvent ev(wxEVT_SET_FOCUS);
 				ev.SetWindow(this);
 				ed->GetControl()->AddPendingEvent(ev);
@@ -266,7 +266,7 @@ void ClassBrowser::OnCBViewMode(wxCommandEvent& event)
 {
 	if (!m_pParser)
 		return;
-		
+
 	if (event.GetId() == idCBViewInheritance)
 		m_pParser->ClassBrowserOptions().showInheritance = !event.IsChecked();
 	else if (event.GetId() == idCBViewModeFlat)
