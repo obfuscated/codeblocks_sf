@@ -90,6 +90,7 @@ Managers/StdAfx.h \
 autodetectcompilers.h \
 cbeditor.h \
 cbeditorprintout.h \
+cbexception.h \
 cbplugin.h \
 cbproject.h \
 cbthreadpool.h \
