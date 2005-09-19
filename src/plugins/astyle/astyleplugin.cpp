@@ -55,9 +55,6 @@ AStylePlugin::AStylePlugin()
 	m_PluginInfo.hasConfigure = true;
 
 	ConfigManager::AddConfiguration(m_PluginInfo.title, _T("/astyle"));
-
-    if (!wxFileExists(resPath + _T("/astyle.zip")))
-        cbThrow(_T("Can't find resources!"));
 }
 
 AStylePlugin::~AStylePlugin()
@@ -67,10 +64,6 @@ AStylePlugin::~AStylePlugin()
 
 void AStylePlugin::OnAttach()
 {
-	// just make sure we have our resources available
-    wxString resPath = ConfigManager::Get()->Read(_T("data_path"), wxEmptyString);
-    if (!wxFileExists(resPath + _T("/astyle.zip")))
-        cbThrow(_T("Can't find resources!"));
 }
 
 void AStylePlugin::OnRelease(bool appShutDown)

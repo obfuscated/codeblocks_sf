@@ -411,7 +411,7 @@ void MainFrame::ShowTips(bool forceShow)
     if (forceShow || showAtStartup)
     {
         wxLogNull null; // disable error message if tips file does not exist
-        wxString tipsFile = CFG_READ(_T("/app_path")) + _T("/tips.txt");
+        wxString tipsFile = CFG_READ(_T("/data_path")) + _T("/tips.txt");
         long tipsIndex = CFG_READ(_T("/next_tip"), (long)0);
         wxTipProvider* tipProvider = wxCreateFileTipProvider(tipsFile, tipsIndex);
         showAtStartup = wxShowTip(this, tipProvider, showAtStartup);

@@ -356,7 +356,7 @@ int CodeBlocksApp::OnRun()
     }
     catch (const char* message)
     {
-        wxSafeShowMessage(_("Exception"), message);
+        wxSafeShowMessage(_("Exception"), _U(message));
     }
     catch (...)
     {

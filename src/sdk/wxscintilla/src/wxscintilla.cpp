@@ -2812,7 +2812,7 @@ wxCharBuffer wxScintilla::GetCurLineRaw (int* linePos) {
     int len = LineLength (GetCurrentLine());
     if (!len) {
         if (linePos)  *linePos = 0;
-        wxCharBuffer empty;
+        wxCharBuffer empty((size_t)0);
         return empty;
     }
     wxCharBuffer buf(len);
@@ -2824,7 +2824,7 @@ wxCharBuffer wxScintilla::GetCurLineRaw (int* linePos) {
 wxCharBuffer wxScintilla::GetLineRaw (int line) {
     int len = LineLength (line);
     if (!len) {
-        wxCharBuffer empty;
+        wxCharBuffer empty((size_t)0);
         return empty;
     }
     wxCharBuffer buf(len);
@@ -2838,7 +2838,7 @@ wxCharBuffer wxScintilla::GetSelectedTextRaw() {
     GetSelection (&start, &end);
     int len = end - start;
     if (!len) {
-        wxCharBuffer empty;
+        wxCharBuffer empty((size_t)0);
         return empty;
     }
     wxCharBuffer buf(len);
@@ -2854,7 +2854,7 @@ wxCharBuffer wxScintilla::GetTextRangeRaw (int startPos, int endPos) {
     }
     int len  = endPos - startPos;
     if (!len) {
-        wxCharBuffer empty;
+        wxCharBuffer empty((size_t)0);
         return empty;
     }
     wxCharBuffer buf(len);
