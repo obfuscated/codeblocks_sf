@@ -30,7 +30,7 @@ public:
         Init();
     }
     
-    wxDockWindow( wxWindow * parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, const wxString& name = "frame", unsigned int flags = wxDWC_DEFAULT ) {
+    wxDockWindow( wxWindow * parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, const wxString& name = wxT("frame"), unsigned int flags = wxDWC_DEFAULT ) {
         Init();
         Create( parent, id, title, pos, size, name, flags );
     }
