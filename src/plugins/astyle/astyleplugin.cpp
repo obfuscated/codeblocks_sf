@@ -12,6 +12,7 @@
 #endif
 
 #include "astyleplugin.h"
+#include <cbexception.h>
 #include <licenses.h>
 #include "astyleconfigdlg.h"
 #include <sstream>
@@ -31,7 +32,7 @@ using std::string;
 
 cbPlugin* GetPlugin()
 {
-	return new AStylePlugin;
+    return new AStylePlugin;
 }
 
 AStylePlugin::AStylePlugin()
@@ -52,8 +53,11 @@ AStylePlugin::AStylePlugin()
 	m_PluginInfo.thanksTo = _T("AStyle team for the useful library.\nSee http://astyle.sourceforge.net");
 	m_PluginInfo.license = LICENSE_GPL;
 	m_PluginInfo.hasConfigure = true;
-	
+
 	ConfigManager::AddConfiguration(m_PluginInfo.title, _T("/astyle"));
+
+    if (!wxFileExists(resPath + _T("/astyle.zip")))
+        cbThrow(_T("Can't find resources!"));
 }
 
 AStylePlugin::~AStylePlugin()
@@ -63,12 +67,10 @@ AStylePlugin::~AStylePlugin()
 
 void AStylePlugin::OnAttach()
 {
-	// do whatever initialization you need for your plugin
-	// NOTE: after this function, the inherited member variable
-	// m_IsAttached will be TRUE...
-	// You should check for it in other functions, because if it
-	// is FALSE, it means that the application did *not* "load"
-	// (see: does not need) this plugin...
+	// just make sure we have our resources available
+    wxString resPath = ConfigManager::Get()->Read(_T("data_path"), wxEmptyString);
+    if (!wxFileExists(resPath + _T("/astyle.zip")))
+        cbThrow(_T("Can't find resources!"));
 }
 
 void AStylePlugin::OnRelease(bool appShutDown)
@@ -97,7 +99,7 @@ int AStylePlugin::Execute()
     wxString formattedText;
 
     astyle::ASFormatter formatter;
-    
+
     // load settings
     FormatterSettings settings;
     settings.ApplyTo(formatter);
@@ -109,7 +111,7 @@ int AStylePlugin::Execute()
         case wxSCI_EOL_CR: eolChars = _T("\r"); break;
         case wxSCI_EOL_LF: eolChars = _T("\n"); break;
     }
-    
+
     //ASStreamIterator iter(edText, eolChars);
     istringstream iter(edText);
     formatter.init(iter);

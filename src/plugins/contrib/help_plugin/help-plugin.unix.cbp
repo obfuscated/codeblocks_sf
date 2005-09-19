@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<!DOCTYPE Code::Blocks_project_file>
+<Code::Blocks_project_file>
+	<FileVersion major="1" minor="1"/>
+	<Project>
+		<Option title="Code::Blocks Help Plugin"/>
+		<Option makefile="Makefile"/>
+		<Option makefile_is_custom="0"/>
+		<Option compiler="0"/>
+		<Build>
+			<Target title="help_plugin">
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\help_plugin.so"/>
+				<Option working_dir="..\help_plugin"/>
+				<Option object_output="..\..\..\.objs\plugins\contrib\help_plugin"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option type="3"/>
+				<Option compiler="0"/>
+				<Option host_application="..\..\..\devel\codeblocks.exe"/>
+				<Compiler>
+					<Add option="-fexpensive-optimizations"/>
+					<Add option="-Os"/>
+					<Add option="-Wall"/>
+					<Add option="-pipe"/>
+					<Add option="-fno-pcc-struct-return"/>
+					<Add option="-fno-rtti"/>
+					<Add option="-fmessage-length=0"/>
+					<Add option="-D__WXGTK__"/>
+					<Add option="-DBUILDING_PLUGIN"/>
+					<Add option="-DGTK_NO_CHECK_CASTS"/>
+					<Add option="-D_FILE_OFFSET_BITS=64"/>
+					<Add option="-D_LARGE_FILES"/>
+					<Add directory="..\..\..\sdk"/>
+					<Add directory="\usr\local\lib\wx\include\gtk-2.4"/>
+				</Compiler>
+				<Linker>
+					<Add library="libcodeblocks.a"/>
+					<Add library="libwx_gtk_stc-2.4.a"/>
+					<Add library="libwx_gtk_xrc-2.4.a"/>
+					<Add library="libwx_gtk-2.4.a"/>
+					<Add directory="..\..\..\devel"/>
+				</Linker>
+				<ExtraCommands>
+					<Mode after="always" />
+					<Add after="zip -j9 ../../../devel/share/CodeBlocks/help_plugin.zip *.xrc"/>
+				</ExtraCommands>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-g"/>
+		</Compiler>
+		<Unit filename="HelpConfigDialog.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="help_plugin"/>
+		</Unit>
+		<Unit filename="HelpConfigDialog.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="help_plugin"/>
+		</Unit>
+		<Unit filename="help_common.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="help_plugin"/>
+		</Unit>
+		<Unit filename="help_common.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="help_plugin"/>
+		</Unit>
+		<Unit filename="help_plugin.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="help_plugin"/>
+		</Unit>
+		<Unit filename="help_plugin.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="help_plugin"/>
+		</Unit>
+		<Unit filename="help_plugin.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="help_plugin"/>
+		</Unit>
+	</Project>
+</Code::Blocks_project_file>
