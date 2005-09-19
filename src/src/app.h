@@ -38,6 +38,7 @@ class CodeBlocksApp : public wxApp
     public:
         virtual bool OnInit();
         virtual int OnExit();
+        virtual int OnRun();
         wxString GetAppPath() const;
         int ParseCmdLine(MainFrame* handlerFrame);
 		void OnAppActivate(wxActivateEvent& event);

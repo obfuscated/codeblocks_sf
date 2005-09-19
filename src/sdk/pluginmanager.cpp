@@ -28,6 +28,7 @@
 #include <wx/menu.h>
 #include <wx/dynlib.h>
 
+#include "cbexception.h" // class's header file
 #include "pluginmanager.h" // class's header file
 #include "cbplugin.h"
 #include "messagemanager.h"
@@ -42,7 +43,7 @@ PluginManager* PluginManager::Get()
 {
     if(Manager::isappShuttingDown()) // The mother of all sanity checks
         PluginManager::Free();
-    else 
+    else
     if (!PluginManagerProxy::Get())
 	{
         PluginManagerProxy::Set( new PluginManager() );
@@ -130,6 +131,7 @@ cbPlugin* PluginManager::LoadPlugin(const wxString& pluginName)
     if (!lib->IsLoaded())
     {
         //msgMan->DebugLog(_("not loaded (file exists?)"));
+        delete lib;
         return 0L;
     }
 
@@ -137,11 +139,24 @@ cbPlugin* PluginManager::LoadPlugin(const wxString& pluginName)
     if (!proc)
     {
         lib->Unload();
+        delete lib;
         //msgMan->DebugLog(_("not a plugin"));
         return 0L;
     }
 
-    cbPlugin* plug = proc();
+    cbPlugin* plug = 0L;
+    try
+    {
+        plug = proc();
+    }
+    catch (cbException& exception)
+    {
+        exception.ShowErrorMessage(false);
+        lib->Unload();
+        delete lib;
+        return 0L;
+    }
+
     wxString plugName = plug->GetInfo()->name;
 
     // check if we have already loaded a plugin by that name
@@ -149,9 +164,10 @@ cbPlugin* PluginManager::LoadPlugin(const wxString& pluginName)
     {
         //msgMan->DebugLog(_("another plugin with name \"%s\" is already loaded..."), plugName.c_str());
         lib->Unload();
+        delete lib;
         return 0L;
     }
-    
+
     PluginElement* plugElem = new PluginElement;
     plugElem->fileName = pluginName;
     plugElem->name = plugName;
@@ -187,7 +203,7 @@ void PluginManager::LoadAllPlugins()
         wxString baseKey;
         baseKey << personalityKey << _T("/plugins/") << m_Plugins[i]->name;
         bool loadIt = ConfigManager::Get()->Read(baseKey, true);
-        
+
         // if we have a problematic plugin, check if this is it
         if (loadIt && !probPlugin.IsEmpty())
         {
@@ -201,7 +217,15 @@ void PluginManager::LoadAllPlugins()
 		{
             ConfigManager::Get()->Write(personalityKey + _T("/plugins/try_to_activate"), plug->GetInfo()->title);
 			Manager::Get()->GetMessageManager()->AppendLog(_("%s "), m_Plugins[i]->name.c_str());
-            plug->Attach();
+            try
+            {
+                plug->Attach();
+            }
+            catch (cbException& exception)
+            {
+                Manager::Get()->GetMessageManager()->AppendLog(_T("[failed]"));
+                exception.ShowErrorMessage(false);
+            }
 		}
     }
 	Manager::Get()->GetMessageManager()->Log(_T(""));
@@ -263,7 +287,7 @@ const PluginInfo* PluginManager::GetPluginInfo(const wxString& pluginName)
     cbPlugin* plug = FindPluginByName(pluginName);
     if (plug)
         return plug->GetInfo();
-        
+
     return NULL;
 }
 
@@ -281,7 +305,7 @@ int PluginManager::ExecutePlugin(const wxString& pluginName)
         else
             return ((cbToolPlugin*)plug)->Execute();
     }
-	
+
 	return 0;
 }
 

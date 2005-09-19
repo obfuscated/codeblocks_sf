@@ -32,6 +32,7 @@
 #include <wx/msgdlg.h>
 #include <wx/choicdlg.h>
 #include <wx/notebook.h>
+#include <cbexception.h>
 #if wxCHECK_VERSION(2,6,0)
     #include <wx/debugrpt.h>
 #endif
@@ -343,6 +344,28 @@ int CodeBlocksApp::OnExit()
     return 0;
 }
 
+int CodeBlocksApp::OnRun()
+{
+    try
+    {
+        return wxApp::OnRun();
+    }
+    catch (cbException& exception)
+    {
+        exception.ShowErrorMessage();
+    }
+    catch (const char* message)
+    {
+        wxSafeShowMessage(_("Exception"), message);
+    }
+    catch (...)
+    {
+        wxSafeShowMessage(_("Exception"), _("Unknown exception was raised. The application will terminate immediately..."));
+    }
+    // if we reached here, return error
+    return -1;
+}
+
 bool CodeBlocksApp::OnCmdLineParsed(wxCmdLineParser& parser)
 {
     return wxApp::OnCmdLineParsed(parser);
@@ -350,7 +373,8 @@ bool CodeBlocksApp::OnCmdLineParsed(wxCmdLineParser& parser)
 
 void CodeBlocksApp::OnFatalException()
 {
-#if wxCHECK_VERSION(2,6,0)
+#if wxCHECK_VERSION(2,6,0) && wxUSE_DEBUGREPORT && wxUSE_XML \
+    && defined(__WXGTK__) // doesn't seem to work on windows...
     wxDebugReport report;
     wxDebugReportPreviewStd preview;
 

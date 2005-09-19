@@ -14,13 +14,13 @@
 				<Option working_dir=""/>
 				<Option object_output=".objs\2.6"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="2"/>
 				<Option compiler="0"/>
 				<Option projectResourceIncludeDirsRelation="2"/>
 				<Compiler>
 					<Add option="-DEXPORT_LIB"/>
 					<Add option="-D_USRDLL"/>
+					<Add option="-DTIXML_USE_STL"/>
 				</Compiler>
 			</Target>
 			<Target title="scintilla">
@@ -28,7 +28,6 @@
 				<Option working_dir="devel"/>
 				<Option object_output=".objs\2.6"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option createStaticLib="1"/>
@@ -80,7 +79,6 @@
 				<Option working_dir=""/>
 				<Option object_output=".objs\2.6"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="2"/>
 				<Option compiler="0"/>
 				<Option projectResourceIncludeDirsRelation="2"/>
@@ -142,7 +140,6 @@
 				<Option working_dir="devel\share\CodeBlocks\plugins"/>
 				<Option object_output=".objs\2.6"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="1"/>
@@ -167,7 +164,6 @@
 				<Option working_dir="devel\share\CodeBlocks\plugins"/>
 				<Option object_output=".objs\2.6"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="1"/>
@@ -194,7 +190,6 @@
 				<Option working_dir="devel\share\CodeBlocks\plugins"/>
 				<Option object_output=".objs\2.6"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="1"/>
@@ -219,7 +214,6 @@
 				<Option working_dir="devel\share\CodeBlocks\plugins"/>
 				<Option object_output=".objs\2.6"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="1"/>
@@ -244,7 +238,6 @@
 				<Option working_dir="devel\share\CodeBlocks\plugins"/>
 				<Option object_output=".objs\2.6"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="1"/>
@@ -269,7 +262,6 @@
 				<Option working_dir="devel\share\CodeBlocks\plugins"/>
 				<Option object_output=".objs\2.6"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="1"/>
@@ -293,7 +285,6 @@
 				<Option working_dir="devel\share\CodeBlocks\plugins"/>
 				<Option object_output=".objs\2.6"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="1"/>
@@ -318,7 +309,6 @@
 				<Option working_dir="devel\share\CodeBlocks\plugins"/>
 				<Option object_output=".objs\2.6"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Compiler>
@@ -339,7 +329,6 @@
 				<Option working_dir="devel\share\CodeBlocks\plugins"/>
 				<Option object_output=".objs\2.6"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option projectIncludeDirsRelation="2"/>
@@ -370,7 +359,6 @@
 				<Option working_dir="tools\ConsoleRunner"/>
 				<Option object_output=".objs\2.6"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="1"/>
 				<Option compiler="0"/>
 				<Option projectCompilerOptionsRelation="0"/>
@@ -400,12 +388,12 @@
 			<Add option="-g"/>
 			<Add option="-pipe"/>
 			<Add option="-mthreads"/>
-			<Add option="-fno-pcc-struct-return"/>
-			<Add option="-fno-rtti"/>
 			<Add option="-fmessage-length=0"/>
+			<Add option="-fexceptions"/>
 			<Add option="-DHAVE_W32API_H"/>
 			<Add option="-D__WXMSW__"/>
 			<Add option="-DWXUSINGDLL"/>
+			<Add option="-DcbDEBUG"/>
 			<Add directory="$(WX_DIR)\include"/>
 			<Add directory="$(WX_DIR)\lib\gcc_dll\msw"/>
 			<Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)\msw"/>
@@ -1506,6 +1494,12 @@
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk\cbeditorprintout.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\cbexception.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
