@@ -20,7 +20,7 @@ WXS_EV_END(wxsSpinCtrlEvents)
 wxsDWDefineBegin(wxsSpinCtrl,wxSpinCtrl,
         ThisWidget = new wxSpinCtrl(parent,id,value,pos,size,style, min ,max);
     )
-    wxsDWDefStr(value,"Default:",_T("0"));
+    wxsDWDefStr(value,"Default:","0");
     wxsDWDefInt(min,"Min:",0)
     wxsDWDefInt(max,"Max:",100)
 wxsDWDefineEnd()

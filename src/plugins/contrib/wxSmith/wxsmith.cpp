@@ -346,7 +346,7 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
     	     !strcmp(Class,"wxPanel") ||
     	     !strcmp(Class,"wxFrame") )
         {
-        	Resources.Add(Name);
+        	Resources.Add(wxString(Name,wxConvUTF8));
         }
         
         Element = Element->NextSiblingElement("object");

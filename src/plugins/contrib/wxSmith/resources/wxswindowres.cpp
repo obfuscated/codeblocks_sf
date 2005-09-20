@@ -169,7 +169,7 @@ bool wxsWindowRes::GenerateEmptySources()
     Content.Replace(_T("$(Guard)"),Guard,true);
     Content.Replace(_T("$(ClassName)"),ClassName,true);
     Content.Replace(_T("$(BaseClassName)"),GetWidgetClass(),true);
-    fprintf(Fl,"%s",Content.mb_str());
+    fprintf(Fl,"%s",(const char*)Content.mb_str());
     fclose(Fl);
     
     Fl = fopen(GetProject()->GetProjectFileName(SrcFile).mb_str(),"wt");

@@ -180,7 +180,7 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
             Elem;
             Elem = Elem->NextSiblingElement(XML_DIALOG_STR) )
     {
-    	wxString Mode = Elem->Attribute(XML_EDITMODE_STR);
+    	wxString Mode = wxString(Elem->Attribute(XML_EDITMODE_STR),wxConvUTF8);
     	wxString Xrc = ( Mode == _T("Source") ) ? _T("") : wxString ( Elem->Attribute(XML_XRCFILE_STR), wxConvUTF8 );
         AddDialogResource(
             wxString ( Elem->Attribute(XML_FNAME_STR), wxConvUTF8 ),
@@ -196,7 +196,7 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
             Elem;
             Elem = Elem->NextSiblingElement(XML_FRAME_STR) )
     {
-    	wxString Mode = Elem->Attribute(XML_EDITMODE_STR);
+    	wxString Mode = wxString(Elem->Attribute(XML_EDITMODE_STR),wxConvUTF8);
     	wxString Xrc = ( Mode == _T("Source") ) ? _T("") : wxString ( Elem->Attribute(XML_XRCFILE_STR), wxConvUTF8 );
         AddFrameResource(
             wxString ( Elem->Attribute(XML_FNAME_STR), wxConvUTF8 ),
@@ -212,7 +212,7 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
             Elem;
             Elem = Elem->NextSiblingElement(XML_PANEL_STR) )
     {
-    	wxString Mode = Elem->Attribute(XML_EDITMODE_STR);
+    	wxString Mode = wxString(Elem->Attribute(XML_EDITMODE_STR),wxConvUTF8);
     	wxString Xrc = ( Mode == _T("Source") ) ? _T("") : wxString ( Elem->Attribute(XML_XRCFILE_STR), wxConvUTF8 );
         AddPanelResource(
             wxString ( Elem->Attribute(XML_FNAME_STR), wxConvUTF8 ),
