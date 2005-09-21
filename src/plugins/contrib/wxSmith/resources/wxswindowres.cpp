@@ -371,7 +371,11 @@ void wxsWindowRes::UpdateWidgetsVarNameIdReq(StrMap& NamesMap, StrMap& IdsMap, w
 		
         wxsWidgetBaseParams& Params = Child->GetBaseParams();
         
-        if ( Params.VarName.Length() == 0 || Params.IdName.Length() == 0 )
+        bool UpdateVar = ( Child->GetBPType() & wxsWidget::bptVariable ) && 
+                         ( Params.VarName.Length() == 0 );
+        bool UpdateId  = ( Child->GetBPType() & wxsWidget::bptId ) &&
+                         ( Params.IdName.Length() == 0 );
+        if ( UpdateVar || UpdateId )
         {
             wxString NameBase = Child->GetInfo().DefaultVarName;
             wxString Name;
@@ -384,13 +388,19 @@ void wxsWindowRes::UpdateWidgetsVarNameIdReq(StrMap& NamesMap, StrMap& IdsMap, w
                 Name.Printf(_T("%s%d"),NameBase.c_str(),Index);
                 Id.Printf(_T("ID_%s%d"),IdBase.c_str(),Index++);
             }
-            while ( NamesMap.find(Name) != NamesMap.end() ||
-                    IdsMap.find(Id)     != IdsMap.end() );
+            while ( ( UpdateVar && NamesMap.find(Name) != NamesMap.end() ) ||
+                    ( UpdateId  && IdsMap.find(Id)     != IdsMap.end() ) );
             
-            Params.VarName = Name;
-            NamesMap[Name] = Child;
-            Params.IdName = Id;
-            IdsMap[Id] = Child;
+            if ( UpdateVar )
+            {
+                Params.VarName = Name;
+                NamesMap[Name] = Child;
+            }
+            if ( UpdateId )
+            {
+                Params.IdName = Id;
+                IdsMap[Id] = Child;
+            }
         }
     
 		UpdateWidgetsVarNameIdReq(NamesMap,IdsMap,Child);
@@ -411,9 +421,9 @@ void wxsWindowRes::CreateSetsReq(StrMap& NamesMap, StrMap& IdsMap, wxsWidget* Wi
                 NamesMap[Child->GetBaseParams().VarName.c_str()] = Child;
             }
             
-            if ( Child->GetBaseParams().VarName.Length() )
+            if ( Child->GetBaseParams().IdName.Length() )
             {
-                IdsMap[Child->GetBaseParams().VarName.c_str()] = Child;
+                IdsMap[Child->GetBaseParams().IdName.c_str()] = Child;
             }
 		}
 		

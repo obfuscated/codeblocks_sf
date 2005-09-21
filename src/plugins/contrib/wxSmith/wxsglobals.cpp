@@ -50,6 +50,7 @@ wxString GetCString(const wxString& Source)
 
 wxString GetWxString(const wxString& Source)
 {
+	if ( Source.empty() ) return _T("_T(\"\")");
 	return wxString::Format(_T("_(%s)"),GetCString(Source).c_str());
 }
 
