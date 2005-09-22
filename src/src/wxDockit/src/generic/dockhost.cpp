@@ -4,8 +4,8 @@
 // Author:      Mark McCormack
 // Modified by:
 // Created:     23/02/04
-// RCS-ID:  
-// Copyright:   
+// RCS-ID:
+// Copyright:
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
@@ -102,7 +102,7 @@ DockWindowList & wxDockHost::GetDockWindowList() {
         wxASSERT(pChildNode);
         wxWindow * pChild = pChildNode->GetData();
         wxASSERT(pChild);
-    
+
         // is it a panel?
         wxDockPanel * pPanel = wxDynamicCast( pChild, wxDockPanel );
         if( pPanel ) {
@@ -129,7 +129,7 @@ void wxDockHost::OnSize( wxSizeEvent &event ) {
         else {
             areaSize_ = newSize.GetWidth();
         }
-		
+
 		if( !internalSizeEvent_ ) {
 			pLayoutManager_->UpdateAllHosts( true, this );
 		}
@@ -292,13 +292,13 @@ wxRect wxDockHost::GetClientArea() {
         case wxRIGHT:
             return wxVERTICAL;
         break;
-        
+
         case wxTOP:
         case wxBOTTOM:
             return wxHORIZONTAL;
         break;
         case wxALL:
-            wxASSERT_MSG( false, "wxALL is not valid" );
+            wxASSERT_MSG( false, _T("wxALL is not valid") );
         break;
     }
     // failed
@@ -307,7 +307,7 @@ wxRect wxDockHost::GetClientArea() {
 wxDirection wxDockHost::GetDirection() {
     return dir_;
 }
- 
+
 wxRect wxDockHost::CalcHostPlacement( bool hitTest ) {
     int area = areaSize_;
     if( IsEmpty() ) {
@@ -344,7 +344,7 @@ wxRect wxDockHost::CalcHostPlacement( bool hitTest ) {
             pos_.y = pcr.y;
             size_.x = area;
             size_.y = pcr.height;
-        break;        
+        break;
         case wxALL:
             // n/a
         break;
@@ -366,7 +366,7 @@ bool wxDockHost::TestForPanel( int sx, int sy, HostInfo &hi ) {
             return true;
         }
     }
-    
+
     wxWindowList & children = GetChildren();
     for( int c=0; c<(int)children.GetCount(); c++ ) {
         // get child
@@ -374,7 +374,7 @@ bool wxDockHost::TestForPanel( int sx, int sy, HostInfo &hi ) {
         wxASSERT(pChildNode);
         wxWindow * pChild = pChildNode->GetData();
         wxASSERT(pChild);
-    
+
         // is it a panel?
         wxDockPanel * pPanel = wxDynamicCast( pChild, wxDockPanel );
         if( pPanel ) {
@@ -401,7 +401,7 @@ wxRect wxDockHost::RectToScreen( wxRect &rect ) {
 }
 
 void wxDockHost::RecalcPanelAreas() {
-    // get the client window 
+    // get the client window
     wxRect cr = GetClientRect();
 
     // set the avaialble panel area
@@ -410,7 +410,7 @@ void wxDockHost::RecalcPanelAreas() {
     if( !lockPanelValue_ ) {
         panelArea_ = (hostArea - splittersArea);
     }
- 
+
     wxWindowList & children = GetChildren();
     int childCount = children.GetCount();
     for( int c=0; c<childCount; c++ ) {
@@ -449,7 +449,7 @@ void wxDockHost::OnCalculateLayout( wxCalculateLayoutEvent &event ) {
 		SetSize( 0,0,0,0 );
         return;
     }
-    
+
 	internalSizeEvent_ = true;
 
     // chew off a bit of area for ourselves from the layout area
@@ -489,7 +489,7 @@ void wxDockHost::SettingsChanged() {
 
     unsigned int flags = liveUpdate ? wxESF_LIVE_UPDATE : 0;
     flags |= splitterBorders ? wxESF_DRAW_GRIPPER : 0;
-    
+
     // inform our splitters
     for( unsigned int i=0; i<splitters_.GetCount(); ++i ) {
         wxExSplitter * pSplitter = splitters_[i];
@@ -507,10 +507,10 @@ void wxDockHost::calcPanelPlacement( bool useProportions ) {
     if( IsEmpty() ) {
         return;
     }
-   
-    // get the client window 
+
+    // get the client window
     wxRect cr = GetClientRect();
-    
+
     int areaRemaining = GetOrientation() == wxHORIZONTAL ? cr.width : cr.height;
     int splittersArea = (numSplitters_ * SPLITTER_SIZE);
     int panelArea = (areaRemaining - splittersArea);
@@ -599,7 +599,7 @@ int wxDockHost::getAssetCount() {
     int childCount = children.GetCount();
 
     // removes 1 for the host's own splitter
-    return childCount-1;      
+    return childCount-1;
 }
 
 void wxDockHost::updateSplitters() {
@@ -615,7 +615,7 @@ void wxDockHost::updateSplitters() {
     wxWindowList newChildList;
     SplitterList toDeleteSplitters;
     splitters_.Clear();
-    
+
 	int c;
     for( c=0; c<childCount; c++ ) {
         // get child
@@ -639,7 +639,7 @@ void wxDockHost::updateSplitters() {
                 wxASSERT(pLastChild);
 
                 wxExSplitter * pSplitter = new wxExSplitter( this, GetOrientation(), pLastChild, pPanel, splitterFlags_ );
-                
+
                 newChildList.Append( pSplitter );
                 numSplitters_++;
                 splitters_.Append( pSplitter );
@@ -677,7 +677,7 @@ void wxDockHost::updateSplitters() {
 
     // update window list
     children = newChildList;
-    
+
     // make sure splitters are connected to the correct panels
     int newChildCount = children.GetCount();
     for( c=0; c<newChildCount; c++ ) {

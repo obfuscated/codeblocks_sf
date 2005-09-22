@@ -301,7 +301,7 @@ void wxDockPanel::AutoFitSingleChild() {
     // apply to client child
     wxWindowList & children = pClient_->GetChildren();
     if( children.GetCount() != 1 ) {
-        wxASSERT_MSG( false, "AutoFitSingleChild() only works when there is a single child!" );
+        wxASSERT_MSG( false, _T("AutoFitSingleChild() only works when there is a single child!") );
     }
     wxWindowListNode * pChildNode = children.GetFirst();
     wxASSERT(pChildNode);

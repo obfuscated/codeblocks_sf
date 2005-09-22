@@ -136,7 +136,7 @@ void wxLayoutManager::AddDockHost( wxDirection dir, int initialSize, const wxStr
             dockName = wxDEFAULT_BOTTOM_HOST;
         break;
         default:
-            wxASSERT_MSG( false, "AddDockHost() - direction parameter not recognised" );
+            wxASSERT_MSG( false, _T("AddDockHost() - direction parameter not recognised") );
         break;
         }
     }
@@ -145,7 +145,7 @@ void wxLayoutManager::AddDockHost( wxDirection dir, int initialSize, const wxStr
     for( DockHostList::Node *node = dockHosts_.GetFirst(); node; node = node->GetNext() ) {
         wxDockHost * pDockHost = node->GetData();
         if( dockName == pDockHost->GetName() || dir == pDockHost->GetDirection() ) {
-            wxASSERT_MSG( false, "AddDockHost() - direction or name already used" );
+            wxASSERT_MSG( false, _T("AddDockHost() - direction or name already used") );
         }
     }
 
@@ -191,7 +191,7 @@ void wxLayoutManager::AddDockWindow( wxDockWindowBase * pDockWindow ) {
     for( DockWindowList::Node *node = dockWindows_.GetFirst(); node; node = node->GetNext() ) {
         wxDockWindowBase * pKnownDockWindow = node->GetData();
         if( pDockWindow->GetName() == pKnownDockWindow->GetName() ) {
-            wxASSERT_MSG( false, "AddDockWindow() - name already used" );
+            wxASSERT_MSG( false, _T("AddDockWindow() - name already used") );
         }
     }
 
