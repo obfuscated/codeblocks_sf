@@ -41,4 +41,5 @@ void wxsResource::EditorSaysHeIsClosing()
     assert ( Editor != NULL );
     assert ( Editor->GetResource() == NULL || Editor->GetResource() == this );
     Editor = NULL;
+    EditorClosed();
 }

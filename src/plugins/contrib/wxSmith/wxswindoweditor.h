@@ -40,7 +40,16 @@ class wxsWindowEditor : public wxsEditor
 
 		/** Closing action will store code changes */
 		virtual bool Close();
+		
+		/** Saving resource */
+		virtual bool Save();
 
+		/** Returns true if resource is modified, false otherwise */
+		virtual bool GetModified();
+		
+		/** Set the resources's modification state to \c modified. */
+		virtual void SetModified(bool modified);
+		
     protected:
 
         /** Unbinding from resource - this function is killing preview objects */
@@ -53,15 +62,15 @@ class wxsWindowEditor : public wxsEditor
 
 		/* Event handlers */
         void OnMouseClick(wxMouseEvent& event);
-        void OnActivate(wxActivateEvent& event);
         void OnSelectWidget(wxsEvent& event);
+        void OnUnselectWidget(wxsEvent& event);
 
         /** Root widget of currently edited window */
         wxsWidget* CurrentWidget;
 
         /** New layer used for dragging widgets */
         wxsDragWindow* DragWnd;
-
+        
         DECLARE_EVENT_TABLE()
 };
 

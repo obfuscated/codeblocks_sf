@@ -99,6 +99,9 @@ class wxsProject
 
         /** Deleting panel resource from project */
         void DeletePanel(wxsPanelRes* Resource);
+        
+        /** Getting modified state */
+        bool GetModified() { return Modified; }
 
     protected:
 
@@ -151,7 +154,9 @@ class wxsProject
 
         /** Function clearing project structures */
         inline void Clear();
-
+        
+        /** Changing modified state */
+        inline void SetModified(bool modified) { Modified = modified; }
 
         IntegrationState Integration;   ///< Current integration state
         wxFileName ProjectPath;         ///< Base Directory of C::B project (where project filr is stored)
@@ -178,6 +183,7 @@ class wxsProject
         PanelListT Panels;
 
         bool DuringClear;               ///< Set to true when inside Clear call
+        bool Modified;                  ///< Set to true when there was any change inside wxSmith project
 
         friend class wxsWindowRes;
 };

@@ -287,6 +287,7 @@ void wxsPalette::InsertBefore(wxsWidget* New,wxsWidget* Ref)
     // Adding this new item into resource tree
     
     New->BuildTree(Plugin->GetResourceTree(),Parent->TreeId,Index);
+    Plugin->GetResourceTree()->Refresh();
 }   
 
 void wxsPalette::InsertAfter(wxsWidget* New,wxsWidget* Ref)
@@ -301,6 +302,7 @@ void wxsPalette::InsertAfter(wxsWidget* New,wxsWidget* Ref)
         return;
     }
     New->BuildTree(Plugin->GetResourceTree(),Parent->TreeId,Index+1);
+    Plugin->GetResourceTree()->Refresh();
 }   
 
 void wxsPalette::InsertInto(wxsWidget* New,wxsWidget* Ref)
@@ -311,6 +313,7 @@ void wxsPalette::InsertInto(wxsWidget* New,wxsWidget* Ref)
         return;
     }
     New->BuildTree(Plugin->GetResourceTree(),Ref->TreeId);
+    Plugin->GetResourceTree()->Refresh();
 }   
 
 void wxsPalette::DeleteRequest()
@@ -349,6 +352,7 @@ void wxsPalette::DeleteRequest()
     {
 		SelectedRes->NotifyChange();
     }
+    Plugin->GetResourceTree()->Refresh();
 }
 
 void wxsPalette::PreviewRequest()

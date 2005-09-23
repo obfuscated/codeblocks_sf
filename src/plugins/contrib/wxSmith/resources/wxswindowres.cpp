@@ -3,6 +3,7 @@
 #include "../wxswidgetfactory.h"
 #include "../wxswindoweditor.h"
 #include "../wxscodegen.h"
+#include "../wxsmith.h"
 #include <manager.h>
 #include <editormanager.h>
 
@@ -73,18 +74,17 @@ wxsWindowRes::wxsWindowRes(
         WxsFile(Wxs),
         SrcFile(Src),
         HFile(Head),
-        XrcFile(Xrc)
+        XrcFile(Xrc),
+        RootWidget(NULL),
+        Modified(false),
+        AvoidCreation(false)
 
 {
 }
 
 void wxsWindowRes::Initialize()
 {
-    RootWidget = wxsWidgetFactory::Get()->Generate(GetWidgetClass(true),this);
-    if ( !RootWidget )
-    {
-    	wxMessageBox(GetWidgetClass(true));
-    }
+	Clear();
 }
 
 wxsWindowRes::~wxsWindowRes()
@@ -95,9 +95,70 @@ wxsWindowRes::~wxsWindowRes()
 
 wxsEditor* wxsWindowRes::CreateEditor()
 {
+	if ( AvoidCreation ) return NULL;
+	GetRootWidget()->BuildTree(wxSmith::Get()->GetResourceTree(),GetTreeItemId());
     wxsWindowEditor* Edit = new wxsWindowEditor(Manager::Get()->GetEditorManager()->GetNotebook(),this);
     Edit->BuildPreview(RootWidget);
     return Edit;
+}
+
+void wxsWindowRes::Clear()
+{
+	if ( RootWidget )
+	{
+        wxsWidgetFactory::Get()->Kill(RootWidget);
+		RootWidget = NULL;
+	}
+	
+    RootWidget = wxsWidgetFactory::Get()->Generate(GetWidgetClass(true),this);
+    if ( !RootWidget )
+    {
+    	wxMessageBox(_("Internal error in plugin: wxSmith.\nCode::Blocks may crash !!!\nPlease, save all Your files, close Code::Blocks and reinstall/remove wxSmith plugin"));
+    }
+}
+
+bool wxsWindowRes::Load()
+{
+	Clear();
+	
+    TiXmlDocument Doc(WxsFile.mb_str());
+    TiXmlElement* Resource;
+
+    if ( !  Doc.LoadFile() ||
+         ! (Resource = Doc.FirstChildElement("resource")) )
+    {
+        Manager::Get()->GetMessageManager()->Log(_("Couldn't load resource data"));
+        return false;
+    }
+
+    /* Finding dialog object */
+
+    TiXmlElement* XmlWindow = Resource->FirstChildElement("object");
+    while ( XmlWindow )
+    {
+    	wxString TypeName = GetWidgetClass(false);
+        if ( !strcmp(XmlWindow->Attribute("class"),TypeName.mb_str()) &&
+             !strcmp(XmlWindow->Attribute("name"),ClassName.mb_str()) )
+        {
+            break;
+        }
+
+        XmlWindow = XmlWindow->NextSiblingElement("object");
+    }
+
+    if ( !XmlWindow ) return false;
+    
+    if ( !GetRootWidget()->XmlLoad(XmlWindow) )
+    {
+        Manager::Get()->GetMessageManager()->Log(_("Couldn't load xrc data, some resources may be damaged"));
+        return false;
+    }
+    
+    // Clearing modified flag
+    
+    SetModified(false);
+
+    return true;
 }
 
 void wxsWindowRes::Save()
@@ -109,6 +170,8 @@ void wxsWindowRes::Save()
         Doc->SaveFile(WxsFile.mb_str());
         delete Doc;
     }
+    
+    SetModified(false);
 }
 
 TiXmlDocument* wxsWindowRes::GenerateXml()
@@ -328,6 +391,12 @@ void wxsWindowRes::NotifyChange()
 	Code.Append(_T('\n'));
 	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(HFile),CodeHeader,Code);
 	UpdateEventTable();
+	
+//---------------------------------
+// Applying modified state
+//---------------------------------
+
+    SetModified();
 }
 
 void wxsWindowRes::AddDeclarationsReq(wxsWidget* Widget,wxString& LocalCode,wxString& GlobalCode,int LocalTabSize,int GlobalTabSize,bool& WasLocal)
@@ -400,6 +469,10 @@ void wxsWindowRes::UpdateWidgetsVarNameIdReq(StrMap& NamesMap, StrMap& IdsMap, w
             {
                 Params.IdName = Id;
                 IdsMap[Id] = Child;
+            }
+            if ( UpdateVar || UpdateId )
+            {
+            	SetModified();
             }
         }
     
@@ -675,6 +748,8 @@ bool wxsWindowRes::CorrectOneWidget(StrMap& NamesMap,StrMap& IdsMap,wxsWidget* C
     	}
     }
     
+    if ( !Valid && Correct ) SetModified();
+    
 	return Valid;
 }
 
@@ -756,4 +831,45 @@ TiXmlDocument* wxsWindowRes::GenerateXrc()
 	TiXmlDocument* Generated = GenerateXml();
 	SetEditMode(EMStore);
 	return Generated;
+}
+
+void wxsWindowRes::SetModified(bool modified)
+{
+	if ( GetEditor() )
+	{
+		Modified = modified;
+	}
+	else
+	{
+		if ( modified ) Save();
+		Modified = false;
+	}
+}
+
+void wxsWindowRes::EditorClosed()
+{
+	AvoidCreation = true;
+	GetRootWidget()->KillTree(wxSmith::Get()->GetResourceTree());
+	if ( GetModified() )
+	{
+		Load();
+		wxTreeCtrl* Tree = wxSmith::Get()->GetResourceTree();
+		Tree->SelectItem(GetTreeItemId());
+        //GetRootWidget()->BuildTree(Tree,GetTreeItemId());
+	}
+	AvoidCreation = false;
+}
+
+void wxsWindowRes::BuildTree(wxTreeCtrl* Tree,wxTreeItemId WhereToAdd,bool NoWidgets)
+{
+	SetTreeItemId(
+        Tree->AppendItem(
+            WhereToAdd,
+            GetClassName(),
+            -1,-1, 
+            new wxsResourceTreeData(this) ) );
+    if ( !NoWidgets )
+    {
+        GetRootWidget()->BuildTree(Tree,GetTreeItemId());
+    }
 }

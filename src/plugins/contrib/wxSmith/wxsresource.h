@@ -3,6 +3,7 @@
 
 #include "wxseditor.h"
 #include "wxsglobals.h"
+#include <wx/treectrl.h>
 
 class wxsProject;
 class wxSmith;
@@ -60,6 +61,8 @@ class wxsResource
         /** Changing broken flag */
         inline void SetResBroken(bool Broken) { EditMode = GetEditMode() | Broken ? wxsResBroken : 0; }
         
+        /** Grtting current tree item in resource browser */
+        inline wxTreeItemId GetTreeItemId() { return ItemId; }
 		
     protected:
     
@@ -69,6 +72,12 @@ class wxsResource
          */
         virtual wxsEditor* CreateEditor() = 0;
         
+        /** Function notifying that editor has just been closed */
+        virtual void EditorClosed() {}
+        
+        /** Function setting tree item in resource browser */
+        inline void SetTreeItemId(wxTreeItemId Id) { ItemId = Id; }
+        
     private:
     
         void EditorSaysHeIsClosing();
@@ -77,6 +86,7 @@ class wxsResource
         wxsEditor* Editor;
         wxsProject* Project;
         int EditMode;
+        wxTreeItemId ItemId;
 };
 
 #endif // WXSRESOURCE_H

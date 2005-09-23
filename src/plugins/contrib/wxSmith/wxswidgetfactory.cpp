@@ -41,15 +41,9 @@ void wxsWidgetFactory::Kill(wxsWidget* Widget)
         {
             Parent->DelChild(Widget);
         }
-
-        wxTreeCtrl* Tree = wxSmith::Get()->GetResourceTree();
-        wxTreeItemId TreeId = Widget->TreeId;
-        if ( ! Widget->AssignedToTree )
-        {
-            Tree = NULL;
-        }
-
+        Widget->KillTree(wxSmith::Get()->GetResourceTree());
         if ( Widget->GetPreview() ) Widget->KillPreview();
+        
         if ( Widget->GetProperties() ) Widget->KillProperties();
 
         // Deleting widget
@@ -62,14 +56,6 @@ void wxsWidgetFactory::Kill(wxsWidget* Widget)
             // Possibly unsafe
             delete Widget;
         }
-
-        // Deleting tree node at the end - when all child nodes has been already deleted
-        if ( Tree )
-        {
-            // There's something wrong when deleting TreeItemData - will do it manually
-            Tree->Delete(TreeId);
-        }
-
     }
 }
 

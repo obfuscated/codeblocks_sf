@@ -12,20 +12,14 @@ wxsEditor::wxsEditor(wxWindow* parent, const wxString& title,wxsResource* _Resou
 
 wxsEditor::~wxsEditor()
 {
-}
-
-bool wxsEditor::QueryClose()
-{
     Unbind();
-    Destroy();
-    return true;
 }
 
 void wxsEditor::Unbind()
 {
     if ( Resource )
     {
-        MyUnbind();
+        //MyUnbind();       // Can not call this since we're inside destructor
         wxsResource* ResStore = Resource;
         Resource = NULL;
         ResStore->EditorSaysHeIsClosing();

@@ -196,6 +196,12 @@ class wxsWidget
         /** Getting events object */
         wxsWidgetEvents* GetEvents();
 
+        /** Function building resource tree for this widget */
+        void BuildTree(wxTreeCtrl* Tree,wxTreeItemId WhereToAdd,int InsertIndex=-1);
+        
+        /** Deleting tree for this widget and for all it's children */
+        void KillTree(wxTreeCtrl* Tree);
+        
 /******************************************************************************/
 /* Preview                                                                    */
 /******************************************************************************/
@@ -636,8 +642,8 @@ class wxsWidget
         /** Adding default properties to properties manager */
         virtual void AddDefaultProperties(BasePropertiesType Props);
         
-        /** Function building tree for this widget */
-        void BuildTree(wxTreeCtrl* Tree,wxTreeItemId WhereToAdd,int InsertIndex=-1);
+        /** Invalidating tree item id for this widget and all of it's children */
+        void InvalidateTreeIds();
         
         wxsWidgetManager* Manager;  ///< Widget's manager
         wxWindow* Preview;          ///< Currently opened preview window (NULL if there's no one)
@@ -670,7 +676,6 @@ class wxsWidget
         friend class wxsProject;
         friend class wxsPalette;
         friend class wxsWidgetFactory;
-
 };
 
 /** Class managing widget */

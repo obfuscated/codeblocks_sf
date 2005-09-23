@@ -35,6 +35,7 @@ wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsWindowRes* Resource):
 
 wxsWindowEditor::~wxsWindowEditor()
 {
+	wxsUnselectRes(GetResource());
 	KillCurrentPreview();
 }
 
@@ -102,15 +103,15 @@ void wxsWindowEditor::OnMouseClick(wxMouseEvent& event)
     }
 }
 
-void wxsWindowEditor::OnActivate(wxActivateEvent& event)
+void wxsWindowEditor::OnSelectWidget(wxsEvent& event)
 {
-    if ( event.GetActive() )
-    {
-    	wxsSelectRes(GetResource());
-    }
+	if ( DragWnd )
+	{
+		DragWnd->ProcessEvent(event);
+	}
 }
 
-void wxsWindowEditor::OnSelectWidget(wxsEvent& event)
+void wxsWindowEditor::OnUnselectWidget(wxsEvent& event)
 {
 	if ( DragWnd )
 	{
@@ -143,8 +144,39 @@ bool wxsWindowEditor::Close()
 	return wxsEditor::Close();
 }
 
+bool wxsWindowEditor::Save()
+{
+	if ( GetResource() )
+	{
+        ((wxsWindowRes*)GetResource())->Save();
+	}
+	return true;
+}
+
+bool wxsWindowEditor::GetModified()
+{
+	if ( !GetResource() ) return false;
+	return ((wxsWindowRes*)GetResource())->GetModified();
+}
+		
+void wxsWindowEditor::SetModified(bool modified)
+{
+	if ( GetResource() )
+	{
+		((wxsWindowRes*)GetResource())->SetModified(modified);
+		if ( ((wxsWindowRes*)GetResource())->GetModified() )
+		{
+			SetTitle(_T("*") + GetShortName());
+		}
+		else
+		{
+			SetTitle(GetShortName());
+		}
+	}
+}
+
 BEGIN_EVENT_TABLE(wxsWindowEditor,wxsEditor)
     EVT_LEFT_DOWN(wxsWindowEditor::OnMouseClick)
-    EVT_ACTIVATE(wxsWindowEditor::OnActivate)
     EVT_SELECT_WIDGET(wxsWindowEditor::OnSelectWidget)
+    EVT_UNSELECT_WIDGET(wxsWindowEditor::OnUnselectWidget)
 END_EVENT_TABLE()

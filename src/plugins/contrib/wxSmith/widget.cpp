@@ -1113,6 +1113,26 @@ bool wxsWidget::XmlGetStringArray(const wxString& ParentName,const wxString& Chi
 }
 //End added
 
+void wxsWidget::KillTree(wxTreeCtrl* Tree)
+{
+	if ( AssignedToTree )
+	{
+		Tree->Delete(TreeId);
+        InvalidateTreeIds();
+	}
+}
+
+void wxsWidget::InvalidateTreeIds()
+{
+	if ( !AssignedToTree ) return;
+	AssignedToTree = false;
+	int Cnt = GetChildCount();
+	for ( int i=0; i<Cnt; i++ )
+	{
+		GetChild(i)->InvalidateTreeIds();
+	}
+}
+
 wxsWindowEditor* wxsWidget::GetEditor()
 {
 	return Resource ? (wxsWindowEditor*)Resource->GetEditor() : NULL;

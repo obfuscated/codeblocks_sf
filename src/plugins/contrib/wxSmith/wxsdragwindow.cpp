@@ -506,6 +506,22 @@ void wxsDragWindow::OnSelectWidget(wxsEvent& event)
     BackFetchMode = false;
 }
 
+void wxsDragWindow::OnUnselectWidget(wxsEvent& event)
+{
+    for ( size_t i = 0; i < DragPoints.size(); )
+    {
+    	DragPointData* DPD = DragPoints[i];
+    	if ( DPD->Widget == event.GetWidget() )
+    	{
+    		DragPoints.erase(DragPoints.begin()+i);
+    	}
+    	else
+    	{
+    		i++;
+    	}
+    }
+}
+
 void wxsDragWindow::ClearDragPoints()
 {
     for ( DragPointsI i = DragPoints.begin(); i!=DragPoints.end(); ++i )
@@ -686,7 +702,6 @@ void wxsDragWindow::AddGraphics(wxDC& DC)
     for ( DragPointsI i = DragPoints.begin(); i != DragPoints.end(); ++i )
     {
     	DragPointData* DPD = *i;
-//    	if ( (*i)->Invisible ) continue;
         wxColor DrawColor( DPD->Inactive ? wxColor(0x80,0x80,0x80) : wxColor(0,0,0) );
         DC.SetPen( wxPen(DrawColor,1) );
         int Style = IsVisible(DPD->Widget) ? wxSOLID : wxTRANSPARENT;
@@ -801,6 +816,7 @@ BEGIN_EVENT_TABLE(wxsDragWindow,wxControl)
     EVT_ERASE_BACKGROUND(wxsDragWindow::OnEraseBack)
     EVT_TIMER(1,wxsDragWindow::TimerRefresh)
     EVT_SELECT_WIDGET(wxsDragWindow::OnSelectWidget)
+    EVT_UNSELECT_WIDGET(wxsDragWindow::OnUnselectWidget)
     EVT_SIZE(wxsDragWindow::OnSize)
     EVT_COMMAND(wxID_ANY,wxEVT_FETCH_BACK,wxsDragWindow::OnFetchBackground)
 END_EVENT_TABLE()

@@ -19,15 +19,16 @@ class wxsEditor : public EditorBase
 		/** Getting current resouce */
 		inline wxsResource* GetResource() { return Resource; }
 		
-		/** Default closing action */
-		virtual bool QueryClose();
 		
     protected:
     
         /** This function should delete all dependencies between this window and
          *  resource object. F.ex. it could delete preview objects
+         *
+         *  NOTE: Can not use this function. This unbinding should be done
+         *        inside deestrtuctor
          */
-        virtual void MyUnbind() = 0;
+//        virtual void MyUnbind() = 0;
         
 	private:
 	

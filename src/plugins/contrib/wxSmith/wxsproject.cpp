@@ -136,35 +136,17 @@ void wxsProject::BuildTree(wxTreeCtrl* Tree,wxTreeItemId WhereToAdd)
 
     for ( DialogListI i = Dialogs.begin(); i!=Dialogs.end(); ++i )
     {
-        (*i)->GetDialog().BuildTree(
-            Tree,
-            Tree->AppendItem(
-                DialogId,
-                (*i)->GetClassName(),
-                -1, -1,
-                new wxsResourceTreeData(*i) ) );
+        (*i)->BuildTree(Tree,DialogId,true);
     }
 
     for ( FrameListI i = Frames.begin(); i!=Frames.end(); ++i )
     {
-        (*i)->GetFrame().BuildTree(
-            Tree,
-            Tree->AppendItem(
-                FrameId,
-                (*i)->GetClassName(),
-                -1, -1,
-                new wxsResourceTreeData(*i) ) );
+        (*i)->BuildTree(Tree,FrameId,true);
     }
 
     for ( PanelListI i = Panels.begin(); i!=Panels.end(); ++i )
     {
-        (*i)->GetPanel().BuildTree(
-            Tree,
-            Tree->AppendItem(
-                PanelId,
-                (*i)->GetClassName(),
-                -1, -1,
-                new wxsResourceTreeData(*i) ) );
+        (*i)->BuildTree(Tree,PanelId,true);
     }
 
     Tree->Refresh();
@@ -221,6 +203,8 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
             wxString ( Elem->Attribute(XML_HFILE_STR), wxConvUTF8 ),
             Xrc );
     }
+    
+    SetModified(false);
 
     return true;
 }
@@ -265,39 +249,9 @@ void wxsProject::AddWindowResource(
         return;
     }
 
-    /* Opening wxs data */
+    /* Creating resource */
 
     wxString RealFileName = GetInternalFileName(FileName);
-
-    TiXmlDocument Doc(RealFileName.mb_str());
-    TiXmlElement* Resource;
-
-    if ( !  Doc.LoadFile() ||
-         ! (Resource = Doc.FirstChildElement("resource")) )
-    {
-        Manager::Get()->GetMessageManager()->Log(_("Couldn't load resource data"));
-        return;
-    }
-
-    /* Finding dialog object */
-
-    TiXmlElement* XmlWindow = Resource->FirstChildElement("object");
-    while ( XmlWindow )
-    {
-    	wxString TypeName = _T("wx") + Type;
-        if ( !strcmp(XmlWindow->Attribute("class"),TypeName.mb_str()) &&
-             !strcmp(XmlWindow->Attribute("name"),ClassName.mb_str()) )
-        {
-            break;
-        }
-
-        XmlWindow = XmlWindow->NextSiblingElement("object");
-    }
-
-    if ( !XmlWindow ) return;
-
-    /* Creating dialog */
-
     wxsWindowRes* Res = NULL;
     int EditMode = !XrcName ? wxsResSource : wxsResSource | wxsResFile;
 
@@ -319,11 +273,8 @@ void wxsProject::AddWindowResource(
         Manager::Get()->GetMessageManager()->Log(_("Couldn't create new resource"));
         return;
     }
-
-    if ( ! (Res->GetRootWidget()->XmlLoad(XmlWindow))  )
-    {
-        Manager::Get()->GetMessageManager()->Log(_("Couldn't load xrc data, some resources may be damaged"));
-    }
+    
+    Res->Load();
 
     // Validating and correcting resource
 
@@ -346,6 +297,8 @@ void wxsProject::AddWindowResource(
     {
         Frames.push_back((wxsFrameRes*)Res);
     }
+    
+    SetModified(true);
 }
 
 bool wxsProject::CheckProjFileExists(const wxString& FileName)
@@ -414,6 +367,7 @@ void wxsProject::SaveProject()
 {
 
     if ( Integration != Integrated ) return;
+    if ( !GetModified() ) return;
 
     WorkingPath.SetName(wxSmithMainConfigFile);
     WorkingPath.SetExt(_T(""));
@@ -426,21 +380,8 @@ void wxsProject::SaveProject()
         Doc->SaveFile(WorkingPath.GetFullPath().mb_str());
         delete Doc;
     }
-
-    for ( DialogListI i = Dialogs.begin(); i!=Dialogs.end(); ++i )
-    {
-        (*i)->Save();
-    }
-
-    for ( FrameListI i = Frames.begin(); i!=Frames.end(); ++i )
-    {
-        (*i)->Save();
-    }
-
-    for ( PanelListI i = Panels.begin(); i!=Panels.end(); ++i )
-    {
-        (*i)->Save();
-    }
+    
+    SetModified(false);
 }
 
 void wxsProject::DeleteDialog(wxsDialogRes* Resource)
@@ -503,6 +444,7 @@ bool wxsProject::AddSmithConfig()
 
     Integration = Integrated;
 
+    SetModified(true);
     SaveProject();
 
     BuildTree(wxSmith::Get()->GetResourceTree(),TreeItem);
@@ -516,6 +458,7 @@ void wxsProject::AddDialog(wxsDialogRes* Dialog)
     Dialogs.push_back(Dialog);
     wxTreeCtrl* Tree = wxSmith::Get()->GetResourceTree();
     Dialog->GetDialog().BuildTree(Tree, Tree->AppendItem( DialogId, Dialog->GetClassName(), -1, -1, new wxsResourceTreeData(Dialog) ) );
+    SetModified(true);
 }
 
 void wxsProject::AddFrame(wxsFrameRes* Frame)
@@ -524,6 +467,7 @@ void wxsProject::AddFrame(wxsFrameRes* Frame)
     Frames.push_back(Frame);
     wxTreeCtrl* Tree = wxSmith::Get()->GetResourceTree();
     Frame->GetFrame().BuildTree(Tree, Tree->AppendItem( FrameId, Frame->GetClassName(), -1, -1, new wxsResourceTreeData(Frame) ) );
+    SetModified(true);
 }
 
 void wxsProject::AddPanel(wxsPanelRes* Panel)
@@ -532,6 +476,7 @@ void wxsProject::AddPanel(wxsPanelRes* Panel)
     Panels.push_back(Panel);
     wxTreeCtrl* Tree = wxSmith::Get()->GetResourceTree();
     Panel->GetPanel().BuildTree(Tree, Tree->AppendItem( PanelId, Panel->GetClassName(), -1, -1, new wxsResourceTreeData(Panel) ) );
+    SetModified(true);
 }
 
 wxsResource* wxsProject::FindResource(const wxString& Name)

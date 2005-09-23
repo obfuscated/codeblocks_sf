@@ -59,6 +59,12 @@ class wxsWindowRes : public wxsResource
 		/** Getting name of xrc file */
 		inline const wxString& GetXrcFile() { return XrcFile; }
 		
+		/** Clearing this resource */
+		void Clear();
+		
+		/** Loading dialog from xml file */
+		bool Load();
+		
 		/** Saving current dialog to xml file */
 		void Save();
 		
@@ -95,18 +101,41 @@ class wxsWindowRes : public wxsResource
         /** Generating Xml document compatible with XRC structure (without additional
          *  parameters */
         TiXmlDocument* GenerateXrc();
+
+		/** Returns true if resource is modified, false otherwise */
+		virtual bool GetModified() { return Modified; }
+		
+		/** Set the resources's modification state to \c modified.
+		 *
+		 *  Modification state can be set to modified only when there's 
+		 *  open editor for this resource. In other case, resource is 
+		 *  automatically saved, and state remains not modified */
+		virtual void SetModified(bool modified = true);
+		
+		/** Function refreshing tree node associated with this resource */
+		void RefreshResourceTree();
+		
+		/** Building resource tree */
+		void BuildTree(wxTreeCtrl* Tree,wxTreeItemId WhereToAdd,bool NoWidgets = false);
         
     protected:
     
         /** Creating editor object */
         virtual wxsEditor* CreateEditor();
         
+        /** Notifying that editor has just closed
+         *
+         * In this case, resource is reloaded from wxs file (all changes
+         * should be now saved when closing editor)
+         */
+        virtual void EditorClosed();
+        
         /** Function initializing this class - it must be called in constructor
          *  of derived class since virtual functinos can be used from top
          *  constrructor only */
         void Initialize();
         
-        /** Function showing resource */
+        /** Function showing preview for this resource */
         virtual void ShowResource(wxXmlResource& Res) = 0;
         
         /** Getting string added as constructor code for base widget */
@@ -166,6 +195,9 @@ class wxsWindowRes : public wxsResource
         wxString      HFile;
         wxString      XrcFile;
         wxsWidget*    RootWidget;
+        bool          Modified;
+        wxTreeItemId  TreeId;
+        bool          AvoidCreation;
 };
 
 

@@ -56,7 +56,10 @@ class wxsDragWindow : public wxControl
 
         /** Event handler for EVT_SELECT_WIDGET event */
         void OnSelectWidget(wxsEvent& event);
-
+        
+        /** Event handler for EVT_UNSELECT_WIDGET event */
+        void OnUnselectWidget(wxsEvent& event);
+        
         /** Timer fuunction refreshing additional graphics */
         void TimerRefresh(wxTimerEvent& event);
 
