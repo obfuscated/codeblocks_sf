@@ -128,13 +128,14 @@ class DebuggerGDB : public cbDebuggerPlugin
 		bool m_BreakOnEntry;
 		int m_HaltAtLine;
 		bool m_HasDebugLog;
+		bool m_StoppedOnSignal;
 		// current frame info
 		StackFrame m_CurrentFrame;
-		
+
 		// extra dialogs
 		DisassemblyDlg* m_pDisassembly;
 		BacktraceDlg* m_pBacktrace;
-		
+
 		DECLARE_EVENT_TABLE()
 };
 

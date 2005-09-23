@@ -144,6 +144,7 @@ DebuggerGDB::DebuggerGDB()
 	m_BreakOnEntry(false),
 	m_HaltAtLine(0),
 	m_HasDebugLog(false),
+	m_StoppedOnSignal(false),
 	m_pDisassembly(0),
 	m_pBacktrace(0)
 {
@@ -980,7 +981,15 @@ void DebuggerGDB::ParseOutput(const wxString& output)
 			bool already = m_ProgramIsStopped;
 			m_ProgramIsStopped = true;
 			if (!already)
+			{
 				DoWatches();
+				// if stopped with a signal, force a backtrace
+				if (m_StoppedOnSignal)
+				{
+                    CmdBacktrace();
+                    m_StoppedOnSignal = false; // reset for next time
+				}
+			}
 		}
 
 		// Is the program exited?
@@ -1012,6 +1021,7 @@ void DebuggerGDB::ParseOutput(const wxString& output)
 			BringAppToFront();
 			wxString sig = GetNextOutputLineClean();
 			Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Program received signal (%s)"), sig.c_str());
+			m_StoppedOnSignal = true;
 		}
 		else if (buffer.Matches(_T("signal-string")))
 		{
