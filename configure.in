@@ -136,6 +136,8 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/Makefile
 	src/plugins/contrib/codestat/Makefile
 	src/plugins/contrib/codestat/resources/Makefile
+	src/plugins/contrib/profiler/Makefile
+	src/plugins/contrib/profiler/resources/Makefile
 	src/tools/Makefile
 	src/tools/ConsoleRunner/Makefile
 	src/setup/Makefile

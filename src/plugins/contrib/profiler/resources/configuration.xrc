@@ -1,0 +1,557 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxDialog" name="dlgCBProfilerConfig">
+    <title>C::B Profiler plugin configuration</title>
+    <centered>1</centered>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <flag>wxALL|wxEXPAND</flag>
+        <border>8</border>
+        <option>1</option>
+        <object class="wxNotebook" name="nbTabs">
+          <object class="notebookpage">
+            <label>Output</label>
+            <object class="wxPanel" name="tabOutput">
+              <style>wxTAB_TRAVERSAL</style>
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>8</border>
+                  <object class="wxStaticBoxSizer" name="wxID_ANY">
+                    <orient>wxVERTICAL</orient>
+                    <label>Output Options</label>
+                    <object class="sizeritem">
+                      <flag>wxALIGN_LEFT|wxALL|wxADJUST_MINSIZE</flag>
+                      <border>8</border>
+                      <object class="wxStaticText" name="stxtWarning">
+                                                
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <fg>#BB0000</fg>
+                                                
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <label>Specifying any of these options overrides the default,
+which prints a flat profile and call graph analysis for all functions</label>
+                                            </object>
+                                        </object>
+                    <object class="sizeritem">
+                      <flag>wxEXPAND|wxALIGN_LEFT</flag>
+                      <border>8</border>
+                      <object class="wxBoxSizer">
+                        <orient>wxHORIZONTAL</orient>
+                        <object class="sizeritem">
+                          <flag>wxALIGN_TOP|wxTOP</flag>
+                          <border>8</border>
+                          <object class="wxCheckBox" name="chkAnnSource">
+                                                        
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            <label>Annotated Source</label>
+                                                        
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            <checked>0</checked>
+                                                    
+                            
+                            
+                            
+                            
+                            <tooltip>This option causes gprof to print annotated source code</tooltip>
+                          </object>
+                                                </object>
+                        <object class="sizeritem">
+                          <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                          <border>0</border>
+                          <object class="wxTextCtrl" name="txtAnnSource">
+                                                    
+                            
+                            
+                            
+                            
+                            <tooltip>If specified, print output only for matching symbols</tooltip>
+                          </object>
+                                                </object>
+                      </object>
+                                        </object>
+                    <object class="sizeritem">
+                      <flag>wxALIGN_LEFT|wxTOP</flag>
+                      <border>8</border>
+                      <object class="wxCheckBox" name="chkBrief">
+                                                
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <label>Brief</label>
+                                                
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <checked>0</checked>
+                                            
+                        
+                        
+                        
+                        
+                        <tooltip>If selected, doesn't print the verbose blurbs that try to explain the meaning of all of the fields in the tables</tooltip>
+                      </object>
+                                        </object>
+                    <object class="sizeritem">
+                      <flag>wxALIGN_LEFT|wxTOP</flag>
+                      <border>8</border>
+                      <object class="wxCheckBox" name="chkFileInfo">
+                                                
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <label>File Info</label>
+                                                
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <checked>0</checked>
+                                            
+                        
+                        
+                        
+                        
+                        <tooltip>This option causes gprof to display summary information about the profile data file(s) and then exit</tooltip>
+                      </object>
+                                        </object>
+                  </object>
+                                </object>
+              </object>
+            </object>
+                    </object>
+          <object class="notebookpage">
+            <label>Analysis</label>
+            <object class="wxPanel" name="tabAnalysis">
+              <style>wxTAB_TRAVERSAL</style>
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>8</border>
+                  <object class="wxStaticBoxSizer" name="wxID_ANY">
+                    <orient>wxVERTICAL</orient>
+                    <label>Analysis Options</label>
+                    <object class="sizeritem">
+                      <flag>wxALIGN_LEFT|wxTOP</flag>
+                      <border>8</border>
+                      <object class="wxCheckBox" name="chkNoStatic">
+                                                
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <label>No static</label>
+                                                
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <checked>0</checked>
+                                            
+                        
+                        
+                        
+                        
+                        <tooltip>This option causes gprof to suppress the printing of statically declared (private) functions</tooltip>
+                      </object>
+                                        </object>
+                    <object class="sizeritem">
+                      <flag>wxEXPAND|wxALIGN_LEFT</flag>
+                      <border>0</border>
+                      <object class="wxBoxSizer">
+                        <orient>wxHORIZONTAL</orient>
+                        <object class="sizeritem">
+                          <flag>wxALIGN_TOP|wxTOP</flag>
+                          <border>8</border>
+                          <object class="wxCheckBox" name="chkMinCount">
+                                                        
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            <label>Minimum Count</label>
+                                                        
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            <checked>0</checked>
+                                                    
+                            
+                            
+                            
+                            
+                            <tooltip>This option affects execution count output only: Symbols that are executed less than num times are suppressed</tooltip>
+                          </object>
+                                                </object>
+                        <object class="sizeritem">
+                          <flag>wxALIGN_TOP|wxLEFT</flag>
+                          <border>8</border>
+                          <object class="wxSpinCtrl" name="spnMinCount">
+                                                        
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            <value>10</value>
+                                                        
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            <min>1</min>
+                                                        
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            <max>99</max>
+                                                    
+                            
+                            
+                            
+                            
+                            <tooltip>This option affects execution count output only: Symbols that are executed less than num times are suppressed</tooltip>
+                          </object>
+                                                </object>
+                      </object>
+                                        </object>
+                  </object>
+                                </object>
+              </object>
+            </object>
+                    </object>
+          <object class="notebookpage">
+            <label>Miscellaneous</label>
+            <object class="wxPanel" name="tabMisc">
+              <style>wxTAB_TRAVERSAL</style>
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>8</border>
+                  <object class="wxStaticBoxSizer" name="wxID_ANY">
+                    <orient>wxVERTICAL</orient>
+                    <label>Miscellaneous Options</label>
+                    <object class="sizeritem">
+                      <flag>wxALIGN_LEFT|wxTOP</flag>
+                      <border>8</border>
+                      <object class="wxCheckBox" name="chkSum">
+                                                
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <label>Sum</label>
+                                                
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <checked>0</checked>
+                                            
+                        
+                        
+                        
+                        
+                        <tooltip>Causes gprof to summarize the information in the profile data files it read in a profile data file 'gmon.sum'</tooltip>
+                      </object>
+                                        </object>
+                  </object>
+                                </object>
+              </object>
+            </object>
+                    </object>
+          <object class="notebookpage">
+            <label>Extra</label>
+            <object class="wxPanel" name="tabExtra">
+              <style>wxTAB_TRAVERSAL</style>
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>8</border>
+                  <object class="wxStaticBoxSizer" name="wxID_ANY">
+                    <orient>wxVERTICAL</orient>
+                    <label>Extra Options</label>
+                    <object class="sizeritem">
+                      <flag>wxALIGN_LEFT|wxALL|wxADJUST_MINSIZE</flag>
+                      <border>8</border>
+                      <object class="wxStaticText" name="stxtWarning">
+                                                
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <fg>#004080</fg>
+                                                
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <label>Here you can specify other options. Useful for advanced users
+that do not want to use the graphic option selection or when you
+need to specify an option multiple times, to use different symspecs</label>
+                                            </object>
+                                        </object>
+                    <object class="sizeritem">
+                      <flag>wxGROW|wxALL</flag>
+                      <border>8</border>
+                      <option>1</option>
+                      <object class="wxTextCtrl" name="txtExtra">
+                                                
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <style>wxTE_MULTILINE</style>
+                                            </object>
+                                        </object>
+                  </object>
+                                </object>
+              </object>
+            </object>
+                    </object>
+          <usenotebooksizer>1</usenotebooksizer>
+        </object>
+            </object>
+      <object class="sizeritem">
+        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <border>8</border>
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <border>0</border>
+            <object class="wxButton" name="wxID_OK">
+                            
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <label>&amp;OK</label>
+                            
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <default>1</default>
+                        </object>
+                    </object>
+          <object class="sizeritem">
+            <border>8</border>
+            <object class="wxButton" name="wxID_CANCEL">
+                            
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              <label>&amp;Cancel</label>
+                        </object>
+                    </object>
+        </object>
+            </object>
+    </object>
+  </object>
+</resource>

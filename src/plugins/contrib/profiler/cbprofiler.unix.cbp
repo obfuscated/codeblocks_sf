@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_project_file>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="1"/>
+	<Project>
+		<Option title="C::B Profiler"/>
+		<Option makefile="Makefile"/>
+		<Option makefile_is_custom="0"/>
+		<Option compiler="0"/>
+		<Build>
+			<Target title="default">
+				<Option output="cbprofiler.so"/>
+				<Option working_dir="."/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option type="3"/>
+				<Option compiler="0"/>
+			</Target>
+			<Environment>
+				<Variable name="CBDIR" value="../../../.."/>
+			</Environment>
+		</Build>
+		<Compiler>
+			<Add option="-Wall"/>
+			<Add option="`wx-config --cflags`"/>
+			<Add option="-DBUILDING_PLUGIN"/>
+			<Add directory="$(CBDIR)/sdk"/>
+			<Add directory="$(CBDIR)/sdk/wxscintilla/include"/>
+		</Compiler>
+		<Linker>
+			<Add option="`wx-config --libs`"/>
+			<Add library="codeblocks"/>
+			<Add directory="$(CBDIR)/devel"/>
+		</Linker>
+		<ExtraCommands>
+			<Add after="cd resources && zip ../cb_profiler.zip *.xrc"/>
+		</ExtraCommands>
+		<Unit filename="cbprofiler.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="cbprofiler.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="cbprofilerconfig.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="cbprofilerconfig.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="cbprofilerexec.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="cbprofilerexec.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
