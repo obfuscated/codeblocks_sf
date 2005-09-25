@@ -82,19 +82,19 @@ int CodeStatExecDlg::Execute(LanguageDef languages[NB_FILETYPES])
    wxGauge* Gauge_Code = XRCCTRL(*this, "Gauge_Code", wxGauge);
    Gauge_Code->SetValue((100*code_lines)/total_lines);
    wxStaticText* txt_Gauge_Code = XRCCTRL(*this, "txt_Gauge_Code", wxStaticText);
-   txt_Gauge_Code->SetLabel(wxString::Format("%3d%% Code only", (100*code_lines)/total_lines));
+   txt_Gauge_Code->SetLabel(wxString::Format(_("%3d%% Code only"), (100*code_lines)/total_lines));
    wxGauge* Gauge_Code_Comments = XRCCTRL(*this, "Gauge_Code_Comments", wxGauge);
    Gauge_Code_Comments->SetValue((100*codecomments_lines)/total_lines);
    wxStaticText* txt_Gauge_Code_Comments = XRCCTRL(*this, "txt_Gauge_Code_Comments", wxStaticText);
-   txt_Gauge_Code_Comments->SetLabel(wxString::Format("%3d%% Code + Comment", (100*codecomments_lines)/total_lines));
+   txt_Gauge_Code_Comments->SetLabel(wxString::Format(_("%3d%% Code + Comment"), (100*codecomments_lines)/total_lines));
    wxGauge* Gauge_Comments = XRCCTRL(*this, "Gauge_Comments", wxGauge);
    Gauge_Comments->SetValue((100*comment_lines)/total_lines);
    wxStaticText* txt_Gauge_Comments = XRCCTRL(*this, "txt_Gauge_Comments", wxStaticText);
-   txt_Gauge_Comments->SetLabel(wxString::Format("%3d%% Comments", (100*comment_lines)/total_lines));
+   txt_Gauge_Comments->SetLabel(wxString::Format(_("%3d%% Comments"), (100*comment_lines)/total_lines));
    wxGauge* Gauge_Empty = XRCCTRL(*this, "Gauge_Empty", wxGauge);
    Gauge_Empty->SetValue((100*empty_lines)/total_lines);
    wxStaticText* txt_Gauge_Empty = XRCCTRL(*this, "txt_Gauge_Empty", wxStaticText);
-   txt_Gauge_Empty->SetLabel(wxString::Format("%3d%% Empty", (100*empty_lines)/total_lines));
+   txt_Gauge_Empty->SetLabel(wxString::Format(_("%3d%% Empty"), (100*empty_lines)/total_lines));
    
    ShowModal();
    

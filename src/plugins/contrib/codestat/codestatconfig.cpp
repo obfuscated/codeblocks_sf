@@ -56,9 +56,9 @@ void CodeStatConfigDlg::PrintLanguageInfo(int id)
 	wxStaticText* txt_Name = XRCCTRL(*this, "txt_Name", wxStaticText);
 	txt_Name->SetLabel(languages[id].name);
 	wxStaticText* txt_FileTypes = XRCCTRL(*this, "txt_FileTypes", wxStaticText);
-	wxString ext_string = "";
+	wxString ext_string = _T("");
 	for (int i=0; i<languages[id].ext.GetCount(); i++)
-	   ext_string = ext_string + " " + languages[id].ext[i];
+	   ext_string = ext_string + _T(" ") + languages[id].ext[i];
 	txt_FileTypes->SetLabel(ext_string);
 	wxStaticText* txt_SingleComment = XRCCTRL(*this, "txt_SingleComment", wxStaticText);
 	txt_SingleComment->SetLabel(languages[id].single_line_comment);

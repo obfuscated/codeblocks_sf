@@ -33,7 +33,7 @@ CodeStat::CodeStat()
     //ctor
     wxFileSystem::AddHandler(new wxZipFSHandler);
     wxXmlResource::Get()->InitAllHandlers();
-    wxString resPath = ConfigManager::Get()->Read("data_path", wxEmptyString);
+    wxString resPath = ConfigManager::Get()->Read(_T("data_path"), wxEmptyString);
     wxXmlResource::Get()->Load(resPath + _T("/codestat.zip#zip:*.xrc"));
     
     m_PluginInfo.name = _T("CodeStatistics");
