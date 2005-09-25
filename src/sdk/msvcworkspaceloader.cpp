@@ -133,7 +133,7 @@ bool MSVCWorkspaceLoader::Open(const wxString& filename)
           }
 
           ++count;
-          wxFileName fname(prjFile);
+          wxFileName fname(UnixFilename(prjFile));
           fname.Normalize(wxPATH_NORM_ALL, wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), wxPATH_NATIVE);
           Manager::Get()->GetMessageManager()->DebugLog(_("Found project '%s' in '%s'"), prjTitle.c_str(), fname.GetFullPath().c_str());
           project = Manager::Get()->GetProjectManager()->LoadProject(fname.GetFullPath());
