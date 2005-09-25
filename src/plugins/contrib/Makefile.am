@@ -1,0 +1,2 @@
+SUBDIRS = codestat profiler
+
