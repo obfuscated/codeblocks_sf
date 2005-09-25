@@ -34,6 +34,10 @@ if BUILD_MANIFEST
 MAYBE_MANIFEST=xpmanifest
 endif
 
+if BUILD_CONTRIB
+MAYBE_CONSTRIB=contrib
+endif
+
 SUBDIRS=$(MAYBE_ASTYLE) \
 		$(MAYBE_CLASSWIZARD) \
 		$(MAYBE_CODECOMPLETION) \
@@ -42,4 +46,16 @@ SUBDIRS=$(MAYBE_ASTYLE) \
 		$(MAYBE_MIMEHANDLER) \
 		$(MAYBE_PLUGINWIZARD) \
 		$(MAYBE_TODO) \
-		$(MAYBE_MANIFEST)
+		$(MAYBE_MANIFEST) \
+		$(MAYBE_CONSTRIB)
+
+DIST_SUBDIRS = astyle \
+		classwizard \
+		codecompletion \
+		compilergcc \
+		debuggergdb \
+		defaultmimehandler \
+		pluginwizard \
+		todo \
+		xpmanifest \
+		contrib

@@ -1,0 +1,9 @@
+Just open "codestat.cbp". Then youll find a project inside. I havent had the chance to test this
+under Linux, so I don't know if the provided project is valid under
+it. In case they are not, then it might suffice with creating a "dummy" plugin project with the plugin
+wizard and then adding manually all the *.cpp and *.h.
+
+In any case, you should check the project build properties, and change the include/lib paths according
+to your WxWidgets and C::B SDK/Full Sources paths.
+
+The sources have been compiled with wxWidgets 2.4. Some little changes may be needed to compile it with wxWidgets 2.6.

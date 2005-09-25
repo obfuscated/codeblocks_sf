@@ -1,0 +1,175 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxDialog" name="dlgCodeStatConfig">
+    <title>Code Statistics plugin configuration</title>
+    <centered>1</centered>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxComboBox" name="combo_Names">
+          
+          
+          <content/>
+        </object>
+        
+        
+        <flag>wxALL|wxALIGN_CENTRE</flag>
+        
+        
+        <border>5</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticBoxSizer">
+          <label></label>
+          <orient>wxVERTICAL</orient>
+          <object class="sizeritem">
+            <object class="wxGridSizer">
+              <cols>2</cols>
+              <rows>4</rows>
+              <object class="sizeritem">
+                <object class="wxStaticText">
+                  
+                  
+                  <label>Name:</label>
+                </object>
+                
+                
+                <flag>wxALIGN_CENTRE_VERTICAL</flag>
+              </object>
+              <object class="sizeritem">
+                <object class="wxTextCtrl" name="txt_Name">
+                  
+                  <style>wxTE_READONLY</style>
+                </object>
+                
+                
+                <flag>wxALL</flag>
+                
+                
+                <border>3</border>
+              </object>
+              <object class="sizeritem">
+                <object class="wxStaticText">
+                  
+                  
+                  <label>File types:</label>
+                </object>
+                
+                
+                <flag>wxALIGN_CENTRE_VERTICAL</flag>
+              </object>
+              <object class="sizeritem">
+                <object class="wxTextCtrl" name="txt_FileTypes">
+                  
+                  <style>wxTE_READONLY</style>
+                </object>
+                
+                
+                <flag>wxALL</flag>
+                
+                
+                <border>3</border>
+              </object>
+              <object class="sizeritem">
+                <object class="wxStaticText">
+                  
+                  
+                  <label>Single comment:</label>
+                </object>
+                
+                
+                <flag>wxALIGN_CENTRE_VERTICAL</flag>
+              </object>
+              <object class="sizeritem">
+                <object class="wxTextCtrl" name="txt_SingleComment">
+                  
+                  <style>wxTE_READONLY</style>
+                </object>
+                
+                
+                <flag>wxALL</flag>
+                
+                
+                <border>3</border>
+              </object>
+              <object class="sizeritem">
+                <object class="wxStaticText">
+                  
+                  
+                  <label>Multi-line comment begin:</label>
+                </object>
+                
+                
+                <flag>wxALIGN_CENTRE_VERTICAL</flag>
+              </object>
+              <object class="sizeritem">
+                <object class="wxTextCtrl" name="txt_MultiLineCommentBegin">
+                  
+                  <style>wxTE_READONLY</style>
+                </object>
+                
+                
+                <flag>wxALL</flag>
+                
+                
+                <border>3</border>
+              </object>
+              <object class="sizeritem">
+                <object class="wxStaticText">
+                  
+                  
+                  <label>Multi-line comment end:</label>
+                </object>
+                
+                
+                <flag>wxALIGN_CENTRE_VERTICAL</flag>
+              </object>
+              <object class="sizeritem">
+                <object class="wxTextCtrl" name="txt_MultiLineCommentEnd">
+                  
+                  <style>wxTE_READONLY</style>
+                </object>
+                
+                
+                <flag>wxALL</flag>
+                
+                
+                <border>3</border>
+              </object>
+            </object>
+          </object>
+        </object>
+        
+        
+        <flag>wxLEFT|wxRIGHT</flag>
+        
+        
+        <border>5</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_OK">
+              
+              
+              <label>Ok</label>
+              
+              
+              <default>1</default>
+            </object>
+            
+            
+            <flag>wxALL|wxALIGN_CENTRE</flag>
+            
+            
+            <border>5</border>
+          </object>
+        </object>
+        
+        
+        <flag>wxALIGN_CENTRE_HORIZONTAL</flag>
+      </object>
+    </object>
+  </object>
+</resource>
