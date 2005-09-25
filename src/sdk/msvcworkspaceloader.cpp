@@ -84,6 +84,9 @@ bool MSVCWorkspaceLoader::Open(const wxString& filename)
 
     int count = 0;
     cbProject* project = 0;
+    wxFileName wfname = filename;
+    wfname.Normalize();
+    Manager::Get()->GetMessageManager()->DebugLog(_("Workspace dir: %s"), wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR).c_str());
     while (!file.Eof())
     {
         wxString line = input.ReadLine();
@@ -130,11 +133,8 @@ bool MSVCWorkspaceLoader::Open(const wxString& filename)
           }
 
           ++count;
-          wxFileName wfname = filename;
-          wxFileName fname = prjFile;
-          wfname.Normalize();
-          fname.MakeAbsolute(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
-          fname.Normalize();
+          wxFileName fname(prjFile);
+          fname.Normalize(wxPATH_NORM_ALL, wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), wxPATH_NATIVE);
           Manager::Get()->GetMessageManager()->DebugLog(_("Found project '%s' in '%s'"), prjTitle.c_str(), fname.GetFullPath().c_str());
           project = Manager::Get()->GetProjectManager()->LoadProject(fname.GetFullPath());
           if (project) registerProject(project->GetTitle(), project);

@@ -91,6 +91,9 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename)
     bool slnConfSection = false; // SolutionConfiguration section?
     bool projConfSection = false; // ProjectConfiguration section?
     bool global = false;  // global section or project section?
+    wxFileName wfname = filename;
+    wfname.Normalize();
+    Manager::Get()->GetMessageManager()->DebugLog(_("Workspace dir: %s"), wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR).c_str());
     while (!file.Eof())
     {
         wxString line = input.ReadLine();
@@ -136,11 +139,8 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename)
             uuid.Replace(_T("\""), _T("")); // remove quotes
 
             ++count;
-            wxFileName wfname = filename;
-            wxFileName fname = prjFile;
-            wfname.Normalize();
-            fname.MakeAbsolute(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
-            fname.Normalize();
+            wxFileName fname(prjFile);
+            fname.Normalize(wxPATH_NORM_ALL, wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), wxPATH_NATIVE);
             Manager::Get()->GetMessageManager()->DebugLog(_("Found project '%s' in '%s'"), prjTitle.c_str(), fname.GetFullPath().c_str());
             project = Manager::Get()->GetProjectManager()->LoadProject(fname.GetFullPath());
             if (project) registerProject(uuid, project);
