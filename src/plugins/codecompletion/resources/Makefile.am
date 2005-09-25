@@ -5,11 +5,11 @@ code_completion.zip:
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/code_completion.zip *.xrc > /dev/null
 
 install-exec-local:
-	mkdir -p $(pkgdatadir)/images/codecompletion
-	$(INSTALL_PROGRAM) $(srcdir)/images/*.png $(pkgdatadir)/images/codecompletion/
+	mkdir -p $(DESTDIR)$(pkgdatadir)/images/codecompletion
+	$(INSTALL_PROGRAM) $(srcdir)/images/*.png $(DESTDIR)$(pkgdatadir)/images/codecompletion/
 
 uninstall-local:
-	rm -f $(pkgdatadir)/images/codecompletion/*.png
+	rm -f $(DESTDIR)$(pkgdatadir)/images/codecompletion/*.png
 
 EXTRA_DIST = insert_class_method.xrc \
 	images/class_folder.png \
