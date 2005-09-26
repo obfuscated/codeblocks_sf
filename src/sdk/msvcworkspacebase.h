@@ -49,11 +49,10 @@ private:
     // UUIDs in MSVC7, like "{35AFBABB-DF05-43DE-91A7-BB828A874015}" (with brackets, no quotes)
     // Project names in MSVC6
     WX_DECLARE_STRING_HASH_MAP(ProjectRecord, HashProjects);
-
     // list of projects records
     HashProjects _projects;
     // build configurations for the workspace (i.e. solution)
-    wxArrayString _workspaceConfigurations;
+    wxSortedArrayString _workspaceConfigurations;
 };
 
 #endif // MSVCWORKSPACEBASE_H

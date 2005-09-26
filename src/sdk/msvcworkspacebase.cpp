@@ -55,6 +55,22 @@ void MSVCWorkspaceBase::updateProjects() {
     int k;
 
     Manager::Get()->GetMessageManager()->DebugLog(_T("Update projects"));
+
+    // no per-workspace config for msvc6, so build a fake one ;)
+    if (_workspaceConfigurations.IsEmpty()) {
+        for (projIt = _projects.begin(); projIt != _projects.end(); ++projIt) {
+            proj = projIt->second;
+            for (k=0; k<proj._project->GetBuildTargetsCount(); ++k) {
+                // should be the configurations, not the build target title
+                wxString s = proj._project->GetBuildTarget(k)->GetTitle();
+                if (_workspaceConfigurations.Index(s) == wxNOT_FOUND) {
+                    _workspaceConfigurations.Add(s);
+                    Manager::Get()->GetMessageManager()->DebugLog(_T("workspace config: '%s'"), s.c_str());
+                }
+            }
+        }
+    }
+
     for (projIt = _projects.begin(); projIt != _projects.end(); ++projIt) {
         proj = projIt->second;
         Manager::Get()->GetMessageManager()->DebugLog(_T("Project %s, %d dependencies"), proj._project->GetTitle().c_str(), proj._dependencyList.GetCount());
@@ -63,43 +79,57 @@ void MSVCWorkspaceBase::updateProjects() {
             if ( depIt != _projects.end()) { // dependency found
                 dep = depIt->second;
 
-                // no per-workspace config for msvc6, so build a fake one ;)
-                if (_workspaceConfigurations.IsEmpty()) {
-                    Manager::Get()->GetMessageManager()->DebugLog(_T("Workspace configurations will be generated from those of project %s"), proj._project->GetTitle().c_str());
-                    for (k=0; k<proj._project->GetBuildTargetsCount(); ++k) {
-                        // should be the configurations, not the build target title
-                        wxString s = proj._project->GetBuildTarget(k)->GetTitle();
-                        _workspaceConfigurations.Add(s);
-                    }
-                }
-
                 // match target configurations
                 for (j=0; j<_workspaceConfigurations.GetCount(); ++j) {
                     ConfigurationMatchings::iterator configIt;
-                    wxString projConfig;
-                    wxString depConfig;
+                    wxString wconfig;
+                    wxString pconfig;
+                    targetProj = 0;
+                    targetDep = 0;
 
-                    //Manager::Get()->GetMessageManager()->DebugLog(_T("config: '%s'"), _workspaceConfigurations[j].c_str());
-
-                    if (proj._configurations.empty()) projConfig = _workspaceConfigurations[j];
-                    else {
+                    if (proj._configurations.empty()) { // msvc6
+                        wconfig = _workspaceConfigurations[j];
+                        targetProj = proj._project->GetBuildTarget(wconfig);
+                        if (targetProj == 0) {
+                            // look for a project config which is a substring of the workspace config
+                            for (int k=0; k<proj._project->GetBuildTargetsCount(); ++k) {
+                                pconfig = proj._project->GetBuildTarget(k)->GetTitle();
+                                //Manager::Get()->GetMessageManager()->DebugLog(_T("Test: %s <-> %s"), wconfig.c_str(), pconfig.c_str());
+                                if (wconfig.StartsWith(pconfig) || pconfig.StartsWith(wconfig))
+                                    targetProj = proj._project->GetBuildTarget(k);
+                            }
+                        }
+                    }
+                    else { // msvc7
                         configIt = proj._configurations.find(_workspaceConfigurations[j]);
-                        if (configIt != proj._configurations.end()) projConfig = configIt->second;
-                        else Manager::Get()->GetMessageManager()->DebugLog(_T("ERROR: could not find the matching for %s project"), proj._project->GetTitle().c_str());
+                        if (configIt != proj._configurations.end()) {
+                            targetProj = proj._project->GetBuildTarget(configIt->second);
+                        }
                     }
-                    targetProj = proj._project->GetBuildTarget(projConfig);
 
-                    if (dep._configurations.empty()) depConfig = _workspaceConfigurations[j];
-                    else {
-                        configIt = dep._configurations.find(_workspaceConfigurations[j]);
-                        if (configIt != dep._configurations.end()) depConfig = configIt->second;
-                        else Manager::Get()->GetMessageManager()->DebugLog(_T("ERROR: could not find the matching for %s project"), dep._project->GetTitle().c_str());
+                    if (dep._configurations.empty()) { // msvc6
+                        wconfig = _workspaceConfigurations[j];
+                        targetDep = dep._project->GetBuildTarget(wconfig);
+                        if (targetDep == 0) {
+                            // look for a project config which is a substring of the workspace config
+                            for (int k=0; k<dep._project->GetBuildTargetsCount(); ++k) {
+                                pconfig = dep._project->GetBuildTarget(k)->GetTitle();
+                                //Manager::Get()->GetMessageManager()->DebugLog(_T("Test: %s <-> %s"), wconfig.c_str(), pconfig.c_str());
+                                if (wconfig.StartsWith(pconfig) || pconfig.StartsWith(wconfig))
+                                    targetDep = dep._project->GetBuildTarget(k);
+                            }
+                        }
                     }
-                    targetDep = dep._project->GetBuildTarget(depConfig);
+                    else { // msvc7
+                        configIt = dep._configurations.find(_workspaceConfigurations[j]);
+                        if (configIt != dep._configurations.end()) {
+                            targetDep = dep._project->GetBuildTarget(configIt->second);
+                        }
+                    }
 
                     if ((targetDep==0) || (targetProj==0)) {
                         Manager::Get()->GetMessageManager()->DebugLog(_T("ERROR: could not find targets"));
-                        return;
+                        continue;
                     }
 
                     Manager::Get()->GetMessageManager()->DebugLog(_T("Match '%s' to '%s'"), targetProj->GetFullTitle().c_str(), targetDep->GetFullTitle().c_str());
@@ -131,6 +161,4 @@ void MSVCWorkspaceBase::updateProjects() {
             }
         }
     }
-
-    //target->AddCommandsBeforeBuild(const wxString& command);
 }
