@@ -53,8 +53,8 @@
         <label>Back-trace</label>
         <help>Displays a back-trace of the stack</help>
       </object>
-      <object class="wxMenuItem" name="idDebuggerMenuDisassemble">
-        <label>Disassembly</label>
+      <object class="wxMenuItem" name="idDebuggerMenuCPU">
+        <label>CPU</label>
         <help>Disassembles the current stack frame</help>
       </object>
     </object>

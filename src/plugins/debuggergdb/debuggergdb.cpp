@@ -27,6 +27,7 @@
 #include <wx/regex.h>
 #include <wx/dialog.h>
 #include <wx/msgdlg.h>
+#include <wx/tokenzr.h>
 
 #include <manager.h>
 #include <configmanager.h>
@@ -61,6 +62,8 @@
 #define CMD_BACKTRACE   5
 #define CMD_DISASSEMBLE 6
 
+#define GDB_PROMPT _T("(gdb)")
+
 static const wxString g_EscapeChars = wxChar(26);
 
 int idMenuDebug = XRCID("idDebuggerMenuDebug");
@@ -73,7 +76,7 @@ int idMenuContinue = XRCID("idDebuggerMenuContinue");
 int idMenuToggleBreakpoint = XRCID("idDebuggerMenuToggleBreakpoint");
 int idMenuSendCommandToGDB = XRCID("idDebuggerMenuSendCommandToGDB");
 int idMenuAddSymbolFile = XRCID("idDebuggerMenuAddSymbolFile");
-int idMenuDisassemble = XRCID("idDebuggerMenuDisassemble");
+int idMenuCPU = XRCID("idDebuggerMenuCPU");
 int idMenuBacktrace = XRCID("idDebuggerMenuBacktrace");
 int idMenuEditWatches = XRCID("idDebuggerMenuEditWatches");
 
@@ -107,7 +110,7 @@ BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
 	EVT_MENU(idMenuSendCommandToGDB, DebuggerGDB::OnSendCommandToGDB)
 	EVT_MENU(idMenuAddSymbolFile, DebuggerGDB::OnAddSymbolFile)
 	EVT_MENU(idMenuBacktrace, DebuggerGDB::OnBacktrace)
-	EVT_MENU(idMenuDisassemble, DebuggerGDB::OnDisassemble)
+	EVT_MENU(idMenuCPU, DebuggerGDB::OnDisassemble)
 	EVT_MENU(idMenuEditWatches, DebuggerGDB::OnEditWatches)
     EVT_MENU(idMenuDebuggerAddWatch, DebuggerGDB::OnAddWatch)
 
@@ -170,7 +173,7 @@ void DebuggerGDB::OnAttach()
 {
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
     wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
-    m_pLog = new SimpleTextLog(msgMan, m_PluginInfo.title);
+    m_pLog = new SimpleTextLog(msgMan, _("Debugger"));
     m_pLog->GetTextControl()->SetFont(font);
     m_PageIndex = msgMan->AddLog(m_pLog);
     // set log image
@@ -608,11 +611,11 @@ int DebuggerGDB::Debug()
 
     // send built-in init commands
 	SendCommand(_T("set confirm off"));
-	if (target->GetTargetType() == ttConsoleOnly)
-        SendCommand(_T("set new-console on"));
 #ifndef __WXMSW__
     SendCommand(_T("set disassembly-flavor att"));
 #else
+	if (target->GetTargetType() == ttConsoleOnly)
+        SendCommand(_T("set new-console on"));
     SendCommand(_T("set disassembly-flavor intel"));
 #endif
 
@@ -813,12 +816,48 @@ void DebuggerGDB::RunCommand(int cmd)
             break;
 
         case CMD_DISASSEMBLE:
+        {
 //            Manager::Get()->GetMessageManager()->Log(m_PageIndex, "Disassembling...");
+            if (m_pDisassembly)
+                m_pDisassembly->ClearRegisters();
+            for (int i = 0; i < 16; ++i)
+            {
+                long int val = ReadRegisterValue(i);
+                if (m_pDisassembly)
+                    m_pDisassembly->AddRegisterValue(i, val);
+//                Manager::Get()->GetMessageManager()->Log(m_PageIndex, "%s: '%s' (%d)", DisassemblyDlg::Registers[i].c_str(), token.c_str(), val);
+            }
             SendCommand(_T("disassemble"));
             break;
+        }
 
         default: break;
     }
+}
+
+long int DebuggerGDB::ReadRegisterValue(int idx)
+{
+    SendCommand(_T("info registers ") + DisassemblyDlg::Registers[idx]);
+    wxString line;
+    do
+    {
+        line = GetNextOutputLineClean();
+    } while (!line.IsEmpty() && line.StartsWith(GDB_PROMPT));
+    if (line.IsEmpty())
+        return 0;
+    // break up the string in its parts
+    wxStringTokenizer tkz(line, wxT("\t"));
+    wxString token;
+    while (tkz.HasMoreTokens())
+    {
+        token = tkz.GetNextToken();
+    }
+    long int val;
+    if (token.StartsWith(_T("0x")))
+        token.ToLong(&val, 16);
+    else
+        token.ToLong(&val, 10);
+    return val;
 }
 
 void DebuggerGDB::CmdDisassemble()
@@ -1060,44 +1099,6 @@ void DebuggerGDB::ParseOutput(const wxString& output)
 //                                                    m_CurrentFrame.valid && !m_CurrentFrame.line.IsEmpty() ? m_CurrentFrame.line.c_str() : "??");
 		}
 
-		// variable info
-		/*else if (buffer.StartsWith("field-begin "))
-			m_Variable << "    " << GetNextOutputLineClean();
-		else if (buffer.Matches("field-name-end") ||
-				buffer.Matches("field-value"))
-			m_Variable << GetNextOutputLineClean();
-		else if (buffer.Matches("value-begin -"))
-		{
-			wxString tmp = GetNextOutputLineClean();
-			m_Variable << tmp;
-			if (tmp.Contains(_T('{')))
-				m_Variable << _T('\n');
-		}
-		else if (buffer.Matches("field-end"))
-		{
-			m_Variable << _T('\n');
-			wxString tmp = GetNextOutputLineClean();
-			if (!tmp.StartsWith(","))
-				m_Variable << tmp;
-			m_pLog->AddLog(m_Variable);
-			m_Variable.Clear();
-		}
-		else if (!m_Variable.IsEmpty() && buffer.Matches("value-end"))
-		{
-			cbEditor* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
-			if (ed)
-			{
-				if (m_EvalWin)
-					m_EvalWin->Destroy();
-				wxString tip;
-				tip.Printf(_("Value of '%s':\n%s"), m_LastEval.c_str(), m_Variable.c_str());
-				m_EvalWin = new wxTipWindow(ed->GetControl(), tip, 640, &m_EvalWin, &m_EvalRect);
-			}
-			else
-				Manager::Get()->GetMessageManager()->Log(m_PageIndex, m_Variable);
-			m_Variable.Clear();
-		}*/
-
 		// source d:/wx2.4/samples/exec/exec.cpp:753:22811:beg:0x403e39
 		else if (buffer.StartsWith(_T("source ")))
 		{
@@ -1106,19 +1107,34 @@ void DebuggerGDB::ParseOutput(const wxString& output)
 
 			if (!reSource.IsValid())
 			#ifdef __WXMSW__
-				reSource.Compile(_T("([A-Za-z]:)([ A-Za-z0-9_/\\.~-]*):([0-9]*)"));
+				reSource.Compile(_T("([A-Za-z]:)([ A-Za-z0-9_/\\.~-]*):([0-9]*):[0-9]*:beg:(0x[0-9A-Za-z]*)"));
 			#else
-				reSource.Compile(_T("([ A-Za-z0-9_/\\.~-]*):([0-9]*)"));
+				reSource.Compile(_T("([ A-Za-z0-9_/\\.~-]*):([0-9]*):[0-9]*:beg:(0x[0-9A-Za-z]*)"));
 			#endif
 			if ( reSource.Matches(buffer) )
 			{
 			#ifdef __WXMSW__
 				wxString file = reSource.GetMatch(buffer, 1) + reSource.GetMatch(buffer, 2);
 				wxString lineStr = reSource.GetMatch(buffer, 3);
+				wxString addr = reSource.GetMatch(buffer, 4);
             #else
 				wxString file = reSource.GetMatch(buffer, 1);
 				wxString lineStr = reSource.GetMatch(buffer, 2);
+				wxString addr = reSource.GetMatch(buffer, 3);
             #endif
+                if (m_pDisassembly)
+                {
+                    long int val;
+                    addr.ToLong(&val, 16);
+                    m_pDisassembly->SetActiveAddress(val);
+                    // update CPU registers
+                    // NOTE: this hangs; another solution must be found...
+//                    for (int i = 0; i < 16; ++i)
+//                    {
+//                        val = ReadRegisterValue(i);
+//                        m_pDisassembly->SetRegisterValue(i, val);
+//                    }
+                }
 				long int line;
 				lineStr.ToLong(&line);
 //				Manager::Get()->GetMessageManager()->DebugLog("file %s, line %ld", file.c_str(), line);
@@ -1149,8 +1165,13 @@ void DebuggerGDB::ParseOutput(const wxString& output)
 //                    Manager::Get()->GetMessageManager()->Log(m_PageIndex, "Disassembly end");
                     break;
                 }
-                if (re.Matches(tmp))
-                    m_pDisassembly->AddAssemblerLine(re.GetMatch(tmp, 1) + _T(": ") + re.GetMatch(tmp, 2));
+                if (re.Matches(tmp) && m_pDisassembly)
+                {
+                    long int val;
+                    wxString addr = re.GetMatch(tmp, 1);
+                    addr.ToLong(&val, 16);
+                    m_pDisassembly->AddAssemblerLine(val, re.GetMatch(tmp, 2));
+                }
 //                    Manager::Get()->GetMessageManager()->Log(m_PageIndex, "%s: %s", re.GetMatch(tmp, 1).c_str(), re.GetMatch(tmp, 2).c_str());
             }
             while (!tmp.IsEmpty());
@@ -1245,7 +1266,7 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
 		mbar->Enable(idMenuSendCommandToGDB, m_pProcess && m_ProgramIsStopped);
  		mbar->Enable(idMenuAddSymbolFile, m_pProcess && m_ProgramIsStopped);
  		mbar->Enable(idMenuBacktrace, m_pProcess && m_ProgramIsStopped);
- 		mbar->Enable(idMenuDisassemble, m_pProcess && m_ProgramIsStopped);
+ 		mbar->Enable(idMenuCPU, m_pProcess && m_ProgramIsStopped);
  		mbar->Enable(idMenuEditWatches, prj && m_ProgramIsStopped);
         mbar->Enable(idMenuStop, m_pProcess && prj);
 	}

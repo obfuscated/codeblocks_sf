@@ -234,7 +234,7 @@ void CompilerGCC::OnAttach()
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
 
 	// create compiler's log
-    m_Log = new SimpleTextLog(msgMan, m_PluginInfo.title);
+    m_Log = new SimpleTextLog(msgMan, _("Build log"));
     m_Log->GetTextControl()->SetFont(font);
     m_PageIndex = msgMan->AddLog(m_Log);
 
@@ -251,7 +251,7 @@ void CompilerGCC::OnAttach()
 	titles.Add(_("Line"));
 	titles.Add(_("Message"));
 
-	m_pListLog = new CompilerMessages(msgMan, m_PluginInfo.title + _(" messages"), 3, widths, titles);
+	m_pListLog = new CompilerMessages(msgMan, _("Build messages"), 3, widths, titles);
 	m_pListLog->SetCompilerErrors(&m_Errors);
     m_pListLog->GetListControl()->SetFont(font);
 	m_ListPageIndex = msgMan->AddLog(m_pListLog);

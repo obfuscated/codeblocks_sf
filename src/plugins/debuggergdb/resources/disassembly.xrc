@@ -1,7 +1,7 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <resource>
   <object class="wxDialog" name="dlgDisassembly">
-    <title>Disassembly</title>
+    <title>CPU window</title>
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
@@ -11,67 +11,97 @@
           <hgap>4</hgap>
           <object class="sizeritem">
             <object class="wxStaticText">
+              
               <label>Function:</label>
             </object>
           </object>
           <object class="sizeritem">
             <object class="wxStaticText" name="lblFunction">
+              
               <label>func</label>
             </object>
+            
             <flag>wxGROW</flag>
           </object>
           <object class="sizeritem">
             <object class="wxStaticText">
+              
               <label>Starting address:</label>
             </object>
           </object>
           <object class="sizeritem">
             <object class="wxStaticText" name="lblAddress">
+              
               <label>addr</label>
             </object>
+            
             <flag>wxGROW</flag>
           </object>
           <growablecols>1</growablecols>
         </object>
+        
         <flag>wxALL|wxGROW</flag>
+        
         <border>8</border>
       </object>
       <object class="sizeritem">
-        <object class="wxTextCtrl" name="txtCode">
-          <style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL</style>
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxListCtrl" name="lcCode">
+              <style>wxLC_REPORT|wxLC_SINGLE_SEL</style>
+            </object>
+            <flag>wxGROW</flag>
+            <minsize>384,240</minsize>
+          </object>
+          <object class="sizeritem">
+            <object class="wxListCtrl" name="lcRegisters">
+              <style>wxLC_REPORT|wxLC_SINGLE_SEL</style>
+            </object>
+            <flag>wxLEFT|wxGROW</flag>
+            <border>8</border>
+            <minsize>240,240</minsize>
+          </object>
         </object>
         <option>1</option>
         <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
         <border>8</border>
-        <minsize>384,240</minsize>
       </object>
       <object class="sizeritem">
         <object class="wxBoxSizer">
           <orient>wxHORIZONTAL</orient>
           <object class="sizeritem">
             <object class="wxButton" name="btnRefresh">
+              
               <label>&amp;Refresh</label>
             </object>
           </object>
-          <object class="spacer">
-            <option>1</option>
-            <flag>wxGROW</flag>
-          </object>
           <object class="sizeritem">
             <object class="wxButton" name="btnSave">
+              
               <label>&amp;Save to text file</label>
+              
               <default>1</default>
             </object>
           </object>
+          <object class="spacer">
+            
+            <option>1</option>
+            
+            <flag>wxGROW</flag>
+          </object>
           <object class="sizeritem">
             <object class="wxButton" name="wxID_CANCEL">
+              
               <label>&amp;Close</label>
             </object>
-            <flag>wxLEFT</flag>
-            <border>8</border>
+            
+            
           </object>
         </object>
+        
         <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+        
         <border>8</border>
       </object>
     </object>

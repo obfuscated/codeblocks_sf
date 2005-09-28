@@ -76,6 +76,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 		wxString GetNextOutputLineClean(bool useStdErr = false);
 		void DoWatches();
         wxString GetEditorWordAtCaret();
+        long int ReadRegisterValue(int idx);
 
 		void SendCommand(const wxString& cmd);
 		void OnUpdateUI(wxUpdateUIEvent& event);
