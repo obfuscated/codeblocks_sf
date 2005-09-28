@@ -39,7 +39,6 @@ class wxsNewWindowDlg : public wxDialog
         wxTextCtrl* Header;
         wxTextCtrl* Source;
         wxCheckBox* UseXrc;
-        wxCheckBox* CheckBox2;
         wxTextCtrl* Xrc;
         //*)
         

@@ -89,6 +89,9 @@ class wxsWindowRes : public wxsResource
         /** This will be used to shedule code rebuilds */
         virtual void NotifyChange();
         
+        /** Funnction regenerating all source code */
+        void RebuildCode();
+        
 		/** Getting main dialog widget */
 		inline wxsWidget* GetRootWidget() { return RootWidget; }
 		
@@ -117,6 +120,9 @@ class wxsWindowRes : public wxsResource
 		
 		/** Building resource tree */
 		void BuildTree(wxTreeCtrl* Tree,wxTreeItemId WhereToAdd,bool NoWidgets = false);
+		
+		/** Changing root widget */
+		bool ChangeRootWidget(wxsWidget* NewRoot,bool DeletePrevious=true);
         
     protected:
     
@@ -151,7 +157,7 @@ class wxsWindowRes : public wxsResource
         virtual wxString GetXrcLoadingCode(int TabSize) = 0;
         
 	private:
-
+	
         /** Structure used for comparing strings */
         struct ltstr {  bool operator()(const wxChar* s1, const wxChar* s2) const { return wxStrcmp(s1, s2) < 0; } };
         

@@ -4,6 +4,7 @@
 #include "../wxswindoweditor.h"
 #include "../wxscodegen.h"
 #include "../wxsmith.h"
+#include "../wxswinundobuffer.h"
 #include <manager.h>
 #include <editormanager.h>
 
@@ -78,7 +79,6 @@ wxsWindowRes::wxsWindowRes(
         RootWidget(NULL),
         Modified(false),
         AvoidCreation(false)
-
 {
 }
 
@@ -96,9 +96,9 @@ wxsWindowRes::~wxsWindowRes()
 wxsEditor* wxsWindowRes::CreateEditor()
 {
 	if ( AvoidCreation ) return NULL;
-	GetRootWidget()->BuildTree(wxSmith::Get()->GetResourceTree(),GetTreeItemId());
+	RootWidget->BuildTree(wxSmith::Get()->GetResourceTree(),GetTreeItemId());
     wxsWindowEditor* Edit = new wxsWindowEditor(Manager::Get()->GetEditorManager()->GetNotebook(),this);
-    Edit->BuildPreview(RootWidget);
+    Edit->BuildPreview();
     return Edit;
 }
 
@@ -171,7 +171,14 @@ void wxsWindowRes::Save()
         delete Doc;
     }
     
-    SetModified(false);
+    if ( GetEditor() )
+    {
+    	GetEditor()->SetModified(false);
+    }
+    else
+    {
+    	SetModified(false);
+    }
 }
 
 TiXmlDocument* wxsWindowRes::GenerateXml()
@@ -257,6 +264,30 @@ void wxsWindowRes::NotifyChange()
 	assert ( GetProject() != NULL );
 	UpdateWidgetsVarNameId();
 	
+	RebuildCode();
+	
+    // Applying modified state
+
+    if ( GetEditor() )
+    {
+    	// Must process inside editor (updating titile)
+    	GetEditor()->SetModified();
+    }
+    else
+    {
+        SetModified();
+    }
+    
+    // Storing change inside undo buffer
+
+    if ( GetEditor() )
+    {
+    	((wxsWindowEditor*)GetEditor())->GetUndoBuff()->StoreChange();
+    }
+}
+
+void wxsWindowRes::RebuildCode()
+{
     // TODO (SpOoN#1#): find tab size in settings
 	int TabSize = 4;
 	int GlobalTabSize = 2 * TabSize;
@@ -391,12 +422,6 @@ void wxsWindowRes::NotifyChange()
 	Code.Append(_T('\n'));
 	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(HFile),CodeHeader,Code);
 	UpdateEventTable();
-	
-//---------------------------------
-// Applying modified state
-//---------------------------------
-
-    SetModified();
 }
 
 void wxsWindowRes::AddDeclarationsReq(wxsWidget* Widget,wxString& LocalCode,wxString& GlobalCode,int LocalTabSize,int GlobalTabSize,bool& WasLocal)
@@ -844,6 +869,12 @@ void wxsWindowRes::SetModified(bool modified)
 		if ( modified ) Save();
 		Modified = false;
 	}
+	
+	// Changing unmodified entry inside undo buffer
+	if ( !modified && GetEditor() )
+	{
+		((wxsWindowEditor*)GetEditor())->GetUndoBuff()->Saved();
+	}
 }
 
 void wxsWindowRes::EditorClosed()
@@ -872,4 +903,29 @@ void wxsWindowRes::BuildTree(wxTreeCtrl* Tree,wxTreeItemId WhereToAdd,bool NoWid
     {
         GetRootWidget()->BuildTree(Tree,GetTreeItemId());
     }
+}
+
+bool wxsWindowRes::ChangeRootWidget(wxsWidget* NewRoot,bool DeletePrevious)
+{
+	if ( !NewRoot ) return false;
+	// New root must be of the same type as current
+	if ( RootWidget->GetInfo().Name != NewRoot->GetInfo().Name ) return false;
+    AvoidCreation = true;
+	RootWidget->KillTree(wxSmith::Get()->GetResourceTree());
+	if ( GetEditor() )
+	{
+		((wxsWindowEditor*)GetEditor())->KillPreview();
+	}
+	if ( DeletePrevious ) wxsWidgetFactory::Get()->Kill(RootWidget);
+	RootWidget = NewRoot;
+    wxTreeCtrl* Tree = wxSmith::Get()->GetResourceTree();
+    Tree->SelectItem(GetTreeItemId());
+    if ( GetEditor() )
+    {
+        GetRootWidget()->BuildTree(Tree,GetTreeItemId());
+        ((wxsWindowEditor*)GetEditor())->BuildPreview();
+    }
+    RebuildCode();
+    AvoidCreation = false;
+	return true;
 }

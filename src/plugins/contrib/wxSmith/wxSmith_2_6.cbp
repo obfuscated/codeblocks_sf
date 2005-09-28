@@ -54,6 +54,7 @@
 			<Add option="-ggdb"/>
 			<Add option="-D__GNUWIN32__"/>
 			<Add option="-DBUILDING_PLUGIN"/>
+			<Add option="-DTIXML_USE_STL"/>
 			<Add directory="..\..\..\sdk"/>
 			<Add directory="..\..\..\sdk\wxscintilla\include"/>
 			<Add directory="propgrid\include"/>
@@ -775,6 +776,16 @@
 			<Option target="wxSmith"/>
 		</Unit>
 		<Unit filename="wxswindoweditor.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="wxswinundobuffer.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="wxswinundobuffer.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

@@ -263,7 +263,7 @@ void wxsPalette::InsertRequest(const wxString& Name)
     
     if ( Edit )
     {
-        Edit->RecreatePreview();
+        Edit->BuildPreview();
     }
     
     if ( SelectedRes )
@@ -337,15 +337,14 @@ void wxsPalette::DeleteRequest()
     
     if ( Edit )
     {
-        Parent = Edit->GetTopWidget();
-        Edit->KillCurrentPreview();
+        Edit->KillPreview();
     }
     
     wxsWidgetFactory::Get()->Kill(Current);
 
     if ( Edit )
     {
-        Edit->BuildPreview(Parent);
+        Edit->BuildPreview();
     }
 
     if ( SelectedRes )

@@ -31,7 +31,6 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType):
     Header = XRCCTRL(*this,"ID_TEXTCTRL2",wxTextCtrl);
     Source = XRCCTRL(*this,"ID_TEXTCTRL3",wxTextCtrl);
     UseXrc = XRCCTRL(*this,"ID_CHECKBOX1",wxCheckBox);
-    CheckBox2 = XRCCTRL(*this,"ID_CHECKBOX2",wxCheckBox);
     Xrc = XRCCTRL(*this,"ID_TEXTCTRL4",wxTextCtrl);
     //*)
 

@@ -218,7 +218,7 @@ bool wxsWidget::PropertiesUpdated(bool Validate,bool Correct)
     Updating = true;
     if ( GetEditor() )
     {
-    	GetEditor()->RecreatePreview();
+    	GetEditor()->BuildPreview();
     }
     if ( Validate )
     {

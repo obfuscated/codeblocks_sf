@@ -9,10 +9,12 @@
 #include "wxsresource.h"
 #include "wxsdragwindow.h"
 #include "resources/wxswindowres.h"
+#include "wxswinundobuffer.h"
+#include "wxswidgetfactory.h"
 
 wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsWindowRes* Resource):
     wxsEditor(parent,Resource->GetWxsFile(),Resource),
-    CurrentWidget(NULL)
+    UndoBuff(new wxsWinUndoBuffer(Resource))
 {
     wxSizer* Sizer = new wxBoxSizer(wxVERTICAL);
 
@@ -31,12 +33,17 @@ wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsWindowRes* Resource):
     DragWnd->Hide();
     wxFileName Name(Resource->GetWxsFile());
     SetTitle(Name.GetFullName());
+    
+    // Storing current resource data as a base for undo buffer
+    UndoBuff->StoreChange();
+    UndoBuff->Saved();
 }
 
 wxsWindowEditor::~wxsWindowEditor()
 {
 	wxsUnselectRes(GetResource());
-	KillCurrentPreview();
+	KillPreview();
+	delete UndoBuff;
 }
 
 static void WidgetRefreshReq(wxWindow* Wnd)
@@ -52,17 +59,17 @@ static void WidgetRefreshReq(wxWindow* Wnd)
     }
 }
 
-void wxsWindowEditor::BuildPreview(wxsWidget* TopWidget)
+void wxsWindowEditor::BuildPreview()
 {
     Scroll->SetSizer(NULL);
     Freeze();
 
-    KillCurrentPreview();
+    KillPreview();
 
     // Creating new sizer
 
+    wxsWidget* TopWidget = GetWinRes()->GetRootWidget();
     wxWindow* TopPreviewWindow = TopWidget ? TopWidget->CreatePreview(Scroll,this) : NULL;
-    CurrentWidget = TopWidget;
 
     if ( TopPreviewWindow )
     {
@@ -87,20 +94,16 @@ void wxsWindowEditor::BuildPreview(wxsWidget* TopWidget)
     Thaw();
 }
 
-void wxsWindowEditor::KillCurrentPreview()
+void wxsWindowEditor::KillPreview()
 {
     Scroll->SetSizer(NULL);
-    if ( CurrentWidget ) CurrentWidget->KillPreview();
-    CurrentWidget = NULL;
+    GetWinRes()->GetRootWidget()->KillPreview();
     DragWnd->Hide();
 }
 
 void wxsWindowEditor::OnMouseClick(wxMouseEvent& event)
 {
-    if ( CurrentWidget )
-    {
-        wxsPropertiesMan::Get()->SetActiveWidget(CurrentWidget);
-    }
+    wxsPropertiesMan::Get()->SetActiveWidget(GetWinRes()->GetRootWidget());
 }
 
 void wxsWindowEditor::OnSelectWidget(wxsEvent& event)
@@ -119,26 +122,6 @@ void wxsWindowEditor::OnUnselectWidget(wxsEvent& event)
 	}
 }
 
-void wxsWindowEditor::PreviewReshaped()
-{
-    SetSizer(NULL);
-
-    if ( CurrentWidget && CurrentWidget->GetPreview() )
-    {
-        wxSizer* NewSizer = new wxGridSizer(1);
-        NewSizer->Add(CurrentWidget->GetPreview(),0,wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL);
-        SetSizer(NewSizer);
-        Layout();
-        CurrentWidget->GetPreview()->Refresh();
-    }
-}
-
-void wxsWindowEditor::MyUnbind()
-{
-	wxsUnselectRes(GetResource());
-    KillCurrentPreview();
-}
-
 bool wxsWindowEditor::Close()
 {
 	return wxsEditor::Close();
@@ -146,33 +129,60 @@ bool wxsWindowEditor::Close()
 
 bool wxsWindowEditor::Save()
 {
-	if ( GetResource() )
-	{
-        ((wxsWindowRes*)GetResource())->Save();
-	}
+    GetWinRes()->Save();
 	return true;
 }
 
 bool wxsWindowEditor::GetModified()
 {
-	if ( !GetResource() ) return false;
-	return ((wxsWindowRes*)GetResource())->GetModified();
+	return GetWinRes()->GetModified();
 }
 		
 void wxsWindowEditor::SetModified(bool modified)
 {
-	if ( GetResource() )
+    GetWinRes()->SetModified(modified);
+    if ( GetWinRes()->GetModified() )
+    {
+        SetTitle(_T("*") + GetShortName());
+    }
+    else
+    {
+        SetTitle(GetShortName());
+    }
+}
+
+bool wxsWindowEditor::CanUndo()
+{
+	return UndoBuff->CanUndo();
+}
+
+bool wxsWindowEditor::CanRedo()
+{
+	return UndoBuff->CanRedo();
+}
+
+void wxsWindowEditor::Undo()
+{
+	wxsWidget* NewRoot = UndoBuff->Undo();
+	if ( !NewRoot ) return;
+	if ( !GetWinRes()->ChangeRootWidget(NewRoot) )
 	{
-		((wxsWindowRes*)GetResource())->SetModified(modified);
-		if ( ((wxsWindowRes*)GetResource())->GetModified() )
-		{
-			SetTitle(_T("*") + GetShortName());
-		}
-		else
-		{
-			SetTitle(GetShortName());
-		}
+		DebLog(_("wxSmith ERROR: Something wrong with undo buffer !!!"));
+		wxsWidgetFactory::Get()->Kill(NewRoot);
 	}
+	SetModified(UndoBuff->IsModified());
+}
+
+void wxsWindowEditor::Redo()
+{
+	wxsWidget* NewRoot = UndoBuff->Redo();
+	if ( !NewRoot ) return;
+	if ( !GetWinRes()->ChangeRootWidget(NewRoot) )
+	{
+		DebLog(_("wxSmith ERROR: Something wrong with undo buffer !!!"));
+        wxsWidgetFactory::Get()->Kill(NewRoot);
+	}
+	SetModified(UndoBuff->IsModified());
 }
 
 BEGIN_EVENT_TABLE(wxsWindowEditor,wxsEditor)

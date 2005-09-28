@@ -11,6 +11,7 @@
 class wxsWidget;
 class wxsDragWindow;
 class wxsWindowRes;
+class wxsWinUndoBuffer;
 
 class wxsWindowEditor : public wxsEditor
 {
@@ -19,24 +20,11 @@ class wxsWindowEditor : public wxsEditor
 
 		virtual ~wxsWindowEditor();
 
-		/** Creating preview from given window */
-		virtual void BuildPreview(wxsWidget* TopWidget);
+		/** Creating preview for resource */
+		virtual void BuildPreview();
 
 		/** Killing previously created preview */
-		virtual void KillCurrentPreview();
-
-		/** Recreating current preview making everything look just like it will
-		 *  be in real program
-		 */
-        inline void RecreatePreview() { BuildPreview(CurrentWidget); }
-
-        /** Function notifying that there's need to recalculate current editor's
-         *  sizers because given widget changed it's size
-         */
-        void PreviewReshaped();
-
-        /** Getting top widget of current preview */
-        wxsWidget* GetTopWidget() { return CurrentWidget; }
+		virtual void KillPreview();
 
 		/** Closing action will store code changes */
 		virtual bool Close();
@@ -50,10 +38,25 @@ class wxsWindowEditor : public wxsEditor
 		/** Set the resources's modification state to \c modified. */
 		virtual void SetModified(bool modified);
 		
+		/** Checking if can Undo */
+		virtual bool CanUndo();
+		
+		/** Ckecing if can Redo */
+		virtual bool CanRedo();
+		
+		/** Undoing */
+		virtual void Undo();
+		
+		/** Redoing */
+		virtual void Redo();
+		
+		/** Getting undo buffer */
+		inline wxsWinUndoBuffer* GetUndoBuff() { return UndoBuff; }
+		
     protected:
 
-        /** Unbinding from resource - this function is killing preview objects */
-        virtual void MyUnbind();
+        /** Getting wxsWindowRes pointer to currently edited resource */
+        inline wxsWindowRes* GetWinRes() { return (wxsWindowRes*)GetResource(); }
 
 	private:
 
@@ -65,11 +68,11 @@ class wxsWindowEditor : public wxsEditor
         void OnSelectWidget(wxsEvent& event);
         void OnUnselectWidget(wxsEvent& event);
 
-        /** Root widget of currently edited window */
-        wxsWidget* CurrentWidget;
-
         /** New layer used for dragging widgets */
         wxsDragWindow* DragWnd;
+        
+        /** Undo buffer */
+        wxsWinUndoBuffer* UndoBuff;
         
         DECLARE_EVENT_TABLE()
 };
