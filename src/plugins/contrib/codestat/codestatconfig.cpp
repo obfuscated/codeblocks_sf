@@ -17,14 +17,14 @@ CodeStatConfigDlg::CodeStatConfigDlg(wxWindow* parent, LanguageDef lang[NB_FILET
 {
     wxXmlResource::Get()->LoadDialog(this, parent, _("dlgCodeStatConfig"));
     wxComboBox* combo_Names = XRCCTRL(*this, "combo_Names", wxComboBox);
-    
+
     // Writing languages names in the combo-box and saving the language classes in a local variable
     for (int i=0; i<NB_FILETYPES; i++)
     {
        languages[i] = lang[i];
        combo_Names->Append(languages[i].name);
     }
-    
+
     combo_Names->SetSelection(0);
     PrintLanguageInfo(0);
 }

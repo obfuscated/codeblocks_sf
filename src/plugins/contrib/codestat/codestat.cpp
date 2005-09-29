@@ -5,37 +5,22 @@
  * Created:   11/09/2005
  * Copyright: (c) Zlika
  * License:   GPL
- **************************************************************/
- 
-#if defined(__GNUG__) && !defined(__APPLE__)
-	#pragma implementation "cbprofiler.h"
-#endif
+  **************************************************************/
+
 #include "codestat.h"
-#include <licenses.h> // defines some common licenses (like the GPL)
-#include <manager.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/fs_zip.h>
-#include <configmanager.h>
-#include "codestatconfig.h"
-#include "codestatexec.h"
-#include <cbproject.h>
-#include <manager.h>
-#include <projectmanager.h>
-#include <messagemanager.h>
-//#include <wx/choicdlg.h>
 
 cbPlugin* GetPlugin()
 {
-    return new CodeStat;
+	    return new CodeStat;
 }
+
 CodeStat::CodeStat()
 {
-    //ctor
-    wxFileSystem::AddHandler(new wxZipFSHandler);
+	 wxFileSystem::AddHandler(new wxZipFSHandler);
     wxXmlResource::Get()->InitAllHandlers();
     wxString resPath = ConfigManager::Get()->Read(_T("data_path"), wxEmptyString);
     wxXmlResource::Get()->Load(resPath + _T("/codestat.zip#zip:*.xrc"));
-    
+
     m_PluginInfo.name = _T("CodeStatistics");
     m_PluginInfo.title = _("Code Statistics");
     m_PluginInfo.version = _("0.1");
@@ -46,13 +31,15 @@ CodeStat::CodeStat()
     m_PluginInfo.thanksTo = _("All the Code::Blocks team!");
     m_PluginInfo.license = LICENSE_GPL;
     m_PluginInfo.hasConfigure = true;
-    
+
     ConfigManager::AddConfiguration(m_PluginInfo.title, _T("/codestat"));
 }
+
 CodeStat::~CodeStat()
 {
-    //dtor
+
 }
+
 void CodeStat::OnAttach()
 {
     // do whatever initialization you need for your plugin
@@ -62,6 +49,7 @@ void CodeStat::OnAttach()
     // is FALSE, it means that the application did *not* "load"
     // (see: does not need) this plugin...
 }
+
 void CodeStat::OnRelease(bool appShutDown)
 {
     // do de-initialization for your plugin
@@ -70,26 +58,29 @@ void CodeStat::OnRelease(bool appShutDown)
     // NOTE: after this function, the inherited member variable
     // m_IsAttached will be FALSE...
 }
+
 int CodeStat::Configure()
 {
     // if not attached, exit
     if (!m_IsAttached)
         return -1;
-    
+
     LanguageDef languages[NB_FILETYPES];
     LoadSettings(languages);
     CodeStatConfigDlg dlg(Manager::Get()->GetAppWindow(), languages);
     if (dlg.ShowModal() == wxID_OK)
     {
     }
+
     return 0;
 }
+
 int CodeStat::Execute()
 {
     // if not attached, exit
     if (!m_IsAttached)
         return -1;
-        
+
    cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
    // if no project open, exit
 	if (!project)
@@ -99,15 +90,15 @@ int CodeStat::Execute()
 		Manager::Get()->GetMessageManager()->DebugLog(msg);
 		return -1;
 	}
-	
+
     dlg = new CodeStatExecDlg(Manager::Get()->GetAppWindow());
-    
+
     // Load the language settings and launch the main function
     LanguageDef languages[NB_FILETYPES];
     LoadSettings(languages);
     if(dlg->Execute(languages) != 0)
         return -1;
-   
+
     return 0;
 }
 
@@ -123,14 +114,14 @@ void CodeStat::LoadSettings(LanguageDef languages[NB_FILETYPES])
 	languages[0].single_line_comment = _T("//");
    languages[0].multiple_line_comment[0] = _T("/*");
    languages[0].multiple_line_comment[1] = _T("*/");
-   
+
    // Java style comments
 	languages[1].name = _T("Java");
 	languages[1].ext.Add(_T("java"));
 	languages[1].single_line_comment = _T("//");
    languages[1].multiple_line_comment[0] = _T("/*");
    languages[1].multiple_line_comment[1] = _T("*/");
-   
+
    // Python style comments
 	languages[2].name = _T("Python");
 	languages[2].ext.Add(_T("py"));

@@ -6,20 +6,21 @@
  * Copyright: (c) Zlika
  * License:   GPL
  **************************************************************/
+
 #ifndef LANGUAGE_DEF_H
 #define LANGUAGE_DEF_H
- 
+
 #include <wx/string.h>
- 
- #define NB_FILETYPES  3  // Number of languages supported
- 
- class LanguageDef
- {
+
+#define NB_FILETYPES  3  // Number of languages supported
+
+class LanguageDef
+{
  	public:
  	   wxString name;
  	   wxArrayString ext;
  	   wxString single_line_comment;
  	   wxString multiple_line_comment[2];
  };
- 
- #endif
+
+#endif

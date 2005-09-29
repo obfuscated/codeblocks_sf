@@ -11,8 +11,9 @@
 #define CODESTAT_H
 
 #if defined(__GNUG__) && !defined(__APPLE__)
-	#pragma interface "cbprofiler.h"
+	#pragma implementation "codestat.h"
 #endif
+
 // For compilers that support precompilation, includes <wx/wx.h>
 #include <wx/wxprec.h>
 
@@ -24,13 +25,19 @@
 	#include <wx/wx.h>
 #endif
 
+#include <licenses.h> // defines some common licenses (like the GPL)
+#include <manager.h>
+#include <configmanager.h>
+#include <cbproject.h>
 #include <cbplugin.h> // the base class we 're inheriting
 #include <settings.h> // needed to use the Code::Blocks SDK
-
+#include <projectmanager.h>
+#include <messagemanager.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/fs_zip.h>
 #include "codestatexec.h"
+#include "codestatconfig.h"
 #include "language_def.h"
-
-
 class CodeStat : public cbToolPlugin
 {
 	public:
@@ -55,4 +62,3 @@ extern "C" {
 #endif
 
 #endif // CODESTAT_H
-

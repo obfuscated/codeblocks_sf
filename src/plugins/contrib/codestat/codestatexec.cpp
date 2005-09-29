@@ -20,7 +20,7 @@ int CodeStatExecDlg::Execute(LanguageDef languages[NB_FILETYPES])
    long int nb_files = 0;
    long int nb_skipped_files = 0;
    long int nb_files_not_found = 0;
-   
+
    cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
    nb_files = project->GetFilesCount();
    //wxMessageBox(wxString::Format(_T("Nb files: %ld"), nb_files), _("Error"), wxOK);
@@ -47,27 +47,28 @@ int CodeStatExecDlg::Execute(LanguageDef languages[NB_FILETYPES])
    		         num_language = l;
    			}
    		}
+
    		// If the language is found, analyse the source file
    		if (num_language > -1)
    	      CountLines(filename, languages[num_language], code_lines, codecomments_lines, comment_lines, empty_lines, total_lines);
          else nb_skipped_files++;
    	}
-      
+
       if (nb_files > 1)
          progress.Update((100*i)/(nb_files-1));
    }
    progress.Update(100);
-   
+
    // Setting-up the statistics dialog box
    wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgCodeStatExec"));
-   
+
    wxStaticText* txt_num_files = XRCCTRL(*this, "txt_num_files", wxStaticText);
    txt_num_files->SetLabel(wxString::Format(_("%ld"), nb_files));
    wxStaticText* txt_skipped_files = XRCCTRL(*this, "txt_skipped_files", wxStaticText);
    txt_skipped_files->SetLabel(wxString::Format(_("%ld"), nb_skipped_files));
    wxStaticText* txt_files_not_found = XRCCTRL(*this, "txt_files_not_found", wxStaticText);
    txt_files_not_found->SetLabel(wxString::Format(_("%ld"), nb_files_not_found));
-   
+
    wxStaticText* txt_Code = XRCCTRL(*this, "txt_Code", wxStaticText);
    txt_Code->SetLabel(wxString::Format(_("%ld"), code_lines));
    wxStaticText* txt_Empty = XRCCTRL(*this, "txt_Empty", wxStaticText);
@@ -78,7 +79,7 @@ int CodeStatExecDlg::Execute(LanguageDef languages[NB_FILETYPES])
    txt_Code_Comments->SetLabel(wxString::Format(_("%ld"), codecomments_lines));
    wxStaticText* txt_Total = XRCCTRL(*this, "txt_Total", wxStaticText);
    txt_Total->SetLabel(wxString::Format(_("%ld"), total_lines));
-   
+
    wxGauge* Gauge_Code = XRCCTRL(*this, "Gauge_Code", wxGauge);
    Gauge_Code->SetValue((100*code_lines)/total_lines);
    wxStaticText* txt_Gauge_Code = XRCCTRL(*this, "txt_Gauge_Code", wxStaticText);
@@ -95,9 +96,9 @@ int CodeStatExecDlg::Execute(LanguageDef languages[NB_FILETYPES])
    Gauge_Empty->SetValue((100*empty_lines)/total_lines);
    wxStaticText* txt_Gauge_Empty = XRCCTRL(*this, "txt_Gauge_Empty", wxStaticText);
    txt_Gauge_Empty->SetLabel(wxString::Format(_("%3d%% Empty"), (100*empty_lines)/total_lines));
-   
+
    ShowModal();
-   
+
    return 0;
 }
 
@@ -113,7 +114,7 @@ void CodeStatExecDlg::CountLines(wxFileName filename, LanguageDef &language,
 	wxString line;
 	wxTextFile file;
 	bool comment, code, multi_line_comment;
-	
+
 	if (file.Open(filename.GetFullPath()))
 	{
 		multi_line_comment = false;
@@ -141,14 +142,14 @@ void CodeStatExecDlg::CountLines(wxFileName filename, LanguageDef &language,
 void CodeStatExecDlg::AnalyseLine(LanguageDef &language, wxString line, bool &comment, bool &code, bool &multi_line_comment)
 {
    int first_single_line_comment, first_multi_line_comment_begin, first_multi_line_comment_end;
-   
+
    // Delete first and trailing spaces
    line = line.Trim(true);
    line = line.Trim(false);
-   
+
 	if (line.IsEmpty())
 	   return;
-	
+
 	// Searching for single and multi-lines comment signs
 	if (language.single_line_comment.Length() > 0)
       first_single_line_comment = line.Find(language.single_line_comment);
@@ -159,7 +160,7 @@ void CodeStatExecDlg::AnalyseLine(LanguageDef &language, wxString line, bool &co
    if (language.multiple_line_comment[1].Length() > 0)
       first_multi_line_comment_end = line.Find(language.multiple_line_comment[1]);
    else first_multi_line_comment_end = -1;
-   
+
    // We are in a multiple line comment => finding the "end of multiple line comment" sign
    if (multi_line_comment)
    {
