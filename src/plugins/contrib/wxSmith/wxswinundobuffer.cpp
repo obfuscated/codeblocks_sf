@@ -1,9 +1,9 @@
 #include "wxswinundobuffer.h"
 
 #include "resources/wxswindowres.h"
+#include "resources/wxswindowresdataobject.h"
 #include "widget.h"
 #include "wxswidgetfactory.h"
-#include <sstream>
 
 wxsWinUndoBuffer::wxsWinUndoBuffer(wxsWindowRes* _Resource,int _MaxEnteries):
     Resource(_Resource),
@@ -29,16 +29,6 @@ void wxsWinUndoBuffer::Clear()
 
 void wxsWinUndoBuffer::StoreChange()
 {
-    wxsWidget* RootWidget = Resource->GetRootWidget();
-    std::ostringstream buffer;
-    
-    TiXmlDocument Doc;
-    TiXmlElement* Elem = Doc.InsertEndChild(TiXmlElement("object"))->ToElement();
-    if ( !Elem ) return;
-    Elem->SetAttribute("class",RootWidget->GetInfo().Name.mb_str());
-    if ( !RootWidget->XmlSave(Elem) ) return;
-    buffer << Doc;
-    
     // Removing all undo points after current one
     
     int Size = GetCount();
@@ -63,8 +53,10 @@ void wxsWinUndoBuffer::StoreChange()
     
     // Adding new undo
     
+	wxsWindowResDataObject Object;
+	Object.MakeFromWidget(Resource->GetRootWidget());
     UndoEntry* NewEntry = new UndoEntry;
-    NewEntry->XmlData = wxString(buffer.str().c_str(),wxConvUTF8);
+    NewEntry->XmlData = Object.GetXmlData();
     NewEntry->XmlData.Shrink();
 // TODO (SpOoN#1#): Add selection
 
@@ -88,17 +80,7 @@ wxsWidget *wxsWinUndoBuffer::Redo()
 
 wxsWidget* wxsWinUndoBuffer::BuildResourceFromEntry(UndoEntry* Entry)
 {
-	std::istringstream buffer(std::string(Entry->XmlData.mb_str()));
-	TiXmlDocument Doc;
-	buffer >> Doc;
-	
-	TiXmlElement* Root = Doc.FirstChildElement("object");
-	const char* Class = Root->Attribute("class");
-	if ( !Class || !*Class ) return NULL;
-	
-	wxsWidget* RootWidget = wxsWidgetFactory::Get()->Generate(wxString(Class,wxConvUTF8),Resource);
-	if ( !RootWidget ) return NULL;
-	
-	RootWidget->XmlLoad(Root);
-	return RootWidget;
+	wxsWindowResDataObject Object;
+	Object.SetXmlData(Entry->XmlData);
+	return Object.BuildWidget(Resource);
 }
