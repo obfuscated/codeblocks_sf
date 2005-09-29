@@ -117,4 +117,12 @@ DECLARE_CB_EVENT_TYPE(cbEVT_THREADTASK_ENDED)
 DECLARE_CB_EVENT_TYPE(cbEVT_THREADTASK_ALLDONE)
 #define EVT_THREADTASK_ALLDONE(id, fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_THREADTASK_ALLDONE, id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) & fn, (wxObject *) NULL ),
 
+// request app to dock/undock a window
+DECLARE_CB_EVENT_TYPE(cbEVT_DOCK_WINDOW)
+#define EVT_DOCK_WINDOW(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_DOCK_WINDOW, -1, -1, (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) & fn, (wxObject *) NULL ),
+DECLARE_CB_EVENT_TYPE(cbEVT_UNDOCK_WINDOW)
+#define EVT_UNDOCK_WINDOW(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_UNDOCK_WINDOW, -1, -1, (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) & fn, (wxObject *) NULL ),
+DECLARE_CB_EVENT_TYPE(cbEVT_SHOW_DOCK_WINDOW)
+#define EVT_SHOW_DOCK_WINDOW(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_SHOW_DOCK_WINDOW, -1, -1, (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) & fn, (wxObject *) NULL ),
+
 #endif // SDK_EVENTS_H

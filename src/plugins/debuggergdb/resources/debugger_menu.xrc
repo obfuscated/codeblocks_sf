@@ -59,7 +59,7 @@
       </object>
     </object>
     <object class="wxMenuItem" name="idDebuggerMenuEditWatches">
-      <label>&amp;Watches...</label>
+      <label>Edit &amp;watches...</label>
       <help>Edit watches...</help>
     </object>
     <object class="separator"/>

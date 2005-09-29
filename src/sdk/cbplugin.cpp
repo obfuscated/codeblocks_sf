@@ -69,7 +69,7 @@ void cbPlugin::Attach()
         event.SetPlugin(this);
         // post event in the host's event queue
         wxPostEvent(frame, event);
-        
+
         m_IsAttached = true;
     }
 	OnAttach();
@@ -153,3 +153,11 @@ cbCodeCompletionPlugin::cbCodeCompletionPlugin()
     m_Type = ptCodeCompletion;
 }
 
+/////
+///// cbProjectWizardPlugin
+/////
+
+cbProjectWizardPlugin::cbProjectWizardPlugin()
+{
+    m_Type = ptProjectWizard;
+}

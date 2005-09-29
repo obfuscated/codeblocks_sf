@@ -100,7 +100,7 @@ class cbPlugin : public wxEvtHandler
         void Release(bool appShutDown);
 		/** The plugin must return its type on request. */
         virtual PluginType GetType(){ return m_Type; }
-		
+
 		/** The plugin must return its info on request. */
         virtual PluginInfo const* GetInfo(){ return &m_PluginInfo; }
 		/** This is a pure virtual method that should be overriden by all
@@ -118,7 +118,7 @@ class cbPlugin : public wxEvtHandler
 		  */
         virtual void BuildMenu(wxMenuBar* menuBar) = 0;
 		/** This method is called by Code::Blocks core modules (EditorManager,
-		  * ProjectManager etc) and is used by the plugin to add any menu 
+		  * ProjectManager etc) and is used by the plugin to add any menu
 		  * items it needs in the module's popup menu. For example, when
 		  * the user right-clicks on a project file in the project tree,
 		  * ProjectManager prepares a popup menu to display with context
@@ -158,7 +158,7 @@ class cbPlugin : public wxEvtHandler
 		  * Think of this method as the actual constructor...
 		  */
         virtual void OnAttach(){}
-		
+
 		/** Any descendent plugin should override this virtual method and
 		  * perform any necessary de-initialization. This method is called by
 		  * Code::Blocks (PluginManager actually) when the plugin has been
@@ -169,7 +169,7 @@ class cbPlugin : public wxEvtHandler
 		  *         behaviour is undefined...
 		  */
         virtual void OnRelease(bool appShutDown){}
-		
+
 		/** This method logs a "Not implemented" message and is provided for
 		  * convenience only. For example, if the plugin *will* provide a
 		  * configuration dialog, but it's not implemented yet, the author
@@ -189,7 +189,7 @@ class cbPlugin : public wxEvtHandler
 };
 
 /** @brief Base class for compiler plugins
-  * 
+  *
   * This plugin type must offer some pre-defined build facilities, on top
   * of the generic plugin's.
   */
@@ -212,8 +212,8 @@ class cbCompilerPlugin: public cbPlugin
 		  * Cleaning a project means deleting any files created by building it.
 		  * This includes any object files, the binary output file, etc.
 		  *
-		  * @param target The specific build target to "clean". If NULL, it 
-		  * cleans all the build targets of the current project. 
+		  * @param target The specific build target to "clean". If NULL, it
+		  * cleans all the build targets of the current project.
 		  */
         virtual int Clean(ProjectBuildTarget* target = 0L) = 0;
 		/** @brief Compile the project/target.
@@ -228,7 +228,7 @@ class cbCompilerPlugin: public cbPlugin
 		  * This makes sure that all compilable files in the project will be
 		  * compiled again.
 		  *
-		  * @param target The specific build target to rebuild. If NULL, it 
+		  * @param target The specific build target to rebuild. If NULL, it
 		  * rebuilds all the build targets of the current project.
 		  */
         virtual int Rebuild(ProjectBuildTarget* target = 0L) = 0;
@@ -264,7 +264,7 @@ class cbCompilerPlugin: public cbPlugin
 };
 
 /** @brief Base class for debugger plugins
-  * 
+  *
   * This plugin type must offer some pre-defined debug facilities, on top
   * of the generic plugin's.
   */
@@ -289,7 +289,7 @@ class cbDebuggerPlugin: public cbPlugin
 };
 
 /** @brief Base class for tool plugins
-  * 
+  *
   * This plugin is automatically managed by Code::Blocks, so the inherited
   * functions to build menus/toolbars are hidden.
   *
@@ -370,6 +370,33 @@ class cbCodeCompletionPlugin : public cbPlugin
 		virtual wxArrayString GetCallTips() = 0;
 		virtual int CodeComplete() = 0;
 		virtual void ShowCallTip() = 0;
+};
+
+/** @brief Base class for wizard plugins
+  *
+  * Wizard plugins are called by Code::Blocks when the user selects
+  * "New project" on a template provided by the plugin.
+  */
+class cbProjectWizardPlugin : public cbPlugin
+{
+    public:
+        cbProjectWizardPlugin();
+
+        /// @return the template's title
+        virtual const wxString& GetTitle() = 0; // the icon's name in new-project-dialog
+        /// @return the template's description
+        virtual const wxString& GetDescription() = 0; // a description
+        /// @return the template's bitmap
+        virtual wxBitmap& GetBitmap() = 0; // a bitmap
+        /// When this is called, the wizard must get to work ;)
+        virtual int Launch() = 0; // do your work ;)
+    private:
+        // "Hide" some virtual members, that are not needed in cbCreateWizardPlugin
+        void BuildMenu(wxMenuBar* menuBar){}
+        void RemoveMenu(wxMenuBar* menuBar){}
+        void BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg){}
+        bool BuildToolBar(wxToolBar* toolBar){ return false; }
+        void RemoveToolBar(wxToolBar* toolBar){}
 };
 
 typedef cbPlugin*(*GetPluginProc)(void);

@@ -787,6 +787,9 @@ wxString DebuggerGDB::GetNextOutputLineClean(bool useStdErr)
 
 void DebuggerGDB::RunCommand(int cmd)
 {
+    if (!m_pProcess || !m_ProgramIsStopped)
+        return;
+
     switch (cmd)
     {
         case CMD_CONTINUE:

@@ -315,6 +315,11 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_EDITOR_OPEN(MainFrame::OnEditorOpened)
 	EVT_EDITOR_SAVE(MainFrame::OnEditorSaved)
 
+	// dock a window
+	EVT_DOCK_WINDOW(MainFrame::OnRequestDockWindow)
+	EVT_UNDOCK_WINDOW(MainFrame::OnRequestUndockWindow)
+	EVT_SHOW_DOCK_WINDOW(MainFrame::OnRequestShowDockWindow)
+
     EVT_NOTEBOOK_PAGE_CHANGED(ID_NBEditorManager, MainFrame::OnPageChanged)
 
 	/// CloseFullScreen event handling
@@ -2244,4 +2249,19 @@ void MainFrame::OnShiftTab(wxCommandEvent& event)
     cbEditor* ed = EDMAN()->GetBuiltinActiveEditor(); // Must make sure it's cbEditor and not EditorBase
     if(ed)
         ed->DoUnIndent();
+}
+
+void MainFrame::OnRequestDockWindow(CodeBlocksEvent& event)
+{
+    // stub
+}
+
+void MainFrame::OnRequestUndockWindow(CodeBlocksEvent& event)
+{
+    // stub
+}
+
+void MainFrame::OnRequestShowDockWindow(CodeBlocksEvent& event)
+{
+    // stub
 }

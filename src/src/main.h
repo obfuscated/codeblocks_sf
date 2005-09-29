@@ -124,7 +124,7 @@ class MainFrame : public wxFrame
         void OnToggleStatusBar(wxCommandEvent& event);
         void OnFocusEditor(wxCommandEvent& event);
         void OnToggleFullScreen(wxCommandEvent& event);
-        
+
         // plugin events
         void OnPluginLoaded(CodeBlocksEvent& event);
         void OnPluginUnloaded(CodeBlocksEvent& event);
@@ -136,13 +136,18 @@ class MainFrame : public wxFrame
 		void OnViewMenuUpdateUI(wxUpdateUIEvent& event);
 		void OnSearchMenuUpdateUI(wxUpdateUIEvent& event);
 		void OnProjectMenuUpdateUI(wxUpdateUIEvent& event);
-		
+
 		void OnLayoutChanged(wxEvent& event);
-		
+
 		// project events
 		void OnProjectActivated(CodeBlocksEvent& event);
 		void OnProjectOpened(CodeBlocksEvent& event);
 		void OnProjectClosed(CodeBlocksEvent& event);
+
+		// dock/undock window requests
+		void OnRequestDockWindow(CodeBlocksEvent& event);
+		void OnRequestUndockWindow(CodeBlocksEvent& event);
+		void OnRequestShowDockWindow(CodeBlocksEvent& event);
 
 		// editor changed events
 		void OnEditorOpened(CodeBlocksEvent& event);
@@ -195,7 +200,7 @@ class MainFrame : public wxFrame
 		EditorManager* m_pEdMan;
 		ProjectManager* m_pPrjMan;
 		MessageManager* m_pMsgMan;
-		
+
         wxToolBar* m_pToolbar;
         PluginToolbarsMap m_PluginsTools;
 
