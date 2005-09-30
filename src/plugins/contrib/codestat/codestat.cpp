@@ -128,4 +128,25 @@ void CodeStat::LoadSettings(LanguageDef languages[NB_FILETYPES])
 	languages[2].single_line_comment = _T("#");
    languages[2].multiple_line_comment[0] = _T("");
    languages[2].multiple_line_comment[1] = _T("");
+   
+   // Perl style comments
+	languages[3].name = _T("Perl");
+	languages[3].ext.Add(_T("pl"));
+	languages[3].single_line_comment = _T("#");
+   languages[3].multiple_line_comment[0] = _T("");
+   languages[3].multiple_line_comment[1] = _T("");
+   
+   // ASM style comments
+	languages[4].name = _T("ASM");
+	languages[4].ext.Add(_T("asm"));
+	languages[4].single_line_comment = _T(";");
+   languages[4].multiple_line_comment[0] = _T("");
+   languages[4].multiple_line_comment[1] = _T("");
+   
+   // Pascal style comments
+	languages[5].name = _T("Pascal");
+	languages[5].ext.Add(_T("pas"));
+	languages[5].single_line_comment = _T("");
+   languages[5].multiple_line_comment[0] = _T("{");
+   languages[5].multiple_line_comment[1] = _T("}");
 }
