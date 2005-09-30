@@ -3,10 +3,10 @@
 #include "../wxswidgetfactory.h"
 #include <sstream>
 
-#define wxsDF_WIDGET   _T("wxSmith XML")
-
-wxsWindowResDataObject::wxsWindowResDataObject()
+wxsWindowResDataObject::wxsWindowResDataObject():
+    WidgetsCount(0)
 {
+	Clear();
 }
 
 wxsWindowResDataObject::~wxsWindowResDataObject()
@@ -21,13 +21,14 @@ void wxsWindowResDataObject::GetAllFormats(wxDataFormat *formats, Direction dir)
 
 bool wxsWindowResDataObject::GetDataHere(const wxDataFormat& format, void *buf) const
 {
+	wxString XmlData = GetXmlData();
     memcpy(buf,XmlData.mb_str(),XmlData.Length()+1);
    	return true;
 }
 
 size_t wxsWindowResDataObject::GetDataSize(const wxDataFormat& format) const
 {
-    return XmlData.Length()+1;
+    return GetXmlData().Length()+1;
 }
 
 size_t wxsWindowResDataObject::GetFormatCount(Direction dir) const
@@ -46,32 +47,51 @@ bool wxsWindowResDataObject::SetData(const wxDataFormat& format, size_t len, con
     char* CharBuff = new char[len];
     memcpy(CharBuff,buf,len);
     CharBuff[len-1] = '\0';      // Adding padding zero, just for sure
-    XmlData = wxString(CharBuff,wxConvUTF8);
-    return true;
+    bool Ret = SetXmlData(wxString(CharBuff,wxConvUTF8));
+    delete[] CharBuff;
+    return Ret;
 }
 
-void wxsWindowResDataObject::MakeFromWidget(wxsWidget* Widget)
+
+void wxsWindowResDataObject::Clear()
 {
-	if ( !Widget ) return;
-	
-    std::ostringstream buffer;
-    
-    TiXmlDocument Doc;
-    TiXmlElement* Elem = Doc.InsertEndChild(TiXmlElement("object"))->ToElement();
-    if ( !Elem ) return;
-    Elem->SetAttribute("class",Widget->GetInfo().Name.mb_str());
-    if ( !Widget->XmlSave(Elem) ) return;
-    buffer << Doc;
-    XmlData = wxString(buffer.str().c_str(),wxConvUTF8);
+	XmlDoc.Clear();
+	XmlElem = XmlDoc.InsertEndChild(TiXmlElement("resource"))->ToElement();
+	WidgetsCount = 0;
 }
 
-wxsWidget* wxsWindowResDataObject::BuildWidget(wxsWindowRes* Resource) const
+bool wxsWindowResDataObject::AddWidget(wxsWidget* Widget)
 {
-    std::istringstream buffer(std::string(XmlData.mb_str()));
-	TiXmlDocument Doc;
-	buffer >> Doc;
-	
-	TiXmlElement* Root = Doc.FirstChildElement("object");
+	if ( !Widget ) return false;
+	TiXmlElement* Elem = XmlElem->InsertEndChild(TiXmlElement("object"))->ToElement();
+	if ( !Elem ) return false;
+	Elem->SetAttribute("class",Widget->GetInfo().Name.mb_str());
+	if ( !Widget->XmlSave(Elem) )
+	{
+		XmlElem->RemoveChild(Elem);
+		return false;
+	}
+	WidgetsCount++;
+	return true;
+}
+
+int wxsWindowResDataObject::GetWidgetCount() const
+{
+	return WidgetsCount;
+}
+
+wxsWidget* wxsWindowResDataObject::BuildWidget(wxsWindowRes* Resource,int Index) const
+{
+	if ( Index < 0 || Index > WidgetsCount ) return NULL;
+
+	TiXmlElement* Root = XmlElem->FirstChildElement("object");
+	if ( !Root ) return NULL;
+	while ( Index )
+	{
+		Index--;
+		Root = Root->NextSiblingElement("object");
+		if ( !Root ) return NULL;
+	}
 	const char* Class = Root->Attribute("class");
 	if ( !Class || !*Class ) return NULL;
 	
@@ -80,4 +100,41 @@ wxsWidget* wxsWindowResDataObject::BuildWidget(wxsWindowRes* Resource) const
 	
 	Widget->XmlLoad(Root);
 	return Widget;
+}
+
+bool wxsWindowResDataObject::SetXmlData(const wxString& Data)
+{
+    std::istringstream buffer(std::string(Data.mb_str()));
+    XmlDoc.Clear();
+    WidgetsCount = 0;
+	buffer >> XmlDoc;
+    if ( XmlDoc.Error() )
+    {
+        DebLog(_T("wxSmith: Error loading Xml data -> ") + wxString(XmlDoc.ErrorDesc(),wxConvUTF8));
+    	Clear();
+    	return false;
+    }
+
+    XmlElem = XmlDoc.FirstChildElement("resource");
+    if ( !XmlElem )
+    {
+    	Clear();
+    	return false;
+    }
+    
+    for ( TiXmlElement* Elem = XmlElem->FirstChildElement("object");
+          Elem;
+          Elem = Elem->NextSiblingElement("object") )
+    {
+    	WidgetsCount++;
+    }
+    
+    return true;
+}
+
+wxString wxsWindowResDataObject::GetXmlData() const
+{
+    std::ostringstream buffer;
+    buffer << XmlDoc;
+    return wxString(buffer.str().c_str(),wxConvUTF8);
 }

@@ -33,6 +33,15 @@ class wxsDragWindow : public wxControl
 
 		/** Function notifying about size change */
 		void NotifySizeChange(const wxSize& NewSize);
+		
+		/** Getting currently selected widget or NULL if there's no such widget inside this resource */
+		wxsWidget* GetSelection();
+		
+		/** Getting count of widgets in multiple selection */
+		int GetMultipleSelCount();
+		
+		/** Getting widget frrom multiple selection */
+		wxsWidget* GetMultipleSelWidget(int Index);
 
 	private:
 

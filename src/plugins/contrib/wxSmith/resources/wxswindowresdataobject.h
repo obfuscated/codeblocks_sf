@@ -2,11 +2,17 @@
 #define WXSWINDOWRESDATAOBJECT_H
 
 #include <wx/dataobj.h>
+#include <tinyxml/tinyxml.h>
+
+#define wxsDF_WIDGET   _T("wxSmith XML")
 
 class wxsWidget;
 class wxsWindowRes;
 
-/** Class representing wxsWidget and all it's children as wxDataObject */
+/** Class representing wxsWidget and all it's children as wxDataObject
+ *
+ * This data object can also handle set of widgets stored continously
+ */
 class wxsWindowResDataObject : public wxDataObject
 {
 	public:
@@ -15,6 +21,36 @@ class wxsWindowResDataObject : public wxDataObject
 		
 		/** Dctor */
 		virtual ~wxsWindowResDataObject();
+
+    //=====================================
+    // Opertating on data
+    //=====================================
+
+        /** Clering all data */
+        void Clear();
+		
+		/** Adding widget into this data object */
+		bool AddWidget(wxsWidget* Widget);
+		
+		/** Getting number of handled widgets inside this object */
+		int GetWidgetCount() const;
+		
+		/** Building wxsWidget class from this data object
+		 * \param Resource - resource owning widget
+		 * \param Index - id of widget (in range 0..GetWidgetCount()-1)
+		 * \return created widget or NULL on error
+		 */
+		wxsWidget* BuildWidget(wxsWindowRes* Resource,int Index = 0) const;
+		
+		/** Setting Xml string describing widget */
+		bool SetXmlData(const wxString& Data);
+		
+		/** Getting Xml strting desecribing widget */
+		wxString GetXmlData() const;
+		
+    //=====================================
+    // Members of wxDataObject class
+    //=====================================
 		
 		/** Enumerating all data formats.
 		 *
@@ -38,23 +74,12 @@ class wxsWindowResDataObject : public wxDataObject
 		
 		/** Setting data - will load Xml data */
 		virtual bool SetData( const wxDataFormat& format, size_t len, const void *buf );
-		
-		/** Generating this data object from wxsWidget class */
-		void MakeFromWidget(wxsWidget* Widget);
-		
-		/** Building wxsWidget class from this data object
-		 * \param Resource - resource owning widget
-		 */
-		wxsWidget* BuildWidget(wxsWindowRes* Resource) const;
-		
-		/** Setting Xml string describing widget */
-		inline void SetXmlData(const wxString& Data) { XmlData = Data; }
-		
-		/** Getting Xml strting desecribing widget */
-		inline const wxString& GetXmlData() { return XmlData; }
-		
+
     private:
-        wxString XmlData;
+    
+        TiXmlDocument XmlDoc;
+        TiXmlElement* XmlElem;
+        int WidgetsCount;
 };
 
 #endif // WXSWINDOWRESDATAOBJECT_H

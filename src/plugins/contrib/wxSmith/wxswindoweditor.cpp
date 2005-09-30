@@ -3,12 +3,14 @@
 #include "widget.h"
 #include <wx/settings.h>
 #include <wx/scrolwin.h>
+#include <wx/clipbrd.h>
 #include "wxspropertiesman.h"
 #include "wxspalette.h"
 #include "wxsmith.h"
 #include "wxsresource.h"
 #include "wxsdragwindow.h"
 #include "resources/wxswindowres.h"
+#include "resources/wxswindowresdataobject.h"
 #include "wxswinundobuffer.h"
 #include "wxswidgetfactory.h"
 
@@ -184,6 +186,49 @@ void wxsWindowEditor::Redo()
 	}
 	SetModified(UndoBuff->IsModified());
 }
+
+bool wxsWindowEditor::CanCut()
+{
+    return DragWnd && DragWnd->GetMultipleSelCount();
+}
+
+bool wxsWindowEditor::CanCopy()
+{
+    return DragWnd && DragWnd->GetMultipleSelCount();
+}
+
+bool wxsWindowEditor::CanPaste()
+{
+    if ( !wxTheClipboard->Open() ) return false;
+    bool Res = wxTheClipboard->IsSupported(wxsDF_WIDGET);
+    wxTheClipboard->Close();
+    return Res;
+}
+
+void wxsWindowEditor::Cut()
+{
+
+}
+
+void wxsWindowEditor::Copy()
+{
+	if ( !DragWnd ) return;
+    if ( !wxTheClipboard->Open() ) return;
+    wxsWindowResDataObject* Data = new wxsWindowResDataObject;
+    int Cnt = DragWnd->GetMultipleSelCount();
+    for ( int i=0; i<Cnt; i++ )
+    {
+    	Data->AddWidget(DragWnd->GetMultipleSelWidget(i));
+    }
+    wxTheClipboard->SetData(Data);
+    wxTheClipboard->Close();
+}
+
+void wxsWindowEditor::Paste()
+{
+
+}
+
 
 BEGIN_EVENT_TABLE(wxsWindowEditor,wxsEditor)
     EVT_LEFT_DOWN(wxsWindowEditor::OnMouseClick)

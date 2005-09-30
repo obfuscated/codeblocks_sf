@@ -80,12 +80,17 @@ class wxsContainer : public wxsWidget
          * \returns >= 0 if found (this value is Id of widget, 0<=Id<ChildCount),
          *          -1 if there's no such child
          */
-        virtual int FindChild(wxsWidget* Widget)
+        virtual int FindChild(wxsWidget* Widget,int Level=1)
         {
             int Cnt = 0;
             for ( WidgetsI i = Widgets.begin(); i!=Widgets.end(); ++i, ++Cnt )
-                if ( (*i)==Widget ) 
+            {
+                if ( (*i)==Widget )
                     return Cnt;
+                if ( Level != 1 )
+                    if ( (*i)->FindChild(Widget,Level-1) )
+                        return 0;
+            }
             return -1;
         }
          

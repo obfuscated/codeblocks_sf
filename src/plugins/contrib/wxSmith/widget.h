@@ -449,10 +449,12 @@ class wxsWidget
         virtual bool DelChild(wxsWidget* Widget) { return false; }
         
         /** Searching for specified widget 
-         * \returns >= 0 if found (this value is Id of widget, 0<=Id<ChildCount),
-         *          -1 if there's no such child
+         * \param Widget - widget we're looking for
+         * \param Level - max depth level (0 - unlimited, 1 - direct children only, >1 - children and subchildren)
+         * \return >= 0 if found (when Level == 1, this value is Id of widget, 0<=Id<ChildCount, otherwise it's 0),
+         *           -1 if there's no such child
          */
-        virtual int FindChild(wxsWidget* Widget) { return -1; }
+        virtual int FindChild(wxsWidget* Widget,int Level = 1) { return -1; }
         
         /** Changing position of widget in child list */
         virtual bool ChangeChildPos(int PrevPos, int NewPos) { return false; }

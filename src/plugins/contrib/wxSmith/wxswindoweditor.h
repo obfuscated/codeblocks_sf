@@ -44,11 +44,29 @@ class wxsWindowEditor : public wxsEditor
 		/** Ckecing if can Redo */
 		virtual bool CanRedo();
 		
+		/** Checking if we can cut */
+		virtual bool CanCut();
+		
+		/** Checking if we can copy */
+		virtual bool CanCopy();
+		
+		/** Checking if we can paste */
+		virtual bool CanPaste();
+				
 		/** Undoing */
 		virtual void Undo();
 		
 		/** Redoing */
 		virtual void Redo();
+		
+		/** Cutting */
+		virtual void Cut();
+		
+		/** Copying */
+		virtual void Copy();
+		
+		/** Pasting */
+		virtual void Paste();
 		
 		/** Getting undo buffer */
 		inline wxsWinUndoBuffer* GetUndoBuff() { return UndoBuff; }

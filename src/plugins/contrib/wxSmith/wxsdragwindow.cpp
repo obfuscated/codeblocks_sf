@@ -735,6 +735,31 @@ void wxsDragWindow::NotifySizeChange(const wxSize& Size)
     Background = new wxBitmap(Size.GetWidth(),Size.GetHeight());
 }
 
+wxsWidget* wxsDragWindow::GetSelection()
+{
+	for ( DragPointsI i =  DragPoints.begin(); i!=DragPoints.end(); ++i )
+	{
+		if ( !(*i)->Inactive )
+		{
+			// Here's active drag point - it's at the edget of current selection
+			return (*i)->Widget;
+		}
+	}
+    return NULL;
+}
+
+int wxsDragWindow::GetMultipleSelCount()
+{
+	return DragPoints.size() / DragBoxTypeCnt;
+}
+
+wxsWidget* wxsDragWindow::GetMultipleSelWidget(int Index)
+{
+	Index *= DragBoxTypeCnt;
+	if ( Index < 0 || Index >= (int)DragPoints.size() ) return NULL;
+	return DragPoints[Index]->Widget;
+}
+
 void wxsDragWindow::OnFetchBackground(wxCommandEvent& event)
 {
 	wxScreenDC DC;
@@ -792,14 +817,7 @@ void wxsDragWindow::BlackDragPoints(wxsWidget* Widget)
 
 bool wxsDragWindow::IsInside(wxsWidget* What,wxsWidget* Where )
 {
-    if ( What == Where ) return true;
-
-    int Cnt = Where->GetChildCount();
-    for ( int i=0; i<Cnt; i++ )
-    {
-        if ( IsInside(What,Where->GetChild(i)) ) return true;
-    }
-    return false;
+	return Where->FindChild(What,0);
 }
 
 bool wxsDragWindow::IsVisible(wxsWidget* Widget)

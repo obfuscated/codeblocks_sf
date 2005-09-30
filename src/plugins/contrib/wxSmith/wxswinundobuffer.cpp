@@ -54,7 +54,7 @@ void wxsWinUndoBuffer::StoreChange()
     // Adding new undo
     
 	wxsWindowResDataObject Object;
-	Object.MakeFromWidget(Resource->GetRootWidget());
+	Object.AddWidget(Resource->GetRootWidget());
     UndoEntry* NewEntry = new UndoEntry;
     NewEntry->XmlData = Object.GetXmlData();
     NewEntry->XmlData.Shrink();
@@ -81,6 +81,6 @@ wxsWidget *wxsWinUndoBuffer::Redo()
 wxsWidget* wxsWinUndoBuffer::BuildResourceFromEntry(UndoEntry* Entry)
 {
 	wxsWindowResDataObject Object;
-	Object.SetXmlData(Entry->XmlData);
+	if ( !Object.SetXmlData(Entry->XmlData) ) return NULL;
 	return Object.BuildWidget(Resource);
 }
