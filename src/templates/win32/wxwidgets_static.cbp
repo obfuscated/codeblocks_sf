@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE Code::Blocks_project_file>
+<Code::Blocks_project_file>
+	<FileVersion major="1" minor="1"/>
+	<Project>
+		<Option title="wxWidgets application"/>
+		<Option makefile="Makefile"/>
+		<Build>
+			<Target title="default">
+				<Option type="0"/>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-pipe"/>
+			<Add option="-mthreads"/>
+			<Add option="-fno-pcc-struct-return"/>
+			<Add option="-fno-rtti"/>
+			<Add option="-fno-exceptions"/>
+			<Add option="-D_X86_"/>
+			<Add option="-DWIN32"/>
+			<Add option="-D_WIN32"/>
+			<Add option="-DWINVER=0x0400"/>
+			<Add option="-D__WIN95__"/>
+			<Add option="-D__GNUWIN32__"/>
+			<Add option="-D__WIN32__"/>
+			<Add option="-DSTRICT"/>
+			<Add option="-D__WXMSW__"/>
+			<Add option="-D__WINDOWS__"/>
+		</Compiler>
+		<Linker>
+			<Add library="wxmsw"/>
+			<Add library="winspool"/>
+			<Add library="winmm"/>
+			<Add library="shell32"/>
+			<Add library="comctl32"/>
+			<Add library="ctl3d32"/>
+			<Add library="odbc32"/>
+			<Add library="advapi32"/>
+			<Add library="wsock32"/>
+			<Add library="opengl32"/>
+			<Add library="glu32"/>
+			<Add library="ole32"/>
+			<Add library="oleaut32"/>
+			<Add library="uuid"/>
+		</Linker>
+	</Project>
+</Code::Blocks_project_file>

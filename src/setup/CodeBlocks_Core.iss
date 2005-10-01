@@ -3,14 +3,14 @@
 
 [Setup]
 AppName=Code::Blocks
-AppVerName=Code::Blocks 1.0-RC1-1
+AppVerName=Code::Blocks 1.0rc2
 AppPublisher=Code::Blocks
 DefaultDirName={pf}\CodeBlocks
 DefaultGroupName=CodeBlocks
-LicenseFile=..\COPYING
-OutputBaseFilename=CodeBlocks-1.0-RC1-1
+LicenseFile=..\..\COPYING
+OutputBaseFilename=CodeBlocks-1.0rc2
 AppPublisherURL=www.codeblocks.org
-AppVersion=1.0-RC1-1
+AppVersion=1.0rc2
 UninstallDisplayIcon={app}\codeblocks.exe
 UninstallDisplayName=Code::Blocks
 ShowLanguageDialog=no
@@ -37,14 +37,15 @@ Source: ..\output\codeblocks.exe; DestDir: {app}; Flags: ignoreversion; Componen
 Source: ..\output\codeblocks.dll; DestDir: {app}; Components: ProgramFiles
 Source: codeblocks.exe.manifest; DestDir: {app}; Components: ProgramFiles
 Source: mingwm10.dll; DestDir: {app}; Components: ProgramFiles
-Source: wxmsw242.dll; DestDir: {app}; Components: ProgramFiles
+Source: wxmsw26_gcc_cb.dll; DestDir: {app}; Components: ProgramFiles
 Source: ..\output\exchndl.dll; DestDir: {app}; Components: ProgramFiles
+Source: ..\output\wxscintilla.dll; DestDir: {app}; Components: ProgramFiles
 Source: ..\output\console_runner.exe; DestDir: {app}; Components: ProgramFiles
-Source: ..\AUTHORS; DestDir: {app}; DestName: AUTHORS.txt; Components: ProgramFiles
-Source: ..\COPYING; DestDir: {app}; DestName: COPYING.txt; Components: ProgramFiles
-Source: ..\README; DestDir: {app}; DestName: README.txt; Components: ProgramFiles
+Source: ..\..\AUTHORS; DestDir: {app}; DestName: AUTHORS.txt; Components: ProgramFiles
+Source: ..\..\COPYING; DestDir: {app}; DestName: COPYING.txt; Components: ProgramFiles
+Source: ..\..\README; DestDir: {app}; DestName: README.txt; Components: ProgramFiles
 Source: ..\tips.txt; DestDir: {app}; Components: ProgramFiles
-Source: ..\ChangeLog; DestDir: {app}; Components: ProgramFiles
+Source: ..\..\ChangeLog; DestDir: {app}; Components: ProgramFiles
 Source: WebSite.url; DestDir: {app}; Components: ProgramFiles
 Source: Forums.url; DestDir: {app}; Components: ProgramFiles
 Source: WiKi.url; DestDir: {app}; Components: ProgramFiles
@@ -67,6 +68,11 @@ Source: ..\output\share\CodeBlocks\manager_resources.zip; DestDir: {app}\share\C
 Source: ..\output\share\CodeBlocks\plugin_wizard.zip; DestDir: {app}\share\CodeBlocks; Components: Plugins/PluginWizard
 Source: ..\output\share\CodeBlocks\todo.zip; DestDir: {app}\share\CodeBlocks; Components: Plugins/ToDo
 Source: ..\output\share\CodeBlocks\devpakupdater.zip; DestDir: {app}\share\CodeBlocks; Components: Plugins/DevPak
+Source: ..\output\share\CodeBlocks\profiler.zip; DestDir: {app}\share\CodeBlocks; Components: Plugins/Profiler
+Source: ..\output\share\CodeBlocks\codestat.zip; DestDir: {app}\share\CodeBlocks; Components: Plugins/CodeStat
+Source: ..\output\share\CodeBlocks\help_plugin.zip; DestDir: {app}\share\CodeBlocks; Components: Plugins/HelpPlugin
+Source: ..\output\share\CodeBlocks\svn.zip; DestDir: {app}\share\CodeBlocks; Components: Plugins/Svn
+Source: ..\output\share\CodeBlocks\wxsmith.zip; DestDir: {app}\share\CodeBlocks; Components: Plugins/wxSmith
 Source: ..\output\share\CodeBlocks\plugins\astyle.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: Plugins/AStyleFormatter
 Source: ..\output\share\CodeBlocks\plugins\classwizard.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: Plugins/ClassWizard
 Source: ..\output\share\CodeBlocks\plugins\codecompletion.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: Plugins/CodeCompletion
@@ -77,6 +83,11 @@ Source: ..\output\share\CodeBlocks\plugins\pluginwizard.dll; DestDir: {app}\shar
 Source: ..\output\share\CodeBlocks\plugins\xpmanifest.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: Plugins/XPManifest
 Source: ..\output\share\CodeBlocks\plugins\todo.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: Plugins/ToDo
 Source: ..\output\share\CodeBlocks\plugins\devpakupdater.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: Plugins/DevPak
+Source: ..\output\share\CodeBlocks\plugins\cbprofiler.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: Plugins/Profiler
+Source: ..\output\share\CodeBlocks\plugins\codestat.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: Plugins/CodeStat
+Source: ..\output\share\CodeBlocks\plugins\help_plugin.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: Plugins/HelpPlugin
+Source: ..\output\share\CodeBlocks\plugins\svn.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: Plugins/Svn
+Source: ..\output\share\CodeBlocks\plugins\wxsmith.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: Plugins/wxSmith
 Source: ..\output\share\CodeBlocks\images\ascii.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\images\codeblocks.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\images\compile.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
@@ -139,14 +150,18 @@ Source: ..\templates\common\console.template; DestDir: {app}\share\CodeBlocks\te
 Source: ..\templates\common\console-main-c.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\common\console-main-cpp.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\common\dll.png; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
-Source: ..\templates\common\ogre_gcc.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
-Source: ..\templates\common\ogre_vctk.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
+Source: ..\templates\common\irr_main.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
+Source: ..\templates\common\irrlicht.png; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\common\ogrelogo.png; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\common\ogre-main.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\common\qt.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\common\qt.template; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\common\qtlogo32.png; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\common\qt-main.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
+Source: ..\templates\common\sdccapp.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
+Source: ..\templates\common\sdccapp.png; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
+Source: ..\templates\common\sdccapp.template; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
+Source: ..\templates\common\sdccapp-main.c; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\common\sdl.png; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\common\sdlapp.template; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\common\sdl-cb.bmp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
@@ -166,7 +181,12 @@ Source: ..\templates\win32\dll.cbp; DestDir: {app}\share\CodeBlocks\templates; C
 Source: ..\templates\win32\dll.template; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\win32\dll-main.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\win32\gui.png; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
+Source: ..\templates\win32\irr_gcc.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
+Source: ..\templates\win32\irr_vctk.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
+Source: ..\templates\win32\irrlicht.template; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\win32\ogre.template; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
+Source: ..\templates\win32\ogre_gcc.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
+Source: ..\templates\win32\ogre_vctk.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\win32\opengl.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\win32\opengl.png; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\win32\opengl.template; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
@@ -178,14 +198,20 @@ Source: ..\templates\win32\win32-main.cpp; DestDir: {app}\share\CodeBlocks\templ
 Source: ..\templates\win32\wxwidgets.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\win32\wxwidgets.template; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\win32\wxwidgets_static.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
+Source: ..\sdk\resources\lexers\lexer_cg.sample; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
+Source: ..\sdk\resources\lexers\lexer_cg.xml; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
 Source: ..\sdk\resources\lexers\lexer_cpp.sample; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
 Source: ..\sdk\resources\lexers\lexer_cpp.xml; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
+Source: ..\sdk\resources\lexers\lexer_f77.sample; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
+Source: ..\sdk\resources\lexers\lexer_f77.xml; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
 Source: ..\sdk\resources\lexers\lexer_gm.sample; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
 Source: ..\sdk\resources\lexers\lexer_gm.xml; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
 Source: ..\sdk\resources\lexers\lexer_hitasm.sample; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
 Source: ..\sdk\resources\lexers\lexer_hitasm.xml; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
 Source: ..\sdk\resources\lexers\lexer_lua.sample; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
 Source: ..\sdk\resources\lexers\lexer_lua.xml; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
+Source: ..\sdk\resources\lexers\lexer_prg.sample; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
+Source: ..\sdk\resources\lexers\lexer_prg.xml; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
 Source: ..\sdk\resources\lexers\lexer_rc.sample; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
 Source: ..\sdk\resources\lexers\lexer_rc.xml; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
 Source: ..\sdk\resources\lexers\lexer_xml.sample; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
@@ -215,16 +241,21 @@ Filename: {app}\codeblocks.exe; Description: Launch Code::Blocks; Flags: nowait 
 Name: ProgramFiles; Description: Required program files; Types: custom compact full; Flags: fixed
 Name: ProgramFiles/Templates; Description: Project templates; Types: custom full
 Name: Plugins; Description: Additional plugins; Types: custom full
-Name: Plugins/ClassWizard; Description: Class wizard plugin; Types: custom full
-Name: Plugins/CodeCompletion; Description: Code completion / Class browser plugin; Types: custom full
-Name: Plugins/CompilerGCC; Description: Compiler plugin; Types: custom compact full
-Name: Plugins/DebuggerGDB; Description: GDB debugger plugin; Types: custom compact full
-Name: Plugins/PluginWizard; Description: Code::Blocks Plugin wizard plugin; Types: custom full
-Name: Plugins/ToDo; Description: To-Do List plugin; Types: custom full
-Name: Plugins/XPManifest; Description: WindowsXP Manifest plugin; Types: custom full
-Name: Plugins/AStyleFormatter; Description: Astyle code formatter plugin; Types: custom full
+Name: Plugins/ClassWizard; Description: Simple C++ class-creation wizard; Types: custom full
+Name: Plugins/CodeCompletion; Description: Code completion / Class browser; Types: custom full
+Name: Plugins/CompilerGCC; Description: Compiler support; Types: custom compact full; Flags: fixed
+Name: Plugins/DebuggerGDB; Description: GDB debugger support; Types: custom compact full
+Name: Plugins/PluginWizard; Description: Code::Blocks Plugin creation wizard; Types: custom full
+Name: Plugins/ToDo; Description: To-Do list support; Types: custom full
+Name: Plugins/XPManifest; Description: WindowsXP Manifest creation; Types: custom full
+Name: Plugins/AStyleFormatter; Description: Astyle code formatter; Types: custom full
 Name: Plugins/DefMimeHandler; Description: Default MIME handler; Types: custom compact full
-Name: Plugins/DevPak; Description: DevPaks support plugin; Types: custom
+Name: Plugins/DevPak; Description: Dev-C++ DevPaks support; Types: custom full
+Name: Plugins/Profiler; Description: GProf output parser; Types: custom full
+Name: Plugins/CodeStat; Description: Code staticstics (lines of code, comments, etc); Types: custom full
+Name: Plugins/HelpPlugin; Description: Support for external help files in Help menu; Types: custom full
+Name: Plugins/Svn; Description: SVN/CVS support for projects; Types: custom full
+Name: Plugins/wxSmith; Description: Work-In-Progress RAD editor for wxWidgets; Types: custom full
 
 [UninstallRun]
 Filename: {app}\codeblocks.exe; Parameters: --clear-configuration; WorkingDir: {app}
