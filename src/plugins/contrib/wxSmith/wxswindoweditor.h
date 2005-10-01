@@ -2,6 +2,7 @@
 #define WXSWINDOWEDITOR_H
 
 #include <wx/wx.h>
+#include <vector>
 
 #include "wxsproject.h"
 #include "wxseditor.h"
@@ -75,6 +76,11 @@ class wxsWindowEditor : public wxsEditor
 
         /** Getting wxsWindowRes pointer to currently edited resource */
         inline wxsWindowRes* GetWinRes() { return (wxsWindowRes*)GetResource(); }
+        
+        /** Getting vector of selected widges. If any-level parent of widget
+         *  is also selected, widget is skipped.
+         */
+        void GetSelectionNoChildren(std::vector<wxsWidget*>& Vector);
 
 	private:
 
@@ -85,6 +91,7 @@ class wxsWindowEditor : public wxsEditor
         void OnMouseClick(wxMouseEvent& event);
         void OnSelectWidget(wxsEvent& event);
         void OnUnselectWidget(wxsEvent& event);
+        
 
         /** New layer used for dragging widgets */
         wxsDragWindow* DragWnd;

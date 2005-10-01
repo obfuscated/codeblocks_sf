@@ -207,18 +207,53 @@ bool wxsWindowEditor::CanPaste()
 
 void wxsWindowEditor::Cut()
 {
-
+	// Almost all selected widgets will be added into clipboard
+	// but with one exception - widget won't be added if parent of this
+	// widget at any level is also selected
+	
+	std::vector<wxsWidget*> Widgets;
+	GetSelectionNoChildren(Widgets);
+	
+	if ( !DragWnd ) return;
+    if ( !wxTheClipboard->Open() ) return;
+    wxsWindowResDataObject* Data = new wxsWindowResDataObject;
+    int Cnt = (int)Widgets.size();
+    for ( int i=0; i<Cnt; i++ )
+    {
+    	Data->AddWidget(Widgets[i]);
+    }
+    wxTheClipboard->SetData(Data);
+    wxTheClipboard->Close();
+    
+    // Removing widgets copied into clipboard
+    KillPreview();
+    for ( int i=0; i<Cnt; i++ )
+    {
+    	// Can not delete top-most widget 
+    	if ( Widgets[i]->GetParent() )
+    	{
+            wxsWidgetFactory::Get()->Kill(Widgets[i]);
+    	}
+    }
+    BuildPreview();
 }
 
 void wxsWindowEditor::Copy()
 {
+	// Almost all selected widgets will be added into clipboard
+	// but with one exception - widget won't be added if parent of this
+	// widget at any level is also selected
+	
+	std::vector<wxsWidget*> Widgets;
+	GetSelectionNoChildren(Widgets);
+	
 	if ( !DragWnd ) return;
     if ( !wxTheClipboard->Open() ) return;
     wxsWindowResDataObject* Data = new wxsWindowResDataObject;
-    int Cnt = DragWnd->GetMultipleSelCount();
+    int Cnt = (int)Widgets.size();
     for ( int i=0; i<Cnt; i++ )
     {
-    	Data->AddWidget(DragWnd->GetMultipleSelWidget(i));
+    	Data->AddWidget(Widgets[i]);
     }
     wxTheClipboard->SetData(Data);
     wxTheClipboard->Close();
@@ -226,7 +261,37 @@ void wxsWindowEditor::Copy()
 
 void wxsWindowEditor::Paste()
 {
+}
 
+void wxsWindowEditor::GetSelectionNoChildren(std::vector<wxsWidget*>& Vector)
+{
+	Vector.clear();
+	int Cnt = DragWnd->GetMultipleSelCount();
+	for ( int i=0; i<Cnt; i++ )
+	{
+		Vector.push_back(DragWnd->GetMultipleSelWidget(i));
+	}
+	
+	for ( int i=0; i<Cnt; i++ )
+	{
+		for ( int j=0; j<Cnt; j++ )
+		{
+			// Yes, I know it could be O(n) ;)
+			wxsWidget* Check = Vector[i];
+			while ( Check = Check->GetParent() )
+			{
+				if ( Check == Vector[j] ) break;
+			}
+			if ( Check )
+			{
+                // i-th vector item has selected (grand)parent, it must be removed
+                Vector.erase(Vector.begin()+i);
+                --i;
+                --Cnt;
+                break;
+            }
+		}
+	}
 }
 
 
