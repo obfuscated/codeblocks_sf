@@ -64,8 +64,8 @@ copy /y templates\common\* output\share\codeblocks\templates > nul
 copy /y templates\win32\* output\share\codeblocks\templates > nul
 copy /y templates\common\* %RESDIR%\templates > nul
 copy /y templates\win32\* %RESDIR%\templates > nul
-copy /y tips.txt devel > nul
-copy /y tips.txt output > nul
+copy /y tips.txt devel\share\CodeBlocks > nul
+copy /y tips.txt output\share\CodeBlocks > nul
 copy /y tools\ConsoleRunner\console_runner*.exe output > nul
 copy /y tools\ConsoleRunner\console_runner*.exe devel > nul
 copy /y devel\*.exe output > nul
