@@ -1,6 +1,12 @@
 #include "wxsresourcetree.h"
 #include "wxsglobals.h"
+#include "resources/wxswindowres.h"
 #include "resources/wxswindowresdataobject.h"
+#include "wxsevent.h"
+#include "widget.h"
+#include "wxspalette.h"
+#include "wxswidgetfactory.h"
+#include "wxswinundobuffer.h"
 
 void wxsResourceTree::OnSelectResource(wxTreeEvent& event)
 {
@@ -47,7 +53,7 @@ void wxsResourceTree::OnEndDrag(wxTreeEvent& event)
         if ( Dest == Dragged ) return;
         
         // Determining insertion method
-        int InsertionType = wxsPALETTE()->GetInsertionType();
+        int InsertionType = wxsPalette::itBefore; //wxsPALETTE()->GetInsertionType();
         
         switch ( InsertionType )
         {

@@ -3,6 +3,9 @@
 
 #include <wx/treectrl.h>
 
+class wxsWidget;
+class wxsResource;
+
 /** Resource tree class */
 class wxsResourceTree: public wxTreeCtrl
 {
