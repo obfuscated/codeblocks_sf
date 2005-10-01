@@ -23,9 +23,11 @@
 #include "wxstreectrl.h"
 #include "wxsradiobox.h"
 #include "wxsdatepickerctrl.h"
+#include "wxsstaticline.h"
 #include "wxssplitterwindow.h"
 #include "wxsnotebook.h"
 #include "wxslistbook.h"
+
 
 #include <wx/xrc/xmlres.h>
 #include <configmanager.h>
@@ -172,6 +174,7 @@ static wxsWidgetInfo StdInfos[] =
     Entry(TreeCtrl,      "wx_wxtreectrl.html#wxtreectrl","<wx/treectrl.h>")
     Entry(RadioBox,      "wx_wxradiobox.html#wxradiobox","<wx/radiobox.h>")
     Entry2Headers(DatePickerCtrl,"wx_wxdatepickerctrl.html#wxdatepickerctrl","<wx/datectrl.h>","<wx/dateevt.h>")
+    Entry(StaticLine,    "wx_wxstaticline.html#wxstaticline","<wx/statline.h>")
     Entry(SplitterWindow,"wx_wxsplitterwindow.html#wxsplitterwindow","<wx/splitter.h>")
     Entry(Notebook,      "wx_wxnotebook.html#wxnotebook","<wx/notebook.h>")
     Entry(Listbook,      "wx_wxlistbook.html#wxlistbook","<wx/listbook.h>")
@@ -272,6 +275,7 @@ wxsWidget* wxsStdManagerT::ProduceWidget(int Id,wxsWindowRes* Res)
         case wxsTreeCtrlId:         return new wxsTreeCtrl(this,Res);
         case wxsRadioBoxId:         return new wxsRadioBox(this,Res);
         case wxsDatePickerCtrlId:   return new wxsDatePickerCtrl(this,Res);
+        case wxsStaticLineId:       return new wxsStaticLine(this,Res);
         case wxsSplitterWindowId:   return new wxsSplitterWindow(this,Res);
         case wxsNotebookId:         return new wxsNotebook(this,Res);
         case wxsListbookId:         return new wxsListbook(this,Res);
