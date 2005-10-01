@@ -16,7 +16,8 @@
 
 wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsWindowRes* Resource):
     wxsEditor(parent,Resource->GetWxsFile(),Resource),
-    UndoBuff(new wxsWinUndoBuffer(Resource))
+    UndoBuff(new wxsWinUndoBuffer(Resource)),
+    InsideMultipleChange(false)
 {
     wxSizer* Sizer = new wxBoxSizer(wxVERTICAL);
 
@@ -35,7 +36,7 @@ wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsWindowRes* Resource):
     DragWnd->Hide();
     wxFileName Name(Resource->GetWxsFile());
     SetTitle(Name.GetFullName());
-    
+
     // Storing current resource data as a base for undo buffer
     UndoBuff->StoreChange();
     UndoBuff->Saved();
@@ -139,9 +140,10 @@ bool wxsWindowEditor::GetModified()
 {
 	return GetWinRes()->GetModified();
 }
-		
+
 void wxsWindowEditor::SetModified(bool modified)
 {
+	DebLog("Setting modified to %d",modified);
     GetWinRes()->SetModified(modified);
     if ( GetWinRes()->GetModified() )
     {
@@ -170,7 +172,7 @@ void wxsWindowEditor::Undo()
 	if ( !GetWinRes()->ChangeRootWidget(NewRoot) )
 	{
 		DebLog(_("wxSmith ERROR: Something wrong with undo buffer !!!"));
-		wxsWidgetFactory::Get()->Kill(NewRoot);
+		wxsKILL(NewRoot);
 	}
 	SetModified(UndoBuff->IsModified());
 }
@@ -182,7 +184,7 @@ void wxsWindowEditor::Redo()
 	if ( !GetWinRes()->ChangeRootWidget(NewRoot) )
 	{
 		DebLog(_("wxSmith ERROR: Something wrong with undo buffer !!!"));
-        wxsWidgetFactory::Get()->Kill(NewRoot);
+        wxsKILL(NewRoot);
 	}
 	SetModified(UndoBuff->IsModified());
 }
@@ -201,6 +203,7 @@ bool wxsWindowEditor::CanPaste()
 {
     if ( !wxTheClipboard->Open() ) return false;
     bool Res = wxTheClipboard->IsSupported(wxsDF_WIDGET);
+// FIXME (SpOoN#1#): Add support for text (XRC) data
     wxTheClipboard->Close();
     return Res;
 }
@@ -210,10 +213,10 @@ void wxsWindowEditor::Cut()
 	// Almost all selected widgets will be added into clipboard
 	// but with one exception - widget won't be added if parent of this
 	// widget at any level is also selected
-	
+
 	std::vector<wxsWidget*> Widgets;
 	GetSelectionNoChildren(Widgets);
-	
+
 	if ( !DragWnd ) return;
     if ( !wxTheClipboard->Open() ) return;
     wxsWindowResDataObject* Data = new wxsWindowResDataObject;
@@ -224,15 +227,15 @@ void wxsWindowEditor::Cut()
     }
     wxTheClipboard->SetData(Data);
     wxTheClipboard->Close();
-    
+
     // Removing widgets copied into clipboard
     KillPreview();
     for ( int i=0; i<Cnt; i++ )
     {
-    	// Can not delete top-most widget 
+    	// Can not delete top-most widget
     	if ( Widgets[i]->GetParent() )
     	{
-            wxsWidgetFactory::Get()->Kill(Widgets[i]);
+            wxsKILL(Widgets[i]);
     	}
     }
     BuildPreview();
@@ -243,10 +246,10 @@ void wxsWindowEditor::Copy()
 	// Almost all selected widgets will be added into clipboard
 	// but with one exception - widget won't be added if parent of this
 	// widget at any level is also selected
-	
+
 	std::vector<wxsWidget*> Widgets;
 	GetSelectionNoChildren(Widgets);
-	
+
 	if ( !DragWnd ) return;
     if ( !wxTheClipboard->Open() ) return;
     wxsWindowResDataObject* Data = new wxsWindowResDataObject;
@@ -261,6 +264,56 @@ void wxsWindowEditor::Copy()
 
 void wxsWindowEditor::Paste()
 {
+    if ( !wxTheClipboard->Open() ) return;
+    wxsWindowResDataObject Data;
+    if ( wxTheClipboard->GetData(Data) )
+    {
+        wxsWidget* RelativeTo = DragWnd->GetSelection();
+        int InsertionType = wxsPalette::Get()->GetInsertionType();
+        if ( !RelativeTo )
+        {
+            InsertionType = wxsPalette::itInto;
+            RelativeTo = GetWinRes()->GetRootWidget();
+            if ( RelativeTo->GetChildCount() == 1 &&
+                 RelativeTo->GetChild(0)->GetInfo().Sizer )
+            {
+                RelativeTo = RelativeTo->GetChild(0);
+            }
+        }
+
+        int Cnt = Data.GetWidgetCount();
+        if ( Cnt )
+        {
+            StartMultipleChange();
+            for ( int i=0; i<Cnt; i++ )
+            {
+                wxsWidget* Insert = Data.BuildWidget(GetWinRes(),i);
+                if ( Insert )
+                {
+                    switch ( InsertionType )
+                    {
+                        case wxsPalette::itAfter:
+                            InsertAfter(Insert,RelativeTo);
+                            RelativeTo = Insert;
+                            break;
+
+                        case wxsPalette::itBefore:
+                            InsertBefore(Insert,RelativeTo);
+                            break;
+
+                        case wxsPalette::itInto:
+                            InsertInto(Insert,RelativeTo);
+                            break;
+                    }
+                }
+            }
+            EndMultipleChange();
+// FIXME (SpOoN#1#): Updating base properties probably won't work properly 
+            GetWinRes()->CheckBaseProperties(true,NULL); 
+            GetWinRes()->NotifyChange();
+        }
+    }
+    wxTheClipboard->Close();
 }
 
 void wxsWindowEditor::GetSelectionNoChildren(std::vector<wxsWidget*>& Vector)
@@ -271,7 +324,7 @@ void wxsWindowEditor::GetSelectionNoChildren(std::vector<wxsWidget*>& Vector)
 	{
 		Vector.push_back(DragWnd->GetMultipleSelWidget(i));
 	}
-	
+
 	for ( int i=0; i<Cnt; i++ )
 	{
 		for ( int j=0; j<Cnt; j++ )
@@ -294,6 +347,146 @@ void wxsWindowEditor::GetSelectionNoChildren(std::vector<wxsWidget*>& Vector)
 	}
 }
 
+bool wxsWindowEditor::StartMultipleChange()
+{
+	if ( InsideMultipleChange ) return false;
+	InsideMultipleChange = true;
+	KillPreview();
+	return true;
+}
+
+bool wxsWindowEditor::EndMultipleChange()
+{
+	if ( !InsideMultipleChange ) return false;
+	InsideMultipleChange = false;
+	BuildPreview();
+	wxsTREE()->Refresh();
+	return true;
+}
+
+bool wxsWindowEditor::InsertBefore(wxsWidget* New,wxsWidget* Ref)
+{
+	if ( !Ref )
+	{
+        Ref = DragWnd->GetSelection();
+	}
+	
+	if ( !Ref )
+	{
+		wxsKILL(New);
+		return false;
+	}
+	
+	if ( !InsideMultipleChange )
+	{
+		KillPreview();
+	}
+    wxsWidget* Parent = Ref->GetParent();
+    
+    int Index;
+    bool Ret;
+    
+    if ( !Parent || (Index=Parent->FindChild(Ref)) < 0 || Parent->AddChild(New,Index) < 0 )
+    {
+        wxsKILL(New);
+        Ret = false;
+    }
+    else
+    {
+        // Adding this new item into resource tree
+        New->BuildTree(wxsTREE(),Parent->TreeId,Index);
+        Ret = true;
+    }
+    
+    if ( !InsideMultipleChange )
+    {
+    	wxsTREE()->Refresh();
+    	BuildPreview();
+    }
+    
+    return Ret;
+}   
+
+bool wxsWindowEditor::InsertAfter(wxsWidget* New,wxsWidget* Ref)
+{
+	if ( !Ref )
+	{
+        Ref = DragWnd->GetSelection();
+	}
+	
+	if ( !Ref )
+	{
+		wxsKILL(New);
+		return false;
+	}
+	
+	if ( !InsideMultipleChange )
+	{
+		KillPreview();
+	}
+    wxsWidget* Parent = Ref->GetParent();
+    
+    int Index;
+    bool Ret;
+    
+    if ( !Parent || (Index=Parent->FindChild(Ref)) < 0 || Parent->AddChild(New,Index+1) < 0 )
+    {
+        wxsKILL(New);
+        Ret = false;
+    }
+    else
+    {
+        // Adding this new item into resource tree
+        New->BuildTree(wxsTREE(),Parent->TreeId,Index+1);
+        Ret = true;
+    }
+    
+    if ( !InsideMultipleChange )
+    {
+    	wxsTREE()->Refresh();
+    	BuildPreview();
+    }
+    
+    return Ret;
+}   
+
+bool wxsWindowEditor::InsertInto(wxsWidget* New,wxsWidget* Ref)
+{
+	if ( !Ref )
+	{
+        Ref = DragWnd->GetSelection();
+	}
+	
+	if ( !Ref )
+	{
+		wxsKILL(New);
+		return false;
+	}
+	
+	if ( !InsideMultipleChange )
+	{
+		KillPreview();
+	}
+	
+	bool Ret;
+    if ( Ref->AddChild(New) < 0 )
+    {
+        wxsKILL(New);
+        Ret = false;
+    }
+    else
+    {
+        New->BuildTree(wxsTREE(),Ref->TreeId);
+        Ret = true;
+    }
+    
+    if ( !InsideMultipleChange )
+    {
+    	wxsTREE()->Refresh();
+    	BuildPreview();
+    }
+    return Ret;
+}   
 
 BEGIN_EVENT_TABLE(wxsWindowEditor,wxsEditor)
     EVT_LEFT_DOWN(wxsWindowEditor::OnMouseClick)

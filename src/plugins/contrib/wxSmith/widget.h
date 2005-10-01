@@ -678,6 +678,7 @@ class wxsWidget
         friend class wxsProject;
         friend class wxsPalette;
         friend class wxsWidgetFactory;
+        friend class wxsWindowResDataObject;
 };
 
 /** Class managing widget */

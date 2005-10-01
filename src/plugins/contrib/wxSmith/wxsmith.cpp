@@ -31,50 +31,12 @@
 #include "wxsevent.h"
 #include "wxsnewwindowdlg.h"
 #include "wxsimportxrcdlg.h"
+#include "wxsresourcetree.h"
 
 static int NewDialogId = wxNewId();
 static int NewFrameId = wxNewId();
 static int NewPanelId = wxNewId();
 static int ImportXrcId = wxNewId();
-
-class wxsResourceTree: public wxTreeCtrl
-{
-    public:
-
-        wxsResourceTree(wxWindow* Parent):
-            wxTreeCtrl(Parent,-1)
-        {}
-
-        void OnSelectResource(wxTreeEvent& event)
-        {
-            wxsResourceTreeData* Data = ((wxsResourceTreeData*)GetItemData(event.GetItem()));
-            if ( Data )
-            {
-                switch ( Data->Type )
-                {
-                    case wxsResourceTreeData::tWidget:
-                        {
-                        	wxsSelectWidget(Data->Widget);
-                        }
-                        break;
-
-                    case wxsResourceTreeData::tResource:
-                        {
-                        	wxsSelectRes(Data->Resource);
-                        }
-                        break;
-
-                    default:;
-                }
-            }
-        }
-
-        DECLARE_EVENT_TABLE()
-};
-
-BEGIN_EVENT_TABLE(wxsResourceTree,wxTreeCtrl)
-    EVT_TREE_SEL_CHANGED(wxID_ANY,wxsResourceTree::OnSelectResource)
-END_EVENT_TABLE()
 
 
 cbPlugin* GetPlugin()
@@ -173,7 +135,7 @@ void wxSmith::OnAttach()
         if ( Messages )
         {
             // Creating widgets palette ad the messages Notebook
-            wxWindow* Palette = new wxsPalette((wxWindow*)Messages,this,Messages->GetPageCount());
+            wxWindow* Palette = new wxsPalette((wxWindow*)Messages,Messages->GetPageCount());
             Messages->AddPage(Palette,_("Widgets"));
         }
 	}
@@ -269,11 +231,11 @@ void wxSmith::OnProjectActivated(CodeBlocksEvent& event)
 void wxSmith::OnSpreadEvent(wxsEvent& event)
 {
     wxsPropertiesMan::Get()->ProcessEvent(event);
-    wxsPalette::Get()->ProcessEvent(event);
     for ( ProjectMapI i = ProjectMap.begin(); i != ProjectMap.end(); ++i )
     {
     	(*i).second->SendEventToEditors(event);
     }
+    wxsPalette::Get()->ProcessEvent(event);
 }
 
 cbProject* wxSmith::GetCBProject(wxsProject* Proj)
@@ -388,7 +350,7 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
     if ( !Element ) return;
     
     // Creating fake resource and testing if xrc can be loaded without any errors
-    wxsWidget* Test = wxsWidgetFactory::Get()->Generate(wxString(Element->Attribute("class"),wxConvUTF8),NULL);
+    wxsWidget* Test = wxsGEN(wxString(Element->Attribute("class"),wxConvUTF8),NULL);
     if ( !Test )
     {
     	// Something went wrong - default factory is not working ?

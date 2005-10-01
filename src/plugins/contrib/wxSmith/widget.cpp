@@ -102,7 +102,7 @@ wxsWidget::~wxsWidget()
 
     while ( GetChildCount() )
     {
-        wxsWidgetFactory::Get()->Kill(GetChild(GetChildCount()-1));
+        wxsKILL(GetChild(GetChildCount()-1));
     }
 
     if ( Events )
@@ -776,7 +776,7 @@ bool wxsWidget::XmlLoadChild(TiXmlElement* Element)
 
     if ( Name && *Name )
     {
-        wxsWidget* Child = wxsWidgetFactory::Get()->Generate(wxString(Name,wxConvUTF8),GetResource());
+        wxsWidget* Child = wxsGEN(wxString(Name,wxConvUTF8),GetResource());
         if ( !Child )
         {
             return false;
@@ -823,7 +823,6 @@ bool wxsWidget::XmlSaveChild(int ChildIndex,TiXmlElement* AddHere)
 
 const wxsWidget::CodeDefines& wxsWidget::GetCodeDefines()
 {
-// TODO (SpOoN#1#): Support font
     CDefines.Style = _T("");
     CDefines.InitCode = _T("");
 
@@ -991,15 +990,13 @@ const wxsWidget::CodeDefines& wxsWidget::GetCodeDefines()
     	                  << GetWxString(BaseParams.ToolTip) << _T(");");
     }
         
-    
-    
     return CDefines;
 }
 
 bool wxsWidgetManager::RegisterInFactory()
 {
-    if ( !wxsWidgetFactory::Get() ) return false;
-    wxsWidgetFactory::Get()->RegisterManager(this);
+    if ( !wxsFACTORY() ) return false;
+    wxsFACTORY()->RegisterManager(this);
     return true;
 }
 

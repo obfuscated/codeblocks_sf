@@ -51,7 +51,7 @@ static const wxString DefSizerCat    = _("Layout");
         DefAuthor,                                      \
         DefAuthorEmail,                                 \
         DefAuthorSite,                                  \
-        _T("http://www.wxwidgets.org/manuals/2.6.1/") _T(Link),  \
+        _T("http://www.wxwidgets.org/manuals/2.6.2/") _T(Link),  \
         DefCategory,                                    \
         _T(#Name),                                      \
         false,                                          \
@@ -78,7 +78,7 @@ static const wxString DefSizerCat    = _("Layout");
         DefAuthor,                                      \
         DefAuthorEmail,                                 \
         DefAuthorSite,                                  \
-        _T("http://www.wxwidgets.org/manuals/2.6.1/") _T(Link),  \
+        _T("http://www.wxwidgets.org/manuals/2.6.2/") _T(Link),  \
         _T(""),                                         \
         _T(""),                                         \
         false,                                          \
@@ -102,7 +102,7 @@ static const wxString DefSizerCat    = _("Layout");
         DefAuthor,                                      \
         DefAuthorEmail,                                 \
         DefAuthorSite,                                  \
-        _T("http://www.wxwidgets.org/manuals/2.6.1/wx_wxsizer.html#wxsizeradd"),    \
+        _T("http://www.wxwidgets.org/manuals/2.6.2/wx_wxsizer.html#wxsizeradd"),    \
         DefSizerCat,                                    \
         _T(""),                                         \
         false,                                          \
@@ -127,7 +127,7 @@ static const wxString DefSizerCat    = _("Layout");
         DefAuthor,                                              \
         DefAuthorEmail,                                         \
         DefAuthorSite,                                          \
-        _T("http://www.wxwidgets.org/manuals/2.6.1/") _T(Link), \
+        _T("http://www.wxwidgets.org/manuals/2.6.2/") _T(Link), \
         DefSizerCat,                                            \
         _T(#Name),                                              \
         true,                                                   \

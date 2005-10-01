@@ -204,6 +204,7 @@ class wxsWindowRes : public wxsResource
         bool          Modified;
         wxTreeItemId  TreeId;
         bool          AvoidCreation;
+        
 };
 
 

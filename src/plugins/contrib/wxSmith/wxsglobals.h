@@ -48,4 +48,25 @@ const wxUint32 wxsNO_COLOUR = wxSYS_COLOUR_MAX + 1;
 /** Constant used to notify that custom colour (not system) is used */
 const wxUint32 wxsCUSTOM_COLOUR = wxPG_COLOUR_CUSTOM;
 
+/** Macro returning pointer to wxSmith plugin class */
+#define wxsPLUGIN()    wxSmith::Get()
+
+/** Macro returning current resource tree */
+#define wxsTREE()  wxsPLUGIN()->GetResourceTree()
+
+/** Macro returning current palette */
+#define wxsPALETTE() wxsPalette::Get()
+
+/** Macro returing current properties window */
+#define wxsPROPERTIES() wxsPropertiesMan::Get()
+
+/** Macro returning widgets factory */
+#define wxsFACTORY() wxsWidgetFactory::Get()
+
+/** Macro generating widget with given name */
+#define wxsGEN(Name,Resource) wxsFACTORY()->Generate(Name,Resource)
+
+/** Macro destrtoying widget */
+#define wxsKILL(Widget) wxsFACTORY()->Kill(Widget)
+
 #endif

@@ -153,7 +153,7 @@ bool wxsDefSizer::XmlLoadChild(TiXmlElement* Element)
     const char* Class = Element->Attribute("class");
     if ( Class && !strcmp(Class,"spacer") )
     {
-        wxsWidget* Child = wxsWidgetFactory::Get()->Generate(_T("Spacer"),GetResource());
+        wxsWidget* Child = wxsGEN(_T("Spacer"),GetResource());
         if ( !Child ) return false;
         if ( !Child->XmlLoad(Element) ) Ret = false;
         int Index = AddChild(Child);
@@ -175,7 +175,7 @@ bool wxsDefSizer::XmlLoadChild(TiXmlElement* Element)
     
     if ( !Name || !*Name ) return false;
     
-    wxsWidget* Child = wxsWidgetFactory::Get()->Generate(wxString(Name,wxConvUTF8),GetResource());
+    wxsWidget* Child = wxsGEN(wxString(Name,wxConvUTF8),GetResource());
     if ( !Child ) return false;
     
     if ( !Child->XmlLoad(RealObject) ) Ret = false;

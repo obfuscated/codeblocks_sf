@@ -293,6 +293,16 @@
 			<Option link="0"/>
 			<Option target="wxSmith"/>
 		</Unit>
+		<Unit filename="defwidgets\wxsstaticline.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="defwidgets\wxsstaticline.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
 		<Unit filename="defwidgets\wxsstatictext.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="wxSmith"/>
@@ -734,6 +744,16 @@
 			<Option target="wxSmith"/>
 		</Unit>
 		<Unit filename="wxsresource.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="wxsresourcetree.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="wxsresourcetree.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

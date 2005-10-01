@@ -90,13 +90,13 @@ void wxsWindowRes::Initialize()
 wxsWindowRes::~wxsWindowRes()
 {
     EditClose();
-    wxsWidgetFactory::Get()->Kill(RootWidget);
+    wxsFACTORY()->Kill(RootWidget);
 }
 
 wxsEditor* wxsWindowRes::CreateEditor()
 {
 	if ( AvoidCreation ) return NULL;
-	RootWidget->BuildTree(wxSmith::Get()->GetResourceTree(),GetTreeItemId());
+	RootWidget->BuildTree(wxsTREE(),GetTreeItemId());
     wxsWindowEditor* Edit = new wxsWindowEditor(Manager::Get()->GetEditorManager()->GetNotebook(),this);
     Edit->BuildPreview();
     return Edit;
@@ -106,11 +106,11 @@ void wxsWindowRes::Clear()
 {
 	if ( RootWidget )
 	{
-        wxsWidgetFactory::Get()->Kill(RootWidget);
+        wxsFACTORY()->Kill(RootWidget);
 		RootWidget = NULL;
 	}
 	
-    RootWidget = wxsWidgetFactory::Get()->Generate(GetWidgetClass(true),this);
+    RootWidget = wxsGEN(GetWidgetClass(true),this);
     if ( !RootWidget )
     {
     	wxMessageBox(_("Internal error in plugin: wxSmith.\nCode::Blocks may crash !!!\nPlease, save all Your files, close Code::Blocks and reinstall/remove wxSmith plugin"));
@@ -163,6 +163,7 @@ bool wxsWindowRes::Load()
 
 void wxsWindowRes::Save()
 {
+	DebLog("Saving");
     TiXmlDocument* Doc = GenerateXml();
     
     if ( Doc )
@@ -880,11 +881,11 @@ void wxsWindowRes::SetModified(bool modified)
 void wxsWindowRes::EditorClosed()
 {
 	AvoidCreation = true;
-	GetRootWidget()->KillTree(wxSmith::Get()->GetResourceTree());
+	GetRootWidget()->KillTree(wxsTREE());
 	if ( GetModified() )
 	{
 		Load();
-		wxTreeCtrl* Tree = wxSmith::Get()->GetResourceTree();
+		wxTreeCtrl* Tree = wxsTREE();
 		Tree->SelectItem(GetTreeItemId());
         //GetRootWidget()->BuildTree(Tree,GetTreeItemId());
 	}
@@ -911,14 +912,14 @@ bool wxsWindowRes::ChangeRootWidget(wxsWidget* NewRoot,bool DeletePrevious)
 	// New root must be of the same type as current
 	if ( RootWidget->GetInfo().Name != NewRoot->GetInfo().Name ) return false;
     AvoidCreation = true;
-	RootWidget->KillTree(wxSmith::Get()->GetResourceTree());
+	RootWidget->KillTree(wxsTREE());
 	if ( GetEditor() )
 	{
 		((wxsWindowEditor*)GetEditor())->KillPreview();
 	}
-	if ( DeletePrevious ) wxsWidgetFactory::Get()->Kill(RootWidget);
+	if ( DeletePrevious ) wxsFACTORY()->Kill(RootWidget);
 	RootWidget = NewRoot;
-    wxTreeCtrl* Tree = wxSmith::Get()->GetResourceTree();
+    wxTreeCtrl* Tree = wxsTREE();
     Tree->SelectItem(GetTreeItemId());
     if ( GetEditor() )
     {
@@ -929,3 +930,4 @@ bool wxsWindowRes::ChangeRootWidget(wxsWidget* NewRoot,bool DeletePrevious)
     AvoidCreation = false;
 	return true;
 }
+

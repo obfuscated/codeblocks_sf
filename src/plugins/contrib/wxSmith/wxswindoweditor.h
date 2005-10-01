@@ -72,6 +72,27 @@ class wxsWindowEditor : public wxsEditor
 		/** Getting undo buffer */
 		inline wxsWinUndoBuffer* GetUndoBuff() { return UndoBuff; }
 		
+		/** Starting multiple-add mode.
+		 *
+		 * Multiple add proceedure MUST be finished with EndMultipleAdd() function
+		 */
+        bool StartMultipleChange();
+        
+        /** Ending multiple-add mode
+         *
+         * Multiple add procedure MUST begin with StartMultipleAdd() function
+         */
+        bool EndMultipleChange();
+		
+		/** Adding new widget before current selection */
+		bool InsertBefore(wxsWidget* New,wxsWidget* Ref=NULL);
+		
+		/** Adding new widget after current selection */
+		bool InsertAfter(wxsWidget* New,wxsWidget* Ref=NULL);
+		
+		/** Adding new widget into current selection */
+		bool InsertInto(wxsWidget* New,wxsWidget* Ref=NULL);
+		
     protected:
 
         /** Getting wxsWindowRes pointer to currently edited resource */
@@ -98,6 +119,9 @@ class wxsWindowEditor : public wxsEditor
         
         /** Undo buffer */
         wxsWinUndoBuffer* UndoBuff;
+        
+        /** Flag for MultipleAddMode */
+        bool InsideMultipleChange;
         
         DECLARE_EVENT_TABLE()
 };

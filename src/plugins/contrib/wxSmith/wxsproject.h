@@ -19,6 +19,7 @@ class wxsWindowRes;
 #include <cbproject.h>
 #include <vector>
 #include <tinyxml/tinyxml.h>
+#include "wxsresourcetree.h"
 
 /** Directory relative to project's main file where wxSmith internal
  *  data should be stored.
@@ -186,34 +187,6 @@ class wxsProject
         bool Modified;                  ///< Set to true when there was any change inside wxSmith project
 
         friend class wxsWindowRes;
-};
-
-
-/** Data used by resource tree */
-
-class wxsResourceTreeData: public wxTreeItemData
-{
-    public:
-
-        wxsResourceTreeData(wxsWidget* _Widget):  wxTreeItemData(),   Type(tWidget)   { Widget = _Widget; }
-        wxsResourceTreeData(wxsResource* _Resource): wxTreeItemData(), Type(tResource) { Resource = _Resource; }
-
-        virtual ~wxsResourceTreeData();
-
-        enum TypeT
-        {
-            None,
-            tWidget,
-            tResource
-        };
-
-        TypeT Type;
-
-        union
-        {
-            wxsWidget* Widget;
-            wxsResource* Resource;
-        };
 };
 
 

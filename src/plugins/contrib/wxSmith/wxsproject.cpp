@@ -34,7 +34,7 @@ wxsProject::IntegrationState wxsProject::BindProject(cbProject* Proj)
 
     /* creating new node in resource tree */
 
-    wxTreeCtrl* ResTree = wxSmith::Get()->GetResourceTree();
+    wxTreeCtrl* ResTree = wxsTREE();
     ResTree->Expand(ResTree->GetRootItem());
     TreeItem = ResTree->AppendItem(ResTree->GetRootItem(),Proj->GetTitle());
 
@@ -122,9 +122,9 @@ inline void wxsProject::Clear()
     Dialogs.clear();
     Frames.clear();
     Panels.clear();
-    if ( Project ) wxSmith::Get()->GetResourceTree()->Delete(TreeItem);
+    if ( Project ) wxsTREE()->Delete(TreeItem);
     Project = NULL;
-    wxSmith::Get()->GetResourceTree()->Refresh();
+    wxsTREE()->Refresh();
     DuringClear = false;
 }
 
@@ -447,7 +447,7 @@ bool wxsProject::AddSmithConfig()
     SetModified(true);
     SaveProject();
 
-    BuildTree(wxSmith::Get()->GetResourceTree(),TreeItem);
+    BuildTree(wxsTREE(),TreeItem);
 
     return true;
 }
@@ -456,7 +456,7 @@ void wxsProject::AddDialog(wxsDialogRes* Dialog)
 {
     if ( !Dialog ) return;
     Dialogs.push_back(Dialog);
-    wxTreeCtrl* Tree = wxSmith::Get()->GetResourceTree();
+    wxTreeCtrl* Tree = wxsTREE();
     Dialog->GetDialog().BuildTree(Tree, Tree->AppendItem( DialogId, Dialog->GetClassName(), -1, -1, new wxsResourceTreeData(Dialog) ) );
     SetModified(true);
 }
@@ -465,7 +465,7 @@ void wxsProject::AddFrame(wxsFrameRes* Frame)
 {
     if ( !Frame ) return;
     Frames.push_back(Frame);
-    wxTreeCtrl* Tree = wxSmith::Get()->GetResourceTree();
+    wxTreeCtrl* Tree = wxsTREE();
     Frame->GetFrame().BuildTree(Tree, Tree->AppendItem( FrameId, Frame->GetClassName(), -1, -1, new wxsResourceTreeData(Frame) ) );
     SetModified(true);
 }
@@ -474,7 +474,7 @@ void wxsProject::AddPanel(wxsPanelRes* Panel)
 {
     if ( !Panel ) return;
     Panels.push_back(Panel);
-    wxTreeCtrl* Tree = wxSmith::Get()->GetResourceTree();
+    wxTreeCtrl* Tree = wxsTREE();
     Panel->GetPanel().BuildTree(Tree, Tree->AppendItem( PanelId, Panel->GetClassName(), -1, -1, new wxsResourceTreeData(Panel) ) );
     SetModified(true);
 }

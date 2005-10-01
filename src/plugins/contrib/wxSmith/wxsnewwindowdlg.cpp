@@ -79,7 +79,7 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
 
     // Second - checking if there's given resoure in current project
 
-    wxsProject* Proj = wxSmith::Get()->GetSmithProject(Manager::Get()->GetProjectManager()->GetActiveProject());
+    wxsProject* Proj = wxsPLUGIN()->GetSmithProject(Manager::Get()->GetProjectManager()->GetActiveProject());
     if ( !Proj ) { return; }
 
     if ( Proj->FindResource(Class->GetValue()) )

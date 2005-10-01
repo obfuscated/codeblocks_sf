@@ -817,7 +817,7 @@ void wxsDragWindow::BlackDragPoints(wxsWidget* Widget)
 
 bool wxsDragWindow::IsInside(wxsWidget* What,wxsWidget* Where )
 {
-	return Where->FindChild(What,0);
+	return Where->FindChild(What,0) >= 0;
 }
 
 bool wxsDragWindow::IsVisible(wxsWidget* Widget)
