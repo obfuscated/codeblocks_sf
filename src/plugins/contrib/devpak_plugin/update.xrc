@@ -126,6 +126,7 @@
                 </object>
                 <option>1</option>
                 <flag>wxGROW</flag>
+                <minsize>320,128</minsize>
               </object>
               <object class="sizeritem">
                 <object class="wxStaticText" name="">
@@ -140,7 +141,6 @@
                 </object>
                 <option>1</option>
                 <flag>wxGROW</flag>
-                <minsize>-1, 128</minsize>
               </object>
             </object>
             <option>1</option>
@@ -152,7 +152,6 @@
         <option>1</option>
         <flag>wxALL|wxGROW</flag>
         <border>8</border>
-        <minsize>576,-1</minsize>
       </object>
       <object class="sizeritem">
         <object class="wxBoxSizer">

@@ -14,7 +14,6 @@
 				<Option working_dir="..\help_plugin"/>
 				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\help_plugin"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option host_application="..\..\..\devel\codeblocks.exe"/>
@@ -48,10 +47,25 @@
 					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\help_plugin.zip *.xrc"/>
 				</ExtraCommands>
 			</Target>
+			<Environment>
+				<Variable name="WX_DIR" value="C:\Devel\wxWidgets-2.6.1"/>
+				<Variable name="WX_CFG" value="NonUnicode"/>
+			</Environment>
 		</Build>
 		<Compiler>
 			<Add option="-g"/>
+			<Add directory="$(WX_DIR)\include"/>
+			<Add directory="$(WX_DIR)\lib\gcc_dll\msw"/>
+			<Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)\msw"/>
+			<Add directory="$(WX_DIR)\contrib\include"/>
 		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(WX_DIR)\include"/>
+		</ResourceCompiler>
+		<Linker>
+			<Add directory="$(WX_DIR)\lib\gcc_dll\msw"/>
+			<Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)"/>
+		</Linker>
 		<Unit filename="HelpConfigDialog.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="help_plugin"/>

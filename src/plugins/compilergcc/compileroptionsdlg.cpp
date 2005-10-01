@@ -149,7 +149,7 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
         wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook);
         nb->DeletePage(6); // remove "Other" page
         nb->DeletePage(4); // remove "Programs" page
-        
+
         // remove "Compiler" buttons
         wxWindow* win = XRCCTRL(*this, "btnAddCompiler", wxButton);
         wxSizer* sizer2 = win->GetContainingSizer();
@@ -206,9 +206,9 @@ void CompilerOptionsDlg::DoFillCompilerPrograms()
         DoSaveCompilerPrograms();
     }
     m_LastCompilerIdx = compilerIdx;
-*/    
+*/
     const CompilerPrograms& progs = CompilerFactory::Compilers[compilerIdx]->GetPrograms();
-    
+
     XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->SetValue(CompilerFactory::Compilers[compilerIdx]->GetMasterPath());
     XRCCTRL(*this, "txtCcompiler", wxTextCtrl)->SetValue(progs.C);
     XRCCTRL(*this, "txtCPPcompiler", wxTextCtrl)->SetValue(progs.CPP);
@@ -217,7 +217,7 @@ void CompilerOptionsDlg::DoFillCompilerPrograms()
     XRCCTRL(*this, "txtDebugger", wxTextCtrl)->SetValue(progs.DBG);
     XRCCTRL(*this, "txtResComp", wxTextCtrl)->SetValue(progs.WINDRES);
     XRCCTRL(*this, "txtMake", wxTextCtrl)->SetValue(progs.MAKE);
-    
+
     XRCCTRL(*this, "lstExtraPaths", wxListBox)->Clear();
     const wxArrayString& extraPaths = CompilerFactory::Compilers[compilerIdx]->GetExtraPaths();
     for (unsigned int i = 0; i < extraPaths.GetCount(); ++i)
@@ -273,7 +273,7 @@ void CompilerOptionsDlg::DoFillTree(cbProject* focusProject, ProjectBuildTarget*
 	m_BuildingTree = true;
 	wxTreeCtrl* tc = XRCCTRL(*this, "tcScope", wxTreeCtrl);
 	tc->DeleteAllItems();
-	
+
 	wxTreeItemId root;
 	ScopeTreeData* selected = 0L;
 	wxTreeItemId selectedItem;
@@ -337,7 +337,7 @@ void CompilerOptionsDlg::DoFillOptions()
 	bool isAll = cmb->GetSelection() == 0;
 	wxCheckListBox* list = XRCCTRL(*this, "lstCompilerOptions", wxCheckListBox);
 	list->Clear();
-	
+
 	for (unsigned int i = 0; i < m_Options.GetCount(); ++i)
 	{
 		CompOption* copt = m_Options.GetOption(i);
@@ -363,12 +363,12 @@ void CompilerOptionsDlg::TextToOptions()
         if (copt)
             copt->enabled = false;
 	}
-	
+
 	wxString rest;
-	
+
     int compilerIdx = XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection();
     Compiler* compiler = CompilerFactory::Compilers[compilerIdx];
-    
+
 	XRCCTRL(*this, "txtCompilerDefines", wxTextCtrl)->Clear();
 	unsigned int i = 0;
 	while (i < m_CompilerOptions.GetCount())
@@ -420,7 +420,7 @@ void CompilerOptionsDlg::OptionsToText()
 {
 	wxArrayString array;
 	DoGetCompileOptions(array, XRCCTRL(*this, "txtCompilerDefines", wxTextCtrl));
-	
+
     int compilerIdx = XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection();
     Compiler* compiler = CompilerFactory::Compilers[compilerIdx];
 
@@ -440,7 +440,7 @@ void CompilerOptionsDlg::OptionsToText()
             }
 		}
 	}
-	
+
 	for (unsigned int i = 0; i < m_Options.GetCount(); ++i)
 	{
 		CompOption* copt = m_Options.GetOption(i);
@@ -465,7 +465,7 @@ void CompilerOptionsDlg::OptionsToText()
                 m_LinkerOptions.RemoveAt(idx, 1);
         }
 	}
-	
+
 	// linker options and libs
 	wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
 	for (int i = 0; i < lstLibs->GetCount(); ++i)
@@ -661,7 +661,7 @@ void CompilerOptionsDlg::DoSaveOptions(int compilerIdx, ScopeTreeData* data)
 	DoGetCompileOptions(m_CompilerOptions, XRCCTRL(*this, "txtCompilerOptions", wxTextCtrl));
 	DoGetCompileOptions(m_LinkerOptions, XRCCTRL(*this, "txtLinkerOptions", wxTextCtrl));
     OptionsToText();
-    
+
 	if (!data)
 	{
 		// global options
@@ -866,7 +866,7 @@ void CompilerOptionsDlg::AutoDetectCompiler()
             wxMessageBox(msg);
         }
         break;
-        
+
         case adrGuessed:
         {
             wxString msg;
@@ -964,7 +964,7 @@ void CompilerOptionsDlg::OnAddDirClick(wxCommandEvent& event)
     if (dlg.ShowModal() == wxID_OK)
     {
         wxString path = dlg.GetPath();
-    
+
         wxListBox* control = GetDirsListBox();
         if (control)
             control->Append(path);
@@ -976,13 +976,13 @@ void CompilerOptionsDlg::OnEditDirClick(wxCommandEvent& event)
     wxListBox* control = GetDirsListBox();
     if (!control || control->GetSelection() < 0)
         return;
-        
+
     wxFileName dir(control->GetString(control->GetSelection()) + wxFileName::GetPathSeparator());
 //    if (m_pProject)
 //        dir.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_pProject->GetBasePath());
 //    Manager::Get()->GetMessageManager()->DebugLog(dir.GetFullPath());
     wxString initial = _T("");
-    
+
     // This path may not exist, but if using EditPathDlg, you still want it
     // displayed
     initial = dir.GetPath(wxPATH_GET_VOLUME);
@@ -998,11 +998,11 @@ void CompilerOptionsDlg::OnEditDirClick(wxCommandEvent& event)
             initial,
             m_pProject ? m_pProject->GetBasePath() : _T(""),
             _("Edit directory"));
-        
+
     if (dlg.ShowModal() == wxID_OK)
     {
         wxString path = dlg.GetPath();
-        
+
         control->SetString(control->GetSelection(), path);
     }
 }
@@ -1027,15 +1027,12 @@ void CompilerOptionsDlg::OnAddVarClick(wxCommandEvent& event)
 	if (name.IsEmpty())
 		return;
 	wxString value = wxGetTextFromUser(_("Please enter value for the new variable:"), title);
-	if (!value.IsEmpty())
-	{
-        CustomVars* vars = GetCustomVars();
-        if (vars)
-        {
-            vars->Add(name, value);
-            DoFillVars(vars);
-        }
-	}
+    CustomVars* vars = GetCustomVars();
+    if (vars)
+    {
+        vars->Add(name, value);
+        DoFillVars(vars);
+    }
 }
 
 void CompilerOptionsDlg::OnEditVarClick(wxCommandEvent& event)
@@ -1048,7 +1045,7 @@ void CompilerOptionsDlg::OnEditVarClick(wxCommandEvent& event)
 	Var* var = static_cast<Var*>(XRCCTRL(*this, "lstVars", wxListBox)->GetClientData(sel));
 	if (!var)
 		return;
-		
+
 	wxString value = wxGetTextFromUser(_("Please edit the variable value:"), title, var->value);
 	if (!value.IsEmpty() && value != var->value)
 	{
@@ -1183,11 +1180,11 @@ void CompilerOptionsDlg::OnResetCompilerClick(wxCommandEvent& event)
 void CompilerOptionsDlg::OnAddLibClick(wxCommandEvent& event)
 {
     /*int compilerIdx = m_pTarget ? m_pTarget->GetCompilerIndex()
-                                : (m_pProject ? m_pProject->GetCompilerIndex() 
+                                : (m_pProject ? m_pProject->GetCompilerIndex()
                                               : XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection());*/
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
     /*LinkLibDlg dlg(this, m_pProject, m_pTarget, CompilerFactory::Compilers[compilerIdx], "");*/
-    
+
     EditPathDlg dlg(this,
             _T(""),
             m_pProject ? m_pProject->GetBasePath() : _T(""),
@@ -1195,7 +1192,7 @@ void CompilerOptionsDlg::OnAddLibClick(wxCommandEvent& event)
             _("Choose library to link"),
             false,
             _("Library files (*.a, *.lib)|*.a;*.lib|All files (*)|*"));
-            
+
     if (dlg.ShowModal() == wxID_OK)
     {
         /*lstLibs->Append(dlg.GetLib());*/
@@ -1206,12 +1203,12 @@ void CompilerOptionsDlg::OnAddLibClick(wxCommandEvent& event)
 void CompilerOptionsDlg::OnEditLibClick(wxCommandEvent& event)
 {
     /*int compilerIdx = m_pTarget ? m_pTarget->GetCompilerIndex()
-                                : (m_pProject ? m_pProject->GetCompilerIndex() 
+                                : (m_pProject ? m_pProject->GetCompilerIndex()
                                               : XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection());*/
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
-    
+
     /*LinkLibDlg dlg(this, m_pProject, m_pTarget, CompilerFactory::Compilers[compilerIdx], lstLibs->GetStringSelection());*/
- 
+
     EditPathDlg dlg(this,
             lstLibs->GetStringSelection(),
             m_pProject ? m_pProject->GetBasePath() : _T(""),
@@ -1219,7 +1216,7 @@ void CompilerOptionsDlg::OnEditLibClick(wxCommandEvent& event)
             _("Choose library to link"),
             false,
             _("Library files (*.a, *.lib)|*.a;*.lib|All files (*)|*"));
-               
+
     if (dlg.ShowModal() == wxID_OK)
     {
         /*lstLibs->SetString(lstLibs->GetSelection(), dlg.GetLib());*/
@@ -1269,7 +1266,7 @@ void CompilerOptionsDlg::OnEditExtraPathClick(wxCommandEvent& event)
     wxListBox* control = XRCCTRL(*this, "lstExtraPaths", wxListBox);
     if (!control || control->GetSelection() < 0)
         return;
-        
+
     wxFileName dir(control->GetString(control->GetSelection()) + wxFileName::GetPathSeparator());
     wxString initial = _T("");
     if (dir.DirExists())
@@ -1497,7 +1494,7 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
                                                         CompilerFactory::CompilerIndexOK(idx) &&
                                                         CompilerFactory::Compilers[idx]->GetParentID() == -1);
     }
-    
+
     // compiler programs
     if (XRCCTRL(*this, "txtMasterPath", wxTextCtrl)) // "Programs" page exists?
     {
@@ -1553,7 +1550,7 @@ void CompilerOptionsDlg::EndModal(int retCode)
         // why does it crash for project compiler options???
         DoSaveCompilerPrograms(idx);
     }
-    
+
 	//others
     wxTextCtrl* txt = XRCCTRL(*this, "txtConsoleShell", wxTextCtrl);
     if (txt)
@@ -1572,15 +1569,15 @@ void CompilerOptionsDlg::OnMyCharHook(wxKeyEvent& event)
         { event.Skip();return; }
     int keycode = event.GetKeyCode();
     int id = focused->GetId();
-    
+
     int myid = 0;
     unsigned int myidx = 0;
-    
+
     const wxChar* str_libs[3] = { _T("btnEditLib"),_T("btnAddLib"),_T("btnDelLib") };
     const wxChar* str_dirs[3] = { _T("btnEditDir"),_T("btnAddDir"),_T("btnDelDir") };
     const wxChar* str_vars[3] = { _T("btnEditVar"),_T("btnAddVar"),_T("btnDeleteVar") };
     const wxChar* str_xtra[3] = { _T("btnExtraEdit"),_T("btnExtraAdd"),_T("btnExtraDelete") };
-    
+
     if(keycode == WXK_RETURN || keycode == WXK_NUMPAD_ENTER)
         { myidx = 0; } // Edit
     else if(keycode == WXK_INSERT || keycode == WXK_NUMPAD_INSERT)
@@ -1589,7 +1586,7 @@ void CompilerOptionsDlg::OnMyCharHook(wxKeyEvent& event)
         { myidx = 2; } // Delete
     else
         { event.Skip();return; }
-        
+
     if(     id == XRCID("lstLibs")) // Link libraries
         { myid =  wxXmlResource::GetXRCID(str_libs[myidx]); }
     else if(id == XRCID("lstIncludeDirs") || id == XRCID("lstLibDirs") || id == XRCID("lstResDirs")) // Directories
@@ -1600,7 +1597,7 @@ void CompilerOptionsDlg::OnMyCharHook(wxKeyEvent& event)
         { myid =  wxXmlResource::GetXRCID(str_xtra[myidx]); }
     else
         myid = 0;
-        
+
     // Generate the event
     if(myid == 0)
         event.Skip();

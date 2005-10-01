@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_project_file>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="1"/>
+	<Project>
+		<Option title="Code Stat"/>
+		<Option makefile="Makefile"/>
+		<Option makefile_is_custom="0"/>
+		<Option compiler="0"/>
+		<Build>
+			<Target title="default">
+				<Option output="bin\codestat.dll"/>
+				<Option working_dir="bin"/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option type="3"/>
+				<Option compiler="0"/>
+				<Option projectCompilerOptionsRelation="0"/>
+			</Target>
+			<Environment>
+				<Variable name="WXDIR" value="C:\Devel\wxWidgets-2.6.1"/>
+				<Variable name="CBDIR" value="C:\Devel\CodeBlocks\src"/>
+			</Environment>
+		</Build>
+		<Compiler>
+			<Add option="-Wall"/>
+			<Add option="-g"/>
+			<Add option="-D__GNUWIN32__"/>
+			<Add option="-DWXUSINGDLL"/>
+			<Add option="-DBUILDING_PLUGIN"/>
+			<Add directory="$(CBDIR)\sdk"/>
+			<Add directory="$(WXDIR)\include"/>
+			<Add directory="$(WXDIR)\contrib\include"/>
+			<Add directory="$(WXDIR)\lib\mswdllNonUnicode"/>
+			<Add directory="$(WXDIR)\lib\gcc_dllNonUnicode\msw"/>
+			<Add directory="$(WXDIR)\lib\gcc_dll\msw"/>
+			<Add directory="$(CBDIR)\sdk\wxscintilla\include"/>
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(WXDIR)\include"/>
+		</ResourceCompiler>
+		<Linker>
+			<Add library="codeblocks"/>
+			<Add library="wxmsw26"/>
+			<Add directory="$(CBDIR)\devel"/>
+			<Add directory="$(WXDIR)\lib\gcc_dllNonUnicode"/>
+			<Add directory="$(WXDIR)\lib\gcc_dll\msw"/>
+		</Linker>
+		<Unit filename="codestat.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="codestat.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="codestatconfig.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="codestatconfig.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="codestatexec.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="codestatexec.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="language_def.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

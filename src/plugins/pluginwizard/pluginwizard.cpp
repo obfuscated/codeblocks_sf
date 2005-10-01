@@ -34,6 +34,7 @@
 #include <configmanager.h>
 #include <projectmanager.h>
 #include <cbproject.h>
+#include <customvars.h>
 #include "pluginwizarddlg.h"
 
 cbPlugin* GetPlugin()
@@ -77,13 +78,58 @@ int PluginWizard::Execute()
     cbProject* project = Manager::Get()->GetProjectManager()->NewProject();
     if (!project)
         return -1;
+
+    // add compiler options
+#ifdef __WXMSW__
     project->AddCompilerOption(_T("-D__GNUWIN32__"));
     project->AddCompilerOption(_T("-DWXUSINGDLL"));
     project->AddCompilerOption(_T("-DBUILDING_PLUGIN"));
-    project->AddLinkLib(_T("codeblocks"));
+    // wx & cb dirs
+    project->AddIncludeDir(_T("$(WX_DIR)\\include"));
+    project->AddIncludeDir(_T("$(WX_DIR)\\lib\\gcc_dll\\msw"));
+    project->AddIncludeDir(_T("$(WX_DIR)\\lib\\gcc_dll$(WX_CFG)\\msw"));
+    project->AddIncludeDir(_T("$(WX_DIR)\\contrib\\include"));
+    project->AddIncludeDir(_T("$(CB_SDK)\\include")); // SDK installation
+    project->AddIncludeDir(_T("$(CB_SDK)\\sdk")); // source tree
+    project->AddIncludeDir(_T("$(CB_SDK)\\sdk\\tinyxml")); // source tree
+    project->AddIncludeDir(_T("$(CB_SDK)\\sdk\\wxscintilla\\include")); // source tree
+#else
+    project->AddCompilerOption(_T("`wx-config --cflags`"));
+#endif
 
+#ifdef __WXMSW__
 // NOTE (rickg22#1#): How not to hardwire wxmsw242 into the plugin?
-    project->AddLinkLib(_T("wxmsw242"));
+// NOTE (mandrav#1#): By making the version an environment variable...
+    project->AddLinkLib(_T("wxmsw$(WX_VER)"));
+    // wx & cb dirs
+    project->AddLibDir(_T("$(WX_DIR)\\lib\\gcc_dll\\msw"));
+    project->AddLibDir(_T("$(WX_DIR)\\lib\\gcc_dll$(WX_CFG)"));
+    project->AddLibDir(_T("$(CB_SDK)\\lib")); // SDK installation
+    project->AddLibDir(_T("$(CB_SDK)\\devel")); // source tree
+    project->AddLibDir(_T("$(CB_SDK)\\sdk\\tinyxml")); // source tree
+    project->AddLibDir(_T("$(CB_SDK)\\sdk\\wxscintilla\\include")); // source tree
+#else
+    project->AddLinkerOption(_T("`wx-config --libs`"));
+#endif
+
+#ifdef __WXMSW__
+    // now create the necessary env. vars
+    wxString wxver = ConfigManager::Get()->Read(_T(""), _T("26"));
+    wxString wxdir = ConfigManager::Get()->Read(_T(""), _T("C:\\wxWidgets-2.6.1"));
+    wxString wxcfg = ConfigManager::Get()->Read(_T(""), _T("NonUnicode"));
+    wxString cbsdk = ConfigManager::Get()->Read(_T(""), _T("C:\\codeblocks-1.0rc2"));
+    CustomVars vars;
+    vars.Add(_T("WX_VER"), wxver);
+    vars.Add(_T("WX_DIR"), wxdir);
+    vars.Add(_T("WX_CFG"), wxcfg);
+    vars.Add(_T("CB_SDK"), cbsdk);
+    project->SetCustomVars(vars);
+#endif
+
+    // cross-platform options
+    project->AddCompilerOption(_T("-Wall")); // all warnings on
+    project->AddCompilerOption(_T("-g")); // debugging symbols
+    project->AddLinkLib(_T("codeblocks"));
 
     wxSetWorkingDirectory(project->GetBasePath());
 
@@ -91,7 +137,7 @@ int PluginWizard::Execute()
 	if (dlg.ShowModal() == wxID_OK)
 	{
         wxString name = !dlg.GetInfo().name.IsEmpty() ? dlg.GetInfo().name : _T("CustomPlugin");
-        wxString title = !dlg.GetInfo().title.IsEmpty() ? dlg.GetInfo().title : _T("Custom Plugin");
+        wxString title = !dlg.GetInfo().title.IsEmpty() ? dlg.GetInfo().title : name;
         project->SetTitle(title);
         project->AddFile(0, dlg.GetHeaderFilename());
         project->AddFile(0, dlg.GetImplementationFilename());
@@ -104,15 +150,17 @@ int PluginWizard::Execute()
 
         Manager::Get()->GetProjectManager()->RebuildTree();
 
+#ifdef __WXMSW__
 		wxMessageDialog msg(Manager::Get()->GetAppWindow(),
 						_("The new plugin project has been created.\n"
-						"Don't forget to add the SDK include and library dirs\n"
-						"in the respective project build options..."),
+						"You should now update the project's custom variables, to adjust "
+						"for your environment..."),
 						_("Information"),
 						wxOK | wxICON_INFORMATION);
+#endif
 		msg.ShowModal();
 		return 0;
 	}
-		
+
 	return -1;
 }

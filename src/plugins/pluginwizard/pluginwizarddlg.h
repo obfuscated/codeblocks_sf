@@ -25,11 +25,13 @@ class PluginWizardDlg : public wxDialog
 		void DoAddHeaderDebugger(wxString& buffer);
 		void DoAddHeaderCodeCompletion(wxString& buffer);
 		void DoAddHeaderMime(wxString& buffer);
+		void DoAddHeaderWizard(wxString& buffer);
 		void DoAddSourceTool(const wxString& classname, wxString& buffer);
 		void DoAddSourceCompiler(const wxString& classname, wxString& buffer);
 		void DoAddSourceDebugger(const wxString& classname, wxString& buffer);
 		void DoAddSourceCodeCompletion(const wxString& classname, wxString& buffer);
 		void DoAddSourceMime(const wxString& classname, wxString& buffer);
+		void DoAddSourceWizard(const wxString& classname, wxString& buffer);
 
 		PluginInfo m_Info;
 		wxString m_Header;

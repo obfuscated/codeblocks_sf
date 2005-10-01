@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<!DOCTYPE Code::Blocks_project_file>
-<Code::Blocks_project_file>
+<!DOCTYPE CodeBlocks_project_file>
+<CodeBlocks_project_file>
 	<FileVersion major="1" minor="1"/>
 	<Project>
 		<Option title="Code::Blocks (wx2.6)"/>
@@ -20,7 +20,6 @@
 				<Compiler>
 					<Add option="-DEXPORT_LIB"/>
 					<Add option="-D_USRDLL"/>
-					<Add option="-DTIXML_USE_STL"/>
 				</Compiler>
 			</Target>
 			<Target title="scintilla">
@@ -394,6 +393,7 @@
 			<Add option="-D__WXMSW__"/>
 			<Add option="-DWXUSINGDLL"/>
 			<Add option="-DcbDEBUG"/>
+			<Add option="-DTIXML_USE_STL"/>
 			<Add directory="$(WX_DIR)\include"/>
 			<Add directory="$(WX_DIR)\lib\gcc_dll\msw"/>
 			<Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)\msw"/>
@@ -3884,4 +3884,4 @@
 			<Option target="console_runner"/>
 		</Unit>
 	</Project>
-</Code::Blocks_project_file>
+</CodeBlocks_project_file>

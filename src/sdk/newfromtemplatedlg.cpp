@@ -78,7 +78,7 @@ NewFromTemplateDlg::~NewFromTemplateDlg()
 void NewFromTemplateDlg::ClearList()
 {
 	wxListCtrl* list = XRCCTRL(*this, "listTemplates", wxListCtrl);
-	for (unsigned int i = 0; i < list->GetItemCount(); ++i)
+	for (int i = 0; i < list->GetItemCount(); ++i)
 	{
 		ListItemData* data = (ListItemData*)list->GetItemData(i);
 		delete data;
@@ -217,7 +217,7 @@ void NewFromTemplateDlg::OnListSelection(wxListEvent& event)
 	ListItemData* data = (ListItemData*)event.GetData();
 	XRCCTRL(*this, "cmbOptions", wxComboBox)->Enable(event.GetIndex() != -1 && data->pt);
 	XRCCTRL(*this, "cmbFileSets", wxComboBox)->Enable(event.GetIndex() != -1 && data->pt);
-	
+
 	m_pWizard = data->plugin;
 	FillTemplate(data->pt);
 }

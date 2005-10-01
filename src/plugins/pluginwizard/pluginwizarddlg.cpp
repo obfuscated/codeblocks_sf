@@ -116,12 +116,21 @@ void PluginWizardDlg::DoAddHeaderMime(wxString& buffer)
 	buffer << _T('\t') << _T('\t') << _T("int OpenFile(const wxString& filename);") << _T('\n');
 }
 
+void PluginWizardDlg::DoAddHeaderWizard(wxString& buffer)
+{
+	buffer << _T('\t') << _T('\t') << _T("const wxString& GetTitle() const;") << _T('\n');
+	buffer << _T('\t') << _T('\t') << _T("const wxString& GetDescription() const;") << _T('\n');
+	buffer << _T('\t') << _T('\t') << _T("const wxString& GetCategory() const;") << _T('\n');
+	buffer << _T('\t') << _T('\t') << _T("const wxBitmap& GetBitmap() const;") << _T('\n');
+	buffer << _T('\t') << _T('\t') << _T("int Launch();") << _T('\n');
+}
+
 void PluginWizardDlg::DoAddSourceTool(const wxString& classname, wxString& buffer)
 {
 	buffer << _T("int ") << m_Info.name << _T("::Execute()") << _T('\n');
 	buffer << _T("{") << _T('\n');
 	buffer << _T('\t') << _T("//do your magic ;)") << _T('\n');
-	buffer << _T('\t') << _T("NotImplemented(\"") << classname << _T("::Execute()") << _T("\");") << _T('\n');
+	buffer << _T('\t') << _T("NotImplemented(_T(\"") << classname << _T("::Execute()") << _T("\"));") << _T('\n');
 	buffer << _T('\t') << _T("return -1;") << _T('\n');
 	buffer << _T("}") << _T('\n');
 	buffer << _T('\n');
@@ -129,64 +138,64 @@ void PluginWizardDlg::DoAddSourceTool(const wxString& classname, wxString& buffe
 
 void PluginWizardDlg::DoAddSourceCompiler(const wxString& classname, wxString& buffer)
 {
-	buffer << _T("int ") << classname << _T("::Run(ProjectBuildTarget* target = 0L)") << _T('\n');
+	buffer << _T("int ") << classname << _T("::Run(ProjectBuildTarget* target)") << _T('\n');
 	buffer << _T("{") << _T('\n');
 	buffer << _T('\t') << _T("//run the active project or specified target") << _T('\n');
-	buffer << _T('\t') << _T("NotImplemented(\"") << classname << _T("::Run()") << _T("\");") << _T('\n');
+	buffer << _T('\t') << _T("NotImplemented(_T(\"") << classname << _T("::Run()") << _T("\"));") << _T('\n');
 	buffer << _T('\t') << _T("return -1;") << _T('\n');
 	buffer << _T("}") << _T('\n');
-	buffer << _T("int ") << classname << _T("::Clean(ProjectBuildTarget* target = 0L)") << _T('\n');
+	buffer << _T("int ") << classname << _T("::Clean(ProjectBuildTarget* target)") << _T('\n');
 	buffer << _T("{") << _T('\n');
 	buffer << _T('\t') << _T("//clean the active project or specified target") << _T('\n');
-	buffer << _T('\t') << _T("NotImplemented(\"") << classname << _T("::Clean()") << _T("\");") << _T('\n');
+	buffer << _T('\t') << _T("NotImplemented(_T(\"") << classname << _T("::Clean()") << _T("\"));") << _T('\n');
 	buffer << _T('\t') << _T("return -1;") << _T('\n');
 	buffer << _T("}") << _T('\n');
-	buffer << _T("int ") << classname << _T("::Compile(ProjectBuildTarget* target = 0L)") << _T('\n');
+	buffer << _T("int ") << classname << _T("::Compile(ProjectBuildTarget* target)") << _T('\n');
 	buffer << _T("{") << _T('\n');
 	buffer << _T('\t') << _T("//compile the active project or specified target") << _T('\n');
-	buffer << _T('\t') << _T("NotImplemented(\"") << classname << _T("::Compile()") << _T("\");") << _T('\n');
+	buffer << _T('\t') << _T("NotImplemented(_T(\"") << classname << _T("::Compile()") << _T("\"));") << _T('\n');
 	buffer << _T('\t') << _T("return -1;") << _T('\n');
 	buffer << _T("}") << _T('\n');
 	buffer << _T("int ") << classname << _T("::CompileAll()") << _T('\n');
 	buffer << _T("{") << _T('\n');
 	buffer << _T('\t') << _T("//compile all projects") << _T('\n');
-	buffer << _T('\t') << _T("NotImplemented(\"") << classname << _T("::CompileAll()") << _T("\");") << _T('\n');
+	buffer << _T('\t') << _T("NotImplemented(_T(\"") << classname << _T("::CompileAll()") << _T("\"));") << _T('\n');
 	buffer << _T('\t') << _T("return -1;") << _T('\n');
 	buffer << _T("}") << _T('\n');
 	buffer << _T("int ") << classname << _T("::RebuildAll()") << _T('\n');
 	buffer << _T("{") << _T('\n');
 	buffer << _T('\t') << _T("//rebuild all projects") << _T('\n');
-	buffer << _T('\t') << _T("NotImplemented(\"") << classname << _T("::RebuildAll()") << _T("\");") << _T('\n');
+	buffer << _T('\t') << _T("NotImplemented(_T(\"") << classname << _T("::RebuildAll()") << _T("\"));") << _T('\n');
 	buffer << _T('\t') << _T("return -1;") << _T('\n');
 	buffer << _T("}") << _T('\n');
-	buffer << _T("int ") << classname << _T("::Rebuild(ProjectBuildTarget* target = 0L)") << _T('\n');
+	buffer << _T("int ") << classname << _T("::Rebuild(ProjectBuildTarget* target)") << _T('\n');
 	buffer << _T("{") << _T('\n');
 	buffer << _T('\t') << _T("//rebuild the active project or specified target") << _T('\n');
-	buffer << _T('\t') << _T("NotImplemented(\"") << classname << _T("::Rebuild()") << _T("\");") << _T('\n');
+	buffer << _T('\t') << _T("NotImplemented(_T(\"") << classname << _T("::Rebuild()") << _T("\"));") << _T('\n');
 	buffer << _T('\t') << _T("return -1;") << _T('\n');
 	buffer << _T("}") << _T('\n');
 	buffer << _T("int ") << classname << _T("::CompileFile(const wxString& file)") << _T('\n');
 	buffer << _T("{") << _T('\n');
 	buffer << _T('\t') << _T("//compile only the specified file") << _T('\n');
-	buffer << _T('\t') << _T("NotImplemented(\"") << classname << _T("::CompileFile()") << _T("\");") << _T('\n');
+	buffer << _T('\t') << _T("NotImplemented(_T(\"") << classname << _T("::CompileFile()") << _T("\"));") << _T('\n');
 	buffer << _T('\t') << _T("return -1;") << _T('\n');
 	buffer << _T("}") << _T('\n');
 	buffer << _T("int ") << classname << _T("::KillProcess()") << _T('\n');
 	buffer << _T("{") << _T('\n');
 	buffer << _T('\t') << _T("//end compiler process") << _T('\n');
-	buffer << _T('\t') << _T("NotImplemented(\"") << classname << _T("::KillProcess()") << _T("\");") << _T('\n');
+	buffer << _T('\t') << _T("NotImplemented(_T(\"") << classname << _T("::KillProcess()") << _T("\"));") << _T('\n');
 	buffer << _T('\t') << _T("return -1;") << _T('\n');
 	buffer << _T("}") << _T('\n');
 	buffer << _T("bool ") << classname << _T("::IsRunning()") << _T('\n');
 	buffer << _T("{") << _T('\n');
 	buffer << _T('\t') << _T("//return true if session is active") << _T('\n');
-	buffer << _T('\t') << _T("NotImplemented(\"") << classname << _T("::IsRunning()") << _T("\");") << _T('\n');
+	buffer << _T('\t') << _T("NotImplemented(_T(\"") << classname << _T("::IsRunning()") << _T("\"));") << _T('\n');
 	buffer << _T('\t') << _T("return false;") << _T('\n');
 	buffer << _T("}") << _T('\n');
 	buffer << _T("int ") << classname << _T("::GetExitCode()") << _T('\n');
 	buffer << _T("{") << _T('\n');
 	buffer << _T('\t') << _T("//return last session exit code") << _T('\n');
-	buffer << _T('\t') << _T("NotImplemented(\"") << classname << _T("::GetExitCode()") << _T("\");") << _T('\n');
+	buffer << _T('\t') << _T("NotImplemented(_T(\"") << classname << _T("::GetExitCode()") << _T("\"));") << _T('\n');
 	buffer << _T('\t') << _T("return -1;") << _T('\n');
 	buffer << _T("}") << _T('\n');
 }
@@ -196,39 +205,39 @@ void PluginWizardDlg::DoAddSourceDebugger(const wxString& classname, wxString& b
 	buffer << _T("int ") << classname << _T("::Debug()") << _T('\n');
 	buffer << _T("{") << _T('\n');
 	buffer << _T('\t') << _T("//actual debugging session starts here") << _T('\n');
-	buffer << _T('\t') << _T("NotImplemented(\"") << classname << _T("::Debug()") << _T("\");") << _T('\n');
+	buffer << _T('\t') << _T("NotImplemented(_T(\"") << classname << _T("::Debug()") << _T("\"));") << _T('\n');
 	buffer << _T('\t') << _T("return -1;") << _T('\n');
 	buffer << _T("}") << _T('\n');
 	buffer << _T("void ") << classname << _T("::CmdContinue()") << _T('\n');
 	buffer << _T("{") << _T('\n');
 	buffer << _T('\t') << _T("//tell debugger to continue") << _T('\n');
-	buffer << _T('\t') << _T("NotImplemented(\"") << classname << _T("::CmdContinue()") << _T("\");") << _T('\n');
+	buffer << _T('\t') << _T("NotImplemented(_T(\"") << classname << _T("::CmdContinue()") << _T("\"));") << _T('\n');
 	buffer << _T("}") << _T('\n');
 	buffer << _T("void ") << classname << _T("::CmdNext()") << _T('\n');
 	buffer << _T("{") << _T('\n');
 	buffer << _T('\t') << _T("//tell debugger to step one line of code") << _T('\n');
-	buffer << _T('\t') << _T("NotImplemented(\"") << classname << _T("::CmdNext()") << _T("\");") << _T('\n');
+	buffer << _T('\t') << _T("NotImplemented(_T(\"") << classname << _T("::CmdNext()") << _T("\"));") << _T('\n');
 	buffer << _T("}") << _T('\n');
 	buffer << _T("void ") << classname << _T("::CmdStep()") << _T('\n');
 	buffer << _T("{") << _T('\n');
 	buffer << _T('\t') << _T("//tell debugger to step one instruction (following inside functions, if needed)") << _T('\n');
-	buffer << _T('\t') << _T("NotImplemented(\"") << classname << _T("::CmdStep()") << _T("\");") << _T('\n');
+	buffer << _T('\t') << _T("NotImplemented(_T(\"") << classname << _T("::CmdStep()") << _T("\"));") << _T('\n');
 	buffer << _T("}") << _T('\n');
 	buffer << _T("void ") << classname << _T("::CmdStop()") << _T('\n');
 	buffer << _T("{") << _T('\n');
 	buffer << _T('\t') << _T("//tell debugger to end debugging session") << _T('\n');
-	buffer << _T('\t') << _T("NotImplemented(\"") << classname << _T("::CmdStop()") << _T("\");") << _T('\n');
+	buffer << _T('\t') << _T("NotImplemented(_T(\"") << classname << _T("::CmdStop()") << _T("\"));") << _T('\n');
 	buffer << _T("}") << _T('\n');
 	buffer << _T("bool ") << classname << _T("::IsRunning()") << _T('\n');
 	buffer << _T("{") << _T('\n');
 	buffer << _T('\t') << _T("//return true if session is active") << _T('\n');
-	buffer << _T('\t') << _T("NotImplemented(\"") << classname << _T("::IsRunning()") << _T("\");") << _T('\n');
+	buffer << _T('\t') << _T("NotImplemented(_T(\"") << classname << _T("::IsRunning()") << _T("\"));") << _T('\n');
 	buffer << _T('\t') << _T("return false;") << _T('\n');
 	buffer << _T("}") << _T('\n');
 	buffer << _T("int ") << classname << _T("::GetExitCode()") << _T('\n');
 	buffer << _T("{") << _T('\n');
 	buffer << _T('\t') << _T("//return last session exit code") << _T('\n');
-	buffer << _T('\t') << _T("NotImplemented(\"") << classname << _T("::GetExitCode()") << _T("\");") << _T('\n');
+	buffer << _T('\t') << _T("NotImplemented(_T(\"") << classname << _T("::GetExitCode()") << _T("\"));") << _T('\n');
 	buffer << _T('\t') << _T("return -1;") << _T('\n');
 	buffer << _T("}") << _T('\n');
 }
@@ -238,7 +247,7 @@ void PluginWizardDlg::DoAddSourceCodeCompletion(const wxString& classname, wxStr
 	buffer << _T("wxArrayString ") << classname << _T("::GetCallTipsFor(const wxString& command)") << _T('\n');
 	buffer << _T("{") << _T('\n');
 	buffer << _T('\t') << _T("//well, give call tips for the string \"command\"...") << _T('\n');
-	buffer << _T('\t') << _T("NotImplemented(\"") << classname << _T("::GetCallTipsFor()") << _T("\");") << _T('\n');
+	buffer << _T('\t') << _T("NotImplemented(_T(\"") << classname << _T("::GetCallTipsFor()") << _T("\"));") << _T('\n');
 	buffer << _T('\t') << _T("wxArrayString items;") << _T('\n');
 	buffer << _T('\t') << _T("return items;") << _T('\n');
 	buffer << _T("}") << _T('\n');
@@ -246,14 +255,14 @@ void PluginWizardDlg::DoAddSourceCodeCompletion(const wxString& classname, wxStr
 	buffer << _T("int ") << classname << _T("::CodeComplete()") << _T('\n');
 	buffer << _T("{") << _T('\n');
 	buffer << _T('\t') << _T("//code-complete") << _T('\n');
-	buffer << _T('\t') << _T("NotImplemented(\"") << classname << _T("::CodeComplete()") << _T("\");") << _T('\n');
+	buffer << _T('\t') << _T("NotImplemented(_T(\"") << classname << _T("::CodeComplete()") << _T("\"));") << _T('\n');
 	buffer << _T('\t') << _T("return -1;") << _T('\n');
 	buffer << _T("}") << _T('\n');
 	buffer << _T('\n');
 	buffer << _T("void ") << classname << _T("::ShowCallTip()") << _T('\n');
 	buffer << _T("{") << _T('\n');
 	buffer << _T('\t') << _T("//display a call-tip") << _T('\n');
-	buffer << _T('\t') << _T("NotImplemented(\"") << classname << _T("::ShowCallTip()") << _T("\");") << _T('\n');
+	buffer << _T('\t') << _T("NotImplemented(_T(\"") << classname << _T("::ShowCallTip()") << _T("\"));") << _T('\n');
 	buffer << _T("}") << _T('\n');
 	buffer << _T('\n');
 }
@@ -263,7 +272,7 @@ void PluginWizardDlg::DoAddSourceMime(const wxString& classname, wxString& buffe
 	buffer << _T("bool ") << classname << _T("::CanHandleFile(const wxString& filename)") << _T('\n');
 	buffer << _T("{") << _T('\n');
 	buffer << _T('\t') << _T("//return true if this plugin can handle the file, false if not...") << _T('\n');
-	buffer << _T('\t') << _T("NotImplemented(\"") << classname << _T("::CanHandleFile()") << _T("\");") << _T('\n');
+	buffer << _T('\t') << _T("NotImplemented(_T(\"") << classname << _T("::CanHandleFile()") << _T("\"));") << _T('\n');
 	buffer << _T('\t') << _T("return false;") << _T('\n');
 	buffer << _T("}") << _T('\n');
 	buffer << _T('\n');
@@ -271,7 +280,56 @@ void PluginWizardDlg::DoAddSourceMime(const wxString& classname, wxString& buffe
 	buffer << _T("{") << _T('\n');
 	buffer << _T('\t') << _T("//Open the file. You said you could in CanHandleFile(), didn't you ;)") << _T('\n');
 	buffer << _T('\t') << _T("//Remember to return zero for success...") << _T('\n');
-	buffer << _T('\t') << _T("NotImplemented(\"") << classname << _T("::OpenFile()") << _T("\");") << _T('\n');
+	buffer << _T('\t') << _T("NotImplemented(_T(\"") << classname << _T("::OpenFile()") << _T("\"));") << _T('\n');
+	buffer << _T('\t') << _T("return -1;") << _T('\n');
+	buffer << _T("}") << _T('\n');
+	buffer << _T('\n');
+}
+
+void PluginWizardDlg::DoAddSourceWizard(const wxString& classname, wxString& buffer)
+{
+	buffer << _T("const wxString& ") << classname << _T("::GetTitle() const") << _T('\n');
+	buffer << _T("{") << _T('\n');
+	buffer << _T('\t') << _T("//return this wizard's title") << _T('\n');
+	buffer << _T('\t') << _T("//this will appear in the new-project dialog") << _T('\n');
+	buffer << _T('\t') << _T("//make sure you change this!") << _T('\n');
+	buffer << _T('\t') << _T("return _(\"XYZ Wizard\");") << _T('\n');
+	buffer << _T("}") << _T('\n');
+	buffer << _T('\n');
+	buffer << _T("const wxString& ") << classname << _T("::GetDescription() const") << _T('\n');
+	buffer << _T("{") << _T('\n');
+	buffer << _T('\t') << _T("//return this wizard's description") << _T('\n');
+	buffer << _T('\t') << _T("//make sure you change this!") << _T('\n');
+	buffer << _T('\t') << _T("return _(\"The XYZ Wizard helps you do this and that\");") << _T('\n');
+	buffer << _T("}") << _T('\n');
+	buffer << _T('\n');
+	buffer << _T("const wxString& ") << classname << _T("::GetCategory() const") << _T('\n');
+	buffer << _T("{") << _T('\n');
+	buffer << _T('\t') << _T("//return this wizard's category") << _T('\n');
+	buffer << _T('\t') << _T("//try to match an existing category") << _T('\n');
+	buffer << _T('\t') << _T("//make sure you change this!") << _T('\n');
+	buffer << _T('\t') << _T("return _(\"XYZ Applications\");") << _T('\n');
+	buffer << _T("}") << _T('\n');
+	buffer << _T('\n');
+	buffer << _T("const wxBitmap& ") << classname << _T("::GetBitmap() const") << _T('\n');
+	buffer << _T("{") << _T('\n');
+	buffer << _T('\t') << _T("//return this wizard's bitmap") << _T('\n');
+	buffer << _T('\t') << _T("//this will appear in the new-project dialog") << _T('\n');
+	buffer << _T('\t') << _T("static wxBitmap IconBitmap;") << _T('\n');
+	buffer << _T('\t') << _T("//make sure the bitmap is loaded") << _T('\n');
+	buffer << _T('\t') << _T("if (!IconBitmap.Ok())") << _T('\n');
+	buffer << _T('\t') << _T("{") << _T('\n');
+	buffer << _T('\t') << _T('\t') << _T("//make sure you change the values below (xyz_wizard and xyz.png)") << _T('\n');
+    buffer << _T('\t') << _T('\t') << _T("wxString resPath = ConfigManager::Get()->Read(_T(\"data_path\"), wxEmptyString) + _T(\"/templates/xyz_wizard\");") << _T('\n');
+    buffer << _T('\t') << _T('\t') << _T("IconBitmap.LoadFile(resPath + _T(\"/xyz.png\"), wxBITMAP_TYPE_PNG);") << _T('\n');
+	buffer << _T('\t') << _T("}") << _T('\n');
+	buffer << _T('\t') << _T("return IconBitmap;") << _T('\n');
+	buffer << _T("}") << _T('\n');
+	buffer << _T('\n');
+	buffer << _T("int ") << classname << _T("::Launch()") << _T('\n');
+	buffer << _T("{") << _T('\n');
+	buffer << _T('\t') << _T("//launch your wizard :D") << _T('\n');
+	buffer << _T('\t') << _T("//return 0 on success...") << _T('\n');
 	buffer << _T('\t') << _T("return -1;") << _T('\n');
 	buffer << _T("}") << _T('\n');
 	buffer << _T('\n');
@@ -292,9 +350,11 @@ void PluginWizardDlg::OnUpdateUI(wxUpdateUIEvent& event)
 {
 	bool isTool = XRCCTRL(*this, "cmbType", wxComboBox)->GetSelection() == 1;
 	bool isMime = XRCCTRL(*this, "cmbType", wxComboBox)->GetSelection() == 5;
-	XRCCTRL(*this, "chkHasMenu", wxCheckBox)->Enable(!isTool && !isMime);
-	XRCCTRL(*this, "chkHasModuleMenu", wxCheckBox)->Enable(!isTool && !isMime);
-	XRCCTRL(*this, "chkHasToolbar", wxCheckBox)->Enable(!isTool && !isMime);
+	bool isWizard = XRCCTRL(*this, "cmbType", wxComboBox)->GetSelection() == 6;
+	XRCCTRL(*this, "chkHasConfigure", wxCheckBox)->Enable(!isWizard);
+	XRCCTRL(*this, "chkHasMenu", wxCheckBox)->Enable(!isTool && !isMime && !isWizard);
+	XRCCTRL(*this, "chkHasModuleMenu", wxCheckBox)->Enable(!isTool && !isMime && !isWizard);
+	XRCCTRL(*this, "chkHasToolbar", wxCheckBox)->Enable(!isTool && !isMime && !isWizard);
 }
 
 void PluginWizardDlg::OnEditInfoClick(wxCommandEvent& event)
@@ -333,7 +393,7 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
 	buffer << _T(" * Name:      ") << headerFname.GetFullName() << _T('\n');
 	buffer << _T(" * Purpose:   Code::Blocks plugin") << _T('\n');
 	buffer << _T(" * Author:    ") << m_Info.author << _T("<") << m_Info.authorEmail << _T(">") << _T('\n');
-	buffer << _T(" * Created:   ") << wxDateTime::Now().Format(_("%c"), wxDateTime::Local) << _T('\n');
+//	buffer << _T(" * Created:   ") << wxDateTime::Now().Format(_("%c"), wxDateTime::Local) << _T('\n');
 	buffer << _T(" * Copyright: (c) ") << m_Info.author <<  _T('\n');
 	buffer << _T(" * License:   GPL") << _T('\n');
 	buffer << _T(" **************************************************************/") << _T('\n');
@@ -376,6 +436,7 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
 		case 3: buffer << _T(" : public cbDebuggerPlugin"); break;
 		case 4: buffer << _T(" : public cbCodeCompletionPlugin"); break;
 		case 5: buffer << _T(" : public cbMimePlugin"); break;
+		case 6: buffer << _T(" : public cbProjectWizardPlugin"); break;
 	}
 	buffer << _T('\n');
 	buffer << _T("{") << _T('\n');
@@ -383,9 +444,9 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
 	buffer << _T('\t') << _T('\t') << m_Info.name << _T("();") << _T('\n');
 	buffer << _T('\t') << _T('\t') << _T("~") << m_Info.name << _T("();") << _T('\n');
 
-	buffer << _T('\t') << _T('\t') << _T("int Configure()");
-	DoAddHeaderOption(buffer, hasConfigure, wxEmptyString);
-	if (type != 1 && type != 5) // not cbToolPlugin and not cbMimePlugin
+    buffer << _T('\t') << _T('\t') << _T("int Configure()");
+    DoAddHeaderOption(buffer, hasConfigure, _T(" 0"));
+	if (type != 1 && type != 5 && type != 6) // not cbToolPlugin, not cbMimePlugin and not cbProjectWizardPlugin
 	{
         buffer << _T('\t') << _T('\t') << _T("void BuildMenu(wxMenuBar* menuBar)");
         DoAddHeaderOption(buffer, hasMenu, wxEmptyString);
@@ -411,9 +472,15 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
 		case 5: // mime
 			DoAddHeaderMime(buffer);
 			break;
+		case 6: // wizard
+			DoAddHeaderWizard(buffer);
+			break;
 	}
-	buffer << _T('\t') << _T('\t') << _T("void OnAttach(); // fires when the plugin is attached to the application") << _T('\n');
-	buffer << _T('\t') << _T('\t') << _T("void OnRelease(bool appShutDown); // fires when the plugin is released from the application") << _T('\n');
+	if (type != 6) // wizard
+	{
+        buffer << _T('\t') << _T('\t') << _T("void OnAttach(); // fires when the plugin is attached to the application") << _T('\n');
+        buffer << _T('\t') << _T('\t') << _T("void OnRelease(bool appShutDown); // fires when the plugin is released from the application") << _T('\n');
+	}
 	buffer << _T('\t') << _T("protected:") << _T('\n');
 	buffer << _T('\t') << _T("private:") << _T('\n');
 	if (hasMenu || hasModuleMenu || hasToolbar)
@@ -445,7 +512,7 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
 	buffer << _T(" * Name:      ") << implFname.GetFullName() << _T('\n');
 	buffer << _T(" * Purpose:   Code::Blocks plugin") << _T('\n');
 	buffer << _T(" * Author:    ") << m_Info.author << _T("<") << m_Info.authorEmail << _T(">") << _T('\n');
-	buffer << _T(" * Created:   ") << wxDateTime::Now().Format(_("%c"), wxDateTime::Local) << _T('\n');
+//	buffer << _T(" * Created:   ") << wxDateTime::Now().Format(_("%c"), wxDateTime::Local) << _T('\n');
 	buffer << _T(" * Copyright: (c) ") << m_Info.author <<  _T('\n');
 	buffer << _T(" * License:   GPL") << _T('\n');
 	buffer << _T(" **************************************************************/") << _T('\n');
@@ -456,6 +523,11 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
 	buffer << _T('\n');
 	buffer << _T("#include \"") << headerFname.GetFullName() << _T("\"") << _T('\n');
 	buffer << _T("#include <licenses.h> // defines some common licenses (like the GPL)") << _T('\n');
+	if (type == 6) // wizard
+	{
+        buffer << _T("#include <wx/bitmap.h>") << _T('\n');
+        buffer << _T("#include <configmanager.h>") << _T('\n');
+	}
 	buffer << _T('\n');
 	buffer << _T("cbPlugin* GetPlugin()") << _T('\n');
 	buffer << _T("{") << _T('\n');
@@ -487,14 +559,14 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
 	buffer << m_Info.name << _T("::") << m_Info.name << _T("()") << _T('\n');
 	buffer << _T("{") << _T('\n');
 	buffer << _T('\t') << _T("//ctor") << _T('\n');
-    buffer << _T('\t') << _T("m_PluginInfo.name = \"") << m_Info.name << _T("\";") << _T('\n');
-    buffer << _T('\t') << _T("m_PluginInfo.title = \"") << m_Info.title << _T("\";") << _T('\n');
-    buffer << _T('\t') << _T("m_PluginInfo.version = \"") << m_Info.version << _T("\";") << _T('\n');
-    buffer << _T('\t') << _T("m_PluginInfo.description = \"") << m_Info.description << _T("\";") << _T('\n');
-    buffer << _T('\t') << _T("m_PluginInfo.author = \"") << m_Info.author << _T("\";") << _T('\n');
-    buffer << _T('\t') << _T("m_PluginInfo.authorEmail = \"") << m_Info.authorEmail << _T("\";") << _T('\n');
-    buffer << _T('\t') << _T("m_PluginInfo.authorWebsite = \"") << m_Info.authorWebsite << _T("\";") << _T('\n');
-    buffer << _T('\t') << _T("m_PluginInfo.thanksTo = \"") << m_Info.thanksTo << _T("\";") << _T('\n');
+    buffer << _T('\t') << _T("m_PluginInfo.name = _T(\"") << m_Info.name << _T("\");") << _T('\n');
+    buffer << _T('\t') << _T("m_PluginInfo.title = _(\"") << m_Info.title << _T("\");") << _T('\n');
+    buffer << _T('\t') << _T("m_PluginInfo.version = _T(\"") << m_Info.version << _T("\");") << _T('\n');
+    buffer << _T('\t') << _T("m_PluginInfo.description = _(\"") << m_Info.description << _T("\");") << _T('\n');
+    buffer << _T('\t') << _T("m_PluginInfo.author = _T(\"") << m_Info.author << _T("\");") << _T('\n');
+    buffer << _T('\t') << _T("m_PluginInfo.authorEmail = _T(\"") << m_Info.authorEmail << _T("\");") << _T('\n');
+    buffer << _T('\t') << _T("m_PluginInfo.authorWebsite = _T(\"") << m_Info.authorWebsite << _T("\");") << _T('\n');
+    buffer << _T('\t') << _T("m_PluginInfo.thanksTo = _(\"") << m_Info.thanksTo << _T("\");") << _T('\n');
     buffer << _T('\t') << _T("m_PluginInfo.license = LICENSE_GPL;") << _T('\n');
 	buffer << _T('\t') << _T("m_PluginInfo.hasConfigure = ") << (hasConfigure ? _T("true;") : _T("false;")) << _T('\n');
 	buffer << _T("}") << _T('\n');
@@ -504,31 +576,34 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
 	buffer << _T('\t') << _T("//dtor") << _T('\n');
 	buffer << _T("}") << _T('\n');
 	buffer << _T('\n');
-	buffer << _T("void ") << m_Info.name << _T("::OnAttach()") << _T('\n');
-	buffer << _T("{") << _T('\n');
-	buffer << _T('\t') << _T("// do whatever initialization you need for your plugin") << _T('\n');
-	buffer << _T('\t') << _T("// NOTE: after this function, the inherited member variable") << _T('\n');
-	buffer << _T('\t') << _T("// m_IsAttached will be TRUE...") << _T('\n');
-	buffer << _T('\t') << _T("// You should check for it in other functions, because if it") << _T('\n');
-	buffer << _T('\t') << _T("// is FALSE, it means that the application did *not* \"load\"") << _T('\n');
-	buffer << _T('\t') << _T("// (see: does not need) this plugin...") << _T('\n');
-	buffer << _T("}") << _T('\n');
-	buffer << _T('\n');
-	buffer << _T("void ") << m_Info.name << _T("::OnRelease(bool appShutDown)") << _T('\n');
-	buffer << _T("{") << _T('\n');
-	buffer << _T('\t') << _T("// do de-initialization for your plugin") << _T('\n');
-	buffer << _T('\t') << _T("// if appShutDown is false, the plugin is unloaded because Code::Blocks is being shut down,") << _T('\n');
-	buffer << _T('\t') << _T("// which means you must not use any of the SDK Managers") << _T('\n');
-	buffer << _T('\t') << _T("// NOTE: after this function, the inherited member variable") << _T('\n');
-	buffer << _T('\t') << _T("// m_IsAttached will be FALSE...") << _T('\n');
-	buffer << _T("}") << _T('\n');
-	buffer << _T('\n');
+	if (type != 6) // wizard
+	{
+        buffer << _T("void ") << m_Info.name << _T("::OnAttach()") << _T('\n');
+        buffer << _T("{") << _T('\n');
+        buffer << _T('\t') << _T("// do whatever initialization you need for your plugin") << _T('\n');
+        buffer << _T('\t') << _T("// NOTE: after this function, the inherited member variable") << _T('\n');
+        buffer << _T('\t') << _T("// m_IsAttached will be TRUE...") << _T('\n');
+        buffer << _T('\t') << _T("// You should check for it in other functions, because if it") << _T('\n');
+        buffer << _T('\t') << _T("// is FALSE, it means that the application did *not* \"load\"") << _T('\n');
+        buffer << _T('\t') << _T("// (see: does not need) this plugin...") << _T('\n');
+        buffer << _T("}") << _T('\n');
+        buffer << _T('\n');
+        buffer << _T("void ") << m_Info.name << _T("::OnRelease(bool appShutDown)") << _T('\n');
+        buffer << _T("{") << _T('\n');
+        buffer << _T('\t') << _T("// do de-initialization for your plugin") << _T('\n');
+        buffer << _T('\t') << _T("// if appShutDown is false, the plugin is unloaded because Code::Blocks is being shut down,") << _T('\n');
+        buffer << _T('\t') << _T("// which means you must not use any of the SDK Managers") << _T('\n');
+        buffer << _T('\t') << _T("// NOTE: after this function, the inherited member variable") << _T('\n');
+        buffer << _T('\t') << _T("// m_IsAttached will be FALSE...") << _T('\n');
+        buffer << _T("}") << _T('\n');
+        buffer << _T('\n');
+	}
 	if (hasConfigure)
 	{
 		buffer << _T("int ") << m_Info.name << _T("::Configure()") << _T('\n');
 		buffer << _T("{") << _T('\n');
 		buffer << _T('\t') << _T("//create and display the configuration dialog for your plugin") << _T('\n');
-		buffer << _T('\t') << _T("NotImplemented(\"") << m_Info.name << _T("::Configure()") << _T("\");") << _T('\n');
+		buffer << _T('\t') << _T("NotImplemented(_T(\"") << m_Info.name << _T("::Configure()") << _T("\"));") << _T('\n');
 		buffer << _T('\t') << _T("return -1;") << _T('\n');
 		buffer << _T("}") << _T('\n');
 		buffer << _T('\n');
@@ -543,7 +618,7 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
             buffer << _T('\t') << _T("//to add any menu items you want...") << _T('\n');
             buffer << _T('\t') << _T("//Append any items you need in the menu...") << _T('\n');
             buffer << _T('\t') << _T("//NOTE: Be careful in here... The application's menubar is at your disposal.") << _T('\n');
-            buffer << _T('\t') << _T("NotImplemented(\"") << m_Info.name << _T("::OfferMenuSpace()") << _T("\");") << _T('\n');
+            buffer << _T('\t') << _T("NotImplemented(_T(\"") << m_Info.name << _T("::OfferMenuSpace()") << _T("\"));") << _T('\n');
             buffer << _T("}") << _T('\n');
             buffer << _T('\n');
         }
@@ -555,7 +630,7 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
             buffer << _T('\t') << _T("//Check the parameter \"type\" and see which module it is") << _T('\n');
             buffer << _T('\t') << _T("//and append any items you need in the menu...") << _T('\n');
             buffer << _T('\t') << _T("//TIP: for consistency, add a separator as the first item...") << _T('\n');
-            buffer << _T('\t') << _T("NotImplemented(\"") << m_Info.name << _T("::OfferModuleMenuSpace()") << _T("\");") << _T('\n');
+            buffer << _T('\t') << _T("NotImplemented(_T(\"") << m_Info.name << _T("::OfferModuleMenuSpace()") << _T("\"));") << _T('\n');
             buffer << _T("}") << _T('\n');
             buffer << _T('\n');
         }
@@ -566,7 +641,7 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
             buffer << _T('\t') << _T("//The application is offering its toolbar for your plugin,") << _T('\n');
             buffer << _T('\t') << _T("//to add any toolbar items you want...") << _T('\n');
             buffer << _T('\t') << _T("//Append any items you need on the toolbar...") << _T('\n');
-            buffer << _T('\t') << _T("NotImplemented(\"") << m_Info.name << _T("::BuildToolBar()") << _T("\");") << _T('\n');
+            buffer << _T('\t') << _T("NotImplemented(_T(\"") << m_Info.name << _T("::BuildToolBar()") << _T("\"));") << _T('\n');
             buffer << _T('\t') << _T("return;") << _T('\n');
             buffer << _T("}") << _T('\n');
             buffer << _T('\n');
@@ -588,6 +663,9 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
 			break;
 		case 5: // mime
 			DoAddSourceMime(m_Info.name, buffer);
+			break;
+		case 6: // wizard
+			DoAddSourceWizard(m_Info.name, buffer);
 			break;
 	}
 	// write buffer to disk
