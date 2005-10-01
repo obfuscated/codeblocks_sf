@@ -6,16 +6,18 @@
 #include <wx/imaglist.h>
 #include "projecttemplateloader.h"
 #include "settings.h"
+#include "pluginmanager.h"
 
 WX_DEFINE_ARRAY(ProjectTemplateLoader*, ProjectTemplateArray);
 
 class NewFromTemplateDlg : public wxDialog
 {
 	public:
-		NewFromTemplateDlg(const ProjectTemplateArray& templates, const wxArrayString& user_templates);
+		NewFromTemplateDlg(const ProjectTemplateArray& templates, const wxArrayString& user_templatesz);
 		virtual ~NewFromTemplateDlg();
 		
 		ProjectTemplateLoader* GetTemplate(){ return m_Template; }
+		cbProjectWizardPlugin* GetWizard(){ return m_pWizard; }
         bool DoNotCreateFiles();
 		bool SelectedTemplate();
 		bool SelectedUserTemplate();
@@ -26,13 +28,16 @@ class NewFromTemplateDlg : public wxDialog
 		void BuildCategories();
 		void BuildList();
 		void FillTemplate(ProjectTemplateLoader* pt);
+		void ClearList();
 		void OnListSelection(wxListEvent& event);
 		void OnCategoryChanged(wxCommandEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);
 	private:
 		ProjectTemplateLoader* m_Template;
+		cbProjectWizardPlugin* m_pWizard;
 		wxImageList m_ImageList;
 		const ProjectTemplateArray m_Templates;
+		PluginsArray m_Wizards;
 		DECLARE_EVENT_TABLE()
 };
 

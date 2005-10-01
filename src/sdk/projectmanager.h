@@ -151,11 +151,13 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
           */
         void MoveProjectDown(cbProject* project, bool warpAround = false);
         /** Create a new empty project.
+		  * @param filename the project's filename
           * @return A pointer to the new project if succesful, or NULL if not.
-          * @note When the new project is created, it asks the user where to save it.
+          * @note When the new project is created, if no filename parameter was supplied,
+		  * it asks the user where to save it.
           * If the user cancels the Save dialog, then NULL is returned from this function.
           */
-        cbProject* NewProject();
+        cbProject* NewProject(const wxString& filename = wxEmptyString);
         /** Add a file to a project. This function comes in two versions. This version,
           * expects a single build target index for the added file to belong to.
           * @param filename The file to add to the project.

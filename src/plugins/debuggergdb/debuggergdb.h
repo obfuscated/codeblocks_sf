@@ -58,8 +58,8 @@ class DebuggerGDB : public cbDebuggerPlugin
 		void CmdToggleBreakpoint();
 		void CmdStop();
 		bool Validate(const wxString& line, const char cb);
-		bool IsRunning(){ return m_pProcess; }
-		int GetExitCode(){ return m_LastExitCode; }
+		bool IsRunning() const { return m_pProcess; }
+		int GetExitCode() const { return m_LastExitCode; }
 
 		void SyncEditor(const wxString& filename, int line);
 	protected:

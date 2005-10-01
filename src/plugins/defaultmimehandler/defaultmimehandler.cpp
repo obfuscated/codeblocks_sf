@@ -123,7 +123,7 @@ int DefaultMimeHandler::Configure()
     return 0;
 }
 
-bool DefaultMimeHandler::CanHandleFile(const wxString& filename)
+bool DefaultMimeHandler::CanHandleFile(const wxString& filename) const
 {
     // always return true
     // even if we don't know how to handle the file,

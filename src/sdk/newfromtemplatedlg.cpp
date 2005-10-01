@@ -35,6 +35,13 @@
 #include "manager.h"
 #include "configmanager.h"
 
+struct ListItemData
+{
+	ListItemData(ProjectTemplateLoader* t = 0, cbProjectWizardPlugin* p = 0) : pt(t), plugin(p) {}
+	ListItemData(const ListItemData& rhs) : pt(rhs.pt), plugin(rhs.plugin) {}
+	ProjectTemplateLoader* pt;
+	cbProjectWizardPlugin* plugin;
+};
 
 BEGIN_EVENT_TABLE(NewFromTemplateDlg, wxDialog)
     EVT_UPDATE_UI(-1, NewFromTemplateDlg::OnUpdateUI)
@@ -44,11 +51,13 @@ END_EVENT_TABLE()
 
 NewFromTemplateDlg::NewFromTemplateDlg(const ProjectTemplateArray& templates, const wxArrayString& user_templates)
 	: m_Template(0L),
+	m_pWizard(0L),
 	m_ImageList(32, 32),
 	m_Templates(templates)
 {
 	//ctor
 	wxXmlResource::Get()->LoadDialog(this, 0L, _T("dlgNewFromTemplate"));
+	m_Wizards = Manager::Get()->GetPluginManager()->GetOffersFor(ptProjectWizard);
 	BuildCategories();
 	BuildList();
 
@@ -63,6 +72,18 @@ NewFromTemplateDlg::NewFromTemplateDlg(const ProjectTemplateArray& templates, co
 NewFromTemplateDlg::~NewFromTemplateDlg()
 {
 	//dtor
+	ClearList();
+}
+
+void NewFromTemplateDlg::ClearList()
+{
+	wxListCtrl* list = XRCCTRL(*this, "listTemplates", wxListCtrl);
+	for (unsigned int i = 0; i < list->GetItemCount(); ++i)
+	{
+		ListItemData* data = (ListItemData*)list->GetItemData(i);
+		delete data;
+	}
+	list->ClearAll();
 }
 
 int NewFromTemplateDlg::GetOptionIndex()
@@ -86,6 +107,12 @@ void NewFromTemplateDlg::BuildCategories()
 		if (cat->FindString(pt->m_Category) == wxNOT_FOUND)
 			cat->Append(pt->m_Category);
 	}
+	for (unsigned int i = 0; i < m_Wizards.GetCount(); ++i)
+	{
+		cbProjectWizardPlugin* plugin = (cbProjectWizardPlugin*)m_Wizards[i];
+		if (cat->FindString(plugin->GetCategory()) == wxNOT_FOUND)
+			cat->Append(plugin->GetCategory());
+	}
 	cat->SetSelection(0);
 }
 
@@ -93,10 +120,11 @@ void NewFromTemplateDlg::BuildList()
 {
 	wxComboBox* cat = XRCCTRL(*this, "cmbCategories", wxComboBox);
 	wxListCtrl* list = XRCCTRL(*this, "listTemplates", wxListCtrl);
-	list->ClearAll();
+	ClearList();
 	m_ImageList.RemoveAll();
 	list->SetImageList(&m_ImageList, wxIMAGE_LIST_NORMAL);
 
+	// file-based templates
 	wxBitmap bmp;
 	bool all = cat->GetSelection() == 0;
 	wxString baseDir = ConfigManager::Get()->Read(_T("/data_path"));
@@ -114,7 +142,20 @@ void NewFromTemplateDlg::BuildList()
 			}
 			int index = list->InsertItem(0, pt->m_Title, idx);
 			if (index != -1)
-				list->SetItemData(index, (long)pt);
+				list->SetItemData(index, (long)(new ListItemData(pt)));
+		}
+	}
+
+	// wizards
+	for (unsigned int i = 0; i < m_Wizards.GetCount(); ++i)
+	{
+		cbProjectWizardPlugin* plugin = (cbProjectWizardPlugin*)m_Wizards[i];
+		if (all || plugin->GetCategory().Matches(cat->GetStringSelection()))
+		{
+			int idx = plugin->GetBitmap().Ok() ? m_ImageList.Add(plugin->GetBitmap()) : -2;
+			int index = list->InsertItem(0, plugin->GetTitle(), idx);
+			if (index != -1)
+				list->SetItemData(index, (long)(new ListItemData(0, plugin)));
 		}
 	}
 
@@ -124,11 +165,13 @@ void NewFromTemplateDlg::BuildList()
 
 void NewFromTemplateDlg::FillTemplate(ProjectTemplateLoader* pt)
 {
-	if (!pt)
-		return;
-	
 	m_Template = pt;
 	XRCCTRL(*this, "cmbOptions", wxComboBox)->Clear();
+	XRCCTRL(*this, "cmbOptions", wxComboBox)->Enable(false);
+	XRCCTRL(*this, "cmbFileSets", wxComboBox)->Enable(false);
+	if (!pt)
+		return;
+
 	for (unsigned int i = 0; i < pt->m_TemplateOptions.GetCount(); ++i)
 	{
 		TemplateOption& opt = pt->m_TemplateOptions[i];
@@ -171,11 +214,12 @@ wxString NewFromTemplateDlg::GetSelectedUserTemplate()
 
 void NewFromTemplateDlg::OnListSelection(wxListEvent& event)
 {
-	ProjectTemplateLoader* data = (ProjectTemplateLoader*)event.GetData();
-	XRCCTRL(*this, "cmbOptions", wxComboBox)->Enable(event.GetIndex() != -1 && data);
-	XRCCTRL(*this, "cmbFileSets", wxComboBox)->Enable(event.GetIndex() != -1 && data);
+	ListItemData* data = (ListItemData*)event.GetData();
+	XRCCTRL(*this, "cmbOptions", wxComboBox)->Enable(event.GetIndex() != -1 && data->pt);
+	XRCCTRL(*this, "cmbFileSets", wxComboBox)->Enable(event.GetIndex() != -1 && data->pt);
 	
-	FillTemplate(data);
+	m_pWizard = data->plugin;
+	FillTemplate(data->pt);
 }
 
 void NewFromTemplateDlg::OnCategoryChanged(wxCommandEvent& event)

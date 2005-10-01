@@ -579,9 +579,9 @@ cbProject* ProjectManager::LoadProject(const wxString& filename)
     return result;
 }
 
-cbProject* ProjectManager::NewProject()
+cbProject* ProjectManager::NewProject(const wxString& filename)
 {
-    return LoadProject(wxEmptyString);
+    return LoadProject(filename);
 }
 
 bool ProjectManager::QueryCloseAllProjects()

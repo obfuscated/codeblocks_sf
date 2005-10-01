@@ -47,6 +47,7 @@ class DLLIMPORT PluginManager
         PluginsArray GetMimeOffers();
         PluginsArray GetCompilerOffers();
         PluginsArray GetCodeCompletionOffers();
+        PluginsArray GetOffersFor(PluginType type);
         void AskPluginsForModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg);
         void NotifyPlugins(CodeBlocksEvent& event);
         cbMimePlugin* GetMIMEHandlerForFile(const wxString& filename);
@@ -56,7 +57,6 @@ class DLLIMPORT PluginManager
 		static void Free();
 		PluginManager();
 		~PluginManager();
-        PluginsArray DoGetOffersFor(PluginType type);
         PluginElementsArray m_Plugins;
     DECLARE_SANITY_CHECK
 };

@@ -159,6 +159,26 @@ cbPlugin* PluginManager::LoadPlugin(const wxString& pluginName)
 
     wxString plugName = plug->GetInfo()->name;
 
+	// check if it is the correct SDK version
+	if (plug->GetSDKVersionMajor() != PLUGIN_SDK_VERSION_MAJOR ||
+		plug->GetSDKVersionMinor() != PLUGIN_SDK_VERSION_MINOR)
+	{
+		// in this case, inform the user...
+		wxString fmt;
+		fmt.Printf(_("The plugin \"%s\" failed to load because it was built with a different Code::Blocks SDK version:\n\n"
+					"Plugin's SDK version: %d.%d\n"
+					"Your SDK version: %d.%d"),
+					plug->GetInfo()->title.c_str(),
+					plug->GetSDKVersionMajor(),
+					plug->GetSDKVersionMinor(),
+					PLUGIN_SDK_VERSION_MAJOR,
+					PLUGIN_SDK_VERSION_MINOR);
+		wxMessageBox(fmt, _("Error loading plugin"), wxICON_ERROR);
+        lib->Unload();
+        delete lib;
+        return 0L;
+	}
+
     // check if we have already loaded a plugin by that name
     if (FindPluginByName(plugName))
     {
@@ -320,25 +340,25 @@ int PluginManager::ConfigurePlugin(const wxString& pluginName)
 
 PluginsArray PluginManager::GetToolOffers()
 {
-    return DoGetOffersFor(ptTool);
+    return GetOffersFor(ptTool);
 }
 
 PluginsArray PluginManager::GetMimeOffers()
 {
-    return DoGetOffersFor(ptMime);
+    return GetOffersFor(ptMime);
 }
 
 PluginsArray PluginManager::GetCompilerOffers()
 {
-    return DoGetOffersFor(ptCompiler);
+    return GetOffersFor(ptCompiler);
 }
 
 PluginsArray PluginManager::GetCodeCompletionOffers()
 {
-	return DoGetOffersFor(ptCodeCompletion);
+	return GetOffersFor(ptCodeCompletion);
 }
 
-PluginsArray PluginManager::DoGetOffersFor(PluginType type)
+PluginsArray PluginManager::GetOffersFor(PluginType type)
 {
     PluginsArray arr;
     SANITY_CHECK(arr);

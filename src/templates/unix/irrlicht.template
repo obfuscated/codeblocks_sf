@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE Code::Blocks_template_file>
 <Code::Blocks_template_file>
-	<Template name="Irrlicht" title="Irrlicht Project" category="Multimedia" bitmap="irrlicht.png">
+	<Template name="Irrlicht" title="Irrlicht Project" category="2D/3D Graphics" bitmap="irrlicht.png">
 		<Notice value="This template expects Irrlicht to be located at /opt/irrlicht.
 						If this is not the case, you will have to update the relevant 
 						custom variable accordingly.

@@ -57,8 +57,8 @@ class CompilerGCC : public cbCompilerPlugin
         virtual int Rebuild(ProjectBuildTarget* target = 0L);
         virtual int CompileFile(const wxString& file);
         virtual int KillProcess();
-		virtual bool IsRunning(){ return m_Process; }
-		virtual int GetExitCode(){ return m_LastExitCode; }
+		virtual bool IsRunning() const { return m_Process; }
+		virtual int GetExitCode() const { return m_LastExitCode; }
 		virtual int Configure(cbProject* project, ProjectBuildTarget* target = 0L);
 
 		void SwitchCompiler(int compilerIdx);

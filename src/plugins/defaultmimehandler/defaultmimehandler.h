@@ -36,8 +36,8 @@ class DefaultMimeHandler : public cbMimePlugin
 		DefaultMimeHandler();
 		~DefaultMimeHandler();
 		int Configure();
-        bool HandlesEverything(){ return true; }
-		bool CanHandleFile(const wxString& filename);
+        bool HandlesEverything() const { return true; }
+		bool CanHandleFile(const wxString& filename) const;
 		int OpenFile(const wxString& filename);
 		void OnAttach(); // fires when the plugin is attached to the application
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application

@@ -26,7 +26,7 @@
 // this is the plugins SDK version number
 // it will change when the plugins interface breaks
 #define PLUGIN_SDK_VERSION_MAJOR 1
-#define PLUGIN_SDK_VERSION_MINOR 0
+#define PLUGIN_SDK_VERSION_MINOR 1
 
 // class decls
 class ProjectBuildTarget;
@@ -74,12 +74,12 @@ class cbPlugin : public wxEvtHandler
           * It's used for returning the SDK major version number this plugin
           * was built on.
           */
-        int GetSDKVersionMajor(){ return PLUGIN_SDK_VERSION_MAJOR; }
+        int GetSDKVersionMajor() const { return PLUGIN_SDK_VERSION_MAJOR; }
         /** This is <u>not</u> a virtual function, so you can't override it.
           * It's used for returning the SDK minor version number this plugin
           * was built on.
           */
-        int GetSDKVersionMinor(){ return PLUGIN_SDK_VERSION_MINOR; }
+        int GetSDKVersionMinor() const { return PLUGIN_SDK_VERSION_MINOR; }
 		/** Attach is <u>not</u> a virtual function, so you can't override it.
 		  * The default implementation hooks the plugin to Code::Block's
 		  * event handling system, so that the plugin can receive (and process)
@@ -99,10 +99,10 @@ class cbPlugin : public wxEvtHandler
 		  */
         void Release(bool appShutDown);
 		/** The plugin must return its type on request. */
-        virtual PluginType GetType(){ return m_Type; }
+        virtual PluginType GetType() const { return m_Type; }
 
 		/** The plugin must return its info on request. */
-        virtual PluginInfo const* GetInfo(){ return &m_PluginInfo; }
+        virtual PluginInfo const* GetInfo() const { return &m_PluginInfo; }
 		/** This is a pure virtual method that should be overriden by all
 		  * plugins. If a plugin provides some sort of configuration dialog,
 		  * this is the place to invoke it. If it does not support/allow
@@ -145,7 +145,7 @@ class cbPlugin : public wxEvtHandler
         /** See whether this plugin is attached or not. A plugin should not perform
 		  * any of its tasks, if not attached...
 		  */
-		bool IsAttached(){ return m_IsAttached; }
+		bool IsAttached() const { return m_IsAttached; }
     protected:
 		/** Any descendent plugin should override this virtual method and
 		  * perform any necessary initialization. This method is called by
@@ -244,9 +244,9 @@ class cbCompilerPlugin: public cbPlugin
         /** @brief Abort the current build process. */
         virtual int KillProcess() = 0;
         /** @brief Is the plugin currently compiling? */
-		virtual bool IsRunning() = 0;
+		virtual bool IsRunning() const = 0;
         /** @brief Get the exit code of the last build process. */
-		virtual int GetExitCode() = 0;
+		virtual int GetExitCode() const = 0;
         /** @brief Display configuration dialog.
           *
           * The default implementation calls Configure(cbProject*,ProjectBuildTarget*).
@@ -283,9 +283,9 @@ class cbDebuggerPlugin: public cbPlugin
 		/** @brief Stop the debugging process. */
 		virtual void CmdStop() = 0;
         /** @brief Is the plugin currently debugging? */
-		virtual bool IsRunning() = 0;
+		virtual bool IsRunning() const = 0;
         /** @brief Get the exit code of the last debug process. */
-		virtual int GetExitCode() = 0;
+		virtual int GetExitCode() const = 0;
 };
 
 /** @brief Base class for tool plugins
@@ -332,7 +332,7 @@ class cbMimePlugin : public cbPlugin
           * @return The plugin should return true if it can handle this file,
           * false if not.
           */
-        virtual bool CanHandleFile(const wxString& filename) = 0;
+        virtual bool CanHandleFile(const wxString& filename) const = 0;
         /** @brief Open the file.
           *
           * @param filename The file to open.
@@ -341,7 +341,7 @@ class cbMimePlugin : public cbPlugin
         virtual int OpenFile(const wxString& filename) = 0;
         /** @brief Is this a default handler?
           *
-          * This is a flag notifying the main app that this plugins can handle
+          * This is a flag notifying the main app that this plugin can handle
           * every file passed to it. Usually you 'll want to return false in
           * this function, because you usually create specialized handler
           * plugins (for specific MIME types)...
@@ -349,7 +349,7 @@ class cbMimePlugin : public cbPlugin
           * @return True if this plugin can handle every possible MIME type,
           * false if not.
           */
-        virtual bool HandlesEverything() = 0;
+        virtual bool HandlesEverything() const = 0;
     private:
         // "Hide" some virtual members, that are not needed in cbMimePlugin
         void BuildMenu(wxMenuBar* menuBar){}
@@ -383,11 +383,13 @@ class cbProjectWizardPlugin : public cbPlugin
         cbProjectWizardPlugin();
 
         /// @return the template's title
-        virtual const wxString& GetTitle() = 0; // the icon's name in new-project-dialog
+        virtual const wxString& GetTitle() const = 0;
         /// @return the template's description
-        virtual const wxString& GetDescription() = 0; // a description
+        virtual const wxString& GetDescription() const = 0;
+        /// @return the template's category (GUI, Console, etc; free-form text)
+        virtual const wxString& GetCategory() const = 0;
         /// @return the template's bitmap
-        virtual wxBitmap& GetBitmap() = 0; // a bitmap
+        virtual const wxBitmap& GetBitmap() const = 0;
         /// When this is called, the wizard must get to work ;)
         virtual int Launch() = 0; // do your work ;)
     private:

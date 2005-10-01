@@ -61,7 +61,7 @@ cbProject::cbProject(const wxString& filename)
     SetCompilerIndex(CompilerFactory::GetDefaultCompilerIndex());
 
 	m_Files.Clear();
-    if (!filename.IsEmpty())
+    if (!filename.IsEmpty() && wxFileExists(filename))
     {
 		// existing project
 		m_Filename = filename;
@@ -71,8 +71,16 @@ cbProject::cbProject(const wxString& filename)
     {
 		// new project
         SetModified(true);
-        m_Filename = CreateUniqueFilename();
-        m_Loaded = SaveAs();
+		if (filename.IsEmpty())
+		{
+	        m_Filename = CreateUniqueFilename();
+    	    m_Loaded = SaveAs();
+		}
+		else
+		{
+	        m_Filename = filename;
+    	    m_Loaded = Save();
+		}
 		if (m_Loaded)
 		{
             wxFileName fname(m_Filename);

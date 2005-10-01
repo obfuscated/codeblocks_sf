@@ -179,6 +179,16 @@ void TemplateManager::NewProject()
 
 void TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
 {
+	// is it a wizard or a template?
+    cbProjectWizardPlugin* wiz = dlg.GetWizard();
+	if (wiz)
+	{
+		// wizard, too easy ;)
+		wiz->Launch();
+		return;
+	}
+
+	// else it's a template
     ProjectTemplateLoader* pt = dlg.GetTemplate();
     if (!pt)
     {
