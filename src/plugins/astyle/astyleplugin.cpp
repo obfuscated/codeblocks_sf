@@ -47,8 +47,8 @@ AStylePlugin::AStylePlugin()
 	m_PluginInfo.title = _T("Source code formatter (AStyle)");
 	m_PluginInfo.version = _T("1.1");
 	m_PluginInfo.description = _T("Uses AStyle 1.17.0-dev to reformat your sources. Useful when copying code from the net or if you just want to reformat your sources based on a specific style.");
-	m_PluginInfo.author = _T("Yiannis Mandravellos");
-	m_PluginInfo.authorEmail = _T("mandrav@codeblocks.org");
+	m_PluginInfo.author = _T("Yiannis Mandravellos | Ceniza (maintainer)");
+	m_PluginInfo.authorEmail = _T("mandrav@codeblocks.org | ceniza@gda.utp.edu.co");
 	m_PluginInfo.authorWebsite = _T("http://www.codeblocks.org");
 	m_PluginInfo.thanksTo = _T("AStyle team for the useful library.\nSee http://astyle.sourceforge.net");
 	m_PluginInfo.license = LICENSE_GPL;
@@ -105,7 +105,11 @@ int AStylePlugin::Execute()
         case wxSCI_EOL_LF: eolChars = _T("\n"); break;
     }
 
-    //ASStreamIterator iter(edText, eolChars);
+    if (edText.size() && *edText.rbegin() != '\r' && *edText.rbegin() != '\n')
+    {
+      edText += eolChars.mb_str();
+    }
+
     istringstream iter(edText);
     formatter.init(iter);
     while (formatter.hasMoreLines())
