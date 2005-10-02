@@ -103,8 +103,8 @@ void CompilerMSVC::Reset()
     m_Commands[(int)ctCompileResourceCmd] = _T("$rescomp $res_includes -fo$resource_output $file");
     m_Commands[(int)ctLinkExeCmd] = _T("$linker /nologo /subsystem:windows $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options");
     m_Commands[(int)ctLinkConsoleExeCmd] = _T("$linker /nologo $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options");
-    m_Commands[(int)ctLinkDynamicCmd] = _T("$linker /dll /nologo $libdirs /out:$exe_output $libs $link_objects $link_options");
-    m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker /lib /nologo $libdirs /out:$static_output $libs $link_objects $link_options");
+    m_Commands[(int)ctLinkDynamicCmd] = _T("$linker /dll /nologo $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options");
+    m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker /lib /nologo $libdirs /out:$static_output $libs $link_objects $link_resobjects $link_options");
 
     LoadDefaultRegExArray();
 
