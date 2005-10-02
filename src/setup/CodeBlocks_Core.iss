@@ -44,7 +44,7 @@ Source: ..\output\console_runner.exe; DestDir: {app}; Components: ProgramFiles
 Source: ..\..\AUTHORS; DestDir: {app}; DestName: AUTHORS.txt; Components: ProgramFiles
 Source: ..\..\COPYING; DestDir: {app}; DestName: COPYING.txt; Components: ProgramFiles
 Source: ..\..\README; DestDir: {app}; DestName: README.txt; Components: ProgramFiles
-Source: ..\tips.txt; DestDir: {app}; Components: ProgramFiles
+Source: ..\output\share\CodeBlocks\tips.txt; DestDir: {app}\share\CodeBlocks; Components: ProgramFiles
 Source: ..\..\ChangeLog; DestDir: {app}; Components: ProgramFiles
 Source: WebSite.url; DestDir: {app}; Components: ProgramFiles
 Source: Forums.url; DestDir: {app}; Components: ProgramFiles
