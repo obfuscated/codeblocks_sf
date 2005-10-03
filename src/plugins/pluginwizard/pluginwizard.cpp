@@ -157,8 +157,8 @@ int PluginWizard::Execute()
 						"for your environment..."),
 						_("Information"),
 						wxOK | wxICON_INFORMATION);
-#endif
 		msg.ShowModal();
+#endif
 		return 0;
 	}
 
