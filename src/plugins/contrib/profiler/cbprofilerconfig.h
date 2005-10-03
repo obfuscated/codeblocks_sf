@@ -1,9 +1,9 @@
 /***************************************************************
  * Name:      cbprofilerconfig.h
  * Purpose:   Code::Blocks plugin
- * Author:    Dark Lord
+ * Author:    Dark Lord & Zlika
  * Created:   07/20/05 15:36:55
- * Copyright: (c) Dark Lord
+ * Copyright: (c) Dark Lord & Zlika
  * Thanks:    Yiannis Mandravellos and his Source code formatter (AStyle) sources
  * License:   GPL
  **************************************************************/
@@ -11,7 +11,15 @@
 #ifndef CBPROFILERCONFIG_H
 #define CBPROFILERCONFIG_H
 
+#include <wx/xrc/xmlres.h>
+#include <wx/intl.h>
+#include <wx/font.h>
+#include <wx/checkbox.h>
+#include <wx/spinctrl.h>
+#include <wx/textctrl.h>
 #include <wx/dialog.h>
+
+#include <configmanager.h>
 
 class CBProfilerConfigDlg : public wxDialog
 {

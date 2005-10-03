@@ -1,37 +1,14 @@
 /***************************************************************
  * Name:      cbprofilerexec.cpp
  * Purpose:   Code::Blocks Profiler plugin: main window
- * Author:    Dark Lord
+ * Author:    Dark Lord & Zlika
  * Created:   07/20/05 21:54:15
- * Copyright: (c) Dark Lord
+ * Copyright: (c) Dark Lord & Zlika
  * Thanks:    Yiannis Mandravellos and his Source code formatter (AStyle) sources
  * License:   GPL
  **************************************************************/
 
 #include "cbprofilerexec.h"
-#include <configmanager.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/intl.h>
-#include <wx/font.h>
-#include <wx/checkbox.h>
-#include <wx/spinctrl.h>
-#include <wx/textctrl.h>
-#include <wx/msgdlg.h>
-#include <cbproject.h>
-#include <manager.h>
-#include <projectmanager.h>
-#include <messagemanager.h>
-#include <wx/process.h>
-#include <wx/datstrm.h>
-//#include <wx/arrstr.h>  // uncomment for wxWidget 2.6
-#include <wx/progdlg.h>
-
-#include <wx/xrc/xmlres.h>
-#include <wx/fs_zip.h>
-
-#include <wx/gdicmn.h>
-#include <wx/filedlg.h>
-#include <wx/ffile.h>
 
 BEGIN_EVENT_TABLE(CBProfilerExecDlg, wxDialog)
 EVT_LIST_ITEM_ACTIVATED(XRCID("lstFlatProfile"), CBProfilerExecDlg::FindInCallGraph)

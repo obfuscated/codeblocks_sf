@@ -1,21 +1,14 @@
 /***************************************************************
  * Name:      cbprofilerconfig.cpp
  * Purpose:   Code::Blocks plugin
- * Author:    Dark Lord
+ * Author:    Dark Lord & Zlika
  * Created:   07/20/05 15:36:50
- * Copyright: (c) Dark Lord
+ * Copyright: (c) Dark Lord & Zlika
  * Thanks:    Yiannis Mandravellos and his Source code formatter (AStyle) sources
  * License:   GPL
  **************************************************************/
 
 #include "cbprofilerconfig.h"
-#include <configmanager.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/intl.h>
-#include <wx/font.h>
-#include <wx/checkbox.h>
-#include <wx/spinctrl.h>
-#include <wx/textctrl.h>
 
 BEGIN_EVENT_TABLE(CBProfilerConfigDlg, wxDialog)
 EVT_CHECKBOX(XRCID("chkAnnSource"), CBProfilerConfigDlg::CheckBoxEvent)

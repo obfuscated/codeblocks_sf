@@ -1,30 +1,14 @@
 /***************************************************************
  * Name:      cbprofiler.cpp
  * Purpose:   Code::Blocks plugin
- * Author:    Dark Lord
+ * Author:    Dark Lord & Zlika
  * Created:   07/20/05 11:12:57
- * Copyright: (c) Dark Lord
+ * Copyright: (c) Dark Lord & Zlika
  * Thanks:    Yiannis Mandravellos and his Source code formatter (AStyle) sources
  * License:   GPL
  **************************************************************/
  
-#if defined(__GNUG__) && !defined(__APPLE__)
-	#pragma implementation "cbprofiler.h"
-#endif
 #include "cbprofiler.h"
-#include <licenses.h> // defines some common licenses (like the GPL)
-#include <manager.h>
-#include <wx/intl.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/fs_zip.h>
-#include <configmanager.h>
-#include "cbprofilerconfig.h"
-#include "cbprofilerexec.h"
-#include <cbproject.h>
-#include <manager.h>
-#include <projectmanager.h>
-#include <messagemanager.h>
-#include <wx/choicdlg.h>
 
 cbPlugin* GetPlugin()
 {

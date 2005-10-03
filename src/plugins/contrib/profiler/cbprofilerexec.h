@@ -1,9 +1,9 @@
 /***************************************************************
  * Name:      cbprofilerexec.h
  * Purpose:   Code::Blocks Profiler plugin: main window
- * Author:    Dark Lord
+ * Author:    Dark Lord & Zlika
  * Created:   07/20/05 21:54:30
- * Copyright: (c) Dark Lord
+ * Copyright: (c) Dark Lord & Zlika
  * Thanks:    Yiannis Mandravellos and his Source code formatter (AStyle) sources
  * License:   GPL
  **************************************************************/
@@ -11,13 +11,31 @@
 #ifndef CBPROFILEREXEC_H
 #define CBPROFILEREXEC_H
 
+#include <wx/xrc/xmlres.h>
+#include <wx/intl.h>
+#include <wx/font.h>
+#include <wx/checkbox.h>
+#include <wx/spinctrl.h>
+#include <wx/textctrl.h>
+#include <wx/listctrl.h>
+#include <wx/msgdlg.h>
+#include <wx/process.h>
+#include <wx/datstrm.h>
+#include <wx/progdlg.h>
+#include <wx/fs_zip.h>
+#include <wx/gdicmn.h>
+#include <wx/filedlg.h>
+#include <wx/ffile.h>
 #include <wx/dialog.h>
 #include <wx/string.h>
-#include <pipedprocess.h>
-#include <wx/msgdlg.h>
-#include <wx/textctrl.h>
 //#include <wx/arrstr.h>  // uncomment for wxWiget 2.6
-#include <wx/listctrl.h>
+
+#include <cbproject.h>
+#include <manager.h>
+#include <projectmanager.h>
+#include <messagemanager.h>
+#include <configmanager.h>
+#include <pipedprocess.h>
 
 typedef struct
 {
