@@ -26,6 +26,7 @@
 #include "codecompletion.h"
 #include <wx/mimetype.h>
 #include <wx/filename.h>
+#include <wx/regex.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/fs_zip.h>
 #include <wx/msgdlg.h>
@@ -55,6 +56,8 @@ int idMenuShowCallTip = wxNewId();
 int idMenuGotoFunction = wxNewId();
 int idEditorSubMenu = wxNewId();
 int idClassMethod = wxNewId();
+int idGotoDeclaration = wxNewId();
+int idOpenIncludeFile = wxNewId();
 
 BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
 	EVT_UPDATE_UI_RANGE(idMenuCodeComplete, idMenuGotoFunction, CodeCompletion::OnUpdateUI)
@@ -63,6 +66,8 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
 	EVT_MENU(idMenuShowCallTip, CodeCompletion::OnShowCallTip)
 	EVT_MENU(idMenuGotoFunction, CodeCompletion::OnGotoFunction)
 	EVT_MENU(idClassMethod, CodeCompletion::OnClassMethod)
+	EVT_MENU(idGotoDeclaration, CodeCompletion::OnGotoDeclaration)
+	EVT_MENU(idOpenIncludeFile, CodeCompletion::OnOpenIncludeFile)
 
 	EVT_EDITOR_AUTOCOMPLETE(CodeCompletion::OnCodeComplete)
 	EVT_EDITOR_CALLTIP(CodeCompletion::OnShowCallTip)
@@ -155,6 +160,43 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
 
 	if (type == mtEditorManager)
 	{
+	    cbStyledTextCtrl* control = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()->GetControl();
+	    if (control)
+	    {
+	        // get caret position and line from mouse cursor
+            cbStyledTextCtrl* control = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()->GetControl();
+            int pos = control->PositionFromPoint(control->ScreenToClient(wxGetMousePosition()));
+            wxString line = control->GetLine(control->LineFromPosition(pos));
+
+            wxRegEx reg(_T("^[ \t]*#[ \t]*include[ \t]+[\"<]([^\">]+)[\">]"));
+            wxString inc;
+            if (reg.Matches(line))
+                inc = reg.GetMatch(line, 1);
+            m_LastIncludeFile.Clear();
+	        if (!inc.IsEmpty())
+	        {
+                wxString msg;
+                msg.Printf(_("Open #include file: '%s'"), inc.c_str());
+                menu->Insert(0, idOpenIncludeFile, msg);
+                menu->Insert(1, wxID_SEPARATOR, wxEmptyString);
+                m_LastIncludeFile = inc;
+	        }
+	        else // either #include or keyword-search
+	        {
+                int ws = control->WordStartPosition(pos, true);
+                int we = control->WordEndPosition(pos, true);
+                wxString txt = control->GetTextRange(ws, we);
+                m_LastKeyword.Clear();
+                if (!txt.IsEmpty())
+                {
+                    wxString msg;
+                    msg.Printf(_("Find declaration of: '%s'"), txt.c_str());
+                    menu->Insert(0, idGotoDeclaration, msg);
+                    menu->Insert(1, wxID_SEPARATOR, wxEmptyString);
+                    m_LastKeyword = txt;
+                }
+	        }
+	    }
         int insertId = menu->FindItem(_("Insert..."));
         if (insertId != wxNOT_FOUND)
         {
@@ -591,4 +633,53 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
 void CodeCompletion::OnClassMethod(wxCommandEvent& event)
 {
     DoClassMethodDeclImpl();
+}
+
+void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
+{
+	EditorManager* edMan = Manager::Get()->GetEditorManager();
+   	if (!edMan)
+   		return;
+
+    wxString txt = m_LastKeyword;
+//    Manager::Get()->GetMessageManager()->DebugLog(_("Go to decl for '%s'"), txt.c_str());
+
+    Parser* parser = m_NativeParsers.FindParserFromActiveEditor();
+    if (!parser)
+        return;
+
+    Token* token = parser->FindTokenByName(txt, false);
+    if (token)
+    {
+        cbEditor* ed = edMan->Open(token->m_Filename);
+        if (ed)
+        {
+            ed->GetControl()->GotoLine(token->m_Line - 1);
+            return;
+        }
+    }
+    wxMessageBox(wxString::Format(_("Not found: %s"), txt.c_str()), _("Warning"), wxICON_WARNING);
+}
+
+void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
+{
+    Parser* parser = m_NativeParsers.FindParserFromActiveEditor();
+    if (!parser)
+        return;
+    wxString inc = m_LastIncludeFile;
+//    Manager::Get()->GetMessageManager()->DebugLog(_("Looking for #include '%s' (%d dirs)"), inc.c_str(), parser->IncludeDirs().GetCount());
+    for (unsigned int i = 0; i < parser->IncludeDirs().GetCount(); ++i)
+    {
+        wxString base = parser->IncludeDirs()[i];
+        wxFileName tmp = inc;
+        tmp.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
+//        Manager::Get()->GetMessageManager()->DebugLog(_("Searching '%s'"), tmp.GetFullPath().c_str());
+        if (wxFileExists(tmp.GetFullPath()))
+        {
+            EditorManager* edMan = Manager::Get()->GetEditorManager();
+            edMan->Open(tmp.GetFullPath());
+            return;
+        }
+    }
+    wxMessageBox(wxString::Format(_("Not found: %s"), inc.c_str()), _("Warning"), wxICON_WARNING);
 }

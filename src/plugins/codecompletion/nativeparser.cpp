@@ -157,6 +157,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
 
     parser->IncludeDirs().Clear();
     wxString base = project->GetBasePath();
+    parser->IncludeDirs().Add(base); // add project's base path
 
     Compiler* compiler = 0;
     // apply compiler global vars

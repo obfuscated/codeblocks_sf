@@ -23,7 +23,7 @@ class CodeCompletion : public cbCodeCompletionPlugin
 		virtual wxArrayString GetCallTips();
 		virtual int CodeComplete();
 		virtual void ShowCallTip();
-        
+
         virtual void CodeCompleteIncludes();
 	private:
     	void OnUpdateUI(wxUpdateUIEvent& event);
@@ -31,6 +31,8 @@ class CodeCompletion : public cbCodeCompletionPlugin
 		void OnShowCallTip(wxCommandEvent& event);
 		void OnGotoFunction(wxCommandEvent& event);
         void OnClassMethod(wxCommandEvent& event);
+		void OnGotoDeclaration(wxCommandEvent& event);
+		void OnOpenIncludeFile(wxCommandEvent& event);
 		void OnProjectOpened(CodeBlocksEvent& event);
 		void OnProjectActivated(CodeBlocksEvent& event);
 		void OnProjectClosed(CodeBlocksEvent& event);
@@ -42,6 +44,9 @@ class CodeCompletion : public cbCodeCompletionPlugin
 		void DoInsertCodeCompleteToken(wxString tokName);
         int DoClassMethodDeclImpl();
         int m_PageIndex;
+
+        wxString m_LastIncludeFile;
+        wxString m_LastKeyword;
 
     	wxMenu* m_EditMenu;
     	wxMenu* m_SearchMenu;

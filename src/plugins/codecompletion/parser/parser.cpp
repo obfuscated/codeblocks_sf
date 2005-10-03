@@ -190,7 +190,11 @@ void Parser::WriteOptions()
 
 bool Parser::ReadFromCache(wxFile* f)
 {
+    // keep a backup of include dirs
+    wxArrayString dirs = m_IncludeDirs;
     Clear();
+    // restore backup
+    m_IncludeDirs = dirs;
 
     unsigned int length = f->Length();
     wxProgressDialog* progress = 0;
