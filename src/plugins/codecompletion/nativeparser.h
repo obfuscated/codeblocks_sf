@@ -54,6 +54,8 @@ class NativeParser : public wxEvtHandler
 		cbProject* FindProjectFromActiveEditor();
 		Parser* FindParserFromActiveEditor();
 		Parser* FindParserFromEditor(cbEditor* editor);
+		Parser* FindParserFromActiveProject();
+		Parser* FindParserFromProject(cbProject* project);
 
 		void CreateClassBrowser();
 		void RemoveClassBrowser(bool appShutDown = false);

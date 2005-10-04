@@ -383,6 +383,18 @@ Parser* NativeParser::FindParserFromActiveEditor()
 	return FindParserFromEditor(ed);
 }
 
+Parser* NativeParser::FindParserFromActiveProject()
+{
+	return FindParserFromProject(Manager::Get()->GetProjectManager()->GetActiveProject());
+}
+
+Parser* NativeParser::FindParserFromProject(cbProject* project)
+{
+    if (!project)
+    	return 0L;
+	return m_Parsers[project];
+}
+
 bool NativeParser::LoadCachedData(Parser* parser, cbProject* project)
 {
     if (!parser || !project)

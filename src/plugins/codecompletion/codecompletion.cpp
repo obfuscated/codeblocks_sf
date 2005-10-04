@@ -645,6 +645,8 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
 //    Manager::Get()->GetMessageManager()->DebugLog(_("Go to decl for '%s'"), txt.c_str());
 
     Parser* parser = m_NativeParsers.FindParserFromActiveEditor();
+	if (!parser)
+		parser = m_NativeParsers.FindParserFromActiveProject(); // get parser of active project, then
     if (!parser)
         return;
 
@@ -664,6 +666,8 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
 void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
 {
     Parser* parser = m_NativeParsers.FindParserFromActiveEditor();
+	if (!parser)
+		parser = m_NativeParsers.FindParserFromActiveProject(); // get parser of active project, then
     if (!parser)
         return;
     wxString inc = m_LastIncludeFile;
