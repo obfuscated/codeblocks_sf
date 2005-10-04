@@ -8,7 +8,7 @@ libdir = $(pkgdatadir)/plugins
 
 lib_LTLIBRARIES = libdefaultmimehandler.la
 
-libdefaultmimehandler_la_LDFLAGS = -module -version-info 0:1:0
+libdefaultmimehandler_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
 libdefaultmimehandler_la_LIBADD = ../../sdk/libcodeblocks.la \
 				../../sdk/wxscintilla/libwxscintilla.la

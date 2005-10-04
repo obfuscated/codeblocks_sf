@@ -8,7 +8,7 @@ libdir = $(pkgdatadir)/plugins
 
 lib_LTLIBRARIES = libcodecompletion.la
 
-libcodecompletion_la_LDFLAGS = -module -version-info 0:1:0
+libcodecompletion_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
 libcodecompletion_la_LIBADD = ../../sdk/libcodeblocks.la \
 				../../sdk/wxscintilla/libwxscintilla.la

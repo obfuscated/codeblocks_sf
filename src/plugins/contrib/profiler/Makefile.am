@@ -8,7 +8,7 @@ libdir = $(pkgdatadir)/plugins
 
 lib_LTLIBRARIES = libprofiler.la
 
-libprofiler_la_LDFLAGS = -module -version-info 0:1:0
+libprofiler_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
 libprofiler_la_LIBADD = ../../../sdk/libcodeblocks.la \
 				../../../sdk/wxscintilla/libwxscintilla.la
