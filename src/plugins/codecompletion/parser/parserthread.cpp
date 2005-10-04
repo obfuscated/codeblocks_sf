@@ -705,7 +705,13 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, const wxSt
 		newToken->m_DisplayName << _T(" : ") << newToken->m_Type;
 
     if (m_pTokens)
+    {
+        // allow token to know its index in the array
+        // (used in serialization)
+        newToken->m_Int = m_pTokens->GetCount();
+
         m_pTokens->Add(newToken);
+    }
     if (m_pLastParent)
         m_pLastParent->AddChild(newToken);
 

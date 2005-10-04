@@ -134,12 +134,6 @@ class Parser : public wxEvtHandler
         void AddTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* parent);
 		void AddTreeNode(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* token, bool childrenOnly = false);
 		void LinkInheritance(bool tempsOnly = false);
-		Token* LoadTokenFromCache(wxFile* f, Token* parent);
-		void SaveTokenToCache(wxFile* f, Token* token);
-		inline void SaveStringToFile(wxFile* f, const wxString& str);
-		inline void SaveIntToFile(wxFile* f, int i);
-		inline bool LoadStringFromFile(wxFile* f, wxString& str);
-		inline bool LoadIntFromFile(wxFile* f, int* i);
 		ParserOptions m_Options;
 		BrowserOptions m_BrowserOptions;
 		unsigned int m_MaxThreadsCount;

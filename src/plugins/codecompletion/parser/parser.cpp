@@ -37,6 +37,8 @@
 	#include <globals.h>
 #endif // STANDALONE
 
+static const char CACHE_MAGIC[] = "CCCACHE_1_0";
+static char CACHE_MAGIC_READ[] = "           ";
 static wxMutex s_mutexListProtection;
 int PARSER_END = wxNewId();
 static int idPool = wxNewId();
@@ -185,67 +187,11 @@ void Parser::WriteOptions()
 #endif // STANDALONE
 }
 
-#define TOKEN_REC 0xFFFFFFFE
-#define FILE_REC 0xFFFFFFFD
-
-bool Parser::ReadFromCache(wxFile* f)
-{
-    // keep a backup of include dirs
-    wxArrayString dirs = m_IncludeDirs;
-    Clear();
-    // restore backup
-    m_IncludeDirs = dirs;
-
-    unsigned int length = f->Length();
-    wxProgressDialog* progress = 0;
-
-    // display cache progress?
-    if (ConfigManager::Get()->Read(_T("/code_completion/show_cache_progress"), 1L))
-    {
-        progress = new wxProgressDialog(_("Code-completion plugin"),
-                                        _("Please wait while loading code-completion cache..."),
-                                        length);
-    }
-
-    // m_Tokens
-    while (!f->Eof())
-    {
-        int rec;
-        if (!LoadIntFromFile(f, &rec) || rec != (int)TOKEN_REC)
-            break;
-        if (!LoadTokenFromCache(f, 0))
-            break;
-        if (progress)
-            progress->Update(f->Tell());
-    }
-
-    // m_ParsedFiles
-    while (!f->Eof())
-    {
-        wxString file;
-        if (!LoadStringFromFile(f, file))
-            break;
-        m_ParsedFiles.Add(file);
-        if (progress)
-            progress->Update(f->Tell());
-    }
-
-    LinkInheritance(); // fix ancestors relationships
-
-    m_UsingCache = true;
-    m_CacheFilesCount = m_ParsedFiles.GetCount();
-    m_CacheTokensCount = m_Tokens.GetCount();
-
-    if (progress)
-        delete progress;
-
-    return true;
-}
-
 bool Parser::CacheNeedsUpdate()
 {
     if (m_UsingCache)
     {
+        ClearTemporaries(); // no temps in counting
         if (m_CacheFilesCount == (int)m_ParsedFiles.GetCount() &&
             m_CacheTokensCount == (int)m_Tokens.GetCount())
         {
@@ -259,8 +205,114 @@ bool Parser::CacheNeedsUpdate()
     return true;
 }
 
+bool Parser::ReadFromCache(wxFile* f)
+{
+    // File format is like this:
+    //
+    // CACHE_MAGIC
+    // Number of parsed files
+    // Number of tokens
+    // Parsed files
+    // Tokens
+    // EOF
+
+    // keep a backup of include dirs
+    wxArrayString dirs = m_IncludeDirs;
+    Clear();
+    // restore backup
+    m_IncludeDirs = dirs;
+
+    if (f->Read(CACHE_MAGIC_READ, sizeof(CACHE_MAGIC_READ)) != sizeof(CACHE_MAGIC_READ) ||
+        strncmp(CACHE_MAGIC, CACHE_MAGIC_READ, sizeof(CACHE_MAGIC_READ) != 0))
+    {
+        return false;
+    }
+    int fcount = 0;
+    int tcount = 0;
+    if (!LoadIntFromFile(f, &fcount)) return false;
+    if (!LoadIntFromFile(f, &tcount)) return false;
+
+    wxProgressDialog* progress = 0;
+    unsigned int counter = 0;
+
+    // display cache progress?
+    if (ConfigManager::Get()->Read(_T("/code_completion/show_cache_progress"), 1L))
+    {
+        progress = new wxProgressDialog(_("Code-completion plugin"),
+                                        _("Please wait while loading code-completion cache..."),
+                                        fcount + tcount);
+    }
+
+    // m_ParsedFiles
+    wxString file;
+    for (int i = 0; i < fcount && !f->Eof(); ++i)
+    {
+        if (!LoadStringFromFile(f, file))
+            return false;
+        m_ParsedFiles.Add(file);
+        if (progress)
+            progress->Update(++counter);
+    }
+
+    // m_Tokens
+    for (int i = 0; i < tcount && !f->Eof(); ++i)
+    {
+        Token* token = new Token;
+        if (!token->SerializeIn(f))
+            return false;
+        token->m_Int = i;
+        m_Tokens.Add(token);
+        if (progress)
+            progress->Update(++counter);
+    }
+
+    // now we must update linking pointers in tokens
+    for (int i = 0; i < tcount; ++i)
+    {
+        Token* token = m_Tokens[i];
+        token->m_pParent = token->m_ParentIndex != -1 ? m_Tokens[token->m_ParentIndex] : 0;
+        // sanity check
+        if (token->m_pParent == token)
+            token->m_pParent = 0;
+
+        for (unsigned int j = 0; j < token->m_AncestorsIndices.GetCount(); ++j)
+        {
+            if (token->m_AncestorsIndices[j] != -1)
+                token->m_Ancestors.Add(m_Tokens[token->m_AncestorsIndices[j]]);
+        }
+
+        for (unsigned int j = 0; j < token->m_ChildrenIndices.GetCount(); ++j)
+        {
+            if (token->m_ChildrenIndices[j] != -1)
+                token->m_Children.Add(m_Tokens[token->m_ChildrenIndices[j]]);
+        }
+    }
+
+//    LinkInheritance(); // fix ancestors relationships
+
+    m_UsingCache = true;
+    m_CacheFilesCount = m_ParsedFiles.GetCount();
+    m_CacheTokensCount = m_Tokens.GetCount();
+
+    if (progress)
+        delete progress;
+
+    return true;
+}
+
 bool Parser::WriteToCache(wxFile* f)
 {
+    // File format is like this:
+    //
+    // CACHE_MAGIC
+    // Number of parsed files
+    // Number of tokens
+    // Parsed files
+    // Tokens
+    // EOF
+
+    ClearTemporaries(); // no temps in cache
+
     unsigned int tcount = m_Tokens.GetCount();
     unsigned int fcount = m_ParsedFiles.GetCount();
     unsigned int counter = 0;
@@ -275,21 +327,11 @@ bool Parser::WriteToCache(wxFile* f)
                                         tcount + fcount);
     }
 
-    // m_Tokens
-    for (unsigned int i = 0; i < tcount; ++i)
-    {
-        Token* token = m_Tokens[i];
-        // only save globals (it's recursive)
-        if (!token->m_pParent && !token->m_IsTemporary)
-        {
-            SaveIntToFile(f, TOKEN_REC);
-            SaveTokenToCache(f, token);
-        }
-        if (progress)
-            progress->Update(++counter);
-    }
+    // write cache magic
+    f->Write(CACHE_MAGIC, sizeof(CACHE_MAGIC));
 
-    SaveIntToFile(f, FILE_REC);
+    SaveIntToFile(f, fcount); // num parsed files
+    SaveIntToFile(f, tcount); // num tokens
 
     // m_ParsedFiles
     for (unsigned int i = 0; i < fcount; ++i)
@@ -299,148 +341,18 @@ bool Parser::WriteToCache(wxFile* f)
             progress->Update(++counter);
     }
 
+    // m_Tokens
+    for (unsigned int i = 0; i < tcount; ++i)
+    {
+        Token* token = m_Tokens[i];
+        token->SerializeOut(f);
+        if (progress)
+            progress->Update(++counter);
+    }
+
     if (progress)
         delete progress;
 
-    return true;
-}
-
-Token* Parser::LoadTokenFromCache(wxFile* f, Token* parent)
-{
-//    int rec;
-//    if (!LoadIntFromFile(f, &rec) || rec != (int)TOKEN_REC)
-//        return 0;
-
-    Token* token = new Token;
-    token->m_pParent = parent;
-
-    bool ok = false;
-    // this loop actually runs only once
-    // it is a block that if we break before ok==true, the token is considered
-    // invalid and deleted.
-    // it is a simple way to avoid goto's and stuff...
-    while (true)
-    {
-        if (!LoadStringFromFile(f, token->m_Type)) break;
-        if (!LoadStringFromFile(f, token->m_ActualType)) break;
-        if (!LoadStringFromFile(f, token->m_Name)) break;
-        if (!LoadStringFromFile(f, token->m_DisplayName)) break;
-        if (!LoadStringFromFile(f, token->m_Args)) break;
-        if (!LoadStringFromFile(f, token->m_AncestorsString)) break;
-        if (!LoadStringFromFile(f, token->m_Filename)) break;
-        if (!LoadIntFromFile(f, (int*)&token->m_Line)) break;
-        if (!LoadStringFromFile(f, token->m_ImplFilename)) break;
-        if (!LoadIntFromFile(f, (int*)&token->m_ImplLine)) break;
-        if (!LoadIntFromFile(f, (int*)&token->m_Scope)) break;
-        if (!LoadIntFromFile(f, (int*)&token->m_TokenKind)) break;
-        if (!LoadIntFromFile(f, (int*)&token->m_IsOperator)) break;
-        if (!LoadIntFromFile(f, (int*)&token->m_IsLocal)) break;
-
-        ok = true;
-        m_Tokens.Add(token);
-        if (parent)
-            parent->m_Children.Add(token);
-
-        int ccount;
-        if (!LoadIntFromFile(f, &ccount)) break;
-
-        for (int i = 0; i < ccount; ++i)
-            LoadTokenFromCache(f, token);
-
-        break; // no looping
-    }
-
-    if (!ok)
-    {
-        delete token;
-        token = 0;
-    }
-
-    return token;
-}
-
-void Parser::SaveTokenToCache(wxFile* f, Token* token)
-{
-//    SaveIntToFile(f, TOKEN_REC);
-
-    SaveStringToFile(f, token->m_Type);
-    SaveStringToFile(f, token->m_ActualType);
-    SaveStringToFile(f, token->m_Name);
-    SaveStringToFile(f, token->m_DisplayName);
-    SaveStringToFile(f, token->m_Args);
-    SaveStringToFile(f, token->m_AncestorsString);
-    SaveStringToFile(f, token->m_Filename);
-    SaveIntToFile(f, token->m_Line);
-    SaveStringToFile(f, token->m_ImplFilename);
-    SaveIntToFile(f, token->m_ImplLine);
-    SaveIntToFile(f, token->m_Scope);
-    SaveIntToFile(f, token->m_TokenKind);
-    SaveIntToFile(f, token->m_IsOperator);
-    SaveIntToFile(f, token->m_IsLocal);
-
-    int tcount = (int)token->m_Children.GetCount();
-    SaveIntToFile(f, tcount); // save num of children
-
-    for (int i = 0; i < tcount; ++i)
-    {
-        Token* tok = token->m_Children[i];
-        SaveTokenToCache(f, tok);
-    }
-}
-
-inline void Parser::SaveStringToFile(wxFile* f, const wxString& str)
-{
-    const wxWX2MBbuf psz = str.mb_str(wxConvUTF8);
-    int size = psz ? strlen(psz) : 0;
-    if (size >= 512)
-        size = 512;
-    SaveIntToFile(f, size);
-    if(size)
-        f->Write(psz, size);
-}
-
-inline void Parser::SaveIntToFile(wxFile* f, int i)
-{
-    /* This used to be done as
-        f->Write(&i, sizeof(int));
-    which is incorrect because it assumes a consistant byte order
-    and a constant int size */
-
-    unsigned int const j = i; // rshifts aren't well-defined for negatives
-    unsigned char c[4] = { j>>0&0xFF, j>>8&0xFF, j>>16&0xFF, j>>24&0xFF };
-    f->Write( c, 4 );
-}
-
-inline bool Parser::LoadStringFromFile(wxFile* f, wxString& str)
-{
-    int size;
-    if (!LoadIntFromFile(f, &size))
-        return false;
-    bool ok = true;
-    if (size > 0 && size <= 512)
-    {
-        static char buf[513];
-        ok = f->Read(buf, size) == size;
-        buf[size] = '\0';
-        str = _U(buf);
-    }
-    else // doesn't fit in our buffer, but still we have to skip it
-    {
-        str.Empty();
-        size = size & 0xFFFFFF; // Can't get any longer than that
-        f->Seek(size, wxFromCurrent);
-    }
-    return ok;
-}
-
-inline bool Parser::LoadIntFromFile(wxFile* f, int* i)
-{
-//    See SaveIntToFile
-//    return f->Read(i, sizeof(int)) == sizeof(int);
-
-    unsigned char c[4];
-    if ( f->Read( c, 4 ) != 4 ) return false;
-    *i = ( c[0]<<0 | c[1]<<8 | c[2]<<16 | c[3]<<24 );
     return true;
 }
 
