@@ -34,6 +34,7 @@
 #include <customvars.h>
 #include <cbeditor.h>
 #include <cbproject.h>
+#include <cbexception.h>
 #include "classbrowser.h"
 #include "parser/parser.h"
 #include <compilerfactory.h>
@@ -410,7 +411,21 @@ bool NativeParser::LoadCachedData(Parser* parser, cbProject* project)
 
     // read cache file
     Manager::Get()->GetMessageManager()->DebugLog(_("Using parser's existing cache: %s"), projectCache.GetFullPath().c_str());
-    bool ret = parser->ReadFromCache(&f);
+    bool ret = false;
+    try
+    {
+        ret = parser->ReadFromCache(&f);
+    }
+    catch (cbException& ex)
+    {
+        ex.ShowErrorMessage(false);
+        ret = false;
+    }
+    catch (...)
+    {
+        // eat it
+        ret = false;
+    }
     DisplayStatus(parser, project);
     return ret;
 }

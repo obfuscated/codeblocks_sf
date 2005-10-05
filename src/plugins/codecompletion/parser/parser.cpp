@@ -248,7 +248,10 @@ bool Parser::ReadFromCache(wxFile* f)
     for (int i = 0; i < fcount && !f->Eof(); ++i)
     {
         if (!LoadStringFromFile(f, file))
+        {
+            delete progress;
             return false;
+        }
         m_ParsedFiles.Add(file);
         if (progress)
             progress->Update(++counter);
@@ -257,11 +260,19 @@ bool Parser::ReadFromCache(wxFile* f)
     // m_Tokens
     for (int i = 0; i < tcount && !f->Eof(); ++i)
     {
+        // update m_Int for inheritance to be serialized properly
         Token* token = new Token;
-        if (!token->SerializeIn(f))
-            return false;
         token->m_Int = i;
         m_Tokens.Add(token);
+    }
+    for (int i = 0; i < tcount && !f->Eof(); ++i)
+    {
+        Token* token = m_Tokens[i];
+        if (!token->SerializeIn(f))
+        {
+            delete progress;
+            return false;
+        }
         if (progress)
             progress->Update(++counter);
     }
@@ -278,13 +289,21 @@ bool Parser::ReadFromCache(wxFile* f)
         for (unsigned int j = 0; j < token->m_AncestorsIndices.GetCount(); ++j)
         {
             if (token->m_AncestorsIndices[j] != -1)
-                token->m_Ancestors.Add(m_Tokens[token->m_AncestorsIndices[j]]);
+            {
+                Token* ancestor = m_Tokens[token->m_AncestorsIndices[j]];
+                if (ancestor != token) // sanity check
+                    token->m_Ancestors.Add(ancestor);
+            }
         }
 
         for (unsigned int j = 0; j < token->m_ChildrenIndices.GetCount(); ++j)
         {
             if (token->m_ChildrenIndices[j] != -1)
-                token->m_Children.Add(m_Tokens[token->m_ChildrenIndices[j]]);
+            {
+                Token* child = m_Tokens[token->m_ChildrenIndices[j]];
+                if (child != token) // sanity check
+                    token->m_Children.Add(child);
+            }
         }
     }
 
@@ -342,6 +361,12 @@ bool Parser::WriteToCache(wxFile* f)
     }
 
     // m_Tokens
+    for (unsigned int i = 0; i < tcount; ++i)
+    {
+        // update m_Int for inheritance to be serialized properly
+        Token* token = m_Tokens[i];
+        token->m_Int = i;
+    }
     for (unsigned int i = 0; i < tcount; ++i)
     {
         Token* token = m_Tokens[i];
@@ -725,9 +750,11 @@ void Parser::Clear()
 	wxSafeYield();
 	wxSleep(0);
 
+	wxMutexLocker* lockl = new wxMutexLocker(s_mutexListProtection);
 	m_ParsedFiles.Clear();
 	m_ReparsedFiles.Clear();
 	m_IncludeDirs.Clear();
+	delete lockl;
 
 	wxMutexLocker lock(s_mutexProtection);
 	WX_CLEAR_ARRAY(m_Tokens);
@@ -739,6 +766,7 @@ void Parser::Clear()
 	m_UsingCache = false;
 	m_CacheFilesCount = 0;
 	m_CacheTokensCount = 0;
+	m_abort_flag = false;
 }
 
 void Parser::ClearTemporaries()
