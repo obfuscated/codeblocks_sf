@@ -7,6 +7,7 @@ Paul Andres Jimenez <ceniza@gda.utp.edu.co>: Help and AStyle plugins
 David Perfors <mispunt@users.sourceforge.net>: Unicode tester and future documentation writer
 Bartlomiej Swiecki <byo.spoon@gmail.com>: wxSmith plugin
 Sylvain Prat <sprat@users.sourceforge.net>: MSVC workspace and project importers
+Thomas Lorblanchès <zlika@users.sourceforge.net>: CodeStat and Profiler plugins
 
 A couple of people are still missing from this list. When I asked for their info,
 they didn't get back to me. Let's hope they 'll be included here before the next release...
