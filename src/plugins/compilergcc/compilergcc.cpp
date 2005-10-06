@@ -1818,7 +1818,11 @@ void CompilerGCC::OnSelectTarget(wxCommandEvent& event)
  	if (event.GetId() == idMenuSelectTargetAll)
 		m_TargetIndex = -1;
 	else if (event.GetId() == idToolTarget)
+#if wxCHECK_VERSION(2, 6, 2)
+		m_TargetIndex = m_ToolTarget->GetCurrentSelection() - (m_HasTargetAll ? 1 : 0);
+#else
 		m_TargetIndex = m_ToolTarget->GetSelection() - (m_HasTargetAll ? 1 : 0);
+#endif
 	else
 	{
 		for (int i = 0; i < MAX_TARGETS; ++i)
