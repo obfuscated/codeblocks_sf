@@ -127,8 +127,8 @@ bool EditorBase::ThereAreOthers()
 
 wxMenu* EditorBase::CreateContextSubMenu(int id) // For context menus
 {
-    wxMenu* menu = 0; 
-    
+    wxMenu* menu = 0;
+
     if(id == idSwitchTo)
     {
         menu = new wxMenu;
@@ -177,31 +177,38 @@ void EditorBase::BasicAddToContextMenu(wxMenu* popup,bool noeditor)
 
 void EditorBase::DisplayContextMenu(const wxPoint& position,bool noeditor)
 {
-	// noeditor: 
+	// inform the editors we 're just about to create a context menu
+	if (!OnBeforeBuildContextMenu(noeditor))
+        return;
+
+	// noeditor:
 	// True if context menu belongs to open files tree;
-	// False if belongs to cbEditor 
-	
+	// False if belongs to cbEditor
+
 	wxMenu* popup = new wxMenu;
 
 	// build menu
-	
+
 	// Basic functions
 	BasicAddToContextMenu(popup,noeditor);
-	
+
 	// Extended functions, part 1 (virtual)
 	AddToContextMenu(popup,noeditor,false);
-	
+
 	// ask other editors / plugins if they need to add any entries in this menu...
     Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtEditorManager, popup, m_Filename);
-	
+
 	popup->AppendSeparator();
 	// Extended functions, part 2 (virtual)
     AddToContextMenu(popup,noeditor,true);
-	
+
+	// inform the editors we 're done creating a context menu (just about to show it)
+	OnAfterBuildContextMenu(noeditor);
+
 	// display menu
 	wxPoint pos = ScreenToClient(position);
 	PopupMenu(popup, pos.x, pos.y);
-	
+
  	delete popup;
 }
 

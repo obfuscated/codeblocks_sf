@@ -160,9 +160,7 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
 	    cbStyledTextCtrl* control = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()->GetControl();
 	    if (control)
 	    {
-	        // get caret position and line from mouse cursor
-            cbStyledTextCtrl* control = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()->GetControl();
-            int pos = control->PositionFromPoint(control->ScreenToClient(wxGetMousePosition()));
+            int pos = control->GetCurrentPos();
             wxString line = control->GetLine(control->LineFromPosition(pos));
 
             wxRegEx reg(_T("^[ \t]*#[ \t]*include[ \t]+[\"<]([^\">]+)[\">]"));

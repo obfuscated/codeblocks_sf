@@ -65,7 +65,7 @@ class DLLIMPORT cbEditor : public EditorBase
 		~cbEditor();
 
 		// properties
-		
+
 		/** Returns a pointer to the underlying cbStyledTextCtrl object (which
 		  * itself is the wxWindows implementation of Scintilla). If you want
 		  * to mess with the actual contents of an editor, this is the object
@@ -198,7 +198,7 @@ class DLLIMPORT cbEditor : public EditorBase
 		bool LineHasMarker(int marker, int line = -1);
 		wxColour GetOptionColour(const wxString& option, const wxColour _default);
 		void NotifyPlugins(wxEventType type, int intArg = 0, const wxString& strArg = wxEmptyString, int xArg = 0, int yArg = 0);
-        
+
         // events
         void OnMarginClick(wxScintillaEvent& event);
         void OnEditorUpdateUI(wxScintillaEvent& event);
@@ -212,7 +212,9 @@ class DLLIMPORT cbEditor : public EditorBase
 
 		// one event handler for all popup menu entries
 		void OnContextMenuEntry(wxCommandEvent& event);
-		
+        bool OnBeforeBuildContextMenu(bool noeditor);
+        void OnAfterBuildContextMenu(bool noeditor);
+
         // variables
         bool m_IsOK;
         cbStyledTextCtrl* m_pControl;

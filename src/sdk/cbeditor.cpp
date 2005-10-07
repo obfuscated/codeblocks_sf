@@ -1151,6 +1151,27 @@ void cbEditor::AddToContextMenu(wxMenu* popup,bool noeditor,bool pluginsdone)
     }
 }
 
+bool cbEditor::OnBeforeBuildContextMenu(bool noeditor)
+{
+    if (!noeditor)
+    {
+        // before the context menu creation, move the caret to where mouse is
+
+        // get caret position and line from mouse cursor
+        cbStyledTextCtrl* control = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()->GetControl();
+        int pos = control->PositionFromPoint(control->ScreenToClient(wxGetMousePosition()));
+        control->GotoPos(pos);
+    }
+
+    // follow default strategy
+    return EditorBase::OnBeforeBuildContextMenu(noeditor);
+}
+
+void cbEditor::OnAfterBuildContextMenu(bool noeditor)
+{
+    // we don't care
+}
+
 void cbEditor::Print(bool selectionOnly, PrintColorMode pcm)
 {
     switch (pcm)
