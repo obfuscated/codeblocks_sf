@@ -274,7 +274,10 @@ wxString ChooseDirectory(wxWindow* parent,
                          bool askToMakeRelative, // relative to initialPath
                          bool showCreateDirButton) // where supported
 {
-    wxDirDialog dlg(parent, message, _T(""), showCreateDirButton ? (wxDD_NEW_DIR_BUTTON | wxRESIZE_BORDER) : wxRESIZE_BORDER);
+    wxDirDialog dlg(parent,
+                    message,
+                    _T(""),
+                    (showCreateDirButton ? wxDD_NEW_DIR_BUTTON : 0) | wxRESIZE_BORDER);
     dlg.SetPath(initialPath);
     if (dlg.ShowModal() != wxID_OK)
         return wxEmptyString;

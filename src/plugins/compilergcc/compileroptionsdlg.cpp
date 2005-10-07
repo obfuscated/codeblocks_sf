@@ -1191,12 +1191,14 @@ void CompilerOptionsDlg::OnAddLibClick(wxCommandEvent& event)
             _("Add library"),
             _("Choose library to link"),
             false,
+            true,
             _("Library files (*.a, *.lib)|*.a;*.lib|All files (*)|*"));
 
     if (dlg.ShowModal() == wxID_OK)
     {
-        /*lstLibs->Append(dlg.GetLib());*/
-        lstLibs->Append(dlg.GetPath());
+        wxArrayString paths = GetArrayFromString(dlg.GetPath());
+        for (unsigned int i = 0; i < paths.GetCount(); ++i)
+            lstLibs->Append(paths[i]);
     }
 }
 
@@ -1214,6 +1216,7 @@ void CompilerOptionsDlg::OnEditLibClick(wxCommandEvent& event)
             m_pProject ? m_pProject->GetBasePath() : _T(""),
             _("Edit library"),
             _("Choose library to link"),
+            false,
             false,
             _("Library files (*.a, *.lib)|*.a;*.lib|All files (*)|*"));
 

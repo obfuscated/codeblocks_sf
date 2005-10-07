@@ -7,7 +7,10 @@
 #include <wx/filename.h>
 #include <wx/msgdlg.h>
 #include <wx/stattext.h>
+#include "globals.h"
 
+// remember last path, when supplied path is empty
+static wxString s_LastPath;
 
 BEGIN_EVENT_TABLE(EditPathDlg, wxDialog)
     EVT_UPDATE_UI(-1, EditPathDlg::OnUpdateUI)
@@ -20,6 +23,7 @@ EditPathDlg::EditPathDlg(wxWindow* parent,
         const wxString& title,
         const wxString& message,
         const bool wantDir,
+        const bool allowMultiSel,
         const wxString& filter)
 {
 	//ctor
@@ -27,13 +31,14 @@ EditPathDlg::EditPathDlg(wxWindow* parent,
 
 	XRCCTRL(*this, "txtPath", wxTextCtrl)->SetValue(path);
 	XRCCTRL(*this, "dlgEditPath", wxDialog)->SetTitle(title);
-	
+
 	if (!wantDir) {
         XRCCTRL(*this, "lblText", wxStaticText)->SetLabel(_("File:"));
 	}
-	
+
 	m_Path = path;
 	m_WantDir = wantDir;
+	m_AllowMultiSel = allowMultiSel;
 	m_Message = message;
 	m_Basepath = basepath;
 	m_Filter = filter;
@@ -49,27 +54,43 @@ EditPathDlg::~EditPathDlg()
 void EditPathDlg::OnBrowse(wxCommandEvent& event)
 {
     wxFileName path;
-    
-    wxFileName fname(XRCCTRL(*this, "txtPath", wxTextCtrl)->GetValue());
-        
+    wxArrayString multi;
+
+    wxString val = XRCCTRL(*this, "txtPath", wxTextCtrl)->GetValue();
+    int idx = val.Find(DEFAULT_ARRAY_SEP);
+    if (idx != -1)
+        val.Remove(idx);
+    wxFileName fname(val);
+
     if (m_WantDir)
     {
-        path = ChooseDirectory(this, m_Message, m_Path,
+        path = ChooseDirectory(this, m_Message, (m_Path.IsEmpty() ? s_LastPath : m_Path),
                 m_Basepath, false, m_ShowCreateDirButton);
-        
+
         if (path.GetFullPath().IsEmpty())
             return;
-    } else {
-        wxFileDialog dlg(this, m_Message, fname.GetPath(), fname.GetFullName(),
-                 m_Filter, wxCHANGE_DIR);
-                 
-        if (dlg.ShowModal() == wxID_OK) {
-            path = dlg.GetPath();
+    }
+    else
+    {
+        wxFileDialog dlg(this, m_Message, (fname.GetPath().IsEmpty() ? s_LastPath : fname.GetPath()),
+                fname.GetFullName(), m_Filter, wxCHANGE_DIR | (m_AllowMultiSel ? wxMULTIPLE : 0) );
+
+        if (dlg.ShowModal() == wxID_OK)
+        {
+            if (m_AllowMultiSel)
+                dlg.GetPaths(multi);
+            else
+                path = dlg.GetPath();
         }
         else
             return;
     }
-    
+
+    if (m_AllowMultiSel && multi.GetCount() != 0 && !multi[0].IsEmpty())
+        s_LastPath = multi[0];
+    else if (!path.GetFullPath().IsEmpty())
+        s_LastPath = path.GetFullPath();
+
     if (m_AskMakeRelative && !m_Basepath.IsEmpty())
     {
         // ask the user if he wants it to be kept as relative
@@ -77,12 +98,30 @@ void EditPathDlg::OnBrowse(wxCommandEvent& event)
                         _("Question"),
                         wxICON_QUESTION | wxYES_NO) == wxYES)
         {
-            path.MakeRelativeTo(m_Basepath);
+            if (m_AllowMultiSel)
+            {
+                for (unsigned int i = 0; i < multi.GetCount(); ++i)
+                {
+                    path = multi[i];
+                    path.MakeRelativeTo(m_Basepath);
+                    multi[i] = path.GetFullPath();
+                }
+                XRCCTRL(*this, "txtPath", wxTextCtrl)->SetValue(GetStringFromArray(multi));
+            }
+            else
+            {
+                path.MakeRelativeTo(m_Basepath);
+                XRCCTRL(*this, "txtPath", wxTextCtrl)->SetValue(path.GetFullPath());
+            }
+        }
+        else
+        {
+            if (m_AllowMultiSel)
+                XRCCTRL(*this, "txtPath", wxTextCtrl)->SetValue(GetStringFromArray(multi));
+            else
+                XRCCTRL(*this, "txtPath", wxTextCtrl)->SetValue(path.GetFullPath());
         }
     }
-    
-    XRCCTRL(*this, "txtPath", wxTextCtrl)->SetValue(path.GetFullPath());
-        
 }
 
 void EditPathDlg::OnUpdateUI(wxUpdateUIEvent& event)
