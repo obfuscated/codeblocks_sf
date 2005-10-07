@@ -51,10 +51,7 @@
 #define COLOUR_MAROON wxColour(0xa0, 0x00, 0x00)
 #define COLOUR_NAVY   wxColour(0x00, 0x00, 0xa0)
 
-cbPlugin* GetPlugin()
-{
-    return new CompilerGCC;
-}
+CB_IMPLEMENT_PLUGIN(CompilerGCC);
 
 // menu IDS
 // just because we don't know other plugins' used identifiers,

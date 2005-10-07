@@ -42,10 +42,7 @@
 #include "parser/parser.h"
 #include "cclist.h"
 
-cbPlugin* GetPlugin()
-{
-    return new CodeCompletion;
-}
+CB_IMPLEMENT_PLUGIN(CodeCompletion);
 
 // menu IDS
 // just because we don't know other plugins' used identifiers,

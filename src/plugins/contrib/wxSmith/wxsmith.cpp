@@ -38,11 +38,8 @@ static int NewFrameId = wxNewId();
 static int NewPanelId = wxNewId();
 static int ImportXrcId = wxNewId();
 
+CB_IMPLEMENT_PLUGIN(wxSmith);
 
-cbPlugin* GetPlugin()
-{
-	return new wxSmith;
-}
 wxSmith* wxSmith::Singleton = NULL;
 
 BEGIN_EVENT_TABLE(wxSmith, cbPlugin)
@@ -274,7 +271,7 @@ void wxSmith::OnNewWindow(wxCommandEvent& event)
 void wxSmith::OnImportXrc(wxCommandEvent& event)
 {
     if ( !CheckIntegration() ) return;
-    
+
 	wxString FileName = ::wxFileSelector(
         _("Select XRC file"),
         _T(""),
@@ -282,11 +279,11 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
         _T("xrc"),
         _("XRC files (*.xrc)|*.xrc"),
         wxOPEN|wxFILE_MUST_EXIST);
-        
+
     if ( FileName.empty() ) return;
-    
+
     // Loading xrc file into xml document
-    
+
     TiXmlDocument Doc(FileName.mb_str());
     TiXmlElement* Resource;
     if (! Doc.LoadFile() ||
@@ -303,17 +300,17 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
     	const char* Class = Element->Attribute("class");
     	const char* Name = Element->Attribute("name");
     	if ( !Class || !Name ) continue;
-    	
+
     	if ( !strcmp(Class,"wxDialog") ||
     	     !strcmp(Class,"wxPanel") ||
     	     !strcmp(Class,"wxFrame") )
         {
         	Resources.Add(wxString(Name,wxConvUTF8));
         }
-        
+
         Element = Element->NextSiblingElement("object");
     }
-    
+
     if ( Resources.Count() == 0 )
     {
     	wxMessageBox(_("Didn't find any editable resources"));
@@ -321,9 +318,9 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
     }
 
     // Selecting resource to edit
-    
+
     wxString Name;
-    
+
     if ( Resources.Count() == 1 )
     {
     	Name = Resources[0];
@@ -337,7 +334,7 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
         if ( Index == -1 ) return;
         Name = Resources[Index];
     }
-    
+
     Element = Resource->FirstChildElement("object");
     while ( Element )
     {
@@ -348,7 +345,7 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
         Element = Element->NextSiblingElement("object");
     }
     if ( !Element ) return;
-    
+
     // Creating fake resource and testing if xrc can be loaded without any errors
     wxsWidget* Test = wxsGEN(wxString(Element->Attribute("class"),wxConvUTF8),NULL);
     if ( !Test )
@@ -370,7 +367,7 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
         }
     }
     delete Test;
-    
+
     // Displaying configuration dialog - it will handle adding resource to project
     wxsImportXrcDlg Dlg(Manager::Get()->GetAppWindow(),Element);
     Dlg.ShowModal();
@@ -414,7 +411,7 @@ bool wxSmith::CheckIntegration()
         default:
             break;
     }
-    
+
     return true;
 }
 

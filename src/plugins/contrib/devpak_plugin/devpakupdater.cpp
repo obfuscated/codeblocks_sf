@@ -23,10 +23,7 @@
 #include <wx/dirdlg.h>
 #include <wx/intl.h>
 
-cbPlugin* GetPlugin()
-{
-	return new DevPakUpdater;
-}
+CB_IMPLEMENT_PLUGIN(DevPakUpdater);
 
 DevPakUpdater::DevPakUpdater()
 {
@@ -48,7 +45,7 @@ DevPakUpdater::DevPakUpdater()
 	m_PluginInfo.hasConfigure = true;
 
     Manager::Get()->Loadxrc(_T("/devpakupdater.zip#zip:*.xrc"));
-    ConfigManager::AddConfiguration(m_PluginInfo.title, _T("/devpak_plugin")); 
+    ConfigManager::AddConfiguration(m_PluginInfo.title, _T("/devpak_plugin"));
     g_MasterPath = ConfigManager::Get()->Read(_T("/devpak_plugin/master_path"));
 }
 

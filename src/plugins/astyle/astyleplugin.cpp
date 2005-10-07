@@ -30,10 +30,7 @@
 using std::istringstream;
 using std::string;
 
-cbPlugin* GetPlugin()
-{
-    return new AStylePlugin;
-}
+CB_IMPLEMENT_PLUGIN(AStylePlugin);
 
 AStylePlugin::AStylePlugin()
 {

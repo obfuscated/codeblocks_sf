@@ -29,10 +29,7 @@
 
 #define CONF_GROUP _T("/mime_types")
 
-cbPlugin* GetPlugin()
-{
-	return new DefaultMimeHandler;
-}
+CB_IMPLEMENT_PLUGIN(DefaultMimeHandler);
 
 DefaultMimeHandler::DefaultMimeHandler()
 {
@@ -81,7 +78,7 @@ void DefaultMimeHandler::OnAttach()
             mt->programIsModal = array[1] == _T("true");
             mt->wildcard = array[2];
             mt->program = array.GetCount() == 4 ? array[3] : _T("");
-            
+
             if (!mt->useEditor && mt->program.IsEmpty())
                 delete mt;
             else
@@ -253,7 +250,7 @@ int DefaultMimeHandler::DoOpenFile(cbMimeType* mt, const wxString& filename)
             wxExecute(external, wxEXEC_ASYNC);
         return ret;
     }
-    
+
     // failed...
     return -1;
 }

@@ -292,15 +292,15 @@ void PluginWizardDlg::DoAddSourceWizard(const wxString& classname, wxString& buf
 	buffer << _T("{") << _T('\n');
 	buffer << _T('\t') << _T("//return this wizard's title") << _T('\n');
 	buffer << _T('\t') << _T("//this will appear in the new-project dialog") << _T('\n');
-	buffer << _T('\t') << _T("//make sure you change this!") << _T('\n');
-	buffer << _T('\t') << _T("return _(\"XYZ Wizard\");") << _T('\n');
+	buffer << _T('\t') << _T("//make sure you set this!") << _T('\n');
+	buffer << _T('\t') << _T("return m_PluginInfo.title;") << _T('\n');
 	buffer << _T("}") << _T('\n');
 	buffer << _T('\n');
 	buffer << _T("const wxString& ") << classname << _T("::GetDescription() const") << _T('\n');
 	buffer << _T("{") << _T('\n');
 	buffer << _T('\t') << _T("//return this wizard's description") << _T('\n');
-	buffer << _T('\t') << _T("//make sure you change this!") << _T('\n');
-	buffer << _T('\t') << _T("return _(\"The XYZ Wizard helps you do this and that\");") << _T('\n');
+	buffer << _T('\t') << _T("//make sure you set this!") << _T('\n');
+	buffer << _T('\t') << _T("return m_PluginInfo.description;") << _T('\n');
 	buffer << _T("}") << _T('\n');
 	buffer << _T('\n');
 	buffer << _T("const wxString& ") << classname << _T("::GetCategory() const") << _T('\n');
@@ -308,7 +308,8 @@ void PluginWizardDlg::DoAddSourceWizard(const wxString& classname, wxString& buf
 	buffer << _T('\t') << _T("//return this wizard's category") << _T('\n');
 	buffer << _T('\t') << _T("//try to match an existing category") << _T('\n');
 	buffer << _T('\t') << _T("//make sure you change this!") << _T('\n');
-	buffer << _T('\t') << _T("return _(\"XYZ Applications\");") << _T('\n');
+	buffer << _T('\t') << _T("static wxString cat = _(\"XYZ Applications\");") << _T('\n');
+	buffer << _T('\t') << _T("return cat;") << _T('\n');
 	buffer << _T("}") << _T('\n');
 	buffer << _T('\n');
 	buffer << _T("const wxBitmap& ") << classname << _T("::GetBitmap() const") << _T('\n');
@@ -487,13 +488,8 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
 		buffer << _T('\t') << _T('\t') << _T("DECLARE_EVENT_TABLE()") << _T('\n');
 	buffer << _T("};") << _T('\n');
 	buffer << _T('\n');
-	buffer << _T("#ifdef __cplusplus") << _T('\n');
-	buffer << _T("extern \"C\" {") << _T('\n');
-	buffer << _T("#endif") << _T('\n');
-	buffer << _T('\t') << _T("PLUGIN_EXPORT cbPlugin* GetPlugin();") << _T('\n');
-	buffer << _T("#ifdef __cplusplus") << _T('\n');
-	buffer << _T("};") << _T('\n');
-	buffer << _T("#endif") << _T('\n');
+	buffer << _T("// Declare the plugin's hooks") << _T('\n');
+	buffer << _T("CB_DECLARE_PLUGIN();") << _T('\n');
 
 	if (GuardBlock)
 	{
@@ -529,10 +525,8 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
         buffer << _T("#include <configmanager.h>") << _T('\n');
 	}
 	buffer << _T('\n');
-	buffer << _T("cbPlugin* GetPlugin()") << _T('\n');
-	buffer << _T("{") << _T('\n');
-	buffer << _T('\t') << _T("return new ") << m_Info.name << _T(";") << _T('\n');
-	buffer << _T("}") << _T('\n');
+	buffer << _T("// Implement the plugin's hooks") << _T('\n');
+	buffer << _T("CB_IMPLEMENT_PLUGIN(") << m_Info.name << _T(");") << _T('\n');
 	buffer << _T('\n');
 	if (hasMenu || hasModuleMenu || hasToolbar)
 	{

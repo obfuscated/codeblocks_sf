@@ -169,9 +169,6 @@ class CompilerGCC : public cbCompilerPlugin
         DECLARE_EVENT_TABLE()
 };
 
-extern "C"
-{
-    PLUGIN_EXPORT cbPlugin* GetPlugin();
-};
+CB_DECLARE_PLUGIN();
 
 #endif // COMPILERGCC_H

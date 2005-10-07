@@ -23,7 +23,7 @@ class HelpPlugin : public cbPlugin
     bool BuildToolBar(wxToolBar *toolBar);
     void OnAttach(); // fires when the plugin is attached to the application
     void OnRelease(bool appShutDown); // fires when the plugin is released from the application
-    
+
   protected:
     void OnFindItem(wxCommandEvent &event);
     void OnHelp(wxCommandEvent &event);
@@ -33,18 +33,15 @@ class HelpPlugin : public cbPlugin
     void AddFile();
     wxString HelpFileFromId(int id);
     void LaunchHelp(const wxString &helpfile, const wxString &keyword = wxEmptyString);
-  
+
   private:
     wxMenuBar *m_pMenuBar;
     HelpCommon::HelpFilesVector m_Vector;
     int m_LastId;
-    
+
     DECLARE_EVENT_TABLE()
 };
 
-extern "C"
-{
-  PLUGIN_EXPORT cbPlugin *GetPlugin();
-};
+CB_DECLARE_PLUGIN();
 
 #endif // HELP_PLUGIN_H

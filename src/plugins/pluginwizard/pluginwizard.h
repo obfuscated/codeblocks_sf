@@ -17,9 +17,6 @@ class PluginWizard : public cbToolPlugin
 		virtual int Execute();
 };
 
-extern "C"
-{
-    PLUGIN_EXPORT cbPlugin* GetPlugin();
-};
+CB_DECLARE_PLUGIN();
 
 #endif // PLUGINWIZARD_H

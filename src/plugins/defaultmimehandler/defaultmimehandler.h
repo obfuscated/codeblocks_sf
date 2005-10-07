@@ -49,13 +49,7 @@ class DefaultMimeHandler : public cbMimePlugin
 	private:
 };
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-	PLUGIN_EXPORT cbPlugin* GetPlugin();
-#ifdef __cplusplus
-};
-#endif
+CB_DECLARE_PLUGIN();
 
 #endif // DEFAULTMIMEHANDLER_H
 

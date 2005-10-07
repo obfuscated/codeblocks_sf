@@ -37,10 +37,7 @@
 #include <customvars.h>
 #include "pluginwizarddlg.h"
 
-cbPlugin* GetPlugin()
-{
-    return new PluginWizard;
-}
+CB_IMPLEMENT_PLUGIN(PluginWizard);
 
 
 PluginWizard::PluginWizard()

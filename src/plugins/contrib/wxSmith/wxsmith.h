@@ -44,9 +44,9 @@ class wxSmith : public cbPlugin
 	public:
 		wxSmith();
 		~wxSmith();
-		
+
 		static wxSmith* Get() { return Singleton; }
-		
+
 		int Configure();
 		void BuildMenu(wxMenuBar* menuBar);
 		void BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg);
@@ -56,15 +56,15 @@ class wxSmith : public cbPlugin
 
         /* Function used while selecting resource in resource browser */
         void OnSelectResource(wxsResourceTreeData* Data);
-        
+
         /* Getting current resourcec tree */
         wxTreeCtrl* GetResourceTree() { return ResourceBrowser; }
 
         wxsProject* GetSmithProject(cbProject* Proj);
         cbProject* GetCBProject(wxsProject* Proj);
-        
+
 	protected:
-	
+
 	private:
         wxTreeCtrl* ResourceBrowser;
         wxScrolledWindow* PropertiesPanel;
@@ -72,41 +72,35 @@ class wxSmith : public cbPlugin
         wxsSplitterWindowEx* LeftSplitter;
 
         /* Here's bridge between current C::B project and wxSmith projects */
-        
+
         typedef std::map<cbProject*,wxsProject*> ProjectMapT;
         typedef ProjectMapT::iterator ProjectMapI;
-        
+
         ProjectMapT ProjectMap;
-        
+
         bool AddSmithToProject(wxsProject* Project);
-        
+
         /* Event processing functions */
-        
+
         void OnProjectClose(CodeBlocksEvent& event);
         void OnProjectOpen(CodeBlocksEvent& event);
         void OnProjectActivated(CodeBlocksEvent& event);
         void OnNewWindow(wxCommandEvent& event);
         void OnImportXrc(wxCommandEvent& event);
-        
+
         /* Internal event-processing functions */
         void OnSpreadEvent(wxsEvent& event);
-        
+
         /** Function checking and adding wxSmith support for current project */
         bool CheckIntegration();
 
         /* Singleton object */
         static wxSmith* Singleton;
-                
+
 		DECLARE_EVENT_TABLE()
 };
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-	PLUGIN_EXPORT cbPlugin* GetPlugin();
-#ifdef __cplusplus
-};
-#endif
+CB_DECLARE_PLUGIN();
 
 #endif // WXSMITH_H
 

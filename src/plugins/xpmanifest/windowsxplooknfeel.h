@@ -17,10 +17,7 @@ class WindowsXPLookNFeel : public cbToolPlugin
 	private:
 };
 
-extern "C"
-{
-	PLUGIN_EXPORT cbPlugin* GetPlugin();
-};
+CB_DECLARE_PLUGIN();
 
 #endif // WINDOWSXPLOOKNFEEL_H
 

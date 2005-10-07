@@ -57,12 +57,14 @@ enum FileType
 	ftOther
 };
 
+#define DEFAULT_ARRAY_SEP _T(";")
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 // global helper funcs
-extern DLLIMPORT wxString GetStringFromArray(const wxArrayString& array, const wxString& separator = _T(";"));
-extern DLLIMPORT wxArrayString GetArrayFromString(const wxString& text, const wxString& separator = _T(";"));
+extern DLLIMPORT wxString GetStringFromArray(const wxArrayString& array, const wxString& separator = DEFAULT_ARRAY_SEP);
+extern DLLIMPORT wxArrayString GetArrayFromString(const wxString& text, const wxString& separator = DEFAULT_ARRAY_SEP, bool trimSpaces = true);
 extern DLLIMPORT bool CreateDirRecursively(const wxString& full_path, int perms = 0755);
 extern DLLIMPORT wxString UnixFilename(const wxString& filename);
 extern DLLIMPORT FileType FileTypeOf(const wxString& filename);

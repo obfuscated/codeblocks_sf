@@ -23,11 +23,6 @@
 	#define PLUGIN_EXPORT
 #endif
 
-// this is the plugins SDK version number
-// it will change when the plugins interface breaks
-#define PLUGIN_SDK_VERSION_MAJOR 1
-#define PLUGIN_SDK_VERSION_MINOR 1
-
 // class decls
 class ProjectBuildTarget;
 class wxMenuBar;
@@ -70,16 +65,6 @@ class cbPlugin : public wxEvtHandler
         cbPlugin();
 		/** cbPlugin destructor. */
         virtual ~cbPlugin();
-        /** This is <u>not</u> a virtual function, so you can't override it.
-          * It's used for returning the SDK major version number this plugin
-          * was built on.
-          */
-        int GetSDKVersionMajor() const { return PLUGIN_SDK_VERSION_MAJOR; }
-        /** This is <u>not</u> a virtual function, so you can't override it.
-          * It's used for returning the SDK minor version number this plugin
-          * was built on.
-          */
-        int GetSDKVersionMinor() const { return PLUGIN_SDK_VERSION_MINOR; }
 		/** Attach is <u>not</u> a virtual function, so you can't override it.
 		  * The default implementation hooks the plugin to Code::Block's
 		  * event handling system, so that the plugin can receive (and process)
@@ -402,6 +387,30 @@ class cbProjectWizardPlugin : public cbPlugin
 };
 
 typedef cbPlugin*(*GetPluginProc)(void);
+typedef int(*GetSDKVersionMajorProc)(void);
+typedef int(*GetSDKVersionMinorProc)(void);
+
+// this is the plugins SDK version number
+// it will change when the plugins interface breaks
+#define PLUGIN_SDK_VERSION_MAJOR 1
+#define PLUGIN_SDK_VERSION_MINOR 2
+
+/** This is used to declare the plugin's hooks.
+  */
+#define CB_DECLARE_PLUGIN() \
+    extern "C" \
+    { \
+        PLUGIN_EXPORT cbPlugin* GetPlugin(); \
+        PLUGIN_EXPORT int GetSDKVersionMajor(); \
+        PLUGIN_EXPORT int GetSDKVersionMinor(); \
+    }
+
+/** This is used to actually implement the plugin's hooks.
+  * @param name The plugin's name (class).
+  */
+#define CB_IMPLEMENT_PLUGIN(name) \
+    cbPlugin* GetPlugin() { return new name; } \
+    int GetSDKVersionMajor() { return PLUGIN_SDK_VERSION_MAJOR; } \
+    int GetSDKVersionMinor() { return PLUGIN_SDK_VERSION_MINOR; } \
 
 #endif // DEVPLUGIN_H
-

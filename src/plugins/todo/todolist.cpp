@@ -30,10 +30,7 @@
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(ToDoItems);
 
-cbPlugin* GetPlugin()
-{
-	return new ToDoList;
-}
+CB_IMPLEMENT_PLUGIN(ToDoList);
 
 const int idAddTodo = wxNewId();
 

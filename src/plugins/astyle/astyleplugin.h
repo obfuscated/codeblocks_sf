@@ -40,10 +40,7 @@ class AStylePlugin : public cbToolPlugin
     private:
 };
 
-extern "C"
-{
-	PLUGIN_EXPORT cbPlugin* GetPlugin();
-};
+CB_DECLARE_PLUGIN();
 
 #endif // ASTYLEPLUGIN_H
 

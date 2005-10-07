@@ -37,7 +37,7 @@ wxString GetStringFromArray(const wxArrayString& array, const wxString& separato
     return out;
 }
 
-wxArrayString GetArrayFromString(const wxString& text, const wxString& separator)
+wxArrayString GetArrayFromString(const wxString& text, const wxString& separator, bool trimSpaces)
 {
     wxArrayString out;
     wxString search = text;
@@ -47,16 +47,22 @@ wxArrayString GetArrayFromString(const wxString& text, const wxString& separator
         int idx = search.Find(separator);
         if (idx == -1)
         {
-            search.Trim(false);
-            search.Trim(true);
+            if (trimSpaces)
+            {
+                search.Trim(false);
+                search.Trim(true);
+            }
             if (!search.IsEmpty())
                 out.Add(search);
             break;
         }
         wxString part = search.Left(idx);
         search.Remove(0, idx + seplen);
-        part.Trim(false);
-        part.Trim(true);
+        if (trimSpaces)
+        {
+            part.Trim(false);
+            part.Trim(true);
+        }
         if (!part.IsEmpty())
             out.Add(part);
     }

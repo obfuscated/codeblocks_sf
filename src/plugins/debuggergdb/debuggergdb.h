@@ -140,10 +140,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 		DECLARE_EVENT_TABLE()
 };
 
-extern "C"
-{
-	PLUGIN_EXPORT cbPlugin* GetPlugin();
-};
+CB_DECLARE_PLUGIN();
 
 #endif // DEBUGGERGDB_H
 

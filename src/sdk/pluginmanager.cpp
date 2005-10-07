@@ -123,7 +123,7 @@ int PluginManager::ScanForPlugins(const wxString& path)
 cbPlugin* PluginManager::LoadPlugin(const wxString& pluginName)
 {
     SANITY_CHECK(0L);
-    //wxLogNull zero; // no need for error messages; we check everything ourselves...
+    wxLogNull zero; // no need for error messages; we check everything ourselves...
     //MessageManager* msgMan = Manager::Get()->GetMessageManager();
 
     wxDynamicLibrary* lib = new wxDynamicLibrary();
@@ -135,6 +135,38 @@ cbPlugin* PluginManager::LoadPlugin(const wxString& pluginName)
         return 0L;
     }
 
+    // first get the SDK version entry points
+    GetSDKVersionMajorProc majorproc = (GetSDKVersionMajorProc)lib->GetSymbol(_T("GetSDKVersionMajor"));
+    GetSDKVersionMinorProc minorproc = (GetSDKVersionMinorProc)lib->GetSymbol(_T("GetSDKVersionMinor"));
+    // if no SDK version entry points, abort
+    if (!majorproc || !minorproc)
+    {
+        //msgMan->DebugLog(_("no SDK version entry points"));
+        delete lib;
+        return 0L;
+    }
+
+	// check if it is the correct SDK version
+	if (majorproc() != PLUGIN_SDK_VERSION_MAJOR ||
+		minorproc() != PLUGIN_SDK_VERSION_MINOR)
+	{
+		// in this case, inform the user...
+		wxString fmt;
+		fmt.Printf(_("The plugin \"%s\" failed to load because it was built with a different Code::Blocks SDK version:\n\n"
+					"Plugin's SDK version: %d.%d\n"
+					"Your SDK version: %d.%d"),
+					pluginName.c_str(),
+					majorproc(),
+					minorproc(),
+					PLUGIN_SDK_VERSION_MAJOR,
+					PLUGIN_SDK_VERSION_MINOR);
+		wxMessageBox(fmt, _("Error loading plugin"), wxICON_ERROR);
+        lib->Unload();
+        delete lib;
+        return 0L;
+	}
+
+    // get the plugin's entry point
     GetPluginProc proc = (GetPluginProc)lib->GetSymbol(_T("GetPlugin"));
     if (!proc)
     {
@@ -144,6 +176,7 @@ cbPlugin* PluginManager::LoadPlugin(const wxString& pluginName)
         return 0L;
     }
 
+    // try to load the plugin
     cbPlugin* plug = 0L;
     try
     {
@@ -157,29 +190,8 @@ cbPlugin* PluginManager::LoadPlugin(const wxString& pluginName)
         return 0L;
     }
 
-    wxString plugName = plug->GetInfo()->name;
-
-	// check if it is the correct SDK version
-	if (plug->GetSDKVersionMajor() != PLUGIN_SDK_VERSION_MAJOR ||
-		plug->GetSDKVersionMinor() != PLUGIN_SDK_VERSION_MINOR)
-	{
-		// in this case, inform the user...
-		wxString fmt;
-		fmt.Printf(_("The plugin \"%s\" failed to load because it was built with a different Code::Blocks SDK version:\n\n"
-					"Plugin's SDK version: %d.%d\n"
-					"Your SDK version: %d.%d"),
-					plug->GetInfo()->title.c_str(),
-					plug->GetSDKVersionMajor(),
-					plug->GetSDKVersionMinor(),
-					PLUGIN_SDK_VERSION_MAJOR,
-					PLUGIN_SDK_VERSION_MINOR);
-		wxMessageBox(fmt, _("Error loading plugin"), wxICON_ERROR);
-        lib->Unload();
-        delete lib;
-        return 0L;
-	}
-
     // check if we have already loaded a plugin by that name
+    wxString plugName = plug->GetInfo()->name;
     if (FindPluginByName(plugName))
     {
         //msgMan->DebugLog(_("another plugin with name \"%s\" is already loaded..."), plugName.c_str());

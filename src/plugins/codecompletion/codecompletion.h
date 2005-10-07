@@ -55,9 +55,6 @@ class CodeCompletion : public cbCodeCompletionPlugin
         DECLARE_EVENT_TABLE()
 };
 
-extern "C"
-{
-    PLUGIN_EXPORT cbPlugin* GetPlugin();
-};
+CB_DECLARE_PLUGIN();
 
 #endif // CODECOMPLETION_H

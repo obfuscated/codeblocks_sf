@@ -53,12 +53,6 @@ class CodeStat : public cbToolPlugin
       CodeStatExecDlg* dlg;
 };
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-	PLUGIN_EXPORT cbPlugin* GetPlugin();
-#ifdef __cplusplus
-};
-#endif
+CB_DECLARE_PLUGIN();
 
 #endif // CODESTAT_H

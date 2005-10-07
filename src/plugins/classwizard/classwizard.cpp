@@ -36,10 +36,7 @@
 #include "classwizarddlg.h"
 #include <cbproject.h>
 
-cbPlugin* GetPlugin()
-{
-    return new ClassWizard;
-}
+CB_IMPLEMENT_PLUGIN(ClassWizard);
 
 
 ClassWizard::ClassWizard()
@@ -109,6 +106,6 @@ int ClassWizard::Execute()
 		}
 		return 0;
 	}
-		
+
 	return -1;
 }

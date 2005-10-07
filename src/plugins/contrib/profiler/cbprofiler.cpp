@@ -7,13 +7,11 @@
  * Thanks:    Yiannis Mandravellos and his Source code formatter (AStyle) sources
  * License:   GPL
  **************************************************************/
- 
+
 #include "cbprofiler.h"
 
-cbPlugin* GetPlugin()
-{
-    return new CBProfiler;
-}
+CB_IMPLEMENT_PLUGIN(CBProfiler);
+
 CBProfiler::CBProfiler()
 {
     //ctor
@@ -21,7 +19,7 @@ CBProfiler::CBProfiler()
     wxXmlResource::Get()->InitAllHandlers();
     wxString resPath = ConfigManager::Get()->Read(_T("data_path"), wxEmptyString);
     wxXmlResource::Get()->Load(resPath + _T("/profiler.zip#zip:*.xrc"));
-    
+
     m_PluginInfo.name = _T("CBProfiler");
     m_PluginInfo.title = _("C::B Profiler");
     m_PluginInfo.version = _("1.0 beta3");
@@ -32,7 +30,7 @@ CBProfiler::CBProfiler()
     m_PluginInfo.thanksTo = _("Mandrav, for the n00b intro to profiling\nand the sources of his Source code\nformatter (AStyle) Plugin, whose clean\ncode structure served as a basis for this\nplugin\n:)");
     m_PluginInfo.license = LICENSE_GPL;
     m_PluginInfo.hasConfigure = true;
-    
+
     ConfigManager::AddConfiguration(m_PluginInfo.title, _T("/cbprofiler"));
 }
 CBProfiler::~CBProfiler()
@@ -61,7 +59,7 @@ int CBProfiler::Configure()
     // if not attached, exit
     if (!m_IsAttached)
         return -1;
-    
+
     CBProfilerConfigDlg dlg(Manager::Get()->GetAppWindow());
     if (dlg.ShowModal() == wxID_OK)
     {
@@ -73,7 +71,7 @@ int CBProfiler::Execute()
     // if not attached, exit
     if (!m_IsAttached)
         return -1;
-        
+
    cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
    // if no project open, exit
 	if (!project)
@@ -83,7 +81,7 @@ int CBProfiler::Execute()
 		Manager::Get()->GetMessageManager()->DebugLog(msg);
 		return -1;
 	}
-	
+
 	ProjectBuildTarget* target = 0L;
 	if (project->GetBuildTargetsCount() > 1)
 	{
@@ -109,7 +107,7 @@ int CBProfiler::Execute()
 		Manager::Get()->GetMessageManager()->DebugLog(msg);
 		return -1;
 	}
-	
+
 	if ((target->GetTargetType() != ttExecutable) && (target->GetTargetType() != ttConsoleOnly))
 	{
 		wxString msg = _("The target is not executable!");
@@ -117,19 +115,19 @@ int CBProfiler::Execute()
 		Manager::Get()->GetMessageManager()->DebugLog(msg);
 		return -1;
 	}
-	
+
 	// Scope...
 	wxString exename,dataname;
-	
+
 	if (target)
-	{	
+	{
         exename = target->GetOutputFilename();
         wxFileName ename(exename);
         ename.Normalize(wxPATH_NORM_ALL, project->GetBasePath());
 		  exename = ename.GetFullPath();
-		
+
 		  wxChar separator = wxFileName::GetPathSeparator();
-        
+
         // The user either hasn't built the target yet or cleaned the project
         if (!ename.FileExists())
         {
@@ -137,7 +135,7 @@ int CBProfiler::Execute()
             if (wxMessageBox(msg,_("Confirmation"),wxYES_NO | wxICON_QUESTION) == wxNO)
                 return -2;
         }
-        
+
         // We locate gmon.out
         dataname=exename.BeforeLast(separator);
         dataname+=separator;
@@ -160,11 +158,11 @@ int CBProfiler::Execute()
             	else return -1;
             }
         }
-        
+
         // If we got so far, it means both the executable and the profile data exist
         wxDateTime exetime=ename.GetModificationTime();
         wxDateTime datatime=dname.GetModificationTime();
-        
+
         // Profile data might be old...
         if(exetime>datatime)
         {
@@ -174,7 +172,7 @@ int CBProfiler::Execute()
         }
 
 	}
-	
+
 	// Loading configuration
 	struct_config config;
 	config.chkAnnSource = ConfigManager::Get()->Read(_T("/cbprofiler/ann_source_chk"), 0L);
@@ -191,10 +189,10 @@ int CBProfiler::Execute()
 
     // If we got this far, all is left is to call gprof!!!
     dlg = new CBProfilerExecDlg(Manager::Get()->GetAppWindow());
-    
+
     // Do we need to show the dialog (process succesful)?
     if(dlg->Execute(exename, dataname, config) != 0)
         return -1;
-   
+
     return 0;
 }

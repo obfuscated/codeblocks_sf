@@ -56,10 +56,7 @@ class ToDoList : public cbPlugin
 		DECLARE_EVENT_TABLE()
 };
 
-extern "C"
-{
-	PLUGIN_EXPORT cbPlugin* GetPlugin();
-};
+CB_DECLARE_PLUGIN();
 
 #endif // TODOLIST_H
 

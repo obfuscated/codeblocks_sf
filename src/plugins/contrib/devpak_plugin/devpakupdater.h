@@ -41,13 +41,7 @@ class DevPakUpdater : public cbToolPlugin
 	private:
 };
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-	PLUGIN_EXPORT cbPlugin* GetPlugin();
-#ifdef __cplusplus
-};
-#endif
+CB_DECLARE_PLUGIN();
 
 #endif // DEVPAKUPDATER_H
 

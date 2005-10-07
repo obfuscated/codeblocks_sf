@@ -33,10 +33,7 @@
 #include <licenses.h>
 #include "windowsxplooknfeel.h"
 
-cbPlugin* GetPlugin()
-{
-	return new WindowsXPLookNFeel;
-}
+CB_IMPLEMENT_PLUGIN(WindowsXPLookNFeel);
 
 WindowsXPLookNFeel::WindowsXPLookNFeel()
 {
