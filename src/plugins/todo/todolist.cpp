@@ -182,7 +182,7 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
     SaveTypes();
 
 	cbStyledTextCtrl* control = ed->GetControl();
-	
+
 	// calculate insertion point
 	int idx = 0;
 	int crlfLen = 0; // length of newline chars
@@ -203,13 +203,17 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
 			case wxSCI_EOL_LF: crlfLen = 1; break;
 			case wxSCI_EOL_CRLF: crlfLen = 2; break;
 		}
-		idx += crlfLen;
+		if (idx > 0)
+            idx += crlfLen;
 	}
-	
+	// make sure insertion point is valid (bug #1300981)
+    if (idx > control->GetLength())
+        idx = control->GetLength();
+
 	// ok, construct todo line text like this:
     // TODO (mandrav#0#): Implement code to do this and the other...
 	wxString buffer;
-    
+
 	// start with the comment
     if (dlg.GetCommentType() == tdctCpp && dlg.GetPosition() != tdpCurrent)
 		buffer << _T("// "); // if tdpCurrent we can't use this type of comment...
@@ -242,7 +246,7 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
 
 	// add the actual text
 	buffer << text;
-	
+
     if (dlg.GetCommentType() == tdctWarning || dlg.GetCommentType() == tdctError)
         buffer << _T("");
 
@@ -267,7 +271,7 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
 		origPos += buffer.Length() + crlfLen;
 	control->GotoPos(origPos);
 	control->EnsureCaretVisible();
-	
+
 	m_pListLog->Parse();
 }
 

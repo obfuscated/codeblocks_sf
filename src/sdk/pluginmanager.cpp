@@ -211,7 +211,7 @@ void PluginManager::LoadAllPlugins()
         wxString msg;
         msg.Printf(_("Plugin \"%s\" failed to load last time Code::Blocks was executed.\n"
                     "Do you want to disable this plugin from loading?"), probPlugin.c_str());
-        if (wxMessageBox(msg, _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxNO)
+        if (wxMessageBox(msg, _("Warning"), wxICON_WARNING | wxYES_NO) == wxNO)
             probPlugin = _T("");
     }
 
@@ -240,11 +240,18 @@ void PluginManager::LoadAllPlugins()
             try
             {
                 plug->Attach();
+                ConfigManager::Get()->DeleteEntry(personalityKey + _T("/plugins/try_to_activate"));
             }
             catch (cbException& exception)
             {
                 Manager::Get()->GetMessageManager()->AppendLog(_T("[failed]"));
                 exception.ShowErrorMessage(false);
+
+                wxString msg;
+                msg.Printf(_("Plugin \"%s\" failed to load...\n"
+                            "Do you want to disable this plugin from loading next time?"), plug->GetInfo()->title.c_str());
+                if (wxMessageBox(msg, _("Warning"), wxICON_WARNING | wxYES_NO) == wxYES)
+                    ConfigManager::Get()->Write(baseKey, false);
             }
 		}
     }
