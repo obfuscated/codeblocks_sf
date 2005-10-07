@@ -917,7 +917,8 @@ void EditorManager::CheckForExternallyModifiedFiles()
 		bool b_modified = false;
         cbEditor* ed = InternalGetBuiltinEditor(node);
 
-        if (!ed) continue;
+        // no builtin editor or new file not yet saved
+        if (!ed || !ed->IsOK()) continue;
         //File was deleted?
         if (!wxFileExists(ed->GetFilename()))
         {
