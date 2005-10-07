@@ -1354,7 +1354,10 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
                 else
                     msg = _("Text not found.\nSearch from the end of the document?");
 
-                if (wxMessageBox(msg, _("Result"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK)
+                // we can make a user-definable                 // tiwag 050902
+                bool DONTASK = ConfigManager::Get()->Read(_T("/editor/auto_wrap_search"), 1);
+                if (DONTASK) wxBell();                          // tiwag 050902
+                if (DONTASK || wxMessageBox(msg, _("Result"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK)
                 {
                     if (data->directionDown)
                     {

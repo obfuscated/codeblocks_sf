@@ -95,6 +95,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
    	XRCCTRL(*this, "spnTabSize", wxSpinCtrl)->SetValue(ConfigManager::Get()->Read(_T("/editor/tab_size"), 4));
    	XRCCTRL(*this, "cmbViewWS", wxComboBox)->SetSelection(ConfigManager::Get()->Read(_T("/editor/view_whitespace"), 0l));
    	XRCCTRL(*this, "rbTabText", wxRadioBox)->SetSelection(ConfigManager::Get()->Read(_T("/editor/tab_text_relative"), 1));
+   	XRCCTRL(*this, "chkAutoWrapSearch", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/editor/auto_wrap_search"), 1));
 
    	// end-of-line
    	XRCCTRL(*this, "chkShowEOL", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/editor/show_eol"), 0l));
@@ -103,14 +104,13 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
    	XRCCTRL(*this, "chkEnsureConsistentEOL", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/editor/eol/ensure_consistent_line_ends"), 0l));
     XRCCTRL(*this, "cmbEOLMode", wxComboBox)->SetSelection(ConfigManager::Get()->Read(_T("/editor/eol/eolmode"),0L));
 
-   	
 	//folding
    	XRCCTRL(*this, "chkEnableFolding", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/editor/folding/show_folds"), 1));
    	XRCCTRL(*this, "chkFoldOnOpen", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/editor/folding/fold_all_on_open"), 0L));
    	XRCCTRL(*this, "chkFoldPreprocessor", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/editor/folding/fold_preprocessor"), 0L));
    	XRCCTRL(*this, "chkFoldComments", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/editor/folding/fold_comments"), 1));
    	XRCCTRL(*this, "chkFoldXml", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/editor/folding/fold_xml"), 1));
-   	
+
 	//gutter
     wxColour color(ConfigManager::Get()->Read(_T("/editor/gutter/color/red"), 0l),
     				ConfigManager::Get()->Read(_T("/editor/gutter/color/green"), 0l),
@@ -153,10 +153,10 @@ EditorConfigurationDlg::~EditorConfigurationDlg()
 {
 	if (m_Theme)
 		delete m_Theme;
-		
+
 	if (m_TextColorControl)
 		delete m_TextColorControl;
-    
+
     if (m_AutoCompTextControl)
         delete m_AutoCompTextControl;
 }
@@ -224,12 +224,12 @@ void EditorConfigurationDlg::ApplyColors()
 		wxFont fnt = XRCCTRL(*this, "lblEditorFont", wxStaticText)->GetFont();
 		if (m_TextColorControl)
 		{
-            m_TextColorControl->StyleSetFont(wxSCI_STYLE_DEFAULT,fnt); 
+            m_TextColorControl->StyleSetFont(wxSCI_STYLE_DEFAULT,fnt);
             m_Theme->Apply(m_Lang, m_TextColorControl);
         }
 		if (m_AutoCompTextControl)
 		{
-            m_AutoCompTextControl->StyleSetFont(wxSCI_STYLE_DEFAULT,fnt); 
+            m_AutoCompTextControl->StyleSetFont(wxSCI_STYLE_DEFAULT,fnt);
             m_Theme->Apply(wxSCI_LEX_CPP, m_AutoCompTextControl);
         }
 	}
@@ -267,7 +267,7 @@ void EditorConfigurationDlg::ReadColors()
                 XRCCTRL(*this, "btnColorsBack", wxButton)->SetBackgroundColour(c);
                 XRCCTRL(*this, "btnColorsBack", wxButton)->SetLabel(_T(""));
             }
-			
+
 			XRCCTRL(*this, "chkColorsBold", wxCheckBox)->SetValue(opt->bold);
 			XRCCTRL(*this, "chkColorsItalics", wxCheckBox)->SetValue(opt->italics);
 			XRCCTRL(*this, "chkColorsUnderlined", wxCheckBox)->SetValue(opt->underlined);
@@ -320,7 +320,7 @@ void EditorConfigurationDlg::UpdateSampleFont(bool askForNewFont)
 	XRCCTRL(*this, "lblEditorFont", wxStaticText)->SetFont(tmpFont);
 	if (!askForNewFont)
 		return;
-		
+
 	wxFontData data;
     data.SetInitialFont(tmpFont);
 
@@ -390,7 +390,7 @@ void EditorConfigurationDlg::ChangeTheme()
     wxString key = cmbThemes->GetStringSelection();
     XRCCTRL(*this, "btnColorsRenameTheme", wxButton)->Enable(key != COLORSET_DEFAULT);
     XRCCTRL(*this, "btnColorsDeleteTheme", wxButton)->Enable(key != COLORSET_DEFAULT);
-    
+
     if (m_Theme)
         delete m_Theme;
     m_Theme = new EditorColorSet(key);
@@ -536,7 +536,7 @@ void EditorConfigurationDlg::OnChooseColor(wxCommandEvent& event)
     	wxColour color = dlg.GetColourData().GetColour();
 	    sender->SetBackgroundColour(color);
     }
-	
+
 	if (event.GetId() == XRCID("btnColorsFore") ||
 		event.GetId() == XRCID("btnColorsBack"))
 		WriteColors();
@@ -594,10 +594,10 @@ void EditorConfigurationDlg::OnAutoCompDelete(wxCommandEvent& event)
     wxListBox* lstKeyword = XRCCTRL(*this, "lstAutoCompKeyword", wxListBox);
     if (lstKeyword->GetSelection() == -1)
         return;
-    
+
     if (wxMessageBox(_("Are you sure you want to delete this keyword?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxNO)
         return;
-    
+
     int sel = lstKeyword->GetSelection();
     AutoCompleteMap::iterator it = m_AutoCompMap.find(lstKeyword->GetString(sel));
     if (it != m_AutoCompMap.end())
@@ -622,7 +622,7 @@ void EditorConfigurationDlg::OnAutoCompKeyword(wxCommandEvent& event)
     wxListBox* lstKeyword = XRCCTRL(*this, "lstAutoCompKeyword", wxListBox);
     if (lstKeyword->GetSelection() == m_LastAutoCompKeyword)
         return;
-    
+
     AutoCompUpdate(m_LastAutoCompKeyword);
     // list new keyword's code
     m_AutoCompTextControl->SetText(m_AutoCompMap[lstKeyword->GetString(lstKeyword->GetSelection())]);
@@ -645,6 +645,7 @@ void EditorConfigurationDlg::OnOK(wxCommandEvent& event)
    	ConfigManager::Get()->Write(_T("/editor/tab_size"),             XRCCTRL(*this, "spnTabSize", wxSpinCtrl)->GetValue());
    	ConfigManager::Get()->Write(_T("/editor/view_whitespace"),      XRCCTRL(*this, "cmbViewWS", wxComboBox)->GetSelection());
    	ConfigManager::Get()->Write(_T("/editor/tab_text_relative"),    XRCCTRL(*this, "rbTabText", wxRadioBox)->GetSelection());
+   	ConfigManager::Get()->Write(_T("/editor/auto_wrap_search"),     XRCCTRL(*this, "chkAutoWrapSearch", wxCheckBox)->GetValue());
 	//folding
    	ConfigManager::Get()->Write(_T("/editor/folding/show_folds"), 			XRCCTRL(*this, "chkEnableFolding", wxCheckBox)->GetValue());
    	ConfigManager::Get()->Write(_T("/editor/folding/fold_all_on_open"), 	XRCCTRL(*this, "chkFoldOnOpen", wxCheckBox)->GetValue());

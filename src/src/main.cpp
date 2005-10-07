@@ -220,6 +220,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idViewFullScreen, MainFrame::OnViewMenuUpdateUI)
 
     EVT_EDITOR_UPDATE_UI(MainFrame::OnEditorUpdateUI)
+    EVT_NOTEBOOK_PAGE_CHANGED(-1, MainFrame::OnEditorUpdateUI_NB)   //tiwag 050917
 
     EVT_PLUGIN_ATTACHED(MainFrame::OnPluginLoaded)
     // EVT_PLUGIN_RELEASED(MainFrame::OnPluginUnloaded)
@@ -966,9 +967,11 @@ void MainFrame::DoUpdateStatusBar()
         SetStatusText(ed->GetControl()->GetOvertype() ? _("Overwrite") : _("Insert"), 2);
         SetStatusText(ed->GetModified() ? _("Modified") : wxEmptyString, 3);
         SetStatusText(ed->GetControl()->GetReadOnly() ? _("Read only") : _("Read/Write"), 4);
+        SetStatusText(ed->GetFilename(), 0);                    //tiwag 050917
     }
     else
     {
+        SetStatusText(_("Welcome to "APP_NAME"!"));             //tiwag 050917
         SetStatusText(wxEmptyString, 1);
         SetStatusText(wxEmptyString, 2);
         SetStatusText(wxEmptyString, 3);
@@ -989,25 +992,27 @@ void MainFrame::DoUpdateAppTitle()
 	}
 	else
         prj = PRJMAN() ? PRJMAN()->GetActiveProject() : 0L;
-	wxString projname=_T(""),edname=_T(""),fulltitle=_T("");
+	wxString projname;
+	wxString edname;
+	wxString fulltitle;
 	if(ed || prj)
 	{
         if(prj)
         {
             if(PRJMAN()->GetActiveProject() == prj)
-                projname = wxString(_T("[")) + prj->GetTitle() + _T("] ");
+                projname = wxString(_T(" [")) + prj->GetTitle() + _T("]");
             else
-                projname = wxString(_T("(")) + prj->GetTitle() + _T(") ");
+                projname = wxString(_T(" (")) + prj->GetTitle() + _T(")");
         }
         if(ed)
             edname = ed->GetTitle();
-        fulltitle = projname + edname;
+        fulltitle = edname + projname;
         if(!fulltitle.IsEmpty())
             fulltitle.Append(_T(" - "));
-        fulltitle.Append(APP_NAME);
 	}
-	else
-        fulltitle = APP_NAME" v"APP_VERSION;
+    fulltitle.Append(APP_NAME);
+    fulltitle.Append(_T(" v"));
+    fulltitle.Append(APP_VERSION);
     SetTitle(fulltitle);
 }
 
@@ -2029,6 +2034,12 @@ void MainFrame::OnEditorUpdateUI(CodeBlocksEvent& event)
 		DoUpdateStatusBar();
 	}
 	event.Skip();
+}
+
+void MainFrame::OnEditorUpdateUI_NB(wxNotebookEvent& event)     //tiwag 050917
+{                                                               //tiwag 050917
+    if (m_pEdMan ) DoUpdateStatusBar();                         //tiwag 050917
+    event.Skip();                                               //tiwag 050917
 }
 
 void MainFrame::OnToggleOpenFilesTree(wxCommandEvent& event)
