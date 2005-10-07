@@ -517,20 +517,21 @@ int DebuggerGDB::Debug()
 	wxString out;
 	m_TimerPollDebugger.Start(100);
 
-	// add as include dirs all open project base dirs
-	ProjectsArray* projects = prjMan->GetProjects();
-	for (unsigned int i = 0; i < projects->GetCount(); ++i)
-	{
-        cbProject* it = projects->Item(i);
-//        if (it == project)
-//            continue;
-        wxString filename = it->GetBasePath();
-        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(filename); // apply env vars
-        msgMan->Log(m_PageIndex, _("Adding source dir: %s"), filename.c_str());
-        ConvertToGDBDirectory(filename, _T(""), false);//project->GetBasePath(), true);
-        SendCommand(_T("directory ") + filename);
-	}
-//    msgMan->Log(m_PageIndex, cmd);
+    if (ConfigManager::Get()->Read(_T("debugger_gdb/add_other_search_dirs"), 0L))
+    {
+        // add as include dirs all open project base dirs
+        ProjectsArray* projects = prjMan->GetProjects();
+        for (unsigned int i = 0; i < projects->GetCount(); ++i)
+        {
+            cbProject* it = projects->Item(i);
+            // skip if it's THE project (already added)
+            if (it == project)
+                continue;
+            AddSourceDir(it->GetBasePath());
+        }
+    }
+    // lastly, add THE project as source dir
+	AddSourceDir(project->GetBasePath());
 
 	cmd.Clear();
 	switch (target->GetTargetType())
@@ -639,6 +640,17 @@ void DebuggerGDB::StripQuotes(wxString& str)
 {
 	if (str.GetChar(0) == _T('\"') && str.GetChar(str.Length() - 1) == _T('\"'))
 			str = str.Mid(1, str.Length() - 2);
+}
+
+void DebuggerGDB::AddSourceDir(const wxString& dir)
+{
+    if (dir.IsEmpty())
+        return;
+    wxString filename = dir;
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(filename); // apply env vars
+    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Adding source dir: %s"), filename.c_str());
+    ConvertToGDBDirectory(filename, _T(""), false);
+    SendCommand(_T("directory ") + filename);
 }
 
 void DebuggerGDB::ConvertToGDBFriendly(wxString& str)

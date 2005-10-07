@@ -40,6 +40,7 @@ DebuggerOptionsDlg::DebuggerOptionsDlg(wxWindow* parent)
 	XRCCTRL(*this, "chkWatchLocals", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("debugger_gdb/watch_locals"), 1));
 	XRCCTRL(*this, "chkTooltipEval", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("debugger_gdb/eval_tooltip"), 0L));
 	XRCCTRL(*this, "chkDebugLog", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("debugger_gdb/debug_log"), 0L));
+	XRCCTRL(*this, "chkAddForeignDirs", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("debugger_gdb/add_other_search_dirs"), 0L));
 }
 
 DebuggerOptionsDlg::~DebuggerOptionsDlg()
@@ -56,6 +57,7 @@ void DebuggerOptionsDlg::EndModal(int retCode)
         ConfigManager::Get()->Write(_T("debugger_gdb/watch_locals"), XRCCTRL(*this, "chkWatchLocals", wxCheckBox)->GetValue());
         ConfigManager::Get()->Write(_T("debugger_gdb/eval_tooltip"), XRCCTRL(*this, "chkTooltipEval", wxCheckBox)->GetValue());
         ConfigManager::Get()->Write(_T("debugger_gdb/debug_log"), XRCCTRL(*this, "chkDebugLog", wxCheckBox)->GetValue());
+        ConfigManager::Get()->Write(_T("debugger_gdb/add_other_search_dirs"), XRCCTRL(*this, "chkAddForeignDirs", wxCheckBox)->GetValue());
     }
 
     wxDialog::EndModal(retCode);

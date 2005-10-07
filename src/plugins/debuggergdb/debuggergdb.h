@@ -66,6 +66,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         void ConvertToGDBFriendly(wxString& str);
         void ConvertToGDBDirectory(wxString& str, wxString base = _T(""), bool relative = true);
         void StripQuotes(wxString& str);
+        void AddSourceDir(const wxString& dir);
 	private:
 		void ParseOutput(const wxString& output);
 		void BringAppToFront();
