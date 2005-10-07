@@ -29,6 +29,7 @@
 #include <wx/imaglist.h>
 #include <wx/bmpbuttn.h>
 #include <wx/file.h>
+#include <wx/progdlg.h>
 
 #include "editormanager.h" // class's header file
 #include "configmanager.h"
@@ -1433,8 +1434,13 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
 
     // now that are list is filled, we 'll search
     // but first we 'll create a hidden cbStyledTextCtrl to do the search for us ;)
-    cbStyledTextCtrl* control = new cbStyledTextCtrl(m_pNotebook, -1);
+    cbStyledTextCtrl* control = new cbStyledTextCtrl(m_pNotebook, -1, wxDefaultPosition, wxSize(0, 0));
     control->Show(false); //hidden
+
+    // let's create a progress dialog because it might take some time depending on the files count
+    wxProgressDialog* progress = new wxProgressDialog(_("Find in files"),
+                                        _("Please wait while searching inside the files..."),
+                                        filesList.GetCount());
 
     // keep a copy of the find struct
     cbFindReplaceData localData = *data;
@@ -1442,6 +1448,9 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
     int count = 0;
     for (size_t i = 0; i < filesList.GetCount(); ++i)
     {
+        // update the progress bar
+        progress->Update(i);
+
         // re-initialize the find struct for every file searched
         *data = localData;
 
@@ -1472,6 +1481,7 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
         }
     }
     delete control; // done with it
+    delete progress; // done here too
 
     if (count > 0)
     {
