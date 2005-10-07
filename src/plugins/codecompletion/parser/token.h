@@ -125,7 +125,7 @@ inline bool LoadStringFromFile(wxFile* f, wxString& str)
         static char buf[513];
         ok = f->Read(buf, size) == size;
         buf[size] = '\0';
-        str = _U(buf);
+        str = wxString(buf, wxConvUTF8);
     }
     else // doesn't fit in our buffer, but still we have to skip it
     {
