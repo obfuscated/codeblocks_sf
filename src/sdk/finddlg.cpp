@@ -50,7 +50,7 @@ FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection, b
 	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgFind"));
 
 	// load last searches
-	wxArrayString previous = GetArrayFromString(ConfigManager::Get()->Read(CONF_GROUP _T("/last"), wxEmptyString));
+	wxArrayString previous = GetArrayFromString(ConfigManager::Get()->Read(CONF_GROUP _T("/last"), wxEmptyString), DEFAULT_ARRAY_SEP, false);
 	for (unsigned int i = 0; i < previous.GetCount(); ++i)
 	{
 		if (!previous[i].IsEmpty())

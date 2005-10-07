@@ -80,7 +80,7 @@ ReplaceDlg::~ReplaceDlg()
 
 void ReplaceDlg::FillComboWithLastValues(wxComboBox* combo, const wxString& configKey)
 {
-	wxArrayString values = GetArrayFromString(ConfigManager::Get()->Read(configKey, wxEmptyString));
+	wxArrayString values = GetArrayFromString(ConfigManager::Get()->Read(configKey, wxEmptyString), DEFAULT_ARRAY_SEP, false);
 	for (unsigned int i = 0; i < values.GetCount(); ++i)
 	{
 		if (!values[i].IsEmpty())
