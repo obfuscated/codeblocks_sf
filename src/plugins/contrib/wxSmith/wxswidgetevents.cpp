@@ -79,12 +79,12 @@ wxString wxsWidgetEvents::GetArrayEnteries(int TabSize)
     		Code.Append(_T('('));
     		if ( Event->WithId )
     		{
-    			if ( Res->GetEditMode() == wxsResSource | wxsResFile )
+    			if ( Res->GetEditMode() == (wxsResSource | wxsResFile) )
     			{
     				Code.Append(_T("XRCID(\""));
     			}
     			Code.Append(Widget->GetBaseParams().IdName);
-    			if ( Res->GetEditMode() == wxsResSource | wxsResFile )
+    			if ( Res->GetEditMode() == (wxsResSource | wxsResFile) )
     			{
     				Code.Append(_T("\")"));
     			}

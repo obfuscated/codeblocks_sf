@@ -203,7 +203,7 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
             wxString ( Elem->Attribute(XML_HFILE_STR), wxConvUTF8 ),
             Xrc );
     }
-    
+
     SetModified(false);
 
     return true;
@@ -253,7 +253,7 @@ void wxsProject::AddWindowResource(
 
     wxString RealFileName = GetInternalFileName(FileName);
     wxsWindowRes* Res = NULL;
-    int EditMode = !XrcName ? wxsResSource : wxsResSource | wxsResFile;
+    int EditMode = !XrcName ? wxsResSource : (wxsResSource | wxsResFile);
 
     if ( Type == _T("Dialog") )
     {
@@ -273,7 +273,7 @@ void wxsProject::AddWindowResource(
         Manager::Get()->GetMessageManager()->Log(_("Couldn't create new resource"));
         return;
     }
-    
+
     Res->Load();
 
     // Validating and correcting resource
@@ -297,7 +297,7 @@ void wxsProject::AddWindowResource(
     {
         Frames.push_back((wxsFrameRes*)Res);
     }
-    
+
     SetModified(true);
 }
 
@@ -380,7 +380,7 @@ void wxsProject::SaveProject()
         Doc->SaveFile(WorkingPath.GetFullPath().mb_str());
         delete Doc;
     }
-    
+
     SetModified(false);
 }
 

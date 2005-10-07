@@ -33,50 +33,22 @@ class wxsDragWindow : public wxControl
 
 		/** Function notifying about size change */
 		void NotifySizeChange(const wxSize& NewSize);
-		
+
 		/** Getting currently selected widget or NULL if there's no such widget inside this resource */
 		wxsWidget* GetSelection();
-		
+
 		/** Getting count of widgets in multiple selection */
 		int GetMultipleSelCount();
-		
+
 		/** Getting widget frrom multiple selection */
 		wxsWidget* GetMultipleSelWidget(int Index);
 
+        /** Getting vector of selected widges. If any-level parent of widget
+         *  is also selected, widget is skipped.
+         */
+		void GetSelectionNoChildren(std::vector<wxsWidget*>& Vector);
+
 	private:
-
-        /** Painting event - currently do nothing, all drawing is done inside timer event */
-        void OnPaint(wxPaintEvent& evt);
-
-        /** Function drawing all additional graphic items */
-        void AddGraphics(wxDC& DC);
-
-        /** Erasing background will do nothing */
-        void OnEraseBack(wxEraseEvent& event);
-
-        /** Event handler for all mouse events */
-        void OnMouse(wxMouseEvent& event);
-
-        /** Size event */
-        void OnSize(wxSizeEvent& event);
-
-        /** Additional event fetching background bitmap */
-        void OnFetchBackground(wxCommandEvent& event);
-
-        /** Event handler for EVT_SELECT_WIDGET event */
-        void OnSelectWidget(wxsEvent& event);
-        
-        /** Event handler for EVT_UNSELECT_WIDGET event */
-        void OnUnselectWidget(wxsEvent& event);
-        
-        /** Timer fuunction refreshing additional graphics */
-        void TimerRefresh(wxTimerEvent& event);
-
-        /** Size of boxes used to drag borders of widgets */
-        static const int DragBoxSize = 6;
-
-        /** Minimal distace which must be done to apply dragging */
-        static const int MinDragDistance = 8;
 
         /** Enum type describing placement of drag box */
         enum DragBoxType
@@ -108,6 +80,63 @@ class wxsDragWindow : public wxControl
         	bool KillMe;                                    ///< Used while refreshing drag points list to find invalid points
         	DragPointData* WidgetPoints[DragBoxTypeCnt];    ///< Pointers to all drag points for this widget
         };
+
+        /** Painting event - currently do nothing, all drawing is done inside timer event */
+        void OnPaint(wxPaintEvent& evt);
+
+        /** Function drawing all additional graphic items */
+        void AddGraphics(wxDC& DC);
+
+        /** Erasing background will do nothing */
+        void OnEraseBack(wxEraseEvent& event);
+
+        /** Event handler for all mouse events */
+        void OnMouse(wxMouseEvent& event);
+
+        /** Forwarding mouse event to preview widget */
+        void ForwardMouseEventToPreview(wxMouseEvent& event,wxsWidget* Widget);
+
+        /** Searching for drag point under cursor */
+        DragPointData* FindCoveredPoint(int PosX,int PosY);
+
+        /** Searching for drag point attached to widget edge under cursor */
+        DragPointData* FindCoveredEdge(int PosX,int PosY);
+
+        /** Searching for left-top drag point for given widget */
+        DragPointData* FindLeftTop(wxsWidget* Widget);
+
+        /** Initializing drag sequence */
+        void DragInit(DragPointData* NewDragPoint,wxsWidget* NewDragWidget,bool MultipleSel,int MouseX,int MouseY);
+
+        /** Processing mouse while dragging */
+        void DragProcess(int MouseX,int MouseY,wxsWidget* UnderCursor);
+
+        /** Finalizing dragging sequence */
+        void DragFinish(wxsWidget* UnderCursor);
+
+        /** Updating cursor */
+        void UpdateCursor(bool Dragging);
+
+        /** Size event */
+        void OnSize(wxSizeEvent& event);
+
+        /** Additional event fetching background bitmap */
+        void OnFetchBackground(wxCommandEvent& event);
+
+        /** Event handler for EVT_SELECT_WIDGET event */
+        void OnSelectWidget(wxsEvent& event);
+
+        /** Event handler for EVT_UNSELECT_WIDGET event */
+        void OnUnselectWidget(wxsEvent& event);
+
+        /** Timer fuunction refreshing additional graphics */
+        void TimerRefresh(wxTimerEvent& event);
+
+        /** Size of boxes used to drag borders of widgets */
+        static const int DragBoxSize = 6;
+
+        /** Minimal distace which must be done to apply dragging */
+        static const int MinDragDistance = 8;
 
         /** Declaration of vector containing all drag points */
         typedef std::vector<DragPointData*> DragPointsT;
@@ -151,8 +180,6 @@ class wxsDragWindow : public wxControl
         /** Updated region - will be used to fetch background */
         wxRegion FetchArea;
 
-        // Mics functions
-
         /** Removing all drag points */
         void ClearDragPoints();
 
@@ -191,7 +218,7 @@ class wxsDragWindow : public wxControl
 
         /** Checking if given widget is inside widget tree */
         bool IsInside(wxsWidget* What,wxsWidget* Where);
-        
+
         /** Checking if widget is truthly visible (it and all of it's parents must be shown) */
         bool IsVisible(wxsWidget* Wdg);
 

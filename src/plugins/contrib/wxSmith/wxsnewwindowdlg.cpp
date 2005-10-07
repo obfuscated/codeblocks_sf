@@ -125,7 +125,7 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
     wxString WxsFile = Class->GetValue() + _T(".wxs");
     wxsWindowRes* NewWindow = NULL;
 
-    int ResType = CreateXrc ? wxsResSource | wxsResFile : wxsResSource;
+    int ResType = CreateXrc ? (wxsResSource | wxsResFile) : wxsResSource;
     wxString XrcFile = CreateXrc ? Xrc->GetValue() : _T("");
 
     if ( Type == _T("Dialog") )
@@ -184,7 +184,7 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
         delete NewWindow;
         Close();
     }
-		
+
     // Adding dialog to project and opening editor for it
 
     if ( Type == _T("Dialog") )

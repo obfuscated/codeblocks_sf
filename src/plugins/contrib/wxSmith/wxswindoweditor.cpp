@@ -87,6 +87,7 @@ void wxsWindowEditor::BuildPreview()
         wxSize Drag(Virtual.GetWidth() > Real.GetWidth() ? Virtual.GetWidth() : Real.GetWidth(),
                     Virtual.GetHeight() > Real.GetHeight() ? Virtual.GetHeight() : Real.GetHeight());
         // Waiting to reposition and resize all widgets
+// FIXME (SpOoN#1#): Don't ever use wxYield, just add pending event and do all required stuff in it's handler
         ::wxYield();
         DragWnd->SetSize(Drag);
         DragWnd->NotifySizeChange(Drag);
@@ -308,8 +309,8 @@ void wxsWindowEditor::Paste()
                 }
             }
             EndMultipleChange();
-// FIXME (SpOoN#1#): Updating base properties probably won't work properly 
-            GetWinRes()->CheckBaseProperties(true,NULL); 
+// FIXME (SpOoN#1#): Updating base properties probably won't work properly
+            GetWinRes()->CheckBaseProperties(true,NULL);
             GetWinRes()->NotifyChange();
         }
     }
@@ -318,33 +319,7 @@ void wxsWindowEditor::Paste()
 
 void wxsWindowEditor::GetSelectionNoChildren(std::vector<wxsWidget*>& Vector)
 {
-	Vector.clear();
-	int Cnt = DragWnd->GetMultipleSelCount();
-	for ( int i=0; i<Cnt; i++ )
-	{
-		Vector.push_back(DragWnd->GetMultipleSelWidget(i));
-	}
-
-	for ( int i=0; i<Cnt; i++ )
-	{
-		for ( int j=0; j<Cnt; j++ )
-		{
-			// Yes, I know it could be O(n) ;)
-			wxsWidget* Check = Vector[i];
-			while ( Check = Check->GetParent() )
-			{
-				if ( Check == Vector[j] ) break;
-			}
-			if ( Check )
-			{
-                // i-th vector item has selected (grand)parent, it must be removed
-                Vector.erase(Vector.begin()+i);
-                --i;
-                --Cnt;
-                break;
-            }
-		}
-	}
+    DragWnd->GetSelectionNoChildren(Vector);
 }
 
 bool wxsWindowEditor::StartMultipleChange()
@@ -370,22 +345,22 @@ bool wxsWindowEditor::InsertBefore(wxsWidget* New,wxsWidget* Ref)
 	{
         Ref = DragWnd->GetSelection();
 	}
-	
+
 	if ( !Ref )
 	{
 		wxsKILL(New);
 		return false;
 	}
-	
+
 	if ( !InsideMultipleChange )
 	{
 		KillPreview();
 	}
     wxsWidget* Parent = Ref->GetParent();
-    
+
     int Index;
     bool Ret;
-    
+
     if ( !Parent || (Index=Parent->FindChild(Ref)) < 0 || Parent->AddChild(New,Index) < 0 )
     {
         wxsKILL(New);
@@ -397,15 +372,15 @@ bool wxsWindowEditor::InsertBefore(wxsWidget* New,wxsWidget* Ref)
         New->BuildTree(wxsTREE(),Parent->TreeId,Index);
         Ret = true;
     }
-    
+
     if ( !InsideMultipleChange )
     {
     	wxsTREE()->Refresh();
     	BuildPreview();
     }
-    
+
     return Ret;
-}   
+}
 
 bool wxsWindowEditor::InsertAfter(wxsWidget* New,wxsWidget* Ref)
 {
@@ -413,22 +388,22 @@ bool wxsWindowEditor::InsertAfter(wxsWidget* New,wxsWidget* Ref)
 	{
         Ref = DragWnd->GetSelection();
 	}
-	
+
 	if ( !Ref )
 	{
 		wxsKILL(New);
 		return false;
 	}
-	
+
 	if ( !InsideMultipleChange )
 	{
 		KillPreview();
 	}
     wxsWidget* Parent = Ref->GetParent();
-    
+
     int Index;
     bool Ret;
-    
+
     if ( !Parent || (Index=Parent->FindChild(Ref)) < 0 || Parent->AddChild(New,Index+1) < 0 )
     {
         wxsKILL(New);
@@ -440,15 +415,15 @@ bool wxsWindowEditor::InsertAfter(wxsWidget* New,wxsWidget* Ref)
         New->BuildTree(wxsTREE(),Parent->TreeId,Index+1);
         Ret = true;
     }
-    
+
     if ( !InsideMultipleChange )
     {
     	wxsTREE()->Refresh();
     	BuildPreview();
     }
-    
+
     return Ret;
-}   
+}
 
 bool wxsWindowEditor::InsertInto(wxsWidget* New,wxsWidget* Ref)
 {
@@ -456,18 +431,18 @@ bool wxsWindowEditor::InsertInto(wxsWidget* New,wxsWidget* Ref)
 	{
         Ref = DragWnd->GetSelection();
 	}
-	
+
 	if ( !Ref )
 	{
 		wxsKILL(New);
 		return false;
 	}
-	
+
 	if ( !InsideMultipleChange )
 	{
 		KillPreview();
 	}
-	
+
 	bool Ret;
     if ( Ref->AddChild(New) < 0 )
     {
@@ -479,14 +454,14 @@ bool wxsWindowEditor::InsertInto(wxsWidget* New,wxsWidget* Ref)
         New->BuildTree(wxsTREE(),Ref->TreeId);
         Ret = true;
     }
-    
+
     if ( !InsideMultipleChange )
     {
     	wxsTREE()->Refresh();
     	BuildPreview();
     }
     return Ret;
-}   
+}
 
 BEGIN_EVENT_TABLE(wxsWindowEditor,wxsEditor)
     EVT_LEFT_DOWN(wxsWindowEditor::OnMouseClick)
