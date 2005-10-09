@@ -678,9 +678,9 @@ int CompilerGCC::DoRunQueue()
 
     if (m_Queue.GetCount() == 0)
 	{
-        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLUE, *wxWHITE));
+        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLUE, wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
         msgMan->Log(m_PageIndex, _("Nothing to be done."));
-        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLACK, *wxWHITE));
+        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
         m_LastExitCode = 0;
         OnJobEnd();
         return 0;
@@ -693,7 +693,7 @@ int CompilerGCC::DoRunQueue()
         return -3;
 	}
 
-	m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLACK, *wxWHITE));
+	m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
     wxString dir;// = m_Project->GetBasePath();
     wxString cmd;
 
@@ -768,7 +768,7 @@ int CompilerGCC::DoRunQueue()
     {
         m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxRED, *wxWHITE));
         msgMan->Log(m_PageIndex, _("Execution of '%s' in '%s' failed."), m_Queue[m_QueueIndex].c_str(), wxGetCwd().c_str());
-		m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLACK, *wxWHITE));
+		m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
         delete m_Process;
         m_Process = NULL;
         m_Queue.Clear();
@@ -1979,7 +1979,7 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColor)
             if (forceErrorColor)
                 m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_MAROON));
             else
-                m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLACK));
+                m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT)));
 			break;
 	}
 
@@ -2046,7 +2046,7 @@ void CompilerGCC::OnJobEnd()
             m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_NAVY));
             Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("%d errors, %d warnings"), m_Errors.GetErrorsCount(), m_Errors.GetWarningsCount());
         }
-        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLACK, *wxWHITE));
+        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
         Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T(" ")); // blank line
 
         if (m_LastExitCode == 0)
