@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_project_file>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="1"/>
+	<Project>
+		<Option title="GLFW Application"/>
+		<Option makefile="Makefile"/>
+		<Option makefile_is_custom="0"/>
+		<Option compiler="0"/>
+		<Build>
+			<Target title="default">
+				<Option output="glfw.exe"/>
+				<Option type="0"/>
+			</Target>
+		</Build>
+		<Linker>
+			<Add library="glfw"/>
+			<Add library="opengl32"/>
+			<Add library="glu32"/>
+			<Add library="user32"/>
+			<Add library="kernel32"/>
+			<Add library="gdi32"/>
+		</Linker>
+	</Project>
+</CodeBlocks_project_file>

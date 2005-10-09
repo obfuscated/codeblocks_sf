@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_project_file>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="1"/>
+	<Project>
+		<Option title="GLFW Application"/>
+		<Option makefile="Makefile"/>
+		<Option makefile_is_custom="0"/>
+		<Option compiler="0"/>
+		<Build>
+			<Target title="default">
+				<Option output="glfwapp"/>
+				<Option type="0"/>
+			</Target>
+		</Build>
+		<Linker>
+			<Add library="glfw"/>
+			<Add library="GL"/>
+			<Add library="GLU"/>
+			<Add library="pthread"/>
+			<Add library="Xxf86vm"/>
+			<Add directory="/usr/X11R6/lib"/>
+		</Linker>
+	</Project>
+</CodeBlocks_project_file>
