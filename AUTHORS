@@ -8,6 +8,7 @@ David Perfors <mispunt@users.sourceforge.net>: Unicode tester and future documen
 Bartlomiej Swiecki <byo.spoon@gmail.com>: wxSmith plugin
 Sylvain Prat <sprat@users.sourceforge.net>: MSVC workspace and project importers
 Thomas Lorblanchès <zlika@users.sourceforge.net>: CodeStat and Profiler plugins
+Thomas Denk <thomas.denk@gmail.com>: SVN/CVS plugin and other contributions
 
 A couple of people are still missing from this list. When I asked for their info,
 they didn't get back to me. Let's hope they 'll be included here before the next release...

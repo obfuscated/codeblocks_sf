@@ -27,6 +27,7 @@
 #include <wx/dir.h>
 #include <wx/menu.h>
 #include <wx/dynlib.h>
+#include <wx/intl.h>
 
 #include "cbexception.h" // class's header file
 #include "pluginmanager.h" // class's header file
@@ -107,14 +108,19 @@ int PluginManager::ScanForPlugins(const wxString& path)
         return count;
 
     wxString filename;
+	wxString failed;
     bool ok = dir.GetFirst(&filename, PLUGINS_MASK, wxDIR_FILES);
     while (ok)
     {
 //		Manager::Get()->GetMessageManager()->AppendDebugLog(_("Trying %s: "), filename.c_str());
         if (LoadPlugin(path + _T('/') + filename))
             ++count;
+		else
+			failed << filename << _T(" ");
         ok = dir.GetNext(&filename);
     }
+	if (!failed.IsEmpty())
+		Manager::Get()->GetMessageManager()->Log(_("*****\nPlugins that failed to load: %s\n*****"), failed.c_str());
     return count;
 
 #undef PLUGINS_MASK

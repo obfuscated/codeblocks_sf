@@ -803,7 +803,8 @@ bool EditorManager::Close(int index,bool dontsave)
 bool EditorManager::Save(const wxString& filename)
 {
     SANITY_CHECK(false);
-    cbEditor* ed = GetBuiltinEditor(IsOpen(filename));
+//    cbEditor* ed = GetBuiltinEditor(IsOpen(filename));
+    EditorBase* ed = IsOpen(filename);
     if (ed)
         return ed->Save();
     return true;
@@ -817,7 +818,7 @@ bool EditorManager::Save(int index)
 	{
 		if (i == index)
 		{
-			cbEditor* ed = InternalGetBuiltinEditor(node);
+		    EditorBase* ed = node->GetData();
 			if (ed)
                 return ed->Save();
 		}
@@ -828,7 +829,7 @@ bool EditorManager::Save(int index)
 bool EditorManager::SaveActive()
 {
     SANITY_CHECK(false);
-    cbEditor* ed = GetBuiltinEditor(GetActiveEditor());
+    EditorBase* ed = GetActiveEditor();
 	if (ed)
 		return ed->Save();
 	return true;
@@ -866,7 +867,7 @@ bool EditorManager::SaveAll()
 	EditorsList::Node* node = m_EditorsList.GetFirst();
     while (node)
 	{
-        cbEditor* ed = InternalGetBuiltinEditor(node);
+	    EditorBase* ed = node->GetData();
         if (ed && !ed->Save())
 		{
 			wxString msg;
