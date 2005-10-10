@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<!DOCTYPE Code::Blocks_project_file>
-<Code::Blocks_project_file>
+<!DOCTYPE CodeBlocks_project_file>
+<CodeBlocks_project_file>
 	<FileVersion major="1" minor="1"/>
 	<Project>
 		<Option title="wxSmith for wx 2.6"/>
@@ -14,7 +14,6 @@
 				<Option working_dir=""/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="2"/>
 				<Option compiler="0"/>
 				<Option projectResourceIncludeDirsRelation="2"/>
@@ -29,7 +28,6 @@
 				<Option working_dir="..\..\..\devel"/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option host_application="./codeblocks.exe"/>
@@ -64,6 +62,7 @@
 			<Add directory="$(WX_DIR)\contrib\include"/>
 		</Compiler>
 		<Linker>
+			<Add option="-i"/>
 			<Add directory="..\..\..\devel"/>
 			<Add directory="propgrid"/>
 			<Add directory="$(WX_DIR)\lib\gcc_dll"/>
@@ -589,16 +588,6 @@
 			<Option link="0"/>
 			<Option target="wxSmith"/>
 		</Unit>
-		<Unit filename="wxsdefevthandler.cpp">
-			<Option compilerVar="CPP"/>
-			<Option target="wxSmith"/>
-		</Unit>
-		<Unit filename="wxsdefevthandler.h">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="wxSmith"/>
-		</Unit>
 		<Unit filename="wxsdefsizer.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="wxSmith"/>
@@ -822,4 +811,4 @@
 			<Option target="wxSmith"/>
 		</Unit>
 	</Project>
-</Code::Blocks_project_file>
+</CodeBlocks_project_file>

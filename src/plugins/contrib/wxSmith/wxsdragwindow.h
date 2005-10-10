@@ -105,6 +105,9 @@ class wxsDragWindow : public wxControl
         /** Searching for left-top drag point for given widget */
         DragPointData* FindLeftTop(wxsWidget* Widget);
 
+        /** Returning left-top drag point from other one */
+        inline DragPointData* FindLeftTop(DragPointData* Point) { return Point->WidgetPoints[LeftTop]; }
+
         /** Initializing drag sequence */
         void DragInit(DragPointData* NewDragPoint,wxsWidget* NewDragWidget,bool MultipleSel,int MouseX,int MouseY);
 
@@ -115,7 +118,7 @@ class wxsDragWindow : public wxControl
         void DragFinish(wxsWidget* UnderCursor);
 
         /** Updating cursor */
-        void UpdateCursor(bool Dragging);
+        void UpdateCursor(bool Dragging,DragPointData* NewDragPoint,wxsWidget* NewDragWidget);
 
         /** Size event */
         void OnSize(wxSizeEvent& event);
@@ -221,6 +224,9 @@ class wxsDragWindow : public wxControl
 
         /** Checking if widget is truthly visible (it and all of it's parents must be shown) */
         bool IsVisible(wxsWidget* Wdg);
+
+        /** Notifying outside about widget change */
+        void SelectWidget(wxsWidget* Widget);
 
         DECLARE_EVENT_TABLE()
 };
