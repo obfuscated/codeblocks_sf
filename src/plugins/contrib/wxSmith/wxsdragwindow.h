@@ -124,7 +124,7 @@ class wxsDragWindow : public wxControl
         void OnSize(wxSizeEvent& event);
 
         /** Additional event fetching background bitmap */
-        void OnFetchBackground(wxCommandEvent& event);
+        void OnFetchBackground(wxTimerEvent& event);
 
         /** Event handler for EVT_SELECT_WIDGET event */
         void OnSelectWidget(wxsEvent& event);
@@ -132,7 +132,7 @@ class wxsDragWindow : public wxControl
         /** Event handler for EVT_UNSELECT_WIDGET event */
         void OnUnselectWidget(wxsEvent& event);
 
-        /** Timer fuunction refreshing additional graphics */
+        /** Timer function refreshing additional graphics */
         void TimerRefresh(wxTimerEvent& event);
 
         /** Size of boxes used to drag borders of widgets */
@@ -166,6 +166,9 @@ class wxsDragWindow : public wxControl
         /** Timer responsible for refreshing additional data */
         wxTimer RefreshTimer;
 
+        /** Timer used inside background-fetching system */
+        wxTimer BackFetchTimer;
+
         /** Bitmap keeping preview of edited window as background */
         wxBitmap* Background;
 
@@ -176,6 +179,9 @@ class wxsDragWindow : public wxControl
 
         /** Flag set when repainting control after fetching background */
         bool PaintAfterFetch;
+
+        /** Flag blocking adding graphic when waiting for background fetch */
+        bool BlockTimerRefresh;
 
         /** Flag blocking incomming widget select events */
         bool BlockWidgetSelect;
@@ -227,6 +233,9 @@ class wxsDragWindow : public wxControl
 
         /** Notifying outside about widget change */
         void SelectWidget(wxsWidget* Widget);
+
+        /** Refreshing everything from outside wxPaint */
+        void UpdateGraphics();
 
         DECLARE_EVENT_TABLE()
 };
