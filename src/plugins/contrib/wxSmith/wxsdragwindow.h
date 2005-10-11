@@ -48,6 +48,9 @@ class wxsDragWindow : public wxControl
          */
 		void GetSelectionNoChildren(std::vector<wxsWidget*>& Vector);
 
+		/** Checking if given widget is inside current selection */
+		bool IsSelected(wxsWidget* Widget);
+
 	private:
 
         /** Enum type describing placement of drag box */
@@ -236,6 +239,10 @@ class wxsDragWindow : public wxControl
 
         /** Refreshing everything from outside wxPaint */
         void UpdateGraphics();
+
+        /** Function used inside GetSelectionNoChildren to iterate through
+            all widgets */
+        void GetSelectionNoChildrenReq(wxsWidget* Widget,std::vector<wxsWidget*>& Vector);
 
         DECLARE_EVENT_TABLE()
 };

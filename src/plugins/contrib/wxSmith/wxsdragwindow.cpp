@@ -414,7 +414,6 @@ void wxsDragWindow::DragFinish(wxsWidget* UnderCursor)
         // Finding out what new parent widget will be
 
         wxsWindowEditor* Editor = (wxsWindowEditor*)RootWidget->GetResource()->GetEditor();
-        Editor->KillPreview();
 
         wxsWidget* NewParent = UnderCursor;
         bool NewParentIsSizer = NewParent->GetInfo().Sizer;
@@ -433,7 +432,30 @@ void wxsDragWindow::DragFinish(wxsWidget* UnderCursor)
         std::vector<wxsWidget*> AllToMove;
         GetSelectionNoChildren(AllToMove);
 
+        // First pass - recalculating position
         int Cnt = (int)AllToMove.size();
+        for ( int i=0; i<Cnt; i++ )
+        {
+            wxsWidget* Moved = AllToMove[i];
+            wxsWidgetBaseParams& Params = Moved->GetBaseParams();
+            DragPointData* LeftTopPoint = FindLeftTop(Moved);
+            if ( LeftTopPoint )
+            {
+                FindAbsolutePosition(Moved,&PosX,&PosY);
+                PosX += LeftTopPoint->PosX - LeftTopPoint->DragInitPosX;
+                PosY += LeftTopPoint->PosY - LeftTopPoint->DragInitPosY;
+
+                NewParent->GetPreview()->ScreenToClient(&PosX,&PosY);
+                Params.PosX = PosX;
+                Params.PosY = PosY;
+            }
+        }
+
+        // Second pass - changing resource structure
+        // Must kill preview to avoid seg faults caused by
+        // differences between preview structure and resource's
+        // structure
+        Editor->KillPreview();
         for ( int i=0; i<Cnt; i++ )
         {
             wxsWidget* Moved = AllToMove[i];
@@ -448,6 +470,7 @@ void wxsDragWindow::DragFinish(wxsWidget* UnderCursor)
                     {
                         Moved->KillTree(wxsTREE());
                         OldParent->ChangeChildPos(OldInSizerPos,NewInSizerPos);
+                        NewInSizerPos = OldParent->FindChild(Moved);
                         Moved->BuildTree(wxsTREE(),NewParent->GetTreeId(),NewInSizerPos);
                     }
                 }
@@ -461,25 +484,7 @@ void wxsDragWindow::DragFinish(wxsWidget* UnderCursor)
             }
 
             wxsWidgetBaseParams& Params = Moved->GetBaseParams();
-
-            DragPointData* LeftTopPoint = FindLeftTop(Moved);
-
-            if ( LeftTopPoint )
-            {
-                FindAbsolutePosition(Moved,&PosX,&PosY);
-                PosX += LeftTopPoint->PosX - LeftTopPoint->DragInitPosX;
-                PosY += LeftTopPoint->PosY - LeftTopPoint->DragInitPosY;
-
-                NewParent->GetPreview()->ScreenToClient(&PosX,&PosY);
-                Params.PosX = PosX;
-                Params.PosY = PosY;
-
-                Moved->UpdateProperties();
-            }
-
             Params.DefaultPosition = NewParentIsSizer;
-
-
             if ( NewInSizerPos >= 0 )
             {
                 NewInSizerPos++;
@@ -487,7 +492,6 @@ void wxsDragWindow::DragFinish(wxsWidget* UnderCursor)
         }
 
         wxsTREE()->Refresh();
-        wxsWidget* Widget = GetSelection();
         RootWidget->PropertiesUpdated(false,false);
 
         /*
@@ -840,7 +844,7 @@ wxsWidget* wxsDragWindow::GetSelection()
 	{
 		if ( !(*i)->Inactive )
 		{
-			// Here's active drag point - it's at the edget of current selection
+			// Here's active drag point - it's at the edge of current selection
 			return (*i)->Widget;
 		}
 	}
@@ -930,32 +934,27 @@ bool wxsDragWindow::IsVisible(wxsWidget* Widget)
 void wxsDragWindow::GetSelectionNoChildren(std::vector<wxsWidget*>& Vector)
 {
 	Vector.clear();
-	int Cnt = GetMultipleSelCount();
-	for ( int i=0; i<Cnt; i++ )
+	GetSelectionNoChildrenReq(RootWidget,Vector);
+}
+
+void wxsDragWindow::GetSelectionNoChildrenReq(wxsWidget* Widget,std::vector<wxsWidget*>& Vector)
+{
+    if ( !Widget )
+    {
+        return;
+    }
+
+	if ( IsSelected(Widget) )
 	{
-		Vector.push_back(GetMultipleSelWidget(i));
+	    Vector.push_back(Widget);
+	    return;
 	}
 
-	for ( int i=0; i<Cnt; i++ )
-	{
-		for ( int j=0; j<Cnt; j++ )
-		{
-			// Yes, I know it could be O(n) ;)
-			wxsWidget* Check = Vector[i];
-			while ( Check = Check->GetParent() )
-			{
-				if ( Check == Vector[j] ) break;
-			}
-			if ( Check )
-			{
-                // i-th vector item has selected (grand)parent, it must be removed
-                Vector.erase(Vector.begin()+i);
-                --i;
-                --Cnt;
-                break;
-            }
-		}
-	}
+    int Cnt = Widget->GetChildCount();
+    for ( int i=0; i<Cnt; i++ )
+    {
+        GetSelectionNoChildrenReq(Widget->GetChild(i),Vector);
+    }
 }
 
 void wxsDragWindow::SelectWidget(wxsWidget* Widget)
@@ -970,6 +969,15 @@ void wxsDragWindow::UpdateGraphics()
     wxClientDC DC(this);
     DC.DrawBitmap(*Background,0,0,false);
     AddGraphics(DC);
+}
+
+bool wxsDragWindow::IsSelected(wxsWidget* Widget)
+{
+    for ( DragPointsI i = DragPoints.begin(); i!=DragPoints.end(); ++i )
+    {
+        if ( (*i)->Widget == Widget ) return true;
+    }
+    return false;
 }
 
 BEGIN_EVENT_TABLE(wxsDragWindow,wxControl)
