@@ -131,7 +131,13 @@ bool wxsWindowResDataObject::SetXmlData(const wxString& Data)
 
 wxString wxsWindowResDataObject::GetXmlData() const
 {
-    std::ostringstream buffer;
-    buffer << XmlDoc;
-    return wxString(buffer.str().c_str(),wxConvUTF8);
+    #ifdef TIXML_USE_STL
+        std::ostringstream buffer;
+        buffer << XmlDoc;
+        return wxString(buffer.str().c_str(),wxConvUTF8);
+    #else
+        TiXmlOutStream buffer;
+        buffer << XmlDoc;
+        return wxString(buffer.c_str(),wxConvUTF8);
+    #endif
 }
