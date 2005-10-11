@@ -68,9 +68,9 @@ wxSmith_LIBS= $(wxSmith_PROJECT_LIBS) -lcodeblocks -lpropgrid -lwxscintilla $(wx
 PropGrid_OBJS=.objs/propgrid/src/propgrid/advprops.o .objs/propgrid/src/propgrid/custctrl.o .objs/propgrid/src/propgrid/manager.o .objs/propgrid/src/propgrid/odcombo.o .objs/propgrid/src/propgrid/propgrid.o 
 PropGrid_LINKOBJS=$(PropGrid_OBJS)
 PropGrid_DEPS=.deps/propgrid/src/propgrid/advprops.d .deps/propgrid/src/propgrid/custctrl.d .deps/propgrid/src/propgrid/manager.d .deps/propgrid/src/propgrid/odcombo.d .deps/propgrid/src/propgrid/propgrid.d 
-wxSmith_OBJS=.objs/defwidgets/wxsboxsizer.o .objs/defwidgets/wxsbutton.o .objs/defwidgets/wxscheckbox.o .objs/defwidgets/wxscombobox.o .objs/defwidgets/wxsdatepickerctrl.o .objs/defwidgets/wxsdialog.o .objs/defwidgets/wxsflexgridsizer.o .objs/defwidgets/wxsframe.o .objs/defwidgets/wxsgauge.o .objs/defwidgets/wxsgridsizer.o .objs/defwidgets/wxslistbox.o .objs/defwidgets/wxspanel.o .objs/defwidgets/wxsradiobox.o .objs/defwidgets/wxsradiobutton.o .objs/defwidgets/wxsscrollbar.o .objs/defwidgets/wxsspacer.o .objs/defwidgets/wxsspinbutton.o .objs/defwidgets/wxsspinctrl.o .objs/defwidgets/wxsstaticboxsizer.o .objs/defwidgets/wxsstatictext.o .objs/defwidgets/wxsstdmanager.o .objs/defwidgets/wxstextctrl.o .objs/defwidgets/wxstogglebutton.o .objs/defwidgets/wxstreectrl.o .objs/defwidgets/wxswindow.o .objs/properties/wxs2intproperty.o .objs/properties/wxsboolproperty.o .objs/properties/wxsborderproperty.o .objs/properties/wxsenumproperty.o .objs/properties/wxsintproperty.o .objs/properties/wxsplacementproperty.o .objs/properties/wxsstringlistproperty.o .objs/properties/wxsstringproperty.o .objs/properties/wxsstyleproperty.o .objs/resources/wxswindowres.o .objs/widget.o .objs/wxscodegen.o .objs/wxscoder.o .objs/wxscontainer.o .objs/wxsdefevthandler.o .objs/wxsdefsizer.o .objs/wxsdefwidget.o .objs/wxsdragwindow.o .objs/wxseditor.o .objs/wxsevent.o .objs/wxseventseditor.o .objs/wxsglobals.o .objs/wxsmith.o .objs/wxsnewwindowdlg.o .objs/wxspalette.o .objs/wxsproject.o .objs/wxsproperties.o .objs/wxspropertiesman.o .objs/wxsresource.o .objs/wxssplitterwindow.o .objs/wxswidgetevents.o .objs/wxswidgetfactory.o .objs/wxswindoweditor.o 
+wxSmith_OBJS=.objs/defwidgets/wxsboxsizer.o .objs/defwidgets/wxsbutton.o .objs/defwidgets/wxscheckbox.o .objs/defwidgets/wxscombobox.o .objs/defwidgets/wxsdatepickerctrl.o .objs/defwidgets/wxsdialog.o .objs/defwidgets/wxsflexgridsizer.o .objs/defwidgets/wxsframe.o .objs/defwidgets/wxsgauge.o .objs/defwidgets/wxsgridsizer.o .objs/defwidgets/wxslistbook.o .objs/defwidgets/wxslistbox.o .objs/defwidgets/wxsnotebook.o .objs/defwidgets/wxspanel.o .objs/defwidgets/wxsradiobox.o .objs/defwidgets/wxsradiobutton.o .objs/defwidgets/wxsscrollbar.o .objs/defwidgets/wxsspacer.o .objs/defwidgets/wxsspinbutton.o .objs/defwidgets/wxsspinctrl.o .objs/defwidgets/wxssplitterwindow.o .objs/defwidgets/wxsstaticboxsizer.o .objs/defwidgets/wxsstaticline.o .objs/defwidgets/wxsstatictext.o .objs/defwidgets/wxsstdmanager.o .objs/defwidgets/wxstextctrl.o .objs/defwidgets/wxstogglebutton.o .objs/defwidgets/wxstreectrl.o .objs/defwidgets/wxswindow.o .objs/properties/wxs2intproperty.o .objs/properties/wxsboolproperty.o .objs/properties/wxsborderproperty.o .objs/properties/wxscolourproperty.o .objs/properties/wxsenumproperty.o .objs/properties/wxsfontproperty.o .objs/properties/wxsintproperty.o .objs/properties/wxsplacementproperty.o .objs/properties/wxsstringlistproperty.o .objs/properties/wxsstringproperty.o .objs/properties/wxsstyleproperty.o .objs/resources/wxswindowres.o .objs/resources/wxswindowresdataobject.o .objs/widget.o .objs/wxscodegen.o .objs/wxscoder.o .objs/wxscontainer.o .objs/wxsdefsizer.o .objs/wxsdefwidget.o .objs/wxsdragwindow.o .objs/wxseditor.o .objs/wxsevent.o .objs/wxseventseditor.o .objs/wxsglobals.o .objs/wxsimportxrcdlg.o .objs/wxsmith.o .objs/wxsnewwindowdlg.o .objs/wxspalette.o .objs/wxsproject.o .objs/wxsproperties.o .objs/wxspropertiesman.o .objs/wxsresource.o .objs/wxsresourcetree.o .objs/wxssplitterwindow.o .objs/wxswidgetevents.o .objs/wxswidgetfactory.o .objs/wxswindoweditor.o .objs/wxswinundobuffer.o 
 wxSmith_LINKOBJS=$(wxSmith_OBJS)
-wxSmith_DEPS=.deps/defwidgets/wxsboxsizer.d .deps/defwidgets/wxsbutton.d .deps/defwidgets/wxscheckbox.d .deps/defwidgets/wxscombobox.d .deps/defwidgets/wxsdatepickerctrl.d .deps/defwidgets/wxsdialog.d .deps/defwidgets/wxsflexgridsizer.d .deps/defwidgets/wxsframe.d .deps/defwidgets/wxsgauge.d .deps/defwidgets/wxsgridsizer.d .deps/defwidgets/wxslistbox.d .deps/defwidgets/wxspanel.d .deps/defwidgets/wxsradiobox.d .deps/defwidgets/wxsradiobutton.d .deps/defwidgets/wxsscrollbar.d .deps/defwidgets/wxsspacer.d .deps/defwidgets/wxsspinbutton.d .deps/defwidgets/wxsspinctrl.d .deps/defwidgets/wxsstaticboxsizer.d .deps/defwidgets/wxsstatictext.d .deps/defwidgets/wxsstdmanager.d .deps/defwidgets/wxstextctrl.d .deps/defwidgets/wxstogglebutton.d .deps/defwidgets/wxstreectrl.d .deps/defwidgets/wxswindow.d .deps/properties/wxs2intproperty.d .deps/properties/wxsboolproperty.d .deps/properties/wxsborderproperty.d .deps/properties/wxsenumproperty.d .deps/properties/wxsintproperty.d .deps/properties/wxsplacementproperty.d .deps/properties/wxsstringlistproperty.d .deps/properties/wxsstringproperty.d .deps/properties/wxsstyleproperty.d .deps/resources/wxswindowres.d .deps/widget.d .deps/wxscodegen.d .deps/wxscoder.d .deps/wxscontainer.d .deps/wxsdefevthandler.d .deps/wxsdefsizer.d .deps/wxsdefwidget.d .deps/wxsdragwindow.d .deps/wxseditor.d .deps/wxsevent.d .deps/wxseventseditor.d .deps/wxsglobals.d .deps/wxsmith.d .deps/wxsnewwindowdlg.d .deps/wxspalette.d .deps/wxsproject.d .deps/wxsproperties.d .deps/wxspropertiesman.d .deps/wxsresource.d .deps/wxssplitterwindow.d .deps/wxswidgetevents.d .deps/wxswidgetfactory.d .deps/wxswindoweditor.d 
+wxSmith_DEPS=.deps/defwidgets/wxsboxsizer.d .deps/defwidgets/wxsbutton.d .deps/defwidgets/wxscheckbox.d .deps/defwidgets/wxscombobox.d .deps/defwidgets/wxsdatepickerctrl.d .deps/defwidgets/wxsdialog.d .deps/defwidgets/wxsflexgridsizer.d .deps/defwidgets/wxsframe.d .deps/defwidgets/wxsgauge.d .deps/defwidgets/wxsgridsizer.d .deps/defwidgets/wxslistbook.d .deps/defwidgets/wxslistbox.d .deps/defwidgets/wxsnotebook.d .deps/defwidgets/wxspanel.d .deps/defwidgets/wxsradiobox.d .deps/defwidgets/wxsradiobutton.d .deps/defwidgets/wxsscrollbar.d .deps/defwidgets/wxsspacer.d .deps/defwidgets/wxsspinbutton.d .deps/defwidgets/wxsspinctrl.d .deps/defwidgets/wxssplitterwindow.d .deps/defwidgets/wxsstaticboxsizer.d .deps/defwidgets/wxsstaticline.d .deps/defwidgets/wxsstatictext.d .deps/defwidgets/wxsstdmanager.d .deps/defwidgets/wxstextctrl.d .deps/defwidgets/wxstogglebutton.d .deps/defwidgets/wxstreectrl.d .deps/defwidgets/wxswindow.d .deps/properties/wxs2intproperty.d .deps/properties/wxsboolproperty.d .deps/properties/wxsborderproperty.d .deps/properties/wxscolourproperty.d .deps/properties/wxsenumproperty.d .deps/properties/wxsfontproperty.d .deps/properties/wxsintproperty.d .deps/properties/wxsplacementproperty.d .deps/properties/wxsstringlistproperty.d .deps/properties/wxsstringproperty.d .deps/properties/wxsstyleproperty.d .deps/resources/wxswindowres.d .deps/resources/wxswindowresdataobject.d .deps/widget.d .deps/wxscodegen.d .deps/wxscoder.d .deps/wxscontainer.d .deps/wxsdefsizer.d .deps/wxsdefwidget.d .deps/wxsdragwindow.d .deps/wxseditor.d .deps/wxsevent.d .deps/wxseventseditor.d .deps/wxsglobals.d .deps/wxsimportxrcdlg.d .deps/wxsmith.d .deps/wxsnewwindowdlg.d .deps/wxspalette.d .deps/wxsproject.d .deps/wxsproperties.d .deps/wxspropertiesman.d .deps/wxsresource.d .deps/wxsresourcetree.d .deps/wxssplitterwindow.d .deps/wxswidgetevents.d .deps/wxswidgetfactory.d .deps/wxswindoweditor.d .deps/wxswinundobuffer.d 
 
 ### The targets of this project
 PropGrid_BIN=propgrid/libpropgrid.a
@@ -88,7 +88,7 @@ all-after:
 
 
 dist:
-	@zip wxSmith_2_6_unix.cbp.zip wxSmith_2_6_unix.cbp Makefile.unix defwidgets/wxsboxsizer.cpp defwidgets/wxsboxsizer.h defwidgets/wxsbutton.cpp defwidgets/wxsbutton.h defwidgets/wxscheckbox.cpp defwidgets/wxscheckbox.h defwidgets/wxscombobox.cpp defwidgets/wxscombobox.h defwidgets/wxsdatepickerctrl.cpp defwidgets/wxsdatepickerctrl.h defwidgets/wxsdialog.cpp defwidgets/wxsdialog.h defwidgets/wxsflexgridsizer.cpp defwidgets/wxsflexgridsizer.h defwidgets/wxsframe.cpp defwidgets/wxsframe.h defwidgets/wxsgauge.cpp defwidgets/wxsgauge.h defwidgets/wxsgridsizer.cpp defwidgets/wxsgridsizer.h defwidgets/wxslistbox.cpp defwidgets/wxslistbox.h defwidgets/wxspanel.cpp defwidgets/wxspanel.h defwidgets/wxsradiobox.cpp defwidgets/wxsradiobox.h defwidgets/wxsradiobutton.cpp defwidgets/wxsradiobutton.h defwidgets/wxsscrollbar.cpp defwidgets/wxsscrollbar.h defwidgets/wxsspacer.cpp defwidgets/wxsspacer.h defwidgets/wxsspinbutton.cpp defwidgets/wxsspinbutton.h defwidgets/wxsspinctrl.cpp defwidgets/wxsspinctrl.h defwidgets/wxsstaticboxsizer.cpp defwidgets/wxsstaticboxsizer.h defwidgets/wxsstatictext.cpp defwidgets/wxsstatictext.h defwidgets/wxsstdmanager.cpp defwidgets/wxsstdmanager.h defwidgets/wxstextctrl.cpp defwidgets/wxstextctrl.h defwidgets/wxstogglebutton.cpp defwidgets/wxstogglebutton.h defwidgets/wxstreectrl.cpp defwidgets/wxstreectrl.h defwidgets/wxswindow.cpp defwidgets/wxswindow.h properties/wxs2intproperty.cpp properties/wxs2intproperty.h properties/wxsboolproperty.cpp properties/wxsboolproperty.h properties/wxsborderproperty.cpp properties/wxsborderproperty.h properties/wxsenumproperty.cpp properties/wxsenumproperty.h properties/wxsintproperty.cpp properties/wxsintproperty.h properties/wxsplacementproperty.cpp properties/wxsplacementproperty.h properties/wxsstringlistproperty.cpp properties/wxsstringlistproperty.h properties/wxsstringproperty.cpp properties/wxsstringproperty.h properties/wxsstyleproperty.cpp properties/wxsstyleproperty.h propgrid/include/wx/propgrid/advprops.h propgrid/include/wx/propgrid/custctrl.h propgrid/include/wx/propgrid/manager.h propgrid/include/wx/propgrid/odcombo.h propgrid/include/wx/propgrid/propdev.h propgrid/include/wx/propgrid/propgrid.h propgrid/src/propgrid/advprops.cpp propgrid/src/propgrid/custctrl.cpp propgrid/src/propgrid/manager.cpp propgrid/src/propgrid/odcombo.cpp propgrid/src/propgrid/propgrid.cpp resources/wxswindowres.cpp resources/wxswindowres.h widget.cpp widget.h wxscodegen.cpp wxscodegen.h wxscoder.cpp wxscoder.h wxscontainer.cpp wxscontainer.h wxsdefevthandler.cpp wxsdefevthandler.h wxsdefsizer.cpp wxsdefsizer.h wxsdefwidget.cpp wxsdefwidget.h wxsdragwindow.cpp wxsdragwindow.h wxseditor.cpp wxseditor.h wxsevent.cpp wxsevent.h wxseventseditor.cpp wxseventseditor.h wxsglobals.cpp wxsglobals.h wxsmith.cpp wxsmith.h wxsnewwindowdlg.cpp wxsnewwindowdlg.h wxspalette.cpp wxspalette.h wxsproject.cpp wxsproject.h wxsproperties.cpp wxsproperties.h wxspropertiesman.cpp wxspropertiesman.h wxsresource.cpp wxsresource.h wxssplitterwindow.cpp wxssplitterwindow.h wxsstdwidget.h wxsstyle.h wxswidgetevents.cpp wxswidgetevents.h wxswidgetfactory.cpp wxswidgetfactory.h wxswindoweditor.cpp wxswindoweditor.h 
+	@zip wxSmith_2_6_unix.cbp.zip wxSmith_2_6_unix.cbp Makefile.unix defwidgets/wxsboxsizer.cpp defwidgets/wxsboxsizer.h defwidgets/wxsbutton.cpp defwidgets/wxsbutton.h defwidgets/wxscheckbox.cpp defwidgets/wxscheckbox.h defwidgets/wxscombobox.cpp defwidgets/wxscombobox.h defwidgets/wxsdatepickerctrl.cpp defwidgets/wxsdatepickerctrl.h defwidgets/wxsdialog.cpp defwidgets/wxsdialog.h defwidgets/wxsflexgridsizer.cpp defwidgets/wxsflexgridsizer.h defwidgets/wxsframe.cpp defwidgets/wxsframe.h defwidgets/wxsgauge.cpp defwidgets/wxsgauge.h defwidgets/wxsgridsizer.cpp defwidgets/wxsgridsizer.h defwidgets/wxslistbook.cpp defwidgets/wxslistbook.h defwidgets/wxslistbox.cpp defwidgets/wxslistbox.h defwidgets/wxsnotebook.cpp defwidgets/wxsnotebook.h defwidgets/wxspanel.cpp defwidgets/wxspanel.h defwidgets/wxsradiobox.cpp defwidgets/wxsradiobox.h defwidgets/wxsradiobutton.cpp defwidgets/wxsradiobutton.h defwidgets/wxsscrollbar.cpp defwidgets/wxsscrollbar.h defwidgets/wxsspacer.cpp defwidgets/wxsspacer.h defwidgets/wxsspinbutton.cpp defwidgets/wxsspinbutton.h defwidgets/wxsspinctrl.cpp defwidgets/wxsspinctrl.h defwidgets/wxssplitterwindow.cpp defwidgets/wxssplitterwindow.h defwidgets/wxsstaticboxsizer.cpp defwidgets/wxsstaticboxsizer.h defwidgets/wxsstaticline.cpp defwidgets/wxsstaticline.h defwidgets/wxsstatictext.cpp defwidgets/wxsstatictext.h defwidgets/wxsstdmanager.cpp defwidgets/wxsstdmanager.h defwidgets/wxstextctrl.cpp defwidgets/wxstextctrl.h defwidgets/wxstogglebutton.cpp defwidgets/wxstogglebutton.h defwidgets/wxstreectrl.cpp defwidgets/wxstreectrl.h defwidgets/wxswindow.cpp defwidgets/wxswindow.h properties/wxs2intproperty.cpp properties/wxs2intproperty.h properties/wxsboolproperty.cpp properties/wxsboolproperty.h properties/wxsborderproperty.cpp properties/wxsborderproperty.h properties/wxscolourproperty.cpp properties/wxscolourproperty.h properties/wxsenumproperty.cpp properties/wxsenumproperty.h properties/wxsfontproperty.cpp properties/wxsfontproperty.h properties/wxsintproperty.cpp properties/wxsintproperty.h properties/wxsplacementproperty.cpp properties/wxsplacementproperty.h properties/wxsstringlistproperty.cpp properties/wxsstringlistproperty.h properties/wxsstringproperty.cpp properties/wxsstringproperty.h properties/wxsstyleproperty.cpp properties/wxsstyleproperty.h propgrid/include/wx/propgrid/advprops.h propgrid/include/wx/propgrid/custctrl.h propgrid/include/wx/propgrid/manager.h propgrid/include/wx/propgrid/odcombo.h propgrid/include/wx/propgrid/propdev.h propgrid/include/wx/propgrid/propgrid.h propgrid/src/propgrid/advprops.cpp propgrid/src/propgrid/custctrl.cpp propgrid/src/propgrid/manager.cpp propgrid/src/propgrid/odcombo.cpp propgrid/src/propgrid/propgrid.cpp resources/wxswindowres.cpp resources/wxswindowres.h resources/wxswindowresdataobject.cpp resources/wxswindowresdataobject.h widget.cpp widget.h wxscodegen.cpp wxscodegen.h wxscoder.cpp wxscoder.h wxscontainer.cpp wxscontainer.h wxsdefsizer.cpp wxsdefsizer.h wxsdefwidget.cpp wxsdefwidget.h wxsdragwindow.cpp wxsdragwindow.h wxseditor.cpp wxseditor.h wxsevent.cpp wxsevent.h wxseventseditor.cpp wxseventseditor.h wxsglobals.cpp wxsglobals.h wxsimportxrcdlg.cpp wxsimportxrcdlg.h wxsmith.cpp wxsmith.h wxsnewwindowdlg.cpp wxsnewwindowdlg.h wxspalette.cpp wxspalette.h wxsproject.cpp wxsproject.h wxsproperties.cpp wxsproperties.h wxspropertiesman.cpp wxspropertiesman.h wxsresource.cpp wxsresource.h wxsresourcetree.cpp wxsresourcetree.h wxssplitterwindow.cpp wxssplitterwindow.h wxsstdwidget.h wxsstyle.h wxswidgetevents.cpp wxswidgetevents.h wxswidgetfactory.cpp wxswidgetfactory.h wxswindoweditor.cpp wxswindoweditor.h wxswinundobuffer.cpp wxswinundobuffer.h 
 
 clean_PropGrid:
 	@echo Cleaning target "PropGrid"...
@@ -288,6 +288,14 @@ $(wxSmith_BIN): $(wxSmith_LINKOBJS) $(wxSmith_RESOURCE)
 	@echo Compiling "defwidgets/wxsgridsizer.cpp"...
 	@$(wxSmith_CPP) $(wxSmith_CFLAGS) $(wxSmith_INCS) -c defwidgets/wxsgridsizer.cpp -o .objs/defwidgets/wxsgridsizer.o
 
+.deps/defwidgets/wxslistbook.d: defwidgets/wxslistbook.cpp
+	@echo Calculating dependencies for "defwidgets/wxslistbook.cpp"...
+	@$(wxSmith_CPP) -MM $(wxSmith_CFLAGS) -MF .deps/defwidgets/wxslistbook.d -MT .objs/defwidgets/wxslistbook.o $(wxSmith_INCS) defwidgets/wxslistbook.cpp
+
+.objs/defwidgets/wxslistbook.o: .deps/defwidgets/wxslistbook.d
+	@echo Compiling "defwidgets/wxslistbook.cpp"...
+	@$(wxSmith_CPP) $(wxSmith_CFLAGS) $(wxSmith_INCS) -c defwidgets/wxslistbook.cpp -o .objs/defwidgets/wxslistbook.o
+
 .deps/defwidgets/wxslistbox.d: defwidgets/wxslistbox.cpp
 	@echo Calculating dependencies for "defwidgets/wxslistbox.cpp"...
 	@$(wxSmith_CPP) -MM $(wxSmith_CFLAGS) -MF .deps/defwidgets/wxslistbox.d -MT .objs/defwidgets/wxslistbox.o $(wxSmith_INCS) defwidgets/wxslistbox.cpp
@@ -295,6 +303,14 @@ $(wxSmith_BIN): $(wxSmith_LINKOBJS) $(wxSmith_RESOURCE)
 .objs/defwidgets/wxslistbox.o: .deps/defwidgets/wxslistbox.d
 	@echo Compiling "defwidgets/wxslistbox.cpp"...
 	@$(wxSmith_CPP) $(wxSmith_CFLAGS) $(wxSmith_INCS) -c defwidgets/wxslistbox.cpp -o .objs/defwidgets/wxslistbox.o
+
+.deps/defwidgets/wxsnotebook.d: defwidgets/wxsnotebook.cpp
+	@echo Calculating dependencies for "defwidgets/wxsnotebook.cpp"...
+	@$(wxSmith_CPP) -MM $(wxSmith_CFLAGS) -MF .deps/defwidgets/wxsnotebook.d -MT .objs/defwidgets/wxsnotebook.o $(wxSmith_INCS) defwidgets/wxsnotebook.cpp
+
+.objs/defwidgets/wxsnotebook.o: .deps/defwidgets/wxsnotebook.d
+	@echo Compiling "defwidgets/wxsnotebook.cpp"...
+	@$(wxSmith_CPP) $(wxSmith_CFLAGS) $(wxSmith_INCS) -c defwidgets/wxsnotebook.cpp -o .objs/defwidgets/wxsnotebook.o
 
 .deps/defwidgets/wxspanel.d: defwidgets/wxspanel.cpp
 	@echo Calculating dependencies for "defwidgets/wxspanel.cpp"...
@@ -352,6 +368,14 @@ $(wxSmith_BIN): $(wxSmith_LINKOBJS) $(wxSmith_RESOURCE)
 	@echo Compiling "defwidgets/wxsspinctrl.cpp"...
 	@$(wxSmith_CPP) $(wxSmith_CFLAGS) $(wxSmith_INCS) -c defwidgets/wxsspinctrl.cpp -o .objs/defwidgets/wxsspinctrl.o
 
+.deps/defwidgets/wxssplitterwindow.d: defwidgets/wxssplitterwindow.cpp
+	@echo Calculating dependencies for "defwidgets/wxssplitterwindow.cpp"...
+	@$(wxSmith_CPP) -MM $(wxSmith_CFLAGS) -MF .deps/defwidgets/wxssplitterwindow.d -MT .objs/defwidgets/wxssplitterwindow.o $(wxSmith_INCS) defwidgets/wxssplitterwindow.cpp
+
+.objs/defwidgets/wxssplitterwindow.o: .deps/defwidgets/wxssplitterwindow.d
+	@echo Compiling "defwidgets/wxssplitterwindow.cpp"...
+	@$(wxSmith_CPP) $(wxSmith_CFLAGS) $(wxSmith_INCS) -c defwidgets/wxssplitterwindow.cpp -o .objs/defwidgets/wxssplitterwindow.o
+
 .deps/defwidgets/wxsstaticboxsizer.d: defwidgets/wxsstaticboxsizer.cpp
 	@echo Calculating dependencies for "defwidgets/wxsstaticboxsizer.cpp"...
 	@$(wxSmith_CPP) -MM $(wxSmith_CFLAGS) -MF .deps/defwidgets/wxsstaticboxsizer.d -MT .objs/defwidgets/wxsstaticboxsizer.o $(wxSmith_INCS) defwidgets/wxsstaticboxsizer.cpp
@@ -359,6 +383,14 @@ $(wxSmith_BIN): $(wxSmith_LINKOBJS) $(wxSmith_RESOURCE)
 .objs/defwidgets/wxsstaticboxsizer.o: .deps/defwidgets/wxsstaticboxsizer.d
 	@echo Compiling "defwidgets/wxsstaticboxsizer.cpp"...
 	@$(wxSmith_CPP) $(wxSmith_CFLAGS) $(wxSmith_INCS) -c defwidgets/wxsstaticboxsizer.cpp -o .objs/defwidgets/wxsstaticboxsizer.o
+
+.deps/defwidgets/wxsstaticline.d: defwidgets/wxsstaticline.cpp
+	@echo Calculating dependencies for "defwidgets/wxsstaticline.cpp"...
+	@$(wxSmith_CPP) -MM $(wxSmith_CFLAGS) -MF .deps/defwidgets/wxsstaticline.d -MT .objs/defwidgets/wxsstaticline.o $(wxSmith_INCS) defwidgets/wxsstaticline.cpp
+
+.objs/defwidgets/wxsstaticline.o: .deps/defwidgets/wxsstaticline.d
+	@echo Compiling "defwidgets/wxsstaticline.cpp"...
+	@$(wxSmith_CPP) $(wxSmith_CFLAGS) $(wxSmith_INCS) -c defwidgets/wxsstaticline.cpp -o .objs/defwidgets/wxsstaticline.o
 
 .deps/defwidgets/wxsstatictext.d: defwidgets/wxsstatictext.cpp
 	@echo Calculating dependencies for "defwidgets/wxsstatictext.cpp"...
@@ -432,6 +464,14 @@ $(wxSmith_BIN): $(wxSmith_LINKOBJS) $(wxSmith_RESOURCE)
 	@echo Compiling "properties/wxsborderproperty.cpp"...
 	@$(wxSmith_CPP) $(wxSmith_CFLAGS) $(wxSmith_INCS) -c properties/wxsborderproperty.cpp -o .objs/properties/wxsborderproperty.o
 
+.deps/properties/wxscolourproperty.d: properties/wxscolourproperty.cpp
+	@echo Calculating dependencies for "properties/wxscolourproperty.cpp"...
+	@$(wxSmith_CPP) -MM $(wxSmith_CFLAGS) -MF .deps/properties/wxscolourproperty.d -MT .objs/properties/wxscolourproperty.o $(wxSmith_INCS) properties/wxscolourproperty.cpp
+
+.objs/properties/wxscolourproperty.o: .deps/properties/wxscolourproperty.d
+	@echo Compiling "properties/wxscolourproperty.cpp"...
+	@$(wxSmith_CPP) $(wxSmith_CFLAGS) $(wxSmith_INCS) -c properties/wxscolourproperty.cpp -o .objs/properties/wxscolourproperty.o
+
 .deps/properties/wxsenumproperty.d: properties/wxsenumproperty.cpp
 	@echo Calculating dependencies for "properties/wxsenumproperty.cpp"...
 	@$(wxSmith_CPP) -MM $(wxSmith_CFLAGS) -MF .deps/properties/wxsenumproperty.d -MT .objs/properties/wxsenumproperty.o $(wxSmith_INCS) properties/wxsenumproperty.cpp
@@ -439,6 +479,14 @@ $(wxSmith_BIN): $(wxSmith_LINKOBJS) $(wxSmith_RESOURCE)
 .objs/properties/wxsenumproperty.o: .deps/properties/wxsenumproperty.d
 	@echo Compiling "properties/wxsenumproperty.cpp"...
 	@$(wxSmith_CPP) $(wxSmith_CFLAGS) $(wxSmith_INCS) -c properties/wxsenumproperty.cpp -o .objs/properties/wxsenumproperty.o
+
+.deps/properties/wxsfontproperty.d: properties/wxsfontproperty.cpp
+	@echo Calculating dependencies for "properties/wxsfontproperty.cpp"...
+	@$(wxSmith_CPP) -MM $(wxSmith_CFLAGS) -MF .deps/properties/wxsfontproperty.d -MT .objs/properties/wxsfontproperty.o $(wxSmith_INCS) properties/wxsfontproperty.cpp
+
+.objs/properties/wxsfontproperty.o: .deps/properties/wxsfontproperty.d
+	@echo Compiling "properties/wxsfontproperty.cpp"...
+	@$(wxSmith_CPP) $(wxSmith_CFLAGS) $(wxSmith_INCS) -c properties/wxsfontproperty.cpp -o .objs/properties/wxsfontproperty.o
 
 .deps/properties/wxsintproperty.d: properties/wxsintproperty.cpp
 	@echo Calculating dependencies for "properties/wxsintproperty.cpp"...
@@ -488,6 +536,14 @@ $(wxSmith_BIN): $(wxSmith_LINKOBJS) $(wxSmith_RESOURCE)
 	@echo Compiling "resources/wxswindowres.cpp"...
 	@$(wxSmith_CPP) $(wxSmith_CFLAGS) $(wxSmith_INCS) -c resources/wxswindowres.cpp -o .objs/resources/wxswindowres.o
 
+.deps/resources/wxswindowresdataobject.d: resources/wxswindowresdataobject.cpp
+	@echo Calculating dependencies for "resources/wxswindowresdataobject.cpp"...
+	@$(wxSmith_CPP) -MM $(wxSmith_CFLAGS) -MF .deps/resources/wxswindowresdataobject.d -MT .objs/resources/wxswindowresdataobject.o $(wxSmith_INCS) resources/wxswindowresdataobject.cpp
+
+.objs/resources/wxswindowresdataobject.o: .deps/resources/wxswindowresdataobject.d
+	@echo Compiling "resources/wxswindowresdataobject.cpp"...
+	@$(wxSmith_CPP) $(wxSmith_CFLAGS) $(wxSmith_INCS) -c resources/wxswindowresdataobject.cpp -o .objs/resources/wxswindowresdataobject.o
+
 .deps/widget.d: widget.cpp
 	@echo Calculating dependencies for "widget.cpp"...
 	@$(wxSmith_CPP) -MM $(wxSmith_CFLAGS) -MF .deps/widget.d -MT .objs/widget.o $(wxSmith_INCS) widget.cpp
@@ -519,14 +575,6 @@ $(wxSmith_BIN): $(wxSmith_LINKOBJS) $(wxSmith_RESOURCE)
 .objs/wxscontainer.o: .deps/wxscontainer.d
 	@echo Compiling "wxscontainer.cpp"...
 	@$(wxSmith_CPP) $(wxSmith_CFLAGS) $(wxSmith_INCS) -c wxscontainer.cpp -o .objs/wxscontainer.o
-
-.deps/wxsdefevthandler.d: wxsdefevthandler.cpp
-	@echo Calculating dependencies for "wxsdefevthandler.cpp"...
-	@$(wxSmith_CPP) -MM $(wxSmith_CFLAGS) -MF .deps/wxsdefevthandler.d -MT .objs/wxsdefevthandler.o $(wxSmith_INCS) wxsdefevthandler.cpp
-
-.objs/wxsdefevthandler.o: .deps/wxsdefevthandler.d
-	@echo Compiling "wxsdefevthandler.cpp"...
-	@$(wxSmith_CPP) $(wxSmith_CFLAGS) $(wxSmith_INCS) -c wxsdefevthandler.cpp -o .objs/wxsdefevthandler.o
 
 .deps/wxsdefsizer.d: wxsdefsizer.cpp
 	@echo Calculating dependencies for "wxsdefsizer.cpp"...
@@ -584,6 +632,14 @@ $(wxSmith_BIN): $(wxSmith_LINKOBJS) $(wxSmith_RESOURCE)
 	@echo Compiling "wxsglobals.cpp"...
 	@$(wxSmith_CPP) $(wxSmith_CFLAGS) $(wxSmith_INCS) -c wxsglobals.cpp -o .objs/wxsglobals.o
 
+.deps/wxsimportxrcdlg.d: wxsimportxrcdlg.cpp
+	@echo Calculating dependencies for "wxsimportxrcdlg.cpp"...
+	@$(wxSmith_CPP) -MM $(wxSmith_CFLAGS) -MF .deps/wxsimportxrcdlg.d -MT .objs/wxsimportxrcdlg.o $(wxSmith_INCS) wxsimportxrcdlg.cpp
+
+.objs/wxsimportxrcdlg.o: .deps/wxsimportxrcdlg.d
+	@echo Compiling "wxsimportxrcdlg.cpp"...
+	@$(wxSmith_CPP) $(wxSmith_CFLAGS) $(wxSmith_INCS) -c wxsimportxrcdlg.cpp -o .objs/wxsimportxrcdlg.o
+
 .deps/wxsmith.d: wxsmith.cpp
 	@echo Calculating dependencies for "wxsmith.cpp"...
 	@$(wxSmith_CPP) -MM $(wxSmith_CFLAGS) -MF .deps/wxsmith.d -MT .objs/wxsmith.o $(wxSmith_INCS) wxsmith.cpp
@@ -640,6 +696,14 @@ $(wxSmith_BIN): $(wxSmith_LINKOBJS) $(wxSmith_RESOURCE)
 	@echo Compiling "wxsresource.cpp"...
 	@$(wxSmith_CPP) $(wxSmith_CFLAGS) $(wxSmith_INCS) -c wxsresource.cpp -o .objs/wxsresource.o
 
+.deps/wxsresourcetree.d: wxsresourcetree.cpp
+	@echo Calculating dependencies for "wxsresourcetree.cpp"...
+	@$(wxSmith_CPP) -MM $(wxSmith_CFLAGS) -MF .deps/wxsresourcetree.d -MT .objs/wxsresourcetree.o $(wxSmith_INCS) wxsresourcetree.cpp
+
+.objs/wxsresourcetree.o: .deps/wxsresourcetree.d
+	@echo Compiling "wxsresourcetree.cpp"...
+	@$(wxSmith_CPP) $(wxSmith_CFLAGS) $(wxSmith_INCS) -c wxsresourcetree.cpp -o .objs/wxsresourcetree.o
+
 .deps/wxssplitterwindow.d: wxssplitterwindow.cpp
 	@echo Calculating dependencies for "wxssplitterwindow.cpp"...
 	@$(wxSmith_CPP) -MM $(wxSmith_CFLAGS) -MF .deps/wxssplitterwindow.d -MT .objs/wxssplitterwindow.o $(wxSmith_INCS) wxssplitterwindow.cpp
@@ -671,5 +735,13 @@ $(wxSmith_BIN): $(wxSmith_LINKOBJS) $(wxSmith_RESOURCE)
 .objs/wxswindoweditor.o: .deps/wxswindoweditor.d
 	@echo Compiling "wxswindoweditor.cpp"...
 	@$(wxSmith_CPP) $(wxSmith_CFLAGS) $(wxSmith_INCS) -c wxswindoweditor.cpp -o .objs/wxswindoweditor.o
+
+.deps/wxswinundobuffer.d: wxswinundobuffer.cpp
+	@echo Calculating dependencies for "wxswinundobuffer.cpp"...
+	@$(wxSmith_CPP) -MM $(wxSmith_CFLAGS) -MF .deps/wxswinundobuffer.d -MT .objs/wxswinundobuffer.o $(wxSmith_INCS) wxswinundobuffer.cpp
+
+.objs/wxswinundobuffer.o: .deps/wxswinundobuffer.d
+	@echo Compiling "wxswinundobuffer.cpp"...
+	@$(wxSmith_CPP) $(wxSmith_CFLAGS) $(wxSmith_INCS) -c wxswinundobuffer.cpp -o .objs/wxswinundobuffer.o
 
 
