@@ -5,6 +5,7 @@
 #include "widget.h"
 #include "wxsevent.h"
 #include "wxsmith.h"
+#include "resources/wxswindowres.h"
 
 static const int wxsDWRefreshInterval = 50;
 
@@ -41,8 +42,6 @@ void wxsDragWindow::OnPaint(wxPaintEvent& event)
 	    // to fetch background image
 	    Hide();
 	    FetchArea = GetUpdateRegion();
-		//wxCommandEvent Evt(wxEVT_FETCH_BACK,-1);
-		//AddPendingEvent(Evt);
 		BackFetchTimer.Start(wxsDWRefreshInterval,true);
 	}
 }
@@ -414,14 +413,17 @@ void wxsDragWindow::DragFinish(wxsWidget* UnderCursor)
     {
         // Finding out what new parent widget will be
 
-        /*
+        wxsWindowEditor* Editor = (wxsWindowEditor*)RootWidget->GetResource()->GetEditor();
+        Editor->KillPreview();
+
         wxsWidget* NewParent = UnderCursor;
         bool NewParentIsSizer = NewParent->GetInfo().Sizer;
         int NewInSizerPos = -1;
 
-        if ( NewParent->IsContainer() )
+        if ( !NewParent->IsContainer() )
         {
             NewParent = NewParent->GetParent();
+            NewParentIsSizer = NewParent->GetInfo().Sizer;
             if ( NewParentIsSizer )
             {
                 NewInSizerPos = NewParent->FindChild(UnderCursor);
@@ -438,21 +440,24 @@ void wxsDragWindow::DragFinish(wxsWidget* UnderCursor)
             wxsWidget* OldParent = Moved->GetParent();
             int OldInSizerPos = OldParent->FindChild(Moved);
 
-            Moved->KillTree(wxsTREE());
             if ( NewParent == OldParent )
             {
-                if ( OldParent->GetInfo().Sizer )
+                if ( NewParentIsSizer )
                 {
                     if ( NewInSizerPos != OldInSizerPos )
                     {
+                        Moved->KillTree(wxsTREE());
                         OldParent->ChangeChildPos(OldInSizerPos,NewInSizerPos);
+                        Moved->BuildTree(wxsTREE(),NewParent->GetTreeId(),NewInSizerPos);
                     }
                 }
             }
             else
             {
+                Moved->KillTree(wxsTREE());
                 OldParent->DelChildId(OldInSizerPos);
                 NewParent->AddChild(Moved,NewInSizerPos);
+                Moved->BuildTree(wxsTREE(),NewParent->GetTreeId(),NewInSizerPos);
             }
 
             wxsWidgetBaseParams& Params = Moved->GetBaseParams();
@@ -468,11 +473,13 @@ void wxsDragWindow::DragFinish(wxsWidget* UnderCursor)
                 NewParent->GetPreview()->ScreenToClient(&PosX,&PosY);
                 Params.PosX = PosX;
                 Params.PosY = PosY;
+
+                Moved->UpdateProperties();
             }
 
             Params.DefaultPosition = NewParentIsSizer;
 
-            Moved->BuildTree(wxsTREE(),NewParent->GetTreeId(),NewInSizerPos);
+
             if ( NewInSizerPos >= 0 )
             {
                 NewInSizerPos++;
@@ -480,8 +487,10 @@ void wxsDragWindow::DragFinish(wxsWidget* UnderCursor)
         }
 
         wxsTREE()->Refresh();
+        wxsWidget* Widget = GetSelection();
+        RootWidget->PropertiesUpdated(false,false);
 
-        */
+        /*
         for ( DragPointsI i = DragPoints.begin(); i != DragPoints.end(); ++i )
         {
             DragPointData* LeftTopPoint = *i;
@@ -507,6 +516,7 @@ void wxsDragWindow::DragFinish(wxsWidget* UnderCursor)
             Widget->UpdateProperties();
             Widget->PropertiesUpdated(false,false);
         }
+        */
     }
 
     CurDragPoint = NULL;

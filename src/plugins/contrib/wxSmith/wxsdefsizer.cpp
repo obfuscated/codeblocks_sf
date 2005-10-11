@@ -15,15 +15,15 @@ class wxsDefSizerPreview: public wxPanel
         {
         	InheritAttributes();
         }
-        
-        
+
+
         wxSizer* Sizer;
         wxsDefSizer* sSizer;
-        
+
         void UpdatePreview()
         {
             assert ( sSizer != NULL );
-            
+
             int Cnt = sSizer->GetChildCount();
             for ( int i=0; i<Cnt; i++ )
             {
@@ -60,11 +60,11 @@ class wxsDefSizerPreview: public wxPanel
             Layout();
             SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
         }
-        
+
         virtual bool HasTransparentBackground() const { return true; }
-        
+
     private:
-    
+
         void OnPaint(wxPaintEvent& event)
         {
             wxPaintDC DC(this);
@@ -74,7 +74,7 @@ class wxsDefSizerPreview: public wxPanel
             DC.SetPen(*wxRED_PEN);
             DC.DrawRectangle(0,0,W,H);
         }
-        
+
         DECLARE_EVENT_TABLE()
 };
 
@@ -122,7 +122,7 @@ wxString wxsDefSizer::GetFinalizingCode(wxsCodeParams& Params)
                     Params->Border));
 		}
 	}
-	
+
     if ( Params.IsDirectParent )
     {
         Code.Append(wxString::Format(_T("%s->SetSizer(%s);"),
@@ -147,7 +147,7 @@ void wxsDefSizer::MyFinalUpdatePreview(wxWindow* Window)
 bool wxsDefSizer::XmlLoadChild(TiXmlElement* Element)
 {
 	if ( strcmp(Element->Value(),"object") ) return true;
-	
+
 	bool Ret = true;
 	TiXmlElement* RealObject = Element;
     const char* Class = Element->Attribute("class");
@@ -168,24 +168,24 @@ bool wxsDefSizer::XmlLoadChild(TiXmlElement* Element)
     {
         RealObject = Element->FirstChildElement("object");
     }
-	
+
 	if ( !RealObject ) return false;
-	
+
     const char* Name = RealObject->Attribute("class");
-    
+
     if ( !Name || !*Name ) return false;
-    
+
     wxsWidget* Child = wxsGEN(wxString(Name,wxConvUTF8),GetResource());
     if ( !Child ) return false;
-    
+
     if ( !Child->XmlLoad(RealObject) ) Ret = false;
     int Index = AddChild(Child);
-    if ( Index < 0 ) 
+    if ( Index < 0 )
     {
         delete Child;
         return false;
     }
-    
+
     return LoadSizerStuff(GetExtraParams(Index),Element) && Ret;
 }
 
@@ -205,7 +205,7 @@ bool wxsDefSizer::XmlSaveChild(int ChildIndex,TiXmlElement* AddHere)
 		}
 		return false;
 	}
-	
+
 	TiXmlElement* SizerItem = AddHere->InsertEndChild(TiXmlElement("object"))->ToElement();
 	SizerItem->SetAttribute("class","sizeritem");
     if ( !SaveSizerStuff(GetExtraParams(ChildIndex),SizerItem) ) Ret = false;
@@ -217,7 +217,7 @@ void wxsDefSizer::AddChildProperties(int ChildIndex)
 	wxsWidget* Widget = GetChild(ChildIndex);
 	wxsSizerExtraParams* Params = GetExtraParams(ChildIndex);
 	if ( !Widget || !Params ) return;
-	
+
     Widget->GetPropertiesObj().AddProperty(_("Proportion:"),Params->Proportion);
     Widget->GetPropertiesObj().AddProperty(_("Border:"),new wxsBorderProperty(&Widget->GetPropertiesObj(),Params->BorderFlags));
     Widget->GetPropertiesObj().AddProperty(_("Border size:"),Params->Border);

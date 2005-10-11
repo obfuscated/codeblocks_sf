@@ -102,10 +102,9 @@ wxsWidget* wxsWindowResDataObject::BuildWidget(wxsWindowRes* Resource,int Index)
 
 bool wxsWindowResDataObject::SetXmlData(const wxString& Data)
 {
-    std::istringstream buffer(std::string(Data.mb_str()));
     XmlDoc.Clear();
     WidgetsCount = 0;
-	buffer >> XmlDoc;
+	XmlDoc.Parse(Data.mb_str());
     if ( XmlDoc.Error() )
     {
         DebLog(_T("wxSmith: Error loading Xml data -> ") + wxString(XmlDoc.ErrorDesc(),wxConvUTF8));

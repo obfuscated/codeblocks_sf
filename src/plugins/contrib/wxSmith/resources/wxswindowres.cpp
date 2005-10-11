@@ -163,7 +163,6 @@ bool wxsWindowRes::Load()
 
 void wxsWindowRes::Save()
 {
-	DebLog("Saving");
     TiXmlDocument* Doc = GenerateXml();
 
     if ( Doc )
