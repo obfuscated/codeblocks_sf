@@ -133,6 +133,9 @@ class wxsDragWindow : public wxControl
         /** Updating cursor */
         void UpdateCursor(bool Dragging,DragPointData* NewDragPoint,wxsWidget* NewDragWidget);
 
+        /** Updating drag assist */
+        void UpdateAssist(bool Dragging,wxsWidget* UnderCursor);
+
         /** Size event */
         void OnSize(wxSizeEvent& event);
 
@@ -200,11 +203,9 @@ class wxsDragWindow : public wxControl
             all widgets */
         void GetSelectionNoChildrenReq(wxsWidget* Widget,std::vector<wxsWidget*>& Vector);
 
-
     /*******************************************/
     /* Variables                               */
     /*******************************************/
-
         /** All drag points used inside this drag window */
         DragPointsT DragPoints;
 

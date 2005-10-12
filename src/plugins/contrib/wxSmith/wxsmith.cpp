@@ -33,6 +33,7 @@
 #include "wxsnewwindowdlg.h"
 #include "wxsimportxrcdlg.h"
 #include "wxsresourcetree.h"
+#include "wxssettingsdlg.h"
 
 static int NewDialogId = wxNewId();
 static int NewFrameId = wxNewId();
@@ -164,7 +165,9 @@ void wxSmith::OnRelease(bool appShutDown)
 
 int wxSmith::Configure()
 {
-	return -1;
+	wxsSettingsDlg Dlg(NULL);
+	Dlg.ShowModal();
+	return 1;
 }
 
 void wxSmith::BuildMenu(wxMenuBar* menuBar)

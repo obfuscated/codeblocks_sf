@@ -1,13 +1,12 @@
 #include "wxsdragwindow.h"
 
 #include <wx/dcclient.h>
+#include <configmanager.h>
 
 #include "widget.h"
 #include "wxsevent.h"
 #include "wxsmith.h"
 #include "resources/wxswindowres.h"
-
-static const int wxsDWRefreshInterval = 50;
 
 wxsDragWindow::wxsDragWindow(wxWindow* Cover,wxsWidget* Wdg,const wxSize& Size):
     wxControl(Cover,-1,wxDefaultPosition,Size,wxNO_BORDER|wxSTAY_ON_TOP),
@@ -25,6 +24,8 @@ wxsDragWindow::~wxsDragWindow()
 {
 	ClearDragPoints();
 	delete Background;
+	if ( DragTargetBitmap ) delete DragTargetBitmap;
+	if ( DragParentBitmap ) delete DragParentBitmap;
 }
 
 void wxsDragWindow::OnPaint(wxPaintEvent& event)
@@ -44,7 +45,7 @@ void wxsDragWindow::OnPaint(wxPaintEvent& event)
 	    // to fetch background image
 	    Hide();
 	    FetchArea = GetUpdateRegion();
-		BackFetchTimer.Start(wxsDWRefreshInterval,true);
+		BackFetchTimer.Start(wxsDWFetchDelay,true);
 	}
 }
 
@@ -82,6 +83,9 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
     NewDragPoint = FindCoveredPoint(MouseX,MouseY);
     if ( !NewDragPoint ) NewDragPoint = FindCoveredEdge(MouseX,MouseY);
     if ( !NewDragPoint ) NewDragWidget = UnderCursor;
+
+    // Updating drag assist
+    UpdateAssist(event.Dragging(),UnderCursor);
 
 	// Processing events
          if ( event.LeftUp()   ) DragFinish(UnderCursor);
@@ -607,7 +611,7 @@ void wxsDragWindow::OnSelectWidget(wxsEvent& event)
             BlackDragPoints(Wdg);
         }
     }
-    UpdateGraphics();
+    Refresh();
 }
 
 void wxsDragWindow::OnUnselectWidget(wxsEvent& event)
@@ -804,32 +808,96 @@ wxsWidget* wxsDragWindow::FindWidgetAtPos(int PosX,int PosY,wxsWidget* Widget)
 
 void wxsDragWindow::AddGraphics(wxDC& DC)
 {
-    /*
-    if ( DragParent && DragParent->GetPreview() )
-    {
-        int PosX, PosY;
-        FindAbsolutePosition(DragParent,&PosX,&PosY);
-        ScreenToClient(&PosX,&PosY);
+    int DragAssistType = wxsDWAssistType;
 
-        if ( !DragParentBitmap )
+    if ( DragAssistType )
+    {
+        if ( DragParent && DragParent->GetPreview() )
         {
+            int PosX, PosY;
             int SizeX, SizeY;
+            FindAbsolutePosition(DragParent,&PosX,&PosY);
+            ScreenToClient(&PosX,&PosY);
             DragParent->GetPreview()->GetSize(&SizeX,&SizeY);
-            wxImage Covered = Background->GetSubBitmap(wxRect(PosX,PosY,SizeX,SizeY));
-            for ( int y=0; y<SizeX; y++ )
+            long Col = wxsDWParentCol;
+            int R = (Col>>16)&0xFF;
+            int G = (Col>> 8)&0xFF;
+            int B = (Col    )&0xFF;
+
+            if ( DragAssistType == 1 )
             {
-                for ( int x=0; x<SizeX; x++ )
+                DC.SetPen(wxPen(wxColour(R,G,B),2));
+                DC.SetBrush(*wxTRANSPARENT_BRUSH);
+                DC.DrawRectangle(PosX,PosY,SizeX,SizeY);
+            }
+            else
+            {
+                if ( !DragParentBitmap )
                 {
-                    Covered.SetRGB(
+                    wxImage Covered = Background->GetSubBitmap(wxRect(PosX,PosY,SizeX,SizeY)).ConvertToImage();
+                    for ( int y=0; y<SizeX; y++ )
+                    {
+                        for ( int x=0; x<SizeX; x++ )
+                        {
+                            Covered.SetRGB(x,y,
+                                ( Covered.GetRed(x,y)   + R ) / 2,
+                                ( Covered.GetGreen(x,y) + G ) / 2,
+                                ( Covered.GetBlue(x,y)  + B ) / 2 );
+                        }
+                    }
+                    DragParentBitmap = new wxBitmap(Covered);
+                }
+
+                if ( DragParentBitmap )
+                {
+                    DC.DrawBitmap(*DragParentBitmap,PosX,PosY);
                 }
             }
-    }
+        }
 
-    if ( DragTarget && DragTarget!=DragParent && DragTarget->GetPreview() )
-    {
+        if ( DragTarget && (DragTarget!=DragParent) && DragTarget->GetPreview() )
+        {
+            int PosX, PosY;
+            int SizeX, SizeY;
+            FindAbsolutePosition(DragTarget,&PosX,&PosY);
+            ScreenToClient(&PosX,&PosY);
+            DragTarget->GetPreview()->GetSize(&SizeX,&SizeY);
+            long Col = wxsDWTargetCol;
+            int R = (Col>>16)&0xFF;
+            int G = (Col>> 8)&0xFF;
+            int B = (Col    )&0xFF;
 
+            if ( DragAssistType == 1 )
+            {
+                DC.SetPen(wxPen(wxColour(R,G,B),2));
+                DC.SetBrush(*wxTRANSPARENT_BRUSH);
+                DC.DrawRectangle(PosX,PosY,SizeX,SizeY);
+            }
+            else
+            {
+                if ( !DragTargetBitmap )
+                {
+                    wxImage Covered = Background->GetSubBitmap(wxRect(PosX,PosY,SizeX,SizeY)).ConvertToImage();
+                    for ( int y=0; y<SizeX; y++ )
+                    {
+                        for ( int x=0; x<SizeX; x++ )
+                        {
+                            Covered.SetRGB(x,y,
+                                ( Covered.GetRed(x,y)   + R ) / 2,
+                                ( Covered.GetGreen(x,y) + G ) / 2,
+                                ( Covered.GetBlue(x,y)  + B ) / 2 );
+                        }
+                    }
+                    DragTargetBitmap = new wxBitmap(Covered);
+                }
+
+                if ( DragTargetBitmap )
+                {
+                    DC.DrawBitmap(*DragTargetBitmap,PosX,PosY);
+                }
+            }
+        }
     }
-    */
 
     for ( DragPointsI i = DragPoints.begin(); i != DragPoints.end(); ++i )
     {
@@ -894,6 +962,16 @@ wxsWidget* wxsDragWindow::GetMultipleSelWidget(int Index)
 
 void wxsDragWindow::OnFetchBackground(wxTimerEvent& event)
 {
+    if ( DragTargetBitmap )
+    {
+        delete DragTargetBitmap;
+        DragTargetBitmap = NULL;
+    }
+    if ( DragParentBitmap )
+    {
+        delete DragParentBitmap;
+        DragParentBitmap = NULL;
+    }
 	wxScreenDC DC;
 	wxMemoryDC DestDC;
     int X = 0, Y = 0;
@@ -1007,6 +1085,52 @@ bool wxsDragWindow::IsSelected(wxsWidget* Widget)
         if ( (*i)->Widget == Widget ) return true;
     }
     return false;
+}
+
+void wxsDragWindow::UpdateAssist(bool Dragging,wxsWidget* UnderCursor)
+{
+    if ( !Dragging || !UnderCursor )
+    {
+        DragTarget = NULL;
+        DragParent = NULL;
+        if ( DragTargetBitmap )
+        {
+            delete DragTargetBitmap;
+            DragTargetBitmap = NULL;
+        }
+        if ( DragParentBitmap )
+        {
+            delete DragParentBitmap;
+            DragParentBitmap = NULL;
+        }
+        return;
+    }
+
+    wxsWidget* Parent = UnderCursor;
+    if ( !Parent->IsContainer() )
+    {
+        Parent = Parent->GetParent();
+    }
+
+    if ( DragTarget != UnderCursor )
+    {
+        DragTarget = UnderCursor;
+        if ( DragTargetBitmap )
+        {
+            delete DragTargetBitmap;
+            DragTargetBitmap = NULL;
+        }
+    }
+
+    if ( DragParent != Parent )
+    {
+        DragParent = Parent;
+        if ( DragParentBitmap )
+        {
+            delete DragParentBitmap;
+            DragParentBitmap = NULL;
+        }
+    }
 }
 
 BEGIN_EVENT_TABLE(wxsDragWindow,wxControl)

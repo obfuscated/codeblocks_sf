@@ -12,7 +12,7 @@
  *  Could be used when need to throw some string to generated code
  */
 wxString GetCString(const wxString& Source);
-        
+
 /** Changing given string to it's representation in wxWidgets */
 wxString GetWxString(const wxString& Source);
 
@@ -23,11 +23,11 @@ bool ValidateIdentifier(const wxString& Name);
 /** Macro used to produce headers for block of code */
 #define wxsBHeader(HName,CName) \
     _T("//(*") _T(HName) _T("(") _T(CName) _T(")")
-    
+
 /** Macro producing header for block of code where class is specified as argument fo Printf */
 #define wxsBHeaderF(HName) \
     wxsBHeader(HName,"%s")
-    
+
 /** Macro containing end of code block */
 #define wxsBEnd()   \
     _T("//*)")
@@ -68,5 +68,26 @@ const wxUint32 wxsCUSTOM_COLOUR = wxPG_COLOUR_CUSTOM;
 
 /** Macro destrtoying widget */
 #define wxsKILL(Widget) wxsFACTORY()->Kill(Widget)
+
+
+/** Enum for drag assist types */
+enum wxsDragAssistTypes
+{
+    wxsDTNone = 0,
+    wxsDTSimple,
+    wxsDTColourMix
+};
+
+/** Getting current drag assist mode from configuration */
+#define wxsDWAssistType ConfigManager::Get()->Read(_T("/wxsmith/dragassisttype"),(long)wxsDTColourMix)
+
+/** Reading Drag target colour from configuration */
+#define wxsDWTargetCol ConfigManager::Get()->Read(_T("/wxsmith/dragtargetcol"),0x608CDFL)
+
+/** Reading Drag paretn colour from configuration */
+#define wxsDWParentCol ConfigManager::Get()->Read(_T("/wxsmith/dragparentcol"),0x0D177BL)
+
+/** Reading fetch deelay from configuration */
+#define wxsDWFetchDelay ConfigManager::Get()->Read(_T("/wxsmith/backfetchdelay"),50L)
 
 #endif

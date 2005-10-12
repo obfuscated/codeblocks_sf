@@ -27,15 +27,19 @@ class wxsSettingsDlg: public wxDialog
     protected:
 
         //(*Handlers(wxsSettingsDlg)
+        void OnBtnOkClick(wxCommandEvent& event);
+        void OnBtnCancelClick(wxCommandEvent& event);
+        void OnDragTargetColClick(wxCommandEvent& event);
+        void OnDragParentColClick(wxCommandEvent& event);
+        void OnDragAssistTypeSelect(wxCommandEvent& event);
         //*)
 
         //(*Declarations(wxsSettingsDlg)
-        wxNotebook* Notebook1;
-        wxPanel* Panel1;
-        wxSpinCtrl* SpinCtrl1;
-        wxComboBox* ComboBox1;
-        wxButton* Button1;
-        wxButton* Button2;
+        wxComboBox* DragAssistType;
+        wxButton* DragTargetCol;
+        wxButton* DragParentCol;
+        wxSpinCtrl* PrevFetchDelay;
+        wxButton* BtnCancel;
         //*)
 
     private:

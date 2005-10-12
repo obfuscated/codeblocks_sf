@@ -43,6 +43,7 @@
                                             <item>Simple</item>
                                             <item>Colour Mix</item>
                                         </content>
+                                        <handler entry="EVT_COMBOBOX" function="OnDragAssistTypeSelect" />
                                         <style>wxCB_READONLY</style>
                                     </object>
                                 </object>
@@ -60,6 +61,7 @@
                                     <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
                                     <object class="wxButton" name="ID_BUTTON1" variable="DragTargetCol" member="yes">
                                         <label>...</label>
+                                        <handler entry="EVT_BUTTON" function="OnDragTargetColClick" />
                                     </object>
                                 </object>
                                 <object class="sizeritem">
@@ -76,6 +78,7 @@
                                     <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
                                     <object class="wxButton" name="ID_BUTTON2" variable="DragParentCol" member="yes">
                                         <label>...</label>
+                                        <handler entry="EVT_BUTTON" function="OnDragParentColClick" />
                                     </object>
                                 </object>
                             </object>
@@ -124,6 +127,7 @@
                         <flag>wxALL|wxALIGN_CENTER</flag>
                         <object class="wxButton" name="ID_BUTTON3" variable="BtnOk" member="no">
                             <label>Ok</label>
+                            <handler entry="EVT_BUTTON" function="OnBtnOkClick" />
                         </object>
                     </object>
                     <object class="sizeritem">
@@ -132,6 +136,7 @@
                         <flag>wxALL|wxALIGN_CENTER</flag>
                         <object class="wxButton" name="ID_BUTTON4" variable="BtnCancel" member="yes">
                             <label>Cancel</label>
+                            <handler entry="EVT_BUTTON" function="OnBtnCancelClick" />
                         </object>
                     </object>
                 </object>
