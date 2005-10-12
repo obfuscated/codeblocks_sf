@@ -231,18 +231,11 @@ bool wxsWidget::PropertiesUpdated(bool Validate,bool Correct)
 
 void wxsWidget::KillPreview()
 {
-    /* Killing child windows */
-    int Cnt = GetChildCount();
-    for ( int i=0; i<Cnt; i++ )
-    {
-        GetChild(i)->KillPreview();
-    }
-
     /* Killing this one */
     if ( Preview != NULL )
     {
-        MyDeletePreview(Preview);
-        Preview = NULL;
+        delete Preview;
+        PreviewDestroyed();
     }
 }
 
@@ -1117,6 +1110,16 @@ void wxsWidget::KillTree(wxTreeCtrl* Tree)
 		Tree->Delete(TreeId);
         InvalidateTreeIds();
 	}
+}
+
+void wxsWidget::PreviewDestroyed()
+{
+    int Cnt = GetChildCount();
+    for ( int i=0; i<Cnt; i++ )
+    {
+        GetChild(i)->PreviewDestroyed();
+    }
+    Preview = NULL;
 }
 
 void wxsWidget::InvalidateTreeIds()

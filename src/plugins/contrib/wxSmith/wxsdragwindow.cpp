@@ -13,7 +13,9 @@ wxsDragWindow::wxsDragWindow(wxWindow* Cover,wxsWidget* Wdg,const wxSize& Size):
     wxControl(Cover,-1,wxDefaultPosition,Size,wxNO_BORDER|wxSTAY_ON_TOP),
     RootWidget(Wdg), CurDragPoint(NULL), CurDragWidget(NULL), RefreshTimer(this,1),
     BackFetchTimer(this,2), Background(NULL), BackFetchMode(true), PaintAfterFetch(false),
-    BlockTimerRefresh(false), BlockWidgetSelect(false)
+    BlockTimerRefresh(false), BlockWidgetSelect(false),
+    DragParent(NULL), DragParentBitmap(NULL),
+    DragTarget(NULL), DragTargetBitmap(NULL)
 {
 	RefreshTimer.Start(50);
 	Background = new wxBitmap(GetSize().GetWidth(),GetSize().GetHeight());
@@ -802,6 +804,33 @@ wxsWidget* wxsDragWindow::FindWidgetAtPos(int PosX,int PosY,wxsWidget* Widget)
 
 void wxsDragWindow::AddGraphics(wxDC& DC)
 {
+    /*
+    if ( DragParent && DragParent->GetPreview() )
+    {
+        int PosX, PosY;
+        FindAbsolutePosition(DragParent,&PosX,&PosY);
+        ScreenToClient(&PosX,&PosY);
+
+        if ( !DragParentBitmap )
+        {
+            int SizeX, SizeY;
+            DragParent->GetPreview()->GetSize(&SizeX,&SizeY);
+            wxImage Covered = Background->GetSubBitmap(wxRect(PosX,PosY,SizeX,SizeY));
+            for ( int y=0; y<SizeX; y++ )
+            {
+                for ( int x=0; x<SizeX; x++ )
+                {
+                    Covered.SetRGB(
+                }
+            }
+    }
+
+    if ( DragTarget && DragTarget!=DragParent && DragTarget->GetPreview() )
+    {
+
+    }
+    */
+
     for ( DragPointsI i = DragPoints.begin(); i != DragPoints.end(); ++i )
     {
     	DragPointData* DPD = *i;

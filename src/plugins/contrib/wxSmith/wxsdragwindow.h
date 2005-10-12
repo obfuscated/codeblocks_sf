@@ -53,6 +53,12 @@ class wxsDragWindow : public wxControl
 
 	private:
 
+        /** Size of boxes used to drag borders of widgets */
+        static const int DragBoxSize = 6;
+
+        /** Minimal distace which must be done to apply dragging */
+        static const int MinDragDistance = 8;
+
         /** Enum type describing placement of drag box */
         enum DragBoxType
         {
@@ -83,6 +89,10 @@ class wxsDragWindow : public wxControl
         	bool KillMe;                                    ///< Used while refreshing drag points list to find invalid points
         	DragPointData* WidgetPoints[DragBoxTypeCnt];    ///< Pointers to all drag points for this widget
         };
+
+        /** Declaration of vector containing all drag points */
+        typedef std::vector<DragPointData*> DragPointsT;
+        typedef DragPointsT::iterator DragPointsI;
 
         /** Painting event - currently do nothing, all drawing is done inside timer event */
         void OnPaint(wxPaintEvent& evt);
@@ -135,62 +145,8 @@ class wxsDragWindow : public wxControl
         /** Event handler for EVT_UNSELECT_WIDGET event */
         void OnUnselectWidget(wxsEvent& event);
 
-        /** Timer function refreshing additional graphics */
+        /** TiMakefile.unixmer function refreshing additional graphics */
         void TimerRefresh(wxTimerEvent& event);
-
-        /** Size of boxes used to drag borders of widgets */
-        static const int DragBoxSize = 6;
-
-        /** Minimal distace which must be done to apply dragging */
-        static const int MinDragDistance = 8;
-
-        /** Declaration of vector containing all drag points */
-        typedef std::vector<DragPointData*> DragPointsT;
-        typedef DragPointsT::iterator DragPointsI;
-
-        /** All drag points used inside this drag window */
-        DragPointsT DragPoints;
-
-        /** Root widget for this resource */
-        wxsWidget* RootWidget;
-
-        /** Drag Point which is currently dragged */
-        DragPointData* CurDragPoint;
-
-        /** Widget which is currently dragged */
-        wxsWidget* CurDragWidget;
-
-        /** Mouse position at the beginning of dragging */
-        int DragMouseBegX, DragMouseBegY;
-
-        /** Set to true if distance while dragging was too small and will be discarded */
-        bool DragDistanceSmall;
-
-        /** Timer responsible for refreshing additional data */
-        wxTimer RefreshTimer;
-
-        /** Timer used inside background-fetching system */
-        wxTimer BackFetchTimer;
-
-        /** Bitmap keeping preview of edited window as background */
-        wxBitmap* Background;
-
-        /** If set to true, drag window will first fetch background and then
-         *  paint content
-         */
-        bool BackFetchMode;
-
-        /** Flag set when repainting control after fetching background */
-        bool PaintAfterFetch;
-
-        /** Flag blocking adding graphic when waiting for background fetch */
-        bool BlockTimerRefresh;
-
-        /** Flag blocking incomming widget select events */
-        bool BlockWidgetSelect;
-
-        /** Updated region - will be used to fetch background */
-        wxRegion FetchArea;
 
         /** Removing all drag points */
         void ClearDragPoints();
@@ -243,6 +199,67 @@ class wxsDragWindow : public wxControl
         /** Function used inside GetSelectionNoChildren to iterate through
             all widgets */
         void GetSelectionNoChildrenReq(wxsWidget* Widget,std::vector<wxsWidget*>& Vector);
+
+
+    /*******************************************/
+    /* Variables                               */
+    /*******************************************/
+
+        /** All drag points used inside this drag window */
+        DragPointsT DragPoints;
+
+        /** Root widget for this resource */
+        wxsWidget* RootWidget;
+
+        /** Drag Point which is currently dragged */
+        DragPointData* CurDragPoint;
+
+        /** Widget which is currently dragged */
+        wxsWidget* CurDragWidget;
+
+        /** Mouse position at the beginning of dragging */
+        int DragMouseBegX, DragMouseBegY;
+
+        /** Set to true if distance while dragging was too small and will be discarded */
+        bool DragDistanceSmall;
+
+        /** Timer responsible for refreshing additional data */
+        wxTimer RefreshTimer;
+
+        /** Timer used inside background-fetching system */
+        wxTimer BackFetchTimer;
+
+        /** Bitmap keeping preview of edited window as background */
+        wxBitmap* Background;
+
+        /** If set to true, drag window will first fetch background and then
+         *  paint content
+         */
+        bool BackFetchMode;
+
+        /** Flag set when repainting control after fetching background */
+        bool PaintAfterFetch;
+
+        /** Flag blocking adding graphic when waiting for background fetch */
+        bool BlockTimerRefresh;
+
+        /** Flag blocking incomming widget select events */
+        bool BlockWidgetSelect;
+
+        /** Updated region - will be used to fetch background */
+        wxRegion FetchArea;
+
+        /** Target container where dragged widgets will be thrown (used while painting) */
+        wxsWidget* DragParent;
+
+        /** Changed background bitmap for DragParent */
+        wxBitmap* DragParentBitmap;
+
+        /** Highlighted widget which is under cursor when dragging (used while painting) */
+        wxsWidget* DragTarget;
+
+        /** Changed background bitmap for DragTarget */
+        wxBitmap* DragTargetBitmap;
 
         DECLARE_EVENT_TABLE()
 };
