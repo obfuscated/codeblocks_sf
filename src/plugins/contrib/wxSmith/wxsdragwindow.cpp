@@ -1,6 +1,7 @@
 #include "wxsdragwindow.h"
 
 #include <wx/dcclient.h>
+#include <wx/dcbuffer.h>
 #include <configmanager.h>
 
 #include "widget.h"
@@ -78,6 +79,7 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
 
     // Disabling background fetch mode when dragging
     BackFetchMode = !event.Dragging();
+    BlockTimerRefresh = event.Dragging();
 
     // Searching for items covered by mouse
     NewDragPoint = FindCoveredPoint(MouseX,MouseY);
@@ -283,7 +285,8 @@ void wxsDragWindow::DragProcess(int MouseX,int MouseY,wxsWidget* UnderCursor)
     if ( CurDragWidget )
     {
         // Snapping to sizer area
-        if ( UnderCursor && !UnderCursor->IsContainer() )
+        if ( UnderCursor && !UnderCursor->IsContainer() &&
+             (wxsDWAssistType == wxsDTNone) )
         {
             wxsWidget* Parent = UnderCursor->GetParent();
             if ( Parent && Parent->GetInfo().Sizer )
@@ -304,6 +307,7 @@ void wxsDragWindow::DragProcess(int MouseX,int MouseY,wxsWidget* UnderCursor)
             (*i)->PosY = (*i)->DragInitPosY + ShiftY;
         }
 
+        RebuildEdgePoints(WidgetPoints);
     }
     else
     {
@@ -361,16 +365,7 @@ void wxsDragWindow::DragProcess(int MouseX,int MouseY,wxsWidget* UnderCursor)
             default:;
         }
 
-        // Rebuilding edge points
-
-        WidgetPoints[Top  ]->PosX = ( WidgetPoints[LeftTop ]->PosX + WidgetPoints[RightTop]->PosX ) / 2;
-        WidgetPoints[Top  ]->PosY =   WidgetPoints[LeftTop ]->PosY;
-        WidgetPoints[Left ]->PosX =   WidgetPoints[LeftTop ]->PosX;
-        WidgetPoints[Left ]->PosY = ( WidgetPoints[LeftTop ]->PosY + WidgetPoints[LeftBtm ]->PosY ) / 2;
-        WidgetPoints[Right]->PosX =   WidgetPoints[RightTop]->PosX;
-        WidgetPoints[Right]->PosY = ( WidgetPoints[RightTop]->PosY + WidgetPoints[RightBtm]->PosY ) / 2;
-        WidgetPoints[Btm  ]->PosX = ( WidgetPoints[LeftBtm ]->PosX + WidgetPoints[RightBtm]->PosX ) / 2;
-        WidgetPoints[Btm  ]->PosY =   WidgetPoints[LeftBtm ]->PosY;
+        RebuildEdgePoints(WidgetPoints);
     }
 
     #undef DoShiftX
@@ -835,7 +830,7 @@ void wxsDragWindow::AddGraphics(wxDC& DC)
                 if ( !DragParentBitmap )
                 {
                     wxImage Covered = Background->GetSubBitmap(wxRect(PosX,PosY,SizeX,SizeY)).ConvertToImage();
-                    for ( int y=0; y<SizeX; y++ )
+                    for ( int y=0; y<SizeY; y++ )
                     {
                         for ( int x=0; x<SizeX; x++ )
                         {
@@ -878,7 +873,7 @@ void wxsDragWindow::AddGraphics(wxDC& DC)
                 if ( !DragTargetBitmap )
                 {
                     wxImage Covered = Background->GetSubBitmap(wxRect(PosX,PosY,SizeX,SizeY)).ConvertToImage();
-                    for ( int y=0; y<SizeX; y++ )
+                    for ( int y=0; y<SizeY; y++ )
                     {
                         for ( int x=0; x<SizeX; x++ )
                         {
@@ -1073,7 +1068,8 @@ void wxsDragWindow::SelectWidget(wxsWidget* Widget)
 
 void wxsDragWindow::UpdateGraphics()
 {
-    wxClientDC DC(this);
+    wxClientDC ClientDC(this);
+    wxBufferedDC DC(&ClientDC,GetSize());
     DC.DrawBitmap(*Background,0,0,false);
     AddGraphics(DC);
 }
@@ -1131,6 +1127,18 @@ void wxsDragWindow::UpdateAssist(bool Dragging,wxsWidget* UnderCursor)
             DragParentBitmap = NULL;
         }
     }
+}
+
+void wxsDragWindow::RebuildEdgePoints(wxsDragWindow::DragPointData** WidgetPoints)
+{
+    WidgetPoints[Top  ]->PosX = ( WidgetPoints[LeftTop ]->PosX + WidgetPoints[RightTop]->PosX ) / 2;
+    WidgetPoints[Top  ]->PosY =   WidgetPoints[LeftTop ]->PosY;
+    WidgetPoints[Left ]->PosX =   WidgetPoints[LeftTop ]->PosX;
+    WidgetPoints[Left ]->PosY = ( WidgetPoints[LeftTop ]->PosY + WidgetPoints[LeftBtm ]->PosY ) / 2;
+    WidgetPoints[Right]->PosX =   WidgetPoints[RightTop]->PosX;
+    WidgetPoints[Right]->PosY = ( WidgetPoints[RightTop]->PosY + WidgetPoints[RightBtm]->PosY ) / 2;
+    WidgetPoints[Btm  ]->PosX = ( WidgetPoints[LeftBtm ]->PosX + WidgetPoints[RightBtm]->PosX ) / 2;
+    WidgetPoints[Btm  ]->PosY =   WidgetPoints[LeftBtm ]->PosY;
 }
 
 BEGIN_EVENT_TABLE(wxsDragWindow,wxControl)

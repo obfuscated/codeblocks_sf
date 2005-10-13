@@ -203,6 +203,9 @@ class wxsDragWindow : public wxControl
             all widgets */
         void GetSelectionNoChildrenReq(wxsWidget* Widget,std::vector<wxsWidget*>& Vector);
 
+        /** Function rebuilding drag points on edges of widgets from other points */
+        void RebuildEdgePoints(DragPointData** WidgetPoints);
+
     /*******************************************/
     /* Variables                               */
     /*******************************************/
