@@ -306,7 +306,6 @@ void wxsDragWindow::DragProcess(int MouseX,int MouseY,wxsWidget* UnderCursor)
             (*i)->PosX = (*i)->DragInitPosX + ShiftX;
             (*i)->PosY = (*i)->DragInitPosY + ShiftY;
         }
-
         RebuildEdgePoints(WidgetPoints);
     }
     else

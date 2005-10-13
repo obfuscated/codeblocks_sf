@@ -93,7 +93,7 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
     if ( wxFileName::FileExists(Proj->GetProjectFileName(Header->GetValue())) )
     {
         if ( wxMessageBox(
-              wxString::Format(_("File '%s' already exist. It will be overwritten.\nContinue ?"),Header->GetValue().c_str()),
+              wxString::Format(_("File '%s' already exists. It will be overwritten.\nContinue ?"),Header->GetValue().c_str()),
               _("File exists"),wxYES_NO|wxICON_ERROR) != wxYES )
         {
             return;
@@ -103,7 +103,7 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
     if ( wxFileName::FileExists(Proj->GetProjectFileName(Source->GetValue())) )
     {
         if ( wxMessageBox(
-              wxString::Format(_("File '%s' already exist. It will be overwritten.\nContinue ?"),Source->GetValue().c_str()),
+              wxString::Format(_("File '%s' already exists. It will be overwritten.\nContinue ?"),Source->GetValue().c_str()),
               _("File exists"),wxYES_NO|wxICON_ERROR) != wxYES )
         {
             return;
@@ -113,7 +113,7 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
     if ( CreateXrc && wxFileName::FileExists(Proj->GetProjectFileName(Xrc->GetValue())) )
     {
         if ( wxMessageBox(
-              wxString::Format(_("File '%s' already exist. It will be overwritten.\nContinue ?"),Source->GetValue().c_str()),
+              wxString::Format(_("File '%s' already exists. It will be overwritten.\nContinue ?"),Source->GetValue().c_str()),
               _("File exists"),wxYES_NO|wxICON_ERROR) != wxYES )
         {
             return;
