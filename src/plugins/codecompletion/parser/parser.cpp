@@ -218,10 +218,12 @@ bool Parser::ReadFromCache(wxFile* f)
 
     // keep a backup of include dirs
     wxArrayString dirs = m_IncludeDirs;
+    Manager::Get()->GetMessageManager()->DebugLog(_("Clearing Cache"));
     Clear();
     // restore backup
     m_IncludeDirs = dirs;
 
+    Manager::Get()->GetMessageManager()->DebugLog(_("Begin reading..."));
     if (f->Read(CACHE_MAGIC_READ, sizeof(CACHE_MAGIC_READ)) != sizeof(CACHE_MAGIC_READ) ||
         strncmp(CACHE_MAGIC, CACHE_MAGIC_READ, sizeof(CACHE_MAGIC_READ) != 0))
     {
@@ -229,7 +231,9 @@ bool Parser::ReadFromCache(wxFile* f)
     }
     int fcount = 0;
     int tcount = 0;
+    Manager::Get()->GetMessageManager()->DebugLog(_("Reading fcount..."));
     if (!LoadIntFromFile(f, &fcount)) return false;
+    Manager::Get()->GetMessageManager()->DebugLog(_("Reading tcount..."));
     if (!LoadIntFromFile(f, &tcount)) return false;
 
     wxProgressDialog* progress = 0;
@@ -238,12 +242,14 @@ bool Parser::ReadFromCache(wxFile* f)
     // display cache progress?
     if (ConfigManager::Get()->Read(_T("/code_completion/show_cache_progress"), 1L))
     {
+        Manager::Get()->GetMessageManager()->DebugLog(_("Creating progress dialog..."));
         progress = new wxProgressDialog(_("Code-completion plugin"),
                                         _("Please wait while loading code-completion cache..."),
                                         fcount + tcount);
     }
 
     // m_ParsedFiles
+    Manager::Get()->GetMessageManager()->DebugLog(_("Reading data from cache NOW"));
     wxString file;
     for (int i = 0; i < fcount && !f->Eof(); ++i)
     {
@@ -257,6 +263,7 @@ bool Parser::ReadFromCache(wxFile* f)
             progress->Update(++counter);
     }
 
+    Manager::Get()->GetMessageManager()->DebugLog(_("Calculating tokens..."));
     // m_Tokens
     for (int i = 0; i < tcount && !f->Eof(); ++i)
     {
@@ -277,6 +284,7 @@ bool Parser::ReadFromCache(wxFile* f)
             progress->Update(++counter);
     }
 
+    Manager::Get()->GetMessageManager()->DebugLog(_("Updating linking pointers..."));
     // now we must update linking pointers in tokens
     for (int i = 0; i < tcount; ++i)
     {
@@ -309,13 +317,16 @@ bool Parser::ReadFromCache(wxFile* f)
 
 //    LinkInheritance(); // fix ancestors relationships
 
+    Manager::Get()->GetMessageManager()->DebugLog(_("Cleaning up subroutine..."));
     m_UsingCache = true;
     m_CacheFilesCount = m_ParsedFiles.GetCount();
     m_CacheTokensCount = m_Tokens.GetCount();
 
+    Manager::Get()->GetMessageManager()->DebugLog(_("Deleting progress dialog (if any)..."));
     if (progress)
         delete progress;
 
+    Manager::Get()->GetMessageManager()->DebugLog(_("Finished reading from cache."));
     return true;
 }
 
@@ -745,28 +756,37 @@ bool Parser::Reparse(const wxString& filename, bool isLocal)
 
 void Parser::Clear()
 {
+    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Disconnecting events..."));
     DisconnectEvents();
+    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Terminating all threads..."));
 	TerminateAllThreads();
-	wxSafeYield();
+    wxSafeYield();
 	wxSleep(0);
 
 	wxMutexLocker* lockl = new wxMutexLocker(s_mutexListProtection);
+    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Clearing 'm_ParsedFiles'..."));
 	m_ParsedFiles.Clear();
+    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Clearing 'm_ReparsedFiles'..."));
 	m_ReparsedFiles.Clear();
+    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Clearing 'm_IncludeDirs'..."));
 	m_IncludeDirs.Clear();
 	delete lockl;
 
+    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Locking s_mutexProtection and clearing m_Tokens..."));
 	wxMutexLocker lock(s_mutexProtection);
 	WX_CLEAR_ARRAY(m_Tokens);
 	m_Tokens.Clear();
 
+    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: wxSafeYield..."));
 	wxSafeYield();
+    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Connecting Events..."));
 	ConnectEvents();
 
 	m_UsingCache = false;
 	m_CacheFilesCount = 0;
 	m_CacheTokensCount = 0;
 	m_abort_flag = false;
+    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Done."));
 }
 
 void Parser::ClearTemporaries()
@@ -787,7 +807,7 @@ void Parser::ClearTemporaries()
 
 void Parser::TerminateAllThreads()
 {
-    wxMutexLocker lock(s_mutexListProtection);
+    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::TerminateAllThreads: Aborting all tasks..."));
     m_Pool.AbortAllTasks();
 }
 

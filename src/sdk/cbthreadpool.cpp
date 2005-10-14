@@ -89,6 +89,7 @@ cbThreadPool::cbThreadPool(wxEvtHandler* owner, int id, int concurrentThreads)
     m_Counter(0)
 {
     SetConcurrentThreads(concurrentThreads);
+    m_Threads.Clear();
 }
 
 cbThreadPool::~cbThreadPool()

@@ -418,12 +418,13 @@ bool NativeParser::LoadCachedData(Parser* parser, cbProject* project)
     }
     catch (cbException& ex)
     {
-        ex.ShowErrorMessage(false);
+        ex.ShowErrorMessage(true);
         ret = false;
     }
     catch (...)
     {
         // eat it
+        wxSafeShowMessage("Exception thrown!","ERROR");
         ret = false;
     }
     DisplayStatus(parser, project);
