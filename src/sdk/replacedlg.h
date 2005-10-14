@@ -19,7 +19,11 @@ class ReplaceDlg : public FindReplaceBase
 		int GetDirection();
 		int GetOrigin();
 		int GetScope();
-		
+		bool GetRecursive(){ return false; }
+		bool GetHidden(){ return false; }
+		wxString GetSearchPath(){ return wxEmptyString; }
+		wxString GetSearchMask(){ return wxEmptyString; }
+
 		void OnRegEx(wxCommandEvent& event);
 	private:
 		void FillComboWithLastValues(wxComboBox* combo, const wxString& configKey);

@@ -19,6 +19,10 @@ class FindReplaceBase : public wxDialog
 		virtual int GetDirection() = 0;
 		virtual int GetOrigin() = 0;
 		virtual int GetScope() = 0;
+		virtual bool GetRecursive() = 0; // for find in search path
+		virtual bool GetHidden() = 0; // for find in search path
+		virtual wxString GetSearchPath() = 0; // for find in search path
+		virtual wxString GetSearchMask() = 0; // for find in search path
 };
 
 #endif // FINDREPLACEBASE_H

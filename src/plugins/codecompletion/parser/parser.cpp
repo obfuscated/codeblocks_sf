@@ -763,14 +763,14 @@ void Parser::Clear()
     wxSafeYield();
 	wxSleep(0);
 
-	wxMutexLocker* lockl = new wxMutexLocker(s_mutexListProtection);
+//	wxMutexLocker* lockl = new wxMutexLocker(s_mutexListProtection);
     Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Clearing 'm_ParsedFiles'..."));
 	m_ParsedFiles.Clear();
     Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Clearing 'm_ReparsedFiles'..."));
 	m_ReparsedFiles.Clear();
     Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Clearing 'm_IncludeDirs'..."));
 	m_IncludeDirs.Clear();
-	delete lockl;
+//	delete lockl;
 
     Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Locking s_mutexProtection and clearing m_Tokens..."));
 	wxMutexLocker lock(s_mutexProtection);

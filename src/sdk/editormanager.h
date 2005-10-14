@@ -34,21 +34,8 @@ struct EditorManagerInternalData;
 WX_DECLARE_LIST(EditorBase, EditorsList);
 WX_DECLARE_STRING_HASH_MAP(wxString, AutoCompleteMap);
 
-struct cbFindReplaceData
-{
-    int start;
-    int end;
-    wxString findText;
-    wxString replaceText;
-    bool findInFiles;
-    bool matchWord;
-    bool startWord;
-    bool matchCase;
-    bool regEx;
-    bool directionDown;
-    bool originEntireScope;
-    bool scopeSelectedText;
-};
+// forward decl
+struct cbFindReplaceData;
 
 /*
  * No description

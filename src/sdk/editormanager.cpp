@@ -30,6 +30,7 @@
 #include <wx/bmpbuttn.h>
 #include <wx/file.h>
 #include <wx/progdlg.h>
+#include <wx/dir.h>
 
 #include "editormanager.h" // class's header file
 #include "configmanager.h"
@@ -82,6 +83,25 @@ END_EVENT_TABLE()
 bool EditorManager::s_CanShutdown = true;
 wxButton *edman_closebutton = NULL; // for private use
 
+struct cbFindReplaceData
+{
+    int start;
+    int end;
+    wxString findText;
+    wxString replaceText;
+    bool findInFiles;
+    bool matchWord;
+    bool startWord;
+    bool matchCase;
+    bool regEx;
+    bool directionDown;
+    bool originEntireScope;
+    int scope;
+    wxString searchPath;
+    wxString searchMask;
+    bool recursiveSearch;
+    bool hiddenSearch;
+};
 
 /** *******************************************************
   * struct EditorManagerInternalData                      *
@@ -1147,7 +1167,11 @@ int EditorManager::ShowFindDialog(bool replace)
 	m_LastFindReplaceData->regEx = dlg->GetRegEx();
 	m_LastFindReplaceData->directionDown = dlg->GetDirection() == 1;
 	m_LastFindReplaceData->originEntireScope = dlg->GetOrigin() == 1;
-	m_LastFindReplaceData->scopeSelectedText = dlg->GetScope() == 1;
+	m_LastFindReplaceData->scope = dlg->GetScope();
+	m_LastFindReplaceData->searchPath = dlg->GetSearchPath();
+	m_LastFindReplaceData->searchMask = dlg->GetSearchMask();
+	m_LastFindReplaceData->recursiveSearch = dlg->GetRecursive();
+	m_LastFindReplaceData->hiddenSearch = dlg->GetHidden();
 
 	delete dlg;
 
@@ -1184,7 +1208,7 @@ void EditorManager::CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFi
 		if (!data->directionDown) // up
 			data->end = 0;
 
-		if (data->scopeSelectedText) // selected text
+		if (data->scope == 1) // selected text
 		{
 			if (!data->directionDown) // up
 			{
@@ -1347,7 +1371,7 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
         }
         else if (!wrapAround && !data->findInFiles) // for "find in files" we don't want to show messages
         {
-            if (!data->scopeSelectedText &&
+            if (!data->scope == 1 &&
                 ((data->directionDown && start != 0) ||
                 (!data->directionDown && start != control->GetLength())))
             {
@@ -1401,22 +1425,10 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
     if (!data || data->findText.IsEmpty())
         return 0;
 
-    bool findInOpenFiles = data->scopeSelectedText; // i.e. find in open files
-
     // let's make a list of all the files to search in
     wxArrayString filesList;
 
-    if (findInOpenFiles) // find in open files
-    {
-        // fill the search list with the open files
-		for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext())
-		{
-        	cbEditor* ed = InternalGetBuiltinEditor(node);
-        	if (ed)
-                filesList.Add(ed->GetFilename());
-        }
-    }
-    else // find in project files
+    if (data->scope == 0) // find in project files
     {
         // fill the search list with all the project files
         cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
@@ -1430,15 +1442,45 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
             if (pf)
             {
                 fullpath = pf->file.GetFullPath();
-                if(wxFileExists(fullpath))  // Does the file exist?
-                    filesList.Add(fullpath);
+                if (filesList.Index(fullpath) == -1) // avoid adding dulpicates
+                {
+                    if(wxFileExists(fullpath))  // Does the file exist?
+                        filesList.Add(fullpath);
+                }
             }
+        }
+    }
+    else if (data->scope == 1) // find in open files
+    {
+        // fill the search list with the open files
+		for (EditorsList::Node* node = m_EditorsList.GetFirst(); node; node = node->GetNext())
+		{
+        	cbEditor* ed = InternalGetBuiltinEditor(node);
+        	if (ed)
+                filesList.Add(ed->GetFilename());
+        }
+    }
+    if (data->scope == 2) // find in custom search path and mask
+    {
+        // fill the search list with the files found under the search path
+        int flags = wxDIR_FILES |
+                    (data->recursiveSearch ? wxDIR_DIRS : 0) |
+                    (data->hiddenSearch ? wxDIR_HIDDEN : 0);
+        wxArrayString masks = GetArrayFromString(data->searchMask);
+        unsigned int count = masks.GetCount();
+        for (unsigned int i = 0; i < count; ++i)
+        {
+            // wxDir::GetAllFiles() does *not* clear the array, so it suits us just fine ;)
+            wxDir::GetAllFiles(data->searchPath, &filesList, masks[i], flags);
         }
     }
 
     // if the list is empty, leave
     if (filesList.GetCount() == 0)
+    {
+        wxMessageBox(_("No files to search in!"), _("Error"), wxICON_WARNING);
         return 0;
+    }
 
     // now that are list is filled, we 'll search
     // but first we 'll create a hidden cbStyledTextCtrl to do the search for us ;)

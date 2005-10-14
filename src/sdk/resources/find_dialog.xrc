@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <resource>
   <object class="wxDialog" name="dlgFind">
     <title>Find</title>
@@ -14,16 +14,34 @@
                 <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
                   <object class="wxStaticText">
+                    
+                    
+                    
                     <label>&amp;Text to search for:</label>
                   </object>
+                  
+                  
+                  
                   <flag>wxTOP|wxLEFT|wxRIGHT</flag>
+                  
+                  
+                  
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
                   <object class="wxComboBox" name="cmbFind1">
+                    
+                    
+                    
                     <content/>
                   </object>
+                  
+                  
+                  
                   <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  
+                  
+                  
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
@@ -34,69 +52,153 @@
                         <orient>wxVERTICAL</orient>
                         <object class="sizeritem">
                           <object class="wxCheckBox" name="chkWholeWord1">
+                            
+                            
+                            
                             <label>Whole &amp;word</label>
                           </object>
+                          
+                          
+                          
                           <flag>wxALL</flag>
+                          
+                          
+                          
                           <border>4</border>
                         </object>
                         <object class="sizeritem">
                           <object class="wxCheckBox" name="chkStartWord1">
+                            
+                            
+                            
                             <label>St&amp;art word</label>
                           </object>
+                          
+                          
+                          
                           <flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
+                          
+                          
+                          
                           <border>4</border>
                         </object>
                         <object class="sizeritem">
                           <object class="wxCheckBox" name="chkMatchCase1">
+                            
+                            
+                            
                             <label>Match &amp;case</label>
                           </object>
+                          
+                          
+                          
                           <flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
+                          
+                          
+                          
                           <border>4</border>
                         </object>
                         <object class="sizeritem">
                           <object class="wxCheckBox" name="chkRegEx1">
+                            
+                            
+                            
                             <label>Regular e&amp;xpression</label>
                           </object>
+                          
+                          
+                          
                           <flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
+                          
+                          
+                          
                           <border>4</border>
                         </object>
                       </object>
+                      
+                      
+                      
                       <flag>wxEXPAND</flag>
                     </object>
                     <object class="sizeritem">
                       <object class="wxRadioBox" name="rbDirection">
+                        
+                        
+                        
                         <label>Direction</label>
+                        
+                        
+                        
                         <content>
                           <item>&amp;Up</item>
                           <item>&amp;Down</item>
                         </content>
+                        
+                        
+                        
                         <dimension>1</dimension>
+                        
+                        
+                        
                         <style>wxRA_SPECIFY_COLS</style>
                       </object>
+                      
+                      
+                      
                       <flag>wxGROW</flag>
                     </object>
                     <object class="sizeritem">
                       <object class="wxRadioBox" name="rbOrigin">
+                        
+                        
+                        
                         <label>Origin</label>
+                        
+                        
+                        
                         <content>
                           <item>&amp;From cursor</item>
                           <item>&amp;Entire scope</item>
                         </content>
+                        
+                        
+                        
                         <dimension>1</dimension>
+                        
+                        
+                        
                         <style>wxRA_SPECIFY_COLS</style>
                       </object>
+                      
+                      
+                      
                       <flag>wxEXPAND</flag>
                     </object>
                     <object class="sizeritem">
                       <object class="wxRadioBox" name="rbScope1">
+                        
+                        
+                        
                         <label>Scope</label>
+                        
+                        
+                        
                         <content>
                           <item>&amp;Global</item>
                           <item>&amp;Selected text</item>
                         </content>
+                        
+                        
+                        
                         <dimension>1</dimension>
+                        
+                        
+                        
                         <style>wxRA_SPECIFY_COLS</style>
                       </object>
+                      
+                      
+                      
                       <flag>wxEXPAND</flag>
                     </object>
                     <cols>2</cols>
@@ -105,7 +207,13 @@
                     <hgap>8</hgap>
                     <growablecols>0</growablecols>
                   </object>
+                  
+                  
+                  
                   <flag>wxALL|wxEXPAND</flag>
+                  
+                  
+                  
                   <border>8</border>
                 </object>
               </object>
@@ -120,16 +228,34 @@
                 <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
                   <object class="wxStaticText">
+                    
+                    
+                    
                     <label>&amp;Text to search for:</label>
                   </object>
+                  
+                  
+                  
                   <flag>wxTOP|wxLEFT|wxRIGHT</flag>
+                  
+                  
+                  
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
                   <object class="wxComboBox" name="cmbFind2">
+                    
+                    
+                    
                     <content/>
                   </object>
+                  
+                  
+                  
                   <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  
+                  
+                  
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
@@ -140,33 +266,72 @@
                         <orient>wxVERTICAL</orient>
                         <object class="sizeritem">
                           <object class="wxCheckBox" name="chkWholeWord2">
+                            
+                            
+                            
                             <label>Whole &amp;word</label>
                           </object>
+                          
+                          
+                          
                           <flag>wxALL</flag>
+                          
+                          
+                          
                           <border>4</border>
                         </object>
                         <object class="sizeritem">
                           <object class="wxCheckBox" name="chkStartWord2">
+                            
+                            
+                            
                             <label>St&amp;art word</label>
                           </object>
+                          
+                          
+                          
                           <flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
+                          
+                          
+                          
                           <border>4</border>
                         </object>
                         <object class="sizeritem">
                           <object class="wxCheckBox" name="chkMatchCase2">
+                            
+                            
+                            
                             <label>Match &amp;case</label>
                           </object>
+                          
+                          
+                          
                           <flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
+                          
+                          
+                          
                           <border>4</border>
                         </object>
                         <object class="sizeritem">
                           <object class="wxCheckBox" name="chkRegEx2">
+                            
+                            
+                            
                             <label>Regular e&amp;xpression</label>
                           </object>
+                          
+                          
+                          
                           <flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
+                          
+                          
+                          
                           <border>4</border>
                         </object>
                       </object>
+                      
+                      
+                      
                       <flag>wxEXPAND</flag>
                     </object>
                     <cols>2</cols>
@@ -175,18 +340,168 @@
                     <growablecols>0</growablecols>
                     <object class="sizeritem">
                       <object class="wxRadioBox" name="rbScope2">
+                        
+                        
+                        
                         <label>Scope</label>
+                        
+                        
+                        
                         <content>
                           <item>&amp;Project files</item>
                           <item>&amp;Open files</item>
+                          <item>Search path (below)</item>
                         </content>
+                        
+                        
+                        
                         <dimension>1</dimension>
+                        
+                        
+                        
                         <style>wxRA_SPECIFY_COLS</style>
                       </object>
+                      
+                      
+                      
                       <flag>wxEXPAND</flag>
                     </object>
                   </object>
+                  
+                  
+                  
                   <flag>wxALL|wxEXPAND</flag>
+                  
+                  
+                  
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticBoxSizer">
+                    <label>Search path</label>
+                    <orient>wxVERTICAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxFlexGridSizer">
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                            
+                            
+                            <label>Path:</label>
+                          </object>
+                          
+                          
+                          <flag>wxTOP|wxRIGHT</flag>
+                          
+                          
+                          <border>4</border>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxTextCtrl" name="txtSearchPath"/>
+                          
+                          
+                          <option>1</option>
+                          
+                          
+                          <flag>wxGROW</flag>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxButton" name="btnBrowsePath">
+                            
+                            
+                            <label>...</label>
+                            
+                            
+                            <size>24,-1</size>
+                          </object>
+                        </object>
+                        <cols>3</cols>
+                        <rows>2</rows>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                            
+                            
+                            <label>Mask:</label>
+                          </object>
+                          
+                          
+                          <flag>wxTOP|wxRIGHT</flag>
+                          
+                          
+                          <border>4</border>
+                        </object>
+                        <vgap>4</vgap>
+                        <growablecols>1</growablecols>
+                        <object class="sizeritem">
+                          <object class="wxTextCtrl" name="txtSearchMask"/>
+                          
+                          
+                          <option>1</option>
+                          
+                          
+                          <flag>wxGROW</flag>
+                        </object>
+                        <object class="spacer">
+                          <size>0,0</size>
+                        </object>
+                        <object class="spacer">
+                          <size>0,0</size>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                            <label>Example mask: *.cpp;*.h</label>
+                            <fg>#800000</fg>
+                          </object>
+                        </object>
+                      </object>
+                      
+                      
+                      <flag>wxALL|wxGROW</flag>
+                      
+                      
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxBoxSizer">
+                        <orient>wxHORIZONTAL</orient>
+                        <object class="sizeritem">
+                          <object class="wxCheckBox" name="chkSearchRecursively">
+                        
+                            
+                            <label>Recurse subdirectories</label>
+                      </object>
+                      
+                      
+                    </object>
+                        <object class="spacer">
+                          
+                          <option>1</option>
+                          
+                          <flag>wxGROW</flag>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxCheckBox" name="chkSearchHidden">
+                        
+                            
+                            <label>Hidden files</label>
+                      </object>
+                      
+                      
+                    </object>
+                      </object>
+                      
+                      <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                      
+                      <border>4</border>
+                    </object>
+                  </object>
+                  
+                  
+                  <option>1</option>
+                  
+                  
+                  <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                  
+                  
                   <border>8</border>
                 </object>
               </object>
@@ -194,8 +509,17 @@
           </object>
           <usenotebooksizer>1</usenotebooksizer>
         </object>
+        
+        
+        
         <option>1</option>
+        
+        
+        
         <flag>wxALL|wxEXPAND</flag>
+        
+        
+        
         <border>8</border>
       </object>
       <object class="sizeritem">
@@ -203,19 +527,40 @@
           <orient>wxHORIZONTAL</orient>
           <object class="sizeritem">
             <object class="wxButton" name="wxID_OK">
+              
+              
+              
               <label>&amp;Find</label>
+              
+              
+              
               <default>1</default>
             </object>
+            
+            
+            
             <flag>wxRIGHT</flag>
+            
+            
+            
             <border>8</border>
           </object>
           <object class="sizeritem">
             <object class="wxButton" name="wxID_CANCEL">
+              
+              
+              
               <label>&amp;Cancel</label>
             </object>
           </object>
         </object>
+        
+        
+        
         <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
+        
+        
+        
         <border>8</border>
       </object>
     </object>

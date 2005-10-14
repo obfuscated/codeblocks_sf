@@ -1986,7 +1986,7 @@ void MainFrame::OnSearchMenuUpdateUI(wxUpdateUIEvent& event)
     cbEditor* ed = EDMAN() ? EDMAN()->GetBuiltinEditor(EDMAN()->GetActiveEditor()) : 0;
     wxMenuBar* mbar = GetMenuBar();
 
-    mbar->Enable(idSearchFind, ed);
+    // 'Find' is always enabled for find-in-files
     mbar->Enable(idSearchFindNext, ed);
     mbar->Enable(idSearchFindPrevious, ed);
     mbar->Enable(idSearchReplace, ed);

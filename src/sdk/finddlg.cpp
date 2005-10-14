@@ -26,6 +26,9 @@
 #include "finddlg.h"
 #include "globals.h"
 #include "configmanager.h"
+#include "manager.h"
+#include "projectmanager.h"
+#include "cbproject.h"
 #include <wx/xrc/xmlres.h>
 #include <wx/intl.h>
 #include <wx/combobox.h>
@@ -41,6 +44,8 @@ BEGIN_EVENT_TABLE(FindDlg, wxDialog)
 	EVT_TEXT(XRCID("cmbFind1"),			FindDlg::OnFindChange)
 	EVT_TEXT(XRCID("cmbFind2"),			FindDlg::OnFindChange)
 	EVT_CHECKBOX(XRCID("chkRegEx1"), 	FindDlg::OnRegEx)
+	EVT_BUTTON(XRCID("btnBrowsePath"), 	FindDlg::OnBrowsePath)
+	EVT_UPDATE_UI(-1, 	                FindDlg::OnUpdateUI)
 END_EVENT_TABLE()
 
 FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection, bool findInFilesOnly)
@@ -80,6 +85,16 @@ FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection, b
 	XRCCTRL(*this, "chkRegEx2", wxCheckBox)->SetValue(ConfigManager::Get()->Read(CONF_GROUP _T("/regex2"), 0L));
 	XRCCTRL(*this, "rbScope2", wxRadioBox)->SetSelection(ConfigManager::Get()->Read(CONF_GROUP _T("/scope2"), 0L));
 
+	// find in files search path options
+    cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+    if (prj)
+        XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->SetValue(prj->GetBasePath());
+    else
+        XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->SetValue(ConfigManager::Get()->Read(CONF_GROUP _T("/search_path")));
+    XRCCTRL(*this, "txtSearchMask", wxTextCtrl)->SetValue(ConfigManager::Get()->Read(CONF_GROUP _T("/search_mask")));
+    XRCCTRL(*this, "chkSearchRecursively", wxCheckBox)->SetValue(ConfigManager::Get()->Read(CONF_GROUP _T("/search_recursive"), 0L));
+    XRCCTRL(*this, "chkSearchHidden", wxCheckBox)->SetValue(ConfigManager::Get()->Read(CONF_GROUP _T("/search_hidden"), 0L));
+
 	if (!m_Complete)
     {
         XRCCTRL(*this, "nbFind", wxNotebook)->DeletePage(0); // no active editor, so only find-in-files
@@ -91,6 +106,11 @@ FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection, b
 
 FindDlg::~FindDlg()
 {
+    ConfigManager::Get()->Write(CONF_GROUP _T("/search_path"), XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->GetValue());
+    ConfigManager::Get()->Write(CONF_GROUP _T("/search_mask"), XRCCTRL(*this, "txtSearchMask", wxTextCtrl)->GetValue());
+    ConfigManager::Get()->Write(CONF_GROUP _T("/search_recursive"), XRCCTRL(*this, "chkSearchRecursively", wxCheckBox)->GetValue());
+    ConfigManager::Get()->Write(CONF_GROUP _T("/search_hidden"), XRCCTRL(*this, "chkSearchHidden", wxCheckBox)->GetValue());
+
 	// save last searches (up to 10)
     wxComboBox* combo = XRCCTRL(*this, "cmbFind1", wxComboBox);
 	if (!m_Complete)
@@ -195,6 +215,26 @@ int FindDlg::GetScope()
 		return XRCCTRL(*this, "rbScope1", wxRadioBox)->GetSelection();
 }
 
+bool FindDlg::GetRecursive()
+{
+    return XRCCTRL(*this, "chkSearchRecursively", wxCheckBox)->IsChecked();
+}
+
+bool FindDlg::GetHidden()
+{
+    return XRCCTRL(*this, "chkSearchHidden", wxCheckBox)->IsChecked();
+}
+
+wxString FindDlg::GetSearchPath()
+{
+    return XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->GetValue();
+}
+
+wxString FindDlg::GetSearchMask()
+{
+    return XRCCTRL(*this, "txtSearchMask", wxTextCtrl)->GetValue();
+}
+
 // events
 
 void FindDlg::OnFindChange(wxCommandEvent& event)
@@ -212,4 +252,22 @@ void FindDlg::OnRegEx(wxCommandEvent& event)
 {
 	if (m_Complete)
         XRCCTRL(*this, "rbDirection", wxRadioBox)->Enable(!XRCCTRL(*this, "chkRegEx1", wxCheckBox)->GetValue());
+}
+
+void FindDlg::OnBrowsePath(wxCommandEvent& event)
+{
+    wxString txtSearchPath = XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->GetValue();
+    wxString dir = ChooseDirectory(0, _("Select search path"), txtSearchPath);
+    if (!dir.IsEmpty())
+        XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->SetValue(dir);
+}
+
+void FindDlg::OnUpdateUI(wxUpdateUIEvent& event)
+{
+    bool on = XRCCTRL(*this, "rbScope2", wxRadioBox)->GetSelection() == 2; // find in search path
+    XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->Enable(on);
+    XRCCTRL(*this, "txtSearchMask", wxTextCtrl)->Enable(on);
+    XRCCTRL(*this, "btnBrowsePath", wxButton)->Enable(on);
+
+    event.Skip();
 }
