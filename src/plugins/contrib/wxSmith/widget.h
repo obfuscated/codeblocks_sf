@@ -426,6 +426,13 @@ class wxsWidget
         /** Getting pointer to given child */
         virtual wxsWidget* GetChild(int Id) { return NULL; }
 
+        /** Function checking if given widget can be added as child,
+         *
+         * \param InsertBeforeThis - proposed position, shouldn't be
+         *        considered as certain thing
+         */
+        virtual bool CanAddChild(wxsWidget* NewWidget,int InsertBeforethis = -1) { return false; }
+
         /** Binding child
          *
          * \param InsertAfterThis - position where to add new widget, if -1,

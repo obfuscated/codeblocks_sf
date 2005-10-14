@@ -32,10 +32,10 @@ int wxsContainer::FindChild(wxsWidget* Widget,int Level)
     while ( Widget )
     {
         Widget = Widget->GetParent();
-        if ( Widget == this || --Level == 0 ) break;
+        if ( (Widget == this) || (--Level == 0) ) break;
     }
 
-    return ( Widget == this ) ? 0 : 1;
+    return ( Widget == this ) ? 0 : -1;
 }
 
 int wxsContainer::AddChild(wxsWidget* NewWidget,int InsertBeforeThis)
@@ -82,6 +82,7 @@ bool wxsContainer::DelChild(wxsWidget* Widget)
 bool wxsContainer::ChangeChildPos(int PrevPos,int NewPos)
 {
     if ( PrevPos<0 || PrevPos >= (int)Widgets.size() ) return false;
+    if ( PrevPos < NewPos ) --NewPos;
     if ( NewPos<0 || NewPos>=(int)Widgets.size() ) return false;
     if ( PrevPos == NewPos ) return true;
 
@@ -90,7 +91,6 @@ bool wxsContainer::ChangeChildPos(int PrevPos,int NewPos)
 
     if ( PrevPos < NewPos )
     {
-        --NewPos;
         while ( PrevPos++ < NewPos )
         {
             Widgets[PrevPos-1] = Widgets[PrevPos];

@@ -8,7 +8,7 @@
 class wxsWindowPreview: public wxPanel
 {
     public:
-    
+
         // Need to check Window->GetParent() before setting style -
         // - if this is wxPanel which has parent, it is not a resource
         wxsWindowPreview(wxWindow* Parent,wxsWindow* _Window,const wxPoint& Position,const wxSize& Size):
@@ -18,15 +18,15 @@ class wxsWindowPreview: public wxPanel
         {
         	if ( !Window->GetParent() )
         	{
-                SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));        	
+                SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
         	}
         }
-        
+
         void UpdatePreview()
         {
         	SetSizer(NULL);
             int Cnt = Window->GetChildCount();
-            
+
             // Searching for sizer - it's preview is standard widget and must be
             // additionally binded to this window through sizer
             for ( int i=0; i<Cnt; i++ )
@@ -46,9 +46,9 @@ class wxsWindowPreview: public wxPanel
                 }
             }
         }
-        
+
     private:
-        
+
         wxsWindow* Window;
 };
 
@@ -79,6 +79,15 @@ wxWindow* wxsWindow::MyCreatePreview(wxWindow* Parent)
     return Wnd;
 }
 
+bool wxsWindow::CanAddChild(wxsWidget* NewWidget,int InsertBeforeThis)
+{
+	if ( NewWidget->GetInfo().Spacer ) return false;
+	if ( NewWidget->GetInfo().Sizer && GetChildCount() ) return false;
+    int Cnt = GetChildCount();
+    for ( int i=0; i<Cnt; i++ ) if ( GetChild(i)->GetInfo().Sizer ) return false;
+	return true;
+}
+
 int wxsWindow::AddChild(wxsWidget* NewWidget,int InsertBeforeThis)
 {
 	if ( NewWidget->GetInfo().Spacer )
@@ -87,13 +96,13 @@ int wxsWindow::AddChild(wxsWidget* NewWidget,int InsertBeforeThis)
 		wxMessageBox(_("This item can be added into sizer only"));
 		return -1;
 	}
-	
+
 	if ( NewWidget->GetInfo().Sizer )
 	{
 		// We're adding sizer to this container - it must be empty
 		// we will check some more properties to give better error
 		// explanation
-		
+
 		if ( GetChildCount() )
 		{
             if ( GetChild(0)->GetInfo().Sizer )
@@ -120,6 +129,6 @@ int wxsWindow::AddChild(wxsWidget* NewWidget,int InsertBeforeThis)
 			}
 		}
 	}
-	
+
 	return wxsContainer::AddChild(NewWidget,InsertBeforeThis);
 }

@@ -20,6 +20,11 @@ class wxsContainer : public wxsWidget
         /** Getting pointer to given child */
         virtual wxsWidget* GetChild(int Id) { return (Id>=0 && Id<(int)Widgets.size()) ? Widgets[Id] : NULL; }
 
+        /** Checking if can add child
+         *  by default all children are allowed
+         */
+        virtual bool CanAddChild(wxsWidget* NewWidget,int InsertBeforeThis = -1 ) { return true; }
+
         /** Binding child
          *
          * \param InsertAfterThis - position where to add new widget, if -1,

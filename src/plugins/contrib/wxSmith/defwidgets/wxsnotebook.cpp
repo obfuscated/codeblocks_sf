@@ -3,6 +3,7 @@
 #include <wx/splitter.h>
 #include "../properties/wxsenumproperty.h"
 #include "../wxswidgetfactory.h"
+#include "../resources/wxswindowres.h"
 
 WXS_ST_BEGIN(wxsNotebookStyles)
     WXS_ST_CATEGORY("wxNotebook")
@@ -28,20 +29,20 @@ class wxsNotebookPreview: public wxNotebook
             wxNotebook(parent,id,pos,size,style),
             Notebook(NB)
         {}
-        
+
     private:
 
         wxsNotebook* Notebook;
         void OnChanged(wxNotebookEvent& event)
         {
-        	wxsWidget* NewSelection = Notebook->GetChild(event.GetSelection());
-        	if ( NewSelection != Notebook->CurrentSelection )
-        	{
-        		Notebook->CurrentSelection = NewSelection;
-                Notebook->PropertiesUpdated(false,false);
-        	}
+//        	wxsWidget* NewSelection = Notebook->GetChild(event.GetSelection());
+//        	if ( NewSelection != Notebook->CurrentSelection )
+//        	{
+//        		Notebook->CurrentSelection = NewSelection;
+//                Notebook->PropertiesUpdated(false,false);
+//        	}
         }
-        
+
         DECLARE_EVENT_TABLE()
 };
 
@@ -55,6 +56,13 @@ wxsNotebook::~wxsNotebook()
 {
 }
 
+bool wxsNotebook::CanAddChild(wxsWidget* NewWidget,int InsertBeforeThis)
+{
+	if ( NewWidget->GetInfo().Sizer ) return false;
+	if ( NewWidget->GetInfo().Spacer ) return false;
+	return true;
+}
+
 int wxsNotebook::AddChild(wxsWidget* NewWidget,int InsertBeforeThis)
 {
 	if ( NewWidget->GetInfo().Sizer )
@@ -62,13 +70,13 @@ int wxsNotebook::AddChild(wxsWidget* NewWidget,int InsertBeforeThis)
 		wxMessageBox(_("Can not add sizer into Notebook.\nAdd panels first"));
 		return -1;
 	}
-	
+
 	if ( NewWidget->GetInfo().Spacer )
 	{
 		wxMessageBox(_("Spacer can be added to sizers only"));
 		return -1;
 	}
-	
+
 	return wxsContainer::AddChild(NewWidget,InsertBeforeThis);
 }
 
@@ -126,42 +134,42 @@ wxString wxsNotebook::GetDeclarationCode(wxsCodeParams& Params)
 bool wxsNotebook::XmlLoadChild(TiXmlElement* Element)
 {
 	if ( strcmp(Element->Value(),"object") ) return true;
-	
+
 	bool Ret = true;
 	TiXmlElement* RealObject = Element;
-	
+
     const char* Class = Element->Attribute("class");
     if ( Class && !strcmp(Class,"notebookpage") )
     {
         RealObject = Element->FirstChildElement("object");
     }
-	
+
 	if ( !RealObject ) return false;
-	
+
     const char* Name = RealObject->Attribute("class");
-    
+
     if ( !Name || !*Name ) return false;
-    
+
     wxsWidget* Child = wxsGEN(wxString(Name,wxConvUTF8),GetResource());
     if ( !Child ) return false;
-    
+
     if ( !Child->XmlLoad(RealObject) ) Ret = false;
     int Index = AddChild(Child);
-    if ( Index < 0 ) 
+    if ( Index < 0 )
     {
         delete Child;
         return false;
     }
-    
+
     wxsNotebookExtraParams* Params = GetExtraParams(Index);
     TiXmlElement* Store = XmlElem();
     XmlAssignElement(Element);
     Params->Label = XmlGetVariable(_T("label"));
     Params->Selected = XmlGetInteger(_T("selected"),0) != 0;
     XmlAssignElement(Store);
-    
+
     if (Index == 0 || Params->Selected) CurrentSelection = Child;
-    
+
     return Ret;
 }
 
@@ -170,14 +178,14 @@ bool wxsNotebook::XmlSaveChild(int ChildIndex,TiXmlElement* AddHere)
 	bool Ret = true;
 	TiXmlElement* NotebookPage = AddHere->InsertEndChild(TiXmlElement("object"))->ToElement();
 	NotebookPage->SetAttribute("class","notebookpage");
-	
+
     wxsNotebookExtraParams* Params = GetExtraParams(ChildIndex);
     TiXmlElement* Store = XmlElem();
     XmlAssignElement(NotebookPage);
     XmlSetVariable(_T("label"),Params->Label);
     if ( Params->Selected ) XmlSetInteger(_T("selected"),1);
     XmlAssignElement(Store);
-    
+
     return wxsWidget::XmlSaveChild(ChildIndex,NotebookPage) && Ret;
 }
 
@@ -186,15 +194,23 @@ void wxsNotebook::AddChildProperties(int ChildIndex)
 	wxsWidget* Widget = GetChild(ChildIndex);
 	wxsNotebookExtraParams* Params = GetExtraParams(ChildIndex);
 	if ( !Widget || !Params ) return;
-	
+
     Widget->GetPropertiesObj().AddProperty(_("Notebook page:"),Params->Label,0);
     Widget->GetPropertiesObj().AddProperty(_(" Page selected:"),Params->Selected,1);
 }
 
 void wxsNotebook::PreviewMouseEvent(wxMouseEvent& event)
 {
-// FIXME (SpOoN#1#): Couldn't get it working :/
-	if ( GetPreview() ) GetPreview()->ProcessEvent(event);
+	if ( GetPreview() && event.LeftDown() )
+	{
+	    wxNotebook* Preview = (wxNotebook*)GetPreview();
+	    int Hit = Preview->HitTest(wxPoint(event.GetX(),event.GetY()));
+        if ( Hit != wxNOT_FOUND )
+        {
+            CurrentSelection = GetChild(Hit);
+            PropertiesUpdated(false,false);
+        }
+	}
 }
 
 void wxsNotebook::EnsurePreviewVisible(wxsWidget* Child)
@@ -211,6 +227,6 @@ void wxsNotebook::EnsurePreviewVisible(wxsWidget* Child)
 			}
 		}
 	}
-	
+
 	wxsWidget::EnsurePreviewVisible(Child);
 }

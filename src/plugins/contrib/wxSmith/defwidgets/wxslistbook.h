@@ -12,7 +12,7 @@ struct wxsListbookExtraParams
 {
 	wxString Label;
 	bool Selected;
-	
+
 	wxsListbookExtraParams():
         Label(_("Page name")),
         Selected(false)
@@ -22,13 +22,14 @@ struct wxsListbookExtraParams
 class wxsListbook : public wxsContainer
 {
 	public:
-	
+
 		wxsListbook(wxsWidgetManager* Man,wxsWindowRes* Res);
 		virtual ~wxsListbook();
         virtual const wxsWidgetInfo& GetInfo()
         {
             return *GetManager()->GetWidgetInfo(wxsListbookId);
         }
+        virtual bool CanAddChild(wxsWidget* NewWidget,int InsertBeforeThis=-1);
 		virtual int AddChild(wxsWidget* NewWidget,int InsertBeforeThis=-1);
 		virtual wxString GetProducingCode(wxsCodeParams& Params);
         virtual wxString GetFinalizingCode(wxsCodeParams& Params);
@@ -38,7 +39,7 @@ class wxsListbook : public wxsContainer
         inline wxsListbookExtraParams* GetExtraParams(int Index) { return (wxsListbookExtraParams*)GetExtra(Index); }
 
    protected:
-   
+
         virtual wxWindow* MyCreatePreview(wxWindow* Parent);
         virtual void MyFinalUpdatePreview(wxWindow* Preview);
         virtual bool XmlLoadChild(TiXmlElement* Element);
@@ -46,7 +47,7 @@ class wxsListbook : public wxsContainer
         virtual void AddChildProperties(int ChildIndex);
         virtual void* NewExtra() { return new wxsListbookExtraParams; }
         virtual void DelExtra(void* Data) { delete (wxsListbookExtraParams*)Data; }
-        
+
     private:
         wxsWidget* CurrentSelection;
         friend class wxsListbookPreview;
