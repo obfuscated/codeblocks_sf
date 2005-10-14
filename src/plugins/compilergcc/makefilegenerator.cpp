@@ -257,6 +257,12 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
     compilerCmd.Replace(_T("$resource_output"), object);
     compilerCmd.Replace(_T("$link_resobjects"), deps);
     compilerCmd.Replace(_T("$link_objects"), object);
+    // the following were added to support the QUICK HACK
+    // at directcommands.cpp:576
+    compilerCmd.Replace(_T("$+link_objects"), object);
+    compilerCmd.Replace(_T("$-link_objects"), object);
+    compilerCmd.Replace(_T("$-+link_objects"), object);
+    compilerCmd.Replace(_T("$+-link_objects"), object);
 
     if (target && (target->GetTargetType() == ttStaticLib || target->GetTargetType() == ttDynamicLib))
     {

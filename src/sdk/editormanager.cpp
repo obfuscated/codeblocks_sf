@@ -1329,6 +1329,8 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
 		flags |= wxSCI_FIND_REGEXP;
 
 	int pos = -1;
+	// avoid infinite loop when wrapping search around, eventually crashing WinLogon O.O
+	bool wrapAround = false;
 	while (true) // loop while not found and user selects to start again from the top
 	{
         int lengthFound = 0;
@@ -1343,7 +1345,7 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
             data->start = pos;
             break; // done
         }
-        else if (!data->findInFiles) // for "find in files" we don't want to show messages
+        else if (!wrapAround && !data->findInFiles) // for "find in files" we don't want to show messages
         {
             if (!data->scopeSelectedText &&
                 ((data->directionDown && start != 0) ||
@@ -1364,11 +1366,13 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
                     {
                         data->start = 0;
                         data->end = control->GetLength();
+                        wrapAround = true; // signal the wrap-around
                     }
                     else
                     {
                         data->start = control->GetLength();
                         data->end = 0;
+                        wrapAround = true; // signal the wrap-around
                     }
                 }
                 else
