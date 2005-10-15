@@ -162,9 +162,12 @@ wxsDragWindow::DragPointData* wxsDragWindow::FindCoveredEdge(int MouseX,int Mous
             case Btm:
                 {
                     int PosX1, PosX2;
+                    int SizeW, SizeH;
+                    DPD->Widget->GetPreview()->GetSize(&SizeW,&SizeH);
+                    if ( SizeH < DragBoxSize ) break; // There must be place to drag this widget
                     FindAbsolutePosition(DPD->Widget,&PosX1,&PosX2);
                     ScreenToClient(&PosX1,&PosX2);
-                    PosX2 = PosX1 + DPD->Widget->GetPreview()->GetSize().GetWidth();
+                    PosX2 = PosX1 + SizeW;
                     int PosY = DPD->PosY - DragBoxSize / 2;
 
                     if ( MouseX >= PosX1 &&
@@ -181,11 +184,14 @@ wxsDragWindow::DragPointData* wxsDragWindow::FindCoveredEdge(int MouseX,int Mous
             case Right:
                 {
                     int PosY1, PosY2;
+                    int SizeW, SizeH;
+                    DPD->Widget->GetPreview()->GetSize(&SizeW,&SizeH);
+                    if ( SizeW < DragBoxSize ) break; // There must be place to drag this widget
                     FindAbsolutePosition(DPD->Widget,&PosY1,&PosY2);
                     ScreenToClient(&PosY1,&PosY2);
 
                     PosY1 = PosY2;
-                    PosY2 = PosY1 + DPD->Widget->GetPreview()->GetSize().GetHeight();
+                    PosY2 = PosY1 + SizeH;
                     int PosX = DPD->PosX - DragBoxSize / 2;
 
                     if ( MouseY >= PosY1 &&
@@ -400,12 +406,26 @@ void wxsDragWindow::DragFinish(wxsWidget* UnderCursor)
         wxsWidget* Widget = CurDragPoint->Widget;
         Widget->GetPreview()->GetPosition(&PosX,&PosY);
 
-        // Updating Widget's position and size
+        // Calculating new widget's position and size
         DragPointData* LeftTopPoint = FindLeftTop(CurDragPoint);
         PosX += LeftTopPoint->PosX - LeftTopPoint->DragInitPosX;
         PosY += LeftTopPoint->PosY - LeftTopPoint->DragInitPosY;
         SizeX = LeftTopPoint->WidgetPoints[Right]->PosX - LeftTopPoint->PosX;
         SizeY = LeftTopPoint->WidgetPoints[Btm]->PosY - LeftTopPoint->PosY;
+
+        // Correcting negative size
+        if ( SizeX < 0 )
+        {
+            PosX += SizeX;
+            LeftTopPoint->PosX += SizeX;
+            SizeX = -SizeX;
+        }
+        if ( SizeY < 0 )
+        {
+            PosY += SizeY;
+            LeftTopPoint->PosY += SizeY;
+            SizeY = -SizeY;
+        }
 
         // Applying changes
         wxsWidgetBaseParams& Params = Widget->GetBaseParams();

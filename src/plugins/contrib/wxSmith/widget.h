@@ -110,7 +110,6 @@ struct wxsWidgetBaseParams
         {}
 };
 
-
 /** Structure containing all data needed while generating code */
 struct wxsCodeParams
 {
@@ -302,7 +301,7 @@ class wxsWidget
          *  \return true - properties valid, false - properties invalid (before correction)
          *          always returns true if Validate == false
          */
-        bool PropertiesUpdated(bool Validate,bool Correct);
+        virtual bool PropertiesUpdated(bool Validate,bool Correct);
 
     protected:
 
