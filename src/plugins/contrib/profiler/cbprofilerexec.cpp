@@ -153,7 +153,6 @@ void CBProfilerExecDlg::ShowOutput(wxArrayString msg, bool error)
 
 CBProfilerExecDlg::~CBProfilerExecDlg()
 {
-    //dtor
 }
 
 void CBProfilerExecDlg::EndModal(int retCode)
@@ -177,7 +176,9 @@ size_t CBProfilerExecDlg::ParseCallGraph(wxArrayString msg, size_t begin)
 	outputCallGraphArea->InsertColumn(5, _T("name"));
 
 	// Jump header lines
-	begin += 6;
+	while ((begin < msg.GetCount())&&(msg[begin].Find(_T("index % time")) == -1))
+	   begin++;
+   begin++;
 
    // Parsing Call Graph
    for (n = begin ; n < msg.GetCount(); n++ )
@@ -233,7 +234,9 @@ size_t CBProfilerExecDlg::ParseFlatProfile(wxArrayString msg, size_t begin)
 	outputFlatProfileArea->InsertColumn(6, _T("name"));
 
 	// Jump header lines
-	begin += 5;
+	while ((begin < msg.GetCount())&&(msg[begin].Find(_T("Ts/call")) == -1))
+	   begin++;
+   begin++;
 
    // Parsing Call Graph
    for (n = begin ; n < msg.GetCount(); n++ )
