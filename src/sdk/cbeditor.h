@@ -147,6 +147,8 @@ class DLLIMPORT cbEditor : public EditorBase
 		void SetBreakpoints();
 		/** Set the color set to use. */
 		void SetColorSet(EditorColorSet* theme);
+		/** Get the color set in use. */
+		EditorColorSet* GetColorSet(){ return m_pTheme; }
 		/** Highlights the brace pair (one of the braces must be under the cursor) */
 		void HighlightBraces();
         /** Returns the specified line's (0-based) indentation (whitespace) in spaces. If line is -1, it uses the current line */
