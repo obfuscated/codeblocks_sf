@@ -744,7 +744,7 @@ bool Parser::Reparse(const wxString& filename, bool isLocal)
 		return false; // if still parsing, exit with error
 
 	wxString file = UnixFilename(filename);
-	Manager::Get()->GetMessageManager()->DebugLog(_("Reparsing %s"), file.c_str());
+//	Manager::Get()->GetMessageManager()->DebugLog(_("Reparsing %s"), file.c_str());
 	RemoveFile(file);
 	ClearTemporaries();
 	wxMutexLocker* lock = new wxMutexLocker(s_mutexListProtection);
@@ -756,37 +756,37 @@ bool Parser::Reparse(const wxString& filename, bool isLocal)
 
 void Parser::Clear()
 {
-    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Disconnecting events..."));
+//    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Disconnecting events..."));
     DisconnectEvents();
-    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Terminating all threads..."));
+//    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Terminating all threads..."));
 	TerminateAllThreads();
     wxSafeYield();
 	wxSleep(0);
 
-//	wxMutexLocker* lockl = new wxMutexLocker(s_mutexListProtection);
-    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Clearing 'm_ParsedFiles'..."));
+	wxMutexLocker* lockl = new wxMutexLocker(s_mutexListProtection);
+//    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Clearing 'm_ParsedFiles'..."));
 	m_ParsedFiles.Clear();
-    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Clearing 'm_ReparsedFiles'..."));
+//    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Clearing 'm_ReparsedFiles'..."));
 	m_ReparsedFiles.Clear();
-    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Clearing 'm_IncludeDirs'..."));
+//    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Clearing 'm_IncludeDirs'..."));
 	m_IncludeDirs.Clear();
-//	delete lockl;
+	delete lockl;
 
-    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Locking s_mutexProtection and clearing m_Tokens..."));
+//    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Locking s_mutexProtection and clearing m_Tokens..."));
 	wxMutexLocker lock(s_mutexProtection);
 	WX_CLEAR_ARRAY(m_Tokens);
 	m_Tokens.Clear();
 
-    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: wxSafeYield..."));
+//    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: wxSafeYield..."));
 	wxSafeYield();
-    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Connecting Events..."));
+//    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Connecting Events..."));
 	ConnectEvents();
 
 	m_UsingCache = false;
 	m_CacheFilesCount = 0;
 	m_CacheTokensCount = 0;
 	m_abort_flag = false;
-    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Done."));
+//    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Done."));
 }
 
 void Parser::ClearTemporaries()

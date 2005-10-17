@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_project_file>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="1"/>
+	<Project>
+		<Option title="Exporter"/>
+		<Option makefile="Makefile"/>
+		<Option makefile_is_custom="0"/>
+		<Option compiler="0"/>
+		<Build>
+			<Target title="default">
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\Exporter.dll"/>
+				<Option working_dir="."/>
+				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\Exporter"/>
+				<Option deps_output=".deps"/>
+				<Option type="3"/>
+				<Option compiler="0"/>
+				<Option host_application="..\..\..\devel\codeblocks.exe"/>
+			</Target>
+			<Environment>
+				<Variable name="WX_VER" value="26"/>
+				<Variable name="WX_DIR" value="C:\wxWidgets-2.6.1"/>
+				<Variable name="WX_CFG" value="NonUnicode"/>
+				<Variable name="CB_SDK" value="..\..\.."/>
+			</Environment>
+		</Build>
+		<Compiler>
+			<Add option="-Wall"/>
+			<Add option="-g"/>
+			<Add option="-D__GNUWIN32__"/>
+			<Add option="-DWXUSINGDLL"/>
+			<Add option="-DBUILDING_PLUGIN"/>
+			<Add directory="$(WX_DIR)\include"/>
+			<Add directory="$(WX_DIR)\lib\gcc_dll\msw"/>
+			<Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)\msw"/>
+			<Add directory="$(WX_DIR)\contrib\include"/>
+			<Add directory="$(CB_SDK)\include"/>
+			<Add directory="$(CB_SDK)\sdk"/>
+			<Add directory="$(CB_SDK)\sdk\tinyxml"/>
+			<Add directory="$(CB_SDK)\sdk\wxscintilla\include"/>
+		</Compiler>
+		<Linker>
+			<Add library="wxmsw$(WX_VER)"/>
+			<Add library="codeblocks"/>
+			<Add library="wxscintilla"/>
+			<Add directory="$(WX_DIR)\lib\gcc_dll\msw"/>
+			<Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)"/>
+			<Add directory="$(CB_SDK)\lib"/>
+			<Add directory="$(CB_SDK)\devel"/>
+			<Add directory="$(CB_SDK)\sdk\tinyxml"/>
+			<Add directory="$(CB_SDK)\sdk\wxscintilla\include"/>
+		</Linker>
+		<Unit filename="HTMLExporter.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="HTMLExporter.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="exporter.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="exporter.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

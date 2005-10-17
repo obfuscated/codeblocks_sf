@@ -50,6 +50,7 @@
 #include <templatemanager.h>
 #include <toolsmanager.h>
 #include <personalitymanager.h>
+#include <cbexception.h>
 
 #include "dlgaboutplugin.h"
 #include "dlgabout.h"
@@ -566,7 +567,14 @@ void MainFrame::CreateMenubar()
 			{
                 AddPluginInSettingsMenu(plug);
                 AddPluginInHelpPluginsMenu(plug);
-				plug->BuildMenu(mbar);
+                try
+                {
+                    plug->BuildMenu(mbar);
+                }
+                catch (cbException& e)
+                {
+                    e.ShowErrorMessage();
+                }
             }
 		}
 	}
@@ -823,7 +831,14 @@ void MainFrame::DoAddPlugin(cbPlugin* plugin)
 	else
     {
         // menu
-        plugin->BuildMenu(GetMenuBar());
+        try
+        {
+            plugin->BuildMenu(GetMenuBar());
+        }
+        catch (cbException& e)
+        {
+            e.ShowErrorMessage();
+        }
         // toolbar
         DoAddPluginToolbar(plugin);
     }
