@@ -142,7 +142,7 @@ class wxsWidget
         static const BasePropertiesType propNone     = 0;
 
         /** VasePropertiesTyue usede by common windows */
-        static const BasePropertiesType propWindow   = bptStyle;
+        static const BasePropertiesType propWindow   = bptStyle | bptColours | bptToolTip | bptFont;
 
         /** BasePropertiesType used by common widgets */
         static const BasePropertiesType propWidget   = bptPosition | bptSize | bptId | bptVariable | bptStyle | bptEnabled | bptFocused | bptHidden | bptColours | bptToolTip | bptFont;
