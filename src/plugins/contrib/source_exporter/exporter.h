@@ -31,23 +31,22 @@ class Exporter : public cbPlugin
 	public:
 		Exporter();
 		~Exporter();
-        void BuildMenu(wxMenuBar* menuBar);
-        void RemoveMenu(wxMenuBar* menuBar);
-		int Configure(){ return 0; }
+    void BuildMenu(wxMenuBar *menuBar);
+    void RemoveMenu(wxMenuBar *menuBar);
+		int Configure() { return 0; }
 		void OnAttach(); // fires when the plugin is attached to the application
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
-        void OnExport(wxCommandEvent& event);
-        void OnUpdateUI(wxUpdateUIEvent& event);
-    private:
-        void BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg){}
-        bool BuildToolBar(wxToolBar* toolBar){ return false; }
-        void RemoveToolBar(wxToolBar* toolBar){}
+    void OnExport(wxCommandEvent &event);
+    void OnUpdateUI(wxUpdateUIEvent &event);
+  private:
+    void BuildModuleMenu(const ModuleType type, wxMenu *menu, const wxString &arg) {}
+    bool BuildToolBar(wxToolBar *toolBar) { return false; }
+    void RemoveToolBar(wxToolBar *toolBar) {}
 
-        DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE();
 };
 
 // Declare the plugin's hooks
 CB_DECLARE_PLUGIN();
 
 #endif // EXPORTER_H
-

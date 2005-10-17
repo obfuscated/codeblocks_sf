@@ -3,6 +3,8 @@
  */
 
 #include "HTMLExporter.h"
+#include <configmanager.h>
+#include <wx/fontutil.h>
 #include <cstdlib>
 #include <sstream>
 #include <iomanip>
@@ -16,12 +18,12 @@ using std::size_t;
 
 namespace
 {
-  // Helper function to convert the decimal value of c to a string
-  inline string to_string(char c)
+  // Helper function to convert i to a string
+  inline string to_string(int i)
   {
     ostringstream ostr;
 
-    ostr << static_cast<int>(c);
+    ostr << i;
 
     return ostr.str();
   }
@@ -39,18 +41,18 @@ const char *HTMLExporter::HTMLMeta =
 
 const char *HTMLExporter::HTMLStyleBEG =
   "<style type=\"text/css\">\n"
-  "<!--\n"
-  "body { color: #000000; background-color: #FFFFFF; }\n";
+  "<!--\n";
 
 string HTMLExporter::HTMLStyle(const EditorColorSet *c_color_set, HighlightLanguage lang)
 {
   string style_list;
+  string style_body("body { color: #000000; background-color: #FFFFFF; }\n");
   EditorColorSet *color_set = const_cast<EditorColorSet *>(c_color_set);
 
-	if (lang == HL_NONE)
-	{
-		return style_list;
-	}
+  if (lang == HL_NONE)
+  {
+    return style_list;
+  }
 
   int count = color_set->GetOptionCount(lang);
 
@@ -65,11 +67,31 @@ string HTMLExporter::HTMLStyle(const EditorColorSet *c_color_set, HighlightLangu
 
     ostringstream ostr;
 
-    ostr << ".style" << optc->value << " { color: #" << hex << setfill('0') << uppercase
-         << setw(2) << static_cast<unsigned int>(optc->fore.Red())
-         << setw(2) << static_cast<unsigned int>(optc->fore.Green())
-         << setw(2) << static_cast<unsigned int>(optc->fore.Blue())
-         << "; ";
+    // If it's the style 0 add it as body, otherwise it's just a custom style
+    if (optc->value == 0)
+    {
+      ostr << "body" << " { color: #" << hex << setfill('0') << uppercase
+           << setw(2) << static_cast<unsigned int>(optc->fore.Red())
+           << setw(2) << static_cast<unsigned int>(optc->fore.Green())
+           << setw(2) << static_cast<unsigned int>(optc->fore.Blue())
+           << "; background-color: #"
+           << setw(2) << static_cast<unsigned int>(optc->back.Red())
+           << setw(2) << static_cast<unsigned int>(optc->back.Green())
+           << setw(2) << static_cast<unsigned int>(optc->back.Blue())
+           << "; ";
+    }
+    else
+    {
+      ostr << ".style" << optc->value << " { color: #" << hex << setfill('0') << uppercase
+           << setw(2) << static_cast<unsigned int>(optc->fore.Red())
+           << setw(2) << static_cast<unsigned int>(optc->fore.Green())
+           << setw(2) << static_cast<unsigned int>(optc->fore.Blue())
+           << "; background-color: "
+           << setw(2) << static_cast<unsigned int>(optc->back.Red())
+           << setw(2) << static_cast<unsigned int>(optc->back.Green())
+           << setw(2) << static_cast<unsigned int>(optc->back.Blue())
+           << "; ";
+    }
 
     if (optc->bold)
     {
@@ -88,10 +110,18 @@ string HTMLExporter::HTMLStyle(const EditorColorSet *c_color_set, HighlightLangu
 
     ostr << "}\n";
 
-    style_list += ostr.str();
+    // Once again, if it's the style 0 then it's the body
+    if (optc->value == 0)
+    {
+      style_body = ostr.str();
+    }
+    else
+    {
+      style_list += ostr.str();
+    }
   }
 
-  return style_list;
+  return style_body + style_list;
 }
 
 const char *HTMLExporter::HTMLStyleEND =
@@ -103,14 +133,31 @@ const char *HTMLExporter::HTMLHeaderEND =
 
 const char *HTMLExporter::HTMLBodyBEG =
   "<body>\n"
-  "<pre>\n"
-  "<code><span style=\"font: 10pt Courier New;\">";
+  "<pre>\n";
 
 string HTMLExporter::HTMLBody(const wxMemoryBuffer &styled_text)
 {
-  string html_body;
+  string html_body("<code><span style=\"font: 8pt Courier New;\">");
   const char *buffer = reinterpret_cast<char *>(styled_text.GetData());
   const size_t buffer_size = styled_text.GetDataLen();
+
+  wxString fontstring = ConfigManager::Get()->Read(_T("/editor/font"), wxEmptyString);
+
+  if (!fontstring.IsEmpty())
+  {
+    wxFont tmpFont;
+    wxNativeFontInfo nfi;
+    nfi.FromString(fontstring);
+    tmpFont.SetNativeFontInfo(nfi);
+
+    int pt = tmpFont.GetPointSize();
+    wxString faceName = tmpFont.GetFaceName();
+
+    if (!faceName.IsEmpty())
+    {
+      html_body = string("<code><span style=\"font: ") + to_string(pt) + string("pt ") + string(faceName.c_str()) + string(";\">");
+    }
+  }
 
   if (buffer_size == 0)
   {
@@ -118,8 +165,17 @@ string HTMLExporter::HTMLBody(const wxMemoryBuffer &styled_text)
   }
 
   // Get the current style from the first character
-  char current_style = buffer[1] + 1;
-  html_body += string("<span class=\"style") + to_string(current_style) + "\">";
+  char current_style = buffer[1];
+
+  // If the first style happen to be the body style...
+  if (current_style == 0)
+  {
+    html_body += string("<span class=\"body\">");
+  }
+  else
+  {
+    html_body += string("<span class=\"style") + to_string(current_style) + "\">";
+  }
 
   for (size_t i = 0; i < buffer_size; i += 2)
   {
