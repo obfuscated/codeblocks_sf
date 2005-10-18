@@ -132,3 +132,8 @@ int wxsWindow::AddChild(wxsWidget* NewWidget,int InsertBeforeThis)
 
 	return wxsContainer::AddChild(NewWidget,InsertBeforeThis);
 }
+
+wxString wxsWindow::GetProducingCode(wxsCodeParams& Params)
+{
+    return GetCodeDefines().InitCode;
+}

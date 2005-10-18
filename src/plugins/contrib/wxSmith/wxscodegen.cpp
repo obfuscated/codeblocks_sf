@@ -55,7 +55,14 @@ void wxsCodeGen::AppendCodeReq(wxsWidget* Widget,wxsCodeParams& ThisParams)
     }
     else
     {
-        ChildParams.ParentName = Widget->GetBaseParams().VarName.c_str();
+        if ( Widget->GetParent() )
+        {
+            ChildParams.ParentName = Widget->GetBaseParams().VarName.c_str();
+        }
+        else
+        {
+            ChildParams.ParentName = _T("this");
+        }
         ChildParams.IsDirectParent = true;
     }
 
@@ -86,44 +93,44 @@ void wxsCodeGen::BeautyCode(wxString& Code,int Spaces,int TabSize)
 
         // Adding spaces at the beginning of line
         NewCode.Append(_T(' '),Spaces);
-        
+
         // Adding characters till the end of line or till some other circumstances
-        
+
         int BracketsCnt = 0;
         while ( *Ptr && *Ptr!=_T('{') && *Ptr!=_T('}') && *Ptr!=_T('\n') && *Ptr!=_T('\r') )
         {
             // Additional brackets counting will avoid line splitting inside for statement
             if ( *Ptr == _T('(') ) BracketsCnt++;
             else if ( *Ptr == _T(')') ) BracketsCnt--;
-            else if ( *Ptr == _T(';') && !BracketsCnt ) break;    
+            else if ( *Ptr == _T(';') && !BracketsCnt ) break;
             NewCode.Append(*Ptr++);
         }
-            
+
         if ( !*Ptr )
         {
             NewCode.Append(_T('\n'));
             break;
         }
-        
+
         switch ( *Ptr++ )
         {
 			case _T(';'):
 				NewCode.Append(_T(';'));
 				NewCode.Append(_T('\n'));
 				break;
-				
+
             case _T('\n'):
             case _T('\r'):
                 NewCode.Append(_T('\n'));
                 break;
-                
+
             case _T('{'):
                 NewCode.Append(_T('\n'));
                 NewCode.Append(_T(' '),Spaces);
                 NewCode.Append(_T("{\n"));
                 Spaces += TabSize;
                 break;
-                
+
             case _T('}'):
                 NewCode.Append(_T('\n'));
                 Spaces -= TabSize;
@@ -133,6 +140,6 @@ void wxsCodeGen::BeautyCode(wxString& Code,int Spaces,int TabSize)
                 break;
         }
     }
-    
+
     Code = NewCode;
 }

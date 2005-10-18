@@ -313,7 +313,7 @@ void wxsWindowRes::RebuildCode()
     if ( GetEditMode() == wxsResSource )
     {
         // Generating producing code
-        wxsCodeGen Gen(RootWidget,TabSize,TabSize);
+        wxsCodeGen Gen(RootWidget,TabSize,TabSize,false);
         Code.Append(Gen.GetCode());
         Code.Append(ResSetUpCode(TabSize));
         Code.Append(_T(' '),TabSize);
