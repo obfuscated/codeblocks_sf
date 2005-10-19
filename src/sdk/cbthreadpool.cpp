@@ -1,6 +1,8 @@
 #include "sdk_precomp.h"
 #include "cbthreadpool.h"
 #include "sdk_events.h"
+#include "manager.h"
+#include "messagemanager.h"
 #include <wx/log.h>
 
 #include <wx/listimpl.cpp>
@@ -89,8 +91,8 @@ cbThreadPool::cbThreadPool(wxEvtHandler* owner, int id, int concurrentThreads)
     m_Batching(false),
     m_Counter(0)
 {
-    SetConcurrentThreads(concurrentThreads);
     m_Threads.Clear();
+    SetConcurrentThreads(concurrentThreads);
 }
 
 cbThreadPool::~cbThreadPool()
@@ -110,6 +112,8 @@ void cbThreadPool::SetConcurrentThreads(int concurrentThreads)
     if (m_ConcurrentThreads == -1)
         m_ConcurrentThreads = 1;
 
+	LOGSTREAM << _T("Concurrent threads for pool set to ") << m_ConcurrentThreads << _T('\n');
+	
     // alloc (or dealloc) based on new thread count
     AllocThreads();
 }
