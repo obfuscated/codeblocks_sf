@@ -1,3 +1,4 @@
+#include <sdk.h>
 #include "advancedcompileroptionsdlg.h"
 #include <compilerfactory.h>
 #include <wx/xrc/xmlres.h>
@@ -45,7 +46,7 @@ void AdvancedCompilerOptionsDlg::ReadCompilerOptions()
     }
     lst->SetSelection(0);
     DisplayCommand(0);
-    
+
     // switches
     const CompilerSwitches& switches = CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches();
     XRCCTRL(*this, "txtAddIncludePath", wxTextCtrl)->SetValue(switches.includeDirs);
@@ -61,7 +62,7 @@ void AdvancedCompilerOptionsDlg::ReadCompilerOptions()
     XRCCTRL(*this, "chkNeedDeps", wxCheckBox)->SetValue(switches.needDependencies);
     XRCCTRL(*this, "chkForceCompilerQuotes", wxCheckBox)->SetValue(switches.forceCompilerUseQuotes);
     XRCCTRL(*this, "chkForceLinkerQuotes", wxCheckBox)->SetValue(switches.forceLinkerUseQuotes);
-    
+
     m_Regexes = CompilerFactory::Compilers[m_CompilerIdx]->GetRegExArray();
     m_SelectedRegex = m_Regexes.Count() > 0 ? 0 : -1;
     FillRegexes();
@@ -104,7 +105,7 @@ void AdvancedCompilerOptionsDlg::DisplayCommand(int nr)
             m_Commands[m_LastCmdIndex] = text->GetValue();
         }
     }
-    
+
     text->SetValue(m_Commands[nr]);
     m_LastCmdIndex = nr;
 }
@@ -113,7 +114,7 @@ void AdvancedCompilerOptionsDlg::FillRegexes()
 {
     wxListBox* list = XRCCTRL(*this, "lstRegex", wxListBox);
     list->Clear();
-    
+
     for (size_t i = 0; i < m_Regexes.Count(); ++i)
     {
         RegExStruct& rs = m_Regexes[i];
@@ -220,7 +221,7 @@ void AdvancedCompilerOptionsDlg::OnRegexUp(wxSpinEvent& event)
 {
     if (m_SelectedRegex <= 0)
         return;
-    
+
     RegExStruct rs = m_Regexes[m_SelectedRegex];
     m_Regexes.RemoveAt(m_SelectedRegex);
     m_Regexes.Insert(rs, m_SelectedRegex - 1);
@@ -232,7 +233,7 @@ void AdvancedCompilerOptionsDlg::OnRegexDown(wxSpinEvent& event)
 {
     if (m_SelectedRegex >= (int)m_Regexes.Count() - 1)
         return;
-    
+
     RegExStruct rs = m_Regexes[m_SelectedRegex];
     m_Regexes.RemoveAt(m_SelectedRegex);
     m_Regexes.Insert(rs, m_SelectedRegex + 1);
@@ -256,7 +257,7 @@ void AdvancedCompilerOptionsDlg::OnRegexTest(wxCommandEvent& event)
     // backup regexes
     RegExArray regex_copy = m_Regexes;
     SaveRegexDetails(m_SelectedRegex);
-    
+
     // test-run
     compiler->SetRegExArray(m_Regexes);
     CompilerLineType clt = compiler->CheckForWarningsAndErrors(text);

@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include "pipedprocess.h" // class' header file
 #include "sdk_events.h"
 
@@ -117,12 +118,12 @@ void PipedProcess::OnTerminate(int pid, int status)
     // show the rest of the output
     while ( HasInput() )
         ;
-	
+
 	CodeBlocksEvent event(cbEVT_PIPEDPROCESS_TERMINATED, m_Id);
     event.SetInt(status);
 //   	m_Parent->ProcessEvent(event);
 	wxPostEvent(m_Parent, event);
-	
+
 	if (m_pvThis)
 		*m_pvThis = 0L;
     delete this;

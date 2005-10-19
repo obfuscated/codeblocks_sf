@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include <sdk.h>
 #include "compileroptionsdlg.h"
 #include "compilergcc.h"
 #include "advancedcompileroptionsdlg.h"

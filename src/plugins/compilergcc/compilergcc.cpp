@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include <sdk.h>
 #include "compilergcc.h"
 #include <manager.h>
 #include <sdk_events.h>

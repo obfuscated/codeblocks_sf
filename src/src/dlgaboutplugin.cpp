@@ -23,13 +23,14 @@
 * $Date$
 */
 
+#include <sdk.h>
 #include "dlgaboutplugin.h" // class's header file
 
 // class constructor
 dlgAboutPlugin::dlgAboutPlugin(wxWindow* parent, const PluginInfo* pi)
 {
 	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgAboutPlugin"));
-	
+
 	XRCCTRL(*this, "lblTitle", wxStaticText)->SetLabel(pi->title);
 	XRCCTRL(*this, "txtDescription", wxTextCtrl)->SetValue(pi->description);
 	XRCCTRL(*this, "txtThanksTo", wxTextCtrl)->SetValue(pi->thanksTo);

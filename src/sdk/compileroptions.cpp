@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include "compileroptions.h"
 #include "manager.h"
 #include "messagemanager.h"
@@ -79,12 +80,12 @@ void CompilerOptions::AddOption(const wxString& name,
 	if (name.IsEmpty() || (option.IsEmpty() && additionalLibs.IsEmpty()))
 		return;
 	CompOption* coption = new CompOption;
-	
+
 	wxString listboxname = name + _T("  [");
 	if (option.IsEmpty())
         listboxname += additionalLibs;
-    else 
-        listboxname += option; 
+    else
+        listboxname += option;
     listboxname += _T("]");
 
 	coption->name = listboxname;

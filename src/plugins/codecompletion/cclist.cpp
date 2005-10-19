@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include <sdk.h>
 #include "cclist.h"
 #include <wx/sizer.h>
 #include <configmanager.h>

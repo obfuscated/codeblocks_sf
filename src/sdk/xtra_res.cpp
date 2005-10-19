@@ -1,3 +1,4 @@
+#include "sdk_precomp.h"
 #include "xtra_res.h"
 #include <wx/wx.h>
 
@@ -15,7 +16,7 @@
 //          protected instead of private! >:(
 /////////////////////////////////////////////////////////////////////////////
 
-wxToolBarAddOnXmlHandler::wxToolBarAddOnXmlHandler() 
+wxToolBarAddOnXmlHandler::wxToolBarAddOnXmlHandler()
 : wxXmlResourceHandler(), m_isInside(FALSE), m_isAddon(false), m_toolbar(NULL)
 {
     XRC_ADD_STYLE(wxTB_FLAT);
@@ -30,12 +31,12 @@ wxToolBarAddOnXmlHandler::wxToolBarAddOnXmlHandler()
 }
 
 wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
-{ 
+{
     wxToolBar* toolbar=NULL;
     if (m_class == _T("tool"))
     {
         wxCHECK_MSG(m_toolbar, NULL, _("Incorrect syntax of XRC resource: tool not within a toolbar!"));
-        
+
         if (GetPosition() != wxDefaultPosition)
         {
             m_toolbar->AddTool(GetID(),
@@ -54,7 +55,7 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
            }
         }
         else
-        {        
+        {
             wxItemKind kind = wxITEM_NORMAL;
             if (GetBool(_T("radio")))
                 kind = wxITEM_RADIO;
@@ -63,7 +64,7 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
                 wxASSERT_MSG( kind == wxITEM_NORMAL,
                               _("can't have both toggleable and radion button at once") );
                 kind = wxITEM_CHECK;
-            }        
+            }
             m_toolbar->AddTool(GetID(),
                                GetText(_T("label")),
                                GetBitmap(_T("bitmap"), wxART_TOOLBAR),
@@ -79,14 +80,14 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
         }
         return m_toolbar; // must return non-NULL
     }
-    
+
     else if (m_class == _T("separator"))
     {
         wxCHECK_MSG(m_toolbar, NULL, _("Incorrect syntax of XRC resource: separator not within a toolbar!"));
         m_toolbar->AddSeparator();
         return m_toolbar; // must return non-NULL
     }
-    
+
     else /*<object class="wxToolBar">*/
     {
         m_isAddon=(m_class == _T("wxToolBarAddOn"));
@@ -101,9 +102,9 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
             #ifdef __WXMSW__
             if (!(style & wxNO_BORDER)) style |= wxNO_BORDER;
             #endif
-    
+
             XRC_MAKE_INSTANCE(toolbar, wxToolBar)
-        
+
             toolbar->Create(m_parentAsWindow,
                              GetID(),
                              GetPosition(),
@@ -137,7 +138,7 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
 
         while (n)
         {
-            if ((n->GetType() == wxXML_ELEMENT_NODE) && 
+            if ((n->GetType() == wxXML_ELEMENT_NODE) &&
                 (n->GetName() == _T("object") || n->GetName() == _T("object_ref")))
             {
                 wxObject *created = CreateResFromNode(n, toolbar, NULL);
@@ -156,7 +157,7 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
         m_toolbar = NULL;
 
         if(!m_isAddon)
-        {            
+        {
             if (m_parentAsWindow && !GetBool(_T("dontattachtoframe")))
             {
                 wxFrame *parentFrame = wxDynamicCast(m_parent, wxFrame);
@@ -172,6 +173,6 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
 bool wxToolBarAddOnXmlHandler::CanHandle(wxXmlNode *node)
 {
     return ((!m_isInside && IsOfClass(node, _T("wxToolBarAddOn"))) ||
-            (m_isInside && IsOfClass(node, _T("tool"))) || 
+            (m_isInside && IsOfClass(node, _T("tool"))) ||
             (m_isInside && IsOfClass(node, _T("separator"))));
 }

@@ -1,3 +1,4 @@
+#include <sdk.h>
 #include <wx/log.h>
 #include <wx/intl.h>
 #include <wx/filename.h>
@@ -30,9 +31,12 @@ pfDetails::pfDetails(DirectCommands* cmds, ProjectBuildTarget* target, ProjectFi
     source_file_absolute_native = pf->file.GetFullPath();
 
     tmp = pf->GetObjName();
-    object_file_native = (target ? target->GetObjectOutput() : _T(".")) +
-                          sep +
-                          tmp.GetFullPath();
+    if (FileTypeOf(pf->relativeFilename) == ftHeader)
+        object_file_native = pf->GetObjName(); // support for precompiled headers
+    else
+        object_file_native = (target ? target->GetObjectOutput() : _T(".")) +
+                              sep +
+                              tmp.GetFullPath();
     wxFileName o_file(object_file_native);
     o_file.MakeAbsolute(prjbase.GetFullPath());
     object_dir_native = o_file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
@@ -221,31 +225,24 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
     }
 
     bool isResource = ft == ftResource;
+    bool isHeader = ft == ftHeader;
 #ifndef __WXMSW__
     // not supported under non-win32 platforms
     if (isResource)
         return ret;
 #endif
-    if (pf->useCustomBuildCommand)
-    {
-        wxString msg;
-        msg.Printf(_("File %s has a custom build command set."
-                    "This feature only works when using GNU \"make\""
-                    "for the build process..."), pfd.source_file_native.c_str());
-        ret.Add(wxString(COMPILER_SIMPLE_LOG) + msg);
-        return ret;
-    }
-    wxString compilerCmd;
-    compilerCmd = mg.CreateSingleFileCompileCmd(isResource ? ctCompileResourceCmd : ctCompileObjectCmd,
-                                                 target,
-                                                 pf,
-                                                 pfd.source_file,
-                                                 pfd.object_file,
-                                                 pfd.dep_file);
+    Compiler* compiler = target ? CompilerFactory::Compilers[target->GetCompilerIndex()] : m_pCompiler;
+    wxString compilerCmd = mg.CreateSingleFileCompileCmd(pf->useCustomBuildCommand
+                                                            ? pf->buildCommand
+                                                            : compiler->GetCommand(isResource ? ctCompileResourceCmd : ctCompileObjectCmd),
+                                                         target,
+                                                         pf,
+                                                         pfd.source_file,
+                                                         pfd.object_file,
+                                                         pfd.dep_file);
 
     if (!compilerCmd.IsEmpty())
     {
-        Compiler* compiler = target ? CompilerFactory::Compilers[target->GetCompilerIndex()] : m_pCompiler;
         switch (compiler->GetSwitches().logging)
         {
             case clogFull:
@@ -253,7 +250,10 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
                 break;
 
             case clogSimple:
-                ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Compiling: ") + pfd.source_file_native);
+                if (isHeader)
+                    ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Precompiling header: ") + pfd.source_file_native);
+                else
+                    ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Compiling: ") + pfd.source_file_native);
                 break;
 
             default:

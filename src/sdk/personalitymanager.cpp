@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include "personalitymanager.h"
 #include "manager.h"
 #include "managerproxy.h"
@@ -68,7 +69,7 @@ void PersonalityManager::ReadPersonalities()
 
 	wxString str;
 	long cookie;
-	
+
 	ConfigManager::Get()->SetPath(GetPersonalitiesRoot());
 	bool cont = ConfigManager::Get()->GetFirstGroup(str, cookie);
 	while (cont)

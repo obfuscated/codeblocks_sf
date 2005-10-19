@@ -2,6 +2,7 @@
  * $Id$
  */
 
+#include <sdk.h>
 #include "compilerMINGW.h"
 #include <wx/intl.h>
 #include <wx/regex.h>
@@ -166,6 +167,7 @@ void CompilerMINGW::LoadDefaultRegExArray()
     m_RegExes.Add(RegExStruct(_("Linker error (lib not found)"), cltError, _T(".*(ld.exe):[ \t](cannot find.*)"), 2, 1));
     m_RegExes.Add(RegExStruct(_("Undefined reference"), cltError, _T("([ \tA-Za-z0-9_:+/\\.-]+):[ \t](undefined reference.*)"), 2, 1));
     m_RegExes.Add(RegExStruct(_("Resource compiler error"), cltError, _T("windres.exe:[ \t](.*)"), 1));
+    m_RegExes.Add(RegExStruct(_("General warning"), cltWarning, _T("([Ww]arning:[ \t].*)"), 1));
 }
 
 AutoDetectResult CompilerMINGW::AutoDetectInstallationDir()

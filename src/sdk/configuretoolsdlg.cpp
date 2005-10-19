@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include <wx/intl.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/listbox.h>
@@ -126,7 +127,7 @@ void ConfigureToolsDlg::OnUp(wxCommandEvent& event)
 {
 	wxListBox* list = XRCCTRL(*this, "lstTools", wxListBox);
 	int sel = list->GetSelection();
-	
+
 	Tool tool(*(Manager::Get()->GetToolsManager()->GetToolByIndex(sel)));
 	Manager::Get()->GetToolsManager()->RemoveToolByIndex(sel);
 	Manager::Get()->GetToolsManager()->InsertTool(sel - 1, &tool);
@@ -138,7 +139,7 @@ void ConfigureToolsDlg::OnDown(wxCommandEvent& event)
 {
 	wxListBox* list = XRCCTRL(*this, "lstTools", wxListBox);
 	int sel = list->GetSelection();
-	
+
 	Tool tool(*(Manager::Get()->GetToolsManager()->GetToolByIndex(sel)));
 	Manager::Get()->GetToolsManager()->RemoveToolByIndex(sel);
 	Manager::Get()->GetToolsManager()->InsertTool(sel + 1, &tool);

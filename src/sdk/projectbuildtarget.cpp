@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include "projectbuildtarget.h" // class's header file
 #include "cbproject.h"
 #include "compilerfactory.h"
@@ -263,6 +264,8 @@ void ProjectFile::SetObjName(const wxString& name)
     FileType ft = FileTypeOf(name);
     if (ft == ftResource || ft == ftResourceBin)
         fname.SetExt(RESOURCEBIN_EXT);
+    else if (ft == ftHeader) // support precompiled headers
+        fname.SetExt(fname.GetExt() + _T(".gch"));
     else
     {
         if (project && CompilerFactory::CompilerIndexOK(project->GetCompilerIndex()))

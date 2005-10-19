@@ -1,3 +1,4 @@
+#include "sdk_precomp.h"
 #include <wx/confbase.h>
 #include <wx/fileconf.h>
 #include <wx/log.h>
@@ -730,8 +731,11 @@ bool ProjectLoader::Save(const wxString& filename)
         if (!f->GetObjName().IsEmpty())
         {
             wxFileName tmp(f->GetObjName());
-            if (tmp.GetExt() != CompilerFactory::Compilers[m_pProject->GetCompilerIndex()]->GetSwitches().objectExtension)
+            if (FileTypeOf(f->relativeFilename) != ftHeader &&
+                tmp.GetExt() != CompilerFactory::Compilers[m_pProject->GetCompilerIndex()]->GetSwitches().objectExtension)
+            {
                 buffer << _T('\t') << _T('\t') << _T('\t') << _T("<Option objectName=\"") << FixEntities(f->GetObjName()) << _T("\"/>") << _T('\n');
+            }
         }
         for (unsigned int x = 0; x < f->buildTargets.GetCount(); ++x)
             buffer << _T('\t') << _T('\t') << _T('\t') << _T("<Option target=\"") << FixEntities(f->buildTargets[x]) << _T("\"/>") << _T('\n');

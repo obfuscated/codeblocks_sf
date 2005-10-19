@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include "projectoptionsdlg.h" // class's header file
 #include "manager.h"
 #include "configmanager.h"

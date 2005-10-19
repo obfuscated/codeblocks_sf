@@ -1,3 +1,4 @@
+#include "sdk_precomp.h"
 #include "manager.h"
 #include "messagemanager.h"
 #include "projecttemplateloader.h"

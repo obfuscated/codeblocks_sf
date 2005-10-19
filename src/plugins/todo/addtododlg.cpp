@@ -1,3 +1,4 @@
+#include <sdk.h>
 #include <wx/intl.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/textctrl.h>
@@ -28,7 +29,7 @@ AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString& types)
         cmb->Append(_T("FIXME"));
     if (m_Types.Index(_T("NOTE")) == wxNOT_FOUND)
         cmb->Append(_T("NOTE"));
-    
+
     wxString sels = ConfigManager::Get()->Read(_T("/todo/last_used_type"), _T(""));
     if (!sels.IsEmpty())
     {
@@ -61,7 +62,7 @@ void AddTodoDlg::LoadUsers()
 		cont = conf->GetNextEntry(entry, cookie);
 	}
 	conf->SetPath(oldPath);
-	
+
 	if (cmb->GetCount() == 0)
 		cmb->Append(wxGetUserId());
 	cmb->SetSelection(0);

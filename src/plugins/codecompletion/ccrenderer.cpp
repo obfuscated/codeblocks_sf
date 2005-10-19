@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include <sdk.h>
 #include "ccrenderer.h"
 
 void CCRenderer::Draw(wxGrid& grid, wxGridCellAttr& attr, wxDC& dc, const wxRect& rect, int row, int col, bool isSelected)
@@ -43,7 +44,7 @@ void CCRenderer::Draw(wxGrid& grid, wxGridCellAttr& attr, wxDC& dc, const wxRect
 	Token* token = m_Tokens->Item(row);
 	if (!token)
 		return;
-		
+
 	wxString str;
 	m_Font = attr.GetFont();
 	wxRect myrect = rect;
@@ -61,7 +62,7 @@ void CCRenderer::Draw(wxGrid& grid, wxGridCellAttr& attr, wxDC& dc, const wxRect
 	// token kind string, e.g. "constructor"
 	str = token->GetTokenKindString() + _T(" ");
 	DoDrawText(grid, dc, myrect, str, *wxBLUE, wxNORMAL, w);
-	
+
 	// token namespace, e.g. "SomeClass::"
 	if (!token->GetNamespace().IsEmpty())
 	{
@@ -94,7 +95,7 @@ void CCRenderer::DoDrawText(wxGrid& grid, wxDC& dc, wxRect& rect, const wxString
 	dc.SetFont(m_Font);
 	dc.SetTextForeground(fore);
 	grid.DrawTextRectangle(dc, text, rect, wxALIGN_LEFT, wxALIGN_TOP);
-	
+
 	int w = 0;
 	if (useThisOffset == -1)
 	{

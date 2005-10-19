@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include <wx/filename.h>
 #include "compiletargetbase.h"
 #include "compilerfactory.h"
@@ -125,7 +126,7 @@ wxString CompileTargetBase::SuggestOutputFilename()
     wxString suggestion;
     switch (m_TargetType)
     {
-        case ttConsoleOnly: 
+        case ttConsoleOnly:
         case ttExecutable: suggestion = GetExecutableFilename(); break;
         case ttDynamicLib: suggestion = GetDynamicLibFilename(); break;
         case ttStaticLib: suggestion = GetStaticLibFilename(); break;
@@ -187,7 +188,7 @@ wxString CompileTargetBase::GetExecutableFilename()
         return wxEmptyString;
     wxFileName fname(m_Filename);
 #ifdef __WXMSW__
-    fname.SetExt(EXECUTABLE_EXT); 
+    fname.SetExt(EXECUTABLE_EXT);
 #else
     fname.SetExt(_T(""));
 #endif
@@ -213,7 +214,7 @@ wxString CompileTargetBase::GetDynamicLibDefFilename()
     if (m_Filename.IsEmpty())
         m_Filename = m_OutputFilename;
     wxFileName fname(m_Filename);
-    
+
     wxString prefix = _T("lib");
     if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
     {
@@ -251,7 +252,7 @@ wxString CompileTargetBase::GetBasePath()
 {
     if (m_Filename.IsEmpty())
         return _T(".");
-        
+
     wxFileName basePath(m_Filename);
     wxString base = basePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
     return !base.IsEmpty() ? base : _T(".");

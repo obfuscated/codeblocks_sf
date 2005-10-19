@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include "messagelog.h" // class's header file
 
 // class constructor

@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include <wx/log.h>
 #include <wx/dir.h>
 

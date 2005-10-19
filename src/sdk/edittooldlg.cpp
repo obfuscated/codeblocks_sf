@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include "edittooldlg.h"
 #include <wx/xrc/xmlres.h>
 #include <wx/intl.h>
@@ -85,6 +86,6 @@ void EditToolDlg::OnOKClick(wxCommandEvent& event)
 	m_Tool->command = XRCCTRL(*this, "txtCommand", wxTextCtrl)->GetValue();
 	m_Tool->params = XRCCTRL(*this, "txtParams", wxTextCtrl)->GetValue();
 	m_Tool->workingDir = XRCCTRL(*this, "txtDir", wxTextCtrl)->GetValue();
-	
+
 	EndModal(wxID_OK);
 }

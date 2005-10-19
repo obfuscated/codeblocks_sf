@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include "customvars.h"
 #include "configmanager.h"
 #include "manager.h"

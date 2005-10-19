@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include <sdk.h>
 #include "nativeparser.h"
 #include <manager.h>
 #include <configmanager.h>

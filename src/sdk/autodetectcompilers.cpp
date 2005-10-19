@@ -1,3 +1,4 @@
+#include "sdk_precomp.h"
 #include "autodetectcompilers.h"
 #include "compilerfactory.h"
 #include <wx/xrc/xmlres.h>
@@ -22,12 +23,12 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
         list->ClearAll();
 		list->InsertColumn(0, _("Compiler"), wxLIST_FORMAT_LEFT, 240);
 		list->InsertColumn(1, _("Status"), wxLIST_FORMAT_LEFT, 76);
-    
+
         for (size_t i = 0; i < CompilerFactory::Compilers.GetCount(); ++i)
         {
             Compiler* compiler = CompilerFactory::Compilers[i];
             list->InsertItem(list->GetItemCount(), compiler->GetName());
-            
+
             int idx = list->GetItemCount() - 1;
             if (compiler->GetParentID() != -1) // not built-in
                 list->SetItem(idx, 1, _("User-defined"));
@@ -45,7 +46,7 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
             }
         }
     }
-    
+
     XRCCTRL(*this, "lblDefCompiler", wxStaticText)->SetLabel(CompilerFactory::GetDefaultCompiler()->GetName());
 }
 

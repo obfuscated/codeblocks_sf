@@ -1,3 +1,4 @@
+#include "sdk_precomp.h"
 #include "cbthreadpool.h"
 #include "sdk_events.h"
 #include <wx/log.h>

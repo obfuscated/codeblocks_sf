@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include "editarrayorderdlg.h" // class's header file
 #include <wx/xrc/xmlres.h>
 #include <wx/intl.h>
@@ -60,7 +61,7 @@ void EditArrayOrderDlg::DoFillList()
 void EditArrayOrderDlg::OnUpdateUI(wxUpdateUIEvent& event)
 {
     wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
-    
+
     XRCCTRL(*this, "btnMoveUp", wxButton)->Enable(list->GetSelection() > 0);
     XRCCTRL(*this, "btnMoveDown", wxButton)->Enable(list->GetSelection() >= 0 && list->GetSelection() < list->GetCount() - 1);
 }
@@ -69,7 +70,7 @@ void EditArrayOrderDlg::OnMoveUp(wxCommandEvent& event)
 {
     wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
     int sel = list->GetSelection();
-    
+
     if (sel > 0)
     {
         wxString tmp = list->GetString(sel);
@@ -96,11 +97,11 @@ void EditArrayOrderDlg::OnMoveDown(wxCommandEvent& event)
 void EditArrayOrderDlg::OnOK(wxCommandEvent& event)
 {
     wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
-    
+
     m_Array.Clear();
     for (int i = 0; i < list->GetCount(); ++i)
         m_Array.Add(list->GetString(i));
-    
+
     EndModal(wxID_OK);
 }
 

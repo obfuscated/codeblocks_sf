@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include "globals.h"
 #include <wx/tokenzr.h>
 #include <wx/filename.h>

@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include <sdk.h>
 #include "ccoptionsdlg.h"
 #include <wx/intl.h>
 #include <wx/xrc/xmlres.h>

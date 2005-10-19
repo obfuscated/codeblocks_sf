@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include <sdk.h>
 #include "codecompletion.h"
 #include <wx/mimetype.h>
 #include <wx/filename.h>

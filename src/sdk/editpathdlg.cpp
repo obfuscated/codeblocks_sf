@@ -1,3 +1,4 @@
+#include "sdk_precomp.h"
 #include "editpathdlg.h"
 #include <wx/intl.h>
 #include <wx/xrc/xmlres.h>

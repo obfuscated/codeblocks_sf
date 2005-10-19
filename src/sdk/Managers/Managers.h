@@ -21,7 +21,7 @@
 *
 * @file Managers.h
 * @author Muhammad Haggag (MHaggag@optimize-eg.com)
-* @brief 
+* @brief
 */
 #if !defined( __MANAGERS_MANAGERS_H )
 #define __MANAGERS_MANAGERS_H
@@ -29,7 +29,7 @@
 #include <wx/config.h>
 
 #ifdef __WXMSW__
-	#ifdef _USRDLL
+	#ifdef EXPORT_LIB
 		// Export
 		#define MANAGERS_API __declspec(dllexport)
 	#else
@@ -70,31 +70,31 @@ namespace Managers
 	// compiler can know which function the caller means
 	inline Manager* Get( Manager* overloader ) { return GetManager(); }
 	inline void Set( Manager* manager ) { SetManager( manager ); }
-	
+
 	// wxConfigBase Specializations
 	inline wxConfigBase* Get(wxConfigBase *overloader) { return GetConfigBase(); }
 	inline void Set( wxConfigBase* config ) { SetConfigBase( config ); }
-	
+
 	// TemplateManager specializations
 	inline TemplateManager* Get(TemplateManager* overloader) { return GetTemplateManager(); }
 	inline void Set( TemplateManager* manager ) { SetTemplateManager( manager ); }
-	
+
 	// Plugin specializations
 	inline PluginManager* Get(PluginManager *overloader) { return GetPluginManager(); }
 	inline void Set( PluginManager* manager ) { SetPluginManager( manager ); }
-	
+
 	// Editor specializations
 	inline EditorManager* Get(EditorManager *overloader) { return GetEditorManager(); }
 	inline void Set( EditorManager* manager ) { SetEditorManager( manager ); }
-	
+
 	// Macors specializations
 	inline MacrosManager* Get( MacrosManager *overloader ) { return GetMacrosManager(); }
 	inline void Set( MacrosManager* manager ) { SetMacrosManager( manager ); }
-	
+
 	// Message specializations
 	inline MessageManager* Get(MessageManager *overloader) { return GetMessageManager(); }
 	inline void Set( MessageManager* manager ) { SetMessageManager( manager ); }
-	
+
 	// Project specializations
 	inline ProjectManager* Get(ProjectManager *overloader) { return GetProjectManager(); }
 	inline void Set( ProjectManager* manager ) { SetProjectManager( manager ); }

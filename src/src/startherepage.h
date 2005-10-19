@@ -1,7 +1,7 @@
 #ifndef STARTHEREPAGE_H
 #define STARTHEREPAGE_H
 
-#include "editorbase.h"
+//#include "editorbase.h"
 
 extern wxString g_StartHereTitle;
 extern int idStartHerePageLink; // used to message the main frame
@@ -15,7 +15,7 @@ class StartHerePage : public EditorBase
 	public:
 		StartHerePage(wxEvtHandler* owner, wxWindow* parent);
 		virtual ~StartHerePage();
-		
+
 		bool LinkClicked(const wxHtmlLinkInfo& link);
 		void SetPageContent(const wxString& buffer); // set the HTML content
         virtual bool VisibleToTree() { return false; }

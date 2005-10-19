@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include "projectfileoptionsdlg.h"
 #include "cbproject.h"
 #include <wx/xrc/xmlres.h>
@@ -42,7 +43,7 @@ ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf)
 	: m_ProjectFile(pf)
 {
 	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgProjectFileOptionsWRK"));
-	
+
 	if (pf)
 	{
 		cbProject* prj = pf->project;
@@ -64,7 +65,7 @@ ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf)
 		XRCCTRL(*this, "txtBuildStage", wxTextCtrl)->SetValue(pf->buildCommand);
 		XRCCTRL(*this, "chkCustomDeps", wxCheckBox)->SetValue(!pf->autoDeps);
 		XRCCTRL(*this, "txtCustomDeps", wxTextCtrl)->SetValue(pf->customDeps);
-		
+
 		SetTitle(_("Options for ") + wxString(_("\"")) + pf->relativeFilename + wxString(_("\"")));
 	}
     XRCCTRL(*this, "txtObjName", wxTextCtrl)->Enable(false);

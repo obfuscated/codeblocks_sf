@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include <sdk.h>
 #include "cclistctrl.h"
 #include <wx/app.h>
 #include <wx/msgdlg.h>
@@ -51,12 +52,12 @@ CCListCtrl::CCListCtrl(wxWindow* parent, int id, Parser* parser, const wxString&
  	SetRowLabelSize(0);
  	SetDefaultRowSize(18);
  	SetGridLineColour(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT));
- 
+
  	// register our custom renderer
  	m_pRenderer = new CCRenderer(&m_CCTokens);
  	RegisterDataType(CUSTOM_DATA_TYPE, m_pRenderer, 0L);
  	SetDefaultRenderer(m_pRenderer);
- 
+
  	// create list of tokens
  	m_pEditor = (cbStyledTextCtrl*)m_pParent->GetParent();
  	PrepareTokens();
@@ -84,7 +85,7 @@ void CCListCtrl::PrepareTokens()
 {
 	// don't do any GUI updates while we 're building the tokens list
 	Freeze();
-	
+
 	// build valid tokens list
 	m_CCTokens.Clear();
 	if (!m_pParser->Options().caseSensitive)
@@ -104,7 +105,7 @@ void CCListCtrl::PrepareTokens()
 			m_CCTokens.Add(token);
 		}
 	}
-	
+
 	// this sets the grid to "virtual" mode
 	if (!m_pGridTable)
 		m_pGridTable = new CCTable(&m_CCTokens);
@@ -113,7 +114,7 @@ void CCListCtrl::PrepareTokens()
 
 	// set the format of cells to that of our custom renderer
 	SetColFormatCustom(0, CUSTOM_DATA_TYPE);
-	
+
 	// proceed to GUI updates
 	Thaw();
 

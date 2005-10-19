@@ -1,3 +1,4 @@
+#include "sdk_precomp.h"
 #include "compiler.h"
 #include "manager.h"
 #include "messagemanager.h"
@@ -135,7 +136,7 @@ void Compiler::SaveSettings(const wxString& baseKey)
         ConfigManager::Get()->Write(group + _T("/filename"), rs.filename);
         ConfigManager::Get()->Write(group + _T("/line"), rs.line);
     }
-    
+
     // custom vars
     m_pCustomVars->Save(tmp + _T("/custom_variables"));
 }

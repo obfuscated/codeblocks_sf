@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include "pluginsconfigurationdlg.h" // class's header file
 #include <wx/xrc/xmlres.h>
 #include <wx/intl.h>
@@ -82,6 +83,6 @@ void PluginsConfigurationDlg::OnOK(wxCommandEvent& event)
         bool checked = list->IsChecked(i);
         ConfigManager::Get()->Write(baseKey, checked);
     }
-    
+
     EndModal(wxID_OK);
 }

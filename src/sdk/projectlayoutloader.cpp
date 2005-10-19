@@ -1,3 +1,4 @@
+#include "sdk_precomp.h"
 #include <wx/confbase.h>
 #include <wx/fileconf.h>
 #include <wx/log.h>

@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include <sdk.h>
 #include <wx/intl.h>
 #include <wx/file.h>
 #include <wx/msgdlg.h>

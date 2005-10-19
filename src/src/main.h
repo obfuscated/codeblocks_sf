@@ -8,7 +8,7 @@
 #include "../sdk/manager.h"
 #include "../sdk/cbplugin.h"
 #include "../sdk/sdk_events.h"
-
+//
 #include "wx/layoutmanager.h"
 #include "wx/dockwindow.h"
 #include "wx/dockhost.h"

@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include <wx/notebook.h>
 #include <wx/menu.h>
 #include <wx/splitter.h>

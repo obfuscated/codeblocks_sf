@@ -1,3 +1,4 @@
+#include <sdk.h>
 #include "printdlg.h"
 #include <wx/xrc/xmlres.h>
 #include <wx/intl.h>

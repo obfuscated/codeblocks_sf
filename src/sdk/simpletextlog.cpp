@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include <wx/sizer.h>
 #include "simpletextlog.h" // class's header file
 
@@ -37,7 +38,7 @@ SimpleTextLog::SimpleTextLog(wxNotebook* parent, const wxString& title)
     bs->Add(m_Text, 1, wxEXPAND | wxALL);
     SetAutoLayout(TRUE);
     SetSizer(bs);
-    
+
     CreateLog(title);
 }
 

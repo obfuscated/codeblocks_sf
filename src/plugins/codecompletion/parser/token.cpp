@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include <sdk.h>
 #include "token.h"
 #include <wx/intl.h>
 

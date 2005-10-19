@@ -1,3 +1,4 @@
+#include "sdk_precomp.h"
 #include <wx/xrc/xmlres.h>
 #include <wx/checklst.h>
 #include <wx/stattext.h>

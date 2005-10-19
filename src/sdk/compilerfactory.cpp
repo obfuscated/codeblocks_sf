@@ -1,3 +1,4 @@
+#include "sdk_precomp.h"
 #include "compilerfactory.h"
 #include "manager.h"
 #include "messagemanager.h"
@@ -17,7 +18,7 @@ void CompilerFactory::RegisterUserCompilers()
 {
 	wxString str;
 	long cookie;
-	
+
 	ConfigManager::Get()->SetPath(_T("/compiler_gcc/compiler_sets"));
 	bool cont = ConfigManager::Get()->GetFirstGroup(str, cookie);
 	while (cont)
@@ -49,7 +50,7 @@ void CompilerFactory::RemoveCompiler(Compiler* compiler)
     if (!compiler)
         return;
     int listIdx = compiler->m_ID;
-    
+
     // loop through compilers list and adjust all following compilers m_ID -= 1 and m_ParentID -= 1
     for (unsigned int i = listIdx; i < Compilers.GetCount(); ++i)
     {
@@ -68,7 +69,7 @@ void CompilerFactory::RemoveCompiler(Compiler* compiler)
     Compilers.Remove(compiler);
     Manager::Get()->GetMessageManager()->DebugLog(_("Compiler \"%s\" removed"), compiler->GetName().c_str());
     delete compiler;
-    
+
     SaveSettings();
 }
 

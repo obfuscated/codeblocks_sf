@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include <sdk.h>
 #include "classwizard.h"
 #include <wx/intl.h>
 #include <wx/filename.h>

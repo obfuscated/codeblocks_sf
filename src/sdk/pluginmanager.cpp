@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include <wx/string.h>
 #include <wx/dir.h>
 #include <wx/menu.h>

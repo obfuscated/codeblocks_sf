@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include <sdk.h>
 #include "parserthread.h"
 #include <wx/app.h>
 #include <wx/log.h>

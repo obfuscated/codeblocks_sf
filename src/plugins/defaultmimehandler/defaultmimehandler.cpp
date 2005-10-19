@@ -7,6 +7,8 @@
  * License:   GPL
  **************************************************************/
 
+#include <sdk.h>
+
 #if defined(__GNUG__) && !defined(__APPLE__)
 	#pragma implementation "defaultmimehandler.h"
 #endif

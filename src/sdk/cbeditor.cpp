@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include <wx/filename.h>
 #include <wx/wfstream.h>
 #include <wx/fontutil.h>

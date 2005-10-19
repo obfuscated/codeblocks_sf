@@ -1,3 +1,4 @@
+#include <sdk.h>
 #include <wx/intl.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/listbox.h>
@@ -54,7 +55,7 @@ wxArrayString InsertClassMethodDlg::GetCode()
             array.Add(str + (m_Decl ? _T(";\n") : _T("\n{\n\n}\n\n")));
         }
     }
-    
+
     return array;
 }
 
@@ -62,7 +63,7 @@ void InsertClassMethodDlg::FillClasses()
 {
     if (!m_pParser || !m_pParser->Done())
         return;
-    
+
     wxListBox* lb = XRCCTRL(*this, "lstClasses", wxListBox);
     lb->Freeze();
     lb->Clear();
@@ -83,20 +84,20 @@ void InsertClassMethodDlg::FillMethods()
 {
     if (!m_pParser || !m_pParser->Done())
         return;
-    
+
     wxListBox* lb = XRCCTRL(*this, "lstClasses", wxListBox);
     wxCheckListBox* clb = XRCCTRL(*this, "chklstMethods", wxCheckListBox);
     clb->Clear();
-    
+
     if (lb->GetSelection() == -1)
         return;
-        
+
     bool includePrivate = XRCCTRL(*this, "chkPrivate", wxCheckBox)->IsChecked();
     bool includeProtected = XRCCTRL(*this, "chkProtected", wxCheckBox)->IsChecked();
     bool includePublic = XRCCTRL(*this, "chkPublic", wxCheckBox)->IsChecked();
 
     Token* parentToken = reinterpret_cast<Token*>(lb->GetClientData(lb->GetSelection()));
-    
+
     clb->Freeze();
     DoFillMethodsFor(clb,
                     parentToken,
@@ -125,7 +126,7 @@ void InsertClassMethodDlg::DoFillMethodsFor(wxCheckListBox* clb,
         Token* token = parentToken->m_Children[i];
         if (!token)
             continue;
-        
+
         //Manager::Get()->GetMessageManager()->DebugLog("Evaluating %s", token->m_DisplayName.c_str());
         bool valid = token->m_TokenKind == tkFunction &&
                 ((includePrivate && token->m_Scope == tsPrivate) ||
@@ -143,7 +144,7 @@ void InsertClassMethodDlg::DoFillMethodsFor(wxCheckListBox* clb,
                 clb->Append(str);
         }
     }
-        
+
     // inheritance
 	for (unsigned int i = 0; i < parentToken->m_Ancestors.GetCount(); ++i)
     {

@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include "cbworkspace.h"
 #include "globals.h"
 #include "manager.h"
@@ -71,7 +72,7 @@ void cbWorkspace::Load()
     if (fname.IsEmpty())
         return;
 	Manager::Get()->GetMessageManager()->DebugLog(_("Loading workspace \"%s\""), fname.c_str());
-	
+
 	bool modified = false;
 	IBaseWorkspaceLoader* pWsp = 0;
 	switch (FileTypeOf(fname))
@@ -85,11 +86,11 @@ void cbWorkspace::Load()
 	SANITY_CHECK();
 	m_Title = pWsp ? pWsp->GetTitle() : wxString(wxEmptyString);
 	SANITY_CHECK();
-    
+
     SANITY_CHECK();
     m_Filename.SetExt(WORKSPACE_EXT);
     SetModified(modified);
-    
+
     if (pWsp)
         delete pWsp;
 }

@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include <wx/intl.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/combobox.h>

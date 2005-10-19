@@ -1,3 +1,4 @@
+#include <sdk.h>
 #include "backtracedlg.h"
 #include "debuggergdb.h"
 #include <wx/intl.h>
@@ -20,7 +21,7 @@ BacktraceDlg::BacktraceDlg(wxWindow* parent, DebuggerGDB* debugger)
 
     wxListCtrl* lst = XRCCTRL(*this, "lstTrace", wxListCtrl);
 
-	wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL); 
+	wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
     lst->SetFont(font);
     Clear();
 }
@@ -64,7 +65,7 @@ void BacktraceDlg::AddFrame(const StackFrame& frame)
     lst->SetItem(idx, 3, frame.valid ? frame.file : _T("??"));
     lst->SetItem(idx, 4, frame.valid ? frame.line : _T("??"));
 	lst->Thaw();
-	
+
 	for (int i = 0; i < 3; ++i)
 	{
         lst->SetColumnWidth(i, wxLIST_AUTOSIZE);
@@ -81,7 +82,7 @@ void BacktraceDlg::OnDblClick(wxListEvent& event)
     int index = lst->GetNextItem(-1,
                                  wxLIST_NEXT_ALL,
                                  wxLIST_STATE_SELECTED);
-    
+
     wxListItem info;
     info.m_itemId = index;
     info.m_mask = wxLIST_MASK_TEXT;

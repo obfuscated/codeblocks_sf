@@ -1,3 +1,4 @@
+#include "sdk_precomp.h"
 #include "externaldepsdlg.h"
 #include "cbproject.h"
 #include "projectbuildtarget.h"
@@ -152,7 +153,7 @@ void ExternalDepsDlg::OnUpdateUI(wxUpdateUIEvent& event)
 {
 	int selAdd = XRCCTRL(*this, "lstAdditionalFiles", wxListBox)->GetSelection();
 	int selExt = XRCCTRL(*this, "lstExternalFiles", wxListBox)->GetSelection();
-	
+
 	XRCCTRL(*this, "btnEditAdditional", wxButton)->Enable(selAdd != -1);
 	XRCCTRL(*this, "btnDelAdditional", wxButton)->Enable(selAdd != -1);
 	XRCCTRL(*this, "btnEditExternal", wxButton)->Enable(selExt != -1);

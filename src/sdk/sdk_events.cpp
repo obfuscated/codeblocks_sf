@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include "sdk_events.h"
 
 IMPLEMENT_DYNAMIC_CLASS(CodeBlocksEvent, wxEvent)

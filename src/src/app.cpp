@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include <sdk.h>
 #include "app.h"
 #include <wx/fs_zip.h>
 #include <wx/xrc/xmlres.h>

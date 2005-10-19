@@ -1,10 +1,11 @@
 /** ManagedThread : A managed implementation of wxThreads
   * (c) 2005, Ricardo Garcia
-  * (Developed as an auxiliary library 
+  * (Developed as an auxiliary library
   *  for project "Code::Blocks" by Yiannis Mandravelos)
   * This file is distributed under the wxWindows license
   */
 
+#include "sdk_precomp.h"
 #include "managedthread.h"
 #include <wx/utils.h>
 /// Keeps count of running threads
@@ -16,7 +17,7 @@ bool ManagedThread::s_abort_all = false;
 
 static ManagedThreadsArray s_threadslist;
 
-ManagedThread::ManagedThread(bool* abortflag) : 
+ManagedThread::ManagedThread(bool* abortflag) :
 wxThread(wxTHREAD_JOINABLE),
 m_pAbort(abortflag)
 {
@@ -75,11 +76,11 @@ void ManagedThread::abort_all()
         #else
             wxMilliSleep(50);
         #endif
-        // (there's a tiny delay between the thread disminishing the count 
+        // (there's a tiny delay between the thread disminishing the count
         // and the thread actually stopping)
         // 50 ms should be more than enough
     }
-    
+
     // 2) Delete thread objects
     ManagedThread *thread;
     for(unsigned int i = 0; i < count_threads();++i)
@@ -92,20 +93,20 @@ void ManagedThread::abort_all()
             delete thread;
         }
     }
-    
+
     // 3) Clear thread list
     wxMutexLocker lock(ManagedThread::s_list_mutex);
     s_threadslist.Clear();
-    
+
     // 4) Reset the abort flag now that no threads are running
-    ManagedThread::s_abort_all = false; 
+    ManagedThread::s_abort_all = false;
 }
 
 void ManagedThread::abort(bool* flag,bool delete_thread)
 {
     if(!flag)
         return;
-        
+
     // 1) Send signal to threads telling to terminate ASAP
     if(count_running() > 0)
     {
@@ -113,10 +114,10 @@ void ManagedThread::abort(bool* flag,bool delete_thread)
 		#if wxVERSION_NUMBER < 2500
             wxUsleep(50); // Wait for threads to terminate
         #else
-            wxMilliSleep(50); 
+            wxMilliSleep(50);
         #endif
     }
-    
+
     // 2) Delete thread objects
     ManagedThread *thread;
     for(unsigned int i = 0; i < count_threads();++i)
@@ -131,9 +132,9 @@ void ManagedThread::abort(bool* flag,bool delete_thread)
         if(delete_thread)
             delete thread;
     }
-    
+
     // 4) Reset the abort flag now that no associated threads are running
-    *flag = false; 
+    *flag = false;
 }
 
 void* ManagedThread::Entry()
@@ -144,9 +145,9 @@ void* ManagedThread::Entry()
     lock = new wxMutexLocker(s_count_running_mutex);
         s_running++;
     delete lock;
-    
+
     result = DoRun();
-    
+
     lock = new wxMutexLocker(s_count_running_mutex);
     if(s_running > 0)
         s_running--;

@@ -1,4 +1,3 @@
-
 #ifndef DLGABOUTPLUGIN_H
 #define DLGABOUTPLUGIN_H
 

@@ -1,3 +1,4 @@
+#include "sdk_precomp.h"
 #include "importers_globals.h"
 
 // default: ask for compiler to use

@@ -1,3 +1,4 @@
+#include <sdk.h>
 #include <wx/intl.h>
 #include <wx/sizer.h>
 #include <wx/menu.h>
@@ -73,7 +74,7 @@ DebuggerTree::DebuggerTree(wxEvtHandler* debugger, wxNotebook* parent)
 
     m_pParent->AddPage(this, _("Watches"));
     m_PageIndex = m_pParent->GetPageCount() - 1;
-    
+
     BuildTree(wxEmptyString);
 }
 
@@ -91,7 +92,7 @@ void DebuggerTree::BuildTree(const wxString& infoText)
 
 	m_pTree->DeleteAllItems();
 	wxTreeItemId root = m_pTree->AddRoot(_("Watches"));
-	
+
 //    Manager::Get()->GetMessageManager()->DebugLog("DebuggerTree::BuildTree(): Parsing '%s'", infoText.c_str());
 	wxString buffer = infoText;
 	wxTreeItemId parent = root;
@@ -138,7 +139,7 @@ int DebuggerTree::FindCommaPos(const wxString& str)
     // comma is a special case because it separates the fields
     // but it can also appear in a function signature, where
     // we shouldn't treat it as a field separator
-    
+
     // what we 'll do now, is decide if the comma is inside
     // a function signature.
     // we 'll do it by counting the opening and closing parenthesis
@@ -146,7 +147,7 @@ int DebuggerTree::FindCommaPos(const wxString& str)
     // if they 're equal, it's a field separator.
     // if they 're not, it's in a function signature
     // ;)
-    
+
     int len = str.Length();
     int i = 0;
     int parCount = 0;
@@ -179,7 +180,7 @@ void DebuggerTree::ParseEntry(const wxTreeItemId& parent, wxString& text)
 		// trim the string from left and right
 		text.Trim(true);
 		text.Trim(false);
-		
+
 		// find position of '{', '}' and ',' ***outside*** of any quotes.
 		// decide which is nearer to the start
 		int braceOpenPos = FindCharOutsideQuotes(text, _T('{'));
@@ -189,7 +190,7 @@ void DebuggerTree::ParseEntry(const wxTreeItemId& parent, wxString& text)
         int commaPos = FindCommaPos(text);
 		if (commaPos == -1) commaPos = 0xFFFFFE;
 		int pos = MIN(commaPos, MIN(braceOpenPos, braceClosePos));
-		
+
 		if (pos == 0xFFFFFE)
 		{
 			if (text.Right(3).Matches(_T(" = ")))
@@ -205,13 +206,13 @@ void DebuggerTree::ParseEntry(const wxTreeItemId& parent, wxString& text)
 		{
 			wxTreeItemId newParent = parent;
 			wxString tmp = text.Left(pos);
-			
+
 			if (tmp.Right(3).Matches(_T(" = ")))
 				tmp.Truncate(tmp.Length() - 3); // remove " = " if last in string
 			if (!tmp.IsEmpty())
 				newParent = m_pTree->AppendItem(parent, tmp); // add entry
 			text.Remove(0, pos + 1);
-			
+
 			if (pos == braceOpenPos)
 				ParseEntry(newParent, text); // proceed one level deeper
 			else if (pos == braceClosePos)
@@ -259,7 +260,7 @@ void DebuggerTree::ShowMenu(wxTreeItemId id, const wxPoint& pt)
 {
 	wxString caption;
     wxMenu menu(wxEmptyString);
-	
+
 	// add watch always visible
 	menu.Append(idAddWatch, _("&Add watch"));
 
@@ -269,7 +270,7 @@ void DebuggerTree::ShowMenu(wxTreeItemId id, const wxPoint& pt)
         menu.Append(idEditWatch, _("&Edit watch"));
         menu.Append(idDeleteWatch, _("&Delete watch"));
 	}
-	
+
 	PopupMenu(&menu, pt);
 }
 
@@ -287,7 +288,7 @@ void DebuggerTree::OnRightClick(wxCommandEvent& event)
     // get right-click point
     wxPoint pt = wxGetMousePosition();
     pt = m_pTree->ScreenToClient(pt);
-    
+
     ShowMenu(tmp, pt);
 }
 

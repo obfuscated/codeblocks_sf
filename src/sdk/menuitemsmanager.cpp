@@ -1,3 +1,4 @@
+#include "sdk_precomp.h"
 #include "menuitemsmanager.h"
 
 MenuItemsManager::MenuItemsManager()

@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include "compileoptionsbase.h"
 #include "sdk_events.h"
 #include "manager.h"

@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include "selecttargetdlg.h"
 #include <wx/xrc/xmlres.h>
 #include <wx/intl.h>
@@ -43,7 +44,7 @@ SelectTargetDlg::SelectTargetDlg(wxWindow* parent, cbProject* project, int selec
 {
 	//ctor
 	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgSelectTarget"));
-	
+
 	wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
 	list->Clear();
 	for (int i = 0; i < m_pProject->GetBuildTargetsCount(); ++i)
@@ -69,7 +70,7 @@ void SelectTargetDlg::UpdateSelected()
         XRCCTRL(*this, "chkSetAsDefaultExec", wxCheckBox)->SetValue(idx == m_pProject->GetDefaultExecuteTargetIndex());
 		XRCCTRL(*this, "txtParams", wxTextCtrl)->SetValue(target->GetExecutionParameters());
 		XRCCTRL(*this, "txtHostApp", wxTextCtrl)->SetValue(target->GetHostApplication());
-#if 0		
+#if 0
 		bool en = target->GetTargetType() == ttExecutable ||
 				target->GetTargetType() == ttConsoleOnly ||
 				((target->GetTargetType() == ttDynamicLib ||
@@ -78,7 +79,7 @@ void SelectTargetDlg::UpdateSelected()
 		XRCCTRL(*this, "btnOK", wxButton)->Enable(en);
 #endif
 	}
-#if 0		
+#if 0
 	else
 		XRCCTRL(*this, "btnOK", wxButton)->Enable(false);
 #endif

@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include <wx/intl.h>
 #include <wx/process.h>
 #include <wx/menu.h>
@@ -43,7 +44,7 @@ ToolsManager* ToolsManager::Get()
 {
     if(Manager::isappShuttingDown()) // The mother of all sanity checks
         ToolsManager::Free();
-    else 
+    else
     if (!ToolsManagerProxy::Get())
 	{
         ToolsManagerProxy::Set( new ToolsManager() );
@@ -79,11 +80,11 @@ ToolsManager::ToolsManager()
 ToolsManager::~ToolsManager()
 {
     SC_DESTRUCTOR_BEGIN
-    
+
     // this is a core manager, so it is removed when the app is shutting down.
     // in this case, the app has already un-hooked us, so no need to do it ourselves...
 //	Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
-	
+
 	m_ItemsManager.Clear( m_Menu );
 
     // free-up any memory used for tools
@@ -107,19 +108,19 @@ bool ToolsManager::Execute(Tool* tool)
     SANITY_CHECK(false);
 	if (!tool)
 		return false;
-		
+
 	wxString cmdline;
 	wxString cmd = tool->command;
 	wxString params = tool->params;
 	wxString dir = tool->workingDir;
-	
+
 	Manager::Get()->GetMacrosManager()->ReplaceMacros(cmd);
 	Manager::Get()->GetMacrosManager()->ReplaceMacros(params);
 	Manager::Get()->GetMacrosManager()->ReplaceMacros(dir);
 
 	cmdline << cmd << _T(" ") << params;
     SANITY_CHECK(false);
-    if(!(Manager::Get()->GetMacrosManager())) 
+    if(!(Manager::Get()->GetMacrosManager()))
         return false; // We cannot afford the Macros Manager to fail here!
                       // What if it failed already?
     wxSetWorkingDirectory(dir);
@@ -226,7 +227,7 @@ void ToolsManager::LoadTools()
     SANITY_CHECK();
 	wxString str;
 	long cookie;
-	
+
 	ConfigManager::Get()->SetPath(_T("/tools"));
 	bool cont = ConfigManager::Get()->GetFirstGroup(str, cookie);
 	while (cont)
@@ -257,11 +258,11 @@ void ToolsManager::SaveTools()
 	{
 		Tool* tool = node->GetData();
 		wxString elem;
-		
+
 		// prepend a 0-padded 2-digit number to keep ordering
 		wxString tmp;
 		tmp.Printf(_("%2.2d"), count++);
-		
+
 		elem << _T("/tools/") << tmp << _T(" ") << tool->name << _T("/");
 		ConfigManager::Get()->Write(elem + _T("command"), tool->command);
 		ConfigManager::Get()->Write(elem + _T("params"), tool->params);
@@ -274,7 +275,7 @@ void ToolsManager::BuildToolsMenu(wxMenu* menu)
     SANITY_CHECK();
     // clear previously added menu items
     m_ItemsManager.Clear(menu);
-    
+
     // add menu items for tools
 	m_Menu = menu;
 	if (m_Menu->GetMenuItemCount() > 0)

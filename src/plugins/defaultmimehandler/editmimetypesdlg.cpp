@@ -7,6 +7,7 @@
  * License:   GPL
  **************************************************************/
 
+#include <sdk.h>
 #include "editmimetypesdlg.h"
 #include <wx/xrc/xmlres.h>
 #include <wx/listbox.h>
@@ -52,7 +53,7 @@ void EditMimeTypesDlg::FillList()
         cbMimeType* mt = m_Array[i];
         lst->Append(mt->wildcard);
     }
-    
+
     m_Selection = m_Array.GetCount() != 0 ? 0 : -1;
     m_LastSelection = m_Selection;
 }
@@ -100,7 +101,7 @@ void EditMimeTypesDlg::UpdateDisplay()
     XRCCTRL(*this, "txtProgram", wxTextCtrl)->Enable(!mt->useEditor);
     XRCCTRL(*this, "btnBrowse", wxButton)->Enable(!mt->useEditor);
     XRCCTRL(*this, "chkModal", wxCheckBox)->Enable(!mt->useEditor);
-    
+
     m_LastSelection = m_Selection;
 }
 

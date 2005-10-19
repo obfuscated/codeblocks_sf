@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include <sdk.h>
 #include "dlgabout.h" // class's header file
 #include "globals.h"
 #include "../sdk/licenses.h"

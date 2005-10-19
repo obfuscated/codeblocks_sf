@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include "confirmreplacedlg.h"
 #include "configmanager.h"
 #include <wx/xrc/xmlres.h>
@@ -67,7 +68,7 @@ void ConfirmReplaceDlg::OnCancel(wxCommandEvent& event)
 
 void ConfirmReplaceDlg::CalcPosition(cbStyledTextCtrl* ed)
 {
-	if(!ed) 
+	if(!ed)
         return;
 
 	int w = 0, h = 0;
@@ -79,9 +80,9 @@ void ConfirmReplaceDlg::CalcPosition(cbStyledTextCtrl* ed)
 	if(pt.x < 0)
         pt.x = 0;
 	pt = ed->ClientToScreen(pt);
-	
+
 	int lineHeight = ed->TextHeight(ed->GetCurrentLine());
-	
+
 	int screenW = wxSystemSettings::GetMetric(wxSYS_SCREEN_X);
 	int screenH = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y);
 	// sanity check
@@ -89,16 +90,16 @@ void ConfirmReplaceDlg::CalcPosition(cbStyledTextCtrl* ed)
 		w = screenW;
 	if (h > screenH)
 		h = screenH;
-	
+
 	// now we 're where we want to be, but check that the whole window is visible...
 	// the main goal here is that the caret *should* be visible...
-	
+
 	// for the horizontal axis, easy stuff
 	if (pt.x + w > screenW)
 		pt.x = screenW - w;
 
 	// for the vertical axis, more work has to be done...
-	
+
     // Does it fit 4 lines above current line?
     if (h + 4*lineHeight < pt.y)
         pt.y -= h + 4*lineHeight;

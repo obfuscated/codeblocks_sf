@@ -1,3 +1,4 @@
+#include "sdk_precomp.h"
 #include "printing_types.h"
 
 wxPrintData* g_printData = 0;
@@ -15,7 +16,7 @@ void DeInitPrinting()
 {
     delete g_pageSetupData;
     g_pageSetupData = 0;
-    
+
     delete g_printData;
     g_printData = 0;
 }

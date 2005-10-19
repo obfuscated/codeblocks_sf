@@ -1,3 +1,4 @@
+#include <sdk.h>
 #include <wx/intl.h>
 #include <wx/msgdlg.h>
 #include <manager.h>

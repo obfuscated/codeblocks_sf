@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include <sdk.h>
 #include "classbrowser.h" // class's header file
 #include "nativeparser.h"
 #include <wx/intl.h>

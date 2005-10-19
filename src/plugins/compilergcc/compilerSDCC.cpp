@@ -2,6 +2,7 @@
  * $Id$
  */
 
+#include <sdk.h>
 #include "compilerSDCC.h"
 #include <wx/intl.h>
 #include <wx/regex.h>

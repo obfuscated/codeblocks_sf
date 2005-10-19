@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include <sdk.h>
 #include <wx/txtstrm.h>
 #include <wx/regex.h>
 #include <wx/dialog.h>

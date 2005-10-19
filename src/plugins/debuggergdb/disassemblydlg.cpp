@@ -1,3 +1,4 @@
+#include <sdk.h>
 #include "disassemblydlg.h"
 #include "debuggergdb.h"
 #include <wx/intl.h>

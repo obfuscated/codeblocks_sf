@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include <sdk.h>
 #include "debuggeroptionsdlg.h"
 #include <configmanager.h>
 #include <wx/intl.h>

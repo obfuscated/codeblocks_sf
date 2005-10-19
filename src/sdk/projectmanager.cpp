@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include <wx/imaglist.h>
 #include <wx/menu.h>
 #include <wx/utils.h>

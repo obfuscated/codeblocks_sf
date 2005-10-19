@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include <sdk.h>
 #include "app.h"
 #include "main.h"
 #include "globals.h"

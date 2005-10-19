@@ -1,3 +1,4 @@
+#include "sdk_precomp.h"
 #include <wx/stream.h>
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>

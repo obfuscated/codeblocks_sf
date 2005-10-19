@@ -1,3 +1,4 @@
+#include "sdk_precomp.h"
 #include "msvcworkspacebase.h"
 #include "manager.h"
 #include "messagemanager.h"

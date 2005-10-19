@@ -1,3 +1,4 @@
+#include <sdk.h>
 #include "todosettingsdlg.h"
 #include <wx/xrc/xmlres.h>
 #include <wx/checkbox.h>
@@ -23,6 +24,6 @@ void ToDoSettingsDlg::EndModal(int retCode)
         bool checked = XRCCTRL(*this, "chkAutoRefresh", wxCheckBox)->GetValue();
         ConfigManager::Get()->Write(_T("todo_list/auto_refresh"), checked);
     }
-    
+
     wxDialog::EndModal(retCode);
 }

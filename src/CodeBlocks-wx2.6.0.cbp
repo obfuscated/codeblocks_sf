@@ -19,7 +19,6 @@
 				<Option projectResourceIncludeDirsRelation="2"/>
 				<Compiler>
 					<Add option="-DEXPORT_LIB"/>
-					<Add option="-D_USRDLL"/>
 				</Compiler>
 			</Target>
 			<Target title="scintilla">
@@ -62,7 +61,7 @@
 				<Compiler>
 					<Add option="-DEXPORT_LIB"/>
 					<Add option="-DEXPORT_EVENTS"/>
-					<Add option="-D_USRDLL"/>
+					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base"/>
@@ -108,6 +107,7 @@
 				<Option projectResourceIncludeDirsRelation="0"/>
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
+					<Add option="-DBUILDING_PLUGIN"/>
 					<Add directory="sdk"/>
 					<Add directory="src\wxDockit\include"/>
 				</Compiler>
@@ -144,8 +144,6 @@
 				<Option projectLinkerOptionsRelation="1"/>
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
-					<Add option="-D_WINDLL"/>
-					<Add option="-DNDEBUG"/>
 					<Add directory="sdk"/>
 					<Add directory="plugins\astyle\astyle"/>
 				</Compiler>
@@ -157,6 +155,18 @@
 					<Add library="wxmsw26"/>
 					<Add directory="devel"/>
 				</Linker>
+			</Target>
+			<Target title="plugin_CompilerGCC_depslib">
+				<Option output="plugins\compilergcc\depslib\libdepslib.a"/>
+				<Option working_dir=""/>
+				<Option object_output=".objs\2.6"/>
+				<Option deps_output=".deps"/>
+				<Option type="2"/>
+				<Option compiler="0"/>
+				<Option projectResourceIncludeDirsRelation="2"/>
+				<Compiler>
+					<Add option="-DDEPSLIB_WINDOWS"/>
+				</Compiler>
 			</Target>
 			<Target title="plugin_CompilerGCC">
 				<Option output="devel\share\CodeBlocks\plugins\compilergcc.dll"/>
@@ -170,8 +180,6 @@
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
-					<Add option="-D_WINDLL"/>
-					<Add option="-DDEPSLIB_WINDOWS"/>
 					<Add directory="sdk"/>
 					<Add directory="plugins\compilergcc\depslib\src"/>
 				</Compiler>
@@ -181,7 +189,9 @@
 					<Add library="libcodeblocks.a"/>
 					<Add library="libwxscintilla.a"/>
 					<Add library="wxmsw26"/>
+					<Add library="depslib"/>
 					<Add directory="devel"/>
+					<Add directory="plugins\compilergcc\depslib"/>
 				</Linker>
 			</Target>
 			<Target title="plugin_DebuggerGDB">
@@ -196,7 +206,6 @@
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
-					<Add option="-D_WINDLL"/>
 					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
@@ -220,7 +229,6 @@
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
-					<Add option="-D_WINDLL"/>
 					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
@@ -244,7 +252,6 @@
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
-					<Add option="-D_WINDLL"/>
 					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
@@ -268,7 +275,6 @@
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
-					<Add option="-D_WINDLL"/>
 					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
@@ -291,7 +297,6 @@
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
-					<Add option="-D_WINDLL"/>
 					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
@@ -312,7 +317,6 @@
 				<Option compiler="0"/>
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
-					<Add option="-D_WINDLL"/>
 					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
@@ -334,7 +338,6 @@
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
-					<Add option="-D_WINDLL"/>
 					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
@@ -389,11 +392,14 @@
 			<Add option="-mthreads"/>
 			<Add option="-fmessage-length=0"/>
 			<Add option="-fexceptions"/>
+			<Add option="-Winvalid-pch"/>
 			<Add option="-DHAVE_W32API_H"/>
 			<Add option="-D__WXMSW__"/>
 			<Add option="-DWXUSINGDLL"/>
 			<Add option="-DcbDEBUG"/>
 			<Add option="-DTIXML_USE_STL"/>
+			<Add option="-DCB_PRECOMP"/>
+			<Add option="-DWX_PRECOMP"/>
 			<Add directory="$(WX_DIR)\include"/>
 			<Add directory="$(WX_DIR)\lib\gcc_dll\msw"/>
 			<Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)\msw"/>
@@ -921,147 +927,147 @@
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\alloc.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\alloc.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\cache.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\cache.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\depslib.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\depslib.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\filent.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\filesys.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\fileunix.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\hash.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\hash.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\headers.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\headers.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\jam.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\lists.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\lists.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\main.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\newstr.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\newstr.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\pathsplit.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\pathsplit.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\pathsys.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\pathunix.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\regexp.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\regexp.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\search.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\search.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\timestamp.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\timestamp.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\directcommands.cpp">
 			<Option compilerVar="CPP"/>
@@ -2303,6 +2309,12 @@
 			<Option link="0"/>
 			<Option target="sdk"/>
 		</Unit>
+		<Unit filename="sdk\sdk.h">
+			<Option compilerVar="CPP"/>
+			<Option link="0"/>
+			<Option weight="0"/>
+			<Option target="src"/>
+		</Unit>
 		<Unit filename="sdk\sdk_events.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="sdk"/>
@@ -2311,6 +2323,12 @@
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\sdk_precomp.h">
+			<Option compilerVar="CPP"/>
+			<Option link="0"/>
+			<Option weight="0"/>
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk\searchresultslog.cpp">

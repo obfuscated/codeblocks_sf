@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include "configmanager.h" // class's header file
 
 #include <wx/intl.h>

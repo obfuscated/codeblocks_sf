@@ -1,3 +1,4 @@
+#include "sdk_precomp.h"
 #include <wx/intl.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/button.h>
@@ -59,7 +60,7 @@ void EditArrayStringDlg::OnAdd(wxCommandEvent& event)
 void EditArrayStringDlg::OnEdit(wxCommandEvent& event)
 {
 	wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
-	
+
 	wxString w = list->GetStringSelection();
 	w = wxGetTextFromUser(_("Edit item"), _("Edit the item:"), w);
 	if (!w.IsEmpty())

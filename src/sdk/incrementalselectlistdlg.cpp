@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include <wx/xrc/xmlres.h>
 #include <wx/intl.h>
 #include <wx/listbox.h>
@@ -47,7 +48,7 @@ void myHandler::OnKeyDown(wxKeyEvent& event)
 		case WXK_ESCAPE:
 			m_pParent->EndModal(wxID_CANCEL);
 			break;
-			
+
 		case WXK_UP:
 			m_pList->SetSelection(m_pList->GetSelection() - 1);
 			break;
@@ -78,10 +79,10 @@ IncrementalSelectListDlg::IncrementalSelectListDlg(wxWindow* parent, const wxArr
 		SetTitle(caption);
 	if (!message.IsEmpty())
 		XRCCTRL(*this, "lblMessage", wxStaticText)->SetLabel(message);
-	
+
 	m_Text = XRCCTRL(*this, "txtSearch", wxTextCtrl);
 	m_List = XRCCTRL(*this, "lstItems", wxListBox);
-	
+
 	myHandler* m_pMyEvtHandler = new myHandler(this, m_Text, m_List);
 	m_Text->SetNextHandler(m_pMyEvtHandler);
 	m_List->SetNextHandler(m_pMyEvtHandler);
@@ -93,7 +94,7 @@ IncrementalSelectListDlg::~IncrementalSelectListDlg()
 {
 	m_Text->SetNextHandler(0L);
 	m_List->SetNextHandler(0L);
-	
+
 	delete m_pMyEvtHandler;
 }
 

@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include <sdk.h>
 #include "tokenizer.h"
 #include <wx/utils.h>
 #include <wx/file.h>

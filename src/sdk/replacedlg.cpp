@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include "globals.h"
 #include "replacedlg.h"
 #include "configmanager.h"

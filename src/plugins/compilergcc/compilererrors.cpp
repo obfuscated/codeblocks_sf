@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include <sdk.h>
 #include "compilererrors.h"
 #include <cbeditor.h>
 #include <cbproject.h>
@@ -74,7 +75,7 @@ void CompilerErrors::Next()
     {
         if (!m_Errors[bkp].isWarning)
         {
-            bool isNote = 
+            bool isNote =
             	((m_Errors[bkp].errors.GetCount()>0) && m_Errors[bkp].errors[0].StartsWith(_T("note:")));
             if(!isNote)
             {
@@ -99,7 +100,7 @@ void CompilerErrors::Previous()
     {
         if (!m_Errors[bkp].isWarning)
         {
-            bool isNote = 
+            bool isNote =
             	((m_Errors[bkp].errors.GetCount()>0) && m_Errors[bkp].errors[0].StartsWith(_T("note:")));
             if(!isNote)
             {

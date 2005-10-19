@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include <wx/xrc/xmlres.h>
 #include <wx/fs_zip.h>
 #include <wx/notebook.h>

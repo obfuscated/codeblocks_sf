@@ -1,3 +1,4 @@
+#include "sdk_precomp.h"
 #include <wx/confbase.h>
 #include <wx/fileconf.h>
 #include <wx/log.h>
@@ -24,16 +25,16 @@ DevCppLoader::~DevCppLoader()
 bool DevCppLoader::Open(const wxString& filename)
 {
     m_pProject->ClearAllProperties();
-        
+
     wxFileConfig* dev = new wxFileConfig(_T(""), _T(""), filename, _T(""), wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_NO_ESCAPE_CHARACTERS);
     dev->SetPath(_T("/Project"));
     int unitCount;
     dev->Read(_T("UnitCount"), &unitCount, 0);
-        
-    wxString path, tmp, title, output, out_path, obj_path; 
+
+    wxString path, tmp, title, output, out_path, obj_path;
     wxArrayString array;
     int typ;
-        
+
     // read project options
     dev->Read(_T("Name"), &title, _T(""));
     m_pProject->SetTitle(title);

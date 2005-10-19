@@ -1,6 +1,7 @@
 #ifdef __WXMSW__
 // this compiler is valid only in windows
 
+#include <sdk.h>
 #include "compilerMSVC.h"
 #include <wx/wx.h>
 #include <wx/log.h>

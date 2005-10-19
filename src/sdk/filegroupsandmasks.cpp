@@ -1,3 +1,4 @@
+#include "sdk_precomp.h"
 #include <wx/intl.h>
 #include "globals.h"
 #include "configmanager.h"
@@ -11,7 +12,7 @@ FilesGroupsAndMasks::FilesGroupsAndMasks()
 {
 	//ctor
 	Load();
-	
+
 	if (m_Groups.GetCount() == 0)
 	{
 		// only add default groups if none were loaded...
@@ -46,7 +47,7 @@ void FilesGroupsAndMasks::CopyFrom(FilesGroupsAndMasks& copy)
         FileGroups* otherfg = copy.m_Groups[i];
 		fg->groupName = otherfg->groupName;
 		fg->fileMasks = otherfg->fileMasks;
-		
+
 		m_Groups.Add(fg);
     }
 }

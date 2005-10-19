@@ -1,3 +1,4 @@
+#include <sdk.h>
 #include "impexpconfig.h"
 #include <wx/intl.h>
 #include <wx/xrc/xmlres.h>
@@ -18,7 +19,7 @@ ImpExpConfig::ImpExpConfig(wxWindow* parent)
 {
 	//ctor
 	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgImpExpConfig"));
-	
+
 	// fill list
 	wxCheckListBox* list = XRCCTRL(*this, "lstConf", wxCheckListBox);
 	list->Clear();
@@ -66,7 +67,7 @@ void ImpExpConfig::OnExport(wxCommandEvent& event)
     wxString filename = AskForFile(_("Choose a file to export"), wxSAVE | wxOVERWRITE_PROMPT);
     if (filename.IsEmpty())
         return;
-    
+
     if (wxFileExists(filename))
         wxRemoveFile(filename);
 
@@ -86,7 +87,7 @@ void ImpExpConfig::OnExport(wxCommandEvent& event)
             }
         }
     }
-    
+
     if (count == 0)
         wxMessageBox(_("No configuration settings selected!"), _("Error"), wxICON_ERROR);
     else

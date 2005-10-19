@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include "sdk_precomp.h"
 #include <wx/sizer.h>
 #include "simplelistlog.h" // class's header file
 
@@ -50,7 +51,7 @@ void SimpleListLog::Init(const wxString& title)
     bs->Add(m_pList, 1, wxEXPAND | wxALL);
     SetAutoLayout(TRUE);
     SetSizer(bs);
-    
+
     CreateLog(title);
 }
 
@@ -70,7 +71,7 @@ void SimpleListLog::SetColumns(int num, int widths[], const wxArrayString& title
 {
 	Clear();
 	m_pList->ClearAll();
-		
+
 	for (int i = 0; i < num; ++i)
 	{
 		m_pList->InsertColumn(i, titles[i], wxLIST_FORMAT_LEFT, widths[i]);

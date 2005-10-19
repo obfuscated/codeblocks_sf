@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include <sdk.h>
 #include "enterinfodlg.h"
 #include <wx/intl.h>
 #include <wx/mdi.h>

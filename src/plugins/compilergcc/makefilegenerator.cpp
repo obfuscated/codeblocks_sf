@@ -23,6 +23,7 @@
 * $Date$
 */
 
+#include <sdk.h>
 #include "makefilegenerator.h" // class's header file
 #include <manager.h>
 #include <macrosmanager.h>
@@ -113,6 +114,17 @@ wxString MakefileGenerator::ReplaceCompilerMacros(CommandType et,
 }
 
 wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
+                                                        ProjectBuildTarget* target,
+                                                        ProjectFile* pf,
+                                                        const wxString& file,
+                                                        const wxString& object,
+                                                        const wxString& deps)
+{
+    UpdateCompiler(target);
+    return CreateSingleFileCompileCmd(m_CompilerSet->GetCommand(et), target, pf, file, object, deps);
+}
+
+wxString MakefileGenerator::CreateSingleFileCompileCmd(const wxString& command,
                                                         ProjectBuildTarget* target,
                                                         ProjectFile* pf,
                                                         const wxString& file,
@@ -239,7 +251,7 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(CommandType et,
 
     wxString linkobjs;
 
-    wxString compilerCmd = m_CompilerSet->GetCommand(et);
+    wxString compilerCmd = command;
     compilerCmd.Replace(_T("$compiler"), compilerStr);
     compilerCmd.Replace(_T("$linker"), m_CompilerSet->GetPrograms().LD);
     compilerCmd.Replace(_T("$lib_linker"), m_CompilerSet->GetPrograms().LIB);

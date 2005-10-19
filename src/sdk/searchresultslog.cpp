@@ -1,3 +1,4 @@
+#include "sdk_precomp.h"
 #include "searchresultslog.h"
 #include "manager.h"
 #include "editormanager.h"

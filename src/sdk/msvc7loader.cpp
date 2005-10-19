@@ -1,3 +1,4 @@
+#include "sdk_precomp.h"
 #include <wx/intl.h>
 #include <wx/msgdlg.h>
 #include <wx/choicdlg.h>

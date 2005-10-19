@@ -3,6 +3,7 @@
   * Panels, windows, toolbars, etc.
   */
 
+#include "sdk_precomp.h"
 #include "xtra_classes.h"
 #include "configmanager.h"
 

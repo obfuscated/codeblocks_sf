@@ -25,6 +25,12 @@ class MakefileGenerator
         bool CreateMakefile();
         void ReplaceMacros(ProjectBuildTarget* bt, ProjectFile* pf, wxString& text);
         void QuoteStringIfNeeded(wxString& str, bool force = false);
+        wxString CreateSingleFileCompileCmd(const wxString& command,
+                                            ProjectBuildTarget* target,
+                                            ProjectFile* pf,
+                                            const wxString& file,
+                                            const wxString& object,
+                                            const wxString& deps);
         wxString CreateSingleFileCompileCmd(CommandType et,
                                             ProjectBuildTarget* target,
                                             ProjectFile* pf,

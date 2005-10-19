@@ -1,3 +1,4 @@
+#include "sdk_precomp.h"
 #include <wx/xrc/xmlres.h>
 #include <wx/intl.h>
 #include <wx/listbox.h>
@@ -49,14 +50,14 @@ void ProjectsFileMasksDlg::ListChange()
 {
 	wxTextCtrl* pText = XRCCTRL(*this, "txtFileMasks", wxTextCtrl);
 	int sel = XRCCTRL(*this, "lstCategories", wxListBox)->GetSelection();
-	
+
 	if (sel != m_LastListSelection)
 	{
 		// switching group; see if the user changed the masks...
 		if (pText->GetValue() != m_FileGroups.GetFileMasks(m_LastListSelection))
 			m_FileGroups.SetFileMasks(m_LastListSelection, pText->GetValue());
 	}
-	
+
 	pText->SetValue(m_FileGroups.GetFileMasks(sel));
 	m_LastListSelection = sel;
 }
@@ -127,6 +128,6 @@ void ProjectsFileMasksDlg::EndModal(int retCode)
 
 		m_pOrigFileGroups->CopyFrom(m_FileGroups);
 	}
-	
+
 	wxDialog::EndModal(retCode);
 }
