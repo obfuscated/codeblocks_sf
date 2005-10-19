@@ -1200,7 +1200,7 @@ void NativeParser::OnThreadEnd(wxCommandEvent& event)
 
 void NativeParser::OnParserEnd(wxCommandEvent& event)
 {
-	Parser* parser = (Parser*)event.GetInt();
+	Parser* parser = (Parser*)event.GetClientData();
 	if (parser)// && parser->Done())
 	{
 		cbProject* project = FindProjectFromParser(parser);

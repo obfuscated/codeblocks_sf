@@ -842,7 +842,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
 {
     LinkInheritance(false);
     wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, PARSER_END);
-    evt.SetInt((int)this);
+    evt.SetClientData(this);
 	wxPostEvent(m_pParent, evt);
 }
 
