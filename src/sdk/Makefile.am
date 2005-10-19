@@ -1,5 +1,11 @@
 SUBDIRS = tinyxml wxscintilla resources
 
+if PRECOMPILE_HEADERS
+BUILT_SOURCES = $(srcdir)/sdk.h.gch
+else
+BUILT_SOURCES = 
+endif
+
 INCLUDES = $(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include \
 			-I$(top_srcdir)/src/sdk/tinyxml
@@ -166,3 +172,10 @@ toolsmanager.h \
 workspaceloader.h \
 xtra_classes.h \
 xtra_res.h
+
+$(srcdir)/sdk.h.gch: $(srcdir)/sdk.h
+	-rm -f $(srcdir)/sdk.h.gch
+	$(CXXCOMPILE) -o $(srcdir)/sdk.h.gch -xc++-header $(srcdir)/sdk.h
+
+clean-local:
+	-rm -f $(srcdir)/sdk.h.gch

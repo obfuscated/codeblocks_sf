@@ -5,6 +5,11 @@
 #ifndef SDK_PRECOMP_H
 #define SDK_PRECOMP_H
 
+#ifndef __WXMSW__
+	// For non-windows platforms, one PCH (sdk.h) is enough...
+	#include <sdk.h>
+#else
+
 #if ( defined(CB_PRECOMP) && !defined(WX_PRECOMP) )
     #define WX_PRECOMP
 #endif // CB_PRECOMP
@@ -109,5 +114,7 @@
     #include <xtra_classes.h>
     #include <xtra_res.h>
 #endif // CB_PRECOMP
+
+#endif // !__WXMSW__
 
 #endif // SDK_PRECOMP_H

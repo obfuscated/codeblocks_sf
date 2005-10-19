@@ -92,6 +92,9 @@ AC_SUBST(CXXFLAGS)
 AC_SUBST(CFLAGS)
 AC_SUBST(LIBS)
 
+CXXFLAGS="$CXXFLAGS $PCH_FLAGS"
+AC_SUBST(codeblocks_PCH_FLAGS, "$PCH_FLAGS")
+
 dnl AM_PATH_GTK(1.2.7, ,
 dnl             AC_MSG_ERROR(Cannot find GTK: Is gtk-config in path?),
 dnl             gthread)
