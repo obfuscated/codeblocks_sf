@@ -1629,10 +1629,7 @@ void ProjectManager::OnGotoFile(wxCommandEvent& event)
 void ProjectManager::OnViewCategorize(wxCommandEvent& event)
 {
     SANITY_CHECK();
-    bool isChecked = event.IsChecked();
-    if (event.GetId() == idMenuViewCategorizePopup)
-        isChecked = !isChecked;
-    m_TreeCategorize = isChecked;
+    m_TreeCategorize = event.IsChecked();
     Manager::Get()->GetAppWindow()->GetMenuBar()->Check(idMenuViewCategorize, m_TreeCategorize);
 	ConfigManager::Get()->Write(_T("/project_manager/categorize_tree"), m_TreeCategorize);
     RebuildTree();
@@ -1641,10 +1638,7 @@ void ProjectManager::OnViewCategorize(wxCommandEvent& event)
 void ProjectManager::OnViewUseFolders(wxCommandEvent& event)
 {
     SANITY_CHECK();
-    bool isChecked = event.IsChecked();
-    if (event.GetId() == idMenuViewUseFoldersPopup)
-        isChecked = !isChecked;
-    m_TreeUseFolders = isChecked;
+    m_TreeUseFolders = event.IsChecked();
     Manager::Get()->GetAppWindow()->GetMenuBar()->Check(idMenuViewUseFolders, m_TreeUseFolders);
 	ConfigManager::Get()->Write(_T("/project_manager/use_folders"), m_TreeUseFolders);
     RebuildTree();
