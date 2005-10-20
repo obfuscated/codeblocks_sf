@@ -783,6 +783,15 @@ void MainFrame::LoadWindowState()
 	Manager::Get()->GetNotebook()->SetSelection(CFG_READ(personalityKey + _T("/main_frame/layout/left_block_selection"), 0L));
 	MSGMAN()->SetSelection(CFG_READ(personalityKey + _T("/main_frame/layout/bottom_block_selection"), 0L));
 
+    // load window size and position
+    SetSize(CFG_READ(personalityKey + _T("/main_frame/left"), 0L),
+            CFG_READ(personalityKey + _T("/main_frame/top"), 0L),
+            CFG_READ(personalityKey + _T("/main_frame/width"), 640),
+            CFG_READ(personalityKey + _T("/main_frame/height"), 480));
+    // maximized?
+    if (CFG_READ(personalityKey + _T("/main_frame/maximized"), 0L))
+        Maximize();
+
     // close message manager (if auto-hiding)
     MSGMAN()->Close();
 }
@@ -804,6 +813,17 @@ void MainFrame::SaveWindowState()
 	// save manager and messages selected page
 	CFG_WRITE(personalityKey + _T("/main_frame/layout/left_block_selection"), Manager::Get()->GetNotebook()->GetSelection());
 	CFG_WRITE(personalityKey + _T("/main_frame/layout/bottom_block_selection"), MSGMAN()->GetSelection());
+
+    // save window size and position
+    CFG_WRITE(personalityKey + _T("/main_frame/maximized"), IsMaximized());
+    if (!IsMaximized() && !IsIconized())
+    {
+        CFG_WRITE(personalityKey + _T("/main_frame/left"), GetPosition().x);
+        CFG_WRITE(personalityKey + _T("/main_frame/top"), GetPosition().y);
+        CFG_WRITE(personalityKey + _T("/main_frame/width"), GetSize().x);
+        CFG_WRITE(personalityKey + _T("/main_frame/height"), GetSize().y);
+    }
+
 }
 
 void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
