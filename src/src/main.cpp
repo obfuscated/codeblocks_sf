@@ -1768,7 +1768,10 @@ void MainFrame::OnSearchGotoLine(wxCommandEvent& event)
 	long int line = 0;
 	strLine.ToLong(&line);
 	if ( line > 1 && line <= max )
+	{
 		ed->GetControl()->GotoPos(ed->GetControl()->PositionFromLine(line - 1));
+		ed->UnfoldBlockFromLine(-1);
+	}
 }
 
 void MainFrame::OnProjectNewEmpty(wxCommandEvent& event)
