@@ -113,7 +113,7 @@ void cbThreadPool::SetConcurrentThreads(int concurrentThreads)
         m_ConcurrentThreads = 1;
 
 	LOGSTREAM << _T("Concurrent threads for pool set to ") << m_ConcurrentThreads << _T('\n');
-	
+
     // alloc (or dealloc) based on new thread count
     AllocThreads();
 }
@@ -239,21 +239,40 @@ void cbThreadPool::FreeThreads()
     for (i = 0; i < m_Threads.GetCount(); ++i)
     {
         PrivateThread* thread = m_Threads[i];
-        thread->Abort();
-        m_Semaphore.Post();
+        thread->Abort();  // set m_Abort on *every* thread first
     }
+
+    for (i = 0; i < m_Threads.GetCount(); ++i)
+        m_Semaphore.Post(); // now it does not matter which thread wakes up
+
+    m_Semaphore.Post();   // let's do one extra, does not harm
+    // actually give them CPU time to die, too
+#if wxCHECK_VERSION(2,6,0)
+    wxMilliSleep(1);
+#else
+    wxUSleep(1);
+#endif
 
     wxLogNull logNo;
     for (i = 0; i < m_Threads.GetCount(); ++i)
     {
+        unsigned int count = 0;
+
         PrivateThread* thread = m_Threads[i];
         while(thread->IsRunning())
         {
-            thread->Abort();
             m_Semaphore.Post();
-            thread->Wait();
+#if wxCHECK_VERSION(2,6,0)
+            wxMilliSleep(1);
+#else
+            wxUSleep(1);
+#endif
+            if(++count > 10)
+                break;
         }
-        thread->Delete();
+
+        if(count > 10)    // a bit brute, but if it did not wake up until now
+            thread->Kill(); // then it will never
     }
     m_Threads.Clear();
 }
