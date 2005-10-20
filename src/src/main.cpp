@@ -2179,7 +2179,10 @@ void MainFrame::OnSettingsEnvironment(wxCommandEvent& event)
 	{
         m_SmallToolBar = CFG_READ(_T("/environment/toolbar_size"), (long int)1) == 1;
         needRestart = m_SmallToolBar != tbarsmall;
-        MSGMAN()->EnableAutoHide(CFG_READ(_T("/message_manager/auto_hide"), 0L));
+        bool autoHide = CFG_READ(_T("/message_manager/auto_hide"), 0L);
+        MSGMAN()->EnableAutoHide(autoHide);
+        if (!autoHide)
+            pDockWindow2->Show(true); // make sure it's shown
         ShowHideStartPage();
 
         if (CFG_READ(_T("/editor/show_close_button"), (long int)0) != edmanCloseBtn)
