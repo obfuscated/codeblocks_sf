@@ -82,6 +82,8 @@ int idFileOpenRecentClearHistory = XRCID("idFileOpenRecentClearHistory");
 int idFileSave = XRCID("idFileSave");
 int idFileSaveAs = XRCID("idFileSaveAs");
 int idFileSaveAllFiles = XRCID("idFileSaveAllFiles");
+int idFileSaveProject = XRCID("idFileSaveProject");
+int idFileSaveProjectAs = XRCID("idFileSaveProjectAs");
 int idFileSaveWorkspace = XRCID("idFileSaveWorkspace");
 int idFileSaveWorkspaceAs = XRCID("idFileSaveWorkspaceAs");
 int idFileClose = XRCID("idFileClose");
@@ -234,6 +236,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idFileSave,  MainFrame::OnFileSave)
     EVT_MENU(idFileSaveAs,  MainFrame::OnFileSaveAs)
     EVT_MENU(idFileSaveAllFiles,  MainFrame::OnFileSaveAllFiles)
+    EVT_MENU(idFileSaveProject,  MainFrame::OnProjectSaveProject)
+    EVT_MENU(idFileSaveProjectAs,  MainFrame::OnProjectSaveProjectAs)
     EVT_MENU(idFileSaveWorkspace,  MainFrame::OnFileSaveWorkspace)
     EVT_MENU(idFileSaveWorkspaceAs,  MainFrame::OnFileSaveWorkspaceAs)
     EVT_BUTTON(ID_EditorManagerCloseButton,MainFrame::OnFileClose)
@@ -783,14 +787,17 @@ void MainFrame::LoadWindowState()
 	Manager::Get()->GetNotebook()->SetSelection(CFG_READ(personalityKey + _T("/main_frame/layout/left_block_selection"), 0L));
 	MSGMAN()->SetSelection(CFG_READ(personalityKey + _T("/main_frame/layout/bottom_block_selection"), 0L));
 
-    // load window size and position
-    SetSize(CFG_READ(personalityKey + _T("/main_frame/left"), 0L),
-            CFG_READ(personalityKey + _T("/main_frame/top"), 0L),
-            CFG_READ(personalityKey + _T("/main_frame/width"), 640),
-            CFG_READ(personalityKey + _T("/main_frame/height"), 480));
-    // maximized?
-    if (CFG_READ(personalityKey + _T("/main_frame/maximized"), 0L))
-        Maximize();
+    if (!IsMaximized() && !IsIconized())
+    {
+        // load window size and position
+        SetSize(CFG_READ(personalityKey + _T("/main_frame/left"), 0L),
+                CFG_READ(personalityKey + _T("/main_frame/top"), 0L),
+                CFG_READ(personalityKey + _T("/main_frame/width"), 640),
+                CFG_READ(personalityKey + _T("/main_frame/height"), 480));
+        // maximized?
+        if (CFG_READ(personalityKey + _T("/main_frame/maximized"), 0L))
+            Maximize();
+    }
 
     // close message manager (if auto-hiding)
     MSGMAN()->Close();
@@ -1894,6 +1901,7 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
         return;
     }
     EditorBase* ed = EDMAN() ? EDMAN()->GetActiveEditor() : 0;
+    cbProject* prj = PRJMAN() ? PRJMAN()->GetActiveProject() : 0L;
     wxMenuBar* mbar = GetMenuBar();
 
     bool canCloseProject = (ProjectManager::CanShutdown() && EditorManager::CanShutdown());
@@ -1905,6 +1913,8 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idFileSave, ed && ed->GetModified());
     mbar->Enable(idFileSaveAs, ed);
     mbar->Enable(idFileSaveAllFiles, ed);
+    mbar->Enable(idFileSaveProject, prj && prj->GetModified() && canCloseProject);
+    mbar->Enable(idFileSaveProjectAs, prj && canCloseProject);
     mbar->Enable(idFileSaveWorkspace, PRJMAN() && canCloseProject);
     mbar->Enable(idFileSaveWorkspaceAs, PRJMAN() && canCloseProject);
     mbar->Enable(idFilePrint, EDMAN() && EDMAN()->GetActiveEditor());
