@@ -9,12 +9,13 @@
 		<Option compiler="0"/>
 		<Build>
 			<Target title="default">
-				<Option output="bin\codestat.dll"/>
-				<Option working_dir="bin"/>
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\codestat.dll"/>
+				<Option working_dir="."/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
 				<Option type="3"/>
 				<Option compiler="0"/>
+				<Option host_application="..\..\..\devel\codeblocks.exe"/>
 				<Option projectCompilerOptionsRelation="0"/>
 			</Target>
 			<Environment>
@@ -25,9 +26,17 @@
 		<Compiler>
 			<Add option="-Wall"/>
 			<Add option="-g"/>
-			<Add option="-D__GNUWIN32__"/>
-			<Add option="-DWXUSINGDLL"/>
+			<Add option="-Winvalid-pch"/>
+			<Add option="-mthreads"/>
+			<Add option="-include &quot;sdk.h&quot;"/>
 			<Add option="-DBUILDING_PLUGIN"/>
+			<Add option="-DCB_PRECOMP"/>
+			<Add option="-DWX_PRECOMP"/>
+			<Add option="-DHAVE_W32API_H"/>
+			<Add option="-D__WXMSW__"/>
+			<Add option="-DWXUSINGDLL"/>
+			<Add option="-DcbDEBUG"/>
+			<Add option="-DTIXML_USE_STL"/>
 			<Add directory="$(CBDIR)\sdk"/>
 			<Add directory="$(WXDIR)\include"/>
 			<Add directory="$(WXDIR)\contrib\include"/>

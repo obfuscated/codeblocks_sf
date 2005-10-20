@@ -18,19 +18,22 @@
 				<Option compiler="0"/>
 				<Option host_application="..\..\..\devel\codeblocks.exe"/>
 				<Compiler>
-					<Add option="-fexpensive-optimizations"/>
-					<Add option="-Os"/>
 					<Add option="-Wall"/>
+					<Add option="-g"/>
+					<Add option="-Winvalid-pch"/>
 					<Add option="-pipe"/>
 					<Add option="-mthreads"/>
-					<Add option="-fno-pcc-struct-return"/>
-					<Add option="-fno-rtti"/>
 					<Add option="-fmessage-length=0"/>
-					<Add option="-D__GNUWIN32__"/>
+					<Add option="-fexceptions"/>
+					<Add option="-include &quot;sdk.h&quot;"/>
+					<Add option="-DBUILDING_PLUGIN"/>
+					<Add option="-DCB_PRECOMP"/>
+					<Add option="-DWX_PRECOMP"/>
+					<Add option="-DHAVE_W32API_H"/>
 					<Add option="-D__WXMSW__"/>
 					<Add option="-DWXUSINGDLL"/>
-					<Add option="-DBUILDING_PLUGIN"/>
-					<Add option="-D_WINDLL"/>
+					<Add option="-DcbDEBUG"/>
+					<Add option="-DTIXML_USE_STL"/>
 					<Add directory="..\..\..\sdk"/>
 					<Add directory="..\..\..\sdk\wxscintilla\include"/>
 				</Compiler>
@@ -53,7 +56,6 @@
 			</Environment>
 		</Build>
 		<Compiler>
-			<Add option="-g"/>
 			<Add directory="$(WX_DIR)\include"/>
 			<Add directory="$(WX_DIR)\lib\gcc_dll\msw"/>
 			<Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)\msw"/>

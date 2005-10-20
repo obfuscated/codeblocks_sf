@@ -133,7 +133,7 @@ bool DevPakInstaller::Uninstall(const wxString& entry)
     for (unsigned int i = 0; i < pathlist.GetCount(); ++i)
     {
         wxString path = pathlist[i];
-        size_t pos = path.Find(_T('/'), true);
+        int pos = path.Find(_T('/'), true);
         while (pos != wxNOT_FOUND)
         {
             wxRmdir(path);

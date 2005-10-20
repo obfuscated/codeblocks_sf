@@ -131,7 +131,6 @@ void UpdateDlg::UpdateStatus(const wxString& status, int curProgress, int maxPro
 
 void UpdateDlg::EnableButtons(bool update, bool abort)
 {
-    wxListCtrl* lst = XRCCTRL(*this, "lvFiles", wxListCtrl);
     wxButton* btnCl = XRCCTRL(*this, "wxID_CANCEL", wxButton);
 
     btnCl->Enable(abort);

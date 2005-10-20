@@ -4,8 +4,6 @@
 #include <wx/filename.h>
 #include <globals.h>
 
-static UpdateRec* list = 0;
-static int g_RecsCount = 0;
 wxString g_MasterPath;
 
 wxString GetSizeString(int bytes)

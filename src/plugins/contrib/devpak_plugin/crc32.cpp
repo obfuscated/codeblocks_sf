@@ -2,10 +2,10 @@
     This code was taken from:
     http://wikisource.org/wiki/CRC32_Checksum_function
     by an unknown author...
-    
+
     I just changed the function names to match the conventions used
     in the rest of the project.
-    
+
     Yiannis Mandravellos <mandrav@codeblocks.org>
 */
 
@@ -52,7 +52,7 @@ unsigned long GetFileCRC32(const char* file)
     {
         // Get the crc table, on first call, generate, otherwise do nothing
         crc_table = GetCRC32Table( crc_table ) ;
-        
+
         // Do we have a crc table?
         if ( crc_table )
         {
@@ -64,7 +64,7 @@ unsigned long GetFileCRC32(const char* file)
             {
                 // Calculate the checksum
                 int ch;
-                
+
                 crc = 0xFFFFFFFFUL;
                 while ((ch = getc(fp)) != EOF)
                     { crc = (crc>>8) ^ crc_table[ (crc^ch) & 0xFF ]; }
@@ -97,13 +97,11 @@ unsigned long GetTextCRC32(const char* text)
     {
         // Get the crc table, on first call, generate, otherwise do nothing
         crc_table = GetCRC32Table( crc_table ) ;
-        
+
         // Do we have a crc table?
         if ( crc_table )
         {
             // Calculate the checksum
-            int ch;
-            
             crc = 0xFFFFFFFFUL;
             while (*text)
                 { crc = (crc>>8) ^ crc_table[ (crc^(*text++)) & 0xFF ]; }
