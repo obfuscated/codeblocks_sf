@@ -912,7 +912,9 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
         case ftMSVCWorkspace:
             // fallthrough
         case ftMSVSWorkspace:
-            if (DoCloseCurrentWorkspace())
+            // verify that it's not the same as the one already open
+            if (filename != PRJMAN()->GetWorkspace()->GetFilename() &&
+                DoCloseCurrentWorkspace())
             {
                 PRJMAN()->LoadWorkspace(filename);
                 m_FilesHistory.AddFileToHistory(filename);
