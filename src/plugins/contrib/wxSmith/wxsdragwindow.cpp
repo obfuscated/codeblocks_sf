@@ -233,7 +233,7 @@ void wxsDragWindow::DragInit(wxsDragWindow::DragPointData* NewDragPoint,wxsWidge
         DragMouseBegX = MouseX;
         DragMouseBegY = MouseY;
         DragDistanceSmall = true;
-        CaptureMouse();
+        //CaptureMouse();
 
         if ( NewDragWidget )
         {
@@ -1064,6 +1064,7 @@ void wxsDragWindow::BlackDragPoints(wxsWidget* Widget)
 
 bool wxsDragWindow::IsInside(wxsWidget* What,wxsWidget* Where )
 {
+    if ( !Where ) return false;
 	return Where->FindChild(What,0) >= 0;
 }
 

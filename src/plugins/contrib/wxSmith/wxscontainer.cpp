@@ -29,7 +29,7 @@ int wxsContainer::FindChild(wxsWidget* Widget,int Level)
         return -1;
     }
 
-    while ( Widget != this )
+    while ( Widget && (Widget != this) )
     {
         Widget = Widget->GetParent();
         if ( --Level == 0 ) break;
