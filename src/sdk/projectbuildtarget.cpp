@@ -161,6 +161,14 @@ BuildTargets& ProjectBuildTarget::GetTargetDeps() {
 
 ProjectFile::ProjectFile()
 {
+    compile = false;
+    link = false;
+    weight = 50;
+    editorOpen = false;
+    editorPos = 0;
+    editorTopLine = 0;
+    useCustomBuildCommand = false;
+    autoDeps = true;
 }
 
 ProjectFile::~ProjectFile()

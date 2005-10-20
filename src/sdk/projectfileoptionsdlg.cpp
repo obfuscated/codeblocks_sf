@@ -118,6 +118,10 @@ void ProjectFileOptionsDlg::OnOKClick(wxCommandEvent& event)
 	m_ProjectFile->customDeps = XRCCTRL(*this, "txtCustomDeps", wxTextCtrl)->GetValue();
 	m_ProjectFile->compilerVar = XRCCTRL(*this, "txtCompiler", wxTextCtrl)->GetValue();
 
+	// make sure we have a compiler var, if the file is to be compiled
+	if (m_ProjectFile->compile && m_ProjectFile->compilerVar.IsEmpty())
+        m_ProjectFile->compilerVar = _T("CPP");
+
     cbProject* prj = m_ProjectFile->project;
     prj->SetModified(true);
 	EndModal(wxID_OK);
