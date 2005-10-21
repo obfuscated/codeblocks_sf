@@ -11,6 +11,9 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-Winvalid-pch"/>
+			<Add option="-include &quot;wx_pch.h&quot;"/>
+			<Add option="-DUSE_PCH"/>
 			<Add option="`wx-config --cflags`"/>
 		</Compiler>
 		<Linker>

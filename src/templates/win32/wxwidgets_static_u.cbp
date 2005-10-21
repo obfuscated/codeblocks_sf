@@ -11,7 +11,7 @@
 			</Target>
 			<Environment>
 				<Variable name="WX_DIR" value="C:\wxWidgets-2.6.2"/>
-				<Variable name="WX_CFG" value="NonUnicode"/>
+				<Variable name="WX_CFG" value="Unicode"/>
 			</Environment> 
 		</Build>
 		<Compiler>
@@ -21,17 +21,18 @@
 			<Add option="-include &quot;wx_pch.h&quot;"/>
 			<Add option="-D__GNUWIN32__"/>
 			<Add option="-D__WXMSW__"/>
+			<Add option="-DwxUSE_UNICODE"/>
 			<Add option="-DUSE_PCH"/>
 			<Add directory="$(WX_DIR)\include"/>
-			<Add directory="$(WX_DIR)\lib\gcc_lib\msw"/>
-			<Add directory="$(WX_DIR)\lib\gcc_lib$(WX_CFG)\msw"/>
+			<Add directory="$(WX_DIR)\lib\gcc_lib\mswu"/>
+			<Add directory="$(WX_DIR)\lib\gcc_lib$(WX_CFG)\mswu"/>
 			<Add directory="$(WX_DIR)\contrib\include"/>
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(WX_DIR)\include"/>
 		</ResourceCompiler> 
 		<Linker>
-			<Add library="wxmsw"/>
+			<Add library="wxmswu"/>
 			<Add library="winspool"/>
 			<Add library="winmm"/>
 			<Add library="shell32"/>
@@ -45,7 +46,7 @@
 			<Add library="ole32"/>
 			<Add library="oleaut32"/>
 			<Add library="uuid"/>
-			<Add directory="$(WX_DIR)\lib\gcc_lib\msw"/>
+			<Add directory="$(WX_DIR)\lib\gcc_lib\mswu"/>
 			<Add directory="$(WX_DIR)\lib\gcc_lib$(WX_CFG)"/> 
 		</Linker>
 		<Unit filename="wx_pch.h">

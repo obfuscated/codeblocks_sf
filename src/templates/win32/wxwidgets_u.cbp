@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<!DOCTYPE Code::Blocks_project_file>
-<Code::Blocks_project_file>
+<!DOCTYPE CodeBlocks_project_file>
+<CodeBlocks_project_file>
 	<FileVersion major="1" minor="1"/>
 	<Project>
 		<Option title="wxWidgets application"/>
@@ -11,7 +11,7 @@
 			</Target>
 			<Environment>
 				<Variable name="WX_DIR" value="C:\wxWidgets-2.6.2"/>
-				<Variable name="WX_CFG" value="NonUnicode"/>
+				<Variable name="WX_CFG" value="Unicode"/>
 			</Environment> 
 		</Build>
 		<Compiler>
@@ -21,32 +21,21 @@
 			<Add option="-include &quot;wx_pch.h&quot;"/>
 			<Add option="-D__GNUWIN32__"/>
 			<Add option="-D__WXMSW__"/>
+			<Add option="-DWXUSINGDLL"/>
+			<Add option="-DwxUSE_UNICODE"/>
 			<Add option="-DUSE_PCH"/>
 			<Add directory="$(WX_DIR)\include"/>
-			<Add directory="$(WX_DIR)\lib\gcc_lib\msw"/>
-			<Add directory="$(WX_DIR)\lib\gcc_lib$(WX_CFG)\msw"/>
+			<Add directory="$(WX_DIR)\lib\gcc_dll\mswu"/>
+			<Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)\mswu"/>
 			<Add directory="$(WX_DIR)\contrib\include"/>
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(WX_DIR)\include"/>
 		</ResourceCompiler> 
 		<Linker>
-			<Add library="wxmsw"/>
-			<Add library="winspool"/>
-			<Add library="winmm"/>
-			<Add library="shell32"/>
-			<Add library="comctl32"/>
-			<Add library="ctl3d32"/>
-			<Add library="odbc32"/>
-			<Add library="advapi32"/>
-			<Add library="wsock32"/>
-			<Add library="opengl32"/>
-			<Add library="glu32"/>
-			<Add library="ole32"/>
-			<Add library="oleaut32"/>
-			<Add library="uuid"/>
-			<Add directory="$(WX_DIR)\lib\gcc_lib\msw"/>
-			<Add directory="$(WX_DIR)\lib\gcc_lib$(WX_CFG)"/> 
+			<Add library="wxmsw26u"/>
+			<Add directory="$(WX_DIR)\lib\gcc_dll\mswu"/>
+			<Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)"/> 
 		</Linker>
 		<Unit filename="wx_pch.h">
 			<Option link="0"/>
@@ -54,4 +43,4 @@
 			<Option target="default"/>
 		</Unit>
 	</Project>
-</Code::Blocks_project_file>
+</CodeBlocks_project_file>
