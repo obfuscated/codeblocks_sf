@@ -368,6 +368,11 @@ void PluginWizardDlg::OnEditInfoClick(wxCommandEvent& event)
 
 void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
 {
+	EndModal(wxID_OK);
+}
+
+void PluginWizardDlg::CreateFiles()
+{
 	int type = XRCCTRL(*this, "cmbType", wxComboBox)->GetSelection();
 	bool isTool = type == 1;
 	// set some variable for easy reference
@@ -667,6 +672,4 @@ void PluginWizardDlg::OnOKClick(wxCommandEvent& event)
 	wxFile impl(UnixFilename(m_Implementation), wxFile::write);
 	cbWrite(impl,buffer);
 	// end of implementation file
-
-	EndModal(wxID_OK);
 }

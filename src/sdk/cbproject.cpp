@@ -570,16 +570,16 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     if (targetIndex >= 0 && targetIndex < (int)m_Targets.GetCount())
         f->AddBuildTarget(m_Targets[targetIndex]->GetTitle());
 
-//	FileType ft = FileTypeOf(filename);
-    localCompile = compile;// &&
-//					(ft == ftSource ||
-//					ft == ftResource);
-    localLink = link;// &&
-//				(ft == ftSource ||
-//				ft == ftResource ||
-//				ft == ftObject ||
-//				ft == ftResourceBin ||
-//				ft == ftStaticLib);
+	FileType ft = FileTypeOf(filename);
+    localCompile = compile &&
+					(ft == ftSource ||
+					ft == ftResource);
+    localLink = link &&
+				(ft == ftSource ||
+				ft == ftResource ||
+				ft == ftObject ||
+				ft == ftResourceBin ||
+				ft == ftStaticLib);
 
 
     f->compile = localCompile;

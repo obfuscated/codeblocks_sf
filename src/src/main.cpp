@@ -1239,13 +1239,6 @@ void MainFrame::OnFileNewEmpty(wxCommandEvent& event)
 		if (PRJMAN()->AddFileToProject(ed->GetFilename(), project, targets) != 0)
 		{
             ProjectFile* pf = project->GetFileByFilename(ed->GetFilename(), false);
-            FileType ft = FileTypeOf(ed->GetFilename());
-            pf->compile = (ft == ftSource || ft == ftResource);
-            pf->link = (ft == ftSource ||
-                        ft == ftResource ||
-                        ft == ftObject ||
-                        ft == ftResourceBin ||
-                        ft == ftStaticLib);
 			ed->SetProjectFile(pf);
 			PRJMAN()->RebuildTree();
 		}

@@ -73,6 +73,10 @@ void PluginWizard::OnRelease(bool appShutDown)
 
 int PluginWizard::Execute()
 {
+	PluginWizardDlg dlg;
+	if (dlg.ShowModal() != wxID_OK)
+        return -1;
+
     cbProject* project = Manager::Get()->GetProjectManager()->NewProject();
     if (!project)
         return -1;
@@ -112,10 +116,11 @@ int PluginWizard::Execute()
 
 #ifdef __WXMSW__
     // now create the necessary env. vars
-    wxString wxver = ConfigManager::Get()->Read(_T(""), _T("26"));
-    wxString wxdir = ConfigManager::Get()->Read(_T(""), _T("C:\\wxWidgets-2.6.1"));
-    wxString wxcfg = ConfigManager::Get()->Read(_T(""), _T("NonUnicode"));
-    wxString cbsdk = ConfigManager::Get()->Read(_T(""), _T("C:\\codeblocks-1.0rc2"));
+// TODO (mandrav#1#): Make these read from LibManager
+    wxString wxver = _T("26");
+    wxString wxdir = _T("C:\\wxWidgets-2.6.1");
+    wxString wxcfg = _T("NonUnicode");
+    wxString cbsdk = _T("C:\\codeblocks-1.0rc2");
     CustomVars vars;
     vars.Add(_T("WX_VER"), wxver);
     vars.Add(_T("WX_DIR"), wxdir);
@@ -130,35 +135,30 @@ int PluginWizard::Execute()
     project->AddLinkLib(_T("codeblocks"));
 
     wxSetWorkingDirectory(project->GetBasePath());
+    dlg.CreateFiles();
 
-	PluginWizardDlg dlg;
-	if (dlg.ShowModal() == wxID_OK)
-	{
-        wxString name = !dlg.GetInfo().name.IsEmpty() ? dlg.GetInfo().name : _T("CustomPlugin");
-        wxString title = !dlg.GetInfo().title.IsEmpty() ? dlg.GetInfo().title : name;
-        project->SetTitle(title);
-        project->AddFile(0, dlg.GetHeaderFilename());
-        project->AddFile(0, dlg.GetImplementationFilename());
+    wxString name = !dlg.GetInfo().name.IsEmpty() ? dlg.GetInfo().name : _T("CustomPlugin");
+    wxString title = !dlg.GetInfo().title.IsEmpty() ? dlg.GetInfo().title : name;
+    project->SetTitle(title);
+    project->AddFile(0, dlg.GetHeaderFilename());
+    project->AddFile(0, dlg.GetImplementationFilename());
 
-        ProjectBuildTarget* target = project->GetBuildTarget(0);
-        target->SetTargetType(ttDynamicLib);
-        target->SetCreateDefFile(false);
-        target->SetCreateStaticLib(false);
-        target->SetOutputFilename(name + _T(".") + DYNAMICLIB_EXT);
+    ProjectBuildTarget* target = project->GetBuildTarget(0);
+    target->SetTargetType(ttDynamicLib);
+    target->SetCreateDefFile(false);
+    target->SetCreateStaticLib(false);
+    target->SetOutputFilename(name + _T(".") + DYNAMICLIB_EXT);
 
-        Manager::Get()->GetProjectManager()->RebuildTree();
+    Manager::Get()->GetProjectManager()->RebuildTree();
 
 #ifdef __WXMSW__
-		wxMessageDialog msg(Manager::Get()->GetAppWindow(),
-						_("The new plugin project has been created.\n"
-						"You should now update the project's custom variables, to adjust "
-						"for your environment..."),
-						_("Information"),
-						wxOK | wxICON_INFORMATION);
-		msg.ShowModal();
+    wxMessageDialog msg(Manager::Get()->GetAppWindow(),
+                    _("The new plugin project has been created.\n"
+                    "You should now update the project's custom variables, to adjust "
+                    "for your environment..."),
+                    _("Information"),
+                    wxOK | wxICON_INFORMATION);
+    msg.ShowModal();
 #endif
-		return 0;
-	}
-
-	return -1;
+    return 0;
 }

@@ -1013,14 +1013,6 @@ int ProjectManager::DoAddFileToProject(const wxString& filename, cbProject* proj
     ProjectFile* pf = project->AddFile(targets[0], filename);
     if (pf)
     {
-        FileType ft = FileTypeOf(filename);
-        pf->compile = (ft == ftSource || ft == ftResource);
-        pf->link = (ft == ftSource ||
-                    ft == ftResource ||
-                    ft == ftObject ||
-                    ft == ftResourceBin ||
-                    ft == ftStaticLib);
-
         // if the file was added succesfully,
         // add to this file the rest of the selected targets...
         for (size_t i = 0; i < targets.GetCount(); ++i)
