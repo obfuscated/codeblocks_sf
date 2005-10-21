@@ -51,10 +51,10 @@ string HTMLExporter::HTMLStyle(const EditorColorSet *c_color_set, HighlightLangu
 
   if (lang == HL_NONE)
   {
-    return style_list;
+    return style_body + style_list;
   }
 
-  int count = color_set->GetOptionCount(lang);
+  const int count = color_set->GetOptionCount(lang);
 
   for (int i = 0; i < count; ++i)
   {

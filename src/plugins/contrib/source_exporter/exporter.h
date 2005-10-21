@@ -36,7 +36,8 @@ class Exporter : public cbPlugin
 		int Configure() { return 0; }
 		void OnAttach(); // fires when the plugin is attached to the application
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
-    void OnExport(wxCommandEvent &event);
+    void OnExportHTML(wxCommandEvent &event);
+    void OnExportRTF(wxCommandEvent &event);
     void OnUpdateUI(wxUpdateUIEvent &event);
   private:
     void BuildModuleMenu(const ModuleType type, wxMenu *menu, const wxString &arg) {}

@@ -20,6 +20,7 @@
 #include <cbexception.h>
 #include <licenses.h> // defines some common licenses (like the GPL)
 #include "HTMLExporter.h"
+#include "RTFExporter.h"
 #include <fstream>
 #include <string>
 
@@ -27,22 +28,25 @@ using std::ofstream;
 using std::string;
 
 static int idFileExportHTML = wxNewId();
+static int idFileExportRTF = wxNewId();
 
 // Implement the plugin's hooks
 CB_IMPLEMENT_PLUGIN(Exporter);
 
 BEGIN_EVENT_TABLE(Exporter, cbPlugin)
-  EVT_MENU(idFileExportHTML, Exporter::OnExport)
+  EVT_MENU(idFileExportHTML, Exporter::OnExportHTML)
+  EVT_MENU(idFileExportRTF, Exporter::OnExportRTF)
   EVT_UPDATE_UI(idFileExportHTML, Exporter::OnUpdateUI)
+  EVT_UPDATE_UI(idFileExportRTF, Exporter::OnUpdateUI)
 END_EVENT_TABLE()
 
 Exporter::Exporter()
 {
   //ctor
-  m_PluginInfo.name = _T("Source HTML Exporter");
-  m_PluginInfo.title = _("Source HTML exporter");
-  m_PluginInfo.version = _T("0.2");
-  m_PluginInfo.description = _("Plugin to export syntax highlighted source files to HTML.");
+  m_PluginInfo.name = _T("Source HTML and RTF Exporter");
+  m_PluginInfo.title = _("Source HTML and RTF exporter");
+  m_PluginInfo.version = _T("0.3");
+  m_PluginInfo.description = _("Plugin to export syntax highlighted source files to HTML or RTF.");
   m_PluginInfo.author = _T("Ceniza");
   m_PluginInfo.authorEmail = _T("ceniza@gda.utp.edu.co");
   m_PluginInfo.authorWebsite = _T("");
@@ -105,18 +109,25 @@ void Exporter::BuildMenu(wxMenuBar *menuBar)
     ++printPos; // after "Print"
   }
 
-  // insert menu item
+  // insert menu items
   file->Insert(printPos, idFileExportHTML, _("Export to HTML"), _("Exports the current file to HTML"));
+  file->Insert(printPos, idFileExportRTF, _("Export to RTF"), _("Exports the current file to RTF"));
 }
 
 void Exporter::RemoveMenu(wxMenuBar *menuBar)
 {
   wxMenu *menu = 0;
-  wxMenuItem *item = menuBar->FindItem(idFileExportHTML, &menu);
+  wxMenuItem *itemHTML = menuBar->FindItem(idFileExportHTML, &menu);
+  wxMenuItem *itemRTF = menuBar->FindItem(idFileExportRTF, &menu);
 
-  if (menu && item)
+  if (menu && itemHTML)
   {
-    menu->Remove(item);
+    menu->Remove(itemHTML);
+  }
+
+  if (menu && itemRTF)
+  {
+    menu->Remove(itemRTF);
   }
 }
 
@@ -137,12 +148,13 @@ void Exporter::OnUpdateUI(wxUpdateUIEvent &event)
     // Enabled if there's a source file opened (be sure it isn't the "Start here" page)
     bool disable = !em || !em->GetActiveEditor() || !em->GetBuiltinActiveEditor();
     mbar->Enable(idFileExportHTML, !disable);
+    mbar->Enable(idFileExportRTF, !disable);
   }
 
   event.Skip();
 }
 
-void Exporter::OnExport(wxCommandEvent &event)
+void Exporter::OnExportHTML(wxCommandEvent &event)
 {
   if (!m_IsAttached)
   {
@@ -167,4 +179,31 @@ void Exporter::OnExport(wxCommandEvent &event)
 
   ofstream file(filename.c_str());
   file << html_code;
+}
+
+void Exporter::OnExportRTF(wxCommandEvent &event)
+{
+  if (!m_IsAttached)
+  {
+    return;
+  }
+
+  EditorManager *em = EDMAN();
+  cbEditor *cb = em->GetBuiltinActiveEditor();
+  wxString filename = wxFileSelector(_("Choose the filename"), _T(""), _T(""), _T("rtf"),_("RTF files|*.rtf"), wxSAVE | wxOVERWRITE_PROMPT);
+
+  if (filename.IsEmpty())
+  {
+    return;
+  }
+
+  wxScintilla *ed = cb->GetControl();
+  wxMemoryBuffer mb = ed->GetStyledText(0, ed->GetLength() - 1);
+  EditorColorSet *ecs = cb->GetColorSet();
+
+  RTFExporter exp;
+  string rtf_code = exp.Export(cb->GetFilename(), mb, ecs);
+
+  ofstream file(filename.c_str());
+  file << rtf_code;
 }
