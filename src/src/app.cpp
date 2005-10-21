@@ -396,12 +396,12 @@ void CodeBlocksApp::ShowSplashScreen()
 	if (!m_NoSplash && ConfigManager::Get()->Read(_T("/environment/show_splash"), 1) == 1)
 	{
 		wxBitmap bitmap;
-		if (bitmap.LoadFile(CFG_READ(_T("/data_path")) + _T("/images/splash.png"), wxBITMAP_TYPE_PNG))
+		if (bitmap.LoadFile(CFG_READ(_T("/data_path")) + _T("/images/splash_new.png"), wxBITMAP_TYPE_PNG))
 		{
 			m_pSplash = new wxSplashScreen(bitmap,
 										wxSPLASH_CENTRE_ON_SCREEN,// | wxSPLASH_TIMEOUT,
 										6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
-										wxSIMPLE_BORDER);// | wxSTAY_ON_TOP);
+										wxBORDER_NONE);
 		}
 		wxSafeYield();
 	}
