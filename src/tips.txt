@@ -5,7 +5,6 @@ You can quickly create a new project by using one of the ready-made templates, b
 You can zoom in and out in the editor by holding Control while rolling the mousewheel
 You can change the colors of the editor by either using "Settings/Editor/Colors" or right-clicking inside the editor and click "Configure editor"
 You can create a duplicate of the line the caret is on, by pressing Ctrl+D
-You can indent / unindent blocks of test using the TAB and SHIFT-TAB keys
-If you don't like the Manager pane in the left, you can put it to the right in the "View" menu
+You can indent / unindent blocks of text using the TAB and SHIFT-TAB keys
 You can press F2 and Shift-F2 to hide the messages and manager pane respectively
 You can close all open files by pressing Ctrl-Shift-F4

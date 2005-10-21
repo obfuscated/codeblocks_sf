@@ -6,10 +6,13 @@
       <object class="wxMenuItem" name="idFileNew">
         
         
+        
         <label>New File</label>
         
         
+        
         <accel>Ctrl-N</accel>
+        
         
         
         <help>Create a new source file</help>
@@ -17,10 +20,13 @@
       <object class="wxMenuItem" name="idProjectNew">
         
         
+        
         <label>New Pro&amp;ject...</label>
         
         
+        
         <accel>Ctrl-Shift-N</accel>
+        
         
         
         <help>Create a new project based on a template</help>
@@ -29,10 +35,13 @@
       <object class="wxMenuItem" name="idFileOpen">
         
         
+        
         <label>&amp;Open</label>
         
         
+        
         <accel>Ctrl-O</accel>
+        
         
         
         <help>Open a file or project</help>
@@ -43,7 +52,9 @@
         <object class="wxMenuItem" name="idFileOpenRecentClearHistory">
           
           
+          
           <label>&amp;Clear history</label>
+          
           
           
           <help>Clear the recent files list</help>
@@ -53,10 +64,13 @@
       <object class="wxMenuItem" name="idFileSave">
         
         
+        
         <label>&amp;Save</label>
         
         
+        
         <accel>Ctrl-S</accel>
+        
         
         
         <help>Save the active file</help>
@@ -64,7 +78,9 @@
       <object class="wxMenuItem" name="idFileSaveAs">
         
         
+        
         <label>&amp;Save &amp;as...</label>
+        
         
         
         <help>Save the active file under a different name</help>
@@ -72,10 +88,13 @@
       <object class="wxMenuItem" name="idFileSaveAllFiles">
         
         
+        
         <label>&amp;Save a&amp;ll files</label>
         
         
+        
         <accel>Ctrl-Shift-S</accel>
+        
         
         
         <help>Save all modified files</help>
@@ -84,7 +103,9 @@
       <object class="wxMenuItem" name="idFileSaveProject">
         
         
+        
         <label>&amp;Save project</label>
+        
         
         
         <help>Save active project</help>
@@ -92,7 +113,9 @@
       <object class="wxMenuItem" name="idFileSaveProjectAs">
         
         
+        
         <label>Sa&amp;ve project as...</label>
+        
         
         
         <help>Save active project under a different name</help>
@@ -101,7 +124,9 @@
       <object class="wxMenuItem" name="idFileSaveWorkspace">
         
         
+        
         <label>Save &amp;Workspace</label>
+        
         
         
         <help>Save current workspace</help>
@@ -109,7 +134,9 @@
       <object class="wxMenuItem" name="idFileSaveWorkspaceAs">
         
         
+        
         <label>Save Wor&amp;kspace as...</label>
+        
         
         
         <help>Save current workspace under a different name</help>
@@ -118,10 +145,13 @@
       <object class="wxMenuItem" name="idFileClose">
         
         
+        
         <label>&amp;Close</label>
         
         
+        
         <accel>Ctrl-W</accel>
+        
         
         
         <help>Close the active file</help>
@@ -129,10 +159,13 @@
       <object class="wxMenuItem" name="idFileCloseAll">
         
         
+        
         <label>&amp;Close all</label>
         
         
+        
         <accel>Ctrl-Shift-W</accel>
+        
         
         
         <help>Close all open files</help>
@@ -140,7 +173,9 @@
       <object class="wxMenuItem" name="idProjectCloseProject">
         
         
+        
         <label>Close project</label>
+        
         
         
         <help>Close active project</help>
@@ -149,9 +184,11 @@
       <object class="wxMenuItem" name="idFilePrintSetup">
         
         
+        
         <label>Print setup...</label>
       </object>
       <object class="wxMenuItem" name="idFilePrint">
+        
         
         
         <label>Print...</label>
@@ -160,10 +197,13 @@
       <object class="wxMenuItem" name="idFileExit">
         
         
+        
         <label>&amp;Quit</label>
         
         
+        
         <accel>Ctrl-Q</accel>
+        
         
         
         <help>Exit Code::Blocks</help>
@@ -174,10 +214,13 @@
       <object class="wxMenuItem" name="idEditUndo">
         
         
+        
         <label>&amp;Undo</label>
         
         
+        
         <accel>Ctrl-Z</accel>
+        
         
         
         <help>Undo the last editing operation</help>
@@ -185,10 +228,13 @@
       <object class="wxMenuItem" name="idEditRedo">
         
         
+        
         <label>&amp;Redo</label>
         
         
+        
         <accel>Ctrl-Shift-Z</accel>
+        
         
         
         <help>Redo the last editing operation</help>
@@ -197,10 +243,13 @@
       <object class="wxMenuItem" name="idEditCut">
         
         
+        
         <label>Cu&amp;t</label>
         
         
+        
         <accel>Ctrl-X</accel>
+        
         
         
         <help>Copy selected text to clipboard and erase it</help>
@@ -208,10 +257,13 @@
       <object class="wxMenuItem" name="idEditCopy">
         
         
+        
         <label>&amp;Copy</label>
         
         
+        
         <accel>Ctrl-C</accel>
+        
         
         
         <help>Copy selected text to clipboard</help>
@@ -219,10 +271,13 @@
       <object class="wxMenuItem" name="idEditPaste">
         
         
+        
         <label>&amp;Paste</label>
         
         
+        
         <accel>Ctrl-V</accel>
+        
         
         
         <help>Paste text from clipboard</help>
@@ -231,10 +286,13 @@
       <object class="wxMenuItem" name="idEditSwapHeaderSource">
         
         
+        
         <label>S&amp;wap header/source</label>
         
         
+        
         <accel>F11</accel>
+        
         
         
         <help>Swap between header and source file pair</help>
@@ -245,10 +303,13 @@
         <object class="wxMenuItem" name="idEditBookmarksToggle">
           
           
+          
           <label>&amp;Toggle bookmark</label>
           
           
+          
           <accel>Ctrl-B</accel>
+          
           
           
           <help>Toggle a bookmark for the current position</help>
@@ -256,10 +317,13 @@
         <object class="wxMenuItem" name="idEditBookmarksPrevious">
           
           
+          
           <label>Goto &amp;previous bookmark</label>
           
           
+          
           <accel>Alt-PgUp</accel>
+          
           
           
           <help>Goto previous bookmark</help>
@@ -267,10 +331,13 @@
         <object class="wxMenuItem" name="idEditBookmarksNext">
           
           
+          
           <label>Goto &amp;next bookmark</label>
           
           
+          
           <accel>Alt-PgDn</accel>
+          
           
           
           <help>Goto next bookmark</help>
@@ -281,7 +348,9 @@
         <object class="wxMenuItem" name="idEditFoldAll">
           
           
+          
           <label>Fold &amp;all</label>
+          
           
           
           <help>Fold all</help>
@@ -289,7 +358,9 @@
         <object class="wxMenuItem" name="idEditUnfoldAll">
           
           
+          
           <label>&amp;Unfold all</label>
+          
           
           
           <help>Unfold all</help>
@@ -297,10 +368,13 @@
         <object class="wxMenuItem" name="idEditToggleAllFolds">
           
           
+          
           <label>&amp;Toggle all folds</label>
           
           
+          
           <accel>Shift-F12</accel>
+          
           
           
           <help>Toggle all folds</help>
@@ -309,7 +383,9 @@
         <object class="wxMenuItem" name="idEditFoldBlock">
           
           
+          
           <label>Fold &amp;current block</label>
+          
           
           
           <help>Fold current block</help>
@@ -317,7 +393,9 @@
         <object class="wxMenuItem" name="idEditUnfoldBlock">
           
           
+          
           <label>Unfold cu&amp;rrent block</label>
+          
           
           
           <help>Unfold current block</help>
@@ -325,10 +403,13 @@
         <object class="wxMenuItem" name="idEditToggleFoldBlock">
           
           
+          
           <label>Toggle current &amp;block</label>
           
           
+          
           <accel>F12</accel>
+          
           
           
           <help>Toggle folding of current block</help>
@@ -339,10 +420,13 @@
         <object class="wxMenuItem" name="idEditEOLCRLF">
           
           
+          
           <label>CR &amp;&amp; LF</label>
           
           
+          
           <help>End-of-line mode uses carriage return and line feed</help>
+          
           
           
           <radio>1</radio>
@@ -350,10 +434,13 @@
         <object class="wxMenuItem" name="idEditEOLCR">
           
           
+          
           <label>CR</label>
           
           
+          
           <help>End-of-line mode uses carriage return only</help>
+          
           
           
           <radio>1</radio>
@@ -361,10 +448,13 @@
         <object class="wxMenuItem" name="idEditEOLLF">
           
           
+          
           <label>LF</label>
           
           
+          
           <help>End-of-line mode uses line feed only</help>
+          
           
           
           <radio>1</radio>
@@ -374,10 +464,13 @@
       <object class="wxMenuItem" name="idEditSelectAll">
         
         
+        
         <label>Select &amp;all</label>
         
         
+        
         <accel>Ctrl-A</accel>
+        
         
         
         <help>Selects the entire text range</help>
@@ -385,10 +478,13 @@
       <object class="wxMenuItem" name="idEditCommentSelected">
         
         
+        
         <label>Comme&amp;nt</label>
         
         
+        
         <accel>Shift-Ctrl-C</accel>
+        
         
         
         <help>Comments the selected block of code</help>
@@ -396,10 +492,13 @@
       <object class="wxMenuItem" name="idEditUncommentSelected">
         
         
+        
         <label>Un&amp;comment</label>
         
         
+        
         <accel>Shift-Ctrl-X</accel>
+        
         
         
         <help>Uncomments the selected block of code</help>
@@ -407,7 +506,9 @@
       <object class="wxMenuItem" name="idEditToggleCommentSelected">
         
         
+        
         <label>Toggle Comme&amp;nt</label>
+        
         
         
         <help>Toggles the commentation of the selected block of code</help>
@@ -415,10 +516,13 @@
       <object class="wxMenuItem" name="idEditAutoComplete">
         
         
+        
         <label>Auto-complete</label>
         
         
+        
         <accel>Ctrl-J</accel>
+        
         
         
         <help>Auto-completes the word under the caret (nothing to do with code-completion plugins)</help>
@@ -429,13 +533,17 @@
       <object class="wxMenuItem" name="idViewToolMain">
         
         
+        
         <label>&amp;Toolbar</label>
+        
         
         
         <help>Show/hide toolbar</help>
         
         
+        
         <checkable>1</checkable>
+        
         
         
         <enabled>1</enabled>
@@ -443,55 +551,39 @@
       <object class="wxMenuItem" name="idViewManager">
         
         
+        
         <label>&amp;Manager</label>
+        
         
         
         <accel>Shift-F2</accel>
         
         
+        
         <help>Show/hide manager</help>
+        
         
         
         <checkable>1</checkable>
         
         
+        
         <enabled>1</enabled>
       </object>
-      <object class="wxMenu" name="idViewManagerPosition">
-        <label>Manager position</label>
-        <object class="wxMenuItem" name="idViewManagerPositionLeft">
-          
-          
-          <label>Left</label>
-          
-          
-          <help>Position the manager tree on the left side of the IDE</help>
-          
-          
-          <checkable>1</checkable>
-        </object>
-        <object class="wxMenuItem" name="idViewManagerPositionRight">
-          
-          
-          <label>Right</label>
-          
-          
-          <help>Position the manager tree on the right side of the IDE</help>
-          
-          
-          <checkable>1</checkable>
-        </object>
-      </object>
       <object class="wxMenuItem" name="idViewOpenFilesTree">
+        
         
         
         <label>&amp;Open files list</label>
         
         
+        
         <help>Show/hide open files list</help>
         
         
+        
         <checkable>1</checkable>
+        
         
         
         <enabled>1</enabled>
@@ -499,16 +591,21 @@
       <object class="wxMenuItem" name="idViewMessageManager">
         
         
+        
         <label>Messa&amp;ges</label>
+        
         
         
         <accel>F2</accel>
         
         
+        
         <help>Show/hide messages</help>
         
         
+        
         <checkable>1</checkable>
+        
         
         
         <enabled>1</enabled>
@@ -516,13 +613,17 @@
       <object class="wxMenuItem" name="idViewStatusbar">
         
         
+        
         <label>&amp;Status bar</label>
+        
         
         
         <help>Show/hide status bar</help>
         
         
+        
         <checkable>1</checkable>
+        
         
         
         <enabled>1</enabled>
@@ -531,13 +632,17 @@
       <object class="wxMenuItem" name="idViewFullScreen">
         
         
+        
         <label>F&amp;ullScreen</label>
+        
         
         
         <help>Switch to FullScreen view</help>
         
         
+        
         <checkable>1</checkable>
+        
         
         
         <enabled>1</enabled>
@@ -546,10 +651,13 @@
       <object class="wxMenuItem" name="idViewFocusEditor">
         
         
+        
         <label>Focus editor</label>
         
         
+        
         <accel>Ctrl-Alt-E</accel>
+        
         
         
         <help>Set focus on the active editor</help>
@@ -560,10 +668,13 @@
       <object class="wxMenuItem" name="idSearchFind">
         
         
+        
         <label>&amp;Find...</label>
         
         
+        
         <accel>Ctrl-F</accel>
+        
         
         
         <help>Search for text</help>
@@ -571,10 +682,13 @@
       <object class="wxMenuItem" name="idSearchFindNext">
         
         
+        
         <label>Find &amp;next</label>
         
         
+        
         <accel>F3</accel>
+        
         
         
         <help>Repeat the last search in the same direction</help>
@@ -582,10 +696,13 @@
       <object class="wxMenuItem" name="idSearchFindPrevious">
         
         
+        
         <label>Find &amp;previous</label>
         
         
+        
         <accel>Shift-F3</accel>
+        
         
         
         <help>Repeat the last search in the opposite direction</help>
@@ -594,10 +711,13 @@
       <object class="wxMenuItem" name="idSearchReplace">
         
         
+        
         <label>&amp;Replace</label>
         
         
+        
         <accel>Ctrl-R</accel>
+        
         
         
         <help>Find and replace text</help>
@@ -606,10 +726,13 @@
       <object class="wxMenuItem" name="idSearchGotoLine">
         
         
+        
         <label>Goto &amp;line...</label>
         
         
+        
         <accel>Ctrl-G</accel>
+        
         
         
         <help>Goto a specific line</help>
@@ -620,10 +743,13 @@
       <object class="wxMenuItem" name="idProjectNew">
         
         
+        
         <label>&amp;New project...</label>
         
         
+        
         <accel>Ctrl-Shift-N</accel>
+        
         
         
         <help>Create a new project based on a template</help>
@@ -631,7 +757,9 @@
       <object class="wxMenuItem" name="idProjectNewEmptyProject">
         
         
+        
         <label>New &amp;empty project</label>
+        
         
         
         <help>Create a new empty project</help>
@@ -640,7 +768,9 @@
       <object class="wxMenuItem" name="idProjectOpen">
         
         
+        
         <label>&amp;Open project</label>
+        
         
         
         <help>Open an existing project</help>
@@ -650,7 +780,9 @@
         <object class="wxMenuItem" name="idProjectImportDevCpp">
           
           
+          
           <label>Dev-C++ project</label>
+          
           
           
           <help>Import an existing Dev-C++ project</help>
@@ -659,7 +791,9 @@
         <object class="wxMenuItem" name="idProjectImportMSVC">
           
           
+          
           <label>MS Visual C++ project</label>
+          
           
           
           <help>Import an existing MS Visual C++ project</help>
@@ -667,7 +801,9 @@
         <object class="wxMenuItem" name="idProjectImportMSVCWksp">
           
           
+          
           <label>MS Visual C++ workspace</label>
+          
           
           
           <help>Import an existing MS Visual C++ workspace</help>
@@ -676,7 +812,9 @@
         <object class="wxMenuItem" name="idProjectImportMSVS">
           
           
+          
           <label>MS Visual Studio project</label>
+          
           
           
           <help>Import an existing MS Visual Studio project</help>
@@ -684,7 +822,9 @@
         <object class="wxMenuItem" name="idProjectImportMSVSWksp">
           
           
+          
           <label>MS Visual Studio solution</label>
+          
           
           
           <help>Import an existing MS Visual Studio solution</help>
@@ -694,7 +834,9 @@
       <object class="wxMenuItem" name="idProjectSaveProject">
         
         
+        
         <label>&amp;Save project</label>
+        
         
         
         <help>Save active project</help>
@@ -702,7 +844,9 @@
       <object class="wxMenuItem" name="idProjectSaveProjectAs">
         
         
+        
         <label>Save project &amp;as...</label>
+        
         
         
         <help>Save active project under a different name</help>
@@ -710,7 +854,9 @@
       <object class="wxMenuItem" name="idProjectSaveAllProjects">
         
         
+        
         <label>Save a&amp;ll projects</label>
+        
         
         
         <help>Save all modified projects</help>
@@ -719,7 +865,9 @@
       <object class="wxMenuItem" name="idProjectSaveTemplate">
         
         
+        
         <label>&amp;Save project as user-template</label>
+        
         
         
         <help>Keep this project as a user-template to base new projects on</help>
@@ -728,7 +876,9 @@
       <object class="wxMenuItem" name="idProjectCloseProject">
         
         
+        
         <label>&amp;Close project</label>
+        
         
         
         <help>Close active project</help>
@@ -736,7 +886,9 @@
       <object class="wxMenuItem" name="idProjectCloseAllProjects">
         
         
+        
         <label>Close all projects</label>
+        
         
         
         <help>Close all opened projects</help>
@@ -750,7 +902,9 @@
       <object class="wxMenuItem" name="idPluginsManagePlugins">
         
         
+        
         <label>Manage &amp;plugins</label>
+        
         
         
         <help>Enable or disable plugins for the next session</help>
@@ -761,7 +915,9 @@
       <object class="wxMenuItem" name="idSettingsEnvironment">
         
         
+        
         <label>&amp;Environment</label>
+        
         
         
         <help>Change environment settings</help>
@@ -769,7 +925,9 @@
       <object class="wxMenuItem" name="idSettingsEditor">
         
         
+        
         <label>E&amp;ditor</label>
+        
         
         
         <help>Change editor's settings</help>
@@ -781,7 +939,9 @@
       <object class="wxMenuItem" name="idSettingsImpExpConfig">
         
         
+        
         <label>Import/e&amp;xport configuration</label>
+        
         
         
         <help>Import/export configuration settings to/from file</help>
@@ -792,7 +952,9 @@
       <object class="wxMenuItem" name="wxID_ABOUT">
         
         
+        
         <label>&amp;About...</label>
+        
         
         
         <help>About Code::Blocks</help>
@@ -800,7 +962,9 @@
       <object class="wxMenuItem" name="idHelpTips">
         
         
+        
         <label>&amp;Tips</label>
+        
         
         
         <help>Tips on using Code::Blocks</help>

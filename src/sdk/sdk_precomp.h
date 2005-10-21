@@ -38,7 +38,6 @@
     #include <wx/xrc/xmlres.h>
     #include <wx/intl.h>
     #include <wx/font.h>
-    #include <wx/stc/stc.h>
     #include <wx/hashmap.h>
     #include <wx/list.h>
     #include <wx/thread.h>
