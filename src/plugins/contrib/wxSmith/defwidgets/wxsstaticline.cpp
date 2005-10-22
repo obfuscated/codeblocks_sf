@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxsstaticline.h"
 
 #include "wx/statline.h"

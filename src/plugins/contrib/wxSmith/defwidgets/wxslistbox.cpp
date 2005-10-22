@@ -1,12 +1,13 @@
+#include "../wxsheaders.h"
 #include "wxslistbox.h"
 
 #include <wx/listbox.h>
 
 WXS_ST_BEGIN(wxsListBoxStyles)
     WXS_ST_CATEGORY("wxListBox")
-#ifdef __WIN32__    
+#ifdef __WIN32__
     WXS_ST(wxLB_HSCROLL) // Windows ONLY
-#endif    
+#endif
     WXS_ST(wxLB_SINGLE)
     WXS_ST(wxLB_MULTIPLE)
     WXS_ST(wxLB_EXTENDED)
@@ -33,7 +34,7 @@ wxsDWDefineBegin(wxsListBox,wxListBox,
         wxsDWAddStrings(arrayChoices,ThisWidget);
         wxsDWSelectString(arrayChoices,defaultChoice,ThisWidget);
     )
-   
+
     #ifdef __NO_PROPGRID
         wxsDWDefIntX(defaultChoice,"selection","Default:",-1)
     #else

@@ -1,3 +1,4 @@
+#include "wxsheaders.h"
 #include "wxsdefsizer.h"
 
 #include "properties/wxsborderproperty.h"

@@ -1,3 +1,4 @@
+#include "wxsheaders.h"
 #include "wxspalette.h"
 
 #include <wx/sizer.h>
@@ -26,54 +27,54 @@ wxsPalette::wxsPalette(wxWindow* Parent,int PN):
 {
 	wxScrolledWindow* Scroll = new wxScrolledWindow(this,-1);
 	Scroll->SetScrollRate(5,5);
-	
+
 	wxFlexGridSizer* Sizer = new wxFlexGridSizer(0,1,5,5);
 	Sizer->AddGrowableCol(0);
 	Sizer->AddGrowableRow(1);
-	
+
 	wxFlexGridSizer* Sizer2 = new wxFlexGridSizer(2,0,5,15);
 	Sizer2->AddGrowableCol(3);
-	
+
 	Sizer2->Add(new wxStaticText(Scroll,-1,_("Insertion type")));
 	Sizer2->Add(new wxStaticText(Scroll,-1,_("Delete")));
 	Sizer2->Add(new wxStaticText(Scroll,-1,_("Preview")));
 	Sizer2->Add(new wxStaticText(Scroll,-1,_("Top list")));
-	
+
 	wxGridSizer* Sizer3 = new wxGridSizer(1,0,5,5);
 	Sizer3->Add(AddBefore = new wxRadioButton(Scroll,-1,_("Before")));
 	Sizer3->Add(AddAfter  = new wxRadioButton(Scroll,-1,_("After")));
 	Sizer3->Add(AddInto   = new wxRadioButton(Scroll,-1,_("Into")));
-	
+
 	Sizer2->Add(Sizer3);
-	
+
 	Sizer2->Add(new wxButton(Scroll,DeleteId,_("Delete")));
 	Sizer2->Add(new wxButton(Scroll,PreviewId,_("Preview")));
-	
+
 	Sizer->Add(Sizer2,0,wxALL|wxGROW,10);
-	
+
 	wxPanel* WidgetsSpace = new wxPanel(Scroll,-1);
-	
+
 	CreateWidgetsPalette(WidgetsSpace);
-	
+
 	Sizer->Add(WidgetsSpace,0,wxALL|wxGROW,10);
-	
+
 	Scroll->SetSizer(Sizer);
 	Sizer->SetVirtualSizeHints(Scroll);
-	
+
 	wxSizer* TopSizer = new wxBoxSizer(wxVERTICAL);
-	
+
 	TopSizer->Add(Scroll,1,wxGROW);
 	SetSizer(TopSizer);
-	
+
 	Singleton = this;
-	
+
 	SetInsertionTypeMask(0);
-	
+
 	SelectedRes = NULL;
 	FindWindow(PreviewId)->Disable();
-	
+
 	Timer.SetOwner(this);
-	
+
 	Timer.Start(100,false);
 }
 
@@ -85,27 +86,27 @@ wxsPalette::~wxsPalette()
 int wxsPalette::GetInsertionType()
 {
     int IT = InsType & InsTypeMask;
-    
+
     if ( !IT )
     {
         if ( InsTypeMask & itBefore ) IT = itBefore;
         else if ( InsTypeMask & itAfter ) IT = itAfter;
         else if ( InsTypeMask & itInto ) IT = itInto;
-    }    
-    
+    }
+
     return IT;
 }
 
 void wxsPalette::SetInsertionTypeMask(int Mask)
 {
     InsTypeMask = Mask;
-    
+
     AddBefore->Enable( (Mask & itBefore) != 0 );
     AddAfter->Enable( (Mask & itAfter) != 0 );
     AddInto->Enable( (Mask & itInto) != 0 );
-    
+
     int CurrentIT = GetInsertionType();
-    
+
     AddBefore->SetValue( (CurrentIT & itBefore) != 0 );
     AddAfter->SetValue( (CurrentIT & itAfter) != 0 );
     AddInto->SetValue( (CurrentIT & itInto) != 0 );
@@ -117,7 +118,7 @@ void wxsPalette::OnRadio(wxCommandEvent& event)
         ( AddBefore->GetValue() ? itBefore : 0 ) |
         ( AddAfter->GetValue()  ? itAfter  : 0 ) |
         ( AddInto->GetValue()   ? itInto   : 0 );
-        
+
     InsType = CurrentIT;
 }
 
@@ -129,31 +130,31 @@ void wxsPalette::CreateWidgetsPalette(wxWindow* Wnd)
 {
     // First we need to split all widgets into groups
     // it will be done using multimap
- 
- 
+
+
     typedef std::multimap<const wxChar*,const wxsWidgetInfo*,ltstr> MapT;
     typedef MapT::iterator MapI;
-    
+
     MapT Map;
-    
+
     for ( const wxsWidgetInfo* Info = wxsFACTORY()->GetFirstInfo(); Info; Info = wxsFACTORY()->GetNextInfo() )
         Map.insert(std::pair<const wxChar*,const wxsWidgetInfo*>(Info->Category,Info));
-        
+
     // Creatign main sizer inside window
     wxFlexGridSizer* Sizer = new wxFlexGridSizer(0,1,0,0);
     Sizer->AddGrowableCol(0);
-    
+
     wxFlexGridSizer* RowSizer = NULL;
-    
+
     const wxChar* PreviousGroup = _T("");
-    
+
     for ( MapI i = Map.begin(); i != Map.end(); ++i )
     {
         if ( !(*i).first || wxStricmp(PreviousGroup,(*i).first) )
         {
             if ( RowSizer ) Sizer->Add(RowSizer,0,wxALL|wxGROW,5);
             Sizer->Add(new wxStaticLine(Wnd,-1),0,wxGROW);
-            
+
             if ( (*i).first && (*i).first[0] )
             {
                 // Need to create new group
@@ -171,7 +172,7 @@ void wxsPalette::CreateWidgetsPalette(wxWindow* Wnd)
         {
             if ( (*i).second->Icon )
             {
-                wxBitmapButton* Btn = 
+                wxBitmapButton* Btn =
                     new wxBitmapButton(Wnd,-1,*(*i).second->Icon,
                         wxDefaultPosition,wxDefaultSize,wxBU_AUTODRAW,
                         wxDefaultValidator, (*i).second->Name);
@@ -188,9 +189,9 @@ void wxsPalette::CreateWidgetsPalette(wxWindow* Wnd)
             }
         }
     }
-    
+
     if ( RowSizer ) Sizer->Add(RowSizer,0,wxALL|wxGROW,5);
-    
+
     Wnd->SetSizer(Sizer);
     Sizer->SetSizeHints(Wnd);
 }
@@ -229,42 +230,42 @@ void wxsPalette::InsertRequest(const wxString& Name)
     {
         return;
     }
-    
+
     wxsWindowEditor* Edit = Current->GetEditor();
-    
+
     wxsWidget* NewWidget = wxsGEN(Name,Current->GetResource());
     if ( NewWidget == NULL )
     {
         DebLog(_("wxSmith: Culdn't generate widget inside factory"));
         return;
     }
-    
+
     switch ( GetInsertionType() )
     {
         case itBefore:
             InsertBefore(NewWidget,Current);
             break;
-            
+
         case itAfter:
             InsertAfter(NewWidget,Current);
             break;
-            
+
         case itInto:
             InsertInto(NewWidget,Current);
             break;
-            
+
         default:
             wxsKILL(NewWidget);
             DebLog(_("Something went wrong"));
             break;
     }
-    
-    
+
+
     if ( Edit )
     {
         Edit->BuildPreview();
     }
-    
+
     if ( SelectedRes )
     {
 		SelectedRes->NotifyChange();
@@ -274,9 +275,9 @@ void wxsPalette::InsertRequest(const wxString& Name)
 void wxsPalette::InsertBefore(wxsWidget* New,wxsWidget* Ref)
 {
     wxsWidget* Parent = Ref->GetParent();
-    
+
     int Index;
-    
+
     if ( !Parent || (Index=Parent->FindChild(Ref)) < 0 || Parent->AddChild(New,Index) < 0 )
     {
         wxsKILL(New);
@@ -284,17 +285,17 @@ void wxsPalette::InsertBefore(wxsWidget* New,wxsWidget* Ref)
     }
 
     // Adding this new item into resource tree
-    
+
     New->BuildTree(wxsTREE(),Parent->TreeId,Index);
     wxsTREE()->Refresh();
-}   
+}
 
 void wxsPalette::InsertAfter(wxsWidget* New,wxsWidget* Ref)
 {
     wxsWidget* Parent = Ref->GetParent();
-    
+
     int Index;
-    
+
     if ( !Parent || (Index=Parent->FindChild(Ref)) < 0 || Parent->AddChild(New,Index+1) < 0 )
     {
         wxsKILL(New);
@@ -302,7 +303,7 @@ void wxsPalette::InsertAfter(wxsWidget* New,wxsWidget* Ref)
     }
     New->BuildTree(wxsTREE(),Parent->TreeId,Index+1);
     wxsTREE()->Refresh();
-}   
+}
 
 void wxsPalette::InsertInto(wxsWidget* New,wxsWidget* Ref)
 {
@@ -313,11 +314,11 @@ void wxsPalette::InsertInto(wxsWidget* New,wxsWidget* Ref)
     }
     New->BuildTree(wxsTREE(),Ref->TreeId);
     wxsTREE()->Refresh();
-}   
+}
 
 void wxsPalette::DeleteRequest()
 {
-	
+
     wxsWidget* Current = wxsPropertiesMan::Get()->GetActiveWidget();
     if ( Current == NULL )
     {
@@ -326,20 +327,20 @@ void wxsPalette::DeleteRequest()
     }
 
     wxsWidget* Parent = Current->GetParent();
-    
+
     if ( !Parent )
     {
         wxMessageBox(_("Can not delete main widget (for now ;)"));
         return;
     }
-    
+
     wxsWindowEditor* Edit = Current->GetEditor();
-    
+
     if ( Edit )
     {
         Edit->KillPreview();
     }
-    
+
     wxsKILL(Current);
 
     if ( Edit )
@@ -362,19 +363,19 @@ void wxsPalette::PreviewRequest()
 void wxsPalette::OnSelectWidget(wxsEvent& event)
 {
     int itMask = 0;
-    
-    if ( event.GetWidget()->GetParent() && 
+
+    if ( event.GetWidget()->GetParent() &&
          ( !event.GetWidget()->GetInfo().Sizer ||
             event.GetWidget()->GetParent()->GetInfo().Sizer ) )
     {
         itMask |= wxsPalette::itBefore | wxsPalette::itAfter;
     }
-    
+
     if ( event.GetWidget()->IsContainer() )
     {
         itMask |= wxsPalette::itInto;
     }
-    
+
     SetInsertionTypeMask(itMask);
     SelectedWidget = event.GetWidget();
 }
@@ -391,15 +392,15 @@ void wxsPalette::OnUnselectWidget(wxsEvent& event)
 void wxsPalette::OnSelectRes(wxsEvent& event)
 {
     wxsResource* Res = event.GetResource();
-    
+
     if ( Res )
     {
         Manager::Get()->GetMessageManager()->SetSelection(PageNum);
         Res->EditOpen();
     }
-    
+
     SelectedRes = Res;
-    
+
     if ( Res && Res->CanPreview() )
     {
         FindWindow(PreviewId)->Enable();

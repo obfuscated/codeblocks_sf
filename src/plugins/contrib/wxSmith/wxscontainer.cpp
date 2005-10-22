@@ -1,3 +1,4 @@
+#include "wxsheaders.h"
 #include "wxscontainer.h"
 
 #include "wxswidgetfactory.h"

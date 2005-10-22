@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxsstdmanager.h"
 
 #include "wxsbutton.h"
@@ -119,7 +120,7 @@ static const wxString DefSizerCat    = _("Layout");
         _T(""),                                         \
         wxsWidgetInfo::exNone                           \
     },
-        
+
 
 #define SizerEntry(Name,Link,Header)                            \
     {   _T("wx") _T(#Name),                                     \
@@ -144,20 +145,20 @@ static const wxString DefSizerCat    = _("Layout");
         _T(""),                                                 \
         wxsWidgetInfo::exNone                                   \
     },
-        
+
 
 static wxsWidgetInfo StdInfos[] =
 {
     { _T(""), _T(""), _T(""), _T(""), _T(""), _T(""), _T(""), _T(""), false,
-      false, false, 0, 0, NULL, NULL, wxsNoneId, 0, NULL, NULL, _T(""), _T(""), 
+      false, false, 0, 0, NULL, NULL, wxsNoneId, 0, NULL, NULL, _T(""), _T(""),
       wxsWidgetInfo::exNone },  // NONE
-    
+
     SizerEntry(GridSizer,"wx_wxgridsizer.html#wxgridsizer","<wx/sizer.h>")
     SizerEntry(BoxSizer,"wx_wxboxsizer.html#wxboxsizer","<wx/sizer.h>")
     SizerEntry(StaticBoxSizer,"wx_wxstaticboxsizer.html#wxstaticboxsizer","<wx/sizer.h>")
     SizerEntry(FlexGridSizer,"wx_wxflexgridsizer.html#wxflexgridsizer","<wx/sizer.h>")
     SpacerEntry()
- 
+
     Entry(Button,      "wx_wxbutton.htm#wxbutton","<wx/button.h>")
     Entry(ToggleButton,"wx_wxtogglebutton.html#wxtogglebutton","<wx/tglbtn.h>")
     Entry(CheckBox,    "wx_wxcheckbox.html#wxcheckbox","<wx/checkbox.h>")
@@ -167,7 +168,7 @@ static wxsWidgetInfo StdInfos[] =
     Entry(Panel,       "wx_wxpanel.html#wxpanel","<wx/panel.h>")
     Entry(TextCtrl,    "wx_wxtextctrl.html#wxtextctrl","<wx/textctrl.h>")
     Entry(Gauge,       "wx_wxgauge.html#wxgauge","<wx/gauge.h>")
-    Entry(RadioButton,   "wx_wxradiobutton.html#wxradiobutton","<wx/radiobut.h>")   
+    Entry(RadioButton,   "wx_wxradiobutton.html#wxradiobutton","<wx/radiobut.h>")
     Entry(ScrollBar,     "wx_wxscrollbar.html#wxscrollbar","<wx/scrolbar.h>")
     Entry(SpinButton,    "wx_wxspinbutton.html#wxspinbutton","<wx/spinbutt.h>")
     Entry(SpinCtrl,      "wx_wxspinctrl.html#wxspinctrl","<wx/spinctrl.h>")
@@ -178,11 +179,11 @@ static wxsWidgetInfo StdInfos[] =
     Entry(SplitterWindow,"wx_wxsplitterwindow.html#wxsplitterwindow","<wx/splitter.h>")
     Entry(Notebook,      "wx_wxnotebook.html#wxnotebook","<wx/notebook.h>")
     Entry(Listbook,      "wx_wxlistbook.html#wxlistbook","<wx/listbook.h>")
-    
+
     WindowEntry(Dialog,"wx_wxdialog.html#wxdialog","<wx/dialog.h>")
     WindowEntry(Frame, "wx_wxframe.html#wxframe","<wx/frame.h>")
     WindowEntry(Panelr,"wx_wxpanel.html#wxpanel","<wx/panel.h>")
-    
+
 };
 
 static const int StdInfosCnt = sizeof(StdInfos) / sizeof(StdInfos[0]);
@@ -214,7 +215,7 @@ bool wxsStdManagerT::Initialize()
         if ( wxFileName::FileExists(FileName) )
         {
             Bmp->LoadFile(FileName,wxBITMAP_TYPE_PNG);
-                
+
             if ( Bmp->Ok() )
             {
                 StdInfos[i].Icon = Bmp;
@@ -237,7 +238,7 @@ int wxsStdManagerT::GetCount()
 {
     return wxsStdIdCount;
 }
-        
+
 /** Getting widget's info */
 const wxsWidgetInfo* wxsStdManagerT::GetWidgetInfo(int Number)
 {
@@ -280,7 +281,7 @@ wxsWidget* wxsStdManagerT::ProduceWidget(int Id,wxsWindowRes* Res)
         case wxsNotebookId:         return new wxsNotebook(this,Res);
         case wxsListbookId:         return new wxsListbook(this,Res);
     }
-    
+
     return NULL;
 }
 

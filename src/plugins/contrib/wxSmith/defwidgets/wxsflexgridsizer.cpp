@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxsflexgridsizer.h"
 
 #include "../properties/wxsstringproperty.h"
@@ -11,9 +12,9 @@ namespace
             wxsFlexGridSizerColsRowsProperty(wxsProperties* Properties,wxString& String, bool AlwaysUpdate):
                 wxsStringProperty(Properties,String,AlwaysUpdate)
             {}
-            
+
         protected:
-        
+
             virtual wxString CorrectValue(const wxString& Value)
             {
             	wxString Return = Value;
@@ -30,7 +31,7 @@ wxString wxsFlexGridSizer::GetProducingCode(wxsCodeParams& Params)
     Code.Printf(_T("%s = new wxFlexGridSizer(%d,%d,%d,%d);"),
         BaseParams.VarName.c_str(),
         Rows, Cols, VGap, HGap );
-        
+
     wxArrayInt Cols = GetArray(GrowableCols);
     for ( size_t i=0; i<Cols.Count(); i++ )
     {
@@ -38,7 +39,7 @@ wxString wxsFlexGridSizer::GetProducingCode(wxsCodeParams& Params)
             BaseParams.VarName.c_str(),
             Cols[i]));
     }
-    
+
     wxArrayInt Rows = GetArray(GrowableRows);
     for ( size_t i=0; i<Rows.Count(); i++ )
     {
@@ -46,7 +47,7 @@ wxString wxsFlexGridSizer::GetProducingCode(wxsCodeParams& Params)
             BaseParams.VarName.c_str(),
             Rows[i]));
     }
-    
+
     return Code;
 }
 
@@ -113,13 +114,13 @@ wxSizer* wxsFlexGridSizer::ProduceSizer(wxWindow* Panel)
     {
     	Sizer->AddGrowableCol(Cols[i]);
     }
-    
+
     wxArrayInt Rows = GetArray(GrowableRows);
     for ( size_t i=0; i<Rows.Count(); i++ )
     {
     	Sizer->AddGrowableRow(Rows[i]);
     }
-    
+
     return Sizer;
 }
 
@@ -131,7 +132,7 @@ wxArrayInt wxsFlexGridSizer::GetArray(const wxString& String,bool* Valid)
 	{
 		*Valid = true;
 	}
-	
+
 	while ( Tokens.HasMoreTokens() )
 	{
 		long Value;
@@ -144,7 +145,7 @@ wxArrayInt wxsFlexGridSizer::GetArray(const wxString& String,bool* Valid)
 		}
 		Array.Add((int)Value);
 	}
-	
+
 	return Array;
 }
 

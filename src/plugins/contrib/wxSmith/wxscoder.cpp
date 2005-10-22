@@ -1,3 +1,4 @@
+#include "wxsheaders.h"
 #include "wxscoder.h"
 
 #include <manager.h>
@@ -23,7 +24,7 @@ wxsCoder::~wxsCoder()
 void wxsCoder::AddCode(const wxString& FileName,const wxString& BlockHeader,const wxString& Code,bool Immediately)
 {
 	DataMutex.Lock();
-	
+
 	// Iterating through all enteries searching for currently associated code
 
 	CodeEntry* Entry;
@@ -35,10 +36,10 @@ void wxsCoder::AddCode(const wxString& FileName,const wxString& BlockHeader,cons
 		if ( Entry->FileName == FileName && Entry->BlockHeader == BlockHeader )
 			break;
 	}
-	
+
 	if ( Entry )
 	{
-		( Previous ? Previous->Next : Enteries ) = Entry->Next;		
+		( Previous ? Previous->Next : Enteries ) = Entry->Next;
 		Previous = Entry;
 		if ( Previous ) while ( Previous->Next ) Previous = Previous->Next;
 	}
@@ -50,7 +51,7 @@ void wxsCoder::AddCode(const wxString& FileName,const wxString& BlockHeader,cons
 	}
 
 	Entry->Code = Code;
-	
+
 	if ( Immediately )
 	{
 		ApplyChanges(Entry);
@@ -63,19 +64,19 @@ void wxsCoder::AddCode(const wxString& FileName,const wxString& BlockHeader,cons
         ( Previous ? Previous->Next : Enteries ) = Entry;
 	}
 	DataMutex.Unlock();
-	
+
 // TODO (SpOoN#1#): Add sheduling and replace direct processing
-	
+
 	ProcessCodeQueue();
 }
 
 bool wxsCoder::ProcessCodeQueue()
 {
 	wxMutexLocker Locker(DataMutex);
-	
+
 	if ( BlockProcess ) return false;
 	BlockProcess = true;
-	
+
 	bool Result = true;
 	time_t now;
 	time(&now);
@@ -88,7 +89,7 @@ bool wxsCoder::ProcessCodeQueue()
 		Enteries = Enteries->Next;
 		delete Entry;
 	}
-	
+
 	BlockProcess = false;
 	return Result;
 }
@@ -108,13 +109,13 @@ bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry)
 {
 	EditorManager* EM = Manager::Get()->GetEditorManager();
 	assert ( EM != NULL );
-	
+
     cbEditor* Editor = EM->GetBuiltinEditor(Entry->FileName);
     if ( Editor )
     {
         return ApplyChanges(Entry,Editor);
     }
-    
+
     return ApplyChanges(Entry,Entry->FileName);
 }
 
@@ -123,14 +124,14 @@ bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry,cbEditor* Editor)
 	assert ( Editor != NULL );
 	cbStyledTextCtrl* Ctrl = Editor->GetControl();
 	assert ( Ctrl != NULL );
-	
+
 	Ctrl->SetSearchFlags(wxSCI_FIND_MATCHCASE);
-	
+
 	Ctrl->SetTargetStart(0);
 	Ctrl->SetTargetEnd(Ctrl->GetLength());
-	
+
 	int Position = Ctrl->SearchInTarget(Entry->BlockHeader);
-	
+
 	if ( Position == -1 )
 	{
 		wxMessageBox(wxString::Format(
@@ -159,7 +160,7 @@ bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry,cbEditor* Editor)
         Ctrl->ReplaceTarget(Entry->Code);
         Editor->SetModified();
     }
-		
+
 	return true;
 }
 
@@ -175,7 +176,7 @@ bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry,const wxString& FileName)
         */
     	return false;
     }
-    
+
     wxString Content;
     if ( !File.ReadAll(&Content) )
     {
@@ -188,8 +189,8 @@ bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry,const wxString& FileName)
     }
 
     int Position = Content.First(Entry->BlockHeader);
-    
-    if ( Position == -1 )   
+
+    if ( Position == -1 )
     {
     	/*
 		wxMessageBox(wxString::Format(
@@ -199,7 +200,7 @@ bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry,const wxString& FileName)
         */
 		return false;
     }
-    
+
     wxString Result = Content.Left(Position);
     Content.Remove(0,Position);
     Position = Content.First(wxsBEnd());
@@ -213,13 +214,13 @@ bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry,const wxString& FileName)
         */
         return false;
     }
-    
+
 // FIXME (SpOoN#1#): Rebuild new code to support valid eol mode
     Result += Entry->Code;
     Result += Content.Remove(0,Position);
-    
+
     File.Close();
-    
+
     if ( !File.Open(FileName,_T("w")) )
     {
     	/*
@@ -229,7 +230,7 @@ bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry,const wxString& FileName)
         */
     	return false;
     }
-    
+
     if ( !File.Write(Result) )
     {
     	/*
@@ -239,7 +240,7 @@ bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry,const wxString& FileName)
         */
     	return false;
     }
-    
+
 	return true;
 }
 
@@ -248,7 +249,7 @@ bool wxsCoder::ProcessCodeForFile(const wxString& FileName)
 	wxMutexLocker Locker(DataMutex);
 
 	bool Result = true;
-	
+
 	for ( CodeEntry* Entry = Enteries, *Previous = NULL; Entry; )
 	{
 		if ( Entry->FileName == FileName )
@@ -264,7 +265,7 @@ bool wxsCoder::ProcessCodeForFile(const wxString& FileName)
 			Entry = Entry->Next;
 		}
 	}
-	
+
 	return Result;
 }
 
@@ -290,7 +291,7 @@ wxString wxsCoder::GetCode(const wxString& FileName,const wxString& BlockHeader)
         if ( End == -1 ) return _T("");
         return Ctrl->GetTextRange(Position,End);
     }
-		
+
     wxFFile File(FileName,_T("r"));
     wxString Content;
     if ( !File.IsOpened() ) return _T("");

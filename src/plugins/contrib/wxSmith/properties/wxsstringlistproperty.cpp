@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxsstringlistproperty.h"
 
 #include <wx/button.h>
@@ -12,26 +13,26 @@
                 wxButton(Parent,-1,_("Edit"),wxDefaultPosition,wxDefaultSize),
                 Prop(Property)
             {}
-    
+
         private:
-        
+
             void OnClick(wxCommandEvent& event)
             {
                 if ( Prop ) Prop->EditList();
             }
-            
+
             wxsStringListProperty* Prop;
-            
+
             DECLARE_EVENT_TABLE()
     };
-    
+
     BEGIN_EVENT_TABLE(wxsStringListPropertyWindow,wxButton)
         EVT_BUTTON(-1,wxsStringListPropertyWindow::OnClick)
     END_EVENT_TABLE()
-    
-    
+
+
     namespace {
-    
+
         class ListEditor: public wxDialog
         {
             public:
@@ -45,27 +46,27 @@
                     Sizer->AddGrowableRow(1);
                     Sizer->Add(new wxStaticText(this,-1,_("List items")),0,wxLEFT|wxRIGHT,5);
                     Sizer->Add(List = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE),0,wxLEFT|wxRIGHT|wxGROW,5);
-                    
+
                     if ( Selection )
                     {
                         Sizer->Add(new wxStaticText(this,-1,_("Selection")),0,wxLEFT|wxRIGHT,5);
                         Sizer->Add(Selected = new wxChoice(this,-1),0,wxLEFT|wxRIGHT|wxGROW,5);
                     }
-                    
+
                     wxBoxSizer* Internal = new wxBoxSizer(wxHORIZONTAL);
                     Internal->Add(new wxButton(this,wxID_OK,_("OK")),1,wxLEFT|wxRIGHT,5);
                     Internal->Add(new wxButton(this,wxID_CANCEL,_("Cancel")),1,wxLEFT|wxRIGHT,5);
-    
+
                     Sizer->Add(Internal,0,wxGROW|wxLEFT|wxRIGHT|wxBOTTOM,5);
-                    
+
                     CenterOnScreen();
-                    
+
                     for ( int i=0; i<(int)Array.Count(); i++ )
                     {
                         List->AppendText(Array[i]);
                         List->AppendText(_T("\n"));
                     }
-                    
+
                     BuildSelection();
                     if ( Selection )
                     {
@@ -78,13 +79,13 @@
                             Selected->SetSelection(*Selection+1);
                         }
                     }
-                    
+
                     SetSizer(Sizer);
                     Sizer->SetSizeHints(this);
                 }
-                
+
             private:
-            
+
                 void OnListChanged(wxCommandEvent& event)
                 {
                     if ( Selection != NULL )
@@ -96,7 +97,7 @@
                         Selected->Select(Sel);
                     }
                 }
-                
+
                 void OnStore(wxCommandEvent& event)
                 {
                     wxStringTokenizer Tokenizer(List->GetValue(),_T("\n"));
@@ -111,7 +112,7 @@
                     }
                     event.Skip();
                 }
-                
+
                 void BuildSelection()
                 {
                     Selected->Clear();
@@ -122,31 +123,31 @@
                         Selected->Append(Tokenizer.GetNextToken());
                     }
                 }
-                
+
                 wxArrayString& Array;
                 int* Selection;
-                
+
                 wxTextCtrl* List;
                 wxChoice* Selected;
-                
+
                 DECLARE_EVENT_TABLE()
         };
-        
+
         BEGIN_EVENT_TABLE(ListEditor,wxDialog)
             EVT_TEXT(-1,ListEditor::OnListChanged)
             EVT_BUTTON(wxID_OK,ListEditor::OnStore)
         END_EVENT_TABLE()
-    
+
     };
 
-#endif    
+#endif
 
 wxsStringListProperty::wxsStringListProperty(wxsProperties* Properties,wxArrayString& _Array):
 	wxsProperty(Properties),
 	Array(_Array),
 	Selected(NULL),
 	SortedFlag(0)
-    #ifndef __NO_PROPGRGID	
+    #ifndef __NO_PROPGRGID
         , PGId(0), SelId(0)
     #endif
 {}
@@ -156,7 +157,7 @@ wxsStringListProperty::wxsStringListProperty(wxsProperties* Properties,wxArraySt
 	Array(_Array),
 	Selected(&_Selected),
 	SortedFlag(_SortedFlag)
-    #ifndef __NO_PROPGRGID	
+    #ifndef __NO_PROPGRGID
         , PGId(0), SelId(0)
     #endif
 {}
@@ -170,16 +171,16 @@ const wxString& wxsStringListProperty::GetTypeName()
     return Name;
 }
 
-#ifdef __NO_PROPGRGID	
+#ifdef __NO_PROPGRGID
 
     wxWindow* wxsStringListProperty::BuildEditWindow(wxWindow* Parent)
     {
         return new wxsStringListPropertyWindow(Parent,this);
     }
-    
+
     void wxsStringListProperty::UpdateEditWindow()
     {}
-    
+
     void wxsStringListProperty::EditList()
     {
         ListEditor Editor(NULL,Array,Selected);
@@ -205,7 +206,7 @@ const wxString& wxsStringListProperty::GetTypeName()
             Grid->SetPropertyValue(SelId,*Selected);
     	}
     }
-            
+
     bool wxsStringListProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)
     {
     	if ( Id == PGId )
@@ -224,7 +225,7 @@ const wxString& wxsStringListProperty::GetTypeName()
         }
         return true;
     }
-            
+
     void wxsStringListProperty::UpdatePropGrid(wxPropertyGrid* Grid)
     {
     	Grid->SetPropertyValue(PGId,Array);
@@ -234,7 +235,7 @@ const wxString& wxsStringListProperty::GetTypeName()
             Grid->SetPropertyValue(SelId,*Selected);
     	}
     }
-    
+
     void wxsStringListProperty::BuildChoices(wxPropertyGrid* Grid)
     {
     	wxPGConstants& consts = Grid->GetPropertyChoices(SelId);
@@ -253,7 +254,7 @@ const wxString& wxsStringListProperty::GetTypeName()
     	}
     	consts.Add(Items,Values);
     }
-    
+
     void wxsStringListProperty::RebuildChoices(wxPropertyGrid* Grid)
     {
     	long SelectedNum = Grid->GetPropertyValue(SelId).GetLong();
@@ -272,12 +273,12 @@ const wxString& wxsStringListProperty::GetTypeName()
     		{
     			Index = Array.Index(SelectedStr);
     		}
-    		
+
     		if ( Index < 0 || Index >= (long)Array.Count() )
     		{
     			Index = -1;
     		}
-    		
+
     		*Selected = Index;
     		Grid->SetPropertyValue(SelId,Index);
     	}
@@ -287,12 +288,12 @@ const wxString& wxsStringListProperty::GetTypeName()
     		Grid->SetPropertyValue(SelId,-1);
     	}
     }
-    
+
     bool wxsStringListProperty::IsSorted()
     {
         assert ( GetProperties() );
         assert ( GetProperties()->GetWidget() );
         return ( GetProperties()->GetWidget()->GetBaseParams().Style & SortedFlag ) != 0;
     }
-    
+
 #endif

@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxsplacementproperty.h"
 
 #include <wx/panel.h>

@@ -1,3 +1,4 @@
+#include "wxsheaders.h"
 #include "wxsproperties.h"
 
 #include "properties/wxsstringproperty.h"
@@ -18,13 +19,13 @@ class wxsPropertyGrid: public wxPropertyGrid
             wxPropertyGrid(Parent,-1),
             Props(_Props)
         {}
-        
+
 	private:
-	
+
         void OnChange(wxPropertyGridEvent& event);
-        
+
         wxsProperties* Props;
-        
+
         DECLARE_EVENT_TABLE()
 };
 
@@ -81,12 +82,12 @@ void wxsProperties::AddProperty(const wxString& Name,bool& Value,int Position)
 {
     AddProperty(Name,new wxsBoolProperty(this,Value),Position);
 }
-		
+
 void wxsProperties::Add2IProperty(const wxString& Name,int& Value1,int& Value2,int Position)
 {
     AddProperty(Name,new wxs2IntProperty(this,Value1,Value2),Position);
 }
-		
+
 void wxsProperties::AddProperty(const wxString& Name,wxArrayString& Array,int Position)
 {
 	AddProperty(Name,new wxsStringListProperty(this,Array),Position);
@@ -96,17 +97,17 @@ void wxsProperties::AddProperty(const wxString& Name,wxArrayString& Array,int& S
 {
 	AddProperty(Name,new wxsStringListProperty(this,Array,Selected,SortedFlag),Position);
 }
-		
+
 void wxsProperties::AddProperty(const wxString& Name,wxsProperty* Prop,int Position)
 {
     if ( !Prop ) return;
     if ( !Name.Length() ) return;
-    
+
     VectorElem* NewElem = new VectorElem;;
     NewElem->Name = Name;
     NewElem->Property = Prop;
-    
-    if ( Position < 0 || Position >= (int)Properties.size() ) 
+
+    if ( Position < 0 || Position >= (int)Properties.size() )
     {
         Properties.push_back(NewElem);
     }
@@ -148,21 +149,21 @@ wxWindow* wxsProperties::GenerateWindow(wxWindow* Parent)
         }
         Panel->SetSizer(Sizer);
         Panel->Layout();
-        
+
         return Panel;
-        
+
     #else
-    
+
         wxsPropertyGrid* PG = new wxsPropertyGrid(Parent,this);
-        
+
         for ( VectorI i = Properties.begin(); i!=Properties.end(); ++i )
         {
         	(*i)->Property->AddToPropGrid(PG,(*i)->Name);
         }
-        
+
         Grid = PG;
         return PG;
-        
+
     #endif
 }
 
@@ -170,7 +171,7 @@ void wxsProperties::ClearArray()
 {
     for ( VectorI i = Properties.begin(); i!=Properties.end(); ++i )
         delete (*i);
-        
+
     Properties.clear();
 }
 
@@ -181,6 +182,6 @@ bool wxsProperties::NotifyChange(bool Check)
     BlockUpdates = true;
     bool Result = Widget->PropertiesUpdated(Check,false);
     BlockUpdates = false;
-    
+
     return Result;
 }

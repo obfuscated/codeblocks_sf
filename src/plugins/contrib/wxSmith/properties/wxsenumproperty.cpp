@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxsenumproperty.h"
 
 #include <wx/panel.h>
@@ -9,7 +10,7 @@
     class wxsEnumPropertyWindow: public wxChoice
     {
         public:
-        
+
             wxsEnumPropertyWindow(wxWindow* Parent,wxsEnumProperty* Property):
                 wxChoice(Parent,-1),
                 Prop(Property),
@@ -24,7 +25,7 @@
             		{
             			Selection = *PtrN;
             		}
-            		
+
             		Append(*PtrN);
             		PtrN++;
             		PtrV++;
@@ -32,7 +33,7 @@
             	}
             	SetStringSelection(Selection);
             }
-            
+
             void UpdateValue()
             {
             	Count = 0;
@@ -45,16 +46,16 @@
             		{
             			Selection = *PtrN;
             		}
-            		
+
             		PtrN++;
             		PtrV++;
             		Count++;
             	}
             	SetStringSelection(Selection);
             }
-            
+
         private:
-        
+
             void OnChoice(wxCommandEvent& event)
             {
             	int Index = GetSelection();
@@ -68,17 +69,17 @@
             	}
             	Prop->ValueChanged(true);
             }
-        
+
             wxsEnumProperty* Prop;
             int Count;
-            
+
             DECLARE_EVENT_TABLE()
     };
-    
+
     BEGIN_EVENT_TABLE(wxsEnumPropertyWindow,wxChoice)
         EVT_CHOICE(wxID_ANY,wxsEnumPropertyWindow::OnChoice)
     END_EVENT_TABLE()
-    
+
 #endif
 
 wxsEnumProperty::wxsEnumProperty(wxsProperties* Properties,int &_Value,const wxChar** _Names,const long* _Values):
@@ -110,19 +111,19 @@ const wxString& wxsEnumProperty::GetTypeName()
     {
         return Window = new wxsEnumPropertyWindow(Parent,this);
     }
-    
+
     void wxsEnumProperty::UpdateEditWindow()
     {
         if ( Window ) Window->UpdateValue();
     }
-            
+
 #else
 
     void wxsEnumProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)
     {
     	PGId = Grid->Append( wxEnumProperty(Name,wxPG_LABEL,Names,Values,0,Value) );
     }
-    
+
     bool wxsEnumProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)
     {
     	if ( Id == PGId )
@@ -132,7 +133,7 @@ const wxString& wxsEnumProperty::GetTypeName()
     	}
     	return true;
     }
-    
+
     void wxsEnumProperty::UpdatePropGrid(wxPropertyGrid* Grid)
     {
     	Grid->SetPropertyValue(PGId,Value);

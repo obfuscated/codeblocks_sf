@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxssplitterwindow.h"
 
 #include <wx/splitter.h>
@@ -42,19 +43,19 @@ int wxsSplitterWindow::AddChild(wxsWidget* NewWidget,int InsertBeforeThis)
 		wxMessageBox(_("Splitter can have 2 children max"));
 		return -1;
 	}
-	
+
 	if ( NewWidget->GetInfo().Sizer )
 	{
 		wxMessageBox(_("Can not add sizer into Splitter.\nAdd panels first"));
 		return -1;
 	}
-	
+
 	if ( NewWidget->GetInfo().Spacer )
 	{
 		wxMessageBox(_("Spacer can be added to sizers only"));
 		return -1;
 	}
-	
+
 	return wxsContainer::AddChild(NewWidget,InsertBeforeThis);
 }
 
@@ -73,7 +74,7 @@ void wxsSplitterWindow::MyFinalUpdatePreview(wxWindow* Preview)
 		Wnd->Initialize(GetChild(0)->GetPreview());
 		return;
 	}
-	
+
 	if ( Orientation==wxVERTICAL )
 	{
 		Wnd->SplitVertically(GetChild(0)->GetPreview(),GetChild(1)->GetPreview(),SashPos);
@@ -104,7 +105,7 @@ wxString wxsSplitterWindow::GetFinalizingCode(wxsCodeParams& Params)
 	{
 		Code.Printf(_T("%s->SetMinimumPaneSize(%d);\n"),BaseParams.VarName.c_str(),MinSize);
 	}
-	
+
 	if ( GetChildCount() == 0 ) return Code;
 	if ( GetChildCount() == 1 )
 	{
@@ -112,7 +113,7 @@ wxString wxsSplitterWindow::GetFinalizingCode(wxsCodeParams& Params)
             BaseParams.VarName.c_str(),
             GetChild(0)->GetBaseParams().VarName.c_str());
 	}
-	
+
 	if ( Orientation==wxVERTICAL )
 	{
 		return Code + wxString::Format(_T("%s->SplitVertically(%s,%s,%d);\n"),

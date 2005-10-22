@@ -1,3 +1,4 @@
+#include "wxsheaders.h"
 #include "wxspropertiesman.h"
 
 #include "wxspalette.h"
@@ -18,13 +19,13 @@ wxsPropertiesMan::~wxsPropertiesMan()
 void wxsPropertiesMan::SetActiveWidget(wxsWidget* Widget)
 {
     if ( !PropertiesPanel || !EventsPanel ) return;
-    
+
 	/** Rebuilding properties panel */
 
     if ( CurrentWidget == Widget ) return;
 
     PropertiesPanel->Freeze();
-    
+
     if ( CurrentWidget )
     {
         CurrentWidget->KillProperties();
@@ -33,9 +34,9 @@ void wxsPropertiesMan::SetActiveWidget(wxsWidget* Widget)
 
     PropertiesPanel->SetSizer(NULL);
     PropertiesPanel->DestroyChildren();
-    
+
     CurrentWidget = Widget;
-    
+
     wxSize Size = PropertiesPanel->GetSize();
     if ( CurrentWidget )
     {
@@ -49,21 +50,21 @@ void wxsPropertiesMan::SetActiveWidget(wxsWidget* Widget)
         NewSizer->Add(Wnd,1,wxGROW);
         PropertiesPanel->SetSizer(NewSizer);
         NewSizer->SetVirtualSizeHints(PropertiesPanel);
-        
+
         wxsTREE()->SelectItem(Widget->GetTreeId());
     }
-    
+
     PropertiesPanel->SetSize(Size);
     PropertiesPanel->Refresh();
     PropertiesPanel->Thaw();
-    
+
     /** Rebuilding events panel */
-    
+
     EventsPanel->Freeze();
     EventsPanel->SetSizer(NULL);
     EventsPanel->DestroyChildren();
     Size = EventsPanel->GetSize();
-    
+
     if ( CurrentWidget )
     {
         wxFlexGridSizer* NewSizer = new wxFlexGridSizer(1);

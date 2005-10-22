@@ -1,3 +1,4 @@
+#include "wxsheaders.h"
 #include "wxssplitterwindow.h"
 
 #include <wx/sizer.h>
@@ -27,7 +28,7 @@ void wxsSplitterWindowEx::Split(wxWindow* Top,wxWindow* Bottom,int SashPosition)
 {
     if ( Top ) Top->SetParent(Splitter);
     if ( Bottom ) Bottom->SetParent(Splitter);
-    
+
     if ( SashPosition ) SplitPosition = SashPosition;
     Splitter->SplitHorizontally(Top,Bottom,SplitterFixup(SplitPosition));
 }
@@ -60,7 +61,7 @@ int wxsSplitterWindowEx::SplitterFixup(int Position)
 	if ( MinMargin > MIN_MARGIN ) MinMargin = MIN_MARGIN;
 	if ( Position < MinMargin ) Position = MinMargin;
 	if ( Position > Height - MinMargin ) Position = Height - MinMargin;
-	
+
 	return Position;
 }
 

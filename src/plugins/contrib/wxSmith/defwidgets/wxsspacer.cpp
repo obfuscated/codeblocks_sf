@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxsspacer.h"
 
 #include "wxsstdmanager.h"
@@ -8,9 +9,9 @@ class wxsSpacerPreview: public wxPanel
         wxsSpacerPreview(wxWindow* Parent,const wxSize& Size):
             wxPanel(Parent,-1,wxDefaultPosition,Size)
         {}
-        
+
     private:
-    
+
         void OnPaint(wxPaintEvent& event)
         {
         	wxPaintDC DC(this);
@@ -18,7 +19,7 @@ class wxsSpacerPreview: public wxPanel
         	DC.SetPen(wxPen(wxColour(0,0,0),1));
         	DC.DrawRectangle(0,0,GetSize().GetWidth(),GetSize().GetHeight());
         }
-        
+
         DECLARE_EVENT_TABLE()
 };
 

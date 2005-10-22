@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxsradiobox.h"
 
 #include "../wxsglobals.h"
@@ -5,10 +6,10 @@
 WXS_ST_BEGIN(wxsRadioBoxStyles)
     WXS_ST_CATEGORY("wxRadioBox")
     WXS_ST(wxRA_SPECIFY_ROWS)
-    WXS_ST(wxRA_SPECIFY_COLS)    
-#ifdef __PALMOS__    
+    WXS_ST(wxRA_SPECIFY_COLS)
+#ifdef __PALMOS__
     WXS_ST(wxRA_USE_CHECKBOX)
-#endif    
+#endif
     WXS_ST_DEFAULTS()
 WXS_ST_END(wxsRadioBoxStyles)
 
@@ -61,14 +62,14 @@ wxString wxsRadioBox::GetProducingCode(wxsCodeParams& Params)
             dimension,
             CDefs.Style.c_str());
 	}
-	
+
 	wxString Code;
 	Code.Printf(_T("wxString wxRadioBoxChoices%d[%d];\n"),Params.UniqueNumber,arrayChoices.Count());
 	for ( size_t i = 0; i < arrayChoices.Count(); ++i )
 	{
 		Code.Append( wxString::Format(_T("wxRadioBoxChoices%d[%d] = %s;\n"),Params.UniqueNumber,i,GetWxString(arrayChoices[i]).c_str()) );
 	}
-	
+
     Code.Append ( wxString::Format(_T("%s = new wxRadioBox(%s,%s,%s,%s,%s,%d,wxRadioBoxChoices%d,%d,%s);"),
         GetBaseParams().VarName.c_str(),
         Params.ParentName.c_str(),
@@ -80,13 +81,13 @@ wxString wxsRadioBox::GetProducingCode(wxsCodeParams& Params)
         Params.UniqueNumber,
         dimension,
         CDefs.Style.c_str()) );
-        
+
     if ( defaultChoice >= 0 )
     {
     	Code.Append( wxString::Format(_T("%s->SetSelection(%d);"),GetBaseParams().VarName.c_str(),defaultChoice) );
     }
-    
+
     Code << CDefs.InitCode;
-    
+
     return Code;
 }

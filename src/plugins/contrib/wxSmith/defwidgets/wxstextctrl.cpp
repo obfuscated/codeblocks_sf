@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxstextctrl.h"
 
 WXS_ST_BEGIN(wxsTextCtrlStyles)

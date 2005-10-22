@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxsgauge.h"
 
 WXS_ST_BEGIN(wxsGaugeStyles)

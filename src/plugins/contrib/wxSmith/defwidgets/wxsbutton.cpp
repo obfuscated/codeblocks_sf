@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxsbutton.h"
 
 WXS_ST_BEGIN(wxsButtonStyles)
@@ -21,7 +22,7 @@ wxsDWDefineBegin(wxsButton,wxButton,
 
     ThisWidget = new wxButton(parent,id,label,pos,size,style);
     if (def) ThisWidget->SetDefault();
-    
+
     )
 
     wxsDWDefLongStr(label,"Label:","Label");

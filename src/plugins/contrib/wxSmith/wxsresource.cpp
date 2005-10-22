@@ -1,11 +1,12 @@
+#include "wxsheaders.h"
 #include "wxsresource.h"
 
 #include "wxsproject.h"
 
 #include <wx/msgdlg.h>
 
-wxsResource::wxsResource(wxsProject* _Project,int _EditMode):  
-    Editor(NULL), 
+wxsResource::wxsResource(wxsProject* _Project,int _EditMode):
+    Editor(NULL),
     Project(_Project),
     EditMode(_EditMode)
 {
@@ -22,7 +23,7 @@ void wxsResource::EditOpen()
     {
         Editor = CreateEditor();
     }
-    
+
     if ( Editor )
     {
         assert ( Editor->GetResource() == this );

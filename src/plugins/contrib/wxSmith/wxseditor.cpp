@@ -1,3 +1,4 @@
+#include "wxsheaders.h"
 #include "wxseditor.h"
 
 #include "wxsresource.h"

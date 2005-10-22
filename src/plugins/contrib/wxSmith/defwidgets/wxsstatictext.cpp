@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxsstatictext.h"
 
 #include "wxsstdmanager.h"

@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxsnotebook.h"
 
 #include <wx/splitter.h>

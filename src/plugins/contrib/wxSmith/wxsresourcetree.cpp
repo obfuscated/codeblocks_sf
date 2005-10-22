@@ -1,3 +1,4 @@
+#include "wxsheaders.h"
 #include "wxsresourcetree.h"
 #include "wxsglobals.h"
 #include "resources/wxswindowres.h"

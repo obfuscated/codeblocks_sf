@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxscolourproperty.h"
 
 #include "../wxsglobals.h"
@@ -27,13 +28,13 @@ const wxString & wxsColourProperty::GetTypeName()
 void wxsColourProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)
 {
     PGId = Grid->Append( wxParentProperty(Name,wxPG_LABEL) );
-    
+
     UseColId = Grid->AppendIn(
         PGId,
         wxBoolProperty(_("Use colour:"),wxPG_LABEL,Type != wxsNO_COLOUR ) );
-        
+
     wxColour Col = wxColour(0,0,0);
-    
+
     if ( Type == wxPG_COLOUR_CUSTOM )
     {
     	Col = Colour;
@@ -42,7 +43,7 @@ void wxsColourProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)
     {
     	Col = wxSystemSettings::GetColour((wxSystemColour)Type);
     }
-        
+
     ColId = Grid->AppendIn(
         PGId,
         wxSystemColourProperty(_("Colour:"), wxPG_LABEL, Col ));
@@ -66,7 +67,7 @@ bool wxsColourProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)
             Type = ColVal->m_type;
             Colour = wxColour(ColVal->m_colour);
     	}
-    	
+
     	return ValueChanged(true);
     }
     return true;
@@ -90,7 +91,7 @@ void wxsColourProperty::UpdatePropGrid(wxPropertyGrid* Grid)
     		InternalType = Type;
     	}
     }
-    
+
     wxColourPropertyValue Value(InternalType,Colour);
     Grid->SetPropertyValue(ColId,Value);
 }

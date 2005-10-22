@@ -1,3 +1,4 @@
+#include "wxsheaders.h"
 #include "wxsglobals.h"
 
 wxString GetCString(const wxString& Source)

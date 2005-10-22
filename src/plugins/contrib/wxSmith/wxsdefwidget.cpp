@@ -1,3 +1,4 @@
+#include "wxsheaders.h"
 #include "wxsdefwidget.h"
 
 #include "properties/wxsstringlistproperty.h"
@@ -36,22 +37,22 @@ void wxsDefWidget::CreateObjectProperties()
 wxString wxsDefWidget::GetProducingCode(wxsCodeParams& Params)
 {
     const CodeDefines& CD = GetCodeDefines();
-    
+
     CodeResult = GetGeneratingCodeStr();
-    
+
     CodeReplace(_T("ThisWidget"),BaseParams.VarName);
     CodeReplace(_T("parent"),Params.ParentName);
     CodeReplace(_T("id"),BaseParams.IdName);
     CodeReplace(_T("pos"),CD.Pos);
     CodeReplace(_T("size"),CD.Size);
     CodeReplace(_T("style"),CD.Style);
-    
+
     evCode();
-    
+
     // Applying default initializing code
-    
+
     CodeResult << CD.InitCode;
-    
+
     return CodeResult;
 }
 
@@ -116,13 +117,13 @@ void wxsDefWidget::evBool(bool& Val,const wxString& Name,const wxString& XrcName
             Val = DefValue;
             break;
         }
-        
+
         case XmlL:
         {
             Val = XmlGetInteger(XrcName,DefValue?1:0) != 0;
             break;
         }
-        
+
         case XmlS:
         {
             if ( Val != DefValue )
@@ -136,13 +137,13 @@ void wxsDefWidget::evBool(bool& Val,const wxString& Name,const wxString& XrcName
         {
             break;
         }
-                
+
         case Code:
         {
             CodeReplace(Name,Val?_T("true"):_T("false"));
             break;
         }
-        
+
         case Props:
         {
         	if ( PropName.Length() )
@@ -163,13 +164,13 @@ void wxsDefWidget::evInt(int& Val,const wxString& Name,const wxString& XrcName,c
             Val = DefValue;
             break;
         }
-        
+
         case XmlL:
         {
             Val = XmlGetInteger(XrcName,DefValue);
             break;
         }
-        
+
         case XmlS:
         {
             if ( Val != DefValue )
@@ -183,13 +184,13 @@ void wxsDefWidget::evInt(int& Val,const wxString& Name,const wxString& XrcName,c
         {
             break;
         }
-                
+
         case Code:
         {
             CodeReplace(Name,wxString::Format(_T("%d"),Val));
             break;
         }
-        
+
         case Props:
         {
         	if ( PropName.Length() )
@@ -211,13 +212,13 @@ void wxsDefWidget::ev2Int(int& Val1,int& Val2,const wxString& Name,const wxStrin
             Val2 = DefValue2;
             break;
         }
-        
+
         case XmlL:
         {
             XmlGetIntPair(XrcName,Val1,Val2,DefValue1,DefValue2);
             break;
         }
-        
+
         case XmlS:
         {
             if ( Val1!=DefValue1 || Val2!=DefValue2 )
@@ -231,13 +232,13 @@ void wxsDefWidget::ev2Int(int& Val1,int& Val2,const wxString& Name,const wxStrin
         {
             break;
         }
-                
+
         case Code:
         {
             CodeReplace(Name,wxString::Format(_T("wxPoint(%d,%d)"),Val1,Val2));
             break;
         }
-        
+
         case Props:
         {
         	if ( PropName.Length() )
@@ -258,31 +259,31 @@ void wxsDefWidget::evStr(wxString& Val,const wxString& Name,const wxString& XrcN
             Val = DefValue;
             break;
         }
-        
+
         case XmlL:
         {
             const wxString& Value = XmlGetVariable(XrcName);
             Val = Value;
             break;
         }
-        
+
         case XmlS:
         {
             XmlSetVariable(XrcName,Val);
             break;
         }
-        
+
         case Destroy:
         {
             break;
         }
-        
+
         case Code:
         {
             CodeReplace(Name,GetWxString(Val));
             break;
         }
-        
+
         case Props:
         {
         	if ( PropName.Length() )
@@ -302,22 +303,22 @@ void wxsDefWidget::evStrArray(wxArrayString& Val,const wxString& Name,const wxSt
             Val.Clear();
             break;
         }
-        
+
         case XmlL:
         {
 			if( !XmlGetStringArray(XrcParentName,XrcChildName,Val) )
 			{
 				Val.Clear();
-			}             
+			}
             break;
         }
-        
+
         case XmlS:
         {
 			if( !XmlSetStringArray(XrcParentName,XrcChildName,Val) )
 			{
 				Val.Clear();
-			}           
+			}
             break;
         }
 
@@ -330,7 +331,7 @@ void wxsDefWidget::evStrArray(wxArrayString& Val,const wxString& Name,const wxSt
         case Code:
         {
             // Replacing wxsDWAddStrings function calls
-            
+
             wxString CodeToSearch = wxString::Format(_T("wxsDWAddStrings(%s,%s);"),Name.c_str(),GetBaseParams().VarName.c_str());
             wxString ReplaceWith;
             for ( size_t i = 0; i<Val.GetCount(); i++ )
@@ -341,16 +342,16 @@ void wxsDefWidget::evStrArray(wxArrayString& Val,const wxString& Name,const wxSt
             	ReplaceWith.Append(_T(");\n"));
             }
             CodeReplace(CodeToSearch,ReplaceWith);
-            
+
             // Replacing wxsDWSelectString function calls
-            
+
             CodeToSearch.Printf(_T("wxsDWSelectString(%s,%d,%s)"),Name.c_str(),DefValue,GetBaseParams().VarName.c_str());
             ReplaceWith.Printf(_T("%s->SetSelection(%d)"),GetBaseParams().VarName.c_str(),DefValue);
             CodeReplace(CodeToSearch,ReplaceWith);
-            
+
             break;
         }
-        
+
         case Props:
         {
         	if ( PropName.Length() )

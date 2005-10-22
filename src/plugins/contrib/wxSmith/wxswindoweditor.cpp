@@ -1,3 +1,4 @@
+#include "wxsheaders.h"
 #include "wxswindoweditor.h"
 
 #include "widget.h"

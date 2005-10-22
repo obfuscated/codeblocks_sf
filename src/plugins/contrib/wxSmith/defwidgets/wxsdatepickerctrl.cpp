@@ -1,14 +1,15 @@
+#include "../wxsheaders.h"
 #include "wxsdatepickerctrl.h"
 
 #include "wx/datectrl.h"
 
 WXS_ST_BEGIN(wxsDatePickerCtrlStyles)
     WXS_ST_CATEGORY("wxDatePickerCtrl")
-    WXS_ST(wxDP_SPIN)    
+    WXS_ST(wxDP_SPIN)
     WXS_ST(wxDP_DROPDOWN)
-    WXS_ST(wxDP_DEFAULT)    
+    WXS_ST(wxDP_DEFAULT)
     WXS_ST(wxDP_ALLOWNONE)
-    WXS_ST(wxDP_SHOWCENTURY)        
+    WXS_ST(wxDP_SHOWCENTURY)
 //    WXS_ST_DEFAULTS()
 WXS_ST_END(wxsDatePickerCtrlStyles)
 

@@ -1,3 +1,4 @@
+#include "wxsheaders.h"
 #include "wxswinundobuffer.h"
 
 #include "resources/wxswindowres.h"
@@ -30,16 +31,16 @@ void wxsWinUndoBuffer::Clear()
 void wxsWinUndoBuffer::StoreChange()
 {
     // Removing all undo points after current one
-    
+
     int Size = GetCount();
     while ( --Size > CurrentPos )
     {
     	delete Enteries[Size];
     	Enteries.erase(Enteries.begin() + Size);
     }
-    
+
     // Removing all outdated undos
-    
+
     if ( MaxEnteries > 0 )
     {
         Size = GetCount();
@@ -50,9 +51,9 @@ void wxsWinUndoBuffer::StoreChange()
             SavedPos--;
         }
     }
-    
+
     // Adding new undo
-    
+
 	wxsWindowResDataObject Object;
 	Object.AddWidget(Resource->GetRootWidget());
     UndoEntry* NewEntry = new UndoEntry;

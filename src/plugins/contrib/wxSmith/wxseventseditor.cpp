@@ -1,3 +1,4 @@
+#include "wxsheaders.h"
 #include "wxseventseditor.h"
 
 #include "widget.h"
@@ -40,7 +41,7 @@ void wxsEventsEditor::OnPropertyChanged(wxPropertyGridEvent& event)
 void wxsEventsEditor::BuildPropertyGrid(bool UpdateOnly)
 {
 	UpdateOnly = false;     // There's something wrong when updating
-	if ( !UpdateOnly ) 
+	if ( !UpdateOnly )
 	{
 		Clear();
 	}
@@ -48,7 +49,7 @@ void wxsEventsEditor::BuildPropertyGrid(bool UpdateOnly)
 	for ( int i=0; i<Cnt; i++ )
 	{
 		wxsEventDesc* Event = Events->GetEvent(i);
-		
+
 		wxArrayString Functions;
 		FindFunctions(Event->EventTypeName,Functions);
 
@@ -56,7 +57,7 @@ void wxsEventsEditor::BuildPropertyGrid(bool UpdateOnly)
         int Index = 0;
         Const.Add(NoneStr,0);
         Const.Add(AddNewStr,1);
-        
+
         for ( int j=0; j<(int)Functions.Count(); j++ )
         {
         	Const.Add(Functions[j],j+2);
@@ -65,7 +66,7 @@ void wxsEventsEditor::BuildPropertyGrid(bool UpdateOnly)
         		Index = j+2;
         	}
         }
-        
+
         if ( UpdateOnly )
         {
         	wxPGId Id = GetPropertyByLabel(Event->EventEntry);
@@ -93,7 +94,7 @@ void wxsEventsEditor::ReadPropertyGrid()
 		if ( Id.IsOk() )
 		{
 			wxString Selection = GetPropertyValueAsString(Id);
-			
+
 			if ( Selection == NoneStr )
 			{
 				Event->FunctionName = _T("");
@@ -109,7 +110,7 @@ void wxsEventsEditor::ReadPropertyGrid()
 			}
 		}
 	}
-	
+
 	if ( NeedUpdate )
 	{
 		UpdatePropertyGrid();
@@ -120,19 +121,19 @@ void wxsEventsEditor::FindFunctions(const wxString& EventType,wxArrayString& Arr
 {
 	wxString Code = wxsCoder::Get()->GetCode( HeaderFile,
         wxString::Format(wxsBHeaderF("Handlers"),ClassName.c_str()) );
-        
+
     // Basic parsing
-    
+
     for(;;)
     {
     	// Searching for void statement - it may begin new fuunction declaration
-    	
+
     	int Pos = Code.Find(_T("void"));
     	if ( Pos == -1 ) break;
-    	
+
     	// Removing all before function name
     	Code.Remove(0,Pos+4).Trim(false);
-    	
+
     	// Getting function name
     	Pos  = 0;
     	while ( (int)Code.Length() > Pos )
@@ -149,13 +150,13 @@ void wxsEventsEditor::FindFunctions(const wxString& EventType,wxArrayString& Arr
     	wxString NewFunctionName = Code.Mid(0,Pos);
     	Code.Remove(0,Pos).Trim(false);
     	if ( !Code.Length() ) break;
-    	
+
     	// Parsing arguments
-    	
+
     	if ( Code.GetChar(0) != _T('(') ) continue;
     	Code.Remove(0,1).Trim(false);
     	if ( !Code.Length() ) break;
-    	
+
     	// Getting argument type
     	Pos  = 0;
     	while ( (int)Code.Length() > Pos )
@@ -172,12 +173,12 @@ void wxsEventsEditor::FindFunctions(const wxString& EventType,wxArrayString& Arr
     	wxString NewEventType = Code.Mid(0,Pos);
     	Code.Remove(0,Pos).Trim(false);
     	if ( !Code.Length() ) break;
-    	
+
     	// Checking if the rest of declaratin is valid
     	if ( Code.GetChar(0) != _T('&') ) continue;
     	Code.Remove(0,1).Trim(false);
     	if ( !Code.Length() ) break;
-    	
+
     	// Skipping argument name
     	Pos  = 0;
     	while ( (int)Code.Length() > Pos )
@@ -193,18 +194,18 @@ void wxsEventsEditor::FindFunctions(const wxString& EventType,wxArrayString& Arr
     	}
     	Code.Remove(0,Pos).Trim(false);
     	if ( !Code.Length() ) break;
-    	
+
     	if ( Code.GetChar(0) != _T(')') ) continue;
     	Code.Remove(0,1).Trim(false);
     	if ( !Code.Length() ) break;
-    	
+
     	if ( Code.GetChar(0) != _T(';') ) continue;
     	Code.Remove(0,1).Trim(false);
-    	
+
     	if ( NewFunctionName.Length() == 0 || NewEventType.Length() == 0 ) continue;
-    	
+
     	// We got new function, checking event type and adding to array
-    	
+
     	if ( !EventType.Length() || EventType == NewEventType )
     	{
     		Array.Add(NewFunctionName);
@@ -215,28 +216,28 @@ void wxsEventsEditor::FindFunctions(const wxString& EventType,wxArrayString& Arr
 wxString wxsEventsEditor::GetFunctionProposition(wxsEventDesc* Event)
 {
     // Creating proposition of new function name
-    
+
     wxString NewNameBase;
     NewNameBase.Printf(_T("On%s%s"),Widget->GetBaseParams().VarName.c_str(),Event->NewFuncNameBase.c_str());
-    
+
     int Suffix = 0;
     wxArrayString Functions;
     FindFunctions(_T(""),Functions);
     wxString NewName = NewNameBase;
-    
+
     while ( Functions.Index(NewName) != wxNOT_FOUND )
     {
     	NewName = NewNameBase;
     	NewName << ++Suffix;
     }
-    
+
     return NewName;
 }
 
 wxString wxsEventsEditor::GetNewFunction(wxsEventDesc* Event)
 {
 	wxString Name = GetFunctionProposition(Event);
-	
+
 	for (;;)
 	{
 		Name = ::wxGetTextFromUser(_("Enter name for new handler:"),_("New handler"),Name);
@@ -247,7 +248,7 @@ wxString wxsEventsEditor::GetNewFunction(wxsEventDesc* Event)
         	wxMessageBox(_("Invalid name"));
         	continue;
         }
-        
+
         wxArrayString Functions;
         FindFunctions(_T(""),Functions);
 
@@ -256,18 +257,18 @@ wxString wxsEventsEditor::GetNewFunction(wxsEventDesc* Event)
         	wxMessageBox(_("Handler with this name already exists"));
         	continue;
         }
-        
+
         break;
 	}
-	
+
 	// Creating new function
-	
+
 	if ( !CreateNewFunction(Event,Name) )
 	{
 		wxMessageBox(_("Couldn't add new handler"));
 		return _T("");
 	}
-	
+
 	return Name;
 }
 
@@ -299,7 +300,7 @@ bool wxsEventsEditor::CreateNewFunction(wxsEventDesc* Event,const wxString& NewF
     Ctrl->LineUp();
     Ctrl->LineUp();
     Ctrl->LineEnd();
-    
+
     Editor->SetModified();
     return true;
 }

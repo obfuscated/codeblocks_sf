@@ -1,3 +1,4 @@
+#include "wxsheaders.h"
 #include "widget.h"
 
 #include "properties/wxsstyleproperty.h"

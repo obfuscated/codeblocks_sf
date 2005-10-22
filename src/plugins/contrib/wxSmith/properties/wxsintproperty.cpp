@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxsintproperty.h"
 
 #include <wx/textctrl.h>
@@ -7,36 +8,36 @@
     class wxsIntPropertyWindow: public wxTextCtrl
     {
         public:
-        
+
             wxsIntPropertyWindow(wxWindow* Parent,wxsIntProperty* Property);
             virtual ~wxsIntPropertyWindow();
-            
+
         private:
-        
+
             void OnTextChange(wxCommandEvent& event);
             void OnTextEnter(wxCommandEvent& event);
             void OnKillFocus(wxFocusEvent& event);
             wxsIntProperty* Prop;
-            
+
             DECLARE_EVENT_TABLE()
     };
-    
+
     BEGIN_EVENT_TABLE(wxsIntPropertyWindow,wxTextCtrl)
         EVT_TEXT(-1,wxsIntPropertyWindow::OnTextChange)
         EVT_TEXT_ENTER(-1,wxsIntPropertyWindow::OnTextEnter)
         EVT_KILL_FOCUS(wxsIntPropertyWindow::OnKillFocus)
     END_EVENT_TABLE()
-    
+
     wxsIntPropertyWindow::wxsIntPropertyWindow(wxWindow* Parent,wxsIntProperty* Property):
         wxTextCtrl(Parent,-1,wxString::Format(_T("%d"),Property->Value),wxDefaultPosition,wxDefaultSize,wxTE_PROCESS_ENTER),
         Prop(Property)
     {
     }
-    
+
     wxsIntPropertyWindow::~wxsIntPropertyWindow()
     {
     }
-    
+
     void wxsIntPropertyWindow::OnTextChange(wxCommandEvent& event)
     {
         if ( Prop->AlwUpd )
@@ -47,7 +48,7 @@
             Prop->ValueChanged(false);
         }
     }
-    
+
     void wxsIntPropertyWindow::OnTextEnter(wxCommandEvent& event)
     {
         long Val = 0;
@@ -56,7 +57,7 @@
         SetValue(wxString::Format(_T("%d"),Prop->Value));
         Prop->ValueChanged(true);
     }
-    
+
     void wxsIntPropertyWindow::OnKillFocus(wxFocusEvent& event)
     {
         long Val = 0;
@@ -67,9 +68,9 @@
     }
 
 #endif
-    
+
 wxsIntProperty::wxsIntProperty(wxsProperties* Properties,int& Int, bool AlwaysUpdate):
-    wxsProperty(Properties), Value(Int), AlwUpd(AlwaysUpdate), 
+    wxsProperty(Properties), Value(Int), AlwUpd(AlwaysUpdate),
     #ifdef __NO_PROPGRGID
         Window(NULL)
     #else
@@ -96,19 +97,19 @@ const wxString& wxsIntProperty::GetTypeName()
     {
         return Window = new wxsIntPropertyWindow(Parent,this);
     }
-    
+
     void wxsIntProperty::UpdateEditWindow()
     {
         if ( Window ) Window->SetValue(wxString::Format(_T("%d"),Value));
     }
-            
+
 #else
 
     void wxsIntProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)
     {
     	PGId = Grid->Append(Name,wxPG_LABEL,Value);
     }
-    
+
     /** Function notifying about property change */
     bool wxsIntProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)
     {
@@ -125,11 +126,11 @@ const wxString& wxsIntProperty::GetTypeName()
     	}
     	return true;
     }
-    
+
     /** Function updating value of this property insided property grid */
     void wxsIntProperty::UpdatePropGrid(wxPropertyGrid* Grid)
     {
     	Grid->SetPropertyValue(PGId,Value);
     }
-    
+
 #endif

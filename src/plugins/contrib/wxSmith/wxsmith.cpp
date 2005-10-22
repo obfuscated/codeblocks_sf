@@ -7,10 +7,7 @@
  * License:   GPL
  **************************************************************/
 
-#if defined(__GNUG__) && !defined(__APPLE__) && !defined(FASTCOMPILE)
-	#pragma implementation "wxsmith.h"
-#endif
-
+#include "wxsheaders.h"
 #include <licenses.h>
 #include <manager.h>
 #include <tinyxml/tinyxml.h>

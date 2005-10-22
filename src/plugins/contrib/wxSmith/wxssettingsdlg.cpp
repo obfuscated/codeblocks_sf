@@ -1,3 +1,4 @@
+#include "wxsheaders.h"
 #include "wxssettingsdlg.h"
 
 #include <configmanager.h>

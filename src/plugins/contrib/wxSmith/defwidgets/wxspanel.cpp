@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxspanel.h"
 
 #include <wx/frame.h>

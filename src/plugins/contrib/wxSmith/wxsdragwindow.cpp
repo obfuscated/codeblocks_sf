@@ -1,3 +1,4 @@
+#include "wxsheaders.h"
 #include "wxsdragwindow.h"
 
 #include <wx/dcclient.h>

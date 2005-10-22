@@ -1,3 +1,4 @@
+#include "wxsheaders.h"
 #include "wxswidgetfactory.h"
 
 #include "wxsmith.h"
@@ -43,7 +44,7 @@ void wxsWidgetFactory::Kill(wxsWidget* Widget)
         }
         Widget->KillTree(wxsTREE());
         if ( Widget->GetPreview() ) Widget->KillPreview();
-        
+
         if ( Widget->GetProperties() ) Widget->KillProperties();
 
         // Deleting widget

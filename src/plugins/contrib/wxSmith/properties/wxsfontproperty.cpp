@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxsfontproperty.h"
 
 #include <wx/intl.h>
@@ -25,11 +26,11 @@ const wxString & wxsFontProperty::GetTypeName()
 void wxsFontProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)
 {
     PGId = Grid->Append( wxParentProperty(Name,wxPG_LABEL) );
-    
+
     UseId = Grid->AppendIn(
         PGId,
         wxBoolProperty(_("Use font:"),wxPG_LABEL,Use ) );
-        
+
     FontId = Grid->AppendIn(
         PGId,
         wxFontProperty(_("Font:"), wxPG_LABEL, Font ));

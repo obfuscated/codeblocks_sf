@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxsborderproperty.h"
 
 #include <wx/panel.h>
@@ -13,17 +14,17 @@
         public:
             wxsBorderPropertyWindow(wxWindow* Parent,wxsBorderProperty* Object);
             virtual ~wxsBorderPropertyWindow();
-            
+
             void UpdateData();
-            
+
         private:
-    
+
             void OnButtonChanged(wxCommandEvent& event);
-            
-            //wxToggleButton 
+
+            //wxToggleButton
             wxCheckBox
                 *Left, *Right, *Top, *Bottom;
-        
+
             wxsBorderProperty* Object;
             DECLARE_EVENT_TABLE()
     };
@@ -32,7 +33,7 @@
         EVT_TOGGLEBUTTON(wxID_ANY,wxsBorderPropertyWindow::OnButtonChanged)
         EVT_CHECKBOX(wxID_ANY,wxsBorderPropertyWindow::OnButtonChanged)
     END_EVENT_TABLE()
-    
+
     wxsBorderPropertyWindow::wxsBorderPropertyWindow(wxWindow* Parent,wxsBorderProperty* _Object):
         wxPanel(Parent,-1),
         Object(_Object)
@@ -41,9 +42,9 @@
         Right = new wxCheckBox(this,-1,_T(""));
         Top = new wxCheckBox(this,-1,_T(""));
         Bottom = new wxCheckBox(this,-1,_T(""));
-        
+
         wxFlexGridSizer* Sizer = new wxFlexGridSizer(3,1,1);
-        
+
         Sizer->Add(1,1);
         Sizer->Add(Top);
         Sizer->Add(1,1);
@@ -53,42 +54,42 @@
         Sizer->Add(1,1);
         Sizer->Add(Bottom);
         Sizer->Add(1,1);
-        
+
         SetSizer(Sizer);
         Sizer->SetSizeHints(this);
     }
-    
+
     wxsBorderPropertyWindow::~wxsBorderPropertyWindow()
     {}
-    
+
     void wxsBorderPropertyWindow::OnButtonChanged(wxCommandEvent& event)
     {
-        int NewFlags = 
+        int NewFlags =
             ( Left->GetValue()   ? wxsSizerExtraParams::Left   :  wxsSizerExtraParams::None ) |
             ( Right->GetValue()  ? wxsSizerExtraParams::Right  :  wxsSizerExtraParams::None ) |
             ( Top->GetValue()    ? wxsSizerExtraParams::Top    :  wxsSizerExtraParams::None ) |
             ( Bottom->GetValue() ? wxsSizerExtraParams::Bottom :  wxsSizerExtraParams::None );
-            
+
         assert(Object != NULL);
-        
+
         Object->BorderFlags = NewFlags;
         Object->ValueChanged(true);
     }
-    
+
     void wxsBorderPropertyWindow::UpdateData()
     {
         assert ( Object != NULL );
         int Flags = Object->BorderFlags;
-       
+
         Left->SetValue( (Flags&wxsSizerExtraParams::Left) != 0 );
         Right->SetValue( (Flags&wxsSizerExtraParams::Right) != 0 );
         Top->SetValue( (Flags&wxsSizerExtraParams::Top) != 0 );
         Bottom->SetValue( (Flags&wxsSizerExtraParams::Bottom) != 0 );
-    
+
     }
-    
+
 #endif
-    
+
 wxsBorderProperty::wxsBorderProperty(wxsProperties* Properties,int& Flag):
     wxsProperty(Properties),
     BorderFlags(Flag),
@@ -118,7 +119,7 @@ const wxString& wxsBorderProperty::GetTypeName()
     {
         return Window = new wxsBorderPropertyWindow(Parent,this);
     }
-    
+
     void wxsBorderProperty::UpdateEditWindow()
     {
         if ( Window )
@@ -131,7 +132,7 @@ const wxString& wxsBorderProperty::GetTypeName()
 
     void wxsBorderProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)
     {
-    	static const wxChar* Borders[] = 
+    	static const wxChar* Borders[] =
     	{
     		_("Left"),
     		_("Right"),
@@ -139,7 +140,7 @@ const wxString& wxsBorderProperty::GetTypeName()
     		_("Bottom"),
     		NULL
     	};
-    	
+
     	static long Values[] =
     	{
     		wxsSizerExtraParams::Left,
@@ -147,11 +148,11 @@ const wxString& wxsBorderProperty::GetTypeName()
     		wxsSizerExtraParams::Top,
     		wxsSizerExtraParams::Bottom
     	};
-    	
+
     	PGId = Grid->Append(wxFlagsProperty(Name,wxPG_LABEL,Borders,Values,0,BorderFlags));
         Grid->SetPropertyAttribute(PGId,wxPG_BOOL_USE_CHECKBOX,(long)1,wxRECURSE);
     }
-    
+
     bool wxsBorderProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)
     {
         if ( Id == PGId )
@@ -161,10 +162,10 @@ const wxString& wxsBorderProperty::GetTypeName()
         }
         return true;
     }
-    
+
     void wxsBorderProperty::UpdatePropGrid(wxPropertyGrid* Grid)
     {
         Grid->SetPropertyValue(PGId,BorderFlags);
     }
-    
+
 #endif

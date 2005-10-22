@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxstogglebutton.h"
 
 #include <wx/tglbtn.h>

@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxsstaticboxsizer.h"
 
 #include "../properties/wxsenumproperty.h"

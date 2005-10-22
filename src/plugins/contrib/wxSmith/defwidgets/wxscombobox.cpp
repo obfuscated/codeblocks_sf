@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxscombobox.h"
 #include <wx/combobox.h>
 WXS_ST_BEGIN(wxsComboBoxStyles)
@@ -72,7 +73,7 @@ wxString wxsComboBox::GetProducingCode(wxsCodeParams& Params)
             GetBaseParams().VarName.c_str(),
             defaultChoice);
     }
-    
+
     Code << CDefs.InitCode;
 
     return Code;

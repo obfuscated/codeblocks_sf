@@ -1,14 +1,15 @@
+#include "../wxsheaders.h"
 #include "wxsspinbutton.h"
 
 #include <wx/spinbutt.h>
 
 WXS_ST_BEGIN(wxsSpinButtonStyles)
     WXS_ST_CATEGORY("wxSpinButton")
-#ifndef __WXGTK__    
-    WXS_ST(wxSP_HORIZONTAL)    
-#endif    
+#ifndef __WXGTK__
+    WXS_ST(wxSP_HORIZONTAL)
+#endif
     WXS_ST(wxSP_VERTICAL)
-    WXS_ST(wxSP_ARROW_KEYS)    
+    WXS_ST(wxSP_ARROW_KEYS)
     WXS_ST(wxSP_WRAP)
     WXS_ST_DEFAULTS()
 WXS_ST_END(wxsSpinButtonStyles)

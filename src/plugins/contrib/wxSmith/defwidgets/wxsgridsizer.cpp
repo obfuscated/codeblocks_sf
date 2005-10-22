@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxsgridsizer.h"
 
 wxString wxsGridSizer::GetProducingCode(wxsCodeParams& Params)

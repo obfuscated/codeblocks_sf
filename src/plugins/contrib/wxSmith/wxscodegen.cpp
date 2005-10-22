@@ -1,3 +1,4 @@
+#include "wxsheaders.h"
 #include "wxscodegen.h"
 
 wxsCodeGen::wxsCodeGen(wxsWidget* Widget,int InitialSpaces,int TabSize,bool DontCreateRoot)

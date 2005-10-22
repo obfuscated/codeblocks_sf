@@ -1,3 +1,4 @@
+#include "wxsheaders.h"
 #include "wxsevent.h"
 
 #include "wxsmith.h"

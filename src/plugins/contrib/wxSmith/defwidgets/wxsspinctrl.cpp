@@ -1,10 +1,11 @@
+#include "../wxsheaders.h"
 #include "wxsspinctrl.h"
 
 #include "wx/spinctrl.h"
 
 WXS_ST_BEGIN(wxsSpinCtrlStyles)
     WXS_ST_CATEGORY("wxSpinCtrl")
-    WXS_ST(wxSP_ARROW_KEYS)    
+    WXS_ST(wxSP_ARROW_KEYS)
     WXS_ST(wxSP_WRAP)
     WXS_ST_DEFAULTS()
 WXS_ST_END(wxsSpinCtrlStyles)

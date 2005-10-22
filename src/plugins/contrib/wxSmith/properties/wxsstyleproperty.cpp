@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxsstyleproperty.h"
 
 #include <wx/panel.h>
@@ -8,7 +9,7 @@
 
     #define WXS_MAX_STYLE_LEN   15
     #define WXSSPW_FIRST_ID     0x1010
-    
+
     class wxsStylePropertyWindow: public wxPanel
     {
         public:
@@ -18,9 +19,9 @@
                 StopUpdate(true)
             {
                 wxSizer* Sizer = new wxFlexGridSizer(1,2,2);
-                
-                wxWindowID CurrentId = WXSSPW_FIRST_ID; 
-                
+
+                wxWindowID CurrentId = WXSSPW_FIRST_ID;
+
                 if ( Styles )
                 {
                     for ( ; Styles->Name.Length(); Styles++ )
@@ -54,15 +55,15 @@
                         }
                     }
                 }
-                
+
                 SetSizer(Sizer);
                 Sizer->SetSizeHints(this);
-                
+
                 UpdateValues();
-                
+
                 StopUpdate = false;
             }
-            
+
             void UpdateValues()
             {
                 for ( int i=IdToStyleMaps.size(); --i >= 0; )
@@ -73,9 +74,9 @@
                     CP->SetValue( (Prop->Style&StyleVal) == StyleVal );
                 }
             }
-            
+
         private:
-        
+
             void OnChange(wxCommandEvent& event)
             {
                 if ( StopUpdate ) return;
@@ -94,18 +95,18 @@
                 Prop->ValueChanged(true);
                 StopUpdate = false;
             }
-        
+
             wxsStyleProperty* Prop;
             std::vector<int> IdToStyleMaps;
             bool StopUpdate;
-            
+
             DECLARE_EVENT_TABLE()
     };
-    
+
     BEGIN_EVENT_TABLE(wxsStylePropertyWindow,wxPanel)
         EVT_CHECKBOX(wxID_ANY,wxsStylePropertyWindow::OnChange)
     END_EVENT_TABLE()
-    
+
 #endif
 
 wxsStyleProperty::wxsStyleProperty(wxsProperties* Properties,int &_Style,wxsStyle *_Styles):
@@ -136,18 +137,18 @@ const wxString& wxsStyleProperty::GetTypeName()
     {
         return Window = new wxsStylePropertyWindow(Parent,this,Styles);
     }
-    
+
     void wxsStyleProperty::UpdateEditWindow()
     {
         if ( Window ) Window->UpdateValues();
     }
-            
+
 #else
 
     void wxsStyleProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)
     {
     	wxPGConstants Consts;
-    	
+
     	for ( wxsStyle* St = Styles; St->Name.Length(); ++St )
     	{
     		if ( St->Value != ((unsigned int)-1) )
@@ -155,11 +156,11 @@ const wxString& wxsStyleProperty::GetTypeName()
     			Consts.Add(St->Name,St->Value);
     		}
     	}
-    	
+
     	PGId = Grid->Append( wxFlagsProperty(Name,wxPG_LABEL,Consts,Style) );
         Grid->SetPropertyAttribute(PGId,wxPG_BOOL_USE_CHECKBOX,(long)1,wxRECURSE);
     }
-    
+
     bool wxsStyleProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)
     {
     	if ( Id == PGId )
@@ -169,7 +170,7 @@ const wxString& wxsStyleProperty::GetTypeName()
     	}
     	return true;
     }
-    
+
     void wxsStyleProperty::UpdatePropGrid(wxPropertyGrid* Grid)
     {
     	Grid->SetPropertyValue(PGId,Style);

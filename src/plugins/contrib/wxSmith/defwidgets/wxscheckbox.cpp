@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxscheckbox.h"
 
 WXS_ST_BEGIN(wxsCheckBoxStyles)
@@ -13,7 +14,7 @@ wxsDWDefineBegin(wxsCheckBox,wxCheckBox,
 
     ThisWidget = new wxCheckBox(parent,id,label,pos,size,style);
     ThisWidget->SetValue(checked);
-    
+
     )
 
     wxsDWDefLongStr(label,"Label:","Label");

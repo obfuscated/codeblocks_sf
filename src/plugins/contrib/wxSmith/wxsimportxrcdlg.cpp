@@ -1,3 +1,4 @@
+#include "wxsheaders.h"
 #include "wxsimportxrcdlg.h"
 
 wxsImportXrcDlg::wxsImportXrcDlg(wxWindow* Parent, TiXmlElement* Elem):

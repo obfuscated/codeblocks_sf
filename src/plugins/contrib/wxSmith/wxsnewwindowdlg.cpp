@@ -1,3 +1,4 @@
+#include "wxsheaders.h"
 #include "wxsnewwindowdlg.h"
 #include "resources/wxswindowres.h"
 #include "wxsmith.h"

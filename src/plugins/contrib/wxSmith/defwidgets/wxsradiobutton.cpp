@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxsradiobutton.h"
 
 WXS_ST_BEGIN(wxsRadioButtonStyles)
@@ -8,14 +9,14 @@ WXS_ST_BEGIN(wxsRadioButtonStyles)
     WXS_ST(wxBU_BOTTOM)
 //    WXS_ST(wxBU_EXACTFIT)
     WXS_ST(wxNO_BORDER)
-    
+
     WXS_ST(wxRB_GROUP)
 #ifdef __WXMSW__
     WXS_ST(wxRB_SINGLE)
 #endif
-#ifdef __PALMOS__    
+#ifdef __PALMOS__
     WXS_ST(wxRB_USE_CHECKBOX)
-#endif     
+#endif
     WXS_ST_DEFAULTS()
 WXS_ST_END(wxsRadioButtonStyles)
 
@@ -34,7 +35,7 @@ wxsDWDefineBegin(wxsRadioButton,wxRadioButton,
 
     ThisWidget = new wxRadioButton(parent,id,label,pos,size,style);
     ThisWidget->SetValue(selected);
-    
+
     )
 
     wxsDWDefLongStr(label,"Label:","Label");

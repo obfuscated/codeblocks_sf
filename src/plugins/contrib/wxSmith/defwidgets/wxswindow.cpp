@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxsdialog.h"
 
 #include <wx/frame.h>
