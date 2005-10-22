@@ -62,9 +62,19 @@
                       <option>1</option>
                       <flag>wxGROW</flag>
                     </object>
-                    <cols></cols>
+                    <cols>2</cols>
                     <hgap>8</hgap>
                     <growablecols>1</growablecols>
+                    <object class="spacer">
+                      <size>0,0</size>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Lower weight means higher priority (order of compiling)</label>
+                        <fg>#A52A2A</fg>
+                      </object>
+                      <flag>wxALIGN_CENTRE</flag>
+                    </object>
                   </object>
                   <border>8</border>
                   <flag>wxALL|wxGROW</flag>
