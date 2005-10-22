@@ -200,6 +200,10 @@ string HTMLExporter::HTMLBody(const wxMemoryBuffer &styled_text)
         html_body += "&gt;";
         break;
 
+      case '&':
+        html_body += "&amp;";
+        break;
+
       case '\r':
         break;
 
