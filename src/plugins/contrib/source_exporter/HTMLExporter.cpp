@@ -74,10 +74,6 @@ string HTMLExporter::HTMLStyle(const EditorColorSet *c_color_set, HighlightLangu
            << setw(2) << static_cast<unsigned int>(optc->fore.Red())
            << setw(2) << static_cast<unsigned int>(optc->fore.Green())
            << setw(2) << static_cast<unsigned int>(optc->fore.Blue())
-           << "; background-color: #"
-           << setw(2) << static_cast<unsigned int>(optc->back.Red())
-           << setw(2) << static_cast<unsigned int>(optc->back.Green())
-           << setw(2) << static_cast<unsigned int>(optc->back.Blue())
            << "; ";
     }
     else
@@ -86,7 +82,12 @@ string HTMLExporter::HTMLStyle(const EditorColorSet *c_color_set, HighlightLangu
            << setw(2) << static_cast<unsigned int>(optc->fore.Red())
            << setw(2) << static_cast<unsigned int>(optc->fore.Green())
            << setw(2) << static_cast<unsigned int>(optc->fore.Blue())
-           << "; background-color: "
+           << "; ";
+    }
+
+    if (optc->back.Ok())
+    {
+      ostr << "background-color: #"
            << setw(2) << static_cast<unsigned int>(optc->back.Red())
            << setw(2) << static_cast<unsigned int>(optc->back.Green())
            << setw(2) << static_cast<unsigned int>(optc->back.Blue())
