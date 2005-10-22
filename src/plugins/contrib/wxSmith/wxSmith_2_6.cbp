@@ -668,9 +668,9 @@
 			<Option target="wxSmith"/>
 		</Unit>
 		<Unit filename="wxsheaders.h">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
+			<Option compilerVar="CPP"/>
 			<Option link="0"/>
+			<Option weight="0"/>
 			<Option target="wxSmith"/>
 		</Unit>
 		<Unit filename="wxsimportxrcdlg.cpp">

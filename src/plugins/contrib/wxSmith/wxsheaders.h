@@ -30,7 +30,6 @@
     #include "wxsresourcetree.h"
     #include "wxssettingsdlg.h"
     #include "wxssplitterwindow.h"
-    #include "wxsstdwidget.h"
     #include "wxsstyle.h"
     #include "wxswidgetevents.h"
     #include "wxswidgetfactory.h"
@@ -49,6 +48,10 @@
     #include "properties/wxsstringlistproperty.h"
     #include "properties/wxsstringproperty.h"
     #include "properties/wxsstyleproperty.h"
+
+    //propgrid
+    #include <wx/propgrid/propgrid.h>
+    #include <wx/propgrid/advprops.h>
 
 #endif
 
