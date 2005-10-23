@@ -21,14 +21,11 @@
 #include <licenses.h> // defines some common licenses (like the GPL)
 #include "HTMLExporter.h"
 #include "RTFExporter.h"
-#include <fstream>
-#include <string>
-
-using std::ofstream;
-using std::string;
+#include "ODTExporter.h"
 
 static int idFileExportHTML = wxNewId();
 static int idFileExportRTF = wxNewId();
+static int idFileExportODT = wxNewId();
 
 // Implement the plugin's hooks
 CB_IMPLEMENT_PLUGIN(Exporter);
@@ -36,17 +33,19 @@ CB_IMPLEMENT_PLUGIN(Exporter);
 BEGIN_EVENT_TABLE(Exporter, cbPlugin)
   EVT_MENU(idFileExportHTML, Exporter::OnExportHTML)
   EVT_MENU(idFileExportRTF, Exporter::OnExportRTF)
+  EVT_MENU(idFileExportODT, Exporter::OnExportODT)
   EVT_UPDATE_UI(idFileExportHTML, Exporter::OnUpdateUI)
   EVT_UPDATE_UI(idFileExportRTF, Exporter::OnUpdateUI)
+  EVT_UPDATE_UI(idFileExportODT, Exporter::OnUpdateUI)
 END_EVENT_TABLE()
 
 Exporter::Exporter()
 {
   //ctor
-  m_PluginInfo.name = _T("Source HTML and RTF Exporter");
-  m_PluginInfo.title = _("Source HTML and RTF exporter");
-  m_PluginInfo.version = _T("0.3");
-  m_PluginInfo.description = _("Plugin to export syntax highlighted source files to HTML or RTF.");
+  m_PluginInfo.name = _T("Source HTML, RTF and ODT Exporter");
+  m_PluginInfo.title = _("Source HTML, RTF and ODT exporter");
+  m_PluginInfo.version = _T("0.4");
+  m_PluginInfo.description = _("Plugin to export syntax highlighted source files to HTML, RTF or ODT.");
   m_PluginInfo.author = _T("Ceniza");
   m_PluginInfo.authorEmail = _T("ceniza@gda.utp.edu.co");
   m_PluginInfo.authorWebsite = _T("");
@@ -110,24 +109,33 @@ void Exporter::BuildMenu(wxMenuBar *menuBar)
   }
 
   // insert menu items
-  file->Insert(printPos, idFileExportHTML, _("Export to HTML"), _("Exports the current file to HTML"));
+  file->Insert(printPos, idFileExportODT, _("Export to ODT"), _("Exports the current file to ODT"));
   file->Insert(printPos, idFileExportRTF, _("Export to RTF"), _("Exports the current file to RTF"));
+  file->Insert(printPos, idFileExportHTML, _("Export to HTML"), _("Exports the current file to HTML"));
 }
 
 void Exporter::RemoveMenu(wxMenuBar *menuBar)
 {
   wxMenu *menu = 0;
   wxMenuItem *itemHTML = menuBar->FindItem(idFileExportHTML, &menu);
-  wxMenuItem *itemRTF = menuBar->FindItem(idFileExportRTF, &menu);
 
   if (menu && itemHTML)
   {
     menu->Remove(itemHTML);
   }
 
+  wxMenuItem *itemRTF = menuBar->FindItem(idFileExportRTF, &menu);
+
   if (menu && itemRTF)
   {
     menu->Remove(itemRTF);
+  }
+
+  wxMenuItem *itemODT = menuBar->FindItem(idFileExportODT, &menu);
+
+  if (menu && itemODT)
+  {
+    menu->Remove(itemODT);
   }
 }
 
@@ -149,6 +157,7 @@ void Exporter::OnUpdateUI(wxUpdateUIEvent &event)
     bool disable = !em || !em->GetActiveEditor() || !em->GetBuiltinActiveEditor();
     mbar->Enable(idFileExportHTML, !disable);
     mbar->Enable(idFileExportRTF, !disable);
+    mbar->Enable(idFileExportODT, !disable);
   }
 
   event.Skip();
@@ -156,32 +165,24 @@ void Exporter::OnUpdateUI(wxUpdateUIEvent &event)
 
 void Exporter::OnExportHTML(wxCommandEvent &event)
 {
-  if (!m_IsAttached)
-  {
-    return;
-  }
-
-  EditorManager *em = EDMAN();
-  cbEditor *cb = em->GetBuiltinActiveEditor();
-  wxString filename = wxFileSelector(_("Choose the filename"), _T(""), _T(""), _T("html"),_("HTML files|*.html;*.htm"), wxSAVE | wxOVERWRITE_PROMPT);
-
-  if (filename.IsEmpty())
-  {
-    return;
-  }
-
-  wxScintilla *ed = cb->GetControl();
-  wxMemoryBuffer mb = ed->GetStyledText(0, ed->GetLength() - 1);
-  EditorColorSet *ecs = cb->GetColorSet();
-
   HTMLExporter exp;
-  string html_code = exp.Export(cb->GetFilename(), mb, ecs);
-
-  ofstream file(filename.c_str());
-  file << html_code;
+  ExportFile(&exp, _T("html"), _("HTML files|*.html;*.htm"));
 }
 
 void Exporter::OnExportRTF(wxCommandEvent &event)
+{
+  RTFExporter exp;
+  ExportFile(&exp, _T("rtf"), _("RTF files|*.rtf"));
+}
+
+
+void Exporter::OnExportODT(wxCommandEvent &event)
+{
+  ODTExporter exp;
+  ExportFile(&exp, _T("odt"), _("ODT files|*.odt"));
+}
+
+void Exporter::ExportFile(BaseExporter *exp, const wxString &default_extension, const wxString &wildcard)
 {
   if (!m_IsAttached)
   {
@@ -190,7 +191,7 @@ void Exporter::OnExportRTF(wxCommandEvent &event)
 
   EditorManager *em = EDMAN();
   cbEditor *cb = em->GetBuiltinActiveEditor();
-  wxString filename = wxFileSelector(_("Choose the filename"), _T(""), _T(""), _T("rtf"),_("RTF files|*.rtf"), wxSAVE | wxOVERWRITE_PROMPT);
+  wxString filename = wxFileSelector(_("Choose the filename"), _T(""), _T(""), default_extension, wildcard, wxSAVE | wxOVERWRITE_PROMPT);
 
   if (filename.IsEmpty())
   {
@@ -201,9 +202,5 @@ void Exporter::OnExportRTF(wxCommandEvent &event)
   wxMemoryBuffer mb = ed->GetStyledText(0, ed->GetLength() - 1);
   EditorColorSet *ecs = cb->GetColorSet();
 
-  RTFExporter exp;
-  string rtf_code = exp.Export(cb->GetFilename(), mb, ecs);
-
-  ofstream file(filename.c_str());
-  file << rtf_code;
+  exp->Export(filename, cb->GetFilename(), mb, ecs);
 }

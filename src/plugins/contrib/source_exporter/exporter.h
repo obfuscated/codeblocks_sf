@@ -26,6 +26,8 @@
 #include <cbplugin.h> // the base class we 're inheriting
 #include <settings.h> // needed to use the Code::Blocks SDK
 
+#include "BaseExporter.h"
+
 class Exporter : public cbPlugin
 {
 	public:
@@ -38,6 +40,8 @@ class Exporter : public cbPlugin
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
     void OnExportHTML(wxCommandEvent &event);
     void OnExportRTF(wxCommandEvent &event);
+    void OnExportODT(wxCommandEvent &event);
+    void ExportFile(BaseExporter *exp, const wxString &default_extension, const wxString &wildcard);
     void OnUpdateUI(wxUpdateUIEvent &event);
   private:
     void BuildModuleMenu(const ModuleType type, wxMenu *menu, const wxString &arg) {}

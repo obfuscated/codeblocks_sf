@@ -8,7 +8,9 @@
 #include <cstdlib>
 #include <sstream>
 #include <iomanip>
+#include <fstream>
 
+using std::ofstream;
 using std::ostringstream;
 using std::hex;
 using std::setw;
@@ -210,7 +212,7 @@ string HTMLExporter::HTMLBody(const wxMemoryBuffer &styled_text)
       default:
         html_body += buffer[i];
         break;
-    };
+    }
   }
 
   html_body += "</span>";
@@ -224,7 +226,7 @@ const char *HTMLExporter::HTMLBodyEND =
   "</body>\n"
   "</html>\n";
 
-string HTMLExporter::Export(wxString title, const wxMemoryBuffer &styled_text, const EditorColorSet *color_set)
+void HTMLExporter::Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColorSet *color_set)
 {
   string html_code;
   HighlightLanguage lang = const_cast<EditorColorSet *>(color_set)->GetLanguageForFilename(title);
@@ -240,5 +242,6 @@ string HTMLExporter::Export(wxString title, const wxMemoryBuffer &styled_text, c
   html_code += HTMLBody(styled_text);
   html_code += HTMLBodyEND;
 
-  return html_code;
+  ofstream file(filename.c_str());
+  file << html_code;
 }

@@ -11,7 +11,9 @@
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
+#include <fstream>
 
+using std::ofstream;
 using std::ostringstream;
 using std::hex;
 using std::setw;
@@ -150,7 +152,7 @@ string RTFExporter::RTFColorTable(const EditorColorSet *c_color_set, HighlightLa
         color_tbl.push_back(optc->back);
         backIter = color_tbl.end() - 1;
       }
-
+      /* TODO (Ceniza#1#): If the background color isn't set don't add it (backIdx = -1) and check for it later */
       int backIdx = backIter - color_tbl.begin();
 
       Style tmpStyle =
@@ -361,7 +363,7 @@ string RTFExporter::RTFBody(const wxMemoryBuffer &styled_text, int pt)
 
 const char *RTFExporter::RTFEnd = "\n\\par }";
 
-string RTFExporter::Export(wxString title, const wxMemoryBuffer &styled_text, const EditorColorSet *color_set)
+void RTFExporter::Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColorSet *color_set)
 {
   string rtf_code;
   HighlightLanguage lang = const_cast<EditorColorSet *>(color_set)->GetLanguageForFilename(title);
@@ -374,5 +376,6 @@ string RTFExporter::Export(wxString title, const wxMemoryBuffer &styled_text, co
   rtf_code += RTFBody(styled_text, pt);
   rtf_code += RTFEnd;
 
-  return rtf_code;
+  ofstream file(filename.c_str());
+  file << rtf_code;
 }

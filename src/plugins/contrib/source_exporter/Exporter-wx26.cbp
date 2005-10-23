@@ -58,11 +58,41 @@
 			<Add directory="$(CB_SDK)\sdk\tinyxml"/>
 			<Add directory="$(CB_SDK)\sdk\wxscintilla\include"/>
 		</Linker>
+		<Unit filename="BaseExporter.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="BaseExporter.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
 		<Unit filename="HTMLExporter.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="default"/>
 		</Unit>
 		<Unit filename="HTMLExporter.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="ODTExporter.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="ODTExporter.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="RTFExporter.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="RTFExporter.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

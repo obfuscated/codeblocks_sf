@@ -1,15 +1,14 @@
 #ifndef RTFEXPORTER_INCLUDED
 #define RTFEXPORTER_INCLUDED
 
-#include <wx/wx.h>
-#include <editorcolorset.h>
-#include <string>
+#include "BaseExporter.h"
 #include <vector>
+#include <string>
 
 using std::string;
 using std::vector;
 
-class RTFExporter
+class RTFExporter : public BaseExporter
 {
   public:
     struct Style
@@ -25,7 +24,7 @@ class RTFExporter
     };
 
   public:
-    string Export(wxString title, const wxMemoryBuffer &styled_text, const EditorColorSet *color_set);
+    void Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColorSet *color_set);
 
   private:
     vector<Style> m_styles;
