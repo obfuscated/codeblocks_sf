@@ -129,6 +129,12 @@ wxString wxsDefSizer::GetFinalizingCode(wxsCodeParams& Params)
         Code.Append(wxString::Format(_T("%s->SetSizer(%s);"),
             Params.ParentName.c_str(),
             BaseParams.VarName.c_str()));
+        Code.Append(wxString::Format(_T("%s->Fit(%s);"),
+            BaseParams.VarName.c_str(),
+            Params.ParentName.c_str()));
+        Code.Append(wxString::Format(_T("%s->SetSizeHints(%s);"),
+            BaseParams.VarName.c_str(),
+            Params.ParentName.c_str()));
     }
     return Code;
 }

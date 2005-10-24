@@ -22,6 +22,14 @@ class wxsFrame : public wxsWindow
         /** Checking if it's centered */
         inline bool GetCentered() { return Centered; }
 
+        /** Function generating code which should produce widget */
+        virtual wxString GetProducingCode(wxsCodeParams& Params);
+
+        /** Function generating code which finishes production process of this
+         *  widget
+         */
+        virtual wxString GetFinalizingCode(wxsCodeParams& Params);
+
     protected:
   
         void CreateObjectProperties();

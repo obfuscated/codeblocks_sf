@@ -15,8 +15,7 @@ BEGIN_EVENT_TABLE(wxsSettingsDlg,wxDialog)
 //*)
 END_EVENT_TABLE()
 
-wxsSettingsDlg::wxsSettingsDlg(wxWindow* parent,wxWindowID id):
-    wxDialog(parent,id,_T(""),wxDefaultPosition,wxDefaultSize)
+wxsSettingsDlg::wxsSettingsDlg(wxWindow* parent,wxWindowID id)
 {
     //(*Initialize(wxsSettingsDlg)
     wxXmlResource::Get()->LoadDialog(this,parent,_T("wxsSettingsDlg"));
@@ -50,12 +49,12 @@ void wxsSettingsDlg::OnBtnOkClick(wxCommandEvent& event)
     ConfigManager::Get()->Write(_T("/wxsmith/dragparentcol"),(((long)ColParent.Red())<<16) + (((long)ColParent.Green())<<8) + (long)ColParent.Blue());
     ConfigManager::Get()->Write(_T("/wxsmith/dragassisttype"),(long)DragAssistType->GetSelection());
     ConfigManager::Get()->Write(_T("/wxsmith/backfetchdelay"),(long)PrevFetchDelay->GetValue());
-    Close();
+    EndModal(wxID_OK);
 }
 
 void wxsSettingsDlg::OnBtnCancelClick(wxCommandEvent& event)
 {
-    Close();
+    EndModal(wxID_OK);
 }
 
 void wxsSettingsDlg::OnDragTargetColClick(wxCommandEvent& event)

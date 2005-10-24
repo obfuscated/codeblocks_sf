@@ -79,8 +79,7 @@ wxSmith::~wxSmith()
 
 void wxSmith::OnAttach()
 {
-    ConfigManager::AddConfiguration(m_PluginInfo.title, _T("/wxsmith"));
-    wxNotebook* Notebook = Manager::Get()->GetNotebook();
+    ConfigManager::AddConfiguration(m_PluginInfo.title, _T("/wxsmith"));     wxNotebook* Notebook = Manager::Get()->GetNotebook();
 	if ( Notebook )
 	{
         // Creating main splitting objects
@@ -164,7 +163,7 @@ int wxSmith::Configure()
 {
 	wxsSettingsDlg Dlg(NULL);
 	Dlg.ShowModal();
-	return 1;
+	return 0;
 }
 
 void wxSmith::BuildMenu(wxMenuBar* menuBar)
@@ -287,17 +286,13 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
     // Loading xrc file into xml document
 
     TiXmlDocument Doc(FileName.mb_str());
-    TiXmlElement* Resource;
-    if (! Doc.LoadFile() ||
+    TiXmlElement* Resource;     if (! Doc.LoadFile() ||
         ! (Resource = Doc.FirstChildElement("resource")) )
     {
     	wxMessageBox(_("Couldn't load XRC file."));
         return;
-    }
-    // Generating list of objects
-    wxArrayString Resources;
-    TiXmlElement* Element = Resource->FirstChildElement("object");
-    while ( Element )
+    }     // Generating list of objects
+    wxArrayString Resources;     TiXmlElement* Element = Resource->FirstChildElement("object");     while ( Element )
     {
     	const char* Class = Element->Attribute("class");
     	const char* Name = Element->Attribute("name");
@@ -345,8 +340,7 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
             break;
         }
         Element = Element->NextSiblingElement("object");
-    }
-    if ( !Element ) return;
+    }     if ( !Element ) return;
 
     // Creating fake resource and testing if xrc can be loaded without any errors
     wxsWidget* Test = wxsGEN(wxString(Element->Attribute("class"),wxConvUTF8),NULL);

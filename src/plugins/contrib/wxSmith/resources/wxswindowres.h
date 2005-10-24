@@ -150,9 +150,6 @@ class wxsWindowRes : public wxsResource
         /** Helper function giving name of resource from current window type */
         virtual const wxChar* GetWidgetClass(bool UseRes = false) = 0;
         
-        /** Function creating code which will set up resource */
-        virtual wxString ResSetUpCode(int TabSize) = 0;
-        
         /** Function generating code loading this resource from xrc file */
         virtual wxString GetXrcLoadingCode(int TabSize) = 0;
         
@@ -306,23 +303,6 @@ class wxsFrameRes: public wxsWindowRes
                 //Frm->MakeModal();
             }
         )
-
-    virtual wxString ResSetUpCode(int TabSize)
-    {
-    	wxString Code;
-    	wxsFrame& Frm = GetFrame();
-    	Code.Append(_T(' '),TabSize);
-    	Code << _T("SetWindowStyle(") << Frm.GetCodeDefines().Style.c_str() << _T(");\n");
-    	Code.Append(_T(' '),TabSize);
-    	Code << _T("SetTitle(") << GetWxString(Frm.Title) << _T(");\n");
-        if ( Frm.Centered )
-        {
-            Code.Append(_T(' '),TabSize);
-        	Code << _T("Centre();\n");
-        }
-    	
-        return Code;
-    }
 };
 
 class wxsPanelRes: public wxsWindowRes
@@ -339,14 +319,6 @@ class wxsPanelRes: public wxsWindowRes
         		Dlg.ShowModal();
         	}
         )
-        
-    virtual wxString ResSetUpCode(int TabSize)
-    {
-    	wxString Code;
-    	Code.Append(_T(' '),TabSize);
-    	Code << _T("SetWindowStyle(") << GetPanel().GetCodeDefines().Style.c_str() << _T(");\n");
-    	return Code;
-    }
 };
 
 #endif

@@ -17,11 +17,12 @@ wxsBHeader("EventTable","$(ClassName)") _T("\n")
 wxsBEnd() _T("\n")
 _T("END_EVENT_TABLE()\n")
 _T("\n")
-_T("$(ClassName)::$(ClassName)(wxWindow* parent,wxWindowID id):\n")
-_T("    $(BaseClassCtor)\n")
+//_T("$(ClassName)::$(ClassName)(wxWindow* parent,wxWindowID id):\n")
+//_T("    $(BaseClassCtor)\n")
+_T("$(ClassName)::$(ClassName)(wxWindow* parent,wxWindowID id)\n")
 _T("{\n")
-_T("    ") wxsBHeader("Initialize","$(ClassName)") _T("\n")
-_T("    ") wxsBEnd() _T("\n")
+_T("\t") wxsBHeader("Initialize","$(ClassName)") _T("\n")
+_T("\t") wxsBEnd() _T("\n")
 _T("}\n")
 _T("\n")
 _T("$(ClassName)::~$(ClassName)()\n")
@@ -39,25 +40,25 @@ wxsBEnd() _T("\n")
 _T("\n")
 _T("class $(ClassName): public $(BaseClassName)\n")
 _T("{\n")
-_T("    public:\n")
+_T("\tpublic:\n")
 _T("\n")
-_T("        $(ClassName)(wxWindow* parent,wxWindowID id = -1);\n")
-_T("        virtual ~$(ClassName)();\n")
+_T("\t\t$(ClassName)(wxWindow* parent,wxWindowID id = -1);\n")
+_T("\t\tvirtual ~$(ClassName)();\n")
 _T("\n")
-_T("        ") wxsBHeader("Identifiers","$(ClassName)") _T("\n")
-_T("        ") wxsBEnd() _T("\n")
+_T("\t\t") wxsBHeader("Identifiers","$(ClassName)") _T("\n")
+_T("\t\t") wxsBEnd() _T("\n")
 _T("\n")
-_T("    protected:\n")
+_T("\tprotected:\n")
 _T("\n")
-_T("        ") wxsBHeader("Handlers","$(ClassName)") _T("\n")
-_T("        ") wxsBEnd() _T("\n")
+_T("\t\t") wxsBHeader("Handlers","$(ClassName)") _T("\n")
+_T("\t\t") wxsBEnd() _T("\n")
 _T("\n")
-_T("        ") wxsBHeader("Declarations","$(ClassName)") _T("\n")
-_T("        ") wxsBEnd() _T("\n")
+_T("\t\t") wxsBHeader("Declarations","$(ClassName)") _T("\n")
+_T("\t\t") wxsBEnd() _T("\n")
 _T("\n")
-_T("    private:\n")
+_T("\tprivate:\n")
 _T("\n")
-_T("        DECLARE_EVENT_TABLE()\n")
+_T("\t\tDECLARE_EVENT_TABLE()\n")
 _T("};\n")
 _T("\n")
 _T("#endif\n");
@@ -249,7 +250,7 @@ bool wxsWindowRes::GenerateEmptySources()
     Content.Replace(_T("$(Include)"),Include,true);
     Content.Replace(_T("$(ClassName)"),ClassName,true);
     Content.Replace(_T("$(BaseClassName)"),GetWidgetClass(),true);
-    Content.Replace(_T("$(BaseClassCtor)"),GetConstructor(),true);
+//    Content.Replace(_T("$(BaseClassCtor)"),GetConstructor(),true);
     fprintf(Fl,"%s",(const char*)Content.mb_str());
     fclose(Fl);
     return true;
@@ -316,7 +317,6 @@ void wxsWindowRes::RebuildCode()
         // Generating producing code
         wxsCodeGen Gen(RootWidget,TabSize,TabSize,false);
         Code.Append(Gen.GetCode());
-        Code.Append(ResSetUpCode(TabSize));
         Code.Append(_T(' '),TabSize);
     }
     else if ( GetEditMode() == wxsResFile | wxsResSource )

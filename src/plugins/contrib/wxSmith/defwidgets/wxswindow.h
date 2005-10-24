@@ -21,11 +21,6 @@ class wxsWindow : public wxsContainer
 		/** Own handler for adding children */
 		virtual int AddChild(wxsWidget* NewWidget,int InsertBeforeThis);
 
-        /** Function generating code which should produce widget
-         *  In this case, generated code will only set-up resource
-         */
-        virtual wxString GetProducingCode(wxsCodeParams& Params);
-
    protected:
 
         /** This function should create preview window for resource.

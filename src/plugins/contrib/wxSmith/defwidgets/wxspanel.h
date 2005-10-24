@@ -32,8 +32,14 @@ class wxsPanelr : public wxsWindow
 {
 	public:
 		wxsPanelr(wxsWidgetManager* Man,wxsWindowRes* Res);
+		
 		virtual ~wxsPanelr();
+		
         virtual const wxsWidgetInfo& GetInfo();
+        
+        /** Function generating code which should produce widget */
+        virtual wxString GetProducingCode(wxsCodeParams& Params);
+
 };
 
 #endif // WXSPANEL_H
