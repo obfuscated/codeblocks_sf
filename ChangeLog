@@ -1,6 +1,10 @@
 Changes for version 1.0-RC2
 -------------------------------
 
+2005-10-24  mandrav
+
+	* Fixed wxWidgets templates
+
 2005-10-24  byo_spoon
 
 	* Added InitDialog event handler

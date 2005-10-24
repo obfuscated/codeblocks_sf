@@ -11,7 +11,7 @@
 			</Target>
 			<Environment>
 				<Variable name="WX_DIR" value="C:\wxWidgets-2.6.2"/>
-				<Variable name="WX_CFG" value="NonUnicode"/>
+				<Variable name="WX_CFG" value=""/>
 			</Environment> 
 		</Build>
 		<Compiler>
@@ -24,7 +24,6 @@
 			<Add option="-DWXUSINGDLL"/>
 			<Add option="-DUSE_PCH"/>
 			<Add directory="$(WX_DIR)\include"/>
-			<Add directory="$(WX_DIR)\lib\gcc_dll\msw"/>
 			<Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)\msw"/>
 			<Add directory="$(WX_DIR)\contrib\include"/>
 		</Compiler>
@@ -33,7 +32,6 @@
 		</ResourceCompiler> 
 		<Linker>
 			<Add library="wxmsw26"/>
-			<Add directory="$(WX_DIR)\lib\gcc_dll\msw"/>
 			<Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)"/> 
 		</Linker>
 		<Unit filename="wx_pch.h">
