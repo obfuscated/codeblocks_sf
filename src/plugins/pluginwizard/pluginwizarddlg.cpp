@@ -459,8 +459,8 @@ void PluginWizardDlg::CreateFiles()
         DoAddHeaderOption(buffer, hasMenu, wxEmptyString);
         buffer << _T('\t') << _T('\t') << _T("void BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg)");
         DoAddHeaderOption(buffer, hasModuleMenu, wxEmptyString);
-        buffer << _T('\t') << _T('\t') << _T("void BuildToolBar(wxToolBar* toolBar)");
-        DoAddHeaderOption(buffer, hasToolbar, wxEmptyString);
+        buffer << _T('\t') << _T('\t') << _T("bool BuildToolBar(wxToolBar* toolBar)");
+        DoAddHeaderOption(buffer, hasToolbar, _T("false"));
 	}
 	switch (type)
 	{
@@ -636,13 +636,14 @@ void PluginWizardDlg::CreateFiles()
         }
         if (hasToolbar)
         {
-            buffer << _T("void ") << m_Info.name << _T("::BuildToolBar(wxToolBar* toolBar)") << _T('\n');
+            buffer << _T("bool ") << m_Info.name << _T("::BuildToolBar(wxToolBar* toolBar)") << _T('\n');
             buffer << _T("{") << _T('\n');
             buffer << _T('\t') << _T("//The application is offering its toolbar for your plugin,") << _T('\n');
             buffer << _T('\t') << _T("//to add any toolbar items you want...") << _T('\n');
             buffer << _T('\t') << _T("//Append any items you need on the toolbar...") << _T('\n');
             buffer << _T('\t') << _T("NotImplemented(_T(\"") << m_Info.name << _T("::BuildToolBar()") << _T("\"));") << _T('\n');
-            buffer << _T('\t') << _T("return;") << _T('\n');
+            buffer << _T('\t') << _T("// return true if you add toolbar items") << _T('\n');
+            buffer << _T('\t') << _T("return false;") << _T('\n');
             buffer << _T("}") << _T('\n');
             buffer << _T('\n');
         }

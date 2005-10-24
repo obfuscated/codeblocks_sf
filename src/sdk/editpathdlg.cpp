@@ -92,6 +92,7 @@ void EditPathDlg::OnBrowse(wxCommandEvent& event)
     else if (!path.GetFullPath().IsEmpty())
         s_LastPath = path.GetFullPath();
 
+    wxString result;
     if (m_AskMakeRelative && !m_Basepath.IsEmpty())
     {
         // ask the user if he wants it to be kept as relative
@@ -107,22 +108,32 @@ void EditPathDlg::OnBrowse(wxCommandEvent& event)
                     path.MakeRelativeTo(m_Basepath);
                     multi[i] = path.GetFullPath();
                 }
-                XRCCTRL(*this, "txtPath", wxTextCtrl)->SetValue(GetStringFromArray(multi));
+                result = GetStringFromArray(multi);
             }
             else
             {
                 path.MakeRelativeTo(m_Basepath);
-                XRCCTRL(*this, "txtPath", wxTextCtrl)->SetValue(path.GetFullPath());
+                result = path.GetFullPath();
             }
         }
         else
         {
             if (m_AllowMultiSel)
-                XRCCTRL(*this, "txtPath", wxTextCtrl)->SetValue(GetStringFromArray(multi));
+                result = GetStringFromArray(multi);
             else
-                XRCCTRL(*this, "txtPath", wxTextCtrl)->SetValue(path.GetFullPath());
+                result = path.GetFullPath();
         }
     }
+    else // always absolute path
+    {
+        if (m_AllowMultiSel)
+            result = GetStringFromArray(multi);
+        else
+            result = path.GetFullPath();
+    }
+
+    // finally set the path
+    XRCCTRL(*this, "txtPath", wxTextCtrl)->SetValue(result);
 }
 
 void EditPathDlg::OnUpdateUI(wxUpdateUIEvent& event)
