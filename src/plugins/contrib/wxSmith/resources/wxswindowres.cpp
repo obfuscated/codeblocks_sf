@@ -817,15 +817,31 @@ void wxsWindowRes::UpdateEventTable()
 	Code.Append(_T('\n'));
 	CollectEventTableEnteries(Code,RootWidget,TabSize);
 	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(GetSourceFile()),CodeHeader,Code);
+    // Applying modified state
+    if ( GetEditor() )
+    {
+    	// Must process inside editor (updating titile)
+    	GetEditor()->SetModified();
+    }
+    else
+    {
+        SetModified();
+    }
+
+    // Storing change inside undo buffer
+    if ( GetEditor() )
+    {
+    	((wxsWindowEditor*)GetEditor())->GetUndoBuff()->StoreChange();
+    }
 }
 
 void wxsWindowRes::CollectEventTableEnteries(wxString& Code,wxsWidget* Widget,int TabSize)
 {
 	int Cnt = Widget->GetChildCount();
+    Code += Widget->GetEvents()->GetArrayEnteries(TabSize);
 	for ( int i=0; i<Cnt; i++ )
 	{
 		wxsWidget* Child = Widget->GetChild(i);
-		Code += Child->GetEvents()->GetArrayEnteries(TabSize);
 		CollectEventTableEnteries(Code,Child,TabSize);
 	}
 }

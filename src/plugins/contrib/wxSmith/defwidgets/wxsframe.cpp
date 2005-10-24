@@ -35,6 +35,7 @@ WXS_ST_BEGIN(wxsFrameStyles)
 WXS_ST_END(wxsFrameStyles)
 
 WXS_EV_BEGIN(wxsFrameEvents)
+    WXS_EV(EVT_INIT_DIALOG,wxInitDialogEvent,Init)
     WXS_EV_DEFAULTS()
 WXS_EV_END(wxsFrameEvents)
 
