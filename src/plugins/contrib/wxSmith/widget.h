@@ -464,6 +464,14 @@ class wxsWidget
         /** Changing position of widget in child list */
         virtual bool ChangeChildPos(int PrevPos, int NewPos) { return false; }
 
+        /** Function returning quick configure panel for child at given position.
+         *
+         * This panel is placed at palette window and should be used to quickly
+         * configure base widget params. The window should automatically update
+         * everything because no notification will be sent wnen destroying window
+         */
+        virtual wxWindow* GetChildPaletteHeader(wxWindow* Parent,int ChildPos) { return NULL; }
+
     protected:
 
         /** Adding additional properties to child object */

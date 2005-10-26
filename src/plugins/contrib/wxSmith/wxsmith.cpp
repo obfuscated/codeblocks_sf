@@ -130,9 +130,16 @@ void wxSmith::OnAttach()
 
         if ( Messages )
         {
+            wxString resPath = ConfigManager::Get()->Read(_T("data_path"), wxEmptyString);
+            wxString FileName = resPath + _T("/images/wxsmith/wxSmith16x16.png");
+
+            wxBitmap SmithBitmap;
+            SmithBitmap.LoadFile(FileName,wxBITMAP_TYPE_PNG);
+            int ImageIndex = Messages->GetImageList()->Add(SmithBitmap);
+
             // Creating widgets palette ad the messages Notebook
             wxWindow* Palette = new wxsPalette((wxWindow*)Messages,Messages->GetPageCount());
-            Messages->AddPage(Palette,_("Widgets"));
+            Messages->AddPage(Palette,_("Widgets"),false,ImageIndex);
         }
 	}
 	else

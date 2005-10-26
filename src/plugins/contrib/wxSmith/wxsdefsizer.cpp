@@ -1,10 +1,11 @@
 #include "wxsheaders.h"
 #include "wxsdefsizer.h"
 
+#include <wx/tokenzr.h>
 #include "properties/wxsborderproperty.h"
 #include "properties/wxsplacementproperty.h"
 #include "wxswidgetfactory.h"
-#include <wx/tokenzr.h>
+#include "wxssizerpaletteheader.h"
 
 class wxsDefSizerPreview: public wxPanel
 {
@@ -375,3 +376,12 @@ wxString wxsDefSizer::GetFlagToSizer(wxsSizerExtraParams* Params)
     return Flags.Length() ? Flags.Mid(1) : _T("");
 }
 
+wxWindow* wxsDefSizer::GetChildPaletteHeader(wxWindow* Parent,int ChildPos)
+{
+    wxsWidget* Widget = GetChild(ChildPos);
+    wxsSizerExtraParams* Params = GetExtraParams(ChildPos);
+
+    if ( !Widget || !Params ) return NULL;
+
+    return new wxsSizerPaletteHeader(Parent,Widget,Params);
+}

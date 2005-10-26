@@ -12,17 +12,13 @@
 #include "wxsmith.h"
 #include "wxsresource.h"
 
-static const int DeleteId = wxNewId();
-static const int PreviewId = wxNewId();
-
 wxsPalette* wxsPalette::Singleton = NULL;
 
 wxsPalette::wxsPalette(wxWindow* Parent,int PN):
     wxPanel(Parent),
     SelectedRes(NULL),
     SelectedWidget(NULL),
-    InsType(itBefore),
-    InsTypeMask(0),
+    Header(this),
     PageNum(PN)
 {
 	wxScrolledWindow* Scroll = new wxScrolledWindow(this,-1);
@@ -32,25 +28,7 @@ wxsPalette::wxsPalette(wxWindow* Parent,int PN):
 	Sizer->AddGrowableCol(0);
 	Sizer->AddGrowableRow(1);
 
-	wxFlexGridSizer* Sizer2 = new wxFlexGridSizer(2,0,5,15);
-	Sizer2->AddGrowableCol(3);
-
-	Sizer2->Add(new wxStaticText(Scroll,-1,_("Insertion type")));
-	Sizer2->Add(new wxStaticText(Scroll,-1,_("Delete")));
-	Sizer2->Add(new wxStaticText(Scroll,-1,_("Preview")));
-	Sizer2->Add(new wxStaticText(Scroll,-1,_("Top list")));
-
-	wxGridSizer* Sizer3 = new wxGridSizer(1,0,5,5);
-	Sizer3->Add(AddBefore = new wxRadioButton(Scroll,-1,_("Before")));
-	Sizer3->Add(AddAfter  = new wxRadioButton(Scroll,-1,_("After")));
-	Sizer3->Add(AddInto   = new wxRadioButton(Scroll,-1,_("Into")));
-
-	Sizer2->Add(Sizer3);
-
-	Sizer2->Add(new wxButton(Scroll,DeleteId,_("Delete")));
-	Sizer2->Add(new wxButton(Scroll,PreviewId,_("Preview")));
-
-	Sizer->Add(Sizer2,0,wxALL|wxGROW,10);
+	Sizer->Add(&Header,0,wxALL|wxGROW,0);
 
 	wxPanel* WidgetsSpace = new wxPanel(Scroll,-1);
 
@@ -71,7 +49,7 @@ wxsPalette::wxsPalette(wxWindow* Parent,int PN):
 	SetInsertionTypeMask(0);
 
 	SelectedRes = NULL;
-	FindWindow(PreviewId)->Disable();
+	Header.ButtonPreview->Disable();
 
 	Timer.SetOwner(this);
 
@@ -81,45 +59,6 @@ wxsPalette::wxsPalette(wxWindow* Parent,int PN):
 wxsPalette::~wxsPalette()
 {
 	//dtor
-}
-
-int wxsPalette::GetInsertionType()
-{
-    int IT = InsType & InsTypeMask;
-
-    if ( !IT )
-    {
-        if ( InsTypeMask & itBefore ) IT = itBefore;
-        else if ( InsTypeMask & itAfter ) IT = itAfter;
-        else if ( InsTypeMask & itInto ) IT = itInto;
-    }
-
-    return IT;
-}
-
-void wxsPalette::SetInsertionTypeMask(int Mask)
-{
-    InsTypeMask = Mask;
-
-    AddBefore->Enable( (Mask & itBefore) != 0 );
-    AddAfter->Enable( (Mask & itAfter) != 0 );
-    AddInto->Enable( (Mask & itInto) != 0 );
-
-    int CurrentIT = GetInsertionType();
-
-    AddBefore->SetValue( (CurrentIT & itBefore) != 0 );
-    AddAfter->SetValue( (CurrentIT & itAfter) != 0 );
-    AddInto->SetValue( (CurrentIT & itInto) != 0 );
-}
-
-void wxsPalette::OnRadio(wxCommandEvent& event)
-{
-    int CurrentIT =
-        ( AddBefore->GetValue() ? itBefore : 0 ) |
-        ( AddAfter->GetValue()  ? itAfter  : 0 ) |
-        ( AddInto->GetValue()   ? itInto   : 0 );
-
-    InsType = CurrentIT;
 }
 
 namespace {
@@ -198,22 +137,10 @@ void wxsPalette::CreateWidgetsPalette(wxWindow* Wnd)
 
 void wxsPalette::OnButton(wxCommandEvent& event)
 {
-    wxWindowID Id = event.GetId();
-    if ( Id == DeleteId )
+    wxWindow* Btn = (wxWindow*)event.GetEventObject();
+    if ( Btn )
     {
-        DeleteRequest();
-    }
-    else if ( Id == PreviewId )
-    {
-        PreviewRequest();
-    }
-    else
-    {
-        wxWindow* Btn = (wxWindow*)event.GetEventObject();
-        if ( Btn )
-        {
-            InsertRequest(Btn->GetName());
-        }
+        InsertRequest(Btn->GetName());
     }
 }
 
@@ -378,6 +305,7 @@ void wxsPalette::OnSelectWidget(wxsEvent& event)
 
     SetInsertionTypeMask(itMask);
     SelectedWidget = event.GetWidget();
+    Header.SeletionChanged(SelectedWidget);
 }
 
 void wxsPalette::OnUnselectWidget(wxsEvent& event)
@@ -386,6 +314,7 @@ void wxsPalette::OnUnselectWidget(wxsEvent& event)
     {
         SetInsertionTypeMask(0);
         SelectedWidget = NULL;
+        Header.SeletionChanged(NULL);
     }
 }
 
@@ -403,11 +332,11 @@ void wxsPalette::OnSelectRes(wxsEvent& event)
 
     if ( Res && Res->CanPreview() )
     {
-        FindWindow(PreviewId)->Enable();
+        Header.ButtonPreview->Enable();
     }
     else
     {
-        FindWindow(PreviewId)->Disable();
+        Header.ButtonPreview->Disable();
     }
 }
 
@@ -416,7 +345,7 @@ void wxsPalette::OnUnselectRes(wxsEvent& event)
     if ( event.GetResource() == SelectedRes )
     {
         SelectedRes = NULL;
-        FindWindow(PreviewId)->Disable();
+        Header.ButtonPreview->Disable();
     }
 }
 
@@ -426,7 +355,6 @@ void wxsPalette::OnTimer(wxTimerEvent& event)
 }
 
 BEGIN_EVENT_TABLE(wxsPalette,wxPanel)
-    EVT_RADIOBUTTON(-1,wxsPalette::OnRadio)
     EVT_BUTTON(-1,wxsPalette::OnButton)
     EVT_SELECT_RES(wxsPalette::OnSelectRes)
     EVT_UNSELECT_RES(wxsPalette::OnUnselectRes)

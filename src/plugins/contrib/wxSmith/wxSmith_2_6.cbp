@@ -713,6 +713,16 @@
 			<Option link="0"/>
 			<Option target="wxSmith"/>
 		</Unit>
+		<Unit filename="wxspaletteheader.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="wxspaletteheader.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
 		<Unit filename="wxsproject.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="wxSmith"/>
@@ -768,6 +778,16 @@
 			<Option target="wxSmith"/>
 		</Unit>
 		<Unit filename="wxssettingsdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="wxssizerpaletteheader.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="wxssizerpaletteheader.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
