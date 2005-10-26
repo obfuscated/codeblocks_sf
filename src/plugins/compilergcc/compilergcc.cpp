@@ -199,7 +199,13 @@ CompilerGCC::CompilerGCC()
 	for (int i = 0; i < MAX_TARGETS; ++i)
 		idMenuSelectTargetOther[i] = wxNewId();
 #ifndef __WXMSW__
+	m_ConsoleTerm = ConfigManager::Get()->Read(_T("/compiler_gcc/console_terminal"), DEFAULT_CONSOLE_TERM);
 	m_ConsoleShell = ConfigManager::Get()->Read(_T("/compiler_gcc/console_shell"), DEFAULT_CONSOLE_SHELL);
+    // because in previous versions the value for terminal
+    // used to be "console_shell" (incorrectly), double-check that
+    // the word "term" or "onsol" doesn't appear in "shell"
+    if (m_ConsoleShell.Contains(_T("term")) || m_ConsoleShell.Contains(_T("onsol")))
+        m_ConsoleShell = DEFAULT_CONSOLE_SHELL;
 #endif
 
 	// register built-in compilers
@@ -312,6 +318,7 @@ int CompilerGCC::Configure(cbProject* project, ProjectBuildTarget* target)
     CompilerOptionsDlg dlg(Manager::Get()->GetAppWindow(), this, project, target);
     if(dlg.ShowModal()==wxID_OK)
     {
+      m_ConsoleTerm = ConfigManager::Get()->Read(_T("/compiler_gcc/console_terminal"), DEFAULT_CONSOLE_TERM);
       m_ConsoleShell = ConfigManager::Get()->Read(_T("/compiler_gcc/console_shell"), DEFAULT_CONSOLE_SHELL);
       SaveOptions();
       SetupEnvironment();
@@ -1106,8 +1113,8 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 	if (target->GetTargetType() == ttConsoleOnly)
 	{
 #ifndef __WXMSW__
-        // for non-win platforms, use m_ConsoleShell to run the console app
-        wxString shell = m_ConsoleShell;
+        // for non-win platforms, use m_ConsoleTerm to run the console app
+        wxString shell = m_ConsoleTerm;
         shell.Replace(_T("$TITLE"), _T("'") + m_Project->GetTitle() + _T("'"));
         cmd << shell << _T(" ");
 #endif

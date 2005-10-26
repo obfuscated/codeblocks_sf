@@ -13,7 +13,8 @@
 #include <compilerfactory.h>
 
 #define MAX_TARGETS 64
-#define DEFAULT_CONSOLE_SHELL _T("xterm -T $TITLE -e")
+#define DEFAULT_CONSOLE_TERM _T("xterm -T $TITLE -e")
+#define DEFAULT_CONSOLE_SHELL _T("/bin/sh -c")
 
 enum CompilerOptionsType
 {
@@ -63,6 +64,8 @@ class CompilerGCC : public cbCompilerPlugin
 
 		void SwitchCompiler(int compilerIdx);
 		int GetCurrentCompilerIndex();
+		const wxString& GetConsoleShell(){ return m_ConsoleShell; }
+		const wxString& GetConsoleTerminal(){ return m_ConsoleTerm; }
 
 		// used to read from the external process
 		void OnIdle(wxIdleEvent& event);
@@ -164,6 +167,7 @@ class CompilerGCC : public cbCompilerPlugin
 		wxString m_LastTempMakefile;
         bool m_DeleteTempMakefile;
 
+		wxString m_ConsoleTerm;
 		wxString m_ConsoleShell;
 
         DECLARE_EVENT_TABLE()

@@ -306,6 +306,10 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(const wxString& command,
             compilerCmd.Replace(_T("$def_output"), _T(""));
         }
     }
+#ifndef __WXMSW__
+    // run the command in a shell, so backtick'd expressions can be evaluated
+    compilerCmd = m_Compiler->GetConsoleShell() + _T(" '") + compilerCmd + _T("'");
+#endif
     return compilerCmd;
 }
 
