@@ -1,0 +1,76 @@
+<resource>
+    <object class="wxPanel" name="wxsPaletteHeader">
+        <style>wxTAB_TRAVERSAL</style>
+        <object class="wxFlexGridSizer" variable="MainSizer" member="yes">
+            <rows>0</rows>
+            <cols>0</cols>
+            <vgap>0</vgap>
+            <hgap>0</hgap>
+            <growablecols>2</growablecols>
+            <object class="sizeritem">
+                <option>1</option>
+                <border>5</border>
+                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
+                <object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="yes">
+                    <orient>wxVERTICAL</orient>
+                    <label>Insert</label>
+                    <object class="sizeritem">
+                        <option>1</option>
+                        <border>5</border>
+                        <flag>wxALIGN_CENTER|wxEXPAND</flag>
+                        <object class="wxRadioButton" name="ID_INTO" variable="AddInto" member="yes">
+                            <label>Into</label>
+                            <value>1</value>
+                            <handler entry="EVT_RADIOBUTTON" function="OnAddIntoChange" />
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <option>1</option>
+                        <border>5</border>
+                        <flag>wxALIGN_CENTER|wxEXPAND</flag>
+                        <object class="wxRadioButton" name="ID_BEFORE" variable="AddBefore" member="yes">
+                            <label>Before</label>
+                            <handler entry="EVT_RADIOBUTTON" function="OnAddBeforeChange" />
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <option>1</option>
+                        <border>5</border>
+                        <flag>wxALIGN_CENTER|wxEXPAND</flag>
+                        <object class="wxRadioButton" name="ID_AFTER" variable="AddAfter" member="yes">
+                            <label>After</label>
+                            <handler entry="EVT_RADIOBUTTON" function="OnAddAfterChange" />
+                        </object>
+                    </object>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <option>1</option>
+                <border>5</border>
+                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
+                <object class="wxStaticBoxSizer" variable="StaticBoxSizer2" member="yes">
+                    <orient>wxHORIZONTAL</orient>
+                    <label>Operations</label>
+                    <object class="sizeritem">
+                        <option>1</option>
+                        <border>2</border>
+                        <flag>wxALL|wxALIGN_CENTER</flag>
+                        <object class="wxButton" name="ID_BUTTON1" variable="ButtonDel" member="yes">
+                            <label>Delete</label>
+                            <handler entry="EVT_BUTTON" function="OnButtonDelClick" />
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <option>1</option>
+                        <border>2</border>
+                        <flag>wxALL|wxALIGN_CENTER</flag>
+                        <object class="wxButton" name="ID_BUTTON2" variable="ButtonPreview" member="yes">
+                            <label>Preview</label>
+                            <handler entry="EVT_BUTTON" function="OnButtonPreviewClick" />
+                        </object>
+                    </object>
+                </object>
+            </object>
+        </object>
+    </object>
+</resource>

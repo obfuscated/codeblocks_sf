@@ -54,7 +54,7 @@ class wxsSizerPaletteHeader: public wxPanel
 
 		//(*Declarations(wxsSizerPaletteHeader)
         wxFlexGridSizer* FlexGridSizer1;
-        wxStaticBoxSizer* StaticBoxSizer3;
+        wxStaticBoxSizer* StaticBoxSizer1;
         wxFlexGridSizer* FlexGridSizer2;
         wxGridSizer* GridSizer1;
         wxCheckBox* BrdTop;
@@ -62,7 +62,7 @@ class wxsSizerPaletteHeader: public wxPanel
         wxCheckBox* BrdRight;
         wxCheckBox* BrdBottom;
         wxSpinCtrl* BrdSize;
-        wxStaticBoxSizer* StaticBoxSizer4;
+        wxStaticBoxSizer* StaticBoxSizer2;
         wxFlexGridSizer* FlexGridSizer3;
         wxGridSizer* GridSizer2;
         wxRadioButton* PlaceLT;
@@ -75,8 +75,8 @@ class wxsSizerPaletteHeader: public wxPanel
         wxRadioButton* PlaceCB;
         wxRadioButton* PlaceRB;
         wxBoxSizer* BoxSizer1;
-        wxCheckBox* PlaceExp;
         wxCheckBox* PlaceShp;
+        wxCheckBox* PlaceExp;
         //*)
 
 	private:

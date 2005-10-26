@@ -19,8 +19,8 @@ BEGIN_EVENT_TABLE(wxsSizerPaletteHeader,wxPanel)
     EVT_RADIOBUTTON(ID_RADIOBUTTON10,wxsSizerPaletteHeader::OnPlaceChange)
     EVT_RADIOBUTTON(ID_RADIOBUTTON11,wxsSizerPaletteHeader::OnPlaceChange)
     EVT_RADIOBUTTON(ID_RADIOBUTTON12,wxsSizerPaletteHeader::OnPlaceChange)
-    EVT_CHECKBOX(ID_CHECKBOX5,wxsSizerPaletteHeader::OnPlaceChange)
     EVT_CHECKBOX(ID_CHECKBOX6,wxsSizerPaletteHeader::OnPlaceChange)
+    EVT_CHECKBOX(ID_CHECKBOX5,wxsSizerPaletteHeader::OnPlaceChange)
 //*)
     EVT_TIMER(-1,wxsSizerPaletteHeader::OnTimer)
 END_EVENT_TABLE()
@@ -33,7 +33,7 @@ wxsSizerPaletteHeader::wxsSizerPaletteHeader(wxWindow* parent,wxsWidget* Modifie
 	//(*Initialize(wxsSizerPaletteHeader)
     Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL);
     FlexGridSizer1 = new wxFlexGridSizer(0,0,0,0);
-    StaticBoxSizer3 = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Border"));
+    StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Border"));
     FlexGridSizer2 = new wxFlexGridSizer(0,2,0,0);
     GridSizer1 = new wxGridSizer(0,3,0,0);
     BrdTop = new wxCheckBox(this,ID_CHECKBOX1,_T(""),wxDefaultPosition,wxDefaultSize,0);
@@ -55,8 +55,8 @@ wxsSizerPaletteHeader::wxsSizerPaletteHeader(wxWindow* parent,wxsWidget* Modifie
     BrdSize = new wxSpinCtrl(this,ID_SPINCTRL1,_("0"),wxDefaultPosition,wxSize(51,-1),0, 0 ,100);
     FlexGridSizer2->Add(GridSizer1,1,wxALIGN_CENTER,5);
     FlexGridSizer2->Add(BrdSize,1,wxALL|wxALIGN_CENTER,5);
-    StaticBoxSizer3->Add(FlexGridSizer2,1,wxALIGN_CENTER,0);
-    StaticBoxSizer4 = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Placement"));
+    StaticBoxSizer1->Add(FlexGridSizer2,1,wxALL|wxALIGN_CENTER,0);
+    StaticBoxSizer2 = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Placement"));
     FlexGridSizer3 = new wxFlexGridSizer(0,0,0,0);
     GridSizer2 = new wxGridSizer(3,3,0,0);
     PlaceLT = new wxRadioButton(this,ID_RADIOBUTTON4,_T(""),wxDefaultPosition,wxDefaultSize,0);
@@ -87,17 +87,17 @@ wxsSizerPaletteHeader::wxsSizerPaletteHeader(wxWindow* parent,wxsWidget* Modifie
     GridSizer2->Add(PlaceCB,1,wxALIGN_CENTER,5);
     GridSizer2->Add(PlaceRB,1,wxALIGN_CENTER,5);
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
-    PlaceExp = new wxCheckBox(this,ID_CHECKBOX5,_("Expand"),wxDefaultPosition,wxDefaultSize,0);
-    PlaceExp->SetValue(false);
     PlaceShp = new wxCheckBox(this,ID_CHECKBOX6,_("Shaped"),wxDefaultPosition,wxDefaultSize,0);
     PlaceShp->SetValue(false);
-    BoxSizer1->Add(PlaceExp,1,wxBOTTOM|wxALIGN_CENTER|wxEXPAND,2);
+    PlaceExp = new wxCheckBox(this,ID_CHECKBOX5,_("Expand"),wxDefaultPosition,wxDefaultSize,0);
+    PlaceExp->SetValue(false);
     BoxSizer1->Add(PlaceShp,1,wxTOP|wxALIGN_CENTER|wxEXPAND,2);
+    BoxSizer1->Add(PlaceExp,1,wxALIGN_CENTER,0);
     FlexGridSizer3->Add(GridSizer2,1,wxALIGN_CENTER,5);
     FlexGridSizer3->Add(BoxSizer1,1,wxLEFT|wxALIGN_CENTER,10);
-    StaticBoxSizer4->Add(FlexGridSizer3,1,wxALIGN_CENTER,5);
-    FlexGridSizer1->Add(StaticBoxSizer3,1,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND,5);
-    FlexGridSizer1->Add(StaticBoxSizer4,1,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND,5);
+    StaticBoxSizer2->Add(FlexGridSizer3,1,wxALL|wxALIGN_CENTER,0);
+    FlexGridSizer1->Add(StaticBoxSizer1,1,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER,5);
+    FlexGridSizer1->Add(StaticBoxSizer2,1,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER,5);
     this->SetSizer(FlexGridSizer1);
     FlexGridSizer1->Fit(this);
     FlexGridSizer1->SetSizeHints(this);
