@@ -250,7 +250,7 @@ void cbThreadPool::FreeThreads()
 #if wxCHECK_VERSION(2,6,0)
     wxMilliSleep(1);
 #else
-    wxUSleep(1);
+    wxUsleep(1);
 #endif
 
     wxLogNull logNo;
@@ -265,7 +265,7 @@ void cbThreadPool::FreeThreads()
 #if wxCHECK_VERSION(2,6,0)
             wxMilliSleep(1);
 #else
-            wxUSleep(1);
+            wxUsleep(1);
 #endif
             if(++count > 10)
                 break;
