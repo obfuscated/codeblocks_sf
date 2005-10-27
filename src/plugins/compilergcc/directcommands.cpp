@@ -22,7 +22,7 @@
 
 pfDetails::pfDetails(DirectCommands* cmds, ProjectBuildTarget* target, ProjectFile* pf)
 {
-    wxString sep = wxFileName::GetPathSeparator();
+    wxString sep = wxFILE_SEP_PATH;
     wxFileName tmp;
 
     wxFileName prjbase(cmds->m_pProject->GetBasePath());
@@ -31,8 +31,46 @@ pfDetails::pfDetails(DirectCommands* cmds, ProjectBuildTarget* target, ProjectFi
     source_file_absolute_native = pf->file.GetFullPath();
 
     tmp = pf->GetObjName();
-    if (FileTypeOf(pf->relativeFilename) == ftHeader)
-        object_file_native = pf->GetObjName(); // support for precompiled headers
+
+    // support for precompiled headers
+    if (target && FileTypeOf(pf->relativeFilename) == ftHeader)
+    {
+        switch (target->GetParentProject()->GetModeForPCH())
+        {
+            case pchSourceDir:
+            {
+                // if PCH is for a file called all.h, we create
+                // all.h.gch/<target>_all.h.gch
+                // (that's right: a directory)
+                wxString new_gch = target->GetTitle() +
+                                    _T("_") +
+                                    pf->GetObjName();
+                // make sure we 're not generating subdirs
+                new_gch.Replace(_T("/"), _T("_"));
+                new_gch.Replace(_T("\\"), _T("_"));
+                new_gch.Replace(_T(" "), _T("_"));
+
+                object_file_native = source_file_native + _T(".gch") +
+                                    wxFILE_SEP_PATH +
+                                    new_gch;
+                break;
+            }
+
+            case pchObjectDir:
+            {
+                object_file_native = (target ? target->GetObjectOutput() : _T(".")) +
+                                      sep +
+                                      tmp.GetFullPath();
+                break;
+            }
+
+            case pchSourceFile:
+            {
+                object_file_native = pf->GetObjName();
+                break;
+            }
+        }
+    }
     else
         object_file_native = (target ? target->GetObjectOutput() : _T(".")) +
                               sep +
@@ -260,6 +298,13 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
                 break;
         }
         AddCommandsToArray(compilerCmd, ret);
+
+        // if it's a PCH, delete the previously generated PCH to avoid problems
+        // (it 'll be recreated anyway)
+        if (FileTypeOf(pf->relativeFilename) == ftHeader && pf->compile)
+        {
+            wxRemoveFile(pfd.object_file_absolute_native);
+        }
     }
     return ret;
 }

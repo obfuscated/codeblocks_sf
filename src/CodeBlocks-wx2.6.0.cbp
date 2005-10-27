@@ -6,6 +6,7 @@
 		<Option title="Code::Blocks (wx2.6)"/>
 		<Option makefile="Makefile.wx2.6"/>
 		<Option makefile_is_custom="0"/>
+		<Option pch_mode="2"/>
 		<Option default_target="4"/>
 		<Option compiler="0"/>
 		<Build>

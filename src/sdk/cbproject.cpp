@@ -58,7 +58,8 @@ cbProject::cbProject(const wxString& filename)
     m_CustomMakefile(false),
     m_Loaded(false),
     m_CurrentlyLoading(false),
-    m_BasePath(_T(""))
+    m_BasePath(_T("")),
+    m_PCHMode(pchSourceDir)
 {
     SetCompilerIndex(CompilerFactory::GetDefaultCompilerIndex());
 

@@ -164,6 +164,7 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
     int defaultTarget = 0;
     int activeTarget = -1;
     int compilerIdx = 0;
+    PCHMode pch_mode = pchSourceDir;
 
     // loop through all options
     while (node)
@@ -186,6 +187,9 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
         if (node->Attribute("compiler"))
             compilerIdx = GetValidCompilerIndex(atoi(node->Attribute("compiler")), _("project"));
 
+        if (node->Attribute("pch_mode"))
+            pch_mode = (PCHMode)atoi(node->Attribute("pch_mode"));
+
         node = node->NextSiblingElement("Option");
     }
 
@@ -195,6 +199,7 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
     m_pProject->SetDefaultExecuteTargetIndex(defaultTarget);
     m_pProject->SetActiveBuildTarget(activeTarget);
     m_pProject->SetCompilerIndex(compilerIdx);
+    m_pProject->SetModeForPCH(pch_mode);
 }
 
 void ProjectLoader::DoBuild(TiXmlElement* parentNode)
@@ -663,6 +668,8 @@ bool ProjectLoader::Save(const wxString& filename)
     buffer << _T('\t') << _T('\t') << _T("<Option title=\"") << FixEntities(m_pProject->GetTitle()) << _T("\"/>") << _T('\n');
     buffer << _T('\t') << _T('\t') << _T("<Option makefile=\"") << FixEntities(m_pProject->GetMakefile()) << _T("\"/>") << _T('\n');
     buffer << _T('\t') << _T('\t') << _T("<Option makefile_is_custom=\"") << m_pProject->IsMakefileCustom() << _T("\"/>") << _T('\n');
+    if (m_pProject->GetModeForPCH() != pchSourceDir)
+        buffer << _T('\t') << _T('\t') << _T("<Option pch_mode=\"") << (int)m_pProject->GetModeForPCH() << _T("\"/>") << _T('\n');
     if (m_pProject->GetDefaultExecuteTargetIndex() != 0)
         buffer << _T('\t') << _T('\t') << _T("<Option default_target=\"") << m_pProject->GetDefaultExecuteTargetIndex() << _T("\"/>") << _T('\n');
     if (m_pProject->GetActiveBuildTarget() != -1)

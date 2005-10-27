@@ -32,6 +32,7 @@
 #include "pluginmanager.h"
 #include "compilerfactory.h"
 #include <wx/xrc/xmlres.h>
+#include <wx/radiobox.h>
 #include "externaldepsdlg.h"
 
 BEGIN_EVENT_TABLE(ProjectOptionsDlg, wxDialog)
@@ -76,6 +77,7 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
 	XRCCTRL(*this, "txtProjectFilename", wxStaticText)->SetLabel(m_Project->GetFilename());
 	XRCCTRL(*this, "txtProjectMakefile", wxTextCtrl)->SetValue(m_Project->GetMakefile());
 	XRCCTRL(*this, "chkCustomMakefile", wxCheckBox)->SetValue(m_Project->IsMakefileCustom());
+	XRCCTRL(*this, "rbPCHStrategy", wxRadioBox)->SetSelection((int)m_Project->GetModeForPCH());
 
     FillBuildTargets();
 
@@ -567,6 +569,7 @@ void ProjectOptionsDlg::OnOK(wxCommandEvent& event)
 	m_Project->SetMakefile(XRCCTRL(*this, "txtProjectMakefile", wxTextCtrl)->GetValue());
 	m_Project->SetMakefileCustom(XRCCTRL(*this, "chkCustomMakefile", wxCheckBox)->GetValue());
 	m_Project->SetTargetType(TargetType(XRCCTRL(*this, "cmbProjectType", wxComboBox)->GetSelection()));
+	m_Project->SetModeForPCH((PCHMode)XRCCTRL(*this, "rbPCHStrategy", wxRadioBox)->GetSelection());
 
 #if 1
     if (m_Current_Sel == -1)

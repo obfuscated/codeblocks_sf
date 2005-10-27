@@ -32,6 +32,13 @@ class DLLIMPORT FileTreeData : public MiscTreeItemData
         cbProject* m_Project;
 };
 
+enum PCHMode
+{
+    pchSourceDir = 0, // in a dir on the same level as the source header (default)
+    pchObjectDir, // in the objects output dir, along with the other object files
+    pchSourceFile, // in a file alongside the source header (with .gch appended)
+};
+
 /*
  * No description
  */
@@ -75,6 +82,10 @@ class DLLIMPORT cbProject : public CompileTargetBase
 		bool SetActiveBuildTarget(int target);
 		int GetActiveBuildTarget();
 
+        // how are we gonna handle precompiled headers?
+        PCHMode GetModeForPCH(){ return m_PCHMode; }
+        void SetModeForPCH(PCHMode mode){ m_PCHMode = mode; SetModified(true); }
+
 		const wxArrayString& ExpandedNodes(){ return m_ExpandedNodes; }
 		void AddExpandedNode(const wxString& path){ m_ExpandedNodes.Add(path); }
 
@@ -115,11 +126,13 @@ class DLLIMPORT cbProject : public CompileTargetBase
         wxArrayString m_ExpandedNodes;
         bool m_Loaded;
         wxTreeItemId m_ProjectNode;
-        
+
         bool m_CurrentlyLoading;
         wxString m_CommonTopLevelPath;
         wxString m_BasePath;
-        
+
+        PCHMode m_PCHMode;
+
         // hashmap for fast searches in cbProject::GetFileByFilename()
         ProjectFiles m_ProjectFilesMap; // keeps UnixFilename(ProjectFile::relativeFilename)
 };

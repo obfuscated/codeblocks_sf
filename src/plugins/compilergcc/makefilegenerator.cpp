@@ -219,6 +219,37 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(const wxString& command,
     else if (!target && !pf) // probably single file compilation
         incs = global_incs;
 
+    // for PCH to work, the very first include dir *must* be the object output dir
+    // *only* if PCH is generated in the object output dir
+    if (target &&
+        target->GetParentProject()->GetModeForPCH() == pchObjectDir)
+    {
+        wxArrayString includedDirs; // avoid adding duplicate dirs...
+        // find all PCH in project
+        int count = target->GetParentProject()->GetFilesCount();
+        for (int i = 0; i < count; ++i)
+        {
+            ProjectFile* f = target->GetParentProject()->GetFile(i);
+            if (FileTypeOf(f->relativeFilename) == ftHeader &&
+                f->compile)
+            {
+                // it is a PCH; add it's object dir to includes
+                wxString dir = target->GetObjectOutput() +
+                        wxFILE_SEP_PATH +
+                        wxFileName(f->relativeFilename).GetPath();
+;
+                if (includedDirs.Index(dir) == wxNOT_FOUND)
+                {
+                    includedDirs.Add(dir);
+                    incs = m_CompilerSet->GetSwitches().includeDirs +
+                            dir +
+                            _T(" ") +
+                            incs;
+                }
+            }
+        }
+    }
+
     wxString libs;
 	wxString global_libs;
 	wxString prj_libs;
