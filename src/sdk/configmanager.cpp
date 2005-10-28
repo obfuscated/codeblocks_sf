@@ -49,7 +49,7 @@ wxConfigBase* ConfigManager::Get()
     if (!ConfigBaseProxy::Get())
 	{
         ConfigManager::Init(wxConfigBase::Get());
-		Manager::Get()->GetMessageManager()->Log(_("ConfigManager initialized"));
+		//Manager::Get()->GetMessageManager()->Log(_("ConfigManager initialized"));
 	}
     return ConfigBaseProxy::Get();
 }
