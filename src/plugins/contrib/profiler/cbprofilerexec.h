@@ -28,7 +28,6 @@
 #include <wx/ffile.h>
 #include <wx/dialog.h>
 #include <wx/string.h>
-//#include <wx/arrstr.h>  // uncomment for wxWiget 2.6
 
 #include <cbproject.h>
 #include <manager.h>
@@ -59,13 +58,17 @@ class CBProfilerExecDlg : public wxDialog
 
 		int Execute(wxString exename, wxString dataname, struct_config config);
 		void ShowOutput(wxArrayString  msg, bool error);
+		wxListCtrl* GetoutputFlatProfileArea() {return outputFlatProfileArea;};
+		int GetsortColumn() {return sortColumn;};
+		int GetsortAscending() {return sortAscending;};
 	protected:
       void EndModal(int retCode);
       void FindInCallGraph(wxListEvent& event);
       void WriteToFile(wxCommandEvent& event);
+      void OnColumnClick(wxListEvent& event);
     private:
-      size_t ParseFlatProfile(wxArrayString msg, size_t begin);
-      size_t ParseCallGraph(wxArrayString msg, size_t begin);
+      size_t ParseFlatProfile(wxArrayString msg, size_t begin, wxProgressDialog &progress);
+      size_t ParseCallGraph(wxArrayString msg, size_t begin, wxProgressDialog &progress);
       wxWindow*   parent;
       wxListCtrl* outputFlatProfileArea;
       wxTextCtrl* outputHelpFlatProfileArea;
@@ -73,6 +76,9 @@ class CBProfilerExecDlg : public wxDialog
       wxTextCtrl* outputHelpCallGraphArea;
       wxTextCtrl* outputMiscArea;
       wxArrayString gprof_output, gprof_errors;
+      static bool sortAscending;
+      static int sortColumn;
+      int LastListClickedCol;
 
       DECLARE_EVENT_TABLE()
 };
