@@ -1161,7 +1161,8 @@ bool cbEditor::OnBeforeBuildContextMenu(bool noeditor)
         // get caret position and line from mouse cursor
         cbStyledTextCtrl* control = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()->GetControl();
         int pos = control->PositionFromPoint(control->ScreenToClient(wxGetMousePosition()));
-        //control->GotoPos(pos);
+        if(control->GetSelectionStart() > pos || control->GetSelectionEnd() < pos) // this re-enables 1-click "Find declaration of..."
+			control->GotoPos(pos);                                              // but avoids losing selection for cut/copy
     }
 
     // follow default strategy
