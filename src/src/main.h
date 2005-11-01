@@ -110,6 +110,7 @@ class MainFrame : public wxFrame
         void OnPluginsExecuteMenu(wxCommandEvent& event);
 
 		void OnSettingsEnvironment(wxCommandEvent& event);
+		void OnGlobalUserVars(wxCommandEvent& event);
         void OnSettingsEditor(wxCommandEvent& event);
         void OnSettingsPlugins(wxCommandEvent& event);
         void OnPluginSettingsMenu(wxCommandEvent& event);

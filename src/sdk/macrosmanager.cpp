@@ -56,6 +56,7 @@ void MacrosManager::Free()
 		delete MacrosManagerProxy::Get();
 		MacrosManagerProxy::Set( 0L );
 	}
+	UserVariableManager::Free();
 }
 
 MacrosManager::MacrosManager()
@@ -95,9 +96,12 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo)
 	/*
 		standard macros are:
 
-		${PROJECT_FILENAME}
+		${PROJECT_FILENAME} ${PROJECT_FILE} ${PROJECTFILE}
 		${PROJECT_NAME}
-		${PROJECT_DIR}
+		${PROJECT_DIR} ${PROJECTDIR} ${PROJECT_DIRECTORY}
+		${CODEBLOCKS} ${APP_PATH}  ${APPPATH}
+		${DATA_PATH} ${DATAPATH}
+		${PLUGINS}
 		${ACTIVE_EDITOR_FILENAME}
 		${ALL_PROJECT_FILES}
 		${MAKEFILE}
@@ -109,9 +113,10 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo)
 	if (buffer.IsEmpty())
 		return;
 
-	wxRegEx re[2];
-	re[0].Compile(_T("(\\$[({]?)([A-Za-z_0-9]+)([)}]?)")); // $HOME, $(HOME) and ${HOME}
-	re[1].Compile(_T("(%)([A-Za-z_0-9]+)(%)")); // %HOME%
+	wxRegEx re[3];
+	re[0].Compile(_T("(\\$[({]?)(\\:\\:[A-Za-z_0-9\\.]+)([)}]?)")); // $::VAR.MEMBER, $(::VAR) and ${::VAR}
+	re[1].Compile(_T("(\\$[({]?)([A-Za-z_0-9]+)([)}]?)")); // $HOME, $(HOME) and ${HOME}
+	re[2].Compile(_T("(%)([A-Za-z_0-9]+)(%)")); // %HOME%
 
 	cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
 	EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
@@ -123,9 +128,10 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo)
 	while (count)
 	{
         count = 0;
-        for (int i = 0; i < 2; ++i)
+        for (int i = 0; i < 3; ++i)
         {
             wxString replace;
+
             if (re[i].Matches(buffer))
             {
                 wxString env = re[i].GetMatch(buffer, 2);
@@ -134,14 +140,22 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo)
                 if (env.Matches(_T("AMP")))
                     replace = _T("&");
 
-                if (env.Matches(_T("PROJECT_FILENAME")))
+                if (env.StartsWith(_T("::")))
+                    replace = UnixFilename(Manager::Get()->GetUserVariableManager()->Replace(env));
+                else if (env.Matches(_T("PROJECT_FILE*")) || env.Matches(_T("PROJECTFILE*")))
                     replace = project ? UnixFilename(prjname.GetFullName()) : _T("");
                 else if (env.Matches(_T("PROJECT_NAME")))
                     replace = project ? project->GetTitle() : _T("");
-                else if (env.Matches(_T("PROJECT_DIR")))
+                else if (env.Matches(_T("PROJECT_DIR*")) || env.Matches(_T("PROJECTDIR*")))
                     replace = project ? UnixFilename(project->GetBasePath()) : _T("");
                 else if (env.Matches(_T("MAKEFILE")))
                     replace = project ? UnixFilename(project->GetMakefile()) : _T("");
+                else if (env.Matches(_T("CODEBLOCKS")) || env.Matches(_T("APP?PATH")))
+                    replace = UnixFilename(ConfigManager::Get()->Read(_T("app_path"), wxEmptyString));
+                else if (env.Matches(_T("DATA?PATH")))
+                    replace = UnixFilename(ConfigManager::Get()->Read(_T("data_path"), wxEmptyString));
+                else if (env.Matches(_T("PLUGINS")))
+                    replace = UnixFilename(ConfigManager::Get()->Read(_T("data_path"), wxEmptyString) + _T("/plugins"));
                 else if (env.Matches(_T("ALL_PROJECT_FILES")))
                 {
                     if (project)

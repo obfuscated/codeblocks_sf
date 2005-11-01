@@ -320,6 +320,11 @@ PersonalityManager* Manager::GetPersonalityManager()
     return appShutingDown ? 0 : PersonalityManager::Get();
 }
 
+UserVariableManager* Manager::GetUserVariableManager()
+{
+    return appShutingDown ? 0 : UserVariableManager::Get();
+}
+
 wxWindow* Manager::GetNotebookPage(const wxString &name, long style,bool issplit)
 {
     if (appShutingDown)

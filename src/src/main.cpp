@@ -62,6 +62,8 @@
 #include <wx/dockpanel.h>
 #include <wx/filename.h>
 
+#include "../sdk/uservarmanager.h"
+
 class wxMyFileDropTarget : public wxFileDropTarget
 {
 public:
@@ -152,6 +154,7 @@ int idProjectImportMSVS = XRCID("idProjectImportMSVS");
 int idProjectImportMSVSWksp = XRCID("idProjectImportMSVSWksp");
 
 int idSettingsEnvironment = XRCID("idSettingsEnvironment");
+int idSettingsGlobalUserVars = XRCID("idSettingsGlobalUserVars");
 int idSettingsEditor = XRCID("idSettingsEditor");
 int idPluginsManagePlugins = XRCID("idPluginsManagePlugins");
 int idSettingsConfigurePlugins = XRCID("idSettingsConfigurePlugins");
@@ -303,6 +306,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idProjectImportMSVSWksp,  MainFrame::OnProjectImportMSVSWksp)
 
 	EVT_MENU(idSettingsEnvironment, MainFrame::OnSettingsEnvironment)
+	EVT_MENU(idSettingsGlobalUserVars, MainFrame::OnGlobalUserVars)
 	EVT_MENU(idSettingsEditor, MainFrame::OnSettingsEditor)
     EVT_MENU(idPluginsManagePlugins, MainFrame::OnSettingsPlugins)
     EVT_MENU(idSettingsImpExpConfig, MainFrame::OnSettingsImpExpConfig)
@@ -2229,6 +2233,11 @@ void MainFrame::OnSettingsEnvironment(wxCommandEvent& event)
 	}
 	if (needRestart)
         wxMessageBox(_("Code::Blocks needs to be restarted for the changes to take effect."), _("Information"), wxICON_INFORMATION);
+}
+
+void MainFrame::OnGlobalUserVars(wxCommandEvent& event)
+{
+	Manager::Get()->GetUserVariableManager()->Configure();
 }
 
 void MainFrame::OnSettingsEditor(wxCommandEvent& event)

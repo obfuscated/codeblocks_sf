@@ -95,6 +95,7 @@
     #include <macrosmanager.h>
     #include <pluginmanager.h>
     #include <personalitymanager.h>
+    #include <uservarmanager.h>
 
     // other base classes
     #include <compileroptions.h>

@@ -65,11 +65,30 @@ void EditPathDlg::OnBrowse(wxCommandEvent& event)
 
     if (m_WantDir)
     {
+        // try to "decode" custom var
+        wxString bkp = val;
+        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(val);
+        fname = val;
+        fname.MakeAbsolute(m_Basepath);
+        m_Path = fname.GetFullPath();
+
         path = ChooseDirectory(this, m_Message, (m_Path.IsEmpty() ? s_LastPath : m_Path),
                 m_Basepath, false, m_ShowCreateDirButton);
 
         if (path.GetFullPath().IsEmpty())
             return;
+
+        // if it was a custom var, see if we can re-insert it
+        if (bkp != val)
+        {
+            wxString tmp = path.GetFullPath();
+            if (tmp.Replace(val, bkp) != 0)
+            {
+                // done here
+                XRCCTRL(*this, "txtPath", wxTextCtrl)->SetValue(tmp);
+                return;
+            }
+        }
     }
     else
     {

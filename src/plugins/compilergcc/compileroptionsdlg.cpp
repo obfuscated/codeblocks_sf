@@ -967,13 +967,6 @@ void CompilerOptionsDlg::OnOptionToggled(wxCommandEvent& event)
 
 void CompilerOptionsDlg::OnAddDirClick(wxCommandEvent& event)
 {
-    /*wxString path = ChooseDirectory(this,
-                                    _("Select directory"),
-                                    m_pProject ? m_pProject->GetBasePath() : "",
-                                    m_pProject ? m_pProject->GetBasePath() : "",
-                                    true,
-                                    true);*/
-
     EditPathDlg dlg(this,
             m_pProject ? m_pProject->GetBasePath() : _T(""),
             m_pProject ? m_pProject->GetBasePath() : _T(""),
@@ -995,25 +988,8 @@ void CompilerOptionsDlg::OnEditDirClick(wxCommandEvent& event)
     if (!control || control->GetSelection() < 0)
         return;
 
-    wxFileName dir(control->GetString(control->GetSelection()) + wxFileName::GetPathSeparator());
-//    if (m_pProject)
-//        dir.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_pProject->GetBasePath());
-//    Manager::Get()->GetMessageManager()->DebugLog(dir.GetFullPath());
-    wxString initial = _T("");
-
-    // This path may not exist, but if using EditPathDlg, you still want it
-    // displayed
-    initial = dir.GetPath(wxPATH_GET_VOLUME);
-
-    /*wxString path = ChooseDirectory(this,
-                                    _("Select directory"),
-                                    initial,
-                                    m_pProject ? m_pProject->GetBasePath() : "",
-                                    true,
-                                    true);*/
-
     EditPathDlg dlg(this,
-            initial,
+            control->GetString(control->GetSelection()),
             m_pProject ? m_pProject->GetBasePath() : _T(""),
             _("Edit directory"));
 

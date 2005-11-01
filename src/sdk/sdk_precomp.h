@@ -86,6 +86,7 @@
     #include <cbplugin.h>
     #include <cbproject.h>
     #include <cbworkspace.h>
+    #include <uservarmanager.h>
 
     // managers
     #include <manager.h>
@@ -100,6 +101,7 @@
     #include <macrosmanager.h>
     #include <pluginmanager.h>
     #include <personalitymanager.h>
+    #include <uservarmanager.h>
 
     // other base classes
     #include <compileroptions.h>
