@@ -87,6 +87,7 @@ simplelistlog.cpp \
 simpletextlog.cpp \
 templatemanager.cpp \
 toolsmanager.cpp \
+uservarmanager.cpp \
 workspaceloader.cpp \
 xtra_classes.cpp \
 xtra_res.cpp
@@ -169,6 +170,7 @@ simplelistlog.h \
 simpletextlog.h \
 templatemanager.h \
 toolsmanager.h \
+uservarmanager.h \
 workspaceloader.h \
 xtra_classes.h \
 xtra_res.h

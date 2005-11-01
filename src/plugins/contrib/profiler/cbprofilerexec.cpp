@@ -173,7 +173,7 @@ size_t CBProfilerExecDlg::ParseCallGraph(wxArrayString msg, size_t begin, wxProg
          {
            item.Clear();
       	   item.SetId(next);
-      	   item.SetTextColour(wxTheColourDatabase->Find("GREY"));
+      	   item.SetTextColour(wxTheColourDatabase->Find(_T("GREY")));
       	   outputCallGraphArea->SetItem(item);
          }
       }

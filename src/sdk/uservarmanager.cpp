@@ -238,7 +238,7 @@ void UsrGlblMgrEditDialog::OnFS(wxCommandEvent& event)
 void UsrGlblMgrEditDialog::OnDelete(wxCommandEvent& event)
 {
     wxString g(XRCCTRL(*this, "variable", wxChoice)->GetStringSelection());
-    if(wxMessageDialog(Manager::Get()->GetAppWindow(), "Delete the global variable " + g + "?", "Delete", wxYES_NO).ShowModal() == wxID_YES)
+    if(wxMessageDialog(Manager::Get()->GetAppWindow(), wxString::Format(_("Delete the global variable %s?"), g.c_str()), _("Delete"), wxYES_NO).ShowModal() == wxID_YES)
         ConfigManager::Get()->DeleteGroup(_T("/UserGlobalVars/") + g);
     List();
 }
