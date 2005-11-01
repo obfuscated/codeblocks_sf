@@ -945,6 +945,8 @@ void EditorManager::CheckForExternallyModifiedFiles()
         //File was deleted?
         if (!wxFileExists(ed->GetFilename()))
         {
+            if(ed->GetModified()) // Already set the flag
+                continue;
         	wxString msg;
         	msg.Printf(_("%s has been deleted, or is no longer available.\n"
 				"Do you wish to keep the file open?\n"
