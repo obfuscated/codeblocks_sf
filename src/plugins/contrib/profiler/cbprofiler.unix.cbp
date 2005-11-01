@@ -34,7 +34,7 @@
 			<Add directory="$(CBDIR)/devel"/>
 		</Linker>
 		<ExtraCommands>
-			<Add after="cd resources && zip ../cb_profiler.zip *.xrc"/>
+			<Add after="cd resources && zip ../profiler.zip *.xrc"/>
 		</ExtraCommands>
 		<Unit filename="cbprofiler.cpp">
 			<Option compilerVar="CPP"/>

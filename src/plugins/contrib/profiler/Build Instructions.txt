@@ -1,9 +1,3 @@
-Just open "cbprofiler.workspace". Then youll find a project inside. I havent had the chance to test this
-under Linux (i.e my slack' box is broken), so I dont know if the provided workspace/project are valid under
-it. In case they are not, then it might suffice with creating a "dummy" plugin project with the plugin
-wizard and then adding manually all the *.cpp and *.h.
+Don't forget to check the project build properties, and change the include/lib paths accordingto your WxWidgets and C::B SDK/Full Sources paths.
 
-In any case, you should check the project build properties, and change the include/lib paths according
-to your WxWidgets and C::B SDK/Full Sources paths.
-
-The sources have been compiled with wxWidgets 2.4. Some little changes are needed to compile it with wxWidgets 2.6 (at least, uncomment the "#include <wx/arrstr.h>" lines).
+The plugin should compile under wxWidget 2.4.2 or 2.6.1.
