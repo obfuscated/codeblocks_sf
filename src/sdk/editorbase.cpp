@@ -39,7 +39,7 @@ END_EVENT_TABLE()
 void EditorBase::InitFilename(const wxString& filename)
 {
     if (filename.IsEmpty())
-    	m_Filename = wxGetCwd() + wxFileName::GetPathSeparator() + CreateUniqueFilename();
+    	m_Filename = CreateUniqueFilename();
     else
     	m_Filename = filename;
 
@@ -52,14 +52,18 @@ void EditorBase::InitFilename(const wxString& filename)
 wxString EditorBase::CreateUniqueFilename()
 {
     const wxString prefix = _("Untitled");
+    const wxString path = wxGetCwd() + wxFILE_SEP_PATH;
     wxString tmp;
     int iter = 1;
     while (true)
     {
         tmp.Clear();
-        tmp << prefix << iter;
-        if (!Manager::Get()->GetEditorManager()->GetEditor(tmp))
+        tmp << path << prefix << iter;
+        if (!Manager::Get()->GetEditorManager()->GetEditor(tmp) &&
+            !wxFileExists(path + tmp))
+        {
             return tmp;
+        }
         ++iter;
     }
 }
