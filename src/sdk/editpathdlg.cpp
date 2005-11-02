@@ -9,6 +9,8 @@
 #include <wx/msgdlg.h>
 #include <wx/stattext.h>
 #include "globals.h"
+#include "manager.h"
+#include "macrosmanager.h"
 
 // remember last path, when supplied path is empty
 static wxString s_LastPath;

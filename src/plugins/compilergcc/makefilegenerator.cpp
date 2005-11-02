@@ -225,6 +225,7 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(const wxString& command,
         target->GetParentProject()->GetModeForPCH() == pchObjectDir)
     {
         wxArrayString includedDirs; // avoid adding duplicate dirs...
+        wxString sep = wxFILE_SEP_PATH;
         // find all PCH in project
         int count = target->GetParentProject()->GetFilesCount();
         for (int i = 0; i < count; ++i)
@@ -234,10 +235,7 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(const wxString& command,
                 f->compile)
             {
                 // it is a PCH; add it's object dir to includes
-                wxString dir = target->GetObjectOutput() +
-                        wxFILE_SEP_PATH +
-                        wxFileName(f->relativeFilename).GetPath();
-;
+                wxString dir = wxFileName(target->GetObjectOutput() + sep + f->GetObjName()).GetPath();
                 if (includedDirs.Index(dir) == wxNOT_FOUND)
                 {
                     includedDirs.Add(dir);
