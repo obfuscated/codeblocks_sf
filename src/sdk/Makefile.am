@@ -40,6 +40,7 @@ devcpploader.cpp \
 editarrayfiledlg.cpp \
 editarrayorderdlg.cpp \
 editarraystringdlg.cpp \
+editkeywordsdlg.cpp \
 editorbase.cpp \
 editorcolorset.cpp \
 editorconfigurationdlg.cpp \
@@ -115,6 +116,7 @@ devcpploader.h \
 editarrayfiledlg.h \
 editarrayorderdlg.h \
 editarraystringdlg.h \
+editkeywordsdlg.h \
 editorbase.h \
 editorcolorset.h \
 editorconfigurationdlg.h \
