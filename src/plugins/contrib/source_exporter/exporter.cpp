@@ -23,6 +23,7 @@
 #include "RTFExporter.h"
 #include "ODTExporter.h"
 
+static int idFileExport = wxNewId();
 static int idFileExportHTML = wxNewId();
 static int idFileExportRTF = wxNewId();
 static int idFileExportODT = wxNewId();
@@ -109,33 +110,21 @@ void Exporter::BuildMenu(wxMenuBar *menuBar)
   }
 
   // insert menu items
-  file->Insert(printPos, idFileExportODT, _("Export to ODT"), _("Exports the current file to ODT"));
-  file->Insert(printPos, idFileExportRTF, _("Export to RTF"), _("Exports the current file to RTF"));
-  file->Insert(printPos, idFileExportHTML, _("Export to HTML"), _("Exports the current file to HTML"));
+  wxMenu *export_menu = new wxMenu;
+  export_menu->Append(idFileExportHTML, _("As &HTML..."), _("Exports the current file to HTML"));
+  export_menu->Append(idFileExportRTF, _("As &RTF..."), _("Exports the current file to RTF"));
+  export_menu->Append(idFileExportODT, _("As &ODT..."), _("Exports the current file to ODT"));
+  file->Insert(printPos, new wxMenuItem(0, idFileExport, _("&Export"), _(""), wxITEM_NORMAL, export_menu));
 }
 
 void Exporter::RemoveMenu(wxMenuBar *menuBar)
 {
   wxMenu *menu = 0;
-  wxMenuItem *itemHTML = menuBar->FindItem(idFileExportHTML, &menu);
+  wxMenuItem *item = menuBar->FindItem(idFileExport, &menu);
 
-  if (menu && itemHTML)
+  if (menu && item)
   {
-    menu->Remove(itemHTML);
-  }
-
-  wxMenuItem *itemRTF = menuBar->FindItem(idFileExportRTF, &menu);
-
-  if (menu && itemRTF)
-  {
-    menu->Remove(itemRTF);
-  }
-
-  wxMenuItem *itemODT = menuBar->FindItem(idFileExportODT, &menu);
-
-  if (menu && itemODT)
-  {
-    menu->Remove(itemODT);
+    menu->Remove(item);
   }
 }
 
