@@ -416,12 +416,14 @@ void EditorColorSet::Save()
 
 			ConfigManager::Get()->Write(tmpKey + _T("/isStyle"), opt->isStyle);
 		}
+        wxString tmpkey;
 		for (int i = 0; i < 3; ++i)
 		{
-			wxString tmpkey;
 			tmpkey.Printf(_T("%s/editor/keywords/%d"), key.c_str(), i);
             ConfigManager::Get()->Write(tmpkey, m_Sets[x].m_Keywords[i]);
 		}
+        tmpkey.Printf(_T("%s/editor/filemasks"), key.c_str());
+        ConfigManager::Get()->Write(tmpkey, GetStringFromArray(m_Sets[x].m_FileMasks, _T(",")));
 	}
 }
 
@@ -466,12 +468,15 @@ void EditorColorSet::Load()
 
 			opt->isStyle = ConfigManager::Get()->Read(tmpKey + _T("/isStyle"), opt->underlined);
 		}
+        wxString tmpkey;
         for (int i = 0; i < 3; ++i)
         {
-            wxString tmpkey;
             tmpkey.Printf(_T("%s/editor/keywords/%d"), key.c_str(), i);
             m_Sets[x].m_Keywords[i] = ConfigManager::Get()->Read(tmpkey, _T(""));
         }
+        tmpkey.Printf(_T("%s/editor/filemasks"), key.c_str());
+        if (ConfigManager::Get()->HasEntry(tmpkey))
+            m_Sets[x].m_FileMasks = GetArrayFromString(ConfigManager::Get()->Read(tmpkey, _T("")), _T(","));
 	}
 }
 

@@ -37,6 +37,7 @@
 
 #include "editorcolorset.h"
 #include "editorconfigurationdlg.h"
+#include "editkeywordsdlg.h"
 #include "manager.h"
 #include "configmanager.h"
 #include "editormanager.h"
@@ -50,6 +51,7 @@ const FileType IdxToFileType[] = { ftSource, ftHeader };
 BEGIN_EVENT_TABLE(EditorConfigurationDlg, wxDialog)
 	EVT_BUTTON(XRCID("btnChooseEditorFont"), 	EditorConfigurationDlg::OnChooseFont)
 	EVT_BUTTON(XRCID("btnKeywords"), 			EditorConfigurationDlg::OnEditKeywords)
+	EVT_BUTTON(XRCID("btnFilemasks"), 			EditorConfigurationDlg::OnEditFilemasks)
 	EVT_BUTTON(XRCID("btnColorsReset"), 		EditorConfigurationDlg::OnColorsReset)
 	EVT_BUTTON(XRCID("btnGutterColor"), 		EditorConfigurationDlg::OnChooseColor)
 	EVT_BUTTON(XRCID("btnColorsFore"), 			EditorConfigurationDlg::OnChooseColor)
@@ -397,6 +399,7 @@ void EditorConfigurationDlg::ChangeTheme()
     m_Theme = new EditorColorSet(key);
 
    	XRCCTRL(*this, "btnKeywords", wxButton)->Enable(m_Theme);
+   	XRCCTRL(*this, "btnFilemasks", wxButton)->Enable(m_Theme);
 
 	wxComboBox* cmbLangs = XRCCTRL(*this, "cmbLangs", wxComboBox);
     cmbLangs->Clear();
@@ -480,24 +483,42 @@ void EditorConfigurationDlg::OnEditKeywords(wxCommandEvent& event)
 {
 	if (m_Theme && m_Lang != HL_NONE)
 	{
-		wxString keyw = wxGetTextFromUser(_("Edit keywords:"),
+	    EditKeywordsDlg dlg(0, m_Theme, m_Lang);
+	    if (dlg.ShowModal() == wxID_OK)
+	    {
+			m_Theme->SetKeywords(m_Lang, 0, dlg.GetLangKeywords());
+			m_Theme->SetKeywords(m_Lang, 1, dlg.GetDocKeywords());
+			m_Theme->SetKeywords(m_Lang, 2, dlg.GetUserKeywords());
+	    }
+	}
+}
+
+void EditorConfigurationDlg::OnEditFilemasks(wxCommandEvent& event)
+{
+	if (m_Theme && m_Lang != HL_NONE)
+	{
+		wxString masks = wxGetTextFromUser(_("Edit filemasks (use commas to spearate them - case insensitive):"),
 										m_Theme->GetLanguageName(m_Lang),
-										m_Theme->GetKeywords(m_Lang, 0));
-		if (!keyw.IsEmpty())
-			m_Theme->SetKeywords(m_Lang, 0, keyw);
+										GetStringFromArray(m_Theme->GetFileMasks(m_Lang), _T(",")));
+		if (!masks.IsEmpty())
+			m_Theme->SetFileMasks(m_Lang, masks);
 	}
 }
 
 void EditorConfigurationDlg::OnColorsReset(wxCommandEvent& event)
 {
-    if (wxMessageBox(_("Are you sure you want to reset all colors to defaults?"),
-                    _("Confirmation"),
-                    wxICON_QUESTION | wxYES_NO) == wxYES)
-    {
-        m_Theme->Reset(m_Lang);
-        ApplyColors();
-        m_ThemeModified = true;
-    }
+	if (m_Theme && m_Lang != HL_NONE)
+	{
+	    wxString tmp;
+	    tmp.Printf(_("Are you sure you want to reset all settings to defaults for \"%s\"?"),
+                    m_Theme->GetLanguageName(m_Lang).c_str());
+        if (wxMessageBox(tmp, _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxYES)
+        {
+            m_Theme->Reset(m_Lang);
+            ApplyColors();
+            m_ThemeModified = true;
+        }
+	}
 }
 
 void EditorConfigurationDlg::OnChangeLang(wxCommandEvent& event)

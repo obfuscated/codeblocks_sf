@@ -26,6 +26,7 @@ class EditorConfigurationDlg : public wxDialog
 		void OnColorComponent(wxCommandEvent& event);
 		void OnColorsReset(wxCommandEvent& event);
 		void OnEditKeywords(wxCommandEvent& event);
+		void OnEditFilemasks(wxCommandEvent& event);
 		void OnChangeLang(wxCommandEvent& event);
 		void OnChangeDefCodeFileType(wxCommandEvent& event);
 		void OnAutoCompKeyword(wxCommandEvent& event);
