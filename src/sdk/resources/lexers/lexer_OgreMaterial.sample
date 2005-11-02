@@ -1,0 +1,29 @@
+// comment
+material fur
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.5 0.5 0.5
+      diffuse 1.0 1.0 1.0
+
+      scene_blend alpha_blend
+      alpha_rejection greater_equal 128
+
+      fragment_program_ref GLSLDemo/BrickFS 
+      { 
+        param_named MortarColor float3 0.8, 0.8, 0.8
+        param_named BrickSize float2 10.0, 16.0
+        param_named BrickPct float4 0.9, 0.9, 0.3, 0.0
+      } 
+
+      texture_unit
+      {
+        texture arbol2.dds
+        tex_address_mode clamp
+        filtering anisotropic
+      }
+    }
+  }
+}

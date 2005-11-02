@@ -941,6 +941,7 @@ void Parser::BuildTree(wxTreeCtrl& tree)
 				token->m_IsLocal) // local symbols only
 				AddTreeNode(tree, m_RootNode, token);
 		}
+		tree.SortChildren(m_RootNode);
 		tree.Expand(m_RootNode);
 		tree.Thaw();
 		return;
@@ -967,6 +968,7 @@ void Parser::BuildTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode
             BuildTreeNamespace(tree, newNS, token);
             AddTreeNamespace(tree, newNS, token);
         }
+		tree.SortChildren(parentNode);
 	}
 }
 
@@ -983,6 +985,7 @@ void Parser::AddTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, 
 			AddTreeNode(tree, node, token);
         }
 	}
+    tree.SortChildren(node);
 	node = tree.AppendItem(parentNode, _("Enums"), PARSER_IMG_ENUMS_FOLDER);
 	for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
 	{
@@ -994,6 +997,7 @@ void Parser::AddTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, 
 			AddTreeNode(tree, node, token);
         }
 	}
+    tree.SortChildren(node);
 	node = tree.AppendItem(parentNode, _("Preprocessor"), PARSER_IMG_PREPROC_FOLDER);
 	for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
 	{
@@ -1005,6 +1009,7 @@ void Parser::AddTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, 
 			AddTreeNode(tree, node, token);
         }
 	}
+    tree.SortChildren(node);
 	node = tree.AppendItem(parentNode, _("Others"), PARSER_IMG_OTHERS_FOLDER);
 	for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
 	{
@@ -1019,6 +1024,7 @@ void Parser::AddTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, 
 			AddTreeNode(tree, node, token);
         }
 	}
+    tree.SortChildren(node);
 }
 
 void Parser::AddTreeNode(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* token, bool childrenOnly)
@@ -1050,4 +1056,5 @@ void Parser::AddTreeNode(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token
 		Token* ancestor = token->m_Ancestors[x];
 		AddTreeNode(tree, node, ancestor, true);
 	}
+    tree.SortChildren(node);
 }
