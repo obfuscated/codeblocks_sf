@@ -412,7 +412,7 @@
 		<Linker>
 			<Add library="wxmsw26"/>
 			<Add directory="sdk\tinyxml"/>
-			<Add directory="$(::WX.lib)\gcc_dll\msw"/>
+			<Add directory="$(::WX.lib)\gcc_dll"/>
 			<Add directory="$(::WX.lib)\gcc_dll$(WX_CFG)"/>
 		</Linker>
 		<Unit filename="devel\share\CodeBlocks\images\codecompletion\README.txt">
