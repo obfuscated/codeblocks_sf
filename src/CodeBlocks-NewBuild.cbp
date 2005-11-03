@@ -400,20 +400,20 @@
 			<Add option="-DTIXML_USE_STL"/>
 			<Add option="-DCB_PRECOMP"/>
 			<Add option="-DWX_PRECOMP"/>
-			<Add directory="$(::WX.include)"/>
-			<Add directory="$(::WX.lib)\gcc_dll\msw"/>
-			<Add directory="$(::WX.lib)\gcc_dll$(WX_CFG)\msw"/>
-			<Add directory="$(::WX)\contrib\include"/>
+			<Add directory="$(#WX.include)"/>
+			<Add directory="$(#WX.lib)\gcc_dll\msw"/>
+			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw"/>
+			<Add directory="$(#WX)\contrib\include"/>
 			<Add directory="sdk\wxscintilla\include"/>
 		</Compiler>
 		<ResourceCompiler>
-			<Add directory="$(::WX.include)"/>
+			<Add directory="$(#WX.include)"/>
 		</ResourceCompiler>
 		<Linker>
 			<Add library="wxmsw26"/>
 			<Add directory="sdk\tinyxml"/>
-			<Add directory="$(::WX.lib)\gcc_dll"/>
-			<Add directory="$(::WX.lib)\gcc_dll$(WX_CFG)"/>
+			<Add directory="$(#WX.lib)\gcc_dll\msw"/>
+			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)"/>
 		</Linker>
 		<Unit filename="devel\share\CodeBlocks\images\codecompletion\README.txt">
 			<Option compilerVar=""/>

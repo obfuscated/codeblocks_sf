@@ -113,10 +113,9 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo)
 	if (buffer.IsEmpty())
 		return;
 
-	wxRegEx re[3];
-	re[0].Compile(_T("(\\$[({]?)(\\:\\:[A-Za-z_0-9\\.]+)([)}]?)")); // $::VAR.MEMBER, $(::VAR) and ${::VAR}
-	re[1].Compile(_T("(\\$[({]?)([A-Za-z_0-9]+)([)}]?)")); // $HOME, $(HOME) and ${HOME}
-	re[2].Compile(_T("(%)([A-Za-z_0-9]+)(%)")); // %HOME%
+	wxRegEx re[2];
+	re[0].Compile(_T("(\\$[({]?)([#]*[A-Za-z_0-9]+[\\.]*[A-Za-z_0-9]+)([)}]?)")); // $HOME, $(HOME) and ${HOME}
+	re[1].Compile(_T("(%)([#]*[A-Za-z_0-9]+[\\.]*[A-Za-z_0-9]+)(%)")); // %HOME%
 
 	cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
 	EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
@@ -128,7 +127,7 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo)
 	while (count)
 	{
         count = 0;
-        for (int i = 0; i < 3; ++i)
+        for (int i = 0; i < 2; ++i)
         {
             wxString replace;
 
@@ -140,7 +139,7 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo)
                 if (env.Matches(_T("AMP")))
                     replace = _T("&");
 
-                if (env.StartsWith(_T("::")))
+                if (env.StartsWith(_T("#")))
                     replace = UnixFilename(Manager::Get()->GetUserVariableManager()->Replace(env));
                 else if (env.Matches(_T("PROJECT_FILE*")) || env.Matches(_T("PROJECTFILE*")))
                     replace = project ? UnixFilename(prjname.GetFullName()) : _T("");

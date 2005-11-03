@@ -31,6 +31,7 @@ void CompilerFactory::RegisterUserCompilers()
             CreateCompilerCopy(Compilers[parent - 1]);
         }
 
+        ConfigManager::Get()->SetPath(_T("/compiler_gcc/compiler_sets"));
 		cont = ConfigManager::Get()->GetNextGroup(str, cookie);
 	}
 	ConfigManager::Get()->SetPath(_T("/"));

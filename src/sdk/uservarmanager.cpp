@@ -76,7 +76,7 @@ wxString UserVariableManager::Replace(const wxString& variable)
 {
     wxConfigBase * cfg = ConfigManager::Get();
 
-    wxString package = variable.AfterLast(wxT(':')).BeforeFirst(wxT('.')).MakeLower();
+    wxString package = variable.AfterLast(wxT('#')).BeforeFirst(wxT('.')).MakeLower();
     wxString member = variable.AfterFirst(wxT('.')).MakeLower();
 
     wxString base = cfg->Read(_T("/UserGlobalVars/") + package + _T("/base"), wxEmptyString);

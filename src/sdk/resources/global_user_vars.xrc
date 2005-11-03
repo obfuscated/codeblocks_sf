@@ -16,9 +16,13 @@
             <object class="wxStaticText">
                         
               
+              
+              
               <label>Variable:</label>
                     </object>
                 
+            
+            
             
             <flag>wxALIGN_CENTRE_VERTICAL</flag>
           </object>
@@ -27,19 +31,45 @@
             <object class="wxChoice" name="variable">
                         
               
+              
+              
               <content/>
+              
+              
               
               <size>240,-1</size>
                     </object>
                 </object>
           <object class="sizeritem">
-            <flag>wxALIGN_CENTRE_VERTICAL</flag>
-            <object class="wxStaticText">
+            <object class="wxBoxSizer">
+              <orient>wxVERTICAL</orient>
+              <object class="sizeritem">
+                <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                <object class="wxStaticText">
                         
               
-              <label>Base directory:</label>
+              
+                  
+                  <label>Base directory:</label>
                     </object>
                 </object>
+              <object class="sizeritem">
+                <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                <object class="wxStaticText">
+                        
+              
+              
+                  
+                  <label>(required)</label>
+                    
+                  
+                  <fg>#800000</fg>
+                </object>
+                </object>
+            </object>
+            
+            <flag>wxGROW</flag>
+          </object>
           <object class="sizeritem">
             <flag>wxGROW</flag>
             <object class="wxFlexGridSizer">
@@ -51,8 +81,12 @@
                 <object class="wxTextCtrl" name="value">
                                 
                   
+                  
+                  
                   <size>80,-1</size>
                                 
+                  
+                  
                   
                   <value></value>
                             </object>
@@ -62,8 +96,12 @@
                 <object class="wxButton" name="fs_value">
                                 
                   
+                  
+                  
                   <size>20,-1</size>
                                 
+                  
+                  
                   
                   <label>...</label>
                             </object>
@@ -72,6 +110,10 @@
                 </object>
         </object>
         </object>
+      <object class="spacer">
+        
+        <size>0,8</size>
+      </object>
       <object class="sizeritem">
         <object class="wxStaticBoxSizer">
           <label>Members (optional)</label>
@@ -81,157 +123,284 @@
             <border>5</border>
             <object class="wxFlexGridSizer">
               <cols>3</cols>
-              <vgap>4</vgap>
+              <vgap>8</vgap>
               <hgap>4</hgap>
               <growablecols>1</growablecols>
               <object class="sizeritem">
-                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                <flag>wxTOP</flag>
                 <object class="wxStaticText">
                         
                   
+                  
+                  
                   <label>INCLUDE:</label>
                     </object>
-                </object>
+                
+                
+                <border>4</border>
+              </object>
               <object class="sizeritem">
-                <object class="wxTextCtrl" name="include">
+                <object class="wxBoxSizer">
+                  <orient>wxVERTICAL</orient>
+                  <object class="sizeritem">
+                    <object class="wxTextCtrl" name="include">
                         
                   
-                  <size>80,-1</size>
+                  
+                      
+                      <size>80,-1</size>
                         
                   
-                  <value></value>
+                  
+                      
+                      <value></value>
                     </object>
                 
+                
+                
+                    
+                    <flag>wxGROW</flag>
+              </object>
+                  <object class="sizeritem">
+                    <object class="wxStaticText">
+                      
+                      <label>(defaults to &lt;base&gt;\include)</label>
+                    </object>
+                  </object>
+                </object>
                 
                 <flag>wxGROW</flag>
               </object>
               <object class="sizeritem">
-                <flag>wxALIGN_CENTER</flag>
                 <object class="wxButton" name="fs_include">
                         
                   
+                  
+                  
                   <size>20,-1</size>
                         
+                  
+                  
                   
                   <label>...</label>
                     </object>
                 </object>
               <object class="sizeritem">
-                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                <flag>wxTOP</flag>
                 <object class="wxStaticText">
                         
+                  
+                  
                   
                   <label>LIB:</label>
                     </object>
-                </object>
+                
+                
+                <border>4</border>
+              </object>
               <object class="sizeritem">
-                <flag>wxGROW</flag>
-                <object class="wxTextCtrl" name="lib">
+                <object class="wxBoxSizer">
+                  <orient>wxVERTICAL</orient>
+                  <object class="sizeritem">
+                    <flag>wxGROW</flag>
+                    <object class="wxTextCtrl" name="lib">
                         
                   
-                  <size>80,-1</size>
+                  
+                      
+                      <size>80,-1</size>
                         
                   
-                  <value></value>
+                  
+                      
+                      <value></value>
                     </object>
                 </object>
+                  <object class="sizeritem">
+                    <object class="wxStaticText">
+                      
+                      <label>(defaults to &lt;base&gt;\lib)</label>
+                    </object>
+                  </object>
+                </object>
+                
+                <flag>wxGROW</flag>
+              </object>
               <object class="sizeritem">
-                <flag>wxALIGN_CENTER</flag>
                 <object class="wxButton" name="fs_lib">
                         
                   
+                  
+                  
                   <size>20,-1</size>
                         
+                  
+                  
                   
                   <label>...</label>
                     </object>
                 </object>
               <object class="sizeritem">
-                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                <flag>wxTOP</flag>
                 <object class="wxStaticText">
                         
+                  
+                  
                   
                   <label>OBJ:</label>
                     </object>
-                </object>
+                
+                
+                <border>4</border>
+              </object>
               <object class="sizeritem">
-                <flag>wxGROW</flag>
-                <object class="wxTextCtrl" name="obj">
+                <object class="wxBoxSizer">
+                  <orient>wxVERTICAL</orient>
+                  <object class="sizeritem">
+                    <flag>wxGROW</flag>
+                    <object class="wxTextCtrl" name="obj">
                         
                   
-                  <size>80,-1</size>
+                  
+                      
+                      <size>80,-1</size>
                         
                   
-                  <value></value>
+                  
+                      
+                      <value></value>
                     </object>
                 </object>
+                  <object class="sizeritem">
+                    <object class="wxStaticText">
+                      
+                      <label>(defaults to &lt;base&gt;\obj)</label>
+                    </object>
+                  </object>
+                </object>
+                
+                <flag>wxGROW</flag>
+              </object>
               <object class="sizeritem">
-                <flag>wxALIGN_CENTER</flag>
                 <object class="wxButton" name="fs_obj">
                         
                   
+                  
+                  
                   <size>20,-1</size>
                         
+                  
+                  
                   
                   <label>...</label>
                     </object>
                 </object>
               <object class="sizeritem">
-                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                <flag>wxTOP</flag>
                 <object class="wxStaticText">
                         
+                  
+                  
                   
                   <label>CFLAGS:</label>
                     </object>
-                </object>
+                
+                
+                <border>4</border>
+              </object>
               <object class="sizeritem">
-                <flag>wxGROW</flag>
-                <object class="wxTextCtrl" name="cflags">
+                <object class="wxBoxSizer">
+                  <orient>wxVERTICAL</orient>
+                  <object class="sizeritem">
+                    <flag>wxGROW</flag>
+                    <object class="wxTextCtrl" name="cflags">
                         
                   
-                  <size>80,-1</size>
+                  
+                      
+                      <size>80,-1</size>
                         
                   
-                  <value></value>
+                  
+                      
+                      <value></value>
                     </object>
                 </object>
+                  <object class="sizeritem">
+                    <object class="wxStaticText">
+                      
+                      <label>(defaults to empty)</label>
+                    </object>
+                  </object>
+                </object>
+                
+                <flag>wxGROW</flag>
+              </object>
               <object class="sizeritem">
-                <flag>wxALIGN_CENTER</flag>
                 <object class="wxButton" name="fs_cflags">
                         
                   
+                  
+                  
                   <size>20,-1</size>
                         
+                  
+                  
                   
                   <label>...</label>
                     </object>
                 </object>
               <object class="sizeritem">
-                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                <flag>wxTOP</flag>
                 <object class="wxStaticText">
                         
                   
+                  
+                  
                   <label>LFLAGS:</label>
                     </object>
-                </object>
+                
+                
+                <border>4</border>
+              </object>
               <object class="sizeritem">
-                <flag>wxGROW</flag>
-                <object class="wxTextCtrl" name="lflags">
+                <object class="wxBoxSizer">
+                  <orient>wxVERTICAL</orient>
+                  <object class="sizeritem">
+                    <flag>wxGROW</flag>
+                    <object class="wxTextCtrl" name="lflags">
                         
                   
-                  <size>80,-1</size>
+                  
+                      
+                      <size>80,-1</size>
                         
                   
-                  <value></value>
+                  
+                      
+                      <value></value>
                     </object>
                 </object>
+                  <object class="sizeritem">
+                    <object class="wxStaticText">
+                      
+                      <label>(defaults to empty)</label>
+                    </object>
+                  </object>
+                </object>
+                
+                <flag>wxGROW</flag>
+              </object>
               <object class="sizeritem">
-                <flag>wxALIGN_CENTER</flag>
                 <object class="wxButton" name="fs_lflags">
                         
                   
+                  
+                  
                   <size>20,-1</size>
                         
+                  
+                  
                   
                   <label>...</label>
                     </object>
@@ -240,7 +409,42 @@
         </object>
         </object>
         
+        
+        
         <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+        
+        
+        
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticText">
+          
+          <label>To add a new global variable, just use it in the compiler options.</label>
+          
+          <fg>#800000</fg>
+        </object>
+        
+        <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+        
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticText">
+          
+          <label>This dialog will pop-up when the new variable is first used.</label>
+          
+          <fg>#800000</fg>
+        </object>
+        
+        <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+        
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticLine"/>
+        
+        <flag>wxALL|wxGROW</flag>
         
         <border>8</border>
       </object>
@@ -255,6 +459,8 @@
             <object class="wxButton" name="delete">
                         
               
+              
+              
               <label>Delete</label>
                     </object>
                 </object>
@@ -268,8 +474,12 @@
                 <object class="wxButton" name="wxID_OK">
                                 
                   
+                  
+                  
                   <label>OK</label>
                             
+                  
+                  
                   <default>1</default>
                 </object>
                         </object>
@@ -279,6 +489,8 @@
                 <object class="wxButton" name="wxID_CANCEL">
                                 
                   
+                  
+                  
                   <label>Cancel</label>
                             </object>
                         </object>
@@ -287,8 +499,11 @@
         </object>
         
         
+        
+        
         <border>8</border>
       </object>
     </object>
+    <centered>1</centered>
   </object>
 </resource>
