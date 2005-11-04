@@ -7,7 +7,7 @@
 
 #ifdef __NO_PROPGRGID
 
-    class wxsEnumPropertyWindow: public wxChoice
+    class WXSCLASS wxsEnumPropertyWindow: public wxChoice
     {
         public:
 

@@ -7,7 +7,7 @@
 WXS_ST_DECLARE(wxsToggleButtonStyles)
 WXS_EV_DECLARE(wxsToggleButtonEvents)
 
-wxsDWDeclareBegin(wxsToggleButton,propWidget,wxsToggleButtonId)
+wxsDWDeclareBegin(wxsToggleButton,wxsToggleButtonId)
     wxString label;
     bool checked;
 wxsDWDeclareEnd()

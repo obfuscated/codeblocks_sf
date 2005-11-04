@@ -4,24 +4,24 @@
 #include <editorbase.h>
 #include "wxsevent.h"
 
-class wxsResource;
+class WXSCLASS wxsResource;
 
-class wxsEditor : public EditorBase
+class WXSCLASS wxsEditor : public EditorBase
 {
 	public:
-	
+
         /** Ctor */
 		wxsEditor(wxWindow* parent, const wxString& title,wxsResource* Resource);
-		
+
 		/** Dctor */
 		virtual ~wxsEditor();
-		
+
 		/** Getting current resouce */
 		inline wxsResource* GetResource() { return Resource; }
-		
-		
+
+
     protected:
-    
+
         /** This function should delete all dependencies between this window and
          *  resource object. F.ex. it could delete preview objects
          *
@@ -29,15 +29,15 @@ class wxsEditor : public EditorBase
          *        inside deestrtuctor
          */
 //        virtual void MyUnbind() = 0;
-        
+
 	private:
-	
+
         /** Function unbinding from current resurce if any */
         void Unbind();
-        
+
         /** Currently associated resource */
         wxsResource* Resource;
-        
+
         /** Handler for all wxSmith events
          *
          * All events must be processed here or inside derived editor's class.
@@ -45,7 +45,7 @@ class wxsEditor : public EditorBase
          * into wxSmith plugin)
          */
         void OnSmithEvent(wxsEvent& event);
-        
+
         DECLARE_EVENT_TABLE()
 };
 

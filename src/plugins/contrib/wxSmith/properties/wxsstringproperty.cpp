@@ -5,7 +5,7 @@
 
 #ifdef __NO_PROPGRGID
 
-    class wxsStringPropertyWindow: public wxTextCtrl
+    class WXSCLASS wxsStringPropertyWindow: public wxTextCtrl
     {
         public:
 

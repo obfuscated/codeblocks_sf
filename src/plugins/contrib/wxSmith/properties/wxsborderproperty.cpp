@@ -9,7 +9,7 @@
 
 #ifdef __NO_PROPGRGID
 
-    class wxsBorderPropertyWindow: public wxPanel
+    class WXSCLASS wxsBorderPropertyWindow: public wxPanel
     {
         public:
             wxsBorderPropertyWindow(wxWindow* Parent,wxsBorderProperty* Object);

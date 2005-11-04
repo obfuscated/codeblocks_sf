@@ -7,25 +7,25 @@
 #include <wx/scrolwin.h>
 #include <wx/event.h>
 
-class wxsPropertiesMan: public wxEvtHandler
+class WXSCLASS wxsPropertiesMan: public wxEvtHandler
 {
 	public:
 		wxsPropertiesMan();
 		virtual ~wxsPropertiesMan();
 		static wxsPropertiesMan* Get() { return &Singleton; }
-		
+
 		virtual void SetActiveWidget(wxsWidget* NewActive);
-		
+
 		inline wxsWidget* GetActiveWidget() { return CurrentWidget; }
-		
+
 	private:
         wxsWidget* CurrentWidget;
         wxScrolledWindow* PropertiesPanel;
         wxScrolledWindow* EventsPanel;
         static wxsPropertiesMan Singleton;
-		
+
 		friend class wxSmith;
-		
+
 		void OnSelectWidget(wxsEvent& event);
 		void OnUnselectWidget(wxsEvent& event);
 		void OnSelectRes(wxsEvent& event);

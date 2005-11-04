@@ -8,7 +8,8 @@
 wxsResource::wxsResource(wxsProject* _Project,int _EditMode):
     Editor(NULL),
     Project(_Project),
-    EditMode(_EditMode)
+    EditMode(_EditMode),
+    Broken(false)
 {
 }
 

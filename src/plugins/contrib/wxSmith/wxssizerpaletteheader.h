@@ -11,10 +11,10 @@
 //*)
 #include <wx/timer.h>
 
-class wxsWidget;
-class wxsSizerExtraParams;
+class WXSCLASS wxsWidget;
+class WXSCLASS wxsSizerExtraParams;
 
-class wxsSizerPaletteHeader: public wxPanel
+class WXSCLASS wxsSizerPaletteHeader: public wxPanel
 {
 	public:
 

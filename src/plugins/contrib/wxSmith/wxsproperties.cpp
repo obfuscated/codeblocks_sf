@@ -12,7 +12,7 @@
 
 #ifndef __NO_PROPGRGID
 
-class wxsPropertyGrid: public wxPropertyGrid
+class WXSCLASS wxsPropertyGrid: public wxPropertyGrid
 {
 	public:
         wxsPropertyGrid(wxWindow* Parent,wxsProperties* _Props):

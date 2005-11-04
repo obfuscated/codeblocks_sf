@@ -3,34 +3,34 @@
 
 #include <wx/event.h>
 
-class wxsResource;
-class wxsWidget;
+class WXSCLASS wxsResource;
+class WXSCLASS wxsWidget;
 
-class wxsEvent: public wxCommandEvent
+class WXSCLASS wxsEvent: public wxCommandEvent
 {
     public:
-    
+
 		wxsEvent(wxEventType Type = wxEVT_NULL, int id = 0, wxsResource* _Res = NULL, wxsWidget* _Widget=NULL)
 			: wxCommandEvent(Type, id),
 			Res(_Res),
             Widget(_Widget)
         {}
-        
+
 		wxsEvent(const wxsEvent& event)
 			: wxCommandEvent(event),
 			Res(event.Res),
 			Widget(event.Widget)
         {}
-        
+
 		virtual wxEvent *Clone() const { return new wxsEvent(*this); }
-		
-		inline wxsResource* GetResource() { return Res;} 
+
+		inline wxsResource* GetResource() { return Res;}
 		inline void SetResource(wxsResource* _Res) { Res = Res; }
 		inline wxsWidget* GetWidget() { return Widget; }
 		inline void SetWidget(wxsWidget* _Widget) { Widget = _Widget; }
-		
+
     private:
-    
+
         wxsResource* Res;
         wxsWidget* Widget;
 };

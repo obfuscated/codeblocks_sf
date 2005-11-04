@@ -3,6 +3,7 @@
 
 #include "wxspalette.h"
 #include "wxsglobals.h"
+#include "widget.h"
 
 BEGIN_EVENT_TABLE(wxsPaletteHeader,wxPanel)
 //(*EventTable(wxsPaletteHeader)

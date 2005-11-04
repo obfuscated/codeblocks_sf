@@ -7,7 +7,7 @@
 WXS_ST_DECLARE(wxsRadioButtonStyles)
 WXS_EV_DECLARE(wxsRadioButtonEvents)
 
-wxsDWDeclareBegin(wxsRadioButton,propWidget,wxsRadioButtonId)
+wxsDWDeclareBegin(wxsRadioButton,wxsRadioButtonId)
     wxString label;
     bool selected;
 wxsDWDeclareEnd()

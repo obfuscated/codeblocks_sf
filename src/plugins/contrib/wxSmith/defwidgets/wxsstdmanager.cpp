@@ -28,6 +28,7 @@
 #include "wxssplitterwindow.h"
 #include "wxsnotebook.h"
 #include "wxslistbook.h"
+#include "../wxsmith.h"
 
 
 #include <wx/xrc/xmlres.h>
@@ -60,6 +61,7 @@ static const wxString DefSizerCat    = _("Layout");
         false,                                          \
         2, 6,                                           \
         NULL,                                           \
+        NULL,                                           \
         &wxsStdManager,                                 \
         wxs##Name##Id,                                  \
         0,                                              \
@@ -87,6 +89,7 @@ static const wxString DefSizerCat    = _("Layout");
         false,                                          \
         2, 6,                                           \
         NULL,                                           \
+        NULL,                                           \
         &wxsStdManager,                                 \
         wxs##Name##Id,                                  \
         0,                                              \
@@ -110,6 +113,7 @@ static const wxString DefSizerCat    = _("Layout");
         false,                                          \
         true,                                           \
         2, 6,                                           \
+        NULL,                                           \
         NULL,                                           \
         &wxsStdManager,                                 \
         wxsSpacerId,                                    \
@@ -136,6 +140,7 @@ static const wxString DefSizerCat    = _("Layout");
         false,                                                  \
         2, 6,                                                   \
         NULL,                                                   \
+        NULL,                                                   \
         &wxsStdManager,                                         \
         wxs##Name##Id,                                          \
         0,                                                      \
@@ -150,7 +155,7 @@ static const wxString DefSizerCat    = _("Layout");
 static wxsWidgetInfo StdInfos[] =
 {
     { _T(""), _T(""), _T(""), _T(""), _T(""), _T(""), _T(""), _T(""), false,
-      false, false, 0, 0, NULL, NULL, wxsNoneId, 0, NULL, NULL, _T(""), _T(""),
+      false, false, 0, 0, NULL, NULL, NULL, wxsNoneId, 0, NULL, NULL, _T(""), _T(""),
       wxsWidgetInfo::exNone },  // NONE
 
     SizerEntry(GridSizer,"wx_wxgridsizer.html#wxgridsizer","<wx/sizer.h>")
@@ -201,6 +206,8 @@ wxsStdManagerT::~wxsStdManagerT()
         {
             delete StdInfos[i].Icon;
             StdInfos[i].Icon = NULL;
+            delete StdInfos[i].Icon16;
+            StdInfos[i].Icon16 = NULL;
         }
     }
 }
@@ -210,6 +217,8 @@ bool wxsStdManagerT::Initialize()
     wxString resPath = ConfigManager::Get()->Read(_T("data_path"), wxEmptyString);
     for ( int i=1; i<StdInfosCnt; i++ )
     {
+        // Loading 32x32 image
+
         wxString FileName = resPath + _T("/images/wxsmith/") + StdInfos[i].Name + _T(".png");
         wxBitmap* Bmp = new wxBitmap;
         if ( wxFileName::FileExists(FileName) )
@@ -230,6 +239,41 @@ bool wxsStdManagerT::Initialize()
         {
             StdInfos[i].Icon = NULL;
         }
+
+        // Loading 16x16 image
+
+        wxString FileName16 = resPath + _T("/images/wxsmith/") + StdInfos[i].Name + _T("16.png");
+        wxBitmap* Bmp16 = new wxBitmap;
+        if ( wxFileName::FileExists(FileName16) )
+        {
+            Bmp16->LoadFile(FileName16,wxBITMAP_TYPE_PNG);
+
+            if ( Bmp16->Ok() )
+            {
+                StdInfos[i].Icon16 = Bmp16;
+            }
+            else
+            {
+                StdInfos[i].Icon16 = NULL;
+                delete Bmp16;
+            }
+        }
+        else
+        {
+            StdInfos[i].Icon16 = NULL;
+        }
+
+        // Adding image to resource tree
+
+//        if ( StdInfos[i].Icon16 != NULL )
+//        {
+//            wxImageList* List = wxsTREE()->GetImageList();
+//            StdInfos[i].TreeIconId = List->Add(*(StdInfos[i].Icon16));
+//        }
+//        else
+//        {
+//            StdInfos[i].TreeIconId = -1;
+//        }
     }
     return true;
 }

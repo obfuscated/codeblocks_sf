@@ -13,7 +13,7 @@
 //*)
 #include "resources/wxswindowres.h"
 
-class wxsNewWindowDlg : public wxDialog
+class WXSCLASS wxsNewWindowDlg : public wxDialog
 {
 	public:
 		wxsNewWindowDlg(wxWindow* parent,const wxString& ResType);
@@ -41,11 +41,11 @@ class wxsNewWindowDlg : public wxDialog
         wxCheckBox* UseXrc;
         wxTextCtrl* Xrc;
         //*)
-        
+
         virtual bool PrepareResource(wxsWindowRes* Res) { return true; }
 
 	private:
-	
+
         bool SourceNotTouched;
         bool HeaderNotTouched;
         bool XrcNotTouched;

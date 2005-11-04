@@ -3,12 +3,12 @@
 
 #include "../wxsproperties.h"
 
-class wxsPlacementPropertyWindow;
+class WXSCLASS wxsPlacementPropertyWindow;
 
-class wxsPlacementProperty : public wxsProperty
+class WXSCLASS wxsPlacementProperty : public wxsProperty
 {
 	public:
-	
+
         /** Ctor */
 		wxsPlacementProperty(wxsProperties* Properties,int& Placement,bool& Expand,bool& Shaped);
 
@@ -17,9 +17,9 @@ class wxsPlacementProperty : public wxsProperty
 
         /** Taking name of value type handled by this item */
         virtual const wxString& GetTypeName();
-        
+
     protected:
-        
+
         #ifdef __NO_PROPGRGID
             virtual wxWindow* BuildEditWindow(wxWindow* Parent);
             virtual void UpdateEditWindow();
@@ -28,9 +28,9 @@ class wxsPlacementProperty : public wxsProperty
             virtual bool PropGridChanged(wxPropertyGrid* Grid,wxPGId Id);
             virtual void UpdatePropGrid(wxPropertyGrid* Grid);
         #endif
-        
+
 	private:
-	
+
         int &PlacementType;
         bool &Expand;
         bool &Shaped;
@@ -45,4 +45,4 @@ class wxsPlacementProperty : public wxsProperty
         #endif
 };
 
-#endif 
+#endif

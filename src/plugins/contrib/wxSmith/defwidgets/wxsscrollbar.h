@@ -7,7 +7,7 @@
 WXS_ST_DECLARE(wxsScrollBarStyles)
 WXS_EV_DECLARE(wxsScrollBarEvents)
 
-wxsDWDeclareBegin(wxsScrollBar,propWidget,wxsScrollBarId)
+wxsDWDeclareBegin(wxsScrollBar,wxsScrollBarId)
     int value;
     int thumbsz;
     int range;

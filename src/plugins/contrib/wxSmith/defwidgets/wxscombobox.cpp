@@ -54,23 +54,23 @@ wxString wxsComboBox::GetProducingCode(wxsCodeParams& Params)
     wxString Code;
     const CodeDefines& CDefs = GetCodeDefines();
     Code.Printf(_T("%s = new wxComboBox(%s,%s,_T(\"\"),%s,%s,0,NULL,%s);\n"),
-            GetBaseParams().VarName.c_str(),
+            GetBaseProperties().VarName.c_str(),
             Params.ParentName.c_str(),
-            GetBaseParams().IdName.c_str(),
+            GetBaseProperties().IdName.c_str(),
             CDefs.Pos.c_str(),
             CDefs.Size.c_str(),
             CDefs.Style.c_str());
     for ( size_t i = 0; i <  arrayChoices.Count(); ++i )
     {
         Code << wxString::Format(_T("%s->Append(%s);\n"),
-            GetBaseParams().VarName.c_str(),
+            GetBaseProperties().VarName.c_str(),
             GetWxString(arrayChoices[i]).c_str());
     }
 
     if ( defaultChoice >= 0 && defaultChoice < (int)arrayChoices.Count() )
     {
         Code << wxString::Format(_T("%s->SetSelection(%d);\n"),
-            GetBaseParams().VarName.c_str(),
+            GetBaseProperties().VarName.c_str(),
             defaultChoice);
     }
 

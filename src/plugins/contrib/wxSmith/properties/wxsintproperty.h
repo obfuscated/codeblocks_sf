@@ -3,8 +3,8 @@
 
 #include "../wxsproperties.h"
 
-class wxsIntPropertyWindow;
-class wxsIntProperty : public wxsProperty
+class WXSCLASS wxsIntPropertyWindow;
+class WXSCLASS wxsIntProperty : public wxsProperty
 {
 	public:
         /** Ctor
@@ -15,13 +15,13 @@ class wxsIntProperty : public wxsProperty
          *                       or after loosing focus
          */
 		wxsIntProperty(wxsProperties* Properties,int &Int, bool AlwaysUpdate);
-		
+
 		/** Dctor */
 		virtual ~wxsIntProperty();
-		
+
         /** Taking name of value type handled by this item */
         virtual const wxString& GetTypeName();
-        
+
     protected:
 
         #ifdef __NO_PROPGRGID
@@ -32,26 +32,26 @@ class wxsIntProperty : public wxsProperty
             virtual bool PropGridChanged(wxPropertyGrid* Grid,wxPGId Id);
             virtual void UpdatePropGrid(wxPropertyGrid* Grid);
         #endif
-        
-            
+
+
         /** This function makes additional correction for value, must always
          *  return acceptable one. It can be declared inside derived classes
          *  to extend abilities of IntProperty (f.ex. inly odd numbers)
          */
         virtual int CorrectValue(int Value) { return Value; }
-        
+
 	private:
-	
+
         int& Value;
         bool AlwUpd;
-        
+
         #ifdef __NO_PROPGRGID
             wxsIntPropertyWindow* Window;
             friend class wxsIntPropertyWindow;
         #else
             wxPGId PGId;
         #endif
-        
+
 };
 
 #endif // WXSINTPROPERTY_H

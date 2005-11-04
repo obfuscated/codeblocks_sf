@@ -19,7 +19,8 @@ wxsPalette::wxsPalette(wxWindow* Parent,int PN):
     SelectedRes(NULL),
     SelectedWidget(NULL),
     Header(this),
-    PageNum(PN)
+    PageNum(PN),
+    WidgetsSpace(NULL)
 {
 	wxScrolledWindow* Scroll = new wxScrolledWindow(this,-1);
 	Scroll->SetScrollRate(5,5);
@@ -30,7 +31,7 @@ wxsPalette::wxsPalette(wxWindow* Parent,int PN):
 
 	Sizer->Add(&Header,0,wxALL|wxGROW,0);
 
-	wxPanel* WidgetsSpace = new wxPanel(Scroll,-1);
+	WidgetsSpace = new wxPanel(Scroll,-1);
 
 	CreateWidgetsPalette(WidgetsSpace);
 
@@ -109,10 +110,21 @@ void wxsPalette::CreateWidgetsPalette(wxWindow* Wnd)
 
         if ( RowSizer )
         {
-            if ( (*i).second->Icon )
+            wxBitmap* Icon;
+
+            if ( wxsDWPalIconSize == 16L )
+            {
+                Icon = (*i).second->Icon16;
+            }
+            else
+            {
+                Icon = (*i).second->Icon;
+            }
+
+            if ( Icon )
             {
                 wxBitmapButton* Btn =
-                    new wxBitmapButton(Wnd,-1,*(*i).second->Icon,
+                    new wxBitmapButton(Wnd,-1,*Icon,
                         wxDefaultPosition,wxDefaultSize,wxBU_AUTODRAW,
                         wxDefaultValidator, (*i).second->Name);
                 RowSizer->Add(Btn,0,wxGROW);
@@ -213,7 +225,7 @@ void wxsPalette::InsertBefore(wxsWidget* New,wxsWidget* Ref)
 
     // Adding this new item into resource tree
 
-    New->BuildTree(wxsTREE(),Parent->TreeId,Index);
+    New->BuildTree(wxsTREE(),Parent->GetTreeId(),Index);
     wxsTREE()->Refresh();
 }
 
@@ -228,7 +240,7 @@ void wxsPalette::InsertAfter(wxsWidget* New,wxsWidget* Ref)
         wxsKILL(New);
         return;
     }
-    New->BuildTree(wxsTREE(),Parent->TreeId,Index+1);
+    New->BuildTree(wxsTREE(),Parent->GetTreeId(),Index+1);
     wxsTREE()->Refresh();
 }
 
@@ -239,7 +251,7 @@ void wxsPalette::InsertInto(wxsWidget* New,wxsWidget* Ref)
         wxsKILL(New);
         return;
     }
-    New->BuildTree(wxsTREE(),Ref->TreeId);
+    New->BuildTree(wxsTREE(),Ref->GetTreeId());
     wxsTREE()->Refresh();
 }
 
@@ -352,6 +364,13 @@ void wxsPalette::OnUnselectRes(wxsEvent& event)
 void wxsPalette::OnTimer(wxTimerEvent& event)
 {
 	wxsCoder::Get()->ProcessCodeQueue();
+}
+
+void wxsPalette::RefreshIcons()
+{
+    WidgetsSpace->SetSizer(NULL);
+    WidgetsSpace->DestroyChildren();
+    CreateWidgetsPalette(WidgetsSpace);
 }
 
 BEGIN_EVENT_TABLE(wxsPalette,wxPanel)

@@ -5,9 +5,12 @@
 #include "properties/wxsstringproperty.h"
 #include "wxsglobals.h"
 
-wxsDefWidget::wxsDefWidget(wxsWidgetManager* Man,wxsWindowRes* Res,BasePropertiesType pType):
-    wxsWidget(Man,Res,pType)
+wxsDefWidget::wxsDefWidget(wxsWidgetManager* Man,wxsWindowRes* Res):
+    wxsWidget(Man,Res)
 {
+    ChangeBPT(wxsREMSource,propWidgetS);
+    ChangeBPT(wxsREMFile,propWidgetF);
+    ChangeBPT(wxsREMMixed,propWidgetM);
 }
 
 wxsDefWidget::~wxsDefWidget()
@@ -40,9 +43,9 @@ wxString wxsDefWidget::GetProducingCode(wxsCodeParams& Params)
 
     CodeResult = GetGeneratingCodeStr();
 
-    CodeReplace(_T("ThisWidget"),BaseParams.VarName);
+    CodeReplace(_T("ThisWidget"),GetBaseProperties().VarName);
     CodeReplace(_T("parent"),Params.ParentName);
-    CodeReplace(_T("id"),BaseParams.IdName);
+    CodeReplace(_T("id"),GetBaseProperties().IdName);
     CodeReplace(_T("pos"),CD.Pos);
     CodeReplace(_T("size"),CD.Size);
     CodeReplace(_T("style"),CD.Style);
@@ -102,7 +105,7 @@ wxString wxsDefWidget::GetDeclarationCode(wxsCodeParams& Params)
     static wxString Tmp;
     Tmp = GetWidgetNameStr();
     Tmp.Append(_T("* "));
-    Tmp += BaseParams.VarName;
+    Tmp += GetBaseProperties().VarName;
     Tmp.Append(_T(';'));
     return Tmp;
 }
@@ -332,11 +335,11 @@ void wxsDefWidget::evStrArray(wxArrayString& Val,const wxString& Name,const wxSt
         {
             // Replacing wxsDWAddStrings function calls
 
-            wxString CodeToSearch = wxString::Format(_T("wxsDWAddStrings(%s,%s);"),Name.c_str(),GetBaseParams().VarName.c_str());
+            wxString CodeToSearch = wxString::Format(_T("wxsDWAddStrings(%s,%s);"),Name.c_str(),GetBaseProperties().VarName.c_str());
             wxString ReplaceWith;
             for ( size_t i = 0; i<Val.GetCount(); i++ )
             {
-            	ReplaceWith.Append(GetBaseParams().VarName);
+            	ReplaceWith.Append(GetBaseProperties().VarName);
             	ReplaceWith.Append(_T("->Append("));
             	ReplaceWith.Append(GetWxString(Val[i]));
             	ReplaceWith.Append(_T(");\n"));
@@ -345,8 +348,8 @@ void wxsDefWidget::evStrArray(wxArrayString& Val,const wxString& Name,const wxSt
 
             // Replacing wxsDWSelectString function calls
 
-            CodeToSearch.Printf(_T("wxsDWSelectString(%s,%d,%s)"),Name.c_str(),DefValue,GetBaseParams().VarName.c_str());
-            ReplaceWith.Printf(_T("%s->SetSelection(%d)"),GetBaseParams().VarName.c_str(),DefValue);
+            CodeToSearch.Printf(_T("wxsDWSelectString(%s,%d,%s)"),Name.c_str(),DefValue,GetBaseProperties().VarName.c_str());
+            ReplaceWith.Printf(_T("%s->SetSelection(%d)"),GetBaseProperties().VarName.c_str(),DefValue);
             CodeReplace(CodeToSearch,ReplaceWith);
 
             break;

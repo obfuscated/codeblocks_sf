@@ -23,7 +23,7 @@ WXS_EV_BEGIN(wxsNotebookEvents)
     WXS_EVI(EVT_NOTEBOOK_PAGE_CHANGING,wxNotebookEvent,PageChanging)
 WXS_EV_END(wxsNotebookEvents)
 
-class wxsNotebookPreview: public wxNotebook
+class WXSCLASS wxsNotebookPreview: public wxNotebook
 {
 	public:
         wxsNotebookPreview(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, wxsNotebook* NB):
@@ -48,9 +48,12 @@ class wxsNotebookPreview: public wxNotebook
 };
 
 wxsNotebook::wxsNotebook(wxsWidgetManager* Man,wxsWindowRes* Res):
-    wxsContainer(Man,Res,true,0,propWidget),
+    wxsContainer(Man,Res,true,0),
     CurrentSelection(0)
 {
+    ChangeBPT(wxsREMSource,propWidgetS);
+    ChangeBPT(wxsREMFile,propWidgetF);
+    ChangeBPT(wxsREMMixed,propWidgetM);
 }
 
 wxsNotebook::~wxsNotebook()
@@ -102,9 +105,9 @@ wxString wxsNotebook::GetProducingCode(wxsCodeParams& Params)
 	const CodeDefines& CD = GetCodeDefines();
 	return wxString::Format(
         _T("%s = new wxNotebook(%s,%s,%s,%s,%s);"),
-        BaseParams.VarName.c_str(),
+        GetBaseProperties().VarName.c_str(),
         Params.ParentName.c_str(),
-        BaseParams.IdName.c_str(),
+        GetBaseProperties().IdName.c_str(),
         CD.Pos.c_str(),
         CD.Size.c_str(),
         CD.Style.c_str());
@@ -119,8 +122,8 @@ wxString wxsNotebook::GetFinalizingCode(wxsCodeParams& Params)
 		wxsNotebookExtraParams* Params = GetExtraParams(i);
 		Code += wxString::Format(
             _T("%s->AddPage(%s,%s,%s);\n"),
-                BaseParams.VarName.c_str(),
-                Child->GetBaseParams().VarName.c_str(),
+                GetBaseProperties().VarName.c_str(),
+                Child->GetBaseProperties().VarName.c_str(),
                 GetWxString(Params->Label).c_str(),
                 Params->Selected ? _T("true") : _T("false"));
 	}
@@ -129,7 +132,7 @@ wxString wxsNotebook::GetFinalizingCode(wxsCodeParams& Params)
 
 wxString wxsNotebook::GetDeclarationCode(wxsCodeParams& Params)
 {
-	return wxString::Format(_T("wxNotebook* %s;"),BaseParams.VarName.c_str());
+	return wxString::Format(_T("wxNotebook* %s;"),GetBaseProperties().VarName.c_str());
 }
 
 bool wxsNotebook::XmlLoadChild(TiXmlElement* Element)

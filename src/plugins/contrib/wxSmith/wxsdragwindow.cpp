@@ -429,7 +429,7 @@ void wxsDragWindow::DragFinish(wxsWidget* UnderCursor)
         }
 
         // Applying changes
-        wxsWidgetBaseParams& Params = Widget->GetBaseParams();
+        wxsBaseProperties& Params = Widget->GetBaseProperties();
         if ( LeftTopPoint->PosX != LeftTopPoint->DragInitPosX ||
              LeftTopPoint->PosY != LeftTopPoint->DragInitPosY )
         {
@@ -500,7 +500,7 @@ void wxsDragWindow::DragFinish(wxsWidget* UnderCursor)
                  (Moved->FindChild(NewParent,0) < 0) &&
                   NewParent->CanAddChild(Moved) )
             {
-                wxsWidgetBaseParams& Params = Moved->GetBaseParams();
+                wxsBaseProperties& Params = Moved->GetBaseProperties();
                 DragPointData* LeftTopPoint = FindLeftTop(Moved);
                 if ( LeftTopPoint )
                 {
@@ -554,7 +554,7 @@ void wxsDragWindow::DragFinish(wxsWidget* UnderCursor)
                 Moved->BuildTree(wxsTREE(),NewParent->GetTreeId(),NewInSizerPos);
             }
 
-            wxsWidgetBaseParams& Params = Moved->GetBaseParams();
+            wxsBaseProperties& Params = Moved->GetBaseProperties();
             Params.DefaultPosition = NewParentIsSizer;
             if ( NewInSizerPos >= 0 )
             {

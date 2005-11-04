@@ -8,7 +8,7 @@
 #include "../widget.h"
 
 #ifdef __NO_PROPGRGID
-    class wxs2IntPropertyWindow: public wxPanel
+    class WXSCLASS wxs2IntPropertyWindow: public wxPanel
     {
         public:
 

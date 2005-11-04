@@ -7,7 +7,7 @@
 WXS_ST_DECLARE(wxsDatePickerCtrlStyles)
 WXS_EV_DECLARE(wxsDatePickerCtrlEvents)
 
-wxsDWDeclareBegin(wxsDatePickerCtrl,propWidget,wxsDatePickerCtrlId)
+wxsDWDeclareBegin(wxsDatePickerCtrl,wxsDatePickerCtrlId)
  // Temporary commented
  // wxDateTime defaultDate;
 wxsDWDeclareEnd()

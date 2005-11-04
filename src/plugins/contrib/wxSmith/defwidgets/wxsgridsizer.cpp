@@ -4,7 +4,7 @@
 wxString wxsGridSizer::GetProducingCode(wxsCodeParams& Params)
 {
     return wxString::Format(_T("%s = new wxGridSizer(%d,%d,%d,%d);"),
-        BaseParams.VarName.c_str(),
+        GetBaseProperties().VarName.c_str(),
         Rows, Cols, VGap, HGap );
 }
 

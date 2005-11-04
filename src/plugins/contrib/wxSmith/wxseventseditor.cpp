@@ -218,7 +218,7 @@ wxString wxsEventsEditor::GetFunctionProposition(wxsEventDesc* Event)
     // Creating proposition of new function name
 
     wxString NewNameBase;
-    NewNameBase.Printf(_T("On%s%s"),Widget->GetBaseParams().VarName.c_str(),Event->NewFuncNameBase.c_str());
+    NewNameBase.Printf(_T("On%s%s"),Widget->GetBaseProperties().VarName.c_str(),Event->NewFuncNameBase.c_str());
 
     int Suffix = 0;
     wxArrayString Functions;

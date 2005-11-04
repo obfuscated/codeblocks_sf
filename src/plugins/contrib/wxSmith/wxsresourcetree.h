@@ -3,30 +3,30 @@
 
 #include <wx/treectrl.h>
 
-class wxsWidget;
-class wxsResource;
+class WXSCLASS wxsWidget;
+class WXSCLASS wxsResource;
 
 /** Resource tree class */
-class wxsResourceTree: public wxTreeCtrl
+class WXSCLASS wxsResourceTree: public wxTreeCtrl
 {
     public:
 
         wxsResourceTree(wxWindow* Parent):
             wxTreeCtrl(Parent,-1)
         {}
-        
+
     private:
 
         void OnSelectResource(wxTreeEvent& event);
         void OnBeginDrag(wxTreeEvent& event);
         void OnEndDrag(wxTreeEvent& event);
-        
+
         wxsWidget* Dragged;
         DECLARE_EVENT_TABLE()
 };
 
 /** Data used by resource tree */
-class wxsResourceTreeData: public wxTreeItemData
+class WXSCLASS wxsResourceTreeData: public wxTreeItemData
 {
     public:
 

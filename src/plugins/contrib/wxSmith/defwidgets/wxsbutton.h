@@ -7,7 +7,7 @@
 WXS_ST_DECLARE(wxsButtonStyles)
 WXS_EV_DECLARE(wxsButtonEvents)
 
-wxsDWDeclareBegin(wxsButton,propWidget,wxsButtonId)
+wxsDWDeclareBegin(wxsButton,wxsButtonId)
     wxString label;
     bool def;
 wxsDWDeclareEnd()

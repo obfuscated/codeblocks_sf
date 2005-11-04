@@ -10,7 +10,7 @@
     #define WXS_MAX_STYLE_LEN   15
     #define WXSSPW_FIRST_ID     0x1010
 
-    class wxsStylePropertyWindow: public wxPanel
+    class WXSCLASS wxsStylePropertyWindow: public wxPanel
     {
         public:
             wxsStylePropertyWindow(wxWindow* Parent,wxsStyleProperty* Property,wxsStyle* Styles):

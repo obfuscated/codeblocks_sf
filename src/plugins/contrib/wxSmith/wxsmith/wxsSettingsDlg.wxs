@@ -81,6 +81,41 @@
                                         <handler entry="EVT_BUTTON" function="OnDragParentColClick" />
                                     </object>
                                 </object>
+                                <object class="sizeritem">
+                                    <option>1</option>
+                                    <border>5</border>
+                                    <flag>wxALL|wxALIGN_CENTER</flag>
+                                    <object class="wxStaticText" name="ID_STATICTEXT5" variable="StaticText5" member="no">
+                                        <label>Palette icon size</label>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <option>1</option>
+                                    <border>5</border>
+                                    <flag>wxALIGN_CENTER</flag>
+                                    <object class="wxFlexGridSizer" variable="FlexGridSizer4" member="no">
+                                        <rows>0</rows>
+                                        <cols>0</cols>
+                                        <vgap>0</vgap>
+                                        <hgap>0</hgap>
+                                        <object class="sizeritem">
+                                            <option>1</option>
+                                            <border>5</border>
+                                            <flag>wxALL|wxALIGN_CENTER</flag>
+                                            <object class="wxRadioButton" name="ID_RADIOBUTTON1" variable="Icons16" member="yes">
+                                                <label>16x16</label>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <option>1</option>
+                                            <border>5</border>
+                                            <flag>wxALL|wxALIGN_CENTER</flag>
+                                            <object class="wxRadioButton" name="ID_RADIOBUTTON2" variable="Icons32" member="yes">
+                                                <label>32x32</label>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
                             </object>
                         </object>
                     </object>

@@ -3,16 +3,16 @@
 
 #include "../widget.h"
 
-class wxsSpacer : public wxsWidget
+class WXSCLASS wxsSpacer : public wxsWidget
 {
 	public:
 		wxsSpacer(wxsWidgetManager* Man,wxsWindowRes* Res);
 		virtual ~wxsSpacer();
-		
+
         virtual const wxsWidgetInfo& GetInfo();
-        
+
     protected:
-    
+
         virtual wxWindow* MyCreatePreview(wxWindow* Parent);
 };
 

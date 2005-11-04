@@ -6,7 +6,7 @@
 wxString wxsBoxSizer::GetProducingCode(wxsCodeParams& Params)
 {
     return wxString::Format(_T("%s = new wxBoxSizer(%s);"),
-        BaseParams.VarName.c_str(),
+        GetBaseProperties().VarName.c_str(),
         (Orient == wxVERTICAL) ? _T("wxVERTICAL") : _T("wxHORIZONTAL") );
 }
 

@@ -8,10 +8,10 @@
 WXS_ST_DECLARE(wxsSplitterWindowStyles)
 WXS_EV_DECLARE(wxsSplitterWindowEvents)
 
-class wxsSplitterWindow : public wxsContainer
+class WXSCLASS wxsSplitterWindow : public wxsContainer
 {
 	public:
-	
+
 		wxsSplitterWindow(wxsWidgetManager* Man,wxsWindowRes* Res);
 		virtual ~wxsSplitterWindow();
         virtual const wxsWidgetInfo& GetInfo()
@@ -24,15 +24,15 @@ class wxsSplitterWindow : public wxsContainer
         virtual wxString GetDeclarationCode(wxsCodeParams& Params);
 
    protected:
-   
+
         virtual wxWindow* MyCreatePreview(wxWindow* Parent);
         virtual void MyFinalUpdatePreview(wxWindow* Preview);
         virtual bool MyXmlLoad();
         virtual bool MyXmlSave();
         virtual void CreateObjectProperties();
-        
+
     private:
-    
+
         int SashPos;
         int MinSize;
         int Orientation;

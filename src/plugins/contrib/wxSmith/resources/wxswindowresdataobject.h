@@ -6,14 +6,14 @@
 
 #define wxsDF_WIDGET   _T("wxSmith XML")
 
-class wxsWidget;
-class wxsWindowRes;
+class WXSCLASS wxsWidget;
+class WXSCLASS wxsWindowRes;
 
 /** Class representing wxsWidget and all it's children as wxDataObject
  *
  * This data object can also handle set of widgets stored continously
  */
-class wxsWindowResDataObject : public wxDataObject
+class WXSCLASS wxsWindowResDataObject : public wxDataObject
 {
 	public:
         /** Ctor */

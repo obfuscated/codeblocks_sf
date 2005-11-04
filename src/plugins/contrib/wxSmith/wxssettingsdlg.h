@@ -8,13 +8,14 @@
 #include <wx/intl.h>
 #include <wx/notebook.h>
 #include <wx/panel.h>
+#include <wx/radiobut.h>
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
 #include <wx/stattext.h>
 #include <wx/xrc/xmlres.h>
 //*)
 
-class wxsSettingsDlg: public wxDialog
+class WXSCLASS wxsSettingsDlg: public wxDialog
 {
     public:
 
@@ -38,6 +39,8 @@ class wxsSettingsDlg: public wxDialog
         wxComboBox* DragAssistType;
         wxButton* DragTargetCol;
         wxButton* DragParentCol;
+        wxRadioButton* Icons16;
+        wxRadioButton* Icons32;
         wxSpinCtrl* PrevFetchDelay;
         wxButton* BtnCancel;
         //*)

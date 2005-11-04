@@ -51,11 +51,11 @@ struct wxsSizerExtraParams
 
 /** Macro starting declaration of sizer class */
 #define wxsDSDeclareBegin(Name,SizerId)                                 \
-    class wxs##Name: public wxsDefSizer                                 \
+    class WXSCLASS wxs##Name: public wxsDefSizer                        \
     {                                                                   \
         public:                                                         \
             wxs##Name(wxsWidgetManager* Man,wxsWindowRes* Res):         \
-                wxsDefSizer(Man,Res,propSizer)                          \
+                wxsDefSizer(Man,Res)                                    \
             {                                                           \
                 Init();                                                 \
             }                                                           \
@@ -70,7 +70,7 @@ struct wxsSizerExtraParams
             virtual wxString GetDeclarationCode(wxsCodeParams& Params)  \
             {                                                           \
                 return wxString::Format(_T("wx") _T(#Name) _T("* %s;"), \
-                    GetBaseParams().VarName.c_str());                   \
+                    GetBaseProperties().VarName.c_str());               \
             }                                                           \
                                                                         \
             virtual wxSizer* ProduceSizer(wxWindow* Panel);             \
@@ -89,10 +89,10 @@ struct wxsSizerExtraParams
     };
 
 /** Base class for sizers */
-class wxsDefSizer : public wxsContainer
+class WXSCLASS wxsDefSizer : public wxsContainer
 {
 	public:
-		wxsDefSizer(wxsWidgetManager* Man,wxsWindowRes* Res,BasePropertiesType pType = propSizer);
+		wxsDefSizer(wxsWidgetManager* Man,wxsWindowRes* Res);
 		virtual ~wxsDefSizer();
 
         virtual wxString GetFinalizingCode(wxsCodeParams& Params);

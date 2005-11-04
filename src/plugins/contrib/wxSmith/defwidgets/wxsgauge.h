@@ -7,7 +7,7 @@
 WXS_ST_DECLARE(wxsGaugeStyles)
 WXS_EV_DECLARE(wxsGaugeEvents)
 
-wxsDWDeclareBegin(wxsGauge,propWidget,wxsGaugeId)
+wxsDWDeclareBegin(wxsGauge,wxsGaugeId)
     int range;
     int value;
     int shadow;

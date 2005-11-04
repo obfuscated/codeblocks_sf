@@ -13,7 +13,7 @@ WXS_EV_DECLARE(wxsComboBoxEvents)
 /* especially                                                                 */
 /******************************************************************************/
 
-wxsDWDeclareBegin(wxsComboBoxBase,propWidget,wxsComboBoxId)
+wxsDWDeclareBegin(wxsComboBoxBase,wxsComboBoxId)
 
   // for default constructor
     //int n;  // Number of strings with which to initialise the control
@@ -24,7 +24,7 @@ wxsDWDeclareBegin(wxsComboBoxBase,propWidget,wxsComboBoxId)
 
 wxsDWDeclareEnd()
 
-class wxsComboBox: public wxsComboBoxBase
+class WXSCLASS wxsComboBox: public wxsComboBoxBase
 {
     public:
         wxsComboBox(wxsWidgetManager* Man,wxsWindowRes* Res):

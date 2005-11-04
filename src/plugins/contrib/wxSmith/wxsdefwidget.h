@@ -11,15 +11,14 @@
 /** This macro starts declaration of new class handling one of default widgets
  *
  * \param Name - class representing widget in wxSmith
- * \param pType - type of widget (for most cases it should be propWidget)
  * \param WidgetId - identifier of widget used in default widget manager
  */
-#define wxsDWDeclareBegin(Name,pType,WidgetId)                              \
-    class Name : public wxsDefWidget                                        \
+#define wxsDWDeclareBegin(Name,WidgetId)                                    \
+    class WXSCLASS Name : public wxsDefWidget                               \
     {                                                                       \
         public:                                                             \
             Name(wxsWidgetManager* Man,wxsWindowRes* Res):                  \
-                wxsDefWidget(Man,Res,pType)                                 \
+                wxsDefWidget(Man,Res)                                       \
             { evInit(); }                                                   \
             virtual ~Name()                                                 \
             { evDestroy(); }                                                \
@@ -32,11 +31,11 @@
             virtual wxWindow* MyCreatePreview(wxWindow* Parent);            \
             virtual wxString GetGeneratingCodeStr();                        \
             virtual wxString GetWidgetNameStr();
- 
+
 /** This macro finishes declaration of new class handling one of default widgets
  *
- * Betwen wxsDWDeclareBegin() and wxsDWDDeclareEnd() declarations of 
- * addional variables describing widget should be placed. 
+ * Betwen wxsDWDeclareBegin() and wxsDWDDeclareEnd() declarations of
+ * addional variables describing widget should be placed.
  */
 #define wxsDWDeclareEnd()                                                   \
     };
@@ -57,13 +56,13 @@
     {                                                                       \
         WidgetName* ThisWidget;                                             \
         wxWindowID id = -1;                                                 \
-        wxPoint pos = BaseParams.DefaultPosition ?                          \
+        wxPoint pos = GetBaseProperties().DefaultPosition ?                 \
             wxDefaultPosition :                                             \
-            wxPoint(BaseParams.PosX,BaseParams.PosY);                       \
-        wxSize size = BaseParams.DefaultSize ?                              \
+            wxPoint(GetBaseProperties().PosX,GetBaseProperties().PosY);     \
+        wxSize size = GetBaseProperties().DefaultSize ?                     \
             wxDefaultSize :                                                 \
-            wxSize(BaseParams.SizeX,BaseParams.SizeY);                      \
-        long style = BaseParams.Style;                                      \
+            wxSize(GetBaseProperties().SizeX,GetBaseProperties().SizeY);    \
+        long style = GetBaseProperties().Style;                             \
         Code;                                                               \
         PreviewApplyDefaults(ThisWidget);                                   \
         return ThisWidget;                                                  \
@@ -143,7 +142,7 @@
  */
 #define wxsDWDefStr(Name,PropName,Default)                                  \
         evStr(Name,_T(#Name),_T(#Name),_T(PropName),_T(Default),false);
-        
+
 /** Extendeed macro assigning given wxString variable with property of widget
  *
  * \param Name - name of Variable
@@ -163,7 +162,7 @@
  */
 #define wxsDWDefLongStr(Name,PropName,Default)                              \
         evStr(Name,_T(#Name),_T(#Name),_T(PropName),_T(Default),true);
-        
+
 /** Extendeed macro assigning given wxString variable with property of widget
  *
  * \param Name - name of Variable
@@ -201,7 +200,7 @@
  */
 #define wxsDWDefStrArrayX(Name,XrcParentName,XrcChildName,PropName,Default,SortFlag) \
         evStrArray(Name,_T(#Name),_T(XrcParentName),_T(XrcChildName),_T(PropName),Default,SortFlag);
-        
+
 /** Macro finalizing definition of class handling one of default widgets
  */
 #define wxsDWDefineEnd()                                                    \
@@ -231,20 +230,20 @@ inline void wxsDWSelectString(const wxArrayString& Array,size_t Index,wxControlW
 }
 
 /** Base class for all default widgets */
-class wxsDefWidget: public wxsWidget
+class WXSCLASS wxsDefWidget: public wxsWidget
 {
 	public:
-	
+
         /** Default costroctor, arguments are passed directly to wxsWidget */
-		wxsDefWidget(wxsWidgetManager* Man,wxsWindowRes* Res,BasePropertiesType pType = propWidget);
-            
+		wxsDefWidget(wxsWidgetManager* Man,wxsWindowRes* Res);
+
         /** Destructor */
 		virtual ~wxsDefWidget();
-		
+
         virtual wxString GetProducingCode(wxsCodeParams& Params);
-		
+
         virtual wxString GetDeclarationCode(wxsCodeParams& Params);
-        
+
     protected:
 
         virtual bool MyXmlLoad();
@@ -256,28 +255,28 @@ class wxsDefWidget: public wxsWidget
         void ev2Int(int& Val1,int& Val2,const wxString& XrcName,const wxString& Name,const wxString& PropName,int DefValue1,int DefValue2);
         void evStr(wxString& Val,const wxString& Name,const wxString& XrcName,const wxString& PropName,wxString DefValue,bool Long);
         void evStrArray(wxArrayString& Val,const wxString& Name,const wxString& XrcParentName,const wxString& XrcChildName,const wxString& PropName, int& DefValue,int SortFlag);
-        
+
         virtual void BuildExtVars() = 0;
         virtual wxString GetGeneratingCodeStr() = 0;
         virtual wxString GetWidgetNameStr() = 0;
-        
+
         void evInit();
         void evDestroy();
-        
+
     private:
 
         enum evUseType { Init, XmlL, XmlS, Code, Props, Destroy };
-       
+
         evUseType evUse;
         bool Return;
         wxString CodeResult;
-        
+
         void evXmlL();
         void evXmlS();
         void evCode();
         void evProps();
-            
-        
+
+
         /** This function does replace the Old identifier with New content
          *
          * Currently it does only replace strings.
@@ -286,7 +285,7 @@ class wxsDefWidget: public wxsWidget
          * \param New - New string
          */
         void CodeReplace(const wxString& Old,const wxString& New);
-        
+
 };
 
 #endif // WXSDEFWIDGET_H

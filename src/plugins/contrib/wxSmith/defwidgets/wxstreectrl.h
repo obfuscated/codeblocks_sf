@@ -7,7 +7,7 @@
 WXS_ST_DECLARE(wxsTreeCtrlStyles)
 WXS_EV_DECLARE(wxsTreeCtrlEvents)
 
-wxsDWDeclareBegin(wxsTreeCtrl,propWidget,wxsTreeCtrlId)
+wxsDWDeclareBegin(wxsTreeCtrl,wxsTreeCtrlId)
 wxsDWDeclareEnd()
 
 

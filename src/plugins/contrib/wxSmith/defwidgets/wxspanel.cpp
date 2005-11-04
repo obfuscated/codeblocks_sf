@@ -18,8 +18,11 @@ WXS_EV_BEGIN(wxsPanelEvents)
 WXS_EV_END(wxsPanelEvents)
 
 wxsPanel::wxsPanel(wxsWidgetManager* Man,wxsWindowRes* Res):
-    wxsWindow(Man,Res,propWidget)
+    wxsWindow(Man,Res,propNone)
 {
+    ChangeBPT(wxsREMSource,propWidgetS);
+    ChangeBPT(wxsREMFile,propWidgetF);
+    ChangeBPT(wxsREMMixed,propWidgetM);
 }
 
 wxsPanel::~wxsPanel()
@@ -36,9 +39,9 @@ wxString wxsPanel::GetProducingCode(wxsCodeParams& Params)
 {
 	const CodeDefines& CDefs = GetCodeDefines();
     return wxString::Format(_T("%s = new wxPanel(%s,%s,%s,%s,%s);\n%s"),
-        BaseParams.VarName.c_str(),
+        GetBaseProperties().VarName.c_str(),
         Params.ParentName.c_str(),
-        BaseParams.IdName.c_str(),
+        GetBaseProperties().IdName.c_str(),
         CDefs.Pos.c_str(),
         CDefs.Size.c_str(),
         CDefs.Style.c_str(),
@@ -48,7 +51,7 @@ wxString wxsPanel::GetProducingCode(wxsCodeParams& Params)
 
 wxString wxsPanel::GetDeclarationCode(wxsCodeParams& Params)
 {
-	return wxString::Format(_T("wxPanel* %s;"),BaseParams.VarName.c_str());
+	return wxString::Format(_T("wxPanel* %s;"),GetBaseProperties().VarName.c_str());
 }
 
 
@@ -66,7 +69,7 @@ WXS_EV_END(wxsPanelrEvents)
 wxsPanelr::wxsPanelr(wxsWidgetManager* Man,wxsWindowRes* Res):
     wxsWindow(Man,Res,propWindow)
 {
-    GetBaseParams().Style = wxTAB_TRAVERSAL;
+    GetBaseProperties().Style = wxTAB_TRAVERSAL;
 }
 
 wxsPanelr::~wxsPanelr()

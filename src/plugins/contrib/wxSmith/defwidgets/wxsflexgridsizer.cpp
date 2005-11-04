@@ -29,14 +29,14 @@ wxString wxsFlexGridSizer::GetProducingCode(wxsCodeParams& Params)
 {
     wxString Code;
     Code.Printf(_T("%s = new wxFlexGridSizer(%d,%d,%d,%d);"),
-        BaseParams.VarName.c_str(),
+        GetBaseProperties().VarName.c_str(),
         Rows, Cols, VGap, HGap );
 
     wxArrayInt Cols = GetArray(GrowableCols);
     for ( size_t i=0; i<Cols.Count(); i++ )
     {
     	Code.Append(wxString::Format(_T("\n%s->AddGrowableCol(%d);"),
-            BaseParams.VarName.c_str(),
+            GetBaseProperties().VarName.c_str(),
             Cols[i]));
     }
 
@@ -44,7 +44,7 @@ wxString wxsFlexGridSizer::GetProducingCode(wxsCodeParams& Params)
     for ( size_t i=0; i<Rows.Count(); i++ )
     {
     	Code.Append(wxString::Format(_T("\n%s->AddGrowableRow(%d);"),
-            BaseParams.VarName.c_str(),
+            GetBaseProperties().VarName.c_str(),
             Rows[i]));
     }
 

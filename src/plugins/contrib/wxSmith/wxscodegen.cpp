@@ -58,7 +58,7 @@ void wxsCodeGen::AppendCodeReq(wxsWidget* Widget,wxsCodeParams& ThisParams)
     {
         if ( Widget->GetParent() )
         {
-            ChildParams.ParentName = Widget->GetBaseParams().VarName.c_str();
+            ChildParams.ParentName = Widget->GetBaseProperties().VarName.c_str();
         }
         else
         {

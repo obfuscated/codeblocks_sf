@@ -7,7 +7,7 @@
 WXS_ST_DECLARE(wxsSpinButtonStyles)
 WXS_EV_DECLARE(wxsSpinButtonEvents)
 
-wxsDWDeclareBegin(wxsSpinButton,propWidget,wxsSpinButtonId)
+wxsDWDeclareBegin(wxsSpinButton,wxsSpinButtonId)
     int value;
     int min;
     int max;

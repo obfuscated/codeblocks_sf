@@ -6,7 +6,7 @@
 
 #ifdef __NO_PROPGRGID
 
-    class wxsStringListPropertyWindow: public wxButton
+    class WXSCLASS wxsStringListPropertyWindow: public wxButton
     {
         public:
             wxsStringListPropertyWindow(wxWindow* Parent,wxsStringListProperty* Property):
@@ -33,7 +33,7 @@
 
     namespace {
 
-        class ListEditor: public wxDialog
+        class WXSCLASS ListEditor: public wxDialog
         {
             public:
                 ListEditor(wxWindow* Parent,wxArrayString& _Array,int* _Selection):
@@ -293,7 +293,7 @@ const wxString& wxsStringListProperty::GetTypeName()
     {
         assert ( GetProperties() );
         assert ( GetProperties()->GetWidget() );
-        return ( GetProperties()->GetWidget()->GetBaseParams().Style & SortedFlag ) != 0;
+        return ( GetProperties()->GetWidget()->GetBaseProperties().Style & SortedFlag ) != 0;
     }
 
 #endif

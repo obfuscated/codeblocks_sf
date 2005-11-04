@@ -126,7 +126,7 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
     wxString WxsFile = Class->GetValue() + _T(".wxs");
     wxsWindowRes* NewWindow = NULL;
 
-    int ResType = CreateXrc ? (wxsResSource | wxsResFile) : wxsResSource;
+    int ResType = CreateXrc ? wxsREMMixed : wxsREMSource;
     wxString XrcFile = CreateXrc ? Xrc->GetValue() : _T("");
 
     if ( Type == _T("Dialog") )

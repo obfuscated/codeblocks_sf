@@ -3,7 +3,7 @@
 
 #include "wxsstdmanager.h"
 
-class wxsSpacerPreview: public wxPanel
+class WXSCLASS wxsSpacerPreview: public wxPanel
 {
 	public:
         wxsSpacerPreview(wxWindow* Parent,const wxSize& Size):

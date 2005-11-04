@@ -9,7 +9,9 @@
 #include <wx/sizer.h>
 //*)
 
-class wxsPaletteHeader: public wxPanel
+class WXSCLASS wxsWidget;
+
+class WXSCLASS wxsPaletteHeader: public wxPanel
 {
 	public:
 

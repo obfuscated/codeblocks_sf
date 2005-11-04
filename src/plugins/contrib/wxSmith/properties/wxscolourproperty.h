@@ -3,7 +3,7 @@
 
 #include "../wxsproperties.h"
 
-class wxsColourProperty : public wxsProperty
+class WXSCLASS wxsColourProperty : public wxsProperty
 {
 	public:
 
@@ -12,13 +12,13 @@ class wxsColourProperty : public wxsProperty
         virtual const wxString& GetTypeName();
 
     protected:
-    
+
         virtual void AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name);
         virtual bool PropGridChanged(wxPropertyGrid* Grid,wxPGId Id);
         virtual void UpdatePropGrid(wxPropertyGrid* Grid);
-        
+
 	private:
-	
+
         wxPGId PGId;
         wxPGId UseColId;
         wxPGId ColId;

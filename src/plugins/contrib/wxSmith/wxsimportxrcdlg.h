@@ -4,22 +4,22 @@
 #include "wxsnewwindowdlg.h"
 
 /** This class is used to show dialgo window and import xrc file data */
-class wxsImportXrcDlg : public wxsNewWindowDlg
+class WXSCLASS wxsImportXrcDlg : public wxsNewWindowDlg
 {
 	public:
         /** Ctor */
 		wxsImportXrcDlg(wxWindow* Parent, TiXmlElement* Element);
-		
+
 		/** Dctor */
 		virtual ~wxsImportXrcDlg();
 
     protected:
-    
+
         /** This procedure will load xrc data to newly created resource */
         virtual bool PrepareResource(wxsWindowRes* Res);
-    
+
 	private:
-	
+
         /** Xml element containing xrc structure */
         TiXmlElement* Element;
 };

@@ -5,14 +5,14 @@
 /* Predefines                                                                 */
 /******************************************************************************/
 
-class wxSmith;
-class wxsWidget;
-class wxsWindowEditor;
-class wxsResource;
-class wxsDialogRes;
-class wxsFrameRes;
-class wxsPanelRes;
-class wxsWindowRes;
+class WXSCLASS wxSmith;
+class WXSCLASS wxsWidget;
+class WXSCLASS wxsWindowEditor;
+class WXSCLASS wxsResource;
+class WXSCLASS wxsDialogRes;
+class WXSCLASS wxsFrameRes;
+class WXSCLASS wxsPanelRes;
+class WXSCLASS wxsWindowRes;
 
 /******************************************************************************/
 
@@ -38,7 +38,7 @@ static const wxString wxSmithMainConfigFile(_T("wxsmith.cfg"));
  *  - anything needed ? add here
  *  .
  */
-class wxsProject
+class WXSCLASS wxsProject
 {
 
 	public:
@@ -100,7 +100,7 @@ class wxsProject
 
         /** Deleting panel resource from project */
         void DeletePanel(wxsPanelRes* Resource);
-        
+
         /** Getting modified state */
         bool GetModified() { return Modified; }
 
@@ -155,7 +155,7 @@ class wxsProject
 
         /** Function clearing project structures */
         inline void Clear();
-        
+
         /** Changing modified state */
         inline void SetModified(bool modified) { Modified = modified; }
 

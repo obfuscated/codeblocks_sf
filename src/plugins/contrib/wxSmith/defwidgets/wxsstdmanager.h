@@ -7,16 +7,16 @@
 enum std_widgets
 {
     wxsNoneId = 0,
-    
+
     /* Sizers */
     wxsGridSizerId,
     wxsBoxSizerId,
     wxsStaticBoxSizerId,
     wxsFlexGridSizerId,
-    
+
     /* Spacer */
     wxsSpacerId,
-    
+
     /* Controls */
     wxsButtonId,
     wxsToggleButtonId,      /* Warning - not compatible with XRC 2.4 */
@@ -38,35 +38,35 @@ enum std_widgets
     wxsSplitterWindowId,
     wxsNotebookId,
     wxsListbookId,
-    
-    
+
+
     /* Windows */
     wxsDialogId,
     wxsFrameId,
     wxsPanelrId,
-    
+
     /* Count */
     wxsStdIdCount
 };
 
-class wxsStdManagerT : public wxsWidgetManager
+class WXSCLASS wxsStdManagerT : public wxsWidgetManager
 {
 	public:
 		wxsStdManagerT();
 		virtual ~wxsStdManagerT();
-		
+
 		/** Initializing manager */
 		virtual bool Initialize();
-		
+
 		/** Getting number of handled widgets */
-        virtual int GetCount(); 
-        
+        virtual int GetCount();
+
         /** Getting widget's info */
         virtual const wxsWidgetInfo* GetWidgetInfo(int Number);
-        
+
         /** Getting new widget */
         virtual wxsWidget* ProduceWidget(int Id,wxsWindowRes* Res);
-        
+
         /** Killing widget */
         virtual void KillWidget(wxsWidget* Widget);
 };

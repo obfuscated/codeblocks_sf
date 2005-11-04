@@ -5,8 +5,8 @@
 #include <wx/string.h>
 
 
-class wxsWidget;
-class wxsWindowRes;
+class WXSCLASS wxsWidget;
+class WXSCLASS wxsWindowRes;
 
 /** This class is used to handle all Undo and Redo actions.
  *
@@ -17,75 +17,75 @@ class wxsWindowRes;
  * of memory consumption problems this can be changed to hold differences
  * between two xml nodes only.
  */
-class wxsWinUndoBuffer
+class WXSCLASS wxsWinUndoBuffer
 {
 	public:
-	
+
         /** Ctor */
 		wxsWinUndoBuffer(wxsWindowRes* Resource,int MaxEnteries=100);
-		
+
 		/** Dctor */
 		virtual ~wxsWinUndoBuffer();
 
         /** Getting number of enteries in undo array */
         inline int GetCount() { return (int)Enteries.size(); }
-        
+
         /** Getting current undo position (counting from 0) */
         inline int GetCurrent() { return CurrentPos; }
-		
+
 		/** Clearing undo table */
 		void Clear();
-		
+
 		/** Checkign if we can undo */
 		inline bool CanUndo() { return CurrentPos > 0; }
-		
+
 		/** Checking if we can redo */
 		bool CanRedo() { return CurrentPos < GetCount() - 1; }
-		
+
 		/** Checking if current undo position is modified relatively to form saved on disk */
 		bool IsModified() { return CurrentPos != SavedPos; }
-		
+
 		/** Adding new undo position */
 		void StoreChange();
-		
+
 		/** Setting last store point as Saved point */
 		inline void Saved() { SavedPos = CurrentPos; }
-		
+
 		/** Undoing
 		 *  \return Resource in form before change or NULL if can not undo */
         wxsWidget* Undo();
-        
+
         /** Redoing
          *  \return Resource in form after change or NULL if can not redo */
         wxsWidget* Redo();
-	
+
 	private:
-	
+
         /** One undo position */
         struct UndoEntry
         {
         	wxString XmlData;           ///< Xml structure representing resource
         	wxString SelectedWidget;    ///< Selection (currently not used)
         };
-        
+
         /** Buildign resource from given entry */
         wxsWidget* BuildResourceFromEntry(UndoEntry* Entry);
-	
+
         typedef std::vector<UndoEntry*> EnteriesT;
         typedef EnteriesT::iterator EnteriesI;
-        
+
         /** Undo buffer */
         EnteriesT Enteries;
-        
+
         /** Resource with monitored data */
         wxsWindowRes* Resource;
-        
+
         /** Current undo position */
         int CurrentPos;
-        
+
         /** Undo position representing not-changed resource (in form it's on disk) */
         int SavedPos;
-        
+
         /** Max enteries in undo buffer */
         int MaxEnteries;
 };

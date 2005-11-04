@@ -5,7 +5,7 @@
 
 #ifdef __NO_PROPGRGID
 
-    class wxsBoolPropertyWindow: public wxCheckBox
+    class WXSCLASS wxsBoolPropertyWindow: public wxCheckBox
     {
         public:
 

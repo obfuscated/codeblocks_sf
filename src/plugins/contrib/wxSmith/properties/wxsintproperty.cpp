@@ -5,7 +5,7 @@
 #include <wx/msgdlg.h>
 
 #ifdef __NO_PROPGRGID
-    class wxsIntPropertyWindow: public wxTextCtrl
+    class WXSCLASS wxsIntPropertyWindow: public wxTextCtrl
     {
         public:
 

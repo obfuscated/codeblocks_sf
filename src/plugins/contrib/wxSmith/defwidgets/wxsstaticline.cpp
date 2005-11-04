@@ -22,7 +22,7 @@ wxsDWDefineEnd()
 wxsStaticLine::wxsStaticLine(wxsWidgetManager* Man,wxsWindowRes* Res):
     wxsStaticLineBase(Man,Res)
 {
-    wxsWidgetBaseParams& Params = GetBaseParams();
+    wxsBaseProperties& Params = GetBaseProperties();
     Params.DefaultSize = false;
     Params.SizeX = 10;
     Params.SizeY = -1;
@@ -31,7 +31,7 @@ wxsStaticLine::wxsStaticLine(wxsWidgetManager* Man,wxsWindowRes* Res):
 bool wxsStaticLine::PropertiesUpdated(bool Validate,bool Correct)
 {
     // Need to additionally check size params
-    wxsWidgetBaseParams& Params = GetBaseParams();
+    wxsBaseProperties& Params = GetBaseProperties();
 
     if ( Params.Style & wxLI_VERTICAL )
     {

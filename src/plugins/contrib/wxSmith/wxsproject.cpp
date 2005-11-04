@@ -254,7 +254,7 @@ void wxsProject::AddWindowResource(
 
     wxString RealFileName = GetInternalFileName(FileName);
     wxsWindowRes* Res = NULL;
-    int EditMode = !XrcName ? wxsResSource : (wxsResSource | wxsResFile);
+    int EditMode = !XrcName ? wxsREMSource : wxsREMMixed;
 
     if ( Type == _T("Dialog") )
     {
@@ -327,7 +327,7 @@ TiXmlDocument* wxsProject::GenerateXml()
         Dlg.SetAttribute(XML_SFILE_STR,Sett->GetSourceFile().mb_str());
         Dlg.SetAttribute(XML_HFILE_STR,Sett->GetHeaderFile().mb_str());
         Dlg.SetAttribute(XML_XRCFILE_STR,Sett->GetXrcFile().mb_str());
-        Dlg.SetAttribute(XML_EDITMODE_STR,Sett->GetEditMode()==wxsResSource?"Source":"Xrc");
+        Dlg.SetAttribute(XML_EDITMODE_STR,Sett->GetEditMode()==wxsREMSource?"Source":"Xrc");
         Elem->InsertEndChild(Dlg);
     }
 
@@ -342,7 +342,7 @@ TiXmlDocument* wxsProject::GenerateXml()
         Frm.SetAttribute(XML_SFILE_STR,Sett->GetSourceFile().mb_str());
         Frm.SetAttribute(XML_HFILE_STR,Sett->GetHeaderFile().mb_str());
         Frm.SetAttribute(XML_XRCFILE_STR,Sett->GetWxsFile().mb_str());
-        Frm.SetAttribute(XML_EDITMODE_STR,Sett->GetEditMode()==wxsResSource?"Source":"Xrc");
+        Frm.SetAttribute(XML_EDITMODE_STR,Sett->GetEditMode()==wxsREMSource?"Source":"Xrc");
         Elem->InsertEndChild(Frm);
     }
 
@@ -357,7 +357,7 @@ TiXmlDocument* wxsProject::GenerateXml()
         Pan.SetAttribute(XML_SFILE_STR,Sett->GetSourceFile().mb_str());
         Pan.SetAttribute(XML_HFILE_STR,Sett->GetHeaderFile().mb_str());
         Pan.SetAttribute(XML_XRCFILE_STR,Sett->GetWxsFile().mb_str());
-        Pan.SetAttribute(XML_EDITMODE_STR,Sett->GetEditMode()==wxsResSource?"Source":"Xrc");
+        Pan.SetAttribute(XML_EDITMODE_STR,Sett->GetEditMode()==wxsREMSource?"Source":"Xrc");
         Elem->InsertEndChild(Pan);
     }
 

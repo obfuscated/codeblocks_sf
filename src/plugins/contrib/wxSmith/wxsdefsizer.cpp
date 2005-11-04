@@ -7,7 +7,7 @@
 #include "wxswidgetfactory.h"
 #include "wxssizerpaletteheader.h"
 
-class wxsDefSizerPreview: public wxPanel
+class WXSCLASS wxsDefSizerPreview: public wxPanel
 {
     public:
         wxsDefSizerPreview(wxWindow* Parent,wxsDefSizer* wxsSizer,wxSizer* _Sizer):
@@ -85,9 +85,12 @@ BEGIN_EVENT_TABLE(wxsDefSizerPreview,wxPanel)
 //    EVT_ERASE_BACKGROUND(wxsGridSizerPreview::OnEraseBack)
 END_EVENT_TABLE()
 
-wxsDefSizer::wxsDefSizer(wxsWidgetManager* Man,wxsWindowRes* Res,BasePropertiesType pType):
-    wxsContainer(Man,Res,false,0,pType)
+wxsDefSizer::wxsDefSizer(wxsWidgetManager* Man,wxsWindowRes* Res):
+    wxsContainer(Man,Res,false,0,propSizerS)
 {
+    ChangeBPT(wxsREMSource,propSizerS);
+    ChangeBPT(wxsREMFile,propSizerF);
+    ChangeBPT(wxsREMMixed,propSizerM);
 }
 
 wxsDefSizer::~wxsDefSizer()
@@ -106,9 +109,9 @@ wxString wxsDefSizer::GetFinalizingCode(wxsCodeParams& Params)
 		{
 			// Spacer class is threated as a special case
 			Code.Append(wxString::Format(_T("%s->Add(%d,%d,%d);"),
-                GetBaseParams().VarName.c_str(),
-                Child->GetBaseParams().SizeX,
-                Child->GetBaseParams().SizeY,
+                GetBaseProperties().VarName.c_str(),
+                Child->GetBaseProperties().SizeX,
+                Child->GetBaseProperties().SizeY,
                 Params->Proportion));
 		}
 		else
@@ -117,8 +120,8 @@ wxString wxsDefSizer::GetFinalizingCode(wxsCodeParams& Params)
             if ( !FlagsToSizer.Length() ) FlagsToSizer = _T("0");
             Code.Append(
                 wxString::Format(_T("%s->Add(%s,%d,%s,%d);\n"),
-                    GetBaseParams().VarName.c_str(),
-                    Child->GetBaseParams().VarName.c_str(),
+                    GetBaseProperties().VarName.c_str(),
+                    Child->GetBaseProperties().VarName.c_str(),
                     Params->Proportion,
                     FlagsToSizer.c_str(),
                     Params->Border));
@@ -129,12 +132,12 @@ wxString wxsDefSizer::GetFinalizingCode(wxsCodeParams& Params)
     {
         Code.Append(wxString::Format(_T("%s->SetSizer(%s);"),
             Params.ParentName.c_str(),
-            BaseParams.VarName.c_str()));
+            GetBaseProperties().VarName.c_str()));
         Code.Append(wxString::Format(_T("%s->Fit(%s);"),
-            BaseParams.VarName.c_str(),
+            GetBaseProperties().VarName.c_str(),
             Params.ParentName.c_str()));
         Code.Append(wxString::Format(_T("%s->SetSizeHints(%s);"),
-            BaseParams.VarName.c_str(),
+            GetBaseProperties().VarName.c_str(),
             Params.ParentName.c_str()));
     }
     return Code;

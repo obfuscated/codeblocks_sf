@@ -5,12 +5,12 @@
 #include "../wxswidgetevents.h"
 
 /** This class is a base for wxsDialog, wxsFrame and wxsPanel classes */
-class wxsWindow : public wxsContainer
+class WXSCLASS wxsWindow : public wxsContainer
 {
 	public:
 
         /** Ctor */
-		wxsWindow(wxsWidgetManager* Man,wxsWindowRes* Res, BasePropertiesType pType);
+		wxsWindow(wxsWidgetManager* Man,wxsWindowRes* Res, wxsBasePropertiesType pType=propNone);
 
 		/** Dctor */
 		virtual ~wxsWindow();

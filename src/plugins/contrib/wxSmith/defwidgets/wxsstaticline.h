@@ -7,10 +7,10 @@
 WXS_ST_DECLARE(wxsStaticLineStyles)
 WXS_EV_DECLARE(wxsStaticLineEvents)
 
-wxsDWDeclareBegin(wxsStaticLineBase,propWidget,wxsStaticLineId)
+wxsDWDeclareBegin(wxsStaticLineBase,wxsStaticLineId)
 wxsDWDeclareEnd()
 
-class wxsStaticLine: public wxsStaticLineBase
+class WXSCLASS wxsStaticLine: public wxsStaticLineBase
 {
     public:
         wxsStaticLine(wxsWidgetManager* Man,wxsWindowRes* Res);

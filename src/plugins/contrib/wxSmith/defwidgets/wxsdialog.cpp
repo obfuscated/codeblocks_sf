@@ -40,7 +40,7 @@ wxsDialog::wxsDialog(wxsWidgetManager* Man,wxsWindowRes* Res):
     wxsWindow(Man,Res,propWindow),
     Centered(false)
 {
-    GetBaseParams().Style = wxDEFAULT_DIALOG_STYLE;
+    GetBaseProperties().Style = wxDEFAULT_DIALOG_STYLE;
 }
 
 wxsDialog::~wxsDialog()

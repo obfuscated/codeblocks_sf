@@ -4,10 +4,10 @@
 #include "widget.h"
 #include <vector>
 
-class wxsContainer : public wxsWidget
+class WXSCLASS wxsContainer : public wxsWidget
 {
 	public:
-		wxsContainer(wxsWidgetManager* Manager,wxsWindowRes* Res,bool IsWindow = false,int MaxChildren = -1,BasePropertiesType pType=propNone):
+		wxsContainer(wxsWidgetManager* Manager,wxsWindowRes* Res,bool IsWindow = false,int MaxChildren = -1,wxsBasePropertiesType pType=propNone):
              wxsWidget(Manager,Res,IsWindow,MaxChildren,pType),
              DeletingAll(false)
         {};

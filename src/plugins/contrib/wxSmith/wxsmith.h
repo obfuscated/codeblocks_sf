@@ -37,9 +37,9 @@
 #include "wxsevent.h"
 #include "wxssplitterwindow.h"
 
-class wxsProject;
+class WXSCLASS wxsProject;
 
-class wxSmith : public cbPlugin
+class WXSCLASS wxSmith : public cbPlugin
 {
 	public:
 		wxSmith();

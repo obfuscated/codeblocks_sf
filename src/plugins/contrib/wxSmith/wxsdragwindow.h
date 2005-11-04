@@ -7,7 +7,7 @@
 #include <vector>
 #include "wxsevent.h"
 
-class wxsWidget;
+class WXSCLASS wxsWidget;
 /** This class is used as an additional layer between window's preview
  *  and user input.
  *
@@ -15,7 +15,7 @@ class wxsWidget;
  * processed by preview window and adding additional features like
  * mouse-dragging boxes.
  */
-class wxsDragWindow : public wxControl
+class WXSCLASS wxsDragWindow : public wxControl
 {
 	public:
 

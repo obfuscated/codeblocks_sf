@@ -7,7 +7,7 @@
 WXS_ST_DECLARE(wxsCheckBoxStyles)
 WXS_EV_DECLARE(wxsCheckBoxEvents)
 
-wxsDWDeclareBegin(wxsCheckBox,propWidget,wxsCheckBoxId)
+wxsDWDeclareBegin(wxsCheckBox,wxsCheckBoxId)
     wxString label;
     bool checked;
 wxsDWDeclareEnd()

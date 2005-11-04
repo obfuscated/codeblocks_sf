@@ -25,11 +25,14 @@ WXS_EV_END(wxsSplitterWindowEvents)
 
 
 wxsSplitterWindow::wxsSplitterWindow(wxsWidgetManager* Man,wxsWindowRes* Res):
-    wxsContainer(Man,Res,true,2,propWidget),
+    wxsContainer(Man,Res,true,2),
     SashPos(0),
     MinSize(-1),
     Orientation(wxHORIZONTAL)
 {
+    ChangeBPT(wxsREMSource,propWidgetS);
+    ChangeBPT(wxsREMFile,propWidgetF);
+    ChangeBPT(wxsREMMixed,propWidgetM);
 }
 
 wxsSplitterWindow::~wxsSplitterWindow()
@@ -90,9 +93,9 @@ wxString wxsSplitterWindow::GetProducingCode(wxsCodeParams& Params)
 	const CodeDefines& CD = GetCodeDefines();
 	return wxString::Format(
         _T("%s = new wxSplitterWindow(%s,%s,%s,%s,%s);"),
-        BaseParams.VarName.c_str(),
+        GetBaseProperties().VarName.c_str(),
         Params.ParentName.c_str(),
-        BaseParams.IdName.c_str(),
+        GetBaseProperties().IdName.c_str(),
         CD.Pos.c_str(),
         CD.Size.c_str(),
         CD.Style.c_str());
@@ -103,35 +106,35 @@ wxString wxsSplitterWindow::GetFinalizingCode(wxsCodeParams& Params)
 	wxString Code;
 	if ( MinSize >= 0 )
 	{
-		Code.Printf(_T("%s->SetMinimumPaneSize(%d);\n"),BaseParams.VarName.c_str(),MinSize);
+		Code.Printf(_T("%s->SetMinimumPaneSize(%d);\n"),GetBaseProperties().VarName.c_str(),MinSize);
 	}
 
 	if ( GetChildCount() == 0 ) return Code;
 	if ( GetChildCount() == 1 )
 	{
 		return Code + wxString::Format(_T("%s->Initialize(%s);\n"),
-            BaseParams.VarName.c_str(),
-            GetChild(0)->GetBaseParams().VarName.c_str());
+            GetBaseProperties().VarName.c_str(),
+            GetChild(0)->GetBaseProperties().VarName.c_str());
 	}
 
 	if ( Orientation==wxVERTICAL )
 	{
 		return Code + wxString::Format(_T("%s->SplitVertically(%s,%s,%d);\n"),
-            BaseParams.VarName.c_str(),
-            GetChild(0)->GetBaseParams().VarName.c_str(),
-            GetChild(1)->GetBaseParams().VarName.c_str(),
+            GetBaseProperties().VarName.c_str(),
+            GetChild(0)->GetBaseProperties().VarName.c_str(),
+            GetChild(1)->GetBaseProperties().VarName.c_str(),
             SashPos);
 	}
     return Code + wxString::Format(_T("%s->SplitHorizontally(%s,%s,%d);\n"),
-        BaseParams.VarName.c_str(),
-        GetChild(0)->GetBaseParams().VarName.c_str(),
-        GetChild(1)->GetBaseParams().VarName.c_str(),
+        GetBaseProperties().VarName.c_str(),
+        GetChild(0)->GetBaseProperties().VarName.c_str(),
+        GetChild(1)->GetBaseProperties().VarName.c_str(),
         SashPos);
 }
 
 wxString wxsSplitterWindow::GetDeclarationCode(wxsCodeParams& Params)
 {
-	return wxString::Format(_T("wxSplitterWindow* %s;"),BaseParams.VarName.c_str());
+	return wxString::Format(_T("wxSplitterWindow* %s;"),GetBaseProperties().VarName.c_str());
 }
 
 bool wxsSplitterWindow::MyXmlLoad()

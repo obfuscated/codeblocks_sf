@@ -369,7 +369,7 @@ bool wxsWindowEditor::InsertBefore(wxsWidget* New,wxsWidget* Ref)
     else
     {
         // Adding this new item into resource tree
-        New->BuildTree(wxsTREE(),Parent->TreeId,Index);
+        New->BuildTree(wxsTREE(),Parent->GetTreeId(),Index);
         Ret = true;
     }
 
@@ -412,7 +412,7 @@ bool wxsWindowEditor::InsertAfter(wxsWidget* New,wxsWidget* Ref)
     else
     {
         // Adding this new item into resource tree
-        New->BuildTree(wxsTREE(),Parent->TreeId,Index+1);
+        New->BuildTree(wxsTREE(),Parent->GetTreeId(),Index+1);
         Ret = true;
     }
 
@@ -451,7 +451,7 @@ bool wxsWindowEditor::InsertInto(wxsWidget* New,wxsWidget* Ref)
     }
     else
     {
-        New->BuildTree(wxsTREE(),Ref->TreeId);
+        New->BuildTree(wxsTREE(),Ref->GetTreeId());
         Ret = true;
     }
 

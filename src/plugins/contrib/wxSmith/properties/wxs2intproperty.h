@@ -3,8 +3,8 @@
 
 #include "../wxsproperties.h"
 
-class wxs2IntPropertyWindow;
-class wxs2IntProperty : public wxsProperty
+class WXSCLASS wxs2IntPropertyWindow;
+class WXSCLASS wxs2IntProperty : public wxsProperty
 {
 	public:
         /** Ctor
@@ -16,15 +16,15 @@ class wxs2IntProperty : public wxsProperty
          *                       or after loosing focus
          */
 		wxs2IntProperty(wxsProperties* Properties,int &Int1,int &Int1, bool AlwaysUpdate=true);
-		
+
 		/** Dctor */
 		virtual ~wxs2IntProperty();
-		
+
         /** Taking name of value type handled by this item */
         virtual const wxString& GetTypeName();
-        
+
     protected:
-        
+
         #ifdef __NO_PROPGRGID
             virtual wxWindow* BuildEditWindow(wxWindow* Parent);
             virtual void UpdateEditWindow();
@@ -33,19 +33,19 @@ class wxs2IntProperty : public wxsProperty
             virtual bool PropGridChanged(wxPropertyGrid* Grid,wxPGId Id);
             virtual void UpdatePropGrid(wxPropertyGrid* Grid);
         #endif
-        
+
         /** This function makes additional correction for value, must always
          *  return acceptable one. It can be declared inside derived classes
          *  to extend abilities of IntProperty (f.ex. inly odd numbers)
          */
         virtual void CorrectValues(int &Value1, int &Value2) { }
-    
+
 	private:
-	
+
         int& Value1;
         int& Value2;
         bool AlwUpd;
-        
+
         #ifdef __NO_PROPGRGID
             wxs2IntPropertyWindow* Window;
             friend class wxs2IntPropertyWindow;
@@ -54,7 +54,7 @@ class wxs2IntProperty : public wxsProperty
             wxPGId Val1Id;
             wxPGId Val2Id;
         #endif
-        
+
 };
 
 #endif // WXS2INTPROPERTY_H

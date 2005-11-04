@@ -8,11 +8,11 @@
 #include "wxsevent.h"
 #include "wxspaletteheader.h"
 
-class wxSmith;
-class wxsWidget;
-class wxsResource;
+class WXSCLASS wxSmith;
+class WXSCLASS wxsWidget;
+class WXSCLASS wxsResource;
 
-class wxsPalette : public wxPanel
+class WXSCLASS wxsPalette : public wxPanel
 {
 	public:
 
@@ -38,6 +38,9 @@ class wxsPalette : public wxPanel
         /** Function showing preview of currently selected resource */
         void PreviewRequest();
 
+        /** Function refreshing icons for widgets */
+        void RefreshIcons();
+
 	private:
 
         /** Currently selected resource */
@@ -54,6 +57,9 @@ class wxsPalette : public wxPanel
 
         /** Timer object used to flush code changes */
         wxTimer Timer;
+
+        /** Panel used as background for widgets */
+        wxPanel* WidgetsSpace;
 
         /** Singleton object */
         static wxsPalette* Singleton;

@@ -3,12 +3,12 @@
 
 #include "../wxsproperties.h"
 
-class wxsBorderPropertyWindow;
+class WXSCLASS wxsBorderPropertyWindow;
 
-class wxsBorderProperty : public wxsProperty
+class WXSCLASS wxsBorderProperty : public wxsProperty
 {
 	public:
-	
+
         /** Ctor */
 		wxsBorderProperty(wxsProperties* Properties,int& Flag);
 
@@ -17,9 +17,9 @@ class wxsBorderProperty : public wxsProperty
 
         /** Taking name of value type handled by this item */
         virtual const wxString& GetTypeName();
-        
+
     protected:
-        
+
         #ifdef __NO_PROPGRGID
             virtual wxWindow* BuildEditWindow(wxWindow* Parent);
             virtual void UpdateEditWindow();
@@ -28,11 +28,11 @@ class wxsBorderProperty : public wxsProperty
             virtual bool PropGridChanged(wxPropertyGrid* Grid,wxPGId Id);
             virtual void UpdatePropGrid(wxPropertyGrid* Grid);
         #endif
-        
+
 	private:
-	
+
         int &BorderFlags;
-        
+
         #ifdef __NO_PROPGRGID
             wxsBorderPropertyWindow* Window;
             friend class wxsBorderPropertyWindow;

@@ -7,7 +7,7 @@
 WXS_ST_DECLARE(wxsStaticTextStyles)
 WXS_EV_DECLARE(wxsStaticTextEvents)
 
-wxsDWDeclareBegin(wxsStaticText,propWidget,wxsStaticTextId)
+wxsDWDeclareBegin(wxsStaticText,wxsStaticTextId)
     wxString label;
 wxsDWDeclareEnd()
 

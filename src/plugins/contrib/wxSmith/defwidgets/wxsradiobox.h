@@ -7,14 +7,14 @@
 WXS_ST_DECLARE(wxsRadioBoxStyles)
 WXS_EV_DECLARE(wxsRadioBoxEvents)
 
-wxsDWDeclareBegin(wxsRadioBoxBase,propWidget,wxsRadioBoxId)
+wxsDWDeclareBegin(wxsRadioBoxBase,wxsRadioBoxId)
     wxString label;
     wxArrayString arrayChoices;
     int defaultChoice;
     int dimension;
 wxsDWDeclareEnd()
 
-class wxsRadioBox: public wxsRadioBoxBase
+class WXSCLASS wxsRadioBox: public wxsRadioBoxBase
 {
 	public:
         wxsRadioBox(wxsWidgetManager* Man,wxsWindowRes* Res):
@@ -22,7 +22,7 @@ class wxsRadioBox: public wxsRadioBoxBase
         {}
 
     protected:
-    
+
         virtual wxWindow* MyCreatePreview(wxWindow* Parent);
         virtual wxString GetProducingCode(wxsCodeParams& Params);
 };

@@ -7,15 +7,15 @@
 WXS_ST_DECLARE(wxsListBoxStyles)
 WXS_EV_DECLARE(wxsListBoxEvents)
 
-wxsDWDeclareBegin(wxsListBox,propWidget,wxsListBoxId)
+wxsDWDeclareBegin(wxsListBox,wxsListBoxId)
 
   // for default constructor
-    //int n;  // Number of strings with which to initialise the control 
+    //int n;  // Number of strings with which to initialise the control
     //wxString choices[3]; //An array of strings with which to initialise the control
-  // for constructor 2  
+  // for constructor 2
     wxArrayString arrayChoices;
     int defaultChoice;
-    
+
 wxsDWDeclareEnd()
 
 

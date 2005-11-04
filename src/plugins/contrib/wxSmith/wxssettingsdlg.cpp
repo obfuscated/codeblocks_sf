@@ -4,6 +4,7 @@
 #include <configmanager.h>
 #include <wx/colordlg.h>
 #include "wxsglobals.h"
+#include "wxspalette.h"
 
 BEGIN_EVENT_TABLE(wxsSettingsDlg,wxDialog)
 //(*EventTable(wxsSettingsDlg)
@@ -22,6 +23,8 @@ wxsSettingsDlg::wxsSettingsDlg(wxWindow* parent,wxWindowID id)
     DragAssistType = XRCCTRL(*this,"ID_COMBOBOX1",wxComboBox);
     DragTargetCol = XRCCTRL(*this,"ID_BUTTON1",wxButton);
     DragParentCol = XRCCTRL(*this,"ID_BUTTON2",wxButton);
+    Icons16 = XRCCTRL(*this,"ID_RADIOBUTTON1",wxRadioButton);
+    Icons32 = XRCCTRL(*this,"ID_RADIOBUTTON2",wxRadioButton);
     PrevFetchDelay = XRCCTRL(*this,"ID_SPINCTRL1",wxSpinCtrl);
     BtnCancel = XRCCTRL(*this,"ID_BUTTON4",wxButton);
     //*)
@@ -32,6 +35,9 @@ wxsSettingsDlg::wxsSettingsDlg(wxWindow* parent,wxWindowID id)
     DragTargetCol->SetBackgroundColour(wxColour((ColTarget>>16)&0xFF,(ColTarget>>8)&0xFF,ColTarget&0xFF));
     DragParentCol->SetBackgroundColour(wxColour((ColParent>>16)&0xFF,(ColParent>>8)&0xFF,ColParent&0xFF));
     PrevFetchDelay->SetValue(wxsDWFetchDelay);
+
+    if ( wxsDWPalIconSize == 16 ) Icons16->SetValue(true);
+    else                          Icons32->SetValue(true);
 }
 
 wxsSettingsDlg::~wxsSettingsDlg()
@@ -49,6 +55,8 @@ void wxsSettingsDlg::OnBtnOkClick(wxCommandEvent& event)
     ConfigManager::Get()->Write(_T("/wxsmith/dragparentcol"),(((long)ColParent.Red())<<16) + (((long)ColParent.Green())<<8) + (long)ColParent.Blue());
     ConfigManager::Get()->Write(_T("/wxsmith/dragassisttype"),(long)DragAssistType->GetSelection());
     ConfigManager::Get()->Write(_T("/wxsmith/backfetchdelay"),(long)PrevFetchDelay->GetValue());
+    ConfigManager::Get()->Write(_T("/wxsmith/paletteiconsize"),(long)(Icons16->GetValue()?16:32));
+    wxsPALETTE()->RefreshIcons();
     EndModal(wxID_OK);
 }
 

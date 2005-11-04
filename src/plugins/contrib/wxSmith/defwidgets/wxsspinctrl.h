@@ -7,7 +7,7 @@
 WXS_ST_DECLARE(wxsSpinCtrlStyles)
 WXS_EV_DECLARE(wxsSpinCtrlEvents)
 
-wxsDWDeclareBegin(wxsSpinCtrl,propWidget,wxsSpinCtrlId)
+wxsDWDeclareBegin(wxsSpinCtrl,wxsSpinCtrlId)
     wxString value;
     int min;
     int max;

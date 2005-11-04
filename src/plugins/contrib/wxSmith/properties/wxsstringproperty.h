@@ -3,9 +3,9 @@
 
 #include "../wxsproperties.h"
 
-class wxsStringPropertyWindow;
+class WXSCLASS wxsStringPropertyWindow;
 
-class wxsStringProperty : public wxsProperty
+class WXSCLASS wxsStringProperty : public wxsProperty
 {
 	public:
         /** Ctor
@@ -16,17 +16,17 @@ class wxsStringProperty : public wxsProperty
          *                       or after loosing focus
          */
 		wxsStringProperty(wxsProperties* Properties,wxString& String, bool AlwaysUpdate,bool Long=false);
-		
+
 		/** Dctor */
 		virtual ~wxsStringProperty();
-		
+
         /** Taking name of value type handled by this item */
         virtual const wxString& GetTypeName();
-        
+
     protected:
-    
+
         virtual wxString CorrectValue(const wxString& Value) { return Value; }
-        
+
         #ifdef __NO_PROPGRGID
             virtual wxWindow* BuildEditWindow(wxWindow* Parent);
             virtual void UpdateEditWindow();
@@ -35,13 +35,13 @@ class wxsStringProperty : public wxsProperty
             virtual bool PropGridChanged(wxPropertyGrid* Grid,wxPGId Id);
             virtual void UpdatePropGrid(wxPropertyGrid* Grid);
         #endif
-        
+
 	private:
-	
+
         wxString& Value;
         bool AlwUpd;
         bool IsLong;
-        
+
         #ifdef __NO_PROPGRGID
             wxsStringPropertyWindow* Window;
             friend class wxsStringPropertyWindow;

@@ -7,7 +7,7 @@
 WXS_ST_DECLARE(wxsTextCtrlStyles)
 WXS_EV_DECLARE(wxsTextCtrlEvents)
 
-wxsDWDeclareBegin(wxsTextCtrl,propWidget,wxsTextCtrlId)
+wxsDWDeclareBegin(wxsTextCtrl,wxsTextCtrlId)
     wxString value;
     int maxlength;
 wxsDWDeclareEnd()

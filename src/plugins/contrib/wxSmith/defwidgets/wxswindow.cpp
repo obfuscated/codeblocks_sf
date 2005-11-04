@@ -6,7 +6,7 @@
 
 #include "wxsstdmanager.h"
 
-class wxsWindowPreview: public wxPanel
+class WXSCLASS wxsWindowPreview: public wxPanel
 {
     public:
 
@@ -14,7 +14,7 @@ class wxsWindowPreview: public wxPanel
         // - if this is wxPanel which has parent, it is not a resource
         wxsWindowPreview(wxWindow* Parent,wxsWindow* _Window,const wxPoint& Position,const wxSize& Size):
             wxPanel(Parent,-1,Position,Size,
-                _Window->GetParent() ? _Window->GetBaseParams().Style : wxRAISED_BORDER ),
+                _Window->GetParent() ? _Window->GetBaseProperties().Style : wxRAISED_BORDER ),
             Window(_Window)
         {
         	if ( !Window->GetParent() )
@@ -38,9 +38,9 @@ class wxsWindowPreview: public wxPanel
                     wxSizer* Sizer = new wxGridSizer(1);
                     Sizer->Add(Widget->GetPreview(),1,wxGROW);
                     SetSizer(Sizer);
-                    if ( ((Window->GetBaseParams().SizeX == -1) &&
-                          (Window->GetBaseParams().SizeY == -1)) ||
-                           Window->GetBaseParams().DefaultSize )
+                    if ( ((Window->GetBaseProperties().SizeX == -1) &&
+                          (Window->GetBaseProperties().SizeY == -1)) ||
+                           Window->GetBaseProperties().DefaultSize )
                     {
                     	Sizer->SetSizeHints(this);
                     }
@@ -53,7 +53,7 @@ class wxsWindowPreview: public wxPanel
         wxsWindow* Window;
 };
 
-wxsWindow::wxsWindow(wxsWidgetManager* Man,wxsWindowRes* Res,wxsWidget::BasePropertiesType pType):
+wxsWindow::wxsWindow(wxsWidgetManager* Man,wxsWindowRes* Res,wxsBasePropertiesType pType):
     wxsContainer(Man,Res,true,0,pType)
 {
 }
