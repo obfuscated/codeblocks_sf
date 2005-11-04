@@ -2,6 +2,7 @@
 #define __WXSEVENT_H
 
 #include <wx/event.h>
+#include "wxsglobals.h"
 
 class WXSCLASS wxsResource;
 class WXSCLASS wxsWidget;

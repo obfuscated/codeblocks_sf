@@ -434,15 +434,18 @@ void wxsWindowRes::AddDeclarationsReq(wxsWidget* Widget,wxString& LocalCode,wxSt
 	for ( int i=0; i<Count; i++ )
 	{
 		wxsWidget* Child = Widget->GetChild(i);
-		wxString Decl = Child->GetDeclarationCode(EmptyParams);
-		if ( Decl.Length() )
+		if ( Child->GetBPType() & bptVariable )
 		{
-            bool Member = Child->GetBaseProperties().IsMember;
-            wxString& Code = Member ? GlobalCode : LocalCode;
-            Code.Append(' ',Member ? GlobalTabSize : LocalTabSize);
-            Code.Append(Decl);
-            Code.Append('\n');
-            WasLocal |= !Member;
+            wxString Decl = Child->GetDeclarationCode(EmptyParams);
+            if ( Decl.Length() )
+            {
+                bool Member = Child->GetBaseProperties().IsMember;
+                wxString& Code = Member ? GlobalCode : LocalCode;
+                Code.Append(' ',Member ? GlobalTabSize : LocalTabSize);
+                Code.Append(Decl);
+                Code.Append('\n');
+                WasLocal |= !Member;
+            }
 		}
 		AddDeclarationsReq(Child,LocalCode,GlobalCode,LocalTabSize,GlobalTabSize,WasLocal);
 	}

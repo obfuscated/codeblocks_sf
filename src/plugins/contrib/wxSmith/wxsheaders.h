@@ -4,9 +4,10 @@
 #include <sdk.h>
 
 #ifdef CB_PRECOMP
-    #include "widget.h"
     #include <wx/propgrid/propgrid.h>
     #include <wx/propgrid/advprops.h>
+
+    #include "wxsglobals.h"
 #endif
 
 #endif

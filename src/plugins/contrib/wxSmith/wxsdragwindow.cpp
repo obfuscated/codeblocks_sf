@@ -234,7 +234,7 @@ void wxsDragWindow::DragInit(wxsDragWindow::DragPointData* NewDragPoint,wxsWidge
         DragMouseBegX = MouseX;
         DragMouseBegY = MouseY;
         DragDistanceSmall = true;
-        //CaptureMouse();
+        CaptureMouse();
 
         if ( NewDragWidget )
         {
@@ -1014,6 +1014,10 @@ void wxsDragWindow::OnFetchBackground(wxTimerEvent& event)
     int X = 0, Y = 0;
     ClientToScreen(&X,&Y);
     DestDC.SelectObject(*Background);
+
+    DestDC.Blit(0,0,GetSize().GetWidth(),GetSize().GetHeight(),&DC,X,Y);
+
+    /*
     wxRegionIterator upd(FetchArea);
     while ( upd )
     {
@@ -1024,6 +1028,8 @@ void wxsDragWindow::OnFetchBackground(wxTimerEvent& event)
         DestDC.Blit(x,y,W,H,&DC,X+x,Y+y);
         upd++;
     }
+    */
+
     FetchArea.Clear();
 
     ProcessPendingEvents();

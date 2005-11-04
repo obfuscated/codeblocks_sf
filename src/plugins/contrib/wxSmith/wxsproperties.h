@@ -11,6 +11,8 @@
 # include <wx/propgrid/propgrid.h>
 #endif
 
+#include "wxsglobals.h"
+
 /* Predefined classes */
 class WXSCLASS wxsWidget;
 class WXSCLASS wxsProperties;

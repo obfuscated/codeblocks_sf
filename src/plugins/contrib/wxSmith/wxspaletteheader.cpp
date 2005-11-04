@@ -131,7 +131,10 @@ void wxsPaletteHeader::SeletionChanged(wxsWidget* Widget)
         wxsWidget* Parent = Widget->GetParent();
         int Index = Parent->FindChild(Widget);
         ParentHeader = Parent->GetChildPaletteHeader(this,Index);
-        MainSizer->Add(ParentHeader);
+        if ( ParentHeader )
+        {
+            MainSizer->Add(ParentHeader);
+        }
     }
 
     MainSizer->Layout();

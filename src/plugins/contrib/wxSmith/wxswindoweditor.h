@@ -8,6 +8,7 @@
 #include "wxseditor.h"
 #include "wxscoder.h"
 #include "wxsevent.h"
+#include "wxsglobals.h"
 
 class WXSCLASS wxsWidget;
 class WXSCLASS wxsDragWindow;
@@ -105,8 +106,20 @@ class WXSCLASS wxsWindowEditor : public wxsEditor
 
 	private:
 
-		/** Scrolled window, parent for preview */
-        wxScrolledWindow* Scroll;
+        wxScrolledWindow* Scroll;   ///< Scrolled window, parent for preview
+        wxNotebook* WidgetsSet;     ///< Notebook with all widgets inside
+        wxBoxSizer* VertSizer;      ///< Root sizer of this editor
+        wxBoxSizer* HorizSizer;     ///< Horizontal sizer managing items below palette
+        wxBoxSizer* QPSizer;        ///< Sizer for quick properties
+        wxBoxSizer* OpsSizer;       ///< Sizer for operations pane
+
+        wxImage InsIntoImg;
+        wxImage InsBeforeImg;
+        wxImage InsAfterImg;
+        wxImage DelImg;
+        wxImage PreviewImg;
+        wxImage QuickPropsImgOpen;
+        wxImage QuickPropsImgClose;
 
 		/* Event handlers */
         void OnMouseClick(wxMouseEvent& event);
@@ -122,6 +135,12 @@ class WXSCLASS wxsWindowEditor : public wxsEditor
 
         /** Flag for MultipleAddMode */
         bool InsideMultipleChange;
+
+        /** Initializing images */
+        void InitializeImages();
+
+        /** Building palette */
+        void BuildPalette(wxNotebook* Palette);
 
         DECLARE_EVENT_TABLE()
 };

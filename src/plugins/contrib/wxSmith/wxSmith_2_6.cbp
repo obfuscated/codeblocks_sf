@@ -31,8 +31,6 @@
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option host_application="./codeblocks.exe"/>
-				<Option createDefFile="1"/>
-				<Option createStaticLib="1"/>
 				<Compiler>
 					<Add option="-g"/>
 					<Add option="-DHAVE_W32API_H"/>
@@ -570,6 +568,16 @@
 			<Option link="0"/>
 			<Option target="wxSmith"/>
 		</Unit>
+		<Unit filename="wxsbaseproperties.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="wxsbaseproperties.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
 		<Unit filename="wxscodegen.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="wxSmith"/>
@@ -595,6 +603,16 @@
 			<Option target="wxSmith"/>
 		</Unit>
 		<Unit filename="wxscontainer.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="wxsdefevthandler.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="wxsdefevthandler.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

@@ -4,6 +4,8 @@
 #include <wx/dataobj.h>
 #include <tinyxml/tinyxml.h>
 
+#include "../wxsglobals.h"
+
 #define wxsDF_WIDGET   _T("wxSmith XML")
 
 class WXSCLASS wxsWidget;
