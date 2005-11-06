@@ -855,7 +855,8 @@ void wxsWindowRes::GenXrcFetchingCode(wxString& Code,wxsWidget* Widget,int TabSi
 	for ( int i=0; i<Cnt; i++ )
 	{
 		wxsWidget* Child = Widget->GetChild(i);
-		if ( Child->GetBaseProperties().IsMember )
+		if ( ( Child->GetBPType() & bptVariable ) &&
+		     ( Child->GetBaseProperties().IsMember ) )
 		{
 			Code.Append(Child->GetBaseProperties().VarName);
 			Code.Append(_T(" = XRCCTRL(*this,\""));
