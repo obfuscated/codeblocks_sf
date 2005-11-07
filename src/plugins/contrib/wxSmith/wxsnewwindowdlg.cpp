@@ -15,7 +15,6 @@ BEGIN_EVENT_TABLE(wxsNewWindowDlg,wxDialog)
     EVT_CHECKBOX(XRCID("ID_CHECKBOX1"),wxsNewWindowDlg::OnUseXrcChange)
     EVT_TEXT(XRCID("ID_TEXTCTRL4"),wxsNewWindowDlg::OnXrcChanged)
     EVT_BUTTON(XRCID("ID_BUTTON1"),wxsNewWindowDlg::OnCancel)
-    EVT_BUTTON(XRCID("ID_BUTTON2"),wxsNewWindowDlg::OnCreate)
 //*)
 END_EVENT_TABLE()
 

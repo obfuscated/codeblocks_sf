@@ -3,6 +3,7 @@
 
 #include <wx/wx.h>
 #include <vector>
+#include <set>
 
 #include "wxsproject.h"
 #include "wxseditor.h"
@@ -94,6 +95,9 @@ class WXSCLASS wxsWindowEditor : public wxsEditor
 		/** Adding new widget into current selection */
 		bool InsertInto(wxsWidget* New,wxsWidget* Ref=NULL);
 
+		/** Reloading images in all editors */
+		static void ReloadImages();
+
     protected:
 
         /** Getting wxsWindowRes pointer to currently edited resource */
@@ -102,30 +106,45 @@ class WXSCLASS wxsWindowEditor : public wxsEditor
         /** Getting vector of selected widges. If any-level parent of widget
          *  is also selected, widget is skipped.
          */
-        void GetSelectionNoChildren(std::vector<wxsWidget*>& Vector);
+        inline void GetSelectionNoChildren(std::vector<wxsWidget*>& Vector);
+
+        /** Getting current selected widget (the one with black borders) */
+        wxsWidget* GetSelection();
 
 	private:
 
-        wxScrolledWindow* Scroll;   ///< Scrolled window, parent for preview
-        wxNotebook* WidgetsSet;     ///< Notebook with all widgets inside
-        wxBoxSizer* VertSizer;      ///< Root sizer of this editor
-        wxBoxSizer* HorizSizer;     ///< Horizontal sizer managing items below palette
-        wxBoxSizer* QPSizer;        ///< Sizer for quick properties
-        wxBoxSizer* OpsSizer;       ///< Sizer for operations pane
+        wxScrolledWindow* Scroll;       ///< Scrolled window, parent for preview
+        wxNotebook* WidgetsSet;         ///< Notebook with all widgets inside
+        wxBoxSizer* VertSizer;          ///< Root sizer of this editor
+        wxBoxSizer* HorizSizer;         ///< Horizontal sizer managing items below palette
+        wxBoxSizer* QPSizer;            ///< Sizer for quick properties
+        wxBoxSizer* OpsSizer;           ///< Sizer for operations pane
+        wxBitmapButton* InsIntoBtn;
+        wxBitmapButton* InsBeforeBtn;
+        wxBitmapButton* InsAfterBtn;
+        wxBitmapButton* DelBtn;
+        wxBitmapButton* PreviewBtn;
+        wxBitmapButton* QuickPanelBtn;
 
-        wxImage InsIntoImg;
-        wxImage InsBeforeImg;
-        wxImage InsAfterImg;
-        wxImage DelImg;
-        wxImage PreviewImg;
-        wxImage QuickPropsImgOpen;
-        wxImage QuickPropsImgClose;
+        int InsType;                    ///< Current insertion type
+        int InsTypeMask;                ///< Current insertion type mask
 
-		/* Event handlers */
-        void OnMouseClick(wxMouseEvent& event);
-        void OnSelectWidget(wxsEvent& event);
-        void OnUnselectWidget(wxsEvent& event);
+        bool QuickPropsOpen;            ///< Set to true if quick properties panel is opened
 
+        static wxImage InsIntoImg;
+        static wxImage InsBeforeImg;
+        static wxImage InsAfterImg;
+        static wxImage DelImg;
+        static wxImage PreviewImg;
+        static wxImage QuickPropsImgOpen;
+        static wxImage QuickPropsImgClose;
+        static wxImage SelectedImg;
+        static std::set<wxsWindowEditor*> AllEditors;
+        static bool ImagesLoaded;
+
+        static const int itBefore = 0x01;
+        static const int itAfter  = 0x02;
+        static const int itInto   = 0x04;
 
         /** New layer used for dragging widgets */
         wxsDragWindow* DragWnd;
@@ -133,14 +152,50 @@ class WXSCLASS wxsWindowEditor : public wxsEditor
         /** Undo buffer */
         wxsWinUndoBuffer* UndoBuff;
 
+		/* Event handlers */
+        void OnMouseClick(wxMouseEvent& event);
+        void OnSelectWidget(wxsEvent& event);
+        void OnUnselectWidget(wxsEvent& event);
+        void OnButton(wxCommandEvent& event);
+        void OnInsInto(wxCommandEvent& event);
+        void OnInsBefore(wxCommandEvent& event);
+        void OnInsAfter(wxCommandEvent& event);
+        void OnDelete(wxCommandEvent& event);
+        void OnPreview(wxCommandEvent& event);
+        void OnQuickProps(wxCommandEvent& event);
+
         /** Flag for MultipleAddMode */
         bool InsideMultipleChange;
 
         /** Initializing images */
-        void InitializeImages();
+        static void InitializeImages();
 
         /** Building palette */
         void BuildPalette(wxNotebook* Palette);
+
+        /** Function inserting new widget */
+        void InsertRequest(const wxString& Name);
+
+        /** Setting mask for insertion type */
+        void SetInsertionTypeMask(int Mask);
+
+        /** Setting new insertion type */
+        void SetInsertionType(int Type);
+
+        /** Rebuilding pictures on insertion type buttons */
+        void RebuildInsTypeIcons();
+
+        /** Rebuilding picture on Quick Props button */
+        void RebuildQuickPropsIcon();
+
+        /** Rebuilding all icons */
+        void RebuildIcons();
+
+        /** Building icon for one button */
+        void BuildInsTypeIcon(wxBitmapButton* Btn,const wxImage& Original,bool Selected,bool Enabled);
+
+        /** Opening or closiung Quick Props panel */
+        void ToggleQuickPropsPanel(bool Open);
 
         DECLARE_EVENT_TABLE()
 };

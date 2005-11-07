@@ -6,6 +6,7 @@
 		<Option title="wxSmith for wx 2.6"/>
 		<Option makefile="Makefile"/>
 		<Option makefile_is_custom="0"/>
+		<Option pch_mode="2"/>
 		<Option default_target="1"/>
 		<Option compiler="0"/>
 		<Build>
