@@ -3,6 +3,7 @@
 
 #include <wx/scrolwin.h>
 #include <wx/propgrid/propgrid.h>
+#include "wxsglobals.h"
 
 class WXSCLASS wxsWidget;
 class WXSCLASS wxsWidgetEvents;

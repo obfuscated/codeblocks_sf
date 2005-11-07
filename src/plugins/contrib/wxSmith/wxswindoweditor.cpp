@@ -5,6 +5,7 @@
 #include <wx/settings.h>
 #include <wx/scrolwin.h>
 #include <wx/clipbrd.h>
+#include <configmanager.h>
 #include "wxspropertiesman.h"
 #include "wxspalette.h"
 #include "wxsmith.h"

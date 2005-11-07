@@ -1,6 +1,8 @@
 #ifndef WXSSETTINGSDLG_H
 #define WXSSETTINGSDLG_H
 
+#include "wxsglobals.h"
+
 //(*Headers(wxsSettingsDlg)
 #include <wx/button.h>
 #include <wx/combobox.h>

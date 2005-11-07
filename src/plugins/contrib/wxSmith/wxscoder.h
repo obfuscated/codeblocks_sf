@@ -6,6 +6,7 @@
 #include <map>
 #include <cbeditor.h>
 #include <time.h>
+#include "wxsglobals.h"
 
 
 #define WXS_CODE_WAIT_TIME	3	///< Time in sec between putting the code into queue and merging it with real files, currently not used

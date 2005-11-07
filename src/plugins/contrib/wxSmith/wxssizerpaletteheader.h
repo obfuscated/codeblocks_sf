@@ -1,6 +1,8 @@
 #ifndef WXSSIZERPALETTEHEADER_H
 #define WXSSIZERPALETTEHEADER_H
 
+#include "wxsglobals.h"
+
 //(*Headers(wxsSizerPaletteHeader)
 #include <wx/checkbox.h>
 #include <wx/intl.h>

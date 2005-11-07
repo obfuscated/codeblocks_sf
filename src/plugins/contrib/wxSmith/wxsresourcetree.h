@@ -2,6 +2,7 @@
 #define WXSRESOURCETREE_H
 
 #include <wx/treectrl.h>
+#include "wxsglobals.h"
 
 class WXSCLASS wxsWidget;
 class WXSCLASS wxsResource;

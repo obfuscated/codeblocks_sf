@@ -6,6 +6,7 @@
 		<Option title="wxSmith for wx 2.6 (Unix)"/>
 		<Option makefile="Makefile.unix"/>
 		<Option makefile_is_custom="0"/>
+		<Option pch_mode="2"/>
 		<Option default_target="1"/>
 		<Option compiler="0"/>
 		<Build>
@@ -540,6 +541,16 @@
 			<Option link="0"/>
 			<Option target="wxSmith"/>
 		</Unit>
+		<Unit filename="wxsbaseproperties.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="wxsbaseproperties.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
 		<Unit filename="wxscodegen.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="wxSmith"/>
@@ -565,6 +576,16 @@
 			<Option target="wxSmith"/>
 		</Unit>
 		<Unit filename="wxscontainer.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="wxsdefevthandler.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="wxsdefevthandler.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -640,6 +661,13 @@
 			<Option link="0"/>
 			<Option target="wxSmith"/>
 		</Unit>
+		<Unit filename="wxsheaders.h">
+			<Option compilerVar="CPP"/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option weight="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
 		<Unit filename="wxsimportxrcdlg.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="wxSmith"/>
@@ -675,6 +703,16 @@
 			<Option target="wxSmith"/>
 		</Unit>
 		<Unit filename="wxspalette.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="wxspaletteheader.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="wxspaletteheader.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -740,6 +778,16 @@
 			<Option link="0"/>
 			<Option target="wxSmith"/>
 		</Unit>
+		<Unit filename="wxssizerpaletteheader.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="wxssizerpaletteheader.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
 		<Unit filename="wxssplitterwindow.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="wxSmith"/>
@@ -777,6 +825,16 @@
 			<Option target="wxSmith"/>
 		</Unit>
 		<Unit filename="wxswidgetfactory.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="wxswidgetmanager.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="wxswidgetmanager.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

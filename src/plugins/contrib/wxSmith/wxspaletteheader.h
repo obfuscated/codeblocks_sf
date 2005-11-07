@@ -1,6 +1,8 @@
 #ifndef WXSPALETTEHEADER_H
 #define WXSPALETTEHEADER_H
 
+#include "wxsglobals.h"
+
 //(*Headers(wxsPaletteHeader)
 #include <wx/button.h>
 #include <wx/intl.h>

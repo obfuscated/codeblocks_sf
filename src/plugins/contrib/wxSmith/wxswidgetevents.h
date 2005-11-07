@@ -5,6 +5,8 @@
 #include <wx/string.h>
 #include <vector>
 
+#include "wxsglobals.h"
+
 class WXSCLASS wxsWidget;
 
 /** Structure describing one event */

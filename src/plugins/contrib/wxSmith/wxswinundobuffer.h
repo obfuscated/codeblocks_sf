@@ -4,6 +4,7 @@
 #include <vector>
 #include <wx/string.h>
 
+#include "wxsglobals.h"
 
 class WXSCLASS wxsWidget;
 class WXSCLASS wxsWindowRes;

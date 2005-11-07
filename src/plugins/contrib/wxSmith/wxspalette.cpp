@@ -6,6 +6,7 @@
 #include <wx/scrolwin.h>
 #include <wx/statline.h>
 #include <map>
+#include <configmanager.h>
 #include "widget.h"
 #include "wxswidgetfactory.h"
 #include "wxspropertiesman.h"
