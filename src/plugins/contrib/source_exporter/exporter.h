@@ -41,6 +41,7 @@ class Exporter : public cbPlugin
     void OnExportHTML(wxCommandEvent &event);
     void OnExportRTF(wxCommandEvent &event);
     void OnExportODT(wxCommandEvent &event);
+    void OnExportPDF(wxCommandEvent &event);
     void ExportFile(BaseExporter *exp, const wxString &default_extension, const wxString &wildcard);
     void OnUpdateUI(wxUpdateUIEvent &event);
   private:

@@ -27,15 +27,6 @@ class ODTExporter : public BaseExporter
     static void ODTCreateCommonFiles(wxZipOutputStream &zout);
     static void ODTCreateStylesFile(wxZipOutputStream &zout, const EditorColorSet *color_set, HighlightLanguage lang);
     static void ODTCreateContentFile(wxZipOutputStream &zout, const wxMemoryBuffer &styled_text);
-    /*static const char *HTMLHeaderBEG;
-    static const char *HTMLMeta;
-    static const char *HTMLStyleBEG;
-    static string HTMLStyle(const EditorColorSet *color_set, HighlightLanguage lang);
-    static const char *HTMLStyleEND;
-    static const char *HTMLHeaderEND;
-    static const char *HTMLBodyBEG;
-    static string HTMLBody(const wxMemoryBuffer &styled_text);
-    static const char *HTMLBodyEND;*/
 };
 
 #endif // ODTEXPORTER_INCLUDED

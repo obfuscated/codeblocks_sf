@@ -8,11 +8,31 @@
 		<Option makefile_is_custom="0"/>
 		<Option compiler="0"/>
 		<Build>
+			<Target title="wxPdfDocument">
+				<Option output="libwxPdfDocument.a"/>
+				<Option working_dir=""/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option type="2"/>
+				<Option compiler="0"/>
+				<Option projectCompilerOptionsRelation="1"/>
+				<Option projectLinkerOptionsRelation="1"/>
+				<Option projectResourceIncludeDirsRelation="2"/>
+				<Compiler>
+					<Add option="-O2"/>
+					<Add option="-mthreads"/>
+					<Add option="-DWX_PRECOMP"/>
+					<Add option="-DHAVE_W32API_H"/>
+					<Add option="-D__WXMSW__"/>
+					<Add option="-DWXUSINGDLL"/>
+				</Compiler>
+			</Target>
 			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\Exporter.dll"/>
 				<Option working_dir="."/>
 				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\Exporter"/>
 				<Option deps_output=".deps"/>
+				<Option external_deps="libwxPdfDocument.a;"/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option host_application="..\..\..\devel\codeblocks.exe"/>
@@ -46,8 +66,10 @@
 			<Add directory="$(CB_SDK)\sdk"/>
 			<Add directory="$(CB_SDK)\sdk\tinyxml"/>
 			<Add directory="$(CB_SDK)\sdk\wxscintilla\include"/>
+			<Add directory="wxPdfDocument\include"/>
 		</Compiler>
 		<Linker>
+			<Add library="wxPdfDocument"/>
 			<Add library="wxmsw$(WX_VER)"/>
 			<Add library="codeblocks"/>
 			<Add library="wxscintilla"/>
@@ -57,6 +79,7 @@
 			<Add directory="$(CB_SDK)\devel"/>
 			<Add directory="$(CB_SDK)\sdk\tinyxml"/>
 			<Add directory="$(CB_SDK)\sdk\wxscintilla\include"/>
+			<Add directory="."/>
 		</Linker>
 		<Unit filename="BaseExporter.cpp">
 			<Option compilerVar="CPP"/>
@@ -88,6 +111,16 @@
 			<Option link="0"/>
 			<Option target="default"/>
 		</Unit>
+		<Unit filename="PDFExporter.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="PDFExporter.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
 		<Unit filename="RTFExporter.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="default"/>
@@ -107,6 +140,52 @@
 			<Option compile="0"/>
 			<Option link="0"/>
 			<Option target="default"/>
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfdoc.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxPdfDocument"/>
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfdocdef.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxPdfDocument"/>
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfencrypt.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxPdfDocument"/>
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdffont.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxPdfDocument"/>
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfimage.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxPdfDocument"/>
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdfdoc.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxPdfDocument"/>
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdfencrypt.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxPdfDocument"/>
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdffont.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxPdfDocument"/>
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdfimage.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxPdfDocument"/>
 		</Unit>
 	</Project>
 </CodeBlocks_project_file>

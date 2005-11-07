@@ -22,11 +22,13 @@
 #include "HTMLExporter.h"
 #include "RTFExporter.h"
 #include "ODTExporter.h"
+#include "PDFExporter.h"
 
 static int idFileExport = wxNewId();
 static int idFileExportHTML = wxNewId();
 static int idFileExportRTF = wxNewId();
 static int idFileExportODT = wxNewId();
+static int idFileExportPDF = wxNewId();
 
 // Implement the plugin's hooks
 CB_IMPLEMENT_PLUGIN(Exporter);
@@ -35,6 +37,7 @@ BEGIN_EVENT_TABLE(Exporter, cbPlugin)
   EVT_MENU(idFileExportHTML, Exporter::OnExportHTML)
   EVT_MENU(idFileExportRTF, Exporter::OnExportRTF)
   EVT_MENU(idFileExportODT, Exporter::OnExportODT)
+  EVT_MENU(idFileExportPDF, Exporter::OnExportPDF)
   EVT_UPDATE_UI(idFileExportHTML, Exporter::OnUpdateUI)
   EVT_UPDATE_UI(idFileExportRTF, Exporter::OnUpdateUI)
   EVT_UPDATE_UI(idFileExportODT, Exporter::OnUpdateUI)
@@ -43,10 +46,10 @@ END_EVENT_TABLE()
 Exporter::Exporter()
 {
   //ctor
-  m_PluginInfo.name = _T("Source HTML, RTF and ODT Exporter");
-  m_PluginInfo.title = _("Source HTML, RTF and ODT exporter");
+  m_PluginInfo.name = _T("Source Exporter");
+  m_PluginInfo.title = _("Source Exporter");
   m_PluginInfo.version = _T("0.4");
-  m_PluginInfo.description = _("Plugin to export syntax highlighted source files to HTML, RTF or ODT.");
+  m_PluginInfo.description = _("Plugin to export syntax highlighted source files to HTML, RTF, ODT or PDF.");
   m_PluginInfo.author = _T("Ceniza");
   m_PluginInfo.authorEmail = _T("ceniza@gda.utp.edu.co");
   m_PluginInfo.authorWebsite = _T("");
@@ -114,6 +117,7 @@ void Exporter::BuildMenu(wxMenuBar *menuBar)
   export_menu->Append(idFileExportHTML, _("As &HTML..."), _("Exports the current file to HTML"));
   export_menu->Append(idFileExportRTF, _("As &RTF..."), _("Exports the current file to RTF"));
   export_menu->Append(idFileExportODT, _("As &ODT..."), _("Exports the current file to ODT"));
+  export_menu->Append(idFileExportPDF, _("As &PDF..."), _("Exports the current file to PDF"));
   file->Insert(printPos, new wxMenuItem(0, idFileExport, _("&Export"), _(""), wxITEM_NORMAL, export_menu));
 }
 
@@ -147,6 +151,7 @@ void Exporter::OnUpdateUI(wxUpdateUIEvent &event)
     mbar->Enable(idFileExportHTML, !disable);
     mbar->Enable(idFileExportRTF, !disable);
     mbar->Enable(idFileExportODT, !disable);
+    mbar->Enable(idFileExportPDF, !disable);
   }
 
   event.Skip();
@@ -169,6 +174,12 @@ void Exporter::OnExportODT(wxCommandEvent &event)
 {
   ODTExporter exp;
   ExportFile(&exp, _T("odt"), _("ODT files|*.odt"));
+}
+
+void Exporter::OnExportPDF(wxCommandEvent &event)
+{
+  PDFExporter exp;
+  ExportFile(&exp, _T("pdf"), _("PDF files|*.pdf"));
 }
 
 void Exporter::ExportFile(BaseExporter *exp, const wxString &default_extension, const wxString &wildcard)
