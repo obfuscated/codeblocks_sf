@@ -223,7 +223,6 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text)
 void PDFExporter::Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColorSet *color_set)
 {
   wxPdfDocument pdf;
-  pdf.SetAutoPageBreak(true);
   HighlightLanguage lang = const_cast<EditorColorSet *>(color_set)->GetLanguageForFilename(title);
 
   PDFSetFont(pdf);
