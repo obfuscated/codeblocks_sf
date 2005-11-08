@@ -102,6 +102,14 @@
                             <label>Cancel</label>
                         </object>
                     </object>
+                    <object class="sizeritem">
+                        <border>5</border>
+                        <flag>wxALL|wxALIGN_CENTER</flag>
+                        <object class="wxButton" name="ID_BUTTON2">
+                            <label>Create</label>
+                            <default>1</default>
+                        </object>
+                    </object>
                 </object>
             </object>
         </object>
