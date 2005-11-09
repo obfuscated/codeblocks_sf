@@ -93,7 +93,7 @@ string RTFExporter::RTFFontTable(int &pt)
 
     if (!faceName.IsEmpty())
     {
-      fonttbl += string(faceName.c_str());
+      fonttbl += string(faceName.mb_str());
     }
     else
     {
@@ -376,6 +376,6 @@ void RTFExporter::Export(const wxString &filename, const wxString &title, const 
   rtf_code += RTFBody(styled_text, pt);
   rtf_code += RTFEnd;
 
-  ofstream file(filename.c_str());
+  ofstream file(filename.mb_str());
   file << rtf_code;
 }

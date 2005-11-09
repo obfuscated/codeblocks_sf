@@ -118,17 +118,17 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text)
 
       if (i->bold)
       {
-        style += "B";
+        style += _T("B");
       }
 
       if (i->italics)
       {
-        style += "I";
+        style += _T("I");
       }
 
       if (i->underlined)
       {
-        style += "U";
+        style += _T("U");
       }
 
       pdf.SetFont(wxEmptyString, style);
@@ -166,17 +166,17 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text)
 
           if (newStyle->bold)
           {
-            style += "B";
+            style += _T("B");
           }
 
           if (newStyle->italics)
           {
-            style += "I";
+            style += _T("I");
           }
 
           if (newStyle->underlined)
           {
-            style += "U";
+            style += _T("U");
           }
 
           pdf.SetFont(wxEmptyString, style);
@@ -212,7 +212,7 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text)
         break;
 
       default:
-        text += _T(buffer[i]);
+        text += buffer[i];
         break;
     };
   }

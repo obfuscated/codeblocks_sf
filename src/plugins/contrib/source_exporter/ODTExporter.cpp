@@ -152,7 +152,7 @@ string ODTExporter::ODTStylesFileMID(wxZipOutputStream &zout)
 
     if (!faceName.IsEmpty())
     {
-      theFont = string(faceName.c_str());
+      theFont = string(faceName.mb_str());
     }
   }
 

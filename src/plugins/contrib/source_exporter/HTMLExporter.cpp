@@ -158,7 +158,7 @@ string HTMLExporter::HTMLBody(const wxMemoryBuffer &styled_text)
 
     if (!faceName.IsEmpty())
     {
-      html_body = string("<code><span style=\"font: ") + to_string(pt) + string("pt ") + string(faceName.c_str()) + string(";\">");
+      html_body = string("<code><span style=\"font: ") + to_string(pt) + string("pt ") + string(faceName.mb_str()) + string(";\">");
     }
   }
 
@@ -242,6 +242,6 @@ void HTMLExporter::Export(const wxString &filename, const wxString &title, const
   html_code += HTMLBody(styled_text);
   html_code += HTMLBodyEND;
 
-  ofstream file(filename.c_str());
+  ofstream file(filename.mb_str());
   file << html_code;
 }

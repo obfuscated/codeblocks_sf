@@ -91,7 +91,8 @@ void Exporter::BuildMenu(wxMenuBar *menuBar)
 
   if (fileMenuPos == -1)
   {
-    cbThrow("Can't find \"File\" menu position?!?");
+    //cbThrow(_("Can't find \"File\" menu position?!?"));
+    return;
   }
 
   // find actual "File" menu
@@ -99,7 +100,8 @@ void Exporter::BuildMenu(wxMenuBar *menuBar)
 
   if (!file)
   {
-    cbThrow("Can't find \"File\" menu?!?");
+    //cbThrow(_("Can't find \"File\" menu?!?"));
+    return;
   }
 
   // decide where to insert in "File" menu
