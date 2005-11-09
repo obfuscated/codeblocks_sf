@@ -191,7 +191,7 @@ void Exporter::ExportFile(BaseExporter *exp, const wxString &default_extension, 
 
   EditorManager *em = EDMAN();
   cbEditor *cb = em->GetBuiltinActiveEditor();
-  wxString filename = wxFileSelector(_("Choose the filename"), _T(""), _T(""), default_extension, wildcard, wxSAVE | wxOVERWRITE_PROMPT);
+  wxString filename = wxFileSelector(_("Choose the filename"), _T(""), wxFileName(cb->GetFilename()).GetName() + _T(".") + default_extension, default_extension, wildcard, wxSAVE | wxOVERWRITE_PROMPT);
 
   if (filename.IsEmpty())
   {
