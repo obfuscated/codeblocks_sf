@@ -21,7 +21,6 @@
 				<Compiler>
 					<Add option="-O2"/>
 					<Add option="-DWX_PRECOMP"/>
-					<Add option="-DWXUSINGDLL"/>
 					<Add option="-D__WXGTK__"/>
 				</Compiler>
 			</Target>
@@ -47,11 +46,14 @@
 			<Add option="-g"/>
 			<Add option="-Winvalid-pch"/>
 			<Add option="-include &quot;sdk.h&quot;"/>
+			<Add option="-DGTK_NO_CHECK_CASTS"/>
+			<Add option="-D__WXGTK__"/>
+			<Add option="-D_FILE_OFFSET_BITS=64"/>
+			<Add option="-D_LARGE_FILES"/>
+			<Add option="-D_LARGEFILE_SOURCE=1"/>
+			<Add option="-DNO_GCC_PRAGMA"/>
 			<Add option="-DBUILDING_PLUGIN"/>
 			<Add option="-DCB_PRECOMP"/>
-			<Add option="-DWX_PRECOMP"/>
-			<Add option="-DWXUSINGDLL"/>
-			<Add option="-D__WXGTK__"/>
 			<Add option="-DcbDEBUG"/>
 			<Add option="-DTIXML_USE_STL"/>
 			<Add directory="$(WX_DIR)/include"/>
@@ -67,7 +69,15 @@
 			<Add directory="/usr/include/wx-2.6"/>
 		</Compiler>
 		<Linker>
+			<Add option="-pthread"/>
 			<Add library="wxPdfDocument"/>
+			<Add library="wx_gtk2u_xrc-2.6"/>
+			<Add library="wx_gtk2u_qa-2.6"/>
+			<Add library="wx_gtk2u_html-2.6"/>
+			<Add library="wx_gtk2u_adv-2.6"/>
+			<Add library="wx_gtk2u_core-2.6"/>
+			<Add library="wx_baseu_xml-2.6"/>
+			<Add library="wx_baseu_net-2.6"/>
 			<Add library="wx_baseu-2.6"/>
 			<Add library="codeblocks"/>
 			<Add library="wxscintilla"/>
