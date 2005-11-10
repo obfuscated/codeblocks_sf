@@ -5,7 +5,7 @@
 #include "properties/wxsborderproperty.h"
 #include "properties/wxsplacementproperty.h"
 #include "wxswidgetfactory.h"
-#include "wxssizerpaletteheader.h"
+#include "wxssizerparentqp.h"
 
 class WXSCLASS wxsDefSizerPreview: public wxPanel
 {
@@ -337,7 +337,6 @@ bool wxsDefSizer::SaveSizerStuff(wxsSizerExtraParams* Params,TiXmlElement* Elem)
     return true;
 }
 
-
 wxString wxsDefSizer::GetFlagToSizer(wxsSizerExtraParams* Params)
 {
     wxString Flags = _T("");
@@ -379,12 +378,12 @@ wxString wxsDefSizer::GetFlagToSizer(wxsSizerExtraParams* Params)
     return Flags.Length() ? Flags.Mid(1) : _T("");
 }
 
-wxWindow* wxsDefSizer::GetChildPaletteHeader(wxWindow* Parent,int ChildPos)
+wxWindow* wxsDefSizer::BuildChildQuickPanel(wxWindow* Parent,int ChildPos)
 {
     wxsWidget* Widget = GetChild(ChildPos);
     wxsSizerExtraParams* Params = GetExtraParams(ChildPos);
 
     if ( !Widget || !Params ) return NULL;
 
-    return new wxsSizerPaletteHeader(Parent,Widget,Params);
+    return new wxsSizerParentQP(Parent,Widget,Params);
 }

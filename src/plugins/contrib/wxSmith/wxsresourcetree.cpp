@@ -5,7 +5,6 @@
 #include "resources/wxswindowresdataobject.h"
 #include "wxsevent.h"
 #include "widget.h"
-#include "wxspalette.h"
 #include "wxswidgetfactory.h"
 #include "wxswinundobuffer.h"
 
@@ -56,26 +55,13 @@ void wxsResourceTree::OnEndDrag(wxTreeEvent& event)
         if ( Dest == Dragged ) return;
 
         // Determining insertion method
-        int InsertionType = wxsPalette::itBefore; //wxsPALETTE()->GetInsertionType();
+        bool InsertBefore = true;
 
-        switch ( InsertionType )
+        if (  !Dest->GetParent() ||
+             ( Dest->GetInfo().Sizer &&
+              !Dest->GetParent()->GetInfo().Sizer ) )
         {
-        	case wxsPalette::itAfter:
-        	case wxsPalette::itBefore:
-                if (  !Dest->GetParent() ||
-                     ( Dest->GetInfo().Sizer &&
-                      !Dest->GetParent()->GetInfo().Sizer ) )
-                {
-                	InsertionType = wxsPalette::itInto;
-                }
-                break;
-
-            case wxsPalette::itInto:
-                if ( !Dest->IsContainer() )
-                {
-                	InsertionType = wxsPalette::itBefore;
-                }
-                break;
+            InsertBefore = false;
         }
 
         // Copying data
@@ -93,24 +79,13 @@ void wxsResourceTree::OnEndDrag(wxTreeEvent& event)
         wxsWindowEditor* Editor2 = (wxsWindowEditor*)Dragged->GetResource()->GetEditor();
         Editor1->StartMultipleChange();
         bool Done;
-        switch ( InsertionType )
+        if ( InsertBefore )
         {
-        	case wxsPalette::itAfter:
-                Done = Editor1->InsertAfter(Insert,Dest);
-                break;
-
-            case wxsPalette::itBefore:
-                Done = Editor1->InsertBefore(Insert,Dest);
-                break;
-
-            case wxsPalette::itInto:
-                Done = Editor1->InsertInto(Insert,Dest);
-                break;
-
-            default:
-                DebLog(_T("wxSmith: Internal error inside dragging copy"));
-                wxsKILL(Insert);
-                Done = false;
+            Done = Editor1->InsertBefore(Insert,Dest);
+        }
+        else
+        {
+            Done = Editor1->InsertInto(Insert,Dest);
         }
 
         if ( Editor1 != Editor2 )

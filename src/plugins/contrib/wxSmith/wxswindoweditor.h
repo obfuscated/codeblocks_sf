@@ -119,12 +119,16 @@ class WXSCLASS wxsWindowEditor : public wxsEditor
         wxBoxSizer* HorizSizer;         ///< Horizontal sizer managing items below palette
         wxBoxSizer* QPSizer;            ///< Sizer for quick properties
         wxBoxSizer* OpsSizer;           ///< Sizer for operations pane
+        wxScrolledWindow* QPArea;       ///< Scrolled window containing all QuickProps sturr
         wxBitmapButton* InsIntoBtn;
         wxBitmapButton* InsBeforeBtn;
         wxBitmapButton* InsAfterBtn;
         wxBitmapButton* DelBtn;
         wxBitmapButton* PreviewBtn;
         wxBitmapButton* QuickPanelBtn;
+
+        wxWindow* QPPanel;              ///< base panel for quick configuration
+        wxWindow* QPParentPanel;        ///< quick props panel created by parent
 
         int InsType;                    ///< Current insertion type
         int InsTypeMask;                ///< Current insertion type mask
@@ -196,6 +200,9 @@ class WXSCLASS wxsWindowEditor : public wxsEditor
 
         /** Opening or closiung Quick Props panel */
         void ToggleQuickPropsPanel(bool Open);
+
+        /** Refreshing content of Quick Props panel */
+        void RebuildQuickProps();
 
         DECLARE_EVENT_TABLE()
 };

@@ -7,7 +7,6 @@
 #include <wx/clipbrd.h>
 #include <configmanager.h>
 #include "wxspropertiesman.h"
-#include "wxspalette.h"
 #include "wxsmith.h"
 #include "wxsresource.h"
 #include "wxsdragwindow.h"
@@ -30,6 +29,8 @@ static const long wxsQuickPropsId = wxNewId();
 
 wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsWindowRes* Resource):
     wxsEditor(parent,Resource->GetWxsFile(),Resource),
+    QPPanel(NULL),
+    QPParentPanel(NULL),
     QuickPropsOpen(false),
     UndoBuff(new wxsWinUndoBuffer(Resource)),
     InsideMultipleChange(false)
@@ -49,8 +50,11 @@ wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsWindowRes* Resource):
     Scroll->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
     HorizSizer->Add(Scroll,1,wxEXPAND);
 
+    QPArea = new wxScrolledWindow(this);
+    QPArea->SetScrollbars(0,5,0,0);
+    HorizSizer->Add(QPArea,0,wxEXPAND);
     QPSizer = new wxBoxSizer(wxVERTICAL);
-    HorizSizer->Add(QPSizer,0,wxEXPAND);
+    QPArea->SetSizer(QPSizer);
 
     OpsSizer = new wxBoxSizer(wxVERTICAL);
     HorizSizer->Add(OpsSizer,0,wxEXPAND);
@@ -177,15 +181,16 @@ void wxsWindowEditor::OnSelectWidget(wxsEvent& event)
         ( !event.GetWidget()->GetInfo().Sizer ||
            event.GetWidget()->GetParent()->GetInfo().Sizer ) )
     {
-        itMask |= wxsPalette::itBefore | wxsPalette::itAfter;
+        itMask |= itBefore | itAfter;
     }
 
     if ( event.GetWidget()->IsContainer() )
     {
-        itMask |= wxsPalette::itInto;
+        itMask |= itInto;
     }
 
     SetInsertionTypeMask(itMask);
+    RebuildQuickProps();
 }
 
 void wxsWindowEditor::OnUnselectWidget(wxsEvent& event)
@@ -339,10 +344,10 @@ void wxsWindowEditor::Paste()
     if ( wxTheClipboard->GetData(Data) )
     {
         wxsWidget* RelativeTo = DragWnd->GetSelection();
-        int InsertionType = wxsPalette::Get()->GetInsertionType();
+        int InsertionType = InsType;
         if ( !RelativeTo )
         {
-            InsertionType = wxsPalette::itInto;
+            InsertionType = itInto;
             RelativeTo = GetWinRes()->GetRootWidget();
             if ( RelativeTo->GetChildCount() == 1 &&
                  RelativeTo->GetChild(0)->GetInfo().Sizer )
@@ -362,16 +367,16 @@ void wxsWindowEditor::Paste()
                 {
                     switch ( InsertionType )
                     {
-                        case wxsPalette::itAfter:
+                        case itAfter:
                             InsertAfter(Insert,RelativeTo);
                             RelativeTo = Insert;
                             break;
 
-                        case wxsPalette::itBefore:
+                        case itBefore:
                             InsertBefore(Insert,RelativeTo);
                             break;
 
-                        case wxsPalette::itInto:
+                        case itInto:
                             InsertInto(Insert,RelativeTo);
                             break;
                     }
@@ -730,17 +735,17 @@ void wxsWindowEditor::SetInsertionType(int Type)
 
     if ( !Type ) Type = InsTypeMask;
 
-    if ( Type & wxsPalette::itInto )
+    if ( Type & itInto )
     {
-        InsType = wxsPalette::itInto;
+        InsType = itInto;
     }
-    else if ( Type & wxsPalette::itAfter )
+    else if ( Type & itAfter )
     {
-        InsType = wxsPalette::itAfter;
+        InsType = itAfter;
     }
-    else if ( Type & wxsPalette::itBefore )
+    else if ( Type & itBefore )
     {
-        InsType = wxsPalette::itBefore;
+        InsType = itBefore;
     }
     else
     {
@@ -843,8 +848,47 @@ void wxsWindowEditor::OnQuickProps(wxCommandEvent& event)
 
 void wxsWindowEditor::ToggleQuickPropsPanel(bool Open)
 {
-    HorizSizer->Show(QPSizer,Open,true);
+    HorizSizer->Show(QPArea,Open,true);
     Layout();
+}
+
+void wxsWindowEditor::RebuildQuickProps()
+{
+    Freeze();
+    if ( QPPanel )
+    {
+        QPSizer->Detach(QPPanel);
+        delete QPPanel;
+        QPPanel = NULL;
+    }
+    if ( QPParentPanel )
+    {
+        QPSizer->Detach(QPParentPanel);
+        delete QPParentPanel;
+        QPParentPanel = NULL;
+    }
+    wxsWidget* Selection = GetSelection();
+    if ( Selection )
+    {
+        QPPanel = Selection->BuildQuickPanel(QPArea);
+        if ( QPPanel )
+        {
+            QPSizer->Add(QPPanel);
+        }
+        wxsWidget* Parent = Selection->GetParent();
+        if ( Parent )
+        {
+            QPParentPanel = Parent->BuildChildQuickPanel(QPArea,Parent->FindChild(Selection));
+            if ( QPParentPanel )
+            {
+                QPSizer->Add(QPParentPanel);
+            }
+        }
+    }
+    QPSizer->Layout();
+    QPSizer->Fit(QPArea);
+    Layout();
+    Thaw();
 }
 
 wxImage wxsWindowEditor::InsIntoImg;

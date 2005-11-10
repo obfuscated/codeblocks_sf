@@ -1,40 +1,45 @@
 #include "wxsheaders.h"
-#include "wxssizerpaletteheader.h"
-
+#include "wxssizerparentqp.h"
 #include "wxsdefsizer.h"
 
-BEGIN_EVENT_TABLE(wxsSizerPaletteHeader,wxPanel)
-//(*EventTable(wxsSizerPaletteHeader)
-    EVT_CHECKBOX(ID_CHECKBOX1,wxsSizerPaletteHeader::OnBrdChange)
-    EVT_CHECKBOX(ID_CHECKBOX2,wxsSizerPaletteHeader::OnBrdChange)
-    EVT_CHECKBOX(ID_CHECKBOX3,wxsSizerPaletteHeader::OnBrdChange)
-    EVT_CHECKBOX(ID_CHECKBOX4,wxsSizerPaletteHeader::OnBrdChange)
-    EVT_SPINCTRL(ID_SPINCTRL1,wxsSizerPaletteHeader::OnBrdSizeChange)
-    EVT_RADIOBUTTON(ID_RADIOBUTTON4,wxsSizerPaletteHeader::OnPlaceChange)
-    EVT_RADIOBUTTON(ID_RADIOBUTTON5,wxsSizerPaletteHeader::OnPlaceChange)
-    EVT_RADIOBUTTON(ID_RADIOBUTTON6,wxsSizerPaletteHeader::OnPlaceChange)
-    EVT_RADIOBUTTON(ID_RADIOBUTTON7,wxsSizerPaletteHeader::OnPlaceChange)
-    EVT_RADIOBUTTON(ID_RADIOBUTTON8,wxsSizerPaletteHeader::OnPlaceChange)
-    EVT_RADIOBUTTON(ID_RADIOBUTTON9,wxsSizerPaletteHeader::OnPlaceChange)
-    EVT_RADIOBUTTON(ID_RADIOBUTTON10,wxsSizerPaletteHeader::OnPlaceChange)
-    EVT_RADIOBUTTON(ID_RADIOBUTTON11,wxsSizerPaletteHeader::OnPlaceChange)
-    EVT_RADIOBUTTON(ID_RADIOBUTTON12,wxsSizerPaletteHeader::OnPlaceChange)
-    EVT_CHECKBOX(ID_CHECKBOX6,wxsSizerPaletteHeader::OnPlaceChange)
-    EVT_CHECKBOX(ID_CHECKBOX5,wxsSizerPaletteHeader::OnPlaceChange)
+BEGIN_EVENT_TABLE(wxsSizerParentQP,wxPanel)
+//(*EventTable(wxsSizerParentQP)
+    EVT_CHECKBOX(ID_CHECKBOX1,wxsSizerParentQP::OnBrdChange)
+    EVT_CHECKBOX(ID_CHECKBOX2,wxsSizerParentQP::OnBrdChange)
+    EVT_CHECKBOX(ID_CHECKBOX3,wxsSizerParentQP::OnBrdChange)
+    EVT_CHECKBOX(ID_CHECKBOX4,wxsSizerParentQP::OnBrdChange)
+    EVT_SPINCTRL(ID_SPINCTRL1,wxsSizerParentQP::OnBrdSizeChange)
+    EVT_RADIOBUTTON(ID_RADIOBUTTON4,wxsSizerParentQP::OnPlaceChange)
+    EVT_RADIOBUTTON(ID_RADIOBUTTON5,wxsSizerParentQP::OnPlaceChange)
+    EVT_RADIOBUTTON(ID_RADIOBUTTON6,wxsSizerParentQP::OnPlaceChange)
+    EVT_RADIOBUTTON(ID_RADIOBUTTON7,wxsSizerParentQP::OnPlaceChange)
+    EVT_RADIOBUTTON(ID_RADIOBUTTON8,wxsSizerParentQP::OnPlaceChange)
+    EVT_RADIOBUTTON(ID_RADIOBUTTON9,wxsSizerParentQP::OnPlaceChange)
+    EVT_RADIOBUTTON(ID_RADIOBUTTON10,wxsSizerParentQP::OnPlaceChange)
+    EVT_RADIOBUTTON(ID_RADIOBUTTON11,wxsSizerParentQP::OnPlaceChange)
+    EVT_RADIOBUTTON(ID_RADIOBUTTON12,wxsSizerParentQP::OnPlaceChange)
+    EVT_CHECKBOX(ID_CHECKBOX6,wxsSizerParentQP::OnPlaceChange)
+    EVT_CHECKBOX(ID_CHECKBOX5,wxsSizerParentQP::OnPlaceChange)
 //*)
-    EVT_TIMER(-1,wxsSizerPaletteHeader::OnTimer)
+    EVT_TIMER(-1,wxsSizerParentQP::OnTimer)
 END_EVENT_TABLE()
 
-wxsSizerPaletteHeader::wxsSizerPaletteHeader(wxWindow* parent,wxsWidget* Modified,wxsSizerExtraParams* _Params,wxWindowID id):
+wxsSizerParentQP::wxsSizerParentQP(wxWindow* parent,wxsWidget* Modified,wxsSizerExtraParams* _Params,wxWindowID id):
     Widget(Modified),
     Params(_Params),
     Timer(this)
 {
-	//(*Initialize(wxsSizerPaletteHeader)
+	//(*Initialize(wxsSizerParentQP)
+    wxStaticBoxSizer* StaticBoxSizer1;
+    wxFlexGridSizer* FlexGridSizer2;
+    wxGridSizer* GridSizer1;
+    wxStaticBoxSizer* StaticBoxSizer2;
+
     Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL);
-    FlexGridSizer1 = new wxFlexGridSizer(0,0,0,0);
+    FlexGridSizer1 = new wxFlexGridSizer(0,1,0,0);
     StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Border"));
     FlexGridSizer2 = new wxFlexGridSizer(0,2,0,0);
+    FlexGridSizer2->AddGrowableCol(1);
     GridSizer1 = new wxGridSizer(0,3,0,0);
     BrdTop = new wxCheckBox(this,ID_CHECKBOX1,_T(""),wxDefaultPosition,wxDefaultSize,0);
     BrdTop->SetValue(false);
@@ -54,7 +59,7 @@ wxsSizerPaletteHeader::wxsSizerPaletteHeader(wxWindow* parent,wxsWidget* Modifie
     GridSizer1->Add(BrdBottom,1,wxALIGN_CENTER,5);
     BrdSize = new wxSpinCtrl(this,ID_SPINCTRL1,_("0"),wxDefaultPosition,wxSize(51,-1),0, 0 ,100);
     FlexGridSizer2->Add(GridSizer1,1,wxALIGN_CENTER,5);
-    FlexGridSizer2->Add(BrdSize,1,wxALL|wxALIGN_CENTER,5);
+    FlexGridSizer2->Add(BrdSize,1,wxLEFT|wxTOP|wxBOTTOM|wxALIGN_CENTER,5);
     StaticBoxSizer1->Add(FlexGridSizer2,1,wxALL|wxALIGN_CENTER,0);
     StaticBoxSizer2 = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Placement"));
     FlexGridSizer3 = new wxFlexGridSizer(0,0,0,0);
@@ -96,7 +101,7 @@ wxsSizerPaletteHeader::wxsSizerPaletteHeader(wxWindow* parent,wxsWidget* Modifie
     FlexGridSizer3->Add(GridSizer2,1,wxALIGN_CENTER,5);
     FlexGridSizer3->Add(BoxSizer1,1,wxLEFT|wxALIGN_CENTER,10);
     StaticBoxSizer2->Add(FlexGridSizer3,1,wxALL|wxALIGN_CENTER,0);
-    FlexGridSizer1->Add(StaticBoxSizer1,1,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER,5);
+    FlexGridSizer1->Add(StaticBoxSizer1,1,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND,5);
     FlexGridSizer1->Add(StaticBoxSizer2,1,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER,5);
     this->SetSizer(FlexGridSizer1);
     FlexGridSizer1->Fit(this);
@@ -107,27 +112,26 @@ wxsSizerPaletteHeader::wxsSizerPaletteHeader(wxWindow* parent,wxsWidget* Modifie
     Timer.Start(250);
 }
 
-wxsSizerPaletteHeader::~wxsSizerPaletteHeader()
+wxsSizerParentQP::~wxsSizerParentQP()
 {
 }
 
-
-void wxsSizerPaletteHeader::OnBrdChange(wxCommandEvent& event)
-{
-    SaveData();
-}
-
-void wxsSizerPaletteHeader::OnBrdSizeChange(wxSpinEvent& event)
+void wxsSizerParentQP::OnBrdChange(wxCommandEvent& event)
 {
     SaveData();
 }
 
-void wxsSizerPaletteHeader::OnPlaceChange(wxCommandEvent& event)
+void wxsSizerParentQP::OnBrdSizeChange(wxSpinEvent& event)
 {
     SaveData();
 }
 
-void wxsSizerPaletteHeader::ReadData()
+void wxsSizerParentQP::OnPlaceChange(wxCommandEvent& event)
+{
+    SaveData();
+}
+
+void wxsSizerParentQP::ReadData()
 {
     if ( !Widget || !Params ) return;
 
@@ -156,7 +160,7 @@ void wxsSizerPaletteHeader::ReadData()
     PlaceShp->SetValue(Params->Shaped);
 }
 
-void wxsSizerPaletteHeader::SaveData()
+void wxsSizerParentQP::SaveData()
 {
     if ( !Widget || !Params ) return;
 
@@ -208,7 +212,7 @@ void wxsSizerPaletteHeader::SaveData()
     Timer.Start();
 }
 
-void wxsSizerPaletteHeader::OnTimer(wxTimerEvent& event)
+void wxsSizerParentQP::OnTimer(wxTimerEvent& event)
 {
     ReadData();
 }

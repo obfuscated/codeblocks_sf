@@ -106,7 +106,7 @@ class WXSCLASS wxsDefSizer : public wxsContainer
         	return (wxsSizerExtraParams*)GetExtra(Index);
         }
 
-        virtual wxWindow* GetChildPaletteHeader(wxWindow* Parent,int ChildPos);
+        virtual wxWindow* BuildChildQuickPanel(wxWindow* Parent,int ChildPos);
 
     protected:
 

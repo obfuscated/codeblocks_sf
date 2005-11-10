@@ -1,9 +1,9 @@
-#ifndef WXSSIZERPALETTEHEADER_H
-#define WXSSIZERPALETTEHEADER_H
+#ifndef WXSSIZERPARENTQP_H
+#define WXSSIZERPARENTQP_H
 
 #include "wxsglobals.h"
 
-//(*Headers(wxsSizerPaletteHeader)
+//(*Headers(wxsSizerParentQP)
 #include <wx/checkbox.h>
 #include <wx/intl.h>
 #include <wx/panel.h>
@@ -16,14 +16,14 @@
 class WXSCLASS wxsWidget;
 class WXSCLASS wxsSizerExtraParams;
 
-class WXSCLASS wxsSizerPaletteHeader: public wxPanel
+class wxsSizerParentQP: public wxPanel
 {
 	public:
 
-		wxsSizerPaletteHeader(wxWindow* parent,wxsWidget* Modified,wxsSizerExtraParams* Params,wxWindowID Id=-1);
-		virtual ~wxsSizerPaletteHeader();
+		wxsSizerParentQP(wxWindow* parent,wxsWidget* Modified,wxsSizerExtraParams* Params,wxWindowID id = -1);
+		virtual ~wxsSizerParentQP();
 
-		//(*Identifiers(wxsSizerPaletteHeader)
+		//(*Identifiers(wxsSizerParentQP)
         enum Identifiers
         {
             ID_CHECKBOX1 = 0x1000,
@@ -47,24 +47,20 @@ class WXSCLASS wxsSizerPaletteHeader: public wxPanel
 
 	protected:
 
-		//(*Handlers(wxsSizerPaletteHeader)
+		//(*Handlers(wxsSizerParentQP)
 		void OnBrdChange(wxCommandEvent& event);
         void OnBrdSizeChange(wxSpinEvent& event);
         void OnPlaceChange(wxCommandEvent& event);
         void OnTimer(wxTimerEvent& event);
         //*)
 
-		//(*Declarations(wxsSizerPaletteHeader)
+		//(*Declarations(wxsSizerParentQP)
         wxFlexGridSizer* FlexGridSizer1;
-        wxStaticBoxSizer* StaticBoxSizer1;
-        wxFlexGridSizer* FlexGridSizer2;
-        wxGridSizer* GridSizer1;
         wxCheckBox* BrdTop;
         wxCheckBox* BrdLeft;
         wxCheckBox* BrdRight;
         wxCheckBox* BrdBottom;
         wxSpinCtrl* BrdSize;
-        wxStaticBoxSizer* StaticBoxSizer2;
         wxFlexGridSizer* FlexGridSizer3;
         wxGridSizer* GridSizer2;
         wxRadioButton* PlaceLT;

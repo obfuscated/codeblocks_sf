@@ -25,7 +25,6 @@
 #include "wxspropertiesman.h"
 #include "wxsproject.h"
 #include "wxswidgetfactory.h"
-#include "wxspalette.h"
 #include "wxsevent.h"
 #include "wxsnewwindowdlg.h"
 #include "wxsimportxrcdlg.h"
@@ -45,7 +44,7 @@ BEGIN_EVENT_TABLE(wxSmith, cbPlugin)
 	EVT_PROJECT_CLOSE(wxSmith::OnProjectClose)
 	EVT_PROJECT_OPEN(wxSmith::OnProjectOpen)
 	EVT_PROJECT_ACTIVATE(wxSmith::OnProjectActivated)
-	EVT_SELECT_RES(wxSmith::OnSpreadEvent)
+	EVT_SELECT_RES(wxSmith::OnSelectRes)
 	EVT_UNSELECT_RES(wxSmith::OnSpreadEvent)
 	EVT_SELECT_WIDGET(wxSmith::OnSpreadEvent)
 	EVT_UNSELECT_WIDGET(wxSmith::OnSpreadEvent)
@@ -128,6 +127,7 @@ void wxSmith::OnAttach()
         }
         // TODO (SpOoN#1#): Add other widgets
 
+        /*
         if ( Messages )
         {
             wxString resPath = ConfigManager::Get()->Read(_T("data_path"), wxEmptyString);
@@ -141,6 +141,7 @@ void wxSmith::OnAttach()
             wxWindow* Palette = new wxsPalette((wxWindow*)Messages,Messages->GetPageCount());
             Messages->AddPage(Palette,_("Widgets"),false,ImageIndex);
         }
+        */
 	}
 	else
 	{
@@ -240,7 +241,17 @@ void wxSmith::OnSpreadEvent(wxsEvent& event)
     {
     	(*i).second->SendEventToEditors(event);
     }
-    wxsPalette::Get()->ProcessEvent(event);
+    //wxsPalette::Get()->ProcessEvent(event);
+}
+
+void wxSmith::OnSelectRes(wxsEvent& event)
+{
+    wxsResource* Res = event.GetResource();
+    if ( Res )
+    {
+        Res->EditOpen();
+    }
+    OnSpreadEvent(event);
 }
 
 cbProject* wxSmith::GetCBProject(wxsProject* Proj)

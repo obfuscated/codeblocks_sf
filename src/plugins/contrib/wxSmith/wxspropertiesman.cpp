@@ -1,7 +1,6 @@
 #include "wxsheaders.h"
 #include "wxspropertiesman.h"
 
-#include "wxspalette.h"
 #include "wxsmith.h"
 #include "wxseventseditor.h"
 

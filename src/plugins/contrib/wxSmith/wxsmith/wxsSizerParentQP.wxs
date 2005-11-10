@@ -1,31 +1,32 @@
 <resource>
-    <object class="wxPanel" name="wxsSizerPaletteHeader">
+    <object class="wxPanel" name="wxsSizerParentQP">
         <style>wxTAB_TRAVERSAL</style>
         <object class="wxFlexGridSizer" variable="FlexGridSizer1" member="yes">
             <rows>0</rows>
-            <cols>0</cols>
+            <cols>1</cols>
             <vgap>0</vgap>
             <hgap>0</hgap>
             <object class="sizeritem">
                 <option>1</option>
                 <border>5</border>
-                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER</flag>
-                <object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="yes">
+                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
+                <object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="no">
                     <orient>wxHORIZONTAL</orient>
                     <label>Border</label>
                     <object class="sizeritem">
                         <option>1</option>
                         <flag>wxALL|wxALIGN_CENTER</flag>
-                        <object class="wxFlexGridSizer" variable="FlexGridSizer2" member="yes">
+                        <object class="wxFlexGridSizer" variable="FlexGridSizer2" member="no">
                             <rows>0</rows>
                             <cols>2</cols>
                             <vgap>0</vgap>
                             <hgap>0</hgap>
+                            <growablecols>1</growablecols>
                             <object class="sizeritem">
                                 <option>1</option>
                                 <border>5</border>
                                 <flag>wxALIGN_CENTER</flag>
-                                <object class="wxGridSizer" variable="GridSizer1" member="yes">
+                                <object class="wxGridSizer" variable="GridSizer1" member="no">
                                     <rows>0</rows>
                                     <cols>3</cols>
                                     <vgap>0</vgap>
@@ -95,7 +96,7 @@
                             <object class="sizeritem">
                                 <option>1</option>
                                 <border>5</border>
-                                <flag>wxALL|wxALIGN_CENTER</flag>
+                                <flag>wxLEFT|wxTOP|wxBOTTOM|wxALIGN_CENTER</flag>
                                 <object class="wxSpinCtrl" name="ID_SPINCTRL1" variable="BrdSize" member="yes">
                                     <value>0</value>
                                     <handler entry="EVT_SPINCTRL" function="OnBrdSizeChange" />
@@ -110,7 +111,7 @@
                 <option>1</option>
                 <border>5</border>
                 <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER</flag>
-                <object class="wxStaticBoxSizer" variable="StaticBoxSizer2" member="yes">
+                <object class="wxStaticBoxSizer" variable="StaticBoxSizer2" member="no">
                     <orient>wxHORIZONTAL</orient>
                     <label>Placement</label>
                     <object class="sizeritem">

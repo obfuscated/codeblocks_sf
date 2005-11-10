@@ -96,7 +96,7 @@ const wxUint32 wxsCUSTOM_COLOUR = wxPG_COLOUR_CUSTOM;
 #define wxsTREE()  wxsPLUGIN()->GetResourceTree()
 
 /** Macro returning current palette */
-#define wxsPALETTE() wxsPalette::Get()
+//#define wxsPALETTE() wxsPalette::Get()
 
 /** Macro returing current properties window */
 #define wxsPROPERTIES() wxsPropertiesMan::Get()

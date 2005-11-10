@@ -190,6 +190,9 @@ class WXSCLASS wxsWidget
          */
         virtual bool PropertiesUpdated(bool Validate,bool Correct);
 
+        /** Function building quick properties panel inside editor area */
+        virtual wxWindow* BuildQuickPanel(wxWindow* Parent) { return NULL; }
+
     protected:
 
         /** This function should create properties view for widget. It is granted
@@ -351,13 +354,12 @@ class WXSCLASS wxsWidget
         /** Changing position of widget in child list */
         virtual bool ChangeChildPos(int PrevPos, int NewPos) { return false; }
 
-        /** Function returning quick configure panel for child at given position.
+        /** Function building quick configure panel for child at given position.
          *
-         * This panel is placed at palette window and should be used to quickly
-         * configure base widget params. The window should automatically update
-         * everything because no notification will be sent wnen destroying window
+         * This funtion should build wxPanel window with widgets for quick
+         * configuration. It will be placed inside quick configure area in editor.
          */
-        virtual wxWindow* GetChildPaletteHeader(wxWindow* Parent,int ChildPos) { return NULL; }
+        virtual wxWindow* BuildChildQuickPanel(wxWindow* Parent,int ChildPos) { return NULL; }
 
     protected:
 

@@ -4,7 +4,7 @@
 #include <configmanager.h>
 #include <wx/colordlg.h>
 #include "wxsglobals.h"
-#include "wxspalette.h"
+#include "wxswindoweditor.h"
 
 BEGIN_EVENT_TABLE(wxsSettingsDlg,wxDialog)
 //(*EventTable(wxsSettingsDlg)
@@ -56,7 +56,8 @@ void wxsSettingsDlg::OnBtnOkClick(wxCommandEvent& event)
     ConfigManager::Get()->Write(_T("/wxsmith/dragassisttype"),(long)DragAssistType->GetSelection());
     ConfigManager::Get()->Write(_T("/wxsmith/backfetchdelay"),(long)PrevFetchDelay->GetValue());
     ConfigManager::Get()->Write(_T("/wxsmith/paletteiconsize"),(long)(Icons16->GetValue()?16:32));
-    wxsPALETTE()->RefreshIcons();
+//    wxsPALETTE()->RefreshIcons();
+    wxsWindowEditor::ReloadImages();
     EndModal(wxID_OK);
 }
 

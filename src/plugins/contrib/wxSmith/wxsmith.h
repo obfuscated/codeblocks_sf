@@ -90,6 +90,7 @@ class WXSCLASS wxSmith : public cbPlugin
 
         /* Internal event-processing functions */
         void OnSpreadEvent(wxsEvent& event);
+        void OnSelectRes(wxsEvent& event);
 
         /** Function checking and adding wxSmith support for current project */
         bool CheckIntegration();
