@@ -39,16 +39,16 @@ HelpConfigDialog::HelpConfigDialog()
 {
   wxXmlResource::Get()->LoadDialog(this, 0L, _T("HelpConfigDialog"));
   HelpCommon::LoadHelpFilesVector(m_Vector);
-  
+
   wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
   lst->Clear();
   HelpCommon::HelpFilesVector::iterator it;
-  
+
   for (it = m_Vector.begin(); it != m_Vector.end(); ++it)
   {
     lst->Append(it->first);
   }
-  
+
   if (m_Vector.size() != 0)
   {
     lst->SetSelection(0);
@@ -69,9 +69,9 @@ void HelpConfigDialog::UpdateEntry(int index)
   {
     return;
   }
-  
+
   wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
-  
+
   if (index < static_cast<int>(m_Vector.size()))
   {
   	m_Vector[index].second = XRCCTRL(*this, "txtHelp", wxTextCtrl)->GetValue();
@@ -97,7 +97,7 @@ void HelpConfigDialog::ChooseFile()
       "All files (*.*)|*.*"
     )
   );
-  
+
   if (!filename.IsEmpty())
   {
     XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(filename);
@@ -107,12 +107,12 @@ void HelpConfigDialog::ChooseFile()
 void HelpConfigDialog::ListChange(wxCommandEvent& event)
 {
   wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
-  
+
   if (lst->GetSelection() != m_LastSel)
   {
     UpdateEntry(m_LastSel);
   }
-  
+
   if ((m_LastSel = lst->GetSelection()) != -1)
   {
     XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(m_Vector[lst->GetSelection()].second);
@@ -134,23 +134,29 @@ void HelpConfigDialog::Add(wxCommandEvent &event)
   wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
   UpdateEntry(lst->GetSelection());
   wxString text = wxGetTextFromUser(_("Please enter new help file title:"), _("Add title"));
-  
+
   if (!text.IsEmpty())
   {
     HelpCommon::HelpFilesVector::iterator it = find(m_Vector.begin(), m_Vector.end(), text);
-    
+
     if (it != m_Vector.end())
     {
       wxMessageBox(_("This title is already in use"), _("Warning"), wxICON_WARNING);
       return;
     }
-    
+
     if (text.CmpNoCase(_T("default")) == 0)
     {
     	wxMessageBox(_("This is a key for internal use of the plugin and cannot be assigned to a help file"), _("Warning"), wxICON_WARNING);
     	return;
     }
-    
+
+    if (text.Find(_T('/')) != -1 || text.Find(_T('\\')) != -1)
+    {
+      wxMessageBox(_("Slashes and backslashes cannot be used to name a help file"), _("Warning"), wxICON_WARNING);
+      return;
+    }
+
     lst->Append(text);
     lst->SetSelection(lst->GetCount() - 1);
     XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(false);
@@ -166,23 +172,29 @@ void HelpConfigDialog::Rename(wxCommandEvent &event)
   wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
   wxString orig = lst->GetString(lst->GetSelection());
   wxString text = wxGetTextFromUser(_("Rename this help file title:"), _("Rename title"), orig);
-  
+
   if (!text.IsEmpty())
   {
     HelpCommon::HelpFilesVector::iterator it = find(m_Vector.begin(), m_Vector.end(), text);
-    
+
     if (it != m_Vector.end())
     {
       wxMessageBox(_("This title is already in use"), _("Warning"), wxICON_WARNING);
       return;
     }
-    
+
     if (text.CmpNoCase(_T("default")) == 0)
     {
     	wxMessageBox(_("This is a key for internal use of the plugin and cannot be assigned to a help file"), _("Warning"), wxICON_WARNING);
     	return;
     }
-    
+
+    if (text.Find(_T('/')) != -1 || text.Find(_T('\\')) != -1)
+    {
+      wxMessageBox(_("Slashes and backslashes cannot be used to name a help file"), _("Warning"), wxICON_WARNING);
+      return;
+    }
+
     m_Vector[lst->GetSelection()].first = text;
     lst->SetString(lst->GetSelection(), text);
   }
@@ -194,17 +206,17 @@ void HelpConfigDialog::Delete(wxCommandEvent &event)
   {
     return;
   }
-  
+
   wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
-  
+
   if (HelpCommon::getDefaultHelpIndex() >= lst->GetSelection())
   {
   	HelpCommon::setDefaultHelpIndex(HelpCommon::getDefaultHelpIndex() - 1);
   }
-  
+
   m_Vector.erase(m_Vector.begin() + lst->GetSelection());
   lst->Delete(lst->GetSelection());
-  
+
   if (lst->GetSelection() != -1)
   {
     XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(m_Vector[lst->GetSelection()].first);
@@ -214,7 +226,7 @@ void HelpConfigDialog::Delete(wxCommandEvent &event)
     XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(_(""));
     XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(false);
   }
-  
+
   m_LastSel = lst->GetSelection();
 }
 
