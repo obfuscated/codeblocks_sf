@@ -126,6 +126,9 @@ const wxUint32 wxsCUSTOM_COLOUR = wxPG_COLOUR_CUSTOM;
 /** Reading icon size inside palette */
 #define wxsDWPalIconSize ConfigManager::Get()->Read(_T("/wxsmith/paletteiconsize"),16L)
 
+/** Reading icon size inside palette */
+#define wxsDWToolIconSize ConfigManager::Get()->Read(_T("/wxsmith/tooliconsize"),32L)
+
 
 /** Shortcut to applications debug log */
 #define DebLog Manager::Get()->GetMessageManager()->DebugLog

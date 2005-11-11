@@ -1183,6 +1183,6 @@ void wxsWidget::ChangeBPT(int REM,wxsBasePropertiesType pType)
 
 wxWindow* wxsWidget::BuildQuickPanel(wxWindow* Parent)
 {
-    return NULL;
-    //return new wxsStandardQP(Parent,this);
+    if ( !( GetBPType() & (bptEnabled|bptHidden|bptFocused|bptId|bptVariable)) ) return NULL;
+    return new wxsStandardQP(Parent,this);
 }

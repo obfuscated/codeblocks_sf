@@ -108,7 +108,7 @@ wxsSizerParentQP::wxsSizerParentQP(wxWindow* parent,wxsWidget* Modified,wxsSizer
     StaticBoxSizer3->Add(Proportion,1,wxALIGN_CENTER|wxEXPAND,5);
     FlexGridSizer1->Add(StaticText1,1,wxALL|wxALIGN_CENTER|wxEXPAND,5);
     FlexGridSizer1->Add(StaticBoxSizer1,1,wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND,5);
-    FlexGridSizer1->Add(StaticBoxSizer2,1,wxLEFT|wxRIGHT|wxALIGN_CENTER,5);
+    FlexGridSizer1->Add(StaticBoxSizer2,1,wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND,5);
     FlexGridSizer1->Add(StaticBoxSizer3,1,wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND,5);
     this->SetSizer(FlexGridSizer1);
     FlexGridSizer1->Fit(this);

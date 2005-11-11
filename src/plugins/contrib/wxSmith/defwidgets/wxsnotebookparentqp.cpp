@@ -22,13 +22,13 @@ wxsNotebookParentQP::wxsNotebookParentQP(wxWindow* parent,wxsWidget* Modified,wx
     StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL,this,_("Label"));
     Label = new wxTextCtrl(this,ID_TEXTCTRL1,_T(""),wxDefaultPosition,wxDefaultSize,0);
     if ( 0 ) Label->SetMaxLength(0);
-    StaticBoxSizer1->Add(Label,0,wxBOTTOM|wxALIGN_CENTER,5);
+    StaticBoxSizer1->Add(Label,0,wxBOTTOM|wxALIGN_CENTER|wxEXPAND,5);
     StaticBoxSizer2 = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Selection"));
     Selection = new wxCheckBox(this,ID_CHECKBOX1,_("Selected"),wxDefaultPosition,wxDefaultSize,0);
     Selection->SetValue(false);
-    StaticBoxSizer2->Add(Selection,1,wxBOTTOM|wxALIGN_CENTER,5);
+    StaticBoxSizer2->Add(Selection,1,wxBOTTOM|wxALIGN_CENTER|wxEXPAND,5);
     FlexGridSizer1->Add(StaticText1,1,wxALL|wxALIGN_CENTER|wxEXPAND,5);
-    FlexGridSizer1->Add(StaticBoxSizer1,1,wxLEFT|wxRIGHT|wxALIGN_CENTER,5);
+    FlexGridSizer1->Add(StaticBoxSizer1,1,wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND,5);
     FlexGridSizer1->Add(StaticBoxSizer2,1,wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND,5);
     this->SetSizer(FlexGridSizer1);
     FlexGridSizer1->Fit(this);

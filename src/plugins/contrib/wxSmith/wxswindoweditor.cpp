@@ -47,7 +47,7 @@ wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsWindowRes* Resource):
     Scroll->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
     HorizSizer->Add(Scroll,1,wxEXPAND);
 
-    QPArea = new wxScrolledWindow(this,-1,wxDefaultPosition,wxDefaultSize,wxHSCROLL|wxVSCROLL|wxSUNKEN_BORDER);
+    QPArea = new wxScrolledWindow(this,-1,wxDefaultPosition,wxDefaultSize,wxVSCROLL|wxSUNKEN_BORDER|wxALWAYS_SHOW_SB);
     QPArea->SetScrollbars(0,5,0,0);
     HorizSizer->Add(QPArea,0,wxEXPAND);
     QPSizer = new wxBoxSizer(wxVERTICAL);
@@ -130,7 +130,7 @@ void wxsWindowEditor::BuildPreview()
     {
         wxSizer* NewSizer = new wxGridSizer(1);
         NewSizer->Add(TopPreviewWindow,0,/*wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL|*/wxALL,10);
-        //Scroll->SetVirtualSizeHints(1,1);
+        Scroll->SetVirtualSizeHints(1,1);
         Scroll->SetSizer(NewSizer);
         NewSizer->SetVirtualSizeHints(Scroll);
         HorizSizer->Layout();
@@ -558,7 +558,7 @@ void wxsWindowEditor::InitializeImages()
         _T("selected16.png")
     };
 
-    const wxString* Array = /*( wxsDWPalIconSize == 16L ) ? SmallNames : */ NormalNames;
+    const wxString* Array = ( wxsDWToolIconSize == 16L ) ? SmallNames : NormalNames;
 
     InsIntoImg.LoadFile(basePath + Array[0]);
     InsAfterImg.LoadFile(basePath + Array[1]);
@@ -574,6 +574,8 @@ void wxsWindowEditor::InitializeImages()
 
 void wxsWindowEditor::BuildPalette(wxNotebook* Palette)
 {
+    Palette->DeleteAllPages();
+
     // First we need to split all widgets into groups
     // it will be done using multimap
 
@@ -789,6 +791,7 @@ void wxsWindowEditor::RebuildIcons()
     RebuildQuickPropsIcon();
     DelBtn->SetLabel(DelImg);
     PreviewBtn->SetLabel(PreviewImg);
+    BuildPalette(WidgetsSet);
     Layout();
 }
 
@@ -852,23 +855,15 @@ void wxsWindowEditor::ToggleQuickPropsPanel(bool Open)
 void wxsWindowEditor::RebuildQuickProps()
 {
     Freeze();
-    while ( QPSizer->GetItem((size_t)0) )
-    {
-        wxSizerItem* Item = QPSizer->GetItem((size_t)0);
-        if ( Item->IsWindow() )
-        {
-            wxWindow* Wnd = Item->GetWindow();
-            QPSizer->Detach(Wnd);
-            delete Wnd;
-        }
-        else
-        {
-            QPSizer->Detach((int)0);
-        }
 
-// TODO (SpOoN#1#): Add support for spacers and sizers
+    int QPx, QPy;
 
-    }
+    QPArea->SetSizer(NULL);
+    QPArea->DestroyChildren();
+    QPSizer = new wxBoxSizer(wxVERTICAL);
+    QPArea->SetSizer(QPSizer);
+    QPArea->GetViewStart(&QPx,&QPy);
+
     wxsWidget* Selection = GetSelection();
     if ( Selection )
     {
@@ -890,6 +885,7 @@ void wxsWindowEditor::RebuildQuickProps()
     QPSizer->Layout();
     QPSizer->Fit(QPArea);
     Layout();
+    QPArea->Scroll(QPx,QPy);
     Thaw();
 }
 

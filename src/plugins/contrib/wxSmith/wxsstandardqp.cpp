@@ -28,12 +28,12 @@ wxsStandardQP::wxsStandardQP(wxWindow* parent,wxsWidget* _Widget,wxWindowID id):
     if ( 0 ) VarName->SetMaxLength(0);
     IsMember = new wxCheckBox(this,ID_CHECKBOX1,_("Is class member"),wxDefaultPosition,wxDefaultSize,0);
     IsMember->SetValue(false);
-    VariableSizer->Add(VarName,1,wxALIGN_CENTER,5);
+    VariableSizer->Add(VarName,1,wxALIGN_CENTER|wxEXPAND,5);
     VariableSizer->Add(IsMember,1,wxALIGN_CENTER|wxEXPAND,5);
     IdentifierSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Identifier"));
     Ident = new wxTextCtrl(this,ID_TEXTCTRL2,_T(""),wxDefaultPosition,wxDefaultSize,0);
     if ( 0 ) Ident->SetMaxLength(0);
-    IdentifierSizer->Add(Ident,1,wxALIGN_CENTER,5);
+    IdentifierSizer->Add(Ident,1,wxALIGN_CENTER|wxEXPAND,5);
     FlagsSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Flags"));
     Enabled = new wxCheckBox(this,ID_CHECKBOX3,_("Enabled"),wxDefaultPosition,wxDefaultSize,0);
     Enabled->SetValue(false);
@@ -165,7 +165,7 @@ void wxsStandardQP::SaveData()
     if ( !Widget ) return;
 
     bool Updated = false;
-   wxsBaseProperties& Params = Widget->GetBaseProperties();
+    wxsBaseProperties& Params = Widget->GetBaseProperties();
 
     #define Update(f,a,b) if ( Widget->GetBPType() & bpt##f ) if ( (Params.a) != (b) ) { (Params.a) = (b); Updated = true; }
     Update(Variable,VarName,VarName->GetValue());

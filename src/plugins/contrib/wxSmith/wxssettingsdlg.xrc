@@ -2,7 +2,7 @@
     <object class="wxDialog" name="wxsSettingsDlg">
         <title>wxSmith Configuration</title>
         <centered>1</centered>
-        <object class="wxFlexGridSizer" variable="FlexGridSizer1" member="no">
+        <object class="wxFlexGridSizer">
             <rows>0</rows>
             <cols>1</cols>
             <vgap>0</vgap>
@@ -13,12 +13,12 @@
                 <option>1</option>
                 <border>5</border>
                 <flag>wxALL|wxALIGN_CENTER</flag>
-                <object class="wxNotebook" name="ID_NOTEBOOK1" variable="Notebook1" member="no">
+                <object class="wxNotebook" name="ID_NOTEBOOK1">
                     <object class="notebookpage">
                         <label>Editor</label>
                         <selected>1</selected>
-                        <object class="wxPanel" name="ID_PANEL1" variable="Panel1" member="no">
-                            <object class="wxFlexGridSizer" variable="FlexGridSizer2" member="no">
+                        <object class="wxPanel" name="ID_PANEL1">
+                            <object class="wxFlexGridSizer">
                                 <rows>0</rows>
                                 <cols>2</cols>
                                 <vgap>0</vgap>
@@ -28,7 +28,7 @@
                                     <option>1</option>
                                     <border>5</border>
                                     <flag>wxALL|wxALIGN_CENTER</flag>
-                                    <object class="wxStaticText" name="ID_STATICTEXT2" variable="StaticText2" member="no">
+                                    <object class="wxStaticText" name="ID_STATICTEXT2">
                                         <label>Drag Assistance Type</label>
                                     </object>
                                 </object>
@@ -36,7 +36,7 @@
                                     <option>1</option>
                                     <border>5</border>
                                     <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
-                                    <object class="wxComboBox" name="ID_COMBOBOX1" variable="DragAssistType" member="yes">
+                                    <object class="wxComboBox" name="ID_COMBOBOX1">
                                         <selection>2</selection>
                                         <content>
                                             <item>None</item>
@@ -50,7 +50,7 @@
                                     <option>1</option>
                                     <border>5</border>
                                     <flag>wxALL|wxALIGN_CENTER</flag>
-                                    <object class="wxStaticText" name="ID_STATICTEXT3" variable="StaticText3" member="no">
+                                    <object class="wxStaticText" name="ID_STATICTEXT3">
                                         <label>Drag target colour</label>
                                     </object>
                                 </object>
@@ -58,7 +58,7 @@
                                     <option>1</option>
                                     <border>5</border>
                                     <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
-                                    <object class="wxButton" name="ID_BUTTON1" variable="DragTargetCol" member="yes">
+                                    <object class="wxButton" name="ID_BUTTON1">
                                         <label>...</label>
                                     </object>
                                 </object>
@@ -66,7 +66,7 @@
                                     <option>1</option>
                                     <border>5</border>
                                     <flag>wxALL|wxALIGN_CENTER</flag>
-                                    <object class="wxStaticText" name="ID_STATICTEXT4" variable="StaticText4" member="no">
+                                    <object class="wxStaticText" name="ID_STATICTEXT4">
                                         <label>Drag Parent Colour</label>
                                     </object>
                                 </object>
@@ -74,7 +74,7 @@
                                     <option>1</option>
                                     <border>5</border>
                                     <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
-                                    <object class="wxButton" name="ID_BUTTON2" variable="DragParentCol" member="yes">
+                                    <object class="wxButton" name="ID_BUTTON2">
                                         <label>...</label>
                                     </object>
                                 </object>
@@ -82,7 +82,7 @@
                                     <option>1</option>
                                     <border>5</border>
                                     <flag>wxALL|wxALIGN_CENTER</flag>
-                                    <object class="wxStaticText" name="ID_STATICTEXT5" variable="StaticText5" member="no">
+                                    <object class="wxStaticText" name="ID_STATICTEXT5">
                                         <label>Palette icon size</label>
                                     </object>
                                 </object>
@@ -90,7 +90,7 @@
                                     <option>1</option>
                                     <border>5</border>
                                     <flag>wxALIGN_CENTER</flag>
-                                    <object class="wxFlexGridSizer" variable="FlexGridSizer4" member="no">
+                                    <object class="wxFlexGridSizer">
                                         <rows>0</rows>
                                         <cols>0</cols>
                                         <vgap>0</vgap>
@@ -99,15 +99,52 @@
                                             <option>1</option>
                                             <border>5</border>
                                             <flag>wxALL|wxALIGN_CENTER</flag>
-                                            <object class="wxRadioButton" name="ID_RADIOBUTTON1" variable="Icons16" member="yes">
+                                            <object class="wxRadioButton" name="ID_RADIOBUTTON1">
                                                 <label>16x16</label>
+                                                <style>wxRB_GROUP</style>
                                             </object>
                                         </object>
                                         <object class="sizeritem">
                                             <option>1</option>
                                             <border>5</border>
                                             <flag>wxALL|wxALIGN_CENTER</flag>
-                                            <object class="wxRadioButton" name="ID_RADIOBUTTON2" variable="Icons32" member="yes">
+                                            <object class="wxRadioButton" name="ID_RADIOBUTTON2">
+                                                <label>32x32</label>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <option>1</option>
+                                    <border>5</border>
+                                    <flag>wxALL|wxALIGN_CENTER</flag>
+                                    <object class="wxStaticText" name="ID_STATICTEXT6">
+                                        <label>Tool icon size</label>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <option>1</option>
+                                    <border>5</border>
+                                    <flag>wxALIGN_CENTER</flag>
+                                    <object class="wxFlexGridSizer">
+                                        <rows>0</rows>
+                                        <cols>0</cols>
+                                        <vgap>0</vgap>
+                                        <hgap>0</hgap>
+                                        <object class="sizeritem">
+                                            <option>1</option>
+                                            <border>5</border>
+                                            <flag>wxALL|wxALIGN_CENTER</flag>
+                                            <object class="wxRadioButton" name="ID_RADIOBUTTON3">
+                                                <label>16x16</label>
+                                                <style>wxRB_GROUP</style>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <option>1</option>
+                                            <border>5</border>
+                                            <flag>wxALL|wxALIGN_CENTER</flag>
+                                            <object class="wxRadioButton" name="ID_RADIOBUTTON4">
                                                 <label>32x32</label>
                                             </object>
                                         </object>
@@ -118,8 +155,8 @@
                     </object>
                     <object class="notebookpage">
                         <label>Advanced</label>
-                        <object class="wxPanel" name="ID_PANEL2" variable="Panel2" member="no">
-                            <object class="wxFlexGridSizer" variable="FlexGridSizer3" member="no">
+                        <object class="wxPanel" name="ID_PANEL2">
+                            <object class="wxFlexGridSizer">
                                 <rows>0</rows>
                                 <cols>0</cols>
                                 <vgap>0</vgap>
@@ -129,7 +166,7 @@
                                     <option>1</option>
                                     <border>5</border>
                                     <flag>wxALL|wxALIGN_CENTER</flag>
-                                    <object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="no">
+                                    <object class="wxStaticText" name="ID_STATICTEXT1">
                                         <label>Preview fetch delay</label>
                                     </object>
                                 </object>
@@ -137,7 +174,7 @@
                                     <option>1</option>
                                     <border>5</border>
                                     <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
-                                    <object class="wxSpinCtrl" name="ID_SPINCTRL1" variable="PrevFetchDelay" member="yes">
+                                    <object class="wxSpinCtrl" name="ID_SPINCTRL1">
                                         <value>50</value>
                                         <max>500</max>
                                     </object>
@@ -151,13 +188,13 @@
                 <option>1</option>
                 <border>5</border>
                 <flag>wxALL|wxALIGN_CENTER</flag>
-                <object class="wxBoxSizer" variable="BoxSizer1" member="no">
+                <object class="wxBoxSizer">
                     <orient>wxHORIZONTAL</orient>
                     <object class="sizeritem">
                         <option>1</option>
                         <border>5</border>
                         <flag>wxALL|wxALIGN_CENTER</flag>
-                        <object class="wxButton" name="ID_BUTTON3" variable="BtnOk" member="no">
+                        <object class="wxButton" name="ID_BUTTON3">
                             <label>Ok</label>
                         </object>
                     </object>
@@ -165,7 +202,7 @@
                         <option>1</option>
                         <border>5</border>
                         <flag>wxALL|wxALIGN_CENTER</flag>
-                        <object class="wxButton" name="ID_BUTTON4" variable="BtnCancel" member="yes">
+                        <object class="wxButton" name="ID_BUTTON4">
                             <label>Cancel</label>
                         </object>
                     </object>

@@ -25,6 +25,9 @@ wxsSettingsDlg::wxsSettingsDlg(wxWindow* parent,wxWindowID id)
     DragParentCol = XRCCTRL(*this,"ID_BUTTON2",wxButton);
     Icons16 = XRCCTRL(*this,"ID_RADIOBUTTON1",wxRadioButton);
     Icons32 = XRCCTRL(*this,"ID_RADIOBUTTON2",wxRadioButton);
+    StaticText6 = XRCCTRL(*this,"ID_STATICTEXT6",wxStaticText);
+    TIcons16 = XRCCTRL(*this,"ID_RADIOBUTTON3",wxRadioButton);
+    TIcons32 = XRCCTRL(*this,"ID_RADIOBUTTON4",wxRadioButton);
     PrevFetchDelay = XRCCTRL(*this,"ID_SPINCTRL1",wxSpinCtrl);
     BtnCancel = XRCCTRL(*this,"ID_BUTTON4",wxButton);
     //*)
@@ -38,13 +41,13 @@ wxsSettingsDlg::wxsSettingsDlg(wxWindow* parent,wxWindowID id)
 
     if ( wxsDWPalIconSize == 16 ) Icons16->SetValue(true);
     else                          Icons32->SetValue(true);
+    if ( wxsDWToolIconSize == 16 ) TIcons16->SetValue(true);
+    else                           TIcons32->SetValue(true);
 }
 
 wxsSettingsDlg::~wxsSettingsDlg()
 {
 }
-
-
 
 void wxsSettingsDlg::OnBtnOkClick(wxCommandEvent& event)
 {
@@ -56,7 +59,7 @@ void wxsSettingsDlg::OnBtnOkClick(wxCommandEvent& event)
     ConfigManager::Get()->Write(_T("/wxsmith/dragassisttype"),(long)DragAssistType->GetSelection());
     ConfigManager::Get()->Write(_T("/wxsmith/backfetchdelay"),(long)PrevFetchDelay->GetValue());
     ConfigManager::Get()->Write(_T("/wxsmith/paletteiconsize"),(long)(Icons16->GetValue()?16:32));
-//    wxsPALETTE()->RefreshIcons();
+    ConfigManager::Get()->Write(_T("/wxsmith/tooliconsize"),(long)(TIcons16->GetValue()?16:32));
     wxsWindowEditor::ReloadImages();
     EndModal(wxID_OK);
 }

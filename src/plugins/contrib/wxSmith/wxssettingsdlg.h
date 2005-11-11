@@ -43,6 +43,9 @@ class WXSCLASS wxsSettingsDlg: public wxDialog
         wxButton* DragParentCol;
         wxRadioButton* Icons16;
         wxRadioButton* Icons32;
+        wxStaticText* StaticText6;
+        wxRadioButton* TIcons16;
+        wxRadioButton* TIcons32;
         wxSpinCtrl* PrevFetchDelay;
         wxButton* BtnCancel;
         //*)

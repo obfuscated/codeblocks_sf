@@ -18,13 +18,13 @@
             <object class="sizeritem">
                 <option>1</option>
                 <border>5</border>
-                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER</flag>
+                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
                 <object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="yes">
                     <orient>wxVERTICAL</orient>
                     <label>Label</label>
                     <object class="sizeritem">
                         <border>5</border>
-                        <flag>wxBOTTOM|wxALIGN_CENTER</flag>
+                        <flag>wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
                         <object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="Label" member="yes">
                             <value></value>
                             <handler entry="EVT_TEXT" function="OnLabelText" />
@@ -42,7 +42,7 @@
                     <object class="sizeritem">
                         <option>1</option>
                         <border>5</border>
-                        <flag>wxBOTTOM|wxALIGN_CENTER</flag>
+                        <flag>wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
                         <object class="wxCheckBox" name="ID_CHECKBOX1" variable="Selection" member="yes">
                             <label>Selected</label>
                             <handler entry="EVT_CHECKBOX" function="OnSelectionChange" />
