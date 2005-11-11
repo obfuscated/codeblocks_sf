@@ -29,8 +29,6 @@ static const long wxsQuickPropsId = wxNewId();
 
 wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsWindowRes* Resource):
     wxsEditor(parent,Resource->GetWxsFile(),Resource),
-    QPPanel(NULL),
-    QPParentPanel(NULL),
     QuickPropsOpen(false),
     UndoBuff(new wxsWinUndoBuffer(Resource)),
     InsideMultipleChange(false)
@@ -45,12 +43,11 @@ wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsWindowRes* Resource):
     VertSizer->Add(WidgetsSet,0,wxEXPAND);
 
     Scroll = new wxScrolledWindow(this);
-    Scroll = new wxScrolledWindow(this);
     Scroll->SetScrollRate(4,4);
     Scroll->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
     HorizSizer->Add(Scroll,1,wxEXPAND);
 
-    QPArea = new wxScrolledWindow(this);
+    QPArea = new wxScrolledWindow(this,-1,wxDefaultPosition,wxDefaultSize,wxHSCROLL|wxVSCROLL|wxSUNKEN_BORDER);
     QPArea->SetScrollbars(0,5,0,0);
     HorizSizer->Add(QPArea,0,wxEXPAND);
     QPSizer = new wxBoxSizer(wxVERTICAL);
@@ -855,33 +852,38 @@ void wxsWindowEditor::ToggleQuickPropsPanel(bool Open)
 void wxsWindowEditor::RebuildQuickProps()
 {
     Freeze();
-    if ( QPPanel )
+    while ( QPSizer->GetItem((size_t)0) )
     {
-        QPSizer->Detach(QPPanel);
-        delete QPPanel;
-        QPPanel = NULL;
-    }
-    if ( QPParentPanel )
-    {
-        QPSizer->Detach(QPParentPanel);
-        delete QPParentPanel;
-        QPParentPanel = NULL;
+        wxSizerItem* Item = QPSizer->GetItem((size_t)0);
+        if ( Item->IsWindow() )
+        {
+            wxWindow* Wnd = Item->GetWindow();
+            QPSizer->Detach(Wnd);
+            delete Wnd;
+        }
+        else
+        {
+            QPSizer->Detach((int)0);
+        }
+
+// TODO (SpOoN#1#): Add support for spacers and sizers
+
     }
     wxsWidget* Selection = GetSelection();
     if ( Selection )
     {
-        QPPanel = Selection->BuildQuickPanel(QPArea);
+        wxWindow* QPPanel = Selection->BuildQuickPanel(QPArea);
         if ( QPPanel )
         {
-            QPSizer->Add(QPPanel);
+            QPSizer->Add(QPPanel,0,wxEXPAND);
         }
         wxsWidget* Parent = Selection->GetParent();
         if ( Parent )
         {
-            QPParentPanel = Parent->BuildChildQuickPanel(QPArea,Parent->FindChild(Selection));
+            wxWindow* QPParentPanel = Parent->BuildChildQuickPanel(QPArea,Parent->FindChild(Selection));
             if ( QPParentPanel )
             {
-                QPSizer->Add(QPParentPanel);
+                QPSizer->Add(QPParentPanel,0,wxEXPAND);
             }
         }
     }

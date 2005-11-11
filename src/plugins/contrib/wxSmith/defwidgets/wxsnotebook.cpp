@@ -5,6 +5,7 @@
 #include "../properties/wxsenumproperty.h"
 #include "../wxswidgetfactory.h"
 #include "../resources/wxswindowres.h"
+#include "wxsnotebookparentqp.h"
 
 WXS_ST_BEGIN(wxsNotebookStyles)
     WXS_ST_CATEGORY("wxNotebook")
@@ -233,4 +234,12 @@ void wxsNotebook::EnsurePreviewVisible(wxsWidget* Child)
 	}
 
 	wxsWidget::EnsurePreviewVisible(Child);
+}
+
+wxWindow* wxsNotebook::BuildChildQuickPanel(wxWindow* Parent,int ChildPos)
+{
+    wxsWidget* Widget = GetChild(ChildPos);
+    wxsNotebookExtraParams* Params = GetExtraParams(ChildPos);
+    if ( !Widget || !Params ) return NULL;
+    return new wxsNotebookParentQP(Parent,Widget,Params);
 }

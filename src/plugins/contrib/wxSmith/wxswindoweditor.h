@@ -127,9 +127,6 @@ class WXSCLASS wxsWindowEditor : public wxsEditor
         wxBitmapButton* PreviewBtn;
         wxBitmapButton* QuickPanelBtn;
 
-        wxWindow* QPPanel;              ///< base panel for quick configuration
-        wxWindow* QPParentPanel;        ///< quick props panel created by parent
-
         int InsType;                    ///< Current insertion type
         int InsTypeMask;                ///< Current insertion type mask
 

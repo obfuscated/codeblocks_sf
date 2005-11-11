@@ -193,6 +193,16 @@
 			<Option link="0"/>
 			<Option target="wxSmith"/>
 		</Unit>
+		<Unit filename="defwidgets\wxslistbookparentqp.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="defwidgets\wxslistbookparentqp.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
 		<Unit filename="defwidgets\wxslistbox.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="wxSmith"/>
@@ -208,6 +218,16 @@
 			<Option target="wxSmith"/>
 		</Unit>
 		<Unit filename="defwidgets\wxsnotebook.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="defwidgets\wxsnotebookparentqp.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="defwidgets\wxsnotebookparentqp.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -800,6 +820,16 @@
 			<Option target="wxSmith"/>
 		</Unit>
 		<Unit filename="wxssplitterwindow.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="wxsstandardqp.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="wxsstandardqp.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>

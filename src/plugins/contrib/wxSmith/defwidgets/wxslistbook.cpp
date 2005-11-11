@@ -6,6 +6,7 @@
 #include "../properties/wxsenumproperty.h"
 #include "../wxswidgetfactory.h"
 #include "../resources/wxswindowres.h"
+#include "wxslistbookparentqp.h"
 
 WXS_ST_BEGIN(wxsListbookStyles)
     WXS_ST_CATEGORY("wxListbook")
@@ -228,4 +229,12 @@ void wxsListbook::EnsurePreviewVisible(wxsWidget* Child)
 	}
 
 	wxsWidget::EnsurePreviewVisible(Child);
+}
+
+wxWindow* wxsListbook::BuildChildQuickPanel(wxWindow* Parent,int ChildPos)
+{
+    wxsWidget* Widget = GetChild(ChildPos);
+    wxsListbookExtraParams* Params = GetExtraParams(ChildPos);
+    if ( !Widget || !Params ) return NULL;
+    return new wxsListbookParentQP(Parent,Widget,Params);
 }

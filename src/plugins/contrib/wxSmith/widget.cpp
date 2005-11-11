@@ -9,6 +9,7 @@
 #include "wxsresource.h"
 #include "wxswindoweditor.h"
 #include "wxswidgetevents.h"
+#include "wxsstandardqp.h"
 #include <wx/tokenzr.h>
 #include <wx/list.h>
 
@@ -1178,4 +1179,10 @@ void wxsWidget::ChangeBPT(int REM,wxsBasePropertiesType pType)
     if ( REM < 0 ) return;
     if ( REM >= wxsREMCount ) return;
     BPTypes[REM] = pType;
+}
+
+wxWindow* wxsWidget::BuildQuickPanel(wxWindow* Parent)
+{
+    return NULL;
+    //return new wxsStandardQP(Parent,this);
 }

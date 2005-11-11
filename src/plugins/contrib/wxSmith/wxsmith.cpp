@@ -114,7 +114,7 @@ void wxSmith::OnAttach()
 
         LeftSplitter->Split(ResourcesContainer,PropertiesContainer);
 
-        MessageManager* Messages = Manager::Get()->GetMessageManager();
+//        MessageManager* Messages = Manager::Get()->GetMessageManager();
         Manager::Get()->Loadxrc(_T("/wxsmith.zip#zip:*"));
 
         // Initializing standard manager

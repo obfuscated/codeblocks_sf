@@ -9,13 +9,22 @@
             <object class="sizeritem">
                 <option>1</option>
                 <border>5</border>
-                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
+                <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                <object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="yes">
+                    <label>Sizer options</label>
+                    <style>wxALIGN_CENTRE|wxSUNKEN_BORDER</style>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <option>1</option>
+                <border>5</border>
+                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
                 <object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="no">
                     <orient>wxHORIZONTAL</orient>
                     <label>Border</label>
                     <object class="sizeritem">
                         <option>1</option>
-                        <flag>wxALL|wxALIGN_CENTER</flag>
+                        <flag>wxALIGN_CENTER</flag>
                         <object class="wxFlexGridSizer" variable="FlexGridSizer2" member="no">
                             <rows>0</rows>
                             <cols>2</cols>
@@ -110,13 +119,13 @@
             <object class="sizeritem">
                 <option>1</option>
                 <border>5</border>
-                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER</flag>
+                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER</flag>
                 <object class="wxStaticBoxSizer" variable="StaticBoxSizer2" member="no">
                     <orient>wxHORIZONTAL</orient>
                     <label>Placement</label>
                     <object class="sizeritem">
                         <option>1</option>
-                        <flag>wxALL|wxALIGN_CENTER</flag>
+                        <flag>wxALIGN_CENTER</flag>
                         <object class="wxFlexGridSizer" variable="FlexGridSizer3" member="yes">
                             <rows>0</rows>
                             <cols>0</cols>
@@ -239,6 +248,25 @@
                                     </object>
                                 </object>
                             </object>
+                        </object>
+                    </object>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <option>1</option>
+                <border>5</border>
+                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
+                <object class="wxStaticBoxSizer" variable="StaticBoxSizer3" member="yes">
+                    <orient>wxVERTICAL</orient>
+                    <label>Proportion</label>
+                    <object class="sizeritem">
+                        <option>1</option>
+                        <border>5</border>
+                        <flag>wxALIGN_CENTER|wxEXPAND</flag>
+                        <object class="wxSpinCtrl" name="ID_SPINCTRL2" variable="Proportion" member="yes">
+                            <value>0</value>
+                            <handler entry="EVT_SPINCTRL" function="OnProportionChange" />
+                            <size>65,21</size>
                         </object>
                     </object>
                 </object>

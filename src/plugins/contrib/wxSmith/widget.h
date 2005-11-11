@@ -190,8 +190,15 @@ class WXSCLASS wxsWidget
          */
         virtual bool PropertiesUpdated(bool Validate,bool Correct);
 
-        /** Function building quick properties panel inside editor area */
-        virtual wxWindow* BuildQuickPanel(wxWindow* Parent) { return NULL; }
+        /** Function building quick properties panel inside editor area
+         *
+         * If this function returns value != NULL, window returned will be
+         * added to parent's sizer automatically. Parent window can handle
+         * more elements added. In such case, this function should fetch
+         * parent's sizer, add all items into this sizer and return NULL.
+         * Default implementation returns panel from base properties.
+         */
+        virtual wxWindow* BuildQuickPanel(wxWindow* Parent);
 
     protected:
 
