@@ -836,7 +836,14 @@ void wxsWindowEditor::OnDelete(wxCommandEvent& event)
 
 void wxsWindowEditor::OnPreview(wxCommandEvent& event)
 {
-    GetResource()->ShowPreview();
+    if ( GetResource()->IsPreview() )
+    {
+        GetResource()->HidePreview();
+    }
+    else
+    {
+        GetResource()->ShowPreview();
+    }
 }
 
 void wxsWindowEditor::OnQuickProps(wxCommandEvent& event)

@@ -40,6 +40,12 @@ class WXSCLASS wxsResource: public wxObject
         /** This function should show preview in modal */
         virtual void ShowPreview() { }
 
+        /** This function should hide previously created preview */
+        virtual void HidePreview() { }
+
+        /** This function should return true if preview is currelty shown */
+        virtual bool IsPreview() { return false; }
+
         /** Getting resource name */
         virtual const wxString& GetResourceName() = 0;
 

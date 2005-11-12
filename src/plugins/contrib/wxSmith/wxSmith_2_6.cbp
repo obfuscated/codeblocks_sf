@@ -559,6 +559,26 @@
 			<Option compilerVar="CPP"/>
 			<Option target="PropGrid"/>
 		</Unit>
+		<Unit filename="resources\wxsdialogpreviewdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="resources\wxsdialogpreviewdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="resources\wxsframepreviewfrm.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxSmith"/>
+		</Unit>
+		<Unit filename="resources\wxsframepreviewfrm.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxSmith"/>
+		</Unit>
 		<Unit filename="resources\wxswindowres.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="wxSmith"/>

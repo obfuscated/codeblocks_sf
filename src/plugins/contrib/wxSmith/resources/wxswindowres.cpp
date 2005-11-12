@@ -17,8 +17,6 @@ wxsBHeader("EventTable","$(ClassName)") _T("\n")
 wxsBEnd() _T("\n")
 _T("END_EVENT_TABLE()\n")
 _T("\n")
-//_T("$(ClassName)::$(ClassName)(wxWindow* parent,wxWindowID id):\n")
-//_T("    $(BaseClassCtor)\n")
 _T("$(ClassName)::$(ClassName)(wxWindow* parent,wxWindowID id)\n")
 _T("{\n")
 _T("\t") wxsBHeader("Initialize","$(ClassName)") _T("\n")
@@ -34,9 +32,17 @@ const wxChar* EmptyHeader =
 _T("#ifndef $(Guard)\n")
 _T("#define $(Guard)\n")
 _T("\n")
-wxsBHeader("Headers","$(ClassName)") _T("\n")
-_T("#include <wx/wx.h>\n")
-wxsBEnd() _T("\n")
+_T("#include <wx/wxprec.h>\n")
+_T("\n")
+_T("#ifdef __BORLANDC__\n")
+_T("    #pragma hdrstop\n")
+_T("#endif\n")
+_T("\n")
+_T("#ifndef WX_PRECOMP\n")
+_T("\t") wxsBHeader("Headers","$(ClassName)") _T("\n")
+_T("\t#include <wx/wx.h>\n")
+_T("\t") wxsBEnd() _T("\n")
+_T("#endif\n")
 _T("\n")
 _T("class $(ClassName): public $(BaseClassName)\n")
 _T("{\n")
@@ -73,6 +79,7 @@ wxsWindowRes::wxsWindowRes(
     const wxString& Head,
     const wxString& Xrc):
         wxsResource(Project,EditMode),
+        Preview(NULL),
         ClassName(Class),
         WxsFile(Wxs),
         SrcFile(Src),
@@ -200,12 +207,25 @@ TiXmlDocument* wxsWindowRes::GenerateXml()
 
 void wxsWindowRes::ShowPreview()
 {
+    if ( Preview ) return;
 // TODO (SpOoN#1#): Save in temporary file
     Save();
 
     wxXmlResource Res(WxsFile);
     Res.InitAllHandlers();
     ShowResource(Res);
+}
+
+void wxsWindowRes::HidePreview()
+{
+    if ( !Preview ) return;
+    delete Preview;
+    Preview = NULL;
+}
+
+bool wxsWindowRes::IsPreview()
+{
+    return Preview != NULL;
 }
 
 const wxString& wxsWindowRes::GetResourceName()

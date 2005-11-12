@@ -5,6 +5,8 @@
 #include "../defwidgets/wxsdialog.h"
 #include "../defwidgets/wxspanel.h"
 #include "../defwidgets/wxsframe.h"
+#include "wxsdialogpreviewdlg.h"
+#include "wxsframepreviewfrm.h"
 #include <wx/string.h>
 #include <wx/xrc/xmlres.h>
 
@@ -73,6 +75,12 @@ class WXSCLASS wxsWindowRes : public wxsResource
 
         /** This function should show preview in modal window */
         virtual void ShowPreview();
+
+        /** This function should hide current preview */
+        virtual void HidePreview();
+
+        /** This function returns true if there's current preview */
+        virtual bool IsPreview();
 
         /** Getting resource name */
         virtual const wxString& GetResourceName();
@@ -152,6 +160,9 @@ class WXSCLASS wxsWindowRes : public wxsResource
 
         /** Function generating code loading this resource from xrc file */
         virtual wxString GetXrcLoadingCode(int TabSize) = 0;
+
+        /** Pointer to window with current preview */
+        wxWindow* Preview;
 
 	private:
 
@@ -265,10 +276,17 @@ class WXSCLASS wxsDialogRes: public wxsWindowRes
         Dialog,
         wxDialog,
         "wxDialog(parent,id,_T(\"\"),wxDefaultPosition,wxDefaultSize)",
-            wxDialog Dlg;
-            if ( Res.LoadDialog(&Dlg,NULL,GetClassName()) )
+            wxsDialogPreviewDlg* Dlg = new wxsDialogPreviewDlg;
+            if ( Res.LoadDialog(Dlg,NULL,GetClassName()) )
             {
-                Dlg.ShowModal();
+                Dlg->Initialize(this);
+                Dlg->Show();
+                Preview = Dlg;
+            }
+            else
+            {
+                delete Dlg;
+                Preview = NULL;
             }
         )
 
@@ -296,11 +314,16 @@ class WXSCLASS wxsFrameRes: public wxsWindowRes
         Frame,
         wxFrame,
         "wxFrame(parent,id,_T(\"\"))",
-            wxFrame* Frm = new wxFrame;
+            wxsFramePreviewFrm* Frm = new wxsFramePreviewFrm;
             if ( Res.LoadFrame(Frm,NULL,GetClassName()) )
             {
+                Frm->Initialize(this);
                 Frm->Show();
-                //Frm->MakeModal();
+                Preview = Frm;
+            }
+            else
+            {
+                Preview = NULL;
             }
         )
 };
@@ -311,12 +334,24 @@ class WXSCLASS wxsPanelRes: public wxsWindowRes
         Panel,
         wxPanelr,
         "wxPanel(parent,id)",
-        	wxDialog Dlg(NULL,-1,wxString::Format(_("Frame preview: %s"),GetClassName().c_str()));
-        	wxPanel* Panel = Res.LoadPanel(&Dlg,GetClassName());
+        	wxsDialogPreviewDlg* Dlg =
+                new wxsDialogPreviewDlg(
+                    NULL,-1,
+                    wxString::Format(_("Frame preview: %s"),GetClassName().c_str()),
+                    wxDefaultPosition,wxDefaultSize,
+                    wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER);
+        	wxPanel* Panel = Res.LoadPanel(Dlg,GetClassName());
         	if ( Panel )
         	{
-        		Dlg.Fit();
-        		Dlg.ShowModal();
+        		Dlg->Fit();
+        		Dlg->Initialize(this);
+        		Dlg->Show();
+        		Preview = Dlg;
+        	}
+        	else
+        	{
+        	    delete Dlg;
+        	    Preview = NULL;
         	}
         )
 };
