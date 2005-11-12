@@ -43,7 +43,6 @@
         Text2 = new wxTextCtrl(this,-1,_T(""),wxDefaultPosition,wxDefaultSize,wxTE_PROCESS_ENTER);
 
         wxSize Size = Text1->GetSize();
-        Size.SetWidth(Size.GetHeight()*2);  // TODO: This seem to be useless
         Text1->SetSize(Size);
         Text2->SetSize(Size);
 

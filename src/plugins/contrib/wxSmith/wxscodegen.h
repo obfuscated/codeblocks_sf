@@ -8,7 +8,7 @@ class WXSCLASS wxsCodeGen
 {
     public:
 
-        wxsCodeGen(wxsWidget* Widget,int InitialSpaces=0,int TabSize=4,bool DontCreateRoot = true);
+        wxsCodeGen(wxsWidget* Widget,bool DontCreateRoot = true);
         virtual ~wxsCodeGen();
 
         inline const wxString& GetCode()
@@ -19,7 +19,7 @@ class WXSCLASS wxsCodeGen
     protected:
 
         /** This function should make the code more beauty ;) */
-        virtual void BeautyCode(wxString& Code,int InitialSpaces,int TabSize);
+        virtual void BeautyCode(wxString& Code);
 
     private:
         wxString Code;

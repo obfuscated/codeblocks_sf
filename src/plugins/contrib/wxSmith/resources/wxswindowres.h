@@ -159,7 +159,7 @@ class WXSCLASS wxsWindowRes : public wxsResource
         virtual const wxChar* GetWidgetClass(bool UseRes = false) = 0;
 
         /** Function generating code loading this resource from xrc file */
-        virtual wxString GetXrcLoadingCode(int TabSize) = 0;
+        virtual wxString GetXrcLoadingCode() = 0;
 
         /** Pointer to window with current preview */
         wxWindow* Preview;
@@ -177,7 +177,7 @@ class WXSCLASS wxsWindowRes : public wxsResource
         TiXmlDocument* GenerateXml();
 
         /** Adding declaration codes for locally stored widgets */
-        void AddDeclarationsReq(wxsWidget* Widget,wxString& LocalCode,wxString& GlobalCode,int LocalTabSize,int GlobalTabSize,bool& WasLocal);
+        void AddDeclarationsReq(wxsWidget* Widget,wxString& LocalCode,wxString& GlobalCode,bool& WasLocal);
 
         /** Function used internally by SetNewWidgetsIdVarName */
         void UpdateWidgetsVarNameIdReq(StrMap& NamesMap,StrMap& IdsMap,wxsWidget* Widget);
@@ -198,10 +198,10 @@ class WXSCLASS wxsWindowRes : public wxsResource
         void BuildHeadersArray(wxsWidget* Widget,wxArrayString& Array);
 
         /** Fuunction collecting code for event table for given widget */
-        static void CollectEventTableEnteries(wxString& Code,wxsWidget* Widget,int TabSize);
+        static void CollectEventTableEnteries(wxString& Code,wxsWidget* Widget);
 
         /** Function generating code fetching controls from xrc structure */
-        static void GenXrcFetchingCode(wxString& Code,wxsWidget* Widget,int TabSize);
+        static void GenXrcFetchingCode(wxString& Code,wxsWidget* Widget);
 
         wxString      ClassName;
         wxString      WxsFile;
@@ -257,10 +257,9 @@ class WXSCLASS wxsWindowRes : public wxsResource
             return UseRes ? _T(#ClassR) : _T("wx") _T(#Name);               \
         }                                                                   \
                                                                             \
-        virtual wxString GetXrcLoadingCode(int TabSize)                     \
+        virtual wxString GetXrcLoadingCode()                                \
         {                                                                   \
             wxString Code;                                                  \
-            Code.Append(_T(' '),TabSize);                                   \
             Code.Append(wxString::Format(                                   \
                 _T("wxXmlResource::Get()->Load%s(this,parent,_T(%s));"),    \
                 _T(#Name), GetCString(GetClassName()).c_str() ));           \
@@ -290,17 +289,14 @@ class WXSCLASS wxsDialogRes: public wxsWindowRes
             }
         )
 
-    virtual wxString ResSetUpCode(int TabSize)
+    virtual wxString ResSetUpCode()
     {
     	wxString Code;
     	wxsDialog& Dlg = GetDialog();
-    	Code.Append(_T(' '),TabSize);
     	Code << _T("SetWindowStyle(") << Dlg.GetCodeDefines().Style.c_str() << _T(");\n");
-    	Code.Append(_T(' '),TabSize);
     	Code << _T("SetTitle(") << GetWxString(Dlg.Title) << _T(");\n");
         if ( Dlg.Centered )
         {
-            Code.Append(_T(' '),TabSize);
         	Code << _T("Centre();\n");
         }
 

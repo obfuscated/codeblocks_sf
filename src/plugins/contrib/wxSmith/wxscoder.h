@@ -27,7 +27,11 @@ class WXSCLASS wxsCoder
 		/** Dctor */
 		virtual ~wxsCoder();
 
-		/** Function adding block of code to processing queue */
+		/** Function adding block of code to processing queue
+		 *
+		 * Code should use tabs for indentation and will be automatically
+		 * indented relatively to code header
+		 */
 		void AddCode(const wxString& FileName,const wxString& BlockHeader,const wxString& Code,bool Immediately = true);
 
 		/** Function reading block of code from given source file */
@@ -73,6 +77,12 @@ class WXSCLASS wxsCoder
 
 		/** Function applying changes to file which is not open inside editor */
 		bool ApplyChanges(CodeEntry* Entry, const wxString& FileName);
+
+        /** Rebuilding code to support current editor settings */
+        void RebuildCode(wxString& BaseIndentation,wxString& Code);
+
+        /** Cutting off given number of spaces at every new line */
+        wxString CutSpaces(wxString Code,int Count);
 
 		/** Singleton object */
 		static wxsCoder* Singleton;

@@ -280,7 +280,6 @@ bool wxsEventsEditor::CreateNewFunction(wxsEventDesc* Event,const wxString& NewF
 	if ( Declarations.Length() == 0 ) return false;
 	Declarations << _T("void ") << NewFunctionName << _T('(');
 	Declarations << Event->EventTypeName << _T("& event);\n");
-    Declarations.Append(_T(' '),2*4);
 	wxsCoder::Get()->AddCode(HeaderFile,DeclarationsHeader,Declarations,true);
 	Res->UpdateEventTable();
 	cbEditor* Editor = Manager::Get()->GetEditorManager()->Open(SourceFile);

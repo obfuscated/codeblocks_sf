@@ -86,7 +86,7 @@ class WXSCLASS wxsWidgetEvents
         wxsEventDesc* GetEventByEntry(const wxString& Entry);
 
         /** Function returning enteries in event table for this item */
-        wxString GetArrayEnteries(int TabSize);
+        wxString GetArrayEnteries();
 
         /** Copying operator */
         wxsWidgetEvents& operator=(const wxsWidgetEvents& Source);

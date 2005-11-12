@@ -66,7 +66,7 @@ wxsEventDesc * wxsWidgetEvents::GetEventByEntry(const wxString& Entry)
     return NULL;
 }
 
-wxString wxsWidgetEvents::GetArrayEnteries(int TabSize)
+wxString wxsWidgetEvents::GetArrayEnteries()
 {
     wxString Code;
     wxsResource* Res = GetWidget()->GetResource();
@@ -75,7 +75,6 @@ wxString wxsWidgetEvents::GetArrayEnteries(int TabSize)
     	wxsEventDesc* Event = *i;
     	if ( Event->FunctionName.Length() )
     	{
-    		Code.Append(_T(' '),TabSize);
     		Code.Append(Event->EventEntry);
     		Code.Append(_T('('));
     		if ( Event->WithId )

@@ -1,7 +1,7 @@
 #include "wxsheaders.h"
 #include "wxscodegen.h"
 
-wxsCodeGen::wxsCodeGen(wxsWidget* Widget,int InitialSpaces,int TabSize,bool DontCreateRoot)
+wxsCodeGen::wxsCodeGen(wxsWidget* Widget,bool DontCreateRoot)
 {
 	if ( DontCreateRoot )
 	{
@@ -27,7 +27,7 @@ wxsCodeGen::wxsCodeGen(wxsWidget* Widget,int InitialSpaces,int TabSize,bool Dont
 		AppendCodeReq(Widget,Params);
 	}
 
-    BeautyCode(Code,InitialSpaces,TabSize);
+    BeautyCode(Code);
 }
 
 wxsCodeGen::~wxsCodeGen()
@@ -79,9 +79,10 @@ void wxsCodeGen::AppendCodeReq(wxsWidget* Widget,wxsCodeParams& ThisParams)
     ThisParams.UniqueNumber = ChildParams.UniqueNumber - 1;
 }
 
-void wxsCodeGen::BeautyCode(wxString& Code,int Spaces,int TabSize)
+void wxsCodeGen::BeautyCode(wxString& Code)
 {
     wxString NewCode;
+    int Tabs = 0;
 
     const wxChar* Ptr = Code.c_str();
 
@@ -93,7 +94,7 @@ void wxsCodeGen::BeautyCode(wxString& Code,int Spaces,int TabSize)
         if ( !*Ptr ) break;
 
         // Adding spaces at the beginning of line
-        NewCode.Append(_T(' '),Spaces);
+        NewCode.Append(_T('\t'),Tabs);
 
         // Adding characters till the end of line or till some other circumstances
 
@@ -127,16 +128,16 @@ void wxsCodeGen::BeautyCode(wxString& Code,int Spaces,int TabSize)
 
             case _T('{'):
                 NewCode.Append(_T('\n'));
-                NewCode.Append(_T(' '),Spaces);
+                NewCode.Append(_T('\t'),Tabs);
                 NewCode.Append(_T("{\n"));
-                Spaces += TabSize;
+                Tabs++;
                 break;
 
             case _T('}'):
                 NewCode.Append(_T('\n'));
-                Spaces -= TabSize;
-                if ( Spaces < 0 ) Spaces = 0;
-                NewCode.Append(_T(' '),Spaces);
+                Tabs--;
+                if ( Tabs < 0 ) Tabs = 0;
+                NewCode.Append(_T('\t'),Tabs);
                 NewCode.Append(_T("}\n"));
                 break;
         }

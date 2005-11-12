@@ -134,10 +134,12 @@ bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry,cbEditor* Editor)
 
 	if ( Position == -1 )
 	{
+	    /*
 		wxMessageBox(wxString::Format(
 			_("Couldn't find code with header:\n\t\"%s\"\nin file '%s'"),
 			Entry->BlockHeader.c_str(),
 			Editor->GetFilename().c_str()));
+        */
 		return false;
 	}
 
@@ -147,14 +149,32 @@ bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry,cbEditor* Editor)
     int End = Ctrl->SearchInTarget(wxsBEnd());
     if ( End == -1 )
     {
+        /*
         wxMessageBox(wxString::Format(
             _("Unfinished block of auto-generated code with header:\n\t\"%s\"\nin file '%s'"),
             Entry->BlockHeader.c_str(),
             Editor->GetFilename().c_str()));
+        */
         return false;
     }
     else
     {
+        wxString BaseIndentation;
+        int IndentPos = Position;
+        while ( --IndentPos >= 0 )
+        {
+            wxChar ch = Ctrl->GetCharAt(IndentPos);
+            if ( (ch == _T('\n')) || (ch == _T('\r')) ) break;
+        }
+        while ( ++IndentPos < Position )
+        {
+            wxChar ch = Ctrl->GetCharAt(IndentPos);
+            BaseIndentation.Append(
+                ( ch == _T('\t') ) ? _T('\t') : _T(' '));
+        }
+
+        RebuildCode(BaseIndentation,Entry->Code);
+
         Ctrl->SetTargetStart(Position);
         Ctrl->SetTargetEnd(End);
         Ctrl->ReplaceTarget(Entry->Code);
@@ -166,7 +186,7 @@ bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry,cbEditor* Editor)
 
 bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry,const wxString& FileName)
 {
-    wxFFile File(FileName,_T("r"));
+    wxFFile File(FileName,_T("rb"));
     if ( !File.IsOpened() )
     {
     	/*
@@ -215,13 +235,28 @@ bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry,const wxString& FileName)
         return false;
     }
 
-// FIXME (SpOoN#1#): Rebuild new code to support valid eol mode
+    wxString BaseIndentation;
+    int IndentPos = Result.Length();
+    while ( --IndentPos >= 0 )
+    {
+        wxChar ch = Result.GetChar(IndentPos);
+        if ( (ch == _T('\n')) || (ch == _T('\r')) ) break;
+    }
+    while ( ++IndentPos < (int)Result.Length() )
+    {
+        wxChar ch = Result.GetChar(IndentPos);
+        BaseIndentation.Append(
+            ( ch == _T('\t') ) ? _T('\t') : _T(' '));
+    }
+
+    RebuildCode(BaseIndentation,Entry->Code);
+
     Result += Entry->Code;
     Result += Content.Remove(0,Position);
 
     File.Close();
 
-    if ( !File.Open(FileName,_T("w")) )
+    if ( !File.Open(FileName,_T("wb")) )
     {
     	/*
 		wxMessageBox(wxString::Format(
@@ -277,6 +312,7 @@ wxString wxsCoder::GetCode(const wxString& FileName,const wxString& BlockHeader)
 	EditorManager* EM = Manager::Get()->GetEditorManager();
 	assert ( EM != NULL );
     cbEditor* Editor = EM->GetBuiltinEditor(FileName);
+    int TabSize = ConfigManager::Get()->Read(_T("/editor/tab_size"), 4L);
     if ( Editor )
     {
         cbStyledTextCtrl* Ctrl = Editor->GetControl();
@@ -285,11 +321,21 @@ wxString wxsCoder::GetCode(const wxString& FileName,const wxString& BlockHeader)
         Ctrl->SetTargetEnd(Ctrl->GetLength());
         int Position = Ctrl->SearchInTarget(BlockHeader);
         if ( Position == -1 ) return _T("");
+        int SpacesCut = 0;
+        int SpacesPos = Position;
+        while ( --SpacesPos >= 0 )
+        {
+            wxChar ch = Ctrl->GetCharAt(SpacesPos);
+            if ( ch == _T('\t') ) SpacesCut += TabSize;
+            else if ( (ch==_T('\n')) || (ch==_T('\r')) ) break;
+            else SpacesCut++;
+        }
+
         Ctrl->SetTargetStart(Position);
         Ctrl->SetTargetEnd(Ctrl->GetLength());
         int End = Ctrl->SearchInTarget(wxsBEnd());
         if ( End == -1 ) return _T("");
-        return Ctrl->GetTextRange(Position,End);
+        return CutSpaces(Ctrl->GetTextRange(Position,End),SpacesCut);
     }
 
     wxFFile File(FileName,_T("r"));
@@ -298,9 +344,91 @@ wxString wxsCoder::GetCode(const wxString& FileName,const wxString& BlockHeader)
     if ( !File.ReadAll(&Content) ) return _T("");
     int Position = Content.First(BlockHeader);
     if ( Position == -1 ) return _T("");
+    int SpacesCut = 0;
+    int SpacesPos = Position;
+    while ( --SpacesPos >= 0 )
+    {
+        wxChar ch = Content.GetChar(SpacesPos);
+        if ( ch == _T('\t') ) SpacesCut += TabSize;
+        else if ( (ch==_T('\n')) || (ch==_T('\r')) ) break;
+        else SpacesCut++;
+    }
+
     Content.Remove(0,Position);
     Position = Content.First(wxsBEnd());
     if ( Position == -1 ) return _T("");
     Content.Remove(Position);
-	return Content;
+	return CutSpaces(Content,SpacesCut);
+}
+
+void wxsCoder::RebuildCode(wxString& BaseIndentation,wxString& Code)
+{
+    bool UseTab = ConfigManager::Get()->Read(_T("/editor/use_tab"), 0L) != 0;
+    int TabSize = ConfigManager::Get()->Read(_T("/editor/tab_size"), 4L);
+    int EolMode = ConfigManager::Get()->Read(_T("/editor/eol/eolmode"), 0L);
+
+    if ( !UseTab )
+    {
+        Code.Replace(_T("\t"),wxString(_T(' '),TabSize));
+    }
+
+    switch ( EolMode )
+    {
+        case 1:
+            BaseIndentation.Prepend(_T("\r"));
+            break;
+
+        case 2:
+            BaseIndentation.Prepend(_T("\n"));
+            break;
+
+        default:
+            BaseIndentation.Prepend(_T("\r\n"));
+    }
+
+
+    Code.Replace(_T("\n"),BaseIndentation);
+}
+
+wxString wxsCoder::CutSpaces(wxString Code,int Count)
+{
+    int TabSize = ConfigManager::Get()->Read(_T("/editor/tab_size"), 4L);
+    if ( TabSize < 1 ) TabSize = 4;
+
+    // Changing to \n line end mode
+    wxString Result;
+
+    for(;;)
+    {
+        int PosN = Code.Find(_T("\n"));
+        int PosR = Code.Find(_T("\r"));
+
+        if ( ( PosN < 0 ) && ( PosR < 0 ) ) break;
+
+        int Pos;
+        if ( PosN < 0 ) Pos = PosR;
+        else if ( PosR < 0 ) Pos = PosN;
+        else Pos = (PosN < PosR) ? PosN : PosR;
+
+        Result.Append(Code.Left(Pos));
+        Code.Remove(0,Pos);
+        while ( Code.Length() )
+        {
+            if ( ( Code[0] != _T('\n') ) &&
+                 ( Code[0] != _T('\r') ) ) break;
+            Code.Remove(0,1);
+        }
+        int LeftSpaces = Count;
+        while ( Code.Length() && LeftSpaces > 0 )
+        {
+            if ( Code[0] == _T(' ') ) LeftSpaces--;
+            else if ( Code[0] == _T('\t') ) LeftSpaces -= TabSize;
+            else break;
+            Code.Remove(0,1);
+        }
+        Result.Append(_T('\n'));
+    }
+
+    Result.Append(Code);
+    return Result;
 }

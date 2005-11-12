@@ -13,8 +13,8 @@ const wxChar* EmptySource =
 _T("#include \"$(Include)\"\n")
 _T("\n")
 _T("BEGIN_EVENT_TABLE($(ClassName),$(BaseClassName))\n")
-wxsBHeader("EventTable","$(ClassName)") _T("\n")
-wxsBEnd() _T("\n")
+_T("\t") wxsBHeader("EventTable","$(ClassName)") _T("\n")
+_T("\t") wxsBEnd() _T("\n")
 _T("END_EVENT_TABLE()\n")
 _T("\n")
 _T("$(ClassName)::$(ClassName)(wxWindow* parent,wxWindowID id)\n")
@@ -310,10 +310,6 @@ void wxsWindowRes::NotifyChange()
 
 void wxsWindowRes::RebuildCode()
 {
-    // TODO (SpOoN#1#): find tab size in settings
-	int TabSize = 4;
-	int GlobalTabSize = 2 * TabSize;
-
 //------------------------------
 // Generating initializing code
 //------------------------------
@@ -324,7 +320,7 @@ void wxsWindowRes::RebuildCode()
 	// Creating local and global declarations
 	wxString GlobalCode;
 	bool WasDeclaration = false;
-	AddDeclarationsReq(RootWidget,Code,GlobalCode,TabSize,GlobalTabSize,WasDeclaration);
+	AddDeclarationsReq(RootWidget,Code,GlobalCode,WasDeclaration);
 	if ( WasDeclaration )
 	{
 		Code.Append(_T('\n'));
@@ -335,9 +331,8 @@ void wxsWindowRes::RebuildCode()
     if ( GetEditMode() == wxsREMSource )
     {
         // Generating producing code
-        wxsCodeGen Gen(RootWidget,TabSize,TabSize,false);
+        wxsCodeGen Gen(RootWidget,false);
         Code.Append(Gen.GetCode());
-        Code.Append(_T(' '),TabSize);
     }
     else if ( GetEditMode() == wxsREMMixed )
     {
@@ -352,14 +347,12 @@ void wxsWindowRes::RebuildCode()
         // No local variables - clearing the code
         Code = CodeHeader;
         Code.Append(_T('\n'));
-        Code.Append(GetXrcLoadingCode(TabSize));
+        Code.Append(GetXrcLoadingCode());
         Code.Append(_T('\n'));
-        Code.Append(_T(' '),TabSize);
 
     	// Loading all controls
-    	GenXrcFetchingCode(Code,RootWidget,TabSize);
+    	GenXrcFetchingCode(Code,RootWidget);
     }
-
 
 	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(SrcFile),CodeHeader,Code);
 
@@ -369,7 +362,6 @@ void wxsWindowRes::RebuildCode()
 
 	CodeHeader.Printf(wxsBHeaderF("Declarations"),GetClassName().c_str());
 	Code = CodeHeader + _T("\n") + GlobalCode;
-	Code.Append(' ',GlobalTabSize);
 	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(HFile),CodeHeader,Code);
 
 //---------------------------------
@@ -379,14 +371,11 @@ void wxsWindowRes::RebuildCode()
     CodeHeader.Printf(wxsBHeaderF("Identifiers"),GetClassName().c_str());
     Code = CodeHeader;
     Code.Append(_T('\n'));
-    Code.Append(_T(' '),GlobalTabSize);
     if ( GetEditMode() == wxsREMSource )
     {
         wxArrayString IdsArray;
         BuildIdsArray(RootWidget,IdsArray);
-        Code.Append(_T("enum Identifiers\n"));
-        Code.Append(_T(' '),GlobalTabSize);
-        Code.Append(_T('{'));
+        Code.Append(_T("enum Identifiers\n{"));
         IdsArray.Sort();
         wxString Previous = _T("");
         bool First = true;
@@ -395,8 +384,7 @@ void wxsWindowRes::RebuildCode()
             if ( IdsArray[i] != Previous )
             {
                 Previous = IdsArray[i];
-                Code.Append( _T('\n') );
-                Code.Append( _T(' '), GlobalTabSize + TabSize );
+                Code.Append( _T("\n\t") );
                 Code.Append( Previous );
                 if ( First )
                 {
@@ -409,10 +397,7 @@ void wxsWindowRes::RebuildCode()
                 }
             }
         }
-        Code.Append( _T('\n') );
-        Code.Append( _T(' '), GlobalTabSize );
-        Code.Append( _T("};\n") );
-        Code.Append( _T(' '), GlobalTabSize );
+        Code.Append( _T("\n};\n") );
     }
     wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(HFile),CodeHeader,Code);
 
@@ -445,7 +430,7 @@ void wxsWindowRes::RebuildCode()
 	UpdateEventTable();
 }
 
-void wxsWindowRes::AddDeclarationsReq(wxsWidget* Widget,wxString& LocalCode,wxString& GlobalCode,int LocalTabSize,int GlobalTabSize,bool& WasLocal)
+void wxsWindowRes::AddDeclarationsReq(wxsWidget* Widget,wxString& LocalCode,wxString& GlobalCode,bool& WasLocal)
 {
 	static wxsCodeParams EmptyParams;
 
@@ -461,13 +446,12 @@ void wxsWindowRes::AddDeclarationsReq(wxsWidget* Widget,wxString& LocalCode,wxSt
             {
                 bool Member = Child->GetBaseProperties().IsMember;
                 wxString& Code = Member ? GlobalCode : LocalCode;
-                Code.Append(' ',Member ? GlobalTabSize : LocalTabSize);
                 Code.Append(Decl);
                 Code.Append('\n');
                 WasLocal |= !Member;
             }
 		}
-		AddDeclarationsReq(Child,LocalCode,GlobalCode,LocalTabSize,GlobalTabSize,WasLocal);
+		AddDeclarationsReq(Child,LocalCode,GlobalCode,WasLocal);
 	}
 }
 
@@ -833,12 +817,11 @@ void wxsWindowRes::BuildHeadersArray(wxsWidget* Widget,wxArrayString& Array)
 
 void wxsWindowRes::UpdateEventTable()
 {
-	int TabSize = 4;
 	wxString CodeHeader;
 	CodeHeader.Printf(wxsBHeaderF("EventTable"),ClassName.c_str());
 	wxString Code = CodeHeader;
 	Code.Append(_T('\n'));
-	CollectEventTableEnteries(Code,RootWidget,TabSize);
+	CollectEventTableEnteries(Code,RootWidget);
 	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(GetSourceFile()),CodeHeader,Code);
     // Applying modified state
     if ( GetEditor() )
@@ -858,18 +841,18 @@ void wxsWindowRes::UpdateEventTable()
     }
 }
 
-void wxsWindowRes::CollectEventTableEnteries(wxString& Code,wxsWidget* Widget,int TabSize)
+void wxsWindowRes::CollectEventTableEnteries(wxString& Code,wxsWidget* Widget)
 {
 	int Cnt = Widget->GetChildCount();
-    Code += Widget->GetEvents()->GetArrayEnteries(TabSize);
+    Code += Widget->GetEvents()->GetArrayEnteries();
 	for ( int i=0; i<Cnt; i++ )
 	{
 		wxsWidget* Child = Widget->GetChild(i);
-		CollectEventTableEnteries(Code,Child,TabSize);
+		CollectEventTableEnteries(Code,Child);
 	}
 }
 
-void wxsWindowRes::GenXrcFetchingCode(wxString& Code,wxsWidget* Widget,int TabSize)
+void wxsWindowRes::GenXrcFetchingCode(wxString& Code,wxsWidget* Widget)
 {
 	int Cnt = Widget->GetChildCount();
 	for ( int i=0; i<Cnt; i++ )
@@ -884,9 +867,8 @@ void wxsWindowRes::GenXrcFetchingCode(wxString& Code,wxsWidget* Widget,int TabSi
 			Code.Append(_T("\","));
 			Code.Append(Child->GetInfo().Name);
 			Code.Append(_T(");\n"));
-			Code.Append(_T(' '),TabSize);
 		}
-		GenXrcFetchingCode(Code,Child,TabSize);
+		GenXrcFetchingCode(Code,Child);
 	}
 }
 
