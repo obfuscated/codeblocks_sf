@@ -78,7 +78,7 @@ wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsWindowRes* Resource):
     UndoBuff->StoreChange();
     UndoBuff->Saved();
 
-    ToggleQuickPropsPanel(false);   // TODO: Store this setting somewhere
+    ToggleQuickPropsPanel(false);
 
     AllEditors.insert(this);
 }
@@ -89,6 +89,7 @@ wxsWindowEditor::~wxsWindowEditor()
 	KillPreview();
 	delete UndoBuff;
 	AllEditors.erase(this);
+	GetResource()->HidePreview();
 }
 
 void wxsWindowEditor::ReloadImages()
