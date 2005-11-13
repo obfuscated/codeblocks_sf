@@ -14,9 +14,17 @@ WXS_ST_BEGIN(wxsNotebookStyles)
     WXS_ST(wxNB_RIGHT)
     WXS_ST(wxNB_TOP)
     WXS_ST(wxNB_BOTTOM)
+#ifdef __WXMSW__
     WXS_ST(wxNB_FIXEDWIDTH)
     WXS_ST(wxNB_MULTILINE)
     WXS_ST(wxNB_NOPAGETHEME)
+#endif
+
+// NOTE (cyberkoa##): wxNB_FLAT is in HELP (WinCE only) file but not in wxMSW's XRC
+// FIXME (cyberkoa##): Find the defination for WINCE platform, __wxWINCE__ ?
+//#ifdef __wxWINCE__
+//    WXS_ST(wxNB_FLAT)
+//#endif
 WXS_ST_END(wxsNotebookStyles)
 
 WXS_EV_BEGIN(wxsNotebookEvents)

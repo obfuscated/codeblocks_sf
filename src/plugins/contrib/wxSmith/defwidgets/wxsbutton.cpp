@@ -8,7 +8,14 @@ WXS_ST_BEGIN(wxsButtonStyles)
     WXS_ST(wxBU_RIGHT)
     WXS_ST(wxBU_BOTTOM)
     WXS_ST(wxBU_EXACTFIT)
+// cyberkoa : No in the XRC but in the help file, MSW and GTK only
+#ifdef __WXMSW__
     WXS_ST(wxNO_BORDER)
+#endif
+#ifdef __WXGTK__
+    WXS_ST(wxNO_BORDER)
+#endif
+
     WXS_ST_DEFAULTS()
 WXS_ST_END(wxsButtonStyles)
 

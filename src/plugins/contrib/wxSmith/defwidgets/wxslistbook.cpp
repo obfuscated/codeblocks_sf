@@ -10,8 +10,11 @@
 
 WXS_ST_BEGIN(wxsListbookStyles)
     WXS_ST_CATEGORY("wxListbook")
-    WXS_ST(wxLI_HORIZONTAL)
-    WXS_ST(wxLI_VERTICAL)
+    WXS_ST(wxLB_DEFAULT)
+    WXS_ST(wxLB_TOP)
+    WXS_ST(wxLB_LEFT)
+    WXS_ST(wxLB_RIGHT)
+    WXS_ST(wxLB_BOTTOM)
 WXS_ST_END(wxsListbookStyles)
 
 WXS_EV_BEGIN(wxsListbookEvents)

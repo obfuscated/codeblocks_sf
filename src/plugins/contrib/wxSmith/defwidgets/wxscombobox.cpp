@@ -3,11 +3,12 @@
 #include <wx/combobox.h>
 WXS_ST_BEGIN(wxsComboBoxStyles)
     WXS_ST_CATEGORY("wxComboBox")
-#ifdef __WIN32__
+#ifdef __WXMSW__
     WXS_ST(wxCB_SIMPLE) // Windows ONLY
 #endif
     WXS_ST(wxCB_READONLY)
     WXS_ST(wxCB_SORT)
+    WXS_ST(wxCB_DROPDOWN)
     WXS_ST_DEFAULTS()
 WXS_ST_END(wxsComboBoxStyles)
 

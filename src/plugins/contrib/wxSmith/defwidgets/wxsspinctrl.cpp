@@ -5,6 +5,13 @@
 
 WXS_ST_BEGIN(wxsSpinCtrlStyles)
     WXS_ST_CATEGORY("wxSpinCtrl")
+
+// NOTE (cyberkoa##): wxSP_HORIZONTAL, wxSP_VERTICAL are not found in HELP but in wxMSW's XRC. Assume same as spinbutton
+#ifndef __WXGTK__
+    WXS_ST(wxSP_HORIZONTAL)
+#endif
+    WXS_ST(wxSP_VERTICAL)
+
     WXS_ST(wxSP_ARROW_KEYS)
     WXS_ST(wxSP_WRAP)
     WXS_ST_DEFAULTS()

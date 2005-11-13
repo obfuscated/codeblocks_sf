@@ -30,7 +30,17 @@ WXS_ST_BEGIN(wxsFrameStyles)
     WXS_ST(wxNO_3D)
     WXS_ST(wxTAB_TRAVERSAL)
     WXS_ST(wxWS_EX_VALIDATE_RECURSIVELY)
+// NOTE (cyberkoa##): wxFRAME_EX_METAL is an extended style and must be set by calling SetExtraStyle before Create is called (two-step construction).
     WXS_ST(wxFRAME_EX_METAL)
+// NOTE (cyberkoa##): cannot use wxFRAME_EX_CONTEXTHELP together with wxMAXIMIZE_BOX or wxMINIMIZE_BOX
+    WXS_ST(wxFRAME_EX_CONTEXTHELP)
+
+// NOTE (cyberkoa##): wxMINIMIZE, wxMAXIMIZE are in the HELP file but not in XRC
+//#ifdef __WXMSW__
+// NOTE (cyberkoa##): There is a style wxICONIZE which is identical to wxMINIMIZE , not included.
+//    WXS_ST(wxMINIMIZE)
+//    WXS_ST(wxMAXIMIZE)
+//#endif
 
 WXS_ST_END(wxsFrameStyles)
 

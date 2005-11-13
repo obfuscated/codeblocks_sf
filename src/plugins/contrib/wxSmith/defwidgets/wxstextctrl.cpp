@@ -13,14 +13,45 @@ WXS_ST_BEGIN(wxsTextCtrlStyles)
     WXS_ST(wxHSCROLL)
     WXS_ST(wxTE_RICH)
     WXS_ST(wxTE_RICH2)
-    WXS_ST(wxTE_AUTO_URL)
     WXS_ST(wxTE_NOHIDESEL)
     WXS_ST(wxTE_LEFT)
+#ifdef __WXMSW__
+    WXS_ST(wxTE_AUTO_URL)
+#endif
+#ifdef __WXGTK20__
+    WXS_ST(wxTE_AUTO_URL)
+#endif
+
+#ifdef __WXMSW__
     WXS_ST(wxTE_CENTRE)
+#endif
+#ifdef __WXGTK20__
+    WXS_ST(wxTE_CENTRE)
+#endif
+
+#ifdef __WXMSW__
     WXS_ST(wxTE_RIGHT)
+#endif
+#ifdef __WXGTK20__
+    WXS_ST(wxTE_RIGHT)
+#endif
+
+#ifdef __WXGTK20__
+    WXS_ST(wxTE_CHARWRAP)
+#endif
+#ifdef ____WXUNIVERSAL__
+    WXS_ST(wxTE_CHARWRAP)
+#endif
+
+#ifdef __WXGTK20__
+    WXS_ST(wxTE_WORDWRAP)
+#endif
+#ifdef ____WXUNIVERSAL__
+    WXS_ST(wxTE_WORDWRAP)
+#endif
+
     WXS_ST(wxTE_DONTWRAP)
     WXS_ST(wxTE_LINEWRAP)
-    WXS_ST(wxTE_WORDWRAP)
 WXS_ST_END(wxsTextCtrlStyles)
 
 WXS_EV_BEGIN(wxsTextCtrlEvents)

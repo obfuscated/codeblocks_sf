@@ -12,6 +12,7 @@
 
 WXS_ST_BEGIN(wxsStaticTextStyles)
     WXS_ST_CATEGORY("wxStaticText")
+    WXS_ST(wxALIGN_LEFT)
     WXS_ST(wxALIGN_RIGHT)
     WXS_ST(wxALIGN_CENTRE)
     WXS_ST(wxST_NO_AUTORESIZE)

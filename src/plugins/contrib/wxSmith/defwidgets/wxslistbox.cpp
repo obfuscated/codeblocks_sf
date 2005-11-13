@@ -5,7 +5,7 @@
 
 WXS_ST_BEGIN(wxsListBoxStyles)
     WXS_ST_CATEGORY("wxListBox")
-#ifdef __WIN32__
+#ifdef __WXMSW__
     WXS_ST(wxLB_HSCROLL) // Windows ONLY
 #endif
     WXS_ST(wxLB_SINGLE)

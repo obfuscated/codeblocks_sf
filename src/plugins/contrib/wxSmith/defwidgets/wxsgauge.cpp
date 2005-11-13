@@ -4,7 +4,11 @@
 WXS_ST_BEGIN(wxsGaugeStyles)
     WXS_ST(wxGA_HORIZONTAL)
     WXS_ST(wxGA_VERTICAL)
+#ifdef __WXMSW__
     WXS_ST(wxGA_SMOOTH)
+#endif
+// NOTE (cyberkoa##): wxGA_PROGRESSBAR not in HELP file but in XRC code
+//    WXS_ST(wxGA_PROGRESSBAR)
 WXS_ST_END(wxsGaugeStyles)
 
 WXS_EV_BEGIN(wxsGaugeEvents)

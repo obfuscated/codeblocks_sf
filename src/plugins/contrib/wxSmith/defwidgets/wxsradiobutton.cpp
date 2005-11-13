@@ -3,18 +3,9 @@
 
 WXS_ST_BEGIN(wxsRadioButtonStyles)
     WXS_ST_CATEGORY("wxRadioButton")
-    WXS_ST(wxBU_LEFT)
-    WXS_ST(wxBU_TOP)
-    WXS_ST(wxBU_RIGHT)
-    WXS_ST(wxBU_BOTTOM)
-//    WXS_ST(wxBU_EXACTFIT)
-    WXS_ST(wxNO_BORDER)
-
     WXS_ST(wxRB_GROUP)
-#ifdef __WXMSW__
     WXS_ST(wxRB_SINGLE)
-#endif
-#ifdef __PALMOS__
+#ifdef __WXPALMOS__
     WXS_ST(wxRB_USE_CHECKBOX)
 #endif
     WXS_ST_DEFAULTS()
