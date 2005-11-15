@@ -21,10 +21,9 @@ WXS_ST_BEGIN(wxsNotebookStyles)
 #endif
 
 // NOTE (cyberkoa##): wxNB_FLAT is in HELP (WinCE only) file but not in wxMSW's XRC
-// FIXME (cyberkoa##): Find the defination for WINCE platform, __wxWINCE__ ?
-//#ifdef __wxWINCE__
-//    WXS_ST(wxNB_FLAT)
-//#endif
+#ifdef __WXWINCE__
+    WXS_ST(wxNB_FLAT)
+#endif
 WXS_ST_END(wxsNotebookStyles)
 
 WXS_EV_BEGIN(wxsNotebookEvents)
