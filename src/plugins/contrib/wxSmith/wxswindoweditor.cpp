@@ -64,6 +64,12 @@ wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsWindowRes* Resource):
     OpsSizer->Add(PreviewBtn   = new wxBitmapButton(this,wxsPreviewId,PreviewImg));
     OpsSizer->Add(1,5);
     OpsSizer->Add(QuickPanelBtn = new wxBitmapButton(this,wxsQuickPropsId,QuickPropsImgOpen));
+    InsIntoBtn   ->SetToolTip(_("Insert new widgets into current selection"));
+    InsBeforeBtn ->SetToolTip(_("Insert new widgets before current selection"));
+    InsAfterBtn  ->SetToolTip(_("Insert new widgets after current selection"));
+    DelBtn       ->SetToolTip(_("Delete current selection"));
+    PreviewBtn   ->SetToolTip(_("Show preview"));
+    QuickPanelBtn->SetToolTip(_("Open / Close Quick Properties panel"));
 
     SetSizer(VertSizer);
 
