@@ -19,8 +19,6 @@
 #include <wx/textctrl.h>
 #include <wx/dialog.h>
 
-#include <configmanager.h>
-
 class CBProfilerConfigDlg : public wxDialog
 {
 	public:
@@ -28,7 +26,7 @@ class CBProfilerConfigDlg : public wxDialog
 		virtual ~CBProfilerConfigDlg();
 	protected:
         void CheckBoxEvent(wxCommandEvent& event);
-        
+
         void LoadSettings();
         void SaveSettings();
         void EndModal(int retCode);

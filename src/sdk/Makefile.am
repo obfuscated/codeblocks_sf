@@ -1,4 +1,4 @@
-SUBDIRS = tinyxml wxscintilla resources
+SUBDIRS = as tinyxml wxscintilla resources
 
 if PRECOMPILE_HEADERS
 BUILT_SOURCES = $(srcdir)/sdk.h.gch
@@ -15,12 +15,14 @@ lib_LTLIBRARIES = libcodeblocks.la
 libcodeblocks_la_LDFLAGS = -version-info @CODEBLOCKS_VERSION_INFO@
 
 libcodeblocks_la_LIBADD =  $(WX_LIBS) \
+			as/libangelscript.la \
 			tinyxml/libtinyxml.la \
 			wxscintilla/libwxscintilla.la
 
 libcodeblocks_la_SOURCES = Managers/Managers.cpp \
 Managers/StdAfx.cpp \
 autodetectcompilers.cpp \
+base64.cpp \
 cbeditor.cpp \
 cbeditorprintout.cpp \
 cbplugin.cpp \
@@ -35,6 +37,7 @@ compiletargetbase.cpp \
 configmanager.cpp \
 configuretoolsdlg.cpp \
 confirmreplacedlg.cpp \
+crc32.cpp \
 customvars.cpp \
 devcpploader.cpp \
 editarrayfiledlg.cpp \
@@ -81,6 +84,7 @@ projectoptionsdlg.cpp \
 projectsfilemasksdlg.cpp \
 projecttemplateloader.cpp \
 replacedlg.cpp \
+scriptingmanager.cpp \
 sdk_events.cpp \
 searchresultslog.cpp \
 selecttargetdlg.cpp \
@@ -96,6 +100,7 @@ xtra_res.cpp
 noinst_HEADERS = Managers/Managers.h \
 Managers/StdAfx.h \
 autodetectcompilers.h \
+base64.h \
 cbeditor.h \
 cbeditorprintout.h \
 cbexception.h \
@@ -111,6 +116,7 @@ compiletargetbase.h \
 configmanager.h \
 configuretoolsdlg.h \
 confirmreplacedlg.h \
+crc32.h \
 customvars.h \
 devcpploader.h \
 editarrayfiledlg.h \
@@ -164,6 +170,7 @@ projectsfilemasksdlg.h \
 projecttemplateloader.h \
 replacedlg.h \
 sanitycheck.h \
+scriptingmanager.h \
 sdk_events.h \
 searchresultslog.h \
 selecttargetdlg.h \

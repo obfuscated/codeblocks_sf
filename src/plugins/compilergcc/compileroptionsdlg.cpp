@@ -255,7 +255,7 @@ void CompilerOptionsDlg::DoFillOthers()
     wxTextCtrl* txt = XRCCTRL(*this, "txtConsoleTerm", wxTextCtrl);
     if (txt)
     {
-        txt->SetValue(ConfigManager::Get()->Read(_T("/compiler_gcc/console_terminal"), DEFAULT_CONSOLE_TERM));
+        txt->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM));
 #ifdef __WXMSW__
         // under win32, this option is not needed, so disable it
         txt->Enable(false);
@@ -264,7 +264,7 @@ void CompilerOptionsDlg::DoFillOthers()
     txt = XRCCTRL(*this, "txtConsoleShell", wxTextCtrl);
     if (txt)
     {
-        txt->SetValue(ConfigManager::Get()->Read(_T("/compiler_gcc/console_shell"), DEFAULT_CONSOLE_SHELL));
+        txt->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/console_shell"), DEFAULT_CONSOLE_SHELL));
         // because in previous versions the value for terminal
         // used to be "console_shell" (incorrectly), double-check that
         // the word "term" or "onsol" doesn't appear in "shell"
@@ -279,7 +279,7 @@ void CompilerOptionsDlg::DoFillOthers()
     if (spn)
     {
         spn->SetRange(0, 1000);
-        spn->SetValue(ConfigManager::Get()->Read(_T("/compiler_gcc/max_reported_errors"), 50));
+        spn->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/max_reported_errors"), 50));
     }
 }
 
@@ -1551,13 +1551,13 @@ void CompilerOptionsDlg::EndModal(int retCode)
 	//others
     wxTextCtrl* txt = XRCCTRL(*this, "txtConsoleShell", wxTextCtrl);
     if (txt)
-        ConfigManager::Get()->Write(_T("/compiler_gcc/console_shell"), txt->GetValue());
+        Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/console_shell"), txt->GetValue());
     txt = XRCCTRL(*this, "txtConsoleTerm", wxTextCtrl);
     if (txt)
-        ConfigManager::Get()->Write(_T("/compiler_gcc/console_terminal"), txt->GetValue());
+        Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/console_terminal"), txt->GetValue());
     wxSpinCtrl* spn = XRCCTRL(*this, "spnMaxErrors", wxSpinCtrl);
     if (spn)
-        ConfigManager::Get()->Write(_T("/compiler_gcc/max_reported_errors"), spn->GetValue());
+        Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/max_reported_errors"), spn->GetValue());
 
 	wxDialog::EndModal(retCode);
 }

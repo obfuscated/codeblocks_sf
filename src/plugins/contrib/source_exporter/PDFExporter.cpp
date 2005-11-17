@@ -33,7 +33,7 @@ bool PDFExporter::Style::operator == (int aValue)
 
 void PDFExporter::PDFSetFont(wxPdfDocument &pdf)
 {
-  wxString fontstring = ConfigManager::Get()->Read(_T("/editor/font"), wxEmptyString);
+  wxString fontstring = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/font"), wxEmptyString);
   wxString faceName(_T("Courier"));
   pdf.SetFont(faceName); // Set Courier as default
   int pt = 8; // Default point size

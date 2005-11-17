@@ -17,21 +17,27 @@
 
 namespace wxUtil {
 
+// NOTE: unicode conversion by mandrav@codeblocks.org for Code::Blocks IDE
 void WriteString( wxOutputStream& stream, const wxString& string ) {
     // write wxString
-    int size = string.size();
+    const wxWX2MBbuf psz = string.mb_str(wxConvUTF8);
+    int size = psz ? strlen(psz) : 0;
     stream.Write( &size, sizeof( size ) );
-    stream.Write( string.c_str(), size );
+    if (size)
+        stream.Write( psz, size );
 }
 
+// NOTE: unicode conversion by mandrav@codeblocks.org for Code::Blocks IDE
 wxString ReadString( wxInputStream& stream ) {
     // read wxString
     int size = 0;
     stream.Read( &size, sizeof( size ) );
-    wxString string;
-    stream.Read( string.GetWriteBuf( size ), size );
-    string.UngetWriteBuf();
-    return string;
+    if (!size)
+        return wxEmptyString;
+    char* psz = new char[size + 1];
+    stream.Read(psz, size);
+    psz[size] = 0;
+    return wxString(psz, wxConvUTF8);
 }
 
 bool SaveCheckFilename( const wxString& file ) {

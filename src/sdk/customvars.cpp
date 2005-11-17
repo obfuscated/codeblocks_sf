@@ -47,32 +47,20 @@ CustomVars::~CustomVars()
 void CustomVars::Load(const wxString& configpath)
 {
 	m_Vars.Clear();
-	long cookie;
 	wxString entry;
-	wxConfigBase* conf = ConfigManager::Get();
-	wxString oldPath = conf->GetPath();
-	conf->SetPath(configpath);
-	bool cont = conf->GetFirstEntry(entry, cookie);
-	while (cont)
-	{
-		DoAdd(entry, conf->Read(entry), false);
-		cont = conf->GetNextEntry(entry, cookie);
-	}
-	conf->SetPath(oldPath);
+	ConfigManager* conf = Manager::Get()->GetConfigManager(_T("compiler"));
+	wxArrayString list = conf->EnumerateKeys(configpath);
+	for (unsigned int i = 0; i < list.GetCount(); ++i)
+		DoAdd(list[i], conf->Read(configpath + _T('/') + list[i]), false);
 	SetModified(false);
 }
 
 void CustomVars::Save(const wxString& configpath)
 {
-	wxConfigBase* conf = ConfigManager::Get();
-	conf->DeleteGroup(configpath);
-	wxString oldPath = conf->GetPath();
-	conf->SetPath(configpath);
+	ConfigManager* conf = Manager::Get()->GetConfigManager(_T("compiler"));
+	conf->DeleteSubPath(configpath);
 	for (unsigned int i = 0; i < m_Vars.GetCount(); ++i)
-	{
-		conf->Write(m_Vars[i].name, m_Vars[i].value);
-	}
-	conf->SetPath(oldPath);
+		conf->Write(configpath + _T('/') + m_Vars[i].name, m_Vars[i].value);
 	SetModified(false);
 }
 

@@ -8,7 +8,7 @@ ToDoSettingsDlg::ToDoSettingsDlg()
 {
 	//ctor
 	wxXmlResource::Get()->LoadDialog(this, 0L, _T("ToDoSettingsDlg"));
-	bool checked = ConfigManager::Get()->Read(_T("todo_list/auto_refresh"), true);
+	bool checked = Manager::Get()->GetConfigManager(_T("todo_list"))->ReadBool(_T("auto_refresh"), true);
 	XRCCTRL(*this, "chkAutoRefresh", wxCheckBox)->SetValue(checked);
 }
 
@@ -22,7 +22,7 @@ void ToDoSettingsDlg::EndModal(int retCode)
     if (retCode == wxID_OK)
     {
         bool checked = XRCCTRL(*this, "chkAutoRefresh", wxCheckBox)->GetValue();
-        ConfigManager::Get()->Write(_T("todo_list/auto_refresh"), checked);
+        Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("auto_refresh"), checked);
     }
 
     wxDialog::EndModal(retCode);

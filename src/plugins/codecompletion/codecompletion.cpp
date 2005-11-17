@@ -85,7 +85,7 @@ CodeCompletion::CodeCompletion()
 {
     wxFileSystem::AddHandler(new wxZipFSHandler);
     wxXmlResource::Get()->InitAllHandlers();
-    wxString resPath = ConfigManager::Get()->Read(_T("data_path"), wxEmptyString);
+    wxString resPath = ConfigManager::GetDataFolder();
     wxXmlResource::Get()->Load(resPath + _T("/code_completion.zip#zip:*.xrc"));
 
     m_PluginInfo.name = _T("CodeCompletion");
@@ -103,8 +103,6 @@ CodeCompletion::CodeCompletion()
     m_PageIndex = -1;
     m_EditMenu = 0L;
 	m_SearchMenu = 0L;
-
-	ConfigManager::AddConfiguration(m_PluginInfo.title, _T("/code_completion"));
 }
 
 CodeCompletion::~CodeCompletion()
@@ -158,9 +156,11 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
 
 	if (type == mtEditorManager)
 	{
-	    cbStyledTextCtrl* control = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()->GetControl();
-	    if (control)
+	    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+	    if (ed)
 	    {
+	        m_LastIncludeFileFrom = ed->GetFilename();
+            cbStyledTextCtrl* control = ed->GetControl();
             int pos = control->GetCurrentPos();
             wxString line = control->GetLine(control->LineFromPosition(pos));
 
@@ -260,10 +260,10 @@ int CodeCompletion::CodeComplete()
 		return -3;
 
 	FileType ft = FileTypeOf(ed->GetShortName());
-	if ( ft != ftHeader && ft != ftSource) // only parse source/header files
+	if (ft != ftHeader && ft != ftSource) // only parse source/header files
 		return -4;
 
-	Parser* parser = m_NativeParsers.FindParserFromActiveEditor();
+	Parser* parser = m_NativeParsers.FindParserFromEditor(ed);
 	if (!parser)
 	{
 		Manager::Get()->GetMessageManager()->DebugLog(_("Active editor has no associated parser ?!?"));
@@ -573,7 +573,7 @@ void CodeCompletion::OnUpdateUI(wxUpdateUIEvent& event)
 
 void CodeCompletion::OnCodeComplete(wxCommandEvent& event)
 {
-    if (ConfigManager::Get()->Read(_T("/code_completion/use_code_completion"), 1L) == 0)
+    if (!Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("/use_code_completion"), true))
         return;
     if (m_IsAttached)
 		DoCodeComplete();
@@ -620,7 +620,7 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
             if (token && token->m_DisplayName.Matches(sel))
             {
                 Manager::Get()->GetMessageManager()->DebugLog(_("Token found at line %d"), token->m_Line);
-                ed->GetControl()->GotoLine(token->m_Line - 1);
+                ed->GotoLine(token->m_Line - 1);
             }
         }
 	}
@@ -652,7 +652,7 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
         cbEditor* ed = edMan->Open(token->m_Filename);
         if (ed)
         {
-            ed->GetControl()->GotoLine(token->m_Line - 1);
+            ed->GotoLine(token->m_Line - 1);
             return;
         }
     }
@@ -666,20 +666,25 @@ void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
 		parser = m_NativeParsers.FindParserFromActiveProject(); // get parser of active project, then
     if (!parser)
         return;
-    wxString inc = m_LastIncludeFile;
-//    Manager::Get()->GetMessageManager()->DebugLog(_("Looking for #include '%s' (%d dirs)"), inc.c_str(), parser->IncludeDirs().GetCount());
-    for (unsigned int i = 0; i < parser->IncludeDirs().GetCount(); ++i)
+
+    // search in all parser's include dirs
+    wxString tmp = parser->FindFileInIncludeDirs(m_LastIncludeFile);
+    if (!tmp.IsEmpty())
     {
-        wxString base = parser->IncludeDirs()[i];
-        wxFileName tmp = inc;
-        tmp.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
-//        Manager::Get()->GetMessageManager()->DebugLog(_("Searching '%s'"), tmp.GetFullPath().c_str());
-        if (wxFileExists(tmp.GetFullPath()))
-        {
-            EditorManager* edMan = Manager::Get()->GetEditorManager();
-            edMan->Open(tmp.GetFullPath());
-            return;
-        }
+        EditorManager* edMan = Manager::Get()->GetEditorManager();
+        edMan->Open(tmp);
+        return;
     }
-    wxMessageBox(wxString::Format(_("Not found: %s"), inc.c_str()), _("Warning"), wxICON_WARNING);
+
+    // look in the same dir as the source file
+    wxFileName fname = m_LastIncludeFile;
+    fname.Assign(wxFileName(m_LastIncludeFileFrom).GetPath(wxPATH_GET_SEPARATOR) + m_LastIncludeFile);
+    if (wxFileExists(fname.GetFullPath()))
+    {
+        EditorManager* edMan = Manager::Get()->GetEditorManager();
+        edMan->Open(fname.GetFullPath());
+        return;
+    }
+
+    wxMessageBox(wxString::Format(_("Not found: %s"), m_LastIncludeFile.c_str()), _("Warning"), wxICON_WARNING);
 }

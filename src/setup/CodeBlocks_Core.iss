@@ -86,6 +86,7 @@ Source: ..\output\share\CodeBlocks\plugins\devpakupdater.dll; DestDir: {app}\sha
 Source: ..\output\share\CodeBlocks\plugins\cbprofiler.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: UntestedPlugins/Profiler
 Source: ..\output\share\CodeBlocks\plugins\codestat.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: UntestedPlugins/CodeStat
 Source: ..\output\share\CodeBlocks\plugins\help_plugin.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: UntestedPlugins/HelpPlugin
+Source: ..\output\share\CodeBlocks\plugins\exporter.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: UntestedPlugins/SourceExporter
 Source: ..\output\share\CodeBlocks\plugins\svn.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: UntestedPlugins/Svn
 Source: ..\output\share\CodeBlocks\plugins\wxsmith.dll; DestDir: {app}\share\CodeBlocks\plugins; Components: UntestedPlugins/wxSmith
 Source: ..\output\share\CodeBlocks\images\ascii.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
@@ -120,6 +121,7 @@ Source: ..\output\share\CodeBlocks\images\run.png; DestDir: {app}\share\CodeBloc
 Source: ..\output\share\CodeBlocks\images\searchreplace.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\images\source.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\images\splash.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
+Source: ..\output\share\CodeBlocks\images\splash_new.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\images\stop.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
 Source: ..\output\share\CodeBlocks\images\undo.png; DestDir: {app}\share\CodeBlocks\images; Components: ProgramFiles
 Source: ..\plugins\codecompletion\resources\images\class.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: Plugins/CodeCompletion
@@ -144,12 +146,16 @@ Source: ..\plugins\codecompletion\resources\images\symbols_folder.png; DestDir: 
 Source: ..\plugins\codecompletion\resources\images\var_private.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: Plugins/CodeCompletion
 Source: ..\plugins\codecompletion\resources\images\var_protected.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: Plugins/CodeCompletion
 Source: ..\plugins\codecompletion\resources\images\var_public.png; DestDir: {app}\share\CodeBlocks\images\codecompletion; Components: Plugins/CodeCompletion
+Source: ..\plugins\contrib\wxSmith\smithicons\*.png; DestDir: {app}\share\CodeBlocks\images\wxsmith; Components: UntestedPlugins/wxSmith
 Source: ..\templates\common\console.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\common\console.png; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\common\console.template; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\common\console-main-c.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\common\console-main-cpp.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\common\dll.png; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
+Source: ..\templates\common\glfw.png; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
+Source: ..\templates\common\glfw.template; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
+Source: ..\templates\common\glfw-main.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\common\irr_main.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\common\irrlicht.png; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\common\ogrelogo.png; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
@@ -169,6 +175,7 @@ Source: ..\templates\common\sdl-main.cpp; DestDir: {app}\share\CodeBlocks\templa
 Source: ..\templates\common\staticlib.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\common\staticlib.template; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\common\staticlib-sample.c; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
+Source: ..\templates\common\wx_pch.h; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\common\wx-app-ash.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\common\wx-app-ash.h; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\common\wx-main-ash.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
@@ -180,6 +187,7 @@ Source: ..\templates\common\wxwidgets.png; DestDir: {app}\share\CodeBlocks\templ
 Source: ..\templates\win32\dll.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\win32\dll.template; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\win32\dll-main.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
+Source: ..\templates\win32\glfw-static.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\win32\gui.png; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\win32\irr_gcc.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\win32\irr_vctk.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
@@ -196,8 +204,10 @@ Source: ..\templates\win32\win32.cbp; DestDir: {app}\share\CodeBlocks\templates;
 Source: ..\templates\win32\win32gui.template; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\win32\win32-main.cpp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\win32\wxwidgets.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
+Source: ..\templates\win32\wxwidgets_u.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\win32\wxwidgets.template; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\templates\win32\wxwidgets_static.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
+Source: ..\templates\win32\wxwidgets_static_u.cbp; DestDir: {app}\share\CodeBlocks\templates; Components: ProgramFiles/Templates
 Source: ..\sdk\resources\lexers\lexer_cg.sample; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
 Source: ..\sdk\resources\lexers\lexer_cg.xml; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
 Source: ..\sdk\resources\lexers\lexer_cpp.sample; DestDir: {app}\share\CodeBlocks\lexers; Components: ProgramFiles
@@ -255,6 +265,7 @@ Name: UntestedPlugins/DevPak; Description: Dev-C++ DevPaks support; Types: custo
 Name: UntestedPlugins/Profiler; Description: GProf output parser; Types: custom full
 Name: UntestedPlugins/CodeStat; Description: Code staticstics (lines of code, comments, etc); Types: custom full
 Name: UntestedPlugins/HelpPlugin; Description: Support for external help files in Help menu; Types: custom full
+Name: UntestedPlugins/SourceExporter; Description: Exports open file to HTML/RTF/ODT; Types: custom full
 Name: UntestedPlugins/Svn; Description: SVN/CVS support for projects; Types: custom
 Name: UntestedPlugins/wxSmith; Description: Work-In-Progress RAD editor for wxWidgets; Types: custom
 

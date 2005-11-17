@@ -16,32 +16,20 @@ void CompilerFactory::RegisterCompiler(Compiler* compiler)
 
 void CompilerFactory::RegisterUserCompilers()
 {
-	wxString str;
-	long cookie;
-
-	ConfigManager::Get()->SetPath(_T("/compiler_gcc/compiler_sets"));
-	bool cont = ConfigManager::Get()->GetFirstGroup(str, cookie);
-	while (cont)
-	{
-		int parent = -1;
-		parent = ConfigManager::Get()->Read(_T("/compiler_gcc/compiler_sets/") + str + _T("/_parent"), -1);
-
+    wxArrayString paths = Manager::Get()->GetConfigManager(_T("compiler"))->EnumerateSubPaths(_T("/sets"));
+    for (unsigned int i = 0; i < paths.GetCount(); ++i)
+    {
+		int parent = Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/sets/") + paths[i] + _T("/parent"), -1);
         if (CompilerIndexOK(parent - 1))
-        {
             CreateCompilerCopy(Compilers[parent - 1]);
-        }
-
-        ConfigManager::Get()->SetPath(_T("/compiler_gcc/compiler_sets"));
-		cont = ConfigManager::Get()->GetNextGroup(str, cookie);
 	}
-	ConfigManager::Get()->SetPath(_T("/"));
 }
 
 int CompilerFactory::CreateCompilerCopy(Compiler* compiler)
 {
     Compiler* newC = compiler->CreateCopy();
     RegisterCompiler(newC);
-    newC->LoadSettings(_T("/compiler_gcc/compiler_sets"));
+    newC->LoadSettings(_T("/sets"));
     Manager::Get()->GetMessageManager()->DebugLog(_("Added compiler \"%s\""), newC->GetName().c_str());
     return Compilers.GetCount() - 1; // return the index for the new compiler
 }
@@ -117,8 +105,8 @@ void CompilerFactory::SetDefaultCompiler(Compiler* compiler)
 
 void CompilerFactory::SaveSettings()
 {
-    wxString baseKey = _T("/compiler_gcc/compiler_sets");
-    ConfigManager::Get()->DeleteGroup(baseKey);
+    wxString baseKey = _T("/sets");
+//    Manager::Get()->GetConfigManager(_T("compiler"))->UnSet(baseKey);
     for (unsigned int i = 0; i < Compilers.GetCount(); ++i)
     {
         Compilers[i]->SaveSettings(baseKey);
@@ -128,7 +116,7 @@ void CompilerFactory::SaveSettings()
 void CompilerFactory::LoadSettings()
 {
     bool needAutoDetection = false;
-    wxString baseKey = _T("/compiler_gcc/compiler_sets");
+    wxString baseKey = _T("/sets");
     for (unsigned int i = 0; i < Compilers.GetCount(); ++i)
     {
         Compilers[i]->LoadSettings(baseKey);

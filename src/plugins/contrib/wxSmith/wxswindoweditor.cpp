@@ -539,7 +539,7 @@ bool wxsWindowEditor::InsertInto(wxsWidget* New,wxsWidget* Ref)
 void wxsWindowEditor::InitializeImages()
 {
     if ( ImagesLoaded ) return;
-    wxString basePath = ConfigManager::Get()->Read(_T("data_path"), wxEmptyString) + _T("/images/wxsmith/");
+    wxString basePath = ConfigManager::GetDataFolder() + _T("/images/wxsmith/");
 
     static const wxString NormalNames[] =
     {

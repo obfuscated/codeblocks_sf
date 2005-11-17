@@ -6,6 +6,8 @@
 #include <wx/file.h>
 #include <settings.h>
 
+#include "blockallocated.h"
+
 class Token;
 WX_DEFINE_ARRAY(Token*, TokensArray);
 
@@ -31,7 +33,7 @@ enum TokenKind
 	tkUndefined     = 0xFFFF,
 };
 
-class Token
+class Token  : public BlockAllocated<Token, 5000>
 {
 	public:
 		Token();

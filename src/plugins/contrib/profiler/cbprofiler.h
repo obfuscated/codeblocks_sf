@@ -34,7 +34,6 @@
 #include <settings.h> // needed to use the Code::Blocks SDK
 #include <licenses.h> // defines some common licenses (like the GPL)
 #include <manager.h>
-#include <configmanager.h>
 #include <cbproject.h>
 #include <projectmanager.h>
 #include <messagemanager.h>

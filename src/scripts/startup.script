@@ -1,0 +1,7 @@
+int main()
+{
+	Log("Running startup script");
+    // ShowMessage("Hello world!");
+
+	return 0;
+}

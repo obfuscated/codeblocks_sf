@@ -144,7 +144,7 @@ string HTMLExporter::HTMLBody(const wxMemoryBuffer &styled_text)
   const char *buffer = reinterpret_cast<char *>(styled_text.GetData());
   const size_t buffer_size = styled_text.GetDataLen();
 
-  wxString fontstring = ConfigManager::Get()->Read(_T("/editor/font"), wxEmptyString);
+  wxString fontstring = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/font"), wxEmptyString);
 
   if (!fontstring.IsEmpty())
   {

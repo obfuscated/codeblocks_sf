@@ -33,7 +33,6 @@
 #include <manager.h>
 #include <projectmanager.h>
 #include <messagemanager.h>
-#include <configmanager.h>
 #include <pipedprocess.h>
 
 typedef struct

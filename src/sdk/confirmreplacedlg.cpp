@@ -25,7 +25,6 @@
 
 #include "sdk_precomp.h"
 #include "confirmreplacedlg.h"
-#include "configmanager.h"
 #include <wx/xrc/xmlres.h>
 #include <wx/stattext.h>
 

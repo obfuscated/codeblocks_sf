@@ -144,9 +144,9 @@ from DLLs. Instead, we build "sdk" as a static library
 #define MACMAN() Manager::Get()->GetMacrosManager()
 #define PRSMAN() Manager::Get()->GetPersonalityManager()
 
-#define CFGMAN() ConfigManager::Get()
-#define CFG_READ(...)    ConfigManager::Get()->Read(__VA_ARGS__)
-#define CFG_WRITE(...) ConfigManager::Get()->Write(__VA_ARGS__)
+#define CFGMAN() OldConfigManager::Get()
+#define CFG_READ(...)    OldConfigManager::Get()->Read(__VA_ARGS__)
+#define CFG_WRITE(...) OldConfigManager::Get()->Write(__VA_ARGS__)
 
 #endif // SETTINGS_H
 

@@ -6,9 +6,10 @@
  * Copyright: (c) Zlika
  * License:   GPL
  **************************************************************/
+
 #ifndef CODESTATCONFIG_H
 #define CODESTATCONFIG_H
-#include <configmanager.h>
+
 #include <wx/dialog.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/intl.h>
@@ -16,6 +17,7 @@
 #include <wx/combobox.h>
 #include <wx/stattext.h>
 #include "language_def.h"
+
 class CodeStatConfigDlg : public wxDialog
 {
 	public:
@@ -30,4 +32,5 @@ class CodeStatConfigDlg : public wxDialog
 	   LanguageDef languages[NB_FILETYPES];
       DECLARE_EVENT_TABLE()
 };
+
 #endif // CODESTATCONFIG_H

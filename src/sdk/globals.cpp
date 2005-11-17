@@ -29,6 +29,7 @@
 #include <wx/filename.h>
 #include <wx/dirdlg.h>
 #include <wx/msgdlg.h>
+#include <wx/file.h>
 
 wxString GetStringFromArray(const wxArrayString& array, const wxString& separator)
 {
@@ -70,101 +71,101 @@ wxArrayString GetArrayFromString(const wxString& text, const wxString& separator
     return out;
 }
 
-bool CreateDirRecursively(const wxString& full_path, int perms)
+void AppendArray(const wxArrayString& from, wxArrayString& to)
 {
-    wxFileName tmp(full_path);
-    wxString sep = wxFileName::GetPathSeparator();
-    wxString currdir = tmp.GetVolume() + tmp.GetVolumeSeparator() + sep;
-    wxArrayString dirs = tmp.GetDirs();
-    for (size_t i = 0; i < dirs.GetCount(); ++i)
+    for (unsigned int i = 0; i < from.GetCount(); ++i)
     {
-        currdir << dirs[i];
-        if (!wxDirExists(currdir) && !wxMkdir(currdir, perms))
-            return false;
-        currdir << sep;
+        to.Add(from[i]);
     }
-    return true;
 }
 
 wxString UnixFilename(const wxString& filename)
 {
     wxString result = filename;
 #ifdef __WXMSW__
+
     while (result.Replace(_T("/"), _T("\\")))
         ;
     while (result.Replace(_T("\\\\"), _T("\\")))
         ;
 #else
+
     while (result.Replace(_T("\\"), _T("/")))
         ;
     while (result.Replace(_T("//"), _T("/")))
         ;
 #endif
+
     return result;
+}
+
+void QuoteStringIfNeeded(wxString& str)
+{
+    if (!str.IsEmpty() && str.GetChar(0) != _T('"') && str.Find(_T(' ')) != -1)
+        str = wxString(_T("\"")) + str + _T("\"");
 }
 
 FileType FileTypeOf(const wxString& filename)
 {
-	wxFileName fname(filename);
-	wxString ext = fname.GetExt().Lower();
+    wxString ext = filename.AfterLast(_T('.')).Lower();
 
-	if (ext.Matches(CODEBLOCKS_EXT))
-		return ftCodeBlocksProject;
+    if (ext.Matches(CPP_EXT) ||
+            ext.Matches(C_EXT) ||
+            ext.Matches(CC_EXT) ||
+            ext.Matches(CXX_EXT)
+       )
+        return ftSource;
 
-	else if (ext.Matches(WORKSPACE_EXT))
-		return ftCodeBlocksWorkspace;
+    else if (ext.Matches(HPP_EXT) ||
+             ext.Matches(H_EXT) ||
+             ext.Matches(HH_EXT) ||
+             ext.Matches(HXX_EXT)
+            )
+        return ftHeader;
 
-	else if (ext.Matches(DEVCPP_EXT))
-		return ftDevCppProject;
+    else if (ext.Matches(CODEBLOCKS_EXT))
+        return ftCodeBlocksProject;
 
-	else if (ext.Matches(MSVC_EXT))
-		return ftMSVCProject;
+    else if (ext.Matches(WORKSPACE_EXT))
+        return ftCodeBlocksWorkspace;
 
-	else if (ext.Matches(MSVS_EXT))
-		return ftMSVSProject;
+    else if (ext.Matches(DEVCPP_EXT))
+        return ftDevCppProject;
 
-	else if (ext.Matches(MSVC_WORKSPACE_EXT))
-		return ftMSVCWorkspace;
+    else if (ext.Matches(MSVC_EXT))
+        return ftMSVCProject;
 
-	else if (ext.Matches(MSVS_WORKSPACE_EXT))
-		return ftMSVSWorkspace;
+    else if (ext.Matches(MSVS_EXT))
+        return ftMSVSProject;
 
-	else if (ext.Matches(CPP_EXT) ||
-		ext.Matches(C_EXT) ||
-		ext.Matches(CC_EXT) ||
-		ext.Matches(CXX_EXT)
-		)
-		return ftSource;
+    else if (ext.Matches(MSVC_WORKSPACE_EXT))
+        return ftMSVCWorkspace;
 
-	else if (ext.Matches(HPP_EXT) ||
-		ext.Matches(H_EXT) ||
-		ext.Matches(HH_EXT) ||
-		ext.Matches(HXX_EXT)
-		)
-		return ftHeader;
+    else if (ext.Matches(MSVS_WORKSPACE_EXT))
+        return ftMSVSWorkspace;
 
-	else if (ext.Matches(OBJECT_EXT))
-		return ftObject;
+    else if (ext.Matches(OBJECT_EXT))
+        return ftObject;
 
-	else if (ext.Matches(XRCRESOURCE_EXT))
-		return ftXRCResource;
+    else if (ext.Matches(XRCRESOURCE_EXT))
+        return ftXRCResource;
 
-	else if (ext.Matches(RESOURCE_EXT))
-		return ftResource;
+    else if (ext.Matches(RESOURCE_EXT))
+        return ftResource;
 
-	else if (ext.Matches(RESOURCEBIN_EXT))
-		return ftResourceBin;
+    else if (ext.Matches(RESOURCEBIN_EXT))
+        return ftResourceBin;
 
-	else if (ext.Matches(STATICLIB_EXT))
-		return ftStaticLib;
+    else if (ext.Matches(STATICLIB_EXT))
+        return ftStaticLib;
 
-	else if (ext.Matches(DYNAMICLIB_EXT))
-		return ftDynamicLib;
+    else if (ext.Matches(DYNAMICLIB_EXT))
+        return ftDynamicLib;
 
-	else if (ext.Matches(EXECUTABLE_EXT))
-		return ftExecutable;
+    else if (ext.Matches(EXECUTABLE_EXT))
+        return ftExecutable;
 
-	return ftOther;
+    return ftOther;
 }
 
 bool DoRememberExpandedNodes(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& nodePaths, wxString& path)
@@ -176,10 +177,13 @@ bool DoRememberExpandedNodes(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArr
     wxString originalPath = path;
     bool found = false;
 #if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)
+
     long int cookie = 0;
 #else
+
     wxTreeItemIdValue cookie; //2.6.0
 #endif
+
     wxTreeItemId child = tree->GetFirstChild(parent, cookie);
     while (child.IsOk())
     {
@@ -225,10 +229,12 @@ void DoExpandRememberedNode(wxTreeCtrl* tree, const wxTreeItemId& parent, const 
         //Manager::Get()->GetMessageManager()->Log(mltDevDebug, "%s, %s", folder.c_str(), tmpPath.c_str());
 
 #if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)
-	    long int cookie = 0;
+        long int cookie = 0;
 #else
-	    wxTreeItemIdValue cookie; //2.6.0
+
+        wxTreeItemIdValue cookie; //2.6.0
 #endif
+
         wxTreeItemId child = tree->GetFirstChild(parent, cookie);
         while (child.IsOk())
         {
@@ -268,6 +274,22 @@ void RestoreTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayStrin
     nodePaths.Clear();
 }
 
+bool CreateDirRecursively(const wxString& full_path, int perms)
+{
+    wxFileName tmp(full_path);
+    wxString sep = wxFileName::GetPathSeparator();
+    wxString currdir = tmp.GetVolume() + tmp.GetVolumeSeparator() + sep;
+    wxArrayString dirs = tmp.GetDirs();
+    for (size_t i = 0; i < dirs.GetCount(); ++i)
+    {
+        currdir << dirs[i];
+        if (!wxDirExists(currdir) && !wxMkdir(currdir, perms))
+            return false;
+        currdir << sep;
+    }
+    return true;
+}
+
 wxString ChooseDirectory(wxWindow* parent,
                          const wxString& message,
                          const wxString& initialPath,
@@ -288,11 +310,109 @@ wxString ChooseDirectory(wxWindow* parent,
     {
         // ask the user if he wants it to be kept as relative
         if (wxMessageBox(_("Keep this as a relative path?"),
-                        _("Question"),
-                        wxICON_QUESTION | wxYES_NO) == wxYES)
+                         _("Question"),
+                         wxICON_QUESTION | wxYES_NO) == wxYES)
         {
             path.MakeRelativeTo(basePath);
         }
     }
     return path.GetFullPath();
+}
+
+/// Reads a wxString from a non-unicode file. File must be open. File is closed automatically.
+bool cbRead(wxFile& file, wxString& st)
+{
+    st.Empty();
+    if (!file.IsOpened())
+        return false;
+    int len = file.Length();
+    if(!len)
+    {
+        file.Close();
+        return true;
+    }
+#if wxUSE_UNICODE
+    char* buff = new char[len+1];
+    if (!buff)
+    {
+        file.Close();
+        return false;
+    }
+    file.Read((void*)buff, len);
+    file.Close();
+    buff[len]='\0';
+    st = wxString((const char *)buff, wxConvUTF8);
+    delete[] buff;
+#else
+
+    char* buff = st.GetWriteBuf(len); // GetWriteBuf already handles the extra '\0'.
+    file.Read((void*)buff, len);
+    file.Close();
+    st.UngetWriteBuf();
+#endif
+
+    return true;
+}
+
+wxString cbReadFileContents(wxFile& file)
+{
+    wxString st;
+    cbRead(file,st);
+    return st;
+}
+
+/// Writes a wxString to a non-unicode file. File must be open. File is closed automatically.
+bool cbWrite(wxFile& file, const wxString& buff)
+{
+    bool result = false;
+    if (file.IsOpened())
+    {
+        result = file.Write(buff,wxConvUTF8);
+        if(result)
+            file.Flush();
+        file.Close();
+    }
+    return result;
+}
+
+/// Writes a wxString to a file. Takes care of unicode and uses a temporary file
+/// to save first and then it copies it over the original.
+bool cbSaveToFile(const wxString& filename, const wxString& contents)
+{
+    wxTempFile file(filename);
+    if (file.IsOpened())
+    {
+        if (!file.Write(contents, wxConvUTF8))
+            return false;
+        if (!file.Commit())
+            return false;
+    }
+    else
+        return false;
+    return true;
+}
+
+
+wxString URLEncode(const wxString &str) // not sure this is 100% standards compliant, but I hope so
+{
+    wxString ret;
+    wxString t;
+    for(unsigned int i = 0; i < str.length(); ++i)
+    {
+        wxChar c = str[i];
+        if( (c >= _T('A') && c <= _T('Z'))
+                || (c >= _T('a') && c <= _T('z'))
+                || (c >= _T('0') && c <= _T('9'))
+                || c == _T('.') || c == _T('-')|| c == _T('_') )
+
+            ret.Append(c);
+        else if(c == _T(' '))
+            ret.Append(_T('+'));
+        else
+        {
+            t.sprintf(_T("%%%02X"), (unsigned int) c);
+            ret.Append(t);
+        }
+    }
+    return ret;
 }

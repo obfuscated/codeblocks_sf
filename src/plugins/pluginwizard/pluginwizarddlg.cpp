@@ -322,7 +322,7 @@ void PluginWizardDlg::DoAddSourceWizard(const wxString& classname, wxString& buf
 	buffer << _T('\t') << _T("if (!IconBitmap.Ok())") << _T('\n');
 	buffer << _T('\t') << _T("{") << _T('\n');
 	buffer << _T('\t') << _T('\t') << _T("//make sure you change the values below (xyz_wizard and xyz.png)") << _T('\n');
-    buffer << _T('\t') << _T('\t') << _T("wxString resPath = ConfigManager::Get()->Read(_T(\"data_path\"), wxEmptyString) + _T(\"/templates/xyz_wizard\");") << _T('\n');
+    buffer << _T('\t') << _T('\t') << _T("wxString resPath = ConfigManager::GetDataFolder() + _T(\"/templates/xyz_wizard\");") << _T('\n');
     buffer << _T('\t') << _T('\t') << _T("IconBitmap.LoadFile(resPath + _T(\"/xyz.png\"), wxBITMAP_TYPE_PNG);") << _T('\n');
 	buffer << _T('\t') << _T("}") << _T('\n');
 	buffer << _T('\t') << _T("return IconBitmap;") << _T('\n');
@@ -528,7 +528,7 @@ void PluginWizardDlg::CreateFiles()
 	if (type == 6) // wizard
 	{
         buffer << _T("#include <wx/bitmap.h>") << _T('\n');
-        buffer << _T("#include <configmanager.h>") << _T('\n');
+        buffer << _T("#include <old_configmanager.h>") << _T('\n');
 	}
 	buffer << _T('\n');
 	buffer << _T("// Implement the plugin's hooks") << _T('\n');

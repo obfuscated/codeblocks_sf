@@ -12,10 +12,10 @@
 			<File source="irr_main.cpp" destination="main.cpp"/>
 		</FileSet>
 		<Option name="Free VisualC++ Toolkit 2003 project">
-			<Project file="irr_vctk.cbp"/>
+			<Project file="irr_vctk.cbp" useDefaultCompiler="0"/>
 		</Option>
 		<Option name="GCC project">
-			<Project file="irr_gcc.cbp"/>
+			<Project file="irr_gcc.cbp" useDefaultCompiler="0"/>
 		</Option>
 	</Template>
 </Code::Blocks_template_file>

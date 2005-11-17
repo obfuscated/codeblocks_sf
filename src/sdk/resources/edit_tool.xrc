@@ -16,6 +16,7 @@
             <object class="wxStaticText">
               <label>Name:</label>
             </object>
+            <flag>wxALIGN_CENTRE_VERTICAL</flag>
           </object>
           <object class="sizeritem">
             <object class="wxTextCtrl" name="txtName"/>
@@ -25,6 +26,7 @@
             <object class="wxStaticText">
               <label>Executable:</label>
             </object>
+            <flag>wxALIGN_CENTRE_VERTICAL</flag>
           </object>
           <object class="sizeritem">
             <object class="wxBoxSizer">
@@ -47,6 +49,7 @@
             <object class="wxStaticText">
               <label>Parameters:</label>
             </object>
+            <flag>wxALIGN_CENTRE_VERTICAL</flag>
           </object>
           <object class="sizeritem">
             <object class="wxTextCtrl" name="txtParams"/>
@@ -56,6 +59,7 @@
             <object class="wxStaticText">
               <label>Working directory:</label>
             </object>
+            <flag>wxALIGN_CENTRE_VERTICAL</flag>
           </object>
           <object class="sizeritem">
             <object class="wxBoxSizer">

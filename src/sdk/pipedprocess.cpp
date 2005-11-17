@@ -27,6 +27,49 @@
 #include "pipedprocess.h" // class' header file
 #include "sdk_events.h"
 
+// The folowing class is created to override wxTextStream::ReadLine()
+class cbTextInputStream : public wxTextInputStream
+{
+    public:
+#if wxUSE_UNICODE
+        cbTextInputStream(wxInputStream& s, const wxString &sep=wxT(" \t"), wxMBConv& conv = wxConvUTF8 )
+            : wxTextInputStream(s, sep, conv)
+        {
+            memset((void*)m_lastBytes, 0, 10);
+        }
+#else
+        cbTextInputStream(wxInputStream& s, const wxString &sep=wxT(" \t") )
+            : wxTextInputStream(s, sep)
+        {
+            memset((void*)m_lastBytes, 0, 10);
+        }
+#endif
+        ~cbTextInputStream(){}
+
+        // The folowing function was copied verbatim from wxTextStream::ReadLine()
+        // The only change, is the addition of m_input.CanRead() in the while()
+        wxString ReadLine()
+        {
+            wxString line;
+
+            while ( m_input.CanRead() && !m_input.Eof() )
+            {
+                wxChar c = NextChar();
+                if(m_input.LastRead() <= 0)
+                    break;
+
+                if ( !m_input )
+                    break;
+
+                if (EatEOL(c))
+                    break;
+
+                line += c;
+            }
+            return line;
+        }
+};
+
 int idTimerPollProcess = wxNewId();
 
 BEGIN_EVENT_TABLE(PipedProcess, wxProcess)
@@ -80,14 +123,14 @@ bool PipedProcess::HasInput()
 {
     bool hasInput = false;
 
-    if (IsInputAvailable())
+    if (IsErrorAvailable())
     {
-        wxTextInputStream sout(*GetInputStream());
+        cbTextInputStream serr(*GetErrorStream());
 
         wxString msg;
-        msg << sout.ReadLine();
+        msg << serr.ReadLine();
 
-		CodeBlocksEvent event(cbEVT_PIPEDPROCESS_STDOUT, m_Id);
+		CodeBlocksEvent event(cbEVT_PIPEDPROCESS_STDERR, m_Id);
         event.SetString(msg);
 		wxPostEvent(m_Parent, event);
 // 		m_Parent->ProcessEvent(event);
@@ -95,14 +138,14 @@ bool PipedProcess::HasInput()
         hasInput = true;
     }
 
-	    if (IsErrorAvailable())
+    if (IsInputAvailable())
     {
-        wxTextInputStream serr(*GetErrorStream());
+        cbTextInputStream sout(*GetInputStream());
 
         wxString msg;
-        msg << serr.ReadLine();
+        msg << sout.ReadLine();
 
-		CodeBlocksEvent event(cbEVT_PIPEDPROCESS_STDERR, m_Id);
+		CodeBlocksEvent event(cbEVT_PIPEDPROCESS_STDOUT, m_Id);
         event.SetString(msg);
 		wxPostEvent(m_Parent, event);
 // 		m_Parent->ProcessEvent(event);

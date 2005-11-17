@@ -112,22 +112,33 @@ const wxUint32 wxsCUSTOM_COLOUR = wxPG_COLOUR_CUSTOM;
 
 
 /** Getting current drag assist mode from configuration */
-#define wxsDWAssistType ConfigManager::Get()->Read(_T("/wxsmith/dragassisttype"),(long)wxsDTColourMix)
+#define wxsDWAssistType Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadInt(_T("/dragassisttype"),(long)wxsDTColourMix)
 
 /** Reading Drag target colour from configuration */
-#define wxsDWTargetCol ConfigManager::Get()->Read(_T("/wxsmith/dragtargetcol"),0x608CDFL)
+#define wxsDWTargetCol Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadInt(_T("/dragtargetcol"),0x608CDFL)
 
 /** Reading Drag paretn colour from configuration */
-#define wxsDWParentCol ConfigManager::Get()->Read(_T("/wxsmith/dragparentcol"),0x0D177BL)
+#define wxsDWParentCol Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadInt(_T("/dragparentcol"),0x0D177BL)
 
 /** Reading fetch deelay from configuration */
-#define wxsDWFetchDelay ConfigManager::Get()->Read(_T("/wxsmith/backfetchdelay"),50L)
+#define wxsDWFetchDelay Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadInt(_T("/backfetchdelay"),50L)
 
 /** Reading icon size inside palette */
-#define wxsDWPalIconSize ConfigManager::Get()->Read(_T("/wxsmith/paletteiconsize"),16L)
+#define wxsDWPalIconSize Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadInt(_T("/paletteiconsize"),16L)
 
 /** Reading icon size inside palette */
-#define wxsDWToolIconSize ConfigManager::Get()->Read(_T("/wxsmith/tooliconsize"),32L)
+#define wxsDWToolIconSize Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadInt(_T("/tooliconsize"),32L)
+
+
+/** Shortcut to applications debug log */
+#define DebLog Manager::Get()->GetMessageManager()->DebugLog
+
+/** Default class declaration specifier */
+#if defined(wxsDEBUG)
+    #define WXSCLASS PLUGIN_EXPORT
+#else
+    #define WXSCLASS
+#endif
 
 
 /** Shortcut to applications debug log */

@@ -67,17 +67,17 @@ void PersonalityManager::ReadPersonalities()
     m_Personalities.Clear();
     m_Personalities.Add(_("Full IDE (default)"));
 
-	wxString str;
-	long cookie;
+//	wxString str;
+//	long cookie;
 
-	ConfigManager::Get()->SetPath(GetPersonalitiesRoot());
-	bool cont = ConfigManager::Get()->GetFirstGroup(str, cookie);
-	while (cont)
-	{
-        m_Personalities.Add(str);
-		cont = ConfigManager::Get()->GetNextGroup(str, cookie);
-	}
-	ConfigManager::Get()->SetPath(_T("/"));
+//	OldConfigManager::Get()->SetPath(GetPersonalitiesRoot());
+//	bool cont = OldConfigManager::Get()->GetFirstGroup(str, cookie);
+//	while (cont)
+//	{
+//        m_Personalities.Add(str);
+//		cont = OldConfigManager::Get()->GetNextGroup(str, cookie);
+//	}
+//	OldConfigManager::Get()->SetPath(_T("/"));
 }
 
 void PersonalityManager::SetPersonality(const wxString& personality, bool createIfNotExist)

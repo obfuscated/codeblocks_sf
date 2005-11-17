@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <resource>
   <object class="wxDialog" name="dlgNewFromTemplate">
     <title>New from template</title>
@@ -18,76 +18,321 @@
                     <orient>wxHORIZONTAL</orient>
                     <object class="sizeritem">
                       <object class="wxStaticText">
+                        
+                        
+                        
                         <label>Category:</label>
                       </object>
+                      
+                      
+                      
                       <flag>wxTOP</flag>
+                      
+                      
+                      
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
                       <object class="wxComboBox" name="cmbCategories">
+                        
+                        
+                        
                         <content/>
+                        
+                        
+                        
                         <style>wxCB_SORT|wxCB_READONLY|wxCB_DROPDOWN</style>
                       </object>
+                      
+                      
+                      
                       <option>1</option>
+                      
+                      
+                      
                       <flag>wxLEFT|wxEXPAND</flag>
+                      
+                      
+                      
                       <border>8</border>
                     </object>
                   </object>
+                  
+                  
+                  
                   <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  
+                  
+                  
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
                   <object class="wxListCtrl" name="listTemplates">
+                    
+                    
+                    
                     <style>wxLC_ICON|wxLC_AUTOARRANGE|wxLC_SINGLE_SEL</style>
                   </object>
+                  
+                  
+                  
                   <option>1</option>
+                  
+                  
+                  
                   <flag>wxALL|wxEXPAND</flag>
+                  
+                  
+                  
                   <border>8</border>
-                  <minsize>320,160</minsize>
+                  
+                  
+                  
+                  <minsize>480,200</minsize>
                 </object>
                 <object class="sizeritem">
-                  <object class="wxStaticBoxSizer">
-                    <label>Options:</label>
-                    <orient>wxVERTICAL</orient>
+                  <object class="wxStaticText" name="lblWarnCompiler">
+                    
+                    <label>WARNING: This template/option pair will NOT use the default compiler.</label>
+                    
+                    <fg>#800000</fg>
+                  </object>
+                  
+                  <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
+                  
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>Project options:</label>
+                      <object class="wxStaticBoxSizer">
+                        <label>Project path and name</label>
+                        <orient>wxVERTICAL</orient>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                        
+                            
+                            
+                            <label>Directory to create project:</label>
                       </object>
-                      <flag>wxTOP|wxLEFT|wxEXPAND</flag>
-                      <border>8</border>
+                      
+                          
+                          
+                          <flag>wxTOP|wxLEFT|wxEXPAND</flag>
+                      
+                          
+                          
+                          <border>8</border>
+                    </object>
+                        <object class="sizeritem">
+                          <object class="wxBoxSizer">
+                            <orient>wxHORIZONTAL</orient>
+                            <object class="sizeritem">
+                              <object class="wxTextCtrl" name="txtPrjPath">
+                        
+                        
+                      </object>
+                      
+                      
+                    
+                              
+                              
+                              <option>1</option>
+                              
+                              
+                              <flag>wxGROW</flag>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxButton" name="btnPrjPathBrowse">
+                                
+                                
+                                <label>...</label>
+                              </object>
+                              
+                              
+                              <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                              
+                              
+                              <minsize>22,22</minsize>
+                            </object>
+                          </object>
+                          
+                          
+                          <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                          
+                          
+                          <border>8</border>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                        
+                            
+                            
+                            <label>Project name:</label>
+                      </object>
+                      
+                          
+                          
+                          <flag>wxLEFT|wxEXPAND</flag>
+                      
+                          
+                          
+                          <border>8</border>
+                    </object>
+                        <object class="sizeritem">
+                          <object class="wxTextCtrl" name="txtPrjName">
+                        
+                        
+                      </object>
+                      
+                          
+                          
+                          <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+                      
+                          
+                          
+                          <border>8</border>
+                    </object>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                        
+                            
+                            
+                            <label>Result: &lt;directory&gt;\&lt;name&gt;\</label>
+                      </object>
+                      
+                          
+                          
+                          <flag>wxLEFT|wxEXPAND</flag>
+                      
+                          
+                          
+                          <border>8</border>
+                    </object>
+                      </object>
+                  
+                  
+                
+                      
+                      
+                      <option>1</option>
+                      
+                      
+                      <flag>wxGROW</flag>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxComboBox" name="cmbOptions">
-                        <content/>
-                        <style>wxCB_READONLY|wxCB_DROPDOWN</style>
+                      <object class="wxStaticBoxSizer">
+                        <label>Options</label>
+                        <orient>wxVERTICAL</orient>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                        
+                            
+                            
+                            <label>Project options:</label>
                       </object>
-                      <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
-                      <border>8</border>
+                      
+                          
+                          
+                          <flag>wxTOP|wxLEFT|wxEXPAND</flag>
+                      
+                          
+                          
+                          <border>8</border>
                     </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>File(s) options:</label>
+                        <object class="sizeritem">
+                          <object class="wxComboBox" name="cmbOptions">
+                        
+                            
+                            
+                            <content/>
+                        
+                            
+                            
+                            <style>wxCB_READONLY|wxCB_DROPDOWN</style>
                       </object>
-                      <flag>wxTOP|wxLEFT|wxEXPAND</flag>
-                      <border>8</border>
+                      
+                          
+                          
+                          <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                      
+                          
+                          
+                          <border>8</border>
                     </object>
-                    <object class="sizeritem">
-                      <object class="wxComboBox" name="cmbFileSets">
-                        <content/>
-                        <style>wxCB_READONLY|wxCB_DROPDOWN</style>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                        
+                            
+                            
+                            <label>File(s) options:</label>
                       </object>
-                      <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
-                      <border>8</border>
+                      
+                          
+                          
+                          <flag>wxLEFT|wxEXPAND</flag>
+                      
+                          
+                          
+                          <border>8</border>
                     </object>
-                    <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkDoNotCreateFiles">
-                        <label>Do not create any files</label>
+                        <object class="sizeritem">
+                          <object class="wxComboBox" name="cmbFileSets">
+                        
+                            
+                            
+                            <content/>
+                        
+                            
+                            
+                            <style>wxCB_READONLY|wxCB_DROPDOWN</style>
                       </object>
-                      <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                      
+                          
+                          
+                          <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+                      
+                          
+                          
+                          <border>8</border>
+                    </object>
+                        <object class="sizeritem">
+                          <object class="wxCheckBox" name="chkDoNotCreateFiles">
+                        
+                            
+                            
+                            <label>Do not create any files</label>
+                      </object>
+                      
+                          
+                          
+                          <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                      
+                          
+                          
+                          <border>8</border>
+                    </object>
+                      </object>
+                  
+                  
+                
+                      
+                      
+                      <option>1</option>
+                      
+                      
+                      <flag>wxLEFT|wxGROW</flag>
+                      
+                      
                       <border>8</border>
                     </object>
                   </object>
+                  
+                  
                   <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  
+                  
                   <border>8</border>
                 </object>
               </object>
@@ -100,54 +345,106 @@
                 <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
                   <object class="wxStaticText">
+                    
+                    
+                    
                     <label>Available templates:</label>
                   </object>
+                  
+                  
+                  
                   <flag>wxTOP|wxLEFT</flag>
+                  
+                  
+                  
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
                   <object class="wxListBox" name="lstUser">
+                    
+                    
+                    
                     <content/>
                   </object>
+                  
+                  
+                  
                   <option>1</option>
+                  
+                  
+                  
                   <flag>wxALL|wxGROW</flag>
+                  
+                  
+                  
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
                   <object class="wxStaticText">
+                    
+                    
+                    
                     <label>* To create a user template, create a project the way you want it
    and click &quot;Project/Save project as user-template&quot; in main menu bar.</label>
                   </object>
+                  
+                  
+                  
                   <flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
+                  
+                  
+                  
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
                   <object class="wxStaticText">
+                    
+                    
+                    
                     <label>* To delete a user template, delete the similarly named folder created
    in %USER_HOME%\.CodeBlocks (for Windows)
    or $$(HOME)\.CodeBlocks (for other platforms).</label>
                   </object>
+                  
+                  
+                  
                   <flag>wxLEFT|wxRIGHT</flag>
+                  
+                  
+                  
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
                   <object class="wxStaticText">
+                    
+                    
+                    
                     <label>   Please note the dot (.) in front of &quot;CodeBlocks&quot;!</label>
+                    
+                    
+                    
                     <fg>#800000</fg>
                   </object>
+                  
+                  
+                  
                   <flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
+                  
+                  
+                  
                   <border>8</border>
                 </object>
               </object>
             </object>
           </object>
         </object>
+        
+        
+        
         <flag>wxALL</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStaticLine"/>
-        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+        
+        
+        
         <border>8</border>
       </object>
       <object class="sizeritem">
@@ -155,19 +452,40 @@
           <orient>wxHORIZONTAL</orient>
           <object class="sizeritem">
             <object class="wxButton" name="wxID_OK">
+              
+              
+              
               <label>&amp;Create</label>
+              
+              
+              
               <default>1</default>
             </object>
+            
+            
+            
             <flag>wxRIGHT</flag>
+            
+            
+            
             <border>8</border>
           </object>
           <object class="sizeritem">
             <object class="wxButton" name="wxID_CANCEL">
+              
+              
+              
               <label>&amp;Cancel</label>
             </object>
           </object>
         </object>
+        
+        
+        
         <flag>wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
+        
+        
+        
         <border>8</border>
       </object>
     </object>

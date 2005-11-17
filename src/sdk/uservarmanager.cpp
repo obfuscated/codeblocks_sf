@@ -24,20 +24,20 @@
 
 class UsrGlblMgrEditDialog : public wxDialog
 {
-        wxString curr;
-    public:
-        UsrGlblMgrEditDialog(wxWindow* parent, const wxString& base);
-    private:
-        void OnOKClick(wxCommandEvent& event);
-        void OnCancelClick(wxCommandEvent& event);
-        void OnDelete(wxCommandEvent& event);
-        void OnFS(wxCommandEvent& event);
-        void OnCB(wxCommandEvent& event);
-        void Load(const wxString& s);
-        void Save();
-        void List();
-        void Add(const wxString& base);
-        DECLARE_EVENT_TABLE()
+    wxString curr;
+public:
+    UsrGlblMgrEditDialog(wxWindow* parent, const wxString& base);
+private:
+    void OnOKClick(wxCommandEvent& event);
+    void OnCancelClick(wxCommandEvent& event);
+    void OnDelete(wxCommandEvent& event);
+    void OnFS(wxCommandEvent& event);
+    void OnCB(wxCommandEvent& event);
+    void Load(const wxString& s);
+    void Save();
+    void List();
+    void Add(const wxString& base);
+    DECLARE_EVENT_TABLE()
 };
 
 UserVariableManager* UserVariableManager::instance = 0;
@@ -74,17 +74,17 @@ void UserVariableManager::Configure()
 
 wxString UserVariableManager::Replace(const wxString& variable)
 {
-    wxConfigBase * cfg = ConfigManager::Get();
+    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("global_uservars"));
 
     wxString package = variable.AfterLast(wxT('#')).BeforeFirst(wxT('.')).MakeLower();
     wxString member = variable.AfterFirst(wxT('.')).MakeLower();
 
-    wxString base = cfg->Read(_T("/UserGlobalVars/") + package + _T("/base"), wxEmptyString);
+    wxString base = cfg->Read(package + _T("/base"));
 
     if(base.IsEmpty())
     {
         wxMessageBox(_("At least one global variable is used but not yet defined.\n"
-                        "Please define it now..."), _("Warning"), wxICON_WARNING);
+                       "Please define it now..."), _("Warning"), wxICON_WARNING);
         UsrGlblMgrEditDialog d(Manager::Get()->GetAppWindow(), package);
         d.ShowModal();
     }
@@ -94,7 +94,7 @@ wxString UserVariableManager::Replace(const wxString& variable)
 
     if(member.IsSameAs(_T("include")) || member.IsSameAs(_T("lib")) || member.IsSameAs(_T("obj")))
     {
-        wxString ret = cfg->Read(_T("/UserGlobalVars/") + package + _T("/") + member, wxEmptyString);
+        wxString ret = cfg->Read(package + _T("/") + member);
         if(ret.IsEmpty()
           )
             ret = base + _T("/") + member;
@@ -102,7 +102,7 @@ wxString UserVariableManager::Replace(const wxString& variable)
     }
     else if(member.IsSameAs(_T("cflags")) || member.IsSameAs(_T("lflags")))
     {
-        return cfg->Read(_T("/UserGlobalVars/") + package + _T("/") + member, wxEmptyString);
+        return cfg->Read(package + _T("/") + member);
     }
 
     Manager::Get()->GetMessageManager()->DebugLog(_T("Warning: bad member ") + member + _T(" of user variable ") + package);
@@ -123,7 +123,7 @@ EVT_BUTTON(XRCID("fs_lib"), UsrGlblMgrEditDialog::OnFS)
 EVT_BUTTON(XRCID("fs_obj"), UsrGlblMgrEditDialog::OnFS)
 EVT_BUTTON(XRCID("fs_cflags"), UsrGlblMgrEditDialog::OnFS)
 EVT_BUTTON(XRCID("fs_lflags"), UsrGlblMgrEditDialog::OnFS)
-EVT_COMBOBOX(XRCID("variable"), UsrGlblMgrEditDialog::OnCB)
+EVT_CHOICE(XRCID("variable"), UsrGlblMgrEditDialog::OnCB)
 END_EVENT_TABLE()
 
 UsrGlblMgrEditDialog::UsrGlblMgrEditDialog(wxWindow* parent, const wxString& base)
@@ -156,20 +156,20 @@ void UsrGlblMgrEditDialog::Load(const wxString& base)
 
     XRCCTRL(*this, "variable", wxChoice)->SetStringSelection(base);
 
-    wxConfigBase * cfg = ConfigManager::Get();
+    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("global_uservars"));
     wxString s;
 
-    s = cfg->Read(_T("/UserGlobalVars/") + base + _T("/base"), wxEmptyString);
+    s = cfg->Read(base + _T("/base"));
     XRCCTRL(*this, "value", wxTextCtrl)->SetValue(s);
-    s = cfg->Read(_T("/UserGlobalVars/") + base + _T("/include"), wxEmptyString);
+    s = cfg->Read(base + _T("/include"));
     XRCCTRL(*this, "include", wxTextCtrl)->SetValue(s);
-    s = cfg->Read(_T("/UserGlobalVars/") + base + _T("/lib"), wxEmptyString);
+    s = cfg->Read(base + _T("/lib"));
     XRCCTRL(*this, "lib", wxTextCtrl)->SetValue(s);
-    s = cfg->Read(_T("/UserGlobalVars/") + base + _T("/obj"), wxEmptyString);
+    s = cfg->Read(base + _T("/obj"));
     XRCCTRL(*this, "obj", wxTextCtrl)->SetValue(s);
-    s = cfg->Read(_T("/UserGlobalVars/") + base + _T("/cflags"), wxEmptyString);
+    s = cfg->Read(base + _T("/cflags"));
     XRCCTRL(*this, "cflags", wxTextCtrl)->SetValue(s);
-    s = cfg->Read(_T("/UserGlobalVars/") + base + _T("/lflags"), wxEmptyString);
+    s = cfg->Read(base + _T("/lflags"));
     XRCCTRL(*this, "lflags", wxTextCtrl)->SetValue(s);
 }
 
@@ -178,22 +178,14 @@ void UsrGlblMgrEditDialog::List()
     wxChoice * c = XRCCTRL(*this, "variable", wxChoice);
     c->Clear();
 
-    wxConfigBase * cfg = ConfigManager::Get();
+    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("global_uservars"));
 
-    wxString path = cfg->GetPath();
-    cfg->SetPath(_T("/UserGlobalVars/"));
-
-    long int i = 0;
-    wxString str;
-
-    bool valid = cfg->GetFirstGroup(str, i);
-    while ( valid )
-    {
-        c->Append(str);
-        valid = cfg->GetNextGroup(str, i);
-    }
-
-    cfg->SetPath(path);
+    wxArrayString paths = cfg->EnumerateSubPaths(_T("/"));
+    c->Append(paths);
+    if(curr.IsEmpty())
+        c->SetSelection(0);
+    else
+        c->SetStringSelection(curr);
 }
 
 void UsrGlblMgrEditDialog::Add(const wxString& base)
@@ -203,20 +195,23 @@ void UsrGlblMgrEditDialog::Add(const wxString& base)
 
 void UsrGlblMgrEditDialog::Save()
 {
-    wxConfigBase * cfg = ConfigManager::Get();
+    if(curr.IsEmpty())
+        return;
 
-    cfg->Write(_T("/UserGlobalVars/") + curr + _T("/base"),    XRCCTRL(*this, "value", wxTextCtrl)->GetValue());
-    cfg->Write(_T("/UserGlobalVars/") + curr + _T("/include"), XRCCTRL(*this, "include", wxTextCtrl)->GetValue());
-    cfg->Write(_T("/UserGlobalVars/") + curr + _T("/lib"),     XRCCTRL(*this, "lib", wxTextCtrl)->GetValue());
-    cfg->Write(_T("/UserGlobalVars/") + curr + _T("/obj"),     XRCCTRL(*this, "obj", wxTextCtrl)->GetValue());
-    cfg->Write(_T("/UserGlobalVars/") + curr + _T("/cflags"),  XRCCTRL(*this, "cflags", wxTextCtrl)->GetValue());
-    cfg->Write(_T("/UserGlobalVars/") + curr + _T("/lflags"),  XRCCTRL(*this, "lflags", wxTextCtrl)->GetValue());
+    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("global_uservars"));
+
+    cfg->Write(curr + _T("/base"),    XRCCTRL(*this, "value", wxTextCtrl)->GetValue());
+    cfg->Write(curr + _T("/include"), XRCCTRL(*this, "include", wxTextCtrl)->GetValue());
+    cfg->Write(curr + _T("/lib"),     XRCCTRL(*this, "lib", wxTextCtrl)->GetValue());
+    cfg->Write(curr + _T("/obj"),     XRCCTRL(*this, "obj", wxTextCtrl)->GetValue());
+    cfg->Write(curr + _T("/cflags"),  XRCCTRL(*this, "cflags", wxTextCtrl)->GetValue());
+    cfg->Write(curr + _T("/lflags"),  XRCCTRL(*this, "lflags", wxTextCtrl)->GetValue());
 }
 
 void UsrGlblMgrEditDialog::OnCB(wxCommandEvent& event)
 {
     Save();
-    Load(XRCCTRL(*this, "variable", wxChoice)->GetStringSelection());
+    Load(event.GetString());
 }
 
 void UsrGlblMgrEditDialog::OnFS(wxCommandEvent& event)
@@ -238,8 +233,8 @@ void UsrGlblMgrEditDialog::OnFS(wxCommandEvent& event)
         c = XRCCTRL(*this, "lflags", wxTextCtrl);
 
     wxString path = ChooseDirectory(0,
-                        _("Choose a location"),
-                        !c->GetValue().IsEmpty() ? c->GetValue() : XRCCTRL(*this, "value", wxTextCtrl)->GetValue());
+                                    _("Choose a location"),
+                                    !c->GetValue().IsEmpty() ? c->GetValue() : XRCCTRL(*this, "value", wxTextCtrl)->GetValue());
     if (!path.IsEmpty())
         c->SetValue(path);
 }
@@ -248,7 +243,8 @@ void UsrGlblMgrEditDialog::OnDelete(wxCommandEvent& event)
 {
     wxString g(XRCCTRL(*this, "variable", wxChoice)->GetStringSelection());
     if(wxMessageDialog(Manager::Get()->GetAppWindow(), wxString::Format(_("Delete the global variable %s?"), g.c_str()), _("Delete"), wxYES_NO).ShowModal() == wxID_YES)
-        ConfigManager::Get()->DeleteGroup(_T("/UserGlobalVars/") + g);
+        Manager::Get()->GetConfigManager(_T("global_uservars"))->DeleteSubPath(g);
+    curr = wxEmptyString;
     List();
 }
 

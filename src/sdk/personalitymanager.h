@@ -28,7 +28,7 @@
   * in the command line, a selection box will be displayed for the user to choose
   * the desired personality.
   *
-  * @note: This class must be initialized *after* ConfigManager and MessageManager...
+  * @note: This class must be initialized *after* OldConfigManager and MessageManager...
   */
 class DLLIMPORT PersonalityManager
 {

@@ -39,7 +39,7 @@ AStylePlugin::AStylePlugin()
 	//ctor
     wxFileSystem::AddHandler(new wxZipFSHandler);
     wxXmlResource::Get()->InitAllHandlers();
-    wxString resPath = ConfigManager::Get()->Read(_T("data_path"), wxEmptyString);
+    wxString resPath = ConfigManager::GetDataFolder();
     wxXmlResource::Get()->Load(resPath + _T("/astyle.zip#zip:*.xrc"));
 
 	m_PluginInfo.name = _T("AStylePlugin");
@@ -52,8 +52,6 @@ AStylePlugin::AStylePlugin()
 	m_PluginInfo.thanksTo = _T("AStyle team for the useful library.\nSee http://astyle.sourceforge.net");
 	m_PluginInfo.license = LICENSE_GPL;
 	m_PluginInfo.hasConfigure = true;
-
-	ConfigManager::AddConfiguration(m_PluginInfo.title, _T("/astyle"));
 }
 
 AStylePlugin::~AStylePlugin()

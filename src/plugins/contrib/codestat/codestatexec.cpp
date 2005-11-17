@@ -11,7 +11,7 @@
 
 int CodeStatExecDlg::Execute(LanguageDef languages[NB_FILETYPES])
 {
-	int i, j, l, num_language;
+    int i, j, l, num_language;
    long int total_lines = 0;
    long int code_lines = 0;
    long int empty_lines = 0;

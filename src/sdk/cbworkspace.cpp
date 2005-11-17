@@ -27,6 +27,7 @@
 #include "cbworkspace.h"
 #include "globals.h"
 #include "manager.h"
+#include "configmanager.h"
 #include "messagemanager.h"
 #include "workspaceloader.h"
 #include "msvcworkspaceloader.h"
@@ -42,11 +43,10 @@ cbWorkspace::cbWorkspace(const wxString& filename)
 	{
         wxString tmp;
         // if no filename given, use the default workspace
-        tmp = wxGetHomeDir();
-        tmp << _T("/.CodeBlocks");
+        tmp = ConfigManager::GetConfigFolder() + wxFILE_SEP_PATH;
         if (!wxDirExists(tmp))
             wxMkdir(tmp, 0755);
-        tmp << _T("/") << DEFAULT_WORKSPACE;
+        tmp << wxFILE_SEP_PATH << DEFAULT_WORKSPACE;
         m_Filename = tmp;
         m_IsDefault = true;
 	}

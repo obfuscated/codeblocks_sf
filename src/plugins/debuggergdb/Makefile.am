@@ -14,13 +14,31 @@ libdebuggergdb_la_LIBADD = ../../sdk/libcodeblocks.la \
 				../../sdk/wxscintilla/libwxscintilla.la
 
 libdebuggergdb_la_SOURCES = backtracedlg.cpp \
+			breakpointsdlg.cpp \
+			cdb_driver.cpp \
+			debugger_defs.cpp \
+			debuggerdriver.cpp \
 			debuggergdb.cpp \
 			debuggeroptionsdlg.cpp \
 			debuggertree.cpp \
-			disassemblydlg.cpp
+			disassemblydlg.cpp \
+			editbreakpointdlg.cpp \
+			editwatchdlg.cpp \
+			editwatchesdlg.cpp \
+			gdb_driver.cpp
 
 noinst_HEADERS = backtracedlg.h \
+			breakpointsdlg.h \
+			cdb_commands.h \
+			cdb_driver.h \
+			debugger_defs.h \
+			debuggerdriver.h \
 			debuggergdb.h \
 			debuggeroptionsdlg.h \
 			debuggertree.h \
-			disassemblydlg.h
+			disassemblydlg.h \
+			editbreakpointdlg.h \
+			editwatchdlg.h \
+			editwatchesdlg.h \
+			gdb_commands.h \
+			gdb_driver.h

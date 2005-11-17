@@ -59,7 +59,8 @@ cbProject::cbProject(const wxString& filename)
     m_Loaded(false),
     m_CurrentlyLoading(false),
     m_BasePath(_T("")),
-    m_PCHMode(pchSourceDir)
+    m_PCHMode(pchSourceDir),
+    m_CurrentlyCompilingTarget(0)
 {
     SetCompilerIndex(CompilerFactory::GetDefaultCompilerIndex());
 
@@ -68,6 +69,7 @@ cbProject::cbProject(const wxString& filename)
     {
 		// existing project
 		m_Filename = filename;
+        m_BasePath = GetBasePath();
         Open();
     }
     else
@@ -88,6 +90,7 @@ cbProject::cbProject(const wxString& filename)
 		{
             wxFileName fname(m_Filename);
 			m_Title = fname.GetName();
+            m_BasePath = GetBasePath();
 			m_CommonTopLevelPath = GetBasePath() + wxFileName::GetPathSeparator();
 			NotifyPlugins(cbEVT_PROJECT_OPEN);
 		}
@@ -439,7 +442,7 @@ bool cbProject::LoadLayout()
 {
    if (m_Filename.IsEmpty())
         return false;
-    int openmode = ConfigManager::Get()->Read(_T("/project_manager/open_files"), (long int)1);
+    int openmode = Manager::Get()->GetConfigManager(_T("project_manager"))->ReadInt(_T("/open_files"), (long int)1);
     bool result = false;
 
     if(openmode==2)
@@ -524,14 +527,17 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 //  NP though, I added a hashmap for fast searches in GetFileByFilename()
 
     f = GetFileByFilename(filename, true, true);
+    if (!f)
+        f = GetFileByFilename(filename, false, true);
     if (f)
+    {
+        if (targetIndex >= 0 && targetIndex < (int)m_Targets.GetCount())
+            f->AddBuildTarget(m_Targets[targetIndex]->GetTitle());
         return f;
-    f = GetFileByFilename(filename, false, true);
-    if (f)
-        return f;
+    }
 
     // OK, add file
-    f = new ProjectFile;
+    f = new ProjectFile(this);
     bool localCompile, localLink;
     wxFileName fname;
     wxString ext;
@@ -544,8 +550,8 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 	f->autoDeps = true;
     f->weight = weight;
 
-	fname = UnixFilename(filename);
-	ext = fname.GetExt().Lower();
+	fname = filename; //UnixFilename(filename);
+	ext = filename.AfterLast(_T('.')).Lower();
 	if (ext.Matches(CPP_EXT) ||
 		ext.Matches(CXX_EXT))
         f->compilerVar = _T("CPP");
@@ -585,14 +591,10 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 
     f->compile = localCompile;
     f->link = localLink;
-    wxString fullFilename = UnixFilename(filename);
-    fname.Assign(fullFilename);
-    if(!m_CurrentlyLoading || m_BasePath.IsEmpty())
-        m_BasePath = GetBasePath();
-    fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_BasePath);
-    fullFilename = fname.GetFullPath();
+//    fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_BasePath);
+    fname.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE, m_BasePath);
+    wxString fullFilename = fname.GetFullPath();
 
-    fname.Assign(fullFilename);
     f->file.Assign(fname);
 	//Manager::Get()->GetMessageManager()->Log(_T("Adding %s"), f->file.GetFullPath().c_str());
     fname.MakeRelativeTo(m_BasePath);
@@ -612,6 +614,12 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     }
     SetModified(true);
     m_ProjectFilesMap[UnixFilename(f->relativeFilename)] = f; // add to hashmap
+
+    if (!wxFileExists(fullFilename))
+        f->SetFileState(fvsMissing);
+    else if (!wxFile::Access(fullFilename.c_str(), wxFile::write)) // readonly
+        f->SetFileState(fvsReadOnly);
+
 	return f;
 }
 
@@ -638,11 +646,14 @@ void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, bool categ
     if (!tree)
         return;
 
+    int fldIdx = Manager::Get()->GetProjectManager()->FolderIconIndex();
+    int prjIdx = Manager::Get()->GetProjectManager()->ProjectIconIndex();
+
     //sort list of files
     m_Files.Sort(filesSort);
 
     FileTreeData* ftd = new FileTreeData(this);
-    m_ProjectNode = tree->AppendItem(root, GetTitle(), 1, 1, ftd);
+    m_ProjectNode = tree->AppendItem(root, GetTitle(), prjIdx, prjIdx, ftd);
     wxTreeItemId others = m_ProjectNode;
 
     // create file-type categories nodes (if enabled)
@@ -652,10 +663,10 @@ void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, bool categ
         pGroupNodes = new wxTreeItemId[fgam->GetGroupsCount()];
         for (unsigned int i = 0; i < fgam->GetGroupsCount(); ++i)
         {
-            pGroupNodes[i] = tree->AppendItem(m_ProjectNode, fgam->GetGroupName(i), 3, 3);
+            pGroupNodes[i] = tree->AppendItem(m_ProjectNode, fgam->GetGroupName(i), fldIdx, fldIdx);
         }
         // add a default category "Others" for all non-matching file-types
-        others = tree->AppendItem(m_ProjectNode, _("Others"), 3, 3);
+        others = tree->AppendItem(m_ProjectNode, _("Others"), fldIdx, fldIdx);
     }
 
     // iterate all project files and add them to the tree
@@ -685,7 +696,7 @@ void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, bool categ
                 parentNode = others;
         }
         // add file in the tree
-        AddTreeNode(tree, f->relativeToCommonTopLevelPath, parentNode, useFolders, f->compile, ftd);
+        f->m_TreeItemId = AddTreeNode(tree, f->relativeToCommonTopLevelPath, parentNode, useFolders, f->compile, (int)f->m_VisualState, ftd);
     }
 
 	// remove empty tree nodes (like empty groups)
@@ -704,11 +715,13 @@ void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, bool categ
     tree->Expand(m_ProjectNode);
 }
 
-void cbProject::AddTreeNode(wxTreeCtrl* tree, const wxString& text, const wxTreeItemId& parent, bool useFolders, bool compiles, FileTreeData* data)
+wxTreeItemId cbProject::AddTreeNode(wxTreeCtrl* tree, const wxString& text, const wxTreeItemId& parent, bool useFolders, bool compiles, int image, FileTreeData* data)
 {
     // see if the text contains any path info, e.g. plugins/compilergcc/compilergcc.cpp
     // in that case, take the first element (plugins in this example), create a sub-folder
     // with the same name and recurse with the result...
+
+    wxTreeItemId ret;
 
     wxString path = text;
     int pos = path.Find(_T('/'));
@@ -739,6 +752,7 @@ void cbProject::AddTreeNode(wxTreeCtrl* tree, const wxString& text, const wxTree
 		{
 			// in order not to override wxTreeCtrl to sort alphabetically but the
 			// folders be always on top, we just search here where to put the new folder...
+            int fldIdx = Manager::Get()->GetProjectManager()->FolderIconIndex();
 #if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)
             long int cookie2 = 0;
 #else
@@ -748,35 +762,36 @@ void cbProject::AddTreeNode(wxTreeCtrl* tree, const wxString& text, const wxTree
 			wxTreeItemId lastChild;
 			while (child)
 			{
-				if (tree->GetItemImage(child) == 3)
+				if (tree->GetItemImage(child) == fldIdx)
 				{
 					if (folder.CompareTo(tree->GetItemText(child)) < 0)
 					{
-						newparent = tree->InsertItem(parent, lastChild, folder, 3, 3);
+						newparent = tree->InsertItem(parent, lastChild, folder, fldIdx, fldIdx);
 						break;
 					}
 				}
 				else
 				{
-					newparent = tree->PrependItem(parent, folder, 3, 3);
+					newparent = tree->PrependItem(parent, folder, fldIdx, fldIdx);
 					break;
 				}
 				lastChild = child;
 				child = tree->GetNextChild(parent, cookie2);
 			}
 			if (!newparent)
-				newparent = tree->AppendItem(parent, folder, 3, 3);
+				newparent = tree->AppendItem(parent, folder, fldIdx, fldIdx);
 		}
 		//tree->SortChildren(parent);
-        AddTreeNode(tree, path, newparent, true, compiles, data);
+        ret = AddTreeNode(tree, path, newparent, true, compiles, image, data);
     }
     else
 	{
-        wxTreeItemId newnode = tree->AppendItem(parent, text, 2, 2, data);
+        ret = tree->AppendItem(parent, text, image, image, data);
 		// the following doesn't seem to work under wxMSW...
 		if (!compiles)
-			tree->SetItemTextColour(newnode, wxColour(0x80, 0x80, 0x80));
+			tree->SetItemTextColour(ret, wxColour(0x80, 0x80, 0x80));
 	}
+	return ret;
 }
 
 void cbProject::RenameInTree(const wxString &newname)
@@ -912,7 +927,19 @@ bool cbProject::SaveAllFiles()
 bool cbProject::ShowOptions()
 {
     ProjectOptionsDlg dlg(Manager::Get()->GetAppWindow(), this);
-    return dlg.ShowModal() == wxID_OK;
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        // update file details
+        FilesList::Node* node = m_Files.GetFirst();
+        while(node)
+        {
+            ProjectFile* f = node->GetData();
+            f->UpdateFileDetails();
+            node = node->GetNext();
+        }
+        return true;
+    }
+    return false;
 }
 
 int cbProject::SelectTarget(int initial, bool evenIfOne)
@@ -939,7 +966,7 @@ ProjectBuildTarget* cbProject::AddBuildTarget(const wxString& targetName)
     target->m_Filename = m_Filename; // really important
     target->SetTitle(targetName);
     target->SetCompilerIndex(GetCompilerIndex()); // same compiler as project's
-    target->SetOutputFilename(GetOutputFilename());
+    target->SetOutputFilename(wxFileName(GetOutputFilename()).GetFullName());
     target->SetWorkingDir(_T("."));
     target->SetObjectOutput(_T(".objs"));
     target->SetDepsOutput(_T(".deps"));
@@ -1086,6 +1113,11 @@ void cbProject::ReOrderTargets(const wxArrayString& nameOrder)
         m_Targets.Insert(target, i);
     }
     SetModified(true);
+}
+
+void cbProject::SetCurrentlyCompilingTarget(ProjectBuildTarget* bt)
+{
+    m_CurrentlyCompilingTarget = bt;
 }
 
 #ifdef USE_OPENFILES_TREE

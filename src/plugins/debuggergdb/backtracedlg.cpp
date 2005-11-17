@@ -51,11 +51,11 @@ void BacktraceDlg::AddFrame(const StackFrame& frame)
 
     wxString addr = _T("??");
     if (frame.valid)
-        addr.Printf(_T("0x%8.8x"), frame.address);
+        addr.Printf(_T("%p"), (void*)frame.address);
 
     wxString num = _T("??");
     if (frame.valid)
-        num.Printf(_T("%d"), frame.number);
+        num.Printf(_T("%ld"), frame.number);
 
 	lst->Freeze();
 	lst->InsertItem(lst->GetItemCount(), num);

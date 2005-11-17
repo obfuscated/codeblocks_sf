@@ -54,12 +54,14 @@ void wxsSettingsDlg::OnBtnOkClick(wxCommandEvent& event)
     wxColour ColTarget = DragTargetCol->GetBackgroundColour();
     wxColour ColParent = DragParentCol->GetBackgroundColour();
 
-    ConfigManager::Get()->Write(_T("/wxsmith/dragtargetcol"),(((long)ColTarget.Red())<<16) + (((long)ColTarget.Green())<<8) + (long)ColTarget.Blue());
-    ConfigManager::Get()->Write(_T("/wxsmith/dragparentcol"),(((long)ColParent.Red())<<16) + (((long)ColParent.Green())<<8) + (long)ColParent.Blue());
-    ConfigManager::Get()->Write(_T("/wxsmith/dragassisttype"),(long)DragAssistType->GetSelection());
-    ConfigManager::Get()->Write(_T("/wxsmith/backfetchdelay"),(long)PrevFetchDelay->GetValue());
-    ConfigManager::Get()->Write(_T("/wxsmith/paletteiconsize"),(long)(Icons16->GetValue()?16:32));
-    ConfigManager::Get()->Write(_T("/wxsmith/tooliconsize"),(long)(TIcons16->GetValue()?16:32));
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("wxsmith"));
+
+    cfg->Write(_T("/dragtargetcol"),(int)((((int)ColTarget.Red())<<16) + (((long)ColTarget.Green())<<8) + (long)ColTarget.Blue()));
+    cfg->Write(_T("/dragparentcol"),(int)((((int)ColParent.Red())<<16) + (((long)ColParent.Green())<<8) + (long)ColParent.Blue()));
+    cfg->Write(_T("/dragassisttype"),(int)DragAssistType->GetSelection());
+    cfg->Write(_T("/backfetchdelay"),(int)PrevFetchDelay->GetValue());
+    cfg->Write(_T("/paletteiconsize"),(int)(Icons16->GetValue()?16:32));
+    cfg->Write(_T("/tooliconsize"),(int)(TIcons16->GetValue()?16:32));
     wxsWindowEditor::ReloadImages();
     EndModal(wxID_OK);
 }

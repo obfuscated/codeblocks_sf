@@ -6,10 +6,10 @@
 			<File source="ogre-main.cpp" destination="main.cpp" targets="Debug;Release"/>
 		</FileSet>
 		<Option name="OGRE Application (Free VisualC++ Toolkit 2003)">
-			<Project file="ogre_vctk.cbp"/>
+			<Project file="ogre_vctk.cbp" useDefaultCompiler="0"/>
 		</Option>
 		<Option name="OGRE Application (GCC)">
-			<Project file="ogre_gcc.cbp"/>
+			<Project file="ogre_gcc.cbp" useDefaultCompiler="0"/>
 		</Option>
 	</Template>
 </Code::Blocks_template_file>

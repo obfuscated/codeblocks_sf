@@ -1165,9 +1165,37 @@ void ListBoxImpl::SetDoubleClickAction(CallBackAction action, void *data) {
     GETLBW(id)->SetDoubleClickAction(action, data);
 }
 
-void ListBoxImpl::SetList(const char* WXUNUSED(list), char WXUNUSED(separator), char WXUNUSED(typesep)) {
-    wxMessageBox (_T("ListBoxImpl::SetList is not implemented!"), _T("PlatWX implementation!"),
-                  wxICON_EXCLAMATION | wxOK);
+void ListBoxImpl::SetList(const char* list, char separator, char typesep) {
+//    wxMessageBox (_T("ListBoxImpl::SetList is not implemented!"), _T("PlatWX implementation!"),
+//                  wxICON_EXCLAMATION | wxOK);
+
+    // NOTE: copied and adapted from AutoComplete.cxx in wxSTC
+	Clear();
+	char *words = new char[strlen(list) + 1];
+	if (words) {
+		strcpy(words, list);
+		char *startword = words;
+		char *numword = NULL;
+		int i = 0;
+		for (; words && words[i]; i++) {
+			if (words[i] == separator) {
+				words[i] = '\0';
+				if (numword)
+					*numword = '\0';
+				Append(startword, numword?atoi(numword + 1):-1);
+				startword = words + i + 1;
+				numword = NULL;
+			} else if (words[i] == typesep) {
+				numword = words + i;
+			}
+		}
+		if (startword) {
+			if (numword)
+				*numword = '\0';
+			Append(startword, numword?atoi(numword + 1):-1);
+		}
+		delete []words;
+	}
 }
 
 

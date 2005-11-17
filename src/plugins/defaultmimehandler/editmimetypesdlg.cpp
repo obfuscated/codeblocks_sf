@@ -18,7 +18,6 @@
 #include <wx/msgdlg.h>
 #include <wx/filedlg.h>
 #include <wx/textdlg.h>
-#include <configmanager.h>
 
 BEGIN_EVENT_TABLE(EditMimeTypesDlg, wxDialog)
     EVT_BUTTON(XRCID("btnNew"), EditMimeTypesDlg::OnNew)

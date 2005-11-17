@@ -106,11 +106,13 @@ AC_MSG_NOTICE([Configuring Code::Blocks...])
 AC_CONFIG_FILES([Makefile
 	src/Makefile
 	src/sdk/Makefile
+	src/sdk/as/Makefile
 	src/sdk/tinyxml/Makefile
 	src/sdk/wxscintilla/Makefile
 	src/sdk/resources/Makefile
 	src/sdk/resources/lexers/Makefile
 	src/src/wxDockit/Makefile
+	src/src/wxKeyBinder/Makefile
 	src/src/resources/Makefile
 	src/src/resources/icons/Makefile
 	src/src/resources/images/Makefile

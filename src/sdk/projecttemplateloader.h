@@ -25,6 +25,7 @@ struct TemplateOption
 	wxString name;
 	wxString notice;
 	int noticeMsgType;
+	bool useDefaultCompiler;
 	wxString file;
 	wxArrayString extraCFlags;
 	wxArrayString extraLDFlags;

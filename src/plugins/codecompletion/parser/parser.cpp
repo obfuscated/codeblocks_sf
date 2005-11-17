@@ -69,7 +69,7 @@ Parser::Parser(wxEvtHandler* parent)
 	m_pImageList = new wxImageList(16, 16);
 	wxBitmap bmp;
 	wxString prefix;
-    prefix = ConfigManager::Get()->Read(_T("data_path")) + _T("/images/codecompletion/");
+    prefix = ConfigManager::GetDataFolder() + _T("/images/codecompletion/");
     // bitmaps must be added by order of PARSER_IMG_* consts
     bmp.LoadFile(prefix + _T("class_folder.png"), wxBITMAP_TYPE_PNG);
     m_pImageList->Add(bmp); // PARSER_IMG_CLASS_FOLDER
@@ -163,28 +163,30 @@ void Parser::ReadOptions()
 	m_BrowserOptions.showInheritance = false;
 	m_BrowserOptions.viewFlat = false;
 #else // !STANDALONE
-	m_MaxThreadsCount = ConfigManager::Get()->Read(_T("/code_completion/max_threads"), 8);
-	m_Options.followLocalIncludes = ConfigManager::Get()->Read(_T("/code_completion/parser_follow_local_includes"), 1L);
-	m_Options.followGlobalIncludes = ConfigManager::Get()->Read(_T("/code_completion/parser_follow_global_includes"), 0L);
-	m_Options.caseSensitive = ConfigManager::Get()->Read(_T("/code_completion/case_sensitive"), 0L);
-	m_Options.useSmartSense = ConfigManager::Get()->Read(_T("/code_completion/use_SmartSense"), 1);
-	m_Options.wantPreprocessor = ConfigManager::Get()->Read(_T("/code_completion/want_preprocessor"), 0L);
-	m_BrowserOptions.showInheritance = ConfigManager::Get()->Read(_T("/code_completion/browser_show_inheritance"), 0L);
-	m_BrowserOptions.viewFlat = ConfigManager::Get()->Read(_T("/code_completion/browser_view_flat"), 0L);
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
+	m_MaxThreadsCount = cfg->ReadInt(_T("/max_threads"), wxThread::GetCPUCount());
+	m_Options.followLocalIncludes = cfg->ReadBool(_T("/parser_follow_local_includes"), false);
+	m_Options.followGlobalIncludes = cfg->ReadBool(_T("/parser_follow_global_includes"), false);
+	m_Options.caseSensitive = cfg->ReadBool(_T("/case_sensitive"), false);
+	m_Options.useSmartSense = cfg->ReadBool(_T("/use_SmartSense"), true);
+	m_Options.wantPreprocessor = cfg->ReadBool(_T("/want_preprocessor"), false);
+	m_BrowserOptions.showInheritance = cfg->ReadBool(_T("/browser_show_inheritance"), false);
+	m_BrowserOptions.viewFlat = cfg->ReadBool(_T("/browser_view_flat"), false);
 #endif // STANDALONE
 }
 
 void Parser::WriteOptions()
 {
 #ifndef STANDALONE
-	ConfigManager::Get()->Write(_T("/code_completion/max_threads"), (int)m_MaxThreadsCount);
-	ConfigManager::Get()->Write(_T("/code_completion/parser_follow_local_includes"), m_Options.followLocalIncludes);
-	ConfigManager::Get()->Write(_T("/code_completion/parser_follow_global_includes"), m_Options.followGlobalIncludes);
-	ConfigManager::Get()->Write(_T("/code_completion/case_sensitive"), m_Options.caseSensitive);
-	ConfigManager::Get()->Write(_T("/code_completion/use_SmartSense"), m_Options.useSmartSense);
-	ConfigManager::Get()->Write(_T("/code_completion/want_preprocessor"), m_Options.wantPreprocessor);
-	ConfigManager::Get()->Write(_T("/code_completion/browser_show_inheritance"), m_BrowserOptions.showInheritance);
-	ConfigManager::Get()->Write(_T("/code_completion/browser_view_flat"), m_BrowserOptions.viewFlat);
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
+	cfg->Write(_T("/max_threads"), (int)m_MaxThreadsCount);
+	cfg->Write(_T("/parser_follow_local_includes"), m_Options.followLocalIncludes);
+	cfg->Write(_T("/parser_follow_global_includes"), m_Options.followGlobalIncludes);
+	cfg->Write(_T("/case_sensitive"), m_Options.caseSensitive);
+	cfg->Write(_T("/use_SmartSense"), m_Options.useSmartSense);
+	cfg->Write(_T("/want_preprocessor"), m_Options.wantPreprocessor);
+	cfg->Write(_T("/browser_show_inheritance"), m_BrowserOptions.showInheritance);
+	cfg->Write(_T("/browser_view_flat"), m_BrowserOptions.viewFlat);
 #endif // STANDALONE
 }
 
@@ -218,7 +220,7 @@ bool Parser::ReadFromCache(wxFile* f)
     // EOF
 
     // keep a backup of include dirs
-    wxArrayString dirs = m_IncludeDirs;
+    wxPathList dirs = m_IncludeDirs;
     Manager::Get()->GetMessageManager()->DebugLog(_("Clearing Cache"));
     Clear();
     // restore backup
@@ -241,7 +243,7 @@ bool Parser::ReadFromCache(wxFile* f)
     unsigned int counter = 0;
 
     // display cache progress?
-    if (ConfigManager::Get()->Read(_T("/code_completion/show_cache_progress"), 1L))
+    if (Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("/show_cache_progress"), true))
     {
         Manager::Get()->GetMessageManager()->DebugLog(_("Creating progress dialog..."));
         progress = new wxProgressDialog(_("Code-completion plugin"),
@@ -351,7 +353,7 @@ bool Parser::WriteToCache(wxFile* f)
     wxProgressDialog* progress = 0;
 
     // display cache progress?
-    if (ConfigManager::Get()->Read(_T("/code_completion/show_cache_progress"), 1L))
+    if (Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("/show_cache_progress"), true))
     {
         progress = new wxProgressDialog(_("Code-completion plugin"),
                                         _("Please wait while saving code-completion cache..."),
@@ -828,6 +830,17 @@ void Parser::ResumeAllThreads()
 //		m_Threads[i]->Resume();
 }
 
+void Parser::AddIncludeDir(const wxString& file)
+{
+    if (!m_IncludeDirs.Member(file))
+        m_IncludeDirs.Add(file);
+}
+
+wxString Parser::FindFileInIncludeDirs(const wxString& file)
+{
+    return m_IncludeDirs.FindAbsoluteValidPath(file);
+}
+
 void Parser::OnStartThread(CodeBlocksEvent& event)
 {
     event.Skip();
@@ -872,41 +885,31 @@ void Parser::OnParseFile(wxCommandEvent& event)
 
 	if (idx == -1)
 		return;
-	fname.Assign(filename.Mid(idx + 1));
-	source.Assign(filename.Left(idx - 1));
+	wxString tgt = filename.AfterFirst(_T('+'));
+	if (tgt.IsEmpty())
+        return;
+	wxString src = filename.BeforeFirst(_T('+'));
+	fname.Assign(tgt);
+	source.Assign(src);
 
-	if (event.GetInt() == 0)
-		base = source.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-	else
+    // search
+	if (m_Options.followGlobalIncludes)
 	{
-		// loop through all known include dirs
-		// and locate the file...
-		for (unsigned int i = 0; i < m_IncludeDirs.GetCount(); ++i)
-		{
-			base = m_IncludeDirs[i];
-			wxFileName tmp = fname;
-			tmp.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
-			if (wxFileExists(tmp.GetFullPath()))
-				break;
-		}
+	    wxString g = UnixFilename(m_IncludeDirs.FindAbsoluteValidPath(tgt));
+	    if (g.IsEmpty())
+	    {
+//            Manager::Get()->GetMessageManager()->DebugLog(_T("? No include looking for %s, ? %s"), tgt.c_str(), filename.c_str());
+            return;
+	    }
+	    filename = g;
 	}
-
-	fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
-	filename = fname.GetFullPath();
-
-	/*wxMutexLocker* lock = new wxMutexLocker(s_mutexListProtection);
-	bool abort = m_ReparsedFiles.Index(filename) != wxNOT_FOUND;
-	delete lock;
-	if (abort)
-		return; // the file is being re-parsed; don't follow includes
-	*/
 
 	if (m_ParsedFiles.Index(filename) != wxNOT_FOUND) // parsed file
         return;
 //	Manager::Get()->GetMessageManager()->DebugLog("Adding in parse queue: %s", filename.c_str());
 
 	bool res = false;
-	if (m_ReparsedFiles.Index(source.GetFullPath()) != wxNOT_FOUND) // reparsing file
+	if (m_ReparsedFiles.Index(src) != wxNOT_FOUND) // reparsing file
 		res = Reparse(filename, event.GetInt() == 0);
 	else
 		res = Parse(filename, event.GetInt() == 0);

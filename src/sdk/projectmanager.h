@@ -281,6 +281,13 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
 		void SetTopEditor(EditorBase* ed);
 		/** @return The Top Editor */
 		EditorBase* GetTopEditor();
+
+		/** @return The workspace icon index in the image list. */
+		int WorkspaceIconIndex();
+		/** @return The project icon index in the image list. */
+		int ProjectIconIndex();
+		/** @return The folder icon index in the image list. */
+		int FolderIconIndex();
     private:
         static ProjectManager* Get(wxNotebook* parent);
 		static void Free();

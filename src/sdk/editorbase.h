@@ -58,6 +58,33 @@ class DLLIMPORT EditorBase : public wxPanel
         /** Should this kind of editor be visible from the open files tree? */
         virtual bool VisibleToTree() { return true; }
 
+        /** Move the caret at the specified line. */
+        virtual void GotoLine(int line){}
+
+        /** Toggle breakpoint at specified line. If @c line is -1, use current line. */
+        virtual void ToggleBreakpoint(int line = -1, bool notifyDebugger = true){}
+        /** Does @c line has breakpoint? */
+        virtual bool HasBreakpoint(int line){ return false; }
+        /** Go to next breakpoint. */
+        virtual void GotoNextBreakpoint(){}
+        /** Go to previous breakpoint. */
+        virtual void GotoPreviousBreakpoint(){}
+
+        /** Toggle bookmark at specified line. If @c line is -1, use current line. */
+        virtual void ToggleBookmark(int line = -1){}
+        /** Does @c line has bookmark? */
+        virtual bool HasBookmark(int line){ return false; }
+        /** Go to next bookmark. */
+        virtual void GotoNextBookmark(){}
+        /** Go to previous bookmark. */
+        virtual void GotoPreviousBookmark(){}
+
+        /** Highlight the line the debugger will execute next. */
+        virtual void SetDebugLine(int line){}
+
+        /** Highlight the specified line as error. */
+        virtual void SetErrorLine(int line){}
+
     protected:
         /** Initializes filename data */
         virtual void InitFilename(const wxString& filename);
@@ -73,7 +100,7 @@ class DLLIMPORT EditorBase : public wxPanel
           * @param noeditor If true, this is an "OpenFilesList" popup menu.
           * @return If the editor returns false, the context menu creation is aborted.
           */
-        virtual bool OnBeforeBuildContextMenu(bool noeditor){ return true; }
+        virtual bool OnBeforeBuildContextMenu(const wxPoint& position, bool noeditor){ return true; }
         /** Informs the editor we 're done creating the context menu (just about to display it).
           * Default implementation does nothing.
           * @param noeditor If true, this is an "OpenFilesList" popup menu.
@@ -90,6 +117,7 @@ class DLLIMPORT EditorBase : public wxPanel
         void BasicAddToContextMenu(wxMenu* popup,bool noeditor);
         SwitchToMap m_SwitchTo;
         wxString m_WinTitle;
+        wxString lastWord;
 };
 
 #endif // EDITORBASE_H

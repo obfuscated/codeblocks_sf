@@ -47,6 +47,7 @@
     #include "compilerDMC.h"
     #include "compilerOW.h"
 #endif
+#include "compilerICC.h"
 #include "compilerSDCC.h"
 
 #define COLOUR_MAROON wxColour(0xa0, 0x00, 0x00)
@@ -199,8 +200,8 @@ CompilerGCC::CompilerGCC()
 	for (int i = 0; i < MAX_TARGETS; ++i)
 		idMenuSelectTargetOther[i] = wxNewId();
 #ifndef __WXMSW__
-	m_ConsoleTerm = ConfigManager::Get()->Read(_T("/compiler_gcc/console_terminal"), DEFAULT_CONSOLE_TERM);
-	m_ConsoleShell = ConfigManager::Get()->Read(_T("/compiler_gcc/console_shell"), DEFAULT_CONSOLE_SHELL);
+	m_ConsoleTerm = Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
+	m_ConsoleShell = Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/console_shell"), DEFAULT_CONSOLE_SHELL);
     // because in previous versions the value for terminal
     // used to be "console_shell" (incorrectly), double-check that
     // the word "term" or "onsol" doesn't appear in "shell"
@@ -216,12 +217,11 @@ CompilerGCC::CompilerGCC()
 	CompilerFactory::RegisterCompiler(new CompilerDMC);
 	CompilerFactory::RegisterCompiler(new CompilerOW);
 #endif
+	CompilerFactory::RegisterCompiler(new CompilerICC);
 	CompilerFactory::RegisterCompiler(new CompilerSDCC);
 
 	// register (if any) user-copies of built-in compilers
 	CompilerFactory::RegisterUserCompilers();
-
-	ConfigManager::AddConfiguration(m_PluginInfo.title, _T("/compiler_gcc"));
 }
 
 CompilerGCC::~CompilerGCC()
@@ -244,7 +244,7 @@ void CompilerGCC::OnAttach()
 
     // set log image
 	wxBitmap bmp;
-	wxString prefix = ConfigManager::Get()->Read(_T("data_path")) + _T("/images/");
+	wxString prefix = ConfigManager::GetDataFolder() + _T("/images/");
     bmp.LoadFile(prefix + _T("misc_16x16.png"), wxBITMAP_TYPE_PNG);
     Manager::Get()->GetMessageManager()->SetLogImage(m_Log, bmp);
 
@@ -265,7 +265,7 @@ void CompilerGCC::OnAttach()
     Manager::Get()->GetMessageManager()->SetLogImage(m_pListLog, bmp);
 
     // set default compiler for new projects
-    CompilerFactory::SetDefaultCompilerIndex(ConfigManager::Get()->Read(_T("/compiler_gcc/default_compiler"), (long int)0));
+    CompilerFactory::SetDefaultCompilerIndex(Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/default_compiler"), 0));
 	LoadOptions();
 	SetupEnvironment();
 }
@@ -274,7 +274,7 @@ void CompilerGCC::OnRelease(bool appShutDown)
 {
     DoDeleteTempMakefile();
 	SaveOptions();
-    ConfigManager::Get()->Write(_T("/compiler_gcc/default_compiler"), CompilerFactory::GetDefaultCompilerIndex());
+    Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/default_compiler"), CompilerFactory::GetDefaultCompilerIndex());
 	if (Manager::Get()->GetMessageManager())
 	{
         Manager::Get()->GetMessageManager()->DeletePage(m_ListPageIndex);
@@ -318,8 +318,8 @@ int CompilerGCC::Configure(cbProject* project, ProjectBuildTarget* target)
     CompilerOptionsDlg dlg(Manager::Get()->GetAppWindow(), this, project, target);
     if(dlg.ShowModal()==wxID_OK)
     {
-      m_ConsoleTerm = ConfigManager::Get()->Read(_T("/compiler_gcc/console_terminal"), DEFAULT_CONSOLE_TERM);
-      m_ConsoleShell = ConfigManager::Get()->Read(_T("/compiler_gcc/console_shell"), DEFAULT_CONSOLE_SHELL);
+      m_ConsoleTerm = Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
+      m_ConsoleShell = Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/console_shell"), DEFAULT_CONSOLE_SHELL);
       SaveOptions();
       SetupEnvironment();
     }
@@ -675,14 +675,10 @@ int CompilerGCC::DoRunQueue()
 		return -2;
 
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
-    msgMan->SwitchTo(m_PageIndex);
+//    msgMan->SwitchTo(m_PageIndex);
 
 	// leave if no active project
     AskForActiveProject();
-
-    // make sure all project files are saved
-    if (m_Project && !m_Project->SaveAllFiles())
-        msgMan->Log(_("Could not save all files..."));
 
     if (m_Queue.GetCount() == 0)
 	{
@@ -727,12 +723,14 @@ int CompilerGCC::DoRunQueue()
             ProjectBuildTarget* bt = m_Project->GetBuildTarget(cmd);
             if (bt)
             {
+                m_Project->SetCurrentlyCompilingTarget(bt);
                 SwitchCompiler(bt->GetCompilerIndex());
                 // re-apply the env vars for this target
                 if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
                     CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
                 m_Project->GetCustomVars().ApplyVarsToEnvironment();
                 bt->GetCustomVars().ApplyVarsToEnvironment();
+
             }
             else
                 msgMan->Log(m_PageIndex, _("Can't locate target '%s'!"), cmd.c_str());
@@ -1041,6 +1039,7 @@ void CompilerGCC::PrintBanner()
 		return;
     if (!m_Project)
         return;
+    Manager::Get()->GetMessageManager()->Open();
     Manager::Get()->GetMessageManager()->SwitchTo(m_PageIndex);
     Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Project   : %s"), m_Project->GetTitle().c_str());
     Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Compiler  : %s (%s)"), CompilerFactory::Compilers[m_Project->GetCompilerIndex()]->GetName().c_str(),
@@ -1074,8 +1073,6 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 	DoPrepareQueue();
 	if (!CompilerValid(target))
 		return -1;
-
-    Manager::Get()->GetMessageManager()->Open();
 
 	if (!target)
 	{
@@ -1121,7 +1118,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         // should console runner be used?
         if (target->GetUseConsoleRunner())
         {
-            wxString baseDir = ConfigManager::Get()->Read(_T("/app_path"));
+            wxString baseDir = ConfigManager::GetExecutableFolder();
 #ifdef __WXMSW__
 	#define CONSOLE_RUNNER "console_runner.exe"
 #else
@@ -1191,6 +1188,10 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 
 int CompilerGCC::Clean(ProjectBuildTarget* target)
 {
+    // make sure all project files are saved
+    if (m_Project && !m_Project->SaveAllFiles())
+        Manager::Get()->GetMessageManager()->Log(_("Could not save all files..."));
+
 	DoPrepareQueue();
 	if (!CompilerValid(target))
 		return -1;
@@ -1198,8 +1199,6 @@ int CompilerGCC::Clean(ProjectBuildTarget* target)
     if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
         CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
     m_Project->GetCustomVars().ApplyVarsToEnvironment();
-
-    Manager::Get()->GetMessageManager()->Open();
 
     wxSetWorkingDirectory(m_Project->GetBasePath());
     if (UseMake(target))
@@ -1230,6 +1229,10 @@ int CompilerGCC::Clean(ProjectBuildTarget* target)
 
 int CompilerGCC::DistClean(ProjectBuildTarget* target)
 {
+    // make sure all project files are saved
+    if (m_Project && !m_Project->SaveAllFiles())
+        Manager::Get()->GetMessageManager()->Log(_("Could not save all files..."));
+
 	DoPrepareQueue();
 	if (!CompilerValid(target))
 		return -1;
@@ -1237,8 +1240,6 @@ int CompilerGCC::DistClean(ProjectBuildTarget* target)
     if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
         CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
     m_Project->GetCustomVars().ApplyVarsToEnvironment();
-
-    Manager::Get()->GetMessageManager()->Open();
 
     wxSetWorkingDirectory(m_Project->GetBasePath());
     if (UseMake(target))
@@ -1269,11 +1270,13 @@ int CompilerGCC::DistClean(ProjectBuildTarget* target)
 
 int CompilerGCC::CreateDist()
 {
+    // make sure all project files are saved
+    if (m_Project && !m_Project->SaveAllFiles())
+        Manager::Get()->GetMessageManager()->Log(_("Could not save all files..."));
+
 	DoPrepareQueue();
 	if (!CompilerValid())
 		return -1;
-
-    Manager::Get()->GetMessageManager()->Open();
 
     wxString cmd;
     if (UseMake())
@@ -1297,8 +1300,6 @@ void CompilerGCC::OnExportMakefile(wxCommandEvent& event)
 	if (makefile.IsEmpty())
 		return;
 
-    Manager::Get()->GetMessageManager()->Open();
-
     wxSetWorkingDirectory(m_Project->GetBasePath());
     if (UseMake())
     {
@@ -1316,6 +1317,10 @@ void CompilerGCC::OnExportMakefile(wxCommandEvent& event)
 
 int CompilerGCC::Compile(ProjectBuildTarget* target)
 {
+    // make sure all project files are saved
+    if (m_Project && !m_Project->SaveAllFiles())
+        Manager::Get()->GetMessageManager()->Log(_("Could not save all files..."));
+
     DoClearErrors();
 	DoPrepareQueue();
 	if (!m_Project || !CompilerValid(target))
@@ -1324,8 +1329,6 @@ int CompilerGCC::Compile(ProjectBuildTarget* target)
     if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
         CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
     m_Project->GetCustomVars().ApplyVarsToEnvironment();
-
-    Manager::Get()->GetMessageManager()->Open();
 
     wxString cmd;
     wxSetWorkingDirectory(m_Project->GetBasePath());
@@ -1340,15 +1343,22 @@ int CompilerGCC::Compile(ProjectBuildTarget* target)
     }
     else
     {
+//        DBGLOG(_T("Creating commands factory"));
         DirectCommands dc(this, CompilerFactory::Compilers[m_CompilerIdx], m_Project, m_PageIndex);
+//        DBGLOG(_T("Generating commands"));
         wxArrayString compile = dc.GetCompileCommands(target);
-        dc.AppendArray(compile, m_Queue);
+        AppendArray(compile, m_Queue);
+//        DBGLOG(_T("Commands generated"));
     }
     return DoRunQueue();
 }
 
 int CompilerGCC::Rebuild(ProjectBuildTarget* target)
 {
+    // make sure all project files are saved
+    if (m_Project && !m_Project->SaveAllFiles())
+        Manager::Get()->GetMessageManager()->Log(_("Could not save all files..."));
+
 	DoPrepareQueue();
 	if (!CompilerValid(target))
 		return -1;
@@ -1356,8 +1366,6 @@ int CompilerGCC::Rebuild(ProjectBuildTarget* target)
     if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
         CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
     m_Project->GetCustomVars().ApplyVarsToEnvironment();
-
-    Manager::Get()->GetMessageManager()->Open();
 
     if (UseMake(target))
     {
@@ -1390,7 +1398,6 @@ int CompilerGCC::Rebuild(ProjectBuildTarget* target)
 
 int CompilerGCC::CompileAll()
 {
-    Manager::Get()->GetMessageManager()->Open();
     DoPrepareMultiProjectCommand(mpjCompile);
     DoPrepareQueue();
     ClearLog();
@@ -1400,7 +1407,6 @@ int CompilerGCC::CompileAll()
 
 int CompilerGCC::RebuildAll()
 {
-    Manager::Get()->GetMessageManager()->Open();
     DoPrepareMultiProjectCommand(mpjRebuild);
     DoPrepareQueue();
     ClearLog();
@@ -1479,8 +1485,6 @@ int CompilerGCC::CompileFile(const wxString& file)
 	if (!CompilerValid())
 		return -1;
 
-    Manager::Get()->GetMessageManager()->Open();
-
     if (m_Project)
         wxSetWorkingDirectory(m_Project->GetBasePath());
 
@@ -1507,7 +1511,7 @@ int CompilerGCC::CompileFile(const wxString& file)
             // get compile commands for file (always linked as console-executable)
             DirectCommands dc(this, CompilerFactory::GetDefaultCompiler(), 0, m_PageIndex);
             wxArrayString compile = dc.GetCompileSingleFileCommand(file);
-            dc.AppendArray(compile, m_Queue);
+            AppendArray(compile, m_Queue);
 
             // apply global custom vars
             CompilerFactory::GetDefaultCompiler()->GetCustomVars().ApplyVarsToEnvironment();
@@ -1536,7 +1540,7 @@ int CompilerGCC::CompileFile(const wxString& file)
     {
         DirectCommands dc(this, CompilerFactory::Compilers[bt->GetCompilerIndex()], m_Project, m_PageIndex);
         wxArrayString compile = dc.CompileFile(bt, pf);
-        dc.AppendArray(compile, m_Queue);
+        AppendArray(compile, m_Queue);
     }
     return DoRunQueue();
 }
@@ -1956,7 +1960,7 @@ void CompilerGCC::OnGCCError(CodeBlocksEvent& event)
 
 void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColor)
 {
-    size_t maxErrors = ConfigManager::Get()->Read(_T("/compiler_gcc/max_reported_errors"), 50);
+    size_t maxErrors = Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/max_reported_errors"), 50);
     if (maxErrors > 0)
     {
         if (m_Errors.GetErrorsCount() > maxErrors)

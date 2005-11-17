@@ -1,0 +1,203 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_project_file>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="1"/>
+	<Project>
+		<Option title="Dev-C++ DevPak updater/installer (wx2.6)"/>
+		<Option makefile="Makefile"/>
+		<Option makefile_is_custom="0"/>
+		<Option default_target="1"/>
+		<Option compiler="0"/>
+		<Build>
+			<Target title="libbz2">
+				<Option output="bzip2\libbz2.a"/>
+				<Option working_dir=""/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option type="2"/>
+				<Option compiler="0"/>
+				<Option projectResourceIncludeDirsRelation="2"/>
+			</Target>
+			<Target title="default">
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\devpakupdater.dll"/>
+				<Option working_dir="..\devpak_plugin"/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option type="3"/>
+				<Option compiler="0"/>
+				<Option host_application="..\..\..\devel\codeblocks.exe"/>
+				<Compiler>
+					<Add option="-Wall"/>
+					<Add option="-g"/>
+					<Add option="-Winvalid-pch"/>
+					<Add option="-mthreads"/>
+					<Add option="-include &quot;sdk.h&quot;"/>
+					<Add option="-DBUILDING_PLUGIN"/>
+					<Add option="-DCB_PRECOMP"/>
+					<Add option="-DWX_PRECOMP"/>
+					<Add option="-DHAVE_W32API_H"/>
+					<Add option="-D__WXMSW__"/>
+					<Add option="-DWXUSINGDLL"/>
+					<Add option="-DcbDEBUG"/>
+					<Add option="-DTIXML_USE_STL"/>
+					<Add directory="..\..\..\sdk"/>
+					<Add directory="..\..\..\sdk\wxscintilla\include"/>
+				</Compiler>
+				<Linker>
+					<Add library="bz2"/>
+					<Add directory="..\..\..\devel"/>
+				</Linker>
+				<ExtraCommands>
+					<Mode after="always" />
+					<Add after="zip ..\..\..\devel\share\CodeBlocks\devpakupdater.zip *.xrc"/>
+				</ExtraCommands>
+			</Target>
+			<Environment>
+				<Variable name="WX_CFG" value="NonUnicode"/>
+			</Environment>
+		</Build>
+		<Compiler>
+			<Add directory="bzip2"/>
+			<Add directory="$(#WX.include)"/>
+			<Add directory="$(#WX.lib)\gcc_dll\msw"/>
+			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw"/>
+			<Add directory="$(#WX)\contrib\include"/>
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WX.include)"/>
+		</ResourceCompiler>
+		<Linker>
+			<Add library="codeblocks"/>
+			<Add library="wxmsw26"/>
+			<Add directory="bzip2"/>
+			<Add directory="$(#WX.lib)\gcc_dll\msw"/>
+			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)"/>
+		</Linker>
+		<Unit filename="bzip2\blocksort.c">
+			<Option compilerVar="CC"/>
+			<Option target="libbz2"/>
+		</Unit>
+		<Unit filename="bzip2\bzlib.c">
+			<Option compilerVar="CC"/>
+			<Option target="libbz2"/>
+		</Unit>
+		<Unit filename="bzip2\bzlib.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="libbz2"/>
+		</Unit>
+		<Unit filename="bzip2\bzlib_private.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="libbz2"/>
+		</Unit>
+		<Unit filename="bzip2\compress.c">
+			<Option compilerVar="CC"/>
+			<Option target="libbz2"/>
+		</Unit>
+		<Unit filename="bzip2\crctable.c">
+			<Option compilerVar="CC"/>
+			<Option target="libbz2"/>
+		</Unit>
+		<Unit filename="bzip2\decompress.c">
+			<Option compilerVar="CC"/>
+			<Option target="libbz2"/>
+		</Unit>
+		<Unit filename="bzip2\huffman.c">
+			<Option compilerVar="CC"/>
+			<Option target="libbz2"/>
+		</Unit>
+		<Unit filename="bzip2\randtable.c">
+			<Option compilerVar="CC"/>
+			<Option target="libbz2"/>
+		</Unit>
+		<Unit filename="cbiniparser.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="cbiniparser.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="cbnetwork.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="cbnetwork.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="conf.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="conf.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="crc32.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="crc32.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="devpakinstaller.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="devpakinstaller.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="devpakupdater.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="devpakupdater.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="mytar.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="mytar.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="update.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="updatedlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="default"/>
+		</Unit>
+		<Unit filename="updatedlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="default"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

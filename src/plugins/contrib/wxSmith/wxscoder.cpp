@@ -312,7 +312,7 @@ wxString wxsCoder::GetCode(const wxString& FileName,const wxString& BlockHeader)
 	EditorManager* EM = Manager::Get()->GetEditorManager();
 	assert ( EM != NULL );
     cbEditor* Editor = EM->GetBuiltinEditor(FileName);
-    int TabSize = ConfigManager::Get()->Read(_T("/editor/tab_size"), 4L);
+    int TabSize = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/tab_size"), 4);
     if ( Editor )
     {
         cbStyledTextCtrl* Ctrl = Editor->GetControl();
@@ -363,9 +363,9 @@ wxString wxsCoder::GetCode(const wxString& FileName,const wxString& BlockHeader)
 
 void wxsCoder::RebuildCode(wxString& BaseIndentation,wxString& Code)
 {
-    bool UseTab = ConfigManager::Get()->Read(_T("/editor/use_tab"), 0L) != 0;
-    int TabSize = ConfigManager::Get()->Read(_T("/editor/tab_size"), 4L);
-    int EolMode = ConfigManager::Get()->Read(_T("/editor/eol/eolmode"), 0L);
+    bool UseTab = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_tab"), false);
+    int TabSize = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/tab_size"), 4);
+    int EolMode = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/eol/eolmode"), 0);
 
     if ( !UseTab )
     {
@@ -392,7 +392,7 @@ void wxsCoder::RebuildCode(wxString& BaseIndentation,wxString& Code)
 
 wxString wxsCoder::CutSpaces(wxString Code,int Count)
 {
-    int TabSize = ConfigManager::Get()->Read(_T("/editor/tab_size"), 4L);
+    int TabSize = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/tab_size"), 4);
     if ( TabSize < 1 ) TabSize = 4;
 
     // Changing to \n line end mode

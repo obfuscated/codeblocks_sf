@@ -23,6 +23,8 @@ bool ProjectTemplateLoader::Open(const wxString& filename)
     if (!pMsg)
         return false;
 
+//    pMsg->DebugLog(_("Reading template file %s"), filename.c_str());
+
     TiXmlDocument doc(filename.mb_str());
     if (!doc.LoadFile())
         return false;
@@ -127,6 +129,8 @@ void ProjectTemplateLoader::DoOption(TiXmlElement* parentNode)
     while (node)
     {
         TemplateOption to;
+        to.useDefaultCompiler = true;
+
         if (node->Attribute("name"))
             to.name = _U(node->Attribute("name"));
 
@@ -139,7 +143,7 @@ void ProjectTemplateLoader::DoOption(TiXmlElement* parentNode)
                 while (to.notice.Replace(_T("  "), _T(" ")))
                     ;
                 to.notice.Replace(_T("\t"), _T(""));
-                to.noticeMsgType = _U(tmpnode->Attribute("value")) == _T("0") ? wxICON_INFORMATION : wxICON_WARNING;
+                to.noticeMsgType = strncmp(tmpnode->Attribute("value"), "0", 1) == 0 ? wxICON_INFORMATION : wxICON_WARNING;
             }
 
             DoOptionProject(node, to);
@@ -155,8 +159,13 @@ void ProjectTemplateLoader::DoOption(TiXmlElement* parentNode)
 void ProjectTemplateLoader::DoOptionProject(TiXmlElement* parentNode, TemplateOption& to)
 {
     TiXmlElement* node = parentNode->FirstChildElement("Project");
-    if (node && node->Attribute("file"))
-        to.file = _U(node->Attribute("file"));
+    if (node)
+    {
+        if (node->Attribute("file"))
+            to.file = _U(node->Attribute("file"));
+        if (node->Attribute("useDefaultCompiler"))
+            to.useDefaultCompiler = strncmp(node->Attribute("useDefaultCompiler"), "0", 1) != 0;
+    }
 }
 
 void ProjectTemplateLoader::DoOptionCompiler(TiXmlElement* parentNode, TemplateOption& to)

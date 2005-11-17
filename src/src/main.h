@@ -8,12 +8,22 @@
 #include "../sdk/manager.h"
 #include "../sdk/cbplugin.h"
 #include "../sdk/sdk_events.h"
-//
+
+// wxDockit
 #include "wx/layoutmanager.h"
 #include "wx/dockwindow.h"
 #include "wx/dockhost.h"
 #include "wx/pane.h"
 #include "wx/slidebar.h"
+
+// you can compile this application without wxKeyBinder undefining the following line
+#define wxUSE_KEYBINDER			1
+
+#if wxUSE_KEYBINDER
+    // wxKeyBinder
+    #include "wx/keybinder.h"
+    #include "wx/menuutils.h"
+#endif
 
 WX_DECLARE_HASH_MAP(int, wxString, wxIntegerHash, wxIntegerEqual, WindowIDsMap);
 WX_DECLARE_HASH_MAP(int, wxString, wxIntegerHash, wxIntegerEqual, PluginIDsMap);
@@ -21,6 +31,18 @@ WX_DECLARE_HASH_MAP(cbPlugin*, wxToolBar*, wxPointerHash, wxPointerEqual, Plugin
 
 class MainFrame : public wxFrame
 {
+#if wxUSE_KEYBINDER
+    protected:
+        wxADD_KEYBINDER_SUPPORT();
+        void InitKeyBinder();
+        void UpdateKeyBinder(wxKeyProfileArray* r);
+        void LoadKeyBindings();
+        void SaveKeyBindings();
+    public:
+        // the array of key profiles used by this app
+        wxKeyProfileArray* m_KeyProfiles;
+#endif // wxUSE_KEYBINDER
+    private:
         wxLayoutManager* pLayoutManager;
         wxSlideBar* pSlideBar;
         wxPane * pPane;
@@ -49,6 +71,8 @@ class MainFrame : public wxFrame
 
         void OnFileNewEmpty(wxCommandEvent& event);
         void OnFileOpen(wxCommandEvent& event);
+        void OnFileReopenProject(wxCommandEvent& event);
+        void OnFileOpenRecentProjectClearHistory(wxCommandEvent& event);
         void OnFileReopen(wxCommandEvent& event);
         void OnFileOpenRecentClearHistory(wxCommandEvent& event);
         void OnFileSave(wxCommandEvent& event);
@@ -60,6 +84,7 @@ class MainFrame : public wxFrame
         void OnFileCloseAll(wxCommandEvent& event);
         void OnFilePrintSetup(wxCommandEvent& event);
         void OnFilePrint(wxCommandEvent& event);
+        void OnFileRunScript(wxCommandEvent& event);
         void OnFileQuit(wxCommandEvent& event);
         void OnFileNext(wxCommandEvent& event);
         void OnFilePrev(wxCommandEvent& event);
@@ -110,11 +135,12 @@ class MainFrame : public wxFrame
         void OnPluginsExecuteMenu(wxCommandEvent& event);
 
 		void OnSettingsEnvironment(wxCommandEvent& event);
+        void OnSettingsKeyBindings(wxCommandEvent& event);
 		void OnGlobalUserVars(wxCommandEvent& event);
         void OnSettingsEditor(wxCommandEvent& event);
         void OnSettingsPlugins(wxCommandEvent& event);
         void OnPluginSettingsMenu(wxCommandEvent& event);
-        void OnSettingsImpExpConfig(wxCommandEvent& event);
+        void OnSettingsNetworkProxy(wxCommandEvent& event);
 
         void OnHelpAbout(wxCommandEvent& event);
         void OnHelpTips(wxCommandEvent& event);
@@ -195,6 +221,7 @@ class MainFrame : public wxFrame
         void TerminateRecentFilesHistory();
 
         wxFileHistory m_FilesHistory;
+        wxFileHistory m_ProjectsHistory;
 
         /// "Close FullScreen" button. Only shown when in FullScreen view
         wxButton* m_pCloseFullScreenBtn;

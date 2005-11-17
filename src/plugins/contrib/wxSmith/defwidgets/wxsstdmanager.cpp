@@ -214,7 +214,7 @@ wxsStdManagerT::~wxsStdManagerT()
 
 bool wxsStdManagerT::Initialize()
 {
-    wxString resPath = ConfigManager::Get()->Read(_T("data_path"), wxEmptyString);
+    wxString resPath = ConfigManager::GetDataFolder();
     for ( int i=1; i<StdInfosCnt; i++ )
     {
         // Loading 32x32 image

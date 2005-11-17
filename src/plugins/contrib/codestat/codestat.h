@@ -34,6 +34,7 @@
 #include "codestatexec.h"
 #include "codestatconfig.h"
 #include "language_def.h"
+
 class CodeStat : public cbToolPlugin
 {
 	public:

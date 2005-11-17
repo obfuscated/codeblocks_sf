@@ -8,7 +8,6 @@
 #include <configmanager.h>
 #include "addtododlg.h"
 
-#define CONF_GROUP _T("/todo/users")
 
 AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString& types)
     : m_Types(types)
@@ -30,7 +29,7 @@ AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString& types)
     if (m_Types.Index(_T("NOTE")) == wxNOT_FOUND)
         cmb->Append(_T("NOTE"));
 
-    wxString sels = ConfigManager::Get()->Read(_T("/todo/last_used_type"), _T(""));
+    wxString sels = Manager::Get()->GetConfigManager(_T("todo_list"))->Read(_T("last_used_type"));
     if (!sels.IsEmpty())
     {
         int sel = cmb->FindString(sels);
@@ -49,19 +48,12 @@ AddTodoDlg::~AddTodoDlg()
 void AddTodoDlg::LoadUsers()
 {
 	wxComboBox* cmb = XRCCTRL(*this, "cmbUser", wxComboBox);
+
+	wxArrayString users;
+	Manager::Get()->GetConfigManager(_T("todo_list"))->Read(_T("users"), &users);
+
 	cmb->Clear();
-	long cookie;
-	wxString entry;
-	wxConfigBase* conf = ConfigManager::Get();
-	wxString oldPath = conf->GetPath();
-	conf->SetPath(CONF_GROUP);
-	bool cont = conf->GetFirstEntry(entry, cookie);
-	while (cont)
-	{
-		cmb->Append(entry);
-		cont = conf->GetNextEntry(entry, cookie);
-	}
-	conf->SetPath(oldPath);
+    cmb->Append(users);
 
 	if (cmb->GetCount() == 0)
 		cmb->Append(wxGetUserId());
@@ -71,17 +63,13 @@ void AddTodoDlg::LoadUsers()
 void AddTodoDlg::SaveUsers()
 {
 	wxComboBox* cmb = XRCCTRL(*this, "cmbUser", wxComboBox);
-	wxConfigBase* conf = ConfigManager::Get();
-	conf->DeleteGroup(CONF_GROUP);
-	wxString oldPath = conf->GetPath();
-	conf->SetPath(CONF_GROUP);
-	if (cmb->FindString(cmb->GetValue()) == wxNOT_FOUND)
-		conf->Write(cmb->GetValue(), wxEmptyString);
+	wxArrayString users;
+
 	for (int i = 0; i < cmb->GetCount(); ++i)
 	{
-		conf->Write(cmb->GetString(i), wxEmptyString);
+		users.Add(cmb->GetString(i));
 	}
-	conf->SetPath(oldPath);
+	Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("users"), users);
 }
 
 wxString AddTodoDlg::GetText()
@@ -135,7 +123,7 @@ void AddTodoDlg::EndModal(int retVal)
             m_Types.Add(cmb->GetString(i));
         }
 
-        ConfigManager::Get()->Write(_T("/todo/last_used_type"), cmb->GetValue());
+        Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("last_used_type"), cmb->GetValue());
 	}
 
 	wxDialog::EndModal(retVal);

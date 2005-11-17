@@ -106,9 +106,9 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& event)
 		DoGuardBlock();
 	wxFileName headerFname(UnixFilename(m_Header));
 
-	bool usestabs = (ConfigManager::Get()->Read(_T("/editor/use_tab"), 0l) != 0);
-	int tabsize = ConfigManager::Get()->Read(_T("/editor/tab_size"), 4);
-	int eolmode = ConfigManager::Get()->Read(_T("/editor/eol/eolmode"),0L);
+	bool usestabs = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_tab"), false);
+	int tabsize = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/tab_size"), 4);
+	int eolmode = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/eol/eolmode"), 0);
 
 	wxString buffer;
 	wxString tabstr = usestabs ? wxString(_T("\t")) : wxString(_T(' '),tabsize);

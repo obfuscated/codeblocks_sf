@@ -33,7 +33,7 @@ void CompilerDMC::Reset()
 	m_Programs.C = _T("dmc.exe");
 	m_Programs.CPP = _T("dmc.exe");
 	m_Programs.LD = _T("link.exe");
-	m_Programs.LIB = _T("link.exe");
+	m_Programs.LIB = _T("lib.exe");
 	m_Programs.WINDRES = _T("rcc.exe");
 	m_Programs.MAKE = _T("mingw32-make.exe");
 
@@ -183,6 +183,7 @@ AutoDetectResult CompilerDMC::AutoDetectInstallationDir()
     // NOTE (mandrav#1#): which doesn't seem to exist if you don't have the CD version ;)
     if (!m_MasterPath.IsEmpty())
     {
+        AddIncludeDir(m_MasterPath + sep + _T("stlport") + sep + _T("stlport"));
         AddIncludeDir(m_MasterPath + sep + _T("include"));
         AddLibDir(m_MasterPath + sep + _T("lib"));
     }

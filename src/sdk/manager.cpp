@@ -29,7 +29,6 @@
 #include <wx/notebook.h>
 #include <wx/menu.h>
 #include <wx/toolbar.h>
-#include <wx/file.h>
 
 #include "manager.h" // class's header file
 #include "projectmanager.h"
@@ -39,69 +38,18 @@
 #include "toolsmanager.h"
 #include "macrosmanager.h"
 #include "configmanager.h"
+#include "scriptingmanager.h"
 #include "templatemanager.h"
 #include "personalitymanager.h"
+#include "uservarmanager.h"
 #include "managerproxy.h"
 #include "xtra_classes.h" // Our custom set of wxWidgets classes
 #include "xtra_res.h" // our new ToolBarAddOn handler
 
+#include "configmanager.h"
+
 
 static bool appShutingDown = false;
-
-/// Reads a wxString from a non-unicode file. File must be open. File is closed automatically.
-bool cbRead(wxFile& file,wxString& st)
-{
-    st.Empty();
-    if (!file.IsOpened())
-        return false;
-    int len = file.Length();
-    if(!len)
-    {
-        file.Close();
-        return true;
-    }
-#if wxUSE_UNICODE
-    char* buff = new char[len+1];
-    if (!buff)
-    {
-        file.Close();
-        return false;
-    }
-    file.Read((void*)buff, len);
-    file.Close();
-    buff[len]='\0';
-    st = wxString((const char *)buff, wxConvUTF8);
-    delete[] buff;
-#else
-    char* buff = st.GetWriteBuf(len); // GetWriteBuf already handles the extra '\0'.
-    file.Read((void*)buff, len);
-    file.Close();
-    st.UngetWriteBuf();
-#endif
-    return true;
-}
-
-const wxString cbRead(wxFile& file)
-{
-    wxString st;
-    cbRead(file,st);
-    return st;
-}
-
-/// Writes a wxString to a non-unicode file. File must be open. File is closed automatically.
-bool cbWrite(wxFile& file, const wxString& buff)
-{
-    bool result = false;
-    if (file.IsOpened())
-    {
-        result = file.Write(buff,wxConvUTF8);
-        if(result)
-            file.Flush();
-        file.Close();
-    }
-    return result;
-}
-
 
 Manager* Manager::Get(wxFrame* appWindow, wxNotebook* notebook, wxWindow* clientWin)
 {
@@ -128,6 +76,7 @@ void Manager::Free()
                     changed to cbPlugin::Release(bool appShutDown). Please
                     test under MSVC too...
         */
+        ScriptingManager::Free();
 		MacrosManager::Free();
 		ToolsManager::Free();
 		TemplateManager::Free();
@@ -204,8 +153,8 @@ void Manager::Initxrc(bool force)
     if(!xrcok || force)
     {
         wxFileSystem::AddHandler(new wxZipFSHandler);
-        wxXmlResource::Get()->InitAllHandlers();
         wxXmlResource::Get()->InsertHandler(new wxToolBarAddOnXmlHandler);
+        wxXmlResource::Get()->InitAllHandlers();
 
         xrcok=true;
     }
@@ -214,7 +163,7 @@ void Manager::Initxrc(bool force)
 void Manager::Loadxrc(wxString relpath)
 {
     Manager::Initxrc();
-    wxString resPath = ConfigManager::Get()->Read(_T("data_path"), wxEmptyString);
+    wxString resPath = ConfigManager::GetDataFolder();
     wxXmlResource::Get()->Load(resPath + relpath);
 }
 
@@ -323,6 +272,19 @@ PersonalityManager* Manager::GetPersonalityManager()
 UserVariableManager* Manager::GetUserVariableManager()
 {
     return appShutingDown ? 0 : UserVariableManager::Get();
+}
+
+ScriptingManager* Manager::GetScriptingManager()
+{
+    return appShutingDown ? 0 : ScriptingManager::Get();
+}
+
+ConfigManager* Manager::GetConfigManager(const wxString& name_space)
+{
+    // do *not* check for appShutingDown here.
+    // ConfigManager is deleted at program exit automatically
+    // and it exists throught the whole lifetime of the application...
+    return CfgMgrBldr::Get(name_space);
 }
 
 wxWindow* Manager::GetNotebookPage(const wxString &name, long style,bool issplit)

@@ -30,7 +30,6 @@
 #include <wx/notebook.h>
 #include <wx/sizer.h>
 #include <wx/menu.h>
-#include <configmanager.h>
 #include <pluginmanager.h>
 #include <editormanager.h>
 #include <projectmanager.h>

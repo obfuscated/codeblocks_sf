@@ -45,6 +45,7 @@ class CodeCompletion : public cbCodeCompletionPlugin
         int DoClassMethodDeclImpl();
         int m_PageIndex;
 
+        wxString m_LastIncludeFileFrom;
         wxString m_LastIncludeFile;
         wxString m_LastKeyword;
 

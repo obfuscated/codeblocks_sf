@@ -7,28 +7,27 @@
 #include <wx/dynarray.h>
 #include <wx/filename.h>
 #include <wx/list.h>
+#include <wx/treectrl.h>
+
+#include "blockallocated.h"
 
 class cbProject;
 class ProjectBuildTarget;
+class pfDetails;
 
-WX_DEFINE_ARRAY(DebuggerBreakpoint*, BreakpointsList);
 WX_DEFINE_ARRAY(ProjectBuildTarget*, BuildTargets);
+WX_DECLARE_HASH_MAP(ProjectBuildTarget*, pfDetails*, wxPointerHash, wxPointerEqual, PFDMap);
 
-class ProjectFile
+class ProjectFile  : public BlockAllocated<ProjectFile, 500>
 {
     public:
-        ProjectFile();
+        ProjectFile(cbProject* prj);
         ~ProjectFile();
-        
+
         void AddBuildTarget(const wxString& targetName);
         void RenameBuildTarget(const wxString& oldTargetName, const wxString& newTargetName);
         void RemoveBuildTarget(const wxString& targetName);
         bool ShowOptions(wxWindow* parent);
-        void ClearBreakpoints();
-        DebuggerBreakpoint* HasBreakpoint(int line);
-        void SetBreakpoint(int line);
-        void RemoveBreakpoint(int line);
-        void ToggleBreakpoint(int line);
 
         // take as example the relative file sdk/cbProject.cpp
         wxString GetBaseName(); // returns sdk/cbProject
@@ -36,8 +35,21 @@ class ProjectFile
         void SetObjName(const wxString& name);
 
         cbProject* project;
+
+        /// @note: if you set 'file' or 'relativeFilename' anywhere in code,
+        ///       you *MUST* call UpdateFileDetails() afterwards or it won't compile anymore
         wxFileName file;
         wxString relativeFilename;
+        /// This is called automatically when adding/removing build targets
+        void UpdateFileDetails(ProjectBuildTarget* target = 0);
+        /// Retrieve the details for this project file for the specified build target
+        const pfDetails& GetFileDetails(ProjectBuildTarget* target);
+
+        /// Set the visual state (modified, read-only, etc)
+		void SetFileState(FileVisualState state);
+        /// Get the visual state (modified, read-only, etc)
+		FileVisualState GetFileState();
+
         wxString relativeToCommonTopLevelPath; // used for the tree, .objs and .deps (has no "..")
         bool compile;
         bool link;
@@ -52,12 +64,39 @@ class ProjectFile
         bool autoDeps;
         wxString customDeps;
         wxString compilerVar;
-        BreakpointsList breakpoints;
         wxArrayString buildTargets;
     private:
+        friend class cbProject;
+        void DoUpdateFileDetails(ProjectBuildTarget* target);
+        FileVisualState m_VisualState;
+        wxTreeItemId m_TreeItemId; // set by the project when building the tree
         wxString m_ObjName;
+        PFDMap m_PFDMap;
 };
 WX_DECLARE_LIST(ProjectFile, FilesList);
+
+// ProjectFile details
+class pfDetails
+{
+    public:
+        pfDetails(ProjectBuildTarget* target, ProjectFile* pf);
+        void Update(ProjectBuildTarget* target, ProjectFile* pf);
+        // all the members below, are set in the constructor
+        wxString source_file;
+        wxString object_file;
+        wxString dep_file;
+        wxString object_dir;
+        wxString dep_dir;
+        // those below, have no UnixFilename() applied, nor QuoteStringIfNeeded()
+        wxString source_file_native;
+        wxString object_file_native;
+        wxString dep_file_native;
+        wxString object_dir_native;
+        wxString dep_dir_native;
+        wxString source_file_absolute_native;
+        wxString object_file_absolute_native;
+        wxString dep_file_absolute_native;
+};
 
 /*
  * No description
@@ -90,7 +129,7 @@ class DLLIMPORT ProjectBuildTarget : public CompileTargetBase
         virtual void SetTargetType(const TargetType& pt); // overriden
 
         // target dependencies: targets to be compiled (if necessary) before this one
-        // add a target to the list of dependencies of this target. Be careful 
+        // add a target to the list of dependencies of this target. Be careful
         // not to add a target more than once
         virtual void AddTargetDep(ProjectBuildTarget* target);
         // get the list of dependency targets of this target

@@ -19,18 +19,12 @@ class wxMenu;
 class wxMenuBar;
 class wxToolBar;
 class UserVariableManager;
+class ScriptingManager;
+class ConfigManager;
 
 /*
  * No description
  */
-
-/// Reads a wxString from a non-unicode file. File must be open. File is closed automatically.
-bool DLLIMPORT cbRead(wxFile& file,wxString& st);
-const wxString DLLIMPORT cbRead(wxFile& file);
-
-/// Writes a wxString to a non-unicode file. File must be open. File is closed automatically.
-bool DLLIMPORT cbWrite(wxFile& file, const wxString& buff);
-
 class DLLIMPORT Manager
 {
 	public:
@@ -47,7 +41,10 @@ class DLLIMPORT Manager
 		ToolsManager* GetToolsManager();
 		MacrosManager* GetMacrosManager();
 		PersonalityManager* GetPersonalityManager();
-		UserVariableManager *GetUserVariableManager();
+		UserVariableManager* GetUserVariableManager();
+		ScriptingManager* GetScriptingManager();
+		ConfigManager* Manager::GetConfigManager(const wxString& name_space);
+
 		static bool isappShutingDown();
 		// stupid typo ;-P
 		static bool isappShuttingDown();

@@ -1,6 +1,7 @@
 #include "help_common.h"
 #include <configmanager.h>
 #include <wx/intl.h>
+#include <wx/dynarray.h>
 
 using std::make_pair;
 
@@ -9,53 +10,43 @@ int HelpCommon::m_DefaultHelpIndex = -1;
 void HelpCommon::LoadHelpFilesVector(HelpCommon::HelpFilesVector &vect)
 {
   vect.clear();
-  long cookie;
-  wxString entry;
-  wxConfigBase *conf = ConfigManager::Get();
-  wxString oldPath = conf->GetPath();
-  conf->SetPath(_T("/help_plugin"));
-  bool cont = conf->GetFirstEntry(entry, cookie);
-
-  while (cont)
+  ConfigManager* conf = Manager::Get()->GetConfigManager(_T("help_plugin"));
+  m_DefaultHelpIndex = conf->ReadInt(_T("/default"), -1);
+  wxArrayString list = conf->EnumerateSubPaths(_T("/"));
+  for (unsigned int i = 0; i < list.GetCount(); ++i)
   {
-    if (entry == _T("default"))
-    {
-      m_DefaultHelpIndex = conf->Read(entry, -1);
-    }
-    else
-    {
-      wxString file = conf->Read(entry, wxEmptyString);
+      wxString name = conf->Read(list[i] + _T("/name"), wxEmptyString);
+      wxString file = conf->Read(list[i] + _T("/file"), wxEmptyString);
 
-      if (!file.IsEmpty())
+      if (!name.IsEmpty() && !file.IsEmpty())
       {
-        vect.push_back(make_pair(entry, file));
+        vect.push_back(make_pair(name, file));
       }
-    }
-
-    cont = conf->GetNextEntry(entry, cookie);
   }
-
-  conf->SetPath(oldPath);
 }
 
 void HelpCommon::SaveHelpFilesVector(HelpCommon::HelpFilesVector &vect)
 {
-  wxConfigBase *conf = ConfigManager::Get();
-  conf->DeleteGroup(_T("/help_plugin"));
-  wxString oldPath = conf->GetPath();
-  conf->SetPath(_T("/help_plugin"));
+  ConfigManager* conf = Manager::Get()->GetConfigManager(_T("help_plugin"));
+  wxArrayString list = conf->EnumerateSubPaths(_T("/"));
+  for (unsigned int i = 0; i < list.GetCount(); ++i)
+    conf->DeleteSubPath(list[i]);
+
   HelpFilesVector::iterator it;
 
+  int count = 0;
   for (it = vect.begin(); it != vect.end(); ++it)
   {
+    wxString name = it->first;
     wxString file = it->second;
 
-    if (!file.IsEmpty())
+    if (!name.IsEmpty() && !file.IsEmpty())
     {
-      conf->Write(it->first, file);
+      wxString key = wxString::Format(_T("/help%d/"), count++);
+      conf->Write(key + _T("name"), name);
+      conf->Write(key + _T("name"), file);
     }
   }
 
-  conf->Write(_T("default"), m_DefaultHelpIndex);
-  conf->SetPath(oldPath);
+  conf->Write(_T("/default"), m_DefaultHelpIndex);
 }

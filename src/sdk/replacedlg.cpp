@@ -34,7 +34,7 @@
 #include <wx/radiobox.h>
 #include <wx/button.h>
 
-#define CONF_GROUP _T("/editor/replace_options")
+#define CONF_GROUP _T("/replace_options")
 
 BEGIN_EVENT_TABLE(ReplaceDlg, wxDialog)
 	EVT_CHECKBOX(XRCID("chkRegEx"), 	ReplaceDlg::OnRegEx)
@@ -44,6 +44,7 @@ ReplaceDlg::ReplaceDlg(wxWindow* parent, const wxString& initial, bool hasSelect
 	: FindReplaceBase(parent, initial, hasSelection)
 {
 	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgReplace"));
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
 
 	// load last searches
 	FillComboWithLastValues(XRCCTRL(*this, "cmbFind", wxComboBox), CONF_GROUP _T("/last"));
@@ -51,13 +52,13 @@ ReplaceDlg::ReplaceDlg(wxWindow* parent, const wxString& initial, bool hasSelect
 
 	// find options
 	XRCCTRL(*this, "cmbFind", wxComboBox)->SetValue(initial);
-	XRCCTRL(*this, "chkWholeWord", wxCheckBox)->SetValue(ConfigManager::Get()->Read(CONF_GROUP _T("/match_word"), 0L));
-	XRCCTRL(*this, "chkStartWord", wxCheckBox)->SetValue(ConfigManager::Get()->Read(CONF_GROUP _T("/start_word"), 0L));
-	XRCCTRL(*this, "chkMatchCase", wxCheckBox)->SetValue(ConfigManager::Get()->Read(CONF_GROUP _T("/match_case"), 0L));
-	XRCCTRL(*this, "chkRegEx", wxCheckBox)->SetValue(ConfigManager::Get()->Read(CONF_GROUP _T("/regex"), 0L));
-	XRCCTRL(*this, "rbDirection", wxRadioBox)->SetSelection(ConfigManager::Get()->Read(CONF_GROUP _T("/direction"), 1));
+	XRCCTRL(*this, "chkWholeWord", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/match_word"), false));
+	XRCCTRL(*this, "chkStartWord", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/start_word"), false));
+	XRCCTRL(*this, "chkMatchCase", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/match_case"), false));
+	XRCCTRL(*this, "chkRegEx", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/regex"), false));
+	XRCCTRL(*this, "rbDirection", wxRadioBox)->SetSelection(cfg->ReadInt(CONF_GROUP _T("/direction"), 1));
 	XRCCTRL(*this, "rbDirection", wxRadioBox)->Enable(!XRCCTRL(*this, "chkRegEx", wxCheckBox)->GetValue()); // if regex, only forward searches
-	XRCCTRL(*this, "rbOrigin", wxRadioBox)->SetSelection(ConfigManager::Get()->Read(CONF_GROUP _T("/origin"), 0L));
+	XRCCTRL(*this, "rbOrigin", wxRadioBox)->SetSelection(cfg->ReadInt(CONF_GROUP _T("/origin"), 0));
 	XRCCTRL(*this, "rbScope", wxRadioBox)->SetSelection(hasSelection);
 	XRCCTRL(*this, "rbScope", wxRadioBox)->Enable(hasSelection);
 
@@ -66,22 +67,24 @@ ReplaceDlg::ReplaceDlg(wxWindow* parent, const wxString& initial, bool hasSelect
 
 ReplaceDlg::~ReplaceDlg()
 {
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
+
 	// save last searches (up to 10)
 	SaveComboValues(XRCCTRL(*this, "cmbFind", wxComboBox), CONF_GROUP _T("/last"));
 	SaveComboValues(XRCCTRL(*this, "cmbReplace", wxComboBox), CONF_GROUP _T("/lastReplace"));
 
 	// find options
-	ConfigManager::Get()->Write(CONF_GROUP _T("/match_word"), XRCCTRL(*this, "chkWholeWord", wxCheckBox)->GetValue());
-	ConfigManager::Get()->Write(CONF_GROUP _T("/start_word"), XRCCTRL(*this, "chkStartWord", wxCheckBox)->GetValue());
-	ConfigManager::Get()->Write(CONF_GROUP _T("/match_case"), XRCCTRL(*this, "chkMatchCase", wxCheckBox)->GetValue());
-	ConfigManager::Get()->Write(CONF_GROUP _T("/regex"), XRCCTRL(*this, "chkRegEx", wxCheckBox)->GetValue());
-	ConfigManager::Get()->Write(CONF_GROUP _T("/direction"), XRCCTRL(*this, "rbDirection", wxRadioBox)->GetSelection());
-	ConfigManager::Get()->Write(CONF_GROUP _T("/origin"), XRCCTRL(*this, "rbOrigin", wxRadioBox)->GetSelection());
+	cfg->Write(CONF_GROUP _T("/match_word"), XRCCTRL(*this, "chkWholeWord", wxCheckBox)->GetValue());
+	cfg->Write(CONF_GROUP _T("/start_word"), XRCCTRL(*this, "chkStartWord", wxCheckBox)->GetValue());
+	cfg->Write(CONF_GROUP _T("/match_case"), XRCCTRL(*this, "chkMatchCase", wxCheckBox)->GetValue());
+	cfg->Write(CONF_GROUP _T("/regex"), XRCCTRL(*this, "chkRegEx", wxCheckBox)->GetValue());
+	cfg->Write(CONF_GROUP _T("/direction"), XRCCTRL(*this, "rbDirection", wxRadioBox)->GetSelection());
+	cfg->Write(CONF_GROUP _T("/origin"), XRCCTRL(*this, "rbOrigin", wxRadioBox)->GetSelection());
 }
 
 void ReplaceDlg::FillComboWithLastValues(wxComboBox* combo, const wxString& configKey)
 {
-	wxArrayString values = GetArrayFromString(ConfigManager::Get()->Read(configKey, wxEmptyString), DEFAULT_ARRAY_SEP, false);
+	wxArrayString values = GetArrayFromString(Manager::Get()->GetConfigManager(_T("editor"))->Read(configKey, wxEmptyString), DEFAULT_ARRAY_SEP, false);
 	for (unsigned int i = 0; i < values.GetCount(); ++i)
 	{
 		if (!values[i].IsEmpty())
@@ -101,7 +104,7 @@ void ReplaceDlg::SaveComboValues(wxComboBox* combo, const wxString& configKey)
 	if (combo->FindString(find) == -1)
 		values.Insert(find, 0);
 	wxString last = GetStringFromArray(values);
-	ConfigManager::Get()->Write(configKey, last);
+	Manager::Get()->GetConfigManager(_T("editor"))->Write(configKey, last);
 }
 
 wxString ReplaceDlg::GetFindString()

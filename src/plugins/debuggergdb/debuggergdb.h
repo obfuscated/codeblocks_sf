@@ -9,32 +9,20 @@
 #include <wx/regex.h>
 #include <wx/tipwin.h>
 
+#include "debugger_defs.h"
 #include "debuggertree.h"
 #include "backtracedlg.h"
 #include "disassemblydlg.h"
 
-struct StackFrame
-{
-    StackFrame() : valid(false), number(0), address(0) {}
-    void Clear()
-    {
-        valid = false;
-        number = 0;
-        address = 0;
-        function.Clear();
-        file.Clear();
-        line.Clear();
-    }
-    bool valid;
-    int number;
-    int address;
-    wxString function;
-    wxString file;
-    wxString line;
-};
+extern const wxString g_EscapeChars;
+
+class DebuggerDriver;
+class DebuggerCmd;
+class Compiler;
 
 class DebuggerGDB : public cbDebuggerPlugin
 {
+        DebuggerDriver* m_pDriver;
 	public:
 		DebuggerGDB();
 		~DebuggerGDB();
@@ -62,24 +50,33 @@ class DebuggerGDB : public cbDebuggerPlugin
 		int GetExitCode() const { return m_LastExitCode; }
 
 		void SyncEditor(const wxString& filename, int line);
+
+		void Log(const wxString& msg);
+		void DebugLog(const wxString& msg);
+		void SendCommand(const wxString& cmd);
+		DebuggerBreakpoint* GetBreakpoint(int num);
+
+        static void ConvertToGDBFriendly(wxString& str);
+        static void ConvertToGDBFile(wxString& str);
+        static void ConvertToGDBDirectory(wxString& str, wxString base = _T(""), bool relative = true);
+        static void StripQuotes(wxString& str);
 	protected:
-        void ConvertToGDBFriendly(wxString& str);
-        void ConvertToGDBDirectory(wxString& str, wxString base = _T(""), bool relative = true);
-        void StripQuotes(wxString& str);
         void AddSourceDir(const wxString& dir);
 	private:
 		void ParseOutput(const wxString& output);
 		void BringAppToFront();
 		void ClearActiveMarkFromAllEditors();
 		void SetBreakpoints();
-		wxString GetInfoFor(const wxString& dbgCmd);
-		wxString GetNextOutputLine(bool useStdErr = false);
-		wxString GetNextOutputLineClean(bool useStdErr = false);
 		void DoWatches();
         wxString GetEditorWordAtCaret();
-        long int ReadRegisterValue(int idx);
+        wxString FindDebuggerExecutable(Compiler* compiler);
+        int LaunchProcess(const wxString& cmd, const wxString& cwd);
+        wxString GetDebuggee(ProjectBuildTarget* target);
+        bool IsStopped();
 
-		void SendCommand(const wxString& cmd);
+        void ClearBreakpointsArray();
+        int HasBreakpoint(const wxString& file, int line); // returns -1 if not found
+
 		void OnUpdateUI(wxUpdateUIEvent& event);
 		void OnDebug(wxCommandEvent& event);
 		void OnStop(wxCommandEvent& event);
@@ -87,6 +84,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 		void OnAddSymbolFile(wxCommandEvent& event);
 		void OnBacktrace(wxCommandEvent& event);
 		void OnDisassemble(wxCommandEvent& event);
+		void OnBreakpoints(wxCommandEvent& event);
 		void OnEditWatches(wxCommandEvent& event);
 		void OnContinue(wxCommandEvent& event);
 		void OnNext(wxCommandEvent& event);
@@ -94,9 +92,11 @@ class DebuggerGDB : public cbDebuggerPlugin
 		void OnStepOut(wxCommandEvent& event);
 		void OnToggleBreakpoint(wxCommandEvent& event);
 		void OnRunToCursor(wxCommandEvent& event);
-		void OnBreakpointAdded(CodeBlocksEvent& event);
-		void OnBreakpointDeleted(CodeBlocksEvent& event);
+		void OnBreakpointAdd(CodeBlocksEvent& event);
+		void OnBreakpointEdit(CodeBlocksEvent& event);
+		void OnBreakpointDelete(CodeBlocksEvent& event);
 		void OnValueTooltip(CodeBlocksEvent& event);
+		void OnEditorOpened(CodeBlocksEvent& event);
         void OnGDBOutput(wxCommandEvent& event);
         void OnGDBError(wxCommandEvent& event);
         void OnGDBTerminated(wxCommandEvent& event);
@@ -104,6 +104,8 @@ class DebuggerGDB : public cbDebuggerPlugin
 		void OnTimer(wxTimerEvent& event);
 		void OnWatchesChanged(wxCommandEvent& event);
         void OnAddWatch(wxCommandEvent& event);
+        void OnAttachToProcess(wxCommandEvent& event);
+        void OnDetach(wxCommandEvent& event);
 
 		wxMenu* m_pMenu;
         SimpleTextLog* m_pLog;
@@ -113,13 +115,13 @@ class DebuggerGDB : public cbDebuggerPlugin
         int m_PageIndex;
         int m_DbgPageIndex;
 		wxRegEx reSource;
-		bool m_ProgramIsStopped;
 		wxString m_LastCmd;
 		wxString m_Variable;
 		cbCompilerPlugin* m_pCompiler;
 		bool m_LastExitCode;
 		int m_TargetIndex;
 		int m_Pid;
+		int m_PidToAttach; // for "attach to process"
 		wxString m_Tbreak;
 		wxTipWindow* m_EvalWin;
 		wxString m_LastEval;
@@ -131,8 +133,13 @@ class DebuggerGDB : public cbDebuggerPlugin
 		int m_HaltAtLine;
 		bool m_HasDebugLog;
 		bool m_StoppedOnSignal;
+
 		// current frame info
 		StackFrame m_CurrentFrame;
+
+        // breakpoints list
+        BreakpointsList m_Breakpoints;
+        int m_LastBreakpointNum;
 
 		// extra dialogs
 		DisassemblyDlg* m_pDisassembly;

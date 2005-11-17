@@ -1,9 +1,10 @@
-SUBDIRS = wxDockit resources
+SUBDIRS = wxDockit wxKeyBinder resources
 
 INCLUDES = $(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include \
 			-I$(top_srcdir)/src/sdk \
-			-I$(top_srcdir)/src/src/wxDockit/include
+			-I$(top_srcdir)/src/src/wxDockit/include \
+			-I$(top_srcdir)/src/src/wxKeyBinder/include
 
 if CODEBLOCKS_LINUX
 AM_CPPFLAGS = -DENABLE_BINRELOC -DAPP_PREFIX="\"@prefix@\""
@@ -15,6 +16,7 @@ codeblocks_LDFLAGS =
 
 codeblocks_LDADD =  $(WX_LIBS) \
 			-LwxDockit -lwxdockit \
+			-LwxKeyBinder -lwxkeybinder \
 			-L../sdk -lcodeblocks \
 			$(WX_XRC)
 
@@ -22,7 +24,6 @@ codeblocks_SOURCES = app.cpp \
 			dlgabout.cpp \
 			dlgaboutplugin.cpp \
 			environmentsettingsdlg.cpp \
-			impexpconfig.cpp \
 			main.cpp \
 			prefix.cpp \
 			printdlg.cpp \
@@ -33,7 +34,6 @@ noinst_HEADERS = app.h \
 			dlgaboutplugin.h \
 			environmentsettingsdlg.h \
 			globals.h \
-			impexpconfig.h \
 			main.h \
 			prefix.h \
 			printdlg.h \

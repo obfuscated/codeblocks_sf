@@ -6,6 +6,7 @@
 #include <wx/event.h>
 #include <wx/timer.h>
 #include <wx/file.h>
+#include <wx/filefn.h> // wxPathList
 #include "parserthread.h"
 #include <cbthreadpool.h>
 #include <sdk_events.h>
@@ -103,7 +104,10 @@ class Parser : public wxEvtHandler
 
 		ParserOptions& Options(){ return m_Options; }
 		BrowserOptions& ClassBrowserOptions(){ return m_BrowserOptions; }
-		wxArrayString& IncludeDirs(){ return m_IncludeDirs; }
+
+		void ClearIncludeDirs(){ m_IncludeDirs.Clear(); }
+		void AddIncludeDir(const wxString& dir);
+		wxString FindFileInIncludeDirs(const wxString& file);
 
 		const TokensArray& GetTokens(){ return m_Tokens; }
 		unsigned int GetFilesCount();
@@ -140,7 +144,7 @@ class Parser : public wxEvtHandler
 		TokensArray m_Tokens;
 		wxArrayString m_ParsedFiles;
 		wxArrayString m_ReparsedFiles;
-		wxArrayString m_IncludeDirs;
+		wxPathList m_IncludeDirs;
 		wxEvtHandler* m_pParent;
 		wxTreeItemId m_RootNode;
 #ifndef STANDALONE

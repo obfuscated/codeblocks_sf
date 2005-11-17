@@ -49,11 +49,8 @@ void SearchResultsLog::SyncEditor(int selIndex)
     cbEditor* ed = Manager::Get()->GetEditorManager()->Open(file);
     if (!ed)
         return;
-    // make sure we can see some context...
-    ed->GetControl()->GotoLine(line - 10);
-    ed->GetControl()->GotoLine(line + 10);
-    ed->GetControl()->GotoLine(line - 1);
     ed->Activate();
+    ed->GotoLine(line - 1);
 }
 
 void SearchResultsLog::OnClick(wxCommandEvent& event)

@@ -138,7 +138,7 @@ string ODTExporter::ODTStylesFileMID(wxZipOutputStream &zout)
   string theFont("Courier New");
   string thePt("8");
 
-  wxString fontstring = ConfigManager::Get()->Read(_T("/editor/font"), wxEmptyString);
+  wxString fontstring = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/font"), wxEmptyString);
 
   if (!fontstring.IsEmpty())
   {

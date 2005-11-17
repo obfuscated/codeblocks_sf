@@ -28,7 +28,6 @@
 #include "main.h"
 #include "globals.h"
 #include "environmentsettingsdlg.h"
-#include "impexpconfig.h"
 #include <cbworkspace.h>
 
 #if defined(_MSC_VER) && defined( _DEBUG )
@@ -39,6 +38,8 @@
 
 #include <wx/tipdlg.h>
 #include <wx/dnd.h>
+#include <wx/mstream.h>
+#include <wx/fileconf.h>
 
 #include <configmanager.h>
 #include <cbproject.h>
@@ -51,6 +52,7 @@
 #include <templatemanager.h>
 #include <toolsmanager.h>
 #include <personalitymanager.h>
+#include <scriptingmanager.h>
 #include <cbexception.h>
 
 #include "dlgaboutplugin.h"
@@ -63,6 +65,52 @@
 #include <wx/filename.h>
 
 #include "../sdk/uservarmanager.h"
+
+#if wxUSE_KEYBINDER
+// ----------------------------------------------------------------------------
+// keybindings dialog: a super-simple wrapper for wxKeyConfigPanel
+// ----------------------------------------------------------------------------
+class KeyBinderDialog : public wxDialog
+{
+    public:
+        wxKeyConfigPanel *m_p;
+        KeyBinderDialog(wxKeyProfileArray &prof, wxWindow *parent, const wxString &title, int mode) :
+            wxDialog(parent, -1, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
+        {
+            // we can do our task in two ways:
+            // 1) we can use wxKeyConfigPanel::ImportMenuBarCmd which gives
+            //    better appearances (for me, at least, :-))
+            // 2) we can use wxKeyConfigPanel::ImportKeyBinderCmd
+
+            // STEP #1: create a simple wxKeyConfigPanel
+            m_p = new wxKeyConfigPanel(this, mode);
+
+            // STEP #2: add a profile array to the wxKeyConfigPanel
+            m_p->AddProfiles(prof);
+
+            // STEP #3: populate the wxTreeCtrl widget of the panel
+            m_p->ImportMenuBarCmd(((wxFrame*)parent)->GetMenuBar());
+
+            // and embed it in a little sizer
+            wxBoxSizer *main = new wxBoxSizer(wxVERTICAL);
+            main->Add(m_p, 1, wxGROW);
+            SetSizer(main);
+            main->SetSizeHints(this);
+
+            // this is a little modification to make dlg look nicer
+            wxSize sz(GetSizer()->GetMinSize());
+            SetSize(-1, -1, (int)(sz.GetWidth()*1.3), (int)(sz.GetHeight()*1.1));
+            CenterOnScreen();
+        }
+        KeyBinderDialog::~KeyBinderDialog(){}
+        void KeyBinderDialog::OnApply(wxCommandEvent &){ EndModal(wxID_OK); }
+    private:
+        DECLARE_EVENT_TABLE()
+};
+BEGIN_EVENT_TABLE(KeyBinderDialog, wxDialog)
+	EVT_BUTTON(wxID_APPLY, KeyBinderDialog::OnApply)
+END_EVENT_TABLE()
+#endif
 
 class wxMyFileDropTarget : public wxFileDropTarget
 {
@@ -77,10 +125,22 @@ private:
     MainFrame* m_frame;
 };
 
+int wxID_FILE10 = wxNewId();
+int wxID_FILE11 = wxNewId();
+int wxID_FILE12 = wxNewId();
+int wxID_FILE13 = wxNewId();
+int wxID_FILE14 = wxNewId();
+int wxID_FILE15 = wxNewId();
+int wxID_FILE16 = wxNewId();
+int wxID_FILE17 = wxNewId();
+int wxID_FILE18 = wxNewId();
+int wxID_FILE19 = wxNewId();
+
 int idFileNew = XRCID("idFileNew");
 int idFileOpen = XRCID("idFileOpen");
 int idFileReopen = XRCID("idFileReopen");
-int idFileOpenRecentClearHistory = XRCID("idFileOpenRecentClearHistory");
+int idFileOpenRecentFileClearHistory = XRCID("idFileOpenRecentFileClearHistory");
+int idFileOpenRecentProjectClearHistory = XRCID("idFileOpenRecentProjectClearHistory");
 int idFileSave = XRCID("idFileSave");
 int idFileSaveAs = XRCID("idFileSaveAs");
 int idFileSaveAllFiles = XRCID("idFileSaveAllFiles");
@@ -92,6 +152,7 @@ int idFileClose = XRCID("idFileClose");
 int idFileCloseAll = XRCID("idFileCloseAll");
 int idFilePrintSetup = XRCID("idFilePrintSetup");
 int idFilePrint = XRCID("idFilePrint");
+int idFileRunScript = XRCID("idFileRunScript");
 int idFileExit = XRCID("idFileExit");
 int idFileNext = wxNewId();
 int idFilePrev = wxNewId();
@@ -154,11 +215,14 @@ int idProjectImportMSVS = XRCID("idProjectImportMSVS");
 int idProjectImportMSVSWksp = XRCID("idProjectImportMSVSWksp");
 
 int idSettingsEnvironment = XRCID("idSettingsEnvironment");
+#if wxUSE_KEYBINDER
+int idSettingsKeyBindings = XRCID("idSettingsKeyBindings");
+#endif
 int idSettingsGlobalUserVars = XRCID("idSettingsGlobalUserVars");
 int idSettingsEditor = XRCID("idSettingsEditor");
 int idPluginsManagePlugins = XRCID("idPluginsManagePlugins");
 int idSettingsConfigurePlugins = XRCID("idSettingsConfigurePlugins");
-int idSettingsImpExpConfig = XRCID("idSettingsImpExpConfig");
+int idSettingsNetworkProxy = XRCID("idSettingsNetworkProxy");
 
 int idHelpTips = XRCID("idHelpTips");
 int idHelpPlugins = XRCID("idHelpPlugins");
@@ -172,7 +236,8 @@ DLLIMPORT extern int ID_EditorManagerCloseButton;
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_CLOSE(MainFrame::OnApplicationClose)
 
-    EVT_UPDATE_UI(idFileOpenRecentClearHistory, MainFrame::OnFileMenuUpdateUI)
+    EVT_UPDATE_UI(idFileOpenRecentFileClearHistory, MainFrame::OnFileMenuUpdateUI)
+    EVT_UPDATE_UI(idFileOpenRecentProjectClearHistory, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileSave, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileSaveAs, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileSaveAllFiles, MainFrame::OnFileMenuUpdateUI)
@@ -234,8 +299,10 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
     EVT_MENU(idFileNew, MainFrame::OnFileNewEmpty)
     EVT_MENU(idFileOpen,  MainFrame::OnFileOpen)
-    EVT_MENU(idFileOpenRecentClearHistory, MainFrame::OnFileOpenRecentClearHistory)
+    EVT_MENU(idFileOpenRecentProjectClearHistory, MainFrame::OnFileOpenRecentProjectClearHistory)
+    EVT_MENU(idFileOpenRecentFileClearHistory, MainFrame::OnFileOpenRecentClearHistory)
     EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, MainFrame::OnFileReopen)
+    EVT_MENU_RANGE(wxID_FILE10, wxID_FILE19, MainFrame::OnFileReopenProject)
     EVT_MENU(idFileSave,  MainFrame::OnFileSave)
     EVT_MENU(idFileSaveAs,  MainFrame::OnFileSaveAs)
     EVT_MENU(idFileSaveAllFiles,  MainFrame::OnFileSaveAllFiles)
@@ -248,6 +315,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idFileCloseAll,  MainFrame::OnFileCloseAll)
     EVT_MENU(idFilePrintSetup,  MainFrame::OnFilePrintSetup)
     EVT_MENU(idFilePrint,  MainFrame::OnFilePrint)
+    EVT_MENU(idFileRunScript,  MainFrame::OnFileRunScript)
     EVT_MENU(idFileExit,  MainFrame::OnFileQuit)
     EVT_MENU(idFileNext,  MainFrame::OnFileNext)
     EVT_MENU(idFilePrev,  MainFrame::OnFilePrev)
@@ -306,10 +374,13 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idProjectImportMSVSWksp,  MainFrame::OnProjectImportMSVSWksp)
 
 	EVT_MENU(idSettingsEnvironment, MainFrame::OnSettingsEnvironment)
+#if wxUSE_KEYBINDER
+	EVT_MENU(idSettingsKeyBindings, MainFrame::OnSettingsKeyBindings)
+#endif
 	EVT_MENU(idSettingsGlobalUserVars, MainFrame::OnGlobalUserVars)
 	EVT_MENU(idSettingsEditor, MainFrame::OnSettingsEditor)
     EVT_MENU(idPluginsManagePlugins, MainFrame::OnSettingsPlugins)
-    EVT_MENU(idSettingsImpExpConfig, MainFrame::OnSettingsImpExpConfig)
+    EVT_MENU(idSettingsNetworkProxy, MainFrame::OnSettingsNetworkProxy)
 
     EVT_MENU(wxID_ABOUT, MainFrame::OnHelpAbout)
     EVT_MENU(idHelpTips, MainFrame::OnHelpTips)
@@ -350,6 +421,8 @@ MainFrame::MainFrame(wxLocale& lang, wxWindow* parent)
 	   pDockWindow2(0),
 	   m_pAccel(0L),
 	   m_locale(lang),
+	   m_FilesHistory(9, wxID_FILE1), // default ctor
+	   m_ProjectsHistory(9, wxID_FILE10),
 	   m_pCloseFullScreenBtn(0L),
        m_pNotebook(0L),
 	   m_pEdMan(0L),
@@ -384,7 +457,7 @@ MainFrame::MainFrame(wxLocale& lang, wxWindow* parent)
 
     this->SetAcceleratorTable(*m_pAccel);
 
-    m_SmallToolBar = CFG_READ(_T("/environment/toolbar_size"), 1L) == 1;
+    m_SmallToolBar = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/toolbar_size"), true);
 	CreateIDE();
 
 #ifdef __WXMSW__
@@ -403,11 +476,12 @@ MainFrame::MainFrame(wxLocale& lang, wxWindow* parent)
     ScanForPlugins();
     LoadWindowState();
 
-    InitPrinting();
+#if wxUSE_KEYBINDER
+    m_KeyProfiles = new wxKeyProfileArray;
+    LoadKeyBindings();
+#endif
     ShowHideStartPage();
-
-    ConfigManager::AddConfiguration(_("Application"), _T("/main_frame"));
-    ConfigManager::AddConfiguration(_("Environment"), _T("/environment"));
+    InitPrinting();
 }
 
 MainFrame::~MainFrame()
@@ -421,26 +495,57 @@ MainFrame::~MainFrame()
 	//Manager::Get()->Free();
 }
 
+#if wxUSE_KEYBINDER
+void MainFrame::InitKeyBinder()
+{
+	// init the keybinder
+	wxKeyProfile *pPrimary = new wxKeyProfile(wxT("Default"), wxT("Code::Blocks default keyprofile"));
+	pPrimary->ImportMenuBarCmd(GetMenuBar());
+
+	m_KeyProfiles->Add(pPrimary);
+
+	// by now, attach to this window the primary keybinder
+	m_KeyProfiles->SetSelProfile(0);
+	UpdateKeyBinder(m_KeyProfiles);
+}
+
+void MainFrame::UpdateKeyBinder(wxKeyProfileArray* r)
+{
+	// detach all
+	r->DetachAll();
+
+	// enable & attach to this window only one
+	r->GetSelProfile()->Enable(true);
+
+	// VERY IMPORTANT: we should not use this function when we
+	//                 have temporary children... they would
+	//                 added to the binder and when they will be
+	//                 deleted, the binder will reference invalid memory...
+	r->GetSelProfile()->AttachRecursively(this);
+	//r.UpdateAllCmd();		// not necessary
+}
+#endif // wxUSE_KEYBINDER
+
 void MainFrame::ShowTips(bool forceShow)
 {
-    bool showAtStartup = CFG_READ(_T("/show_tips"), 1) != 0;
+    bool showAtStartup = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/show_tips"), true);
     if (forceShow || showAtStartup)
     {
         wxLogNull null; // disable error message if tips file does not exist
-        wxString tipsFile = CFG_READ(_T("/data_path")) + _T("/tips.txt");
-        long tipsIndex = CFG_READ(_T("/next_tip"), (long)0);
+        wxString tipsFile = ConfigManager::GetDataFolder() + _T("/tips.txt");
+        long tipsIndex = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/next_tip"), 0);
         wxTipProvider* tipProvider = wxCreateFileTipProvider(tipsFile, tipsIndex);
         showAtStartup = wxShowTip(this, tipProvider, showAtStartup);
         delete tipProvider;
-        CFG_WRITE(_T("/show_tips"), showAtStartup);
-        CFG_WRITE(_T("/next_tip"), (long)tipProvider->GetCurrentTip());
+        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/show_tips"), showAtStartup);
+        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/next_tip"), (int)tipProvider->GetCurrentTip());
     }
 }
 
 void MainFrame::CreateIDE()
 {
-	int leftW = CFG_READ(_T("/main_frame/layout/left_block_width"), 200);
-	int bottomH = CFG_READ(_T("/main_frame/layout/bottom_block_height"), 150);
+	int leftW = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/left_block_width"), 200);
+	int bottomH = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/bottom_block_height"), 150);
 	SetSize(800,600);
 	wxSize clientsize = GetClientSize();
 
@@ -526,7 +631,7 @@ void MainFrame::CreateMenubar()
 	wxMenu *tools=0L, *plugs=0L, *pluginsM=0L, *settingsPlugins=0L;
 	wxMenuItem *tmpitem=0L;
 
-    wxString resPath = CFG_READ(_T("data_path"), wxEmptyString);
+    wxString resPath = ConfigManager::GetDataFolder();
     wxXmlResource *myres = wxXmlResource::Get();
     myres->Load(resPath + _T("/resources.zip#zip:main_menu.xrc"));
     mbar = myres->LoadMenuBar(_T("main_menu_bar"));
@@ -605,7 +710,7 @@ void MainFrame::CreateToolbars()
 	}
 
     // *** Begin new Toolbar routine ***
-    wxString resPath = CFG_READ(_T("data_path"), wxEmptyString);
+    wxString resPath = ConfigManager::GetDataFolder();
     wxString xrcToolbarName = _T("main_toolbar");
     if(m_SmallToolBar) // Insert logic here
         xrcToolbarName += _T("_16x16");
@@ -664,7 +769,7 @@ void MainFrame::ScanForPlugins()
 
     PluginManager* m_PluginManager = Manager::Get()->GetPluginManager();
 
-    wxString path = CFG_READ(_T("data_path")) + _T("/plugins");
+    wxString path = ConfigManager::GetDataFolder() + _T("/plugins");
     MSGMAN()->Log(_("Scanning for plugins in %s..."), path.c_str());
     int count = m_PluginManager->ScanForPlugins(path);
     MSGMAN()->AppendLog(_("Found %d plugins: "), count);
@@ -770,36 +875,30 @@ void MainFrame::LoadWindowState()
 {
 	wxLogNull ln; // no logging needed
 
-    const wxString& personalityKey = Manager::Get()->GetPersonalityManager()->GetPersonalityKey();
-
-    wxString path = wxGetUserHome();
-    path << _T("/") << personalityKey;
-    path << _T(".cb_layout.bin");
-    wxFileInputStream fi( path );
-    if (fi.Ok())
-    {
-        wxUtil::ReadWindowLayout( fi, this );
-        pLayoutManager->LoadFromStream( fi );
-        pSlideBar->LoadFromStream( fi );
-    }
+    wxString buf;
+    buf = Manager::Get()->GetConfigManager(_T("app"))->ReadBinary(_T("/main_frame/layout"));
+    wxMemoryInputStream ms(buf.c_str(), buf.Length());
+    wxUtil::ReadWindowLayout(ms, this);
+    pLayoutManager->LoadFromStream( ms );
+    pSlideBar->LoadFromStream( ms );
 
     // toolbar visibility
-	if (m_pToolbar)
-        m_pToolbar->Show(CFG_READ(personalityKey + _T("/main_frame/layout/toolbar_show"), 1));
+	if (pSlideBar)
+        pSlideBar->Show(Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/main_frame/layout/toolbar_show"), true));
 
 	// load manager and messages selected page
-	Manager::Get()->GetNotebook()->SetSelection(CFG_READ(personalityKey + _T("/main_frame/layout/left_block_selection"), 0L));
-	MSGMAN()->SetSelection(CFG_READ(personalityKey + _T("/main_frame/layout/bottom_block_selection"), 0L));
+	Manager::Get()->GetNotebook()->SetSelection(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/left_block_selection"), 0));
+	MSGMAN()->SetSelection(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/bottom_block_selection"), 0));
 
     if (!IsMaximized() && !IsIconized())
     {
         // load window size and position
-        SetSize(CFG_READ(personalityKey + _T("/main_frame/left"), 0L),
-                CFG_READ(personalityKey + _T("/main_frame/top"), 0L),
-                CFG_READ(personalityKey + _T("/main_frame/width"), 640),
-                CFG_READ(personalityKey + _T("/main_frame/height"), 480));
+        SetSize(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/left"), 0),
+                Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/top"), 0),
+                Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/width"), 640),
+                Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/height"), 480));
         // maximized?
-        if (CFG_READ(personalityKey + _T("/main_frame/maximized"), 0L))
+        if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/main_frame/layout/maximized"), false))
             Maximize();
     }
 
@@ -811,31 +910,94 @@ void MainFrame::SaveWindowState()
 {
 	wxLogNull ln; // no logging needed
 
-    const wxString& personalityKey = Manager::Get()->GetPersonalityManager()->GetPersonalityKey();
+    wxMemoryOutputStream os;
+    wxUtil::WriteWindowLayout(os, this);
+    pLayoutManager->SaveToStream( os );
+    pSlideBar->SaveToStream( os );
+    wxString buf(static_cast<const wxChar*>(os.GetOutputStreamBuffer()->GetBufferStart()), os.GetSize());
+    Manager::Get()->GetConfigManager(_T("app"))->WriteBinary(_T("/main_frame/layout"), buf);
 
-    wxString path = wxGetUserHome();
-    path << _T("/") << personalityKey;
-    path << _T(".cb_layout.bin");
-    wxFileOutputStream fo( path );
-    wxUtil::WriteWindowLayout( fo, this );
-    pLayoutManager->SaveToStream( fo );
-    pSlideBar->SaveToStream( fo );
+    // toolbar visibility
+	if (pSlideBar)
+        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/toolbar_show"), pSlideBar->IsShown());
 
 	// save manager and messages selected page
-	CFG_WRITE(personalityKey + _T("/main_frame/layout/left_block_selection"), Manager::Get()->GetNotebook()->GetSelection());
-	CFG_WRITE(personalityKey + _T("/main_frame/layout/bottom_block_selection"), MSGMAN()->GetSelection());
+	Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/left_block_selection"), Manager::Get()->GetNotebook()->GetSelection());
+	Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/bottom_block_selection"), MSGMAN()->GetSelection());
 
     // save window size and position
-    CFG_WRITE(personalityKey + _T("/main_frame/maximized"), IsMaximized());
+    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/maximized"), IsMaximized());
     if (!IsMaximized() && !IsIconized())
     {
-        CFG_WRITE(personalityKey + _T("/main_frame/left"), GetPosition().x);
-        CFG_WRITE(personalityKey + _T("/main_frame/top"), GetPosition().y);
-        CFG_WRITE(personalityKey + _T("/main_frame/width"), GetSize().x);
-        CFG_WRITE(personalityKey + _T("/main_frame/height"), GetSize().y);
+        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/left"), GetPosition().x);
+        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/top"), GetPosition().y);
+        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/width"), GetSize().x);
+        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/height"), GetSize().y);
     }
 
 }
+
+#if wxUSE_KEYBINDER
+void MainFrame::LoadKeyBindings()
+{
+    wxFileConfig cfg(wxEmptyString, // appname
+                    wxEmptyString, // vendor
+                    ConfigManager::GetConfigFolder() + _T("/keys.conf"), // local file
+                    wxEmptyString, // global file
+                    wxCONFIG_USE_LOCAL_FILE);
+	// before loading we must register in wxCmd arrays the various types
+	// of commands we want wxCmd::Load to be able to recognize...
+	wxMenuCmd::Register(GetMenuBar());
+	// clear our old array
+	m_KeyProfiles->Cleanup();
+
+	if (cfg.HasGroup(_T("/keybindings")) && m_KeyProfiles->Load(&cfg, _T("/keybindings")))
+	{
+
+		// get the cmd count
+		int total = 0;
+		for (int i=0; i<m_KeyProfiles->GetCount(); i++)
+			total += m_KeyProfiles->Item(i)->GetCmdCount();
+
+		if (total == 0)
+		{
+            m_pMsgMan->Log(wxT("No keyprofiles have been found.\nA default keyprofile will be set.\n"));
+			wxKeyProfile *p = new wxKeyProfile(wxT("Default"));
+			p->ImportMenuBarCmd(GetMenuBar());
+			m_KeyProfiles->Add(p);
+		}
+		else
+		{
+			wxString msg = wxString::Format(
+					wxT("%d key binding profiles have been loaded ")
+					wxT("(%d commands in total).\n")
+					wxT("Profile '%s' applied."),
+					m_KeyProfiles->GetCount(), total,
+					m_KeyProfiles->GetSelProfile()->GetName().c_str());
+            m_pMsgMan->Log(msg);
+		}
+
+		// reattach this frame to the loaded keybinder
+		UpdateKeyBinder(m_KeyProfiles);
+	}
+	else
+	{
+	    // load defaults
+        InitKeyBinder();
+		m_pMsgMan->Log(_T("Using default key bindings"));
+	}
+}
+
+void MainFrame::SaveKeyBindings()
+{
+    wxFileConfig cfg(wxEmptyString, // appname
+                    wxEmptyString, // vendor
+                    ConfigManager::GetConfigFolder() + _T("/keys.conf"), // local file
+                    wxEmptyString, // global file
+                    wxCONFIG_USE_LOCAL_FILE);
+	m_KeyProfiles->Save(&cfg, _T("/keybindings"), true);
+}
+#endif // wxUSE_KEYBINDER
 
 void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
 {
@@ -921,7 +1083,7 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
                 DoCloseCurrentWorkspace())
             {
                 PRJMAN()->LoadWorkspace(filename);
-                m_FilesHistory.AddFileToHistory(filename);
+                m_ProjectsHistory.AddFileToHistory(filename);
             }
             else
                 return false;
@@ -964,11 +1126,17 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
 bool MainFrame::DoOpenProject(const wxString& filename, bool addToHistory)
 {
 //    MSGMAN()->DebugLog(_("Opening project '%s'"), filename.c_str());
+    if (!wxFileExists(filename))
+    {
+        wxMessageBox(_("The project file does not exist..."), _("Error"), wxICON_ERROR);
+        return false;
+    }
+
     cbProject* prj = PRJMAN()->LoadProject(filename);
     if (prj)
     {
 		if (addToHistory)
-			m_FilesHistory.AddFileToHistory(prj->GetFilename());
+			m_ProjectsHistory.AddFileToHistory(prj->GetFilename());
         return true;
     }
     return false;
@@ -1074,7 +1242,7 @@ void MainFrame::ShowHideStartPage(bool forceHasProject)
         return;
     bool show = !forceHasProject &&
                 PRJMAN()->GetProjects()->GetCount() == 0 &&
-                CFG_READ(_T("/environment/start_here_page"), 1);
+                Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/start_here_page"), true);
 
     EditorBase* sh = EDMAN()->GetEditor(g_StartHereTitle);
     if (show && !sh)
@@ -1109,11 +1277,11 @@ void MainFrame::OnStartHereLink(wxCommandEvent& event)
 //                    displays only 5.
 //                    Things could be done better though...
     	wxChar num = link.Last();
-        for (int i = 0; i < (int)m_FilesHistory.GetCount(); ++i)
+        for (int i = 0; i < (int)m_ProjectsHistory.GetCount(); ++i)
         {
         	if (num - _T('1') == i)
         	{
-        		OpenGeneric(m_FilesHistory.GetHistoryFile(i), true);
+        		OpenGeneric(m_ProjectsHistory.GetHistoryFile(i), true);
         		break;
         	}
         }
@@ -1129,8 +1297,8 @@ void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
 	{
 		wxString base;
 		base.Printf(_T("CB_VAR_HISTORY_FILE_%d"), i + 1);
-		if (i < (int)m_FilesHistory.GetCount())
-            buf.Replace(base, m_FilesHistory.GetHistoryFile(i));
+		if (i < (int)m_ProjectsHistory.GetCount())
+            buf.Replace(base, m_ProjectsHistory.GetHistoryFile(i));
         else
             buf.Replace(base, _T(""));
 	}
@@ -1153,22 +1321,42 @@ void MainFrame::InitializeRecentFilesHistory()
         if (!menu)
             return;
         wxMenu* recentFiles = 0;
-        menu->FindItem(idFileOpenRecentClearHistory, &recentFiles);
+        menu->FindItem(idFileOpenRecentFileClearHistory, &recentFiles);
         if (recentFiles)
         {
             m_FilesHistory.UseMenu(recentFiles);
-            ConfigManager::Get()->SetPath(_T("/recent_files"));
-            m_FilesHistory.Load(*ConfigManager::Get());
-            ConfigManager::Get()->SetPath(_T("/"));
+
+            wxArrayString files = Manager::Get()->GetConfigManager(_T("app"))->ReadArrayString(_T("/recent_files"));
+            for (unsigned int i = 0; i < files.GetCount(); ++i)
+            {
+                m_FilesHistory.AddFileToHistory(files[i]);
+            }
+        }
+        wxMenu* recentProjects = 0;
+        menu->FindItem(idFileOpenRecentProjectClearHistory, &recentProjects);
+        if (recentProjects)
+        {
+            m_ProjectsHistory.UseMenu(recentProjects);
+
+            wxArrayString files = Manager::Get()->GetConfigManager(_T("app"))->ReadArrayString(_T("/recent_projects"));
+            for (unsigned int i = 0; i < files.GetCount(); ++i)
+            {
+                m_ProjectsHistory.AddFileToHistory(files[i]);
+            }
         }
     }
 }
 
 void MainFrame::TerminateRecentFilesHistory()
 {
-    ConfigManager::Get()->SetPath(_T("/recent_files"));
-    m_FilesHistory.Save(*ConfigManager::Get());
-    ConfigManager::Get()->SetPath(_T("/"));
+    wxArrayString files;
+    for (unsigned int i = 0; i < m_FilesHistory.GetCount(); ++i)
+        files.Add(m_FilesHistory.GetHistoryFile(i));
+    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/recent_files"), files);
+    files.Clear();
+    for (unsigned int i = 0; i < m_ProjectsHistory.GetCount(); ++i)
+        files.Add(m_ProjectsHistory.GetHistoryFile(i));
+    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/recent_projects"), files);
 
     wxMenuBar* mbar = GetMenuBar();
     if (!mbar)
@@ -1180,9 +1368,13 @@ void MainFrame::TerminateRecentFilesHistory()
         if (!menu)
             return;
         wxMenu* recentFiles = 0;
-        menu->FindItem(idFileOpenRecentClearHistory, &recentFiles);
+        menu->FindItem(idFileOpenRecentFileClearHistory, &recentFiles);
         if (recentFiles)
             m_FilesHistory.RemoveMenu(recentFiles);
+        wxMenu* recentProjects = 0;
+        menu->FindItem(idFileOpenRecentProjectClearHistory, &recentProjects);
+        if (recentProjects)
+            m_ProjectsHistory.RemoveMenu(recentProjects);
     }
 }
 
@@ -1298,6 +1490,21 @@ void MainFrame::OnFileOpen(wxCommandEvent& event)
     delete dlg;
 }
 
+void MainFrame::OnFileReopenProject(wxCommandEvent& event)
+{
+    wxString fname = m_ProjectsHistory.GetHistoryFile(event.GetId() - wxID_FILE10);
+    DoOpenProject(fname, false);
+}
+
+void MainFrame::OnFileOpenRecentProjectClearHistory(wxCommandEvent& event)
+{
+    while (m_ProjectsHistory.GetCount())
+	{
+        m_ProjectsHistory.RemoveFileFromHistory(0);
+		Manager::Get()->GetConfigManager(_T("app"))->DeleteSubPath(_T("/recent_projects"));
+	}
+}
+
 void MainFrame::OnFileReopen(wxCommandEvent& event)
 {
     wxString fname = m_FilesHistory.GetHistoryFile(event.GetId() - wxID_FILE1);
@@ -1309,7 +1516,7 @@ void MainFrame::OnFileOpenRecentClearHistory(wxCommandEvent& event)
     while (m_FilesHistory.GetCount())
 	{
         m_FilesHistory.RemoveFileFromHistory(0);
-		ConfigManager::Get()->DeleteGroup(_T("/recent_files"));
+		Manager::Get()->GetConfigManager(_T("app"))->DeleteSubPath(_T("/recent_files"));
 	}
 }
 
@@ -1344,13 +1551,13 @@ void MainFrame::OnFileSaveAllFiles(wxCommandEvent& event)
 void MainFrame::OnFileSaveWorkspace(wxCommandEvent& event)
 {
     if (PRJMAN()->SaveWorkspace())
-        m_FilesHistory.AddFileToHistory(PRJMAN()->GetWorkspace()->GetFilename());
+        m_ProjectsHistory.AddFileToHistory(PRJMAN()->GetWorkspace()->GetFilename());
 }
 
 void MainFrame::OnFileSaveWorkspaceAs(wxCommandEvent& event)
 {
     if (PRJMAN()->SaveWorkspaceAs(_T("")))
-        m_FilesHistory.AddFileToHistory(PRJMAN()->GetWorkspace()->GetFilename());
+        m_ProjectsHistory.AddFileToHistory(PRJMAN()->GetWorkspace()->GetFilename());
 }
 
 void MainFrame::OnFileClose(wxCommandEvent& WXUNUSED(event))
@@ -1392,6 +1599,19 @@ void MainFrame::OnFilePrint(wxCommandEvent& event)
         EDMAN()->Print(dlg.GetPrintScope(), dlg.GetPrintColorMode());
 }
 
+void MainFrame::OnFileRunScript(wxCommandEvent& WXUNUSED(event))
+{
+    wxFileDialog* dlg = new wxFileDialog(this,
+                            _("Run script"),
+                            wxEmptyString,
+                            wxEmptyString,
+                            _T("Script files (*.script)|*.script"),
+                            wxOPEN);
+    if (dlg->ShowModal() == wxID_OK)
+        Manager::Get()->GetScriptingManager()->LoadScript(dlg->GetPath());
+    delete dlg;
+}
+
 void MainFrame::OnFileQuit(wxCommandEvent& WXUNUSED(event))
 {
     Close(TRUE);
@@ -1412,6 +1632,10 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
         return;
     }
 
+#if wxUSE_KEYBINDER
+	delete m_KeyProfiles;
+#endif
+
     SaveWindowState();
     TerminateRecentFilesHistory();
 
@@ -1428,7 +1652,6 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
         PopEventHandler(false);
 
 	Manager::Get()->Free();
-	ConfigManager::Get()->Flush();
     Destroy();
 }
 
@@ -1442,21 +1665,21 @@ void MainFrame::OnEditBookmarksToggle(wxCommandEvent& event)
 {
     cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
     if (ed)
-		ed->MarkerToggle(BOOKMARK_MARKER);
+		ed->ToggleBookmark();
 }
 
 void MainFrame::OnEditBookmarksNext(wxCommandEvent& event)
 {
     cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
     if (ed)
-		ed->MarkerNext(BOOKMARK_MARKER);
+		ed->GotoNextBookmark();
 }
 
 void MainFrame::OnEditBookmarksPrevious(wxCommandEvent& event)
 {
     cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
     if (ed)
-		ed->MarkerPrevious(BOOKMARK_MARKER);
+		ed->GotoPreviousBookmark();
 }
 
 void MainFrame::OnEditUndo(wxCommandEvent& event)
@@ -1768,15 +1991,15 @@ void MainFrame::OnSearchGotoLine(wxCommandEvent& event)
 	that suitable either.
 	*/
     wxString strLine = wxGetTextFromUser( _("Line: "),
-								_("Goto line"),
-								_T( "" ),
-								this );
+                                        _("Goto line"),
+                                        _T( "" ),
+                                        this );
 	long int line = 0;
 	strLine.ToLong(&line);
 	if ( line > 1 && line <= max )
 	{
-		ed->GetControl()->GotoPos(ed->GetControl()->PositionFromLine(line - 1));
-		ed->UnfoldBlockFromLine(-1);
+		ed->UnfoldBlockFromLine(line - 1);
+		ed->GotoLine(line - 1);
 	}
 }
 
@@ -1819,14 +2042,14 @@ void MainFrame::OnProjectSaveProject(wxCommandEvent& event)
 {
     if (PRJMAN()->SaveActiveProject() ||
         PRJMAN()->SaveActiveProjectAs())
-        m_FilesHistory.AddFileToHistory(PRJMAN()->GetActiveProject()->GetFilename());
+        m_ProjectsHistory.AddFileToHistory(PRJMAN()->GetActiveProject()->GetFilename());
     DoUpdateStatusBar();
 }
 
 void MainFrame::OnProjectSaveProjectAs(wxCommandEvent& event)
 {
     if (PRJMAN()->SaveActiveProjectAs())
-        m_FilesHistory.AddFileToHistory(PRJMAN()->GetActiveProject()->GetFilename());
+        m_ProjectsHistory.AddFileToHistory(PRJMAN()->GetActiveProject()->GetFilename());
     DoUpdateStatusBar();
 }
 
@@ -1915,8 +2138,8 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
 
     bool canCloseProject = (ProjectManager::CanShutdown() && EditorManager::CanShutdown());
     mbar->Enable(idProjectCloseProject,canCloseProject);
-    mbar->Enable(idFileOpenRecentClearHistory, m_FilesHistory.GetCount());
-    mbar->Enable(idFileOpenRecentClearHistory, m_FilesHistory.GetCount());
+    mbar->Enable(idFileOpenRecentFileClearHistory, m_FilesHistory.GetCount());
+    mbar->Enable(idFileOpenRecentProjectClearHistory, m_ProjectsHistory.GetCount());
     mbar->Enable(idFileClose, ed);
     mbar->Enable(idFileCloseAll, ed);
     mbar->Enable(idFileSave, ed && ed->GetModified());
@@ -2152,7 +2375,7 @@ void MainFrame::OnFocusEditor(wxCommandEvent& event)
 
 void MainFrame::OnToggleFullScreen(wxCommandEvent& event)
 {
-    ShowFullScreen( !IsFullScreen(), wxFULLSCREEN_NOTOOLBAR | wxFULLSCREEN_NOSTATUSBAR
+    ShowFullScreen( !IsFullScreen(), wxFULLSCREEN_NOTOOLBAR// | wxFULLSCREEN_NOSTATUSBAR
                     | wxFULLSCREEN_NOBORDER | wxFULLSCREEN_NOCAPTION );
 
     // Create fullscreen-close button if we're in fullscreen
@@ -2211,20 +2434,20 @@ void MainFrame::OnSettingsEnvironment(wxCommandEvent& event)
 {
     bool tbarsmall = m_SmallToolBar;
     bool needRestart = false;
-    bool edmanCloseBtn = CFG_READ(_T("/editor/show_close_button"), (long int)0);
+    bool edmanCloseBtn = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/show_close_button"), false);
 
 	EnvironmentSettingsDlg dlg(this);
 	if (dlg.ShowModal() == wxID_OK)
 	{
-        m_SmallToolBar = CFG_READ(_T("/environment/toolbar_size"), (long int)1) == 1;
+        m_SmallToolBar = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/toolbar_size"), true);
         needRestart = m_SmallToolBar != tbarsmall;
-        bool autoHide = CFG_READ(_T("/message_manager/auto_hide"), 0L);
+        bool autoHide = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_hide"), false);
         MSGMAN()->EnableAutoHide(autoHide);
         if (!autoHide)
             pDockWindow2->Show(true); // make sure it's shown
         ShowHideStartPage();
 
-        if (CFG_READ(_T("/editor/show_close_button"), (long int)0) != edmanCloseBtn)
+        if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/show_close_button"), false) != edmanCloseBtn)
         {
         	wxMessageBox(_("Some of the changes you made will be applied after you restart Code::Blocks."),
                             _("Information"),
@@ -2261,11 +2484,50 @@ void MainFrame::OnSettingsPlugins(wxCommandEvent& event)
     m_ReconfiguringPlugins = false;
 }
 
-void MainFrame::OnSettingsImpExpConfig(wxCommandEvent& event)
+#if wxUSE_KEYBINDER
+void MainFrame::OnSettingsKeyBindings(wxCommandEvent& event)
 {
-    ImpExpConfig dlg(this);
-    dlg.ShowModal();
+	bool btree = true;
+	bool baddprofile = true;
+	bool bprofiles = true;
+	bool bprofileedit = true;
+
+	// setup build flags
+	int mode = btree ? wxKEYBINDER_USE_TREECTRL : wxKEYBINDER_USE_LISTBOX;
+	if (baddprofile) mode |= wxKEYBINDER_SHOW_ADDREMOVE_PROFILE;
+	if (bprofileedit) mode |= wxKEYBINDER_ENABLE_PROFILE_EDITING;
+
+	int exitcode;
+	{	// we need to destroy MyDialog *before* the call to UpdateArr:()
+		// otherwise the call to wxKeyBinder::AttachRecursively() which
+		// is done inside UpdateArr() would attach to the binder all
+		// MyDialog subwindows which are children of the main frame.
+		// then, when the dialog is destroyed, wxKeyBinder holds
+		// invalid pointers which will provoke a crash !!
+
+		KeyBinderDialog dlg(*m_KeyProfiles, this, wxT("Edit key bindings"), mode | wxKEYBINDER_SHOW_APPLYBUTTON);
+
+		// does the user wants to enable key profiles ?
+		dlg.m_p->EnableKeyProfiles(bprofiles);
+
+		if ((exitcode=dlg.ShowModal()) == wxID_OK)
+		{
+
+			// update our array (we gave a copy of it to MyDialog)
+			*m_KeyProfiles = dlg.m_p->GetProfiles();
+		}
+	}
+
+	if (exitcode == wxID_OK)
+	{
+		// select the right keyprofile
+		UpdateKeyBinder(m_KeyProfiles);
+		SaveKeyBindings();
+		int sel = m_KeyProfiles->GetSelProfileIdx();
+		m_pMsgMan->Log(_T("Profile '%s' selected"), m_KeyProfiles->Item(sel)->GetName().c_str());
+	}
 }
+#endif
 
 void MainFrame::OnLayoutChanged(wxEvent& event)
 {
@@ -2289,12 +2551,14 @@ void MainFrame::OnProjectOpened(CodeBlocksEvent& event)
 
 void MainFrame::OnEditorOpened(CodeBlocksEvent& event)
 {
+//    UpdateKeyBinder(m_KeyProfiles);
     DoUpdateAppTitle();
     event.Skip();
 }
 
 void MainFrame::OnEditorClosed(CodeBlocksEvent& event)
 {
+//    UpdateKeyBinder(m_KeyProfiles);
     DoUpdateAppTitle();
     event.Skip();
 }
@@ -2338,4 +2602,11 @@ void MainFrame::OnRequestUndockWindow(CodeBlocksEvent& event)
 void MainFrame::OnRequestShowDockWindow(CodeBlocksEvent& event)
 {
     // stub
+}
+
+void MainFrame::OnSettingsNetworkProxy(wxCommandEvent& event)
+{
+	Manager::Get()->GetConfigManager(_T("app"))->Write(_T("network_proxy"), wxGetTextFromUser(_T("Please enter")
+		_T("your network proxy for all internet connections made by Code::Blocks.\n")
+		_T("Format: hostname:port"), _T("Network proxy")));
 }

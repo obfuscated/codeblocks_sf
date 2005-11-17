@@ -164,11 +164,8 @@ void CompilerErrors::DoGotoError(const CompileError& error)
 			{
 				ed->SetProjectFile(f);
 				ed->Activate();
-				// make sure we can see some context...
-				ed->GetControl()->GotoLine(error.line - 10);
-				ed->GetControl()->GotoLine(error.line + 10);
-				ed->GetControl()->GotoLine(error.line - 1);
-				ed->MarkLine(ERROR_LINE, error.line - 1);
+				ed->GotoLine(error.line - 1);
+				ed->SetErrorLine(error.line - 1);
 			}
         }
 	}
@@ -181,7 +178,7 @@ void CompilerErrors::DoClearErrorMarkFromAllEditors()
 	{
         cbEditor* ed = edMan->GetBuiltinEditor(i);
         if (ed)
-            ed->MarkLine(ERROR_LINE, -1);
+            ed->SetErrorLine(-1);
 	}
 }
 

@@ -49,12 +49,13 @@
 					"plugins...\n")
 */
 // class constructor
+
 dlgAbout::dlgAbout(wxWindow* parent)
 {
 	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgAbout"));
 
 	wxBitmap bmp;
-	wxString file = ConfigManager::Get()->Read(_T("data_path")) + _T("/images/splash.png");
+	wxString file = ConfigManager::ReadDataPath() + _T("/images/splash.png");
 	bmp.LoadFile(file, wxBITMAP_TYPE_PNG);
 	XRCCTRL(*this, "lblTitle", wxStaticBitmap)->SetBitmap(bmp);
 	XRCCTRL(*this, "lblBuildTimestamp", wxStaticText)->SetLabel(wxString(_T("Build: ")) + APP_BUILD_TIMESTAMP);

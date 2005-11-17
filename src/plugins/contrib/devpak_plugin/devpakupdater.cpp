@@ -45,8 +45,7 @@ DevPakUpdater::DevPakUpdater()
 	m_PluginInfo.hasConfigure = true;
 
     Manager::Get()->Loadxrc(_T("/devpakupdater.zip#zip:*.xrc"));
-    ConfigManager::AddConfiguration(m_PluginInfo.title, _T("/devpak_plugin"));
-    g_MasterPath = ConfigManager::Get()->Read(_T("/devpak_plugin/master_path"));
+    g_MasterPath = Manager::Get()->GetConfigManager(_T("devpak_plugin"))->Read(_T("/master_path"));
 }
 
 DevPakUpdater::~DevPakUpdater()
@@ -92,7 +91,7 @@ bool DevPakUpdater::ConfigurationValid()
 int DevPakUpdater::Configure()
 {
     if (g_MasterPath.IsEmpty())
-        g_MasterPath = ConfigManager::Get()->Read(_T("/app_path")) + wxFILE_SEP_PATH + _T("DevPaks");
+        g_MasterPath = ConfigManager::GetConfigFolder() + wxFILE_SEP_PATH + _T("DevPaks");
 	wxString dir = wxDirSelector(_("Please select the path where DevPaks will be downloaded and installed:"),
                                 g_MasterPath);
     if (!dir.IsEmpty())
@@ -103,7 +102,7 @@ int DevPakUpdater::Configure()
             g_MasterPath.Clear();
             return -1;
         }
-        ConfigManager::Get()->Write(_T("/devpak_plugin/master_path"), g_MasterPath);
+        Manager::Get()->GetConfigManager(_T("devpak_plugin"))->Write(_T("/master_path"), g_MasterPath);
         return 0;
     }
     return -1;

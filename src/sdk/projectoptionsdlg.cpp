@@ -26,7 +26,6 @@
 #include "sdk_precomp.h"
 #include "projectoptionsdlg.h" // class's header file
 #include "manager.h"
-#include "configmanager.h"
 #include "editarrayorderdlg.h"
 #include "editarrayfiledlg.h"
 #include "pluginmanager.h"
@@ -300,23 +299,42 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
     browseO->Enable(true);
     browseD->Enable(true);
 
-    wxFileName fname;
+    wxFileName fname = target->GetOutputFilename();
+    wxString name = fname.GetName();
+    wxString ext = fname.GetExt();
+    wxString libext = CompilerFactory::Compilers[target->GetCompilerIndex()]->GetSwitches().libExtension;
+    wxString libpre = CompilerFactory::Compilers[target->GetCompilerIndex()]->GetSwitches().libPrefix;
     switch ((TargetType)cmb->GetSelection())
     {
         case ttConsoleOnly:
         case ttExecutable:
-            fname.Assign(m_Project->GetExecutableFilename());
-            fname.MakeRelativeTo(m_Project->GetBasePath());
+            if (ext != EXECUTABLE_EXT)
+                fname.SetExt(EXECUTABLE_EXT);
+            if (!libpre.IsEmpty() && name.StartsWith(libpre))
+            {
+                name.Remove(0, libpre.Length());
+                fname.SetName(name);
+            }
             txt->SetValue(fname.GetFullPath());
             break;
         case ttDynamicLib:
-            fname.Assign(m_Project->GetDynamicLibFilename());
-            fname.MakeRelativeTo(m_Project->GetBasePath());
+            if (ext != DYNAMICLIB_EXT)
+                fname.SetExt(DYNAMICLIB_EXT);
+            if (!libpre.IsEmpty() && name.StartsWith(libpre))
+            {
+                name.Remove(0, libpre.Length());
+                fname.SetName(name);
+            }
             txt->SetValue(fname.GetFullPath());
             break;
         case ttStaticLib:
-            fname.Assign(m_Project->GetStaticLibFilename());
-            fname.MakeRelativeTo(m_Project->GetBasePath());
+            if (ext != libext)
+                fname.SetExt(libext);
+            if (!libpre.IsEmpty() && !name.StartsWith(libpre))
+            {
+                name.Prepend(libpre);
+                fname.SetName(name);
+            }
             txt->SetValue(fname.GetFullPath());
             break;
         case ttCommandsOnly:
@@ -332,6 +350,7 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
             browseW->Enable(false);
             browseO->Enable(false);
             browseD->Enable(false);
+            break;
     }
 }
 

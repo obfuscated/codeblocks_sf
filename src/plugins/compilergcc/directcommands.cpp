@@ -20,102 +20,6 @@
 #include "customvars.h"
 #include <depslib.h>
 
-pfDetails::pfDetails(DirectCommands* cmds, ProjectBuildTarget* target, ProjectFile* pf)
-{
-    wxString sep = wxFILE_SEP_PATH;
-    wxFileName tmp;
-
-    wxFileName prjbase(cmds->m_pProject->GetBasePath());
-
-    source_file_native = pf->relativeFilename;
-    source_file_absolute_native = pf->file.GetFullPath();
-
-    tmp = pf->GetObjName();
-
-    // support for precompiled headers
-    if (target && FileTypeOf(pf->relativeFilename) == ftHeader)
-    {
-        switch (target->GetParentProject()->GetModeForPCH())
-        {
-            case pchSourceDir:
-            {
-                // if PCH is for a file called all.h, we create
-                // all.h.gch/<target>_all.h.gch
-                // (that's right: a directory)
-                wxString new_gch = target->GetTitle() +
-                                    _T("_") +
-                                    pf->GetObjName();
-                // make sure we 're not generating subdirs
-                new_gch.Replace(_T("/"), _T("_"));
-                new_gch.Replace(_T("\\"), _T("_"));
-                new_gch.Replace(_T(" "), _T("_"));
-
-                object_file_native = source_file_native + _T(".gch") +
-                                    wxFILE_SEP_PATH +
-                                    new_gch;
-                break;
-            }
-
-            case pchObjectDir:
-            {
-                object_file_native = (target ? target->GetObjectOutput() : _T(".")) +
-                                      sep +
-                                      tmp.GetFullPath();
-                break;
-            }
-
-            case pchSourceFile:
-            {
-                object_file_native = pf->GetObjName();
-                break;
-            }
-        }
-    }
-    else
-        object_file_native = (target ? target->GetObjectOutput() : _T(".")) +
-                              sep +
-                              tmp.GetFullPath();
-    wxFileName o_file(object_file_native);
-    o_file.MakeAbsolute(prjbase.GetFullPath());
-    object_dir_native = o_file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-    object_file_absolute_native = o_file.GetFullPath();
-    tmp.SetExt(_T("depend"));
-    dep_file_native = (target ? target->GetDepsOutput() : _T(".")) +
-                      sep +
-                      tmp.GetFullPath();
-    wxFileName d_file(dep_file_native);
-    d_file.MakeAbsolute(prjbase.GetFullPath());
-    dep_dir_native = d_file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-    dep_file_absolute_native = o_file.GetFullPath();
-
-    source_file = UnixFilename(source_file_native);
-    cmds->QuoteStringIfNeeded(source_file);
-
-    object_file = UnixFilename(object_file_native);
-    cmds->QuoteStringIfNeeded(object_file);
-
-    dep_file = UnixFilename(dep_file_native);
-    cmds->QuoteStringIfNeeded(dep_file);
-
-    object_dir = UnixFilename(object_dir_native);
-    cmds->QuoteStringIfNeeded(object_dir);
-
-    dep_dir = UnixFilename(dep_dir_native);
-    cmds->QuoteStringIfNeeded(dep_dir);
-
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(object_file_native);
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(object_dir_native);
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(object_file_absolute_native);
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(dep_file_native);
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(dep_dir_native);
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(dep_file_absolute_native);
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(dep_dir);
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(object_dir);
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(dep_file);
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(object_file);
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(source_file);
-}
-
 DirectCommands::DirectCommands(CompilerGCC* compilerPlugin, Compiler* compiler, cbProject* project, int logPageIndex)
     : m_PageIndex(logPageIndex),
     m_pCompilerPlugin(compilerPlugin),
@@ -126,6 +30,7 @@ DirectCommands::DirectCommands(CompilerGCC* compilerPlugin, Compiler* compiler, 
     //ctor
     if (!m_pProject)
         return; // probably a compile file cmd without a project
+
     depsStart();
     wxFileName cwd;
     cwd.Assign(m_pProject->GetBasePath());
@@ -155,22 +60,6 @@ DirectCommands::~DirectCommands()
         stats.scanned, stats.cache_used, stats.cache_updated);
 
     depsDone();
-}
-
-// static
-void DirectCommands::QuoteStringIfNeeded(wxString& str)
-{
-    if (!str.IsEmpty() && str.Find(_T(' ')) != -1 && str.GetChar(0) != _T('"'))
-        str = wxString(_T("\"")) + str + _T("\"");
-}
-
-// static
-void DirectCommands::AppendArray(const wxArrayString& from, wxArrayString& to)
-{
-    for (unsigned int i = 0; i < from.GetCount(); ++i)
-    {
-        to.Add(from[i]);
-    }
 }
 
 void DirectCommands::AddCommandsToArray(const wxString& cmds, wxArrayString& array)
@@ -228,7 +117,7 @@ wxArrayString DirectCommands::CompileFile(ProjectBuildTarget* target, ProjectFil
     {
         DepsSearchStart(target);
 
-        pfDetails pfd(this, target, pf);
+        const pfDetails& pfd = pf->GetFileDetails(target);
         if (!IsObjectOutdated(pfd))
             return ret;
     }
@@ -244,11 +133,14 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
     wxLogNull ln;
     wxArrayString ret;
 
+    if(target)
+        target->GetParentProject()->SetCurrentlyCompilingTarget(target);
+
     // is it compilable?
     if (!pf->compile || pf->compilerVar.IsEmpty())
         return ret;
 
-    pfDetails pfd(this, target, pf);
+    const pfDetails& pfd = pf->GetFileDetails(target);
 
     MakefileGenerator mg(m_pCompilerPlugin, m_pProject, _T(""), 0); // don't worry! we just need a couple of utility funcs from it
 
@@ -413,7 +305,8 @@ wxArrayString DirectCommands::GetCompileCommands(ProjectBuildTarget* target, boo
         // add post-build commands
         if (needPost || m_pProject->GetAlwaysRunPostBuildSteps())
             AppendArray(GetPostBuildCommands(0L), ret);
-    }
+	}
+    m_pProject->SetCurrentlyCompilingTarget(0);
     return ret;
 }
 
@@ -463,13 +356,14 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
     // iterate all files of the project/target and add them to the build process
     size_t counter = ret.GetCount();
     MyFilesArray files = GetProjectFilesSortedByWeight(target, true, false);
-    for (unsigned int i = 0; i < files.GetCount(); ++i)
+    size_t fcount = files.GetCount();
+    for (unsigned int i = 0; i < fcount; ++i)
     {
         ProjectFile* pf = files[i];
-        pfDetails pfd(this, target, pf);
+        const pfDetails& pfd = pf->GetFileDetails(target);
         bool doBuild = false;
 
-       if (pf->autoDeps)
+        if (pf->autoDeps)
             doBuild = force || IsObjectOutdated(pfd);
         else
         {
@@ -642,7 +536,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     for (unsigned int i = 0; i < files.GetCount(); ++i)
     {
         ProjectFile* pf = files[i];
-        pfDetails pfd(this, target, pf);
+        const pfDetails& pfd = pf->GetFileDetails(target);
 
         if (FileTypeOf(pf->relativeFilename) == ftResource)
             resfiles << pfd.object_file << _T(" ");
@@ -750,7 +644,7 @@ wxArrayString DirectCommands::GetTargetCleanCommands(ProjectBuildTarget* target,
     for (unsigned int i = 0; i < files.GetCount(); ++i)
     {
         ProjectFile* pf = files[i];
-        pfDetails pfd(this, target, pf);
+        const pfDetails& pfd = pf->GetFileDetails(target);
         ret.Add(pfd.object_file_absolute_native);
         if (distclean)
             ret.Add(pfd.dep_file_absolute_native);

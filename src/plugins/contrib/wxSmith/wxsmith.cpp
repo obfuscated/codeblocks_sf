@@ -78,7 +78,7 @@ wxSmith::~wxSmith()
 
 void wxSmith::OnAttach()
 {
-    ConfigManager::AddConfiguration(m_PluginInfo.title, _T("/wxsmith"));     wxNotebook* Notebook = Manager::Get()->GetNotebook();
+    wxNotebook* Notebook = Manager::Get()->GetNotebook();
 	if ( Notebook )
 	{
         // Creating main splitting objects
@@ -130,7 +130,7 @@ void wxSmith::OnAttach()
         /*
         if ( Messages )
         {
-            wxString resPath = ConfigManager::Get()->Read(_T("data_path"), wxEmptyString);
+            wxString resPath = ConfigManager::GetDataFolder();
             wxString FileName = resPath + _T("/images/wxsmith/wxSmith16x16.png");
 
             wxBitmap SmithBitmap;

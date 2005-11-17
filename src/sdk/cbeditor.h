@@ -3,14 +3,6 @@
 
 #define EDITOR_MODIFIED             _T("*")
 
-#define BOOKMARK_MARKER					0
-#define BOOKMARK_STYLE 					wxSCI_MARK_ARROW
-#define BREAKPOINT_MARKER				1
-#define BREAKPOINT_STYLE 				wxSCI_MARK_CIRCLE
-#define BREAKPOINT_LINE					2
-#define ACTIVE_LINE						3
-#define ERROR_LINE						4
-
 #include <wx/wxscintilla.h>
 #include <wx/hashmap.h>
 #include <wx/datetime.h>
@@ -119,32 +111,6 @@ class DLLIMPORT cbEditor : public EditorBase
 		void UnfoldBlockFromLine(int line = -1);
 		/** Toggles folding of the block containing \c line. If \c line is -1, toggles folding of the block containing the caret. */
 		void ToggleFoldBlockFromLine(int line = -1);
-		/** Each line in the editor might have one or more markers associated with it.
-		  * Think of it as flags for each line. A specific marker can be set for a line,
-		  * or not set. Markers used in cbEditor are:
-		  * \li breakpoints: set when a line has a breakpoint
-		  * \li bookmarks: set when a line has a bookmark\n
-		  * More markers may be used in the future...\n
-		  * This method, sets a marker on a line.
-		  * If \c line is -1, sets a marker on the line containing the caret.\n
-		  * Predefined values for \c marker are BREAKPOINT_MARKER and BOOKMARK_MARKER...
-		  */
-		void MarkLine(int marker, int line = -1);
-		/** Toggles \c marker on \c line.
-		  * If \c line is -1, toggles \c marker on the line containing the caret.
-		  * @see MarkLine() for information on markers.
-		  */
-		void MarkerToggle(int marker, int line = -1);
-		/** Moves the caret to the next line containing marker of type \c marker.
-		  * @see MarkLine() for information on markers.
-		  */
-		void MarkerNext(int marker);
-		/** Moves the caret to the previous line containing marker of type \c marker.
-		  * @see MarkLine() for information on markers.
-		  */
-		void MarkerPrevious(int marker);
-		/** Sets the breakpoint markers of the editor, by asking the associated ProjectFile (which reads them from the project layout). */
-		void SetBreakpoints();
 		/** Set the color set to use. */
 		void SetColorSet(EditorColorSet* theme);
 		/** Get the color set in use. */
@@ -179,6 +145,28 @@ class DLLIMPORT cbEditor : public EditorBase
           * dialog.
           */
 		void AutoComplete();
+        /** Move the caret at the specified line. */
+        void GotoLine(int line);
+        /** Toggle breakpoint at specified line. If @c line is -1, use current line. */
+        void ToggleBreakpoint(int line = -1, bool notifyDebugger = true);
+        /** Does @c line has breakpoint? */
+        bool HasBreakpoint(int line);
+        /** Go to next breakpoint. */
+        void GotoNextBreakpoint();
+        /** Go to previous breakpoint. */
+        void GotoPreviousBreakpoint();
+        /** Toggle bookmark at specified line. If @c line is -1, use current line. */
+        void ToggleBookmark(int line = -1);
+        /** Does @c line has bookmark? */
+        bool HasBookmark(int line);
+        /** Go to next bookmark. */
+        void GotoNextBookmark();
+        /** Go to previous bookmark. */
+        void GotoPreviousBookmark();
+        /** Highlight the line the debugger will execute next. */
+        void SetDebugLine(int line);
+        /** Highlight the specified line as error. */
+        void SetErrorLine(int line);
 
 		// Workaround for shift-tab bug in wx2.4.2
 		void DoIndent(); /// Indents current line/block
@@ -190,6 +178,12 @@ class DLLIMPORT cbEditor : public EditorBase
 
     private:
         // functions
+        bool LineHasMarker(int marker, int line = -1);
+        void MarkerToggle(int marker, int line = -1);
+        void MarkerNext(int marker);
+        void MarkerPrevious(int marker);
+        void MarkLine(int marker, int line);
+
 		void DoFoldAll(int fold); // 0=unfold, 1=fold, 2=toggle
 		void DoFoldBlockFromLine(int line, int fold); // 0=unfold, 1=fold, 2=toggle
 		bool DoFoldLine(int line, int fold); // 0=unfold, 1=fold, 2=toggle
@@ -197,7 +191,6 @@ class DLLIMPORT cbEditor : public EditorBase
         void SetEditorStyle();
         bool Open();
         void DoAskForCodeCompletion(); // relevant to code-completion plugins
-		bool LineHasMarker(int marker, int line = -1);
 		wxColour GetOptionColour(const wxString& option, const wxColour _default);
 		void NotifyPlugins(wxEventType type, int intArg = 0, const wxString& strArg = wxEmptyString, int xArg = 0, int yArg = 0);
 
@@ -214,7 +207,7 @@ class DLLIMPORT cbEditor : public EditorBase
 
 		// one event handler for all popup menu entries
 		void OnContextMenuEntry(wxCommandEvent& event);
-        bool OnBeforeBuildContextMenu(bool noeditor);
+        bool OnBeforeBuildContextMenu(const wxPoint& position, bool noeditor);
         void OnAfterBuildContextMenu(bool noeditor);
 
         // variables

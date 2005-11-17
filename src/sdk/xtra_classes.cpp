@@ -27,7 +27,7 @@ bool wxSplitPanel::Create(wxWindow* parent, wxWindowID id,
     m_splitter->SetMinimumPaneSize(20);
     m_SplitterConfig = configname;
     m_defaultsashposition = defaultsashposition;
-    m_IniSashPos = m_SplitterConfig.IsEmpty() ? -1 : CFG_READ(configname,m_defaultsashposition);
+    m_IniSashPos = m_SplitterConfig.IsEmpty() ? -1 : Manager::Get()->GetConfigManager(_T("splitpanel"))->ReadInt(configname, m_defaultsashposition);
     m_lastsashposition = 0;
     m_sizer = new wxBoxSizer(wxVERTICAL);
     SetSizer(m_sizer);
@@ -63,7 +63,7 @@ void wxSplitPanel::RefreshSplitter(int idtop,int idbottom)
         if(sashPosition <= 0)
         {
             if(m_IniSashPos == -1)
-                m_IniSashPos = m_SplitterConfig.IsEmpty() ? -1 : CFG_READ(m_SplitterConfig,m_defaultsashposition);
+                m_IniSashPos = m_SplitterConfig.IsEmpty() ? -1 : Manager::Get()->GetConfigManager(_T("splitpanel"))->ReadInt(m_SplitterConfig, m_defaultsashposition);
             sashPosition =  (m_IniSashPos > 0) ? m_IniSashPos : m_lastsashposition;
         }
         if(w1!=topwin && w2!=bottomwin)
@@ -110,7 +110,7 @@ void wxSplitPanel::OnUpdateUI(wxUpdateUIEvent& event)
 wxSplitPanel::~wxSplitPanel()
 {
 	if (!m_SplitterConfig.IsEmpty())
-        ConfigManager::Get()->Write(m_SplitterConfig, m_lastsashposition);
+        Manager::Get()->GetConfigManager(_T("splitpanel"))->Write(m_SplitterConfig, m_lastsashposition);
     m_splitter=0;
     SetSizer(0L);
 }

@@ -10,6 +10,7 @@ class DisassemblyDlg : public wxDialog
 {
 	public:
         static wxString Registers[];
+        static int RegisterIndexFromName(const wxString& name);
 
 		DisassemblyDlg(wxWindow* parent, DebuggerGDB* debugger);
 		virtual ~DisassemblyDlg();

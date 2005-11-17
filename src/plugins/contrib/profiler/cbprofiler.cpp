@@ -9,6 +9,7 @@
  **************************************************************/
 
 #include "cbprofiler.h"
+#include <configmanager.h>
 
 CB_IMPLEMENT_PLUGIN(CBProfiler);
 
@@ -17,7 +18,7 @@ CBProfiler::CBProfiler()
     //ctor
     wxFileSystem::AddHandler(new wxZipFSHandler);
     wxXmlResource::Get()->InitAllHandlers();
-    wxString resPath = ConfigManager::Get()->Read(_T("data_path"), wxEmptyString);
+    wxString resPath = ConfigManager::GetDataFolder();
     wxXmlResource::Get()->Load(resPath + _T("/profiler.zip#zip:*.xrc"));
 
     m_PluginInfo.name = _T("CBProfiler");
@@ -30,8 +31,6 @@ CBProfiler::CBProfiler()
     m_PluginInfo.thanksTo = _("Mandrav, for the n00b intro to profiling\nand the sources of his Source code\nformatter (AStyle) Plugin, whose clean\ncode structure served as a basis for this\nplugin\n:)");
     m_PluginInfo.license = LICENSE_GPL;
     m_PluginInfo.hasConfigure = true;
-
-    ConfigManager::AddConfiguration(m_PluginInfo.title, _T("/cbprofiler"));
 }
 CBProfiler::~CBProfiler()
 {
@@ -173,19 +172,20 @@ int CBProfiler::Execute()
 
 	}
 
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("cbprofiler"));
+
 	// Loading configuration
 	struct_config config;
-	config.chkAnnSource = ConfigManager::Get()->Read(_T("/cbprofiler/ann_source_chk"), 0L);
-	config.txtAnnSource = ConfigManager::Get()->Read(_T("/cbprofiler/ann_source_txt"), _T(""));
-	config.chkMinCount = ConfigManager::Get()->Read(_T("/cbprofiler/min_count_chk"), 0L);
-	config.spnMinCount = ConfigManager::Get()->Read(_T("/cbprofiler/min_count_spn"), 0L);
-	config.chkBrief = ConfigManager::Get()->Read(_T("/cbprofiler/brief"), 0L);
-	config.chkFileInfo = ConfigManager::Get()->Read(_T("/cbprofiler/file_info"), 0L);
-	config.chkNoStatic = ConfigManager::Get()->Read(_T("/cbprofiler/no_static"), 0L);
-	config.chkMinCount = ConfigManager::Get()->Read(_T("/cbprofiler/min_count_chk"), 0L);
-	config.spnMinCount = ConfigManager::Get()->Read(_T("/cbprofiler/min_count_spn"), 0L);
-	config.chkSum = ConfigManager::Get()->Read(_T("/cbprofiler/sum"), 0L);
-	config.txtExtra = ConfigManager::Get()->Read(_T("/cbprofiler/extra_txt"), _T(""));
+	config.chkAnnSource = cfg->ReadBool(_T("/ann_source_chk"), false);
+	config.txtAnnSource = cfg->Read(_T("/ann_source_txt"), wxEmptyString);
+	config.chkMinCount = cfg->ReadBool(_T("/min_count_chk"), false);
+	config.spnMinCount = cfg->ReadInt(_T("/min_count_spn"), 0);
+	config.chkBrief = cfg->ReadBool(_T("/brief"), false);
+	config.chkFileInfo = cfg->ReadBool(_T("/file_info"), false);
+	config.chkNoStatic = cfg->ReadBool(_T("/no_static"), false);
+	config.chkMinCount = cfg->ReadBool(_T("/min_count_chk"), false);
+	config.chkSum = cfg->ReadBool(_T("/sum"), false);
+	config.txtExtra = cfg->Read(_T("/extra_txt"), wxEmptyString);
 
     // If we got this far, all is left is to call gprof!!!
     dlg = new CBProfilerExecDlg(Manager::Get()->GetAppWindow());

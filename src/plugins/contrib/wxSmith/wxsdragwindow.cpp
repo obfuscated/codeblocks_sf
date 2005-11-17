@@ -3,7 +3,6 @@
 
 #include <wx/dcclient.h>
 #include <wx/dcbuffer.h>
-#include <configmanager.h>
 
 #include "widget.h"
 #include "wxsevent.h"

@@ -2,7 +2,6 @@
 #include "todolistview.h"
 #include <wx/intl.h>
 #include <manager.h>
-#include <configmanager.h>
 #include <editormanager.h>
 #include <messagemanager.h>
 #include <projectmanager.h>
@@ -372,8 +371,8 @@ void ToDoListView::OnListItemSelected(wxListEvent& event)
 	cbEditor* ed = Manager::Get()->GetEditorManager()->Open(file);
 	if (ed)
 	{
-		ed->GetControl()->GotoLine(line);
 		ed->Activate();
+		ed->GotoLine(line);
     }
 }
 

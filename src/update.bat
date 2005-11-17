@@ -9,6 +9,7 @@ if not exist output\share\CodeBlocks\images md output\share\CodeBlocks\images\
 if not exist output\share\CodeBlocks\images\codecompletion md output\share\CodeBlocks\images\codecompletion\
 if not exist output\share\CodeBlocks\plugins md output\share\CodeBlocks\plugins\
 if not exist output\share\CodeBlocks\templates md output\share\CodeBlocks\templates\
+if not exist output\share\CodeBlocks\scripts md output\share\CodeBlocks\scripts\
 if not exist devel md devel\
 if not exist devel\share md devel\share\
 if not exist devel\share\CodeBlocks md devel\share\CodeBlocks\
@@ -17,6 +18,7 @@ if not exist devel\share\CodeBlocks\images md devel\share\CodeBlocks\images\
 if not exist devel\share\CodeBlocks\images\codecompletion md devel\share\CodeBlocks\images\codecompletion\
 if not exist devel\share\CodeBlocks\plugins md devel\share\CodeBlocks\plugins\
 if not exist devel\share\CodeBlocks\templates md devel\share\CodeBlocks\templates\
+if not exist devel\share\CodeBlocks\scripts md devel\share\CodeBlocks\scripts\
 
 set ZIPCMD=zip
 set RESDIR=devel\share\CodeBlocks
@@ -64,6 +66,8 @@ copy /y templates\common\* output\share\codeblocks\templates > nul
 copy /y templates\win32\* output\share\codeblocks\templates > nul
 copy /y templates\common\* %RESDIR%\templates > nul
 copy /y templates\win32\* %RESDIR%\templates > nul
+copy /y scripts\* %RESDIR%\scripts > nul
+copy /y scripts\* output\share\codeblocks\scripts > nul
 copy /y tips.txt devel\share\CodeBlocks > nul
 copy /y tips.txt output\share\CodeBlocks > nul
 copy /y tools\ConsoleRunner\console_runner*.exe output > nul

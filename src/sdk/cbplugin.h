@@ -361,22 +361,28 @@ class cbCodeCompletionPlugin : public cbPlugin
   *
   * Wizard plugins are called by Code::Blocks when the user selects
   * "New project" on a template provided by the plugin.
+  *
+  * A plugin of this type can support more than one wizards. The @c index
+  * used as a parameter to most of the functions, denotes 0-based index
+  * of the project wizard to run.
   */
 class cbProjectWizardPlugin : public cbPlugin
 {
     public:
         cbProjectWizardPlugin();
 
+        /// @return the number of template wizards this plugin contains
+        virtual int GetCount() const = 0;
         /// @return the template's title
-        virtual const wxString& GetTitle() const = 0;
+        virtual wxString GetTitle(int index) const = 0;
         /// @return the template's description
-        virtual const wxString& GetDescription() const = 0;
+        virtual wxString GetDescription(int index) const = 0;
         /// @return the template's category (GUI, Console, etc; free-form text)
-        virtual const wxString& GetCategory() const = 0;
+        virtual wxString GetCategory(int index) const = 0;
         /// @return the template's bitmap
-        virtual const wxBitmap& GetBitmap() const = 0;
+        virtual const wxBitmap& GetBitmap(int index) const = 0;
         /// When this is called, the wizard must get to work ;)
-        virtual int Launch() = 0; // do your work ;)
+        virtual int Launch(int index) = 0; // do your work ;)
     private:
         // "Hide" some virtual members, that are not needed in cbCreateWizardPlugin
         void BuildMenu(wxMenuBar* menuBar){}
@@ -393,7 +399,7 @@ typedef int(*GetSDKVersionMinorProc)(void);
 // this is the plugins SDK version number
 // it will change when the plugins interface breaks
 #define PLUGIN_SDK_VERSION_MAJOR 1
-#define PLUGIN_SDK_VERSION_MINOR 2
+#define PLUGIN_SDK_VERSION_MINOR 4
 
 /** This is used to declare the plugin's hooks.
   */

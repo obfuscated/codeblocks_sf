@@ -172,7 +172,20 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
 
 bool wxToolBarAddOnXmlHandler::CanHandle(wxXmlNode *node)
 {
-    return ((!m_isInside && IsOfClass(node, _T("wxToolBarAddOn"))) ||
-            (m_isInside && IsOfClass(node, _T("tool"))) ||
-            (m_isInside && IsOfClass(node, _T("separator"))));
+// NOTE (mandrav#1#): wxXmlResourceHandler::IsOfClass() doesn't work in unicode (2.6.2)
+// Don't ask why. It does this and doesn't work for our custom handler:
+//    return node->GetPropVal(wxT("class"), wxEmptyString) == classname;
+//
+// This works though:
+//    return node->GetPropVal(wxT("class"), wxEmptyString).Matches(classname);
+//
+// Don't ask me why... >:-|
+
+    bool istbar = node->GetPropVal(wxT("class"), wxEmptyString).Matches(_T("wxToolBarAddOn"));
+    bool istool = node->GetPropVal(wxT("class"), wxEmptyString).Matches(_T("tool"));
+    bool issep = node->GetPropVal(wxT("class"), wxEmptyString).Matches(_T("separator"));
+
+    return ((!m_isInside && istbar) ||
+            (m_isInside && istool) ||
+            (m_isInside && issep));
 }

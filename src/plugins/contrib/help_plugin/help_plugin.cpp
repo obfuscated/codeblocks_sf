@@ -68,7 +68,7 @@ HelpPlugin::HelpPlugin()
 : m_pMenuBar(0), m_LastId(0)
 {
   //ctor
-  wxString resPath = ConfigManager::Get()->Read(_T("data_path"), wxEmptyString);
+  wxString resPath = ConfigManager::GetDataFolder();
   wxXmlResource::Get()->Load(resPath + _T("/help_plugin.zip#zip:*.xrc"));
 
   m_PluginInfo.name = _T("HelpPlugin");
@@ -81,8 +81,6 @@ HelpPlugin::HelpPlugin()
   m_PluginInfo.thanksTo = _T("Codeblocks dev team !\nBourricot for the initial version");
   m_PluginInfo.license = LICENSE_GPL;
   m_PluginInfo.hasConfigure = true;
-
-  ConfigManager::AddConfiguration(m_PluginInfo.title, _T("/help_plugin"));
 
   // initialize IDs for Help and popup menu
   for (int i = 0; i < MAX_HELP_ITEMS; ++i)

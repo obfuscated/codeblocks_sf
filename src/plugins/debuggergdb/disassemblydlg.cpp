@@ -28,6 +28,16 @@ wxString DisassemblyDlg::Registers[] = {
     _T("ss")
 };
 
+int DisassemblyDlg::RegisterIndexFromName(const wxString& name)
+{
+    for (int i = 0; i < 16; ++i)
+    {
+        if (name.Matches(DisassemblyDlg::Registers[i]))
+            return i;
+    }
+    return -1;
+}
+
 BEGIN_EVENT_TABLE(DisassemblyDlg, wxDialog)
     EVT_BUTTON(XRCID("btnSave"), DisassemblyDlg::OnSave)
     EVT_BUTTON(XRCID("btnRefresh"), DisassemblyDlg::OnRefresh)
@@ -54,7 +64,7 @@ void DisassemblyDlg::Clear(const StackFrame& frame)
     XRCCTRL(*this, "lblFunction", wxStaticText)->SetLabel(frame.valid ? frame.function : _T("??"));
     wxString addr = _T("??");
     if (frame.valid)
-        addr.Printf(_T("0x%8.8x"), frame.address);
+        addr.Printf(_T("%p"), (void*)frame.address);
     XRCCTRL(*this, "lblAddress", wxStaticText)->SetLabel(addr);
 
     wxListCtrl* lc = XRCCTRL(*this, "lcCode", wxListCtrl);
@@ -117,6 +127,8 @@ void DisassemblyDlg::SetActiveAddress(unsigned long int addr)
 
 void DisassemblyDlg::AddRegisterValue(int idx, long int value)
 {
+    if (idx == -1)
+        return;
     wxListCtrl* lc = XRCCTRL(*this, "lcRegisters", wxListCtrl);
 	lc->Freeze();
 	lc->InsertItem(lc->GetItemCount(), Registers[idx]);
@@ -126,7 +138,15 @@ void DisassemblyDlg::AddRegisterValue(int idx, long int value)
 
 void DisassemblyDlg::SetRegisterValue(int idx, long int value)
 {
+    if (idx == -1)
+        return;
     wxListCtrl* lc = XRCCTRL(*this, "lcRegisters", wxListCtrl);
+    if (!lc->GetItemCount())
+    {
+        ClearRegisters();
+        for (int i = 0; i < 16; ++i)
+            AddRegisterValue(i, 0);
+    }
 	wxString fmt;
 	fmt.Printf(_T("0x%x"), (size_t)value);
     lc->SetItem(idx, 1, fmt);

@@ -88,26 +88,25 @@ END_EVENT_TABLE()
 CCOptionsDlg::CCOptionsDlg(wxWindow* parent)
 	: m_Parser(this)
 {
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
+
 	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgCCSettings"));
 	XRCCTRL(*this, "chkLocals", wxCheckBox)->SetValue(m_Parser.Options().followLocalIncludes);
 	XRCCTRL(*this, "chkGlobals", wxCheckBox)->SetValue(m_Parser.Options().followGlobalIncludes);
 	XRCCTRL(*this, "chkPreprocessor", wxCheckBox)->SetValue(m_Parser.Options().wantPreprocessor);
-	XRCCTRL(*this, "chkNoCC", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/code_completion/use_code_completion"), 1L) == 0);
+	XRCCTRL(*this, "chkNoCC", wxCheckBox)->SetValue(!cfg->ReadBool(_T("/use_code_completion"), true));
 	XRCCTRL(*this, "chkSimpleMode", wxCheckBox)->SetValue(!m_Parser.Options().useSmartSense);
 	XRCCTRL(*this, "chkCaseSensitive", wxCheckBox)->SetValue(m_Parser.Options().caseSensitive);
 	XRCCTRL(*this, "chkInheritance", wxCheckBox)->SetValue(m_Parser.ClassBrowserOptions().showInheritance);
 	XRCCTRL(*this, "cmbCBView", wxComboBox)->SetSelection(m_Parser.ClassBrowserOptions().viewFlat ? 0 : 1);
-	XRCCTRL(*this, "chkUseCache", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/code_completion/use_cache"), 0L));
-	XRCCTRL(*this, "chkAlwaysUpdateCache", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/code_completion/update_cache_always"), 0L));
-	XRCCTRL(*this, "chkShowCacheProgress", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/code_completion/show_cache_progress"), 1L));
+	XRCCTRL(*this, "chkUseCache", wxCheckBox)->SetValue(cfg->ReadBool(_T("/use_cache"), false));
+	XRCCTRL(*this, "chkAlwaysUpdateCache", wxCheckBox)->SetValue(cfg->ReadBool(_T("/update_cache_always"), false));
+	XRCCTRL(*this, "chkShowCacheProgress", wxCheckBox)->SetValue(cfg->ReadBool(_T("/show_cache_progress"), true));
 
-    wxColour color(ConfigManager::Get()->Read(_T("/code_completion/color/red"), 0xFF),
-    				ConfigManager::Get()->Read(_T("/code_completion/color/green"), 0xFF),
-    				ConfigManager::Get()->Read(_T("/code_completion/color/blue"), 0xFF)
-					);
+    wxColour color = cfg->ReadColour(_T("/color"), *wxWHITE);
     XRCCTRL(*this, "btnColor", wxButton)->SetBackgroundColour(color);
 
-	int timerDelay = ConfigManager::Get()->Read(_T("/editor/cc_delay"), 500);
+	int timerDelay = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/cc_delay"), 500);
 	XRCCTRL(*this, "sliderDelay", wxSlider)->SetValue(timerDelay / 100);
 	UpdateSliderLabel();
 
@@ -163,22 +162,20 @@ void CCOptionsDlg::OnOK(wxCommandEvent& event)
 	m_Parser.Options().followGlobalIncludes = XRCCTRL(*this, "chkGlobals", wxCheckBox)->GetValue();
 	m_Parser.Options().wantPreprocessor = XRCCTRL(*this, "chkPreprocessor", wxCheckBox)->GetValue();
 	m_Parser.Options().caseSensitive = XRCCTRL(*this, "chkCaseSensitive", wxCheckBox)->GetValue();
-	ConfigManager::Get()->Write(_T("/code_completion/use_code_completion"), !XRCCTRL(*this, "chkNoCC", wxCheckBox)->GetValue());
+	Manager::Get()->GetConfigManager(_T("code_completion"))->Write(_T("/use_code_completion"), !XRCCTRL(*this, "chkNoCC", wxCheckBox)->GetValue());
 	m_Parser.Options().useSmartSense = !XRCCTRL(*this, "chkSimpleMode", wxCheckBox)->GetValue();
 	m_Parser.ClassBrowserOptions().showInheritance = XRCCTRL(*this, "chkInheritance", wxCheckBox)->GetValue();
 	m_Parser.ClassBrowserOptions().viewFlat = XRCCTRL(*this, "cmbCBView", wxComboBox)->GetSelection() == 0;
 	m_Parser.WriteOptions();
 
-	ConfigManager::Get()->Write(_T("/code_completion/use_cache"), XRCCTRL(*this, "chkUseCache", wxCheckBox)->GetValue());
-	ConfigManager::Get()->Write(_T("/code_completion/update_cache_always"), XRCCTRL(*this, "chkAlwaysUpdateCache", wxCheckBox)->GetValue());
-	ConfigManager::Get()->Write(_T("/code_completion/show_cache_progress"), XRCCTRL(*this, "chkShowCacheProgress", wxCheckBox)->GetValue());
+	Manager::Get()->GetConfigManager(_T("code_completion"))->Write(_T("/use_cache"), XRCCTRL(*this, "chkUseCache", wxCheckBox)->GetValue());
+	Manager::Get()->GetConfigManager(_T("code_completion"))->Write(_T("/update_cache_always"), XRCCTRL(*this, "chkAlwaysUpdateCache", wxCheckBox)->GetValue());
+	Manager::Get()->GetConfigManager(_T("code_completion"))->Write(_T("/show_cache_progress"), XRCCTRL(*this, "chkShowCacheProgress", wxCheckBox)->GetValue());
 
-    ConfigManager::Get()->Write(_T("/code_completion/color/red"),		XRCCTRL(*this, "btnColor", wxButton)->GetBackgroundColour().Red());
-    ConfigManager::Get()->Write(_T("/code_completion/color/green"),	XRCCTRL(*this, "btnColor", wxButton)->GetBackgroundColour().Green());
-    ConfigManager::Get()->Write(_T("/code_completion/color/blue"),	XRCCTRL(*this, "btnColor", wxButton)->GetBackgroundColour().Blue());
+    Manager::Get()->GetConfigManager(_T("code_completion"))->Write(_T("/color"), XRCCTRL(*this, "btnColor", wxButton)->GetBackgroundColour().Red());
 
 	int timerDelay = XRCCTRL(*this, "sliderDelay", wxSlider)->GetValue() * 100;
-	ConfigManager::Get()->Write(_T("/editor/cc_delay"), timerDelay);
+	Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("/cc_delay"), timerDelay);
 
 	wxDialog::OnOK(event);
 }

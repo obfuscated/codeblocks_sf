@@ -9,6 +9,7 @@
 #include "openfilestree.h"
 #include "compiletargetbase.h"
 #include "projectbuildtarget.h"
+#include "cbplugin.h"
 
 // forward decl
 class cbProject;
@@ -44,7 +45,7 @@ enum PCHMode
  */
 class DLLIMPORT cbProject : public CompileTargetBase
 {
-	public:
+ 	public:
 		// class constructor
 		cbProject(const wxString& filename = wxEmptyString);
 		// class destructor
@@ -107,13 +108,18 @@ class DLLIMPORT cbProject : public CompileTargetBase
         void RestoreTreeState(wxTreeCtrl* tree);
 		int SelectTarget(int initial = -1, bool evenIfOne = false);
         void RenameInTree(const wxString &newname);
+        ProjectBuildTarget *GetCurrentlyCompilingTarget(){return m_CurrentlyCompilingTarget;};
+
+        // This function is for internal use by compilers only.
+        // Using this function outside in any other place results in undefined behaviour!
+        void SetCurrentlyCompilingTarget(ProjectBuildTarget* bt);
     private:
         void Open();
-        void AddTreeNode(wxTreeCtrl* tree, const wxString& text, const wxTreeItemId& parent, bool useFolders, bool compiles, FileTreeData* data = 0L);
+        wxTreeItemId AddTreeNode(wxTreeCtrl* tree, const wxString& text, const wxTreeItemId& parent, bool useFolders, bool compiles, int image, FileTreeData* data = 0L);
         ProjectBuildTarget* AddDefaultBuildTarget();
         int IndexOfBuildTargetName(const wxString& targetName);
         wxString CreateUniqueFilename();
-		void NotifyPlugins(wxEventType type);
+        void NotifyPlugins(wxEventType type);
 
         // properties
         BuildTargets m_Targets;
@@ -135,6 +141,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
 
         // hashmap for fast searches in cbProject::GetFileByFilename()
         ProjectFiles m_ProjectFilesMap; // keeps UnixFilename(ProjectFile::relativeFilename)
+        ProjectBuildTarget* m_CurrentlyCompilingTarget;
 };
 
 #endif // DEVPROJECT_H

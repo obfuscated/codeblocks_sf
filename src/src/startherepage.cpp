@@ -55,18 +55,22 @@ StartHerePage::StartHerePage(wxEvtHandler* owner, wxWindow* parent)
 	//ctor
     wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
 
-    wxString resPath = ConfigManager::Get()->Read(_T("/data_path"));
+    wxString resPath = ConfigManager::ReadDataPath();
 	m_pWin = new MyHtmlWin(this, idWin, wxPoint(0,0), GetSize());
+
 	// set default font sizes based on system default font size
+
     /* NOTE (mandrav#1#): wxWidgets documentation on wxHtmlWindow::SetFonts(),
     states that the sizes array accepts values from -2 to +4.
     My tests (under linux at least) have showed that it actually
     expects real point sizes. */
+
 	wxFont systemFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
 	int sizes[7] = {};
 	for (int i = 0; i < 7; ++i)
         sizes[i] = systemFont.GetPointSize();
 	m_pWin->SetFonts(wxEmptyString, wxEmptyString, &sizes[0]);
+
     // must load the page this way because if we don't the image can't be found...
 	m_pWin->LoadPage(resPath + _T("/start_here.zip#zip:start_here.html"));
 

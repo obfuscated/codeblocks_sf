@@ -10,48 +10,66 @@
 
 EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent)
 {
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgEnvironmentSettings"));
+    wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgEnvironmentSettings"));
 
-	// tab "General"
-	XRCCTRL(*this, "chkShowSplash", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/environment/show_splash"), 1));
-	XRCCTRL(*this, "chkDDE", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/environment/use_dde"), 1));
-	XRCCTRL(*this, "chkSingleInstance", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/environment/single_instance"), 1));
-	XRCCTRL(*this, "chkAssociations", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/environment/check_associations"), 1));
-	XRCCTRL(*this, "chkModifiedFiles", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/environment/check_modified_files"), 1));
-	XRCCTRL(*this, "chkDebugLog", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/message_manager/has_debug_log"), (long int)0));
-	XRCCTRL(*this, "rbAppStart", wxRadioBox)->SetSelection(ConfigManager::Get()->Read(_T("/environment/blank_workspace"), (long int)0));
-	XRCCTRL(*this, "rbProjectOpen", wxRadioBox)->SetSelection(ConfigManager::Get()->Read(_T("/project_manager/open_files"), (long int)1));
-	XRCCTRL(*this, "rbToolbarSize", wxRadioBox)->SetSelection(ConfigManager::Get()->Read(_T("/environment/toolbar_size"), (long int)1));
-	XRCCTRL(*this, "chkAutoHideMessages", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/message_manager/auto_hide"), 0L));
-	XRCCTRL(*this, "chkShowEditorCloseButton", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/editor/show_close_button"), 0L));
-	XRCCTRL(*this, "chkShowStartPage", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/environment/start_here_page"), 1));
-	XRCCTRL(*this, "chkSafebutSlow", wxCheckBox)->SetValue(ConfigManager::Get()->Read(_T("/message_manager/safe_but_slow"), 0L));
+    ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
+    ConfigManager *pcfg = Manager::Get()->GetConfigManager(_T("project_manager"));
+    ConfigManager *mcfg = Manager::Get()->GetConfigManager(_T("message_manager"));
+    ConfigManager *ecfg = Manager::Get()->GetConfigManager(_T("editor"));
+
+    // tab "General"
+    XRCCTRL(*this, "chkShowSplash", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/show_splash"), true));
+    XRCCTRL(*this, "chkDDE", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/use_dde"), true));
+    XRCCTRL(*this, "chkSingleInstance", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/single_instance"), true));
+    XRCCTRL(*this, "chkAssociations", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/check_associations"), true));
+    XRCCTRL(*this, "chkModifiedFiles", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/check_modified_files"), true));
+    XRCCTRL(*this, "chkDebugLog", wxCheckBox)->SetValue(mcfg->ReadBool(_T("/has_debug_log"), false));
+    XRCCTRL(*this, "rbAppStart", wxRadioBox)->SetSelection(cfg->ReadBool(_T("/environment/blank_workspace"), true) ? 1 : 0);
+
+    XRCCTRL(*this, "rbProjectOpen", wxRadioBox)->SetSelection(pcfg->ReadInt(_T("/open_files"), 1));
+
+    XRCCTRL(*this, "rbToolbarSize", wxRadioBox)->SetSelection(cfg->ReadInt(_T("/environment/toolbar_size"), 1));
+    XRCCTRL(*this, "chkAutoHideMessages", wxCheckBox)->SetValue(mcfg->ReadBool(_T("/auto_hide"), false));
+
+    XRCCTRL(*this, "chkShowEditorCloseButton", wxCheckBox)->SetValue(ecfg->ReadBool(_T("/show_close_button"), false));
+
+    XRCCTRL(*this, "chkShowStartPage", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/start_here_page"), true));
+    XRCCTRL(*this, "chkSafebutSlow", wxCheckBox)->SetValue(mcfg->ReadBool(_T("/safe_but_slow"), false));
 }
 
 EnvironmentSettingsDlg::~EnvironmentSettingsDlg()
 {
-	//dtor
+    //dtor
 }
 
 void EnvironmentSettingsDlg::EndModal(int retCode)
 {
-	if (retCode == wxID_OK)
-	{
-		// tab "General"
-		ConfigManager::Get()->Write(_T("/environment/show_splash"), XRCCTRL(*this, "chkShowSplash", wxCheckBox)->GetValue());
-		ConfigManager::Get()->Write(_T("/environment/use_dde"), XRCCTRL(*this, "chkDDE", wxCheckBox)->GetValue());
-		ConfigManager::Get()->Write(_T("/environment/single_instance"), XRCCTRL(*this, "chkSingleInstance", wxCheckBox)->GetValue());
-		ConfigManager::Get()->Write(_T("/environment/check_associations"), XRCCTRL(*this, "chkAssociations", wxCheckBox)->GetValue());
-		ConfigManager::Get()->Write(_T("/environment/check_modified_files"), XRCCTRL(*this, "chkModifiedFiles", wxCheckBox)->GetValue());
-        ConfigManager::Get()->Write(_T("/message_manager/has_debug_log"), XRCCTRL(*this, "chkDebugLog", wxCheckBox)->GetValue());
-        ConfigManager::Get()->Write(_T("/environment/blank_workspace"), XRCCTRL(*this, "rbAppStart", wxRadioBox)->GetSelection());
-        ConfigManager::Get()->Write(_T("/project_manager/open_files"), XRCCTRL(*this, "rbProjectOpen", wxRadioBox)->GetSelection());
-        ConfigManager::Get()->Write(_T("/environment/toolbar_size"), XRCCTRL(*this, "rbToolbarSize", wxRadioBox)->GetSelection());
-        ConfigManager::Get()->Write(_T("/message_manager/auto_hide"), XRCCTRL(*this, "chkAutoHideMessages", wxCheckBox)->GetValue());
-        ConfigManager::Get()->Write(_T("/editor/show_close_button"), XRCCTRL(*this, "chkShowEditorCloseButton", wxCheckBox)->GetValue());
-        ConfigManager::Get()->Write(_T("/environment/start_here_page"), XRCCTRL(*this, "chkShowStartPage", wxCheckBox)->GetValue());
-        ConfigManager::Get()->Write(_T("/message_manager/safe_but_slow"), XRCCTRL(*this, "chkSafebutSlow", wxCheckBox)->GetValue());
-	}
+    if (retCode == wxID_OK)
+    {
+        ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
+        ConfigManager *pcfg = Manager::Get()->GetConfigManager(_T("project_manager"));
+        ConfigManager *mcfg = Manager::Get()->GetConfigManager(_T("message_manager"));
+        ConfigManager *ecfg = Manager::Get()->GetConfigManager(_T("editor"));
 
-	wxDialog::EndModal(retCode);
+        // tab "General"
+        cfg->Write(_T("/environment/show_splash"),           (bool) XRCCTRL(*this, "chkShowSplash", wxCheckBox)->GetValue());
+        cfg->Write(_T("/environment/use_dde"),               (bool) XRCCTRL(*this, "chkDDE", wxCheckBox)->GetValue());
+        cfg->Write(_T("/environment/single_instance"),       (bool) XRCCTRL(*this, "chkSingleInstance", wxCheckBox)->GetValue());
+        cfg->Write(_T("/environment/check_associations"),    (bool) XRCCTRL(*this, "chkAssociations", wxCheckBox)->GetValue());
+        cfg->Write(_T("/environment/check_modified_files"),  (bool) XRCCTRL(*this, "chkModifiedFiles", wxCheckBox)->GetValue());
+        mcfg->Write(_T("/has_debug_log"),                    (bool) XRCCTRL(*this, "chkDebugLog", wxCheckBox)->GetValue());
+        cfg->Write(_T("/environment/blank_workspace"),       (bool) XRCCTRL(*this, "rbAppStart", wxRadioBox)->GetSelection() ? true : false);
+
+        pcfg->Write(_T("/open_files"),                       (int) XRCCTRL(*this, "rbProjectOpen", wxRadioBox)->GetSelection());
+
+        cfg->Write(_T("/environment/toolbar_size"),          (int)  XRCCTRL(*this, "rbToolbarSize", wxRadioBox)->GetSelection());
+        mcfg->Write(_T("/auto_hide"),                        (bool) XRCCTRL(*this, "chkAutoHideMessages", wxCheckBox)->GetValue());
+
+        ecfg->Write(_T("/show_close_button"),                (bool) XRCCTRL(*this, "chkShowEditorCloseButton", wxCheckBox)->GetValue());
+
+        cfg->Write(_T("/environment/start_here_page"),       (bool) XRCCTRL(*this, "chkShowStartPage", wxCheckBox)->GetValue());
+        mcfg->Write(_T("/safe_but_slow"),                    (bool) XRCCTRL(*this, "chkSafebutSlow", wxCheckBox)->GetValue());
+    }
+
+    wxDialog::EndModal(retCode);
 }
