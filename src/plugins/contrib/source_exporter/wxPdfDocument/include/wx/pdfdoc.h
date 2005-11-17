@@ -13,9 +13,9 @@
 #ifndef _PDFDOC_H_
 #define _PDFDOC_H_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "pdfdoc.h"
-#endif
+//#if defined(__GNUG__) && !defined(__APPLE__)
+//    #pragma interface "pdfdoc.h"
+//#endif
 
 #include <wx/dynarray.h>
 #include <wx/mstream.h>

@@ -4,7 +4,7 @@ INCLUDES = $(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/sdk \
 			-I$(top_srcdir)/src/sdk/as/include
 
-lib_LTLIBRARIES = libangelscript.la
+noinst_LTLIBRARIES = libangelscript.la
 
 libangelscript_la_LDFLAGS = -version-info @CODEBLOCKS_VERSION_INFO@
 

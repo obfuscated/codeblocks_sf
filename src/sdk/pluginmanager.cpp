@@ -124,14 +124,14 @@ int PluginManager::ScanForPlugins(const wxString& path)
 cbPlugin* PluginManager::LoadPlugin(const wxString& pluginName)
 {
     SANITY_CHECK(0L);
-    wxLogNull zero; // no need for error messages; we check everything ourselves...
-    //MessageManager* msgMan = Manager::Get()->GetMessageManager();
+    //wxLogNull zero; // no need for error messages; we check everything ourselves...
+    MessageManager* msgMan = Manager::Get()->GetMessageManager();
 
     wxDynamicLibrary* lib = new wxDynamicLibrary();
     lib->Load(pluginName);
     if (!lib->IsLoaded())
     {
-        //msgMan->DebugLog(_("not loaded (file exists?)"));
+        msgMan->DebugLog(_("%s: not loaded (file exists?)"), pluginName.c_str());
         delete lib;
         return 0L;
     }
@@ -142,7 +142,7 @@ cbPlugin* PluginManager::LoadPlugin(const wxString& pluginName)
     // if no SDK version entry points, abort
     if (!majorproc || !minorproc)
     {
-        //msgMan->DebugLog(_("no SDK version entry points"));
+        msgMan->DebugLog(_("%s: no SDK version entry points"), pluginName.c_str());
         delete lib;
         return 0L;
     }
@@ -173,7 +173,7 @@ cbPlugin* PluginManager::LoadPlugin(const wxString& pluginName)
     {
         lib->Unload();
         delete lib;
-        //msgMan->DebugLog(_("not a plugin"));
+        msgMan->DebugLog(_("%s: not a plugin"), pluginName.c_str());
         return 0L;
     }
 
@@ -195,7 +195,7 @@ cbPlugin* PluginManager::LoadPlugin(const wxString& pluginName)
     wxString plugName = plug->GetInfo()->name;
     if (FindPluginByName(plugName))
     {
-        //msgMan->DebugLog(_("another plugin with name \"%s\" is already loaded..."), plugName.c_str());
+        msgMan->DebugLog(_("%s: another plugin with name \"%s\" is already loaded..."), pluginName.c_str(), plugName.c_str());
         lib->Unload();
         delete lib;
         return 0L;
@@ -208,7 +208,7 @@ cbPlugin* PluginManager::LoadPlugin(const wxString& pluginName)
 	plugElem->plugin = plug;
     m_Plugins.Add(plugElem);
 
-	//msgMan->DebugLog(_("loaded %s"), plugName.c_str());
+	msgMan->DebugLog(_("%s: loaded"), plugName.c_str());
     return plug;
 }
 

@@ -10,7 +10,7 @@
 #include <wx/textctrl.h>
 //*)
 
-#include "wxsListbook.h"
+#include "wxslistbook.h"
 
 class wxsListbookParentQP: public wxPanel
 {

@@ -9,9 +9,9 @@
 #ifndef EXPORTER_H
 #define EXPORTER_H
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-	#pragma interface "exporter.h"
-#endif
+//#if defined(__GNUG__) && !defined(__APPLE__)
+//	#pragma interface "exporter.h"
+//#endif
 // For compilers that support precompilation, includes <wx/wx.h>
 #include <wx/wxprec.h>
 
