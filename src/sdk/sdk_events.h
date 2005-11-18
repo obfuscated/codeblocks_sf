@@ -4,13 +4,13 @@
 #include <wx/event.h>
 #include "settings.h"
 #include "cbproject.h"
-#include "cbeditor.h"
+#include "editorbase.h"
 #include "cbplugin.h"
 
 class EVTIMPORT CodeBlocksEvent : public wxCommandEvent
 {
 	public:
-		CodeBlocksEvent(wxEventType commandType = wxEVT_NULL, int id = 0, cbProject* project = 0L, cbEditor* editor = 0L, cbPlugin* plugin = 0L)
+		CodeBlocksEvent(wxEventType commandType = wxEVT_NULL, int id = 0, cbProject* project = 0L, EditorBase* editor = 0L, cbPlugin* plugin = 0L)
 			: wxCommandEvent(commandType, id),
 			m_pProject(project),
 			m_pEditor(editor),
@@ -28,8 +28,8 @@ class EVTIMPORT CodeBlocksEvent : public wxCommandEvent
 
 		cbProject* GetProject() const { return m_pProject; }
 		void SetProject(cbProject* project){ m_pProject = project; }
-		cbEditor* GetEditor() const { return m_pEditor; }
-		void SetEditor(cbEditor* editor){ m_pEditor = editor; }
+		EditorBase* GetEditor() const { return m_pEditor; }
+		void SetEditor(EditorBase* editor){ m_pEditor = editor; }
 		cbPlugin* GetPlugin() const { return m_pPlugin; }
 		void SetPlugin(cbPlugin* plugin){ m_pPlugin = plugin; }
 		int GetX(){ return m_X; }
@@ -38,7 +38,7 @@ class EVTIMPORT CodeBlocksEvent : public wxCommandEvent
 		void SetY(int y){ m_Y = y; }
 	protected:
 		cbProject* m_pProject;
-		cbEditor* m_pEditor;
+		EditorBase* m_pEditor;
 		cbPlugin* m_pPlugin;
 		// for some editor events
 		int m_X;
@@ -66,6 +66,10 @@ DECLARE_CB_EVENT_TYPE(cbEVT_EDITOR_CLOSE)
 #define EVT_EDITOR_CLOSE(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_CLOSE, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 DECLARE_CB_EVENT_TYPE(cbEVT_EDITOR_OPEN)
 #define EVT_EDITOR_OPEN(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_OPEN, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+DECLARE_CB_EVENT_TYPE(cbEVT_EDITOR_ACTIVATED)
+#define EVT_EDITOR_ACTIVATED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_ACTIVATED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+DECLARE_CB_EVENT_TYPE(cbEVT_EDITOR_DEACTIVATED)
+#define EVT_EDITOR_DEACTIVATED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_DEACTIVATED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 DECLARE_CB_EVENT_TYPE(cbEVT_EDITOR_SAVE)
 #define EVT_EDITOR_SAVE(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_SAVE, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 DECLARE_CB_EVENT_TYPE(cbEVT_EDITOR_AUTOCOMPLETE)

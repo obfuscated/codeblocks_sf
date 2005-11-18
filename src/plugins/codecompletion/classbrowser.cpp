@@ -29,13 +29,18 @@
 #include <wx/intl.h>
 #include <wx/notebook.h>
 #include <wx/sizer.h>
+#include <wx/stattext.h>
+#include <wx/combobox.h>
 #include <wx/menu.h>
+#include <manager.h>
+#include <configmanager.h>
 #include <pluginmanager.h>
 #include <editormanager.h>
 #include <projectmanager.h>
 #include <globals.h>
 
 int ID_ClassBrowser = wxNewId();
+int idCombo = wxNewId();
 int idMenuJumpToDeclaration = wxNewId();
 int idMenuJumpToImplementation = wxNewId();
 int idMenuRefreshTree = wxNewId();
@@ -54,6 +59,7 @@ BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
     EVT_MENU(idCBViewInheritance, ClassBrowser::OnCBViewMode)
     EVT_MENU(idCBViewModeFlat, ClassBrowser::OnCBViewMode)
     EVT_MENU(idCBViewModeStructured, ClassBrowser::OnCBViewMode)
+    EVT_COMBOBOX(idCombo, ClassBrowser::OnViewScope)
 END_EVENT_TABLE()
 
 // class constructor
@@ -64,6 +70,17 @@ ClassBrowser::ClassBrowser(wxNotebook* parent, NativeParser* np)
 	m_pParser(0L)
 {
     wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
+
+    wxBoxSizer* hs = new wxBoxSizer(wxHORIZONTAL);
+    hs->Add(new wxStaticText(this, -1, _T("View:")), 0, wxALIGN_CENTER_VERTICAL);
+    wxArrayString choices;
+    choices.Add(_T("Current file's symbols only"));
+    choices.Add(_T("All project symbols"));
+    wxComboBox* cmb = new wxComboBox(this, idCombo, wxEmptyString, wxDefaultPosition, wxDefaultSize, choices, wxCB_READONLY);
+    cmb->SetSelection(0);
+    hs->Add(cmb, 1, wxEXPAND | wxLEFT, 4);
+    bs->Add(hs, 0, wxEXPAND | wxTOP | wxBOTTOM, 4);
+
 	m_Tree = new wxTreeCtrl(this, ID_ClassBrowser);
     bs->Add(m_Tree, 1, wxEXPAND | wxALL);
     SetAutoLayout(TRUE);
@@ -96,6 +113,8 @@ void ClassBrowser::Update()
 		::SaveTreeState(m_Tree, m_pParser->GetRootNode(), treeState);
 		m_pParser->BuildTree(*m_Tree);
 		::RestoreTreeState(m_Tree, m_pParser->GetRootNode(), treeState);
+		if (!m_Tree->IsExpanded(m_pParser->GetRootNode()))
+            m_Tree->Expand(m_pParser->GetRootNode());
 	}
 	else
 		m_Tree->DeleteAllItems();
@@ -278,4 +297,20 @@ void ClassBrowser::OnCBViewMode(wxCommandEvent& event)
 
 	m_pParser->WriteOptions();
 	Update();
+}
+
+void ClassBrowser::OnViewScope(wxCommandEvent& event)
+{
+	if (m_pParser)
+	{
+		m_pParser->ClassBrowserOptions().showAllSymbols = event.GetSelection() == 1;
+        m_pParser->WriteOptions();
+        Update();
+	}
+	else
+	{
+	    // no project open
+	    // just save the user selection in the configuration
+        Manager::Get()->GetConfigManager(_T("code_completion"))->Write(_T("/show_all_symbols"), event.GetSelection() == 1);
+	}
 }

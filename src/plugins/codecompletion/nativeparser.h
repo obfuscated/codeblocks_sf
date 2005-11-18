@@ -6,6 +6,7 @@
 
 // forward decls
 class cbEditor;
+class EditorBase;
 class cbProject;
 class ClassBrowser;
 class Parser;
@@ -42,7 +43,7 @@ class NativeParser : public wxEvtHandler
 		void ForceReparseActiveProject();
 
 		int MarkItemsByAI(bool reallyUseAI = true);
-		
+
 		const wxString& GetCodeCompletionItems();
 		const wxArrayString& GetCallTips();
 
@@ -78,10 +79,11 @@ class NativeParser : public wxEvtHandler
 		void OnThreadStart(wxCommandEvent& event);
 		void OnThreadEnd(wxCommandEvent& event);
 		void OnParserEnd(wxCommandEvent& event);
-		
+		void OnEditorActivated(EditorBase* editor);
+
 		bool SkipWhitespaceForward(cbEditor* editor, int& pos);
 		bool SkipWhitespaceBackward(cbEditor* editor, int& pos);
-		
+
 		ParsersMap m_Parsers;
 		ParsersFilenameMap m_ParsersFilenames;
 		int m_EditorStartWord;

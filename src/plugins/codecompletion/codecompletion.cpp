@@ -71,6 +71,7 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
 	EVT_EDITOR_CALLTIP(CodeCompletion::OnShowCallTip)
 	EVT_EDITOR_USERLIST_SELECTION(CodeCompletion::OnUserListSelection)
 	EVT_EDITOR_SAVE(CodeCompletion::OnReparseActiveEditor)
+	EVT_EDITOR_ACTIVATED(CodeCompletion::OnEditorActivated)
 
 	EVT_PROJECT_OPEN(CodeCompletion::OnProjectOpened)
 	EVT_PROJECT_ACTIVATE(CodeCompletion::OnProjectActivated)
@@ -487,6 +488,8 @@ void CodeCompletion::DoInsertCodeCompleteToken(wxString tokName)
 	ed->GetControl()->GotoPos(m_NativeParsers.GetEditorStartWord() + tokName.Length());
 }
 
+// events
+
 void CodeCompletion::OnProjectOpened(CodeBlocksEvent& event)
 {
     if (m_IsAttached)
@@ -537,7 +540,7 @@ void CodeCompletion::OnReparseActiveEditor(CodeBlocksEvent& event)
 {
     if (m_IsAttached)
     {
-    	cbEditor* ed = event.GetEditor();
+    	EditorBase* ed = event.GetEditor();
     	if (!ed)
     		return;
 		Parser* parser = m_NativeParsers.FindParserFromActiveEditor();
@@ -551,7 +554,11 @@ void CodeCompletion::OnReparseActiveEditor(CodeBlocksEvent& event)
     event.Skip();
 }
 
-// events
+void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
+{
+    m_NativeParsers.OnEditorActivated(event.GetEditor());
+    event.Skip();
+}
 
 void CodeCompletion::OnUpdateUI(wxUpdateUIEvent& event)
 {

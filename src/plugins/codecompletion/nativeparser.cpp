@@ -1221,3 +1221,14 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
 		}
 	}
 }
+
+void NativeParser::OnEditorActivated(EditorBase* editor)
+{
+    cbEditor* ed = editor && editor->IsBuiltinEditor() ? static_cast<cbEditor*>(editor) : 0;
+    if (ed)
+    {
+        Parser* parser = FindParserFromEditor(ed);
+        if (parser && !parser->ClassBrowserOptions().showAllSymbols)
+            m_pClassBrowser->Update();
+    }
+}

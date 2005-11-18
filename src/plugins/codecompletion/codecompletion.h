@@ -40,6 +40,7 @@ class CodeCompletion : public cbCodeCompletionPlugin
 		void OnProjectFileRemoved(CodeBlocksEvent& event);
 		void OnUserListSelection(CodeBlocksEvent& event);
 		void OnReparseActiveEditor(CodeBlocksEvent& event);
+		void OnEditorActivated(CodeBlocksEvent& event);
 		void DoCodeComplete();
 		void DoInsertCodeCompleteToken(wxString tokName);
         int DoClassMethodDeclImpl();

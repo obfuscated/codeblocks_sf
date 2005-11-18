@@ -34,6 +34,7 @@
 #ifndef STANDALONE
 	#include <configmanager.h>
 	#include <messagemanager.h>
+	#include <editormanager.h>
 	#include <manager.h>
 	#include <globals.h>
 #endif // STANDALONE
@@ -162,6 +163,7 @@ void Parser::ReadOptions()
 	m_Options.useSmartSense = true;
 	m_BrowserOptions.showInheritance = false;
 	m_BrowserOptions.viewFlat = false;
+	m_BrowserOptions.showAllSymbols = false;
 #else // !STANDALONE
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
 	m_MaxThreadsCount = cfg->ReadInt(_T("/max_threads"), wxThread::GetCPUCount());
@@ -172,6 +174,7 @@ void Parser::ReadOptions()
 	m_Options.wantPreprocessor = cfg->ReadBool(_T("/want_preprocessor"), false);
 	m_BrowserOptions.showInheritance = cfg->ReadBool(_T("/browser_show_inheritance"), false);
 	m_BrowserOptions.viewFlat = cfg->ReadBool(_T("/browser_view_flat"), false);
+	m_BrowserOptions.showAllSymbols = cfg->ReadBool(_T("/show_all_symbols"), false);
 #endif // STANDALONE
 }
 
@@ -186,6 +189,7 @@ void Parser::WriteOptions()
 	cfg->Write(_T("/use_SmartSense"), m_Options.useSmartSense);
 	cfg->Write(_T("/want_preprocessor"), m_Options.wantPreprocessor);
 	cfg->Write(_T("/browser_show_inheritance"), m_BrowserOptions.showInheritance);
+	cfg->Write(_T("/show_all_symbols"), m_BrowserOptions.showAllSymbols);
 	cfg->Write(_T("/browser_view_flat"), m_BrowserOptions.viewFlat);
 #endif // STANDALONE
 }
@@ -933,7 +937,28 @@ void Parser::BuildTree(wxTreeCtrl& tree)
 
 #ifndef STANDALONE
 	tree.SetImageList(m_pImageList);
+
+    wxString fname;
+    EditorBase* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    if (ed)
+    {
+        fname = ed->GetFilename().BeforeLast(_T('.'));
+        // wildcard match for extension
+        fname << _T(".*");
+    }
+
+    // "mark" tokens based on scope
+    bool fnameEmpty = fname.IsEmpty();
+    for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
+    {
+        Token* token = m_Tokens[x];
+        token->m_Bool = m_BrowserOptions.showAllSymbols ||
+                        (!fnameEmpty &&
+                            (token->m_Filename.Matches(fname) ||
+                            token->m_ImplFilename.Matches(fname)));
+    }
 #endif
+
 	m_RootNode = tree.AddRoot(_("Symbols"), PARSER_IMG_SYMBOLS_FOLDER);
 	if (m_BrowserOptions.viewFlat)
 	{
@@ -941,8 +966,11 @@ void Parser::BuildTree(wxTreeCtrl& tree)
 		{
 			Token* token = m_Tokens[x];
 			if (!token->m_pParent && // base (no parent)
-				token->m_IsLocal) // local symbols only
+				token->m_IsLocal && // local symbols only
+                token->m_Bool) // scope ok
+            {
 				AddTreeNode(tree, m_RootNode, token);
+            }
 		}
 		tree.SortChildren(m_RootNode);
 		tree.Expand(m_RootNode);
@@ -962,7 +990,8 @@ void Parser::BuildTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode
 	for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
 	{
 		Token* token = m_Tokens[x];
-		if (token->m_pParent == parent &&
+		if (token->m_Bool && // scope ok
+            token->m_pParent == parent &&
 			token->m_IsLocal && // local symbols only
 			token->m_TokenKind == tkNamespace) // namespaces
         {
@@ -981,7 +1010,8 @@ void Parser::AddTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, 
 	for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
 	{
 		Token* token = m_Tokens[x];
-		if (token->m_pParent == parent && // parent matches
+		if (token->m_Bool && // scope ok
+            token->m_pParent == parent && // parent matches
 			token->m_IsLocal && // local symbols only
 			token->m_TokenKind == tkClass) // classes
         {
@@ -993,7 +1023,8 @@ void Parser::AddTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, 
 	for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
 	{
 		Token* token = m_Tokens[x];
-		if (token->m_pParent == parent && // parent matches
+		if (token->m_Bool && // scope ok
+            token->m_pParent == parent && // parent matches
 			token->m_IsLocal && // local symbols only
 			token->m_TokenKind == tkEnum) // enums
         {
@@ -1005,7 +1036,8 @@ void Parser::AddTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, 
 	for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
 	{
 		Token* token = m_Tokens[x];
-		if (token->m_pParent == parent && // parent matches
+		if (token->m_Bool && // scope ok
+            token->m_pParent == parent && // parent matches
 			token->m_IsLocal && // local symbols only
 			token->m_TokenKind == tkPreprocessor) // preprocessor
         {
@@ -1017,7 +1049,8 @@ void Parser::AddTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, 
 	for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
 	{
 		Token* token = m_Tokens[x];
-		if (token->m_pParent == parent && // parent matches
+		if (token->m_Bool && // scope ok
+            token->m_pParent == parent && // parent matches
 			token->m_IsLocal && // local symbols only
 			(token->m_TokenKind == tkEnumerator || // enumerators
 			token->m_TokenKind == tkFunction || // functions

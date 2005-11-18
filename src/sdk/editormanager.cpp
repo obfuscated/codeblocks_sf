@@ -38,7 +38,9 @@
 #include <wx/xrc/xmlres.h>
 #include "messagemanager.h"
 #include "projectmanager.h"
+#include "pluginmanager.h"
 #include "manager.h"
+#include "sdk_events.h"
 #include "editorcolorset.h"
 #include "editorconfigurationdlg.h"
 #include "finddlg.h"
@@ -661,7 +663,13 @@ void EditorManager::SetActiveEditor(EditorBase* ed)
     SANITY_CHECK();
     int page = FindPageFromEditor(ed);
     if (page != -1)
+    {
         m_pNotebook->SetSelection(page);
+        // because we use SetSelection() manually, the event handler isn't called,
+        // so we must send this event manually
+        CodeBlocksEvent evt(cbEVT_EDITOR_ACTIVATED, -1, 0, GetActiveEditor());
+        Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
+    }
 }
 
 cbEditor* EditorManager::New()
@@ -1674,17 +1682,17 @@ int EditorManager::FindNext(bool goingDown, cbStyledTextCtrl* control, cbFindRep
 
 void EditorManager::OnPageChanged(wxNotebookEvent& event)
 {
-    if (event.GetEventObject() == this)
-    {
-    }
+    CodeBlocksEvent evt(cbEVT_EDITOR_ACTIVATED, -1, 0, GetActiveEditor());
+    Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
+
     event.Skip(); // allow others to process it too
 }
 
 void EditorManager::OnPageChanging(wxNotebookEvent& event)
 {
-    if (event.GetEventObject() == this)
-    {
-    }
+    CodeBlocksEvent evt(cbEVT_EDITOR_DEACTIVATED, -1, 0, GetActiveEditor());
+    Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
+
     event.Skip(); // allow others to process it too
 }
 

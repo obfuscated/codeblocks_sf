@@ -1353,7 +1353,8 @@ void DebuggerGDB::OnBreakpointAdd(CodeBlocksEvent& event)
     bp->line = event.GetInt();
 
     //Workaround for GDB to break on C++ constructor/destructor
-    cbEditor* ed = event.GetEditor();
+    EditorBase* base = event.GetEditor();
+    cbEditor* ed = base && base->IsBuiltinEditor() ? static_cast<cbEditor*>(base) : 0;
     if (ed)
     {
         wxString lb = ed->GetControl()->GetLine(bp->line);
@@ -1422,7 +1423,8 @@ void DebuggerGDB::OnValueTooltip(CodeBlocksEvent& event)
     if (!Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("eval_tooltip"), false))
         return;
 
-	cbEditor* ed = event.GetEditor();
+    EditorBase* base = event.GetEditor();
+    cbEditor* ed = base && base->IsBuiltinEditor() ? static_cast<cbEditor*>(base) : 0;
 	if (!ed)
 		return;
 
@@ -1465,7 +1467,7 @@ void DebuggerGDB::OnEditorOpened(CodeBlocksEvent& event)
 {
     // when an editor opens, look if we have breakpoints for it
     // and notify it...
-    cbEditor* ed = event.GetEditor();
+    EditorBase* ed = event.GetEditor();
     if (ed)
     {
         for (unsigned int i = 0; i < m_Breakpoints.GetCount(); ++i)

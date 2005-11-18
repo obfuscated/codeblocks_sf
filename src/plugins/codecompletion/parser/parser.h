@@ -65,8 +65,9 @@ struct ParserOptions
 
 struct BrowserOptions
 {
-	bool showInheritance;
-	bool viewFlat;
+	bool showInheritance; // default: false
+	bool viewFlat; // default: false
+	bool showAllSymbols; // default: false
 };
 
 class Parser : public wxEvtHandler
