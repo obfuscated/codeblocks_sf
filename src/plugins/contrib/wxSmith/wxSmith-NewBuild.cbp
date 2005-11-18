@@ -75,6 +75,7 @@
 			<Add directory="$(#WX.lib)\gcc_dll\msw"/>
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw"/>
 			<Add directory="$(#WX)\contrib\include"/>
+			<Add directory="$(#CB.include)\as\include"/>
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)"/>
@@ -86,7 +87,7 @@
 			<Add directory="$(#CB.lib)"/>
 			<Add directory="$(#CB)\sdk\tinyxml"/>
 			<Add directory="$(#CB.lib)\tinyxml"/>
-			<Add directory="$(#WX.lib)\gcc_dll\msw"/>
+			<Add directory="$(#WX.lib)\gcc_dll"/>
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)"/>
 		</Linker>
 		<ExtraCommands>
