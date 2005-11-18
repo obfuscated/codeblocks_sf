@@ -1486,7 +1486,6 @@ void DebuggerGDB::OnValueTooltip(CodeBlocksEvent& event)
 
 	if (!token.IsEmpty())
 	{
-		Manager::Get()->GetMessageManager()->AppendLog(m_PageIndex, _("Value of %s: "), token.c_str());
 		pt = ed->GetControl()->PointFromPosition(start);
 		pt = ed->GetControl()->ClientToScreen(pt);
 		m_EvalRect.x = pt.x;

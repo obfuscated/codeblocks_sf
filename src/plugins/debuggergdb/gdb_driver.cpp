@@ -1,3 +1,4 @@
+#include <sdk.h>
 #include "gdb_driver.h"
 #include "gdb_commands.h"
 #include <manager.h>

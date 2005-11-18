@@ -169,30 +169,17 @@ class CdbCmd_AddBreakpoint : public DebuggerCmd
         {
             if (bp->enabled)
             {
+                wxString out = m_BP->filename;
+                DebuggerGDB::ConvertToGDBFile(out);
+                QuoteStringIfNeeded(out);
+                // we add one to line,  because scintilla uses 0-based line numbers, while gdb uses 1-based
+                m_Cmd << _T("bu") << m_BP->bpNum << _T(' ');
+                if (m_BP->temporary)
+                    m_Cmd << _T("/1 ");
                 if (bp->func.IsEmpty())
-                {
-                    wxString out = m_BP->filename;
-                    DebuggerGDB::ConvertToGDBFile(out);
-                    QuoteStringIfNeeded(out);
-                    // we add one to line,  because scintilla uses 0-based line numbers, while gdb uses 1-based
-                    m_Cmd << _T("bu") << m_BP->bpNum << _T(' ');
-                    if (m_BP->temporary)
-                        m_Cmd << _T("/1 ");
                     m_Cmd << _T('`') << out << _T(":") << bp->line + 1 << _T('`');
-                }
-                //GDB workaround
-                //Use function name if this is C++ constructor/destructor
                 else
-                {
-                    if (!m_BP->temporary)
-                        m_Cmd << _T("break ");
-                    else
-                        m_Cmd << _T("tbreak ");
                     m_Cmd << bp->func;
-                }
-                //end GDB workaround
-
-                // condition and ignore count will be set in ParseOutput, where we 'll have the bp number
             }
         }
         void ParseOutput(const wxString& output)
@@ -219,12 +206,10 @@ class CdbCmd_AddBreakpoint : public DebuggerCmd
 class CdbCmd_RemoveBreakpoint : public DebuggerCmd
 {
     public:
-        /** @param bp The breakpoint to remove. If NULL, all breakpoints are removed.
-            @param deleteBPwhenDone If bp is not NULL and this is true the breakpoint will be deleted after removal. */
-        CdbCmd_RemoveBreakpoint(DebuggerDriver* driver, DebuggerBreakpoint* bp, bool deleteBPwhenDone = false)
+        /** @param bp The breakpoint to remove. If NULL, all breakpoints are removed. */
+        CdbCmd_RemoveBreakpoint(DebuggerDriver* driver, DebuggerBreakpoint* bp)
             : DebuggerCmd(driver),
-            m_BP(bp),
-            m_DeleteBPwhenDone(deleteBPwhenDone)
+            m_BP(bp)
         {
             if (!bp)
                 m_Cmd << _T("bc *");
@@ -239,7 +224,6 @@ class CdbCmd_RemoveBreakpoint : public DebuggerCmd
         }
 
         DebuggerBreakpoint* m_BP;
-        bool m_DeleteBPwhenDone;
 };
 
 /**
@@ -308,16 +292,57 @@ class CdbCmd_Watch : public DebuggerCmd
             m_pDTree(dtree),
             m_pWatch(watch)
         {
-            m_Cmd << _T("output ") << Watch::FormatCommand(m_pWatch->format) << _T(" ") << m_pWatch->keyword;
+            m_Cmd << _T("?? ") << /*Watch::FormatCommand(m_pWatch->format) << */_T(" ") << m_pWatch->keyword;
         }
         void ParseOutput(const wxString& output)
         {
-            wxArrayString lines = GetArrayFromString(output, _T('\n'));
+//            struct HWND__ * 0x7ffd8000
+//
+//            struct tagWNDCLASSEXA
+//               +0x000 cbSize           : 0x7c8021b5
+//               +0x004 style            : 0x7c802011
+//               +0x008 lpfnWndProc      : 0x7c80b529     kernel32!GetModuleHandleA+0
+//               +0x00c cbClsExtra       : 0
+//               +0x010 cbWndExtra       : 2147319808
+//               +0x014 hInstance        : 0x00400000
+//               +0x018 hIcon            : 0x0012fe88
+//               +0x01c hCursor          : 0x0040a104
+//               +0x020 hbrBackground    : 0x689fa962
+//               +0x024 lpszMenuName     : 0x004028ae  "???"
+//               +0x028 lpszClassName    : 0x0040aa30  "CodeBlocksWindowsApp"
+//               +0x02c hIconSm          : (null)
+//
+//            char * 0x0040aa30
+//             "CodeBlocksWindowsApp"
+            wxRegEx re(_T("(\\+0x[A-Fa-f0-9]+ )"));
+            wxArrayString lines = GetArrayFromString(output, _T('\n'), false);
             wxString w;
+            int braces = 0;
+            size_t col = 0;
     		w << m_pWatch->keyword << _T(" = ");
     		for (unsigned int i = 0; i < lines.GetCount(); ++i)
-                w << lines[i] << _T(',');
+    		{
+//                m_pDriver->Log(lines[i]);
+    		    size_t thiscol = lines[i].find_first_not_of(_T(" \t"));
+    		    if (thiscol > col){ ++braces; w << _T('{'); col = thiscol; }
+    		    else if (thiscol < col){ --braces; w << _T("},"); col = thiscol; }
+    		    else
+    		    {
+                    size_t nextcol = i < lines.GetCount() - 1 ? lines[i + 1].find_first_not_of(_T(" \t")) : wxString::npos;
+                    if (nextcol == thiscol || (i != 0 && nextcol == wxString::npos))
+                        w << _T(',');
+    		    }
+    		    if (lines[i].Contains(_T(':'))) lines[i].Replace(_T(":"), _T("="));
+    		    while (lines[i].Replace(_T("  ="), _T(" =")))
+                    ;
+    		    if (re.Matches(lines[i]))
+                    lines[i].Replace(re.GetMatch(lines[i], 1), wxEmptyString);
+                w << lines[i];
+    		}
+    		if (braces > 0)
+                w << _T("},");
             w << _T('\n');
+//            m_pDriver->Log(w);
             m_pDTree->BuildTree(w);
         }
 };
@@ -342,15 +367,29 @@ class CdbCmd_TooltipEvaluation : public DebuggerCmd
             m_WinRect(tiprect),
             m_What(what)
         {
-            m_Cmd << _T("output ") << what;
+            m_Cmd << _T("?? ") << what;
         }
         void ParseOutput(const wxString& output)
         {
-            wxString tip;
-            if (output.StartsWith(_T("No symbol ")) || output.StartsWith(_T("Attempt to ")))
-                tip = output;
-            else
-                tip = m_What + _T("=") + output;
+//            struct HWND__ * 0x7ffd8000
+//
+//            struct tagWNDCLASSEXA
+//               +0x000 cbSize           : 0x7c8021b5
+//               +0x004 style            : 0x7c802011
+//               +0x008 lpfnWndProc      : 0x7c80b529     kernel32!GetModuleHandleA+0
+//               +0x00c cbClsExtra       : 0
+//               +0x010 cbWndExtra       : 2147319808
+//               +0x014 hInstance        : 0x00400000
+//               +0x018 hIcon            : 0x0012fe88
+//               +0x01c hCursor          : 0x0040a104
+//               +0x020 hbrBackground    : 0x689fa962
+//               +0x024 lpszMenuName     : 0x004028ae  "???"
+//               +0x028 lpszClassName    : 0x0040aa30  "CodeBlocksWindowsApp"
+//               +0x02c hIconSm          : (null)
+//
+//            char * 0x0040aa30
+//             "CodeBlocksWindowsApp"
+            wxString tip = m_What + _T("=") + output;
 
             if (*m_pWin)
                 (*m_pWin)->Destroy();

@@ -1,3 +1,4 @@
+#include <sdk.h>
 #include "cdb_driver.h"
 #include "cdb_commands.h"
 #include <manager.h>
@@ -151,38 +152,36 @@ void CDB_driver::AddBreakpoint(DebuggerBreakpoint* bp)
 
 void CDB_driver::RemoveBreakpoint(DebuggerBreakpoint* bp, bool deleteAlso)
 {
-	QueueCommand(new CdbCmd_RemoveBreakpoint(this, bp, deleteAlso));
+	QueueCommand(new CdbCmd_RemoveBreakpoint(this, bp));
 }
 
 void CDB_driver::EvaluateSymbol(const wxString& symbol, wxTipWindow** tipWin, const wxRect& tipRect)
 {
-    NOT_IMPLEMENTED();
-//    QueueCommand(new CdbCmd_TooltipEvaluation(this, symbol, tipWin, tipRect));
+    QueueCommand(new CdbCmd_TooltipEvaluation(this, symbol, tipWin, tipRect));
 }
 
 void CDB_driver::UpdateWatches(bool doLocals, bool doArgs, DebuggerTree* tree)
 {
     NOT_IMPLEMENTED();
-//    // clear watches tree
-//    tree->ResetTree();
-//    tree->SetNumberOfUpdates(2 + tree->GetWatches().GetCount()); // watches + locals + args
-//
-//    // locals before args because of precedence
+    // clear watches tree
+    tree->ResetTree();
+    tree->SetNumberOfUpdates(0 + tree->GetWatches().GetCount()); // watches + locals + args
+
+    // locals before args because of precedence
 //    if (doLocals)
 //        QueueCommand(new CdbCmd_InfoLocals(this, tree));
 //    if (doArgs)
 //        QueueCommand(new CdbCmd_InfoArguments(this, tree));
-//    for (unsigned int i = 0; i < tree->GetWatches().GetCount(); ++i)
-//    {
-//        Watch& w = tree->GetWatches()[i];
-//        QueueCommand(new CdbCmd_Watch(this, tree, &w));
-//    }
+    for (unsigned int i = 0; i < tree->GetWatches().GetCount(); ++i)
+    {
+        Watch& w = tree->GetWatches()[i];
+        QueueCommand(new CdbCmd_Watch(this, tree, &w));
+    }
 }
 
 void CDB_driver::Detach()
 {
-    NOT_IMPLEMENTED();
-//    QueueCommand(new CdbCmd_Detach(this));
+    QueueCommand(new CdbCmd_Detach(this));
 }
 
 void CDB_driver::ParseOutput(const wxString& output)
