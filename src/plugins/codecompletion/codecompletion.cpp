@@ -556,7 +556,12 @@ void CodeCompletion::OnReparseActiveEditor(CodeBlocksEvent& event)
 
 void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
 {
-    m_NativeParsers.OnEditorActivated(event.GetEditor());
+    static EditorBase* m_LastActiveEditor = event.GetEditor();
+    if (m_LastActiveEditor != event.GetEditor())
+    {
+        m_LastActiveEditor = event.GetEditor();
+        m_NativeParsers.OnEditorActivated(event.GetEditor());
+    }
     event.Skip();
 }
 
