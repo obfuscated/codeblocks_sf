@@ -62,15 +62,15 @@ void GDB_driver::Prepare(bool isConsole)
         QueueCommand(new DebuggerCmd(this, initCmds[i]));
     }
 
+    // set working directory
+    if (!m_WorkingDir.IsEmpty())
+        QueueCommand(new DebuggerCmd(this, _T("cd ") + m_WorkingDir));
+
     // add search dirs
     for (unsigned int i = 0; i < m_Dirs.GetCount(); ++i)
     {
         QueueCommand(new GdbCmd_AddSourceDir(this, m_Dirs[i]));
     }
-
-    // set working directory
-    if (!m_WorkingDir.IsEmpty())
-        QueueCommand(new DebuggerCmd(this, _T("cd ") + m_WorkingDir));
 }
 
 void GDB_driver::Start(bool breakOnEntry)

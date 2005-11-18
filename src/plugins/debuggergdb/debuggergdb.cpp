@@ -387,6 +387,7 @@ void DebuggerGDB::SetBreakpoints()
 {
     if (!m_pDriver)
         return;
+    Log(_T("Setting breakpoints"));
 	m_pDriver->RemoveBreakpoint(0); // clear all breakpoints
 
     unsigned int i = 0;
@@ -812,8 +813,11 @@ void DebuggerGDB::ConvertToGDBDirectory(wxString& str, wxString base, bool relat
 		if(ColonLocation != -1)
 		{
 			//If can, get 8.3 name for path (Windows only)
-			GetShortPathName(str.c_str(), buf, 255);
-			str = buf;
+            if (str.Contains(_T(' '))) // only if has spaces
+            {
+                GetShortPathName(str.c_str(), buf, 255);
+                str = buf;
+            }
 		}
 		else if(!base.IsEmpty() && str.GetChar(0) != _T('/'))
 		{
@@ -824,8 +828,11 @@ void DebuggerGDB::ConvertToGDBDirectory(wxString& str, wxString base, bool relat
 				if(str.Find(_T('/')) != -1) str = str.AfterFirst(_T('/'));
 				else str.Clear();
 			}
-			GetShortPathName(base.c_str(), buf, 255);
-			str = buf;
+            if (base.Contains(_T(' '))) // only if has spaces
+            {
+                GetShortPathName(base.c_str(), buf, 255);
+                str = buf;
+            }
 		}
 
 		if(ColonLocation == -1 || base.IsEmpty())
