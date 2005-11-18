@@ -230,16 +230,14 @@ void ToolsManager::LoadTools()
     for (unsigned int i = 0; i < list.GetCount(); ++i)
 	{
 		Tool tool;
+		tool.name = cfg->Read(_T("/") + list[i] + _T("/name"));
+		if (tool.name.IsEmpty())
+            continue;
 		tool.command = cfg->Read(_T("/") + list[i] + _T("/command"));
 		if (tool.command.IsEmpty())
             continue;
 		tool.params = cfg->Read(_T("/") + list[i] + _T("/params"));
 		tool.workingDir = cfg->Read(_T("/") + list[i] + _T("/workingDir"));
-
-		// remove ordering number
-		if (list[i].GetChar(2) == ' ' && list[i].Left(2).IsNumber())
-			list[i].Remove(0, 3);
-		tool.name = list[i];
 
 		AddTool(&tool, false);
 	}
@@ -264,9 +262,10 @@ void ToolsManager::SaveTools()
 
 		// prepend a 0-padded 2-digit number to keep ordering
 		wxString tmp;
-		tmp.Printf(_("%2.2d"), count++);
+		tmp.Printf(_("tool%2.2d"), count++);
 
-		elem << _T("/") << tmp << _T(" ") << tool->name << _T("/");
+		elem << _T("/") << tmp  << _T("/");
+		cfg->Write(elem + _T("name"), tool->name);
 		cfg->Write(elem + _T("command"), tool->command);
 		cfg->Write(elem + _T("params"), tool->params);
 		cfg->Write(elem + _T("workingDir"), tool->workingDir);
