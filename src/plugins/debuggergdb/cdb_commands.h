@@ -175,10 +175,9 @@ class CdbCmd_AddBreakpoint : public DebuggerCmd
                     DebuggerGDB::ConvertToGDBFile(out);
                     QuoteStringIfNeeded(out);
                     // we add one to line,  because scintilla uses 0-based line numbers, while gdb uses 1-based
-                    if (!m_BP->temporary)
-                        m_Cmd << _T("bp") << m_BP->bpNum << _T(' ');
-                    else
-                        m_Cmd << _T("tbreak ");
+                    m_Cmd << _T("bu") << m_BP->bpNum << _T(' ');
+                    if (m_BP->temporary)
+                        m_Cmd << _T("/1 ");
                     m_Cmd << _T('`') << out << _T(":") << bp->line + 1 << _T('`');
                 }
                 //GDB workaround
@@ -209,8 +208,6 @@ class CdbCmd_AddBreakpoint : public DebuggerCmd
                 if (lines[i].StartsWith(_T("*** ")))
                     m_pDriver->Log(lines[i]);
             }
-            if (m_BP->temporary)
-                delete m_BP;
         }
 
         DebuggerBreakpoint* m_BP;

@@ -215,9 +215,7 @@ void DebuggerGDB::OnAttach()
 
 void DebuggerGDB::OnRelease(bool appShutDown)
 {
-    if (m_pDriver)
-        delete m_pDriver;
-    m_pDriver = 0;
+    StopDebuggerDriver();
 
     ClearBreakpointsArray();
 
@@ -383,6 +381,15 @@ DebuggerBreakpoint* DebuggerGDB::GetBreakpoint(int num)
     return m_Breakpoints[num];
 }
 
+void DebuggerGDB::RemoveBreakpoint(int num)
+{
+    if (num < 0 || num >= (int)m_Breakpoints.GetCount())
+        return;
+    DebuggerBreakpoint* bp = m_Breakpoints[num];
+    delete bp;
+    m_Breakpoints.RemoveAt(num);
+}
+
 void DebuggerGDB::SetBreakpoints()
 {
     if (!m_pDriver)
@@ -396,7 +403,7 @@ void DebuggerGDB::SetBreakpoints()
         DebuggerBreakpoint* bp = m_Breakpoints[i];
         bp->bpNum = -1;
         m_pDriver->AddBreakpoint(bp);
-        if (bp->temporary)
+        if (bp->temporary && !m_pDriver->KeepTempBreakpoints())
         {
             m_Breakpoints.RemoveAt(i);
             // reset bp->index for following breakpoints
@@ -554,6 +561,25 @@ bool DebuggerGDB::IsStopped()
     return !m_pDriver || m_pDriver->IsStopped();
 }
 
+bool DebuggerGDB::StartDebuggerDriverFor(ProjectBuildTarget* target)
+{
+    StopDebuggerDriver();
+    int idx = target ? target->GetCompilerIndex() : CompilerFactory::GetDefaultCompilerIndex();
+    if (idx == 1) // MSVC // TODO: do not hardcode these
+        m_pDriver = new CDB_driver(this);
+    else
+        m_pDriver = new GDB_driver(this);
+    m_pDriver->SetDebugWindows(m_pBacktrace, m_pDisassembly);
+    return true;
+}
+
+void DebuggerGDB::StopDebuggerDriver()
+{
+    if (m_pDriver)
+        delete m_pDriver;
+    m_pDriver = 0;
+}
+
 int DebuggerGDB::Debug()
 {
     // if already running, return
@@ -679,10 +705,12 @@ int DebuggerGDB::Debug()
         }
     }
 
-    if (m_pDriver)
-        delete m_pDriver;
-    m_pDriver = new GDB_driver(this);
-    m_pDriver->SetDebugWindows(m_pBacktrace, m_pDisassembly);
+    // start debugger driver based on target compiler, or default compiler if no target
+    if (!StartDebuggerDriverFor(target))
+    {
+        wxMessageBox(_T("Could not decide which debugger to use!"), _T("Error"), wxICON_ERROR);
+        return -1;
+    }
 
     // create gdb launch command
 	wxString cmd;
@@ -1032,22 +1060,19 @@ void DebuggerGDB::CmdRunToCursor()
     bp->temporary = true;
     bp->filename = filename;
     bp->line = ed->GetControl()->GetCurrentLine();
-    if (m_pDriver)
-        m_pDriver->AddBreakpoint(bp);
-    else
+
+    if (!m_pDriver || m_pDriver->KeepTempBreakpoints())
     {
         m_Breakpoints.Add(bp);
         bp->index = m_Breakpoints.GetCount() - 1;
     }
+    if (m_pDriver)
+        m_pDriver->AddBreakpoint(bp);
 
 	if (m_pProcess)
-	{
 		CmdContinue();
-	}
 	else
-	{
 		Debug();
-	}
 }
 
 void DebuggerGDB::CmdToggleBreakpoint()
@@ -1088,12 +1113,16 @@ void DebuggerGDB::ParseOutput(const wxString& output)
     {
         m_pDriver->ParseOutput(output);
 
-        if (m_pDriver->IsStopped() && m_pDriver->HasCursorChanged())
+        // is it still valid?
+        if (m_pDriver)
         {
-            SyncEditor(m_pDriver->GetStopFile(), m_pDriver->GetStopLine());
-//				m_HaltAtLine = line - 1;
-            BringAppToFront();
-            DoWatches();
+            if (m_pDriver->IsStopped() && m_pDriver->HasCursorChanged())
+            {
+                SyncEditor(m_pDriver->GetStopFile(), m_pDriver->GetStopLine());
+//                m_HaltAtLine = line - 1;
+                BringAppToFront();
+                DoWatches();
+            }
         }
     }
 }
@@ -1338,6 +1367,7 @@ void DebuggerGDB::OnGDBTerminated(wxCommandEvent& event)
 //	m_pProcess = 0L;
 
 	ClearActiveMarkFromAllEditors();
+    StopDebuggerDriver();
 	Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Debugger finished with status %d"), m_LastExitCode);
 
 	if (m_NoDebugInfo)

@@ -23,6 +23,8 @@ class CDB_driver : public DebuggerDriver
         virtual void Disassemble();
         virtual void Detach();
 
+        virtual bool KeepTempBreakpoints(){ return true; }
+
         virtual void AddBreakpoint(DebuggerBreakpoint* bp);
         virtual void RemoveBreakpoint(DebuggerBreakpoint* bp, bool deleteAlso = false);
         virtual void EvaluateSymbol(const wxString& symbol, wxTipWindow** tipWin, const wxRect& tipRect);

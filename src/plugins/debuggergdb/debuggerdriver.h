@@ -110,6 +110,10 @@ class DebuggerDriver
         /** Parse debugger's output. */
         virtual void ParseOutput(const wxString& output) = 0;
 
+        /** The driver should return true if it needs the plugin to keep
+        temporary breakpoints in the breakpoints list, false if not. */
+        virtual bool KeepTempBreakpoints() = 0;
+
         /** Is the program stopped? */
         virtual bool IsStopped(){ return m_ProgramIsStopped; }
         /** Has the cursor changed? (cursor is the currently executing line of code) */

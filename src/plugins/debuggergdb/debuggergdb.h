@@ -55,6 +55,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 		void DebugLog(const wxString& msg);
 		void SendCommand(const wxString& cmd);
 		DebuggerBreakpoint* GetBreakpoint(int num);
+		void RemoveBreakpoint(int num);
 
         static void ConvertToGDBFriendly(wxString& str);
         static void ConvertToGDBFile(wxString& str);
@@ -73,6 +74,8 @@ class DebuggerGDB : public cbDebuggerPlugin
         int LaunchProcess(const wxString& cmd, const wxString& cwd);
         wxString GetDebuggee(ProjectBuildTarget* target);
         bool IsStopped();
+        bool StartDebuggerDriverFor(ProjectBuildTarget* target);
+        void StopDebuggerDriver();
 
         void ClearBreakpointsArray();
         int HasBreakpoint(const wxString& file, int line); // returns -1 if not found

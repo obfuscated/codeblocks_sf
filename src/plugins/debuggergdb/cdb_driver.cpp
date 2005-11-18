@@ -225,6 +225,8 @@ void CDB_driver::ParseOutput(const wxString& output)
         // >   38:     if (!RegisterClassEx (&wincl))
         if (reBP.Matches(lines[i]))
         {
+            Log(lines[i]);
+
             long int bpNum;
             reBP.GetMatch(lines[i], 1).ToLong(&bpNum);
             DebuggerBreakpoint* bp = m_pDBG->GetBreakpoint(bpNum);
@@ -232,6 +234,8 @@ void CDB_driver::ParseOutput(const wxString& output)
             {
                 m_StopFile = bp->filename;
                 m_StopLine = bp->line + 1;
+                if (bp->temporary)
+                    m_pDBG->RemoveBreakpoint(bp->index);
             }
             m_CursorChanged = true;
             m_ProgramIsStopped = true;
