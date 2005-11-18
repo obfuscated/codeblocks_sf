@@ -283,6 +283,11 @@
         <accel>Ctrl-F</accel>
         <help>Search for text</help>
       </object>
+      <object class="wxMenuItem" name="idSearchFindInFiles">
+        <label>&amp;Find in Files</label>
+        <accel>Ctrl-Shift-F</accel>
+        <help>Search for text</help>
+      </object>
       <object class="wxMenuItem" name="idSearchFindNext">
         <label>Find &amp;next</label>
         <accel>F3</accel>

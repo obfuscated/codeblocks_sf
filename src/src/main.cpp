@@ -193,6 +193,7 @@ int idViewFocusEditor = XRCID("idViewFocusEditor");
 int idViewFullScreen = XRCID("idViewFullScreen");
 
 int idSearchFind = XRCID("idSearchFind");
+int idSearchFindInFiles = XRCID("idSearchFindInFiles");
 int idSearchFindNext = XRCID("idSearchFindNext");
 int idSearchFindPrevious = XRCID("idSearchFindPrevious");
 int idSearchReplace = XRCID("idSearchReplace");
@@ -279,6 +280,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idEditToggleCommentSelected, MainFrame::OnEditMenuUpdateUI)
 
     EVT_UPDATE_UI(idSearchFind, MainFrame::OnSearchMenuUpdateUI)
+    EVT_UPDATE_UI(idSearchFindInFiles, MainFrame::OnSearchMenuUpdateUI)
     EVT_UPDATE_UI(idSearchFindNext, MainFrame::OnSearchMenuUpdateUI)
     EVT_UPDATE_UI(idSearchFindPrevious, MainFrame::OnSearchMenuUpdateUI)
     EVT_UPDATE_UI(idSearchReplace, MainFrame::OnSearchMenuUpdateUI)
@@ -345,6 +347,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idEditToggleCommentSelected, MainFrame::OnEditToggleCommentSelected)
 
     EVT_MENU(idSearchFind,  MainFrame::OnSearchFind)
+    EVT_MENU(idSearchFindInFiles,  MainFrame::OnSearchFind)
     EVT_MENU(idSearchFindNext,  MainFrame::OnSearchFindNext)
     EVT_MENU(idSearchFindPrevious,  MainFrame::OnSearchFindNext)
     EVT_MENU(idSearchReplace,  MainFrame::OnSearchReplace)
@@ -1967,7 +1970,7 @@ void MainFrame::OnEditEOLMode(wxCommandEvent& event)
 
 void MainFrame::OnSearchFind(wxCommandEvent& event)
 {
-	EDMAN()->ShowFindDialog(false);
+	EDMAN()->ShowFindDialog(false, event.GetId() == idSearchFindInFiles);
 }
 
 void MainFrame::OnSearchFindNext(wxCommandEvent& event)

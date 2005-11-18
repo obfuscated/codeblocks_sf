@@ -99,7 +99,7 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         bool SaveAs(int index);
         bool SaveActiveAs();
         bool SaveAll();
-        int ShowFindDialog(bool replace);
+        int ShowFindDialog(bool replace,  bool explicitly_find_in_files = false);
         int Find(cbStyledTextCtrl* control, cbFindReplaceData* data);
         int FindInFiles(cbFindReplaceData* data);
         int Replace(cbStyledTextCtrl* control, cbFindReplaceData* data);

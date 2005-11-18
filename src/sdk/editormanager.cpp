@@ -1203,7 +1203,7 @@ bool EditorManager::SwapActiveHeaderSource()
     return 0L;
 }
 
-int EditorManager::ShowFindDialog(bool replace)
+int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
 {
     SANITY_CHECK(-1);
 
@@ -1236,7 +1236,7 @@ int EditorManager::ShowFindDialog(bool replace)
 
 	FindReplaceBase* dlg;
 	if (!replace)
-		dlg = new FindDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection, !ed);
+		dlg = new FindDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection, explicitly_find_in_files || !ed);
 	else
 		dlg = new ReplaceDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection);
 	if (dlg->ShowModal() == wxID_CANCEL)
