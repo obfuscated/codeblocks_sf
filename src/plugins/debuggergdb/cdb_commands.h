@@ -371,29 +371,40 @@ class CdbCmd_Backtrace : public DebuggerCmd
             : DebuggerCmd(driver),
             m_pDlg(dlg)
         {
-            m_Cmd << _T("bt");
+            m_Cmd << _T("k n");
         }
         void ParseOutput(const wxString& output)
         {
-            // output is a series of:
-            // #0  main () at main.cpp:8
+            // output is:
+            //  # ChildEBP RetAddr
+            // 00 0012fe98 00401426 Win32GUI!WinMain+0x89 [c:\devel\tmp\win32 test\main.cpp @ 55]
+            // 00 0012fe98 00401426 Win32GUI!WinMain+0x89
+            //
+            // so we have a two-steps process:
+            // 1) Get match for the second version (without file/line info)
+            // 2) See if we have file/line info and read it
             wxArrayString lines = GetArrayFromString(output, _T('\n'));
-    		for (unsigned int i = 0; i < lines.GetCount(); ++i)
+            if (!lines.GetCount() || !lines[0].Contains(_T("ChildEBP")))
+                return;
+            // start from line 1
+    		for (unsigned int i = 1; i < lines.GetCount(); ++i)
     		{
-    		    // #0  main (argc=1, argv=0x3e2440) at my main.cpp:15
-//    		    wxRegEx re(_T("#([0-9]+)[ \t]+([A-Za-z0-9_:]+)[ \t]+\\([^)]*\\)[ \t]+at[ \t]+(.*):([0-9]+)"));
-    		    // #0  0x004013cf in main () at main.cpp:11
-    		    wxRegEx re(_T("#([0-9]+)[ \t]+(0x[A-Fa-f0-9]+)[ \t]+in[ \t]+([A-Za-z0-9_:]+)[ \t]+\\([^)]*\\)[ \t]+at[ \t]+(.*):([0-9]+)"));
-    		    if (re.Matches(lines[i]))
+                wxRegEx re1(_T("([0-9]+) ([A-Fa-f0-9]+) ([A-Fa-f0-9]+) ([^[]*)"));
+//                wxRegEx ref(_T("\\[([A-Za-z]:)([ A-Za-z0-9_/\\.~-]*) @ ([0-9]+)\\]"));
+    		    if (re1.Matches(lines[i]))
     		    {
-                    m_pDriver->DebugLog(_T("MATCH!"));
                     StackFrame sf;
                     sf.valid = true;
-    		        re.GetMatch(lines[i], 1).ToLong(&sf.number);
-    		        re.GetMatch(lines[i], 2).ToULong(&sf.address, 16);
-    		        sf.function = re.GetMatch(lines[i], 3);
-    		        sf.file = re.GetMatch(lines[i], 4);
-    		        sf.line = re.GetMatch(lines[i], 5);
+    		        re1.GetMatch(lines[i], 1).ToLong(&sf.number);
+    		        re1.GetMatch(lines[i], 2).ToULong(&sf.address, 16); // match 2 or 3 ???
+    		        sf.function = re1.GetMatch(lines[i], 4);
+    		        // do we have file/line info?
+                    wxRegEx re2(_T("\\[([A-Za-z]:)([ A-Za-z0-9_/\\.~-]*) @ ([0-9]+)\\]"));
+                    if (re2.Matches(lines[i]))
+                    {
+                        sf.file = re2.GetMatch(lines[i], 1) + re2.GetMatch(lines[i], 2);
+                        sf.line = re2.GetMatch(lines[i], 3);
+                    }
                     m_pDlg->AddFrame(sf);
     		    }
     		}

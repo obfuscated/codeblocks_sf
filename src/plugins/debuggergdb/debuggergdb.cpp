@@ -1290,7 +1290,7 @@ void DebuggerGDB::OnSendCommandToGDB(wxCommandEvent& event)
 	if (cmd.IsEmpty())
 		return;
 	m_LastCmd = cmd;
-//	QueueCommand(new DebuggerCmd(this, cmd, true));
+	m_pDriver->QueueCommand(new DebuggerCmd(m_pDriver, cmd, true));
 }
 
 void DebuggerGDB::OnAddSymbolFile(wxCommandEvent& event)

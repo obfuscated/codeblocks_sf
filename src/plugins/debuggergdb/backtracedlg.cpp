@@ -37,7 +37,7 @@ void BacktraceDlg::Clear()
     lst->ClearAll();
 	lst->Freeze();
 	lst->DeleteAllItems();
-    lst->InsertColumn(0, _("Nr"), wxLIST_FORMAT_LEFT);
+    lst->InsertColumn(0, _("Nr"), wxLIST_FORMAT_RIGHT);
     lst->InsertColumn(1, _("Address"), wxLIST_FORMAT_LEFT);
     lst->InsertColumn(2, _("Function"), wxLIST_FORMAT_LEFT);
     lst->InsertColumn(3, _("File"), wxLIST_FORMAT_LEFT, 128);
@@ -66,7 +66,8 @@ void BacktraceDlg::AddFrame(const StackFrame& frame)
     lst->SetItem(idx, 4, frame.valid ? frame.line : _T("??"));
 	lst->Thaw();
 
-	for (int i = 0; i < 3; ++i)
+    lst->SetColumnWidth(0, 32);
+	for (int i = 1; i < 3; ++i)
 	{
         lst->SetColumnWidth(i, wxLIST_AUTOSIZE);
 	}
