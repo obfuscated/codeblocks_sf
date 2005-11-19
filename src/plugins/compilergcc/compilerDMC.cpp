@@ -154,7 +154,7 @@ void CompilerDMC::Reset()
     m_Commands[(int)ctLinkExeCmd] = _T("$linker /NOLOGO /subsystem:windows -WA $link_options $link_objects, $exe_output, , $libs, , $link_resobjects");
     m_Commands[(int)ctLinkConsoleExeCmd] = _T("$linker /NOLOGO $link_options $link_objects, $exe_output, , $libs");
     m_Commands[(int)ctLinkDynamicCmd] = _T("$linker /NOLOGO /subsystem:windows -WD $link_options $link_objects, $exe_output, , $libs, , $link_resobjects");
-    m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker $link_options $link_objects, $static_output, , $libs, , $link_resobjects");
+    m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker $link_options $static_output $link_objects");
 
     LoadDefaultRegExArray();
 
