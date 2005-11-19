@@ -6,6 +6,7 @@
 
 #include "wxsglobals.h"
 
+
 class WXSCLASS wxsWidget;
 class WXSCLASS wxsWindowRes;
 
@@ -59,6 +60,10 @@ class WXSCLASS wxsWinUndoBuffer
         /** Redoing
          *  \return Resource in form after change or NULL if can not redo */
         wxsWidget* Redo();
+
+        /** Discarding changes
+         *  \return Resource in unmodified form */
+        wxsWidget* DiscardChanges();
 
 	private:
 

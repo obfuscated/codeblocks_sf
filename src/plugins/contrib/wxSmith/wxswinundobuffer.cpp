@@ -79,6 +79,14 @@ wxsWidget *wxsWinUndoBuffer::Redo()
     return BuildResourceFromEntry(Enteries[CurrentPos]);
 }
 
+wxsWidget *wxsWinUndoBuffer::DiscardChanges()
+{
+    if ( SavedPos < 0 ) return NULL;
+    if ( SavedPos >= GetCount() ) return NULL;
+    CurrentPos = SavedPos;
+    return BuildResourceFromEntry(Enteries[CurrentPos]);
+}
+
 wxsWidget* wxsWinUndoBuffer::BuildResourceFromEntry(UndoEntry* Entry)
 {
 	wxsWindowResDataObject Object;
