@@ -39,6 +39,7 @@ class DebuggerTree : public wxPanel
 		void OnTreeRightClick(wxTreeEvent& event);
 		void OnRightClick(wxCommandEvent& event);
 		void OnAddWatch(wxCommandEvent& event);
+		void OnAddWatchScript(wxCommandEvent& event);
 		void OnEditWatch(wxCommandEvent& event);
 		void OnDeleteWatch(wxCommandEvent& event);
 		void OnDeleteAllWatches(wxCommandEvent& event);

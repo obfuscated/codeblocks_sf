@@ -3,6 +3,8 @@
 #include <wx/sizer.h>
 #include <wx/menu.h>
 #include <wx/textdlg.h>
+#include <wx/filedlg.h>
+#include <wx/textfile.h>
 #include <wx/msgdlg.h>
 #include <wx/app.h>
 #include <globals.h>
@@ -15,6 +17,7 @@
 int cbCustom_WATCHES_CHANGED = wxNewId();
 int idTree = wxNewId();
 int idAddWatch = wxNewId();
+int idAddWatchScript = wxNewId();
 int idEditWatch = wxNewId();
 int idDeleteWatch = wxNewId();
 int idDeleteAllWatches = wxNewId();
@@ -56,6 +59,7 @@ BEGIN_EVENT_TABLE(DebuggerTree, wxPanel)
     EVT_TREE_ITEM_RIGHT_CLICK(idTree, DebuggerTree::OnTreeRightClick)
     EVT_COMMAND_RIGHT_CLICK(idTree, DebuggerTree::OnRightClick)
 	EVT_MENU(idAddWatch, DebuggerTree::OnAddWatch)
+	EVT_MENU(idAddWatchScript, DebuggerTree::OnAddWatchScript)
 	EVT_MENU(idEditWatch, DebuggerTree::OnEditWatch)
 	EVT_MENU(idDeleteWatch, DebuggerTree::OnDeleteWatch)
 	EVT_MENU(idDeleteAllWatches, DebuggerTree::OnDeleteAllWatches)
@@ -314,6 +318,7 @@ void DebuggerTree::ShowMenu(wxTreeItemId id, const wxPoint& pt)
 
 	// add watch always visible
 	menu.Append(idAddWatch, _("&Add watch"));
+	menu.Append(idAddWatchScript, _("Load watch &script"));
 
 	// we have to have a valid id for the following to be enabled
     if (id.IsOk() && // valid item
@@ -352,6 +357,39 @@ void DebuggerTree::OnAddWatch(wxCommandEvent& event)
     EditWatchDlg dlg;
     if (dlg.ShowModal() == wxID_OK && !dlg.GetWatch().keyword.IsEmpty())
         AddWatch(dlg.GetWatch().keyword, dlg.GetWatch().format);
+}
+
+void DebuggerTree::OnAddWatchScript(wxCommandEvent& event)
+{
+    wxString fname;
+    wxFileDialog dlg (Manager::Get()->GetAppWindow(),
+                    _T("Open debugger watch file"),
+                    _T(""),
+                    _T(""),
+                    _T("Watch files (*.watch)|*.watch|Any file (*)|*"),
+                    wxOPEN | wxFILE_MUST_EXIST | wxCHANGE_DIR);
+    if (dlg.ShowModal() != wxID_OK)
+        return;
+
+    wxTextFile tf(dlg.GetPath());
+    if (tf.Open())
+    {
+        // iterate over each line of file and send to debugger
+        wxString cmd = tf.GetFirstLine();
+        while(true)
+        {
+            if (!cmd.IsEmpty()) // Skip empty lines
+            {
+//                Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Adding watch \"%s\" to debugger:"), keyword);
+                AddWatch(cmd, Undefined);
+            }
+            if (tf.Eof()) break;
+                cmd = tf.GetNextLine();
+        }
+        tf.Close(); // release file handle
+    }
+    else
+        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Error opening debugger watch file: %s"), fname.c_str());
 }
 
 void DebuggerTree::OnEditWatch(wxCommandEvent& event)
