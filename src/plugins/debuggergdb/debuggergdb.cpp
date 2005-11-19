@@ -924,38 +924,46 @@ void DebuggerGDB::RunCommand(int cmd)
     {
         case CMD_CONTINUE:
             ClearActiveMarkFromAllEditors();
-            Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Continuing..."));
-            m_pDriver->Continue();
+            if (m_pDriver)
+            {
+                Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Continuing..."));
+                m_pDriver->Continue();
+            }
 //            QueueCommand(new DebuggerCmd(this, _T("cont")));
             break;
 
         case CMD_STEP:
             ClearActiveMarkFromAllEditors();
-            m_pDriver->Step();
+            if (m_pDriver)
+                m_pDriver->Step();
 //            QueueCommand(new DebuggerCmd(this, _T("next")));
             break;
 
         case CMD_STEPIN:
             ClearActiveMarkFromAllEditors();
-            m_pDriver->StepIn();
+            if (m_pDriver)
+                m_pDriver->StepIn();
 //            QueueCommand(new DebuggerCmd(this, _T("step")));
             break;
 
         case CMD_STOP:
             ClearActiveMarkFromAllEditors();
-            m_pDriver->Stop();
+            if (m_pDriver)
+                m_pDriver->Stop();
 //            QueueCommand(new DebuggerCmd(this, _T("quit")));
             break;
 
         case CMD_BACKTRACE:
 //            Manager::Get()->GetMessageManager()->Log(m_PageIndex, "Running back-trace...");
-            m_pDriver->Backtrace();
+            if (m_pDriver)
+                m_pDriver->Backtrace();
             break;
 
         case CMD_DISASSEMBLE:
         {
 //            Manager::Get()->GetMessageManager()->Log(m_PageIndex, "Disassemblying...");
-            m_pDriver->Disassemble();
+            if (m_pDriver)
+                m_pDriver->Disassemble();
             break;
         }
 

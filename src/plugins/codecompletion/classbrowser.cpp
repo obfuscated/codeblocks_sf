@@ -28,6 +28,8 @@
 #include "nativeparser.h"
 #include <wx/intl.h>
 #include <wx/notebook.h>
+#include <wx/treectrl.h>
+#include <wx/listctrl.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/combobox.h>
@@ -39,7 +41,47 @@
 #include <projectmanager.h>
 #include <globals.h>
 
+class myTextCtrl : public wxTextCtrl
+{
+    public:
+        myTextCtrl(ClassBrowser* cb,
+                    wxWindow* parent,
+                    wxWindowID id,
+                    const wxString& value = wxEmptyString,
+                    const wxPoint& pos = wxDefaultPosition,
+                    const wxSize& size = wxDefaultSize,
+                    long style = wxTE_PROCESS_ENTER,
+                    const wxValidator& validator = wxDefaultValidator,
+                    const wxString& name = wxTextCtrlNameStr)
+            : wxTextCtrl(parent, id, value, pos, size, style, validator, name),
+            m_CB(cb)
+            {}
+        virtual ~myTextCtrl() {}
+    protected:
+        ClassBrowser* m_CB;
+
+        // Intercept key presses to handle Enter. */
+        void OnKey(wxKeyEvent& event)
+        {
+            if (event.GetKeyCode() == WXK_RETURN)
+            {
+                wxCommandEvent e;
+                m_CB->OnSearch(e);
+            }
+            else
+                event.Skip();
+        }
+        DECLARE_EVENT_TABLE()
+};
+BEGIN_EVENT_TABLE(myTextCtrl, wxTextCtrl)
+	EVT_KEY_DOWN(myTextCtrl::OnKey)
+END_EVENT_TABLE()
+
+int ID_TopPanel = wxNewId();
+int ID_Search = wxNewId();
 int ID_ClassBrowser = wxNewId();
+int ID_ClassMembers = wxNewId();
+int idBtnSearch = wxNewId();
 int idCombo = wxNewId();
 int idMenuJumpToDeclaration = wxNewId();
 int idMenuJumpToImplementation = wxNewId();
@@ -50,8 +92,13 @@ int idCBViewModeStructured = wxNewId();
 int idMenuForceReparse = wxNewId();
 
 BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
+	EVT_TREE_SEL_CHANGED(ID_ClassBrowser, ClassBrowser::OnTreeItemClick)
 	EVT_TREE_ITEM_ACTIVATED(ID_ClassBrowser, ClassBrowser::OnTreeItemDoubleClick)
     EVT_TREE_ITEM_RIGHT_CLICK(ID_ClassBrowser, ClassBrowser::OnTreeItemRightClick)
+
+	EVT_TREE_ITEM_ACTIVATED(ID_ClassMembers, ClassBrowser::OnTreeItemDoubleClick)
+    EVT_TREE_ITEM_RIGHT_CLICK(ID_ClassMembers, ClassBrowser::OnListItemRightClick)
+
     EVT_MENU(idMenuJumpToDeclaration, ClassBrowser::OnJumpTo)
     EVT_MENU(idMenuJumpToImplementation, ClassBrowser::OnJumpTo)
     EVT_MENU(idMenuRefreshTree, ClassBrowser::OnRefreshTree)
@@ -60,31 +107,59 @@ BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
     EVT_MENU(idCBViewModeFlat, ClassBrowser::OnCBViewMode)
     EVT_MENU(idCBViewModeStructured, ClassBrowser::OnCBViewMode)
     EVT_COMBOBOX(idCombo, ClassBrowser::OnViewScope)
+    EVT_BUTTON(idBtnSearch, ClassBrowser::OnSearch)
 END_EVENT_TABLE()
 
 // class constructor
 ClassBrowser::ClassBrowser(wxNotebook* parent, NativeParser* np)
-    : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxCLIP_CHILDREN),
+    : wxSplitPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxCLIP_CHILDREN),
     m_Parent(parent),
     m_NativeParser(np),
+    m_TreeForPopupMenu(0),
 	m_pParser(0L)
 {
+    SetConfigEntryForSplitter(_T("class_browser_tree_height"));
+    wxPanel* top = new wxPanel(GetSplitter(), ID_TopPanel, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
+
     wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
 
-    wxBoxSizer* hs = new wxBoxSizer(wxHORIZONTAL);
-    hs->Add(new wxStaticText(this, -1, _T("View:")), 0, wxALIGN_CENTER_VERTICAL);
-    wxArrayString choices;
-    choices.Add(_T("Current file's symbols only"));
-    choices.Add(_T("All project symbols"));
-    wxComboBox* cmb = new wxComboBox(this, idCombo, wxEmptyString, wxDefaultPosition, wxDefaultSize, choices, wxCB_READONLY);
-    cmb->SetSelection(0);
-    hs->Add(cmb, 1, wxEXPAND | wxLEFT, 4);
-    bs->Add(hs, 0, wxEXPAND | wxTOP | wxBOTTOM, 4);
+    wxFlexGridSizer* fs = new wxFlexGridSizer(2, 4, 0);
+    fs->AddGrowableCol(1);
 
-	m_Tree = new wxTreeCtrl(this, ID_ClassBrowser);
+    fs->Add(new wxStaticText(top, -1, _T("View:")), 0, wxALIGN_CENTER_VERTICAL);
+
+    wxArrayString choices;
+    choices.Add(_T("Current file's symbols only..."));
+    choices.Add(_T("All project symbols"));
+    wxComboBox* cmb = new wxComboBox(top, idCombo, wxEmptyString, wxDefaultPosition, wxDefaultSize, choices, wxCB_READONLY);
+    bool all = Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("/show_all_symbols"), false);
+    cmb->SetSelection(all ? 1 : 0);
+    fs->Add(cmb, 1, wxEXPAND | wxLEFT, 4);
+
+    fs->Add(new wxStaticText(top, -1, _T("Search:")), 0, wxALIGN_CENTER_VERTICAL);
+
+    wxBoxSizer* hs = new wxBoxSizer(wxHORIZONTAL);
+    m_Search = new myTextCtrl(this, top, ID_Search);
+    hs->Add(m_Search, 1, wxEXPAND | wxLEFT, 4);
+    wxButton* search = new wxButton(top, idBtnSearch, _T(">"), wxDefaultPosition, wxSize(24, 24));
+    hs->Add(search, 0, wxALIGN_CENTER_VERTICAL);
+    fs->Add(hs, 0, wxEXPAND | wxBOTTOM, 4);
+
+    bs->Add(fs, 0, wxEXPAND | wxTOP, 4);
+
+	m_Tree = new wxTreeCtrl(top, ID_ClassBrowser, wxPoint(0, 0), wxSize(100, 64), wxTR_HAS_BUTTONS | wxTR_HIDE_ROOT | wxTR_DEFAULT_STYLE);
     bs->Add(m_Tree, 1, wxEXPAND | wxALL);
-    SetAutoLayout(TRUE);
-    SetSizer(bs);
+    top->SetAutoLayout(TRUE);
+    top->SetSizer(bs);
+
+	m_List = new wxTreeCtrl(GetSplitter(), ID_ClassMembers, wxPoint(0, 0), wxSize(100, 64), wxTR_DEFAULT_STYLE);
+
+    GetSplitter()->SetMinimumPaneSize(64);
+    SetAutoLayout(true);
+	RefreshSplitter(ID_TopPanel, ID_ClassMembers);
+    Refresh();
+    m_Tree->Refresh();
+    m_List->Refresh();
 
     m_Parent->AddPage(this, _("Symbols"));
     m_PageIndex = m_Parent->GetPageCount() - 1;
@@ -120,7 +195,7 @@ void ClassBrowser::Update()
 		m_Tree->DeleteAllItems();
 }
 
-void ClassBrowser::ShowMenu(wxTreeItemId id, const wxPoint& pt)
+void ClassBrowser::ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, const wxPoint& pt)
 {
 // NOTE: local variables are tricky! If you build two local menus
 // and attach menu B to menu A, on function exit both menu A and menu B
@@ -130,6 +205,7 @@ void ClassBrowser::ShowMenu(wxTreeItemId id, const wxPoint& pt)
 // A safer approach is to make all menus heap-based, and delete the topmost
 // on exit.
 
+    m_TreeForPopupMenu = tree;
     if ( !id.IsOk() )
         return;
 
@@ -137,7 +213,7 @@ void ClassBrowser::ShowMenu(wxTreeItemId id, const wxPoint& pt)
 	wxString caption;
     wxMenu *menu=new wxMenu(wxEmptyString);
 
-	ClassTreeData* ctd = (ClassTreeData*)m_Tree->GetItemData(id);
+	ClassTreeData* ctd = (ClassTreeData*)tree->GetItemData(id);
     if (ctd)
     {
         switch (ctd->GetToken()->m_TokenKind)
@@ -154,31 +230,34 @@ void ClassBrowser::ShowMenu(wxTreeItemId id, const wxPoint& pt)
     }
 
     // ask any plugins to add items in this menu
-    Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtClassBrowser, menu, m_Tree->GetItemText(id));
+    Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtClassBrowser, menu, tree->GetItemText(id));
 
-    if (menu->GetMenuItemCount() != 0)
-		menu->AppendSeparator();
-
-	wxMenu *sub = new wxMenu(_T(""));
-    sub->AppendCheckItem(idCBViewInheritance, _("Show inherited members"));
-    sub->AppendSeparator();
-    sub->AppendRadioItem(idCBViewModeFlat, _("Flat"));
-    sub->AppendRadioItem(idCBViewModeStructured, _("Structured"));
-
-	menu->Append(wxNewId(), _("&View options"), sub);
-    menu->Append(idMenuRefreshTree, _("&Refresh tree"));
-
-    if (id == m_Tree->GetRootItem())
+    if (tree == m_Tree)
     {
-        menu->AppendSeparator();
-        menu->Append(idMenuForceReparse, _("Re-parse now"));
+        if (menu->GetMenuItemCount() != 0)
+            menu->AppendSeparator();
+
+        wxMenu *sub = new wxMenu(_T(""));
+        sub->AppendCheckItem(idCBViewInheritance, _("Show inherited members"));
+        sub->AppendSeparator();
+        sub->AppendRadioItem(idCBViewModeFlat, _("Flat"));
+        sub->AppendRadioItem(idCBViewModeStructured, _("Structured"));
+
+        menu->Append(wxNewId(), _("&View options"), sub);
+        menu->Append(idMenuRefreshTree, _("&Refresh tree"));
+
+        if (id == m_Tree->GetRootItem())
+        {
+            menu->AppendSeparator();
+            menu->Append(idMenuForceReparse, _("Re-parse now"));
+        }
+
+        menu->Check(idCBViewInheritance, m_pParser ? m_pParser->ClassBrowserOptions().showInheritance : false);
+        sub->Check(idCBViewModeFlat, m_pParser ? m_pParser->ClassBrowserOptions().viewFlat : false);
+        sub->Check(idCBViewModeStructured, m_pParser ? !m_pParser->ClassBrowserOptions().viewFlat : false);
     }
 
-	menu->Check(idCBViewInheritance, m_pParser ? m_pParser->ClassBrowserOptions().showInheritance : false);
-	sub->Check(idCBViewModeFlat, m_pParser ? m_pParser->ClassBrowserOptions().viewFlat : false);
-	sub->Check(idCBViewModeStructured, m_pParser ? !m_pParser->ClassBrowserOptions().viewFlat : false);
-
-    PopupMenu(menu, pt);
+    PopupMenu(menu, tree->GetParent()->ScreenToClient(tree->ClientToScreen(pt)));
     delete menu; // Prevents memory leak
 #endif // wxUSE_MENUS
 }
@@ -187,14 +266,51 @@ void ClassBrowser::ShowMenu(wxTreeItemId id, const wxPoint& pt)
 
 void ClassBrowser::OnTreeItemRightClick(wxTreeEvent& event)
 {
-	m_Tree->SelectItem(event.GetItem());
-    ShowMenu(event.GetItem(), event.GetPoint());
+    wxTreeCtrl* tree = m_Tree;
+	tree->SelectItem(event.GetItem());
+    ShowMenu(tree, event.GetItem(), event.GetPoint());// + tree->GetPosition());
+}
+
+void ClassBrowser::OnListItemRightClick(wxTreeEvent& event)
+{
+    wxTreeCtrl* tree = m_List;
+	tree->SelectItem(event.GetItem());
+    ShowMenu(tree, event.GetItem(), event.GetPoint());
+}
+
+void ClassBrowser::OnTreeItemClick(wxTreeEvent& event)
+{
+	wxTreeItemId id = event.GetItem();
+	m_List->Freeze();
+	m_List->DeleteAllItems();
+	if (!id.IsOk())
+	{
+	    m_List->Thaw();
+	    return;
+	}
+	m_List->SetImageList(m_Tree->GetImageList());
+    ClassTreeData* old = static_cast<ClassTreeData*>(m_Tree->GetItemData(id));
+    ClassTreeData* cdt = old ? new ClassTreeData(old->GetToken()) : 0;
+	wxTreeItemId root = m_List->AddRoot(m_Tree->GetItemText(id), m_Tree->GetItemImage(id), m_Tree->GetItemImage(id), cdt);
+
+    wxTreeItemIdValue cookie;
+	wxTreeItemId child = m_Tree->GetFirstChild(id, cookie);
+	while (child.IsOk())
+	{
+	    old = static_cast<ClassTreeData*>(m_Tree->GetItemData(child));
+	    cdt = old ? new ClassTreeData(old->GetToken()) : 0;
+        m_List->AppendItem(root, m_Tree->GetItemText(child), m_Tree->GetItemImage(child), m_Tree->GetItemImage(child), cdt);
+        child = m_Tree->GetNextChild(id, cookie);
+	}
+    m_List->Expand(root);
+    m_List->Thaw();
 }
 
 void ClassBrowser::OnJumpTo(wxCommandEvent& event)
 {
-	wxTreeItemId id = m_Tree->GetSelection();
-	ClassTreeData* ctd = (ClassTreeData*)m_Tree->GetItemData(id);
+    wxTreeCtrl* tree = m_TreeForPopupMenu;
+	wxTreeItemId id = tree->GetSelection();
+	ClassTreeData* ctd = (ClassTreeData*)tree->GetItemData(id);
     if (ctd)
     {
         cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
@@ -215,8 +331,7 @@ void ClassBrowser::OnJumpTo(wxCommandEvent& event)
                     line = ctd->GetToken()->m_ImplLine - 1;
                 else
                     line = ctd->GetToken()->m_Line - 1;
-				int pos = ed->GetControl()->PositionFromLine(line);
-				ed->GetControl()->GotoPos(pos);
+				ed->GotoLine(line);
 			}
         }
     }
@@ -224,8 +339,9 @@ void ClassBrowser::OnJumpTo(wxCommandEvent& event)
 
 void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
 {
-	wxTreeItemId id = m_Tree->GetSelection();
-	ClassTreeData* ctd = (ClassTreeData*)m_Tree->GetItemData(id);
+    wxTreeCtrl* tree = (wxTreeCtrl*)event.GetEventObject();
+	wxTreeItemId id = event.GetItem();
+	ClassTreeData* ctd = (ClassTreeData*)tree->GetItemData(id);
     if (ctd)
     {
         cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
@@ -259,8 +375,7 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
                     line = ctd->GetToken()->m_ImplLine - 1;
                 else
                     line = ctd->GetToken()->m_Line - 1;
-				int pos = ed->GetControl()->PositionFromLine(line);
-				ed->GetControl()->GotoPos(pos);
+				ed->GotoLine(line);
 
 				wxFocusEvent ev(wxEVT_SET_FOCUS);
 				ev.SetWindow(this);
@@ -304,13 +419,51 @@ void ClassBrowser::OnViewScope(wxCommandEvent& event)
 	if (m_pParser)
 	{
 		m_pParser->ClassBrowserOptions().showAllSymbols = event.GetSelection() == 1;
-        m_pParser->WriteOptions();
+		m_pParser->WriteOptions();
         Update();
 	}
 	else
 	{
-	    // no project open
-	    // just save the user selection in the configuration
+	    // we have no parser; just write the setting in the configuration
         Manager::Get()->GetConfigManager(_T("code_completion"))->Write(_T("/show_all_symbols"), event.GetSelection() == 1);
 	}
+}
+
+bool ClassBrowser::RecursiveSearch(const wxString& search, wxTreeCtrl* tree, const wxTreeItemId& parent, wxTreeItemId& result)
+{
+    wxTreeItemIdValue cookie;
+	wxTreeItemId child = tree->GetFirstChild(parent, cookie);
+	while (child.IsOk())
+	{
+        if (tree->GetItemText(child).Lower().Contains(search))
+        {
+            result = child;
+            return true;
+        }
+        if (tree->ItemHasChildren(child))
+        {
+            if (RecursiveSearch(search, tree, child, result))
+                return true;
+        }
+        child = tree->GetNextChild(parent, cookie);
+	}
+	return false;
+}
+
+void ClassBrowser::OnSearch(wxCommandEvent& event)
+{
+    if (m_Search->GetValue().IsEmpty())
+        return;
+    wxTreeItemId result;
+    if (RecursiveSearch(m_Search->GetValue().Lower(), m_Tree, m_Tree->GetRootItem(), result))
+    {
+        result = m_Tree->GetItemParent(result);
+        m_Tree->SelectItem(result);
+        m_Tree->EnsureVisible(result);
+        if (RecursiveSearch(m_Search->GetValue().Lower(), m_List, m_List->GetRootItem(), result))
+        {
+            m_List->SelectItem(result);
+            m_List->EnsureVisible(result);
+        }
+    }
 }

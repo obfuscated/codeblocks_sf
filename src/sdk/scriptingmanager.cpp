@@ -156,8 +156,7 @@ int ScriptingManager::LoadScript(const wxString& filename, const wxString& modul
             cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname);
             if (ed && exec.GetLineNumber() != 0)
             {
-                int pos = ed->GetControl()->PositionFromLine(exec.GetLineNumber() - 1);
-                ed->GetControl()->GotoPos(pos);
+                ed->GotoLine(exec.GetLineNumber() - 1);
                 ed->GetControl()->SetFocus();
             }
         }
@@ -183,6 +182,7 @@ int ScriptingManager::LoadScript(const wxString& filename, const wxString& modul
                     if (line != 0)
                     {
                         int pos = ed->GetControl()->PositionFromLine(line - 1);
+                        ed->GotoLine(line - 1);
                         ed->GetControl()->GotoPos(pos + column - 1);
                         ed->GetControl()->SetFocus();
                     }

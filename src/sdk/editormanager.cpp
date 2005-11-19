@@ -1949,7 +1949,7 @@ void EditorManager::InitPane()
     Manager* man = Manager::Get();
     wxWindow* win = man->GetNotebookPage(_("Projects"),wxTAB_TRAVERSAL | wxCLIP_CHILDREN,true);
     wxSplitPanel* mypanel = (wxSplitPanel*)(win);
-    mypanel->SetConfigEntryForSplitter(_T("/editor/opened_files_tree_height"));
+    mypanel->SetConfigEntryForSplitter(_T("/opened_files_tree_height"));
     wxSplitterWindow* mysplitter = mypanel->GetSplitter();
     BuildOpenedFilesTree(mysplitter);
     mypanel->SetAutoLayout(true);

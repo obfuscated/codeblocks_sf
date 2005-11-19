@@ -13,7 +13,8 @@
 
 IMPLEMENT_DYNAMIC_CLASS(wxSplitPanel, wxPanel)
 BEGIN_EVENT_TABLE(wxSplitPanel,wxPanel)
-    EVT_UPDATE_UI(-1,wxSplitPanel::OnUpdateUI)
+// We connect the events dynamically. Look in Create().
+//    EVT_UPDATE_UI(-1,wxSplitPanel::OnUpdateUI)
 END_EVENT_TABLE()
 
 
@@ -32,6 +33,11 @@ bool wxSplitPanel::Create(wxWindow* parent, wxWindowID id,
     m_sizer = new wxBoxSizer(wxVERTICAL);
     SetSizer(m_sizer);
     m_sizer->Add( m_splitter, 1, wxGROW, 0 );
+
+    Connect(id, -1, wxEVT_UPDATE_UI,
+            (wxObjectEventFunction)(wxEventFunction)(wxUpdateUIEventFunction)
+            &wxSplitPanel::OnUpdateUI);
+
     return true;
 }
 
@@ -62,7 +68,7 @@ void wxSplitPanel::RefreshSplitter(int idtop,int idbottom)
         sashPosition = m_lastsashposition;
         if(sashPosition <= 0)
         {
-            if(m_IniSashPos == -1)
+            if(m_IniSashPos < 20)
                 m_IniSashPos = m_SplitterConfig.IsEmpty() ? -1 : Manager::Get()->GetConfigManager(_T("splitpanel"))->ReadInt(m_SplitterConfig, m_defaultsashposition);
             sashPosition =  (m_IniSashPos > 0) ? m_IniSashPos : m_lastsashposition;
         }

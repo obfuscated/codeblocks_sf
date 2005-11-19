@@ -217,7 +217,7 @@ void ProjectManager::InitPane()
     if(m_pTree)
         return;
     wxSplitPanel* mypanel = (wxSplitPanel*)(Manager::Get()->GetNotebookPage(_("Projects"),wxTAB_TRAVERSAL | wxCLIP_CHILDREN,true));
-    mypanel->SetConfigEntryForSplitter(_T("opened_files_tree_height"));
+    mypanel->SetConfigEntryForSplitter(_T("/opened_files_tree_height"));
     m_pPanel = mypanel;
     wxSplitterWindow* mysplitter = mypanel->GetSplitter();
     BuildTree(mysplitter);

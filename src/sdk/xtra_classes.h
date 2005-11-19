@@ -8,6 +8,7 @@
   * This file is distributed under the wxWindows license
   */
 
+#include <settings.h>
 #include <wx/panel.h>
 #include <wx/splitter.h>
 #include <wx/sizer.h>
@@ -15,7 +16,7 @@
 /** A simple panel with included wxSplitterWindow and a sizer. Nothing more
   *
   */
-class wxSplitPanel : public wxPanel
+class DLLIMPORT wxSplitPanel : public wxPanel
 {
 public:
     wxSplitPanel::wxSplitPanel() { /*nothing to init, really */ }
