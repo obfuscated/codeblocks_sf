@@ -134,13 +134,13 @@ ClassBrowser::ClassBrowser(wxNotebook* parent, NativeParser* np)
     wxComboBox* cmb = new wxComboBox(top, idCombo, wxEmptyString, wxDefaultPosition, wxDefaultSize, choices, wxCB_READONLY);
     bool all = Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("/show_all_symbols"), false);
     cmb->SetSelection(all ? 1 : 0);
-    fs->Add(cmb, 1, wxEXPAND | wxLEFT, 4);
+    fs->Add(cmb, 1, wxEXPAND);
 
     fs->Add(new wxStaticText(top, -1, _T("Search:")), 0, wxALIGN_CENTER_VERTICAL);
 
     wxBoxSizer* hs = new wxBoxSizer(wxHORIZONTAL);
     m_Search = new myTextCtrl(this, top, ID_Search);
-    hs->Add(m_Search, 1, wxEXPAND | wxLEFT, 4);
+    hs->Add(m_Search, 1, wxEXPAND);
     wxButton* search = new wxButton(top, idBtnSearch, _T(">"), wxDefaultPosition, wxSize(24, 24));
     hs->Add(search, 0, wxALIGN_CENTER_VERTICAL);
     fs->Add(hs, 0, wxEXPAND | wxBOTTOM, 4);
@@ -435,10 +435,15 @@ bool ClassBrowser::RecursiveSearch(const wxString& search, wxTreeCtrl* tree, con
 	wxTreeItemId child = tree->GetFirstChild(parent, cookie);
 	while (child.IsOk())
 	{
-        if (tree->GetItemText(child).Lower().Contains(search))
+        ClassTreeData* ctd = static_cast<ClassTreeData*>(tree->GetItemData(child));
+        if (ctd && ctd->GetToken())
         {
-            result = child;
-            return true;
+            Token* token = ctd->GetToken();
+            if (token->m_Name.Lower().StartsWith(search))
+            {
+                result = child;
+                return true;
+            }
         }
         if (tree->ItemHasChildren(child))
         {
@@ -457,7 +462,6 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
     wxTreeItemId result;
     if (RecursiveSearch(m_Search->GetValue().Lower(), m_Tree, m_Tree->GetRootItem(), result))
     {
-        result = m_Tree->GetItemParent(result);
         m_Tree->SelectItem(result);
         m_Tree->EnsureVisible(result);
         if (RecursiveSearch(m_Search->GetValue().Lower(), m_List, m_List->GetRootItem(), result))
