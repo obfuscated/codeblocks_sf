@@ -604,6 +604,10 @@ bool wxsWindowRes::CorrectOneWidget(StrMap& NamesMap,StrMap& IdsMap,wxsWidget* C
     			wxMessageBox(_("Item must have variable name"));
     			return false;
     		}
+    		else
+    		{
+    		    DBGLOG(_T("wxSmith: Widget has empty variable name"));
+    		}
 
    			// Creating new unique name
 
@@ -628,6 +632,10 @@ bool wxsWindowRes::CorrectOneWidget(StrMap& NamesMap,StrMap& IdsMap,wxsWidget* C
             		wxMessageBox(wxString::Format(_("Invalid character: '%c' in variable name"),VarName.GetChar(0)));
             		return false;
             	}
+            	else
+            	{
+            	    DBGLOG(_T("wxSmith: Variable name : \"%s\" is not a valid c++ identifier (invalid character \"%c\" at position %d)"),VarName.c_str(),VarName.GetChar(0),0);
+            	}
                 Valid = false;
             }
             else
@@ -647,6 +655,10 @@ bool wxsWindowRes::CorrectOneWidget(StrMap& NamesMap,StrMap& IdsMap,wxsWidget* C
                         wxMessageBox(wxString::Format(_("Invalid character: '%c' in variable name"),VarName.GetChar(i)));
                         return false;
                     }
+                    else
+                    {
+                        DBGLOG(_T("wxSmith: Variable name : \"%s\" is not a valid c++ identifier (invalid character \"%c\" at position %d)"),VarName.c_str(),VarName.GetChar(i),i);
+                    }
                     Valid = false;
                 }
                 else
@@ -662,6 +674,10 @@ bool wxsWindowRes::CorrectOneWidget(StrMap& NamesMap,StrMap& IdsMap,wxsWidget* C
             	{
             		wxMessageBox(wxString::Format(_("Item with variable name '%s' already exists"),Corrected.c_str()));
             		return false;
+            	}
+            	else
+            	{
+            	    DBGLOG(_T("wxSmith: Duplicated variable name: \"%s\""),VarName.c_str());
             	}
 
             	// Generating new unique name
@@ -699,6 +715,10 @@ bool wxsWindowRes::CorrectOneWidget(StrMap& NamesMap,StrMap& IdsMap,wxsWidget* C
     			wxMessageBox(_("Item must have identifier"));
     			return false;
     		}
+    		else
+    		{
+    		    DBGLOG(_T("wxSmith: Empty identifier"));
+    		}
 
    			// Creating new unique name
 
@@ -724,6 +744,10 @@ bool wxsWindowRes::CorrectOneWidget(StrMap& NamesMap,StrMap& IdsMap,wxsWidget* C
             		wxMessageBox(wxString::Format(_("Invalid character: '%c' in variable name"),IdName.GetChar(0)));
             		return false;
             	}
+                else
+                {
+                    DBGLOG(_T("wxSmith: Identifier name : \"%s\" is not a valid c++ name (invalid character \"%c\" at position %d)"),IdName.c_str(),IdName.GetChar(0),0);
+                }
                 Valid = false;
             }
             else
@@ -743,6 +767,10 @@ bool wxsWindowRes::CorrectOneWidget(StrMap& NamesMap,StrMap& IdsMap,wxsWidget* C
                         wxMessageBox(wxString::Format(_("Invalid character: '%c' in variable name"),IdName.GetChar(i)));
                         return false;
                     }
+                    else
+                    {
+                        DBGLOG(_T("wxSmith: Identifier name : \"%s\" is not a valid c++ name (invalid character \"%c\" at position %d)"),IdName.c_str(),IdName.GetChar(i),i);
+                    }
                     Valid = false;
                 }
                 else
@@ -759,6 +787,10 @@ bool wxsWindowRes::CorrectOneWidget(StrMap& NamesMap,StrMap& IdsMap,wxsWidget* C
             	{
             		wxMessageBox(wxString::Format(_("Item with identifier '%s' already exists"),Corrected.c_str()));
             		return false;
+            	}
+            	else
+            	{
+            	    DBGLOG(_T("wxSmith: Duplicated identifier name: \"%s\""),IdName.c_str());
             	}
 
             	// Generating new unique name

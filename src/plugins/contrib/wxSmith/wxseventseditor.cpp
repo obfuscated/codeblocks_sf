@@ -36,6 +36,7 @@ void wxsEventsEditor::OnPropertyChanged(wxPropertyGridEvent& event)
 {
 	ReadPropertyGrid();
 	Res->UpdateEventTable();
+	Refresh();
 }
 
 void wxsEventsEditor::BuildPropertyGrid(bool UpdateOnly)
