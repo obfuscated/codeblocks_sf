@@ -13,6 +13,7 @@ void HelpCommon::LoadHelpFilesVector(HelpCommon::HelpFilesVector &vect)
   ConfigManager* conf = Manager::Get()->GetConfigManager(_T("help_plugin"));
   m_DefaultHelpIndex = conf->ReadInt(_T("/default"), -1);
   wxArrayString list = conf->EnumerateSubPaths(_T("/"));
+
   for (unsigned int i = 0; i < list.GetCount(); ++i)
   {
       wxString name = conf->Read(list[i] + _T("/name"), wxEmptyString);
@@ -29,12 +30,16 @@ void HelpCommon::SaveHelpFilesVector(HelpCommon::HelpFilesVector &vect)
 {
   ConfigManager* conf = Manager::Get()->GetConfigManager(_T("help_plugin"));
   wxArrayString list = conf->EnumerateSubPaths(_T("/"));
+
   for (unsigned int i = 0; i < list.GetCount(); ++i)
+  {
     conf->DeleteSubPath(list[i]);
+  }
 
   HelpFilesVector::iterator it;
 
   int count = 0;
+
   for (it = vect.begin(); it != vect.end(); ++it)
   {
     wxString name = it->first;
@@ -44,7 +49,7 @@ void HelpCommon::SaveHelpFilesVector(HelpCommon::HelpFilesVector &vect)
     {
       wxString key = wxString::Format(_T("/help%d/"), count++);
       conf->Write(key + _T("name"), name);
-      conf->Write(key + _T("name"), file);
+      conf->Write(key + _T("file"), file);
     }
   }
 
