@@ -8,7 +8,8 @@ endif
 
 INCLUDES = $(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include \
-			-I$(top_srcdir)/src/sdk/tinyxml
+			-I$(top_srcdir)/src/sdk/tinyxml \
+			-I$(top_srcdir)/src/sdk/as/include
 
 lib_LTLIBRARIES = libcodeblocks.la
 

@@ -17,7 +17,8 @@
 int cbCustom_WATCHES_CHANGED = wxNewId();
 int idTree = wxNewId();
 int idAddWatch = wxNewId();
-int idAddWatchScript = wxNewId();
+int idLoadWatchFile = wxNewId();
+int idSaveWatchFile = wxNewId();
 int idEditWatch = wxNewId();
 int idDeleteWatch = wxNewId();
 int idDeleteAllWatches = wxNewId();
@@ -59,7 +60,8 @@ BEGIN_EVENT_TABLE(DebuggerTree, wxPanel)
     EVT_TREE_ITEM_RIGHT_CLICK(idTree, DebuggerTree::OnTreeRightClick)
     EVT_COMMAND_RIGHT_CLICK(idTree, DebuggerTree::OnRightClick)
 	EVT_MENU(idAddWatch, DebuggerTree::OnAddWatch)
-	EVT_MENU(idAddWatchScript, DebuggerTree::OnAddWatchScript)
+	EVT_MENU(idLoadWatchFile, DebuggerTree::OnLoadWatchFile)
+	EVT_MENU(idSaveWatchFile, DebuggerTree::OnSaveWatchFile)
 	EVT_MENU(idEditWatch, DebuggerTree::OnEditWatch)
 	EVT_MENU(idDeleteWatch, DebuggerTree::OnDeleteWatch)
 	EVT_MENU(idDeleteAllWatches, DebuggerTree::OnDeleteAllWatches)
@@ -318,7 +320,8 @@ void DebuggerTree::ShowMenu(wxTreeItemId id, const wxPoint& pt)
 
 	// add watch always visible
 	menu.Append(idAddWatch, _("&Add watch"));
-	menu.Append(idAddWatchScript, _("Load watch &script"));
+	menu.Append(idLoadWatchFile, _("&Load watch file"));
+	menu.Append(idSaveWatchFile, _("&Save watch file"));
 
 	// we have to have a valid id for the following to be enabled
     if (id.IsOk() && // valid item
@@ -359,11 +362,18 @@ void DebuggerTree::OnAddWatch(wxCommandEvent& event)
         AddWatch(dlg.GetWatch().keyword, dlg.GetWatch().format);
 }
 
-void DebuggerTree::OnAddWatchScript(wxCommandEvent& event)
+void DebuggerTree::OnLoadWatchFile(wxCommandEvent& event)
 {
+    // ToDo:
+    // - Currently each watch is imported as WatchType "Unspecified". This should
+    //   be changed that the file contains another (optional) column with the type.
+    // - Change "Watch files" format to XML?
+    // - With the current implementation sometimes the debugger tree gets weird.
+    // - (Maybe) verify that watches are not already present?
+
     wxString fname;
     wxFileDialog dlg (Manager::Get()->GetAppWindow(),
-                    _T("Open debugger watch file"),
+                    _T("Load debugger watch file"),
                     _T(""),
                     _T(""),
                     _T("Watch files (*.watch)|*.watch|Any file (*)|*"),
@@ -389,7 +399,59 @@ void DebuggerTree::OnAddWatchScript(wxCommandEvent& event)
         tf.Close(); // release file handle
     }
     else
-        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Error opening debugger watch file: %s"), fname.c_str());
+        Manager::Get()->GetMessageManager()->Log(m_PageIndex,
+                        _("Error opening debugger watch file: %s"), fname.c_str());
+}
+
+void DebuggerTree::OnSaveWatchFile(wxCommandEvent& event)
+{
+    // Verify that there ARE watches to save
+    size_t wc = m_Watches.GetCount();
+    if (wc<1)
+    {
+        wxMessageBox(_("There are no watches in the list to save."),
+                     _("Save Watches"), wxICON_ERROR);
+        return;
+    }
+
+    wxString fname;
+    wxFileDialog dlg (Manager::Get()->GetAppWindow(),
+                    _T("Save debugger watch file"),
+                    _T(""),
+                    _T(""),
+                    _T("Watch files (*.watch)|*.watch|Any file (*)|*"),
+                    wxSAVE | wxOVERWRITE_PROMPT);
+    if (dlg.ShowModal() != wxID_OK)
+        return;
+
+    wxTextFile tf(dlg.GetPath());
+    bool bSuccess = false;
+
+    // Create() will fail if the file exist -> must use Open() if file exist
+    if (tf.Exists())
+    {
+        bSuccess = tf.Open();
+        if (bSuccess) tf.Clear(); // remove old content (if any)
+    }
+    else
+    {
+        bSuccess = tf.Create();
+    }
+
+    if (bSuccess)
+    {
+        // iterate over each watch and write them to the file buffer
+        for (size_t i = 0; i < wc; ++i)
+        {
+            Watch& w = m_Watches[i];
+            tf.AddLine(w.keyword);
+        }
+        tf.Write(); // Write buffer to file
+        tf.Close(); // release file handle
+    }
+    else
+        Manager::Get()->GetMessageManager()->Log(m_PageIndex,
+                        _("Error opening debugger watch file: %s"), fname.c_str());
 }
 
 void DebuggerTree::OnEditWatch(wxCommandEvent& event)
