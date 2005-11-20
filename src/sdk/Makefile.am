@@ -21,6 +21,7 @@ libcodeblocks_la_LIBADD =  $(WX_LIBS) \
 
 libcodeblocks_la_SOURCES = Managers/Managers.cpp \
 Managers/StdAfx.cpp \
+annoyingdialog.cpp \
 autodetectcompilers.cpp \
 base64.cpp \
 cbeditor.cpp \
@@ -99,6 +100,7 @@ xtra_res.cpp
 
 noinst_HEADERS = Managers/Managers.h \
 Managers/StdAfx.h \
+annoyingdialog.h \
 autodetectcompilers.h \
 base64.h \
 cbeditor.h \
