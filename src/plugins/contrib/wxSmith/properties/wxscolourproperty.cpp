@@ -47,6 +47,8 @@ void wxsColourProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)
     ColId = Grid->AppendIn(
         PGId,
         wxSystemColourProperty(_("Colour:"), wxPG_LABEL, Col ));
+
+    Grid->SetPropertyAttribute(UseColId,wxPG_BOOL_USE_CHECKBOX,(long)1,wxRECURSE);
 }
 
 bool wxsColourProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)

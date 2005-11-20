@@ -54,6 +54,7 @@ wxsFrame::wxsFrame(wxsWidgetManager* Man,wxsWindowRes* Res):
     wxsWindow(Man,Res,propWindow),
     Centered(false)
 {
+    GetBaseProperties().Style = wxDEFAULT_FRAME_STYLE;
 }
 
 wxsFrame::~wxsFrame()

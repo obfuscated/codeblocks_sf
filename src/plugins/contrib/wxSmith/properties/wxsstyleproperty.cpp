@@ -116,7 +116,8 @@ wxsStyleProperty::wxsStyleProperty(wxsProperties* Properties,int &_Style,wxsStyl
     #ifdef __NO_PROPGRGID
         Window(NULL)
     #else
-        PGId(0)
+        PGId(0),
+        LastPG(0)
     #endif
 {
 }
@@ -149,15 +150,22 @@ const wxString& wxsStyleProperty::GetTypeName()
     {
     	wxPGConstants Consts;
 
+        unsigned int Bit = 1;
     	for ( wxsStyle* St = Styles; St->Name.Length(); ++St )
     	{
     		if ( St->Value != ((unsigned int)-1) )
     		{
-    			Consts.Add(St->Name,St->Value);
+    			Consts.Add(St->Name,Bit);
+    			Bit <<= 1;
+    			if ( Bit < 0 )
+    			{
+    			    DBGLOG(_T("Widget has over 31 styles, style property is corrupted!!!"));
+    			}
     		}
     	}
 
-    	PGId = Grid->Append( wxFlagsProperty(Name,wxPG_LABEL,Consts,Style) );
+        LastPG = ConvertStyleToPG(Style);
+    	PGId = Grid->Append( wxFlagsProperty(Name,wxPG_LABEL,Consts,LastPG) );
         Grid->SetPropertyAttribute(PGId,wxPG_BOOL_USE_CHECKBOX,(long)1,wxRECURSE);
     }
 
@@ -165,7 +173,32 @@ const wxString& wxsStyleProperty::GetTypeName()
     {
     	if ( Id == PGId )
     	{
-    		Style = Grid->GetPropertyValue(Id).GetLong();
+    	    int ThisPG = Grid->GetPropertyValue(Id).GetLong();
+    	    int Changes = ThisPG ^ LastPG;
+
+            int Bit = 1;
+            for ( wxsStyle* St = Styles; St->Name.Length(); ++St )
+            {
+                if ( St->Value != ((unsigned int)-1) )
+                {
+                    if ( Changes & Bit )
+                    {
+                        if ( ThisPG & Bit )
+                        {
+                            // Bit has been set
+                            Style |= St->Value;
+                        }
+                        else
+                        {
+                            // Bit has been cleared
+                            Style &= ~St->Value;
+                        }
+                    }
+                    Bit <<= 1;
+                }
+            }
+
+    		UpdatePropGrid(Grid);
     		return ValueChanged(true);
     	}
     	return true;
@@ -173,7 +206,26 @@ const wxString& wxsStyleProperty::GetTypeName()
 
     void wxsStyleProperty::UpdatePropGrid(wxPropertyGrid* Grid)
     {
-    	Grid->SetPropertyValue(PGId,Style);
+        LastPG = ConvertStyleToPG(Style);
+    	Grid->SetPropertyValue(PGId,LastPG);
+    }
+
+    int wxsStyleProperty::ConvertStyleToPG(unsigned int Style)
+    {
+        int Bit = 1;
+        int Value = 0;
+    	for ( wxsStyle* St = Styles; St->Name.Length(); ++St )
+    	{
+    		if ( St->Value != ((unsigned int)-1) )
+    		{
+    		    if ( (Style & St->Value) == St->Value )
+    		    {
+                    Value |= Bit;
+    		    }
+    			Bit <<= 1;
+    		}
+    	}
+    	return Value;
     }
 
 #endif

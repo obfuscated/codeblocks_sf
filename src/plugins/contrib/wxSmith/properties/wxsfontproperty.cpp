@@ -34,6 +34,8 @@ void wxsFontProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)
     FontId = Grid->AppendIn(
         PGId,
         wxFontProperty(_("Font:"), wxPG_LABEL, Font ));
+
+    Grid->SetPropertyAttribute(UseId,wxPG_BOOL_USE_CHECKBOX,(long)1,wxRECURSE);
 }
 
 bool wxsFontProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)

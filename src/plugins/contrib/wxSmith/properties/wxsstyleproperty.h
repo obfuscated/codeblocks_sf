@@ -27,6 +27,8 @@ class WXSCLASS wxsStyleProperty : public wxsProperty
             virtual void AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name);
             virtual bool PropGridChanged(wxPropertyGrid* Grid,wxPGId Id);
             virtual void UpdatePropGrid(wxPropertyGrid* Grid);
+
+            int ConvertStyleToPG(unsigned int Style);
         #endif
 
 	private:
@@ -39,6 +41,7 @@ class WXSCLASS wxsStyleProperty : public wxsProperty
             friend class wxsStylePropertyWindow;
         #else
             wxPGId PGId;
+            int LastPG;
         #endif
 };
 
