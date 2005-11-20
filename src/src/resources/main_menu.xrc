@@ -404,10 +404,6 @@
         <label>&amp;Global variables</label>
         <help>Change global compiler variables</help>
       </object>
-      <object class="wxMenuItem" name="idSettingsNetworkProxy">
-        <label>Network proxy</label>
-        <help>Set a proxy server for network access</help>
-      </object>
       <object class="wxMenu" name="idSettingsConfigurePlugins">
         <label>&amp;Plugins' settings</label>
       </object>

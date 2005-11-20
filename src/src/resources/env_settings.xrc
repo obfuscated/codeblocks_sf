@@ -147,6 +147,63 @@
             </object>
           </object>
           <object class="notebookpage">
+            <label>Dialogs</label>
+            <object class="wxPanel" name="tabDialogs">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxStaticText" name="">
+                    <label>Re-enable the following confirmation dialogs:</label>
+                  </object>
+                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticText" name="">
+                    <label>(list will be empty if all dialogs are enabled)</label>
+                  </object>
+                  <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxCheckList" name="chkDialogs">
+                    <content/>
+                  </object>
+                  <option>1</option>
+                  <flag>wxALL|wxGROW</flag>
+                  <border>8</border>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object class="notebookpage">
+            <label>Network</label>
+            <object class="wxPanel" name="tabNetwork">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxStaticText" name="">
+                    <label>Use the following proxy when making network connections:</label>
+                  </object>
+                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticText" name="">
+                    <label>Format: hostname:port</label>
+                  </object>
+                  <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxTextCtrl" name="txtProxy"/>
+                  <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object class="notebookpage">
             <label>Tweaks</label>
             <object class="wxPanel" name="tabTweaks">
               <object class="wxBoxSizer">

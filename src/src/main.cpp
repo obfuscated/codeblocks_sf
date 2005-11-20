@@ -223,7 +223,6 @@ int idSettingsGlobalUserVars = XRCID("idSettingsGlobalUserVars");
 int idSettingsEditor = XRCID("idSettingsEditor");
 int idPluginsManagePlugins = XRCID("idPluginsManagePlugins");
 int idSettingsConfigurePlugins = XRCID("idSettingsConfigurePlugins");
-int idSettingsNetworkProxy = XRCID("idSettingsNetworkProxy");
 
 int idHelpTips = XRCID("idHelpTips");
 int idHelpPlugins = XRCID("idHelpPlugins");
@@ -383,7 +382,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_MENU(idSettingsGlobalUserVars, MainFrame::OnGlobalUserVars)
 	EVT_MENU(idSettingsEditor, MainFrame::OnSettingsEditor)
     EVT_MENU(idPluginsManagePlugins, MainFrame::OnSettingsPlugins)
-    EVT_MENU(idSettingsNetworkProxy, MainFrame::OnSettingsNetworkProxy)
 
     EVT_MENU(wxID_ABOUT, MainFrame::OnHelpAbout)
     EVT_MENU(idHelpTips, MainFrame::OnHelpTips)
@@ -2613,11 +2611,4 @@ void MainFrame::OnRequestUndockWindow(CodeBlocksEvent& event)
 void MainFrame::OnRequestShowDockWindow(CodeBlocksEvent& event)
 {
     // stub
-}
-
-void MainFrame::OnSettingsNetworkProxy(wxCommandEvent& event)
-{
-	Manager::Get()->GetConfigManager(_T("app"))->Write(_T("network_proxy"), wxGetTextFromUser(_T("Please enter")
-		_T("your network proxy for all internet connections made by Code::Blocks.\n")
-		_T("Format: hostname:port"), _T("Network proxy")));
 }

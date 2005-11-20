@@ -34,6 +34,7 @@
 #include <projectmanager.h>
 #include <editormanager.h>
 #include <customvars.h>
+#include <annoyingdialog.h>
 #include <wx/xrc/xmlres.h>
 #include "makefilegenerator.h"
 #include "compileroptionsdlg.h"
@@ -1639,14 +1640,17 @@ void CompilerGCC::OnCompileFile(wxCommandEvent& event)
 
 void CompilerGCC::OnRebuild(wxCommandEvent& event)
 {
-	if (wxMessageBox(_("Rebuilding the project will cause the deletion of all "
+    AnnoyingDialog dlg(_("Rebuild project"),
+                        _("Rebuilding the project will cause the deletion of all "
                         "object files and building it from scratch.\nThis action "
                         "might take a while, especially if your project contains "
                         "more than a few files.\nAnother factor is your CPU "
                         "and the available system memory.\n\n"
                         "Are you sure you want to rebuild the entire project?"),
-					_("Rebuild project"),
-					wxYES_NO | wxICON_QUESTION) == wxNO)
+					wxART_QUESTION,
+					AnnoyingDialog::YES_NO,
+					wxID_YES);
+    if (dlg.ShowModal() == wxID_NO)
     {
         return;
     }
@@ -1682,14 +1686,17 @@ void CompilerGCC::OnCompileAll(wxCommandEvent& event)
 
 void CompilerGCC::OnRebuildAll(wxCommandEvent& event)
 {
-	if (wxMessageBox(_("Rebuilding ALL the open projects will cause the deletion of all "
+    AnnoyingDialog dlg(_("Rebuild workspace"),
+                        _("Rebuilding ALL the open projects will cause the deletion of all "
                         "object files and building them from scratch.\nThis action "
                         "might take a while, especially if your projects contain "
                         "more than a few files.\nAnother factor is your CPU "
                         "and the available system memory.\n\n"
                         "Are you sure you want to rebuild ALL the projects?"),
-					_("Rebuild projects"),
-					wxYES_NO | wxICON_QUESTION) == wxNO)
+					wxART_QUESTION,
+					AnnoyingDialog::YES_NO,
+					wxID_YES);
+	if (dlg.ShowModal() == wxID_NO)
     {
         return;
     }
@@ -1698,7 +1705,8 @@ void CompilerGCC::OnRebuildAll(wxCommandEvent& event)
 
 void CompilerGCC::OnClean(wxCommandEvent& event)
 {
-	if (wxMessageBox(_("Cleaning the target or project will cause the deletion "
+    AnnoyingDialog dlg(_("Clean project"),
+                        _("Cleaning the target or project will cause the deletion "
                         "of all relevant object files.\nThis means that you will "
                         "have to build your project from scratch next time you "
                         "'ll want to build it.\nThat action "
@@ -1706,8 +1714,10 @@ void CompilerGCC::OnClean(wxCommandEvent& event)
                         "more than a few files.\nAnother factor is your CPU "
                         "and the available system memory.\n\n"
                         "Are you sure you want to proceed to cleaning?"),
-					_("Clean target/project"),
-					wxYES_NO | wxICON_QUESTION) == wxNO)
+					wxART_QUESTION,
+					AnnoyingDialog::YES_NO,
+					wxID_YES);
+	if (dlg.ShowModal() == wxID_NO)
     {
         return;
     }
@@ -1738,7 +1748,8 @@ void CompilerGCC::OnClean(wxCommandEvent& event)
 
 void CompilerGCC::OnDistClean(wxCommandEvent& event)
 {
-	if (wxMessageBox(_("Dist-cleaning the target or project will cause the deletion "
+    AnnoyingDialog dlg(_("Dist-clean project"),
+                        _("Dist-cleaning the target or project will cause the deletion "
                         "of all relevant object files.\nThis means that you will "
                         "have to build your project from scratch next time you "
                         "'ll want to build it.\nThat action "
@@ -1746,8 +1757,10 @@ void CompilerGCC::OnDistClean(wxCommandEvent& event)
                         "more than a few files.\nAnother factor is your CPU "
                         "and the available system memory.\n\n"
                         "Are you sure you want to proceed to dist-cleaning?"),
-					_("Dist-clean target/project"),
-					wxYES_NO | wxICON_QUESTION) == wxNO)
+					wxART_QUESTION,
+					AnnoyingDialog::YES_NO,
+					wxID_YES);
+	if (dlg.ShowModal() == wxID_NO)
     {
         return;
     }
