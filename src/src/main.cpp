@@ -1084,7 +1084,7 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
                 DoCloseCurrentWorkspace())
             {
                 PRJMAN()->LoadWorkspace(filename);
-                m_ProjectsHistory.AddFileToHistory(filename);
+                AddToRecentProjectsHistory(filename);
             }
             else
                 return false;
@@ -1137,7 +1137,7 @@ bool MainFrame::DoOpenProject(const wxString& filename, bool addToHistory)
     if (prj)
     {
 		if (addToHistory)
-			m_ProjectsHistory.AddFileToHistory(prj->GetFilename());
+			AddToRecentProjectsHistory(prj->GetFilename());
         return true;
     }
     return false;
@@ -1148,7 +1148,7 @@ bool MainFrame::DoOpenFile(const wxString& filename, bool addToHistory)
     if (EDMAN()->Open(filename))
     {
 		if (addToHistory)
-			m_FilesHistory.AddFileToHistory(filename);
+			AddToRecentFilesHistory(filename);
         return true;
     }
     return false;
@@ -1356,6 +1356,84 @@ void MainFrame::InitializeRecentFilesHistory()
     }
 }
 
+void MainFrame::AddToRecentFilesHistory(const wxString& filename)
+{
+    m_FilesHistory.AddFileToHistory(filename);
+
+    // because we append "clear history" menu to the end of the list,
+    // each time we must add a history item we have to:
+    // a) remove "Clear history"
+    // b) clear the menu
+    // c) fill it with the history items
+    // and d) append "Clear history"...
+    wxMenuBar* mbar = GetMenuBar();
+    if (!mbar)
+        return;
+    int pos = mbar->FindMenu(_("&File"));
+    if (pos == wxNOT_FOUND)
+        return;
+    wxMenu* menu = mbar->GetMenu(pos);
+    if (!menu)
+        return;
+    wxMenu* recentFiles = 0;
+    wxMenuItem* clear = menu->FindItem(idFileOpenRecentFileClearHistory, &recentFiles);
+    if (clear && recentFiles)
+    {
+        // a)
+        recentFiles->Remove(clear);
+        // b)
+        m_FilesHistory.RemoveMenu(recentFiles);
+        while (recentFiles->GetMenuItemCount())
+            recentFiles->Delete(recentFiles->GetMenuItems()[0]);
+        // c)
+        m_FilesHistory.UseMenu(recentFiles);
+        m_FilesHistory.AddFilesToMenu(recentFiles);
+        // d)
+        if (recentFiles->GetMenuItemCount())
+            recentFiles->AppendSeparator();
+        recentFiles->Append(clear);
+    }
+}
+
+void MainFrame::AddToRecentProjectsHistory(const wxString& filename)
+{
+    m_ProjectsHistory.AddFileToHistory(filename);
+
+    // because we append "clear history" menu to the end of the list,
+    // each time we must add a history item we have to:
+    // a) remove "Clear history"
+    // b) clear the menu
+    // c) fill it with the history items
+    // and d) append "Clear history"...
+    wxMenuBar* mbar = GetMenuBar();
+    if (!mbar)
+        return;
+    int pos = mbar->FindMenu(_("&File"));
+    if (pos == wxNOT_FOUND)
+        return;
+    wxMenu* menu = mbar->GetMenu(pos);
+    if (!menu)
+        return;
+    wxMenu* recentProjects = 0;
+    wxMenuItem* clear = menu->FindItem(idFileOpenRecentProjectClearHistory, &recentProjects);
+    if (clear && recentProjects)
+    {
+        // a)
+        recentProjects->Remove(clear);
+        // b)
+        m_ProjectsHistory.RemoveMenu(recentProjects);
+        while (recentProjects->GetMenuItemCount())
+            recentProjects->Delete(recentProjects->GetMenuItems()[0]);
+        // c)
+        m_ProjectsHistory.UseMenu(recentProjects);
+        m_ProjectsHistory.AddFilesToMenu(recentProjects);
+        // d)
+        if (recentProjects->GetMenuItemCount())
+            recentProjects->AppendSeparator();
+        recentProjects->Append(clear);
+    }
+}
+
 void MainFrame::TerminateRecentFilesHistory()
 {
     wxArrayString files;
@@ -1502,7 +1580,7 @@ void MainFrame::OnFileOpen(wxCommandEvent& event)
 void MainFrame::OnFileReopenProject(wxCommandEvent& event)
 {
     wxString fname = m_ProjectsHistory.GetHistoryFile(event.GetId() - wxID_FILE10);
-    DoOpenProject(fname, false);
+    OpenGeneric(fname, true);
 }
 
 void MainFrame::OnFileOpenRecentProjectClearHistory(wxCommandEvent& event)
@@ -1510,14 +1588,14 @@ void MainFrame::OnFileOpenRecentProjectClearHistory(wxCommandEvent& event)
     while (m_ProjectsHistory.GetCount())
 	{
         m_ProjectsHistory.RemoveFileFromHistory(0);
-		Manager::Get()->GetConfigManager(_T("app"))->DeleteSubPath(_T("/recent_projects"));
 	}
+    Manager::Get()->GetConfigManager(_T("app"))->DeleteSubPath(_T("/recent_projects"));
 }
 
 void MainFrame::OnFileReopen(wxCommandEvent& event)
 {
     wxString fname = m_FilesHistory.GetHistoryFile(event.GetId() - wxID_FILE1);
-    Open(fname, true);
+    OpenGeneric(fname, true);
 }
 
 void MainFrame::OnFileOpenRecentClearHistory(wxCommandEvent& event)
@@ -1525,8 +1603,8 @@ void MainFrame::OnFileOpenRecentClearHistory(wxCommandEvent& event)
     while (m_FilesHistory.GetCount())
 	{
         m_FilesHistory.RemoveFileFromHistory(0);
-		Manager::Get()->GetConfigManager(_T("app"))->DeleteSubPath(_T("/recent_files"));
 	}
+    Manager::Get()->GetConfigManager(_T("app"))->DeleteSubPath(_T("/recent_files"));
 }
 
 void MainFrame::OnFileSave(wxCommandEvent& event)
@@ -1560,13 +1638,13 @@ void MainFrame::OnFileSaveAllFiles(wxCommandEvent& event)
 void MainFrame::OnFileSaveWorkspace(wxCommandEvent& event)
 {
     if (PRJMAN()->SaveWorkspace())
-        m_ProjectsHistory.AddFileToHistory(PRJMAN()->GetWorkspace()->GetFilename());
+        AddToRecentProjectsHistory(PRJMAN()->GetWorkspace()->GetFilename());
 }
 
 void MainFrame::OnFileSaveWorkspaceAs(wxCommandEvent& event)
 {
     if (PRJMAN()->SaveWorkspaceAs(_T("")))
-        m_ProjectsHistory.AddFileToHistory(PRJMAN()->GetWorkspace()->GetFilename());
+        AddToRecentProjectsHistory(PRJMAN()->GetWorkspace()->GetFilename());
 }
 
 void MainFrame::OnFileClose(wxCommandEvent& WXUNUSED(event))
@@ -2051,14 +2129,14 @@ void MainFrame::OnProjectSaveProject(wxCommandEvent& event)
 {
     if (PRJMAN()->SaveActiveProject() ||
         PRJMAN()->SaveActiveProjectAs())
-        m_ProjectsHistory.AddFileToHistory(PRJMAN()->GetActiveProject()->GetFilename());
+        AddToRecentProjectsHistory(PRJMAN()->GetActiveProject()->GetFilename());
     DoUpdateStatusBar();
 }
 
 void MainFrame::OnProjectSaveProjectAs(wxCommandEvent& event)
 {
     if (PRJMAN()->SaveActiveProjectAs())
-        m_ProjectsHistory.AddFileToHistory(PRJMAN()->GetActiveProject()->GetFilename());
+        AddToRecentProjectsHistory(PRJMAN()->GetActiveProject()->GetFilename());
     DoUpdateStatusBar();
 }
 

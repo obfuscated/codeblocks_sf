@@ -217,6 +217,8 @@ class MainFrame : public wxFrame
         void SaveWindowState();
 
         void InitializeRecentFilesHistory();
+        void AddToRecentFilesHistory(const wxString& filename);
+        void AddToRecentProjectsHistory(const wxString& filename);
         void TerminateRecentFilesHistory();
 
         wxFileHistory m_FilesHistory;
