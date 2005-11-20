@@ -30,7 +30,7 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent)
 
     // tab "View"
     XRCCTRL(*this, "rbProjectOpen", wxRadioBox)->SetSelection(pcfg->ReadInt(_T("/open_files"), 1));
-    XRCCTRL(*this, "rbToolbarSize", wxRadioBox)->SetSelection(cfg->ReadInt(_T("/environment/toolbar_size"), 1));
+    XRCCTRL(*this, "rbToolbarSize", wxRadioBox)->SetSelection(cfg->ReadBool(_T("/environment/toolbar_size"), true) ? 1 : 0);
     XRCCTRL(*this, "chkAutoHideMessages", wxCheckBox)->SetValue(mcfg->ReadBool(_T("/auto_hide"), false));
     XRCCTRL(*this, "chkShowEditorCloseButton", wxCheckBox)->SetValue(ecfg->ReadBool(_T("/show_close_button"), false));
     XRCCTRL(*this, "chkShowStartPage", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/start_here_page"), true));
@@ -78,8 +78,8 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
 
         // tab "View"
         cfg->Write(_T("/environment/blank_workspace"),       (bool) XRCCTRL(*this, "rbAppStart", wxRadioBox)->GetSelection() ? true : false);
-        pcfg->Write(_T("/open_files"),                       (int) XRCCTRL(*this, "rbProjectOpen", wxRadioBox)->GetSelection());
-        cfg->Write(_T("/environment/toolbar_size"),          (int)  XRCCTRL(*this, "rbToolbarSize", wxRadioBox)->GetSelection());
+        pcfg->Write(_T("/open_files"),                       (int)  XRCCTRL(*this, "rbProjectOpen", wxRadioBox)->GetSelection());
+        cfg->Write(_T("/environment/toolbar_size"),          (bool) XRCCTRL(*this, "rbToolbarSize", wxRadioBox)->GetSelection() == 1);
         mcfg->Write(_T("/auto_hide"),                        (bool) XRCCTRL(*this, "chkAutoHideMessages", wxCheckBox)->GetValue());
         ecfg->Write(_T("/show_close_button"),                (bool) XRCCTRL(*this, "chkShowEditorCloseButton", wxCheckBox)->GetValue());
         cfg->Write(_T("/environment/start_here_page"),       (bool) XRCCTRL(*this, "chkShowStartPage", wxCheckBox)->GetValue());

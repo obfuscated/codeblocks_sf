@@ -16,7 +16,7 @@ AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message,
         dontAnnoy(false),
         defRet(defaultReturn)
 {
-    if (Manager::Get()->GetConfigManager("an_dlg")->Exists(caption))
+    if (Manager::Get()->GetConfigManager(_T("an_dlg"))->Exists(caption))
     {
         dontAnnoy = true;
         return;
@@ -47,7 +47,7 @@ AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message,
         numButtons = 1;
         growableCol = -1;
         id1 = (style == OK ? wxID_OK : 1);
-        bTxt1 = b1.IsEmpty() ? _T("OK") : b1;
+        bTxt1 = b1.IsEmpty() ? wxString(_("OK")) : b1;
     }
     else if(style == YES_NO || style == OK_CANCEL || style == TWO_BUTTONS)
     {
@@ -55,8 +55,8 @@ AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message,
         growableCol = -1;
         id1 = (style == YES_NO ? wxID_YES : (style == OK_CANCEL ? wxID_OK     : 1));
         id2 = (style == YES_NO ? wxID_NO  : (style == OK_CANCEL ? wxID_CANCEL : 2));
-        bTxt1 = b1.IsEmpty() ? (style == YES_NO ? wxString(_T("Yes")) : wxString(_T("OK")))     : b1;
-        bTxt2 = b2.IsEmpty() ? (style == YES_NO ? wxString(_T("No"))  : wxString(_T("Cancel"))) : b2;
+        bTxt1 = b1.IsEmpty() ? (style == YES_NO ? wxString(_("Yes")) : wxString(_("OK")))     : b1;
+        bTxt2 = b2.IsEmpty() ? (style == YES_NO ? wxString(_("No"))  : wxString(_("Cancel"))) : b2;
     }
     else if(style == YES_NO_CANCEL || style == THREE_BUTTONS)
     {
@@ -65,9 +65,9 @@ AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message,
         id1 = (style == YES_NO_CANCEL ? wxID_CANCEL : 1);
         id2 = (style == YES_NO_CANCEL ? wxID_YES    : 2);
         id3 = (style == YES_NO_CANCEL ? wxID_NO     : 3);
-        bTxt1 = b1.IsEmpty() ? _T("Cancel") : b1;
-        bTxt2 = b2.IsEmpty() ? _T("Cancel") : b2;
-        bTxt3 = b3.IsEmpty() ? _T("Cancel") : b3;
+        bTxt1 = b1.IsEmpty() ? wxString(_("Cancel")) : b1;
+        bTxt2 = b2.IsEmpty() ? wxString(_("Cancel")) : b2;
+        bTxt3 = b3.IsEmpty() ? wxString(_("Cancel")) : b3;
     }
     else
         cbThrow(wxString(_T("Fatal error:\nUndefined style in dialog ")) << caption);
@@ -114,7 +114,7 @@ void AnnoyingDialog::OnButton(wxCommandEvent& event)
         cbThrow(_T("Ow... null pointer."));
 
     if(cb->IsChecked())
-        Manager::Get()->GetConfigManager("an_dlg")->Write(GetTitle(), GetTitle());
+        Manager::Get()->GetConfigManager(_T("an_dlg"))->Write(GetTitle(), GetTitle());
     EndModal(event.GetId());
 }
 
