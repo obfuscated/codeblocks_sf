@@ -529,11 +529,11 @@ void EditorConfigurationDlg::OnChangeDefCodeFileType(wxCommandEvent& event)
 	int sel = XRCCTRL(*this, "cmbDefCodeFileType", wxComboBox)->GetSelection();
 	if (sel != m_DefCodeFileType)
 	{
-        key.Printf(_T("/default_code/%d"), IdxToFileType[m_DefCodeFileType]);
+        key.Printf(_T("/default_code/set%d"), IdxToFileType[m_DefCodeFileType]);
         Manager::Get()->GetConfigManager(_T("editor"))->Write(key, XRCCTRL(*this, "txtDefCode", wxTextCtrl)->GetValue());
 	}
 	m_DefCodeFileType = sel;
-    key.Printf(_T("/default_code/%d"), IdxToFileType[m_DefCodeFileType]);
+    key.Printf(_T("/default_code/set%d"), IdxToFileType[m_DefCodeFileType]);
     XRCCTRL(*this, "txtDefCode", wxTextCtrl)->SetValue(Manager::Get()->GetConfigManager(_T("editor"))->Read(key, wxEmptyString));
 }
 
