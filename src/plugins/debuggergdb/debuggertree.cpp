@@ -32,7 +32,9 @@ int idDeleteAllWatches = wxNewId();
 class WatchTree : public wxTreeCtrl
 {
 	public:
-		WatchTree(wxWindow* parent, int id) : wxTreeCtrl(parent, id) {}
+		WatchTree(wxWindow* parent, int id)
+            : wxTreeCtrl(parent, id, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE | wxTR_HIDE_ROOT)
+        {}
 	protected:
 		void OnRightClick(wxMouseEvent& event)
 		{
@@ -78,7 +80,7 @@ DebuggerTree::DebuggerTree(wxEvtHandler* debugger, wxNotebook* parent)
 #ifndef __WXMSW__
 	m_pTree = new WatchTree(this, idTree);
 #else
-	m_pTree = new wxTreeCtrl(this, idTree);
+	m_pTree = new wxTreeCtrl(this, idTree, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE | wxTR_HIDE_ROOT);
 #endif
     bs->Add(m_pTree, 1, wxEXPAND | wxALL);
     SetAutoLayout(TRUE);
