@@ -18,13 +18,9 @@ class DebuggerTree : public wxPanel
 		virtual ~DebuggerTree();
 		wxTreeCtrl* GetTree(){ return m_pTree; }
 
-		void ResetTree(); ///< Called by the debugger plugin
-		void BuildTree(const wxString& infoText); ///< adds a new node to the tree, parsing @c infoText
-		/** Because of the queued commands, we have no way of knowing when the tree is ready for display.
-		But if the debugger tells us that BuildTree() is expected to be called, say, 5 times we can
-		count ;)
-		*/
-		void SetNumberOfUpdates(int num){ m_NumUpdates = num; }
+		void BeginUpdateTree(); ///< Clears and freezes the tree for massive updates
+		void BuildTree(const wxString& infoText, WatchStringFormat fmt); ///< adds a new node to the tree, parsing @c infoText
+		void EndUpdateTree(); ///< Un-freezes the tree
 
 		void ClearWatches();
 		void SetWatches(const WatchesArray& watches);
@@ -35,6 +31,8 @@ class DebuggerTree : public wxPanel
 		Watch* FindWatch(const wxString& watch, WatchFormat format = Any);
 		int FindWatchIndex(const wxString& watch, WatchFormat format = Any);
 	protected:
+		void BuildTreeGDB(const wxString& infoText);
+		void BuildTreeCDB(const wxString& infoText);
         void NotifyForChangedWatches();
 		void ShowMenu(wxTreeItemId id, const wxPoint& pt);
 		void OnTreeRightClick(wxTreeEvent& event);
@@ -58,6 +56,7 @@ class DebuggerTree : public wxPanel
 	private:
         int FindCharOutsideQuotes(const wxString& str, wxChar ch); // returns position of ch in str
         int FindCommaPos(const wxString& str); // ignores commas in function signatures
+        bool m_InUpdateBlock;
 		DECLARE_EVENT_TABLE()
 };
 

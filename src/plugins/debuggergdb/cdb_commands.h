@@ -226,57 +226,57 @@ class CdbCmd_RemoveBreakpoint : public DebuggerCmd
         DebuggerBreakpoint* m_BP;
 };
 
-/**
-  * Command to get info about local frame variables.
-  */
-class CdbCmd_InfoLocals : public DebuggerCmd
-{
-        DebuggerTree* m_pDTree;
-    public:
-        /** @param tree The tree to display the locals. */
-        CdbCmd_InfoLocals(DebuggerDriver* driver, DebuggerTree* dtree)
-            : DebuggerCmd(driver),
-            m_pDTree(dtree)
-        {
-            m_Cmd << _T("info locals");
-        }
-        void ParseOutput(const wxString& output)
-        {
-            wxArrayString lines = GetArrayFromString(output, _T('\n'));
-            wxString locals;
-    		locals << _T("Local variables = {");
-    		for (unsigned int i = 0; i < lines.GetCount(); ++i)
-                locals << lines[i] << _T(',');
-            locals << _T("}") << _T('\n');
-            m_pDTree->BuildTree(locals);
-        }
-};
+// /**
+//  * Command to get info about local frame variables.
+//  */
+//class CdbCmd_InfoLocals : public DebuggerCmd
+//{
+//        DebuggerTree* m_pDTree;
+//    public:
+//        /** @param tree The tree to display the locals. */
+//        CdbCmd_InfoLocals(DebuggerDriver* driver, DebuggerTree* dtree)
+//            : DebuggerCmd(driver),
+//            m_pDTree(dtree)
+//        {
+//            m_Cmd << _T("info locals");
+//        }
+//        void ParseOutput(const wxString& output)
+//        {
+//            wxArrayString lines = GetArrayFromString(output, _T('\n'));
+//            wxString locals;
+//    		locals << _T("Local variables = {");
+//    		for (unsigned int i = 0; i < lines.GetCount(); ++i)
+//                locals << lines[i] << _T(',');
+//            locals << _T("}") << _T('\n');
+//            m_pDTree->BuildTree(locals);
+//        }
+//};
 
-/**
-  * Command to get info about current function arguments.
-  */
-class CdbCmd_InfoArguments : public DebuggerCmd
-{
-        DebuggerTree* m_pDTree;
-    public:
-        /** @param tree The tree to display the args. */
-        CdbCmd_InfoArguments(DebuggerDriver* driver, DebuggerTree* dtree)
-            : DebuggerCmd(driver),
-            m_pDTree(dtree)
-        {
-            m_Cmd << _T("info args");
-        }
-        void ParseOutput(const wxString& output)
-        {
-            wxArrayString lines = GetArrayFromString(output, _T('\n'));
-            wxString args;
-    		args << _T("Function Arguments = {");
-    		for (unsigned int i = 0; i < lines.GetCount(); ++i)
-                args << lines[i] << _T(',');
-            args << _T("}") << _T('\n');
-            m_pDTree->BuildTree(args);
-        }
-};
+// /**
+//  * Command to get info about current function arguments.
+//  */
+//class CdbCmd_InfoArguments : public DebuggerCmd
+//{
+//        DebuggerTree* m_pDTree;
+//    public:
+//        /** @param tree The tree to display the args. */
+//        CdbCmd_InfoArguments(DebuggerDriver* driver, DebuggerTree* dtree)
+//            : DebuggerCmd(driver),
+//            m_pDTree(dtree)
+//        {
+//            m_Cmd << _T("info args");
+//        }
+//        void ParseOutput(const wxString& output)
+//        {
+//            wxArrayString lines = GetArrayFromString(output, _T('\n'));
+//            wxString args;
+//    		args << _T("Function Arguments = {");
+//    		for (unsigned int i = 0; i < lines.GetCount(); ++i)
+//                args << lines[i] << _T(',');
+//            args << _T("}") << _T('\n');
+//            m_pDTree->BuildTree(args);
+//        }
+//};
 
 /**
   * Command to get info about a watched variable.
@@ -292,7 +292,9 @@ class CdbCmd_Watch : public DebuggerCmd
             m_pDTree(dtree),
             m_pWatch(watch)
         {
-            m_Cmd << _T("?? ") << /*Watch::FormatCommand(m_pWatch->format) << */_T(" ") << m_pWatch->keyword;
+            if (m_pWatch->format != Undefined)
+                m_pDriver->DebugLog(_T("Watch formats are not supported by this driver"));
+            m_Cmd << _T("?? ") << m_pWatch->keyword;
         }
         void ParseOutput(const wxString& output)
         {
@@ -314,36 +316,14 @@ class CdbCmd_Watch : public DebuggerCmd
 //
 //            char * 0x0040aa30
 //             "CodeBlocksWindowsApp"
+
+            // just remove struct offsets
             wxRegEx re(_T("(\\+0x[A-Fa-f0-9]+ )"));
-            wxArrayString lines = GetArrayFromString(output, _T('\n'), false);
-            wxString w;
-            int braces = 0;
-            size_t col = 0;
-    		w << m_pWatch->keyword << _T(" = ");
-    		for (unsigned int i = 0; i < lines.GetCount(); ++i)
-    		{
-//                m_pDriver->Log(lines[i]);
-    		    size_t thiscol = lines[i].find_first_not_of(_T(" \t"));
-    		    if (thiscol > col){ ++braces; w << _T('{'); col = thiscol; }
-    		    else if (thiscol < col){ --braces; w << _T("},"); col = thiscol; }
-    		    else
-    		    {
-                    size_t nextcol = i < lines.GetCount() - 1 ? lines[i + 1].find_first_not_of(_T(" \t")) : wxString::npos;
-                    if (nextcol == thiscol || (i != 0 && nextcol == wxString::npos))
-                        w << _T(',');
-    		    }
-    		    if (lines[i].Contains(_T(':'))) lines[i].Replace(_T(":"), _T("="));
-    		    while (lines[i].Replace(_T("  ="), _T(" =")))
-                    ;
-    		    if (re.Matches(lines[i]))
-                    lines[i].Replace(re.GetMatch(lines[i], 1), wxEmptyString);
-                w << lines[i];
-    		}
-    		if (braces > 0)
-                w << _T("},");
-            w << _T('\n');
-//            m_pDriver->Log(w);
-            m_pDTree->BuildTree(w);
+            wxString lines = output;
+            if (re.Matches(lines))
+                re.ReplaceAll(&lines, wxEmptyString);
+
+            m_pDTree->BuildTree(m_pWatch->keyword + _T(" = ") + lines, wsfCDB);
         }
 };
 

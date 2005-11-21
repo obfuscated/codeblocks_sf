@@ -1,3 +1,4 @@
+#include <sdk.h>
 #include "debuggerdriver.h"
 #include "debuggergdb.h"
 
@@ -76,6 +77,18 @@ void DebuggerDriver::RunQueue()
     {
         m_QueueBusy = true;
         m_pDBG->SendCommand(CurrentCommand()->m_Cmd);
+    }
+
+    // Call Action()
+    CurrentCommand()->Action();
+
+    // If the command was an action (i.e. no command specified,
+    // remove it from the queue and run the next command.
+    // For other commands, this happens in driver's ParseOutput().
+    if (CurrentCommand()->m_Cmd.IsEmpty())
+    {
+        RemoveTopCommand(true);
+        RunQueue();
     }
 }
 

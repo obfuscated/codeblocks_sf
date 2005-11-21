@@ -162,10 +162,8 @@ void CDB_driver::EvaluateSymbol(const wxString& symbol, wxTipWindow** tipWin, co
 
 void CDB_driver::UpdateWatches(bool doLocals, bool doArgs, DebuggerTree* tree)
 {
-    NOT_IMPLEMENTED();
-    // clear watches tree
-    tree->ResetTree();
-    tree->SetNumberOfUpdates(0 + tree->GetWatches().GetCount()); // watches + locals + args
+    // start updating watches tree
+    tree->BeginUpdateTree();
 
     // locals before args because of precedence
 //    if (doLocals)
@@ -177,6 +175,9 @@ void CDB_driver::UpdateWatches(bool doLocals, bool doArgs, DebuggerTree* tree)
         Watch& w = tree->GetWatches()[i];
         QueueCommand(new CdbCmd_Watch(this, tree, &w));
     }
+
+    // run this action-only command to update the tree
+    QueueCommand(new DbgCmd_UpdateWatchesTree(this, tree));
 }
 
 void CDB_driver::Detach()

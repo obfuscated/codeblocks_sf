@@ -56,11 +56,11 @@ void CompilerMSVC::Reset()
 
     m_Options.ClearOptions();
 	m_Options.AddOption(_("Produce debugging symbols"),
-				_T("/Zi"),
+				_T("/Zi /DDEBUG"),
 				_("Debugging"),
 				_T("/DEBUG"),
 				true,
-				_T("/Og /O1 /O2 /Os /Ot /Ox"),
+				_T("/Og /O1 /O2 /Os /Ot /Ox /NDEBUG"),
 				_("You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."));
 	m_Options.AddOption(_("Enable all compiler warnings"), _T("/Wall"), _("Warnings"));
 	m_Options.AddOption(_("Enable warnings level 1"), _T("/W1"), _("Warnings"));

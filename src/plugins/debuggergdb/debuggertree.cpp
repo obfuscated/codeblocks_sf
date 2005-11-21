@@ -11,6 +11,7 @@
 #include "debuggertree.h"
 #include <manager.h>
 #include <messagemanager.h>
+#include <cbexception.h>
 
 #include "editwatchdlg.h"
 
@@ -73,8 +74,7 @@ DebuggerTree::DebuggerTree(wxEvtHandler* debugger, wxNotebook* parent)
     : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxCLIP_CHILDREN),
     m_pParent(parent),
 	m_pDebugger(debugger),
-	m_NumUpdates(0),
-	m_CurrNumUpdates(0)
+	m_InUpdateBlock(false)
 {
     wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
 #ifndef __WXMSW__
@@ -88,8 +88,6 @@ DebuggerTree::DebuggerTree(wxEvtHandler* debugger, wxNotebook* parent)
 
     m_pParent->AddPage(this, _("Watches"));
     m_PageIndex = m_pParent->GetPageCount() - 1;
-
-    BuildTree(wxEmptyString);
 }
 
 DebuggerTree::~DebuggerTree()
@@ -98,45 +96,49 @@ DebuggerTree::~DebuggerTree()
 	m_pParent->RemovePage(m_PageIndex);
 }
 
-void DebuggerTree::ResetTree()
+void DebuggerTree::BeginUpdateTree()
 {
+    if (m_InUpdateBlock)
+    {
+        Manager::Get()->GetMessageManager()->DebugLogWarning(_T("DebuggerTree::BeginUpdateTree() while already in update block"));
+        return;
+    }
+
     if (m_pTree->IsExpanded(m_pTree->GetRootItem()))
         ::SaveTreeState(m_pTree, m_pTree->GetRootItem(), m_TreeState);
 	m_pTree->Freeze();
 
 	m_pTree->DeleteAllItems();
 	wxTreeItemId root = m_pTree->AddRoot(_("Watches"));
+	m_InUpdateBlock = true;
 }
 
-void DebuggerTree::BuildTree(const wxString& infoText)
+void DebuggerTree::BuildTree(const wxString& infoText, WatchStringFormat fmt)
 {
-//    Manager::Get()->GetMessageManager()->DebugLog("DebuggerTree::BuildTree(): Parsing '%s'", infoText.c_str());
-	wxString buffer = infoText;
-	// remove CRLFs (except if inside quotes)
-	int len = buffer.Length();
-	bool inQuotes = false;
-	for (int i = 0; i < len; ++i)
-	{
-        if (buffer.GetChar(i) == _T('"') && (i == 0 || (i > 0 && buffer.GetChar(i - 1) != _T('\\'))))
-            inQuotes = !inQuotes;
-        if (!inQuotes)
-        {
-            if (buffer.GetChar(i) == _T('\r'))
-                buffer.SetChar(i, _T(' '));
-            else if (buffer.GetChar(i) == _T('\n'))
-                buffer.SetChar(i, _T(','));
-        }
-	}
-	ParseEntry(m_pTree->GetRootItem(), buffer);
-
-    ++m_CurrNumUpdates;
-    if (m_CurrNumUpdates >= m_NumUpdates)
+    if (!m_InUpdateBlock)
     {
-        ::RestoreTreeState(m_pTree, m_pTree->GetRootItem(), m_TreeState);
-        m_pTree->Expand(m_pTree->GetRootItem());
-    	m_pTree->Thaw();
-    	m_CurrNumUpdates = 0;
+        Manager::Get()->GetMessageManager()->DebugLogWarning(_T("DebuggerTree::BuildTree() while not in update block"));
+        return;
     }
+
+    if (fmt == wsfGDB)
+        BuildTreeGDB(infoText);
+    else
+        BuildTreeCDB(infoText);
+}
+
+void DebuggerTree::EndUpdateTree()
+{
+    if (!m_InUpdateBlock)
+    {
+        Manager::Get()->GetMessageManager()->DebugLogWarning(_T("DebuggerTree::EndUpdateTree() while not in update block"));
+        return;
+    }
+
+    ::RestoreTreeState(m_pTree, m_pTree->GetRootItem(), m_TreeState);
+    m_pTree->Expand(m_pTree->GetRootItem());
+    m_pTree->Thaw();
+    m_InUpdateBlock = false;
 }
 
 int DebuggerTree::FindCharOutsideQuotes(const wxString& str, wxChar ch)
@@ -241,6 +243,54 @@ void DebuggerTree::ParseEntry(const wxTreeItemId& parent, wxString& text)
 		}
 	}
 #undef MIN
+}
+
+void DebuggerTree::BuildTreeGDB(const wxString& infoText)
+{
+//    Manager::Get()->GetMessageManager()->DebugLog("DebuggerTree::BuildTree(): Parsing '%s'", infoText.c_str());
+	wxString buffer = infoText;
+	// remove CRLFs (except if inside quotes)
+	int len = buffer.Length();
+	bool inQuotes = false;
+	for (int i = 0; i < len; ++i)
+	{
+        if (buffer.GetChar(i) == _T('"') && (i == 0 || (i > 0 && buffer.GetChar(i - 1) != _T('\\'))))
+            inQuotes = !inQuotes;
+        if (!inQuotes)
+        {
+            if (buffer.GetChar(i) == _T('\r'))
+                buffer.SetChar(i, _T(' '));
+            else if (buffer.GetChar(i) == _T('\n'))
+                buffer.SetChar(i, _T(','));
+        }
+	}
+	ParseEntry(m_pTree->GetRootItem(), buffer);
+}
+
+void DebuggerTree::BuildTreeCDB(const wxString& infoText)
+{
+    wxTreeItemId parent = m_pTree->GetRootItem();
+    wxTreeItemId node = parent;
+
+    wxArrayString lines = GetArrayFromString(infoText, _T('\n'), false);
+    size_t col = lines[0].find_first_not_of(_T(" \t"));
+    for (unsigned int i = 0; i < lines.GetCount(); ++i)
+    {
+        size_t thiscol = lines[i].find_first_not_of(_T(" \t"));
+        if (thiscol > col)
+        {
+            // add child node
+            parent = node;
+            col = thiscol;
+        }
+        else if (thiscol < col)
+        {
+            // go one level up
+            parent = m_pTree->GetItemParent(parent);
+            col = thiscol;
+        }
+        node = m_pTree->AppendItem(parent, lines[i].Strip(wxString::both));
+    }
 }
 
 void DebuggerTree::ClearWatches()

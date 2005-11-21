@@ -311,7 +311,7 @@ class GdbCmd_InfoLocals : public DebuggerCmd
     		for (unsigned int i = 0; i < lines.GetCount(); ++i)
                 locals << lines[i] << _T(',');
             locals << _T("}") << _T('\n');
-            m_pDTree->BuildTree(locals);
+            m_pDTree->BuildTree(locals, wsfGDB);
         }
 };
 
@@ -337,7 +337,7 @@ class GdbCmd_InfoArguments : public DebuggerCmd
     		for (unsigned int i = 0; i < lines.GetCount(); ++i)
                 args << lines[i] << _T(',');
             args << _T("}") << _T('\n');
-            m_pDTree->BuildTree(args);
+            m_pDTree->BuildTree(args, wsfGDB);
         }
 };
 
@@ -355,7 +355,17 @@ class GdbCmd_Watch : public DebuggerCmd
             m_pDTree(dtree),
             m_pWatch(watch)
         {
-            m_Cmd << _T("output ") << Watch::FormatCommand(m_pWatch->format) << _T(" ") << m_pWatch->keyword;
+            m_Cmd << _T("output ");
+            switch (m_pWatch->format)
+            {
+                case Decimal:       m_Cmd << _T("/d "); break;
+                case Unsigned:      m_Cmd << _T("/u "); break;
+                case Hex:           m_Cmd << _T("/x "); break;
+                case Binary:        m_Cmd << _T("/t "); break;
+                case Char:          m_Cmd << _T("/c "); break;
+                default:            break;
+            }
+            m_Cmd << m_pWatch->keyword;
         }
         void ParseOutput(const wxString& output)
         {
@@ -365,7 +375,7 @@ class GdbCmd_Watch : public DebuggerCmd
     		for (unsigned int i = 0; i < lines.GetCount(); ++i)
                 w << lines[i] << _T(',');
             w << _T('\n');
-            m_pDTree->BuildTree(w);
+            m_pDTree->BuildTree(w, wsfGDB);
         }
 };
 
