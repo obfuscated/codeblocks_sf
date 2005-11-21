@@ -244,8 +244,7 @@ void DebuggerTree::ParseEntry(const wxTreeItemId& parent, wxString& text)
 void DebuggerTree::ClearWatches()
 {
 	m_Watches.Clear();
-	wxCommandEvent event(cbCustom_WATCHES_CHANGED);
-	wxPostEvent(m_pDebugger, event);
+	NotifyForChangedWatches();
 }
 
 int SortWatchesByName(Watch** first, Watch** second)
@@ -253,19 +252,25 @@ int SortWatchesByName(Watch** first, Watch** second)
     return (*first)->keyword.Cmp((*second)->keyword);
 }
 
-void DebuggerTree::AddWatch(const wxString& watch, WatchFormat format)
+void DebuggerTree::AddWatch(const wxString& watch, WatchFormat format, bool notify)
 {
     if (FindWatchIndex(watch, format) != wxNOT_FOUND)
         return; // already there
 	m_Watches.Add(Watch(watch, format));
 	m_Watches.Sort(SortWatchesByName);
-	wxCommandEvent event(cbCustom_WATCHES_CHANGED);
-	wxPostEvent(m_pDebugger, event);
+
+	if (notify)
+        NotifyForChangedWatches();
 }
 
 void DebuggerTree::SetWatches(const WatchesArray& watches)
 {
 	m_Watches = watches;
+	NotifyForChangedWatches();
+}
+
+void DebuggerTree::NotifyForChangedWatches()
+{
 	wxCommandEvent event(cbCustom_WATCHES_CHANGED);
 	wxPostEvent(m_pDebugger, event);
 }
@@ -275,20 +280,19 @@ const WatchesArray& DebuggerTree::GetWatches()
 	return m_Watches;
 }
 
-void DebuggerTree::DeleteWatch(const wxString& watch, WatchFormat format)
+void DebuggerTree::DeleteWatch(const wxString& watch, WatchFormat format, bool notify)
 {
     int idx = FindWatchIndex(watch, format);
     if (idx != wxNOT_FOUND)
         m_Watches.RemoveAt(idx);
-	wxCommandEvent event(cbCustom_WATCHES_CHANGED);
-	wxPostEvent(m_pDebugger, event);
+    if (notify)
+        NotifyForChangedWatches();
 }
 
 void DebuggerTree::DeleteAllWatches()
 {
     m_Watches.Clear();
-	wxCommandEvent event(cbCustom_WATCHES_CHANGED);
-	wxPostEvent(m_pDebugger, event);
+	NotifyForChangedWatches();
 }
 
 Watch* DebuggerTree::FindWatch(const wxString& watch, WatchFormat format)
@@ -320,8 +324,6 @@ void DebuggerTree::ShowMenu(wxTreeItemId id, const wxPoint& pt)
 
 	// add watch always visible
 	menu.Append(idAddWatch, _("&Add watch"));
-	menu.Append(idLoadWatchFile, _("&Load watch file"));
-	menu.Append(idSaveWatchFile, _("&Save watch file"));
 
 	// we have to have a valid id for the following to be enabled
     if (id.IsOk() && // valid item
@@ -331,6 +333,9 @@ void DebuggerTree::ShowMenu(wxTreeItemId id, const wxPoint& pt)
         menu.Append(idEditWatch, _("&Edit watch"));
         menu.Append(idDeleteWatch, _("&Delete watch"));
 	}
+    menu.AppendSeparator();
+	menu.Append(idLoadWatchFile, _("&Load watch file"));
+	menu.Append(idSaveWatchFile, _("&Save watch file"));
     menu.AppendSeparator();
     menu.Append(idDeleteAllWatches, _("Delete all watches"));
 
@@ -364,6 +369,8 @@ void DebuggerTree::OnAddWatch(wxCommandEvent& event)
 
 void DebuggerTree::OnLoadWatchFile(wxCommandEvent& event)
 {
+    WatchesArray fromFile = m_Watches; // copy current watches
+
     // ToDo:
     // - Currently each watch is imported as WatchType "Unspecified". This should
     //   be changed that the file contains another (optional) column with the type.
@@ -391,12 +398,15 @@ void DebuggerTree::OnLoadWatchFile(wxCommandEvent& event)
             if (!cmd.IsEmpty()) // Skip empty lines
             {
 //                Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Adding watch \"%s\" to debugger:"), keyword);
-                AddWatch(cmd, Undefined);
+                AddWatch(cmd, Undefined, false); // do not notify about new watch (we 'll do it when done)
             }
             if (tf.Eof()) break;
                 cmd = tf.GetNextLine();
         }
         tf.Close(); // release file handle
+
+        // notify about changed watches
+        NotifyForChangedWatches();
     }
     else
         Manager::Get()->GetMessageManager()->Log(m_PageIndex,
@@ -467,9 +477,7 @@ void DebuggerTree::OnEditWatch(wxCommandEvent& event)
         if (dlg.ShowModal() == wxID_OK && !dlg.GetWatch().keyword.IsEmpty())
         {
             *w = dlg.GetWatch();
-            // send *one* event
-            wxCommandEvent event(cbCustom_WATCHES_CHANGED);
-            wxPostEvent(m_pDebugger, event);
+            NotifyForChangedWatches();
         }
     }
 }

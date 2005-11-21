@@ -29,12 +29,13 @@ class DebuggerTree : public wxPanel
 		void ClearWatches();
 		void SetWatches(const WatchesArray& watches);
 		const WatchesArray& GetWatches();
-		void AddWatch(const wxString& watch, WatchFormat format = Undefined);
-		void DeleteWatch(const wxString& watch, WatchFormat format = Any);
+		void AddWatch(const wxString& watch, WatchFormat format = Undefined, bool notify = true);
+		void DeleteWatch(const wxString& watch, WatchFormat format = Any, bool notify = true);
 		void DeleteAllWatches();
 		Watch* FindWatch(const wxString& watch, WatchFormat format = Any);
 		int FindWatchIndex(const wxString& watch, WatchFormat format = Any);
 	protected:
+        void NotifyForChangedWatches();
 		void ShowMenu(wxTreeItemId id, const wxPoint& pt);
 		void OnTreeRightClick(wxTreeEvent& event);
 		void OnRightClick(wxCommandEvent& event);
