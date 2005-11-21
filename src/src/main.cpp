@@ -2574,6 +2574,26 @@ void MainFrame::OnSettingsPlugins(wxCommandEvent& event)
 #if wxUSE_KEYBINDER
 void MainFrame::OnSettingsKeyBindings(wxCommandEvent& event)
 {
+    // because wxKeyBinder *must* not bind "temporary" windows
+    // i.e. windows that will be destroyed before the application ends,
+    // we have to make sure there are no such windows open.
+    if (Manager::Get()->GetEditorManager()->GetEditorsCount())
+    {
+        if (wxMessageBox(_("Before editing the keyboard shortcuts, all open editor windows "
+                            "must be closed (and saved if needed).\n\n"
+                            "Are you sure you want to close all editor windows?"),
+                        _("Confirmation"),
+                        wxICON_QUESTION | wxYES_NO) == wxNO)
+        {
+            return;
+        }
+        if (!Manager::Get()->GetEditorManager()->CloseAll())
+        {
+            wxMessageBox(_("Failed to close all windows. Aborting keyboard configuration..."), _("Warning"), wxICON_WARNING);
+            return;
+        }
+    }
+
 	bool btree = true;
 	bool baddprofile = true;
 	bool bprofiles = true;

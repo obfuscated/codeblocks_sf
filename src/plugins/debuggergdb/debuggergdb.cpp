@@ -1220,7 +1220,7 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
  		mbar->Enable(idMenuAddSymbolFile, m_pProcess && stopped);
  		mbar->Enable(idMenuBacktrace, m_pProcess && stopped);
  		mbar->Enable(idMenuCPU, m_pProcess && stopped);
- 		mbar->Enable(idMenuEditWatches, en && stopped);
+// 		mbar->Enable(idMenuEditWatches, en && stopped);
         mbar->Enable(idMenuStop, m_pProcess && en);
         mbar->Enable(idMenuAttachToProcess, !m_pProcess);
         mbar->Enable(idMenuDetach, m_pProcess && m_PidToAttach != 0);
