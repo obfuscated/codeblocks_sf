@@ -226,31 +226,30 @@ class CdbCmd_RemoveBreakpoint : public DebuggerCmd
         DebuggerBreakpoint* m_BP;
 };
 
-// /**
-//  * Command to get info about local frame variables.
-//  */
-//class CdbCmd_InfoLocals : public DebuggerCmd
-//{
-//        DebuggerTree* m_pDTree;
-//    public:
-//        /** @param tree The tree to display the locals. */
-//        CdbCmd_InfoLocals(DebuggerDriver* driver, DebuggerTree* dtree)
-//            : DebuggerCmd(driver),
-//            m_pDTree(dtree)
-//        {
-//            m_Cmd << _T("info locals");
-//        }
-//        void ParseOutput(const wxString& output)
-//        {
-//            wxArrayString lines = GetArrayFromString(output, _T('\n'));
-//            wxString locals;
-//    		locals << _T("Local variables = {");
-//    		for (unsigned int i = 0; i < lines.GetCount(); ++i)
-//                locals << lines[i] << _T(',');
-//            locals << _T("}") << _T('\n');
-//            m_pDTree->BuildTree(locals);
-//        }
-//};
+/**
+  * Command to get info about local frame variables.
+  */
+class CdbCmd_InfoLocals : public DebuggerCmd
+{
+        DebuggerTree* m_pDTree;
+    public:
+        /** @param tree The tree to display the locals. */
+        CdbCmd_InfoLocals(DebuggerDriver* driver, DebuggerTree* dtree)
+            : DebuggerCmd(driver),
+            m_pDTree(dtree)
+        {
+            m_Cmd << _T("dv");
+        }
+        void ParseOutput(const wxString& output)
+        {
+            wxString locals;
+            locals << _T("Local variables\n");
+            wxArrayString lines = GetArrayFromString(output, _T('\n'));
+            for (unsigned int i = 0; i < lines.GetCount(); ++i)
+                locals << _T(' ') << lines[i].Strip(wxString::both) << _T('\n');
+            m_pDTree->BuildTree(locals, wsfCDB);
+        }
+};
 
 // /**
 //  * Command to get info about current function arguments.

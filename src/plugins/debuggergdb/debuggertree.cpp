@@ -273,7 +273,7 @@ void DebuggerTree::BuildTreeCDB(const wxString& infoText)
     wxTreeItemId node = parent;
 
     wxArrayString lines = GetArrayFromString(infoText, _T('\n'), false);
-    size_t col = lines[0].find_first_not_of(_T(" \t"));
+    size_t col = 0;
     for (unsigned int i = 0; i < lines.GetCount(); ++i)
     {
         size_t thiscol = lines[i].find_first_not_of(_T(" \t"));
@@ -289,7 +289,15 @@ void DebuggerTree::BuildTreeCDB(const wxString& infoText)
             parent = m_pTree->GetItemParent(parent);
             col = thiscol;
         }
-        node = m_pTree->AppendItem(parent, lines[i].Strip(wxString::both));
+        wxString actual;
+        int sep = lines[i].First(_T(" : "));
+        if (sep != -1)
+            actual = lines[i].SubString(0, sep).Strip(wxString::both) +
+                    _T(" : ") +
+                    lines[i].SubString(sep + 2, lines[i].Length()).Strip(wxString::both);
+        else
+            actual = lines[i].Strip(wxString::both);
+        node = m_pTree->AppendItem(parent, actual);
     }
 }
 

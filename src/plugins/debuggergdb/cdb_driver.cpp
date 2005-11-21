@@ -166,8 +166,8 @@ void CDB_driver::UpdateWatches(bool doLocals, bool doArgs, DebuggerTree* tree)
     tree->BeginUpdateTree();
 
     // locals before args because of precedence
-//    if (doLocals)
-//        QueueCommand(new CdbCmd_InfoLocals(this, tree));
+    if (doLocals)
+        QueueCommand(new CdbCmd_InfoLocals(this, tree));
 //    if (doArgs)
 //        QueueCommand(new CdbCmd_InfoArguments(this, tree));
     for (unsigned int i = 0; i < tree->GetWatches().GetCount(); ++i)
