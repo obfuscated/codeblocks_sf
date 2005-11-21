@@ -685,7 +685,7 @@ cbEditor* EditorManager::New()
 
     // add default text
     wxString key;
-    key.Printf(_T("/default_code/%d"), (int)FileTypeOf(ed->GetFilename()));
+    key.Printf(_T("/default_code/set%d"), (int)FileTypeOf(ed->GetFilename()));
     wxString code = Manager::Get()->GetConfigManager(_T("editor"))->Read(key, wxEmptyString);
     ed->GetControl()->SetText(code);
 
