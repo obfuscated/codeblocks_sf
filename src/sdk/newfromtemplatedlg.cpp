@@ -266,6 +266,11 @@ void NewFromTemplateDlg::OnListSelection(wxListEvent& event)
 	m_pWizard = data->plugin;
 	m_WizardIndex = data->wizPluginIndex;
 	FillTemplate(data->pt);
+	if (m_pWizard)
+        XRCCTRL(*this, "wxID_OK", wxButton)->SetLabel(_T("Sta&rt wizard..."));
+    else
+        XRCCTRL(*this, "wxID_OK", wxButton)->SetLabel(_T("C&reate"));
+    Layout();
 }
 
 void NewFromTemplateDlg::OnCategoryChanged(wxCommandEvent& event)
