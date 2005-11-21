@@ -19,11 +19,7 @@ class IOLib
 
         bool RemoveDir(const wxString& src)
         {
-        	#ifdef wxUSE_UNICODE
-            return wxRmDir(_C(src));
-            #else
-            return wxRmDir(src);
-            #endif
+            return wxRmdir(src);
         }
 
         bool DirectoryExists(const wxString& dir)
