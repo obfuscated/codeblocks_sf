@@ -8,6 +8,8 @@
 #include "wxswidgetfactory.h"
 #include "wxswinundobuffer.h"
 
+const long wxsConfigureProjectId = wxNewId();
+
 void wxsResourceTree::OnSelectResource(wxTreeEvent& event)
 {
     wxsResourceTreeData* Data = ((wxsResourceTreeData*)GetItemData(event.GetItem()));
@@ -110,9 +112,39 @@ void wxsResourceTree::OnEndDrag(wxTreeEvent& event)
     }
 }
 
+void wxsResourceTree::OnRightClick(wxTreeEvent& event)
+{
+    wxMenu Popup;
+    wxsResourceTreeData* Data = ((wxsResourceTreeData*)GetItemData(event.GetItem()));
+    if ( Data )
+    {
+        switch ( Data->Type )
+        {
+            case wxsResourceTreeData::tProject:
+                SelectedProject = Data->Project;
+                Popup.Append(wxsConfigureProjectId,_("Configure"));
+                PopupMenu(&Popup);
+                break;
+
+            default:;
+        }
+    }
+}
+
+void wxsResourceTree::OnConfigureProject(wxCommandEvent& event)
+{
+    if ( SelectedProject )
+    {
+        SelectedProject->Configure();
+    }
+}
+
+
 BEGIN_EVENT_TABLE(wxsResourceTree,wxTreeCtrl)
     EVT_TREE_SEL_CHANGED(wxID_ANY,wxsResourceTree::OnSelectResource)
     EVT_TREE_BEGIN_DRAG(wxID_ANY,wxsResourceTree::OnBeginDrag)
     EVT_TREE_BEGIN_RDRAG(wxID_ANY,wxsResourceTree::OnBeginDrag)
     EVT_TREE_END_DRAG(wxID_ANY,wxsResourceTree::OnEndDrag)
+    EVT_TREE_ITEM_RIGHT_CLICK(wxID_ANY,wxsResourceTree::OnRightClick)
+    EVT_MENU(wxsConfigureProjectId,wxsResourceTree::OnConfigureProject)
 END_EVENT_TABLE()

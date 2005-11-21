@@ -7,6 +7,7 @@
 #include "resources/wxswindowres.h"
 #include "wxswidgetfactory.h"
 #include "wxsmith.h"
+#include "wxsprojectconfigurationdlg.h"
 #include <wx/string.h>
 
 #define XML_DIALOG_STR   "dialog"
@@ -18,9 +19,14 @@
 #define XML_HFILE_STR    "header_file"
 #define XML_XRCFILE_STR  "xrc_file"
 #define XML_EDITMODE_STR "edit_mode"
+#define XML_CONFIG_STR   "configuration"
+#define XML_APPFILE_STR  "app_src_file"
+#define XML_MAINRES_STR  "main_resource"
+#define XML_INITALL_STR  "init_all_handlers"
+#define XML_AUTOLOAD_STR "load_resource"
 
 
-wxsProject::wxsProject():  Integration(NotBinded), Project(NULL), DuringClear(false)
+wxsProject::wxsProject():  Integration(NotBinded), Project(NULL), CallInitAll(true), CallInitAllNecessary(true), DuringClear(false)
 {}
 
 wxsProject::~wxsProject()
@@ -37,7 +43,9 @@ wxsProject::IntegrationState wxsProject::BindProject(cbProject* Proj)
 
     wxTreeCtrl* ResTree = wxsTREE();
     ResTree->Expand(ResTree->GetRootItem());
-    TreeItem = ResTree->AppendItem(ResTree->GetRootItem(),Proj->GetTitle());
+    TreeItem = ResTree->AppendItem(ResTree->GetRootItem(),Proj->GetTitle(),
+        -1,-1,
+        new wxsResourceTreeData(this));
 
     /* Binding project object */
     if ( Proj && !Proj->IsLoaded() )
@@ -205,6 +213,48 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
             Xrc );
     }
 
+    // Loading configuration stuff
+
+    Elem = MainNode->FirstChildElement(XML_CONFIG_STR);
+    if ( Elem )
+    {
+        AppFile = Elem->Attribute(XML_APPFILE_STR);
+        MainResource = Elem->Attribute(XML_MAINRES_STR);
+        wxString InitAllMode = Elem->Attribute(XML_INITALL_STR);
+        if ( InitAllMode == _T("never") )
+        {
+            CallInitAll = false;
+            CallInitAllNecessary = false;
+        }
+        else if ( InitAllMode == _T("always") )
+        {
+            CallInitAll = true;
+            CallInitAllNecessary = false;
+        }
+        else
+        {
+            CallInitAll = true;
+            CallInitAllNecessary = true;
+        }
+    }
+
+    // Loading list of automatically loaded resource files
+
+    for ( Elem = MainNode->FirstChildElement(XML_AUTOLOAD_STR);
+          Elem;
+          Elem = Elem->NextSiblingElement(XML_AUTOLOAD_STR) )
+    {
+        TiXmlText* Text = Elem->FirstChild()->ToText();
+        if ( Text && Text->Value() )
+        {
+            wxString FileName(Text->Value(),wxConvUTF8);
+            if ( FileName.Length() )
+            {
+                LoadedResources.Add(FileName);
+            }
+        }
+    }
+
     SetModified(false);
 
     return true;
@@ -359,6 +409,32 @@ TiXmlDocument* wxsProject::GenerateXml()
         Pan.SetAttribute(XML_XRCFILE_STR,Sett->GetWxsFile().mb_str());
         Pan.SetAttribute(XML_EDITMODE_STR,Sett->GetEditMode()==wxsREMSource?"Source":"Xrc");
         Elem->InsertEndChild(Pan);
+    }
+
+    TiXmlElement* Config = Elem->InsertEndChild(TiXmlElement(XML_CONFIG_STR))->ToElement();
+    if ( Config )
+    {
+        Config->SetAttribute(XML_APPFILE_STR,AppFile.mb_str());
+        Config->SetAttribute(XML_MAINRES_STR,MainResource.mb_str());
+
+        if ( CallInitAll && CallInitAllNecessary )
+        {
+            Config->SetAttribute(XML_INITALL_STR,"necessary");
+        }
+        else if ( CallInitAll )
+        {
+            Config->SetAttribute(XML_INITALL_STR,"always");
+        }
+        else
+        {
+            Config->SetAttribute(XML_INITALL_STR,"never");
+        }
+    }
+
+    for ( size_t i=0; i< LoadedResources.GetCount(); ++i )
+    {
+        TiXmlNode* Node = Elem->InsertEndChild(TiXmlElement(XML_AUTOLOAD_STR));
+        if ( Node ) Node->InsertEndChild(TiXmlText(LoadedResources[i].mb_str()));
     }
 
     return Doc;
@@ -525,6 +601,220 @@ void wxsProject::SendEventToEditors(wxEvent& event)
     }
 }
 
-wxsResourceTreeData::~wxsResourceTreeData()
+void wxsProject::Configure()
 {
+    wxsProjectConfigurationDlg Dlg(0L,this);
+    Dlg.ShowModal();
+}
+
+bool wxsProject::SetMainResource(const wxString& NewMainResource)
+{
+    bool Found = false;
+
+    for ( DialogListI i = Dialogs.begin(); i!=Dialogs.end(); ++i )
+    {
+        if ( (*i)->GetResourceName() == NewMainResource )
+        {
+            Found = true;
+            break;
+        }
+    }
+
+    if ( !Found ) for ( FrameListI i = Frames.begin(); i!=Frames.end(); ++i )
+    {
+        if ( (*i)->GetResourceName() == NewMainResource )
+        {
+            Found = true;
+            break;
+        }
+    }
+
+    if ( Found )
+    {
+        MainResource = NewMainResource;
+    }
+    else
+    {
+        MainResource = _T("");
+    }
+    RebuildAppCode();
+    SetModified(true);
+    return true;
+}
+
+void wxsProject::SetCallInitAll(bool NewInitAll,bool NewNecessary)
+{
+    CallInitAll = NewInitAll;
+    CallInitAllNecessary = NewInitAll && NewNecessary;
+    RebuildAppCode();
+    SetModified(true);
+}
+
+void wxsProject::SetAutoLoadedResources(const wxArrayString& Array)
+{
+    LoadedResources = Array;
+    RebuildAppCode();
+    SetModified(true);
+}
+
+void wxsProject::EnumerateResources(wxArrayString& Array,bool MainOnly)
+{
+    for ( DialogListI i = Dialogs.begin(); i!=Dialogs.end(); ++i )
+    {
+        Array.Add((*i)->GetResourceName());
+    }
+
+    for ( FrameListI i = Frames.begin(); i!=Frames.end(); ++i )
+    {
+        Array.Add((*i)->GetResourceName());
+    }
+
+    if ( !MainOnly ) for ( PanelListI i = Panels.begin(); i!=Panels.end(); ++i )
+    {
+        Array.Add((*i)->GetResourceName());
+    }
+}
+
+void wxsProject::RebuildAppCode()
+{
+    if ( AppFile.empty() ) return;
+
+    bool InitAllHandlers = GetCallInitAll();
+    bool MainResourceValid = false;
+    bool CheckInitAll = GetCallInitAllNecessary() && InitAllHandlers;
+    bool CheckMainRes = MainResource.Length();
+    bool IsAnyXRC = false;
+    wxsWindowRes* MainResPtr = NULL;
+
+    // Finding out if we are using Xrc
+    if ( CheckInitAll || CheckMainRes )
+    {
+        for ( DialogListI i = Dialogs.begin(); i!=Dialogs.end(); ++i )
+        {
+            if ( CheckMainRes && (MainResource == (*i)->GetResourceName()) )
+            {
+                MainResourceValid = true;
+                MainResPtr = *i;
+            }
+
+            if ( CheckInitAll && ( (*i)->GetEditMode() == wxsREMMixed ) )
+            {
+                IsAnyXRC = true;
+            }
+        }
+
+        for ( FrameListI i = Frames.begin(); i!=Frames.end(); ++i )
+        {
+            if ( CheckMainRes && (MainResource == (*i)->GetResourceName()) )
+            {
+                MainResourceValid = true;
+                MainResPtr = *i;
+            }
+
+            if ( CheckInitAll && ( (*i)->GetEditMode() == wxsREMMixed ) )
+            {
+                IsAnyXRC = true;
+            }
+        }
+
+        for ( PanelListI i = Panels.begin(); i!=Panels.end(); ++i )
+        {
+            if ( CheckInitAll && ( (*i)->GetEditMode() == wxsREMMixed ) )
+            {
+                IsAnyXRC = true;
+            }
+        }
+
+        if ( CheckInitAll && !IsAnyXRC )
+        {
+            InitAllHandlers = false;
+        }
+    }
+
+    wxString CodeHeader = wxsBBegin() _T("AppInitialize");
+    wxString NewCode = CodeHeader;
+
+    NewCode.Append(_T("\nbool wxsOK = true;\n"));
+
+    if ( InitAllHandlers )
+    {
+        NewCode.Append(_T("wxXmlResource::Get()->InitAllHandlers();\n"));
+    }
+
+    for ( size_t i = 0; i<LoadedResources.Count(); ++i )
+    {
+        NewCode.Append(_T("wxsOK = wxsOK && wxXmlResource::Get()->Load(_T(\""));
+        NewCode.Append(LoadedResources[i]);
+        NewCode.Append(_T("\"));\n"));
+    }
+
+    if ( MainResourceValid )
+    {
+        NewCode.Append(
+            wxString::Format(
+                _T("if ( wxsOK )\n")
+                _T("{\n")
+                _T("\t%s* MainResource = new %s(0L);\n")
+                _T("\tif ( MainResource ) MainResource->Show();\n")
+                _T("}\n"),
+                MainResource.c_str(),
+                MainResource.c_str()));
+    }
+
+    wxsCoder::Get()->AddCode(GetProjectFileName(AppFile),CodeHeader,NewCode);
+
+    CodeHeader = wxsBBegin() _T("AppHeaders");
+    NewCode = CodeHeader;
+    NewCode.Append(_T("\n"));
+
+    if ( MainResourceValid && MainResPtr )
+    {
+        NewCode.Append(
+            wxString::Format(
+                _T("#include \"%s\"\n"),
+                MainResPtr->GetHeaderFile().c_str()));
+    }
+
+    if ( IsAnyXRC || LoadedResources.Count() )
+    {
+        NewCode.Append(_T("#include <wx/xrc/xmlres.h>\n"));
+    }
+
+    wxsCoder::Get()->AddCode(GetProjectFileName(AppFile),CodeHeader,NewCode);
+}
+
+wxString wxsProject::GetProjectPath()
+{
+    return ProjectPath.GetPath();
+}
+
+wxString wxsProject::GetInternalPath()
+{
+    return WorkingPath.GetPath();
+}
+
+bool wxsProject::IsAppManaged()
+{
+    return IsAppSourceManager(GetAppSourceFile());
+}
+
+bool wxsProject::IsAppSourceManager(const wxString& FileName)
+{
+    if ( FileName.empty() ) return false;
+
+    if ( wxsCoder::Get()->GetCode(
+        GetProjectFileName(FileName),
+        wxsBBegin() _T("AppInitialize") ).empty() ) return false;
+
+    if ( wxsCoder::Get()->GetCode(
+        GetProjectFileName(FileName),
+        wxsBBegin() _T("AppHeaders") ).empty() ) return false;
+
+    return true;
+}
+
+bool wxsProject::SetAppSourceFile(const wxString& NewAppFile)
+{
+    AppFile = NewAppFile;
+    return true;
 }

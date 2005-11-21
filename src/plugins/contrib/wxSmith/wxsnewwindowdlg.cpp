@@ -8,7 +8,7 @@
 #include "globals.h"
 
 BEGIN_EVENT_TABLE(wxsNewWindowDlg,wxDialog)
-//(*EventTable(wxsNewWindowDlg)
+    //(*EventTable(wxsNewWindowDlg)
     EVT_TEXT(XRCID("ID_TEXTCTRL1"),wxsNewWindowDlg::OnClassChanged)
     EVT_TEXT(XRCID("ID_TEXTCTRL2"),wxsNewWindowDlg::OnHeaderChanged)
     EVT_TEXT(XRCID("ID_TEXTCTRL3"),wxsNewWindowDlg::OnSourceChanged)
@@ -16,7 +16,7 @@ BEGIN_EVENT_TABLE(wxsNewWindowDlg,wxDialog)
     EVT_TEXT(XRCID("ID_TEXTCTRL4"),wxsNewWindowDlg::OnXrcChanged)
     EVT_BUTTON(XRCID("ID_BUTTON1"),wxsNewWindowDlg::OnCancel)
     EVT_BUTTON(XRCID("ID_BUTTON2"),wxsNewWindowDlg::OnCreate)
-//*)
+    //*)
 END_EVENT_TABLE()
 
 wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType):

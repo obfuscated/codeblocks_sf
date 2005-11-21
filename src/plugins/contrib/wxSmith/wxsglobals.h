@@ -76,10 +76,13 @@ const wxUint32 wxsCUSTOM_COLOUR = wxPG_COLOUR_CUSTOM;
 // ========
 //
 
+/** Macro declaring beginning of any block of code */
+#define wxsBBegin() \
+    _T("//(*")
 
 /** Macro used to produce headers for block of code */
 #define wxsBHeader(HName,CName) \
-    _T("//(*") _T(HName) _T("(") _T(CName) _T(")")
+    wxsBBegin() _T(HName) _T("(") _T(CName) _T(")")
 
 /** Macro producing header for block of code where class is specified as argument fo Printf */
 #define wxsBHeaderF(HName) \

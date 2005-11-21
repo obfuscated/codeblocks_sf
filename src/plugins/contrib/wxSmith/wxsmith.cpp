@@ -35,6 +35,7 @@ static int NewDialogId = wxNewId();
 static int NewFrameId = wxNewId();
 static int NewPanelId = wxNewId();
 static int ImportXrcId = wxNewId();
+static int ConfigureId = wxNewId();
 
 CB_IMPLEMENT_PLUGIN(wxSmith);
 
@@ -52,6 +53,7 @@ BEGIN_EVENT_TABLE(wxSmith, cbPlugin)
 	EVT_MENU(NewFrameId,wxSmith::OnNewWindow)
 	EVT_MENU(NewPanelId,wxSmith::OnNewWindow)
 	EVT_MENU(ImportXrcId,wxSmith::OnImportXrc)
+	EVT_MENU(ConfigureId,wxSmith::OnConfigure)
 END_EVENT_TABLE()
 
 wxSmith::wxSmith()
@@ -64,7 +66,14 @@ wxSmith::wxSmith()
 	m_PluginInfo.author = _("BYO");
 	m_PluginInfo.authorEmail = _("byo.spoon@gmail.com");
 	m_PluginInfo.authorWebsite = _("");
-	m_PluginInfo.thanksTo = _("Ann for Being\nGigi for Faworki\n\nGod for Love\n\nJaakko Salli for wxPropertyGrid");
+	m_PluginInfo.thanksTo =
+        _("Ann for Being\n"
+          "Anha for Smile\n"
+          "Gigi for Faworki\n"
+          "\n"
+          "God for Love\n"
+          "\n"
+          "Jaakko Salli for wxPropertyGrid");
 	m_PluginInfo.license = LICENSE_GPL;
 	m_PluginInfo.hasConfigure = true;
 
@@ -177,11 +186,13 @@ int wxSmith::Configure()
 void wxSmith::BuildMenu(wxMenuBar* menuBar)
 {
 	wxMenu* Menu = new wxMenu;
-	Menu->Append(NewDialogId,_("Add Dialog"));
-	Menu->Append(NewFrameId,_("Add Frame"));
-	Menu->Append(NewPanelId,_("Add Panel"));
+	Menu->Append(NewDialogId,_("Add &Dialog"));
+	Menu->Append(NewFrameId,_("Add &Frame"));
+	Menu->Append(NewPanelId,_("Add &Panel"));
 	Menu->AppendSeparator();
-	Menu->Append(ImportXrcId,_("Import XRC file"));
+	Menu->Append(ImportXrcId,_("Import &XRC file"));
+	Menu->AppendSeparator();
+	Menu->Append(ConfigureId,_("&Configure wxSmith for current project"));
 
 	int ToolsPos = menuBar->FindMenu(_("&Tools"));
 
@@ -247,6 +258,17 @@ void wxSmith::OnSpreadEvent(wxsEvent& event)
 void wxSmith::OnSelectRes(wxsEvent& event)
 {
     wxsResource* Res = event.GetResource();
+    if ( Res )
+    {
+        Res->EditOpen();
+        Res->OnSelect();
+    }
+    OnSpreadEvent(event);
+}
+
+void wxSmith::OnSelectWidget(wxsEvent& event)
+{
+    wxsResource* Res = event.GetWidget()->GetResource();
     if ( Res )
     {
         Res->EditOpen();
@@ -429,3 +451,11 @@ bool wxSmith::CheckIntegration()
     return true;
 }
 
+void wxSmith::OnConfigure(wxCommandEvent& event)
+{
+    cbProject* CP = PRJMAN()->GetActiveProject();
+    if ( !CP ) return;
+    wxsProject* SP = GetSmithProject(CP);
+    if ( !SP ) return;
+    SP->Configure();
+}

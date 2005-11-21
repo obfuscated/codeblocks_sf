@@ -38,10 +38,8 @@ _T("#ifdef __BORLANDC__\n")
 _T("    #pragma hdrstop\n")
 _T("#endif\n")
 _T("\n")
-_T("#ifndef WX_PRECOMP\n")
-_T("\t") wxsBHeader("Headers","$(ClassName)") _T("\n")
-_T("\t#include <wx/wx.h>\n")
-_T("\t") wxsBEnd() _T("\n")
+wxsBHeader("Headers","$(ClassName)") _T("\n")
+wxsBEnd() _T("\n")
 _T("#endif\n")
 _T("\n")
 _T("class $(ClassName): public $(BaseClassName)\n")
@@ -941,7 +939,6 @@ void wxsWindowRes::EditorClosed()
 		Load();
 		wxTreeCtrl* Tree = wxsTREE();
 		Tree->SelectItem(GetTreeItemId());
-        //GetRootWidget()->BuildTree(Tree,GetTreeItemId());
 	}
 	AvoidCreation = false;
 }
@@ -985,3 +982,7 @@ bool wxsWindowRes::ChangeRootWidget(wxsWidget* NewRoot,bool DeletePrevious)
 	return true;
 }
 
+void wxsWindowRes::OnSelect()
+{
+    wxsSelectWidget(GetRootWidget());
+}

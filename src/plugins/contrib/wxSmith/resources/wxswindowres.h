@@ -132,6 +132,9 @@ class WXSCLASS wxsWindowRes : public wxsResource
 		/** Changing root widget */
 		bool ChangeRootWidget(wxsWidget* NewRoot,bool DeletePrevious=true);
 
+        /** Action when selecting this resource */
+        virtual void OnSelect();
+
     protected:
 
         /** Creating editor object */

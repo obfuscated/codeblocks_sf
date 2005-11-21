@@ -2,10 +2,12 @@
 #define WXSRESOURCETREE_H
 
 #include <wx/treectrl.h>
+
 #include "wxsglobals.h"
 
 class WXSCLASS wxsWidget;
 class WXSCLASS wxsResource;
+class WXSCLASS wxsProject;
 
 /** Resource tree class */
 class WXSCLASS wxsResourceTree: public wxTreeCtrl
@@ -19,10 +21,13 @@ class WXSCLASS wxsResourceTree: public wxTreeCtrl
     private:
 
         void OnSelectResource(wxTreeEvent& event);
+        void OnRightClick(wxTreeEvent& event);
         void OnBeginDrag(wxTreeEvent& event);
         void OnEndDrag(wxTreeEvent& event);
+        void OnConfigureProject(wxCommandEvent& event);
 
         wxsWidget* Dragged;
+        wxsProject* SelectedProject;
         DECLARE_EVENT_TABLE()
 };
 
@@ -33,14 +38,16 @@ class WXSCLASS wxsResourceTreeData: public wxTreeItemData
 
         wxsResourceTreeData(wxsWidget* _Widget):  wxTreeItemData(),   Type(tWidget)   { Widget = _Widget; }
         wxsResourceTreeData(wxsResource* _Resource): wxTreeItemData(), Type(tResource) { Resource = _Resource; }
+        wxsResourceTreeData(wxsProject* _Project): wxTreeItemData(), Type(tProject) { Project = _Project; }
 
-        virtual ~wxsResourceTreeData();
+        virtual ~wxsResourceTreeData() {}
 
         enum TypeT
         {
             None,
             tWidget,
-            tResource
+            tResource,
+            tProject
         };
 
         TypeT Type;
@@ -49,6 +56,7 @@ class WXSCLASS wxsResourceTreeData: public wxTreeItemData
         {
             wxsWidget* Widget;
             wxsResource* Resource;
+            wxsProject* Project;
         };
 };
 

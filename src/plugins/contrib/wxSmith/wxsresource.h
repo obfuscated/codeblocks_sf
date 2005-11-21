@@ -67,6 +67,9 @@ class WXSCLASS wxsResource: public wxObject
         /** Grtting current tree item in resource browser */
         inline wxTreeItemId GetTreeItemId() { return ItemId; }
 
+        /** Function triggered when this resource is selected */
+        virtual void OnSelect() {}
+
     protected:
 
         /** Function which should create editor window.

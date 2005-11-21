@@ -1,6 +1,8 @@
 #ifndef WXSPROJECT_H
 #define WXSPROJECT_H
 
+
+
 #include "wxsglobals.h"
 
 /******************************************************************************/
@@ -106,6 +108,54 @@ class WXSCLASS wxsProject
         /** Getting modified state */
         bool GetModified() { return Modified; }
 
+        /** Displaying configuration dialog */
+        void Configure();
+
+        /** Function returing source file where app is declared */
+        inline const wxString& GetAppSourceFile() { return AppFile; }
+
+        /** Function setting soure file where app is declared */
+        bool SetAppSourceFile(const wxString& NewAppFile);
+
+        /** Function returning main resource name */
+        inline const wxString& GetMainResource() { return MainResource; }
+
+        /** Function setting main resource name */
+        bool SetMainResource(const wxString& NewMainResource);
+
+        /** Function returning value for InitAll flag */
+        inline bool GetCallInitAll() { return CallInitAll; }
+
+        /** Funtion returning valuie for InitAllNecessary flag */
+        inline bool GetCallInitAllNecessary() { return CallInitAllNecessary; }
+
+        /** Function setting values for InitAll and InitAllNecessary flags */
+        void SetCallInitAll(bool NewInitAll,bool NewNecessary);
+
+        /** Function returning array of automatically loaded resources */
+        inline const wxArrayString& GetAutoLoadedResources() { return LoadedResources; }
+
+        /** Function setting array of automatically loadeed resources */
+        void SetAutoLoadedResources(const wxArrayString& Array);
+
+        /** Function enumerating resources */
+        void EnumerateResources(wxArrayString& Array,bool MainOnly=false);
+
+        /** Function returning main project path */
+        wxString GetProjectPath();
+
+        /** Function returning path of directory where all wxsmith files are stored */
+        wxString GetInternalPath();
+
+        /** Function returning true if wxSmith manages application source for this project */
+        bool IsAppManaged();
+
+        /** Function returning true if specified app source file seems to be managed by wxSmith */
+        bool IsAppSourceManager(const wxString& FileName);
+
+        /** checling if given file is insided current project */
+        bool CheckProjFileExists(const wxString& FileName);
+
     protected:
 
         /** Function loading all data from xml source */
@@ -152,23 +202,28 @@ class WXSCLASS wxsProject
         /** Function building tree for resources in this project */
         void BuildTree(wxTreeCtrl* Tree,wxTreeItemId WhereToAdd);
 
-        /** checling if given file is insided current project */
-        bool CheckProjFileExists(const wxString& FileName);
-
         /** Function clearing project structures */
         inline void Clear();
 
         /** Changing modified state */
         inline void SetModified(bool modified) { Modified = modified; }
 
+        /** Rebuilding application code */
+        void RebuildAppCode();
+
         IntegrationState Integration;   ///< Current integration state
-        wxFileName ProjectPath;         ///< Base Directory of C::B project (where project filr is stored)
+        wxFileName ProjectPath;         ///< Base Directory of C::B project (where project file is stored)
         wxFileName WorkingPath;         ///< Directory where wxSmith's private data will be stored
         cbProject* Project;             ///< Project associated with project
         wxTreeItemId TreeItem;          ///< Tree item where project's resources are kept
         wxTreeItemId DialogId;          ///< Tree item for dialog resourcecs
         wxTreeItemId FrameId;           ///< Tree item for frame resources
         wxTreeItemId PanelId;           ///< Tree item for panel resources
+        wxString AppFile;               ///< Source file defining application
+        wxArrayString LoadedResources;  ///< List of automatically loaded resource files
+        wxString MainResource;          ///< Resource used by default
+        bool CallInitAll;               ///< True if wxXmlResource::Get()->InitAllHandlers() should be called while initialization
+        bool CallInitAllNecessary;      ///< True if should call wxXmlResource::Get()->InitAllHandlers() only when necessary
 
         /* Resources */
 

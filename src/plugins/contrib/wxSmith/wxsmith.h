@@ -87,10 +87,12 @@ class WXSCLASS wxSmith : public cbPlugin
         void OnProjectActivated(CodeBlocksEvent& event);
         void OnNewWindow(wxCommandEvent& event);
         void OnImportXrc(wxCommandEvent& event);
+        void OnConfigure(wxCommandEvent& event);
 
         /* Internal event-processing functions */
         void OnSpreadEvent(wxsEvent& event);
         void OnSelectRes(wxsEvent& event);
+        void OnSelectWidget(wxsEvent& event);
 
         /** Function checking and adding wxSmith support for current project */
         bool CheckIntegration();
