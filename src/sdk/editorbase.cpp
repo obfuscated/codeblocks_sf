@@ -58,7 +58,7 @@ wxString EditorBase::CreateUniqueFilename()
     const wxString prefix = _("Untitled");
     const wxString path = wxGetCwd() + wxFILE_SEP_PATH;
     wxString tmp;
-    int iter = 1;
+    int iter = 0;
     while (true)
     {
         tmp.Clear();
