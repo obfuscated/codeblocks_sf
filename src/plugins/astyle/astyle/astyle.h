@@ -60,7 +60,7 @@ using namespace std;
 #define EXIT -1
 #define FUNCTION "function"
 #define BLOCK "block"
-
+#define NDEBUG 1 // Compiling release version of Astyle by default
 #if defined( NDEBUG )
 #define TRACE( type, message ) ( (void) 0 )
 #define TRACE_LIFE( type, message ) ( (void) 0 )
@@ -382,7 +382,7 @@ class ASFormatter : public ASBeautifier
                         preBracketHeaderStack( NULL ),
                         bracketTypeStack( NULL ),
                         parenStack( NULL )
-        { 
+        {
         };
         virtual ~ASFormatter() { delete (preBracketHeaderStack); };
 
