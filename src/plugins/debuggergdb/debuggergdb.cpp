@@ -593,6 +593,8 @@ int DebuggerGDB::Debug()
     if (m_HasDebugLog)
         m_pDbgLog->GetTextControl()->Clear();
 
+    m_pTree->GetTree()->DeleteAllItems();
+
     // switch to the debugging log and clear it
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
     msgMan->SwitchTo(m_PageIndex);
@@ -771,7 +773,7 @@ int DebuggerGDB::Debug()
 
 	wxString out;
 	// start polling gdb's output
-	m_TimerPollDebugger.Start(100);
+	m_TimerPollDebugger.Start(20);
 
     m_pDriver->Prepare(target && target->GetTargetType() == ttConsoleOnly);
     SetBreakpoints();

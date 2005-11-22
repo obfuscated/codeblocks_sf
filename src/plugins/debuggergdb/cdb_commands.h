@@ -242,40 +242,16 @@ class CdbCmd_InfoLocals : public DebuggerCmd
         }
         void ParseOutput(const wxString& output)
         {
+            if (output.StartsWith(_T("Unable to enumerate locals")))
+                return;
             wxString locals;
             locals << _T("Local variables\n");
             wxArrayString lines = GetArrayFromString(output, _T('\n'));
             for (unsigned int i = 0; i < lines.GetCount(); ++i)
                 locals << _T(' ') << lines[i].Strip(wxString::both) << _T('\n');
-            m_pDTree->BuildTree(locals, wsfCDB);
+            m_pDTree->BuildTree(0, locals, wsfCDB);
         }
 };
-
-// /**
-//  * Command to get info about current function arguments.
-//  */
-//class CdbCmd_InfoArguments : public DebuggerCmd
-//{
-//        DebuggerTree* m_pDTree;
-//    public:
-//        /** @param tree The tree to display the args. */
-//        CdbCmd_InfoArguments(DebuggerDriver* driver, DebuggerTree* dtree)
-//            : DebuggerCmd(driver),
-//            m_pDTree(dtree)
-//        {
-//            m_Cmd << _T("info args");
-//        }
-//        void ParseOutput(const wxString& output)
-//        {
-//            wxArrayString lines = GetArrayFromString(output, _T('\n'));
-//            wxString args;
-//    		args << _T("Function Arguments = {");
-//    		for (unsigned int i = 0; i < lines.GetCount(); ++i)
-//                args << lines[i] << _T(',');
-//            args << _T("}") << _T('\n');
-//            m_pDTree->BuildTree(args);
-//        }
-//};
 
 /**
   * Command to get info about a watched variable.
@@ -322,7 +298,11 @@ class CdbCmd_Watch : public DebuggerCmd
             if (re.Matches(lines))
                 re.ReplaceAll(&lines, wxEmptyString);
 
-            m_pDTree->BuildTree(m_pWatch->keyword + _T(" = ") + lines, wsfCDB);
+            // replace : with =
+            while (lines.Replace(_T(" : "), _T(" = ")))
+                ;
+
+            m_pDTree->BuildTree(m_pWatch, m_pWatch->keyword + _T(" = ") + lines, wsfCDB);
         }
 };
 
@@ -331,7 +311,6 @@ class CdbCmd_Watch : public DebuggerCmd
   */
 class CdbCmd_TooltipEvaluation : public DebuggerCmd
 {
-        DebuggerTree* m_pDTree;
         wxTipWindow** m_pWin;
         wxRect m_WinRect;
         wxString m_What;

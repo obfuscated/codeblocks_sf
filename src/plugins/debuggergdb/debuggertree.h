@@ -11,6 +11,14 @@
 
 extern int cbCustom_WATCHES_CHANGED;
 
+class WatchTreeData : public wxTreeItemData
+{
+    public:
+        WatchTreeData(Watch* w) : m_pWatch(w), m_UpToDate(true) {}
+        Watch* m_pWatch;
+        bool m_UpToDate;
+};
+
 class DebuggerTree : public wxPanel
 {
 	public:
@@ -19,20 +27,21 @@ class DebuggerTree : public wxPanel
 		wxTreeCtrl* GetTree(){ return m_pTree; }
 
 		void BeginUpdateTree(); ///< Clears and freezes the tree for massive updates
-		void BuildTree(const wxString& infoText, WatchStringFormat fmt); ///< adds a new node to the tree, parsing @c infoText
+		void BuildTree(Watch* watch, const wxString& infoText, WatchStringFormat fmt); ///< adds a new node to the tree, parsing @c infoText
 		void EndUpdateTree(); ///< Un-freezes the tree
 
 		void ClearWatches();
 		void SetWatches(const WatchesArray& watches);
 		const WatchesArray& GetWatches();
 		void AddWatch(const wxString& watch, WatchFormat format = Undefined, bool notify = true);
+		void DeleteWatch(Watch* watch, bool notify = true);
 		void DeleteWatch(const wxString& watch, WatchFormat format = Any, bool notify = true);
 		void DeleteAllWatches();
 		Watch* FindWatch(const wxString& watch, WatchFormat format = Any);
 		int FindWatchIndex(const wxString& watch, WatchFormat format = Any);
 	protected:
-		void BuildTreeGDB(const wxString& infoText);
-		void BuildTreeCDB(const wxString& infoText);
+		void BuildTreeGDB(Watch* watch, const wxString& infoText);
+		void BuildTreeCDB(Watch* watch, const wxString& infoText);
         void NotifyForChangedWatches();
 		void ShowMenu(wxTreeItemId id, const wxPoint& pt);
 		void OnTreeRightClick(wxTreeEvent& event);
@@ -44,7 +53,6 @@ class DebuggerTree : public wxPanel
 		void OnDeleteWatch(wxCommandEvent& event);
 		void OnDeleteAllWatches(wxCommandEvent& event);
 
-		void ParseEntry(const wxTreeItemId& parent, wxString& text);
 		wxTreeCtrl* m_pTree;
 		wxNotebook* m_pParent;
 		wxEvtHandler* m_pDebugger;
@@ -54,6 +62,11 @@ class DebuggerTree : public wxPanel
         int m_NumUpdates;
         int m_CurrNumUpdates;
 	private:
+        void MarkAllNodes(const wxTreeItemId& parent, bool uptodate);
+        void ClearAllMarkedNodes(const wxTreeItemId& parent, bool uptodate);
+        wxTreeItemId AddItem(wxTreeItemId& parent, const wxString& text, Watch* watch);
+        bool FindChildItem(const wxString& item, const wxTreeItemId& parent, wxTreeItemId& result);
+		void ParseEntry(Watch* watch, wxTreeItemId& parent, wxString& text);
         int FindCharOutsideQuotes(const wxString& str, wxChar ch); // returns position of ch in str
         int FindCommaPos(const wxString& str); // ignores commas in function signatures
         bool m_InUpdateBlock;

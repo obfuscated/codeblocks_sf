@@ -163,6 +163,11 @@ void GDB_driver::Detach()
 
 void GDB_driver::ParseOutput(const wxString& output)
 {
+    if (output.StartsWith(_T("gdb: ")) ||
+        output.StartsWith(_T("ContinueDebugEvent ")))
+    {
+        return;
+    }
     static wxString buffer;
 	buffer << output << _T('\n');
     m_CursorChanged = false;

@@ -311,7 +311,7 @@ class GdbCmd_InfoLocals : public DebuggerCmd
     		for (unsigned int i = 0; i < lines.GetCount(); ++i)
                 locals << lines[i] << _T(',');
             locals << _T("}") << _T('\n');
-            m_pDTree->BuildTree(locals, wsfGDB);
+            m_pDTree->BuildTree(0, locals, wsfGDB);
         }
 };
 
@@ -337,7 +337,7 @@ class GdbCmd_InfoArguments : public DebuggerCmd
     		for (unsigned int i = 0; i < lines.GetCount(); ++i)
                 args << lines[i] << _T(',');
             args << _T("}") << _T('\n');
-            m_pDTree->BuildTree(args, wsfGDB);
+            m_pDTree->BuildTree(0, args, wsfGDB);
         }
 };
 
@@ -375,7 +375,7 @@ class GdbCmd_Watch : public DebuggerCmd
     		for (unsigned int i = 0; i < lines.GetCount(); ++i)
                 w << lines[i] << _T(',');
             w << _T('\n');
-            m_pDTree->BuildTree(w, wsfGDB);
+            m_pDTree->BuildTree(m_pWatch, w, wsfGDB);
         }
 };
 
@@ -384,7 +384,6 @@ class GdbCmd_Watch : public DebuggerCmd
   */
 class GdbCmd_TooltipEvaluation : public DebuggerCmd
 {
-        DebuggerTree* m_pDTree;
         wxTipWindow** m_pWin;
         wxRect m_WinRect;
         wxString m_What;
