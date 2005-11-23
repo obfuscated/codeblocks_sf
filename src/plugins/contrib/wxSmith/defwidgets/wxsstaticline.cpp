@@ -33,7 +33,7 @@ bool wxsStaticLine::PropertiesUpdated(bool Validate,bool Correct)
     // Need to additionally check size params
     wxsBaseProperties& Params = GetBaseProperties();
 
-    if ( Params.Style & wxLI_VERTICAL )
+    if ( GetStyle() & wxLI_VERTICAL )
     {
         if ( Params.SizeY == -1 )
         {

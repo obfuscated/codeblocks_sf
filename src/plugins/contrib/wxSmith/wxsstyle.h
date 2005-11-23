@@ -1,15 +1,6 @@
 #ifndef __WXSSTYLE_H
 #define __WXSSTYLE_H
 
-/** Structure describing one widget's stule */
-struct wxsStyle
-{
-    wxString Name;          ///< Style name
-    unsigned int Value;     ///< Value of style
-    unsigned int Flags;     ///< Style flags
-    unsigned int Index;     ///< This value will be set as index in style array (separate indexes used for standard and extended styles)
-};
-
 /* ************************************************************************** */
 /*  Available style flags                                                     */
 /* ************************************************************************** */
@@ -26,6 +17,20 @@ const unsigned int wxsSFOS2    = 0x00000100;    ///< This style can be used in O
 const unsigned int wxsSFX11    = 0x00000200;    ///< This style can be used in X11
 const unsigned int wxsSFAll    = 0x00000FFF;    ///< This style can be used anywhere
 const unsigned int wxsSFExt    = 0x80000000;    ///< This is extended style
+
+/** Structure describing one widget's stule */
+struct wxsStyle
+{
+    wxString Name;          ///< Style name
+    unsigned int Value;     ///< Value of style
+    unsigned int Flags;     ///< Style flags
+
+    /** Checking if this is style category */
+    inline bool IsCategory() { return Value == ((unsigned int)-1); }
+
+    /** Checking if this is extended style */
+    inline bool IsExtra() { return ( Flags & wxsSFExt ) != 0; }
+};
 
 /* ************************************************************************** */
 /*  Usefull defines used while creating set of widget's styles                */

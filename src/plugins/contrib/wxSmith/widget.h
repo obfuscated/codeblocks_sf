@@ -200,6 +200,18 @@ class WXSCLASS wxsWidget
          */
         virtual wxWindow* BuildQuickPanel(wxWindow* Parent);
 
+        /** Getting window's style */
+        long GetStyle();
+
+        /** Setting window's style */
+        void SetStyle(long Style);
+
+        /** Getting window's extra style */
+        long GetExStyle();
+
+        /** Setting window's extra style */
+        void SetExStyle(long ExStyle);
+
     protected:
 
         /** This function should create properties view for widget. It is granted
@@ -231,9 +243,6 @@ class WXSCLASS wxsWidget
         {
             AddDefaultProperties(GetBPType());
         }
-
-        /** Getting wingow's style */
-        inline int GetStyle() { return BaseProperties.Style; }
 
         /** Getting window's position */
         inline wxPoint GetPosition()

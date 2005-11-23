@@ -46,6 +46,7 @@ void wxsDialogPreviewDlg::Initialize(wxsResource* _Res)
 //    }
 
     Res = _Res;
+    Layout();
 }
 
 bool wxsDialogPreviewDlg::IsBorderLess()

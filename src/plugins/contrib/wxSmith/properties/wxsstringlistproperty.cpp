@@ -293,7 +293,7 @@ const wxString& wxsStringListProperty::GetTypeName()
     {
         assert ( GetProperties() );
         assert ( GetProperties()->GetWidget() );
-        return ( GetProperties()->GetWidget()->GetBaseProperties().Style & SortedFlag ) != 0;
+        return ( GetProperties()->GetWidget()->GetStyle() & SortedFlag ) != 0;
     }
 
 #endif

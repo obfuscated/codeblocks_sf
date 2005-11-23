@@ -69,7 +69,7 @@ WXS_EV_END(wxsPanelrEvents)
 wxsPanelr::wxsPanelr(wxsWidgetManager* Man,wxsWindowRes* Res):
     wxsWindow(Man,Res,propWindow)
 {
-    GetBaseProperties().Style = wxTAB_TRAVERSAL;
+    SetStyle(wxTAB_TRAVERSAL);
 }
 
 wxsPanelr::~wxsPanelr()

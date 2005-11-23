@@ -56,13 +56,9 @@
     {                                                                       \
         WidgetName* ThisWidget;                                             \
         wxWindowID id = -1;                                                 \
-        wxPoint pos = GetBaseProperties().DefaultPosition ?                 \
-            wxDefaultPosition :                                             \
-            wxPoint(GetBaseProperties().PosX,GetBaseProperties().PosY);     \
-        wxSize size = GetBaseProperties().DefaultSize ?                     \
-            wxDefaultSize :                                                 \
-            wxSize(GetBaseProperties().SizeX,GetBaseProperties().SizeY);    \
-        long style = GetBaseProperties().Style;                             \
+        wxPoint pos = GetPosition();                                        \
+        wxSize size = GetSize();                                            \
+        long style  = GetStyle();                                           \
         Code;                                                               \
         PreviewApplyDefaults(ThisWidget);                                   \
         return ThisWidget;                                                  \

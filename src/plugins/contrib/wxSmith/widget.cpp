@@ -191,8 +191,12 @@ void wxsWidget::AddDefaultProperties(wxsBasePropertiesType pType)
                 _T("Style:"),
                 new wxsStyleProperty(
                     &PropertiesObject,
-                    GetBaseProperties().Style,
-                    GetInfo().Styles),
+                    GetBaseProperties().StyleBits,
+                    GetBaseProperties().ExStyleBits,
+                    GetInfo().Styles,
+                     ( GetResource()->GetEditMode() == wxsREMMixed ) ||
+                     ( GetResource()->GetEditMode() == wxsREMFile )
+                    ),
                 -1);
         }
     }
@@ -250,17 +254,27 @@ void wxsWidget::KillPreview()
 void wxsWidget::PreviewApplyDefaults(wxWindow* Wnd)
 {
 	wxsBasePropertiesType pType = GetBPType();
-	if ( pType & bptEnabled && !GetBaseProperties().Enabled )
+
+	if ( (pType & bptStyle) )
+	{
+	    long ExStyle = GetExStyle();
+	    if ( ExStyle != 0 )
+	    {
+            Wnd->SetExtraStyle(Wnd->GetExtraStyle() | ExStyle);
+	    }
+	}
+
+	if ( (pType & bptEnabled) && !GetBaseProperties().Enabled )
 	{
 		Wnd->Disable();
 	}
 
-	if ( pType & bptFocused && GetBaseProperties().Focused )
+	if ( (pType & bptFocused) && GetBaseProperties().Focused )
 	{
 		Wnd->SetFocus();
 	}
 
-	if ( pType & bptHidden && GetBaseProperties().Hidden )
+	if ( (pType & bptHidden) && GetBaseProperties().Hidden )
 	{
 		Wnd->Hide();
 	}
@@ -292,16 +306,15 @@ void wxsWidget::PreviewApplyDefaults(wxWindow* Wnd)
 		}
 	}
 
-    if ( pType & bptToolTip && GetBaseProperties().ToolTip )
+    if ( (pType & bptToolTip) && GetBaseProperties().ToolTip )
     {
     	Wnd->SetToolTip(GetBaseProperties().ToolTip);
     }
 
-    if ( pType & bptFont && GetBaseProperties().UseFont )
+    if ( (pType & bptFont) && GetBaseProperties().UseFont )
     {
     	Wnd->SetFont(GetBaseProperties().Font);
     }
-
 }
 
 void wxsWidget::XmlAssignElement(TiXmlElement* Elem)
@@ -346,26 +359,56 @@ bool wxsWidget::XmlLoadDefaultsT(wxsBasePropertiesType pType)
     /* Processing style */
     if ( pType & bptStyle )
     {
-        wxString StyleStr = XmlGetVariable(_T("style"));
-        wxsStyle* Styles = GetInfo().Styles;
-        GetBaseProperties().Style = 0;
-        if ( Styles )
+// TODO (SpOoN#1#): Clarify this code
+        GetBaseProperties().StyleBits = 0;
+        wxStringTokenizer Tkn(XmlGetVariable(_T("style")),_T("| \t\n"));
+
+        while ( Tkn.HasMoreTokens() )
         {
-            for ( ; Styles->Name != _T(""); Styles++ )
+            wxString Style = Tkn.GetNextToken();
+            wxsStyle* St = GetInfo().Styles;
+            int Bit = 1;
+            if ( St )
             {
-                int Pos = StyleStr.Find(Styles->Name);
-                int Len = (int)Styles->Name.Length();
-                if ( Pos < 0 ) continue;
-
-                // One character after style in StyleStr should be checked - it
-                // must be '|'. Same for character before.
-
-                if ( ( Pos + Len >= (int)StyleStr.Len() || StyleStr.GetChar(Pos+Len) == _T('|') ) &&
-                     ( Pos == 0 || StyleStr.GetChar(Pos-1) == _T('|') ) )
+                for ( ; !St->Name.empty(); St++ )
                 {
-                    GetBaseProperties().Style |= Styles->Value;
+                    if ( St->IsCategory() ) continue;
+                    if ( St->IsExtra() ) continue;
+
+                    if ( Style == St->Name )
+                    {
+                        GetBaseProperties().StyleBits |= Bit;
+                        break;
+                    }
+                    Bit <<= 1;
                 }
             }
+        }
+
+        GetBaseProperties().ExStyleBits = 0;
+        Tkn.SetString(XmlGetVariable(_T("exstyle")),_T("| \t\n"));
+
+        while ( Tkn.HasMoreTokens() )
+        {
+            wxString Style = Tkn.GetNextToken();
+            wxsStyle* St = GetInfo().Styles;
+            int Bit = 1;
+            if ( St )
+            {
+                for ( ; !St->Name.empty(); St++ )
+                {
+                    if ( St->IsCategory() ) continue;
+                    if ( !St->IsExtra() ) continue;
+
+                    if ( Style == St->Name )
+                    {
+                        GetBaseProperties().ExStyleBits |= Bit;
+                        break;
+                    }
+                    Bit <<= 1;
+                }
+            }
+
         }
     }
 
@@ -542,30 +585,45 @@ bool wxsWidget::XmlSaveDefaultsT(wxsBasePropertiesType pType)
 
     if ( pType & bptStyle )
     {
-        int StyleBits = GetBaseProperties().Style;
+        wxString Style;
+        wxString ExStyle;
 
-        wxString StyleString;
+        int StyleBits = GetBaseProperties().StyleBits;
+        int StyleBit = 1;
 
-        // Warning: This may cause some data los if styles are not
-        //          configured properly
+        int ExStyleBits = GetBaseProperties().ExStyleBits;
+        int ExStyleBit = 1;
 
-        wxsStyle* Style = GetInfo().Styles;
-        if ( Style )
+        wxsStyle* St = GetInfo().Styles;
+
+        if ( St )
         {
-            for ( ; Style->Name; Style++ )
+            for ( ; !St->Name.empty(); St++ )
             {
-                if ( ( Style->Value != 0 ) && ( ( StyleBits & Style->Value ) == Style->Value ) )
+                if ( St->IsCategory() ) continue;
+
+                if ( St->IsExtra() )
                 {
-                    StyleString.Append('|');
-                    StyleString.Append(Style->Name);
-                    StyleBits &= ~Style->Value;
+                    if ( ExStyleBits & ExStyleBit )
+                    {
+                        if ( !ExStyle.empty() ) ExStyle.Append(_T('|'));
+                        ExStyle.Append(St->Name);
+                    }
+                    ExStyleBit <<= 1;
+                }
+                else
+                {
+                    if ( StyleBits & StyleBit )
+                    {
+                        if ( !Style.empty() ) Style.Append(_T('|'));
+                        Style.Append(St->Name);
+                    }
+                    StyleBit <<= 1;
                 }
             }
-        }
 
-        if ( StyleString.Len() != 0 )
-        {
-            XmlSetVariable(_T("style"),StyleString.c_str()+1);
+            if ( !Style.empty()   ) XmlSetVariable(_T("style"),Style);
+            if ( !ExStyle.empty() ) XmlSetVariable(_T("exstyle"),ExStyle);
         }
     }
 
@@ -835,23 +893,54 @@ const wxsWidget::CodeDefines& wxsWidget::GetCodeDefines()
 
     // Filling up styles
 
+    wxString StyleStr;
+    wxString ExStyleStr;
+
+    CDefines.Style = _T("0");
     wxsStyle* Style = GetInfo().Styles;
-    int StyleV = GetBaseProperties().Style;
     if ( Style )
     {
+        int StyleBits = GetBaseProperties().StyleBits;
+        int StyleBit = 1;
+
+        int ExStyleBits = GetBaseProperties().ExStyleBits;
+        int ExStyleBit = 1;
+
         for ( ; Style->Name; Style++ )
         {
-            if ( Style->Value && ( ( StyleV & Style->Value ) == Style->Value ) )
-            {
-                StyleV &= ~Style->Value;
+            if ( Style->IsCategory() ) continue;
 
-                if ( CDefines.Style.Length() ) CDefines.Style.Append('|');
-                CDefines.Style.Append(Style->Name);
+            if ( Style->IsExtra() )
+            {
+                if ( ExStyleBits & ExStyleBit )
+                {
+                    if ( !ExStyleStr.empty() ) ExStyleStr.Append(_T('|'));
+                    ExStyleStr.Append(Style->Name);
+                }
+                ExStyleBit<<=1;
             }
+            else
+            {
+                if ( StyleBits & StyleBit )
+                {
+                    if ( !StyleStr.empty() ) StyleStr.Append(_T('|'));
+                    StyleStr.Append(Style->Name);
+                }
+                StyleBit<<=1;
+            }
+
         }
     }
-
-    if ( CDefines.Style.Len() == 0 ) CDefines.Style = _T("0");
+    if ( !StyleStr.empty() ) CDefines.Style = StyleStr;
+    if ( !ExStyleStr.empty() )
+    {
+        CDefines.InitCode << SelectCode
+                          << _T("SetExtraStyle(")
+                          << SelectCode
+                          << _T("GetExtraStyle() | ")
+                          << ExStyleStr
+                          << _T(");\n");
+    }
 
     // Creating position
 
@@ -1185,4 +1274,98 @@ wxWindow* wxsWidget::BuildQuickPanel(wxWindow* Parent)
 {
     if ( !( GetBPType() & (bptEnabled|bptHidden|bptFocused|bptId|bptVariable)) ) return NULL;
     return new wxsStandardQP(Parent,this);
+}
+
+long wxsWidget::GetStyle()
+{
+    long Value = 0;
+    wxsStyle* St = GetInfo().Styles;
+    if ( St )
+    {
+        int StyleBits = GetBaseProperties().StyleBits;
+        int StyleBit = 1;
+        for ( ; !St->Name.empty(); St++ )
+        {
+            if ( St->IsCategory() ) continue;
+            if ( St->IsExtra() ) continue;
+
+            if ( StyleBits & StyleBit )
+            {
+                // Bit is set, using this style
+                Value |= St->Value;
+            }
+            StyleBit <<= 1;
+        }
+    }
+    return Value;
+}
+
+long wxsWidget::GetExStyle()
+{
+    long Value = 0;
+    wxsStyle* St = GetInfo().Styles;
+    if ( St )
+    {
+        int StyleBits = GetBaseProperties().ExStyleBits;
+        int StyleBit = 1;
+        for ( ; !St->Name.empty(); St++ )
+        {
+            if ( St->IsCategory() ) continue;
+            if ( !St->IsExtra() ) continue;
+
+            if ( StyleBits & StyleBit )
+            {
+                // Bit is set, using this style
+                Value |= St->Value;
+            }
+            StyleBit <<= 1;
+        }
+    }
+    return Value;
+}
+
+void wxsWidget::SetStyle(long Style)
+{
+    wxsStyle* St = GetInfo().Styles;
+    if ( St )
+    {
+        int StyleBits = 0;
+        int StyleBit = 1;
+        for ( ; !St->Name.empty(); St++ )
+        {
+            if ( St->IsCategory() ) continue;
+            if ( St->IsExtra() ) continue;
+
+            if ( (long)St->Value == Style )
+            {
+                // Bit is set, using this style
+                StyleBits |= StyleBit;
+            }
+            StyleBit <<= 1;
+        }
+        GetBaseProperties().StyleBits = StyleBits;
+    }
+}
+
+void wxsWidget::SetExStyle(long ExStyle)
+{
+    wxsStyle* St = GetInfo().Styles;
+    if ( St )
+    {
+        int ExStyleBits = 0;
+        int ExStyleBit = 1;
+        for ( ; !St->Name.empty(); St++ )
+        {
+            if ( St->IsCategory() ) continue;
+            if ( !St->IsExtra() ) continue;
+
+            if ( (long)St->Value == ExStyle )
+            {
+                // Bit is set, using this style
+                ExStyleBits |= ExStyleBit;
+            }
+            ExStyleBit <<= 1;
+        }
+        GetBaseProperties().ExStyleBits = ExStyleBits;
+    }
 }

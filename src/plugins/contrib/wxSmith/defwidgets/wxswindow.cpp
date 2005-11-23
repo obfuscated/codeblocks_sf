@@ -14,12 +14,16 @@ class WXSCLASS wxsWindowPreview: public wxPanel
         // - if this is wxPanel which has parent, it is not a resource
         wxsWindowPreview(wxWindow* Parent,wxsWindow* _Window,const wxPoint& Position,const wxSize& Size):
             wxPanel(Parent,-1,Position,Size,
-                _Window->GetParent() ? _Window->GetBaseProperties().Style : wxRAISED_BORDER ),
+                _Window->GetParent() ? _Window->GetStyle() : wxRAISED_BORDER ),
             Window(_Window)
         {
         	if ( !Window->GetParent() )
         	{
                 SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
+        	}
+        	if ( Window->GetExStyle() )
+        	{
+        	    SetExtraStyle(Window->GetExStyle());
         	}
         }
 

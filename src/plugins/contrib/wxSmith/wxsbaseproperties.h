@@ -14,7 +14,8 @@ struct wxsBaseProperties
     bool DefaultPosition;           ///< Widget has default position
     int SizeX, SizeY;               ///< Widget's size
     bool DefaultSize;               ///< Widget has default size
-    int Style;                      ///< Current style
+    int StyleBits;                  ///< Bitfield of used styles
+    int ExStyleBits;                ///< Bitfield of used extended styles
 
     bool Enabled;                   ///< If false, widget is disabled (true by deefault)
     bool Focused;                   ///< If true, widget is focused (false by default)
@@ -40,7 +41,8 @@ struct wxsBaseProperties
         DefaultPosition(true),
         SizeX(-1), SizeY(-1),
         DefaultSize(true),
-        Style(0),
+        StyleBits(0),
+        ExStyleBits(0),
         Enabled(true),
         Focused(false),
         Hidden(false),
@@ -62,7 +64,7 @@ const wxsBasePropertiesType bptPosition  = 0x0001;  ///< Item is using position
 const wxsBasePropertiesType bptSize      = 0x0002;  ///< Item is using size
 const wxsBasePropertiesType bptId        = 0x0004;  ///< Item is using identifier
 const wxsBasePropertiesType bptVariable  = 0x0008;  ///< Item is using variable
-const wxsBasePropertiesType bptStyle     = 0x0010;  ///< Item is using style
+const wxsBasePropertiesType bptStyle     = 0x0010;  ///< Item is using style and extra style
 const wxsBasePropertiesType bptEnabled   = 0x0020;  ///< Item is using Enabled property
 const wxsBasePropertiesType bptFocused   = 0x0040;  ///< Item is using Focused property
 const wxsBasePropertiesType bptHidden    = 0x0080;  ///< Item is using Hidden property

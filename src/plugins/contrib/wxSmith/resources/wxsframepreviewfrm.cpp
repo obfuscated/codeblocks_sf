@@ -46,6 +46,7 @@ void wxsFramePreviewFrm::Initialize(wxsResource* _Res)
 //    }
 
     Res = _Res;
+    Layout();
 }
 
 bool wxsFramePreviewFrm::IsBorderLess()

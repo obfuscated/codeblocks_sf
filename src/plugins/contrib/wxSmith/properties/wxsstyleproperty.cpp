@@ -5,119 +5,17 @@
 #include <wx/stattext.h>
 #include <vector>
 
-#ifdef __NO_PROPGRGID
-
-    #define WXS_MAX_STYLE_LEN   15
-    #define WXSSPW_FIRST_ID     0x1010
-
-    class WXSCLASS wxsStylePropertyWindow: public wxPanel
-    {
-        public:
-            wxsStylePropertyWindow(wxWindow* Parent,wxsStyleProperty* Property,wxsStyle* Styles):
-                wxPanel(Parent,-1),
-                Prop(Property),
-                StopUpdate(true)
-            {
-                wxSizer* Sizer = new wxFlexGridSizer(1,2,2);
-
-                wxWindowID CurrentId = WXSSPW_FIRST_ID;
-
-                if ( Styles )
-                {
-                    for ( ; Styles->Name.Length(); Styles++ )
-                    {
-                        if ( Styles->Value == ((unsigned int)-1) )
-                        {
-                            // Adding dividing text
-                            wxStaticText* ST = new wxStaticText(this,-1,Styles->Name);
-                            wxFont Font = ST->GetFont();
-                            Font.SetWeight(wxBOLD);
-                            Font.SetUnderlined(true);
-                            ST->SetFont(Font);
-                            Sizer->Add(ST);
-                        }
-                        else if ( Styles->Value )
-                        {
-                            IdToStyleMaps.push_back(Styles->Value);
-                            wxString Name = Styles->Name;
-                            bool IsToolTip = false;
-                            if ( Name.Length() > WXS_MAX_STYLE_LEN )
-                            {
-                                Name = Name.Mid(0,WXS_MAX_STYLE_LEN-3) + _T("...");
-                                IsToolTip = true;
-                            }
-                            wxCheckBox* CB = new wxCheckBox(this,CurrentId++,Name);
-                            if ( IsToolTip )
-                            {
-                                CB->SetToolTip(Styles->Name);
-                            }
-                            Sizer->Add(CB);
-                        }
-                    }
-                }
-
-                SetSizer(Sizer);
-                Sizer->SetSizeHints(this);
-
-                UpdateValues();
-
-                StopUpdate = false;
-            }
-
-            void UpdateValues()
-            {
-                for ( int i=IdToStyleMaps.size(); --i >= 0; )
-                {
-                    wxCheckBox* CP = (wxCheckBox*)FindWindow(WXSSPW_FIRST_ID+i);
-                    if ( !CP ) continue;
-                    int StyleVal = IdToStyleMaps[i];
-                    CP->SetValue( (Prop->Style&StyleVal) == StyleVal );
-                }
-            }
-
-        private:
-
-            void OnChange(wxCommandEvent& event)
-            {
-                if ( StopUpdate ) return;
-                StopUpdate = true;
-                int NewStyle = 0;
-                for ( int i=IdToStyleMaps.size(); --i >= 0; )
-                {
-                    wxCheckBox* CP = (wxCheckBox*)FindWindow(WXSSPW_FIRST_ID+i);
-                    if ( !CP ) continue;
-                    if ( CP->GetValue() )
-                    {
-                        NewStyle |= IdToStyleMaps[i];
-                    }
-                }
-                Prop->Style = NewStyle;
-                Prop->ValueChanged(true);
-                StopUpdate = false;
-            }
-
-            wxsStyleProperty* Prop;
-            std::vector<int> IdToStyleMaps;
-            bool StopUpdate;
-
-            DECLARE_EVENT_TABLE()
-    };
-
-    BEGIN_EVENT_TABLE(wxsStylePropertyWindow,wxPanel)
-        EVT_CHECKBOX(wxID_ANY,wxsStylePropertyWindow::OnChange)
-    END_EVENT_TABLE()
-
-#endif
-
-wxsStyleProperty::wxsStyleProperty(wxsProperties* Properties,int &_Style,wxsStyle *_Styles):
+wxsStyleProperty::wxsStyleProperty(wxsProperties* Properties,int &_StyleBits,int &_ExStyleBits,wxsStyle *_Styles,bool _XrcOnly):
     wxsProperty(Properties),
-    Style(_Style),
+    StyleBits(_StyleBits),
+    ExStyleBits(_ExStyleBits),
     Styles(_Styles),
+    XrcOnly(_XrcOnly),
     #ifdef __NO_PROPGRGID
         Window(NULL)
     #else
-        PGId(0),
-        LastPG(0)
+        StylePGId(0),
+        ExStylePGId(0)
     #endif
 {
 }
@@ -132,100 +30,71 @@ const wxString& wxsStyleProperty::GetTypeName()
     return Name;
 }
 
-#ifdef __NO_PROPGRGID
+void wxsStyleProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)
+{
+    wxPGConstants Consts;
+    wxPGConstants ExConsts;
 
-    wxWindow* wxsStyleProperty::BuildEditWindow(wxWindow* Parent)
+    int StCount = 0;
+    int ExCount = 0;
+    for ( wxsStyle* St = Styles; St->Name.Length(); ++St )
     {
-        return Window = new wxsStylePropertyWindow(Parent,this,Styles);
-    }
+        if ( St->IsCategory() ) continue;
 
-    void wxsStyleProperty::UpdateEditWindow()
-    {
-        if ( Window ) Window->UpdateValues();
-    }
-
-#else
-
-    void wxsStyleProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)
-    {
-    	wxPGConstants Consts;
-
-        unsigned int Bit = 1;
-    	for ( wxsStyle* St = Styles; St->Name.Length(); ++St )
-    	{
-    		if ( St->Value != ((unsigned int)-1) )
-    		{
-    			Consts.Add(St->Name,Bit);
-    			Bit <<= 1;
-    			if ( Bit < 0 )
-    			{
-    			    DBGLOG(_T("Widget has over 31 styles, style property is corrupted!!!"));
-    			}
-    		}
-    	}
-
-        LastPG = ConvertStyleToPG(Style);
-    	PGId = Grid->Append( wxFlagsProperty(Name,wxPG_LABEL,Consts,LastPG) );
-        Grid->SetPropertyAttribute(PGId,wxPG_BOOL_USE_CHECKBOX,(long)1,wxRECURSE);
-    }
-
-    bool wxsStyleProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)
-    {
-    	if ( Id == PGId )
-    	{
-    	    int ThisPG = Grid->GetPropertyValue(Id).GetLong();
-    	    int Changes = ThisPG ^ LastPG;
-
-            int Bit = 1;
-            for ( wxsStyle* St = Styles; St->Name.Length(); ++St )
+        if ( St->IsExtra() )
+        {
+            if ( !XrcOnly || (St->Flags & wxsSFXRC) )
             {
-                if ( St->Value != ((unsigned int)-1) )
-                {
-                    if ( Changes & Bit )
-                    {
-                        if ( ThisPG & Bit )
-                        {
-                            // Bit has been set
-                            Style |= St->Value;
-                        }
-                        else
-                        {
-                            // Bit has been cleared
-                            Style &= ~St->Value;
-                        }
-                    }
-                    Bit <<= 1;
-                }
+                ExConsts.Add(St->Name,(1<<ExCount));
             }
-
-    		UpdatePropGrid(Grid);
-    		return ValueChanged(true);
-    	}
-    	return true;
+            ExCount++;
+            if ( ExCount == 32 )
+            {
+                DBGLOG(_T("Widget has over 31 extra styles, extra style property is corrupted!!!"));
+            }
+        }
+        else
+        {
+            if ( !XrcOnly || (St->Flags & wxsSFXRC) )
+            {
+                Consts.Add(St->Name,(1<<StCount));
+            }
+            StCount++;
+            if ( StCount == 32 )
+            {
+                DBGLOG(_T("Widget has over 31 styles, style property is corrupted!!!"));
+            }
+        }
     }
 
-    void wxsStyleProperty::UpdatePropGrid(wxPropertyGrid* Grid)
+    StylePGId = Grid->Append( wxFlagsProperty(_("Style:"),wxPG_LABEL,Consts,StyleBits) );
+    Grid->SetPropertyAttribute(StylePGId,wxPG_BOOL_USE_CHECKBOX,(long)1,wxRECURSE);
+    if ( ExCount )
     {
-        LastPG = ConvertStyleToPG(Style);
-    	Grid->SetPropertyValue(PGId,LastPG);
+        ExStylePGId = Grid->Append( wxFlagsProperty(_("Extra style:"),wxPG_LABEL,ExConsts,ExStyleBits) );
+        Grid->SetPropertyAttribute(ExStylePGId,wxPG_BOOL_USE_CHECKBOX,(long)1,wxRECURSE);
     }
+}
 
-    int wxsStyleProperty::ConvertStyleToPG(unsigned int Style)
+bool wxsStyleProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)
+{
+    if ( ( Id == StylePGId ) || ( Id == ExStylePGId ) )
     {
-        int Bit = 1;
-        int Value = 0;
-    	for ( wxsStyle* St = Styles; St->Name.Length(); ++St )
-    	{
-    		if ( St->Value != ((unsigned int)-1) )
-    		{
-    		    if ( (Style & St->Value) == St->Value )
-    		    {
-                    Value |= Bit;
-    		    }
-    			Bit <<= 1;
-    		}
-    	}
-    	return Value;
+        StyleBits = Grid->GetPropertyValue(StylePGId).GetLong();
+        if ( ExStylePGId != 0 )
+        {
+            ExStyleBits = Grid->GetPropertyValue(ExStylePGId).GetLong();
+        }
+        return ValueChanged(true);
     }
+    return true;
+}
 
-#endif
+void wxsStyleProperty::UpdatePropGrid(wxPropertyGrid* Grid)
+{
+    Grid->SetPropertyValue(StylePGId,StyleBits);
+    if ( ExStylePGId != 0 )
+    {
+        Grid->SetPropertyValue(ExStylePGId,ExStyleBits);
+    }
+}

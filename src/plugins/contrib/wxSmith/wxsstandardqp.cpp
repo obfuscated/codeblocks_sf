@@ -1,15 +1,16 @@
+#include "wxsheaders.h"
 #include "wxsstandardqp.h"
 #include "widget.h"
 
 BEGIN_EVENT_TABLE(wxsStandardQP,wxPanel)
-//(*EventTable(wxsStandardQP)
+    //(*EventTable(wxsStandardQP)
     EVT_TEXT(ID_TEXTCTRL1,wxsStandardQP::OnTextChanged)
     EVT_CHECKBOX(ID_CHECKBOX1,wxsStandardQP::OnChange)
     EVT_TEXT(ID_TEXTCTRL2,wxsStandardQP::OnTextChanged)
     EVT_CHECKBOX(ID_CHECKBOX3,wxsStandardQP::OnChange)
     EVT_CHECKBOX(ID_CHECKBOX2,wxsStandardQP::OnChange)
     EVT_CHECKBOX(ID_CHECKBOX4,wxsStandardQP::OnChange)
-//*)
+    //*)
     EVT_TIMER(0,wxsStandardQP::OnReadTimer)
     EVT_TIMER(1,wxsStandardQP::OnWriteTimer)
 END_EVENT_TABLE()

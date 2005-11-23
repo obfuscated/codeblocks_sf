@@ -1,3 +1,4 @@
+#include "wxsheaders.h"
 #include "wxsprojectconfigurationdlg.h"
 
 #include "wxsproject.h"

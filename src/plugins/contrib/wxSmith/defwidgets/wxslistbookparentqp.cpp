@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxslistbookparentqp.h"
 
 BEGIN_EVENT_TABLE(wxsListbookParentQP,wxPanel)
