@@ -235,9 +235,6 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
                     cmd << _T("ignore ") << m_BP->bpNum << _T(" ") << m_BP->ignoreCount;
                     m_pDriver->QueueCommand(new DebuggerCmd(m_pDriver, cmd), DebuggerDriver::High);
                 }
-
-                if (m_BP->temporary)
-                    delete m_BP;
             }
             else
                 m_pDriver->Log(output); // one of the error responses
@@ -252,12 +249,10 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
 class GdbCmd_RemoveBreakpoint : public DebuggerCmd
 {
     public:
-        /** @param bp The breakpoint to remove. If NULL, all breakpoints are removed.
-            @param deleteBPwhenDone If bp is not NULL and this is true the breakpoint will be deleted after removal. */
-        GdbCmd_RemoveBreakpoint(DebuggerDriver* driver, DebuggerBreakpoint* bp, bool deleteBPwhenDone = false)
+        /** @param bp The breakpoint to remove. If NULL, all breakpoints are removed. */
+        GdbCmd_RemoveBreakpoint(DebuggerDriver* driver, DebuggerBreakpoint* bp)
             : DebuggerCmd(driver),
-            m_BP(bp),
-            m_DeleteBPwhenDone(deleteBPwhenDone)
+            m_BP(bp)
         {
             if (!bp)
             {
@@ -281,12 +276,9 @@ class GdbCmd_RemoveBreakpoint : public DebuggerCmd
             if (!output.IsEmpty())
                 m_pDriver->Log(output);
 //            m_pDriver->DebugLog(wxString::Format(_("Breakpoint removed: file %s, line %d"), m_BP->filename.c_str(), m_BP->line + 1));
-            if (m_DeleteBPwhenDone)
-                delete m_BP;
         }
 
         DebuggerBreakpoint* m_BP;
-        bool m_DeleteBPwhenDone;
 };
 
 /**

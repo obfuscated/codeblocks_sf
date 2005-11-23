@@ -126,9 +126,9 @@ void GDB_driver::AddBreakpoint(DebuggerBreakpoint* bp)
 	QueueCommand(new GdbCmd_AddBreakpoint(this, bp));
 }
 
-void GDB_driver::RemoveBreakpoint(DebuggerBreakpoint* bp, bool deleteAlso)
+void GDB_driver::RemoveBreakpoint(DebuggerBreakpoint* bp)
 {
-	QueueCommand(new GdbCmd_RemoveBreakpoint(this, bp, deleteAlso));
+	QueueCommand(new GdbCmd_RemoveBreakpoint(this, bp));
 }
 
 void GDB_driver::EvaluateSymbol(const wxString& symbol, wxTipWindow** tipWin, const wxRect& tipRect)

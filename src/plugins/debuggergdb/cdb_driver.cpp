@@ -150,7 +150,7 @@ void CDB_driver::AddBreakpoint(DebuggerBreakpoint* bp)
 	QueueCommand(new CdbCmd_AddBreakpoint(this, bp));
 }
 
-void CDB_driver::RemoveBreakpoint(DebuggerBreakpoint* bp, bool deleteAlso)
+void CDB_driver::RemoveBreakpoint(DebuggerBreakpoint* bp)
 {
 	QueueCommand(new CdbCmd_RemoveBreakpoint(this, bp));
 }
@@ -229,13 +229,13 @@ void CDB_driver::ParseOutput(const wxString& output)
 
             long int bpNum;
             reBP.GetMatch(lines[i], 1).ToLong(&bpNum);
-            DebuggerBreakpoint* bp = m_pDBG->GetBreakpoint(bpNum);
+            DebuggerBreakpoint* bp = m_pDBG->GetState().GetBreakpoint(bpNum);
             if (bp)
             {
                 m_StopFile = bp->filename;
                 m_StopLine = bp->line + 1;
                 if (bp->temporary)
-                    m_pDBG->RemoveBreakpoint(bp->index);
+                    m_pDBG->GetState().RemoveBreakpoint(bp->index);
             }
             m_CursorChanged = true;
             m_ProgramIsStopped = true;

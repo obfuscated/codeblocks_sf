@@ -47,8 +47,7 @@
 #include <wx/fs_zip.h>
 
 #include "debuggergdb.h"
-#include "cdb_driver.h"
-#include "gdb_driver.h"
+#include "debuggerdriver.h"
 #include "debuggeroptionsdlg.h"
 #include "breakpointsdlg.h"
 #include "editbreakpointdlg.h"
@@ -139,7 +138,7 @@ BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
 END_EVENT_TABLE()
 
 DebuggerGDB::DebuggerGDB()
-	: m_pDriver(0),
+	: m_State(this),
 	m_pMenu(0L),
 	m_pLog(0L),
 	m_pDbgLog(0L),
@@ -159,7 +158,6 @@ DebuggerGDB::DebuggerGDB()
 	m_HaltAtLine(0),
 	m_HasDebugLog(false),
 	m_StoppedOnSignal(false),
-	m_LastBreakpointNum(1),
 	m_pDisassembly(0),
 	m_pBacktrace(0)
 {
@@ -215,9 +213,8 @@ void DebuggerGDB::OnAttach()
 
 void DebuggerGDB::OnRelease(bool appShutDown)
 {
-    StopDebuggerDriver();
-
-    ClearBreakpointsArray();
+    if (m_State.GetDriver())
+        m_State.GetDriver()->SetDebugWindows(0, 0);
 
     if (m_pDisassembly)
         m_pDisassembly->Destroy();
@@ -235,6 +232,8 @@ void DebuggerGDB::OnRelease(bool appShutDown)
 
     //Close debug session when appShutDown
 	CmdStop();
+
+    m_State.CleanUp();
 
     if (Manager::Get()->GetMessageManager())
     {
@@ -345,74 +344,9 @@ void DebuggerGDB::DoWatches()
 {
 	if (!m_pProcess)
         return;
-    m_pDriver->UpdateWatches(Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("watch_locals"), true),
+    m_State.GetDriver()->UpdateWatches(Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("watch_locals"), true),
                             Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("watch_args"), true),
                             m_pTree);
-}
-
-void DebuggerGDB::ClearBreakpointsArray()
-{
-//    if (m_pProcess)
-//        QueueCommand(new DbgCmd_RemoveBreakpoint(this, 0)); // clear all breakpoints
-    for (unsigned int i = 0; i < m_Breakpoints.GetCount(); ++i)
-    {
-        DebuggerBreakpoint* bp = m_Breakpoints[i];
-        delete bp;
-    }
-    m_Breakpoints.Clear();
-}
-
-int DebuggerGDB::HasBreakpoint(const wxString& file, int line)
-{
-//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("Looking for breakpoint at %s, line %d"), file.c_str(), line);
-    for (unsigned int i = 0; i < m_Breakpoints.GetCount(); ++i)
-    {
-        DebuggerBreakpoint* bp = m_Breakpoints[i];
-        if (bp->filename == file && bp->line == line)
-            return i;
-    }
-    return -1;
-}
-
-DebuggerBreakpoint* DebuggerGDB::GetBreakpoint(int num)
-{
-    if (num < 0 || num >= (int)m_Breakpoints.GetCount())
-        return 0;
-    return m_Breakpoints[num];
-}
-
-void DebuggerGDB::RemoveBreakpoint(int num)
-{
-    if (num < 0 || num >= (int)m_Breakpoints.GetCount())
-        return;
-    DebuggerBreakpoint* bp = m_Breakpoints[num];
-    delete bp;
-    m_Breakpoints.RemoveAt(num);
-}
-
-void DebuggerGDB::SetBreakpoints()
-{
-    if (!m_pDriver)
-        return;
-    Log(_T("Setting breakpoints"));
-	m_pDriver->RemoveBreakpoint(0); // clear all breakpoints
-
-    unsigned int i = 0;
-    while (i < m_Breakpoints.GetCount())
-    {
-        DebuggerBreakpoint* bp = m_Breakpoints[i];
-        bp->bpNum = -1;
-        m_pDriver->AddBreakpoint(bp);
-        if (bp->temporary && !m_pDriver->KeepTempBreakpoints())
-        {
-            m_Breakpoints.RemoveAt(i);
-            // reset bp->index for following breakpoints
-            for (unsigned int x = i; x < m_Breakpoints.GetCount(); ++x)
-                m_Breakpoints[x]->index = x;
-        }
-        else
-            ++i;
-	}
 }
 
 wxString DebuggerGDB::FindDebuggerExecutable(Compiler* compiler)
@@ -558,26 +492,7 @@ wxString DebuggerGDB::GetDebuggee(ProjectBuildTarget* target)
 
 bool DebuggerGDB::IsStopped()
 {
-    return !m_pDriver || m_pDriver->IsStopped();
-}
-
-bool DebuggerGDB::StartDebuggerDriverFor(ProjectBuildTarget* target)
-{
-    StopDebuggerDriver();
-    int idx = target ? target->GetCompilerIndex() : CompilerFactory::GetDefaultCompilerIndex();
-    if (idx == 1) // MSVC // TODO: do not hardcode these
-        m_pDriver = new CDB_driver(this);
-    else
-        m_pDriver = new GDB_driver(this);
-    m_pDriver->SetDebugWindows(m_pBacktrace, m_pDisassembly);
-    return true;
-}
-
-void DebuggerGDB::StopDebuggerDriver()
-{
-    if (m_pDriver)
-        delete m_pDriver;
-    m_pDriver = 0;
+    return !m_State.GetDriver() || m_State.GetDriver()->IsStopped();
 }
 
 int DebuggerGDB::Debug()
@@ -587,7 +502,6 @@ int DebuggerGDB::Debug()
 		return 1;
 
     m_NoDebugInfo = false;
-    m_LastBreakpointNum = 1;
 
     // clear the debug log
     if (m_HasDebugLog)
@@ -708,11 +622,13 @@ int DebuggerGDB::Debug()
     }
 
     // start debugger driver based on target compiler, or default compiler if no target
-    if (!StartDebuggerDriverFor(target))
+    if (!m_State.StartDriver(target))
     {
         wxMessageBox(_T("Could not decide which debugger to use!"), _T("Error"), wxICON_ERROR);
         return -1;
     }
+    m_State.GetDriver()->SetDebugWindows(m_pBacktrace, m_pDisassembly);
+
 
     // create gdb launch command
 	wxString cmd;
@@ -721,7 +637,7 @@ int DebuggerGDB::Debug()
     wxString cmdline;
     if (m_PidToAttach == 0)
     {
-        m_pDriver->ClearDirectories();
+        m_State.GetDriver()->ClearDirectories();
         // add other open projects dirs as search dirs (only if option is enabled)
         if (Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("add_other_search_dirs"), false))
         {
@@ -749,7 +665,7 @@ int DebuggerGDB::Debug()
             if (path != _T(".")) // avoid silly message "changing to ."
             {
                 msgMan->Log(m_PageIndex, _("Changing directory to: %s"), path.c_str());
-                m_pDriver->SetWorkingDirectory(path);
+                m_State.GetDriver()->SetWorkingDirectory(path);
             }
         }
 
@@ -758,10 +674,10 @@ int DebuggerGDB::Debug()
         wxString debuggee = GetDebuggee(target);
         if (debuggee.IsEmpty())
             return -3;
-        cmdline = m_pDriver->GetCommandLine(cmdexe, debuggee);
+        cmdline = m_State.GetDriver()->GetCommandLine(cmdexe, debuggee);
     }
     else // m_PidToAttach != 0
-        cmdline = m_pDriver->GetCommandLine(cmdexe, m_PidToAttach);
+        cmdline = m_State.GetDriver()->GetCommandLine(cmdexe, m_PidToAttach);
 
     // start the gdb process
     wxString wdir = project ? project->GetBasePath() : _T(".");
@@ -775,22 +691,22 @@ int DebuggerGDB::Debug()
 	// start polling gdb's output
 	m_TimerPollDebugger.Start(20);
 
-    m_pDriver->Prepare(target && target->GetTargetType() == ttConsoleOnly);
-    SetBreakpoints();
-    m_pDriver->Start(false);
+    m_State.GetDriver()->Prepare(target && target->GetTargetType() == ttConsoleOnly);
+    m_State.ApplyBreakpoints();
+    m_State.GetDriver()->Start(false);
 
 	return 0;
 }
 
 void DebuggerGDB::AddSourceDir(const wxString& dir)
 {
-    if (!m_pDriver || dir.IsEmpty())
+    if (!m_State.GetDriver() || dir.IsEmpty())
         return;
     wxString filename = dir;
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(filename); // apply env vars
     Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Adding source dir: %s"), filename.c_str());
     ConvertToGDBDirectory(filename, _T(""), false);
-    m_pDriver->AddDirectory(filename);
+    m_State.GetDriver()->AddDirectory(filename);
 }
 
 // static
@@ -926,46 +842,46 @@ void DebuggerGDB::RunCommand(int cmd)
     {
         case CMD_CONTINUE:
             ClearActiveMarkFromAllEditors();
-            if (m_pDriver)
+            if (m_State.GetDriver())
             {
                 Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Continuing..."));
-                m_pDriver->Continue();
+                m_State.GetDriver()->Continue();
             }
 //            QueueCommand(new DebuggerCmd(this, _T("cont")));
             break;
 
         case CMD_STEP:
             ClearActiveMarkFromAllEditors();
-            if (m_pDriver)
-                m_pDriver->Step();
+            if (m_State.GetDriver())
+                m_State.GetDriver()->Step();
 //            QueueCommand(new DebuggerCmd(this, _T("next")));
             break;
 
         case CMD_STEPIN:
             ClearActiveMarkFromAllEditors();
-            if (m_pDriver)
-                m_pDriver->StepIn();
+            if (m_State.GetDriver())
+                m_State.GetDriver()->StepIn();
 //            QueueCommand(new DebuggerCmd(this, _T("step")));
             break;
 
         case CMD_STOP:
             ClearActiveMarkFromAllEditors();
-            if (m_pDriver)
-                m_pDriver->Stop();
+            if (m_State.GetDriver())
+                m_State.GetDriver()->Stop();
 //            QueueCommand(new DebuggerCmd(this, _T("quit")));
             break;
 
         case CMD_BACKTRACE:
 //            Manager::Get()->GetMessageManager()->Log(m_PageIndex, "Running back-trace...");
-            if (m_pDriver)
-                m_pDriver->Backtrace();
+            if (m_State.GetDriver())
+                m_State.GetDriver()->Backtrace();
             break;
 
         case CMD_DISASSEMBLE:
         {
 //            Manager::Get()->GetMessageManager()->Log(m_PageIndex, "Disassemblying...");
-            if (m_pDriver)
-                m_pDriver->Disassemble();
+            if (m_State.GetDriver())
+                m_State.GetDriver()->Disassemble();
             break;
         }
 
@@ -988,11 +904,6 @@ void DebuggerGDB::CmdBacktrace()
 
 void DebuggerGDB::CmdContinue()
 {
-	if (!m_Tbreak.IsEmpty())
-	{
-//		QueueCommand(new DebuggerCmd(this, m_Tbreak));
-		m_Tbreak.Clear();
-	}
     RunCommand(CMD_CONTINUE);
 }
 
@@ -1031,28 +942,32 @@ void DebuggerGDB::CmdStepOut()
 {
 	cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 	if (!ed) return;
-	ProjectFile* pf = ed->GetProjectFile();
-	if (!pf) return;
-	wxString filename = pf->file.GetFullName(), lineBuf, cmd;
+	wxString filename = UnixFilename(ed->GetFilename()), lineBuf, cmd;
 	cbStyledTextCtrl* stc = ed->GetControl();
 	int line = m_HaltAtLine;
 	lineBuf = stc->GetLine(line);
+	int maxline = stc->GetLineCount();
 
 	unsigned int nLevel = 1;
-	while(nLevel){
-		 if ((lineBuf.Find(_T('{'))+1) && Validate(lineBuf, _T('{')) &&
-			 (line > m_HaltAtLine)) nLevel++;
-		 if ((lineBuf.Find(_T('}'))+1) && Validate(lineBuf, _T('}'))) nLevel--;
-		 if (nLevel) lineBuf = stc->GetLine(++line);
+	while(nLevel && line <= maxline)
+	{
+        if ((lineBuf.Find(_T('{'))+1) &&
+            Validate(lineBuf, _T('{')) &&
+            (line > m_HaltAtLine))
+        {
+            nLevel++;
+        }
+        if ((lineBuf.Find(_T('}'))+1) && Validate(lineBuf, _T('}')))
+            nLevel--;
+		if (nLevel)
+            lineBuf = stc->GetLine(++line);
 	}
 	if (line == stc->GetCurrentLine())
 		CmdNext();
 	else
 	{
-        wxString out = filename;
-        ConvertToGDBDirectory(out);
-		cmd << _T("tbreak ") << out << _T(":") << line+1;
-		m_Tbreak = cmd;
+        ConvertToGDBFile(filename);
+        m_State.AddBreakpoint(filename, line, true);
 		CmdContinue();
 	}
 }
@@ -1065,19 +980,7 @@ void DebuggerGDB::CmdRunToCursor()
 
 	wxString filename = UnixFilename(ed->GetFilename());
     ConvertToGDBFile(filename);
-
-    DebuggerBreakpoint* bp = new DebuggerBreakpoint;
-    bp->temporary = true;
-    bp->filename = filename;
-    bp->line = ed->GetControl()->GetCurrentLine();
-
-    if (!m_pDriver || m_pDriver->KeepTempBreakpoints())
-    {
-        m_Breakpoints.Add(bp);
-        bp->index = m_Breakpoints.GetCount() - 1;
-    }
-    if (m_pDriver)
-        m_pDriver->AddBreakpoint(bp);
+    m_State.AddBreakpoint(filename, ed->GetControl()->GetCurrentLine(), true);
 
 	if (m_pProcess)
 		CmdContinue();
@@ -1119,17 +1022,17 @@ void DebuggerGDB::CmdStop()
 
 void DebuggerGDB::ParseOutput(const wxString& output)
 {
-    if (m_pDriver)
+    if (m_State.GetDriver())
     {
-        m_pDriver->ParseOutput(output);
+        m_State.GetDriver()->ParseOutput(output);
 
         // is it still valid?
-        if (m_pDriver)
+        if (m_State.GetDriver())
         {
-            if (m_pDriver->IsStopped() && m_pDriver->HasCursorChanged())
+            if (m_State.GetDriver()->IsStopped() && m_State.GetDriver()->HasCursorChanged())
             {
-                SyncEditor(m_pDriver->GetStopFile(), m_pDriver->GetStopLine());
-//                m_HaltAtLine = line - 1;
+                SyncEditor(m_State.GetDriver()->GetStopFile(), m_State.GetDriver()->GetStopLine());
+                m_HaltAtLine = m_State.GetDriver()->GetStopLine() - 1;
                 BringAppToFront();
                 DoWatches();
             }
@@ -1300,7 +1203,7 @@ void DebuggerGDB::OnSendCommandToGDB(wxCommandEvent& event)
 	if (cmd.IsEmpty())
 		return;
 	m_LastCmd = cmd;
-	m_pDriver->QueueCommand(new DebuggerCmd(m_pDriver, cmd, true));
+	m_State.GetDriver()->QueueCommand(new DebuggerCmd(m_State.GetDriver(), cmd, true));
 }
 
 void DebuggerGDB::OnAddSymbolFile(wxCommandEvent& event)
@@ -1330,10 +1233,10 @@ void DebuggerGDB::OnDisassemble(wxCommandEvent& event)
 
 void DebuggerGDB::OnBreakpoints(wxCommandEvent& event)
 {
-    BreakpointsDlg dlg(m_Breakpoints);
+    BreakpointsDlg dlg(m_State.GetBreakpoints());
 	if (dlg.ShowModal() == wxID_OK)
 	{
-		SetBreakpoints();
+		m_State.ApplyBreakpoints();
 	}
 }
 
@@ -1377,7 +1280,7 @@ void DebuggerGDB::OnGDBTerminated(wxCommandEvent& event)
 //	m_pProcess = 0L;
 
 	ClearActiveMarkFromAllEditors();
-    StopDebuggerDriver();
+    m_State.StopDriver();
 	Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Debugger finished with status %d"), m_LastExitCode);
 
 	if (m_NoDebugInfo)
@@ -1391,76 +1294,50 @@ void DebuggerGDB::OnGDBTerminated(wxCommandEvent& event)
 
 void DebuggerGDB::OnBreakpointAdd(CodeBlocksEvent& event)
 {
-    // do we have a bp there?
-    if (HasBreakpoint(event.GetString(), event.GetInt()) != -1)
-        return;
+    m_State.AddBreakpoint(event.GetString(), event.GetInt(), false);
 
-    DebuggerBreakpoint* bp = new DebuggerBreakpoint;
-    bp->filename = event.GetString();
-    bp->line = event.GetInt();
-
-    //Workaround for GDB to break on C++ constructor/destructor
-    EditorBase* base = event.GetEditor();
-    cbEditor* ed = base && base->IsBuiltinEditor() ? static_cast<cbEditor*>(base) : 0;
-    if (ed)
-    {
-        wxString lb = ed->GetControl()->GetLine(bp->line);
-        wxString cppClassName;
-        wxString cppDestructor = _T("~");
-        char bufBase[255], bufMethod[255];
-        // NOTE (rickg22#1#): Had to do some changes to convert to unicode
-        int i = sscanf(lb.mb_str(), "%[0-9A-Za-z_~]::%[0-9A-Za-z_~](", bufBase, bufMethod);
-        if (i == 2)
-        {
-            wxString strBase = _U(bufBase);
-            wxString strMethod = _U(bufMethod);
-            cppClassName << strBase;
-            cppDestructor << cppClassName;
-            if (cppClassName.Matches(strMethod) || cppDestructor.Matches(strMethod))
-                bp->func << cppClassName << _T("::") << strMethod;
-            else
-                bp->func.Clear();
-        }
-    }
-    //end GDB workaround
-
-    m_Breakpoints.Add(bp);
-    bp->index = m_Breakpoints.GetCount() - 1;
-    if (m_pDriver)
-        m_pDriver->AddBreakpoint(bp);
+//    //Workaround for GDB to break on C++ constructor/destructor
+//    EditorBase* base = event.GetEditor();
+//    cbEditor* ed = base && base->IsBuiltinEditor() ? static_cast<cbEditor*>(base) : 0;
+//    if (ed)
+//    {
+//        wxString lb = ed->GetControl()->GetLine(bp->line);
+//        wxString cppClassName;
+//        wxString cppDestructor = _T("~");
+//        char bufBase[255], bufMethod[255];
+//        // NOTE (rickg22#1#): Had to do some changes to convert to unicode
+//        int i = sscanf(lb.mb_str(), "%[0-9A-Za-z_~]::%[0-9A-Za-z_~](", bufBase, bufMethod);
+//        if (i == 2)
+//        {
+//            wxString strBase = _U(bufBase);
+//            wxString strMethod = _U(bufMethod);
+//            cppClassName << strBase;
+//            cppDestructor << cppClassName;
+//            if (cppClassName.Matches(strMethod) || cppDestructor.Matches(strMethod))
+//                bp->func << cppClassName << _T("::") << strMethod;
+//            else
+//                bp->func.Clear();
+//        }
+//    }
+//    //end GDB workaround
 }
 
 void DebuggerGDB::OnBreakpointEdit(CodeBlocksEvent& event)
 {
-    int idx = HasBreakpoint(event.GetString(), event.GetInt());
-    if (idx == -1)
+    int idx = m_State.HasBreakpoint(event.GetString(), event.GetInt());
+    DebuggerBreakpoint* bp = m_State.GetBreakpoint(idx);
+    if (!bp)
         return;
-
-    DebuggerBreakpoint* bp = m_Breakpoints[idx];
     EditBreakpointDlg dlg(bp);
-    if (dlg.ShowModal() == wxID_OK && m_pDriver)
+    if (dlg.ShowModal() == wxID_OK)
     {
-        m_pDriver->RemoveBreakpoint(bp);
-        m_pDriver->AddBreakpoint(bp);
+        m_State.ResetBreakpoint(idx);
     }
 }
 
 void DebuggerGDB::OnBreakpointDelete(CodeBlocksEvent& event)
 {
-    int idx = HasBreakpoint(event.GetString(), event.GetInt());
-    if (idx == -1)
-        return;
-
-    DebuggerBreakpoint* bp = m_Breakpoints[idx];
-    m_Breakpoints.RemoveAt(idx);
-    // reset bp->index for following breakpoints
-    for (unsigned int x = idx; x < m_Breakpoints.GetCount(); ++x)
-        m_Breakpoints[x]->index = x;
-
-    if (m_pDriver)
-        m_pDriver->RemoveBreakpoint(bp, true); // deletes the breakpoint when done running
-    else
-        delete bp;
+    m_State.RemoveBreakpoint(event.GetString(), event.GetInt());
 }
 
 void DebuggerGDB::OnValueTooltip(CodeBlocksEvent& event)
@@ -1505,7 +1382,7 @@ void DebuggerGDB::OnValueTooltip(CodeBlocksEvent& event)
 		m_EvalRect.width = pt.x - m_EvalRect.x;
 		m_EvalRect.height = (pt.y + ed->GetControl()->GetCharHeight()) - m_EvalRect.y;
 		m_LastEval = token;
-        m_pDriver->EvaluateSymbol(token, &m_EvalWin, m_EvalRect);
+        m_State.GetDriver()->EvaluateSymbol(token, &m_EvalWin, m_EvalRect);
 	}
 }
 
@@ -1516,9 +1393,9 @@ void DebuggerGDB::OnEditorOpened(CodeBlocksEvent& event)
     EditorBase* ed = event.GetEditor();
     if (ed)
     {
-        for (unsigned int i = 0; i < m_Breakpoints.GetCount(); ++i)
+        for (unsigned int i = 0; i < m_State.GetBreakpoints().GetCount(); ++i)
         {
-            DebuggerBreakpoint* bp = m_Breakpoints[i];
+            DebuggerBreakpoint* bp = m_State.GetBreakpoints()[i];
             if (bp->filename.Matches(ed->GetFilename()))
                 ed->ToggleBreakpoint(bp->line, false);
         }
@@ -1561,6 +1438,6 @@ void DebuggerGDB::OnAttachToProcess(wxCommandEvent& event)
 
 void DebuggerGDB::OnDetach(wxCommandEvent& event)
 {
-    m_pDriver->Detach();
-    m_pDriver->Stop();
+    m_State.GetDriver()->Detach();
+    m_State.GetDriver()->Stop();
 }

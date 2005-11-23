@@ -23,10 +23,8 @@ class GDB_driver : public DebuggerDriver
         virtual void Disassemble();
         virtual void Detach();
 
-        virtual bool KeepTempBreakpoints(){ return false; }
-
         virtual void AddBreakpoint(DebuggerBreakpoint* bp);
-        virtual void RemoveBreakpoint(DebuggerBreakpoint* bp, bool deleteAlso = false);
+        virtual void RemoveBreakpoint(DebuggerBreakpoint* bp);
         virtual void EvaluateSymbol(const wxString& symbol, wxTipWindow** tipWin, const wxRect& tipRect);
         virtual void UpdateWatches(bool doLocals, bool doArgs, DebuggerTree* tree);
         virtual void ParseOutput(const wxString& output);

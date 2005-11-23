@@ -86,9 +86,8 @@ class DebuggerDriver
 
         /** Remove a breakpoint.
             @param bp The breakpoint to remove. If NULL, all reakpoints are removed.
-            @param deleteAlso If true, @c bp will be deleted when done.
         */
-        virtual void RemoveBreakpoint(DebuggerBreakpoint* bp, bool deleteAlso = false) = 0;
+        virtual void RemoveBreakpoint(DebuggerBreakpoint* bp) = 0;
 
         /** Evaluate a symbol.
             @param symbol The symbol to evaluate.
@@ -109,10 +108,6 @@ class DebuggerDriver
 
         /** Parse debugger's output. */
         virtual void ParseOutput(const wxString& output) = 0;
-
-        /** The driver should return true if it needs the plugin to keep
-        temporary breakpoints in the breakpoints list, false if not. */
-        virtual bool KeepTempBreakpoints() = 0;
 
         /** Is the program stopped? */
         virtual bool IsStopped(){ return m_ProgramIsStopped; }

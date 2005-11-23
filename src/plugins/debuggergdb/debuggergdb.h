@@ -9,6 +9,7 @@
 #include <wx/regex.h>
 #include <wx/tipwin.h>
 
+#include "debuggerstate.h"
 #include "debugger_defs.h"
 #include "debuggertree.h"
 #include "backtracedlg.h"
@@ -22,7 +23,7 @@ class Compiler;
 
 class DebuggerGDB : public cbDebuggerPlugin
 {
-        DebuggerDriver* m_pDriver;
+        DebuggerState m_State;
 	public:
 		DebuggerGDB();
 		~DebuggerGDB();
@@ -54,8 +55,8 @@ class DebuggerGDB : public cbDebuggerPlugin
 		void Log(const wxString& msg);
 		void DebugLog(const wxString& msg);
 		void SendCommand(const wxString& cmd);
-		DebuggerBreakpoint* GetBreakpoint(int num);
-		void RemoveBreakpoint(int num);
+
+		DebuggerState& GetState(){ return m_State; }
 
         static void ConvertToGDBFriendly(wxString& str);
         static void ConvertToGDBFile(wxString& str);
@@ -67,18 +68,12 @@ class DebuggerGDB : public cbDebuggerPlugin
 		void ParseOutput(const wxString& output);
 		void BringAppToFront();
 		void ClearActiveMarkFromAllEditors();
-		void SetBreakpoints();
 		void DoWatches();
         wxString GetEditorWordAtCaret();
         wxString FindDebuggerExecutable(Compiler* compiler);
         int LaunchProcess(const wxString& cmd, const wxString& cwd);
         wxString GetDebuggee(ProjectBuildTarget* target);
         bool IsStopped();
-        bool StartDebuggerDriverFor(ProjectBuildTarget* target);
-        void StopDebuggerDriver();
-
-        void ClearBreakpointsArray();
-        int HasBreakpoint(const wxString& file, int line); // returns -1 if not found
 
 		void OnUpdateUI(wxUpdateUIEvent& event);
 		void OnDebug(wxCommandEvent& event);
@@ -125,7 +120,6 @@ class DebuggerGDB : public cbDebuggerPlugin
 		int m_TargetIndex;
 		int m_Pid;
 		int m_PidToAttach; // for "attach to process"
-		wxString m_Tbreak;
 		wxTipWindow* m_EvalWin;
 		wxString m_LastEval;
 		wxRect m_EvalRect;
@@ -139,10 +133,6 @@ class DebuggerGDB : public cbDebuggerPlugin
 
 		// current frame info
 		StackFrame m_CurrentFrame;
-
-        // breakpoints list
-        BreakpointsList m_Breakpoints;
-        int m_LastBreakpointNum;
 
 		// extra dialogs
 		DisassemblyDlg* m_pDisassembly;
