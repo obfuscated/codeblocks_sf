@@ -218,9 +218,9 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
     Elem = MainNode->FirstChildElement(XML_CONFIG_STR);
     if ( Elem )
     {
-        AppFile = Elem->Attribute(XML_APPFILE_STR);
-        MainResource = Elem->Attribute(XML_MAINRES_STR);
-        wxString InitAllMode = Elem->Attribute(XML_INITALL_STR);
+        AppFile = wxString ( Elem->Attribute(XML_APPFILE_STR), wxConvUTF8 );
+        MainResource = wxString( Elem->Attribute(XML_MAINRES_STR), wxConvUTF8 );
+        wxString InitAllMode = wxString( Elem->Attribute(XML_INITALL_STR),wxConvUTF8);
         if ( InitAllMode == _T("never") )
         {
             CallInitAll = false;
