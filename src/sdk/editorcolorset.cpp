@@ -410,39 +410,18 @@ void EditorColorSet::Save()
 			OptionColor* opt = m_Sets[x].m_Colors.Item(i);
 			wxString tmpKey;
 			tmpKey << key << _T("/style") << i;
-			bool wrote = false;
 
 			if (opt->fore != opt->originalfore && opt->fore != wxNullColour)
-			{
                 cfg->Write(tmpKey + _T("/fore"), opt->fore);
-                wrote = true;
-			}
 			if (opt->back != opt->originalback && opt->back != wxNullColour)
-			{
                 cfg->Write(tmpKey + _T("/back"), opt->back);
-                wrote = true;
-			}
 
-            if (opt->bold)
-			{
-                cfg->Write(tmpKey + _T("/bold"),       opt->bold);
-                wrote = true;
-			}
-            if (opt->italics)
-			{
-                cfg->Write(tmpKey + _T("/italics"),    opt->italics);
-                wrote = true;
-			}
-            if (opt->underlined)
-			{
-                cfg->Write(tmpKey + _T("/underlined"), opt->underlined);
-                wrote = true;
-			}
-//            if (opt->isStyle)
-//                cfg->Write(tmpKey + _T("/isStyle"), opt->isStyle);
+            cfg->Write(tmpKey + _T("/bold"),       opt->bold);
+            cfg->Write(tmpKey + _T("/italics"),    opt->italics);
+            cfg->Write(tmpKey + _T("/underlined"), opt->underlined);
+            cfg->Write(tmpKey + _T("/isStyle"),    opt->isStyle);
 
-            if (wrote)
-                cfg->Write(tmpKey + _T("/name"), opt->name, true);
+            cfg->Write(tmpKey + _T("/name"), opt->name, true);
 		}
         wxString tmpkey;
 		for (int i = 0; i < 3; ++i)
@@ -493,7 +472,7 @@ void EditorColorSet::Load()
 			opt->italics = cfg->ReadBool(tmpKey + _T("/italics"), opt->italics);
 			opt->underlined = cfg->ReadBool(tmpKey + _T("/underlined"), opt->underlined);
 
-//			opt->isStyle = cfg->ReadBool(tmpKey + _T("/isStyle"), opt->underlined);
+			opt->isStyle = cfg->ReadBool(tmpKey + _T("/isStyle"), opt->underlined);
 		}
         wxString tmpkey;
         for (int i = 0; i < 3; ++i)

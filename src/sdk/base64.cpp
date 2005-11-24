@@ -96,7 +96,7 @@ wxString wxBase64::Decode(const wxString& data)
         if (++i < len)
         {
             c = data[i];
-            if (fillchar == c)
+            if ((char)fillchar == c)
                 break;
 
             c = cvt.Find(c);
@@ -108,7 +108,7 @@ wxString wxBase64::Decode(const wxString& data)
         if (++i < len)
         {
             c1 = data[i];
-            if (fillchar == c1)
+            if ((char)fillchar == c1)
                 break;
 
             c1 = cvt.Find(c1);

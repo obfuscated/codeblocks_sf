@@ -33,6 +33,7 @@
 #include "cbproject.h" // class's header file
 #include "sdk_events.h"
 #include "manager.h"
+#include "cbeditor.h"
 #include "projectoptionsdlg.h"
 #include "projectloader.h"
 #include "devcpploader.h"

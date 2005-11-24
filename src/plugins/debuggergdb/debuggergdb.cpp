@@ -37,6 +37,7 @@
 #include <pluginmanager.h>
 #include <editormanager.h>
 #include <macrosmanager.h>
+#include <cbeditor.h>
 #include <projectbuildtarget.h>
 #include <sdk_events.h>
 #include <editarraystringdlg.h>

@@ -252,7 +252,7 @@ void PluginManager::LoadAllPlugins()
             try
             {
                 plug->Attach();
-                Manager::Get()->GetConfigManager(_T("plugins"))->Write(_T("/try_to_activate"), wxEmptyString);
+                Manager::Get()->GetConfigManager(_T("plugins"))->Write(_T("/try_to_activate"), wxEmptyString, false);
             }
             catch (cbException& exception)
             {
@@ -270,7 +270,7 @@ void PluginManager::LoadAllPlugins()
 	Manager::Get()->GetMessageManager()->Log(_T(""));
 
     wxLogNull ln;
-    Manager::Get()->GetConfigManager(_T("plugins"))->Write(_T("/try_to_activate"), wxEmptyString);
+    Manager::Get()->GetConfigManager(_T("plugins"))->Write(_T("/try_to_activate"), wxEmptyString, false);
 }
 
 void PluginManager::UnloadAllPlugins()

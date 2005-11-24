@@ -15,7 +15,6 @@
 #include "configmanager.h"
 #include "personalitymanager.h"
 #include "cbexception.h"
-#include "base64.h"
 #include "crc32.h"
 
 #include <wx/file.h>
@@ -691,7 +690,7 @@ bool ConfigManager::Read(const wxString& name, wxColour* ret)
         if(c->QueryIntAttribute("r", &r) == TIXML_SUCCESS
                 && c->QueryIntAttribute("g", &g) == TIXML_SUCCESS
                 && c->QueryIntAttribute("b", &b) == TIXML_SUCCESS)
-            ret->Set(r, b, g);
+            ret->Set(r, g, b);
         return true;
     }
     return false;

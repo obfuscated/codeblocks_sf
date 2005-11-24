@@ -483,10 +483,7 @@ void cbEditor::CreateEditor()
 
 wxColour cbEditor::GetOptionColour(const wxString& option, const wxColour _default)
 {
-    return wxColour (Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(option + _T("/red"), _default.Red()),
-    				Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(option + _T("/green"), _default.Green()),
-    				Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(option + _T("/blue"), _default.Blue())
-	);
+    return Manager::Get()->GetConfigManager(_T("editor"))->ReadColour(option, _default);
 }
 
 void cbEditor::SetEditorStyle()

@@ -48,6 +48,7 @@
 #include "managerproxy.h"
 #include "multiselectdlg.h"
 #include "cbworkspace.h"
+#include "cbeditor.h"
 #include "xtra_classes.h"
 
 // static

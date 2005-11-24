@@ -125,16 +125,19 @@ bool WorkspaceLoader::Open(const wxString& filename)
 
 bool WorkspaceLoader::Save(const wxString& title, const wxString& filename)
 {
-    wxString buffer;
-    wxArrayString array;
+    const char* ROOT_TAG = "CodeBlocks_workspace_file";
+
+    TiXmlDocument doc;
+    doc.SetCondenseWhiteSpace(false);
+    doc.InsertEndChild(TiXmlDeclaration("1.0", "UTF-8", "yes"));
+    TiXmlElement* rootnode = static_cast<TiXmlElement*>(doc.InsertEndChild(TiXmlElement(ROOT_TAG)));
+    if (!rootnode)
+        return false;
+
+    TiXmlElement* wksp = static_cast<TiXmlElement*>(rootnode->InsertEndChild(TiXmlElement("Workspace")));
+    wksp->SetAttribute("title", _C(title));
 
     ProjectsArray* arr = Manager::Get()->GetProjectManager()->GetProjects();
-
-    buffer << _T("<?xml version=\"1.0\"?>") << _T("\n");
-    buffer << _T("<!DOCTYPE CodeBlocks_workspace_file>") << _T("\n");
-    buffer << _T("<CodeBlocks_workspace_file>") << _T("\n");
-    buffer << _T("\t") << _T("<Workspace title=\"") << title << _T("\">") << _T("\n");
-
     for (unsigned int i = 0; i < arr->GetCount(); ++i)
     {
         cbProject* prj = arr->Item(i);
@@ -143,15 +146,10 @@ bool WorkspaceLoader::Save(const wxString& title, const wxString& filename)
         wxFileName fname(prj->GetFilename());
         fname.MakeRelativeTo(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
 
-        buffer << _T("\t\t") << _T("<Project filename=\"") << fname.GetFullPath() << _T("\"");
+        TiXmlElement* node = static_cast<TiXmlElement*>(wksp->InsertEndChild(TiXmlElement("Project")));
+        node->SetAttribute("filename", _C(fname.GetFullPath()));
         if (prj == Manager::Get()->GetProjectManager()->GetActiveProject())
-            buffer << _T(" active=\"1\"");
-        buffer << _T("/>") << _T("\n");
+            node->SetAttribute("active", 1);
     }
-
-    buffer << _T("\t") << _T("</Workspace>") << _T("\n");
-    buffer << _T("</CodeBlocks_workspace_file>") << _T("\n");
-
-    wxFile file(filename, wxFile::write);
-    return cbWrite(file,buffer);
+    return doc.SaveFile(_C(filename));
 }

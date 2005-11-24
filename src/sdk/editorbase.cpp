@@ -5,6 +5,7 @@
 #include <wx/menu.h>
 #include "manager.h"
 #include "editorbase.h"
+#include "cbeditor.h"
 #include "editormanager.h"
 #include "pluginmanager.h"
 

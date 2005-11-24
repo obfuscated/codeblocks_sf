@@ -1,5 +1,13 @@
 #include <sdk_precomp.h>
 #include <settings.h>
+#include <manager.h>
+#include <messagemanager.h>
+#include <configmanager.h>
+#include <editormanager.h>
+#include <projectmanager.h>
+#include <macrosmanager.h>
+#include <cbproject.h>
+#include <cbeditor.h>
 #include "scriptbindings.h"
 #include "sc_wxstring.h"
 #include "sc_wxarraystring.h"
@@ -85,12 +93,14 @@ void RegisterBindings(asIScriptEngine* engine)
 //------------------------------------------------------------------------------
 void Register_ConfigManager(asIScriptEngine* engine)
 {
-    engine->RegisterObjectMethod("ConfigManagerClass", "wxString Read(const wxString& in,const wxString& in) const", asMETHODPR(wxConfigBase, Read, (const wxString&,const wxString&)const, wxString), asCALL_THISCALL);
-    engine->RegisterObjectMethod("ConfigManagerClass", "int Read(const wxString& in,int) const", asMETHODPR(wxConfigBase, Read, (const wxString&,long)const, long), asCALL_THISCALL);
-    engine->RegisterObjectMethod("ConfigManagerClass", "bool Write(const wxString& in,int)", asMETHODPR(wxConfigBase, Write, (const wxString&,long), bool), asCALL_THISCALL);
-    engine->RegisterObjectMethod("ConfigManagerClass", "bool Write(const wxString& in,double)", asMETHODPR(wxConfigBase, Write, (const wxString&,long), bool), asCALL_THISCALL);
-    engine->RegisterObjectMethod("ConfigManagerClass", "bool Write(const wxString& in,bool)", asMETHODPR(wxConfigBase, Write, (const wxString&,long), bool), asCALL_THISCALL);
-    engine->RegisterObjectMethod("ConfigManagerClass", "bool Write(const wxString& in,const wxString& in)", asMETHODPR(wxConfigBase, Write, (const wxString&,const wxString&), bool), asCALL_THISCALL);
+    engine->RegisterObjectMethod("ConfigManagerClass", "wxString Read(const wxString& in,const wxString& in)", asMETHODPR(ConfigManager, Read, (const wxString&,const wxString&), wxString), asCALL_THISCALL);
+    engine->RegisterObjectMethod("ConfigManagerClass", "int Read(const wxString& in,int)", asMETHODPR(ConfigManager, ReadInt, (const wxString&,int), int), asCALL_THISCALL);
+    engine->RegisterObjectMethod("ConfigManagerClass", "bool Read(const wxString& in,bool)", asMETHODPR(ConfigManager, ReadBool, (const wxString&,bool), bool), asCALL_THISCALL);
+    engine->RegisterObjectMethod("ConfigManagerClass", "double Read(const wxString& in,double)", asMETHODPR(ConfigManager, ReadDouble, (const wxString&,double), double), asCALL_THISCALL);
+    engine->RegisterObjectMethod("ConfigManagerClass", "void Write(const wxString& in,int)", asMETHODPR(ConfigManager, Write, (const wxString&,int), void), asCALL_THISCALL);
+    engine->RegisterObjectMethod("ConfigManagerClass", "void Write(const wxString& in,double)", asMETHODPR(ConfigManager, Write, (const wxString&,double), void), asCALL_THISCALL);
+    engine->RegisterObjectMethod("ConfigManagerClass", "void Write(const wxString& in,bool)", asMETHODPR(ConfigManager, Write, (const wxString&,bool), void), asCALL_THISCALL);
+    engine->RegisterObjectMethod("ConfigManagerClass", "void Write(const wxString& in,const wxString& in,bool)", asMETHODPR(ConfigManager, Write, (const wxString&,const wxString&,bool), void), asCALL_THISCALL);
 
     // actually bind EditorManager's instance
     engine->RegisterGlobalProperty("ConfigManagerClass ConfigManager", Manager::Get()->GetConfigManager(_T("volatile:scripting")));

@@ -11,6 +11,7 @@
 #include "tinyxml/tinyxml.h"
 #include "manager.h"
 #include "messagemanager.h"
+#include "base64.h"
 
 
 /* ------------------------------------------------------------------------------------------------------------------
@@ -199,7 +200,7 @@ public:
             while(e = n->IterateChildren(e)->ToElement())
             {
                 T *obj = new T;
-                obj->SerializeIn(wxBase64Decode(e->FirstChild()->ToText()->Value()));
+                obj->SerializeIn(wxBase64::Decode(e->FirstChild()->ToText()->Value()));
                 (*map)[e->Value()] = obj;
             }
     };

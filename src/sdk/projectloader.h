@@ -37,21 +37,15 @@ class DLLIMPORT ProjectLoader : public IBaseLoader
 
         void DoUnits(TiXmlElement* parentNode);
         void DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file);
-
-        void BeginOptionSection(wxString& buffer, const wxString& sectionName, int nrOfTabs);
-        bool DoOptionSection(wxString& buffer, const wxArrayString& array, int nrOfTabs, const wxString& optionName = _("option"));
-        void EndOptionSection(wxString& buffer, const wxString& sectionName, int nrOfTabs);
-
-        // shortcut that calls BeginOptionSection(), DoOptionSection() and EndOptionSection()
-        void SaveOptions(wxString& buffer, const wxArrayString& array, const wxString& sectionName, int nrOfTabs, const wxString& optionName = _("option"), const wxString& extra = wxEmptyString);
 	private:
-        void SaveCompilerOptions(wxString& buffer, CompileOptionsBase* object, int nrOfTabs);
-        void SaveResourceCompilerOptions(wxString& buffer, CompileOptionsBase* object, int nrOfTabs);
-        void SaveLinkerOptions(wxString& buffer, CompileOptionsBase* object, int nrOfTabs);
-        void SaveEnvironment(wxString& buffer, CustomVars* vars, int nrOfTabs);
-
         void ConvertVersion_Pre_1_1();
         void ConvertLibraries(CompileTargetBase* object);
+
+        // convenience functions, used in Save()
+        TiXmlElement* AddElement(TiXmlElement* parent, const char* name, const char* attr, const wxString& attribute);
+        TiXmlElement* AddElement(TiXmlElement* parent, const char* name, const char* attr, int attribute);
+        void AddArrayOfElements(TiXmlElement* parent, const char* name, const char* attr, const wxArrayString& array);
+        void SaveEnvironment(TiXmlElement* parent, CustomVars* vars);
 
         // accepts a questionable compiler index and returns a valid compiler index
         // (popping up a selection dialog if needed)

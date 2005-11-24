@@ -2,9 +2,11 @@
 #include "scriptingmanager.h"
 #include "cbexception.h"
 #include "manager.h"
+#include "editormanager.h"
 #include "messagemanager.h"
 #include "configmanager.h"
 #include "scriptingcall.h"
+#include "cbeditor.h"
 #include "as/bindings/scriptbindings.h"
 #include <wx/msgdlg.h>
 #include <wx/file.h>

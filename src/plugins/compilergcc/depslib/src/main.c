@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include "depslib.h"
 
+#ifdef DEPSLIB_WINDOWS
+    #include <io.h> // for getcwd
+#endif
+
 #if 0
 void test(const char *path)
 {
@@ -107,12 +111,7 @@ int main(void)
 	struct depsStats stats;
 
 	char cwd[1024];
-#ifdef DEPSLIB_WINDOWS
-	_getcwd(cwd, sizeof(cwd)); // let wxWindows handle this nastiness
-#endif
-#ifdef DEPSLIB_UNIX
 	getcwd(cwd, sizeof(cwd)); // let wxWindows handle this nastiness
-#endif
 
 #if 0
 test("C:/foo/bar/baz");

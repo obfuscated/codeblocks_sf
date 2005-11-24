@@ -29,6 +29,7 @@
 #include "compilerfactory.h"
 #include "projectfileoptionsdlg.h"
 #include "manager.h"
+#include "projectmanager.h"
 #include "macrosmanager.h"
 #include "globals.h"
 #include "customvars.h"

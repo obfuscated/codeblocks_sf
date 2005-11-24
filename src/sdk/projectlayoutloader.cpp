@@ -112,13 +112,14 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
 
 bool ProjectLayoutLoader::Save(const wxString& filename)
 {
-    wxString buffer;
-    wxArrayString array;
+    const char* ROOT_TAG = "CodeBlocks_layout_file";
 
-
-    buffer << _T("<?xml version=\"1.0\"?>") << _T('\n');
-    buffer << _T("<!DOCTYPE CodeBlocks_layout_file>") << _T('\n');
-    buffer << _T("<CodeBlocks_layout_file>") << _T('\n');
+    TiXmlDocument doc;
+    doc.SetCondenseWhiteSpace(false);
+    doc.InsertEndChild(TiXmlDeclaration("1.0", "UTF-8", "yes"));
+    TiXmlElement* rootnode = static_cast<TiXmlElement*>(doc.InsertEndChild(TiXmlElement(ROOT_TAG)));
+    if (!rootnode)
+        return false;
 
 	ProjectFile* active = 0L;
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
@@ -132,22 +133,24 @@ bool ProjectLayoutLoader::Save(const wxString& filename)
 
 		if (f->editorOpen || f->editorPos || f->editorTopLine)
 		{
-			buffer << _T('\t') << _T("<File name=\"") << f->relativeFilename << _T("\" ");
-			buffer << _T("open=\"") << f->editorOpen << _T("\" ");
-			buffer << _T("top=\"") << (f == active) << _T("\">") << _T('\n');
-			buffer << _T('\t') << _T('\t') << _T("<Cursor position=\"") << f->editorPos << _T("\" topLine=\"") << f->editorTopLine << _T("\"/>") << _T('\n');
-			buffer << _T('\t') << _T("</File>") << _T('\n');
+            TiXmlElement* node = static_cast<TiXmlElement*>(rootnode->InsertEndChild(TiXmlElement("File")));
+            node->SetAttribute("name", _C(f->relativeFilename));
+            node->SetAttribute("open", f->editorOpen);
+            node->SetAttribute("top", (f == active));
+
+            TiXmlElement* cursor = static_cast<TiXmlElement*>(node->InsertEndChild(TiXmlElement("Cursor")));
+            cursor->SetAttribute("position", f->editorPos);
+            cursor->SetAttribute("topLine", f->editorTopLine);
 		}
 	}
 	const wxArrayString& en = m_pProject->ExpandedNodes();
 	for (unsigned int i = 0; i < en.GetCount(); ++i)
 	{
 		if (!en[i].IsEmpty())
-			buffer << _T('\t') << _T("<Expand folder=\"") << en[i] << _T("\"/>") << _T('\n');
+		{
+            TiXmlElement* node = static_cast<TiXmlElement*>(rootnode->InsertEndChild(TiXmlElement("Expand")));
+            node->SetAttribute("folder", _C(en[i]));
+		}
 	}
-
-    buffer << _T("</CodeBlocks_layout_file>") << _T('\n');
-
-    wxFile file(filename, wxFile::write);
-    return cbWrite(file,buffer);
+    return doc.SaveFile(_C(filename));
 }

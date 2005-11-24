@@ -1,12 +1,13 @@
 <?xml version="1.0"?>
-<!DOCTYPE Code::Blocks_project_file>
-<Code::Blocks_project_file>
+<!DOCTYPE CodeBlocks_project_file>
+<CodeBlocks_project_file>
 	<FileVersion major="1" minor="1"/>
 	<Project>
 		<Option title="Code::Blocks"/>
-		<Option makefile="Makefile"/>
+		<Option makefile="Makefile.cb"/>
 		<Option makefile_is_custom="0"/>
-		<Option default_target="4"/>
+		<Option pch_mode="2"/>
+		<Option default_target="6"/>
 		<Option compiler="0"/>
 		<Build>
 			<Target title="tinyXML">
@@ -14,13 +15,23 @@
 				<Option working_dir=""/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="2"/>
 				<Option compiler="0"/>
 				<Option projectResourceIncludeDirsRelation="2"/>
 				<Compiler>
 					<Add option="-DEXPORT_LIB"/>
-					<Add option="-D_USRDLL"/>
+				</Compiler>
+			</Target>
+			<Target title="AngelScript">
+				<Option output="sdk\as\libangelscript.a"/>
+				<Option working_dir=""/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option type="2"/>
+				<Option compiler="0"/>
+				<Option projectResourceIncludeDirsRelation="2"/>
+				<Compiler>
+					<Add option="-fno-inline"/>
 				</Compiler>
 			</Target>
 			<Target title="scintilla">
@@ -28,7 +39,6 @@
 				<Option working_dir="devel"/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option createStaticLib="1"/>
@@ -45,13 +55,17 @@
 				<ResourceCompiler>
 					<Add directory="sdk\wxscintilla\include"/>
 				</ResourceCompiler>
+				<Linker>
+					<Add library="wxmsw26$(WX_UNICODE)"/>
+					<Add library="gdi32"/>
+				</Linker>
 			</Target>
 			<Target title="sdk">
 				<Option output="devel\codeblocks.dll"/>
 				<Option working_dir="devel"/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
+				<Option external_deps="sdk\tinyxml\txml;"/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option parameters="--debug-log --no-check-associations"/>
@@ -60,35 +74,56 @@
 				<Compiler>
 					<Add option="-DEXPORT_LIB"/>
 					<Add option="-DEXPORT_EVENTS"/>
-					<Add option="-D_USRDLL"/>
+					<Add directory="sdk"/>
+					<Add directory="sdk\as\source"/>
 				</Compiler>
 				<Linker>
-					<Add option="-Wl,--enable-auto-image-base"/>
 					<Add option="-Wl,--export-all-symbols"/>
-					<Add option="-Wl,--add-stdcall-alias"/>
-					<Add library="libtxml.a"/>
-					<Add library="libwxxrc.a"/>
-					<Add library="libwxscintilla.a"/>
+					<Add library="txml"/>
+					<Add library="angelscript"/>
+					<Add library="wxscintilla"/>
 					<Add directory="devel"/>
+					<Add directory="sdk\as"/>
 				</Linker>
 			</Target>
-			<Target title="wxDockit">
-				<Option output="src\wxDockit\lib\libwxDockit.a"/>
+			<Target title="wxDockIt">
+				<Option output="src\wxDockit\lib\libwxDockIt.a"/>
 				<Option working_dir=""/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="2"/>
 				<Option compiler="0"/>
 				<Option projectResourceIncludeDirsRelation="2"/>
 				<Compiler>
-					<Add option="-DwxUSE_WX24"/>
+					<Add option="-D__GNUWIN32__"/>
+					<Add option="-DWIN32"/>
+					<Add option="-DWINVER=0x400"/>
 					<Add option="-DPANE_AWARE"/>
-					<Add option="-D_WIN32_IE=0x300"/>
+					<Add option="-D_WIN32_IE=0x0500"/>
+					<Add option="-DWXUSINGDLL"/>
 					<Add directory="src\wxDockit\include"/>
 				</Compiler>
 				<ResourceCompiler>
 					<Add directory="src\wxDockit\include"/>
+				</ResourceCompiler>
+			</Target>
+			<Target title="wxKeyBinder">
+				<Option output="src\wxKeyBinder\lib\libwxkeybinder.a"/>
+				<Option working_dir=""/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option type="2"/>
+				<Option compiler="0"/>
+				<Option projectResourceIncludeDirsRelation="2"/>
+				<Compiler>
+					<Add option="-Winvalid-pch"/>
+					<Add option="-include &quot;sdk.h&quot;"/>
+					<Add option="-DBUILDING_PLUGIN"/>
+					<Add directory="src\wxKeyBinder\include"/>
+					<Add directory="sdk"/>
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="src\wxKeyBinder\include"/>
 				</ResourceCompiler>
 			</Target>
 			<Target title="src">
@@ -96,7 +131,7 @@
 				<Option working_dir="devel"/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
+				<Option external_deps="..\wxDockit\lib\wxdockit;"/>
 				<Option type="0"/>
 				<Option compiler="0"/>
 				<Option parameters="--debug-log --no-check-associations -ns"/>
@@ -105,34 +140,34 @@
 				<Option projectResourceIncludeDirsRelation="0"/>
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
+					<Add option="-DBUILDING_PLUGIN"/>
 					<Add directory="sdk"/>
 					<Add directory="src\wxDockit\include"/>
+					<Add directory="src\wxKeyBinder\include"/>
 				</Compiler>
-				<ResourceCompiler>
-					<Add directory="src\wxDockit\include"/>
-				</ResourceCompiler>
 				<Linker>
-					<Add library="libcodeblocks.a"/>
-					<Add library="libwxscintilla.a"/>
-					<Add library="libwxxrc.a"/>
-					<Add library="wxDockit"/>
-					<Add library="libkernel32.a"/>
-					<Add library="libuser32.a"/>
-					<Add library="libgdi32.a"/>
-					<Add library="libcomdlg32.a"/>
-					<Add library="libwinspool.a"/>
-					<Add library="libwinmm.a"/>
-					<Add library="libshell32.a"/>
-					<Add library="libcomctl32.a"/>
-					<Add library="libodbc32.a"/>
-					<Add library="libole32.a"/>
-					<Add library="liboleaut32.a"/>
-					<Add library="libuuid.a"/>
-					<Add library="librpcrt4.a"/>
-					<Add library="libadvapi32.a"/>
-					<Add library="libwsock32.a"/>
+					<Add library="codeblocks"/>
+					<Add library="wxDockIt"/>
+					<Add library="wxkeybinder"/>
+					<Add library="wxscintilla"/>
+					<Add library="kernel32"/>
+					<Add library="user32"/>
+					<Add library="gdi32"/>
+					<Add library="comdlg32"/>
+					<Add library="winspool"/>
+					<Add library="winmm"/>
+					<Add library="shell32"/>
+					<Add library="comctl32"/>
+					<Add library="odbc32"/>
+					<Add library="ole32"/>
+					<Add library="oleaut32"/>
+					<Add library="uuid"/>
+					<Add library="rpcrt4"/>
+					<Add library="advapi32"/>
+					<Add library="wsock32"/>
 					<Add directory="devel"/>
 					<Add directory="src\wxDockit\lib"/>
+					<Add directory="src\wxKeyBinder\lib"/>
 				</Linker>
 			</Target>
 			<Target title="plugin_Astyle">
@@ -140,33 +175,38 @@
 				<Option working_dir="devel\share\CodeBlocks\plugins"/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="1"/>
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
-					<Add option="-D_WINDLL"/>
-					<Add option="-DNDEBUG"/>
 					<Add directory="sdk"/>
 					<Add directory="plugins\astyle\astyle"/>
 				</Compiler>
 				<Linker>
-					<Add option="-Wl,--enable-auto-image-base"/>
-					<Add option="-Wl,--add-stdcall-alias"/>
-					<Add library="libcodeblocks.a"/>
-					<Add library="libwxscintilla.a"/>
-					<Add library="libwxxrc.a"/>
-					<Add library="wxmsw242"/>
+					<Add library="codeblocks"/>
+					<Add library="wxscintilla"/>
+					<Add library="wxmsw26$(WX_UNICODE)"/>
 					<Add directory="devel"/>
 				</Linker>
 			</Target>
-			<Target title="plugin_CompilerGCC">
-				<Option output="devel\share\CodeBlocks\plugins\compilergcc.dll"/>
-				<Option working_dir="."/>
+			<Target title="plugin_CompilerGCC_depslib">
+				<Option output="plugins\compilergcc\depslib\libdepslib.a"/>
+				<Option working_dir=""/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
+				<Option type="2"/>
+				<Option compiler="0"/>
+				<Option projectResourceIncludeDirsRelation="2"/>
+				<Compiler>
+					<Add option="-DDEPSLIB_WINDOWS"/>
+				</Compiler>
+			</Target>
+			<Target title="plugin_CompilerGCC">
+				<Option output="devel\share\CodeBlocks\plugins\compilergcc.dll"/>
+				<Option working_dir="devel\share\CodeBlocks\plugins"/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="1"/>
@@ -174,27 +214,23 @@
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
-					<Add option="-D_WINDLL"/>
-					<Add option="-DDEPSLIB_WINDOWS"/>
 					<Add directory="sdk"/>
 					<Add directory="plugins\compilergcc\depslib\src"/>
 				</Compiler>
 				<Linker>
-					<Add option="-Wl,--enable-auto-image-base"/>
-					<Add option="-Wl,--add-stdcall-alias"/>
-					<Add library="libcodeblocks.a"/>
-					<Add library="libwxscintilla.a"/>
-					<Add library="libwxxrc.a"/>
-					<Add library="wxmsw242"/>
+					<Add library="codeblocks"/>
+					<Add library="wxscintilla"/>
+					<Add library="wxmsw26$(WX_UNICODE)"/>
+					<Add library="depslib"/>
 					<Add directory="devel"/>
+					<Add directory="plugins\compilergcc\depslib"/>
 				</Linker>
 			</Target>
 			<Target title="plugin_DebuggerGDB">
 				<Option output="devel\share\CodeBlocks\plugins\debuggergdb.dll"/>
-				<Option working_dir="."/>
+				<Option working_dir="devel\share\CodeBlocks\plugins"/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="1"/>
@@ -202,25 +238,20 @@
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
-					<Add option="-D_WINDLL"/>
 					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
-					<Add option="-Wl,--enable-auto-image-base"/>
-					<Add option="-Wl,--add-stdcall-alias"/>
-					<Add library="libcodeblocks.a"/>
-					<Add library="libwxscintilla.a"/>
-					<Add library="libwxxrc.a"/>
-					<Add library="wxmsw242"/>
+					<Add library="codeblocks"/>
+					<Add library="wxscintilla"/>
+					<Add library="wxmsw26$(WX_UNICODE)"/>
 					<Add directory="devel"/>
 				</Linker>
 			</Target>
 			<Target title="plugin_CodeCompletion">
 				<Option output="devel\share\CodeBlocks\plugins\codecompletion.dll"/>
-				<Option working_dir="."/>
+				<Option working_dir="devel\share\CodeBlocks\plugins"/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="1"/>
@@ -228,25 +259,20 @@
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
-					<Add option="-D_WINDLL"/>
 					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
-					<Add option="-Wl,--enable-auto-image-base"/>
-					<Add option="-Wl,--add-stdcall-alias"/>
-					<Add library="libcodeblocks.a"/>
-					<Add library="libwxscintilla.a"/>
-					<Add library="libwxxrc.a"/>
-					<Add library="wxmsw242"/>
+					<Add library="codeblocks"/>
+					<Add library="wxscintilla"/>
+					<Add library="wxmsw26$(WX_UNICODE)"/>
 					<Add directory="devel"/>
 				</Linker>
 			</Target>
 			<Target title="plugin_ClassWizard">
 				<Option output="devel\share\CodeBlocks\plugins\classwizard.dll"/>
-				<Option working_dir="."/>
+				<Option working_dir="devel\share\CodeBlocks\plugins"/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="1"/>
@@ -254,25 +280,20 @@
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
-					<Add option="-D_WINDLL"/>
 					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
-					<Add option="-Wl,--enable-auto-image-base"/>
-					<Add option="-Wl,--add-stdcall-alias"/>
-					<Add library="libcodeblocks.a"/>
-					<Add library="libwxscintilla.a"/>
-					<Add library="libwxxrc.a"/>
-					<Add library="wxmsw242"/>
+					<Add library="codeblocks"/>
+					<Add library="wxscintilla"/>
+					<Add library="wxmsw26$(WX_UNICODE)"/>
 					<Add directory="devel"/>
 				</Linker>
 			</Target>
 			<Target title="plugin_DefMimeHandler">
 				<Option output="devel\share\CodeBlocks\plugins\defaultmimehandler.dll"/>
-				<Option working_dir="."/>
+				<Option working_dir="devel\share\CodeBlocks\plugins"/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="1"/>
@@ -280,24 +301,19 @@
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
-					<Add option="-D_WINDLL"/>
 					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
-					<Add option="-Wl,--enable-auto-image-base"/>
-					<Add option="-Wl,--add-stdcall-alias"/>
 					<Add library="codeblocks"/>
-					<Add library="wxxrc"/>
-					<Add library="wxmsw242"/>
+					<Add library="wxmsw26$(WX_UNICODE)"/>
 					<Add directory="devel"/>
 				</Linker>
 			</Target>
 			<Target title="plugin_PluginsWizard">
 				<Option output="devel\share\CodeBlocks\plugins\pluginwizard.dll"/>
-				<Option working_dir="."/>
+				<Option working_dir="devel\share\CodeBlocks\plugins"/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option projectLinkerOptionsRelation="1"/>
@@ -305,38 +321,29 @@
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
-					<Add option="-D_WINDLL"/>
 					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
-					<Add option="-Wl,--enable-auto-image-base"/>
-					<Add option="-Wl,--add-stdcall-alias"/>
-					<Add library="libcodeblocks.a"/>
-					<Add library="libwxscintilla.a"/>
-					<Add library="libwxxrc.a"/>
-					<Add library="wxmsw242"/>
+					<Add library="codeblocks"/>
+					<Add library="wxscintilla"/>
+					<Add library="wxmsw26$(WX_UNICODE)"/>
 					<Add directory="devel"/>
 				</Linker>
 			</Target>
 			<Target title="plugin_ToDo">
 				<Option output="devel\share\CodeBlocks\plugins\todo.dll"/>
-				<Option working_dir="."/>
+				<Option working_dir="devel\share\CodeBlocks\plugins"/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
-					<Add option="-D_WINDLL"/>
 					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
-					<Add option="-Wl,--enable-auto-image-base"/>
-					<Add option="-Wl,--add-stdcall-alias"/>
-					<Add library="libcodeblocks.a"/>
-					<Add library="libwxscintilla.a"/>
-					<Add library="wxmsw242"/>
+					<Add library="codeblocks"/>
+					<Add library="wxscintilla"/>
 					<Add directory="devel"/>
 				</Linker>
 			</Target>
@@ -345,29 +352,27 @@
 				<Option working_dir="devel\share\CodeBlocks\plugins"/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option projectIncludeDirsRelation="2"/>
 				<Option projectLibDirsRelation="2"/>
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN"/>
-					<Add option="-D_WINDLL"/>
 					<Add directory="sdk"/>
 				</Compiler>
 				<Linker>
-					<Add option="-Wl,--enable-auto-image-base"/>
-					<Add option="-Wl,--add-stdcall-alias"/>
-					<Add library="libcodeblocks.a"/>
-					<Add library="wxmsw242"/>
+					<Add library="codeblocks"/>
 					<Add directory="devel"/>
 				</Linker>
 			</Target>
 			<Target title="update">
-				<Option type="4"/>
+				<Option output="C:\Devel\codeblocks-2.4\src\CodeBlocks.dll"/>
+				<Option working_dir="C:\Devel\codeblocks-2.4\src"/>
+				<Option object_output="C:\Devel\codeblocks-2.4\src\.objs"/>
+				<Option deps_output="C:\Devel\codeblocks-2.4\src\.deps"/>
+				<Option type="3"/>
 				<Option compiler="0"/>
 				<Option includeInTargetAll="0"/>
-				<Option projectResourceIncludeDirsRelation="4"/>
 				<ExtraCommands>
 					<Add before="update.bat"/>
 				</ExtraCommands>
@@ -377,29 +382,34 @@
 				<Option working_dir="tools\ConsoleRunner"/>
 				<Option object_output=".objs"/>
 				<Option deps_output=".deps"/>
-				<Option external_deps=""/>
 				<Option type="1"/>
 				<Option compiler="0"/>
-				<Option projectCompilerOptionsRelation="0"/>
+				<Option projectCompilerOptionsRelation="1"/>
 				<Option projectLinkerOptionsRelation="1"/>
-				<Option projectIncludeDirsRelation="2"/>
+				<Option projectIncludeDirsRelation="1"/>
 				<Option projectResourceIncludeDirsRelation="1"/>
+				<Option projectLibDirsRelation="1"/>
 				<Compiler>
 					<Add option="-Os"/>
-					<Add option="-D__WXMSW__"/>
 				</Compiler>
 			</Target>
 			<Target title="doc">
-				<Option type="4"/>
+				<Option output="C:\Devel\codeblocks-2.4\src\CodeBlocks.exe"/>
+				<Option working_dir="C:\Devel\codeblocks-2.4\src"/>
+				<Option object_output="C:\Devel\codeblocks-2.4\src\.objs"/>
+				<Option deps_output="C:\Devel\codeblocks-2.4\src\.deps"/>
+				<Option type="1"/>
 				<Option compiler="0"/>
 				<Option includeInTargetAll="0"/>
-				<Option projectResourceIncludeDirsRelation="4"/>
+				<Option projectResourceIncludeDirsRelation="1"/>
 				<ExtraCommands>
 					<Add before="doxygen sdk.doxy"/>
 				</ExtraCommands>
 			</Target>
 			<Environment>
-				<Variable name="WX_DIR" value="C:\Devel\wxWindows-2.4.2"/>
+				<Variable name="WX_CFG" value="Unicode"/>
+				<Variable name="WX_UNICODE" value="u"/>
+				<Variable name="WX_DIR" value="C:\Devel\wxWidgets-2.6.2"/>
 			</Environment>
 		</Build>
 		<Compiler>
@@ -407,24 +417,33 @@
 			<Add option="-g"/>
 			<Add option="-pipe"/>
 			<Add option="-mthreads"/>
-			<Add option="-fno-pcc-struct-return"/>
-			<Add option="-fno-rtti"/>
 			<Add option="-fmessage-length=0"/>
-			<Add option="-D__GNUWIN32__"/>
+			<Add option="-fexceptions"/>
+			<Add option="-Winvalid-pch"/>
+			<Add option="-DHAVE_W32API_H"/>
 			<Add option="-D__WXMSW__"/>
 			<Add option="-DWXUSINGDLL"/>
+			<Add option="-DcbDEBUG"/>
+			<Add option="-DTIXML_USE_STL"/>
+			<Add option="-DCB_PRECOMP"/>
+			<Add option="-DWX_PRECOMP"/>
+			<Add option="-DwxUSE_UNICODE"/>
 			<Add directory="$(WX_DIR)\include"/>
-			<Add directory="$(WX_DIR)\lib\mswdll"/>
+			<Add directory="$(WX_DIR)\lib\gcc_dll\msw$(WX_UNICODE)"/>
+			<Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)\msw$(WX_UNICODE)"/>
 			<Add directory="$(WX_DIR)\contrib\include"/>
 			<Add directory="sdk\wxscintilla\include"/>
+			<Add directory="sdk\as\include"/>
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(WX_DIR)\include"/>
 		</ResourceCompiler>
 		<Linker>
-			<Add library="wxmsw242"/>
+			<Add library="wxmsw26$(WX_UNICODE)"/>
 			<Add directory="sdk\tinyxml"/>
 			<Add directory="$(WX_DIR)\lib"/>
+			<Add directory="$(WX_DIR)\lib\gcc_dll\msw$(WX_UNICODE)"/>
+			<Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)"/>
 		</Linker>
 		<Unit filename="devel\share\CodeBlocks\images\codecompletion\README.txt">
 			<Option compilerVar=""/>
@@ -856,6 +875,16 @@
 			<Option link="0"/>
 			<Option target="plugin_CompilerGCC"/>
 		</Unit>
+		<Unit filename="plugins\compilergcc\compilerICC.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerICC.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_CompilerGCC"/>
+		</Unit>
 		<Unit filename="plugins\compilergcc\compilerMINGW.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="plugin_CompilerGCC"/>
@@ -938,147 +967,147 @@
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\alloc.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\alloc.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\cache.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\cache.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\depslib.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\depslib.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\filent.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\filesys.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\fileunix.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\hash.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\hash.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\headers.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\headers.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\jam.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\lists.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\lists.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\main.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\newstr.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\newstr.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\pathsplit.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\pathsplit.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\pathsys.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\pathunix.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\regexp.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\regexp.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\search.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\search.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\timestamp.c">
 			<Option compilerVar="CC"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\depslib\src\timestamp.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="plugin_CompilerGCC"/>
+			<Option target="plugin_CompilerGCC_depslib"/>
 		</Unit>
 		<Unit filename="plugins\compilergcc\directcommands.cpp">
 			<Option compilerVar="CPP"/>
@@ -1188,6 +1217,52 @@
 			<Option link="0"/>
 			<Option target="plugin_DebuggerGDB"/>
 		</Unit>
+		<Unit filename="plugins\debuggergdb\breakpointsdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\breakpointsdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\cdb_commands.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\cdb_driver.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\cdb_driver.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\debugger_defs.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\debugger_defs.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\debuggerdriver.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\debuggerdriver.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
 		<Unit filename="plugins\debuggergdb\debuggergdb.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="plugin_DebuggerGDB"/>
@@ -1203,6 +1278,16 @@
 			<Option target="plugin_DebuggerGDB"/>
 		</Unit>
 		<Unit filename="plugins\debuggergdb\debuggeroptionsdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\debuggerstate.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\debuggerstate.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -1228,7 +1313,59 @@
 			<Option link="0"/>
 			<Option target="plugin_DebuggerGDB"/>
 		</Unit>
+		<Unit filename="plugins\debuggergdb\editbreakpointdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\editbreakpointdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\editwatchdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\editwatchdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\editwatchesdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\editwatchesdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\gdb_commands.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\gdb_driver.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\gdb_driver.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
 		<Unit filename="plugins\debuggergdb\resources\backtrace.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
+		<Unit filename="plugins\debuggergdb\resources\breakpoints.xrc">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -1264,6 +1401,12 @@
 			<Option link="0"/>
 			<Option target="plugin_DebuggerGDB"/>
 		</Unit>
+		<Unit filename="plugins\debuggergdb\resources\edit_watches_dlg.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="plugin_DebuggerGDB"/>
+		</Unit>
 		<Unit filename="plugins\debuggergdb\resources\images\16x16\dbgnext.png">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
@@ -1283,12 +1426,6 @@
 			<Option target="plugin_DebuggerGDB"/>
 		</Unit>
 		<Unit filename="plugins\debuggergdb\resources\images\16x16\dbgstep.png">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="plugin_DebuggerGDB"/>
-		</Unit>
-		<Unit filename="plugins\debuggergdb\resources\images\16x16\dbgstepout.png">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -1319,12 +1456,6 @@
 			<Option target="plugin_DebuggerGDB"/>
 		</Unit>
 		<Unit filename="plugins\debuggergdb\resources\images\dbgstep.png">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="plugin_DebuggerGDB"/>
-		</Unit>
-		<Unit filename="plugins\debuggergdb\resources\images\dbgstepout.png">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -1498,11 +1629,425 @@
 			<Option link="0"/>
 			<Option target="sdk"/>
 		</Unit>
+		<Unit filename="sdk\annoyingdialog.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\annoyingdialog.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\as\bindings\sc_io.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\as\bindings\sc_io.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\as\bindings\sc_wxarraystring.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\as\bindings\sc_wxarraystring.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\as\bindings\sc_wxstring.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\as\bindings\sc_wxstring.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\as\bindings\scriptbindings.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\as\bindings\scriptbindings.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\as\include\angelscript.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_anyobject.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_anyobject.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_array.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_arrayobject.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_arrayobject.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_builder.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_builder.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_bytecode.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_bytecode.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_bytecodedef.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_c.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_callfunc.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_callfunc.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_callfunc_sh4.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_callfunc_x86.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_compiler.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_compiler.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_config.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_configgroup.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_configgroup.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_context.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_context.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_datatype.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_datatype.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_debug.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_gcobject.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_gcobject.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_generic.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_generic.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_map.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_module.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_module.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_objecttype.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_objecttype.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_outputbuffer.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_outputbuffer.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_parser.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_parser.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_property.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_restore.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_restore.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_scriptcode.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_scriptcode.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_scriptengine.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_scriptengine.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_scriptfunction.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_scriptfunction.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_scriptnode.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_scriptnode.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_scriptstruct.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_scriptstruct.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_string.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_string.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_string_util.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_string_util.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_structs.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_texts.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_thread.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_thread.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_tokendef.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_tokenizer.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_tokenizer.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_typeinfo.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_typeinfo.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_types.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_variablescope.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="AngelScript"/>
+		</Unit>
+		<Unit filename="sdk\as\source\as_variablescope.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="AngelScript"/>
+		</Unit>
 		<Unit filename="sdk\autodetectcompilers.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk\autodetectcompilers.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\base64.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\base64.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\blockallocated.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -1523,6 +2068,12 @@
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk\cbeditorprintout.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\cbexception.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -1648,6 +2199,16 @@
 			<Option link="0"/>
 			<Option target="sdk"/>
 		</Unit>
+		<Unit filename="sdk\crc32.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\crc32.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
 		<Unit filename="sdk\customvars.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="sdk"/>
@@ -1693,6 +2254,16 @@
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk\editarraystringdlg.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\editkeywordsdlg.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\editkeywordsdlg.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -2182,12 +2753,6 @@
 			<Option link="0"/>
 			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="sdk\resources\editor_manager.xrc">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="sdk"/>
-		</Unit>
 		<Unit filename="sdk\resources\external_deps.xrc">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
@@ -2201,6 +2766,12 @@
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk\resources\generic_multi_select.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\resources\global_user_vars.xrc">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -2255,18 +2826,6 @@
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_lua.xml">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="sdk"/>
-		</Unit>
-		<Unit filename="sdk\resources\lexers\lexer_prg.sample">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="sdk"/>
-		</Unit>
-		<Unit filename="sdk\resources\lexers\lexer_prg.xml">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -2344,6 +2903,28 @@
 			<Option link="0"/>
 			<Option target="sdk"/>
 		</Unit>
+		<Unit filename="sdk\scriptingcall.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\scriptingmanager.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\scriptingmanager.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\sdk.h">
+			<Option compilerVar="CPP"/>
+			<Option link="0"/>
+			<Option weight="0"/>
+			<Option target="src"/>
+		</Unit>
 		<Unit filename="sdk\sdk_events.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="sdk"/>
@@ -2352,6 +2933,12 @@
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\sdk_precomp.h">
+			<Option compilerVar="CPP"/>
+			<Option link="0"/>
+			<Option weight="0"/>
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk\searchresultslog.cpp">
@@ -2443,6 +3030,16 @@
 			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="sdk\toolsmanager.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\uservarmanager.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="sdk"/>
+		</Unit>
+		<Unit filename="sdk\uservarmanager.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -3026,16 +3623,6 @@
 			<Option link="0"/>
 			<Option target="src"/>
 		</Unit>
-		<Unit filename="src\impexpconfig.cpp">
-			<Option compilerVar="CPP"/>
-			<Option target="src"/>
-		</Unit>
-		<Unit filename="src\impexpconfig.h">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="src"/>
-		</Unit>
 		<Unit filename="src\main.cpp">
 			<Option compilerVar="CPP"/>
 			<Option target="src"/>
@@ -3404,12 +3991,6 @@
 			<Option link="0"/>
 			<Option target="src"/>
 		</Unit>
-		<Unit filename="src\resources\main_frame.xrc">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="src"/>
-		</Unit>
 		<Unit filename="src\resources\main_menu.xrc">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
@@ -3439,13 +4020,43 @@
 			<Option objectName="src\resources\resources.res"/>
 			<Option target="src"/>
 		</Unit>
-		<Unit filename="src\resources\start_here\cb_logo.jpg">
+		<Unit filename="src\resources\start_here\cb.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\start_here\new.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\start_here\open.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\start_here\reopen.png">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
 			<Option target="src"/>
 		</Unit>
 		<Unit filename="src\resources\start_here\start_here.html">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\start_here\title.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="src"/>
+		</Unit>
+		<Unit filename="src\resources\start_here\www.png">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
@@ -3465,316 +4076,480 @@
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\include\wx\dockhost.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\include\wx\dockit_defs.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\include\wx\dockpanel.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\include\wx\dockwindow.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\include\wx\exsplitter.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\include\wx\gdi.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\include\wx\generic\toolbutton.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\include\wx\gripper.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\gtk\dockwindow.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\gtk\gdi.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\gtk\pane.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
 		</Unit>
 		<Unit filename="src\wxDockit\include\wx\layoutmanager.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\include\wx\msw\dockwindow.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\include\wx\msw\gdi.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\include\wx\msw\pane.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\msw\resources\HSPLITBAR.cur">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\msw\resources\SMALLARROWS.cur">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="src\wxDockit\include\wx\msw\resources\VSPLITBAR.cur">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
 		</Unit>
 		<Unit filename="src\wxDockit\include\wx\msw\toolbutton.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\include\wx\msw\wxdockit.rc">
 			<Option compilerVar="WINDRES"/>
 			<Option objectName="src\wxDockit\include\wx\msw\wxdockit.res"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\include\wx\pane.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\include\wx\slidebar.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\include\wx\toolbutton.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\include\wx\util.h">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxDockit\lib\readme.txt">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="src\wxDockit\readme.txt">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="src\wxDockit\releaseNotes.txt">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
 		</Unit>
 		<Unit filename="src\wxDockit\src\generic\barholder.cpp">
 			<Option compilerVar="CPP"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\src\generic\dockhost.cpp">
 			<Option compilerVar="CPP"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\src\generic\dockpanel.cpp">
 			<Option compilerVar="CPP"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\src\generic\dockwindow.cpp">
 			<Option compilerVar="CPP"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\src\generic\exsplitter.cpp">
 			<Option compilerVar="CPP"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\src\generic\gdi.cpp">
 			<Option compilerVar="CPP"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\src\generic\gripper.cpp">
 			<Option compilerVar="CPP"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\src\generic\layoutmanager.cpp">
 			<Option compilerVar="CPP"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\src\generic\pane.cpp">
 			<Option compilerVar="CPP"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\src\generic\slidebar.cpp">
 			<Option compilerVar="CPP"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\src\generic\toolbutton.cpp">
 			<Option compilerVar="CPP"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\src\generic\util.cpp">
 			<Option compilerVar="CPP"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\src\msw\dockwindow_msw.cpp">
 			<Option compilerVar="CPP"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\src\msw\gdi_msw.cpp">
 			<Option compilerVar="CPP"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\src\msw\pane_msw.cpp">
 			<Option compilerVar="CPP"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
 		</Unit>
 		<Unit filename="src\wxDockit\src\msw\toolbutton_msw.cpp">
 			<Option compilerVar="CPP"/>
-			<Option target="wxDockit"/>
+			<Option target="wxDockIt"/>
+		</Unit>
+		<Unit filename="src\wxKeyBinder\include\wx\keybinder.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxKeyBinder"/>
+		</Unit>
+		<Unit filename="src\wxKeyBinder\include\wx\keybinderdef.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxKeyBinder"/>
+		</Unit>
+		<Unit filename="src\wxKeyBinder\include\wx\menuutils.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxKeyBinder"/>
+		</Unit>
+		<Unit filename="src\wxKeyBinder\src\keybinder.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxKeyBinder"/>
+		</Unit>
+		<Unit filename="src\wxKeyBinder\src\menuutils.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="wxKeyBinder"/>
+		</Unit>
+		<Unit filename="templates\common\console-main-c.cpp">
+			<Option compilerVar="CPP"/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\console-main-cpp.cpp">
+			<Option compilerVar="CPP"/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\console.cbp">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\console.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\console.template">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\dll.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\ogre-main.cpp">
+			<Option compilerVar="CPP"/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\ogre_gcc.cbp">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\ogre_vctk.cbp">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\ogrelogo.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\qt-main.cpp">
+			<Option compilerVar="CPP"/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\qt.cbp">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\qt.template">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\qtlogo32.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\sdl-cb.bmp">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\sdl-main.cpp">
+			<Option compilerVar="CPP"/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\sdl.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\sdlapp.template">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\staticlib-sample.c">
+			<Option compilerVar="CC"/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\staticlib.cbp">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\staticlib.template">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\wx-app-ash.cpp">
+			<Option compilerVar="CPP"/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\wx-app-ash.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\wx-main-ash.cpp">
+			<Option compilerVar="CPP"/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\wx-main-ash.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\wx-main-s.cpp">
+			<Option compilerVar="CPP"/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\wx-main-sh.cpp">
+			<Option compilerVar="CPP"/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\wx-main-sh.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\common\wxwidgets.png">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
 		</Unit>
 		<Unit filename="templates\console-main-c.cpp">
 			<Option compilerVar="CPP"/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
+			<Option target="wxDockIt"/>
 		</Unit>
-		<Unit filename="templates\console-main-cpp.cpp">
+		<Unit filename="templates\win32\dll-main.cpp">
 			<Option compilerVar="CPP"/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\console.cbp">
+		<Unit filename="templates\win32\dll.cbp">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\console.png">
+		<Unit filename="templates\win32\dll.template">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\console.template">
+		<Unit filename="templates\win32\gui.png">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\gui.png">
+		<Unit filename="templates\win32\ogre.template">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\opengl-main.cpp">
+		<Unit filename="templates\win32\opengl-main.cpp">
 			<Option compilerVar="CPP"/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\opengl.cbp">
+		<Unit filename="templates\win32\opengl.cbp">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\opengl.png">
+		<Unit filename="templates\win32\opengl.png">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\opengl.template">
+		<Unit filename="templates\win32\opengl.template">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\win32-main.cpp">
+		<Unit filename="templates\win32\sdlapp.cbp">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+		</Unit>
+		<Unit filename="templates\win32\win32-main.cpp">
 			<Option compilerVar="CPP"/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\win32.cbp">
+		<Unit filename="templates\win32\win32.cbp">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\win32gui.template">
+		<Unit filename="templates\win32\win32gui.template">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\wx-app-ash.cpp">
-			<Option compilerVar="CPP"/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="sdk"/>
-		</Unit>
-		<Unit filename="templates\wx-app-ash.h">
+		<Unit filename="templates\win32\wxwidgets.cbp">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\wx-main-ash.cpp">
-			<Option compilerVar="CPP"/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="sdk"/>
-		</Unit>
-		<Unit filename="templates\wx-main-ash.h">
+		<Unit filename="templates\win32\wxwidgets.template">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
-		<Unit filename="templates\wx-main-s.cpp">
-			<Option compilerVar="CPP"/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="sdk"/>
-		</Unit>
-		<Unit filename="templates\wx-main-sh.cpp">
-			<Option compilerVar="CPP"/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="sdk"/>
-		</Unit>
-		<Unit filename="templates\wx-main-sh.h">
+		<Unit filename="templates\win32\wxwidgets_static.cbp">
 			<Option compilerVar=""/>
 			<Option compile="0"/>
 			<Option link="0"/>
-			<Option target="sdk"/>
-		</Unit>
-		<Unit filename="templates\wxwindows.cbp">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="sdk"/>
-		</Unit>
-		<Unit filename="templates\wxwindows.png">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="sdk"/>
-		</Unit>
-		<Unit filename="templates\wxwindows.template">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="sdk"/>
 		</Unit>
 		<Unit filename="tips.txt">
 			<Option compilerVar=""/>
@@ -3787,4 +4562,4 @@
 			<Option target="console_runner"/>
 		</Unit>
 	</Project>
-</Code::Blocks_project_file>
+</CodeBlocks_project_file>

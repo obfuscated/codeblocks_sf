@@ -39,6 +39,7 @@
 #include <pluginmanager.h>
 #include <editormanager.h>
 #include <projectmanager.h>
+#include <cbeditor.h>
 #include <globals.h>
 
 class myTextCtrl : public wxTextCtrl

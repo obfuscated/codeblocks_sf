@@ -55,7 +55,7 @@ struct PluginInfo
   * Code::Blocks creates a menu entry for the plugin, under the Settings
   * menu, to configure it. See Configure() for more information.
   */
-class cbPlugin : public wxEvtHandler
+class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 {
     public:
 		/** In default cbPlugin's constructor the associated PluginInfo structure
@@ -178,7 +178,7 @@ class cbPlugin : public wxEvtHandler
   * This plugin type must offer some pre-defined build facilities, on top
   * of the generic plugin's.
   */
-class cbCompilerPlugin: public cbPlugin
+class PLUGIN_EXPORT cbCompilerPlugin: public cbPlugin
 {
 	public:
 		cbCompilerPlugin();
@@ -253,7 +253,7 @@ class cbCompilerPlugin: public cbPlugin
   * This plugin type must offer some pre-defined debug facilities, on top
   * of the generic plugin's.
   */
-class cbDebuggerPlugin: public cbPlugin
+class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
 {
 	public:
 		cbDebuggerPlugin();
@@ -282,7 +282,7 @@ class cbDebuggerPlugin: public cbPlugin
   * provide a configuration dialog, they 're also added under the
   * "Settings/Configure plugins" menu.
   */
-class cbToolPlugin : public cbPlugin
+class PLUGIN_EXPORT cbToolPlugin : public cbPlugin
 {
     public:
         cbToolPlugin();
@@ -307,7 +307,7 @@ class cbToolPlugin : public cbPlugin
   * Mime plugins are called by Code::Blocks to operate on files that Code::Blocks
   * wouldn't know how to handle on itself.
   */
-class cbMimePlugin : public cbPlugin
+class PLUGIN_EXPORT cbMimePlugin : public cbPlugin
 {
     public:
         cbMimePlugin();
@@ -348,7 +348,7 @@ class cbMimePlugin : public cbPlugin
   *
   * This interface is subject to change, so not much info here...
   */
-class cbCodeCompletionPlugin : public cbPlugin
+class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
 {
     public:
         cbCodeCompletionPlugin();
@@ -366,7 +366,7 @@ class cbCodeCompletionPlugin : public cbPlugin
   * used as a parameter to most of the functions, denotes 0-based index
   * of the project wizard to run.
   */
-class cbProjectWizardPlugin : public cbPlugin
+class PLUGIN_EXPORT cbProjectWizardPlugin : public cbPlugin
 {
     public:
         cbProjectWizardPlugin();

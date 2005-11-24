@@ -2,6 +2,7 @@
 #include "searchresultslog.h"
 #include "manager.h"
 #include "editormanager.h"
+#include "cbeditor.h"
 
 BEGIN_EVENT_TABLE(SearchResultsLog, SimpleListLog)
 //

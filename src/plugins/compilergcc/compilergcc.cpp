@@ -33,6 +33,7 @@
 #include <macrosmanager.h>
 #include <projectmanager.h>
 #include <editormanager.h>
+#include <cbeditor.h>
 #include <customvars.h>
 #include <annoyingdialog.h>
 #include <wx/xrc/xmlres.h>

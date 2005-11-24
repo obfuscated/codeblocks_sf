@@ -8,6 +8,7 @@
  **************************************************************/
 
 #include <sdk.h>
+#include <settings.h>
 #include "editmimetypesdlg.h"
 #include <wx/xrc/xmlres.h>
 #include <wx/listbox.h>
