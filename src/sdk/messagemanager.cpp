@@ -40,16 +40,8 @@
 #include "managerproxy.h"
 
 #define CBYIELD() \
-  {                                                         \
-      if(m_SafebutSlow)                                     \
-      {                                                     \
-          if(Manager::Get()->GetAppWindow())                \
-              Manager::Get()->GetAppWindow()->Refresh();    \
-      }                                                     \
-      else                                                  \
-      {                                                     \
-          wxTheApp->Yield();                                \
-      }                                                     \
+  {                                                     \
+      wxTheApp->Yield();                                \
   }
 
 MessageManager* MessageManager::Get(wxWindow* parent)
@@ -180,7 +172,7 @@ void MessageManager::Log(const wxChar* msg, ...)
     m_Logs[mltLog]->AddLog(tmp);
     m_Logs[mltLog]->Refresh();
 
-	if(!Manager::isappShuttingDown())
+	if(!Manager::isappShuttingDown() && !m_SafebutSlow)
         CBYIELD();
 }
 
@@ -204,7 +196,7 @@ void MessageManager::DebugLog(const wxChar* msg, ...)
 //    m_Logs[mltDebug]->AddLog(tmp);
     m_Logs[mltDebug]->Refresh();
 
-	if(!Manager::isappShuttingDown())
+	if(!Manager::isappShuttingDown() && !m_SafebutSlow)
         CBYIELD();
 }
 
@@ -279,7 +271,7 @@ void MessageManager::Log(int id, const wxChar* msg, ...)
     m_LogIDs[id]->AddLog(tmp);
     m_LogIDs[id]->Refresh();
 
-	if(!Manager::isappShuttingDown())
+    if(!Manager::isappShuttingDown() && !m_SafebutSlow)
         CBYIELD();
 }
 
@@ -295,7 +287,7 @@ void MessageManager::AppendLog(const wxChar* msg, ...)
 
     m_Logs[mltLog]->AddLog(tmp, false);
     m_Logs[mltLog]->Refresh();
-	if(!Manager::isappShuttingDown())
+	if(!Manager::isappShuttingDown() && !m_SafebutSlow)
         CBYIELD();
 }
 
@@ -314,7 +306,7 @@ void MessageManager::AppendLog(int id, const wxChar* msg, ...)
 
     m_LogIDs[id]->AddLog(tmp, false);
     m_LogIDs[id]->Refresh();
-	if(!Manager::isappShuttingDown())
+	if(!Manager::isappShuttingDown() && !m_SafebutSlow)
         CBYIELD();
 }
 
