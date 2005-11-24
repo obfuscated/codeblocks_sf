@@ -685,7 +685,7 @@ void ProjectLoader::AddArrayOfElements(TiXmlElement* parent, const char* name, c
     {
         if (array[i].IsEmpty())
             continue;
-        AddElement(parent, name, attr, FixEntities(array[i]));
+        AddElement(parent, name, attr, array[i]);
     }
 }
 
@@ -725,8 +725,8 @@ bool ProjectLoader::Save(const wxString& filename)
     rootnode->InsertEndChild(TiXmlElement("Project"));
     TiXmlElement* prjnode = rootnode->FirstChildElement("Project");
 
-    AddElement(prjnode, "Option", "title", FixEntities(m_pProject->GetTitle()));
-    AddElement(prjnode, "Option", "makefile", FixEntities(m_pProject->GetMakefile()));
+    AddElement(prjnode, "Option", "title", m_pProject->GetTitle());
+    AddElement(prjnode, "Option", "makefile", m_pProject->GetMakefile());
     AddElement(prjnode, "Option", "makefile_is_custom", m_pProject->IsMakefileCustom());
     if (m_pProject->GetModeForPCH() != pchSourceDir)
         AddElement(prjnode, "Option", "pch_mode", (int)m_pProject->GetModeForPCH());
@@ -745,26 +745,26 @@ bool ProjectLoader::Save(const wxString& filename)
         if (!target)
             break;
 
-        TiXmlElement* tgtnode = AddElement(buildnode, "Target", "title", FixEntities(target->GetTitle()));
+        TiXmlElement* tgtnode = AddElement(buildnode, "Target", "title", target->GetTitle());
         if (target->GetTargetType() != ttCommandsOnly)
         {
-            AddElement(tgtnode, "Option", "output", FixEntities(target->GetOutputFilename()));
-            AddElement(tgtnode, "Option", "working_dir", FixEntities(target->GetWorkingDir()));
-            AddElement(tgtnode, "Option", "object_output", FixEntities(target->GetObjectOutput()));
-            AddElement(tgtnode, "Option", "deps_output", FixEntities(target->GetDepsOutput()));
+            AddElement(tgtnode, "Option", "output", target->GetOutputFilename());
+            AddElement(tgtnode, "Option", "working_dir", target->GetWorkingDir());
+            AddElement(tgtnode, "Option", "object_output", target->GetObjectOutput());
+            AddElement(tgtnode, "Option", "deps_output", target->GetDepsOutput());
         }
         if (!target->GetExternalDeps().IsEmpty())
-            AddElement(tgtnode, "Option", "external_deps", FixEntities(target->GetExternalDeps()));
+            AddElement(tgtnode, "Option", "external_deps", target->GetExternalDeps());
         if (!target->GetAdditionalOutputFiles().IsEmpty())
-            AddElement(tgtnode, "Option", "additional_output", FixEntities(target->GetAdditionalOutputFiles()));
+            AddElement(tgtnode, "Option", "additional_output", target->GetAdditionalOutputFiles());
         AddElement(tgtnode, "Option", "type", target->GetTargetType());
         AddElement(tgtnode, "Option", "compiler", target->GetCompilerIndex());
         if (target->GetTargetType() == ttConsoleOnly && !target->GetUseConsoleRunner())
             AddElement(tgtnode, "Option", "use_console_runner", 0);
         if (!target->GetExecutionParameters().IsEmpty())
-            AddElement(tgtnode, "Option", "parameters", FixEntities(target->GetExecutionParameters()));
+            AddElement(tgtnode, "Option", "parameters", target->GetExecutionParameters());
         if (!target->GetHostApplication().IsEmpty())
-            AddElement(tgtnode, "Option", "host_application", FixEntities(target->GetHostApplication()));
+            AddElement(tgtnode, "Option", "host_application", target->GetHostApplication());
         if (!target->GetIncludeInTargetAll())
             AddElement(tgtnode, "Option", "includeInTargetAll", 0);
         if ((target->GetTargetType() == ttStaticLib || target->GetTargetType() == ttDynamicLib) && target->GetCreateDefFile())
@@ -834,8 +834,8 @@ bool ProjectLoader::Save(const wxString& filename)
     {
         ProjectFile* f = m_pProject->GetFile(i);
 
-        TiXmlElement* unitnode = AddElement(prjnode, "Unit", "filename", FixEntities(f->relativeFilename));
-        AddElement(unitnode, "Option", "compilerVar", FixEntities(f->compilerVar));
+        TiXmlElement* unitnode = AddElement(prjnode, "Unit", "filename", f->relativeFilename);
+        AddElement(unitnode, "Option", "compilerVar", f->compilerVar);
         if (!f->compile)
             AddElement(unitnode, "Option", "compile", 0);
         if (!f->link)
@@ -847,14 +847,14 @@ bool ProjectLoader::Save(const wxString& filename)
         if (!f->buildCommand.IsEmpty())
         {
             f->buildCommand.Replace(_T("\n"), _T("\\n"));
-            AddElement(unitnode, "Option", "buildCommand", FixEntities(f->buildCommand));
+            AddElement(unitnode, "Option", "buildCommand", f->buildCommand);
         }
         if (!f->autoDeps)
             AddElement(unitnode, "Option", "autoDeps", 0);
         if (!f->customDeps.IsEmpty())
         {
             f->customDeps.Replace(_T("\n"), _T("\\n"));
-            AddElement(unitnode, "Option", "customDeps", FixEntities(f->customDeps));
+            AddElement(unitnode, "Option", "customDeps", f->customDeps);
         }
         if (!f->GetObjName().IsEmpty())
         {
@@ -862,11 +862,11 @@ bool ProjectLoader::Save(const wxString& filename)
             if (FileTypeOf(f->relativeFilename) != ftHeader &&
                 tmp.GetExt() != CompilerFactory::Compilers[m_pProject->GetCompilerIndex()]->GetSwitches().objectExtension)
             {
-                AddElement(unitnode, "Option", "objectName", FixEntities(f->GetObjName()));
+                AddElement(unitnode, "Option", "objectName", f->GetObjName());
             }
         }
         for (unsigned int x = 0; x < f->buildTargets.GetCount(); ++x)
-            AddElement(unitnode, "Option", "target", FixEntities(f->buildTargets[x]));
+            AddElement(unitnode, "Option", "target", f->buildTargets[x]);
     }
     return doc.SaveFile(_C(filename));
 }
