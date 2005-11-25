@@ -472,7 +472,7 @@ void EditorColorSet::Load()
 			opt->italics = cfg->ReadBool(tmpKey + _T("/italics"), opt->italics);
 			opt->underlined = cfg->ReadBool(tmpKey + _T("/underlined"), opt->underlined);
 
-			opt->isStyle = cfg->ReadBool(tmpKey + _T("/isStyle"), opt->underlined);
+			opt->isStyle = cfg->ReadBool(tmpKey + _T("/isStyle"), opt->isStyle);
 		}
         wxString tmpkey;
         for (int i = 0; i < 3; ++i)
@@ -490,12 +490,13 @@ void EditorColorSet::Reset(HighlightLanguage lang)
 {
     wxLogNull ln;
     wxString key;
-    key << _T("/color_sets/") << m_Name << _T("/") << GetLanguageName(lang);
+    key << _T("/color_sets/") << m_Name << _T("/set") << lang;
     if (Manager::Get()->GetConfigManager(_T("editor"))->EnumerateSubPaths(key).GetCount() != 0)
         Manager::Get()->GetConfigManager(_T("editor"))->DeleteSubPath(key);
 
     ClearAllOptionColors();
     LoadAvailableSets();
+    Load();
 }
 
 wxString& EditorColorSet::GetKeywords(HighlightLanguage lang, int idx)
