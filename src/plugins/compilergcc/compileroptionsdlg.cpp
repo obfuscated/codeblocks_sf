@@ -34,6 +34,7 @@
 #include <projectmanager.h>
 #include <customvars.h>
 #include "editpathdlg.h"
+#include "editpairdlg.h"
 
 BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxDialog)
     EVT_UPDATE_UI(			XRCID("btnEditDir"),	    CompilerOptionsDlg::OnUpdateUI)
@@ -1016,22 +1017,22 @@ void CompilerOptionsDlg::OnRemoveDirClick(wxCommandEvent& event)
 
 void CompilerOptionsDlg::OnAddVarClick(wxCommandEvent& event)
 {
-	const wxString title = _("Add variable");
-	wxString name = wxGetTextFromUser(_("Please enter the name for the new variable:"), title);
-	if (name.IsEmpty())
-		return;
-	wxString value = wxGetTextFromUser(_("Please enter value for the new variable:"), title);
     CustomVars* vars = GetCustomVars();
-    if (vars)
+    if (!vars)
+        return;
+
+    wxString key;
+    wxString value;
+    EditPairDlg dlg(this, key, value, _("Add new variable"), EditPairDlg::bmBrowseForDirectory);
+    if (dlg.ShowModal() == wxID_OK)
     {
-        vars->Add(name, value);
+        vars->Add(key, value);
         DoFillVars(vars);
     }
 }
 
 void CompilerOptionsDlg::OnEditVarClick(wxCommandEvent& event)
 {
-	const wxString title = _("Edit variable");
 	int sel = XRCCTRL(*this, "lstVars", wxListBox)->GetSelection();
 	if (sel == -1)
 		return;
@@ -1040,14 +1041,20 @@ void CompilerOptionsDlg::OnEditVarClick(wxCommandEvent& event)
 	if (!var)
 		return;
 
-	wxString value = wxGetTextFromUser(_("Please edit the variable value:"), title, var->value);
-	if (!value.IsEmpty() && value != var->value)
-	{
-		var->value = value;
-        CustomVars* vars = GetCustomVars();
-        if (vars)
-            vars->SetModified(true);
-		XRCCTRL(*this, "lstVars", wxListBox)->SetString(sel, var->name + _T(" = ") + var->value);
+    wxString key = var->name;
+    wxString value = var->value;
+    EditPairDlg dlg(this, key, value, _("Edit variable"), EditPairDlg::bmBrowseForDirectory);
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        if (value != var->value)
+        {
+            var->name = key;
+            var->value = value;
+            CustomVars* vars = GetCustomVars();
+            if (vars)
+                vars->SetModified(true);
+            XRCCTRL(*this, "lstVars", wxListBox)->SetString(sel, var->name + _T(" = ") + var->value);
+        }
 	}
 }
 
