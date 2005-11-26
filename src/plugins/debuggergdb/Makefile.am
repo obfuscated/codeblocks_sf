@@ -20,6 +20,7 @@ libdebuggergdb_la_SOURCES = backtracedlg.cpp \
 			debuggerdriver.cpp \
 			debuggergdb.cpp \
 			debuggeroptionsdlg.cpp \
+			debuggerstate.cpp \
 			debuggertree.cpp \
 			disassemblydlg.cpp \
 			editbreakpointdlg.cpp \
@@ -35,6 +36,7 @@ noinst_HEADERS = backtracedlg.h \
 			debuggerdriver.h \
 			debuggergdb.h \
 			debuggeroptionsdlg.h \
+			debuggerstate.h \
 			debuggertree.h \
 			disassemblydlg.h \
 			editbreakpointdlg.h \

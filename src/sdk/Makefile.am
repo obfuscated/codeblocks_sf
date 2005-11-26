@@ -51,6 +51,7 @@ editorcolorset.cpp \
 editorconfigurationdlg.cpp \
 editorlexerloader.cpp \
 editormanager.cpp \
+editpairdlg.cpp \
 editpathdlg.cpp \
 edittooldlg.cpp \
 externaldepsdlg.cpp \
@@ -131,6 +132,7 @@ editorcolorset.h \
 editorconfigurationdlg.h \
 editorlexerloader.h \
 editormanager.h \
+editpairdlg.h \
 editpathdlg.h \
 edittooldlg.h \
 externaldepsdlg.h \
