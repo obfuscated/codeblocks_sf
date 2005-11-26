@@ -37,10 +37,10 @@ CB_IMPLEMENT_PLUGIN(AStylePlugin);
 AStylePlugin::AStylePlugin()
 {
 	//ctor
-    wxFileSystem::AddHandler(new wxZipFSHandler);
-    wxXmlResource::Get()->InitAllHandlers();
-    wxString resPath = ConfigManager::GetDataFolder();
-    wxXmlResource::Get()->Load(resPath + _T("/astyle.zip#zip:*.xrc"));
+  wxFileSystem::AddHandler(new wxZipFSHandler);
+  wxXmlResource::Get()->InitAllHandlers();
+  wxString resPath = ConfigManager::GetDataFolder();
+  wxXmlResource::Get()->Load(resPath + _T("/astyle.zip#zip:*.xrc"));
 
 	m_PluginInfo.name = _T("AStylePlugin");
 	m_PluginInfo.title = _T("Source code formatter (AStyle)");
@@ -72,56 +72,73 @@ void AStylePlugin::OnRelease(bool appShutDown)
 
 int AStylePlugin::Configure()
 {
-    AstyleConfigDlg dlg(Manager::Get()->GetAppWindow());
-    dlg.ShowModal();
+  AstyleConfigDlg dlg(Manager::Get()->GetAppWindow());
+  dlg.ShowModal();
 
-    return 0;
+  return 0;
 }
 
 int AStylePlugin::Execute()
 {
-    if (!IsAttached())
-        return -1;
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (!ed)
-        return 0;
-    string edText(ed->GetControl()->GetText().mb_str());
-    wxString formattedText;
+  if (!IsAttached())
+  {
+    return -1;
+  }
 
-    astyle::ASFormatter formatter;
+  cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 
-    // load settings
-    FormatterSettings settings;
-    settings.ApplyTo(formatter);
+  if (!ed)
+  {
+    return 0;
+  }
 
-    wxString eolChars;
-    switch (ed->GetControl()->GetEOLMode())
+  string edText(ed->GetControl()->GetText().mb_str());
+  wxString formattedText;
+
+  astyle::ASFormatter formatter;
+
+  // load settings
+  FormatterSettings settings;
+  settings.ApplyTo(formatter);
+
+  wxString eolChars;
+
+  switch (ed->GetControl()->GetEOLMode())
+  {
+    case wxSCI_EOL_CRLF: eolChars = _T("\r\n"); break;
+    case wxSCI_EOL_CR: eolChars = _T("\r"); break;
+    case wxSCI_EOL_LF: eolChars = _T("\n"); break;
+  }
+
+  if (edText.size() && *edText.rbegin() != '\r' && *edText.rbegin() != '\n')
+  {
+    edText += eolChars.mb_str();
+  }
+
+  istringstream iter(edText);
+  formatter.init(iter);
+
+  wxSetCursor(*wxHOURGLASS_CURSOR);
+
+  while (formatter.hasMoreLines())
+  {
+    formattedText << _U(formatter.nextLine().c_str());
+
+    if (formatter.hasMoreLines())
     {
-        case wxSCI_EOL_CRLF: eolChars = _T("\r\n"); break;
-        case wxSCI_EOL_CR: eolChars = _T("\r"); break;
-        case wxSCI_EOL_LF: eolChars = _T("\n"); break;
+      formattedText << eolChars;
     }
+  }
 
-    if (edText.size() && *edText.rbegin() != '\r' && *edText.rbegin() != '\n')
-    {
-      edText += eolChars.mb_str();
-    }
+  int pos = ed->GetControl()->GetCurrentPos();
 
-    istringstream iter(edText);
-    formatter.init(iter);
-    while (formatter.hasMoreLines())
-    {
-        formattedText << _U(formatter.nextLine().c_str());
-        if (formatter.hasMoreLines())
-            formattedText << eolChars;
-    }
+  ed->GetControl()->BeginUndoAction();
+  ed->GetControl()->SetText(formattedText);
+  ed->GetControl()->EndUndoAction();
+  ed->GetControl()->GotoPos(pos);
+  ed->SetModified(true);
 
-	int pos = ed->GetControl()->GetCurrentPos();
-	ed->GetControl()->BeginUndoAction();
-    ed->GetControl()->SetText(formattedText);
-	ed->GetControl()->EndUndoAction();
-	ed->GetControl()->GotoPos(pos);
-    ed->SetModified(true);
+  wxSetCursor(*wxSTANDARD_CURSOR);
 
-	return 0;
+  return 0;
 }

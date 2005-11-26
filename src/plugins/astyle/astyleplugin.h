@@ -29,18 +29,15 @@
 
 class AStylePlugin : public cbToolPlugin
 {
-    public:
-        AStylePlugin();
-        ~AStylePlugin();
-        int Configure();
-        int Execute();
-        void OnAttach(); // fires when the plugin is attached to the application
-        void OnRelease(bool appShutDown); // fires when the plugin is released from the application
-    protected:
-    private:
+  public:
+    AStylePlugin();
+    ~AStylePlugin();
+    int Configure();
+    int Execute();
+    void OnAttach(); // fires when the plugin is attached to the application
+    void OnRelease(bool appShutDown); // fires when the plugin is released from the application
 };
 
 CB_DECLARE_PLUGIN();
 
 #endif // ASTYLEPLUGIN_H
-
