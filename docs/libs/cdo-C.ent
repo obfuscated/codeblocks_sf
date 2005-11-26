@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- COMMON DOC OBJECTS -->
+<!ENTITY copyright SYSTEM '../common/C/copyright.xml'>
+<!ENTITY conventions SYSTEM '../common/C/conventions.xml'>
+<!ENTITY publisher SYSTEM '../common/C/publisher.xml'>
+<!ENTITY feedback SYSTEM '../common/C/feedback.xml'>
+<!ENTITY legalnotice SYSTEM '../common/C/legalnotice.xml'>
+<!ENTITY disclaimer SYSTEM '../common/C/disclaimer.xml'>
+<!ENTITY gpl SYSTEM '../common/C/gpl.xml'>
+<!ENTITY fdl SYSTEM '../common/C/fdl.xml'>

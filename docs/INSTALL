@@ -1,0 +1,26 @@
+Code::Blocks Documentation Conversion Tools Installation Instructions
+
+After downloading the sources of the documentation, there are some things that
+need to be set up on your computer if you want to convert the XML source into
+something easier to read (eg. HTML or TXT). If you are interested in this, then keep 
+reading. You only need this when you want to recreate the docs youreself.
+
+
+If you want to convert the XML to HTML, install the following:
+
+* libxml2
+  - libxml2
+* libxslt
+  - libxslt1.1
+* DocBook DTD
+  - docbook-xml
+* DocBook XSL Stylesheets
+  - docbook-xsl
+* HTMLTidy
+  - tidy
+
+If you want to convert the XML to TXT, install the above items, and then install
+the following:
+
+* lynx
+  - lynx
