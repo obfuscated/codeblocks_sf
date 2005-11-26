@@ -393,13 +393,19 @@ void EditorConfigurationDlg::ChangeTheme()
    	XRCCTRL(*this, "btnFilemasks", wxButton)->Enable(m_Theme);
 
 	wxComboBox* cmbLangs = XRCCTRL(*this, "cmbLangs", wxComboBox);
+	int sel = cmbLangs->GetSelection();
     cmbLangs->Clear();
     wxArrayString langs = m_Theme->GetAllHighlightLanguages();
     for (unsigned int i = 0; i < langs.GetCount(); ++i)
     {
     	cmbLangs->Append(langs[i]);
     }
-    cmbLangs->SetSelection(0);
+	if (sel == -1)
+	{
+	    wxString lang = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/color_sets/active_lang"), _T("C/C++"));
+        sel = cmbLangs->FindString(lang);
+	}
+    cmbLangs->SetSelection(sel != -1 ? sel : 0);
     cmbLangs->Enable(langs.GetCount() != 0);
 	if (m_Theme)
 	{
@@ -691,6 +697,7 @@ void EditorConfigurationDlg::OnOK(wxCommandEvent& event)
 		Manager::Get()->GetEditorManager()->SetColorSet(m_Theme);
         cfg->Write(_T("/color_sets/active_color_set"), m_Theme->GetName());
 	}
+    cfg->Write(_T("/color_sets/active_lang"), XRCCTRL(*this, "cmbLangs", wxComboBox)->GetStringSelection());
 
     // save any changes in auto-completion
     wxListBox* lstKeyword = XRCCTRL(*this, "lstAutoCompKeyword", wxListBox);
