@@ -1,4 +1,5 @@
 @echo off
+cls
 zip ..\..\..\devel\share\CodeBlocks\wxsmith.zip *.xrc
 zip ..\..\..\output\share\CodeBlocks\wxsmith.zip *.xrc
 md ..\..\..\devel\share\CodeBlocks\images\wxsmith > nul 2>&1
