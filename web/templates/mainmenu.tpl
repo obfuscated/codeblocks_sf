@@ -31,6 +31,7 @@
       <li><a href="http://sourceforge.net/tracker/?func=add&amp;group_id=126998&amp;atid=707419" rel="external">Ftr Requests</a></li>
       <li><a href="http://sourceforge.net/tracker/?func=add&amp;group_id=126998&amp;atid=707416" rel="external">Report bugs</a></li>
       <li><a href="http://sourceforge.net/tracker/?func=add&amp;group_id=126998&amp;atid=707418" rel="external">Submit patch</a></li>
+      <li><a href="/source_code.shtml">Source code</a></li>
     </ul>
   </li>
   <li><h3><a href="http://forums.codeblocks.org/index.php/board,10.0.html">Help Wanted</a></h3></li>

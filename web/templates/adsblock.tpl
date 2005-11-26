@@ -22,6 +22,9 @@ google_color_text = "000000";
 
 <p class="center"><a href="http://www.spreadfirefox.com/?q=affiliates&amp;id=0&amp;t=70"><img
  alt="Get Firefox!" title="Get Firefox!" width="88" height="31" src="img/getfirefox.gif" /></a></p>
+<p class="center"><a href="http://developer.berlios.de">
+ <img src="http://developer.berlios.de/bslogo.php?group_id=5358"
+ width="124" height="32" border="0" alt="BerliOS Logo" /></a></p>
 <p class="center"><a href="http://sourceforge.net">
  <img src="http://sourceforge.net/sflogo.php?group_id=126998&amp;type=1"
  width="88" height="31" alt="SourceForge.net Logo" /></a></p>
