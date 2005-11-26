@@ -296,7 +296,7 @@ wxPdfBarCodeCreator::EncodeCode39Ext(const wxString& code)
   static wxString encode[] = {
     _T("%U"), _T("$A"), _T("$B"), _T("$C"),
     _T("$D"), _T("$E"), _T("$F"), _T("$G"),
-    _T("$H"), _T("$I"), _T("$J"), _T("£K"),
+    _T("$H"), _T("$I"), _T("$J"), _T("Â£K"),
     _T("$L"), _T("$M"), _T("$N"), _T("$O"),
     _T("$P"), _T("$Q"), _T("$R"), _T("$S"),
     _T("$T"), _T("$U"), _T("$V"), _T("$W"),
