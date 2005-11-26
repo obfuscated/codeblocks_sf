@@ -15,13 +15,11 @@ using std::find;
 namespace
 {
   // Helper function to write text
-  inline void PDFWriteText(wxPdfDocument &pdf, const wxString &text)
+  inline void PDFWriteText(wxPdfDocument &pdf, const wxString &text, bool fill)
   {
     if (!text.IsEmpty())
     {
-      // TODO (Ceniza#5#): Get a background colour drawn without "erasing" text around
-      // Must be fixed in wxPdfDocument first
-      pdf.Cell(pdf.GetStringWidth(text), 4, text);//, wxPDF_BORDER_NONE, 0, wxPDF_ALIGN_LEFT, 1);
+      pdf.WriteCell(4., text, wxPDF_BORDER_NONE, fill);
     }
   }
 };
@@ -96,6 +94,7 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text)
 {
   const char *buffer = reinterpret_cast<char *>(styled_text.GetData());
   const size_t buffer_size = styled_text.GetDataLen();
+  bool fill = false;
 
   pdf.AddPage();
 
@@ -137,10 +136,11 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text)
       if (i->back.Ok())
       {
         pdf.SetFillColor(i->back);
+        fill = true;
       }
       else
       {
-        pdf.SetFillColor(*wxWHITE);
+        fill = false;
       }
     }
   }
@@ -153,7 +153,7 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text)
     {
       if (!isspace(buffer[i]))
       {
-        PDFWriteText(pdf, text);
+        PDFWriteText(pdf, text, fill);
         text.Empty();
 
         current_style = buffer[i + 1];
@@ -185,17 +185,18 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text)
           if (newStyle->back.Ok())
           {
             pdf.SetFillColor(newStyle->back);
+            fill = true;
           }
           else
           {
-            pdf.SetFillColor(*wxWHITE);
+            fill = false;
           }
         }
         else if (defStyleIdx != -1)
         {
           pdf.SetFont(wxEmptyString);
           pdf.SetTextColor(*wxBLACK);
-          pdf.SetFillColor(*wxWHITE);
+          fill = false;
         }
       }
     }
@@ -206,7 +207,7 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text)
         break;
 
       case '\n':
-        PDFWriteText(pdf, text);
+        PDFWriteText(pdf, text, fill);
         text.Empty();
         pdf.Ln();
         break;
@@ -217,7 +218,7 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text)
     };
   }
 
-  PDFWriteText(pdf, text);
+  PDFWriteText(pdf, text, fill);
 }
 
 void PDFExporter::Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColorSet *color_set)

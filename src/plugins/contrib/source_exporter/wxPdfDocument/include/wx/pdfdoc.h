@@ -13,9 +13,9 @@
 #ifndef _PDFDOC_H_
 #define _PDFDOC_H_
 
-//#if defined(__GNUG__) && !defined(__APPLE__)
-//    #pragma interface "pdfdoc.h"
-//#endif
+#if defined(__GNUG__) && !defined(__APPLE__)
+    #pragma interface "pdfdoc.h"
+#endif
 
 #include <wx/dynarray.h>
 #include <wx/mstream.h>
@@ -25,7 +25,7 @@
 #include "wx/pdffont.h"
 #include "wx/pdfimage.h"
 
-#define wxPDF_PRODUCER       _T("wxPdfDocument 0.5.1")
+#define wxPDF_PRODUCER       _T("wxPdfDocument 0.6.0")
 
 /// Border options
 #define wxPDF_BORDER_NONE    0x0000
@@ -100,6 +100,30 @@ enum wxPdfLineJoin
   wxPDF_LINEJOIN_MITER = 0,
   wxPDF_LINEJOIN_ROUND = 1,
   wxPDF_LINEJOIN_BEVEL = 2
+};
+
+enum wxPdfMarker
+{
+  wxPDF_MARKER_CIRCLE,
+  wxPDF_MARKER_SQUARE,
+  wxPDF_MARKER_TRIANGLE_UP,
+  wxPDF_MARKER_TRIANGLE_DOWN,
+  wxPDF_MARKER_TRIANGLE_LEFT,
+  wxPDF_MARKER_TRIANGLE_RIGHT,
+  wxPDF_MARKER_DIAMOND,
+  wxPDF_MARKER_PENTAGON_UP,
+  wxPDF_MARKER_PENTAGON_DOWN,
+  wxPDF_MARKER_PENTAGON_LEFT,
+  wxPDF_MARKER_PENTAGON_RIGHT,
+  wxPDF_MARKER_STAR,
+  wxPDF_MARKER_STAR4,
+  wxPDF_MARKER_PLUS,
+  wxPDF_MARKER_CROSS,
+  wxPDF_MARKER_SUN,
+  wxPDF_MARKER_BOWTIE_HORIZONTAL,
+  wxPDF_MARKER_BOWTIE_VERTICAL,
+  wxPDF_MARKER_ASTERISK,
+  wxPDF_MARKER_LAST  // Marks the last available marker symbol; do not use!
 };
 
 /// Class representing internal or external links.
@@ -277,26 +301,50 @@ public:
                  const wxPdfArrayDouble& dash = wxPdfArrayDouble(), double phase = -1,
                  const wxColour& color = wxColour());
 
+  /// Copy constructor
+  wxPdfLineStyle(const wxPdfLineStyle& lineStyle);
+
+  /// Assignment operator
+  wxPdfLineStyle& operator= (const wxPdfLineStyle& lineStyle);
+
   /// Destructor
   virtual ~wxPdfLineStyle();
 
   /// Check whether the style is initialized.
   bool IsSet() const { return m_isSet; }
 
+  /// Set the line width
+  void SetWidth(double width) { m_width = width; }
+
   /// Get the line width
   double GetWidth() const { return m_width; }
+
+  /// Set the line ending style
+  void SetLineCap(const wxPdfLineCap cap) { m_cap = cap; }
 
   /// Get the line ending style
   wxPdfLineCap GetLineCap() const { return m_cap; }
 
+  /// Set the line join style
+  void SetLineJoin(const wxPdfLineJoin join) { m_join = join; }
+
   /// Get the line join style
   wxPdfLineJoin GetLineJoin() const { return m_join; }
+
+  /// Set the dash pattern
+  void SetDash(const wxPdfArrayDouble& dash) { m_dash = dash; }
 
   /// Get the dash pattern
   const wxPdfArrayDouble& GetDash() const { return m_dash; }
 
+  /// Set the dash pattern phase
+  void SetPhase(double phase) { m_phase = phase; }
+
   /// Get the dash pattern phase
   double GetPhase() const { return m_phase; }
+
+  /// Set the line color
+  void SetColour(const wxColour& color) { m_color = color; };
 
   /// Get the line color
   const wxColour& GetColour() const { return m_color; };
@@ -309,6 +357,57 @@ private:
   wxPdfArrayDouble m_dash;    ///< Dash pattern
   double           m_phase;   ///< Dash pattern phase
   wxColour         m_color;   ///< Line color
+};
+
+/// Class representing gradients.
+class WXDLLIMPEXP_PDFDOC wxPdfGradient
+{
+public:
+  /// Constructor
+  /**
+  * Creates a line style for use in graphics primitives.
+  * \param[in] width Width of the line in user units.
+  * \param[in] cap   Type of cap to put on the line (butt, round, square).
+  *                  The difference between 'square' and 'butt' is that 'square'
+  *                  projects a flat end past the end of the line.
+  * \param[in] join  form of line joining: miter, round or bevel
+  * \param[in] dash  pattern for dashed lines.Is an empty array (without dash) or
+  *   array with series of length values, which are the lengths of the on and off dashes.
+  *           For example: (2) represents 2 on, 2 off, 2 on , 2 off ...
+  *                        (2,1) is 2 on, 1 off, 2 on, 1 off.. etc
+  * \param[in] phase Modifier of the dash pattern which is used to shift the point at which the pattern starts
+  * \param[in] color line color.
+  * \see SetLineStyle(), Curve(), Line(), Circle(), Ellipse(), Rect(), RoundedRect(), Polygon(), RegularPolygon(), StarPolygon()
+  */
+  wxPdfGradient(int type, const wxColour& color1, const wxColour& color2, double coords[]);
+
+  /// Destructor
+  virtual ~wxPdfGradient();
+
+  /// Set gradient object index
+  void SetObjIndex(int n) { m_n = n; }
+
+  /// Get gradient object index
+  int  GetObjIndex() { return m_n; }
+
+  /// Get the gradient type
+  const int GetType() const { return m_type; };
+
+  /// Get the gradient color 1
+  const wxColour& GetColor1() const { return m_color1; };
+
+  /// Get the gradient color 2
+  const wxColour& GetColor2() const { return m_color2; };
+
+  /// Get the gradient coordinates
+  const double* GetCoords() const { return m_coords; }
+
+private:
+  int              m_n;         ///< Gradient index
+  int              m_type;      ///< Gradient type
+  wxColour         m_color1;    ///< Gradient color 1
+  wxColour         m_color2;    ///< Gradient color 2
+  double           m_coords[5]; ///< Gradient coordinates
 };
 
 /// Hashmap class for document pages
@@ -325,6 +424,9 @@ WX_DECLARE_HASH_MAP(long, wxArrayPtrVoid*, wxIntegerHash, wxIntegerEqual, PageLi
 
 /// Hashmap class for font encoding differences
 WX_DECLARE_HASH_MAP(long, wxString*, wxIntegerHash, wxIntegerEqual, DiffHashMap);
+
+/// Hashmap class for gradients
+WX_DECLARE_HASH_MAP(long, wxPdfGradient*, wxIntegerHash, wxIntegerEqual, GradientMap);
 
 /// Hashmap class for core fonts
 WX_DECLARE_STRING_HASH_MAP(int, CoreFontMap);
@@ -431,6 +533,12 @@ public:
   */
   virtual void SetLeftMargin(double margin);
   
+  /// Returns the left margin.
+  /**
+  * \return double left margin.
+  */
+  virtual double GetLeftMargin();
+
   /// Defines the top margin.
   /**
   * The method can be called before creating the first page.
@@ -439,6 +547,12 @@ public:
   */
   virtual void SetTopMargin(double margin);
   
+  /// Returns the top margin.
+  /**
+  * \return double top margin.
+  */
+  virtual double GetTopMargin();
+
   /// Defines the right margin.
   /**
   * The method can be called before creating the first page.
@@ -446,6 +560,25 @@ public:
   * \see SetLeftMargin(), SetTopMargin(), SetAutoPageBreak(), SetMargins()
   */
   virtual void SetRightMargin(double margin);
+
+  /// Returns the right margin.
+  /**
+  * \return double right margin.
+  */
+  virtual double GetRightMargin();
+
+  /// Defines the cell margin.
+  /**
+  * The method can be called before creating the first page.
+  * \param margin The margin.
+  */
+  virtual void SetCellMargin(double margin);
+
+  /// Returns the cell margin.
+  /**
+  * \return double cell margin.
+  */
+  virtual double GetCellMargin();
 
   /// Enables or disables the automatic page breaking mode.
   /**
@@ -636,6 +769,12 @@ public:
   */
   virtual void SetFillColor(const wxColour& color);
   
+  /// Gets the color used for all filling operations.
+  /**
+  * \see SetFillColor()
+  */
+  virtual const wxColour GetFillColor();
+  
   /// Defines the color used for text.
   /**
   * It can be expressed in RGB components or gray scale. The method can be called before the first page is
@@ -677,6 +816,12 @@ public:
   */
   virtual void SetLineStyle(const wxPdfLineStyle& linestyle);
 
+  /// Get current line style
+  /**
+  * \param linestyle: Line style. \see wxPdfLineStale
+  */
+  virtual const wxPdfLineStyle& GetLineStyle();
+
   /// Draws a line between two points.
   /**
   * \param x1 Abscissa of first point
@@ -687,16 +832,18 @@ public:
   */
   virtual void Line(double x1, double y1, double x2, double y2);
   
-  /// Draws a line between two points.
+  /// Draws an arrow line between two points.
   /**
   * \param x1 Abscissa of first point
   * \param y1 Ordinate of first point
   * \param x2 Abscissa of second point
   * \param y2 Ordinate of second point
-  * \param style Line style
-  * \see SetLineWidth(), SetDrawColor(), SetLineStyle()
+  * \param linewidth line width
+  * \param height height of the arrow head
+  * \param width width of the arrow head
+  * \see SetLineWidth(), SetDrawColor(), SetFillColor()
   */
-  virtual void Line(double x1, double y1, double x2, double y2, const wxPdfLineStyle& style);
+  virtual void Arrow(double x1, double y1, double x2, double y2, double linewidth, double height, double width);
 
   /// Outputs a rectangle.
   /**
@@ -709,12 +856,9 @@ public:
   *   \li wxPDF_STYLE_DRAW (default)
   *   \li wxPDF_STYLE_FILL: fill
   *   \li wxPDF_STYLE_FILLDRAW: draw and fill
-  * \param borderStyle: Border style of rectangle. \see SetLineStyle()
-  * \param fillColor: Fill color.
   * \see SetLineWidth(), SetDrawColor(), SetFillColor()
   */
-  virtual void Rect(double x, double y, double w, double h, int style = wxPDF_STYLE_DRAW,
-                    const wxPdfLineStyle& borderStyle = wxPdfLineStyle(), const wxColour& fillColor = wxColour());
+  virtual void Rect(double x, double y, double w, double h, int style = wxPDF_STYLE_DRAW);
 
   /// Draws a rounded rectangle
   /**
@@ -731,12 +875,9 @@ public:
   *   \li wxPDF_CORNER_BOTTOM_RIGHT  bottom right corner
   *   \li wxPDF_CORNER_ALL           all corners
   * \param style: Style of rectangle (draw and/or fill)
-  * \param borderStyle: Border style of rectangle. \see SetLineStyle()
-  * \param fillColor: Fill color.
   */
   virtual void RoundedRect(double x, double y, double w, double h,
-                           double r, int roundCorner = wxPDF_CORNER_ALL, int style = wxPDF_STYLE_DRAW,
-                           const wxPdfLineStyle& borderStyle = wxPdfLineStyle(), const wxColour& fillColor = wxColour());
+                           double r, int roundCorner = wxPDF_CORNER_ALL, int style = wxPDF_STYLE_DRAW);
 
   /// Draws a Bézier curve
   /**
@@ -750,14 +891,10 @@ public:
   * \param x3: Abscissa of end point
   * \param y3: Ordinate of end point
   * \param style: Style of rectangle (draw and/or fill)
-  * \param lineStyle: Line style of curve. \see SetLineStyle()
-  * \param fillColor: Fill color.
   */
   virtual void Curve(double x0, double y0, double x1, double y1,
                      double x2, double y2, double x3, double y3,
-                     int style = wxPDF_STYLE_DRAW,
-                     const wxPdfLineStyle& lineStyle = wxPdfLineStyle(),
-                     const wxColour& fillColor = wxColour());
+                     int style = wxPDF_STYLE_DRAW);
 
   /// Draws an ellipse
   /**
@@ -769,15 +906,11 @@ public:
   * \param astart: Start angle
   * \param afinish: Finish angle
   * \param style: Style of rectangle (draw and/or fill)
-  * \param lineStyle: Line style of curve. \see SetLineStyle()
-  * \param fillColor: Fill color.
   * \param nSeg: Ellipse is made up of nSeg Bézier curves
   */
   virtual void Ellipse(double x0, double y0, double rx, double ry = 0, 
                        double angle = 0, double astart = 0, double afinish = 360,
-                       int style = wxPDF_STYLE_DRAW,
-                       const wxPdfLineStyle& lineStyle = wxPdfLineStyle(),
-                       const wxColour& fillColor = wxColour(), int nSeg = 8);
+                       int style = wxPDF_STYLE_DRAW, int nSeg = 8);
 
   /// Draws a circle
   /**
@@ -787,15 +920,25 @@ public:
   * \param astart: Start angle
   * \param afinish: Finish angle
   * \param style: Style of rectangle (draw and/or fill)
-  * \param lineStyle: Line style of curve. \see SetLineStyle()
-  * \param fillColor: Fill color.
   * \param nSeg: Circle is made up of nSeg Bézier curves
   */
   virtual void Circle(double x0, double y0, double r, 
                       double astart = 0, double afinish = 360,
-                      int style = wxPDF_STYLE_DRAW, 
-                      const wxPdfLineStyle& lineStyle = wxPdfLineStyle(), 
-                      const wxColour& fillColor = wxColour(), int nSeg = 8);
+                      int style = wxPDF_STYLE_DRAW, int nSeg = 8);
+
+  /// Draws a sector
+  /**
+  * \param x0: Abscissa of Center point
+  * \param y0: Ordinate of Center point
+  * \param r: Radius
+  * \param astart: Start angle
+  * \param afinish: Finish angle
+  * \param style: Style of rectangle (draw and/or fill, default: fill&draw)
+  * \param clockwise: indicates whether to go clockwise (default: true)
+  * \param origin: origin of angles (0 for 3 o'clock, 90 for noon, 180 for 9 o'clock, 270 for 6 o'clock; default: 90)
+  */
+  virtual void Sector(double x0, double y0, double r, double astart, double afinish,
+                      int style = wxPDF_STYLE_FILLDRAW, bool clockwise = true, double origin = 90.);
 
   /// Draws a polygon
   /**
@@ -806,9 +949,7 @@ public:
   * \param fillColor: Fill color.
   */
   virtual void Polygon(const wxPdfArrayDouble& x, const wxPdfArrayDouble& y,
-                       int style = wxPDF_STYLE_DRAW,
-                       const wxPdfLineStyle& lineStyle = wxPdfLineStyle(),
-                       const wxColour& fillColor = wxColour());
+                       int style = wxPDF_STYLE_DRAW);
 
    /// Draws a regular polygon
   /**
@@ -827,8 +968,6 @@ public:
   */
   virtual void RegularPolygon(double x0, double y0, double r, int ns, double angle = 0, bool circle = false,
                               int style = wxPDF_STYLE_DRAW, 
-                              const wxPdfLineStyle& lineStyle = wxPdfLineStyle(),
-                              const wxColour& fillColor = wxColour(),
                               int circleStyle = wxPDF_STYLE_DRAW,
                               const wxPdfLineStyle& circleLineStyle = wxPdfLineStyle(),
                               const wxColour& circleFillColor = wxColour());
@@ -851,8 +990,6 @@ public:
   */
   virtual void StarPolygon(double x0, double y0, double r, int nv, int ng, double angle = 0, bool circle = false,
                            int style = wxPDF_STYLE_DRAW, 
-                           const wxPdfLineStyle& lineStyle = wxPdfLineStyle(),
-                           const wxColour& fillColor = wxColour(),
                            int circleStyle = wxPDF_STYLE_DRAW,
                            const wxPdfLineStyle& circleLineStyle = wxPdfLineStyle(),
                            const wxColour& circleFillColor = wxColour());
@@ -921,7 +1058,7 @@ public:
 #if wxUSE_UNICODE
   virtual bool AddFontCJK(const wxString& family);
 #else
-  virtual bool AddFontCJK(const wxString& family) { return false; }
+  virtual bool AddFontCJK(const wxString& WXUNUSED(family)) { return false; }
 #endif
   
   /// Sets the font used to print character strings. 
@@ -1117,6 +1254,28 @@ public:
   * \see SetFont(), SetTextColor(), AddLink(), MultiCell(), SetAutoPageBreak()
   */
   virtual void Write(double h, const wxString& txt, const wxPdfLink& link = wxPdfLink(-1));
+
+  /// This method prints text with cell attributes from the current position.
+  /**
+  * When the right margin is reached (or the \n character is met) a line break occurs and text continues
+  * from the left margin. Upon method exit, the current position is left just at the end of the text.
+  * It is possible to put a link on the text.
+  * \param h Line height
+  * \param txt String to print
+  * \param border Indicates if borders must be drawn around the cell. The value can be 
+  *   \li wxPDF_BORDER_NONE no border
+  *   \li wxPDF_BORDER_LEFT left border
+  *   \li wxPDF_BORDER_RIGHT right border
+  *   \li wxPDF_BORDER_TOP top border
+  *   \li wxPDF_BORDER_BOTTOM bottom border
+  *   \li wxPDF_BORDER_FRAME border on all sides
+  * 
+  * or a combination of them.
+  * \param fill Indicates if the cell background must be painted (1) or transparent (0). Default value: 0.
+  * \param link URL or identifier returned by AddLink()
+  * \see SetFont(), SetTextColor(), AddLink(), MultiCell(), SetAutoPageBreak()
+  */
+  virtual void WriteCell(double h, const wxString& txt, int border = wxPDF_BORDER_NONE, int fill = 0, const wxPdfLink& link = wxPdfLink(-1));
 
   /// Puts an image in the page. 
   /**
@@ -1329,7 +1488,159 @@ public:
                            int align = wxPDF_ALIGN_LEFT, int fill = 0, 
                            const wxPdfLink& link = wxPdfLink(-1));
 
+  /// Enters a transformation environment
+  /**
+  * Before applying any transformation this method should be invoked.
+  * All transformation method invoke it implicitly if necessary.
+  * All open transformation environments are closed implicitly on page end.
+  */
+  virtual void StartTransform();
+
+  /// Performs scaling in X direction only
+  /**
+  * A scaling transformation is applied for the X direction.
+  * \param sx: scaling factor for width as percent. 0 is not allowed.
+  * \param x: abscissa of the scaling center. Default is current x position
+  * \param y: ordinate of the scaling center. Default is current y position
+  */
+  virtual bool ScaleX(double sx, double x = -1, double y = -1);
+
+  /// Performs scaling in Y direction only
+  /**
+  * A scaling transformation is applied for the Y direction.
+  * \param sy: scaling factor for height as percent. 0 is not allowed.
+  * \param x: abscissa of the scaling center. Default is current x position
+  * \param y: ordinate of the scaling center. Default is current y position
+  */
+  virtual bool ScaleY(double sy, double x = -1, double y = -1);
+
+  /// Performs equal scaling in X and Y direction
+  /**
+  * A scaling transformation is applied for both - X and Y - directions.
+  * \param s: scaling factor for width and height as percent. 0 is not allowed.
+  * \param x: abscissa of the scaling center. Default is current x position
+  * \param y: ordinate of the scaling center. Default is current y position
+  */
+  virtual bool ScaleXY(double s, double x = -1, double y = -1);
+
+  /// Performs scaling in X and Y direction
+  /**
+  * A scaling transformation is applied independently for X and Y direction.
+  * \param sx: scaling factor for width in percent. 0 is not allowed.
+  * \param sy: scaling factor for height in percent. 0 is not allowed.
+  * \param x: abscissa of the scaling center. Default is current x position
+  * \param y: ordinate of the scaling center. Default is current y position
+  */
+  virtual bool Scale(double sx, double sy, double x = -1, double y = -1);
+
+  /// Performs a horizontal mirroring transformation
+  /**
+  * Alias for scaling -100% in x-direction
+  * \param x: abscissa of the axis of reflection
+  */
+  virtual void MirrorH(double x = -1);
+
+  /// Performs a vertical mirroring transformation
+  /**
+  * Alias for scaling -100% in y-direction
+  * \param y: abscissa of the axis of reflection
+  */
+  virtual void MirrorV(double y = -1);
+
+  /// Moves the X origin
+  /**
+  * \param tx: movement to the right
+  */
+  virtual void TranslateX(double tx);
+
+  /// Moves the Y origin
+  /**
+  * \param ty: movement to the bottom
+  */
+  virtual void TranslateY(double ty);
+
+  /// Moves the origin
+  /**
+  * \param tx: movement to the right
+  * \param ty: movement to the bottom
+  */
+  virtual void Translate(double tx, double ty);
+
+//  virtual void Rotate(double angle, double x = -1, double y = -1);
+
+  /// Performs a skewing in both X direction only
+  /**
+  * \param xAngle: angle in degrees between -90 (skew to the left) and 90 (skew to the right)
+  * \param x: abscissa of the skewing center. default is current x position
+  * \param y: ordinate of the skewing center. default is current y position
+  */
+  virtual bool SkewX(double xAngle, double x = -1, double y = -1);
+
+  /// Performs a skewing in Y direction only
+  /**
+  * \param yAngle: angle in degrees between -90 (skew to the bottom) and 90 (skew to the top)
+  * \param x: abscissa of the skewing center. default is current x position
+  * \param y: ordinate of the skewing center. default is current y position
+  */
+  virtual bool SkewY(double yAngle, double x = -1, double y = -1);
+
+  /// Performs a skewing in both X and Y directions
+  /**
+  * \param xAngle: angle in degrees between -90 (skew to the left) and 90 (skew to the right)
+  * \param yAngle: angle in degrees between -90 (skew to the bottom) and 90 (skew to the top)
+  * \param x: abscissa of the skewing center. default is current x position
+  * \param y: ordinate of the skewing center. default is current y position
+  */
+  virtual bool Skew(double xAngle, double yAngle, double x = -1, double y = -1);
+
+  /// Leaves a transformation environment
+  /**
+  * This method should be invoked to cancel a transformation environment
+  * opened by StartTransform.
+  * All open transformation environments are closed implicitly on page end.
+  */
+  virtual void StopTransform();
+
+  /// Paints a linear gradient shading to rectangular area
+  /**
+  * \param x abscissa of the top left corner of the rectangle.
+  * \param y ordinate of the top left corner of the rectangle.
+  * \param w width of the rectangle.
+  * \param h height of the rectangle.
+  * \param col1 first color (RGB components).
+  * \param col2 second color (RGB components).
+  * \param coords array of the form (x1, y1, x2, y2) which defines the gradient vector (see linear_gradient_coords.jpg).
+  *               The default value is from left to right (x1=0, y1=0, x2=1, y2=0).
+  */
+  virtual void LinearGradient(double x, double y, double w, double h,
+                              const wxColour& col1, const wxColour& col2);
+  virtual void LinearGradient(double x, double y, double w, double h,
+                              const wxColour& col1, const wxColour& col2,
+                              double coords[4]);
+
+  /// Paints a radial gradient shading to rectangular area
+  /**
+  * \param x abscissa of the top left corner of the rectangle.
+  * \param y ordinate of the top left corner of the rectangle.
+  * \param w width of the rectangle.
+  * \param h height of the rectangle.
+  * \param col1 first color (RGB components).
+  * \param col2 second color (RGB components).
+  * \param coords array of the form (fx, fy, cx, cy, r) where (fx, fy) is the starting point
+  *               of the gradient with color1, (cx, cy) is the center of the circle with
+  *               color2, and r is the radius of the circle (see radial_gradient_coords.jpg).
+  *               (fx, fy) should be inside the circle, otherwise some areas will not be defined.
+  */
+  virtual void RadialGradient(double x, double y, double w, double h,
+                              const wxColour& col1, const wxColour& col2);
+  virtual void RadialGradient(double x, double y, double w, double h,
+                              const wxColour& col1, const wxColour& col2, 
+                              double coords[5]);
+
+  void Marker(double x, double y, wxPdfMarker markerType, double size);
+
 protected:
+
   /// Return fonts path
   virtual wxString GetFontPath();
 
@@ -1356,6 +1667,9 @@ protected:
 
   /// Add bookmarks
   virtual void PutBookmarks();
+
+  /// Add shaders
+  virtual void PutShaders();
 
   /// Adds fonts
   virtual void PutFonts();
@@ -1388,37 +1702,49 @@ protected:
   virtual wxString DoUnderline(double x, double y, const wxString& txt);
 
   /// Format a text string
-  virtual void TextEscape(const wxString& s, bool newline = true);
+  void TextEscape(const wxString& s, bool newline = true);
 
   /// Add byte stream
-  virtual void PutStream(wxMemoryOutputStream& s);
+  void PutStream(wxMemoryOutputStream& s);
   
   /// Add a line to the document
-  virtual void OutTextstring(const wxString& s, bool newline = true);
+  void OutTextstring(const wxString& s, bool newline = true);
   
   /// Add \ before \, ( and )
-  virtual void OutEscape(const char* s, int len);
+  void OutEscape(const char* s, int len);
 
   /// Add ASCII string
-  virtual void OutAscii(const wxString& s, bool newline = true);
+  void OutAscii(const wxString& s, bool newline = true);
 
   /// Add character string
-  virtual void Out(const char* s, bool newline = true);
+  void Out(const char* s, bool newline = true);
 
   /// Add len characters
-  virtual void Out(const char* s, int len, bool newline = true);
+  void Out(const char* s, int len, bool newline = true);
 
   /// Sets a draw point
   void OutPoint(double x, double y);
 
+  /// Sets a draw point relative to current position
+  void OutPointRelative(double dx, double dy);
+
   /// Draws a line from last draw point
   void OutLine(double x, double y);
+
+  /// Draws a line relative from last draw point
+  void OutLineRelative(double dx, double dy);
 
   /// Draws a Bézier curve from last draw point
   void OutCurve(double x1, double y1, double x2, double y2, double x3, double y3);
 
+  /// Perform transformation
+  void Transform(double tm[6]);
+
+  /// Paints a linear or radial gradient shading to a rectangular area
+  void Gradient(int type, const wxColour& col1, const wxColour& col2, double coords[]);
+
   /// Initialize the core fonts
-  virtual void InitializeCoreFonts();
+  void InitializeCoreFonts();
 
   /// Convert a wxColour to the corresponding PDF specification
   static wxString RGB2String(const wxColour& color);
@@ -1466,6 +1792,9 @@ private:
   double         m_angle;              ///< current rotation angle
   double         m_lasth;              ///< height of last cell printed
   double         m_lineWidth;          ///< line width in user units
+  wxPdfLineStyle m_lineStyle;          ///< current line style
+
+  int            m_inTransform;        ///< flag for transformation state
 
   CoreFontMap*   m_coreFonts;          ///< array of standard font names (and character widths)
   FontHashMap*   m_fonts;              ///< array of used fonts
@@ -1473,6 +1802,7 @@ private:
   ImageHashMap*  m_images;             ///< array of used images
   PageLinksMap*  m_pageLinks;          ///< array of links in pages
   LinkHashMap*   m_links;              ///< array of internal links
+  GradientMap*   m_gradients;          ///< array of gradients
   
   wxArrayPtrVoid m_outlines;           ///< array of bookmarks
   int            m_outlineRoot;        ///< number of root node
@@ -1489,6 +1819,7 @@ private:
   wxString       m_drawColor;          ///< commands for drawing color
   wxString       m_fillColor;          ///< commands for filling color
   wxString       m_textColor;          ///< commands for text color
+  wxColour       m_fillColorOrig;      ///< original filling color
   bool           m_colorFlag;          ///< indicates whether fill and text colors are different
   double         m_ws;                 ///< word spacing
 

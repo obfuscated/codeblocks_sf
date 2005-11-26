@@ -13,9 +13,9 @@
 #ifndef _PDFFONT_H_
 #define _PDFFONT_H_
 
-//#if defined(__GNUG__) && !defined(__APPLE__)
-//    #pragma interface "pdffont.h"
-//#endif
+#if defined(__GNUG__) && !defined(__APPLE__)
+    #pragma interface "pdffont.h"
+#endif
 
 #include "wx/strconv.h"
 #include "wx/xml/xml.h"
@@ -169,17 +169,29 @@ public:
   /// Check whether the font has an associated font file
   bool HasFile() { return m_file.Length() > 0; }
 
+  /// Set the name of the Character-to-Glyph mapping file
+  void SetFontFile(const wxString& file) { m_file = file; }
+
   /// Get the name of the associated font file
   wxString GetFontFile() { return m_file; }
 
+  /// Set the name of the Character-to-Glyph mapping file
+  void SetCtgFile(const wxString& ctg) { m_ctg = ctg; }
+
   /// Get the name of the Character-to-Glyph mapping file
   wxString GetCtgFile() { return m_ctg; }
+
+  /// Get font file size 1
+  void SetSize1(int size1) { m_size1 = size1; }
 
   /// Get font file size 1
   int  GetSize1() { return m_size1; }
 
   /// Check whether the file has a size 2
   bool HasSize2() { return m_size2 > 0; }
+
+  /// Get font file size 2
+  void SetSize2(int size2) { m_size2 = size2; }
 
   /// Get font file size 2 (Type 1 only)
   int  GetSize2() { return m_size2; }
@@ -192,6 +204,12 @@ public:
 
   /// Get font supplement /Type 0 only)
   wxString GetSupplement() { return m_supplement; }
+
+  /// Set char width map
+  void SetCharWidthMap(CharWidthMap* cw) { m_cw = cw; }
+
+  /// Set char width map
+  const CharWidthMap* GetCharWidthMap() { return m_cw; }
 
   /// Get the character width array as string
   virtual wxString GetWidthsAsString();
@@ -206,7 +224,7 @@ public:
   virtual const wxPdfFontDescription& GetDesc() const { return m_desc; }
 
   /// Load the font metrics XML file
-  virtual bool LoadFontMetrics(wxXmlNode* root) { return false; };
+  virtual bool LoadFontMetrics(wxXmlNode* WXUNUSED(root)) { return false; };
 
 #if wxUSE_UNICODE
   /// Get the associated encoding converter

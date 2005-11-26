@@ -125,6 +125,48 @@ wxPdfLineStyle::~wxPdfLineStyle()
 {
 }
 
+
+wxPdfLineStyle::wxPdfLineStyle(const wxPdfLineStyle& lineStyle)
+{
+  m_isSet = lineStyle.m_isSet;
+  m_width = lineStyle.m_width;
+  m_cap   = lineStyle.m_cap;
+  m_join  = lineStyle.m_join;
+  m_dash  = lineStyle.m_dash;
+  m_phase = lineStyle.m_phase;
+  m_color = lineStyle.m_color;
+}
+
+wxPdfLineStyle&
+wxPdfLineStyle::operator= (const wxPdfLineStyle& lineStyle)
+{
+  m_isSet = lineStyle.m_isSet;
+  m_width = lineStyle.m_width;
+  m_cap   = lineStyle.m_cap;
+  m_join  = lineStyle.m_join;
+  m_dash  = lineStyle.m_dash;
+  m_phase = lineStyle.m_phase;
+  m_color = lineStyle.m_color;
+  return *this;
+}
+
+wxPdfGradient::wxPdfGradient(int type, const wxColour& color1, const wxColour& color2, double coords[])
+{
+  m_type = type;
+  m_color1 = color1;
+  m_color2 = color2;
+  int nCoords = (type == 2) ? 4 : ((type == 3) ? 5 : 0);
+  int j;
+  for (j = 0; j < nCoords; j++)
+  {
+    m_coords[j] = coords[j];
+  }
+}
+
+wxPdfGradient::~wxPdfGradient()
+{
+}
+
 // ----------------------------------------------------------------------------
 // wxPdfDocument: class representing a PDF document
 // ----------------------------------------------------------------------------
@@ -149,6 +191,7 @@ wxPdfDocument::wxPdfDocument(int orientation, const wxString& unit, wxPaperSize 
   m_pageLinks  = new PageLinksMap();
   m_links      = new LinkHashMap();
   m_diffs      = new DiffHashMap();
+  m_gradients  = new GradientMap();
 
   m_outlineRoot     = -1;
   m_maxOutlineLevel = 0;
@@ -217,6 +260,7 @@ wxPdfDocument::wxPdfDocument(int orientation, const wxString& unit, wxPaperSize 
   m_w = m_wPt / m_k;
   m_h = m_hPt / m_k;
   m_angle = 0;
+  m_inTransform = 0;
 
   // Page margins (1 cm)
   double margin = 28.35 / m_k;
@@ -315,6 +359,16 @@ wxPdfDocument::~wxPdfDocument()
     }
   }
   delete m_diffs;
+
+  GradientMap::iterator gradient = m_gradients->begin();
+  for (gradient = m_gradients->begin(); gradient != m_gradients->end(); gradient++)
+  {
+    if (gradient->second != NULL)
+    {
+      delete gradient->second;
+    }
+  }
+  delete m_gradients;
 
   delete m_orientationChanges;
 
@@ -513,6 +567,7 @@ wxPdfDocument::SetDrawColor(const unsigned char grayscale)
 void
 wxPdfDocument::SetFillColor(const wxColour& color)
 {
+  m_fillColorOrig = color;
   m_fillColor = RGB2String(color) + _T(" rg");
   m_colorFlag = (m_fillColor != m_textColor);
   if (m_page > 0)
@@ -524,12 +579,19 @@ wxPdfDocument::SetFillColor(const wxColour& color)
 void
 wxPdfDocument::SetFillColor(const unsigned char grayscale)
 {
+  m_fillColorOrig = wxColour(grayscale, grayscale, grayscale);
   m_fillColor = Double2String(((double) grayscale)/255.,3) + _T(" g");
   m_colorFlag = (m_fillColor != m_textColor);
   if (m_page > 0)
   {
     OutAscii(m_fillColor);
   }
+}
+
+const wxColour
+wxPdfDocument::GetFillColor()
+{
+  return m_fillColorOrig;
 }
 
 void
@@ -568,26 +630,8 @@ wxPdfDocument::Line(double x1, double y1, double x2, double y2)
 }
 
 void
-wxPdfDocument::Line(double x1, double y1, double x2, double y2, const wxPdfLineStyle& style)
+wxPdfDocument::Rect(double x, double y, double w, double h, int style)
 {
-  SetLineStyle(style);
-  Line(x1, y1, x2, y2);
-}
-
-void
-wxPdfDocument::Rect(double x, double y, double w, double h, int style,
-                    const wxPdfLineStyle& borderStyle, const wxColour& fillColor)
-{
-  if ((style & wxPDF_STYLE_FILL) && fillColor.Ok())
-  {
-    SetFillColor(fillColor);
-  }
-  // Draw a rectangle
-  if ((style & wxPDF_STYLE_FILL) != wxPDF_STYLE_FILL && borderStyle.IsSet())
-  {
-    SetLineStyle(borderStyle);
-  }
-
   wxString op;
   // Draw a rectangle
   if ((style & wxPDF_STYLE_FILLDRAW) == wxPDF_STYLE_FILL)
@@ -610,21 +654,16 @@ wxPdfDocument::Rect(double x, double y, double w, double h, int style,
 
 void
 wxPdfDocument::RoundedRect(double x, double y, double w, double h,
-                           double r, int roundCorner, int style,
-                           const wxPdfLineStyle& borderStyle, const wxColour& fillColor)
+                           double r, int roundCorner, int style)
 {
   if ((roundCorner & wxPDF_CORNER_ALL) == wxPDF_CORNER_NONE)
   {
     // Not rounded
-    Rect(x, y, w, h, style, borderStyle, fillColor);
+    Rect(x, y, w, h, style);
   }
   else
   { 
     // Rounded
-    if ((style & wxPDF_STYLE_FILL) && fillColor.Ok())
-    {
-      SetFillColor(fillColor);
-    }
     wxString op;
     // Draw a rectangle
     if ((style & wxPDF_STYLE_FILLDRAW) == wxPDF_STYLE_FILL)
@@ -640,10 +679,6 @@ wxPdfDocument::RoundedRect(double x, double y, double w, double h,
       else
       {
         op = _T("S");
-      }
-      if (borderStyle.IsSet())
-      {
-        SetLineStyle(borderStyle);
       }
     }
 
@@ -709,14 +744,8 @@ wxPdfDocument::RoundedRect(double x, double y, double w, double h,
 void
 wxPdfDocument::Curve(double x0, double y0, double x1, double y1, 
                      double x2, double y2, double x3, double y3,
-                     int style, const wxPdfLineStyle& lineStyle, const wxColour& fillColor)
+                     int style)
 {
-  if ((style & wxPDF_STYLE_FILL) && fillColor.Ok())
-  {
-    SetFillColor(fillColor);
-  }
-
-
   wxString op;
   // Draw a rectangle
   if ((style & wxPDF_STYLE_FILLDRAW) == wxPDF_STYLE_FILL)
@@ -733,10 +762,6 @@ wxPdfDocument::Curve(double x0, double y0, double x1, double y1,
     {
       op = _T("S");
     }
-    if (lineStyle.IsSet())
-    {
-      SetLineStyle(lineStyle);
-    }
   }
 
   OutPoint(x0, y0);
@@ -747,15 +772,10 @@ wxPdfDocument::Curve(double x0, double y0, double x1, double y1,
 void
 wxPdfDocument::Ellipse(double x0, double y0, double rx, double ry, 
                        double angle, double astart, double afinish,
-                       int style, const wxPdfLineStyle& lineStyle,
-                       const wxColour& fillColor, int nSeg)
+                       int style, int nSeg)
 {
   if (rx <= 0) return;
 
-  if ((style & wxPDF_STYLE_FILL) && fillColor.Ok())
-  {
-    SetFillColor(fillColor);
-  }
   wxString op;
   // Draw a rectangle
   if ((style & wxPDF_STYLE_MASK) == wxPDF_STYLE_FILL)
@@ -775,10 +795,6 @@ wxPdfDocument::Ellipse(double x0, double y0, double rx, double ry,
     else
     {
       op = _T("S");
-    }
-    if (lineStyle.IsSet())
-    {
-      SetLineStyle(lineStyle);
     }
   }
 
@@ -853,20 +869,126 @@ wxPdfDocument::Ellipse(double x0, double y0, double rx, double ry,
 
 void
 wxPdfDocument::Circle(double x0, double y0, double r, double astart, double afinish,
-                      int style, const wxPdfLineStyle& lineStyle, const wxColour& fillColor, int nSeg)
+                      int style, int nSeg)
 {
-  Ellipse(x0, y0, r, 0, 0, astart, afinish, style, lineStyle, fillColor, nSeg);
+  Ellipse(x0, y0, r, 0, 0, astart, afinish, style, nSeg);
 }
 
 void
-wxPdfDocument::Polygon(const wxPdfArrayDouble& x, const wxPdfArrayDouble& y,
-                       int style, const wxPdfLineStyle& lineStyle, const wxColour& fillColor)
+wxPdfDocument::Sector(double xc, double yc, double r, double astart, double afinish,
+                      int style, bool clockwise, double origin)
+{
+  static double pi = 4. * atan(1.);
+  static double pi2 = 0.5 * pi;
+  double d;
+  if (clockwise)
+  {
+    d = afinish;
+    afinish = origin - astart;
+    astart = origin - d;
+  }
+  else
+  {
+    afinish += origin;
+    astart += origin;
+  }
+  astart = fmod(astart, 360.) + 360;
+  afinish = fmod(afinish, 360.) + 360;
+  if (astart > afinish)
+  {
+    afinish += 360;
+  }
+  afinish = afinish / 180. * pi;
+  astart = astart / 180. * pi;
+  d = afinish - astart;
+  if (d == 0)
+  {
+    d = 2 * pi;
+  }
+  
+  wxString op;
+  if ((style & wxPDF_STYLE_FILLDRAW) == wxPDF_STYLE_FILL)
+  {
+    op = _T("f");
+  }
+  else
+  {
+    if ((style & wxPDF_STYLE_FILLDRAW) == wxPDF_STYLE_FILLDRAW)
+    {
+      op = _T("b");
+    }
+    else
+    {
+      op = _T("s");
+    }
+  }
+
+  double myArc;
+  if (sin(d/2) != 0.0)
+  {
+    myArc = 4./3. * (1.-cos(d/2))/sin(d/2) * r;
+  }
+  else
+  {
+    myArc = 0.0;
+  }
+  // first put the center
+  OutPoint(xc,yc);
+  // put the first point
+  OutLine(xc+r*cos(astart),yc-r*sin(astart));
+  // draw the arc
+  if (d < pi2)
+  {
+    OutCurve(xc+r*cos(astart)+myArc*cos(pi2+astart),
+             yc-r*sin(astart)-myArc*sin(pi2+astart),
+             xc+r*cos(afinish)+myArc*cos(afinish-pi2),
+             yc-r*sin(afinish)-myArc*sin(afinish-pi2),
+             xc+r*cos(afinish),
+             yc-r*sin(afinish));
+  }
+  else
+  {
+    afinish = astart + d/4;
+    myArc = 4./3. * (1.-cos(d/8))/sin(d/8) * r;
+    OutCurve(xc+r*cos(astart)+myArc*cos(pi2+astart),
+             yc-r*sin(astart)-myArc*sin(pi2+astart),
+             xc+r*cos(afinish)+myArc*cos(afinish-pi2),
+             yc-r*sin(afinish)-myArc*sin(afinish-pi2),
+             xc+r*cos(afinish),
+             yc-r*sin(afinish));
+    astart = afinish;
+    afinish = astart + d/4;
+    OutCurve(xc+r*cos(astart)+myArc*cos(pi2+astart),
+             yc-r*sin(astart)-myArc*sin(pi2+astart),
+             xc+r*cos(afinish)+myArc*cos(afinish-pi2),
+             yc-r*sin(afinish)-myArc*sin(afinish-pi2),
+             xc+r*cos(afinish),
+             yc-r*sin(afinish));
+    astart = afinish;
+    afinish = astart + d/4;
+    OutCurve(xc+r*cos(astart)+myArc*cos(pi2+astart),
+             yc-r*sin(astart)-myArc*sin(pi2+astart),
+             xc+r*cos(afinish)+myArc*cos(afinish-pi2),
+             yc-r*sin(afinish)-myArc*sin(afinish-pi2),
+             xc+r*cos(afinish),
+             yc-r*sin(afinish));
+    astart = afinish;
+    afinish = astart + d/4;
+    OutCurve(xc+r*cos(astart)+myArc*cos(pi2+astart),
+             yc-r*sin(astart)-myArc*sin(pi2+astart),
+             xc+r*cos(afinish)+myArc*cos(afinish-pi2),
+             yc-r*sin(afinish)-myArc*sin(afinish-pi2),
+             xc+r*cos(afinish),
+             yc-r*sin(afinish));
+  }
+  // terminate drawing
+  OutAscii(op);
+}
+
+void
+wxPdfDocument::Polygon(const wxPdfArrayDouble& x, const wxPdfArrayDouble& y, int style)
 {
   int np = (x.GetCount() < y.GetCount()) ? x.GetCount() : y.GetCount();
-  if ((style & wxPDF_STYLE_FILL) && fillColor.Ok())
-  {
-    SetFillColor(fillColor);
-  }
 
   wxString op;
   if ((style & wxPDF_STYLE_FILLDRAW) == wxPDF_STYLE_FILL)
@@ -883,10 +1005,6 @@ wxPdfDocument::Polygon(const wxPdfArrayDouble& x, const wxPdfArrayDouble& y,
     {
       op = _T("S");
     }
-    if (lineStyle.IsSet())
-    {
-      SetLineStyle(lineStyle);
-    }
   }
 
   OutPoint(x[0], y[0]);
@@ -900,8 +1018,7 @@ wxPdfDocument::Polygon(const wxPdfArrayDouble& x, const wxPdfArrayDouble& y,
 }
 
 void
-wxPdfDocument::RegularPolygon(double x0, double y0, double r, int ns, double angle, bool circle,
-                              int style, const wxPdfLineStyle& lineStyle, const wxColour& fillColor,
+wxPdfDocument::RegularPolygon(double x0, double y0, double r, int ns, double angle, bool circle, int style, 
                               int circleStyle, const wxPdfLineStyle& circleLineStyle, const wxColour& circleFillColor)
 {
   if (ns < 3)
@@ -910,7 +1027,13 @@ wxPdfDocument::RegularPolygon(double x0, double y0, double r, int ns, double ang
   }
   if (circle)
   {
-    Circle(x0, y0, r, 0, 360, circleStyle, circleLineStyle, circleFillColor);
+    wxPdfLineStyle saveStyle = GetLineStyle();
+    SetLineStyle(circleLineStyle);
+    wxColour saveColor = GetFillColor();
+    SetFillColor(circleFillColor);
+    Circle(x0, y0, r, 0, 360, circleStyle);
+    SetLineStyle(saveStyle);
+    SetFillColor(saveColor);
   }
   static double pi = 4. * atan(1.);
   double a;
@@ -922,13 +1045,12 @@ wxPdfDocument::RegularPolygon(double x0, double y0, double r, int ns, double ang
     x.Add(x0 + (r * sin(a)));
     y.Add(y0 + (r * cos(a)));
   }
-  Polygon(x, y, style, lineStyle, fillColor);
+  Polygon(x, y, style);
 }
 
 
 void
-wxPdfDocument::StarPolygon(double x0, double y0, double r, int nv, int ng, double angle, bool circle,
-                           int style, const wxPdfLineStyle& lineStyle, const wxColour& fillColor,
+wxPdfDocument::StarPolygon(double x0, double y0, double r, int nv, int ng, double angle, bool circle, int style, 
                            int circleStyle, const wxPdfLineStyle& circleLineStyle, const wxColour& circleFillColor)
 {
   if (nv < 2)
@@ -937,7 +1059,13 @@ wxPdfDocument::StarPolygon(double x0, double y0, double r, int nv, int ng, doubl
   }
   if (circle)
   {
-    Circle(x0, y0, r, 0, 360, circleStyle, circleLineStyle, circleFillColor);
+    wxPdfLineStyle saveStyle = GetLineStyle();
+    SetLineStyle(circleLineStyle);
+    wxColour saveColor = GetFillColor();
+    SetFillColor(circleFillColor);
+    Circle(x0, y0, r, 0, 360, circleStyle);
+    SetLineStyle(saveStyle);
+    SetFillColor(saveColor);
   }
   wxArrayInt visited;
   visited.SetCount(nv);
@@ -959,9 +1087,10 @@ wxPdfDocument::StarPolygon(double x0, double y0, double r, int nv, int ng, doubl
     i = (i + ng) % nv;
   }
   while (visited[i] == 0);
-  Polygon(x, y, style, lineStyle, fillColor);
+  Polygon(x, y, style);
 }
 
+#if 0
 void
 wxPdfDocument::Rotate(double angle, double x, double y)
 {
@@ -996,6 +1125,7 @@ wxPdfDocument::Rotate(double angle, double x, double y)
              Double2String(-cy,2) + wxString(_T(" cm")));
   }
 }
+#endif
 
 bool
 wxPdfDocument::AddFont(const wxString& family, const wxString& style, const wxString& file)
@@ -1384,9 +1514,11 @@ void
 wxPdfDocument::RotatedText(double x, double y, const wxString& txt, double angle)
 {
   // Text rotated around its origin
+  StartTransform();
   Rotate(angle, x, y);
   Text(x, y, txt);
-  Rotate(0);
+//  TODO Rotate(0);
+  StopTransform();
 }
 
 bool
@@ -1684,10 +1816,13 @@ wxPdfDocument::MultiCell(double w, double h, const wxString& txt, int border, in
 void
 wxPdfDocument::Write(double h, const wxString& txt, const wxPdfLink& link)
 {
-  // Output text in flowing mode
-  double w = m_w - m_rMargin - m_x;
-  double wmax = (w - 2 * m_cMargin);
+  WriteCell(h, txt, wxPDF_BORDER_NONE, 0, link);
+}
 
+void
+wxPdfDocument::WriteCell(double h, const wxString& txt, int border, int fill, const wxPdfLink& link)
+{
+  // Output text in flowing mode
   wxString s = txt;
   s.Replace(_T("\r"),_T("")); // remove carriage returns
   int nb = s.Length();
@@ -1698,6 +1833,12 @@ wxPdfDocument::Write(double h, const wxString& txt, const wxPdfLink& link)
     m_x += GetStringWidth(s);
     return;
   }
+
+  double saveCellMargin = GetCellMargin();
+  SetCellMargin(0);
+
+  double w = m_w - m_rMargin - m_x;
+  double wmax = (w - 2 * m_cMargin);
 
   int sep = -1;
   int i = 0;
@@ -1712,7 +1853,7 @@ wxPdfDocument::Write(double h, const wxString& txt, const wxPdfLink& link)
     if (c == _T('\n'))
     {
       // Explicit line break
-      Cell(w, h, s.SubString(j,i-1), wxPDF_BORDER_NONE, 2, wxPDF_ALIGN_LEFT, 0, link);
+      Cell(w, h, s.SubString(j,i-1), border, 2, wxPDF_ALIGN_LEFT, fill, link);
       i++;
       sep = -1;
       j = i;
@@ -1751,11 +1892,11 @@ wxPdfDocument::Write(double h, const wxString& txt, const wxPdfLink& link)
         {
           i++;
         }
-        Cell(w, h,s.SubString(j, i-1), wxPDF_BORDER_NONE, 2, wxPDF_ALIGN_LEFT, 0, link);
+        Cell(w, h,s.SubString(j, i-1), border, 2, wxPDF_ALIGN_LEFT, fill, link);
       }
       else
       {
-        Cell(w, h, s.SubString(j, sep-1), wxPDF_BORDER_NONE, 2, wxPDF_ALIGN_LEFT, 0, link);
+        Cell(w, h, s.SubString(j, sep-1), border, 2, wxPDF_ALIGN_LEFT, fill, link);
         i = sep + 1;
       }
       sep = -1;
@@ -1777,10 +1918,12 @@ wxPdfDocument::Write(double h, const wxString& txt, const wxPdfLink& link)
   // Last chunk
   if (i != j)
   {
-    Cell(len, h, s.SubString(j,i-1), wxPDF_BORDER_NONE, 0, wxPDF_ALIGN_LEFT, 0, link);
+    Cell(len, h, s.SubString(j,i-1), border, 0, wxPDF_ALIGN_LEFT, fill, link);
   }
 
-  m_x += GetStringWidth(s.SubString(j, i-1));
+  // Following statement was in PHP code, but seems to be in error.
+  // m_x += GetStringWidth(s.SubString(j, i-1));
+  SetCellMargin(saveCellMargin);
 }
 
 bool
@@ -1871,9 +2014,11 @@ wxPdfDocument::RotatedImage(const wxString& file, double x, double y, double w, 
                             double angle, const wxString& type, const wxPdfLink& link)
 {
   // Image rotated around its upper-left corner
+  StartTransform();
   Rotate(angle, x, y);
   Image(file, x, y, w, h, type, link);
-  Rotate(0);
+  // TODO Rotate(0);
+  StopTransform();
 }
 
 void
@@ -1971,6 +2116,12 @@ wxPdfDocument::SetLeftMargin(double margin)
   }
 }
 
+double
+wxPdfDocument::GetLeftMargin()
+{
+  return m_lMargin;
+}
+
 void
 wxPdfDocument::SetTopMargin(double margin)
 {
@@ -1978,11 +2129,36 @@ wxPdfDocument::SetTopMargin(double margin)
   m_tMargin = margin;
 }
 
+double
+wxPdfDocument::GetTopMargin()
+{
+  return m_tMargin;
+}
+
 void
 wxPdfDocument::SetRightMargin(double margin)
 {
   // Set right margin
   m_rMargin = margin;
+}
+
+double
+wxPdfDocument::GetRightMargin()
+{
+  return m_rMargin;
+}
+
+void
+wxPdfDocument::SetCellMargin(double margin)
+{
+  // Set cell margin
+  m_cMargin = margin;
+}
+
+double
+wxPdfDocument::GetCellMargin()
+{
+  return m_cMargin;
 }
 
 void
@@ -2325,11 +2501,17 @@ void
 wxPdfDocument::EndPage()
 {
   // End of page contents
+  while (m_inTransform > 0)
+  {
+    StopTransform();
+  }
+#if 0
   if (m_angle != 0)
   {
     m_angle = 0;
     Out("Q");
   }
+#endif
   m_state = 1;
 }
 
@@ -2712,6 +2894,63 @@ wxPdfDocument::PutPages()
            Double2String(hPt,2) + wxString(_T("]")));
   Out(">>");
   Out("endobj");
+}
+
+void
+wxPdfDocument::PutShaders()
+{
+  GradientMap::iterator gradient;
+  for (gradient = m_gradients->begin(); gradient != m_gradients->end(); gradient++)
+  {
+    int type = gradient->second->GetType();
+		//foreach($this->gradients as $id=>$grad){
+		NewObj();
+		Out("<<");
+		Out("/FunctionType 2");
+		Out("/Domain [0.0 1.0]");
+		Out("/C0 [", false);
+    OutAscii(RGB2String(gradient->second->GetColor1()), false);
+    Out("]");
+		Out("/C1 [", false);
+    OutAscii(RGB2String(gradient->second->GetColor2()), false);
+    Out("]");
+		Out("/N 1");
+		Out(">>");
+		Out("endobj");
+		int f1 = m_n;
+
+		NewObj();
+		Out("<<");
+    OutAscii(wxString::Format(_T("/ShadingType %d"), type));
+		Out("/ColorSpace /DeviceRGB");
+    const double* coords = gradient->second->GetCoords();
+		if (type == 2)
+    {
+			OutAscii(wxString(_T("/Coords [")) +
+               Double2String(coords[0],3) + wxString(_T(" ")) +
+               Double2String(coords[1],3) + wxString(_T(" ")) +
+               Double2String(coords[2],3) + wxString(_T(" ")) +
+               Double2String(coords[3],3) + wxString(_T("]")));
+      OutAscii(wxString::Format(_T("/Function %d 0 R"), f1));
+			Out("/Extend [true true] ");
+		}
+		else if (type == 3)
+    {
+			// x0, y0, r0, x1, y1, r1
+			// at this time radius of inner circle is 0
+			OutAscii(wxString(_T("/Coords [")) +
+               Double2String(coords[0],3) + wxString(_T(" ")) +
+               Double2String(coords[1],3) + wxString(_T(" 0 ")) +
+               Double2String(coords[2],3) + wxString(_T(" ")) +
+               Double2String(coords[3],3) + wxString(_T(" ")) +
+               Double2String(coords[4],3) + wxString(_T("]")));
+			OutAscii(wxString::Format(_T("/Function %d 0 R"), f1));
+			Out("/Extend [true true] ");
+		}
+		Out(">>");
+		Out("endobj");
+		gradient->second->SetObjIndex(m_n);
+	}
 }
 
 void
@@ -3184,6 +3423,14 @@ wxPdfDocument::PutResourceDict()
   Out("/XObject <<");
   PutXObjectDict();
   Out(">>");
+	Out("/Shading <<");
+  GradientMap::iterator gradient;
+  for (gradient = m_gradients->begin(); gradient != m_gradients->end(); gradient++)
+  {
+	  //foreach(m_gradients as $id=>$grad)
+    OutAscii(wxString::Format(_T("/Sh%d %d 0 R"), gradient->first, gradient->second->GetObjIndex()));
+  }
+	Out(">>");
 }
 
 void
@@ -3290,6 +3537,7 @@ wxPdfDocument::PutEncryption()
 void
 wxPdfDocument::PutResources()
 {
+	PutShaders();
   PutFonts();
   PutImages();
   
@@ -3484,6 +3732,17 @@ wxPdfDocument::OutPoint(double x, double y)
 {
   OutAscii(Double2String(x * m_k,2) + wxString(_T(" ")) +
            Double2String((m_h - y) * m_k,2) + wxString(_T(" m")));
+  m_x = x;
+  m_y = y;
+}
+
+void
+wxPdfDocument::OutPointRelative(double dx, double dy)
+{
+  m_x += dx;
+  m_y += dy;
+  OutAscii(Double2String(m_x * m_k,2) + wxString(_T(" ")) +
+           Double2String((m_h - m_y) * m_k,2) + wxString(_T(" m")));
 }
 
 void
@@ -3492,6 +3751,18 @@ wxPdfDocument::OutLine(double x, double y)
   // Draws a line from last draw point
   OutAscii(Double2String(x * m_k,2) + wxString(_T(" ")) +
            Double2String((m_h - y) * m_k,2) + wxString(_T(" l")));
+  m_x = x;
+  m_y = y;
+}
+
+void
+wxPdfDocument::OutLineRelative(double dx, double dy)
+{
+  m_x += dx;
+  m_y += dy;
+  // Draws a line from last draw point
+  OutAscii(Double2String(m_x * m_k,2) + wxString(_T(" ")) +
+           Double2String((m_h - m_y) * m_k,2) + wxString(_T(" l")));
 }
 
 void
@@ -3504,6 +3775,8 @@ wxPdfDocument::OutCurve(double x1, double y1, double x2, double y2, double x3, d
            Double2String((m_h - y2) * m_k,2) + wxString(_T(" ")) +
            Double2String(x3 * m_k,2) + wxString(_T(" ")) +
            Double2String((m_h - y3) * m_k,2) + wxString(_T(" c")));
+  m_x = x3;
+  m_y = y3;
 }
 
 void
@@ -3615,6 +3888,7 @@ wxPdfDocument::GetUniqueId(const wxString& prefix)
 void
 wxPdfDocument::SetLineStyle(const wxPdfLineStyle& linestyle)
 {
+  m_lineStyle = linestyle;
   if (linestyle.GetWidth() >= 0)
   {
     double width_prev = m_lineWidth;
@@ -3669,96 +3943,540 @@ wxPdfDocument::SetLineStyle(const wxPdfLineStyle& linestyle)
   }
 }
 
-#if 0
-
-void
-wxPdfDocument::Sector(double xc, double yc, double r, double astart, double b, style='FD', $cw=true, $o=90)
+const wxPdfLineStyle&
+wxPdfDocument::GetLineStyle()
 {
-  static pi = 4. * atan(1.);
-  static pi2 = 0.5 * pi;
-  double d;
-  if($cw)
-  {
-      $d = afinish;
-      afinish = $o - astart;
-      astart = $o - $d;
-  }
-  else
-  {
-    afinish += $o;
-    astart += $o;
-  }
-  astart = (astart%360)+360;
-  afinish = (afinish%360)+360;
-  if (astart > afinish)
-      afinish +=360;
-  afinish = afinish/180*pi;
-  astart = astart/180*pi;
-  d = afinish - astart;
-  if (d == 0)
-  {
-      $d =2*pi;
-  }
-  
-  if($style=='F')
-      $op='f';
-  elseif($style=='FD' or $style=='DF')
-      $op='b';
-  else
-      $op='s';
-  if (sin($d/2))
-      $MyArc = 4/3*(1-cos($d/2))/sin($d/2)*$r;
-  // first put the center
-  OutPoint(xc,yc);
-  // put the first point
-  OutLine(xc+r*cos(astart),yc-r*sin(astart));
-  // draw the arc
-  if (d < pi2)
-  {
-    OutCurve(xc+r*cos(astart)+myArc*cos(pi2+astart),
-             yc-r*sin(astart)-myArc*sin(pi2+astart),
-             xc+r*cos(afinish)+myArc*cos(afinish-pi2),
-             yc-r*sin(afinish)-myArc*sin(afinish-pi2),
-             xc+r*cos(afinish),
-             yc-r*sin(afinish));
-  }
-  else
-  {
-    afinish = astart + d/4;
-    myArc = 4./3. * (1.-cos(d/8))/sin(d/8) * r;
-    OutCurve(xc+r*cos(astart)+myArc*cos(pi2+astart),
-             yc-r*sin(astart)-myArc*sin(pi2+astart),
-             xc+r*cos(afinish)+myArc*cos(afinish-pi2),
-             yc-r*sin(afinish)-myArc*sin(afinish-pi2),
-             xc+r*cos(afinish),
-             yc-r*sin(afinish));
-    astart = afinish;
-    afinish = astart + d/4;
-    OutCurve(xc+r*cos(astart)+myArc*cos(pi2+astart),
-             yc-r*sin(astart)-myArc*sin(pi2+astart),
-             xc+r*cos(afinish)+myArc*cos(afinish-pi2),
-             yc-r*sin(afinish)-myArc*sin(afinish-pi2),
-             xc+r*cos(afinish),
-             yc-r*sin(afinish));
-    astart = afinish;
-    afinish = astart + d/4;
-    OutCurve(xc+r*cos(astart)+myArc*cos(pi2+astart),
-             yc-r*sin(astart)-myArc*sin(pi2+astart),
-             xc+r*cos(afinish)+myArc*cos(afinish-pi2),
-             yc-r*sin(afinish)-myArc*sin(afinish-pi2),
-             xc+r*cos(afinish),
-             yc-r*sin(afinish));
-    astart = afinish;
-    afinish = astart + d/4;
-    OutCurve(xc+r*cos(astart)+myArc*cos(pi2+astart),
-             yc-r*sin(astart)-myArc*sin(pi2+astart),
-             xc+r*cos(afinish)+myArc*cos(afinish-pi2),
-             yc-r*sin(afinish)-myArc*sin(afinish-pi2),
-             xc+r*cos(afinish),
-             yc-r*sin(afinish));
-  }
-  // terminate drawing
-  OutAscii(op);
+  return m_lineStyle;
 }
 
-#endif
+void
+wxPdfDocument::StartTransform()
+{
+	//save the current graphic state
+  m_inTransform++;
+  Out("q");
+}
+
+bool
+wxPdfDocument::ScaleX(double sx, double x, double y)
+{
+	return Scale(sx, 100, x, y);
+}
+
+bool
+wxPdfDocument::ScaleY(double sy, double x, double y)
+{
+	return Scale(100, sy, x, y);
+}
+
+bool
+wxPdfDocument::ScaleXY(double s, double x, double y)
+{
+	return Scale(s, s, x, y);
+}
+
+bool
+wxPdfDocument::Scale(double sx, double sy, double x, double y)
+{
+	if (x < 0)
+  {
+		x = m_x;
+  }
+	if (y < 0)
+  {
+		y = m_y;
+  }
+	if (sx == 0 || sy == 0)
+  {
+		// TODO	$this->Error('Please use values unequal to zero for Scaling');
+    return false;
+  }
+	y = (m_h - y) * m_k;
+	x *= m_k;
+	//calculate elements of transformation matrix
+	sx /= 100;
+	sy /= 100;
+  double tm[6];
+	tm[0] = sx;
+	tm[1] = 0;
+	tm[2] = 0;
+	tm[3] = sy;
+	tm[4] = x * (1 - sx);
+	tm[5] = y * (1 - sy);
+	//scale the coordinate system
+  if (m_inTransform == 0)
+  {
+    StartTransform();
+  }
+	Transform(tm);
+  return true;
+}
+
+void
+wxPdfDocument::MirrorH(double x)
+{
+	Scale(-100, 100, x);
+}
+
+void
+wxPdfDocument::MirrorV(double y)
+{
+	Scale(100, -100, -1, y);
+}
+
+void
+wxPdfDocument::TranslateX(double tx)
+{
+	Translate(tx, 0);
+}
+
+void
+wxPdfDocument::TranslateY(double ty)
+{
+	Translate(0, ty);
+}
+
+void
+wxPdfDocument::Translate(double tx, double ty)
+{
+  if (m_inTransform == 0)
+  {
+    StartTransform();
+  }
+	//calculate elements of transformation matrix
+  double tm[6];
+	tm[0] = 1;
+	tm[1] = 0;
+	tm[2] = 0;
+	tm[3] = 1;
+	tm[4] = tx;
+	tm[5] = -ty;
+	//translate the coordinate system
+	Transform(tm);
+}
+
+void
+wxPdfDocument::Rotate(double angle, double x, double y)
+{
+  if (m_inTransform == 0)
+  {
+    StartTransform();
+  }
+	if (x < 0)
+  {
+		x = m_x;
+  }
+	if (y < 0)
+  {
+		y = m_y;
+  }
+	y = (m_h - y) * m_k;
+	x *= m_k;
+	//calculate elements of transformation matrix
+  double tm[6];
+  angle *= (atan(1.) / 45.);
+	tm[0] = cos(angle);
+	tm[1] = sin(angle);
+	tm[2] = -tm[1];
+	tm[3] = tm[0];
+	tm[4] = x + tm[1] * y - tm[0] * x;
+	tm[5] = y - tm[0] * y - tm[1] * x;
+	//rotate the coordinate system around ($x,$y)
+	Transform(tm);
+}
+
+bool
+wxPdfDocument::SkewX(double xAngle, double x, double y)
+{
+	return Skew(xAngle, 0, x, y);
+}
+
+bool
+wxPdfDocument::SkewY(double yAngle, double x, double y)
+{
+	return Skew(0, yAngle, x, y);
+}
+
+bool
+wxPdfDocument::Skew(double xAngle, double yAngle, double x, double y)
+{
+	if (x < 0)
+  {
+		x = m_x;
+  }
+	if (y < 0)
+  {
+		y = m_y;
+  }
+	if (xAngle <= -90 || xAngle >= 90 || yAngle <= -90 || yAngle >= 90)
+  {
+			// TODO $this->Error('Please use values between -90° and 90° for skewing');
+    return false;
+  }
+	x *= m_k;
+  y = (m_h - y) * m_k;
+	//calculate elements of transformation matrix
+  double tm[6];
+  xAngle *= (atan(1.) / 45.);
+  yAngle *= (atan(1.) / 45.);
+	tm[0] = 1;
+	tm[1] = tan(yAngle);
+	tm[2] = tan(xAngle);
+	tm[3] = 1;
+	tm[4] = -tm[2] * y;
+	tm[5] = -tm[1] * x;
+	//skew the coordinate system
+  if (m_inTransform == 0)
+  {
+    StartTransform();
+  }
+	Transform(tm);
+  return true;
+}
+
+void
+wxPdfDocument::Transform(double tm[6])
+{
+//	_out(sprintf('%.3f %.3f %.3f %.3f %.3f %.3f cm', $tm[0],$tm[1],$tm[2],$tm[3],$tm[4],$tm[5]));
+  OutAscii(Double2String( tm[0],3) + wxString(_T(" ")) +
+           Double2String( tm[1],3) + wxString(_T(" ")) +
+           Double2String( tm[2],3) + wxString(_T(" ")) +
+           Double2String( tm[3],3) + wxString(_T(" ")) +
+           Double2String( tm[4],3) + wxString(_T(" ")) +
+           Double2String( tm[5],3) + wxString(_T(" cm")));
+}
+
+void
+wxPdfDocument::StopTransform()
+{
+	//restore previous graphic state
+  if (m_inTransform > 0)
+  {
+    m_inTransform--;
+  	Out("Q");
+  }
+}
+
+void
+wxPdfDocument::LinearGradient(double x, double y, double w, double h,
+                              const wxColour& col1, const wxColour& col2)
+{
+  double coords[4] = {0, 0, 1, 0};
+  LinearGradient(x, y, w, h, col1, col2, coords);
+}
+
+void
+wxPdfDocument::LinearGradient(double x, double y, double w, double h,
+                              const wxColour& col1, const wxColour& col2,
+                              double coords[4])
+{
+	ClippingRect(x, y, w, h, false);
+	//set up transformation matrix for gradient
+  double tm[6];
+	tm[0] = w * m_k;
+	tm[1] = 0;
+	tm[2] = 0;
+	tm[3] = h * m_k;
+	tm[4] = x * m_k;
+	tm[5] = (m_h - (y+h)) * m_k;
+	Transform(tm);
+	Gradient(2, col1, col2, coords);
+}
+
+void
+wxPdfDocument::RadialGradient(double x, double y, double w, double h,
+                              const wxColour& col1, const wxColour& col2)
+{
+  double coords[5] = {0.5, 0.5, 0.5, 0.5, 1};
+  RadialGradient(x, y, w, h, col1, col2, coords);
+}
+
+void
+wxPdfDocument::RadialGradient(double x, double y, double w, double h,
+                              const wxColour& col1, const wxColour& col2, 
+                              double coords[5])
+{
+	ClippingRect(x, y, w, h, false);
+	//set up transformation matrix for gradient
+  double tm[6];
+	tm[0] = w * m_k;
+	tm[1] = 0;
+	tm[2] = 0;
+	tm[3] = h * m_k;
+	tm[4] = x * m_k;
+	tm[5] = (m_h - (y+h)) * m_k;
+	Transform(tm);
+	Gradient(3, col1, col2, coords);
+}
+
+void
+wxPdfDocument::Gradient(int type, const wxColour& col1, const wxColour& col2, double coords[])
+{
+	int n = (*m_gradients).size()+1;
+  (*m_gradients)[n] = new wxPdfGradient(type, col1, col2, coords);
+	//paint the gradient
+  OutAscii(wxString::Format(_T("/Sh%d sh"), n));
+	//restore previous Graphic State
+	Out("Q");
+}
+
+/* draw a marker at a raw point-based coordinate */
+void
+wxPdfDocument::Marker(double x, double y, wxPdfMarker markerType, double size)
+{
+  double saveLineWidth = m_lineWidth;
+  double halfsize = size * 0.5;
+  static double b = 4. / 3.;
+
+  Out("q");
+  switch (markerType) 
+  {
+	  case wxPDF_MARKER_CIRCLE:
+      SetLineWidth(size * 0.15);
+	    OutPoint(x - halfsize, y);
+	    OutCurve(x - halfsize, y + b * halfsize, x + halfsize, y + b * halfsize, x + halfsize, y);
+	    OutCurve(x + halfsize, y - b * halfsize, x - halfsize, y - b * halfsize, x - halfsize, y);
+		  Out("h");
+    	Out("B");
+		  break;
+	  case wxPDF_MARKER_TRIANGLE_UP:
+      SetLineWidth(size * 0.15);
+		  OutPoint(x, y - size * 0.6667);
+		  OutLineRelative(-size / 1.7321, size);
+		  OutLineRelative(1.1546 * size, 0.0);
+		  Out("h");
+    	Out("B");
+		  break;
+	  case wxPDF_MARKER_TRIANGLE_DOWN:
+      SetLineWidth(size * 0.15);
+		  OutPoint(x, y + size * 0.6667);
+		  OutLineRelative(-size / 1.7321, -size);
+		  OutLineRelative(1.1546 * size, 0.0);
+		  Out("h");
+    	Out("B");
+		  break;
+	  case wxPDF_MARKER_TRIANGLE_LEFT:
+      SetLineWidth(size * 0.15);
+		  OutPoint(x - size * 0.6667, y);
+		  OutLineRelative(size, -size / 1.7321);
+		  OutLineRelative(0.0, 1.1546 * size);
+		  Out("h");
+    	Out("B");
+		  break;
+	  case wxPDF_MARKER_TRIANGLE_RIGHT:
+      SetLineWidth(size * 0.15);
+		  OutPoint(x + size * 0.6667, y);
+		  OutLineRelative(-size, -size / 1.7321);
+		  OutLineRelative(0.0, 1.1546 * size);
+		  Out("h");
+    	Out("B");
+		  break;
+	  case wxPDF_MARKER_DIAMOND:
+      SetLineWidth(size * 0.15);
+		  size *= 0.9;
+		  OutPoint( x, y+size/1.38);
+		  OutLineRelative( 0.546 * size, -size / 1.38);
+		  OutLineRelative(-0.546 * size, -size / 1.38);
+		  OutLineRelative(-0.546 * size,  size / 1.38);
+		  Out("h");
+    	Out("B");
+		  break;
+	  case wxPDF_MARKER_SQUARE:
+      SetLineWidth(size * 0.15);
+		  Rect(x - halfsize, y - halfsize, size, size, wxPDF_STYLE_FILLDRAW);
+    	Out("B");
+		  break;
+	  case wxPDF_MARKER_STAR:
+		  size *= 1.2;
+		  halfsize = 0.5 * size;
+      SetLineWidth(size * 0.09);
+		  OutPoint(x, y + size * 0.5);
+		  OutLine(x + 0.112255 * size, y + 0.15451 * size);
+		  OutLine(x + 0.47552  * size, y + 0.15451 * size);
+		  OutLine(x + 0.181635 * size, y - 0.05902 * size);
+		  OutLine(x + 0.29389  * size, y - 0.40451 * size);
+		  OutLine(x, y - 0.19098 * size);
+		  OutLine(x - 0.29389  * size, y - 0.40451 * size);
+		  OutLine(x - 0.181635 * size, y - 0.05902 * size);
+		  OutLine(x - 0.47552  * size, y + 0.15451 * size);
+		  OutLine(x - 0.112255 * size, y + 0.15451 * size);
+		  Out("h");
+    	Out("B");
+		  break;
+	  case wxPDF_MARKER_STAR4:
+		  size *= 1.2;
+		  halfsize = 0.5 * size;
+      SetLineWidth(size * 0.09);
+		  OutPoint(x, y + size * 0.5);
+		  OutLine(x + 0.125 * size, y + 0.125 * size);
+		  OutLine(x + size * 0.5, y);
+		  OutLine(x + 0.125 * size, y - 0.125 * size);
+		  OutLine(x, y - size * 0.5);
+		  OutLine(x - 0.125 * size, y - 0.125 * size);
+		  OutLine(x - size * 0.5, y);
+		  OutLine(x - 0.125 * size, y + 0.125 * size);
+		  Out("h");
+    	Out("B");
+		  break;
+	  case wxPDF_MARKER_PLUS:
+		  size *= 1.2;
+		  halfsize = 0.5 * size;
+      SetLineWidth(size * 0.1);
+		  OutPoint(x + 0.125 * size, y + size * 0.5);
+		  OutLine(x + 0.125 * size, y + 0.125 * size);
+		  OutLine(x + size * 0.5, y + 0.125 * size);
+		  OutLine(x + size * 0.5, y - 0.125 * size);
+		  OutLine(x + 0.125 * size, y - 0.125 * size);
+		  OutLine(x + 0.125 * size, y - size * 0.5);
+		  OutLine(x - 0.125 * size, y - size * 0.5);
+		  OutLine(x - 0.125 * size, y - 0.125 * size);
+		  OutLine(x - size * 0.5, y - 0.125 * size);
+		  OutLine(x - size * 0.5, y + 0.125 * size);
+		  OutLine(x - 0.125 * size, y + 0.125 * size);
+		  OutLine(x - 0.125 * size, y + size * 0.5);
+		  Out("h");
+    	Out("B");
+		  break;
+	  case wxPDF_MARKER_CROSS:
+		  size *= 1.2;
+		  halfsize = 0.5 * size;
+      SetLineWidth(size * 0.1);
+		  OutPoint(x, y + 0.176777 * size);
+      OutLine(x + 0.265165 * size, y + 0.441941 * size);
+      OutLine(x + 0.441941 * size, y + 0.265165 * size);
+		  OutLine(x + 0.176777 * size, y);
+      OutLine(x + 0.441941 * size, y - 0.265165 * size);
+      OutLine(x + 0.265165 * size, y - 0.441941 * size);
+		  OutLine(x, y - 0.176777 * size);
+      OutLine(x - 0.265165 * size, y - 0.441941 * size);
+      OutLine(x - 0.441941 * size, y - 0.265165 * size);
+		  OutLine(x - 0.176777 * size, y);
+      OutLine(x - 0.441941 * size, y + 0.265165 * size);
+      OutLine(x - 0.265165 * size, y + 0.441941 * size);
+		  Out("h");
+    	Out("B");
+		  break;
+	  case wxPDF_MARKER_PENTAGON_UP:
+      SetLineWidth(size * 0.15);
+		  OutPoint(x + 0.5257 * size, y - size * 0.1708);
+		  OutLineRelative(-0.5257 * size, -0.382  * size);
+		  OutLineRelative(-0.5257 * size, 0.382  * size);
+		  OutLineRelative(0.2008 * size, 0.6181 * size);
+		  OutLineRelative(0.6499 * size,  0.0);
+		  Out("h");
+    	Out("B");
+		  break;
+	  case wxPDF_MARKER_PENTAGON_DOWN:
+      SetLineWidth(size * 0.15);
+		  OutPoint(x - 0.5257 * size, y + size * 0.1708);
+		  OutLineRelative( 0.5257 * size,  0.382  * size);
+		  OutLineRelative( 0.5257 * size, -0.382  * size);
+		  OutLineRelative(-0.2008 * size, -0.6181 * size);
+		  OutLineRelative(-0.6499 * size,  0.0);
+		  Out("h");
+    	Out("B");
+		  break;
+	  case wxPDF_MARKER_PENTAGON_LEFT:
+      SetLineWidth(size * 0.15);
+		  OutPoint(x - size * 0.1708, y + 0.5257 * size);
+		  OutLineRelative(-0.382  * size, -0.5257 * size);
+		  OutLineRelative( 0.382  * size, -0.5257 * size);
+		  OutLineRelative( 0.6181 * size,  0.2008 * size);
+		  OutLineRelative( 0.0,            0.6499 * size);
+		  Out("h");
+    	Out("B");
+		  break;
+	  case wxPDF_MARKER_PENTAGON_RIGHT:
+      SetLineWidth(size * 0.15);
+		  OutPoint(x + size * 0.1708, y - 0.5257 * size);
+		  OutLineRelative( 0.382  * size,  0.5257 * size);
+		  OutLineRelative(-0.382  * size,  0.5257 * size);
+		  OutLineRelative(-0.6181 * size, -0.2008 * size);
+		  OutLineRelative( 0.0,           -0.6499 * size);
+		  Out("h");
+    	Out("B");
+		  break;
+	  case wxPDF_MARKER_BOWTIE_HORIZONTAL:
+      SetLineWidth(size * 0.13);
+		  OutPoint(x - 0.5 * size, y - 0.5 * size);
+		  OutLine(x + 0.5 * size, y + 0.5 * size);
+		  OutLine(x + 0.5 * size, y - 0.5 * size);
+		  OutLine(x - 0.5 * size, y + 0.5 * size);
+		  Out("h");
+    	Out("B");
+		  break;
+	  case wxPDF_MARKER_BOWTIE_VERTICAL:
+      SetLineWidth(size * 0.13);
+		  OutPoint(x - 0.5 * size, y - 0.5 * size);
+		  OutLine(x + 0.5 * size, y + 0.5 * size);
+		  OutLine(x - 0.5 * size, y + 0.5 * size);
+		  OutLine(x + 0.5 * size, y - 0.5 * size);
+		  Out("h");
+    	Out("B");
+		  break;
+	  case wxPDF_MARKER_ASTERISK:
+		  size *= 1.05;
+      SetLineWidth(size * 0.15);
+		  OutPoint( x, y + size * 0.5);
+		  OutLineRelative(0.0, -size);
+		  OutPoint( x + 0.433 * size, y + 0.25 * size);
+		  OutLine(x - 0.433 * size, y - 0.25 * size);
+		  OutPoint(x + 0.433 * size, y - 0.25 * size);
+		  OutLine(x - 0.433 * size, y + 0.25 * size);
+    	Out("S");
+		  break;
+	  case wxPDF_MARKER_SUN:
+      SetLineWidth(size * 0.15);
+      halfsize = size * 0.25;
+	    OutPoint(x - halfsize, y);
+	    OutCurve(x - halfsize, y + b * halfsize, x + halfsize, y + b * halfsize, x + halfsize, y);
+	    OutCurve(x + halfsize, y - b * halfsize, x - halfsize, y - b * halfsize, x - halfsize, y);
+		  Out("h");
+ 		  OutPoint(x + size * 0.5, y);
+		  OutLine(x + size * 0.25, y);
+		  OutPoint(x - size * 0.5, y);
+		  OutLine(x - size * 0.25, y);
+		  OutPoint(x, y - size * 0.5);
+		  OutLine(x, y - size * 0.25);
+		  OutPoint(x, y + size * 0.5);
+		  OutLine(x, y + size * 0.25);
+    	Out("B");
+	  	break;
+
+	  default:
+		  break;
+  }
+  Out("Q");
+	m_x = x;
+  m_y = y;
+  SetLineWidth(saveLineWidth);
+}
+
+void
+wxPdfDocument::Arrow(double x1, double y1, double x2, double y2, double linewidth, double height, double width)
+{
+  double saveLineWidth = m_lineWidth;
+  double dx = x2 - x1;
+  double dy = y2 - y1;
+  double dz = sqrt (dx*dx+dy*dy);
+  double sina = dy / dz;
+  double cosa = dx / dz;
+  double x3 = x2 - cosa * height + sina * width;
+  double y3 = y2 - sina * height - cosa * width;
+  double x4 = x2 - cosa * height - sina * width;
+  double y4 = y2 - sina * height + cosa * width;
+
+  SetLineWidth(0.2);
+
+  //Draw a arrow head
+  OutAscii(Double2String( x2*m_k,2) + wxString(_T(" ")) +
+           Double2String( (m_h-y2)*m_k,2) + wxString(_T(" m ")) +
+           Double2String( x3*m_k,2) + wxString(_T(" ")) +
+           Double2String( (m_h-y3)*m_k,2) + wxString(_T(" l ")) +
+           Double2String( x4*m_k,2) + wxString(_T(" ")) +
+           Double2String( (m_h-y4)*m_k,2) + wxString(_T(" l b")));
+
+  SetLineWidth(linewidth);
+  Line(x1+cosa*linewidth, y1+sina*linewidth, x2-cosa*height, y2-sina*height);
+  SetLineWidth(saveLineWidth);
+}
