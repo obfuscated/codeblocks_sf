@@ -18,20 +18,20 @@ class DLLIMPORT TemplateManager : public wxEvtHandler
 		void CreateMenu(wxMenuBar* menuBar);
 		void ReleaseMenu(wxMenuBar* menuBar);
 		void BuildToolsMenu(wxMenu* menu);
-		void NewProject();
+		cbProject* NewProject();
 		void SaveUserTemplate(cbProject* prj);
 	protected:
 		void LoadTemplates();
 		void LoadUserTemplates();
-		void NewProjectFromTemplate(NewFromTemplateDlg& dlg);
-		void NewProjectFromUserTemplate(NewFromTemplateDlg& dlg);
+		cbProject* NewProjectFromTemplate(NewFromTemplateDlg& dlg);
+		cbProject* NewProjectFromUserTemplate(NewFromTemplateDlg& dlg);
 		void OnNew(wxCommandEvent& event);
 		ProjectTemplateArray m_Templates;
 		wxArrayString m_UserTemplates;
 	private:
 		TemplateManager();
 		virtual ~TemplateManager();
-		
+
 		DECLARE_EVENT_TABLE();
 };
 

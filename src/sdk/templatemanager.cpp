@@ -151,8 +151,9 @@ void TemplateManager::LoadUserTemplates()
 	Manager::Get()->GetMessageManager()->DebugLog(_("%d user templates loaded"), m_UserTemplates.GetCount());
 }
 
-void TemplateManager::NewProject()
+cbProject* TemplateManager::NewProject()
 {
+	cbProject* prj = NULL;
 	// one-time warning message
     if (Manager::Get()->GetConfigManager(_T("template_manager"))->ReadBool(_T("/notification"), true))
     {
@@ -172,29 +173,33 @@ void TemplateManager::NewProject()
 	if (dlg.ShowModal() == wxID_OK)
 	{
         if (dlg.SelectedUserTemplate())
-            NewProjectFromUserTemplate(dlg);
+            prj = NewProjectFromUserTemplate(dlg);
         else
-            NewProjectFromTemplate(dlg);
+            prj = NewProjectFromTemplate(dlg);
 	}
+	return prj;
 }
 
-void TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
+cbProject* TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
 {
+	cbProject* prj = NULL;
 	// is it a wizard or a template?
     cbProjectWizardPlugin* wiz = dlg.GetWizard();
 	if (wiz)
 	{
 		// wizard, too easy ;)
 		wiz->Launch(dlg.GetWizardIndex());
-		return;
-	}
+        // TODO (rickg22#1#): Mandrav: Please add some way to return the project from the wizard
+        //                             so the project can be added to the history
+		return NULL;
+    }
 
 	// else it's a template
     ProjectTemplateLoader* pt = dlg.GetTemplate();
     if (!pt)
     {
         Manager::Get()->GetMessageManager()->DebugLog(_("Templates dialog returned OK but no template was selected ?!?"));
-        return;
+        return NULL;
     }
     int optidx = dlg.GetOptionIndex();
     int filesetidx = dlg.GetFileSetIndex();
@@ -204,12 +209,12 @@ void TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
     if (!wxDirExists(dlg.GetProjectPath() + wxFILE_SEP_PATH))
     {
         if (wxMessageBox(wxString::Format(_("The directory %s does not exist. Are you sure you want to create it?"), dlg.GetProjectPath().c_str()), _("Confirmation"), wxICON_QUESTION | wxYES_NO) != wxYES)
-            return;
+            return NULL;
     }
     if (wxDirExists(dlg.GetProjectPath() + wxFILE_SEP_PATH + dlg.GetProjectName() + wxFILE_SEP_PATH))
     {
         if (wxMessageBox(wxString::Format(_("The directory %s already exists. Are you sure you want to create the new project there?"), wxString(dlg.GetProjectPath() + wxFILE_SEP_PATH + dlg.GetProjectName()).c_str()), _("Confirmation"), wxICON_QUESTION | wxYES_NO) != wxYES)
-            return;
+            return NULL;
     }
 
     wxFileName fname;
@@ -220,7 +225,7 @@ void TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
     if (!CreateDirRecursively(fname.GetPath() + wxFILE_SEP_PATH))
     {
         wxMessageBox(_("Failed to create directory ") + fname.GetPath(), _("Error"), wxICON_ERROR);
-        return;
+        return NULL;
     }
 
     if (dlg.GetProjectPath() != Manager::Get()->GetConfigManager(_T("template_manager"))->Read(_T("/projects_path")))
@@ -237,7 +242,7 @@ void TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
     baseDir << sep << _T("templates");
     wxCopyFile(baseDir + sep + option.file, filename);
 
-    cbProject* prj = Manager::Get()->GetProjectManager()->LoadProject(filename);
+    prj = Manager::Get()->GetProjectManager()->LoadProject(filename);
     if (prj)
     {
         prj->SetTitle(dlg.GetProjectName());
@@ -301,21 +306,23 @@ void TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
         if (!option.notice.IsEmpty())
             wxMessageBox(option.notice, _("Notice"), option.noticeMsgType);
     }
+    return prj;
 }
 
-void TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg)
+cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg)
 {
+    cbProject* prj = NULL;
     if (!dlg.SelectedUserTemplate())
     {
         Manager::Get()->GetMessageManager()->DebugLog(_("TemplateManager::NewProjectFromUserTemplate() called when no user template was selected ?!?"));
-        return;
+        return NULL;
     }
 
     // select directory to copy user template files
     wxString sep = wxFileName::GetPathSeparator();
     wxString path = ChooseDirectory(0, _("Choose a directory to create the new project"));
     if (path.IsEmpty())
-        return;
+        return NULL;
 
     wxBusyCursor busy;
 
@@ -324,7 +331,7 @@ void TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg)
     if (!wxDirExists(templ))
     {
         Manager::Get()->GetMessageManager()->DebugLog(_("Cannot open user-template source path '%s'!"), templ.c_str());
-        return;
+        return NULL;
     }
 
     // copy files
@@ -369,9 +376,10 @@ void TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg)
         		wxRenameFile(project_filename, fname.GetFullPath());
         		project_filename = fname.GetFullPath();
         	}
-            Manager::Get()->GetProjectManager()->LoadProject(project_filename);
+            prj = Manager::Get()->GetProjectManager()->LoadProject(project_filename);
         }
     }
+    return prj;
 }
 
 void TemplateManager::SaveUserTemplate(cbProject* prj)

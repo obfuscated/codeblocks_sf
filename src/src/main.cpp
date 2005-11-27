@@ -2092,18 +2092,26 @@ void MainFrame::OnSearchGotoLine(wxCommandEvent& event)
 
 void MainFrame::OnProjectNewEmpty(wxCommandEvent& event)
 {
-    PRJMAN()->NewProject();
+    cbProject* prj = PRJMAN()->NewProject();
 	// verify that the open files are still in sync
 	// the new file might have overwritten an existing one)
 	EDMAN()->CheckForExternallyModifiedFiles();
+	if(prj)
+	    AddToRecentProjectsHistory(prj->GetFilename());
 }
 
 void MainFrame::OnProjectNew(wxCommandEvent& event)
 {
-    TemplateManager::Get()->NewProject();
+    cbProject* prj = TemplateManager::Get()->NewProject();
 	// verify that the open files are still in sync
 	// the new file might have overwritten an existing one)
 	EDMAN()->CheckForExternallyModifiedFiles();
+	if(prj)
+	{
+	    prj->Save();
+	    prj->SaveAllFiles();
+	    AddToRecentProjectsHistory(prj->GetFilename());
+	}
 }
 
 void MainFrame::OnProjectOpen(wxCommandEvent& event)
