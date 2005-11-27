@@ -648,6 +648,8 @@ bool ProjectManager::QueryCloseProject(cbProject *proj,bool dontsavefiles)
     SANITY_CHECK(true);
     if(!proj)
         return true;
+    if(proj->GetCurrentlyCompilingTarget())
+        return false;
     if(!dontsavefiles)
         if(!proj->QueryCloseAllFiles())
             return false;
@@ -692,6 +694,8 @@ bool ProjectManager::CloseProject(cbProject* project,bool dontsave)
     SANITY_CHECK(true);
     if (!project)
         return true;
+    if(project->GetCurrentlyCompilingTarget())
+        return false;
     if(!dontsave)
          if(!QueryCloseProject(project))
             return false;
@@ -721,6 +725,9 @@ bool ProjectManager::CloseActiveProject(bool dontsave)
     SANITY_CHECK(false);
     if (!m_pActiveProject)
         return true;
+    if(m_pActiveProject->GetCurrentlyCompilingTarget())
+        return false;
+
     if(m_sanitycheck_shutdown) // if shutdown, don't ask.
         dontsave=true;
     if(!dontsave)
@@ -1554,7 +1561,7 @@ void ProjectManager::OnCloseProject(wxCommandEvent& event)
         proj = ftd->GetProject();
     if(proj)
     {
-        if(m_IsLoadingProject)
+        if(m_IsLoadingProject || proj->GetCurrentlyCompilingTarget())
         {
             wxBell();
         }

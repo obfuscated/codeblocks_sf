@@ -1706,6 +1706,17 @@ void MainFrame::OnFileQuit(wxCommandEvent& WXUNUSED(event))
 
 void MainFrame::OnApplicationClose(wxCloseEvent& event)
 {
+    ProjectManager* prjman = Manager::Get()->GetProjectManager();
+    if(prjman)
+    {
+        cbProject* prj = prjman->GetActiveProject();
+        if(prj && prj->GetCurrentlyCompilingTarget())
+        {
+            event.Veto();
+            wxBell();
+            return;
+        }
+    }
     if (!ProjectManager::CanShutdown() || !EditorManager::CanShutdown())
     {
         event.Veto();
@@ -2232,6 +2243,8 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
     wxMenuBar* mbar = GetMenuBar();
 
     bool canCloseProject = (ProjectManager::CanShutdown() && EditorManager::CanShutdown());
+    if(prj && prj->GetCurrentlyCompilingTarget())
+        canCloseProject = false;
     mbar->Enable(idProjectCloseProject,canCloseProject);
     mbar->Enable(idFileOpenRecentFileClearHistory, m_FilesHistory.GetCount());
     mbar->Enable(idFileOpenRecentProjectClearHistory, m_ProjectsHistory.GetCount());

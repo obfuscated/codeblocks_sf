@@ -2062,6 +2062,13 @@ void CompilerGCC::OnJobEnd()
 
 	if (ended)
     {
+        // Clear the Active Project's currently compiling target
+        // NOTE (rickg22#1#): This way we can prevent Codeblocks from shutting down
+        // when a project's being compiled.
+
+        if(m_Project)
+            m_Project->SetCurrentlyCompilingTarget(0);
+
         long int elapsed = wxGetElapsedTime() / 1000;
         int mins = elapsed / 60;
         int secs = (elapsed % 60);
