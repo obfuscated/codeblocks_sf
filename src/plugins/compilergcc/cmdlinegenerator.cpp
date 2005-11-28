@@ -227,10 +227,22 @@ void CmdLineGenerator::SetupIncludeDirs(Compiler* compiler, ProjectBuildTarget* 
                 {
                     includedDirs.Add(dir);
                     QuoteStringIfNeeded(dir);
-                    result << compiler->GetSwitches().includeDirs << dir << _T(" ");
+                    // for gcc-4.0+, use the following:
+                    // result << _T("-iquote") << dir << _T(' ');
+                    // for earlier versions, -I- must be used
+                    result << compiler->GetSwitches().includeDirs << dir << _T(' ');
                 }
             }
         }
+        // for earlier that gcc-4.0
+        result << _T("-I- ");
+        count = (int)includedDirs.GetCount();
+        for (int i = 0; i < count; ++i)
+        {
+            QuoteStringIfNeeded(includedDirs[i]);
+            result << compiler->GetSwitches().includeDirs << includedDirs[i] << _T(' ');
+        }
+        result << _T("-I. ");
     }
 
     if (target)
