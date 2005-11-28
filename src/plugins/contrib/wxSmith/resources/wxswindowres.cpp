@@ -6,6 +6,7 @@
 #include "../wxscodegen.h"
 #include "../wxsmith.h"
 #include "../wxswinundobuffer.h"
+#include "../wxspredefinedids.h"
 #include <manager.h>
 #include <editormanager.h>
 
@@ -65,7 +66,6 @@ _T("\t\tDECLARE_EVENT_TABLE()\n")
 _T("};\n")
 _T("\n")
 _T("#endif\n");
-
 
 wxsWindowRes::wxsWindowRes(
     wxsProject* Project,
@@ -372,29 +372,32 @@ void wxsWindowRes::RebuildCode()
     {
         wxArrayString IdsArray;
         BuildIdsArray(RootWidget,IdsArray);
-        Code.Append(_T("enum Identifiers\n{"));
-        IdsArray.Sort();
-        wxString Previous = _T("");
-        bool First = true;
-        for ( size_t i = 0; i<IdsArray.Count(); ++i )
+        if ( IdsArray.Count() )
         {
-            if ( IdsArray[i] != Previous )
+            Code.Append(_T("enum Identifiers\n{"));
+            IdsArray.Sort();
+            wxString Previous = _T("");
+            bool First = true;
+            for ( size_t i = 0; i<IdsArray.Count(); ++i )
             {
-                Previous = IdsArray[i];
-                Code.Append( _T("\n\t") );
-                Code.Append( Previous );
-                if ( First )
+                if ( IdsArray[i] != Previous )
                 {
-                    Code.Append( _T(" = 0x1000") );
-                    First = false;
-                }
-                if ( i < IdsArray.Count() - 1 )
-                {
-                    Code.Append( _T(',') );
+                    Previous = IdsArray[i];
+                    Code.Append( _T("\n\t") );
+                    Code.Append( Previous );
+                    if ( First )
+                    {
+                        Code.Append( _T(" = 0x1000") );
+                        First = false;
+                    }
+                    if ( i < IdsArray.Count() - 1 )
+                    {
+                        Code.Append( _T(',') );
+                    }
                 }
             }
+            Code.Append( _T("\n};\n") );
         }
-        Code.Append( _T("\n};\n") );
     }
     wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(HFile),CodeHeader,Code);
 
@@ -731,77 +734,114 @@ bool wxsWindowRes::CorrectOneWidget(StrMap& NamesMap,StrMap& IdsMap,wxsWidget* C
     	}
     	else
     	{
-    		// Validating name as C++ ideentifier
-            if ( wxString(_T("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-                          _T("abcdefghijklmnopqrstuvwxyz")
-                          _T("_") ).Find(IdName.GetChar(0)) == -1 )
-            {
-            	if ( !Correct )
-            	{
-            		wxMessageBox(wxString::Format(_("Invalid character: '%c' in variable name"),IdName.GetChar(0)));
-            		return false;
-            	}
-                else
-                {
-                    DBGLOG(_T("wxSmith: Identifier name : \"%s\" is not a valid c++ name (invalid character \"%c\" at position %d)"),IdName.c_str(),IdName.GetChar(0),0);
-                }
-                Valid = false;
-            }
-            else
-            {
-            	Corrected.Append(IdName.GetChar(0));
-            }
-
-            for ( size_t i=1; i<IdName.Length(); ++i )
-            {
-                if ( wxString(_T("0123456789")
-                              _T("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    	    long IdValue;
+    	    if ( !IdName.ToLong(&IdValue,0) )
+    	    {
+                // Validating id as C++ identifier
+                if ( wxString(_T("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
                               _T("abcdefghijklmnopqrstuvwxyz")
-                              _T("_") ).Find(IdName.GetChar(i)) == -1 )
+                              _T("_") ).Find(IdName.GetChar(0)) == -1 )
                 {
                     if ( !Correct )
                     {
-                        wxMessageBox(wxString::Format(_("Invalid character: '%c' in variable name"),IdName.GetChar(i)));
+                        wxMessageBox(wxString::Format(_("Invalid character: '%c' in id name"),IdName.GetChar(0)));
                         return false;
                     }
                     else
                     {
-                        DBGLOG(_T("wxSmith: Identifier name : \"%s\" is not a valid c++ name (invalid character \"%c\" at position %d)"),IdName.c_str(),IdName.GetChar(i),i);
+                        DBGLOG(_T("wxSmith: Identifier name : \"%s\" is not a valid c++ name (invalid character \"%c\" at position %d)"),IdName.c_str(),IdName.GetChar(0),0);
                     }
                     Valid = false;
                 }
                 else
                 {
-                    Corrected.Append(IdName.GetChar(i));
+                    Corrected.Append(IdName.GetChar(0));
                 }
-            }
 
-            // Searching for another widget with same name
-
-            if ( IdsMap.find(Corrected) != IdsMap.end() && Corrected != _T("ID_COMMON") )
-            {
-            	if ( !Correct )
-            	{
-            		wxMessageBox(wxString::Format(_("Item with identifier '%s' already exists"),Corrected.c_str()));
-            		return false;
-            	}
-            	else
-            	{
-            	    DBGLOG(_T("wxSmith: Duplicated identifier name: \"%s\""),IdName.c_str());
-            	}
-
-            	// Generating new unique name
-
-                wxString Prefix = Changed->GetInfo().DefaultVarName;
-                Prefix.UpperCase();
-                for ( int i=1;; ++i )
+                for ( size_t i=1; i<IdName.Length(); ++i )
                 {
-                    Corrected.Printf(_T("ID_%s%d"),Prefix.c_str(),i);
-                    if ( IdsMap.find(Corrected) == IdsMap.end() ) break;
+                    if ( wxString(_T("0123456789")
+                                  _T("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+                                  _T("abcdefghijklmnopqrstuvwxyz")
+                                  _T("_") ).Find(IdName.GetChar(i)) == -1 )
+                    {
+                        if ( !Correct )
+                        {
+                            wxMessageBox(wxString::Format(_("Invalid character: '%c' in id name"),IdName.GetChar(i)));
+                            return false;
+                        }
+                        else
+                        {
+                            DBGLOG(_T("wxSmith: Identifier name : \"%s\" is not a valid c++ name (invalid character \"%c\" at position %d)"),IdName.c_str(),IdName.GetChar(i),i);
+                        }
+                        Valid = false;
+                    }
+                    else
+                    {
+                        Corrected.Append(IdName.GetChar(i));
+                    }
                 }
 
-            	Valid = false;
-            }
+                // Searching for another widget with same name
+
+                bool Predefined = false;
+                for ( int i=0; i<wxsPredefinedIdsCount; i++ )
+                {
+                    if ( wxsPredefinedIds[i] == Corrected )
+                    {
+                        Predefined = true;
+                        break;
+                    }
+                }
+
+                if ( (!Predefined) &&
+                     ( IdsMap.find(Corrected) != IdsMap.end() ) )
+                {
+                    if ( !Correct )
+                    {
+                        wxMessageBox(wxString::Format(_("Item with identifier '%s' already exists"),Corrected.c_str()));
+                        return false;
+                    }
+                    else
+                    {
+                        DBGLOG(_T("wxSmith: Duplicated identifier name: \"%s\""),IdName.c_str());
+                    }
+
+                    // Generating new unique name
+
+                    wxString Prefix = Changed->GetInfo().DefaultVarName;
+                    Prefix.UpperCase();
+                    for ( int i=1;; ++i )
+                    {
+                        Corrected.Printf(_T("ID_%s%d"),Prefix.c_str(),i);
+                        if ( IdsMap.find(Corrected) == IdsMap.end() ) break;
+                    }
+
+                    Valid = false;
+                }
+    	    }
+    	    else
+    	    {
+    	        if ( GetEditMode() != wxsREMSource )
+    	        {
+    	            if ( IdName != _T("-1") )
+    	            {
+                        if ( !Correct )
+                        {
+                            wxMessageBox(wxString::Format(_("XRC allow only -1 value instead of identifier name."),Corrected.c_str()));
+                            return false;
+                        }
+                        else
+                        {
+                            DBGLOG(_T("wxSmith: Invalid numeric id value: \"%s\""),IdName.c_str());
+                        }
+
+                        IdName = _T("-1");
+                        Valid = false;
+    	            }
+    	        }
+    	    }
+
     	}
 
     	if ( Correct )
@@ -823,7 +863,24 @@ void wxsWindowRes::BuildIdsArray(wxsWidget* Widget,wxArrayString& Array)
 		wxsWidget* Child = Widget->GetChild(i);
 		if ( Child->GetBPType() & bptId )
 		{
-			Array.Add(Child->GetBaseProperties().IdName);
+		    const wxString& Name = Child->GetBaseProperties().IdName;
+		    long Value;
+		    bool Predefined = Name.ToLong(&Value,0);
+		    if ( !Predefined )
+		    {
+		        for ( int i=0; i<wxsPredefinedIdsCount; i++ )
+                {
+                    if ( Name == wxsPredefinedIds[i] )
+                    {
+                        Predefined = true;
+                        break;
+                    }
+                }
+		    }
+		    if ( !Predefined )
+		    {
+                Array.Add(Child->GetBaseProperties().IdName);
+		    }
 		}
 		BuildIdsArray(Child,Array);
 	}
