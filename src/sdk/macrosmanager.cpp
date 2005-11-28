@@ -25,7 +25,6 @@
 
 #include "sdk_precomp.h"
 #include <wx/menu.h>
-#include <wx/regex.h>
 
 #include "projectmanager.h"
 #include "editormanager.h"
@@ -37,6 +36,26 @@
 #include "managerproxy.h"
 #include "uservarmanager.h"
 #include "configmanager.h"
+
+/*
+    standard macros are:
+
+    ${PROJECT_FILENAME} ${PROJECT_FILE} ${PROJECTFILE}
+    ${PROJECT_NAME}
+    ${PROJECT_DIR} ${PROJECTDIR} ${PROJECT_DIRECTORY}
+    ${CODEBLOCKS} ${APP_PATH}  ${APPPATH}
+    ${DATA_PATH} ${DATAPATH}
+    ${PLUGINS}
+    ${ACTIVE_EDITOR_FILENAME}
+    ${ALL_PROJECT_FILES}
+    ${MAKEFILE}
+    ${FOO_OUTPUT_FILE} // per target
+    ${BAR_OUTPUT_DIR} // per target
+    $(TARGET_OUTPUT_DIR) // the current target's out dir
+    $(TARGET_NAME)       // the current target's name (title)
+
+    ${AMP} TODO: implement AddMacro() for custom macros (like this)
+*/
 
 MacrosManager* MacrosManager::Get()
 {
@@ -65,6 +84,7 @@ MacrosManager::MacrosManager()
 {
 	//ctor
 	SC_CONSTRUCTOR_BEGIN
+	Reset();
 }
 
 MacrosManager::~MacrosManager()
@@ -92,42 +112,123 @@ wxString MacrosManager::ReplaceMacros(const wxString& buffer, bool envVarsToo)
 	return tmp;
 }
 
+void MacrosManager::Reset()
+{
+    SANITY_CHECK();
+    m_lastProject = NULL;
+    m_lastTarget = NULL;
+    m_lastEditor = NULL;
+
+    m_AppPath = UnixFilename(ConfigManager::GetExecutableFolder());
+    m_DataPath = UnixFilename(ConfigManager::GetDataFolder());
+    m_Plugins = UnixFilename(ConfigManager::GetDataFolder() + _T("/plugins"));
+    ClearProjectKeys();
+	m_re[0].Compile(_T("(\\$[({]?)([#]*[A-Za-z_0-9]+[\\.]*[A-Za-z_0-9]+)([)}]?)")); // $HOME, $(HOME) and ${HOME}
+	m_re[1].Compile(_T("(%)([#]*[A-Za-z_0-9]+[\\.]*[A-Za-z_0-9]+)(%)")); // %HOME%
+
+}
+
+void MacrosManager::ClearProjectKeys()
+{
+    SANITY_CHECK();
+    m_ProjectKeys.Clear();
+    m_ProjectValues.Clear();
+    m_ProjectKeys.Add(_T("AMP"));m_ProjectValues.Add(_T("&"));
+    m_ProjectKeys.Add(_T("CODEBLOCKS"));m_ProjectValues.Add(m_AppPath);
+    m_ProjectKeys.Add(_T("APP?PATH"));m_ProjectValues.Add(m_AppPath);
+    m_ProjectKeys.Add(_T("DATA?PATH"));m_ProjectValues.Add(m_DataPath);
+    m_ProjectKeys.Add(_T("PLUGINS"));m_ProjectValues.Add(m_Plugins);
+}
+
+void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuildTarget* target)
+{
+	SANITY_CHECK();
+	if(!editor)
+	{
+        m_ActiveEditorFilename = _T("");
+        m_lastEditor = NULL;
+	}
+    else if(editor != m_lastEditor)
+    {
+        m_ActiveEditorFilename = UnixFilename(editor->GetFilename());
+        m_lastEditor = editor;
+    }
+	if(!project)
+	{
+		m_ProjectFilename = _T("");
+		m_ProjectName = _T("");
+		m_ProjectDir = _T("");
+		m_ProjectFiles = _T("");
+		m_Makefile = _T("");
+		m_lastProject = NULL;
+        ClearProjectKeys();
+        m_ProjectKeys.Add(_T("PROJECT_FILE*"));m_ProjectValues.Add(_T(""));
+        m_ProjectKeys.Add(_T("PROJECTFILE*"));m_ProjectValues.Add(_T(""));
+        m_ProjectKeys.Add(_T("PROJECT_NAME"));m_ProjectValues.Add(_T(""));
+        m_ProjectKeys.Add(_T("PROJECT_DIR*"));m_ProjectValues.Add(_T(""));
+        m_ProjectKeys.Add(_T("PROJECTDIR*"));m_ProjectValues.Add(_T(""));
+        m_ProjectKeys.Add(_T("MAKEFILE"));m_ProjectValues.Add(_T(""));
+        m_ProjectKeys.Add(_T("ALL_PROJECT_FILES"));m_ProjectValues.Add(_T(""));
+	}
+	else if(project != m_lastProject)
+	{
+	    m_lastTarget = NULL; // reset last target when project changes
+	    m_prjname.Assign(project->GetFilename());
+	    m_ProjectFilename = UnixFilename(m_prjname.GetFullName());
+	    m_ProjectName = project->GetTitle();
+	    m_ProjectDir = UnixFilename(project->GetBasePath());
+	    m_Makefile = UnixFilename(project->GetMakefile());
+	    m_ProjectFiles = _T("");
+        for (int i = 0; i < project->GetFilesCount(); ++i)
+            m_ProjectFiles << UnixFilename(project->GetFile(i)->relativeFilename) << _T(" ");
+        ClearProjectKeys();
+        m_ProjectKeys.Add(_T("PROJECT_FILE*"));m_ProjectValues.Add(m_ProjectFilename);
+        m_ProjectKeys.Add(_T("PROJECTFILE*"));m_ProjectValues.Add(m_ProjectFilename);
+        m_ProjectKeys.Add(_T("PROJECT_NAME"));m_ProjectValues.Add(m_ProjectName);
+        m_ProjectKeys.Add(_T("PROJECT_DIR*"));m_ProjectValues.Add(m_ProjectDir);
+        m_ProjectKeys.Add(_T("PROJECTDIR*"));m_ProjectValues.Add(m_ProjectDir);
+        m_ProjectKeys.Add(_T("MAKEFILE"));m_ProjectValues.Add(m_Makefile);
+        m_ProjectKeys.Add(_T("ALL_PROJECT_FILES"));m_ProjectValues.Add(m_ProjectFiles);
+
+        for (int i = 0; i < project->GetBuildTargetsCount(); ++i)
+        {
+            ProjectBuildTarget* target = project->GetBuildTarget(i);
+            if (!target)
+                continue;
+            wxString title = target->GetTitle().Upper();
+            m_ProjectKeys.Add(title + _T("_OUTPUT_FILE"));
+            m_ProjectValues.Add(UnixFilename(target->GetOutputFilename()));
+            m_ProjectKeys.Add(title + _T("_OUTPUT_DIR"));
+            m_ProjectValues.Add(UnixFilename(target->GetBasePath()));
+        }
+        m_lastProject = project;
+	}
+
+	if(!target)
+	{
+	    m_TargetOutputDir = _T("");
+	    m_TargetName = _T("");
+	    m_lastTarget = NULL;
+	}
+	else if(target != m_lastTarget)
+	{
+	    m_TargetOutputDir = UnixFilename(target->GetBasePath());
+	    m_TargetName = UnixFilename(target->GetTitle());
+	    m_lastTarget = target;
+	}
+}
+
 void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo)
 {
     SANITY_CHECK();
-	/*
-		standard macros are:
-
-		${PROJECT_FILENAME} ${PROJECT_FILE} ${PROJECTFILE}
-		${PROJECT_NAME}
-		${PROJECT_DIR} ${PROJECTDIR} ${PROJECT_DIRECTORY}
-		${CODEBLOCKS} ${APP_PATH}  ${APPPATH}
-		${DATA_PATH} ${DATAPATH}
-		${PLUGINS}
-		${ACTIVE_EDITOR_FILENAME}
-		${ALL_PROJECT_FILES}
-		${MAKEFILE}
-		${FOO_OUTPUT_FILE} // per target
-		${BAR_OUTPUT_DIR} // per target
-		$(TARGET_OUTPUT_DIR) // the current target's out dir
-		$(TARGET_NAME)       // the current target's name (title)
-
-		${AMP} TODO: implement AddMacro() for custom macros (like this)
-	*/
 	if (buffer.IsEmpty())
 		return;
-
-	wxRegEx re[2];
-	re[0].Compile(_T("(\\$[({]?)([#]*[A-Za-z_0-9]+[\\.]*[A-Za-z_0-9]+)([)}]?)")); // $HOME, $(HOME) and ${HOME}
-	re[1].Compile(_T("(%)([#]*[A-Za-z_0-9]+[\\.]*[A-Za-z_0-9]+)(%)")); // %HOME%
 
 	cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
 	EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
 	ProjectBuildTarget* target = project ? project->GetCurrentlyCompilingTarget() : 0;
 
-	wxFileName prjname;
-	if (project)
-		prjname.Assign(project->GetFilename());
+	RecalcVars(project,editor,target);
 
     int count = 1;
 	while (count)
@@ -135,80 +236,53 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo)
         count = 0;
         for (int i = 0; i < 2; ++i)
         {
+            if (!(m_re[i].Matches(buffer)))
+                continue;
+
             wxString replace;
+            wxString env = m_re[i].GetMatch(buffer, 2);
+            wxString pre = m_re[i].GetMatch(buffer, 1);
+            wxString post = m_re[i].GetMatch(buffer, 3);
 
-            if (re[i].Matches(buffer))
+            if (env.StartsWith(_T("#")))
+                replace = UnixFilename(Manager::Get()->GetUserVariableManager()->Replace(env));
+            else if (env.Matches(_T("ACTIVE_EDITOR_FILENAME")))
+                replace = m_ActiveEditorFilename;
+            else if (env.Matches(_T("TARGET_OUTPUT_DIR")))
+                replace = m_TargetOutputDir;
+            else if (env.Matches(_T("TARGET_NAME")))
+                replace = m_TargetName;
+            else
             {
-                wxString env = re[i].GetMatch(buffer, 2);
-                wxString pre = re[i].GetMatch(buffer, 1);
-                wxString post = re[i].GetMatch(buffer, 3);
-                if (env.Matches(_T("AMP")))
-                    replace = _T("&");
-
-                if (env.StartsWith(_T("#")))
-                    replace = UnixFilename(Manager::Get()->GetUserVariableManager()->Replace(env));
-                else if (env.Matches(_T("PROJECT_FILE*")) || env.Matches(_T("PROJECTFILE*")))
-                    replace = project ? UnixFilename(prjname.GetFullName()) : _T("");
-                else if (env.Matches(_T("PROJECT_NAME")))
-                    replace = project ? project->GetTitle() : _T("");
-                else if (env.Matches(_T("PROJECT_DIR*")) || env.Matches(_T("PROJECTDIR*")))
-                    replace = project ? UnixFilename(project->GetBasePath()) : _T("");
-                else if (env.Matches(_T("MAKEFILE")))
-                    replace = project ? UnixFilename(project->GetMakefile()) : _T("");
-                else if (env.Matches(_T("CODEBLOCKS")) || env.Matches(_T("APP?PATH")))
-                    replace = UnixFilename(ConfigManager::GetExecutableFolder());
-                else if (env.Matches(_T("DATA?PATH")))
-                    replace = UnixFilename(ConfigManager::GetDataFolder());
-                else if (env.Matches(_T("PLUGINS")))
-                    replace = UnixFilename(ConfigManager::GetDataFolder() + _T("/plugins"));
-                else if (target && env.Matches(_T("TARGET_OUTPUT_DIR")))
-                    replace = UnixFilename(target->GetBasePath());
-                else if (target && env.Matches(_T("TARGET_NAME")))
-                    replace = UnixFilename(target->GetTitle());
-                else if (env.Matches(_T("ALL_PROJECT_FILES")))
+                for (size_t i = 0; i < m_ProjectKeys.Count(); i++)
                 {
-                    if (project)
+                    if (env.Matches(m_ProjectKeys[i]))
                     {
-                        for (int i = 0; i < project->GetFilesCount(); ++i)
-                            replace << UnixFilename(project->GetFile(i)->relativeFilename) << _T(" ");
-                    }
-                }
-                else if (env.Matches(_T("ACTIVE_EDITOR_FILENAME")))
-                    replace = editor ? UnixFilename(editor->GetFilename()) : _T("");
-                else if (project)
-                {
-                    for (int i = 0; i < project->GetBuildTargetsCount(); ++i)
-                    {
-                        ProjectBuildTarget* target = project->GetBuildTarget(i);
-                        if (!target)
-                            continue;
-                        wxString title = target->GetTitle().Upper();
-                        if (env.Matches(title + _T("_OUTPUT_FILE")))
-                            replace = target ? UnixFilename(target->GetOutputFilename()) : _T("");
-                        else if (env.Matches(title + _T("_OUTPUT_DIR")))
-                            replace = target ? UnixFilename(target->GetBasePath()) : _T("");
-                    }
-                }
-
-                wxString before = pre + env + post;
-
-                if (!replace.IsEmpty())
-                {
-                    buffer.Replace(before, replace);
-                    ++count;
-                }
-                else
-                {
-                    if (envVarsToo)
-                    {
-                        wxString envactual;
-                        wxGetEnv(env, &envactual);
-//                        LOGSTREAM << _("Converting ") << before << _(" to ") << envactual << _('\n');
-                        buffer.Replace(before, envactual);
-                        ++count;
+                        replace = m_ProjectValues[i];
+                        break;
                     }
                 }
             }
+
+            wxString before = pre + env + post;
+
+            if (!replace.IsEmpty())
+            {
+                buffer.Replace(before, replace);
+                ++count;
+            }
+            else
+            {
+                if (envVarsToo)
+                {
+                    wxString envactual;
+                    wxGetEnv(env, &envactual);
+//                        LOGSTREAM << _("Converting ") << before << _(" to ") << envactual << _('\n');
+                    buffer.Replace(before, envactual);
+                    ++count;
+                }
+            }
+
         }
 	}
 }

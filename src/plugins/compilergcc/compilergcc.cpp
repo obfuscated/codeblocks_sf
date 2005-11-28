@@ -978,6 +978,7 @@ bool CompilerGCC::CompilerValid(ProjectBuildTarget* target)
 bool CompilerGCC::DoCreateMakefile(bool temporary, const wxString& makefile)
 {
     DoDeleteTempMakefile();
+    Manager::Get()->GetMacrosManager()->Reset();
 
     // display error about incorrect compile environment
 	if (!m_EnvironmentMsg.IsEmpty())
@@ -1334,6 +1335,7 @@ int CompilerGCC::Compile(ProjectBuildTarget* target)
 
     wxString cmd;
     wxSetWorkingDirectory(m_Project->GetBasePath());
+    Manager::Get()->GetMacrosManager()->Reset();
     if (UseMake(target))
     {
         wxString make = CompilerFactory::Compilers[m_CompilerIdx]->GetPrograms().MAKE;
