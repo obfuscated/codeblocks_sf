@@ -40,7 +40,7 @@ WX_DEFINE_LIST(FilesList);
 // class constructor
 ProjectBuildTarget::ProjectBuildTarget(cbProject* parentProject) : m_Project(parentProject)
 {
-    m_BuildWithAll = true;
+    m_BuildWithAll = false;
     m_CreateStaticLib = true;
     m_CreateDefFile = true;
     m_UseConsoleRunner = true;

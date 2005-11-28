@@ -131,6 +131,14 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
 	DoFillTree(project, target);
 	DoFillVars();
 
+    wxComboBox* cmb = XRCCTRL(*this, "cmbBuildMethod", wxComboBox);
+    if (cmb)
+    {
+        // build method is always "direct" now
+        cmb->SetSelection(1);
+        cmb->Enable(false);
+    }
+
     wxTreeCtrl* tree = XRCCTRL(*this, "tcScope", wxTreeCtrl);
     wxSizer* sizer = tree->GetContainingSizer();
     if (!project)
@@ -140,6 +148,7 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
         sizer->Show(tree,false);
         sizer->Remove(tree);
         wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook);
+        nb->DeletePage(6); // remove "Make" page
         nb->DeletePage(3); // remove "Commands" page
 	}
 	else
@@ -149,7 +158,7 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
         SetTitle(_("Project's Build options"));
 
         wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook);
-        nb->DeletePage(6); // remove "Other" page
+        nb->DeletePage(7); // remove "Other" page
         nb->DeletePage(4); // remove "Programs" page
 
         // remove "Compiler" buttons
@@ -158,6 +167,13 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
         sizer2->Clear(true);
         sizer2->RecalcSizes();
         sizer2->Layout();
+
+        // disable "Make" elements, if project is not using custom makefile
+        bool en = project->IsMakefileCustom();
+        XRCCTRL(*this, "txtMakeCmd_Build", wxTextCtrl)->Enable(en);
+        XRCCTRL(*this, "txtMakeCmd_Compile", wxTextCtrl)->Enable(en);
+        XRCCTRL(*this, "txtMakeCmd_Clean", wxTextCtrl)->Enable(en);
+        XRCCTRL(*this, "txtMakeCmd_DistClean", wxTextCtrl)->Enable(en);
     }
     sizer->Layout();
     Layout();
@@ -597,9 +613,9 @@ void CompilerOptionsDlg::DoLoadOptions(int compilerIdx, ScopeTreeData* data)
         wxComboBox* cmb = XRCCTRL(*this, "cmbLogging", wxComboBox);
         if (cmb)
             cmb->SetSelection((int)compiler->GetSwitches().logging);
-        cmb = XRCCTRL(*this, "cmbBuildMethod", wxComboBox);
-        if (cmb)
-            cmb->SetSelection((int)compiler->GetSwitches().buildMethod);
+//        cmb = XRCCTRL(*this, "cmbBuildMethod", wxComboBox);
+//        if (cmb)
+//            cmb->SetSelection((int)compiler->GetSwitches().buildMethod);
 	}
 	else
 	{
@@ -618,7 +634,12 @@ void CompilerOptionsDlg::DoLoadOptions(int compilerIdx, ScopeTreeData* data)
 			m_CommandsBeforeBuild = project->GetCommandsBeforeBuild();
 			m_AlwaysUsePre = project->GetAlwaysRunPreBuildSteps();
 			m_AlwaysUsePost = project->GetAlwaysRunPostBuildSteps();
-		}
+
+            XRCCTRL(*this, "txtMakeCmd_Build", wxTextCtrl)->SetValue(project->GetMakeCommandFor(mcBuild));
+            XRCCTRL(*this, "txtMakeCmd_Compile", wxTextCtrl)->SetValue(project->GetMakeCommandFor(mcCompileFile));
+            XRCCTRL(*this, "txtMakeCmd_Clean", wxTextCtrl)->SetValue(project->GetMakeCommandFor(mcClean));
+            XRCCTRL(*this, "txtMakeCmd_DistClean", wxTextCtrl)->SetValue(project->GetMakeCommandFor(mcDistClean));
+        }
 		else
 		{
 			// target options
@@ -639,6 +660,11 @@ void CompilerOptionsDlg::DoLoadOptions(int compilerIdx, ScopeTreeData* data)
 			XRCCTRL(*this, "cmbIncludesPolicy", wxComboBox)->SetSelection(target->GetOptionRelation(ortIncludeDirs));
 			XRCCTRL(*this, "cmbLibDirsPolicy", wxComboBox)->SetSelection(target->GetOptionRelation(ortLibDirs));
 			XRCCTRL(*this, "cmbResDirsPolicy", wxComboBox)->SetSelection(target->GetOptionRelation(ortResDirs));
+
+            XRCCTRL(*this, "txtMakeCmd_Build", wxTextCtrl)->SetValue(target->GetMakeCommandFor(mcBuild));
+            XRCCTRL(*this, "txtMakeCmd_Compile", wxTextCtrl)->SetValue(target->GetMakeCommandFor(mcCompileFile));
+            XRCCTRL(*this, "txtMakeCmd_Clean", wxTextCtrl)->SetValue(target->GetMakeCommandFor(mcClean));
+            XRCCTRL(*this, "txtMakeCmd_DistClean", wxTextCtrl)->SetValue(target->GetMakeCommandFor(mcDistClean));
 		}
 	}
 	TextToOptions();
@@ -701,13 +727,13 @@ void CompilerOptionsDlg::DoSaveOptions(int compilerIdx, ScopeTreeData* data)
             switches.logging = (CompilerLoggingType)cmb->GetSelection();
             compiler->SetSwitches(switches);
         }
-        cmb = XRCCTRL(*this, "cmbBuildMethod", wxComboBox);
-        if (cmb)
-        {
-            CompilerSwitches switches = compiler->GetSwitches();
-            switches.buildMethod = (CompilerBuildMethod)cmb->GetSelection();
-            compiler->SetSwitches(switches);
-        }
+//        cmb = XRCCTRL(*this, "cmbBuildMethod", wxComboBox);
+//        if (cmb)
+//        {
+//            CompilerSwitches switches = compiler->GetSwitches();
+//            switches.buildMethod = (CompilerBuildMethod)cmb->GetSelection();
+//            compiler->SetSwitches(switches);
+//        }
 	}
 	else
 	{
@@ -725,6 +751,11 @@ void CompilerOptionsDlg::DoSaveOptions(int compilerIdx, ScopeTreeData* data)
 			project->SetCommandsAfterBuild(m_CommandsAfterBuild);
             project->SetAlwaysRunPreBuildSteps(m_AlwaysUsePre);
             project->SetAlwaysRunPostBuildSteps(m_AlwaysUsePost);
+
+            project->SetMakeCommandFor(mcBuild, XRCCTRL(*this, "txtMakeCmd_Build", wxTextCtrl)->GetValue());
+            project->SetMakeCommandFor(mcCompileFile, XRCCTRL(*this, "txtMakeCmd_Compile", wxTextCtrl)->GetValue());
+            project->SetMakeCommandFor(mcClean, XRCCTRL(*this, "txtMakeCmd_Clean", wxTextCtrl)->GetValue());
+            project->SetMakeCommandFor(mcDistClean, XRCCTRL(*this, "txtMakeCmd_DistClean", wxTextCtrl)->GetValue());
 		}
 		else
 		{
@@ -745,6 +776,11 @@ void CompilerOptionsDlg::DoSaveOptions(int compilerIdx, ScopeTreeData* data)
 			target->SetCommandsAfterBuild(m_CommandsAfterBuild);
             target->SetAlwaysRunPreBuildSteps(m_AlwaysUsePre);
             target->SetAlwaysRunPostBuildSteps(m_AlwaysUsePost);
+
+            target->SetMakeCommandFor(mcBuild, XRCCTRL(*this, "txtMakeCmd_Build", wxTextCtrl)->GetValue());
+            target->SetMakeCommandFor(mcCompileFile, XRCCTRL(*this, "txtMakeCmd_Compile", wxTextCtrl)->GetValue());
+            target->SetMakeCommandFor(mcClean, XRCCTRL(*this, "txtMakeCmd_Clean", wxTextCtrl)->GetValue());
+            target->SetMakeCommandFor(mcDistClean, XRCCTRL(*this, "txtMakeCmd_DistClean", wxTextCtrl)->GetValue());
 		}
 	}
 }

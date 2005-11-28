@@ -33,6 +33,7 @@
 #include <macrosmanager.h>
 #include <projectmanager.h>
 #include <editormanager.h>
+
 #include <cbeditor.h>
 #include <customvars.h>
 #include <annoyingdialog.h>
@@ -318,12 +319,12 @@ void CompilerGCC::OnRelease(bool appShutDown)
 int CompilerGCC::Configure(cbProject* project, ProjectBuildTarget* target)
 {
     CompilerOptionsDlg dlg(Manager::Get()->GetAppWindow(), this, project, target);
-    if(dlg.ShowModal()==wxID_OK)
+    if(dlg.ShowModal() == wxID_OK)
     {
-      m_ConsoleTerm = Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
-      m_ConsoleShell = Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/console_shell"), DEFAULT_CONSOLE_SHELL);
-      SaveOptions();
-      SetupEnvironment();
+        m_ConsoleTerm = Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
+        m_ConsoleShell = Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/console_shell"), DEFAULT_CONSOLE_SHELL);
+        SaveOptions();
+        SetupEnvironment();
     }
     return 0;
 }
@@ -770,6 +771,11 @@ int CompilerGCC::DoRunQueue()
 #endif
 	}
 
+#ifndef __WXMSW__
+    // run the command in a shell, so backtick'd expressions can be evaluated
+    cmd = GetConsoleShell() + _T(" '") + cmd + _T("'");
+#endif
+
     m_Process = new PipedProcess((void**)&m_Process, this, idGCCProcess, pipe, dir);
     m_Pid = wxExecute(cmd, flags, m_Process);
     if ( !m_Pid )
@@ -913,7 +919,6 @@ bool CompilerGCC::DoPrepareMultiProjectCommand(MultiProjectJob job)
 
 void CompilerGCC::DoPrepareQueue()
 {
-	Manager::Get()->GetMacrosManager()->Reset();
 	if (m_LastTempMakefile.IsEmpty() || m_Queue.GetCount() == 0)
 	{
 		m_QueueIndex = 0;
@@ -953,13 +958,37 @@ void CompilerGCC::DoDeleteTempMakefile()
 
 bool CompilerGCC::UseMake(ProjectBuildTarget* target)
 {
-    int idx = m_CompilerIdx;
-    if (target)
-        idx = target->GetCompilerIndex();
-    else if (m_Project)
-        idx = m_Project->GetCompilerIndex();
+    if (!m_Project)
+        return false;
+    int idx = m_Project->GetCompilerIndex();
     if (CompilerFactory::CompilerIndexOK(idx))
-        return CompilerFactory::Compilers[idx]->GetSwitches().buildMethod == cbmUseMake;
+    {
+        if (m_Project->IsMakefileCustom())
+            return true;
+        else
+        {
+            if (CompilerFactory::Compilers[idx]->GetSwitches().buildMethod == cbmUseMake)
+            {
+                // since November 28 2005, "make" is no more a valid build method
+                // except if the project is set to use a custom Makefile
+                // (and is selected automatically, in this case).
+                // just notify the user once about this change
+                if (!Manager::Get()->GetConfigManager(_T("compiler"))->Exists(_T("/notify_no_make")))
+                {
+                    Manager::Get()->GetConfigManager(_T("compiler"))->Set(_T("/notify_no_make"));
+                    wxMessageBox(_("Code::Blocks no longer supports the \"GNU make\" build method, "
+                                    "except for projects which\nare using a custom Makefile "
+                                    "(in which case, this build method is selected automatically).\n"
+                                    "This poses no problem on the overall build process and this "
+                                    "notification is displayed\n"
+                                    "just to alert you about this change.\n\n"
+                                    "No further action is required on your part."),
+                                    _("Information"),
+                                    wxICON_INFORMATION);
+                }
+            }
+        }
+    }
     return false;
 }
 
@@ -979,7 +1008,6 @@ bool CompilerGCC::CompilerValid(ProjectBuildTarget* target)
 bool CompilerGCC::DoCreateMakefile(bool temporary, const wxString& makefile)
 {
     DoDeleteTempMakefile();
-    Manager::Get()->GetMacrosManager()->Reset();
 
     // display error about incorrect compile environment
 	if (!m_EnvironmentMsg.IsEmpty())
@@ -1041,14 +1069,16 @@ void CompilerGCC::PrintBanner()
 {
 	if (!CompilerValid())
 		return;
-    if (!m_Project)
-        return;
     Manager::Get()->GetMessageManager()->Open();
     Manager::Get()->GetMessageManager()->SwitchTo(m_PageIndex);
-    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Project   : %s"), m_Project->GetTitle().c_str());
-    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Compiler  : %s (%s)"), CompilerFactory::Compilers[m_Project->GetCompilerIndex()]->GetName().c_str(),
-                                                                                    CompilerFactory::Compilers[m_Project->GetCompilerIndex()]->GetSwitches().buildMethod == cbmUseMake ? _("using GNU \"make\"") : _("called directly"));
-    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Directory : %s"), m_Project->GetBasePath().c_str());
+    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Project   : %s"), m_Project
+                                                                                ? m_Project->GetTitle().c_str()
+                                                                                : _("no project"));
+    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Compiler  : %s"), m_Project
+                                                                                ? CompilerFactory::Compilers[m_Project->GetCompilerIndex()]->GetName().c_str()
+                                                                                : CompilerFactory::GetDefaultCompiler()->GetName().c_str());
+    if (m_Project)
+        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Directory : %s"), m_Project->GetBasePath().c_str());
     Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("--------------------------------------------------------------------------------"));
 }
 
@@ -1190,6 +1220,18 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 	return 0;
 }
 
+wxString CompilerGCC::GetMakeCommandFor(MakeCommand cmd, ProjectBuildTarget* target)
+{
+    if (!m_Project)
+        return wxEmptyString;
+    wxString command = target ? target->GetMakeCommandFor(cmd) : m_Project->GetMakeCommandFor(cmd);
+    command.Replace(_T("$makefile"), m_Project->GetMakefile());
+    command.Replace(_T("$make"), CompilerFactory::Compilers[m_CompilerIdx]->GetPrograms().MAKE);
+    command.Replace(_T("$target"), target ? target->GetTitle() : _T(""));
+//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("Make: %s"), command.c_str());
+    return command;
+}
+
 int CompilerGCC::Clean(ProjectBuildTarget* target)
 {
     // make sure all project files are saved
@@ -1203,22 +1245,18 @@ int CompilerGCC::Clean(ProjectBuildTarget* target)
     if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
         CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
     m_Project->GetCustomVars().ApplyVarsToEnvironment();
+    m_Generator.Init(m_Project);
 
     wxSetWorkingDirectory(m_Project->GetBasePath());
     if (UseMake(target))
     {
-        wxString cmd;
-        wxString make = CompilerFactory::Compilers[m_CompilerIdx]->GetPrograms().MAKE;
-        if (target)
-            cmd << make << _T(" -f ") << m_LastTempMakefile << _T(" clean_") << target->GetTitle();
-        else
-            cmd << make << _T(" -f ") << m_LastTempMakefile << _T(" clean");
+        wxString cmd = GetMakeCommandFor(mcClean, target);
         m_Queue.Add(cmd);
         return DoRunQueue();
     }
     else
     {
-        DirectCommands dc(this, CompilerFactory::Compilers[m_CompilerIdx], m_Project, m_PageIndex);
+        DirectCommands dc(this, &m_Generator, CompilerFactory::Compilers[m_CompilerIdx], m_Project, m_PageIndex);
         wxArrayString clean = dc.GetCleanCommands(target, false);
         Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Cleaning %s..."), target ? target->GetTitle().c_str() : m_Project->GetTitle().c_str());
         for (unsigned int i = 0; i < clean.GetCount(); ++i)
@@ -1244,22 +1282,18 @@ int CompilerGCC::DistClean(ProjectBuildTarget* target)
     if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
         CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
     m_Project->GetCustomVars().ApplyVarsToEnvironment();
+    m_Generator.Init(m_Project);
 
     wxSetWorkingDirectory(m_Project->GetBasePath());
     if (UseMake(target))
     {
-        wxString cmd;
-        wxString make = CompilerFactory::Compilers[m_CompilerIdx]->GetPrograms().MAKE;
-        if (target)
-            cmd << make << _T(" -f ") << m_LastTempMakefile << _T(" distclean_") << target->GetTitle();
-        else
-            cmd << make << _T(" -f ") << m_LastTempMakefile << _T(" distclean");
+        wxString cmd = GetMakeCommandFor(mcDistClean, target);
         m_Queue.Add(cmd);
         return DoRunQueue();
     }
     else
     {
-        DirectCommands dc(this, CompilerFactory::Compilers[m_CompilerIdx], m_Project, m_PageIndex);
+        DirectCommands dc(this, &m_Generator, CompilerFactory::Compilers[m_CompilerIdx], m_Project, m_PageIndex);
         wxArrayString clean = dc.GetCleanCommands(target, true);
         Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Dist-cleaning %s..."), target ? target->GetTitle().c_str() : m_Project->GetTitle().c_str());
         for (unsigned int i = 0; i < clean.GetCount(); ++i)
@@ -1298,6 +1332,14 @@ int CompilerGCC::CreateDist()
 
 void CompilerGCC::OnExportMakefile(wxCommandEvent& event)
 {
+    wxMessageBox(_("This functionality has been temporarily removed from Code::Blocks.\n"
+                    "With all the updates from the last couple of months, the makefile exporter "
+                    "is not anymore in-sync with the rest of the build process.\n"
+                    "We are sorry for the inconvenience..."),
+                    _T("Warning"),
+                    wxICON_WARNING);
+    return;
+
 	if (!CompilerValid())
 		return;
 	wxString makefile = wxGetTextFromUser(_("Please enter the \"Makefile\" name:"), _("Export Makefile"), ProjectMakefile());
@@ -1333,23 +1375,19 @@ int CompilerGCC::Compile(ProjectBuildTarget* target)
     if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
         CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
     m_Project->GetCustomVars().ApplyVarsToEnvironment();
+    m_Generator.Init(m_Project);
 
     wxString cmd;
     wxSetWorkingDirectory(m_Project->GetBasePath());
-    Manager::Get()->GetMacrosManager()->Reset();
     if (UseMake(target))
     {
-        wxString make = CompilerFactory::Compilers[m_CompilerIdx]->GetPrograms().MAKE;
-        if (target)
-            cmd << make << _T(" -f ") << m_LastTempMakefile << _T(" ") << target->GetTitle();
-        else
-            cmd << make << _T(" -f ") << m_LastTempMakefile;
+        wxString cmd = GetMakeCommandFor(mcBuild, target);
         m_Queue.Add(cmd);
     }
     else
     {
 //        DBGLOG(_T("Creating commands factory"));
-        DirectCommands dc(this, CompilerFactory::Compilers[m_CompilerIdx], m_Project, m_PageIndex);
+        DirectCommands dc(this, &m_Generator, CompilerFactory::Compilers[m_CompilerIdx], m_Project, m_PageIndex);
 //        DBGLOG(_T("Generating commands"));
         wxArrayString compile = dc.GetCompileCommands(target);
         AppendArray(compile, m_Queue);
@@ -1371,27 +1409,14 @@ int CompilerGCC::Rebuild(ProjectBuildTarget* target)
     if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
         CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
     m_Project->GetCustomVars().ApplyVarsToEnvironment();
+    m_Generator.Init(m_Project);
 
     if (UseMake(target))
     {
-        wxString cmd;
-        wxString make = CompilerFactory::Compilers[m_CompilerIdx]->GetPrograms().MAKE;
-        if (target)
-        {
-            cmd << make << _T(" -f ") << m_LastTempMakefile << _T(" clean_") << target->GetTitle();
-            m_Queue.Add(cmd);
-            cmd.Clear();
-            cmd << make << _T(" -f ") << m_LastTempMakefile << _T(" ") << target->GetTitle();
-            m_Queue.Add(cmd);
-        }
-        else
-        {
-            cmd << make << _T(" -f ") << m_LastTempMakefile << _T(" clean");
-            m_Queue.Add(cmd);
-            cmd.Clear();
-            cmd << make << _T(" -f ") << m_LastTempMakefile;
-            m_Queue.Add(cmd);
-        }
+        wxString cmd = GetMakeCommandFor(mcClean, target);
+        m_Queue.Add(cmd);
+        cmd = GetMakeCommandFor(mcBuild, target);
+        m_Queue.Add(cmd);
     }
     else
     {
@@ -1503,6 +1528,9 @@ int CompilerGCC::CompileFile(const wxString& file)
 
         // switch to the default compiler
         SwitchCompiler(CompilerFactory::GetDefaultCompilerIndex());
+        // apply global custom vars
+        CompilerFactory::GetDefaultCompiler()->GetCustomVars().ApplyVarsToEnvironment();
+        m_Generator.Init(0);
 
         if (useMake)
         {
@@ -1514,12 +1542,9 @@ int CompilerGCC::CompileFile(const wxString& file)
         else
         {
             // get compile commands for file (always linked as console-executable)
-            DirectCommands dc(this, CompilerFactory::GetDefaultCompiler(), 0, m_PageIndex);
+            DirectCommands dc(this, &m_Generator, CompilerFactory::GetDefaultCompiler(), 0, m_PageIndex);
             wxArrayString compile = dc.GetCompileSingleFileCommand(file);
             AppendArray(compile, m_Queue);
-
-            // apply global custom vars
-            CompilerFactory::GetDefaultCompiler()->GetCustomVars().ApplyVarsToEnvironment();
         }
         return DoRunQueue();
     }
@@ -1537,13 +1562,13 @@ int CompilerGCC::CompileFile(const wxString& file)
         // apply global custom vars
         CompilerFactory::Compilers[bt->GetCompilerIndex()]->GetCustomVars().ApplyVarsToEnvironment();
 
-        wxString make = CompilerFactory::Compilers[m_CompilerIdx]->GetPrograms().MAKE;
-        m_Queue.Add(make + _T(" -f ") + m_LastTempMakefile + _T(" depend_") + bt->GetTitle() + _T("_DIRS")); // make the output dir
-        m_Queue.Add(make + _T(" -f ") + m_LastTempMakefile + _T(" ") + fname);
+        wxString cmd = GetMakeCommandFor(mcCompileFile, bt);
+        cmd.Replace(_T("$file"), fname);
+        m_Queue.Add(cmd);
     }
     else
     {
-        DirectCommands dc(this, CompilerFactory::Compilers[bt->GetCompilerIndex()], m_Project, m_PageIndex);
+        DirectCommands dc(this, &m_Generator, CompilerFactory::Compilers[bt->GetCompilerIndex()], m_Project, m_PageIndex);
         wxArrayString compile = dc.CompileFile(bt, pf);
         AppendArray(compile, m_Queue);
     }

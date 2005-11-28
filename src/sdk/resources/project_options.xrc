@@ -23,11 +23,14 @@
                       <object class="wxStaticText">
                         
                         
+                        
                         <label>Title:</label>
                       </object>
                       
                       
+                      
                       <flag>wxTOP</flag>
+                      
                       
                       
                       <border>4</border>
@@ -36,10 +39,12 @@
                       <object class="wxTextCtrl" name="txtProjectName"/>
                       
                       
+                      
                       <flag>wxEXPAND</flag>
                     </object>
                     <object class="sizeritem">
                       <object class="wxStaticText">
+                        
                         
                         
                         <label>Filename:</label>
@@ -49,8 +54,10 @@
                       <object class="wxStaticText" name="txtProjectFilename">
                         
                         
+                        
                         <label></label>
                       </object>
+                      
                       
                       
                       <flag>wxEXPAND</flag>
@@ -59,11 +66,14 @@
                       <object class="wxStaticText">
                         
                         
+                        
                         <label>Makefile:</label>
                       </object>
                       
                       
+                      
                       <flag>wxTOP</flag>
+                      
                       
                       
                       <border>4</border>
@@ -74,17 +84,21 @@
                           <object class="wxTextCtrl" name="txtProjectMakefile"/>
                           
                           
+                          
                           <minsize>160,-1</minsize>
                         </object>
                         <object class="sizeritem">
                           <object class="wxCheckBox" name="chkCustomMakefile">
                             
                             
+                            
                             <label>This is a custom Makefile</label>
                           </object>
                           
                           
+                          
                           <flag>wxTOP</flag>
+                          
                           
                           
                           <border>4</border>
@@ -94,13 +108,16 @@
                         <object class="spacer">
                           
                           
+                          
                           <size>0,0</size>
                         </object>
                         <object class="sizeritem">
                           <object class="wxStaticText">
                             
                             
+                            
                             <label>(the file must exist, no Makefile will be auto-generated)</label>
+                            
                             
                             
                             <fg>#800000</fg>
@@ -112,21 +129,26 @@
                     <object class="sizeritem">
                       <object class="wxStaticText">
                         
+                        
                         <label>Precompiled headers:</label>
                       </object>
                     </object>
                     <object class="sizeritem">
                       <object class="wxRadioBox" name="rbPCHStrategy">
                         
+                        
                         <label>Strategy</label>
                         
+                        
                         <content>
-                          <item>Generate PCH in a directory alongside original header (default)</item>
-                          <item>Generate PCH in the object output dir</item>
+                          <item>Generate PCH in a directory alongside original header</item>
+                          <item>Generate PCH in the object output dir (default)</item>
                           <item>Generate PCH alongside original header</item>
                         </content>
                         
+                        
                         <dimension>1</dimension>
+                        
                         
                         <style>wxRA_SPECIFY_COLS</style>
                       </object>
@@ -137,27 +159,36 @@
                         <orient>wxVERTICAL</orient>
                         <object class="sizeritem">
                           <object class="wxStaticText">
+                            
                             <label>If you change the strategy used for PCH generation,</label>
+                            
                             <fg>#800000</fg>
                           </object>
                         </object>
                         <object class="sizeritem">
                           <object class="wxStaticText">
+                            
                             <label>please delete the old PCH file (or directory) manually to avoid conflicts...</label>
+                            
                             <fg>#800000</fg>
                           </object>
                         </object>
                       </object>
+                      
                       <option>1</option>
+                      
                       <flag>wxGROW</flag>
                     </object>
                   </object>
                   
                   
+                  
                   <option>1</option>
                   
                   
+                  
                   <flag>wxALL|wxEXPAND</flag>
+                  
                   
                   
                   <border>8</border>
@@ -166,11 +197,14 @@
                   <object class="wxButton" name="btnProjectBuildOptions">
                     
                     
+                    
                     <label>Project's build options...</label>
                   </object>
                   
                   
+                  
                   <flag>wxBOTTOM|wxRIGHT|wxALIGN_RIGHT</flag>
+                  
                   
                   
                   <border>8</border>
@@ -190,6 +224,7 @@
                       <object class="wxStaticText">
                         
                         
+                        
                         <label>Targets:</label>
                       </object>
                     </object>
@@ -197,11 +232,14 @@
                       <object class="wxListBox" name="lstBuildTarget">
                         
                         
+                        
                         <content/>
                       </object>
                       
                       
+                      
                       <option>1</option>
+                      
                       
                       
                       <flag>wxEXPAND</flag>
@@ -213,11 +251,14 @@
                           <object class="wxButton" name="btnAddBuildTarget">
                             
                             
+                            
                             <label>Add</label>
                           </object>
                           
                           
+                          
                           <flag>wxRIGHT</flag>
+                          
                           
                           
                           <border>4</border>
@@ -226,17 +267,21 @@
                           <object class="wxButton" name="btnEditBuildTarget">
                             
                             
+                            
                             <label>Rename</label>
                           </object>
                           
                           
+                          
                           <flag>wxRIGHT</flag>
+                          
                           
                           
                           <border>4</border>
                         </object>
                         <object class="sizeritem">
                           <object class="wxButton" name="btnDelBuildTarget">
+                            
                             
                             
                             <label>Delete</label>
@@ -248,8 +293,10 @@
                       <object class="wxButton" name="btnBuildOrder">
                         
                         
+                        
                         <label>Change targets build order...</label>
                       </object>
+                      
                       
                       
                       <flag>wxALIGN_CENTRE_HORIZONTAL</flag>
@@ -258,8 +305,10 @@
                       <object class="wxButton" name="btnTargetBuildOptions">
                         
                         
+                        
                         <label>Target's build options...</label>
                       </object>
+                      
                       
                       
                       <flag>wxALIGN_CENTRE_HORIZONTAL</flag>
@@ -267,7 +316,9 @@
                   </object>
                   
                   
+                  
                   <flag>wxALL|wxEXPAND</flag>
+                  
                   
                   
                   <border>8</border>
@@ -276,11 +327,14 @@
                   <object class="wxStaticLine">
                     
                     
+                    
                     <style>wxLI_VERTICAL</style>
                   </object>
                   
                   
+                  
                   <flag>wxTOP|wxBOTTOM|wxEXPAND</flag>
+                  
                   
                   
                   <border>8</border>
@@ -294,11 +348,14 @@
                           <object class="wxStaticText">
                             
                             
+                            
                             <label>Type:</label>
                           </object>
                           
                           
+                          
                           <flag>wxTOP</flag>
+                          
                           
                           
                           <border>4</border>
@@ -310,6 +367,7 @@
                               <object class="wxComboBox" name="cmbProjectType">
                                 
                                 
+                                
                                 <content>
                                   <item>GUI application</item>
                                   <item>Console application</item>
@@ -319,7 +377,9 @@
                                 </content>
                                 
                                 
+                                
                                 <selection>0</selection>
+                                
                                 
                                 
                                 <style>wxCB_READONLY|wxCB_DROPDOWN</style>
@@ -329,14 +389,18 @@
                               <object class="wxCheckBox" name="chkUseConsoleRunner">
                                 
                                 
+                                
                                 <label>Pause when execution ends</label>
+                                
                                 
                                 
                                 <tooltip>Pause with &quot;Press any key&quot; when execution ends (only when executed from inside Code::Blocks)</tooltip>
                               </object>
                               
                               
+                              
                               <flag>wxTOP|wxEXPAND</flag>
+                              
                               
                               
                               <border>2</border>
@@ -344,10 +408,13 @@
                           </object>
                           
                           
+                          
                           <option>1</option>
                           
                           
+                          
                           <flag>wxBOTTOM|wxEXPAND</flag>
+                          
                           
                           
                           <border>4</border>
@@ -356,11 +423,14 @@
                           <object class="wxStaticText">
                             
                             
+                            
                             <label>Output filename:</label>
                           </object>
                           
                           
+                          
                           <flag>wxTOP</flag>
+                          
                           
                           
                           <border>4</border>
@@ -372,7 +442,9 @@
                               <object class="wxTextCtrl" name="txtOutputFilename"/>
                               
                               
+                              
                               <option>1</option>
+                              
                               
                               
                               <flag>wxEXPAND</flag>
@@ -381,13 +453,16 @@
                               <object class="wxButton" name="btnBrowseOutputFilename">
                                 
                                 
+                                
                                 <label>...</label>
                               </object>
+                              
                               
                               
                               <minsize>22,22</minsize>
                             </object>
                           </object>
+                          
                           
                           
                           <flag>wxEXPAND</flag>
@@ -396,11 +471,14 @@
                           <object class="wxStaticText">
                             
                             
+                            
                             <label>Execution working dir:</label>
                           </object>
                           
                           
+                          
                           <flag>wxTOP</flag>
+                          
                           
                           
                           <border>4</border>
@@ -412,7 +490,9 @@
                               <object class="wxTextCtrl" name="txtWorkingDir"/>
                               
                               
+                              
                               <option>1</option>
+                              
                               
                               
                               <flag>wxEXPAND</flag>
@@ -421,13 +501,16 @@
                               <object class="wxButton" name="btnBrowseWorkingDir">
                                 
                                 
+                                
                                 <label>...</label>
                               </object>
+                              
                               
                               
                               <minsize>22,22</minsize>
                             </object>
                           </object>
+                          
                           
                           
                           <flag>wxEXPAND</flag>
@@ -436,11 +519,14 @@
                           <object class="wxStaticText">
                             
                             
+                            
                             <label>Objects output dir:</label>
                           </object>
                           
                           
+                          
                           <flag>wxTOP</flag>
+                          
                           
                           
                           <border>4</border>
@@ -452,7 +538,9 @@
                               <object class="wxTextCtrl" name="txtObjectDir"/>
                               
                               
+                              
                               <option>1</option>
+                              
                               
                               
                               <flag>wxEXPAND</flag>
@@ -461,13 +549,16 @@
                               <object class="wxButton" name="btnBrowseObjectDir">
                                 
                                 
+                                
                                 <label>...</label>
                               </object>
+                              
                               
                               
                               <minsize>22,22</minsize>
                             </object>
                           </object>
+                          
                           
                           
                           <flag>wxEXPAND</flag>
@@ -479,11 +570,14 @@
                               <object class="wxStaticText">
                                 
                                 
+                                
                                 <label>Dependencies output dir:</label>
                               </object>
                               
                               
+                              
                               <flag>wxTOP</flag>
+                              
                               
                               
                               <border>4</border>
@@ -492,13 +586,16 @@
                               <object class="wxStaticText">
                                 
                                 
+                                
                                 <label>(used only with GNU &quot;make&quot;)</label>
+                                
                                 
                                 
                                 <fg>#800000</fg>
                               </object>
                             </object>
                           </object>
+                          
                           
                           
                           <flag>wxGROW</flag>
@@ -510,8 +607,10 @@
                               <object class="wxTextCtrl" name="txtDepsDir">
                                 
                                 
+                                
                                 <style></style>
                               </object>
+                              
                               
                               
                               <option>1</option>
@@ -520,8 +619,10 @@
                               <object class="wxButton" name="btnBrowseDepsDir">
                                 
                                 
+                                
                                 <label>...</label>
                               </object>
+                              
                               
                               
                               <minsize>22,22</minsize>
@@ -529,9 +630,11 @@
                           </object>
                           
                           
+                          
                           <flag>wxEXPAND</flag>
                         </object>
                         <object class="spacer">
+                          
                           
                           
                           <size>0,0</size>
@@ -540,11 +643,14 @@
                           <object class="wxCheckBox" name="chkBuildThisTarget">
                             
                             
+                            
                             <label>Build this target with &quot;All&quot;</label>
+                            
                             
                             
                             <tooltip>Build this target when building the whole project.\nIf no target is marked to be built, the targets resemble MSVC configurations.</tooltip>
                           </object>
+                          
                           
                           
                           <flag>wxEXPAND</flag>
@@ -556,19 +662,23 @@
                         <object class="spacer">
                           
                           
+                          
                           <size>0,0</size>
                         </object>
                         <object class="sizeritem">
                           <object class="wxCheckBox" name="chkCreateDefFile">
                             
                             
+                            
                             <label>Create .DEF exports file</label>
                           </object>
+                          
                           
                           
                           <flag>wxEXPAND</flag>
                         </object>
                         <object class="spacer">
+                          
                           
                           
                           <size>0,0</size>
@@ -577,13 +687,16 @@
                           <object class="wxCheckBox" name="chkCreateStaticLib">
                             
                             
+                            
                             <label>Create import library</label>
                           </object>
+                          
                           
                           
                           <flag>wxEXPAND</flag>
                         </object>
                         <object class="spacer">
+                          
                           
                           
                           <size>0,0</size>
@@ -592,13 +705,16 @@
                           <object class="wxButton" name="btnExternalDeps">
                             
                             
+                            
                             <label>External dependencies...</label>
                           </object>
+                          
                           
                           
                           <flag>wxEXPAND</flag>
                         </object>
                       </object>
+                      
                       
                       
                       <flag>wxEXPAND</flag>
@@ -611,14 +727,18 @@
                           <object class="wxCheckList" name="lstFiles">
                             
                             
+                            
                             <content/>
                           </object>
+                          
                           
                           
                           <option>1</option>
                           
                           
+                          
                           <flag>wxALL|wxEXPAND</flag>
+                          
                           
                           
                           <border>4</border>
@@ -630,13 +750,16 @@
                               <object class="wxButton" name="btnToggleCheckmarks">
                                 
                                 
+                                
                                 <label>Toggle checkmarks</label>
                               </object>
                             </object>
                             <object class="spacer">
                               
                               
+                              
                               <size>1,1</size>
+                              
                               
                               
                               <option>1</option>
@@ -645,13 +768,16 @@
                               <object class="wxButton" name="btnFileOptions">
                                 
                                 
+                                
                                 <label>Selected file options</label>
                               </object>
                             </object>
                           </object>
                           
                           
+                          
                           <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                          
                           
                           
                           <border>4</border>
@@ -659,10 +785,13 @@
                       </object>
                       
                       
+                      
                       <option>1</option>
                       
                       
+                      
                       <flag>wxTOP|wxEXPAND</flag>
+                      
                       
                       
                       <border>8</border>
@@ -670,10 +799,13 @@
                   </object>
                   
                   
+                  
                   <option>1</option>
                   
                   
+                  
                   <flag>wxALL|wxEXPAND</flag>
+                  
                   
                   
                   <border>8</border>
@@ -684,10 +816,13 @@
         </object>
         
         
+        
         <option>1</option>
         
         
+        
         <flag>wxALL|wxEXPAND</flag>
+        
         
         
         <border>8</border>
@@ -699,14 +834,18 @@
             <object class="wxButton" name="btnOK">
               
               
+              
               <label>OK</label>
+              
               
               
               <default>1</default>
             </object>
             
             
+            
             <flag>wxRIGHT</flag>
+            
             
             
             <border>8</border>
@@ -715,13 +854,16 @@
             <object class="wxButton" name="wxID_CANCEL">
               
               
+              
               <label>Cancel</label>
             </object>
           </object>
         </object>
         
         
+        
         <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
+        
         
         
         <border>8</border>

@@ -36,6 +36,13 @@ CompileTargetBase::CompileTargetBase()
 	//ctor
     for (int i = 0; i < 4; ++i)
         m_OptionsRelation[i] = orAppendToParentOptions;
+
+    // default "make" commands
+    m_MakeCommands[mcBuild] =       _T("$make -f $makefile $target");
+    m_MakeCommands[mcCompileFile] = _T("$make -f $makefile $file");
+    m_MakeCommands[mcClean] =       _T("$make -f $makefile clean$target");
+    m_MakeCommands[mcDistClean] =   _T("$make -f $makefile distclean$target");
+    m_MakeCommandsModified = false;
 }
 
 CompileTargetBase::~CompileTargetBase()
@@ -302,5 +309,14 @@ void CompileTargetBase::SetCompilerIndex(int compilerIdx)
     if (compilerIdx == m_CompilerIdx)
         return;
     m_CompilerIdx = compilerIdx;
+    SetModified(true);
+}
+
+void CompileTargetBase::SetMakeCommandFor(MakeCommand cmd, const wxString& make)
+{
+    if (m_MakeCommands[cmd] == make)
+        return;
+    m_MakeCommands[cmd] = make;
+    m_MakeCommandsModified = true;
     SetModified(true);
 }

@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-    <FileVersion major="1" minor="1" />
+    <FileVersion major="1" minor="2" />
     <Project>
         <Option title="Code::Blocks (wx2.6)" />
         <Option makefile="Makefile.wx2.6" />
-        <Option makefile_is_custom="0" />
         <Option pch_mode="2" />
         <Option default_target="6" />
         <Option compiler="0" />
@@ -13,9 +12,9 @@
                 <Option output="sdk\tinyxml\libtxml.a" />
                 <Option working_dir="" />
                 <Option object_output=".objs\2.6" />
-                <Option deps_output=".deps" />
                 <Option type="2" />
                 <Option compiler="0" />
+                <Option includeInTargetAll="1" />
                 <Option projectResourceIncludeDirsRelation="2" />
                 <Compiler>
                     <Add option="-DEXPORT_LIB" />
@@ -28,9 +27,9 @@
                 <Option output="sdk\as\libangelscript.a" />
                 <Option working_dir="" />
                 <Option object_output=".objs\2.6" />
-                <Option deps_output=".deps" />
                 <Option type="2" />
                 <Option compiler="0" />
+                <Option includeInTargetAll="1" />
                 <Option projectResourceIncludeDirsRelation="2" />
                 <Compiler>
                     <Add option="-fno-inline" />
@@ -43,9 +42,9 @@
                 <Option output="devel\wxscintilla.dll" />
                 <Option working_dir="devel" />
                 <Option object_output=".objs\2.6" />
-                <Option deps_output=".deps" />
                 <Option type="3" />
                 <Option compiler="0" />
+                <Option includeInTargetAll="1" />
                 <Option createStaticLib="1" />
                 <Compiler>
                     <Add option="-D__WX__" />
@@ -70,11 +69,11 @@
                 <Option output="devel\codeblocks.dll" />
                 <Option working_dir="devel" />
                 <Option object_output=".objs\2.6" />
-                <Option deps_output=".deps" />
                 <Option external_deps="sdk\tinyxml\libtxml.a;" />
                 <Option type="3" />
                 <Option compiler="0" />
                 <Option parameters="--debug-log --no-check-associations" />
+                <Option includeInTargetAll="1" />
                 <Option createStaticLib="1" />
                 <Option projectLinkerOptionsRelation="2" />
                 <Compiler>
@@ -100,9 +99,9 @@
                 <Option output="src\wxDockit\lib\libwxDockIt.a" />
                 <Option working_dir="" />
                 <Option object_output=".objs\2.6" />
-                <Option deps_output=".deps" />
                 <Option type="2" />
                 <Option compiler="0" />
+                <Option includeInTargetAll="1" />
                 <Option projectResourceIncludeDirsRelation="2" />
                 <Compiler>
                     <Add option="-D__GNUWIN32__" />
@@ -123,9 +122,9 @@
                 <Option output="src\wxKeyBinder\lib\libwxkeybinder.a" />
                 <Option working_dir="" />
                 <Option object_output=".objs\2.6" />
-                <Option deps_output=".deps" />
                 <Option type="2" />
                 <Option compiler="0" />
+                <Option includeInTargetAll="1" />
                 <Option projectResourceIncludeDirsRelation="2" />
                 <Compiler>
                     <Add option="-Winvalid-pch" />
@@ -144,11 +143,11 @@
                 <Option output="devel\codeblocks.exe" />
                 <Option working_dir="devel" />
                 <Option object_output=".objs\2.6" />
-                <Option deps_output=".deps" />
                 <Option external_deps="..\wxDockit\lib\libwxdockit.a;" />
                 <Option type="0" />
                 <Option compiler="0" />
                 <Option parameters="--debug-log --no-check-associations -ns" />
+                <Option includeInTargetAll="1" />
                 <Option projectLinkerOptionsRelation="2" />
                 <Option projectIncludeDirsRelation="2" />
                 <Option projectResourceIncludeDirsRelation="0" />
@@ -190,9 +189,9 @@
                 <Option output="devel\share\CodeBlocks\plugins\astyle.dll" />
                 <Option working_dir="devel\share\CodeBlocks\plugins" />
                 <Option object_output=".objs\2.6" />
-                <Option deps_output=".deps" />
                 <Option type="3" />
                 <Option compiler="0" />
+                <Option includeInTargetAll="1" />
                 <Option projectLinkerOptionsRelation="1" />
                 <Compiler>
                     <Add option="-DBUILDING_PLUGIN" />
@@ -214,9 +213,9 @@
                 <Option output="plugins\compilergcc\depslib\libdepslib.a" />
                 <Option working_dir="" />
                 <Option object_output=".objs\2.6" />
-                <Option deps_output=".deps" />
                 <Option type="2" />
                 <Option compiler="0" />
+                <Option includeInTargetAll="1" />
                 <Option projectResourceIncludeDirsRelation="2" />
                 <Compiler>
                     <Add option="-DDEPSLIB_WINDOWS" />
@@ -229,9 +228,9 @@
                 <Option output="devel\share\CodeBlocks\plugins\compilergcc.dll" />
                 <Option working_dir="devel\share\CodeBlocks\plugins" />
                 <Option object_output=".objs\2.6" />
-                <Option deps_output=".deps" />
                 <Option type="3" />
                 <Option compiler="0" />
+                <Option includeInTargetAll="1" />
                 <Option projectLinkerOptionsRelation="1" />
                 <Option projectIncludeDirsRelation="2" />
                 <Option projectLibDirsRelation="2" />
@@ -257,9 +256,9 @@
                 <Option output="devel\share\CodeBlocks\plugins\debuggergdb.dll" />
                 <Option working_dir="devel\share\CodeBlocks\plugins" />
                 <Option object_output=".objs\2.6" />
-                <Option deps_output=".deps" />
                 <Option type="3" />
                 <Option compiler="0" />
+                <Option includeInTargetAll="1" />
                 <Option projectLinkerOptionsRelation="1" />
                 <Option projectIncludeDirsRelation="2" />
                 <Option projectLibDirsRelation="2" />
@@ -282,9 +281,9 @@
                 <Option output="devel\share\CodeBlocks\plugins\codecompletion.dll" />
                 <Option working_dir="devel\share\CodeBlocks\plugins" />
                 <Option object_output=".objs\2.6" />
-                <Option deps_output=".deps" />
                 <Option type="3" />
                 <Option compiler="0" />
+                <Option includeInTargetAll="1" />
                 <Option projectLinkerOptionsRelation="1" />
                 <Option projectIncludeDirsRelation="2" />
                 <Option projectLibDirsRelation="2" />
@@ -307,9 +306,9 @@
                 <Option output="devel\share\CodeBlocks\plugins\classwizard.dll" />
                 <Option working_dir="devel\share\CodeBlocks\plugins" />
                 <Option object_output=".objs\2.6" />
-                <Option deps_output=".deps" />
                 <Option type="3" />
                 <Option compiler="0" />
+                <Option includeInTargetAll="1" />
                 <Option projectLinkerOptionsRelation="1" />
                 <Option projectIncludeDirsRelation="2" />
                 <Option projectLibDirsRelation="2" />
@@ -332,9 +331,9 @@
                 <Option output="devel\share\CodeBlocks\plugins\defaultmimehandler.dll" />
                 <Option working_dir="devel\share\CodeBlocks\plugins" />
                 <Option object_output=".objs\2.6" />
-                <Option deps_output=".deps" />
                 <Option type="3" />
                 <Option compiler="0" />
+                <Option includeInTargetAll="1" />
                 <Option projectLinkerOptionsRelation="1" />
                 <Option projectIncludeDirsRelation="2" />
                 <Option projectLibDirsRelation="2" />
@@ -356,9 +355,9 @@
                 <Option output="devel\share\CodeBlocks\plugins\pluginwizard.dll" />
                 <Option working_dir="devel\share\CodeBlocks\plugins" />
                 <Option object_output=".objs\2.6" />
-                <Option deps_output=".deps" />
                 <Option type="3" />
                 <Option compiler="0" />
+                <Option includeInTargetAll="1" />
                 <Option projectLinkerOptionsRelation="1" />
                 <Option projectIncludeDirsRelation="2" />
                 <Option projectLibDirsRelation="2" />
@@ -381,9 +380,9 @@
                 <Option output="devel\share\CodeBlocks\plugins\todo.dll" />
                 <Option working_dir="devel\share\CodeBlocks\plugins" />
                 <Option object_output=".objs\2.6" />
-                <Option deps_output=".deps" />
                 <Option type="3" />
                 <Option compiler="0" />
+                <Option includeInTargetAll="1" />
                 <Compiler>
                     <Add option="-DBUILDING_PLUGIN" />
                     <Add directory="sdk" />
@@ -402,9 +401,9 @@
                 <Option output="devel\share\CodeBlocks\plugins\xpmanifest.dll" />
                 <Option working_dir="devel\share\CodeBlocks\plugins" />
                 <Option object_output=".objs\2.6" />
-                <Option deps_output=".deps" />
                 <Option type="3" />
                 <Option compiler="0" />
+                <Option includeInTargetAll="1" />
                 <Option projectIncludeDirsRelation="2" />
                 <Option projectLibDirsRelation="2" />
                 <Compiler>
@@ -420,25 +419,13 @@
                 </Linker>
                 <ExtraCommands />
             </Target>
-            <Target title="update">
-                <Option type="4" />
-                <Option compiler="0" />
-                <Option includeInTargetAll="0" />
-                <Option projectResourceIncludeDirsRelation="4" />
-                <Compiler />
-                <ResourceCompiler />
-                <Linker />
-                <ExtraCommands>
-                    <Add before="update.bat" />
-                </ExtraCommands>
-            </Target>
             <Target title="console_runner">
                 <Option output="tools\ConsoleRunner\console_runner.exe" />
                 <Option working_dir="tools\ConsoleRunner" />
                 <Option object_output=".objs\2.6" />
-                <Option deps_output=".deps" />
                 <Option type="1" />
                 <Option compiler="0" />
+                <Option includeInTargetAll="1" />
                 <Option projectCompilerOptionsRelation="0" />
                 <Option projectLinkerOptionsRelation="1" />
                 <Option projectIncludeDirsRelation="2" />
@@ -449,18 +436,6 @@
                 <ResourceCompiler />
                 <Linker />
                 <ExtraCommands />
-            </Target>
-            <Target title="doc">
-                <Option type="4" />
-                <Option compiler="0" />
-                <Option includeInTargetAll="0" />
-                <Option projectResourceIncludeDirsRelation="4" />
-                <Compiler />
-                <ResourceCompiler />
-                <Linker />
-                <ExtraCommands>
-                    <Add before="doxygen sdk.doxy" />
-                </ExtraCommands>
             </Target>
             <Environment>
                 <Variable name="WX_CFG" value="NonUnicode" />
@@ -903,6 +878,16 @@
             <Option target="plugin_CompilerGCC" />
         </Unit>
         <Unit filename="plugins\compilergcc\advancedcompileroptionsdlg.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="plugin_CompilerGCC" />
+        </Unit>
+        <Unit filename="plugins\compilergcc\cmdlinegenerator.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="plugin_CompilerGCC" />
+        </Unit>
+        <Unit filename="plugins\compilergcc\cmdlinegenerator.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
@@ -1660,7 +1645,6 @@
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="doc" />
         </Unit>
         <Unit filename="sdk\Managers\Managers.cpp">
             <Option compilerVar="CPP" />

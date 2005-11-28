@@ -10,6 +10,7 @@
 #include "compilermessages.h"
 #include <wx/process.h>
 #include "compilererrors.h"
+#include "cmdlinegenerator.h"
 #include <compilerfactory.h>
 
 #define MAX_TARGETS 64
@@ -127,6 +128,9 @@ class CompilerGCC : public cbCompilerPlugin
 		bool CompilerValid(ProjectBuildTarget* target = 0);
 		ProjectBuildTarget* GetBuildTargetForFile(ProjectFile* pf);
 		ProjectBuildTarget* GetBuildTargetForFile(const wxString& file);
+        wxString GetMakeCommandFor(MakeCommand cmd, ProjectBuildTarget* target);
+
+        CmdLineGenerator m_Generator;
 
 		// programs
 		int m_CompilerIdx;

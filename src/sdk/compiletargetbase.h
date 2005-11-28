@@ -32,6 +32,17 @@ enum TargetType
     ttCommandsOnly /**< Target only runs commands in pre-build and/or post-build steps */
 };
 
+enum MakeCommand
+{
+    mcClean = 0,
+    mcDistClean,
+    mcBuild,
+    mcCompileFile,
+
+    /// *Don't* use this. It's only used internally for enumerations...
+    mcLast
+};
+
 /**
   * @brief Base class for build target classes
   * Each Code::Blocks project
@@ -49,7 +60,7 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
 		CompileTargetBase();
 		virtual ~CompileTargetBase();
 
-        virtual const wxString& GetFilename(); 
+        virtual const wxString& GetFilename();
         virtual const wxString& GetTitle(); ///< Read the target's title
         virtual void SetTitle(const wxString& title); ///< Set the target's title
         virtual void SetOutputFilename(const wxString& filename); ///< Set the target's output filename
@@ -76,6 +87,9 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
 		virtual void SetHostApplication(const wxString& app); ///< Set the target's host application to \c app
         virtual void SetCompilerIndex(int compilerIdx); ///< Set the target's compiler index
         virtual int GetCompilerIndex(){ return m_CompilerIdx; } ///< Read the target's compiler index
+        virtual wxString GetMakeCommandFor(MakeCommand cmd){ return m_MakeCommands[cmd]; }
+        virtual void SetMakeCommandFor(MakeCommand cmd, const wxString& make);
+        virtual bool MakeCommandsModified(){ return m_MakeCommandsModified; }
 	protected:
         friend class cbProject;
         wxString m_Filename;
@@ -89,6 +103,8 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         OptionsRelation m_OptionsRelation[4];
         TargetType m_TargetType;
         int m_CompilerIdx;
+        wxString m_MakeCommands[mcLast];
+        bool m_MakeCommandsModified;
 	private:
 };
 

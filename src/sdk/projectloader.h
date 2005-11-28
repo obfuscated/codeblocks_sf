@@ -3,8 +3,8 @@
 
 #include "ibaseloader.h"
 
-#define PROJECT_FILE_VERSION_MAJOR _T("1")
-#define PROJECT_FILE_VERSION_MINOR _T("1")
+#define PROJECT_FILE_VERSION_MAJOR 1
+#define PROJECT_FILE_VERSION_MINOR 2
 
 class cbProject;
 class ProjectBuildTarget;
@@ -28,6 +28,7 @@ class DLLIMPORT ProjectLoader : public IBaseLoader
         void DoIncludesOptions(TiXmlElement* parentNode, ProjectBuildTarget* target = 0L);
         void DoLibsOptions(TiXmlElement* parentNode, ProjectBuildTarget* target = 0L);
         void DoExtraCommands(TiXmlElement* parentNode, ProjectBuildTarget* target = 0L);
+        void DoMakeCommands(TiXmlElement* parentNode, CompileTargetBase* target);
 
         void DoBuild(TiXmlElement* parentNode);
         void DoBuildTarget(TiXmlElement* parentNode);
@@ -56,6 +57,7 @@ class DLLIMPORT ProjectLoader : public IBaseLoader
         cbProject* m_pProject;
         bool m_Upgraded;
         bool m_OpenDirty; // set this to true if the project is loaded but modified (like the case when setting another compiler, if invalid)
+        bool m_IsPre_1_2;
 };
 
 #endif // PROJECTLOADER_H

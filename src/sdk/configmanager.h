@@ -196,12 +196,12 @@ public:
         wxString key(name);
         TiXmlHandle ph(AssertPath(key));
         TiXmlElement* e = 0;
-        if(TiXmlNode *n = ph.FirstChild(key).FirstChild(_T("objmap")).Node())
+        if(TiXmlNode *n = ph.FirstChild(key).FirstChild("objmap").Node())
             while(e = n->IterateChildren(e)->ToElement())
             {
                 T *obj = new T;
-                obj->SerializeIn(wxBase64::Decode(e->FirstChild()->ToText()->Value()));
-                (*map)[e->Value()] = obj;
+                obj->SerializeIn(wxBase64::Decode(_U(e->FirstChild()->ToText()->Value())));
+                (*map)[_U(e->Value())] = obj;
             }
     };
 

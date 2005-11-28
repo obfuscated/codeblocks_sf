@@ -15,14 +15,19 @@
 #include <messagemanager.h>
 #include <macrosmanager.h>
 #include "directcommands.h"
+#include "cmdlinegenerator.h"
 #include "compilergcc.h"
-#include "makefilegenerator.h"
 #include "customvars.h"
 #include <depslib.h>
 
-DirectCommands::DirectCommands(CompilerGCC* compilerPlugin, Compiler* compiler, cbProject* project, int logPageIndex)
+DirectCommands::DirectCommands(CompilerGCC* compilerPlugin,
+                                CmdLineGenerator* generator,
+                                Compiler* compiler,
+                                cbProject* project,
+                                int logPageIndex)
     : m_PageIndex(logPageIndex),
     m_pCompilerPlugin(compilerPlugin),
+    m_pGenerator(generator),
     m_pCompiler(compiler),
     m_pProject(project),
     m_pCurrTarget(0)
@@ -142,7 +147,7 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
 
     const pfDetails& pfd = pf->GetFileDetails(target);
 
-    MakefileGenerator mg(m_pCompilerPlugin, m_pProject, _T(""), 0); // don't worry! we just need a couple of utility funcs from it
+//    MakefileGenerator mg(m_pCompilerPlugin, m_pProject, _T(""), 0); // don't worry! we just need a couple of utility funcs from it
 
     // lookup file's type
     FileType ft = FileTypeOf(pf->relativeFilename);
@@ -162,14 +167,15 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
         return ret;
 #endif
     Compiler* compiler = target ? CompilerFactory::Compilers[target->GetCompilerIndex()] : m_pCompiler;
-    wxString compilerCmd = mg.CreateSingleFileCompileCmd(pf->useCustomBuildCommand
-                                                            ? pf->buildCommand
-                                                            : compiler->GetCommand(isResource ? ctCompileResourceCmd : ctCompileObjectCmd),
-                                                         target,
-                                                         pf,
-                                                         pfd.source_file,
-                                                         pfd.object_file,
-                                                         pfd.dep_file);
+    wxString compilerCmd = pf->useCustomBuildCommand
+                            ? pf->buildCommand
+                            : compiler->GetCommand(isResource ? ctCompileResourceCmd : ctCompileObjectCmd);
+    m_pGenerator->CreateSingleFileCompileCmd(compilerCmd,
+                                             target,
+                                             pf,
+                                             pfd.source_file,
+                                             pfd.object_file,
+                                             pfd.dep_file);
 
     if (!compilerCmd.IsEmpty())
     {
@@ -224,20 +230,21 @@ wxArrayString DirectCommands::GetCompileSingleFileCommand(const wxString& filena
     QuoteStringIfNeeded(s_filename);
     QuoteStringIfNeeded(o_filename);
 
-    MakefileGenerator mg(m_pCompilerPlugin, 0, _T(""), 0); // don't worry! we just need a couple of utility funcs from it
-
-    wxString compilerCmd = mg.CreateSingleFileCompileCmd(ctCompileObjectCmd,
-                                                         0,
-                                                         0,
-                                                         s_filename,
-                                                         o_filename,
-                                                         wxEmptyString);
-    wxString linkerCmd = mg.CreateSingleFileCompileCmd(ctLinkConsoleExeCmd,
-                                                         0,
-                                                         0,
-                                                         wxEmptyString,
-                                                         o_filename,
-                                                         wxEmptyString);
+    Compiler* compiler = CompilerFactory::GetDefaultCompiler();
+    wxString compilerCmd = compiler->GetCommand(ctCompileObjectCmd);
+    m_pGenerator->CreateSingleFileCompileCmd(compilerCmd,
+                                             0,
+                                             0,
+                                             s_filename,
+                                             o_filename,
+                                             wxEmptyString);
+    wxString linkerCmd = compiler->GetCommand(ctLinkConsoleExeCmd);
+    m_pGenerator->CreateSingleFileCompileCmd(linkerCmd,
+                                             0,
+                                             0,
+                                             wxEmptyString,
+                                             o_filename,
+                                             wxEmptyString);
 
     if (!compilerCmd.IsEmpty())
     {
@@ -495,7 +502,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     wxLogNull ln;
     wxArrayString ret;
 
-    MakefileGenerator mg(m_pCompilerPlugin, m_pProject, _T(""), 0); // don't worry! we just need a couple of utility funcs from it
+//    MakefileGenerator mg(m_pCompilerPlugin, m_pProject, _T(""), 0); // don't worry! we just need a couple of utility funcs from it
     wxFileName out = UnixFilename(target->GetOutputFilename());
 
     wxString output = target->GetOutputFilename();
@@ -592,10 +599,17 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
             break;
         default: break;
     }
-    wxString compilerCmd = mg.CreateSingleFileCompileCmd(ct, target, 0, _T(""), linkfiles, resfiles);
+    Compiler* compiler = target ? CompilerFactory::Compilers[target->GetCompilerIndex()] : m_pCompiler;
+    wxString compilerCmd = compiler->GetCommand(ct);
+    m_pGenerator->CreateSingleFileCompileCmd(compilerCmd,
+                                             target,
+                                             0,
+                                             _T(""),
+                                             linkfiles,
+                                             resfiles);
+//    wxString compilerCmd = mg.CreateSingleFileCompileCmd(ct, target, 0, _T(""), linkfiles, resfiles);
     if (!compilerCmd.IsEmpty())
     {
-        Compiler* compiler = target ? CompilerFactory::Compilers[target->GetCompilerIndex()] : m_pCompiler;
         switch (compiler->GetSwitches().logging)
         {
             case clogFull:
