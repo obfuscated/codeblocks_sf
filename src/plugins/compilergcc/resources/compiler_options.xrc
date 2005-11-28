@@ -11,11 +11,14 @@
             
             
             
+            
             <flag>wxEXPAND</flag>
             
             
             
+            
             <border>8</border>
+            
             
             
             
@@ -34,7 +37,9 @@
                         
                         
                         
+                        
                         <content/>
+                        
                         
                         
                         
@@ -43,11 +48,14 @@
                       
                       
                       
+                      
                       <option>1</option>
                       
                       
                       
+                      
                       <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                      
                       
                       
                       
@@ -61,8 +69,10 @@
                             
                             
                             
+                            
                             <label>Set as default</label>
                           </object>
+                          
                           
                           
                           
@@ -70,9 +80,11 @@
                           
                           
                           
+                          
                           <border>4</border>
                         </object>
                         <object class="spacer">
+                          
                           
                           
                           
@@ -83,12 +95,15 @@
                             
                             
                             
+                            
                             <label>Copy</label>
                           </object>
                           
                           
                           
+                          
                           <flag>wxTOP</flag>
+                          
                           
                           
                           
@@ -99,12 +114,15 @@
                             
                             
                             
+                            
                             <label>Rename</label>
                           </object>
                           
                           
                           
+                          
                           <flag>wxTOP</flag>
+                          
                           
                           
                           
@@ -115,12 +133,15 @@
                             
                             
                             
+                            
                             <label>Delete</label>
                           </object>
                           
                           
                           
+                          
                           <flag>wxTOP|wxRIGHT</flag>
+                          
                           
                           
                           
@@ -131,8 +152,10 @@
                             
                             
                             
+                            
                             <label>Reset defaults</label>
                           </object>
+                          
                           
                           
                           
@@ -140,9 +163,11 @@
                           
                           
                           
+                          
                           <border>4</border>
                         </object>
                       </object>
+                      
                       
                       
                       
@@ -153,7 +178,9 @@
                 
                 
                 
+                
                 <flag>wxBOTTOM|wxLEFT|wxEXPAND</flag>
+                
                 
                 
                 
@@ -177,8 +204,10 @@
                                 
                                 
                                 
+                                
                                 <label>Policy:</label>
                               </object>
+                              
                               
                               
                               
@@ -186,10 +215,12 @@
                               
                               
                               
+                              
                               <border>4</border>
                             </object>
                             <object class="sizeritem">
                               <object class="wxComboBox" name="cmbCompilerPolicy">
+                                
                                 
                                 
                                 
@@ -202,6 +233,7 @@
                                 
                                 
                                 
+                                
                                 <style>wxCB_READONLY|wxCB_DROPDOWN</style>
                               </object>
                             </object>
@@ -209,7 +241,9 @@
                           
                           
                           
+                          
                           <flag>wxALL|wxEXPAND</flag>
+                          
                           
                           
                           
@@ -220,7 +254,9 @@
                           
                           
                           
+                          
                           <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+                          
                           
                           
                           
@@ -239,12 +275,15 @@
                                       
                                       
                                       
+                                      
                                       <label>Categories:</label>
                                     </object>
                                     
                                     
                                     
+                                    
                                     <flag>wxTOP|wxLEFT|wxRIGHT</flag>
+                                    
                                     
                                     
                                     
@@ -255,7 +294,9 @@
                                       
                                       
                                       
+                                      
                                       <content/>
+                                      
                                       
                                       
                                       
@@ -264,7 +305,9 @@
                                     
                                     
                                     
+                                    
                                     <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+                                    
                                     
                                     
                                     
@@ -275,6 +318,7 @@
                                     <flag>wxALL|wxEXPAND</flag>
                                     <border>8</border>
                                     <object class="wxCheckList" name="lstCompilerOptions">
+                                      
                                       
                                       
                                       
@@ -298,6 +342,7 @@
                                         
                                       
                                       
+                                      
                                       <style>wxTE_MULTILINE|wxHSCROLL|wxTE_RICH2</style>
                                       </object>
                                   </object>
@@ -318,6 +363,7 @@
                                         
                                       
                                       
+                                      
                                       <style>wxTE_MULTILINE|wxHSCROLL|wxTE_RICH2</style>
                                       </object>
                                   </object>
@@ -328,11 +374,14 @@
                           
                           
                           
+                          
                           <option>1</option>
                           
                           
                           
+                          
                           <flag>wxALL|wxEXPAND</flag>
+                          
                           
                           
                           
@@ -358,8 +407,10 @@
                                 
                                 
                                 
+                                
                                 <label>Policy:</label>
                               </object>
+                              
                               
                               
                               
@@ -367,10 +418,12 @@
                               
                               
                               
+                              
                               <border>4</border>
                             </object>
                             <object class="sizeritem">
                               <object class="wxComboBox" name="cmbLinkerPolicy">
+                                
                                 
                                 
                                 
@@ -383,6 +436,7 @@
                                 
                                 
                                 
+                                
                                 <style>wxCB_READONLY|wxCB_DROPDOWN</style>
                               </object>
                             </object>
@@ -390,7 +444,9 @@
                           
                           
                           
+                          
                           <flag>wxALL|wxEXPAND</flag>
+                          
                           
                           
                           
@@ -401,7 +457,9 @@
                           
                           
                           
+                          
                           <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+                          
                           
                           
                           
@@ -422,8 +480,10 @@
                                         
                                         
                                         
+                                        
                                         <content/>
                                       </object>
+                                      
                                       
                                       
                                       
@@ -431,7 +491,9 @@
                                       
                                       
                                       
+                                      
                                       <flag>wxTOP|wxGROW</flag>
+                                      
                                       
                                       
                                       
@@ -442,7 +504,9 @@
                                       
                                       
                                       
+                                      
                                       <flag>wxLEFT|wxALIGN_CENTRE_VERTICAL</flag>
+                                      
                                       
                                       
                                       
@@ -452,11 +516,14 @@
                                   
                                   
                                   
+                                  
                                   <option>1</option>
                                   
                                   
                                   
+                                  
                                   <flag>wxALL|wxGROW</flag>
+                                  
                                   
                                   
                                   
@@ -472,7 +539,9 @@
                                         
                                         
                                         
+                                        
                                         <label>Add</label>
+                                        
                                         
                                         
                                         
@@ -486,7 +555,9 @@
                                         
                                         
                                         
+                                        
                                         <label>Edit</label>
+                                        
                                         
                                         
                                         
@@ -498,7 +569,9 @@
                                         
                                         
                                         
+                                        
                                         <label>Delete</label>
+                                        
                                         
                                         
                                         
@@ -509,7 +582,9 @@
                                   
                                   
                                   
+                                  
                                   <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
+                                  
                                   
                                   
                                   
@@ -519,11 +594,14 @@
                               
                               
                               
+                              
                               <option>1</option>
                               
                               
                               
+                              
                               <flag>wxALL|wxGROW</flag>
+                              
                               
                               
                               
@@ -538,8 +616,10 @@
                                     
                                     
                                     
+                                    
                                     <style>wxTE_MULTILINE|wxHSCROLL|wxTE_RICH2</style>
                                   </object>
+                                  
                                   
                                   
                                   
@@ -547,7 +627,9 @@
                                   
                                   
                                   
+                                  
                                   <flag>wxALL|wxGROW</flag>
+                                  
                                   
                                   
                                   
@@ -557,11 +639,14 @@
                               
                               
                               
+                              
                               <option>1</option>
                               
                               
                               
+                              
                               <flag>wxALL|wxGROW</flag>
+                              
                               
                               
                               
@@ -571,11 +656,14 @@
                           
                           
                           
+                          
                           <option>1</option>
                           
                           
                           
+                          
                           <flag>wxALL|wxGROW</flag>
+                          
                           
                           
                           
@@ -611,8 +699,10 @@
                                               
                                               
                                               
+                                              
                                               <label>Policy:</label>
                                             </object>
+                                            
                                             
                                             
                                             
@@ -620,10 +710,12 @@
                                             
                                             
                                             
+                                            
                                             <border>4</border>
                                           </object>
                                           <object class="sizeritem">
                                             <object class="wxComboBox" name="cmbIncludesPolicy">
+                                              
                                               
                                               
                                               
@@ -636,6 +728,7 @@
                                               
                                               
                                               
+                                              
                                               <style>wxCB_READONLY|wxCB_DROPDOWN</style>
                                             </object>
                                           </object>
@@ -643,7 +736,9 @@
                                         
                                         
                                         
+                                        
                                         <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                                        
                                         
                                         
                                         
@@ -654,7 +749,9 @@
                                         
                                         
                                         
+                                        
                                         <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                                        
                                         
                                         
                                         
@@ -665,7 +762,9 @@
                                           
                                           
                                           
+                                          
                                           <content/>
+                                          
                                           
                                           
                                           
@@ -674,11 +773,14 @@
                                         
                                         
                                         
+                                        
                                         <option>1</option>
                                         
                                         
                                         
+                                        
                                         <flag>wxALL|wxGROW</flag>
+                                        
                                         
                                         
                                         
@@ -704,8 +806,10 @@
                                               
                                               
                                               
+                                              
                                               <label>Policy:</label>
                                             </object>
+                                            
                                             
                                             
                                             
@@ -713,10 +817,12 @@
                                             
                                             
                                             
+                                            
                                             <border>4</border>
                                           </object>
                                           <object class="sizeritem">
                                             <object class="wxComboBox" name="cmbLibDirsPolicy">
+                                              
                                               
                                               
                                               
@@ -729,6 +835,7 @@
                                               
                                               
                                               
+                                              
                                               <style>wxCB_READONLY|wxCB_DROPDOWN</style>
                                             </object>
                                           </object>
@@ -736,7 +843,9 @@
                                         
                                         
                                         
+                                        
                                         <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                                        
                                         
                                         
                                         
@@ -747,7 +856,9 @@
                                         
                                         
                                         
+                                        
                                         <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                                        
                                         
                                         
                                         
@@ -758,7 +869,9 @@
                                           
                                           
                                           
+                                          
                                           <content/>
+                                          
                                           
                                           
                                           
@@ -767,11 +880,14 @@
                                         
                                         
                                         
+                                        
                                         <option>1</option>
                                         
                                         
                                         
+                                        
                                         <flag>wxALL|wxGROW</flag>
+                                        
                                         
                                         
                                         
@@ -797,8 +913,10 @@
                                               
                                               
                                               
+                                              
                                               <label>Policy:</label>
                                             </object>
+                                            
                                             
                                             
                                             
@@ -806,10 +924,12 @@
                                             
                                             
                                             
+                                            
                                             <border>4</border>
                                           </object>
                                           <object class="sizeritem">
                                             <object class="wxComboBox" name="cmbResDirsPolicy">
+                                              
                                               
                                               
                                               
@@ -822,6 +942,7 @@
                                               
                                               
                                               
+                                              
                                               <style>wxCB_READONLY|wxCB_DROPDOWN</style>
                                             </object>
                                           </object>
@@ -829,7 +950,9 @@
                                         
                                         
                                         
+                                        
                                         <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                                        
                                         
                                         
                                         
@@ -840,7 +963,9 @@
                                         
                                         
                                         
+                                        
                                         <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                                        
                                         
                                         
                                         
@@ -851,7 +976,9 @@
                                           
                                           
                                           
+                                          
                                           <content/>
+                                          
                                           
                                           
                                           
@@ -860,11 +987,14 @@
                                         
                                         
                                         
+                                        
                                         <option>1</option>
                                         
                                         
                                         
+                                        
                                         <flag>wxALL|wxGROW</flag>
+                                        
                                         
                                         
                                         
@@ -878,7 +1008,9 @@
                               
                               
                               
+                              
                               <option>1</option>
+                              
                               
                               
                               
@@ -889,12 +1021,15 @@
                                 
                                 
                                 
+                                
                                 <tooltip>Re-order directories</tooltip>
                               </object>
                               
                               
                               
+                              
                               <flag>wxLEFT|wxALIGN_CENTRE_VERTICAL</flag>
+                              
                               
                               
                               
@@ -904,11 +1039,14 @@
                           
                           
                           
+                          
                           <option>1</option>
                           
                           
                           
+                          
                           <flag>wxALL|wxGROW</flag>
+                          
                           
                           
                           
@@ -922,12 +1060,15 @@
                                 
                                 
                                 
+                                
                                 <label>Add</label>
                               </object>
                               
                               
                               
+                              
                               <flag>wxRIGHT</flag>
+                              
                               
                               
                               
@@ -938,12 +1079,15 @@
                                 
                                 
                                 
+                                
                                 <label>Edit</label>
                               </object>
                               
                               
                               
+                              
                               <flag>wxRIGHT</flag>
+                              
                               
                               
                               
@@ -954,6 +1098,7 @@
                                 
                                 
                                 
+                                
                                 <label>Delete</label>
                               </object>
                             </object>
@@ -961,7 +1106,9 @@
                           
                           
                           
+                          
                           <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
+                          
                           
                           
                           
@@ -984,8 +1131,10 @@
                                 
                                 
                                 
+                                
                                 <style>wxTE_MULTILINE|wxHSCROLL</style>
                               </object>
+                              
                               
                               
                               
@@ -993,7 +1142,9 @@
                               
                               
                               
+                              
                               <flag>wxALL|wxGROW</flag>
+                              
                               
                               
                               
@@ -1004,12 +1155,15 @@
                                 
                                 
                                 
+                                
                                 <label>Always execute, even if target is up-to-date</label>
                               </object>
                               
                               
                               
+                              
                               <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                              
                               
                               
                               
@@ -1019,11 +1173,14 @@
                           
                           
                           
+                          
                           <option>1</option>
                           
                           
                           
+                          
                           <flag>wxALL|wxGROW</flag>
+                          
                           
                           
                           
@@ -1038,8 +1195,10 @@
                                 
                                 
                                 
+                                
                                 <style>wxTE_MULTILINE|wxHSCROLL</style>
                               </object>
+                              
                               
                               
                               
@@ -1047,7 +1206,9 @@
                               
                               
                               
+                              
                               <flag>wxALL|wxGROW</flag>
+                              
                               
                               
                               
@@ -1058,12 +1219,15 @@
                                 
                                 
                                 
+                                
                                 <label>Always execute, even if target is up-to-date</label>
                               </object>
                               
                               
                               
+                              
                               <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                              
                               
                               
                               
@@ -1073,11 +1237,14 @@
                           
                           
                           
+                          
                           <option>1</option>
                           
                           
                           
+                          
                           <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                          
                           
                           
                           
@@ -1103,7 +1270,9 @@
                                   
                                   
                                   
+                                  
                                   <option>1</option>
+                                  
                                   
                                   
                                   
@@ -1114,7 +1283,9 @@
                                     
                                     
                                     
+                                    
                                     <label>...</label>
+                                    
                                     
                                     
                                     
@@ -1126,7 +1297,9 @@
                                     
                                     
                                     
+                                    
                                     <label>Auto-detect</label>
+                                    
                                     
                                     
                                     
@@ -1137,7 +1310,9 @@
                               
                               
                               
+                              
                               <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                              
                               
                               
                               
@@ -1148,7 +1323,10 @@
                                 
                                 
                                 
-                                <label>NOTE: All programs below, must exist either in the &quot;bin&quot; sub-directory of this path or in any of the extra paths below...</label>
+                                
+                                <label>NOTE: All programs below, must exist either in the &quot;bin&quot; sub-directory of this path
+or in any of the &quot;Additional paths&quot;...</label>
+                                
                                 
                                 
                                 
@@ -1157,7 +1335,9 @@
                               
                               
                               
+                              
                               <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                              
                               
                               
                               
@@ -1167,7 +1347,9 @@
                           
                           
                           
+                          
                           <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                          
                           
                           
                           
@@ -1195,6 +1377,7 @@
                                                 
                                               
                                               
+                                              
                                               <label>C compiler:</label>
                                               </object>
                                             </object>
@@ -1206,12 +1389,15 @@
                                                   
                                                 
                                                 
+                                                
                                                 <option>1</option>
                                                   
                                                 
                                                 
+                                                
                                                 <flag>wxEXPAND</flag>
                                                   
+                                                
                                                 
                                                 
                                                 <border>8</border>
@@ -1221,8 +1407,10 @@
                                                     
                                                   
                                                   
+                                                  
                                                   <label>...</label>
                                                     
+                                                  
                                                   
                                                   
                                                   <size>20,20</size>
@@ -1232,11 +1420,13 @@
                                               
                                             
                                             
+                                            
                                             <flag>wxEXPAND</flag>
                                             </object>
                                           <object class="sizeritem">
                                             <object class="wxStaticText">
                                                 
+                                              
                                               
                                               
                                               <label>C++ compiler:</label>
@@ -1250,12 +1440,15 @@
                                                   
                                                 
                                                 
+                                                
                                                 <option>1</option>
                                                   
                                                 
                                                 
+                                                
                                                 <flag>wxEXPAND</flag>
                                                   
+                                                
                                                 
                                                 
                                                 <border>8</border>
@@ -1265,8 +1458,10 @@
                                                     
                                                   
                                                   
+                                                  
                                                   <label>...</label>
                                                     
+                                                  
                                                   
                                                   
                                                   <size>20,20</size>
@@ -1276,11 +1471,13 @@
                                               
                                             
                                             
+                                            
                                             <flag>wxEXPAND</flag>
                                             </object>
                                           <object class="sizeritem">
                                             <object class="wxStaticText">
                                                 
+                                              
                                               
                                               
                                               <label>Linker for dynamic libs:</label>
@@ -1294,12 +1491,15 @@
                                                   
                                                 
                                                 
+                                                
                                                 <option>1</option>
                                                   
                                                 
                                                 
+                                                
                                                 <flag>wxEXPAND</flag>
                                                   
+                                                
                                                 
                                                 
                                                 <border>8</border>
@@ -1309,8 +1509,10 @@
                                                     
                                                   
                                                   
+                                                  
                                                   <label>...</label>
                                                     
+                                                  
                                                   
                                                   
                                                   <size>20,20</size>
@@ -1320,11 +1522,13 @@
                                               
                                             
                                             
+                                            
                                             <flag>wxEXPAND</flag>
                                             </object>
                                           <object class="sizeritem">
                                             <object class="wxStaticText">
                                                 
+                                              
                                               
                                               
                                               <label>Linker for static libs:</label>
@@ -1338,12 +1542,15 @@
                                                   
                                                 
                                                 
+                                                
                                                 <option>1</option>
                                                   
                                                 
                                                 
+                                                
                                                 <flag>wxEXPAND</flag>
                                                   
+                                                
                                                 
                                                 
                                                 <border>8</border>
@@ -1353,8 +1560,10 @@
                                                     
                                                   
                                                   
+                                                  
                                                   <label>...</label>
                                                     
+                                                  
                                                   
                                                   
                                                   <size>20,20</size>
@@ -1364,11 +1573,13 @@
                                               
                                             
                                             
+                                            
                                             <flag>wxEXPAND</flag>
                                             </object>
                                           <object class="sizeritem">
                                             <object class="wxStaticText">
                                                 
+                                              
                                               
                                               
                                               <label>Debugger:</label>
@@ -1382,12 +1593,15 @@
                                                   
                                                 
                                                 
+                                                
                                                 <option>1</option>
                                                   
                                                 
                                                 
+                                                
                                                 <flag>wxEXPAND</flag>
                                                   
+                                                
                                                 
                                                 
                                                 <border>8</border>
@@ -1397,8 +1611,10 @@
                                                     
                                                   
                                                   
+                                                  
                                                   <label>...</label>
                                                     
+                                                  
                                                   
                                                   
                                                   <size>20,20</size>
@@ -1408,11 +1624,13 @@
                                               
                                             
                                             
+                                            
                                             <flag>wxEXPAND</flag>
                                             </object>
                                           <object class="sizeritem">
                                             <object class="wxStaticText">
                                                 
+                                              
                                               
                                               
                                               <label>Resource compiler:</label>
@@ -1426,12 +1644,15 @@
                                                   
                                                 
                                                 
+                                                
                                                 <option>1</option>
                                                   
                                                 
                                                 
+                                                
                                                 <flag>wxEXPAND</flag>
                                                   
+                                                
                                                 
                                                 
                                                 <border>8</border>
@@ -1441,8 +1662,10 @@
                                                     
                                                   
                                                   
+                                                  
                                                   <label>...</label>
                                                     
+                                                  
                                                   
                                                   
                                                   <size>20,20</size>
@@ -1452,11 +1675,13 @@
                                               
                                             
                                             
+                                            
                                             <flag>wxEXPAND</flag>
                                             </object>
                                           <object class="sizeritem">
                                             <object class="wxStaticText">
                                                 
+                                              
                                               
                                               
                                               <label>Make program:</label>
@@ -1470,12 +1695,15 @@
                                                   
                                                 
                                                 
+                                                
                                                 <option>1</option>
                                                   
                                                 
                                                 
+                                                
                                                 <flag>wxEXPAND</flag>
                                                   
+                                                
                                                 
                                                 
                                                 <border>8</border>
@@ -1485,8 +1713,10 @@
                                                     
                                                   
                                                   
+                                                  
                                                   <label>...</label>
                                                     
+                                                  
                                                   
                                                   
                                                   <size>20,20</size>
@@ -1496,18 +1726,22 @@
                                               
                                             
                                             
+                                            
                                             <flag>wxEXPAND</flag>
                                             </object>
                                         </object>
                                           
                                         
                                         
+                                        
                                         <option>1</option>
                                           
                                         
                                         
+                                        
                                         <flag>wxALL|wxEXPAND</flag>
                                           
+                                        
                                         
                                         
                                         <border>8</border>
@@ -1525,17 +1759,21 @@
                                             
                                           
                                           
+                                          
                                           <content/>
                                           </object>
                                           
+                                        
                                         
                                         
                                         <option>1</option>
                                           
                                         
                                         
+                                        
                                         <flag>wxALL|wxGROW</flag>
                                           
+                                        
                                         
                                         
                                         <border>8</border>
@@ -1548,12 +1786,14 @@
                                                 
                                               
                                               
+                                              
                                               <label>Add</label>
                                               </object>
                                             </object>
                                           <object class="sizeritem">
                                             <object class="wxButton" name="btnExtraEdit">
                                                 
+                                              
                                               
                                               
                                               <label>Edit</label>
@@ -1564,6 +1804,7 @@
                                                 
                                               
                                               
+                                              
                                               <label>Delete</label>
                                               </object>
                                             </object>
@@ -1571,8 +1812,10 @@
                                           
                                         
                                         
+                                        
                                         <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
                                           
+                                        
                                         
                                         
                                         <border>8</border>
@@ -1584,11 +1827,14 @@
                               
                               
                               
+                              
                               <option>1</option>
                               
                               
                               
+                              
                               <flag>wxEXPAND</flag>
+                              
                               
                               
                               
@@ -1598,11 +1844,14 @@
                           
                           
                           
+                          
                           <option>1</option>
                           
                           
                           
+                          
                           <flag>wxALL|wxGROW</flag>
+                          
                           
                           
                           
@@ -1621,12 +1870,15 @@
                             
                             
                             
+                            
                             <label>Programs / variables:</label>
                           </object>
                           
                           
                           
+                          
                           <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                          
                           
                           
                           
@@ -1637,8 +1889,10 @@
                             
                             
                             
+                            
                             <content/>
                           </object>
+                          
                           
                           
                           
@@ -1646,7 +1900,9 @@
                           
                           
                           
+                          
                           <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+                          
                           
                           
                           
@@ -1657,7 +1913,9 @@
                             
                             
                             
+                            
                             <label>These variables can be used in compiler and/or linker options. Use them as compiler/linker options this way: $$(varname)</label>
+                            
                             
                             
                             
@@ -1666,11 +1924,14 @@
                           
                           
                           
+                          
                           <flag>wxLEFT|wxRIGHT|wxGROW</flag>
                           
                           
                           
+                          
                           <border>8</border>
+                          
                           
                           
                           
@@ -1684,6 +1945,7 @@
                                 
                                 
                                 
+                                
                                 <label>&amp;Add</label>
                               </object>
                             </object>
@@ -1692,12 +1954,15 @@
                                 
                                 
                                 
+                                
                                 <label>&amp;Edit</label>
                               </object>
                               
                               
                               
+                              
                               <flag>wxLEFT|wxRIGHT</flag>
+                              
                               
                               
                               
@@ -1708,6 +1973,7 @@
                                 
                                 
                                 
+                                
                                 <label>&amp;Delete</label>
                               </object>
                             </object>
@@ -1715,7 +1981,9 @@
                           
                           
                           
+                          
                           <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>
+                          
                           
                           
                           
@@ -1731,10 +1999,14 @@
                         <orient>wxVERTICAL</orient>
                         <object class="sizeritem">
                           <object class="wxStaticText" name="">
+                            
                             <label>IMPORTANT: These commands are ONLY used when the project is using a custom Makefile.</label>
+                            
                             <fg>#800000</fg>
                           </object>
+                          
                           <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                          
                           <border>8</border>
                         </object>
                         <object class="sizeritem">
@@ -1744,8 +2016,10 @@
                             <hgap>4</hgap>
                             <object class="sizeritem">
                               <object class="wxStaticText">
+                                
                                 <label>Build project/target:</label>
                               </object>
+                              
                               <flag>wxALIGN_CENTRE_VERTICAL</flag>
                             </object>
                             <object class="sizeritem">
@@ -1758,7 +2032,9 @@
                               
                               
                               
+                              
                               <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+                              
                               
                               
                               
@@ -1767,8 +2043,10 @@
                             <growablecols>1</growablecols>
                             <object class="sizeritem">
                               <object class="wxStaticText">
+                                
                                 <label>Compile single file:</label>
                               </object>
+                              
                               <flag>wxALIGN_CENTRE_VERTICAL</flag>
                             </object>
                             <object class="sizeritem">
@@ -1781,7 +2059,9 @@
                               
                               
                               
+                              
                               <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+                              
                               
                               
                               
@@ -1789,8 +2069,10 @@
                             </object>
                             <object class="sizeritem">
                               <object class="wxStaticText">
+                                
                                 <label>Clean project/target:</label>
                               </object>
+                              
                               <flag>wxALIGN_CENTRE_VERTICAL</flag>
                             </object>
                             <object class="sizeritem">
@@ -1803,7 +2085,9 @@
                               
                               
                               
+                              
                               <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+                              
                               
                               
                               
@@ -1811,8 +2095,10 @@
                             </object>
                             <object class="sizeritem">
                               <object class="wxStaticText">
+                                
                                 <label>Dist-clean project/target:</label>
                               </object>
+                              
                               <flag>wxALIGN_CENTRE_VERTICAL</flag>
                             </object>
                             <object class="sizeritem">
@@ -1825,27 +2111,36 @@
                               
                               
                               
+                              
                               <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+                              
                               
                               
                               
                               <border>8</border>
                             </object>
                           </object>
+                          
                           <option>1</option>
+                          
                           <flag>wxALL|wxGROW</flag>
+                          
                           <border>8</border>
                         </object>
                         <object class="sizeritem">
                           <object class="wxStaticText">
                                 
+                            
                             <label>Known variables: $$make, $$makefile, $$target,$$file</label>
                                 
+                            
                             <fg>#800000</fg>
                               </object>
                               
+                          
                           <flag>wxLEFT|wxRIGHT</flag>
                               
+                          
                           <border>8</border>
                             </object>
                       </object>
@@ -1864,8 +2159,10 @@
                                 
                                 
                                 
+                                
                                 <label>Compiler logging:</label>
                               </object>
+                              
                               
                               
                               
@@ -1873,10 +2170,12 @@
                               
                               
                               
+                              
                               <border>4</border>
                             </object>
                             <object class="sizeritem">
                               <object class="wxComboBox" name="cmbLogging">
+                                
                                 
                                 
                                 
@@ -1888,7 +2187,9 @@
                                 
                                 
                                 
+                                
                                 <selection>0</selection>
+                                
                                 
                                 
                                 
@@ -1897,7 +2198,9 @@
                               
                               
                               
+                              
                               <option>1</option>
+                              
                               
                               
                               
@@ -1911,12 +2214,15 @@
                                 
                                 
                                 
+                                
                                 <label>Build method:</label>
                               </object>
                               
                               
                               
+                              
                               <flag>wxTOP|wxRIGHT</flag>
+                              
                               
                               
                               
@@ -1927,6 +2233,7 @@
                                 
                                 
                                 
+                                
                                 <content>
                                   <item>Work with Makefiles (GNU &quot;make&quot; is required)</item>
                                   <item>Invoke compiler directly</item>
@@ -1934,7 +2241,9 @@
                                 
                                 
                                 
+                                
                                 <selection>0</selection>
+                                
                                 
                                 
                                 
@@ -1943,7 +2252,9 @@
                               
                               
                               
+                              
                               <option>1</option>
+                              
                               
                               
                               
@@ -1953,7 +2264,9 @@
                           
                           
                           
+                          
                           <flag>wxALL|wxGROW</flag>
+                          
                           
                           
                           
@@ -1971,12 +2284,15 @@
                                     
                                     
                                     
+                                    
                                     <label>Max nr. of errors to log (0=unlimited):</label>
                                   </object>
                                   
                                   
                                   
+                                  
                                   <flag>wxTOP|wxRIGHT</flag>
+                                  
                                   
                                   
                                   
@@ -1987,7 +2303,9 @@
                                     
                                     
                                     
+                                    
                                     <value>50</value>
+                                    
                                     
                                     
                                     
@@ -1999,12 +2317,15 @@
                                     
                                     
                                     
+                                    
                                     <label>Shell to run compiler:</label>
                                   </object>
                                   
                                   
                                   
+                                  
                                   <flag>wxTOP|wxRIGHT</flag>
+                                  
                                   
                                   
                                   
@@ -2015,7 +2336,9 @@
                                   
                                   
                                   
+                                  
                                   <option>1</option>
+                                  
                                   
                                   
                                   
@@ -2026,12 +2349,15 @@
                                     
                                     
                                     
+                                    
                                     <label>Terminal to run console programs:</label>
                                   </object>
                                   
                                   
                                   
+                                  
                                   <flag>wxTOP|wxRIGHT</flag>
+                                  
                                   
                                   
                                   
@@ -2042,7 +2368,9 @@
                                   
                                   
                                   
+                                  
                                   <option>1</option>
+                                  
                                   
                                   
                                   
@@ -2055,11 +2383,14 @@
                               
                               
                               
+                              
                               <option>1</option>
                               
                               
                               
+                              
                               <flag>wxALL|wxGROW</flag>
+                              
                               
                               
                               
@@ -2069,7 +2400,9 @@
                           
                           
                           
+                          
                           <flag>wxALL|wxGROW</flag>
+                          
                           
                           
                           
@@ -2082,11 +2415,14 @@
                           
                           
                           
+                          
                           <option>1</option>
                           
                           
                           
+                          
                           <flag>wxALL|wxGROW</flag>
+                          
                           
                           
                           
@@ -2097,12 +2433,15 @@
                             
                             
                             
+                            
                             <label>Advanced options...</label>
                           </object>
                           
                           
                           
+                          
                           <flag>wxALL|wxALIGN_RIGHT|wxALIGN_BOTTOM</flag>
+                          
                           
                           
                           
@@ -2116,7 +2455,9 @@
                 
                 
                 
+                
                 <option>1</option>
+                
                 
                 
                 
@@ -2124,7 +2465,9 @@
                 
                 
                 
+                
                 <border>8</border>
+                
                 
                 
                 
@@ -2134,7 +2477,9 @@
             
             
             
+            
             <option>1</option>
+            
             
             
             
@@ -2144,11 +2489,14 @@
         
         
         
+        
         <option>1</option>
         
         
         
+        
         <flag>wxALL|wxEXPAND</flag>
+        
         
         
         
@@ -2162,7 +2510,9 @@
               
               
               
+              
               <label>&amp;Ok</label>
+              
               
               
               
@@ -2171,7 +2521,9 @@
             
             
             
+            
             <flag>wxRIGHT</flag>
+            
             
             
             
@@ -2182,6 +2534,7 @@
               
               
               
+              
               <label>&amp;Cancel</label>
             </object>
           </object>
@@ -2189,7 +2542,9 @@
         
         
         
+        
         <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
+        
         
         
         
