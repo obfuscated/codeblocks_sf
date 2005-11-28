@@ -913,6 +913,7 @@ bool CompilerGCC::DoPrepareMultiProjectCommand(MultiProjectJob job)
 
 void CompilerGCC::DoPrepareQueue()
 {
+	Manager::Get()->GetMacrosManager()->Reset();
 	if (m_LastTempMakefile.IsEmpty() || m_Queue.GetCount() == 0)
 	{
 		m_QueueIndex = 0;
