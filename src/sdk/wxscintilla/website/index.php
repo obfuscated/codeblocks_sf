@@ -26,6 +26,14 @@ A wxWidgets implementation of the Scintilla editing control.
 wxScintilla implements the <a href="http://scintilla.sourceforge.net/" target=_top>Scintilla</a> editing control with the wxWidgets API. It's derived from wxStyledTextCtrl (see wxWidgets/contrib) and has the same functionality and a similar API. The almost singular difference (beside naming) is it has a much faster release cycle.
 </p>
 
+<h4>Download</h4>
+<ul>
+<li><a href="http://prdownloads.sourceforge.net/wyoguide/wxscintilla_1.66.0.tar.gz?download" target=_top>wxscintilla_1.66.0.tar.gz</a> Platform in dependent source.</li>
+</ul>
+<p>
+Everything and more can be downloaded from <a href="http://sourceforge.net/project/showfiles.php?group_id=51305" target=_top>sourceforge.net</a> or you can browse the <a href="http://cvs.sourceforge.net/viewcvs.py/wxcode/wxCode/components/wxscintilla/" target=_top>CVS</a> source tree.
+</p>
+
 <h4>Documentation</h4>
 <p>
 The <a href="reference.html" target=_top>API reference</a> can be read online here.
@@ -34,12 +42,7 @@ The <a href="reference.html" target=_top>API reference</a> can be read online he
 <h4>Screenshots</h4>
 <p align=center>
 <img src="images/wyoeditor01.png"><br />
-Screen shot of wyoEditor, see <a href="http://freshmeat.net/projects/wyoeditor" target=_top>here</a>.
-</p>
-
-<h4>Download</h4>
-<p>
-Go to the <a href="http://wxcode.sourceforge.net/index.php?page=complist.php" target=_top>project list</a>, click on the release of <b>wxScintilla</b>.
+Screen shots of wyoEditor, see <a href="http://freshmeat.net/projects/wyoeditor" target=_top>here</a>.
 </p>
 
 <h4>New releases</h4>

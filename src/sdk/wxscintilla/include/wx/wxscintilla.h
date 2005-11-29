@@ -20,7 +20,7 @@
 #ifndef __WXSCINTILLA_H__
 #define __WXSCINTILLA_H__
 
-#define wxSCINTILLA_VERSION _T("1.64.0")
+#define wxSCINTILLA_VERSION _T("1.66.0")
 
 #include <wx/wx.h>
 #include <wx/dnd.h>
@@ -147,6 +147,7 @@
 #define wxSCI_CHARSET_MAC 77
 #define wxSCI_CHARSET_OEM 255
 #define wxSCI_CHARSET_RUSSIAN 204
+#define wxSCI_CHARSET_CYRILLIC 1251
 #define wxSCI_CHARSET_SHIFTJIS 128
 #define wxSCI_CHARSET_SYMBOL 2
 #define wxSCI_CHARSET_TURKISH 162
@@ -381,6 +382,7 @@
 #define wxSCI_LEX_SMALLTALK 72
 #define wxSCI_LEX_FLAGSHIP 73
 #define wxSCI_LEX_CSOUND 74
+#define wxSCI_LEX_FREEBASIC 75
 
 // When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
 // value assigned in sequence from SCLEX_AUTOMATIC+1.
@@ -578,6 +580,7 @@
 #define wxSCI_PL_ARRAY 13
 #define wxSCI_PL_HASH 14
 #define wxSCI_PL_SYMBOLTABLE 15
+#define wxSCI_PL_VARIABLE_INDEXER 16
 #define wxSCI_PL_REGEX 17
 #define wxSCI_PL_REGSUBST 18
 #define wxSCI_PL_LONGQUOTE 19
@@ -593,6 +596,42 @@
 #define wxSCI_PL_STRING_QR 29
 #define wxSCI_PL_STRING_QW 30
 #define wxSCI_PL_POD_VERB 31
+
+// Lexical states for SCLEX_RUBY
+#define wxSCI_RB_DEFAULT 0
+#define wxSCI_RB_ERROR 1
+#define wxSCI_RB_COMMENTLINE 2
+#define wxSCI_RB_POD 3
+#define wxSCI_RB_NUMBER 4
+#define wxSCI_RB_WORD 5
+#define wxSCI_RB_STRING 6
+#define wxSCI_RB_CHARACTER 7
+#define wxSCI_RB_CLASSNAME 8
+#define wxSCI_RB_DEFNAME 9
+#define wxSCI_RB_OPERATOR 10
+#define wxSCI_RB_IDENTIFIER 11
+#define wxSCI_RB_REGEX 12
+#define wxSCI_RB_GLOBAL 13
+#define wxSCI_RB_SYMBOL 14
+#define wxSCI_RB_MODULE_NAME 15
+#define wxSCI_RB_INSTANCE_VAR 16
+#define wxSCI_RB_CLASS_VAR 17
+#define wxSCI_RB_BACKTICKS 18
+#define wxSCI_RB_DATASECTION 19
+#define wxSCI_RB_HERE_DELIM 20
+#define wxSCI_RB_HERE_Q 21
+#define wxSCI_RB_HERE_QQ 22
+#define wxSCI_RB_HERE_QX 23
+#define wxSCI_RB_STRING_Q 24
+#define wxSCI_RB_STRING_QQ 25
+#define wxSCI_RB_STRING_QX 26
+#define wxSCI_RB_STRING_QR 27
+#define wxSCI_RB_STRING_QW 28
+#define wxSCI_RB_WORD_DEMOTED 29
+#define wxSCI_RB_STDIN 30
+#define wxSCI_RB_STDOUT 31
+#define wxSCI_RB_STDERR 40
+#define wxSCI_RB_UPPER_BOUND 41
 
 // Lexical states for SCLEX_VB, SCLEX_VBSCRIPT, SCLEX_POWERBASIC
 #define wxSCI_B_DEFAULT 0
@@ -763,10 +802,14 @@
 #define wxSCI_LISP_COMMENT 1
 #define wxSCI_LISP_NUMBER 2
 #define wxSCI_LISP_KEYWORD 3
+#define wxSCI_LISP_KEYWORD_KW 4
+#define wxSCI_LISP_SYMBOL 5
 #define wxSCI_LISP_STRING 6
 #define wxSCI_LISP_STRINGEOL 8
 #define wxSCI_LISP_IDENTIFIER 9
 #define wxSCI_LISP_OPERATOR 10
+#define wxSCI_LISP_SPECIAL 11
+#define wxSCI_LISP_MULTI_COMMENT 12
 
 // Lexical states for SCLEX_EIFFEL and SCLEX_EIFFELKW
 #define wxSCI_EIFFEL_DEFAULT 0
@@ -1159,6 +1202,7 @@
 #define wxSCI_AU3_PREPROCESSOR 11
 #define wxSCI_AU3_SPECIAL 12
 #define wxSCI_AU3_EXPAND 13
+#define wxSCI_AU3_COMOBJ 14
 
 // Lexical states for SCLEX_APDL
 #define wxSCI_APDL_DEFAULT 0
@@ -1258,37 +1302,25 @@
 
 // Lexical states for SCLEX_T3
 #define wxSCI_T3_DEFAULT 0
-#define wxSCI_T3_PREPROCESSOR 1
-#define wxSCI_T3_BLOCK_COMMENT 2
-#define wxSCI_T3_LINE_COMMENT 3
-#define wxSCI_T3_OPERATOR 4
-#define wxSCI_T3_KEYWORD 5
-#define wxSCI_T3_NUMBER 6
-#define wxSCI_T3_BRACKET 7
-#define wxSCI_T3_HTML_TAG 8
-#define wxSCI_T3_HTML_STRING 9
-#define wxSCI_T3_S_STRING 10
-#define wxSCI_T3_S_LIB_DIRECTIVE 11
-#define wxSCI_T3_S_MSG_PARAM 12
-#define wxSCI_T3_S_H_DEFAULT 13
-#define wxSCI_T3_D_STRING 14
-#define wxSCI_T3_D_LIB_DIRECTIVE 15
-#define wxSCI_T3_D_MSG_PARAM 16
-#define wxSCI_T3_D_H_DEFAULT 17
-#define wxSCI_T3_X_DEFAULT 18
-#define wxSCI_T3_X_PREPROCESSOR 19
-#define wxSCI_T3_X_BLOCK_COMMENT 20
-#define wxSCI_T3_X_LINE_COMMENT 21
-#define wxSCI_T3_X_S_STRING 22
-#define wxSCI_T3_X_S_LIB_DIRECTIVE 23
-#define wxSCI_T3_X_S_MSG_PARAM 24
-#define wxSCI_T3_X_S_H_DEFAULT 25
-#define wxSCI_T3_X_D_STRING 26
-#define wxSCI_T3_X_D_LIB_DIRECTIVE 27
-#define wxSCI_T3_X_D_MSG_PARAM 28
-#define wxSCI_T3_X_D_H_DEFAULT 29
-#define wxSCI_T3_USER1 30
-#define wxSCI_T3_USER2 31
+#define wxSCI_T3_X_DEFAULT 1
+#define wxSCI_T3_PREPROCESSOR 2
+#define wxSCI_T3_BLOCK_COMMENT 3
+#define wxSCI_T3_LINE_COMMENT 4
+#define wxSCI_T3_OPERATOR 5
+#define wxSCI_T3_KEYWORD 6
+#define wxSCI_T3_NUMBER 7
+#define wxSCI_T3_IDENTIFIER 8
+#define wxSCI_T3_S_STRING 9
+#define wxSCI_T3_D_STRING 10
+#define wxSCI_T3_X_STRING 11
+#define wxSCI_T3_LIB_DIRECTIVE 12
+#define wxSCI_T3_MSG_PARAM 13
+#define wxSCI_T3_HTML_TAG 14
+#define wxSCI_T3_HTML_DEFAULT 15
+#define wxSCI_T3_HTML_STRING 16
+#define wxSCI_T3_USER1 17
+#define wxSCI_T3_USER2 18
+#define wxSCI_T3_USER3 19
 
 // Lexical states for SCLEX_REBOL
 #define wxSCI_REBOL_DEFAULT 0
@@ -2237,7 +2269,7 @@ public:
     int GetPrintColourMode();
 
     // Find some text in the document.
-    int FindText (int minPos, int maxPos, const wxString& text, int flags=0);
+    int FindText (int minPos, int maxPos, const wxString& text, int flags=0, int* lengthFound = 0);
 
     // On Windows, will draw the document into a display context such as a printer.
     int FormatRange (bool doDraw, int startPos, int endPos, wxDC* draw, wxDC* target, wxRect renderRect, wxRect pageRect);

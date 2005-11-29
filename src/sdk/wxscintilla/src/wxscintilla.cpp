@@ -1083,13 +1083,16 @@ int wxScintilla::GetPrintColourMode() {
 }
 
 // Find some text in the document.
-int wxScintilla::FindText (int minPos, int maxPos, const wxString& text, int flags) {
+int wxScintilla::FindText (int minPos, int maxPos, const wxString& text, int flags, int* lengthFound) {
     TextToFind  ft;
     ft.chrg.cpMin = minPos;
     ft.chrg.cpMax = maxPos;
     wxWX2MBbuf buf = (wxWX2MBbuf)wx2sci(text);
     ft.lpstrText = (char*)(const char*)buf;
-    return SendMsg (SCI_FINDTEXT, flags, (long)&ft);
+    int ret = SendMsg (SCI_FINDTEXT, flags, (long)&ft);
+    if (lengthFound)
+        *lengthFound = ft.chrgText.cpMax - ft.chrgText.cpMin;
+    return ret;
 }
 
 // On Windows, will draw the document into a display context such as a printer.
@@ -2812,7 +2815,7 @@ wxCharBuffer wxScintilla::GetCurLineRaw (int* linePos) {
     int len = LineLength (GetCurrentLine());
     if (!len) {
         if (linePos)  *linePos = 0;
-        wxCharBuffer empty((size_t)0);
+        wxCharBuffer empty;
         return empty;
     }
     wxCharBuffer buf(len);
@@ -2824,7 +2827,7 @@ wxCharBuffer wxScintilla::GetCurLineRaw (int* linePos) {
 wxCharBuffer wxScintilla::GetLineRaw (int line) {
     int len = LineLength (line);
     if (!len) {
-        wxCharBuffer empty((size_t)0);
+        wxCharBuffer empty;
         return empty;
     }
     wxCharBuffer buf(len);
@@ -2838,7 +2841,7 @@ wxCharBuffer wxScintilla::GetSelectedTextRaw() {
     GetSelection (&start, &end);
     int len = end - start;
     if (!len) {
-        wxCharBuffer empty((size_t)0);
+        wxCharBuffer empty;
         return empty;
     }
     wxCharBuffer buf(len);
@@ -2854,7 +2857,7 @@ wxCharBuffer wxScintilla::GetTextRangeRaw (int startPos, int endPos) {
     }
     int len  = endPos - startPos;
     if (!len) {
-        wxCharBuffer empty((size_t)0);
+        wxCharBuffer empty;
         return empty;
     }
     wxCharBuffer buf(len);

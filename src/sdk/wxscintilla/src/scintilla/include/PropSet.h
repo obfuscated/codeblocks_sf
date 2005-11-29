@@ -29,6 +29,7 @@ protected:
 	Property *props[hashRoots];
 	Property *enumnext;
 	int enumhash;
+	static bool caseSensitiveFilenames;
 	static unsigned int HashString(const char *s, size_t len) {
 		unsigned int ret = 0;
 		while (len--) {
@@ -58,6 +59,9 @@ public:
 	char *ToString();	// Caller must delete[] the return value
 	bool GetFirst(char **key, char **val);
 	bool GetNext(char **key, char **val);
+	static void SetCaseSensitiveFilenames(bool caseSensitiveFilenames_) {
+		caseSensitiveFilenames = caseSensitiveFilenames_;
+	}
 
 private:
 	// copy-value semantics not implemented
@@ -89,6 +93,7 @@ public:
 	char *Allocate(int size);
 	void SetFromAllocated();
 	bool InList(const char *s);
+	bool InListAbbreviated(const char *s, const char marker);
 	const char *GetNearestWord(const char *wordStart, int searchLen,
 		bool ignoreCase = false, SString wordCharacters="", int wordIndex = -1);
 	char *GetNearestWords(const char *wordStart, int searchLen,

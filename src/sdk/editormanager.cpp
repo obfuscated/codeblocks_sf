@@ -1351,8 +1351,7 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
 	while (!stop)
 	{
 		int lengthFound = 0;
-		pos = control->FindText(data->start, data->end, data->findText, flags/*, &lengthFound*/);
-		lengthFound = data->findText.Length();
+		pos = control->FindText(data->start, data->end, data->findText, flags, &lengthFound);
 		if (pos == -1)
 			break;
 		control->GotoPos(pos);
@@ -1450,8 +1449,7 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
 	while (true) // loop while not found and user selects to start again from the top
 	{
         int lengthFound = 0;
-        pos = control->FindText(data->start, data->end, data->findText, flags/*, &lengthFound*/);
-        lengthFound = data->findText.Length();
+        pos = control->FindText(data->start, data->end, data->findText, flags, &lengthFound);
         if (pos != -1)
         {
             control->GotoPos(pos);
