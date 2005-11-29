@@ -979,9 +979,10 @@ void DebuggerGDB::CmdRunToCursor()
 	if (!ed)
 		return;
 
-	wxString filename = UnixFilename(ed->GetFilename());
-    ConvertToGDBFile(filename);
-    m_State.AddBreakpoint(filename, ed->GetControl()->GetCurrentLine(), true);
+//	wxString filename = UnixFilename(ed->GetFilename());
+//    ConvertToGDBFile(filename);
+//    m_State.AddBreakpoint(filename, ed->GetControl()->GetCurrentLine(), true);
+    m_State.AddBreakpoint(ed->GetFilename(), ed->GetControl()->GetCurrentLine(), true);
 
 	if (m_pProcess)
 		CmdContinue();

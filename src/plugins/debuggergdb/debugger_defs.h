@@ -79,7 +79,8 @@ struct DebuggerBreakpoint
         ignoreCount(0),
         useCondition(false),
         address(0),
-        bpNum(-1)
+        bpNum(-1),
+        alreadySet(false)
     {}
     wxString filename; ///< The filename for the breakpoint.
 	int line; ///< The line for the breakpoint.
@@ -94,6 +95,7 @@ struct DebuggerBreakpoint
 	wxString func; ///< The function to set the breakpoint. If this is set, it is preferred over the filename/line combination.
 	unsigned long int address; ///< The actual breakpoint address. This is read back from the debugger. *Don't* write to it.
 	long int bpNum; ///< The breakpoint number. This is read back from the debugger. *Don't* write to it.
+	bool alreadySet; ///< Is this already set? Used to mark temporary breakpoints for removal.
 };
 WX_DEFINE_ARRAY(DebuggerBreakpoint*, BreakpointsList);
 

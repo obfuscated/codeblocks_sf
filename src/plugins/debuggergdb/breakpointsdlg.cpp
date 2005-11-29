@@ -43,9 +43,11 @@ void BreakpointsDlg::FillBreakpoints()
     for (unsigned int i = 0; i < m_List.GetCount(); ++i)
     {
         DebuggerBreakpoint* bp = m_List[i];
+        if (bp->temporary)
+            continue;
         wxString filename = bp->filename;
         filename << _T(" : ") << bp->line + 1;
-        lst->Append(filename);
+        lst->Append(filename, bp);
     }
 }
 
@@ -55,7 +57,7 @@ void BreakpointsDlg::FillRecord(int sel)
     if (m_LastSel != -1)
     {
         // save old record
-        DebuggerBreakpoint* bp = m_List[m_LastSel];
+        DebuggerBreakpoint* bp = static_cast<DebuggerBreakpoint*>(lst->GetClientData(m_LastSel));
         if (bp)
         {
             bp->enabled = XRCCTRL(*this, "chkEnabled", wxCheckBox)->GetValue();
@@ -69,7 +71,7 @@ void BreakpointsDlg::FillRecord(int sel)
     if (sel >= 0 && sel < (int)lst->GetCount())
     {
         m_LastSel = sel;
-        DebuggerBreakpoint* bp = m_List[sel];
+        DebuggerBreakpoint* bp = static_cast<DebuggerBreakpoint*>(lst->GetClientData(sel));
         if (bp)
         {
             XRCCTRL(*this, "chkEnabled", wxCheckBox)->SetValue(bp->enabled);

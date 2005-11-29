@@ -139,15 +139,27 @@ void DebuggerState::ApplyBreakpoints()
 {
     if (!m_pDriver)
         return;
+
+    // remove any previously set temporary breakpoints
+    int i = (int)m_Breakpoints.GetCount() - 1;
+    while (i >= 0)
+    {
+        DebuggerBreakpoint* bp = m_Breakpoints[i];
+        if (bp->temporary && bp->alreadySet)
+            m_Breakpoints.RemoveAt(i);
+        --i;
+    }
+
 //    Log(_T("Setting breakpoints"));
 	m_pDriver->RemoveBreakpoint(0); // clear all breakpoints
 
-    unsigned int i = 0;
-    while (i < m_Breakpoints.GetCount())
+    i = (int)m_Breakpoints.GetCount() - 1;
+    while (i >= 0)
     {
         DebuggerBreakpoint* bp = m_Breakpoints[i];
         bp->bpNum = -1;
+        bp->index = i;
         m_pDriver->AddBreakpoint(bp);
-        ++i;
+        --i;
 	}
 }

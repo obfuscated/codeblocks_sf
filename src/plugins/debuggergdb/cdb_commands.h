@@ -180,6 +180,7 @@ class CdbCmd_AddBreakpoint : public DebuggerCmd
                     m_Cmd << _T('`') << out << _T(":") << bp->line + 1 << _T('`');
                 else
                     m_Cmd << bp->func;
+                bp->alreadySet = true;
             }
         }
         void ParseOutput(const wxString& output)

@@ -239,8 +239,8 @@ void CDB_driver::ParseOutput(const wxString& output)
             {
                 m_StopFile = bp->filename;
                 m_StopLine = bp->line + 1;
-                if (bp->temporary)
-                    m_pDBG->GetState().RemoveBreakpoint(bp->index);
+//                if (bp->temporary)
+//                    m_pDBG->GetState().RemoveBreakpoint(bp->index);
             }
             m_CursorChanged = true;
             m_ProgramIsStopped = true;

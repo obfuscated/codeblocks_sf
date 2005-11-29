@@ -260,6 +260,7 @@ void GDB_driver::ParseOutput(const wxString& output)
 				wxString lineStr = reSource.GetMatch(buffer, 2);
 				wxString addr = reSource.GetMatch(buffer, 3);
             #endif
+
                 if (m_pDisassembly && m_pDisassembly->IsShown())
                 {
                     long int addrL;

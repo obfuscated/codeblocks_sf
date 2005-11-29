@@ -270,7 +270,7 @@ void NewFromTemplateDlg::OnListSelection(wxListEvent& event)
         XRCCTRL(*this, "wxID_OK", wxButton)->SetLabel(_T("Sta&rt wizard..."));
     else
         XRCCTRL(*this, "wxID_OK", wxButton)->SetLabel(_T("C&reate"));
-    Layout();
+    XRCCTRL(*this, "wxID_OK", wxButton)->Layout();
 }
 
 void NewFromTemplateDlg::OnCategoryChanged(wxCommandEvent& event)

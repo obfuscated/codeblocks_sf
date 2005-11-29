@@ -174,9 +174,9 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
             : DebuggerCmd(driver),
             m_BP(bp)
         {
-            if (bp->enabled)
+            if (m_BP->enabled)
             {
-                if (bp->func.IsEmpty())
+                if (m_BP->func.IsEmpty())
                 {
                     wxString out = m_BP->filename;
                     DebuggerGDB::ConvertToGDBFile(out);
@@ -186,7 +186,7 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
                         m_Cmd << _T("break ");
                     else
                         m_Cmd << _T("tbreak ");
-                    m_Cmd << out << _T(":") << bp->line + 1;
+                    m_Cmd << out << _T(":") << m_BP->line + 1;
                 }
                 //GDB workaround
                 //Use function name if this is C++ constructor/destructor
@@ -196,10 +196,11 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
                         m_Cmd << _T("break ");
                     else
                         m_Cmd << _T("tbreak ");
-                    m_Cmd << bp->func;
+                    m_Cmd << m_BP->func;
                 }
                 //end GDB workaround
 
+                m_BP->alreadySet = true;
                 // condition and ignore count will be set in ParseOutput, where we 'll have the bp number
             }
         }
