@@ -221,9 +221,14 @@ void CDB_driver::ParseOutput(const wxString& output)
     {
 //            Log(_T("DEBUG: ") + lines[i]); // write it in the full debugger log
 
+        if (lines[i].StartsWith(_T("Cannot execute "))
+        {
+            Log(lines[i]);
+        }
+
         // Breakpoint 0 hit
         // >   38:     if (!RegisterClassEx (&wincl))
-        if (reBP.Matches(lines[i]))
+        else if (reBP.Matches(lines[i]))
         {
             Log(lines[i]);
 
