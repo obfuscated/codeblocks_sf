@@ -184,7 +184,7 @@ esac
 AC_MSG_CHECKING(whether to build the contrib plugins)
 contrib_default="no"
 AC_ARG_ENABLE(contrib, [AC_HELP_STRING([--enable-contrib], [build the contrib plugins (default NO)])],,
-                       enable_contrib=$todo_default)
+                       enable_contrib=$contrib_default)
 AM_CONDITIONAL([BUILD_CONTRIB], [test "x$enable_contrib" = "xyes"])
 if test "x$enable_contrib" = "xyes"; then
 	AC_MSG_RESULT(yes)
