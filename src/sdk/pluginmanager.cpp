@@ -30,8 +30,9 @@
 #include <wx/dynlib.h>
 #include <wx/intl.h>
 
-#include "cbexception.h" // class's header file
 #include "pluginmanager.h" // class's header file
+#include "annoyingdialog.h"
+#include "cbexception.h"
 #include "cbplugin.h"
 #include "messagemanager.h"
 #include "manager.h"
@@ -121,9 +122,9 @@ int PluginManager::ScanForPlugins(const wxString& path)
 #undef PLUGINS_MASK
 }
 
-cbPlugin* PluginManager::LoadPlugin(const wxString& pluginName)
+bool PluginManager::LoadPlugin(const wxString& pluginName)
 {
-    SANITY_CHECK(0L);
+    SANITY_CHECK(false);
     //wxLogNull zero; // no need for error messages; we check everything ourselves...
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
 
@@ -133,7 +134,7 @@ cbPlugin* PluginManager::LoadPlugin(const wxString& pluginName)
     {
         msgMan->DebugLog(_("%s: not loaded (file exists?)"), pluginName.c_str());
         delete lib;
-        return 0L;
+        return false;
     }
 
     // first get the SDK version entry points
@@ -144,7 +145,7 @@ cbPlugin* PluginManager::LoadPlugin(const wxString& pluginName)
     {
         msgMan->DebugLog(_("%s: no SDK version entry points"), pluginName.c_str());
         delete lib;
-        return 0L;
+        return false;
     }
 
 	// check if it is the correct SDK version
@@ -153,7 +154,9 @@ cbPlugin* PluginManager::LoadPlugin(const wxString& pluginName)
 	{
 		// in this case, inform the user...
 		wxString fmt;
-		fmt.Printf(_("The plugin \"%s\" failed to load because it was built with a different Code::Blocks SDK version:\n\n"
+		fmt.Printf(_("A plugin failed to load because it was built "
+                    "with a different Code::Blocks SDK version.\n\n"
+					"Plugin: %s\n"
 					"Plugin's SDK version: %d.%d\n"
 					"Your SDK version: %d.%d"),
 					pluginName.c_str(),
@@ -161,55 +164,78 @@ cbPlugin* PluginManager::LoadPlugin(const wxString& pluginName)
 					minorproc(),
 					PLUGIN_SDK_VERSION_MAJOR,
 					PLUGIN_SDK_VERSION_MINOR);
-		wxMessageBox(fmt, _("Error loading plugin"), wxICON_ERROR);
+        AnnoyingDialog dlg(_("Wrong plugin version"),
+                            fmt,
+                            wxART_WARNING,
+                            AnnoyingDialog::OK,
+                            wxID_OK);
+        dlg.ShowModal();
         lib->Unload();
         delete lib;
-        return 0L;
+        return false;
 	}
 
-    // get the plugin's entry point
-    GetPluginProc proc = (GetPluginProc)lib->GetSymbol(_T("GetPlugin"));
-    if (!proc)
+    // get the plugin's count inside this library
+    GetPluginsCountProc countproc = (GetPluginsCountProc)lib->GetSymbol(_T("GetPluginsCount"));
+    // and the factory function too
+    GetPluginProc factory = (GetPluginProc)lib->GetSymbol(_T("GetPlugin"));
+    if (!countproc || !factory)
     {
         lib->Unload();
         delete lib;
         msgMan->DebugLog(_("%s: not a plugin"), pluginName.c_str());
-        return 0L;
+        return false;
     }
 
-    // try to load the plugin
-    cbPlugin* plug = 0L;
-    try
+    // loop for all plugins contained in this library
+    size_t pluginsCount = countproc();
+    int libUseCount = 0;
+    for (size_t i = 0; i < pluginsCount; ++i)
     {
-        plug = proc();
+        // try to load the plugin
+        cbPlugin* plug = 0L;
+        try
+        {
+            plug = factory(i);
+        }
+        catch (cbException& exception)
+        {
+            exception.ShowErrorMessage(false);
+            continue;
+        }
+
+        // check if we have already loaded a plugin by that name
+        wxString plugName = plug->GetInfo()->name;
+        if (FindPluginByName(plugName))
+        {
+            msgMan->DebugLog(_("%s: another plugin with name \"%s\" is already loaded..."), pluginName.c_str(), plugName.c_str());
+            delete plug;
+            continue;
+        }
+
+        // all done; add it to our list
+        PluginElement* plugElem = new PluginElement;
+        plugElem->fileName = pluginName;
+        plugElem->name = plugName;
+        plugElem->library = lib;
+        plugElem->plugin = plug;
+        m_Plugins.Add(plugElem);
+
+        ++libUseCount;
+
+        msgMan->DebugLog(_("%s: loaded"), plugName.c_str());
     }
-    catch (cbException& exception)
+
+    if (libUseCount == 0)
     {
-        exception.ShowErrorMessage(false);
+        // not even one plugin was loaded
+        // free this library
         lib->Unload();
         delete lib;
-        return 0L;
+        return false;
     }
 
-    // check if we have already loaded a plugin by that name
-    wxString plugName = plug->GetInfo()->name;
-    if (FindPluginByName(plugName))
-    {
-        msgMan->DebugLog(_("%s: another plugin with name \"%s\" is already loaded..."), pluginName.c_str(), plugName.c_str());
-        lib->Unload();
-        delete lib;
-        return 0L;
-    }
-
-    PluginElement* plugElem = new PluginElement;
-    plugElem->fileName = pluginName;
-    plugElem->name = plugName;
-    plugElem->library = lib;
-	plugElem->plugin = plug;
-    m_Plugins.Add(plugElem);
-
-	msgMan->DebugLog(_("%s: loaded"), plugName.c_str());
-    return plug;
+    return true;
 }
 
 void PluginManager::LoadAllPlugins()

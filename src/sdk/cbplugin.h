@@ -1,5 +1,5 @@
-#ifndef DEVPLUGIN_H
-#define DEVPLUGIN_H
+#ifndef CBPLUGIN_H
+#define CBPLUGIN_H
 
 #include <wx/dynarray.h>
 #include <wx/event.h>
@@ -392,31 +392,85 @@ class PLUGIN_EXPORT cbProjectWizardPlugin : public cbPlugin
         void RemoveToolBar(wxToolBar* toolBar){}
 };
 
-typedef cbPlugin*(*GetPluginProc)(void);
+typedef size_t(*GetPluginsCountProc)(void);
+typedef cbPlugin*(*GetPluginProc)(size_t);
 typedef int(*GetSDKVersionMajorProc)(void);
 typedef int(*GetSDKVersionMinorProc)(void);
 
 // this is the plugins SDK version number
 // it will change when the plugins interface breaks
 #define PLUGIN_SDK_VERSION_MAJOR 1
-#define PLUGIN_SDK_VERSION_MINOR 4
+#define PLUGIN_SDK_VERSION_MINOR 5
 
 /** This is used to declare the plugin's hooks.
   */
 #define CB_DECLARE_PLUGIN() \
     extern "C" \
     { \
-        PLUGIN_EXPORT cbPlugin* GetPlugin(); \
+        PLUGIN_EXPORT size_t GetPluginsCount(); \
+        PLUGIN_EXPORT cbPlugin* GetPlugin(size_t index); \
         PLUGIN_EXPORT int GetSDKVersionMajor(); \
         PLUGIN_EXPORT int GetSDKVersionMinor(); \
     }
 
 /** This is used to actually implement the plugin's hooks.
+  * Implements and exports one plugin of class @c name.
   * @param name The plugin's name (class).
   */
 #define CB_IMPLEMENT_PLUGIN(name) \
-    cbPlugin* GetPlugin() { return new name; } \
+    size_t GetPluginsCount(){ return 1; } \
+    cbPlugin* GetPlugin(size_t index) { return new name; } \
     int GetSDKVersionMajor() { return PLUGIN_SDK_VERSION_MAJOR; } \
-    int GetSDKVersionMinor() { return PLUGIN_SDK_VERSION_MINOR; } \
+    int GetSDKVersionMinor() { return PLUGIN_SDK_VERSION_MINOR; }
 
-#endif // DEVPLUGIN_H
+/** Synonym to CB_IMPLEMENT_PLUGIN.
+  * Implements and exports ONE plugin of class @c name.
+  * @param name The plugin's name (class).
+  */
+#define CB_IMPLEMENT_PLUGINS_1(name) \
+    size_t GetPluginsCount(){ return 1; } \
+    cbPlugin* GetPlugin(size_t index) { return new name; } \
+    int GetSDKVersionMajor() { return PLUGIN_SDK_VERSION_MAJOR; } \
+    int GetSDKVersionMinor() { return PLUGIN_SDK_VERSION_MINOR; }
+
+/** Used to export more than one plugin from the same library.
+  * Implements and exports TWO plugins of class @c name1 and @c name2.
+  * @param name1 The first plugin's name (class).
+  * @param name2 The second plugin's name (class).
+  */
+#define CB_IMPLEMENT_PLUGINS_2(name1,name2) \
+    size_t GetPluginsCount(){ return 2; } \
+    cbPlugin* GetPlugin(size_t index) \
+    { \
+        switch(index) \
+        { \
+            case 0: return new name1; \
+            case 1: return new name2; \
+            default: cbThrow(_("Invalid plugin index!")); \
+        } \
+    } \
+    int GetSDKVersionMajor() { return PLUGIN_SDK_VERSION_MAJOR; } \
+    int GetSDKVersionMinor() { return PLUGIN_SDK_VERSION_MINOR; }
+
+/** Used to export more than one plugin from the same library.
+  * Implements and exports THREE plugins of class @c name1, @c name2 and @c name3.
+  * @param name1 The first plugin's name (class).
+  * @param name2 The second plugin's name (class).
+  * @param name3 The third plugin's name (class).
+  */
+#define CB_IMPLEMENT_PLUGINS_3(name1,name2,name3) \
+    size_t GetPluginsCount(){ return 3; } \
+    cbPlugin* GetPlugin(size_t index) \
+    { \
+        switch(index) \
+        { \
+            case 0: return new name1; \
+            case 1: return new name2; \
+            case 2: return new name3; \
+            default: cbThrow(_("Invalid plugin index!")); \
+        } \
+    } \
+    int GetSDKVersionMajor() { return PLUGIN_SDK_VERSION_MAJOR; } \
+    int GetSDKVersionMinor() { return PLUGIN_SDK_VERSION_MINOR; }
+
+#endif // CBPLUGIN_H

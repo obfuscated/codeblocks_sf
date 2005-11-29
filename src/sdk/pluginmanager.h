@@ -34,7 +34,7 @@ class DLLIMPORT PluginManager
 		void CreateMenu(wxMenuBar* menuBar);
 		void ReleaseMenu(wxMenuBar* menuBar);
 		int ScanForPlugins(const wxString& path);
-        cbPlugin* LoadPlugin(const wxString& pluginName);
+        bool LoadPlugin(const wxString& pluginName);
         void LoadAllPlugins();
         void UnloadAllPlugins();
         int ExecutePlugin(const wxString& pluginName);

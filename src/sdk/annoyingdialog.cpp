@@ -106,6 +106,8 @@ AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message,
 
     SetSizer( outerSizer );
     outerSizer->SetSizeHints(this);
+
+    Centre();
 }
 
 void AnnoyingDialog::OnButton(wxCommandEvent& event)
