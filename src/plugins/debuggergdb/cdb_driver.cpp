@@ -221,7 +221,7 @@ void CDB_driver::ParseOutput(const wxString& output)
     {
 //            Log(_T("DEBUG: ") + lines[i]); // write it in the full debugger log
 
-        if (lines[i].StartsWith(_T("Cannot execute "))
+        if (lines[i].StartsWith(_T("Cannot execute ")))
         {
             Log(lines[i]);
         }
