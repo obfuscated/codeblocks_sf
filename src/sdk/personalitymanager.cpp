@@ -106,7 +106,7 @@ const wxString& PersonalityManager::GetPersonality()
     static wxString pers;
     pers = m_CurrentPersonalityIdx > 0 && m_CurrentPersonalityIdx < (int)m_Personalities.GetCount()
             ? m_Personalities[m_CurrentPersonalityIdx]
-            : wxT("");
+            : wxT("default");
     return pers;
 }
 
