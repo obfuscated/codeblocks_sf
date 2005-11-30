@@ -74,6 +74,9 @@ static const wxCmdLineEntryDesc cmdLineDesc[] =
     { wxCMD_LINE_SWITCH, _T(""), _T("clear-configuration"), _T("completely clear program's configuration"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_OPTION, _T(""), _T("prefix"),  _T("the shared data dir prefix"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
     { wxCMD_LINE_OPTION, _T("p"), _T("personality"),  _T("the personality to use: \"ask\" or <personality-name>"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
+    { wxCMD_LINE_SWITCH, _T(""), _T("rebuild"), _T("clean and then build the project/workspace"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_SWITCH, _T(""), _T("build"), _T("just build the project/workspace"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_SWITCH, _T(""), _T("hidden"), _T("do not show a window (used only with *build options)"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_PARAM, _T(""), _T(""),  _T("filename(s)"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE },
     { wxCMD_LINE_NONE }
 };
@@ -209,20 +212,25 @@ void CodeBlocksApp::InitFrame()
             g_DDEServer->SetFrame(frame);
     #endif
     HideSplashScreen();
-    frame->Show(TRUE);
-    SetTopWindow(frame);
+    frame->Show(!m_Hidden);
     if (ParseCmdLine(frame) == 0)
     {
         if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/blank_workspace"), true) == false)
             Manager::Get()->GetProjectManager()->LoadWorkspace();
     }
 
+    if (!m_Batch)
+    {
+        frame->Show(true);
+        SetTopWindow(frame);
+
 #ifdef wxUSE_BINDERAPP
-	SetGlobalHandler(frame);
-	SetGlobalBinder(frame->m_KeyProfiles.Item(0));
+        SetGlobalHandler(frame);
+        SetGlobalBinder(frame->m_KeyProfiles.Item(0));
 #endif
 
-    frame->ShowTips(); // this func checks if the user wants tips, so no need to check here
+        frame->ShowTips(); // this func checks if the user wants tips, so no need to check here
+    }
 }
 
 void CodeBlocksApp::CheckVersion()
@@ -300,6 +308,12 @@ void CodeBlocksApp::InitLocale()
 
 bool CodeBlocksApp::OnInit()
 {
+    m_Batch = false;
+    m_Build = false;
+    m_ReBuild = false;
+    m_Hidden = false;
+    m_BatchExitCode = 0;
+
     try
     {
         m_pSplash = 0;
@@ -338,6 +352,13 @@ bool CodeBlocksApp::OnInit()
         if(!InitXRCStuff())
             return false;
         InitFrame();
+
+        if (m_Batch)
+        {
+            m_BatchExitCode = BatchJob();
+            return false;
+        }
+
         CheckVersion();
 
         CodeBlocksEvent event(cbEVT_APP_STARTUP_DONE);
@@ -375,7 +396,7 @@ int CodeBlocksApp::OnExit()
 #endif
     if (m_pSingleInstance)
         delete m_pSingleInstance;
-    return 0;
+    return m_Batch ? m_BatchExitCode : 0;
 }
 
 int CodeBlocksApp::OnRun()
@@ -420,6 +441,35 @@ void CodeBlocksApp::OnFatalException()
                     "will terminate immediately.\n"
                     "We are sorry for the inconvenience..."));
 #endif
+}
+
+int CodeBlocksApp::BatchJob()
+{
+    if (!m_Batch)
+        return -1;
+
+    // find compiler plugin
+    PluginsArray arr = Manager::Get()->GetPluginManager()->GetCompilerOffers();
+    if (arr.GetCount() == 0)
+        return -2;
+
+    cbCompilerPlugin* compiler = static_cast<cbCompilerPlugin*>(arr[0]);
+    if (!compiler)
+        return -3;
+
+    if (m_ReBuild)
+        compiler->RebuildAll();
+    else if (m_Build)
+        compiler->CompileAll();
+
+    // wait for compiler to finish
+    while (compiler->IsRunning())
+    {
+        wxMilliSleep(10);
+        Yield(true);
+    }
+
+    return compiler->GetExitCode();
 }
 
 void CodeBlocksApp::ShowSplashScreen()
@@ -516,8 +566,22 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                 {
                     int count = parser.GetParamCount();
 					filesInCmdLine = count != 0;
+					bool hasProjOrWksp = false;
                     for ( int param = 0; param < count; ++param )
-                        handlerFrame->Open(parser.GetParam(param));
+                    {
+                        if (handlerFrame->Open(parser.GetParam(param)) && !hasProjOrWksp)
+                        {
+                            // is it a project/workspace?
+                            FileType ft = FileTypeOf(parser.GetParam(param));
+                            if (ft == ftCodeBlocksProject || ft == ftCodeBlocksWorkspace)
+                                hasProjOrWksp = true;
+                        }
+                    }
+
+                    // batch jobs
+                    m_Batch = hasProjOrWksp;
+                    m_Batch = m_Batch && (m_Build || m_ReBuild);
+                    m_Hidden = m_Batch && m_Hidden;
                 }
                 else
                 {
@@ -535,6 +599,11 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
 					m_HasDebugLog = parser.Found(_T("debug-log"), &val);
 					if (parser.Found(_T("personality"), &val))
                         SetupPersonality(val);
+
+                    // batch jobs
+                    m_Hidden = parser.Found(_T("hidden"), &val);
+                    m_Build = parser.Found(_T("build"), &val);
+                    m_ReBuild = parser.Found(_T("rebuild"), &val);
                 }
             }
             break;

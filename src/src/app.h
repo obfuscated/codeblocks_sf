@@ -66,6 +66,7 @@ class CodeBlocksApp : public
         void InitFrame();
         void CheckVersion();
         void InitLocale();
+        int BatchJob();
         wxLocale m_locale; // locale we'll be using
     private:
         void ShowSplashScreen();
@@ -81,6 +82,14 @@ class CodeBlocksApp : public
 #ifdef __WXMSW__
         HINSTANCE m_ExceptionHandlerLib;
 #endif
+        // batch jobs - start
+        bool m_Batch;
+        bool m_Build;
+        bool m_ReBuild;
+        bool m_Hidden;
+        int m_BatchExitCode;
+        // batch jobs - end
+
         wxSplashScreen* m_pSplash;
 		wxSingleInstanceChecker* m_pSingleInstance;
         DECLARE_EVENT_TABLE()

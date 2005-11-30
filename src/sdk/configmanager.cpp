@@ -61,16 +61,17 @@ CfgMgrBldr::CfgMgrBldr() : doc(0), volatile_doc(0), r(false)
     if(personality.StartsWith(_T("http://")))
         SwitchToR(personality);
     else
-        SwitchTo(ConfigManager::GetConfigFolder() + personality + _T(".conf"));
+        SwitchTo(ConfigManager::GetConfigFolder() + wxFILE_SEP_PATH + personality + _T(".conf"));
 }
 
 void CfgMgrBldr::SwitchTo(const wxString& absFileName)
 {
     Close();
-    doc = new TiXmlDocument(absFileName.mb_str());
-    if(!doc->LoadFile()
-            && !doc->LoadFile((ConfigManager::GetExecutableFolder() + _T("/default.conf")).mb_str())
-            && !doc->LoadFile((ConfigManager::GetConfigFolder() + _T("/default.conf")).mb_str()))
+    wxString loc = absFileName;
+    if (loc.IsEmpty())
+        loc = ConfigManager::LocateDataFile(_T("default.conf"));
+    doc = new TiXmlDocument(loc.mb_str());
+    if(!doc->LoadFile())
     {
         doc->InsertEndChild(TiXmlDeclaration("1.0", "UTF-8", "yes"));
         doc->InsertEndChild(TiXmlElement(_C(CfgMgrConsts::rootTag)));
@@ -309,11 +310,14 @@ wxString ConfigManager::GetDataFolder()
 wxString ConfigManager::LocateDataFile(const wxString& filename)
 {
     wxPathList searchPaths;
+    searchPaths.Add(GetConfigFolder());
     searchPaths.Add(GetDataFolder());
     searchPaths.Add(GetExecutableFolder());
     searchPaths.Add(GetHomeFolder());
     searchPaths.AddEnvList(_T("PATH"));
-    searchPaths.Add(_T("C:/"));
+#ifdef __WXMSW__
+    searchPaths.Add(_T("C:\\"));
+#endif
     return searchPaths.FindValidPath(filename);
 }
 
