@@ -20,22 +20,20 @@ WXS_ST_BEGIN(wxsDialogStyles)
     WXS_ST(wxDIALOG_MODAL)
     WXS_ST(wxDIALOG_MODELESS)
     WXS_ST(wxDIALOG_NO_PARENT)
-
-
     WXS_ST(wxTAB_TRAVERSAL)
     WXS_ST(wxWS_EX_VALIDATE_RECURSIVELY)
     WXS_ST(wxDIALOG_EX_METAL)
     WXS_ST(wxMAXIMIZE_BOX)
     WXS_ST(wxMINIMIZE_BOX)
     WXS_ST(wxFRAME_SHAPED)
-#ifdef __WXMSW__
-    WXS_ST(wxNO_3D)
-// NOTE (cyberkoa##): wxDIALOG_EX_CONTEXTHELP is an extended style and must be set by calling SetExtraStyle before Create is called (two-step construction), code generation need to take care of this.
-    WXS_ST(wxDIALOG_EX_CONTEXTHELP)
-#endif
-// NOTE (cyberkoa##): wxDIALOG_EX_METAL is an extended style and must be set by calling SetExtraStyle before Create is called (two-step construction), code generation need to take care of this.
-// TODO (cyberkoa##): wxDIALOG_EX_METAL not in MSW's XRC but in Help file
-//    WXS_ST(wxDIALOG_EX_METAL)
+// NOTE (cyberkoa#1#): wxNO_3D & wxDIALOG_EX_CONTEXTHELP is only available
+// on WXMSW wxDIALOG_EX_METAL only for WXMAC
+// NOTE (cyberkoa#1#):  wxDIALOG_EX_CONTEXTHELP & wxDIALOG_EX_METAL are
+// extended style which need 2 steps construction
+    WXS_ST_MASK(wxNO_3D,wxsSFWin,0,true)
+    WXS_EXST_MASK(wxDIALOG_EX_CONTEXTHELP,wxsSFWin,0,true)
+    WXS_EXST_MASK(wxDIALOG_EX_METAL,wxsSFOSX,0,true)
+
 WXS_ST_END(wxsDialogStyles)
 
 WXS_EV_BEGIN(wxsDialogEvents)
