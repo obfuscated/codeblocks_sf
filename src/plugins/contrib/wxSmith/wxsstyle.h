@@ -9,13 +9,19 @@ const unsigned int wxsSFXRC    = 0x00000001;    ///< This style can be used in X
 const unsigned int wxsSFWin    = 0x00000002;    ///< This style can be used in Windows (any)
 const unsigned int wxsSFWin95  = 0x00000004;    ///< This style can be used in Win95
 const unsigned int wxsSFWinCE  = 0x00000008;    ///< This style can be used in WinCE
-const unsigned int wxsSFGTK    = 0x00000010;    ///< This style can be used in GTK
-const unsigned int wxsSFMAC    = 0x00000020;    ///< This style can be used in MAC
-const unsigned int wxsSFMotif  = 0x00000040;    ///< This style can be used in Motif
-const unsigned int wxsSFMGL    = 0x00000080;    ///< This style can be used in MGL
-const unsigned int wxsSFOS2    = 0x00000100;    ///< This style can be used in OS2
-const unsigned int wxsSFX11    = 0x00000200;    ///< This style can be used in X11
-const unsigned int wxsSFAll    = 0x00000FFF;    ///< This style can be used anywhere
+const unsigned int wxsSFGTK    = 0x00000010;    ///< This style can be used in GTK+ (any GTK)
+const unsigned int wxsSFGTK12  = 0x00000020;    ///< This style can be used in GTK (1.2 only)
+const unsigned int wxsSFGTK20  = 0x00000040;    ///< This style can be used in GTK (1.2 only)
+const unsigned int wxsSFOSX    = 0x00000080;    ///< This style can be used in MAC (any OSX port Cocoa or Carbon)
+const unsigned int wxsSFCOCOA  = 0x00000100;    ///< This style can be used in MAC (OSX port Cocoa API)
+const unsigned int wxsSFCARBON = 0x00000200;    ///< This style can be used in MAC (MacOS for Carbon CFM)
+const unsigned int wxsSFMotif  = 0x00000400;    ///< This style can be used in Motif
+const unsigned int wxsSFMGL    = 0x00000800;    ///< This style can be used in MGL
+const unsigned int wxsSFOS2    = 0x00001000;    ///< This style can be used in OS2
+const unsigned int wxsSFX11    = 0x00002000;    ///< This style can be used in X11
+const unsigned int wxsSFPALMOS = 0x00004000;    ///< This style can be used in PALMOS
+const unsigned int wxsSFUNIV   = 0x00008000;    ///< This style can be used in wxUNIV
+const unsigned int wxsSFAll    = 0x0000FFFF;    ///< This style can be used anywhere
 const unsigned int wxsSFExt    = 0x80000000;    ///< This is extended style
 
 /** Structure describing one widget's stule */
