@@ -14,16 +14,12 @@ WXS_ST_BEGIN(wxsNotebookStyles)
     WXS_ST(wxNB_RIGHT)
     WXS_ST(wxNB_TOP)
     WXS_ST(wxNB_BOTTOM)
-#ifdef __WXMSW__
-    WXS_ST(wxNB_FIXEDWIDTH)
-    WXS_ST(wxNB_MULTILINE)
-    WXS_ST(wxNB_NOPAGETHEME)
-#endif
+    WXS_ST_MASK(wxNB_FIXEDWIDTH,wxsSFWin,0,true)
+    WXS_ST_MASK(wxNB_MULTILINE,wxsSFWin,0,true)
+    WXS_ST_MASK(wxNB_NOPAGETHEME,wxsSFWin,0,true)
 
 // NOTE (cyberkoa##): wxNB_FLAT is in HELP (WinCE only) file but not in wxMSW's XRC
-#ifdef __WXWINCE__
-    WXS_ST(wxNB_FLAT)
-#endif
+    WXS_ST_MASK(wxNB_FLAT,wxsSFWinCE,0,true)
 WXS_ST_END(wxsNotebookStyles)
 
 WXS_EV_BEGIN(wxsNotebookEvents)

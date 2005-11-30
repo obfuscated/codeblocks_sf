@@ -22,7 +22,7 @@ WXS_ST_BEGIN(wxsTreeCtrlStyles)
     WXS_ST(wxTR_MULTIPLE)
     WXS_ST(wxTR_EXTENDED)
     WXS_ST(wxTR_DEFAULT_STYLE)
-    WXS_ST_DEFAULTS()
+ //   WXS_ST_DEFAULTS()
 WXS_ST_END(wxsTreeCtrlStyles)
 
 WXS_EV_BEGIN(wxsTreeCtrlEvents)

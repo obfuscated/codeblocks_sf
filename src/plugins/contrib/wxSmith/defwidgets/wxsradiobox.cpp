@@ -8,14 +8,10 @@ WXS_ST_BEGIN(wxsRadioBoxStyles)
     WXS_ST(wxRA_SPECIFY_ROWS)
     WXS_ST(wxRA_SPECIFY_COLS)
 // NOTE (cyberkoa##): wxRA_HORIZONTAL & wxRA_VERTICAL is not in HELP file but in wxMSW's XRC
-    WXS_ST(wxRA_HORIZONTAL)
-    WXS_ST(wxRA_VERTICAL)
+    WXS_ST_MASK(wxRA_HORIZONTAL,wxsSFAll,0,false)
+    WXS_ST_MASK(wxRA_VERTICAL,wxsSFAll,0,false)
+    WXS_ST_MASK(wxRA_USE_CHECKBOX,wxsSFPALMOS,0,true)
 
-// FIXME (cyberkoa##): wxRA_USE_CHECKBOX currently only support on PalmOS,to confirm the PALMOS #ifdef statement
-//#ifdef __PALMOS__
-//    WXS_ST(wxRA_USE_CHECKBOX)
-//#endif
-    WXS_ST_DEFAULTS()
 WXS_ST_END(wxsRadioBoxStyles)
 
 WXS_EV_BEGIN(wxsRadioBoxEvents)

@@ -10,47 +10,26 @@ WXS_ST_BEGIN(wxsTextCtrlStyles)
     WXS_ST(wxTE_MULTILINE)
     WXS_ST(wxTE_PASSWORD)
     WXS_ST(wxTE_READONLY)
+//Help file : No effect under GTK1
     WXS_ST(wxHSCROLL)
     WXS_ST(wxTE_RICH)
     WXS_ST(wxTE_RICH2)
     WXS_ST(wxTE_NOHIDESEL)
     WXS_ST(wxTE_LEFT)
-#ifdef __WXMSW__
-    WXS_ST(wxTE_AUTO_URL)
-#endif
-#ifdef __WXGTK20__
-    WXS_ST(wxTE_AUTO_URL)
-#endif
+    WXS_ST_MASK(wxTE_AUTO_URL,wxsSFWin|wxsSFGTK20,0,true)
+    WXS_ST_MASK(wxTE_CENTRE,wxsSFWin|wxsSFGTK20,0,true)
+    WXS_ST_MASK(wxTE_RIGHT,wxsSFWin|wxsSFGTK20,0,true)
+    WXS_ST_MASK(wxTE_CENTRE,wxsSFWin|wxsSFGTK20,0,true)
+    WXS_ST_MASK(wxTE_CHARWRAP,wxsSFUNIV|wxsSFGTK20,0,true)
+    WXS_ST_MASK(wxTE_WORDWRAP,wxsSFUNIV|wxsSFGTK20,0,true)
+    WXS_ST(wxTE_BESTWRAP)
 
-#ifdef __WXMSW__
-    WXS_ST(wxTE_CENTRE)
-#endif
-#ifdef __WXGTK20__
-    WXS_ST(wxTE_CENTRE)
-#endif
+// Help file :On PocketPC and Smartphone, causes the first letter to be capitalized
+    WXS_ST_MASK(wxTE_CAPITALIZE,wxsSFWinCE,0,true)
+// Help file : same as wxTE_HSCROLL, so ignore
+//    WXS_ST(wxTE_DONTWRAP)
 
-#ifdef __WXMSW__
-    WXS_ST(wxTE_RIGHT)
-#endif
-#ifdef __WXGTK20__
-    WXS_ST(wxTE_RIGHT)
-#endif
-
-#ifdef __WXGTK20__
-    WXS_ST(wxTE_CHARWRAP)
-#endif
-#ifdef ____WXUNIVERSAL__
-    WXS_ST(wxTE_CHARWRAP)
-#endif
-
-#ifdef __WXGTK20__
-    WXS_ST(wxTE_WORDWRAP)
-#endif
-#ifdef ____WXUNIVERSAL__
-    WXS_ST(wxTE_WORDWRAP)
-#endif
-
-    WXS_ST(wxTE_DONTWRAP)
+// Not in Help file but in XRC file, assume applying to all platform
     WXS_ST(wxTE_LINEWRAP)
 WXS_ST_END(wxsTextCtrlStyles)
 

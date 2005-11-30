@@ -4,9 +4,8 @@
 WXS_ST_BEGIN(wxsGaugeStyles)
     WXS_ST(wxGA_HORIZONTAL)
     WXS_ST(wxGA_VERTICAL)
-#ifdef __WXMSW__
+// NOTE (cyberkoa#1#): according to Help file , wxGA_SMOOTH is not support by all platform but does not mention which platform is not support.
     WXS_ST(wxGA_SMOOTH)
-#endif
 // NOTE (cyberkoa##): wxGA_PROGRESSBAR not in HELP file but in XRC code
 //    WXS_ST(wxGA_PROGRESSBAR)
 WXS_ST_END(wxsGaugeStyles)

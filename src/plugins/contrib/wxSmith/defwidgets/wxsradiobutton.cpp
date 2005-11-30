@@ -5,10 +5,9 @@ WXS_ST_BEGIN(wxsRadioButtonStyles)
     WXS_ST_CATEGORY("wxRadioButton")
     WXS_ST(wxRB_GROUP)
     WXS_ST(wxRB_SINGLE)
-#ifdef __WXPALMOS__
-    WXS_ST(wxRB_USE_CHECKBOX)
-#endif
-    WXS_ST_DEFAULTS()
+// NOTE (cyberkoa#1#): wxRB_USE_CHECKBOX is only available under PALMOS, not sure whether in XRC PALMOS port or not
+    WXS_ST_MASK(wxRB_USE_CHECKBOX,wxsSFPALMOS,0,true)
+
 WXS_ST_END(wxsRadioButtonStyles)
 
 WXS_EV_BEGIN(wxsRadioButtonEvents)

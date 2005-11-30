@@ -4,18 +4,9 @@
 WXS_ST_BEGIN(wxsCheckBoxStyles)
     WXS_ST_CATEGORY("wxCheckBox")
     WXS_ST(wxCHK_2STATE)
-
-#ifndef __WXMGL__
-#ifndef __WXOS2__
-#ifndef __WXGTK20__
-    WXS_ST(wxCHK_3STATE)
-    WXS_ST(wxCHK_ALLOW_3RD_STATE_FOR_USER)
-#endif
-#endif
-#endif
-
     WXS_ST(wxALIGN_RIGHT)
-    WXS_ST_DEFAULTS()
+    WXS_ST_MASK(wxCHK_3STATE,wxsSFAll,wxsSFMGL |wxsSFGTK12 | wxsSFOS2,true)
+    WXS_ST_MASK(wxCHK_ALLOW_3RD_STATE_FOR_USER,wxsSFAll,wxsSFMGL |wxsSFGTK12 | wxsSFOS2,true)
 WXS_ST_END(wxsCheckBoxStyles)
 
 WXS_EV_BEGIN(wxsCheckBoxEvents)
