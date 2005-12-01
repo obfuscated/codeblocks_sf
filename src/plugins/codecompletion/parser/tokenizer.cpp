@@ -31,6 +31,17 @@
 #include "../../../sdk/manager.h"
 #include <cctype>
 
+
+namespace TokenizerConsts
+{
+const wxString colon(_T(":"));
+const wxString colon_colon(_T("::"));
+const wxString operator_str(_T("operator"));
+const wxString include_str(_T("#include"));
+const wxString hash(_T("#"));
+const wxString tabcrlf(_T("\t\n\r"));
+};
+
 Tokenizer::Tokenizer(const wxString& filename)
 	: m_Filename(filename),
 	m_BufferLen(0),
@@ -128,91 +139,47 @@ bool Tokenizer::ReadFile()
     return true;
 }
 
-wxChar Tokenizer::CurrentChar()
-{
-	return m_Buffer.GetChar(m_TokenIndex);
-}
-
-wxChar Tokenizer::NextChar()
-{
-	if ((m_TokenIndex + 1) < 0 || (m_TokenIndex + 1) >= m_BufferLen)
-		return 0;
-	return m_Buffer.GetChar(m_TokenIndex + 1);
-}
-
-wxChar Tokenizer::PreviousChar()
-{
-	if ((m_TokenIndex - 1) < 0 || (m_TokenIndex - 1) >= m_BufferLen)
-		return 0;
-	return m_Buffer.GetChar(m_TokenIndex - 1);
-}
-
-void Tokenizer::AdjustLineNumber()
-{
-	if (CurrentChar() == '\n')
-		++m_LineNumber;
-}
-
-bool Tokenizer::MoveToNextChar()
-{
-	++m_TokenIndex;
-	if (!IsEOF())
-	{
-		AdjustLineNumber();
-		return true;
-	}
-	return false;
-}
-
 bool Tokenizer::SkipWhiteSpace()
 {
-	// skip spaces, tabs, etc.
-	while (!IsEOF() && isspace(CurrentChar()))
-		MoveToNextChar();
-	if (IsEOF())
-		return false;
-	return true;
+    // skip spaces, tabs, etc.
+    while (CurrentChar() <= _T(' ') && MoveToNextChar()) // don't check EOF when MoveToNextChar already does, also replace replace isspace() which calls msvcrt.dll
+        ;             									 // with a dirty hack:  CurrentChar() <= ' ' is "good enough" here
+    if (IsEOF())
+        return false;
+    return true;
 }
 
 bool Tokenizer::SkipToChar(const wxChar& ch)
 {
-	// skip everything until we find ch
-	while (1)
-	{
-		while (!IsEOF() && CurrentChar() != ch)
-			MoveToNextChar();
-		if (PreviousChar() != '\\')
-			break;
-		else
-		{
-			// check for "\\"
-			if (m_TokenIndex - 2 >= 0 && m_Buffer.GetChar(m_TokenIndex - 2) == '\\')
-				break;
-		}
-		MoveToNextChar();
-	}
-	if (IsEOF())
-		return false;
-	return true;
+    // skip everything until we find ch
+    while(true)
+    {
+        while (CurrentChar() != ch && MoveToNextChar())  // don't check EOF when MoveToNextChar already does
+            ;
+
+        if (IsEOF())
+            return false;
+
+        if (PreviousChar() != '\\')
+            break;
+        else
+        {
+            // check for "\\"
+            if (m_TokenIndex - 2 >= 0 && m_Buffer.GetChar(m_TokenIndex - 2) == '\\')
+                break;
+        }
+        MoveToNextChar();
+    }
+    return true;
 }
 
-bool Tokenizer::CharInString(const char ch, const char* chars)
-{
-	int len = strlen(chars);
-	for (int i = 0; i < len; ++i)
-	{
-		if (ch == chars[i])
-			return true;
-	}
-	return false;
-}
 
 bool Tokenizer::SkipToOneOfChars(const char* chars, bool supportNesting)
 {
 	// skip everything until we find any one of chars
 	while (1)
 	{
-		while (!IsEOF() && !CharInString(CurrentChar(), chars))
+		while (NotEOF() && !CharInString(CurrentChar(), chars))
 		{
 			if (CurrentChar() == '"' || CurrentChar() == '\'')
 			{
@@ -248,7 +215,7 @@ bool Tokenizer::SkipToEOL()
 	// skip everything until we find EOL
 	while (1)
 	{
-		while (!IsEOF() && CurrentChar() != '\n')
+		while (NotEOF() && CurrentChar() != '\n')
 			MoveToNextChar();
 		wxChar last = PreviousChar();
 		// if DOS line endings, we 've hit \r and we skip to \n...
@@ -279,7 +246,7 @@ bool Tokenizer::SkipBlock(const wxChar& ch)
 
 	MoveToNextChar();
 	int count = 1; // counter for nested blocks (xxx())
-	while (!IsEOF())
+	while (NotEOF())
 	{
 		if (CurrentChar() == '"' || CurrentChar() == '\'')
 		{
@@ -308,8 +275,7 @@ bool Tokenizer::SkipUnwanted()
 			(!m_IsOperator && CurrentChar() == '=') ||
 			(!m_IsOperator && CurrentChar() == '[') ||
 			CurrentChar() == '?' ||
-			m_Buffer.Mid(m_TokenIndex, 2) == _T("//") ||
-			m_Buffer.Mid(m_TokenIndex, 2) == _T("/*"))
+			CurrentChar() == '/' && (NextChar() == '/' || NextChar() == '*') )
 	{
 		bool skipPreprocessor = false; // used for #include
 		while (m_Buffer.Mid(m_TokenIndex, 2) == _T("//") ||
@@ -317,8 +283,8 @@ bool Tokenizer::SkipUnwanted()
 		{
 			// C/C++ style comments
 			bool cstyle = NextChar() == '*';
-			MoveToNextChar();
-			MoveToNextChar();
+			MoveToNextChar(2);
+			//MoveToNextChar();
 			while (1)
 			{
 				if (!cstyle)
@@ -451,19 +417,21 @@ wxString Tokenizer::DoGetToken()
 	if (isalpha(CurrentChar()) || CurrentChar() == '_')
 	{
 		// keywords, identifiers, etc.
-		while (!IsEOF() &&
-				(isalnum(CurrentChar()) ||
-				CurrentChar() == '_'))
-			MoveToNextChar();
+
+		// operator== is cheaper than isalnum, also MoveToNextChar already includes IsEOF
+		while (  ( CurrentChar() == '_' ||
+				   isalnum(CurrentChar()) ) && MoveToNextChar()  )
+		;
+
 		if (IsEOF())
 			return wxEmptyString;
 		m_Str = m_Buffer.Mid(start, m_TokenIndex - start);
-		m_IsOperator = m_Str.Matches(_T("operator"));
+		m_IsOperator = m_Str.IsSameAs(TokenizerConsts::operator_str);
 	}
 	else if (isdigit(CurrentChar()))
 	{
 		// numbers
-		while (!IsEOF() && CharInString(CurrentChar(), "0123456789.abcdefABCDEFfXxLl"))
+		while (NotEOF() && CharInString(CurrentChar(), "0123456789.abcdefABCDEFXxLl"))
 			MoveToNextChar();
 		if (IsEOF())
 			return wxEmptyString;
@@ -487,12 +455,12 @@ wxString Tokenizer::DoGetToken()
 		{
 			MoveToNextChar();
 			MoveToNextChar();
-			m_Str = _T("::");
+			m_Str.assign(TokenizerConsts::colon_colon); // this only copies a pointer, but operator= allocates memory and does a memcpy!
 		}
 		else
 		{
 			MoveToNextChar();
-			m_Str = _T(":");
+			m_Str.assign(TokenizerConsts::colon);
 		}
 	}
 	else if (CurrentChar() == '(')
@@ -502,9 +470,14 @@ wxString Tokenizer::DoGetToken()
 		if (!SkipBlock(CurrentChar()))
 			return wxEmptyString;
 		wxString tmp = m_Buffer.Mid(start, m_TokenIndex - start);
-		tmp.Replace(_T("\t"), _T(" ")); // replace tabs with spaces
-		tmp.Replace(_T("\n"), _T(" ")); // replace LF with spaces
-		tmp.Replace(_T("\r"), _T(" ")); // replace CR with spaces
+//		tmp.Replace(_T("\t"), _T(" ")); // replace tabs with spaces
+//		tmp.Replace(_T("\n"), _T(" ")); // replace LF with spaces
+//		tmp.Replace(_T("\r"), _T(" ")); // replace CR with spaces
+		{ // this is much faster:
+			size_t i;
+			while((i = tmp.find_first_of(TokenizerConsts::tabcrlf)) != wxString::npos)
+				tmp[i] = _T(' ');
+		}
 		// fix-up arguments (remove excessive spaces/tabs/newlines)
 		for (unsigned int i = 0; i < tmp.Length() - 1; ++i)
 		{
@@ -548,9 +521,11 @@ wxString Tokenizer::DoGetToken()
 			m_Str << tmp.GetChar(i);
 		}
 		m_Str << _T(')'); // add closing parenthesis (see "i < tmp.Length() - 1" in previous "for")
-		m_Str.Replace(_T("  "), _T(" ")); // replace two-spaces with single-space (introduced if it skipped comments or assignments)
-		m_Str.Replace(_T("( "), _T("("));
-		m_Str.Replace(_T(" )"), _T(")"));
+//		m_Str.Replace(_T("  "), _T(" ")); // replace two-spaces with single-space (introduced if it skipped comments or assignments)
+//		m_Str.Replace(_T("( "), _T("("));
+//		m_Str.Replace(_T(" )"), _T(")"));
+		//Str.Replace is massive overkill here since it has to allocate one new block per replacement
+        CompactSpaces(m_Str);
 	}
 	else
 	{
@@ -562,9 +537,9 @@ wxString Tokenizer::DoGetToken()
 		MoveToNextChar();
 	}
 
-	if (m_LastWasPreprocessor && !m_Str.Matches(_T("#")) && !m_LastPreprocessor.Matches(_T("#")))
+	if (m_LastWasPreprocessor && !m_Str.IsSameAs(_T("#")) && !m_LastPreprocessor.IsSameAs(_T("#")))
 	{
-		if (!m_LastPreprocessor.Matches(_T("#include")))
+		if (!m_LastPreprocessor.IsSameAs(TokenizerConsts::include_str))
 		{
 			// except for #include, all other preprocessor directives need only
 			// one word exactly after the directive, e.g. #define THIS_WORD

@@ -642,7 +642,7 @@ wxString ParserThread::GetActualTokenType()
 
 Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, const wxString& args, bool isOperator)
 {
-	wxMutexLocker lock(s_mutexProtection);
+	wxCriticalSectionLocker lock(s_mutexProtection);
 	if (m_Options.useBuffer && TokenExists(name))
 		return 0L;
 	Token* newToken = new Token;

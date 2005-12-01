@@ -41,7 +41,7 @@
 
 static const char CACHE_MAGIC[] = "CCCACHE_1_0";
 static char CACHE_MAGIC_READ[] = "           ";
-static wxMutex s_mutexListProtection;
+static wxCriticalSection s_mutexListProtection;
 int PARSER_END = wxNewId();
 static int idPool = wxNewId();
 
@@ -401,13 +401,13 @@ bool Parser::WriteToCache(wxFile* f)
 
 unsigned int Parser::GetFilesCount()
 {
-	wxMutexLocker lock(s_mutexListProtection);
+	wxCriticalSectionLocker lock(s_mutexListProtection);
 	return m_ParsedFiles.GetCount();
 }
 
 bool Parser::Done()
 {
-    wxMutexLocker lock(s_mutexListProtection);
+    wxCriticalSectionLocker lock(s_mutexListProtection);
 	return m_Pool.Done();
 }
 
@@ -670,10 +670,11 @@ bool Parser::Parse(const wxString& filename, bool isLocal)
 bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadOptions& opts)
 {
 	wxString buffOrFile = bufferOrFilename;
-
-	wxMutexLocker* lock = new wxMutexLocker(s_mutexListProtection);
-	bool parsed = !opts.useBuffer && m_ParsedFiles.Index(buffOrFile) != wxNOT_FOUND;
-	delete lock;
+	bool parsed;
+	{
+	wxCriticalSectionLocker lock(s_mutexListProtection);
+	parsed = !opts.useBuffer && m_ParsedFiles.Index(buffOrFile) != wxNOT_FOUND;
+	}
 	if (parsed)
 	{
 #ifndef STANDALONE
@@ -689,7 +690,7 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
 											&m_Tokens);
 	if (!opts.useBuffer)
 	{
-//		lock = new wxMutexLocker(s_mutexListProtection);
+//		lock = new wxCriticalSectionLocker(s_mutexListProtection);
 		m_ParsedFiles.Add(buffOrFile);
 //	    LOGSTREAM << "Adding task for: " << buffOrFile << '\n';
 		m_Pool.AddTask(thread, true);
@@ -721,8 +722,8 @@ bool Parser::ParseBufferForFunctions(const wxString& buffer)
 
 bool Parser::RemoveFile(const wxString& filename)
 {
-	wxMutexLocker lock(s_mutexListProtection);
-	wxMutexLocker lock1(s_mutexProtection);
+	wxCriticalSectionLocker lock(s_mutexListProtection);
+	wxCriticalSectionLocker lock1(s_mutexProtection);
 
 	wxString file = UnixFilename(filename);
 	if (m_ParsedFiles.Index(file) != wxNOT_FOUND)
@@ -754,9 +755,10 @@ bool Parser::Reparse(const wxString& filename, bool isLocal)
 //	Manager::Get()->GetMessageManager()->DebugLog(_("Reparsing %s"), file.c_str());
 	RemoveFile(file);
 	ClearTemporaries();
-	wxMutexLocker* lock = new wxMutexLocker(s_mutexListProtection);
+	{
+	wxCriticalSectionLocker lock(s_mutexListProtection);
 	m_ReparsedFiles.Add(file);
-	delete lock;
+	}
 
 	return Parse(file, isLocal);
 }
@@ -770,17 +772,18 @@ void Parser::Clear()
     wxSafeYield();
 	wxSleep(0);
 
-	wxMutexLocker* lockl = new wxMutexLocker(s_mutexListProtection);
+	{
+	wxCriticalSectionLocker lockl(s_mutexListProtection);
 //    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Clearing 'm_ParsedFiles'..."));
 	m_ParsedFiles.Clear();
 //    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Clearing 'm_ReparsedFiles'..."));
 	m_ReparsedFiles.Clear();
 //    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Clearing 'm_IncludeDirs'..."));
 	m_IncludeDirs.Clear();
-	delete lockl;
+	}
 
 //    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Locking s_mutexProtection and clearing m_Tokens..."));
-	wxMutexLocker lock(s_mutexProtection);
+	wxCriticalSectionLocker lock(s_mutexProtection);
 	WX_CLEAR_ARRAY(m_Tokens);
 	m_Tokens.Clear();
 
@@ -821,7 +824,7 @@ void Parser::TerminateAllThreads()
 void Parser::PauseAllThreads()
 {
 //    wxLogNull ln; // no other logging
-//	wxMutexLocker lock(s_mutexListProtection);
+//	wxCriticalSectionLocker lock(s_mutexListProtection);
 //	for (unsigned int i = 0; i < m_Threads.GetCount(); ++i)
 //		m_Threads[i]->Pause();
 }
@@ -829,7 +832,7 @@ void Parser::PauseAllThreads()
 void Parser::ResumeAllThreads()
 {
 //    wxLogNull ln; // no other logging
-//	wxMutexLocker lock(s_mutexListProtection);
+//	wxCriticalSectionLocker lock(s_mutexListProtection);
 //	for (unsigned int i = 0; i < m_Threads.GetCount(); ++i)
 //		m_Threads[i]->Resume();
 }

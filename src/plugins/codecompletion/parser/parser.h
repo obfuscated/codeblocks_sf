@@ -44,7 +44,7 @@
 
 extern int PARSER_END;
 
-class ClassTreeData : public wxTreeItemData
+class ClassTreeData : public BlockAllocated<ClassTreeData, 500>, public wxTreeItemData
 {
     public:
         ClassTreeData(Token* token){ m_Token = token; }

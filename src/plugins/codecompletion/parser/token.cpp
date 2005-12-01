@@ -81,7 +81,7 @@ bool Token::InheritsFrom(Token* token)
 	for (unsigned int i = 0; i < m_Ancestors.GetCount(); ++i)
 	{
 		Token* ancestor = m_Ancestors[i];
-		if (ancestor == token || ancestor->InheritsFrom(token))
+		if (ancestor == token || ancestor->InheritsFrom(token))  // ##### is this intended?
 			return true;
 	}
 	return false;

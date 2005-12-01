@@ -14,7 +14,7 @@
 extern int NEW_TOKEN;
 extern int FILE_NEEDS_PARSING;
 
-static wxMutex s_mutexProtection;
+static wxCriticalSection s_mutexProtection;
 
 struct ParserThreadOptions
 {
