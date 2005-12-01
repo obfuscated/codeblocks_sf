@@ -18,8 +18,8 @@ public:
     static void abort_all(); // Warning! Once set, can't be reset!
     static void abort(bool* flag,bool delete_thread = true);
     bool* get_abort_location() { if(!this) return 0L;return m_pAbort; }
-    void set_abort_location(bool* abortflag) 
-    { 
+    void set_abort_location(bool* abortflag)
+    {
         if(!this) return;
         m_pAbort=abortflag;
     }
@@ -31,11 +31,11 @@ protected:
     static ManagedThread* GetThread(size_t n);
     static void DeleteThreadFromList(ManagedThread* thread);
 
-    static wxMutex s_count_running_mutex;
-    static wxMutex s_list_mutex;
+    static wxCriticalSection s_count_running_mutex;
+    static wxCriticalSection s_list_mutex;
     static unsigned long s_running;
     bool* m_pAbort;
-    static bool s_abort_all;    
+    static bool s_abort_all;
 };
 
 #endif

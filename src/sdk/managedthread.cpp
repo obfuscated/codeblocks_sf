@@ -10,8 +10,8 @@
 #include <wx/utils.h>
 /// Keeps count of running threads
 
-wxMutex ManagedThread::s_count_running_mutex;
-wxMutex ManagedThread::s_list_mutex;
+wxCriticalSection ManagedThread::s_count_running_mutex;
+wxCriticalSection ManagedThread::s_list_mutex;
 unsigned long ManagedThread::s_running = 0;
 bool ManagedThread::s_abort_all = false;
 
@@ -21,16 +21,14 @@ ManagedThread::ManagedThread(bool* abortflag) :
 wxThread(wxTHREAD_JOINABLE),
 m_pAbort(abortflag)
 {
-    wxMutexLocker* lock;
-    lock = new wxMutexLocker(s_list_mutex);
+	wxCriticalSectionLocker lock(s_list_mutex);
     s_threadslist.Add(this);
-    delete lock;
 }
 
 ManagedThread::~ManagedThread()
 {
-//    wxMutexLocker* lock;
-//    lock = new wxMutexLocker(s_list_mutex);
+//    wxCriticalSectionLocker* lock;
+//    lock = new wxCriticalSectionLocker(s_list_mutex);
 // NOTE: DeleteThreadFromList() locks the mutex by itself
     DeleteThreadFromList(this); // Deletes thread from list
 //    delete lock;
@@ -38,19 +36,19 @@ ManagedThread::~ManagedThread()
 
 unsigned long ManagedThread::count_running()
 {
-    wxMutexLocker lock(ManagedThread::s_count_running_mutex);
+    wxCriticalSectionLocker lock(ManagedThread::s_count_running_mutex);
     return ManagedThread::s_running;
 }
 
 unsigned long ManagedThread::count_threads()
 {
-    wxMutexLocker lock(ManagedThread::s_list_mutex);
+    wxCriticalSectionLocker lock(ManagedThread::s_list_mutex);
     return s_threadslist.GetCount();
 }
 
 ManagedThread* ManagedThread::GetThread(size_t n)
 {
-    wxMutexLocker lock(ManagedThread::s_list_mutex);
+    wxCriticalSectionLocker lock(ManagedThread::s_list_mutex);
     if(n>=s_threadslist.GetCount())
         return 0L;
     return s_threadslist.Item(n);
@@ -95,7 +93,7 @@ void ManagedThread::abort_all()
     }
 
     // 3) Clear thread list
-    wxMutexLocker lock(ManagedThread::s_list_mutex);
+    wxCriticalSectionLocker lock(ManagedThread::s_list_mutex);
     s_threadslist.Clear();
 
     // 4) Reset the abort flag now that no threads are running
@@ -140,18 +138,19 @@ void ManagedThread::abort(bool* flag,bool delete_thread)
 void* ManagedThread::Entry()
 {
     void* result;
-    wxMutexLocker* lock;
 
-    lock = new wxMutexLocker(s_count_running_mutex);
+    {
+		wxCriticalSectionLocker lock(s_count_running_mutex);
         s_running++;
-    delete lock;
+    }
 
     result = DoRun();
 
-    lock = new wxMutexLocker(s_count_running_mutex);
-    if(s_running > 0)
-        s_running--;
-    delete lock;
+    {
+		wxCriticalSectionLocker lock(s_count_running_mutex);
+		if(s_running > 0)
+			s_running--;
+    }
 
     return result;
 
@@ -162,7 +161,7 @@ void* ManagedThread::DoRun()
 
 void ManagedThread::DeleteThreadFromList(ManagedThread* thread)
 {
-    wxMutexLocker lock(ManagedThread::s_list_mutex);
+    wxCriticalSectionLocker lock(ManagedThread::s_list_mutex);
     unsigned int i = 0;
     while(i < s_threadslist.GetCount())
     {

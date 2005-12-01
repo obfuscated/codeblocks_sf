@@ -18,7 +18,7 @@ class pfDetails;
 WX_DEFINE_ARRAY(ProjectBuildTarget*, BuildTargets);
 WX_DECLARE_HASH_MAP(ProjectBuildTarget*, pfDetails*, wxPointerHash, wxPointerEqual, PFDMap);
 
-class ProjectFile  : public BlockAllocated<ProjectFile, 500>
+class ProjectFile  : public BlockAllocated<ProjectFile, 1000>
 {
     public:
         ProjectFile(cbProject* prj);
@@ -76,7 +76,7 @@ class ProjectFile  : public BlockAllocated<ProjectFile, 500>
 WX_DECLARE_LIST(ProjectFile, FilesList);
 
 // ProjectFile details
-class pfDetails
+class pfDetails : public BlockAllocated<pfDetails, 1000>
 {
     public:
         pfDetails(ProjectBuildTarget* target, ProjectFile* pf);
@@ -101,7 +101,7 @@ class pfDetails
 /*
  * No description
  */
-class DLLIMPORT ProjectBuildTarget : public CompileTargetBase
+class DLLIMPORT ProjectBuildTarget : public BlockAllocated<ProjectBuildTarget, 1000>, public CompileTargetBase
 {
 	public:
 		// class constructor

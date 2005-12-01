@@ -7,7 +7,7 @@
 #include "editorbase.h"
 #include "cbplugin.h"
 
-class EVTIMPORT CodeBlocksEvent : public wxCommandEvent
+class EVTIMPORT CodeBlocksEvent : public wxCommandEvent, public BlockAllocated<CodeBlocksEvent, 75>
 {
 	public:
 		CodeBlocksEvent(wxEventType commandType = wxEVT_NULL, int id = 0, cbProject* project = 0L, EditorBase* editor = 0L, cbPlugin* plugin = 0L)
