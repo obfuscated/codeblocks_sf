@@ -41,6 +41,7 @@
 #include <editormanager.h>
 #include <projectmanager.h>
 #include <personalitymanager.h>
+#include <pluginmanager.h>
 #include <sdk_events.h>
 #include <manager.h>
 #include <scriptingmanager.h>
@@ -76,6 +77,7 @@ static const wxCmdLineEntryDesc cmdLineDesc[] =
     { wxCMD_LINE_OPTION, _T("p"), _T("personality"),  _T("the personality to use: \"ask\" or <personality-name>"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
     { wxCMD_LINE_SWITCH, _T(""), _T("rebuild"), _T("clean and then build the project/workspace"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_SWITCH, _T(""), _T("build"), _T("just build the project/workspace"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_OPTION, _T(""), _T("target"),  _T("the target for the batch build"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
     { wxCMD_LINE_SWITCH, _T(""), _T("hidden"), _T("do not show a window (used only with *build options)"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_PARAM, _T(""), _T(""),  _T("filename(s)"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE },
     { wxCMD_LINE_NONE }
@@ -211,8 +213,6 @@ void CodeBlocksApp::InitFrame()
         if(g_DDEServer)
             g_DDEServer->SetFrame(frame);
     #endif
-    HideSplashScreen();
-    frame->Show(!m_Hidden);
     if (ParseCmdLine(frame) == 0)
     {
         if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/blank_workspace"), true) == false)
@@ -231,6 +231,8 @@ void CodeBlocksApp::InitFrame()
 
         frame->ShowTips(); // this func checks if the user wants tips, so no need to check here
     }
+    HideSplashScreen();
+    frame->Show(!m_Hidden);
 }
 
 void CodeBlocksApp::CheckVersion()
@@ -458,9 +460,9 @@ int CodeBlocksApp::BatchJob()
         return -3;
 
     if (m_ReBuild)
-        compiler->RebuildAll();
+        compiler->RebuildWorkspace(m_BatchTarget);
     else if (m_Build)
-        compiler->CompileAll();
+        compiler->BuildWorkspace(m_BatchTarget);
 
     // wait for compiler to finish
     while (compiler->IsRunning())
@@ -604,6 +606,7 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                     m_Hidden = parser.Found(_T("hidden"), &val);
                     m_Build = parser.Found(_T("build"), &val);
                     m_ReBuild = parser.Found(_T("rebuild"), &val);
+                    parser.Found(_T("target"), &m_BatchTarget);
                 }
             }
             break;

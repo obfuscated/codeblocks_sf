@@ -84,6 +84,7 @@ class CodeBlocksApp : public
 #endif
         // batch jobs - start
         bool m_Batch;
+        wxString m_BatchTarget;
         bool m_Build;
         bool m_ReBuild;
         bool m_Hidden;

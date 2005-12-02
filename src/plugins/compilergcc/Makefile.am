@@ -20,6 +20,7 @@ libcompiler_la_LIBADD = ../../sdk/libcodeblocks.la \
 libcompiler_la_SOURCES = advancedcompileroptionsdlg.cpp \
 			cmdlinegenerator.cpp \
 			compilerBCC.cpp \
+			compiler_defs.cpp \
 			compilerDMC.cpp \
 			compilererrors.cpp \
 			compilergcc.cpp \
@@ -36,6 +37,7 @@ libcompiler_la_SOURCES = advancedcompileroptionsdlg.cpp \
 noinst_HEADERS = advancedcompileroptionsdlg.h \
 			cmdlinegenerator.h \
 			compilerBCC.h \
+			compiler_defs.h \
 			compilerDMC.h \
 			compilererrors.h \
 			compilergcc.h \

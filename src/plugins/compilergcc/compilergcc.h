@@ -11,6 +11,7 @@
 #include <wx/process.h>
 #include "compilererrors.h"
 #include "cmdlinegenerator.h"
+#include "compiler_defs.h"
 #include <compilerfactory.h>
 
 #define MAX_TARGETS 64
@@ -30,13 +31,6 @@ enum ErrorType
 	etWarning
 };
 
-enum MultiProjectJob
-{
-    mpjNone,
-    mpjCompile,
-    mpjRebuild
-};
-
 class CompilerGCC : public cbCompilerPlugin
 {
     public:
@@ -50,13 +44,16 @@ class CompilerGCC : public cbCompilerPlugin
         virtual bool BuildToolBar(wxToolBar* toolBar);
 
         virtual int Run(ProjectBuildTarget* target = 0L);
+        virtual int Run(const wxString& target);
         virtual int Clean(ProjectBuildTarget* target = 0L);
-        virtual int DistClean(ProjectBuildTarget* target = 0L);
-        virtual int Compile(ProjectBuildTarget* target = 0L);
-        virtual int CompileAll();
-        virtual int RebuildAll();
-        virtual int CreateDist();
+        virtual int Clean(const wxString& target);
+        virtual int Build(ProjectBuildTarget* target = 0L);
+        virtual int Build(const wxString& target);
         virtual int Rebuild(ProjectBuildTarget* target = 0L);
+        virtual int Rebuild(const wxString& target);
+        virtual int CleanWorkspace(const wxString& target = wxEmptyString);
+        virtual int BuildWorkspace(const wxString& target = wxEmptyString);
+        virtual int RebuildWorkspace(const wxString& target = wxEmptyString);
         virtual int CompileFile(const wxString& file);
         virtual int KillProcess();
 		virtual bool IsRunning() const { return m_Process; }
@@ -77,7 +74,8 @@ class CompilerGCC : public cbCompilerPlugin
         void OnRebuild(wxCommandEvent& event);
         void OnCompileAll(wxCommandEvent& event);
         void OnRebuildAll(wxCommandEvent& event);
-        void OnDistClean(wxCommandEvent& event);
+        void OnCleanAll(wxCommandEvent& event);
+//        void OnDistClean(wxCommandEvent& event);
         void OnClean(wxCommandEvent& event);
         void OnRun(wxCommandEvent& event);
 		void OnProjectCompilerOptions(wxCommandEvent& event);
@@ -88,7 +86,7 @@ class CompilerGCC : public cbCompilerPlugin
 		void OnNextError(wxCommandEvent& event);
 		void OnPreviousError(wxCommandEvent& event);
 		void OnClearErrors(wxCommandEvent& event);
-        void OnCreateDist(wxCommandEvent& event);
+//        void OnCreateDist(wxCommandEvent& event);
         void OnExportMakefile(wxCommandEvent& event);
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnConfig(wxCommandEvent& event);
@@ -104,7 +102,6 @@ class CompilerGCC : public cbCompilerPlugin
 
 		void SaveOptions();
 		void LoadOptions();
-		bool DoPrepareMultiProjectCommand(MultiProjectJob job);
 		void DoPrepareQueue();
         int DoRunQueue();
         bool DoCreateMakefile(bool temporary = true, const wxString& makefile = _T(""));
@@ -123,14 +120,19 @@ class CompilerGCC : public cbCompilerPlugin
 		void DoClearErrors();
         wxString ProjectMakefile();
         void AddOutputLine(const wxString& output, bool forceErrorColor = false);
-        void PrintBanner();
+        void PrintBanner(cbProject* prj = 0);
         bool UseMake(ProjectBuildTarget* target = 0);
 		bool CompilerValid(ProjectBuildTarget* target = 0);
 		ProjectBuildTarget* GetBuildTargetForFile(ProjectFile* pf);
 		ProjectBuildTarget* GetBuildTargetForFile(const wxString& file);
         wxString GetMakeCommandFor(MakeCommand cmd, ProjectBuildTarget* target);
 
+        // wxArrayString from DirectCommands
+        void AddToCommandQueue(const wxArrayString& commands);
+
         CmdLineGenerator m_Generator;
+        CompilerQueue m_CommandQueue;
+        bool m_BuildingWorkspace;
 
 		// programs
 		int m_CompilerIdx;
@@ -153,19 +155,12 @@ class CompilerGCC : public cbCompilerPlugin
         CompilerMessages* m_pListLog;
 		wxComboBox* m_ToolTarget;
 		wxStaticText* m_ToolTargetLabel;
-		bool m_IsRun;
 		bool m_RunAfterCompile;
 		wxString m_CdRun;
-		MultiProjectJob m_DoAllProjects; // for xxxAll() functions
-		cbProject* m_BackupActiveProject;
-		unsigned int m_ProjectIndex;
 		wxString m_RunCmd;
 		bool m_LastExitCode;
 		CompilerErrors m_Errors;
 		bool m_HasTargetAll;
-
-		unsigned int m_QueueIndex;
-        wxArrayString m_Queue;
 
 		wxString m_OriginalPath;
 		wxString m_LastTempMakefile;

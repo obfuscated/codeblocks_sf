@@ -47,11 +47,12 @@ class DLLIMPORT MessageManager : public wxNotebook
         friend class Manager; // give Manager access to our private members
 		void CreateMenu(wxMenuBar* menuBar);
 		void ReleaseMenu(wxMenuBar* menuBar);
-		
+
 		wxWindow* GetContainerWindow(){ return m_pContainerWin; }
 		void SetContainerWindow(wxWindow* win){ m_pContainerWin = win; }
 
         int AddLog(MessageLog* log);
+		void LogToStdOut(const wxChar* msg, ...);
 		void Log(const wxChar* msg, ...);
 		void DebugLog(const wxChar* msg, ...);
 		void DebugLogWarning(const wxChar* msg, ...);

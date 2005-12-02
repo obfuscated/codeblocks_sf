@@ -1,4 +1,5 @@
 #include <sdk_precomp.h>
+#include <angelscript.h>
 #include "scriptingmanager.h"
 #include "cbexception.h"
 #include "manager.h"

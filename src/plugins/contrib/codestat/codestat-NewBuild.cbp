@@ -1,99 +1,102 @@
-<?xml version="1.0"?>
-<!DOCTYPE CodeBlocks_project_file>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="1"/>
-	<Project>
-		<Option title="Code Stat"/>
-		<Option makefile="Makefile"/>
-		<Option makefile_is_custom="0"/>
-		<Option compiler="0"/>
-		<Build>
-			<Target title="default">
-				<Option output="..\..\..\devel\share\CodeBlocks\plugins\codestat.dll"/>
-				<Option working_dir="."/>
-				<Option object_output=".objs"/>
-				<Option deps_output=".deps"/>
-				<Option type="3"/>
-				<Option compiler="0"/>
-				<Option host_application="..\..\..\devel\codeblocks.exe"/>
-				<Option projectCompilerOptionsRelation="0"/>
-			</Target>
-			<Environment>
-				<Variable name="WX_CFG" value="NonUnicode"/>
-			</Environment>
-		</Build>
-		<Compiler>
-			<Add option="-Wall"/>
-			<Add option="-g"/>
-			<Add option="-Winvalid-pch"/>
-			<Add option="-mthreads"/>
-			<Add option="-include &quot;sdk.h&quot;"/>
-			<Add option="-DBUILDING_PLUGIN"/>
-			<Add option="-DCB_PRECOMP"/>
-			<Add option="-DWX_PRECOMP"/>
-			<Add option="-DHAVE_W32API_H"/>
-			<Add option="-D__WXMSW__"/>
-			<Add option="-DWXUSINGDLL"/>
-			<Add option="-DcbDEBUG"/>
-			<Add option="-DTIXML_USE_STL"/>
-			<Add directory="$(#CB)\sdk"/>
-			<Add directory="$(#CB.INCLUDE)"/>
-			<Add directory="$(#CB)\sdk\wxscintilla\include"/>
-			<Add directory="$(#CB.INCLUDE)\wxscintilla\include"/>
-			<Add directory="$(#WX.INCLUDE)"/>
-			<Add directory="$(#WX)\contrib\include"/>
-			<Add directory="$(#WX.lib)\gcc_dll\msw"/>
-			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw"/>
-		</Compiler>
-		<ResourceCompiler>
-			<Add directory="$(#WX.include)"/>
-		</ResourceCompiler>
-		<Linker>
-			<Add library="codeblocks"/>
-			<Add library="wxmsw26"/>
-			<Add directory="$(#CB)\devel"/>
-			<Add directory="$(#CB.LIB)"/>
-			<Add directory="$(#WX.lib)\gcc_dll\msw"/>
-			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)"/>
-		</Linker>
-		<ExtraCommands>
-			<Add after="zip -j9 ..\..\..\devel\share\codeblocks\codestat.zip resources\*.xrc"/>
-		</ExtraCommands>
-		<Unit filename="codestat.cpp">
-			<Option compilerVar="CPP"/>
-			<Option target="default"/>
-		</Unit>
-		<Unit filename="codestat.h">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="default"/>
-		</Unit>
-		<Unit filename="codestatconfig.cpp">
-			<Option compilerVar="CPP"/>
-			<Option target="default"/>
-		</Unit>
-		<Unit filename="codestatconfig.h">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="default"/>
-		</Unit>
-		<Unit filename="codestatexec.cpp">
-			<Option compilerVar="CPP"/>
-			<Option target="default"/>
-		</Unit>
-		<Unit filename="codestatexec.h">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="default"/>
-		</Unit>
-		<Unit filename="language_def.h">
-			<Option compilerVar=""/>
-			<Option compile="0"/>
-			<Option link="0"/>
-			<Option target="default"/>
-		</Unit>
-	</Project>
+    <FileVersion major="1" minor="1" />
+    <Project>
+        <Option title="Code Stat" />
+        <Option makefile="Makefile" />
+        <Option makefile_is_custom="0" />
+        <Option compiler="0" />
+        <Build>
+            <Target title="default">
+                <Option output="..\..\..\devel\share\CodeBlocks\plugins\codestat.dll" />
+                <Option working_dir="." />
+                <Option object_output=".objs" />
+                <Option deps_output=".deps" />
+                <Option type="3" />
+                <Option compiler="0" />
+                <Option host_application="..\..\..\devel\codeblocks.exe" />
+                <Option projectCompilerOptionsRelation="0" />
+                <Compiler />
+                <ResourceCompiler />
+                <Linker />
+                <ExtraCommands />
+            </Target>
+            <Environment>
+                <Variable name="WX_CFG" value="NonUnicode" />
+            </Environment>
+        </Build>
+        <Compiler>
+            <Add option="-Wall" />
+            <Add option="-g" />
+            <Add option="-Winvalid-pch" />
+            <Add option="-mthreads" />
+            <Add option='-include &quot;sdk.h&quot;' />
+            <Add option="-DBUILDING_PLUGIN" />
+            <Add option="-DCB_PRECOMP" />
+            <Add option="-DWX_PRECOMP" />
+            <Add option="-DHAVE_W32API_H" />
+            <Add option="-D__WXMSW__" />
+            <Add option="-DWXUSINGDLL" />
+            <Add option="-DcbDEBUG" />
+            <Add option="-DTIXML_USE_STL" />
+            <Add directory="$(#CB)\sdk" />
+            <Add directory="$(#CB.INCLUDE)" />
+            <Add directory="$(#CB)\sdk\wxscintilla\include" />
+            <Add directory="$(#CB.INCLUDE)\wxscintilla\include" />
+            <Add directory="$(#WX.INCLUDE)" />
+            <Add directory="$(#WX)\contrib\include" />
+            <Add directory="$(#WX.lib)\gcc_dll\msw" />
+            <Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw" />
+        </Compiler>
+        <ResourceCompiler>
+            <Add directory="$(#WX.include)" />
+        </ResourceCompiler>
+        <Linker>
+            <Add library="libcodeblocks.a" />
+            <Add library="wxmsw26" />
+            <Add directory="$(#CB)\devel" />
+            <Add directory="$(#CB.LIB)" />
+            <Add directory="$(#WX.lib)\gcc_dll\msw" />
+            <Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
+        </Linker>
+        <ExtraCommands>
+            <Add after="zip -j9 ..\..\..\devel\share\codeblocks\codestat.zip resources\*.xrc" />
+        </ExtraCommands>
+        <Unit filename="codestat.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="default" />
+        </Unit>
+        <Unit filename="codestat.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="default" />
+        </Unit>
+        <Unit filename="codestatconfig.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="default" />
+        </Unit>
+        <Unit filename="codestatconfig.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="default" />
+        </Unit>
+        <Unit filename="codestatexec.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="default" />
+        </Unit>
+        <Unit filename="codestatexec.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="default" />
+        </Unit>
+        <Unit filename="language_def.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="default" />
+        </Unit>
+    </Project>
 </CodeBlocks_project_file>

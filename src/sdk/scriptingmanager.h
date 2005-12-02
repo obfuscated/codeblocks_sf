@@ -1,9 +1,10 @@
 #ifndef SCRIPTING_H
 #define SCRIPTING_H
 
-#include <angelscript.h>
 #include "settings.h"
 #include <wx/intl.h>
+
+class asIScriptEngine;
 
 class DLLIMPORT ScriptingManager
 {

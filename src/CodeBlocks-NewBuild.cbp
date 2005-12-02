@@ -19,9 +19,6 @@
                 <Compiler>
                     <Add option="-DEXPORT_LIB" />
                 </Compiler>
-                <ResourceCompiler />
-                <Linker />
-                <ExtraCommands />
             </Target>
             <Target title="AngelScript">
                 <Option output="sdk\as\libangelscript.a" />
@@ -34,9 +31,6 @@
                 <Compiler>
                     <Add option="-fno-inline" />
                 </Compiler>
-                <ResourceCompiler />
-                <Linker />
-                <ExtraCommands />
             </Target>
             <Target title="scintilla">
                 <Option output="devel\wxscintilla.dll" />
@@ -63,7 +57,6 @@
                     <Add library="wxmsw26" />
                     <Add library="gdi32" />
                 </Linker>
-                <ExtraCommands />
             </Target>
             <Target title="sdk">
                 <Option output="devel\codeblocks.dll" />
@@ -82,7 +75,6 @@
                     <Add directory="sdk" />
                     <Add directory="sdk\as\source" />
                 </Compiler>
-                <ResourceCompiler />
                 <Linker>
                     <Add option="-Wl,--enable-auto-image-base" />
                     <Add option="-Wl,--export-all-symbols" />
@@ -93,7 +85,6 @@
                     <Add directory="devel" />
                     <Add directory="sdk\as" />
                 </Linker>
-                <ExtraCommands />
             </Target>
             <Target title="wxDockIt">
                 <Option output="src\wxDockit\lib\libwxDockIt.a" />
@@ -115,8 +106,6 @@
                 <ResourceCompiler>
                     <Add directory="src\wxDockit\include" />
                 </ResourceCompiler>
-                <Linker />
-                <ExtraCommands />
             </Target>
             <Target title="wxKeyBinder">
                 <Option output="src\wxKeyBinder\lib\libwxkeybinder.a" />
@@ -136,8 +125,6 @@
                 <ResourceCompiler>
                     <Add directory="src\wxKeyBinder\include" />
                 </ResourceCompiler>
-                <Linker />
-                <ExtraCommands />
             </Target>
             <Target title="src">
                 <Option output="devel\codeblocks.exe" />
@@ -158,7 +145,6 @@
                     <Add directory="src\wxDockit\include" />
                     <Add directory="src\wxKeyBinder\include" />
                 </Compiler>
-                <ResourceCompiler />
                 <Linker>
                     <Add library="libcodeblocks.a" />
                     <Add library="wxDockIt" />
@@ -183,7 +169,6 @@
                     <Add directory="src\wxDockit\lib" />
                     <Add directory="src\wxKeyBinder\lib" />
                 </Linker>
-                <ExtraCommands />
             </Target>
             <Target title="plugin_Astyle">
                 <Option output="devel\share\CodeBlocks\plugins\astyle.dll" />
@@ -198,7 +183,6 @@
                     <Add directory="sdk" />
                     <Add directory="plugins\astyle\astyle" />
                 </Compiler>
-                <ResourceCompiler />
                 <Linker>
                     <Add option="-Wl,--enable-auto-image-base" />
                     <Add option="-Wl,--add-stdcall-alias" />
@@ -207,7 +191,6 @@
                     <Add library="wxmsw26" />
                     <Add directory="devel" />
                 </Linker>
-                <ExtraCommands />
             </Target>
             <Target title="plugin_CompilerGCC_depslib">
                 <Option output="plugins\compilergcc\depslib\libdepslib.a" />
@@ -220,9 +203,6 @@
                 <Compiler>
                     <Add option="-DDEPSLIB_WINDOWS" />
                 </Compiler>
-                <ResourceCompiler />
-                <Linker />
-                <ExtraCommands />
             </Target>
             <Target title="plugin_CompilerGCC">
                 <Option output="devel\share\CodeBlocks\plugins\compilergcc.dll" />
@@ -239,7 +219,6 @@
                     <Add directory="sdk" />
                     <Add directory="plugins\compilergcc\depslib\src" />
                 </Compiler>
-                <ResourceCompiler />
                 <Linker>
                     <Add option="-Wl,--enable-auto-image-base" />
                     <Add option="-Wl,--add-stdcall-alias" />
@@ -250,7 +229,6 @@
                     <Add directory="devel" />
                     <Add directory="plugins\compilergcc\depslib" />
                 </Linker>
-                <ExtraCommands />
             </Target>
             <Target title="plugin_DebuggerGDB">
                 <Option output="devel\share\CodeBlocks\plugins\debuggergdb.dll" />
@@ -266,7 +244,6 @@
                     <Add option="-DBUILDING_PLUGIN" />
                     <Add directory="sdk" />
                 </Compiler>
-                <ResourceCompiler />
                 <Linker>
                     <Add option="-Wl,--enable-auto-image-base" />
                     <Add option="-Wl,--add-stdcall-alias" />
@@ -275,7 +252,6 @@
                     <Add library="wxmsw26" />
                     <Add directory="devel" />
                 </Linker>
-                <ExtraCommands />
             </Target>
             <Target title="plugin_CodeCompletion">
                 <Option output="devel\share\CodeBlocks\plugins\codecompletion.dll" />
@@ -291,7 +267,6 @@
                     <Add option="-DBUILDING_PLUGIN" />
                     <Add directory="sdk" />
                 </Compiler>
-                <ResourceCompiler />
                 <Linker>
                     <Add option="-Wl,--enable-auto-image-base" />
                     <Add option="-Wl,--add-stdcall-alias" />
@@ -300,7 +275,6 @@
                     <Add library="wxmsw26" />
                     <Add directory="devel" />
                 </Linker>
-                <ExtraCommands />
             </Target>
             <Target title="plugin_ClassWizard">
                 <Option output="devel\share\CodeBlocks\plugins\classwizard.dll" />
@@ -316,7 +290,6 @@
                     <Add option="-DBUILDING_PLUGIN" />
                     <Add directory="sdk" />
                 </Compiler>
-                <ResourceCompiler />
                 <Linker>
                     <Add option="-Wl,--enable-auto-image-base" />
                     <Add option="-Wl,--add-stdcall-alias" />
@@ -325,7 +298,6 @@
                     <Add library="wxmsw26" />
                     <Add directory="devel" />
                 </Linker>
-                <ExtraCommands />
             </Target>
             <Target title="plugin_DefMimeHandler">
                 <Option output="devel\share\CodeBlocks\plugins\defaultmimehandler.dll" />
@@ -341,7 +313,6 @@
                     <Add option="-DBUILDING_PLUGIN" />
                     <Add directory="sdk" />
                 </Compiler>
-                <ResourceCompiler />
                 <Linker>
                     <Add option="-Wl,--enable-auto-image-base" />
                     <Add option="-Wl,--add-stdcall-alias" />
@@ -349,7 +320,6 @@
                     <Add library="wxmsw26" />
                     <Add directory="devel" />
                 </Linker>
-                <ExtraCommands />
             </Target>
             <Target title="plugin_PluginsWizard">
                 <Option output="devel\share\CodeBlocks\plugins\pluginwizard.dll" />
@@ -365,7 +335,6 @@
                     <Add option="-DBUILDING_PLUGIN" />
                     <Add directory="sdk" />
                 </Compiler>
-                <ResourceCompiler />
                 <Linker>
                     <Add option="-Wl,--enable-auto-image-base" />
                     <Add option="-Wl,--add-stdcall-alias" />
@@ -374,7 +343,6 @@
                     <Add library="wxmsw26" />
                     <Add directory="devel" />
                 </Linker>
-                <ExtraCommands />
             </Target>
             <Target title="plugin_ToDo">
                 <Option output="devel\share\CodeBlocks\plugins\todo.dll" />
@@ -387,7 +355,6 @@
                     <Add option="-DBUILDING_PLUGIN" />
                     <Add directory="sdk" />
                 </Compiler>
-                <ResourceCompiler />
                 <Linker>
                     <Add option="-Wl,--enable-auto-image-base" />
                     <Add option="-Wl,--add-stdcall-alias" />
@@ -395,7 +362,6 @@
                     <Add library="libwxscintilla.a" />
                     <Add directory="devel" />
                 </Linker>
-                <ExtraCommands />
             </Target>
             <Target title="plugin_XPManifest">
                 <Option output="devel\share\CodeBlocks\plugins\xpmanifest.dll" />
@@ -410,14 +376,12 @@
                     <Add option="-DBUILDING_PLUGIN" />
                     <Add directory="sdk" />
                 </Compiler>
-                <ResourceCompiler />
                 <Linker>
                     <Add option="-Wl,--enable-auto-image-base" />
                     <Add option="-Wl,--add-stdcall-alias" />
                     <Add library="libcodeblocks.a" />
                     <Add directory="devel" />
                 </Linker>
-                <ExtraCommands />
             </Target>
             <Target title="console_runner">
                 <Option output="tools\ConsoleRunner\console_runner.exe" />
@@ -433,9 +397,6 @@
                 <Compiler>
                     <Add option="-Os" />
                 </Compiler>
-                <ResourceCompiler />
-                <Linker />
-                <ExtraCommands />
             </Target>
             <Environment>
                 <Variable name="WX_CFG" value="NonUnicode" />
@@ -472,7 +433,6 @@
             <Add directory="$(#WX.lib)\gcc_dll\msw" />
             <Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
         </Linker>
-        <ExtraCommands />
         <Unit filename="devel\share\CodeBlocks\images\codecompletion\README.txt">
             <Option compilerVar="" />
             <Option compile="0" />
@@ -958,6 +918,16 @@
             <Option target="plugin_CompilerGCC" />
         </Unit>
         <Unit filename="plugins\compilergcc\compilerSDCC.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="plugin_CompilerGCC" />
+        </Unit>
+        <Unit filename="plugins\compilergcc\compiler_defs.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="plugin_CompilerGCC" />
+        </Unit>
+        <Unit filename="plugins\compilergcc\compiler_defs.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />

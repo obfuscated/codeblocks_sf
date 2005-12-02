@@ -3,6 +3,7 @@
 
 #include <wx/string.h>
 #include <wx/hashmap.h>
+#include <compiletargetbase.h>
 
 class cbProject;
 class ProjectBuildTarget;

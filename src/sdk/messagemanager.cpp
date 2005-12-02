@@ -159,6 +159,18 @@ bool MessageManager::CheckLogType(MessageLogType type)
 	return true;
 }
 
+void MessageManager::LogToStdOut(const wxChar* msg, ...)
+{
+    wxString tmp;
+    va_list arg_list;
+
+    va_start(arg_list, msg);
+    tmp = wxString::FormatV(msg, arg_list);
+    va_end(arg_list);
+
+    fprintf(stdout, tmp.mb_str());
+}
+
 void MessageManager::Log(const wxChar* msg, ...)
 {
     SANITY_CHECK();

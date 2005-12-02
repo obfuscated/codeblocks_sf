@@ -182,6 +182,7 @@ class PLUGIN_EXPORT cbCompilerPlugin: public cbPlugin
 {
 	public:
 		cbCompilerPlugin();
+
 		/** @brief Run the project/target.
 		  *
 		  * Running a project means executing its build output. Of course
@@ -192,6 +193,9 @@ class PLUGIN_EXPORT cbCompilerPlugin: public cbPlugin
 		  * only one build target in the project).
 		  */
         virtual int Run(ProjectBuildTarget* target = 0L) = 0;
+        /** Same as Run(ProjectBuildTarget*) but with a wxString argument. */
+        virtual int Run(const wxString& target) = 0;
+
 		/** @brief Clean the project/target.
 		  *
 		  * Cleaning a project means deleting any files created by building it.
@@ -201,15 +205,21 @@ class PLUGIN_EXPORT cbCompilerPlugin: public cbPlugin
 		  * cleans all the build targets of the current project.
 		  */
         virtual int Clean(ProjectBuildTarget* target = 0L) = 0;
-		/** @brief Compile the project/target.
+        /** Same as Clean(ProjectBuildTarget*) but with a wxString argument. */
+        virtual int Clean(const wxString& target) = 0;
+
+		/** @brief Build the project/target.
 		  *
-		  * @param target The specific build target to compile. If NULL, it
-		  * compiles all the build targets of the current project.
+		  * @param target The specific build target to build. If NULL, it
+		  * builds all the targets of the current project.
 		  */
-        virtual int Compile(ProjectBuildTarget* target = 0L) = 0;
+        virtual int Build(ProjectBuildTarget* target = 0L) = 0;
+        /** Same as Build(ProjectBuildTarget*) but with a wxString argument. */
+        virtual int Build(const wxString& target) = 0;
+
 		/** @brief Rebuild the project/target.
 		  *
-		  * Rebuilding a project is equal to calling Clean() and then Compile().
+		  * Rebuilding a project is equal to calling Clean() and then Build().
 		  * This makes sure that all compilable files in the project will be
 		  * compiled again.
 		  *
@@ -217,24 +227,42 @@ class PLUGIN_EXPORT cbCompilerPlugin: public cbPlugin
 		  * rebuilds all the build targets of the current project.
 		  */
         virtual int Rebuild(ProjectBuildTarget* target = 0L) = 0;
-		/** @brief Compile all open projects, i.e. all targets in all projects. */
-        virtual int CompileAll() = 0;
-		/** @brief Rebuild all open projects, i.e. all targets in all projects. */
-        virtual int RebuildAll() = 0;
+        /** Same as Rebuild(ProjectBuildTarget*) but with a wxString argument. */
+        virtual int Rebuild(const wxString& target) = 0;
+
+		/** @brief Build all open projects.
+		  * @param target If not empty, the target to build in each project. Else all targets.
+		  */
+        virtual int BuildWorkspace(const wxString& target = wxEmptyString) = 0;
+
+		/** @brief Rebuild all open projects.
+		  * @param target If not empty, the target to rebuild in each project. Else all targets.
+		  */
+        virtual int RebuildWorkspace(const wxString& target = wxEmptyString) = 0;
+
+		/** @brief Clean all open projects.
+		  * @param target If not empty, the target to clean in each project. Else all targets.
+		  */
+        virtual int CleanWorkspace(const wxString& target = wxEmptyString) = 0;
+
         /** @brief Compile a specific file.
           *
           * @param file The file to compile (must be a project file!)
           */
         virtual int CompileFile(const wxString& file) = 0;
+
         /** @brief Abort the current build process. */
         virtual int KillProcess() = 0;
+
         /** @brief Is the plugin currently compiling? */
 		virtual bool IsRunning() const = 0;
+
         /** @brief Get the exit code of the last build process. */
 		virtual int GetExitCode() const = 0;
+
         /** @brief Display configuration dialog.
           *
-          * The default implementation calls Configure(cbProject*,ProjectBuildTarget*).
+          * The default implementation calls Configure(NULL, NULL).
           *
           * @see Configure(cbProject*,ProjectBuildTarget*)
           */
@@ -400,7 +428,7 @@ typedef int(*GetSDKVersionMinorProc)(void);
 // this is the plugins SDK version number
 // it will change when the plugins interface breaks
 #define PLUGIN_SDK_VERSION_MAJOR 1
-#define PLUGIN_SDK_VERSION_MINOR 5
+#define PLUGIN_SDK_VERSION_MINOR 6
 
 /** This is used to declare the plugin's hooks.
   */

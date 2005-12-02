@@ -17,7 +17,7 @@
       <help>Run current project</help>
     </object>
     <object class="wxMenuItem" name="idCompilerMenuCompileAndRun">
-      <label>Bui&amp;ld &amp;&amp; run</label>
+      <label>Bui&amp;ld and run</label>
       <accel>F9</accel>
       <help>Build and run current project</help>
     </object>
@@ -26,14 +26,9 @@
       <accel>Ctrl-F11</accel>
       <help>Rebuild current project</help>
     </object>
-    <object class="separator"/>
     <object class="wxMenuItem" name="idCompilerMenuClean">
       <label>&amp;Clean</label>
       <help>Clean current project</help>
-    </object>
-    <object class="wxMenuItem" name="idCompilerMenuDistClean">
-      <label>Di&amp;st-clean</label>
-      <help>Clean current project (dependencies too)</help>
     </object>
     <object class="separator"/>
     <object class="wxMenuItem" name="idCompilerMenuCompileAll">
@@ -43,6 +38,10 @@
     <object class="wxMenuItem" name="idCompilerMenuRebuildAll">
       <label>Reb&amp;uild workspace</label>
       <help>Rebuild all projects in workspace</help>
+    </object>
+    <object class="wxMenuItem" name="idCompilerMenuCleanAll">
+      <label>Clean workspace</label>
+      <help>Clean current project (dependencies too)</help>
     </object>
     <object class="separator"/>
     <object class="wxMenuItem" name="idCompilerMenuKillProcess">
@@ -72,10 +71,6 @@
       <label>Select target...</label>
     </object>
     <object class="separator"/>
-    <object class="wxMenuItem" name="idCompilerMenuCreateDist">
-      <label>Create distribution</label>
-      <help>Create a source distribution package</help>
-    </object>
     <object class="wxMenuItem" name="idCompilerMenuExportMakefile">
       <label>E&amp;xport Makefile</label>
       <help>Export Makefile so that you can build the program from the command line</help>
