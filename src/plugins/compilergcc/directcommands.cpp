@@ -147,8 +147,6 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
 
     const pfDetails& pfd = pf->GetFileDetails(target);
 
-//    MakefileGenerator mg(m_pCompilerPlugin, m_pProject, _T(""), 0); // don't worry! we just need a couple of utility funcs from it
-
     // lookup file's type
     FileType ft = FileTypeOf(pf->relativeFilename);
 
@@ -319,6 +317,8 @@ wxArrayString DirectCommands::GetCompileCommands(ProjectBuildTarget* target, boo
 
 wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* target, bool force)
 {
+    target->GetCustomVars().ApplyVarsToEnvironment();
+
     wxArrayString ret;
     ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Switching to target: ") + target->GetTitle());
     // NOTE: added this to notify compiler about the active target.
@@ -407,6 +407,10 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
 
 wxArrayString DirectCommands::GetPreBuildCommands(ProjectBuildTarget* target)
 {
+    m_pProject->GetCustomVars().ApplyVarsToEnvironment();
+    if (target)
+        target->GetCustomVars().ApplyVarsToEnvironment();
+
     wxArrayString buildcmds = target ? target->GetCommandsBeforeBuild() : m_pProject->GetCommandsBeforeBuild();
     if (!buildcmds.IsEmpty())
     {
@@ -438,11 +442,20 @@ wxArrayString DirectCommands::GetPreBuildCommands(ProjectBuildTarget* target)
                 break;
         }
     }
+
+    for (size_t n = 0; n < buildcmds.GetCount(); ++n)
+    {
+        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(buildcmds[n]);
+    }
     return buildcmds;
 }
 
 wxArrayString DirectCommands::GetPostBuildCommands(ProjectBuildTarget* target)
 {
+    m_pProject->GetCustomVars().ApplyVarsToEnvironment();
+    if (target)
+        target->GetCustomVars().ApplyVarsToEnvironment();
+
     wxArrayString buildcmds = target ? target->GetCommandsAfterBuild() : m_pProject->GetCommandsAfterBuild();
     if (!buildcmds.IsEmpty())
     {
@@ -473,6 +486,10 @@ wxArrayString DirectCommands::GetPostBuildCommands(ProjectBuildTarget* target)
                 break;
         }
     }
+    for (size_t n = 0; n < buildcmds.GetCount(); ++n)
+    {
+        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(buildcmds[n]);
+    }
     return buildcmds;
 }
 
@@ -499,14 +516,15 @@ wxArrayString DirectCommands::GetLinkCommands(ProjectBuildTarget* target, bool f
 
 wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, bool force)
 {
+    target->GetCustomVars().ApplyVarsToEnvironment();
+
     wxLogNull ln;
     wxArrayString ret;
 
-//    MakefileGenerator mg(m_pCompilerPlugin, m_pProject, _T(""), 0); // don't worry! we just need a couple of utility funcs from it
-    wxFileName out = UnixFilename(target->GetOutputFilename());
-
     wxString output = target->GetOutputFilename();
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(output);
+
+    wxFileName out = UnixFilename(output);
     wxString linkfiles;
     wxString resfiles;
 
@@ -607,7 +625,6 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
                                              _T(""),
                                              linkfiles,
                                              resfiles);
-//    wxString compilerCmd = mg.CreateSingleFileCompileCmd(ct, target, 0, _T(""), linkfiles, resfiles);
     if (!compilerCmd.IsEmpty())
     {
         switch (compiler->GetSwitches().logging)
@@ -617,7 +634,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
                 break;
 
             default: // linker always simple log (if not full)
-                ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Linking ") + kind_of_output + _T(": ") + target->GetOutputFilename());
+                ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Linking ") + kind_of_output + _T(": ") + output);
                 break;
         }
 

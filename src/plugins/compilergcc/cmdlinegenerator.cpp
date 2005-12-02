@@ -138,6 +138,7 @@ void CmdLineGenerator::CreateSingleFileCompileCmd(wxString& command,
         wxFileName fname(object_unquoted);
         fname.SetExt(EXECUTABLE_EXT);
         wxString output = fname.GetFullPath();
+        QuoteStringIfNeeded(output);
         command.Replace(_T("$exe_output"), output);
     }
     else
