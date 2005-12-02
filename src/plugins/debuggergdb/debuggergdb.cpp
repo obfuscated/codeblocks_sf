@@ -608,9 +608,12 @@ int DebuggerGDB::Debug()
                 return -1;
             }
 
-            m_pCompiler->Compile(target);
+            m_pCompiler->Build(target);
             while (m_pCompiler->IsRunning())
-                wxYield();
+            {
+                wxMilliSleep(10);
+                wxTheApp->Yield(true);
+            }
             msgMan->SwitchTo(m_PageIndex);
             if (m_pCompiler->GetExitCode() != 0)
             {

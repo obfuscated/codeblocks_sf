@@ -783,6 +783,7 @@ int CompilerGCC::DoRunQueue()
     else
         m_timerIdleWakeUp.Start(100);
 
+    delete cmd;
     return 0;
 }
 
