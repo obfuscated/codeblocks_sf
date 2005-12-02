@@ -764,7 +764,7 @@ int CompilerGCC::DoRunQueue()
 
 #ifndef __WXMSW__
     // run the command in a shell, so backtick'd expressions can be evaluated
-    cmd = GetConsoleShell() + _T(" '") + cmd + _T("'");
+    cmd = GetConsoleShell() + _T(" '") + cmd->command + _T("'");
 #endif
 
     m_Process = new PipedProcess((void**)&m_Process, this, idGCCProcess, pipe, dir);
