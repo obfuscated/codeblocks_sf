@@ -1130,7 +1130,7 @@ void ConfigManager::Read(const wxString& name, ConfigManagerContainer::IntToStri
     {
         while(curr = mNode->IterateChildren(curr)->ToElement())
         {
-            wxString(curr->Value()).Mid(1).ToLong(&tmp);
+            _U(curr->Value()).Mid(1).ToLong(&tmp);
             (*map)[tmp] = _U(curr->FirstChild()->ToText()->Value());
         }
     }

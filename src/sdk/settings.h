@@ -5,7 +5,7 @@
     #define _UU(x,y) wxString((x),(y))
     #define _CC(x,y) (x).mb_str((y))
 #else
-    #define _UU(x,y) (x)
+    #define _UU(x,y) (wxString(x))
     #define _CC(x,y) (x)
 #endif
 
