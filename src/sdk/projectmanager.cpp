@@ -602,6 +602,14 @@ cbProject* ProjectManager::LoadProject(const wxString& filename)
         // we 're done
 
         result = project;
+
+        // notify plugins that the project is loaded
+        // moved here from cbProject::Open() because code-completion
+        // kicks in too early and the perceived loading time is long...
+        CodeBlocksEvent event(cbEVT_PROJECT_OPEN);
+        event.SetProject(m_pActiveProject);
+        Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+
         break;
     }while(false);
     // we 're done
@@ -1054,9 +1062,14 @@ int ProjectManager::DoAddFileToProject(const wxString& filename, cbProject* proj
 		}
 	}
 
+    // make sure filename is relative to project path
+    wxFileName fname(filename);
+    fname.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE, project->GetBasePath());
+    fname.MakeRelativeTo(project->GetBasePath());
+
     // add the file to the first selected target
     SANITY_CHECK(0);
-    ProjectFile* pf = project->AddFile(targets[0], filename);
+    ProjectFile* pf = project->AddFile(targets[0], fname.GetFullPath());
     if (pf)
     {
         // if the file was added succesfully,

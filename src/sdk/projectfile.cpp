@@ -107,6 +107,15 @@ void ProjectFile::SetObjName(const wxString& name)
         else
             fname.SetExt(_T(".o")); // fallback?
     }
+#ifdef __WXMSW__
+    // special case for windows and files on a different drive
+    if (name.Length() > 1 && name.GetChar(1) == _T(':'))
+    {
+        wxString tmp = fname.GetFullPath();
+        tmp.Remove(1, 1);
+        fname.Assign(tmp);
+    }
+#endif
     m_ObjName = fname.GetFullPath();
 }
 

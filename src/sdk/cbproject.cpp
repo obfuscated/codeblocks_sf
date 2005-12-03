@@ -93,7 +93,10 @@ cbProject::cbProject(const wxString& filename)
 			m_Title = fname.GetName();
             m_BasePath = GetBasePath();
 			m_CommonTopLevelPath = GetBasePath() + wxFileName::GetPathSeparator();
-			NotifyPlugins(cbEVT_PROJECT_OPEN);
+
+            // moved to ProjectManager::LoadProject()
+            // see explanation there...
+//			NotifyPlugins(cbEVT_PROJECT_OPEN);
 		}
     }
 }
@@ -319,7 +322,10 @@ void cbProject::Open()
 		if (!m_Targets.GetCount())
 			AddDefaultBuildTarget();
 		SetModified(ft != ftCodeBlocksProject || fileUpgraded || fileModified);
-		NotifyPlugins(cbEVT_PROJECT_OPEN);
+
+		// moved to ProjectManager::LoadProject()
+		// see explanation there...
+//		NotifyPlugins(cbEVT_PROJECT_OPEN);
 
 		if (fileUpgraded)
 		{
@@ -601,14 +607,18 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 
     f->compile = localCompile;
     f->link = localLink;
-    fname.Assign(GetBasePath() + wxFILE_SEP_PATH + filename);
-//    fname.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE, m_BasePath);
-    wxString fullFilename = fname.GetFullPath();
 
+#ifdef __WXMSW__
+    // for windows, make sure the filename is not on another drive...
+    if (filename.Length() > 1 && filename.GetChar(1) == _T(':'))
+        fname.Assign(filename);
+    else
+#endif
+        fname.Assign(GetBasePath() + wxFILE_SEP_PATH + filename);
+
+    wxString fullFilename = fname.GetFullPath();
     f->file.Assign(fname);
-	//Manager::Get()->GetMessageManager()->Log(_T("Adding %s"), f->file.GetFullPath().c_str());
-//    fname.MakeRelativeTo(m_BasePath);
-    f->relativeFilename = filename;//fname.GetFullPath();
+    f->relativeFilename = filename;
 
     // now check if we have already added this file
     // if we have, return the existing file, but add the specified target
@@ -745,6 +755,11 @@ wxTreeItemId cbProject::AddTreeNode(wxTreeCtrl* tree, const wxString& text, cons
     wxTreeItemId ret;
 
     wxString path = text;
+#ifdef __WXMSW__
+    // special case for windows and files on a different drive
+    if (path.Length() > 1 && path.GetChar(1) == _T(':'))
+        path.Remove(1, 1);
+#endif
     int pos = path.Find(_T('/'));
     if (pos == -1)
         pos = path.Find(_T('\\'));
