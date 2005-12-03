@@ -514,9 +514,6 @@ ProjectFile* cbProject::AddFile(const wxString& targetName, const wxString& file
 
 ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool compile, bool link, unsigned short int weight)
 {
-    // look if the file belongs to the project already. If so, return it
-    ProjectFile* f;
-
 //  NOTE (Rick#1#): When loading the project, do not search for existing files
 //  (Assumming that there are no duplicate entries in the .cbp file)
 //  This saves us a lot of processing when loading large projects.
@@ -527,18 +524,25 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 //  This means we have to search anyway.
 //  NP though, I added a hashmap for fast searches in GetFileByFilename()
 
-    f = GetFileByFilename(filename, true, true);
-    if (!f)
-        f = GetFileByFilename(filename, false, true);
-    if (f)
-    {
-        if (targetIndex >= 0 && targetIndex < (int)m_Targets.GetCount())
-            f->AddBuildTarget(m_Targets[targetIndex]->GetTitle());
-        return f;
-    }
+/* NOTE (mandrav#1#): Calling GetFileByFilename() twice, is costly.
+    Instead of searching for duplicate files when entering here,
+    we 'll search before exiting.
+    The rationale is that by then, we 'll have the relative filename
+    in our own representation and this will make everything quicker
+    (check GetFileByFilename implementation to understand why)...
+*/
+//    f = GetFileByFilename(filename, true, true);
+//    if (!f)
+//        f = GetFileByFilename(filename, false, true);
+//    if (f)
+//    {
+//        if (targetIndex >= 0 && targetIndex < (int)m_Targets.GetCount())
+//            f->AddBuildTarget(m_Targets[targetIndex]->GetTitle());
+//        return f;
+//    }
 
-    // OK, add file
-    f = new ProjectFile(this);
+    // create file
+    ProjectFile* f = new ProjectFile(this);
     bool localCompile, localLink;
     wxFileName fname;
     wxString ext;
@@ -575,6 +579,7 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
         }
     }
 
+    // add the build target
     if (targetIndex >= 0 && targetIndex < (int)m_Targets.GetCount())
         f->AddBuildTarget(m_Targets[targetIndex]->GetTitle());
 
@@ -600,6 +605,17 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 	//Manager::Get()->GetMessageManager()->Log(_T("Adding %s"), f->file.GetFullPath().c_str());
     fname.MakeRelativeTo(m_BasePath);
     f->relativeFilename = fname.GetFullPath();
+
+    // now check if we have already added this file
+    // if we have, return the existing file, but add the specified target
+    ProjectFile* existing = GetFileByFilename(f->relativeFilename, true, true);
+    if (existing == f)
+    {
+        delete f;
+        if (targetIndex >= 0 && targetIndex < (int)m_Targets.GetCount())
+            existing->AddBuildTarget(m_Targets[targetIndex]->GetTitle());
+        return existing;
+    }
 
     m_Files.Append(f);
     if (!m_CurrentlyLoading)
