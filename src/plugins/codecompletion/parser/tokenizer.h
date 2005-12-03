@@ -103,9 +103,11 @@ protected:
 
     void CompactSpaces(wxString& str) const  // zero-alloc single-copy  --- wxString::Replace has to do an awful lot of copying
     {
-        //  m_Str.Replace(_T("  "), _T(" "));   // replace two-spaces with single-space (introduced if it skipped comments or assignments)
-        //  m_Str.Replace(_T("( "), _T("("));
-        //  m_Str.Replace(_T(" )"), _T(")"));
+    	if(str.size() < 3)
+    	return;
+//          str.Replace(_T("  "), _T(" "));   // replace two-spaces with single-space (introduced if it skipped comments or assignments)
+//          str.Replace(_T("( "), _T("("));
+//          str.Replace(_T(" )"), _T(")"));
 
         wxChar c = 0;
         wxChar last = 0;
@@ -115,7 +117,7 @@ protected:
         {
             c = str[src];
 
-            if(c == _T(' ') && (last == _T(' ') || last != _T('(')) )
+            if(c == _T(' ') && (last == _T(' ') || last == _T('(')) )
                 continue;
             else if(c == _T(')') && last == _T(' '))
                 --dst;
