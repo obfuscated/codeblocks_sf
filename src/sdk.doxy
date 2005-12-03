@@ -1,4 +1,4 @@
-# Doxyfile 1.4.3
+# Doxyfile 1.4.1
 
 #---------------------------------------------------------------------------
 # Project related configuration options
@@ -30,10 +30,10 @@ STRIP_FROM_INC_PATH    =
 SHORT_NAMES            = NO
 JAVADOC_AUTOBRIEF      = NO
 MULTILINE_CPP_IS_BRIEF = NO
-DETAILS_AT_TOP         = NO
+DETAILS_AT_TOP         = YES
 INHERIT_DOCS           = YES
 DISTRIBUTE_GROUP_DOC   = NO
-TAB_SIZE               = 8
+TAB_SIZE               = 4
 ALIASES                = 
 OPTIMIZE_OUTPUT_FOR_C  = NO
 OPTIMIZE_OUTPUT_JAVA   = NO
@@ -107,7 +107,9 @@ FILE_PATTERNS          = *.c \
                          *.mm \
                          *.dox
 RECURSIVE              = YES
-EXCLUDE                = ./sdk/tinyxml/
+EXCLUDE                = ./sdk/tinyxml/ \
+                         ./sdk/wxscintilla/ \
+                         ./sdk/as/
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = 
 EXAMPLE_PATH           = 
