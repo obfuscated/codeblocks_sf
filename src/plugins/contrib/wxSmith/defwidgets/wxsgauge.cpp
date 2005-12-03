@@ -15,10 +15,10 @@ WXS_EV_BEGIN(wxsGaugeEvents)
 WXS_EV_END(wxsGaugeEvents)
 
 wxsDWDefineBegin(wxsGauge,wxGauge,
-    ThisWidget = new wxGauge(parent,id,range,pos,size,style);
-    if ( value ) ThisWidget->SetValue(value);
-    if ( shadow ) ThisWidget->SetValue(shadow);
-    if ( bezel ) ThisWidget->SetValue(bezel);
+    WXS_THIS = new wxGauge(WXS_PARENT,WXS_ID,range,WXS_POS,WXS_SIZE,WXS_STYLE);
+    if ( value ) WXS_THIS->SetValue(value);
+    if ( shadow ) WXS_THIS->SetValue(shadow);
+    if ( bezel ) WXS_THIS->SetValue(bezel);
     )
     wxsDWDefInt(range,"Range:",100);
     wxsDWDefInt(value,"Value:",0);

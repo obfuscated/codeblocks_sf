@@ -23,9 +23,9 @@ WXS_EV_END(wxsSpinButtonEvents)
 //wxSpinButton(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxSP_HORIZONTAL, const wxString& name = "spinButton")
 
 wxsDWDefineBegin(wxsSpinButton,wxSpinButton,
-        ThisWidget = new wxSpinButton(parent,id,pos,size,style);
-        ThisWidget->SetRange(min,max);
-        ThisWidget->SetValue(value);
+        WXS_THIS = new wxSpinButton(WXS_PARENT,WXS_ID,WXS_POS,WXS_SIZE,WXS_STYLE);
+        WXS_THIS->SetRange(min,max);
+        WXS_THIS->SetValue(value);
     )
     wxsDWDefInt(value,"Default:",0);
     wxsDWDefInt(min,"Min:",0)

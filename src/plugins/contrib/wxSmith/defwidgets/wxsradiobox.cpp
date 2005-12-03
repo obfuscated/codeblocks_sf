@@ -23,16 +23,11 @@ WXS_EV_END(wxsRadioBoxEvents)
 //wxRadioBox(wxWindow* parent, wxWindowID id, const wxString& label, const wxPoint& point = wxDefaultPosition, const wxSize& size = wxDefaultSize, int n = 0, const wxString choices[] = NULL, int majorDimension = 0, long style = wxRA_SPECIFY_COLS, const wxValidator& validator = wxDefaultValidator, const wxString& name = "radioBox")
 
 wxsDWDefineBegin(wxsRadioBoxBase,wxRadioBox,
-    /* This code only avoids generating some warnings - it won't be used anywhere */
-    ThisWidget = new wxRadioBox(parent,id,_T(""),pos,size,0,NULL,1,style);
+    WXS_THIS = new wxRadioBox(WXS_PARENT,WXS_ID,_T(""),WXS_POS,WXS_SIZE,0,NULL,1,WXS_STYLE);
     )
 
     wxsDWDefStr(label,"Label:","");
-    #ifdef __NO_PROPGRID
-        wxsDWDefIntX(defaultChoice,"selection","Default:",-1)
-    #else
-        wxsDWDefIntX(defaultChoice,"selection","",-1)
-    #endif
+    wxsDWDefIntX(defaultChoice,"selection","",-1)
     wxsDWDefStrArrayX(arrayChoices,"content","item","Choices:",defaultChoice,-1)
     wxsDWDefInt(dimension,"Dimension:",1)
 wxsDWDefineEnd()

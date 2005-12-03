@@ -2,10 +2,10 @@
 #include "wxsnotebookparentqp.h"
 
 BEGIN_EVENT_TABLE(wxsNotebookParentQP,wxPanel)
-//(*EventTable(wxsNotebookParentQP)
+    //(*EventTable(wxsNotebookParentQP)
     EVT_TEXT(ID_TEXTCTRL1,wxsNotebookParentQP::OnLabelText)
     EVT_CHECKBOX(ID_CHECKBOX1,wxsNotebookParentQP::OnSelectionChange)
-//*)
+    //*)
     EVT_TIMER(0,wxsNotebookParentQP::OnWriteTimer)
     EVT_TIMER(1,wxsNotebookParentQP::OnReadTimer)
 END_EVENT_TABLE()

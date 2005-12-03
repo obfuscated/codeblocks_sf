@@ -23,8 +23,8 @@ WXS_EV_END(wxsRadioButtonEvents)
 
 wxsDWDefineBegin(wxsRadioButton,wxRadioButton,
 
-    ThisWidget = new wxRadioButton(parent,id,label,pos,size,style);
-    ThisWidget->SetValue(selected);
+    WXS_THIS = new wxRadioButton(WXS_PARENT,WXS_ID,label,WXS_POS,WXS_SIZE,WXS_STYLE);
+    WXS_THIS->SetValue(selected);
 
     )
 

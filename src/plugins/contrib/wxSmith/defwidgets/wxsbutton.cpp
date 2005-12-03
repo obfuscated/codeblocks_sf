@@ -21,8 +21,8 @@ WXS_EV_END(wxsButtonEvents)
 
 wxsDWDefineBegin(wxsButton,wxButton,
 
-    ThisWidget = new wxButton(parent,id,label,pos,size,style);
-    if (def) ThisWidget->SetDefault();
+    WXS_THIS = new wxButton(WXS_PARENT,WXS_ID,label,WXS_POS,WXS_SIZE,WXS_STYLE);
+    if (def) WXS_THIS->SetDefault();
 
     )
 

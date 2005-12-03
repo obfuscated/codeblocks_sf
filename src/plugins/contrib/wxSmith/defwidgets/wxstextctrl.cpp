@@ -42,8 +42,8 @@ WXS_EV_BEGIN(wxsTextCtrlEvents)
 WXS_EV_END(wxsTextCtrlEvents)
 
 wxsDWDefineBegin(wxsTextCtrl,wxTextCtrl,
-    ThisWidget = new wxTextCtrl(parent,id,value,pos,size,style);
-    if ( maxlength ) ThisWidget->SetMaxLength(maxlength);
+    WXS_THIS = new wxTextCtrl(WXS_PARENT,WXS_ID,value,WXS_POS,WXS_SIZE,WXS_STYLE);
+    if ( maxlength ) WXS_THIS->SetMaxLength(maxlength);
     )
     wxsDWDefLongStr(value,"Value:","Text");
     wxsDWDefInt(maxlength,"Max length:",0);

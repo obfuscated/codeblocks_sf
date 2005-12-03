@@ -43,14 +43,15 @@ wxString wxsDefWidget::GetProducingCode(wxsCodeParams& Params)
 
     CodeResult = GetGeneratingCodeStr();
 
-    CodeReplace(_T("ThisWidget"),GetBaseProperties().VarName);
-    CodeReplace(_T("parent"),Params.ParentName);
-    CodeReplace(_T("id"),GetBaseProperties().IdName);
-    CodeReplace(_T("pos"),CD.Pos);
-    CodeReplace(_T("size"),CD.Size);
-    CodeReplace(_T("style"),CD.Style);
-
     evCode();
+
+    CodeReplace(_T("WXS_POS"),CD.Pos);
+    CodeReplace(_T("WXS_SIZE"),CD.Size);
+    CodeReplace(_T("WXS_STYLE"),CD.Style);
+    
+    CodeReplace(_T("WXS_ID"),GetBaseProperties().IdName);
+    CodeReplace(_T("WXS_THIS"),GetBaseProperties().VarName);
+    CodeReplace(_T("WXS_PARENT"),Params.ParentName);
 
     // Applying default initializing code
 
@@ -97,7 +98,55 @@ void wxsDefWidget::evDestroy()
 
 void wxsDefWidget::CodeReplace(const wxString& Old,const wxString& New)
 {
-    CodeResult.Replace(Old,New,true);
+    if ( Old.empty() ) return;
+    
+    wxString NewCode;
+    int Pos = CodeResult.Find(Old);
+    if ( Pos < 0 )
+    {
+        DBGLOG("wxSmith: %s -> %s",Old.c_str(),New.c_str());
+        DBGLOG("in string: %s",CodeResult.c_str());
+    }
+    while ( Pos >= 0 )
+    {
+        bool CanMove = true;
+        wxChar Before = ( Pos > 0 ) ? CodeResult[Pos-1] : _T('\0');
+
+        if ( ( (Before >= 'a') && (Before <= 'z') ) ||
+             ( (Before >= 'A') && (Before <= 'Z') ) ||
+             ( (Before >= '0') && (Before <= '9') ) ||
+               (Before == '_') )
+        {
+            CanMove = false;
+        }
+        else
+        { 
+            size_t AfterPos = Pos + Old.Len();
+            wxChar After = ( AfterPos < CodeResult.Len() ) ? CodeResult[AfterPos] : _T('\0');
+            if ( ( (After >= 'a') && (After <= 'z') ) ||
+                 ( (After >= 'A') && (After <= 'Z') ) ||
+                 ( (After >= '0') && (After <= '9') ) ||
+                   (After == '_') )
+            {
+                CanMove = false;
+            }
+        }
+
+        if ( !CanMove )
+        {
+            NewCode.Append(CodeResult.Mid(0,Pos+1));
+            CodeResult.Remove(0,Pos+1);
+        }
+        else
+        {
+            NewCode.Append(CodeResult.Mid(0,Pos));
+            NewCode.Append(New);
+            CodeResult.Remove(0,Pos+Old.Len());
+        }
+        Pos = CodeResult.Find(Old);
+    }
+    NewCode.Append(CodeResult);
+    CodeResult = NewCode;
 }
 
 wxString wxsDefWidget::GetDeclarationCode(wxsCodeParams& Params)
@@ -109,7 +158,6 @@ wxString wxsDefWidget::GetDeclarationCode(wxsCodeParams& Params)
     Tmp.Append(_T(';'));
     return Tmp;
 }
-
 
 void wxsDefWidget::evBool(bool& Val,const wxString& Name,const wxString& XrcName,const wxString& PropName,bool DefValue)
 {
@@ -335,12 +383,11 @@ void wxsDefWidget::evStrArray(wxArrayString& Val,const wxString& Name,const wxSt
         {
             // Replacing wxsDWAddStrings function calls
 
-            wxString CodeToSearch = wxString::Format(_T("wxsDWAddStrings(%s,%s);"),Name.c_str(),GetBaseProperties().VarName.c_str());
+            wxString CodeToSearch = wxString::Format(_T("wxsDWAddStrings(%s,WXS_THIS);"),Name.c_str());
             wxString ReplaceWith;
             for ( size_t i = 0; i<Val.GetCount(); i++ )
             {
-            	ReplaceWith.Append(GetBaseProperties().VarName);
-            	ReplaceWith.Append(_T("->Append("));
+            	ReplaceWith.Append(_T("WXS_THIS->Append("));
             	ReplaceWith.Append(GetWxString(Val[i]));
             	ReplaceWith.Append(_T(");\n"));
             }
@@ -348,8 +395,8 @@ void wxsDefWidget::evStrArray(wxArrayString& Val,const wxString& Name,const wxSt
 
             // Replacing wxsDWSelectString function calls
 
-            CodeToSearch.Printf(_T("wxsDWSelectString(%s,%d,%s)"),Name.c_str(),DefValue,GetBaseProperties().VarName.c_str());
-            ReplaceWith.Printf(_T("%s->SetSelection(%d)"),GetBaseProperties().VarName.c_str(),DefValue);
+            CodeToSearch.Printf(_T("wxsDWSelectString(%s,%d,WXS_THIS)"),Name.c_str(),DefValue);
+            ReplaceWith.Printf(_T("WXS_THIS->SetSelection(%d)"),DefValue);
             CodeReplace(CodeToSearch,ReplaceWith);
 
             break;

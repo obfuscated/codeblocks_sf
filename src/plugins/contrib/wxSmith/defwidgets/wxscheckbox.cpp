@@ -16,8 +16,8 @@ WXS_EV_END(wxsCheckBoxEvents)
 
 wxsDWDefineBegin(wxsCheckBox,wxCheckBox,
 
-    ThisWidget = new wxCheckBox(parent,id,label,pos,size,style);
-    ThisWidget->SetValue(checked);
+    WXS_THIS = new wxCheckBox(WXS_PARENT,WXS_ID,label,WXS_POS,WXS_SIZE,WXS_STYLE);
+    WXS_THIS->SetValue(checked);
 
     )
 

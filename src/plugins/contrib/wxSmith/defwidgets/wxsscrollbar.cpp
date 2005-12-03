@@ -29,8 +29,8 @@ WXS_EV_END(wxsScrollBarEvents)
 
 wxsDWDefineBegin(wxsScrollBar,wxScrollBar,
 
-    ThisWidget = new wxScrollBar(parent,id,pos,size,style);
-    ThisWidget->SetScrollbar(value,thumbsz,range,pagesz);
+    WXS_THIS = new wxScrollBar(WXS_PARENT,WXS_ID,WXS_POS,WXS_SIZE,WXS_STYLE);
+    WXS_THIS->SetScrollbar(value,thumbsz,range,pagesz);
     )
     wxsDWDefInt(value,"Value:",0);
     wxsDWDefIntX(thumbsz,"thumbsize","Thumb size:",1);

@@ -52,16 +52,16 @@
 #define wxsDWDefineBegin(Name,WidgetName,Code)                              \
     wxString Name::GetGeneratingCodeStr() { return _T(#Code); }             \
     wxString Name::GetWidgetNameStr() { return _T(#WidgetName); }           \
-    wxWindow* Name::MyCreatePreview(wxWindow* parent)                       \
+    wxWindow* Name::MyCreatePreview(wxWindow* WXS_PARENT)                   \
     {                                                                       \
-        WidgetName* ThisWidget;                                             \
-        wxWindowID id = -1;                                                 \
-        wxPoint pos = GetPosition();                                        \
-        wxSize size = GetSize();                                            \
-        long style  = GetStyle();                                           \
+        WidgetName* WXS_THIS;                                               \
+        wxWindowID WXS_ID = -1;                                             \
+        wxPoint WXS_POS = GetPosition();                                    \
+        wxSize WXS_SIZE = GetSize();                                        \
+        long WXS_STYLE = GetStyle();                                        \
         Code;                                                               \
-        PreviewApplyDefaults(ThisWidget);                                   \
-        return ThisWidget;                                                  \
+        PreviewApplyDefaults(WXS_THIS);                                     \
+        return WXS_THIS;                                                    \
     }                                                                       \
     void Name::BuildExtVars()                                               \
     {
@@ -275,7 +275,7 @@ class WXSCLASS wxsDefWidget: public wxsWidget
 
         /** This function does replace the Old identifier with New content
          *
-         * Currently it does only replace strings.
+         * It replaces strings but only when it won't break tpkens
          *
          * \param Old - Old string
          * \param New - New string

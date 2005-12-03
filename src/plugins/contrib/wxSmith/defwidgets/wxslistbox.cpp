@@ -28,16 +28,12 @@ WXS_EV_END(wxsListBoxEvents)
 
 
 wxsDWDefineBegin(wxsListBox,wxListBox,
-        ThisWidget = new wxListBox(parent,id,pos,size,0,0,style);
-        wxsDWAddStrings(arrayChoices,ThisWidget);
-        wxsDWSelectString(arrayChoices,defaultChoice,ThisWidget);
+        WXS_THIS = new wxListBox(WXS_PARENT,WXS_ID,WXS_POS,WXS_SIZE,0,0,WXS_STYLE);
+        wxsDWAddStrings(arrayChoices,WXS_THIS);
+        wxsDWSelectString(arrayChoices,defaultChoice,WXS_THIS);
     )
 
-    #ifdef __NO_PROPGRID
-        wxsDWDefIntX(defaultChoice,"selection","Default:",-1)
-    #else
-        wxsDWDefIntX(defaultChoice,"selection","",-1)
-    #endif
+    wxsDWDefIntX(defaultChoice,"selection","",-1)
     wxsDWDefStrArrayX(arrayChoices,"content","item","Choices:",defaultChoice,wxLB_SORT)
 
 wxsDWDefineEnd()

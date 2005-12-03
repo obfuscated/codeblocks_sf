@@ -24,14 +24,10 @@ WXS_EV_END(wxsComboBoxEvents)
 
 
 wxsDWDefineBegin(wxsComboBoxBase,wxComboBox,
-        ThisWidget = new wxComboBox(parent,id,_T(""),pos,size,0,0,style);
+        WXS_THIS = new wxComboBox(WXS_PARENT,WXS_ID,_T(""),WXS_POS,WXS_SIZE,0,0,WXS_STYLE);
 	)
 
-    #ifdef __NO_PROPGRID
-        wxsDWDefIntX(defaultChoice,"selection","Default:",-1)
-    #else
-        wxsDWDefIntX(defaultChoice,"selection","",-1)
-    #endif
+    wxsDWDefIntX(defaultChoice,"selection","",-1)
     wxsDWDefStrArrayX(arrayChoices,"content","item","Choices",defaultChoice,wxCB_SORT)
 
 wxsDWDefineEnd()

@@ -55,7 +55,7 @@ WXS_EV_END(wxsTreeCtrlEvents)
 
 wxsDWDefineBegin(wxsTreeCtrl,wxTreeCtrl,
 
-    ThisWidget = new wxTreeCtrl(parent,id,pos,size,style);
+    WXS_THIS = new wxTreeCtrl(WXS_PARENT,WXS_ID,WXS_POS,WXS_SIZE,WXS_STYLE);
     )
 
 wxsDWDefineEnd()
