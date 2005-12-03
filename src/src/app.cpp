@@ -78,7 +78,6 @@ static const wxCmdLineEntryDesc cmdLineDesc[] =
     { wxCMD_LINE_SWITCH, _T(""), _T("rebuild"), _T("clean and then build the project/workspace"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_SWITCH, _T(""), _T("build"), _T("just build the project/workspace"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_OPTION, _T(""), _T("target"),  _T("the target for the batch build"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
-    { wxCMD_LINE_SWITCH, _T(""), _T("hidden"), _T("do not show a window (used only with *build options)"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_PARAM, _T(""), _T(""),  _T("filename(s)"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE },
     { wxCMD_LINE_NONE }
 };
@@ -206,13 +205,15 @@ bool CodeBlocksApp::InitXRCStuff()
 	return true;
 }
 
-void CodeBlocksApp::InitFrame()
+MainFrame* CodeBlocksApp::InitFrame()
 {
     MainFrame *frame = new MainFrame(m_locale, (wxFrame*)0L);
-    #ifdef __WXMSW__
-        if(g_DDEServer)
-            g_DDEServer->SetFrame(frame);
-    #endif
+    SetTopWindow(0);
+    frame->Hide(); // frame is shown by the caller
+#ifdef __WXMSW__
+    if(g_DDEServer)
+        g_DDEServer->SetFrame(frame);
+#endif
     if (ParseCmdLine(frame) == 0)
     {
         if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/blank_workspace"), true) == false)
@@ -221,18 +222,12 @@ void CodeBlocksApp::InitFrame()
 
     if (!m_Batch)
     {
-        frame->Show(true);
-        SetTopWindow(frame);
-
 #ifdef wxUSE_BINDERAPP
         SetGlobalHandler(frame);
         SetGlobalBinder(frame->m_KeyProfiles.Item(0));
 #endif
-
-        frame->ShowTips(); // this func checks if the user wants tips, so no need to check here
     }
-    HideSplashScreen();
-    frame->Show(!m_Hidden);
+    return frame;
 }
 
 void CodeBlocksApp::CheckVersion()
@@ -313,7 +308,6 @@ bool CodeBlocksApp::OnInit()
     m_Batch = false;
     m_Build = false;
     m_ReBuild = false;
-    m_Hidden = false;
     m_BatchExitCode = 0;
 
     try
@@ -329,6 +323,10 @@ bool CodeBlocksApp::OnInit()
         if(!LoadConfig())
             return false;
 
+        InitImageHandlers();
+        if (!m_Batch)
+            ShowSplashScreen();
+
         InitLocale();
         m_pSingleInstance = 0;
         if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/single_instance"), true))
@@ -337,6 +335,7 @@ bool CodeBlocksApp::OnInit()
             m_pSingleInstance = new wxSingleInstanceChecker(name);
             if (m_pSingleInstance->IsAnotherRunning())
             {
+                HideSplashScreen();
                 wxLogError(_("Another program instance is already running, aborting."));
                 return false;
             }
@@ -344,16 +343,19 @@ bool CodeBlocksApp::OnInit()
 
         InitAssociations();
         InitDebugConsole();
-        InitImageHandlers();
         if(m_ClearConf)
         {
             ClearConf();
+            HideSplashScreen();
             return false;
         }
-        ShowSplashScreen();
         if(!InitXRCStuff())
+        {
+            HideSplashScreen();
             return false;
-        InitFrame();
+        }
+
+        MainFrame* frame = InitFrame();
 
         if (m_Batch)
         {
@@ -369,6 +371,12 @@ bool CodeBlocksApp::OnInit()
 
         // run startup script
         Manager::Get()->GetScriptingManager()->LoadScript(_T("startup.script"));
+
+        // finally, show the app
+        HideSplashScreen();
+        SetTopWindow(frame);
+        frame->Show();
+        frame->ShowTips(); // this func checks if the user wants tips, so no need to check here
 
         return true;
     }
@@ -583,7 +591,6 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                     // batch jobs
                     m_Batch = hasProjOrWksp;
                     m_Batch = m_Batch && (m_Build || m_ReBuild);
-                    m_Hidden = m_Batch && m_Hidden;
                 }
                 else
                 {
@@ -603,10 +610,12 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                         SetupPersonality(val);
 
                     // batch jobs
-                    m_Hidden = parser.Found(_T("hidden"), &val);
                     m_Build = parser.Found(_T("build"), &val);
                     m_ReBuild = parser.Found(_T("rebuild"), &val);
                     parser.Found(_T("target"), &m_BatchTarget);
+
+                    // initial setting for batch flag (will be reset when ParseCmdLine() is called again).
+                    m_Batch = m_Build || m_ReBuild;
                 }
             }
             break;

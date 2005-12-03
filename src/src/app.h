@@ -63,7 +63,7 @@ class CodeBlocksApp : public
         void InitImageHandlers();
         void ClearConf();
         bool InitXRCStuff();
-        void InitFrame();
+        MainFrame* InitFrame();
         void CheckVersion();
         void InitLocale();
         int BatchJob();
@@ -87,7 +87,6 @@ class CodeBlocksApp : public
         wxString m_BatchTarget;
         bool m_Build;
         bool m_ReBuild;
-        bool m_Hidden;
         int m_BatchExitCode;
         // batch jobs - end
 

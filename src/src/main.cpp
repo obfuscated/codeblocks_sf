@@ -879,7 +879,6 @@ void MainFrame::LoadWindowState()
     wxString buf;
     buf = Manager::Get()->GetConfigManager(_T("app"))->ReadBinary(_T("/main_frame/layout"));
     wxMemoryInputStream ms(buf.c_str(), buf.Length());
-    wxUtil::ReadWindowLayout(ms, this);
     pLayoutManager->LoadFromStream( ms );
     pSlideBar->LoadFromStream( ms );
 
@@ -912,7 +911,6 @@ void MainFrame::SaveWindowState()
 	wxLogNull ln; // no logging needed
 
     wxMemoryOutputStream os;
-    wxUtil::WriteWindowLayout(os, this);
     pLayoutManager->SaveToStream( os );
     pSlideBar->SaveToStream( os );
     wxString buf(static_cast<const wxChar*>(os.GetOutputStreamBuffer()->GetBufferStart()), os.GetSize());
