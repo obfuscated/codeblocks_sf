@@ -746,7 +746,7 @@ bool EditorManager::UpdateProjectFiles(cbProject* project)
 		ProjectFile* pf = ed->GetProjectFile();
 		if (!pf)
 			continue;
-		if (pf->project != project)
+		if (pf->GetParentProject() != project)
 			continue;
 		pf->editorTopLine = ed->GetControl()->GetFirstVisibleLine();
 		pf->editorPos = ed->GetControl()->GetCurrentPos();

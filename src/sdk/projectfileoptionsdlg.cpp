@@ -46,7 +46,7 @@ ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf)
 
 	if (pf)
 	{
-		cbProject* prj = pf->project;
+		cbProject* prj = pf->GetParentProject();
 		wxCheckListBox *list = XRCCTRL(*this, "lstTargets", wxCheckListBox);
 		for (int i = 0; i < prj->GetBuildTargetsCount(); ++i)
 		{
@@ -122,7 +122,7 @@ void ProjectFileOptionsDlg::OnOKClick(wxCommandEvent& event)
 	if (m_ProjectFile->compile && m_ProjectFile->compilerVar.IsEmpty())
         m_ProjectFile->compilerVar = _T("CPP");
 
-    cbProject* prj = m_ProjectFile->project;
+    cbProject* prj = m_ProjectFile->GetParentProject();
     prj->SetModified(true);
 	EndModal(wxID_OK);
 }

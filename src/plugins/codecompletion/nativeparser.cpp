@@ -372,7 +372,7 @@ Parser* NativeParser::FindParserFromEditor(cbEditor* editor)
 	ProjectFile* pf = editor->GetProjectFile();
 	if (!pf)
 		return 0L;
-	cbProject* project = pf->project;
+	cbProject* project = pf->GetParentProject();
 	return m_Parsers[project];
 }
 

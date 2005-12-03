@@ -87,9 +87,9 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
 		virtual void SetHostApplication(const wxString& app); ///< Set the target's host application to \c app
         virtual void SetCompilerIndex(int compilerIdx); ///< Set the target's compiler index
         virtual int GetCompilerIndex(){ return m_CompilerIdx; } ///< Read the target's compiler index
-        virtual wxString GetMakeCommandFor(MakeCommand cmd){ return m_MakeCommands[cmd]; }
-        virtual void SetMakeCommandFor(MakeCommand cmd, const wxString& make);
-        virtual bool MakeCommandsModified(){ return m_MakeCommandsModified; }
+        virtual wxString GetMakeCommandFor(MakeCommand cmd){ return m_MakeCommands[cmd]; } ///< Get the "make" command used for @c cmd
+        virtual void SetMakeCommandFor(MakeCommand cmd, const wxString& make); ///< Set the "make" command used for @c cmd
+        virtual bool MakeCommandsModified(){ return m_MakeCommandsModified; } ///< True if any of the "make" commands is modified.
 	protected:
         friend class cbProject;
         wxString m_Filename;

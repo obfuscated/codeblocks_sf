@@ -4,6 +4,7 @@
 #include "settings.h"
 #include "globals.h"
 #include "compiletargetbase.h"
+#include "projectfile.h"
 #include <wx/dynarray.h>
 #include <wx/filename.h>
 #include <wx/list.h>
@@ -13,133 +14,109 @@
 
 class cbProject;
 class ProjectBuildTarget;
-class pfDetails;
 
 WX_DEFINE_ARRAY(ProjectBuildTarget*, BuildTargets);
-WX_DECLARE_HASH_MAP(ProjectBuildTarget*, pfDetails*, wxPointerHash, wxPointerEqual, PFDMap);
 
-class ProjectFile  : public BlockAllocated<ProjectFile, 1000>
-{
-    public:
-        ProjectFile(cbProject* prj);
-        ~ProjectFile();
-
-        void AddBuildTarget(const wxString& targetName);
-        void RenameBuildTarget(const wxString& oldTargetName, const wxString& newTargetName);
-        void RemoveBuildTarget(const wxString& targetName);
-        bool ShowOptions(wxWindow* parent);
-
-        // take as example the relative file sdk/cbProject.cpp
-        wxString GetBaseName(); // returns sdk/cbProject
-        const wxString& GetObjName(); // returns sdk/cbProject.o
-        void SetObjName(const wxString& name);
-
-        cbProject* project;
-
-        /// @note: if you set 'file' or 'relativeFilename' anywhere in code,
-        ///       you *MUST* call UpdateFileDetails() afterwards or it won't compile anymore
-        wxFileName file;
-        wxString relativeFilename;
-        /// This is called automatically when adding/removing build targets
-        void UpdateFileDetails(ProjectBuildTarget* target = 0);
-        /// Retrieve the details for this project file for the specified build target
-        const pfDetails& GetFileDetails(ProjectBuildTarget* target);
-
-        /// Set the visual state (modified, read-only, etc)
-		void SetFileState(FileVisualState state);
-        /// Get the visual state (modified, read-only, etc)
-		FileVisualState GetFileState();
-
-        wxString relativeToCommonTopLevelPath; // used for the tree, .objs and .deps (has no "..")
-        bool compile;
-        bool link;
-        unsigned short int weight; // files acn be sorted by their weight and a
-                    // compiler can compile them in this sorted order
-                    // weight ranges from 0 to 100, default is 50
-        bool editorOpen; // layout info
-        int editorPos; // layout info
-        int editorTopLine; // layout info
-        wxString buildCommand;
-        bool useCustomBuildCommand;
-        bool autoDeps;
-        wxString customDeps;
-        wxString compilerVar;
-        wxArrayString buildTargets;
-    private:
-        friend class cbProject;
-        void DoUpdateFileDetails(ProjectBuildTarget* target);
-        FileVisualState m_VisualState;
-        wxTreeItemId m_TreeItemId; // set by the project when building the tree
-        wxString m_ObjName;
-        PFDMap m_PFDMap;
-};
-WX_DECLARE_LIST(ProjectFile, FilesList);
-
-// ProjectFile details
-class pfDetails : public BlockAllocated<pfDetails, 1000>
-{
-    public:
-        pfDetails(ProjectBuildTarget* target, ProjectFile* pf);
-        void Update(ProjectBuildTarget* target, ProjectFile* pf);
-        // all the members below, are set in the constructor
-        wxString source_file;
-        wxString object_file;
-        wxString dep_file;
-        wxString object_dir;
-        wxString dep_dir;
-        // those below, have no UnixFilename() applied, nor QuoteStringIfNeeded()
-        wxString source_file_native;
-        wxString object_file_native;
-        wxString dep_file_native;
-        wxString object_dir_native;
-        wxString dep_dir_native;
-        wxString source_file_absolute_native;
-        wxString object_file_absolute_native;
-        wxString dep_file_absolute_native;
-};
-
-/*
- * No description
- */
+/** Represents a Code::Blocks project build target. */
 class DLLIMPORT ProjectBuildTarget : public BlockAllocated<ProjectBuildTarget, 1000>, public CompileTargetBase
 {
 	public:
-		// class constructor
+		/// Constructor
 		ProjectBuildTarget(cbProject* parentProject);
-		// class destructor
+		/// Destructor
 		~ProjectBuildTarget();
 
+        /** @return The target's parent project. */
         virtual cbProject* GetParentProject();
-        virtual wxString GetFullTitle(); // returns "projectname - targetname"
+        /** @return The full title, i.e. "projectname - targetname". */
+        virtual wxString GetFullTitle();
 
         //properties
+
+        /** @return A string containing a list of all the external files this target depends on.
+          * If any of the files in this list is newer than the target's output, the target is relinked.
+          */
         virtual const wxString& GetExternalDeps();
+
+        /** Set a list of all the external files this targets depends on.
+          * If any of the files in this list is newer than the target's output, the target is relinked.
+          * @param deps A string containing the list of files.
+          */
         virtual void SetExternalDeps(const wxString& deps);
+
+        /** @return A string containing a list of additional output files, besides the main output.
+          * If any of the files in this list is older than the list returned by
+          * GetExternalDeps(), the target is relinked.
+          */
         virtual const wxString& GetAdditionalOutputFiles();
+
+        /** Set a list of all additional output files this targets creates, besides its main output.
+          * If any of the files in this list is older than the list returned by
+          * GetExternalDeps(), the target is relinked.
+          * @param files A string containing the list of additional files.
+          */
         virtual void SetAdditionalOutputFiles(const wxString& files);
+
+        /** @return True if this target should be built when the virtual target "All" is selected, false if not. */
         virtual bool GetIncludeInTargetAll();
+
+        /** Set if this target should be built when the virtual target "All" is selected.
+          * @param buildIt If true, the target will be built with "All" else it won't. */
         virtual void SetIncludeInTargetAll(bool buildIt);
+
+        /** Valid only for targets generating dynamic libraries (DLLs or SOs).
+          * @return True if the target creates a DEF imports file. */
         virtual bool GetCreateDefFile();
+
+        /** Set if the target creates a DEF imports file.
+          * Valid only for targets generating dynamic libraries (DLLs or SOs).
+          * @param createIt If true, a DEF file is generated else it is not. */
         virtual void SetCreateDefFile(bool createIt);
+
+        /** Valid only for targets generating dynamic libraries (DLLs or SOs).
+          * @return True if an import library will be created, false if not. */
         virtual bool GetCreateStaticLib();
+
+        /** Set if an import library should be created.
+          * Valid only for targets generating dynamic libraries (DLLs or SOs).
+          * @param createIt If true, an import library will be created else it will not. */
         virtual void SetCreateStaticLib(bool createIt);
+
+        /** Valid only for targets generating a console executable.
+          * ConsoleRunner is an external utility program that waits for a keypress
+          * after the target is executed.
+          * @return True if ConsoleRunner should be used, false if not. */
         virtual bool GetUseConsoleRunner();
+
+        /** Set if ConsoleRunner should be used.
+          * Valid only for targets generating a console executable.
+          * ConsoleRunner is an external utility program that waits for a keypress
+          * after the target is executed.
+          * @param useIt If true, ConsoleRunner is used else it is not. */
         virtual void SetUseConsoleRunner(bool useIt);
 
         virtual void SetTargetType(const TargetType& pt); // overriden
 
-        // target dependencies: targets to be compiled (if necessary) before this one
-        // add a target to the list of dependencies of this target. Be careful
-        // not to add a target more than once
+        /** Targets to be compiled (if necessary) before this one.
+          * Add a target to the list of dependencies of this target. Be careful
+          * not to add a target more than once.
+          * @param target The build target to add as a dependency.
+          */
         virtual void AddTargetDep(ProjectBuildTarget* target);
-        // get the list of dependency targets of this target
+
+        /** @return A list of dependency targets of this target. */
         virtual BuildTargets& GetTargetDeps();
 
+        /** Provides an easy way to iterate all the files belonging in this target.
+          * @return A list of files belonging in this target. */
+        virtual FilesList& GetFilesList(){ return m_Files; }
     private:
+        friend class ProjectFile; // to allow it to add/remove files in FilesList
         cbProject* m_Project;
         wxString m_ExternalDeps;
         wxString m_AdditionalOutputFiles;
         BuildTargets m_TargetDeps;
+        FilesList m_Files;
         bool m_BuildWithAll;
         bool m_CreateStaticLib;
         bool m_CreateDefFile;
@@ -147,4 +124,3 @@ class DLLIMPORT ProjectBuildTarget : public BlockAllocated<ProjectBuildTarget, 1
 };
 
 #endif // PROJECTBUILDTARGET_H
-

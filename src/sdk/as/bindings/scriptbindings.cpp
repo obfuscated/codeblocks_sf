@@ -268,8 +268,8 @@ void Register_ProjectFile(asIScriptEngine* engine)
     engine->RegisterObjectMethod("ProjectFile", "wxString GetBaseName()", asMETHOD(ProjectFile, GetBaseName), asCALL_THISCALL);
     engine->RegisterObjectMethod("ProjectFile", "wxString& GetObjName()", asMETHOD(ProjectFile, GetObjName), asCALL_THISCALL);
     engine->RegisterObjectMethod("ProjectFile", "void SetObjName(const wxString& in)", asMETHOD(ProjectFile, SetObjName), asCALL_THISCALL);
+    engine->RegisterObjectMethod("ProjectFile", "Project@ GetParentProject()", asMETHOD(ProjectFile, GetParentProject), asCALL_THISCALL);
 
-    engine->RegisterObjectProperty("ProjectFile", "Project@ project", offsetof(ProjectFile, project));
     engine->RegisterObjectProperty("ProjectFile", "wxString relativeFilename", offsetof(ProjectFile, relativeFilename));
     engine->RegisterObjectProperty("ProjectFile", "wxString relativeToCommonTopLevelPath", offsetof(ProjectFile, relativeToCommonTopLevelPath));
     engine->RegisterObjectProperty("ProjectFile", "bool compile", offsetof(ProjectFile, compile));

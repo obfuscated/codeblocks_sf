@@ -594,17 +594,21 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 				ft == ftResourceBin ||
 				ft == ftStaticLib);
 
+    // optimization opportunity:
+    //
+    // filename is relative to the project's base path, so
+    // to get the absolute filename, we just prepend the project's base path...
 
     f->compile = localCompile;
     f->link = localLink;
-//    fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_BasePath);
-    fname.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE, m_BasePath);
+    fname.Assign(GetBasePath() + wxFILE_SEP_PATH + filename);
+//    fname.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE, m_BasePath);
     wxString fullFilename = fname.GetFullPath();
 
     f->file.Assign(fname);
 	//Manager::Get()->GetMessageManager()->Log(_T("Adding %s"), f->file.GetFullPath().c_str());
-    fname.MakeRelativeTo(m_BasePath);
-    f->relativeFilename = fname.GetFullPath();
+//    fname.MakeRelativeTo(m_BasePath);
+    f->relativeFilename = filename;//fname.GetFullPath();
 
     // now check if we have already added this file
     // if we have, return the existing file, but add the specified target
@@ -1051,11 +1055,13 @@ int cbProject::IndexOfBuildTargetName(const wxString& targetName)
     return -1;
 }
 
-bool cbProject::SetActiveBuildTarget(int target)
+bool cbProject::SetActiveBuildTarget(int index)
 {
-    if (target == m_ActiveTarget)
+    if (index < 0 || index >= GetBuildTargetsCount())
+        return false;
+    if (index == m_ActiveTarget)
         return true;
-    m_ActiveTarget = target;
+    m_ActiveTarget = index;
     SetModified(true);
     return true;
 }

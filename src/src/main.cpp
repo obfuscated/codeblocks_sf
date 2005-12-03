@@ -1204,7 +1204,7 @@ void MainFrame::DoUpdateAppTitle()
 	{
 	    ProjectFile* prjf = ((cbEditor*)ed)->GetProjectFile();
 	    if(prjf)
-            prj = prjf->project;
+            prj = prjf->GetParentProject();
 	}
 	else
         prj = PRJMAN() ? PRJMAN()->GetActiveProject() : 0L;
