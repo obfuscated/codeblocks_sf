@@ -141,7 +141,8 @@ wxString CompileTargetBase::SuggestOutputFilename()
             suggestion.Clear();
             break;
     }
-    return UnixFilename(suggestion);
+    wxFileName fname(suggestion);
+    return UnixFilename(fname.GetFullName());
 }
 
 wxString CompileTargetBase::GetWorkingDir()
