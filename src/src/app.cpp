@@ -751,6 +751,7 @@ bool CodeBlocksApp::DoCheckAssociation(const wxString& ext, const wxString& desc
 {
     wxLogNull no_log_here;
 	wxRegKey key; // defaults to HKCR
+	wxString strVal;
 
 	key.SetName(wxString(_T("HKEY_CLASSES_ROOT\\.")) + ext);
 	if (!key.Open())
@@ -763,21 +764,41 @@ bool CodeBlocksApp::DoCheckAssociation(const wxString& ext, const wxString& desc
 	key.SetName(wxString(_T("HKEY_CLASSES_ROOT\\CodeBlocks.")) + ext + _T("\\DefaultIcon"));
 	if (!key.Open())
         return false;
+    if (!key.QueryValue(wxEmptyString, strVal))
+        return false;
+    if (strVal != wxString::Format(_T("%s,%s"), exe.c_str(), icoNum.c_str()))
+        return false;
 
 	key.SetName(wxString(_T("HKEY_CLASSES_ROOT\\CodeBlocks.")) + ext + _T("\\shell\\open\\command"));
 	if (!key.Open())
+        return false;
+    if (!key.QueryValue(wxEmptyString, strVal))
+        return false;
+    if (strVal != wxString::Format(_T("\"%s\" \"%%1\""), exe.c_str()))
         return false;
 
 	key.SetName(wxString(_T("HKEY_CLASSES_ROOT\\CodeBlocks.")) + ext + _T("\\shell\\open\\ddeexec"));
 	if (!key.Open())
         return false;
+    if (!key.QueryValue(wxEmptyString, strVal))
+        return false;
+    if (strVal != _T("[Open(\"%1\")]"))
+        return false;
 
 	key.SetName(wxString(_T("HKEY_CLASSES_ROOT\\CodeBlocks.")) + ext + _T("\\shell\\open\\ddeexec\\application"));
 	if (!key.Open())
         return false;
+    if (!key.QueryValue(wxEmptyString, strVal))
+        return false;
+    if (strVal != DDE_SERVICE)
+        return false;
 
 	key.SetName(wxString(_T("HKEY_CLASSES_ROOT\\CodeBlocks.")) + ext + _T("\\shell\\open\\ddeexec\\topic"));
 	if (!key.Open())
+        return false;
+    if (!key.QueryValue(wxEmptyString, strVal))
+        return false;
+    if (strVal != DDE_TOPIC)
         return false;
 
     return true;
