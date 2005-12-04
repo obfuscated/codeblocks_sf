@@ -42,11 +42,11 @@ BEGIN_EVENT_TABLE(ProjectOptionsDlg, wxDialog)
 	EVT_BUTTON(    XRCID("btnBuildOrder"),             ProjectOptionsDlg::OnBuildOrderClick)
 	EVT_BUTTON(    XRCID("btnAddBuildTarget"),         ProjectOptionsDlg::OnAddBuildTargetClick)
 	EVT_BUTTON(    XRCID("btnEditBuildTarget"),        ProjectOptionsDlg::OnEditBuildTargetClick)
+	EVT_BUTTON(    XRCID("btnCopyBuildTarget"),        ProjectOptionsDlg::OnCopyBuildTargetClick)
 	EVT_BUTTON(    XRCID("btnDelBuildTarget"),         ProjectOptionsDlg::OnRemoveBuildTargetClick)
 	EVT_BUTTON(    XRCID("btnBrowseOutputFilename"),   ProjectOptionsDlg::OnBrowseOutputFilenameClick)
 	EVT_BUTTON(    XRCID("btnBrowseWorkingDir"),       ProjectOptionsDlg::OnBrowseDirClick)
 	EVT_BUTTON(    XRCID("btnBrowseObjectDir"),        ProjectOptionsDlg::OnBrowseDirClick)
-	EVT_BUTTON(    XRCID("btnBrowseDepsDir"),          ProjectOptionsDlg::OnBrowseDirClick)
 	EVT_BUTTON(    XRCID("btnExternalDeps"),           ProjectOptionsDlg::OnEditDepsClick)
 	EVT_LISTBOX_DCLICK(XRCID("lstFiles"),              ProjectOptionsDlg::OnFileOptionsClick)
 	EVT_BUTTON(    XRCID("btnFileOptions"),            ProjectOptionsDlg::OnFileOptionsClick)
@@ -124,11 +124,9 @@ void ProjectOptionsDlg::DoTargetChange()
     wxTextCtrl* txt = XRCCTRL(*this, "txtOutputFilename", wxTextCtrl);
     wxTextCtrl* txtW = XRCCTRL(*this, "txtWorkingDir", wxTextCtrl);
     wxTextCtrl* txtO = XRCCTRL(*this, "txtObjectDir", wxTextCtrl);
-    wxTextCtrl* txtD = XRCCTRL(*this, "txtDepsDir", wxTextCtrl);
     wxButton* browse = XRCCTRL(*this, "btnBrowseOutputFilename", wxButton);
     wxButton* browseW = XRCCTRL(*this, "btnBrowseWorkingDir", wxButton);
     wxButton* browseO = XRCCTRL(*this, "btnBrowseObjectDir", wxButton);
-    wxButton* browseD = XRCCTRL(*this, "btnBrowseDepsDir", wxButton);
     XRCCTRL(*this, "chkCreateDefFile", wxCheckBox)->Enable(target->GetTargetType() == ttStaticLib ||
                                                             target->GetTargetType() == ttDynamicLib);
     chkCR->Enable(false);
@@ -155,14 +153,11 @@ void ProjectOptionsDlg::DoTargetChange()
                             (TargetType)cmb->GetSelection() == ttDynamicLib);
                 txtO->SetValue(target->GetObjectOutput());
                 txtO->Enable(true);
-                txtD->SetValue(target->GetDepsOutput());
-                txtD->Enable(true);
                 browse->Enable(true);
                 browseW->Enable((TargetType)cmb->GetSelection() == ttExecutable ||
                                 (TargetType)cmb->GetSelection() == ttConsoleOnly ||
                                 (TargetType)cmb->GetSelection() == ttDynamicLib);
                 browseO->Enable(true);
-                browseD->Enable(true);
                 break;
 
             default: // for commands-only targets
@@ -172,12 +167,9 @@ void ProjectOptionsDlg::DoTargetChange()
                 txtW->Enable(false);
                 txtO->SetValue(_T(""));
                 txtO->Enable(false);
-                txtD->SetValue(_T(""));
-                txtD->Enable(false);
                 browse->Enable(false);
                 browseW->Enable(false);
                 browseO->Enable(false);
-                browseD->Enable(false);
                 break;
         }
     }
@@ -238,11 +230,6 @@ void ProjectOptionsDlg::DoBeforeTargetChange(bool force)
 //		fname.MakeRelativeTo(m_Project->GetBasePath());
 		target->SetObjectOutput(fname.GetFullPath());
 
-		fname.Assign(XRCCTRL(*this, "txtDepsDir", wxTextCtrl)->GetValue());
-//		fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
-//		fname.MakeRelativeTo(m_Project->GetBasePath());
-		target->SetDepsOutput(fname.GetFullPath());
-
 		// files options
 		wxCheckListBox* list = XRCCTRL(*this, "lstFiles", wxCheckListBox);
 		int count = list->GetCount();
@@ -271,11 +258,9 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
     wxTextCtrl* txt = XRCCTRL(*this, "txtOutputFilename", wxTextCtrl);
     wxTextCtrl* txtW = XRCCTRL(*this, "txtWorkingDir", wxTextCtrl);
     wxTextCtrl* txtO = XRCCTRL(*this, "txtObjectDir", wxTextCtrl);
-    wxTextCtrl* txtD = XRCCTRL(*this, "txtDepsDir", wxTextCtrl);
     wxButton* browse = XRCCTRL(*this, "btnBrowseOutputFilename", wxButton);
     wxButton* browseW = XRCCTRL(*this, "btnBrowseWorkingDir", wxButton);
     wxButton* browseO = XRCCTRL(*this, "btnBrowseObjectDir", wxButton);
-    wxButton* browseD = XRCCTRL(*this, "btnBrowseDepsDir", wxButton);
     if (!cmb || !txt || !browse)
         return;
 
@@ -290,14 +275,11 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
                 (TargetType)cmb->GetSelection() == ttDynamicLib);
     txtO->Enable(true);
     txtO->SetValue(target->GetObjectOutput());
-    txtD->Enable(true);
-    txtD->SetValue(target->GetDepsOutput());
     browse->Enable(true);
     browseW->Enable((TargetType)cmb->GetSelection() == ttExecutable ||
                     (TargetType)cmb->GetSelection() == ttConsoleOnly ||
                     (TargetType)cmb->GetSelection() == ttDynamicLib);
     browseO->Enable(true);
-    browseD->Enable(true);
 
     wxFileName fname = target->GetOutputFilename();
     wxString name = fname.GetName();
@@ -341,15 +323,12 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
             txt->SetValue(_T(""));
             txtW->SetValue(_T(""));
             txtO->SetValue(_T(""));
-            txtD->SetValue(_T(""));
             txt->Enable(false);
             txtW->Enable(false);
             txtO->Enable(false);
-            txtD->Enable(false);
             browse->Enable(false);
             browseW->Enable(false);
             browseO->Enable(false);
-            browseD->Enable(false);
             break;
     }
 }
@@ -449,6 +428,37 @@ void ProjectOptionsDlg::OnEditBuildTargetClick(wxCommandEvent& event)
     lstTargets->SetSelection(targetIdx);
 }
 
+void ProjectOptionsDlg::OnCopyBuildTargetClick(wxCommandEvent& event)
+{
+    wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
+    int targetIdx = lstTargets->GetSelection();
+
+    ProjectBuildTarget* target = m_Project->GetBuildTarget(targetIdx);
+    if (!target)
+    {
+        wxMessageDialog(this, _("Could not locate target..."),
+                                _("Error"),
+                                wxOK | wxCENTRE | wxICON_ERROR);
+        return;
+    }
+
+    wxString newTargetName = wxGetTextFromUser(_("Enter the duplicated build target's name:"),
+                                               _("Duplicate build target"),
+                                              _("Copy of ") + target->GetTitle());
+    if (newTargetName.IsEmpty())
+        return;
+    if (!m_Project->DuplicateBuildTarget(targetIdx, newTargetName))
+    {
+        wxMessageBox(_("Failed to duplicate this build target..."), _("Error"), wxICON_ERROR);
+        return;
+    }
+
+    // add target to targets combo
+    lstTargets->Append(newTargetName);
+    lstTargets->SetSelection(lstTargets->GetCount() - 1);
+    DoTargetChange();
+}
+
 void ProjectOptionsDlg::OnRemoveBuildTargetClick(wxCommandEvent& event)
 {
     wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
@@ -489,8 +499,6 @@ void ProjectOptionsDlg::OnBrowseDirClick(wxCommandEvent& event)
         targettext = XRCCTRL(*this, "txtWorkingDir", wxTextCtrl);
     else if (event.GetId() == XRCID("btnBrowseObjectDir"))
         targettext = XRCCTRL(*this, "txtObjectDir", wxTextCtrl);
-    else if (event.GetId() == XRCID("btnBrowseDepsDir"))
-        targettext = XRCCTRL(*this, "txtDepsDir", wxTextCtrl);
     else
         return;
 
@@ -573,6 +581,7 @@ void ProjectOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
     // target options
     XRCCTRL(*this, "btnBuildOrder", wxButton)->Enable(lstTargets->GetCount() > 1);
     XRCCTRL(*this, "btnEditBuildTarget", wxButton)->Enable(en);
+    XRCCTRL(*this, "btnCopyBuildTarget", wxButton)->Enable(en);
     XRCCTRL(*this, "btnDelBuildTarget", wxButton)->Enable(en && lstTargets->GetCount() > 1);
 
 	// edit project/target build options

@@ -218,7 +218,9 @@ wxString cbProject::CreateUniqueFilename()
 
 void cbProject::ClearAllProperties()
 {
+    m_Files.DeleteContents(true);
     m_Files.Clear();
+    m_Files.DeleteContents(false);
     m_CompilerOptions.Clear();
     m_LinkerOptions.Clear();
     m_IncludeDirs.Clear();
@@ -663,6 +665,17 @@ bool cbProject::RemoveFile(int index)
     FilesList::Node* node = m_Files.Item(index);
     m_Files.DeleteNode(node);
 
+    // remove this file from all targets too
+    for (unsigned int i = 0; i < m_Targets.GetCount(); ++i)
+    {
+        ProjectBuildTarget* target = m_Targets[i];
+        if (target)
+        {
+            target->GetFilesList().DeleteObject(f);
+        }
+    }
+    delete f;
+
     SetModified(true);
 	return true;
 }
@@ -1033,6 +1046,32 @@ bool cbProject::RenameBuildTarget(int index, const wxString& targetName)
 bool cbProject::RenameBuildTarget(const wxString& oldTargetName, const wxString& newTargetName)
 {
     return RenameBuildTarget(IndexOfBuildTargetName(oldTargetName), newTargetName);
+}
+
+ProjectBuildTarget* cbProject::DuplicateBuildTarget(int index, const wxString& newName)
+{
+    ProjectBuildTarget* newTarget = 0;
+    ProjectBuildTarget* target = GetBuildTarget(index);
+    if (target)
+    {
+        newTarget = new ProjectBuildTarget(*target);
+        wxString newTargetName = !newName.IsEmpty() ? newName : (_("Copy of ") + target->GetTitle());
+        newTarget->SetTitle(newTargetName);
+        // just notify the files of this target that they belong to the new target too
+        for (FilesList::Node* it = newTarget->GetFilesList().GetFirst(); it; it = it->GetNext())
+        {
+            ProjectFile* pf = it->GetData();
+            pf->AddBuildTarget(newTargetName);
+        }
+        SetModified(true);
+        m_Targets.Add(newTarget);
+    }
+    return newTarget;
+}
+
+ProjectBuildTarget* cbProject::DuplicateBuildTarget(const wxString& targetName, const wxString& newName)
+{
+    return DuplicateBuildTarget(IndexOfBuildTargetName(targetName), newName);
 }
 
 bool cbProject::RemoveBuildTarget(int index)

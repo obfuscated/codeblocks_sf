@@ -63,8 +63,6 @@ ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf)
 		XRCCTRL(*this, "txtObjName", wxTextCtrl)->SetValue(pf->GetObjName());
 		XRCCTRL(*this, "chkBuildStage", wxCheckBox)->SetValue(pf->useCustomBuildCommand);
 		XRCCTRL(*this, "txtBuildStage", wxTextCtrl)->SetValue(pf->buildCommand);
-		XRCCTRL(*this, "chkCustomDeps", wxCheckBox)->SetValue(!pf->autoDeps);
-		XRCCTRL(*this, "txtCustomDeps", wxTextCtrl)->SetValue(pf->customDeps);
 
 		SetTitle(_("Options for ") + wxString(_("\"")) + pf->relativeFilename + wxString(_("\"")));
 	}
@@ -81,8 +79,6 @@ void ProjectFileOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
 	{
 		bool en = XRCCTRL(*this, "chkBuildStage", wxCheckBox)->GetValue();
 		XRCCTRL(*this, "txtBuildStage", wxTextCtrl)->Enable(en);
-		en = XRCCTRL(*this, "chkCustomDeps", wxCheckBox)->GetValue();
-		XRCCTRL(*this, "txtCustomDeps", wxTextCtrl)->Enable(en);
 	}
 	else
 	{
@@ -93,8 +89,6 @@ void ProjectFileOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
 		XRCCTRL(*this, "txtObjName", wxTextCtrl)->Enable(false);;
 		XRCCTRL(*this, "chkBuildStage", wxCheckBox)->Enable(false);
 		XRCCTRL(*this, "txtBuildStage", wxTextCtrl)->Enable(false);
-		XRCCTRL(*this, "chkCustomDeps", wxCheckBox)->Enable(false);
-		XRCCTRL(*this, "txtCustomDeps", wxTextCtrl)->Enable(false);
 	}
 }
 
@@ -114,8 +108,6 @@ void ProjectFileOptionsDlg::OnOKClick(wxCommandEvent& event)
 //	m_ProjectFile->SetObjName(XRCCTRL(*this, "txtObjName", wxTextCtrl)->GetValue());
 	m_ProjectFile->useCustomBuildCommand = XRCCTRL(*this, "chkBuildStage", wxCheckBox)->GetValue();
 	m_ProjectFile->buildCommand = XRCCTRL(*this, "txtBuildStage", wxTextCtrl)->GetValue();
-	m_ProjectFile->autoDeps = !XRCCTRL(*this, "chkCustomDeps", wxCheckBox)->GetValue();
-	m_ProjectFile->customDeps = XRCCTRL(*this, "txtCustomDeps", wxTextCtrl)->GetValue();
 	m_ProjectFile->compilerVar = XRCCTRL(*this, "txtCompiler", wxTextCtrl)->GetValue();
 
 	// make sure we have a compiler var, if the file is to be compiled

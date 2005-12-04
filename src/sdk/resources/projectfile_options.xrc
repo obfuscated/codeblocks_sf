@@ -190,58 +190,6 @@ You could *really* mess-up Code::Blocks' Build System...</label>
               </object>
             </object>
           </object>
-          <object class="notebookpage">
-            <label>Dependencies</label>
-            <object class="wxPanel" name="tabDeps">
-              <object class="wxBoxSizer">
-                <orient>wxVERTICAL</orient>
-                <object class="sizeritem">
-                  <object class="wxCheckBox" name="chkCustomDeps">
-                    <label>Use custom dependencies generation</label>
-                  </object>
-                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
-                  <border>8</border>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxTextCtrl" name="txtCustomDeps">
-                    <style>wxTE_MULTILINE</style>
-                  </object>
-                  <option>1</option>
-                  <flag>wxALL|wxEXPAND</flag>
-                  <border>8</border>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxStaticText">
-                    <label>You can use the following variables:
-    $$DIR : returns the directory where the file resides (no trailing path separator)
-    $$NAME : returns just the file's name (no path, no extension)
-    $$BASE : returns the relative filename without extension
-    $$OBJECT : returns the link object filename
-    $$DEPEND: returns the dependencies file
-    $$FILENAME : returns the relative filename as-is
-    $$INCLUDES: returns the include dirs
-    $$CFLAGS: returns the compiler options
-    $$LDFLAGS: returns the linker options
-    $$LIBS: returns the link libraries
-    $$LIBDIRS: returns the linker dirs
-    $$DEPEND_DIR: returns the dependencies dir
-    $$OBJECT_DIR: returns the object output dir</label>
-                  </object>
-                  <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
-                  <border>8</border>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxStaticText">
-                    <label>Please, don't change anything unless you really know what you 're doing.
-You could *really* mess-up Code::Blocks' Build System...</label>
-                    <fg>#FF0000</fg>
-                  </object>
-                  <flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
-                  <border>8</border>
-                </object>
-              </object>
-            </object>
-          </object>
         </object>
         <option>1</option>
         <flag>wxALL|wxEXPAND</flag>

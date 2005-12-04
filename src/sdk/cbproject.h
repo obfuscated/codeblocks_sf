@@ -168,8 +168,22 @@ class DLLIMPORT cbProject : public CompileTargetBase
           */
         bool RenameBuildTarget(const wxString& oldTargetName, const wxString& newTargetName);
 
+        /** Duplicate a build target.
+          * @param index The index of the build target to duplicate.
+          * @param newName The name for the new build target. If empty, it will be named like "Copy of <base_target_name>".
+          * @return The new build target if @c index was valid, NULL if not (or something went wrong).
+          */
+        ProjectBuildTarget* DuplicateBuildTarget(int index, const wxString& newName = wxEmptyString);
+
+        /** Duplicate a build target.
+          * @param targetName The name of the build target to duplicate.
+          * @param newName The name for the new build target. If empty, it will be named like "Copy of <base_target_name>".
+          * @return The new build target if @c index was valid, NULL if not (or something went wrong).
+          */
+        ProjectBuildTarget* DuplicateBuildTarget(const wxString& targetName, const wxString& newName = wxEmptyString);
+
         /** Remove a build target.
-          * @param index The index of the build target remove.
+          * @param index The index of the build target to remove.
           * @return True if @c index was valid, false if not.
           */
         bool RemoveBuildTarget(int index);
