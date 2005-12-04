@@ -11,6 +11,16 @@
 #include "debuggertree.h"
 #include "backtracedlg.h"
 
+//#0 wxEntry () at main.cpp:5
+//#8  0x77d48734 in USER32!GetDC () from C:\WINDOWS\system32\user32.dll
+//#9  0x001b04fe in ?? ()
+//#29 0x100b07bc in wxEntry () from C:\WINDOWS\system32\wxmsw26_gcc_cb.dll
+//#30 0x00403c0a in WinMain (hInstance=0x400000, hPrevInstance=0x0, lpCmdLine=0x241ef9 "", nCmdShow=10) at C:/Devel/wxSmithTest/app.cpp:297
+//#31 0x004076ca in main () at C:/Devel/wxWidgets-2.6.1/include/wx/intl.h:555
+static wxRegEx reBT1(_T("#([0-9]+)[ \t]+[0x]*([A-Fa-f0-9]*)[ \t]*[in]*[ \t]*([^( \t]+)[ \t]+(\\([^)]*\\))"));
+static wxRegEx reBT2(_T("\\)[ \t]+[atfrom]+[ \t]+(.*):([0-9]+)"));
+static wxRegEx reBT3(_T("\\)[ \t]+[atfrom]+[ \t]+(.*)"));
+
 /**
   * Command to add a search directory for source files in debugger's paths.
   */
@@ -424,25 +434,29 @@ class GdbCmd_Backtrace : public DebuggerCmd
         }
         void ParseOutput(const wxString& output)
         {
-            // output is a series of:
-            // #0  main () at main.cpp:8
             wxArrayString lines = GetArrayFromString(output, _T('\n'));
     		for (unsigned int i = 0; i < lines.GetCount(); ++i)
     		{
+    		    // reBT1 matches frame number, address, function and args (common to all formats)
+    		    // reBT2 matches filename and line (optional)
+    		    // reBT3 matches filename only (for DLLs) (optional)
+
     		    // #0  main (argc=1, argv=0x3e2440) at my main.cpp:15
-//    		    wxRegEx re(_T("#([0-9]+)[ \t]+([A-Za-z0-9_:]+)[ \t]+\\([^)]*\\)[ \t]+at[ \t]+(.*):([0-9]+)"));
-    		    // #0  0x004013cf in main () at main.cpp:11
-    		    wxRegEx re(_T("#([0-9]+)[ \t]+(0x[A-Fa-f0-9]+)[ \t]+in[ \t]+([A-Za-z0-9_:]+)[ \t]+\\([^)]*\\)[ \t]+at[ \t]+(.*):([0-9]+)"));
-    		    if (re.Matches(lines[i]))
+    		    if (reBT1.Matches(lines[i]))
     		    {
-                    m_pDriver->DebugLog(_T("MATCH!"));
+//                    m_pDriver->DebugLog(_T("MATCH!"));
                     StackFrame sf;
                     sf.valid = true;
-    		        re.GetMatch(lines[i], 1).ToLong(&sf.number);
-    		        re.GetMatch(lines[i], 2).ToULong(&sf.address, 16);
-    		        sf.function = re.GetMatch(lines[i], 3);
-    		        sf.file = re.GetMatch(lines[i], 4);
-    		        sf.line = re.GetMatch(lines[i], 5);
+    		        reBT1.GetMatch(lines[i], 1).ToLong(&sf.number);
+    		        reBT1.GetMatch(lines[i], 2).ToULong(&sf.address, 16);
+    		        sf.function = reBT1.GetMatch(lines[i], 3) + reBT1.GetMatch(lines[i], 4);
+                    if (reBT2.Matches(lines[i]))
+                    {
+                        sf.file = reBT2.GetMatch(lines[i], 1);
+                        sf.line = reBT2.GetMatch(lines[i], 2);
+                    }
+                    else if (reBT3.Matches(lines[i]))
+                        sf.file = reBT3.GetMatch(lines[i], 1);
                     m_pDlg->AddFrame(sf);
     		    }
     		}

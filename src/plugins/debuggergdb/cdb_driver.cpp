@@ -128,7 +128,6 @@ void CDB_driver::StepOut()
 
 void CDB_driver::Backtrace()
 {
-    NOT_IMPLEMENTED();
     if (!m_pBacktrace)
         return;
     QueueCommand(new CdbCmd_Backtrace(this, m_pBacktrace));

@@ -46,6 +46,11 @@ void GDB_driver::Prepare(bool isConsole)
 
     // send built-in init commands
 	QueueCommand(new DebuggerCmd(this, _T("set confirm off")));
+	// no wrapping lines
+    QueueCommand(new DebuggerCmd(this, _T("set width 0")));
+    // no pagination
+    QueueCommand(new DebuggerCmd(this, _T("set height 0")));
+    // allow pending breakpoints
     QueueCommand(new DebuggerCmd(this, _T("set breakpoint pending on")));
 #ifndef __WXMSW__
     QueueCommand(new DebuggerCmd(this, _T("set disassembly-flavor att")));
@@ -235,6 +240,14 @@ void GDB_driver::ParseOutput(const wxString& output)
             {
                 Backtrace();
             }
+        }
+
+        // pending breakpoint resolved?
+        // e.g.
+        // Pending breakpoint "C:/Devel/codeblocks/trunk/src/sdk/cbproject.cpp:332" resolved
+        else if (lines[i].StartsWith(_T("Pending breakpoint ")))
+        {
+            m_pDBG->Log(lines[i]);
         }
 
         // cursor change
