@@ -881,6 +881,15 @@ void CompilerGCC::DoRecreateTargetMenu()
 
 void CompilerGCC::DoUpdateTargetMenu()
 {
+    // keep the last selected target name for BuildWorkspace() and friends
+    m_LastTargetName.Clear();
+    if (m_Project && m_TargetIndex != -1)
+    {
+        ProjectBuildTarget* target = m_Project->GetBuildTarget(m_TargetIndex);
+        if (target)
+            m_LastTargetName = target->GetTitle();
+    }
+
 	if (!m_TargetMenu)
 		return;
 
@@ -1089,7 +1098,7 @@ int CompilerGCC::Run(const wxString& target)
 {
     if (!CheckProject())
         return -1;
-    return Run(m_Project->GetBuildTarget(target));
+    return Run(m_Project->GetBuildTarget(target.IsEmpty() ? m_LastTargetName : target));
 }
 
 int CompilerGCC::Run(ProjectBuildTarget* target)
@@ -1228,7 +1237,7 @@ int CompilerGCC::Clean(const wxString& target)
 {
     if (!CheckProject())
         return -1;
-    return Clean(m_Project->GetBuildTarget(target));
+    return Clean(m_Project->GetBuildTarget(target.IsEmpty() ? m_LastTargetName : target));
 }
 
 int CompilerGCC::Clean(ProjectBuildTarget* target)
@@ -1303,7 +1312,7 @@ int CompilerGCC::Build(const wxString& target)
 {
     if (!CheckProject())
         return -1;
-    return Build(m_Project->GetBuildTarget(target));
+    return Build(m_Project->GetBuildTarget(target.IsEmpty() ? m_LastTargetName : target));
 }
 
 int CompilerGCC::Build(ProjectBuildTarget* target)
@@ -1346,7 +1355,7 @@ int CompilerGCC::Rebuild(const wxString& target)
 {
     if (!CheckProject())
         return -1;
-    return Rebuild(m_Project->GetBuildTarget(target));
+    return Rebuild(m_Project->GetBuildTarget(target.IsEmpty() ? m_LastTargetName : target));
 }
 
 int CompilerGCC::Rebuild(ProjectBuildTarget* target)

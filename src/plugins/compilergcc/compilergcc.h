@@ -161,6 +161,7 @@ class CompilerGCC : public cbCompilerPlugin
 		bool m_LastExitCode;
 		CompilerErrors m_Errors;
 		bool m_HasTargetAll;
+		wxString m_LastTargetName;
 
 		wxString m_OriginalPath;
 		wxString m_LastTempMakefile;
