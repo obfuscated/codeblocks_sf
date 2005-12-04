@@ -48,7 +48,7 @@ wxString wxsDefWidget::GetProducingCode(wxsCodeParams& Params)
     CodeReplace(_T("WXS_POS"),CD.Pos);
     CodeReplace(_T("WXS_SIZE"),CD.Size);
     CodeReplace(_T("WXS_STYLE"),CD.Style);
-    
+
     CodeReplace(_T("WXS_ID"),GetBaseProperties().IdName);
     CodeReplace(_T("WXS_THIS"),GetBaseProperties().VarName);
     CodeReplace(_T("WXS_PARENT"),Params.ParentName);
@@ -99,13 +99,13 @@ void wxsDefWidget::evDestroy()
 void wxsDefWidget::CodeReplace(const wxString& Old,const wxString& New)
 {
     if ( Old.empty() ) return;
-    
+
     wxString NewCode;
     int Pos = CodeResult.Find(Old);
     if ( Pos < 0 )
     {
-        DBGLOG("wxSmith: %s -> %s",Old.c_str(),New.c_str());
-        DBGLOG("in string: %s",CodeResult.c_str());
+        DBGLOG(_("wxSmith: %s -> %s"),Old.c_str(),New.c_str());
+        DBGLOG(_("in string: %s"),CodeResult.c_str());
     }
     while ( Pos >= 0 )
     {
@@ -120,7 +120,7 @@ void wxsDefWidget::CodeReplace(const wxString& Old,const wxString& New)
             CanMove = false;
         }
         else
-        { 
+        {
             size_t AfterPos = Pos + Old.Len();
             wxChar After = ( AfterPos < CodeResult.Len() ) ? CodeResult[AfterPos] : _T('\0');
             if ( ( (After >= 'a') && (After <= 'z') ) ||
