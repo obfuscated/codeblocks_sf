@@ -244,6 +244,7 @@ class WXSCLASS wxsProject
         bool Modified;                  ///< Set to true when there was any change inside wxSmith project
 
         friend class wxsWindowRes;
+        friend class wxSmithMime;
 };
 
 

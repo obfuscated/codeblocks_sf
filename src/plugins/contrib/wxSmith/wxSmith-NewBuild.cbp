@@ -400,6 +400,12 @@
             <Option link="0" />
             <Option target="wxSmith" />
         </Unit>
+        <Unit filename="newwindow.xrc">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
         <Unit filename="properties\wxs2intproperty.cpp">
             <Option compilerVar="CPP" />
             <Option target="wxSmith" />
@@ -606,6 +612,408 @@
             <Option link="0" />
             <Option target="wxSmith" />
         </Unit>
+        <Unit filename="smithicons\Spacer.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\Spacer16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\deletewidget.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\deletewidget16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\insertafter.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\insertafter16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\insertbefore.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\insertbefore16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\insertinto.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\insertinto16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\quickpropsclose.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\quickpropsclose16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\quickpropsopen.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\quickpropsopen16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\selected.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\selected16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\showpreview.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\showpreview16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxBoxSizer.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxBoxSizer16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxButton.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxButton16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxCheckBox.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxCheckBox16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxComboBox.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxComboBox16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxDatePickerCtrl.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxDatePickerCtrl16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxFlexGridSizer.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxFlexGridSizer16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxGauge.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxGauge16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxGridSizer.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxGridSizer16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxListBox.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxListBox16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxListbook.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxListbook16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxNotebook.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxNotebook16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxPanel.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxPanel16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxRadioBox.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxRadioBox16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxRadioButton.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxRadioButton16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxScrollBar.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxScrollBar16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxSmith16x16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxSpinButton.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxSpinButton16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxSpinCtrl.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxSpinCtrl16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxSplitterWindow.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxSplitterWindow16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxStaticBoxSizer.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxStaticBoxSizer16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxStaticLine.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxStaticLine16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxStaticText.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxStaticText16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxTextCtrl.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxTextCtrl16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxToggleButton.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxToggleButton16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxTreeCtrl.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="smithicons\wxTreeCtrl16.png">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
         <Unit filename="widget.cpp">
             <Option compilerVar="CPP" />
             <Option target="wxSmith" />
@@ -752,6 +1160,48 @@
             <Option link="0" />
             <Option target="wxSmith" />
         </Unit>
+        <Unit filename="wxsmith\wxsListbookParentQP.wxs">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="wxsmith\wxsNewWindowDlg.wxs">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="wxsmith\wxsNotebookParentQP.wxs">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="wxsmith\wxsProjectConfigurationDlg.wxs">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="wxsmith\wxsSettingsDlg.wxs">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="wxsmith\wxsSizerParentQP.wxs">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="wxsmith\wxsStandardQP.wxs">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
         <Unit filename="wxsnewwindowdlg.cpp">
             <Option compilerVar="CPP" />
             <Option target="wxSmith" />
@@ -787,6 +1237,12 @@
             <Option target="wxSmith" />
         </Unit>
         <Unit filename="wxsprojectconfigurationdlg.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="wxsprojectconfigurationdlg.xrc">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
@@ -837,6 +1293,12 @@
             <Option target="wxSmith" />
         </Unit>
         <Unit filename="wxssettingsdlg.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="wxssettingsdlg.xrc">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
