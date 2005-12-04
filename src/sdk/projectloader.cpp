@@ -70,11 +70,11 @@ bool ProjectLoader::Open(const wxString& filename)
         int minor = PROJECT_FILE_VERSION_MINOR;
         version->QueryIntAttribute("major", &major);
         version->QueryIntAttribute("minor", &minor);
-        if (major < PROJECT_FILE_VERSION_MAJOR ||
-            (major == PROJECT_FILE_VERSION_MAJOR && minor < PROJECT_FILE_VERSION_MINOR))
+        if (major < 1 ||
+            (major == 1 && minor < 2))
         {
             // pre-1.2
-            pMsg->DebugLog(_("Project version is < %d.%d. Defaults changed..."), PROJECT_FILE_VERSION_MAJOR, PROJECT_FILE_VERSION_MINOR);
+            pMsg->DebugLog(_("Project version is %d.%d. Defaults have changed since then..."), major, minor);
             m_IsPre_1_2 = true;
         }
         else if (major >= PROJECT_FILE_VERSION_MAJOR && minor > PROJECT_FILE_VERSION_MINOR)
@@ -230,9 +230,6 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
 
         else if (node->Attribute("default_target"))
             defaultTarget = atoi(node->Attribute("default_target"));
-
-        else if (node->Attribute("active_target"))
-            activeTarget = atoi(node->Attribute("active_target"));
 
         else if (node->Attribute("compiler"))
             compilerIdx = GetValidCompilerIndex(atoi(node->Attribute("compiler")), _("project"));
@@ -786,8 +783,6 @@ bool ProjectLoader::Save(const wxString& filename)
         AddElement(prjnode, "Option", "pch_mode", (int)m_pProject->GetModeForPCH());
     if (m_pProject->GetDefaultExecuteTargetIndex() != 0)
         AddElement(prjnode, "Option", "default_target", m_pProject->GetDefaultExecuteTargetIndex());
-    if (m_pProject->GetActiveBuildTarget() != -1)
-        AddElement(prjnode, "Option", "active_target", m_pProject->GetActiveBuildTarget());
     AddElement(prjnode, "Option", "compiler", m_pProject->GetCompilerIndex());
 
     if (m_pProject->MakeCommandsModified())

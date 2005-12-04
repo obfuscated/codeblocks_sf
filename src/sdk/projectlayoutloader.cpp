@@ -58,6 +58,15 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
             return false;
         }
     }
+
+    elem = root->FirstChildElement("ActiveTarget");
+    if (elem)
+    {
+        int val = 0;
+        if (elem->QueryIntAttribute("index", &val) == TIXML_SUCCESS)
+            m_pProject->SetActiveBuildTarget(val);
+    }
+
     elem = root->FirstChildElement("File");
     if (!elem)
     {
@@ -120,6 +129,9 @@ bool ProjectLayoutLoader::Save(const wxString& filename)
     TiXmlElement* rootnode = static_cast<TiXmlElement*>(doc.InsertEndChild(TiXmlElement(ROOT_TAG)));
     if (!rootnode)
         return false;
+
+    TiXmlElement* tgtidx = static_cast<TiXmlElement*>(rootnode->InsertEndChild(TiXmlElement("ActiveTarget")));
+    tgtidx->SetAttribute("index", m_pProject->GetActiveBuildTarget());
 
 	ProjectFile* active = 0L;
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();

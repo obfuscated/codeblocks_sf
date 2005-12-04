@@ -874,7 +874,6 @@ const wxString& cbProject::GetMakefile()
 
     m_Makefile = makefile.GetFullPath();
 
-	SetModified(true);
 	return m_Makefile;
 }
 
@@ -1116,7 +1115,6 @@ bool cbProject::SetActiveBuildTarget(int index)
     if (index == m_ActiveTarget)
         return true;
     m_ActiveTarget = index;
-    SetModified(true);
     return true;
 }
 
