@@ -696,6 +696,8 @@ cbEditor* EditorManager::New()
     #endif
 	ed->Show(true);
 	SetActiveEditor(ed);
+    CodeBlocksEvent evt(cbEVT_EDITOR_OPEN, -1, 0, ed);
+    Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
     return ed;
 }
 
