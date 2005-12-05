@@ -115,8 +115,9 @@ int PluginManager::ScanForPlugins(const wxString& path)
 			failed << filename << _T(" ");
         ok = dir.GetNext(&filename);
     }
+    Manager::Get()->GetMessageManager()->Log(_("Found %d plugins"), count);
 	if (!failed.IsEmpty())
-		Manager::Get()->GetMessageManager()->Log(_("*****\nPlugins that failed to load: %s\n*****"), failed.c_str());
+		Manager::Get()->GetMessageManager()->Log(_("Plugins that failed to load: %s"), failed.c_str());
     return count;
 
 #undef PLUGINS_MASK
@@ -125,7 +126,7 @@ int PluginManager::ScanForPlugins(const wxString& path)
 bool PluginManager::LoadPlugin(const wxString& pluginName)
 {
     SANITY_CHECK(false);
-    //wxLogNull zero; // no need for error messages; we check everything ourselves...
+    wxLogNull zero; // no need for error messages; we check everything ourselves...
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
 
     wxDynamicLibrary* lib = new wxDynamicLibrary();
@@ -137,34 +138,49 @@ bool PluginManager::LoadPlugin(const wxString& pluginName)
         return false;
     }
 
-    // first get the SDK version entry points
-    GetSDKVersionMajorProc majorproc = (GetSDKVersionMajorProc)lib->GetSymbol(_T("GetSDKVersionMajor"));
-    GetSDKVersionMinorProc minorproc = (GetSDKVersionMinorProc)lib->GetSymbol(_T("GetSDKVersionMinor"));
-    // if no SDK version entry points, abort
-    if (!majorproc || !minorproc)
+    // first, see if we have a name function
+    PluginNameProc nameproc = (PluginNameProc)lib->GetSymbol(_T("PluginName"));
+    if (!nameproc)
     {
-        msgMan->DebugLog(_("%s: no SDK version entry points"), pluginName.c_str());
+        msgMan->DebugLog(_("%s: not a plugin (no PluginName)"), pluginName.c_str());
+        delete lib;
+        return false;
+    }
+
+    // now get the SDK version entry points
+    int major;
+    int minor;
+    int release;
+    PluginSDKVersionProc versionproc = (PluginSDKVersionProc)lib->GetSymbol(_T("PluginSDKVersion"));
+    // if no SDK version entry point, abort
+    if (!versionproc)
+    {
+        msgMan->DebugLog(_("%s: no SDK version entry point"), pluginName.c_str());
         delete lib;
         return false;
     }
 
 	// check if it is the correct SDK version
-	if (majorproc() != PLUGIN_SDK_VERSION_MAJOR ||
-		minorproc() != PLUGIN_SDK_VERSION_MINOR)
+	versionproc(&major, &minor, &release);
+	if (major != PLUGIN_SDK_VERSION_MAJOR ||
+		minor != PLUGIN_SDK_VERSION_MINOR ||
+		release != PLUGIN_SDK_VERSION_RELEASE)
 	{
 		// in this case, inform the user...
 		wxString fmt;
 		fmt.Printf(_("A plugin failed to load because it was built "
                     "with a different Code::Blocks SDK version.\n\n"
 					"Plugin: %s\n"
-					"Plugin's SDK version: %d.%d\n"
-					"Your SDK version: %d.%d"),
+					"Plugin's SDK version: %d.%d.%d\n"
+					"Your SDK version: %d.%d.%d"),
 					pluginName.c_str(),
-					majorproc(),
-					minorproc(),
+					major,
+					minor,
+					release,
 					PLUGIN_SDK_VERSION_MAJOR,
-					PLUGIN_SDK_VERSION_MINOR);
-        AnnoyingDialog dlg(_("Wrong plugin version"),
+					PLUGIN_SDK_VERSION_MINOR,
+					PLUGIN_SDK_VERSION_RELEASE);
+        AnnoyingDialog dlg(_("Plugin loading error"),
                             fmt,
                             wxART_WARNING,
                             AnnoyingDialog::OK,
@@ -178,7 +194,7 @@ bool PluginManager::LoadPlugin(const wxString& pluginName)
     // get the plugin's count inside this library
     GetPluginsCountProc countproc = (GetPluginsCountProc)lib->GetSymbol(_T("GetPluginsCount"));
     // and the factory function too
-    GetPluginProc factory = (GetPluginProc)lib->GetSymbol(_T("GetPlugin"));
+    CreatePluginProc factory = (CreatePluginProc)lib->GetSymbol(_T("CreatePlugin"));
     if (!countproc || !factory)
     {
         lib->Unload();
@@ -192,6 +208,20 @@ bool PluginManager::LoadPlugin(const wxString& pluginName)
     int libUseCount = 0;
     for (size_t i = 0; i < pluginsCount; ++i)
     {
+        // first check if it is allowed to load
+        if (!Manager::Get()->GetConfigManager(_T("plugins"))->ReadBool(_T("/") + nameproc(i), true))
+        {
+            // we 'll keep the record, so that it is shown in "Plugins->Manage plugins..."
+            PluginElement* plugElem = new PluginElement;
+            plugElem->fileName = pluginName;
+            plugElem->name = nameproc(i);
+            plugElem->library = lib;
+            plugElem->freeProc = 0;
+            plugElem->plugin = 0;
+            m_Plugins.Add(plugElem);
+            continue; // do not load it at all
+        }
+
         // try to load the plugin
         cbPlugin* plug = 0L;
         try
@@ -218,6 +248,7 @@ bool PluginManager::LoadPlugin(const wxString& pluginName)
         plugElem->fileName = pluginName;
         plugElem->name = plugName;
         plugElem->library = lib;
+        plugElem->freeProc = (FreePluginProc)lib->GetSymbol(_T("FreePlugin"));
         plugElem->plugin = plug;
         m_Plugins.Add(plugElem);
 
@@ -232,7 +263,7 @@ bool PluginManager::LoadPlugin(const wxString& pluginName)
         // free this library
         lib->Unload();
         delete lib;
-        return false;
+        return true; // but it's not an error ;)
     }
 
     return true;
@@ -256,6 +287,8 @@ void PluginManager::LoadAllPlugins()
     for (unsigned int i = 0; i < m_Plugins.GetCount(); ++i)
     {
         cbPlugin* plug = m_Plugins[i]->plugin;
+        if (!plug)
+            continue;
 
         // do not load it if the user has explicitly asked not to...
         wxString baseKey;
@@ -304,6 +337,8 @@ void PluginManager::UnloadAllPlugins()
     SANITY_CHECK_ADVANCED(); // don't use "normal" sanity check because
                              // this function is called by the destructor
 //    Manager::Get()->GetMessageManager()->DebugLog("Count %d", m_Plugins.GetCount());
+
+    // first loop to release all plugins
 	unsigned int i = m_Plugins.GetCount();
     while (i > 0)
     {
@@ -317,6 +352,18 @@ void PluginManager::UnloadAllPlugins()
         //it->first->library->Unload();
 //        Manager::Get()->GetMessageManager()->DebugLog(_("Plugin '%s' unloaded"), m_Plugins[i]->name.c_str());
         // FIXME: find a way to delete the toolbars too...
+    }
+
+    // second loop to delete all plugins from memory
+	i = m_Plugins.GetCount();
+    while (i > 0)
+    {
+		--i;
+        cbPlugin* plug = m_Plugins[i]->plugin;
+        if (m_Plugins[i]->freeProc)
+            m_Plugins[i]->freeProc(plug);
+        else
+            delete plug; // try to delete it ourselves...
     }
 }
 
@@ -498,7 +545,8 @@ void PluginManager::NotifyPlugins(CodeBlocksEvent& event)
             sendEvt = true;
         else if (sendEvt)
         {
-            plug->ProcessEvent(event); // Plugins require immediate attention
+            if (plug)
+                plug->ProcessEvent(event); // Plugins require immediate attention
             // wxPostEvent(plug, event);
             sendEvt = false;
         }

@@ -773,11 +773,12 @@ void MainFrame::ScanForPlugins()
     wxString path = ConfigManager::GetDataFolder() + _T("/plugins");
     MSGMAN()->Log(_("Scanning for plugins in %s..."), path.c_str());
     int count = m_PluginManager->ScanForPlugins(path);
-    MSGMAN()->AppendLog(_("Found %d plugins: "), count);
-
-    // actually load plugins
-    m_PluginManager->LoadAllPlugins();
-//    MSGMAN()->DebugLog(_("%d plugins loaded"), count);
+    if (count > 0)
+    {
+        MSGMAN()->AppendLog(_("Loading: "));
+        // actually load plugins
+        m_PluginManager->LoadAllPlugins();
+    }
 }
 
 void MainFrame::AddPluginInMenus(wxMenu* menu, cbPlugin* plugin, wxObjectEventFunction callback, int pos)

@@ -51,6 +51,14 @@ PluginsConfigurationDlg::PluginsConfigurationDlg(wxWindow* parent)
     for (unsigned int i = 0; i < plugins.GetCount(); ++i)
     {
         PluginElement* elem = plugins[i];
+        if (!elem->plugin)
+        {
+            // this plugin is not loaded
+            // display its name
+            list->Append(elem->name);
+            list->Check(list->GetCount()-1, false);
+            continue;
+        }
         list->Append(elem->plugin->GetInfo()->title + _(", v") + elem->plugin->GetInfo()->version);
 
         wxString baseKey;

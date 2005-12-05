@@ -420,25 +420,28 @@ class PLUGIN_EXPORT cbProjectWizardPlugin : public cbPlugin
         void RemoveToolBar(wxToolBar* toolBar){}
 };
 
+typedef void(*PluginSDKVersionProc)(int*,int*,int*);
 typedef size_t(*GetPluginsCountProc)(void);
-typedef cbPlugin*(*GetPluginProc)(size_t);
-typedef int(*GetSDKVersionMajorProc)(void);
-typedef int(*GetSDKVersionMinorProc)(void);
+typedef wxString(*PluginNameProc)(size_t);
+typedef cbPlugin*(*CreatePluginProc)(size_t);
+typedef void(*FreePluginProc)(cbPlugin*);
 
 // this is the plugins SDK version number
 // it will change when the plugins interface breaks
 #define PLUGIN_SDK_VERSION_MAJOR 1
 #define PLUGIN_SDK_VERSION_MINOR 6
+#define PLUGIN_SDK_VERSION_RELEASE 1
 
 /** This is used to declare the plugin's hooks.
   */
 #define CB_DECLARE_PLUGIN() \
     extern "C" \
     { \
+        PLUGIN_EXPORT wxString PluginName(size_t index); \
         PLUGIN_EXPORT size_t GetPluginsCount(); \
-        PLUGIN_EXPORT cbPlugin* GetPlugin(size_t index); \
-        PLUGIN_EXPORT int GetSDKVersionMajor(); \
-        PLUGIN_EXPORT int GetSDKVersionMinor(); \
+        PLUGIN_EXPORT cbPlugin* CreatePlugin(size_t index); \
+        PLUGIN_EXPORT void FreePlugin(cbPlugin* plugin); \
+        PLUGIN_EXPORT void PluginSDKVersion(int* major, int* minor, int* release); \
     }
 
 /** This is used to actually implement the plugin's hooks.
@@ -446,20 +449,32 @@ typedef int(*GetSDKVersionMinorProc)(void);
   * @param name The plugin's name (class).
   */
 #define CB_IMPLEMENT_PLUGIN(name) \
+    wxString PluginName(size_t index){ return wxString(_U(#name)); } \
     size_t GetPluginsCount(){ return 1; } \
-    cbPlugin* GetPlugin(size_t index) { return new name; } \
-    int GetSDKVersionMajor() { return PLUGIN_SDK_VERSION_MAJOR; } \
-    int GetSDKVersionMinor() { return PLUGIN_SDK_VERSION_MINOR; }
+    cbPlugin* CreatePlugin(size_t index) { return new name; } \
+    void FreePlugin(cbPlugin* plugin){ delete plugin; } \
+    void PluginSDKVersion(int* major, int* minor, int* release) \
+    { \
+        if (major) *major = PLUGIN_SDK_VERSION_MAJOR; \
+        if (minor) *minor = PLUGIN_SDK_VERSION_MINOR; \
+        if (release) *release = PLUGIN_SDK_VERSION_RELEASE; \
+    }
 
 /** Synonym to CB_IMPLEMENT_PLUGIN.
   * Implements and exports ONE plugin of class @c name.
   * @param name The plugin's name (class).
   */
 #define CB_IMPLEMENT_PLUGINS_1(name) \
+    wxString PluginName(size_t index){ return wxString(_U(#name)); } \
     size_t GetPluginsCount(){ return 1; } \
-    cbPlugin* GetPlugin(size_t index) { return new name; } \
-    int GetSDKVersionMajor() { return PLUGIN_SDK_VERSION_MAJOR; } \
-    int GetSDKVersionMinor() { return PLUGIN_SDK_VERSION_MINOR; }
+    cbPlugin* CreatePlugin(size_t index) { return new name; } \
+    void FreePlugin(cbPlugin* plugin){ delete plugin; } \
+    void PluginSDKVersion(int* major, int* minor, int* release) \
+    { \
+        if (major) *major = PLUGIN_SDK_VERSION_MAJOR; \
+        if (minor) *minor = PLUGIN_SDK_VERSION_MINOR; \
+        if (release) *release = PLUGIN_SDK_VERSION_RELEASE; \
+    }
 
 /** Used to export more than one plugin from the same library.
   * Implements and exports TWO plugins of class @c name1 and @c name2.
@@ -467,18 +482,32 @@ typedef int(*GetSDKVersionMinorProc)(void);
   * @param name2 The second plugin's name (class).
   */
 #define CB_IMPLEMENT_PLUGINS_2(name1,name2) \
+    wxString PluginName(size_t index) \
+    { \
+        switch (index) \
+        { \
+            case 0: return wxString(_U(#name1));  \
+            case 1: return wxString(_U(#name2));  \
+            default: cbThrow(_("Invalid plugin index in PluginName()!")); \
+        } \
+    } \
     size_t GetPluginsCount(){ return 2; } \
-    cbPlugin* GetPlugin(size_t index) \
+    cbPlugin* CreatePlugin(size_t index) \
     { \
         switch(index) \
         { \
             case 0: return new name1; \
             case 1: return new name2; \
-            default: cbThrow(_("Invalid plugin index!")); \
+            default: cbThrow(_("Invalid plugin index in CreatePlugin()!")); \
         } \
     } \
-    int GetSDKVersionMajor() { return PLUGIN_SDK_VERSION_MAJOR; } \
-    int GetSDKVersionMinor() { return PLUGIN_SDK_VERSION_MINOR; }
+    void FreePlugin(cbPlugin* plugin){ delete plugin; } \
+    void PluginSDKVersion(int* major, int* minor, int* release) \
+    { \
+        if (major) *major = PLUGIN_SDK_VERSION_MAJOR; \
+        if (minor) *minor = PLUGIN_SDK_VERSION_MINOR; \
+        if (release) *release = PLUGIN_SDK_VERSION_RELEASE; \
+    }
 
 /** Used to export more than one plugin from the same library.
   * Implements and exports THREE plugins of class @c name1, @c name2 and @c name3.
@@ -487,18 +516,33 @@ typedef int(*GetSDKVersionMinorProc)(void);
   * @param name3 The third plugin's name (class).
   */
 #define CB_IMPLEMENT_PLUGINS_3(name1,name2,name3) \
+    wxString PluginName(size_t index) \
+    { \
+        switch (index) \
+        { \
+            case 0: return wxString(_U(#name1));  \
+            case 1: return wxString(_U(#name2));  \
+            case 2: return wxString(_U(#name3));  \
+            default: cbThrow(_("Invalid plugin index in PluginName()!")); \
+        } \
+    } \
     size_t GetPluginsCount(){ return 3; } \
-    cbPlugin* GetPlugin(size_t index) \
+    cbPlugin* CreatePlugin(size_t index) \
     { \
         switch(index) \
         { \
             case 0: return new name1; \
             case 1: return new name2; \
             case 2: return new name3; \
-            default: cbThrow(_("Invalid plugin index!")); \
+            default: cbThrow(_("Invalid plugin index in CreatePlugin()!")); \
         } \
     } \
-    int GetSDKVersionMajor() { return PLUGIN_SDK_VERSION_MAJOR; } \
-    int GetSDKVersionMinor() { return PLUGIN_SDK_VERSION_MINOR; }
+    void FreePlugin(cbPlugin* plugin){ delete plugin; } \
+    void PluginSDKVersion(int* major, int* minor, int* release) \
+    { \
+        if (major) *major = PLUGIN_SDK_VERSION_MAJOR; \
+        if (minor) *minor = PLUGIN_SDK_VERSION_MINOR; \
+        if (release) *release = PLUGIN_SDK_VERSION_RELEASE; \
+    }
 
 #endif // CBPLUGIN_H

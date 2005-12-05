@@ -18,6 +18,7 @@ struct PluginElement
     wxString name;
     wxString fileName;
     wxDynamicLibrary* library;
+    FreePluginProc freeProc;
 	cbPlugin* plugin;
 };
 
