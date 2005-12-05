@@ -449,7 +449,7 @@ typedef void(*FreePluginProc)(cbPlugin*);
   * @param name The plugin's name (class).
   */
 #define CB_IMPLEMENT_PLUGIN(name) \
-    wxString PluginName(size_t index){ return wxString(_U(#name)); } \
+    wxString PluginName(size_t index){ return _T(#name); } \
     size_t GetPluginsCount(){ return 1; } \
     cbPlugin* CreatePlugin(size_t index) { return new name; } \
     void FreePlugin(cbPlugin* plugin){ delete plugin; } \
@@ -465,7 +465,7 @@ typedef void(*FreePluginProc)(cbPlugin*);
   * @param name The plugin's name (class).
   */
 #define CB_IMPLEMENT_PLUGINS_1(name) \
-    wxString PluginName(size_t index){ return wxString(_U(#name)); } \
+    wxString PluginName(size_t index){ return _T(#name); } \
     size_t GetPluginsCount(){ return 1; } \
     cbPlugin* CreatePlugin(size_t index) { return new name; } \
     void FreePlugin(cbPlugin* plugin){ delete plugin; } \
@@ -486,8 +486,8 @@ typedef void(*FreePluginProc)(cbPlugin*);
     { \
         switch (index) \
         { \
-            case 0: return wxString(_U(#name1));  \
-            case 1: return wxString(_U(#name2));  \
+            case 0: return _T(#name1);  \
+            case 1: return _T(#name2);  \
             default: cbThrow(_("Invalid plugin index in PluginName()!")); \
         } \
     } \
@@ -520,9 +520,9 @@ typedef void(*FreePluginProc)(cbPlugin*);
     { \
         switch (index) \
         { \
-            case 0: return wxString(_U(#name1));  \
-            case 1: return wxString(_U(#name2));  \
-            case 2: return wxString(_U(#name3));  \
+            case 0: return _T(#name1);  \
+            case 1: return _T(#name2);  \
+            case 2: return _T(#name3);  \
             default: cbThrow(_("Invalid plugin index in PluginName()!")); \
         } \
     } \
