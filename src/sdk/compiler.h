@@ -9,7 +9,7 @@
 
 /*
     Macros used in command specs:
-    
+
     Compiler executable: $compiler
     Resource compiler executable: $rescomp
     Linker executable: $linker
@@ -30,7 +30,7 @@
     Dynamic lib output file: $dynamic_output
     Dynamic lib DEF output file: $def_output
     Resources output file: $resource_output
-    
+
     Usual special chars apply: \t, \n, etc.
     The command output should be ready for inclusion
     in a Makefile (properly tab aligned but *no* tabs at the start of the string)
@@ -87,6 +87,7 @@ WX_DECLARE_OBJARRAY(RegExStruct, RegExArray);
 /// Helper enum to retrieve compiler commands
 enum CommandType
 {
+    ctInvalid = -1,
     ctCompileObjectCmd = 0, ///< Compile object command, e.g. "$compiler $options $includes -c $file -o $object"
     ctGenDependenciesCmd,   ///< Generate dependencies command
     ctCompileResourceCmd,   ///< Compile Win32 resources command, e.g. "$rescomp -i $file -J rc -o $resource_output -O coff $includes"
@@ -161,7 +162,7 @@ class DLLIMPORT Compiler : public CompileOptionsBase
 		Compiler(const wxString& name);
 		Compiler(const Compiler& other); // copy ctor to copy everything but update m_ID
 		virtual ~Compiler();
-		
+
 		/** @brief Check if the supplied string is a compiler warning/error */
 		virtual CompilerLineType CheckForWarningsAndErrors(const wxString& line);
 		/** @brief Returns warning/error filename. Use it after a call to CheckForWarningsAndErrors() */

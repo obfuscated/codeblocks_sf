@@ -16,6 +16,7 @@
 #include "configmanager.h"
 #include "messagemanager.h"
 #include "manager.h"
+#include "cbexception.h"
 #include <wx/dialog.h>
 #include <wx/intl.h>
 #include <wx/xrc/xmlres.h>
@@ -231,6 +232,11 @@ void UsrGlblMgrEditDialog::OnFS(wxCommandEvent& event)
         c = XRCCTRL(*this, "cflags", wxTextCtrl);
     else if(id == XRCID("fs_lflags"))
         c = XRCCTRL(*this, "lflags", wxTextCtrl);
+	else
+		{
+			c = 0;
+			cbThrow(_T("Encountered invalid button ID"));
+		}
 
     wxString path = ChooseDirectory(0,
                                     _("Choose a location"),

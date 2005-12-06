@@ -18,6 +18,7 @@
 #include "cmdlinegenerator.h"
 #include "compilergcc.h"
 #include "customvars.h"
+#include "cbexception.h"
 #include <depslib.h>
 
 DirectCommands::DirectCommands(CompilerGCC* compilerPlugin,
@@ -593,7 +594,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
 
     // add actual link command
     wxString kind_of_output;
-    CommandType ct;
+    CommandType ct = ctInvalid; // get rid of compiler warning
     switch (target->GetTargetType())
     {
         case ttConsoleOnly:
@@ -615,7 +616,15 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
             ct = ctLinkStaticCmd;
             kind_of_output = _("static library");
             break;
-        default: break;
+		case ttCommandsOnly:
+			ret.Clear();
+			return ret;
+			break;
+        default:
+			wxString ex;
+			ex.Printf(_T("Encountered invalid TargetType (value = %d)"), target->GetTargetType());
+			cbThrow(ex);
+        break;
     }
     Compiler* compiler = target ? CompilerFactory::Compilers[target->GetCompilerIndex()] : m_pCompiler;
     wxString compilerCmd = compiler->GetCommand(ct);
