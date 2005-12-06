@@ -709,7 +709,7 @@ void CodeBlocksApp::DoSetAssociation(const wxString& ext, const wxString& descr,
 	key.Create();
 	key = DDE_TOPIC;
 
-	if(ext.IsSameAs("cbp") || ext.IsSameAs("workspace"))
+	if(ext.IsSameAs(CODEBLOCKS_EXT) || ext.IsSameAs(WORKSPACE_EXT))
 	{
 		key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext + _T("\\shell\\Build\\command"));
 		key.Create();
@@ -811,6 +811,25 @@ bool CodeBlocksApp::DoCheckAssociation(const wxString& ext, const wxString& desc
         return false;
     if (strVal != DDE_TOPIC)
         return false;
+
+	if(ext.IsSameAs(CODEBLOCKS_EXT) || ext.IsSameAs(WORKSPACE_EXT))
+	{
+		key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext + _T("\\shell\\Build\\command"));
+        if (!key.Open())
+            return false;
+        if (!key.QueryValue(wxEmptyString, strVal))
+            return false;
+        if (strVal != _T("\"") + exe + _T("\" --build /na /nd /ns \"%1\""))
+            return false;
+
+		key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext + _T("\\shell\\Rebuild (clean)\\command"));
+        if (!key.Open())
+            return false;
+        if (!key.QueryValue(wxEmptyString, strVal))
+            return false;
+        if (strVal != _T("\"") + exe + _T("\" --rebuild /na /nd /ns \"%1\""))
+            return false;
+	}
 
     return true;
 }

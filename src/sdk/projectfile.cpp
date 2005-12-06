@@ -1,3 +1,4 @@
+#include "sdk_precomp.h"
 #include "projectfile.h"
 #include "projectbuildtarget.h"
 #include "cbproject.h"
