@@ -757,6 +757,16 @@ void ProjectLoader::SaveEnvironment(TiXmlElement* parent, CustomVars* vars)
 
 bool ProjectLoader::Save(const wxString& filename)
 {
+    if (ExportTargetAsProject(filename, wxEmptyString))
+    {
+        m_pProject->SetModified(false);
+        return true;
+    }
+    return false;
+}
+
+bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxString& onlyTarget)
+{
     CustomVars* vars = 0;
     const char* ROOT_TAG = "CodeBlocks_project_file";
 
@@ -797,11 +807,19 @@ bool ProjectLoader::Save(const wxString& filename)
     prjnode->InsertEndChild(TiXmlElement("Build"));
     TiXmlElement* buildnode = prjnode->FirstChildElement("Build");
 
+    // now decide which target we 're exporting.
+    // remember that if onlyTarget is empty, we export all targets (i.e. normal save).
+    ProjectBuildTarget* onlytgt = m_pProject->GetBuildTarget(onlyTarget);
+
     for (int i = 0; i < m_pProject->GetBuildTargetsCount(); ++i)
     {
         ProjectBuildTarget* target = m_pProject->GetBuildTarget(i);
         if (!target)
             break;
+
+        // skip every target except the desired one
+        if (onlytgt && onlytgt != target)
+            continue;
 
         TiXmlElement* tgtnode = AddElement(buildnode, "Target", "title", target->GetTitle());
         if (target->GetTargetType() != ttCommandsOnly)
@@ -926,6 +944,10 @@ bool ProjectLoader::Save(const wxString& filename)
     {
         ProjectFile* f = m_pProject->GetFile(i);
 
+        // do not save project files that do not belong in the target we 're exporting
+        if (onlytgt && !onlytgt->GetFilesList().Find(f))
+            continue;
+
         TiXmlElement* unitnode = AddElement(prjnode, "Unit", "filename", f->relativeFilename);
         AddElement(unitnode, "Option", "compilerVar", f->compilerVar);
         if (!f->compile)
@@ -962,10 +984,7 @@ bool ProjectLoader::Save(const wxString& filename)
     }
 
     if (doc.SaveFile(_C(filename)))
-    {
-        m_pProject->SetModified(false);
         return true;
-    }
     return false;
 }
 

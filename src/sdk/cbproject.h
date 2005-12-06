@@ -182,6 +182,27 @@ class DLLIMPORT cbProject : public CompileTargetBase
           */
         ProjectBuildTarget* DuplicateBuildTarget(const wxString& targetName, const wxString& newName = wxEmptyString);
 
+        /** Export a target as a new project.
+          * In other words, save a copy of the project containing only the specified target.
+          * The user will be prompted with a dialog to select the new project name.
+          * @param index The index of the build target to export.
+          * @return True on success, false on failure (or dialog cancellation).
+          * @note The dialog to select the new project name is not a file dialog because
+          * the user is not allowed to save anywhere. The new project must remain "operational"
+          * (assuming the target to export, was "operational") so the new project must be saved
+          * in the same directory as the original to preserve relative paths.
+          */
+        bool ExportTargetAsProject(int index);
+
+        /** Export a target as a new project.
+          * In other words, save a copy of the project containing only the specified target.
+          * The user will be prompted with a dialog to select the new project name.
+          * @param targetName The name of the build target to export.
+          * @return True on success, false on failure (or dialog cancellation).
+          * @see ExportTargetAsProject(int).
+          */
+        bool ExportTargetAsProject(const wxString& targetName);
+
         /** Remove a build target.
           * @param index The index of the build target to remove.
           * @return True if @c index was valid, false if not.

@@ -1073,6 +1073,44 @@ ProjectBuildTarget* cbProject::DuplicateBuildTarget(const wxString& targetName, 
     return DuplicateBuildTarget(IndexOfBuildTargetName(targetName), newName);
 }
 
+bool cbProject::ExportTargetAsProject(int index)
+{
+    ProjectBuildTarget* target = GetBuildTarget(index);
+    if (!target)
+        return false;
+    return ExportTargetAsProject(target->GetTitle());
+}
+
+bool cbProject::ExportTargetAsProject(const wxString& targetName)
+{
+    ProjectBuildTarget* target = GetBuildTarget(targetName);
+    if (!target)
+        return false;
+
+    // ask for the new project's name
+    wxString newName = wxGetTextFromUser(_("Please enter the new project's name (no path, no extension)."),
+                                        _("Export target as new project"),
+                                        target->GetTitle());
+    if (newName.IsEmpty())
+        return false;
+    wxFileName fname(GetFilename());
+    fname.SetName(newName);
+
+    Save();
+    bool alreadyModified = GetModified();
+    wxString oldTitle = GetTitle();
+    SetTitle(targetName);
+
+    ProjectLoader loader(this);
+    bool ret = loader.ExportTargetAsProject(fname.GetFullPath(), target->GetTitle());
+
+    SetTitle(oldTitle);
+    if (!alreadyModified)
+        SetModified(false);
+
+    return ret;
+}
+
 bool cbProject::RemoveBuildTarget(int index)
 {
     ProjectBuildTarget* target = GetBuildTarget(index);

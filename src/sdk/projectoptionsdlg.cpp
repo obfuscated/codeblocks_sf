@@ -33,6 +33,7 @@
 #include <wx/xrc/xmlres.h>
 #include <wx/radiobox.h>
 #include "externaldepsdlg.h"
+#include "annoyingdialog.h"
 
 BEGIN_EVENT_TABLE(ProjectOptionsDlg, wxDialog)
     EVT_UPDATE_UI( -1,                                 ProjectOptionsDlg::OnUpdateUI)
@@ -48,6 +49,7 @@ BEGIN_EVENT_TABLE(ProjectOptionsDlg, wxDialog)
 	EVT_BUTTON(    XRCID("btnBrowseWorkingDir"),       ProjectOptionsDlg::OnBrowseDirClick)
 	EVT_BUTTON(    XRCID("btnBrowseObjectDir"),        ProjectOptionsDlg::OnBrowseDirClick)
 	EVT_BUTTON(    XRCID("btnExternalDeps"),           ProjectOptionsDlg::OnEditDepsClick)
+	EVT_BUTTON(    XRCID("btnExportTarget"),           ProjectOptionsDlg::OnExportTargetClick)
 	EVT_LISTBOX_DCLICK(XRCID("lstFiles"),              ProjectOptionsDlg::OnFileOptionsClick)
 	EVT_BUTTON(    XRCID("btnFileOptions"),            ProjectOptionsDlg::OnFileOptionsClick)
 	EVT_BUTTON(    XRCID("btnToggleCheckmarks"),       ProjectOptionsDlg::OnFileToggleMarkClick)
@@ -492,6 +494,27 @@ void ProjectOptionsDlg::OnEditDepsClick(wxCommandEvent& event)
 	dlg.ShowModal();
 }
 
+void ProjectOptionsDlg::OnExportTargetClick(wxCommandEvent& event)
+{
+    wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
+	ProjectBuildTarget* target = m_Project->GetBuildTarget(lstTargets->GetSelection());
+	if (!target)
+        return;
+
+    AnnoyingDialog dlg(_("Create project from target confirmation"),
+                        _("This project will be saved before exporting the build target.\n"
+                        "Are you sure you want to export the selected "
+                        "build target to a new project?"),
+                        wxART_QUESTION,
+                        AnnoyingDialog::YES_NO,
+                        wxID_YES);
+    if (dlg.ShowModal() == wxID_YES)
+    {
+        if (m_Project->ExportTargetAsProject(target->GetTitle()))
+            wxMessageBox(_("New project created succesfully!"), _("Information"), wxICON_INFORMATION);
+    }
+}
+
 void ProjectOptionsDlg::OnBrowseDirClick(wxCommandEvent& event)
 {
     wxTextCtrl* targettext = 0;
@@ -587,6 +610,7 @@ void ProjectOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
 	// edit project/target build options
     XRCCTRL(*this, "btnProjectBuildOptions", wxButton)->Enable(m_pCompiler);
     XRCCTRL(*this, "btnTargetBuildOptions", wxButton)->Enable(m_pCompiler && en);
+    XRCCTRL(*this, "btnExportTarget", wxButton)->Enable(en);
 }
 
 void ProjectOptionsDlg::OnOK(wxCommandEvent& event)

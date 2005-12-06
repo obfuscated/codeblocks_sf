@@ -10,15 +10,27 @@ class cbProject;
 class ProjectBuildTarget;
 class ProjectFile;
 
+/** Code::Blocks project file loader. */
 class DLLIMPORT ProjectLoader : public IBaseLoader
 {
 	public:
+        /** Constructor.
+          * @param project The project to handle (load/save). */
 		ProjectLoader(cbProject* project);
+		/// Destructor.
 		virtual ~ProjectLoader();
 
         bool Open(const wxString& filename);
         bool Save(const wxString& filename);
+        /** Export a target as a new project.
+          * In other words, save a copy of the project containing only the specified target.
+          * @param filename The new project filename.
+          * @param onlyTarget The target name. If empty, it's like saving the project under a different name
+          * (i.e. all targets are exported to the new project). */
+        bool ExportTargetAsProject(const wxString& filename, const wxString& onlyTarget);
+        /** @return True if the file was upgraded after load, false if not. */
         bool FileUpgraded(){ return m_Upgraded; }
+        /** @return True if the file was modified while loading, false if not. This is usually true if FileUpgraded() returned true. */
         bool FileModified(){ return m_OpenDirty; }
 	protected:
         void DoProjectOptions(TiXmlElement* parentNode);

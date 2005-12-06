@@ -30,6 +30,7 @@ class ProjectOptionsDlg : public wxDialog
 		void OnBrowseOutputFilenameClick(wxCommandEvent& event);
 		void OnBrowseDirClick(wxCommandEvent& event);
 		void OnEditDepsClick(wxCommandEvent& event);
+		void OnExportTargetClick(wxCommandEvent& event);
 		void OnBuildOrderClick(wxCommandEvent& event);
 		void OnProjectBuildOptionsClick(wxCommandEvent& event);
 		void OnTargetBuildOptionsClick(wxCommandEvent& event);
