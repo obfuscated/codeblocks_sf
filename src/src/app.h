@@ -49,12 +49,6 @@ class CodeBlocksApp : public
 		void OnAppActivate(wxActivateEvent& event);
         bool OnCmdLineParsed(wxCmdLineParser& parser);
         void OnFatalException();
-#ifdef __WXMSW__
-		void SetAssociations();
-		void DoSetAssociation(const wxString& ext, const wxString& descr, const wxString& exe, const wxString& icoNum);
-		void CheckAssociations();
-		bool DoCheckAssociation(const wxString& ext, const wxString& descr, const wxString& exe, const wxString& icoNum);
-#endif
     protected:
         bool LoadConfig();
         void InitAssociations();
@@ -84,6 +78,7 @@ class CodeBlocksApp : public
 #endif
         // batch jobs - start
         bool m_Batch;
+        bool m_BatchNotify;
         wxString m_BatchTarget;
         bool m_Build;
         bool m_ReBuild;

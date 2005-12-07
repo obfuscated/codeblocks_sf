@@ -83,18 +83,29 @@ int PluginWizard::Execute()
 
     // add compiler options
 #ifdef __WXMSW__
+    project->AddCompilerOption(_T("-pipe"));
+    project->AddCompilerOption(_T("-mthreads"));
+    project->AddCompilerOption(_T("-fmessage-length=0"));
+    project->AddCompilerOption(_T("-fexceptions"));
+    project->AddCompilerOption(_T("-Winvalid-pch"));
     project->AddCompilerOption(_T("-D__GNUWIN32__"));
     project->AddCompilerOption(_T("-DWXUSINGDLL"));
     project->AddCompilerOption(_T("-DBUILDING_PLUGIN"));
+    project->AddCompilerOption(_T("-D__WXMSW__"));
+    project->AddCompilerOption(_T("-DHAVE_W32API_H"));
     // wx & cb dirs
-    project->AddIncludeDir(_T("$(WX_DIR)\\include"));
-    project->AddIncludeDir(_T("$(WX_DIR)\\lib\\gcc_dll\\msw"));
-    project->AddIncludeDir(_T("$(WX_DIR)\\lib\\gcc_dll$(WX_CFG)\\msw"));
-    project->AddIncludeDir(_T("$(WX_DIR)\\contrib\\include"));
-    project->AddIncludeDir(_T("$(CB_SDK)\\include")); // SDK installation
-    project->AddIncludeDir(_T("$(CB_SDK)\\sdk")); // source tree
-    project->AddIncludeDir(_T("$(CB_SDK)\\sdk\\tinyxml")); // source tree
-    project->AddIncludeDir(_T("$(CB_SDK)\\sdk\\wxscintilla\\include")); // source tree
+    project->AddIncludeDir(_T("$(#WX.include)"));
+    project->AddIncludeDir(_T("$(#WX.lib)\\gcc_dll\\msw"));
+    project->AddIncludeDir(_T("$(#WX.lib)\\gcc_dll\\msw$(WX_CFG)\\msw"));
+    project->AddIncludeDir(_T("$(#WX)\\contrib\\include"));
+    project->AddIncludeDir(_T("$(#CB.include)")); // SDK installation
+    project->AddIncludeDir(_T("$(#CB.include)\\tinyxml")); // SDK installation
+    project->AddIncludeDir(_T("$(#CB.include)\\wxscintilla\\include")); // SDK installation
+    project->AddIncludeDir(_T("$(#CB)\\sdk")); // source tree
+    project->AddIncludeDir(_T("$(#CB)\\sdk\\tinyxml")); // source tree
+    project->AddIncludeDir(_T("$(#CB)\\sdk\\wxscintilla\\include")); // source tree
+    // resource dirs
+    project->AddResourceIncludeDir(_T("$(#WX.include)"));
 #else
     project->AddCompilerOption(_T("`wx-config --cflags`"));
 #endif
@@ -104,12 +115,11 @@ int PluginWizard::Execute()
 // NOTE (mandrav#1#): By making the version an environment variable...
     project->AddLinkLib(_T("wxmsw$(WX_VER)"));
     // wx & cb dirs
-    project->AddLibDir(_T("$(WX_DIR)\\lib\\gcc_dll\\msw"));
-    project->AddLibDir(_T("$(WX_DIR)\\lib\\gcc_dll$(WX_CFG)"));
-    project->AddLibDir(_T("$(CB_SDK)\\lib")); // SDK installation
-    project->AddLibDir(_T("$(CB_SDK)\\devel")); // source tree
-    project->AddLibDir(_T("$(CB_SDK)\\sdk\\tinyxml")); // source tree
-    project->AddLibDir(_T("$(CB_SDK)\\sdk\\wxscintilla\\include")); // source tree
+    project->AddLibDir(_T("$(#WX.lib)\\gcc_dll\\msw"));
+    project->AddLibDir(_T("$(#WX.lib)\\gcc_dll$(WX_CFG)"));
+    project->AddLibDir(_T("$(#CB.lib)")); // SDK installation
+    project->AddLibDir(_T("$(#CB)\\devel")); // source tree
+    project->AddLibDir(_T("$(#CB)\\sdk\\tinyxml")); // source tree
 #else
     project->AddLinkerOption(_T("`wx-config --libs`"));
 #endif
@@ -118,14 +128,10 @@ int PluginWizard::Execute()
     // now create the necessary env. vars
 // TODO (mandrav#1#): Make these read from LibManager
     wxString wxver = _T("26");
-    wxString wxdir = _T("C:\\wxWidgets-2.6.1");
-    wxString wxcfg = _T("NonUnicode");
-    wxString cbsdk = _T("C:\\codeblocks-1.0rc2");
+    wxString wxcfg = _T("");
     CustomVars vars;
-    vars.Add(_T("WX_VER"), wxver);
-    vars.Add(_T("WX_DIR"), wxdir);
     vars.Add(_T("WX_CFG"), wxcfg);
-    vars.Add(_T("CB_SDK"), cbsdk);
+    vars.Add(_T("WX_VER"), wxver);
     project->SetCustomVars(vars);
 #endif
 

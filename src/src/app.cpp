@@ -25,6 +25,7 @@
 
 #include <sdk.h>
 #include "app.h"
+#include "associations.h"
 #include <wx/fs_zip.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/cmdline.h>
@@ -46,17 +47,7 @@
 #include <manager.h>
 #include <scriptingmanager.h>
 
-#ifdef __WXMSW__
-	#include <wx/msw/registry.h>
-	#include <shlobj.h> // for SHChangeNotify()
-	#define DDE_SERVICE	_T("CODEBLOCKS")
-	#define DDE_TOPIC	_T("CodeBlocksDDEServer")
-	#ifdef __CBDEBUG__
-	#include <windows.h>
-	#include <wincon.h>
-	#include <wx/log.h>
-	#endif
-#else
+#ifndef __WXMSW__
     #include "prefix.h" // binreloc
 #endif
 
@@ -78,6 +69,7 @@ static const wxCmdLineEntryDesc cmdLineDesc[] =
     { wxCMD_LINE_SWITCH, _T(""), _T("rebuild"), _T("clean and then build the project/workspace"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_SWITCH, _T(""), _T("build"), _T("just build the project/workspace"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_OPTION, _T(""), _T("target"),  _T("the target for the batch build"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
+    { wxCMD_LINE_SWITCH, _T(""), _T("batch-build-notify"),  _T("show message when batch build is done"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_PARAM, _T(""), _T(""),  _T("filename(s)"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE },
     { wxCMD_LINE_NONE }
 };
@@ -133,7 +125,27 @@ void CodeBlocksApp::InitAssociations()
 #ifdef __WXMSW__
 	ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
 	if (!m_NoAssocs && cfg->ReadBool(_T("/environment/check_associations"), true))
-		CheckAssociations();
+	{
+		if (!Associations::Check())
+		{
+            HideSplashScreen();
+            wxString msg;
+            msg.Printf(_("%s is not currently the default application for C/C++ source files\nDo you want to set it as default?"), APP_NAME);
+            int answer = wxMessageBox(msg,
+                                        _("File associations"),
+                                        wxICON_QUESTION | wxYES_NO | wxYES_DEFAULT);
+            if (answer == wxYES)
+                Associations::Set();
+            else
+            {
+                wxMessageBox(_("File associations will *not* be checked from now on, on program startup.\n"
+                               "If you want to enable the check, go to \"Settings/Environment\" and check \"Check & set file associations\"..."),
+                             _("Information"),
+                             wxICON_INFORMATION);
+                Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/environment/check_associations"), false);
+            }
+		}
+	}
 
 	if (!m_NoDDE && cfg->ReadBool(_T("/environment/use_dde"), true))
 	{
@@ -306,6 +318,7 @@ void CodeBlocksApp::InitLocale()
 bool CodeBlocksApp::OnInit()
 {
     m_Batch = false;
+    m_BatchNotify = false;
     m_Build = false;
     m_ReBuild = false;
     m_BatchExitCode = 0;
@@ -478,8 +491,15 @@ int CodeBlocksApp::BatchJob()
         wxMilliSleep(10);
         Yield(true);
     }
+    int exitCode = compiler->GetExitCode();
 
-    return compiler->GetExitCode();
+    if (m_BatchNotify)
+    {
+        wxString msg;
+        msg.Printf(_("Batch build is complete.\nProcess exited with status code %d."), exitCode);
+        wxMessageBox(msg, APP_NAME, exitCode == 0 ? wxICON_INFORMATION : wxICON_WARNING);
+    }
+    return exitCode;
 }
 
 void CodeBlocksApp::ShowSplashScreen()
@@ -610,6 +630,7 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                         SetupPersonality(val);
 
                     // batch jobs
+                    m_BatchNotify = parser.Found(_T("batch-build-notify"), &val);
                     m_Build = parser.Found(_T("build"), &val);
                     m_ReBuild = parser.Found(_T("rebuild"), &val);
                     parser.Found(_T("target"), &m_BatchTarget);
@@ -658,182 +679,6 @@ void CodeBlocksApp::SetupPersonality(const wxString& personality)
 }
 
 #ifdef __WXMSW__
-void CodeBlocksApp::SetAssociations()
-{
-	wxChar name[MAX_PATH] = {0};
-	GetModuleFileName(0L, name, MAX_PATH);
-
-	DoSetAssociation(CODEBLOCKS_EXT, wxString(APP_NAME) + _(" project file"), name, _T("1"));
-	DoSetAssociation(WORKSPACE_EXT, wxString(APP_NAME) +  _("workspace file"), name, _T("1"));
-	DoSetAssociation(C_EXT, _("C source file"), name, _T("2"));
-	DoSetAssociation(CPP_EXT, _("C++ source file"), name, _T("3"));
-	DoSetAssociation(CC_EXT, _("C++ source file"), name, _T("3"));
-	DoSetAssociation(CXX_EXT, _("C++ source file"), name, _T("3"));
-	DoSetAssociation(H_EXT, _("C/C++ header file"), name, _T("4"));
-	DoSetAssociation(HPP_EXT, _("C/C++ header file"), name, _T("4"));
-	DoSetAssociation(HH_EXT, _("C/C++ header file"), name, _T("4"));
-	DoSetAssociation(HXX_EXT, _("C/C++ header file"), name, _T("4"));
-
-	SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, 0L, 0L);
-}
-
-void CodeBlocksApp::DoSetAssociation(const wxString& ext, const wxString& descr, const wxString& exe, const wxString& icoNum)
-{
-	wxRegKey key; // defaults to HKCR
-
-	key.SetName(_T("HKEY_CLASSES_ROOT\\.") + ext);
-	key.Create();
-	key = _T("CodeBlocks.") + ext;
-
-	key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext);
-	key.Create();
-	key = descr;
-
-	key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext + _T("\\DefaultIcon"));
-	key.Create();
-	key = exe + _T(",") + icoNum;
-
-	key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext + _T("\\shell\\open\\command"));
-	key.Create();
-	key = _T("\"") + exe + _T("\" \"%1\"");
-
-	key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext + _T("\\shell\\open\\ddeexec"));
-	key.Create();
-	key = _T("[Open(\"%1\")]");
-
-	key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext + _T("\\shell\\open\\ddeexec\\Application"));
-	key.Create();
-	key = DDE_SERVICE;
-
-	key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext + _T("\\shell\\open\\ddeexec\\topic"));
-	key.Create();
-	key = DDE_TOPIC;
-
-	if(ext.IsSameAs(CODEBLOCKS_EXT) || ext.IsSameAs(WORKSPACE_EXT))
-	{
-		key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext + _T("\\shell\\Build\\command"));
-		key.Create();
-		key = _T("\"") + exe + _T("\" --build /na /nd /ns \"%1\"");
-
-		key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext + _T("\\shell\\Rebuild (clean)\\command"));
-		key.Create();
-		key = _T("\"") + exe + _T("\" --rebuild /na /nd /ns \"%1\"");
-	}
-}
-
-// sets file associations if not there (depending on user prefs)
-void CodeBlocksApp::CheckAssociations()
-{
-	wxChar name[MAX_PATH] = {0};
-	GetModuleFileName(0L, name, MAX_PATH);
-
-	if (!DoCheckAssociation(CODEBLOCKS_EXT, wxString(APP_NAME) + _(" project file"), name, _T("1")) ||
-        !DoCheckAssociation(WORKSPACE_EXT, wxString(APP_NAME) + _(" workspace file"), name, _T("1")) ||
-        !DoCheckAssociation(C_EXT, _T("C source file"), name, _T("2")) ||
-        !DoCheckAssociation(CPP_EXT, _T("C++ source file"), name, _T("3")) ||
-        !DoCheckAssociation(CC_EXT, _T("C++ source file"), name, _T("3")) ||
-        !DoCheckAssociation(CXX_EXT, _T("C++ source file"), name, _T("3")) ||
-        !DoCheckAssociation(H_EXT, _T("C/C++ header file"), name, _T("4")) ||
-        !DoCheckAssociation(HPP_EXT, _T("C/C++ header file"), name, _T("4")) ||
-        !DoCheckAssociation(HH_EXT, _T("C/C++ header file"), name, _T("4")) ||
-        !DoCheckAssociation(HXX_EXT, _T("C/C++ header file"), name, _T("4")))
-    {
-        HideSplashScreen();
-        wxString msg;
-        msg.Printf(_("%s is not currently the default application for C/C++ source files\nDo you want to set it as default?"), APP_NAME);
-        int answer = wxMessageBox(msg,
-                                    _("File associations"),
-                                    wxICON_QUESTION | wxYES_NO | wxYES_DEFAULT);
-        if (answer == wxYES)
-            SetAssociations();
-        else
-        {
-            wxMessageBox(_("File associations will *not* be checked from now on, on program startup.\n"
-                           "If you want to enable the check, go to \"Settings/Environment\" and check \"Check & set file associations\"..."),
-                         _("Information"),
-                         wxICON_INFORMATION);
-            Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/environment/check_associations"), false);
-        }
-    }
-}
-
-// returns true if association is already established
-bool CodeBlocksApp::DoCheckAssociation(const wxString& ext, const wxString& descr, const wxString& exe, const wxString& icoNum)
-{
-    wxLogNull no_log_here;
-	wxRegKey key; // defaults to HKCR
-	wxString strVal;
-
-	key.SetName(wxString(_T("HKEY_CLASSES_ROOT\\.")) + ext);
-	if (!key.Open())
-        return false;
-
-	key.SetName(wxString(_T("HKEY_CLASSES_ROOT\\CodeBlocks.")) + ext);
-	if (!key.Open())
-        return false;
-
-	key.SetName(wxString(_T("HKEY_CLASSES_ROOT\\CodeBlocks.")) + ext + _T("\\DefaultIcon"));
-	if (!key.Open())
-        return false;
-    if (!key.QueryValue(wxEmptyString, strVal))
-        return false;
-    if (strVal != wxString::Format(_T("%s,%s"), exe.c_str(), icoNum.c_str()))
-        return false;
-
-	key.SetName(wxString(_T("HKEY_CLASSES_ROOT\\CodeBlocks.")) + ext + _T("\\shell\\open\\command"));
-	if (!key.Open())
-        return false;
-    if (!key.QueryValue(wxEmptyString, strVal))
-        return false;
-    if (strVal != wxString::Format(_T("\"%s\" \"%%1\""), exe.c_str()))
-        return false;
-
-	key.SetName(wxString(_T("HKEY_CLASSES_ROOT\\CodeBlocks.")) + ext + _T("\\shell\\open\\ddeexec"));
-	if (!key.Open())
-        return false;
-    if (!key.QueryValue(wxEmptyString, strVal))
-        return false;
-    if (strVal != _T("[Open(\"%1\")]"))
-        return false;
-
-	key.SetName(wxString(_T("HKEY_CLASSES_ROOT\\CodeBlocks.")) + ext + _T("\\shell\\open\\ddeexec\\application"));
-	if (!key.Open())
-        return false;
-    if (!key.QueryValue(wxEmptyString, strVal))
-        return false;
-    if (strVal != DDE_SERVICE)
-        return false;
-
-	key.SetName(wxString(_T("HKEY_CLASSES_ROOT\\CodeBlocks.")) + ext + _T("\\shell\\open\\ddeexec\\topic"));
-	if (!key.Open())
-        return false;
-    if (!key.QueryValue(wxEmptyString, strVal))
-        return false;
-    if (strVal != DDE_TOPIC)
-        return false;
-
-	if(ext.IsSameAs(CODEBLOCKS_EXT) || ext.IsSameAs(WORKSPACE_EXT))
-	{
-		key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext + _T("\\shell\\Build\\command"));
-        if (!key.Open())
-            return false;
-        if (!key.QueryValue(wxEmptyString, strVal))
-            return false;
-        if (strVal != _T("\"") + exe + _T("\" --build /na /nd /ns \"%1\""))
-            return false;
-
-		key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext + _T("\\shell\\Rebuild (clean)\\command"));
-        if (!key.Open())
-            return false;
-        if (!key.QueryValue(wxEmptyString, strVal))
-            return false;
-        if (strVal != _T("\"") + exe + _T("\" --rebuild /na /nd /ns \"%1\""))
-            return false;
-	}
-
-    return true;
-}
-
 //// DDE
 
 wxConnectionBase* DDEServer::OnAcceptConnection(const wxString& topic)

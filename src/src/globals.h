@@ -4,8 +4,8 @@
 #define APP_VENDOR				_T("Code::Blocks")
 #define APP_NAME				_T("Code::Blocks")
 #define APP_VERSION				_T("1.0")
-#define APP_ACTUAL_VERSION_VERB	_T("1.0 CVS")
-#define APP_ACTUAL_VERSION		_T("1.0-cvs")
+#define APP_ACTUAL_VERSION_VERB	_T("1.0 HEAD")
+#define APP_ACTUAL_VERSION		_T("1.0-head")
 #define APP_URL					_T("http://www.codeblocks.org")
 #define APP_CONTACT_EMAIL		_T("mandrav@codeblocks.org")
 

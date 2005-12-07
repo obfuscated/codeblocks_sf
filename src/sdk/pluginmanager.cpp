@@ -480,7 +480,7 @@ PluginsArray PluginManager::GetOffersFor(PluginType type)
     for (unsigned int i = 0; i < m_Plugins.GetCount(); ++i)
     {
         cbPlugin* plug = m_Plugins[i]->plugin;
-        if (plug->IsAttached() && plug->GetType() == type)
+        if (plug && plug->IsAttached() && plug->GetType() == type)
         {
             if (type == ptMime)
             {

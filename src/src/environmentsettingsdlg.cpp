@@ -8,6 +8,11 @@
 #include <wx/msgdlg.h>
 
 #include "environmentsettingsdlg.h"
+#include "associations.h"
+
+BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxDialog)
+    EVT_BUTTON(XRCID("btnSetAssocs"), EnvironmentSettingsDlg::OnSetAssocs)
+END_EVENT_TABLE()
 
 EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent)
 {
@@ -46,16 +51,33 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent)
             lb->Append(caption);
     }
 
+    // tab "Batch builds"
+    XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->SetValue(cfg->Read(_T("/batch_build_args"), DEFAULT_BATCH_BUILD_ARGS));
+
     // tab "Network"
     XRCCTRL(*this, "txtProxy", wxTextCtrl)->SetValue(cfg->Read(_T("/network_proxy")));
 
     // tab "Tweaks"
     XRCCTRL(*this, "chkSafebutSlow", wxCheckBox)->SetValue(mcfg->ReadBool(_T("/safe_but_slow"), false));
+
+    // disable some windows-only settings, in other platforms
+#ifndef __WXMSW__
+    XRCCTRL(*this, "chkDDE", wxCheckBox)->Enable(false);
+    XRCCTRL(*this, "chkAssociations", wxCheckBox)->Enable(false);
+    XRCCTRL(*this, "btnSetAssocs", wxButton)->Enable(false);
+    XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->Enable(false);
+#endif
 }
 
 EnvironmentSettingsDlg::~EnvironmentSettingsDlg()
 {
     //dtor
+}
+
+void EnvironmentSettingsDlg::OnSetAssocs(wxCommandEvent& event)
+{
+    Associations::Set();
+    wxMessageBox(_("Code::Blocks associated with C/C++ files."), _("Information"), wxICON_INFORMATION);
 }
 
 void EnvironmentSettingsDlg::EndModal(int retCode)
@@ -92,11 +114,19 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
                 acfg->UnSet(lb->GetString(i));
         }
 
+        // tab "Batch builds"
+        wxString bbargs = XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->GetValue();
+        if (bbargs != cfg->Read(_T("/batch_build_args"), DEFAULT_BATCH_BUILD_ARGS))
+        {
+            cfg->Write(_T("/batch_build_args"), bbargs);
+            Associations::SetBatchBuildOnly();
+        }
+
         // tab "Network"
-        cfg->Write(_T("/network_proxy"),                    XRCCTRL(*this, "txtProxy", wxTextCtrl)->GetValue());
+        cfg->Write(_T("/network_proxy"),    XRCCTRL(*this, "txtProxy", wxTextCtrl)->GetValue());
 
         // tab "Tweaks"
-        mcfg->Write(_T("/safe_but_slow"),                    (bool) XRCCTRL(*this, "chkSafebutSlow", wxCheckBox)->GetValue());
+        mcfg->Write(_T("/safe_but_slow"),   (bool) XRCCTRL(*this, "chkSafebutSlow", wxCheckBox)->GetValue());
     }
 
     wxDialog::EndModal(retCode);
