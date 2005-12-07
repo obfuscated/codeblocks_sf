@@ -9,7 +9,6 @@
 
 BEGIN_EVENT_TABLE(wxsNewWindowDlg,wxDialog)
     //(*EventTable(wxsNewWindowDlg)
-    EVT_TEXT(XRCID("ID_TEXTCTRL1"),wxsNewWindowDlg::OnClassChanged)
     EVT_TEXT(XRCID("ID_TEXTCTRL2"),wxsNewWindowDlg::OnHeaderChanged)
     EVT_TEXT(XRCID("ID_TEXTCTRL3"),wxsNewWindowDlg::OnSourceChanged)
     EVT_CHECKBOX(XRCID("ID_CHECKBOX1"),wxsNewWindowDlg::OnUseXrcChange)
@@ -28,7 +27,6 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType):
 {
     //(*Initialize(wxsNewWindowDlg)
     wxXmlResource::Get()->LoadDialog(this,parent,_T("wxsNewWindowDlg"));
-    Class = XRCCTRL(*this,"ID_TEXTCTRL1",wxTextCtrl);
     Header = XRCCTRL(*this,"ID_TEXTCTRL2",wxTextCtrl);
     Source = XRCCTRL(*this,"ID_TEXTCTRL3",wxTextCtrl);
     UseXrc = XRCCTRL(*this,"ID_CHECKBOX1",wxCheckBox);

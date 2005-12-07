@@ -26,14 +26,6 @@
                             </object>
                             <object class="sizeritem">
                                 <border>5</border>
-                                <flag>wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                                <object class="wxTextCtrl" name="ID_TEXTCTRL1">
-                                    <value></value>
-                                    <size>80,-1</size>
-                                </object>
-                            </object>
-                            <object class="sizeritem">
-                                <border>5</border>
                                 <flag>wxALIGN_CENTER</flag>
                                 <object class="wxStaticText" name="ID_STATICTEXT2">
                                     <label>Header file:</label>
