@@ -3614,6 +3614,16 @@
             <Option link="0" />
             <Option target="src" />
         </Unit>
+        <Unit filename="src\associations.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="src" />
+        </Unit>
+        <Unit filename="src\associations.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="src" />
+        </Unit>
         <Unit filename="src\dlgabout.cpp">
             <Option compilerVar="CPP" />
             <Option target="src" />
