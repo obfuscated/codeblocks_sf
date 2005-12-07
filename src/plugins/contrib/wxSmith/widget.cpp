@@ -350,8 +350,7 @@ bool wxsWidget::XmlLoadDefaultsT(wxsBasePropertiesType pType)
     /* Processing variable name and locality */
     if ( pType & bptVariable )
     {
-        const char* VarName = XmlElem()->Attribute("variable");
-        GetBaseProperties().VarName = VarName ? wxString ( VarName, wxConvUTF8 ) : _T("");
+        GetBaseProperties().VarName = _U(XmlElem()->Attribute("variable"));
         const char* IsMember = XmlElem()->Attribute("member");
         GetBaseProperties().IsMember = IsMember ? ( strcasecmp(IsMember,"no") != 0 ) : true;
     }
@@ -743,7 +742,7 @@ wxString wxsWidget::XmlGetVariable(const wxString& name)
         TiXmlText* Text = Node->ToText();
         if ( Text )
         {
-            return wxString(Text->Value(), wxConvUTF8);
+            return _U(Text->Value());
         }
         Node = Node->NextSibling();
     }
@@ -835,7 +834,7 @@ bool wxsWidget::XmlLoadChild(TiXmlElement* Element)
 
     if ( Name && *Name )
     {
-        wxsWidget* Child = wxsGEN(wxString(Name,wxConvUTF8),GetResource());
+        wxsWidget* Child = wxsGEN(_U(Name),GetResource());
         if ( !Child )
         {
             return false;
@@ -1188,7 +1187,7 @@ bool wxsWidget::XmlGetStringArray(const wxString& ParentName,const wxString& Chi
 			while(Node)
 			{
 			 if(Node->ToText())
-              stringArray.Add(wxString(Node->ToText()->Value(),wxConvUTF8));
+              stringArray.Add(_U(Node->ToText()->Value()));
 
               Node=Node->NextSibling();
             }

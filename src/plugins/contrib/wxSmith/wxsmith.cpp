@@ -249,11 +249,7 @@ void wxSmith::OnProjectActivated(CodeBlocksEvent& event)
 void wxSmith::OnSpreadEvent(wxsEvent& event)
 {
     wxsPropertiesMan::Get()->ProcessEvent(event);
-    for ( ProjectMapI i = ProjectMap.begin(); i != ProjectMap.end(); ++i )
-    {
-    	(*i).second->SendEventToEditors(event);
-    }
-    //wxsPalette::Get()->ProcessEvent(event);
+    wxsWindowEditor::SpreadEvent(event);
 }
 
 void wxSmith::OnSelectRes(wxsEvent& event)
@@ -343,7 +339,7 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
     	     !strcmp(Class,"wxPanel") ||
     	     !strcmp(Class,"wxFrame") )
         {
-        	Resources.Add(wxString(Name,wxConvUTF8));
+        	Resources.Add(_U(Name));
         }
 
         Element = Element->NextSiblingElement("object");
@@ -384,7 +380,7 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
     }     if ( !Element ) return;
 
     // Creating fake resource and testing if xrc can be loaded without any errors
-    wxsWidget* Test = wxsGEN(wxString(Element->Attribute("class"),wxConvUTF8),NULL);
+    wxsWidget* Test = wxsGEN(_U(Element->Attribute("class")),NULL);
     if ( !Test )
     {
     	// Something went wrong - default factory is not working ?

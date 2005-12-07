@@ -47,7 +47,7 @@ bool wxsWindowResDataObject::SetData(const wxDataFormat& format, size_t len, con
     char* CharBuff = new char[len+1];
     memcpy(CharBuff,buf,len);
     CharBuff[len] = '\0';      // Adding padding zero
-    bool Ret = SetXmlData(wxString(CharBuff,wxConvUTF8));
+    bool Ret = SetXmlData(_U(CharBuff));
     delete[] CharBuff;
     return Ret;
 }
@@ -94,7 +94,7 @@ wxsWidget* wxsWindowResDataObject::BuildWidget(wxsWindowRes* Resource,int Index)
 	const char* Class = Root->Attribute("class");
 	if ( !Class || !*Class ) return NULL;
 
-	wxsWidget* Widget = wxsGEN(wxString(Class,wxConvUTF8),Resource);
+	wxsWidget* Widget = wxsGEN(_U(Class),Resource);
 	if ( !Widget ) return NULL;
 
 	Widget->XmlLoad(Root);
@@ -108,7 +108,7 @@ bool wxsWindowResDataObject::SetXmlData(const wxString& Data)
 	XmlDoc.Parse(Data.mb_str());
     if ( XmlDoc.Error() )
     {
-        DebLog(_T("wxSmith: Error loading Xml data -> ") + wxString(XmlDoc.ErrorDesc(),wxConvUTF8));
+        DebLog(_T("wxSmith: Error loading Xml data -> ") + _U(XmlDoc.ErrorDesc()));
     	Clear();
     	return false;
     }
@@ -135,10 +135,10 @@ wxString wxsWindowResDataObject::GetXmlData() const
     #ifdef TIXML_USE_STL
         std::ostringstream buffer;
         buffer << XmlDoc;
-        return wxString(buffer.str().c_str(),wxConvUTF8);
+        return _U(buffer.str().c_str());
     #else
         TiXmlOutStream buffer;
         buffer << XmlDoc;
-        return wxString(buffer.c_str(),wxConvUTF8);
+        return _U(buffer.c_str());
     #endif
 }

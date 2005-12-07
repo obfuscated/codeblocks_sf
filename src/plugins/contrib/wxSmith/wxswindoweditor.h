@@ -97,6 +97,9 @@ class WXSCLASS wxsWindowEditor : public wxsEditor
 
 		/** Reloading images in all editors */
 		static void ReloadImages();
+		
+		/** Sending given event to all editors */
+		static void SpreadEvent(wxEvent& event);
 
     protected:
 

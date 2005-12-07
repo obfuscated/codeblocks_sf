@@ -919,6 +919,14 @@ void wxsWindowEditor::RebuildQuickProps()
     Thaw();
 }
 
+void wxsWindowEditor::SpreadEvent(wxEvent& event)
+{
+    for ( std::set<wxsWindowEditor*>::iterator i = AllEditors.begin(); i != AllEditors.end(); ++i )
+    {
+        (*i)->ProcessEvent(event);
+    }
+}
+
 wxImage wxsWindowEditor::InsIntoImg;
 wxImage wxsWindowEditor::InsBeforeImg;
 wxImage wxsWindowEditor::InsAfterImg;

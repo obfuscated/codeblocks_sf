@@ -1122,6 +1122,16 @@
             <Option link="0" />
             <Option target="wxSmith" />
         </Unit>
+        <Unit filename="wxsextresmanager.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="wxsextresmanager.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
         <Unit filename="wxsglobals.cpp">
             <Option compilerVar="CPP" />
             <Option target="wxSmith" />

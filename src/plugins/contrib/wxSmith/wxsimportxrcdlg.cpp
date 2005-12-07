@@ -2,12 +2,12 @@
 #include "wxsimportxrcdlg.h"
 
 wxsImportXrcDlg::wxsImportXrcDlg(wxWindow* Parent, TiXmlElement* Elem):
-    wxsNewWindowDlg(Parent,wxString(Elem->Attribute("class")+2,wxConvUTF8)),
+    wxsNewWindowDlg(Parent,_U(Elem->Attribute("class")+2)),
     Element(Elem)
 {
-	wxString ResourceName = wxString(Elem->Attribute("name"),wxConvUTF8);
+	wxString ResourceName = _U(Elem->Attribute("name"));
 	Class->SetValue(ResourceName);
-	wxString ResType = wxString(Elem->Attribute("class")+2,wxConvUTF8);
+	wxString ResType = _U(Elem->Attribute("class")+2);
 	SetTitle(wxString::Format(_("Importing %s resource"),ResType.c_str()));
 }
 

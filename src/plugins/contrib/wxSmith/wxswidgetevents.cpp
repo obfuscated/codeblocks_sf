@@ -131,9 +131,9 @@ void wxsWidgetEvents::XmlLoadFunctions(TiXmlElement* Element)
 
     	if ( ! ( HandlerName  = Handler->Attribute(HandlerXmlEntryName) ) ) continue;
     	if ( ! ( FunctionName = Handler->Attribute(HandlerXmlFunctionName) ) ) continue;
-    	if ( ! ( Event = GetEventByEntry(wxString(HandlerName,wxConvUTF8)) ) ) continue;
-    	if ( GetEventByFunction(wxString(FunctionName,wxConvUTF8)) ) continue;
-    	Event->FunctionName = wxString(FunctionName,wxConvUTF8);
+    	if ( ! ( Event = GetEventByEntry(_U(HandlerName)) ) ) continue;
+    	if ( GetEventByFunction(_U(FunctionName)) ) continue;
+    	Event->FunctionName = _U(FunctionName);
     }
 }
 

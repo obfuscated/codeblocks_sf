@@ -22,10 +22,13 @@ void wxsEventsEditor::SetWidget(wxsWidget* _Widget)
 	Events = _Widget->GetEvents();
 	Res = _Widget->GetResource();
 	Proj = Res->GetProject();
-	SourceFile = Proj->GetProjectFileName(Res->GetSourceFile());
-	HeaderFile = Proj->GetProjectFileName(Res->GetHeaderFile());
-	ClassName = Res->GetClassName();
-	BuildPropertyGrid();
+	if ( Proj )
+	{
+        SourceFile = Proj->GetProjectFileName(Res->GetSourceFile());
+        HeaderFile = Proj->GetProjectFileName(Res->GetHeaderFile());
+        ClassName = Res->GetClassName();
+        BuildPropertyGrid();
+	}
 }
 
 wxsEventsEditor::~wxsEventsEditor()

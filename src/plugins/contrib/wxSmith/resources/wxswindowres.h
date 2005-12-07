@@ -37,6 +37,9 @@ class WXSCLASS wxsWindowRes : public wxsResource
             const wxString& Src,
             const wxString& Head,
             const wxString& Xrc );
+            
+        /** Ctor for external files */
+        wxsWindowRes(const wxString& Class,const wxString& FileName);
 
 		/** Dctor */
 		virtual ~wxsWindowRes();
@@ -227,6 +230,10 @@ class WXSCLASS wxsWindowRes : public wxsResource
                         const wxString& Head,                               \
                         const wxString& Xrc ):                              \
             wxsWindowRes(Project,EditMode,ClassS,Wxs,Src,Head,Xrc)          \
+        { Initialize(); }                                                   \
+                                                                            \
+        wxs##Name##Res( const wxString& Class, const wxString& FileName ):  \
+            wxsWindowRes(Class,FileName)                                    \
         { Initialize(); }                                                   \
                                                                             \
         virtual ~wxs##Name##Res()                                           \

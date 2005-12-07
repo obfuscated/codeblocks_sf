@@ -153,7 +153,7 @@ bool wxsListbook::XmlLoadChild(TiXmlElement* Element)
 
     if ( !Name || !*Name ) return false;
 
-    wxsWidget* Child = wxsGEN(wxString(Name,wxConvUTF8),GetResource());
+    wxsWidget* Child = wxsGEN(_U(Name),GetResource());
     if ( !Child ) return false;
 
     if ( !Child->XmlLoad(RealObject) ) Ret = false;

@@ -171,13 +171,13 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
             Elem;
             Elem = Elem->NextSiblingElement(XML_DIALOG_STR) )
     {
-    	wxString Mode = wxString(Elem->Attribute(XML_EDITMODE_STR),wxConvUTF8);
-    	wxString Xrc = ( Mode == _T("Source") ) ? _T("") : wxString ( Elem->Attribute(XML_XRCFILE_STR), wxConvUTF8 );
+    	wxString Mode = _U(Elem->Attribute(XML_EDITMODE_STR));
+    	wxString Xrc = ( Mode == _T("Source") ) ? _T("") : _U( Elem->Attribute(XML_XRCFILE_STR));
         AddDialogResource(
-            wxString ( Elem->Attribute(XML_FNAME_STR), wxConvUTF8 ),
-            wxString ( Elem->Attribute(XML_CNAME_STR), wxConvUTF8 ),
-            wxString ( Elem->Attribute(XML_SFILE_STR), wxConvUTF8 ),
-            wxString ( Elem->Attribute(XML_HFILE_STR), wxConvUTF8 ),
+            _U( Elem->Attribute(XML_FNAME_STR) ),
+            _U( Elem->Attribute(XML_CNAME_STR) ),
+            _U( Elem->Attribute(XML_SFILE_STR) ),
+            _U( Elem->Attribute(XML_HFILE_STR) ),
             Xrc );
     }
 
@@ -187,13 +187,13 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
             Elem;
             Elem = Elem->NextSiblingElement(XML_FRAME_STR) )
     {
-    	wxString Mode = wxString(Elem->Attribute(XML_EDITMODE_STR),wxConvUTF8);
-    	wxString Xrc = ( Mode == _T("Source") ) ? _T("") : wxString ( Elem->Attribute(XML_XRCFILE_STR), wxConvUTF8 );
+    	wxString Mode = _U(Elem->Attribute(XML_EDITMODE_STR));
+    	wxString Xrc = ( Mode == _T("Source") ) ? _T("") : _U( Elem->Attribute(XML_XRCFILE_STR) );
         AddFrameResource(
-            wxString ( Elem->Attribute(XML_FNAME_STR), wxConvUTF8 ),
-            wxString ( Elem->Attribute(XML_CNAME_STR), wxConvUTF8 ),
-            wxString ( Elem->Attribute(XML_SFILE_STR), wxConvUTF8 ),
-            wxString ( Elem->Attribute(XML_HFILE_STR), wxConvUTF8 ),
+            _U( Elem->Attribute(XML_FNAME_STR) ),
+            _U( Elem->Attribute(XML_CNAME_STR) ),
+            _U( Elem->Attribute(XML_SFILE_STR) ),
+            _U( Elem->Attribute(XML_HFILE_STR) ),
             Xrc );
     }
 
@@ -203,13 +203,13 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
             Elem;
             Elem = Elem->NextSiblingElement(XML_PANEL_STR) )
     {
-    	wxString Mode = wxString(Elem->Attribute(XML_EDITMODE_STR),wxConvUTF8);
-    	wxString Xrc = ( Mode == _T("Source") ) ? _T("") : wxString ( Elem->Attribute(XML_XRCFILE_STR), wxConvUTF8 );
+    	wxString Mode = _U(Elem->Attribute(XML_EDITMODE_STR));
+    	wxString Xrc = ( Mode == _T("Source") ) ? _T("") : _U( Elem->Attribute(XML_XRCFILE_STR) );
         AddPanelResource(
-            wxString ( Elem->Attribute(XML_FNAME_STR), wxConvUTF8 ),
-            wxString ( Elem->Attribute(XML_CNAME_STR), wxConvUTF8 ),
-            wxString ( Elem->Attribute(XML_SFILE_STR), wxConvUTF8 ),
-            wxString ( Elem->Attribute(XML_HFILE_STR), wxConvUTF8 ),
+            _U( Elem->Attribute(XML_FNAME_STR) ),
+            _U( Elem->Attribute(XML_CNAME_STR) ),
+            _U( Elem->Attribute(XML_SFILE_STR) ),
+            _U( Elem->Attribute(XML_HFILE_STR) ),
             Xrc );
     }
 
@@ -218,9 +218,9 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
     Elem = MainNode->FirstChildElement(XML_CONFIG_STR);
     if ( Elem )
     {
-        AppFile = wxString ( Elem->Attribute(XML_APPFILE_STR), wxConvUTF8 );
-        MainResource = wxString( Elem->Attribute(XML_MAINRES_STR), wxConvUTF8 );
-        wxString InitAllMode = wxString( Elem->Attribute(XML_INITALL_STR),wxConvUTF8);
+        AppFile = _U( Elem->Attribute(XML_APPFILE_STR) );
+        MainResource = _U( Elem->Attribute(XML_MAINRES_STR) );
+        wxString InitAllMode = _U( Elem->Attribute(XML_INITALL_STR));
         if ( InitAllMode == _T("never") )
         {
             CallInitAll = false;
@@ -247,7 +247,7 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
         TiXmlText* Text = Elem->FirstChild()->ToText();
         if ( Text && Text->Value() )
         {
-            wxString FileName(Text->Value(),wxConvUTF8);
+            wxString FileName(Text->Value());
             if ( FileName.Length() )
             {
                 LoadedResources.Add(FileName);

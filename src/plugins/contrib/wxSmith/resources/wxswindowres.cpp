@@ -7,6 +7,7 @@
 #include "../wxsmith.h"
 #include "../wxswinundobuffer.h"
 #include "../wxspredefinedids.h"
+#include "../wxsextresmanager.h"
 #include <manager.h>
 #include <editormanager.h>
 
@@ -87,6 +88,19 @@ wxsWindowRes::wxsWindowRes(
 {
 }
 
+wxsWindowRes::wxsWindowRes(const wxString& Class,const wxString& FileName):
+    wxsResource(NULL,wxsREMFile),
+    Preview(NULL),
+    ClassName(Class),
+    WxsFile(FileName),
+    SrcFile(_T("")),
+    HFile(_T("")),
+    XrcFile(FileName),
+    RootWidget(NULL),
+    Modified(false)
+{
+}
+    
 void wxsWindowRes::Initialize()
 {
 	Clear();
@@ -230,6 +244,8 @@ const wxString& wxsWindowRes::GetResourceName()
 
 bool wxsWindowRes::GenerateEmptySources()
 {
+    if ( !GetProject() ) return false;
+    
     // Generating file variables
 
     wxString FName = wxFileName(HFile).GetFullName();
@@ -265,7 +281,6 @@ bool wxsWindowRes::GenerateEmptySources()
     Content.Replace(_T("$(Include)"),Include,true);
     Content.Replace(_T("$(ClassName)"),ClassName,true);
     Content.Replace(_T("$(BaseClassName)"),GetWidgetClass(),true);
-//    Content.Replace(_T("$(BaseClassCtor)"),GetConstructor(),true);
     fprintf(Fl,"%s",(const char*)Content.mb_str());
     fclose(Fl);
     return true;
@@ -273,18 +288,11 @@ bool wxsWindowRes::GenerateEmptySources()
 
 void wxsWindowRes::NotifyChange()
 {
-	// Nothing to be done when edit xrc file only
-	if ( GetEditMode() == wxsREMFile ) return;
-
     // Regenerating source code
-
-	assert ( GetProject() != NULL );
 	UpdateWidgetsVarNameId();
-
 	RebuildCode();
 
     // Applying modified state
-
     if ( GetEditor() )
     {
     	// Must process inside editor (updating titile)
@@ -305,6 +313,8 @@ void wxsWindowRes::NotifyChange()
 
 void wxsWindowRes::RebuildCode()
 {
+    if ( !GetProject() ) return;
+    
 //------------------------------
 // Generating initializing code
 //------------------------------
@@ -901,6 +911,8 @@ void wxsWindowRes::BuildHeadersArray(wxsWidget* Widget,wxArrayString& Array)
 
 void wxsWindowRes::UpdateEventTable()
 {
+    if ( !GetProject() ) return;
+    
 	wxString CodeHeader;
 	CodeHeader.Printf(wxsBHeaderF("EventTable"),ClassName.c_str());
 	wxString Code = CodeHeader;
@@ -993,6 +1005,10 @@ void wxsWindowRes::EditorClosed()
 		Load();
 		wxTreeCtrl* Tree = wxsTREE();
 		Tree->SelectItem(GetTreeItemId());
+	}
+	if ( !GetProject() )
+	{
+	    wxsEXTRES()->ResClosed(this);
 	}
 	wxsBlockSelectEvents(false);
 }

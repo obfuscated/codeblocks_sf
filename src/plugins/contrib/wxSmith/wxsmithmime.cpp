@@ -3,6 +3,7 @@
 
 #include "wxsmith.h"
 #include "resources/wxswindowres.h"
+#include "wxsextresmanager.h"
 
 wxSmithMime::wxSmithMime()
 {
@@ -54,6 +55,10 @@ bool wxSmithMime::CanHandleFile(const wxString& FileName) const
                 if ( (*i)->GetWxsFile() == FileName ) return true;
             }
         }
+    }
+    else if ( FN.GetExt().Upper() == _T("XRC") )
+    {
+        return true;
     }
     
     return false;
@@ -107,6 +112,10 @@ int wxSmithMime::OpenFile(const wxString& FileName)
                 }
             }
         }
+    }
+    else if ( FN.GetExt().Upper() == _T("XRC") )
+    {
+        wxsEXTRES()->OpenXrc(FileName);
     }
     
     return 1;
