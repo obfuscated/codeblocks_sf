@@ -369,6 +369,10 @@ Parser* NativeParser::FindParserFromEditor(cbEditor* editor)
     if (!editor)
     	return 0L;
 
+    FileType ft = FileTypeOf(editor->GetFilename());
+    if (ft != ftSource && ft != ftHeader)
+        return 0L;
+
 	ProjectFile* pf = editor->GetProjectFile();
 	if (!pf)
 		return 0L;
