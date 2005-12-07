@@ -83,8 +83,7 @@ wxsWindowRes::wxsWindowRes(
         HFile(Head),
         XrcFile(Xrc),
         RootWidget(NULL),
-        Modified(false),
-        AvoidCreation(false)
+        Modified(false)
 {
 }
 
@@ -101,7 +100,6 @@ wxsWindowRes::~wxsWindowRes()
 
 wxsEditor* wxsWindowRes::CreateEditor()
 {
-	if ( AvoidCreation ) return NULL;
 	RootWidget->BuildTree(wxsTREE(),GetTreeItemId());
     wxsWindowEditor* Edit = new wxsWindowEditor(Manager::Get()->GetEditorManager()->GetNotebook(),this);
     Edit->BuildPreview();
@@ -988,7 +986,7 @@ void wxsWindowRes::SetModified(bool modified)
 
 void wxsWindowRes::EditorClosed()
 {
-	AvoidCreation = true;
+	wxsBlockSelectEvents();
 	GetRootWidget()->KillTree(wxsTREE());
 	if ( GetModified() )
 	{
@@ -996,7 +994,7 @@ void wxsWindowRes::EditorClosed()
 		wxTreeCtrl* Tree = wxsTREE();
 		Tree->SelectItem(GetTreeItemId());
 	}
-	AvoidCreation = false;
+	wxsBlockSelectEvents(false);
 }
 
 void wxsWindowRes::BuildTree(wxTreeCtrl* Tree,wxTreeItemId WhereToAdd,bool NoWidgets)
@@ -1018,7 +1016,7 @@ bool wxsWindowRes::ChangeRootWidget(wxsWidget* NewRoot,bool DeletePrevious)
 	if ( !NewRoot ) return false;
 	// New root must be of the same type as current
 	if ( RootWidget->GetInfo().Name != NewRoot->GetInfo().Name ) return false;
-    AvoidCreation = true;
+    wxsBlockSelectEvents();
 	RootWidget->KillTree(wxsTREE());
 	if ( GetEditor() )
 	{
@@ -1034,7 +1032,7 @@ bool wxsWindowRes::ChangeRootWidget(wxsWidget* NewRoot,bool DeletePrevious)
         ((wxsWindowEditor*)GetEditor())->BuildPreview();
     }
     RebuildCode();
-    AvoidCreation = false;
+    wxsBlockSelectEvents(false);
 	return true;
 }
 

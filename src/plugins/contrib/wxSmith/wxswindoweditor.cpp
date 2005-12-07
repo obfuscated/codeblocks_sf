@@ -94,17 +94,17 @@ wxsWindowEditor::~wxsWindowEditor()
     // First we need to discard all changes,
     // this operation will recreate unmodified code
     // in source files
-    if ( GetModified() )
-    {
-        wxsWidget* NewRoot = UndoBuff->DiscardChanges();
-        if ( NewRoot )
-        {
-            if ( !GetWinRes()->ChangeRootWidget(NewRoot) )
-            {
-                wxsKILL(NewRoot);
-            }
-        }
-    }
+//    if ( GetModified() )
+//    {
+//        wxsWidget* NewRoot = UndoBuff->DiscardChanges();
+//        if ( NewRoot )
+//        {
+//            if ( !GetWinRes()->ChangeRootWidget(NewRoot) )
+//            {
+//                wxsKILL(NewRoot);
+//            }
+//        }
+//    }
 
     // Now doing the rest
 	wxsUnselectRes(GetResource());

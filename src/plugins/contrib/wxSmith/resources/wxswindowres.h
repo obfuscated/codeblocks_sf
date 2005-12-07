@@ -214,8 +214,6 @@ class WXSCLASS wxsWindowRes : public wxsResource
         wxsWidget*    RootWidget;
         bool          Modified;
         wxTreeItemId  TreeId;
-        bool          AvoidCreation;
-
 };
 
 

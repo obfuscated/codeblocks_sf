@@ -48,12 +48,22 @@ extern const wxEventType wxEVT_UNSELECT_WIDGET; // Send when given widget is no 
 #define EVT_SELECT_WIDGET(fn) DECLARE_EVENT_TABLE_ENTRY( wxEVT_SELECT_WIDGET, -1, -1, (wxObjectEventFunction)(wxEventFunction)(wxsEventFunction)&fn, (wxObject *) NULL ),
 #define EVT_UNSELECT_WIDGET(fn) DECLARE_EVENT_TABLE_ENTRY( wxEVT_UNSELECT_WIDGET, -1, -1, (wxObjectEventFunction)(wxEventFunction)(wxsEventFunction)&fn, (wxObject *) NULL ),
 
+/** Sending global widget selection event */
 void wxsSelectWidget(wxsWidget* Widget);
 
+/** Sending globak widget unselection dialog */
 void wxsUnselectWidget(wxsWidget* Widget);
 
+/** Sending global resource selection event */
 void wxsSelectRes(wxsResource* Res);
 
+/** Sending global resource unselection event */
 void wxsUnselectRes(wxsResource* Res);
+
+/** Changing blocking of selection events 
+ *
+ * If selection events are blocked, wxsSelectWidget
+ * and wxsSelectRes do nothing */
+void wxsBlockSelectEvents(bool Block = true);
 
 #endif
