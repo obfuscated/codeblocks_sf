@@ -73,7 +73,7 @@ wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsWindowRes* Resource):
 
     SetSizer(VertSizer);
 
-    SetInsertionTypeMask(0);    // FIXME: Select root widget
+    SetInsertionTypeMask(0); 
 
     DragWnd = new wxsDragWindow(Scroll,NULL,Scroll->GetSize());
     DragWnd->Hide();
@@ -87,24 +87,38 @@ wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsWindowRes* Resource):
     ToggleQuickPropsPanel(false);
 
     AllEditors.insert(this);
+    
+    BuildPreview();
+    
+    wxsSelectWidget(GetWinRes()->GetRootWidget());
 }
 
 wxsWindowEditor::~wxsWindowEditor()
 {
+    // Need to associate Drag window with empty widget
+    // because sometimes it generated events when destroying window
+    // what caused seg faults
+    DragWnd->SetWidget(NULL);
+    
+    // Destroying also Quick Props panel which usually triggers it's
+    // Save() method when being destroyed
+    QPArea->SetSizer(NULL);
+    QPArea->DestroyChildren();
+    
     // First we need to discard all changes,
     // this operation will recreate unmodified code
     // in source files
-//    if ( GetModified() )
-//    {
-//        wxsWidget* NewRoot = UndoBuff->DiscardChanges();
-//        if ( NewRoot )
-//        {
-//            if ( !GetWinRes()->ChangeRootWidget(NewRoot) )
-//            {
-//                wxsKILL(NewRoot);
-//            }
-//        }
-//    }
+    if ( GetModified() )
+    {
+        wxsWidget* NewRoot = UndoBuff->DiscardChanges();
+        if ( NewRoot )
+        {
+            if ( !GetWinRes()->ChangeRootWidget(NewRoot) )
+            {
+                wxsKILL(NewRoot);
+            }
+        }
+    }
 
     // Now doing the rest
 	wxsUnselectRes(GetResource());

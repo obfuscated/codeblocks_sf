@@ -114,14 +114,15 @@ wxsWindowRes::~wxsWindowRes()
 
 wxsEditor* wxsWindowRes::CreateEditor()
 {
+    Load();
 	RootWidget->BuildTree(wxsTREE(),GetTreeItemId());
     wxsWindowEditor* Edit = new wxsWindowEditor(Manager::Get()->GetEditorManager()->GetNotebook(),this);
-    Edit->BuildPreview();
     return Edit;
 }
 
 void wxsWindowRes::Clear()
 {
+    wxsBlockSelectEvents();
 	if ( RootWidget )
 	{
         wxsFACTORY()->Kill(RootWidget);
@@ -133,10 +134,17 @@ void wxsWindowRes::Clear()
     {
     	wxMessageBox(_("Internal error in plugin: wxSmith.\nCode::Blocks may crash !!!\nPlease, save all Your files, close Code::Blocks and reinstall/remove wxSmith plugin"));
     }
+    wxsBlockSelectEvents(false);
 }
 
 bool wxsWindowRes::Load()
 {
+    if ( GetEditor() )
+    {
+        DBGLOG(_("wxSmith ERROR !!! Can not load resource when editor is opened"));
+        return false;
+    }
+    
 	Clear();
 
     TiXmlDocument Doc(WxsFile.mb_str());
@@ -174,13 +182,18 @@ bool wxsWindowRes::Load()
 
     // Clearing modified flag
 
-    SetModified(false);
+    Modified = false;
 
     return true;
 }
 
 void wxsWindowRes::Save()
 {
+    if ( !GetEditor() )
+    {
+        DBGLOG(_("wxSmith ERROR !!! Resource can be saved only when editor is opened"));
+    }
+    
     TiXmlDocument* Doc = GenerateXml();
 
     if ( Doc )
@@ -189,14 +202,7 @@ void wxsWindowRes::Save()
         delete Doc;
     }
 
-    if ( GetEditor() )
-    {
-    	GetEditor()->SetModified(false);
-    }
-    else
-    {
-    	SetModified(false);
-    }
+    GetEditor()->SetModified(false);
 }
 
 TiXmlDocument* wxsWindowRes::GenerateXml()
@@ -979,18 +985,12 @@ TiXmlDocument* wxsWindowRes::GenerateXrc()
 
 void wxsWindowRes::SetModified(bool modified)
 {
-	if ( GetEditor() )
-	{
-		Modified = modified;
-	}
-	else
-	{
-		if ( modified ) Save();
-		Modified = false;
-	}
+    if ( !GetEditor() ) return;
+    
+    Modified = modified;
 
 	// Changing unmodified entry inside undo buffer
-	if ( !modified && GetEditor() )
+	if ( !modified )
 	{
 		((wxsWindowEditor*)GetEditor())->GetUndoBuff()->Saved();
 	}
@@ -1000,16 +1000,12 @@ void wxsWindowRes::EditorClosed()
 {
 	wxsBlockSelectEvents();
 	GetRootWidget()->KillTree(wxsTREE());
-	if ( GetModified() )
-	{
-		Load();
-		wxTreeCtrl* Tree = wxsTREE();
-		Tree->SelectItem(GetTreeItemId());
-	}
+	Clear();
 	if ( !GetProject() )
 	{
 	    wxsEXTRES()->ResClosed(this);
 	}
+	Modified = false;
 	wxsBlockSelectEvents(false);
 }
 
