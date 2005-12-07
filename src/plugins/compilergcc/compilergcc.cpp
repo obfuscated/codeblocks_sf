@@ -141,6 +141,7 @@ BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
 	EVT_COMBOBOX(idToolTarget,						CompilerGCC::OnSelectTarget)
 
 	EVT_PROJECT_ACTIVATE(CompilerGCC::OnProjectActivated)
+	EVT_PROJECT_OPEN(CompilerGCC::OnProjectLoaded)
 	//EVT_PROJECT_POPUP_MENU(CompilerGCC::OnProjectPopupMenu)
 
 	EVT_PIPEDPROCESS_STDOUT(idGCCProcess, CompilerGCC::OnGCCOutput)
@@ -1940,7 +1941,12 @@ void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
 
 void CompilerGCC::OnProjectActivated(CodeBlocksEvent& event)
 {
-    //Manager::Get()->GetMessageManager()->Log(mltDevDebug, "OnProjectActivated()");
+	DoRecreateTargetMenu();
+	event.Skip(); // *very* important! don't forget it...
+}
+
+void CompilerGCC::OnProjectLoaded(CodeBlocksEvent& event)
+{
 	DoRecreateTargetMenu();
 	event.Skip(); // *very* important! don't forget it...
 }

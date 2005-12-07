@@ -94,6 +94,7 @@ class CompilerGCC : public cbCompilerPlugin
 		void SetupEnvironment();
 		void SetEnvironmentForCompilerIndex(int idx, wxString& envPath);
 		void OnProjectActivated(CodeBlocksEvent& event);
+		void OnProjectLoaded(CodeBlocksEvent& event);
 		/*void OnProjectPopupMenu(wxNotifyEvent& event);*/
 		void OnGCCOutput(CodeBlocksEvent& event);
 		void OnGCCError(CodeBlocksEvent& event);
