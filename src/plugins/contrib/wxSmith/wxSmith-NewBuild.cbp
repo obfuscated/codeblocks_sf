@@ -78,6 +78,9 @@
         </ResourceCompiler>
         <Linker>
             <Add option="-i" />
+            <Add option="-Wl,--enable-auto-image-base" />
+            <Add option="-Wl,--export-all-symbols" />
+            <Add option="-Wl,--add-stdcall-alias" />
             <Add directory="propgrid" />
             <Add directory="$(#CB)\devel" />
             <Add directory="$(#CB.lib)" />
