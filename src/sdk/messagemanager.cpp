@@ -232,6 +232,7 @@ void MessageManager::DebugLogWarning(const wxChar* msg, ...)
 void MessageManager::DebugLogError(const wxChar* msg, ...)
 {
     SANITY_CHECK();
+
     wxString tmp;
     va_list arg_list;
 
@@ -240,7 +241,9 @@ void MessageManager::DebugLogError(const wxChar* msg, ...)
     va_end(arg_list);
 
     wxString typ = _("ERROR");
-//    wxSafeShowMessage(typ, typ + _T(":\n\n") + tmp);
+    wxSafeShowMessage(typ, typ + _T(":\n\n") + tmp);
+    if (!m_HasDebugLog)
+        return;
     ((SimpleTextLog*)m_Logs[mltDebug])->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxRED));
     DebugLog(typ + _T(": ") + tmp);
     ((SimpleTextLog*)m_Logs[mltDebug])->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
