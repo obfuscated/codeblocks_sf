@@ -1570,6 +1570,11 @@ int CompilerGCC::CompileFile(const wxString& file)
     }
     else
     {
+        if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
+            CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
+        m_Project->GetCustomVars().ApplyVarsToEnvironment();
+        m_Generator.Init(m_Project);
+
         DirectCommands dc(this, &m_Generator, CompilerFactory::Compilers[bt->GetCompilerIndex()], m_Project, m_PageIndex);
         wxArrayString compile = dc.CompileFile(bt, pf);
         AddToCommandQueue(compile);
