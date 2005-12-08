@@ -155,7 +155,7 @@ bool DoCheckAssociation(const wxString& ext, const wxString& descr, const wxStri
 
 	if(ext.IsSameAs(CODEBLOCKS_EXT) || ext.IsSameAs(WORKSPACE_EXT))
 	{
-	    wxString batchbuildargs = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/batch_build_args"), _T("/na /nd /ns"));
+	    wxString batchbuildargs = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/batch_build_args"), DEFAULT_BATCH_BUILD_ARGS);
 		key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext + _T("\\shell\\Build\\command"));
         if (!key.Open())
             return false;
