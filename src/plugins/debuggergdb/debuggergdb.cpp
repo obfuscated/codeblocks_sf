@@ -91,6 +91,7 @@ int idMenuDetach = XRCID("idDebuggerMenuDetach");
 int idGDBProcess = wxNewId();
 int idTimerPollDebugger = wxNewId();
 int idMenuDebuggerAddWatch = wxNewId();
+int idMenuSettings = wxNewId();
 
 CB_IMPLEMENT_PLUGIN(DebuggerGDB);
 
@@ -121,6 +122,7 @@ BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
     EVT_MENU(idMenuDebuggerAddWatch, DebuggerGDB::OnAddWatch)
     EVT_MENU(idMenuAttachToProcess, DebuggerGDB::OnAttachToProcess)
     EVT_MENU(idMenuDetach, DebuggerGDB::OnDetach)
+    EVT_MENU(idMenuSettings, DebuggerGDB::OnSettings)
 
 	EVT_EDITOR_BREAKPOINT_ADD(DebuggerGDB::OnBreakpointAdd)
 	EVT_EDITOR_BREAKPOINT_EDIT(DebuggerGDB::OnBreakpointEdit)
@@ -164,16 +166,16 @@ DebuggerGDB::DebuggerGDB()
 {
     Manager::Get()->Loadxrc(_T("/debugger_gdb.zip#zip:*.xrc"));
 
-	m_PluginInfo.name = _T("DebuggerGDB");
-	m_PluginInfo.title = _("GDB Debugger");
+	m_PluginInfo.name = _T("Debugger");
+	m_PluginInfo.title = _("Debugger");
 	m_PluginInfo.version = _T("0.1");
-	m_PluginInfo.description = _("Plugin that interfaces the GNU GDB debugger.");
+	m_PluginInfo.description = _("Plugin that interfaces the GNU GDB and MS CDB debuggers.");
     m_PluginInfo.author = _T("Yiannis An. Mandravellos");
     m_PluginInfo.authorEmail = _T("info@codeblocks.org");
     m_PluginInfo.authorWebsite = _T("www.codeblocks.org");
 	m_PluginInfo.thanksTo = _T("");
 	m_PluginInfo.license = LICENSE_GPL;
-	m_PluginInfo.hasConfigure = true;
+	m_PluginInfo.hasConfigure = false; // make C::B *not* add a Settings->Plugins->Debugger menu
 
 	m_TimerPollDebugger.SetOwner(this, idTimerPollDebugger);
 }
@@ -285,6 +287,13 @@ void DebuggerGDB::BuildMenu(wxMenuBar* menuBar)
 			finalPos = projcompMenuPos + 1;
 	}
     menuBar->Insert(finalPos, m_pMenu, _("&Debug"));
+    // Add entry in settings menu (outside "plugins")
+    int settingsMenuPos = menuBar->FindMenu(_("&Settings"));
+    if (settingsMenuPos != wxNOT_FOUND)
+    {
+        wxMenu* settingsmenu = menuBar->GetMenu(settingsMenuPos);
+        settingsmenu->Insert(3,idMenuSettings,_("&Debugger"),_("Debugger options"));
+    }
 }
 
 void DebuggerGDB::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg)
@@ -1447,4 +1456,9 @@ void DebuggerGDB::OnDetach(wxCommandEvent& event)
 {
     m_State.GetDriver()->Detach();
     m_State.GetDriver()->Stop();
+}
+
+void DebuggerGDB::OnSettings(wxCommandEvent& event)
+{
+    Configure();
 }

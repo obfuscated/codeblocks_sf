@@ -104,6 +104,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         void OnAddWatch(wxCommandEvent& event);
         void OnAttachToProcess(wxCommandEvent& event);
         void OnDetach(wxCommandEvent& event);
+        void OnSettings(wxCommandEvent& event);
 
 		wxMenu* m_pMenu;
         SimpleTextLog* m_pLog;

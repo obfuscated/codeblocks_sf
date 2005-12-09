@@ -7,23 +7,28 @@
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
         <object class="wxStaticBoxSizer">
-          <label>Initial GDB commands</label>
+          <label>Debugger intialisation commands</label>
           <orient>wxVERTICAL</orient>
           <object class="sizeritem">
             <object class="wxTextCtrl" name="txtInit">
+              
               
               
               <style>wxTE_MULTILINE</style>
             </object>
             
             
+            
             <option>1</option>
+            
             
             
             <flag>wxALL|wxGROW</flag>
             
             
+            
             <border>8</border>
+            
             
             
             <minsize>240,128</minsize>
@@ -32,14 +37,18 @@
             <object class="wxStaticText">
               
               
-              <label>These commands will be sent to GDB on each session start</label>
+              
+              <label>These commands will be sent to the debugger on each session start</label>
+              
               
               
               <fg>#800000</fg>
             </object>
             
             
+            
             <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+            
             
             
             <border>8</border>
@@ -47,7 +56,9 @@
         </object>
         
         
+        
         <flag>wxALL|wxGROW</flag>
+        
         
         
         <border>8</border>
@@ -61,7 +72,9 @@
             <object class="wxCheckBox" name="chkWatchArgs">
               
               
+              
               <label>Watch function arguments</label>
+              
               
               
               <tooltip>Automatic watches are added for the current function's arguments</tooltip>
@@ -71,7 +84,9 @@
             <object class="wxCheckBox" name="chkWatchLocals">
               
               
+              
               <label>Watch local variables</label>
+              
               
               
               <tooltip>Automatic watches are added for all the local variables of the current function</tooltip>
@@ -81,7 +96,9 @@
             <object class="wxCheckBox" name="chkTooltipEval">
               
               
+              
               <label>Evaluate expression under cursor</label>
+              
               
               
               <tooltip>While debugging, leaving the mouse over a variable (or the selection) evaluates it in a tooltip</tooltip>
@@ -91,7 +108,9 @@
             <object class="wxCheckBox" name="chkDebugLog">
               
               
+              
               <label>Display debugger's  log</label>
+              
               
               
               <tooltip>If enabled, the debugger's raw input/output will be looged in a separate log page</tooltip>
@@ -101,7 +120,9 @@
             <object class="wxCheckBox" name="chkAddForeignDirs">
               
               
+              
               <label>Add other open projects' paths in the search list</label>
+              
               
               
               <tooltip>If enabled, the other open projects' paths will be added in the debugger's search list</tooltip>
@@ -110,10 +131,13 @@
         </object>
         
         
+        
         <option>1</option>
         
         
+        
         <flag>wxALL|wxGROW</flag>
+        
         
         
         <border>8</border>
@@ -122,7 +146,9 @@
         <object class="wxStaticLine"/>
         
         
+        
         <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+        
         
         
         <border>8</border>
@@ -134,7 +160,9 @@
             <object class="wxButton" name="wxID_OK">
               
               
+              
               <label>&amp;OK</label>
+              
               
               
               <default>1</default>
@@ -144,11 +172,14 @@
             <object class="wxButton" name="wxID_CANCEL">
               
               
+              
               <label>&amp;Cancel</label>
             </object>
             
             
+            
             <flag>wxLEFT</flag>
+            
             
             
             <border>8</border>
@@ -156,7 +187,9 @@
         </object>
         
         
+        
         <flag>wxTOP|wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
+        
         
         
         <border>8</border>
