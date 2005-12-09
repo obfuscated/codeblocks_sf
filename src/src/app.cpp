@@ -25,7 +25,6 @@
 
 #include <sdk.h>
 #include "app.h"
-#include "associations.h"
 #include <wx/fs_zip.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/cmdline.h>
@@ -49,6 +48,8 @@
 
 #ifndef __WXMSW__
     #include "prefix.h" // binreloc
+#else
+    #include "associations.h"
 #endif
 
 #include "globals.h"

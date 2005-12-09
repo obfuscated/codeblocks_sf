@@ -8,7 +8,9 @@
 #include <wx/msgdlg.h>
 
 #include "environmentsettingsdlg.h"
-#include "associations.h"
+#ifdef __WXMSW__
+    #include "associations.h"
+#endif
 
 BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxDialog)
     EVT_BUTTON(XRCID("btnSetAssocs"), EnvironmentSettingsDlg::OnSetAssocs)
@@ -76,7 +78,9 @@ EnvironmentSettingsDlg::~EnvironmentSettingsDlg()
 
 void EnvironmentSettingsDlg::OnSetAssocs(wxCommandEvent& event)
 {
+#ifdef __WXMSW__
     Associations::Set();
+#endif
     wxMessageBox(_("Code::Blocks associated with C/C++ files."), _("Information"), wxICON_INFORMATION);
 }
 
@@ -119,7 +123,9 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         if (bbargs != cfg->Read(_T("/batch_build_args"), DEFAULT_BATCH_BUILD_ARGS))
         {
             cfg->Write(_T("/batch_build_args"), bbargs);
+        #ifdef __WXMSW__
             Associations::SetBatchBuildOnly();
+        #endif
         }
 
         // tab "Network"
