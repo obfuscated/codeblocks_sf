@@ -52,6 +52,8 @@ void GDB_driver::Prepare(bool isConsole)
     QueueCommand(new DebuggerCmd(this, _T("set height 0")));
     // allow pending breakpoints
     QueueCommand(new DebuggerCmd(this, _T("set breakpoint pending on")));
+    // show pretty function names in disassembly
+    QueueCommand(new DebuggerCmd(this, _T("set print asm-demangle on")));
 #ifndef __WXMSW__
     QueueCommand(new DebuggerCmd(this, _T("set disassembly-flavor att")));
 #else
@@ -128,11 +130,15 @@ void GDB_driver::Disassemble()
 
 void GDB_driver::AddBreakpoint(DebuggerBreakpoint* bp)
 {
+    if (bp)
+        m_pDBG->Log(wxString::Format(_T("Breakpoint ADD %s:%d"), bp->filename.c_str(), bp->line));
 	QueueCommand(new GdbCmd_AddBreakpoint(this, bp));
 }
 
 void GDB_driver::RemoveBreakpoint(DebuggerBreakpoint* bp)
 {
+    if (bp)
+        m_pDBG->Log(wxString::Format(_T("Breakpoint REMOVE %s:%d"), bp->filename.c_str(), bp->line));
 	QueueCommand(new GdbCmd_RemoveBreakpoint(this, bp));
 }
 

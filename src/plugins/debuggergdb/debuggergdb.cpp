@@ -574,6 +574,7 @@ int DebuggerGDB::Debug()
         msgMan->AppendLog(m_PageIndex,_("ERROR: You need to specify a debugger program in the compiler's settings."));
         #ifdef __WXMSW__
         msgMan->Log(m_PageIndex,_("\n(For MINGW compilers, it's 'gdb.exe' (without the quotes))"));
+        msgMan->Log(m_PageIndex,_("\n(For MSVC compilers, it's 'cdb.exe' (without the quotes))"));
         #else
         msgMan->Log(m_PageIndex,_("\n(For GCC compilers, it's 'gdb' (without the quotes))"));
         #endif
@@ -1040,6 +1041,7 @@ void DebuggerGDB::ParseOutput(const wxString& output)
                 m_HaltAtLine = m_State.GetDriver()->GetStopLine() - 1;
                 BringAppToFront();
                 DoWatches();
+                Log(wxString::Format(_("At %s:%d"), m_State.GetDriver()->GetStopFile().c_str(), m_State.GetDriver()->GetStopLine()));
             }
         }
     }

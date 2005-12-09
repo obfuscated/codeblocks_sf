@@ -57,8 +57,9 @@ int DebuggerState::AddBreakpoint(const wxString& file, int line, bool temp)
 {
     // do we have a bp there?
     int idx = HasBreakpoint(file, line);
+    // if yes, remove old breakpoint first
     if (idx != -1)
-        return idx;
+        RemoveBreakpoint(idx, true);
     // create new bp
     DebuggerBreakpoint* bp = new DebuggerBreakpoint;
     bp->filename = file;
