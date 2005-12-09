@@ -36,6 +36,7 @@
 #include "managerproxy.h"
 #include "uservarmanager.h"
 #include "configmanager.h"
+#include "globals.h"
 
 /*
     standard macros are:
@@ -287,6 +288,8 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo)
                     }
                 }
             }
+
+			QuoteStringIfNeeded(replace);
 
             wxString before = pre + env + post;
 
