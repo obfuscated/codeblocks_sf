@@ -113,6 +113,8 @@ class DebuggerDriver
         virtual bool IsStopped(){ return m_ProgramIsStopped; }
         /** Has the cursor changed? (cursor is the currently executing line of code) */
         virtual bool HasCursorChanged(){ return m_CursorChanged; }
+        /** Get stopped address. */
+        virtual wxString GetStopAddress(){ return m_StopAddress; }
         /** Get stopped file. */
         virtual wxString GetStopFile(){ return m_StopFile; }
         /** Get stopped line. */
@@ -133,6 +135,7 @@ class DebuggerDriver
         BacktraceDlg* m_pBacktrace;
         DisassemblyDlg* m_pDisassembly;
         wxString m_StopFile;
+        wxString m_StopAddress;
         long int m_StopLine;
 
 		// commands

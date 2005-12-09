@@ -112,6 +112,7 @@ void CDB_driver::Continue()
 void CDB_driver::Step()
 {
     QueueCommand(new DebuggerCmd(this, _T("p")));
+    // print a stack frame to find out about the file we 've stopped
     QueueCommand(new DebuggerCmd(this, _T("k n 1")));
 }
 
@@ -136,11 +137,10 @@ void CDB_driver::Backtrace()
 
 void CDB_driver::Disassemble()
 {
-    NOT_IMPLEMENTED();
-//    if (!m_pDisassembly)
-//        return;
-//    QueueCommand(new CdbCmd_Disassembly(this, m_pDisassembly));
-//    m_pDisassembly->Show();
+    if (!m_pDisassembly)
+        return;
+    QueueCommand(new CdbCmd_Disassembly(this, m_pDisassembly));
+    m_pDisassembly->Show();
 }
 
 void CDB_driver::AddBreakpoint(DebuggerBreakpoint* bp)
@@ -250,14 +250,22 @@ void CDB_driver::ParseOutput(const wxString& output)
         else if (lines[i].Contains(_T("ChildEBP")))
         {
 //            wxRegEx ref(_T("([0-9]+) ([A-Fa-f0-9]+) ([A-Fa-f0-9]+) [^[]* \\[([A-Za-z]:)([ A-Za-z0-9_/\\.~-]*) @ ([0-9]+)\\]"));
-            wxRegEx ref(_T("\\[([A-Za-z]:)([ A-Za-z0-9_/\\.~-]*) @ ([0-9]+)\\]"));
+            wxRegEx ref(_T("[ \t]([A-Za-z]+.*)[ \t]+\\[([A-Za-z]:)([ A-Za-z0-9_/\\.~-]*) @ ([0-9]+)\\]"));
             if (ref.Matches(lines[i + 1]))
             {
                 ++i; // we 're interested in the next line
-                m_StopFile = ref.GetMatch(lines[i], 1) + ref.GetMatch(lines[i], 2);
-                ref.GetMatch(lines[i], 3).ToLong(&m_StopLine);
+                m_StopAddress = ref.GetMatch(lines[i], 1);
+                m_StopFile = ref.GetMatch(lines[i], 2) + ref.GetMatch(lines[i], 3);
+                ref.GetMatch(lines[i], 4).ToLong(&m_StopLine);
                 m_CursorChanged = true;
                 m_ProgramIsStopped = true;
+                if (m_pDisassembly && m_pDisassembly->IsShown())
+                {
+                    long int addrL;
+                    m_StopAddress.ToLong(&addrL, 16);
+                    m_pDisassembly->SetActiveAddress(addrL);
+                    QueueCommand(new CdbCmd_InfoRegisters(this, m_pDisassembly));
+                }
             }
         }
 

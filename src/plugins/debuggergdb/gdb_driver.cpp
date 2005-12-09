@@ -130,15 +130,11 @@ void GDB_driver::Disassemble()
 
 void GDB_driver::AddBreakpoint(DebuggerBreakpoint* bp)
 {
-    if (bp)
-        m_pDBG->Log(wxString::Format(_T("Breakpoint ADD %s:%d"), bp->filename.c_str(), bp->line));
 	QueueCommand(new GdbCmd_AddBreakpoint(this, bp));
 }
 
 void GDB_driver::RemoveBreakpoint(DebuggerBreakpoint* bp)
 {
-    if (bp)
-        m_pDBG->Log(wxString::Format(_T("Breakpoint REMOVE %s:%d"), bp->filename.c_str(), bp->line));
 	QueueCommand(new GdbCmd_RemoveBreakpoint(this, bp));
 }
 
