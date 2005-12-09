@@ -253,25 +253,25 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo)
             else if (env.Matches(_T("TARGET_NAME")))
                 replace = m_TargetName;
             else if (env.Matches(_T("TDAY")))
-                replace = wxDateTime::Now().Format("%Y%m%d");
+                replace = wxDateTime::Now().Format(_T("%Y%m%d"));
             else if (env.Matches(_T("TODAY")))
-                replace = wxDateTime::Now().Format("%Y-%m-%d");
+                replace = wxDateTime::Now().Format(_T("%Y-%m-%d"));
             else if (env.Matches(_T("NOW")))
-                replace = wxDateTime::Now().Format("%Y-%m-%d-%H.%M");
+                replace = wxDateTime::Now().Format(_T("%Y-%m-%d-%H.%M"));
             else if (env.Matches(_T("NOW_L")))
-                replace = wxDateTime::Now().Format("%Y-%m-%d-%H.%M.%S");
+                replace = wxDateTime::Now().Format(_T("%Y-%m-%d-%H.%M.%S"));
             else if (env.Matches(_T("WEEKDAY")))
-                replace = wxDateTime::Now().Format("%A");
+                replace = wxDateTime::Now().Format(_T("%A"));
             else if (env.Matches(_T("TDAY_UTC")))
-                replace = wxDateTime::Now().ToGMT().Format("%Y%m%d");
+                replace = wxDateTime::Now().ToGMT().Format(_T("%Y%m%d"));
             else if (env.Matches(_T("TODAY_UTC")))
-                replace = wxDateTime::Now().ToGMT().Format("%Y-%m-%d");
+                replace = wxDateTime::Now().ToGMT().Format(_T("%Y-%m-%d"));
             else if (env.Matches(_T("NOW_UTC")))
-                replace = wxDateTime::Now().ToGMT().Format("%Y-%m-%d-%H.%M");
+                replace = wxDateTime::Now().ToGMT().Format(_T("%Y-%m-%d-%H.%M"));
             else if (env.Matches(_T("NOW_L_UTC")))
-                replace = wxDateTime::Now().ToGMT().Format("%Y-%m-%d-%H.%M.%S");
+                replace = wxDateTime::Now().ToGMT().Format(_T("%Y-%m-%d-%H.%M.%S"));
             else if (env.Matches(_T("WEEKDAY_UTC")))
-                replace = wxDateTime::Now().ToGMT().Format("%A");
+                replace = wxDateTime::Now().ToGMT().Format(_T("%A"));
 			else if (env.Matches(_T("LANGUAGE")))
                 replace = wxLocale::GetLanguageName(wxLocale::GetSystemLanguage());
 			else if (env.Matches(_T("ENCODING")))
