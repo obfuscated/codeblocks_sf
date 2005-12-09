@@ -54,7 +54,9 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent)
     }
 
     // tab "Batch builds"
+#ifdef __WXMSW__
     XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->SetValue(cfg->Read(_T("/batch_build_args"), DEFAULT_BATCH_BUILD_ARGS));
+#endif
 
     // tab "Network"
     XRCCTRL(*this, "txtProxy", wxTextCtrl)->SetValue(cfg->Read(_T("/network_proxy")));
@@ -119,14 +121,14 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         }
 
         // tab "Batch builds"
+#ifdef __WXMSW__
         wxString bbargs = XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->GetValue();
         if (bbargs != cfg->Read(_T("/batch_build_args"), DEFAULT_BATCH_BUILD_ARGS))
         {
             cfg->Write(_T("/batch_build_args"), bbargs);
-        #ifdef __WXMSW__
             Associations::SetBatchBuildOnly();
-        #endif
         }
+#endif
 
         // tab "Network"
         cfg->Write(_T("/network_proxy"),    XRCCTRL(*this, "txtProxy", wxTextCtrl)->GetValue());
