@@ -101,11 +101,11 @@ br_locate (void *symbol)
 	FILE *f;
 	char *path;
 
-	br_return_val_if_fail (symbol != NULL, NULL);
+	br_return_val_if_fail (symbol != NULL, (char*)NULL);
 
 	f = fopen ("/proc/self/maps", "r");
 	if (!f)
-		return NULL;
+		return (char*)NULL;
 
 	while (!feof (f))
 	{
@@ -143,7 +143,7 @@ br_locate (void *symbol)
 	}
 
 	fclose (f);
-	return NULL;
+	return (char*)NULL;
 }
 
 
@@ -165,10 +165,10 @@ br_locate_prefix (void *symbol)
 {
 	char *path, *prefix;
 
-	br_return_val_if_fail (symbol != NULL, NULL);
+	br_return_val_if_fail (symbol != NULL, (char*)NULL);
 
 	path = br_locate (symbol);
-	if (!path) return NULL;
+	if (!path) return (char*)NULL;
 
 	prefix = br_extract_prefix (path);
 	free (path);
@@ -195,11 +195,11 @@ br_prepend_prefix (void *symbol, char *path)
 {
 	char *tmp, *newpath;
 
-	br_return_val_if_fail (symbol != NULL, NULL);
-	br_return_val_if_fail (path != NULL, NULL);
+	br_return_val_if_fail (symbol != NULL, (char*)NULL);
+	br_return_val_if_fail (path != NULL, (char*)NULL);
 
 	tmp = br_locate_prefix (symbol);
-	if (!tmp) return NULL;
+	if (!tmp) return (char*)NULL;
 
 	if (strcmp (tmp, "/") == 0)
 		newpath = strdup (path);
@@ -207,7 +207,7 @@ br_prepend_prefix (void *symbol, char *path)
 		newpath = br_strcat (tmp, path);
 
 	/* Get rid of compiler warning ("br_prepend_prefix never used") */
-	if (0) br_prepend_prefix (NULL, NULL);
+	if (0) br_prepend_prefix (NULL,  (char*)NULL);
 
 	free (tmp);
 	return newpath;
@@ -222,7 +222,7 @@ br_prepend_prefix (void *symbol, char *path)
 #include <pthread.h>
 
 static pthread_key_t br_thread_key;
-static pthread_once_t br_thread_key_once = PTHREAD_ONCE_INIT;
+static pthread_once_t br_thread_key_once = {0, (pthread_mutex_t)NULL};//PTHREAD_ONCE_INIT;
 
 
 static void

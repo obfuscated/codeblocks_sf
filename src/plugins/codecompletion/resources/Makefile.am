@@ -6,7 +6,7 @@ code_completion.zip:
 
 install-exec-local:
 	mkdir -p $(DESTDIR)$(pkgdatadir)/images/codecompletion
-	$(INSTALL_PROGRAM) $(srcdir)/images/*.png $(DESTDIR)$(pkgdatadir)/images/codecompletion/
+	$(INSTALL_DATA) $(srcdir)/images/*.png $(DESTDIR)$(pkgdatadir)/images/codecompletion/
 
 uninstall-local:
 	rm -f $(DESTDIR)$(pkgdatadir)/images/codecompletion/*.png
