@@ -108,6 +108,7 @@
       <object class="separator"/>
       <object class="wxMenuItem" name="idFileExit">
         <label>&amp;Quit</label>
+        <bitmap>images\16x16\exit.png</bitmap>
         <accel>Ctrl-Q</accel>
         <help>Exit Code::Blocks</help>
       </object>
