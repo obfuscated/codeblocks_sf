@@ -57,7 +57,9 @@ libwxsmith_la_SOURCES = ./widget.cpp \
 ./wxsprojectconfigurationdlg.cpp \
 ./wxspredefinedids.cpp \
 ./wxsmithmime.cpp \
-./wxsextresmanager.cpp
+./wxsextresmanager.cpp \
+./wxswizzard.cpp \
+./wxsmithwizzard.cpp
 
 noinst_HEADERS = ./widget.h \
 ./wxscodegen.h \
@@ -95,7 +97,9 @@ noinst_HEADERS = ./widget.h \
 ./wxsprojectconfigurationdlg.h \
 ./wxspredefinedids.h \
 ./wxsmithmime.h \
-./wxsextresmanager.h
+./wxsextresmanager.h \
+./wxswizzard.h \
+./wxsmithwizzard.h
 
 EXTRA_DIST = *.cbp \
 			*.xrc \

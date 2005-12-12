@@ -1210,6 +1210,16 @@
             <Option link="0" />
             <Option target="wxSmith" />
         </Unit>
+        <Unit filename="wxsmithwizzard.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="wxsmithwizzard.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
         <Unit filename="wxsnewwindowdlg.cpp">
             <Option compilerVar="CPP" />
             <Option target="wxSmith" />
@@ -1399,6 +1409,16 @@
             <Option target="wxSmith" />
         </Unit>
         <Unit filename="wxswinundobuffer.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="wxswizzard.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="wxswizzard.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
