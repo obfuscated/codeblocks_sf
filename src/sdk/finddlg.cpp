@@ -41,6 +41,9 @@
 
 #define CONF_GROUP _T("/find_options")
 
+// flag to know when to update the search-in-files custom path
+cbProject* g_LastUsedProject = 0;
+
 BEGIN_EVENT_TABLE(FindDlg, wxDialog)
 	EVT_TEXT(XRCID("cmbFind1"),			FindDlg::OnFindChange)
 	EVT_TEXT(XRCID("cmbFind2"),			FindDlg::OnFindChange)
@@ -89,8 +92,11 @@ FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection, b
 
 	// find in files search path options
     cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-    if (prj)
+    if (prj && g_LastUsedProject != prj)
+    {
         XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->SetValue(prj->GetBasePath());
+        g_LastUsedProject = prj;
+    }
     else
         XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->SetValue(cfg->Read(CONF_GROUP _T("/search_path")));
     XRCCTRL(*this, "txtSearchMask", wxTextCtrl)->SetValue(cfg->Read(CONF_GROUP _T("/search_mask")));

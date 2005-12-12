@@ -1559,7 +1559,10 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
                     (data->recursiveSearch ? wxDIR_DIRS : 0) |
                     (data->hiddenSearch ? wxDIR_HIDDEN : 0);
         wxArrayString masks = GetArrayFromString(data->searchMask);
+        if (!masks.GetCount())
+            masks.Add(_T("*"));
         unsigned int count = masks.GetCount();
+        wxLogNull ln; // no logging
         for (unsigned int i = 0; i < count; ++i)
         {
             // wxDir::GetAllFiles() does *not* clear the array, so it suits us just fine ;)
@@ -1582,7 +1585,9 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
     // let's create a progress dialog because it might take some time depending on the files count
     wxProgressDialog* progress = new wxProgressDialog(_("Find in files"),
                                         _("Please wait while searching inside the files..."),
-                                        filesList.GetCount());
+                                        filesList.GetCount(),
+                                        Manager::Get()->GetAppWindow(),
+                                        wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
 
     // keep a copy of the find struct
     cbFindReplaceData localData = *data;
@@ -1592,7 +1597,8 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
     for (size_t i = 0; i < filesList.GetCount(); ++i)
     {
         // update the progress bar
-        progress->Update(i);
+        if (!progress->Update(i))
+            break; // user pressed "Cancel"
 
         // re-initialize the find struct for every file searched
         *data = localData;
@@ -1624,7 +1630,7 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
             // log it
             line = control->LineFromPosition(control->GetSelectionStart());
             if(line == lastline)  // avoid multiple hits on the same line (try search for "manager")
-			continue;
+                continue;
 
             lastline = line;
             LogSearch(filesList[i], line + 1, control->GetLine(line));
