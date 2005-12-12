@@ -961,6 +961,7 @@ bool ProjectManager::CloseWorkspace()
 
         delete m_pWorkspace;
         m_pWorkspace = 0;
+        m_pTree->SetItemText(m_TreeRoot, _("Workspace"));
     }
     else
         return CloseAllProjects(false);

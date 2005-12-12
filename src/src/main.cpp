@@ -102,6 +102,7 @@ int idFileSaveProject = XRCID("idFileSaveProject");
 int idFileSaveProjectAs = XRCID("idFileSaveProjectAs");
 int idFileSaveWorkspace = XRCID("idFileSaveWorkspace");
 int idFileSaveWorkspaceAs = XRCID("idFileSaveWorkspaceAs");
+int idFileCloseWorkspace = XRCID("idFileCloseWorkspace");
 int idFileClose = XRCID("idFileClose");
 int idFileCloseAll = XRCID("idFileCloseAll");
 int idFilePrintSetup = XRCID("idFilePrintSetup");
@@ -195,6 +196,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idFileSaveAllFiles, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileSaveWorkspace, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileSaveWorkspaceAs, MainFrame::OnFileMenuUpdateUI)
+    EVT_UPDATE_UI(idFileCloseWorkspace, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileClose, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileCloseAll, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFilePrintSetup, MainFrame::OnFileMenuUpdateUI)
@@ -264,6 +266,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idFileSaveProjectAs,  MainFrame::OnProjectSaveProjectAs)
     EVT_MENU(idFileSaveWorkspace,  MainFrame::OnFileSaveWorkspace)
     EVT_MENU(idFileSaveWorkspaceAs,  MainFrame::OnFileSaveWorkspaceAs)
+    EVT_MENU(idFileCloseWorkspace,  MainFrame::OnFileCloseWorkspace)
     EVT_BUTTON(ID_EditorManagerCloseButton,MainFrame::OnFileClose)
     EVT_MENU(idFileClose,  MainFrame::OnFileClose)
     EVT_MENU(idFileCloseAll,  MainFrame::OnFileCloseAll)
@@ -1500,6 +1503,11 @@ void MainFrame::OnFileSaveWorkspaceAs(wxCommandEvent& event)
         AddToRecentProjectsHistory(PRJMAN()->GetWorkspace()->GetFilename());
 }
 
+void MainFrame::OnFileCloseWorkspace(wxCommandEvent& event)
+{
+    PRJMAN()->CloseWorkspace();
+}
+
 void MainFrame::OnFileClose(wxCommandEvent& WXUNUSED(event))
 {
     EDMAN()->CloseActive();
@@ -2113,6 +2121,7 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idFileSaveProjectAs, prj && canCloseProject);
     mbar->Enable(idFileSaveWorkspace, PRJMAN() && canCloseProject);
     mbar->Enable(idFileSaveWorkspaceAs, PRJMAN() && canCloseProject);
+    mbar->Enable(idFileCloseWorkspace, PRJMAN() && canCloseProject);
     mbar->Enable(idFilePrint, EDMAN() && EDMAN()->GetActiveEditor());
 
 	if (m_pToolbar)
