@@ -923,11 +923,14 @@ void cbEditor::ToggleFoldBlockFromLine(int line)
 	DoFoldBlockFromLine(line, 2);
 }
 
-void cbEditor::GotoLine(int line)
+void cbEditor::GotoLine(int line, bool centerOnScreen)
 {
-    int onScreen = m_pControl->LinesOnScreen() >> 1;
-    m_pControl->GotoLine(line - onScreen);
-    m_pControl->GotoLine(line + onScreen);
+    if (centerOnScreen)
+    {
+        int onScreen = m_pControl->LinesOnScreen() >> 1;
+        m_pControl->GotoLine(line - onScreen);
+        m_pControl->GotoLine(line + onScreen);
+    }
     m_pControl->GotoLine(line);
 }
 
@@ -1034,6 +1037,20 @@ void cbEditor::MarkLine(int marker, int line)
 	}
 	else
 		m_pControl->SetCaretLineVisible(Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/highlight_caret_line"), true));
+}
+
+void cbEditor::GotoMatchingBrace()
+{
+    // this works only when the caret is *before* the brace
+    int matchingBrace = m_pControl->BraceMatch(m_pControl->GetCurrentPos());
+
+    // if we haven't found it, we 'll search at pos-1 too
+    if(matchingBrace == wxSCI_INVALID_POSITION)
+        matchingBrace = m_pControl->BraceMatch(m_pControl->GetCurrentPos() - 1);
+
+    // now, we either found it or not
+    if(matchingBrace != wxSCI_INVALID_POSITION)
+        m_pControl->GotoPos(matchingBrace);
 }
 
 void cbEditor::HighlightBraces()

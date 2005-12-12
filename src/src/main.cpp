@@ -163,6 +163,7 @@ int idEditCopy = XRCID("idEditCopy");
 int idEditCut = XRCID("idEditCut");
 int idEditPaste = XRCID("idEditPaste");
 int idEditSwapHeaderSource = XRCID("idEditSwapHeaderSource");
+int idEditGotoMatchingBrace = XRCID("idEditGotoMatchingBrace");
 int idEditBookmarks = XRCID("idEditBookmarks");
 int idEditBookmarksToggle = XRCID("idEditBookmarksToggle");
 int idEditBookmarksPrevious = XRCID("idEditBookmarksPrevious");
@@ -260,6 +261,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idEditCut, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditPaste, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditSwapHeaderSource, MainFrame::OnEditMenuUpdateUI)
+    EVT_UPDATE_UI(idEditGotoMatchingBrace, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditFoldAll, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditUnfoldAll, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditToggleAllFolds, MainFrame::OnEditMenuUpdateUI)
@@ -327,6 +329,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idEditCut,  MainFrame::OnEditCut)
     EVT_MENU(idEditPaste,  MainFrame::OnEditPaste)
     EVT_MENU(idEditSwapHeaderSource,  MainFrame::OnEditSwapHeaderSource)
+    EVT_MENU(idEditGotoMatchingBrace,  MainFrame::OnEditGotoMatchingBrace)
     EVT_MENU(idEditFoldAll,  MainFrame::OnEditFoldAll)
     EVT_MENU(idEditUnfoldAll,  MainFrame::OnEditUnfoldAll)
     EVT_MENU(idEditToggleAllFolds,  MainFrame::OnEditToggleAllFolds)
@@ -1758,6 +1761,13 @@ void MainFrame::OnEditSwapHeaderSource(wxCommandEvent& event)
     DoUpdateStatusBar();
 }
 
+void MainFrame::OnEditGotoMatchingBrace(wxCommandEvent& event)
+{
+    cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
+    if (ed)
+		ed->GotoMatchingBrace();
+}
+
 void MainFrame::OnEditBookmarksToggle(wxCommandEvent& event)
 {
     cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
@@ -2305,6 +2315,7 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idEditCopy, ed && hasSel);
     mbar->Enable(idEditPaste, ed && canPaste);
     mbar->Enable(idEditSwapHeaderSource, ed);
+    mbar->Enable(idEditGotoMatchingBrace, ed);
     mbar->Enable(idEditFoldAll, ed);
     mbar->Enable(idEditUnfoldAll, ed);
     mbar->Enable(idEditToggleAllFolds, ed);

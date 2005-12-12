@@ -59,7 +59,7 @@ class DLLIMPORT EditorBase : public wxPanel
         virtual bool VisibleToTree() { return true; }
 
         /** Move the caret at the specified line. */
-        virtual void GotoLine(int line){}
+        virtual void GotoLine(int line, bool centerOnScreen = true){}
 
         /** Toggle breakpoint at specified line. If @c line is -1, use current line. */
         virtual void ToggleBreakpoint(int line = -1, bool notifyDebugger = true){}

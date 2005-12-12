@@ -115,6 +115,8 @@ class DLLIMPORT cbEditor : public EditorBase
 		void SetColorSet(EditorColorSet* theme);
 		/** Get the color set in use. */
 		EditorColorSet* GetColorSet(){ return m_pTheme; }
+		/** Jumps to the matching brace (if there is one). */
+		void GotoMatchingBrace();
 		/** Highlights the brace pair (one of the braces must be under the cursor) */
 		void HighlightBraces();
         /** Returns the specified line's (0-based) indentation (whitespace) in spaces. If line is -1, it uses the current line */
@@ -145,8 +147,9 @@ class DLLIMPORT cbEditor : public EditorBase
           * dialog.
           */
 		void AutoComplete();
-        /** Move the caret at the specified line. */
-        void GotoLine(int line);
+        /** Move the caret at the specified line.
+          * @param centerOnScreen If true (default), tries to bring the specified line to the center of the editor.*/
+        void GotoLine(int line, bool centerOnScreen = true);
         /** Toggle breakpoint at specified line. If @c line is -1, use current line. */
         void ToggleBreakpoint(int line = -1, bool notifyDebugger = true);
         /** Does @c line has breakpoint? */
