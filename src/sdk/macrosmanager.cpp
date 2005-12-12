@@ -37,6 +37,7 @@
 #include "uservarmanager.h"
 #include "configmanager.h"
 #include "globals.h"
+#include "customvars.h"
 
 /*
     standard macros are:
@@ -107,7 +108,7 @@ void MacrosManager::ReleaseMenu(wxMenuBar* menuBar)
 
 wxString MacrosManager::ReplaceMacros(const wxString& buffer, bool envVarsToo)
 {
-    SANITY_CHECK(_T(""));
+    SANITY_CHECK(wxEmptyString);
 	wxString tmp = buffer;
 	ReplaceMacros(tmp, envVarsToo);
 	return tmp;
@@ -144,9 +145,12 @@ void MacrosManager::ClearProjectKeys()
 void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuildTarget* target)
 {
 	SANITY_CHECK();
+
+	VarsArray vars = project->GetCustomVars().GetVars();
+
 	if(!editor)
 	{
-        m_ActiveEditorFilename = _T("");
+        m_ActiveEditorFilename = wxEmptyString;
         m_lastEditor = NULL;
 	}
     else if(editor != m_lastEditor)
@@ -156,20 +160,20 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
     }
 	if(!project)
 	{
-		m_ProjectFilename = _T("");
-		m_ProjectName = _T("");
-		m_ProjectDir = _T("");
-		m_ProjectFiles = _T("");
-		m_Makefile = _T("");
+		m_ProjectFilename = wxEmptyString;
+		m_ProjectName = wxEmptyString;
+		m_ProjectDir = wxEmptyString;
+		m_ProjectFiles = wxEmptyString;
+		m_Makefile = wxEmptyString;
 		m_lastProject = NULL;
         ClearProjectKeys();
-        m_ProjectKeys.Add(_T("PROJECT_FILE*"));m_ProjectValues.Add(_T(""));
-        m_ProjectKeys.Add(_T("PROJECTFILE*"));m_ProjectValues.Add(_T(""));
-        m_ProjectKeys.Add(_T("PROJECT_NAME"));m_ProjectValues.Add(_T(""));
-        m_ProjectKeys.Add(_T("PROJECT_DIR*"));m_ProjectValues.Add(_T(""));
-        m_ProjectKeys.Add(_T("PROJECTDIR*"));m_ProjectValues.Add(_T(""));
-        m_ProjectKeys.Add(_T("MAKEFILE"));m_ProjectValues.Add(_T(""));
-        m_ProjectKeys.Add(_T("ALL_PROJECT_FILES"));m_ProjectValues.Add(_T(""));
+        m_ProjectKeys.Add(_T("PROJECT_FILE*"));m_ProjectValues.Add(wxEmptyString);
+        m_ProjectKeys.Add(_T("PROJECTFILE*"));m_ProjectValues.Add(wxEmptyString);
+        m_ProjectKeys.Add(_T("PROJECT_NAME"));m_ProjectValues.Add(wxEmptyString);
+        m_ProjectKeys.Add(_T("PROJECT_DIR*"));m_ProjectValues.Add(wxEmptyString);
+        m_ProjectKeys.Add(_T("PROJECTDIR*"));m_ProjectValues.Add(wxEmptyString);
+        m_ProjectKeys.Add(_T("MAKEFILE"));m_ProjectValues.Add(wxEmptyString);
+        m_ProjectKeys.Add(_T("ALL_PROJECT_FILES"));m_ProjectValues.Add(wxEmptyString);
 	}
 	else if(project != m_lastProject)
 	{
@@ -179,7 +183,7 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
 	    m_ProjectName = project->GetTitle();
 	    m_ProjectDir = UnixFilename(project->GetBasePath());
 	    m_Makefile = UnixFilename(project->GetMakefile());
-	    m_ProjectFiles = _T("");
+	    m_ProjectFiles = wxEmptyString;
         for (int i = 0; i < project->GetFilesCount(); ++i)
             m_ProjectFiles << UnixFilename(project->GetFile(i)->relativeFilename) << _T(" ");
         ClearProjectKeys();
@@ -190,6 +194,13 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
         m_ProjectKeys.Add(_T("PROJECTDIR*"));m_ProjectValues.Add(m_ProjectDir);
         m_ProjectKeys.Add(_T("MAKEFILE"));m_ProjectValues.Add(m_Makefile);
         m_ProjectKeys.Add(_T("ALL_PROJECT_FILES"));m_ProjectValues.Add(m_ProjectFiles);
+
+	if(project)
+		for(size_t i = 0; i < vars.GetCount(); ++i)
+			{
+				m_ProjectKeys.Add( vars[i].name );
+				m_ProjectValues.Add( vars[i].value );
+			}
 
         for (int i = 0; i < project->GetBuildTargetsCount(); ++i)
         {
@@ -207,8 +218,8 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
 
 	if(!target)
 	{
-	    m_TargetOutputDir = _T("");
-	    m_TargetName = _T("");
+	    m_TargetOutputDir = wxEmptyString;
+	    m_TargetName = wxEmptyString;
 	    m_lastTarget = NULL;
 	}
 	else if(target != m_lastTarget)
