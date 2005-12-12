@@ -3,6 +3,7 @@
 #include "manager.h"
 #include "editormanager.h"
 #include "cbeditor.h"
+#include <wx/filename.h>
 
 BEGIN_EVENT_TABLE(SearchResultsLog, SimpleListLog)
 //
@@ -38,7 +39,13 @@ void SearchResultsLog::FocusEntry(size_t index)
 
 void SearchResultsLog::SyncEditor(int selIndex)
 {
-    wxString file = m_pList->GetItemText(selIndex);
+    wxFileName filename(m_pList->GetItemText(selIndex));
+    wxString file;
+    if (!filename.IsAbsolute())
+        file = m_Base + wxFILE_SEP_PATH + filename.GetFullPath();
+    else
+        file = filename.GetFullPath();
+
     wxListItem li;
     li.m_itemId = selIndex;
     li.m_col = 1;

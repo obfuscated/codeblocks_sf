@@ -9,10 +9,13 @@ class SearchResultsLog : public SimpleListLog
 		SearchResultsLog(wxNotebook* parent, const wxString& title, int numCols, int widths[], const wxArrayString& titles);
 		virtual ~SearchResultsLog();
 		void FocusEntry(size_t index);
+		void SetBasePath(const wxString base){ m_Base = base; }
 	protected:
         void OnClick(wxCommandEvent& event);
         void OnDoubleClick(wxCommandEvent& event);
         void SyncEditor(int selIndex);
+
+        wxString m_Base;
 	private:
         DECLARE_EVENT_TABLE()
 };

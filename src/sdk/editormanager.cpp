@@ -1612,16 +1612,21 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
 
         // now search for first occurence
         if (Find(control, data) == -1)
-            {
+        {
         	  lastline = -1;
             continue;
-            }
+        }
 
         int line = control->LineFromPosition(control->GetSelectionStart());
         lastline = line;
 
+        // make the filename relative
+        wxString filename = filesList[i];
+        if (filename.StartsWith(data->searchPath))
+            filename.Remove(0, data->searchPath.Length());
+
         // log it
-        LogSearch(filesList[i], line + 1, control->GetLine(line));
+        LogSearch(filename, line + 1, control->GetLine(line));
         ++count;
 
         // now loop finding the next occurence
@@ -1633,7 +1638,7 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
                 continue;
 
             lastline = line;
-            LogSearch(filesList[i], line + 1, control->GetLine(line));
+            LogSearch(filename, line + 1, control->GetLine(line));
             ++count;
         }
     }
@@ -1642,9 +1647,10 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
 
     if (count > 0)
     {
+        static_cast<SearchResultsLog*>(m_pSearchLog)->SetBasePath(data->searchPath);
         Manager::Get()->GetMessageManager()->SwitchTo(m_SearchLogIndex);
         Manager::Get()->GetMessageManager()->Open();
-        reinterpret_cast<SearchResultsLog*>(m_pSearchLog)->FocusEntry(0);
+        static_cast<SearchResultsLog*>(m_pSearchLog)->FocusEntry(0);
     }
     else
     {
