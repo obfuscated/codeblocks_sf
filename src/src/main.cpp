@@ -66,52 +66,6 @@
 
 #include "../sdk/uservarmanager.h"
 
-#if wxUSE_KEYBINDER
-// ----------------------------------------------------------------------------
-// keybindings dialog: a super-simple wrapper for wxKeyConfigPanel
-// ----------------------------------------------------------------------------
-class KeyBinderDialog : public wxDialog
-{
-    public:
-        wxKeyConfigPanel *m_p;
-        KeyBinderDialog(wxKeyProfileArray &prof, wxWindow *parent, const wxString &title, int mode) :
-            wxDialog(parent, -1, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
-        {
-            // we can do our task in two ways:
-            // 1) we can use wxKeyConfigPanel::ImportMenuBarCmd which gives
-            //    better appearances (for me, at least, :-))
-            // 2) we can use wxKeyConfigPanel::ImportKeyBinderCmd
-
-            // STEP #1: create a simple wxKeyConfigPanel
-            m_p = new wxKeyConfigPanel(this, mode);
-
-            // STEP #2: add a profile array to the wxKeyConfigPanel
-            m_p->AddProfiles(prof);
-
-            // STEP #3: populate the wxTreeCtrl widget of the panel
-            m_p->ImportMenuBarCmd(((wxFrame*)parent)->GetMenuBar());
-
-            // and embed it in a little sizer
-            wxBoxSizer *main = new wxBoxSizer(wxVERTICAL);
-            main->Add(m_p, 1, wxGROW);
-            SetSizer(main);
-            main->SetSizeHints(this);
-
-            // this is a little modification to make dlg look nicer
-            wxSize sz(GetSizer()->GetMinSize());
-            SetSize(-1, -1, (int)(sz.GetWidth()*1.3), (int)(sz.GetHeight()*1.1));
-            CenterOnScreen();
-        }
-        KeyBinderDialog::~KeyBinderDialog(){}
-        void KeyBinderDialog::OnApply(wxCommandEvent &){ EndModal(wxID_OK); }
-    private:
-        DECLARE_EVENT_TABLE()
-};
-BEGIN_EVENT_TABLE(KeyBinderDialog, wxDialog)
-	EVT_BUTTON(wxID_APPLY, KeyBinderDialog::OnApply)
-END_EVENT_TABLE()
-#endif
-
 class wxMyFileDropTarget : public wxFileDropTarget
 {
 public:
@@ -217,9 +171,6 @@ int idProjectImportMSVS = XRCID("idProjectImportMSVS");
 int idProjectImportMSVSWksp = XRCID("idProjectImportMSVSWksp");
 
 int idSettingsEnvironment = XRCID("idSettingsEnvironment");
-#if wxUSE_KEYBINDER
-int idSettingsKeyBindings = XRCID("idSettingsKeyBindings");
-#endif
 int idSettingsGlobalUserVars = XRCID("idSettingsGlobalUserVars");
 int idSettingsEditor = XRCID("idSettingsEditor");
 int idPluginsManagePlugins = XRCID("idPluginsManagePlugins");
@@ -379,9 +330,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idProjectImportMSVSWksp,  MainFrame::OnProjectImportMSVSWksp)
 
 	EVT_MENU(idSettingsEnvironment, MainFrame::OnSettingsEnvironment)
-#if wxUSE_KEYBINDER
-	EVT_MENU(idSettingsKeyBindings, MainFrame::OnSettingsKeyBindings)
-#endif
 	EVT_MENU(idSettingsGlobalUserVars, MainFrame::OnGlobalUserVars)
 	EVT_MENU(idSettingsEditor, MainFrame::OnSettingsEditor)
     EVT_MENU(idPluginsManagePlugins, MainFrame::OnSettingsPlugins)
@@ -480,10 +428,6 @@ MainFrame::MainFrame(wxLocale& lang, wxWindow* parent)
     ScanForPlugins();
     LoadWindowState();
 
-#if wxUSE_KEYBINDER
-    m_KeyProfiles = new wxKeyProfileArray;
-    LoadKeyBindings();
-#endif
     ShowHideStartPage();
     InitPrinting();
 }
@@ -498,37 +442,6 @@ MainFrame::~MainFrame()
     DeInitPrinting();
 	//Manager::Get()->Free();
 }
-
-#if wxUSE_KEYBINDER
-void MainFrame::InitKeyBinder()
-{
-	// init the keybinder
-	wxKeyProfile *pPrimary = new wxKeyProfile(wxT("Default"), wxT("Code::Blocks default keyprofile"));
-	pPrimary->ImportMenuBarCmd(GetMenuBar());
-
-	m_KeyProfiles->Add(pPrimary);
-
-	// by now, attach to this window the primary keybinder
-	m_KeyProfiles->SetSelProfile(0);
-	UpdateKeyBinder(m_KeyProfiles);
-}
-
-void MainFrame::UpdateKeyBinder(wxKeyProfileArray* r)
-{
-	// detach all
-	r->DetachAll();
-
-	// enable & attach to this window only one
-	r->GetSelProfile()->Enable(true);
-
-	// VERY IMPORTANT: we should not use this function when we
-	//                 have temporary children... they would
-	//                 added to the binder and when they will be
-	//                 deleted, the binder will reference invalid memory...
-	r->GetSelProfile()->AttachRecursively(this);
-	//r.UpdateAllCmd();		// not necessary
-}
-#endif // wxUSE_KEYBINDER
 
 void MainFrame::ShowTips(bool forceShow)
 {
@@ -939,68 +852,6 @@ void MainFrame::SaveWindowState()
     }
 
 }
-
-#if wxUSE_KEYBINDER
-void MainFrame::LoadKeyBindings()
-{
-    wxFileConfig cfg(wxEmptyString, // appname
-                    wxEmptyString, // vendor
-                    ConfigManager::GetConfigFolder() + _T("/keys.conf"), // local file
-                    wxEmptyString, // global file
-                    wxCONFIG_USE_LOCAL_FILE);
-	// before loading we must register in wxCmd arrays the various types
-	// of commands we want wxCmd::Load to be able to recognize...
-	wxMenuCmd::Register(GetMenuBar());
-	// clear our old array
-	m_KeyProfiles->Cleanup();
-
-	if (cfg.HasGroup(_T("/keybindings")) && m_KeyProfiles->Load(&cfg, _T("/keybindings")))
-	{
-
-		// get the cmd count
-		int total = 0;
-		for (int i=0; i<m_KeyProfiles->GetCount(); i++)
-			total += m_KeyProfiles->Item(i)->GetCmdCount();
-
-		if (total == 0)
-		{
-            m_pMsgMan->Log(wxT("No keyprofiles have been found.\nA default keyprofile will be set.\n"));
-			wxKeyProfile *p = new wxKeyProfile(wxT("Default"));
-			p->ImportMenuBarCmd(GetMenuBar());
-			m_KeyProfiles->Add(p);
-		}
-		else
-		{
-			wxString msg = wxString::Format(
-					wxT("%d key binding profiles have been loaded ")
-					wxT("(%d commands in total).\n")
-					wxT("Profile '%s' applied."),
-					m_KeyProfiles->GetCount(), total,
-					m_KeyProfiles->GetSelProfile()->GetName().c_str());
-            m_pMsgMan->Log(msg);
-		}
-
-		// reattach this frame to the loaded keybinder
-		UpdateKeyBinder(m_KeyProfiles);
-	}
-	else
-	{
-	    // load defaults
-        InitKeyBinder();
-		m_pMsgMan->Log(_T("Using default key bindings"));
-	}
-}
-
-void MainFrame::SaveKeyBindings()
-{
-    wxFileConfig cfg(wxEmptyString, // appname
-                    wxEmptyString, // vendor
-                    ConfigManager::GetConfigFolder() + _T("/keys.conf"), // local file
-                    wxEmptyString, // global file
-                    wxCONFIG_USE_LOCAL_FILE);
-	m_KeyProfiles->Save(&cfg, _T("/keybindings"), true);
-}
-#endif // wxUSE_KEYBINDER
 
 void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
 {
@@ -1731,10 +1582,6 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
         event.Veto();
         return;
     }
-
-#if wxUSE_KEYBINDER
-	delete m_KeyProfiles;
-#endif
 
     SaveWindowState();
     TerminateRecentFilesHistory();
@@ -2601,71 +2448,6 @@ void MainFrame::OnSettingsPlugins(wxCommandEvent& event)
 	}
     m_ReconfiguringPlugins = false;
 }
-
-#if wxUSE_KEYBINDER
-void MainFrame::OnSettingsKeyBindings(wxCommandEvent& event)
-{
-    // because wxKeyBinder *must* not bind "temporary" windows
-    // i.e. windows that will be destroyed before the application ends,
-    // we have to make sure there are no such windows open.
-    if (Manager::Get()->GetEditorManager()->GetEditorsCount())
-    {
-        if (wxMessageBox(_("Before editing the keyboard shortcuts, all open editor windows "
-                            "must be closed (and saved if needed).\n\n"
-                            "Are you sure you want to close all editor windows?"),
-                        _("Confirmation"),
-                        wxICON_QUESTION | wxYES_NO) == wxNO)
-        {
-            return;
-        }
-        if (!Manager::Get()->GetEditorManager()->CloseAll())
-        {
-            wxMessageBox(_("Failed to close all windows. Aborting keyboard configuration..."), _("Warning"), wxICON_WARNING);
-            return;
-        }
-    }
-
-	bool btree = true;
-	bool baddprofile = true;
-	bool bprofiles = true;
-	bool bprofileedit = true;
-
-	// setup build flags
-	int mode = btree ? wxKEYBINDER_USE_TREECTRL : wxKEYBINDER_USE_LISTBOX;
-	if (baddprofile) mode |= wxKEYBINDER_SHOW_ADDREMOVE_PROFILE;
-	if (bprofileedit) mode |= wxKEYBINDER_ENABLE_PROFILE_EDITING;
-
-	int exitcode;
-	{	// we need to destroy MyDialog *before* the call to UpdateArr:()
-		// otherwise the call to wxKeyBinder::AttachRecursively() which
-		// is done inside UpdateArr() would attach to the binder all
-		// MyDialog subwindows which are children of the main frame.
-		// then, when the dialog is destroyed, wxKeyBinder holds
-		// invalid pointers which will provoke a crash !!
-
-		KeyBinderDialog dlg(*m_KeyProfiles, this, wxT("Edit key bindings"), mode | wxKEYBINDER_SHOW_APPLYBUTTON);
-
-		// does the user wants to enable key profiles ?
-		dlg.m_p->EnableKeyProfiles(bprofiles);
-
-		if ((exitcode=dlg.ShowModal()) == wxID_OK)
-		{
-
-			// update our array (we gave a copy of it to MyDialog)
-			*m_KeyProfiles = dlg.m_p->GetProfiles();
-		}
-	}
-
-	if (exitcode == wxID_OK)
-	{
-		// select the right keyprofile
-		UpdateKeyBinder(m_KeyProfiles);
-		SaveKeyBindings();
-		int sel = m_KeyProfiles->GetSelProfileIdx();
-		m_pMsgMan->Log(_T("Profile '%s' selected"), m_KeyProfiles->Item(sel)->GetName().c_str());
-	}
-}
-#endif
 
 void MainFrame::OnLayoutChanged(wxEvent& event)
 {

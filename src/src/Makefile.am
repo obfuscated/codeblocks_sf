@@ -1,10 +1,9 @@
-SUBDIRS = wxDockit wxKeyBinder resources
+SUBDIRS = wxDockit resources
 
 INCLUDES = $(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include \
 			-I$(top_srcdir)/src/sdk \
-			-I$(top_srcdir)/src/src/wxDockit/include \
-			-I$(top_srcdir)/src/src/wxKeyBinder/include
+			-I$(top_srcdir)/src/src/wxDockit/include
 
 if CODEBLOCKS_LINUX
 AM_CPPFLAGS = -DENABLE_BINRELOC -DAPP_PREFIX="\"@prefix@\""
@@ -16,7 +15,6 @@ codeblocks_LDFLAGS =
 
 codeblocks_LDADD =  $(WX_LIBS) \
 			-LwxDockit -lwxdockit \
-			-LwxKeyBinder -lwxkeybinder \
 			-L../sdk -lcodeblocks \
 			$(WX_XRC)
 

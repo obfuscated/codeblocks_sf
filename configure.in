@@ -112,7 +112,6 @@ AC_CONFIG_FILES([Makefile
 	src/sdk/resources/Makefile
 	src/sdk/resources/lexers/Makefile
 	src/src/wxDockit/Makefile
-	src/src/wxKeyBinder/Makefile
 	src/src/resources/Makefile
 	src/src/resources/icons/Makefile
 	src/src/resources/images/Makefile
@@ -142,6 +141,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/codestat/Makefile
 	src/plugins/contrib/codestat/resources/Makefile
 	src/plugins/contrib/help_plugin/Makefile
+	src/plugins/contrib/keybinder/Makefile
 	src/plugins/contrib/profiler/Makefile
 	src/plugins/contrib/profiler/resources/Makefile
 	src/plugins/contrib/source_exporter/Makefile

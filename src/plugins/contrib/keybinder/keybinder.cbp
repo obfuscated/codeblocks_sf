@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+    <FileVersion major="1" minor="2" />
+    <Project>
+        <Option title="C::B KeyBinder" />
+        <Option pch_mode="0" />
+        <Option compiler="0" />
+        <Build>
+            <Target title="default">
+                <Option output="..\..\..\devel\share\CodeBlocks\plugins\keybinder.dll" />
+                <Option type="3" />
+                <Option compiler="0" />
+                <Option host_application="..\..\..\devel\codeblocks.exe" />
+                <Option includeInTargetAll="1" />
+                <Compiler>
+                    <Add option="-Winvalid-pch" />
+                    <Add option="-pipe" />
+                    <Add option="-mthreads" />
+                    <Add option="-fmessage-length=0" />
+                    <Add option="-fexceptions" />
+                    <Add option='-include &quot;sdk.h&quot;' />
+                    <Add option="-DBUILDING_PLUGIN" />
+                    <Add option="-DCB_PRECOMP" />
+                    <Add option="-DWX_PRECOMP" />
+                    <Add option="-DHAVE_W32API_H" />
+                    <Add option="-D__WXMSW__" />
+                    <Add option="-DWXUSINGDLL" />
+                    <Add option="-DcbDEBUG" />
+                    <Add option="-DTIXML_USE_STL" />
+                </Compiler>
+            </Target>
+            <Environment>
+                <Variable name="WX_VER" value="26" />
+                <Variable name="WX_CFG" value="NonUnicode" />
+            </Environment>
+        </Build>
+        <Compiler>
+            <Add option="-Wall" />
+            <Add option="-g" />
+            <Add directory="$(#CB)\sdk" />
+            <Add directory="$(#CB)\sdk\wxscintilla\include" />
+            <Add directory="$(#WX.include)" />
+            <Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw" />
+            <Add directory="$(#WX)\contrib\include" />
+        </Compiler>
+        <Linker>
+            <Add library="wxmsw$(WX_VER)" />
+            <Add library="codeblocks" />
+            <Add directory="$(#CB)\devel" />
+            <Add directory="$(#CB.lib)" />
+            <Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
+        </Linker>
+        <Unit filename="cbkeybinder.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="default" />
+        </Unit>
+        <Unit filename="cbkeybinder.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="default" />
+        </Unit>
+        <Unit filename="debugging.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="default" />
+        </Unit>
+        <Unit filename="keybinder.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="default" />
+        </Unit>
+        <Unit filename="keybinder.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="default" />
+        </Unit>
+        <Unit filename="keybinderdef.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="default" />
+        </Unit>
+        <Unit filename="menuutils.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="default" />
+        </Unit>
+        <Unit filename="menuutils.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="default" />
+        </Unit>
+    </Project>
+</CodeBlocks_project_file>

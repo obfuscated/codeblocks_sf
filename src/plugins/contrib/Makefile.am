@@ -1,2 +1,2 @@
-SUBDIRS = codestat help_plugin profiler source_exporter wxSmith
+SUBDIRS = codestat help_plugin keybinder profiler source_exporter wxSmith
 
