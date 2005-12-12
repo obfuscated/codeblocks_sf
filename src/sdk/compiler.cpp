@@ -212,7 +212,7 @@ void Compiler::LoadSettings(const wxString& baseKey)
     while (true)
     {
         group.Printf(_T("%s/regex/re%3.3d"), tmp.c_str(), index++);
-        if (!cfg->Exists(group))
+        if (!cfg->Exists(group+_T("/description")))
             break;
         else if (!cleared)
         {
