@@ -67,6 +67,7 @@ static const wxCmdLineEntryDesc cmdLineDesc[] =
     { wxCMD_LINE_SWITCH, _T(""), _T("clear-configuration"), _T("completely clear program's configuration"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_OPTION, _T(""), _T("prefix"),  _T("the shared data dir prefix"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
     { wxCMD_LINE_OPTION, _T("p"), _T("personality"),  _T("the personality to use: \"ask\" or <personality-name>"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
+    { wxCMD_LINE_OPTION, _T(""), _T("profile"),  _T("synonym to personality"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
     { wxCMD_LINE_SWITCH, _T(""), _T("rebuild"), _T("clean and then build the project/workspace"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_SWITCH, _T(""), _T("build"), _T("just build the project/workspace"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_OPTION, _T(""), _T("target"),  _T("the target for the batch build"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
@@ -627,8 +628,11 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
 					m_NoSplash = parser.Found(_T("no-splash-screen"), &val);
 					m_ClearConf = parser.Found(_T("clear-configuration"), &val);
 					m_HasDebugLog = parser.Found(_T("debug-log"), &val);
-					if (parser.Found(_T("personality"), &val))
+					if (parser.Found(_T("personality"), &val) ||
+                        parser.Found(_T("profile"), &val))
+                    {
                         SetupPersonality(val);
+                    }
 
                     // batch jobs
                     m_BatchNotify = parser.Found(_T("batch-build-notify"), &val);
@@ -662,8 +666,8 @@ void CodeBlocksApp::SetupPersonality(const wxString& personality)
 #endif
         // display personality selection dialog
         wxSingleChoiceDialog dlg(0,
-                                _("Please choose which personality to load:"),
-                                _("Personalities"),
+                                _("Please choose which personality (profile) to load:"),
+                                _("Personalities (profiles)"),
 #if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)
                                 list.GetCount(), strings);
 #else
