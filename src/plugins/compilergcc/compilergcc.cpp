@@ -1251,9 +1251,9 @@ int CompilerGCC::Clean(ProjectBuildTarget* target)
 	if (!CompilerValid(target))
 		return -1;
 
-    if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
-        CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
-    m_Project->GetCustomVars().ApplyVarsToEnvironment();
+//    if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
+//        CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
+//    m_Project->GetCustomVars().ApplyVarsToEnvironment();
     m_Generator.Init(m_Project);
 
     wxSetWorkingDirectory(m_Project->GetBasePath());
@@ -1327,9 +1327,9 @@ int CompilerGCC::Build(ProjectBuildTarget* target)
     if (m_Project && !m_Project->SaveAllFiles())
         Manager::Get()->GetMessageManager()->Log(_("Could not save all files..."));
 
-    if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
-        CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
-    m_Project->GetCustomVars().ApplyVarsToEnvironment();
+//    if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
+//        CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
+//    m_Project->GetCustomVars().ApplyVarsToEnvironment();
     m_Generator.Init(m_Project);
 
     wxSetWorkingDirectory(m_Project->GetBasePath());
@@ -1369,9 +1369,9 @@ int CompilerGCC::Rebuild(ProjectBuildTarget* target)
 	if (!CompilerValid(target))
 		return -1;
 
-    if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
-        CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
-    m_Project->GetCustomVars().ApplyVarsToEnvironment();
+//    if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
+//        CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
+//    m_Project->GetCustomVars().ApplyVarsToEnvironment();
     m_Generator.Init(m_Project);
 
     if (UseMake(target))
@@ -1531,7 +1531,7 @@ int CompilerGCC::CompileFile(const wxString& file)
         // switch to the default compiler
         SwitchCompiler(CompilerFactory::GetDefaultCompilerIndex());
         // apply global custom vars
-        CompilerFactory::GetDefaultCompiler()->GetCustomVars().ApplyVarsToEnvironment();
+//        CompilerFactory::GetDefaultCompiler()->GetCustomVars().ApplyVarsToEnvironment();
         m_Generator.Init(0);
 
         if (useMake)
@@ -1562,7 +1562,7 @@ int CompilerGCC::CompileFile(const wxString& file)
         mg.ConvertToMakefileFriendly(fname, true);
 
         // apply global custom vars
-        CompilerFactory::Compilers[bt->GetCompilerIndex()]->GetCustomVars().ApplyVarsToEnvironment();
+//        CompilerFactory::Compilers[bt->GetCompilerIndex()]->GetCustomVars().ApplyVarsToEnvironment();
 
         wxString cmd = GetMakeCommandFor(mcCompileFile, bt);
         cmd.Replace(_T("$file"), fname);
@@ -1570,9 +1570,9 @@ int CompilerGCC::CompileFile(const wxString& file)
     }
     else
     {
-        if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
-            CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
-        m_Project->GetCustomVars().ApplyVarsToEnvironment();
+//        if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
+//            CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
+//        m_Project->GetCustomVars().ApplyVarsToEnvironment();
         m_Generator.Init(m_Project);
 
         DirectCommands dc(this, &m_Generator, CompilerFactory::Compilers[bt->GetCompilerIndex()], m_Project, m_PageIndex);

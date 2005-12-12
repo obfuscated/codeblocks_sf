@@ -315,7 +315,7 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
 {
     m_pProject->SetCurrentlyCompilingTarget(target);
 
-    target->GetCustomVars().ApplyVarsToEnvironment();
+//    target->GetCustomVars().ApplyVarsToEnvironment();
 
     wxArrayString ret;
     ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Switching to target: ") + target->GetTitle());
@@ -387,9 +387,9 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
 wxArrayString DirectCommands::GetPreBuildCommands(ProjectBuildTarget* target)
 {
     m_pProject->SetCurrentlyCompilingTarget(target);
-    m_pProject->GetCustomVars().ApplyVarsToEnvironment();
-    if (target)
-        target->GetCustomVars().ApplyVarsToEnvironment();
+//    m_pProject->GetCustomVars().ApplyVarsToEnvironment();
+//    if (target)
+//        target->GetCustomVars().ApplyVarsToEnvironment();
 
     wxArrayString buildcmds = target ? target->GetCommandsBeforeBuild() : m_pProject->GetCommandsBeforeBuild();
     if (!buildcmds.IsEmpty())
@@ -412,9 +412,9 @@ wxArrayString DirectCommands::GetPreBuildCommands(ProjectBuildTarget* target)
 wxArrayString DirectCommands::GetPostBuildCommands(ProjectBuildTarget* target)
 {
     m_pProject->SetCurrentlyCompilingTarget(target);
-    m_pProject->GetCustomVars().ApplyVarsToEnvironment();
-    if (target)
-        target->GetCustomVars().ApplyVarsToEnvironment();
+//    m_pProject->GetCustomVars().ApplyVarsToEnvironment();
+//    if (target)
+//        target->GetCustomVars().ApplyVarsToEnvironment();
 
     wxArrayString buildcmds = target ? target->GetCommandsAfterBuild() : m_pProject->GetCommandsAfterBuild();
     if (!buildcmds.IsEmpty())
@@ -465,7 +465,7 @@ wxArrayString DirectCommands::GetLinkCommands(ProjectBuildTarget* target, bool f
 wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, bool force)
 {
     m_pProject->SetCurrentlyCompilingTarget(target);
-    target->GetCustomVars().ApplyVarsToEnvironment();
+//    target->GetCustomVars().ApplyVarsToEnvironment();
 
     wxLogNull ln;
     wxArrayString ret;
