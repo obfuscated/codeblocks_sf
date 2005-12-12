@@ -100,7 +100,7 @@ void DebuggerTree::BeginUpdateTree()
 {
     if (m_InUpdateBlock)
     {
-        Manager::Get()->GetMessageManager()->DebugLogWarning(_T("DebuggerTree::BeginUpdateTree() while already in update block"));
+//        Manager::Get()->GetMessageManager()->DebugLogWarning(_T("DebuggerTree::BeginUpdateTree() while already in update block"));
         return;
     }
 
@@ -119,7 +119,7 @@ void DebuggerTree::BuildTree(Watch* watch, const wxString& infoText, WatchString
 {
     if (!m_InUpdateBlock)
     {
-        Manager::Get()->GetMessageManager()->DebugLogWarning(_T("DebuggerTree::BuildTree() while not in update block"));
+//        Manager::Get()->GetMessageManager()->DebugLogWarning(_T("DebuggerTree::BuildTree() while not in update block"));
         return;
     }
 
@@ -133,7 +133,7 @@ void DebuggerTree::EndUpdateTree()
 {
     if (!m_InUpdateBlock)
     {
-        Manager::Get()->GetMessageManager()->DebugLogWarning(_T("DebuggerTree::EndUpdateTree() while not in update block"));
+//        Manager::Get()->GetMessageManager()->DebugLogWarning(_T("DebuggerTree::EndUpdateTree() while not in update block"));
         return;
     }
 

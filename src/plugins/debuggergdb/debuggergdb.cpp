@@ -1091,7 +1091,7 @@ void DebuggerGDB::SyncEditor(const wxString& filename, int line)
 			{
 				ed->SetProjectFile(f);
             	ed->Show(true);
-				ed->GotoLine(line - 1);
+				ed->GotoLine(line - 1, false);
 				ed->SetDebugLine(line - 1);
 			}
         }
@@ -1102,7 +1102,7 @@ void DebuggerGDB::SyncEditor(const wxString& filename, int line)
             if (ed)
 			{
             	ed->Show(true);
-				ed->GotoLine(line - 1);
+				ed->GotoLine(line - 1, false);
 				ed->SetDebugLine(line - 1);
 			}
         }

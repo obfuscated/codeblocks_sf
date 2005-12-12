@@ -36,12 +36,12 @@ DebuggerOptionsDlg::DebuggerOptionsDlg(wxWindow* parent)
 	//ctor
 	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgDebuggerOptions"));
 
-	XRCCTRL(*this, "txtInit", wxTextCtrl)->SetValue(Manager::Get()->GetConfigManager(_T("debugger"))->Read(_T("debugger_gdb/init_commands"), wxEmptyString));
-	XRCCTRL(*this, "chkWatchArgs", wxCheckBox)->SetValue(Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("debugger_gdb/watch_args"), true));
-	XRCCTRL(*this, "chkWatchLocals", wxCheckBox)->SetValue(Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("debugger_gdb/watch_locals"), true));
-	XRCCTRL(*this, "chkTooltipEval", wxCheckBox)->SetValue(Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("debugger_gdb/eval_tooltip"), false));
-	XRCCTRL(*this, "chkDebugLog", wxCheckBox)->SetValue(Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("debugger_gdb/debug_log"), false));
-	XRCCTRL(*this, "chkAddForeignDirs", wxCheckBox)->SetValue(Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("debugger_gdb/add_other_search_dirs"), false));
+	XRCCTRL(*this, "txtInit", wxTextCtrl)->SetValue(Manager::Get()->GetConfigManager(_T("debugger"))->Read(_T("init_commands"), wxEmptyString));
+	XRCCTRL(*this, "chkWatchArgs", wxCheckBox)->SetValue(Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("watch_args"), true));
+	XRCCTRL(*this, "chkWatchLocals", wxCheckBox)->SetValue(Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("watch_locals"), true));
+	XRCCTRL(*this, "chkTooltipEval", wxCheckBox)->SetValue(Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("eval_tooltip"), false));
+	XRCCTRL(*this, "chkDebugLog", wxCheckBox)->SetValue(Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("debug_log"), false));
+	XRCCTRL(*this, "chkAddForeignDirs", wxCheckBox)->SetValue(Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("add_other_search_dirs"), false));
 }
 
 DebuggerOptionsDlg::~DebuggerOptionsDlg()
