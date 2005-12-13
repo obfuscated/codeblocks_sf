@@ -208,15 +208,20 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
     source_file_absolute_native = pf->file.GetFullPath();
 
     tmp = pf->GetObjName();
-    Compiler* compiler = target
-                            ? CompilerFactory::Compilers[target->GetCompilerIndex()]
-                            : CompilerFactory::GetDefaultCompiler();
-    if (!compiler)
-        return;
-    tmp.SetExt(compiler->GetSwitches().objectExtension);
+    FileType ft = FileTypeOf(pf->relativeFilename);
+
+    // don't change object extension for precompiled headers
+    if (ft != ftHeader)
+    {
+        Compiler* compiler = target
+                                ? CompilerFactory::Compilers[target->GetCompilerIndex()]
+                                : CompilerFactory::GetDefaultCompiler();
+        if (compiler)
+            tmp.SetExt(compiler->GetSwitches().objectExtension);
+    }
 
     // support for precompiled headers
-    if (target && FileTypeOf(pf->relativeFilename) == ftHeader)
+    if (target && ft == ftHeader)
     {
         switch (target->GetParentProject()->GetModeForPCH())
         {
