@@ -446,11 +446,6 @@
       <object class="wxMenu" name="idSettingsConfigurePlugins">
         <label>&amp;Plugins' settings</label>
       </object>
-      <object class="separator"/>
-      <object class="wxMenuItem" name="idSettingsKeyBindings">
-        <label>&amp;Keyboard shortcuts</label>
-        <help>Change accelerators used for menu entries</help>
-      </object>
     </object>
     <object class="wxMenu" name="menu_help">
       <label>&amp;Help</label>
