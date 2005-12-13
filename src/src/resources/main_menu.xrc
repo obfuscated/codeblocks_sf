@@ -426,6 +426,7 @@
       <label>P&amp;lugins</label>
       <object class="wxMenuItem" name="idPluginsManagePlugins">
         <label>Manage &amp;plugins</label>
+	<bitmap>images\16x16\plug.png</bitmap>
         <help>Enable or disable plugins for the next session</help>
       </object>
     </object>
