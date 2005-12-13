@@ -64,6 +64,7 @@
     #include <wx/wxscintilla.h>
 
     // basic headers
+    #include <gcc-attribs.h>
     #include <settings.h>
     #include <globals.h>
     #include <licenses.h>
