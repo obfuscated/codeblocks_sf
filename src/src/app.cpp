@@ -52,7 +52,7 @@
     #include "associations.h"
 #endif
 
-#include "globals.h"
+#include "appglobals.h"
 
 #if wxUSE_CMDLINE_PARSER
 static const wxCmdLineEntryDesc cmdLineDesc[] =

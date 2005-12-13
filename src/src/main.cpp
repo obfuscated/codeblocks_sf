@@ -26,7 +26,7 @@
 #include <sdk.h>
 #include "app.h"
 #include "main.h"
-#include "globals.h"
+#include "appglobals.h"
 #include "environmentsettingsdlg.h"
 #include <cbworkspace.h>
 

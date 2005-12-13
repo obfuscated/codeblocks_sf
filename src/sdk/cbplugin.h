@@ -12,7 +12,7 @@
 		#ifdef EXPORT_LIB
 			#define PLUGIN_EXPORT __declspec (dllexport)
 		#else // !EXPORT_LIB
-			#if BUILDING_PLUGIN
+			#ifdef BUILDING_PLUGIN
 				#define PLUGIN_EXPORT __declspec (dllexport)
 			#else // !BUILDING_PLUGIN
 				#define PLUGIN_EXPORT __declspec (dllimport)

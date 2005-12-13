@@ -222,8 +222,11 @@ br_prepend_prefix (void *symbol, char *path)
 #include <pthread.h>
 
 static pthread_key_t br_thread_key;
+#ifdef __FREEBSD__
 static pthread_once_t br_thread_key_once = {0, (pthread_mutex_t)NULL};//PTHREAD_ONCE_INIT;
-
+#else
+static pthread_once_t br_thread_key_once = PTHREAD_ONCE_INIT;
+#endif
 
 static void
 br_thread_local_store_fini ()

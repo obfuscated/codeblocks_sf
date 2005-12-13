@@ -11,7 +11,7 @@
 #include <editormanager.h>
 #include <configmanager.h>
 #include "startherepage.h"
-#include "globals.h"
+#include "appglobals.h"
 
 wxString g_StartHereTitle = _("Start here");
 int idStartHerePageLink = wxNewId();

@@ -28,10 +28,10 @@ codeblocks_SOURCES = app.cpp \
 			startherepage.cpp
 
 noinst_HEADERS = app.h \
+			appglobals.h \
 			dlgabout.h \
 			dlgaboutplugin.h \
 			environmentsettingsdlg.h \
-			globals.h \
 			main.h \
 			prefix.h \
 			printdlg.h \

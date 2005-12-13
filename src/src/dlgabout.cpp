@@ -25,7 +25,7 @@
 
 #include <sdk.h>
 #include "dlgabout.h" // class's header file
-#include "globals.h"
+#include "appglobals.h"
 #include "../sdk/licenses.h"
 #include "../sdk/configmanager.h"
 

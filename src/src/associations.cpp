@@ -1,6 +1,6 @@
 #include <sdk.h>
 #include "associations.h"
-#include "globals.h"
+#include "appglobals.h"
 #include <manager.h>
 #include <configmanager.h>
 

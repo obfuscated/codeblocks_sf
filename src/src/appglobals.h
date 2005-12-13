@@ -1,5 +1,5 @@
-#ifndef GLOBALS_H
-#define GLOBALS_H
+#ifndef APPGLOBALS_H
+#define APPGLOBALS_H
 
 #define APP_VENDOR				_T("Code::Blocks")
 #define APP_NAME				_T("Code::Blocks")
@@ -29,4 +29,4 @@
 
 #define APP_BUILD_TIMESTAMP	(wxString(wxT(__DATE__)) + wxT(", ") + wxT(__TIME__) + wxT(" - wx") + wxString(wxT(wxVERSION_NUM_DOT_STRING)) + wxT(" (") + APP_PLATFORM + wxT(", ") + APP_WXANSI_UNICODE + wxT(")") )
 
-#endif // GLOBALS_H
+#endif // APPGLOBALS_H
