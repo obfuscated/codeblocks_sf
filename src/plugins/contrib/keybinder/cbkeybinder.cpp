@@ -21,6 +21,7 @@
 
 #include "cbkeybinder.h"
 #include <licenses.h> // defines some common licenses (like the GPL)
+#include <configmanager.h>
 
 // ----------------------------------------------------------------------------
 
