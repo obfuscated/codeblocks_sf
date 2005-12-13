@@ -49,6 +49,7 @@ bool WorkspaceLoader::Open(const wxString& filename)
     TiXmlElement* proj;
     cbProject* loadedProject;
     wxString projectFilename;
+    wxFileName wfname(filename);
 
     root = doc.FirstChildElement("CodeBlocks_workspace_file");
     if (!root)
@@ -79,6 +80,7 @@ bool WorkspaceLoader::Open(const wxString& filename)
         return false;
     }
 
+    // first loop to load projects
     while (proj)
     {
         if(Manager::isappShuttingDown() || !GetpMan() || !GetpMsg())
@@ -91,7 +93,6 @@ bool WorkspaceLoader::Open(const wxString& filename)
         }
         else
         {
-            wxFileName wfname(filename);
             wxFileName fname(projectFilename);
             fname.MakeAbsolute(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
             loadedProject = GetpMan()->LoadProject(fname.GetFullPath());
@@ -114,7 +115,41 @@ bool WorkspaceLoader::Open(const wxString& filename)
                     break;
             }
         }
-        proj = proj->NextSiblingElement();
+        proj = proj->NextSiblingElement("Project");
+    }
+
+    // second loop to setup dependencies
+    proj = wksp->FirstChildElement("Project");
+    while (proj)
+    {
+        cbProject* thisprj = 0;
+        projectFilename = _U(proj->Attribute("filename"));
+        if (projectFilename.IsEmpty())
+        {
+            GetpMsg()->DebugLog(_("'Project' node exists, but no filename?!?"));
+            thisprj = 0;
+        }
+        else
+        {
+            wxFileName fname(projectFilename);
+            fname.MakeAbsolute(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
+            thisprj = Manager::Get()->GetProjectManager()->IsOpen(fname.GetFullPath());
+        }
+
+        if (thisprj)
+        {
+            TiXmlElement* dep = proj->FirstChildElement("Depends");
+            while (dep)
+            {
+                wxFileName fname(_U(dep->Attribute("filename")));
+                fname.MakeAbsolute(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
+                cbProject* depprj = Manager::Get()->GetProjectManager()->IsOpen(fname.GetFullPath());
+                if (depprj)
+                    Manager::Get()->GetProjectManager()->AddProjectDependency(thisprj, depprj);
+                dep = dep->NextSiblingElement("Depends");
+            }
+        }
+        proj = proj->NextSiblingElement("Project");
     }
 
     if (m_pActiveProj)
@@ -150,6 +185,19 @@ bool WorkspaceLoader::Save(const wxString& title, const wxString& filename)
         node->SetAttribute("filename", _C(fname.GetFullPath()));
         if (prj == Manager::Get()->GetProjectManager()->GetActiveProject())
             node->SetAttribute("active", 1);
+
+        const ProjectsArray* deps = Manager::Get()->GetProjectManager()->GetDependenciesForProject(prj);
+        if (deps && deps->GetCount())
+        {
+            for (size_t i = 0; i < deps->GetCount(); ++i)
+            {
+                prj = deps->Item(i);
+                fname.Assign(prj->GetFilename());
+                fname.MakeRelativeTo(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
+                TiXmlElement* dnode = static_cast<TiXmlElement*>(node->InsertEndChild(TiXmlElement("Depends")));
+                dnode->SetAttribute("filename", _C(fname.GetFullPath()));
+            }
+        }
     }
     return doc.SaveFile(_C(filename));
 }

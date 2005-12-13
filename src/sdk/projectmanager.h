@@ -3,6 +3,7 @@
 
 #include <wx/event.h>
 #include <wx/dynarray.h>
+#include <wx/hashmap.h>
 #include <wx/treectrl.h>
 #include "sanitycheck.h"
 #include "settings.h"
@@ -20,6 +21,7 @@ class cbWorkspace;
 
 DLLIMPORT extern int ID_ProjectManager; /* Used by both Project and Editor Managers */
 WX_DEFINE_ARRAY(cbProject*, ProjectsArray);
+WX_DECLARE_HASH_MAP(cbProject*, ProjectsArray*, wxPointerHash, wxPointerEqual, DepsMap); // for project dependencies
 
 /** @brief The entry point singleton for working with projects.
   *
@@ -251,6 +253,47 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
 		  */
         cbWorkspace* GetWorkspace();
 
+
+        /** @brief Adds a project as a dependency of another project.
+          * Projects inside workspaces allow you to set dependencies between them.
+          * When project A depends on project B, this means that before building
+          * project A, project B will be built because it obviously generates code
+          * that project A depends upon.
+          * @param base The project to set a dependency for.
+          * @param dependsOn the project that must be built before @c base project.
+          */
+        bool AddProjectDependency(cbProject* base, cbProject* dependsOn);
+        /** @brief Removes a project dependency.
+          * @see AddProjectDependency()
+          * @param base The project to remove a dependency from.
+          * @param doesNotDependOn The project that is to stop being a dependency of project @c base.
+          */
+        void RemoveProjectDependency(cbProject* base, cbProject* doesNotDependOn);
+        /** @brief Removes all dependencies from project @c base.
+          * @see AddProjectDependency()
+          * @param base The project to remove all dependencies from.
+          */
+        void ClearProjectDependencies(cbProject* base);
+        /** @brief Removes the project @c base from being a dependency of any other project.
+          * @see AddProjectDependency()
+          * @param base The project to remove from all dependencies.
+          */
+        void RemoveProjectFromAllDependencies(cbProject* base);
+        /** @brief Get the array of projects @c base depends on.
+          * @param base The project to get its dependencies.
+          * @return An array of project dependencies, or NULL if no dependencies are set for @c base.
+          */
+        const ProjectsArray* GetDependenciesForProject(cbProject* base);
+        /** Displays a dialog to setup project dependencies.
+          * @param base The project to setup its dependencies. Can be NULL (default) because there's a project selection combo in the dialog.
+          */
+        void ConfigureProjectDependencies(cbProject* base = 0);
+        /** Checks for circular dependencies between @c base and @c dependsOn.
+          * @return True if circular dependency is detected, false if it isn't.
+          */
+        bool CausesCircularDependency(cbProject* base, cbProject* dependsOn);
+
+
 		/// Rebuild the project manager's tree.
         void RebuildTree();
 		/** Stop the tree control from updating.
@@ -326,6 +369,7 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
         cbProject* m_pActiveProject;
         wxImageList* m_pImages;
         ProjectsArray* m_pProjects;
+        DepsMap m_ProjectDeps;
         cbWorkspace* m_pWorkspace;
         EditorBase* m_pTopEditor;
         bool m_TreeCategorize;

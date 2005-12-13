@@ -127,6 +127,8 @@ class CompilerGCC : public cbCompilerPlugin
 		ProjectBuildTarget* GetBuildTargetForFile(ProjectFile* pf);
 		ProjectBuildTarget* GetBuildTargetForFile(const wxString& file);
         wxString GetMakeCommandFor(MakeCommand cmd, ProjectBuildTarget* target);
+        int DoBuild(cbProject* prj, const wxString& target);
+        void BuildDependencies(cbProject* prj, const wxString& target);
 
         // wxArrayString from DirectCommands
         void AddToCommandQueue(const wxArrayString& commands);

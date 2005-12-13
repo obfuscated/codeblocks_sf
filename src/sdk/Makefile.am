@@ -79,6 +79,7 @@ libcodeblocks_la_SOURCES = Managers/Managers.cpp \
 						pluginsconfigurationdlg.cpp \
 						printing_types.cpp \
 						projectbuildtarget.cpp \
+						projectdepsdlg.cpp \
 						projectfile.cpp \
 						projectfileoptionsdlg.cpp \
 						projectlayoutloader.cpp \
@@ -167,6 +168,7 @@ noinst_HEADERS = Managers/Managers.h \
 				pluginsconfigurationdlg.h \
 				printing_types.h \
 				projectbuildtarget.h \
+				projectdepsdlg.h \
 				projectfile.h \
 				projectfileoptionsdlg.h \
 				projectlayoutloader.h \

@@ -45,6 +45,7 @@
 #include "workspaceloader.h"
 #include "filegroupsandmasks.h"
 #include "projectsfilemasksdlg.h"
+#include "projectdepsdlg.h"
 #include "managerproxy.h"
 #include "multiselectdlg.h"
 #include "cbworkspace.h"
@@ -753,6 +754,7 @@ bool ProjectManager::CloseActiveProject(bool dontsave)
 
     m_pActiveProject->CloseAllFiles(true);
     m_pProjects->Remove(m_pActiveProject);
+    RemoveProjectFromAllDependencies(m_pActiveProject);
     delete m_pActiveProject;
 	m_pActiveProject = 0L;
     if (m_pProjects->GetCount() > 0)
@@ -1264,6 +1266,143 @@ void ProjectManager::DoOpenSelectedFile()
 			DoOpenFile(f, f->file.GetFullPath());
         }
     }
+}
+
+bool ProjectManager::CausesCircularDependency(cbProject* base, cbProject* dependsOn)
+{
+    if (!base || !dependsOn)
+        return false;
+
+    // 1st check is both projects are the same one
+    if (base == dependsOn)
+        return true;
+
+    const ProjectsArray* arr = GetDependenciesForProject(dependsOn);
+    if (arr)
+    {
+        // now check deeper
+        for (size_t i = 0; i < arr->GetCount(); ++i)
+        {
+            if (CausesCircularDependency(base, arr->Item(i)))
+                return true;
+        }
+    }
+
+    // if we reached here, no possibility of circular dependency :)
+    return false;
+}
+
+bool ProjectManager::AddProjectDependency(cbProject* base, cbProject* dependsOn)
+{
+    if (!base || !dependsOn)
+        return false;
+
+    // avoid circular dependencies
+    if (CausesCircularDependency(base, dependsOn))
+        return false;
+
+    ProjectsArray* arr = 0;
+    DepsMap::iterator it = m_ProjectDeps.find(base);
+    if (it == m_ProjectDeps.end())
+    {
+        // create a ProjectsArray* to hold the dependencies for base
+        arr = new ProjectsArray;
+        m_ProjectDeps[base] = arr;
+    }
+    else
+        arr = it->second;
+
+    // add dependency only if not already there
+    if (arr->Index(dependsOn) == wxNOT_FOUND)
+    {
+        arr->Add(dependsOn);
+        if (m_pWorkspace)
+            m_pWorkspace->SetModified(true);
+        Manager::Get()->GetMessageManager()->DebugLog(_T("%s now depends on %s (%d deps)"), base->GetTitle().c_str(), dependsOn->GetTitle().c_str(), arr->GetCount());
+    }
+    return true;
+}
+
+void ProjectManager::RemoveProjectDependency(cbProject* base, cbProject* doesNotDependOn)
+{
+    if (!base || !doesNotDependOn)
+        return;
+
+    DepsMap::iterator it = m_ProjectDeps.find(base);
+    if (it == m_ProjectDeps.end())
+        return; // nothing to remove
+
+    ProjectsArray* arr = it->second;
+    arr->Remove(doesNotDependOn);
+
+    Manager::Get()->GetMessageManager()->DebugLog(_T("%s now does not depend on %s (%d deps)"), base->GetTitle().c_str(), doesNotDependOn->GetTitle().c_str(), arr->GetCount());
+    // if it was the last dependency, delete the array
+    if (!arr->GetCount())
+    {
+        m_ProjectDeps.erase(it);
+        delete arr;
+    }
+    if (m_pWorkspace)
+        m_pWorkspace->SetModified(true);
+}
+
+void ProjectManager::ClearProjectDependencies(cbProject* base)
+{
+    if (!base)
+        return;
+    DepsMap::iterator it = m_ProjectDeps.find(base);
+    if (it == m_ProjectDeps.end())
+        return; // nothing to remove
+
+    delete it->second;
+    m_ProjectDeps.erase(it);
+    if (m_pWorkspace)
+        m_pWorkspace->SetModified(true);
+
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Removed all deps from %s"), base->GetTitle().c_str());
+}
+
+void ProjectManager::RemoveProjectFromAllDependencies(cbProject* base)
+{
+    if (!base)
+        return;
+    DepsMap::iterator it = m_ProjectDeps.find(base);
+    while (it != m_ProjectDeps.end())
+    {
+        ProjectsArray* arr = it->second;
+        // only check projects that do have a dependencies array
+        if (!arr)
+            continue;
+
+        arr->Remove(base);
+        if (m_pWorkspace)
+            m_pWorkspace->SetModified(true);
+
+        // if it was the last dependency, delete the array
+        if (!arr->GetCount())
+        {
+            DepsMap::iterator it2 = it++;
+            m_ProjectDeps.erase(it2);
+            delete arr;
+        }
+        else
+            ++it;
+    }
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Removed %s from all deps"), base->GetTitle().c_str());
+}
+
+const ProjectsArray* ProjectManager::GetDependenciesForProject(cbProject* base)
+{
+    DepsMap::iterator it = m_ProjectDeps.find(base);
+    if (it != m_ProjectDeps.end())
+        return it->second;
+    return 0;
+}
+
+void ProjectManager::ConfigureProjectDependencies(cbProject* base)
+{
+    ProjectDepsDlg dlg(Manager::Get()->GetAppWindow(), base);
+    dlg.ShowModal();
 }
 
 // events

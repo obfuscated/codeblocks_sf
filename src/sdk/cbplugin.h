@@ -430,7 +430,7 @@ typedef void(*FreePluginProc)(cbPlugin*);
 // it will change when the plugins interface breaks
 #define PLUGIN_SDK_VERSION_MAJOR 1
 #define PLUGIN_SDK_VERSION_MINOR 6
-#define PLUGIN_SDK_VERSION_RELEASE 1
+#define PLUGIN_SDK_VERSION_RELEASE 2
 
 /** This is used to declare the plugin's hooks.
   */

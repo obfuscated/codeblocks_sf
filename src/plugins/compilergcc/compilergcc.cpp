@@ -707,6 +707,7 @@ void CompilerGCC::AddToCommandQueue(const wxArrayString& commands)
 int CompilerGCC::DoRunQueue()
 {
     wxLogNull ln;
+    static cbProject* lastProject = 0;
 
 	// leave if already running
 	if (m_Process)
@@ -722,10 +723,10 @@ int CompilerGCC::DoRunQueue()
         msgMan->Log(m_PageIndex, _("Nothing to be done."));
         msgMan->LogToStdOut(_("Nothing to be done.\n"));
         m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
+        lastProject = 0;
         return 0;
 	}
 
-    static cbProject* lastProject = 0;
     if (lastProject != cmd->project)
     {
         lastProject = cmd->project;
@@ -787,6 +788,7 @@ int CompilerGCC::DoRunQueue()
         delete m_Process;
         m_Process = NULL;
         m_CommandQueue.Clear();
+        lastProject = 0;
     }
     else
         m_timerIdleWakeUp.Start(100);
@@ -1309,46 +1311,81 @@ void CompilerGCC::OnExportMakefile(wxCommandEvent& event)
     wxMessageBox(msg);
 }
 
-int CompilerGCC::Build(const wxString& target)
+int CompilerGCC::DoBuild(cbProject* prj, const wxString& target)
 {
-    if (!CheckProject())
-        return -1;
-    return Build(m_Project->GetBuildTarget(target.IsEmpty() ? m_LastTargetName : target));
-}
-
-int CompilerGCC::Build(ProjectBuildTarget* target)
-{
-    DoClearErrors();
-	DoPrepareQueue();
-	if (!m_Project || !CompilerValid(target))
+	if (!prj)
+        return -2;
+    ProjectBuildTarget* bt =  prj->GetBuildTarget(target.IsEmpty() ? m_LastTargetName : target);
+    if (!CompilerValid(bt))
         return -2;
 
+    BuildDependencies(prj, target);
+
     // make sure all project files are saved
-    if (m_Project && !m_Project->SaveAllFiles())
+    if (prj && !prj->SaveAllFiles())
         Manager::Get()->GetMessageManager()->Log(_("Could not save all files..."));
 
 //    if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
 //        CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
-//    m_Project->GetCustomVars().ApplyVarsToEnvironment();
-    m_Generator.Init(m_Project);
+//    prj->GetCustomVars().ApplyVarsToEnvironment();
+    m_Generator.Init(prj);
 
-    wxSetWorkingDirectory(m_Project->GetBasePath());
+    wxSetWorkingDirectory(prj->GetBasePath());
 
     wxString cmd;
-    if (UseMake(target))
+    if (UseMake(bt))
     {
-        wxString cmd = GetMakeCommandFor(mcBuild, target);
-        m_CommandQueue.Add(new CompilerCommand(cmd, wxEmptyString, m_Project, target));
+        wxString cmd = GetMakeCommandFor(mcBuild, bt);
+        m_CommandQueue.Add(new CompilerCommand(cmd, wxEmptyString, prj, bt));
     }
     else
     {
 //        DBGLOG(_T("Creating commands factory"));
-        DirectCommands dc(this, &m_Generator, CompilerFactory::Compilers[m_CompilerIdx], m_Project, m_PageIndex);
+        DirectCommands dc(this, &m_Generator, CompilerFactory::Compilers[m_CompilerIdx], prj, m_PageIndex);
 //        DBGLOG(_T("Generating commands"));
-        wxArrayString compile = dc.GetCompileCommands(target);
+        wxArrayString compile = dc.GetCompileCommands(bt);
+        cbProject* bak = m_Project;
+        m_Project = prj;
         AddToCommandQueue(compile);
+        m_Project = bak;
 //        DBGLOG(_T("Commands generated"));
     }
+    return 0;
+}
+
+void CompilerGCC::BuildDependencies(cbProject* prj, const wxString& target)
+{
+    const ProjectsArray* arr = Manager::Get()->GetProjectManager()->GetDependenciesForProject(prj);
+    if (!arr || !arr->GetCount())
+        return;
+
+    for (size_t i = 0; i < arr->GetCount(); ++i)
+    {
+        cbProject* thisprj = arr->Item(i);
+        if (!Manager::Get()->GetProjectManager()->CausesCircularDependency(prj, thisprj))
+            DoBuild(thisprj, target);
+    }
+}
+
+int CompilerGCC::Build(const wxString& target)
+{
+    if (!CheckProject())
+        return -1;
+    DoClearErrors();
+	DoPrepareQueue();
+    if (DoBuild(m_Project, target) != 0)
+        return -2;
+    return DoRunQueue();
+}
+
+int CompilerGCC::Build(ProjectBuildTarget* target)
+{
+    if (!CheckProject())
+        return -1;
+    DoClearErrors();
+	DoPrepareQueue();
+    if (DoBuild(m_Project, target ? target->GetTitle() : m_LastTargetName) != 0)
+        return -2;
     return DoRunQueue();
 }
 

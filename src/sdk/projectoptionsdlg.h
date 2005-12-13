@@ -33,6 +33,7 @@ class ProjectOptionsDlg : public wxDialog
 		void OnExportTargetClick(wxCommandEvent& event);
 		void OnBuildOrderClick(wxCommandEvent& event);
 		void OnProjectBuildOptionsClick(wxCommandEvent& event);
+		void OnProjectDepsClick(wxCommandEvent& event);
 		void OnTargetBuildOptionsClick(wxCommandEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);
     private:

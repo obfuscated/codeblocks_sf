@@ -39,6 +39,7 @@ BEGIN_EVENT_TABLE(ProjectOptionsDlg, wxDialog)
     EVT_UPDATE_UI( -1,                                 ProjectOptionsDlg::OnUpdateUI)
 	EVT_BUTTON(    XRCID("btnOK"),                     ProjectOptionsDlg::OnOK)
 	EVT_BUTTON(    XRCID("btnProjectBuildOptions"),    ProjectOptionsDlg::OnProjectBuildOptionsClick)
+	EVT_BUTTON(    XRCID("btnProjectDeps"),            ProjectOptionsDlg::OnProjectDepsClick)
 	EVT_BUTTON(    XRCID("btnTargetBuildOptions"),     ProjectOptionsDlg::OnTargetBuildOptionsClick)
 	EVT_BUTTON(    XRCID("btnBuildOrder"),             ProjectOptionsDlg::OnBuildOrderClick)
 	EVT_BUTTON(    XRCID("btnAddBuildTarget"),         ProjectOptionsDlg::OnAddBuildTargetClick)
@@ -354,6 +355,11 @@ void ProjectOptionsDlg::OnBuildOrderClick(wxCommandEvent& event)
         m_Current_Sel = -1; // force no "save changes" for next call
         FillBuildTargets();
     }
+}
+
+void ProjectOptionsDlg::OnProjectDepsClick(wxCommandEvent& event)
+{
+    Manager::Get()->GetProjectManager()->ConfigureProjectDependencies(m_Project);
 }
 
 void ProjectOptionsDlg::OnProjectBuildOptionsClick(wxCommandEvent& event)
