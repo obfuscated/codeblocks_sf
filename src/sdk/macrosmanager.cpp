@@ -126,7 +126,7 @@ void MacrosManager::Reset()
     m_Plugins = UnixFilename(ConfigManager::GetDataFolder() + _T("/plugins"));
     ClearProjectKeys();
     m_re.Compile(_T("(\\$[({]?|%)(#?[A-Za-z_0-9]+[\\.]?[A-Za-z_0-9]+)([)}%]?)"));
-    uVarMan = Manager::Get()->GetUserVariableManager();
+    m_uVarMan = Manager::Get()->GetUserVariableManager();
 }
 
 void MacrosManager::ClearProjectKeys()
@@ -271,7 +271,7 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo)
     EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
     ProjectBuildTarget* target = project ? project->GetCurrentlyCompilingTarget() : 0;
 
-    if(project != m_lastProject || editor != m_lastEditor || target != m_lastTarget)
+    if(project || project != m_lastProject || target != m_lastTarget)
         RecalcVars(project, editor, target);
 
     wxString replace;
@@ -285,7 +285,7 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo)
         before = m_re.GetMatch(buffer, 0);
 
         if (env[0] == _T('#'))
-            replace = UnixFilename(uVarMan->Replace(env));
+            replace = UnixFilename(m_uVarMan->Replace(env));
         else
         {
             MacrosMap::iterator it;

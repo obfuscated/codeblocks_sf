@@ -36,7 +36,7 @@ protected:
     m_Makefile, m_TargetOutputDir, m_TargetName;
 	MacrosMap macros;
     wxRegEx m_re;
-    UserVariableManager *uVarMan;
+    UserVariableManager *m_uVarMan;
 public:
     void Reset();
 private:
