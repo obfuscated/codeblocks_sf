@@ -106,7 +106,7 @@ public:
             delete[] allocBlocks[i];
     };
 
-    __inline__ __malloc__ void* New()
+    __malloc__ void* New()
     {
         #ifdef DEBUG_BLOCKALLOC
             ++ref_count;
@@ -122,7 +122,7 @@ public:
         return p;
     };
 
-    __inline__ void Delete(void *ptr)
+    void Delete(void *ptr)
     {
         #ifdef DEBUG_BLOCKALLOC
             --ref_count;
@@ -140,12 +140,12 @@ class BlockAllocated
 
 public:
 
-    __inline__ __malloc__ void* operator new(size_t size)
+    __malloc__ void* operator new(size_t size)
     {
         return allocator.New();
     };
 
-    __inline__ void operator delete(void *ptr)
+    void operator delete(void *ptr)
     {
         if(unlikely(ptr == 0)) // C++ standard requires this
             return;

@@ -84,12 +84,12 @@ protected:
         }
     };
 
-    __inline__ wxChar CurrentChar() const
+    wxChar CurrentChar() const
     {
         return m_Buffer.GetChar(m_TokenIndex);
     };
 
-    __inline__ wxChar CurrentCharMoveNext()
+    wxChar CurrentCharMoveNext()
     {
     	size_t i = m_TokenIndex++;
 
@@ -99,14 +99,14 @@ protected:
 			return 0;
     };
 
-    __inline__ wxChar Tokenizer::NextChar() const
+    wxChar Tokenizer::NextChar() const
     {
         if (unlikely((m_TokenIndex + 1) >= m_BufferLen)) //    m_TokenIndex + 1) < 0  can never be true
             return 0;
         return m_Buffer.GetChar(m_TokenIndex + 1);
     };
 
-    __inline__ wxChar Tokenizer::PreviousChar() const
+    wxChar Tokenizer::PreviousChar() const
     {
         if (unlikely((m_TokenIndex - 1) < 0))       //   (m_TokenIndex - 1) >= m_BufferLen can never be true
             return 0;
@@ -141,7 +141,7 @@ protected:
     };
 
 private:
-    __inline__ __pure__ bool CharInString(const char ch, const char* chars) const
+    __pure__ bool CharInString(const char ch, const char* chars) const
     {
         int len = strlen(chars);
         for (int i = 0; i < len; ++i)
