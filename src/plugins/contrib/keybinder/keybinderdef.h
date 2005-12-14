@@ -7,7 +7,7 @@
 // Copyright:   (c) Aleksandras Gluchovas and (c) Francesco Montorsi
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
-
+//commit 12/14/2005 9:16 AM
 
 #ifndef _WX_KEYBINDER_DEFS_H_
 #define _WX_KEYBINDER_DEFS_H_

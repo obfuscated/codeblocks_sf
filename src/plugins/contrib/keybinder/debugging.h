@@ -2,7 +2,7 @@
 #define __WX_DEBUGGING_H__
 //#include <manager.h>
 //#include <messagemanager.h>
-
+//commit 12/14/2005 9:16 AM
 
 #define LOGGING 0
 #define TRAP asm("int3")

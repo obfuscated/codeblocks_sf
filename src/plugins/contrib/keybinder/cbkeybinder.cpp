@@ -5,7 +5,7 @@
  * Copyright: (c) Pecan @ Mispent Intent
  * License:   GPL
  **************************************************************/
-
+//commit 12/14/2005 9:15 AM
 // The majority of this code was lifted from wxKeyBinder and
 // its "minimal.cpp" sample program
 
@@ -21,7 +21,6 @@
 
 #include "cbkeybinder.h"
 #include <licenses.h> // defines some common licenses (like the GPL)
-#include <configmanager.h>
 
 // ----------------------------------------------------------------------------
 
@@ -30,8 +29,6 @@
 // Implement the plugin's hooks
 CB_IMPLEMENT_PLUGIN(cbKeyBinder);
 
-    //timer will be used if keys unbound within 6 seconds of startup
-//	enum{ TIMER_ID = 1001};       //timer
 // ----------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(cbKeyBinder, cbPlugin)
 	// add events here...
@@ -60,13 +57,12 @@ END_EVENT_TABLE()
 // ----------------------------------------------------------------------------
 cbKeyBinder::cbKeyBinder()
 // ---------------------------------------------------------------------------
-//    :m_timer(this, TIMER_ID) //timer
 {
 	//ctor
 	m_PluginInfo.name = _T("cbKeyBinder");
 	m_PluginInfo.title = _("Keyboard shortcuts configuration");
 	m_PluginInfo.version = _T("0.4");
-	m_PluginInfo.description = _("CodeBlocks KeyBinder");
+	m_PluginInfo.description = _("CodeBlocks KeyBinder\nCommit 12/14/2005 9AM");
 	m_PluginInfo.author = _T("Pecan && Mispent Intent");
 	m_PluginInfo.authorEmail = _T("");
 	m_PluginInfo.authorWebsite = _T("");
@@ -98,8 +94,12 @@ void cbKeyBinder::OnAttach()
     // "SCIwindow" & "cbMainWindow". See wxKeyBinder::Attach() in keybinder.cpp
     // Change name of codeblocks main window so it gets attached by keybinder
 
+    // Have to have at least one window to attach to else secondary keys wont work
+    // and "notebook" windows work just fine. Dont need AppWindow attach
+
+    //get window for log when debugging
     pcbWindow = Manager::Get()->GetAppWindow();
-    pcbWindow->SetName("cbMainWindow");
+    //pcbWindow->SetName("cbAppWindow");
 
     #if LOGGING
         // allocate wxLogWindow in the header
@@ -164,8 +164,8 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
 
 	//memorize incomming menubar
     m_pMenuBar = menuBar;
-    // init the keybinder
 
+    // init the keybinder
     //memorize the key file name as {%HOME%}\cbKeyBinder+{ver}.ini
     m_sKeyFilename = ConfigManager::GetConfigFolder();
     // remove the dots from version string
@@ -180,7 +180,7 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
     // wait to show error messages after CodeBlocks is running
     bKeyFileErrMsgShown = TRUE;
     //load the key binding definition file
-    OnLoad();
+    //-OnLoad(); unecessary since EVT_APP_STARTUP_DONE(cbKeyBinder::OnAppStartupDone)
     bKeyFileErrMsgShown = FALSE;
 
     // override OnLoad()s setting of 'm_bBound' so timer will reload
@@ -280,6 +280,12 @@ void cbKeyBinder::Rebind()
 // ----------------------------------------------------------------------------
 void cbKeyBinder::UpdateArr(wxKeyProfileArray &r)
 {
+    //=====================================================================//
+    // The following warnings don't apply anymore because this
+    // keybinder.h::wxKeyBinder::Attach() has been caged.
+    // It can only attach to SCIwindows and the C::B main window
+    //=====================================================================//
+
     //=================================================================//
     //***do not use this routine until the dialog has been dismissed***//
     //=================================================================//
@@ -521,7 +527,7 @@ void cbKeyBinder::OnSave()
 			total += m_pKeyProfArr->Item(i)->GetCmdCount();
 
 		wxMessageBox(wxString::Format(wxT("All the [%d] keyprofiles ([%d] commands ")
-			wxT("in total)\n have been saved in \"")+path+wxT(".ini\""),
+			wxT("in total) have been saved in \n\"")+path+wxT(".ini\""),
             m_pKeyProfArr->GetCount(), total),
 			wxT("Save"));
 
@@ -744,19 +750,17 @@ void cbKeyBinder::OnAppStartupDone(CodeBlocksEvent& event)
     // a project or file is opened
 
     // if keys still unbound, do it here.
-    // stop the timer after one entry
-//    m_timer.Stop();
 
     // load key binding from file
     if (!m_bBound)
      {
         #if LOGGING
-         LOGIT("cbKeyBinder:Begin OnTimer() Key Load");
+         LOGIT("cbKeyBinder:Begin initial Key Load");
         #endif
         m_bBound=TRUE;
         OnLoad();
         #if LOGGING
-         LOGIT("cbKeyBinder:End OnTimer() Key Load");
+         LOGIT("cbKeyBinder:End initial Key Load");
         #endif
      }
     return;

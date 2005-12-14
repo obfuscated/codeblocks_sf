@@ -8,7 +8,7 @@
 // Copyright:   (c) Francesco Montorsi
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
-
+//commit 12/14/2005 9:16 AM
 
 
 #ifdef __GNUG__
@@ -107,7 +107,6 @@ void wxMenuCmd::Update()
 	if (m_nShortcuts <= 0) {
 
 		//-wxLogDebug(wxT("wxMenuCmd::Update - no shortcuts defined for [%s]"), str.c_str());
-        //-wxLogDebug("\n");
 
 		// no more shortcuts for this menuitem: SetText()
 		// will delete the hotkeys associated...
@@ -116,8 +115,8 @@ void wxMenuCmd::Update()
 	}
 
 	wxString newtext = str+wxT("\t")+GetShortcut(0)->GetStr();
-	//-wxLogDebug(wxT("wxMenuCmd::Update - setting the new text to [%s]"), newtext.c_str());
-    //-wxLogDebug("\n");
+
+	//wxLogDebug(wxT("wxMenuCmd::Update - setting the new text to [%s]"), newtext.c_str());
 
 #if defined( __WXMSW__ )
 
@@ -174,27 +173,30 @@ void wxMenuCmd::Exec(wxObject *origin, wxEvtHandler *client)
 // --+v0.3---------------------------------------------------------------------
 wxCmd *wxMenuCmd::CreateNew(wxString cmdName, int id)
 // ----------------------------------------------------------------------------
-{//+v0.3
+{//+v0.3+v0.5
 	if (!m_pMenuBar) return NULL;
 
 	// search the menuitem which is tied to the given ID
-	wxMenuItem *p = m_pMenuBar->FindItem(id);
-
+	//-v0.5 wxMenuItem *p = m_pMenuBar->FindItem(id);
 	//-v0.3 if (!p) return NULL;
+
 	// CodeBlocks has dynamic (shifty) menu item id's
 	// so the file loaded item may have a differenct item id
 	// search for a matching menu item
+
+    //wxLogDebug("CreateNew(): id:%d name:%s", id, cmdName.GetData());
+    wxMenuItem* p = 0;
+	//find menu item id by name
+	int actualMenuID = wxFindMenuItem(m_pMenuBar,cmdName);
+	if (wxNOT_FOUND != actualMenuID)
+        p = m_pMenuBar->FindItem(actualMenuID);
 	if (!p)
 	 {
-        int foundId = wxFindMenuItem(m_pMenuBar, cmdName);
-        if (wxNOT_FOUND == foundId)
-         {
-            wxLogDebug("CreateNew()UnMatched "+cmdName);
+            wxLogDebug("CreateNew()UnMatched id:%d name:%s", id, cmdName.GetData());
             return NULL;
-         }
-        p = m_pMenuBar->FindItem(foundId);
 	 }
-	wxASSERT(id == p->GetId());
+	//-v0.5
+	//-wxASSERT(id == p->GetId());
 	return new wxMenuCmd(p);
 }
 

@@ -5,6 +5,7 @@
  * Copyright: (c) Pecan
  * License:   GPL
  **************************************************************/
+//commit 12/14/2005 9:16 AM
 
 #ifndef CBKEYBINDER_H
 #define CBKEYBINDER_H
@@ -30,6 +31,7 @@
 // ----------------------------------------------------------------------------
 #include <manager.h>
 #include <messagemanager.h>
+#include <configmanager.h>
 #include <cbeditor.h>
 #include "keybinder.h"
 #include "menuutils.h"
@@ -37,7 +39,7 @@
 #include "wx/fileconf.h"
 #include "wx/app.h"
 #include "wx/utils.h"
-#include "wx/timer.h"
+
 
 // ----------------------------------------------------------------------------
 #include "debugging.h"
@@ -97,11 +99,9 @@ class cbKeyBinder : public cbPlugin
         void cbKeyBinder::OnEditorOpen(CodeBlocksEvent& event);
         void cbKeyBinder::OnEditorClose(CodeBlocksEvent& event);
         //void cbKeyBinder::OnSetFocus(wxFocusEvent& event);
-//        void cbKeyBinder::OnTimer(wxTimerEvent& event); //timer
         void cbKeyBinder::OnAppStartupDone(CodeBlocksEvent& event);
 
         wxWindow* pcbWindow;            //main app window
-//        wxTimer m_timer;                //timer
         wxArrayPtrVoid m_EditorPtrs;    //attached editor windows
         bool bKeyFileErrMsgShown;
 

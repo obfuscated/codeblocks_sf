@@ -7,7 +7,7 @@
 // Copyright:   (c) Aleksandras Gluchovas and (c) Francesco Montorsi
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
-
+//commit 12/14/2005 9:16 AM
 #ifndef __WX_MENUUTILS_H__
 #define __WX_MENUUTILS_H__
 
@@ -41,7 +41,7 @@ int /*-lf-WXDLLIMPEXP_KEYBINDER*/ wxFindMenuItem(wxMenuBar *, const wxString &st
 //! when is executed.
 //class /*-lf-WXDLLIMPEXP_KEYBINDER*/ wxMenuCmd : public wxCmd
 //----------------------------------------------------------------------------
-class  wxMenuCmd : public wxCmd
+class wxMenuCmd : public wxCmd
 // ---------------------------------------------------------------------------
 {
 	//! The menuitem which is connected to this command

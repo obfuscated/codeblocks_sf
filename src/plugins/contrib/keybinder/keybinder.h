@@ -8,7 +8,7 @@
 // Copyright:   (c) Aleksandras Gluchovas and (c) Francesco Montorsi
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
-
+//commit 12/14/2005 9:15 AM
 
 
 
@@ -62,7 +62,7 @@ class wxConfigBase;
 //!
 //-v0.1- class WXDLLIMPEXP_KEYBINDER wxKeyBind
 // ----------------------------------------------------------------------------
-class  wxKeyBind
+class wxKeyBind
 // ----------------------------------------------------------------------------
 {
 protected:
