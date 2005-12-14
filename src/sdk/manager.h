@@ -45,7 +45,7 @@ class DLLIMPORT Manager
 		ScriptingManager* GetScriptingManager();
 		ConfigManager* Manager::GetConfigManager(const wxString& name_space);
 
-		static bool isappShutingDown();
+		static bool isappShutingDown() __deprecated__;
 		// stupid typo ;-P
 		static bool isappShuttingDown();
 

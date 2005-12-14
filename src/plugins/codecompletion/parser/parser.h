@@ -99,9 +99,9 @@ class Parser : public wxEvtHandler
 		void SetTokenKindImage(int kind, const wxIcon& icon);
 		wxImageList* GetImageList(){ return m_pImageList; }
 #endif // STANDALONE
-		Token* FindTokenByName(const wxString& name, bool globalsOnly = true, short int kindMask = 0xFFFF);
-		Token* FindChildTokenByName(Token* parent, const wxString& name, bool useInheritance = false, short int kindMask = 0xFFFF);
-		Token* FindTokenByDisplayName(const wxString& name);
+		Token* FindTokenByName(const wxString& name, bool globalsOnly = true, short int kindMask = 0xFFFF) const;
+		Token* FindChildTokenByName(Token* parent, const wxString& name, bool useInheritance = false, short int kindMask = 0xFFFF) const;
+		Token* FindTokenByDisplayName(const wxString& name) const;
 
 		ParserOptions& Options(){ return m_Options; }
 		BrowserOptions& ClassBrowserOptions(){ return m_BrowserOptions; }

@@ -489,7 +489,7 @@ int Parser::GetTokenKindImage(Token* token)
 }
 #endif // STANDALONE
 
-Token* Parser::FindTokenByName(const wxString& name, bool globalsOnly, short int kindMask)
+Token* Parser::FindTokenByName(const wxString& name, bool globalsOnly, short int kindMask) const
 {
 //	for (unsigned int i = m_Tokens.GetCount() - 1; i >= 0; --i)
     Token* res = 0;
@@ -509,7 +509,7 @@ Token* Parser::FindTokenByName(const wxString& name, bool globalsOnly, short int
 	return res;
 }
 
-Token* Parser::FindChildTokenByName(Token* parent, const wxString& name, bool useInheritance, short int kindMask)
+Token* Parser::FindChildTokenByName(Token* parent, const wxString& name, bool useInheritance, short int kindMask) const
 {
 	if (!parent)
 		return FindTokenByName(name, false, kindMask);
@@ -533,7 +533,7 @@ Token* Parser::FindChildTokenByName(Token* parent, const wxString& name, bool us
 	return 0L;
 }
 
-Token* Parser::FindTokenByDisplayName(const wxString& name)
+Token* Parser::FindTokenByDisplayName(const wxString& name) const
 {
 	for (unsigned int i = 0; i < m_Tokens.GetCount(); ++i)
 	{
@@ -544,7 +544,7 @@ Token* Parser::FindTokenByDisplayName(const wxString& name)
 	return 0L;
 }
 
-int TokensSortProc(Token** first, Token** second)
+__pure__ int TokensSortProc(Token** first, Token** second)
 {
 	Token* parent1 = first[0]->m_pParent;
 	Token* parent2 = second[0]->m_pParent;

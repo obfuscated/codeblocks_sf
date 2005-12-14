@@ -56,7 +56,7 @@ Token::~Token()
 	//dtor
 }
 
-wxString Token::GetNamespace()
+wxString Token::GetNamespace() const
 {
 	wxString res;
 	Token* parent = m_pParent;
@@ -74,7 +74,7 @@ void Token::AddChild(Token* child)
 		m_Children.Add(child);
 }
 
-bool Token::InheritsFrom(Token* token)
+bool Token::InheritsFrom(Token* token) const
 {
 	if (!token)
 		return false;
@@ -87,7 +87,7 @@ bool Token::InheritsFrom(Token* token)
 	return false;
 }
 
-wxString Token::GetTokenKindString()
+wxString Token::GetTokenKindString() const
 {
 	switch (m_TokenKind)
 	{
@@ -100,18 +100,18 @@ wxString Token::GetTokenKindString()
 		case tkDestructor: return _("destructor");
 		case tkPreprocessor: return _("preprocessor");
 		case tkVariable: return _("variable");
-		default: return _T(""); // tkUndefined
+		default: return wxEmptyString; // tkUndefined
 	}
 }
 
-wxString Token::GetTokenScopeString()
+wxString Token::GetTokenScopeString() const
 {
 	switch (m_Scope)
 	{
 		case tsPrivate: return _("private");
 		case tsProtected: return _("protected");
 		case tsPublic: return _("public");
-		default: return _T("");
+		default: return wxEmptyString;
 	}
 }
 

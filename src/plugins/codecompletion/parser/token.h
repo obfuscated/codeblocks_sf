@@ -41,10 +41,10 @@ class Token  : public BlockAllocated<Token, 10000>
 		~Token();
 
 		void AddChild(Token* child);
-		wxString GetNamespace();
-		bool InheritsFrom(Token* token);
-		wxString GetTokenKindString();
-		wxString GetTokenScopeString();
+		wxString GetNamespace() const;
+		bool InheritsFrom(Token* token) const;
+		wxString GetTokenKindString() const;
+		wxString GetTokenScopeString() const;
 
 		bool SerializeIn(wxFile* f);
 		bool SerializeOut(wxFile* f);

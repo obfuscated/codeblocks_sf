@@ -144,7 +144,7 @@ bool Tokenizer::SkipWhiteSpace()
     // skip spaces, tabs, etc.
     while (CurrentChar() <= _T(' ') && MoveToNextChar()) // don't check EOF when MoveToNextChar already does, also replace replace isspace() which calls msvcrt.dll
         ;             									 // with a dirty hack:  CurrentChar() <= ' ' is "good enough" here
-    if (IsEOF())
+    if (unlikely(IsEOF()))
         return false;
     return true;
 }
@@ -157,7 +157,7 @@ bool Tokenizer::SkipToChar(const wxChar& ch)
         while (CurrentChar() != ch && MoveToNextChar())  // don't check EOF when MoveToNextChar already does
             ;
 
-        if (IsEOF())
+        if (unlikely(IsEOF()))
             return false;
 
         if (PreviousChar() != '\\')
@@ -402,7 +402,7 @@ void Tokenizer::UngetToken()
 
 wxString Tokenizer::DoGetToken()
 {
-	if (IsEOF())
+	if (unlikely(IsEOF()))
 		return wxEmptyString;
 
 	if (!SkipWhiteSpace())
@@ -414,7 +414,7 @@ wxString Tokenizer::DoGetToken()
 	int start = m_TokenIndex;
 	wxString m_Str;
 
-	if (isalpha(CurrentChar()) || CurrentChar() == '_')
+	if (CurrentChar() == '_' || isalpha(CurrentChar()))
 	{
 		// keywords, identifiers, etc.
 
@@ -423,7 +423,7 @@ wxString Tokenizer::DoGetToken()
 				   isalnum(CurrentChar()) ) && MoveToNextChar()  )
 		;
 
-		if (IsEOF())
+		if (unlikely(IsEOF()))
 			return wxEmptyString;
 		m_Str = m_Buffer.Mid(start, m_TokenIndex - start);
 		m_IsOperator = m_Str.IsSameAs(TokenizerConsts::operator_str);
