@@ -28,6 +28,10 @@
 #include "wxssplitterwindow.h"
 #include "wxsnotebook.h"
 #include "wxslistbook.h"
+#include "wxsscrolledwindow.h"
+#include "wxschoicebook.h"
+#include "wxscalendarctrl.h"
+#include "wxsgenericdirctrl.h"
 #include "../wxsmith.h"
 
 
@@ -180,10 +184,14 @@ static wxsWidgetInfo StdInfos[] =
     Entry(TreeCtrl,      "wx_wxtreectrl.html#wxtreectrl","<wx/treectrl.h>")
     Entry(RadioBox,      "wx_wxradiobox.html#wxradiobox","<wx/radiobox.h>")
     Entry2Headers(DatePickerCtrl,"wx_wxdatepickerctrl.html#wxdatepickerctrl","<wx/datectrl.h>","<wx/dateevt.h>")
+    Entry(CalendarCtrl,  "wx_wxcalendarctrl.html#wxcalendarctrl","<wx/calctrl.h>")
     Entry(StaticLine,    "wx_wxstaticline.html#wxstaticline","<wx/statline.h>")
     Entry(SplitterWindow,"wx_wxsplitterwindow.html#wxsplitterwindow","<wx/splitter.h>")
     Entry(Notebook,      "wx_wxnotebook.html#wxnotebook","<wx/notebook.h>")
     Entry(Listbook,      "wx_wxlistbook.html#wxlistbook","<wx/listbook.h>")
+    Entry(Choicebook,    "wx_wxchoicebook.html#wxchoicebook","<wx/choicebk.h>")
+    Entry(ScrolledWindow,"wx_wxscrolledwindow.html#wxscrolledwindow","<wx/scrolwin.h>")
+    Entry(GenericDirCtrl,"wx_wxgenericdirctrl.html#wxgenericdirctrl","<wx/dirctrl.h>")
 
     WindowEntry(Dialog,"wx_wxdialog.html#wxdialog","<wx/dialog.h>")
     WindowEntry(Frame, "wx_wxframe.html#wxframe","<wx/frame.h>")
@@ -320,10 +328,14 @@ wxsWidget* wxsStdManagerT::ProduceWidget(int Id,wxsWindowRes* Res)
         case wxsTreeCtrlId:         return new wxsTreeCtrl(this,Res);
         case wxsRadioBoxId:         return new wxsRadioBox(this,Res);
         case wxsDatePickerCtrlId:   return new wxsDatePickerCtrl(this,Res);
+        case wxsCalendarCtrlId:     return new wxsCalendarCtrl(this,Res);
         case wxsStaticLineId:       return new wxsStaticLine(this,Res);
         case wxsSplitterWindowId:   return new wxsSplitterWindow(this,Res);
         case wxsNotebookId:         return new wxsNotebook(this,Res);
         case wxsListbookId:         return new wxsListbook(this,Res);
+        case wxsChoicebookId:       return new wxsChoicebook(this,Res);
+        case wxsScrolledWindowId:   return new wxsScrolledWindow(this,Res);
+        case wxsGenericDirCtrlId:   return new wxsGenericDirCtrl(this,Res);
     }
 
     return NULL;

@@ -40,7 +40,12 @@ wxsnotebook.cpp \
 wxssplitterwindow.cpp \
 wxsstaticline.cpp \
 wxslistbookparentqp.cpp \
-wxsnotebookparentqp.cpp
+wxsnotebookparentqp.cpp \
+wxscalendarctrl.cpp \
+wxschoicebook.cpp \
+wxschoicebookparentqp.cpp \
+wxsgenericdirctrl.cpp \
+wxsscrolledwindow.cpp
 
 noinst_HEADERS = wxsboxsizer.h \
 wxsbutton.h \
@@ -72,4 +77,9 @@ wxsnotebook.h \
 wxssplitterwindow.h \
 wxsstaticline.h \
 wxslistbookparentqp.h \
-wxsnotebookparentqp.h
+wxsnotebookparentqp.h \
+wxscalendarctrl.h \
+wxschoicebook.h \
+wxschoicebookparentqp.h \
+wxsgenericdirctrl.h \
+wxsscrolledwindow.h

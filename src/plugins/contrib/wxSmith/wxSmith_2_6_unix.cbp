@@ -71,11 +71,41 @@
             <Option link="0" />
             <Option target="wxSmith" />
         </Unit>
+        <Unit filename="defwidgets\wxscalendarctrl.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="defwidgets\wxscalendarctrl.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
         <Unit filename="defwidgets\wxscheckbox.cpp">
             <Option compilerVar="CPP" />
             <Option target="wxSmith" />
         </Unit>
         <Unit filename="defwidgets\wxscheckbox.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="defwidgets\wxschoicebook.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="defwidgets\wxschoicebook.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="defwidgets\wxschoicebookparentqp.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="defwidgets\wxschoicebookparentqp.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
@@ -136,6 +166,16 @@
             <Option target="wxSmith" />
         </Unit>
         <Unit filename="defwidgets\wxsgauge.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="defwidgets\wxsgenericdirctrl.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="defwidgets\wxsgenericdirctrl.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
@@ -236,6 +276,16 @@
             <Option target="wxSmith" />
         </Unit>
         <Unit filename="defwidgets\wxsscrollbar.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="defwidgets\wxsscrolledwindow.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="defwidgets\wxsscrolledwindow.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
