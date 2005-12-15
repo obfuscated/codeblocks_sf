@@ -423,10 +423,10 @@ MainFrame::MainFrame(wxLocale& lang, wxWindow* parent)
 
     DoCreateStatusBar();
 #if wxUSE_STATUSBAR
-    SetStatusText(_("Welcome to ")+wxString(APP_NAME"!"));
+    SetStatusText(_("Welcome to ")+ APP_NAME + _T("!"));
 #endif // wxUSE_STATUSBAR
 
-    SetTitle(APP_NAME _T(" v") APP_VERSION);
+    SetTitle(APP_NAME + _T(" v") + APP_VERSION);
 
     ScanForPlugins();
     LoadWindowState();
@@ -1045,7 +1045,7 @@ void MainFrame::DoUpdateStatusBar()
     }
     else
     {
-        SetStatusText(_("Welcome to "APP_NAME"!"));             //tiwag 050917
+        SetStatusText(_("Welcome to ") + APP_NAME + _T("!"));             //tiwag 050917
         SetStatusText(wxEmptyString, 1);
         SetStatusText(wxEmptyString, 2);
         SetStatusText(wxEmptyString, 3);

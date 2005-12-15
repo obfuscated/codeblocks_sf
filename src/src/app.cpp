@@ -132,7 +132,7 @@ void CodeBlocksApp::InitAssociations()
 		{
             HideSplashScreen();
             wxString msg;
-            msg.Printf(_("%s is not currently the default application for C/C++ source files\nDo you want to set it as default?"), APP_NAME);
+            msg.Printf(_("%s is not currently the default application for C/C++ source files\nDo you want to set it as default?"), APP_NAME.c_str());
             int answer = wxMessageBox(msg,
                                         _("File associations"),
                                         wxICON_QUESTION | wxYES_NO | wxYES_DEFAULT);
@@ -462,9 +462,9 @@ void CodeBlocksApp::OnFatalException()
     if ( preview.Show(report) )
         report.Process();
 #else
-    wxMessageBox(_("Something has gone wrong inside " APP_NAME " and it "
-                    "will terminate immediately.\n"
-                    "We are sorry for the inconvenience..."));
+    wxMessageBox(wxString::Format(_("Something has gone wrong inside %s and it "
+                                    "will terminate immediately.\n"
+                                    "We are sorry for the inconvenience..."), APP_NAME.c_str()));
 #endif
 }
 
@@ -541,13 +541,15 @@ bool CodeBlocksApp::CheckResource(const wxString& res)
         HideSplashScreen();
     	wxString msg;
     	msg.Printf("Cannot find %s...\n"
-    		APP_NAME" was configured to be installed in '%s'.\n"
+    		"%s was configured to be installed in '%s'.\n"
     		"Please use the command-line switch '--prefix' or "
             "set the CODEBLOCKS_DATA_DIR environment variable "
-    		"to point where "APP_NAME" is installed,\n"
+    		"to point where %s is installed,\n"
     		"or try re-installing the application...",
     		res.c_str(),
-    		ConfigManager::ReadDataPath().c_str());
+    		APP_NAME.c_str(),
+    		ConfigManager::ReadDataPath().c_str(),
+    		APP_NAME.c_str());
     	wxMessageBox(msg);
     	return false;
     }

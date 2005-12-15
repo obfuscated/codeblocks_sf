@@ -5,9 +5,32 @@
         <Option title="Code::Blocks (wx2.6)" />
         <Option makefile="Makefile.wx2.6" />
         <Option pch_mode="2" />
-        <Option default_target="5" />
+        <Option default_target="7" />
         <Option compiler="0" />
         <Build>
+            <Target title="AutoRevision">
+                <Option output="tools\AutoRevision\autorevision.exe" />
+                <Option object_output=".objs\2.6" />
+                <Option type="1" />
+                <Option compiler="0" />
+                <Option includeInTargetAll="1" />
+                <Option projectResourceIncludeDirsRelation="1" />
+            </Target>
+            <Target title="ConsoleRunner">
+                <Option output="tools\ConsoleRunner\console_runner.exe" />
+                <Option working_dir="tools\ConsoleRunner" />
+                <Option object_output=".objs\2.6" />
+                <Option type="1" />
+                <Option compiler="0" />
+                <Option includeInTargetAll="1" />
+                <Option projectCompilerOptionsRelation="0" />
+                <Option projectLinkerOptionsRelation="1" />
+                <Option projectIncludeDirsRelation="2" />
+                <Option projectResourceIncludeDirsRelation="1" />
+                <Compiler>
+                    <Add option="-Os" />
+                </Compiler>
+            </Target>
             <Target title="tinyXML">
                 <Option output="sdk\tinyxml\libtxml.a" />
                 <Option working_dir="" />
@@ -147,8 +170,12 @@
                     <Add directory="devel" />
                     <Add directory="src\wxDockit\lib" />
                 </Linker>
+                <ExtraCommands>
+                    <Add before="tools/AutoRevision/autorevision.exe +wx +int . src/revision.h" />
+                    <Mode before="always" />
+                </ExtraCommands>
             </Target>
-            <Target title="plugin_Astyle">
+            <Target title="AStyle">
                 <Option output="devel\share\CodeBlocks\plugins\astyle.dll" />
                 <Option working_dir="devel\share\CodeBlocks\plugins" />
                 <Option object_output=".objs\2.6" />
@@ -170,7 +197,7 @@
                     <Add directory="devel" />
                 </Linker>
             </Target>
-            <Target title="plugin_CompilerGCC_depslib">
+            <Target title="Compiler depslib">
                 <Option output="plugins\compilergcc\depslib\libdepslib.a" />
                 <Option working_dir="" />
                 <Option object_output=".objs\2.6" />
@@ -182,7 +209,7 @@
                     <Add option="-DDEPSLIB_WINDOWS" />
                 </Compiler>
             </Target>
-            <Target title="plugin_CompilerGCC">
+            <Target title="Compiler">
                 <Option output="devel\share\CodeBlocks\plugins\compilergcc.dll" />
                 <Option working_dir="devel\share\CodeBlocks\plugins" />
                 <Option object_output=".objs\2.6" />
@@ -208,7 +235,7 @@
                     <Add directory="plugins\compilergcc\depslib" />
                 </Linker>
             </Target>
-            <Target title="plugin_DebuggerGDB">
+            <Target title="Debugger">
                 <Option output="devel\share\CodeBlocks\plugins\debuggergdb.dll" />
                 <Option working_dir="devel\share\CodeBlocks\plugins" />
                 <Option object_output=".objs\2.6" />
@@ -231,7 +258,7 @@
                     <Add directory="devel" />
                 </Linker>
             </Target>
-            <Target title="plugin_CodeCompletion">
+            <Target title="Code-completion">
                 <Option output="devel\share\CodeBlocks\plugins\codecompletion.dll" />
                 <Option working_dir="devel\share\CodeBlocks\plugins" />
                 <Option object_output=".objs\2.6" />
@@ -254,7 +281,7 @@
                     <Add directory="devel" />
                 </Linker>
             </Target>
-            <Target title="plugin_ClassWizard">
+            <Target title="Class wizard">
                 <Option output="devel\share\CodeBlocks\plugins\classwizard.dll" />
                 <Option working_dir="devel\share\CodeBlocks\plugins" />
                 <Option object_output=".objs\2.6" />
@@ -277,7 +304,7 @@
                     <Add directory="devel" />
                 </Linker>
             </Target>
-            <Target title="plugin_DefMimeHandler">
+            <Target title="Default MIME handler">
                 <Option output="devel\share\CodeBlocks\plugins\defaultmimehandler.dll" />
                 <Option working_dir="devel\share\CodeBlocks\plugins" />
                 <Option object_output=".objs\2.6" />
@@ -299,7 +326,7 @@
                     <Add directory="devel" />
                 </Linker>
             </Target>
-            <Target title="plugin_PluginsWizard">
+            <Target title="Plugin wizard">
                 <Option output="devel\share\CodeBlocks\plugins\pluginwizard.dll" />
                 <Option working_dir="devel\share\CodeBlocks\plugins" />
                 <Option object_output=".objs\2.6" />
@@ -322,7 +349,7 @@
                     <Add directory="devel" />
                 </Linker>
             </Target>
-            <Target title="plugin_ToDo">
+            <Target title="To-do">
                 <Option output="devel\share\CodeBlocks\plugins\todo.dll" />
                 <Option working_dir="devel\share\CodeBlocks\plugins" />
                 <Option object_output=".objs\2.6" />
@@ -341,7 +368,7 @@
                     <Add directory="devel" />
                 </Linker>
             </Target>
-            <Target title="plugin_XPManifest">
+            <Target title="XP look &amp; feel">
                 <Option output="devel\share\CodeBlocks\plugins\xpmanifest.dll" />
                 <Option working_dir="devel\share\CodeBlocks\plugins" />
                 <Option object_output=".objs\2.6" />
@@ -360,21 +387,6 @@
                     <Add library="libcodeblocks.a" />
                     <Add directory="devel" />
                 </Linker>
-            </Target>
-            <Target title="console_runner">
-                <Option output="tools\ConsoleRunner\console_runner.exe" />
-                <Option working_dir="tools\ConsoleRunner" />
-                <Option object_output=".objs\2.6" />
-                <Option type="1" />
-                <Option compiler="0" />
-                <Option includeInTargetAll="1" />
-                <Option projectCompilerOptionsRelation="0" />
-                <Option projectLinkerOptionsRelation="1" />
-                <Option projectIncludeDirsRelation="2" />
-                <Option projectResourceIncludeDirsRelation="1" />
-                <Compiler>
-                    <Add option="-Os" />
-                </Compiler>
             </Target>
             <Environment>
                 <Variable name="WX_CFG" value="NonUnicode" />
@@ -431,1163 +443,1163 @@
         </Unit>
         <Unit filename="plugins\astyle\astyle\ASBeautifier.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_Astyle" />
+            <Option target="AStyle" />
         </Unit>
         <Unit filename="plugins\astyle\astyle\ASFormatter.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_Astyle" />
+            <Option target="AStyle" />
         </Unit>
         <Unit filename="plugins\astyle\astyle\INSTALL.TXT">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_Astyle" />
+            <Option target="AStyle" />
         </Unit>
         <Unit filename="plugins\astyle\astyle\Makefile">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_Astyle" />
+            <Option target="AStyle" />
         </Unit>
         <Unit filename="plugins\astyle\astyle\astyle.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_Astyle" />
+            <Option target="AStyle" />
         </Unit>
         <Unit filename="plugins\astyle\astyle\astyle.html">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_Astyle" />
+            <Option target="AStyle" />
         </Unit>
         <Unit filename="plugins\astyle\astyle\astyle_main.cpp">
             <Option compilerVar="CPP" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_Astyle" />
+            <Option target="AStyle" />
         </Unit>
         <Unit filename="plugins\astyle\astyle\astyle_release_notes.html">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_Astyle" />
+            <Option target="AStyle" />
         </Unit>
         <Unit filename="plugins\astyle\astyle\compiler_defines.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_Astyle" />
+            <Option target="AStyle" />
         </Unit>
         <Unit filename="plugins\astyle\astyle\license.html">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_Astyle" />
+            <Option target="AStyle" />
         </Unit>
         <Unit filename="plugins\astyle\astyleconfigdlg.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_Astyle" />
+            <Option target="AStyle" />
         </Unit>
         <Unit filename="plugins\astyle\astyleconfigdlg.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_Astyle" />
+            <Option target="AStyle" />
         </Unit>
         <Unit filename="plugins\astyle\astyleplugin.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_Astyle" />
+            <Option target="AStyle" />
         </Unit>
         <Unit filename="plugins\astyle\astyleplugin.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_Astyle" />
+            <Option target="AStyle" />
         </Unit>
         <Unit filename="plugins\astyle\formattersettings.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_Astyle" />
+            <Option target="AStyle" />
         </Unit>
         <Unit filename="plugins\astyle\formattersettings.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_Astyle" />
+            <Option target="AStyle" />
         </Unit>
         <Unit filename="plugins\astyle\resources\configuration.xrc">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_Astyle" />
+            <Option target="AStyle" />
         </Unit>
         <Unit filename="plugins\classwizard\classwizard.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_ClassWizard" />
+            <Option target="Class wizard" />
         </Unit>
         <Unit filename="plugins\classwizard\classwizard.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_ClassWizard" />
+            <Option target="Class wizard" />
         </Unit>
         <Unit filename="plugins\classwizard\classwizarddlg.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_ClassWizard" />
+            <Option target="Class wizard" />
         </Unit>
         <Unit filename="plugins\classwizard\classwizarddlg.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_ClassWizard" />
+            <Option target="Class wizard" />
         </Unit>
         <Unit filename="plugins\classwizard\resources\new_class.xrc">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_ClassWizard" />
+            <Option target="Class wizard" />
         </Unit>
         <Unit filename="plugins\codecompletion\cclist.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\cclist.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\cclistctrl.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\cclistctrl.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\ccoptionsdlg.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\ccoptionsdlg.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\ccrenderer.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\ccrenderer.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\classbrowser.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\classbrowser.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\codecompletion.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\codecompletion.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\insertclassmethoddlg.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\insertclassmethoddlg.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\nativeparser.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\nativeparser.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\parser\parser.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\parser\parser.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\parser\parserthread.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\parser\parserthread.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\parser\token.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\parser\token.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\parser\tokenizer.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\parser\tokenizer.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\resources\images\class.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\resources\images\class_folder.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\resources\images\ctor_private.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\resources\images\ctor_protected.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\resources\images\ctor_public.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\resources\images\dtor_private.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\resources\images\dtor_protected.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\resources\images\dtor_public.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\resources\images\enum.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\resources\images\enumerator.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\resources\images\enums_folder.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\resources\images\method_private.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\resources\images\method_protected.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\resources\images\method_public.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\resources\images\namespace.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\resources\images\others_folder.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\resources\images\preproc.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\resources\images\preproc_folder.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\resources\images\symbols_folder.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\resources\images\var_private.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\resources\images\var_protected.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\resources\images\var_public.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\resources\insert_class_method.xrc">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\codecompletion\resources\settings.xrc">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CodeCompletion" />
+            <Option target="Code-completion" />
         </Unit>
         <Unit filename="plugins\compilergcc\advancedcompileroptionsdlg.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\advancedcompileroptionsdlg.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\cmdlinegenerator.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\cmdlinegenerator.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\compilerBCC.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\compilerBCC.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\compilerDMC.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\compilerDMC.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\compilerICC.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\compilerICC.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\compilerMINGW.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\compilerMINGW.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\compilerMSVC.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\compilerMSVC.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\compilerOW.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\compilerOW.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\compilerSDCC.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\compilerSDCC.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\compiler_defs.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\compiler_defs.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\compilererrors.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\compilererrors.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\compilergcc.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\compilergcc.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\compilermessages.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\compilermessages.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\compileroptionsdlg.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\compileroptionsdlg.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\alloc.c">
             <Option compilerVar="CC" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\alloc.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\cache.c">
             <Option compilerVar="CC" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\cache.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\depslib.c">
             <Option compilerVar="CC" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\depslib.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\filent.c">
             <Option compilerVar="CC" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\filesys.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\fileunix.c">
             <Option compilerVar="CC" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\hash.c">
             <Option compilerVar="CC" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\hash.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\headers.c">
             <Option compilerVar="CC" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\headers.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\jam.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\lists.c">
             <Option compilerVar="CC" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\lists.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\main.c">
             <Option compilerVar="CC" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\newstr.c">
             <Option compilerVar="CC" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\newstr.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\pathsplit.c">
             <Option compilerVar="CC" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\pathsplit.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\pathsys.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\pathunix.c">
             <Option compilerVar="CC" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\regexp.c">
             <Option compilerVar="CC" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\regexp.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\search.c">
             <Option compilerVar="CC" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\search.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\timestamp.c">
             <Option compilerVar="CC" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\depslib\src\timestamp.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC_depslib" />
+            <Option target="Compiler depslib" />
         </Unit>
         <Unit filename="plugins\compilergcc\directcommands.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\directcommands.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\makefilegenerator.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\makefilegenerator.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\resources\advanced_compiler_options.xrc">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\resources\compiler_menu.xrc">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\resources\compiler_options.xrc">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\resources\compiler_toolbar.xrc">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\resources\compiler_toolbar_16x16.xrc">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\resources\images\16x16\compile.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\resources\images\16x16\compilerun.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\resources\images\16x16\rebuild.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\resources\images\16x16\run.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\resources\images\compile.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\resources\images\compilerun.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\resources\images\rebuild.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\compilergcc\resources\images\run.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_CompilerGCC" />
+            <Option target="Compiler" />
         </Unit>
         <Unit filename="plugins\debuggergdb\backtracedlg.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\backtracedlg.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\breakpointsdlg.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\breakpointsdlg.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\cdb_commands.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\cdb_driver.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\cdb_driver.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\debugger_defs.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\debugger_defs.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\debuggerdriver.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\debuggerdriver.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\debuggergdb.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\debuggergdb.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\debuggeroptionsdlg.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\debuggeroptionsdlg.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\debuggerstate.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\debuggerstate.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\debuggertree.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\debuggertree.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\disassemblydlg.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\disassemblydlg.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\editbreakpointdlg.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\editbreakpointdlg.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\editwatchdlg.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\editwatchdlg.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\editwatchesdlg.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\editwatchesdlg.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\gdb_commands.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\gdb_driver.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\gdb_driver.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\resources\backtrace.xrc">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\resources\breakpoints.xrc">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\resources\debugger_menu.xrc">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\resources\debugger_options_dlg.xrc">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\resources\debugger_toolbar.xrc">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\resources\debugger_toolbar_16x16.xrc">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\resources\disassembly.xrc">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\resources\edit_watches_dlg.xrc">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\resources\images\16x16\dbgnext.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\resources\images\16x16\dbgrun.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\resources\images\16x16\dbgrunto.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\resources\images\16x16\dbgstep.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\resources\images\16x16\stop.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\resources\images\dbgnext.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\resources\images\dbgrun.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\resources\images\dbgrunto.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\resources\images\dbgstep.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\resources\images\stop.png">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DebuggerGDB" />
+            <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\defaultmimehandler\defaultmimehandler.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_DefMimeHandler" />
+            <Option target="Default MIME handler" />
         </Unit>
         <Unit filename="plugins\defaultmimehandler\defaultmimehandler.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DefMimeHandler" />
+            <Option target="Default MIME handler" />
         </Unit>
         <Unit filename="plugins\defaultmimehandler\editmimetypesdlg.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_DefMimeHandler" />
+            <Option target="Default MIME handler" />
         </Unit>
         <Unit filename="plugins\defaultmimehandler\editmimetypesdlg.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DefMimeHandler" />
+            <Option target="Default MIME handler" />
         </Unit>
         <Unit filename="plugins\defaultmimehandler\mimetypesarray.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DefMimeHandler" />
+            <Option target="Default MIME handler" />
         </Unit>
         <Unit filename="plugins\defaultmimehandler\resources\edit_files_handling.xrc">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_DefMimeHandler" />
+            <Option target="Default MIME handler" />
         </Unit>
         <Unit filename="plugins\pluginwizard\enterinfodlg.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_PluginsWizard" />
+            <Option target="Plugin wizard" />
         </Unit>
         <Unit filename="plugins\pluginwizard\enterinfodlg.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_PluginsWizard" />
+            <Option target="Plugin wizard" />
         </Unit>
         <Unit filename="plugins\pluginwizard\pluginwizard.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_PluginsWizard" />
+            <Option target="Plugin wizard" />
         </Unit>
         <Unit filename="plugins\pluginwizard\pluginwizard.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_PluginsWizard" />
+            <Option target="Plugin wizard" />
         </Unit>
         <Unit filename="plugins\pluginwizard\pluginwizarddlg.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_PluginsWizard" />
+            <Option target="Plugin wizard" />
         </Unit>
         <Unit filename="plugins\pluginwizard\pluginwizarddlg.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_PluginsWizard" />
+            <Option target="Plugin wizard" />
         </Unit>
         <Unit filename="plugins\pluginwizard\resources\new_plugin.xrc">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_PluginsWizard" />
+            <Option target="Plugin wizard" />
         </Unit>
         <Unit filename="plugins\pluginwizard\resources\plugin_info.xrc">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_PluginsWizard" />
+            <Option target="Plugin wizard" />
         </Unit>
         <Unit filename="plugins\todo\addtododlg.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_ToDo" />
+            <Option target="To-do" />
         </Unit>
         <Unit filename="plugins\todo\addtododlg.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_ToDo" />
+            <Option target="To-do" />
         </Unit>
         <Unit filename="plugins\todo\resources\add_todo.xrc">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_ToDo" />
+            <Option target="To-do" />
         </Unit>
         <Unit filename="plugins\todo\resources\settings.xrc">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_ToDo" />
+            <Option target="To-do" />
         </Unit>
         <Unit filename="plugins\todo\todolist.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_ToDo" />
+            <Option target="To-do" />
         </Unit>
         <Unit filename="plugins\todo\todolist.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_ToDo" />
+            <Option target="To-do" />
         </Unit>
         <Unit filename="plugins\todo\todolistview.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_ToDo" />
+            <Option target="To-do" />
         </Unit>
         <Unit filename="plugins\todo\todolistview.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_ToDo" />
+            <Option target="To-do" />
         </Unit>
         <Unit filename="plugins\todo\todosettingsdlg.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_ToDo" />
+            <Option target="To-do" />
         </Unit>
         <Unit filename="plugins\todo\todosettingsdlg.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_ToDo" />
+            <Option target="To-do" />
         </Unit>
         <Unit filename="plugins\xpmanifest\windowsxplooknfeel.cpp">
             <Option compilerVar="CPP" />
-            <Option target="plugin_XPManifest" />
+            <Option target="XP look &amp; feel" />
         </Unit>
         <Unit filename="plugins\xpmanifest\windowsxplooknfeel.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="plugin_XPManifest" />
+            <Option target="XP look &amp; feel" />
         </Unit>
         <Unit filename="sdk.doxy">
             <Option compilerVar="" />
@@ -4087,6 +4099,12 @@
             <Option link="0" />
             <Option target="src" />
         </Unit>
+        <Unit filename="src\revision.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="src" />
+        </Unit>
         <Unit filename="src\startherepage.cpp">
             <Option compilerVar="CPP" />
             <Option target="src" />
@@ -4556,9 +4574,13 @@
             <Option link="0" />
             <Option target="src" />
         </Unit>
+        <Unit filename="tools\AutoRevision\main.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="AutoRevision" />
+        </Unit>
         <Unit filename="tools\ConsoleRunner\main.cpp">
             <Option compilerVar="CPP" />
-            <Option target="console_runner" />
+            <Option target="ConsoleRunner" />
         </Unit>
     </Project>
 </CodeBlocks_project_file>

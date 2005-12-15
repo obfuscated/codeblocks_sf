@@ -60,33 +60,36 @@ dlgAbout::dlgAbout(wxWindow* parent)
 	XRCCTRL(*this, "lblTitle", wxStaticBitmap)->SetBitmap(bmp);
 	XRCCTRL(*this, "lblBuildTimestamp", wxStaticText)->SetLabel(wxString(_T("Build: ")) + APP_BUILD_TIMESTAMP);
 	XRCCTRL(*this, "txtDescription", wxTextCtrl)->SetValue(DESCR);
-	XRCCTRL(*this, "txtThanksTo", wxTextCtrl)->SetValue(
-        _("The wxWidgets project (http://www.wxwidgets.org)\n"
-        "TinyXML parser (http://www.grinninglizard.com/tinyxml)\n"
-        "The GNU Software Foundation (http://www.gnu.org)\n"
-        "Last, but not least, the open-source community\n\n"
-        "Co-developers:\n"
+	XRCCTRL(*this, "txtThanksTo", wxTextCtrl)->SetValue(_T(
+        "Developers:\n"
         "--------------\n"
-        "Ricardo Garcia: All-hands person\n"
+        "Yiannis Mandravellos: Project leader - Core developer\n"
+        "Thomas Denk         : Core developer\n"
+        "Ricardo Garcia      : All-hands person\n"
+        "\"tiwag\"             : Developer\n"
         "\n"
         "Contributors (in no special order):\n"
         "-----------------------------------\n"
-        "byo, Tiwag,\n"
-        "elvstone, me22: Conversion to Unicode\n"
-        "byo, cyberkoa : wxSmith RAD plugin (WIP)\n"
-        "P. A. Jimenez : Help and AStyle plugins\n"
-        "Hakki Dogusan : DigitalMars compiler support\n"
-        "ybx           : OpenWatcom compiler support\n"
-        "Tim Baker     : Patches for the direct-compile-mode\n"
-        "                dependencies generation system\n"
-        "Eric Burnett  : GDB debugger plugin patches\n"
-        "Chris Raschko : Design of the 3D logo for Code::Blocks\n"
-        "J.A. Ortega   : 3D Icon based on the above"
+        "byo,elvstone, me22  : Conversion to Unicode\n"
+        "byo, cyberkoa       : wxSmith RAD plugin\n"
+        "P. A. Jimenez       : Help and AStyle plugins\n"
+        "Hakki Dogusan       : DigitalMars compiler support\n"
+        "ybx                 : OpenWatcom compiler support\n"
+        "Tim Baker           : Patches for the direct-compile-mode\n"
+        "                      dependencies generation system\n"
+        "Eric Burnett        : GDB debugger plugin patches\n"
+        "Chris Raschko       : Design of the 3D logo for Code::Blocks\n"
+        "J.A. Ortega         : 3D Icon based on the above\n"
+        "\n"
+        "The wxWidgets project (http://www.wxwidgets.org).\n"
+        "TinyXML parser (http://www.grinninglizard.com/tinyxml).\n"
+        "The GNU Software Foundation (http://www.gnu.org).\n"
+        "Last, but not least, the open-source community."
         ));
 	XRCCTRL(*this, "txtLicense", wxTextCtrl)->SetValue(LICENSE_GPL);
 	XRCCTRL(*this, "lblName", wxStaticText)->SetLabel(APP_NAME);
-	XRCCTRL(*this, "lblVersion", wxStaticText)->SetLabel(APP_ACTUAL_VERSION);
-	XRCCTRL(*this, "lblAuthor", wxStaticText)->SetLabel(_("Yiannis An. Mandravellos"));
+	XRCCTRL(*this, "lblVersion", wxStaticText)->SetLabel(APP_ACTUAL_VERSION_VERB);
+	XRCCTRL(*this, "lblAuthor", wxStaticText)->SetLabel(_("The Code::Blocks Team"));
 	XRCCTRL(*this, "lblEmail", wxStaticText)->SetLabel(APP_CONTACT_EMAIL);
 	XRCCTRL(*this, "lblWebsite", wxStaticText)->SetLabel(APP_URL);
 }
