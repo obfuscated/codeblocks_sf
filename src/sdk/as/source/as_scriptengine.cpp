@@ -36,7 +36,7 @@
 //
 
 
-#ifdef __FREEBSD__
+#ifdef __FreeBSD__
 	#include <stdlib.h>
 #else
 	#include <malloc.h>
