@@ -1,4 +1,4 @@
-SUBDIRS = sdk src plugins tools setup templates
+SUBDIRS = tools sdk src plugins setup templates
 
 dist_pkgdata_DATA = tips.txt
 

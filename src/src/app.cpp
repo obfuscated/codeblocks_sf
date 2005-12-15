@@ -540,12 +540,12 @@ bool CodeBlocksApp::CheckResource(const wxString& res)
     {
         HideSplashScreen();
     	wxString msg;
-    	msg.Printf("Cannot find %s...\n"
+    	msg.Printf(_T("Cannot find %s...\n"
     		"%s was configured to be installed in '%s'.\n"
     		"Please use the command-line switch '--prefix' or "
             "set the CODEBLOCKS_DATA_DIR environment variable "
     		"to point where %s is installed,\n"
-    		"or try re-installing the application...",
+    		"or try re-installing the application..."),
     		res.c_str(),
     		APP_NAME.c_str(),
     		ConfigManager::ReadDataPath().c_str(),

@@ -1,1 +1,1 @@
-SUBDIRS = ConsoleRunner
+SUBDIRS = AutoRevision ConsoleRunner

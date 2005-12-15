@@ -102,15 +102,16 @@ int main(int argc, char** argv)
                     fprintf(f, "#include <string>\n");
                 if(do_wx)
                     fprintf(f, "#include <wx/string.h>\n");
+                fprintf(f, "#include <wx/intl.h>\n");
 
-                fprintf(f, "\n#define SVN_REVISION \"%s\"\n", token.c_str());
+                fprintf(f, "\n#define SVN_REVISION _T(\"%s\")\n", token.c_str());
 
                 if(do_int)
                     fprintf(f, "const unsigned int svn_revision = %s;\n", token.c_str());
                 if(do_std)
                     fprintf(f, "const std::string svn_revision_s(\"%s\");\n", token.c_str());
                 if(do_wx)
-                    fprintf(f, "const wxString svnRevision(\"%s\");\n", token.c_str());
+                    fprintf(f, "const wxString svnRevision(_T(\"%s\"));\n", token.c_str());
 
                 fprintf(f, "\n\n#endif\n");
                 fclose(f);
