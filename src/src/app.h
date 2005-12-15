@@ -33,12 +33,7 @@
 #include "../sdk/manager.h"
 #include "main.h"
 
-class CodeBlocksApp : public
-#ifdef wxUSE_BINDERAPP
-	wxBinderApp
-#else
-	wxApp
-#endif
+class CodeBlocksApp : public wxApp
 {
     public:
         virtual bool OnInit();

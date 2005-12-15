@@ -1388,22 +1388,23 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
 		{
 			if (replace)
 			{
+			    int lengthReplace = data->replaceText.Length();
 				if (data->regEx)
 				{
 					// set target same as selection
 					control->SetTargetStart(control->GetSelectionStart());
 					control->SetTargetEnd(control->GetSelectionEnd());
 					// replace with regEx support
-					control->ReplaceTargetRE(data->replaceText);
+					lengthReplace = control->ReplaceTargetRE(data->replaceText);
 					// reset target
 					control->SetTargetStart(0);
 					control->SetTargetEnd(0);
 				}
 				else
 					control->ReplaceSelection(data->replaceText);
-				data->start += data->replaceText.Length();
+				data->start += lengthReplace;
 				// adjust end pos by adding the length difference between find and replace strings
-				int diff = data->replaceText.Length() - lengthFound;
+				int diff = lengthReplace - lengthFound;
 				if (data->directionDown)
 					data->end += diff;
 				else
