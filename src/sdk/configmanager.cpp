@@ -16,6 +16,7 @@
 #include "personalitymanager.h"
 #include "cbexception.h"
 #include "crc32.h"
+#include "autorevision.h"
 
 #include <wx/file.h>
 #include <wx/dir.h>
@@ -239,6 +240,18 @@ ConfigManager* CfgMgrBldr::Instantiate(const wxString& name_space)
 wxString ConfigManager::GetProxy()
 {
     return Manager::Get()->GetConfigManager(_T("app"))->Read(_T("network_proxy"));
+}
+
+wxString ConfigManager::GetRevisionString()
+{
+	wxMessageBox(SVN_REVISION);
+	wxMessageBox(autorevision::svnRevision);
+    return wxString(autorevision::svnRevision);
+}
+
+unsigned int ConfigManager::GetRevisionNumber()
+{
+    return autorevision::svn_revision;
 }
 
 wxString ConfigManager::GetExecutableFolder()

@@ -88,6 +88,8 @@ public:
     static wxString GetDataFolder();
     static wxString GetExecutableFolder();
     static wxString GetProxy();
+    static wxString GetRevisionString();
+    static unsigned int GetRevisionNumber();
 
     static inline wxString ReadDataPath(){return GetDataFolder();};      // use instead of cfg->Read("data_path");
     static inline wxString ReadAppPath(){return GetExecutableFolder();}; // use instead of cfg->Read("app_path");

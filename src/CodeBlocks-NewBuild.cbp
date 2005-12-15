@@ -15,6 +15,9 @@
                 <Option compiler="0" />
                 <Option includeInTargetAll="1" />
                 <Option projectResourceIncludeDirsRelation="1" />
+                <Linker>
+                    <Add option="-s" />
+                </Linker>
             </Target>
             <Target title="ConsoleRunner">
                 <Option output="tools\ConsoleRunner\console_runner.exe" />
@@ -108,6 +111,10 @@
                     <Add directory="devel" />
                     <Add directory="sdk\as" />
                 </Linker>
+                <ExtraCommands>
+                    <Add before="tools/autorevision/autorevision +wx +int +t . sdk/autorevision.h" />
+                    <Mode before="always" />
+                </ExtraCommands>
             </Target>
             <Target title="wxDockIt">
                 <Option output="src\wxDockit\lib\libwxDockIt.a" />
@@ -170,10 +177,6 @@
                     <Add directory="devel" />
                     <Add directory="src\wxDockit\lib" />
                 </Linker>
-                <ExtraCommands>
-                    <Add before="tools/AutoRevision/autorevision.exe +wx +int . src/revision.h" />
-                    <Mode before="always" />
-                </ExtraCommands>
             </Target>
             <Target title="AStyle">
                 <Option output="devel\share\CodeBlocks\plugins\astyle.dll" />
@@ -4574,13 +4577,13 @@
             <Option link="0" />
             <Option target="src" />
         </Unit>
-        <Unit filename="tools\AutoRevision\main.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="AutoRevision" />
-        </Unit>
         <Unit filename="tools\ConsoleRunner\main.cpp">
             <Option compilerVar="CPP" />
             <Option target="ConsoleRunner" />
+        </Unit>
+        <Unit filename="tools\autorevision\autorevision.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="AutoRevision" />
         </Unit>
     </Project>
 </CodeBlocks_project_file>

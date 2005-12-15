@@ -1,15 +1,11 @@
 #ifndef APPGLOBALS_H
 #define APPGLOBALS_H
 
-// revision.h is auto-created by tools/AutoRevision/autorevision.exe
-// whenever the repository revision is changed...
-#include "revision.h"
-
 const wxString APP_VENDOR               = _T("Code::Blocks");
 const wxString APP_NAME				    = _T("Code::Blocks");
 const wxString APP_VERSION				= _T("1.0");
-const wxString APP_ACTUAL_VERSION_VERB	= _T("1.0 revision ") + svnRevision;
-const wxString APP_ACTUAL_VERSION		= _T("1.0-r") + svnRevision;
+const wxString APP_ACTUAL_VERSION_VERB	= _T("1.0 revision ");
+const wxString APP_ACTUAL_VERSION		= _T("1.0-r");
 const wxString APP_URL					= _T("http://www.codeblocks.org");
 const wxString APP_CONTACT_EMAIL		= _T("info@codeblocks.org");
 

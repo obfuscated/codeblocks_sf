@@ -5,6 +5,9 @@
 #include <wx/log.h> // for wxSafeShowMessage()
 #include <wx/msgdlg.h> // for wxMessageBox()
 
+#include "configmanager.h"
+#include "../src/appglobals.h"
+
 /**
 @brief Code::Blocks error handling unit.
 
@@ -25,12 +28,20 @@ class cbException
 		virtual ~cbException(){}
 		void ShowErrorMessage(bool safe = true)
 		{
+			wxString gccvers;
+			#ifdef __GNUC__
+			gccvers.Printf(_T("gcc %d.%d.%d "), __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
+			#endif
             wxString title = _("Exception");
 		    wxString err;
 		    err.Printf(_("An exception has been raised!\n\n"
                         "The application encountered an error at %s, on line %d.\n"
-                        "The error message is:\n\n%s"),
-                        File.c_str(), Line, Message.c_str());
+                        "The error message is:\n\n%s\n\n"
+                        "Code::Blocks Version %s  revision %d   (%s%s/%s, "
+                        "build: %s %s)"),
+                        File.c_str(), Line, Message.c_str(),
+                        APP_ACTUAL_VERSION_VERB.c_str(), ConfigManager::GetRevisionNumber(), gccvers.c_str(), APP_PLATFORM.c_str(), APP_WXANSI_UNICODE.c_str(),
+                        _T(__DATE__), _T(__TIME__));
             if (safe)
                 wxSafeShowMessage(title, err);
             else
