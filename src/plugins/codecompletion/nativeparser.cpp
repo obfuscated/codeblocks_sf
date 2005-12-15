@@ -162,14 +162,14 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
     parser->AddIncludeDir(base); // add project's base path
 
     Compiler* compiler = 0;
-    // apply compiler global vars
+//    // apply compiler global vars
 	if (CompilerFactory::Compilers.GetCount() > 0 && CompilerFactory::CompilerIndexOK(project->GetCompilerIndex()))
-	{
+//	{
 		compiler = CompilerFactory::Compilers[project->GetCompilerIndex()];
-        compiler->GetCustomVars().ApplyVarsToEnvironment();
-	}
+//        compiler->GetCustomVars().ApplyVarsToEnvironment();
+//	}
     // apply project vars
-    project->GetCustomVars().ApplyVarsToEnvironment();
+//    project->GetCustomVars().ApplyVarsToEnvironment();
 
     // get project include dirs
     for (unsigned int i = 0; i < project->GetIncludeDirs().GetCount(); ++i)
@@ -194,7 +194,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
         if (target)
         {
         	// apply target vars
-            target->GetCustomVars().ApplyVarsToEnvironment();
+//            target->GetCustomVars().ApplyVarsToEnvironment();
             for (unsigned int ti = 0; ti < target->GetIncludeDirs().GetCount(); ++ti)
             {
                 wxString out = target->GetIncludeDirs()[ti];
