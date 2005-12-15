@@ -96,7 +96,20 @@ StartHerePage::StartHerePage(wxEvtHandler* owner, wxWindow* parent)
         buf = _("<html><body><h1>Welcome to Code::Blocks!</h1><br>The default start page seems to be missing...</body></html>");
     delete fs;
 
+	wxString revInfo;
+	#ifdef __GNUC__
+	revInfo.Printf(_T("Version %s %d   (gcc %d.%d.%d %s/%s, build: %s %s)"),
+					APP_ACTUAL_VERSION_VERB.c_str(), ConfigManager::GetRevisionNumber(),
+					__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__, APP_PLATFORM.c_str(), APP_WXANSI_UNICODE.c_str(),
+					_T(__DATE__), _T(__TIME__));
+	#else
+	revInfo.Printf(_T("Version %s %d   (%s/%s, build: %s %s)"),
+					APP_ACTUAL_VERSION_VERB.c_str(), ConfigManager::GetRevisionNumber(),
+					APP_PLATFORM.c_str(), APP_WXANSI_UNICODE.c_str(),
+					_T(__DATE__), _T(__TIME__));
+	#endif
     // perform var substitution
+    buf.Replace(_T("CB_VAR_REVISION_INFO"), revInfo);
     buf.Replace(_T("CB_VAR_VERSION_VERB"), APP_ACTUAL_VERSION_VERB);
     buf.Replace(_T("CB_VAR_VERSION"), APP_ACTUAL_VERSION);
     m_pWin->SetPage(buf);

@@ -4102,12 +4102,6 @@
             <Option link="0" />
             <Option target="src" />
         </Unit>
-        <Unit filename="src\revision.h">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="src" />
-        </Unit>
         <Unit filename="src\startherepage.cpp">
             <Option compilerVar="CPP" />
             <Option target="src" />
