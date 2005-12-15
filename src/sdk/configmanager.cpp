@@ -244,8 +244,6 @@ wxString ConfigManager::GetProxy()
 
 wxString ConfigManager::GetRevisionString()
 {
-	wxMessageBox(SVN_REVISION);
-	wxMessageBox(autorevision::svnRevision);
     return wxString(autorevision::svnRevision);
 }
 
