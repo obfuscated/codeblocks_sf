@@ -144,6 +144,9 @@ void MacrosManager::ClearProjectKeys()
     macros[_T("DATA-PATH")]  = m_DataPath;
     macros[_T("DATAPATH")]  = m_DataPath;
     macros[_T("PLUGINS")]  = m_Plugins;
+	macros[_T("LANGUAGE")]  = wxLocale::GetLanguageName(wxLocale::GetSystemLanguage());
+	macros[_T("ENCODING")]  = wxLocale::GetSystemEncodingName();
+
 }
 
 void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuildTarget* target)
@@ -246,18 +249,19 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
     macros[_T("TARGET_NAME")]    = m_TargetName;
     macros[_T("ACTIVE_EDITOR_FILENAME")] = m_ActiveEditorFilename;
 
-    macros[_T("LANGUAGE")]  = wxLocale::GetLanguageName(wxLocale::GetSystemLanguage());
-    macros[_T("ENCODING")]  = wxLocale::GetSystemEncodingName();
-    macros[_T("TDAY")]   = wxDateTime::Now().Format(_T("%Y%m%d"));
-    macros[_T("TODAY")]   = wxDateTime::Now().Format(_T("%Y-%m-%d"));
-    macros[_T("NOW")]   = wxDateTime::Now().Format(_T("%Y-%m-%d-%H.%M"));
-    macros[_T("NOW_L")]   = wxDateTime::Now().Format(_T("%Y-%m-%d-%H.%M.%S"));
-    macros[_T("WEEKDAY")]  = wxDateTime::Now().Format(_T("%A"));
-    macros[_T("TDAY_UTC")]  = wxDateTime::Now().ToGMT().Format(_T("%Y%m%d"));
-    macros[_T("TODAY_UTC")]  = wxDateTime::Now().ToGMT().Format(_T("%Y-%m-%d"));
-    macros[_T("NOW_UTC")]  = wxDateTime::Now().ToGMT().Format(_T("%Y-%m-%d-%H.%M"));
-    macros[_T("NOW_L_UTC")]  = wxDateTime::Now().ToGMT().Format(_T("%Y-%m-%d-%H.%M.%S"));
-    macros[_T("WEEKDAY_UTC")] = wxDateTime::Now().ToGMT().Format(_T("%A"));
+	wxDateTime now(wxDateTime::Now());
+	wxDateTime nowGMT(now.ToGMT());
+
+    macros[_T("TDAY")]   = now.Format(_T("%Y%m%d"));
+    macros[_T("TODAY")]   = now.Format(_T("%Y-%m-%d"));
+    macros[_T("NOW")]   = now.Format(_T("%Y-%m-%d-%H.%M"));
+    macros[_T("NOW_L")]   = now.Format(_T("%Y-%m-%d-%H.%M.%S"));
+    macros[_T("WEEKDAY")]  = now.Format(_T("%A"));
+    macros[_T("TDAY_UTC")]  = nowGMT.Format(_T("%Y%m%d"));
+    macros[_T("TODAY_UTC")]  = nowGMT.Format(_T("%Y-%m-%d"));
+    macros[_T("NOW_UTC")]  = nowGMT.Format(_T("%Y-%m-%d-%H.%M"));
+    macros[_T("NOW_L_UTC")]  = nowGMT.Format(_T("%Y-%m-%d-%H.%M.%S"));
+    macros[_T("WEEKDAY_UTC")] = nowGMT.Format(_T("%A"));
 }
 
 void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo)
@@ -271,7 +275,7 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo)
     EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
     ProjectBuildTarget* target = project ? project->GetCurrentlyCompilingTarget() : 0;
 
-    if(project || project != m_lastProject || target != m_lastTarget)
+    if(!project || project != m_lastProject || target != m_lastTarget)
         RecalcVars(project, editor, target);
 
     wxString replace;
