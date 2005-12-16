@@ -456,9 +456,9 @@ void MainFrame::ShowTips(bool forceShow)
         long tipsIndex = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/next_tip"), 0);
         wxTipProvider* tipProvider = wxCreateFileTipProvider(tipsFile, tipsIndex);
         showAtStartup = wxShowTip(this, tipProvider, showAtStartup);
-        delete tipProvider;
         Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/show_tips"), showAtStartup);
         Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/next_tip"), (int)tipProvider->GetCurrentTip());
+        delete tipProvider;
     }
 }
 
