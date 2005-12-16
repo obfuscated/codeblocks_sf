@@ -247,7 +247,7 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
         TiXmlText* Text = Elem->FirstChild()->ToText();
         if ( Text && Text->Value() )
         {
-            wxString FileName(Text->Value());
+            wxString FileName = _U(Text->Value());
             if ( FileName.Length() )
             {
                 LoadedResources.Add(FileName);

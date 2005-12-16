@@ -26,7 +26,7 @@ wxsDWDefineBegin(wxsGenericDirCtrl,wxGenericDirCtrl,
         filter,
         defaultfilter);
     )
-    wxsDWDefStr(defaultfolder,_("Default folder:"),_T(""));
-    wxsDWDefStr(filter,_("Filter:"),_T(""));
-    wxsDWDefInt(defaultfilter,_("Default filter:"),0);
+    wxsDWDefStr(defaultfolder,"Default folder:","");
+    wxsDWDefStr(filter,"Filter:","");
+    wxsDWDefInt(defaultfilter,"Default filter:",0);
 wxsDWDefineEnd()

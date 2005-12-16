@@ -363,6 +363,16 @@
             <Option link="0" />
             <Option target="wxSmith" />
         </Unit>
+        <Unit filename="defwidgets\wxsslider.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="defwidgets\wxsslider.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
         <Unit filename="defwidgets\wxsspacer.cpp">
             <Option compilerVar="CPP" />
             <Option target="wxSmith" />

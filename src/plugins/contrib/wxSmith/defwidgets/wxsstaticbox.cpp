@@ -5,7 +5,7 @@
 #include "../wxspropertiesman.h"
 
 WXS_ST_BEGIN(wxsStaticBoxStyles)
-    WXS_ST_CATEGORY("wxStaticBox")
+    WXS_ST_CATEGORY("wxWindow")
     WXS_ST_MASK(wxCLIP_CHILDREN,wxsSFWin,0,true)
     WXS_ST(wxSIMPLE_BORDER)
     WXS_ST(wxSUNKEN_BORDER)

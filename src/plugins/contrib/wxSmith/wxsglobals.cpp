@@ -11,7 +11,7 @@ wxString GetCString(const wxString& Source)
     {
         wxChar ch = Source.GetChar(i);
 
-        if ( ch < _T(' ') && ch >= _T('\0') )
+        if ( (unsigned)ch < _T(' ') )
         {
             switch ( ch )
             {

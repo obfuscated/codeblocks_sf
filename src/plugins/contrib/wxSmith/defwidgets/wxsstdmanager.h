@@ -45,6 +45,7 @@ enum std_widgets
     wxsChoiceId,
     wxsStaticBoxId,
     wxsHtmlWindowId,
+    wxsSliderId,
 
     /* Windows */
     wxsDialogId,

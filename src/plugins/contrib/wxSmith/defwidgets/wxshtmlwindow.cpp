@@ -34,7 +34,10 @@ wxWindow* wxsHtmlWindow::MyCreatePreview(wxWindow* Parent)
     }
     if ( !url.empty() )
     {
-        Wnd->LoadPage(url);
+        Wnd->SetPage(
+         wxString(_T("<body><center>")) +
+         _("Following url will be used:") +
+         _T("<br>") + url + _T("</center></body>"));
     }
     else if ( !htmlcode.empty() )
     {

@@ -49,7 +49,8 @@ wxsscrolledwindow.cpp \
 wxslistctrl.cpp \
 wxschoice.cpp \
 wxsstaticbox.cpp \
-wxshtmlwindow.cpp
+wxshtmlwindow.cpp \
+wxsxslider.cpp
 
 noinst_HEADERS = wxsboxsizer.h \
 wxsbutton.h \
@@ -90,4 +91,5 @@ wxsscrolledwindow.h \
 wxslistctrl.h \
 wxschoice.h \
 wxsstaticbox.h \
-wxshtmlwindow.h
+wxshtmlwindow.h \
+wxsslider.h

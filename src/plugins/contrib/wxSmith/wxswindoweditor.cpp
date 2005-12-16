@@ -626,7 +626,7 @@ void wxsWindowEditor::BuildPalette(wxNotebook* Palette)
 
     const wxChar* PreviousGroup = _T("");
 
-    wxPanel* CurrentPanel = NULL;
+    wxScrolledWindow* CurrentPanel = NULL;
     wxSizer* RowSizer = NULL;
 
     for ( MapI i = Map.begin(); i != Map.end(); ++i )
@@ -636,12 +636,14 @@ void wxsWindowEditor::BuildPalette(wxNotebook* Palette)
             if ( CurrentPanel )
             {
                 CurrentPanel->SetSizer(RowSizer);
+                RowSizer->SetVirtualSizeHints(CurrentPanel);
             }
             if ( (*i).first && (*i).first[0] )
             {
                 // Need to create new tab
                 PreviousGroup = (*i).first;
-                CurrentPanel = new wxPanel(Palette);
+                CurrentPanel = new wxScrolledWindow(Palette,-1,wxDefaultPosition,wxDefaultSize,0/*wxALWAYS_SHOW_SB|wxHSCROLL*/);
+                CurrentPanel->SetScrollRate(1,0);
                 Palette->AddPage(CurrentPanel,PreviousGroup);
                 RowSizer = new wxBoxSizer(wxHORIZONTAL);
             }
@@ -671,7 +673,7 @@ void wxsWindowEditor::BuildPalette(wxNotebook* Palette)
                     new wxBitmapButton(CurrentPanel,-1,*Icon,
                         wxDefaultPosition,wxDefaultSize,wxBU_AUTODRAW,
                         wxDefaultValidator, (*i).second->Name);
-                RowSizer->Add(Btn,0,wxGROW);
+                RowSizer->Add(Btn,0,wxALIGN_CENTER);
                 Btn->SetToolTip((*i).second->Name);
             }
             else
@@ -688,6 +690,7 @@ void wxsWindowEditor::BuildPalette(wxNotebook* Palette)
     if ( CurrentPanel )
     {
         CurrentPanel->SetSizer(RowSizer);
+        RowSizer->SetVirtualSizeHints(CurrentPanel);
     }
 }
 

@@ -682,7 +682,7 @@ void wxsWizzard::OnButton2Click(wxCommandEvent& event)
             case 0: // Global variables
                 project->AddIncludeDir(_T("$(#WX.include)"));
                 project->AddIncludeDir(_T("$(#WX.lib)\\gcc_dll\\msw"));
-                project->AddIncludeDir(_T("$(#WX.lib)\\gcc_dll\\msw$(WX_CFG)\\msw"));
+                project->AddIncludeDir(_T("$(#WX.lib)\\gcc_dll$(WX_CFG)\\msw"));
                 project->AddIncludeDir(_T("$(#WX)\\contrib\\include"));
                 project->AddLibDir(_T("$(#WX.lib)\\gcc_dll"));
                 project->AddLibDir(_T("$(#WX.lib)\\gcc_dll\\msw"));
