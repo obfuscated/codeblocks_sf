@@ -347,7 +347,20 @@ bool CodeBlocksApp::OnInit()
         if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/single_instance"), true))
         {
             const wxString name = wxString::Format(_T("Code::Blocks-%s"), wxGetUserId().c_str());
-            m_pSingleInstance = new wxSingleInstanceChecker(name);
+
+			// this is a really Smart way of getting to the temp folder...
+			// providing a function wxGetTempFolder would be far too easy
+			wxString tempFolder;
+			wxFile f;
+			wxString wxIsJustAnnoying = wxFileName::CreateTempFileName(wxEmptyString, &f);
+
+			if(!wxIsJustAnnoying.IsEmpty())
+			{
+			::wxRemoveFile(wxIsJustAnnoying); // hmph...!
+			tempFolder = wxFileName(wxIsJustAnnoying).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+			}
+
+            m_pSingleInstance = new wxSingleInstanceChecker(name, tempFolder);
             if (m_pSingleInstance->IsAnotherRunning())
             {
                 HideSplashScreen();

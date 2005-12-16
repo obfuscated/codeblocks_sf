@@ -71,7 +71,7 @@ void CfgMgrBldr::SwitchTo(const wxString& absFileName)
     wxString loc = absFileName;
     if (loc.IsEmpty())
         loc = ConfigManager::LocateDataFile(_T("default.conf"));
-    doc = new TiXmlDocument(loc.mb_str());
+    doc = new TiXmlDocument(loc.fn_str());
     if(!doc->LoadFile())
     {
         doc->InsertEndChild(TiXmlDeclaration("1.0", "UTF-8", "yes"));
@@ -432,7 +432,7 @@ TiXmlElement* ConfigManager::AssertPath(wxString& path)
     path.Replace(_T("///"), _T("/"));
     path.Replace(_T("//"),  _T("/"));
 
-    wxString illegal(_T(" :.,;!\"$%&()[]<>{}?*+-|#"));
+    wxString illegal(_T(" -:.,;!\"$%&()[]<>{}?*+|#"));
     size_t i;
     while((i = path.find_first_of(illegal)) != wxString::npos)
         path[i] = _T('_');
