@@ -93,7 +93,7 @@ unsigned long wxCrc32::FromString(const wxString& text)
 {
     static unsigned long *crc_table = NULL;
     unsigned long crc = 0;
-    const char* p = text.mb_str(wxConvUTF8);
+    const wxChar* p = text.mb_str(wxConvUTF8);
 
     if (text)
     {
