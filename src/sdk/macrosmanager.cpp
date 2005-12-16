@@ -125,7 +125,7 @@ void MacrosManager::Reset()
     m_DataPath = UnixFilename(ConfigManager::GetDataFolder());
     m_Plugins = UnixFilename(ConfigManager::GetDataFolder() + _T("/plugins"));
     ClearProjectKeys();
-    m_re.Compile(_T("(\\$[({]?|%)(#?[A-Za-z_0-9]+[\\.]?[A-Za-z_0-9]+)([)}%]?)"));
+    m_re.Compile(_T("(\\$[({]?|%)(#?[A-Za-z_0-9]+[\\.]?[A-Za-z_0-9]?)([)}%]?)"));
     m_uVarMan = Manager::Get()->GetUserVariableManager();
 }
 
@@ -223,14 +223,17 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
             macros[title + _T("_OUTPUT_DIR")] = UnixFilename(target->GetBasePath());
         }
         m_lastProject = project;
+    }
 
+	if(project)
+	{
         VarsArray vars = project->GetCustomVars().GetVars();
 
         for(size_t i = 0; i < vars.GetCount(); ++i)
         {
-            macros[vars[i].name.Upper()] = vars[i].value.Upper();
+            macros[vars[i].name.Upper()] = vars[i].value;
         }
-    }
+	}
 
     if(!target)
     {
@@ -293,7 +296,7 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo)
         else
         {
             MacrosMap::iterator it;
-            if((it = macros.find(env)) != macros.end())
+            if((it = macros.find(env.Upper())) != macros.end())
                 replace = it->second;
         }
 
