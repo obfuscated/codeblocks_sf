@@ -841,6 +841,7 @@ bool EditorManager::QueryClose(EditorBase *ed)
             case wxNO:      break;
             case wxCANCEL:  return false;
         }
+	ed->SetModified(false);
     }
     else
     {

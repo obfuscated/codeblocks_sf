@@ -37,7 +37,7 @@ namespace CfgMgrConsts
 {
     const wxString app_path(_T("app_path"));
     const wxString data_path(_T("data_path"));
-    const wxString rootTag = _T("CodeBlocksConfig");
+    const wxString rootTag(_T("CodeBlocksConfig"));
     const int version = 1;
 }
 
@@ -71,7 +71,7 @@ void CfgMgrBldr::SwitchTo(const wxString& absFileName)
     wxString loc = absFileName;
     if (loc.IsEmpty())
         loc = ConfigManager::LocateDataFile(_T("default.conf"));
-    doc = new TiXmlDocument(loc.fn_str());
+    doc = new TiXmlDocument(_C(loc));
     if(!doc->LoadFile())
     {
         doc->InsertEndChild(TiXmlDeclaration("1.0", "UTF-8", "yes"));
