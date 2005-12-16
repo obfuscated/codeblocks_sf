@@ -761,6 +761,8 @@ bool cbEditor::SaveAs()
     //Manager::Get()->GetMessageManager()->Log(mltDevDebug, "Filename=%s\nShort=%s", m_Filename.c_str(), m_Shortname.c_str());
     m_IsOK = true;
     SetModified(true);
+	if(m_pTheme)
+        m_pTheme->Apply(this);
     return Save();
 }
 
