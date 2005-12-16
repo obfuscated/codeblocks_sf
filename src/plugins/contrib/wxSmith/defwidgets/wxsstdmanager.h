@@ -3,7 +3,6 @@
 
 #include "../widget.h"
 
-
 enum std_widgets
 {
     wxsNoneId = 0,
@@ -19,7 +18,7 @@ enum std_widgets
 
     /* Controls */
     wxsButtonId,
-    wxsToggleButtonId,      /* Warning - not compatible with XRC 2.4 */
+    wxsToggleButtonId,
     wxsCheckBoxId,
     wxsStaticTextId,
     wxsComboBoxId,
@@ -42,6 +41,7 @@ enum std_widgets
     wxsChoicebookId,
     wxsScrolledWindowId,
     wxsGenericDirCtrlId,
+    wxsListCtrlId,
 
     /* Windows */
     wxsDialogId,

@@ -32,6 +32,7 @@
 #include "wxschoicebook.h"
 #include "wxscalendarctrl.h"
 #include "wxsgenericdirctrl.h"
+#include "wxslistctrl.h"
 #include "../wxsmith.h"
 
 
@@ -192,6 +193,7 @@ static wxsWidgetInfo StdInfos[] =
     Entry(Choicebook,    "wx_wxchoicebook.html#wxchoicebook","<wx/choicebk.h>")
     Entry(ScrolledWindow,"wx_wxscrolledwindow.html#wxscrolledwindow","<wx/scrolwin.h>")
     Entry(GenericDirCtrl,"wx_wxgenericdirctrl.html#wxgenericdirctrl","<wx/dirctrl.h>")
+    Entry(ListCtrl,      "wx_wxlistctrl.html#wxlistctrl","<wx/listctrl.h>")
 
     WindowEntry(Dialog,"wx_wxdialog.html#wxdialog","<wx/dialog.h>")
     WindowEntry(Frame, "wx_wxframe.html#wxframe","<wx/frame.h>")
@@ -304,38 +306,41 @@ wxsWidget* wxsStdManagerT::ProduceWidget(int Id,wxsWindowRes* Res)
 {
     switch ( Id )
     {
-        case wxsGridSizerId:        return new wxsGridSizer(this,Res);
-        case wxsBoxSizerId:         return new wxsBoxSizer(this,Res);
-        case wxsStaticBoxSizerId:   return new wxsStaticBoxSizer(this,Res);
-        case wxsFlexGridSizerId:    return new wxsFlexGridSizer(this,Res);
-        case wxsButtonId:           return new wxsButton(this,Res);
-        case wxsCheckBoxId:         return new wxsCheckBox(this,Res);
-        case wxsStaticTextId:       return new wxsStaticText(this,Res);
-        case wxsToggleButtonId:     return new wxsToggleButton(this,Res);
-        case wxsComboBoxId:         return new wxsComboBox(this,Res);
-        case wxsListBoxId:          return new wxsListBox(this,Res);
-        case wxsPanelId:            return new wxsPanel(this,Res);
-        case wxsTextCtrlId:         return new wxsTextCtrl(this,Res);
-        case wxsGaugeId:            return new wxsGauge(this,Res);
-        case wxsSpacerId:           return new wxsSpacer(this,Res);
-        case wxsDialogId:           return new wxsDialog(this,Res);
-        case wxsFrameId:            return new wxsFrame(this,Res);
-        case wxsPanelrId:           return new wxsPanelr(this,Res);
-        case wxsRadioButtonId:      return new wxsRadioButton(this,Res);
-        case wxsScrollBarId:        return new wxsScrollBar(this,Res);
-        case wxsSpinButtonId:       return new wxsSpinButton(this,Res);
-        case wxsSpinCtrlId:         return new wxsSpinCtrl(this,Res);
-        case wxsTreeCtrlId:         return new wxsTreeCtrl(this,Res);
-        case wxsRadioBoxId:         return new wxsRadioBox(this,Res);
-        case wxsDatePickerCtrlId:   return new wxsDatePickerCtrl(this,Res);
-        case wxsCalendarCtrlId:     return new wxsCalendarCtrl(this,Res);
-        case wxsStaticLineId:       return new wxsStaticLine(this,Res);
-        case wxsSplitterWindowId:   return new wxsSplitterWindow(this,Res);
-        case wxsNotebookId:         return new wxsNotebook(this,Res);
-        case wxsListbookId:         return new wxsListbook(this,Res);
-        case wxsChoicebookId:       return new wxsChoicebook(this,Res);
-        case wxsScrolledWindowId:   return new wxsScrolledWindow(this,Res);
-        case wxsGenericDirCtrlId:   return new wxsGenericDirCtrl(this,Res);
+        #define ITEM(Name) case wxs##Name##Id: return new wxs##Name(this,Res);
+        ITEM(GridSizer)
+        ITEM(BoxSizer)
+        ITEM(StaticBoxSizer)
+        ITEM(FlexGridSizer)
+        ITEM(Button)
+        ITEM(CheckBox)
+        ITEM(StaticText)
+        ITEM(ToggleButton)
+        ITEM(ComboBox)
+        ITEM(ListBox)
+        ITEM(Panel)
+        ITEM(TextCtrl)
+        ITEM(Gauge)
+        ITEM(Spacer)
+        ITEM(Dialog)
+        ITEM(Frame)
+        ITEM(Panelr)
+        ITEM(RadioButton)
+        ITEM(ScrollBar)
+        ITEM(SpinButton)
+        ITEM(SpinCtrl)
+        ITEM(TreeCtrl)
+        ITEM(RadioBox)
+        ITEM(DatePickerCtrl)
+        ITEM(CalendarCtrl)
+        ITEM(StaticLine)
+        ITEM(SplitterWindow)
+        ITEM(Notebook)
+        ITEM(Listbook)
+        ITEM(Choicebook)
+        ITEM(ScrolledWindow)
+        ITEM(GenericDirCtrl)
+        ITEM(ListCtrl)
+        #undef ITEM
     }
 
     return NULL;

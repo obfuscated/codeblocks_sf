@@ -45,7 +45,8 @@ wxscalendarctrl.cpp \
 wxschoicebook.cpp \
 wxschoicebookparentqp.cpp \
 wxsgenericdirctrl.cpp \
-wxsscrolledwindow.cpp
+wxsscrolledwindow.cpp \
+wxslistctrl.cpp
 
 noinst_HEADERS = wxsboxsizer.h \
 wxsbutton.h \
@@ -82,4 +83,5 @@ wxscalendarctrl.h \
 wxschoicebook.h \
 wxschoicebookparentqp.h \
 wxsgenericdirctrl.h \
-wxsscrolledwindow.h
+wxsscrolledwindow.h \
+wxslistctrl.h
