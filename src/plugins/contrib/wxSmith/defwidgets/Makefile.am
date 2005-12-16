@@ -46,7 +46,10 @@ wxschoicebook.cpp \
 wxschoicebookparentqp.cpp \
 wxsgenericdirctrl.cpp \
 wxsscrolledwindow.cpp \
-wxslistctrl.cpp
+wxslistctrl.cpp \
+wxschoice.cpp \
+wxsstaticbox.cpp \
+wxshtmlwindow.cpp
 
 noinst_HEADERS = wxsboxsizer.h \
 wxsbutton.h \
@@ -84,4 +87,7 @@ wxschoicebook.h \
 wxschoicebookparentqp.h \
 wxsgenericdirctrl.h \
 wxsscrolledwindow.h \
-wxslistctrl.h
+wxslistctrl.h \
+wxschoice.h \
+wxsstaticbox.h \
+wxshtmlwindow.h

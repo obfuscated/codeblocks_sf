@@ -91,6 +91,16 @@
             <Option link="0" />
             <Option target="wxSmith" />
         </Unit>
+        <Unit filename="defwidgets\wxschoice.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="defwidgets\wxschoice.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
         <Unit filename="defwidgets\wxschoicebook.cpp">
             <Option compilerVar="CPP" />
             <Option target="wxSmith" />
@@ -191,6 +201,16 @@
             <Option link="0" />
             <Option target="wxSmith" />
         </Unit>
+        <Unit filename="defwidgets\wxshtmlwindow.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="defwidgets\wxshtmlwindow.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
         <Unit filename="defwidgets\wxslistbook.cpp">
             <Option compilerVar="CPP" />
             <Option target="wxSmith" />
@@ -216,6 +236,16 @@
             <Option target="wxSmith" />
         </Unit>
         <Unit filename="defwidgets\wxslistbox.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="defwidgets\wxslistctrl.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="defwidgets\wxslistctrl.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
@@ -326,6 +356,16 @@
             <Option target="wxSmith" />
         </Unit>
         <Unit filename="defwidgets\wxssplitterwindow.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="defwidgets\wxsstaticbox.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="defwidgets\wxsstaticbox.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />

@@ -33,6 +33,9 @@
 #include "wxscalendarctrl.h"
 #include "wxsgenericdirctrl.h"
 #include "wxslistctrl.h"
+#include "wxschoice.h"
+#include "wxsstaticbox.h"
+#include "wxshtmlwindow.h"
 #include "../wxsmith.h"
 
 
@@ -194,6 +197,9 @@ static wxsWidgetInfo StdInfos[] =
     Entry(ScrolledWindow,"wx_wxscrolledwindow.html#wxscrolledwindow","<wx/scrolwin.h>")
     Entry(GenericDirCtrl,"wx_wxgenericdirctrl.html#wxgenericdirctrl","<wx/dirctrl.h>")
     Entry(ListCtrl,      "wx_wxlistctrl.html#wxlistctrl","<wx/listctrl.h>")
+    Entry(Choice,        "wx_wxchoice.html#wxchoice","<wx/choice.h>")
+    Entry(StaticBox,     "wx_wxstaticbox.html#wxstaticbox","<wx/statbox.h>")
+    Entry2Headers(HtmlWindow,    "wx_wxhtmlwindow.html#wxhtmlwindow","<wx/html/htmlwin.h>","<wx/filesys.h>")
 
     WindowEntry(Dialog,"wx_wxdialog.html#wxdialog","<wx/dialog.h>")
     WindowEntry(Frame, "wx_wxframe.html#wxframe","<wx/frame.h>")
@@ -340,6 +346,9 @@ wxsWidget* wxsStdManagerT::ProduceWidget(int Id,wxsWindowRes* Res)
         ITEM(ScrolledWindow)
         ITEM(GenericDirCtrl)
         ITEM(ListCtrl)
+        ITEM(Choice)
+        ITEM(StaticBox)
+        ITEM(HtmlWindow)
         #undef ITEM
     }
 

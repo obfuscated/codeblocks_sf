@@ -42,6 +42,9 @@ enum std_widgets
     wxsScrolledWindowId,
     wxsGenericDirCtrlId,
     wxsListCtrlId,
+    wxsChoiceId,
+    wxsStaticBoxId,
+    wxsHtmlWindowId,
 
     /* Windows */
     wxsDialogId,
