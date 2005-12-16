@@ -153,7 +153,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/wxSmith/resources/Makefile
 	src/plugins/contrib/wxSmith/smithicons/Makefile
 	src/tools/Makefile
-	src/tools/AutoRevision/Makefile
+	src/tools/autorevision/Makefile
 	src/tools/ConsoleRunner/Makefile
 	src/setup/Makefile
 	src/setup/mime/Makefile
