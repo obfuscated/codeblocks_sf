@@ -125,7 +125,7 @@ void MacrosManager::Reset()
     m_DataPath = UnixFilename(ConfigManager::GetDataFolder());
     m_Plugins = UnixFilename(ConfigManager::GetDataFolder() + _T("/plugins"));
     ClearProjectKeys();
-    m_re.Compile(_T("(\\$[({]?|%)(#?[A-Za-z_0-9]+[\\.]?[A-Za-z_0-9]?)([)}%]?)"));
+    m_re.Compile(_T("(%|\\$[({]?)(#?[A-Za-z_0-9\\.]+)([)}%]?)"));
     m_uVarMan = Manager::Get()->GetUserVariableManager();
 }
 
@@ -281,38 +281,41 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo)
     if(!project || project != m_lastProject || target != m_lastTarget)
         RecalcVars(project, editor, target);
 
+    wxString search;
     wxString replace;
-    wxString before;
 
     while(m_re.Matches(buffer))
     {
         replace.Empty();
 
-        wxString env = m_re.GetMatch(buffer, 2).Upper();
-        before = m_re.GetMatch(buffer, 0);
+        wxString var = m_re.GetMatch(buffer, 2).Upper();
+        search = m_re.GetMatch(buffer, 0);
 
-        if (env[0] == _T('#'))
-            replace = UnixFilename(m_uVarMan->Replace(env));
+        if (var[0] == _T('#'))
+        {
+            replace = UnixFilename(m_uVarMan->Replace(var));
+        }
         else
         {
             MacrosMap::iterator it;
-            if((it = macros.find(env.Upper())) != macros.end())
+            if((it = macros.find(var)) != macros.end())
                 replace = it->second;
         }
 
         QuoteStringIfNeeded(replace);
+		//Manager::Get()->GetMessageManager()->DebugLog(wxString(wxString("replacing ") << search << " (variable: " << var << ")" << "with: ") << replace);
 
         if (!replace.IsEmpty())
         {
-            buffer.Replace(before, replace);
+            buffer.Replace(search, replace);
         }
         else
         {
             if (envVarsToo)
             {
                 wxString envactual;
-                wxGetEnv(env, &envactual);
-                buffer.Replace(before, envactual);
+                wxGetEnv(var, &envactual);
+                buffer.Replace(search, envactual);
             }
         }
     }
