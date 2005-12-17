@@ -38,7 +38,7 @@
 
 #include <wx/tipdlg.h>
 #include <wx/dnd.h>
-#include <wx/mstream.h>
+#include <wx/sstream.h>
 #include <wx/fileconf.h>
 
 #include <configmanager.h>
@@ -798,9 +798,9 @@ void MainFrame::LoadWindowState()
 
     wxString buf;
     buf = Manager::Get()->GetConfigManager(_T("app"))->ReadBinary(_T("/main_frame/layout"));
-    wxMemoryInputStream ms(buf.c_str(), buf.Length());
-    pLayoutManager->LoadFromStream( ms );
-    pSlideBar->LoadFromStream( ms );
+    wxStringInputStream sis(buf);
+    pLayoutManager->LoadFromStream( sis );
+    pSlideBar->LoadFromStream( sis );
 
     // toolbar visibility
 	if (pSlideBar)
@@ -830,11 +830,10 @@ void MainFrame::SaveWindowState()
 {
 	wxLogNull ln; // no logging needed
 
-    wxMemoryOutputStream os;
+    wxStringOutputStream os;
     pLayoutManager->SaveToStream( os );
     pSlideBar->SaveToStream( os );
-    wxString buf(static_cast<const wxChar*>(os.GetOutputStreamBuffer()->GetBufferStart()), os.GetSize());
-    Manager::Get()->GetConfigManager(_T("app"))->WriteBinary(_T("/main_frame/layout"), buf);
+    Manager::Get()->GetConfigManager(_T("app"))->WriteBinary(_T("/main_frame/layout"), os.GetString());
 
     // toolbar visibility
 	if (pSlideBar)

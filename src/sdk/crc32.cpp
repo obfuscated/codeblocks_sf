@@ -44,56 +44,58 @@ static unsigned long *GetCRC32Table( unsigned long *crc_table )
     return ( crc_table ) ;
 }
 
-unsigned long wxCrc32::FromFile(const wxString& file)
-{
-    static unsigned long *crc_table = NULL;
-    unsigned long crc = 0;
-
-    if (file)
-    {
-        // Get the crc table, on first call, generate, otherwise do nothing
-        crc_table = GetCRC32Table( crc_table ) ;
-
-        // Do we have a crc table?
-        if ( crc_table )
-        {
-            // Open the file for reading
-            FILE *fp = fopen(file.mb_str(wxConvUTF8), "r");
-
-            // Was the file open succesfull?
-            if (fp)
-            {
-                // Calculate the checksum
-                int ch;
-
-                crc = 0xFFFFFFFFUL;
-                while ((ch = getc(fp)) != EOF)
-                    { crc = (crc>>8) ^ crc_table[ (crc^ch) & 0xFF ]; }
-
-                crc ^= 0xFFFFFFFFUL ;
-
-                // Close the file
-                fclose(fp);
-            }
-        }
-    }
-
-    // If we have a crc table, delete it from memory
-    if ( crc_table ) { delete[] crc_table; }
-
-    // Set it to a null pointer, the have it (re)created on next calls to this
-    // function
-    crc_table = NULL;
-
-    // Return the checksum result
-    return( crc ) ;
-}
+unsigned long wxCrc32::FromFile(const wxString& file){return 0uL;};
+/* TODO (thomas#1#): Reimplement this by reading in the complete file and calling FromString (function is currently unused anyway) */
+//unsigned long wxCrc32::FromFile(const wxString& file)
+//{
+//    static unsigned long *crc_table = NULL;
+//    unsigned long crc = 0;
+//
+//    if (file)
+//    {
+//        // Get the crc table, on first call, generate, otherwise do nothing
+//        crc_table = GetCRC32Table( crc_table ) ;
+//
+//        // Do we have a crc table?
+//        if ( crc_table )
+//        {
+//            // Open the file for reading
+//            FILE *fp = fopen(file.mb_str(wxConvUTF8), "r");
+//
+//            // Was the file open succesfull?
+//            if (fp)
+//            {
+//                // Calculate the checksum
+//                int ch;
+//
+//                crc = 0xFFFFFFFFUL;
+//                while ((ch = getc(fp)) != EOF)
+//                    { crc = (crc>>8) ^ crc_table[ (crc^ch) & 0xFF ]; }
+//
+//                crc ^= 0xFFFFFFFFUL ;
+//
+//                // Close the file
+//                fclose(fp);
+//            }
+//        }
+//    }
+//
+//    // If we have a crc table, delete it from memory
+//    if ( crc_table ) { delete[] crc_table; }
+//
+//    // Set it to a null pointer, the have it (re)created on next calls to this
+//    // function
+//    crc_table = NULL;
+//
+//    // Return the checksum result
+//    return( crc ) ;
+//}
 
 unsigned long wxCrc32::FromString(const wxString& text)
 {
     static unsigned long *crc_table = NULL;
     unsigned long crc = 0;
-    const wxChar* p = text.mb_str(wxConvUTF8);
+    int i = 0;
 
     if (text)
     {
@@ -105,8 +107,8 @@ unsigned long wxCrc32::FromString(const wxString& text)
         {
             // Calculate the checksum
             crc = 0xFFFFFFFFUL;
-            while (*p)
-                { crc = (crc>>8) ^ crc_table[ (crc^(*p++)) & 0xFF ]; }
+            while (text[i])
+                { crc = (crc>>8) ^ crc_table[ (crc^(text[i++])) & 0xFF ]; }
 
             crc ^= 0xFFFFFFFFUL ;
         }
