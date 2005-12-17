@@ -50,7 +50,8 @@ wxslistctrl.cpp \
 wxschoice.cpp \
 wxsstaticbox.cpp \
 wxshtmlwindow.cpp \
-wxsxslider.cpp
+wxsxslider.cpp \
+wxschecklistbox.cpp
 
 noinst_HEADERS = wxsboxsizer.h \
 wxsbutton.h \
@@ -92,4 +93,5 @@ wxslistctrl.h \
 wxschoice.h \
 wxsstaticbox.h \
 wxshtmlwindow.h \
-wxsslider.h
+wxsslider.h \
+wxschecklistbox.h

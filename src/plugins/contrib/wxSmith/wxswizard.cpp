@@ -1,5 +1,5 @@
 #include "wxsheaders.h"
-#include "wxswizzard.h"
+#include "wxswizard.h"
 
 #include <wx/filename.h>
 #include <cbproject.h>
@@ -472,19 +472,19 @@ static wxsFilePart wxsMainFrameXrc[] =
     { NULL }
 };
 
-BEGIN_EVENT_TABLE(wxsWizzard,wxDialog)
-	//(*EventTable(wxsWizzard)
-	EVT_BUTTON(ID_BUTTON3,wxsWizzard::OnDirChooseClick)
-	EVT_COMBOBOX(ID_COMBOBOX2,wxsWizzard::OnConfModeSelect)
-	EVT_BUTTON(ID_BUTTON4,wxsWizzard::OnwxDirChooseClick)
-	EVT_BUTTON(ID_BUTTON1,wxsWizzard::OnButton1Click)
-	EVT_BUTTON(ID_BUTTON2,wxsWizzard::OnButton2Click)
+BEGIN_EVENT_TABLE(wxsWizard,wxDialog)
+	//(*EventTable(wxsWizard)
+	EVT_BUTTON(ID_BUTTON3,wxsWizard::OnDirChooseClick)
+	EVT_COMBOBOX(ID_COMBOBOX2,wxsWizard::OnConfModeSelect)
+	EVT_BUTTON(ID_BUTTON4,wxsWizard::OnwxDirChooseClick)
+	EVT_BUTTON(ID_BUTTON1,wxsWizard::OnButton1Click)
+	EVT_BUTTON(ID_BUTTON2,wxsWizard::OnButton2Click)
 	//*)
 END_EVENT_TABLE()
 
-wxsWizzard::wxsWizzard(wxWindow* parent,wxWindowID id)
+wxsWizard::wxsWizard(wxWindow* parent,wxWindowID id)
 {
-	//(*Initialize(wxsWizzard)
+	//(*Initialize(wxsWizard)
 	wxFlexGridSizer* FlexGridSizer2;
 	wxStaticBoxSizer* StaticBoxSizer1;
 	wxFlexGridSizer* FlexGridSizer3;
@@ -504,7 +504,7 @@ wxsWizzard::wxsWizzard(wxWindow* parent,wxWindowID id)
 	wxButton* Button1;
 	wxButton* Button2;
 	
-	Create(parent,id,_("wxSmith project wizzard"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE);
+	Create(parent,id,_("wxSmith project wizard"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE);
 	MainSizer = new wxFlexGridSizer(0,1,0,0);
 	FlexGridSizer2 = new wxFlexGridSizer(0,1,0,0);
 	FlexGridSizer2->AddGrowableCol(0);
@@ -614,16 +614,16 @@ wxsWizzard::wxsWizzard(wxWindow* parent,wxWindowID id)
     //#endif
 }
 
-wxsWizzard::~wxsWizzard()
+wxsWizard::~wxsWizard()
 {
 }
 
-void wxsWizzard::OnButton1Click(wxCommandEvent& event)
+void wxsWizard::OnButton1Click(wxCommandEvent& event)
 {
     EndModal(1);
 }
 
-void wxsWizzard::OnButton2Click(wxCommandEvent& event)
+void wxsWizard::OnButton2Click(wxCommandEvent& event)
 {
     wxString Dir = PrjDir->GetValue();
     wxString Name = PrjName->GetValue();
@@ -796,7 +796,7 @@ void wxsWizzard::OnButton2Click(wxCommandEvent& event)
     EndModal(0);
 }
 
-void wxsWizzard::OnConfModeSelect(wxCommandEvent& event)
+void wxsWizard::OnConfModeSelect(wxCommandEvent& event)
 {
     bool EnableWxConf = ( ConfMode->GetSelection() != 0 );
     
@@ -805,19 +805,19 @@ void wxsWizzard::OnConfModeSelect(wxCommandEvent& event)
     WxConf->Enable(EnableWxConf);
 }
 
-void wxsWizzard::OnDirChooseClick(wxCommandEvent& event)
+void wxsWizard::OnDirChooseClick(wxCommandEvent& event)
 {
     wxString Dir = wxDirSelector();
     if ( !Dir.empty() ) PrjDir->SetValue(Dir);
 }
 
-void wxsWizzard::OnwxDirChooseClick(wxCommandEvent& event)
+void wxsWizard::OnwxDirChooseClick(wxCommandEvent& event)
 {
     wxString Dir = wxDirSelector();
     if ( !Dir.empty() ) WxDir->SetValue(Dir);
 }
 
-bool wxsWizzard::BuildFile(
+bool wxsWizard::BuildFile(
     cbProject* project,
     const wxString& RootPath,
     const wxString& FileName,

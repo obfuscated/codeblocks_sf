@@ -31,7 +31,7 @@
 #include "wxsresourcetree.h"
 #include "wxssettingsdlg.h"
 #include "wxsmithmime.h"
-#include "wxsmithwizzard.h"
+#include "wxsmithwizard.h"
 
 static int NewDialogId = wxNewId();
 static int NewFrameId = wxNewId();
@@ -39,7 +39,7 @@ static int NewPanelId = wxNewId();
 static int ImportXrcId = wxNewId();
 static int ConfigureId = wxNewId();
 
-CB_IMPLEMENT_PLUGINS_3(wxSmith,wxSmithMime,wxSmithWizzard);
+CB_IMPLEMENT_PLUGINS_3(wxSmith,wxSmithMime,wxSmithWizard);
 
 wxSmith* wxSmith::Singleton = NULL;
 

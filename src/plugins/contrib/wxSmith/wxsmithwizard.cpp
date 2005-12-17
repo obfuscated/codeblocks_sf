@@ -1,13 +1,13 @@
 #include "wxsheaders.h"
-#include "wxsmithwizzard.h"
-#include "wxswizzard.h"
+#include "wxsmithwizard.h"
+#include "wxswizard.h"
 
-wxSmithWizzard::wxSmithWizzard()
+wxSmithWizard::wxSmithWizard()
 {
-	m_PluginInfo.name = _("wxSmithWizzard");
-	m_PluginInfo.title = _("wxSmith - Project Wizzard plugin");
+	m_PluginInfo.name = _("wxSmithWizard");
+	m_PluginInfo.title = _("wxSmith - Project Wizard plugin");
 	m_PluginInfo.version = _("1.0");
-	m_PluginInfo.description = _("Project Wizzard for wxSmith");
+	m_PluginInfo.description = _("Project Wizard for wxSmith");
 	m_PluginInfo.author = _("BYO");
 	m_PluginInfo.authorEmail = _("byo.spoon@gmail.com");
 	m_PluginInfo.authorWebsite = _T("");
@@ -20,12 +20,12 @@ wxSmithWizzard::wxSmithWizzard()
         wxBITMAP_TYPE_PNG);
 }
 
-wxSmithWizzard::~wxSmithWizzard()
+wxSmithWizard::~wxSmithWizard()
 {
 }
 
-int wxSmithWizzard::Launch(int Index)
+int wxSmithWizard::Launch(int Index)
 {
-    wxsWizzard Dlg(0L);
+    wxsWizard Dlg(0L);
     return Dlg.ShowModal();
 }

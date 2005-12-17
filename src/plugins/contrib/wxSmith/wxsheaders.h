@@ -5,6 +5,7 @@
 
 #ifdef CB_PRECOMP
     #include <wx/propgrid/propgrid.h>
+    #include <wx/propgrid/propdev.h>
     #include <wx/propgrid/advprops.h>
 
     #include "wxsglobals.h"

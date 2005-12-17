@@ -20,7 +20,9 @@ wxsstringlistproperty.cpp \
 wxsstringproperty.cpp \
 wxsstyleproperty.cpp \
 wxscolourproperty.cpp \
-wxsfontproperty.cpp
+wxsfontproperty.cpp \
+wxsstringlistcheckproperty.cpp \
+wxscheckstringseditor.cpp
 
 noinst_HEADERS = wxs2intproperty.h \
 wxsboolproperty.h \
@@ -32,4 +34,6 @@ wxsstringlistproperty.h \
 wxsstringproperty.h \
 wxsstyleproperty.h \
 wxscolourproperty.h \
-wxsfontproperty.h
+wxsfontproperty.h \
+wxsstringlistcheckproperty.h \
+wxscheckstringseditor.h

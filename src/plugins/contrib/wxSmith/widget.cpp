@@ -1015,8 +1015,9 @@ const wxsWidget::CodeDefines& wxsWidget::GetCodeDefines()
     if ( pType & bptFont && GetBaseProperties().UseFont )
     {
     	wxFont& Font = GetBaseProperties().Font;
-    	CDefines.InitCode << SelectCode          << _T("SetFont(wxFont(")
-    	                  << Font.GetPointSize() << _T(",");
+    	CDefines.InitCode.Append(
+            wxString::Format(_T("%sSetFont(wxFont(%d,"),
+                SelectCode.c_str(),Font.GetPointSize()));
 
     	switch ( Font.GetFamily() )
     	{

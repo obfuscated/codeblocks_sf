@@ -232,7 +232,7 @@ wxString wxsEventsEditor::GetFunctionProposition(wxsEventDesc* Event)
     while ( Functions.Index(NewName) != wxNOT_FOUND )
     {
     	NewName = NewNameBase;
-    	NewName << ++Suffix;
+    	NewName.Append(wxString::Format(_T("%d"),++Suffix));
     }
 
     return NewName;

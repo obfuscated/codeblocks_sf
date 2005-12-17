@@ -1,15 +1,15 @@
-#ifndef WXSMITHWIZZARD_H
-#define WXSMITHWIZZARD_H
+#ifndef WXSMITHWIZARD_H
+#define WXSMITHWIZARD_H
 
 #include <cbplugin.h>
 #include <wx/bitmap.h>
 
-class wxSmithWizzard : public cbProjectWizardPlugin
+class wxSmithWizard : public cbProjectWizardPlugin
 {
     public:
-        wxSmithWizzard();
+        wxSmithWizard();
         
-        virtual ~wxSmithWizzard();
+        virtual ~wxSmithWizard();
         
         virtual int Configure() { return -1; }
         

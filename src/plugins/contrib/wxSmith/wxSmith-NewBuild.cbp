@@ -43,7 +43,7 @@
                 </Linker>
             </Target>
             <Environment>
-                <Variable name="WX_CFG" value="" />
+                <Variable name="WX_CFG" value="NonUnicode" />
             </Environment>
         </Build>
         <Compiler>
@@ -128,6 +128,16 @@
             <Option target="wxSmith" />
         </Unit>
         <Unit filename="defwidgets\wxscheckbox.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="defwidgets\wxschecklistbox.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="defwidgets\wxschecklistbox.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
@@ -539,6 +549,16 @@
             <Option link="0" />
             <Option target="wxSmith" />
         </Unit>
+        <Unit filename="properties\wxscheckstringseditor.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="properties\wxscheckstringseditor.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
         <Unit filename="properties\wxscolourproperty.cpp">
             <Option compilerVar="CPP" />
             <Option target="wxSmith" />
@@ -584,6 +604,16 @@
             <Option target="wxSmith" />
         </Unit>
         <Unit filename="properties\wxsplacementproperty.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="properties\wxsstringlistcheckproperty.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="properties\wxsstringlistcheckproperty.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
@@ -1325,11 +1355,11 @@
             <Option link="0" />
             <Option target="wxSmith" />
         </Unit>
-        <Unit filename="wxsmithwizzard.cpp">
+        <Unit filename="wxsmithwizard.cpp">
             <Option compilerVar="CPP" />
             <Option target="wxSmith" />
         </Unit>
-        <Unit filename="wxsmithwizzard.h">
+        <Unit filename="wxsmithwizard.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
@@ -1529,11 +1559,11 @@
             <Option link="0" />
             <Option target="wxSmith" />
         </Unit>
-        <Unit filename="wxswizzard.cpp">
+        <Unit filename="wxswizard.cpp">
             <Option compilerVar="CPP" />
             <Option target="wxSmith" />
         </Unit>
-        <Unit filename="wxswizzard.h">
+        <Unit filename="wxswizard.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />

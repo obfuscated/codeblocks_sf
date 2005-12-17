@@ -1,5 +1,5 @@
-#ifndef WXSWIZZARD_H
-#define WXSWIZZARD_H
+#ifndef WXSWIZARD_H
+#define WXSWIZARD_H
 
 #include <wx/wxprec.h>
 
@@ -7,7 +7,7 @@
     #pragma hdrstop
 #endif
 
-//(*Headers(wxsWizzard)
+//(*Headers(wxsWizard)
 #include <wx/button.h>
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
@@ -22,14 +22,14 @@ struct wxsFilePart;
 
 #include <cbproject.h>
 
-class wxsWizzard: public wxDialog
+class wxsWizard: public wxDialog
 {
 	public:
 
-		wxsWizzard(wxWindow* parent,wxWindowID id = -1);
-		virtual ~wxsWizzard();
+		wxsWizard(wxWindow* parent,wxWindowID id = -1);
+		virtual ~wxsWizard();
 
-		//(*Identifiers(wxsWizzard)
+		//(*Identifiers(wxsWizard)
 		enum Identifiers
 		{
 		    ID_BUTTON1 = 0x1000,
@@ -60,7 +60,7 @@ class wxsWizzard: public wxDialog
 
 	protected:
 
-		//(*Handlers(wxsWizzard)
+		//(*Handlers(wxsWizard)
 		void OnButton1Click(wxCommandEvent& event);
 		void OnButton2Click(wxCommandEvent& event);
 		void OnConfModeSelect(wxCommandEvent& event);
@@ -68,7 +68,7 @@ class wxsWizzard: public wxDialog
 		void OnwxDirChooseClick(wxCommandEvent& event);
 		//*)
 
-		//(*Declarations(wxsWizzard)
+		//(*Declarations(wxsWizard)
 		wxFlexGridSizer* MainSizer;
 		wxTextCtrl* PrjName;
 		wxTextCtrl* FrmTitle;

@@ -37,6 +37,7 @@
 #include "wxsstaticbox.h"
 #include "wxshtmlwindow.h"
 #include "wxsslider.h"
+#include "wxschecklistbox.h"
 #include "../wxsmith.h"
 
 
@@ -202,6 +203,7 @@ static wxsWidgetInfo StdInfos[] =
     Entry(StaticBox,     "wx_wxstaticbox.html#wxstaticbox","<wx/statbox.h>")
     Entry2Headers(HtmlWindow,    "wx_wxhtmlwindow.html#wxhtmlwindow","<wx/html/htmlwin.h>","<wx/filesys.h>")
     Entry(Slider,        "wx_wxslider.html#wxslideer","<wx/slider.h>")
+    Entry(CheckListBox,  "wx_wxchecklistbox.html#wxchecklistbox","<wx/checklst.h>")
 
     WindowEntry(Dialog,"wx_wxdialog.html#wxdialog","<wx/dialog.h>")
     WindowEntry(Frame, "wx_wxframe.html#wxframe","<wx/frame.h>")
@@ -352,6 +354,7 @@ wxsWidget* wxsStdManagerT::ProduceWidget(int Id,wxsWindowRes* Res)
         ITEM(StaticBox)
         ITEM(HtmlWindow)
         ITEM(Slider)
+        ITEM(CheckListBox)
         #undef ITEM
     }
 
