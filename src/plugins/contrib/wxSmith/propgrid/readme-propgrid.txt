@@ -8,9 +8,10 @@
 
   ************************************************
 
-    Version:   1.0.5
+    Version:   1.0.6.1
     Requires:  wxWidgets 2.5.2 or later
     Platforms: Windows - OK; Linux GTK 2.0 - OK; Linux GTK 1.2 - 95% OK;
+               Mac OS X - Reported to build and run without huge problems;
                other platforms remain untested.
     License:   wxWidgets license
 
@@ -43,6 +44,7 @@
   Altough I have tried to test the installer well enough, there may still be problems
   at this point. If you find any, then please report them.
 
+
   POSIX SYSTEMS (Linux, OS X, mingw+msys etc.)
 
   Extract the archive to a temporary directory and run install-propgrid.sh.
@@ -50,7 +52,7 @@
   For example:
 
   > cd <dir-where-you-downloaded-the-source-archive>
-  > tar zxf wxpropgrid-1.0.0rc2-src.tar.gz -C /tmp
+  > tar zxf wxpropgrid-1.0.6.1-src.tar.gz -C /tmp
   > cd /tmp
   > sh install-propgrid.sh
 

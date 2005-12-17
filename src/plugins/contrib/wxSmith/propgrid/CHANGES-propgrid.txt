@@ -1,4 +1,56 @@
 
+
+Version 1.0.6.1 ( Dec-02-2005 )
+
+   Tweaks:
+
+   - wxPG_BOOL_USE_DOUBLE_CLICK_CYCLING (wxBoolProperty attribute to allow
+     value cycling with double-click) has been improved considerably.
+     Focusing to the combo box is now detected as the first click, so
+     behaviour will be much smoother than before.
+
+
+   Bugs Fixed:
+
+   - ComboBox control crashed often (for instance, when the dropdown button
+     was pressed many times in a row).
+
+   - In some cases wxPropertyGrid stole keyboard focus.
+
+
+
+Version 1.0.6 ( Sep-21-2005 )
+
+  Minor Features:
+
+  - Initial Mac OS X compatibility has been reported (should build and run -
+    thanks to Jan-Friso Schipper for working it out).
+
+    NOTE: wxPropertyGrid::SetFont is reported to crash, so offending code in it
+    has been commented out. However, if you are willing to debug the issue, you
+    can replace line '#if !defined(__WXMAC__)' with line '#if 1' in propgrid.cpp:
+    wxPropertyGrid::SetFont.
+
+  - wxWidgets 2.6.2 makefiles.
+
+
+  Bugs Fixed:
+
+  - wxFloatProperty and sample's wxArrayDoubleProperty had problems when
+    locale was set to one using comma as decimal point.
+
+  - wxUIntProperty did not render its value unless base or prefix was
+    explicitly set (via SetPropertyAttribute).
+
+  - WinXP/Win2K, wxWidgets 2.6.1+: Improved indentation fix.
+
+  - When mouse was leaving "slowly" via right edge through active editor
+    control, correct mouse leave event was not triggered resulting in
+    latest changes not being committed (though there was error notification
+    in debug build).
+
+
+
 Version 1.0.5 ( Jun-06-2005 )
 
   Minor Features:
@@ -17,7 +69,7 @@ Version 1.0.5 ( Jun-06-2005 )
     editor was incorrect (due to change in default font face: previously
     "MS Shell Dlg", now "MS Shell Dlg 2").
 
-  - wxGTK: Virtual size was sometimesskewed.
+  - wxGTK: Virtual size was sometimes skewed.
 
   - When a property with children was expanded or collapsed, and current
     selection was outside the visible area, then the grid was inadvertedly

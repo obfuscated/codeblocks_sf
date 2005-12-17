@@ -30,6 +30,7 @@
     #include "wx/window.h"
     #include "wx/panel.h"
     #include "wx/dc.h"
+    #include "wx/dcclient.h"
     #include "wx/button.h"
     #include "wx/pen.h"
     #include "wx/brush.h"

@@ -789,7 +789,25 @@ void wxPropertyGridManager::RecalculatePositions ( int width, int height )
 #if wxUSE_TOOLBAR
     if ( m_pToolbar )
     {
-        m_pToolbar->SetSize(0,0,width,-1);
+        int tbHeight;
+
+        //m_pToolbar->SetSize(0,0,width,-1);
+    #if ( wxMINOR_VERSION < 6 || wxRELEASE_NUMBER < 2 )
+        tbHeight = -1;
+    #else
+        // In wxWidgets 2.6.2+, Toolbar default height may be broken
+        #if defined(__WXMSW__)
+            tbHeight = 22;
+        #elif defined(__WXGTK__)
+            tbHeight = 22;
+        #elif defined(__WXMAC__)
+            tbHeight = 22;
+        #else
+            tbHeight = 22;
+        #endif
+    #endif
+
+        m_pToolbar->SetSize(0,0,width,tbHeight);
         propgrid_y = m_pToolbar->GetSize().y;
     }
 #endif

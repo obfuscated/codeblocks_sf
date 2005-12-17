@@ -46,6 +46,7 @@
     \ref misc\n
     \ref proplist\n
     \ref userhelp\n
+    \ref bugspostponed\n
     \ref bugs\n
     \ref issues\n
     \ref todo\n
@@ -1036,6 +1037,17 @@
       changed if text was changed and return was pressed afterwards.
 
     - In long strings tabs are represented by "\t" and line break by "\n".
+
+    \section bugspostponed Bugs Not Fixed In 1.0.x branch
+
+    This is a list of bugs that have been fixed in the 1.1.0 development branch,
+    but not in the 1.0.x stable API branch. Personally I don't have enough time
+    and energy to do the necessary code changes and testing for both branches.
+
+    - Size given in constructor or Create does not work.
+
+    - It is not possible to have user properties with name not starting
+      with "wx".
 
     \section bugs Known Bugs
     Any insight on these is more than welcome.

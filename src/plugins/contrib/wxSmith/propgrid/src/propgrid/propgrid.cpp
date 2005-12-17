@@ -71,6 +71,8 @@
 # include <wx/propgrid/odcombo.h>
 #endif
 
+#define wxPGComboBox wxPGOwnerDrawnComboBox
+
 // Two pics for the expand / collapse buttons.
 // Files are not supplied with this project (since it is
 // recommended to use either custom or native rendering).
@@ -262,6 +264,12 @@
 
 #endif
 
+
+#ifndef wxCC_CORRECT_CONTROL_POSITION
+# define wxCC_CORRECT_CONTROL_POSITION 0
+#endif
+
+
 #if wxPG_NO_CHILD_EVT_MOTION
 
 # define wxPG_SPLITTERX_DETECTMARGIN1    3 // this much on left
@@ -298,6 +306,12 @@
 # undef wxPG_NAT_BUTTON_BORDER_ANY
 
 #else
+
+
+#ifndef wxPG_NAT_CHOICE_BORDER_ANY
+# define wxPG_NAT_CHOICE_BORDER_ANY  0
+#endif
+
 
 #if wxPG_USE_GENERIC_TEXTCTRL
 
@@ -455,147 +469,8 @@ void wxPropertyGrid::AutoGetTranslation ( bool ) { }
 //
 
 //
-// For Next Release (1.0.1):
+// Nothing here any more -- all TODO's moved to 1.1.x's propgrid.cpp.
 //
-// Maybe for 1.1:
-// * Consider: Match system font size in grid.
-//   Problem: There is no preferred font point size detection.
-// * wxGTK1: Multichoice can't get value correctly.
-// * wxGTK1: Control(s) disapper after:
-//     Splitter centering.
-//     Collapse expand.
-//     - Refresh is not enough?
-// * Make tab traversal to other controls (Navigate) work like it should.
-// * wxMSW: Scrollbar "freezing".
-//   Symptom: After popup is shown, and even if destroyed, scrollbar in
-//     the wxScrolledWindow refuses to become hot (but usually still works).
-//     Ends when another window becomes activated or window is resized
-//     (horizontally, even programmatically is ok).
-// * Font family list (or maybe dialog).
-//
-// For 1.1+:
-// * Locking for globals.
-// * GetPropertyAttribute.
-// * Splitter position relative change on resize (to prevent twicthing
-//   caused by scrollbar change but splitter not centering).
-// * Multiple delimiters for string tokenizers (e.g. ';' in addition to ',').
-// * Consider: Further additions to wxPropertyContainerMethods
-//   (virtual Insert, Delete and DrawItemAndChildren, and then methods
-//   that need them). This could reduce size of wxPropertyGridManager
-//   code.
-// * Consider: three-argument wxEnumProperty (choices would be added
-//     with AddPropertyChoice). Already has this, but with docs too.
-// * Error/Warning popups (preferably a balloon tooltip on Win NT-based OS).
-// * Consider adding optional images in front of property label.
-// * Improve string editor dialog (but how?).
-// * Tree buttons to use system colours. What colours to use?
-//   Native rendering only produces one set of buttons, so that won't
-//   do (or we would need to use that and another method).
-//
-// Bug Fixes:
-// * wxGTK, no cc: Right-click doesn't occur if right-clicked on control.
-// * wxGTK, no cc: TAB-based editor browsing ceases sometimes (try 2nd page, until
-//   two disabled boolprops).
-//
-// High Priority:
-// * wxMAC port (if I only could!).
-//
-// Medium Priority:
-// * Some (flag) longs to wxuint32s.
-// * wxPropertyGridManager's missing methods:
-//   GetLastProperty.
-// * Adding items when focused is no-no.
-// * Properly fix DoGetBestSize (both controls). How? It is called but
-//   result is probably somehow interpreted incorrectly.
-// * Other ports?
-//
-// To Consider:
-// * Simple checkbox: Background clear unaligned (see with grey colour scheme).
-//   Problem: It is caused by the MSW checkmark drawing background clear.
-// * Remove hover support to lighten some code (no tooltips, then).
-//   Would basicly eliminate need for visibility cache (get first visible
-//   instead viscache refresh and find items around it).
-// * Embed page system in wxPropertyGrid. Not wxScrolledWindow to make
-//   wxPropertyGridManager to inherit from wxPropertyGrid.
-//   Feb-13-2005: Not a good idea, would simply be complicated in another way.
-//   Mar-29-2005: Actually, end result would be better (pages would be the top
-//     level of property hierarchy), but workload in comparison enormous.
-// * Custom image horizontal size increment in relation to line height.
-//   Feb-13-2005: Only real help if people use really big ( ptsz>12 ) fonts.
-//   So this is real low priority.
-// * At some occasions, maybe use FindOrCreatePen and FindOrCreateBrush.
-//   Feb-13-2005: More bloat for marginal gains.
-// * Key event forwarding (use ex flag to mark that).
-//   Feb-13-2005: Really needed?
-// * Visual state saving (which items are expanded and which collapsed,
-//   which mode is selected).
-//   Feb-13-2005: More bloat?
-// * Manager: SetCustomModeBitmaps. Call before toolbar is actually created.
-//   Feb-13-2005: More bloat?
-// * More drop-down editors (for wxLongStringProperty etc.) instead of modal dialogs.
-//   Problem: complex, multi-sub-control popups do not work yet (will they ever work?).
-// * Replace: replaces one property with another. Must have same label or auto sorting
-//   must be turned off.
-//   Feb-13-2005: More bloat?
-//
-// Low Priority:
-// * wxPropertyGridManager::SetFont.
-// * Native textctrl spacing to work properly with font sizes > 10.
-// * Basic context menu with Reset() and checkable Show Description that toggle the help box.
-// * wxCustomEnumProperty - Allows user to set the image as well.
-// * GetItemAtY() to use binary search.
-// * When focus out from control, selected is drawn in background instead in selforeground,
-//   like in .NET implementation.
-// * Preparations for wxPGProperty direct usage.
-// * Refine dialog-position auto-generator.
-// * Maybe different colour lines between categories (like light grey ones in .NET).
-//   (though I don't think its that elegant).
-//
-
-//
-// Documentation Todo:
-// * Set/GetPropertyValue: Strings work for all value types.
-// * SetPropertyAttribute.
-// * Having graphics glitches? Use Freeze and Thaw.
-// * How to do a property that uses choices list (i.e. how to handle wxPGConstants*).
-//
-
-/**
-
-  Validation Feature:
-
-  - Added property value validation scheme. Use like this:
-
-      wxIntPropertyValidator int_validator(min,max);
-      pg->SetPropertyValidator(wxT("MyIntProperty"),int_validator);
-
-    Also has wxFloatPropertyValidator that works exactly the same
-    way, but for properties with double as value type.
-
-    To create custom validators, see wxPropertyValidator (base
-    class for property validators) documentation and progrid.h/
-    propgrid.cpp code.
-
-#if wxPG_USE_VALIDATORS
-    m_validator->AssertDataType(wxT("double"));
-#endif
-
-  ....
-
-  To wxArrayDoublePropertyClass::SetValueFromString:
-#if wxPG_USE_VALIDATORS
-        else if ( m_validator )
-        {
-            wxPGVariant tvariant(tval);
-            if ( !m_validator->Validate(tvariant,tstr) )
-            {
-                ok = FALSE;
-                break;
-            }
-        }
-#endif
-
-*/
 
 // -----------------------------------------------------------------------
 
@@ -737,13 +612,7 @@ WX_PG_IMPLEMENT_PROPERTY_CLASS(wxUIntProperty,long,unsigned long,TextCtrl)
 wxUIntPropertyClass::wxUIntPropertyClass ( const wxString& label, const wxString& name,
     unsigned long value ) : wxPGProperty(label,name)
 {
-    // Set initial value for the sprintf template
-    /*if ( !wxPGGlobalVars->m_uintTemplate.length() )
-    {
-        wxPGGlobalVars->m_uintTemplate = wxT("%u");
-        wxPGGlobalVars->m_uintRadix = 10;
-    }*/
-    m_base = wxPG_BASE_DEC;
+    m_base = 6; // This is magic number for dec base (must be same as in setattribute)
     m_realBase = 10;
     m_prefix = wxPG_PREFIX_NONE;
 
@@ -891,8 +760,6 @@ void wxPropertyGrid::DoubleToString(wxString& target,
 
     if ( removeZeroes && precision != 0 )
     {
-        wxASSERT ( target.Find(wxT('.')) != wxNOT_FOUND );
-
         // Remove excess zeroes (do not remove this code just yet)
         int cur_pos = target.length() - 1;
         wxChar a;
@@ -903,8 +770,12 @@ void wxPropertyGrid::DoubleToString(wxString& target,
             a = target.GetChar ( cur_pos );
         }
 
-        if ( target.GetChar ( cur_pos ) != wxT('.') )
+        wxChar cur_char = target.GetChar ( cur_pos );
+        if ( cur_char != wxT('.') && cur_char != wxT(',') )
+        {
             cur_pos += 1;
+            cur_char = target.GetChar ( cur_pos );
+        }
 
         target.Truncate ( cur_pos );
     }
@@ -2238,6 +2109,8 @@ bool wxLongStringPropertyClass::OnButtonClick ( wxPropertyGrid* propgrid, wxStri
     wxDialog* dlg = new wxDialog (propgrid,-1,m_label,
         wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxCLIP_CHILDREN);
 
+    dlg->SetFont(propgrid->GetFont()); // Correctly use propgrid's font
+
     // Multi-line text editor dialog.
     const int spacing = 8;
     wxBoxSizer* topsizer = new wxBoxSizer( wxVERTICAL );
@@ -2380,6 +2253,8 @@ bool wxArrayEditorDialog::Create(wxWindow *parent,
 {
 
     bool res = wxDialog::Create (parent,1,caption,pos,sz,style);
+
+    SetFont(parent->GetFont()); // Correctly use propgrid's font
 
     const int spacing = 4;
 
@@ -3666,6 +3541,7 @@ wxPGProperty* wxParentProperty( const wxString& label, const wxString& name )
 }
 
 WX_PG_IMPLEMENT_PROPERTY_CLASS_PLAIN(wxParentProperty,none,TextCtrl)
+WX_PG_IMPLEMENT_CLASSINFO(wxParentProperty)
 
 wxParentPropertyClass::wxParentPropertyClass ( const wxString& label, const wxString& name )
     : wxPGPropertyWithChildren(label,name)
@@ -4464,6 +4340,7 @@ wxPGCtrlClass* wxPGChoiceEditor::CreateControls ( wxPropertyGrid* propgrid, wxPG
     // Get choices.
     choiceinfo.m_arrWxString = (wxString*) NULL;
     choiceinfo.m_arrWxChars = (const wxChar**) NULL;
+    choiceinfo.m_itemCount = 0;
 
     int index = property->GetChoiceInfo ( &choiceinfo );
 
@@ -5982,6 +5859,7 @@ bool wxPropertyGrid::SetFont ( const wxFont& font )
     // Must disable active editor.
     if ( m_selected ) ClearSelection();
 
+#if !defined(__WXMAC__)
     bool res = wxScrolledWindow::SetFont ( font );
     if ( res )
     {
@@ -6013,6 +5891,15 @@ bool wxPropertyGrid::SetFont ( const wxFont& font )
 
         Refresh();
     }
+#else
+    // ** wxMAC Only **
+    // TODO: Remove after SetFont crash fixed.
+    if ( m_iFlags & wxPG_FL_INITIALIZED )
+    {
+        wxLogDebug(wxT("WARNING: propgrid.cpp: wxPropertyGrid::SetFont has been disabled on wxMac since there has been crash reported in it. If you are willing to debug the cause, replace line '#if !defined(__WXMAC__)' with line '#if 1' in wxPropertyGrid::SetFont."));
+    }
+    return false;
+#endif
 
     return res;
 }
@@ -6526,6 +6413,7 @@ void wxPropertyGrid::SetCurControlBoldFont()
         wxRect r = m_wndPrimary->GetRect();
         r.x += textCtrlXAdjust;
         r.width -= textCtrlXAdjust;
+        m_ctrlXAdjust += textCtrlXAdjust;
         m_wndPrimary->SetSize(r);
     }
 #endif
@@ -6913,7 +6801,7 @@ wxString& wxPropertyGrid::CreateEscapeSequences ( wxString& dst_str, wxString& s
     {
         src++;
 
-        if ( a >= wxT(' ') )
+        if ( a >= wxT(' ') || a < 0 )
         {
             // This surely is not something that requires an escape sequence.
             *dst = a;
@@ -9631,8 +9519,8 @@ void wxPropertyGrid::SetupEventHandling ( wxWindow* arg_wnd, int id )
         CONNECT_CHILD(wxEVT_LEFT_UP,(wxMouseEventFunction),OnMouseUpChild)
         CONNECT_CHILD(wxEVT_LEFT_DOWN,(wxMouseEventFunction),OnMouseClickChild)
         CONNECT_CHILD(wxEVT_RIGHT_UP,(wxMouseEventFunction),OnMouseRightClickChild)
-        CONNECT_CHILD(wxEVT_ENTER_WINDOW,(wxMouseEventFunction),OnMouseEntryChild)
-        CONNECT_CHILD(wxEVT_LEAVE_WINDOW,(wxMouseEventFunction),OnMouseEntryChild)
+        CONNECT_CHILD(wxEVT_ENTER_WINDOW,(wxMouseEventFunction),OnMouseEntry)
+        CONNECT_CHILD(wxEVT_LEAVE_WINDOW,(wxMouseEventFunction),OnMouseEntry)
         CONNECT_CHILD(wxEVT_KEY_DOWN,(wxCharEventFunction),OnKeyChild)
     }
     CONNECT_CHILD(wxEVT_SET_FOCUS,(wxFocusEventFunction),OnFocusEvent)
@@ -9704,25 +9592,29 @@ void wxPropertyGrid::SelectProperty (wxPGProperty* p,
         // Is it the same?
         if ( m_selected == p && !forceswitch )
         {
-            if ( focus )
+            // Only set focus if not deselecting
+            if ( p )
             {
-                if ( m_wndPrimary )
+                if ( focus )
                 {
-                    m_wndPrimary->SetFocus ();
-                    m_editorFocused = 1;
+                    if ( m_wndPrimary )
+                    {
+                        m_wndPrimary->SetFocus ();
+                        m_editorFocused = 1;
+                    }
+                }
+                else
+                {
+                #if wxPG_USE_CUSTOM_CONTROLS
+                    if ( m_wndPrimary )
+                        m_wndPrimary->RemoveFocus ();
+                #else
+                    wxScrolledWindow::SetFocus();
+                #endif
+                    m_editorFocused = 0;
                 }
             }
-            else
-            {
-            #if wxPG_USE_CUSTOM_CONTROLS
-                if ( m_wndPrimary )
-                    m_wndPrimary->RemoveFocus ();
-            #else
-                wxScrolledWindow::SetFocus();
-            #endif
-                m_editorFocused = 0;
-            }
-    
+
             return;
         }
     
@@ -9819,14 +9711,20 @@ void wxPropertyGrid::SelectProperty (wxPGProperty* p,
                                                       good_pos,
                                                       grect.GetSize(),
                                                       &m_wndSecondary);
-    
+
                 // NOTE: It is allowed for m_wndPrimary to be NULL - in this case
                 //       value is drawn as normal, and m_wndSecondary is assumed
                 //       to be a right-aligned button that triggers a separate editor
                 //       window.
-    
+
                 if ( m_wndPrimary )
                 {
+
+                    // If it has modified status, use bold font
+                    // (must be done before capturing m_ctrlXAdjust)
+                    if ( (p->m_flags & wxPG_PROP_MODIFIED) && (m_windowStyle & wxPG_BOLD_MODIFIED) )
+                        SetCurControlBoldFont();
+
                 #if !wxPG_USE_CUSTOM_CONTROLS
 
                     // Store x relative to splitter (we'll need it).
@@ -9848,11 +9746,6 @@ void wxPropertyGrid::SelectProperty (wxPGProperty* p,
                     {
                         m_iFlags &= ~(wxPG_FL_PRIMARY_FILLS_ENTIRE);
                     }
-
-                    // If it has modified status, use bold font
-
-                    if ( (p->m_flags & wxPG_PROP_MODIFIED) && (m_windowStyle & wxPG_BOLD_MODIFIED) )
-                        SetCurControlBoldFont();
 
                 #if !wxPG_USE_CUSTOM_CONTROLS
                     m_wndPrimary->SetSizeHints(3,3);
@@ -10420,58 +10313,57 @@ void wxPropertyGrid::OnResize ( wxSizeEvent& event )
 #endif
     */
 
-    // Stop now if frozen
-    if ( m_frozen )
-        return;
-
-    // Need to recalculate visibles array?
-    //if ( height != old_height )
-    if ( height > m_calcVisHeight )
-        CalculateVisibles ( -1, FALSE );
-
-    //wxScrolledWindow::Refresh(FALSE,NULL);
-    if ( sb_vis_toggled )
+    if ( !m_frozen )
     {
-        Refresh();
-    }
-    else if ( m_splitterx != old_splitterx )
-    {
-        if ( abs(height-old_height) < 100 )
-        {
-            Update(); // Necessary, atleast on wxMSW
-            RedrawAllVisible();
-        }
-        else
+
+        // Need to recalculate visibles array?
+        //if ( height != old_height )
+        if ( height > m_calcVisHeight )
+            CalculateVisibles ( -1, FALSE );
+
+        //wxScrolledWindow::Refresh(FALSE,NULL);
+        if ( sb_vis_toggled )
         {
             Refresh();
         }
-    }
-    else
-    {
-    #if wxPG_USE_CUSTOM_CONTROLS
-        // Need to update custom controls.
-
-        // First off, if selected item has custom image, we need to completely redraw it or
-        // risk a graphics glitch.
-        if ( m_selected &&
-             (
-               m_selected->IsFlagSet(wxPG_PROP_CUSTOMIMAGE) ||
-               ( m_wndSecondary && !m_wndPrimary )
-             )
-           )
+        else if ( m_splitterx != old_splitterx )
         {
-            DrawItem ( m_selected );
+            if ( abs(height-old_height) < 100 )
+            {
+                Update(); // Necessary, atleast on wxMSW
+                RedrawAllVisible();
+            }
+            else
+            {
+                Refresh();
+            }
         }
         else
         {
-            if ( m_wndPrimary )
-                m_wndPrimary->Draw();
-            if ( m_wndSecondary )
-                m_wndSecondary->Draw();
-        }
-    #endif
-    }
+        #if wxPG_USE_CUSTOM_CONTROLS
+            // Need to update custom controls.
 
+            // First off, if selected item has custom image, we need to completely redraw it or
+            // risk a graphics glitch.
+            if ( m_selected &&
+                 (
+                   m_selected->IsFlagSet(wxPG_PROP_CUSTOMIMAGE) ||
+                   ( m_wndSecondary && !m_wndPrimary )
+                 )
+               )
+            {
+                DrawItem ( m_selected );
+            }
+            else
+            {
+                if ( m_wndPrimary )
+                    m_wndPrimary->Draw();
+                if ( m_wndSecondary )
+                    m_wndSecondary->Draw();
+            }
+        #endif
+        }
+    }
 
     RecalculateVirtualSize();
 
@@ -11210,9 +11102,6 @@ void wxPropertyGrid::OnMouseUp( wxMouseEvent &event )
 
 void wxPropertyGrid::OnMouseEntry ( wxMouseEvent &event )
 {
-    int x = event.m_x;
-    int y = event.m_y;
-
     if ( event.Entering() )
     {
         if ( !(m_iFlags & wxPG_FL_MOUSE_INSIDE) )
@@ -11239,7 +11128,11 @@ void wxPropertyGrid::OnMouseEntry ( wxMouseEvent &event )
         // Without this, wxSpinCtrl editor will sometimes have wrong cursor
         SetCursor( wxNullCursor );
 
-        if ( ( x <= 0 || y <= 0 || x >= m_width || y >= m_height ) )
+        // This may get called from child control as well, so event's
+        // mouse position cannot be relied on.
+        wxPoint pt = ScreenToClient(::wxGetMousePosition());
+
+        if ( ( pt.x <= 0 || pt.y <= 0 || pt.x >= m_width || pt.y >= m_height ) )
         {
             CommitChangesFromEditor();
 
@@ -11310,11 +11203,6 @@ bool wxPropertyGrid::OnMouseChildCommon ( wxMouseEvent &event, int* px, int *py 
         return TRUE;
     }
     return FALSE;
-}
-
-void wxPropertyGrid::OnMouseEntryChild ( wxMouseEvent &event )
-{
-    event.Skip();
 }
 
 void wxPropertyGrid::OnMouseClickChild( wxMouseEvent &event )
@@ -13010,6 +12898,7 @@ static void wxPGRegisterStandardPropertyClasses()
     wxPGRegisterPropertyClass(wxLongStringProperty);
 
     wxPGRegisterPropertyClass(wxPropertyCategory);
+    wxPGRegisterPropertyClass(wxParentProperty);
     wxPGRegisterPropertyClass(wxCustomProperty);
 
     // TODO: Are these really "standard" ?

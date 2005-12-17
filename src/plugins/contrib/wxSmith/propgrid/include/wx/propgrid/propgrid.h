@@ -175,6 +175,10 @@
 //   it does.
 #define wxPG_INCLUDE_WXOBJECT           0 // 1 if inherit wxPGProperty from wxObject - always 1 if wxPG_EMBED_VARIANT
 
+
+#define wxPG_USE_GENERIC_TEXTCTRL       0 // This at 1 is deprecated feature
+
+
 #if wxPG_EMBED_VARIANT
 # error "wxPG_EMBED_VARIANT is currently broken."
 # undef wxPG_INCLUDE_WXOBJECT
@@ -226,8 +230,8 @@
 #  define wxCCustomTextCtrl wxGenericTextCtrl
 # endif
 //# define wxCCustomComboBox wxComboBox
-class WXDLLEXPORT wxPGComboBox;
-# define wxCCustomComboBox wxPGComboBox
+class WXDLLEXPORT wxPGOwnerDrawnComboBox;
+# define wxCCustomComboBox wxPGOwnerDrawnComboBox
 # define wxCCustomButton wxButton
 #endif
 
@@ -4209,7 +4213,7 @@ public:
 
     //wxArrayPtrVoid* GetCatArray () { return &m_pState->m_catArray; }
 #if !wxPG_USE_CUSTOM_CONTROLS
-    void OnComboItemPaint (wxPGComboBox* pCb,int item,wxDC& dc,
+    void OnComboItemPaint (wxPGOwnerDrawnComboBox* pCb,int item,wxDC& dc,
                            wxRect& rect,int flags );
 #endif
 
@@ -4482,7 +4486,6 @@ protected:
     bool OnMouseChildCommon ( wxMouseEvent &event, int* px, int *py );
 
     // sub-control event handlers
-    void OnMouseEntryChild ( wxMouseEvent &event );
     void OnMouseClickChild ( wxMouseEvent &event );
     void OnMouseRightClickChild ( wxMouseEvent &event );
     void OnMouseMoveChild ( wxMouseEvent &event );
