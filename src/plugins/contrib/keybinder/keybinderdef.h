@@ -8,6 +8,8 @@
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
 //commit 12/14/2005 9:16 AM
+//commit 12/16/2005 8:54 PM
+
 
 #ifndef _WX_KEYBINDER_DEFS_H_
 #define _WX_KEYBINDER_DEFS_H_

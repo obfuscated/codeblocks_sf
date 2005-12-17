@@ -9,6 +9,7 @@
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
 //commit 12/14/2005 9:15 AM
+//commit 12/16/2005 8:54 PM
 
 
 #ifdef __GNUG__
@@ -225,6 +226,8 @@ wxString wxKeyBind::KeyCodeToString(int keyCode)
 {
 	wxString res;
 
+    //LOGIT("KeyCodeToString_IN:keyCode[%d]char[%c]", keyCode, keyCode );
+
 	switch (keyCode)
 	{
 		// IGNORED KEYS
@@ -248,6 +251,7 @@ wxString wxKeyBind::KeyCodeToString(int keyCode)
 		// which would be useless even in debug builds...
 	case WXK_SHIFT:
 	case WXK_CONTROL:
+	case WXK_ALT:                           //+v0.5
 		return wxEmptyString;
 
 
@@ -270,7 +274,6 @@ wxString wxKeyBind::KeyCodeToString(int keyCode)
     case WXK_F23: case WXK_F24:
 		res << wxT('F') << keyCode - WXK_F1 + 1;
 		break;
-
 
 
 		// MISCELLANEOUS KEYS
@@ -339,10 +342,14 @@ wxString wxKeyBind::KeyCodeToString(int keyCode)
 	case WXK_HOME:
         res << wxT("HOME"); break;
 
-
-
+//+V.05 (Pecan#1#): wxIsalnm is excluding keys not num or a-z like }{ etc
+//+v.05 (Pecan#1#): Holding Alt shows ALT+3 A: added WXK_ALT: to above case
+//+v.05 (Pecan#1#): ALT +Ctrl Left/Right show in Dlg, up/Down dont. Printable?
+//               A: wxWidgets2.6.2 returns false on modifier keys for Ctrl+Alt+UP/DOWN combination.
+//                  It returns Ctrl+Alt+PRIOR instead of UP/DOWN and shows false for ctrl & alt.
+//                  Same is true for Ctrl+Shift+UP/Down.
+//                  Alt+Shift+Up/Down work ok.
 	default:
-
 		// ASCII chars...
 		if (wxIsalnum(keyCode))
 		{
@@ -354,18 +361,23 @@ wxString wxKeyBind::KeyCodeToString(int keyCode)
 			res << wxT(" (numpad)");		// so it is clear it's different from other keys
 			break;
 
+		} else if (wxIsprint(keyCode)) { //v+0.5
+			res << (wxChar)keyCode;
+			break;
+
 		} else {
 
 			// we couldn't create a description for the given keycode...
 			wxLogDebug(wxT("wxKeyBind::KeyCodeToString - unknown key: [%d]"), keyCode);
-            //-wxLogDebug("\n");
 			return wxEmptyString;
 		}
-	}
+	}//default
+
+    //LOGIT("KeyCodeToStringOUT:keyCode[%d]char[%c]Desc[%s]", keyCode, keyCode,res.GetData() );
 
 	return res;
-}
 
+}//KeyCodeToString
 // ----------------------------------------------------------------------------
 int wxKeyBind::StringToKeyCode(const wxString &keyName)
 // ----------------------------------------------------------------------------
@@ -387,25 +399,37 @@ int wxKeyBind::StringToKeyCode(const wxString &keyName)
 	if (keyName == wxT("SPACE"))    return WXK_SPACE;
 	if (keyName == wxT("DELETE"))   return WXK_DELETE;
 
-	if (keyName == wxT("PRIOR"))    return WXK_PRIOR;	            //-v0.1-
-    if (keyName == wxT("NEXT"))     return WXK_NEXT;	            //-v0.1-
-    if (keyName == wxT("LEFT"))     return WXK_NUMPAD_LEFT ;        //-v0.1-
-	if (keyName == wxT("UP"))       return  WXK_NUMPAD_UP;          //-v0.1-
-	if (keyName == wxT("RIGHT"))    return  WXK_NUMPAD_RIGHT;       //-v0.1-
-	if (keyName == wxT("DOWN"))     return  WXK_NUMPAD_DOWN;        //-v0.1-
-	if (keyName == wxT("HOME"))     return  WXK_NUMPAD_HOME;        //-v0.1-
-	if (keyName == wxT("PAGEUP"))   return  WXK_NUMPAD_PAGEUP;      //-v0.1-
-	if (keyName == wxT("NEXT"))     return  WXK_NUMPAD_NEXT;        //-v0.1-
-	if (keyName == wxT("PAGEDOWN")) return  WXK_NUMPAD_PAGEDOWN;    //-v0.1-
-	if (keyName == wxT("END"))      return  WXK_NUMPAD_END;         //-v0.1-
-	if (keyName == wxT("BEGIN"))    return  WXK_NUMPAD_BEGIN;       //-v0.1-
-	if (keyName == wxT("INSERT"))   return  WXK_NUMPAD_INSERT;      //-v0.1-
-	if (keyName == wxT("DELETE"))   return  WXK_NUMPAD_DELETE;      //-v0.1-
-	if (keyName == wxT("="))        return  WXK_NUMPAD_EQUAL;       //-v0.1-
-	if (keyName == wxT("*"))        return  WXK_NUMPAD_MULTIPLY;    //-v0.1-
-	if (keyName == wxT(""))         return  WXK_NUMPAD_ADD;         //-v0.1-
-	if (keyName == wxT("."))        return  WXK_NUMPAD_DECIMAL;     //-v0.1-
-	if (keyName == wxT("/"))        return  WXK_NUMPAD_DIVIDE;      //-v0.1-
+	if (keyName == wxT("PRIOR"))    return WXK_PRIOR;	           //+v0.1-
+    if (keyName == wxT("NEXT"))     return WXK_NEXT;	           //+v0.1-
+    if (keyName == wxT("LEFT"))     return WXK_LEFT ;       //+v0.5
+	if (keyName == wxT("UP"))       return WXK_UP;          //+v0.5
+	if (keyName == wxT("RIGHT"))    return WXK_RIGHT;       //+v0.5
+	if (keyName == wxT("DOWN"))     return WXK_DOWN;        //+v0.5
+	if (keyName == wxT("HOME"))     return WXK_HOME;        //+v0.5
+	if (keyName == wxT("PAGEUP"))   return WXK_PAGEUP;      //+v0.5
+	if (keyName == wxT("NEXT"))     return WXK_NEXT;        //+v0.5
+	if (keyName == wxT("PAGEDOWN")) return WXK_PAGEDOWN;    //+v0.5
+	if (keyName == wxT("END"))      return WXK_END;         //+v0.5
+	if (keyName == wxT("INSERT"))   return WXK_INSERT;      //+v0.5
+	if (keyName == wxT("DELETE"))   return WXK_DELETE;      //+v0.5
+
+    if (keyName == wxT("LEFT (numpad)"))     return WXK_NUMPAD_LEFT ;       //+v0.1-
+	if (keyName == wxT("UP (numpad)"))       return WXK_NUMPAD_UP;          //+v0.1-
+	if (keyName == wxT("RIGHT (numpad)"))    return WXK_NUMPAD_RIGHT;       //+v0.1-
+	if (keyName == wxT("DOWN (numpad)"))     return WXK_NUMPAD_DOWN;        //+v0.1-
+	if (keyName == wxT("HOME (numpad)"))     return WXK_NUMPAD_HOME;        //+v0.1-
+	if (keyName == wxT("PAGEUP (numpad)"))   return WXK_NUMPAD_PAGEUP;      //+v0.1-
+	if (keyName == wxT("NEXT (numpad)"))     return WXK_NUMPAD_NEXT;        //+v0.1-
+	if (keyName == wxT("PAGEDOWN (numpad)")) return WXK_NUMPAD_PAGEDOWN;    //+v0.1-
+	if (keyName == wxT("END (numpad)"))      return WXK_NUMPAD_END;         //+v0.1-
+	if (keyName == wxT("BEGIN (numpad)"))    return WXK_NUMPAD_BEGIN;       //+v0.1-
+	if (keyName == wxT("INSERT (numpad)"))   return WXK_NUMPAD_INSERT;      //+v0.1-
+	if (keyName == wxT("DELETE (numpad)"))   return WXK_NUMPAD_DELETE;      //+v0.1-
+	if (keyName == wxT("= (numpad)"))        return WXK_NUMPAD_EQUAL;       //+v0.1-
+	if (keyName == wxT("* (numpad)"))        return WXK_NUMPAD_MULTIPLY;    //+v0.1-
+	if (keyName == wxT("+ (numpad)"))        return WXK_NUMPAD_ADD;         //+v0.1-
+	if (keyName == wxT(". (numpad)"))        return WXK_NUMPAD_DECIMAL;     //+v0.1-
+	if (keyName == wxT("/ (numpad)"))        return WXK_NUMPAD_DIVIDE;      //+v0.1-
 
 	// it should be an ASCII key...
 	return (int)keyName.GetChar(0);
@@ -453,6 +477,11 @@ int wxKeyBind::StringToKeyModifier(const wxString &keyModifier)
 int wxKeyBind::GetKeyModifier(wxKeyEvent &event)
 // ----------------------------------------------------------------------------
 {
+// NOTE: wxWidgets2.6.2 returns false on modifier keys for Ctrl+Alt+UP/DOWN combination.
+//       It returns Ctrl+Alt+PRIOR instead of UP/DOWN and shows false for ctrl & alt.
+//       Same is true for Ctrl+Shift+UP/Down.
+//       Alt+Shift+Up/Down work ok.
+
     int mod = 0;
     if (event.AltDown())
         mod |= wxACCEL_ALT;
@@ -1762,7 +1791,7 @@ wxKeyProfileArray wxKeyConfigPanel::GetProfiles() const
 void wxKeyConfigPanel::UpdateButtons()
 {
 	wxLogDebug(wxT("wxKeyConfigPanel::UpdateButtons"));
-    //-wxLogDebug("\n");
+
 	wxString str;
 
 	// is the remove button to be enabled ?
@@ -2005,7 +2034,6 @@ void wxKeyConfigPanel::OnBindingSelected(wxCommandEvent &)
 // ----------------------------------------------------------------------------
 {
 	wxLogDebug(wxT("wxKeyConfigPanel::OnBindingSelected"));
-    //-wxLogDebug("\n");
 
 	// the remove button should be enabled if the
 	// element just selected is valid...
@@ -2017,7 +2045,6 @@ void wxKeyConfigPanel::OnCategorySelected(wxCommandEvent &ev)
 // ----------------------------------------------------------------------------
 {
 	wxLogDebug(wxT("wxKeyConfigPanel::OnCategorySelected"));
-    //-wxLogDebug("\n");
 
 	// update selection
 	int sel = m_pCategories->GetSelection();

@@ -6,14 +6,10 @@
  * License:   GPL
  **************************************************************/
 //commit 12/14/2005 9:15 AM
+//commit 12/16/2005 8:54 PM
+
 // The majority of this code was lifted from wxKeyBinder and
 // its "minimal.cpp" sample program
-
-// This plugin should to be loaded after all modifications to the menus
-// have been made by other plugins; else it won't see the menu changes
-// until a 5 second timer invokes it to scan the menus again.
-// Prefixing cbKeyBinder.dll with a 'z' (eg. zcbKeyBinder.dll) is
-// a simple way of loading it last.
 
 #if defined(__GNUG__) && !defined(__APPLE__)
 	#pragma implementation "cbkeybinder.h"
@@ -36,12 +32,7 @@ BEGIN_EVENT_TABLE(cbKeyBinder, cbPlugin)
 	EVT_PROJECT_CLOSE(cbKeyBinder::OnProjectClosed)
 	EVT_EDITOR_OPEN(cbKeyBinder::OnEditorOpen)
 	EVT_EDITOR_CLOSE(cbKeyBinder::OnEditorClose)
-//    EVT_TIMER(TIMER_ID, cbKeyBinder::OnTimer) //timer
 	EVT_PROJECT_OPEN(cbKeyBinder::OnProjectOpened)
-	// keybinder doesnt need these (yet)
-	//EVT_PROJECT_ACTIVATE(cbKeyBinder::OnProjectActivated)
-	//EVT_PROJECT_FILE_ADDED(cbKeyBinder::OnProjectFileAdded)
-	//EVT_PROJECT_FILE_REMOVED(cbKeyBinder::OnProjectFileRemoved)
 
 	EVT_APP_STARTUP_DONE(cbKeyBinder::OnAppStartupDone)
 
@@ -62,7 +53,9 @@ cbKeyBinder::cbKeyBinder()
 	m_PluginInfo.name = _T("cbKeyBinder");
 	m_PluginInfo.title = _("Keyboard shortcuts configuration");
 	m_PluginInfo.version = _T("0.4");
-	m_PluginInfo.description = _("CodeBlocks KeyBinder\nCommit 12/14/2005 9AM");
+	m_PluginInfo.description <<"CodeBlocks KeyBinder\n"
+                            << "NOTE: Ctrl+Alt+{UP|DOWN} unsupported.\n"
+                            << "commit 12/16/2005 8:54 PM\n";
 	m_PluginInfo.author = _T("Pecan && Mispent Intent");
 	m_PluginInfo.authorEmail = _T("");
 	m_PluginInfo.authorWebsite = _T("");
@@ -83,7 +76,7 @@ void cbKeyBinder::OnAttach()
 // ----------------------------------------------------------------------------
 {
 	// do whatever initialization you need for your plugin
-	// NOTE: after this function, the inherited member variable
+	// :NOTE: after this function, the inherited member variable
 	// m_IsAttached will be TRUE...
 	// You should check for it in other functions, because if it
 	// is FALSE, it means that the application did *not* "load"
@@ -177,18 +170,9 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
     #if LOGGING
      LOGIT("cbKB:BuildMenu()");
     #endif
-    // wait to show error messages after CodeBlocks is running
-    bKeyFileErrMsgShown = TRUE;
-    //load the key binding definition file
-    //-OnLoad(); unecessary since EVT_APP_STARTUP_DONE(cbKeyBinder::OnAppStartupDone)
-    bKeyFileErrMsgShown = FALSE;
 
-    // override OnLoad()s setting of 'm_bBound' so timer will reload
-    // key file after other plugins change menus
+    //say keys have not yet been loaded/bound to menus
     m_bBound = false;
-
-    // set timer to recheck key bindings later
-//    m_timer.Start(5000);    // 5 second interval
 
     return ;
 

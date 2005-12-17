@@ -48,7 +48,7 @@
             <Add library="codeblocks" />
             <Add directory="$(#CB)\devel" />
             <Add directory="$(#CB.lib)" />
-            <Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
+            <Add directory="$(#WX.lib)\gcc_dll" />
         </Linker>
         <Unit filename="cbkeybinder.cpp">
             <Option compilerVar="CPP" />

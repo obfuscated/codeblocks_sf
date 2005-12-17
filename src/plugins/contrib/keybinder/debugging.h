@@ -3,6 +3,7 @@
 //#include <manager.h>
 //#include <messagemanager.h>
 //commit 12/14/2005 9:16 AM
+//commit 12/16/2005 8:54 PM
 
 #define LOGGING 0
 #define TRAP asm("int3")
