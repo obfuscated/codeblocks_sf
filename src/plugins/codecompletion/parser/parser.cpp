@@ -544,7 +544,7 @@ Token* Parser::FindTokenByDisplayName(const wxString& name) const
 	return 0L;
 }
 
-__pure__ int TokensSortProc(Token** first, Token** second)
+int TokensSortProc(Token** first, Token** second)
 {
 	Token* parent1 = first[0]->m_pParent;
 	Token* parent2 = second[0]->m_pParent;

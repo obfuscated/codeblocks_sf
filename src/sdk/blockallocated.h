@@ -106,7 +106,7 @@ public:
             delete[] allocBlocks[i];
     };
 
-    __malloc__ void* New()
+    ___malloc___ void* New()
     {
         #ifdef DEBUG_BLOCKALLOC
             ++ref_count;
@@ -140,7 +140,7 @@ class BlockAllocated
 
 public:
 
-    __malloc__ void* operator new(size_t size)
+    ___malloc___ void* operator new(size_t size)
     {
         return allocator.New();
     };

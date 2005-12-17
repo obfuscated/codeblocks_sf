@@ -21,19 +21,19 @@ public:
     wxString PeekToken();
     void UngetToken();
 
-    __inline__ const wxString& GetFilename() const
+    ___inline___ const wxString& GetFilename() const
     {
         return m_Filename;
     };
-    __inline__ unsigned int GetLineNumber() const
+    ___inline___ unsigned int GetLineNumber() const
     {
         return m_LineNumber;
     };
-    __inline__ unsigned int GetNestingLevel() const
+    ___inline___ unsigned int GetNestingLevel() const
     {
         return m_NestLevel;
     };
-    __inline__ bool IsOK() const
+    ___inline___ bool IsOK() const
     {
         return m_IsOK;
     };
@@ -49,17 +49,17 @@ protected:
     bool SkipBlock(const wxChar& ch);
     bool SkipUnwanted(); // skips comments, assignments, preprocessor etc.
 
-    __inline__ bool IsEOF() const
+    ___inline___ bool IsEOF() const
     {
         return m_TokenIndex >= m_BufferLen;
     };
 
-    __inline__ bool NotEOF() const
+    ___inline___ bool NotEOF() const
     {
         return m_TokenIndex < m_BufferLen;
     };
 
-    __inline__ bool MoveToNextChar(const unsigned int amount = 1)
+    ___inline___ bool MoveToNextChar(const unsigned int amount = 1)
     {
         assert(amount);
         if(amount == 1) // compiler will dead-strip this
@@ -141,7 +141,7 @@ protected:
     };
 
 private:
-    __pure__ bool CharInString(const char ch, const char* chars) const
+    ___pure___ bool CharInString(const char ch, const char* chars) const
     {
         int len = strlen(chars);
         for (int i = 0; i < len; ++i)
