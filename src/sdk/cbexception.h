@@ -41,7 +41,7 @@ class cbException
                         "build: %s %s)"),
                         File.c_str(), Line, Message.c_str(),
                         APP_ACTUAL_VERSION_VERB.c_str(), ConfigManager::GetRevisionNumber(), gccvers.c_str(), APP_PLATFORM.c_str(), APP_WXANSI_UNICODE.c_str(),
-                        _T(__DATE__), _T(__TIME__));
+                        wxT(__DATE__), wxT(__TIME__));
             if (safe)
                 wxSafeShowMessage(title, err);
             else

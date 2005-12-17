@@ -101,12 +101,12 @@ StartHerePage::StartHerePage(wxEvtHandler* owner, wxWindow* parent)
 	revInfo.Printf(_T("Version %s %d   (gcc %d.%d.%d %s/%s, build: %s %s)"),
 					APP_ACTUAL_VERSION_VERB.c_str(), ConfigManager::GetRevisionNumber(),
 					__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__, APP_PLATFORM.c_str(), APP_WXANSI_UNICODE.c_str(),
-					_T(__DATE__), _T(__TIME__));
+					wxT(__DATE__), wxT(__TIME__));
 	#else
 	revInfo.Printf(_T("Version %s %d   (%s/%s, build: %s %s)"),
 					APP_ACTUAL_VERSION_VERB.c_str(), ConfigManager::GetRevisionNumber(),
 					APP_PLATFORM.c_str(), APP_WXANSI_UNICODE.c_str(),
-					_T(__DATE__), _T(__TIME__));
+					wxT(__DATE__), wxT(__TIME__));
 	#endif
     // perform var substitution
     buf.Replace(_T("CB_VAR_REVISION_INFO"), revInfo);
