@@ -2112,11 +2112,12 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idFileSaveWorkspace, PRJMAN() && canCloseProject);
     mbar->Enable(idFileSaveWorkspaceAs, PRJMAN() && canCloseProject);
     mbar->Enable(idFileCloseWorkspace, PRJMAN() && canCloseProject);
-    mbar->Enable(idFilePrint, EDMAN() && EDMAN()->GetActiveEditor());
+    mbar->Enable(idFilePrint, EDMAN() && EDMAN()->GetBuiltinActiveEditor());
 
 	if (m_pToolbar)
 	{
 		m_pToolbar->EnableTool(idFileSave, ed && ed->GetModified());
+        m_pToolbar->EnableTool(idFilePrint, EDMAN() && EDMAN()->GetBuiltinActiveEditor());
 	}
 
 	event.Skip();
