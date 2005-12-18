@@ -563,18 +563,17 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 	f->autoDeps = true;
     f->weight = weight;
 
+	FileType ft = FileTypeOf(filename);
 	fname = filename; //UnixFilename(filename);
 	ext = filename.AfterLast(_T('.')).Lower();
-	if (ext.Matches(CPP_EXT) ||
-		ext.Matches(CXX_EXT))
-        f->compilerVar = _T("CPP");
-	else if (ext.Matches(C_EXT) ||
-		ext.Matches(CC_EXT))
+	if (ext.Matches(C_EXT) || ext.Matches(CC_EXT))
         f->compilerVar = _T("CC");
 #ifdef __WXMSW__
 	else if (ext.Matches(RESOURCE_EXT))
         f->compilerVar = _T("WINDRES");
 #endif
+    else
+        f->compilerVar = _T("CPP"); // default
 
     if (!m_Targets.GetCount())
     {
@@ -591,7 +590,6 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     if (targetIndex >= 0 && targetIndex < (int)m_Targets.GetCount())
         f->AddBuildTarget(m_Targets[targetIndex]->GetTitle());
 
-	FileType ft = FileTypeOf(filename);
     localCompile = compile &&
 					(ft == ftSource ||
 					ft == ftResource);
