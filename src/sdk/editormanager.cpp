@@ -197,17 +197,23 @@ class EditorNotebook : public wxNotebook
         {
             // according to the wx docs, HitTest only works on MSW and Univ
             // will have to check...
-            #ifdef __WXMSW__
+            //
+            // update: hmm, it seems it's working fine with wxGTK-2.6.1/Gnome 2.12
+            // I 'll uncomment it and wait for reactions.
+//            #ifdef __WXMSW__
             m_RightClickSelected = HitTest(event.GetPosition());
             if (m_RightClickSelected != -1)
                 Manager::Get()->GetEditorManager()->Close(m_RightClickSelected);
-            #endif
+//            #endif
         }
         void OnRightDown(wxMouseEvent& event)
         {
             // according to the wx docs, HitTest only works on MSW and Univ
             // will have to check...
-            #ifdef __WXMSW__
+            //
+            // update: hmm, it seems it's working fine with wxGTK-2.6.1/Gnome 2.12
+            // I 'll uncomment it and wait for reactions.
+//            #ifdef __WXMSW__
             m_RightClickSelected = HitTest(event.GetPosition());
             if (m_RightClickSelected == -1)
                 return;
@@ -227,7 +233,7 @@ class EditorNotebook : public wxNotebook
                 pop->Enable(idNBTabSave, ed->GetModified());
             PopupMenu(pop, event.GetPosition().x, event.GetPosition().y);
             delete pop;
-            #endif
+//            #endif
         }
         void OnClose(wxCommandEvent& event)
         {
