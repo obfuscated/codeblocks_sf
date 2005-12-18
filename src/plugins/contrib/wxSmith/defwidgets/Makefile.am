@@ -50,7 +50,7 @@ wxslistctrl.cpp \
 wxschoice.cpp \
 wxsstaticbox.cpp \
 wxshtmlwindow.cpp \
-wxsxslider.cpp \
+wxsslider.cpp \
 wxschecklistbox.cpp
 
 noinst_HEADERS = wxsboxsizer.h \
