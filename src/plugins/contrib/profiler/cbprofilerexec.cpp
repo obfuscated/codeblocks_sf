@@ -218,7 +218,7 @@ size_t CBProfilerExecDlg::ParseFlatProfile(wxArrayString msg, size_t begin, wxPr
 	outputFlatProfileArea->InsertColumn(6, _T("name"));
 
 	// Jump header lines
-	while ((begin < msg.GetCount())&&(msg[begin].Find(_T("Ts/call")) == -1))
+	while ((begin < msg.GetCount())&&(msg[begin].Find(_T("time   seconds")) == -1))
 	   begin++;
     begin++;
 
@@ -295,7 +295,7 @@ void CBProfilerExecDlg::FindInCallGraph(wxListEvent& event)
 
 	 // Then search this name in the call graph
 	 wxString indexColumn, functionColumn;
-	 size_t n;
+	 int n;
 	 for (n=0; n<outputCallGraphArea->GetItemCount(); n++)
 	 {
 	 	 item.Clear();
