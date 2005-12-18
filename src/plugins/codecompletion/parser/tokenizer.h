@@ -2,7 +2,6 @@
 #define TOKENIZER_H
 
 #include <wx/string.h>
-#include <gcc-attribs.h>
 
 struct TokenizerOptions
 {
@@ -21,19 +20,19 @@ public:
     wxString PeekToken();
     void UngetToken();
 
-    ___inline___ const wxString& GetFilename() const
+    inline const wxString& GetFilename() const
     {
         return m_Filename;
     };
-    ___inline___ unsigned int GetLineNumber() const
+    inline unsigned int GetLineNumber() const
     {
         return m_LineNumber;
     };
-    ___inline___ unsigned int GetNestingLevel() const
+    inline unsigned int GetNestingLevel() const
     {
         return m_NestLevel;
     };
-    ___inline___ bool IsOK() const
+    inline bool IsOK() const
     {
         return m_IsOK;
     };
@@ -49,23 +48,23 @@ protected:
     bool SkipBlock(const wxChar& ch);
     bool SkipUnwanted(); // skips comments, assignments, preprocessor etc.
 
-    ___inline___ bool IsEOF() const
+    inline bool IsEOF() const
     {
         return m_TokenIndex >= m_BufferLen;
     };
 
-    ___inline___ bool NotEOF() const
+    inline bool NotEOF() const
     {
         return m_TokenIndex < m_BufferLen;
     };
 
-    ___inline___ bool MoveToNextChar(const unsigned int amount = 1)
+    inline bool MoveToNextChar(const unsigned int amount = 1)
     {
         assert(amount);
         if(amount == 1) // compiler will dead-strip this
         {
             ++m_TokenIndex;
-            if (unlikely(IsEOF()))
+            if (IsEOF())
                 return false;
 
             if (CurrentChar() == _T('\n'))
@@ -75,7 +74,7 @@ protected:
         else
         {
             m_TokenIndex += amount;
-            if (unlikely(IsEOF()))
+            if (IsEOF())
                 return false;
 
             if (CurrentChar() == _T('\n'))
@@ -93,7 +92,7 @@ protected:
     {
     	size_t i = m_TokenIndex++;
 
-    	if(likely(m_TokenIndex < m_BufferLen))
+    	if(m_TokenIndex < m_BufferLen)
 			return m_Buffer.GetChar(i);
 		else
 			return 0;
@@ -101,14 +100,14 @@ protected:
 
     wxChar Tokenizer::NextChar() const
     {
-        if (unlikely((m_TokenIndex + 1) >= m_BufferLen)) //    m_TokenIndex + 1) < 0  can never be true
+        if ((m_TokenIndex + 1) >= m_BufferLen) //    m_TokenIndex + 1) < 0  can never be true
             return 0;
         return m_Buffer.GetChar(m_TokenIndex + 1);
     };
 
     wxChar Tokenizer::PreviousChar() const
     {
-        if (unlikely((m_TokenIndex - 1) < 0))       //   (m_TokenIndex - 1) >= m_BufferLen can never be true
+        if ((m_TokenIndex - 1) < 0)       //   (m_TokenIndex - 1) >= m_BufferLen can never be true
             return 0;
         return m_Buffer.GetChar(m_TokenIndex - 1);
     };
@@ -141,7 +140,7 @@ protected:
     };
 
 private:
-    ___pure___ bool CharInString(const char ch, const char* chars) const
+    inline bool CharInString(const char ch, const char* chars) const
     {
         int len = strlen(chars);
         for (int i = 0; i < len; ++i)

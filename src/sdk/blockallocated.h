@@ -34,7 +34,6 @@
 
 #include <vector>
 #include <wx/file.h>
-#include <gcc-attribs.h>
 
 template <class T, unsigned int pool_size>
 class BlockAllocator
@@ -106,7 +105,7 @@ public:
             delete[] allocBlocks[i];
     };
 
-    ___malloc___ void* New()
+    inline void* New()
     {
         #ifdef DEBUG_BLOCKALLOC
             ++ref_count;
@@ -114,7 +113,7 @@ public:
             max_refs = ref_count > max_refs ? ref_count : max_refs;
         #endif
 
-        if(unlikely(first == 0))
+        if(first == 0)
             AllocBlockPushBack();
 
         void *p = &(first->data);
@@ -122,7 +121,7 @@ public:
         return p;
     };
 
-    void Delete(void *ptr)
+    inline void Delete(void *ptr)
     {
         #ifdef DEBUG_BLOCKALLOC
             --ref_count;
@@ -140,14 +139,14 @@ class BlockAllocated
 
 public:
 
-    ___malloc___ void* operator new(size_t size)
+    inline void* operator new(size_t size)
     {
         return allocator.New();
     };
 
-    void operator delete(void *ptr)
+    inline void operator delete(void *ptr)
     {
-        if(unlikely(ptr == 0)) // C++ standard requires this
+        if(ptr == 0) // C++ standard requires this
             return;
         allocator.Delete(ptr);
     };
