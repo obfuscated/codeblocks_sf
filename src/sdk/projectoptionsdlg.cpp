@@ -29,6 +29,7 @@
 #include "editarrayorderdlg.h"
 #include "editarrayfiledlg.h"
 #include "pluginmanager.h"
+#include "projectmanager.h"
 #include "compilerfactory.h"
 #include <wx/xrc/xmlres.h>
 #include <wx/radiobox.h>
