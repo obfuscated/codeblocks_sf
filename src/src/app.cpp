@@ -100,7 +100,11 @@ bool CodeBlocksApp::LoadConfig()
 #ifdef __WXMSW__
     wxString data = GetAppPath(); // under windows it is under the exe dir
 #else
-    wxString data = wxT(APP_PREFIX); // under linux, get the preprocessor value
+    #ifdef APP_PREFIX
+        wxString data = wxT(APP_PREFIX); // under linux, get the preprocessor value
+    #else
+        wxString data = GetAppPath();
+    #endif
 #endif
     wxString actualData = _T("/share/codeblocks");
     data << actualData;

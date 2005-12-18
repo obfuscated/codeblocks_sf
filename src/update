@@ -2,17 +2,21 @@
 
 echo Creating output directory tree
 
-mkdir -p output/share/CodeBlocks/lexers
-mkdir -p output/share/CodeBlocks/images/codecompletion
-mkdir -p output/share/CodeBlocks/plugins
-mkdir -p output/share/CodeBlocks/templates
-mkdir -p devel/share/CodeBlocks/lexers
-mkdir -p devel/share/CodeBlocks/images/codecompletion
-mkdir -p devel/share/CodeBlocks/plugins
-mkdir -p devel/share/CodeBlocks/templates
+mkdir -p output/share/codeblocks/lexers
+mkdir -p output/share/codeblocks/images/codecompletion
+mkdir -p output/share/codeblocks/images/16x16
+mkdir -p output/share/codeblocks/plugins
+mkdir -p output/share/codeblocks/templates
+mkdir -p output/share/codeblocks/scripts
+mkdir -p devel/share/codeblocks/lexers
+mkdir -p devel/share/codeblocks/images/codecompletion
+mkdir -p devel/share/codeblocks/images/16x16
+mkdir -p devel/share/codeblocks/plugins
+mkdir -p devel/share/codeblocks/templates
+mkdir -p devel/share/codeblocks/scripts
 
 ZIPCMD="zip"
-RESDIR="devel/share/CodeBlocks"
+RESDIR="devel/share/codeblocks"
 echo Compressing core UI resources
 ${ZIPCMD} -j9 ${RESDIR}/resources.zip src/resources/*.xrc > /dev/null
 ${ZIPCMD} -j9 ${RESDIR}/manager_resources.zip sdk/resources/*.xrc sdk/resources/images/*.png > /dev/null
@@ -39,41 +43,43 @@ ${ZIPCMD} -0 ../../../${RESDIR}/debugger_gdb.zip images/*.png images/16x16/*.png
 cd ../../..
 
 echo Copying files
-cp -f ${RESDIR}/*.zip output/share/CodeBlocks > /dev/null
+cp -f ${RESDIR}/*.zip output/share/codeblocks > /dev/null
 cp -f sdk/resources/lexers/lexer_* ${RESDIR}/lexers > /dev/null
-cp -f sdk/resources/lexers/lexer_* output/share/CodeBlocks/lexers > /dev/null
+cp -f sdk/resources/lexers/lexer_* output/share/codeblocks/lexers > /dev/null
 cp -f src/resources/images/*.png ${RESDIR}/images > /dev/null
-cp -f src/resources/images/*.png output/share/CodeBlocks/images > /dev/null
+cp -f src/resources/images/*.png output/share/codeblocks/images > /dev/null
 cp -f plugins/codecompletion/resources/images/*.png ${RESDIR}/images/codecompletion > /dev/null
-cp -f plugins/codecompletion/resources/images/*.png output/share/CodeBlocks/images/codecompletion > /dev/null
-cp -f templates/common/* output/share/CodeBlocks/templates > /dev/null
-cp -f templates/unix/* output/share/CodeBlocks/templates > /dev/null
+cp -f plugins/codecompletion/resources/images/*.png output/share/codeblocks/images/codecompletion > /dev/null
+cp -f templates/common/* output/share/codeblocks/templates > /dev/null
+cp -f templates/unix/* output/share/codeblocks/templates > /dev/null
 cp -f templates/common/* ${RESDIR}/templates > /dev/null
 cp -f templates/unix/* ${RESDIR}/templates > /dev/null
-cp -f tips.txt devel/share/CodeBlocks > /dev/null
-cp -f tips.txt output/share/CodeBlocks > /dev/null
-cp -f tools/ConsoleRunner/console_runner*.exe output > /dev/null
-cp -f tools/ConsoleRunner/console_runner*.exe devel > /dev/null
-cp -f devel/*.exe output > /dev/null
+cp -f scripts/*.script ${RESDIR}/scripts > /dev/null
+cp -f scripts/*.script output/share/codeblocks/scripts > /dev/null
+cp -f tips.txt devel/share/codeblocks > /dev/null
+cp -f tips.txt output/share/codeblocks > /dev/null
+cp -f tools/ConsoleRunner/console_runner output > /dev/null
+cp -f tools/ConsoleRunner/console_runner devel > /dev/null
+cp -f devel/codeblocks output > /dev/null
 cp -f devel/*.so output > /dev/null
-cp -f ${RESDIR}/plugins/*.so output/share/CodeBlocks/plugins > /dev/null
+cp -f ${RESDIR}/plugins/*.so output/share/codeblocks/plugins > /dev/null
 echo Stripping debug info from output tree
-strip output/*.exe
+strip output/codeblocks
 strip output/*.so
-strip output/share/CodeBlocks/plugins/*.so
+strip output/share/codeblocks/plugins/*.so
 
 echo Creating launch-scripts
 echo -e "#!/bin/sh\n" > output/run.sh
 echo -n "APP_DIR=" >> output/run.sh
 echo `pwd`/output >> output/run.sh
 echo "export LD_LIBRARY_PATH=\$APP_DIR:\$LD_LIBRARY_PATH" >> output/run.sh
-echo "\$APP_DIR/codeblocks.exe \$@" >> output/run.sh
+echo "\$APP_DIR/codeblocks \$@" >> output/run.sh
 chmod +x output/run.sh
 echo -e "#!/bin/sh\n" > devel/run.sh
 echo -n "APP_DIR=" >> devel/run.sh
 echo `pwd`/devel >> devel/run.sh
 echo "export LD_LIBRARY_PATH=\$APP_DIR:\$LD_LIBRARY_PATH" >> devel/run.sh
-echo "\$APP_DIR/codeblocks.exe \$@" >> devel/run.sh
+echo "\$APP_DIR/codeblocks \$@" >> devel/run.sh
 chmod +x devel/run.sh
 
 ZIPCMD=
