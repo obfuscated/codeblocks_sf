@@ -72,10 +72,10 @@ void FilesGroupsAndMasks::Save()
 	{
         FileGroups* fg = m_Groups[i];
         wxString key;
-        key << _("group") << i << _T("/") << _T("name");
+        key << _("/file_groups/group") << i << _T("/") << _T("name");
 		conf->Write(key, fg->groupName);
         key.Clear();
-        key << _("group") << i << _T("/") << _T("mask");
+        key << _("/file_groups/group") << i << _T("/") << _T("mask");
 		conf->Write(key, GetStringFromArray(fg->fileMasks, _T(";")));
 	}
 }
