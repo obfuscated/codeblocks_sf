@@ -12,20 +12,21 @@
 #include "crc32.h"
 #include <stdio.h>
 
-static unsigned long *GetCRC32Table( unsigned long *crc_table )
+
+static wxUint32 *GetCRC32Table( wxUint32 *crc_table )
 {
     // First call to this function? Or after freeing the memory?
     if ( !crc_table )
     {
         // Allocate memory
-        crc_table = new unsigned long[256];
+        crc_table = new wxUint32[256];
 
         // Was the allocation succesfull?
         if ( crc_table )
         {
             // Generate the crc table
-            unsigned long crc ;
-            int i, j ;
+            wxUint32 crc ;
+            unsigned int i, j ;
 
             for(i = 0; i < 256; i++)
             {
@@ -44,7 +45,7 @@ static unsigned long *GetCRC32Table( unsigned long *crc_table )
     return ( crc_table ) ;
 }
 
-unsigned long wxCrc32::FromFile(const wxString& file){return 0uL;};
+wxUint32 wxCrc32::FromFile(const wxString& file){return 0uL;};
 /* TODO (thomas#1#): Reimplement this by reading in the complete file and calling FromString (function is currently unused anyway) */
 //unsigned long wxCrc32::FromFile(const wxString& file)
 //{
@@ -91,11 +92,11 @@ unsigned long wxCrc32::FromFile(const wxString& file){return 0uL;};
 //    return( crc ) ;
 //}
 
-unsigned long wxCrc32::FromString(const wxString& text)
+wxUint32 wxCrc32::FromString(const wxString& text)
 {
-    static unsigned long *crc_table = NULL;
-    unsigned long crc = 0;
-    int i = 0;
+    static wxUint32 *crc_table = NULL;
+    wxUint32 crc = 0;
+    unsigned int i = 0;
 
     if (text)
     {

@@ -2,11 +2,12 @@
 #define CRC32_H
 
 #include "settings.h"
+#include <wx/defs.h>
 
 namespace wxCrc32
 {
-    DLLIMPORT unsigned long FromFile(const wxString& filename);
-    DLLIMPORT unsigned long FromString(const wxString& text);
+    DLLIMPORT wxUint32 FromFile(const wxString& filename);
+    DLLIMPORT wxUint32 FromString(const wxString& text);
 };
 
 #endif // CRC32_H
