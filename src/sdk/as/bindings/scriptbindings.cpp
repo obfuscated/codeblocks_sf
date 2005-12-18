@@ -13,6 +13,11 @@
 #include "sc_wxarraystring.h"
 #include "sc_io.h"
 
+#ifdef offsetof
+    #undef offsetof
+#endif
+#define offsetof(T, M) ( reinterpret_cast <size_t> ( & reinterpret_cast <const volatile char &>(reinterpret_cast<T *> (1000)->M) ) - 1000u)
+
 // In Code::Blocks nothing is refcounted.
 // In order to use objects as handles (aka pointers), we must provide
 // these two dummy functions.
