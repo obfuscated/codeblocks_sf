@@ -616,7 +616,7 @@ void ConfigManager::Write(const wxString& name,  const wxString& value, bool ign
     TiXmlElement *str = GetUniqElement(e, key);
 
     TiXmlElement *s = GetUniqElement(str, _T("str"));
-    SetNodeText(s, TiXmlText(value.mb_str()));
+    SetNodeText(s, TiXmlText(value.mb_str(wxConvUTF8)));
 }
 
 void ConfigManager::Write(const wxString& key, const char* str)
@@ -857,7 +857,7 @@ void ConfigManager::Write(const wxString& name,  const wxArrayString& arrayStrin
     for(unsigned int i = 0; i < arrayString.GetCount(); ++i)
     {
         TiXmlElement s("s");
-        s.InsertEndChild(TiXmlText(arrayString[i].mb_str()));
+        s.InsertEndChild(TiXmlText(arrayString[i].mb_str(wxConvUTF8)));
         as->InsertEndChild(s);
     }
 }
@@ -894,7 +894,7 @@ void ConfigManager::WriteBinary(const wxString& name,  const wxString& source)
 
     TiXmlElement *s = GetUniqElement(str, _T("bin"));
     s->SetAttribute("crc", wxCrc32::FromString(source));
-    SetNodeText(s, TiXmlText(wxBase64::Encode(source).mb_str()));
+    SetNodeText(s, TiXmlText(wxBase64::Encode(source).mb_str(wxConvUTF8)));
 }
 
 void ConfigManager::WriteBinary(const wxString& name,  void* ptr, size_t len)
