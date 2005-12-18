@@ -270,7 +270,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_BUTTON(ID_EditorManagerCloseButton,MainFrame::OnFileClose)
     EVT_MENU(idFileClose,  MainFrame::OnFileClose)
     EVT_MENU(idFileCloseAll,  MainFrame::OnFileCloseAll)
-    EVT_MENU(idFilePrintSetup,  MainFrame::OnFilePrintSetup)
     EVT_MENU(idFilePrint,  MainFrame::OnFilePrint)
     EVT_MENU(idFileRunScript,  MainFrame::OnFileRunScript)
     EVT_MENU(idFileExit,  MainFrame::OnFileQuit)
@@ -432,7 +431,6 @@ MainFrame::MainFrame(wxLocale& lang, wxWindow* parent)
     LoadWindowState();
 
     ShowHideStartPage();
-    InitPrinting();
 }
 
 MainFrame::~MainFrame()
@@ -1530,13 +1528,6 @@ void MainFrame::OnFilePrev(wxCommandEvent& event)
 {
     EDMAN()->ActivatePrevious();
     DoUpdateStatusBar();
-}
-
-void MainFrame::OnFilePrintSetup(wxCommandEvent& event)
-{
-    wxPrintDialog dlg(this, g_printData);
-    if (dlg.ShowModal() == wxID_OK)
-        *g_printData = dlg.GetPrintDialogData().GetPrintData();
 }
 
 void MainFrame::OnFilePrint(wxCommandEvent& event)

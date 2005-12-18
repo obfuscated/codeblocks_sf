@@ -1298,9 +1298,13 @@ void cbEditor::Print(bool selectionOnly, PrintColorMode pcm)
             m_pControl->SetPrintColourMode(wxSCI_PRINT_INVERTLIGHT);
             break;
     }
+    wxLogNull ln;
+//    wxPrintDialogData printDialogData(*g_printData);
+//    wxPrinter printer(&printDialogData);
+    InitPrinting();
     wxPrinter printer;
     wxPrintout* printout = new cbEditorPrintout(m_Filename, m_pControl, selectionOnly);
-    if (!printer.Print(this, printout, false))
+    if (!printer.Print(this, printout, true))
     {
         if (wxPrinter::GetLastError() == wxPRINTER_ERROR)
         {
@@ -1308,6 +1312,8 @@ void cbEditor::Print(bool selectionOnly, PrintColorMode pcm)
                             "Perhaps your current printer is not set correctly?"), _("Printing"), wxICON_ERROR);
         }
     }
+    else
+        *g_printData = printer.GetPrintDialogData().GetPrintData();
     delete printout;
 }
 

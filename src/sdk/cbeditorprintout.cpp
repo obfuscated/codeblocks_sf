@@ -1,6 +1,8 @@
 #include "sdk_precomp.h"
 #include "cbeditorprintout.h"
 #include "printing_types.h"
+#include <manager.h>
+#include <messagemanager.h>
 
 cbEditorPrintout::cbEditorPrintout(const wxString& title, cbStyledTextCtrl* control, bool selectionOnly)
         : wxPrintout(title),
@@ -14,6 +16,7 @@ cbEditorPrintout::cbEditorPrintout(const wxString& title, cbStyledTextCtrl* cont
         m_SelStart = control->GetSelectionStart();
         m_SelEnd = control->GetSelectionEnd();
     }
+
 }
 
 cbEditorPrintout::~cbEditorPrintout()
@@ -86,19 +89,23 @@ void cbEditorPrintout::GetPageInfo(int *minPage, int *maxPage, int *selPageFrom,
     // wxWidgets 2.4.2, have some printing-related bugs.
     // one of them is that that GetDC always returns 0 in GetPageInfo.
     // this means we can't count the pages...
+    wxDC *dc = GetDC();
+    if (dc)
+    {
+        ScaleDC(dc);
 
-    //    wxDC *dc = GetDC();
-    //    if (!dc) return;
-    //    ScaleDC(dc);
+        // count pages
+        m_printed = m_SelStart;
+        while (HasPage(*maxPage))
+        {
+            m_printed = m_TextControl->FormatRange (0, m_printed, m_SelEnd,
+                                             dc, dc, m_printRect, m_pageRect);
+            *maxPage += 1;
+        }
+    }
+    else
+        *maxPage = 32000; // use a fictitious high number
 
-    // count pages
-    //    m_printed = m_SelStart;
-    //    while (HasPage (*maxPage)) {
-    //        m_printed = m_TextControl->FormatRange (0, m_printed, m_SelEnd,
-    //                                         dc, dc, m_printRect, m_pageRect);
-    //        *maxPage += 1;
-    //    }
-    *maxPage = 32000;
     if (*maxPage > 0)
         *minPage = 1;
     *selPageFrom = *minPage;
