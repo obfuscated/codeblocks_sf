@@ -572,7 +572,7 @@ void ConfigManager::DeleteAll()
 TiXmlElement* ConfigManager::GetUniqElement(TiXmlElement* p, const wxString& q)
 {
     TiXmlElement* r;
-    if(r = p->FirstChildElement(_C(q)))
+    if((r = p->FirstChildElement(_C(q))))
         return r;
 
     return (TiXmlElement*)(p->InsertEndChild(TiXmlElement(_C(q))));
@@ -873,7 +873,7 @@ void ConfigManager::Read(const wxString& name, wxArrayString *arrayString)
     TiXmlNode *curr = 0;
     if(asNode)
     {
-        while(curr = asNode->IterateChildren("s", curr)->ToElement())
+        while((curr = asNode->IterateChildren("s", curr)->ToElement()))
             arrayString->Add(_U(curr->FirstChild()->ToText()->Value()));
     }
 }
@@ -940,7 +940,7 @@ wxArrayString ConfigManager::EnumerateSubPaths(const wxString& path)
     TiXmlElement *curr = 0;
     if(e)
     {
-        while(curr = e->IterateChildren(curr)->ToElement())
+        while((curr = e->IterateChildren(curr)->ToElement()))
         {
             wxChar c = *(_U(curr->Value()));
             if(c < _T('A') || c > _T('Z')) // first char must be a letter, uppercase letters are key names
@@ -1024,7 +1024,7 @@ wxArrayString ConfigManager::EnumerateKeys(const wxString& path)
     TiXmlElement *curr = 0;
     if(e)
     {
-        while(curr = e->IterateChildren(curr)->ToElement())
+        while((curr = e->IterateChildren(curr)->ToElement()))
         {
             wxChar c = *(_U(curr->Value()));
             if(c >= _T('A') && c <= _T('Z')) // opposite of the above
@@ -1093,7 +1093,7 @@ void ConfigManager::Read(const wxString& name, ConfigManagerContainer::StringToS
     TiXmlNode *curr = 0;
     if(mNode)
     {
-        while(curr = mNode->IterateChildren(curr)->ToElement())
+        while((curr = mNode->IterateChildren(curr)->ToElement()))
             (*map)[_U(curr->Value())] = _U(curr->FirstChild()->ToText()->Value());
     }
 }
@@ -1139,7 +1139,7 @@ void ConfigManager::Read(const wxString& name, ConfigManagerContainer::IntToStri
     long tmp;
     if(mNode)
     {
-        while(curr = mNode->IterateChildren(curr)->ToElement())
+        while((curr = mNode->IterateChildren(curr)->ToElement()))
         {
             _U(curr->Value()).Mid(1).ToLong(&tmp);
             (*map)[tmp] = _U(curr->FirstChild()->ToText()->Value());
@@ -1191,7 +1191,7 @@ void ConfigManager::Read(const wxString& name, ConfigManagerContainer::StringSet
     TiXmlNode *curr = 0;
     if(mNode)
     {
-        while(curr = mNode->IterateChildren(curr)->ToElement())
+        while((curr = mNode->IterateChildren(curr)->ToElement()))
             set->insert(_U(curr->FirstChild()->ToText()->Value()))
             ;
     }
