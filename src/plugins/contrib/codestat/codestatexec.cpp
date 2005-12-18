@@ -41,7 +41,7 @@ int CodeStatExecDlg::Execute(LanguageDef languages[NB_FILETYPES])
    		num_language = -1;
    		for (l=0; l<NB_FILETYPES; l++)
    		{
-   			for (j=0; j<languages[l].ext.Count(); j++)
+   			for (j=0; j<(int)languages[l].ext.Count(); j++)
    			{
    		      if (filename.GetExt() == languages[l].ext[j])
    		         num_language = l;
