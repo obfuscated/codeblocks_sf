@@ -1,0 +1,40 @@
+@import url("ie.css");
+
+/* body style */
+
+body
+{
+    font-family: Verdana, sans-serif !important;
+}
+
+/* link styles */
+
+a
+{
+    background-color: inherit;
+    color: #004188;
+    text-decoration: none;
+}
+
+a:hover
+{
+    text-decoration: underline;
+}
+
+/* navigation */
+
+#nav
+{
+    float: right;
+    font-size: 16pt;
+    position: absolute;
+    right: 95px;
+    top: 40px;
+}
+
+/* footer */
+
+.footer
+{
+    text-align: center;
+}
