@@ -17,7 +17,13 @@ class wxsCheckStringsEditor: public wxDialog
 {
 	public:
 
-		wxsCheckStringsEditor(wxWindow* parent,wxWindowID id = -1);
+		wxsCheckStringsEditor(
+            wxWindow* parent,
+            const wxArrayString& Strings,
+            const wxsArrayBool& Bools,
+            bool Sorted,
+            wxWindowID id = -1);
+            
 		virtual ~wxsCheckStringsEditor();
 
 		//(*Identifiers(wxsCheckStringsEditor)
@@ -39,6 +45,7 @@ class wxsCheckStringsEditor: public wxDialog
 		
 		wxArrayString Strings;
 		wxsArrayBool Bools;
+		bool Sorted;
 
 	protected:
 
@@ -73,6 +80,25 @@ class wxsCheckStringsEditor: public wxDialog
 		//*)
 
 	private:
+	
+        struct SortItem
+        {
+            wxString String;
+            int InitialIndex;
+            SortItem(wxString S,int I): String(S), InitialIndex(I) {}
+        };
+        
+        static int SortCmpFunc(SortItem** First,SortItem** Second)
+        {
+            if ( (*First)->String < (*Second)->String ) return -1;
+            if ( (*First)->String > (*Second)->String ) return 1;
+            return 0;
+        }
+        
+        WX_DEFINE_ARRAY(SortItem*,SortArray);
+	
+        void InitialRemapBools();
+        void FinalRemapBools();
 
 		DECLARE_EVENT_TABLE()
 };

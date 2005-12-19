@@ -65,22 +65,21 @@ bool wxsStringListCheckProperty::PropertyGridCallback(wxPropertyGrid* propGrid,w
 
 bool wxsStringListCheckProperty::EditValues(wxPropertyGrid* propGrid)
 {
-    wxsCheckStringsEditor Dlg(0L);
-    Dlg.Strings = Array;
-    Dlg.Bools = Checks;
-    if ( Dlg.ShowModal() != wxID_OK ) return false;
+    wxsCheckStringsEditor Dlg(0L,Array,Checks,IsSorted());
+    if ( Dlg.ShowModal() != wxID_OK ) return true;
     Array = Dlg.Strings;
     Checks = Dlg.Bools;
     RebuildData(propGrid);
+    ValueChanged(true);
     return true;
 }
 
-//bool wxsStringListCheckProperty::IsSorted()
-//{
-//    assert ( GetProperties() );
-//    assert ( GetProperties()->GetWidget() );
-//    return ( GetProperties()->GetWidget()->GetStyle() & SortedFlag ) != 0;
-//}
+bool wxsStringListCheckProperty::IsSorted()
+{
+    assert ( GetProperties() );
+    assert ( GetProperties()->GetWidget() );
+    return ( GetProperties()->GetWidget()->GetStyle() & SortedFlag ) != 0;
+}
 
 void wxsStringListCheckProperty::RebuildData(wxPropertyGrid* propGrid)
 {

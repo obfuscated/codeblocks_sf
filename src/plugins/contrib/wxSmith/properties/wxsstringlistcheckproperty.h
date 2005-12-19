@@ -33,6 +33,7 @@ class WXSCLASS wxsStringListCheckProperty : public wxsProperty
         
         bool EditValues(wxPropertyGrid* propGrid);
         void RebuildData(wxPropertyGrid* propGrid);
+        bool IsSorted();
 
 		wxArrayString& Array;
 		wxsArrayBool& Checks;

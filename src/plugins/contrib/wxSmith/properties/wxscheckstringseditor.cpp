@@ -14,7 +14,15 @@ BEGIN_EVENT_TABLE(wxsCheckStringsEditor,wxDialog)
 	//*)
 END_EVENT_TABLE()
 
-wxsCheckStringsEditor::wxsCheckStringsEditor(wxWindow* parent,wxWindowID id)
+wxsCheckStringsEditor::wxsCheckStringsEditor(            
+    wxWindow* parent,
+    const wxArrayString& _Strings,
+    const wxsArrayBool& _Bools,
+    bool _Sorted,
+    wxWindowID id):
+        Strings(_Strings),
+        Bools(_Bools),
+        Sorted(_Sorted)
 {
 	//(*Initialize(wxsCheckStringsEditor)
 	Create(parent,id,_("Choices:"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE);
@@ -63,6 +71,8 @@ wxsCheckStringsEditor::wxsCheckStringsEditor(wxWindow* parent,wxWindowID id)
 	Center();
 	//*)
 	
+	if ( Sorted ) InitialRemapBools();
+	
 	for ( size_t i = 0; i<Strings.Count(); i++ )
 	{
 	    StringList->Append(Strings[i]);
@@ -90,6 +100,7 @@ void wxsCheckStringsEditor::OnButton6Click(wxCommandEvent& event)
         Strings.Add(StringList->GetString(i));
         Bools.Add(StringList->IsChecked(i));
     }
+    if ( Sorted ) FinalRemapBools();
     EndModal(wxID_OK);
 }
 
@@ -141,4 +152,57 @@ void wxsCheckStringsEditor::OnButton5Click(wxCommandEvent& event)
 void wxsCheckStringsEditor::OnListClick(wxCommandEvent& event)
 {
     EditArea->SetValue(StringList->GetStringSelection());
+}
+
+void wxsCheckStringsEditor::InitialRemapBools()
+{
+    // Need to fixup boolean order because sort flag is on
+    // checked attribs are relative to sorted strings, not
+    // the order in xrc file (surely XRC bug but we will keep
+    // standards)
+   
+    SortArray Sort;
+    for ( size_t i = 0; i<Strings.Count(); ++i )
+    {
+        Sort.Add(new SortItem(Strings[i],i) );
+    }
+    Sort.Sort(SortCmpFunc);
+    
+    wxsArrayBool NewBools;
+    NewBools.Add(false,Bools.Count());
+    
+    for ( size_t i = 0; i<Sort.Count(); ++i )
+    {
+        NewBools[Sort[i]->InitialIndex] = Bools[i];
+    }
+    Bools = NewBools;
+
+    for ( size_t i = 0; i<Sort.Count(); ++i )
+    {
+        delete Sort[i];
+    }
+}
+
+void wxsCheckStringsEditor::FinalRemapBools()
+{
+    SortArray Sort;
+    for ( size_t i = 0; i<Strings.Count(); ++i )
+    {
+        Sort.Add(new SortItem(Strings[i],i) );
+    }
+    Sort.Sort(SortCmpFunc);
+
+    wxsArrayBool NewBools;
+    NewBools.Add(false,Bools.Count());
+    
+    for ( size_t i = 0; i<Sort.Count(); ++i )
+    {
+        NewBools[i] = Bools[Sort[i]->InitialIndex];
+    }
+    Bools = NewBools;
+    
+    for ( size_t i = 0; i<Sort.Count(); ++i )
+    {
+        delete Sort[i];
+    }
 }
