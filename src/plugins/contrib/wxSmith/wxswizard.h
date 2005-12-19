@@ -36,25 +36,28 @@ class wxsWizard: public wxDialog
 		    ID_BUTTON2,
 		    ID_BUTTON3,
 		    ID_BUTTON4,
+		    ID_BUTTON5,
 		    ID_CHECKBOX1,
 		    ID_CHECKBOX2,
 		    ID_CHECKBOX3,
 		    ID_CHECKBOX4,
 		    ID_CHECKBOX5,
+		    ID_CHECKBOX6,
 		    ID_COMBOBOX1,
 		    ID_COMBOBOX2,
 		    ID_STATICTEXT1,
 		    ID_STATICTEXT2,
-		    ID_STATICTEXT3,
 		    ID_STATICTEXT4,
 		    ID_STATICTEXT5,
 		    ID_STATICTEXT6,
 		    ID_STATICTEXT7,
+		    ID_STATICTEXT8,
 		    ID_TEXTCTRL1,
 		    ID_TEXTCTRL2,
 		    ID_TEXTCTRL3,
 		    ID_TEXTCTRL4,
-		    ID_TEXTCTRL5
+		    ID_TEXTCTRL5,
+		    ID_TEXTCTRL6
 		};
 		//*)
 
@@ -66,13 +69,23 @@ class wxsWizard: public wxDialog
 		void OnConfModeSelect(wxCommandEvent& event);
 		void OnDirChooseClick(wxCommandEvent& event);
 		void OnwxDirChooseClick(wxCommandEvent& event);
+		void OnUseCustomPrjDirChange(wxCommandEvent& event);
+		void OnBaseDirChooseClick(wxCommandEvent& event);
+		void OnBaseDirText(wxCommandEvent& event);
+		void OnPrjNameText(wxCommandEvent& event);
 		//*)
 
 		//(*Declarations(wxsWizard)
 		wxFlexGridSizer* MainSizer;
 		wxTextCtrl* PrjName;
 		wxTextCtrl* FrmTitle;
+		wxStaticText* StaticText8;
+		wxBoxSizer* BoxSizer5;
+		wxTextCtrl* BaseDir;
+		wxButton* BaseDirChoose;
+		wxCheckBox* UseCustomPrjDir;
 		wxTextCtrl* PrjDir;
+		wxButton* PrjDirChoose;
 		wxCheckBox* AddMenu;
 		wxCheckBox* AddStatus;
 		wxCheckBox* AddAbout;
@@ -87,6 +100,8 @@ class wxsWizard: public wxDialog
 		//*)
 
 	private:
+	
+        bool Initialized;
 
         bool BuildFile(
             cbProject* project,
@@ -98,6 +113,10 @@ class wxsWizard: public wxDialog
             bool Compile,
             bool Link,
             unsigned short Weight);
+            
+        void RebuildPrjDir();
+        
+        wxString GetProjectFileName();
 
  		DECLARE_EVENT_TABLE()
 };

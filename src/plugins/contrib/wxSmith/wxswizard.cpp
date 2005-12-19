@@ -6,6 +6,7 @@
 #include <projectmanager.h>
 #include <manager.h>
 #include <messagemanager.h>
+#include <customvars.h>
 #include "wxsmith.h"
 
 /* ************************************************************************** */
@@ -474,6 +475,10 @@ static wxsFilePart wxsMainFrameXrc[] =
 
 BEGIN_EVENT_TABLE(wxsWizard,wxDialog)
 	//(*EventTable(wxsWizard)
+	EVT_TEXT(ID_TEXTCTRL1,wxsWizard::OnPrjNameText)
+	EVT_TEXT(ID_TEXTCTRL6,wxsWizard::OnBaseDirText)
+	EVT_BUTTON(ID_BUTTON5,wxsWizard::OnBaseDirChooseClick)
+	EVT_CHECKBOX(ID_CHECKBOX6,wxsWizard::OnUseCustomPrjDirChange)
 	EVT_BUTTON(ID_BUTTON3,wxsWizard::OnDirChooseClick)
 	EVT_COMBOBOX(ID_COMBOBOX2,wxsWizard::OnConfModeSelect)
 	EVT_BUTTON(ID_BUTTON4,wxsWizard::OnwxDirChooseClick)
@@ -482,7 +487,8 @@ BEGIN_EVENT_TABLE(wxsWizard,wxDialog)
 	//*)
 END_EVENT_TABLE()
 
-wxsWizard::wxsWizard(wxWindow* parent,wxWindowID id)
+wxsWizard::wxsWizard(wxWindow* parent,wxWindowID id):
+    Initialized(false)
 {
 	//(*Initialize(wxsWizard)
 	wxFlexGridSizer* FlexGridSizer2;
@@ -490,9 +496,7 @@ wxsWizard::wxsWizard(wxWindow* parent,wxWindowID id)
 	wxFlexGridSizer* FlexGridSizer3;
 	wxStaticText* StaticText1;
 	wxStaticText* StaticText2;
-	wxStaticText* StaticText3;
 	wxBoxSizer* BoxSizer2;
-	wxButton* DirChoose;
 	wxBoxSizer* BoxSizer3;
 	wxFlexGridSizer* FlexGridSizer4;
 	wxStaticText* StaticText5;
@@ -504,7 +508,7 @@ wxsWizard::wxsWizard(wxWindow* parent,wxWindowID id)
 	wxButton* Button1;
 	wxButton* Button2;
 	
-	Create(parent,id,_("wxSmith project wizard"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE);
+	Create(parent,id,_("wxSmith project wizzard"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE);
 	MainSizer = new wxFlexGridSizer(0,1,0,0);
 	FlexGridSizer2 = new wxFlexGridSizer(0,1,0,0);
 	FlexGridSizer2->AddGrowableCol(0);
@@ -519,19 +523,32 @@ wxsWizard::wxsWizard(wxWindow* parent,wxWindowID id)
 	StaticText2 = new wxStaticText(this,ID_STATICTEXT2,_("Main frame title:"),wxDefaultPosition,wxDefaultSize,0);
 	FrmTitle = new wxTextCtrl(this,ID_TEXTCTRL2,_("Welcome to wxSmith application"),wxDefaultPosition,wxDefaultSize,0);
 	if ( 0 ) FrmTitle->SetMaxLength(0);
-	StaticText3 = new wxStaticText(this,ID_STATICTEXT3,_("Project Directory:"),wxDefaultPosition,wxDefaultSize,0);
+	StaticText8 = new wxStaticText(this,ID_STATICTEXT8,_("Base directory:"),wxDefaultPosition,wxDefaultSize,0);
+	BoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
+	BaseDir = new wxTextCtrl(this,ID_TEXTCTRL6,_T(""),wxDefaultPosition,wxDefaultSize,0);
+	if ( 0 ) BaseDir->SetMaxLength(0);
+	BaseDirChoose = new wxButton(this,ID_BUTTON5,_("..."),wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
+	if (false) BaseDirChoose->SetDefault();
+	BoxSizer5->Add(BaseDir,1,wxLEFT|wxBOTTOM|wxALIGN_CENTER,5);
+	BoxSizer5->Add(BaseDirChoose,0,wxRIGHT|wxBOTTOM|wxALIGN_CENTER,5);
+	UseCustomPrjDir = new wxCheckBox(this,ID_CHECKBOX6,_("Custom proj. dir:"),wxDefaultPosition,wxDefaultSize,0);
+	UseCustomPrjDir->SetValue(false);
 	BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
 	PrjDir = new wxTextCtrl(this,ID_TEXTCTRL3,_T(""),wxDefaultPosition,wxDefaultSize,0);
 	if ( 0 ) PrjDir->SetMaxLength(0);
-	DirChoose = new wxButton(this,ID_BUTTON3,_("..."),wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
-	if (false) DirChoose->SetDefault();
+	PrjDir->Disable();
+	PrjDirChoose = new wxButton(this,ID_BUTTON3,_("..."),wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
+	if (false) PrjDirChoose->SetDefault();
+	PrjDirChoose->Disable();
 	BoxSizer2->Add(PrjDir,1,wxLEFT|wxBOTTOM|wxALIGN_CENTER,5);
-	BoxSizer2->Add(DirChoose,0,wxRIGHT|wxBOTTOM|wxALIGN_CENTER,5);
+	BoxSizer2->Add(PrjDirChoose,0,wxRIGHT|wxBOTTOM|wxALIGN_CENTER,5);
 	FlexGridSizer3->Add(StaticText1,1,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
 	FlexGridSizer3->Add(PrjName,1,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND,5);
 	FlexGridSizer3->Add(StaticText2,1,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
 	FlexGridSizer3->Add(FrmTitle,1,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND,5);
-	FlexGridSizer3->Add(StaticText3,1,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
+	FlexGridSizer3->Add(StaticText8,1,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
+	FlexGridSizer3->Add(BoxSizer5,1,wxALIGN_CENTER|wxEXPAND,0);
+	FlexGridSizer3->Add(UseCustomPrjDir,1,wxALL|wxALIGN_CENTER,5);
 	FlexGridSizer3->Add(BoxSizer2,1,wxALIGN_CENTER|wxEXPAND,0);
 	BoxSizer3 = new wxBoxSizer(wxVERTICAL);
 	AddMenu = new wxCheckBox(this,ID_CHECKBOX1,_("Add simple menu"),wxDefaultPosition,wxDefaultSize,0);
@@ -607,11 +624,17 @@ wxsWizard::wxsWizard(wxWindow* parent,wxWindowID id)
 	Center();
 	//*)
 	
-    //#ifndef __WXMSW__
+    #ifndef __WXMSW__
         MainSizer->Show(wxWidgetsConfig,false,true);
         MainSizer->Fit(this);
         MainSizer->SetSizeHints(this);
-    //#endif
+    #endif
+    
+    
+    BaseDir->SetValue(
+        Manager::Get()->GetConfigManager(_T("wxsmith"))->Read(_T("wizardbasepath"),_T("")));
+    Initialized = true;
+    RebuildPrjDir();
 }
 
 wxsWizard::~wxsWizard()
@@ -652,21 +675,9 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
         return;
     }
     
-    wxString ProjectFileName = Dir + wxFileName::GetPathSeparator();
+    wxString ProjectFileName = Dir + wxFileName::GetPathSeparator() +
+        GetProjectFileName() + _T(".cbp");
    
-    for ( size_t i = 0; i < Name.Len(); i++ )
-    {
-        wxChar ch = Name[i];
-        if ( (ch >= 'A' && ch <= 'Z') ||
-             (ch >= 'a' && ch <= 'z') ||
-             (ch >= '0' && ch <= '9') ||
-             (ch == '_') )
-        {
-            ProjectFileName.Append(ch);
-        }
-    }
-    ProjectFileName.Append(_T(".cbp"));
-    
     cbProject* project = PRJMAN()->NewProject(ProjectFileName);
     if ( !project ) 
     {
@@ -674,8 +685,9 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
         return;
     }
     
+    CustomVars vars;
     #ifdef __WXMSW__
-    
+        
         // Configuring paths
         switch ( ConfMode->GetSelection() )
         {
@@ -688,6 +700,7 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
                 project->AddLibDir(_T("$(#WX.lib)\\gcc_dll\\msw"));
                 project->AddLibDir(_T("$(#WX.lib)\\gcc_dll$(WX_CFG)"));
                 project->AddResourceIncludeDir(_T("$(#WX.include)"));
+                vars.Add(_T("WX_CFG"),_T(""));
                 break;
                 
             case 1: // Custom variables
@@ -699,6 +712,8 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
                 project->AddLibDir(_T("$(WX_DIR)\\lib\\gcc_dll\\msw"));
                 project->AddLibDir(_T("$(WX_DIR)\\lib\\gcc_dll$(WX_CFG)"));
                 project->AddResourceIncludeDir(_T("$(WX_DIR)\\include"));
+                vars.Add(_T("WX_DIR"),_T("C:\\wxWidgets-2.6.2"));
+                vars.Add(_T("WX_CFG"),_T(""));
                 break;
                 
             case 2:
@@ -760,6 +775,7 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
         project->AddCompilerOption(_T("`wx-config --cflags`"));
         project->AddLinkerOption(_T("`wx-config --libs`"));
     #endif
+    project->SetCustomVars(vars);
 
     int flags = 0;
     if ( UseXrc->GetValue() )    flags |= wxsSrcXrc;
@@ -793,6 +809,11 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
         }
     }
     project->Save();
+    Manager::Get()->GetConfigManager(_T("wxsmith"))->Write(_T("wizardbasepath"),BaseDir->GetValue());
+    if ( !vars.GetVars().empty() )
+    {
+        wxMessageBox(_("New project created. But You may need\nto adjust some custom vars in project options"));
+    }
     EndModal(0);
 }
 
@@ -807,7 +828,7 @@ void wxsWizard::OnConfModeSelect(wxCommandEvent& event)
 
 void wxsWizard::OnDirChooseClick(wxCommandEvent& event)
 {
-    wxString Dir = wxDirSelector();
+    wxString Dir = wxDirSelector(wxDirSelectorPromptStr,PrjDir->GetValue());
     if ( !Dir.empty() ) PrjDir->SetValue(Dir);
 }
 
@@ -869,4 +890,60 @@ bool wxsWizard::BuildFile(
         file->link = Link;
     }
     return AllWritten;
+}
+
+void wxsWizard::OnUseCustomPrjDirChange(wxCommandEvent& event)
+{
+    bool Enable = UseCustomPrjDir->GetValue();
+    PrjDir->Enable(Enable);
+    PrjDirChoose->Enable(Enable);
+    RebuildPrjDir();
+}
+
+void wxsWizard::RebuildPrjDir()
+{
+    if ( !Initialized ) return;
+    if ( UseCustomPrjDir->GetValue() ) return;
+    PrjDir->SetValue(
+        BaseDir->GetValue() + wxFileName::GetPathSeparator() +
+        GetProjectFileName() );
+}
+
+wxString wxsWizard::GetProjectFileName()
+{
+    wxString Name = PrjName->GetValue();
+    wxString ProjectFileName;
+    for ( size_t i = 0; i < Name.Len(); i++ )
+    {
+        wxChar ch = Name[i];
+        if ( (ch >= _T('A') && ch <= _T('Z')) ||
+             (ch >= _T('a') && ch <= _T('z')) ||
+             (ch >= _T('0') && ch <= _T('9')) ||
+             (ch == _T('_')) )
+        {
+            ProjectFileName.Append(ch);
+        }
+        else if ( ch == _T(' ') )
+        {
+            ProjectFileName.Append(_T('_'));
+        }
+    }
+    return ProjectFileName;
+}
+
+void wxsWizard::OnBaseDirChooseClick(wxCommandEvent& event)
+{
+    wxString Dir = ::wxDirSelector(wxDirSelectorPromptStr,BaseDir->GetValue());
+    if ( !Dir.empty() ) BaseDir->SetValue(Dir);
+    RebuildPrjDir();
+}
+
+void wxsWizard::OnBaseDirText(wxCommandEvent& event)
+{
+    RebuildPrjDir();
+}
+
+void wxsWizard::OnPrjNameText(wxCommandEvent& event)
+{
+    RebuildPrjDir();
 }
