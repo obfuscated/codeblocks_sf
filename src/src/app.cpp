@@ -368,7 +368,7 @@ bool CodeBlocksApp::OnInit()
             if (m_pSingleInstance->IsAnotherRunning())
             {
                 HideSplashScreen();
-                wxLogError(_("Another program instance is already running, aborting."));
+                wxLogError(_("Another program instance is already running.\nCode::Blocks is currently configured to only allow one running instance.\n\nYou can access this Setting under the menu item 'Environment'."));
                 return false;
             }
         }
