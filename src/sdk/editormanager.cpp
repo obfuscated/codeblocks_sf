@@ -1510,6 +1510,13 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
                 break; // done
             }
         }
+        else if (wrapAround)
+        {
+            wxString msg;
+            msg.Printf(_("Not found: %s"), data->findText.c_str());
+            wxMessageBox(msg, _("Result"), wxICON_INFORMATION);
+            break; // done
+        }
         else
             break; // done
     }
