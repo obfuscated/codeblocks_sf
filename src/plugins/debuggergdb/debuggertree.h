@@ -52,6 +52,8 @@ class DebuggerTree : public wxPanel
 		void OnEditWatch(wxCommandEvent& event);
 		void OnDeleteWatch(wxCommandEvent& event);
 		void OnDeleteAllWatches(wxCommandEvent& event);
+		void OnDereferencePointer(wxCommandEvent& event);
+		void OnWatchThis(wxCommandEvent& event);
 
 		wxTreeCtrl* m_pTree;
 		wxNotebook* m_pParent;
@@ -64,7 +66,7 @@ class DebuggerTree : public wxPanel
 	private:
         void MarkAllNodes(const wxTreeItemId& parent, bool uptodate);
         void ClearAllMarkedNodes(const wxTreeItemId& parent, bool uptodate);
-        wxTreeItemId AddItem(wxTreeItemId& parent, const wxString& text, Watch* watch);
+        wxTreeItemId AddItem(wxTreeItemId& parent, const wxString& text, Watch* watch, bool* newlyAdded = 0);
         bool FindChildItem(const wxString& item, const wxTreeItemId& parent, wxTreeItemId& result);
 		void ParseEntry(Watch* watch, wxTreeItemId& parent, wxString& text);
         int FindCharOutsideQuotes(const wxString& str, wxChar ch); // returns position of ch in str

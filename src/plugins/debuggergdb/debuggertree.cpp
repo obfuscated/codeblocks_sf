@@ -23,6 +23,8 @@ int idSaveWatchFile = wxNewId();
 int idEditWatch = wxNewId();
 int idDeleteWatch = wxNewId();
 int idDeleteAllWatches = wxNewId();
+int idDereferenceValue = wxNewId();
+int idWatchThis = wxNewId();
 
 #ifndef __WXMSW__
 /*
@@ -68,6 +70,8 @@ BEGIN_EVENT_TABLE(DebuggerTree, wxPanel)
 	EVT_MENU(idEditWatch, DebuggerTree::OnEditWatch)
 	EVT_MENU(idDeleteWatch, DebuggerTree::OnDeleteWatch)
 	EVT_MENU(idDeleteAllWatches, DebuggerTree::OnDeleteAllWatches)
+	EVT_MENU(idDereferenceValue, DebuggerTree::OnDereferencePointer)
+	EVT_MENU(idWatchThis, DebuggerTree::OnWatchThis)
 END_EVENT_TABLE()
 
 DebuggerTree::DebuggerTree(wxEvtHandler* debugger, wxNotebook* parent)
@@ -162,9 +166,11 @@ bool DebuggerTree::FindChildItem(const wxString& item, const wxTreeItemId& paren
     return false;
 }
 
-wxTreeItemId DebuggerTree::AddItem(wxTreeItemId& parent, const wxString& text, Watch* watch)
+wxTreeItemId DebuggerTree::AddItem(wxTreeItemId& parent, const wxString& text, Watch* watch, bool* newlyAdded)
 {
     wxTreeItemId result;
+    if (newlyAdded)
+        *newlyAdded = false;
 
     wxString search = text;
     wxString value = text;
@@ -188,12 +194,19 @@ wxTreeItemId DebuggerTree::AddItem(wxTreeItemId& parent, const wxString& text, W
         m_pTree->SetItemData(result, new WatchTreeData(watch));
 
         if (value != oldvalue)
+        {
+            m_pTree->EnsureVisible(result); // expand as necessary
             m_pTree->SetItemTextColour(result, *wxRED);
+        }
         else
             m_pTree->SetItemTextColour(result, wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT));
     }
     else
+    {
         result = m_pTree->AppendItem(parent, text, -1, -1, new WatchTreeData(watch));
+        if (newlyAdded)
+            *newlyAdded = true;
+    }
     return result;
 }
 
@@ -317,15 +330,20 @@ void DebuggerTree::ParseEntry(Watch* watch, wxTreeItemId& parent, wxString& text
 		{
 			wxTreeItemId newParent = parent;
 			wxString tmp = text.Left(pos);
+			bool newlyAdded = false;
 
 			if (tmp.Right(3).Matches(_T(" = ")))
 				tmp.Truncate(tmp.Length() - 3); // remove " = " if last in string
 			if (!tmp.IsEmpty())
-                newParent = AddItem(parent, tmp, watch); // add entry
+                newParent = AddItem(parent, tmp, watch, &newlyAdded); // add entry
 			text.Remove(0, pos + 1);
 
 			if (pos == braceOpenPos)
+			{
 				ParseEntry(watch, newParent, text); // proceed one level deeper
+				if (newlyAdded)
+                    m_pTree->Expand(newParent);
+			}
 			else if (pos == braceClosePos)
 				break; // return one level up
 		}
@@ -485,8 +503,17 @@ void DebuggerTree::ShowMenu(wxTreeItemId id, const wxPoint& pt)
 	wxString caption;
     wxMenu menu(wxEmptyString);
 
+    // if we right-clicked on a pointer, add a "dereference pointer" entry
+    wxString itemtext = m_pTree->GetItemText(id);
+    if (itemtext.Find(_T('*')) != wxNOT_FOUND)
+    {
+        menu.Append(idDereferenceValue, wxString::Format(_("Dereference pointer '%s'"), itemtext.BeforeFirst(_T('=')).c_str()));
+        menu.AppendSeparator();
+    }
+
 	// add watch always visible
 	menu.Append(idAddWatch, _("&Add watch"));
+	menu.Append(idWatchThis, _("Watch '*&this'"));
 
 	// we have to have a valid id for the following to be enabled
     WatchTreeData* data = dynamic_cast<WatchTreeData*>(m_pTree->GetItemData(id));
@@ -657,4 +684,24 @@ void DebuggerTree::OnDeleteAllWatches(wxCommandEvent& event)
 {
     if (wxMessageBox(_("Are you sure you want to delete all watches?"), _("Question"), wxICON_QUESTION | wxYES_NO) == wxYES)
         DeleteAllWatches();
+}
+
+void DebuggerTree::OnDereferencePointer(wxCommandEvent& event)
+{
+    WatchTreeData* data = static_cast<WatchTreeData*>(m_pTree->GetItemData(m_pTree->GetSelection()));
+    Watch* w = data ? data->m_pWatch : 0;
+    if (w)
+        m_Watches.Add(Watch(_T('*') + w->keyword));
+    else
+    {
+        wxString itemtext = m_pTree->GetItemText(m_pTree->GetSelection());
+        m_Watches.Add(Watch(_T('*') + itemtext.BeforeFirst(_T('='))));
+    }
+    NotifyForChangedWatches();
+}
+
+void DebuggerTree::OnWatchThis(wxCommandEvent& event)
+{
+    m_Watches.Add(Watch(_T("*this")));
+    NotifyForChangedWatches();
 }
