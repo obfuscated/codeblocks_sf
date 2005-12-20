@@ -229,16 +229,20 @@ class EditorNotebook : public wxNotebook
 			pop->Append(idNBTabSaveAll, _("Save all"));
 
 			EditorManager *em = Manager::Get()->GetEditorManager();
-			unsigned int num_modified = 0;
+			bool any_modified = false;
 
-			for (int i = 0; i < em->GetEditorsCount(); ++i)
+			for(int i = 0; i < em->GetEditorsCount(); ++i)
 			{
 				EditorBase* ed = em->GetEditor(i);
-				if (ed && ed->GetModified() )
-					++num_modified;
+				if (ed && ed->GetModified())
+					{
+					any_modified = true;
+					break;
+					}
 			}
+
 			pop->Enable(idNBTabSave, em->GetEditor(m_RightClickSelected)->GetModified());
-			pop->Enable(idNBTabSaveAll, num_modified > 1 );
+			pop->Enable(idNBTabSaveAll, any_modified );
 
             PopupMenu(pop, event.GetPosition().x, event.GetPosition().y);
             delete pop;
