@@ -115,7 +115,7 @@ wxString Token::GetTokenScopeString() const
 	}
 }
 
-bool Token::SerializeIn(wxFile* f)
+bool Token::SerializeIn(wxInputStream* f)
 {
     if (!LoadIntFromFile(f, (int*)&m_ParentIndex)) return false;
     if (!LoadStringFromFile(f, m_Type)) return false;
@@ -156,7 +156,7 @@ bool Token::SerializeIn(wxFile* f)
     return true;
 }
 
-bool Token::SerializeOut(wxFile* f)
+bool Token::SerializeOut(wxOutputStream* f)
 {
     SaveIntToFile(f, m_pParent ? m_pParent->m_Int : -1);
     SaveStringToFile(f, m_Type);

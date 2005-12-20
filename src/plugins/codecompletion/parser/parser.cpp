@@ -212,7 +212,7 @@ bool Parser::CacheNeedsUpdate()
     return true;
 }
 
-bool Parser::ReadFromCache(wxFile* f)
+bool Parser::ReadFromCache(wxInputStream* f)
 {
     // File format is like this:
     //
@@ -231,7 +231,7 @@ bool Parser::ReadFromCache(wxFile* f)
     m_IncludeDirs = dirs;
 
     Manager::Get()->GetMessageManager()->DebugLog(_("Begin reading..."));
-    if (f->Read(CACHE_MAGIC_READ, sizeof(CACHE_MAGIC_READ)) != sizeof(CACHE_MAGIC_READ) ||
+    if (f->Read(CACHE_MAGIC_READ, sizeof(CACHE_MAGIC_READ)).LastRead() != sizeof(CACHE_MAGIC_READ) ||
         strncmp(CACHE_MAGIC, CACHE_MAGIC_READ, sizeof(CACHE_MAGIC_READ) != 0))
     {
         return false;
@@ -337,7 +337,7 @@ bool Parser::ReadFromCache(wxFile* f)
     return true;
 }
 
-bool Parser::WriteToCache(wxFile* f)
+bool Parser::WriteToCache(wxOutputStream* f)
 {
     // File format is like this:
     //

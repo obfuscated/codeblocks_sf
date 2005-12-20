@@ -46,8 +46,8 @@ class Token  : public BlockAllocated<Token, 10000>
 		wxString GetTokenKindString() const;
 		wxString GetTokenScopeString() const;
 
-		bool SerializeIn(wxFile* f);
-		bool SerializeOut(wxFile* f);
+		bool SerializeIn(wxInputStream* f);
+		bool SerializeOut(wxOutputStream* f);
 
 		wxString m_Type; // this is the return value (if any): e.g. const wxString&
 		wxString m_ActualType; // this is what the parser believes is the actual return value: e.g. wxString
@@ -82,7 +82,7 @@ class Token  : public BlockAllocated<Token, 10000>
 	private:
 };
 
-inline void SaveIntToFile(wxFile* f, int i)
+inline void SaveIntToFile(wxOutputStream* f, int i)
 {
     /* This used to be done as
         f->Write(&i, sizeof(int));
@@ -94,18 +94,18 @@ inline void SaveIntToFile(wxFile* f, int i)
     f->Write( c, 4 );
 }
 
-inline bool LoadIntFromFile(wxFile* f, int* i)
+inline bool LoadIntFromFile(wxInputStream* f, int* i)
 {
 //    See SaveIntToFile
 //    return f->Read(i, sizeof(int)) == sizeof(int);
 
     unsigned char c[4];
-    if ( f->Read( c, 4 ) != 4 ) return false;
+    if ( f->Read( c, 4 ).LastRead() != 4 ) return false;
     *i = ( c[0]<<0 | c[1]<<8 | c[2]<<16 | c[3]<<24 );
     return true;
 }
 
-inline void SaveStringToFile(wxFile* f, const wxString& str)
+inline void SaveStringToFile(wxOutputStream* f, const wxString& str)
 {
     const wxWX2MBbuf psz = str.mb_str(wxConvUTF8);
     int size = psz ? strlen(psz) : 0;
@@ -116,7 +116,7 @@ inline void SaveStringToFile(wxFile* f, const wxString& str)
         f->Write(psz, size);
 }
 
-inline bool LoadStringFromFile(wxFile* f, wxString& str)
+inline bool LoadStringFromFile(wxInputStream* f, wxString& str)
 {
     int size;
     if (!LoadIntFromFile(f, &size))
@@ -125,7 +125,7 @@ inline bool LoadStringFromFile(wxFile* f, wxString& str)
     if (size > 0 && size <= 512)
     {
         static char buf[513];
-        ok = f->Read(buf, size) == size;
+        ok = f->Read(buf, size).LastRead() == (size_t)size;
         buf[size] = '\0';
         str = wxString(buf, wxConvUTF8);
     }
@@ -133,7 +133,7 @@ inline bool LoadStringFromFile(wxFile* f, wxString& str)
     {
         str.Empty();
         size = size & 0xFFFFFF; // Can't get any longer than that
-        f->Seek(size, wxFromCurrent);
+        f->SeekI(size, wxFromCurrent);
     }
     return ok;
 }

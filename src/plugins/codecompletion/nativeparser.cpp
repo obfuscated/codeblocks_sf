@@ -40,6 +40,8 @@
 #include "parser/parser.h"
 #include <compilerfactory.h>
 
+#include <wx/wfstream.h>
+
 #include <cctype>
 
 BEGIN_EVENT_TABLE(NativeParser, wxEvtHandler)
@@ -419,7 +421,10 @@ bool NativeParser::LoadCachedData(Parser* parser, cbProject* project)
     bool ret = false;
     try
     {
-        ret = parser->ReadFromCache(&f);
+        wxFileInputStream fs(f);
+        wxBufferedInputStream fb(fs);
+
+        ret = parser->ReadFromCache(&fb);
     }
     catch (cbException& ex)
     {
@@ -452,9 +457,12 @@ bool NativeParser::SaveCachedData(Parser* parser, const wxString& projectFilenam
         return false;
     }
 
+    wxFileOutputStream fs(f);
+    wxBufferedOutputStream fb(fs);
+
     // write cache file
     Manager::Get()->GetMessageManager()->DebugLog(_("Updating parser's cache: %s"), projectCache.GetFullPath().c_str());
-    return parser->WriteToCache(&f);
+    return parser->WriteToCache(&fb);
 }
 
 void NativeParser::DisplayStatus(Parser* parser, cbProject* project)

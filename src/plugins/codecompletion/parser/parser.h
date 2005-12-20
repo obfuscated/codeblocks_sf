@@ -86,8 +86,8 @@ class Parser : public wxEvtHandler
 		void Clear();
 		void ReadOptions();
 		void WriteOptions();
-		bool ReadFromCache(wxFile* f);
-		bool WriteToCache(wxFile* f);
+		bool ReadFromCache(wxInputStream* f);
+		bool WriteToCache(wxOutputStream* f);
 		bool CacheNeedsUpdate();
 
 		void StartTimer(){ wxStartTimer(); }
