@@ -226,11 +226,20 @@ class EditorNotebook : public wxNotebook
             }
             pop->AppendSeparator();
             pop->Append(idNBTabSave, _("Save"));
-            if (GetPageCount() > 1)
-                pop->Append(idNBTabSaveAll, _("Save all"));
-            EditorBase* ed = Manager::Get()->GetEditorManager()->GetEditor(m_RightClickSelected);
-            if (ed)
-                pop->Enable(idNBTabSave, ed->GetModified());
+			pop->Append(idNBTabSaveAll, _("Save all"));
+
+			EditorManager *em = Manager::Get()->GetEditorManager();
+			unsigned int num_modified = 0;
+
+			for (int i = 0; i < em->GetEditorsCount(); ++i)
+			{
+				EditorBase* ed = em->GetEditor(i);
+				if (ed && ed->GetModified() )
+					++num_modified;
+			}
+			pop->Enable(idNBTabSave, num_modified);
+			pop->Enable(idNBTabSaveAll, num_modified > 1 );
+
             PopupMenu(pop, event.GetPosition().x, event.GetPosition().y);
             delete pop;
 //            #endif
@@ -271,6 +280,9 @@ BEGIN_EVENT_TABLE(EditorNotebook, wxNotebook)
     EVT_MENU(idNBTabCloseAllOthers, EditorNotebook::OnCloseAllOthers)
     EVT_MIDDLE_DOWN(EditorNotebook::OnMiddleDown)
     EVT_RIGHT_DOWN(EditorNotebook::OnRightDown)
+    EVT_MENU(idNBTabSave, EditorNotebook::OnSave)
+    EVT_MENU(idNBTabSaveAll, EditorNotebook::OnSaveAll)
+
 END_EVENT_TABLE()
 
 // class constructor
