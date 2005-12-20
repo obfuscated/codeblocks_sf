@@ -21,8 +21,8 @@ public:
     friend class Manager;
     void CreateMenu(wxMenuBar* menuBar);
     void ReleaseMenu(wxMenuBar* menuBar);
-    void ReplaceMacros(wxString& buffer, bool envVarsToo = false);
-    wxString ReplaceMacros(const wxString& buffer, bool envVarsToo = false);
+    void ReplaceMacros(wxString& buffer, bool envVarsToo = false, ProjectBuildTarget* target = 0);
+    wxString ReplaceMacros(const wxString& buffer, bool envVarsToo = false, ProjectBuildTarget* target = 0);
     void ReplaceEnvVars(wxString& buffer);
     void RecalcVars(cbProject* project,EditorBase* editor,ProjectBuildTarget* target);
     void ClearProjectKeys();

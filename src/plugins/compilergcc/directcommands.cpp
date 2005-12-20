@@ -315,8 +315,7 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
 {
     m_pProject->SetCurrentlyCompilingTarget(target);
 
-//    target->GetCustomVars().ApplyVarsToEnvironment();
-
+//	Manager::Get()->GetMessageManager()->DebugLog(wxString("-----GetTargetCompileCommands-----"));
     wxArrayString ret;
     ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Switching to target: ") + target->GetTitle());
     // NOTE: added this to notify compiler about the active target.
@@ -387,9 +386,8 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
 wxArrayString DirectCommands::GetPreBuildCommands(ProjectBuildTarget* target)
 {
     m_pProject->SetCurrentlyCompilingTarget(target);
-//    m_pProject->GetCustomVars().ApplyVarsToEnvironment();
-//    if (target)
-//        target->GetCustomVars().ApplyVarsToEnvironment();
+//	Manager::Get()->GetMessageManager()->DebugLog(wxString("-----GetPreBuildCommands-----"));
+	Manager::Get()->GetMacrosManager()->RecalcVars(target ? target->GetParentProject() : 0, Manager::Get()->GetEditorManager()->GetActiveEditor(), target);
 
     wxArrayString buildcmds = target ? target->GetCommandsBeforeBuild() : m_pProject->GetCommandsBeforeBuild();
     if (!buildcmds.IsEmpty())
@@ -413,8 +411,7 @@ wxArrayString DirectCommands::GetPostBuildCommands(ProjectBuildTarget* target)
 {
     m_pProject->SetCurrentlyCompilingTarget(target);
 //    m_pProject->GetCustomVars().ApplyVarsToEnvironment();
-//    if (target)
-//        target->GetCustomVars().ApplyVarsToEnvironment();
+	//Manager::Get()->GetMacrosManager()->Reset();
 
     wxArrayString buildcmds = target ? target->GetCommandsAfterBuild() : m_pProject->GetCommandsAfterBuild();
     if (!buildcmds.IsEmpty())
@@ -465,7 +462,6 @@ wxArrayString DirectCommands::GetLinkCommands(ProjectBuildTarget* target, bool f
 wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, bool force)
 {
     m_pProject->SetCurrentlyCompilingTarget(target);
-//    target->GetCustomVars().ApplyVarsToEnvironment();
 
     wxLogNull ln;
     wxArrayString ret;
@@ -769,11 +765,13 @@ void DirectCommands::DepsSearchStart(ProjectBuildTarget* target)
     wxArrayString prj_incs = m_pProject->GetIncludeDirs();
     wxArrayString tgt_incs = target->GetIncludeDirs();
 
+	MacrosManager* mm = Manager::Get()->GetMacrosManager();
+
     // replace custom vars in include dirs
     for (unsigned int i = 0; i < prj_incs.GetCount(); ++i)
-        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(prj_incs[i]);
+        mm->ReplaceMacros(prj_incs[i], true, target);
     for (unsigned int i = 0; i < tgt_incs.GetCount(); ++i)
-        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(tgt_incs[i]);
+        mm->ReplaceMacros(tgt_incs[i], true, target);
 
     OptionsRelation relation = target->GetOptionRelation(ortIncludeDirs);
     switch (relation)

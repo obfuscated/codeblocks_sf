@@ -106,33 +106,34 @@ void MacrosManager::ReleaseMenu(wxMenuBar* menuBar)
     SANITY_CHECK();
 }
 
-wxString MacrosManager::ReplaceMacros(const wxString& buffer, bool envVarsToo)
+wxString MacrosManager::ReplaceMacros(const wxString& buffer, bool envVarsToo, ProjectBuildTarget* target)
 {
     SANITY_CHECK(wxEmptyString);
     wxString tmp = buffer;
-    ReplaceMacros(tmp, envVarsToo);
+    ReplaceMacros(tmp, envVarsToo, target);
     return tmp;
 }
 
 void MacrosManager::Reset()
 {
     SANITY_CHECK();
-    m_lastProject = NULL;
-    m_lastTarget = NULL;
-    m_lastEditor = NULL;
+//	Manager::Get()->GetMessageManager()->DebugLog(_T("reset"));
+    m_lastProject = 0;
+    m_lastTarget = 0;
+    m_lastEditor = 0;
 
     m_AppPath = UnixFilename(ConfigManager::GetExecutableFolder());
     m_DataPath = UnixFilename(ConfigManager::GetDataFolder());
     m_Plugins = UnixFilename(ConfigManager::GetDataFolder() + _T("/plugins"));
     ClearProjectKeys();
-    m_re.Compile(_T("(%|\\$[({]?)(#?[A-Za-z_0-9\\.]+)([)}%]?)"));
+    m_re.Compile(_T("(%|\\$[({]?)(#?[A-Za-z_0-9.]+)([)}%/\\]?)"));
     m_uVarMan = Manager::Get()->GetUserVariableManager();
 }
 
 void MacrosManager::ClearProjectKeys()
 {
     SANITY_CHECK();
-
+//	Manager::Get()->GetMessageManager()->DebugLog(_T("clear"));
     macros.clear();
 
     macros[_T("AMP")]   = _T("&");
@@ -152,7 +153,7 @@ void MacrosManager::ClearProjectKeys()
 void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuildTarget* target)
 {
     SANITY_CHECK();
-
+//	Manager::Get()->GetMessageManager()->DebugLog(wxString("recalc...  (project == ") << (int) project << _T("   editor == ") << (int)editor << _T("   target == ") << (int)target << ")");
     if(!editor)
     {
         m_ActiveEditorFilename = wxEmptyString;
@@ -165,6 +166,7 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
     }
     if(!project)
     {
+//		Manager::Get()->GetMessageManager()->DebugLog("project == 0");
         m_ProjectFilename = wxEmptyString;
         m_ProjectName = wxEmptyString;
         m_ProjectDir = wxEmptyString;
@@ -188,6 +190,7 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
     }
     else if(project != m_lastProject)
     {
+//		Manager::Get()->GetMessageManager()->DebugLog("project != m_lastProject");
         m_lastTarget = NULL; // reset last target when project changes
         m_prjname.Assign(project->GetFilename());
         m_ProjectFilename = UnixFilename(m_prjname.GetFullName());
@@ -227,11 +230,35 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
 
 	if(project)
 	{
+//		Manager::Get()->GetMessageManager()->DebugLog("setting per-project variables...");
         VarsArray vars = project->GetCustomVars().GetVars();
+		wxString key;
 
         for(size_t i = 0; i < vars.GetCount(); ++i)
         {
-            macros[vars[i].name.Upper()] = vars[i].value;
+        	key.assign(vars[i].name.Upper());
+        	if(key[0] == _T('$'));
+				key = key.Mid(1);
+
+//			Manager::Get()->GetMessageManager()->DebugLog(wxString("") << vars[i].name.Upper() << " = " << vars[i].value);
+            macros[key] = vars[i].value;
+        }
+	}
+
+	if(target)
+	{
+//		Manager::Get()->GetMessageManager()->DebugLog("setting per-target variables...");
+        VarsArray vars = target->GetCustomVars().GetVars();
+		wxString key;
+
+        for(size_t i = 0; i < vars.GetCount(); ++i)
+        {
+        	key.assign(vars[i].name.Upper());
+        	if(key[0] == _T('$'));
+				key = key.Mid(1);
+
+//			Manager::Get()->GetMessageManager()->DebugLog(wxString("") << vars[i].name.Upper() << " = " << vars[i].value);
+            macros[key] = vars[i].value;
         }
 	}
 
@@ -267,18 +294,20 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
     macros[_T("WEEKDAY_UTC")] = nowGMT.Format(_T("%A"));
 }
 
-void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo)
+void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo, ProjectBuildTarget* target)
 {
     SANITY_CHECK();
-
+//	Manager::Get()->GetMessageManager()->DebugLog(wxString("ReplaceMacros(\"") << buffer << "\")");
     if (buffer.IsEmpty())
         return;
 
-    cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
-    EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
-    ProjectBuildTarget* target = project ? project->GetCurrentlyCompilingTarget() : 0;
+		cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
+		EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
 
-    if(!project || project != m_lastProject || target != m_lastTarget)
+		if(!target)
+			target = project ? project->GetCurrentlyCompilingTarget() : 0;
+
+    if(project != m_lastProject || target != m_lastTarget)
         RecalcVars(project, editor, target);
 
     wxString search;
@@ -289,6 +318,7 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo)
         replace.Empty();
 
         wxString var = m_re.GetMatch(buffer, 2).Upper();
+        wxString right = m_re.GetMatch(buffer, 3);
         search = m_re.GetMatch(buffer, 0);
 
         if (var[0] == _T('#'))
@@ -302,8 +332,11 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo)
                 replace = it->second;
         }
 
-        QuoteStringIfNeeded(replace);
-		//Manager::Get()->GetMessageManager()->DebugLog(wxString(wxString("replacing ") << search << " (variable: " << var << ")" << "with: ") << replace);
+
+		if(right.size() && (right[0] == _T('\\') || right[0] == _T('/'))) // workaround for foo\$variable\bar
+			replace.append(right);
+
+//		Manager::Get()->GetMessageManager()->DebugLog(wxString(wxString("replacing ") << search << " (variable: " << var << ") " << "with: ") << replace);
 
         if (!replace.IsEmpty())
         {
@@ -319,6 +352,9 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo)
             }
         }
     }
+	QuoteStringIfNeeded(replace);
+
+//	Manager::Get()->GetMessageManager()->DebugLog(wxString("ReplaceMacros() ---> return: ") << buffer);
 }
 
 void MacrosManager::ReplaceEnvVars(wxString& buffer)

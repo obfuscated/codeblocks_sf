@@ -682,6 +682,7 @@ void CompilerGCC::AddToCommandQueue(const wxArrayString& commands)
             cmd.Remove(0, myTargetChange.Length());
             // using other compiler now: find it and set it
             lastTarget = m_Project->GetBuildTarget(cmd);
+
 //            if (bt)
 //            {
 //                m_Project->SetCurrentlyCompilingTarget(bt);
@@ -1253,9 +1254,8 @@ int CompilerGCC::Clean(ProjectBuildTarget* target)
 	if (!CompilerValid(target))
 		return -1;
 
-//    if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
-//        CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
-//    m_Project->GetCustomVars().ApplyVarsToEnvironment();
+//	Manager::Get()->GetMacrosManager()->Reset();
+
     m_Generator.Init(m_Project);
 
     wxSetWorkingDirectory(m_Project->GetBasePath());
@@ -1325,9 +1325,8 @@ int CompilerGCC::DoBuild(cbProject* prj, const wxString& target)
     if (prj && !prj->SaveAllFiles())
         Manager::Get()->GetMessageManager()->Log(_("Could not save all files..."));
 
-//    if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
-//        CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
-//    prj->GetCustomVars().ApplyVarsToEnvironment();
+//	Manager::Get()->GetMacrosManager()->Reset();
+
     m_Generator.Init(prj);
 
     wxSetWorkingDirectory(prj->GetBasePath());
@@ -1406,9 +1405,8 @@ int CompilerGCC::Rebuild(ProjectBuildTarget* target)
 	if (!CompilerValid(target))
 		return -1;
 
-//    if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
-//        CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
-//    m_Project->GetCustomVars().ApplyVarsToEnvironment();
+//	Manager::Get()->GetMacrosManager()->Reset();
+
     m_Generator.Init(m_Project);
 
     if (UseMake(target))
@@ -1567,8 +1565,8 @@ int CompilerGCC::CompileFile(const wxString& file)
 
         // switch to the default compiler
         SwitchCompiler(CompilerFactory::GetDefaultCompilerIndex());
-        // apply global custom vars
-//        CompilerFactory::GetDefaultCompiler()->GetCustomVars().ApplyVarsToEnvironment();
+//        Manager::Get()->GetMessageManager()->DebugLog("-----CompileFile [if(!pf)]-----");
+		Manager::Get()->GetMacrosManager()->Reset();
         m_Generator.Init(0);
 
         if (useMake)
@@ -1598,8 +1596,7 @@ int CompilerGCC::CompileFile(const wxString& file)
         MakefileGenerator mg(this, 0, _T(""), 0);
         mg.ConvertToMakefileFriendly(fname, true);
 
-        // apply global custom vars
-//        CompilerFactory::Compilers[bt->GetCompilerIndex()]->GetCustomVars().ApplyVarsToEnvironment();
+		Manager::Get()->GetMacrosManager()->Reset();
 
         wxString cmd = GetMakeCommandFor(mcCompileFile, bt);
         cmd.Replace(_T("$file"), fname);
