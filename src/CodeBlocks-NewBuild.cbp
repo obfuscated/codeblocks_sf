@@ -217,6 +217,7 @@
                 <Option output="devel\share\CodeBlocks\plugins\compilergcc.dll" />
                 <Option working_dir="devel\share\CodeBlocks\plugins" />
                 <Option object_output=".objs\2.6" />
+                <Option external_deps="plugins\compilergcc\depslib\libdepslib.a;" />
                 <Option type="3" />
                 <Option compiler="0" />
                 <Option includeInTargetAll="1" />
@@ -411,7 +412,6 @@
             <Add option="-DTIXML_USE_STL" />
             <Add option="-DCB_PRECOMP" />
             <Add option="-DWX_PRECOMP" />
-            <Add option="-DwxUSE_UNICODE=0" />
             <Add directory="$(#WX.include)" />
             <Add directory="$(#WX.lib)\gcc_dll\msw" />
             <Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw" />
