@@ -257,6 +257,7 @@ bool ParserThread::ParseBufferForFunctions(const wxString& buffer)
                             m_Str.Clear();
                         }
                         HandleFunction(token);
+                        m_Str.Clear();
                     }
 					else
 						m_Tokens.GetToken(); // skip args
