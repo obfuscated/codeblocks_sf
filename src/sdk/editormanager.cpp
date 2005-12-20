@@ -237,7 +237,7 @@ class EditorNotebook : public wxNotebook
 				if (ed && ed->GetModified() )
 					++num_modified;
 			}
-			pop->Enable(idNBTabSave, num_modified);
+			pop->Enable(idNBTabSave, em->GetEditor(m_RightClickSelected)->GetModified());
 			pop->Enable(idNBTabSaveAll, num_modified > 1 );
 
             PopupMenu(pop, event.GetPosition().x, event.GetPosition().y);
