@@ -499,8 +499,10 @@ bool MSVC7Loader::DoImportFiles(TiXmlElement* root, int numConfigurations)
         while(file)
         {
             wxString fname = ReplaceMSVCMacros(_U(file->Attribute("RelativePath")));
-            if (!fname.IsEmpty())
+            if ((!fname.IsEmpty()) && (fname != _T(".\\")))
             {
+            	if (fname.StartsWith(_T(".\\")))
+					fname.erase(0, 2);
                 ProjectFile* pf = m_pProject->AddFile(0, fname);
                 if (pf)
                 {
