@@ -83,11 +83,15 @@ wxString UnixFilename(const wxString& filename)
 {
     wxString result = filename;
 #ifdef __WXMSW__
+    bool unc_name = result.StartsWith(_T("\\\\"));
 
     while (result.Replace(_T("/"), _T("\\")))
         ;
     while (result.Replace(_T("\\\\"), _T("\\")))
         ;
+
+    if (unc_name)
+        result = _T("\\") + result;
 #else
 
     while (result.Replace(_T("\\"), _T("/")))
@@ -276,16 +280,32 @@ void RestoreTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayStrin
 
 bool CreateDirRecursively(const wxString& full_path, int perms)
 {
-    wxFileName tmp(full_path);
-    wxString sep = wxFileName::GetPathSeparator();
-    wxString currdir = tmp.GetVolume() + tmp.GetVolumeSeparator() + sep;
-    wxArrayString dirs = tmp.GetDirs();
+    wxArrayString dirs;
+    wxString currdir;
+
+#ifdef __WXMSW__
+    // hack to support for UNC filenames
+    if (full_path.StartsWith(_T("\\\\")))
+    {
+        wxFileName tmp(_T("C:") + full_path.SubString(1, full_path.Length()));
+        dirs = tmp.GetDirs();
+        currdir = _T("\\\\") + dirs[0] + wxFILE_SEP_PATH;
+        wxMessageBox(currdir);
+        dirs.RemoveAt(0);
+    }
+    else
+#endif
+    {
+        wxFileName tmp(full_path);
+        currdir = tmp.GetVolume() + tmp.GetVolumeSeparator() + wxFILE_SEP_PATH;
+        dirs = tmp.GetDirs();
+    }
     for (size_t i = 0; i < dirs.GetCount(); ++i)
     {
         currdir << dirs[i];
         if (!wxDirExists(currdir) && !wxMkdir(currdir, perms))
             return false;
-        currdir << sep;
+        currdir << wxFILE_SEP_PATH;
     }
     return true;
 }

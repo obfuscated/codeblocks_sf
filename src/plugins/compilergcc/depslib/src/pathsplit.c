@@ -4,7 +4,7 @@
  * This file is part of depslib.
  *
  * License is hereby granted to use this software and distribute it
- * freely, as long as this copyright notice is retained and modifications 
+ * freely, as long as this copyright notice is retained and modifications
  * are clearly marked.
  *
  * ALL WARRANTIES ARE HEREBY DISCLAIMED.
@@ -69,6 +69,11 @@ char *path_tostring(PATHSPLIT *f, char *buf)
 void path_split(const char *path, PATHSPLIT *f)
 {
 	const char *p = path;
+#ifdef DEPSLIB_WINDOWS
+	// support UNC filename in windows: ignore leading slashes
+	while ((*p == '/') || (*p == '\\'))
+        ++p;
+#endif
 	PATHPART *part;
 
 	f->count = 1;
@@ -94,7 +99,7 @@ void path_split(const char *path, PATHSPLIT *f)
 #endif
 			++f->count;
 		}
-		p++;
+		++p;
 	}
 
 	f->part[f->count - 1].len = p - f->part[f->count - 1].ptr;
@@ -122,9 +127,9 @@ Unix:
 int is_relative(PATHSPLIT *f)
 {
 #ifdef DEPSLIB_WINDOWS
-	/* Volume C: D: etc is present */
-	if ((f->part[0].len == 2) &&
-		(f->part[0].ptr[1] == ':'))
+	/* Volume C: D: etc is present, or is a UNC filename */
+	if (((f->part[0].len == 2) && (f->part[0].ptr[1] == ':')) ||
+		((f->part[0].len > 2) && (f->part[0].ptr[0] == '\\' && f->part[0].ptr[1] == '\\')))
 	{
 		return 0;
 	}
