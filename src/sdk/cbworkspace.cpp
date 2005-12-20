@@ -73,6 +73,15 @@ void cbWorkspace::Load()
         return;
 	Manager::Get()->GetMessageManager()->DebugLog(_("Loading workspace \"%s\""), fname.c_str());
 
+	if (!m_Filename.FileExists())
+	{
+		Manager::Get()->GetMessageManager()->DebugLog(_("File does not exist."));
+		wxString msg;
+		msg.Printf(_("Workspace '%s' does not exist..."), fname.c_str());
+		wxMessageBox(msg, _("Error"), wxOK | wxCENTRE | wxICON_ERROR);
+		return;
+	}
+
 	bool modified = false;
 	IBaseWorkspaceLoader* pWsp = 0;
 	switch (FileTypeOf(fname))
