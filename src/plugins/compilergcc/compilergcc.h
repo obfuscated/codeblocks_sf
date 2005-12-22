@@ -9,6 +9,7 @@
 #include <simpletextlog.h>
 #include "compilermessages.h"
 #include <wx/process.h>
+#include <wx/dynarray.h>
 #include "compilererrors.h"
 #include "cmdlinegenerator.h"
 #include "compiler_defs.h"
@@ -29,6 +30,27 @@ enum ErrorType
 	etNone = 0,
 	etError,
 	etWarning
+};
+
+/// Helper enum for compiler's state. This state signifies the kind of build the compiler is working on.
+enum BuildJob
+{
+    bjIdle = 0, ///< Not currently building
+    bjWorkspace, ///< Building the workspace
+    bjProject, ///< Building the project
+    bjTarget ///< Building the target
+};
+
+/// Defines the current state of the compiler.
+enum BuildState
+{
+    bsNone = 0,
+    bsProjectPreBuild,
+    bsTargetPreBuild,
+    bsTargetBuild,
+    bsTargetPostBuild,
+    bsProjectPostBuild,
+    bsProjectDone
 };
 
 class CompilerGCC : public cbCompilerPlugin
@@ -56,7 +78,7 @@ class CompilerGCC : public cbCompilerPlugin
         virtual int RebuildWorkspace(const wxString& target = wxEmptyString);
         virtual int CompileFile(const wxString& file);
         virtual int KillProcess();
-		virtual bool IsRunning() const { return m_Process || m_CommandQueue.GetCount(); }
+		virtual bool IsRunning() const;
 		virtual int GetExitCode() const { return m_LastExitCode; }
 		virtual int Configure(cbProject* project, ProjectBuildTarget* target = 0L);
 
@@ -121,14 +143,19 @@ class CompilerGCC : public cbCompilerPlugin
 		void DoClearErrors();
         wxString ProjectMakefile();
         void AddOutputLine(const wxString& output, bool forceErrorColor = false);
-        void PrintBanner(cbProject* prj = 0);
+        void PrintBanner(cbProject* prj = 0, ProjectBuildTarget* target = 0);
         bool UseMake(ProjectBuildTarget* target = 0);
 		bool CompilerValid(ProjectBuildTarget* target = 0);
 		ProjectBuildTarget* GetBuildTargetForFile(ProjectFile* pf);
 		ProjectBuildTarget* GetBuildTargetForFile(const wxString& file);
         wxString GetMakeCommandFor(MakeCommand cmd, ProjectBuildTarget* target);
-        int DoBuild(cbProject* prj, const wxString& target);
-        void BuildDependencies(cbProject* prj, const wxString& target);
+        int DoBuild(cbProject* prj);
+        void CalculateWorkspaceDependencies();
+        void CalculateProjectDependencies(cbProject* prj);
+        void InitBuildState(BuildJob job, const wxString& target);
+        void ResetBuildState();
+        void BuildStateManagement(); ///< This uses m_BuildJob.
+        BuildState GetNextStateBasedOnJob();
 
         // wxArrayString from DirectCommands
         void AddToCommandQueue(const wxArrayString& commands);
@@ -165,6 +192,23 @@ class CompilerGCC : public cbCompilerPlugin
 		CompilerErrors m_Errors;
 		bool m_HasTargetAll;
 		wxString m_LastTargetName;
+
+        // state management
+		cbProject* m_pBuildingProject;
+		int m_BuildingProjectIdx;
+		int m_BuildingTargetIdx;
+		wxString m_BuildingTargetName;
+		BuildJob m_BuildJob;
+		BuildState m_BuildState;
+		BuildState m_NextBuildState;
+		bool m_BuildStateTargetIsAll;
+		cbProject* m_pLastBuildingProject;
+		ProjectBuildTarget* m_pLastBuildingTarget;
+		wxArrayInt m_BuildDeps;
+		int m_BuildDepsIndex;
+        // to decide if post-build steps should run
+        bool m_RunTargetPostBuild;
+        bool m_RunProjectPostBuild;
 
 		wxString m_OriginalPath;
 		wxString m_LastTempMakefile;

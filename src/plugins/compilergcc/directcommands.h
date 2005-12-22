@@ -28,6 +28,8 @@ class DirectCommands
                         int logPageIndex = 0);
 		~DirectCommands();
 
+        wxArrayString GetPreBuildCommands(ProjectBuildTarget* target);
+        wxArrayString GetPostBuildCommands(ProjectBuildTarget* target);
 		wxArrayString CompileFile(ProjectBuildTarget* target, ProjectFile* pf, bool force = false);
 		wxArrayString GetCompileFileCommand(ProjectBuildTarget* target, ProjectFile* pf);
 		wxArrayString GetCompileSingleFileCommand(const wxString& filename);
@@ -41,8 +43,6 @@ class DirectCommands
         bool AreExternalDepsOutdated(const wxString& buildOutput, const wxString& additionalFiles, const wxString& externalDeps);
         bool IsObjectOutdated(const pfDetails& pfd);
         void DepsSearchStart(ProjectBuildTarget* target);
-        wxArrayString GetPreBuildCommands(ProjectBuildTarget* target);
-        wxArrayString GetPostBuildCommands(ProjectBuildTarget* target);
         MyFilesArray GetProjectFilesSortedByWeight(ProjectBuildTarget* target, bool compile, bool link);
         void AddCommandsToArray(const wxString& cmds, wxArrayString& array);
 

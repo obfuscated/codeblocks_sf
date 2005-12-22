@@ -172,7 +172,7 @@ void CmdLineGenerator::CreateSingleFileCompileCmd(wxString& command,
     }
 
     // finally, replace all macros in one go
-    Manager::Get()->GetMacrosManager()->ReplaceMacros(command, true);
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(command, true, target);
 }
 
 /// Setup output filename for build target.

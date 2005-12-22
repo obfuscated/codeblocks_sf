@@ -199,7 +199,12 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
         m_Makefile = UnixFilename(project->GetMakefile());
         m_ProjectFiles = wxEmptyString;
         for (int i = 0; i < project->GetFilesCount(); ++i)
-            m_ProjectFiles << UnixFilename(project->GetFile(i)->relativeFilename) << _T(' ');
+        {
+            // quote filenames, if they contain spaces
+            wxString out = UnixFilename(project->GetFile(i)->relativeFilename);
+            QuoteStringIfNeeded(out);
+            m_ProjectFiles << out << _T(' ');
+        }
 
         ClearProjectKeys();
         macros[_T("PROJECT_FILE")]  = m_ProjectFilename;
@@ -222,6 +227,8 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
             if (!target)
                 continue;
             wxString title = target->GetTitle().Upper();
+            while (title.Replace(_T(" "), _T("_")))
+                ; // replace spaces with underscores (what about other invalid chars?)
             macros[title + _T("_OUTPUT_FILE")] = UnixFilename(target->GetOutputFilename());
             macros[title + _T("_OUTPUT_DIR")] = UnixFilename(target->GetBasePath());
         }
@@ -230,35 +237,11 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
 
 	if(project)
 	{
-//		Manager::Get()->GetMessageManager()->DebugLog("setting per-project variables...");
         VarsArray vars = project->GetCustomVars().GetVars();
-		wxString key;
 
         for(size_t i = 0; i < vars.GetCount(); ++i)
         {
-        	key.assign(vars[i].name.Upper());
-        	if(key[0] == _T('$'));
-				key = key.Mid(1);
-
-//			Manager::Get()->GetMessageManager()->DebugLog(wxString("") << vars[i].name.Upper() << " = " << vars[i].value);
-            macros[key] = vars[i].value;
-        }
-	}
-
-	if(target)
-	{
-//		Manager::Get()->GetMessageManager()->DebugLog("setting per-target variables...");
-        VarsArray vars = target->GetCustomVars().GetVars();
-		wxString key;
-
-        for(size_t i = 0; i < vars.GetCount(); ++i)
-        {
-        	key.assign(vars[i].name.Upper());
-        	if(key[0] == _T('$'));
-				key = key.Mid(1);
-
-//			Manager::Get()->GetMessageManager()->DebugLog(wxString("") << vars[i].name.Upper() << " = " << vars[i].value);
-            macros[key] = vars[i].value;
+            macros[vars[i].name.Upper()] = vars[i].value;
         }
 	}
 
@@ -274,6 +257,16 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
         m_TargetName = UnixFilename(target->GetTitle());
         m_lastTarget = target;
     }
+
+	if(target)
+	{
+        VarsArray vars = target->GetCustomVars().GetVars();
+
+        for(size_t i = 0; i < vars.GetCount(); ++i)
+        {
+            macros[vars[i].name.Upper()] = vars[i].value;
+        }
+	}
 
     macros[_T("TARGET_OUTPUT_DIR")]   = m_TargetOutputDir;
     macros[_T("TARGET_NAME")]    = m_TargetName;
@@ -301,11 +294,13 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo, ProjectBuil
     if (buffer.IsEmpty())
         return;
 
-		cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
-		EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    cbProject* project = target
+                        ? target->GetParentProject()
+                        : Manager::Get()->GetProjectManager()->GetActiveProject();
+    EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
 
-		if(!target)
-			target = project ? project->GetCurrentlyCompilingTarget() : 0;
+    if(!target)
+        target = project ? project->GetCurrentlyCompilingTarget() : 0;
 
     if(project != m_lastProject || target != m_lastTarget)
         RecalcVars(project, editor, target);

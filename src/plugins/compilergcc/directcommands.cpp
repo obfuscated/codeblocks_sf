@@ -281,12 +281,6 @@ wxArrayString DirectCommands::GetCompileCommands(ProjectBuildTarget* target, boo
 {
     wxArrayString ret;
 
-    m_pProject->SetCurrentlyCompilingTarget(0);
-
-    // add project pre-build commands
-    AppendArray(GetPreBuildCommands(0L), ret);
-    size_t counter = ret.GetCount();
-
     if (target)
         ret = GetTargetCompileCommands(target, force);
     else
@@ -301,39 +295,27 @@ wxArrayString DirectCommands::GetCompileCommands(ProjectBuildTarget* target, boo
             }
         }
 	}
-
-    // remove pre-build commands if no compile needed and not always run pre-build commands
-    bool needPost = ret.GetCount() != counter;
-    if (!needPost  && !m_pProject->GetAlwaysRunPreBuildSteps())
-        ret.Clear();
-
-    m_pProject->SetCurrentlyCompilingTarget(0);
     return ret;
 }
 
 wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* target, bool force)
 {
-    m_pProject->SetCurrentlyCompilingTarget(target);
-
 //	Manager::Get()->GetMessageManager()->DebugLog(wxString("-----GetTargetCompileCommands-----"));
     wxArrayString ret;
-    ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Switching to target: ") + target->GetTitle());
+//    ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Switching to target: ") + target->GetTitle());
     // NOTE: added this to notify compiler about the active target.
     // this is needed when targets use different compiler each
     // and C::B tries to parse the compiler's output.
     // previous behaviour, used the project's compiler for parsing
     // all targets output, which failed when a target's compiler
     // was different than the project's...
-    ret.Add(wxString(COMPILER_TARGET_CHANGE) + target->GetTitle());
+//    ret.Add(wxString(COMPILER_TARGET_CHANGE) + target->GetTitle());
 
     m_pCurrTarget = target;
 
     // make sure all project files are saved
     if (!m_pProject->SaveAllFiles())
         wxMessageBox(_("Could not save all files. Build might be incomplete..."));
-
-    // add target pre-build commands
-    AppendArray(GetPreBuildCommands(target), ret);
 
     // set list of #include directories
     DepsSearchStart(target);
@@ -370,25 +352,16 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
     wxArrayString link = GetLinkCommands(target, ret.GetCount() != counter);
     AppendArray(link, ret);
 
-    // remove pre-build commands if no compile needed and not always run pre-build commands
-    bool needPost = ret.GetCount() != counter;
-    if (!needPost && !target->GetAlwaysRunPreBuildSteps())
-        ret.Clear();
+    // remove "switching to target" message if no compile needed
+//    bool needPost = ret.GetCount() != counter;
+//    if (!needPost)
+//        ret.Clear();
 
-    // force post-build step, if needed
-    if (!ret.GetCount() && target->GetAlwaysRunPostBuildSteps())
-        AppendArray(GetPostBuildCommands(target), ret);
-
-    m_pProject->SetCurrentlyCompilingTarget(0);
     return ret;
 }
 
 wxArrayString DirectCommands::GetPreBuildCommands(ProjectBuildTarget* target)
 {
-    m_pProject->SetCurrentlyCompilingTarget(target);
-//	Manager::Get()->GetMessageManager()->DebugLog(wxString("-----GetPreBuildCommands-----"));
-	Manager::Get()->GetMacrosManager()->RecalcVars(target ? target->GetParentProject() : 0, Manager::Get()->GetEditorManager()->GetActiveEditor(), target);
-
     wxArrayString buildcmds = target ? target->GetCommandsBeforeBuild() : m_pProject->GetCommandsBeforeBuild();
     if (!buildcmds.IsEmpty())
     {
@@ -401,18 +374,17 @@ wxArrayString DirectCommands::GetPreBuildCommands(ProjectBuildTarget* target)
             tmp.Add(buildcmds[i]);
         }
         buildcmds = tmp;
-        buildcmds.Insert(wxString(COMPILER_SIMPLE_LOG) + _("Running pre-build step: ") + title, 0);
+        if (target)
+            buildcmds.Insert(wxString(COMPILER_SIMPLE_LOG) + _("Running target pre-build steps"), 0);
+        else
+            buildcmds.Insert(wxString(COMPILER_SIMPLE_LOG) + _("Running project pre-build steps"), 0);
     }
-    m_pProject->SetCurrentlyCompilingTarget(0);
     return buildcmds;
 }
 
 wxArrayString DirectCommands::GetPostBuildCommands(ProjectBuildTarget* target)
 {
-    m_pProject->SetCurrentlyCompilingTarget(target);
 //    m_pProject->GetCustomVars().ApplyVarsToEnvironment();
-	//Manager::Get()->GetMacrosManager()->Reset();
-
     wxArrayString buildcmds = target ? target->GetCommandsAfterBuild() : m_pProject->GetCommandsAfterBuild();
     if (!buildcmds.IsEmpty())
     {
@@ -425,15 +397,16 @@ wxArrayString DirectCommands::GetPostBuildCommands(ProjectBuildTarget* target)
             tmp.Add(buildcmds[i]);
         }
         buildcmds = tmp;
-        buildcmds.Insert(wxString(COMPILER_SIMPLE_LOG) + _("Running post-build step: ") + title, 0);
+        if (target)
+            buildcmds.Insert(wxString(COMPILER_SIMPLE_LOG) + _("Running target post-build steps"), 0);
+        else
+            buildcmds.Insert(wxString(COMPILER_SIMPLE_LOG) + _("Running project post-build steps"), 0);
     }
-    m_pProject->SetCurrentlyCompilingTarget(0);
     return buildcmds;
 }
 
 wxArrayString DirectCommands::GetLinkCommands(ProjectBuildTarget* target, bool force)
 {
-    m_pProject->SetCurrentlyCompilingTarget(0);
     wxArrayString ret;
 
     if (target)
@@ -450,19 +423,11 @@ wxArrayString DirectCommands::GetLinkCommands(ProjectBuildTarget* target, bool f
             }
         }
     }
-
-    // add project post-build commands
-    if (ret.GetCount() != 0  || m_pProject->GetAlwaysRunPostBuildSteps())
-        AppendArray(GetPostBuildCommands(0L), ret);
-
-    m_pProject->SetCurrentlyCompilingTarget(0);
     return ret;
 }
 
 wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, bool force)
 {
-    m_pProject->SetCurrentlyCompilingTarget(target);
-
     wxLogNull ln;
     wxArrayString ret;
 
@@ -599,12 +564,6 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
 
         AddCommandsToArray(compilerCmd, ret);
     }
-
-    // add target post-build commands
-    if (ret.GetCount() != 0  || target->GetAlwaysRunPostBuildSteps())
-        AppendArray(GetPostBuildCommands(target), ret);
-
-    m_pProject->SetCurrentlyCompilingTarget(0);
     return ret;
 }
 
