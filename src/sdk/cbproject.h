@@ -381,6 +381,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
         // properties
         BuildTargets m_Targets;
         int m_ActiveTarget;
+        int m_LastSavedActiveTarget;
         int m_DefaultExecuteTarget;
         wxString m_Makefile;
         bool m_CustomMakefile;

@@ -104,6 +104,9 @@ int idMenuProjectDown = wxNewId();
 int idMenuViewCategorizePopup = wxNewId();
 int idMenuViewUseFoldersPopup = wxNewId();
 int idMenuTreeRenameWorkspace = wxNewId();
+int idMenuTreeSaveWorkspace = wxNewId();
+int idMenuTreeSaveAsWorkspace = wxNewId();
+int idMenuTreeCloseWorkspace = wxNewId();
 // TODO (mandrav#1#): Add "save workspace" context menu entry
 
 #ifndef __WXMSW__
@@ -151,6 +154,9 @@ BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
     EVT_MENU(idMenuProjectUp, ProjectManager::OnSetActiveProject)
     EVT_MENU(idMenuProjectDown, ProjectManager::OnSetActiveProject)
     EVT_MENU(idMenuTreeRenameWorkspace, ProjectManager::OnRenameWorkspace)
+    EVT_MENU(idMenuTreeSaveWorkspace, ProjectManager::OnSaveWorkspace)
+    EVT_MENU(idMenuTreeSaveAsWorkspace, ProjectManager::OnSaveAsWorkspace)
+    EVT_MENU(idMenuTreeCloseWorkspace, ProjectManager::OnCloseWorkspace)
     EVT_MENU(idMenuAddFile, ProjectManager::OnAddFileToProject)
     EVT_MENU(idMenuAddFilesRecursively, ProjectManager::OnAddFilesToProjectRecursively)
     EVT_MENU(idMenuRemoveFile, ProjectManager::OnRemoveFileFromProject)
@@ -485,6 +491,11 @@ it differs from the block currently in CreateMenu() by the following two IDs */
     else if (id == m_TreeRoot && m_pWorkspace)
     {
         menu.Append(idMenuTreeRenameWorkspace, _("Rename workspace"));
+        menu.AppendSeparator();
+        menu.Append(idMenuTreeSaveWorkspace, _("Save workspace"));
+        menu.Append(idMenuTreeSaveAsWorkspace, _("Save workspace as..."));
+        menu.AppendSeparator();
+        menu.Append(idMenuTreeCloseWorkspace, _("Close workspace"));
     }
 
     if (menu.GetMenuItemCount() != 0)
@@ -596,6 +607,7 @@ cbProject* ProjectManager::LoadProject(const wxString& filename)
             break; // sanity check
 
         project->LoadLayout();
+        project->SetModified(false);
         if(!sanity_check())
             break; // sanity check
         if (m_pWorkspace)
@@ -1480,6 +1492,33 @@ void ProjectManager::OnRenameWorkspace(wxCommandEvent& event)
             m_pWorkspace->SetTitle(text);
             m_pTree->SetItemText(m_TreeRoot, m_pWorkspace->GetTitle());
         }
+    }
+}
+
+void ProjectManager::OnSaveWorkspace(wxCommandEvent& event)
+{
+    SANITY_CHECK();
+    if (m_pWorkspace)
+    {
+        SaveWorkspace();
+    }
+}
+
+void ProjectManager::OnSaveAsWorkspace(wxCommandEvent& event)
+{
+    SANITY_CHECK();
+    if (m_pWorkspace)
+    {
+        SaveWorkspaceAs(_T(""));
+    }
+}
+
+void ProjectManager::OnCloseWorkspace(wxCommandEvent& event)
+{
+    SANITY_CHECK();
+    if (m_pWorkspace)
+    {
+        CloseWorkspace();
     }
 }
 

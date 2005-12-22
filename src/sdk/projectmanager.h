@@ -345,6 +345,9 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
         void OnTreeItemRightClick(wxTreeEvent& event);
         void OnRightClick(wxCommandEvent& event);
         void OnRenameWorkspace(wxCommandEvent& event);
+        void OnSaveWorkspace(wxCommandEvent& event);
+        void OnSaveAsWorkspace(wxCommandEvent& event);
+        void OnCloseWorkspace(wxCommandEvent& event);
         void OnSetActiveProject(wxCommandEvent& event);
         void OnAddFilesToProjectRecursively(wxCommandEvent& event);
         void OnAddFileToProject(wxCommandEvent& event);

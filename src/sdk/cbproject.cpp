@@ -54,6 +54,7 @@
 // class constructor
 cbProject::cbProject(const wxString& filename)
     : m_ActiveTarget(-1),
+    m_LastSavedActiveTarget(-1),
     m_DefaultExecuteTarget(-1),
     m_Makefile(_T("")),
     m_CustomMakefile(false),
@@ -148,8 +149,13 @@ void cbProject::SetCompilerIndex(int compilerIdx)
 
 bool cbProject::GetModified()
 {
+    // check base options
 	if (CompileOptionsBase::GetModified())
 		return true;
+
+    // check active target
+    if (m_LastSavedActiveTarget != m_ActiveTarget)
+        return true;
 
 	// check targets
     for (unsigned int i = 0; i < m_Targets.GetCount(); ++i)
@@ -172,6 +178,9 @@ void cbProject::SetModified(bool modified)
         ProjectBuildTarget* target = m_Targets[i];
         target->SetModified(modified);
     }
+
+    if (!modified)
+        m_LastSavedActiveTarget = m_ActiveTarget;
 }
 
 void cbProject::SetMakefileCustom(bool custom)
@@ -1146,7 +1155,7 @@ int cbProject::IndexOfBuildTargetName(const wxString& targetName)
 
 bool cbProject::SetActiveBuildTarget(int index)
 {
-    if (index < 0 || index >= GetBuildTargetsCount())
+    if (index < -1 || index >= GetBuildTargetsCount())
         return false;
     if (index == m_ActiveTarget)
         return true;
