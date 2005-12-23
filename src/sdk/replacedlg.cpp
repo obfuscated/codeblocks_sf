@@ -117,6 +117,11 @@ wxString ReplaceDlg::GetReplaceString()
 	return XRCCTRL(*this, "cmbReplace", wxComboBox)->GetValue();
 }
 
+bool ReplaceDlg::GetDeleteOldSearches()
+{
+	return true;
+}
+
 bool ReplaceDlg::GetMatchWord()
 {
 	return XRCCTRL(*this, "chkWholeWord", wxCheckBox)->GetValue();

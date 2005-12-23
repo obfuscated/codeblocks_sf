@@ -11,6 +11,7 @@ class FindDlg : public FindReplaceBase
 		wxString GetFindString();
 		wxString GetReplaceString(){ return wxEmptyString; }
 		bool IsFindInFiles();
+        bool GetDeleteOldSearches();
 		bool GetMatchWord();
 		bool GetStartWord();
 		bool GetMatchCase();

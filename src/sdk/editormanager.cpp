@@ -93,6 +93,7 @@ struct cbFindReplaceData
     wxString findText;
     wxString replaceText;
     bool findInFiles;
+    bool delOldSearches;
     bool matchWord;
     bool startWord;
     bool matchCase;
@@ -441,8 +442,14 @@ void EditorManager::LogSearch(const wxString& file, int line, const wxString& li
     wxString lineTextL;
     wxString lineStr;
 
-    lineStr.Printf(_T("%d"), line);
+    // line number -1 is used for empty string
+    if( line != -1) {
+        lineStr.Printf(_T("%d"), line);
+    } else {
+        lineStr.Printf(_T(" "));
+    }
     lineTextL = lineText;
+    lineTextL.Replace(_T("\t"), _T(" "));
     lineTextL.Replace(_T("\r"), _T(" "));
     lineTextL.Replace(_T("\n"), _T(" "));
     lineTextL.Trim(false);
@@ -453,6 +460,7 @@ void EditorManager::LogSearch(const wxString& file, int line, const wxString& li
     values.Add(lineTextL);
 
     m_pSearchLog->AddLog(values);
+    m_pSearchLog->GetListControl()->SetColumnWidth(0, wxLIST_AUTOSIZE);
     m_pSearchLog->GetListControl()->SetColumnWidth(2, wxLIST_AUTOSIZE);
 }
 
@@ -1278,6 +1286,7 @@ int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
 	m_LastFindReplaceData->findText = dlg->GetFindString();
 	m_LastFindReplaceData->replaceText = dlg->GetReplaceString();
 	m_LastFindReplaceData->findInFiles = dlg->IsFindInFiles();
+    m_LastFindReplaceData->delOldSearches = dlg->GetDeleteOldSearches();
 	m_LastFindReplaceData->matchWord = dlg->GetMatchWord();
 	m_LastFindReplaceData->startWord = dlg->GetStartWord();
 	m_LastFindReplaceData->matchCase = dlg->GetMatchCase();
@@ -1543,7 +1552,10 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
 int EditorManager::FindInFiles(cbFindReplaceData* data)
 {
     // clear old search results
-    m_pSearchLog->GetListControl()->DeleteAllItems();
+    if ( data->delOldSearches ) {
+        m_pSearchLog->GetListControl()->DeleteAllItems();
+    }
+    int oldcount = m_pSearchLog->GetListControl()->GetItemCount();
 
     if (!data || data->findText.IsEmpty())
         return 0;
@@ -1623,6 +1635,11 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
     // keep a copy of the find struct
     cbFindReplaceData localData = *data;
 
+    if ( !data->delOldSearches ) {
+        LogSearch(_T("=========="), -1, _T("=== \"") + data->findText + _T("\" ==="));
+        oldcount++;
+    }
+
     int lastline = -1;
     int count = 0;
     for (size_t i = 0; i < filesList.GetCount(); ++i)
@@ -1681,13 +1698,15 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
         static_cast<SearchResultsLog*>(m_pSearchLog)->SetBasePath(data->searchPath);
         Manager::Get()->GetMessageManager()->SwitchTo(m_SearchLogIndex);
         Manager::Get()->GetMessageManager()->Open();
-        static_cast<SearchResultsLog*>(m_pSearchLog)->FocusEntry(0);
+        static_cast<SearchResultsLog*>(m_pSearchLog)->FocusEntry(oldcount);
     }
     else
     {
         wxString msg;
-        msg.Printf(_("Not found: %s"), data->findText.c_str());
-        wxMessageBox(msg, _("Result"), wxICON_INFORMATION);
+        //msg.Printf(_("Not found: %s"), data->findText.c_str());
+        //wxMessageBox(msg, _("Result"), wxICON_INFORMATION);
+        msg.Printf(_("not found in %d files"), filesList.GetCount());
+        LogSearch(_T(""), -1, msg );
     }
 
     return count;

@@ -12,6 +12,7 @@ class ReplaceDlg : public FindReplaceBase
 		wxString GetFindString();
 		wxString GetReplaceString();
 		bool IsFindInFiles(){ return false; }
+        bool GetDeleteOldSearches();
 		bool GetMatchWord();
 		bool GetStartWord();
 		bool GetMatchCase();

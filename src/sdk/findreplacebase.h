@@ -12,6 +12,7 @@ class FindReplaceBase : public wxDialog
 		virtual wxString GetFindString() = 0;
 		virtual wxString GetReplaceString() = 0;
 		virtual bool IsFindInFiles() = 0;
+        virtual bool GetDeleteOldSearches() = 0;
 		virtual bool GetMatchWord() = 0;
 		virtual bool GetStartWord() = 0;
 		virtual bool GetMatchCase() = 0;
