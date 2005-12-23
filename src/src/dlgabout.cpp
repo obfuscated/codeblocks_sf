@@ -88,7 +88,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
         ));
 	XRCCTRL(*this, "txtLicense", wxTextCtrl)->SetValue(LICENSE_GPL);
 	XRCCTRL(*this, "lblName", wxStaticText)->SetLabel(APP_NAME);
-	XRCCTRL(*this, "lblVersion", wxStaticText)->SetLabel(APP_ACTUAL_VERSION_VERB + ConfigManager::GetRevisionString());
+	XRCCTRL(*this, "lblVersion", wxStaticText)->SetLabel(APP_ACTUAL_VERSION_VERB);
 	XRCCTRL(*this, "lblAuthor", wxStaticText)->SetLabel(_("The Code::Blocks Team"));
 	XRCCTRL(*this, "lblEmail", wxStaticText)->SetLabel(APP_CONTACT_EMAIL);
 	XRCCTRL(*this, "lblWebsite", wxStaticText)->SetLabel(APP_URL);

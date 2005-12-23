@@ -98,13 +98,13 @@ StartHerePage::StartHerePage(wxEvtHandler* owner, wxWindow* parent)
 
 	wxString revInfo;
 	#ifdef __GNUC__
-	revInfo.Printf(_T("Version %s %d   (gcc %d.%d.%d %s/%s, build: %s %s)"),
-					APP_ACTUAL_VERSION_VERB.c_str(), ConfigManager::GetRevisionNumber(),
+	revInfo.Printf(_T("Version %s (gcc %d.%d.%d %s/%s, build: %s %s)"),
+					APP_ACTUAL_VERSION_VERB.c_str(),
 					__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__, APP_PLATFORM.c_str(), APP_WXANSI_UNICODE.c_str(),
 					wxT(__DATE__), wxT(__TIME__));
 	#else
-	revInfo.Printf(_T("Version %s %d   (%s/%s, build: %s %s)"),
-					APP_ACTUAL_VERSION_VERB.c_str(), ConfigManager::GetRevisionNumber(),
+	revInfo.Printf(_T("Version %s (%s/%s, build: %s %s)"),
+					APP_ACTUAL_VERSION_VERB.c_str(),
 					APP_PLATFORM.c_str(), APP_WXANSI_UNICODE.c_str(),
 					wxT(__DATE__), wxT(__TIME__));
 	#endif

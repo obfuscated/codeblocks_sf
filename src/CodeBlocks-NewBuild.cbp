@@ -3331,6 +3331,10 @@
             <Option link="0" />
             <Option target="src" />
         </Unit>
+        <Unit filename="src\appglobals.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="src" />
+        </Unit>
         <Unit filename="src\appglobals.h">
             <Option compilerVar="" />
             <Option compile="0" />
