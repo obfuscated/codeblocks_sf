@@ -24,7 +24,8 @@ libcodecompletion_la_SOURCES = cclist.cpp \
 			parser/parser.cpp \
 			parser/parserthread.cpp \
 			parser/token.cpp \
-			parser/tokenizer.cpp
+			parser/tokenizer.cpp \
+			parser/searchtree.cpp
 
 noinst_HEADERS = cclist.h \
 			cclistctrl.h \
@@ -37,4 +38,5 @@ noinst_HEADERS = cclist.h \
 			parser/parser.h \
 			parser/parserthread.h \
 			parser/token.h \
-			parser/tokenizer.h
+			parser/tokenizer.h \
+			parser/searchtree.h
