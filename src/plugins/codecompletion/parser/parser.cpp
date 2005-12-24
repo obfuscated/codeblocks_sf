@@ -687,7 +687,8 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
 											buffOrFile,
 											isLocal,
 											opts,
-											&m_Tokens);
+											&m_Tokens,
+											&m_TokensTree);
 	if (!opts.useBuffer)
 	{
 //		lock = new wxCriticalSectionLocker(s_mutexListProtection);
@@ -716,7 +717,8 @@ bool Parser::ParseBufferForFunctions(const wxString& buffer)
 											wxEmptyString,
 											false,
 											opts,
-											&m_Tokens);
+											&m_Tokens,
+											&m_TokensTree);
 	return thread->ParseBufferForFunctions(buffer);
 }
 
@@ -746,6 +748,16 @@ bool Parser::RemoveFile(const wxString& filename)
 	return true;
 }
 
+void Parser::ReCreateTree()
+{
+    m_TokensTree.Clear();
+    unsigned int i;
+    for(i = 0; i < m_Tokens.GetCount();i++)
+    {
+        m_TokensTree.AddToken(m_Tokens[i]->m_Name,m_Tokens[i]);
+    }
+}
+
 bool Parser::Reparse(const wxString& filename, bool isLocal)
 {
 	if (!Done())
@@ -755,6 +767,7 @@ bool Parser::Reparse(const wxString& filename, bool isLocal)
 //	Manager::Get()->GetMessageManager()->DebugLog(_("Reparsing %s"), file.c_str());
 	RemoveFile(file);
 	ClearTemporaries();
+	ReCreateTree();
 	{
 	wxCriticalSectionLocker lock(s_mutexListProtection);
 	m_ReparsedFiles.Add(file);

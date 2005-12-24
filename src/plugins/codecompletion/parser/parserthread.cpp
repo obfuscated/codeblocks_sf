@@ -41,9 +41,11 @@ ParserThread::ParserThread(wxEvtHandler* parent,bool* abortflag,
 							const wxString& bufferOrFilename,
 							bool isLocal,
 							ParserThreadOptions& options,
-							TokensArray* tokens)
+							TokensArray* tokens,
+							TokensTree* tree)
 	: m_pParent(parent),
 	m_pTokens(tokens),
+	m_pTree(tree),
 	m_pLastParent(0L),
 	m_IsLocal(isLocal),
 	m_StartBlockIndex(0),
@@ -567,14 +569,25 @@ bool ParserThread::Parse()
 
 Token* ParserThread::TokenExists(const wxString& name, Token* parent, short int kindMask)
 {
+
     if (!m_pTokens)
         return 0;
+    Token* token;
+#if 1
+    if(m_pTree)
+    {
+
+        token = m_pTree->TokenExists(name, parent, kindMask);
+        return token;
+    }
+#endif
+
     if (!parent)
     {
         // when parsing a block, we must make sure the token does not already exist...
         for (unsigned int i = m_StartBlockIndex; i < m_pTokens->GetCount(); ++i)
         {
-            Token* token = m_pTokens->Item(i);
+            token = m_pTokens->Item(i);
             if ((token->m_TokenKind & kindMask) && token->m_Name.Matches(name))
                 return token;
         }
@@ -584,8 +597,8 @@ Token* ParserThread::TokenExists(const wxString& name, Token* parent, short int 
         // search only under the parent token
         for (unsigned int i = 0; i < parent->m_Children.GetCount(); ++i)
         {
-            Token* token = parent->m_Children.Item(i);
-            if ((token->m_TokenKind & kindMask) && token->m_Name.Matches(name))
+            token = parent->m_Children.Item(i);
+            if ((token->m_TokenKind & kindMask) && token->m_Name==name)
                 return token;
         }
     }
@@ -666,6 +679,7 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, const wxSt
         {
 //            Log("NS: '" + m_EncounteredNamespaces[i] + "' for " + newToken->m_Name);
             localParent = TokenExists(m_EncounteredNamespaces[i], localParent, tkClass | tkNamespace);
+
             if (!localParent)
                 break;
         }
@@ -710,6 +724,12 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, const wxSt
         m_pTokens->Add(newToken);
     if (m_pLastParent)
         m_pLastParent->AddChild(newToken);
+#if 1
+    if (m_pTree)
+    {
+        m_pTree->AddToken(newToken->m_Name,newToken);
+    }
+#endif
 
 	return newToken;
 }

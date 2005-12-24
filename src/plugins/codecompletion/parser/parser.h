@@ -81,6 +81,7 @@ class Parser : public wxEvtHandler
 		bool Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadOptions& opts);
 		bool ParseBuffer(const wxString& buffer, bool isLocal = true, bool bufferSkipBlocks = false);
 		bool ParseBufferForFunctions(const wxString& buffer);
+		void ReCreateTree();
 		bool Reparse(const wxString& filename, bool isLocal = true);
 		bool RemoveFile(const wxString& filename);
 		void Clear();
@@ -111,6 +112,7 @@ class Parser : public wxEvtHandler
 		wxString FindFileInIncludeDirs(const wxString& file);
 
 		const TokensArray& GetTokens(){ return m_Tokens; }
+		TokensTree& GetTokensTree() { return m_TokensTree; }
 		unsigned int GetFilesCount();
 
 		bool Done();
@@ -143,6 +145,7 @@ class Parser : public wxEvtHandler
 		BrowserOptions m_BrowserOptions;
 		unsigned int m_MaxThreadsCount;
 		TokensArray m_Tokens;
+		TokensTree m_TokensTree;
 		wxArrayString m_ParsedFiles;
 		wxArrayString m_ReparsedFiles;
 		wxPathList m_IncludeDirs;

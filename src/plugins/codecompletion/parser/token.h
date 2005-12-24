@@ -8,6 +8,8 @@
 
 #include "blockallocated.h"
 
+#include "searchtree.h"
+
 class Token;
 WX_DEFINE_ARRAY(Token*, TokensArray);
 
@@ -32,6 +34,7 @@ enum TokenKind
 	tkPreprocessor  = 0x0100,
 	tkUndefined     = 0xFFFF,
 };
+
 
 class Token  : public BlockAllocated<Token, 10000>
 {
@@ -137,6 +140,21 @@ inline bool LoadStringFromFile(wxInputStream* f, wxString& str)
     }
     return ok;
 }
+
+typedef SearchTree<TokensArray> TokenSearchTree;
+class TokensTree
+{
+    public:
+        TokenSearchTree m_Tree;
+//        size_t GetHash(const wxString& name);
+        void Clear();
+        TokensTree();
+        Token* TokenExists(const wxString& name, Token* parent, short int kindMask);
+        void AddToken(const wxString& name,Token* newToken);
+        virtual ~TokensTree() {}
+//    private:
+//        unsigned int m_hash1[256],m_hash2[256];
+};
 
 #endif // TOKEN_H
 

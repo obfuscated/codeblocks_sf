@@ -30,7 +30,8 @@ class ParserThread : public cbThreadPoolTask
 					const wxString& bufferOrFilename,
 					bool isLocal,
 					ParserThreadOptions& options,
-					TokensArray* tokens);
+					TokensArray* tokens,
+					TokensTree* tree);
 		virtual ~ParserThread();
 		int Execute(){ return Parse() ? 0 : 1; }
 		bool Parse();
@@ -56,6 +57,7 @@ class ParserThread : public cbThreadPoolTask
 		Tokenizer m_Tokens;
 		wxEvtHandler* m_pParent;
 		TokensArray* m_pTokens;
+		TokensTree* m_pTree;
 		Token* m_pLastParent;
 		TokenScope m_LastScope;
 		wxString m_Filename;

@@ -192,3 +192,74 @@ bool Token::SerializeOut(wxOutputStream* f)
     // parent-child relationship is set in a post-processing step when serializing in
     return true;
 }
+
+// *** TokensTree ***
+
+TokensTree::TokensTree()
+{
+#if 0
+    // Initialization: Pseudo-random numbers for distributing the string space
+
+    // Sequences obtained from www.random.org
+    unsigned int hash1[16] = { 0x98, 0xb0, 0xf0, 0xaa, 0xc2, 0xa2, 0xe6, 0x96, 0x0c, 0x18, 0xd4, 0xae, 0x1b, 0xd4, 0xab, 0xe8 };
+    unsigned int hash2[16] = { 0xfd, 0x3b, 0x18, 0x2b, 0xb4, 0x1c, 0xb6, 0x40, 0xdf, 0x1f, 0x99, 0xcd, 0x56, 0x22, 0xd7, 0xfe };
+    unsigned int hash3[16] = { 0xf1, 0xc2, 0x4f, 0x11, 0xac, 0x6f, 0x24, 0x55, 0xcf, 0x33, 0x35, 0x1f, 0xfc, 0x14, 0x71, 0xbc };
+    unsigned int hash4[16] = { 0xd6, 0x36, 0x93, 0xa7, 0x82, 0xf6, 0xa8, 0x83, 0xb7, 0xde, 0x9b, 0xfb, 0x46, 0x85, 0x75, 0x26 };
+
+    unsigned int i;
+    for(i = 0; i < 256; i++)
+    {
+        m_hash1[i]=hash1[i & 15] ^ hash2[(i >> 4) & 15];
+        m_hash2[i]=hash3[i & 15] ^ hash4[(i >> 4) & 15];
+    }
+#endif
+}
+
+#if 0
+inline size_t TokensTree::GetHash(const wxString& name)
+{
+    return 0;
+    if(!name.Length())
+        return 0;
+    return 255 & (m_hash1[255 & name.Length()] ^ m_hash2[255 & (unsigned char)(name[0])]);
+}
+#endif
+
+Token* TokensTree::TokenExists(const wxString& name, Token* parent, short int kindMask)
+{
+//    TokenSearchTree* curtree = &m_Trees[GetHash(name)];
+    TokenSearchTree* curtree = &m_Tree;
+    int idx = curtree->GetItemNo(name);
+    if(idx==0)
+        return 0;
+    unsigned int i;
+    TokensArray* curlist = &(curtree->GetItemAtPos(idx));
+    for(i = 0; i < curlist->GetCount(); i++)
+    {
+        Token* curtoken = curlist->Item(i);
+        if((!parent || curtoken->m_pParent == parent) && curtoken->m_TokenKind & kindMask)
+            return curtoken;
+    }
+    return 0;
+}
+
+void TokensTree::AddToken(const wxString& name,Token* newToken)
+{
+    static TokensArray tmp_tokens;
+    tmp_tokens.Clear();
+//    TokenSearchTree* curtree = &m_Trees[GetHash(name)];
+    TokenSearchTree* curtree = &m_Tree;
+    size_t idx = curtree->AddItem(name,tmp_tokens,false);
+    TokensArray* curlist = &(curtree->GetItemAtPos(idx));
+    int subidx = curlist->Index(newToken);
+    if(subidx == wxNOT_FOUND)
+        curlist->Add(newToken);
+}
+
+void TokensTree::Clear()
+{
+    m_Tree.Clear();
+//    size_t i;
+//    for(i=0;i<255;i++)
+//        m_Trees[i].Clear();
+}
