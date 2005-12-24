@@ -25,7 +25,8 @@ codeblocks_SOURCES = app.cpp \
 			main.cpp \
 			prefix.cpp \
 			printdlg.cpp \
-			startherepage.cpp
+			startherepage.cpp \
+			appglobals.cpp
 
 noinst_HEADERS = app.h \
 			appglobals.h \
@@ -35,4 +36,5 @@ noinst_HEADERS = app.h \
 			main.h \
 			prefix.h \
 			printdlg.h \
-			startherepage.h
+			startherepage.h \
+			appglobals.h
