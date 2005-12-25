@@ -1477,6 +1477,7 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
             }
 			m_pControl->InsertText(pos, indent);
 			m_pControl->GotoPos(pos + indent.Length());
+			m_pControl->ChooseCaretX();
 		}
 		m_pControl->EndUndoAction();
 	}
@@ -1505,6 +1506,7 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
                     pos = m_pControl->GetCurrentPos();
                     m_pControl->InsertText(pos, indent);
                     m_pControl->GotoPos(pos + indent.Length());
+                    m_pControl->ChooseCaretX();
                 }
             }
             m_pControl->EndUndoAction();
