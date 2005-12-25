@@ -694,7 +694,11 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
 //		lock = new wxCriticalSectionLocker(s_mutexListProtection);
 		m_ParsedFiles.Add(buffOrFile);
 //	    LOGSTREAM << "Adding task for: " << buffOrFile << '\n';
+#ifdef CODECOMPLETION_PROFILING
+        thread->Parse();
+#else
 		m_Pool.AddTask(thread, true);
+#endif
 //		delete lock;
 		return true;
 	}

@@ -122,7 +122,6 @@ inline unsigned int SearchTreeNode::GetDeepestMatchingPosition(BasicSearchTree* 
     // to the parent node's edge (the first character in the  tree), not this one.
 
     unsigned int startpos = GetLabelStartDepth() - StringStartDepth;
-    unsigned int curpos = startpos;
     // startpos determines the starting position of the string, to compare with
     // the label.
     // if StringStartDepth = 0, and the Label's Start Depth = 0
@@ -131,23 +130,19 @@ inline unsigned int SearchTreeNode::GetDeepestMatchingPosition(BasicSearchTree* 
 
 
     // Now let's compare the strings and find the first difference.
-    // curpos will hold the first position in the string with a different
-    // character.
-    size_t i;
     const string& the_label = GetActualLabel(tree);
-    for(i = 0; i < m_labellen && i + startpos < s.length(); i++)
+    size_t i,i_limit;
+    i_limit = s.length() - startpos;
+    if(i_limit > m_labellen)
+        i_limit = m_labellen;
+
+    for(i = 0; i < i_limit; i++)
     {
-        if(the_label[m_labelstart+i]!=s[curpos])
+        if(the_label[m_labelstart+i]!=s[startpos+i])
             break;
-        // The current character matches. Let's increment curpos,
-        // which will hold the next character to be tested.
-        curpos++;
     }
 
-    // curpos now holds the position of the first mismatching character
-    // in s. To get the depth, we add StringStartDepth, and we're done.
-
-    return curpos + StringStartDepth;
+    return GetLabelStartDepth() + i;
 }
 
 inline void SearchTreeNode::RecalcDepth(BasicSearchTree* tree)
@@ -220,7 +215,8 @@ string SearchTreeNode::Serialize(BasicSearchTree* tree,nSearchTreeNode node_id,b
     {
         if(item->second)
         {
-            result << _T("    <item depth=\"") << u2s(item->first) << _T("\" itemid=\"" << u2s(item->second) <<  "\"") << _T(" />\n");
+
+            result << _T("    <item depth=\"") << u2s(item->first) << _T("\" itemid=\"") << u2s(item->second) <<  _T("\"") << _T(" />\n");
         }
     }
     result << _T("  </items>\n");
@@ -229,7 +225,8 @@ string SearchTreeNode::Serialize(BasicSearchTree* tree,nSearchTreeNode node_id,b
     {
         if(link->second)
         {
-            result << _T("    <child char=\"") << SerializeString(string(link->first)) << _T("\" nodeid=\"" << u2s(link->second) <<  "\"") << _T(" />\n");
+
+            result << _T("    <child char=\"") << SerializeString(string(link->first)) << _T("\" nodeid=\"") << u2s(link->second) <<  _T("\"") << _T(" />\n");
         }
     }
 
