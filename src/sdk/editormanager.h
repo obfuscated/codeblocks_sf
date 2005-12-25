@@ -180,7 +180,7 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         SimpleListLog* m_pSearchLog;
         int m_SearchLogIndex;
         int m_SashPosition;
-
+		bool m_isCheckingForExternallyModifiedFiles;
         friend struct EditorManagerInternalData;
         EditorManagerInternalData* m_pData;
 

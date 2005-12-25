@@ -301,7 +301,8 @@ EditorManager::EditorManager(wxWindow* parent)
     m_LastModifiedflag(false),
     m_pSearchLog(0),
     m_SearchLogIndex(-1),
-    m_SashPosition(150) // no longer used
+    m_SashPosition(150), // no longer used
+    m_isCheckingForExternallyModifiedFiles(false)
 {
 	SC_CONSTRUCTOR_BEGIN
 	EditorManagerProxy::Set(this);
@@ -1052,6 +1053,11 @@ void EditorManager::Print(PrintScope ps, PrintColorMode pcm)
 void EditorManager::CheckForExternallyModifiedFiles()
 {
     SANITY_CHECK();
+
+	if(m_isCheckingForExternallyModifiedFiles) // for some reason, a mutex locker does not work???
+		return;
+	m_isCheckingForExternallyModifiedFiles = true;
+
     wxLogNull ln;
     bool reloadAll = false; // flag to stop bugging the user
     wxArrayString failedFiles; // list of files failed to reload
@@ -1134,6 +1140,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
         msg.Printf(_("Could not reload all files:\n\n%s"), GetStringFromArray(failedFiles, _T("\n")).c_str());
         wxMessageBox(msg, _("Error"), wxICON_ERROR);
     }
+	m_isCheckingForExternallyModifiedFiles = false;
 }
 
 bool EditorManager::SwapActiveHeaderSource()
