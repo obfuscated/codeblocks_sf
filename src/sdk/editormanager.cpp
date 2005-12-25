@@ -705,11 +705,14 @@ void EditorManager::SetActiveEditor(EditorBase* ed)
 cbEditor* EditorManager::New()
 {
     SANITY_CHECK(0L);
+
+    wxString old_title = Manager::Get()->GetAppWindow()->GetTitle(); // Fix for Bug #1389450
     cbEditor* ed = new cbEditor(m_pNotebook, wxEmptyString);
 	if (!ed->SaveAs())
 	{
 		//DeletePage(ed->GetPageIndex());
 		ed->Destroy();
+		Manager::Get()->GetAppWindow()->SetTitle(old_title); // Though I can't reproduce the bug, this does no harm
 		return 0L;
 	}
 
