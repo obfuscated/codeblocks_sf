@@ -58,6 +58,7 @@ ISerializable::~ISerializable()
 
 CfgMgrBldr::CfgMgrBldr() : doc(0), volatile_doc(0), r(false)
 {
+	TiXmlBase::SetCondenseWhiteSpace(false);
     wxString personality(Manager::Get()->GetPersonalityManager()->GetPersonality());
     if(personality.StartsWith(_T("http://")))
         SwitchToR(personality);
@@ -77,7 +78,6 @@ void CfgMgrBldr::SwitchTo(const wxString& absFileName)
         doc->InsertEndChild(TiXmlDeclaration("1.0", "UTF-8", "yes"));
         doc->InsertEndChild(TiXmlElement(_C(CfgMgrConsts::rootTag)));
         doc->FirstChildElement(_C(CfgMgrConsts::rootTag))->SetAttribute("version", CfgMgrConsts::version);
-        doc->SetCondenseWhiteSpace(false);
         doc->ClearError();
     }
 
