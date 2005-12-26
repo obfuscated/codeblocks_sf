@@ -168,6 +168,19 @@ void CompilerErrors::DoGotoError(const CompileError& error)
 				ed->SetErrorLine(error.line - 1);
 			}
         }
+		else
+		{
+			if(!isAbsolute) // this is always the case, except for system headers
+				filename.Prepend(project->GetCommonTopLevelPath());
+
+			cbEditor* ed = Manager::Get()->GetEditorManager()->Open(filename);
+			if (ed)
+			{
+				ed->Activate();
+				ed->GotoLine(error.line - 1);
+				ed->SetErrorLine(error.line - 1);
+			}
+		}
 	}
 }
 
