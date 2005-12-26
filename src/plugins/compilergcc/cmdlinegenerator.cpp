@@ -186,8 +186,14 @@ void CmdLineGenerator::SetupOutputFilenames(Compiler* compiler, ProjectBuildTarg
     QuoteStringIfNeeded(result);
     m_Output[target] = result;
 
-    // static
-    wxFileName fname(target->GetOutputFilename());
+	// Replace Variables FIRST to address the $(VARIABLE)libfoo.a problem
+	// if $(VARIABLE) expands to /bar/ then wxFileName will still consider $(VARIABLE)libfoo.a a filename,
+	// not a fully qualified path, so we will prepend lib to /bar/libfoo.a incorrectly
+	// NOTE (thomas#1#): A better solution might be to use a regex, but finding an universal regex might not be easy...
+    wxString fnameString(target->GetOutputFilename());
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(fnameString, true);
+    wxFileName fname(fnameString);
+
     if (!fname.GetName().StartsWith(compiler->GetSwitches().libPrefix))
         fname.SetName(compiler->GetSwitches().libPrefix + fname.GetName());
     fname.SetExt(compiler->GetSwitches().libExtension);
@@ -198,7 +204,7 @@ void CmdLineGenerator::SetupOutputFilenames(Compiler* compiler, ProjectBuildTarg
     // def
     fname.SetExt(_T("def"));
     result = UnixFilename(fname.GetFullPath());
-    QuoteStringIfNeeded(result);
+    QuoteStringIfNeeded(result); // NOTE (thomas#1#): Do we really need to call QuoteStringIfNeeded that often? ReplaceMacros already does it, and we do it twice again without ever possibly adding whitespace
     m_DefOutput[target] = result;
 }
 
