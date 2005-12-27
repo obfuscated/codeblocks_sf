@@ -200,11 +200,11 @@ wxString cbProject::CreateUniqueFilename()
     int projCount = arr->GetCount();
     int iter = 1;
 	bool ok = false;
-    tmp << prefix << iter;
+    tmp << prefix << wxString::Format(_T("%d"), iter);
     while (!ok)
     {
         tmp.Clear();
-        tmp << prefix << iter;
+        tmp << prefix << wxString::Format(_T("%d"), iter);
 
 		ok = true;
         for (int i = 0; i < projCount; ++i)

@@ -46,7 +46,7 @@ void BreakpointsDlg::FillBreakpoints()
         if (bp->temporary)
             continue;
         wxString filename = bp->filename;
-        filename << _T(" : ") << bp->line + 1;
+        filename << _T(" : ") << wxString::Format(_T("%d"), bp->line + 1);
         lst->Append(filename, bp);
     }
 }
