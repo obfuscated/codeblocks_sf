@@ -608,7 +608,10 @@ void ConfigManager::Write(const wxString& name,  const wxString& value, bool ign
         return;
     }
     if(ignoreEmpty && value.IsEmpty())
+    {
+    	UnSet(name);
         return;
+    }
 
     wxString key(name);
     TiXmlElement* e = AssertPath(key);
