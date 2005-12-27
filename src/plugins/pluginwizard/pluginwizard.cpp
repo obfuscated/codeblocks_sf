@@ -56,7 +56,7 @@ PluginWizard::PluginWizard()
     m_PluginInfo.authorEmail = _T("info@codeblocks.org");
     m_PluginInfo.authorWebsite = _T("www.codeblocks.org");
     m_PluginInfo.thanksTo = _T("");
-	m_PluginInfo.hasConfigure = false;
+    m_PluginInfo.hasConfigure = false;
 }
 
 PluginWizard::~PluginWizard()
@@ -73,8 +73,8 @@ void PluginWizard::OnRelease(bool appShutDown)
 
 int PluginWizard::Execute()
 {
-	PluginWizardDlg dlg;
-	if (dlg.ShowModal() != wxID_OK)
+    PluginWizardDlg dlg;
+    if (dlg.ShowModal() != wxID_OK)
         return -1;
 
     cbProject* project = Manager::Get()->GetProjectManager()->NewProject();
@@ -115,7 +115,7 @@ int PluginWizard::Execute()
 // NOTE (mandrav#1#): By making the version an environment variable...
     project->AddLinkLib(_T("wxmsw$(WX_VER)"));
     // wx & cb dirs
-    project->AddLibDir(_T("$(#WX.lib)\\gcc_dll\\msw"));
+    project->AddLibDir(_T("$(#WX.lib)\\gcc_dll"));
     project->AddLibDir(_T("$(#WX.lib)\\gcc_dll$(WX_CFG)"));
     project->AddLibDir(_T("$(#CB.lib)")); // SDK installation
     project->AddLibDir(_T("$(#CB)\\devel")); // source tree
