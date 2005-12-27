@@ -55,6 +55,7 @@ int idMenuGotoFunction = wxNewId();
 int idEditorSubMenu = wxNewId();
 int idClassMethod = wxNewId();
 int idGotoDeclaration = wxNewId();
+int idGotoImplementation = wxNewId();
 int idOpenIncludeFile = wxNewId();
 
 BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
@@ -65,6 +66,7 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
 	EVT_MENU(idMenuGotoFunction, CodeCompletion::OnGotoFunction)
 	EVT_MENU(idClassMethod, CodeCompletion::OnClassMethod)
 	EVT_MENU(idGotoDeclaration, CodeCompletion::OnGotoDeclaration)
+	EVT_MENU(idGotoImplementation, CodeCompletion::OnGotoDeclaration)
 	EVT_MENU(idOpenIncludeFile, CodeCompletion::OnOpenIncludeFile)
 
 	EVT_EDITOR_AUTOCOMPLETE(CodeCompletion::OnCodeComplete)
@@ -184,15 +186,28 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
                 int we = control->WordEndPosition(pos, true);
                 wxString txt = control->GetTextRange(ws, we);
                 m_LastKeyword.Clear();
-                if (!txt.IsEmpty())
-                {
-                    wxString msg;
-                    msg.Printf(_("Find declaration of: '%s'"), txt.c_str());
-                    menu->Insert(0, idGotoDeclaration, msg);
-                    menu->Insert(1, wxID_SEPARATOR, wxEmptyString);
-                    m_LastKeyword = txt;
-                }
-	        }
+				if (!txt.IsEmpty())
+				{
+					Token* token = m_NativeParsers.FindParserFromEditor(ed)->FindTokenByName(txt, false);
+					int sep = 0;
+					if (token)
+					{
+						wxString msg;
+						if(!token->m_Filename.IsEmpty())
+						{
+							msg.Printf(_("Find declaration of: '%s'"), txt.c_str());
+							menu->Insert(sep++, idGotoDeclaration, msg);
+						}
+						if(!token->m_ImplFilename.IsEmpty())
+						{
+							msg.Printf(_("Find implementation of: '%s'"), txt.c_str());
+							menu->Insert(sep++, idGotoImplementation, msg);
+						}
+						if(sep)
+							menu->Insert(sep, wxID_SEPARATOR, wxEmptyString);
+						m_LastKeyword = txt;
+					}
+				}
 	    }
         int insertId = menu->FindItem(_("Insert..."));
         if (insertId != wxNOT_FOUND)
@@ -213,6 +228,7 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
         }
         else
             Manager::Get()->GetMessageManager()->DebugLog(_("Could not find Insert menu!"));
+		}
 	}
 }
 
@@ -661,12 +677,25 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     Token* token = parser->FindTokenByName(txt, false);
     if (token)
     {
-        cbEditor* ed = edMan->Open(token->m_Filename);
-        if (ed)
-        {
-            ed->GotoLine(token->m_Line - 1);
-            return;
-        }
+		if(event.GetId() == idGotoImplementation)
+		{
+			cbEditor* ed = edMan->Open(token->m_ImplFilename);
+			if (ed)
+			{
+				ed->GotoLine(token->m_ImplLine - 1);
+				return;
+			}
+		}
+		else
+		{
+			cbEditor* ed = edMan->Open(token->m_Filename);
+			if (ed)
+			{
+				ed->GotoLine(token->m_Line - 1);
+				return;
+			}
+		}
+
     }
     wxMessageBox(wxString::Format(_("Not found: %s"), txt.c_str()), _("Warning"), wxICON_WARNING);
 }
