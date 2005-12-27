@@ -109,6 +109,7 @@ AC_CONFIG_FILES([Makefile
 	src/sdk/as/Makefile
 	src/sdk/tinyxml/Makefile
 	src/sdk/wxscintilla/Makefile
+	src/sdk/propgrid/Makefile
 	src/sdk/resources/Makefile
 	src/sdk/resources/lexers/Makefile
 	src/src/wxDockit/Makefile
