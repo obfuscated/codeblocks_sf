@@ -1,4 +1,4 @@
-SUBDIRS = as tinyxml wxscintilla resources
+SUBDIRS = as tinyxml wxscintilla resources propgrid
 
 if PRECOMPILE_HEADERS
 BUILT_SOURCES = $(srcdir)/sdk.h.gch
@@ -9,7 +9,8 @@ endif
 INCLUDES = $(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include \
 			-I$(top_srcdir)/src/sdk/tinyxml \
-			-I$(top_srcdir)/src/sdk/as/include
+			-I$(top_srcdir)/src/sdk/as/include \
+			-I$(top_srcdir)/src/sdk/propgrid/include
 
 lib_LTLIBRARIES = libcodeblocks.la
 
@@ -18,7 +19,8 @@ libcodeblocks_la_LDFLAGS = -version-info @CODEBLOCKS_VERSION_INFO@
 libcodeblocks_la_LIBADD =  $(WX_LIBS) \
 			as/libangelscript.la \
 			tinyxml/libtinyxml.la \
-			wxscintilla/libwxscintilla.la
+			wxscintilla/libwxscintilla.la \
+			propgrid/libpropgrid.la
 
 libcodeblocks_la_SOURCES = Managers/Managers.cpp \
 						Managers/StdAfx.cpp \

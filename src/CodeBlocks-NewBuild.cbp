@@ -85,6 +85,15 @@
                     <Add library="gdi32" />
                 </Linker>
             </Target>
+            <Target title="wxPropertyGrid">
+                <Option output="sdk\propgrid\libpropgrid.a" />
+                <Option working_dir="" />
+                <Option object_output=".objs\2.6" />
+                <Option type="2" />
+                <Option compiler="0" />
+                <Option includeInTargetAll="1" />
+                <Option projectResourceIncludeDirsRelation="2" />
+            </Target>
             <Target title="sdk">
                 <Option output="devel\codeblocks.dll" />
                 <Option working_dir="devel" />
@@ -109,8 +118,10 @@
                     <Add library="libtxml.a" />
                     <Add library="libangelscript.a" />
                     <Add library="libwxscintilla.a" />
+                    <Add library="propgrid" />
                     <Add directory="devel" />
                     <Add directory="sdk\as" />
+                    <Add directory="sdk\propgrid" />
                 </Linker>
                 <ExtraCommands>
                     <Add before="tools/autorevision/autorevision +wx +int +t . sdk/autorevision.h" />
@@ -398,7 +409,8 @@
             </Environment>
         </Build>
         <Compiler>
-            <Add option="-g" />
+            <Add option="-Wall" />
+	<Add option="-g" />
             <Add option="-pipe" />
             <Add option="-mthreads" />
             <Add option="-fmessage-length=0" />
@@ -417,6 +429,7 @@
             <Add directory="$(#WX)\contrib\include" />
             <Add directory="sdk\wxscintilla\include" />
             <Add directory="sdk\as\include" />
+            <Add directory="sdk\propgrid\include" />
         </Compiler>
         <ResourceCompiler>
             <Add directory="$(#WX.include)" />
@@ -2449,6 +2462,68 @@
             <Option compile="0" />
             <Option link="0" />
             <Option target="sdk" />
+        </Unit>
+        <Unit filename="sdk\propgrid\include\wx\propgrid\advprops.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxPropertyGrid" />
+        </Unit>
+        <Unit filename="sdk\propgrid\include\wx\propgrid\custctrl.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxPropertyGrid" />
+        </Unit>
+        <Unit filename="sdk\propgrid\include\wx\propgrid\manager.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxPropertyGrid" />
+        </Unit>
+        <Unit filename="sdk\propgrid\include\wx\propgrid\odcombo.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxPropertyGrid" />
+        </Unit>
+        <Unit filename="sdk\propgrid\include\wx\propgrid\pg_dox_mainpage.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxPropertyGrid" />
+        </Unit>
+        <Unit filename="sdk\propgrid\include\wx\propgrid\propdev.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxPropertyGrid" />
+        </Unit>
+        <Unit filename="sdk\propgrid\include\wx\propgrid\propgrid.h">
+            <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxPropertyGrid" />
+        </Unit>
+        <Unit filename="sdk\propgrid\src\propgrid\advprops.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="wxPropertyGrid" />
+        </Unit>
+        <Unit filename="sdk\propgrid\src\propgrid\custctrl.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="wxPropertyGrid" />
+        </Unit>
+        <Unit filename="sdk\propgrid\src\propgrid\manager.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="wxPropertyGrid" />
+        </Unit>
+        <Unit filename="sdk\propgrid\src\propgrid\odcombo.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="wxPropertyGrid" />
+        </Unit>
+        <Unit filename="sdk\propgrid\src\propgrid\propgrid.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="wxPropertyGrid" />
         </Unit>
         <Unit filename="sdk\replacedlg.cpp">
             <Option compilerVar="CPP" />
