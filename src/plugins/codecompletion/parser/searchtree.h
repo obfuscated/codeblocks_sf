@@ -27,7 +27,7 @@
 
 #else
 
-#include <string>
+#  include <string>
 
 #endif
 

@@ -44,6 +44,9 @@ const wxString tabcrlf(_T("\t\n\r"));
 
 Tokenizer::Tokenizer(const wxString& filename)
 	: m_Filename(filename),
+    m_peek(_T("")),
+    m_curtoken(_T("")),
+    m_peekavailable(false),
 	m_BufferLen(0),
 	m_NestLevel(0),
 	m_UndoNestLevel(0),
@@ -378,26 +381,48 @@ wxString Tokenizer::GetToken()
 	m_UndoTokenIndex = m_TokenIndex;
 	m_UndoLineNumber = m_LineNumber;
 	m_UndoNestLevel = m_NestLevel;
-	return DoGetToken();
+	if(m_peekavailable)
+    {
+        m_TokenIndex = m_PeekTokenIndex;
+        m_LineNumber = m_PeekLineNumber;
+        m_NestLevel = m_PeekNestLevel;
+        m_curtoken = m_peek;
+    }
+    else
+        m_curtoken = DoGetToken();
+	m_peekavailable = false;
+	return m_curtoken;
 }
 
 wxString Tokenizer::PeekToken()
 {
-	unsigned int undoTokenIndex = m_TokenIndex;
-	unsigned int undoLineNumber = m_LineNumber;
-	unsigned int undoNestLevel = m_NestLevel;
-	wxString peek = DoGetToken();
-	m_TokenIndex = undoTokenIndex;
-	m_LineNumber = undoLineNumber;
-	m_NestLevel = undoNestLevel;
-	return peek;
+    if(!m_peekavailable)
+    {
+        m_peekavailable = true;
+        unsigned int undoTokenIndex = m_TokenIndex;
+        unsigned int undoLineNumber = m_LineNumber;
+        unsigned int undoNestLevel = m_NestLevel;
+        m_peek = DoGetToken();
+        m_PeekTokenIndex = m_TokenIndex;
+        m_PeekLineNumber = m_LineNumber;
+        m_PeekNestLevel = m_NestLevel;
+        m_TokenIndex = undoTokenIndex;
+        m_LineNumber = undoLineNumber;
+        m_NestLevel = undoNestLevel;
+    }
+    return m_peek;
 }
 
 void Tokenizer::UngetToken()
 {
+    m_PeekTokenIndex = m_TokenIndex;
+    m_PeekLineNumber = m_LineNumber;
+    m_PeekNestLevel = m_NestLevel;
 	m_TokenIndex = m_UndoTokenIndex;
 	m_LineNumber = m_UndoLineNumber;
 	m_NestLevel = m_UndoNestLevel;
+	m_peek = m_curtoken;
+	m_peekavailable = true;
 }
 
 wxString Tokenizer::DoGetToken()

@@ -37,6 +37,70 @@ int THREAD_END = wxNewId();
 int NEW_TOKEN = wxNewId();
 int FILE_NEEDS_PARSING = wxNewId();
 
+namespace ParserConsts
+{
+    const wxString space(_T(" "));
+    const wxString spaced_colon(_T(" : "));
+    const wxString empty(_T(""));
+    const wxString hash(_T("#"));
+    const wxString x_event_table(_T("*_EVENT_TABLE"));
+    const wxString x_event_table_x(_T("*_EVENT_TABLE*"));
+    const wxString plus(_T("+"));
+    const wxString comma(_T(","));
+    const wxString commaclbrace(_T(",}"));
+    const wxString dash(_T("-"));
+    const wxString dot(_T("."));
+    const wxString colon(_T(":"));
+    const wxString dcolon(_T("::"));
+    const wxString semicolon(_T(";"));
+    const wxString semicolonopbrace(_T(";{"));
+    const wxString semicolonclbrace(_T(";}"));
+    const wxString lt(_T("<"));
+    const wxString gt(_T(">"));
+    const wxString gtsemicolon(_T(">;"));
+    const wxString begin_event_table(_T("BEGIN_EVENT_TABLE"));
+    const wxString end_event_table(_T("END_EVENT_TABLE"));
+    const wxString implement_app(_T("IMPLEMENT_APP"));
+    const wxString implement_dynamic_class(_T("IMPLEMENT_DYNAMIC_CLASS"));
+    const wxString unnamed(_T("Un-named"));
+    const wxString wx_declare_x(_T("WX_DECLARE_*"));
+    const wxString wx_define_x(_T("WX_DEFINE_*"));
+    const wxString quot(_T("\""));
+    const wxString kw_C(_T("\"C\""));
+    const wxString kw__asm(_T("__asm"));
+    const wxString kw_class(_T("class"));
+    const wxString kw_define(_T("define"));
+    const wxString kw_delete(_T("delete"));
+    const wxString kw_do(_T("do"));
+    const wxString kw_else(_T("else"));
+    const wxString kw_enum(_T("enum"));
+    const wxString kw_extern(_T("extern"));
+    const wxString kw_for(_T("for"));
+    const wxString kw_friend(_T("friend"));
+    const wxString kw_if(_T("if"));
+    const wxString kw_include(_T("include"));
+    const wxString kw_inline(_T("inline"));
+    const wxString kw_namespace(_T("namespace"));
+    const wxString kw_operator(_T("operator"));
+    const wxString kw_private(_T("private"));
+    const wxString kw_protected(_T("protected"));
+    const wxString kw_public(_T("public"));
+    const wxString kw_return(_T("return"));
+    const wxString kw_static(_T("static"));
+    const wxString kw_struct(_T("struct"));
+    const wxString kw_switch(_T("switch"));
+    const wxString kw_template(_T("template"));
+    const wxString kw_typedef(_T("typedef"));
+    const wxString kw_union(_T("union"));
+    const wxString kw_using(_T("using"));
+    const wxString kw_virtual(_T("virtual"));
+    const wxString kw_while(_T("while"));
+    const wxString opbrace(_T("{"));
+    const wxString opbracesemicolon(_T("{;"));
+    const wxString clbrace(_T("}"));
+    const wxString tilde(_T("~"));
+};
+
 ParserThread::ParserThread(wxEvtHandler* parent,bool* abortflag,
 							const wxString& bufferOrFilename,
 							bool isLocal,
@@ -114,8 +178,7 @@ wxChar ParserThread::SkipToOneOfChars(const wxString& chars, bool supportNesting
 		if (token.IsEmpty())
 			return '\0'; // eof
 
-		if (!supportNesting ||
-			(supportNesting && m_Tokens.GetNestingLevel() == level))
+		if (!supportNesting || m_Tokens.GetNestingLevel() == level)
 		{
 			wxChar ch = token.GetChar(0);
 			if (chars.Find(ch) != wxNOT_FOUND)
@@ -151,11 +214,11 @@ void ParserThread::SkipAngleBraces()
     while (true)
     {
         wxString tmp = m_Tokens.GetToken();
-        if (tmp.Matches(_T("<")))
+        if (tmp==ParserConsts::lt)
             ++nestLvl;
-        else if (tmp.Matches(_T(">")))
+        else if (tmp==ParserConsts::gt)
             --nestLvl;
-        else if (tmp.Matches(_T(";")))
+        else if (tmp==ParserConsts::semicolon)
         {
         	// unget token - leave ; on the stack
         	m_Tokens.UngetToken();
@@ -197,16 +260,16 @@ bool ParserThread::ParseBufferForFunctions(const wxString& buffer)
 		Log(token);
 #endif
 
-		if (token.Matches(_T(";")))
+		if (token==ParserConsts::semicolon)
 		{
 			m_Str.Clear();
 		}
-		else if (token.Matches(_T("{")))
+		else if (token==ParserConsts::opbrace)
 		{
 			SkipBlock();
 			m_Str.Clear();
 		}
-		else if (token.Matches(_T("}")))
+		else if (token==ParserConsts::clbrace)
 		{
 			m_Str.Clear();
 		}
@@ -214,19 +277,20 @@ bool ParserThread::ParseBufferForFunctions(const wxString& buffer)
 //		{
 //			m_Str.Clear();
 //		}
-		else if (token.Matches(_T("typedef")) ||
-			token.Matches(_T(":")))
+		else if (token==ParserConsts::kw_typedef
+		 ||
+			token==ParserConsts::colon)
 		{
-			SkipToOneOfChars(_T(";}"), true);
+			SkipToOneOfChars(ParserConsts::semicolonclbrace, true);
 			m_Str.Clear();
 		}
-		else if (token.Matches(_T("extern")) ||
-			token.StartsWith(_T("__asm")))
+		else if (token==ParserConsts::kw_extern ||
+			token.StartsWith(ParserConsts::kw__asm))
 		{
-			SkipToOneOfChars(_T(";"));
+			SkipToOneOfChars(ParserConsts::semicolon);
 			//m_Str.Clear();
 		}
-		else if (token.Matches(_T("#")))
+		else if (token==ParserConsts::hash)
 		{
 			m_Tokens.GetToken();
 			m_Tokens.GetToken();
@@ -241,17 +305,21 @@ bool ParserThread::ParseBufferForFunctions(const wxString& buffer)
 				{
 					// function
 					// ignore some well-known wxWindows macros
-					if (token.Matches(_T("BEGIN_EVENT_TABLE")))
+					if (token==ParserConsts::begin_event_table)
 					{
 						// skip till after END_EVENT_TABLE
-						while (!token.IsEmpty() && !token.Matches(_T("END_EVENT_TABLE")))
+						while (!token.IsEmpty() && token!=ParserConsts::end_event_table)
 							token = m_Tokens.GetToken(); // skip args
 						m_Tokens.GetToken(); // skip args
 					}
-					else if (!token.Matches(_T("*_EVENT_TABLE")) &&
-						!token.Matches(_T("IMPLEMENT_APP")) &&
-						!token.Matches(_T("WX_DECLARE_*")) &&
-						!token.Matches(_T("WX_DEFINE_*")))
+					else if ( token.Matches(ParserConsts::x_event_table) ||
+						token==ParserConsts::implement_app ||
+						token.Matches(ParserConsts::wx_declare_x) ||
+						token.Matches(ParserConsts::wx_define_x) )
+                    {
+                        m_Tokens.GetToken(); // skip args
+                    }
+                    else
                     {
 						if (m_Str.GetChar(0) == '~')
 						{
@@ -261,12 +329,10 @@ bool ParserThread::ParseBufferForFunctions(const wxString& buffer)
                         HandleFunction(token);
                         m_Str.Clear();
                     }
-					else
-						m_Tokens.GetToken(); // skip args
 				}
 				else
 				{
-					m_Str << token << _T(" ");
+					m_Str << token << _T(' ');
 				}
 			}
 		}
@@ -314,24 +380,24 @@ bool ParserThread::Parse()
 		Log(token);
 #endif
 
-		if (token.Matches(_T(";")))
+		if (token==ParserConsts::semicolon)
 		{
 			m_Str.Clear();
 		}
-		else if (token.Matches(_T("delete")) ||
-                token.Matches(_T(".")) ||
-				(token.Matches(_T(">")) && m_LastToken.Matches(_T("-"))))
+		else if (token==ParserConsts::kw_delete ||
+                token==ParserConsts::dot ||
+				(token==ParserConsts::gt && m_LastToken==ParserConsts::dash))
 		{
 			m_Str.Clear();
-			SkipToOneOfChars(_T(";}"));
+			SkipToOneOfChars(ParserConsts::semicolonclbrace);
 		}
-		else if (token.Matches(_T("{")))
+		else if (token==ParserConsts::opbrace)
 		{
 			if (!m_Options.useBuffer || m_Options.bufferSkipBlocks)
 				SkipBlock();
 			m_Str.Clear();
 		}
-		else if (token.Matches(_T("}")))
+		else if (token==ParserConsts::clbrace)
 		{
 			m_pLastParent = 0L;
 			m_LastScope = tsUndefined;
@@ -341,104 +407,104 @@ bool ParserThread::Parse()
 			if (!m_Options.useBuffer)
                 break;
 		}
-		else if (token.Matches(_T(":")))
+		else if (token==ParserConsts::colon)
 		{
-			if (m_LastToken.Matches(_T("public")))
+			if (m_LastToken==ParserConsts::kw_public)
 				m_LastScope = tsPublic;
-			else if (m_LastToken.Matches(_T("protected")))
+			else if (m_LastToken==ParserConsts::kw_protected)
 				m_LastScope = tsProtected;
-			else if (m_LastToken.Matches(_T("private")))
+			else if (m_LastToken==ParserConsts::kw_private)
 				m_LastScope = tsPrivate;
 			m_Str.Clear();
 		}
-		else if (token.Matches(_T("while")) ||
-			token.Matches(_T("if")) ||
-			token.Matches(_T("do")) ||
-			token.Matches(_T("else")) ||
-			token.Matches(_T("for")) ||
-			token.Matches(_T("switch")))
+		else if (token==ParserConsts::kw_while ||
+                token==ParserConsts::kw_if ||
+                token==ParserConsts::kw_do ||
+                token==ParserConsts::kw_else ||
+                token==ParserConsts::kw_for ||
+                token==ParserConsts::kw_switch)
 		{
 			if (!m_Options.useBuffer || m_Options.bufferSkipBlocks)
-				SkipToOneOfChars(_T(";}"), true);
+				SkipToOneOfChars(ParserConsts::semicolonclbrace, true);
 			else
 				m_Tokens.GetToken(); //skip args
 			m_Str.Clear();
 		}
-		else if (token.Matches(_T("typedef")) ||
-			token.Matches(_T("return")) ||
-			token.Matches(_T(":")))
+		else if (token==ParserConsts::kw_typedef ||
+			token==ParserConsts::kw_return ||
+			token==ParserConsts::colon)
 		{
-			SkipToOneOfChars(_T(";}"), true);
+			SkipToOneOfChars(ParserConsts::semicolonclbrace, true);
 			m_Str.Clear();
 		}
-		else if (token.Matches(_T("extern")))
+		else if (token==ParserConsts::kw_extern)
 		{
             // check for "C"
             m_Str = m_Tokens.GetToken();
-            if (m_Str.Matches(_T("\"C\"")))
+            if (m_Str==ParserConsts::kw_C)
             {
                 m_Tokens.GetToken(); // "eat" {
                 Parse(); // time for recursion ;)
             }
             else
-                SkipToOneOfChars(_T(";")); // skip externs
+                SkipToOneOfChars(ParserConsts::semicolon); // skip externs
 //                m_Tokens.UngetToken(); // nope, return the token back...
             m_Str.Clear();
         }
-        else if (token.StartsWith(_T("__asm")))
+        else if (token.StartsWith(ParserConsts::kw__asm))
 		{
-			SkipToOneOfChars(_T(";"), true);
+			SkipToOneOfChars(ParserConsts::semicolon, true);
 			//m_Str.Clear();
 		}
-		else if (token.Matches(_T("static")) ||
-			token.Matches(_T("virtual")) ||
-			token.Matches(_T("inline")))
+		else if (token==ParserConsts::kw_static ||
+			token==ParserConsts::kw_virtual ||
+			token==ParserConsts::kw_inline)
 		{
 			// do nothing (skip it)
 			//m_Str.Clear();
 		}
-		else if (token.Matches(_T("#")))
+		else if (token==ParserConsts::hash)
 		{
 			token = m_Tokens.GetToken();
-			if (token.Matches(_T("include")))
+			if (token==ParserConsts::kw_include)
 				HandleIncludes();
-			else if (token.Matches(_T("define")))
+			else if (token==ParserConsts::kw_define)
 				HandleDefines();
 			m_Str.Clear();
 		}
-		else if (token.Matches(_T("using"))) // using namespace ?
+		else if (token==ParserConsts::kw_using) // using namespace ?
 		{
-            SkipToOneOfChars(_T(";}"), true);
+            SkipToOneOfChars(ParserConsts::semicolonclbrace, true);
 			m_Str.Clear();
 		}
-		else if (token.Matches(_T("namespace")))
+		else if (token==ParserConsts::kw_namespace)
 		{
 			m_Str.Clear();
 			HandleNamespace();
 		}
-		else if (token.Matches(_T("template")))
+		else if (token==ParserConsts::kw_template)
 		{
 			m_Str.Clear();
-			SkipToOneOfChars(_T(">;"), true);
+			SkipToOneOfChars(ParserConsts::gtsemicolon, true);
 		}
-		else if (token.Matches(_T("class")))
+		else if (token==ParserConsts::kw_class)
 		{
 			m_Str.Clear();
 			HandleClass();
 		}
-		else if (token.Matches(_T("struct")))
+		else if (token==ParserConsts::kw_struct)
 		{
 			m_Str.Clear();
 			HandleClass(false);
 		}
-		else if (token.Matches(_T("enum")))
+		else if (token==ParserConsts::kw_enum)
 		{
 			m_Str.Clear();
 			HandleEnum();
 		}
-		else if (token.Matches(_T("union")))
+		else if (token==ParserConsts::kw_union)
         {
-            SkipToOneOfChars(_T("{;"));
+            SkipToOneOfChars(ParserConsts::opbracesemicolon);
 //            if (m_Tokens.GetToken() == "{")
             {
                 Token* oldparent = m_pLastParent;
@@ -448,7 +514,7 @@ bool ParserThread::Parse()
             }
         }
 #if 1
-		else if (token.Matches(_T("operator")))
+		else if (token==ParserConsts::kw_operator)
 		{
 			wxString func = token;
 			while (1)
@@ -487,32 +553,34 @@ bool ParserThread::Parse()
 					{
 						// function
 						// ignore some well-known wxWindows macros
-						if (token.Matches(_T("BEGIN_EVENT_TABLE")))
+						if (token==ParserConsts::begin_event_table)
 						{
 							// skip till after END_EVENT_TABLE
-							while (!token.IsEmpty() && !token.Matches(_T("END_EVENT_TABLE")))
+							while (!token.IsEmpty() && token!=ParserConsts::end_event_table)
 								token = m_Tokens.GetToken(); // skip args
 							m_Tokens.GetToken(); // skip args
 						}
-						else if (!token.Matches(_T("*_EVENT_TABLE*")) &&
-							!token.Matches(_T("IMPLEMENT_APP")) &&
-							!token.Matches(_T("IMPLEMENT_DYNAMIC_CLASS")) &&
-							!token.Matches(_T("WX_DECLARE_*")) &&
-							!token.Matches(_T("WX_DEFINE_*")))
+						else if (token.Matches(ParserConsts::x_event_table_x) ||
+							token==ParserConsts::implement_app ||
+							token==ParserConsts::implement_dynamic_class ||
+							token.Matches(ParserConsts::wx_declare_x) ||
+							token.Matches(ParserConsts::wx_define_x))
                         {
+							m_Tokens.GetToken(); // skip args
+                        }
+						else
+						{
 //                            Log("m_Str='"+m_Str+"'");
 //                            Log("token='"+token+"'");
 //                            Log("peek='"+peek+"'");
 							HandleFunction(token);
-                        }
-						else
-							m_Tokens.GetToken(); // skip args
+						}
 					}
 					else
 						m_Tokens.GetToken(); // eat args when parsing block
 					m_Str.Clear();
 				}
-				else if (peek.Matches(_T(",")))
+				else if (peek==ParserConsts::comma)
 				{
                     // example decl to encounter a comma: int x,y,z;
                     // token should hold the var (x/y/z)
@@ -521,13 +589,13 @@ bool ParserThread::Parse()
                     // skip comma (we had peeked it)
                     m_Tokens.GetToken();
 				}
-				else if (peek.Matches(_T("<")))
+				else if (peek==ParserConsts::lt)
 				{
                     // a template, e.g. someclass<void>::memberfunc
                     // we have to skip <>, so we 're left with someclass::memberfunc
                     SkipAngleBraces();
                     peek = m_Tokens.PeekToken();
-                    if (peek.Matches(_T("::")))
+                    if (peek==ParserConsts::dcolon)
                     {
     //                    Log("peek='::', token='" + token + "', m_LastToken='" + m_LastToken + "', m_Str='" + m_Str + "'");
                         m_EncounteredNamespaces.Add(token);
@@ -535,17 +603,17 @@ bool ParserThread::Parse()
                     }
                     if (m_Str.IsEmpty())
                     {
-                        m_Str = GetStringFromArray(m_EncounteredNamespaces, _T("::")) + token;
+                        m_Str = GetStringFromArray(m_EncounteredNamespaces, ParserConsts::dcolon) + token;
                         m_EncounteredNamespaces.Clear();
                     }
 				}
-                else if (peek.Matches(_T("::")))
+                else if (peek==ParserConsts::dcolon)
                 {
 //                    Log("peek='::', token='" + token + "', m_LastToken='" + m_LastToken + "', m_Str='" + m_Str + "'");
                     m_EncounteredNamespaces.Add(token);
                     m_Tokens.GetToken(); // eat ::
                 }
-				else if ((peek.Matches(_T(";")) || (m_Options.useBuffer && peek.GetChar(0) == _T('(')) && !m_Str.Contains(_T("::"))) && m_pTokens)
+				else if ((peek==ParserConsts::semicolon || (m_Options.useBuffer && peek.GetChar(0) == _T('(')) && !m_Str.Contains(ParserConsts::dcolon)) && m_pTokens)
 				{
 //					Log("m_Str='"+m_Str+"'");
 //					Log("token='"+token+"'");
@@ -558,7 +626,7 @@ bool ParserThread::Parse()
 				}
 				else
 				{
-					m_Str << token << _T(" ");
+					m_Str << token << _T(' ');
 				}
 			}
 		}
@@ -664,7 +732,7 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, const wxSt
 	if (kind == tkDestructor)
 	{
 		// special class destructors case
-		newToken->m_Name = _T("~") + name;
+		newToken->m_Name = ParserConsts::tilde + name;
 		m_Str.Clear();
 	}
 	else
@@ -812,7 +880,7 @@ void ParserThread::HandleNamespace()
     wxString ns = m_Tokens.GetToken();
     wxString next = m_Tokens.PeekToken();
 
-    if (next.Matches(_T("{")))
+    if (next==ParserConsts::opbrace)
     {
         // use the existing copy (if any)
         Token* newToken = TokenExists(ns, 0, tkNamespace);
@@ -836,7 +904,7 @@ void ParserThread::HandleNamespace()
         m_LastScope = lastScope;
     }
     else
-        SkipToOneOfChars(_T(";{")); // some kind of error in code ?
+        SkipToOneOfChars(ParserConsts::semicolonopbrace); // some kind of error in code ?
 }
 
 void ParserThread::HandleClass(bool isClass)
@@ -849,13 +917,13 @@ void ParserThread::HandleClass(bool isClass)
 		wxString next = m_Tokens.PeekToken();
 		if (!current.IsEmpty() && !next.IsEmpty())
 		{
-			if (next.Matches(_T("<"))) // template specialization
+			if (next==ParserConsts::lt) // template specialization
 			{
                 SkipAngleBraces();
                 next = m_Tokens.PeekToken();
 			}
 
-			if (next.Matches(_T(":"))) // has ancestor(s)
+			if (next==ParserConsts::colon) // has ancestor(s)
 			{
                 //Log("Class " + current + " has ancestors");
 				m_Tokens.GetToken(); // eat ":"
@@ -863,24 +931,26 @@ void ParserThread::HandleClass(bool isClass)
 				{
 					wxString tmp = m_Tokens.GetToken();
 					next = m_Tokens.PeekToken();
-					if (!tmp.Matches(_T("public")) &&
-						!tmp.Matches(_T("protected")) &&
-						!tmp.Matches(_T("private")) &&
-						!tmp.Matches(_T(">")) &&
-						!tmp.Matches(_T(",")))
+					if (!(
+                        tmp==ParserConsts::comma ||
+                        tmp==ParserConsts::gt ||
+                        tmp==ParserConsts::kw_public ||
+                        tmp==ParserConsts::kw_protected ||
+                        tmp==ParserConsts::kw_private
+                        ))
                     {
                         // fix for namespace usage in ancestors
-                        if (tmp.Matches(_T("::")) || next.Matches(_T("::")))
+                        if (tmp==ParserConsts::dcolon || next==ParserConsts::dcolon)
                             ancestors << tmp;
 						else
                             ancestors << tmp << _T(',');
 						//Log("Adding ancestor " + tmp);
                     }
 					if (next.IsEmpty() ||
-						next.Matches(_T("{")) ||
-						next.Matches(_T(";")))
+						next==ParserConsts::opbrace ||
+						next==ParserConsts::semicolon)
 						break;
-                    else if (next.Matches(_T("<")))
+                    else if (next==ParserConsts::lt)
                     {
                         // template class
                         int nest = 0;
@@ -888,15 +958,15 @@ void ParserThread::HandleClass(bool isClass)
                         while (1)
                         {
                             wxString tmp1 = m_Tokens.GetToken();
-                            if (tmp1.Matches(_T("<")))
+                            if (tmp1==ParserConsts::lt)
                                 ++nest;
-                            else if (tmp1.Matches(_T(">")))
+                            else if (tmp1==ParserConsts::gt)
                                 --nest;
 
                             if (tmp1.IsEmpty() ||
-                                tmp1.Matches(_T("{")) ||
-                                tmp1.Matches(_T(";")) ||
-                                (tmp1.Matches(_T(">")) && nest <= 0))
+                                tmp1==ParserConsts::opbrace ||
+                                tmp1==ParserConsts::semicolon ||
+                                (tmp1==ParserConsts::gt && nest <= 0))
                             {
                                 m_Tokens.UngetToken(); // put it back before exiting
                                 break;
@@ -907,7 +977,7 @@ void ParserThread::HandleClass(bool isClass)
                 //Log("Ancestors: " + ancestors);
 			}
 
-			if (current.Matches(_T("{"))) // unnamed class/struct
+			if (current==ParserConsts::opbrace) // unnamed class/struct
 			{
 				Token* lastParent = m_pLastParent;
 				TokenScope lastScope = m_LastScope;
@@ -921,7 +991,7 @@ void ParserThread::HandleClass(bool isClass)
 				m_LastScope = lastScope;
                 break;
 			}
-			else if (next.Matches(_T("{")))   // no ancestor(s)
+			else if (next==ParserConsts::opbrace)   // no ancestor(s)
 			{
 				Token* newToken = DoAddToken(tkClass, current);
 				if (!newToken)
@@ -944,7 +1014,7 @@ void ParserThread::HandleClass(bool isClass)
 				m_LastScope = lastScope;
                 break;
 			}
-			else if (next.Matches(_T(";"))) // forward decl; we don't care
+			else if (next==ParserConsts::semicolon) // forward decl; we don't care
 				break;
 			else if (next.GetChar(0) == '(') // function: struct xyz& DoSomething()...
 			{
@@ -961,7 +1031,7 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
 {
     //Log("Adding function '"+name+"': m_Str='"+m_Str+"'");
 	wxString args = m_Tokens.GetToken();
-	if (!m_Str.StartsWith(_T("friend")))
+	if (!m_Str.StartsWith(ParserConsts::kw_friend))
 	{
 		TokenKind kind = tkFunction;
 		bool CtorDtor = m_pLastParent && name.Matches(m_pLastParent->m_Name);
@@ -987,14 +1057,14 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
 			m_Str.Trim();
 			if (m_Str.IsEmpty())
 				kind = tkConstructor;
-			else if (m_Str.Matches(_T("~")))
+			else if (m_Str==ParserConsts::tilde)
 				kind = tkDestructor;
 		}
 //        Log("Adding function '"+name+"': m_Str='"+m_Str+"'"+", enc_ns="+(m_EncounteredNamespaces.GetCount()?m_EncounteredNamespaces[0]:"nil"));
 		DoAddToken(kind, name, args, isOperator);
 	}
-	if (!m_Tokens.PeekToken().Matches(_T("}")))
-		SkipToOneOfChars(_T(";}"), true);
+	if (!m_Tokens.PeekToken()==ParserConsts::clbrace)
+		SkipToOneOfChars(ParserConsts::semicolonclbrace,true);
 }
 
 void ParserThread::HandleEnum()
@@ -1005,10 +1075,10 @@ void ParserThread::HandleEnum()
 	wxString token = m_Tokens.GetToken();
 	if (token.IsEmpty())
 		return;
-    else if (token.Matches(_T("{")))
+    else if (token==ParserConsts::opbrace)
 	{
         // we have an un-named enum
-		token = _T("Un-named");
+		token = ParserConsts::unnamed;
 		m_Tokens.UngetToken(); // return '{' back
 		isUnnamed = true;
     }
@@ -1046,11 +1116,11 @@ void ParserThread::HandleEnum()
 		wxString peek = m_Tokens.PeekToken();
 		if (token.IsEmpty() || peek.IsEmpty())
 			return; //eof
-		if (token.Matches(_T("}")) && level == m_Tokens.GetNestingLevel())
+		if (token==ParserConsts::clbrace && level == m_Tokens.GetNestingLevel())
 			break;
 		// assignments (=xxx) are ignored by the tokenizer,
 		// so we don't have to worry about them here ;)
-		if (peek.Matches(_T(",")) || peek.Matches(_T("}")) || peek.Matches(_T(":")))
+		if (peek==ParserConsts::comma || peek==ParserConsts::clbrace || peek==ParserConsts::colon)
 		{
             // this "if", avoids non-valid enumerators
             // like a comma (if no enumerators follow)
@@ -1061,16 +1131,16 @@ void ParserThread::HandleEnum()
                 DoAddToken(tkEnumerator, token);
                 m_pLastParent = lastParent;
 			}
-			if (peek.Matches(_T(":")))
+			if (peek==ParserConsts::colon)
 			{
 				// bit specifier (eg, xxx:1)
 				//walk to , or }
-				SkipToOneOfChars(_T(",}"));
+				SkipToOneOfChars(ParserConsts::commaclbrace);
 			}
 		}
 	}
 	// skip to ;
 	token = m_Tokens.GetToken();
-	while (!token.IsEmpty() && !token.Matches(_T(";")))
+	while (!token.IsEmpty() && token!=ParserConsts::semicolon)
 		token = m_Tokens.GetToken();
 }
