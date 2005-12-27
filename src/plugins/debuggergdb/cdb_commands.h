@@ -113,7 +113,7 @@ class CdbCmd_AttachToProcess : public DebuggerCmd
         CdbCmd_AttachToProcess(DebuggerDriver* driver, int pid)
             : DebuggerCmd(driver)
         {
-            m_Cmd << _T("attach ") << pid;
+            m_Cmd << _T("attach ") << wxString::Format(_T("%d"), pid);
         }
         void ParseOutput(const wxString& output)
         {
@@ -173,11 +173,11 @@ class CdbCmd_AddBreakpoint : public DebuggerCmd
                 DebuggerGDB::ConvertToGDBFile(out);
                 QuoteStringIfNeeded(out);
                 // we add one to line,  because scintilla uses 0-based line numbers, while gdb uses 1-based
-                m_Cmd << _T("bu") << m_BP->bpNum << _T(' ');
+                m_Cmd << _T("bu") << wxString::Format(_T("%d"), (int) m_BP->bpNum) << _T(' ');
                 if (m_BP->temporary)
                     m_Cmd << _T("/1 ");
                 if (bp->func.IsEmpty())
-                    m_Cmd << _T('`') << out << _T(":") << bp->line + 1 << _T('`');
+                    m_Cmd << _T('`') << out << _T(":") << wxString::Format(_T("%d"), bp->line + 1) << _T('`');
                 else
                     m_Cmd << bp->func;
                 bp->alreadySet = true;
@@ -215,7 +215,7 @@ class CdbCmd_RemoveBreakpoint : public DebuggerCmd
             if (!bp)
                 m_Cmd << _T("bc *");
             else
-                m_Cmd << _T("bc ") << bp->bpNum;
+                m_Cmd << _T("bc ") << wxString::Format(_T("%d"), (int) bp->bpNum);
         }
         void ParseOutput(const wxString& output)
         {

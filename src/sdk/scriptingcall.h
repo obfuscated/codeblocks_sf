@@ -101,7 +101,7 @@ class ScriptingCall
             result << _T("Module: ") << m_Module << _T("\n");
             result << _T("Section: ") << m_Section << _T("\n");
             result << _T("Function: ") << m_Function << _T("\n");
-            result << _T("Line: ") << m_Line;
+            result << _T("Line: ") << wxString::Format(_T("%d"), m_Line);
             return result;
         }
     protected:

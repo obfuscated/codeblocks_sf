@@ -67,7 +67,7 @@ void MultiSelectDlg::UpdateStatus()
             ++count;
 	}
 	wxString msg;
-	msg << _("Selected: ") << count;
+	msg << _("Selected: ") << wxString::Format(_T("%d"), count);
 	XRCCTRL(*this, "lblStatus", wxStaticText)->SetLabel(msg);
 }
 

@@ -403,13 +403,13 @@ void EditorColorSet::Save()
 		if (lang.IsEmpty())
             continue;
         key.Clear();
-		key << _T("/color_sets/") << m_Name << _T("/set") << x;
+		key << _T("/color_sets/") << m_Name << _T("/set") << wxString::Format(_T("%d"), x);
         cfg->Write(key + _T("/name"), lang);
 		for (unsigned int i = 0; i < m_Sets[x].m_Colors.GetCount(); ++i)
 		{
 			OptionColor* opt = m_Sets[x].m_Colors.Item(i);
 			wxString tmpKey;
-			tmpKey << key << _T("/style") << i;
+			tmpKey << key << _T("/style") << wxString::Format(_T("%d"), i);
 
 			if (opt->fore != opt->originalfore && opt->fore != wxNullColour)
                 cfg->Write(tmpKey + _T("/fore"), opt->fore);
@@ -452,14 +452,14 @@ void EditorColorSet::Load()
 		if (lang.IsEmpty())
             continue;
 		key.Clear();
-		key << _T("/color_sets/") << m_Name << _T("/set") << x;
+		key << _T("/color_sets/") << m_Name << _T("/set") << wxString::Format(_T("%d"), x);
 		if (cfg->EnumerateSubPaths(key).GetCount() == 0)
 			continue;
 		for (unsigned int i = 0; i < m_Sets[x].m_Colors.GetCount(); ++i)
 		{
 			OptionColor* opt = m_Sets[x].m_Colors.Item(i);
 			wxString tmpKey;
-			tmpKey << key << _T("/style") << i;
+			tmpKey << key << _T("/style") << wxString::Format(_T("%d"), i);
 
 			if (cfg->Exists(tmpKey + _T("/name")))
                 opt->name = cfg->Read(tmpKey + _T("/name"));
@@ -490,7 +490,7 @@ void EditorColorSet::Reset(HighlightLanguage lang)
 {
     wxLogNull ln;
     wxString key;
-    key << _T("/color_sets/") << m_Name << _T("/set") << lang;
+    key << _T("/color_sets/") << m_Name << _T("/set") << wxString::Format(_T("%d"), lang);
     if (Manager::Get()->GetConfigManager(_T("editor"))->EnumerateSubPaths(key).GetCount() != 0)
         Manager::Get()->GetConfigManager(_T("editor"))->DeleteSubPath(key);
 

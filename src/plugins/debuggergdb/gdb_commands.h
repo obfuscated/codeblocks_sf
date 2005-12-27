@@ -123,7 +123,7 @@ class GdbCmd_AttachToProcess : public DebuggerCmd
         GdbCmd_AttachToProcess(DebuggerDriver* driver, int pid)
             : DebuggerCmd(driver)
         {
-            m_Cmd << _T("attach ") << pid;
+            m_Cmd << _T("attach ") << wxString::Format(_T("%d"), pid);
         }
         void ParseOutput(const wxString& output)
         {
@@ -196,7 +196,7 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
                         m_Cmd << _T("break ");
                     else
                         m_Cmd << _T("tbreak ");
-                    m_Cmd << out << _T(":") << m_BP->line + 1;
+                    m_Cmd << out << _T(":") << wxString::Format(_T("%d"), m_BP->line + 1);
                 }
                 //GDB workaround
                 //Use function name if this is C++ constructor/destructor
@@ -235,7 +235,7 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
                 if (m_BP->useCondition && !m_BP->condition.IsEmpty())
                 {
                     wxString cmd;
-                    cmd << _T("condition ") << m_BP->bpNum << _T(" ") << m_BP->condition;
+                    cmd << _T("condition ") << wxString::Format(_T("%d"), (int) m_BP->bpNum) << _T(" ") << m_BP->condition;
                     m_pDriver->QueueCommand(new DebuggerCmd(m_pDriver, cmd), DebuggerDriver::High);
                 }
 
@@ -243,7 +243,7 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
                 if (m_BP->useIgnoreCount && m_BP->ignoreCount > 0)
                 {
                     wxString cmd;
-                    cmd << _T("ignore ") << m_BP->bpNum << _T(" ") << m_BP->ignoreCount;
+                    cmd << _T("ignore ") << wxString::Format(_T("%d"), (int) m_BP->bpNum) << _T(" ") << m_BP->ignoreCount;
                     m_pDriver->QueueCommand(new DebuggerCmd(m_pDriver, cmd), DebuggerDriver::High);
                 }
             }
@@ -273,7 +273,7 @@ class GdbCmd_RemoveBreakpoint : public DebuggerCmd
 
             if (bp->enabled && bp->bpNum > 0)
             {
-                m_Cmd << _T("delete ") << bp->bpNum;
+                m_Cmd << _T("delete ") << wxString::Format(_T("%d"), (int) bp->bpNum);
             }
         }
         void ParseOutput(const wxString& output)

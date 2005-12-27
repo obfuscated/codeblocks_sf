@@ -63,7 +63,7 @@ wxString EditorBase::CreateUniqueFilename()
     while (true)
     {
         tmp.Clear();
-        tmp << path << prefix << iter;
+        tmp << path << prefix << wxString::Format(_T("%d"), iter);
         if (!Manager::Get()->GetEditorManager()->GetEditor(tmp) &&
                 !wxFileExists(path + tmp))
         {

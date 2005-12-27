@@ -101,7 +101,7 @@ class DLLIMPORT MessageManager : public wxNotebook
 		  * using LogPage(), e.g:
 		  *     *LOGGER << LogPage(pageIndex) << "Some message\n";
 		  */
-		template<typename T> MessageManager& operator<<(const T& val)
+		template<typename T> MessageManager& operator<<(const T& val)/* NOTE (thomas#9#): This template is inherently unsafe for Unicode */
 		{
             wxString tmp;
             tmp << val;

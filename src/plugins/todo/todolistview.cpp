@@ -340,7 +340,7 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
 				item.user.Trim();
 				item.user.Trim(false);
 				item.line = CalculateLineNumber(buffer, pos);
-				item.lineStr << item.line + 1; // 1-based line number for list
+				item.lineStr << wxString::Format(_T("%d"), item.line + 1); // 1-based line number for list
 				m_Items.Add(item);
 			}
 			else

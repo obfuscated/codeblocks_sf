@@ -33,7 +33,7 @@ wxString GDB_driver::GetCommandLine(const wxString& debugger, int pid)
     cmd << debugger;
     cmd << _T(" -nx");          // don't run .gdbinit
     cmd << _T(" -fullname ");   // report full-path filenames when breaking
-    cmd << _T("-pid=") << pid;
+    cmd << _T("-pid=") << wxString::Format(_T("%d"), pid);
     return cmd;
 }
 

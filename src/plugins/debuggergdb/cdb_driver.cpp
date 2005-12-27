@@ -77,7 +77,7 @@ wxString CDB_driver::GetCommandLine(const wxString& debugger, int pid)
     }
 
     // finally, add the PID
-    cmd << _T(" -p ") << pid;
+    cmd << _T(" -p ") << wxString::Format(_T("%d"), pid);
 
     if (!m_WorkingDir.IsEmpty())
         wxSetWorkingDirectory(m_WorkingDir);

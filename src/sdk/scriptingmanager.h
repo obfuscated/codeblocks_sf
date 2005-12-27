@@ -37,7 +37,7 @@ class DLLIMPORT ScriptingManager
     { \
         if (r < 0) \
         { \
-            LOGSTREAM << what << _T(": ") << ScriptingManager::GetErrorDescription(r) << _T(" (") _U(__FILE__) << _T(":") << __LINE__ << _T(")\n"); \
+            LOGSTREAM << what << _T(": ") << ScriptingManager::GetErrorDescription(r) << _T(" (") _U(__FILE__) << _T(":") << wxString::Format(_T("%d"), __LINE__) << _T(")\n"); \
             return ret; \
         } \
     }
@@ -46,7 +46,7 @@ class DLLIMPORT ScriptingManager
     { \
         if (r < 0) \
         { \
-            LOGSTREAM << what << _T(": ") << ScriptingManager::GetErrorDescription(r) << _T(" (") _U(__FILE__) << _T(":") << __LINE__ << _T(")\n"); \
+            LOGSTREAM << what << _T(": ") << ScriptingManager::GetErrorDescription(r) << _T(" (") _U(__FILE__) << _T(":") << wxString::Format(_T("%d"), __LINE__) << _T(")\n"); \
             return; \
         } \
 	}
