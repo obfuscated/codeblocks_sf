@@ -121,6 +121,7 @@
                     <Add library="propgrid" />
 		<Add directory="devel" />
                     <Add directory="sdk\as" />
+                    <Add directory="sdk\propgrid" />
                 </Linker>
                 <ExtraCommands>
                     <Add before="tools/autorevision/autorevision +wx +int +t . sdk/autorevision.h" />
