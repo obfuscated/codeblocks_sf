@@ -188,7 +188,8 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
                 m_LastKeyword.Clear();
 				if (!txt.IsEmpty())
 				{
-					Token* token = m_NativeParsers.FindParserFromEditor(ed)->FindTokenByName(txt, false);
+					Parser* parser = m_NativeParsers.FindParserFromEditor(ed);
+					Token* token = parser ? parser->FindTokenByName(txt, false) : 0;
 					int sep = 0;
 					if (token)
 					{
