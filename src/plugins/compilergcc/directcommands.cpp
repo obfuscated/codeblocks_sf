@@ -277,6 +277,31 @@ wxArrayString DirectCommands::GetCompileSingleFileCommand(const wxString& filena
     return ret;
 }
 
+/// This is to be used *only* for files not belonging to a project!!!
+wxArrayString DirectCommands::GetCleanSingleFileCommand(const wxString& filename)
+{
+    wxLogNull ln;
+    wxArrayString ret;
+
+    // lookup file's type
+    FileType ft = FileTypeOf(filename);
+
+    // is it compilable?
+    if (ft != ftSource)
+        return ret;
+
+    wxFileName fname(filename);
+    fname.SetExt(m_pCompiler->GetSwitches().objectExtension);
+    wxString o_filename = fname.GetFullPath();
+    fname.SetExt(EXECUTABLE_EXT);
+    wxString exe_filename = fname.GetFullPath();
+
+    ret.Add(o_filename);
+    ret.Add(exe_filename);
+
+    return ret;
+}
+
 wxArrayString DirectCommands::GetCompileCommands(ProjectBuildTarget* target, bool force)
 {
     wxArrayString ret;

@@ -38,6 +38,7 @@ class DirectCommands
 		wxArrayString GetLinkCommands(ProjectBuildTarget* target, bool force = false);
 		wxArrayString GetTargetLinkCommands(ProjectBuildTarget* target, bool force = false);
 		wxArrayString GetCleanCommands(ProjectBuildTarget* target, bool distclean = false);
+		wxArrayString GetCleanSingleFileCommand(const wxString& filename);
 		wxArrayString GetTargetCleanCommands(ProjectBuildTarget* target, bool distclean = false);
 	protected:
         bool AreExternalDepsOutdated(const wxString& buildOutput, const wxString& additionalFiles, const wxString& externalDeps);

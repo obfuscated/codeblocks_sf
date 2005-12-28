@@ -674,16 +674,11 @@ FileTreeData* CompilerGCC::DoSwitchProjectTemporarily()
 
 void CompilerGCC::AddToCommandQueue(const wxArrayString& commands)
 {
-    if (!m_pBuildingProject)
-    {
-        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("Invalid project in AddToCommandQueue()!"));
-        return;
-    }
     // loop added for compiler log when not working with Makefiles
     wxString mySimpleLog = wxString(COMPILER_SIMPLE_LOG);
     wxString myTargetChange = wxString(COMPILER_TARGET_CHANGE);
 //    ProjectBuildTarget* lastTarget = 0;
-    ProjectBuildTarget* bt = m_pBuildingProject->GetBuildTarget(m_BuildingTargetIdx);
+    ProjectBuildTarget* bt = m_pBuildingProject ? m_pBuildingProject->GetBuildTarget(m_BuildingTargetIdx) : 0;
     size_t count = commands.GetCount();
     for (size_t i = 0; i < count; ++i)
     {
@@ -1126,6 +1121,61 @@ void CompilerGCC::DoClearErrors()
 	m_pListLog->Clear();
 }
 
+int CompilerGCC::RunSingleFile(const wxString& filename)
+{
+    wxFileName fname(filename);
+    m_CdRun = fname.GetPath();
+    fname.SetExt(EXECUTABLE_EXT);
+    wxString exe_filename = fname.GetFullPath();
+    wxString cmd;
+
+#ifndef __WXMSW__
+    // for non-win platforms, use m_ConsoleTerm to run the console app
+    wxString shell = m_ConsoleTerm;
+    shell.Replace(_T("$TITLE"), _T("'") + exe_filename + _T("'"));
+    cmd << shell << _T(" ");
+#endif
+    wxString baseDir = ConfigManager::GetExecutableFolder();
+#ifdef __WXMSW__
+	#define CONSOLE_RUNNER "console_runner.exe"
+#else
+	#define CONSOLE_RUNNER "console_runner"
+#endif
+    if (wxFileExists(baseDir + wxT("/" CONSOLE_RUNNER)))
+        cmd << baseDir << wxT("/" CONSOLE_RUNNER " ");
+
+    cmd << _T("\"");
+    cmd << exe_filename;
+    cmd << _T("\"");
+
+    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Checking for existence: %s"), exe_filename.c_str());
+    if (!wxFileExists(exe_filename))
+    {
+    	int ret = wxMessageBox(_("It seems that this file has not been built yet.\n"
+                                "Do you want to build it now?"),
+                                _("Information"),
+                                wxYES | wxNO | wxCANCEL | wxICON_QUESTION);
+        switch (ret)
+        {
+        	case wxYES:
+        	{
+        	    m_RunAfterCompile = true;
+        		Build(wxEmptyString);
+        		return -1;
+        	}
+            case wxNO:
+                break;
+            default:
+                return -1;
+        }
+    }
+
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(m_CdRun);
+    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Executing: %s (in %s)"), cmd.c_str(), m_CdRun.c_str());
+    m_CommandQueue.Add(new CompilerCommand(cmd, wxEmptyString, 0, 0, true));
+    return 0;
+}
+
 int CompilerGCC::Run(const wxString& target)
 {
     if (!CheckProject())
@@ -1136,7 +1186,11 @@ int CompilerGCC::Run(const wxString& target)
 int CompilerGCC::Run(ProjectBuildTarget* target)
 {
     if (!CheckProject())
+    {
+        if (Manager::Get()->GetEditorManager()->GetActiveEditor())
+            return RunSingleFile(Manager::Get()->GetEditorManager()->GetActiveEditor()->GetFilename());
         return -1;
+    }
 	DoPrepareQueue();
 	if (!CompilerValid(target))
 		return -1;
@@ -1286,7 +1340,8 @@ int CompilerGCC::Clean(ProjectBuildTarget* target)
 
     m_Generator.Init(m_Project);
 
-    wxSetWorkingDirectory(m_Project->GetBasePath());
+    if (m_Project)
+        wxSetWorkingDirectory(m_Project->GetBasePath());
     if (UseMake(target))
     {
         wxString cmd = GetMakeCommandFor(mcClean, target);
@@ -1295,9 +1350,19 @@ int CompilerGCC::Clean(ProjectBuildTarget* target)
     }
     else
     {
-        DirectCommands dc(this, &m_Generator, CompilerFactory::Compilers[m_CompilerIdx], m_Project, m_PageIndex);
-        wxArrayString clean = dc.GetCleanCommands(target, true);
-        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Cleaning %s..."), target ? target->GetTitle().c_str() : m_Project->GetTitle().c_str());
+        wxArrayString clean;
+        if (m_Project)
+        {
+            DirectCommands dc(this, &m_Generator, CompilerFactory::Compilers[m_CompilerIdx], m_Project, m_PageIndex);
+            clean = dc.GetCleanCommands(target, true);
+            Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Cleaning %s..."), target ? target->GetTitle().c_str() : m_Project->GetTitle().c_str());
+        }
+        else
+        {
+            DirectCommands dc(this, &m_Generator, CompilerFactory::GetDefaultCompiler(), 0, m_PageIndex);
+            clean = dc.GetCleanSingleFileCommand(Manager::Get()->GetEditorManager()->GetActiveEditor()->GetFilename());
+            Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Cleaning object and output files..."));
+        }
         for (unsigned int i = 0; i < clean.GetCount(); ++i)
         {
             wxRemoveFile(clean[i]);
@@ -1709,7 +1774,12 @@ void CompilerGCC::CalculateProjectDependencies(cbProject* prj)
 int CompilerGCC::Build(const wxString& target)
 {
     if (!CheckProject())
+    {
+        // no active project
+        if (Manager::Get()->GetEditorManager()->GetActiveEditor())
+            return CompileFile(Manager::Get()->GetEditorManager()->GetActiveEditor()->GetFilename());
         return -1;
+    }
     DoClearErrors();
 	DoPrepareQueue();
 
@@ -2045,6 +2115,7 @@ void CompilerGCC::OnCompileFile(wxCommandEvent& event)
 
 void CompilerGCC::OnRebuild(wxCommandEvent& event)
 {
+    CheckProject();
     AnnoyingDialog dlg(_("Rebuild project"),
                         _("Rebuilding the project will cause the deletion of all "
                         "object files and building it from scratch.\nThis action "
@@ -2055,7 +2126,7 @@ void CompilerGCC::OnRebuild(wxCommandEvent& event)
 					wxART_QUESTION,
 					AnnoyingDialog::YES_NO,
 					wxID_YES);
-    if (dlg.ShowModal() == wxID_NO)
+    if (m_Project && dlg.ShowModal() == wxID_NO)
     {
         return;
     }
@@ -2129,6 +2200,7 @@ void CompilerGCC::OnCleanAll(wxCommandEvent& event)
 
 void CompilerGCC::OnClean(wxCommandEvent& event)
 {
+    CheckProject();
     AnnoyingDialog dlg(_("Clean project"),
                         _("Cleaning the target or project will cause the deletion "
                         "of all relevant object files.\nThis means that you will "
@@ -2141,7 +2213,7 @@ void CompilerGCC::OnClean(wxCommandEvent& event)
 					wxART_QUESTION,
 					AnnoyingDialog::YES_NO,
 					wxID_YES);
-	if (dlg.ShowModal() == wxID_NO)
+	if (m_Project && dlg.ShowModal() == wxID_NO)
     {
         return;
     }
@@ -2263,27 +2335,27 @@ void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
     bool running = IsRunning();
     if (mbar)
     {
-        mbar->Enable(idMenuCompile, !running && prj);
+        mbar->Enable(idMenuCompile, !running && (prj || ed));
         mbar->Enable(idMenuCompileAll, !running && prj);
         mbar->Enable(idMenuCompileFromProjectManager, !running && prj);
         mbar->Enable(idMenuCompileTargetFromProjectManager, !running && prj);
         mbar->Enable(idMenuCompileFile, !running && ed);
         mbar->Enable(idMenuCompileFileFromProjectManager, !running && prj);
-        mbar->Enable(idMenuRebuild, !running && prj);
+        mbar->Enable(idMenuRebuild, !running && (prj || ed));
         mbar->Enable(idMenuRebuildAll, !running && prj);
         mbar->Enable(idMenuRebuildFromProjectManager, !running && prj);
         mbar->Enable(idMenuRebuildTargetFromProjectManager, !running && prj);
-        mbar->Enable(idMenuClean, !running && prj);
+        mbar->Enable(idMenuClean, !running && (prj || ed));
         mbar->Enable(idMenuCleanAll, !running && prj);
         mbar->Enable(idMenuCleanFromProjectManager, !running && prj);
         mbar->Enable(idMenuCleanTargetFromProjectManager, !running && prj);
-        mbar->Enable(idMenuCompileAndRun, !running && prj);
-        mbar->Enable(idMenuRun, !running && prj);
+        mbar->Enable(idMenuCompileAndRun, !running && (prj || ed));
+        mbar->Enable(idMenuRun, !running && (prj || ed));
         mbar->Enable(idMenuKillProcess, running);
         mbar->Enable(idMenuSelectTarget, !running && prj);
 
-        mbar->Enable(idMenuNextError, !running && prj && m_Errors.HasNextError());
-        mbar->Enable(idMenuPreviousError, !running && prj && m_Errors.HasPreviousError());
+        mbar->Enable(idMenuNextError, !running && (prj || ed) && m_Errors.HasNextError());
+        mbar->Enable(idMenuPreviousError, !running && (prj || ed) && m_Errors.HasPreviousError());
 //        mbar->Enable(idMenuClearErrors, cnt);
 
         mbar->Enable(idMenuExportMakefile, !running && prj);
@@ -2296,10 +2368,10 @@ void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
 	wxToolBar* tbar = m_pTbar;//Manager::Get()->GetAppWindow()->GetToolBar();
 	if (tbar)
 	{
-        tbar->EnableTool(idMenuCompile, !running && prj);
-        tbar->EnableTool(idMenuRun, !running && prj);
-        tbar->EnableTool(idMenuCompileAndRun, !running && prj);
-        tbar->EnableTool(idMenuRebuild, !running && prj);
+        tbar->EnableTool(idMenuCompile, !running && (prj || ed));
+        tbar->EnableTool(idMenuRun, !running && (prj || ed));
+        tbar->EnableTool(idMenuCompileAndRun, !running && (prj || ed));
+        tbar->EnableTool(idMenuRebuild, !running && (prj || ed));
         tbar->EnableTool(idMenuKillProcess, running && prj);
 
         m_ToolTarget = XRCCTRL(*tbar, "idToolTarget", wxComboBox);

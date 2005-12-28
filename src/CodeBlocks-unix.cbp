@@ -555,6 +555,16 @@
             <Option link="0" />
             <Option target="Code-completion" />
         </Unit>
+        <Unit filename="plugins/codecompletion/parser/searchtree.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="Code-completion" />
+        </Unit>
+        <Unit filename="plugins/codecompletion/parser/searchtree.h">
+            <Option compilerVar="CPP" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="Code-completion" />
+        </Unit>
         <Unit filename="plugins/codecompletion/parser/token.cpp">
             <Option compilerVar="CPP" />
             <Option target="Code-completion" />
@@ -3507,6 +3517,10 @@
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
+            <Option target="src" />
+        </Unit>
+        <Unit filename="src/appglobals.cpp">
+            <Option compilerVar="CPP" />
             <Option target="src" />
         </Unit>
         <Unit filename="src/appglobals.h">
