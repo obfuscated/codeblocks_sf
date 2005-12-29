@@ -150,7 +150,6 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/wxSmith/Makefile
 	src/plugins/contrib/wxSmith/defwidgets/Makefile
 	src/plugins/contrib/wxSmith/properties/Makefile
-	src/plugins/contrib/wxSmith/propgrid/Makefile
 	src/plugins/contrib/wxSmith/resources/Makefile
 	src/plugins/contrib/wxSmith/smithicons/Makefile
 	src/tools/Makefile

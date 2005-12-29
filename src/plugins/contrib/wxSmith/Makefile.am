@@ -1,4 +1,4 @@
-SUBDIRS = propgrid defwidgets properties resources smithicons
+SUBDIRS = defwidgets properties resources smithicons
 
 if PRECOMPILE_HEADERS
 BUILT_SOURCES = $(srcdir)/wxsheaders.h.gch
@@ -9,7 +9,7 @@ endif
 INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/sdk \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include \
-		-I$(top_srcdir)/src/plugins/contrib/wxSmith/propgrid/include
+		-I$(top_srcdir)/src/sdk/propgrid/include
 
 libdir = $(pkgdatadir)/plugins
 
@@ -19,7 +19,7 @@ libwxsmith_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid
 
 libwxsmith_la_LIBADD = ../../../sdk/libcodeblocks.la \
 				../../../sdk/wxscintilla/libwxscintilla.la \
-				propgrid/libpropgrid.la \
+				../../../sdk/propgrid/libpropgrid.la \
 				defwidgets/libwxsmith_defwidgets.la \
 				properties/libwxsmith_properties.la \
 				resources/libwxsmith_resources.la
