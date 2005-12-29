@@ -53,9 +53,9 @@ cbKeyBinder::cbKeyBinder()
 	m_PluginInfo.name = _T("cbKeyBinder");
 	m_PluginInfo.title = _("Keyboard shortcuts configuration");
 	m_PluginInfo.version = _T("0.4");
-	m_PluginInfo.description <<"CodeBlocks KeyBinder\n"
-                            << "NOTE: Ctrl+Alt+{UP|DOWN} unsupported.\n"
-                            << "commit 12/16/2005 8:54 PM\n";
+	m_PluginInfo.description <<_("CodeBlocks KeyBinder\n")
+                            << _("NOTE: Ctrl+Alt+{UP|DOWN} unsupported.\n")
+                            << _("commit 12/16/2005 8:54 PM\n");
 	m_PluginInfo.author = _T("Pecan && Mispent Intent");
 	m_PluginInfo.authorEmail = _T("");
 	m_PluginInfo.authorWebsite = _T("");
@@ -254,7 +254,7 @@ void cbKeyBinder::Rebind()
 	UpdateArr(*m_pKeyProfArr);
 
  	#ifdef LOGGING
-        wxLogDebug("cbKeyBinder Rebind\n");
+        wxLogDebug(_T("cbKeyBinder Rebind\n"));
     #endif
 
 	return;
@@ -296,7 +296,7 @@ void cbKeyBinder::UpdateArr(wxKeyProfileArray &r)
         //r.UpdateAllCmd();		// not necessary
 
     #if LOGGING
-      LOGIT("UpdateArr::End");
+      LOGIT(_T("UpdateArr::End"));
     #endif
 
 }//cbKeyBinder::UpdateArr
@@ -305,7 +305,7 @@ void cbKeyBinder::OnKeybindings()
 // ----------------------------------------------------------------------------
 {
     #ifdef LOGGING
-     LOGIT("cbKB:OnKeybindings()");
+     LOGIT(_T("cbKB:OnKeybindings()"));
     #endif
 
     //wait for a good key file load()
@@ -400,8 +400,8 @@ void cbKeyBinder::OnLoad()
 	// before loading we must register in wxCmd arrays the various types
 	// of commands we want wxCmd::Load to be able to recognize...
 
-	LOGIT("--------------");
-	LOGIT("OnLoad()Begin");
+	LOGIT(_T("--------------"));
+	LOGIT(_T("OnLoad()Begin"));
 
     // tell other routines that binding has taken place
     m_bBound = TRUE;
@@ -417,7 +417,7 @@ void cbKeyBinder::OnLoad()
 	wxMenuCmd::Register(m_pMenuBar);
 
 	wxString strLoadFilename = m_sKeyFilename;
-	LOGIT("cbKB:Loading File %s", strLoadFilename.GetData());
+	LOGIT(_T("cbKB:Loading File %s"), strLoadFilename.GetData());
 
     wxFileConfig cfg(wxEmptyString, // appname
                     wxEmptyString, // vendor
@@ -458,7 +458,7 @@ void cbKeyBinder::OnLoad()
                     total, m_pKeyProfArr->GetSelProfileIdx()+1,
 					m_pKeyProfArr->GetSelProfile()->GetName().c_str()),
 						wxT("Load Successful"));
-             LOGIT("cbKeyBinder Matched %d MenuItems", total);
+             LOGIT(_T("cbKeyBinder Matched %d MenuItems"), total);
             #endif
 		 }//endelse
 
@@ -467,7 +467,7 @@ void cbKeyBinder::OnLoad()
 
 	} else {
         #ifdef LOGGING
-	     LOGIT("cbKeyBinder:Error loading key file.\nCreating Defaults"); //doing nothing for now
+	     LOGIT(_T("cbKeyBinder:Error loading key file.\nCreating Defaults")); //doing nothing for now
 	    #endif
 //	    wxString strErrMsg = "Error loading Key Bindings file:\n"+m_sKeyFilename;
 //	    if ( ! bKeyFileErrMsgShown)
@@ -477,7 +477,7 @@ void cbKeyBinder::OnLoad()
 	}
 
     #ifdef LOGGING
-	 LOGIT("OnLoad()End\n");
+	 LOGIT(_T("OnLoad()End\n"));
 	#endif
 
 	return;
@@ -577,7 +577,7 @@ void cbKeyBinder::OnProjectOpened(CodeBlocksEvent& event)
     if (m_IsAttached)
      {
         #if LOGGING
-          LOGIT("cbKB:ProjectOpened");
+          LOGIT(_T("cbKB:ProjectOpened"));
         #endif
      }
     event.Skip();
@@ -590,7 +590,7 @@ void cbKeyBinder::OnProjectActivated(CodeBlocksEvent& event)
     if (m_IsAttached)
      {
         #if LOGGING
-          LOGIT("cbKB:ProjectActivated");
+          LOGIT(_T("cbKB:ProjectActivated"));
         #endif
      }
     event.Skip();
@@ -602,7 +602,7 @@ void cbKeyBinder::OnProjectClosed(CodeBlocksEvent& event)
     if (m_IsAttached)
      {
         #if LOGGING
-          LOGIT("cbKB:ProjectClosed");
+          LOGIT(_T("cbKB:ProjectClosed"));
         #endif
 
         //get rid of unused editor ptr space
@@ -617,7 +617,7 @@ void cbKeyBinder::OnProjectFileAdded(CodeBlocksEvent& event)
     if (m_IsAttached)
      {
         #if LOGGING
-          LOGIT("cbKB:ProjectFileAdded");
+          LOGIT(_T("cbKB:ProjectFileAdded"));
         #endif
      }
     event.Skip();
@@ -629,7 +629,7 @@ void cbKeyBinder::OnProjectFileRemoved(CodeBlocksEvent& event)
     if (m_IsAttached)
      {
        #if LOGGING
-        LOGIT("cbKB:ProjectFileRemoved");
+        LOGIT(_T("cbKB:ProjectFileRemoved"));
        #endif
      }
     event.Skip();
@@ -640,7 +640,7 @@ void cbKeyBinder::OnEditorOpen(CodeBlocksEvent& event)
 {
     if (m_IsAttached)
      {
-         LOGIT("cbKB:OnEditorOpen()");
+         LOGIT(_T("cbKB:OnEditorOpen()"));
         if (!m_bBound)
          {
             OnLoad(); event.Skip(); return;
@@ -653,7 +653,7 @@ void cbKeyBinder::OnEditorOpen(CodeBlocksEvent& event)
 
         #ifdef RC3
          wxWindow* thisWindow = event.GetEditor();
-         wxWindow* thisEditor = thisWindow->FindWindowByName("SCIwindow",thisWindow);
+         wxWindow* thisEditor = thisWindow->FindWindowByName(_T("SCIwindow"),thisWindow);
 
          // find editor window the Code::Blocks way
          // find the cbStyledTextCtrl wxScintilla "SCIwindow" to this EditorBase
@@ -673,7 +673,7 @@ void cbKeyBinder::OnEditorOpen(CodeBlocksEvent& event)
             //Rebind keys to newly opened windows
             m_pKeyProfArr->GetSelProfile()->Attach(thisEditor);
             #if LOGGING
-             LOGIT("cbKB:OnEditorOpen/Attach %s %p", thisEditor->GetTitle().c_str(), thisEditor);
+             LOGIT(_T("cbKB:OnEditorOpen/Attach %s %p"), thisEditor->GetTitle().c_str(), thisEditor);
             #endif
          }
      }
@@ -700,7 +700,7 @@ void cbKeyBinder::OnEditorClose(CodeBlocksEvent& event)
 
          //find the cbStyledTextCtrl wxScintilla window
          wxWindow*
-           thisEditor = thisWindow->FindWindowByName("SCIwindow", thisWindow);
+           thisEditor = thisWindow->FindWindowByName(_T("SCIwindow"), thisWindow);
 
          // find editor window the Code::Blocks way
          // find the cbStyledTextCtrl wxScintilla "SCIwindow" to this EditorBase
@@ -719,7 +719,7 @@ void cbKeyBinder::OnEditorClose(CodeBlocksEvent& event)
             m_pKeyProfArr->GetSelProfile()->Detach(thisEditor);
             m_EditorPtrs.Remove(thisEditor);
             #if LOGGING
-             LOGIT("cbKB:OnEditorClose/Detach %s %p", thisEditor->GetTitle().c_str(), thisEditor);
+             LOGIT(_T("cbKB:OnEditorClose/Detach %s %p"), thisEditor->GetTitle().c_str(), thisEditor);
             #endif
          }//if
      }

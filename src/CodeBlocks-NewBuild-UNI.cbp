@@ -5,7 +5,7 @@
         <Option title="Code::Blocks (wx2.6)" />
         <Option makefile="Makefile.wx2.6" />
         <Option pch_mode="2" />
-        <Option default_target="7" />
+        <Option default_target="8" />
         <Option compiler="0" />
         <Build>
             <Target title="AutoRevision">
@@ -119,7 +119,7 @@
                     <Add library="libangelscript.a" />
                     <Add library="libwxscintilla.a" />
                     <Add library="propgrid" />
-		<Add directory="devel" />
+                    <Add directory="devel" />
                     <Add directory="sdk\as" />
                     <Add directory="sdk\propgrid" />
                 </Linker>
@@ -626,6 +626,16 @@
         </Unit>
         <Unit filename="plugins\codecompletion\parser\parserthread.h">
             <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="Code-completion" />
+        </Unit>
+        <Unit filename="plugins\codecompletion\parser\searchtree.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="Code-completion" />
+        </Unit>
+        <Unit filename="plugins\codecompletion\parser\searchtree.h">
+            <Option compilerVar="CPP" />
             <Option compile="0" />
             <Option link="0" />
             <Option target="Code-completion" />
@@ -2515,7 +2525,7 @@
             <Option compilerVar="CPP" />
             <Option target="wxPropertyGrid" />
         </Unit>
-	<Unit filename="sdk\replacedlg.cpp">
+        <Unit filename="sdk\replacedlg.cpp">
             <Option compilerVar="CPP" />
             <Option target="sdk" />
         </Unit>

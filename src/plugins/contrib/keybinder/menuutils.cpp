@@ -192,7 +192,7 @@ wxCmd *wxMenuCmd::CreateNew(wxString cmdName, int id)
         p = m_pMenuBar->FindItem(actualMenuID);
 	if (!p)
 	 {
-            wxLogDebug("CreateNew()UnMatched id:%d name:%s", id, cmdName.GetData());
+            wxLogDebug(_T("CreateNew()UnMatched id:%d name:%s"), id, cmdName.GetData());
             return NULL;
 	 }
 	//-v0.5

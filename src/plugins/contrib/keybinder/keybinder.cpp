@@ -805,7 +805,7 @@ void wxKeyBinder::Attach(wxWindow *p)
 
     //+v0.3 RC3 we allow only static windows to be attached by codeblocks
     // Disappearing frames/windows cause crashes
-    wxString usableWindows = "sciwindow notebook";
+    wxString usableWindows = _T("sciwindow notebook");
     wxString windowName = p->GetName().MakeLower();
 
     if (!usableWindows.Contains(windowName))
@@ -926,7 +926,7 @@ void wxKeyBinder::DetachAll()
 	for (int i=0; i < (int)m_arrHandlers.GetCount(); i++)
 	 {
         pwin = ((wxBinderEvtHandler*)m_arrHandlers.Item(i))->GetTargetWnd();     //+v0.4
-        wxLogDebug( "WxKeyBinder:DetachAll:Deleteing EvtHdlr for %p", pwin);     //+v0.4
+        wxLogDebug( _T("WxKeyBinder:DetachAll:Deleteing EvtHdlr for %p"), pwin);     //+v0.4
         delete (wxBinderEvtHandler*)m_arrHandlers.Item(i);
 	 }
 
@@ -1100,7 +1100,7 @@ bool wxKeyBinder::Load(wxConfigBase *p, const wxString &key)
 				//-v0.3 wxCmd *cmd = wxCmd::CreateNew(ntype, nid);
 				//+v0.3get command name and descriptions string
 
-				wxString cmdName(""); wxString cmdDesc("");
+				wxString cmdName; wxString cmdDesc;
 				if (! GetNameandDescription(p, str, cmdName, cmdDesc))
 				 {  //-v0.3 cont = FALSE; continue to load next command
                     //-break;

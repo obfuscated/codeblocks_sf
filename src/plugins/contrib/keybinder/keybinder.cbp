@@ -27,11 +27,12 @@
                     <Add option="-DWXUSINGDLL" />
                     <Add option="-DcbDEBUG" />
                     <Add option="-DTIXML_USE_STL" />
+                    <Add option="-DwxUSE_UNICODE" />
                 </Compiler>
             </Target>
             <Environment>
-                <Variable name="WX_VER" value="26" />
-                <Variable name="WX_CFG" value="NonUnicode" />
+                <Variable name="WX_CFG" value="" />
+                <Variable name="WX_SUFFIX" value="u" />
             </Environment>
         </Build>
         <Compiler>
@@ -40,12 +41,12 @@
             <Add directory="$(#CB)\sdk" />
             <Add directory="$(#CB)\sdk\wxscintilla\include" />
             <Add directory="$(#WX.include)" />
-            <Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw" />
+            <Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
             <Add directory="$(#WX)\contrib\include" />
         </Compiler>
         <Linker>
-            <Add library="wxmsw$(WX_VER)" />
             <Add library="codeblocks" />
+            <Add library="wxmsw26$(WX_SUFFIX)" />
             <Add directory="$(#CB)\devel" />
             <Add directory="$(#CB.lib)" />
             <Add directory="$(#WX.lib)\gcc_dll" />

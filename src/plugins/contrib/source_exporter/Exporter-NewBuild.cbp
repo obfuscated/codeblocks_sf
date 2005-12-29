@@ -1,48 +1,37 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-    <FileVersion major="1" minor="1" />
+    <FileVersion major="1" minor="2" />
     <Project>
         <Option title="Exporter" />
-        <Option makefile="Makefile" />
-        <Option makefile_is_custom="0" />
+        <Option pch_mode="0" />
         <Option compiler="0" />
         <Build>
             <Target title="wxPdfDocument">
                 <Option output="libwxPdfDocument.a" />
                 <Option working_dir="" />
-                <Option object_output=".objs" />
-                <Option deps_output=".deps" />
                 <Option type="2" />
                 <Option compiler="0" />
+                <Option includeInTargetAll="1" />
                 <Option projectCompilerOptionsRelation="2" />
                 <Option projectLinkerOptionsRelation="2" />
                 <Option projectResourceIncludeDirsRelation="2" />
-                <Compiler />
-                <ResourceCompiler />
-                <Linker />
-                <ExtraCommands />
             </Target>
             <Target title="default">
                 <Option output="..\..\..\devel\share\CodeBlocks\plugins\Exporter.dll" />
-                <Option working_dir="." />
-                <Option object_output=".objs" />
-                <Option deps_output=".deps" />
                 <Option external_deps="libwxPdfDocument.a;" />
                 <Option type="3" />
                 <Option compiler="0" />
                 <Option host_application="..\..\..\devel\codeblocks.exe" />
+                <Option includeInTargetAll="1" />
                 <Option projectLinkerOptionsRelation="2" />
-                <Compiler />
-                <ResourceCompiler />
                 <Linker>
                     <Add library="libwxPdfDocument.a" />
                     <Add directory="." />
                 </Linker>
-                <ExtraCommands />
             </Target>
             <Environment>
-                <Variable name="WX_VER" value="26" />
-                <Variable name="WX_CFG" value="NonUnicode" />
+                <Variable name="WX_CFG" value="" />
+                <Variable name="WX_SUFFIX" value="u" />
             </Environment>
         </Build>
         <Compiler>
@@ -59,9 +48,9 @@
             <Add option="-DWXUSINGDLL" />
             <Add option="-DcbDEBUG" />
             <Add option="-DTIXML_USE_STL" />
+            <Add option="-DwxUSE_UNICODE" />
             <Add directory="$(#WX.include)" />
-            <Add directory="$(#WX.lib)\gcc_dll\msw" />
-            <Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw" />
+            <Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
             <Add directory="$(#WX)\contrib\include" />
             <Add directory="$(#CB.include)\include" />
             <Add directory="$(#CB)\sdk" />
@@ -75,16 +64,14 @@
             <Add directory="$(#WX.include)" />
         </ResourceCompiler>
         <Linker>
-            <Add library="wxmsw$(WX_VER)" />
+            <Add library="wxmsw26$(WX_SUFFIX)" />
             <Add library="codeblocks" />
             <Add library="wxscintilla" />
-            <Add directory="$(#WX.lib)\gcc_dll\msw" />
             <Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
             <Add directory="$(#CB.lib)" />
             <Add directory="$(#CB)\devel" />
             <Add directory="$(#CB)\sdk\tinyxml" />
         </Linker>
-        <ExtraCommands />
         <Unit filename="BaseExporter.cpp">
             <Option compilerVar="CPP" />
             <Option target="default" />

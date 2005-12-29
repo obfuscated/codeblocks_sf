@@ -7,19 +7,6 @@
         <Option default_target="1" />
         <Option compiler="0" />
         <Build>
-            <Target title="PropGrid">
-                <Option output="propgrid\libpropgrid.a" />
-                <Option working_dir="" />
-                <Option type="2" />
-                <Option compiler="0" />
-                <Option includeInTargetAll="1" />
-                <Option projectResourceIncludeDirsRelation="2" />
-                <Compiler>
-                    <Add option="-DHAVE_W32API_H" />
-                    <Add option="-D__WXMSW__" />
-                    <Add option="-DWXUSINGDLL" />
-                </Compiler>
-            </Target>
             <Target title="wxSmith">
                 <Option output="..\..\..\devel\share\CodeBlocks\plugins\wxsmith.dll" />
                 <Option working_dir="..\..\..\devel" />
@@ -38,12 +25,13 @@
                     <Add library="txml" />
                     <Add library="codeblocks" />
                     <Add library="libpropgrid.a" />
-                    <Add library="wxmsw26" />
+                    <Add library="wxmsw26$(WX_SUFFIX)" />
                     <Add library="libwxscintilla.a" />
                 </Linker>
             </Target>
             <Environment>
-                <Variable name="WX_CFG" value="NonUnicode" />
+                <Variable name="WX_CFG" value="" />
+                <Variable name="WX_SUFFIX" value="u" />
             </Environment>
         </Build>
         <Compiler>
@@ -62,14 +50,14 @@
             <Add option="-DCB_PRECOMP" />
             <Add option="-DWX_PRECOMP" />
             <Add option="-DBUILDING_PLUGIN" />
-            <Add directory="propgrid\include" />
+            <Add option="-DwxUSE_UNICODE" />
+            <Add directory="..\..\..\sdk\propgrid\include" />
             <Add directory="$(#CB)\sdk" />
             <Add directory="$(#CB.include)" />
             <Add directory="$(#CB)\sdk\wxscintilla\include" />
             <Add directory="$(#CB.include)\wxscintilla\include" />
             <Add directory="$(#WX.include)" />
-            <Add directory="$(#WX.lib)\gcc_dll\msw" />
-            <Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw" />
+            <Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
             <Add directory="$(#WX)\contrib\include" />
             <Add directory="$(#CB.include)\as\include" />
         </Compiler>
@@ -81,12 +69,11 @@
             <Add option="-Wl,--enable-auto-image-base" />
             <Add option="-Wl,--export-all-symbols" />
             <Add option="-Wl,--add-stdcall-alias" />
-            <Add directory="propgrid" />
+            <Add directory="..\..\..\sdk\propgrid" />
             <Add directory="$(#CB)\devel" />
             <Add directory="$(#CB.lib)" />
             <Add directory="$(#CB)\sdk\tinyxml" />
             <Add directory="$(#CB.lib)\tinyxml" />
-            <Add directory="$(#WX.lib)\gcc_dll" />
             <Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
         </Linker>
         <ExtraCommands>
@@ -648,62 +635,6 @@
             <Option compile="0" />
             <Option link="0" />
             <Option target="wxSmith" />
-        </Unit>
-        <Unit filename="propgrid\include\wx\propgrid\advprops.h">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="PropGrid" />
-        </Unit>
-        <Unit filename="propgrid\include\wx\propgrid\custctrl.h">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="PropGrid" />
-        </Unit>
-        <Unit filename="propgrid\include\wx\propgrid\manager.h">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="PropGrid" />
-        </Unit>
-        <Unit filename="propgrid\include\wx\propgrid\odcombo.h">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="PropGrid" />
-        </Unit>
-        <Unit filename="propgrid\include\wx\propgrid\propdev.h">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="PropGrid" />
-        </Unit>
-        <Unit filename="propgrid\include\wx\propgrid\propgrid.h">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="PropGrid" />
-        </Unit>
-        <Unit filename="propgrid\src\propgrid\advprops.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="PropGrid" />
-        </Unit>
-        <Unit filename="propgrid\src\propgrid\custctrl.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="PropGrid" />
-        </Unit>
-        <Unit filename="propgrid\src\propgrid\manager.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="PropGrid" />
-        </Unit>
-        <Unit filename="propgrid\src\propgrid\odcombo.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="PropGrid" />
-        </Unit>
-        <Unit filename="propgrid\src\propgrid\propgrid.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="PropGrid" />
         </Unit>
         <Unit filename="resources\wxsdialogpreviewdlg.cpp">
             <Option compilerVar="CPP" />
