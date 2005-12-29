@@ -158,7 +158,7 @@ wxString wxKeyBind::NumpadKeyCodeToString(int keyCode)
 	case WXK_NUMPAD7:
 	case WXK_NUMPAD8:
 	case WXK_NUMPAD9:
-		res << keyCode - WXK_NUMPAD0;
+		res << wxString::Format(_T("%d"), keyCode - WXK_NUMPAD0);
 		break;
 
 	case WXK_NUMPAD_SPACE:
@@ -172,7 +172,7 @@ wxString wxKeyBind::NumpadKeyCodeToString(int keyCode)
 	case WXK_NUMPAD_F2:
 	case WXK_NUMPAD_F3:
 	case WXK_NUMPAD_F4:
-		res << wxT("F") << keyCode - WXK_NUMPAD_F1;
+		res << wxT("F") << wxString::Format(_T("%d"), keyCode - WXK_NUMPAD_F1);
 		break;
 
 	case WXK_NUMPAD_LEFT:
@@ -272,7 +272,7 @@ wxString wxKeyBind::KeyCodeToString(int keyCode)
     case WXK_F19: case WXK_F20:
     case WXK_F21: case WXK_F22:
     case WXK_F23: case WXK_F24:
-		res << wxT('F') << keyCode - WXK_F1 + 1;
+		res << wxT('F') << wxString::Format(_T("%d"), keyCode - WXK_F1 + 1);
 		break;
 
 
