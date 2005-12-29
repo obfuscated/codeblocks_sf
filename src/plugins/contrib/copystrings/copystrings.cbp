@@ -6,13 +6,13 @@
         <Option compiler="0" />
         <Build>
             <Target title="default">
-                <Option output="copystrings.dll" />
+                <Option output="..\..\..\devel\share\CodeBlocks\plugins\copystrings.dll" />
                 <Option type="3" />
                 <Option compiler="0" />
             </Target>
             <Environment>
                 <Variable name="WX_CFG" value="" />
-                <Variable name="WX_VER" value="26" />
+                <Variable name="WX_SUFFIX" value="u" />
             </Environment>
         </Build>
         <Compiler>
@@ -28,9 +28,9 @@
             <Add option="-DBUILDING_PLUGIN" />
             <Add option="-D__WXMSW__" />
             <Add option="-DHAVE_W32API_H" />
+            <Add option="-DwxUSE_UNICODE" />
             <Add directory="$(#WX.include)" />
-            <Add directory="$(#WX.lib)\gcc_dll\msw" />
-            <Add directory="$(#WX.lib)\gcc_dll\msw$(WX_CFG)\msw" />
+            <Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
             <Add directory="$(#WX)\contrib\include" />
             <Add directory="$(#CB.include)" />
             <Add directory="$(#CB.include)\tinyxml" />
@@ -43,10 +43,9 @@
             <Add directory="$(#WX.include)" />
         </ResourceCompiler>
         <Linker>
-            <Add library="wxmsw$(WX_VER)" />
             <Add library="codeblocks" />
             <Add library="wxscintilla" />
-            <Add directory="$(#WX.lib)\gcc_dll\msw" />
+            <Add library="wxmsw26$(WX_SUFFIX)" />
             <Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
             <Add directory="$(#CB.lib)" />
             <Add directory="$(#CB)\devel" />
