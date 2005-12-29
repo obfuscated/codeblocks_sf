@@ -460,7 +460,7 @@ public:
 };
 
 
-
+class wxKeyBinder;
 
 //! This is a wxEvtHandler which can be attached to any wxWindow-derived
 //! class. It handles only the key events calling a wxKeyBinder to process

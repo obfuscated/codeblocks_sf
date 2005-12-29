@@ -19,7 +19,6 @@ libwxsmith_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid
 
 libwxsmith_la_LIBADD = ../../../sdk/libcodeblocks.la \
 				../../../sdk/wxscintilla/libwxscintilla.la \
-				../../../sdk/propgrid/libpropgrid.la \
 				defwidgets/libwxsmith_defwidgets.la \
 				properties/libwxsmith_properties.la \
 				resources/libwxsmith_resources.la
