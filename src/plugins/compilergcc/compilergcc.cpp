@@ -785,9 +785,10 @@ int CompilerGCC::DoRunQueue()
 		pipe = false; // no need to pipe output channels...
 		flags |= wxEXEC_NOHIDE;
 		dir = m_CdRun;
-#ifndef __WXMSW__
-		wxSetEnv(_T("LD_LIBRARY_PATH"), _T("."));
-#endif
+    #ifndef __WXMSW__
+        // setup dynamic linker path
+		wxSetEnv(_T("LD_LIBRARY_PATH"), dir + _T(":$LD_LIBRARY_PATH"));
+    #endif
 	}
 
     // special shell used only for build commands
@@ -1224,7 +1225,10 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     wxFileName f(out);
     f.MakeAbsolute(m_Project->GetBasePath());
 //    m_CdRun = f.GetPath(wxPATH_GET_VOLUME);
-    m_CdRun = target->GetWorkingDir();
+    wxFileName cd(target->GetWorkingDir());
+    if (cd.IsRelative())
+        cd.MakeAbsolute(m_Project->GetBasePath());
+    m_CdRun = cd.GetFullPath();
 
     // for console projects, use helper app to wait for a key after
     // execution ends...
