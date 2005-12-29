@@ -19,7 +19,7 @@ FilesGroupsAndMasks::FilesGroupsAndMasks()
 		group = AddGroup(_("Headers"));
 		SetFileMasks(group, _T("*.h;*.hpp;*.hh;*.hxx;*.H;*.HPP;*.HH;*.HXX") );
 		group = AddGroup(_("Resources"));
-		SetFileMasks(group, _T("*.res;*.xrc;*.RES;*.XRC") );
+		SetFileMasks(group, _T("*.res;*.xrc;*.rc;*.RES;*.XRC;*.RC") );
 	}
 }
 
