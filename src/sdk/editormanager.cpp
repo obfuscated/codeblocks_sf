@@ -1713,10 +1713,17 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
     else
     {
         wxString msg;
-        //msg.Printf(_("Not found: %s"), data->findText.c_str());
-        //wxMessageBox(msg, _("Result"), wxICON_INFORMATION);
-        msg.Printf(_("not found in %d files"), filesList.GetCount());
-        LogSearch(_T(""), -1, msg );
+        if ( data->delOldSearches )
+        {
+            msg.Printf(_("Not found: %s"), data->findText.c_str());
+            wxMessageBox(msg, _("Result"), wxICON_INFORMATION);
+        }
+        else
+        {
+            msg.Printf(_("not found in %d files"), filesList.GetCount());
+            LogSearch(_T(""), -1, msg );
+            static_cast<SearchResultsLog*>(m_pSearchLog)->FocusEntry(oldcount);
+        }
     }
 
     return count;
