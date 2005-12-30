@@ -210,9 +210,14 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
     tmp = pf->GetObjName();
     FileType ft = FileTypeOf(pf->relativeFilename);
 
-    // don't change object extension for precompiled headers
-    if (ft != ftHeader)
+    if (ft == ftResource)
     {
+        // windows resources need different extension than other object files
+        tmp.SetExt(_T("res"));
+    }
+    else if (ft != ftHeader)
+    {
+        // don't change object extension for precompiled headers
         Compiler* compiler = target
                                 ? CompilerFactory::Compilers[target->GetCompilerIndex()]
                                 : CompilerFactory::GetDefaultCompiler();
