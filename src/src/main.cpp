@@ -1112,7 +1112,7 @@ void MainFrame::OnStartHereLink(wxCommandEvent& event)
     if (link.Matches(_T("CB_CMD_NEW_PROJECT")))
         TemplateManager::Get()->NewProject();
     else if (link.Matches(_T("CB_CMD_OPEN_PROJECT")))
-        OnFileOpen(evt);
+        OnProjectOpen(evt);
     else if (link.Matches(_T("CB_CMD_CONF_ENVIRONMENT")))
         OnSettingsEnvironment(evt);
     else if (link.Matches(_T("CB_CMD_CONF_EDITOR")))
@@ -1125,20 +1125,11 @@ void MainFrame::OnStartHereLink(wxCommandEvent& event)
     }
     else if (link.StartsWith(_T("CB_CMD_OPEN_HISTORY_")))
     {
-    	// history file
-// NOTE (mandrav#1#): This thing works for up to 9 history files.
-//                    The good thing is that the current start here page
-//                    displays only 5.
-//                    Things could be done better though...
-    	wxChar num = link.Last();
-        for (int i = 0; i < (int)m_ProjectsHistory.GetCount(); ++i)
-        {
-        	if (num - _T('1') == i)
-        	{
-        		OpenGeneric(m_ProjectsHistory.GetHistoryFile(i), true);
-        		break;
-        	}
-        }
+		unsigned long count;
+		link.AfterLast(_T('_')).ToULong(&count);
+		--count;
+		if(count < m_ProjectsHistory.GetCount())
+			OpenGeneric(m_ProjectsHistory.GetHistoryFile(count), true);
     }
 }
 
