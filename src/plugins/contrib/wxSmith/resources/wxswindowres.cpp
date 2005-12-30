@@ -8,6 +8,7 @@
 #include "../wxswinundobuffer.h"
 #include "../wxspredefinedids.h"
 #include "../wxsextresmanager.h"
+#include "../wxscustomwidgetxmlhandler.h"
 #include <manager.h>
 #include <editormanager.h>
 
@@ -225,9 +226,10 @@ void wxsWindowRes::ShowPreview()
     if ( Preview ) return;
 // TODO (SpOoN#1#): Save in temporary file
     Save();
-
+    
     wxXmlResource Res(WxsFile);
     Res.InitAllHandlers();
+    Res.AddHandler(new wxsCustomWidgetXmlHandler());
     ShowResource(Res);
 }
 

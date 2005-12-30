@@ -153,21 +153,9 @@ bool wxsNotebook::XmlLoadChild(TiXmlElement* Element)
     }
 
 	if ( !RealObject ) return false;
-
-    const char* Name = RealObject->Attribute("class");
-
-    if ( !Name || !*Name ) return false;
-
-    wxsWidget* Child = wxsGEN(_U(Name),GetResource());
-    if ( !Child ) return false;
-
-    if ( !Child->XmlLoad(RealObject) ) Ret = false;
-    int Index = AddChild(Child);
-    if ( Index < 0 )
-    {
-        delete Child;
-        return false;
-    }
+	if ( !wxsWidget::XmlLoadChild(RealObject) ) return false;
+    int Index = GetChildCount() - 1;
+    if ( Index < 0 ) return false;
 
     wxsNotebookExtraParams* Params = GetExtraParams(Index);
     TiXmlElement* Store = XmlElem();
@@ -176,7 +164,7 @@ bool wxsNotebook::XmlLoadChild(TiXmlElement* Element)
     Params->Selected = XmlGetInteger(_T("selected"),0) != 0;
     XmlAssignElement(Store);
 
-    if (Index == 0 || Params->Selected) CurrentSelection = Child;
+    if (Index == 0 || Params->Selected) CurrentSelection = GetChild(Index);
 
     return Ret;
 }

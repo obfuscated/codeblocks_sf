@@ -181,22 +181,9 @@ bool wxsDefSizer::XmlLoadChild(TiXmlElement* Element)
     }
 
 	if ( !RealObject ) return false;
-
-    const char* Name = RealObject->Attribute("class");
-
-    if ( !Name || !*Name ) return false;
-
-    wxsWidget* Child = wxsGEN(_U(Name),GetResource());
-    if ( !Child ) return false;
-
-    if ( !Child->XmlLoad(RealObject) ) Ret = false;
-    int Index = AddChild(Child);
-    if ( Index < 0 )
-    {
-        delete Child;
-        return false;
-    }
-
+	if ( !wxsWidget::XmlLoadChild(RealObject) ) return false;
+    int Index = GetChildCount() - 1;
+    if ( Index < 0 ) return false;
     return LoadSizerStuff(GetExtraParams(Index),Element) && Ret;
 }
 

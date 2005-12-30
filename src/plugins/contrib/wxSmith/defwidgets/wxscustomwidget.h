@@ -20,6 +20,7 @@ class wxsCustomWidget: public wxsWidget
         virtual wxString GetProducingCode(wxsCodeParams& Params);
         virtual wxString GetDeclarationCode(wxsCodeParams& Params);
         virtual const wxsWidgetInfo& GetInfo();
+        virtual bool PropertiesUpdated(bool Validate,bool Correct);
         
     protected:
     
@@ -27,12 +28,15 @@ class wxsCustomWidget: public wxsWidget
         wxString CreatingCode;
         wxString Style;
         wxString XmlData;
+        TiXmlDocument XmlDataDoc;
         
         virtual bool MyXmlLoad();
         virtual bool MyXmlSave();
         virtual void CreateObjectProperties();
         virtual wxWindow* MyCreatePreview(wxWindow* Parent);
         
+        void RebuildXmlData();
+        bool RebuildXmlDataDoc(bool Validate,bool Currect);
 };
 
 #endif // WXSCUSTOMWIDGET_H

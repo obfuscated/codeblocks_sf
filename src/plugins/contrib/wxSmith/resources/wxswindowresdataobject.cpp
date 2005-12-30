@@ -1,5 +1,6 @@
 #include "../wxsheaders.h"
 #include "wxswindowresdataobject.h"
+#include "wxswindowres.h"
 #include "../widget.h"
 #include "../wxswidgetfactory.h"
 #include <sstream>
@@ -95,7 +96,12 @@ wxsWidget* wxsWindowResDataObject::BuildWidget(wxsWindowRes* Resource,int Index)
 	if ( !Class || !*Class ) return NULL;
 
 	wxsWidget* Widget = wxsGEN(_U(Class),Resource);
-	if ( !Widget ) return NULL;
+	if ( !Widget )
+	{
+	    if ( Resource->GetEditMode() == wxsREMSource ) return false;
+        Widget = wxsGEN(_T("Custom"),Resource);
+        if ( !Widget ) return false;
+	}
 
 	Widget->XmlLoad(Root);
 	return Widget;

@@ -827,24 +827,18 @@ bool wxsWidget::XmlLoadChild(TiXmlElement* Element)
 	// Processing <object> elements only
     if ( strcmp(Element->Value(),"object") ) return true;
 
-
     const char* Name = Element->Attribute("class");
 
     bool Ret = true;
-    bool UsingXrc = GetResource()->GetEditMode() != wxsREMSource;
 
     if ( Name && *Name )
     {
         wxsWidget* Child = wxsGEN(_U(Name),GetResource());
         if ( !Child )
         {
-            if ( !UsingXrc ) return false;
-            // We assume this is custom widget
+            if ( GetResource()->GetEditMode() == wxsREMSource ) return false;
             Child = wxsGEN(_T("Custom"),GetResource());
-            if ( !Child )
-            {
-                return false;
-            }
+            if ( !Child ) return false;
         }
 
         if ( !Child->XmlLoad(Element) ) Ret = false;

@@ -63,7 +63,7 @@ bool wxsCustomWidget::MyXmlLoad()
         ClassName = _U(XmlElem()->Attribute("class"));
         Style = XmlGetVariable(_T("style"));
         
-        TiXmlDocument Doc;
+        XmlDataDoc.Clear();
         for ( TiXmlElement* Elem = XmlElem()->FirstChildElement();
               Elem;
               Elem = Elem->NextSiblingElement() )
@@ -81,19 +81,11 @@ bool wxsCustomWidget::MyXmlLoad()
                  Name != _T("font") &&
                  Name != _T("handler") )
             {
-                Doc.InsertEndChild(*Elem);
+                XmlDataDoc.InsertEndChild(*Elem);
             }
         }
-        
-        #ifdef TIXML_USE_STL
-            std::ostringstream buffer;
-            buffer << Doc;
-            XmlData = _U(buffer.str().c_str());
-        #else
-            TiXmlOutStream buffer;
-            buffer << Doc;
-            XmlData = _U(buffer.c_str());
-        #endif
+
+        RebuildXmlData();
     }
     
     return true;
@@ -111,10 +103,7 @@ bool wxsCustomWidget::MyXmlSave()
         XmlElem()->SetAttribute("class",ClassName.mb_str());
         XmlSetVariable(_T("style"),Style);
         
-        TiXmlDocument Doc;
-        Doc.Parse(XmlData.mb_str());
-        
-        for ( TiXmlElement* Elem = Doc.FirstChildElement();
+        for ( TiXmlElement* Elem = XmlDataDoc.FirstChildElement();
               Elem;
               Elem = Elem->NextSiblingElement() )
         {
@@ -165,4 +154,42 @@ wxWindow* wxsCustomWidget::MyCreatePreview(wxWindow* Parent)
     Wnd->SetBackgroundColour(wxColour(0,0,0));
     Wnd->SetForegroundColour(wxColour(0xFF,0xFF,0xFF));
     return Wnd;
+}
+
+void wxsCustomWidget::RebuildXmlData()
+{
+    #ifdef TIXML_USE_STL
+        std::ostringstream buffer;
+        buffer << XmlDataDoc;
+        XmlData = _U(buffer.str().c_str());
+    #else
+        TiXmlOutStream buffer;
+        buffer << XmlDataDoc;
+        XmlData = _U(buffer.c_str());
+    #endif
+}
+
+bool wxsCustomWidget::RebuildXmlDataDoc(bool Validate,bool Correct)
+{
+    XmlDataDoc.Clear();
+    XmlDataDoc.Parse(XmlData.mb_str());
+    if ( !Validate ) return true;
+    if ( !XmlDataDoc.Error() ) return true;
+    if ( Correct )
+    {
+        RebuildXmlData();
+        return false;
+    }
+    wxMessageBox(
+        wxString::Format(
+            _("Invalid Xml structure.\nError at line %d, column %d:\n\t\"%s\""),
+                XmlDataDoc.ErrorRow(),XmlDataDoc.ErrorCol(),
+                wxGetTranslation(_U(XmlDataDoc.ErrorDesc()).c_str())));
+    return false;
+}
+
+bool wxsCustomWidget::PropertiesUpdated(bool Validate,bool Correct)
+{
+    bool Ret = RebuildXmlDataDoc(Validate,Correct);
+    return wxsWidget::PropertiesUpdated(Validate,Correct) && Ret;
 }

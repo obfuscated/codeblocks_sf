@@ -1137,6 +1137,16 @@
             <Option link="0" />
             <Option target="wxSmith" />
         </Unit>
+        <Unit filename="wxscustomwidgetxmlhandler.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="wxscustomwidgetxmlhandler.h">
+            <Option compilerVar="CPP" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
         <Unit filename="wxsdefsizer.cpp">
             <Option compilerVar="CPP" />
             <Option target="wxSmith" />

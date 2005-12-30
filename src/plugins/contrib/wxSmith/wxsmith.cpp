@@ -313,7 +313,9 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
     	wxMessageBox(_("Couldn't load XRC file."));
         return;
     }     // Generating list of objects
-    wxArrayString Resources;     TiXmlElement* Element = Resource->FirstChildElement("object");     while ( Element )
+    wxArrayString Resources;
+    TiXmlElement* Element = Resource->FirstChildElement("object");
+    while ( Element )
     {
     	const char* Class = Element->Attribute("class");
     	const char* Name = Element->Attribute("name");
