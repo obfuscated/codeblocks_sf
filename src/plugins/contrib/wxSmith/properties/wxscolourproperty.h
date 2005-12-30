@@ -3,7 +3,7 @@
 
 #include "../wxsproperties.h"
 
-class WXSCLASS wxsColourProperty : public wxsProperty
+class wxsColourProperty : public wxsProperty
 {
 	public:
 

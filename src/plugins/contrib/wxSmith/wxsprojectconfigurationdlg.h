@@ -15,7 +15,7 @@
 
 #include "wxsglobals.h"
 
-class WXSCLASS wxsProject;
+class wxsProject;
 
 class wxsProjectConfigurationDlg: public wxDialog
 {

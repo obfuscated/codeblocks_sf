@@ -5,10 +5,10 @@
 #include "wxsglobals.h"
 #include <wx/treectrl.h>
 
-class WXSCLASS wxsProject;
-class WXSCLASS wxSmith;
+class wxsProject;
+class wxSmith;
 
-class WXSCLASS wxsResource: public wxObject
+class wxsResource: public wxObject
 {
 	public:
 

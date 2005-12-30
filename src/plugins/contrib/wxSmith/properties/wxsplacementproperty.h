@@ -3,9 +3,7 @@
 
 #include "../wxsproperties.h"
 
-class WXSCLASS wxsPlacementPropertyWindow;
-
-class WXSCLASS wxsPlacementProperty : public wxsProperty
+class wxsPlacementProperty : public wxsProperty
 {
 	public:
 
@@ -20,14 +18,9 @@ class WXSCLASS wxsPlacementProperty : public wxsProperty
 
     protected:
 
-        #ifdef __NO_PROPGRGID
-            virtual wxWindow* BuildEditWindow(wxWindow* Parent);
-            virtual void UpdateEditWindow();
-        #else
-            virtual void AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name);
-            virtual bool PropGridChanged(wxPropertyGrid* Grid,wxPGId Id);
-            virtual void UpdatePropGrid(wxPropertyGrid* Grid);
-        #endif
+        virtual void AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name);
+        virtual bool PropGridChanged(wxPropertyGrid* Grid,wxPGId Id);
+        virtual void UpdatePropGrid(wxPropertyGrid* Grid);
 
 	private:
 
@@ -35,14 +28,9 @@ class WXSCLASS wxsPlacementProperty : public wxsProperty
         bool &Expand;
         bool &Shaped;
 
-        #ifdef __NO_PROPGRGID
-            wxsPlacementPropertyWindow* Window;
-            friend class wxsPlacementPropertyWindow;
-        #else
-            wxPGId PGId;
-            wxPGId ExpandId;
-            wxPGId ShapedId;
-        #endif
+        wxPGId PGId;
+        wxPGId ExpandId;
+        wxPGId ShapedId;
 };
 
 #endif

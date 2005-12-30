@@ -6,17 +6,15 @@
 #include <wx/sizer.h>
 #include <vector>
 
-#ifndef __NO_PROPGRGID
-# include <wx/scrolwin.h>
-# include <wx/propgrid/propgrid.h>
-#endif
+#include <wx/scrolwin.h>
+#include <wx/propgrid/propgrid.h>
 
 #include "wxsglobals.h"
 
 /* Predefined classes */
-class WXSCLASS wxsWidget;
-class WXSCLASS wxsProperties;
-class WXSCLASS wxsPropertyGrid;
+class wxsWidget;
+class wxsProperties;
+class wxsPropertyGrid;
 
 
 /** Class used to handle one property
@@ -24,7 +22,7 @@ class WXSCLASS wxsPropertyGrid;
  *  The idea of this class is to give object which would be able to
  *  create window responsible for editing given property
  */
-class WXSCLASS wxsProperty
+class wxsProperty
 {
     public:
 
@@ -47,32 +45,17 @@ class WXSCLASS wxsProperty
 
     protected:
 
-        #ifdef __NO_PROPGRGID
+        /** Function adding entry for this property inside wxPropertyGrid class */
+        virtual void AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name) = 0;
 
-            /** This function must create window which will be responsible for
-             *  editing property's value */
-            virtual wxWindow* BuildEditWindow(wxWindow* Parent) = 0;
+        /** Function notifying about property change
+         *
+         * \return If false, changed property has invalid value
+         */
+        virtual bool PropGridChanged(wxPropertyGrid* Grid,wxPGId Id) = 0;
 
-            /** This funcytion must update content of currently created editor window
-             *  taking it's value prop current property
-             */
-            virtual void UpdateEditWindow() = 0;
-
-        #else
-
-            /** Function adding entry for this property inside wxPropertyGrid class */
-            virtual void AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name) = 0;
-
-            /** Function notifying about property change
-             *
-             * \return If false, changed property has invalid value
-             */
-            virtual bool PropGridChanged(wxPropertyGrid* Grid,wxPGId Id) = 0;
-
-            /** Function updating value of this property insided property grid */
-            virtual void UpdatePropGrid(wxPropertyGrid* Grid) = 0;
-
-        #endif
+        /** Function updating value of this property insided property grid */
+        virtual void UpdatePropGrid(wxPropertyGrid* Grid) = 0;
 
         /** This function returns wxsProperties object which uses this property */
         inline wxsProperties* GetProperties() { return Props; }
@@ -81,12 +64,9 @@ class WXSCLASS wxsProperty
 
         /** Properties object handling this property */
         wxsProperties* Props;
-
+        
         friend class wxsProperties;
-
-        #ifndef __NO_PROPGRGID
-            friend class wxsPropertyGrid;
-        #endif
+        friend class wxsPropertyGrid;
 };
 
 
@@ -94,7 +74,7 @@ class WXSCLASS wxsProperty
  *
  *  This class handles set of properties and manages them
  */
-class WXSCLASS wxsProperties
+class wxsProperties
 {
 	public:
 
@@ -163,15 +143,13 @@ class WXSCLASS wxsProperties
         /** Widget which is associated with this properties */
         wxsWidget* Widget;
 
-        #ifndef __NO_PROPGRGID
-            wxsPropertyGrid* Grid;
-            friend class wxsPropertyGrid;
-        #endif
+        wxsPropertyGrid* Grid;
 
         /** Used for blocking update callbacks */
         bool BlockUpdates;
 
         friend class wxsProperty;
+        friend class wxsPropertyGrid;
 };
 
 #endif // WXSBASEPROPERTIES_H

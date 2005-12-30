@@ -5,7 +5,7 @@
 #include "../wxswidgetevents.h"
 
 /** This class is a base for wxsDialog, wxsFrame and wxsPanel classes */
-class WXSCLASS wxsWindow : public wxsContainer
+class wxsWindow : public wxsContainer
 {
 	public:
 

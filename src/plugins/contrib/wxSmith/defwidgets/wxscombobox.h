@@ -24,7 +24,7 @@ wxsDWDeclareBegin(wxsComboBoxBase,wxsComboBoxId)
 
 wxsDWDeclareEnd()
 
-class WXSCLASS wxsComboBox: public wxsComboBoxBase
+class wxsComboBox: public wxsComboBoxBase
 {
     public:
         wxsComboBox(wxsWidgetManager* Man,wxsWindowRes* Res):

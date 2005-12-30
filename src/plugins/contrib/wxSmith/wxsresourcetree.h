@@ -5,12 +5,12 @@
 
 #include "wxsglobals.h"
 
-class WXSCLASS wxsWidget;
-class WXSCLASS wxsResource;
-class WXSCLASS wxsProject;
+class wxsWidget;
+class wxsResource;
+class wxsProject;
 
 /** Resource tree class */
-class WXSCLASS wxsResourceTree: public wxTreeCtrl
+class wxsResourceTree: public wxTreeCtrl
 {
     public:
 
@@ -32,7 +32,7 @@ class WXSCLASS wxsResourceTree: public wxTreeCtrl
 };
 
 /** Data used by resource tree */
-class WXSCLASS wxsResourceTreeData: public wxTreeItemData
+class wxsResourceTreeData: public wxTreeItemData
 {
     public:
 

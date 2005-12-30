@@ -13,7 +13,7 @@
 //*)
 #include "resources/wxswindowres.h"
 
-class WXSCLASS wxsNewWindowDlg : public wxDialog
+class wxsNewWindowDlg : public wxDialog
 {
 	public:
 		wxsNewWindowDlg(wxWindow* parent,const wxString& ResType);

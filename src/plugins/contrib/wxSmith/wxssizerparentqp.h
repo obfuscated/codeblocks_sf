@@ -14,8 +14,8 @@
 //*)
 #include <wx/timer.h>
 
-class WXSCLASS wxsWidget;
-class WXSCLASS wxsSizerExtraParams;
+class wxsWidget;
+class wxsSizerExtraParams;
 
 class wxsSizerParentQP: public wxPanel
 {

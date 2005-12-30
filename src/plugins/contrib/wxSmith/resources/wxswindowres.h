@@ -24,7 +24,7 @@
  *   - wxsREMSource - in this mode, resource is stored inside source code, no XrcFile is
  *     needed
  */
-class WXSCLASS wxsWindowRes : public wxsResource
+class wxsWindowRes : public wxsResource
 {
 	public:
 
@@ -270,14 +270,14 @@ class WXSCLASS wxsWindowRes : public wxsResource
             wxString Code;                                                  \
             Code.Append(wxString::Format(                                   \
                 _T("wxXmlResource::Get()->Load%s(this,parent,_T(%s));"),    \
-                _T(#Name), GetCString(GetClassName()).c_str() ));           \
+                _T(#Name), wxsGetCString(GetClassName()).c_str() ));        \
             return Code;                                                    \
         }                                                                   \
 
 
 /* Generic resources */
 
-class WXSCLASS wxsDialogRes: public wxsWindowRes
+class wxsDialogRes: public wxsWindowRes
 {
     wxsGenericWindowResourceBody(
         Dialog,
@@ -302,7 +302,7 @@ class WXSCLASS wxsDialogRes: public wxsWindowRes
     	wxString Code;
     	wxsDialog& Dlg = GetDialog();
     	Code << _T("SetWindowStyle(") << Dlg.GetCodeDefines().Style.c_str() << _T(");\n");
-    	Code << _T("SetTitle(") << GetWxString(Dlg.Title) << _T(");\n");
+    	Code << _T("SetTitle(") << wxsGetWxString(Dlg.Title) << _T(");\n");
         if ( Dlg.Centered )
         {
         	Code << _T("Centre();\n");
@@ -312,7 +312,7 @@ class WXSCLASS wxsDialogRes: public wxsWindowRes
     }
 };
 
-class WXSCLASS wxsFrameRes: public wxsWindowRes
+class wxsFrameRes: public wxsWindowRes
 {
     wxsGenericWindowResourceBody(
         Frame,
@@ -332,7 +332,7 @@ class WXSCLASS wxsFrameRes: public wxsWindowRes
         )
 };
 
-class WXSCLASS wxsPanelRes: public wxsWindowRes
+class wxsPanelRes: public wxsWindowRes
 {
     wxsGenericWindowResourceBody(
         Panel,

@@ -19,7 +19,7 @@ struct wxsNotebookExtraParams
     {}
 };
 
-class WXSCLASS wxsNotebook : public wxsContainer
+class wxsNotebook : public wxsContainer
 {
 	public:
 

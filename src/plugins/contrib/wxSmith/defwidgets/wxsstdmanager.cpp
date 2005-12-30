@@ -38,6 +38,7 @@
 #include "wxshtmlwindow.h"
 #include "wxsslider.h"
 #include "wxschecklistbox.h"
+#include "wxscustomwidget.h"
 #include "../wxsmith.h"
 
 
@@ -135,7 +136,6 @@ static const wxString DefSizerCat    = _("Layout");
         wxsWidgetInfo::exNone                           \
     },
 
-
 #define SizerEntry(Name,Link,Header)                            \
     {   _T("wx") _T(#Name),                                     \
         DefLicence,                                             \
@@ -159,6 +159,31 @@ static const wxString DefSizerCat    = _("Layout");
         _T(Header),                                             \
         _T(""),                                                 \
         wxsWidgetInfo::exNone                                   \
+    },
+
+#define CustomEntry()                                   \
+    {   _T("Custom"),                                   \
+        _("Not specified"),                             \
+        _T(""),                                         \
+        _T(""),                                         \
+        _T(""),                                         \
+        _T(""),                                         \
+        DefCategory,                                    \
+        _T("Custom"),                                   \
+        false,                                          \
+        false,                                          \
+        false,                                          \
+        0, 0,                                           \
+        NULL,                                           \
+        NULL,                                           \
+        &wxsStdManager,                                 \
+        wxsCustomWidgetId,                              \
+        0,                                              \
+        NULL,                                           \
+        wxsCustomWidgetEvents,                          \
+        _T(""),                                         \
+        _T(""),                                         \
+        wxsWidgetInfo::exNone                           \
     },
 
 
@@ -204,6 +229,8 @@ static wxsWidgetInfo StdInfos[] =
     Entry2Headers(HtmlWindow,    "wx_wxhtmlwindow.html#wxhtmlwindow","<wx/html/htmlwin.h>","<wx/filesys.h>")
     Entry(Slider,        "wx_wxslider.html#wxslideer","<wx/slider.h>")
     Entry(CheckListBox,  "wx_wxchecklistbox.html#wxchecklistbox","<wx/checklst.h>")
+    
+    CustomEntry()
 
     WindowEntry(Dialog,"wx_wxdialog.html#wxdialog","<wx/dialog.h>")
     WindowEntry(Frame, "wx_wxframe.html#wxframe","<wx/frame.h>")
@@ -355,6 +382,7 @@ wxsWidget* wxsStdManagerT::ProduceWidget(int Id,wxsWindowRes* Res)
         ITEM(HtmlWindow)
         ITEM(Slider)
         ITEM(CheckListBox)
+        ITEM(CustomWidget)
         #undef ITEM
     }
 

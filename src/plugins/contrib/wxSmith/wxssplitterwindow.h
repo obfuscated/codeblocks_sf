@@ -10,7 +10,7 @@
 /** This class extends behaviour of standard splitter window
  *  which fixes some bugs with them when using wxDockIt
  */
-class WXSCLASS wxsSplitterWindowEx : public wxPanel
+class wxsSplitterWindowEx : public wxPanel
 {
 	public:
 

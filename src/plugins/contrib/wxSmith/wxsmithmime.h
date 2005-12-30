@@ -2,7 +2,7 @@
 #define WXSMITHMIME_H
 
 /** Helper plugin dealing with mime types */
-class WXSCLASS wxSmithMime : public cbMimePlugin
+class wxSmithMime : public cbMimePlugin
 {
     public:
     

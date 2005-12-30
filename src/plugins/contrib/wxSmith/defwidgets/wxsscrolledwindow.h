@@ -7,7 +7,7 @@ WXS_ST_DECLARE(wxsScrolledWindowStyles)
 WXS_EV_DECLARE(wxsScrolledWindowEvents)
 
 /** Standard panel - it may be used as a widget */
-class WXSCLASS wxsScrolledWindow : public wxsWindow
+class wxsScrolledWindow : public wxsWindow
 {
 	public:
 		wxsScrolledWindow(wxsWidgetManager* Man,wxsWindowRes* Res);

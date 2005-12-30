@@ -108,7 +108,7 @@ bool wxsWindowResDataObject::SetXmlData(const wxString& Data)
 	XmlDoc.Parse(Data.mb_str());
     if ( XmlDoc.Error() )
     {
-        DebLog(_T("wxSmith: Error loading Xml data -> ") + _U(XmlDoc.ErrorDesc()));
+        DBGLOG(_T("wxSmith: Error loading Xml data -> ") + _U(XmlDoc.ErrorDesc()));
     	Clear();
     	return false;
     }

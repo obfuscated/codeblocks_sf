@@ -4,8 +4,7 @@
 #include "../wxsproperties.h"
 #include "../widget.h"
 
-class WXSCLASS wxsEnumPropertyWindow;
-class WXSCLASS wxsEnumProperty : public wxsProperty
+class wxsEnumProperty : public wxsProperty
 {
 	public:
 
@@ -20,14 +19,9 @@ class WXSCLASS wxsEnumProperty : public wxsProperty
 
     protected:
 
-        #ifdef __NO_PROPGRGID
-            virtual wxWindow* BuildEditWindow(wxWindow* Parent);
-            virtual void UpdateEditWindow();
-        #else
-            virtual void AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name);
-            virtual bool PropGridChanged(wxPropertyGrid* Grid,wxPGId Id);
-            virtual void UpdatePropGrid(wxPropertyGrid* Grid);
-        #endif
+        virtual void AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name);
+        virtual bool PropGridChanged(wxPropertyGrid* Grid,wxPGId Id);
+        virtual void UpdatePropGrid(wxPropertyGrid* Grid);
 
 	private:
 
@@ -35,12 +29,7 @@ class WXSCLASS wxsEnumProperty : public wxsProperty
         const wxChar** Names;
         const long* Values;
 
-        #ifdef __NO_PROPGRGID
-            wxsEnumPropertyWindow* Window;
-            friend class wxsEnumPropertyWindow;
-        #else
-            wxPGId PGId;
-        #endif
+        wxPGId PGId;
 };
 
 #endif

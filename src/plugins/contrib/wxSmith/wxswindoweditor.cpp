@@ -280,7 +280,7 @@ void wxsWindowEditor::Undo()
 	if ( !NewRoot ) return;
 	if ( !GetWinRes()->ChangeRootWidget(NewRoot) )
 	{
-		DebLog(_("wxSmith ERROR: Something wrong with undo buffer !!!"));
+		DBGLOG(_("wxSmith ERROR: Something wrong with undo buffer !!!"));
 		wxsKILL(NewRoot);
 	}
 	SetModified(UndoBuff->IsModified());
@@ -292,7 +292,7 @@ void wxsWindowEditor::Redo()
 	if ( !NewRoot ) return;
 	if ( !GetWinRes()->ChangeRootWidget(NewRoot) )
 	{
-		DebLog(_("wxSmith ERROR: Something wrong with undo buffer !!!"));
+		DBGLOG(_("wxSmith ERROR: Something wrong with undo buffer !!!"));
         wxsKILL(NewRoot);
 	}
 	SetModified(UndoBuff->IsModified());
@@ -699,7 +699,7 @@ void wxsWindowEditor::InsertRequest(const wxString& Name)
     wxsWidget* Current = GetSelection();
     if ( Current == NULL )
     {
-        DebLog(_("wxSmith: No widget selected - couldn't create new widget"));
+        DBGLOG(_("wxSmith: No widget selected - couldn't create new widget"));
         return;
     }
 
@@ -711,7 +711,7 @@ void wxsWindowEditor::InsertRequest(const wxString& Name)
     wxsWidget* NewWidget = wxsGEN(Name,GetWinRes());
     if ( NewWidget == NULL )
     {
-        DebLog(_("wxSmith: Culdn't generate widget inside factory"));
+        DBGLOG(_("wxSmith: Culdn't generate widget inside factory"));
         return;
     }
 
@@ -731,7 +731,7 @@ void wxsWindowEditor::InsertRequest(const wxString& Name)
 
         default:
             wxsKILL(NewWidget);
-            DebLog(_("Something went wrong"));
+            DBGLOG(_T("wxSmith: Internal error"));
             break;
     }
 
@@ -855,7 +855,7 @@ void wxsWindowEditor::OnDelete(wxCommandEvent& event)
     wxsWidget* Current = GetSelection();
     if ( Current == NULL )
     {
-        DebLog(_("wxSmith: No widget selecteed - couldn't delete"));
+        DBGLOG(_("wxSmith: No widget selecteed - couldn't delete"));
         return;
     }
 

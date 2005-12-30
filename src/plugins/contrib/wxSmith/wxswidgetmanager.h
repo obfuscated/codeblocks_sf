@@ -5,9 +5,9 @@
 #include "wxswidgetevents.h"
 #include "wxsstyle.h"
 
-class WXSCLASS wxsWidget;
-class WXSCLASS wxsWindowRes;
-class WXSCLASS wxsWidgetManager;
+class wxsWidget;
+class wxsWindowRes;
+class wxsWidgetManager;
 
 /** Structure containing info about widget */
 struct wxsWidgetInfo

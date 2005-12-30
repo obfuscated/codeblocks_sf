@@ -10,7 +10,7 @@ wxString wxsStaticBoxSizer::GetProducingCode(wxsCodeParams& Params)
         GetBaseProperties().VarName.c_str(),
         (Orient == wxVERTICAL) ? _T("wxVERTICAL") : _T("wxHORIZONTAL"),
         Params.ParentName.c_str(),
-        GetWxString(Label).c_str() );
+        wxsGetWxString(Label).c_str() );
 }
 
 bool wxsStaticBoxSizer::MyXmlLoad()

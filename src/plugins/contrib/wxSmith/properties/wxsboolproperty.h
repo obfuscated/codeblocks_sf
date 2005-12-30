@@ -3,8 +3,7 @@
 
 #include "../wxsproperties.h"
 
-class WXSCLASS wxsBoolPropertyWindow;
-class WXSCLASS wxsBoolProperty : public wxsProperty
+class wxsBoolProperty : public wxsProperty
 {
 	public:
         /** Ctor
@@ -24,26 +23,14 @@ class WXSCLASS wxsBoolProperty : public wxsProperty
 
     protected:
 
-        #ifdef __NO_PROPGRGID
-            virtual wxWindow* BuildEditWindow(wxWindow* Parent);
-            virtual void UpdateEditWindow();
-        #else
-            virtual void AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name);
-            virtual bool PropGridChanged(wxPropertyGrid* Grid,wxPGId Id);
-            virtual void UpdatePropGrid(wxPropertyGrid* Grid);
-        #endif
+        virtual void AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name);
+        virtual bool PropGridChanged(wxPropertyGrid* Grid,wxPGId Id);
+        virtual void UpdatePropGrid(wxPropertyGrid* Grid);
 
 	private:
 
         bool& Value;
-
-        #ifdef __NO_PROPGRGID
-            wxsBoolPropertyWindow* Window;
-            friend class wxsBoolPropertyWindow;
-        #else
-            wxPGId PGId;
-        #endif
-
+        wxPGId PGId;
 };
 
 #endif // WXSBOOLPROPERTY_H

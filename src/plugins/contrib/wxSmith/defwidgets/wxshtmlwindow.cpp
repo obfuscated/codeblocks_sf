@@ -70,13 +70,13 @@ wxString wxsHtmlWindow::GetProducingCode(wxsCodeParams& Params)
     {
         Code << wxString::Format(_T("%s->LoadPage(%s);\n"),
                 GetBaseProperties().VarName.c_str(),
-                GetWxString(url).c_str());
+                wxsGetWxString(url).c_str());
     }
     else if (!htmlcode.empty())
     {
         Code << wxString::Format(_T("%s->SetPage(%s);\n"),
                 GetBaseProperties().VarName.c_str(),
-                GetWxString(htmlcode).c_str());
+                wxsGetWxString(htmlcode).c_str());
     }
     
     Code << CDefs.InitCode;

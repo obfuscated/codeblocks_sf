@@ -3,9 +3,7 @@
 
 #include "../wxsproperties.h"
 
-class WXSCLASS wxsBorderPropertyWindow;
-
-class WXSCLASS wxsBorderProperty : public wxsProperty
+class wxsBorderProperty : public wxsProperty
 {
 	public:
 
@@ -20,25 +18,14 @@ class WXSCLASS wxsBorderProperty : public wxsProperty
 
     protected:
 
-        #ifdef __NO_PROPGRGID
-            virtual wxWindow* BuildEditWindow(wxWindow* Parent);
-            virtual void UpdateEditWindow();
-        #else
-            virtual void AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name);
-            virtual bool PropGridChanged(wxPropertyGrid* Grid,wxPGId Id);
-            virtual void UpdatePropGrid(wxPropertyGrid* Grid);
-        #endif
+        virtual void AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name);
+        virtual bool PropGridChanged(wxPropertyGrid* Grid,wxPGId Id);
+        virtual void UpdatePropGrid(wxPropertyGrid* Grid);
 
 	private:
 
         int &BorderFlags;
-
-        #ifdef __NO_PROPGRGID
-            wxsBorderPropertyWindow* Window;
-            friend class wxsBorderPropertyWindow;
-        #else
-            wxPGId PGId;
-        #endif
+        wxPGId PGId;
 };
 
 #endif // WXSBORDERPROPERTY_H

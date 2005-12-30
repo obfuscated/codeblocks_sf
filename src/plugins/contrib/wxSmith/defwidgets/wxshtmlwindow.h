@@ -13,7 +13,7 @@ wxsDWDeclareBegin(wxsHtmlWindowBase,wxsHtmlWindowId)
     wxString htmlcode;
 wxsDWDeclareEnd()
 
-class WXSCLASS wxsHtmlWindow: public wxsHtmlWindowBase
+class wxsHtmlWindow: public wxsHtmlWindowBase
 {
     public:
         wxsHtmlWindow(wxsWidgetManager* Man,wxsWindowRes* Res):

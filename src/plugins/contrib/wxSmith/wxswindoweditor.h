@@ -11,12 +11,12 @@
 #include "wxsevent.h"
 #include "wxsglobals.h"
 
-class WXSCLASS wxsWidget;
-class WXSCLASS wxsDragWindow;
-class WXSCLASS wxsWindowRes;
-class WXSCLASS wxsWinUndoBuffer;
+class wxsWidget;
+class wxsDragWindow;
+class wxsWindowRes;
+class wxsWinUndoBuffer;
 
-class WXSCLASS wxsWindowEditor : public wxsEditor
+class wxsWindowEditor : public wxsEditor
 {
 	public:
 		wxsWindowEditor(wxWindow* parent, wxsWindowRes* Resource);

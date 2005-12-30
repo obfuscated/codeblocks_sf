@@ -3,8 +3,7 @@
 
 #include "../wxsproperties.h"
 
-class WXSCLASS wxsIntPropertyWindow;
-class WXSCLASS wxsIntProperty : public wxsProperty
+class wxsIntProperty : public wxsProperty
 {
 	public:
         /** Ctor
@@ -24,15 +23,9 @@ class WXSCLASS wxsIntProperty : public wxsProperty
 
     protected:
 
-        #ifdef __NO_PROPGRGID
-            virtual wxWindow* BuildEditWindow(wxWindow* Parent);
-            virtual void UpdateEditWindow();
-        #else
-            virtual void AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name);
-            virtual bool PropGridChanged(wxPropertyGrid* Grid,wxPGId Id);
-            virtual void UpdatePropGrid(wxPropertyGrid* Grid);
-        #endif
-
+        virtual void AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name);
+        virtual bool PropGridChanged(wxPropertyGrid* Grid,wxPGId Id);
+        virtual void UpdatePropGrid(wxPropertyGrid* Grid);
 
         /** This function makes additional correction for value, must always
          *  return acceptable one. It can be declared inside derived classes
@@ -45,13 +38,7 @@ class WXSCLASS wxsIntProperty : public wxsProperty
         int& Value;
         bool AlwUpd;
 
-        #ifdef __NO_PROPGRGID
-            wxsIntPropertyWindow* Window;
-            friend class wxsIntPropertyWindow;
-        #else
-            wxPGId PGId;
-        #endif
-
+        wxPGId PGId;
 };
 
 #endif // WXSINTPROPERTY_H

@@ -99,4 +99,13 @@ const wxsBasePropertiesType propSizerF   = 0;
 /** wxsBasePropertiesType used by spacer */
 const wxsBasePropertiesType propSpacer   = bptSize;
 
+/** wxsBasePropertiesType used by custom widgets when in source edit mode */
+const wxsBasePropertiesType propCustomS  = bptPosition | bptSize | bptId | bptVariable | bptEnabled | bptFocused | bptHidden | bptColours | bptToolTip | bptFont;
+
+/** wxsBasePropertiesType used by custom widgets in File edit mode */
+const wxsBasePropertiesType propCustomF  = bptPosition | bptSize | bptId | bptEnabled | bptFocused | bptHidden | bptColours | bptToolTip | bptFont;
+
+/** wxsBasePropertiesType used by custom widgets in Mixed edit mode */
+const wxsBasePropertiesType propCustomM  = propCustomS;
+
 #endif // WXSBASEPROPERTIES_H

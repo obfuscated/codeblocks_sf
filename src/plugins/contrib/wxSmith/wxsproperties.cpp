@@ -10,9 +10,7 @@
 
 #include <wx/stattext.h>
 
-#ifndef __NO_PROPGRGID
-
-class WXSCLASS wxsPropertyGrid: public wxPropertyGrid
+class wxsPropertyGrid: public wxPropertyGrid
 {
 	public:
         wxsPropertyGrid(wxWindow* Parent,wxsProperties* _Props):
@@ -48,8 +46,6 @@ void wxsPropertyGrid::OnChange(wxPropertyGridEvent& event)
 		}
 	}
 }
-
-#endif
 
 bool wxsProperty::ValueChanged(bool Change)
 {
@@ -123,11 +119,7 @@ void wxsProperties::UpdateProperties()
     BlockUpdates = true;
     for ( VectorI i = Properties.begin(); i!=Properties.end(); ++i )
     {
-        #ifdef __NO_PROPGRGID
-            (*i)->Property->UpdateEditWindow();
-        #else
-            (*i)->Property->UpdatePropGrid(Grid);
-        #endif
+        (*i)->Property->UpdatePropGrid(Grid);
     }
     BlockUpdates = false;
 }

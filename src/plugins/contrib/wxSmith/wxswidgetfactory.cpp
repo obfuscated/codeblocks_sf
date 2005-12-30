@@ -81,7 +81,7 @@ void wxsWidgetFactory::RegisterManager(wxsWidgetManager* Manager)
     for ( int i = 0; i<Count; i++ )
     {
         const wxsWidgetInfo* Info = Manager->GetWidgetInfo(i);
-        if ( Info && ValidateIdentifier(Info->Name) )
+        if ( Info && wxsValidateIdentifier(Info->Name) )
         {
             Widgets[&Info->Name] = Info;
         }

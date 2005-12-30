@@ -7,19 +7,6 @@
         <Option default_target="1" />
         <Option compiler="0" />
         <Build>
-            <Target title="PropGrid">
-                <Option output="propgrid\libpropgrid.a" />
-                <Option working_dir="" />
-                <Option type="2" />
-                <Option compiler="0" />
-                <Option includeInTargetAll="1" />
-                <Option projectResourceIncludeDirsRelation="2" />
-                <Compiler>
-                    <Add option="-DHAVE_W32API_H" />
-                    <Add option="-D__WXMSW__" />
-                    <Add option="-DWXUSINGDLL" />
-                </Compiler>
-            </Target>
             <Target title="wxSmith">
                 <Option output="..\..\..\devel\share\CodeBlocks\plugins\wxsmith.dll" />
                 <Option working_dir="..\..\..\devel" />
@@ -61,7 +48,7 @@
             <Add option="-DwxsDEBUG" />
             <Add directory="..\..\..\sdk" />
             <Add directory="..\..\..\sdk\wxscintilla\include" />
-            <Add directory="propgrid\include" />
+            <Add directory="..\..\..\sdk\propgrid\include" />
             <Add directory="$(WX_DIR)\include" />
             <Add directory="$(WX_DIR)\lib\gcc_dll\msw" />
             <Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)\msw" />
@@ -70,7 +57,7 @@
         <Linker>
             <Add option="-i" />
             <Add directory="..\..\..\devel" />
-            <Add directory="propgrid" />
+            <Add directory="..\..\..\sdk\propgrid" />
             <Add directory="$(WX_DIR)\lib\gcc_dll" />
             <Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)" />
         </Linker>
@@ -164,6 +151,16 @@
         </Unit>
         <Unit filename="defwidgets\wxscombobox.h">
             <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="defwidgets\wxscustomwidget.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="wxSmith" />
+        </Unit>
+        <Unit filename="defwidgets\wxscustomwidget.h">
+            <Option compilerVar="CPP" />
             <Option compile="0" />
             <Option link="0" />
             <Option target="wxSmith" />
@@ -638,57 +635,46 @@
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="PropGrid" />
         </Unit>
         <Unit filename="propgrid\include\wx\propgrid\custctrl.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="PropGrid" />
         </Unit>
         <Unit filename="propgrid\include\wx\propgrid\manager.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="PropGrid" />
         </Unit>
         <Unit filename="propgrid\include\wx\propgrid\odcombo.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="PropGrid" />
         </Unit>
         <Unit filename="propgrid\include\wx\propgrid\propdev.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="PropGrid" />
         </Unit>
         <Unit filename="propgrid\include\wx\propgrid\propgrid.h">
             <Option compilerVar="" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="PropGrid" />
         </Unit>
         <Unit filename="propgrid\src\propgrid\advprops.cpp">
             <Option compilerVar="CPP" />
-            <Option target="PropGrid" />
         </Unit>
         <Unit filename="propgrid\src\propgrid\custctrl.cpp">
             <Option compilerVar="CPP" />
-            <Option target="PropGrid" />
         </Unit>
         <Unit filename="propgrid\src\propgrid\manager.cpp">
             <Option compilerVar="CPP" />
-            <Option target="PropGrid" />
         </Unit>
         <Unit filename="propgrid\src\propgrid\odcombo.cpp">
             <Option compilerVar="CPP" />
-            <Option target="PropGrid" />
         </Unit>
         <Unit filename="propgrid\src\propgrid\propgrid.cpp">
             <Option compilerVar="CPP" />
-            <Option target="PropGrid" />
         </Unit>
         <Unit filename="resources\wxsdialogpreviewdlg.cpp">
             <Option compilerVar="CPP" />

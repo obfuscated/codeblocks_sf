@@ -831,13 +831,20 @@ bool wxsWidget::XmlLoadChild(TiXmlElement* Element)
     const char* Name = Element->Attribute("class");
 
     bool Ret = true;
+    bool UsingXrc = GetResource()->GetEditMode() != wxsREMSource;
 
     if ( Name && *Name )
     {
         wxsWidget* Child = wxsGEN(_U(Name),GetResource());
         if ( !Child )
         {
-            return false;
+            if ( !UsingXrc ) return false;
+            // We assume this is custom widget
+            Child = wxsGEN(_T("Custom"),GetResource());
+            if ( !Child )
+            {
+                return false;
+            }
         }
 
         if ( !Child->XmlLoad(Element) ) Ret = false;
@@ -1059,7 +1066,7 @@ const wxsWidget::CodeDefines& wxsWidget::GetCodeDefines()
         }
         else
         {
-            CDefines.InitCode << GetWxString(Font.GetFaceName());
+            CDefines.InitCode << wxsGetWxString(Font.GetFaceName());
         }
 
         CDefines.InitCode << _T("));");
@@ -1083,7 +1090,7 @@ const wxsWidget::CodeDefines& wxsWidget::GetCodeDefines()
     if ( pType & bptToolTip && !GetBaseProperties().ToolTip.empty() )
     {
     	CDefines.InitCode << SelectCode << _T("SetToolTip(")
-    	                  << GetWxString(GetBaseProperties().ToolTip) << _T(");");
+    	                  << wxsGetWxString(GetBaseProperties().ToolTip) << _T(");");
     }
 
     return CDefines;

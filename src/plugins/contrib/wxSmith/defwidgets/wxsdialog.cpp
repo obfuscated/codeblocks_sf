@@ -82,7 +82,7 @@ wxString wxsDialog::GetProducingCode(wxsCodeParams& Params)
 {
     CodeDefines CDefs = GetCodeDefines();
     return wxString::Format(_T("Create(parent,id,%s,%s,%s,%s);%s"),
-        GetWxString(Title).c_str(),CDefs.Pos.c_str(),
+        wxsGetWxString(Title).c_str(),CDefs.Pos.c_str(),
         CDefs.Size.c_str(),CDefs.Style.c_str(),
         CDefs.InitCode.c_str());
 }

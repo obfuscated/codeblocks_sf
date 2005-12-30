@@ -125,7 +125,6 @@ void wxSmith::OnAttach()
 
         LeftSplitter->Split(ResourcesContainer,PropertiesContainer);
 
-//        MessageManager* Messages = Manager::Get()->GetMessageManager();
         Manager::Get()->Loadxrc(_T("/wxsmith.zip#zip:*"));
 
         // Initializing standard manager
@@ -134,25 +133,9 @@ void wxSmith::OnAttach()
 
         if ( ! wxsStdManager.RegisterInFactory() )
         {
-            //DebLog("Couldn't register standard widget's factory - this plugin will be useless");
+            DBGLOG(_T("wxSmith: Couldn't register standard widget's factory - this plugin will be useless"));
         }
         // TODO (SpOoN#1#): Add other widgets
-
-        /*
-        if ( Messages )
-        {
-            wxString resPath = ConfigManager::GetDataFolder();
-            wxString FileName = resPath + _T("/images/wxsmith/wxSmith16x16.png");
-
-            wxBitmap SmithBitmap;
-            SmithBitmap.LoadFile(FileName,wxBITMAP_TYPE_PNG);
-            int ImageIndex = Messages->GetImageList()->Add(SmithBitmap);
-
-            // Creating widgets palette ad the messages Notebook
-            wxWindow* Palette = new wxsPalette((wxWindow*)Messages,Messages->GetPageCount());
-            Messages->AddPage(Palette,_("Widgets"),false,ImageIndex);
-        }
-        */
 	}
 	else
 	{
@@ -421,7 +404,7 @@ bool wxSmith::CheckIntegration()
 
     if ( !Proj )
     {
-        DebLog(_("Something wrong - couldn't find assciated wxsProject"));
+        DBGLOG(_("Something wrong - couldn't find associated wxsProject"));
         return false;
     }
 

@@ -7,7 +7,7 @@
 #include "wxswidgetfactory.h"
 #include "wxssizerparentqp.h"
 
-class WXSCLASS wxsDefSizerPreview: public wxPanel
+class wxsDefSizerPreview: public wxPanel
 {
     public:
         wxsDefSizerPreview(wxWindow* Parent,wxsDefSizer* wxsSizer,wxSizer* _Sizer):

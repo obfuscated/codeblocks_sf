@@ -16,18 +16,22 @@
 //
 //
 
-
 /** Changing given string to it's representation in C++.
  *
  *  Could be used when need to throw some string to generated code
  */
-wxString GetCString(const wxString& Source);
+wxString wxsGetCString(const wxString& Source);
 
 /** Changing given string to it's representation in wxWidgets */
-wxString GetWxString(const wxString& Source);
+wxString wxsGetWxString(const wxString& Source);
 
-/** checkign if given work is a valid c++ Identifier */
-bool ValidateIdentifier(const wxString& Name);
+/** Replacing one string inside source code with another,
+ *  This function grants that it replace strings only
+ *  if it won't break c++ identifiers */
+void wxsCodeReplace(wxString& Code,const wxString& Old,const wxString& New);
+
+/** Checkign if given word is a valid c++ Identifier */
+bool wxsValidateIdentifier(const wxString& Name);
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -131,28 +135,6 @@ const wxUint32 wxsCUSTOM_COLOUR = wxPG_COLOUR_CUSTOM;
 
 /** Reading icon size inside palette */
 #define wxsDWToolIconSize Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadInt(_T("/tooliconsize"),32L)
-
-
-/** Shortcut to applications debug log */
-#define DebLog Manager::Get()->GetMessageManager()->DebugLog
-
-/** Default class declaration specifier */
-#if defined(wxsDEBUG)
-    #define WXSCLASS PLUGIN_EXPORT
-#else
-    #define WXSCLASS
-#endif
-
-
-/** Shortcut to applications debug log */
-#define DebLog Manager::Get()->GetMessageManager()->DebugLog
-
-/** Default class declaration specifier */
-#if defined(wxsDEBUG)
-    #define WXSCLASS PLUGIN_EXPORT
-#else
-    #define WXSCLASS
-#endif
 
 
 #endif

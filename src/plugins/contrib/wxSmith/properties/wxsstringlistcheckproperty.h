@@ -8,7 +8,7 @@
 
 WX_DEFINE_ARRAY(bool,wxsArrayBool);
 
-class WXSCLASS wxsStringListCheckProperty : public wxsProperty
+class wxsStringListCheckProperty : public wxsProperty
 {
 	public:
 

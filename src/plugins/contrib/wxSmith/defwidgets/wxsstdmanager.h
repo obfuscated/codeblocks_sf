@@ -47,6 +47,8 @@ enum std_widgets
     wxsHtmlWindowId,
     wxsSliderId,
     wxsCheckListBoxId,
+    
+    wxsCustomWidgetId,
 
     /* Windows */
     wxsDialogId,
@@ -57,7 +59,7 @@ enum std_widgets
     wxsStdIdCount
 };
 
-class WXSCLASS wxsStdManagerT : public wxsWidgetManager
+class wxsStdManagerT : public wxsWidgetManager
 {
 	public:
 		wxsStdManagerT();

@@ -40,7 +40,7 @@ wxString wxsCheckListBox::GetProducingCode(wxsCodeParams& Params)
     {
         Code << wxString::Format(_T("%s->Append(%s);\n"),
             GetBaseProperties().VarName.c_str(),
-            GetWxString(arrayChoices[i]).c_str());
+            wxsGetWxString(arrayChoices[i]).c_str());
     }
 
     for ( size_t i = 0; i < arrayChecks.Count(); ++i )

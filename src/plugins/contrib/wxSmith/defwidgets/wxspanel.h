@@ -7,7 +7,7 @@ WXS_ST_DECLARE(wxsPanelStyles)
 WXS_EV_DECLARE(wxsPanelEvents)
 
 /** Standard panel - it may be used as a widget */
-class WXSCLASS wxsPanel : public wxsWindow
+class wxsPanel : public wxsWindow
 {
 	public:
 		wxsPanel(wxsWidgetManager* Man,wxsWindowRes* Res);
@@ -28,7 +28,7 @@ WXS_ST_DECLARE(wxsPanelrStyles)
 WXS_EV_DECLARE(wxsPanelrEvents)
 
 /** Resource panel - may be used as a resource */
-class WXSCLASS wxsPanelr : public wxsWindow
+class wxsPanelr : public wxsWindow
 {
 	public:
 		wxsPanelr(wxsWidgetManager* Man,wxsWindowRes* Res);

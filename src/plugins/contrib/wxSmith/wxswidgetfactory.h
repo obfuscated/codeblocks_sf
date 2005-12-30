@@ -4,7 +4,7 @@
 #include <map>
 #include "widget.h"
 
-class WXSCLASS wxsWidgetFactory
+class wxsWidgetFactory
 {
 	public:
 

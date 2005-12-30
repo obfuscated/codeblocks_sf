@@ -7,7 +7,7 @@
 
 #include "wxsglobals.h"
 
-class WXSCLASS wxsWidget;
+class wxsWidget;
 
 /** Structure describing one event */
 struct wxsEventDesc
@@ -50,7 +50,7 @@ struct wxsEventDesc
 /** This class is responsible for handling events for widget.
  *  Events are processed by root resource's class
  */
-class WXSCLASS wxsWidgetEvents
+class wxsWidgetEvents
 {
 	public:
 

@@ -3,8 +3,7 @@
 
 #include "widget.h"
 
-
-class WXSCLASS wxsCodeGen
+class wxsCodeGen
 {
     public:
 

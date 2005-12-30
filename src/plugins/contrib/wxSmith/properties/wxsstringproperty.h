@@ -3,9 +3,7 @@
 
 #include "../wxsproperties.h"
 
-class WXSCLASS wxsStringPropertyWindow;
-
-class WXSCLASS wxsStringProperty : public wxsProperty
+class wxsStringProperty : public wxsProperty
 {
 	public:
         /** Ctor
@@ -27,27 +25,16 @@ class WXSCLASS wxsStringProperty : public wxsProperty
 
         virtual wxString CorrectValue(const wxString& Value) { return Value; }
 
-        #ifdef __NO_PROPGRGID
-            virtual wxWindow* BuildEditWindow(wxWindow* Parent);
-            virtual void UpdateEditWindow();
-        #else
-            virtual void AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name);
-            virtual bool PropGridChanged(wxPropertyGrid* Grid,wxPGId Id);
-            virtual void UpdatePropGrid(wxPropertyGrid* Grid);
-        #endif
+        virtual void AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name);
+        virtual bool PropGridChanged(wxPropertyGrid* Grid,wxPGId Id);
+        virtual void UpdatePropGrid(wxPropertyGrid* Grid);
 
 	private:
 
         wxString& Value;
         bool AlwUpd;
         bool IsLong;
-
-        #ifdef __NO_PROPGRGID
-            wxsStringPropertyWindow* Window;
-            friend class wxsStringPropertyWindow;
-        #else
-            wxPGId PGId;
-        #endif
+        wxPGId PGId;
 };
 
 #endif // WXSSTRINGPROPERTY_H

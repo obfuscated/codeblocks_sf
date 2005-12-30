@@ -7,7 +7,7 @@
 #include <wx/scrolwin.h>
 #include <wx/event.h>
 
-class WXSCLASS wxsPropertiesMan: public wxEvtHandler
+class wxsPropertiesMan: public wxEvtHandler
 {
 	public:
 		wxsPropertiesMan();

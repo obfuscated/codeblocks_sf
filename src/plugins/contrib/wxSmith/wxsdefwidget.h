@@ -14,7 +14,7 @@
  * \param WidgetId - identifier of widget used in default widget manager
  */
 #define wxsDWDeclareBegin(Name,WidgetId)                                    \
-    class WXSCLASS Name : public wxsDefWidget                               \
+    class Name : public wxsDefWidget                               \
     {                                                                       \
         public:                                                             \
             Name(wxsWidgetManager* Man,wxsWindowRes* Res):                  \
@@ -226,7 +226,7 @@ inline void wxsDWSelectString(const wxArrayString& Array,size_t Index,wxControlW
 }
 
 /** Base class for all default widgets */
-class WXSCLASS wxsDefWidget: public wxsWidget
+class wxsDefWidget: public wxsWidget
 {
 	public:
 
@@ -271,17 +271,6 @@ class WXSCLASS wxsDefWidget: public wxsWidget
         void evXmlS();
         void evCode();
         void evProps();
-
-
-        /** This function does replace the Old identifier with New content
-         *
-         * It replaces strings but only when it won't break tpkens
-         *
-         * \param Old - Old string
-         * \param New - New string
-         */
-        void CodeReplace(const wxString& Old,const wxString& New);
-
 };
 
 #endif // WXSDEFWIDGET_H

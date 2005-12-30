@@ -51,7 +51,7 @@ struct wxsSizerExtraParams
 
 /** Macro starting declaration of sizer class */
 #define wxsDSDeclareBegin(Name,SizerId)                                 \
-    class WXSCLASS wxs##Name: public wxsDefSizer                        \
+    class wxs##Name: public wxsDefSizer                        \
     {                                                                   \
         public:                                                         \
             wxs##Name(wxsWidgetManager* Man,wxsWindowRes* Res):         \
@@ -89,7 +89,7 @@ struct wxsSizerExtraParams
     };
 
 /** Base class for sizers */
-class WXSCLASS wxsDefSizer : public wxsContainer
+class wxsDefSizer : public wxsContainer
 {
 	public:
 		wxsDefSizer(wxsWidgetManager* Man,wxsWindowRes* Res);

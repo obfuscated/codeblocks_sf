@@ -22,7 +22,7 @@ WXS_EV_BEGIN(wxsChoicebookEvents)
     WXS_EVI(EVT_NOTEBOOK_PAGE_CHANGING,wxChoicebookEvent,PageChanging)
 WXS_EV_END(wxsChoicebookEvents)
 
-class WXSCLASS wxsChoicebookPreview: public wxChoicebook
+class wxsChoicebookPreview: public wxChoicebook
 {
 	public:
         wxsChoicebookPreview(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, wxsChoicebook* NB):
@@ -123,7 +123,7 @@ wxString wxsChoicebook::GetFinalizingCode(wxsCodeParams& Params)
             _T("%s->AddPage(%s,%s,%s);\n"),
                 GetBaseProperties().VarName.c_str(),
                 Child->GetBaseProperties().VarName.c_str(),
-                GetWxString(Params->Label).c_str(),
+                wxsGetWxString(Params->Label).c_str(),
                 Params->Selected ? _T("true") : _T("false"));
 	}
 	return Code;

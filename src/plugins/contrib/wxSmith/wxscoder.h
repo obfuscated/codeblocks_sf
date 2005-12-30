@@ -17,7 +17,7 @@
  * Current implementation does not shedule coded upgrades which may cause
  * bad results in performance.
  */
-class WXSCLASS wxsCoder
+class wxsCoder
 {
 	public:
 

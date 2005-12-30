@@ -17,7 +17,7 @@
 #include <wx/xrc/xmlres.h>
 //*)
 
-class WXSCLASS wxsSettingsDlg: public wxDialog
+class wxsSettingsDlg: public wxDialog
 {
     public:
 

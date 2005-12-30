@@ -4,7 +4,7 @@
 #include "wxsnewwindowdlg.h"
 
 /** This class is used to show dialgo window and import xrc file data */
-class WXSCLASS wxsImportXrcDlg : public wxsNewWindowDlg
+class wxsImportXrcDlg : public wxsNewWindowDlg
 {
 	public:
         /** Ctor */

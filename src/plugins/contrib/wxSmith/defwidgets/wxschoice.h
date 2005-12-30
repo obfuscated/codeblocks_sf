@@ -12,7 +12,7 @@ wxsDWDeclareBegin(wxsChoiceBase,wxsChoiceId)
     int defaultChoice;
 wxsDWDeclareEnd()
 
-class WXSCLASS wxsChoice: public wxsChoiceBase
+class wxsChoice: public wxsChoiceBase
 {
     public:
         wxsChoice(wxsWidgetManager* Man,wxsWindowRes* Res):

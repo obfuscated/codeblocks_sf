@@ -52,7 +52,7 @@ wxString wxsRadioBox::GetProducingCode(wxsCodeParams& Params)
             GetBaseProperties().VarName.c_str(),
             Params.ParentName.c_str(),
             GetBaseProperties().IdName.c_str(),
-            GetWxString(label).c_str(),
+            wxsGetWxString(label).c_str(),
             CDefs.Pos.c_str(),
             CDefs.Size.c_str(),
             dimension,
@@ -63,14 +63,14 @@ wxString wxsRadioBox::GetProducingCode(wxsCodeParams& Params)
 	Code.Printf(_T("wxString wxRadioBoxChoices%d[%d];\n"),Params.UniqueNumber,arrayChoices.Count());
 	for ( size_t i = 0; i < arrayChoices.Count(); ++i )
 	{
-		Code.Append( wxString::Format(_T("wxRadioBoxChoices%d[%d] = %s;\n"),Params.UniqueNumber,i,GetWxString(arrayChoices[i]).c_str()) );
+		Code.Append( wxString::Format(_T("wxRadioBoxChoices%d[%d] = %s;\n"),Params.UniqueNumber,i,wxsGetWxString(arrayChoices[i]).c_str()) );
 	}
 
     Code.Append ( wxString::Format(_T("%s = new wxRadioBox(%s,%s,%s,%s,%s,%d,wxRadioBoxChoices%d,%d,%s);"),
         GetBaseProperties().VarName.c_str(),
         Params.ParentName.c_str(),
         GetBaseProperties().IdName.c_str(),
-        GetWxString(label).c_str(),
+        wxsGetWxString(label).c_str(),
         CDefs.Pos.c_str(),
         CDefs.Size.c_str(),
         arrayChoices.Count(),

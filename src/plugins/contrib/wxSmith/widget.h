@@ -17,10 +17,10 @@
 #include "wxsbaseproperties.h"
 #include "wxswidgetmanager.h"
 
-class WXSCLASS wxsWidgetManager;
-class WXSCLASS wxsWidget;
-class WXSCLASS wxsWidgetEvents;
-class WXSCLASS wxsEventDesc;
+class wxsWidgetManager;
+class wxsWidget;
+class wxsWidgetEvents;
+class wxsEventDesc;
 
 /** Structure containing all data needed while generating code */
 struct wxsCodeParams
@@ -31,7 +31,7 @@ struct wxsCodeParams
 };
 
 /** Class representing one widget */
-class WXSCLASS wxsWidget
+class wxsWidget
 {
     public:
 

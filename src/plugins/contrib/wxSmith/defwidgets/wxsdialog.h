@@ -6,7 +6,7 @@
 WXS_ST_DECLARE(wxsDialogStyles)
 WXS_EV_DECLARE(wxsDialogEvents)
 
-class WXSCLASS wxsDialog : public wxsWindow
+class wxsDialog : public wxsWindow
 {
 	public:
 		wxsDialog(wxsWidgetManager* Man,wxsWindowRes* Res);

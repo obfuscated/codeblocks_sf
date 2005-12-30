@@ -6,7 +6,7 @@
 
 #include "wxsstdmanager.h"
 
-class WXSCLASS wxsWindowPreview: public wxPanel
+class wxsWindowPreview: public wxPanel
 {
     public:
 

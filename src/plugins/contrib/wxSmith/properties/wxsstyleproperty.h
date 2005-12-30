@@ -4,7 +4,7 @@
 #include "../wxsproperties.h"
 #include "../widget.h"
 
-class WXSCLASS wxsStyleProperty : public wxsProperty
+class wxsStyleProperty : public wxsProperty
 {
 	public:
 

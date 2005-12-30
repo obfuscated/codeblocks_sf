@@ -1,7 +1,7 @@
 #include "wxsheaders.h"
 #include "wxsglobals.h"
 
-wxString GetCString(const wxString& Source)
+wxString wxsGetCString(const wxString& Source)
 {
     wxString Result = _T("\"");
 
@@ -49,10 +49,58 @@ wxString GetCString(const wxString& Source)
     return Result;
 }
 
-wxString GetWxString(const wxString& Source)
+wxString wxsGetWxString(const wxString& Source)
 {
 	if ( Source.empty() ) return _T("_T(\"\")");
-	return wxString::Format(_T("_(%s)"),GetCString(Source).c_str());
+	return wxString::Format(_T("_(%s)"),wxsGetCString(Source).c_str());
+}
+
+void wxsCodeReplace(wxString& Code,const wxString& Old,const wxString& New)
+{
+    if ( Old.empty() ) return;
+
+    wxString NewCode;
+    int Pos = Code.Find(Old);
+    while ( Pos >= 0 )
+    {
+        bool CanMove = true;
+        wxChar Before = ( Pos > 0 ) ? Code[Pos-1] : _T('\0');
+
+        if ( ( (Before >= 'a') && (Before <= 'z') ) ||
+             ( (Before >= 'A') && (Before <= 'Z') ) ||
+             ( (Before >= '0') && (Before <= '9') ) ||
+               (Before == '_') )
+        {
+            CanMove = false;
+        }
+        else
+        {
+            size_t AfterPos = Pos + Old.Len();
+            wxChar After = ( AfterPos < Code.Len() ) ? Code[AfterPos] : _T('\0');
+            if ( ( (After >= 'a') && (After <= 'z') ) ||
+                 ( (After >= 'A') && (After <= 'Z') ) ||
+                 ( (After >= '0') && (After <= '9') ) ||
+                   (After == '_') )
+            {
+                CanMove = false;
+            }
+        }
+
+        if ( !CanMove )
+        {
+            NewCode.Append(Code.Mid(0,Pos+1));
+            Code.Remove(0,Pos+1);
+        }
+        else
+        {
+            NewCode.Append(Code.Mid(0,Pos));
+            NewCode.Append(New);
+            Code.Remove(0,Pos+Old.Len());
+        }
+        Pos = Code.Find(Old);
+    }
+    NewCode.Append(Code);
+    Code = NewCode;
 }
 
 /** Set of names which can not be used as widget names
@@ -79,7 +127,7 @@ static const wxChar* DeadNames[] =
 /** Numbe of enteries in array of dead names */
 static const int DeadNamesLen = sizeof(DeadNames) / sizeof(DeadNames[0]);
 
-bool ValidateIdentifier(const wxString& NameStr)
+bool wxsValidateIdentifier(const wxString& NameStr)
 {
     const wxChar* Name = NameStr.c_str();
     if ( !Name ) return false;

@@ -19,7 +19,7 @@ struct wxsChoicebookExtraParams
     {}
 };
 
-class WXSCLASS wxsChoicebook : public wxsContainer
+class wxsChoicebook : public wxsContainer
 {
 	public:
 

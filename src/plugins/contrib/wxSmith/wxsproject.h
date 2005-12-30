@@ -9,14 +9,14 @@
 /* Predefines                                                                 */
 /******************************************************************************/
 
-class WXSCLASS wxSmith;
-class WXSCLASS wxsWidget;
-class WXSCLASS wxsWindowEditor;
-class WXSCLASS wxsResource;
-class WXSCLASS wxsDialogRes;
-class WXSCLASS wxsFrameRes;
-class WXSCLASS wxsPanelRes;
-class WXSCLASS wxsWindowRes;
+class wxSmith;
+class wxsWidget;
+class wxsWindowEditor;
+class wxsResource;
+class wxsDialogRes;
+class wxsFrameRes;
+class wxsPanelRes;
+class wxsWindowRes;
 
 /******************************************************************************/
 
@@ -42,7 +42,7 @@ static const wxString wxSmithMainConfigFile(_T("wxsmith.cfg"));
  *  - anything needed ? add here
  *  .
  */
-class WXSCLASS wxsProject
+class wxsProject
 {
 
 	public:

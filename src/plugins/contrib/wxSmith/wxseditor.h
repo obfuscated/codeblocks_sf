@@ -4,9 +4,9 @@
 #include <editorbase.h>
 #include "wxsevent.h"
 
-class WXSCLASS wxsResource;
+class wxsResource;
 
-class WXSCLASS wxsEditor : public EditorBase
+class wxsEditor : public EditorBase
 {
 	public:
 

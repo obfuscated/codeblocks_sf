@@ -72,7 +72,7 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
     const wxChar* ClassName = Class->GetValue().c_str();
 
 
-    if ( !ValidateIdentifier(ClassName) )
+    if ( !wxsValidateIdentifier(ClassName) )
     {
         wxMessageBox(_("Invalid class name"));
         return;

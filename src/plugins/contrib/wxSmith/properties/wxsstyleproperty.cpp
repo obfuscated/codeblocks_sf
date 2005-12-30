@@ -11,12 +11,8 @@ wxsStyleProperty::wxsStyleProperty(wxsProperties* Properties,int &_StyleBits,int
     ExStyleBits(_ExStyleBits),
     Styles(_Styles),
     XrcOnly(_XrcOnly),
-    #ifdef __NO_PROPGRGID
-        Window(NULL)
-    #else
-        StylePGId(0),
-        ExStylePGId(0)
-    #endif
+    StylePGId(0),
+    ExStylePGId(0)
 {
 }
 

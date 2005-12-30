@@ -7,8 +7,8 @@
 #include "wxsglobals.h"
 
 
-class WXSCLASS wxsWidget;
-class WXSCLASS wxsWindowRes;
+class wxsWidget;
+class wxsWindowRes;
 
 /** This class is used to handle all Undo and Redo actions.
  *
@@ -19,7 +19,7 @@ class WXSCLASS wxsWindowRes;
  * of memory consumption problems this can be changed to hold differences
  * between two xml nodes only.
  */
-class WXSCLASS wxsWinUndoBuffer
+class wxsWinUndoBuffer
 {
 	public:
 

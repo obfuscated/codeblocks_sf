@@ -22,7 +22,7 @@ WXS_EV_BEGIN(wxsListbookEvents)
     WXS_EVI(EVT_LISTBOOK_PAGE_CHANGING,wxListbookEvent,PageChanging)
 WXS_EV_END(wxsListbookEvents)
 
-class WXSCLASS wxsListbookPreview: public wxListbook
+class wxsListbookPreview: public wxListbook
 {
 	public:
         wxsListbookPreview(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, wxsListbook* NB):
@@ -123,7 +123,7 @@ wxString wxsListbook::GetFinalizingCode(wxsCodeParams& Params)
             _T("%s->AddPage(%s,%s,%s);\n"),
                 GetBaseProperties().VarName.c_str(),
                 Child->GetBaseProperties().VarName.c_str(),
-                GetWxString(Params->Label).c_str(),
+                wxsGetWxString(Params->Label).c_str(),
                 Params->Selected ? _T("true") : _T("false"));
 	}
 	return Code;

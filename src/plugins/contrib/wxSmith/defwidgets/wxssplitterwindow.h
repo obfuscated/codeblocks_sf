@@ -8,7 +8,7 @@
 WXS_ST_DECLARE(wxsSplitterWindowStyles)
 WXS_EV_DECLARE(wxsSplitterWindowEvents)
 
-class WXSCLASS wxsSplitterWindow : public wxsContainer
+class wxsSplitterWindow : public wxsContainer
 {
 	public:
 

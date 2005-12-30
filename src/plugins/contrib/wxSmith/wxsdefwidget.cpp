@@ -45,13 +45,13 @@ wxString wxsDefWidget::GetProducingCode(wxsCodeParams& Params)
 
     evCode();
 
-    CodeReplace(_T("WXS_POS"),CD.Pos);
-    CodeReplace(_T("WXS_SIZE"),CD.Size);
-    CodeReplace(_T("WXS_STYLE"),CD.Style);
+    wxsCodeReplace(CodeResult,_T("WXS_POS"),CD.Pos);
+    wxsCodeReplace(CodeResult,_T("WXS_SIZE"),CD.Size);
+    wxsCodeReplace(CodeResult,_T("WXS_STYLE"),CD.Style);
 
-    CodeReplace(_T("WXS_ID"),GetBaseProperties().IdName);
-    CodeReplace(_T("WXS_THIS"),GetBaseProperties().VarName);
-    CodeReplace(_T("WXS_PARENT"),Params.ParentName);
+    wxsCodeReplace(CodeResult,_T("WXS_ID"),GetBaseProperties().IdName);
+    wxsCodeReplace(CodeResult,_T("WXS_THIS"),GetBaseProperties().VarName);
+    wxsCodeReplace(CodeResult,_T("WXS_PARENT"),Params.ParentName);
 
     // Applying default initializing code
 
@@ -96,59 +96,6 @@ void wxsDefWidget::evDestroy()
     BuildExtVars();
 }
 
-void wxsDefWidget::CodeReplace(const wxString& Old,const wxString& New)
-{
-    if ( Old.empty() ) return;
-
-    wxString NewCode;
-    int Pos = CodeResult.Find(Old);
-    if ( Pos < 0 )
-    {
-        DBGLOG(_("wxSmith: %s -> %s"),Old.c_str(),New.c_str());
-        DBGLOG(_("in string: %s"),CodeResult.c_str());
-    }
-    while ( Pos >= 0 )
-    {
-        bool CanMove = true;
-        wxChar Before = ( Pos > 0 ) ? CodeResult[Pos-1] : _T('\0');
-
-        if ( ( (Before >= 'a') && (Before <= 'z') ) ||
-             ( (Before >= 'A') && (Before <= 'Z') ) ||
-             ( (Before >= '0') && (Before <= '9') ) ||
-               (Before == '_') )
-        {
-            CanMove = false;
-        }
-        else
-        {
-            size_t AfterPos = Pos + Old.Len();
-            wxChar After = ( AfterPos < CodeResult.Len() ) ? CodeResult[AfterPos] : _T('\0');
-            if ( ( (After >= 'a') && (After <= 'z') ) ||
-                 ( (After >= 'A') && (After <= 'Z') ) ||
-                 ( (After >= '0') && (After <= '9') ) ||
-                   (After == '_') )
-            {
-                CanMove = false;
-            }
-        }
-
-        if ( !CanMove )
-        {
-            NewCode.Append(CodeResult.Mid(0,Pos+1));
-            CodeResult.Remove(0,Pos+1);
-        }
-        else
-        {
-            NewCode.Append(CodeResult.Mid(0,Pos));
-            NewCode.Append(New);
-            CodeResult.Remove(0,Pos+Old.Len());
-        }
-        Pos = CodeResult.Find(Old);
-    }
-    NewCode.Append(CodeResult);
-    CodeResult = NewCode;
-}
-
 wxString wxsDefWidget::GetDeclarationCode(wxsCodeParams& Params)
 {
     static wxString Tmp;
@@ -191,7 +138,7 @@ void wxsDefWidget::evBool(bool& Val,const wxString& Name,const wxString& XrcName
 
         case Code:
         {
-            CodeReplace(Name,Val?_T("true"):_T("false"));
+            wxsCodeReplace(CodeResult,Name,Val?_T("true"):_T("false"));
             break;
         }
 
@@ -238,7 +185,7 @@ void wxsDefWidget::evInt(int& Val,const wxString& Name,const wxString& XrcName,c
 
         case Code:
         {
-            CodeReplace(Name,wxString::Format(_T("%d"),Val));
+            wxsCodeReplace(CodeResult,Name,wxString::Format(_T("%d"),Val));
             break;
         }
 
@@ -286,7 +233,7 @@ void wxsDefWidget::ev2Int(int& Val1,int& Val2,const wxString& Name,const wxStrin
 
         case Code:
         {
-            CodeReplace(Name,wxString::Format(_T("wxPoint(%d,%d)"),Val1,Val2));
+            wxsCodeReplace(CodeResult,Name,wxString::Format(_T("wxPoint(%d,%d)"),Val1,Val2));
             break;
         }
 
@@ -331,7 +278,7 @@ void wxsDefWidget::evStr(wxString& Val,const wxString& Name,const wxString& XrcN
 
         case Code:
         {
-            CodeReplace(Name,GetWxString(Val));
+            wxsCodeReplace(CodeResult,Name,wxsGetWxString(Val));
             break;
         }
 
@@ -388,16 +335,16 @@ void wxsDefWidget::evStrArray(wxArrayString& Val,const wxString& Name,const wxSt
             for ( size_t i = 0; i<Val.GetCount(); i++ )
             {
             	ReplaceWith.Append(_T("WXS_THIS->Append("));
-            	ReplaceWith.Append(GetWxString(Val[i]));
+            	ReplaceWith.Append(wxsGetWxString(Val[i]));
             	ReplaceWith.Append(_T(");\n"));
             }
-            CodeReplace(CodeToSearch,ReplaceWith);
+            wxsCodeReplace(CodeResult,CodeToSearch,ReplaceWith);
 
             // Replacing wxsDWSelectString function calls
 
             CodeToSearch.Printf(_T("wxsDWSelectString(%s,%d,WXS_THIS)"),Name.c_str(),DefValue);
             ReplaceWith.Printf(_T("WXS_THIS->SetSelection(%d)"),DefValue);
-            CodeReplace(CodeToSearch,ReplaceWith);
+            wxsCodeReplace(CodeResult,CodeToSearch,ReplaceWith);
 
             break;
         }

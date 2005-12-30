@@ -5,7 +5,7 @@
 #include "../widget.h"
 
 
-class WXSCLASS wxsStringListProperty : public wxsProperty
+class wxsStringListProperty : public wxsProperty
 {
 	public:
 
@@ -23,15 +23,9 @@ class WXSCLASS wxsStringListProperty : public wxsProperty
 
     protected:
 
-        #ifdef __NO_PROPGRGID
-            virtual wxWindow* BuildEditWindow(wxWindow* Parent);
-            virtual void UpdateEditWindow();
-            void EditList();
-        #else
-            virtual void AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name);
-            virtual bool PropGridChanged(wxPropertyGrid* Grid,wxPGId Id);
-            virtual void UpdatePropGrid(wxPropertyGrid* Grid);
-        #endif
+        virtual void AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name);
+        virtual bool PropGridChanged(wxPropertyGrid* Grid,wxPGId Id);
+        virtual void UpdatePropGrid(wxPropertyGrid* Grid);
 
 	private:
 
@@ -39,16 +33,12 @@ class WXSCLASS wxsStringListProperty : public wxsProperty
 		int* Selected;
 		int SortedFlag;
 
-		#ifdef __NO_PROPGRGID
-            friend class wxsStringListPropertyWindow;
-        #else
-            wxPGId PGId;
-            wxPGId SelId;
+        wxPGId PGId;
+        wxPGId SelId;
 
-            void BuildChoices(wxPropertyGrid* Grid);
-            void RebuildChoices(wxPropertyGrid* Grid);
-            bool IsSorted();
-        #endif
+        void BuildChoices(wxPropertyGrid* Grid);
+        void RebuildChoices(wxPropertyGrid* Grid);
+        bool IsSorted();
 };
 
 #endif

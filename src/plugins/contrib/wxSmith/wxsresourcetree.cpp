@@ -73,7 +73,7 @@ void wxsResourceTree::OnEndDrag(wxTreeEvent& event)
         wxsWidget* Insert = Data.BuildWidget(Dest->GetResource());
         if ( !Insert )
         {
-        	DebLog(_("wxSmith: Error while cloning widget"));
+        	DBGLOG(_("wxSmith: Error while cloning widget"));
         	return;
         }
 

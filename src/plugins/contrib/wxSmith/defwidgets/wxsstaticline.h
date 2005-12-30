@@ -10,7 +10,7 @@ WXS_EV_DECLARE(wxsStaticLineEvents)
 wxsDWDeclareBegin(wxsStaticLineBase,wxsStaticLineId)
 wxsDWDeclareEnd()
 
-class WXSCLASS wxsStaticLine: public wxsStaticLineBase
+class wxsStaticLine: public wxsStaticLineBase
 {
     public:
         wxsStaticLine(wxsWidgetManager* Man,wxsWindowRes* Res);

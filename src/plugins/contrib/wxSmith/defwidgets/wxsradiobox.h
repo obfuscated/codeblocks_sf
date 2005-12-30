@@ -14,7 +14,7 @@ wxsDWDeclareBegin(wxsRadioBoxBase,wxsRadioBoxId)
     int dimension;
 wxsDWDeclareEnd()
 
-class WXSCLASS wxsRadioBox: public wxsRadioBoxBase
+class wxsRadioBox: public wxsRadioBoxBase
 {
 	public:
         wxsRadioBox(wxsWidgetManager* Man,wxsWindowRes* Res):

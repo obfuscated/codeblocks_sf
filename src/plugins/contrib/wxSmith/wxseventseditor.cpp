@@ -4,6 +4,7 @@
 #include "widget.h"
 #include "wxswidgetevents.h"
 #include "resources/wxswindowres.h"
+#include "wxsglobals.h"
 #include <editormanager.h>
 
 #define NoneStr   _("-- None --")
@@ -247,7 +248,7 @@ wxString wxsEventsEditor::GetNewFunction(wxsEventDesc* Event)
 		Name = ::wxGetTextFromUser(_("Enter name for new handler:"),_("New handler"),Name);
 		if ( !Name.Length() ) return _T("");
 
-        if ( !ValidateIdentifier(Name) )
+        if ( !wxsValidateIdentifier(Name) )
         {
         	wxMessageBox(_("Invalid name"));
         	continue;

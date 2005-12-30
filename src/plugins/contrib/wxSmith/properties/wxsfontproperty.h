@@ -3,7 +3,7 @@
 
 #include "../wxsproperties.h"
 
-class WXSCLASS wxsFontProperty : public wxsProperty
+class wxsFontProperty : public wxsProperty
 {
 	public:
 		wxsFontProperty(wxsProperties* Properties,bool& Use,wxFont& Font);

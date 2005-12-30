@@ -8,8 +8,6 @@
 
 #include "wxsglobals.h"
 
-#define DebLog Manager::Get()->GetMessageManager()->DebugLog
-
 wxsCoder::wxsCoder():
 	Enteries(NULL),
 	BlockProcess(false)

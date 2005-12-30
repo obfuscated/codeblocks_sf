@@ -6,7 +6,7 @@
 WXS_ST_DECLARE(wxsFrameStyles)
 WXS_EV_DECLARE(wxsFrameEvents)
 
-class WXSCLASS wxsFrame : public wxsWindow
+class wxsFrame : public wxsWindow
 {
 	public:
 		wxsFrame(wxsWidgetManager* Man,wxsWindowRes* Res);

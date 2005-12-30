@@ -3,7 +3,7 @@
 
 #include "../widget.h"
 
-class WXSCLASS wxsSpacer : public wxsWidget
+class wxsSpacer : public wxsWidget
 {
 	public:
 		wxsSpacer(wxsWidgetManager* Man,wxsWindowRes* Res);

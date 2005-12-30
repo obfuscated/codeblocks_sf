@@ -4,10 +4,10 @@
 #include <wx/event.h>
 #include "wxsglobals.h"
 
-class WXSCLASS wxsResource;
-class WXSCLASS wxsWidget;
+class wxsResource;
+class wxsWidget;
 
-class WXSCLASS wxsEvent: public wxCommandEvent
+class wxsEvent: public wxCommandEvent
 {
     public:
 

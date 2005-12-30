@@ -27,7 +27,7 @@ WXS_EV_BEGIN(wxsNotebookEvents)
     WXS_EVI(EVT_NOTEBOOK_PAGE_CHANGING,wxNotebookEvent,PageChanging)
 WXS_EV_END(wxsNotebookEvents)
 
-class WXSCLASS wxsNotebookPreview: public wxNotebook
+class wxsNotebookPreview: public wxNotebook
 {
 	public:
         wxsNotebookPreview(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, wxsNotebook* NB):
@@ -128,7 +128,7 @@ wxString wxsNotebook::GetFinalizingCode(wxsCodeParams& Params)
             _T("%s->AddPage(%s,%s,%s);\n"),
                 GetBaseProperties().VarName.c_str(),
                 Child->GetBaseProperties().VarName.c_str(),
-                GetWxString(Params->Label).c_str(),
+                wxsGetWxString(Params->Label).c_str(),
                 Params->Selected ? _T("true") : _T("false"));
 	}
 	return Code;

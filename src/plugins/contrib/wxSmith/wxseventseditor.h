@@ -5,13 +5,13 @@
 #include <wx/propgrid/propgrid.h>
 #include "wxsglobals.h"
 
-class WXSCLASS wxsWidget;
-class WXSCLASS wxsWidgetEvents;
-class WXSCLASS wxsWindowRes;
-class WXSCLASS wxsProject;
-class WXSCLASS wxsEventDesc;
+class wxsWidget;
+class wxsWidgetEvents;
+class wxsWindowRes;
+class wxsProject;
+class wxsEventDesc;
 
-class WXSCLASS wxsEventsEditor : public wxPropertyGrid
+class wxsEventsEditor : public wxPropertyGrid
 {
 	public:
 
