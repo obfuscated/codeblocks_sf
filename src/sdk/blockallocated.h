@@ -35,7 +35,7 @@
 #include <vector>
 #include <wx/file.h>
 
-template <class T, unsigned int pool_size>
+template <class T, unsigned int pool_size, const unsigned int dbg_id>
 class BlockAllocator
 {
     template <class U>
@@ -84,22 +84,26 @@ class BlockAllocator
 public:
 
     BlockAllocator() : first(0), last(0), ref_count(0), max_refs(0), total_refs(0)
-    {}
-    ;
+    {
+	#ifdef __GNUC__
+	assert(__builtin_constant_p(dbg_id));
+	#endif
+	};
 
     ~BlockAllocator()
     {
-        #ifdef DEBUG_BLOCKALLOC
+        if(dbg_id)
+        {
             wxString s;
-            wxFile f(wxString("blockalloc_debug") << DEBUG_BLOCKALLOC << ".log", wxFile::write);
-            s.Printf("%d reserved pools of size %d (%d total objects)\n"
+            wxFile f(wxString(_T("blockalloc_debug_")) << wxString::Format(_T("%d"), dbg_id) << _T(".log"), wxFile::write);
+            s.Printf(_T("%d reserved pools of size %d (%d total objects)\n"
             "Maximum number of allocated objects: %d\n"
             "Total number of allocations: %d\n"
-            "Number of stale objects: %d %s",
+            "Number of stale objects: %d %s"),
             allocBlocks.size(), pool_size, allocBlocks.size() * pool_size,
-            max_refs, total_refs, ref_count, (ref_count == 0 ? "" : "(smells of memory leak...)"));
+            max_refs, total_refs, ref_count, (ref_count == 0 ? _T("") : _T("(smells of memory leak...)")));
             f.Write(s);
-        #endif
+		}
 
         for(unsigned int i = 0; i < allocBlocks.size(); ++i)
             delete[] allocBlocks[i];
@@ -107,11 +111,12 @@ public:
 
     inline void* New()
     {
-        #ifdef DEBUG_BLOCKALLOC
+        if(dbg_id)
+        {
             ++ref_count;
             ++total_refs;
             max_refs = ref_count > max_refs ? ref_count : max_refs;
-        #endif
+        }
 
         if(first == 0)
             AllocBlockPushBack();
@@ -123,19 +128,18 @@ public:
 
     inline void Delete(void *ptr)
     {
-        #ifdef DEBUG_BLOCKALLOC
+        if(dbg_id)
             --ref_count;
-		#endif
 
         PushFront((LinkedBlock<T> *) ((char *) ptr - sizeof(void*)));
     };
 };
 
 
-template <class T, unsigned int pool_size>
+template <class T, unsigned int pool_size, const unsigned int dbg_id = 0>
 class BlockAllocated
 {
-    static BlockAllocator<T, pool_size> allocator;
+    static BlockAllocator<T, pool_size, dbg_id> allocator;
 
 public:
 
@@ -151,8 +155,8 @@ public:
         allocator.Delete(ptr);
     };
 };
-template<class T, unsigned int pool_size>
-BlockAllocator<T, pool_size> BlockAllocated<T, pool_size>::allocator;
+template<class T, unsigned int pool_size, unsigned int dbg_id>
+BlockAllocator<T, pool_size, dbg_id> BlockAllocated<T, pool_size, dbg_id>::allocator;
 
 
 
