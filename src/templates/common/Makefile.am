@@ -35,4 +35,5 @@ dist_pkgdata_DATA = console.cbp \
 		wx-main-s.cpp \
 		wx-main-sh.cpp \
 		wx-main-sh.h \
+		wx_pch.h\
 		wxwidgets.png
