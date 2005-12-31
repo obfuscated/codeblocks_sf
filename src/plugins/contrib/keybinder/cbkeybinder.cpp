@@ -7,6 +7,7 @@
  **************************************************************/
 //commit 12/14/2005 9:15 AM
 //commit 12/16/2005 8:54 PM
+//commit 12/31/2005 10AM
 
 // The majority of this code was lifted from wxKeyBinder and
 // its "minimal.cpp" sample program
@@ -33,7 +34,6 @@ BEGIN_EVENT_TABLE(cbKeyBinder, cbPlugin)
 	EVT_EDITOR_OPEN(cbKeyBinder::OnEditorOpen)
 	EVT_EDITOR_CLOSE(cbKeyBinder::OnEditorClose)
 	EVT_PROJECT_OPEN(cbKeyBinder::OnProjectOpened)
-
 	EVT_APP_STARTUP_DONE(cbKeyBinder::OnAppStartupDone)
 
 END_EVENT_TABLE()
@@ -52,10 +52,10 @@ cbKeyBinder::cbKeyBinder()
 	//ctor
 	m_PluginInfo.name = _T("cbKeyBinder");
 	m_PluginInfo.title = _("Keyboard shortcuts configuration");
-	m_PluginInfo.version = _T("0.4");
+	m_PluginInfo.version = _T("0.4.1");
 	m_PluginInfo.description <<_("CodeBlocks KeyBinder\n")
                             << _("NOTE: Ctrl+Alt+{UP|DOWN} unsupported.\n")
-                            << _("commit 12/16/2005 8:54 PM\n");
+                            << _("commit 12/31/2005 10\n");
 	m_PluginInfo.author = _T("Pecan && Mispent Intent");
 	m_PluginInfo.authorEmail = _T("");
 	m_PluginInfo.authorWebsite = _T("");
@@ -84,15 +84,13 @@ void cbKeyBinder::OnAttach()
 
 
     // Only stable windows can be attached for codeblocks; currently
-    // "SCIwindow" & "cbMainWindow". See wxKeyBinder::Attach() in keybinder.cpp
-    // Change name of codeblocks main window so it gets attached by keybinder
+    // "SCIwindow" & "notebook". See wxKeyBinder::Attach() in keybinder.cpp
 
     // Have to have at least one window to attach to else secondary keys wont work
     // and "notebook" windows work just fine. Dont need AppWindow attach
 
     //get window for log when debugging
     pcbWindow = Manager::Get()->GetAppWindow();
-    //pcbWindow->SetName("cbAppWindow");
 
     #if LOGGING
         // allocate wxLogWindow in the header
@@ -101,7 +99,7 @@ void cbKeyBinder::OnAttach()
         /* wxLogWindow* */
         pMyLog = new wxLogWindow(pcbWindow,m_PluginInfo.name);
         wxLog::SetActiveTarget(pMyLog);
-        LOGIT("log message window open");
+        LOGIT(_T("log message window open"));
         pMyLog->Flush();
     #endif
 
@@ -138,7 +136,7 @@ int cbKeyBinder::Configure()
     // Then, when saved to a config file, the key will be enabled at
     // C::B plugin initialization.
 
-    //is main window attached?
+    //call configuation dialogue
     OnKeybindings();
     return 0;
 }
@@ -155,20 +153,29 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
 
 	if(!m_IsAttached) {	return;	 }
 
-	//memorize incomming menubar
+    // init the keybinder
+	// memorize incomming menubar
     m_pMenuBar = menuBar;
 
-    // init the keybinder
-    //memorize the key file name as {%HOME%}\cbKeyBinder+{ver}.ini
+    // Create filename like cbKeyBinder{pluginversion}v{sdkversion}.ini
+    // +v0.4.1 Get major and minor SDK versions to use in filename
+    int SDKmajor; int SDKminor; int SDKrelease;
+    PluginSDKVersion( &SDKmajor, &SDKminor, &SDKrelease);
+    wxString SDKverStr = wxEmptyString;
+    SDKverStr.sprintf(_T("%d%d"),SDKmajor,SDKminor);
+
+    //memorize the key file name as {%HOME%}\cbKeyBinder+{vers}.ini
     m_sKeyFilename = ConfigManager::GetConfigFolder();
-    // remove the dots from version string
-    wxString sPluginVersion=m_PluginInfo.version;
+    // remove the dots from version string (using first 3 chars)
+    wxString sPluginVersion=m_PluginInfo.version.BeforeLast('.'); //+v0.4.1
     sPluginVersion.Replace(_T("."),_T(""));
     m_sKeyFilename = m_sKeyFilename<<wxFILE_SEP_PATH<<m_PluginInfo.name<<sPluginVersion
-        <<_T("v")<<PLUGIN_SDK_VERSION_MAJOR<<PLUGIN_SDK_VERSION_MINOR<<_T(".ini");
+        <<_T("v")<<SDKverStr<<_T(".ini"); //+v0.4.1
 
     #if LOGGING
-     LOGIT("cbKB:BuildMenu()");
+     LOGIT(_T("cbKB:BuildMenu()"));
+     LOGIT(_T("SDKmajor:%d SDKminor:%d SDKverStr:%s"),SDKmajor,SDKminor,SDKverStr.GetData());
+     LOGIT(_T("File:%s"),m_sKeyFilename.GetData());
     #endif
 
     //say keys have not yet been loaded/bound to menus
@@ -187,8 +194,6 @@ void cbKeyBinder::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxS
 	//TIP: for consistency, add a separator as the first item...
 	//-v0.1--NotImplemented(_T("cbKeyBinder::OfferModuleMenuSpace()"));
 	if(!m_IsAttached) {	return;	 }
-
-
 	return;
 }
 // ----------------------------------------------------------------------------
@@ -207,6 +212,8 @@ bool cbKeyBinder::BuildToolBar(wxToolBar* toolBar)
 void cbKeyBinder::Rebind()
 // ----------------------------------------------------------------------------
 {
+    // called when we can't do anything else. Makes a virgin key profile
+    // array from the C::B menu items.
 
  	wxKeyProfile *pPrimary;//-, *pSecondary;
 
@@ -214,7 +221,7 @@ void cbKeyBinder::Rebind()
 	pPrimary->ImportMenuBarCmd(m_pMenuBar);
 
 	#if LOGGING
-        LOGIT("cbKB:ReBind:Imported");
+        LOGIT(_T("cbKB:ReBind:Imported"));
     #endif
 
 	//pSecondary = new wxKeyProfile(*pPrimary);
@@ -275,7 +282,7 @@ void cbKeyBinder::UpdateArr(wxKeyProfileArray &r)
     //=================================================================//
 
     #if LOGGING
-      LOGIT("UpdateArr::Begin");
+      LOGIT(_T("UpdateArr::Begin"));
     #endif
 
 	// detach all windows bound to keys
@@ -311,18 +318,18 @@ void cbKeyBinder::OnKeybindings()
     //wait for a good key file load()
     if (!m_bBound) return;
 
-    // Sets options and invoke the dialog
+    // Sets options and invokes the configuation dialog
     // The commented lines are from the original wxKeyBinder
     // They may be useful later
 
 	//bool btree = GetMenuBar()->IsChecked(Minimal_UseTreeCtrl);
 	bool btree = true;
 	//bool baddprofile = GetMenuBar()->IsChecked(Minimal_ShowAddRemoveProfile);
-	bool baddprofile = false;
+	bool baddprofile = true;
 	//bool bprofiles = GetMenuBar()->IsChecked(Minimal_ShowKeyProfiles);
-	bool bprofiles = false;
+	bool bprofiles = true;
 	//bool bprofileedit = GetMenuBar()->IsChecked(Minimal_EnableProfileEdit);
-	bool bprofileedit = false;
+	bool bprofileedit = true;
 
 	// setup build flags
 	int mode = btree ? wxKEYBINDER_USE_TREECTRL : wxKEYBINDER_USE_LISTBOX;
@@ -399,9 +406,10 @@ void cbKeyBinder::OnLoad()
 
 	// before loading we must register in wxCmd arrays the various types
 	// of commands we want wxCmd::Load to be able to recognize...
-
-	LOGIT(_T("--------------"));
-	LOGIT(_T("OnLoad()Begin"));
+    #if LOGGING
+	 LOGIT(_T("--------------"));
+	 LOGIT(_T("OnLoad()Begin"));
+	#endif
 
     // tell other routines that binding has taken place
     m_bBound = TRUE;
@@ -417,7 +425,9 @@ void cbKeyBinder::OnLoad()
 	wxMenuCmd::Register(m_pMenuBar);
 
 	wxString strLoadFilename = m_sKeyFilename;
-	LOGIT(_T("cbKB:Loading File %s"), strLoadFilename.GetData());
+	#if LOGGING
+	 LOGIT(_T("cbKB:Loading File %s"), strLoadFilename.GetData());
+	#endif
 
     wxFileConfig cfg(wxEmptyString, // appname
                     wxEmptyString, // vendor
@@ -441,7 +451,7 @@ void cbKeyBinder::OnLoad()
 			wxKeyProfile *p = new wxKeyProfile(wxT("Default"));
 			p->ImportMenuBarCmd(m_pMenuBar);
 			#if LOGGING
-			  LOGIT("cbKB:OnLoad:Menu Imported");
+			  LOGIT(_T("cbKB:OnLoad:Menu Imported"));
 			#endif
 			m_pKeyProfArr->Add(p);
 
@@ -473,6 +483,8 @@ void cbKeyBinder::OnLoad()
 //	    if ( ! bKeyFileErrMsgShown)
 //	      wxMessageBox(strErrMsg);
 //	    bKeyFileErrMsgShown = TRUE; //say message has been shown
+
+        // The last resort, create a virgin key profile array
 	    Rebind();
 	}
 
@@ -489,13 +501,13 @@ void cbKeyBinder::OnSave()
 {
     // Save the key profile(s) to a file
 
-    // delete the file
+    // delete the key definition file (removes invalid menuitem id's)
     // Removes file, returning true if successful.
     bool done = ::wxRemoveFile(m_sKeyFilename);
      if (done)
       {
         #if LOGGING
-          { LOGIT("cbKB:File %s deleted.",m_sKeyFilename.GetData()); }
+          { LOGIT(_T("cbKB:File %s deleted."),m_sKeyFilename.GetData()); }
         #endif
       }//if (done..
 
@@ -729,24 +741,21 @@ void cbKeyBinder::OnEditorClose(CodeBlocksEvent& event)
 void cbKeyBinder::OnAppStartupDone(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
 {
-    // get around the un-binding problem in BuildMenu
-    // without this, no key bindings take place until
-    // a project or file is opened
-
     // if keys still unbound, do it here.
 
     // load key binding from file
     if (!m_bBound)
      {
         #if LOGGING
-         LOGIT("cbKeyBinder:Begin initial Key Load");
+         LOGIT(_T("cbKeyBinder:Begin initial Key Load"));
         #endif
         m_bBound=TRUE;
         OnLoad();
         #if LOGGING
-         LOGIT("cbKeyBinder:End initial Key Load");
+         LOGIT(_T("cbKeyBinder:End initial Key Load"));
         #endif
      }
+    event.Skip(); //+v0.4.1
     return;
 }//OnAppStartupDone
 // ----------------------------------------------------------------------------

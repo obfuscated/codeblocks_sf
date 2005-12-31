@@ -7,6 +7,11 @@
  **************************************************************/
 //commit 12/14/2005 9:16 AM
 //commit 12/16/2005 8:54 PM
+//commit 12/31/2005 10AM
+
+// v0.4.1 12/30/2005
+//  added event.Skip() to cbKeyBinder::OnAppStartupDone(CodeBlocksEvent& event)
+//  enabled multiple profiles
 
 #ifndef CBKEYBINDER_H
 #define CBKEYBINDER_H
@@ -99,7 +104,6 @@ class cbKeyBinder : public cbPlugin
         void cbKeyBinder::OnProjectFileRemoved(CodeBlocksEvent& event);
         void cbKeyBinder::OnEditorOpen(CodeBlocksEvent& event);
         void cbKeyBinder::OnEditorClose(CodeBlocksEvent& event);
-        //void cbKeyBinder::OnSetFocus(wxFocusEvent& event);
         void cbKeyBinder::OnAppStartupDone(CodeBlocksEvent& event);
 
         wxWindow* pcbWindow;            //main app window
