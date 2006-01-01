@@ -33,6 +33,7 @@
 #include <wx/msgdlg.h>
 #include <wx/choicdlg.h>
 #include <wx/notebook.h>
+#include <wx/clipbrd.h>
 #include <cbexception.h>
 #if wxCHECK_VERSION(2,6,0)
     #include <wx/debugrpt.h>
@@ -329,6 +330,8 @@ bool CodeBlocksApp::OnInit()
     m_ReBuild = false;
     m_BatchExitCode = 0;
 
+	wxTheClipboard->Flush();
+
     try
     {
         m_pSplash = 0;
@@ -430,6 +433,8 @@ bool CodeBlocksApp::OnInit()
 
 int CodeBlocksApp::OnExit()
 {
+	wxTheClipboard->Flush();
+
 #ifdef __WXMSW__
 	if (g_DDEServer)
 		delete g_DDEServer;
