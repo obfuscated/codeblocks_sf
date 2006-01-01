@@ -128,6 +128,14 @@ void GDB_driver::Disassemble()
     m_pDisassembly->Show();
 }
 
+void GDB_driver::CPURegisters()
+{
+    if (!m_pCPURegisters)
+        return;
+    QueueCommand(new GdbCmd_InfoRegisters(this, m_pCPURegisters));
+    m_pCPURegisters->Show();
+}
+
 void GDB_driver::AddBreakpoint(DebuggerBreakpoint* bp)
 {
 	QueueCommand(new GdbCmd_AddBreakpoint(this, bp));
@@ -281,8 +289,9 @@ void GDB_driver::ParseOutput(const wxString& output)
                     long int addrL;
                     addr.ToLong(&addrL, 16);
                     m_pDisassembly->SetActiveAddress(addrL);
-                    QueueCommand(new GdbCmd_InfoRegisters(this, m_pDisassembly));
                 }
+                if (m_pCPURegisters && m_pCPURegisters->IsShown())
+                    QueueCommand(new GdbCmd_InfoRegisters(this, m_pCPURegisters));
 				lineStr.ToLong(&m_StopLine);
 				m_StopFile = file;
                 m_CursorChanged = true;

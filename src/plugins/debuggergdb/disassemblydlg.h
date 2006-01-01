@@ -1,26 +1,20 @@
 #ifndef DISASSEMBLYDLG_H
 #define DISASSEMBLYDLG_H
 
-#include <wx/dialog.h>
+#include <wx/panel.h>
 
 class DebuggerGDB;
 struct StackFrame;
 
-class DisassemblyDlg : public wxDialog
+class DisassemblyDlg : public wxPanel
 {
 	public:
-        static wxString Registers[];
-        static int RegisterIndexFromName(const wxString& name);
-
 		DisassemblyDlg(wxWindow* parent, DebuggerGDB* debugger);
 		virtual ~DisassemblyDlg();
 
         void Clear(const StackFrame& frame);
-        void ClearRegisters();
 		void AddAssemblerLine(unsigned long int addr, const wxString& line);
 		void SetActiveAddress(unsigned long int addr);
-		void AddRegisterValue(int idx, long int value);
-		void SetRegisterValue(int idx, long int value);
 	protected:
         void OnSave(wxCommandEvent& event);
         void OnRefresh(wxCommandEvent& event);

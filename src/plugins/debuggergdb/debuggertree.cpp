@@ -74,9 +74,8 @@ BEGIN_EVENT_TABLE(DebuggerTree, wxPanel)
 	EVT_MENU(idWatchThis, DebuggerTree::OnWatchThis)
 END_EVENT_TABLE()
 
-DebuggerTree::DebuggerTree(wxEvtHandler* debugger, wxNotebook* parent)
+DebuggerTree::DebuggerTree(wxWindow* parent, wxEvtHandler* debugger)
     : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxCLIP_CHILDREN),
-    m_pParent(parent),
 	m_pDebugger(debugger),
 	m_InUpdateBlock(false)
 {
@@ -90,14 +89,14 @@ DebuggerTree::DebuggerTree(wxEvtHandler* debugger, wxNotebook* parent)
     SetAutoLayout(TRUE);
     SetSizer(bs);
 
-    m_pParent->AddPage(this, _("Watches"));
-    m_PageIndex = m_pParent->GetPageCount() - 1;
+//    m_pParent->AddPage(this, _("Watches"));
+//    m_PageIndex = m_pParent->GetPageCount() - 1;
 }
 
 DebuggerTree::~DebuggerTree()
 {
 	//dtor
-	m_pParent->RemovePage(m_PageIndex);
+//	m_pParent->RemovePage(m_PageIndex);
 }
 
 void DebuggerTree::BeginUpdateTree()
@@ -580,7 +579,7 @@ void DebuggerTree::OnLoadWatchFile(wxCommandEvent& event)
         {
             if (!cmd.IsEmpty()) // Skip empty lines
             {
-//                Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Adding watch \"%s\" to debugger:"), keyword);
+//                Manager::Get()->GetMessageManager()->DebugLog(_("Adding watch \"%s\" to debugger:"), keyword);
                 AddWatch(cmd, Undefined, false); // do not notify about new watch (we 'll do it when done)
             }
             if (tf.Eof()) break;
@@ -592,8 +591,7 @@ void DebuggerTree::OnLoadWatchFile(wxCommandEvent& event)
         NotifyForChangedWatches();
     }
     else
-        Manager::Get()->GetMessageManager()->Log(m_PageIndex,
-                        _("Error opening debugger watch file: %s"), fname.c_str());
+        Manager::Get()->GetMessageManager()->DebugLog(_("Error opening debugger watch file: %s"), fname.c_str());
 }
 
 void DebuggerTree::OnSaveWatchFile(wxCommandEvent& event)
@@ -643,8 +641,7 @@ void DebuggerTree::OnSaveWatchFile(wxCommandEvent& event)
         tf.Close(); // release file handle
     }
     else
-        Manager::Get()->GetMessageManager()->Log(m_PageIndex,
-                        _("Error opening debugger watch file: %s"), fname.c_str());
+        Manager::Get()->GetMessageManager()->DebugLog(_("Error opening debugger watch file: %s"), fname.c_str());
 }
 
 void DebuggerTree::OnEditWatch(wxCommandEvent& event)

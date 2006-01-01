@@ -8,37 +8,7 @@
 #include <wx/listctrl.h>
 #include <wx/wfstream.h>
 
-// static
-wxString DisassemblyDlg::Registers[] = {
-    _T("eax"),
-    _T("ebx"),
-    _T("ecx"),
-    _T("edx"),
-    _T("esp"),
-    _T("esi"),
-    _T("ebp"),
-    _T("edi"),
-    _T("eip"),
-    _T("eflags"),
-    _T("cs"),
-    _T("ds"),
-    _T("es"),
-    _T("fs"),
-    _T("gs"),
-    _T("ss")
-};
-
-int DisassemblyDlg::RegisterIndexFromName(const wxString& name)
-{
-    for (int i = 0; i < 16; ++i)
-    {
-        if (name.Matches(DisassemblyDlg::Registers[i]))
-            return i;
-    }
-    return -1;
-}
-
-BEGIN_EVENT_TABLE(DisassemblyDlg, wxDialog)
+BEGIN_EVENT_TABLE(DisassemblyDlg, wxPanel)
     EVT_BUTTON(XRCID("btnSave"), DisassemblyDlg::OnSave)
     EVT_BUTTON(XRCID("btnRefresh"), DisassemblyDlg::OnRefresh)
 END_EVENT_TABLE()
@@ -48,10 +18,13 @@ DisassemblyDlg::DisassemblyDlg(wxWindow* parent, DebuggerGDB* debugger)
     m_LastActiveAddr(0)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgDisassembly"));
-	SetWindowStyle(GetWindowStyle() | wxFRAME_FLOAT_ON_PARENT);
+	wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgDisassembly"));
+//	SetWindowStyle(GetWindowStyle() | wxFRAME_FLOAT_ON_PARENT);
 	wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
     XRCCTRL(*this, "lcCode", wxListCtrl)->SetFont(font);
+
+    StackFrame sf;
+    Clear(sf);
 }
 
 DisassemblyDlg::~DisassemblyDlg()
@@ -73,18 +46,6 @@ void DisassemblyDlg::Clear(const StackFrame& frame)
 	lc->DeleteAllItems();
     lc->InsertColumn(0, _("Address"), wxLIST_FORMAT_LEFT);
     lc->InsertColumn(1, _("Instruction"), wxLIST_FORMAT_LEFT);
-	lc->Thaw();
-}
-
-void DisassemblyDlg::ClearRegisters()
-{
-    wxListCtrl* lc = XRCCTRL(*this, "lcRegisters", wxListCtrl);
-    lc->ClearAll();
-	lc->Freeze();
-	lc->DeleteAllItems();
-    lc->InsertColumn(0, _("Register"), wxLIST_FORMAT_LEFT);
-    lc->InsertColumn(1, _("Hex"), wxLIST_FORMAT_RIGHT);
-    lc->InsertColumn(2, _("Integer"), wxLIST_FORMAT_RIGHT);
 	lc->Thaw();
 }
 
@@ -123,40 +84,6 @@ void DisassemblyDlg::SetActiveAddress(unsigned long int addr)
             break;
         }
     }
-}
-
-void DisassemblyDlg::AddRegisterValue(int idx, long int value)
-{
-    if (idx == -1)
-        return;
-    wxListCtrl* lc = XRCCTRL(*this, "lcRegisters", wxListCtrl);
-	lc->Freeze();
-	lc->InsertItem(lc->GetItemCount(), Registers[idx]);
-	SetRegisterValue(lc->GetItemCount() - 1, value);
-	lc->Thaw();
-}
-
-void DisassemblyDlg::SetRegisterValue(int idx, long int value)
-{
-    if (idx == -1)
-        return;
-    wxListCtrl* lc = XRCCTRL(*this, "lcRegisters", wxListCtrl);
-    if (!lc->GetItemCount())
-    {
-        ClearRegisters();
-        for (int i = 0; i < 16; ++i)
-            AddRegisterValue(i, 0);
-    }
-	wxString fmt;
-	fmt.Printf(_T("0x%x"), (size_t)value);
-    lc->SetItem(idx, 1, fmt);
-	fmt.Printf(_T("%ld"), value);
-    lc->SetItem(idx, 2, fmt);
-
-	for (int i = 0; i < 3; ++i)
-	{
-        lc->SetColumnWidth(i, wxLIST_AUTOSIZE);
-	}
 }
 
 void DisassemblyDlg::OnSave(wxCommandEvent& event)

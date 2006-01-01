@@ -22,7 +22,7 @@ class WatchTreeData : public wxTreeItemData
 class DebuggerTree : public wxPanel
 {
 	public:
-		DebuggerTree(wxEvtHandler* debugger, wxNotebook* parent);
+		DebuggerTree(wxWindow* parent, wxEvtHandler* debugger);
 		virtual ~DebuggerTree();
 		wxTreeCtrl* GetTree(){ return m_pTree; }
 
@@ -56,9 +56,7 @@ class DebuggerTree : public wxPanel
 		void OnWatchThis(wxCommandEvent& event);
 
 		wxTreeCtrl* m_pTree;
-		wxNotebook* m_pParent;
 		wxEvtHandler* m_pDebugger;
-		int m_PageIndex;
 		WatchesArray m_Watches;
         wxArrayString m_TreeState;
         int m_NumUpdates;

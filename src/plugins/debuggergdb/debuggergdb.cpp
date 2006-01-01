@@ -68,6 +68,7 @@
 #define CMD_STOP        4
 #define CMD_BACKTRACE   5
 #define CMD_DISASSEMBLE 6
+#define CMD_REGISTERS   7
 
 const wxString g_EscapeChars = wxChar(26);
 
@@ -82,6 +83,8 @@ int idMenuToggleBreakpoint = XRCID("idDebuggerMenuToggleBreakpoint");
 int idMenuSendCommandToGDB = XRCID("idDebuggerMenuSendCommandToGDB");
 int idMenuAddSymbolFile = XRCID("idDebuggerMenuAddSymbolFile");
 int idMenuCPU = XRCID("idDebuggerMenuCPU");
+int idMenuRegisters = XRCID("idDebuggerMenuRegisters");
+int idMenuWatches = XRCID("idDebuggerMenuWatches");
 int idMenuBacktrace = XRCID("idDebuggerMenuBacktrace");
 int idMenuBreakpoints = XRCID("idDebuggerMenuBreakpoints");
 int idMenuEditWatches = XRCID("idDebuggerMenuEditWatches");
@@ -117,6 +120,8 @@ BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
 	EVT_MENU(idMenuAddSymbolFile, DebuggerGDB::OnAddSymbolFile)
 	EVT_MENU(idMenuBacktrace, DebuggerGDB::OnBacktrace)
 	EVT_MENU(idMenuCPU, DebuggerGDB::OnDisassemble)
+	EVT_MENU(idMenuRegisters, DebuggerGDB::OnRegisters)
+	EVT_MENU(idMenuWatches, DebuggerGDB::OnViewWatches)
 	EVT_MENU(idMenuBreakpoints, DebuggerGDB::OnBreakpoints)
 	EVT_MENU(idMenuEditWatches, DebuggerGDB::OnEditWatches)
     EVT_MENU(idMenuDebuggerAddWatch, DebuggerGDB::OnAddWatch)
@@ -162,6 +167,7 @@ DebuggerGDB::DebuggerGDB()
 	m_HasDebugLog(false),
 	m_StoppedOnSignal(false),
 	m_pDisassembly(0),
+	m_pCPURegisters(0),
 	m_pBacktrace(0)
 {
     Manager::Get()->Loadxrc(_T("/debugger_gdb.zip#zip:*.xrc"));
@@ -204,34 +210,82 @@ void DebuggerGDB::OnAttach()
         Manager::Get()->GetMessageManager()->SetLogImage(m_pDbgLog, bmp);
     }
 
-	if (!m_pTree)
-		m_pTree = new DebuggerTree(this, Manager::Get()->GetNotebook());
-
+    m_pTree = new DebuggerTree(Manager::Get()->GetAppWindow(), this);
     m_pDisassembly = new DisassemblyDlg(Manager::Get()->GetAppWindow(), this);
-    m_pDisassembly->Hide();
-
+    m_pCPURegisters = new CPURegistersDlg(Manager::Get()->GetAppWindow(), this);
     m_pBacktrace = new BacktraceDlg(Manager::Get()->GetAppWindow(), this);
-    m_pBacktrace->Hide();
+
+    CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
+
+    evt.title = _("Disassembly");
+    evt.pWindow = m_pDisassembly;
+    evt.dockSide = CodeBlocksDockEvent::dsBottom;
+    evt.desiredSize.Set(350, 250);
+    evt.minimumSize.Set(150, 150);
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+
+    evt.title = _("CPU Registers");
+    evt.pWindow = m_pCPURegisters;
+    evt.dockSide = CodeBlocksDockEvent::dsLeft;
+    evt.desiredSize.Set(350, 250);
+    evt.minimumSize.Set(150, 150);
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+
+    evt.title = _("Call stack");
+    evt.pWindow = m_pBacktrace;
+    evt.dockSide = CodeBlocksDockEvent::dsTop;
+    evt.desiredSize.Set(150, 150);
+    evt.minimumSize.Set(150, 150);
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+
+    evt.title = _("Watches");
+    evt.pWindow = m_pTree;
+    evt.dockSide = CodeBlocksDockEvent::dsRight;
+    evt.desiredSize.Set(150, 250);
+    evt.minimumSize.Set(150, 150);
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 }
 
 void DebuggerGDB::OnRelease(bool appShutDown)
 {
     if (m_State.GetDriver())
-        m_State.GetDriver()->SetDebugWindows(0, 0);
+        m_State.GetDriver()->SetDebugWindows(0, 0, 0);
 
     if (m_pDisassembly)
-        m_pDisassembly->Destroy();
+    {
+        CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
+        evt.pWindow = m_pDisassembly;
+        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        delete m_pDisassembly;
+    }
     m_pDisassembly = 0;
 
+    if (m_pCPURegisters)
+    {
+        CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
+        evt.pWindow = m_pCPURegisters;
+        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        delete m_pCPURegisters;
+    }
+    m_pCPURegisters = 0;
+
     if (m_pBacktrace)
-        m_pBacktrace->Destroy();
+    {
+        CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
+        evt.pWindow = m_pBacktrace;
+        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        delete m_pBacktrace;
+    }
     m_pBacktrace = 0;
 
 	if (m_pTree)
 	{
-		delete m_pTree;
-		m_pTree = 0L;
+        CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
+        evt.pWindow = m_pTree;
+        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        delete m_pTree;
 	}
+    m_pTree = 0L;
 
     //Close debug session when appShutDown
 	CmdStop();
@@ -641,7 +695,7 @@ int DebuggerGDB::Debug()
         wxMessageBox(_T("Could not decide which debugger to use!"), _T("Error"), wxICON_ERROR);
         return -1;
     }
-    m_State.GetDriver()->SetDebugWindows(m_pBacktrace, m_pDisassembly);
+    m_State.GetDriver()->SetDebugWindows(m_pBacktrace, m_pDisassembly, m_pCPURegisters);
 
 
     // create gdb launch command
@@ -899,20 +953,47 @@ void DebuggerGDB::RunCommand(int cmd)
             break;
         }
 
+        case CMD_REGISTERS:
+        {
+//            Manager::Get()->GetMessageManager()->Log(m_PageIndex, "Displaying registers...");
+            if (m_State.GetDriver())
+                m_State.GetDriver()->CPURegisters();
+            break;
+        }
+
         default: break;
     }
 }
 
+void DebuggerGDB::CmdRegisters()
+{
+    // show it
+    CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
+    evt.pWindow = m_pCPURegisters;
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+
+    RunCommand(CMD_REGISTERS);
+}
+
 void DebuggerGDB::CmdDisassemble()
 {
-    m_pDisassembly->Show();
+    // show it
+    CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
+    evt.pWindow = m_pDisassembly;
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+
     RunCommand(CMD_DISASSEMBLE);
 }
 
 void DebuggerGDB::CmdBacktrace()
 {
     m_pBacktrace->Clear();
-    m_pBacktrace->Show();
+
+    // show it
+    CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
+    evt.pWindow = m_pBacktrace;
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+
     RunCommand(CMD_BACKTRACE);
 }
 
@@ -1245,6 +1326,19 @@ void DebuggerGDB::OnBacktrace(wxCommandEvent& event)
 void DebuggerGDB::OnDisassemble(wxCommandEvent& event)
 {
     CmdDisassemble();
+}
+
+void DebuggerGDB::OnRegisters(wxCommandEvent& event)
+{
+    CmdRegisters();
+}
+
+void DebuggerGDB::OnViewWatches(wxCommandEvent& event)
+{
+    // show it
+    CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
+    evt.pWindow = m_pTree;
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 }
 
 void DebuggerGDB::OnBreakpoints(wxCommandEvent& event)

@@ -14,6 +14,7 @@
 #include "debuggertree.h"
 #include "backtracedlg.h"
 #include "disassemblydlg.h"
+#include "cpuregistersdlg.h"
 
 extern const wxString g_EscapeChars;
 
@@ -36,6 +37,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 
 		void RunCommand(int cmd);
 		void CmdDisassemble();
+		void CmdRegisters();
 		void CmdBacktrace();
 
 		int Debug();
@@ -82,6 +84,8 @@ class DebuggerGDB : public cbDebuggerPlugin
 		void OnAddSymbolFile(wxCommandEvent& event);
 		void OnBacktrace(wxCommandEvent& event);
 		void OnDisassemble(wxCommandEvent& event);
+		void OnRegisters(wxCommandEvent& event);
+		void OnViewWatches(wxCommandEvent& event);
 		void OnBreakpoints(wxCommandEvent& event);
 		void OnEditWatches(wxCommandEvent& event);
 		void OnContinue(wxCommandEvent& event);
@@ -137,6 +141,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 
 		// extra dialogs
 		DisassemblyDlg* m_pDisassembly;
+		CPURegistersDlg* m_pCPURegisters;
 		BacktraceDlg* m_pBacktrace;
 
 		DECLARE_EVENT_TABLE()

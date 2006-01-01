@@ -1,7 +1,6 @@
 <?xml version="1.0" ?>
 <resource>
   <object class="wxToolBarAddOn" name="debugger_toolbar_16x16">
-    <object class="separator" />
     <object class="tool" name="idDebuggerMenuDebug">
 	  <tooltip>Debug / Continue</tooltip>
       <longhelp>Debug or continue program (depends on context)</longhelp>

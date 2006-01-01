@@ -538,10 +538,10 @@ class GdbCmd_DisassemblyInit : public DebuggerCmd
   */
 class GdbCmd_InfoRegisters : public DebuggerCmd
 {
-        DisassemblyDlg* m_pDlg;
+        CPURegistersDlg* m_pDlg;
     public:
         /** @param dlg The disassembly dialog. */
-        GdbCmd_InfoRegisters(DebuggerDriver* driver, DisassemblyDlg* dlg)
+        GdbCmd_InfoRegisters(DebuggerDriver* driver, CPURegistersDlg* dlg)
             : DebuggerCmd(driver),
             m_pDlg(dlg)
         {
@@ -580,7 +580,7 @@ class GdbCmd_InfoRegisters : public DebuggerCmd
                 {
                     long int addr;
                     re.GetMatch(lines[i], 2).ToLong(&addr, 16);
-                    m_pDlg->SetRegisterValue(DisassemblyDlg::RegisterIndexFromName(re.GetMatch(lines[i], 1)), addr);
+                    m_pDlg->SetRegisterValue(CPURegistersDlg::RegisterIndexFromName(re.GetMatch(lines[i], 1)), addr);
                 }
     		}
 //            m_pDlg->Show(true);
@@ -602,7 +602,6 @@ class GdbCmd_Disassembly : public DebuggerCmd
         {
             m_Cmd << _T("disassemble");
             m_pDriver->QueueCommand(new GdbCmd_DisassemblyInit(driver, dlg)); // chain call
-            m_pDriver->QueueCommand(new GdbCmd_InfoRegisters(driver, dlg)); // chain call
         }
         void ParseOutput(const wxString& output)
         {

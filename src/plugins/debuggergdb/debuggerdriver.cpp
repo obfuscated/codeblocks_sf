@@ -29,10 +29,11 @@ void DebuggerDriver::DebugLog(const wxString& msg)
     m_pDBG->DebugLog(msg);
 }
 
-void DebuggerDriver::SetDebugWindows(BacktraceDlg* b, DisassemblyDlg* d)
+void DebuggerDriver::SetDebugWindows(BacktraceDlg* b, DisassemblyDlg* d, CPURegistersDlg* r)
 {
     m_pBacktrace = b;
     m_pDisassembly = d;
+    m_pCPURegisters = r;
 }
 
 void DebuggerDriver::ClearDirectories()

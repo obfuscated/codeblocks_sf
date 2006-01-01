@@ -143,6 +143,14 @@ void CDB_driver::Disassemble()
     m_pDisassembly->Show();
 }
 
+void CDB_driver::CPURegisters()
+{
+    if (!m_pCPURegisters)
+        return;
+    QueueCommand(new CdbCmd_InfoRegisters(this, m_pCPURegisters));
+    m_pCPURegisters->Show();
+}
+
 void CDB_driver::AddBreakpoint(DebuggerBreakpoint* bp)
 {
 	bp->bpNum = bp->index;
@@ -264,8 +272,9 @@ void CDB_driver::ParseOutput(const wxString& output)
                     long int addrL;
                     m_StopAddress.ToLong(&addrL, 16);
                     m_pDisassembly->SetActiveAddress(addrL);
-                    QueueCommand(new CdbCmd_InfoRegisters(this, m_pDisassembly));
                 }
+                if (m_pCPURegisters && m_pCPURegisters->IsShown())
+                    QueueCommand(new CdbCmd_InfoRegisters(this, m_pCPURegisters));
             }
         }
 

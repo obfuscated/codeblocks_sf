@@ -1,48 +1,75 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <resource>
-  <object class="wxDialog" name="dlgBacktrace">
+  <object class="wxPanel" name="dlgBacktrace">
     <title>Back-trace</title>
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
         <object class="wxListCtrl" name="lstTrace">
+          
+          
+          
+          
           <style>wxLC_REPORT</style>
         </object>
+        
+        
+        
+        
         <option>1</option>
-        <flag>wxALL|wxGROW</flag>
-        <border>8</border>
-        <minsize>384,240</minsize>
+        
+        
+        
+        
+        <flag>wxGROW</flag>
+        
+        
+        
+        
+        
+        
       </object>
       <object class="sizeritem">
         <object class="wxBoxSizer">
           <orient>wxHORIZONTAL</orient>
           <object class="sizeritem">
+            <object class="wxButton" name="btnSave">
+              
+              
+              
+              
+              <label>&amp;Save to text file</label>
+              
+              
+              
+            </object>
+          </object>
+          <object class="sizeritem">
             <object class="wxButton" name="btnRefresh">
+              
+              
+              
+              
               <label>&amp;Refresh</label>
             </object>
-          </object>
-          <object class="spacer">
-            <option>1</option>
-            <flag>wxGROW</flag>
-          </object>
-          <object class="sizeritem">
-            <object class="wxButton" name="btnSave">
-              <label>&amp;Save to text file</label>
-              <default>1</default>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <object class="wxButton" name="wxID_CANCEL">
-              <label>&amp;Close</label>
-            </object>
+          
+            
             <flag>wxLEFT</flag>
-            <border>8</border>
+            
+            <border>2</border>
           </object>
         </object>
-        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
-        <border>8</border>
+        
+        
+        
+        
+        <flag>wxALL|wxALIGN_RIGHT</flag>
+        
+        
+        
+        
+        <border>2</border>
       </object>
     </object>
-    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxRESIZE_BOX</style>
   </object>
 </resource>

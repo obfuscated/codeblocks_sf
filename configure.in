@@ -112,7 +112,7 @@ AC_CONFIG_FILES([Makefile
 	src/sdk/propgrid/Makefile
 	src/sdk/resources/Makefile
 	src/sdk/resources/lexers/Makefile
-	src/src/wxDockit/Makefile
+	src/src/wxAUI/Makefile
 	src/src/resources/Makefile
 	src/src/resources/icons/Makefile
 	src/src/resources/images/Makefile

@@ -21,6 +21,7 @@ class GDB_driver : public DebuggerDriver
         virtual void StepOut();
         virtual void Backtrace();
         virtual void Disassemble();
+        virtual void CPURegisters();
         virtual void Detach();
 
         virtual void AddBreakpoint(DebuggerBreakpoint* bp);

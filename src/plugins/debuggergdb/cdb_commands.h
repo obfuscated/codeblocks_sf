@@ -415,10 +415,10 @@ class CdbCmd_Backtrace : public DebuggerCmd
   */
 class CdbCmd_InfoRegisters : public DebuggerCmd
 {
-        DisassemblyDlg* m_pDlg;
+        CPURegistersDlg* m_pDlg;
     public:
         /** @param dlg The disassembly dialog. */
-        CdbCmd_InfoRegisters(DebuggerDriver* driver, DisassemblyDlg* dlg)
+        CdbCmd_InfoRegisters(DebuggerDriver* driver, CPURegistersDlg* dlg)
             : DebuggerCmd(driver),
             m_pDlg(dlg)
         {
@@ -447,7 +447,7 @@ class CdbCmd_InfoRegisters : public DebuggerCmd
                 {
                     long int addrL;
                     addr.ToLong(&addrL, 16);
-                    m_pDlg->SetRegisterValue(DisassemblyDlg::RegisterIndexFromName(reg), addrL);
+                    m_pDlg->SetRegisterValue(CPURegistersDlg::RegisterIndexFromName(reg), addrL);
                 }
     		}
 //            m_pDlg->Show(true);
@@ -468,7 +468,6 @@ class CdbCmd_DisassemblyStep2 : public DebuggerCmd
             m_pDlg(dlg)
         {
             m_Cmd << _T("uf ") << StopAddress;
-            m_pDriver->QueueCommand(new CdbCmd_InfoRegisters(driver, dlg)); // chain call
         }
         void ParseOutput(const wxString& output)
         {

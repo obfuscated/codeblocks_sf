@@ -4,30 +4,24 @@
 #include <wx/toolbar.h>
 #include <wx/docview.h> // for wxFileHistory
 #include <wx/notebook.h>
+#include <wx/dynarray.h>
 #include <../sdk/cbeditor.h>
 #include "../sdk/manager.h"
 #include "../sdk/cbplugin.h"
 #include "../sdk/sdk_events.h"
 
-// wxDockit
-#include "wx/layoutmanager.h"
-#include "wx/dockwindow.h"
-#include "wx/dockhost.h"
-#include "wx/pane.h"
-#include "wx/slidebar.h"
+// wxAUI
+#include "wxAUI/manager.h"
 
-WX_DECLARE_HASH_MAP(int, wxString, wxIntegerHash, wxIntegerEqual, WindowIDsMap);
 WX_DECLARE_HASH_MAP(int, wxString, wxIntegerHash, wxIntegerEqual, PluginIDsMap);
 WX_DECLARE_HASH_MAP(cbPlugin*, wxToolBar*, wxPointerHash, wxPointerEqual, PluginToolbarsMap);
+WX_DECLARE_STRING_HASH_MAP(wxString, LayoutViewsMap);
 
 class MainFrame : public wxFrame
 {
     private:
-        wxLayoutManager* pLayoutManager;
-        wxSlideBar* pSlideBar;
-        wxPane * pPane;
-        wxDockWindow * pDockWindow1;
-        wxDockWindow * pDockWindow2;
+        wxFrameManager m_LayoutManager;
+        LayoutViewsMap m_LayoutViews;
     public:
         wxAcceleratorTable* m_pAccel;
         MainFrame(wxLocale& locale, wxWindow* parent = (wxWindow*)NULL);
@@ -94,6 +88,9 @@ class MainFrame : public wxFrame
 		void OnEditBookmarksNext(wxCommandEvent& event);
 		void OnEditBookmarksPrevious(wxCommandEvent& event);
 
+        void OnViewLayout(wxCommandEvent& event);
+        void OnViewLayoutSave(wxCommandEvent& event);
+
         void OnSearchFind(wxCommandEvent& event);
         void OnSearchFindNext(wxCommandEvent& event);
         void OnSearchReplace(wxCommandEvent& event);
@@ -147,17 +144,15 @@ class MainFrame : public wxFrame
 		void OnSearchMenuUpdateUI(wxUpdateUIEvent& event);
 		void OnProjectMenuUpdateUI(wxUpdateUIEvent& event);
 
-		void OnLayoutChanged(wxEvent& event);
-
 		// project events
 		void OnProjectActivated(CodeBlocksEvent& event);
 		void OnProjectOpened(CodeBlocksEvent& event);
 		void OnProjectClosed(CodeBlocksEvent& event);
 
 		// dock/undock window requests
-		void OnRequestDockWindow(CodeBlocksEvent& event);
-		void OnRequestUndockWindow(CodeBlocksEvent& event);
-		void OnRequestShowDockWindow(CodeBlocksEvent& event);
+		void OnRequestDockWindow(CodeBlocksDockEvent& event);
+		void OnRequestUndockWindow(CodeBlocksDockEvent& event);
+		void OnRequestShowDockWindow(CodeBlocksDockEvent& event);
 
 		// editor changed events
 		void OnEditorOpened(CodeBlocksEvent& event);
@@ -178,8 +173,10 @@ class MainFrame : public wxFrame
         void AddPluginInPluginsMenu(cbPlugin* plugin);
         void AddPluginInSettingsMenu(cbPlugin* plugin);
         void AddPluginInHelpPluginsMenu(cbPlugin* plugin);
-        void AddPluginInMenus(wxMenu* menu, cbPlugin* plugin, wxObjectEventFunction callback, int pos = -1);
+        wxMenuItem* AddPluginInMenus(wxMenu* menu, cbPlugin* plugin, wxObjectEventFunction callback, int pos = -1, bool checkable = false);
         void RemovePluginFromMenus(const wxString& pluginName);
+
+        void SaveViewLayout(const wxString& name, const wxString& layout);
 
 		void AddEditorInWindowMenu(const wxString& filename, const wxString& title);
 		void RemoveEditorFromWindowMenu(const wxString& filename);
@@ -217,7 +214,6 @@ class MainFrame : public wxFrame
         wxToolBar* m_pToolbar;
         PluginToolbarsMap m_PluginsTools;
 
-		WindowIDsMap m_WindowIDsMap;
         PluginIDsMap m_PluginIDsMap;
         wxMenu* m_ToolsMenu;
 		wxMenu* m_PluginsMenu;

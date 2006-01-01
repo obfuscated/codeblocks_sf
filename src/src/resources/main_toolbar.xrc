@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <resource>
-<object class="wxToolBar" name="main_toolbar">
+<object class="wxToolBarAddOn" name="main_toolbar">
 <bitmapsize>22,22</bitmapsize>
 <style>wxTB_HORIZONTAL</style>
  <object class="tool" name="idProjectNew">

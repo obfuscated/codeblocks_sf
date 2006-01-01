@@ -60,8 +60,6 @@
 #include "startherepage.h"
 #include "printdlg.h"
 #include <wx/printdlg.h>
-#include <wx/util.h>
-#include <wx/dockpanel.h>
 #include <wx/filename.h>
 
 #include "../sdk/uservarmanager.h"
@@ -140,6 +138,8 @@ int idEditUncommentSelected = XRCID("idEditUncommentSelected");
 int idEditToggleCommentSelected = XRCID("idEditToggleCommentSelected");
 int idEditAutoComplete = XRCID("idEditAutoComplete");
 
+int idViewLayoutSave = XRCID("idViewLayoutSave");
+int idViewToolbars = XRCID("idViewToolbars");
 int idViewToolMain = XRCID("idViewToolMain");
 int idViewManager = XRCID("idViewManager");
 int idViewOpenFilesTree = XRCID("idViewOpenFilesTree");
@@ -308,6 +308,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idSearchReplace,  MainFrame::OnSearchReplace)
     EVT_MENU(idSearchGotoLine,  MainFrame::OnSearchGotoLine)
 
+    EVT_MENU(idViewLayoutSave, MainFrame::OnViewLayoutSave)
     EVT_MENU(idViewToolMain, MainFrame::OnToggleBar)
     EVT_MENU(idViewMessageManager, MainFrame::OnToggleBar)
     EVT_MENU(idViewManager, MainFrame::OnToggleBar)
@@ -342,8 +343,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_MENU(idStartHerePageLink, MainFrame::OnStartHereLink)
 	EVT_MENU(idStartHerePageVarSubst, MainFrame::OnStartHereVarSubst)
 
-	EVT_LAYOUT_CHANGED(MainFrame::OnLayoutChanged)
-
 	EVT_PROJECT_ACTIVATE(MainFrame::OnProjectActivated)
 	EVT_PROJECT_OPEN(MainFrame::OnProjectOpened)
 	EVT_PROJECT_CLOSE(MainFrame::OnProjectClosed)
@@ -352,8 +351,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_EDITOR_SAVE(MainFrame::OnEditorSaved)
 
 	// dock a window
-	EVT_DOCK_WINDOW(MainFrame::OnRequestDockWindow)
-	EVT_UNDOCK_WINDOW(MainFrame::OnRequestUndockWindow)
+	EVT_ADD_DOCK_WINDOW(MainFrame::OnRequestDockWindow)
+	EVT_REMOVE_DOCK_WINDOW(MainFrame::OnRequestUndockWindow)
 	EVT_SHOW_DOCK_WINDOW(MainFrame::OnRequestShowDockWindow)
 
     EVT_NOTEBOOK_PAGE_CHANGED(ID_NBEditorManager, MainFrame::OnPageChanged)
@@ -368,11 +367,6 @@ END_EVENT_TABLE()
 
 MainFrame::MainFrame(wxLocale& lang, wxWindow* parent)
        : wxFrame(parent, -1, _T("MainWin"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE),
-	   pLayoutManager(0),
-	   pSlideBar(0),
-	   pPane(0),
-	   pDockWindow1(0),
-	   pDockWindow2(0),
 	   m_pAccel(0L),
 	   m_locale(lang),
 	   m_FilesHistory(9, wxID_FILE1), // default ctor
@@ -388,6 +382,9 @@ MainFrame::MainFrame(wxLocale& lang, wxWindow* parent)
        m_HelpPluginsMenu(0L),
        m_ReconfiguringPlugins(false)
 {
+    // tell wxFrameManager to manage this frame
+    m_LayoutManager.SetFrame(this);
+
 #if defined( _MSC_VER ) && defined( _DEBUG )
 	int tmpFlag = _CrtSetDbgFlag( _CRTDBG_REPORT_FLAG );
 	//tmpFlag |= _CRTDBG_CHECK_ALWAYS_DF;
@@ -428,6 +425,8 @@ MainFrame::MainFrame(wxLocale& lang, wxWindow* parent)
     SetTitle(APP_NAME + _T(" v") + APP_VERSION);
 
     ScanForPlugins();
+    // save default view
+    SaveViewLayout(_T("Code::Blocks default"), m_LayoutManager.SavePerspective());
     LoadWindowState();
 
     ShowHideStartPage();
@@ -435,8 +434,6 @@ MainFrame::MainFrame(wxLocale& lang, wxWindow* parent)
 
 MainFrame::~MainFrame()
 {
-	delete pLayoutManager;
-
     this->SetAcceleratorTable(wxNullAcceleratorTable);
     delete m_pAccel;
 
@@ -471,38 +468,19 @@ void MainFrame::CreateIDE()
 	m_pCloseFullScreenBtn = new wxButton(this, idCloseFullScreen, _( "Close Fullscreen" ), wxDefaultPosition );
 	m_pCloseFullScreenBtn->Show( false );
 
-    pSlideBar = new wxSlideBar( this, 0 );
-    pPane = new wxPane( this, 0, wxT("Client Pane") );
-    pPane->ShowHeader(false);
-    pPane->ShowCloseButton( false );
+    // project manager
 	m_pNotebook = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, /*wxNB_LEFT | */wxCLIP_CHILDREN/* | wxNB_MULTILINE*/);
-	Manager::Get(this, m_pNotebook, 0);//pPane);
+	Manager::Get(this, m_pNotebook, 0);
+    m_LayoutManager.AddPane(m_pNotebook, wxPaneInfo().
+                              Name(wxT("ManagementPane")).Caption(wxT("Management")).
+                              BestSize(wxSize(leftW, clientsize.GetHeight())).MinSize(wxSize(100,100)).
+                              Left().Layer(1));
 
-    pDockWindow1 = new wxDockWindow( this, 0, _("Management"), wxPoint( 64, 64 ), wxSize( leftW, clientsize.GetHeight() ) );
-    pDockWindow1->SetClient( m_pNotebook );
-
-    pDockWindow2 = new wxDockWindow( this, 0, _("Messages"), wxPoint( 96, 96 ), wxSize( clientsize.GetWidth(), bottomH ), wxT("d1") );
-    pDockWindow2->SetClient( Manager::Get()->GetMessageManager() );
-
-    // setup dockmanager
-	pLayoutManager = new wxLayoutManager( this );
-    pLayoutManager->AddDefaultHosts();
-    pLayoutManager->AddDockWindow( pDockWindow1 );
-    pLayoutManager->AddDockWindow( pDockWindow2 );
-    pLayoutManager->SetLayout( wxDWF_SPLITTER_BORDERS, pPane );
-
-    // auto-dock some dockwindows
-    HostInfo hi;
-    hi = pLayoutManager->GetDockHost( wxDEFAULT_LEFT_HOST );
-    hi.pHost->SetAreaSize(leftW);
-    pLayoutManager->DockWindow( pDockWindow1, hi );
-    hi = pLayoutManager->GetDockHost( wxDEFAULT_RIGHT_HOST );
-    hi.pHost->SetAreaSize(leftW);
-    hi = pLayoutManager->GetDockHost( wxDEFAULT_TOP_HOST );
-    hi.pHost->SetAreaSize(bottomH);
-    hi = pLayoutManager->GetDockHost( wxDEFAULT_BOTTOM_HOST );
-    hi.pHost->SetAreaSize(bottomH);
-    pLayoutManager->DockWindow( pDockWindow2, hi );
+    // message manager
+    m_LayoutManager.AddPane(Manager::Get()->GetMessageManager(), wxPaneInfo().
+                              Name(wxT("MessagesPane")).Caption(wxT("Messages")).
+                              BestSize(wxSize(clientsize.GetWidth(), bottomH)).//MinSize(wxSize(50,50)).
+                              Bottom());
 
 	CreateMenubar();
 
@@ -510,13 +488,15 @@ void MainFrame::CreateIDE()
 	m_pPrjMan = Manager::Get()->GetProjectManager();
 	m_pMsgMan = Manager::Get()->GetMessageManager();
 
-    m_pMsgMan->SetContainerWindow(pDockWindow2);
-
     CreateToolbars();
     SetToolBar(0);
 
-    pSlideBar->SetMode( wxSLIDE_MODE_COMPACT );
-    pPane->SetClient(m_pEdMan->GetPanel());
+    // editor manager
+    m_LayoutManager.AddPane(m_pEdMan->GetPanel(), wxPaneInfo().Name(wxT("MainPane")).
+                            CenterPane());
+
+    // "commit" all changes made to wxFrameManager
+    m_LayoutManager.Update();
 }
 
 wxMenu* MainFrame::RecreateMenu(wxMenuBar* mbar, const wxString& name)
@@ -627,38 +607,24 @@ void MainFrame::CreateToolbars()
 		m_pToolbar = 0L;
 	}
 
-    // *** Begin new Toolbar routine ***
     wxString resPath = ConfigManager::GetDataFolder();
     wxString xrcToolbarName = _T("main_toolbar");
     if(m_SmallToolBar) // Insert logic here
         xrcToolbarName += _T("_16x16");
     myres->Load(resPath + _T("/resources.zip#zip:*.xrc"));
     MSGMAN()->DebugLog(_("Loading toolbar..."));
-    wxToolBar *mytoolbar = myres->LoadToolBar(this,xrcToolbarName);
 
-    if(mytoolbar==0L)
-    {
-        MSGMAN()->DebugLog(_("failed!"));
-        int flags = wxTB_HORIZONTAL;
-        int major;
-        int minor;
-        // version==wxWINDOWS_NT && major==5 && minor==1 => windowsXP
-        bool isXP = wxGetOsVersion(&major, &minor) == wxWINDOWS_NT && major == 5 && minor == 1;
-        if (!isXP)
-            flags |= wxTB_FLAT;
-        mytoolbar = CreateToolBar(flags, wxID_ANY);
-        if(m_SmallToolBar)
-            mytoolbar->SetToolBitmapSize(wxSize(16, 16));
-        else
-            mytoolbar->SetToolBitmapSize(wxSize(22, 22));
-    }
-
-    m_pToolbar=mytoolbar;
+    m_pToolbar = new wxToolBar(this, 0);
+    m_pToolbar->SetToolBitmapSize(m_SmallToolBar ? wxSize(16, 16) : wxSize(32, 32));
+    Manager::Get()->AddonToolBar(m_pToolbar,xrcToolbarName);
 	m_pToolbar->Realize();
-    SetToolBar(0);
-    // *** End new Toolbar routine ***
 
-    pSlideBar->AddWindow( m_pToolbar, _("Main") );
+    // add toolbars in docking system
+    m_LayoutManager.AddPane(m_pToolbar, wxPaneInfo().
+                          Name(wxT("MainToolbar")).Caption(wxT("Main Toolbar")).
+                          ToolbarPane().Top().
+                          LeftDockable(false).RightDockable(false));
+    m_LayoutManager.Update();
 
 	// ask all plugins to rebuild their toolbars
 	PluginElementsArray plugins = Manager::Get()->GetPluginManager()->GetPlugins();
@@ -698,28 +664,31 @@ void MainFrame::ScanForPlugins()
     }
 }
 
-void MainFrame::AddPluginInMenus(wxMenu* menu, cbPlugin* plugin, wxObjectEventFunction callback, int pos)
+wxMenuItem* MainFrame::AddPluginInMenus(wxMenu* menu, cbPlugin* plugin, wxObjectEventFunction callback, int pos, bool checkable)
 {
+    wxMenuItem* item = 0;
     if (!plugin || !menu)
-		return;
+		return item;
 
     PluginIDsMap::iterator it;
     for (it = m_PluginIDsMap.begin(); it != m_PluginIDsMap.end(); ++it)
     {
         if (it->second == plugin->GetInfo()->name)
         {
-            if (menu->FindItem(it->first) != 0)
-                return;
+            item = menu->FindItem(it->first);
+            if (item)
+                return item;
         }
     }
 
     int id = wxNewId();
     m_PluginIDsMap[id] = plugin->GetInfo()->name;
     if (pos == -1)
-        menu->Append(id, plugin->GetInfo()->title);
+        item = menu->Append(id, plugin->GetInfo()->title, wxEmptyString, checkable ? wxITEM_CHECK : wxITEM_NORMAL);
     else
-        menu->Insert(pos, id, plugin->GetInfo()->title);
+        item = menu->Insert(pos, id, plugin->GetInfo()->title, wxEmptyString, checkable ? wxITEM_CHECK : wxITEM_NORMAL);
     Connect( id,  wxEVT_COMMAND_MENU_SELECTED, callback );
+    return item;
 }
 
 void MainFrame::AddPluginInPluginsMenu(cbPlugin* plugin)
@@ -794,15 +763,18 @@ void MainFrame::LoadWindowState()
 {
 	wxLogNull ln; // no logging needed
 
-    wxString buf;
-    buf = Manager::Get()->GetConfigManager(_T("app"))->ReadBinary(_T("/main_frame/layout"));
-    wxStringInputStream sis(buf);
-    pLayoutManager->LoadFromStream( sis );
-    pSlideBar->LoadFromStream( sis );
-
-    // toolbar visibility
-	if (pSlideBar)
-        pSlideBar->Show(Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/main_frame/layout/toolbar_show"), true));
+    wxArrayString subs = Manager::Get()->GetConfigManager(_T("app"))->EnumerateSubPaths(_T("/main_frame/layout"));
+    for (size_t i = 0; i < subs.GetCount(); ++i)
+    {
+        wxString name = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/main_frame/layout/") + subs[i] + _T("/name"));
+        wxString layout = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/main_frame/layout/") + subs[i] + _T("/data"));
+        SaveViewLayout(name, layout);
+    }
+    wxString deflayout = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/main_frame/layout/default"));
+    deflayout = m_LayoutViews[deflayout];
+    if (deflayout.IsEmpty())
+        deflayout = m_LayoutViews[_T("Code::Blocks default")];
+    m_LayoutManager.LoadPerspective(deflayout);
 
 	// load manager and messages selected page
 	Manager::Get()->GetNotebook()->SetSelection(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/left_block_selection"), 0));
@@ -828,14 +800,16 @@ void MainFrame::SaveWindowState()
 {
 	wxLogNull ln; // no logging needed
 
-    wxStringOutputStream os;
-    pLayoutManager->SaveToStream( os );
-    pSlideBar->SaveToStream( os );
-    Manager::Get()->GetConfigManager(_T("app"))->WriteBinary(_T("/main_frame/layout"), os.GetString());
-
-    // toolbar visibility
-	if (pSlideBar)
-        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/toolbar_show"), pSlideBar->IsShown());
+    int count = 0;
+    for (LayoutViewsMap::iterator it = m_LayoutViews.begin(); it != m_LayoutViews.end(); ++it)
+    {
+        if (it->first.IsEmpty())
+            continue;
+        ++count;
+        wxString key = wxString::Format(_T("/main_frame/layout/view%d/"), count);
+        Manager::Get()->GetConfigManager(_T("app"))->Write(key + _T("name"), it->first);
+        Manager::Get()->GetConfigManager(_T("app"))->Write(key + _T("data"), it->second);
+    }
 
 	// save manager and messages selected page
 	Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/left_block_selection"), Manager::Get()->GetNotebook()->GetSelection());
@@ -853,14 +827,50 @@ void MainFrame::SaveWindowState()
 
 }
 
+void MainFrame::SaveViewLayout(const wxString& name, const wxString& layout)
+{
+    if (name.IsEmpty())
+        return;
+    m_LayoutViews[name] = layout;
+    wxMenu* viewLayouts = 0;
+    GetMenuBar()->FindItem(idViewLayoutSave, &viewLayouts);
+    if (viewLayouts && viewLayouts->FindItem(name) == wxNOT_FOUND)
+    {
+        int id = wxNewId();
+        viewLayouts->Insert(0, id, name, wxString::Format(_("Switch to %s layout"), name.c_str()));
+        Connect( id,  wxEVT_COMMAND_MENU_SELECTED,
+            (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)&MainFrame::OnViewLayout);
+        m_PluginIDsMap[id] = name;
+    }
+}
+
 void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
 {
     wxToolBar* tb = new wxToolBar(this, 0);
-    tb->SetToolBitmapSize(m_SmallToolBar ? wxSize(16, 16) : wxSize(22, 22));
+    tb->SetToolBitmapSize(m_SmallToolBar ? wxSize(16, 16) : wxSize(32, 32));
     if (plugin->BuildToolBar(tb))
     {
         SetToolBar(0);
-        pSlideBar->AddWindow( tb, plugin->GetInfo()->name, wxBF_EXPAND_X );
+
+        // add View->Toolbars menu item for toolbar
+        wxMenu* viewToolbars = 0;
+        GetMenuBar()->FindItem(idViewToolMain, &viewToolbars);
+        if (viewToolbars)
+        {
+            wxMenuItem* item = AddPluginInMenus(viewToolbars, plugin,
+                                                (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)&MainFrame::OnToggleBar,
+                                                -1, true);
+            if (item)
+            {
+                item->Check(true);
+                m_PluginsTools[plugin] = tb;
+            }
+        }
+
+        m_LayoutManager.AddPane(tb, wxPaneInfo().
+                              Name(plugin->GetInfo()->name + _T("Toolbar")).Caption(plugin->GetInfo()->title + _T(" Toolbar")).
+                              ToolbarPane().Top().Row(1));
+        m_LayoutManager.Update();
     }
     else
         delete tb;
@@ -1577,12 +1587,8 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     SaveWindowState();
     TerminateRecentFilesHistory();
 
-// NOTE (mandrav#1#): The following two lines, make the app crash on exit with wx2.6.1-ansi...
-//    Hide(); // Hide the window
-//    Refresh();
-
-    // unhook editor manager's notebook from the layout, or else bad things happen ;)
-    pPane->SetClient(0);
+    Hide(); // Hide the window
+	m_LayoutManager.UnInit();
 
     // remove all other event handlers from this window
     // this stops it from crashing, when no plugins are loaded
@@ -1902,6 +1908,28 @@ void MainFrame::OnEditEOLMode(wxCommandEvent& event)
     }
 }
 
+void MainFrame::OnViewLayout(wxCommandEvent& event)
+{
+    wxString layout = m_LayoutViews[m_PluginIDsMap[event.GetId()]];
+    if (!layout.IsEmpty())
+    {
+        m_LayoutManager.LoadPerspective(layout);
+        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/default"), m_PluginIDsMap[event.GetId()]);
+        Refresh(true);
+    }
+}
+
+void MainFrame::OnViewLayoutSave(wxCommandEvent& event)
+{
+    wxString def = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/main_frame/layout/default"));
+    wxString name = wxGetTextFromUser(_("Enter the name for this layout"), _("Save current layout"), def);
+    if (!name.IsEmpty())
+    {
+        SaveViewLayout(name, m_LayoutManager.SavePerspective());
+        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/default"), name);
+    }
+}
+
 void MainFrame::OnSearchFind(wxCommandEvent& event)
 {
 	EDMAN()->ShowFindDialog(false, event.GetId() == idSearchFindInFiles);
@@ -2198,16 +2226,34 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
     }
     wxMenuBar* mbar = GetMenuBar();
     cbEditor* ed = EDMAN() ? EDMAN()->GetBuiltinActiveEditor() : 0;
-    bool manVis = pDockWindow1->GetDockPanel()->IsDocked() || pDockWindow1->IsShown();
+    bool manVis = m_LayoutManager.GetPane(m_pNotebook).IsShown();
 
-    mbar->Check(idViewToolMain, pSlideBar->IsShown());
     mbar->Check(idViewManager, manVis);
     mbar->Check(idViewOpenFilesTree, m_pEdMan && m_pEdMan->IsOpenFilesTreeVisible());
     mbar->Enable(idViewOpenFilesTree, manVis && m_pEdMan);
-    mbar->Check(idViewMessageManager, pDockWindow2->GetDockPanel()->IsDocked() || pDockWindow2->IsShown());
+    mbar->Check(idViewMessageManager, m_LayoutManager.GetPane(Manager::Get()->GetMessageManager()).IsShown());
     mbar->Check(idViewStatusbar, GetStatusBar() && GetStatusBar()->IsShown());
     mbar->Check(idViewFullScreen, IsFullScreen());
     mbar->Enable(idViewFocusEditor, ed);
+
+    // toolbars
+    mbar->Check(idViewToolMain, m_LayoutManager.GetPane(m_pToolbar).IsShown());
+    wxMenu* viewToolbars = 0;
+    GetMenuBar()->FindItem(idViewToolMain, &viewToolbars);
+    if (viewToolbars)
+    {
+        for (size_t i = 0; i < viewToolbars->GetMenuItemCount(); ++i)
+        {
+            wxMenuItem* item = viewToolbars->GetMenuItems()[i];
+            wxString pluginName = m_PluginIDsMap[item->GetId()];
+            if (!pluginName.IsEmpty())
+            {
+                cbPlugin* plugin = Manager::Get()->GetPluginManager()->FindPluginByName(pluginName);
+                if (plugin)
+                    item->Check(m_LayoutManager.GetPane(m_PluginsTools[plugin]).IsShown());
+            }
+        }
+    }
 
 	event.Skip();
 }
@@ -2286,23 +2332,29 @@ void MainFrame::OnToggleOpenFilesTree(wxCommandEvent& event)
 
 void MainFrame::OnToggleBar(wxCommandEvent& event)
 {
-	if (event.GetId() == idViewManager)
+    wxWindow* win = 0;
+    if (event.GetId() == idViewManager)
+        win = m_pNotebook;
+    else if (event.GetId() == idViewMessageManager)
+        win = Manager::Get()->GetMessageManager();
+    else if (event.GetId() == idViewToolMain)
+        win = m_pToolbar;
+    else
     {
-        pDockWindow1->Show(!(pDockWindow1->GetDockPanel()->IsDocked() || pDockWindow1->IsShown()));
+        wxString pluginName = m_PluginIDsMap[event.GetId()];
+        if (!pluginName.IsEmpty())
+        {
+            cbPlugin* plugin = Manager::Get()->GetPluginManager()->FindPluginByName(pluginName);
+            if (plugin)
+                win = m_PluginsTools[plugin];
+        }
     }
-	else if (event.GetId() == idViewMessageManager)
-	{
-        pDockWindow2->Show(!(pDockWindow2->GetDockPanel()->IsDocked() || pDockWindow2->IsShown()));
+
+    if (win)
+    {
+        m_LayoutManager.GetPane(win).Show(event.IsChecked());
+        m_LayoutManager.Update();
     }
-	else if (event.GetId() == idViewToolMain)
-	{
-		pSlideBar->Show(!pSlideBar->IsShown());
-// under Windows, the toolbar doesn't disappear immediately...
-#ifdef __WXMSW__
-        SendSizeEvent(); // make sure everything is laid out properly
-        wxSafeYield();
-#endif // __WXMSW__
-	}
 }
 
 void MainFrame::OnToggleStatusBar(wxCommandEvent& event)
@@ -2401,8 +2453,8 @@ void MainFrame::OnSettingsEnvironment(wxCommandEvent& event)
         needRestart = m_SmallToolBar != tbarsmall;
         bool autoHide = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_hide"), false);
         MSGMAN()->EnableAutoHide(autoHide);
-        if (!autoHide)
-            pDockWindow2->Show(true); // make sure it's shown
+//        if (!autoHide)
+//            pDockWindow2->Show(true); // make sure it's shown
         ShowHideStartPage();
 
         if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/show_close_button"), false) != edmanCloseBtn)
@@ -2440,13 +2492,6 @@ void MainFrame::OnSettingsPlugins(wxCommandEvent& event)
 //        CreateToolbars();
 	}
     m_ReconfiguringPlugins = false;
-}
-
-void MainFrame::OnLayoutChanged(wxEvent& event)
-{
-	if (!m_pEdMan || event.GetEventObject() != pLayoutManager)
-        return;
-    m_pEdMan->RefreshOpenFilesTree();
 }
 
 void MainFrame::OnProjectActivated(CodeBlocksEvent& event)
@@ -2502,17 +2547,47 @@ void MainFrame::OnShiftTab(wxCommandEvent& event)
         ed->DoUnIndent();
 }
 
-void MainFrame::OnRequestDockWindow(CodeBlocksEvent& event)
+void MainFrame::OnRequestDockWindow(CodeBlocksDockEvent& event)
 {
-    // stub
+    wxPaneInfo info;
+    wxString name = event.name;
+    if (name.IsEmpty())
+    {
+        static int idx = 1;
+        name = wxString::Format(_T("UntitledPane%d"), idx++);
+    }
+// TODO (mandrav##): Check for existing pane with the same name
+    info.Name(name);
+    info.Caption(event.title.IsEmpty() ? name : event.title);
+    info.BestSize(event.desiredSize);
+    info.FloatingSize(event.desiredSize);
+    info.MinSize(event.minimumSize);
+    info.Layer(event.stretch ? 1 : 0);
+    info.CloseButton(event.hideable ? true : false);
+    switch (event.dockSide)
+    {
+        case CodeBlocksDockEvent::dsLeft: info.Left(); break;
+        case CodeBlocksDockEvent::dsRight: info.Right(); break;
+        case CodeBlocksDockEvent::dsTop: info.Top(); break;
+        case CodeBlocksDockEvent::dsBottom: info.Bottom(); break;
+        case CodeBlocksDockEvent::dsFloating: info.Float(); break;
+
+        default: break;
+    }
+    info.Hide();
+    m_LayoutManager.AddPane(event.pWindow, info);
+    m_LayoutManager.Update();
 }
 
-void MainFrame::OnRequestUndockWindow(CodeBlocksEvent& event)
+void MainFrame::OnRequestUndockWindow(CodeBlocksDockEvent& event)
 {
-    // stub
+    m_LayoutManager.DetachPane(event.pWindow);
+    m_LayoutManager.Update();
 }
 
-void MainFrame::OnRequestShowDockWindow(CodeBlocksEvent& event)
+void MainFrame::OnRequestShowDockWindow(CodeBlocksDockEvent& event)
 {
     // stub
+    m_LayoutManager.GetPane(event.pWindow).Show();
+    m_LayoutManager.Update();
 }

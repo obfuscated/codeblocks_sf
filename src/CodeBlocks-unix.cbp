@@ -75,7 +75,6 @@
             </Target>
             <Target title="wxPropertyGrid">
                 <Option output="libpropgrid.a" />
-                <Option working_dir="" />
                 <Option type="3" />
                 <Option compiler="0" />
                 <Option includeInTargetAll="1" />
@@ -109,20 +108,16 @@
                     <Mode before="always" />
                 </ExtraCommands>
             </Target>
-            <Target title="wxDockIt">
-                <Option output="src/wxDockit/lib/libwxDockIt.a" />
+            <Target title="wxAUI">
+                <Option output="src/wxAUI/libwxaui.a" />
                 <Option working_dir="" />
                 <Option type="2" />
                 <Option compiler="0" />
                 <Option includeInTargetAll="1" />
                 <Option projectResourceIncludeDirsRelation="2" />
                 <Compiler>
-                    <Add option="-DPANE_AWARE" />
-                    <Add directory="src/wxDockit/include" />
+                    <Add directory="src/wxAUI" />
                 </Compiler>
-                <ResourceCompiler>
-                    <Add directory="src/wxDockit/include" />
-                </ResourceCompiler>
             </Target>
             <Target title="src">
                 <Option output="devel/codeblocks" />
@@ -139,14 +134,14 @@
                 <Compiler>
                     <Add option="-DENABLE_BINRELOC" />
                     <Add directory="sdk" />
-                    <Add directory="src/wxDockit/include" />
+                    <Add directory="src/wxAUI" />
                 </Compiler>
                 <Linker>
                     <Add library="codeblocks" />
-                    <Add library="wxDockIt" />
+                    <Add library="wxaui" />
                     <Add library="wxscintilla" />
                     <Add directory="devel" />
-                    <Add directory="src/wxDockit/lib" />
+                    <Add directory="src/wxAUI" />
                 </Linker>
             </Target>
             <Target title="AStyle">
@@ -1158,6 +1153,16 @@
             <Option link="0" />
             <Option target="Debugger" />
         </Unit>
+        <Unit filename="plugins/debuggergdb/cpuregistersdlg.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="Debugger" />
+        </Unit>
+        <Unit filename="plugins/debuggergdb/cpuregistersdlg.h">
+            <Option compilerVar="CPP" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="Debugger" />
+        </Unit>
         <Unit filename="plugins/debuggergdb/debugger_defs.cpp">
             <Option compilerVar="CPP" />
             <Option target="Debugger" />
@@ -1282,6 +1287,12 @@
         </Unit>
         <Unit filename="plugins/debuggergdb/resources/breakpoints.xrc">
             <Option compilerVar="" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="Debugger" />
+        </Unit>
+        <Unit filename="plugins/debuggergdb/resources/cpuregisters.xrc">
+            <Option compilerVar="CPP" />
             <Option compile="0" />
             <Option link="0" />
             <Option target="Debugger" />
@@ -4092,179 +4103,15 @@
             <Option link="0" />
             <Option target="src" />
         </Unit>
-        <Unit filename="src/wxDockit/include/wx/barholder.h">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="wxDockIt" />
-        </Unit>
-        <Unit filename="src/wxDockit/include/wx/dockhost.h">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="wxDockIt" />
-        </Unit>
-        <Unit filename="src/wxDockit/include/wx/dockit_defs.h">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="wxDockIt" />
-        </Unit>
-        <Unit filename="src/wxDockit/include/wx/dockpanel.h">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="wxDockIt" />
-        </Unit>
-        <Unit filename="src/wxDockit/include/wx/dockwindow.h">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="wxDockIt" />
-        </Unit>
-        <Unit filename="src/wxDockit/include/wx/exsplitter.h">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="wxDockIt" />
-        </Unit>
-        <Unit filename="src/wxDockit/include/wx/gdi.h">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="wxDockIt" />
-        </Unit>
-        <Unit filename="src/wxDockit/include/wx/generic/toolbutton.h">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="wxDockIt" />
-        </Unit>
-        <Unit filename="src/wxDockit/include/wx/gripper.h">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="wxDockIt" />
-        </Unit>
-        <Unit filename="src/wxDockit/include/wx/gtk/dockwindow.h">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-        </Unit>
-        <Unit filename="src/wxDockit/include/wx/gtk/gdi.h">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-        </Unit>
-        <Unit filename="src/wxDockit/include/wx/gtk/pane.h">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-        </Unit>
-        <Unit filename="src/wxDockit/include/wx/layoutmanager.h">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="wxDockIt" />
-        </Unit>
-        <Unit filename="src/wxDockit/include/wx/pane.h">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="wxDockIt" />
-        </Unit>
-        <Unit filename="src/wxDockit/include/wx/slidebar.h">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="wxDockIt" />
-        </Unit>
-        <Unit filename="src/wxDockit/include/wx/toolbutton.h">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="wxDockIt" />
-        </Unit>
-        <Unit filename="src/wxDockit/include/wx/util.h">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="wxDockIt" />
-        </Unit>
-        <Unit filename="src/wxDockit/lib/readme.txt">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-        </Unit>
-        <Unit filename="src/wxDockit/readme.txt">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-        </Unit>
-        <Unit filename="src/wxDockit/releaseNotes.txt">
-            <Option compilerVar="" />
-            <Option compile="0" />
-            <Option link="0" />
-        </Unit>
-        <Unit filename="src/wxDockit/src/generic/barholder.cpp">
+        <Unit filename="src/wxAUI/manager.cpp">
             <Option compilerVar="CPP" />
-            <Option target="wxDockIt" />
+            <Option target="wxAUI" />
         </Unit>
-        <Unit filename="src/wxDockit/src/generic/dockhost.cpp">
+        <Unit filename="src/wxAUI/manager.h">
             <Option compilerVar="CPP" />
-            <Option target="wxDockIt" />
-        </Unit>
-        <Unit filename="src/wxDockit/src/generic/dockpanel.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="wxDockIt" />
-        </Unit>
-        <Unit filename="src/wxDockit/src/generic/dockwindow.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="wxDockIt" />
-        </Unit>
-        <Unit filename="src/wxDockit/src/generic/exsplitter.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="wxDockIt" />
-        </Unit>
-        <Unit filename="src/wxDockit/src/generic/gdi.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="wxDockIt" />
-        </Unit>
-        <Unit filename="src/wxDockit/src/generic/gripper.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="wxDockIt" />
-        </Unit>
-        <Unit filename="src/wxDockit/src/generic/layoutmanager.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="wxDockIt" />
-        </Unit>
-        <Unit filename="src/wxDockit/src/generic/pane.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="wxDockIt" />
-        </Unit>
-        <Unit filename="src/wxDockit/src/generic/slidebar.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="wxDockIt" />
-        </Unit>
-        <Unit filename="src/wxDockit/src/generic/toolbutton.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="wxDockIt" />
-        </Unit>
-        <Unit filename="src/wxDockit/src/generic/util.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="wxDockIt" />
-        </Unit>
-        <Unit filename="src/wxDockit/src/gtk/dockwindow_gtk.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="wxDockIt" />
-        </Unit>
-        <Unit filename="src/wxDockit/src/gtk/gdi_gtk.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="wxDockIt" />
-        </Unit>
-        <Unit filename="src/wxDockit/src/gtk/pane_gtk.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="wxDockIt" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxAUI" />
         </Unit>
         <Unit filename="templates/common/console-main-c.cpp">
             <Option compilerVar="CPP" />
@@ -4415,7 +4262,7 @@
             <Option compilerVar="CPP" />
             <Option compile="0" />
             <Option link="0" />
-            <Option target="wxDockIt" />
+            <Option target="wxAUI" />
         </Unit>
         <Unit filename="templates/win32/dll-main.cpp">
             <Option compilerVar="CPP" />

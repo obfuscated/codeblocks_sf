@@ -6,7 +6,7 @@
 #include <wx/button.h>
 #include <wx/wfstream.h>
 
-BEGIN_EVENT_TABLE(BacktraceDlg, wxDialog)
+BEGIN_EVENT_TABLE(BacktraceDlg, wxPanel)
     EVT_BUTTON(XRCID("btnSave"), BacktraceDlg::OnSave)
     EVT_BUTTON(XRCID("btnRefresh"), BacktraceDlg::OnRefresh)
     EVT_LIST_ITEM_ACTIVATED(XRCID("lstTrace"), BacktraceDlg::OnDblClick)
@@ -16,7 +16,7 @@ BacktraceDlg::BacktraceDlg(wxWindow* parent, DebuggerGDB* debugger)
     : m_pDbg(debugger)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgBacktrace"));
+	wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgBacktrace"));
 	SetWindowStyle(GetWindowStyle() | wxFRAME_FLOAT_ON_PARENT);
 
     wxListCtrl* lst = XRCCTRL(*this, "lstTrace", wxListCtrl);

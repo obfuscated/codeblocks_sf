@@ -1,7 +1,6 @@
 <?xml version="1.0" ?>
 <resource>
   <object class="wxToolBarAddOn" name="compiler_toolbar">
-    <object class="separator"/>
     <object class="tool" name="idCompilerMenuCompile">
       <tooltip>Build</tooltip>
       <longhelp>Build the active project</longhelp>

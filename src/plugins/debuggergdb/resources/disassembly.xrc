@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resource>
-  <object class="wxDialog" name="dlgDisassembly">
-    <title>CPU window</title>
+  <object class="wxPanel" name="dlgDisassembly">
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
         <object class="wxFlexGridSizer">
           <cols>2</cols>
-          <vgap>4</vgap>
+          <vgap>2</vgap>
           <hgap>4</hgap>
           <object class="sizeritem">
             <object class="wxStaticText">
+              
+              
+              
+              
               
               
               
@@ -22,8 +25,16 @@
               
               
               
+              
+              
+              
+              
               <label>func</label>
             </object>
+            
+            
+            
+            
             
             
             
@@ -31,6 +42,10 @@
           </object>
           <object class="sizeritem">
             <object class="wxStaticText">
+              
+              
+              
+              
               
               
               
@@ -42,8 +57,16 @@
               
               
               
+              
+              
+              
+              
               <label>addr</label>
             </object>
+            
+            
+            
+            
             
             
             
@@ -54,70 +77,60 @@
         
         
         
-        <flag>wxALL|wxGROW</flag>
         
         
         
-        <border>8</border>
+        
+        <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+        
+        
+        
+        
+        
+      
+        
+        
+        <border>2</border>
       </object>
       <object class="sizeritem">
-        <object class="wxBoxSizer">
-          <orient>wxHORIZONTAL</orient>
-          <object class="sizeritem">
-            <object class="wxListCtrl" name="lcCode">
+        <object class="wxListCtrl" name="lcCode">
               
               
-              <style>wxLC_REPORT|wxLC_SINGLE_SEL</style>
-            </object>
-            
-            
-            
-            <option>2</option>
-            <flag>wxGROW</flag>
-            
+              
+              
           
-            <minsize>320,240</minsize>
-          </object>
-          <object class="sizeritem">
-            <object class="wxListCtrl" name="lcRegisters">
-              
-              
-              <style>wxLC_REPORT|wxLC_SINGLE_SEL</style>
+          
+          <style>wxLC_REPORT|wxLC_SINGLE_SEL</style>
             </object>
             
             
             
-            <option>1</option>
-            <flag>wxLEFT|wxGROW</flag>
             
             
-            <border>8</border>
-            
-          </object>
-        </object>
         
         
         <option>1</option>
+            
+            
         
         
-        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+        <flag>wxGROW</flag>
+            
+          
+            
+            
         
         
-        <border>8</border>
-      </object>
+          </object>
       <object class="sizeritem">
         <object class="wxBoxSizer">
           <orient>wxHORIZONTAL</orient>
           <object class="sizeritem">
-            <object class="wxButton" name="btnRefresh">
-              
-              
-              
-              <label>&amp;Refresh</label>
-            </object>
-          </object>
-          <object class="sizeritem">
             <object class="wxButton" name="btnSave">
+              
+              
+              
+              
               
               
               
@@ -125,40 +138,46 @@
               
               
               
-              <default>1</default>
+              
+              
+              
             </object>
-          </object>
-          <object class="spacer">
-            
-            
-            
-            <option>1</option>
-            
-            
-            
-            <flag>wxGROW</flag>
           </object>
           <object class="sizeritem">
-            <object class="wxButton" name="wxID_CANCEL">
+            <object class="wxButton" name="btnRefresh">
               
               
               
-              <label>&amp;Close</label>
+              
+              
+              
+              
+              <label>&amp;Refresh</label>
             </object>
+          
             
+            <flag>wxLEFT</flag>
             
+            <border>2</border>
           </object>
         </object>
         
         
         
-        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
         
         
         
-        <border>8</border>
+        
+        <flag>wxALL|wxALIGN_RIGHT</flag>
+        
+        
+        
+        
+        
+        
+        
+        <border>2</border>
       </object>
     </object>
-    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxRESIZE_BOX</style>
   </object>
 </resource>

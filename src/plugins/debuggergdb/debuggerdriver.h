@@ -12,6 +12,7 @@ class DebuggerGDB;
 class DebuggerTree;
 class BacktraceDlg;
 class DisassemblyDlg;
+class CPURegistersDlg;
 class Compiler;
 
 WX_DEFINE_ARRAY(DebuggerCmd*, DebuggerCommands);
@@ -40,7 +41,7 @@ class DebuggerDriver
         ////////////////////////////////
 
         /** Inform the driver about the plugin's available (not necessarily visible) debugging windows. */
-        virtual void SetDebugWindows(BacktraceDlg* b, DisassemblyDlg* d);
+        virtual void SetDebugWindows(BacktraceDlg* b, DisassemblyDlg* d, CPURegistersDlg* r);
 
         /** Add a directory in search list. */
         virtual void AddDirectory(const wxString& dir);
@@ -78,6 +79,7 @@ class DebuggerDriver
         virtual void StepOut() = 0;
         virtual void Backtrace() = 0;
         virtual void Disassemble() = 0;
+        virtual void CPURegisters() = 0;
 
         /** Add a breakpoint.
             @param bp The breakpoint to add.
@@ -134,6 +136,7 @@ class DebuggerDriver
 
         BacktraceDlg* m_pBacktrace;
         DisassemblyDlg* m_pDisassembly;
+        CPURegistersDlg* m_pCPURegisters;
         wxString m_StopFile;
         wxString m_StopAddress;
         long int m_StopLine;

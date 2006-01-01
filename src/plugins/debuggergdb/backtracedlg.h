@@ -1,13 +1,13 @@
 #ifndef BACKTRACEDLG_H
 #define BACKTRACEDLG_H
 
-#include <wx/dialog.h>
+#include <wx/panel.h>
 #include <wx/listctrl.h>
 
 class DebuggerGDB;
 struct StackFrame;
 
-class BacktraceDlg : public wxDialog
+class BacktraceDlg : public wxPanel
 {
 	public:
 		BacktraceDlg(wxWindow* parent, DebuggerGDB* debugger);

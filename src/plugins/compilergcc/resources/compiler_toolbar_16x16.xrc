@@ -1,7 +1,6 @@
 <?xml version="1.0" ?>
 <resource>
   <object class="wxToolBarAddOn" name="compiler_toolbar_16x16">
-    <object class="separator" />
     <object class="tool" name="idCompilerMenuCompile">
       <tooltip>Build</tooltip>
       <longhelp>Build the active project</longhelp>
@@ -37,6 +36,5 @@
 	    <size>160,-1</size>
 		<style>wxCB_READONLY</style>
     </object>
-    <object class="separator" />
   </object>
 </resource>

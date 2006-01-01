@@ -9,6 +9,7 @@ EXTRA_DIST = backtrace.xrc \
 	debugger_options_dlg.xrc \
 	debugger_toolbar_16x16.xrc \
 	debugger_toolbar.xrc \
+	cpuregisters.xrc \
 	disassembly.xrc \
 	images/dbgnext.png \
 	images/dbgrun.png \
