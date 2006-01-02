@@ -220,9 +220,7 @@ template <class T> void Register_CompileOptionsBase(asIScriptEngine* engine, con
     engine->RegisterObjectMethod(_C(classname), "void AddLibDir(const wxString& in)", asMETHOD(T, AddLibDir), asCALL_THISCALL);
     engine->RegisterObjectMethod(_C(classname), "void AddCommandsBeforeBuild(const wxString& in)", asMETHOD(T, AddCommandsBeforeBuild), asCALL_THISCALL);
     engine->RegisterObjectMethod(_C(classname), "void AddCommandsAfterBuild(const wxString& in)", asMETHOD(T, AddCommandsAfterBuild), asCALL_THISCALL);
-    engine->RegisterObjectMethod(_C(classname), "bool GetAlwaysRunPreBuildSteps()", asMETHOD(T, GetAlwaysRunPreBuildSteps), asCALL_THISCALL);
     engine->RegisterObjectMethod(_C(classname), "bool GetAlwaysRunPostBuildSteps()", asMETHOD(T, GetAlwaysRunPostBuildSteps), asCALL_THISCALL);
-    engine->RegisterObjectMethod(_C(classname), "void SetAlwaysRunPreBuildSteps(bool)", asMETHOD(T, SetAlwaysRunPreBuildSteps), asCALL_THISCALL);
     engine->RegisterObjectMethod(_C(classname), "void SetAlwaysRunPostBuildSteps(bool)", asMETHOD(T, SetAlwaysRunPostBuildSteps), asCALL_THISCALL);
 }
 

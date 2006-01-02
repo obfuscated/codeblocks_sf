@@ -331,35 +331,9 @@ void CompileOptionsBase::AddCommandsAfterBuild(const wxString& command)
 	SetModified(true);
 }
 
-bool CompileOptionsBase::GetCpp()
-{
-	return m_Cpp;
-}
-
-void CompileOptionsBase::SetCpp(bool cpp)
-{
-	if (m_Cpp == cpp)
-		return;
-	m_Cpp = cpp;
-	SetModified(true);
-}
-
-bool CompileOptionsBase::GetAlwaysRunPreBuildSteps()
-{
-    return m_AlwaysRunPreCmds;
-}
-
 bool CompileOptionsBase::GetAlwaysRunPostBuildSteps()
 {
     return m_AlwaysRunPostCmds;
-}
-
-void CompileOptionsBase::SetAlwaysRunPreBuildSteps(bool always)
-{
-    if (m_AlwaysRunPreCmds == always)
-        return;
-    m_AlwaysRunPreCmds = always;
-    SetModified(true);
 }
 
 void CompileOptionsBase::SetAlwaysRunPostBuildSteps(bool always)

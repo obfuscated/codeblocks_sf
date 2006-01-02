@@ -34,7 +34,7 @@ class DLLIMPORT CompileOptionsBase
 		CompileOptionsBase();
 		CompileOptionsBase(const CompileOptionsBase& other);
 		virtual ~CompileOptionsBase();
-		
+
 		virtual void SetBuildConfiguration(const BuildConfiguration& bc);
 		virtual const BuildConfiguration& GetBuildConfiguration();
 		virtual void SetLinkerOptions(const wxArrayString& linkerOpts);
@@ -63,11 +63,7 @@ class DLLIMPORT CompileOptionsBase
         virtual void AddLibDir(const wxString& option);
 		virtual void AddCommandsBeforeBuild(const wxString& command);
 		virtual void AddCommandsAfterBuild(const wxString& command);
-		virtual bool GetCpp();
-		virtual void SetCpp(bool cpp);
-		virtual bool GetAlwaysRunPreBuildSteps();
 		virtual bool GetAlwaysRunPostBuildSteps();
-		virtual void SetAlwaysRunPreBuildSteps(bool always);
 		virtual void SetAlwaysRunPostBuildSteps(bool always);
         virtual void SetCustomVars(const CustomVars& vars); ///< Set the target's custom variables
         virtual CustomVars& GetCustomVars(); ///< Read the target's custom variables

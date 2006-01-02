@@ -607,7 +607,6 @@ void CompilerOptionsDlg::DoLoadOptions(int compilerIdx, ScopeTreeData* data)
 		m_LinkLibs = compiler->GetLinkLibs();
 		m_CommandsAfterBuild = compiler->GetCommandsAfterBuild();
 		m_CommandsBeforeBuild = compiler->GetCommandsBeforeBuild();
-		m_AlwaysUsePre = compiler->GetAlwaysRunPreBuildSteps();
 		m_AlwaysUsePost = compiler->GetAlwaysRunPostBuildSteps();
 
         wxComboBox* cmb = XRCCTRL(*this, "cmbLogging", wxComboBox);
@@ -632,7 +631,6 @@ void CompilerOptionsDlg::DoLoadOptions(int compilerIdx, ScopeTreeData* data)
 			m_LinkLibs = project->GetLinkLibs();
 			m_CommandsAfterBuild = project->GetCommandsAfterBuild();
 			m_CommandsBeforeBuild = project->GetCommandsBeforeBuild();
-			m_AlwaysUsePre = project->GetAlwaysRunPreBuildSteps();
 			m_AlwaysUsePost = project->GetAlwaysRunPostBuildSteps();
 
             XRCCTRL(*this, "txtMakeCmd_Build", wxTextCtrl)->SetValue(project->GetMakeCommandFor(mcBuild));
@@ -653,7 +651,6 @@ void CompilerOptionsDlg::DoLoadOptions(int compilerIdx, ScopeTreeData* data)
 			m_LinkLibs = target->GetLinkLibs();
 			m_CommandsAfterBuild = target->GetCommandsAfterBuild();
 			m_CommandsBeforeBuild = target->GetCommandsBeforeBuild();
-			m_AlwaysUsePre = target->GetAlwaysRunPreBuildSteps();
 			m_AlwaysUsePost = target->GetAlwaysRunPostBuildSteps();
 			XRCCTRL(*this, "cmbCompilerPolicy", wxComboBox)->SetSelection(target->GetOptionRelation(ortCompilerOptions));
 			XRCCTRL(*this, "cmbLinkerPolicy", wxComboBox)->SetSelection(target->GetOptionRelation(ortLinkerOptions));
@@ -682,7 +679,6 @@ void CompilerOptionsDlg::DoLoadOptions(int compilerIdx, ScopeTreeData* data)
 	{
         DoFillCompileOptions(m_CommandsBeforeBuild, XRCCTRL(*this, "txtCmdBefore", wxTextCtrl));
         DoFillCompileOptions(m_CommandsAfterBuild, XRCCTRL(*this, "txtCmdAfter", wxTextCtrl));
-        XRCCTRL(*this, "chkAlwaysRunPre", wxCheckBox)->SetValue(m_AlwaysUsePre);
         XRCCTRL(*this, "chkAlwaysRunPost", wxCheckBox)->SetValue(m_AlwaysUsePost);
     }
 }
@@ -692,7 +688,6 @@ void CompilerOptionsDlg::DoSaveOptions(int compilerIdx, ScopeTreeData* data)
     // only if "Commands" page exists
 	if (XRCCTRL(*this, "txtCmdBefore", wxTextCtrl))
 	{
-        m_AlwaysUsePre = XRCCTRL(*this, "chkAlwaysRunPre", wxCheckBox)->GetValue();
         m_AlwaysUsePost = XRCCTRL(*this, "chkAlwaysRunPost", wxCheckBox)->GetValue();
         DoGetCompileOptions(m_CommandsBeforeBuild, XRCCTRL(*this, "txtCmdBefore", wxTextCtrl));
         DoGetCompileOptions(m_CommandsAfterBuild, XRCCTRL(*this, "txtCmdAfter", wxTextCtrl));
@@ -717,7 +712,6 @@ void CompilerOptionsDlg::DoSaveOptions(int compilerIdx, ScopeTreeData* data)
 		compiler->SetLinkLibs(m_LinkLibs);
 		compiler->SetCommandsBeforeBuild(m_CommandsBeforeBuild);
 		compiler->SetCommandsAfterBuild(m_CommandsAfterBuild);
-		compiler->SetAlwaysRunPreBuildSteps(m_AlwaysUsePre);
 		compiler->SetAlwaysRunPostBuildSteps(m_AlwaysUsePost);
 
         wxComboBox* cmb = XRCCTRL(*this, "cmbLogging", wxComboBox);
@@ -749,7 +743,6 @@ void CompilerOptionsDlg::DoSaveOptions(int compilerIdx, ScopeTreeData* data)
 			project->SetLinkLibs(m_LinkLibs);
 			project->SetCommandsBeforeBuild(m_CommandsBeforeBuild);
 			project->SetCommandsAfterBuild(m_CommandsAfterBuild);
-            project->SetAlwaysRunPreBuildSteps(m_AlwaysUsePre);
             project->SetAlwaysRunPostBuildSteps(m_AlwaysUsePost);
 
             project->SetMakeCommandFor(mcBuild, XRCCTRL(*this, "txtMakeCmd_Build", wxTextCtrl)->GetValue());
@@ -774,7 +767,6 @@ void CompilerOptionsDlg::DoSaveOptions(int compilerIdx, ScopeTreeData* data)
             target->SetOptionRelation(ortResDirs, OptionsRelation(XRCCTRL(*this, "cmbResDirsPolicy", wxComboBox)->GetSelection()));
 			target->SetCommandsBeforeBuild(m_CommandsBeforeBuild);
 			target->SetCommandsAfterBuild(m_CommandsAfterBuild);
-            target->SetAlwaysRunPreBuildSteps(m_AlwaysUsePre);
             target->SetAlwaysRunPostBuildSteps(m_AlwaysUsePost);
 
             target->SetMakeCommandFor(mcBuild, XRCCTRL(*this, "txtMakeCmd_Build", wxTextCtrl)->GetValue());

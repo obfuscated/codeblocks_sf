@@ -10,7 +10,9 @@ enum OptionsRelationType
     ortLinkerOptions, /**< Linker option */
     ortIncludeDirs, /**< Compiler include dir option */
     ortLibDirs, /**< Linker include dir option */
-    ortResDirs /**< Resource compiler include dir option */
+    ortResDirs, /**< Resource compiler include dir option */
+
+    ortLast
 };
 
 /** Option's relation */
@@ -100,7 +102,7 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         wxString m_DepsOutput;
         wxString m_ExecutionParameters;
         wxString m_HostApplication;
-        OptionsRelation m_OptionsRelation[4];
+        OptionsRelation m_OptionsRelation[ortLast];
         TargetType m_TargetType;
         int m_CompilerIdx;
         wxString m_MakeCommands[mcLast];

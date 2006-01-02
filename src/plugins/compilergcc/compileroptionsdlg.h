@@ -88,7 +88,7 @@ class CompilerOptionsDlg : public wxDialog
 		void OnMyCharHook(wxKeyEvent& event);
 
 		virtual void EndModal(int retCode);
-		
+
 		CompilerGCC* m_Compiler;
 		CompilerOptions m_Options;
         wxArrayString m_LinkerOptions;
@@ -99,13 +99,12 @@ class CompilerOptionsDlg : public wxDialog
         wxArrayString m_ResDirs;
 		wxArrayString m_CommandsBeforeBuild;
 		wxArrayString m_CommandsAfterBuild;
-		bool m_AlwaysUsePre;
 		bool m_AlwaysUsePost;
 		int m_LastCompilerIdx;
 		int m_InitialCompilerIdx;
 		cbProject* m_pProject;
 		ProjectBuildTarget* m_pTarget;
-		
+
 		bool m_BuildingTree; // flag to ignore tree changing events while building it
 
 		DECLARE_EVENT_TABLE()

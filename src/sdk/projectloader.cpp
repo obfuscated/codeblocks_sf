@@ -547,10 +547,7 @@ void ProjectLoader::DoExtraCommands(TiXmlElement* parentNode, ProjectBuildTarget
         TiXmlElement* child = node->FirstChildElement("Mode");
         while (child)
         {
-            wxString mode = _U(child->Attribute("before"));
-            if (mode == _T("always"))
-                base->SetAlwaysRunPreBuildSteps(true);
-            mode = _U(child->Attribute("after"));
+            wxString mode = _U(child->Attribute("after"));
             if (mode == _T("always"))
                 base->SetAlwaysRunPostBuildSteps(true);
 
@@ -886,8 +883,6 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
             tgtnode->RemoveChild(node);
         else
         {
-            if (target->GetAlwaysRunPreBuildSteps())
-                AddElement(node, "Mode", "before", wxString(_T("always")));
             if (target->GetAlwaysRunPostBuildSteps())
                 AddElement(node, "Mode", "after", wxString(_T("always")));
         }
@@ -933,8 +928,6 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
         prjnode->RemoveChild(node);
     else
     {
-        if (m_pProject->GetAlwaysRunPreBuildSteps())
-            AddElement(node, "Mode", "before", wxString(_T("always")));
         if (m_pProject->GetAlwaysRunPostBuildSteps())
             AddElement(node, "Mode", "after", wxString(_T("always")));
     }
