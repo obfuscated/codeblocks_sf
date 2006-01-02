@@ -361,7 +361,7 @@ bool cbRead(wxFile& file, wxString& st)
     file.Read((void*)buff, len);
     file.Close();
     buff[len]='\0';
-    st = wxString((const char *)buff, wxConvUTF8);
+    st = wxString((const char *)buff, wxConvLocal);
     delete[] buff;
 #else
 
