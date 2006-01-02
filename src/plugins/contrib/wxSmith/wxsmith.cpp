@@ -17,6 +17,7 @@
 #include <wx/notebook.h>
 #include <wx/sashwin.h>
 #include <configmanager.h>
+#include <cbexception.h>
 
 #include "wxsmith.h"
 #include "wxswindoweditor.h"

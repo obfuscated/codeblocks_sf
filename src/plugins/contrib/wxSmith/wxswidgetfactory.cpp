@@ -45,7 +45,7 @@ void wxsWidgetFactory::Kill(wxsWidget* Widget)
         Widget->KillTree(wxsTREE());
         if ( Widget->GetPreview() ) Widget->KillPreview();
 
-        if ( Widget->GetProperties() ) Widget->KillProperties();
+        if ( Widget->GetPropertiesWindow() ) Widget->KillPropertiesWindow();
 
         // Deleting widget
         if ( Widget->GetInfo().Manager )

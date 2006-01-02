@@ -22,6 +22,7 @@ class wxsCodeGen
 
     private:
         wxString Code;
+        int PreviousUniqueNumber;
 
         void AppendCodeReq(wxsWidget* Widget,wxsCodeParams& Params);
 };

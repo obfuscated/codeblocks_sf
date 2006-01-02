@@ -5,25 +5,20 @@
 #include <wx/stattext.h>
 #include <vector>
 
-wxsStyleProperty::wxsStyleProperty(wxsProperties* Properties,int &_StyleBits,int &_ExStyleBits,wxsStyle *_Styles,bool _XrcOnly):
-    wxsProperty(Properties),
-    StyleBits(_StyleBits),
-    ExStyleBits(_ExStyleBits),
-    Styles(_Styles),
-    XrcOnly(_XrcOnly),
-    StylePGId(0),
-    ExStylePGId(0)
+wxsStyleProperty::wxsStyleProperty(
+    int &_StyleBits,
+    int &_ExStyleBits,
+    wxsStyle *_Styles,
+    bool _XrcOnly,
+    const wxString& ExPropName):
+        StyleBits(_StyleBits),
+        ExStyleBits(_ExStyleBits),
+        Styles(_Styles),
+        XrcOnly(_XrcOnly),
+        ExName(ExPropName),
+        StylePGId(0),
+        ExStylePGId(0)
 {
-}
-
-wxsStyleProperty::~wxsStyleProperty()
-{
-}
-
-const wxString& wxsStyleProperty::GetTypeName()
-{
-    static wxString Name(_T("widget style"));
-    return Name;
 }
 
 void wxsStyleProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)
@@ -63,11 +58,11 @@ void wxsStyleProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)
         }
     }
 
-    StylePGId = Grid->Append( wxFlagsProperty(_("Style:"),wxPG_LABEL,Consts,StyleBits) );
+    StylePGId = Grid->Append( wxFlagsProperty(Name,wxPG_LABEL,Consts,StyleBits) );
     Grid->SetPropertyAttribute(StylePGId,wxPG_BOOL_USE_CHECKBOX,(long)1,wxRECURSE);
     if ( ExCount )
     {
-        ExStylePGId = Grid->Append( wxFlagsProperty(_("Extra style:"),wxPG_LABEL,ExConsts,ExStyleBits) );
+        ExStylePGId = Grid->Append( wxFlagsProperty(ExName,wxPG_LABEL,ExConsts,ExStyleBits) );
         Grid->SetPropertyAttribute(ExStylePGId,wxPG_BOOL_USE_CHECKBOX,(long)1,wxRECURSE);
     }
 }

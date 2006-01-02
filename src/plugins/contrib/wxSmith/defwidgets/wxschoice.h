@@ -21,7 +21,7 @@ class wxsChoice: public wxsChoiceBase
 
     protected:
         virtual wxWindow* MyCreatePreview(wxWindow* Parent);
-        virtual wxString GetProducingCode(wxsCodeParams& Params);
+        virtual wxString GetProducingCode(const wxsCodeParams& Params);
 };
 
 #endif

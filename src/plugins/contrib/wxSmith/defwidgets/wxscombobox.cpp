@@ -43,32 +43,31 @@ wxWindow* wxsComboBox::MyCreatePreview(wxWindow* Parent)
     return Combo;
 }
 
-wxString wxsComboBox::GetProducingCode(wxsCodeParams& Params)
+wxString wxsComboBox::GetProducingCode(const wxsCodeParams& Params)
 {
     wxString Code;
-    const CodeDefines& CDefs = GetCodeDefines();
     Code.Printf(_T("%s = new wxComboBox(%s,%s,_T(\"\"),%s,%s,0,NULL,%s);\n"),
-            GetBaseProperties().VarName.c_str(),
+            Params.VarName.c_str(),
             Params.ParentName.c_str(),
-            GetBaseProperties().IdName.c_str(),
-            CDefs.Pos.c_str(),
-            CDefs.Size.c_str(),
-            CDefs.Style.c_str());
+            Params.IdName.c_str(),
+            Params.Pos.c_str(),
+            Params.Size.c_str(),
+            Params.Style.c_str());
     for ( size_t i = 0; i <  arrayChoices.Count(); ++i )
     {
         Code << wxString::Format(_T("%s->Append(%s);\n"),
-            GetBaseProperties().VarName.c_str(),
+            Params.VarName.c_str(),
             wxsGetWxString(arrayChoices[i]).c_str());
     }
 
     if ( defaultChoice >= 0 && defaultChoice < (int)arrayChoices.Count() )
     {
         Code << wxString::Format(_T("%s->SetSelection(%d);\n"),
-            GetBaseProperties().VarName.c_str(),
+            Params.VarName.c_str(),
             defaultChoice);
     }
 
-    Code << CDefs.InitCode;
+    Code << Params.InitCode;
 
     return Code;
 }

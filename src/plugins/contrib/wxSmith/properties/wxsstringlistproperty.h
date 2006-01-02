@@ -10,16 +10,10 @@ class wxsStringListProperty : public wxsProperty
 	public:
 
         /** Ctor */
-		wxsStringListProperty(wxsProperties* Properties,wxArrayString& Array);
+		wxsStringListProperty(wxArrayString& Array);
 
         /** Ctor */
-		wxsStringListProperty(wxsProperties* Properties,wxArrayString& Array,int& Selected,int SortedFlag=0);
-
-		/** DCtor */
-		virtual ~wxsStringListProperty();
-
-        /** Taking name of value type handled by this item */
-        virtual const wxString& GetTypeName();
+		wxsStringListProperty(wxArrayString& Array,int& Selected,int SortedFlag=0);
 
     protected:
 

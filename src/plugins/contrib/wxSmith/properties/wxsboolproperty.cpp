@@ -4,22 +4,11 @@
 #include <wx/checkbox.h>
 
 
-wxsBoolProperty::wxsBoolProperty(wxsProperties* Properties,bool& Bool):
-    wxsProperty(Properties), Value(Bool),
+wxsBoolProperty::wxsBoolProperty(bool& Bool):
+    Value(Bool),
     PGId(0)
 {
 	//ctor
-}
-
-wxsBoolProperty::~wxsBoolProperty()
-{
-	//dtor
-}
-
-const wxString& wxsBoolProperty::GetTypeName()
-{
-    static wxString Name(_T("bool"));
-    return Name;
 }
 
 void wxsBoolProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)

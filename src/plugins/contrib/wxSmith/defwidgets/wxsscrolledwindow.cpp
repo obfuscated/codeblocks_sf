@@ -22,9 +22,9 @@ wxsScrolledWindow::wxsScrolledWindow(wxsWidgetManager* Man,wxsWindowRes* Res):
     ChangeBPT(wxsREMFile,propWidgetF);
     ChangeBPT(wxsREMMixed,propWidgetM);
     SetStyle(wxHSCROLL);
-    int Bits = GetBaseProperties().StyleBits;
+    int Bits = BaseProperties.StyleBits;
     SetStyle(wxVSCROLL);
-    GetBaseProperties().StyleBits |= Bits;
+    BaseProperties.StyleBits |= Bits;
     // TODO (SpOoN#1#): Change this workaround to something normal
 }
 
@@ -38,22 +38,15 @@ const wxsWidgetInfo& wxsScrolledWindow::GetInfo()
 }
 
 
-wxString wxsScrolledWindow::GetProducingCode(wxsCodeParams& Params)
+wxString wxsScrolledWindow::GetProducingCode(const wxsCodeParams& Params)
 {
-	const CodeDefines& CDefs = GetCodeDefines();
     return wxString::Format(_T("%s = new wxScrolledWindow(%s,%s,%s,%s,%s);\n%s"),
-        GetBaseProperties().VarName.c_str(),
+        Params.VarName.c_str(),
         Params.ParentName.c_str(),
-        GetBaseProperties().IdName.c_str(),
-        CDefs.Pos.c_str(),
-        CDefs.Size.c_str(),
-        CDefs.Style.c_str(),
-        CDefs.InitCode.c_str()
+        Params.IdName.c_str(),
+        Params.Pos.c_str(),
+        Params.Size.c_str(),
+        Params.Style.c_str(),
+        Params.InitCode.c_str()
         );
 }
-
-wxString wxsScrolledWindow::GetDeclarationCode(wxsCodeParams& Params)
-{
-	return wxString::Format(_T("wxScrolledWindow* %s;"),GetBaseProperties().VarName.c_str());
-}
-

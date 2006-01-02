@@ -3,22 +3,11 @@
 
 #include <wx/textctrl.h>
 
-wxsStringProperty::wxsStringProperty(wxsProperties* Properties,wxString& String, bool AlwaysUpdate,bool Long):
-    wxsProperty(Properties), Value(String), AlwUpd(AlwaysUpdate), IsLong(Long),
+wxsStringProperty::wxsStringProperty(wxString& String, bool Long):
+    Value(String), 
+    IsLong(Long),
     PGId(0)
 {
-	//ctor
-}
-
-wxsStringProperty::~wxsStringProperty()
-{
-	//dtor
-}
-
-const wxString& wxsStringProperty::GetTypeName()
-{
-    static wxString Name(_T("wxString"));
-    return Name;
 }
 
 void wxsStringProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)

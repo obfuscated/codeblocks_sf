@@ -14,6 +14,7 @@
 #include "resources/wxswindowresdataobject.h"
 #include "wxswinundobuffer.h"
 #include "wxswidgetfactory.h"
+#include "wxsevent.h"
 
 namespace {
 struct ltstr {  bool operator()(const wxChar* s1, const wxChar* s2) const { return wxStricmp(s1, s2) < 0; } };
@@ -73,7 +74,7 @@ wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsWindowRes* Resource):
 
     SetSizer(VertSizer);
 
-    SetInsertionTypeMask(0); 
+    SetInsertionTypeMask(0);
 
     DragWnd = new wxsDragWindow(Scroll,NULL,Scroll->GetSize());
     DragWnd->Hide();
@@ -87,9 +88,9 @@ wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsWindowRes* Resource):
     ToggleQuickPropsPanel(false);
 
     AllEditors.insert(this);
-    
+
     BuildPreview();
-    
+
     wxsSelectWidget(GetWinRes()->GetRootWidget());
 }
 
@@ -99,12 +100,12 @@ wxsWindowEditor::~wxsWindowEditor()
     // because sometimes it generated events when destroying window
     // what caused seg faults
     DragWnd->SetWidget(NULL);
-    
+
     // Destroying also Quick Props panel which usually triggers it's
     // Save() method when being destroyed
     QPArea->SetSizer(NULL);
     QPArea->DestroyChildren();
-    
+
     // First we need to discard all changes,
     // this operation will recreate unmodified code
     // in source files
@@ -224,15 +225,21 @@ void wxsWindowEditor::OnSelectWidget(wxsEvent& event)
     }
 
     SetInsertionTypeMask(itMask);
-    RebuildQuickProps();
+    RebuildQuickProps(GetSelection());
 }
 
 void wxsWindowEditor::OnUnselectWidget(wxsEvent& event)
 {
+	if ( event.GetWidget() == GetSelection() )
+	{
+	    RebuildQuickProps(NULL);
+	}
+
 	if ( DragWnd )
 	{
 		DragWnd->ProcessEvent(event);
 	}
+
 }
 
 bool wxsWindowEditor::Close()
@@ -867,11 +874,13 @@ void wxsWindowEditor::OnDelete(wxCommandEvent& event)
         return;
     }
 
+    wxsBlockSelectEvents(true);
     KillPreview();
     wxsKILL(Current);
     BuildPreview();
     GetResource()->NotifyChange();
     wxsTREE()->Refresh();
+    wxsBlockSelectEvents(false);
 }
 
 void wxsWindowEditor::OnPreview(wxCommandEvent& event)
@@ -899,7 +908,7 @@ void wxsWindowEditor::ToggleQuickPropsPanel(bool Open)
     Layout();
 }
 
-void wxsWindowEditor::RebuildQuickProps()
+void wxsWindowEditor::RebuildQuickProps(wxsWidget* Selection)
 {
     Freeze();
 
@@ -911,7 +920,6 @@ void wxsWindowEditor::RebuildQuickProps()
     QPArea->SetSizer(QPSizer);
     QPArea->GetViewStart(&QPx,&QPy);
 
-    wxsWidget* Selection = GetSelection();
     if ( Selection )
     {
         wxWindow* QPPanel = Selection->BuildQuickPanel(QPArea);

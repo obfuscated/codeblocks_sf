@@ -7,31 +7,22 @@
 
 #include "../widget.h"
 
-wxs2IntProperty::wxs2IntProperty(wxsProperties* Properties,int& Int1,int& Int2, bool AlwaysUpdate):
-    wxsProperty(Properties), Value1(Int1), Value2(Int2), AlwUpd(AlwaysUpdate),
+wxs2IntProperty::wxs2IntProperty(int& Int1,int& Int2,const wxString& SubName1,const wxString& SubName2):
+    Value1(Int1),
+    Value2(Int2),
+    Name1(SubName1),
+    Name2(SubName2),
     PGId(0),
     Val1Id(0),
     Val2Id(0)
 {
-	//ctor
-}
-
-wxs2IntProperty::~wxs2IntProperty()
-{
-	//dtor
-}
-
-const wxString& wxs2IntProperty::GetTypeName()
-{
-    static wxString Name(_T("2 x int"));
-    return Name;
 }
 
 void wxs2IntProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)
 {
     PGId   = Grid->Append( wxParentProperty(Name,wxPG_LABEL) );
-    Val1Id = Grid->AppendIn(PGId, wxIntProperty(_("X"), wxPG_LABEL, Value1) );
-    Val2Id = Grid->AppendIn(PGId, wxIntProperty(_("Y"), wxPG_LABEL, Value2) );
+    Val1Id = Grid->AppendIn(PGId, wxIntProperty(Name1, wxPG_LABEL, Value1));
+    Val2Id = Grid->AppendIn(PGId, wxIntProperty(Name2, wxPG_LABEL, Value2));
 }
 
 bool wxs2IntProperty::PropGridChanged(wxPropertyGrid* Grid,wxPGId Id)

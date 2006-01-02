@@ -17,10 +17,10 @@ class wxsCustomWidget: public wxsWidget
     public:
         wxsCustomWidget(wxsWidgetManager* Man,wxsWindowRes* Res);
         virtual ~wxsCustomWidget();
-        virtual wxString GetProducingCode(wxsCodeParams& Params);
-        virtual wxString GetDeclarationCode(wxsCodeParams& Params);
+        virtual wxString GetProducingCode(const wxsCodeParams& Params);
+        virtual wxString GetDeclarationCode(const wxsCodeParams& Params);
         virtual const wxsWidgetInfo& GetInfo();
-        virtual bool PropertiesUpdated(bool Validate,bool Correct);
+        virtual bool MyPropertiesChanged(bool Validate,bool Correct);
         
     protected:
     
@@ -32,7 +32,7 @@ class wxsCustomWidget: public wxsWidget
         
         virtual bool MyXmlLoad();
         virtual bool MyXmlSave();
-        virtual void CreateObjectProperties();
+        virtual void MyCreateProperties();
         virtual wxWindow* MyCreatePreview(wxWindow* Parent);
         
         void RebuildXmlData();

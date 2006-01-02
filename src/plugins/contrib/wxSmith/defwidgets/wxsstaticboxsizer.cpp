@@ -4,10 +4,10 @@
 #include "../properties/wxsenumproperty.h"
 #include "../wxsglobals.h"
 
-wxString wxsStaticBoxSizer::GetProducingCode(wxsCodeParams& Params)
+wxString wxsStaticBoxSizer::GetProducingCode(const wxsCodeParams& Params)
 {
     return wxString::Format(_T("%s = new wxStaticBoxSizer(%s,%s,%s);"),
-        GetBaseProperties().VarName.c_str(),
+        Params.VarName.c_str(),
         (Orient == wxVERTICAL) ? _T("wxVERTICAL") : _T("wxHORIZONTAL"),
         Params.ParentName.c_str(),
         wxsGetWxString(Label).c_str() );
@@ -29,13 +29,13 @@ bool wxsStaticBoxSizer::MyXmlSave()
 }
 
 
-void wxsStaticBoxSizer::CreateObjectProperties()
+void wxsStaticBoxSizer::MyCreateProperties()
 {
-    PropertiesObject.AddProperty( _("Label:"), Label, 0 );
 	static const wxChar* Names[] = { _("Horizontal"), _("Vertical"), NULL };
 	static long Values[] = { wxHORIZONTAL, wxVERTICAL };
-    wxsWidget::CreateObjectProperties();
-    PropertiesObject.AddProperty( _("Orientation:"), new wxsEnumProperty(&PropertiesObject,Orient,Names,Values), 1);
+    Properties.AddProperty( _("Label:"), Label);
+    Properties.AddProperty( _("Orientation:"), new wxsEnumProperty(Orient,Names,Values));
+    wxsWidget::MyCreateProperties();
 }
 
 void wxsStaticBoxSizer::Init()

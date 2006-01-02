@@ -4,6 +4,7 @@
 #include <wx/filename.h>
 #include <cbproject.h>
 #include <projectmanager.h>
+#include <configmanager.h>
 #include <manager.h>
 #include <messagemanager.h>
 #include <customvars.h>
@@ -258,6 +259,11 @@ static wxsFilePart wxsMainFrameH[] =
 static const wxChar wxsMainFrameCpp_1[] =
 _T("#include \"mainframe.h\"\n")
 _T("\n")
+_T("#include <wx/settings.h>\n")
+_T("#include <wx/menu.h>\n")
+_T("#include <wx/statusbr.h>\n")
+_T("#include <wx/msgdlg.h>\n")
+_T("\n")
 _T("int idMenuQuit = wxNewId();\n")
 _T("int idMenuAbout = wxNewId();\n")
 _T("\n");
@@ -507,7 +513,7 @@ wxsWizard::wxsWizard(wxWindow* parent,wxWindowID id):
 	wxBoxSizer* BoxSizer1;
 	wxButton* Button1;
 	wxButton* Button2;
-	
+
 	Create(parent,id,_("wxSmith project wizzard"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE);
 	MainSizer = new wxFlexGridSizer(0,1,0,0);
 	FlexGridSizer2 = new wxFlexGridSizer(0,1,0,0);
@@ -623,14 +629,14 @@ wxsWizard::wxsWizard(wxWindow* parent,wxWindowID id):
 	MainSizer->SetSizeHints(this);
 	Center();
 	//*)
-	
+
     #ifndef __WXMSW__
         MainSizer->Show(wxWidgetsConfig,false,true);
         MainSizer->Fit(this);
         MainSizer->SetSizeHints(this);
     #endif
-    
-    
+
+
     BaseDir->SetValue(
         Manager::Get()->GetConfigManager(_T("wxsmith"))->Read(_T("wizardbasepath"),_T("")));
     Initialized = true;
@@ -650,44 +656,44 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
 {
     wxString Dir = PrjDir->GetValue();
     wxString Name = PrjName->GetValue();
-    
+
     if ( Name.empty() )
     {
         wxMessageBox(_("Please enter project name"));
         return;
     }
-    
+
     if ( Dir.empty() )
     {
         wxMessageBox(_("Please enter project directory"));
         return;
     }
-    
+
     if ( !wxFileName(Dir).IsAbsolute() )
     {
         wxMessageBox(_("Project path must be absolute"));
         return;
     }
-    
+
     if ( !wxFileName::Mkdir(Dir,0777,wxPATH_MKDIR_FULL ) )
     {
         wxMessageBox(_("Couldn't create main project directory"));
         return;
     }
-    
+
     wxString ProjectFileName = Dir + wxFileName::GetPathSeparator() +
         GetProjectFileName() + _T(".cbp");
-   
+
     cbProject* project = PRJMAN()->NewProject(ProjectFileName);
-    if ( !project ) 
+    if ( !project )
     {
         wxMessageBox(_("Couldn't create new project file"));
         return;
     }
-    
+
     CustomVars vars;
     #ifdef __WXMSW__
-        
+
         // Configuring paths
         switch ( ConfMode->GetSelection() )
         {
@@ -702,7 +708,7 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
                 project->AddResourceIncludeDir(_T("$(#WX.include)"));
                 vars.Add(_T("WX_CFG"),_T(""));
                 break;
-                
+
             case 1: // Custom variables
                 project->AddIncludeDir(_T("$(WX_DIR)\\include"));
                 project->AddIncludeDir(_T("$(WX_DIR)\\lib\\gcc_dll\\msw"));
@@ -715,14 +721,14 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
                 vars.Add(_T("WX_DIR"),_T("C:\\wxWidgets-2.6.2"));
                 vars.Add(_T("WX_CFG"),_T(""));
                 break;
-                
+
             case 2:
                 project->AddIncludeDir(_T("$(#WX.include"));
                 project->AddLibDir(_T("$(#WX.lib"));
                 project->AddIncludeDir(_T("$(#WX.obj"));
                 break;
         }
-        
+
         // Configuring project options
         project->AddCompilerOption(_T("-DUSE_PCH"));
         switch ( ConfMode->GetSelection() )
@@ -738,15 +744,15 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
                 project->AddCompilerOption(_T("-D__GNUWIN32__"));
                 project->AddCompilerOption(_T("-D__WXMSW__"));
                 project->AddCompilerOption(_T("-DHAVE_W32API_H"));
-                
+
                 project->AddLinkLib(_T("wxmsw26"));
-        
+
                 switch ( LibType->GetSelection() )
                 {
                     case 0: // DLL
                         project->AddCompilerOption(_T("-DWXUSINGDLL"));
                         break;
-                        
+
                     case 1: // static
                         project->AddLinkLib(_T("winspool"));
                         project->AddLinkLib(_T("winmm"));
@@ -764,13 +770,13 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
                         break;
                 }
                 break;
-                
+
             case 2:
                 project->AddCompilerOption(_T("$(#WX.cflags)"));
                 project->AddLinkerOption(_T("$(#WX.lflags)"));
                 break;
         }
-        
+
     #else
         project->AddCompilerOption(_T("`wx-config --cflags`"));
         project->AddLinkerOption(_T("`wx-config --libs`"));
@@ -797,7 +803,7 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
     {
         wxMessageBox(_("Error occured while creating files. Project may be corrupted."));
     }
-    
+
     PRJMAN()->RebuildTree();
     if ( wxsPLUGIN() )
     {
@@ -820,7 +826,7 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
 void wxsWizard::OnConfModeSelect(wxCommandEvent& event)
 {
     bool EnableWxConf = ( ConfMode->GetSelection() != 0 );
-    
+
     WxDir->Enable(EnableWxConf);
     WxDirChoose->Enable(EnableWxConf);
     WxConf->Enable(EnableWxConf);
@@ -859,11 +865,11 @@ bool wxsWizard::BuildFile(
         }
     }
     if ( !IsAnyPartUsed ) return true;
-    
+
     wxString FullPath = RootPath + wxFileName::GetPathSeparator() + FileName;
     wxFileName FN(FullPath);
     if ( !wxFileName::Mkdir(FN.GetPath(),0777,wxPATH_MKDIR_FULL) ) return false;
-    
+
     wxFile Fl(FN.GetFullPath(),wxFile::write);
     if ( !Fl.IsOpened() ) return false;
 
@@ -875,10 +881,10 @@ bool wxsWizard::BuildFile(
             if ( !Fl.Write(FP->Text) ) AllWritten = false;
         }
     }
-    
+
     if ( !AddToProject ) return AllWritten;
     ProjectFile* file = project->AddFile(0,FileName,Compile,Link,Weight);
-    if ( !file ) 
+    if ( !file )
     {
         AllWritten = false;
     }

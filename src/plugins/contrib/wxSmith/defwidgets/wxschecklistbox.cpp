@@ -25,21 +25,21 @@ wxsDWDefineBegin(wxsCheckListBoxBase,wxCheckListBox,
     )
 wxsDWDefineEnd()
 
-wxString wxsCheckListBox::GetProducingCode(wxsCodeParams& Params)
+wxString wxsCheckListBox::GetProducingCode(const wxsCodeParams& Params)
 {
     wxString Code;
-    const CodeDefines& CDefs = GetCodeDefines();
     Code.Printf(_T("%s = new wxCheckListBox(%s,%s,%s,%s,0,NULL,%s);\n"),
-            GetBaseProperties().VarName.c_str(),
-            Params.ParentName.c_str(),
-            GetBaseProperties().IdName.c_str(),
-            CDefs.Pos.c_str(),
-            CDefs.Size.c_str(),
-            CDefs.Style.c_str());
+        Params.VarName.c_str(),
+        Params.ParentName.c_str(),
+        Params.IdName.c_str(),
+        Params.Pos.c_str(),
+        Params.Size.c_str(),
+        Params.Style.c_str());
+        
     for ( size_t i = 0; i < arrayChoices.Count(); ++i )
     {
         Code << wxString::Format(_T("%s->Append(%s);\n"),
-            GetBaseProperties().VarName.c_str(),
+            Params.VarName.c_str(),
             wxsGetWxString(arrayChoices[i]).c_str());
     }
 
@@ -48,10 +48,10 @@ wxString wxsCheckListBox::GetProducingCode(wxsCodeParams& Params)
         if ( arrayChecks[i] )
         {
             Code << wxString::Format(_T("%s->Check(%d,true);\n"),
-                GetBaseProperties().VarName.c_str(), i);
+                Params.VarName.c_str(), i);
         }
     }
-    Code << CDefs.InitCode;
+    Code << Params.InitCode;
     return Code;
 }
 
@@ -119,8 +119,8 @@ bool wxsCheckListBox::MyXmlSave()
     return true;
 }
 
-void wxsCheckListBox::CreateObjectProperties()
+void wxsCheckListBox::MyCreateProperties()
 {
-    PropertiesObject.AddProperty(_("Content:"),new wxsStringListCheckProperty(&PropertiesObject,arrayChoices,arrayChecks,wxLB_SORT));
-    wxsWidget::CreateObjectProperties();
+    Properties.AddProperty(_("Content:"),new wxsStringListCheckProperty(arrayChoices,arrayChecks,wxLB_SORT));
+    wxsWidget::MyCreateProperties();
 }

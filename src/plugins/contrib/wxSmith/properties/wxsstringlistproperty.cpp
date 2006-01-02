@@ -4,28 +4,19 @@
 #include <wx/button.h>
 #include <wx/tokenzr.h>
 
-wxsStringListProperty::wxsStringListProperty(wxsProperties* Properties,wxArrayString& _Array):
-	wxsProperty(Properties),
+wxsStringListProperty::wxsStringListProperty(wxArrayString& _Array):
 	Array(_Array),
 	Selected(NULL),
-	SortedFlag(0), PGId(0), SelId(0)
+	SortedFlag(0), 
+	PGId(0), 
+	SelId(0)
 {}
 
-wxsStringListProperty::wxsStringListProperty(wxsProperties* Properties,wxArrayString& _Array,int& _Selected,int _SortedFlag):
-	wxsProperty(Properties),
+wxsStringListProperty::wxsStringListProperty(wxArrayString& _Array,int& _Selected,int _SortedFlag):
 	Array(_Array),
 	Selected(&_Selected),
 	SortedFlag(_SortedFlag), PGId(0), SelId(0)
 {}
-
-wxsStringListProperty::~wxsStringListProperty()
-{}
-
-const wxString& wxsStringListProperty::GetTypeName()
-{
-    static wxString Name(_T("wxArrayString"));
-    return Name;
-}
 
 void wxsStringListProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)
 {

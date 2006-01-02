@@ -1117,6 +1117,12 @@
             <Option link="0" />
             <Option target="wxSmith" />
         </Unit>
+        <Unit filename="wxscodeparams.h">
+            <Option compilerVar="CPP" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxSmith" />
+        </Unit>
         <Unit filename="wxscoder.cpp">
             <Option compilerVar="CPP" />
             <Option target="wxSmith" />

@@ -1,10 +1,10 @@
 #include "../wxsheaders.h"
 #include "wxsgridsizer.h"
 
-wxString wxsGridSizer::GetProducingCode(wxsCodeParams& Params)
+wxString wxsGridSizer::GetProducingCode(const wxsCodeParams& Params)
 {
     return wxString::Format(_T("%s = new wxGridSizer(%d,%d,%d,%d);"),
-        GetBaseProperties().VarName.c_str(),
+        Params.VarName.c_str(),
         Rows, Cols, VGap, HGap );
 }
 
@@ -27,11 +27,11 @@ bool wxsGridSizer::MyXmlSave()
 }
 
 
-void wxsGridSizer::CreateObjectProperties()
+void wxsGridSizer::MyCreateProperties()
 {
-    wxsWidget::CreateObjectProperties();
-    PropertiesObject.Add2IProperty(_("Cols x rows:"),Cols,Rows,0);
-    PropertiesObject.Add2IProperty(_("VGap x HGap:"),VGap,HGap,1);
+    Properties.Add2IProperty(_("Cols x rows:"),Cols,Rows);
+    Properties.Add2IProperty(_("VGap x HGap:"),VGap,HGap);
+    wxsWidget::MyCreateProperties();
 }
 
 void wxsGridSizer::Init()

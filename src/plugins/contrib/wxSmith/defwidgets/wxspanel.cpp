@@ -35,25 +35,18 @@ const wxsWidgetInfo& wxsPanel::GetInfo()
 }
 
 
-wxString wxsPanel::GetProducingCode(wxsCodeParams& Params)
+wxString wxsPanel::GetProducingCode(const wxsCodeParams& Params)
 {
-	const CodeDefines& CDefs = GetCodeDefines();
     return wxString::Format(_T("%s = new wxPanel(%s,%s,%s,%s,%s);\n%s"),
-        GetBaseProperties().VarName.c_str(),
+        Params.VarName.c_str(),
         Params.ParentName.c_str(),
-        GetBaseProperties().IdName.c_str(),
-        CDefs.Pos.c_str(),
-        CDefs.Size.c_str(),
-        CDefs.Style.c_str(),
-        CDefs.InitCode.c_str()
+        Params.IdName.c_str(),
+        Params.Pos.c_str(),
+        Params.Size.c_str(),
+        Params.Style.c_str(),
+        Params.InitCode.c_str()
         );
 }
-
-wxString wxsPanel::GetDeclarationCode(wxsCodeParams& Params)
-{
-	return wxString::Format(_T("wxPanel* %s;"),GetBaseProperties().VarName.c_str());
-}
-
 
 WXS_ST_BEGIN(wxsPanelrStyles)
     WXS_ST(wxNO_3D)
@@ -81,10 +74,9 @@ const wxsWidgetInfo& wxsPanelr::GetInfo()
     return *wxsStdManager.GetWidgetInfo(wxsPanelrId);
 }
 
-wxString wxsPanelr::GetProducingCode(wxsCodeParams& Params)
+wxString wxsPanelr::GetProducingCode(const wxsCodeParams& Params)
 {
-    CodeDefines CDefs = GetCodeDefines();
     return wxString::Format(_T("Create(parent,id,%s,%s,%s);%s"),
-        CDefs.Pos.c_str(),CDefs.Size.c_str(),
-        CDefs.Style.c_str(),CDefs.InitCode.c_str());
+        Params.Pos.c_str(),Params.Size.c_str(),
+        Params.Style.c_str(),Params.InitCode.c_str());
 }

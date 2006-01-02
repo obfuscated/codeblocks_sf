@@ -7,23 +7,10 @@
 
 #include "../wxsdefsizer.h"
 
-wxsBorderProperty::wxsBorderProperty(wxsProperties* Properties,int& Flag):
-    wxsProperty(Properties),
+wxsBorderProperty::wxsBorderProperty(int& Flag):
     BorderFlags(Flag),
     PGId(0)
 {
-	//ctor
-}
-
-wxsBorderProperty::~wxsBorderProperty()
-{
-	//dtor
-}
-
-const wxString& wxsBorderProperty::GetTypeName()
-{
-    static wxString Type(_T("Widget Border"));
-    return Type;
 }
 
 void wxsBorderProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)

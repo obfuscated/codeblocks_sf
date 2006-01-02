@@ -7,27 +7,22 @@
 
 #include "../wxsdefsizer.h"
 
-wxsPlacementProperty::wxsPlacementProperty(wxsProperties* Properties,int& Placement,bool& _Expand,bool& _Shaped):
-    wxsProperty(Properties),
-    PlacementType(Placement),
-    Expand(_Expand),
-    Shaped(_Shaped),
-    PGId(0),
-    ExpandId(0),
-    ShapedId(0)
+wxsPlacementProperty::wxsPlacementProperty(
+    int& Placement,
+    bool& _Expand,
+    bool& _Shaped,
+    const wxString& ExpandPropName,
+    const wxString& ShapedPropName):
+        PlacementType(Placement),
+        Expand(_Expand),
+        Shaped(_Shaped),
+        ExpandName(ExpandPropName),
+        ShapedName(ShapedPropName),
+        PGId(0),
+        ExpandId(0),
+        ShapedId(0)
 {
 	//ctor
-}
-
-wxsPlacementProperty::~wxsPlacementProperty()
-{
-	//dtor
-}
-
-const wxString& wxsPlacementProperty::GetTypeName()
-{
-    static wxString Type(_T("Widget Placement"));
-    return Type;
 }
 
 void wxsPlacementProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)
@@ -60,8 +55,8 @@ void wxsPlacementProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Na
     };
 
     PGId = Grid->Append( wxEnumProperty(Name,wxPG_LABEL,Placements,Values,0,PlacementType) );
-    ExpandId = Grid->Append( wxBoolProperty( _("Expand"), wxPG_LABEL, Expand ) );
-    ShapedId = Grid->Append( wxBoolProperty( _("Shaped"), wxPG_LABEL, Shaped ) );
+    ExpandId = Grid->Append( wxBoolProperty(ExpandName, wxPG_LABEL, Expand ) );
+    ShapedId = Grid->Append( wxBoolProperty(ShapedName, wxPG_LABEL, Shaped ) );
     Grid->SetPropertyAttribute(ExpandId,wxPG_BOOL_USE_CHECKBOX,(long)1,wxRECURSE);
     Grid->SetPropertyAttribute(ShapedId,wxPG_BOOL_USE_CHECKBOX,(long)1,wxRECURSE);
 }

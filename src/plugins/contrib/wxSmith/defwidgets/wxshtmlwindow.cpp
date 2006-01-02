@@ -47,39 +47,38 @@ wxWindow* wxsHtmlWindow::MyCreatePreview(wxWindow* Parent)
     return Wnd;
 }
 
-wxString wxsHtmlWindow::GetProducingCode(wxsCodeParams& Params)
+wxString wxsHtmlWindow::GetProducingCode(const wxsCodeParams& Params)
 {
     wxString Code;
-    const CodeDefines& CDefs = GetCodeDefines();
     
     Code.Printf(_T("%s = new wxHtmlWindow(%s,%s,%s,%s,%s);\n"),
-        GetBaseProperties().VarName.c_str(),
+        Params.VarName.c_str(),
         Params.ParentName.c_str(),
-        GetBaseProperties().IdName.c_str(),
-        CDefs.Pos.c_str(),
-        CDefs.Size.c_str(),
-        CDefs.Style.c_str());
+        Params.IdName.c_str(),
+        Params.Pos.c_str(),
+        Params.Size.c_str(),
+        Params.Style.c_str());
         
     if ( borders )
     {
         Code << wxString::Format(_T("%s->SetBorders(%d);\n"),
-                GetBaseProperties().VarName.c_str(),
+                Params.VarName.c_str(),
                 borders);
     }
     if ( !url.empty() )
     {
         Code << wxString::Format(_T("%s->LoadPage(%s);\n"),
-                GetBaseProperties().VarName.c_str(),
+                Params.VarName.c_str(),
                 wxsGetWxString(url).c_str());
     }
     else if (!htmlcode.empty())
     {
         Code << wxString::Format(_T("%s->SetPage(%s);\n"),
-                GetBaseProperties().VarName.c_str(),
+                Params.VarName.c_str(),
                 wxsGetWxString(htmlcode).c_str());
     }
     
-    Code << CDefs.InitCode;
+    Code << Params.InitCode;
     
     return Code;
 }

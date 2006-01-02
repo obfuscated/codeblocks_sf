@@ -37,7 +37,7 @@ class wxsWindowRes : public wxsResource
             const wxString& Src,
             const wxString& Head,
             const wxString& Xrc );
-            
+
         /** Ctor for external files */
         wxsWindowRes(const wxString& Class,const wxString& FileName);
 
@@ -238,6 +238,7 @@ class wxsWindowRes : public wxsResource
                                                                             \
         virtual ~wxs##Name##Res()                                           \
         {                                                                   \
+            EditClose();                                                    \
             if ( GetProject() )                                             \
             {                                                               \
                 GetProject()->Delete##Name                                  \
@@ -301,7 +302,9 @@ class wxsDialogRes: public wxsWindowRes
     {
     	wxString Code;
     	wxsDialog& Dlg = GetDialog();
-    	Code << _T("SetWindowStyle(") << Dlg.GetCodeDefines().Style.c_str() << _T(");\n");
+    	wxsCodeParams Params;
+    	Dlg.BuildCodeParams(Params);
+    	Code << _T("SetWindowStyle(") << Params.Style.c_str() << _T(");\n");
     	Code << _T("SetTitle(") << wxsGetWxString(Dlg.Title) << _T(");\n");
         if ( Dlg.Centered )
         {

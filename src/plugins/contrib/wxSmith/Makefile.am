@@ -100,7 +100,8 @@ noinst_HEADERS = ./widget.h \
 ./wxsextresmanager.h \
 ./wxswizard.h \
 ./wxsmithwizard.h \
-./wxscustomwidgetxmlhandler.h
+./wxscustomwidgetxmlhandler.h \
+./wxscodeparams.h
 
 EXTRA_DIST = *.cbp \
 			*.xrc \

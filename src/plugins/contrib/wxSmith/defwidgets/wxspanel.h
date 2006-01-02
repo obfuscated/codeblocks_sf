@@ -18,10 +18,7 @@ class wxsPanel : public wxsWindow
         virtual const wxsWidgetInfo& GetInfo();
 
         /** Function generating code which should produce widget */
-        virtual wxString GetProducingCode(wxsCodeParams& Params);
-
-        /** Function generating code which generates variable containing this widget. */
-        virtual wxString GetDeclarationCode(wxsCodeParams& Params);
+        virtual wxString GetProducingCode(const wxsCodeParams& Params);
 };
 
 WXS_ST_DECLARE(wxsPanelrStyles)
@@ -38,7 +35,7 @@ class wxsPanelr : public wxsWindow
         virtual const wxsWidgetInfo& GetInfo();
 
         /** Function generating code which should produce widget */
-        virtual wxString GetProducingCode(wxsCodeParams& Params);
+        virtual wxString GetProducingCode(const wxsCodeParams& Params);
 
 };
 

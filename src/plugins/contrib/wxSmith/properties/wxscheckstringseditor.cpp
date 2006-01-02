@@ -84,7 +84,6 @@ wxsCheckStringsEditor::~wxsCheckStringsEditor()
 {
 }
 
-
 void wxsCheckStringsEditor::OnButton7Click(wxCommandEvent& event)
 {
     EndModal(wxID_CANCEL);

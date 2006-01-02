@@ -31,31 +31,29 @@ bool wxsDefWidget::MyXmlSave()
     return Return;
 }
 
-void wxsDefWidget::CreateObjectProperties()
+void wxsDefWidget::MyCreateProperties()
 {
     evProps();
-    wxsWidget::CreateObjectProperties();
+    wxsWidget::MyCreateProperties();
 }
 
-wxString wxsDefWidget::GetProducingCode(wxsCodeParams& Params)
+wxString wxsDefWidget::GetProducingCode(const wxsCodeParams& Params)
 {
-    const CodeDefines& CD = GetCodeDefines();
-
     CodeResult = GetGeneratingCodeStr();
 
     evCode();
 
-    wxsCodeReplace(CodeResult,_T("WXS_POS"),CD.Pos);
-    wxsCodeReplace(CodeResult,_T("WXS_SIZE"),CD.Size);
-    wxsCodeReplace(CodeResult,_T("WXS_STYLE"),CD.Style);
+    wxsCodeReplace(CodeResult,_T("WXS_POS"),Params.Pos);
+    wxsCodeReplace(CodeResult,_T("WXS_SIZE"),Params.Size);
+    wxsCodeReplace(CodeResult,_T("WXS_STYLE"),Params.Style);
 
-    wxsCodeReplace(CodeResult,_T("WXS_ID"),GetBaseProperties().IdName);
-    wxsCodeReplace(CodeResult,_T("WXS_THIS"),GetBaseProperties().VarName);
+    wxsCodeReplace(CodeResult,_T("WXS_ID"),Params.IdName);
+    wxsCodeReplace(CodeResult,_T("WXS_THIS"),Params.VarName);
     wxsCodeReplace(CodeResult,_T("WXS_PARENT"),Params.ParentName);
 
     // Applying default initializing code
 
-    CodeResult << CD.InitCode;
+    CodeResult << Params.InitCode;
 
     return CodeResult;
 }
@@ -94,16 +92,6 @@ void wxsDefWidget::evDestroy()
 {
     evUse = Destroy;
     BuildExtVars();
-}
-
-wxString wxsDefWidget::GetDeclarationCode(wxsCodeParams& Params)
-{
-    static wxString Tmp;
-    Tmp = GetWidgetNameStr();
-    Tmp.Append(_T("* "));
-    Tmp += GetBaseProperties().VarName;
-    Tmp.Append(_T(';'));
-    return Tmp;
 }
 
 void wxsDefWidget::evBool(bool& Val,const wxString& Name,const wxString& XrcName,const wxString& PropName,bool DefValue)
@@ -146,7 +134,7 @@ void wxsDefWidget::evBool(bool& Val,const wxString& Name,const wxString& XrcName
         {
         	if ( PropName.Length() )
         	{
-                PropertiesObject.AddProperty(PropName,Val);
+                Properties.AddProperty(PropName,Val);
         	}
             break;
         }
@@ -193,7 +181,7 @@ void wxsDefWidget::evInt(int& Val,const wxString& Name,const wxString& XrcName,c
         {
         	if ( PropName.Length() )
         	{
-                PropertiesObject.AddProperty(PropName,Val);
+                Properties.AddProperty(PropName,Val);
         	}
             break;
         }
@@ -241,7 +229,7 @@ void wxsDefWidget::ev2Int(int& Val1,int& Val2,const wxString& Name,const wxStrin
         {
         	if ( PropName.Length() )
         	{
-                PropertiesObject.Add2IProperty(PropName,Val1,Val2);
+                Properties.Add2IProperty(PropName,Val1,Val2);
         	}
             break;
         }
@@ -286,7 +274,7 @@ void wxsDefWidget::evStr(wxString& Val,const wxString& Name,const wxString& XrcN
         {
         	if ( PropName.Length() )
         	{
-                PropertiesObject.AddProperty(PropName, new wxsStringProperty(&PropertiesObject,Val,true,Long) );
+                Properties.AddProperty(PropName, new wxsStringProperty(Val,Long) );
         	}
         }
     }
@@ -353,7 +341,7 @@ void wxsDefWidget::evStrArray(wxArrayString& Val,const wxString& Name,const wxSt
         {
         	if ( PropName.Length() )
         	{
-                PropertiesObject.AddProperty(PropName,Val,DefValue,SortFlag,-1);
+                Properties.AddProperty(PropName,Val,DefValue,SortFlag,-1);
         	}
         }
     }

@@ -42,9 +42,9 @@ class wxsWindowPreview: public wxPanel
                     wxSizer* Sizer = new wxGridSizer(1);
                     Sizer->Add(Widget->GetPreview(),1,wxGROW);
                     SetSizer(Sizer);
-                    if ( ((Window->GetBaseProperties().SizeX == -1) &&
-                          (Window->GetBaseProperties().SizeY == -1)) ||
-                           Window->GetBaseProperties().DefaultSize )
+                    if ( ((Window->BaseProperties.SizeX == -1) &&
+                          (Window->BaseProperties.SizeY == -1)) ||
+                           Window->BaseProperties.DefaultSize )
                     {
                     	Sizer->SetSizeHints(this);
                     }

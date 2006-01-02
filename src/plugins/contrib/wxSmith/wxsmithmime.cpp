@@ -5,6 +5,8 @@
 #include "resources/wxswindowres.h"
 #include "wxsextresmanager.h"
 
+#include <licenses.h>
+
 wxSmithMime::wxSmithMime()
 {
 	m_PluginInfo.name = _("wxSmithMime");

@@ -11,7 +11,6 @@
 
 #include "wxsglobals.h"
 
-/* Predefined classes */
 class wxsWidget;
 class wxsProperties;
 class wxsPropertyGrid;
@@ -27,21 +26,12 @@ class wxsProperty
     public:
 
         /** ctor */
-        wxsProperty(wxsProperties* Properties): Props(Properties)
+        wxsProperty(): Props(NULL)
         {}
 
         /** dctor */
         virtual ~wxsProperty()
         {}
-
-        /** Taking name of value type handled by this item */
-        virtual const wxString& GetTypeName() = 0;
-
-        /** This function notifies properties manager that value of this property
-         *  has changed, it must be called every time we need to notice other
-         *  components that the value has changed
-         */
-        virtual bool ValueChanged(bool Check);
 
     protected:
 
@@ -60,6 +50,16 @@ class wxsProperty
         /** This function returns wxsProperties object which uses this property */
         inline wxsProperties* GetProperties() { return Props; }
 
+        /** This function notifies properties manager that value of this property
+         *  has changed, it must be called every time we need to notice other
+         *  components that the value has changed.
+         *
+         *  \param Check if true, it's possible that property has unacceptable
+         *         value and should be checker
+         *  \return true if change was accepted, false if value is incorrect
+         */
+        bool ValueChanged(bool Check);
+
     private:
 
         /** Properties object handling this property */
@@ -69,53 +69,49 @@ class wxsProperty
         friend class wxsPropertyGrid;
 };
 
-
-/** Class managing base properties of widget.
- *
- *  This class handles set of properties and manages them
- */
+/** Class managing properties of widget. */
 class wxsProperties
 {
 	public:
 
+        /** Ctor */
 		wxsProperties(wxsWidget* _Widget);
 
-		virtual ~wxsProperties();
+        /** Dctor */
+		~wxsProperties();
 
 		/** Adding new string property */
-		virtual void AddProperty(const wxString& Name,wxString& Value,int Position=-1);
+		void AddProperty(const wxString& Name,wxString& Value,int Position=-1);
 
 		/** Adding new integer property */
-		virtual void AddProperty(const wxString& Name,int& Value,int Position=-1);
+		void AddProperty(const wxString& Name,int& Value,int Position=-1);
 
 		/** Adding bool property */
-		virtual void AddProperty(const wxString& Name,bool& Value,int Position=-1);
+		void AddProperty(const wxString& Name,bool& Value,int Position=-1);
 
 		/** Adding new 2xinteger property */
-		virtual void Add2IProperty(const wxString& Name,int& Value1,int& Value2,int Position=-1);
+		void Add2IProperty(const wxString& Name,int& Value1,int& Value2,int Position=-1);
 
 		/** Adding new wxArrayStrting property */
-		virtual void AddProperty(const wxString& Name,wxArrayString& Array,int Position=-1);
+		void AddProperty(const wxString& Name,wxArrayString& Array,int Position=-1);
 
 		/** Adding new wxArrayStrting property with additional "selected" flag */
-		virtual void AddProperty(const wxString& Name,wxArrayString& Array,int& Selected,int SortFlag,int Position=-1);
+		void AddProperty(const wxString& Name,wxArrayString& Array,int& Selected,int SortFlag,int Position=-1);
 
 		/** Adding custom property */
-		virtual void AddProperty(const wxString& Name,wxsProperty* Property,int Position=-1);
+		void AddProperty(const wxString& Name,wxsProperty* Property,int Position=-1);
 
-		/** Generating properties window for this properties */
-		virtual wxWindow* GenerateWindow(wxWindow* Parent);
+		/** Generating new prop grid window */
+		wxWindow* GenerateWindow(wxWindow* Parent);
+		
+		/** Getting prop grid window previously created */
+		wxWindow* GetWindow();
 
 		/** Updating content of current properties window */
-		virtual void UpdateProperties();
+		void UpdateProperties();
 
-		/** Getting widget associated with this properties obiject */
+		/** Getting widget associated with this properties object */
 		inline wxsWidget* GetWidget() { return Widget; }
-
-    protected:
-
-        /** Function clearing the array of properties */
-        void ClearArray();
 
 	private:
 
@@ -124,16 +120,18 @@ class wxsProperties
          * \param Check - if true, properties will be adidtionally checked
          * \return False when Check==true and not all properties were valid, true otherwise
          */
-        virtual bool NotifyChange(bool Check);
+        bool NotifyChange(bool Check);
+
+        /** Function clearing the array of properties */
+        void ClearArray();
 
         /** Structure holding one property */
         struct VectorElem
         {
             wxString Name;          ///< Property's name
-            wxsProperty* Property;  ///< Property objecct
+            wxsProperty* Property;  ///< Property object
         };
 
-        /** Vector types */
         typedef std::vector<VectorElem*> VectorT;
         typedef VectorT::iterator VectorI;
 
@@ -143,13 +141,14 @@ class wxsProperties
         /** Widget which is associated with this properties */
         wxsWidget* Widget;
 
+        /** Curent property grid */
         wxsPropertyGrid* Grid;
 
         /** Used for blocking update callbacks */
         bool BlockUpdates;
 
-        friend class wxsProperty;
         friend class wxsPropertyGrid;
+        friend class wxsProperty;       // Allowing NotifyChange from property
 };
 
 #endif // WXSBASEPROPERTIES_H

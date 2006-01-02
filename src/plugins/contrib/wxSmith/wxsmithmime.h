@@ -1,6 +1,8 @@
 #ifndef WXSMITHMIME_H
 #define WXSMITHMIME_H
 
+#include <cbplugin.h>
+
 /** Helper plugin dealing with mime types */
 class wxSmithMime : public cbMimePlugin
 {

@@ -4,25 +4,19 @@
 #include "../wxsglobals.h"
 #include <wx/intl.h>
 
-wxsColourProperty::wxsColourProperty(wxsProperties* Properties,wxUint32& _Type,wxColour& _Colour):
-    wxsProperty(Properties),
-    PGId(0),
-    UseColId(0),
-    ColId(0),
-    Type(_Type),
-    Colour(_Colour)
+wxsColourProperty::wxsColourProperty(
+    wxUint32& _Type,
+    wxColour& _Colour,
+    const wxString& UseSubName,
+    const wxString& ColSubName):
+        Type(_Type),
+        Colour(_Colour),
+        UseName(UseSubName),
+        ColName(ColSubName),
+        PGId(0),
+        UseColId(0),
+        ColId(0)
 {
-}
-
-wxsColourProperty::~wxsColourProperty()
-{
-	//dtor
-}
-
-const wxString & wxsColourProperty::GetTypeName()
-{
-    static wxString Type(_T("wxColour"));
-    return Type;
 }
 
 void wxsColourProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)
@@ -31,7 +25,7 @@ void wxsColourProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)
 
     UseColId = Grid->AppendIn(
         PGId,
-        wxBoolProperty(_("Use colour:"),wxPG_LABEL,Type != wxsNO_COLOUR ) );
+        wxBoolProperty(UseName,wxPG_LABEL,Type != wxsNO_COLOUR ) );
 
     wxColour Col = wxColour(0,0,0);
 
@@ -46,7 +40,7 @@ void wxsColourProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)
 
     ColId = Grid->AppendIn(
         PGId,
-        wxSystemColourProperty(_("Colour:"), wxPG_LABEL, Col ));
+        wxSystemColourProperty(ColName, wxPG_LABEL, Col ));
 
     Grid->SetPropertyAttribute(UseColId,wxPG_BOOL_USE_CHECKBOX,(long)1,wxRECURSE);
 }

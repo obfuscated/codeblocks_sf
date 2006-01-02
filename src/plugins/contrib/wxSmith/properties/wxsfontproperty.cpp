@@ -4,23 +4,18 @@
 #include <wx/intl.h>
 #include <wx/propgrid/advprops.h>
 
-wxsFontProperty::wxsFontProperty(wxsProperties* Properties,bool& _Use,wxFont& _Font):
-    wxsProperty(Properties),
-    PGId(0),
-    UseId(0),
-    Use(_Use),
-    Font(_Font)
+wxsFontProperty::wxsFontProperty(
+    bool& _Use,
+    wxFont& _Font,
+    const wxString& UseSubName,
+    const wxString& FontSubName):
+        Use(_Use),
+        Font(_Font),
+        UseName(UseSubName),
+        FontName(FontSubName),
+        PGId(0),
+        UseId(0)
 {
-}
-
-wxsFontProperty::~wxsFontProperty()
-{
-}
-
-const wxString & wxsFontProperty::GetTypeName()
-{
-    static wxString Type(_T("wxFont"));
-    return Type;
 }
 
 void wxsFontProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)
@@ -29,11 +24,11 @@ void wxsFontProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)
 
     UseId = Grid->AppendIn(
         PGId,
-        wxBoolProperty(_("Use font:"),wxPG_LABEL,Use ) );
+        wxBoolProperty(UseName,wxPG_LABEL,Use ) );
 
     FontId = Grid->AppendIn(
         PGId,
-        wxFontProperty(_("Font:"), wxPG_LABEL, Font ));
+        wxFontProperty(FontName, wxPG_LABEL, Font ));
 
     Grid->SetPropertyAttribute(UseId,wxPG_BOOL_USE_CHECKBOX,(long)1,wxRECURSE);
 }

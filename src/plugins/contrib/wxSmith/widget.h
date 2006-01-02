@@ -16,19 +16,12 @@
 #include "wxsstyle.h"
 #include "wxsbaseproperties.h"
 #include "wxswidgetmanager.h"
+#include "wxscodeparams.h"
 
 class wxsWidgetManager;
 class wxsWidget;
 class wxsWidgetEvents;
 class wxsEventDesc;
-
-/** Structure containing all data needed while generating code */
-struct wxsCodeParams
-{
-    wxString ParentName;
-    bool IsDirectParent;
-    int UniqueNumber;
-};
 
 /** Class representing one widget */
 class wxsWidget
@@ -56,20 +49,14 @@ class wxsWidget
         /** Getting manager of this widget */
         inline wxsWidgetManager* GetManager() { return Manager; }
 
-        /** Getting parent widget of this one */
+        /** Getting parent item of this one */
         inline wxsWidget* GetParent() { return Parent; }
 
-        /** Getting resource tree of this widget */
+        /** Getting resource tree item id of this widget in resource browser */
         inline wxTreeItemId GetTreeId() { return TreeId; }
-
-        /** Getting wxsBasePropertiesType for this widget */
-        wxsBasePropertiesType GetBPType();
 
         /** Getting resource owning this widget */
         inline wxsWindowRes* GetResource() { return Resource; }
-
-        /** Getting default properties object */
-        inline wxsProperties& GetPropertiesObj() { return PropertiesObject; }
 
         /** Getting editor for this widget (or NULL if there's no editor) */
         wxsWindowEditor* GetEditor();
@@ -82,11 +69,6 @@ class wxsWidget
 
         /** Deleting tree for this widget and for all it's children */
         void KillTree(wxTreeCtrl* Tree);
-
-    protected:
-
-        /** Changing base properties used in given edit mode */
-        void ChangeBPT(int ResourceEditMode,wxsBasePropertiesType bpType);
 
 /******************************************************************************/
 /* Preview                                                                    */
@@ -128,7 +110,7 @@ class wxsWidget
          */
         virtual wxWindow* MyCreatePreview(wxWindow* Parent) = 0;
 
-        /** This fuunction can be used to update all properties for preview
+        /** This function can be used to update all properties for preview
          *  after creating it's children.
          */
         virtual void MyFinalUpdatePreview(wxWindow* Preview) {}
@@ -144,43 +126,20 @@ class wxsWidget
 
     public:
 
-        /** Function returning base configuration params for this widget */
-        inline wxsBaseProperties& GetBaseProperties() { return BaseProperties; }
+        /** Getting current wxsBasePropertiesType for this widget */
+        inline wxsBasePropertiesType GetBPType() { return BPType; }
 
-        /** Getting properties window for this widget */
-        inline wxWindow* CreatePropertiesWindow(wxWindow* Parent)
-        {
-            if ( !PropertiesCreated )
-            {
-                CreateObjectProperties();
-                AddParentProperties();
-                PropertiesCreated = true;
-            }
-            if ( !Properties ) Properties = MyCreatePropertiesWindow(Parent);
-            return Properties;
-        }
+        /** Creating properties window for this widget */
+        wxWindow* CreatePropertiesWindow(wxWindow* Parent);
 
         /** This function returns current properties window */
-        inline wxWindow* GetProperties() { return Properties; }
+        inline wxWindow* GetPropertiesWindow() { return PropertiesWindow; }
 
-        /** This should kill properties window */
-        inline void KillProperties()
-        {
-            if ( Properties != NULL )
-            {
-                DeleteProperties(Properties);
-                Properties = NULL;
-            }
-        }
+        /** This function destroys properties window */
+        void KillPropertiesWindow();
 
         /** Function which should update content of current properties window */
-        virtual void UpdateProperties()
-        {
-            if ( Updating ) return;
-            Updating = true;
-            MyUpdateProperties();
-            Updating = false;
-        }
+        void UpdatePropertiesWindow();
 
         /** Function notifying that properties were changed inside properties editor
          *  \param Validate - if true, changed properties should be validated
@@ -188,7 +147,7 @@ class wxsWidget
          *  \return true - properties valid, false - properties invalid (before correction)
          *          always returns true if Validate == false
          */
-        virtual bool PropertiesUpdated(bool Validate,bool Correct);
+        bool PropertiesChanged(bool Validate,bool Correct);
 
         /** Function building quick properties panel inside editor area
          *
@@ -200,51 +159,40 @@ class wxsWidget
          */
         virtual wxWindow* BuildQuickPanel(wxWindow* Parent);
 
-        /** Getting window's style */
+        /** Getting window's style 
+         *
+         * This fuunction is supplied here because styles stored
+         * in base properties object are not directly mapped into
+         * properties used in wxWidgets.
+         * \return Style usable in wxWidgets
+         */
         long GetStyle();
 
-        /** Setting window's style */
+        /** Setting window's style 
+         *
+         * This function sets specified style in base proeprties object.
+         * \param Style wxWidgets style
+         */
         void SetStyle(long Style);
 
-        /** Getting window's extra style */
+        /** Getting window's extra style 
+         *
+         * \see GetStyle
+         */
         long GetExStyle();
 
-        /** Setting window's extra style */
+        /** Setting window's extra style 
+         *
+         * \see SetStyle
+         */
         void SetExStyle(long ExStyle);
 
-    protected:
-
-        /** This function should create properties view for widget. It is granted
-         *  that there are no properties created yet.
+        /** Getting window's position 
+         *
+         * This function returns wxPoint class with current position
+         * (may be wxDefaultPosition). It may be used directly when 
+         * creating previews.
          */
-        virtual wxWindow* MyCreatePropertiesWindow(wxWindow* Parent)
-        {
-            return GenBasePropertiesConfig(Parent);
-        }
-
-        /** This function should delete properties window. Usually should be
-         *  left as default. Put here to aviod conflicts between different
-         *  memory heaps.
-         */
-        virtual void DeleteProperties(wxWindow* Properties) { delete Properties; }
-
-        /** Function which should update content of current properties window */
-        virtual void MyUpdateProperties()
-        {
-            if ( GetProperties() ) PropertiesObject.UpdateProperties();
-        }
-
-        /** Function initializing properties for this widget.
-         *  This should add all properties.
-         *  Call to this function is made when properties window is created for the
-         *  first time
-         */
-        virtual void CreateObjectProperties()
-        {
-            AddDefaultProperties(GetBPType());
-        }
-
-        /** Getting window's position */
         inline wxPoint GetPosition()
         {
             return BaseProperties.DefaultPosition ?
@@ -252,7 +200,12 @@ class wxsWidget
                 wxPoint(BaseProperties.PosX,BaseProperties.PosY);
         }
 
-        /** Getting window's size */
+        /** Getting window's size 
+         *
+         * This functino returns wxSize class with current size
+         * (may be wxDefaultSize). It may be used directly when
+         * creating previews.
+         */
         inline wxSize GetSize()
         {
             return BaseProperties.DefaultSize ?
@@ -260,16 +213,58 @@ class wxsWidget
                 wxSize(BaseProperties.SizeX,BaseProperties.SizeY);
         }
 
-    private:
+    protected:
 
-        inline void AddParentProperties()
-        {
-        	if ( GetParent() )
-        	{
-        		GetParent()->AddChildProperties(GetParent()->FindChild(this));
-        	}
-        }
+        /** This function should create properties editor for this widget
+         *
+         * It is granted that there are no properties created yet.
+         * Default implementation creates wxPropertyGrid widget
+         * handling all registered properties.
+         */
+        virtual wxWindow* MyCreatePropertiesWindow(wxWindow* Parent);
 
+        /** Function which should update content of current properties editor window.
+         *
+         * At the time of call, it's granted that property window exists.
+         * Default implementation updates previously created property grid
+         */
+        virtual void MyUpdatePropertiesWindow();
+        
+        /** Function notifying about property change
+         *
+         * This functino is called when any property of this
+         * widget has been changed in property editor.
+         * Meaning of arguments and return value is same as in case
+         * of PropertyChanged function.
+         */
+        virtual bool MyPropertiesChanged(bool Validate,bool Correct);
+
+        /** Function initializing properties for this widget.
+         *
+         *  This function should add all properties for this widget.
+         *  Call to this function is made when properties window is
+         *  created for the first time. If this fucntion is overwritten
+         *  in derived classes, it should call the original one after
+         *  creating it's private properties to include all default ones.
+         */
+        virtual void MyCreateProperties();
+        
+        /** Changing base properties used in given edit mode
+         *
+         * This function should be called once for each edit mode
+         * when widget has different set of base properties in different
+         * modes.
+         */
+        void ChangeBPT(int ResourceEditMode,wxsBasePropertiesType bpType);
+
+    public:
+
+        /** Base parameters describing this widget */
+        wxsBaseProperties BaseProperties;
+
+        /** Base object used to handle properties */
+        wxsProperties Properties;
+        
 /******************************************************************************/
 /* Code generation                                                            */
 /******************************************************************************/
@@ -280,7 +275,7 @@ class wxsWidget
          *  It's called BEFORE widget's children are created and
          *  must set up BaseProperties.VarName variable inside code.
          */
-        virtual wxString GetProducingCode(wxsCodeParams& Params) { return _T(""); }
+        virtual wxString GetProducingCode(const wxsCodeParams& Params) = 0;
 
         /** Function generating code which finishes production process of this
          *  widget, it will be called AFTER child widgets are created
@@ -288,28 +283,20 @@ class wxsWidget
          * It can be used f.ex. by sizers to bind to parent item.
          * UniqueNumber is same as in GetProducingCode
          */
-        virtual wxString GetFinalizingCode(wxsCodeParams& Params) { return _T(""); }
+        virtual wxString GetFinalizingCode(const wxsCodeParams& Params);
 
         /** Function generating code which generates variable containing this
          *  widget. If there's no variable (f.ex. space inside sizers), it should
          *  return empty string
          */
-        virtual wxString GetDeclarationCode(wxsCodeParams& Params) { return _T(""); }
-
-        /** Structure deeclaring some code-defines which could be usefull while
-         *  creating widget's code
+        virtual wxString GetDeclarationCode(const wxsCodeParams& Params);
+        
+        /** Function building wxsCodeParams object for this widget.
+         *
+         *  UniqueNumber, IsDirectParent and ParentName are not filled.
          */
-        struct CodeDefines
-        {
-            wxString Style;         ///< Widget's style in form 'wxSTYLE1|wxSTYLE2'
-            wxString Pos;           ///< Widget's position
-            wxString Size;          ///< Widget's size
-            wxString InitCode;      ///< Code initializing Enabled / Focused / Hidden flags, Colours, ToolTip and Font
-        };
-
-        /** Function creating current coded defines */
-        virtual const CodeDefines& GetCodeDefines();
-
+        void BuildCodeParams(wxsCodeParams& Params);
+ 
 /**********************************************************************/
 /* Support for containers                                             */
 /**********************************************************************/
@@ -396,35 +383,6 @@ class wxsWidget
          * Default implementation save <object> Xml element
          */
         virtual bool XmlSaveChild(int ChildIndex,TiXmlElement* AddHere);
-
-/**********************************************************************/
-/* Support for base widget's parameters                               */
-/**********************************************************************/
-
-   protected:
-
-        /** Function creating wxPanel object which contains panel with
-         * configuration of base widget's properties
-         */
-        inline wxWindow* GenBasePropertiesConfig(wxWindow* Parent)
-        {
-            return PropertiesObject.GenerateWindow(Parent);
-        }
-
-        /** This function updates content of given base properties panel,
-         *  should be called when any operation on preview changes any of
-         *  base properties.
-         */
-        inline void UpdateBasePropertiesConfig()
-        {
-            PropertiesObject.UpdateProperties();
-        }
-
-        /** Base parameters describing this widget */
-        wxsBaseProperties BaseProperties;
-
-        /** Base object used to handle properties */
-        wxsProperties PropertiesObject;
 
 /******************************************************************************/
 /* XML Operations                                                             */
@@ -526,10 +484,8 @@ class wxsWidget
          */
         void XmlAssignElement(TiXmlElement* Element);
 
-        // Added by cyberkoa
         /** Set a series of string with the same given element name */
         virtual bool wxsWidget::XmlSetStringArray(const wxString &ParentName,const wxString& ChildName, wxArrayString& stringArray);
-        //End Add
 
         /** Reading all default values for widget */
         inline bool XmlLoadDefaults() { return XmlLoadDefaultsT(GetBPType()); }
@@ -567,7 +523,7 @@ class wxsWidget
         wxsWidgetManager* Manager;  ///< Widget's manager
         wxWindow* Preview;          ///< Currently opened preview window (NULL if there's no one)
         wxsWindowRes* Resource;     ///< Resource owning this widget
-        wxWindow* Properties;       ///< Currently opened properties window (NULL if there's no one)
+        wxWindow* PropertiesWindow; ///< Currently opened properties window (NULL if there's no one)
         wxsWidget* Parent;          ///< Parent widget of this one
         int MaxChildren;            ///< Num of max. Childs, -1 if no limit, valid for containers only
 
@@ -580,9 +536,7 @@ class wxsWidget
 
         bool PropertiesCreated;
 
-        wxsBasePropertiesType BPTypes[wxsREMCount];  ///< Set of base properties used for each edit mode
-
-        CodeDefines CDefines;       ///< Will be filled and returned inside GetCodedeDefines
+        wxsBasePropertiesType BPType;   ///< Flags for used base properties
 
         wxTreeItemId TreeId;        ///< Id of item in resource tree
         bool AssignedToTree;        ///< True if this widget has it's entry inside resource tree

@@ -47,6 +47,8 @@ class wxsEditor : public EditorBase
         void OnSmithEvent(wxsEvent& event);
 
         DECLARE_EVENT_TABLE()
+
+        friend class wxsResource;
 };
 
 #endif // WXSEDITOR_H

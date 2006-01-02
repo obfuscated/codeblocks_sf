@@ -60,7 +60,7 @@ void wxsSelectRes(wxsResource* Res);
 /** Sending global resource unselection event */
 void wxsUnselectRes(wxsResource* Res);
 
-/** Changing blocking of selection events 
+/** Changing blocking of selection events
  *
  * If selection events are blocked, wxsSelectWidget
  * and wxsSelectRes do nothing */

@@ -5,23 +5,12 @@
 #include <wx/stattext.h>
 #include <vector>
 
-wxsEnumProperty::wxsEnumProperty(wxsProperties* Properties,int &_Value,const wxChar** _Names,const long* _Values):
-    wxsProperty(Properties),
+wxsEnumProperty::wxsEnumProperty(int &_Value,const wxChar** _Names,const long* _Values):
     Value(_Value),
     Names(_Names),
     Values(_Values),
     PGId(0)
 {
-}
-
-wxsEnumProperty::~wxsEnumProperty()
-{
-}
-
-const wxString& wxsEnumProperty::GetTypeName()
-{
-    static wxString Name(_T("enum property"));
-    return Name;
 }
 
 void wxsEnumProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)

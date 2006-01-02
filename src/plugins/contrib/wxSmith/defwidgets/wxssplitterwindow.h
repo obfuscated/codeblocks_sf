@@ -19,9 +19,8 @@ class wxsSplitterWindow : public wxsContainer
             return *GetManager()->GetWidgetInfo(wxsSplitterWindowId);
         }
 		virtual int AddChild(wxsWidget* NewWidget,int InsertBeforeThis);
-		virtual wxString GetProducingCode(wxsCodeParams& Params);
-        virtual wxString GetFinalizingCode(wxsCodeParams& Params);
-        virtual wxString GetDeclarationCode(wxsCodeParams& Params);
+		virtual wxString GetProducingCode(const wxsCodeParams& Params);
+        virtual wxString GetFinalizingCode(const wxsCodeParams& Params);
 
    protected:
 
@@ -29,7 +28,7 @@ class wxsSplitterWindow : public wxsContainer
         virtual void MyFinalUpdatePreview(wxWindow* Preview);
         virtual bool MyXmlLoad();
         virtual bool MyXmlSave();
-        virtual void CreateObjectProperties();
+        virtual void MyCreateProperties();
 
     private:
 

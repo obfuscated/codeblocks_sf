@@ -65,13 +65,7 @@ struct wxsSizerExtraParams
             	return *wxsStdManager.GetWidgetInfo(SizerId);           \
             }                                                           \
                                                                         \
-            virtual wxString GetProducingCode(wxsCodeParams& Params);   \
-                                                                        \
-            virtual wxString GetDeclarationCode(wxsCodeParams& Params)  \
-            {                                                           \
-                return wxString::Format(_T("wx") _T(#Name) _T("* %s;"), \
-                    GetBaseProperties().VarName.c_str());               \
-            }                                                           \
+            virtual wxString GetProducingCode(const wxsCodeParams& Params);   \
                                                                         \
             virtual wxSizer* ProduceSizer(wxWindow* Panel);             \
                                                                         \
@@ -79,7 +73,7 @@ struct wxsSizerExtraParams
                                                                         \
             virtual bool MyXmlLoad();                                   \
             virtual bool MyXmlSave();                                   \
-            virtual void CreateObjectProperties();                      \
+            virtual void MyCreateProperties();                          \
             virtual void Init();                                        \
                                                                         \
         private:
@@ -95,7 +89,7 @@ class wxsDefSizer : public wxsContainer
 		wxsDefSizer(wxsWidgetManager* Man,wxsWindowRes* Res);
 		virtual ~wxsDefSizer();
 
-        virtual wxString GetFinalizingCode(wxsCodeParams& Params);
+        virtual wxString GetFinalizingCode(const wxsCodeParams& Params);
 
         /** This function should produce sizer with properties handled by this objeect */
         virtual wxSizer* ProduceSizer(wxWindow* Panel) = 0;

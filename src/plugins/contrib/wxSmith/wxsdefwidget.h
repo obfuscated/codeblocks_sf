@@ -236,15 +236,13 @@ class wxsDefWidget: public wxsWidget
         /** Destructor */
 		virtual ~wxsDefWidget();
 
-        virtual wxString GetProducingCode(wxsCodeParams& Params);
-
-        virtual wxString GetDeclarationCode(wxsCodeParams& Params);
+        virtual wxString GetProducingCode(const wxsCodeParams& Params);
 
     protected:
 
         virtual bool MyXmlLoad();
         virtual bool MyXmlSave();
-        virtual void CreateObjectProperties();
+        virtual void MyCreateProperties();
 
         void evBool(bool& Val,const wxString& Name,const wxString& XrcName,const wxString& PropName,bool DefValue);
         void evInt(int& Val,const wxString& Name,const wxString& XrcName,const wxString& PropName,int DefValue);

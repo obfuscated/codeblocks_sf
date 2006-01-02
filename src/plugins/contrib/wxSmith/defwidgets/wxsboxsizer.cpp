@@ -3,10 +3,10 @@
 
 #include "../properties/wxsenumproperty.h"
 
-wxString wxsBoxSizer::GetProducingCode(wxsCodeParams& Params)
+wxString wxsBoxSizer::GetProducingCode(const wxsCodeParams& Params)
 {
     return wxString::Format(_T("%s = new wxBoxSizer(%s);"),
-        GetBaseProperties().VarName.c_str(),
+        BaseProperties.VarName.c_str(),
         (Orient == wxVERTICAL) ? _T("wxVERTICAL") : _T("wxHORIZONTAL") );
 }
 
@@ -24,12 +24,12 @@ bool wxsBoxSizer::MyXmlSave()
 }
 
 
-void wxsBoxSizer::CreateObjectProperties()
+void wxsBoxSizer::MyCreateProperties()
 {
 	static const wxChar* Names[] = { _("Horizontal"), _("Vertical"), NULL };
 	static long Values[] = { wxHORIZONTAL, wxVERTICAL };
-    wxsWidget::CreateObjectProperties();
-    PropertiesObject.AddProperty( _("Orientation:"), new wxsEnumProperty(&PropertiesObject,Orient,Names,Values), 0);
+    Properties.AddProperty( _("Orientation:"), new wxsEnumProperty(Orient,Names,Values), 0);
+    wxsWidget::MyCreateProperties();
 }
 
 void wxsBoxSizer::Init()

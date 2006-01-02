@@ -97,34 +97,34 @@ wxsDefSizer::~wxsDefSizer()
 {
 }
 
-wxString wxsDefSizer::GetFinalizingCode(wxsCodeParams& Params)
+wxString wxsDefSizer::GetFinalizingCode(const wxsCodeParams& Params)
 {
 	wxString Code;
 	int Cnt = GetChildCount();
 	for ( int i=0; i<Cnt; i++ )
 	{
 		wxsWidget* Child = GetChild(i);
-		wxsSizerExtraParams* Params = GetExtraParams(i);
+		wxsSizerExtraParams* ExParams = GetExtraParams(i);
 		if ( Child->GetInfo().Spacer )
 		{
 			// Spacer class is threated as a special case
 			Code.Append(wxString::Format(_T("%s->Add(%d,%d,%d);"),
-                GetBaseProperties().VarName.c_str(),
-                Child->GetBaseProperties().SizeX,
-                Child->GetBaseProperties().SizeY,
-                Params->Proportion));
+                Params.VarName.c_str(),
+                Child->BaseProperties.SizeX,
+                Child->BaseProperties.SizeY,
+                ExParams->Proportion));
 		}
 		else
 		{
-            wxString FlagsToSizer = GetFlagToSizer(Params);
+            wxString FlagsToSizer = GetFlagToSizer(ExParams);
             if ( !FlagsToSizer.Length() ) FlagsToSizer = _T("0");
             Code.Append(
                 wxString::Format(_T("%s->Add(%s,%d,%s,%d);\n"),
-                    GetBaseProperties().VarName.c_str(),
-                    Child->GetBaseProperties().VarName.c_str(),
-                    Params->Proportion,
+                    Params.VarName.c_str(),
+                    Child->BaseProperties.VarName.c_str(),
+                    ExParams->Proportion,
                     FlagsToSizer.c_str(),
-                    Params->Border));
+                    ExParams->Border));
 		}
 	}
 
@@ -132,12 +132,12 @@ wxString wxsDefSizer::GetFinalizingCode(wxsCodeParams& Params)
     {
         Code.Append(wxString::Format(_T("%s->SetSizer(%s);"),
             Params.ParentName.c_str(),
-            GetBaseProperties().VarName.c_str()));
+            Params.VarName.c_str()));
         Code.Append(wxString::Format(_T("%s->Fit(%s);"),
-            GetBaseProperties().VarName.c_str(),
+            Params.VarName.c_str(),
             Params.ParentName.c_str()));
         Code.Append(wxString::Format(_T("%s->SetSizeHints(%s);"),
-            GetBaseProperties().VarName.c_str(),
+            Params.VarName.c_str(),
             Params.ParentName.c_str()));
     }
     return Code;
@@ -216,10 +216,10 @@ void wxsDefSizer::AddChildProperties(int ChildIndex)
 	wxsSizerExtraParams* Params = GetExtraParams(ChildIndex);
 	if ( !Widget || !Params ) return;
 
-    Widget->GetPropertiesObj().AddProperty(_("Proportion:"),Params->Proportion);
-    Widget->GetPropertiesObj().AddProperty(_("Border:"),new wxsBorderProperty(&Widget->GetPropertiesObj(),Params->BorderFlags));
-    Widget->GetPropertiesObj().AddProperty(_("Border size:"),Params->Border);
-    Widget->GetPropertiesObj().AddProperty(_("Placement:"),new wxsPlacementProperty(&Widget->GetPropertiesObj(),Params->Placement,Params->Expand,Params->Shaped));
+    Widget->Properties.AddProperty(_("Proportion:"),Params->Proportion);
+    Widget->Properties.AddProperty(_("Border:"),new wxsBorderProperty(Params->BorderFlags));
+    Widget->Properties.AddProperty(_("Border size:"),Params->Border);
+    Widget->Properties.AddProperty(_("Placement:"),new wxsPlacementProperty(Params->Placement,Params->Expand,Params->Shaped));
 }
 
 bool wxsDefSizer::LoadSizerStuff(wxsSizerExtraParams* Params,TiXmlElement* Elem)

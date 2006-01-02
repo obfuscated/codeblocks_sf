@@ -9,8 +9,8 @@ namespace
     class wxsFlexGridSizerColsRowsProperty: public wxsStringProperty
     {
     	public:
-            wxsFlexGridSizerColsRowsProperty(wxsProperties* Properties,wxString& String, bool AlwaysUpdate):
-                wxsStringProperty(Properties,String,AlwaysUpdate)
+            wxsFlexGridSizerColsRowsProperty(wxString& String, bool AlwaysUpdate):
+                wxsStringProperty(String,AlwaysUpdate)
             {}
 
         protected:
@@ -24,19 +24,18 @@ namespace
     };
 };
 
-
-wxString wxsFlexGridSizer::GetProducingCode(wxsCodeParams& Params)
+wxString wxsFlexGridSizer::GetProducingCode(const wxsCodeParams& Params)
 {
     wxString Code;
     Code.Printf(_T("%s = new wxFlexGridSizer(%d,%d,%d,%d);"),
-        GetBaseProperties().VarName.c_str(),
+        Params.VarName.c_str(),
         Rows, Cols, VGap, HGap );
 
     wxArrayInt Cols = GetArray(GrowableCols);
     for ( size_t i=0; i<Cols.Count(); i++ )
     {
     	Code.Append(wxString::Format(_T("\n%s->AddGrowableCol(%d);"),
-            GetBaseProperties().VarName.c_str(),
+            Params.VarName.c_str(),
             Cols[i]));
     }
 
@@ -44,7 +43,7 @@ wxString wxsFlexGridSizer::GetProducingCode(wxsCodeParams& Params)
     for ( size_t i=0; i<Rows.Count(); i++ )
     {
     	Code.Append(wxString::Format(_T("\n%s->AddGrowableRow(%d);"),
-            GetBaseProperties().VarName.c_str(),
+            Params.VarName.c_str(),
             Rows[i]));
     }
 
@@ -85,15 +84,15 @@ bool wxsFlexGridSizer::MyXmlSave()
 }
 
 
-void wxsFlexGridSizer::CreateObjectProperties()
+void wxsFlexGridSizer::MyCreateProperties()
 {
-    wxsWidget::CreateObjectProperties();
-    PropertiesObject.Add2IProperty(_("Cols x rows:"),Cols,Rows,0);
-    PropertiesObject.Add2IProperty(_("VGap x HGap:"),VGap,HGap,1);
-    PropertiesObject.AddProperty(_("Growable cols:"),
-        new wxsFlexGridSizerColsRowsProperty(&PropertiesObject,GrowableCols,true),2);
-    PropertiesObject.AddProperty(_("Growable rows:"),
-        new wxsFlexGridSizerColsRowsProperty(&PropertiesObject,GrowableRows,true),3);
+    Properties.Add2IProperty(_("Cols x rows:"),Cols,Rows);
+    Properties.Add2IProperty(_("VGap x HGap:"),VGap,HGap);
+    Properties.AddProperty(_("Growable cols:"),
+        new wxsFlexGridSizerColsRowsProperty(GrowableCols,true));
+    Properties.AddProperty(_("Growable rows:"),
+        new wxsFlexGridSizerColsRowsProperty(GrowableRows,true));
+    wxsWidget::MyCreateProperties();
 }
 
 void wxsFlexGridSizer::Init()

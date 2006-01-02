@@ -45,3 +45,14 @@ wxWindow* wxsSpacer::MyCreatePreview(wxWindow* Parent)
 {
 	return new wxsSpacerPreview(Parent,GetSize());
 }
+
+wxString wxsSpacer::GetDeclarationCode(const wxsCodeParams& Params)
+{
+    // No declaration for spacer
+    return _T("");
+}
+
+wxString wxsSpacer::GetProducingCode(const wxsCodeParams& Params)
+{
+    return _T("");
+}

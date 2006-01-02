@@ -101,7 +101,7 @@ wxsWindowRes::wxsWindowRes(const wxString& Class,const wxString& FileName):
     Modified(false)
 {
 }
-    
+
 void wxsWindowRes::Initialize()
 {
 	Clear();
@@ -145,7 +145,7 @@ bool wxsWindowRes::Load()
         DBGLOG(_("wxSmith ERROR !!! Can not load resource when editor is opened"));
         return false;
     }
-    
+
 	Clear();
 
     TiXmlDocument Doc(WxsFile.mb_str());
@@ -194,7 +194,7 @@ void wxsWindowRes::Save()
     {
         DBGLOG(_("wxSmith ERROR !!! Resource can be saved only when editor is opened"));
     }
-    
+
     TiXmlDocument* Doc = GenerateXml();
 
     if ( Doc )
@@ -226,7 +226,7 @@ void wxsWindowRes::ShowPreview()
     if ( Preview ) return;
 // TODO (SpOoN#1#): Save in temporary file
     Save();
-    
+
     wxXmlResource Res(WxsFile);
     Res.InitAllHandlers();
     Res.AddHandler(new wxsCustomWidgetXmlHandler());
@@ -253,7 +253,7 @@ const wxString& wxsWindowRes::GetResourceName()
 bool wxsWindowRes::GenerateEmptySources()
 {
     if ( !GetProject() ) return false;
-    
+
     // Generating file variables
 
     wxString FName = wxFileName(HFile).GetFullName();
@@ -322,7 +322,7 @@ void wxsWindowRes::NotifyChange()
 void wxsWindowRes::RebuildCode()
 {
     if ( !GetProject() ) return;
-    
+
 //------------------------------
 // Generating initializing code
 //------------------------------
@@ -448,19 +448,22 @@ void wxsWindowRes::RebuildCode()
 
 void wxsWindowRes::AddDeclarationsReq(wxsWidget* Widget,wxString& LocalCode,wxString& GlobalCode,bool& WasLocal)
 {
-	static wxsCodeParams EmptyParams;
-
 	if ( !Widget ) return;
+
+	static wxsCodeParams Params;
+
 	int Count = Widget->GetChildCount();
 	for ( int i=0; i<Count; i++ )
 	{
 		wxsWidget* Child = Widget->GetChild(i);
 		if ( Child->GetBPType() & bptVariable )
-		{
-            wxString Decl = Child->GetDeclarationCode(EmptyParams);
+        {
+		    // Only VarName should be used when fetching declaration code
+            Params.VarName = Child->BaseProperties.VarName;
+            wxString Decl = Child->GetDeclarationCode(Params);
             if ( Decl.Length() )
             {
-                bool Member = Child->GetBaseProperties().IsMember;
+                bool Member = Child->BaseProperties.IsMember;
                 wxString& Code = Member ? GlobalCode : LocalCode;
                 Code.Append(Decl);
                 Code.Append('\n');
@@ -487,7 +490,7 @@ void wxsWindowRes::UpdateWidgetsVarNameIdReq(StrMap& NamesMap, StrMap& IdsMap, w
 	{
 		wxsWidget* Child = Widget->GetChild(i);
 
-        wxsBaseProperties& Params = Child->GetBaseProperties();
+        wxsBaseProperties& Params = Child->BaseProperties;
 
         bool UpdateVar = ( Child->GetBPType() & bptVariable ) &&
                          ( Params.VarName.Length() == 0 );
@@ -538,14 +541,14 @@ void wxsWindowRes::CreateSetsReq(StrMap& NamesMap, StrMap& IdsMap, wxsWidget* Wi
 
 		if ( Child != Without )
 		{
-            if ( Child->GetBaseProperties().VarName.Length() )
+            if ( Child->BaseProperties.VarName.Length() )
             {
-                NamesMap[Child->GetBaseProperties().VarName.c_str()] = Child;
+                NamesMap[Child->BaseProperties.VarName.c_str()] = Child;
             }
 
-            if ( Child->GetBaseProperties().IdName.Length() )
+            if ( Child->BaseProperties.IdName.Length() )
             {
-                IdsMap[Child->GetBaseProperties().IdName.c_str()] = Child;
+                IdsMap[Child->BaseProperties.IdName.c_str()] = Child;
             }
 		}
 
@@ -585,8 +588,8 @@ bool wxsWindowRes::CheckBasePropertiesReq(wxsWidget* Widget,bool Correct,StrMap&
 			Result = false;
 		}
 
-		NamesMap[Child->GetBaseProperties().VarName] = Child;
-		IdsMap[Child->GetBaseProperties().IdName] = Child;
+		NamesMap[Child->BaseProperties.VarName] = Child;
+		IdsMap[Child->BaseProperties.IdName] = Child;
 
 		if ( ! CheckBasePropertiesReq(Child,Correct,NamesMap,IdsMap) )
 		{
@@ -606,7 +609,7 @@ bool wxsWindowRes::CorrectOneWidget(StrMap& NamesMap,StrMap& IdsMap,wxsWidget* C
 
     if ( Changed->GetBPType() & bptVariable )
     {
-    	wxString& VarName = Changed->GetBaseProperties().VarName;
+    	wxString& VarName = Changed->BaseProperties.VarName;
     	wxString Corrected;
     	VarName.Trim(true);
     	VarName.Trim(false);
@@ -717,7 +720,7 @@ bool wxsWindowRes::CorrectOneWidget(StrMap& NamesMap,StrMap& IdsMap,wxsWidget* C
 
     if ( Changed->GetBPType() & bptId )
     {
-    	wxString& IdName = Changed->GetBaseProperties().IdName;
+    	wxString& IdName = Changed->BaseProperties.IdName;
     	wxString Corrected;
     	IdName.Trim(true);
     	IdName.Trim(false);
@@ -879,7 +882,7 @@ void wxsWindowRes::BuildIdsArray(wxsWidget* Widget,wxArrayString& Array)
 		wxsWidget* Child = Widget->GetChild(i);
 		if ( Child->GetBPType() & bptId )
 		{
-		    const wxString& Name = Child->GetBaseProperties().IdName;
+		    const wxString& Name = Child->BaseProperties.IdName;
 		    long Value;
 		    bool Predefined = Name.ToLong(&Value,0);
 		    if ( !Predefined )
@@ -895,7 +898,7 @@ void wxsWindowRes::BuildIdsArray(wxsWidget* Widget,wxArrayString& Array)
 		    }
 		    if ( !Predefined )
 		    {
-                Array.Add(Child->GetBaseProperties().IdName);
+                Array.Add(Child->BaseProperties.IdName);
 		    }
 		}
 		BuildIdsArray(Child,Array);
@@ -920,7 +923,7 @@ void wxsWindowRes::BuildHeadersArray(wxsWidget* Widget,wxArrayString& Array)
 void wxsWindowRes::UpdateEventTable()
 {
     if ( !GetProject() ) return;
-    
+
 	wxString CodeHeader;
 	CodeHeader.Printf(wxsBHeaderF("EventTable"),ClassName.c_str());
 	wxString Code = CodeHeader;
@@ -963,11 +966,11 @@ void wxsWindowRes::GenXrcFetchingCode(wxString& Code,wxsWidget* Widget)
 	{
 		wxsWidget* Child = Widget->GetChild(i);
 		if ( ( Child->GetBPType() & bptVariable ) &&
-		     ( Child->GetBaseProperties().IsMember ) )
+		     ( Child->BaseProperties.IsMember ) )
 		{
-			Code.Append(Child->GetBaseProperties().VarName);
+			Code.Append(Child->BaseProperties.VarName);
 			Code.Append(_T(" = XRCCTRL(*this,\""));
-			Code.Append(Child->GetBaseProperties().IdName);
+			Code.Append(Child->BaseProperties.IdName);
 			Code.Append(_T("\","));
 			Code.Append(Child->GetInfo().Name);
 			Code.Append(_T(");\n"));
@@ -988,7 +991,7 @@ TiXmlDocument* wxsWindowRes::GenerateXrc()
 void wxsWindowRes::SetModified(bool modified)
 {
     if ( !GetEditor() ) return;
-    
+
     Modified = modified;
 
 	// Changing unmodified entry inside undo buffer

@@ -104,39 +104,33 @@ void wxsNotebook::MyFinalUpdatePreview(wxWindow* Preview)
 	}
 }
 
-wxString wxsNotebook::GetProducingCode(wxsCodeParams& Params)
+wxString wxsNotebook::GetProducingCode(const wxsCodeParams& Params)
 {
-	const CodeDefines& CD = GetCodeDefines();
 	return wxString::Format(
         _T("%s = new wxNotebook(%s,%s,%s,%s,%s);"),
-        GetBaseProperties().VarName.c_str(),
+        Params.VarName.c_str(),
         Params.ParentName.c_str(),
-        GetBaseProperties().IdName.c_str(),
-        CD.Pos.c_str(),
-        CD.Size.c_str(),
-        CD.Style.c_str());
+        Params.IdName.c_str(),
+        Params.Pos.c_str(),
+        Params.Size.c_str(),
+        Params.Style.c_str());
 }
 
-wxString wxsNotebook::GetFinalizingCode(wxsCodeParams& Params)
+wxString wxsNotebook::GetFinalizingCode(const wxsCodeParams& Params)
 {
 	wxString Code;
 	for ( int i=0; i<GetChildCount(); ++i )
 	{
 		wxsWidget* Child = GetChild(i);
-		wxsNotebookExtraParams* Params = GetExtraParams(i);
+		wxsNotebookExtraParams* ExParams = GetExtraParams(i);
 		Code += wxString::Format(
             _T("%s->AddPage(%s,%s,%s);\n"),
-                GetBaseProperties().VarName.c_str(),
-                Child->GetBaseProperties().VarName.c_str(),
-                wxsGetWxString(Params->Label).c_str(),
-                Params->Selected ? _T("true") : _T("false"));
+                Params.VarName.c_str(),
+                Child->BaseProperties.VarName.c_str(),
+                wxsGetWxString(ExParams->Label).c_str(),
+                ExParams->Selected ? _T("true") : _T("false"));
 	}
 	return Code;
-}
-
-wxString wxsNotebook::GetDeclarationCode(wxsCodeParams& Params)
-{
-	return wxString::Format(_T("wxNotebook* %s;"),GetBaseProperties().VarName.c_str());
 }
 
 bool wxsNotebook::XmlLoadChild(TiXmlElement* Element)
@@ -191,8 +185,8 @@ void wxsNotebook::AddChildProperties(int ChildIndex)
 	wxsNotebookExtraParams* Params = GetExtraParams(ChildIndex);
 	if ( !Widget || !Params ) return;
 
-    Widget->GetPropertiesObj().AddProperty(_("Notebook page:"),Params->Label,0);
-    Widget->GetPropertiesObj().AddProperty(_(" Page selected:"),Params->Selected,1);
+    Widget->Properties.AddProperty(_("Notebook page:"),Params->Label,0);
+    Widget->Properties.AddProperty(_(" Page selected:"),Params->Selected,1);
 }
 
 void wxsNotebook::PreviewMouseEvent(wxMouseEvent& event)
@@ -204,7 +198,7 @@ void wxsNotebook::PreviewMouseEvent(wxMouseEvent& event)
         if ( Hit != wxNOT_FOUND )
         {
             CurrentSelection = GetChild(Hit);
-            PropertiesUpdated(false,false);
+            PropertiesChanged(false,false);
         }
 	}
 }

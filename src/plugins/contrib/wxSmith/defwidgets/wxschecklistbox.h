@@ -21,15 +21,14 @@ class wxsCheckListBox: public wxsCheckListBoxBase
            wxsCheckListBoxBase(Man,Res)
         {}
         
-        virtual wxString GetProducingCode(wxsCodeParams& Params);
-        virtual wxWindow* MyCreatePreview(wxWindow* Parent);            \
+        virtual wxString GetProducingCode(const wxsCodeParams& Params);
+        virtual wxWindow* MyCreatePreview(wxWindow* Parent);
 
     protected:
     
         virtual bool MyXmlLoad();
         virtual bool MyXmlSave();
-        virtual void CreateObjectProperties();
+        virtual void MyCreateProperties();
 };
-    
 
 #endif

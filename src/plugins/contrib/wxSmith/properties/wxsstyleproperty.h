@@ -10,20 +10,13 @@ class wxsStyleProperty : public wxsProperty
 
         /** Ctor */
 		wxsStyleProperty(
-            wxsProperties* Properties,
             int &StyleBits,
             int &ExStyleBits,
             wxsStyle*Styles,
-            bool XrcOnly);
-
-		/** DCtor */
-		virtual ~wxsStyleProperty();
-
-        /** Taking name of value type handled by this item */
-        virtual const wxString& GetTypeName();
+            bool XrcOnly,
+            const wxString& ExPropName=_("Extra style"));
 
     protected:
-
         virtual void AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name);
         virtual bool PropGridChanged(wxPropertyGrid* Grid,wxPGId Id);
         virtual void UpdatePropGrid(wxPropertyGrid* Grid);
@@ -34,6 +27,7 @@ class wxsStyleProperty : public wxsProperty
         int& ExStyleBits;
         wxsStyle* Styles;
         bool XrcOnly;
+        wxString ExName;
 
         wxPGId StylePGId;
         wxPGId ExStylePGId;

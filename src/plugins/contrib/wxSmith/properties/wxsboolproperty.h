@@ -6,20 +6,7 @@
 class wxsBoolProperty : public wxsProperty
 {
 	public:
-        /** Ctor
-         *
-         * \param Bool - variable which will be monitored
-         * \param AlwaysUpdate - if true, any change (includig key events) will be
-         *                       reported, if false, update will be made only after enter
-         *                       or after loosing focus
-         */
-		wxsBoolProperty(wxsProperties* Properties,bool &Bool);
-
-		/** Dctor */
-		virtual ~wxsBoolProperty();
-
-        /** Taking name of value type handled by this item */
-        virtual const wxString& GetTypeName();
+		wxsBoolProperty(bool &Bool);
 
     protected:
 

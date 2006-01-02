@@ -16,7 +16,7 @@ class wxsStaticLine: public wxsStaticLineBase
         wxsStaticLine(wxsWidgetManager* Man,wxsWindowRes* Res);
 
     protected:
-        virtual bool PropertiesUpdated(bool Validate,bool Correct);
+        virtual bool MyPropertiesUpdated(bool Validate,bool Correct);
 };
 
 

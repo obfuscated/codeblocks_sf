@@ -3,27 +3,24 @@
 
 wxsCodeGen::wxsCodeGen(wxsWidget* Widget,bool DontCreateRoot)
 {
+    PreviousUniqueNumber = 1;
+    wxsCodeParams Params;
+    Params.UniqueNumber = 1;
+    Params.IsDirectParent = true;
 	if ( DontCreateRoot )
 	{
-		int Cnt = Widget->GetChildCount();
-
-		wxsCodeParams Params;
-		Params.UniqueNumber = 1;
         Params.ParentName = _T("this");
-        Params.IsDirectParent = true;
-
+		int Cnt = Widget->GetChildCount();
 		for ( int i=0; i<Cnt; i++ )
 		{
-			AppendCodeReq(Widget->GetChild(i),Params);
-			Params.UniqueNumber++;
+		    wxsWidget* Child = Widget->GetChild(i);
+            Child->BuildCodeParams(Params);
+			AppendCodeReq(Child,Params);
 		}
 	}
 	else
 	{
-		wxsCodeParams Params;
-		Params.ParentName = _T("Parent");
-		Params.IsDirectParent = true;
-		Params.UniqueNumber = 1;
+	    Widget->BuildCodeParams(Params);
 		AppendCodeReq(Widget,Params);
 	}
 
@@ -32,7 +29,6 @@ wxsCodeGen::wxsCodeGen(wxsWidget* Widget,bool DontCreateRoot)
 
 wxsCodeGen::~wxsCodeGen()
 {
-    //dtor
 }
 
 void wxsCodeGen::AppendCodeReq(wxsWidget* Widget,wxsCodeParams& ThisParams)
@@ -46,8 +42,7 @@ void wxsCodeGen::AppendCodeReq(wxsWidget* Widget,wxsCodeParams& ThisParams)
     int Cnt = Widget->GetChildCount();
 
     wxsCodeParams ChildParams;
-
-    ChildParams.UniqueNumber = ThisParams.UniqueNumber + 1;
+    ChildParams.UniqueNumber = ++PreviousUniqueNumber;
 
     if ( Widget->GetInfo().Sizer )
     {
@@ -58,7 +53,7 @@ void wxsCodeGen::AppendCodeReq(wxsWidget* Widget,wxsCodeParams& ThisParams)
     {
         if ( Widget->GetParent() )
         {
-            ChildParams.ParentName = Widget->GetBaseProperties().VarName.c_str();
+            ChildParams.ParentName = Widget->BaseProperties.VarName;
         }
         else
         {
@@ -69,14 +64,13 @@ void wxsCodeGen::AppendCodeReq(wxsWidget* Widget,wxsCodeParams& ThisParams)
 
     for ( int i=0; i<Cnt; i++ )
     {
-        AppendCodeReq(Widget->GetChild(i),ChildParams);
-        ChildParams.UniqueNumber++;
+        wxsWidget* Child = Widget->GetChild(i);
+        Child->BuildCodeParams(ChildParams);
+        AppendCodeReq(Child,ChildParams);
     }
 
     Code.Append( Widget->GetFinalizingCode(ThisParams) );
     Code.Append(_T('\n'));
-
-    ThisParams.UniqueNumber = ChildParams.UniqueNumber - 1;
 }
 
 void wxsCodeGen::BeautyCode(wxString& Code)

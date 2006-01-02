@@ -97,7 +97,7 @@ class wxsWindowEditor : public wxsEditor
 
 		/** Reloading images in all editors */
 		static void ReloadImages();
-		
+
 		/** Sending given event to all editors */
 		static void SpreadEvent(wxEvent& event);
 
@@ -202,7 +202,7 @@ class wxsWindowEditor : public wxsEditor
         void ToggleQuickPropsPanel(bool Open);
 
         /** Refreshing content of Quick Props panel */
-        void RebuildQuickProps();
+        void RebuildQuickProps(wxsWidget* Selection);
 
         DECLARE_EVENT_TABLE()
 };

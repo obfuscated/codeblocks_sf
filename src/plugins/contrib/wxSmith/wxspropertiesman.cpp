@@ -8,11 +8,15 @@ wxsPropertiesMan::wxsPropertiesMan():
     CurrentWidget(NULL),
     PropertiesPanel(NULL)
 {
-	//ctor
 }
 
 wxsPropertiesMan::~wxsPropertiesMan()
 {
+    if ( CurrentWidget )
+    {
+        CurrentWidget->KillPropertiesWindow();
+        CurrentWidget = NULL;
+    }
 }
 
 void wxsPropertiesMan::SetActiveWidget(wxsWidget* Widget)
@@ -20,14 +24,13 @@ void wxsPropertiesMan::SetActiveWidget(wxsWidget* Widget)
     if ( !PropertiesPanel || !EventsPanel ) return;
 
 	/** Rebuilding properties panel */
-
     if ( CurrentWidget == Widget ) return;
 
     PropertiesPanel->Freeze();
 
     if ( CurrentWidget )
     {
-        CurrentWidget->KillProperties();
+        CurrentWidget->KillPropertiesWindow();
         CurrentWidget = NULL;
     }
 
@@ -45,7 +48,7 @@ void wxsPropertiesMan::SetActiveWidget(wxsWidget* Widget)
         NewSizer->AddGrowableCol(0);
         NewSizer->AddGrowableRow(0);
         wxWindow* Wnd = CurrentWidget->CreatePropertiesWindow(PropertiesPanel);
-        CurrentWidget->UpdateProperties();
+        CurrentWidget->UpdatePropertiesWindow();
         NewSizer->Add(Wnd,1,wxGROW);
         PropertiesPanel->SetSizer(NewSizer);
         NewSizer->SetVirtualSizeHints(PropertiesPanel);
@@ -99,7 +102,6 @@ void wxsPropertiesMan::OnSelectRes(wxsEvent& event)
 
 void wxsPropertiesMan::OnUnselectRes(wxsEvent& event)
 {
-
 }
 
 BEGIN_EVENT_TABLE(wxsPropertiesMan,wxEvtHandler)
@@ -108,7 +110,6 @@ BEGIN_EVENT_TABLE(wxsPropertiesMan,wxEvtHandler)
     EVT_SELECT_RES(wxsPropertiesMan::OnSelectRes)
     EVT_UNSELECT_RES(wxsPropertiesMan::OnUnselectRes)
 END_EVENT_TABLE()
-
 
 /** Singleton definition */
 wxsPropertiesMan wxsPropertiesMan::Singleton;

@@ -31,9 +31,8 @@ class wxsListbook : public wxsContainer
         }
         virtual bool CanAddChild(wxsWidget* NewWidget,int InsertBeforeThis=-1);
 		virtual int AddChild(wxsWidget* NewWidget,int InsertBeforeThis=-1);
-		virtual wxString GetProducingCode(wxsCodeParams& Params);
-        virtual wxString GetFinalizingCode(wxsCodeParams& Params);
-        virtual wxString GetDeclarationCode(wxsCodeParams& Params);
+		virtual wxString GetProducingCode(const wxsCodeParams& Params);
+        virtual wxString GetFinalizingCode(const wxsCodeParams& Params);
         virtual void PreviewMouseEvent(wxMouseEvent& event);
         virtual void EnsurePreviewVisible(wxsWidget* Child);
         inline wxsListbookExtraParams* GetExtraParams(int Index) { return (wxsListbookExtraParams*)GetExtra(Index); }

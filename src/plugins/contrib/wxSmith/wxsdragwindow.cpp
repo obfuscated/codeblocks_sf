@@ -4,6 +4,8 @@
 #include <wx/dcclient.h>
 #include <wx/dcbuffer.h>
 
+#include <configmanager.h>
+
 #include "widget.h"
 #include "wxsevent.h"
 #include "wxsmith.h"
@@ -428,7 +430,7 @@ void wxsDragWindow::DragFinish(wxsWidget* UnderCursor)
         }
 
         // Applying changes
-        wxsBaseProperties& Params = Widget->GetBaseProperties();
+        wxsBaseProperties& Params = Widget->BaseProperties;
         if ( LeftTopPoint->PosX != LeftTopPoint->DragInitPosX ||
              LeftTopPoint->PosY != LeftTopPoint->DragInitPosY )
         {
@@ -440,8 +442,8 @@ void wxsDragWindow::DragFinish(wxsWidget* UnderCursor)
         Params.DefaultSize = false;
         Params.SizeX = SizeX;
         Params.SizeY = SizeY;
-        Widget->UpdateProperties();
-        Widget->PropertiesUpdated(false,false);     // This will recreate preview
+        Widget->UpdatePropertiesWindow();
+        Widget->PropertiesChanged(false,false);     // This will recreate preview
     }
     else
     {
@@ -499,7 +501,7 @@ void wxsDragWindow::DragFinish(wxsWidget* UnderCursor)
                  (Moved->FindChild(NewParent,0) < 0) &&
                   NewParent->CanAddChild(Moved) )
             {
-                wxsBaseProperties& Params = Moved->GetBaseProperties();
+                wxsBaseProperties& Params = Moved->BaseProperties;
                 DragPointData* LeftTopPoint = FindLeftTop(Moved);
                 if ( LeftTopPoint )
                 {
@@ -553,7 +555,7 @@ void wxsDragWindow::DragFinish(wxsWidget* UnderCursor)
                 Moved->BuildTree(wxsTREE(),NewParent->GetTreeId(),NewInSizerPos);
             }
 
-            wxsBaseProperties& Params = Moved->GetBaseProperties();
+            wxsBaseProperties& Params = Moved->BaseProperties;
             Params.DefaultPosition = NewParentIsSizer;
             if ( NewInSizerPos >= 0 )
             {
@@ -562,7 +564,7 @@ void wxsDragWindow::DragFinish(wxsWidget* UnderCursor)
         }
 
         wxsTREE()->Refresh();
-        RootWidget->PropertiesUpdated(false,false);
+        RootWidget->PropertiesChanged(false,false);
     }
 
     CurDragPoint = NULL;

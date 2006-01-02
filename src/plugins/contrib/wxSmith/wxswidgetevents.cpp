@@ -83,7 +83,7 @@ wxString wxsWidgetEvents::GetArrayEnteries()
     			{
     				Code.Append(_T("XRCID(\""));
     			}
-    			Code.Append(Widget->GetBaseProperties().IdName);
+    			Code.Append(Widget->BaseProperties.IdName);
     			if ( Res->GetEditMode() == wxsREMMixed )
     			{
     				Code.Append(_T("\")"));

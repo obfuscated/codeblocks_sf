@@ -113,7 +113,7 @@ void wxsStandardQP::OnWriteTimer(wxTimerEvent& event)
 void wxsStandardQP::ReadData()
 {
     if ( !Widget ) return;
-    wxsBaseProperties& Params = Widget->GetBaseProperties();
+    wxsBaseProperties& Params = Widget->BaseProperties;
 
     if ( Widget->GetBPType() & bptVariable )
     {
@@ -166,7 +166,7 @@ void wxsStandardQP::SaveData()
     if ( !Widget ) return;
 
     bool Updated = false;
-    wxsBaseProperties& Params = Widget->GetBaseProperties();
+    wxsBaseProperties& Params = Widget->BaseProperties;
 
     #define Update(f,a,b) if ( Widget->GetBPType() & bpt##f ) if ( (Params.a) != (b) ) { (Params.a) = (b); Updated = true; }
     Update(Variable,VarName,VarName->GetValue());
@@ -179,8 +179,8 @@ void wxsStandardQP::SaveData()
 
     if ( Updated )
     {
-        Widget->UpdateProperties();
-        Widget->PropertiesUpdated(false,false);
+        Widget->UpdatePropertiesWindow();
+        Widget->PropertiesChanged(false,false);
     }
 
     ReadTimer.Start();

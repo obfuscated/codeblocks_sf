@@ -7,20 +7,16 @@ class wxs2IntProperty : public wxsProperty
 {
 	public:
         /** Ctor
-         *
          * \param Int1 - first variable which will be monitored
          * \param Int2 - second variable which will be monitored
-         * \param AlwaysUpdate - if true, any change (includig key events) will be
-         *                       reported, if false, update will be made only after enter
-         *                       or after loosing focus
+         * \param SubName1 - name of subproperty for first integer
+         * \param SubName2 - name of subproperty for second integer
          */
-		wxs2IntProperty(wxsProperties* Properties,int &Int1,int &Int1, bool AlwaysUpdate=true);
-
-		/** Dctor */
-		virtual ~wxs2IntProperty();
-
-        /** Taking name of value type handled by this item */
-        virtual const wxString& GetTypeName();
+		wxs2IntProperty(
+            int &Int1,
+            int &Int2,
+            const wxString& SubName1 = _("X"),
+            const wxString& SubName2 = _("Y") );
 
     protected:
 
@@ -38,7 +34,8 @@ class wxs2IntProperty : public wxsProperty
 
         int& Value1;
         int& Value2;
-        bool AlwUpd;
+        wxString Name1;
+        wxString Name2;
 
         wxPGId PGId;
         wxPGId Val1Id;

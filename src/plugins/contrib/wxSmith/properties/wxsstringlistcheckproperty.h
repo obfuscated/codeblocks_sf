@@ -13,13 +13,7 @@ class wxsStringListCheckProperty : public wxsProperty
 	public:
 
         /** Ctor */
-		wxsStringListCheckProperty(wxsProperties* Properties,wxArrayString& Array,wxsArrayBool& Checks,int SortedFlag=0);
-
-		/** DCtor */
-		virtual ~wxsStringListCheckProperty();
-
-        /** Taking name of value type handled by this item */
-        virtual const wxString& GetTypeName();
+		wxsStringListCheckProperty(wxArrayString& Array,wxsArrayBool& Checks,int SortedFlag=0);
 
     protected:
 

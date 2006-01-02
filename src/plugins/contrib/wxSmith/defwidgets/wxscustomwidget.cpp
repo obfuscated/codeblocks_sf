@@ -1,3 +1,4 @@
+#include "../wxsheaders.h"
 #include "wxscustomwidget.h"
 
 #include "wxsstdmanager.h"
@@ -24,26 +25,25 @@ wxsCustomWidget::~wxsCustomWidget()
 {
 }
 
-wxString wxsCustomWidget::GetProducingCode(wxsCodeParams& Params)
+wxString wxsCustomWidget::GetProducingCode(const wxsCodeParams& Params)
 {
-    const CodeDefines& CD = GetCodeDefines();
     wxString Result = CreatingCode;
-    wxsCodeReplace(Result,_T("$(POS)"),CD.Pos);
-    wxsCodeReplace(Result,_T("$(SIZE)"),CD.Size);
+    wxsCodeReplace(Result,_T("$(POS)"),Params.Pos);
+    wxsCodeReplace(Result,_T("$(SIZE)"),Params.Size);
     wxsCodeReplace(Result,_T("$(STYLE)"),Style);
-    wxsCodeReplace(Result,_T("$(ID)"),GetBaseProperties().IdName);
-    wxsCodeReplace(Result,_T("$(THIS)"),GetBaseProperties().VarName);
+    wxsCodeReplace(Result,_T("$(ID)"),Params.IdName);
+    wxsCodeReplace(Result,_T("$(THIS)"),Params.VarName);
     wxsCodeReplace(Result,_T("$(PARENT)"),Params.ParentName);
     wxsCodeReplace(Result,_T("$(CLASS)"),ClassName);
-    Result << CD.InitCode;
+    Result << Params.InitCode;
     return Result;
 }
 
-wxString wxsCustomWidget::GetDeclarationCode(wxsCodeParams& Params)
+wxString wxsCustomWidget::GetDeclarationCode(const wxsCodeParams& Params)
 {
     return wxString::Format(_T("%s* %s;"),
         ClassName.c_str(),
-        GetBaseProperties().VarName.c_str());
+        Params.VarName.c_str());
 }
 
 const wxsWidgetInfo& wxsCustomWidget::GetInfo()
@@ -128,23 +128,23 @@ bool wxsCustomWidget::MyXmlSave()
     return true;
 }
 
-void wxsCustomWidget::CreateObjectProperties()
+void wxsCustomWidget::MyCreateProperties()
 {
-    wxsWidget::CreateObjectProperties();
-    PropertiesObject.AddProperty(_T("Class name:"),ClassName,0);
+    Properties.AddProperty(_T("Class name:"),ClassName);
     if ( GetResource()->GetEditMode() == wxsREMSource )
     {
-        PropertiesObject.AddProperty(
+        Properties.AddProperty(
             _T("Creating code:"),
-                new wxsStringProperty(&PropertiesObject,CreatingCode,true,true),1);
+                new wxsStringProperty(CreatingCode,true),1);
     }
     else
     {
-        PropertiesObject.AddProperty(
+        Properties.AddProperty(
             _T("Xml Data:"),
-                new wxsStringProperty(&PropertiesObject,XmlData,true,true),1);
+                new wxsStringProperty(XmlData,true),1);
     }
-    PropertiesObject.AddProperty(_T("Style:"),Style,2);
+    Properties.AddProperty(_T("Style:"),Style,2);
+    wxsWidget::MyCreateProperties();
 }
 
 wxWindow* wxsCustomWidget::MyCreatePreview(wxWindow* Parent)
@@ -188,8 +188,8 @@ bool wxsCustomWidget::RebuildXmlDataDoc(bool Validate,bool Correct)
     return false;
 }
 
-bool wxsCustomWidget::PropertiesUpdated(bool Validate,bool Correct)
+bool wxsCustomWidget::MyPropertiesChanged(bool Validate,bool Correct)
 {
     bool Ret = RebuildXmlDataDoc(Validate,Correct);
-    return wxsWidget::PropertiesUpdated(Validate,Correct) && Ret;
+    return wxsWidget::PropertiesChanged(Validate,Correct) && Ret;
 }

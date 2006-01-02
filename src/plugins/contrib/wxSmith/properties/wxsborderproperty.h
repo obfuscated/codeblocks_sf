@@ -8,13 +8,7 @@ class wxsBorderProperty : public wxsProperty
 	public:
 
         /** Ctor */
-		wxsBorderProperty(wxsProperties* Properties,int& Flag);
-
-        /** Dctor */
-		virtual ~wxsBorderProperty();
-
-        /** Taking name of value type handled by this item */
-        virtual const wxString& GetTypeName();
+		wxsBorderProperty(int& Flag);
 
     protected:
 

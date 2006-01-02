@@ -4,22 +4,11 @@
 #include <wx/textctrl.h>
 #include <wx/msgdlg.h>
 
-wxsIntProperty::wxsIntProperty(wxsProperties* Properties,int& Int, bool AlwaysUpdate):
-    wxsProperty(Properties), Value(Int), AlwUpd(AlwaysUpdate),
+wxsIntProperty::wxsIntProperty(int& Int):
+    Value(Int),
     PGId(0)
 {
 	//ctor
-}
-
-wxsIntProperty::~wxsIntProperty()
-{
-	//dtor
-}
-
-const wxString& wxsIntProperty::GetTypeName()
-{
-    static wxString Name(_T("int"));
-    return Name;
 }
 
 void wxsIntProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)

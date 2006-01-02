@@ -19,22 +19,15 @@ class wxsStringListCheckPropClass: public wxCustomPropertyClass
         wxsStringListCheckProperty* Prop;
 };
 
-wxsStringListCheckProperty::wxsStringListCheckProperty(wxsProperties* Properties,wxArrayString& _Array,wxsArrayBool& _Checks,int _SortedFlag):
-	wxsProperty(Properties),
-	Array(_Array),
-	Checks(_Checks),
-	SortedFlag(_SortedFlag),
-    PGId(0)
+wxsStringListCheckProperty::wxsStringListCheckProperty(
+    wxArrayString& _Array,
+    wxsArrayBool& _Checks,
+    int _SortedFlag):
+        Array(_Array),
+        Checks(_Checks),
+        SortedFlag(_SortedFlag),
+        PGId(0)
 {}
-
-wxsStringListCheckProperty::~wxsStringListCheckProperty()
-{}
-
-const wxString& wxsStringListCheckProperty::GetTypeName()
-{
-    static wxString Name(_T("wxArrayString+wxsArrayBool"));
-    return Name;
-}
 
 void wxsStringListCheckProperty::AddToPropGrid(wxPropertyGrid* Grid,const wxString& Name)
 {

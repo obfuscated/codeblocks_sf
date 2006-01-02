@@ -23,16 +23,16 @@ class wxsFrame : public wxsWindow
         inline bool GetCentered() { return Centered; }
 
         /** Function generating code which should produce widget */
-        virtual wxString GetProducingCode(wxsCodeParams& Params);
+        virtual wxString GetProducingCode(const wxsCodeParams& Params);
 
         /** Function generating code which finishes production process of this
          *  widget
          */
-        virtual wxString GetFinalizingCode(wxsCodeParams& Params);
+        virtual wxString GetFinalizingCode(const wxsCodeParams& Params);
 
     protected:
 
-        void CreateObjectProperties();
+        virtual void MyCreateProperties();
         virtual bool MyXmlLoad();
         virtual bool MyXmlSave();
 

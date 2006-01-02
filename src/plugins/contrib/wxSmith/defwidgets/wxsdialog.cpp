@@ -57,11 +57,11 @@ const wxsWidgetInfo& wxsDialog::GetInfo()
     return *wxsStdManager.GetWidgetInfo(wxsDialogId);
 }
 
-void wxsDialog::CreateObjectProperties()
+void wxsDialog::MyCreateProperties()
 {
-    wxsWidget::CreateObjectProperties();
-	PropertiesObject.AddProperty(_("Title:"),Title,0);
-	PropertiesObject.AddProperty(_("Centered:"),Centered,1);
+	Properties.AddProperty(_("Title:"),Title);
+	Properties.AddProperty(_("Centered:"),Centered);
+    wxsWidget::MyCreateProperties();
 }
 
 bool wxsDialog::MyXmlLoad()
@@ -78,16 +78,15 @@ bool wxsDialog::MyXmlSave()
 	return true;
 }
 
-wxString wxsDialog::GetProducingCode(wxsCodeParams& Params)
+wxString wxsDialog::GetProducingCode(const wxsCodeParams& Params)
 {
-    CodeDefines CDefs = GetCodeDefines();
     return wxString::Format(_T("Create(parent,id,%s,%s,%s,%s);%s"),
-        wxsGetWxString(Title).c_str(),CDefs.Pos.c_str(),
-        CDefs.Size.c_str(),CDefs.Style.c_str(),
-        CDefs.InitCode.c_str());
+        wxsGetWxString(Title).c_str(),Params.Pos.c_str(),
+        Params.Size.c_str(),Params.Style.c_str(),
+        Params.InitCode.c_str());
 }
 
-wxString wxsDialog::GetFinalizingCode(wxsCodeParams& Params)
+wxString wxsDialog::GetFinalizingCode(const wxsCodeParams& Params)
 {
     return Centered ? _T("Center();\n") : _T("");
 }

@@ -3,6 +3,7 @@
 
 #include <manager.h>
 #include <editormanager.h>
+#include <configmanager.h>
 #include <messagemanager.h>
 #include <wx/ffile.h>
 

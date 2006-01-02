@@ -7,14 +7,19 @@ class wxsPlacementProperty : public wxsProperty
 {
 	public:
 
-        /** Ctor */
-		wxsPlacementProperty(wxsProperties* Properties,int& Placement,bool& Expand,bool& Shaped);
-
-        /** Dctor */
-		virtual ~wxsPlacementProperty();
-
-        /** Taking name of value type handled by this item */
-        virtual const wxString& GetTypeName();
+        /** Ctor 
+         * \param Placement - placement flags
+         * \param Expand - expand flag
+         * \param Shaped - shaped flag
+         * \param ExpandName - name of property handling expand flag
+         * \param ShapedName - name of property handling shaped flag
+         */
+		wxsPlacementProperty(
+            int& Placement,
+            bool& Expand,
+            bool& Shaped,
+            const wxString& ExpandPropName = _("Expand"),
+            const wxString& ShapedPropName = _("Shaped"));
 
     protected:
 
@@ -27,6 +32,8 @@ class wxsPlacementProperty : public wxsProperty
         int &PlacementType;
         bool &Expand;
         bool &Shaped;
+        wxString ExpandName;
+        wxString ShapedName;
 
         wxPGId PGId;
         wxPGId ExpandId;

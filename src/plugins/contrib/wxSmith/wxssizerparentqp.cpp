@@ -212,8 +212,8 @@ void wxsSizerParentQP::SaveData()
 
     if ( Updated )
     {
-        Widget->UpdateProperties();
-        Widget->PropertiesUpdated(false,false);
+        Widget->UpdatePropertiesWindow();
+        Widget->PropertiesChanged(false,false);
     }
 
     Timer.Start();

@@ -39,7 +39,7 @@ class wxsChoicebookPreview: public wxChoicebook
 //        	if ( NewSelection != Choicebook->CurrentSelection )
 //        	{
 //        		Choicebook->CurrentSelection = NewSelection;
-//                Choicebook->PropertiesUpdated(false,false);
+//                Choicebook->PropertiesChanged(false,false);
 //        	}
         }
 
@@ -99,39 +99,33 @@ void wxsChoicebook::MyFinalUpdatePreview(wxWindow* Preview)
 	}
 }
 
-wxString wxsChoicebook::GetProducingCode(wxsCodeParams& Params)
+wxString wxsChoicebook::GetProducingCode(const wxsCodeParams& Params)
 {
-	const CodeDefines& CD = GetCodeDefines();
 	return wxString::Format(
         _T("%s = new wxChoicebook(%s,%s,%s,%s,%s);"),
-        GetBaseProperties().VarName.c_str(),
-        Params.ParentName.c_str(),
-        GetBaseProperties().IdName.c_str(),
-        CD.Pos.c_str(),
-        CD.Size.c_str(),
-        CD.Style.c_str());
+            Params.VarName.c_str(),
+            Params.ParentName.c_str(),
+            Params.IdName.c_str(),
+            Params.Pos.c_str(),
+            Params.Size.c_str(),
+            Params.Style.c_str());
 }
 
-wxString wxsChoicebook::GetFinalizingCode(wxsCodeParams& Params)
+wxString wxsChoicebook::GetFinalizingCode(const wxsCodeParams& Params)
 {
 	wxString Code;
 	for ( int i=0; i<GetChildCount(); ++i )
 	{
 		wxsWidget* Child = GetChild(i);
-		wxsChoicebookExtraParams* Params = GetExtraParams(i);
+		wxsChoicebookExtraParams* ExParams = GetExtraParams(i);
 		Code += wxString::Format(
             _T("%s->AddPage(%s,%s,%s);\n"),
-                GetBaseProperties().VarName.c_str(),
-                Child->GetBaseProperties().VarName.c_str(),
-                wxsGetWxString(Params->Label).c_str(),
-                Params->Selected ? _T("true") : _T("false"));
+                Params.VarName.c_str(),
+                Child->BaseProperties.VarName.c_str(),
+                wxsGetWxString(ExParams->Label).c_str(),
+                ExParams->Selected ? _T("true") : _T("false"));
 	}
 	return Code;
-}
-
-wxString wxsChoicebook::GetDeclarationCode(wxsCodeParams& Params)
-{
-	return wxString::Format(_T("wxChoicebook* %s;"),GetBaseProperties().VarName.c_str());
 }
 
 bool wxsChoicebook::XmlLoadChild(TiXmlElement* Element)
@@ -186,8 +180,8 @@ void wxsChoicebook::AddChildProperties(int ChildIndex)
 	wxsChoicebookExtraParams* Params = GetExtraParams(ChildIndex);
 	if ( !Widget || !Params ) return;
 
-    Widget->GetPropertiesObj().AddProperty(_("Choicebook page:"),Params->Label,0);
-    Widget->GetPropertiesObj().AddProperty(_(" Page selected:"),Params->Selected,1);
+    Widget->Properties.AddProperty(_("Choicebook page:"),Params->Label,0);
+    Widget->Properties.AddProperty(_(" Page selected:"),Params->Selected,1);
 }
 
 void wxsChoicebook::PreviewMouseEvent(wxMouseEvent& event)
@@ -199,7 +193,7 @@ void wxsChoicebook::PreviewMouseEvent(wxMouseEvent& event)
         if ( Hit != wxNOT_FOUND )
         {
             CurrentSelection = GetChild(Hit);
-            PropertiesUpdated(false,false);
+            PropertiesChanged(false,false);
         }
 	}
 }
