@@ -77,6 +77,8 @@ private:
     MainFrame* m_frame;
 };
 
+const static wxString gDefaultLayout = _T("Code::Blocks default");
+
 int wxID_FILE10 = wxNewId();
 int wxID_FILE11 = wxNewId();
 int wxID_FILE12 = wxNewId();
@@ -426,7 +428,10 @@ MainFrame::MainFrame(wxLocale& lang, wxWindow* parent)
 
     ScanForPlugins();
     // save default view
-    SaveViewLayout(_T("Code::Blocks default"), m_LayoutManager.SavePerspective());
+    wxString deflayout = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/main_frame/layout/default"));
+    if (deflayout.IsEmpty())
+        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/default"), gDefaultLayout);
+    SaveViewLayout(gDefaultLayout, m_LayoutManager.SavePerspective());
     LoadWindowState();
 
     ShowHideStartPage();
@@ -614,16 +619,16 @@ void MainFrame::CreateToolbars()
     myres->Load(resPath + _T("/resources.zip#zip:*.xrc"));
     MSGMAN()->DebugLog(_("Loading toolbar..."));
 
-    m_pToolbar = new wxToolBar(this, 0);
-    m_pToolbar->SetToolBitmapSize(m_SmallToolBar ? wxSize(16, 16) : wxSize(32, 32));
+    wxSize size = m_SmallToolBar ? wxSize(16, 16) : wxSize(22, 22);
+    m_pToolbar = new wxToolBar(this, -1, wxDefaultPosition, size, wxTB_FLAT | wxTB_NODIVIDER);
+    m_pToolbar->SetToolBitmapSize(size);
     Manager::Get()->AddonToolBar(m_pToolbar,xrcToolbarName);
 	m_pToolbar->Realize();
 
     // add toolbars in docking system
     m_LayoutManager.AddPane(m_pToolbar, wxPaneInfo().
                           Name(wxT("MainToolbar")).Caption(wxT("Main Toolbar")).
-                          ToolbarPane().Top().
-                          LeftDockable(false).RightDockable(false));
+                          ToolbarPane().Top());
     m_LayoutManager.Update();
 
 	// ask all plugins to rebuild their toolbars
@@ -773,7 +778,7 @@ void MainFrame::LoadWindowState()
     wxString deflayout = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/main_frame/layout/default"));
     deflayout = m_LayoutViews[deflayout];
     if (deflayout.IsEmpty())
-        deflayout = m_LayoutViews[_T("Code::Blocks default")];
+        deflayout = m_LayoutViews[gDefaultLayout];
     m_LayoutManager.LoadPerspective(deflayout);
 
 	// load manager and messages selected page
@@ -846,8 +851,9 @@ void MainFrame::SaveViewLayout(const wxString& name, const wxString& layout)
 
 void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
 {
-    wxToolBar* tb = new wxToolBar(this, 0);
-    tb->SetToolBitmapSize(m_SmallToolBar ? wxSize(16, 16) : wxSize(32, 32));
+    wxSize size = m_SmallToolBar ? wxSize(16, 16) : wxSize(22, 22);
+    wxToolBar* tb = new wxToolBar(this, -1, wxDefaultPosition, size, wxTB_FLAT | wxTB_NODIVIDER);
+    tb->SetToolBitmapSize(size);
     if (plugin->BuildToolBar(tb))
     {
         SetToolBar(0);
