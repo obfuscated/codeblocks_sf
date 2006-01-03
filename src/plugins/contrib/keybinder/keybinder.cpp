@@ -10,6 +10,7 @@
 /////////////////////////////////////////////////////////////////////////////
 //commit 12/14/2005 9:15 AM
 //commit 12/16/2005 8:54 PM
+//commit 1/2/2006 7:38 PM
 
 
 #ifdef __GNUG__
@@ -805,11 +806,17 @@ void wxKeyBinder::Attach(wxWindow *p)
 
     //+v0.3 RC3 we allow only static windows to be attached by codeblocks
     // Disappearing frames/windows cause crashes
-    wxString usableWindows = _T("sciwindow notebook");
+    wxArrayString usableWindows;                    //+v0.4.2
+    usableWindows.Add(_T("sciwindow"));             //+v0.4.2
+    usableWindows.Add(_T("notebook"));              //+v0.4.2
+    usableWindows.Add(_T("treectrl"));              //+v0.4.2
+    usableWindows.Add(_T("listctrl"));              //+v0.4.2
+    usableWindows.Add(_T("id_editormanagerpanel")); //+v0.4.2
+    usableWindows.Add(_T("text"));                  //+v0.4.2
     wxString windowName = p->GetName().MakeLower();
 
-    if (!usableWindows.Contains(windowName))
-     {  //wxLogDebug(wxT("wxKeyBinder::Attach skipping [%s]"), p->GetName().c_str());
+    if (wxNOT_FOUND == usableWindows.Index(windowName,false)) //+v0.4.2
+     {  wxLogDebug(wxT("wxKeyBinder::Attach skipping [%s]"), p->GetName().c_str());
         return;
      }
 

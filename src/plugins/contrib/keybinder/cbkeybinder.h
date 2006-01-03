@@ -7,11 +7,17 @@
  **************************************************************/
 //commit 12/14/2005 9:16 AM
 //commit 12/16/2005 8:54 PM
-//commit 12/31/2005 10AM
+//commit 12/31/2005 10:31 AM
+//commit 1/2/2006 7:38 PM
 
 // v0.4.1 12/30/2005
 //  added event.Skip() to cbKeyBinder::OnAppStartupDone(CodeBlocksEvent& event)
 //  enabled multiple profiles
+
+// v0.4.2 1/2/2006 6PM
+// keybinder attaching some windows named 's'
+// so verify full name of window not just substring
+// attach to text windows allowing keybinder invocation when no editor
 
 #ifndef CBKEYBINDER_H
 #define CBKEYBINDER_H
