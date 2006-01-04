@@ -30,7 +30,7 @@
 #include <wx/dcbuffer.h>
 #include <wx/dataobj.h>
 #include <wx/dnd.h>
-#include "textdroptarget.h"
+#include "TextDropTarget.h"
 class wxPageContainer;
 
 #ifndef M_PI
@@ -254,6 +254,7 @@ private:
 	DECLARE_EVENT_TABLE()
 	void OnNavigationKey(wxNavigationKeyEvent& event);
 	void OnPaint(wxPaintEvent& WXUNUSED(event));
+	void OnEraseBackground(wxEraseEvent& WXUNUSED(event)) { }
 	void OnSize(wxSizeEvent& event);
 };
 

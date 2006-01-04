@@ -4,7 +4,7 @@
     <Project>
         <Option title="Code::Blocks - Unix" />
         <Option pch_mode="2" />
-        <Option default_target="8" />
+        <Option default_target="9" />
         <Option compiler="0" />
         <Build>
             <Target title="AutoRevision">
@@ -15,7 +15,7 @@
                 <Option projectCompilerOptionsRelation="1" />
                 <Option projectLinkerOptionsRelation="1" />
                 <Option projectIncludeDirsRelation="1" />
-                <Option projectResourceIncludeDirsRelation="1" />
+                <Option projectResourceIncludeDirsRelation="0" />
                 <Option projectLibDirsRelation="1" />
                 <Linker>
                     <Add option="-s" />
@@ -30,7 +30,7 @@
                 <Option projectCompilerOptionsRelation="1" />
                 <Option projectLinkerOptionsRelation="1" />
                 <Option projectIncludeDirsRelation="1" />
-                <Option projectResourceIncludeDirsRelation="1" />
+                <Option projectResourceIncludeDirsRelation="0" />
                 <Option projectLibDirsRelation="1" />
                 <Compiler>
                     <Add option="-Os" />
@@ -42,7 +42,7 @@
                 <Option type="2" />
                 <Option compiler="0" />
                 <Option includeInTargetAll="1" />
-                <Option projectResourceIncludeDirsRelation="2" />
+                <Option projectResourceIncludeDirsRelation="0" />
             </Target>
             <Target title="AngelScript">
                 <Option output="sdk/as/libangelscript.a" />
@@ -50,7 +50,7 @@
                 <Option type="2" />
                 <Option compiler="0" />
                 <Option includeInTargetAll="1" />
-                <Option projectResourceIncludeDirsRelation="2" />
+                <Option projectResourceIncludeDirsRelation="0" />
                 <Compiler>
                     <Add option="-fno-inline" />
                 </Compiler>
@@ -61,6 +61,7 @@
                 <Option type="3" />
                 <Option compiler="0" />
                 <Option includeInTargetAll="1" />
+                <Option projectResourceIncludeDirsRelation="0" />
                 <Compiler>
                     <Add option="-DSCI_LEXER" />
                     <Add option="-DLINK_LEXERS" />
@@ -73,12 +74,21 @@
                     <Add directory="sdk/wxscintilla/include" />
                 </ResourceCompiler>
             </Target>
-            <Target title="wxPropertyGrid">
-                <Option output="libpropgrid.a" />
-                <Option type="3" />
+            <Target title="wxFlatNotebook">
+                <Option output="sdk/wxFlatNotebook/libwxflatnotebook.a" />
+                <Option working_dir="" />
+                <Option type="2" />
                 <Option compiler="0" />
                 <Option includeInTargetAll="1" />
-                <Option createStaticLib="1" />
+                <Option projectResourceIncludeDirsRelation="0" />
+            </Target>
+            <Target title="wxPropertyGrid">
+                <Option output="sdk/propgrid/libpropgrid.a" />
+                <Option working_dir="" />
+                <Option type="2" />
+                <Option compiler="0" />
+                <Option includeInTargetAll="1" />
+                <Option projectResourceIncludeDirsRelation="0" />
                 <Compiler>
                     <Add directory="sdk/propgrid/include" />
                 </Compiler>
@@ -86,26 +96,33 @@
             <Target title="sdk">
                 <Option output="devel/libcodeblocks.so" />
                 <Option working_dir="devel" />
-                <Option external_deps="sdk/tinyxml/libtxml.a;" />
+                <Option external_deps="sdk/tinyxml/libtxml.a;sdk/propgrid/libpropgrid.a;sdk/wxFlatNotebook/libwxflatnotebook.a;" />
                 <Option type="3" />
                 <Option compiler="0" />
                 <Option parameters="--debug-log --no-check-associations" />
                 <Option includeInTargetAll="1" />
                 <Option projectLinkerOptionsRelation="2" />
+                <Option projectResourceIncludeDirsRelation="0" />
                 <Compiler>
                     <Add directory="sdk" />
                     <Add directory="sdk/as/source" />
+                    <Add directory="sdk/as/include" />
+                    <Add directory="sdk/propgrid/include" />
+                    <Add directory="sdk/wxFlatNotebook" />
                 </Compiler>
                 <Linker>
                     <Add library="txml" />
                     <Add library="angelscript" />
                     <Add library="wxscintilla" />
+                    <Add library="wxflatnotebook" />
+                    <Add library="propgrid" />
                     <Add directory="devel" />
                     <Add directory="sdk/as" />
+                    <Add directory="sdk/propgrid" />
+                    <Add directory="sdk/wxFlatNotebook" />
                 </Linker>
                 <ExtraCommands>
                     <Add before="tools/autorevision/auto_revision +wx +int +t . sdk/autorevision.h" />
-                    <Mode before="always" />
                 </ExtraCommands>
             </Target>
             <Target title="wxAUI">
@@ -114,7 +131,7 @@
                 <Option type="2" />
                 <Option compiler="0" />
                 <Option includeInTargetAll="1" />
-                <Option projectResourceIncludeDirsRelation="2" />
+                <Option projectResourceIncludeDirsRelation="0" />
                 <Compiler>
                     <Add directory="src/wxAUI" />
                 </Compiler>
@@ -135,6 +152,7 @@
                     <Add option="-DENABLE_BINRELOC" />
                     <Add directory="sdk" />
                     <Add directory="src/wxAUI" />
+                    <Add directory="sdk/wxFlatNotebook" />
                 </Compiler>
                 <Linker>
                     <Add library="codeblocks" />
@@ -151,6 +169,7 @@
                 <Option compiler="0" />
                 <Option includeInTargetAll="1" />
                 <Option projectLinkerOptionsRelation="1" />
+                <Option projectResourceIncludeDirsRelation="0" />
                 <Compiler>
                     <Add directory="sdk" />
                     <Add directory="plugins/astyle/astyle" />
@@ -168,7 +187,7 @@
                 <Option type="2" />
                 <Option compiler="0" />
                 <Option includeInTargetAll="1" />
-                <Option projectResourceIncludeDirsRelation="2" />
+                <Option projectResourceIncludeDirsRelation="0" />
                 <Compiler>
                     <Add option="-DDEPSLIB_UNIX" />
                 </Compiler>
@@ -181,6 +200,7 @@
                 <Option includeInTargetAll="1" />
                 <Option projectLinkerOptionsRelation="1" />
                 <Option projectIncludeDirsRelation="2" />
+                <Option projectResourceIncludeDirsRelation="0" />
                 <Option projectLibDirsRelation="2" />
                 <Compiler>
                     <Add directory="sdk" />
@@ -203,6 +223,7 @@
                 <Option includeInTargetAll="1" />
                 <Option projectLinkerOptionsRelation="1" />
                 <Option projectIncludeDirsRelation="2" />
+                <Option projectResourceIncludeDirsRelation="0" />
                 <Option projectLibDirsRelation="2" />
                 <Compiler>
                     <Add directory="sdk" />
@@ -222,6 +243,7 @@
                 <Option includeInTargetAll="1" />
                 <Option projectLinkerOptionsRelation="1" />
                 <Option projectIncludeDirsRelation="2" />
+                <Option projectResourceIncludeDirsRelation="0" />
                 <Option projectLibDirsRelation="2" />
                 <Compiler>
                     <Add directory="sdk" />
@@ -241,6 +263,7 @@
                 <Option includeInTargetAll="1" />
                 <Option projectLinkerOptionsRelation="1" />
                 <Option projectIncludeDirsRelation="2" />
+                <Option projectResourceIncludeDirsRelation="0" />
                 <Option projectLibDirsRelation="2" />
                 <Compiler>
                     <Add directory="sdk" />
@@ -260,6 +283,7 @@
                 <Option includeInTargetAll="1" />
                 <Option projectLinkerOptionsRelation="1" />
                 <Option projectIncludeDirsRelation="2" />
+                <Option projectResourceIncludeDirsRelation="0" />
                 <Option projectLibDirsRelation="2" />
                 <Compiler>
                     <Add directory="sdk" />
@@ -278,6 +302,7 @@
                 <Option includeInTargetAll="1" />
                 <Option projectLinkerOptionsRelation="1" />
                 <Option projectIncludeDirsRelation="2" />
+                <Option projectResourceIncludeDirsRelation="0" />
                 <Option projectLibDirsRelation="2" />
                 <Compiler>
                     <Add directory="sdk" />
@@ -295,6 +320,7 @@
                 <Option type="3" />
                 <Option compiler="0" />
                 <Option includeInTargetAll="1" />
+                <Option projectResourceIncludeDirsRelation="0" />
                 <Compiler>
                     <Add directory="sdk" />
                 </Compiler>
@@ -319,7 +345,6 @@
             <Add option="-DcbDEBUG" />
             <Add option="-DCB_PRECOMP" />
             <Add directory="sdk/wxscintilla/include" />
-            <Add directory="sdk/as/include" />
         </Compiler>
         <Linker>
             <Add option="`wx-config --libs`" />
@@ -3076,6 +3101,22 @@
             <Option compile="0" />
             <Option link="0" />
             <Option target="sdk" />
+        </Unit>
+        <Unit filename="sdk/wxFlatNotebook/TextDropTarget.h">
+            <Option compilerVar="CPP" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxFlatNotebook" />
+        </Unit>
+        <Unit filename="sdk/wxFlatNotebook/wxFlatNotebook.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="wxFlatNotebook" />
+        </Unit>
+        <Unit filename="sdk/wxFlatNotebook/wxFlatNotebook.h">
+            <Option compilerVar="CPP" />
+            <Option compile="0" />
+            <Option link="0" />
+            <Option target="wxFlatNotebook" />
         </Unit>
         <Unit filename="sdk/wxscintilla/include/wx/wxscintilla.h">
             <Option compilerVar="" />
