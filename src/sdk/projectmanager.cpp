@@ -119,7 +119,7 @@ int idMenuTreeCloseWorkspace = wxNewId();
 class PrjTree : public wxTreeCtrl
 {
 	public:
-		PrjTree(wxWindow* parent, int id) : wxTreeCtrl(parent, id) {}
+		PrjTree(wxWindow* parent, int id) : wxTreeCtrl(parent, id, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE | wxNO_BORDER) {}
 	protected:
 		void OnRightClick(wxMouseEvent& event)
 		{
@@ -183,7 +183,6 @@ END_EVENT_TABLE()
 // class constructor
 ProjectManager::ProjectManager(wxNotebook* parent)
 	: m_pTree(0),
-    m_pPanel(0),
     m_pWorkspace(0),
 	m_pTopEditor(0),
     m_TreeCategorize(false),
@@ -224,13 +223,8 @@ void ProjectManager::InitPane()
         return;
     if(m_pTree)
         return;
-    wxSplitPanel* mypanel = (wxSplitPanel*)(Manager::Get()->GetNotebookPage(_("Projects"),wxTAB_TRAVERSAL | wxCLIP_CHILDREN,true));
-    mypanel->SetConfigEntryForSplitter(_T("/opened_files_tree_height"));
-    m_pPanel = mypanel;
-    wxSplitterWindow* mysplitter = mypanel->GetSplitter();
-    BuildTree(mysplitter);
-    mypanel->SetAutoLayout(true);
-    mypanel->RefreshSplitter(ID_EditorManager,ID_ProjectManager);
+    BuildTree(Manager::Get()->GetNotebook());
+    Manager::Get()->GetNotebook()->AddPage(m_pTree, _("Projects"));
 }
 
 int ProjectManager::WorkspaceIconIndex()
@@ -253,7 +247,7 @@ void ProjectManager::BuildTree(wxWindow* parent)
     #ifndef __WXMSW__
         m_pTree = new PrjTree(parent, ID_ProjectManager);
     #else
-        m_pTree = new wxTreeCtrl(parent, ID_ProjectManager);
+        m_pTree = new wxTreeCtrl(parent, ID_ProjectManager, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE | wxNO_BORDER);
     #endif
 
     static const wxString imgs[] = {
@@ -312,8 +306,6 @@ ProjectManager::~ProjectManager()
     delete m_pProjects;m_pProjects = 0;
     delete m_pImages;m_pImages = 0;
 	delete m_pFileGroups;m_pFileGroups = 0;
-
-	delete m_pTree; m_pTree = 0;
 
 	SC_DESTRUCTOR_END
 }
@@ -1459,8 +1451,8 @@ void ProjectManager::OnRightClick(wxCommandEvent& event)
     menu.Check(idMenuViewUseFoldersPopup, m_TreeUseFolders);
 
     wxPoint pt = wxGetMousePosition();
-    pt = m_pPanel->ScreenToClient(pt);
-    m_pPanel->PopupMenu(&menu, pt);
+    pt = m_pTree->ScreenToClient(pt);
+    m_pTree->PopupMenu(&menu, pt);
 }
 
 void ProjectManager::OnTreeItemRightClick(wxTreeEvent& event)
@@ -1580,7 +1572,7 @@ void ProjectManager::OnAddFilesToProjectRecursively(wxCommandEvent& event)
     if (!prj)
         return;
 
-    wxString dir = ChooseDirectory(m_pPanel,
+    wxString dir = ChooseDirectory(m_pTree,
                                     _("Add files recursively..."),
                                     prj->GetBasePath(),
                                     wxEmptyString,
@@ -1648,7 +1640,7 @@ void ProjectManager::OnAddFileToProject(wxCommandEvent& event)
     if (!prj)
         return;
 
-    wxFileDialog dlg(m_pPanel,
+    wxFileDialog dlg(m_pTree,
                     _("Add files to project..."),
                     prj->GetBasePath(),
                     wxEmptyString,
@@ -1824,7 +1816,7 @@ void ProjectManager::OnProperties(wxCommandEvent& event)
             {
                 ProjectFile* pf = project->GetFile(ftd->GetFileIndex());
                 if (pf)
-                    pf->ShowOptions(m_pPanel);
+                    pf->ShowOptions(m_pTree);
             }
         }
     }
@@ -1835,7 +1827,7 @@ void ProjectManager::OnProperties(wxCommandEvent& event)
         {
             ProjectFile* pf = ed->GetProjectFile();
             if (pf)
-                pf->ShowOptions(m_pPanel);
+                pf->ShowOptions(m_pTree);
         }
     }
 }
@@ -1853,7 +1845,7 @@ void ProjectManager::OnGotoFile(wxCommandEvent& event)
 	for (int i = 0; i < m_pActiveProject->GetFilesCount(); ++i)
 		files.Add(m_pActiveProject->GetFile(i)->relativeFilename);
 
-	IncrementalSelectListDlg dlg(m_pPanel, files, _("Select file..."), _("Please select file to open:"));
+	IncrementalSelectListDlg dlg(m_pTree, files, _("Select file..."), _("Please select file to open:"));
 	if (dlg.ShowModal() == wxID_OK)
 	{
 		ProjectFile* pf = m_pActiveProject->GetFileByFilename(dlg.GetStringSelection(), true);

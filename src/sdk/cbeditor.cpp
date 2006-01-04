@@ -378,7 +378,7 @@ void cbEditor::SetModified(bool modified)
             SetEditorTitle(EDITOR_MODIFIED + m_Shortname);
         else
             SetEditorTitle(m_Shortname);
-
+        Manager::Get()->GetEditorManager()->RefreshOpenedFilesTree();
     }
     // visual state
     if (m_pProjectFile)

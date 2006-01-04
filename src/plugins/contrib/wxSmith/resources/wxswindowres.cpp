@@ -11,6 +11,7 @@
 #include "../wxscustomwidgetxmlhandler.h"
 #include <manager.h>
 #include <editormanager.h>
+#include <wxFlatNotebook.h>
 
 const wxChar* EmptySource =
 _T("#include \"$(Include)\"\n")

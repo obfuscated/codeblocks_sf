@@ -68,8 +68,12 @@ class EVTIMPORT CodeBlocksDockEvent : public wxEvent
             title(_("Untitled")),
             pWindow(0),
             desiredSize(100, 100),
+            floatingSize(150, 150),
             minimumSize(40, 40),
             dockSide(dsUndefined),
+            row(-1),
+            column(-1),
+            shown(false),
             stretch(false),
             hideable(true),
             asTab(false)
@@ -81,8 +85,12 @@ class EVTIMPORT CodeBlocksDockEvent : public wxEvent
             title(rhs.title),
             pWindow(rhs.pWindow),
             desiredSize(rhs.desiredSize),
+            floatingSize(rhs.minimumSize),
             minimumSize(rhs.minimumSize),
             dockSide(rhs.dockSide),
+            row(rhs.row),
+            column(rhs.column),
+            shown(rhs.shown),
             stretch(rhs.stretch),
             hideable(rhs.hideable),
             asTab(rhs.asTab),
@@ -95,8 +103,12 @@ class EVTIMPORT CodeBlocksDockEvent : public wxEvent
         wxString title;     ///< Dock's title.
         wxWindow* pWindow;  ///< The window to dock.
         wxSize desiredSize; ///< The desired size.
+        wxSize floatingSize;///< The desired floating size.
         wxSize minimumSize; ///< The minimum allowed size.
         DockSide dockSide;  ///< The side to dock it.
+        int row;            ///< The row to dock it.
+        int column;         ///< The column to dock it.
+        bool shown;         ///< If true, initially shown.
         bool stretch;       ///< If true, the dock will stretch to fill the @c dockSide
         bool hideable;      ///< If true, the dock will be allowed to be closed by the user.
         bool asTab;         ///< Add this window as a tab of an existing docked window (NOT IMPLEMENTED).
@@ -188,8 +200,11 @@ DECLARE_CB_EVENT_TYPE(cbEVT_ADD_DOCK_WINDOW)
 // request app to stop managing a docked window
 DECLARE_CB_EVENT_TYPE(cbEVT_REMOVE_DOCK_WINDOW)
 #define EVT_REMOVE_DOCK_WINDOW(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_REMOVE_DOCK_WINDOW, -1, -1, (wxObjectEventFunction) (wxEventFunction) (CodeBlocksDockEventFunction) & fn, (wxObject *) NULL ),
-// request app to show a docked window (if closed by the user)
+// request app to show a docked window
 DECLARE_CB_EVENT_TYPE(cbEVT_SHOW_DOCK_WINDOW)
 #define EVT_SHOW_DOCK_WINDOW(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_SHOW_DOCK_WINDOW, -1, -1, (wxObjectEventFunction) (wxEventFunction) (CodeBlocksDockEventFunction) & fn, (wxObject *) NULL ),
+// request app to hide a docked window
+DECLARE_CB_EVENT_TYPE(cbEVT_HIDE_DOCK_WINDOW)
+#define EVT_HIDE_DOCK_WINDOW(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_HIDE_DOCK_WINDOW, -1, -1, (wxObjectEventFunction) (wxEventFunction) (CodeBlocksDockEventFunction) & fn, (wxObject *) NULL ),
 
 #endif // SDK_EVENTS_H

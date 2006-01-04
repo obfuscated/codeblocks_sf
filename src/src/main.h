@@ -39,6 +39,8 @@ class MainFrame : public wxFrame
         bool OpenGeneric(const wxString& filename, bool addToHistory = true);
 
         // event handlers
+        void OnEraseBackground(wxEraseEvent& event);
+        void OnSize(wxSizeEvent& event);
         void OnApplicationClose(wxCloseEvent& event);
         void OnStartHereLink(wxCommandEvent& event);
         void OnStartHereVarSubst(wxCommandEvent& event);
@@ -90,6 +92,7 @@ class MainFrame : public wxFrame
 
         void OnViewLayout(wxCommandEvent& event);
         void OnViewLayoutSave(wxCommandEvent& event);
+        void OnViewLayoutDelete(wxCommandEvent& event);
 
         void OnSearchFind(wxCommandEvent& event);
         void OnSearchFindNext(wxCommandEvent& event);
@@ -153,6 +156,7 @@ class MainFrame : public wxFrame
 		void OnRequestDockWindow(CodeBlocksDockEvent& event);
 		void OnRequestUndockWindow(CodeBlocksDockEvent& event);
 		void OnRequestShowDockWindow(CodeBlocksDockEvent& event);
+		void OnRequestHideDockWindow(CodeBlocksDockEvent& event);
 
 		// editor changed events
 		void OnEditorOpened(CodeBlocksEvent& event);
@@ -176,7 +180,11 @@ class MainFrame : public wxFrame
         wxMenuItem* AddPluginInMenus(wxMenu* menu, cbPlugin* plugin, wxObjectEventFunction callback, int pos = -1, bool checkable = false);
         void RemovePluginFromMenus(const wxString& pluginName);
 
-        void SaveViewLayout(const wxString& name, const wxString& layout);
+        void LoadViewLayout(const wxString& name);
+        void SaveViewLayout(const wxString& name, const wxString& layout, bool select = false);
+        void DoSelectLayout(const wxString& name);
+        void DoFixToolbarsLayout();
+        bool DoCheckCurrentLayoutForChanges(bool canCancel = true);
 
 		void AddEditorInWindowMenu(const wxString& filename, const wxString& title);
 		void RemoveEditorFromWindowMenu(const wxString& filename);
@@ -189,6 +197,9 @@ class MainFrame : public wxFrame
         void DoCreateStatusBar();
         void DoUpdateStatusBar();
 		void DoUpdateAppTitle();
+		void DoUpdateLayout();
+        void DoUpdateLayoutColors();
+		void DoUpdateEditorStyle();
 
         void ShowHideStartPage(bool forceHasProject = false);
 
@@ -222,6 +233,10 @@ class MainFrame : public wxFrame
 
         bool m_ReconfiguringPlugins;
         bool m_SmallToolBar;
+        bool m_StartupDone;
+
+        wxString m_LastLayoutName;
+        wxString m_LastLayoutData;
 
         DECLARE_EVENT_TABLE()
 };

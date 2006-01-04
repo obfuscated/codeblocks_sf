@@ -23,6 +23,12 @@
 	#define PLUGIN_EXPORT
 #endif
 
+// this is the plugins SDK version number
+// it will change when the SDK interface breaks
+#define PLUGIN_SDK_VERSION_MAJOR 1
+#define PLUGIN_SDK_VERSION_MINOR 6
+#define PLUGIN_SDK_VERSION_RELEASE 3
+
 // class decls
 class ProjectBuildTarget;
 class wxMenuBar;
@@ -425,12 +431,6 @@ typedef size_t(*GetPluginsCountProc)(void);
 typedef wxString(*PluginNameProc)(size_t);
 typedef cbPlugin*(*CreatePluginProc)(size_t);
 typedef void(*FreePluginProc)(cbPlugin*);
-
-// this is the plugins SDK version number
-// it will change when the plugins interface breaks
-#define PLUGIN_SDK_VERSION_MAJOR 1
-#define PLUGIN_SDK_VERSION_MINOR 6
-#define PLUGIN_SDK_VERSION_RELEASE 2
 
 /** This is used to declare the plugin's hooks.
   */

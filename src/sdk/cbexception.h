@@ -1,5 +1,5 @@
-#ifndef CBEXTENSION_H
-#define CBEXTENSION_H
+#ifndef CBEXCEPTION_H
+#define CBEXCEPTION_H
 
 #include <wx/intl.h> // for _() and _T()
 #include <wx/log.h> // for wxSafeShowMessage()
@@ -82,4 +82,4 @@ class cbException
         }
 #endif
 
-#endif // CBEXTENSION_H
+#endif // CBEXCEPTION_H

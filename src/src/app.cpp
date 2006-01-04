@@ -46,6 +46,7 @@
 #include <sdk_events.h>
 #include <manager.h>
 #include <scriptingmanager.h>
+#include <wxFlatNotebook.h>
 
 #ifndef __WXMSW__
     #include "prefix.h" // binreloc

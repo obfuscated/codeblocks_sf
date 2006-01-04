@@ -601,7 +601,8 @@ void ProjectLoader::DoEnvironment(TiXmlElement* parentNode, CompileOptionsBase* 
 
 void ProjectLoader::DoUnits(TiXmlElement* parentNode)
 {
-    Manager::Get()->GetMessageManager()->DebugLog(_U("Loading project files..."));
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Loading project files..."));
+    int count = 0;
     TiXmlElement* unit = parentNode->FirstChildElement("Unit");
     while (unit)
     {
@@ -610,13 +611,17 @@ void ProjectLoader::DoUnits(TiXmlElement* parentNode)
         {
             ProjectFile* file = m_pProject->AddFile(-1, filename);
             if (!file)
-                Manager::Get()->GetMessageManager()->DebugLog(_("Can't load file '%s'"), filename.c_str());
+                Manager::Get()->GetMessageManager()->DebugLog(_T("Can't load file '%s'"), filename.c_str());
             else
+            {
+                ++count;
                 DoUnitOptions(unit, file);
+            }
         }
 
         unit = unit->NextSiblingElement("Unit");
     }
+    Manager::Get()->GetMessageManager()->DebugLog(_T("%d files loaded"), count);
 }
 
 void ProjectLoader::DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file)

@@ -558,8 +558,13 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 //        return f;
 //    }
 
+    // quick test
+    ProjectFile* f = m_ProjectFilesMap[UnixFilename(filename)];
+    if (f)
+        return f;
+
     // create file
-    ProjectFile* f = new ProjectFile(this);
+    f = new ProjectFile(this);
     bool localCompile, localLink;
     wxFileName fname;
     wxString ext;

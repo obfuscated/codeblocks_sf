@@ -8,6 +8,7 @@
 #include "cbeditor.h"
 #include "editormanager.h"
 #include "pluginmanager.h"
+#include <wxFlatNotebook.h>
 
 // needed for initialization of variables
 int editorbase_RegisterId(int id)

@@ -20,7 +20,7 @@
 * Program URL   : http://www.codeblocks.org
 *
 * $Id$
-* $Date$
+* $Date: 2006-01-02 12:50:21 +0200 (ΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ’ΒΞΒΞ’ΒΞβ€™Ξ’ΒµΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ’Β¦, 02 ΞΒΞ’ΒΞΒ²Ξ²β‚¬ΒΞβ€ ΞΒΞ’ΒΞβ€™Ξ’Β±ΞΒΞ’ΒΞβ€™Ξ’Β½ 2006) $
 */
 
 #include <sdk.h>
@@ -61,6 +61,7 @@
 #include "printdlg.h"
 #include <wx/printdlg.h>
 #include <wx/filename.h>
+#include <wxFlatNotebook.h>
 
 #include "../sdk/uservarmanager.h"
 
@@ -140,6 +141,7 @@ int idEditUncommentSelected = XRCID("idEditUncommentSelected");
 int idEditToggleCommentSelected = XRCID("idEditToggleCommentSelected");
 int idEditAutoComplete = XRCID("idEditAutoComplete");
 
+int idViewLayoutDelete = XRCID("idViewLayoutDelete");
 int idViewLayoutSave = XRCID("idViewLayoutSave");
 int idViewToolbars = XRCID("idViewToolbars");
 int idViewToolMain = XRCID("idViewToolMain");
@@ -186,9 +188,10 @@ int idLeftSash = XRCID("idLeftSash");
 int idBottomSash = XRCID("idBottomSash");
 int idCloseFullScreen = XRCID("idCloseFullScreen");
 int idShiftTab = wxNewId();
-DLLIMPORT extern int ID_EditorManagerCloseButton;
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
+    EVT_ERASE_BACKGROUND(MainFrame::OnEraseBackground)
+    EVT_SIZE(MainFrame::OnSize)
     EVT_CLOSE(MainFrame::OnApplicationClose)
 
     EVT_UPDATE_UI(idFileOpenRecentFileClearHistory, MainFrame::OnFileMenuUpdateUI)
@@ -269,7 +272,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idFileSaveWorkspace,  MainFrame::OnFileSaveWorkspace)
     EVT_MENU(idFileSaveWorkspaceAs,  MainFrame::OnFileSaveWorkspaceAs)
     EVT_MENU(idFileCloseWorkspace,  MainFrame::OnFileCloseWorkspace)
-    EVT_BUTTON(ID_EditorManagerCloseButton,MainFrame::OnFileClose)
     EVT_MENU(idFileClose,  MainFrame::OnFileClose)
     EVT_MENU(idFileCloseAll,  MainFrame::OnFileCloseAll)
     EVT_MENU(idFilePrint,  MainFrame::OnFilePrint)
@@ -311,6 +313,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idSearchGotoLine,  MainFrame::OnSearchGotoLine)
 
     EVT_MENU(idViewLayoutSave, MainFrame::OnViewLayoutSave)
+    EVT_MENU(idViewLayoutDelete, MainFrame::OnViewLayoutDelete)
     EVT_MENU(idViewToolMain, MainFrame::OnToggleBar)
     EVT_MENU(idViewMessageManager, MainFrame::OnToggleBar)
     EVT_MENU(idViewManager, MainFrame::OnToggleBar)
@@ -356,6 +359,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_ADD_DOCK_WINDOW(MainFrame::OnRequestDockWindow)
 	EVT_REMOVE_DOCK_WINDOW(MainFrame::OnRequestUndockWindow)
 	EVT_SHOW_DOCK_WINDOW(MainFrame::OnRequestShowDockWindow)
+	EVT_HIDE_DOCK_WINDOW(MainFrame::OnRequestHideDockWindow)
 
     EVT_NOTEBOOK_PAGE_CHANGED(ID_NBEditorManager, MainFrame::OnPageChanged)
 
@@ -382,7 +386,8 @@ MainFrame::MainFrame(wxLocale& lang, wxWindow* parent)
        m_ToolsMenu(0L),
        m_SettingsMenu(0L),
        m_HelpPluginsMenu(0L),
-       m_ReconfiguringPlugins(false)
+       m_ReconfiguringPlugins(false),
+       m_StartupDone(false) // one-time flag
 {
     // tell wxFrameManager to manage this frame
     m_LayoutManager.SetFrame(this);
@@ -431,10 +436,13 @@ MainFrame::MainFrame(wxLocale& lang, wxWindow* parent)
     wxString deflayout = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/main_frame/layout/default"));
     if (deflayout.IsEmpty())
         Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/default"), gDefaultLayout);
+    DoFixToolbarsLayout();
     SaveViewLayout(gDefaultLayout, m_LayoutManager.SavePerspective());
     LoadWindowState();
 
     ShowHideStartPage();
+    m_StartupDone = true;
+    DoUpdateLayout();
 }
 
 MainFrame::~MainFrame()
@@ -497,11 +505,12 @@ void MainFrame::CreateIDE()
     SetToolBar(0);
 
     // editor manager
-    m_LayoutManager.AddPane(m_pEdMan->GetPanel(), wxPaneInfo().Name(wxT("MainPane")).
+    m_LayoutManager.AddPane(m_pEdMan->GetNotebook(), wxPaneInfo().Name(wxT("MainPane")).
                             CenterPane());
 
-    // "commit" all changes made to wxFrameManager
-    m_LayoutManager.Update();
+    DoUpdateLayout();
+    DoUpdateLayoutColors();
+    DoUpdateEditorStyle();
 }
 
 wxMenu* MainFrame::RecreateMenu(wxMenuBar* mbar, const wxString& name)
@@ -629,7 +638,7 @@ void MainFrame::CreateToolbars()
     m_LayoutManager.AddPane(m_pToolbar, wxPaneInfo().
                           Name(wxT("MainToolbar")).Caption(wxT("Main Toolbar")).
                           ToolbarPane().Top());
-    m_LayoutManager.Update();
+    DoUpdateLayout();
 
 	// ask all plugins to rebuild their toolbars
 	PluginElementsArray plugins = Manager::Get()->GetPluginManager()->GetPlugins();
@@ -776,10 +785,7 @@ void MainFrame::LoadWindowState()
         SaveViewLayout(name, layout);
     }
     wxString deflayout = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/main_frame/layout/default"));
-    deflayout = m_LayoutViews[deflayout];
-    if (deflayout.IsEmpty())
-        deflayout = m_LayoutViews[gDefaultLayout];
-    m_LayoutManager.LoadPerspective(deflayout);
+    LoadViewLayout(deflayout);
 
 	// load manager and messages selected page
 	Manager::Get()->GetNotebook()->SetSelection(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/left_block_selection"), 0));
@@ -804,6 +810,7 @@ void MainFrame::LoadWindowState()
 void MainFrame::SaveWindowState()
 {
 	wxLogNull ln; // no logging needed
+    DoCheckCurrentLayoutForChanges(false);
 
     int count = 0;
     for (LayoutViewsMap::iterator it = m_LayoutViews.begin(); it != m_LayoutViews.end(); ++it)
@@ -832,7 +839,29 @@ void MainFrame::SaveWindowState()
 
 }
 
-void MainFrame::SaveViewLayout(const wxString& name, const wxString& layout)
+void MainFrame::LoadViewLayout(const wxString& name)
+{
+    if (m_LastLayoutName != name && !DoCheckCurrentLayoutForChanges(true))
+        return;
+
+    wxString layout = m_LayoutViews[name];
+    if (layout.IsEmpty())
+    {
+        layout = m_LayoutViews[gDefaultLayout];
+        DoSelectLayout(gDefaultLayout);
+    }
+    else
+        DoSelectLayout(name);
+
+    m_LayoutManager.LoadPerspective(layout, false);
+    DoFixToolbarsLayout();
+    DoUpdateLayout();
+
+    m_LastLayoutName = name;
+    m_LastLayoutData = layout;
+}
+
+void MainFrame::SaveViewLayout(const wxString& name, const wxString& layout, bool select)
 {
     if (name.IsEmpty())
         return;
@@ -842,10 +871,66 @@ void MainFrame::SaveViewLayout(const wxString& name, const wxString& layout)
     if (viewLayouts && viewLayouts->FindItem(name) == wxNOT_FOUND)
     {
         int id = wxNewId();
-        viewLayouts->Insert(0, id, name, wxString::Format(_("Switch to %s layout"), name.c_str()));
+        viewLayouts->InsertCheckItem(viewLayouts->GetMenuItemCount() - 3, id, name, wxString::Format(_("Switch to %s layout"), name.c_str()));
         Connect( id,  wxEVT_COMMAND_MENU_SELECTED,
             (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)&MainFrame::OnViewLayout);
         m_PluginIDsMap[id] = name;
+    }
+    if (select)
+        DoSelectLayout(name);
+}
+
+bool MainFrame::DoCheckCurrentLayoutForChanges(bool canCancel)
+{
+    DoFixToolbarsLayout();
+    wxString lastlayout = m_LayoutManager.SavePerspective();
+    if (!m_LastLayoutName.IsEmpty() && lastlayout != m_LastLayoutData)
+    {
+        switch (wxMessageBox(wxString::Format(_("The layout '%s' has changed. Do you want to save it?"), m_LastLayoutName.c_str()),
+                        _("Layout changed"),
+                        wxICON_QUESTION | wxYES | wxNO | (canCancel ? wxCANCEL : 0) | wxYES_DEFAULT))
+        {
+            case wxYES:
+                SaveViewLayout(m_LastLayoutName, lastlayout, false);
+                break;
+            case wxCANCEL:
+                DoSelectLayout(m_LastLayoutName);
+                return false;
+            default:
+                break;
+        }
+    }
+    return true;
+}
+
+void MainFrame::DoFixToolbarsLayout()
+{
+    // because the user might change the toolbar icons size, we must cater for it...
+    wxPaneInfoArray& panes = m_LayoutManager.GetAllPanes();
+    for (size_t i = 0; i < panes.GetCount(); ++i)
+    {
+        wxPaneInfo& info = panes[i];
+        if (info.state & wxPaneInfo::optionToolbar)
+        {
+            info.best_size = info.window->GetSize();
+        }
+    }
+}
+
+void MainFrame::DoSelectLayout(const wxString& name)
+{
+    wxMenu* viewLayouts = 0;
+    GetMenuBar()->FindItem(idViewLayoutSave, &viewLayouts);
+    if (viewLayouts)
+    {
+        wxMenuItemList& items = viewLayouts->GetMenuItems();
+        for (size_t i = 0; i < items.GetCount(); ++i)
+        {
+//            if (!items[i]->IsCheckable())
+//                continue;
+            items[i]->Check(items[i]->GetText().IsSameAs(name));
+        }
+        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/default"), name);
     }
 }
 
@@ -876,7 +961,7 @@ void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
         m_LayoutManager.AddPane(tb, wxPaneInfo().
                               Name(plugin->GetInfo()->name + _T("Toolbar")).Caption(plugin->GetInfo()->title + _T(" Toolbar")).
                               ToolbarPane().Top().Row(1));
-        m_LayoutManager.Update();
+        DoUpdateLayout();
     }
     else
         delete tb;
@@ -1065,6 +1150,57 @@ void MainFrame::DoUpdateStatusBar()
         SetStatusText(wxEmptyString, 4);
     }
 #endif // wxUSE_STATUSBAR
+}
+
+void MainFrame::DoUpdateEditorStyle()
+{
+    wxFlatNotebook* fn = Manager::Get()->GetEditorManager()->GetNotebook();
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
+
+    int nbstyle = cfg->ReadInt(_T("/environment/editor_tabs_style"), wxFNB_DEFAULT_STYLE);
+    int flags = wxFNB_MOUSE_MIDDLE_CLOSES_TABS;
+    switch (nbstyle)
+    {
+        case 1: // gradient
+            flags |= wxFNB_FANCY_TABS;
+            fn->SetGradientColorBorder(cfg->ReadColour(_T("/environment/editor_gradient_border"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW))));
+            fn->SetGradientColorFrom(cfg->ReadColour(_T("/environment/editor_gradient_from"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE))));
+            fn->SetGradientColorTo(cfg->ReadColour(_T("/environment/editor_gradient_to"), *wxWHITE));
+            break;
+
+        case 2: // vc71
+            flags |= wxFNB_VC71;
+            break;
+
+        default:
+            break;
+    }
+    fn->SetBookStyle(flags);
+}
+
+void MainFrame::DoUpdateLayoutColors()
+{
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
+    wxDockArt* art = m_LayoutManager.GetArtProvider();
+
+    art->SetMetric(wxAUI_ART_PANE_BORDER_SIZE,   cfg->ReadInt(_T("/environment/aui/border_size"), art->GetMetric(wxAUI_ART_PANE_BORDER_SIZE)));
+    art->SetMetric(wxAUI_ART_SASH_SIZE,          cfg->ReadInt(_T("/environment/aui/sash_size"), art->GetMetric(wxAUI_ART_SASH_SIZE)));
+    art->SetMetric(wxAUI_ART_CAPTION_SIZE,       cfg->ReadInt(_T("/environment/aui/caption_size"), art->GetMetric(wxAUI_ART_CAPTION_SIZE)));
+    art->SetColor(wxAUI_ART_BACKGROUND_COLOUR,   cfg->ReadColour(_T("/environment/aui/bg_color"), art->GetColor(wxAUI_ART_BACKGROUND_COLOUR)));
+    art->SetColor(wxAUI_ART_SASH_COLOUR,         cfg->ReadColour(_T("/environment/aui/sash_color"), art->GetColor(wxAUI_ART_SASH_COLOUR)));
+    art->SetColor(wxAUI_ART_CAPTION_COLOUR,      cfg->ReadColour(_T("/environment/aui/caption_color"), art->GetColor(wxAUI_ART_CAPTION_COLOUR)));
+    art->SetColor(wxAUI_ART_CAPTION_TEXT_COLOUR, cfg->ReadColour(_T("/environment/aui/caption_text_color"), art->GetColor(wxAUI_ART_CAPTION_TEXT_COLOUR)));
+    art->SetColor(wxAUI_ART_BORDER_COLOUR,       cfg->ReadColour(_T("/environment/aui/border_color"), art->GetColor(wxAUI_ART_BORDER_COLOUR)));
+    art->SetColor(wxAUI_ART_GRIPPER_COLOUR,      cfg->ReadColour(_T("/environment/aui/gripper_color"), art->GetColor(wxAUI_ART_GRIPPER_COLOUR)));
+
+    DoUpdateLayout();
+}
+
+void MainFrame::DoUpdateLayout()
+{
+    if (!m_StartupDone)
+        return;
+    m_LayoutManager.Update();
 }
 
 void MainFrame::DoUpdateAppTitle()
@@ -1564,6 +1700,18 @@ void MainFrame::OnFileQuit(wxCommandEvent& WXUNUSED(event))
     Close(TRUE);
 }
 
+void MainFrame::OnEraseBackground(wxEraseEvent& event)
+{
+    // for flicker-free display
+    event.Skip();
+}
+
+void MainFrame::OnSize(wxSizeEvent& event)
+{
+    // for flicker-free display
+    event.Skip();
+}
+
 void MainFrame::OnApplicationClose(wxCloseEvent& event)
 {
     ProjectManager* prjman = Manager::Get()->GetProjectManager();
@@ -1593,7 +1741,16 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     SaveWindowState();
     TerminateRecentFilesHistory();
 
-    Hide(); // Hide the window
+    // Hide the window
+    Hide();
+
+    // Hide all panes - fixes crash if plugin windows are visible
+    wxPaneInfoArray& panes = m_LayoutManager.GetAllPanes();
+    for (size_t i = 0; i < panes.GetCount(); ++i)
+    {
+        wxPaneInfo& info = panes[i];
+        info.Hide();
+    }
 	m_LayoutManager.UnInit();
 
     // remove all other event handlers from this window
@@ -1916,13 +2073,7 @@ void MainFrame::OnEditEOLMode(wxCommandEvent& event)
 
 void MainFrame::OnViewLayout(wxCommandEvent& event)
 {
-    wxString layout = m_LayoutViews[m_PluginIDsMap[event.GetId()]];
-    if (!layout.IsEmpty())
-    {
-        m_LayoutManager.LoadPerspective(layout);
-        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/default"), m_PluginIDsMap[event.GetId()]);
-        Refresh(true);
-    }
+    LoadViewLayout(m_PluginIDsMap[event.GetId()]);
 }
 
 void MainFrame::OnViewLayoutSave(wxCommandEvent& event)
@@ -1931,8 +2082,42 @@ void MainFrame::OnViewLayoutSave(wxCommandEvent& event)
     wxString name = wxGetTextFromUser(_("Enter the name for this layout"), _("Save current layout"), def);
     if (!name.IsEmpty())
     {
-        SaveViewLayout(name, m_LayoutManager.SavePerspective());
-        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/default"), name);
+        DoFixToolbarsLayout();
+        SaveViewLayout(name, m_LayoutManager.SavePerspective(), true);
+    }
+}
+
+void MainFrame::OnViewLayoutDelete(wxCommandEvent& event)
+{
+    if (wxMessageBox(wxString::Format(_("Are you really sure you want to delete the layout '%s'?"), m_LastLayoutName.c_str()),
+                    _("Confirmation"),
+                    wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxYES)
+    {
+        // first delete it from the hashmap
+        LayoutViewsMap::iterator it = m_LayoutViews.find(m_LastLayoutName);
+        if (it != m_LayoutViews.end())
+            m_LayoutViews.erase(it);
+
+        // now delete the menu item too
+        wxMenu* viewLayouts = 0;
+        GetMenuBar()->FindItem(idViewLayoutSave, &viewLayouts);
+        if (viewLayouts)
+        {
+            int id = viewLayouts->FindItem(m_LastLayoutName);
+            if (id != wxNOT_FOUND)
+                viewLayouts->Delete(id);
+            // delete the id from the map too
+            PluginIDsMap::iterator it2 = m_PluginIDsMap.find(id);
+            if (it2 != m_PluginIDsMap.end())
+                m_PluginIDsMap.erase(it2);
+        }
+
+        wxMessageBox(wxString::Format(_("Layout '%s' deleted.\nWill now revert to layout '%s'..."), m_LastLayoutName.c_str(), gDefaultLayout.c_str()),
+                        _("Information"), wxICON_INFORMATION);
+
+        // finally, revert to the default layout
+        m_LastLayoutName = gDefaultLayout; // do not ask to save old layout ;)
+        LoadViewLayout(gDefaultLayout);
     }
 }
 
@@ -2236,7 +2421,7 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
 
     mbar->Check(idViewManager, manVis);
     mbar->Check(idViewOpenFilesTree, m_pEdMan && m_pEdMan->IsOpenFilesTreeVisible());
-    mbar->Enable(idViewOpenFilesTree, manVis && m_pEdMan);
+    mbar->Enable(idViewOpenFilesTree, m_pEdMan);
     mbar->Check(idViewMessageManager, m_LayoutManager.GetPane(Manager::Get()->GetMessageManager()).IsShown());
     mbar->Check(idViewStatusbar, GetStatusBar() && GetStatusBar()->IsShown());
     mbar->Check(idViewFullScreen, IsFullScreen());
@@ -2359,7 +2544,7 @@ void MainFrame::OnToggleBar(wxCommandEvent& event)
     if (win)
     {
         m_LayoutManager.GetPane(win).Show(event.IsChecked());
-        m_LayoutManager.Update();
+        DoUpdateLayout();
     }
 }
 
@@ -2452,9 +2637,12 @@ void MainFrame::OnSettingsEnvironment(wxCommandEvent& event)
     bool needRestart = false;
     bool edmanCloseBtn = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/show_close_button"), false);
 
-	EnvironmentSettingsDlg dlg(this);
+	EnvironmentSettingsDlg dlg(this, m_LayoutManager.GetArtProvider());
 	if (dlg.ShowModal() == wxID_OK)
 	{
+        DoUpdateEditorStyle();
+        DoUpdateLayoutColors();
+
         m_SmallToolBar = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/toolbar_size"), true);
         needRestart = m_SmallToolBar != tbarsmall;
         bool autoHide = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_hide"), false);
@@ -2565,11 +2753,6 @@ void MainFrame::OnRequestDockWindow(CodeBlocksDockEvent& event)
 // TODO (mandrav##): Check for existing pane with the same name
     info.Name(name);
     info.Caption(event.title.IsEmpty() ? name : event.title);
-    info.BestSize(event.desiredSize);
-    info.FloatingSize(event.desiredSize);
-    info.MinSize(event.minimumSize);
-    info.Layer(event.stretch ? 1 : 0);
-    info.CloseButton(event.hideable ? true : false);
     switch (event.dockSide)
     {
         case CodeBlocksDockEvent::dsLeft: info.Left(); break;
@@ -2580,20 +2763,34 @@ void MainFrame::OnRequestDockWindow(CodeBlocksDockEvent& event)
 
         default: break;
     }
-    info.Hide();
+    info.Show(event.shown);
+    info.BestSize(event.desiredSize);
+    info.FloatingSize(event.floatingSize);
+    info.MinSize(event.minimumSize);
+    info.Layer(event.stretch ? 1 : 0);
+    if (event.row != -1)
+        info.Row(event.row);
+    if (event.column != -1)
+        info.Position(event.column);
+    info.CloseButton(event.hideable ? true : false);
     m_LayoutManager.AddPane(event.pWindow, info);
-    m_LayoutManager.Update();
+    DoUpdateLayout();
 }
 
 void MainFrame::OnRequestUndockWindow(CodeBlocksDockEvent& event)
 {
     m_LayoutManager.DetachPane(event.pWindow);
-    m_LayoutManager.Update();
+    DoUpdateLayout();
 }
 
 void MainFrame::OnRequestShowDockWindow(CodeBlocksDockEvent& event)
 {
-    // stub
     m_LayoutManager.GetPane(event.pWindow).Show();
-    m_LayoutManager.Update();
+    DoUpdateLayout();
+}
+
+void MainFrame::OnRequestHideDockWindow(CodeBlocksDockEvent& event)
+{
+    m_LayoutManager.GetPane(event.pWindow).Hide();
+    DoUpdateLayout();
 }

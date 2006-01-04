@@ -318,7 +318,6 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
           * is the parent of the project manager's tree obtained through GetTree().
           * @return A pointer to a wxPanel window.
           */
-		wxPanel* GetPanel(){ return (this==NULL) ? 0 : m_pPanel; }
 		wxMenu* GetProjectMenu();
 		/** Sets the Top Editor (the active editor from the last session) */
 		void SetTopEditor(EditorBase* ed);
@@ -367,7 +366,6 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
 
         wxNotebook* m_pParent;
         wxTreeCtrl* m_pTree;
-		wxPanel* m_pPanel;
         wxTreeItemId m_TreeRoot;
         cbProject* m_pActiveProject;
         wxImageList* m_pImages;

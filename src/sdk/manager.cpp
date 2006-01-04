@@ -286,31 +286,3 @@ ConfigManager* Manager::GetConfigManager(const wxString& name_space)
     // and it exists throught the whole lifetime of the application...
     return CfgMgrBldr::Get(name_space);
 }
-
-wxWindow* Manager::GetNotebookPage(const wxString &name, long style,bool issplit)
-{
-    if (appShutingDown)
-        return 0L;
-    if (!m_pNotebook)
-        return 0L;
-    wxNotebookPage* page = 0L;
-    #if wxVERSION_NUMBER < 2500
-    int i;
-    #else
-    unsigned int i;
-    #endif
-    for (i = 0; i < m_pNotebook->GetPageCount(); ++i)
-    {
-        if (m_pNotebook->GetPageText(i) == name)
-        {
-            return m_pNotebook->GetPage(i);
-        }
-    }
-    // Not found. Let's create it.
-    if (issplit)
-        page=new wxSplitPanel(m_pNotebook,-1,wxDefaultPosition,wxDefaultSize,style);
-    else
-        page=new wxPanel(m_pNotebook,-1,wxDefaultPosition,wxDefaultSize,style);
-    m_pNotebook->AddPage(page,name);
-    return page;
-}

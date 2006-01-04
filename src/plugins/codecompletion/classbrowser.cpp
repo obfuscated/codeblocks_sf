@@ -148,7 +148,7 @@ ClassBrowser::ClassBrowser(wxNotebook* parent, NativeParser* np)
 
     bs->Add(fs, 0, wxEXPAND | wxTOP, 4);
 
-	m_Tree = new wxTreeCtrl(top, ID_ClassBrowser, wxPoint(0, 0), wxSize(100, 64), wxTR_HAS_BUTTONS | wxTR_HIDE_ROOT | wxTR_DEFAULT_STYLE);
+	m_Tree = new wxTreeCtrl(top, ID_ClassBrowser, wxPoint(0, 0), wxSize(100, 64), wxTR_HAS_BUTTONS | wxTR_DEFAULT_STYLE);
     bs->Add(m_Tree, 1, wxEXPAND | wxALL);
     top->SetAutoLayout(TRUE);
     top->SetSizer(bs);

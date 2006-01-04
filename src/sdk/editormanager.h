@@ -10,8 +10,6 @@
 
 #include "openfilestree.h"
 
-// #include "editorbase.h"
-// #include "cbproject.h"
 #include "printing_types.h"
 
 DLLIMPORT extern int ID_NBEditorManager;
@@ -20,8 +18,8 @@ DLLIMPORT extern int idEditorManagerCheckFiles;
 DLLIMPORT extern int ID_EditorManagerCloseButton;
 // forward decls
 class EditorBase;
-class wxNotebook;
-class wxNotebookEvent;
+class wxFlatNotebook;
+class wxFlatNotebookEvent;
 class wxMenuBar;
 class EditorColorSet;
 class cbProject;
@@ -31,7 +29,6 @@ class cbStyledTextCtrl;
 class SimpleListLog;
 struct EditorManagerInternalData;
 
-WX_DECLARE_LIST(EditorBase, EditorsList);
 WX_DECLARE_STRING_HASH_MAP(wxString, AutoCompleteMap);
 
 // forward decl
@@ -46,12 +43,11 @@ class DLLIMPORT EditorManager : public wxEvtHandler
     public:
         friend class Manager; // give Manager access to our private members
         static bool CanShutdown(){ return s_CanShutdown; }
-        wxNotebook* GetNotebook(){ return m_pNotebook; }
-        wxPanel* GetPanel() { return m_pPanel; }
+        wxFlatNotebook* GetNotebook(){ return m_pNotebook; }
         void CreateMenu(wxMenuBar* menuBar);
         void ReleaseMenu(wxMenuBar* menuBar);
         void Configure();
-        int GetEditorsCount(){ return m_EditorsList.GetCount(); }
+        int GetEditorsCount();
         AutoCompleteMap& GetAutoCompleteMap(){ return m_AutoCompleteMap; }
 
         EditorBase* IsOpen(const wxString& filename);
@@ -133,8 +129,15 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         void RebuildOpenedFilesTree(wxTreeCtrl *tree = 0L);
         void RefreshOpenedFilesTree(bool force = false);
 
-        void OnPageChanged(wxNotebookEvent& event);
-        void OnPageChanging(wxNotebookEvent& event);
+        void OnPageChanged(wxFlatNotebookEvent& event);
+        void OnPageChanging(wxFlatNotebookEvent& event);
+        void OnPageClosing(wxFlatNotebookEvent& event);
+        void OnPageContextMenu(wxFlatNotebookEvent& event);
+        void OnClose(wxCommandEvent& event);
+        void OnCloseAll(wxCommandEvent& event);
+        void OnCloseAllOthers(wxCommandEvent& event);
+        void OnSave(wxCommandEvent& event);
+        void OnSaveAll(wxCommandEvent& event);
         void OnAppDoneStartup(wxCommandEvent& event);
         void OnAppStartShutdown(wxCommandEvent& event);
         void OnUpdateUI(wxUpdateUIEvent& event);
@@ -146,7 +149,8 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         // m_EditorsList access
         void AddEditorBase(EditorBase* eb);
         void RemoveEditorBase(EditorBase* eb, bool deleteObject = true);
-        cbEditor* InternalGetBuiltinEditor(EditorsList::Node* node);
+        cbEditor* InternalGetBuiltinEditor(int page);
+        EditorBase* InternalGetEditorBase(int page);
 
         void CreateSearchLog();
         void LogSearch(const wxString& file, int line, const wxString& lineText);
@@ -169,9 +173,7 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         void CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFindReplaceData* data);
         void OnCheckForModifiedFiles(wxCommandEvent& event);
 
-        wxNotebook* m_pNotebook;
-        wxPanel* m_pPanel;
-        EditorsList m_EditorsList;
+        wxFlatNotebook* m_pNotebook;
         cbFindReplaceData* m_LastFindReplaceData;
         EditorColorSet* m_Theme;
         wxTreeCtrl* m_pTree;
