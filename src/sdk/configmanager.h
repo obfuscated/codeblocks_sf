@@ -207,6 +207,10 @@ public:
             }
     };
 
+	static inline bool Windows();
+	static inline bool Unix();
+	static inline bool Linux();
+	static inline bool Unicode();
 };
 
 
@@ -239,6 +243,7 @@ class DLLIMPORT CfgMgrBldr
     TiXmlDocument *volatile_doc;
     wxCriticalSection cs;
     bool r;
+    wxString cfg;
 
     CfgMgrBldr();
     ~CfgMgrBldr();

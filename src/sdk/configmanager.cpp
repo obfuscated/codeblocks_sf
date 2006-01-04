@@ -27,6 +27,10 @@
 #include <shlobj.h>
 #endif
 
+#ifdef TIXML_USE_STL
+#include <string>
+#endif
+
 wxString ConfigManager::app_path = wxEmptyString;
 wxString ConfigManager::data_path = wxEmptyString;
 wxString ConfigManager::config_folder = wxEmptyString;
@@ -58,7 +62,7 @@ ISerializable::~ISerializable()
 
 CfgMgrBldr::CfgMgrBldr() : doc(0), volatile_doc(0), r(false)
 {
-	TiXmlBase::SetCondenseWhiteSpace(false);
+    TiXmlBase::SetCondenseWhiteSpace(false);
     wxString personality(Manager::Get()->GetPersonalityManager()->GetPersonality());
     if(personality.StartsWith(_T("http://")))
         SwitchToR(personality);
@@ -69,28 +73,46 @@ CfgMgrBldr::CfgMgrBldr() : doc(0), volatile_doc(0), r(false)
 void CfgMgrBldr::SwitchTo(const wxString& absFileName)
 {
     Close();
+
+    if(doc)
+        delete doc;
+    doc = new TiXmlDocument();
+    doc->ClearError();
+
     wxString loc = absFileName;
-    if (loc.IsEmpty())
+    if (absFileName.IsEmpty())
         loc = ConfigManager::LocateDataFile(_T("default.conf"));
-    doc = new TiXmlDocument(_C(loc));
-    if(!doc->LoadFile())
+
+    if(!wxFile::Access(loc, wxFile::read)) // no config file found
     {
+        cfg = absFileName;
         doc->InsertEndChild(TiXmlDeclaration("1.0", "UTF-8", "yes"));
         doc->InsertEndChild(TiXmlElement(_C(CfgMgrConsts::rootTag)));
         doc->FirstChildElement(_C(CfgMgrConsts::rootTag))->SetAttribute("version", CfgMgrConsts::version);
-        doc->ClearError();
     }
+    else
+    {
+        cfg = loc;
+        wxFile file(loc);
+        char *input = new char[file.Length()];
+        file.Read(input, file.Length());
+        doc->Parse(input);
+        delete[] input;
+    }
+
+    if(doc->ErrorId())
+        wxMessageBox(wxString(_T("TinyXML error:\n")) << _U(doc->ErrorDesc()), _("Warning"), wxICON_WARNING);
 
     TiXmlElement* docroot = doc->FirstChildElement(_C(CfgMgrConsts::rootTag));
     if(!docroot)
     {
         wxString s;
         s.Printf(_("Fatal error parsing configuration. The file %s is not a valid Code::Blocks config file."),
-                    #if wxUSE_UNICODE
-                    _U(doc->Value()).c_str());
-                    #else
-                    doc->Value());
-                    #endif
+#if wxUSE_UNICODE
+                 _U(doc->Value()).c_str());
+#else
+                 doc->Value());
+#endif
         cbThrow(s);
     }
 
@@ -107,6 +129,13 @@ void CfgMgrBldr::SwitchTo(const wxString& absFileName)
 void CfgMgrBldr::SwitchToR(const wxString& absFileName)
 {
     Close();
+
+    if(doc)
+        delete doc;
+    doc = new TiXmlDocument();
+    doc->ClearError();
+
+    cfg = absFileName;
 
     wxURL url(absFileName);
     url.SetProxy(ConfigManager::GetProxy());
@@ -131,13 +160,14 @@ void CfgMgrBldr::SwitchToR(const wxString& absFileName)
             }
             if(Manager::Get() && Manager::Get()->GetMessageManager())
             {
-	            Manager::Get()->GetMessageManager()->DebugLog(_T("##### Error loading or parsing remote config file"));
-    	        Manager::Get()->GetMessageManager()->DebugLog(_U(doc->ErrorDesc()));
-    	        doc->ClearError();
+                Manager::Get()->GetMessageManager()->DebugLog(_T("##### Error loading or parsing remote config file"));
+                Manager::Get()->GetMessageManager()->DebugLog(_U(doc->ErrorDesc()));
+                doc->ClearError();
             }
         }
         delete is;
     }
+    cfg.Empty();
     SwitchTo(wxEmptyString); // fall back
 }
 
@@ -152,16 +182,43 @@ CfgMgrBldr::~CfgMgrBldr()
     Close();
 }
 
-
 void CfgMgrBldr::Close()
 {
-    if(doc && r == false)
+    if(doc)
     {
-        doc->SaveFile();
+        if(!cfg.StartsWith(_T("http://")))
+        {
+            const char *buffer; // UTF-8 encoded data
+			size_t len;
+
+#ifdef TIXML_USE_STL
+            std::string outSt;
+            outSt << *doc;
+            buffer = outSt.c_str();
+            len = outSt.length();
+#else
+            TiXmlOutStream outSt;
+            outSt << *doc;
+            buffer = outSt.c_str();
+            len = outSt.length();
+#endif
+
+            wxFile file(cfg, wxFile::write);
+            if(file.IsOpened())
+                file.Write(buffer, strlen(buffer));
+            else
+            {
+                wxSafeShowMessage(_T("Could not open config file for writing."), _("Warning"));
+                // TODO (thomas#1#): add "retry" option
+            }
+        }
+        else
+        {
+            // implement WebDAV another time
+        }
         delete doc;
-        doc = 0;
     }
-    r = false;
+    doc = 0;
 }
 
 
@@ -265,10 +322,10 @@ wxString ConfigManager::GetExecutableFolder()
     ConfigManager::app_path = fname.GetPath(wxPATH_GET_VOLUME);
 #else
 
-//    ConfigManager::app_path = wxString(SELFPATH,wxConvUTF8);
-//    ConfigManager::app_path = wxFileName(base).GetPath();
-//    if (ConfigManager::app_path.IsEmpty())
-        ConfigManager::app_path = _T(".");
+    //    ConfigManager::app_path = wxString(SELFPATH,wxConvUTF8);
+    //    ConfigManager::app_path = wxFileName(base).GetPath();
+    //    if (ConfigManager::app_path.IsEmpty())
+    ConfigManager::app_path = _T(".");
 #endif
 
     return ConfigManager::app_path;
@@ -293,7 +350,7 @@ wxString ConfigManager::GetConfigFolder()
     {
         TCHAR szPath[MAX_PATH];
         SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, 0, szPath);
-        ConfigManager::config_folder = wxString(szPath) + _T("/codeblocks");
+        ConfigManager::config_folder = wxString(szPath) + _T("\\codeblocks");
     }
     if(!wxDirExists(ConfigManager::config_folder))
         wxMkdir(ConfigManager::config_folder);
@@ -327,8 +384,10 @@ wxString ConfigManager::LocateDataFile(const wxString& filename)
     searchPaths.Add(GetHomeFolder());
     searchPaths.AddEnvList(_T("PATH"));
 #ifdef __WXMSW__
+
     searchPaths.Add(_T("C:\\"));
 #endif
+
     return searchPaths.FindValidPath(filename);
 }
 
@@ -444,14 +503,15 @@ TiXmlElement* ConfigManager::AssertPath(wxString& path)
         {
             wxString s;
             s.Printf(_("The Configuration key %s (child of node \"%s\" in namespace \"%s\") does not meet the standard for variable naming.\nVariables names are required to start with a letter."),
-                        path.c_str(),
-                        #if wxUSE_UNICODE
-                        _U(pathNode->Value()).c_str(),
-                        _U(root->Value()).c_str());
-                        #else
-                        pathNode->Value(),
-                        root->Value());
-                        #endif
+                     path.c_str(),
+#if wxUSE_UNICODE
+                     _U(pathNode->Value()).c_str(),
+                     _U(root->Value()).c_str());
+#else
+
+                     pathNode->Value(),
+                     root->Value());
+#endif
             cbThrow(s);
         }
         return pathNode;
@@ -475,16 +535,17 @@ TiXmlElement* ConfigManager::AssertPath(wxString& path)
             e = e->Parent()->ToElement();
         else if(sub[0] < _T('a') || sub[0] > _T('z'))
         {
-        wxString s;
-        s.Printf(_("The subpath %s (child of node \"%s\" in namespace \"%s\") does not meet the standard for path naming.\nPaths and subpaths are required to start with a letter."), sub.c_str(),
-                    #if wxUSE_UNICODE
-                    _U(e->Value()).c_str(),
-                    _U(root->Value()).c_str());
-                    #else
-                    e->Value(),
-                    root->Value());
-                    #endif
-        cbThrow(s);
+            wxString s;
+            s.Printf(_("The subpath %s (child of node \"%s\" in namespace \"%s\") does not meet the standard for path naming.\nPaths and subpaths are required to start with a letter."), sub.c_str(),
+#if wxUSE_UNICODE
+                     _U(e->Value()).c_str(),
+                     _U(root->Value()).c_str());
+#else
+
+                     e->Value(),
+                     root->Value());
+#endif
+            cbThrow(s);
         }
         else
         {
@@ -507,14 +568,15 @@ TiXmlElement* ConfigManager::AssertPath(wxString& path)
     {
         wxString s;
         s.Printf(_("The Configuration key %s (child of node \"%s\" in namespace \"%s\") does not meet the standard for variable naming.\nVariables names are required to start with a letter."),
-                    path.c_str(),
-                    #if wxUSE_UNICODE
-                    _U(pathNode->Value()).c_str(),
-                    _U(root->Value()).c_str());
-                    #else
-                    pathNode->Value(),
-                    root->Value());
-                    #endif
+                 path.c_str(),
+#if wxUSE_UNICODE
+                 _U(pathNode->Value()).c_str(),
+                 _U(root->Value()).c_str());
+#else
+
+                 pathNode->Value(),
+                 root->Value());
+#endif
         cbThrow(s);
     }
     return e;
@@ -609,7 +671,7 @@ void ConfigManager::Write(const wxString& name,  const wxString& value, bool ign
     }
     if(ignoreEmpty && value.IsEmpty())
     {
-    	UnSet(name);
+        UnSet(name);
         return;
     }
 
@@ -624,8 +686,8 @@ void ConfigManager::Write(const wxString& name,  const wxString& value, bool ign
 
 void ConfigManager::Write(const wxString& key, const char* str)
 {
-/* NOTE (mandrav#1#): Do *not* remove 'false' from the call because in ANSI builds,
-it matches this very function and overflows the stack... */
+    /* NOTE (mandrav#1#): Do *not* remove 'false' from the call because in ANSI builds,
+    it matches this very function and overflows the stack... */
     Write(key, _U(str), false);
 };
 
@@ -1230,5 +1292,22 @@ void ConfigManager::Write(const wxString& name, const ConfigManagerContainer::Se
 
 
 
+#if wxUSE_UNICODE
+bool ConfigManager::Unicode() {return true;}
+#else
+bool ConfigManager::Unicode() {return false;};
+#endif
+
+#ifdef __WIN32__
+bool ConfigManager::Windows() {return true;};
+bool ConfigManager::Unix() {return false;};
+#endif
+
+#ifdef __WXGTK__
+bool ConfigManager::Windows() {return false;};
+bool ConfigManager::Unix() {return true;};
+#endif
+
+bool ConfigManager::Linux() {return Unix();};
 
 
