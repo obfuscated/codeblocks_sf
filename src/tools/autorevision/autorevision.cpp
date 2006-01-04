@@ -65,17 +65,19 @@ int main(int argc, char** argv)
     docFile.append("/.svn/entries");
 
 
-    ifstream inFile(docFile.c_str());
-    if (!inFile)
-    {
-        puts("Error: could not open input file");
-        return -1;
-    }
-
     string token;
     string stoken;
     string old;
+	string comment;
 
+    ifstream inFile(docFile.c_str());
+    if (!inFile)
+    {
+        puts("Error: could not open input file.\nThis does not seem to be a revision controlled project.");
+        token = "0";
+        comment = "/*NO_REVISION*/";
+    }
+    else
     while(!inFile.eof())
     {
         inFile >> token;
@@ -86,7 +88,7 @@ int main(int argc, char** argv)
             if(start < end)
             {
                 token = token.substr(start, end - start);
-                string comment("/*");
+                comment.assign("/*");
                 comment.append(token);
                 comment.append("*/");
 
@@ -96,73 +98,72 @@ int main(int argc, char** argv)
                     {
                         in >> old;
                         if(old == comment)
-							{
-							if(be_verbose)
-								printf("Revision unchanged (%s). Skipping.", token.c_str());
-							in.close();
-							inFile.close();
+                        {
+                            if(be_verbose)
+                                printf("Revision unchanged (%s). Skipping.", token.c_str());
+                            in.close();
+                            inFile.close();
                             return 0;
-							}
-						else if(be_verbose)
-							printf("Generating %s for revision %s.", outputFile.c_str(), token.c_str());
+                        }
+                        else if(be_verbose)
+                            printf("Generating %s for revision %s.", outputFile.c_str(), token.c_str());
 
                     }
                     in.close();
                 }
 
-
-                FILE *f = fopen(outputFile.c_str(), "wb");
-
-                if(!f)
-                {
-                    puts("Error: Could not open output file.");
-                    return -1;
-                }
-                fprintf(f, "%s\n", comment.c_str());
-                fprintf(f, "#ifndef AUTOREVISION_H\n");
-                fprintf(f, "#define AUTOREVISION_H\n\n\n");
-
-                if(do_std)
-                    fprintf(f, "#include <string>\n");
-                if(do_wx)
-                    fprintf(f, "#include <wx/string.h>\n");
-
-                fprintf(f, "\n#define SVN_REVISION \"%s\"\n\n", token.c_str());
-
-				if(do_int || do_std || do_wx)
-					fprintf(f, "namespace autorevision\n{\n\n");
-
-				if(do_translate)
-					{
-					stoken.assign("_T(\"");
-					stoken.append(token);
-					stoken.append("\")");
-					}
-				else
-					{
-					stoken.assign("\"");
-					stoken.append(token);
-					stoken.append("\"");
-					}
-
-                if(do_int)
-                    fprintf(f, "const unsigned int svn_revision = %s;\n", token.c_str());
-                if(do_std)
-                    fprintf(f, "const std::string svn_revision_s(%s);\n", stoken.c_str());
-                if(do_wx)
-                    fprintf(f, "const wxString svnRevision(%s);\n", stoken.c_str());
-
-				if(do_int || do_std || do_wx)
-					fprintf(f, "\n}\n\n");
-
-                fprintf(f, "\n\n#endif\n");
-                fclose(f);
-
-                return 0;
             }
+		break;
         }
     }
-    puts("Error: Could not find revision.");
-    return -1;
+
+    FILE *f = fopen(outputFile.c_str(), "wb");
+
+    if(!f)
+    {
+        puts("Error: Could not open output file.");
+        return -1;
+    }
+    fprintf(f, "%s\n", comment.c_str());
+    fprintf(f, "#ifndef AUTOREVISION_H\n");
+    fprintf(f, "#define AUTOREVISION_H\n\n\n");
+
+    if(do_std)
+        fprintf(f, "#include <string>\n");
+    if(do_wx)
+        fprintf(f, "#include <wx/string.h>\n");
+
+    fprintf(f, "\n#define SVN_REVISION \"%s\"\n\n", token.c_str());
+
+    if(do_int || do_std || do_wx)
+        fprintf(f, "namespace autorevision\n{\n");
+
+    if(do_translate)
+    {
+        stoken.assign("_T(\"");
+        stoken.append(token);
+        stoken.append("\")");
+    }
+    else
+    {
+        stoken.assign("\"");
+        stoken.append(token);
+        stoken.append("\"");
+    }
+
+    if(do_int)
+        fprintf(f, "\tconst unsigned int svn_revision = %s;\n", token.c_str());
+    if(do_std)
+        fprintf(f, "\tconst std::string svn_revision_s(%s);\n", stoken.c_str());
+    if(do_wx)
+        fprintf(f, "\tconst wxString svnRevision(%s);\n", stoken.c_str());
+
+    if(do_int || do_std || do_wx)
+        fprintf(f, "}\n\n");
+
+    fprintf(f, "\n\n#endif\n");
+    fclose(f);
+
+    return 0;
 }
 
