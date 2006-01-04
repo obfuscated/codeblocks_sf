@@ -319,6 +319,7 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo, ProjectBuil
         if (var[0] == _T('#'))
         {
             replace = UnixFilename(m_uVarMan->Replace(var));
+			QuoteStringIfNeeded(replace);
         }
         else
         {
