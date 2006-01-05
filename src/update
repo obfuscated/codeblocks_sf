@@ -48,6 +48,8 @@ cp -f sdk/resources/lexers/lexer_* ${RESDIR}/lexers > /dev/null
 cp -f sdk/resources/lexers/lexer_* output/share/codeblocks/lexers > /dev/null
 cp -f src/resources/images/*.png ${RESDIR}/images > /dev/null
 cp -f src/resources/images/*.png output/share/codeblocks/images > /dev/null
+cp -f src/resources/images/16x16/*.png ${RESDIR}/images/16x16 > /dev/null
+cp -f src/resources/images/16x16/*.png output/share/codeblocks/images/16x16 > /dev/null
 cp -f plugins/codecompletion/resources/images/*.png ${RESDIR}/images/codecompletion > /dev/null
 cp -f plugins/codecompletion/resources/images/*.png output/share/codeblocks/images/codecompletion > /dev/null
 cp -f templates/common/* output/share/codeblocks/templates > /dev/null
