@@ -63,11 +63,13 @@ BEGIN_EVENT_TABLE(wxBinderEvtHandler, wxEvtHandler)
 #endif
 
 #if defined( __WXMSW__	)		// supported only on Win32
+#if wxUSE_HOTKEY                // enabled?
 #if wxCHECK_VERSION(2, 5, 1)	// and from wxWidgets 2.5.1
 
 	// I don't think this is needed because wxEVT_HOTKEY are generated
 	// only in some special cases...
 	EVT_HOTKEY(wxID_ANY, wxBinderEvtHandler::OnChar)
+#endif
 #endif
 #endif
 
