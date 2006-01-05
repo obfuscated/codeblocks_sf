@@ -24,8 +24,8 @@ public:
 template <class T>
 CTextDropTarget<T>::CTextDropTarget(T* pParent, pt2Func pt2CallbackFunc)
 : m_pParent(pParent)
-, m_pt2CallbackFunc(pt2CallbackFunc)
 {
+	m_pt2CallbackFunc = pt2CallbackFunc;
 }
 
 template <class T>
@@ -36,5 +36,5 @@ CTextDropTarget<T>::~CTextDropTarget(void)
 template <class T>
 bool CTextDropTarget<T>::OnDropText(wxCoord x, wxCoord y, const wxString& data)
 {
-	return (m_pParent->*m_pt2CallbackFunc)(x, y, data);
+	return (m_pParent->*m_pt2CallbackFunc)(x, y, data); 
 }

@@ -30,16 +30,13 @@
 const int ID_Text = wxNewId();
 
 // class constructor
-SimpleTextLog::SimpleTextLog(wxNotebook* parent, const wxString& title)
-    : MessageLog(parent)
+SimpleTextLog::SimpleTextLog()
 {
     wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
 	m_Text = new wxTextCtrl(this, ID_Text, _T(""), wxDefaultPosition, wxDefaultSize, wxTE_READONLY | wxTE_MULTILINE | wxTE_RICH2);
     bs->Add(m_Text, 1, wxEXPAND | wxALL);
     SetAutoLayout(TRUE);
     SetSizer(bs);
-
-    CreateLog(title);
 }
 
 // class destructor

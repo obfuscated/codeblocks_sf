@@ -246,7 +246,7 @@ EditorManager* Manager::GetEditorManager()
 
 MessageManager* Manager::GetMessageManager()
 {
-	return appShutingDown ? 0 : MessageManager::Get(m_pAppWindow);
+	return appShutingDown ? 0 : MessageManager::Get();
 }
 
 PluginManager* Manager::GetPluginManager()

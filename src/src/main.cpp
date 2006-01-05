@@ -20,7 +20,7 @@
 * Program URL   : http://www.codeblocks.org
 *
 * $Id$
-* $Date: 2006-01-02 12:50:21 +0200 (ΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ’ΒΞΒΞ’ΒΞβ€™Ξ’ΒµΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ’Β¦, 02 ΞΒΞ’ΒΞΒ²Ξ²β‚¬ΒΞβ€ ΞΒΞ’ΒΞβ€™Ξ’Β±ΞΒΞ’ΒΞβ€™Ξ’Β½ 2006) $
+* $Date: 2006-01-02 12:50:21 +0200 (ΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ²β€Ξ†ΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ²β‚¬β„ΆΞβ€™Ξ’Β²ΞΒΞ’ΒΞβ€™Ξ’Β²ΞΒΞ’Β²ΞΒ²Ξ²β‚¬ΒΞ’Β¬Ξβ€™Ξ’ΒΞΒΞ²β‚¬β„ΆΞβ€™Ξ’Β¬ΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ²β€Ξ†ΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ²β€Ξ†ΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ’Β²ΞΒ²Ξ²β‚¬ΒΞ’Β¬ΞΒ²Ξ²β‚¬ΒΞβ€ ΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ²β€Ξ†ΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒµΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ²β€Ξ†ΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ²β‚¬β„ΆΞβ€™Ξ’Β²ΞΒΞ’ΒΞβ€™Ξ’Β²ΞΒΞ’Β²ΞΒ²Ξ²β‚¬ΒΞ’Β¬Ξβ€™Ξ’ΒΞΒΞ²β‚¬β„ΆΞβ€™Ξ’Β¬ΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ²β€Ξ†ΞΒΞ²β‚¬β„ΆΞβ€™Ξ’Β¦, 02 ΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ²β€Ξ†ΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ²β‚¬β„ΆΞβ€™Ξ’Β²ΞΒΞ’ΒΞβ€™Ξ’Β²ΞΒΞ’Β²ΞΒ²Ξ²β€Β¬Ξ’ΒΞβ€™Ξ’Β¬ΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ’Β²ΞΒ²Ξ²β‚¬ΒΞ’Β¬Ξβ€™Ξ’Β ΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ²β€Ξ†ΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ’Β²ΞΒ²Ξ²β‚¬ΒΞ’Β¬ΞΒ²Ξ²β‚¬ΒΞβ€ ΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ²β€Ξ†ΞΒΞ²β‚¬β„ΆΞβ€™Ξ’Β±ΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ²β€Ξ†ΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ’Β²ΞΒ²Ξ²β‚¬ΒΞ’Β¬ΞΒ²Ξ²β‚¬ΒΞβ€ ΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ²β€Ξ†ΞΒΞ²β‚¬β„ΆΞβ€™Ξ’Β½ 2006) $
 */
 
 #include <sdk.h>
@@ -490,7 +490,7 @@ void MainFrame::CreateIDE()
                               Left().Layer(1));
 
     // message manager
-    m_LayoutManager.AddPane(Manager::Get()->GetMessageManager(), wxPaneInfo().
+    m_LayoutManager.AddPane(Manager::Get()->GetMessageManager()->GetNotebook(), wxPaneInfo().
                               Name(wxT("MessagesPane")).Caption(wxT("Messages")).
                               BestSize(wxSize(clientsize.GetWidth(), bottomH)).//MinSize(wxSize(50,50)).
                               Bottom());
@@ -576,7 +576,7 @@ void MainFrame::CreateMenubar()
 	// core modules: create menus
 	PRJMAN()->CreateMenu(mbar);
 	EDMAN()->CreateMenu(mbar);
-	MSGMAN()->CreateMenu(mbar);
+	Manager::Get()->GetMessageManager()->CreateMenu(mbar);
 
 	// ask all plugins to rebuild their menus
 	PluginElementsArray plugins = Manager::Get()->GetPluginManager()->GetPlugins();
@@ -626,7 +626,7 @@ void MainFrame::CreateToolbars()
     if(m_SmallToolBar) // Insert logic here
         xrcToolbarName += _T("_16x16");
     myres->Load(resPath + _T("/resources.zip#zip:*.xrc"));
-    MSGMAN()->DebugLog(_("Loading toolbar..."));
+    Manager::Get()->GetMessageManager()->DebugLog(_("Loading toolbar..."));
 
     wxSize size = m_SmallToolBar ? wxSize(16, 16) : wxSize(22, 22);
     m_pToolbar = new wxToolBar(this, -1, wxDefaultPosition, size, wxTB_FLAT | wxTB_NODIVIDER);
@@ -668,11 +668,11 @@ void MainFrame::ScanForPlugins()
     PluginManager* m_PluginManager = Manager::Get()->GetPluginManager();
 
     wxString path = ConfigManager::GetDataFolder() + _T("/plugins");
-    MSGMAN()->Log(_("Scanning for plugins in %s..."), path.c_str());
+    Manager::Get()->GetMessageManager()->Log(_("Scanning for plugins in %s..."), path.c_str());
     int count = m_PluginManager->ScanForPlugins(path);
     if (count > 0)
     {
-        MSGMAN()->AppendLog(_("Loading: "));
+        Manager::Get()->GetMessageManager()->AppendLog(_("Loading: "));
         // actually load plugins
         m_PluginManager->LoadAllPlugins();
     }
@@ -738,7 +738,7 @@ void MainFrame::AddPluginInHelpPluginsMenu(cbPlugin* plugin)
 
 void MainFrame::RemovePluginFromMenus(const wxString& pluginName)
 {
-    //MSGMAN()->DebugLog("Unloading %s plugin", pluginName.c_str());
+    //Manager::Get()->GetMessageManager()->DebugLog("Unloading %s plugin", pluginName.c_str());
 	if (pluginName.IsEmpty())
 		return;
 
@@ -757,7 +757,7 @@ void MainFrame::RemovePluginFromMenus(const wxString& pluginName)
         else
             ++it;
 	}
-    //MSGMAN()->DebugLog("id=%d", id);
+    //Manager::Get()->GetMessageManager()->DebugLog("id=%d", id);
 	if (id.GetCount() == 0)
 		return; // not found
 
@@ -789,7 +789,7 @@ void MainFrame::LoadWindowState()
 
 	// load manager and messages selected page
 	Manager::Get()->GetNotebook()->SetSelection(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/left_block_selection"), 0));
-	MSGMAN()->SetSelection(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/bottom_block_selection"), 0));
+	Manager::Get()->GetMessageManager()->GetNotebook()->SetSelection(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/bottom_block_selection"), 0));
 
     if (!IsMaximized() && !IsIconized())
     {
@@ -804,7 +804,7 @@ void MainFrame::LoadWindowState()
     }
 
     // close message manager (if auto-hiding)
-    MSGMAN()->Close();
+    Manager::Get()->GetMessageManager()->Close();
 }
 
 void MainFrame::SaveWindowState()
@@ -825,7 +825,7 @@ void MainFrame::SaveWindowState()
 
 	// save manager and messages selected page
 	Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/left_block_selection"), Manager::Get()->GetNotebook()->GetSelection());
-	Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/bottom_block_selection"), MSGMAN()->GetSelection());
+	Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/bottom_block_selection"), Manager::Get()->GetMessageManager()->GetNotebook()->GetSelection());
 
     // save window size and position
     Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/maximized"), IsMaximized());
@@ -969,7 +969,7 @@ void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
 
 void MainFrame::DoAddPlugin(cbPlugin* plugin)
 {
-    //MSGMAN()->DebugLog(_("Adding plugin: %s"), plugin->GetInfo()->name.c_str());
+    //Manager::Get()->GetMessageManager()->DebugLog(_("Adding plugin: %s"), plugin->GetInfo()->name.c_str());
     AddPluginInSettingsMenu(plugin);
     AddPluginInHelpPluginsMenu(plugin);
     if (plugin->GetType() == ptTool)
@@ -998,8 +998,8 @@ bool MainFrame::Open(const wxString& filename, bool addToHistory)
     wxFileName fn(filename);
     fn.Normalize(); // really important so that two same files with different names are not loaded twice
     wxString name = fn.GetFullPath();
-    //MSGMAN()->DebugLog(_("Opening file '%s'"), sname.c_str());
-    MSGMAN()->DebugLog(_("Opening file %s"), name.c_str());
+    //Manager::Get()->GetMessageManager()->DebugLog(_("Opening file '%s'"), sname.c_str());
+    Manager::Get()->GetMessageManager()->DebugLog(_("Opening file %s"), name.c_str());
     bool ret = OpenGeneric(name, addToHistory);
 	return ret;
 }
@@ -1080,7 +1080,7 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
 
 bool MainFrame::DoOpenProject(const wxString& filename, bool addToHistory)
 {
-//    MSGMAN()->DebugLog(_("Opening project '%s'"), filename.c_str());
+//    Manager::Get()->GetMessageManager()->DebugLog(_("Opening project '%s'"), filename.c_str());
     if (!wxFileExists(filename))
     {
         wxMessageBox(_("The project file does not exist..."), _("Error"), wxICON_ERROR);
@@ -1154,28 +1154,34 @@ void MainFrame::DoUpdateStatusBar()
 
 void MainFrame::DoUpdateEditorStyle()
 {
-    wxFlatNotebook* fn = Manager::Get()->GetEditorManager()->GetNotebook();
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
 
+    wxFlatNotebook* fn = Manager::Get()->GetEditorManager()->GetNotebook();
     int nbstyle = cfg->ReadInt(_T("/environment/editor_tabs_style"), wxFNB_DEFAULT_STYLE);
-    int flags = wxFNB_MOUSE_MIDDLE_CLOSES_TABS;
     switch (nbstyle)
     {
         case 1: // gradient
-            flags |= wxFNB_FANCY_TABS;
-            fn->SetGradientColorBorder(cfg->ReadColour(_T("/environment/editor_gradient_border"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW))));
-            fn->SetGradientColorFrom(cfg->ReadColour(_T("/environment/editor_gradient_from"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE))));
-            fn->SetGradientColorTo(cfg->ReadColour(_T("/environment/editor_gradient_to"), *wxWHITE));
+            nbstyle = wxFNB_FANCY_TABS;
             break;
 
         case 2: // vc71
-            flags |= wxFNB_VC71;
+            nbstyle = wxFNB_VC71;
             break;
 
         default:
+            nbstyle = wxFNB_DEFAULT_STYLE;
             break;
     }
-    fn->SetBookStyle(flags);
+    fn->SetBookStyle(nbstyle | wxFNB_MOUSE_MIDDLE_CLOSES_TABS);
+    fn->SetGradientColorBorder(cfg->ReadColour(_T("/environment/editor_gradient_border"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW))));
+    fn->SetGradientColorFrom(cfg->ReadColour(_T("/environment/editor_gradient_from"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE))));
+    fn->SetGradientColorTo(cfg->ReadColour(_T("/environment/editor_gradient_to"), *wxWHITE));
+
+    fn = Manager::Get()->GetMessageManager()->GetNotebook();
+    fn->SetBookStyle(nbstyle | wxFNB_BOTTOM | wxFNB_NO_X_BUTTON);
+    fn->SetGradientColorBorder(cfg->ReadColour(_T("/environment/editor_gradient_border"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW))));
+    fn->SetGradientColorFrom(cfg->ReadColour(_T("/environment/editor_gradient_from"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE))));
+    fn->SetGradientColorTo(cfg->ReadColour(_T("/environment/editor_gradient_to"), *wxWHITE));
 }
 
 void MainFrame::DoUpdateLayoutColors()
@@ -1471,7 +1477,7 @@ void MainFrame::OnPluginsExecuteMenu(wxCommandEvent& event)
     if (!pluginName.IsEmpty())
         Manager::Get()->GetPluginManager()->ExecutePlugin(pluginName);
     else
-        MSGMAN()->DebugLog(_("No plugin found for ID %d"), event.GetId());
+        Manager::Get()->GetMessageManager()->DebugLog(_("No plugin found for ID %d"), event.GetId());
 }
 
 void MainFrame::OnPluginSettingsMenu(wxCommandEvent& event)
@@ -1480,7 +1486,7 @@ void MainFrame::OnPluginSettingsMenu(wxCommandEvent& event)
     if (!pluginName.IsEmpty())
         Manager::Get()->GetPluginManager()->ConfigurePlugin(pluginName);
     else
-        MSGMAN()->DebugLog(_("No plugin found for ID %d"), event.GetId());
+        Manager::Get()->GetMessageManager()->DebugLog(_("No plugin found for ID %d"), event.GetId());
 }
 
 void MainFrame::OnHelpPluginMenu(wxCommandEvent& event)
@@ -1491,7 +1497,7 @@ void MainFrame::OnHelpPluginMenu(wxCommandEvent& event)
         const PluginInfo* pi = Manager::Get()->GetPluginManager()->GetPluginInfo(pluginName);
         if (!pi)
         {
-            MSGMAN()->DebugLog(_("No plugin info for %s!"), pluginName.c_str());
+            Manager::Get()->GetMessageManager()->DebugLog(_("No plugin info for %s!"), pluginName.c_str());
             return;
         }
         dlgAboutPlugin* dlg = new dlgAboutPlugin(this, pi);
@@ -1499,7 +1505,7 @@ void MainFrame::OnHelpPluginMenu(wxCommandEvent& event)
         delete dlg;
     }
     else
-        MSGMAN()->DebugLog(_("No plugin found for ID %d"), event.GetId());
+        Manager::Get()->GetMessageManager()->DebugLog(_("No plugin found for ID %d"), event.GetId());
 }
 
 void MainFrame::OnFileNewEmpty(wxCommandEvent& event)
@@ -2422,7 +2428,7 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Check(idViewManager, manVis);
     mbar->Check(idViewOpenFilesTree, m_pEdMan && m_pEdMan->IsOpenFilesTreeVisible());
     mbar->Enable(idViewOpenFilesTree, m_pEdMan);
-    mbar->Check(idViewMessageManager, m_LayoutManager.GetPane(Manager::Get()->GetMessageManager()).IsShown());
+    mbar->Check(idViewMessageManager, m_LayoutManager.GetPane(Manager::Get()->GetMessageManager()->GetNotebook()).IsShown());
     mbar->Check(idViewStatusbar, GetStatusBar() && GetStatusBar()->IsShown());
     mbar->Check(idViewFullScreen, IsFullScreen());
     mbar->Enable(idViewFocusEditor, ed);
@@ -2527,7 +2533,7 @@ void MainFrame::OnToggleBar(wxCommandEvent& event)
     if (event.GetId() == idViewManager)
         win = m_pNotebook;
     else if (event.GetId() == idViewMessageManager)
-        win = Manager::Get()->GetMessageManager();
+        win = Manager::Get()->GetMessageManager()->GetNotebook();
     else if (event.GetId() == idViewToolMain)
         win = m_pToolbar;
     else
@@ -2609,7 +2615,7 @@ void MainFrame::OnPluginLoaded(CodeBlocksEvent& event)
         if (!m_ReconfiguringPlugins)
             DoAddPlugin(plug);
         wxString msg = plug->GetInfo()->title;
-        MSGMAN()->DebugLog(_("%s plugin loaded"), msg.c_str());
+        Manager::Get()->GetMessageManager()->DebugLog(_("%s plugin loaded"), msg.c_str());
 	}
 }
 
@@ -2626,7 +2632,7 @@ void MainFrame::OnPluginUnloaded(CodeBlocksEvent& event)
             CreateMenubar();
 		}
         wxString msg = plug->GetInfo()->title;
-        MSGMAN()->DebugLog(_("%s plugin unloaded"), msg.c_str());
+        Manager::Get()->GetMessageManager()->DebugLog(_("%s plugin unloaded"), msg.c_str());
     }
 }
 #endif
@@ -2646,7 +2652,7 @@ void MainFrame::OnSettingsEnvironment(wxCommandEvent& event)
         m_SmallToolBar = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/toolbar_size"), true);
         needRestart = m_SmallToolBar != tbarsmall;
         bool autoHide = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_hide"), false);
-        MSGMAN()->EnableAutoHide(autoHide);
+        Manager::Get()->GetMessageManager()->EnableAutoHide(autoHide);
 //        if (!autoHide)
 //            pDockWindow2->Show(true); // make sure it's shown
         ShowHideStartPage();

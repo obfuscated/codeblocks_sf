@@ -22,8 +22,8 @@ BEGIN_EVENT_TABLE(ToDoListView, SimpleListLog)
 	EVT_BUTTON(idRefresh, ToDoListView::OnRefresh)
 END_EVENT_TABLE()
 
-ToDoListView::ToDoListView(wxNotebook* parent, const wxString& title, int numCols, int widths[], const wxArrayString& titles, const wxArrayString& m_Types)
-    : SimpleListLog(parent, title, numCols, widths, titles),
+ToDoListView::ToDoListView(int numCols, int widths[], const wxArrayString& titles, const wxArrayString& m_Types)
+    : SimpleListLog(numCols, widths, titles),
     m_pSource(0L),
     m_pUser(0L),
     m_Types(m_Types)

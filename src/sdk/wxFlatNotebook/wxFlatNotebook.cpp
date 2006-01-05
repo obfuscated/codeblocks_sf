@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:		wxFlatNotebook.cpp
+// Name:	wxFlatNotebook.cpp
 // Purpose:     generic implementation of flat style notebook class.
 // Author:      Eran Ifrah <admin@eistware.com>
 // Modified by: Priyank Bolia <soft@priyank.in>
@@ -76,6 +76,13 @@ void wxFlatNotebook::OnSize(wxSizeEvent& event)
 
 void wxFlatNotebook::AddPage(wxWindow* window, const wxString& caption, const bool selected, const int imgindex)
 {
+    // sanity check
+    if (!window)
+        return;
+
+    // reparent the window to us
+    window->Reparent(this);
+
 	// Add tab
 	bool bSelected = selected || m_windows.empty();
 	int curSel = m_pages->GetSelection();
@@ -145,6 +152,13 @@ wxFlatNotebookImageList * wxFlatNotebook::GetImageList()
 
 bool wxFlatNotebook::InsertPage(size_t index, wxWindow* page, const wxString& text, bool select, const int imgindex)
 {
+    // sanity check
+    if (!page)
+        return false;
+
+    // reparent the window to us
+    page->Reparent(this);
+
 	// Insert tab
 	bool bSelected = select || m_windows.empty();
 	int curSel = m_pages->GetSelection();
@@ -233,15 +247,15 @@ void wxFlatNotebook::DeletePage(size_t page, bool notify)
 
     if (notify)
     {
-        // Fire a closing event
-        wxFlatNotebookEvent event(wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CLOSING, GetId());
-        event.SetSelection((int)page);
-        event.SetEventObject(this);
-        GetEventHandler()->ProcessEvent(event);
+	// Fire a closing event
+	wxFlatNotebookEvent event(wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CLOSING, GetId());
+	event.SetSelection((int)page);
+	event.SetEventObject(this);
+	GetEventHandler()->ProcessEvent(event);
 
-        // The event handler allows it?
-        if (!event.IsAllowed())
-            return;
+	// The event handler allows it?
+    if (!event.IsAllowed())
+        return;
     }
 
 	Freeze();
@@ -306,6 +320,16 @@ wxWindow* wxFlatNotebook::GetPage(size_t page) const
 		return NULL;
 
 	return m_windows[page];
+}
+
+int wxFlatNotebook::GetPageIndex(wxWindow* win) const
+{
+    for (size_t i = 0; i < m_windows.size(); ++i)
+    {
+        if (m_windows[i] == win)
+            return (int)i;
+    }
+    return -1;
 }
 
 int wxFlatNotebook::GetSelection() const
@@ -402,15 +426,15 @@ bool wxFlatNotebook::RemovePage(size_t page, bool notify)
 
     if (notify)
     {
-        // Fire a closing event
-        wxFlatNotebookEvent event(wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CLOSING, GetId());
-        event.SetSelection((int)page);
-        event.SetEventObject(this);
-        GetEventHandler()->ProcessEvent(event);
+	// Fire a closing event
+	wxFlatNotebookEvent event(wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CLOSING, GetId());
+	event.SetSelection((int)page);
+	event.SetEventObject(this);
+	GetEventHandler()->ProcessEvent(event);
 
-        // The event handler allows it?
-        if (!event.IsAllowed())
-            return false;
+	// The event handler allows it?
+    if (!event.IsAllowed())
+        return false;
     }
 
 	Freeze();
@@ -493,6 +517,8 @@ EVT_MOTION(wxPageContainer::OnMouseMove)
 EVT_ERASE_BACKGROUND(wxPageContainer::OnEraseBackground)
 EVT_LEAVE_WINDOW(wxPageContainer::OnMouseLeave)
 END_EVENT_TABLE()
+
+
 
 wxPageContainer::wxPageContainer(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style)
 : m_ImageList(NULL)
@@ -822,7 +848,9 @@ void wxPageContainer::AddPage(const wxString& caption, const bool selected, cons
 	{
 		m_iActivePage = (int)m_pagesInfoVec.size();
 	}
-	m_pagesInfoVec.push_back(wxPageInfo(caption, imgindex));
+	wxPageInfo pg(caption, imgindex);
+	pg.SetPosition(wxPoint(100, 0)); // mark as "visible". fixes bug with DoSetSelection() before painting for the very first time
+	m_pagesInfoVec.push_back(pg);
 	Refresh();
 }
 
@@ -832,8 +860,10 @@ bool wxPageContainer::InsertPage(size_t index, wxWindow* /*page*/, const wxStrin
 	{
 		m_iActivePage = (int)m_pagesInfoVec.size();
 	}
+	wxPageInfo pg(text, imgindex);
+	pg.SetPosition(wxPoint(100, 0)); // mark as "visible". fixes bug with DoSetSelection() before painting for the very first time
 	std::vector<wxPageInfo>::iterator iter = m_pagesInfoVec.begin() + index;
-	m_pagesInfoVec.insert(iter, wxPageInfo(text, imgindex));
+	m_pagesInfoVec.insert(iter, pg);
 	Refresh();
 	return true;
 }
@@ -862,8 +892,8 @@ void wxPageContainer::OnMiddleDown(wxMouseEvent& event)
 			GetParent()->GetEventHandler()->ProcessEvent(event);
 			if (event.IsAllowed())
 			{
-                // Set the current tab to be active
-                SetSelection((size_t)tabIdx);
+			// Set the current tab to be active
+			SetSelection((size_t)tabIdx);
                 DeletePage((size_t)tabIdx, false);
 			}
 			break;
@@ -876,15 +906,15 @@ void wxPageContainer::OnMiddleDown(wxMouseEvent& event)
 
 void wxPageContainer::OnRightDown(wxMouseEvent& event)
 {
-    wxPageInfo pgInfo;
-    int tabIdx;
-    int where = HitTest(event.GetPosition(), pgInfo, tabIdx);
-    switch(where)
-    {
-    case wxFNB_TAB:
+		wxPageInfo pgInfo;
+		int tabIdx;
+		int where = HitTest(event.GetPosition(), pgInfo, tabIdx);
+		switch(where)
+		{
+		case wxFNB_TAB:
         {
-            // Set the current tab to be active
-            SetSelection((size_t)tabIdx);
+			// Set the current tab to be active
+			SetSelection((size_t)tabIdx);
 
             wxFlatNotebookEvent event(wxEVT_COMMAND_FLATNOTEBOOK_CONTEXT_MENU, GetParent()->GetId());
             event.SetSelection((int)tabIdx);
@@ -892,10 +922,10 @@ void wxPageContainer::OnRightDown(wxMouseEvent& event)
             event.SetEventObject(GetParent());
             GetParent()->GetEventHandler()->ProcessEvent(event);
         }
-        break;
-    default:
-        break;
-    }
+			break;
+		default:
+			break;
+		}
 	event.Skip();
 }
 
@@ -932,6 +962,13 @@ void wxPageContainer::OnLeftDown(wxMouseEvent& event)
 				break;
 
 			int lastVisibleTab = GetLastVisibleTab();
+			if(lastVisibleTab < 0)
+			{
+				// Probably the screen is too small for displaying even a single
+				// tab, in this case we do nothing
+				break;
+			}
+
 			m_nFrom = lastVisibleTab;
 			Refresh();
 			break;
@@ -1044,6 +1081,15 @@ void wxPageContainer::DoSetSelection(size_t page)
 	if(!IsTabVisible(page))
 	{
 		m_nFrom = (int)page;
+
+		// fix for the add-page bug that displays only the added page
+        int scrollLeft = GetNumTabsCanScrollLeft();
+        if (scrollLeft > 0)
+            m_nFrom -= scrollLeft - 1;
+        if(m_nFrom < 0)
+            m_nFrom = 0;
+        // end of fix
+
 		Refresh();
 	}
 }
@@ -1531,6 +1577,7 @@ int wxPageContainer::GetPageImageIndex(size_t page)
 	}
 	return -1;
 }
+
 bool wxPageContainer::OnTextDropTarget(wxCoord x, wxCoord y, const wxString& data)
 {
 	int nIndex = -1;
@@ -1612,3 +1659,4 @@ void wxPageContainer::MoveTabPage(int nMove, int nMoveTo)
 	DoSetSelection(m_iActivePage);
 	Refresh();
 }
+

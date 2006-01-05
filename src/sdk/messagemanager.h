@@ -4,7 +4,6 @@
 #include "settings.h"
 #include "messagelog.h"
 #include <wx/hashmap.h>
-#include <wx/notebook.h>
 #include "sanitycheck.h"
 
 // convenience macros
@@ -20,26 +19,19 @@
 // DBGLOG("This is a test %s", "hi!")
 // LOGGER->SwitchTo(m_PageIndex)
 // LOGSTREAM << "Logged to standard log (debug)\n"
-// LOGSTREAM << LOGPAGE(m_PageIndex) << "Logged to my log\n"
-// LOGSTREAM << LOGPAGE(mltDebug) << "Logged to debug log\n"
 
-enum MessageLogType
-{
-    mltDebug = 0,
-	mltLog,
-	mltOther
-};
-
-WX_DECLARE_HASH_MAP(MessageLogType, MessageLog*, wxIntegerHash, wxIntegerEqual, LogsMap);
-WX_DECLARE_HASH_MAP(int, MessageLog*, wxIntegerHash, wxIntegerEqual, LogIDsMap);
+WX_DECLARE_HASH_MAP(int, MessageLog*, wxIntegerHash, wxIntegerEqual, LogsMap);
 
 // forward decls
 class wxMenuBar;
+class wxBitmap;
+class wxFlatNotebook;
+class wxFlatNotebookEvent;
 
 /*
  * No description
  */
-class DLLIMPORT MessageManager : public wxNotebook
+class DLLIMPORT MessageManager : public wxEvtHandler
 {
 	public:
         typedef short int LockToken;
@@ -48,10 +40,11 @@ class DLLIMPORT MessageManager : public wxNotebook
 		void CreateMenu(wxMenuBar* menuBar);
 		void ReleaseMenu(wxMenuBar* menuBar);
 
-		wxWindow* GetContainerWindow(){ return m_pContainerWin; }
-		void SetContainerWindow(wxWindow* win){ m_pContainerWin = win; }
+		wxFlatNotebook* GetNotebook() { return m_pNotebook; }
 
-        int AddLog(MessageLog* log);
+        int AddLog(MessageLog* log, const wxString& title, const wxBitmap& bitmap = wxNullBitmap);
+        void RemoveLog(MessageLog* log);
+
 		void LogToStdOut(const wxChar* msg, ...);
 		void Log(const wxChar* msg, ...);
 		void DebugLog(const wxChar* msg, ...);
@@ -60,7 +53,6 @@ class DLLIMPORT MessageManager : public wxNotebook
 		void Log(int id, const wxChar* msg, ...);
 		void AppendLog(const wxChar* msg, ...);
 		void AppendLog(int id, const wxChar* msg, ...);
-		void SwitchTo(MessageLogType type);
 		void SwitchTo(int id);
 		void SetLogImage(int id, const wxBitmap& bitmap);
 		void SetLogImage(MessageLog* log, const wxBitmap& bitmap);
@@ -69,7 +61,6 @@ class DLLIMPORT MessageManager : public wxNotebook
         void EnableAutoHide(bool enable = true);
         /** @brief Is auto-hiding enabled? */
         bool IsAutoHiding();
-        int GetOpenSize();
         /** @brief Open message manager. */
         void Open();
         /** @brief Close message manager.
@@ -92,10 +83,6 @@ class DLLIMPORT MessageManager : public wxNotebook
           */
         void Unlock(bool force = false);
 
-		/** @brief Set the active log target for streaming */
-		MessageLogType LogPage(MessageLogType lt);
-		/** @brief Set the active log target for streaming */
-		MessageLogType LogPage(int pageIndex);
 		/** @brief Streaming operator.
 		  * By default, streams to the debug log. This can be changed by
 		  * using LogPage(), e.g:
@@ -105,38 +92,28 @@ class DLLIMPORT MessageManager : public wxNotebook
 		{
             wxString tmp;
             tmp << val;
-            AppendLog(m_OtherPageLogTarget, tmp);
+            AppendLog(m_DebugLog, tmp);
             return *this;
 		}        /** @brief Special streaming operator for target log */
-		MessageManager& operator<<(const MessageLogType& val)
-		{
-            // "eat" input. the actual job is carried out in LogPage()
-            return *this;
-		}
-
-		bool GetSafebutSlow();
-		void SetSafebutSlow(bool flag, bool dosave = false);
     private:
-		static MessageManager* Get(wxWindow* parent);
+		static MessageManager* Get();
 		static void Free();
-		MessageManager(wxWindow* parent);
+		MessageManager();
 		~MessageManager();
-        int DoAddLog(MessageLogType type, MessageLog* log);
-		bool CheckLogType(MessageLogType type);
-        void DoSwitchTo(MessageLog* ml);
-        void OnSelChange(wxNotebookEvent& event);
+        int DoAddLog(MessageLog* log, const wxString& title, const wxBitmap& bitmap = wxNullBitmap);
+        bool CheckLogId(int id);
 
+        void OnAppDoneStartup(wxCommandEvent& event);
+        void OnAppStartShutdown(wxCommandEvent& event);
+        void OnPageChanged(wxFlatNotebookEvent& event);
+
+        wxFlatNotebook* m_pNotebook;
         LogsMap m_Logs;
-        LogIDsMap m_LogIDs;
-		bool m_HasDebugLog;
-		int m_OtherPageLogTarget; // used by the streaming operators
+		int m_AppLog;
+		int m_DebugLog;
 		short int m_LockCounter;
-		int m_OpenSize; // the size when open
 		bool m_AutoHide; // auto-hide?
-		bool m_Open; // is open?
-		wxWindow* m_pContainerWin;
-		bool m_SafebutSlow; // Adds extra stability against crashes, but
-                            // the application becomes a bit unresponsive
+
 		DECLARE_EVENT_TABLE();
 		DECLARE_SANITY_CHECK
 };

@@ -6,7 +6,7 @@
 class SearchResultsLog : public SimpleListLog
 {
 	public:
-		SearchResultsLog(wxNotebook* parent, const wxString& title, int numCols, int widths[], const wxArrayString& titles);
+		SearchResultsLog(int numCols, int widths[], const wxArrayString& titles);
 		virtual ~SearchResultsLog();
 		void FocusEntry(size_t index);
 		void SetBasePath(const wxString base){ m_Base = base; }

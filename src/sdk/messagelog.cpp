@@ -20,28 +20,21 @@
 * Program URL   : http://www.codeblocks.org
 *
 * $Id$
-* $Date$
+* $Date: 2005-10-19 16:50:49 +0300 (ΞΒΞ’ΒΞβ€™Ξ’Β¤ΞΒΞ’ΒΞβ€™Ξ’ΒµΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ’Β, 19 ΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ’ΒΞΒΞ’ΒΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ’Β 2005) $
 */
 
 #include "sdk_precomp.h"
 #include "messagelog.h" // class's header file
+#include "manager.h"
 
 // class constructor
-MessageLog::MessageLog(wxNotebook* parent)
-    : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxCLIP_CHILDREN)
+MessageLog::MessageLog()
+    : wxPanel(Manager::Get()->GetAppWindow(), wxID_ANY, wxDefaultPosition, wxDefaultSize)
 {
-    m_Parent = parent;
-    m_PageIndex = -1;
+    m_PageId = -1;
 }
 
 // class destructor
 MessageLog::~MessageLog()
 {
 }
-
-void MessageLog::CreateLog(const wxString& title)
-{
-    m_Parent->AddPage(this, title);
-    m_PageIndex = m_Parent->GetPageCount() - 1;
-}
-

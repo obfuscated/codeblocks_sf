@@ -111,7 +111,7 @@
                 <Option output="devel\codeblocks.dll" />
                 <Option working_dir="devel" />
                 <Option object_output=".objs\2.6" />
-                <Option external_deps="sdk\tinyxml\libtxml.a;sdk\as\libangelscript.a;sdk\propgrid\libpropgrid.a;sdk\wxFlatNotebook\lib\libwxflatnotebook.a;devel\libwxscintilla.a;" />
+                <Option external_deps="sdk\tinyxml\libtxml.a;sdk\as\libangelscript.a;sdk\propgrid\libpropgrid.a;sdk\wxFlatNotebook\libwxflatnotebook.a;devel\libwxscintilla.a;" />
                 <Option type="3" />
                 <Option compiler="0" />
                 <Option parameters="--debug-log --no-check-associations" />

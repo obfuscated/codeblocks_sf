@@ -14,17 +14,15 @@ class DLLIMPORT MessageLog : public wxPanel
 		// class destructor
 		virtual ~MessageLog();
 
-        virtual void CreateLog(const wxString& title);
 		virtual void AddLog(const wxString& msg, bool addNewLine = true) = 0;
-		int GetPageIndex(){ return m_PageIndex; }
+		virtual int GetPageId() const { return m_PageId; }
     protected:
 		// class constructor
-		MessageLog(wxNotebook* parent);
+		MessageLog();
 
     private:
-        wxNotebook* m_Parent;
-        int m_PageIndex;
+        friend class MessageManager; // allow MessageManager to tamper with m_PageId
+        int m_PageId;
 };
 
 #endif // MESSAGELOG_H
-

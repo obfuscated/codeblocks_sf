@@ -1,0 +1,383 @@
+--- wxFlatNotebook-base.cpp	Thu Jan 05 14:47:11 2006
++++ wxFlatNotebook.cpp	Thu Jan 05 22:46:21 2006
+@@ -10,7 +10,7 @@
+ // Licence:     wxWindows license <http://www.wxwidgets.org/licence3.txt>
+ ///////////////////////////////////////////////////////////////////////////////
+ 
+-#include <wx/wxFlatNotebook/wxFlatNotebook.h>
++#include "wxFlatNotebook.h"
+ #include <algorithm>
+ #include <wx/tooltip.h>
+ #include <wx/tipwin.h>
+@@ -21,6 +21,7 @@
+ DEFINE_EVENT_TYPE(wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CHANGED)
+ DEFINE_EVENT_TYPE(wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CHANGING)
+ DEFINE_EVENT_TYPE(wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CLOSING) 
++DEFINE_EVENT_TYPE(wxEVT_COMMAND_FLATNOTEBOOK_CONTEXT_MENU)
+ 
+ IMPLEMENT_DYNAMIC_CLASS(wxFlatNotebook, wxPanel)
+ 
+@@ -75,6 +76,13 @@
+ 
+ void wxFlatNotebook::AddPage(wxWindow* window, const wxString& caption, const bool selected, const int imgindex)
+ {
++    // sanity check
++    if (!window)
++        return;
++
++    // reparent the window to us
++    window->Reparent(this);
++
+ 	// Add tab
+ 	bool bSelected = selected || m_windows.empty();
+ 	int curSel = m_pages->GetSelection();
+@@ -144,6 +152,13 @@
+ 
+ bool wxFlatNotebook::InsertPage(size_t index, wxWindow* page, const wxString& text, bool select, const int imgindex)
+ {
++    // sanity check
++    if (!page)
++        return false;
++
++    // reparent the window to us
++    page->Reparent(this);
++
+ 	// Insert tab
+ 	bool bSelected = select || m_windows.empty();
+ 	int curSel = m_pages->GetSelection();
+@@ -225,11 +240,13 @@
+ 	m_pages->DoSetSelection(page);
+ }
+ 
+-void wxFlatNotebook::DeletePage(size_t page)
++void wxFlatNotebook::DeletePage(size_t page, bool notify)
+ {
+ 	if(page >= m_windows.size())
+ 		return;
+ 
++    if (notify)
++    {
+ 	// Fire a closing event
+ 	wxFlatNotebookEvent event(wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CLOSING, GetId());
+ 	event.SetSelection((int)page);
+@@ -239,6 +256,7 @@
+ 	// The event handler allows it?
+     if (!event.IsAllowed())
+         return;
++    }
+ 
+ 	Freeze();
+ 
+@@ -252,14 +270,14 @@
+ 		m_mainSizer->Detach(pageRemoved);
+ 	}
+ 
+-	// Now we can destroy it; in wxWidgets use Destroy instead of delete
+-	pageRemoved->Destroy();
+-
+ 	// Remove it from the array as well
+ 	std::vector<wxWindow*>::iterator iter = std::find(m_windows.begin(), m_windows.end(), pageRemoved);
+ 	if(iter != m_windows.end())
+ 		m_windows.erase(iter);
+ 
++	// Now we can destroy it; in wxWidgets use Destroy instead of delete
++	pageRemoved->Destroy();
++
+ 	Thaw();
+ 
+ 	m_pages->DoDeletePage(page);
+@@ -304,6 +322,16 @@
+ 	return m_windows[page];
+ }
+ 
++int wxFlatNotebook::GetPageIndex(wxWindow* win) const
++{
++    for (size_t i = 0; i < m_windows.size(); ++i)
++    {
++        if (m_windows[i] == win)
++            return (int)i;
++    }
++    return -1;
++}
++
+ int wxFlatNotebook::GetSelection() const 
+ { 
+ 	return m_pages->GetSelection(); 
+@@ -391,11 +419,13 @@
+ 	return m_pages->m_nStyle;
+ }
+ 
+-bool wxFlatNotebook::RemovePage(size_t page)
++bool wxFlatNotebook::RemovePage(size_t page, bool notify)
+ {
+ 	if(page >= m_windows.size())
+ 		return false;
+ 
++    if (notify)
++    {
+ 	// Fire a closing event
+ 	wxFlatNotebookEvent event(wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CLOSING, GetId());
+ 	event.SetSelection((int)page);
+@@ -405,6 +435,7 @@
+ 	// The event handler allows it?
+     if (!event.IsAllowed())
+         return false;
++    }
+ 
+ 	Freeze();
+ 
+@@ -433,11 +464,6 @@
+ 	return true;
+ }
+ 
+-void wxFlatNotebook::SetRightClickMenu(wxMenu* menu)
+-{
+-	m_pages->m_pRightClickMenu = menu;
+-}
+-
+ wxString wxFlatNotebook::GetPageText(size_t page)
+ {
+ 	return m_pages->GetPageText(page);
+@@ -497,12 +523,11 @@
+ wxPageContainer::wxPageContainer(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style)
+ : m_ImageList(NULL) 
+ , m_iActivePage(-1)
++, m_bHoverX(false)
+ , m_bHoverLeftArrow(false)
+ , m_bHoverRightArrow(false)
+-, m_bHoverX(false)
+-, m_pParent(parent)
+-, m_pRightClickMenu(NULL)
+ , m_pDropTarget(NULL)
++, m_pParent(parent)
+ {
+ 	m_colorTo = wxColor(255, 255, 255);
+ 	m_colorFrom   = wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
+@@ -515,11 +540,6 @@
+ 
+ wxPageContainer::~wxPageContainer(void)
+ {
+-	if(m_pRightClickMenu)
+-	{
+-		delete m_pRightClickMenu;
+-		m_pRightClickMenu = NULL;
+-	}
+ }
+ 
+ void wxPageContainer::OnPaint(wxPaintEvent &event)
+@@ -828,7 +848,9 @@
+ 	{
+ 		m_iActivePage = (int)m_pagesInfoVec.size();
+ 	}
+-	m_pagesInfoVec.push_back(wxPageInfo(caption, imgindex));
++	wxPageInfo pg(caption, imgindex);
++	pg.SetPosition(wxPoint(100, 0)); // mark as "visible". fixes bug with DoSetSelection() before painting for the very first time
++	m_pagesInfoVec.push_back(pg);
+ 	Refresh();
+ }
+ 
+@@ -838,8 +860,10 @@
+ 	{
+ 		m_iActivePage = (int)m_pagesInfoVec.size();
+ 	}
++	wxPageInfo pg(text, imgindex);
++	pg.SetPosition(wxPoint(100, 0)); // mark as "visible". fixes bug with DoSetSelection() before painting for the very first time
+ 	std::vector<wxPageInfo>::iterator iter = m_pagesInfoVec.begin() + index;
+-	m_pagesInfoVec.insert(iter, wxPageInfo(text, imgindex));
++	m_pagesInfoVec.insert(iter, pg);
+ 	Refresh();
+ 	return true;
+ }
+@@ -862,9 +886,16 @@
+ 	{
+ 	case wxFNB_TAB:
+ 		{
++			wxFlatNotebookEvent event(wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CLOSING, GetParent()->GetId());
++			event.SetSelection(tabIdx);
++			event.SetEventObject(GetParent());
++			GetParent()->GetEventHandler()->ProcessEvent(event);
++			if (event.IsAllowed())
++			{
+ 			// Set the current tab to be active
+ 			SetSelection((size_t)tabIdx);
+-			DeletePage((size_t)tabIdx);
++                DeletePage((size_t)tabIdx, false);
++			}
+ 			break;
+ 		}
+ 	default:
+@@ -875,24 +906,26 @@
+ 
+ void wxPageContainer::OnRightDown(wxMouseEvent& event)
+ {
+-	if(m_pRightClickMenu)
+-	{
+ 		wxPageInfo pgInfo;
+ 		int tabIdx;
+ 		int where = HitTest(event.GetPosition(), pgInfo, tabIdx);
+ 		switch(where)
+ 		{
+ 		case wxFNB_TAB:
++        {
+ 			// Set the current tab to be active
+ 			SetSelection((size_t)tabIdx);
+ 
+-			// Popup the right click menu
+-			PopupMenu(m_pRightClickMenu);
++            wxFlatNotebookEvent event(wxEVT_COMMAND_FLATNOTEBOOK_CONTEXT_MENU, GetParent()->GetId());
++            event.SetSelection((int)tabIdx);
++            event.SetOldSelection((int)m_iActivePage);
++            event.SetEventObject(GetParent());
++            GetParent()->GetEventHandler()->ProcessEvent(event);
++        }
+ 			break;
+ 		default:
+ 			break;
+ 		}
+-	}
+ 	event.Skip();
+ }
+ 
+@@ -966,7 +999,8 @@
+ 			event.SetSelection(m_iActivePage);
+ 			event.SetEventObject(GetParent());
+ 			GetParent()->GetEventHandler()->ProcessEvent(event);
+-			DeletePage((size_t)m_iActivePage);
++			if (event.IsAllowed())
++                DeletePage((size_t)m_iActivePage, false);
+ 			break;
+ 		}
+ 	}
+@@ -1047,14 +1081,23 @@
+ 	if(!IsTabVisible(page))
+ 	{
+ 		m_nFrom = (int)page;
++
++		// fix for the add-page bug that displays only the added page
++        int scrollLeft = GetNumTabsCanScrollLeft();
++        if (scrollLeft > 0)
++            m_nFrom -= scrollLeft - 1;
++        if(m_nFrom < 0)
++            m_nFrom = 0;
++        // end of fix
++
+ 		Refresh();
+ 	}
+ }
+ 
+-void wxPageContainer::DeletePage(size_t page)
++void wxPageContainer::DeletePage(size_t page, bool notify)
+ {
+ 	wxFlatNotebook* book = (wxFlatNotebook*)GetParent();
+-	book->DeletePage(page);
++	book->DeletePage(page, notify);
+ 	book->Refresh();
+ }
+ 
+--- wxFlatNotebook-base.h	Thu Jan 05 18:06:40 2006
++++ wxFlatNotebook.h	Thu Jan 05 22:41:01 2006
+@@ -31,7 +31,7 @@
+ #include <wx/dataobj.h>
+ #include <wx/dnd.h>
+ 
+-#include "textdroptarget.h"
++#include "TextDropTarget.h"
+ class wxPageContainer;
+ 
+ #ifndef M_PI
+@@ -42,7 +42,7 @@
+ 
+ 
+ ///  wxFlatNotebook styles
+-#define wxFNB_DEFAULT_STYLE				wxFNB_MOUSE_MIDDLE_CLOSES_TABS | wxFNB_BORDER | wxFNB_TOP
++#define wxFNB_DEFAULT_STYLE				wxFNB_MOUSE_MIDDLE_CLOSES_TABS | wxFNB_BORDER //| wxFNB_TOP
+ 
+ /// Use Visual Studio 2003 (VC7.1) Style for tabs
+ #define wxFNB_VC71						1
+@@ -125,7 +125,7 @@
+ 	/** 	
+ 	\param page - index of page to be deleted
+ 	*/
+-	void DeletePage(size_t page);
++	void DeletePage(size_t page, bool notify = true);
+ 
+ 	/// Deletes all notebook pages and destroys all windows associated with pages
+ 	bool DeleteAllPages();
+@@ -141,6 +141,11 @@
+ 	\param page - page index
+ 	*/
+ 	wxWindow * GetPage(size_t page) const;
++	/// Returns the page index of the window object.
++	/**
++	\param win - window object
++	*/
++	int GetPageIndex(wxWindow* win) const;
+ 
+ 	/// Returns the currently visible/selected notebook page 0 based index.
+ 	int GetSelection() const;
+@@ -176,7 +181,7 @@
+ 	/** 	
+ 	\param page - page index to be removed
+ 	*/
+-	bool RemovePage(size_t page);
++	bool RemovePage(size_t page, bool notify = true);
+ 
+ 	/// Sets the amount of space around each page's icon and label, in pixels.
+ 	/** 	
+@@ -196,11 +201,6 @@
+ 	*/
+ 	long GetBookStyle();
+ 
+-	/// Sets a right click menu to the notebook
+-	/** 	
+-	\param menu - right click menu object
+-	*/
+-	void SetRightClickMenu(wxMenu* menu);
+ 	/// Returns the page text
+ 	/** 	
+ 	\param page - page index
+@@ -467,7 +467,7 @@
+ 	virtual void ShowTabTooltip(int tabIdx);
+ 
+ 	/// A wrapper from calling the DoDeletePage()
+-	void DeletePage(size_t page);
++	void DeletePage(size_t page, bool notify = true);
+ 
+ 	/// Remove all pages from the container (it also deletes them)
+ 	void DeleteAllPages();
+@@ -527,9 +527,6 @@
+ 	/// Pointer to the parent window
+ 	wxWindow *m_pParent;
+ 
+-	/// The right click menu
+-	wxMenu* m_pRightClickMenu;
+-
+ 	/// Gradient colors
+ 	wxColour m_colorFrom, m_colorTo, m_colorBorder;
+ };
+@@ -569,10 +566,13 @@
+ 	int  GetOldSelection() { return (int)oldsel; }
+ }; 
+ 
++#define wxFN_IMPEXP
++
+ BEGIN_DECLARE_EVENT_TYPES()
+-DECLARE_EVENT_TYPE(wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CHANGED, 50000)
+-DECLARE_EVENT_TYPE(wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CHANGING, 50001)
+-DECLARE_EVENT_TYPE(wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CLOSING, 50002)
++    DECLARE_EXPORTED_EVENT_TYPE(wxFN_IMPEXP, wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CHANGED, 50000)
++    DECLARE_EXPORTED_EVENT_TYPE(wxFN_IMPEXP, wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CHANGING, 50001)
++    DECLARE_EXPORTED_EVENT_TYPE(wxFN_IMPEXP, wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CLOSING, 50002)
++    DECLARE_EXPORTED_EVENT_TYPE(wxFN_IMPEXP, wxEVT_COMMAND_FLATNOTEBOOK_CONTEXT_MENU, 50003)
+ END_DECLARE_EVENT_TYPES()
+ 
+ typedef void (wxEvtHandler::*wxFlatNotebookEventFunction)(wxFlatNotebookEvent&);
+@@ -588,5 +588,8 @@
+ 
+ #define EVT_FLATNOTEBOOK_PAGE_CLOSING(winid, fn) \
+ 	wx__DECLARE_EVT1(wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CLOSING, winid, wxFlatNotebookEventHandler(fn))
++
++#define EVT_FLATNOTEBOOK_CONTEXT_MENU(winid, fn) \
++	wx__DECLARE_EVT1(wxEVT_COMMAND_FLATNOTEBOOK_CONTEXT_MENU, winid, wxFlatNotebookEventHandler(fn))
+ 
+ #endif // WXFLATNOTEBOOK_H

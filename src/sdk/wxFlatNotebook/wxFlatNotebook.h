@@ -30,6 +30,7 @@
 #include <wx/dcbuffer.h>
 #include <wx/dataobj.h>
 #include <wx/dnd.h>
+
 #include "TextDropTarget.h"
 class wxPageContainer;
 
@@ -140,6 +141,11 @@ public:
 	\param page - page index
 	*/
 	wxWindow * GetPage(size_t page) const;
+	/// Returns the page index of the window object.
+	/**
+	\param win - window object
+	*/
+	int GetPageIndex(wxWindow* win) const;
 
 	/// Returns the currently visible/selected notebook page 0 based index.
 	int GetSelection() const;
@@ -254,8 +260,8 @@ private:
 	DECLARE_EVENT_TABLE()
 	void OnNavigationKey(wxNavigationKeyEvent& event);
 	void OnPaint(wxPaintEvent& WXUNUSED(event));
-	void OnEraseBackground(wxEraseEvent& WXUNUSED(event)) { }
 	void OnSize(wxSizeEvent& event);
+	void OnEraseBackground(wxEraseEvent& WXUNUSED(event)) { }
 };
 
 /**

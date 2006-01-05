@@ -12,7 +12,7 @@ class DLLIMPORT SimpleTextLog : public MessageLog
 {
 	public:
 		// class constructor
-		SimpleTextLog(wxNotebook* parent, const wxString& title);
+		SimpleTextLog();
 		// class destructor
 		~SimpleTextLog();
 

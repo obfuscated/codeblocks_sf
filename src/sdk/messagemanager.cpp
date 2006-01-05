@@ -27,10 +27,10 @@
 #include <wx/intl.h>
 #include <wx/datetime.h>
 #include <wx/menu.h>
-#include <wx/imaglist.h>
 #include <wx/log.h>
 #include <wx/laywin.h>
 #include <wx/settings.h>
+#include <wx/bitmap.h>
 
 #include "manager.h"
 #include "messagemanager.h" // class's header file
@@ -38,19 +38,22 @@
 #include "configmanager.h"
 #include "simpletextlog.h"
 #include "managerproxy.h"
+#include <wxFlatNotebook.h>
 
 #define CBYIELD() \
   {                                                     \
       wxTheApp->Yield();                                \
   }
 
-MessageManager* MessageManager::Get(wxWindow* parent)
+static int idNB = wxNewId();
+
+MessageManager* MessageManager::Get()
 {
     if(Manager::isappShuttingDown()) // The mother of all sanity checks
         MessageManager::Free();
     else if (!MessageManagerProxy::Get())
 	{
-		MessageManagerProxy::Set( new MessageManager(parent) );
+		MessageManagerProxy::Set( new MessageManager() );
 		MessageManagerProxy::Get()->Log(_("MessageManager initialized"));
 	}
     return MessageManagerProxy::Get();
@@ -65,22 +68,25 @@ void MessageManager::Free()
 	}
 }
 
-BEGIN_EVENT_TABLE(MessageManager, wxNotebook)
-    EVT_NOTEBOOK_PAGE_CHANGED(-1, MessageManager::OnSelChange)
+BEGIN_EVENT_TABLE(MessageManager, wxEvtHandler)
+    EVT_APP_STARTUP_DONE(MessageManager::OnAppDoneStartup)
+    EVT_APP_START_SHUTDOWN(MessageManager::OnAppStartShutdown)
+    EVT_FLATNOTEBOOK_PAGE_CHANGED(idNB, MessageManager::OnPageChanged)
 END_EVENT_TABLE()
 
 // class constructor
-MessageManager::MessageManager(wxWindow* parent)
-    : wxNotebook(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxCLIP_CHILDREN | wxNB_BOTTOM),// | wxNB_MULTILINE),
+MessageManager::MessageManager()
+    : m_AppLog(-1),
+    m_DebugLog(-1),
     m_LockCounter(0),
-    m_OpenSize(150),
-    m_AutoHide(false),
-    m_Open(false),
-    m_SafebutSlow(false)
+    m_AutoHide(false)
 {
     SC_CONSTRUCTOR_BEGIN
 
-    wxImageList* images = new wxImageList(16, 16);
+    m_pNotebook = new wxFlatNotebook(Manager::Get()->GetAppWindow(), idNB);
+    m_pNotebook->SetBookStyle(wxFNB_BOTTOM | wxFNB_NO_X_BUTTON);
+    m_pNotebook->SetImageList(new wxFlatNotebookImageList);
+
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("message_manager"));
 
     // add default log and debug images (index 0 and 1)
@@ -88,29 +94,23 @@ MessageManager::MessageManager(wxWindow* parent)
 	wxString prefix;
     prefix = ConfigManager::GetDataFolder() + _T("/images/");
     bmp.LoadFile(prefix + _T("edit_16x16.png"), wxBITMAP_TYPE_PNG);
-    images->Add(bmp);
+    m_pNotebook->GetImageList()->push_back(bmp);
     bmp.LoadFile(prefix + _T("contents_16x16.png"), wxBITMAP_TYPE_PNG);
-    images->Add(bmp);
-    AssignImageList(images);
+    m_pNotebook->GetImageList()->push_back(bmp);
 
-    m_Logs.clear();
-    m_LogIDs.clear();
-    DoAddLog(mltLog, new SimpleTextLog(this, _("Code::Blocks")));
-	m_HasDebugLog = cfg->ReadBool(_T("/has_debug_log"), false);
-	m_SafebutSlow = cfg->ReadBool(_T("/safe_but_slow"), false);
+    m_AppLog = DoAddLog(new SimpleTextLog(), _("Code::Blocks"));
 
-	if (m_HasDebugLog)
+	bool hasDebugLog = cfg->ReadBool(_T("/has_debug_log"), false);
+	if (hasDebugLog)
 	{
-		DoAddLog(mltDebug, new SimpleTextLog(this, _("Code::Blocks Debug")));
-		SetPageImage(m_Logs[mltDebug]->GetPageIndex(), 1); // set debug log image
+		m_DebugLog = DoAddLog(new SimpleTextLog(), _("Code::Blocks Debug"));
+		SetLogImage(m_DebugLog, bmp); // set debug log image
     }
 
-	cfg->Write(_T("/safe_but_slow"), m_SafebutSlow);
-
-    m_OpenSize = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/bottom_block_height"), 150);
     m_AutoHide = cfg->ReadBool(_T("/auto_hide"), false);
 //    Open();
-    LogPage(mltDebug); // default logging page for stream operator
+
+    Manager::Get()->GetAppWindow()->PushEventHandler(this);
 }
 
 // class destructor
@@ -118,24 +118,7 @@ MessageManager::~MessageManager()
 {
     SC_DESTRUCTOR_BEGIN
     SC_DESTRUCTOR_END
-}
-
-bool MessageManager::GetSafebutSlow()
-{
-    if(!this)
-        return false;
-    return m_SafebutSlow;
-}
-
-void MessageManager::SetSafebutSlow(bool flag, bool dosave)
-{
-    if(this)
-    {
-        m_SafebutSlow = flag;
-        if(dosave)
-            Manager::Get()->GetConfigManager(_T("message_manager"))->Write(_T("/safe_but_slow"), m_SafebutSlow);
-    }
-
+    delete m_pNotebook->GetImageList();
 }
 
 void MessageManager::CreateMenu(wxMenuBar* menuBar)
@@ -148,15 +131,9 @@ void MessageManager::ReleaseMenu(wxMenuBar* menuBar)
     SANITY_CHECK();
 }
 
-bool MessageManager::CheckLogType(MessageLogType type)
+bool MessageManager::CheckLogId(int id)
 {
-    SANITY_CHECK(false);
-    if (type == mltOther)
-    {
-        DebugLog(_("Can't use MessageManager::Log(mltOther, ...); Use MessageManager::Log(id, ...)"));
-        return false;
-    }
-	return true;
+    return id >= 0 && id < (int)m_Logs.size() && (m_Logs[id] != 0L);
 }
 
 void MessageManager::LogToStdOut(const wxChar* msg, ...)
@@ -181,17 +158,17 @@ void MessageManager::Log(const wxChar* msg, ...)
     tmp = wxString::FormatV(msg, arg_list);
     va_end(arg_list);
 
-    m_Logs[mltLog]->AddLog(tmp);
-    m_Logs[mltLog]->Refresh();
+    m_Logs[m_AppLog]->AddLog(tmp);
+    m_Logs[m_AppLog]->Refresh();
 
-	if(!Manager::isappShuttingDown() && !m_SafebutSlow)
+	if(!Manager::isappShuttingDown())
         CBYIELD();
 }
 
 void MessageManager::DebugLog(const wxChar* msg, ...)
 {
     SANITY_CHECK();
-	if (!m_HasDebugLog)
+	if (!CheckLogId(m_DebugLog))
 		return;
     wxString tmp;
     va_list arg_list;
@@ -203,12 +180,12 @@ void MessageManager::DebugLog(const wxChar* msg, ...)
 	wxDateTime timestamp = wxDateTime::UNow();
 	wxString ts;
 	ts.Printf(_T("%2.2d:%2.2d:%2.2d.%3.3d"), timestamp.GetHour(), timestamp.GetMinute(), timestamp.GetSecond(), timestamp.GetMillisecond());
-    m_Logs[mltDebug]->AddLog(_T("[") + ts + _T("]: ") + tmp);
+    m_Logs[m_DebugLog]->AddLog(_T("[") + ts + _T("]: ") + tmp);
 //    m_Logs[mltDebug]->AddLog(_T("[") + timestamp.Format(_T("%X.%l")) + _T("]: ") + tmp);
 //    m_Logs[mltDebug]->AddLog(tmp);
-    m_Logs[mltDebug]->Refresh();
+    m_Logs[m_DebugLog]->Refresh();
 
-	if(!Manager::isappShuttingDown() && !m_SafebutSlow)
+	if(!Manager::isappShuttingDown())
         CBYIELD();
 }
 
@@ -224,11 +201,11 @@ void MessageManager::DebugLogWarning(const wxChar* msg, ...)
 
     wxString typ = _("WARNING");
     wxSafeShowMessage(typ, typ + _T(":\n\n") + tmp);
-    if (!m_HasDebugLog)
+    if (!CheckLogId(m_DebugLog))
         return;
-    ((SimpleTextLog*)m_Logs[mltDebug])->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLUE));
+    ((SimpleTextLog*)m_Logs[m_DebugLog])->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLUE));
     DebugLog(typ + _T(": ") + tmp);
-    ((SimpleTextLog*)m_Logs[mltDebug])->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
+    ((SimpleTextLog*)m_Logs[m_DebugLog])->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
 }
 
 void MessageManager::DebugLogError(const wxChar* msg, ...)
@@ -244,38 +221,44 @@ void MessageManager::DebugLogError(const wxChar* msg, ...)
 
     wxString typ = _("ERROR");
     wxSafeShowMessage(typ, typ + _T(":\n\n") + tmp);
-    if (!m_HasDebugLog)
+    if (!CheckLogId(m_DebugLog))
         return;
-    ((SimpleTextLog*)m_Logs[mltDebug])->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxRED));
+    ((SimpleTextLog*)m_Logs[m_DebugLog])->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxRED));
     DebugLog(typ + _T(": ") + tmp);
-    ((SimpleTextLog*)m_Logs[mltDebug])->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
+    ((SimpleTextLog*)m_Logs[m_DebugLog])->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
 }
 
 // add a new log page
-int MessageManager::AddLog(MessageLog* log)
+int MessageManager::AddLog(MessageLog* log, const wxString& title, const wxBitmap& bitmap)
 {
     SANITY_CHECK(-1);
-    return DoAddLog(mltOther, log);
+    return DoAddLog(log, title, bitmap);
+}
+
+void MessageManager::RemoveLog(MessageLog* log)
+{
+    // TODO
 }
 
 // add a new log page
-int MessageManager::DoAddLog(MessageLogType type, MessageLog* log)
+int MessageManager::DoAddLog(MessageLog* log, const wxString& title, const wxBitmap& bitmap)
 {
     SANITY_CHECK(-1);
-    if (!m_HasDebugLog && type == mltDebug)
-        return -1;
 
-    if (type != mltOther)
-        m_Logs[type] = log;
-    m_LogIDs[log->GetPageIndex()] = log;
-    SetPageImage(log->GetPageIndex(), 0); // set default page image
-    return log->GetPageIndex();
+    static int pageId = 0;
+    int id = pageId++;
+
+    log->m_PageId = id;
+    m_Logs[id] = log;
+    m_pNotebook->AddPage(log, title, false);
+    SetLogImage(id, bitmap);
+    return id;
 }
 
 void MessageManager::Log(int id, const wxChar* msg, ...)
 {
     SANITY_CHECK();
-    if (!m_LogIDs[id])
+    if (!CheckLogId(id))
         return;
 
     wxString tmp;
@@ -285,10 +268,10 @@ void MessageManager::Log(int id, const wxChar* msg, ...)
     tmp = wxString::FormatV(msg, arg_list);
     va_end(arg_list);
 
-    m_LogIDs[id]->AddLog(tmp);
-    m_LogIDs[id]->Refresh();
+    m_Logs[id]->AddLog(tmp);
+    m_Logs[id]->Refresh();
 
-    if(!Manager::isappShuttingDown() && !m_SafebutSlow)
+    if(!Manager::isappShuttingDown())
         CBYIELD();
 }
 
@@ -302,16 +285,16 @@ void MessageManager::AppendLog(const wxChar* msg, ...)
     tmp = wxString::FormatV(msg, arg_list);
     va_end(arg_list);
 
-    m_Logs[mltLog]->AddLog(tmp, false);
-    m_Logs[mltLog]->Refresh();
-	if(!Manager::isappShuttingDown() && !m_SafebutSlow)
+    m_Logs[m_AppLog]->AddLog(tmp, false);
+    m_Logs[m_AppLog]->Refresh();
+	if(!Manager::isappShuttingDown())
         CBYIELD();
 }
 
 void MessageManager::AppendLog(int id, const wxChar* msg, ...)
 {
     SANITY_CHECK();
-    if (!m_LogIDs[id])
+    if (!CheckLogId(id))
         return;
 
     wxString tmp;
@@ -321,72 +304,44 @@ void MessageManager::AppendLog(int id, const wxChar* msg, ...)
     tmp = wxString::FormatV(msg, arg_list);
     va_end(arg_list);
 
-    m_LogIDs[id]->AddLog(tmp, false);
-    m_LogIDs[id]->Refresh();
-	if(!Manager::isappShuttingDown() && !m_SafebutSlow)
+    m_Logs[id]->AddLog(tmp, false);
+    m_Logs[id]->Refresh();
+	if(!Manager::isappShuttingDown())
         CBYIELD();
 }
 
 // switch to log page
-void MessageManager::SwitchTo(MessageLogType type)
-{
-    SANITY_CHECK();
-    if (!m_HasDebugLog && type == mltDebug)
-        return;
-
-    if (!CheckLogType(type))
-		return;
-    DoSwitchTo(m_Logs[type]);
-}
-
 void MessageManager::SwitchTo(int id)
 {
     SANITY_CHECK();
-    DoSwitchTo(m_LogIDs[id]);
-}
 
-MessageLogType MessageManager::LogPage(MessageLogType lt)
-{
-    m_OtherPageLogTarget = m_Logs[lt] ? m_Logs[lt]->GetPageIndex() : 0;
-    return lt;
-}
-
-MessageLogType MessageManager::LogPage(int pageIndex)
-{
-    m_OtherPageLogTarget = pageIndex;
-    return mltOther;
-}
-
-void MessageManager::DoSwitchTo(MessageLog* ml)
-{
-    SANITY_CHECK();
-    if (ml)
-    {
-        int index = ml->GetPageIndex();
-        SetSelection(index);
-    }
-    else
-        DebugLog(_("MessageManager::DoSwitchTo() invalid page..."));
+    if (!CheckLogId(id))
+        return;
+    int index = m_pNotebook->GetPageIndex(m_Logs[id]);
+    m_pNotebook->SetSelection(index);
 }
 
 void MessageManager::SetLogImage(int id, const wxBitmap& bitmap)
 {
     SANITY_CHECK();
-    if (!m_LogIDs[id] || !GetImageList())
+    if (!CheckLogId(id))
         return;
 
-    int idx = GetImageList()->Add(bitmap);
-    SetPageImage(m_LogIDs[id]->GetPageIndex(), idx);
+    int index = m_pNotebook->GetPageIndex(m_Logs[id]);
+    if (!bitmap.Ok())
+        m_pNotebook->SetPageImageIndex(index, 0); // default log image
+    else
+    {
+        m_pNotebook->GetImageList()->push_back(bitmap);
+        m_pNotebook->SetPageImageIndex(index, m_pNotebook->GetImageList()->size() - 1);
+    }
 }
 
 void MessageManager::SetLogImage(MessageLog* log, const wxBitmap& bitmap)
 {
     SANITY_CHECK();
-    if (!log || !GetImageList())
-        return;
-
-    int idx = GetImageList()->Add(bitmap);
-    SetPageImage(log->GetPageIndex(), idx);
+    if (log)
+        SetLogImage(log->GetPageId(), bitmap);
 }
 
 void MessageManager::EnableAutoHide(bool enable)
@@ -401,32 +356,27 @@ bool MessageManager::IsAutoHiding()
     return m_AutoHide;
 }
 
-int MessageManager::GetOpenSize()
-{
-    return m_OpenSize;
-}
-
 void MessageManager::Open()
 {
-    if (!m_AutoHide || m_Open)
+    if (!m_AutoHide)
         return;
 
-    if (m_pContainerWin)
-        m_pContainerWin->Show(true);
-    m_Open = true;
+    CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
+    evt.pWindow = m_pNotebook;
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 }
 
 void MessageManager::Close(bool force)
 {
-    if (!m_AutoHide || !m_Open)
+    if (!m_AutoHide)
         return;
     if (!force && m_LockCounter > 0)
         return;
 
     m_LockCounter = 0;
-    if (m_pContainerWin)
-        m_pContainerWin->Show(false);
-    m_Open = false;
+    CodeBlocksDockEvent evt(cbEVT_HIDE_DOCK_WINDOW);
+    evt.pWindow = m_pNotebook;
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 }
 
 void MessageManager::LockOpen()
@@ -449,7 +399,17 @@ void MessageManager::Unlock(bool force)
     }
 }
 
-void MessageManager::OnSelChange(wxNotebookEvent& event)
+void MessageManager::OnAppDoneStartup(wxCommandEvent& event)
+{
+    event.Skip(); // allow others to process it too
+}
+
+void MessageManager::OnAppStartShutdown(wxCommandEvent& event)
+{
+    event.Skip(); // allow others to process it too
+}
+
+void MessageManager::OnPageChanged(wxFlatNotebookEvent& event)
 {
     if (m_AutoHide && event.GetEventObject() == this)
     {

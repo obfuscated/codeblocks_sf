@@ -1,0 +1,7 @@
+wxFlatNotebook - This class represents a flat notebook control for the 
+wxWidgets C++ GUI frame work, which manages multiple windows with associated tabs using different styles
+
+Version 0.9
+
+Release date: 05/01/2006
+

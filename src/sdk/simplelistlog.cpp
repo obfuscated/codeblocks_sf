@@ -31,28 +31,24 @@ int ID_List = wxNewId();
 
 
 // class constructor
-SimpleListLog::SimpleListLog(wxNotebook* parent, const wxString& title)
-    : MessageLog(parent)
+SimpleListLog::SimpleListLog()
 {
-	Init(title);
+	Init();
 }
 
-SimpleListLog::SimpleListLog(wxNotebook* parent, const wxString& title, int numCols, int widths[], const wxArrayString& titles)
-    : MessageLog(parent)
+SimpleListLog::SimpleListLog(int numCols, int widths[], const wxArrayString& titles)
 {
-	Init(title);
+	Init();
 	SetColumns(numCols, widths, titles);
 }
 
-void SimpleListLog::Init(const wxString& title)
+void SimpleListLog::Init()
 {
     wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
 	m_pList = new wxListCtrl(this, ID_List, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_SINGLE_SEL);
     bs->Add(m_pList, 1, wxEXPAND | wxALL);
     SetAutoLayout(TRUE);
     SetSizer(bs);
-
-    CreateLog(title);
 }
 
 // class destructor

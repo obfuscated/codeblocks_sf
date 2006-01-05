@@ -83,8 +83,8 @@ void ToDoList::OnAttach()
 	titles.Add(_("File"));
 
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
-	m_pListLog = new ToDoListView(msgMan, m_PluginInfo.title, 6, widths, titles, m_Types);
-	m_ListPageIndex = msgMan->AddLog(m_pListLog);
+	m_pListLog = new ToDoListView(6, widths, titles, m_Types);
+	m_ListPageIndex = msgMan->AddLog(m_pListLog, m_PluginInfo.title);
 
     m_AutoRefresh = Manager::Get()->GetConfigManager(_T("todo_list"))->ReadBool(_T("auto_refresh"), true);
     LoadTypes();
@@ -93,7 +93,7 @@ void ToDoList::OnAttach()
 void ToDoList::OnRelease(bool appShutDown)
 {
     if (Manager::Get()->GetMessageManager())
-        Manager::Get()->GetMessageManager()->DeletePage(m_ListPageIndex);
+        Manager::Get()->GetMessageManager()->RemoveLog(m_pListLog);
 }
 
 void ToDoList::BuildMenu(wxMenuBar* menuBar)

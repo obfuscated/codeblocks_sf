@@ -12,21 +12,21 @@ class DLLIMPORT SimpleListLog : public MessageLog
 {
 	public:
 		// class constructor
-		SimpleListLog(wxNotebook* parent, const wxString& title);
-		SimpleListLog(wxNotebook* parent, const wxString& title, int numCols, int widths[], const wxArrayString& titles);
+		SimpleListLog();
+		SimpleListLog(int numCols, int widths[], const wxArrayString& titles);
 		// class destructor
 		~SimpleListLog();
 
 		virtual void AddLog(const wxString& msg, bool addNewLine = true);
 		wxListCtrl* GetListControl(){ return m_pList; }
-		
+
 		void SetColumns(int numCols, int widths[], const wxArrayString& titles);
 		void AddLog(const wxArrayString& values);
 		void Clear();
     protected:
         wxListCtrl* m_pList;
     private:
-		void Init(const wxString& title);
+		void Init();
 };
 
 #endif // SIMPLELISTLOG_H

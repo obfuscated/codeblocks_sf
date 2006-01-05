@@ -12,8 +12,8 @@ BEGIN_EVENT_TABLE(CompilerMessages, SimpleListLog)
 
 END_EVENT_TABLE()
 
-CompilerMessages::CompilerMessages(wxNotebook* parent, const wxString& title, int numCols, int widths[], const wxArrayString& titles)
-    : SimpleListLog(parent, title, numCols, widths, titles)
+CompilerMessages::CompilerMessages(int numCols, int widths[], const wxArrayString& titles)
+    : SimpleListLog(numCols, widths, titles)
 {
 	//ctor
     int id = m_pList->GetId();

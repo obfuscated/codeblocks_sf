@@ -242,9 +242,9 @@ void CompilerGCC::OnAttach()
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
 
 	// create compiler's log
-    m_Log = new SimpleTextLog(msgMan, _("Build log"));
+    m_Log = new SimpleTextLog();
     m_Log->GetTextControl()->SetFont(font);
-    m_PageIndex = msgMan->AddLog(m_Log);
+    m_PageIndex = msgMan->AddLog(m_Log, _("Build log"));
 
     // set log image
 	wxBitmap bmp;
@@ -259,10 +259,10 @@ void CompilerGCC::OnAttach()
 	titles.Add(_("Line"));
 	titles.Add(_("Message"));
 
-	m_pListLog = new CompilerMessages(msgMan, _("Build messages"), 3, widths, titles);
+	m_pListLog = new CompilerMessages(3, widths, titles);
 	m_pListLog->SetCompilerErrors(&m_Errors);
     m_pListLog->GetListControl()->SetFont(font);
-	m_ListPageIndex = msgMan->AddLog(m_pListLog);
+	m_ListPageIndex = msgMan->AddLog(m_pListLog, _("Build messages"));
 
     // set log image
     bmp.LoadFile(prefix + _T("flag_16x16.png"), wxBITMAP_TYPE_PNG);
@@ -281,8 +281,8 @@ void CompilerGCC::OnRelease(bool appShutDown)
     Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/default_compiler"), CompilerFactory::GetDefaultCompilerIndex());
 	if (Manager::Get()->GetMessageManager())
 	{
-        Manager::Get()->GetMessageManager()->DeletePage(m_ListPageIndex);
-        Manager::Get()->GetMessageManager()->DeletePage(m_PageIndex);
+        Manager::Get()->GetMessageManager()->RemoveLog(m_Log);
+        Manager::Get()->GetMessageManager()->RemoveLog(m_pListLog);
     }
 
 	if (appShutDown)
