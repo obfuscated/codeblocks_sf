@@ -275,52 +275,50 @@ void CodeBlocksApp::InitLocale()
 {
     const wxString langs[] =
     {
-        _T("(System default)"),
-//        _T("English (U.S.)")
-//        _T("English"),
-//        _T("Chinese (Simplified)"),
-//        _T("German"),
-//        _T("Russian"),
+        _T("(System default)")
+//        ,_T("English (U.S.)")
+//        ,_T("English")
+//        ,_T("Chinese (Simplified)")
+//        ,_T("German")
+//        ,_T("Russian")
     };
 
     // Must have the same order than the above
     const long int locales[] =
     {
-        wxLANGUAGE_DEFAULT,
-        wxLANGUAGE_ENGLISH_US,
-        wxLANGUAGE_ENGLISH,
-        wxLANGUAGE_CHINESE_SIMPLIFIED,
-        wxLANGUAGE_GERMAN,
-        wxLANGUAGE_RUSSIAN
+        wxLANGUAGE_DEFAULT
+//        ,wxLANGUAGE_ENGLISH_US
+//        ,wxLANGUAGE_ENGLISH
+//        ,wxLANGUAGE_CHINESE_SIMPLIFIED
+//        ,wxLANGUAGE_GERMAN
+//        ,wxLANGUAGE_RUSSIAN
     };
 
     long int lng = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/locale/language"),(long int)-2);
 
-    if(lng==-2) // -2 = Undefined / ask
+    if (lng <= -2 && WXSIZEOF(langs)>=2) // ask only if undefined and there are at least 2 choices
     {
-        lng = -1;
-        if(WXSIZEOF(langs)>=2)
-            lng = wxGetSingleChoiceIndex(_T("Please choose language:"), _T("Language"),
-                                           WXSIZEOF(langs), langs);
-
-        if(lng >= 0 && abs(lng) < WXSIZEOF(locales))
+        lng = wxGetSingleChoiceIndex(_T("Please choose language:"), _T("Language"), WXSIZEOF(langs), langs);
+        if (lng >= 0 && static_cast<unsigned int>(lng) < WXSIZEOF(locales))
+        {
             lng = locales[lng];
-        else
-            lng = -1; // -1 = Don't use locale
+        }
+    }
+    else
+    {
+        lng = -1; // -1 = Don't use locale
     }
 
-
-    if(lng>=0)
+    if (lng>=0)
     {
         m_locale.Init(lng);
         wxLocale::AddCatalogLookupPathPrefix(ConfigManager::GetDataFolder() + _T("/locale"));
         wxLocale::AddCatalogLookupPathPrefix(wxT("."));
         wxLocale::AddCatalogLookupPathPrefix(wxT(".."));
         m_locale.AddCatalog(wxT("codeblocks"));
-        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/locale/language"), (int)lng);
     }
-    else
-        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/locale/language"),(int)-1);
+
+    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/locale/language"), (int)lng);
 }
 
 bool CodeBlocksApp::OnInit()
