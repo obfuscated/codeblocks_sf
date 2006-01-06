@@ -14,7 +14,7 @@
 #include <messagemanager.h>
 #include <cbeditor.h>
 #include <projectmanager.h>
-#include <wx/notebook.h>
+#include <wxFlatNotebook/wxFlatNotebook.h>
 #include <wx/sashwin.h>
 #include <configmanager.h>
 #include <cbexception.h>
@@ -90,7 +90,7 @@ wxSmith::~wxSmith()
 
 void wxSmith::OnAttach()
 {
-    wxNotebook* Notebook = Manager::Get()->GetNotebook();
+    wxFlatNotebook* Notebook = Manager::Get()->GetProjectManager()->GetNotebook();
 	if ( Notebook )
 	{
         // Creating main splitting objects
