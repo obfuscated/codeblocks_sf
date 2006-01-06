@@ -19,7 +19,7 @@ class ClassBrowser : public wxSplitPanel
 {
 	public:
 		// class constructor
-		ClassBrowser(wxNotebook* parent, NativeParser* np);
+		ClassBrowser(wxWindow* parent, NativeParser* np);
 		// class destructor
 		~ClassBrowser();
 		void SetParser(Parser* parser);
@@ -39,9 +39,7 @@ class ClassBrowser : public wxSplitPanel
 		void OnSearch(wxCommandEvent& event);
 		bool RecursiveSearch(const wxString& search, wxTreeCtrl* tree, const wxTreeItemId& parent, wxTreeItemId& result);
         void ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, const wxPoint& pt);
-        wxNotebook* m_Parent;
         NativeParser* m_NativeParser;
-        int m_PageIndex;
         wxTreeCtrl* m_Tree;
         wxTreeCtrl* m_List;
         wxTextCtrl* m_Search;

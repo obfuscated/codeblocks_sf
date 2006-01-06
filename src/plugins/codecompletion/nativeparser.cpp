@@ -39,6 +39,7 @@
 #include "classbrowser.h"
 #include "parser/parser.h"
 #include <compilerfactory.h>
+#include <wxFlatNotebook/wxFlatNotebook.h>
 
 #include <wx/wfstream.h>
 
@@ -66,13 +67,19 @@ NativeParser::~NativeParser()
 void NativeParser::CreateClassBrowser()
 {
 	if (!m_pClassBrowser)
-		m_pClassBrowser = new ClassBrowser(Manager::Get()->GetNotebook(), this);
+	{
+		m_pClassBrowser = new ClassBrowser(Manager::Get()->GetProjectManager()->GetNotebook(), this);
+        Manager::Get()->GetProjectManager()->GetNotebook()->AddPage(m_pClassBrowser, _("Symbols"));
+	}
 }
 
 void NativeParser::RemoveClassBrowser(bool appShutDown)
 {
     if (!appShutDown && m_pClassBrowser)
     {
+        int idx = Manager::Get()->GetProjectManager()->GetNotebook()->GetPageIndex(m_pClassBrowser);
+        if (idx != -1)
+            Manager::Get()->GetProjectManager()->GetNotebook()->RemovePage(idx);
         delete m_pClassBrowser;
     }
     m_pClassBrowser = 0L;

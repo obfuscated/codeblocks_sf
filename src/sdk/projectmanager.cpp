@@ -32,6 +32,7 @@
 #include <wx/splitter.h>
 #include <wx/filename.h>
 #include <wx/progdlg.h>
+#include <wxFlatNotebook.h>
 
 #include "projectmanager.h" // class's header file
 #include "sdk_events.h"
@@ -55,13 +56,13 @@
 // static
 bool ProjectManager::s_CanShutdown = true;
 
-ProjectManager* ProjectManager::Get(wxNotebook* parent)
+ProjectManager* ProjectManager::Get()
 {
     if(Manager::isappShuttingDown()) // The mother of all sanity checks
         ProjectManager::Free();
     else if (!ProjectManagerProxy::Get())
 	{
-		ProjectManagerProxy::Set(new ProjectManager(parent));
+		ProjectManagerProxy::Set(new ProjectManager());
 		Manager::Get()->GetMessageManager()->Log(_("ProjectManager initialized"));
 	}
     return ProjectManagerProxy::Get();
@@ -107,7 +108,10 @@ int idMenuTreeRenameWorkspace = wxNewId();
 int idMenuTreeSaveWorkspace = wxNewId();
 int idMenuTreeSaveAsWorkspace = wxNewId();
 int idMenuTreeCloseWorkspace = wxNewId();
-// TODO (mandrav#1#): Add "save workspace" context menu entry
+
+static const int idNB = wxNewId();
+static const int idNB_TabTop = wxNewId();
+static const int idNB_TabBottom = wxNewId();
 
 #ifndef __WXMSW__
 /*
@@ -143,11 +147,12 @@ BEGIN_EVENT_TABLE(PrjTree, wxTreeCtrl)
 END_EVENT_TABLE()
 #endif // !__WXMSW__
 
-
 BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
     EVT_TREE_ITEM_ACTIVATED(ID_ProjectManager, ProjectManager::OnProjectFileActivated)
     EVT_TREE_ITEM_RIGHT_CLICK(ID_ProjectManager, ProjectManager::OnTreeItemRightClick)
     EVT_COMMAND_RIGHT_CLICK(ID_ProjectManager, ProjectManager::OnRightClick)
+    EVT_MENU(idNB_TabTop, ProjectManager::OnTabPosition)
+    EVT_MENU(idNB_TabBottom, ProjectManager::OnTabPosition)
     EVT_MENU(idMenuSetActiveProject, ProjectManager::OnSetActiveProject)
     EVT_MENU(idMenuNextProject, ProjectManager::OnSetActiveProject)
     EVT_MENU(idMenuPriorProject, ProjectManager::OnSetActiveProject)
@@ -181,7 +186,7 @@ BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
 END_EVENT_TABLE()
 
 // class constructor
-ProjectManager::ProjectManager(wxNotebook* parent)
+ProjectManager::ProjectManager()
 	: m_pTree(0),
     m_pWorkspace(0),
 	m_pTopEditor(0),
@@ -193,8 +198,17 @@ ProjectManager::ProjectManager(wxNotebook* parent)
 	m_InitialDir(_T(""))
 {
     SC_CONSTRUCTOR_BEGIN
+
+    m_pNotebook = new wxFlatNotebook(Manager::Get()->GetAppWindow(), idNB);
+    m_pNotebook->SetBookStyle(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/environment/project_tabs_style"), wxFNB_NO_X_BUTTON));
+    m_pNotebook->SetImageList(new wxFlatNotebookImageList);
+
+    wxMenu* NBmenu = new wxMenu(); // deleted automatically by wxFlatNotebook
+    NBmenu->Append(idNB_TabTop, _("Tabs at top"));
+    NBmenu->Append(idNB_TabBottom, _("Tabs at bottom"));
+    m_pNotebook->SetRightClickMenu(NBmenu);
+
     m_InitialDir=wxFileName::GetCwd();
-    m_pParent = parent;
     m_pActiveProject = 0L;
     m_pProjects = new ProjectsArray;
     m_pProjects->Clear();
@@ -216,6 +230,37 @@ ProjectManager::ProjectManager(wxNotebook* parent)
     Manager::Get()->GetAppWindow()->PushEventHandler(this);
 }
 
+// class destructor
+ProjectManager::~ProjectManager()
+{
+    SC_DESTRUCTOR_BEGIN
+
+    // this is a core manager, so it is removed when the app is shutting down.
+    // in this case, the app has already un-hooked us, so no need to do it ourselves...
+//	Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
+
+    if (m_pWorkspace)
+        delete m_pWorkspace;
+    m_pWorkspace = 0;
+
+    int count = m_pProjects->GetCount();
+    for (int i = 0; i < count; ++i)
+    {
+        cbProject* project = m_pProjects->Item(i);
+        if (project)
+            delete project;
+    }
+    m_pProjects->Clear();
+
+    delete m_pProjects;m_pProjects = 0;
+    delete m_pImages;m_pImages = 0;
+	delete m_pFileGroups;m_pFileGroups = 0;
+
+    delete m_pNotebook->GetImageList();
+
+	SC_DESTRUCTOR_END
+}
+
 void ProjectManager::InitPane()
 {
     SANITY_CHECK();
@@ -223,8 +268,8 @@ void ProjectManager::InitPane()
         return;
     if(m_pTree)
         return;
-    BuildTree(Manager::Get()->GetNotebook());
-    Manager::Get()->GetNotebook()->AddPage(m_pTree, _("Projects"));
+    BuildTree();
+    m_pNotebook->AddPage(m_pTree, _("Projects"));
 }
 
 int ProjectManager::WorkspaceIconIndex()
@@ -242,12 +287,12 @@ int ProjectManager::FolderIconIndex()
     return (int)fvsLast + 2;
 }
 
-void ProjectManager::BuildTree(wxWindow* parent)
+void ProjectManager::BuildTree()
 {
     #ifndef __WXMSW__
-        m_pTree = new PrjTree(parent, ID_ProjectManager);
+        m_pTree = new PrjTree(m_pNotebook, ID_ProjectManager);
     #else
-        m_pTree = new wxTreeCtrl(parent, ID_ProjectManager, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE | wxNO_BORDER);
+        m_pTree = new wxTreeCtrl(m_pNotebook, ID_ProjectManager, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE | wxNO_BORDER);
     #endif
 
     static const wxString imgs[] = {
@@ -280,34 +325,6 @@ void ProjectManager::BuildTree(wxWindow* parent)
 
     // make sure tree is not "frozen"
     UnfreezeTree(true);
-}
-// class destructor
-ProjectManager::~ProjectManager()
-{
-    SC_DESTRUCTOR_BEGIN
-
-    // this is a core manager, so it is removed when the app is shutting down.
-    // in this case, the app has already un-hooked us, so no need to do it ourselves...
-//	Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
-
-    if (m_pWorkspace)
-        delete m_pWorkspace;
-    m_pWorkspace = 0;
-
-    int count = m_pProjects->GetCount();
-    for (int i = 0; i < count; ++i)
-    {
-        cbProject* project = m_pProjects->Item(i);
-        if (project)
-            delete project;
-    }
-    m_pProjects->Clear();
-
-    delete m_pProjects;m_pProjects = 0;
-    delete m_pImages;m_pImages = 0;
-	delete m_pFileGroups;m_pFileGroups = 0;
-
-	SC_DESTRUCTOR_END
 }
 
 void ProjectManager::CreateMenu(wxMenuBar* menuBar)
@@ -1410,6 +1427,17 @@ void ProjectManager::ConfigureProjectDependencies(cbProject* base)
 }
 
 // events
+
+void ProjectManager::OnTabPosition(wxCommandEvent& event)
+{
+    long style = m_pNotebook->GetBookStyle();
+    style = style ^ wxFNB_BOTTOM;
+
+    if (event.GetId() == idNB_TabBottom)
+        style |= wxFNB_BOTTOM;
+    m_pNotebook->SetBookStyle(style);
+    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/environment/project_tabs_style"), (int)style);
+}
 
 void ProjectManager::OnProjectFileActivated(wxTreeEvent& event)
 {

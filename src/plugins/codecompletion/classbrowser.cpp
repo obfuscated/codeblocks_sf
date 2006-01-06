@@ -27,7 +27,6 @@
 #include "classbrowser.h" // class's header file
 #include "nativeparser.h"
 #include <wx/intl.h>
-#include <wx/notebook.h>
 #include <wx/treectrl.h>
 #include <wx/listctrl.h>
 #include <wx/sizer.h>
@@ -112,9 +111,8 @@ BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
 END_EVENT_TABLE()
 
 // class constructor
-ClassBrowser::ClassBrowser(wxNotebook* parent, NativeParser* np)
+ClassBrowser::ClassBrowser(wxWindow* parent, NativeParser* np)
     : wxSplitPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxCLIP_CHILDREN),
-    m_Parent(parent),
     m_NativeParser(np),
     m_TreeForPopupMenu(0),
 	m_pParser(0L)
@@ -146,7 +144,7 @@ ClassBrowser::ClassBrowser(wxNotebook* parent, NativeParser* np)
     hs->Add(search, 0, wxALIGN_CENTER_VERTICAL);
     fs->Add(hs, 0, wxEXPAND | wxBOTTOM, 4);
 
-    bs->Add(fs, 0, wxEXPAND | wxTOP, 4);
+    bs->Add(fs, 0, wxEXPAND | wxTOP | wxLEFT | wxRIGHT, 4);
 
 	m_Tree = new wxTreeCtrl(top, ID_ClassBrowser, wxPoint(0, 0), wxSize(100, 64), wxTR_HAS_BUTTONS | wxTR_DEFAULT_STYLE);
     bs->Add(m_Tree, 1, wxEXPAND | wxALL);
@@ -161,15 +159,11 @@ ClassBrowser::ClassBrowser(wxNotebook* parent, NativeParser* np)
     Refresh();
     m_Tree->Refresh();
     m_List->Refresh();
-
-    m_Parent->AddPage(this, _("Symbols"));
-    m_PageIndex = m_Parent->GetPageCount() - 1;
 }
 
 // class destructor
 ClassBrowser::~ClassBrowser()
 {
-//	m_Parent->RemovePage(m_PageIndex);
 }
 
 void ClassBrowser::SetParser(Parser* parser)

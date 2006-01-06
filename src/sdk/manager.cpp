@@ -46,16 +46,13 @@
 #include "xtra_classes.h" // Our custom set of wxWidgets classes
 #include "xtra_res.h" // our new ToolBarAddOn handler
 
-#include "configmanager.h"
-
-
 static bool appShutingDown = false;
 
-Manager* Manager::Get(wxFrame* appWindow, wxNotebook* notebook, wxWindow* clientWin)
+Manager* Manager::Get(wxFrame* appWindow)
 {
     if (!ManagerProxy::Get() && appWindow)
 	{
-        ManagerProxy::Set( new Manager(appWindow, notebook, clientWin) );
+        ManagerProxy::Set( new Manager(appWindow) );
 		ManagerProxy::Get()->GetMessageManager()->Log(_("Manager initialized"));
 	}
     return ManagerProxy::Get();
@@ -125,14 +122,9 @@ bool Manager::isappShuttingDown()
 }
 
 // class constructor
-Manager::Manager(wxFrame* appWindow, wxNotebook* prjNB, wxWindow* clientWin)
-	: m_pAppWindow(appWindow),
-	m_pNotebook(prjNB),
-	m_pClientWin(clientWin)
+Manager::Manager(wxFrame* appWindow)
+	: m_pAppWindow(appWindow)
 {
-    if (!m_pClientWin)
-        m_pClientWin = appWindow;
-
     // Basically, this is the very first place that will be called in the lib
     // (through Manager::Get()), so it's a very good place to load and initialize
     // any resources we 'll be using...
@@ -222,26 +214,14 @@ wxFrame* Manager::GetAppWindow()
 	return m_pAppWindow;
 }
 
-wxNotebook* Manager::GetNotebook()
-{
-	if(!this) return 0; // Fixes early-shutdown segfault
-	return m_pNotebook;
-}
-
-wxWindow* Manager::GetClientWindow()
-{
-	if(!this) return 0; // Fixes early-shutdown segfault
-	return m_pClientWin;
-}
-
 ProjectManager* Manager::GetProjectManager()
 {
-	return appShutingDown ? 0 : ProjectManager::Get(m_pNotebook);
+	return appShutingDown ? 0 : ProjectManager::Get();
 }
 
 EditorManager* Manager::GetEditorManager()
 {
-	return appShutingDown ? 0 : EditorManager::Get(m_pClientWin);
+	return appShutingDown ? 0 : EditorManager::Get();
 }
 
 MessageManager* Manager::GetMessageManager()

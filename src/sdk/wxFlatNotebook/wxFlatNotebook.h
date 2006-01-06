@@ -201,6 +201,11 @@ public:
 	*/
 	long GetBookStyle();
 
+	/// Sets a right click menu to the notebook
+	/**
+	\param menu - right click menu object
+	*/
+	void SetRightClickMenu(wxMenu* menu);
 	/// Returns the page text
 	/**
 	\param page - page index
@@ -248,6 +253,7 @@ public:
 
 	/// Returns an image list object associated with wxFlatNotebook
 	wxFlatNotebookImageList * GetImageList();
+
 private:
 	wxBoxSizer* m_mainSizer;
 	wxPageContainer *m_pages;
@@ -495,6 +501,9 @@ protected:
 	/// starting from the first visible tab (i.e. m_nFrom)
 	int  GetNumTabsCanScrollLeft();
 
+	/// Return the number of visible tabs
+	int GetNumOfVisibleTabs();
+
 	/**
 	* \brief Drop event handler, to be passed as function pointer to CTextDropTarget class.
 	* \param x X coordinate where the drop take place
@@ -511,6 +520,13 @@ protected:
 	*/
 	void MoveTabPage(int nMove, int nMoveTo);
 
+	/// Check whether page can fit to the current
+	/// screen or a scrolling is  required
+	/**
+	\param page - page index
+	*/
+	bool CanFitToScreen(size_t page);
+
 private:
 	std::vector<wxPageInfo> m_pagesInfoVec;
 	int m_iActivePage;
@@ -526,6 +542,9 @@ private:
 
 	/// Pointer to the parent window
 	wxWindow *m_pParent;
+
+	/// The right click menu
+	wxMenu* m_pRightClickMenu;
 
 	/// Gradient colors
 	wxColour m_colorFrom, m_colorTo, m_colorBorder;

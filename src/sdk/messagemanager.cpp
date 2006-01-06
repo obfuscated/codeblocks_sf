@@ -45,7 +45,9 @@
       wxTheApp->Yield();                                \
   }
 
-static int idNB = wxNewId();
+static const int idNB = wxNewId();
+static const int idNB_TabTop = wxNewId();
+static const int idNB_TabBottom = wxNewId();
 
 MessageManager* MessageManager::Get()
 {
@@ -69,6 +71,8 @@ void MessageManager::Free()
 }
 
 BEGIN_EVENT_TABLE(MessageManager, wxEvtHandler)
+    EVT_MENU(idNB_TabTop, MessageManager::OnTabPosition)
+    EVT_MENU(idNB_TabBottom, MessageManager::OnTabPosition)
     EVT_APP_STARTUP_DONE(MessageManager::OnAppDoneStartup)
     EVT_APP_START_SHUTDOWN(MessageManager::OnAppStartShutdown)
     EVT_FLATNOTEBOOK_PAGE_CHANGED(idNB, MessageManager::OnPageChanged)
@@ -84,8 +88,13 @@ MessageManager::MessageManager()
     SC_CONSTRUCTOR_BEGIN
 
     m_pNotebook = new wxFlatNotebook(Manager::Get()->GetAppWindow(), idNB);
-    m_pNotebook->SetBookStyle(wxFNB_BOTTOM | wxFNB_NO_X_BUTTON);
+    m_pNotebook->SetBookStyle(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/environment/message_tabs_style"), wxFNB_BOTTOM | wxFNB_NO_X_BUTTON));
     m_pNotebook->SetImageList(new wxFlatNotebookImageList);
+
+    wxMenu* NBmenu = new wxMenu(); // deleted automatically by wxFlatNotebook
+    NBmenu->Append(idNB_TabTop, _("Tabs at top"));
+    NBmenu->Append(idNB_TabBottom, _("Tabs at bottom"));
+    m_pNotebook->SetRightClickMenu(NBmenu);
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("message_manager"));
 
@@ -397,6 +406,17 @@ void MessageManager::Unlock(bool force)
         m_LockCounter = 0;
         Close(true);
     }
+}
+
+void MessageManager::OnTabPosition(wxCommandEvent& event)
+{
+    long style = m_pNotebook->GetBookStyle();
+    style = style ^ wxFNB_BOTTOM;
+
+    if (event.GetId() == idNB_TabBottom)
+        style |= wxFNB_BOTTOM;
+    m_pNotebook->SetBookStyle(style);
+    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/environment/message_tabs_style"), (int)style);
 }
 
 void MessageManager::OnAppDoneStartup(wxCommandEvent& event)

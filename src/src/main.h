@@ -17,6 +17,8 @@ WX_DECLARE_HASH_MAP(int, wxString, wxIntegerHash, wxIntegerEqual, PluginIDsMap);
 WX_DECLARE_HASH_MAP(cbPlugin*, wxToolBar*, wxPointerHash, wxPointerEqual, PluginToolbarsMap);
 WX_DECLARE_STRING_HASH_MAP(wxString, LayoutViewsMap);
 
+class wxFlatNotebook;
+
 class MainFrame : public wxFrame
 {
     private:
@@ -200,6 +202,7 @@ class MainFrame : public wxFrame
 		void DoUpdateLayout();
         void DoUpdateLayoutColors();
 		void DoUpdateEditorStyle();
+		void DoUpdateEditorStyle(wxFlatNotebook* target, const wxString& prefix, long defaultStyle);
 
         void ShowHideStartPage(bool forceHasProject = false);
 
@@ -217,7 +220,6 @@ class MainFrame : public wxFrame
         /// "Close FullScreen" button. Only shown when in FullScreen view
         wxButton* m_pCloseFullScreenBtn;
 
-        wxNotebook* m_pNotebook;
 		EditorManager* m_pEdMan;
 		ProjectManager* m_pPrjMan;
 		MessageManager* m_pMsgMan;

@@ -464,6 +464,11 @@ bool wxFlatNotebook::RemovePage(size_t page, bool notify)
 	return true;
 }
 
+void wxFlatNotebook::SetRightClickMenu(wxMenu* menu)
+{
+	m_pages->m_pRightClickMenu = menu;
+}
+
 wxString wxFlatNotebook::GetPageText(size_t page)
 {
 	return m_pages->GetPageText(page);
@@ -528,6 +533,7 @@ wxPageContainer::wxPageContainer(wxWindow* parent, wxWindowID id, const wxPoint&
 , m_bHoverRightArrow(false)
 , m_pDropTarget(NULL)
 , m_pParent(parent)
+, m_pRightClickMenu(NULL)
 {
 	m_colorTo = wxColor(255, 255, 255);
 	m_colorFrom   = wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
@@ -540,6 +546,11 @@ wxPageContainer::wxPageContainer(wxWindow* parent, wxWindowID id, const wxPoint&
 
 wxPageContainer::~wxPageContainer(void)
 {
+	if(m_pRightClickMenu)
+	{
+		delete m_pRightClickMenu;
+		m_pRightClickMenu = NULL;
+	}
 }
 
 void wxPageContainer::OnPaint(wxPaintEvent &event)
@@ -848,9 +859,7 @@ void wxPageContainer::AddPage(const wxString& caption, const bool selected, cons
 	{
 		m_iActivePage = (int)m_pagesInfoVec.size();
 	}
-	wxPageInfo pg(caption, imgindex);
-	pg.SetPosition(wxPoint(100, 0)); // mark as "visible". fixes bug with DoSetSelection() before painting for the very first time
-	m_pagesInfoVec.push_back(pg);
+	m_pagesInfoVec.push_back(wxPageInfo(caption, imgindex));
 	Refresh();
 }
 
@@ -860,10 +869,8 @@ bool wxPageContainer::InsertPage(size_t index, wxWindow* /*page*/, const wxStrin
 	{
 		m_iActivePage = (int)m_pagesInfoVec.size();
 	}
-	wxPageInfo pg(text, imgindex);
-	pg.SetPosition(wxPoint(100, 0)); // mark as "visible". fixes bug with DoSetSelection() before painting for the very first time
 	std::vector<wxPageInfo>::iterator iter = m_pagesInfoVec.begin() + index;
-	m_pagesInfoVec.insert(iter, pg);
+	m_pagesInfoVec.insert(iter, wxPageInfo(text, imgindex));
 	Refresh();
 	return true;
 }
@@ -916,11 +923,19 @@ void wxPageContainer::OnRightDown(wxMouseEvent& event)
 			// Set the current tab to be active
 			SetSelection((size_t)tabIdx);
 
-            wxFlatNotebookEvent event(wxEVT_COMMAND_FLATNOTEBOOK_CONTEXT_MENU, GetParent()->GetId());
-            event.SetSelection((int)tabIdx);
-            event.SetOldSelection((int)m_iActivePage);
-            event.SetEventObject(GetParent());
-            GetParent()->GetEventHandler()->ProcessEvent(event);
+            // If the owner has defined a context menu for the tabs,
+            // popup the right click menu
+            if (m_pRightClickMenu)
+                PopupMenu(m_pRightClickMenu);
+            else
+            {
+                // send a message to popup a custom menu
+                wxFlatNotebookEvent event(wxEVT_COMMAND_FLATNOTEBOOK_CONTEXT_MENU, GetParent()->GetId());
+                event.SetSelection((int)tabIdx);
+                event.SetOldSelection((int)m_iActivePage);
+                event.SetEventObject(GetParent());
+                GetParent()->GetEventHandler()->ProcessEvent(event);
+            }
         }
 			break;
 		default:
@@ -969,7 +984,7 @@ void wxPageContainer::OnLeftDown(wxMouseEvent& event)
 				break;
 			}
 
-			m_nFrom = lastVisibleTab;
+			m_nFrom += GetNumOfVisibleTabs();
 			Refresh();
 			break;
 		}
@@ -1080,17 +1095,25 @@ void wxPageContainer::DoSetSelection(size_t page)
 
 	if(!IsTabVisible(page))
 	{
-		m_nFrom = (int)page;
-
-		// fix for the add-page bug that displays only the added page
-        int scrollLeft = GetNumTabsCanScrollLeft();
-        if (scrollLeft > 0)
-            m_nFrom -= scrollLeft - 1;
-        if(m_nFrom < 0)
-            m_nFrom = 0;
-        // end of fix
-
-		Refresh();
+		if(page == m_pagesInfoVec.size() - 1)
+		{
+			// Incase the added tab is last,
+			// the function IsTabVisible() will always return false
+			// and thus will cause an evil behaviour that the new
+			// tab will hide all other tabs, we need to check if the
+			// new selected tab can fit to the current screen
+			if(!CanFitToScreen(page))
+			{
+				m_nFrom = (int)page;
+			}
+			Refresh();
+		}
+		else
+		{
+			// Redraw the tabs starting from page
+            m_nFrom = (int)page;
+            Refresh();
+		}
 	}
 }
 
@@ -1104,7 +1127,9 @@ void wxPageContainer::DeletePage(size_t page, bool notify)
 bool wxPageContainer::IsTabVisible(size_t page)
 {
 	int iPage = (int)page;
-	return iPage <= GetLastVisibleTab() && iPage >= m_nFrom;
+	int iLastVisiblePage = GetLastVisibleTab();
+
+	return iPage <= iLastVisiblePage && iPage >= m_nFrom;
 }
 
 void wxPageContainer::DoDeletePage(size_t page)
@@ -1114,15 +1139,7 @@ void wxPageContainer::DoDeletePage(size_t page)
 	std::vector<wxPageInfo>::iterator iter = m_pagesInfoVec.begin();
 	std::vector<wxPageInfo>::iterator endIter = m_pagesInfoVec.end();
 
-	for(size_t counter=0; iter != endIter; iter++, counter++)
-	{
-		if(counter == page)
-		{
-			m_pagesInfoVec.erase(iter);
-			break;
-		}
-	}
-
+	m_pagesInfoVec.erase(iter + page);
 	m_iActivePage--;
 
 	// The delete page was the last first on the array,
@@ -1130,9 +1147,6 @@ void wxPageContainer::DoDeletePage(size_t page)
 	// active page to be the first one (0)
 	if(m_iActivePage < 0 && !m_pagesInfoVec.empty())
 		m_iActivePage = 0;
-
-	if(m_nFrom > 0)
-		m_nFrom--;
 
 	// Refresh the tabs
 	if(m_iActivePage >= 0)
@@ -1471,6 +1485,7 @@ int wxPageContainer::GetNumTabsCanScrollLeft()
 	// Incase we have error prevent crash
 	if(m_nFrom < 0)
 		return 0;
+
 	for(i=m_nFrom; i>=0; i--)
 	{
 		dc.GetTextExtent(GetPageText(i), &tabWidth, &pom);
@@ -1481,7 +1496,9 @@ int wxPageContainer::GetNumTabsCanScrollLeft()
 			tabWidth += 16;
 
 		if(posx + tabWidth + BUTTONS_AREA_WIDTH >= clientWidth)
+		{
 			break;
+		}
 
 		numTabs++;
 		posx += tabWidth -1;
@@ -1658,5 +1675,83 @@ void wxPageContainer::MoveTabPage(int nMove, int nMoveTo)
 	m_iActivePage = nMoveTo-1;
 	DoSetSelection(m_iActivePage);
 	Refresh();
+}
+
+bool wxPageContainer::CanFitToScreen(size_t page)
+{
+	// Incase the from is greater than page,
+	// we need to reset the m_nFrom, so in order
+	// to force the caller to do so, we return false
+	if(m_nFrom > (int)page)
+		return false;
+
+	// Calculate the tab width including borders and image if any
+	wxClientDC dc(this);
+
+	int width, pom, shapePoints, height, tabHeight;
+
+	wxString stam = wxT("Tp");	// Temp data to get the text height;
+	dc.GetTextExtent(stam, &width, &height);
+	dc.GetTextExtent(GetPageText(page), &width, &pom);
+
+	tabHeight = height + 8; // We use 6 pixels as padding
+
+	if(m_nStyle & wxFNB_VC71)
+		tabHeight = (m_nStyle & wxFNB_BOTTOM) ? tabHeight - 4 :  tabHeight;
+	else if(m_nStyle & wxFNB_FANCY_TABS)
+		tabHeight = (m_nStyle & wxFNB_BOTTOM) ? tabHeight - 3 :  tabHeight;
+
+	int tabWidth = ((wxFlatNotebook *)m_pParent)->m_nPadding * 2 + width;
+
+	if(m_nStyle != wxFNB_VC71)
+		shapePoints = (int)(tabHeight*tan((double)m_pagesInfoVec[page].GetTabAngle()/180.0*M_PI));
+	else
+		shapePoints = 0;
+
+	if(!(m_nStyle & wxFNB_VC71))
+		// Default style
+		tabWidth += 2 * shapePoints;
+
+	bool hasImage = (m_ImageList != NULL);
+	if(hasImage) hasImage &= m_pagesInfoVec[page].GetImageIndex() != -1;
+
+	// For VC71 style, we only add the icon size (16 pixels)
+	if(hasImage && ( (m_nStyle & wxFNB_VC71) || (m_nStyle & wxFNB_FANCY_TABS)) )
+		tabWidth += 16;
+	else
+		// Default style
+		tabWidth += 16 + shapePoints / 2;
+
+	// Check if we can draw more
+	int posx = ((wxFlatNotebook *)m_pParent)->m_nPadding;
+
+	if(m_nFrom >= 0)
+	{
+		for(int i=m_nFrom; i<(int)m_pagesInfoVec.size(); i++)
+		{
+			if(m_pagesInfoVec[i].GetPosition() == wxPoint(-1, -1))
+				break;
+			posx += m_pagesInfoVec[i].GetSize().x;
+		}
+	}
+
+	wxRect rect = GetClientRect();
+	int clientWidth = rect.width;
+
+	if(posx + tabWidth + BUTTONS_AREA_WIDTH >= clientWidth)
+		return false;
+	return true;
+}
+
+int wxPageContainer::GetNumOfVisibleTabs()
+{
+	int i=m_nFrom;
+	int counter = 0;
+	for(; i<(int)m_pagesInfoVec.size(); i++, ++counter)
+	{
+		if(m_pagesInfoVec[i].GetPosition() == wxPoint(-1, -1))
+			break;
+	}
+	return counter;
 }
 

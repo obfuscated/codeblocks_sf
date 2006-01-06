@@ -10,7 +10,6 @@
 
 // forward decls
 class wxMenuBar;
-class wxNotebook;
 class wxPanel;
 class cbProject;
 class EditorBase;
@@ -18,6 +17,8 @@ class wxImageList;
 class ProjectFile;
 class FilesGroupsAndMasks;
 class cbWorkspace;
+class wxFlatNotebook;
+class wxFlatNotebookEvent;
 
 DLLIMPORT extern int ID_ProjectManager; /* Used by both Project and Editor Managers */
 WX_DEFINE_ARRAY(cbProject*, ProjectsArray);
@@ -39,6 +40,9 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
         static bool s_CanShutdown;
 	public:
         friend class Manager; // give Manager access to our private members
+
+		wxFlatNotebook* GetNotebook() { return m_pNotebook; }
+
         // Can the app shutdown? (actually: is ProjectManager busy at the moment?)
         static bool CanShutdown(){ return s_CanShutdown; }
         /// Application menu creation. Called by the application only.
@@ -331,14 +335,15 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
 		/** @return The folder icon index in the image list. */
 		int FolderIconIndex();
     private:
-        static ProjectManager* Get(wxNotebook* parent);
+        static ProjectManager* Get();
 		static void Free();
-		ProjectManager(wxNotebook* parent);
+		ProjectManager();
 		~ProjectManager();
 
 		void InitPane();
-		void BuildTree(wxWindow* parent);
+		void BuildTree();
         void ShowMenu(wxTreeItemId id, const wxPoint& pt);
+        void OnTabPosition(wxCommandEvent& event);
         void OnProjectFileActivated(wxTreeEvent& event);
         void OnExecParameters(wxCommandEvent& event);
         void OnTreeItemRightClick(wxTreeEvent& event);
@@ -364,7 +369,7 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
 		void DoOpenFile(ProjectFile* pf, const wxString& filename);
 		int DoAddFileToProject(const wxString& filename, cbProject* project, wxArrayInt& targets);
 
-        wxNotebook* m_pParent;
+        wxFlatNotebook* m_pNotebook;
         wxTreeCtrl* m_pTree;
         wxTreeItemId m_TreeRoot;
         cbProject* m_pActiveProject;

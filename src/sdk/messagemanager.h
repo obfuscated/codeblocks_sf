@@ -4,6 +4,7 @@
 #include "settings.h"
 #include "messagelog.h"
 #include <wx/hashmap.h>
+#include <wx/menu.h>
 #include "sanitycheck.h"
 
 // convenience macros
@@ -103,6 +104,7 @@ class DLLIMPORT MessageManager : public wxEvtHandler
         int DoAddLog(MessageLog* log, const wxString& title, const wxBitmap& bitmap = wxNullBitmap);
         bool CheckLogId(int id);
 
+        void OnTabPosition(wxCommandEvent& event);
         void OnAppDoneStartup(wxCommandEvent& event);
         void OnAppStartShutdown(wxCommandEvent& event);
         void OnPageChanged(wxFlatNotebookEvent& event);

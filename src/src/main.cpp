@@ -20,7 +20,7 @@
 * Program URL   : http://www.codeblocks.org
 *
 * $Id$
-* $Date: 2006-01-02 12:50:21 +0200 (ΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ²β€Ξ†ΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ²β‚¬β„ΆΞβ€™Ξ’Β²ΞΒΞ’ΒΞβ€™Ξ’Β²ΞΒΞ’Β²ΞΒ²Ξ²β‚¬ΒΞ’Β¬Ξβ€™Ξ’ΒΞΒΞ²β‚¬β„ΆΞβ€™Ξ’Β¬ΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ²β€Ξ†ΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ²β€Ξ†ΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ’Β²ΞΒ²Ξ²β‚¬ΒΞ’Β¬ΞΒ²Ξ²β‚¬ΒΞβ€ ΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ²β€Ξ†ΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒµΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ²β€Ξ†ΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ²β‚¬β„ΆΞβ€™Ξ’Β²ΞΒΞ’ΒΞβ€™Ξ’Β²ΞΒΞ’Β²ΞΒ²Ξ²β‚¬ΒΞ’Β¬Ξβ€™Ξ’ΒΞΒΞ²β‚¬β„ΆΞβ€™Ξ’Β¬ΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ²β€Ξ†ΞΒΞ²β‚¬β„ΆΞβ€™Ξ’Β¦, 02 ΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ²β€Ξ†ΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ²β‚¬β„ΆΞβ€™Ξ’Β²ΞΒΞ’ΒΞβ€™Ξ’Β²ΞΒΞ’Β²ΞΒ²Ξ²β€Β¬Ξ’ΒΞβ€™Ξ’Β¬ΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ’Β²ΞΒ²Ξ²β‚¬ΒΞ’Β¬Ξβ€™Ξ’Β ΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ²β€Ξ†ΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ’Β²ΞΒ²Ξ²β‚¬ΒΞ’Β¬ΞΒ²Ξ²β‚¬ΒΞβ€ ΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ²β€Ξ†ΞΒΞ²β‚¬β„ΆΞβ€™Ξ’Β±ΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ²β€Ξ†ΞΒΞ²β‚¬β„ΆΞβ€™Ξ’ΒΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ’Β²ΞΒ²Ξ²β‚¬ΒΞ’Β¬ΞΒ²Ξ²β‚¬ΒΞβ€ ΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ²β€Ξ†ΞΒΞ²β‚¬β„ΆΞβ€™Ξ’Β½ 2006) $
+* $Date$
 */
 
 #include <sdk.h>
@@ -378,7 +378,6 @@ MainFrame::MainFrame(wxLocale& lang, wxWindow* parent)
 	   m_FilesHistory(9, wxID_FILE1), // default ctor
 	   m_ProjectsHistory(9, wxID_FILE10),
 	   m_pCloseFullScreenBtn(0L),
-       m_pNotebook(0L),
 	   m_pEdMan(0L),
 	   m_pPrjMan(0L),
 	   m_pMsgMan(0L),
@@ -482,9 +481,8 @@ void MainFrame::CreateIDE()
 	m_pCloseFullScreenBtn->Show( false );
 
     // project manager
-	m_pNotebook = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, /*wxNB_LEFT | */wxCLIP_CHILDREN/* | wxNB_MULTILINE*/);
-	Manager::Get(this, m_pNotebook, 0);
-    m_LayoutManager.AddPane(m_pNotebook, wxPaneInfo().
+	Manager::Get(this);
+    m_LayoutManager.AddPane(Manager::Get()->GetProjectManager()->GetNotebook(), wxPaneInfo().
                               Name(wxT("ManagementPane")).Caption(wxT("Management")).
                               BestSize(wxSize(leftW, clientsize.GetHeight())).MinSize(wxSize(100,100)).
                               Left().Layer(1));
@@ -788,7 +786,7 @@ void MainFrame::LoadWindowState()
     LoadViewLayout(deflayout);
 
 	// load manager and messages selected page
-	Manager::Get()->GetNotebook()->SetSelection(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/left_block_selection"), 0));
+	Manager::Get()->GetProjectManager()->GetNotebook()->SetSelection(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/left_block_selection"), 0));
 	Manager::Get()->GetMessageManager()->GetNotebook()->SetSelection(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/bottom_block_selection"), 0));
 
     if (!IsMaximized() && !IsIconized())
@@ -824,7 +822,7 @@ void MainFrame::SaveWindowState()
     }
 
 	// save manager and messages selected page
-	Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/left_block_selection"), Manager::Get()->GetNotebook()->GetSelection());
+	Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/left_block_selection"), Manager::Get()->GetProjectManager()->GetNotebook()->GetSelection());
 	Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/bottom_block_selection"), Manager::Get()->GetMessageManager()->GetNotebook()->GetSelection());
 
     // save window size and position
@@ -1152,12 +1150,10 @@ void MainFrame::DoUpdateStatusBar()
 #endif // wxUSE_STATUSBAR
 }
 
-void MainFrame::DoUpdateEditorStyle()
+void MainFrame::DoUpdateEditorStyle(wxFlatNotebook* target, const wxString& prefix, long defaultStyle)
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
-
-    wxFlatNotebook* fn = Manager::Get()->GetEditorManager()->GetNotebook();
-    int nbstyle = cfg->ReadInt(_T("/environment/editor_tabs_style"), wxFNB_DEFAULT_STYLE);
+    long nbstyle = cfg->ReadInt(_T("/environment/tabs_style"), 0);
     switch (nbstyle)
     {
         case 1: // gradient
@@ -1169,19 +1165,28 @@ void MainFrame::DoUpdateEditorStyle()
             break;
 
         default:
-            nbstyle = wxFNB_DEFAULT_STYLE;
+            nbstyle = 0;
             break;
     }
-    fn->SetBookStyle(nbstyle | wxFNB_MOUSE_MIDDLE_CLOSES_TABS);
-    fn->SetGradientColorBorder(cfg->ReadColour(_T("/environment/editor_gradient_border"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW))));
-    fn->SetGradientColorFrom(cfg->ReadColour(_T("/environment/editor_gradient_from"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE))));
-    fn->SetGradientColorTo(cfg->ReadColour(_T("/environment/editor_gradient_to"), *wxWHITE));
+    nbstyle |= defaultStyle;
+    nbstyle |= cfg->ReadInt(_T("/environment/") + prefix + _T("_tabs_style"));
+
+    target->SetBookStyle(nbstyle);
+    target->SetGradientColorBorder(cfg->ReadColour(_T("/environment/gradient_border"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW))));
+    target->SetGradientColorFrom(cfg->ReadColour(_T("/environment/gradient_from"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE))));
+    target->SetGradientColorTo(cfg->ReadColour(_T("/environment/gradient_to"), *wxWHITE));
+}
+
+void MainFrame::DoUpdateEditorStyle()
+{
+    wxFlatNotebook* fn = Manager::Get()->GetEditorManager()->GetNotebook();
+    DoUpdateEditorStyle(fn, _T("editor"), wxFNB_MOUSE_MIDDLE_CLOSES_TABS);
 
     fn = Manager::Get()->GetMessageManager()->GetNotebook();
-    fn->SetBookStyle(nbstyle | wxFNB_BOTTOM | wxFNB_NO_X_BUTTON);
-    fn->SetGradientColorBorder(cfg->ReadColour(_T("/environment/editor_gradient_border"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW))));
-    fn->SetGradientColorFrom(cfg->ReadColour(_T("/environment/editor_gradient_from"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE))));
-    fn->SetGradientColorTo(cfg->ReadColour(_T("/environment/editor_gradient_to"), *wxWHITE));
+    DoUpdateEditorStyle(fn, _T("message"), wxFNB_NO_X_BUTTON);
+
+    fn = Manager::Get()->GetProjectManager()->GetNotebook();
+    DoUpdateEditorStyle(fn, _T("project"), wxFNB_NO_X_BUTTON);
 }
 
 void MainFrame::DoUpdateLayoutColors()
@@ -2423,7 +2428,7 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
     }
     wxMenuBar* mbar = GetMenuBar();
     cbEditor* ed = EDMAN() ? EDMAN()->GetBuiltinActiveEditor() : 0;
-    bool manVis = m_LayoutManager.GetPane(m_pNotebook).IsShown();
+    bool manVis = m_LayoutManager.GetPane(Manager::Get()->GetProjectManager()->GetNotebook()).IsShown();
 
     mbar->Check(idViewManager, manVis);
     mbar->Check(idViewOpenFilesTree, m_pEdMan && m_pEdMan->IsOpenFilesTreeVisible());
@@ -2531,7 +2536,7 @@ void MainFrame::OnToggleBar(wxCommandEvent& event)
 {
     wxWindow* win = 0;
     if (event.GetId() == idViewManager)
-        win = m_pNotebook;
+        win = Manager::Get()->GetProjectManager()->GetNotebook();
     else if (event.GetId() == idViewMessageManager)
         win = Manager::Get()->GetMessageManager()->GetNotebook();
     else if (event.GetId() == idViewToolMain)

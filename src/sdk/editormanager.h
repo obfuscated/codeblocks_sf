@@ -138,6 +138,7 @@ class DLLIMPORT EditorManager : public wxEvtHandler
         void OnCloseAllOthers(wxCommandEvent& event);
         void OnSave(wxCommandEvent& event);
         void OnSaveAll(wxCommandEvent& event);
+        void OnTabPosition(wxCommandEvent& event);
         void OnAppDoneStartup(wxCommandEvent& event);
         void OnAppStartShutdown(wxCommandEvent& event);
         void OnUpdateUI(wxUpdateUIEvent& event);
@@ -166,9 +167,9 @@ class DLLIMPORT EditorManager : public wxEvtHandler
 
         AutoCompleteMap m_AutoCompleteMap;
     private:
-        static EditorManager* Get(wxWindow* parent);
+        static EditorManager* Get();
         static void Free();
-        EditorManager(wxWindow* parent);
+        EditorManager();
         ~EditorManager();
         void CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFindReplaceData* data);
         void OnCheckForModifiedFiles(wxCommandEvent& event);
