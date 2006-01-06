@@ -36,7 +36,7 @@ void streamWhitespace( TIXML_OSTREAM * stream )
 	int i;
 	for ( i=0; i<streamOutDepth; i++ )
 	{
-		(*stream) << "    ";
+		(*stream) << "\t";
 	}
 }
 

@@ -859,7 +859,9 @@ void wxPageContainer::AddPage(const wxString& caption, const bool selected, cons
 	{
 		m_iActivePage = (int)m_pagesInfoVec.size();
 	}
-	m_pagesInfoVec.push_back(wxPageInfo(caption, imgindex));
+	wxPageInfo pg(caption, imgindex);
+	pg.SetPosition(wxPoint(1,1));
+	m_pagesInfoVec.push_back(pg);
 	Refresh();
 }
 
@@ -869,8 +871,10 @@ bool wxPageContainer::InsertPage(size_t index, wxWindow* /*page*/, const wxStrin
 	{
 		m_iActivePage = (int)m_pagesInfoVec.size();
 	}
+	wxPageInfo pg(text, imgindex);
+	pg.SetPosition(wxPoint(1,1));
 	std::vector<wxPageInfo>::iterator iter = m_pagesInfoVec.begin() + index;
-	m_pagesInfoVec.insert(iter, wxPageInfo(text, imgindex));
+	m_pagesInfoVec.insert(iter, pg);
 	Refresh();
 	return true;
 }

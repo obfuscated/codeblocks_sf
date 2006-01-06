@@ -1,5 +1,5 @@
 --- wxFlatNotebook-base.cpp	Fri Jan 06 01:39:55 2006
-+++ wxFlatNotebook.cpp	Fri Jan 06 14:16:14 2006
++++ wxFlatNotebook.cpp	Fri Jan 06 20:21:44 2006
 @@ -10,7 +10,7 @@
  // Licence:     wxWindows license <http://www.wxwidgets.org/licence3.txt>
  ///////////////////////////////////////////////////////////////////////////////
@@ -141,7 +141,30 @@
  {
  	m_colorTo = wxColor(255, 255, 255);
  	m_colorFrom   = wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
-@@ -862,9 +893,16 @@
+@@ -828,7 +859,9 @@
+ 	{
+ 		m_iActivePage = (int)m_pagesInfoVec.size();
+ 	}
+-	m_pagesInfoVec.push_back(wxPageInfo(caption, imgindex));
++	wxPageInfo pg(caption, imgindex);
++	pg.SetPosition(wxPoint(1,1));
++	m_pagesInfoVec.push_back(pg);
+ 	Refresh();
+ }
+ 
+@@ -838,8 +871,10 @@
+ 	{
+ 		m_iActivePage = (int)m_pagesInfoVec.size();
+ 	}
++	wxPageInfo pg(text, imgindex);
++	pg.SetPosition(wxPoint(1,1));
+ 	std::vector<wxPageInfo>::iterator iter = m_pagesInfoVec.begin() + index;
+-	m_pagesInfoVec.insert(iter, wxPageInfo(text, imgindex));
++	m_pagesInfoVec.insert(iter, pg);
+ 	Refresh();
+ 	return true;
+ }
+@@ -862,9 +897,16 @@
  	{
  	case wxFNB_TAB:
  		{
@@ -159,7 +182,7 @@
  			break;
  		}
  	default:
-@@ -875,24 +913,34 @@
+@@ -875,24 +917,34 @@
  
  void wxPageContainer::OnRightDown(wxMouseEvent& event)
  {
@@ -198,7 +221,7 @@
  	event.Skip();
  }
  
-@@ -966,7 +1014,8 @@
+@@ -966,7 +1018,8 @@
  			event.SetSelection(m_iActivePage);
  			event.SetEventObject(GetParent());
  			GetParent()->GetEventHandler()->ProcessEvent(event);
@@ -208,7 +231,7 @@
  			break;
  		}
  	}
-@@ -1068,10 +1117,10 @@
+@@ -1068,10 +1121,10 @@
  	}
  }
  
@@ -221,7 +244,7 @@
  	book->Refresh();
  }
  
-@@ -1705,3 +1754,4 @@
+@@ -1705,3 +1758,4 @@
  	}
  	return counter;
  }
