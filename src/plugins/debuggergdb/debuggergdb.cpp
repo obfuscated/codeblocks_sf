@@ -219,29 +219,33 @@ void DebuggerGDB::OnAttach()
 
     evt.title = _("Disassembly");
     evt.pWindow = m_pDisassembly;
-    evt.dockSide = CodeBlocksDockEvent::dsBottom;
+    evt.dockSide = CodeBlocksDockEvent::dsFloating;
     evt.desiredSize.Set(350, 250);
+    evt.floatingSize.Set(350, 250);
     evt.minimumSize.Set(150, 150);
     Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 
     evt.title = _("CPU Registers");
     evt.pWindow = m_pCPURegisters;
-    evt.dockSide = CodeBlocksDockEvent::dsLeft;
+    evt.dockSide = CodeBlocksDockEvent::dsFloating;
     evt.desiredSize.Set(350, 250);
+    evt.floatingSize.Set(350, 250);
     evt.minimumSize.Set(150, 150);
     Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 
     evt.title = _("Call stack");
     evt.pWindow = m_pBacktrace;
-    evt.dockSide = CodeBlocksDockEvent::dsTop;
+    evt.dockSide = CodeBlocksDockEvent::dsFloating;
     evt.desiredSize.Set(150, 150);
+    evt.floatingSize.Set(450, 150);
     evt.minimumSize.Set(150, 150);
     Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 
     evt.title = _("Watches");
     evt.pWindow = m_pTree;
-    evt.dockSide = CodeBlocksDockEvent::dsRight;
+    evt.dockSide = CodeBlocksDockEvent::dsFloating;
     evt.desiredSize.Set(150, 250);
+    evt.floatingSize.Set(150, 250);
     evt.minimumSize.Set(150, 150);
     Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 }
@@ -761,7 +765,10 @@ int DebuggerGDB::Debug()
 
     m_State.GetDriver()->Prepare(target && target->GetTargetType() == ttConsoleOnly);
     m_State.ApplyBreakpoints();
-    m_State.GetDriver()->Start(false);
+
+    // Don't issue 'run' if attaching to a process (Bug #1391904)
+    if (m_PidToAttach == 0)
+		m_State.GetDriver()->Start(false);
 
 	return 0;
 }
@@ -1220,8 +1227,8 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
 		mbar->Enable(idMenuToggleBreakpoint, en && ed && stopped);
 		mbar->Enable(idMenuSendCommandToGDB, m_pProcess && stopped);
  		mbar->Enable(idMenuAddSymbolFile, m_pProcess && stopped);
- 		mbar->Enable(idMenuBacktrace, m_pProcess && stopped);
- 		mbar->Enable(idMenuCPU, m_pProcess && stopped);
+// 		mbar->Enable(idMenuBacktrace, m_pProcess && stopped);
+// 		mbar->Enable(idMenuCPU, m_pProcess && stopped);
 // 		mbar->Enable(idMenuEditWatches, en && stopped);
         mbar->Enable(idMenuStop, m_pProcess && en);
         mbar->Enable(idMenuAttachToProcess, !m_pProcess);
