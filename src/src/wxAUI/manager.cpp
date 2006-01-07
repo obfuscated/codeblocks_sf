@@ -3060,7 +3060,6 @@ void wxFrameManager::OnFloatingPaneClosed(wxWindow* wnd)
     pane.window->Show(false);
     pane.window->Reparent(m_frame);
     pane.frame = NULL;
-    pane.Dock();
     pane.Hide();
 }
 

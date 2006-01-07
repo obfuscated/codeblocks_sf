@@ -1,5 +1,5 @@
 --- manager-base.cpp	Wed Dec 14 18:04:54 2005
-+++ manager.cpp	Sat Jan 07 15:40:28 2006
++++ manager.cpp	Sat Jan 07 20:25:51 2006
 @@ -376,7 +376,13 @@
          m_mgr.Update();           
  
@@ -55,3 +55,11 @@
      DoDrop(m_docks, m_panes, pane, client_pt, action_offset);
  
      // if the pane is still floating, update it's floating
+@@ -3044,7 +3060,6 @@
+     pane.window->Show(false);
+     pane.window->Reparent(m_frame);
+     pane.frame = NULL;
+-    pane.Dock();
+     pane.Hide();
+ }
+ 
