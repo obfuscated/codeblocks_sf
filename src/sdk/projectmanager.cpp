@@ -53,6 +53,18 @@
 #include "cbeditor.h"
 #include "xtra_classes.h"
 
+// maximum number of items in "Open with" context menu
+static const unsigned int MAX_OPEN_WITH_ITEMS = 20; // keep it in sync with below array!
+static const int idOpenWith[] =
+{
+    wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(),
+    wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(),
+    wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(),
+    wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(),
+};
+// special entry: force open with internal editor
+static const int idOpenWithInternal = wxNewId();
+
 // static
 bool ProjectManager::s_CanShutdown = true;
 
@@ -151,6 +163,8 @@ BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
     EVT_TREE_ITEM_ACTIVATED(ID_ProjectManager, ProjectManager::OnProjectFileActivated)
     EVT_TREE_ITEM_RIGHT_CLICK(ID_ProjectManager, ProjectManager::OnTreeItemRightClick)
     EVT_COMMAND_RIGHT_CLICK(ID_ProjectManager, ProjectManager::OnRightClick)
+    EVT_MENU_RANGE(idOpenWith[0], idOpenWith[MAX_OPEN_WITH_ITEMS - 1], ProjectManager::OnOpenWith)
+    EVT_MENU(idOpenWithInternal, ProjectManager::OnOpenWith)
     EVT_MENU(idNB_TabTop, ProjectManager::OnTabPosition)
     EVT_MENU(idNB_TabBottom, ProjectManager::OnTabPosition)
     EVT_MENU(idMenuSetActiveProject, ProjectManager::OnSetActiveProject)
@@ -460,6 +474,20 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
 				caption.Printf(_("Open %s"), m_pTree->GetItemText(id).c_str());
 				menu.Append(idMenuOpenFile, caption);
 			}
+
+			// add "Open with" menu
+			wxMenu* openWith = new wxMenu;
+            PluginsArray mimes = Manager::Get()->GetPluginManager()->GetMimeOffers();
+            for (unsigned int i = 0; i < mimes.GetCount() && i < MAX_OPEN_WITH_ITEMS; ++i)
+            {
+                cbMimePlugin* plugin = (cbMimePlugin*)mimes[i];
+                if (plugin && plugin->CanHandleFile(m_pTree->GetItemText(id)))
+                    openWith->Append(idOpenWith[i], plugin->GetInfo()->title);
+            }
+            openWith->AppendSeparator();
+            openWith->Append(idOpenWithInternal, _("Internal editor"));
+            menu.Append(wxID_ANY, _("Open with..."), openWith);
+
     		menu.AppendSeparator();
     	    menu.Append(idMenuRemoveFilePopup, _("Remove file from project"));
         }
@@ -1240,7 +1268,6 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
         {
             ed->SetProjectFile(pf);
             ed->Show(true);
-
         }
         else
         {
@@ -1263,10 +1290,16 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
 
 		// not a recognized file type
         cbMimePlugin* plugin = Manager::Get()->GetPluginManager()->GetMIMEHandlerForFile(filename);
-        if (!plugin || plugin->OpenFile(filename) != 0)
+        if (!plugin)
 		{
             wxString msg;
             msg.Printf(_("Could not open file '%s'.\nNo handler registered for this type of file."), filename.c_str());
+            Manager::Get()->GetMessageManager()->DebugLogError(msg);
+		}
+        else if (plugin->OpenFile(filename) != 0)
+		{
+            wxString msg;
+            msg.Printf(_("Could not open file '%s'.\nThe registered handler (%s) could not open it."), filename.c_str(), plugin->GetInfo()->title.c_str());
             Manager::Get()->GetMessageManager()->DebugLogError(msg);
 		}
 	}
@@ -1801,6 +1834,42 @@ void ProjectManager::OnCloseFile(wxCommandEvent& event)
 void ProjectManager::OnOpenFile(wxCommandEvent& event)
 {
 	DoOpenSelectedFile();
+}
+
+void ProjectManager::OnOpenWith(wxCommandEvent& event)
+{
+    wxTreeItemId sel = m_pTree->GetSelection();
+    FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
+
+    if (ftd)
+    {
+	    cbProject* project = ftd->GetProject();
+	    ProjectFile* f = project->GetFile(ftd->GetFileIndex());
+    	if (f)
+        {
+            wxString filename = f->file.GetFullPath();
+            if (event.GetId() == idOpenWithInternal)
+            {
+                cbEditor* ed = Manager::Get()->GetEditorManager()->Open(filename);
+                if (ed)
+                {
+                    ed->SetProjectFile(f);
+                    ed->Show(true);
+                    return;
+                }
+            }
+            else
+            {
+                PluginsArray mimes = Manager::Get()->GetPluginManager()->GetMimeOffers();
+                cbMimePlugin* plugin = (cbMimePlugin*)mimes[event.GetId() - idOpenWith[0]];
+                if (plugin && plugin->OpenFile(filename) == 0)
+                    return;
+            }
+            wxString msg;
+            msg.Printf(_("Failed to open '%s'."), filename.c_str());
+            Manager::Get()->GetMessageManager()->DebugLogError(msg);
+        }
+    }
 }
 
 void ProjectManager::OnProperties(wxCommandEvent& event)

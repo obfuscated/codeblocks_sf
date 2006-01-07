@@ -359,6 +359,7 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
         void OnCloseProject(wxCommandEvent& event);
         void OnCloseFile(wxCommandEvent& event);
         void OnOpenFile(wxCommandEvent& event);
+        void OnOpenWith(wxCommandEvent& event);
         void OnProperties(wxCommandEvent& event);
 		void OnGotoFile(wxCommandEvent& event);
         void OnViewCategorize(wxCommandEvent& event);

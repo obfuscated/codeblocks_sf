@@ -2362,7 +2362,7 @@ void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
         mbar->Enable(idMenuPreviousError, !running && (prj || ed) && m_Errors.HasPreviousError());
 //        mbar->Enable(idMenuClearErrors, cnt);
 
-        mbar->Enable(idMenuExportMakefile, !running && prj);
+        mbar->Enable(idMenuExportMakefile, false);// !running && prj);
 
         // Project menu
         mbar->Enable(idMenuProjectCompilerOptions, !running && prj);
