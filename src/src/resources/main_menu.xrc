@@ -59,7 +59,7 @@
       </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idFileSaveProject">
-        <label>&amp;Save project</label>
+        <label>Save project</label>
         <help>Save active project</help>
       </object>
       <object class="wxMenuItem" name="idFileSaveProjectAs">
@@ -87,7 +87,7 @@
         <help>Close the active file</help>
       </object>
       <object class="wxMenuItem" name="idFileCloseAll">
-        <label>&amp;Close all</label>
+        <label>Close all</label>
         <accel>Ctrl-Shift-W</accel>
         <help>Close all open files</help>
       </object>
