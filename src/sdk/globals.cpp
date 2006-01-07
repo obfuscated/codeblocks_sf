@@ -402,7 +402,7 @@ bool cbSaveToFile(const wxString& filename, const wxString& contents)
     wxTempFile file(filename);
     if (file.IsOpened())
     {
-        if (!file.Write(contents, wxConvUTF8))
+        if (!file.Write(contents, wxConvLocal))
             return false;
         if (!file.Commit())
             return false;
