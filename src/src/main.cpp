@@ -79,6 +79,7 @@ private:
 };
 
 const static wxString gDefaultLayout = _T("Code::Blocks default");
+static wxString gDefaultLayoutData; // this will keep the "hardcoded" default layout
 
 int wxID_FILE10 = wxNewId();
 int wxID_FILE11 = wxNewId();
@@ -436,7 +437,8 @@ MainFrame::MainFrame(wxLocale& lang, wxWindow* parent)
     if (deflayout.IsEmpty())
         Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/default"), gDefaultLayout);
     DoFixToolbarsLayout();
-    SaveViewLayout(gDefaultLayout, m_LayoutManager.SavePerspective());
+    gDefaultLayoutData = m_LayoutManager.SavePerspective(); // keep the "hardcoded" layout handy
+    SaveViewLayout(gDefaultLayout, gDefaultLayoutData);
     LoadWindowState();
 
     ShowHideStartPage();
@@ -1750,19 +1752,11 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     }
 
     SaveWindowState();
+	m_LayoutManager.UnInit();
     TerminateRecentFilesHistory();
 
     // Hide the window
     Hide();
-
-    // Hide all panes - fixes crash if plugin windows are visible
-    wxPaneInfoArray& panes = m_LayoutManager.GetAllPanes();
-    for (size_t i = 0; i < panes.GetCount(); ++i)
-    {
-        wxPaneInfo& info = panes[i];
-        info.Hide();
-    }
-	m_LayoutManager.UnInit();
 
     // remove all other event handlers from this window
     // this stops it from crashing, when no plugins are loaded
@@ -2100,6 +2094,19 @@ void MainFrame::OnViewLayoutSave(wxCommandEvent& event)
 
 void MainFrame::OnViewLayoutDelete(wxCommandEvent& event)
 {
+    if (m_LastLayoutName == gDefaultLayout)
+    {
+        if (wxMessageBox(_("The default layout cannot be deleted. It can always be reverted to "
+                        "a predefined state though.\nDo you want to revert it now?"),
+                        _("Confirmation"),
+                        wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxYES)
+        {
+            m_LayoutViews[gDefaultLayout] = gDefaultLayoutData;
+            LoadViewLayout(gDefaultLayout);
+            return;
+        }
+    }
+
     if (wxMessageBox(wxString::Format(_("Are you really sure you want to delete the layout '%s'?"), m_LastLayoutName.c_str()),
                     _("Confirmation"),
                     wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxYES)
@@ -2754,6 +2761,9 @@ void MainFrame::OnShiftTab(wxCommandEvent& event)
 
 void MainFrame::OnRequestDockWindow(CodeBlocksDockEvent& event)
 {
+    if (Manager::isappShuttingDown())
+        return;
+
     wxPaneInfo info;
     wxString name = event.name;
     if (name.IsEmpty())
@@ -2762,28 +2772,28 @@ void MainFrame::OnRequestDockWindow(CodeBlocksDockEvent& event)
         name = wxString::Format(_T("UntitledPane%d"), idx++);
     }
 // TODO (mandrav##): Check for existing pane with the same name
-    info.Name(name);
-    info.Caption(event.title.IsEmpty() ? name : event.title);
+    info = info.Name(name);
+    info = info.Caption(event.title.IsEmpty() ? name : event.title);
     switch (event.dockSide)
     {
-        case CodeBlocksDockEvent::dsLeft: info.Left(); break;
-        case CodeBlocksDockEvent::dsRight: info.Right(); break;
-        case CodeBlocksDockEvent::dsTop: info.Top(); break;
-        case CodeBlocksDockEvent::dsBottom: info.Bottom(); break;
-        case CodeBlocksDockEvent::dsFloating: info.Float(); break;
+        case CodeBlocksDockEvent::dsLeft: info = info.Left(); break;
+        case CodeBlocksDockEvent::dsRight: info = info.Right(); break;
+        case CodeBlocksDockEvent::dsTop: info = info.Top(); break;
+        case CodeBlocksDockEvent::dsBottom: info = info.Bottom(); break;
+        case CodeBlocksDockEvent::dsFloating: info = info.Float(); break;
 
         default: break;
     }
-    info.Show(event.shown);
-    info.BestSize(event.desiredSize);
-    info.FloatingSize(event.floatingSize);
-    info.MinSize(event.minimumSize);
-    info.Layer(event.stretch ? 1 : 0);
+    info = info.Show(event.shown);
+    info = info.BestSize(event.desiredSize);
+    info = info.FloatingSize(event.floatingSize);
+    info = info.MinSize(event.minimumSize);
+    info = info.Layer(event.stretch ? 1 : 0);
     if (event.row != -1)
-        info.Row(event.row);
+        info = info.Row(event.row);
     if (event.column != -1)
-        info.Position(event.column);
-    info.CloseButton(event.hideable ? true : false);
+        info = info.Position(event.column);
+    info = info.CloseButton(event.hideable ? true : false);
     m_LayoutManager.AddPane(event.pWindow, info);
     DoUpdateLayout();
 }

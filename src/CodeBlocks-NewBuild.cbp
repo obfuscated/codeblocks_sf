@@ -164,7 +164,7 @@
                 <Option output="devel\codeblocks.exe" />
                 <Option working_dir="devel" />
                 <Option object_output=".objs\2.6" />
-                <Option external_deps="..\wxDockit\lib\libwxdockit.a;" />
+                <Option external_deps="src\wxAUI\libwxaui.a;" />
                 <Option type="0" />
                 <Option compiler="0" />
                 <Option parameters="--debug-log --no-check-associations -ns" />

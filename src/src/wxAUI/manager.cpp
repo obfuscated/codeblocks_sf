@@ -4,7 +4,7 @@
 // Author:      Benjamin I. Williams
 // Modified by:
 // Created:     2005-05-17
-// RCS-ID:      
+// RCS-ID:
 // Copyright:   (C) Copyright 2005, Kirix Corporation, All Rights Reserved.
 // Licence:     wxWindows Library Licence, Version 3.1
 ///////////////////////////////////////////////////////////////////////////////
@@ -88,12 +88,12 @@ wxDefaultDockArt::wxDefaultDockArt()
         0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xef,0xfb,0xcf,0xf9,
         0x9f,0xfc,0x3f,0xfe,0x3f,0xfe,0x9f,0xfc,0xcf,0xf9,0xef,0xfb,
         0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff};
-        
+
     static unsigned char pin_bits[]={
         0xff,0xff,0xff,0xff,0xff,0xff,0x1f,0xfc,0xdf,0xfc,0xdf,0xfc,
         0xdf,0xfc,0xdf,0xfc,0xdf,0xfc,0x0f,0xf8,0x7f,0xff,0x7f,0xff,
         0x7f,0xff,0xff,0xff,0xff,0xff,0xff,0xff};
-          
+
     m_close_bitmap = BitmapFromBits(close_bits, 16, 16);
     m_pin_bitmap = BitmapFromBits(pin_bits, 16, 16);
 
@@ -207,7 +207,7 @@ void wxDefaultDockArt::DrawBorder(wxDC& dc, const wxRect& _rect,
             dc.SetPen(*wxWHITE_PEN);
             dc.DrawLine(rect.x, rect.y, rect.x+rect.width, rect.y);
             dc.DrawLine(rect.x, rect.y, rect.x, rect.y+rect.height);
-            dc.SetPen(m_border_pen);       
+            dc.SetPen(m_border_pen);
             dc.DrawLine(rect.x, rect.y+rect.height-1,
                         rect.x+rect.width, rect.y+rect.height-1);
             dc.DrawLine(rect.x+rect.width-1, rect.y,
@@ -259,12 +259,12 @@ void wxDefaultDockArt::DrawGripper(wxDC& dc,
         dc.DrawPoint(rect.x+3, rect.y+y);
         dc.SetPen(m_gripper_pen2);
         dc.DrawPoint(rect.x+3, rect.y+y+1);
-        dc.DrawPoint(rect.x+4, rect.y+y);        
+        dc.DrawPoint(rect.x+4, rect.y+y);
         dc.SetPen(m_gripper_pen3);
         dc.DrawPoint(rect.x+5, rect.y+y+1);
-        dc.DrawPoint(rect.x+5, rect.y+y+2);        
-        dc.DrawPoint(rect.x+4, rect.y+y+2);        
-        
+        dc.DrawPoint(rect.x+5, rect.y+y+2);
+        dc.DrawPoint(rect.x+4, rect.y+y+2);
+
         y += 4;
         if (y > rect.GetHeight()-5)
             break;
@@ -365,19 +365,25 @@ public:
     {
         m_pane_window = pane.window;
         m_pane_window->Reparent(this);
-        
+
         wxPaneInfo contained_pane = pane;
         contained_pane.Dock().Center().Show().
                        CaptionVisible(false).
                        PaneBorder(false).
                        Layer(0).Row(0).Position(0);
-                                              
+
         m_mgr.AddPane(m_pane_window, contained_pane);
-        m_mgr.Update();           
+        m_mgr.Update();
 
         if (pane.min_size.IsFullySpecified())
+        {
+            // because SetSizeHints() calls Fit() too (which sets the window size to its minimum allowed),
+            // we keep the size before calling SetSizeHints() and reset it afterwards...
+            wxSize tmp = GetSize();
             GetSizer()->SetSizeHints(this);
-        
+            SetSize(tmp);
+        }
+
         SetTitle(pane.caption);
 
         if (contained_pane.IsFixed())
@@ -396,7 +402,7 @@ public:
                 size = m_pane_window->GetSize();
             if (pane.HasGripper())
                 size.x += m_owner_mgr->m_art->GetMetric(wxAUI_ART_GRIPPER_SIZE);
-                
+
             SetClientSize(size);
         }
     }
@@ -407,7 +413,7 @@ private:
     {
         m_owner_mgr->OnFloatingPaneResized(m_pane_window, event.GetSize());
     }
-    
+
     void OnClose(wxCloseEvent& event)
     {
         m_owner_mgr->OnFloatingPaneClosed(m_pane_window);
@@ -433,7 +439,7 @@ private:
         }
 
         m_last_rect = win_rect;
-        
+
         if (!isMouseDown())
             return;
 
@@ -536,7 +542,7 @@ static void DrawResizeHint(wxDC& dc, const wxRect& rect)
 {
     wxBitmap stipple = wxPaneCreateStippleBitmap();
     wxBrush brush(stipple);
-    dc.SetBrush(brush);    
+    dc.SetBrush(brush);
     dc.SetPen(*wxTRANSPARENT_PEN);
 
     dc.SetLogicalFunction(wxXOR);
@@ -555,23 +561,23 @@ static void MakeWindowTransparent(wxWindow* wnd, int amount)
     static PSETLAYEREDWINDOWATTR pSetLayeredWindowAttributes = NULL;
     static HMODULE h = NULL;
     HWND hwnd = (HWND)wnd->GetHWND();
-    
+
     if (!h)
         h = LoadLibrary(_T("user32"));
-        
+
     if (!pSetLayeredWindowAttributes)
     {
         pSetLayeredWindowAttributes =
          (PSETLAYEREDWINDOWATTR)GetProcAddress(h,"SetLayeredWindowAttributes");
     }
-    
+
     if (pSetLayeredWindowAttributes == NULL)
         return;
-        
+
     LONG exstyle = GetWindowLong(hwnd, GWL_EXSTYLE);
     if (0 == (exstyle & 0x80000) /*WS_EX_LAYERED*/)
-        SetWindowLong(hwnd, GWL_EXSTYLE, exstyle | 0x80000 /*WS_EX_LAYERED*/);   
-             
+        SetWindowLong(hwnd, GWL_EXSTYLE, exstyle | 0x80000 /*WS_EX_LAYERED*/);
+
     pSetLayeredWindowAttributes(hwnd, 0, amount, 2 /*LWA_ALPHA*/);
 }
 
@@ -653,7 +659,7 @@ static void DoInsertDockRow(wxPaneInfoArray& panes,
     }
 }
 
-// DoInsertDockLayer() is an internal function that inserts a space for 
+// DoInsertDockLayer() is an internal function that inserts a space for
 // another dock pane by incrementing all existing dock row values by one
 static void DoInsertPane(wxPaneInfoArray& panes,
                          int dock_direction,
@@ -696,14 +702,14 @@ static void FindDocks(wxDockInfoArray& docks,
         max_row = wxMax(max_row, docks.Item(i).dock_row);
         max_layer = wxMax(max_layer, docks.Item(i).dock_layer);
     }
-    
+
     // if no dock layer was specified, search all dock layers
     if (dock_layer == -1)
     {
         begin_layer = 0;
         end_layer = max_layer;
     }
-    
+
     // if no dock row was specified, search all dock row
     if (dock_row == -1)
     {
@@ -863,19 +869,19 @@ wxDockUIPart* wxFrameManager::HitTest(int x, int y)
     for (i = 0, part_count = m_uiparts.GetCount(); i < part_count; ++i)
     {
         wxDockUIPart* item = &m_uiparts.Item(i);
-        
-        // we are not interested in typeDock, because this space 
+
+        // we are not interested in typeDock, because this space
         // isn't used to draw anything, just for measurements;
         // besides, the entire dock area is covered with other
         // rectangles, which we are interested in.
         if (item->type == wxDockUIPart::typeDock)
             continue;
-            
+
         // if the point is inside the rectangle, we have a hit
         if (item->rect.Inside(x,y))
             return item;
     }
-    
+
     // nothing found, return NULL
     return NULL;
 }
@@ -942,7 +948,7 @@ void wxFrameManager::SetArtProvider(wxDockArt* art_provider)
 {
     // delete the last art provider, if any
     delete m_art;
-    
+
     // assign the new art provider
     m_art = art_provider;
 }
@@ -963,7 +969,7 @@ bool wxFrameManager::AddPane(wxWindow* window, const wxPaneInfo& pane_info)
 
     // set the pane window
     pinfo.window = window;
-    
+
     // if the pane's name identifier is blank, create a random string
     if (pinfo.name.IsEmpty())
     {
@@ -971,7 +977,7 @@ bool wxFrameManager::AddPane(wxWindow* window, const wxPaneInfo& pane_info)
              (unsigned int)pinfo.window, (unsigned int)time(NULL),
              (unsigned int)clock(), m_panes.GetCount());
     }
-    
+
     // set initial proportion (if not already set)
     if (pinfo.dock_proportion == 0)
         pinfo.dock_proportion = 100000;
@@ -988,7 +994,7 @@ bool wxFrameManager::AddPane(wxWindow* window, const wxPaneInfo& pane_info)
         pinfo.window)
     {
         pinfo.best_size = pinfo.window->GetClientSize();
-        
+
         if (pinfo.min_size != wxDefaultSize)
         {
             if (pinfo.best_size.x < pinfo.min_size.x)
@@ -1043,7 +1049,7 @@ bool wxFrameManager::InsertPane(wxWindow* window, const wxPaneInfo& pane_info,
                  pane_info.dock_layer);
             break;
     }
-    
+
     // if the window already exists, we are basically just moving/inserting the
     // existing window.  If it doesn't exist, we need to add it and insert it
     wxPaneInfo& existing_pane = GetPane(window);
@@ -1073,7 +1079,7 @@ bool wxFrameManager::InsertPane(wxWindow* window, const wxPaneInfo& pane_info,
     return true;
 }
 
-    
+
 bool wxFrameManager::DetachPane(wxWindow* window)
 {
     int i, count;
@@ -1123,15 +1129,15 @@ wxString wxFrameManager::SavePerspective()
     for (pane_i = 0; pane_i < pane_count; ++pane_i)
     {
         wxPaneInfo& pane = m_panes.Item(pane_i);
-        
+
         result += wxT("name=");
         result += EscapeDelimiters(pane.name);
         result += wxT(";");
-        
+
         result += wxT("caption=");
         result += EscapeDelimiters(pane.caption);
         result += wxT(";");
-        
+
         result += wxString::Format(wxT("state=%u;"), pane.state);
         result += wxString::Format(wxT("dir=%d;"), pane.dock_direction);
         result += wxString::Format(wxT("layer=%d;"), pane.dock_layer);
@@ -1150,17 +1156,17 @@ wxString wxFrameManager::SavePerspective()
         result += wxString::Format(wxT("floath=%d"), pane.floating_size.y);
         result += wxT("|");
     }
-    
+
     int dock_i, dock_count = m_docks.GetCount();
     for (dock_i = 0; dock_i < dock_count; ++dock_i)
     {
         wxDockInfo& dock = m_docks.Item(dock_i);
-        
+
         result += wxString::Format(wxT("dock_size(%d,%d,%d)=%d|"),
                                    dock.dock_direction, dock.dock_layer,
                                    dock.dock_row, dock.size);
     }
-    
+
     return result;
 }
 
@@ -1171,7 +1177,7 @@ bool wxFrameManager::LoadPerspective(const wxString& layout, bool update)
 {
     wxString input = layout;
     wxString part;
-    
+
     // check layout string version
     part = input.BeforeFirst(wxT('|'));
     input = input.AfterFirst(wxT('|'));
@@ -1179,8 +1185,8 @@ bool wxFrameManager::LoadPerspective(const wxString& layout, bool update)
     part.Trim(false);
     if (part != wxT("layout1"))
         return false;
-    
-    
+
+
     // mark all panes currently managed as docked and hidden
     int pane_i, pane_count = m_panes.GetCount();
     for (pane_i = 0; pane_i < pane_count; ++pane_i)
@@ -1188,12 +1194,12 @@ bool wxFrameManager::LoadPerspective(const wxString& layout, bool update)
 
     // clear out the dock array; this will be reconstructed
     m_docks.Clear();
-    
+
     // replace escaped characters so we can
     // split up the string easily
     input.Replace(wxT("\\|"), wxT("\a"));
     input.Replace(wxT("\\;"), wxT("\b"));
-    
+
     while (1)
     {
         wxPaneInfo pane;
@@ -1211,7 +1217,7 @@ bool wxFrameManager::LoadPerspective(const wxString& layout, bool update)
         {
             wxString val_name = pane_part.BeforeFirst(wxT('='));
             wxString value = pane_part.AfterFirst(wxT('='));
-                  
+
             long dir, layer, row, size;
             wxString piece = val_name.AfterFirst(wxT('('));
             piece = piece.BeforeLast(wxT(')'));
@@ -1220,7 +1226,7 @@ bool wxFrameManager::LoadPerspective(const wxString& layout, bool update)
             piece.BeforeFirst(wxT(',')).ToLong(&layer);
             piece.AfterFirst(wxT(',')).ToLong(&row);
             value.ToLong(&size);
-            
+
             wxDockInfo dock;
             dock.dock_direction = dir;
             dock.dock_layer = layer;
@@ -1241,7 +1247,7 @@ bool wxFrameManager::LoadPerspective(const wxString& layout, bool update)
             val_name.Trim(false);
             value.Trim(true);
             value.Trim(false);
-        
+
             if (val_name.IsEmpty())
                 break;
 
@@ -1285,14 +1291,14 @@ bool wxFrameManager::LoadPerspective(const wxString& layout, bool update)
                 wxFAIL_MSG(wxT("Bad Perspective String"));
             }
         }
-        
+
         // replace escaped characters so we can
         // split up the string easily
         pane.name.Replace(wxT("\a"), wxT("|"));
         pane.name.Replace(wxT("\b"), wxT(";"));
         pane.caption.Replace(wxT("\a"), wxT("|"));
         pane.caption.Replace(wxT("\b"), wxT(";"));
-        
+
         wxPaneInfo& p = GetPane(pane.name);
         if (!p.IsOk())
         {
@@ -1300,13 +1306,13 @@ bool wxFrameManager::LoadPerspective(const wxString& layout, bool update)
             // in the existing layout
             return false;
         }
-        
+
         pane.window = p.window;
         pane.frame = p.frame;
         pane.buttons = p.buttons;
         p = pane;
     }
-    
+
     if (update)
         Update();
 
@@ -1339,7 +1345,7 @@ void wxFrameManager::GetPanePositionsAndSizes(wxDockInfo& dock,
             action_pane = pane_i;
         }
     }
-    
+
     // set up each panes default position, and
     // determine the size (width or height, depending
     // on the dock's orientation) of each pane
@@ -1348,12 +1354,12 @@ void wxFrameManager::GetPanePositionsAndSizes(wxDockInfo& dock,
         wxPaneInfo& pane = *(dock.panes.Item(pane_i));
         positions.Add(pane.dock_pos);
         int size = 0;
-        
+
         if (pane.HasBorder())
             size += (pane_border_size*2);
         if (pane.HasGripper())
             size += gripper_size;
-                
+
         if (dock.IsHorizontal())
         {
             size += pane.best_size.x;
@@ -1361,10 +1367,10 @@ void wxFrameManager::GetPanePositionsAndSizes(wxDockInfo& dock,
          else
         {
             if (pane.HasCaption())
-                size += caption_size; 
+                size += caption_size;
             size += pane.best_size.y;
         }
-   
+
         sizes.Add(size);
     }
 
@@ -1385,7 +1391,7 @@ void wxFrameManager::GetPanePositionsAndSizes(wxDockInfo& dock,
 
         offset += sizes[pane_i];
     }
-    
+
     // if the dock mode is fixed, make sure none of the panes
     // overlap; we will bump panes that overlap
     offset = 0;
@@ -1407,7 +1413,7 @@ void wxFrameManager::LayoutAddPane(wxSizer* cont,
                                    wxPaneInfo& pane,
                                    wxDockUIPartArray& uiparts,
                                    bool spacer_only)
-{        
+{
     wxDockUIPart part;
     wxSizerItem* sizer_item;
 
@@ -1510,7 +1516,7 @@ void wxFrameManager::LayoutAddPane(wxSizer* cont,
     // determine if the pane should have a minimum size; if the pane is
     // non-resizable (fixed) then we must set a minimum size. Alternitavely,
     // if the pane.min_size is set, we must use that value as well
-    
+
     wxSize min_size = pane.min_size;
     if (pane.IsFixed())
     {
@@ -1520,7 +1526,7 @@ void wxFrameManager::LayoutAddPane(wxSizer* cont,
             pane_proportion = 0;
         }
     }
-    
+
     if (min_size != wxDefaultSize)
     {
         vert_pane_sizer->SetItemMinSize(
@@ -1595,7 +1601,7 @@ void wxFrameManager::LayoutAddDock(wxSizer* cont,
     if (dock.fixed)
     {
         wxArrayInt pane_positions, pane_sizes;
-        
+
         // figure out the real pane positions we will
         // use, without modifying the each pane's pane_pos member
         GetPanePositionsAndSizes(dock, pane_positions, pane_sizes);
@@ -1716,12 +1722,12 @@ wxSizer* wxFrameManager::LayoutAll(wxPaneInfoArray& panes,
     int caption_size = m_art->GetMetric(wxAUI_ART_CAPTION_SIZE);
     wxSize cli_size = m_frame->GetClientSize();
     int i, dock_count, pane_count;
-    
+
 
     // empty all docks out
     for (i = 0, dock_count = docks.GetCount(); i < dock_count; ++i)
         docks.Item(i).panes.Empty();
-    
+
     // iterate through all known panes, filing each
     // of them into the appropriate dock. If the
     // pane does not exist in the dock, add it
@@ -1756,7 +1762,7 @@ wxSizer* wxFrameManager::LayoutAll(wxPaneInfoArray& panes,
             RemovePaneFromDocks(docks, p, dock);
 
             // pane needs to be added to the dock,
-            // if it doesn't already exist 
+            // if it doesn't already exist
             if (!FindPaneInDock(*dock, p.window))
                 dock->panes.Add(&p);
         }
@@ -1780,7 +1786,7 @@ wxSizer* wxFrameManager::LayoutAll(wxPaneInfoArray& panes,
     {
         wxDockInfo& dock = docks.Item(i);
         int j, dock_pane_count = dock.panes.GetCount();
-        
+
         // sort the dock pane array by the pane's
         // dock position (dock_pos), in ascending order
         dock.panes.Sort(PaneSortFunc);
@@ -1798,13 +1804,13 @@ wxSizer* wxFrameManager::LayoutAll(wxPaneInfoArray& panes,
                     pane_size = pane.min_size;
                 if (pane_size == wxDefaultSize)
                     pane_size = pane.window->GetSize();
-                
+
                 if (dock.IsHorizontal())
                     size = wxMax(pane_size.y, size);
                      else
                     size = wxMax(pane_size.x, size);
             }
-            
+
             // add space for the border (two times), but only
             // if at least one pane inside the dock has a pane border
             for (j = 0; j < dock_pane_count; ++j)
@@ -1867,15 +1873,15 @@ wxSizer* wxFrameManager::LayoutAll(wxPaneInfoArray& panes,
                 }
             }
         }
-        
+
         if (plus_border)
             dock_min_size += (pane_border_size*2);
         if (plus_caption && dock.IsHorizontal())
             dock_min_size += (caption_size);
-           
+
         dock.min_size = dock_min_size;
-        
-        
+
+
         // if the pane's current size is less than it's
         // minimum, increase the dock's size to it's minimum
         if (dock.size < dock.min_size)
@@ -1919,7 +1925,7 @@ wxSizer* wxFrameManager::LayoutAll(wxPaneInfoArray& panes,
         {
             wxArrayInt pane_positions, pane_sizes;
             GetPanePositionsAndSizes(dock, pane_positions, pane_sizes);
-            
+
             int offset = 0;
             for (j = 0; j < dock_pane_count; ++j)
             {
@@ -1936,12 +1942,12 @@ wxSizer* wxFrameManager::LayoutAll(wxPaneInfoArray& panes,
             }
         }
     }
-    
+
     // discover the maximum dock layer
     int max_layer = 0;
     for (i = 0; i < dock_count; ++i)
         max_layer = wxMax(max_layer, docks.Item(i).dock_layer);
- 
+
 
     // clear out uiparts
     uiparts.Empty();
@@ -1982,10 +1988,10 @@ wxSizer* wxFrameManager::LayoutAll(wxPaneInfoArray& panes,
                 LayoutAddDock(cont, *arr.Item(row), uiparts, spacer_only);
         }
 
-        
+
         // fill out the middle layer (which consists
         // of left docks, content area and right docks)
-        
+
         middle = new wxBoxSizer(wxHORIZONTAL);
 
         // find any left docks in this layer
@@ -2094,12 +2100,12 @@ void wxFrameManager::Update()
         {
             // because the pane is no longer in a floating, we need to
             // reparent it to m_frame and destroy the floating frame
-            
+
             // reduce flicker
 
             p.window->SetSize(1,1);
             p.frame->Show(false);
-                       
+
             // reparent to m_frame and destroy the pane
             p.window->Reparent(m_frame);
             p.frame->SetSizer(NULL);
@@ -2127,19 +2133,23 @@ void wxFrameManager::Update()
                                                   this, -1,
                                                   p.floating_pos,
                                                   p.floating_size);
-                                
+
                 // on MSW, if the owner desires transparent dragging, and
                 // the dragging is happening right now, then the floating
-                // window should have this style by default                  
+                // window should have this style by default
                 #ifdef __WXMSW__
                 if (m_action == actionDragFloatingPane &&
                     (m_flags & wxAUI_MGR_TRANSPARENT_DRAG))
                         MakeWindowTransparent(frame, 150);
                 #endif
-                
+
                 frame->SetPaneWindow(p);
                 p.frame = frame;
-                frame->Show();
+
+                if (p.IsShown())
+                {
+                    frame->Show();
+                }
             }
              else
             {
@@ -2151,6 +2161,8 @@ void wxFrameManager::Update()
                                      -1, -1, wxSIZE_USE_EXISTING);
                     //p.frame->Move(p.floating_pos.x, p.floating_pos.y);
                 }
+
+                 p.frame->Show(p.IsShown());
             }
         }
          else
@@ -2196,9 +2208,9 @@ void wxFrameManager::Update()
     }
 
     Repaint();
-    
+
     // set frame's minimum size
-    
+
 
 
 /*
@@ -2212,9 +2224,9 @@ void wxFrameManager::Update()
 
     wxSize minframe_size(min_size.x+frame_size.x-client_size.x,
                          min_size.y+frame_size.y-client_size.y );
-                         
+
     m_frame->SetMinSize(minframe_size);
- 
+
     if (frame_size.x < minframe_size.x ||
         frame_size.y < minframe_size.y)
             sizer->Fit(m_frame);
@@ -2230,7 +2242,7 @@ void wxFrameManager::Update()
 void wxFrameManager::DoFrameLayout()
 {
     m_frame->Layout();
-    
+
     int i, part_count;
     for (i = 0, part_count = m_uiparts.GetCount(); i < part_count; ++i)
     {
@@ -2272,7 +2284,7 @@ int wxFrameManager::GetDockPixelOffset(wxPaneInfo& test)
 {
     // the only way to accurately calculate the dock's
     // offset is to actually run a theoretical layout
-    
+
     int i, part_count, dock_count;
     wxDockInfoArray docks;
     wxPaneInfoArray panes;
@@ -2293,9 +2305,9 @@ int wxFrameManager::GetDockPixelOffset(wxPaneInfo& test)
         if (part.type == wxDockUIPart::typeDock)
             part.dock->rect = part.rect;
     }
-    
+
     delete sizer;
-    
+
     for (i = 0, dock_count = docks.GetCount(); i < dock_count; ++i)
     {
         wxDockInfo& dock = docks.Item(i);
@@ -2361,7 +2373,7 @@ bool wxFrameManager::DoDrop(wxDockInfoArray& docks,
 
     // The result should always be shown
     drop.Show();
-    
+
 
     // Check to see if the pane has been dragged outside of the window
     // (or near to the outside of the window), if so, dock it along the edge
@@ -2370,13 +2382,13 @@ bool wxFrameManager::DoDrop(wxDockInfoArray& docks,
     int layer_insert_offset = auiLayerInsertOffset;
     if (target.IsToolbar())
         layer_insert_offset = 0;
-    
+
     if (pt.x < layer_insert_offset &&
         pt.x > layer_insert_offset-auiLayerInsertPixels)
     {
         int new_layer = wxMax(wxMax(GetMaxLayer(docks, wxAUI_DOCK_LEFT),
                                     GetMaxLayer(docks, wxAUI_DOCK_BOTTOM)),
-                                    GetMaxLayer(docks, wxAUI_DOCK_TOP)) + 1;       
+                                    GetMaxLayer(docks, wxAUI_DOCK_TOP)) + 1;
         drop.Dock().Left().
              Layer(new_layer).
              Row(0).
@@ -2400,7 +2412,7 @@ bool wxFrameManager::DoDrop(wxDockInfoArray& docks,
     {
         int new_layer = wxMax(wxMax(GetMaxLayer(docks, wxAUI_DOCK_RIGHT),
                                     GetMaxLayer(docks, wxAUI_DOCK_TOP)),
-                                    GetMaxLayer(docks, wxAUI_DOCK_BOTTOM)) + 1;    
+                                    GetMaxLayer(docks, wxAUI_DOCK_BOTTOM)) + 1;
         drop.Dock().Right().
              Layer(new_layer).
              Row(0).
@@ -2428,7 +2440,7 @@ bool wxFrameManager::DoDrop(wxDockInfoArray& docks,
     {
         if (!part || !part->dock)
             return false;
-        
+
 
         // calculate the offset from where the dock begins
         // to the point where the user dropped the pane
@@ -2448,7 +2460,7 @@ bool wxFrameManager::DoDrop(wxDockInfoArray& docks,
                 drop.Float();
             return ProcessDockResult(target, drop);
         }
-        
+
         drop.Dock().
              Direction(part->dock->dock_direction).
              Layer(part->dock->dock_layer).
@@ -2464,7 +2476,7 @@ bool wxFrameManager::DoDrop(wxDockInfoArray& docks,
                             part->dock->dock_row);
             drop.dock_row = row;
         }
-        
+
         if (pt.y > part->dock->rect.y + part->dock->rect.height - 2 &&
             part->dock->panes.GetCount() > 1)
         {
@@ -2479,7 +2491,7 @@ bool wxFrameManager::DoDrop(wxDockInfoArray& docks,
 
 
 
-    
+
     if (!part)
         return false;
 
@@ -2548,12 +2560,12 @@ bool wxFrameManager::DoDrop(wxDockInfoArray& docks,
         part = GetPaneBorderPart(part->pane->window);
         if (!part)
             return false;
-            
+
         bool insert_dock_row = false;
         int insert_row = part->pane->dock_row;
         int insert_dir = part->pane->dock_direction;
         int insert_layer = part->pane->dock_layer;
-        
+
         switch (part->pane->dock_direction)
         {
             case wxAUI_DOCK_TOP:
@@ -2589,7 +2601,7 @@ bool wxFrameManager::DoDrop(wxDockInfoArray& docks,
                 if (new_row_pixels_y > (part->rect.height*20)/100)
                     new_row_pixels_y = (part->rect.height*20)/100;
 
-                
+
                 // determine if the mouse pointer is in a location that
                 // will cause a new row to be inserted.  The hot spot positions
                 // are along the borders of the center pane
@@ -2618,7 +2630,7 @@ bool wxFrameManager::DoDrop(wxDockInfoArray& docks,
         }
 
         if (insert_dock_row)
-        { 
+        {
             DoInsertDockRow(panes, insert_dir, insert_layer, insert_row);
             drop.Dock().Direction(insert_dir).
                         Layer(insert_layer).
@@ -2626,25 +2638,25 @@ bool wxFrameManager::DoDrop(wxDockInfoArray& docks,
                         Position(0);
             return ProcessDockResult(target, drop);
         }
-        
+
         // determine the mouse offset and the pane size, both in the
         // direction of the dock itself, and perpendicular to the dock
-        
+
         int offset, size;
-        
+
         if (part->orientation == wxVERTICAL)
         {
             offset = pt.y - part->rect.y;
-            size = part->rect.GetHeight(); 
+            size = part->rect.GetHeight();
         }
          else
         {
             offset = pt.x - part->rect.x;
             size = part->rect.GetWidth();
         }
-        
+
         int drop_position = part->pane->dock_pos;
-        
+
         // if we are in the top/left part of the pane,
         // insert the pane before the pane being hovered over
         if (offset <= size/2)
@@ -2689,7 +2701,7 @@ void wxFrameManager::OnHintFadeTimer(wxTimerEvent& event)
         m_hint_fadetimer.Stop();
         return;
     }
-    
+
     m_hint_fadeamt += 5;
     MakeWindowTransparent(m_hint_wnd, m_hint_fadeamt);
 #endif
@@ -2698,30 +2710,30 @@ void wxFrameManager::OnHintFadeTimer(wxTimerEvent& event)
 void wxFrameManager::ShowHint(const wxRect& rect)
 {
     #ifdef __WXMSW__
-    
+
     // First, determine if the operating system can handle transparency.
     // Transparency is available on Win2000 and above
-    
+
     static int os_type = -1;
     static int ver_major = -1;
-    
+
     if (os_type == -1)
         os_type = ::wxGetOsVersion(&ver_major);
 
     // If the transparent flag is set, and the OS supports it,
     // go ahead and use a transparent hint
-    
+
     if ((m_flags & wxAUI_MGR_TRANSPARENT_HINT) != 0 &&
         os_type == wxWINDOWS_NT && ver_major >= 5)
     {
         if (m_last_hint == rect)
             return;
         m_last_hint = rect;
-        
+
         int initial_fade = 50;
         if (m_flags & wxAUI_MGR_TRANSPARENT_HINT_FADE)
             initial_fade = 0;
-            
+
         if (m_hint_wnd == NULL)
         {
             wxPoint pt = rect.GetPosition();
@@ -2742,7 +2754,7 @@ void wxFrameManager::ShowHint(const wxRect& rect)
             MakeWindowTransparent(m_hint_wnd, initial_fade);
             m_hint_wnd->SetSize(pt.x, pt.y, rect.width, rect.height);
         }
-        
+
         if (m_flags & wxAUI_MGR_TRANSPARENT_HINT_FADE)
         {
             // start fade in timer
@@ -2750,7 +2762,7 @@ void wxFrameManager::ShowHint(const wxRect& rect)
             m_hint_fadetimer.SetOwner(this, 101);
             m_hint_fadetimer.Start(5);
         }
-        
+
         return;
     }
     #endif
@@ -2762,7 +2774,7 @@ void wxFrameManager::ShowHint(const wxRect& rect)
         m_frame->Refresh();
         m_frame->Update();
     }
-    
+
     wxScreenDC screendc;
     wxRegion clip(1, 1, 10000, 10000);
 
@@ -2801,7 +2813,7 @@ void wxFrameManager::ShowHint(const wxRect& rect)
 }
 
 void wxFrameManager::HideHint()
-{   
+{
     // hides a transparent window hint (currently wxMSW only)
     #ifdef __WXMSW__
     if (m_hint_wnd)
@@ -2812,7 +2824,7 @@ void wxFrameManager::HideHint()
         return;
     }
     #endif
-    
+
     // hides a painted hint by redrawing the frame window
     if (!m_last_hint.IsEmpty())
     {
@@ -2914,7 +2926,7 @@ void wxFrameManager::DrawHintRect(wxWindow* pane_window,
             break;
         }
     }
-    
+
     delete sizer;
 
     // actually show the hint rectangle on the screen
@@ -2927,7 +2939,7 @@ void wxFrameManager::OnFloatingPaneMoveStart(wxWindow* wnd)
     // try to find the pane
     wxPaneInfo& pane = GetPane(wnd);
     wxASSERT_MSG(pane.IsOk(), wxT("Pane window not found"));
-    
+
     #ifdef __WXMSW__
     if (m_flags & wxAUI_MGR_TRANSPARENT_DRAG)
         MakeWindowTransparent(pane.frame, 150);
@@ -2939,10 +2951,10 @@ void wxFrameManager::OnFloatingPaneMoving(wxWindow* wnd)
     // try to find the pane
     wxPaneInfo& pane = GetPane(wnd);
     wxASSERT_MSG(pane.IsOk(), wxT("Pane window not found"));
-    
+
     wxPoint pt = ::wxGetMousePosition();
     wxPoint client_pt = m_frame->ScreenToClient(pt);
-    
+
     // calculate the offset from the upper left-hand corner
     // of the frame to the mouse pointer
     wxPoint frame_pos = pane.frame->GetPosition();
@@ -2957,7 +2969,7 @@ void wxFrameManager::OnFloatingPaneMoving(wxWindow* wnd)
             wxPaneInfoArray panes;
             wxDockUIPartArray uiparts;
             wxPaneInfo hint = pane;
-            
+
             CopyDocksAndPanes(docks, panes, m_docks, m_panes);
 
             // find out where the new pane would be
@@ -2965,18 +2977,21 @@ void wxFrameManager::OnFloatingPaneMoving(wxWindow* wnd)
                 return;
             if (hint.IsFloating())
                 return;
-            
+
             pane = hint;
             m_action = actionDragToolbarPane;
             m_action_window = pane.window;
-            
+
             Update();
         }
-        
+
         return;
     }
-    
-    DrawHintRect(wnd, client_pt, action_offset);
+
+    if (!wxGetKeyState(WXK_ALT))
+        DrawHintRect(wnd, client_pt, action_offset);
+    else
+        RemoveHint();
 
     #ifdef __WXGTK__
     // this cleans up some screen artifacts that are caused on GTK because
@@ -2984,8 +2999,8 @@ void wxFrameManager::OnFloatingPaneMoving(wxWindow* wnd)
     // in DrawHintRect)
     //Refresh();
     #endif
-    
-    
+
+
     // reduces flicker
     m_frame->Update();
 }
@@ -2995,32 +3010,33 @@ void wxFrameManager::OnFloatingPaneMoved(wxWindow* wnd)
     // try to find the pane
     wxPaneInfo& pane = GetPane(wnd);
     wxASSERT_MSG(pane.IsOk(), wxT("Pane window not found"));
-    
+
     wxPoint pt = ::wxGetMousePosition();
     wxPoint client_pt = m_frame->ScreenToClient(pt);
-    
+
     // calculate the offset from the upper left-hand corner
     // of the frame to the mouse pointer
     wxPoint frame_pos = pane.frame->GetPosition();
     wxPoint action_offset(pt.x-frame_pos.x, pt.y-frame_pos.y);
-    
+
     // do the drop calculation
-    DoDrop(m_docks, m_panes, pane, client_pt, action_offset);
+    if (!wxGetKeyState(WXK_ALT))
+        DoDrop(m_docks, m_panes, pane, client_pt, action_offset);
 
     // if the pane is still floating, update it's floating
     // position (that we store)
     if (pane.IsFloating())
     {
         pane.floating_pos = pane.frame->GetPosition();
-        
+
         #ifdef __WXMSW__
         if (m_flags & wxAUI_MGR_TRANSPARENT_DRAG)
             MakeWindowTransparent(pane.frame, 255);
         #endif
     }
-        
+
     Update();
-    
+
     RemoveHint();
 }
 
@@ -3029,7 +3045,7 @@ void wxFrameManager::OnFloatingPaneResized(wxWindow* wnd, const wxSize& size)
     // try to find the pane
     wxPaneInfo& pane = GetPane(wnd);
     wxASSERT_MSG(pane.IsOk(), wxT("Pane window not found"));
-    
+
     pane.floating_size = size;
 }
 
@@ -3064,9 +3080,9 @@ void wxFrameManager::Render(wxDC* dc)
         // don't draw hidden pane items
         if (part.sizer_item && !part.sizer_item->IsShown())
             continue;
-        
+
         int pane_state = (part.pane ? part.pane->state : 0);
-        
+
         switch (part.type)
         {
             case wxDockUIPart::typeDockSizer:
@@ -3081,7 +3097,7 @@ void wxFrameManager::Render(wxDC* dc)
                 break;
             case wxDockUIPart::typeGripper:
                 m_art->DrawGripper(*dc, part.rect);
-                break;     
+                break;
             case wxDockUIPart::typePaneBorder:
                 m_art->DrawBorder(*dc, part.rect, pane_state);
                 break;
@@ -3175,7 +3191,7 @@ void wxFrameManager::OnSetCursor(wxSetCursorEvent& event)
             cursor = wxCursor(wxCURSOR_SIZING);
         }
     }
-    
+
     event.SetCursor(cursor);
 }
 
@@ -3187,7 +3203,7 @@ void wxFrameManager::UpdateButtonOnScreen(wxDockUIPart* button_ui_part,
     wxDockUIPart* hit_test = HitTest(event.GetX(), event.GetY());
 
     int state = wxAUI_BUTTON_STATE_NORMAL;
-    
+
     if (hit_test == button_ui_part)
     {
         if (event.LeftDown())
@@ -3355,13 +3371,13 @@ void wxFrameManager::OnLeftUp(wxMouseEvent& event)
                 wxPaneInfo& p = *dock.panes.Item(i);
                 if (p.window == pane.window)
                     pane_position = i;
-                
+
                 // while we're at it, subtract the pane sash
                 // width from the dock width, because this would
                 // skew our proportion calculations
                 if (i > 0)
                     dock_pixels -= sash_size;
-             
+
                 // also, the whole size (including decorations) of
                 // all fixed panes must also be subtracted, because they
                 // are not part of the proportion calculation
@@ -3377,7 +3393,7 @@ void wxFrameManager::OnLeftUp(wxMouseEvent& event)
                     total_proportion += p.dock_proportion;
                 }
             }
-            
+
             // find a pane in our dock to 'steal' space from or to 'give'
             // space to -- this is essentially what is done when a pane is
             // resized; the pane should usually be the first non-fixed pane
@@ -3392,12 +3408,12 @@ void wxFrameManager::OnLeftUp(wxMouseEvent& event)
                     break;
                 }
             }
-            
-            
+
+
             // demand that the pane being resized is found in this dock
             // (this assert really never should be raised)
             wxASSERT_MSG(pane_position != -1, wxT("Pane not found in dock"));
-            
+
             // prevent division by zero
             if (dock_pixels == 0 || total_proportion == 0 || borrow_pane == -1)
             {
@@ -3407,10 +3423,10 @@ void wxFrameManager::OnLeftUp(wxMouseEvent& event)
 
             // calculate the new proportion of the pane
             int new_proportion = (new_pixsize*total_proportion)/dock_pixels;
-            
+
             // default minimum size
             int min_size = 0;
-            
+
             // check against the pane's minimum size, if specified. please note
             // that this is not enough to ensure that the minimum size will
             // not be violated, because the whole frame might later be shrunk,
@@ -3418,7 +3434,7 @@ void wxFrameManager::OnLeftUp(wxMouseEvent& event)
             if (pane.min_size.IsFullySpecified())
             {
                 min_size = 0;
-                
+
                 if (pane.HasBorder())
                     min_size += (pane_border_size*2);
 
@@ -3434,8 +3450,8 @@ void wxFrameManager::OnLeftUp(wxMouseEvent& event)
                     min_size += pane.min_size.x;
                 }
             }
-            
-            
+
+
             // for some reason, an arithmatic error somewhere is causing
             // the proportion calculations to always be off by 1 pixel;
             // for now we will add the 1 pixel on, but we really should
@@ -3443,19 +3459,19 @@ void wxFrameManager::OnLeftUp(wxMouseEvent& event)
             min_size++;
 
             int min_proportion = (min_size*total_proportion)/dock_pixels;
-                
+
             if (new_proportion < min_proportion)
                 new_proportion = min_proportion;
-            
-            
-            
+
+
+
             int prop_diff = new_proportion - pane.dock_proportion;
 
             // borrow the space from our neighbor pane to the
             // right or bottom (depending on orientation)
             dock.panes.Item(borrow_pane)->dock_proportion -= prop_diff;
             pane.dock_proportion = new_proportion;
-            
+
             // repaint
             Update();
             Repaint(NULL);
@@ -3464,7 +3480,7 @@ void wxFrameManager::OnLeftUp(wxMouseEvent& event)
      else if (m_action == actionClickButton)
     {
         m_hover_button = NULL;
-        m_frame->ReleaseMouse();     
+        m_frame->ReleaseMouse();
         UpdateButtonOnScreen(m_action_part, event);
 
         // fire button-click event
@@ -3487,7 +3503,7 @@ void wxFrameManager::OnLeftUp(wxMouseEvent& event)
 
         wxPaneInfo& pane = GetPane(m_action_window);
         wxASSERT_MSG(pane.IsOk(), wxT("Pane window not found"));
-    
+
         // save the new positions
         wxDockInfoPtrArray docks;
         FindDocks(m_docks, pane.dock_direction,
@@ -3495,15 +3511,15 @@ void wxFrameManager::OnLeftUp(wxMouseEvent& event)
         if (docks.GetCount() == 1)
         {
             wxDockInfo& dock = *docks.Item(0);
-            
+
             wxArrayInt pane_positions, pane_sizes;
             GetPanePositionsAndSizes(dock, pane_positions, pane_sizes);
-            
+
             int i, dock_pane_count = dock.panes.GetCount();
             for (i = 0; i < dock_pane_count; ++i)
                 dock.panes.Item(i)->dock_pos = pane_positions[i];
         }
-        
+
         pane.state &= ~wxPaneInfo::actionPane;
         Update();
     }
@@ -3520,13 +3536,13 @@ void wxFrameManager::OnMotion(wxMouseEvent& event)
     // sure that only real mouse moves will get anywhere in this method;
     // this appears to be a bug somewhere, and I don't know where the
     // mouse move event is being generated.  only verified on MSW
-    
+
     wxPoint mouse_pos = event.GetPosition();
     if (m_last_mouse_move == mouse_pos)
         return;
     m_last_mouse_move = mouse_pos;
 
-    
+
     if (m_action == actionResize)
     {
         wxPoint pos = m_action_part->rect.GetPosition();
@@ -3548,19 +3564,19 @@ void wxFrameManager::OnMotion(wxMouseEvent& event)
     {
         int drag_x_threshold = wxSystemSettings::GetMetric(wxSYS_DRAG_X);
         int drag_y_threshold = wxSystemSettings::GetMetric(wxSYS_DRAG_Y);
-        
+
         // caption has been clicked.  we need to check if the mouse
         // is now being dragged. if it is, we need to change the
         // mouse action to 'drag'
         if (abs(event.m_x - m_action_start.x) > drag_x_threshold ||
-            abs(event.m_y - m_action_start.y) > drag_y_threshold)     
+            abs(event.m_y - m_action_start.y) > drag_y_threshold)
         {
             wxPaneInfo* pane_info = m_action_part->pane;
 
             if (!pane_info->IsToolbar())
             {
                 if ((m_flags & wxAUI_MGR_ALLOW_FLOATING) &&
-                    pane_info->IsFloatable()) 
+                    pane_info->IsFloatable())
                 {
                     m_action = actionDragFloatingPane;
 
@@ -3573,7 +3589,7 @@ void wxFrameManager::OnMotion(wxMouseEvent& event)
                     Update();
 
                     m_action_window = pane_info->frame;
-                    
+
                     // action offset is used here to make it feel "natural" to the user
                     // to drag a docked pane and suddenly have it become a floating frame.
                     // Sometimes, however, the offset where the user clicked on the docked
@@ -3606,7 +3622,7 @@ void wxFrameManager::OnMotion(wxMouseEvent& event)
 
         wxPoint pt = event.GetPosition();
         DoDrop(m_docks, m_panes, pane, pt, m_action_offset);
-        
+
         // if DoDrop() decided to float the pane, set up
         // the floating pane's initial position
         if (pane.IsFloating())
@@ -3615,13 +3631,13 @@ void wxFrameManager::OnMotion(wxMouseEvent& event)
             pane.floating_pos = wxPoint(pt.x - m_action_offset.x,
                                         pt.y - m_action_offset.y);
         }
-        
+
         // this will do the actiual move operation;
         // in the case that the pane has been floated,
         // this call will create the floating pane
         // and do the reparenting
         Update();
-        
+
         // if the pane has been floated, change the mouse
         // action actionDragFloatingPane so that subsequent
         // EVT_MOTION() events will move the floating pane
@@ -3631,7 +3647,7 @@ void wxFrameManager::OnMotion(wxMouseEvent& event)
             m_action = actionDragFloatingPane;
             m_action_window = pane.frame;
         }
-    } 
+    }
      else
     {
         wxDockUIPart* part = HitTest(event.GetX(), event.GetY());
@@ -3675,7 +3691,7 @@ void wxFrameManager::OnLeaveWindow(wxMouseEvent& event)
 void wxFrameManager::OnPaneButton(wxFrameManagerEvent& event)
 {
     wxPaneInfo& pane = *(event.pane);
-    
+
     if (event.button == wxPaneInfo::buttonClose)
     {
         pane.Hide();

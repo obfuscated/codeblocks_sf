@@ -1,0 +1,57 @@
+--- manager-base.cpp	Wed Dec 14 18:04:54 2005
++++ manager.cpp	Sat Jan 07 15:40:28 2006
+@@ -376,7 +376,13 @@
+         m_mgr.Update();           
+ 
+         if (pane.min_size.IsFullySpecified())
++        {
++            // because SetSizeHints() calls Fit() too (which sets the window size to its minimum allowed),
++            // we keep the size before calling SetSizeHints() and reset it afterwards...
++            wxSize tmp = GetSize();
+             GetSizer()->SetSizeHints(this);
++            SetSize(tmp);
++        }
+         
+         SetTitle(pane.caption);
+ 
+@@ -2139,8 +2145,12 @@
+                 
+                 frame->SetPaneWindow(p);
+                 p.frame = frame;
++
++                if (p.IsShown())
++                {
+                 frame->Show();
+             }
++            }
+              else
+             {
+                 // frame already exists, make sure it's position
+@@ -2151,6 +2161,8 @@
+                                      -1, -1, wxSIZE_USE_EXISTING);
+                     //p.frame->Move(p.floating_pos.x, p.floating_pos.y);
+                 }
++
++                 p.frame->Show(p.IsShown());
+             }
+         }
+          else
+@@ -2976,7 +2988,10 @@
+         return;
+     }
+     
++    if (!wxGetKeyState(WXK_ALT))
+     DrawHintRect(wnd, client_pt, action_offset);
++    else
++        RemoveHint();
+ 
+     #ifdef __WXGTK__
+     // this cleans up some screen artifacts that are caused on GTK because
+@@ -3005,6 +3020,7 @@
+     wxPoint action_offset(pt.x-frame_pos.x, pt.y-frame_pos.y);
+     
+     // do the drop calculation
++    if (!wxGetKeyState(WXK_ALT))
+     DoDrop(m_docks, m_panes, pane, client_pt, action_offset);
+ 
+     // if the pane is still floating, update it's floating
