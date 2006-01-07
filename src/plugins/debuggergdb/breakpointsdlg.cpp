@@ -3,6 +3,8 @@
 #include <manager.h>
 #include <editormanager.h>
 #include <cbeditor.h>
+#include "editbreakpointdlg.h"
+#include "debuggerstate.h"
 #include <wx/intl.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/textctrl.h>
@@ -11,23 +13,40 @@
 #include <wx/checkbox.h>
 #include <wx/spinctrl.h>
 
-BEGIN_EVENT_TABLE(BreakpointsDlg, wxDialog)
-    EVT_BUTTON(XRCID("btnRemove"), BreakpointsDlg::OnRemove)
-    EVT_BUTTON(XRCID("btnRemoveAll"), BreakpointsDlg::OnRemoveAll)
-    EVT_LISTBOX(XRCID("lstBreakpoints"), BreakpointsDlg::OnListboxClick)
-    EVT_UPDATE_UI(-1, BreakpointsDlg::OnUpdateUI)
+static const int idRemove = wxNewId();
+static const int idRemoveAll = wxNewId();
+static const int idProperties = wxNewId();
+static const int idOpen = wxNewId();
+
+BEGIN_EVENT_TABLE(BreakpointsDlg, wxPanel)
+    EVT_MENU(idRemove, BreakpointsDlg::OnRemove)
+    EVT_MENU(idRemoveAll, BreakpointsDlg::OnRemoveAll)
+    EVT_MENU(idProperties, BreakpointsDlg::OnProperties)
+    EVT_MENU(idOpen, BreakpointsDlg::OnOpen)
 END_EVENT_TABLE()
 
-BreakpointsDlg::BreakpointsDlg(BreakpointsList& list, wxWindow* parent)
-    : m_LastSel(-1),
-    m_List(list)
+BreakpointsDlg::BreakpointsDlg(DebuggerState& state)
+    : m_State(state),
+    m_BreakpointsList(state.GetBreakpoints())
 {
     //ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgBreakpoints"));
-    wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
-	XRCCTRL(*this, "lstBreakpoints", wxListBox)->SetFont(font);
+    long style = m_pList->GetWindowStyleFlag();
+    m_pList->SetWindowStyleFlag(style | wxLC_HRULES | wxLC_VRULES);
+    int widths[] = { 128, 44 };
+    wxArrayString titles;
+    titles.Add(_("Filename"));
+    titles.Add(_("Line"));
+    SetColumns(2, widths, titles);
+
+    Connect(m_pList->GetId(), -1, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
+            (wxObjectEventFunction) (wxEventFunction) (wxListEventFunction)
+            &BreakpointsDlg::OnDoubleClick);
+
+    Connect(m_pList->GetId(), -1, wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK,
+            (wxObjectEventFunction) (wxEventFunction) (wxListEventFunction)
+            &BreakpointsDlg::OnRightClick);
+
 	FillBreakpoints();
-	FillRecord(0);
 }
 
 BreakpointsDlg::~BreakpointsDlg()
@@ -35,116 +54,101 @@ BreakpointsDlg::~BreakpointsDlg()
     //dtor
 }
 
+void BreakpointsDlg::Refresh()
+{
+    FillBreakpoints();
+}
+
 void BreakpointsDlg::FillBreakpoints()
 {
-    wxListBox* lst = XRCCTRL(*this, "lstBreakpoints", wxListBox);
-    lst->Clear();
-
-    for (unsigned int i = 0; i < m_List.GetCount(); ++i)
+    m_pList->Freeze();
+    Clear();
+    for (unsigned int i = 0; i < m_BreakpointsList.GetCount(); ++i)
     {
-        DebuggerBreakpoint* bp = m_List[i];
+        DebuggerBreakpoint* bp = m_State.GetBreakpoints()[i];
         if (bp->temporary)
             continue;
-        wxString filename = bp->filename;
-        filename << _T(" : ") << wxString::Format(_T("%d"), bp->line + 1);
-        lst->Append(filename, bp);
+        wxArrayString entry;
+        entry.Add(bp->filename);
+        entry.Add(wxString::Format(_T("%d"), bp->line + 1));
+        AddLog(entry);
     }
-}
-
-void BreakpointsDlg::FillRecord(int sel)
-{
-    wxListBox* lst = XRCCTRL(*this, "lstBreakpoints", wxListBox);
-    if (m_LastSel != -1)
-    {
-        // save old record
-        DebuggerBreakpoint* bp = static_cast<DebuggerBreakpoint*>(lst->GetClientData(m_LastSel));
-        if (bp)
-        {
-            bp->enabled = XRCCTRL(*this, "chkEnabled", wxCheckBox)->GetValue();
-            bp->useIgnoreCount = XRCCTRL(*this, "chkIgnore", wxCheckBox)->IsChecked();
-            bp->ignoreCount = XRCCTRL(*this, "spnIgnoreCount", wxSpinCtrl)->GetValue();
-            bp->useCondition = XRCCTRL(*this, "chkExpr", wxCheckBox)->IsChecked();
-            bp->condition = XRCCTRL(*this, "txtExpr", wxTextCtrl)->GetValue();
-        }
-    }
-
-    if (sel >= 0 && sel < (int)lst->GetCount())
-    {
-        m_LastSel = sel;
-        DebuggerBreakpoint* bp = static_cast<DebuggerBreakpoint*>(lst->GetClientData(sel));
-        if (bp)
-        {
-            XRCCTRL(*this, "chkEnabled", wxCheckBox)->SetValue(bp->enabled);
-            XRCCTRL(*this, "chkIgnore", wxCheckBox)->SetValue(bp->useIgnoreCount);
-            XRCCTRL(*this, "spnIgnoreCount", wxSpinCtrl)->SetValue(bp->ignoreCount);
-            XRCCTRL(*this, "chkExpr", wxCheckBox)->SetValue(bp->useCondition);
-            XRCCTRL(*this, "txtExpr", wxTextCtrl)->SetValue(bp->condition);
-        }
-        lst->SetSelection(sel);
-    }
-    else
-    {
-        XRCCTRL(*this, "chkEnabled", wxCheckBox)->SetValue(false);
-        XRCCTRL(*this, "chkIgnore", wxCheckBox)->SetValue(false);
-        XRCCTRL(*this, "spnIgnoreCount", wxSpinCtrl)->SetValue(0);
-        XRCCTRL(*this, "chkExpr", wxCheckBox)->SetValue(false);
-        XRCCTRL(*this, "txtExpr", wxTextCtrl)->SetValue(_T(""));
-    }
-}
-
-void BreakpointsDlg::EndModal(int retCode)
-{
-    FillRecord(XRCCTRL(*this, "lstBreakpoints", wxListBox)->GetSelection());
-    wxDialog::EndModal(retCode);
+    m_pList->SetColumnWidth(0, wxLIST_AUTOSIZE);
+    m_pList->Thaw();
 }
 
 void BreakpointsDlg::RemoveBreakpoint(int sel)
 {
-    wxListBox* lst = XRCCTRL(*this, "lstBreakpoints", wxListBox);
-    if (sel >= 0 && sel < (int)lst->GetCount())
-    {
-        DebuggerBreakpoint* bp = m_List[sel];
-        cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(bp->filename);
-        if (ed)
-        {
-            ed->ToggleBreakpoint(bp->line);
-        }
-    }
+    if (sel < 0 || sel >= (int)m_State.GetBreakpoints().GetCount())
+        return;
+    DebuggerBreakpoint* bp = m_State.GetBreakpoints()[sel];
+    if (!bp)
+        return;
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(bp->filename);
+    if (ed)
+        ed->RemoveBreakpoint(bp->line);
 }
 
 void BreakpointsDlg::OnRemove(wxCommandEvent& event)
 {
-    RemoveBreakpoint(XRCCTRL(*this, "lstBreakpoints", wxListBox)->GetSelection());
-    m_LastSel = -1;
-    FillBreakpoints();
-    FillRecord(0);
+    long item = m_pList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+    if (item == -1)
+        return;
+    RemoveBreakpoint(item);
 }
 
 void BreakpointsDlg::OnRemoveAll(wxCommandEvent& event)
 {
-    wxListBox* lst = XRCCTRL(*this, "lstBreakpoints", wxListBox);
-    for (int i = 0; i < lst->GetCount(); ++i)
+    for (int i = m_pList->GetItemCount() - 1; i >= 0; --i)
         RemoveBreakpoint(i);
-    m_LastSel = -1;
-    FillBreakpoints();
-    FillRecord(0);
 }
 
-void BreakpointsDlg::OnListboxClick(wxCommandEvent& event)
+void BreakpointsDlg::OnProperties(wxCommandEvent& event)
 {
-    FillRecord(XRCCTRL(*this, "lstBreakpoints", wxListBox)->GetSelection());
+    long item = m_pList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+    if (item == -1 || item > (int)m_State.GetBreakpoints().GetCount())
+        return;
+    DebuggerBreakpoint* bp = m_State.GetBreakpoints()[item];
+    if (!bp)
+        return;
+    int idx = m_State.HasBreakpoint(bp->filename, bp->line);
+    bp = m_State.GetBreakpoint(idx);
+    EditBreakpointDlg dlg(bp);
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        m_State.ResetBreakpoint(idx);
+    }
 }
 
-void BreakpointsDlg::OnUpdateUI(wxUpdateUIEvent& event)
+void BreakpointsDlg::OnOpen(wxCommandEvent& event)
 {
-    bool en = XRCCTRL(*this, "chkEnabled", wxCheckBox)->IsChecked();
-    bool sel = XRCCTRL(*this, "lstBreakpoints", wxListBox)->GetSelection() != -1;
-    bool cnt = XRCCTRL(*this, "lstBreakpoints", wxListBox)->GetCount() != 0;
-    XRCCTRL(*this, "chkEnabled", wxCheckBox)->Enable(sel);
-    XRCCTRL(*this, "btnRemove", wxButton)->Enable(sel);
-    XRCCTRL(*this, "btnRemoveAll", wxButton)->Enable(cnt);
-    XRCCTRL(*this, "chkIgnore", wxCheckBox)->Enable(sel && en && !XRCCTRL(*this, "chkExpr", wxCheckBox)->IsChecked());
-    XRCCTRL(*this, "spnIgnoreCount", wxSpinCtrl)->Enable(sel && en && XRCCTRL(*this, "chkIgnore", wxCheckBox)->IsChecked());
-    XRCCTRL(*this, "chkExpr", wxCheckBox)->Enable(sel && en && !XRCCTRL(*this, "chkIgnore", wxCheckBox)->IsChecked());
-    XRCCTRL(*this, "txtExpr", wxTextCtrl)->Enable(sel && en && XRCCTRL(*this, "chkExpr", wxCheckBox)->IsChecked());
+    long item = m_pList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+    if (item == -1)
+        return;
+    if (item < 0 || item >= (int)m_State.GetBreakpoints().GetCount())
+        return;
+    DebuggerBreakpoint* bp = m_State.GetBreakpoints()[item];
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(bp->filename);
+    if (ed)
+    {
+        ed->GotoLine(bp->line, true);
+        ed->Activate();
+    }
+}
+
+void BreakpointsDlg::OnRightClick(wxListEvent& event)
+{
+    wxMenu menu;
+    menu.Append(idOpen, _("Open in editor"));
+    menu.Append(idProperties, _("Breakpoint properties"));
+    menu.AppendSeparator();
+    menu.Append(idRemove, _("Remove breakpoint"));
+    menu.Append(idRemoveAll, _("Remove all breakpoints"));
+    PopupMenu(&menu);
+}
+
+void BreakpointsDlg::OnDoubleClick(wxListEvent& event)
+{
+    wxCommandEvent evt;
+    OnOpen(evt);
 }

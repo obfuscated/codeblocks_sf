@@ -11,16 +11,22 @@
 
 #include "debuggerstate.h"
 #include "debugger_defs.h"
-#include "debuggertree.h"
 #include "backtracedlg.h"
 #include "disassemblydlg.h"
 #include "cpuregistersdlg.h"
+#include "breakpointsdlg.h"
 
 extern const wxString g_EscapeChars;
 
 class DebuggerDriver;
 class DebuggerCmd;
 class Compiler;
+
+class DebuggerTree;
+class DisassemblyDlg;
+class CPURegistersDlg;
+class BacktraceDlg;
+class BreakpointsDlg;
 
 class DebuggerGDB : public cbDebuggerPlugin
 {
@@ -129,7 +135,6 @@ class DebuggerGDB : public cbDebuggerPlugin
 		wxString m_LastEval;
 		wxRect m_EvalRect;
 		wxTimer m_TimerPollDebugger;
-		DebuggerTree* m_pTree;
 		bool m_NoDebugInfo;
 		bool m_BreakOnEntry;
 		int m_HaltAtLine;
@@ -140,9 +145,11 @@ class DebuggerGDB : public cbDebuggerPlugin
 		StackFrame m_CurrentFrame;
 
 		// extra dialogs
+		DebuggerTree* m_pTree;
 		DisassemblyDlg* m_pDisassembly;
 		CPURegistersDlg* m_pCPURegisters;
 		BacktraceDlg* m_pBacktrace;
+        BreakpointsDlg* m_pBreakpointsWindow;
 
 		DECLARE_EVENT_TABLE()
 };

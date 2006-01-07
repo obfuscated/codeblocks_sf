@@ -552,6 +552,8 @@ void EditorManager::ActivatePrevious()
 void EditorManager::SetActiveEditor(EditorBase* ed)
 {
     SANITY_CHECK();
+    if (ed->IsBuiltinEditor())
+        static_cast<cbEditor*>(ed)->GetControl()->SetFocus();
     int page = FindPageFromEditor(ed);
     if (page != -1)
     {

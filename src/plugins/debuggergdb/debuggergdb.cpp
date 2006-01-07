@@ -50,7 +50,7 @@
 #include "debuggergdb.h"
 #include "debuggerdriver.h"
 #include "debuggeroptionsdlg.h"
-#include "breakpointsdlg.h"
+#include "debuggertree.h"
 #include "editbreakpointdlg.h"
 #include "editwatchesdlg.h"
 #include "editwatchdlg.h"
@@ -160,15 +160,16 @@ DebuggerGDB::DebuggerGDB()
 	m_Pid(0),
 	m_PidToAttach(0),
 	m_EvalWin(0L),
-	m_pTree(0L),
 	m_NoDebugInfo(false),
 	m_BreakOnEntry(false),
 	m_HaltAtLine(0),
 	m_HasDebugLog(false),
 	m_StoppedOnSignal(false),
+	m_pTree(0L),
 	m_pDisassembly(0),
 	m_pCPURegisters(0),
-	m_pBacktrace(0)
+	m_pBacktrace(0),
+	m_pBreakpointsWindow(0)
 {
     Manager::Get()->Loadxrc(_T("/debugger_gdb.zip#zip:*.xrc"));
 
@@ -214,6 +215,7 @@ void DebuggerGDB::OnAttach()
     m_pDisassembly = new DisassemblyDlg(Manager::Get()->GetAppWindow(), this);
     m_pCPURegisters = new CPURegistersDlg(Manager::Get()->GetAppWindow(), this);
     m_pBacktrace = new BacktraceDlg(Manager::Get()->GetAppWindow(), this);
+    m_pBreakpointsWindow = new BreakpointsDlg(m_State);
 
     CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
 
@@ -248,12 +250,30 @@ void DebuggerGDB::OnAttach()
     evt.floatingSize.Set(150, 250);
     evt.minimumSize.Set(150, 150);
     Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+
+    evt.title = _("Breakpoints");
+    evt.pWindow = m_pBreakpointsWindow;
+    evt.dockSide = CodeBlocksDockEvent::dsFloating;
+    evt.desiredSize.Set(350, 250);
+    evt.floatingSize.Set(350, 250);
+    evt.minimumSize.Set(150, 150);
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+
 }
 
 void DebuggerGDB::OnRelease(bool appShutDown)
 {
     if (m_State.GetDriver())
         m_State.GetDriver()->SetDebugWindows(0, 0, 0);
+
+    if (m_pBreakpointsWindow)
+    {
+        CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
+        evt.pWindow = m_pBreakpointsWindow;
+        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        delete m_pBreakpointsWindow;
+    }
+    m_pBreakpointsWindow = 0;
 
     if (m_pDisassembly)
     {
@@ -1350,11 +1370,10 @@ void DebuggerGDB::OnViewWatches(wxCommandEvent& event)
 
 void DebuggerGDB::OnBreakpoints(wxCommandEvent& event)
 {
-    BreakpointsDlg dlg(m_State.GetBreakpoints());
-	if (dlg.ShowModal() == wxID_OK)
-	{
-		m_State.ApplyBreakpoints();
-	}
+    // show it
+    CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
+    evt.pWindow = m_pBreakpointsWindow;
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 }
 
 void DebuggerGDB::OnEditWatches(wxCommandEvent& event)
@@ -1412,6 +1431,8 @@ void DebuggerGDB::OnGDBTerminated(wxCommandEvent& event)
 void DebuggerGDB::OnBreakpointAdd(CodeBlocksEvent& event)
 {
     m_State.AddBreakpoint(event.GetString(), event.GetInt(), false);
+    if (m_pBreakpointsWindow)
+        m_pBreakpointsWindow->Refresh();
 
 //    //Workaround for GDB to break on C++ constructor/destructor
 //    EditorBase* base = event.GetEditor();
@@ -1450,11 +1471,15 @@ void DebuggerGDB::OnBreakpointEdit(CodeBlocksEvent& event)
     {
         m_State.ResetBreakpoint(idx);
     }
+    if (m_pBreakpointsWindow)
+        m_pBreakpointsWindow->Refresh();
 }
 
 void DebuggerGDB::OnBreakpointDelete(CodeBlocksEvent& event)
 {
     m_State.RemoveBreakpoint(event.GetString(), event.GetInt());
+    if (m_pBreakpointsWindow)
+        m_pBreakpointsWindow->Refresh();
 }
 
 void DebuggerGDB::OnValueTooltip(CodeBlocksEvent& event)

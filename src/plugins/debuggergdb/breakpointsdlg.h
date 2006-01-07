@@ -1,29 +1,33 @@
-#ifndef BREAKPOINTS_H
-#define BREAKPOINTS_H
+#ifndef BREAKPOINTSDLG_H
+#define BREAKPOINTSDLG_H
 
-#include <wx/dialog.h>
+#include <simplelistlog.h>
 #include "debugger_defs.h"
 
-class BreakpointsDlg : public wxDialog
+class DebuggerState;
+
+class BreakpointsDlg : public SimpleListLog
 {
     public:
-        BreakpointsDlg(BreakpointsList& list, wxWindow* parent = 0);
+        BreakpointsDlg(DebuggerState& state);
         virtual ~BreakpointsDlg();
+
+        void Refresh();
     protected:
         void FillBreakpoints();
-        void FillRecord(int sel);
-        void EndModal(int retCode);
         void RemoveBreakpoint(int sel);
 
         void OnRemove(wxCommandEvent& event);
         void OnRemoveAll(wxCommandEvent& event);
-        void OnListboxClick(wxCommandEvent& event);
-        void OnUpdateUI(wxUpdateUIEvent& event);
+        void OnProperties(wxCommandEvent& event);
+        void OnOpen(wxCommandEvent& event);
+        void OnRightClick(wxListEvent& event);
+        void OnDoubleClick(wxListEvent& event);
 
-        int m_LastSel;
-        BreakpointsList& m_List;
+        DebuggerState& m_State;
+        BreakpointsList& m_BreakpointsList;
     private:
         DECLARE_EVENT_TABLE()
 };
 
-#endif // BREAKPOINTS_H
+#endif // BREAKPOINTSDLG_H

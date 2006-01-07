@@ -936,22 +936,42 @@ void cbEditor::GotoLine(int line, bool centerOnScreen)
     m_pControl->GotoLine(line);
 }
 
-void cbEditor::ToggleBreakpoint(int line, bool notifyDebugger)
+bool cbEditor::AddBreakpoint(int line, bool notifyDebugger)
 {
+    if (HasBreakpoint(line))
+        return false;
 	if (line == -1)
 		line = m_pControl->GetCurrentLine();
     MarkerToggle(BREAKPOINT_MARKER, line);
     if (notifyDebugger)
-    {
-        NotifyPlugins(LineHasMarker(BREAKPOINT_MARKER, line)
-                            ? cbEVT_EDITOR_BREAKPOINT_ADD
-                            : cbEVT_EDITOR_BREAKPOINT_DELETE,
-                        line, m_Filename);
-    }
+        NotifyPlugins(cbEVT_EDITOR_BREAKPOINT_ADD, line, m_Filename);
+    return true;
+}
+
+bool cbEditor::RemoveBreakpoint(int line, bool notifyDebugger)
+{
+    if (!HasBreakpoint(line))
+        return false;
+	if (line == -1)
+		line = m_pControl->GetCurrentLine();
+    MarkerToggle(BREAKPOINT_MARKER, line);
+    if (notifyDebugger)
+        NotifyPlugins(cbEVT_EDITOR_BREAKPOINT_DELETE, line, m_Filename);
+    return true;
+}
+
+void cbEditor::ToggleBreakpoint(int line, bool notifyDebugger)
+{
+    if (HasBreakpoint(line))
+        RemoveBreakpoint(line, notifyDebugger);
+    else
+        AddBreakpoint(line, notifyDebugger);
 }
 
 bool cbEditor::HasBreakpoint(int line)
 {
+	if (line == -1)
+		line = m_pControl->GetCurrentLine();
     return LineHasMarker(BREAKPOINT_MARKER, line);
 }
 
@@ -1373,19 +1393,11 @@ void cbEditor::OnContextMenuEntry(wxCommandEvent& event)
             m_pProjectFile->ShowOptions(this);
     }
     else if (id == idBreakpointAdd)
-    {
-        m_pControl->MarkerAdd(m_pData->m_LastMarginMenuLine, BREAKPOINT_MARKER);
-        NotifyPlugins(cbEVT_EDITOR_BREAKPOINT_ADD, m_pData->m_LastMarginMenuLine, m_Filename);
-    }
+        AddBreakpoint(m_pData->m_LastMarginMenuLine);
     else if (id == idBreakpointEdit)
-    {
         NotifyPlugins(cbEVT_EDITOR_BREAKPOINT_EDIT, m_pData->m_LastMarginMenuLine, m_Filename);
-    }
     else if (id == idBreakpointRemove)
-    {
-        m_pControl->MarkerDelete(m_pData->m_LastMarginMenuLine, BREAKPOINT_MARKER);
-        NotifyPlugins(cbEVT_EDITOR_BREAKPOINT_DELETE, m_pData->m_LastMarginMenuLine, m_Filename);
-    }
+        RemoveBreakpoint(m_pData->m_LastMarginMenuLine);
     else
         event.Skip();
 	//Manager::Get()->GetMessageManager()->DebugLog(_("Leaving OnContextMenuEntry"));

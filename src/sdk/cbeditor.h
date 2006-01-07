@@ -150,13 +150,17 @@ class DLLIMPORT cbEditor : public EditorBase
         /** Move the caret at the specified line.
           * @param centerOnScreen If true (default), tries to bring the specified line to the center of the editor.*/
         void GotoLine(int line, bool centerOnScreen = true);
-        /** Toggle breakpoint at specified line. If @c line is -1, use current line. */
+        /** Add debugger breakpoint at specified line. If @c line is -1, use current line. */
+        bool AddBreakpoint(int line = -1, bool notifyDebugger = true);
+        /** Remove debugger breakpoint at specified line. If @c line is -1, use current line. */
+        bool RemoveBreakpoint(int line = -1, bool notifyDebugger = true);
+        /** Toggle debugger breakpoint at specified line. If @c line is -1, use current line. */
         void ToggleBreakpoint(int line = -1, bool notifyDebugger = true);
-        /** Does @c line has breakpoint? */
+        /** Does @c line has debugger breakpoint? If @c line is -1, use current line. */
         bool HasBreakpoint(int line);
-        /** Go to next breakpoint. */
+        /** Go to next debugger breakpoint. */
         void GotoNextBreakpoint();
-        /** Go to previous breakpoint. */
+        /** Go to previous debugger breakpoint. */
         void GotoPreviousBreakpoint();
         /** Toggle bookmark at specified line. If @c line is -1, use current line. */
         void ToggleBookmark(int line = -1);
