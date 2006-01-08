@@ -1464,7 +1464,7 @@ void ProjectManager::ConfigureProjectDependencies(cbProject* base)
 void ProjectManager::OnTabPosition(wxCommandEvent& event)
 {
     long style = m_pNotebook->GetBookStyle();
-    style = style ^ wxFNB_BOTTOM;
+    style &= ~wxFNB_BOTTOM;
 
     if (event.GetId() == idNB_TabBottom)
         style |= wxFNB_BOTTOM;

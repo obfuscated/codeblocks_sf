@@ -1698,7 +1698,7 @@ void EditorManager::OnSaveAll(wxCommandEvent& event)
 void EditorManager::OnTabPosition(wxCommandEvent& event)
 {
     long style = m_pNotebook->GetBookStyle();
-    style = style ^ wxFNB_BOTTOM;
+    style &= ~wxFNB_BOTTOM;
 
     if (event.GetId() == idNBTabBottom)
         style |= wxFNB_BOTTOM;
