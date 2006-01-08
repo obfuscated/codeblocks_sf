@@ -1447,7 +1447,11 @@ void CompilerOptionsDlg::OnSelectProgramClick(wxCommandEvent& event)
                             _("Select file"),
                             XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->GetValue() + _T("/bin"),
                             obj->GetValue(),
+                            #ifdef __WXMSW__
                             _("Executable files (*.exe)|*.exe"),
+                            #else
+                            _("All files (*)|*"),
+                            #endif
                             wxOPEN | wxFILE_MUST_EXIST);
     dlg->SetFilterIndex(0);
 
