@@ -9,6 +9,7 @@
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
 //commit 12/14/2005 9:16 AM
+//commit 1/7/2006 9:04 PM v0.4.4
 
 
 #ifdef __GNUG__
@@ -71,14 +72,7 @@ int wxFindMenuItem(wxMenuBar *p, const wxString &str)
 // ----------------------------------------------------------------------------
 void wxMenuCmd::Update()
 // ----------------------------------------------------------------------------
-{
-
-// The following did not stop the crashes. Verifying the id did.
-////    //codeblocks has items with backslashes in them
-////    // that look like accelerators and hotkeys.
-////    //The backslashes crash GetLabel()
-////    if ( str.Contains(_T("\\\\")) )
-////      return;
+{ //v0.4.4 changes to use bitmapped menuitems
 
     //+v0.4
     // verify menu item has not changed its id or disappeared
@@ -87,11 +81,13 @@ void wxMenuCmd::Update()
 
     //+v0.3
     // leave numeric menu items alone. They get replaced by CodeBlocks
-    wxString str = m_pItem->GetText();
-    if (str.Left(1).IsNumber())
+    wxString strText = m_pItem->GetText();
+    if (strText.Left(1).IsNumber())
       return;
-
-	/*wxString*/ str = m_pItem->GetLabel();
+    //use full text to get label to preserve mnemonics
+	wxString strLabel = strText.BeforeFirst(_T('\t'));
+    wxString newtext = strLabel; //no accel
+    //-newtext.Append( _T(' '), strText.Length()-strLabel.Length() );
 
 #ifdef __WXGTK__
 	// on GTK, an optimization in wxMenu::SetText checks
@@ -99,52 +95,62 @@ void wxMenuCmd::Update()
 	// case, it returns without doing nothing... :-(
 	// to solve the problem, a space is added or removed
 	// from the label to ovverride this optimization check
-	str.Trim();
-	if (str == m_pItem->GetLabel())
-		str += wxT(" ");
+	newtext.Trim();
+	if (newtext == m_pItem->GetLabel())
+		newtext += wxT(" ");
 #endif
-
+    wxAcceleratorEntry* pItemAccel = m_pItem->GetAccel();
+    //wxAcceleratorEntry* pItemAccel = wxGetAccelFromString(strText);
+    // clearing previous shortcuts if none now assigned
 	if (m_nShortcuts <= 0) {
+        if ( ! pItemAccel) return;
+		wxLogDebug(wxT("wxMenuCmd::Update - Removing shortcuts [%s] for [%s]"), strText.c_str(),newtext.c_str());
+		// set "un-ownerdrawn" text to preserve menu width
+        m_pItem->SetText(newtext);
+        //now redraw the menuitem if bitmapped
+		if (m_pItem->GetBitmap().GetWidth())
+        {   m_pItem->SetOwnerDrawn();
+            m_pItem->SetText(newtext);
+        }
+        //-m_pItem->GetMenu()->UpdateAccel(m_pItem); //<--does nothing previous SetTExt() didnt
+        return;
+    }
 
-		//-wxLogDebug(wxT("wxMenuCmd::Update - no shortcuts defined for [%s]"), str.c_str());
-
-		// no more shortcuts for this menuitem: SetText()
-		// will delete the hotkeys associated...
-		m_pItem->SetText(str);
-		return;
-	}
-
-	wxString newtext = str+wxT("\t")+GetShortcut(0)->GetStr();
-
-	//wxLogDebug(wxT("wxMenuCmd::Update - setting the new text to [%s]"), newtext.c_str());
+    //make new Label+Accelerator string
+	newtext = strLabel+wxT("\t")+GetShortcut(0)->GetStr();
 
 #if defined( __WXMSW__ )
 
-	// change the accelerator...
-	m_pItem->SetText(newtext);
-	m_pItem->GetMenu()->UpdateAccel(m_pItem);
-
-	// we could also do that in this way:
-	//    wxAcceleratorEntry acc = GetAccelerator(0);
-	//    m_pItem->SetAccel(&acc);
-	// but this is just slower because wxMenuItem::SetAccel
-	// creates a string from the accelerator entry we give to it
-	// (i.e. it internally builds a string analogue to our 'newtext')
-	// and then calls wxMenuItem::SetText...
+	// change the accelerator...but only if it has changed
+    wxAcceleratorEntry* pPrfAccel = wxGetAccelFromString(newtext);
+    if ( ! pPrfAccel) return;
+    if ( pItemAccel
+         && ( pItemAccel->GetFlags() == pPrfAccel->GetFlags() )
+         && ( pItemAccel->GetKeyCode() == pPrfAccel->GetKeyCode() ) )
+         return;
+    wxLogDebug(wxT("wxMenuCmd::Update - Setting shortcuts for [%s]"), newtext.c_str());
+    // set "un-ownerdrawn" text to preserve menu width
+    m_pItem->SetText(newtext);
+    //now redraw the menuitem if bitmapped
+    if (m_pItem->GetBitmap().GetWidth())
+    {   m_pItem->SetOwnerDrawn();
+        //m_pItem->GetMenu()->UpdateAccel(m_pItem); //<-- does nothing that SetText() doesnt
+        m_pItem->SetText(newtext);
+    }
 
 #elif defined( __WXGTK__ )
 
 	// on GTK, the SetAccel() function doesn't have any effect...
 	m_pItem->SetText(newtext);
 
-#ifdef __WXGTK20__
+  #ifdef __WXGTK20__
 
 	//   gtk_menu_item_set_accel_path(GTK_MENU_ITEM(m_pItem), wxGTK_CONV(newtext));
 
-#endif
-#endif
-}
+  #endif
+#endif //elif defined( __WXGTK__ )
 
+}//Update
 // ----------------------------------------------------------------------------
 void wxMenuCmd::Exec(wxObject *origin, wxEvtHandler *client)
 // ----------------------------------------------------------------------------

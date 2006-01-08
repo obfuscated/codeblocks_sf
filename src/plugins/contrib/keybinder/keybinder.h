@@ -10,6 +10,7 @@
 /////////////////////////////////////////////////////////////////////////////
 //commit 12/14/2005 9:15 AM
 //commit 12/16/2005 8:54 PM
+//commit 1/7/2006 9:04 PM v0.4.4
 
 
 
@@ -607,6 +608,9 @@ public:		// accessors
 class wxKeyBinder : public wxObject
 // ----------------------------------------------------------------------------
 {
+  public:
+    // Names of windows to which keybinder can attach //+v0.4.4
+    static wxArrayString usableWindows;               //+v0.4.4
 protected:
 
 	//! The array of wxCmd-derived classes.
@@ -827,8 +831,8 @@ public:		// miscellaneous
 	const wxCmdArray *GetArray() const		{ return &m_arrCmd; }
 
     // returns True if window actually exists
-    bool winExists(wxWindow*);
-    bool winExistsRunner(wxWindow *pCheckit, wxWindow* pNodeWin);        //-lf- //-v0.1
+    wxWindow* winExists(wxWindow*);
+    wxWindow* FindWindowRecursively(const wxWindow* parent, const wxWindow* handle);
 
 private:
 	DECLARE_CLASS(wxKeyBinder)

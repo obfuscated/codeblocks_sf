@@ -11,6 +11,7 @@
 //commit 12/14/2005 9:15 AM
 //commit 12/16/2005 8:54 PM
 //commit 1/2/2006 7:38 PM
+//commit 1/7/2006 9:05 PM v0.4.4
 
 
 #ifdef __GNUG__
@@ -132,7 +133,9 @@ END_EVENT_TABLE()
 // some statics
 int wxCmd::m_nCmdTypes = 0;
 wxCmd::wxCmdType wxCmd::m_arrCmdType[];
-
+// window names allowd for which keybinder may attach()
+wxArrayString wxKeyBinder::usableWindows;                    //+v0.4.4
+wxWindow* mainAppWindow = 0;
 
 
 
@@ -806,17 +809,11 @@ void wxKeyBinder::Attach(wxWindow *p)
 	if (p->GetExtraStyle() & wxWS_EX_TRANSIENT)
 		return;		// do not attach ourselves to temporary windows !!
 
-    //+v0.3 RC3 we allow only static windows to be attached by codeblocks
+    //+v0.4.4 we allow only static windows to be attached by codeblocks
     // Disappearing frames/windows cause crashes
-    wxArrayString usableWindows;                    //+v0.4.2
-    usableWindows.Add(_T("sciwindow"));             //+v0.4.2
-    usableWindows.Add(_T("notebook"));              //+v0.4.2
-    usableWindows.Add(_T("treectrl"));              //+v0.4.2
-    usableWindows.Add(_T("listctrl"));              //+v0.4.2
-    usableWindows.Add(_T("id_editormanagerpanel")); //+v0.4.2
-    usableWindows.Add(_T("text"));                  //+v0.4.2
     wxString windowName = p->GetName().MakeLower();
 
+    if (wxNOT_FOUND == usableWindows.Index(_T("*"),false)) //+v0.4.4 debugging
     if (wxNOT_FOUND == usableWindows.Index(windowName,false)) //+v0.4.2
      {  wxLogDebug(wxT("wxKeyBinder::Attach skipping [%s]"), p->GetName().c_str());
         return;
@@ -841,7 +838,9 @@ void wxKeyBinder::AttachRecursively(wxWindow *p)
 
  	if (!p)
 		return;
-	//if (!winExists(p)) return;	 //+v0.1
+    // memorize this main window pointer    //+v0.4.4
+    mainAppWindow = p ;                //+v0.4.4
+
 	Attach(p);
 
  	// this is the standard way wxWidgets uses to iterate through children...
@@ -856,50 +855,56 @@ void wxKeyBinder::AttachRecursively(wxWindow *p)
 			AttachRecursively(win);
 	}
 }
+// ----------------------------------------------------------------------------
+wxWindow* wxKeyBinder::FindWindowRecursively(const wxWindow* parent, const wxWindow* handle)
+// ----------------------------------------------------------------------------
+{//+v0.4.4
+    if ( parent )
+    {
+        // see if this is the one we're looking for
+        if ( parent == handle )
+            return (wxWindow *)parent;
 
-//// ----------------------------------------------------------------------------
-//bool wxKeyBinder::winExistsRunner(wxWindow *pCheckit, wxWindow* pNodeWin)        //+v0.1
-//// ----------------------------------------------------------------------------
-//{ //+v0.1-
-//
-// 	if (!pCheckit) return false;
-//    if (!pNodeWin)  return false;
-//
-//    LOGIT("winExistsRunner() win:%p node:%p",pCheckit,pNodeWin);
-//
-//    if (pCheckit == pNodeWin) return true;
-//	for (wxWindowList::compatibility_iterator node = pNodeWin->GetChildren().GetFirst();
-//            node; node = node->GetNext())
-//	{
-//		// recursively check each child
-//		wxWindow *win = (wxWindow *)node->GetData();
-//
-//        //if (!win) break;
-//        LOGIT("win:%p node:%p",pCheckit,win);
-//		if (win == pCheckit) return TRUE;
-//        if (win) winExistsRunner(pCheckit,win);
-//	}
-//
-//	return FALSE;
-//}
-//// ----------------------------------------------------------------------------
-//bool wxKeyBinder::winExists(wxWindow *p)                    //+v0.1
-//// ----------------------------------------------------------------------------
-//{ //+v0.1-
-//// this doesnt work. Can't get wxWindows to give correct top window
-// 	if (!p)
-//		return false;
-//
-// 	// get top app window
-//    //wxWindow* pTopAppWin = Manager::Get()->GetAppWindow() ;
-//    //wxWindow* pTopAppWin = wxTheApp->GetTopWindow() ;
-//    wxWindow* pTopAppWin = 0;
-//    pTopAppWin =  wxWindow::FindWindowByName("MainWin", NULL);
-//    //LOGIT("winExits()pTopAppWin %p",pTopAppWin);
-//    bool bResult = winExistsRunner(p, pTopAppWin);
-//    return bResult;
-//}
+        // It wasn't, so check all its children
+        for ( wxWindowList::compatibility_iterator node = parent->GetChildren().GetFirst();
+              node;
+              node = node->GetNext() )
+        {
+            // recursively check each child
+            wxWindow *win = (wxWindow *)node->GetData();
+            wxWindow *retwin = FindWindowRecursively(win, handle);
+            if (retwin)
+                return retwin;
+        }
+    }
 
+    // Not found
+    return NULL;
+}
+// ----------------------------------------------------------------------------
+wxWindow* wxKeyBinder::winExists(wxWindow *parent)
+// ----------------------------------------------------------------------------
+{ //+v0.4.4
+
+    if ( !parent )
+    {
+        return NULL;
+    }
+
+    // start at very top of wx's windows
+    for ( wxWindowList::compatibility_iterator node = wxTopLevelWindows.GetFirst();
+          node;
+          node = node->GetNext() )
+    {
+        // recursively check each window & its children
+        wxWindow* win = node->GetData();
+        wxWindow* retwin = FindWindowRecursively(win, parent);
+        if (retwin)
+            return retwin;
+    }
+
+    return NULL;
+}
 // ----------------------------------------------------------------------------
 //  wxKeyBinder Detach
 // ----------------------------------------------------------------------------
@@ -929,14 +934,21 @@ void wxKeyBinder::DetachAll()
 
 	// delete all handlers (they will automatically remove themselves from
 	// event handler chains)
-//	for (int i=0; i < (int)m_arrHandlers.GetCount(); i++)
-//		delete (wxBinderEvtHandler*)m_arrHandlers.Item(i);
+    //	for (int i=0; i < (int)m_arrHandlers.GetCount(); i++)
+    //		delete (wxBinderEvtHandler*)m_arrHandlers.Item(i);
 
 	for (int i=0; i < (int)m_arrHandlers.GetCount(); i++)
 	 {
         pwin = ((wxBinderEvtHandler*)m_arrHandlers.Item(i))->GetTargetWnd();     //+v0.4
-        wxLogDebug( _T("WxKeyBinder:DetachAll:Deleteing EvtHdlr for %p"), pwin);     //+v0.4
-        delete (wxBinderEvtHandler*)m_arrHandlers.Item(i);
+        if ( winExists( pwin ) )
+        {
+            wxLogDebug( _T("WxKeyBinder:DetachAll:Deleteing EvtHdlr for [%s]%p"), pwin->GetLabel().GetData(), pwin);     //+v0.4
+            delete (wxBinderEvtHandler*)m_arrHandlers.Item(i);
+        } else {
+            //FIXIT Is this a memory leak with the eventhandler still on event chain??
+            wxLogDebug( _T("WxKeyBinder:DetachAll:window NOT found %p <----------"), pwin);     //+v0.4
+
+        }
 	 }
 
 	// and clear the array
@@ -1014,7 +1026,6 @@ void wxKeyBinder::OnChar(wxKeyEvent &event, wxEvtHandler *next)
 
 			wxLogDebug(wxT("wxKeyBinder::OnChar - ignoring this keyevent [%d] because I'm not ")
 				wxT("attached to the window which generated the keypress..."), event.GetKeyCode());
-            //-wxLogDebug("\n");
 			event.Skip();		// ... skip it
 			return;
 		}
@@ -1022,7 +1033,8 @@ void wxKeyBinder::OnChar(wxKeyEvent &event, wxEvtHandler *next)
 		wxLogDebug(wxT("wxKeyBinder::OnChar - calling the Exec() function of the [%s] ")
 				wxT("wxCmd on the keycode [%d] (event timestamp: %ld)"),
 				p->GetName().c_str(), event.GetKeyCode(), event.m_timeStamp);
-        //-wxLogDebug("\n");
+		wxLogDebug(wxT("wxKeyBinder::OnChar - window[%s][%p]"),
+                ((wxWindow*)event.GetEventObject())->GetLabel().GetData(), event.GetEventObject());
 		p->Exec(event.GetEventObject(),		// otherwise, tell wxCmd to send the
 				client);	// associated wxEvent to the next handler in the chain
 	}

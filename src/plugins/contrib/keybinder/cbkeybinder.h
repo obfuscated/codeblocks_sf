@@ -9,6 +9,7 @@
 //commit 12/16/2005 8:54 PM
 //commit 12/31/2005 10:31 AM
 //commit 1/2/2006 7:38 PM
+//commit 1/7/2006 9:06 PM v0.4.4
 
 // v0.4.1 12/30/2005
 //  added event.Skip() to cbKeyBinder::OnAppStartupDone(CodeBlocksEvent& event)
@@ -18,6 +19,11 @@
 // keybinder attaching some windows named 's'
 // so verify full name of window not just substring
 // attach to text windows allowing keybinder invocation when no editor
+
+// v0.4.4 1/7/2006 1
+// additions to keybinder::Update() for use of bitmapped menuitems
+// made keybinder "usableWindow" filter efficient (Attach())
+// add recursive "winExist" check to stop disappearing panels crash
 
 #ifndef CBKEYBINDER_H
 #define CBKEYBINDER_H

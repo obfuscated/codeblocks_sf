@@ -6,12 +6,12 @@
 //commit 12/16/2005 8:54 PM
 
 #define LOGGING 0
-#define TRAP asm("int3")
 
 #define wxLogMessage wxLogDebug
 #define LOGIT wxLogDebug
 
 #if LOGGING
+      #define TRAP asm("int3")
     #undef wxLogMessage
     #undef LOGIT
     #define wxLogDebug wxLogMessage
