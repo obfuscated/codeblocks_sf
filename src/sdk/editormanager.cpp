@@ -234,10 +234,6 @@ EditorManager::~EditorManager()
 	SC_DESTRUCTOR_BEGIN
 	SaveAutoComplete();
 
-    // Clean up the notebook to prevent segfaults later
-    if(m_pNotebook)
-        m_pNotebook->DeleteAllPages();
-
 	if (m_Theme)
 		delete m_Theme;
 
