@@ -10,6 +10,7 @@
 //commit 12/31/2005 10:30 AM
 //commit 1/2/2006 7:38 PM
 //commit 1/7/2006 9:06 PM v0.4.4
+//commit 1/7/2006 9:06 PM v0.4.5
 
 // The majority of this code was lifted from wxKeyBinder and
 // its "minimal.cpp" sample program
@@ -54,10 +55,10 @@ cbKeyBinder::cbKeyBinder()
 	//ctor
 	m_PluginInfo.name = _T("cbKeyBinder");
 	m_PluginInfo.title = _("Keyboard shortcuts configuration");
-	m_PluginInfo.version = _T("0.4.4");
+	m_PluginInfo.version = _T("0.4.5");
 	m_PluginInfo.description <<_("CodeBlocks KeyBinder\n")
                             << _("NOTE: Ctrl+Alt+{UP|DOWN} unsupported.\n")
-                            << _("1/7/2006 9\n");
+                            << _("1/8/2006 9\n");
 	m_PluginInfo.author = _T("Pecan && Mispent Intent");
 	m_PluginInfo.authorEmail = _T("");
 	m_PluginInfo.authorWebsite = _T("");

@@ -10,6 +10,7 @@
 /////////////////////////////////////////////////////////////////////////////
 //commit 12/14/2005 9:16 AM
 //commit 1/7/2006 9:04 PM v0.4.4
+//commit 1/8/2006 9:47 AM v0.4.5
 
 
 #ifdef __GNUG__
@@ -86,8 +87,7 @@ void wxMenuCmd::Update()
       return;
     //use full text to get label to preserve mnemonics
 	wxString strLabel = strText.BeforeFirst(_T('\t'));
-    wxString newtext = strLabel; //no accel
-    //-newtext.Append( _T(' '), strText.Length()-strLabel.Length() );
+    wxString newtext = strLabel; //no accel, contains mnemonic
 
 #ifdef __WXGTK__
 	// on GTK, an optimization in wxMenu::SetText checks
@@ -95,10 +95,12 @@ void wxMenuCmd::Update()
 	// case, it returns without doing nothing... :-(
 	// to solve the problem, a space is added or removed
 	// from the label to ovverride this optimization check
+	newtext = m_pItem->GetLabel(); //v0.4.5
 	newtext.Trim();
 	if (newtext == m_pItem->GetLabel())
 		newtext += wxT(" ");
 #endif
+
     wxAcceleratorEntry* pItemAccel = m_pItem->GetAccel();
     //wxAcceleratorEntry* pItemAccel = wxGetAccelFromString(strText);
     // clearing previous shortcuts if none now assigned
@@ -107,12 +109,14 @@ void wxMenuCmd::Update()
 		wxLogDebug(wxT("wxMenuCmd::Update - Removing shortcuts [%s] for [%s]"), strText.c_str(),newtext.c_str());
 		// set "un-ownerdrawn" text to preserve menu width
         m_pItem->SetText(newtext);
-        //now redraw the menuitem if bitmapped
-		if (m_pItem->GetBitmap().GetWidth())
-        {   m_pItem->SetOwnerDrawn();
-            m_pItem->SetText(newtext);
-        }
+        #if defined( __WXMSW__ )
+         //now redraw the menuitem if bitmapped
+         if (m_pItem->GetBitmap().GetWidth())
+         {   m_pItem->SetOwnerDrawn();
+             m_pItem->SetText(newtext);
+         }
         //-m_pItem->GetMenu()->UpdateAccel(m_pItem); //<--does nothing previous SetTExt() didnt
+        #endif
         return;
     }
 
@@ -120,7 +124,6 @@ void wxMenuCmd::Update()
 	newtext = strLabel+wxT("\t")+GetShortcut(0)->GetStr();
 
 #if defined( __WXMSW__ )
-
 	// change the accelerator...but only if it has changed
     wxAcceleratorEntry* pPrfAccel = wxGetAccelFromString(newtext);
     if ( ! pPrfAccel) return;
@@ -137,17 +140,12 @@ void wxMenuCmd::Update()
         //m_pItem->GetMenu()->UpdateAccel(m_pItem); //<-- does nothing that SetText() doesnt
         m_pItem->SetText(newtext);
     }
-
 #elif defined( __WXGTK__ )
-
 	// on GTK, the SetAccel() function doesn't have any effect...
 	m_pItem->SetText(newtext);
-
   #ifdef __WXGTK20__
-
 	//   gtk_menu_item_set_accel_path(GTK_MENU_ITEM(m_pItem), wxGTK_CONV(newtext));
-
-  #endif
+  #endif //__WXGTK20__
 #endif //elif defined( __WXGTK__ )
 
 }//Update
