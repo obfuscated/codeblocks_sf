@@ -1938,6 +1938,7 @@ void EditorManager::InitPane()
     if (!m_pTree)
         return;
     CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
+    evt.name = _T("OpenFilesPane");
     evt.title = _("Open files list");
     evt.pWindow = m_pTree;
     evt.minimumSize.Set(50, 50);

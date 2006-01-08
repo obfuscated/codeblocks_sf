@@ -219,6 +219,7 @@ void DebuggerGDB::OnAttach()
 
     CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
 
+    evt.name = _T("DisassemblyPane");
     evt.title = _("Disassembly");
     evt.pWindow = m_pDisassembly;
     evt.dockSide = CodeBlocksDockEvent::dsFloating;
@@ -227,6 +228,7 @@ void DebuggerGDB::OnAttach()
     evt.minimumSize.Set(150, 150);
     Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 
+    evt.name = _T("CPURegistersPane");
     evt.title = _("CPU Registers");
     evt.pWindow = m_pCPURegisters;
     evt.dockSide = CodeBlocksDockEvent::dsFloating;
@@ -235,6 +237,7 @@ void DebuggerGDB::OnAttach()
     evt.minimumSize.Set(150, 150);
     Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 
+    evt.name = _T("CallStackPane");
     evt.title = _("Call stack");
     evt.pWindow = m_pBacktrace;
     evt.dockSide = CodeBlocksDockEvent::dsFloating;
@@ -243,6 +246,7 @@ void DebuggerGDB::OnAttach()
     evt.minimumSize.Set(150, 150);
     Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 
+    evt.name = _T("WatchesPane");
     evt.title = _("Watches");
     evt.pWindow = m_pTree;
     evt.dockSide = CodeBlocksDockEvent::dsFloating;
@@ -251,6 +255,7 @@ void DebuggerGDB::OnAttach()
     evt.minimumSize.Set(150, 150);
     Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 
+    evt.name = _T("BreakpointsPane");
     evt.title = _("Breakpoints");
     evt.pWindow = m_pBreakpointsWindow;
     evt.dockSide = CodeBlocksDockEvent::dsFloating;

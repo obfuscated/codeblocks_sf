@@ -54,6 +54,7 @@
 #include <personalitymanager.h>
 #include <scriptingmanager.h>
 #include <cbexception.h>
+#include <annoyingdialog.h>
 
 #include "dlgaboutplugin.h"
 #include "dlgabout.h"
@@ -485,13 +486,13 @@ void MainFrame::CreateIDE()
     // project manager
 	Manager::Get(this);
     m_LayoutManager.AddPane(Manager::Get()->GetProjectManager()->GetNotebook(), wxPaneInfo().
-                              Name(wxT("ManagementPane")).Caption(wxT("Management")).
+                              Name(wxT("ManagementPane")).Caption(_("Management")).
                               BestSize(wxSize(leftW, clientsize.GetHeight())).MinSize(wxSize(100,100)).
                               Left().Layer(1));
 
     // message manager
     m_LayoutManager.AddPane(Manager::Get()->GetMessageManager()->GetNotebook(), wxPaneInfo().
-                              Name(wxT("MessagesPane")).Caption(wxT("Messages")).
+                              Name(wxT("MessagesPane")).Caption(_("Messages")).
                               BestSize(wxSize(clientsize.GetWidth(), bottomH)).//MinSize(wxSize(50,50)).
                               Bottom());
 
@@ -636,7 +637,7 @@ void MainFrame::CreateToolbars()
 
     // add toolbars in docking system
     m_LayoutManager.AddPane(m_pToolbar, wxPaneInfo().
-                          Name(wxT("MainToolbar")).Caption(wxT("Main Toolbar")).
+                          Name(wxT("MainToolbar")).Caption(_("Main Toolbar")).
                           ToolbarPane().Top());
     DoUpdateLayout();
 
@@ -886,14 +887,17 @@ bool MainFrame::DoCheckCurrentLayoutForChanges(bool canCancel)
     wxString lastlayout = m_LayoutManager.SavePerspective();
     if (!m_LastLayoutName.IsEmpty() && lastlayout != m_LastLayoutData)
     {
-        switch (wxMessageBox(wxString::Format(_("The layout '%s' has changed. Do you want to save it?"), m_LastLayoutName.c_str()),
-                        _("Layout changed"),
-                        wxICON_QUESTION | wxYES | wxNO | (canCancel ? wxCANCEL : 0) | wxYES_DEFAULT))
+        AnnoyingDialog dlg(_("Layout changed"),
+                            wxString::Format(_("The layout '%s' has changed. Do you want to save it?"), m_LastLayoutName.c_str()),
+                            wxART_QUESTION,
+                            AnnoyingDialog::YES_NO_CANCEL,
+                            wxID_YES);
+        switch (dlg.ShowModal())
         {
-            case wxYES:
+            case wxID_YES:
                 SaveViewLayout(m_LastLayoutName, lastlayout, false);
                 break;
-            case wxCANCEL:
+            case wxID_CANCEL:
                 DoSelectLayout(m_LastLayoutName);
                 return false;
             default:
@@ -959,7 +963,7 @@ void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
         }
 
         m_LayoutManager.AddPane(tb, wxPaneInfo().
-                              Name(plugin->GetInfo()->name + _T("Toolbar")).Caption(plugin->GetInfo()->title + _T(" Toolbar")).
+                              Name(plugin->GetInfo()->name + _T("Toolbar")).Caption(plugin->GetInfo()->title + _(" Toolbar")).
                               ToolbarPane().Top().Row(1));
         DoUpdateLayout();
     }

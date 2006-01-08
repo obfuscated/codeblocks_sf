@@ -62,11 +62,11 @@ AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message,
     {
         numButtons = 3;
         growableCol = separate ? 1 : -1;
-        id1 = (style == YES_NO_CANCEL ? wxID_CANCEL : 1);
-        id2 = (style == YES_NO_CANCEL ? wxID_YES    : 2);
-        id3 = (style == YES_NO_CANCEL ? wxID_NO     : 3);
-        bTxt1 = b1.IsEmpty() ? wxString(_("Cancel")) : b1;
-        bTxt2 = b2.IsEmpty() ? wxString(_("Cancel")) : b2;
+        id1 = (style == YES_NO_CANCEL ? wxID_YES    : 1);
+        id2 = (style == YES_NO_CANCEL ? wxID_NO     : 2);
+        id3 = (style == YES_NO_CANCEL ? wxID_CANCEL : 3);
+        bTxt1 = b1.IsEmpty() ? wxString(_("Yes")) : b1;
+        bTxt2 = b2.IsEmpty() ? wxString(_("No")) : b2;
         bTxt3 = b3.IsEmpty() ? wxString(_("Cancel")) : b3;
     }
     else
@@ -88,13 +88,13 @@ AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message,
     {
         wxButton *but2 = new wxButton(this, id2, bTxt2, wxDefaultPosition, wxDefaultSize, 0);
         but2->SetDefault();
-        buttonArea->Add(but2, 0, wxALIGN_CENTER|wxALL, 5);
+        buttonArea->Add(but2, 0, wxALIGN_CENTER|wxTOP|wxBOTTOM|wxRIGHT, 5);
     }
     if(numButtons > 2)
     {
-        wxButton *but3 = new wxButton(this, id3, bTxt2, wxDefaultPosition, wxDefaultSize, 0);
+        wxButton *but3 = new wxButton(this, id3, bTxt3, wxDefaultPosition, wxDefaultSize, 0);
         but3->SetDefault();
-        buttonArea->Add(but3, 0, wxALIGN_CENTER|wxALL, 5);
+        buttonArea->Add(but3, 0, wxALIGN_CENTER|wxTOP|wxBOTTOM|wxRIGHT, 5);
     }
 //    mainArea->Add( buttonArea, 0, wxALIGN_CENTER|wxTOP, 10);
 
