@@ -153,6 +153,14 @@
         <help>Swap between header and source file pair</help>
       </object>
       <object class="separator"/>
+      <object class="wxMenu" name="idEditHighlightMode">
+        <label>&amp;Highlight mode</label>
+        <help>Switch highlighting mode for the active editor</help>
+        <object class="wxMenuItem" name="idEditHighlightModeText">
+          <label>Plain text</label>
+          <help>Switch highlighting mode for current document to &quot;Plain text&quot;</help>
+        </object>
+      </object>
       <object class="wxMenu" name="idEditBookmarks">
         <label>&amp;Bookmarks</label>
         <object class="wxMenuItem" name="idEditBookmarksToggle">

@@ -75,6 +75,7 @@ class MainFrame : public wxFrame
         void OnEditPaste(wxCommandEvent& event);
         void OnEditSwapHeaderSource(wxCommandEvent& event);
         void OnEditGotoMatchingBrace(wxCommandEvent& event);
+        void OnEditHighlightMode(wxCommandEvent& event);
         void OnEditFoldAll(wxCommandEvent& event);
         void OnEditUnfoldAll(wxCommandEvent& event);
         void OnEditToggleAllFolds(wxCommandEvent& event);

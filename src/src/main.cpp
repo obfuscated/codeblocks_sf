@@ -55,6 +55,7 @@
 #include <scriptingmanager.h>
 #include <cbexception.h>
 #include <annoyingdialog.h>
+#include <editorcolorset.h>
 
 #include "dlgaboutplugin.h"
 #include "dlgabout.h"
@@ -122,6 +123,8 @@ int idEditCut = XRCID("idEditCut");
 int idEditPaste = XRCID("idEditPaste");
 int idEditSwapHeaderSource = XRCID("idEditSwapHeaderSource");
 int idEditGotoMatchingBrace = XRCID("idEditGotoMatchingBrace");
+int idEditHighlightMode = XRCID("idEditHighlightMode");
+int idEditHighlightModeText = XRCID("idEditHighlightModeText");
 int idEditBookmarks = XRCID("idEditBookmarks");
 int idEditBookmarksToggle = XRCID("idEditBookmarksToggle");
 int idEditBookmarksPrevious = XRCID("idEditBookmarksPrevious");
@@ -289,6 +292,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idEditPaste,  MainFrame::OnEditPaste)
     EVT_MENU(idEditSwapHeaderSource,  MainFrame::OnEditSwapHeaderSource)
     EVT_MENU(idEditGotoMatchingBrace,  MainFrame::OnEditGotoMatchingBrace)
+    EVT_MENU(idEditHighlightModeText,  MainFrame::OnEditHighlightMode)
     EVT_MENU(idEditFoldAll,  MainFrame::OnEditFoldAll)
     EVT_MENU(idEditUnfoldAll,  MainFrame::OnEditUnfoldAll)
     EVT_MENU(idEditToggleAllFolds,  MainFrame::OnEditToggleAllFolds)
@@ -541,7 +545,7 @@ void MainFrame::CreateMenubar()
 {
 	int tmpidx;
 	wxMenuBar* mbar=0L;
-	wxMenu *tools=0L, *plugs=0L, *pluginsM=0L, *settingsPlugins=0L;
+	wxMenu *hl=0L, *tools=0L, *plugs=0L, *pluginsM=0L, *settingsPlugins=0L;
 	wxMenuItem *tmpitem=0L;
 
     wxString resPath = ConfigManager::GetDataFolder();
@@ -555,6 +559,31 @@ void MainFrame::CreateMenubar()
     }
 
     // Find Menus that we'll change later
+
+    tmpidx=mbar->FindMenu(_("&Edit"));
+    if(tmpidx!=wxNOT_FOUND)
+    {
+        mbar->FindItem(idEditHighlightModeText, &hl);
+        if (hl)
+        {
+            EditorColorSet* theme = Manager::Get()->GetEditorManager()->GetColorSet();
+            if (theme)
+            {
+                wxArrayString langs = theme->GetAllHighlightLanguages();
+                for (size_t i = 0; i < langs.GetCount(); ++i)
+                {
+                    if (i == 20 || i == 40 || i ==60 || i == 80)
+                        hl->Break(); // break into columns every 20 items
+                    int id = wxNewId();
+                    hl->Append(id, langs[i],
+                                wxString::Format(_("Switch highlighting mode for current document to \"%s\""), langs[i].c_str()));
+                    Connect(id, -1, wxEVT_COMMAND_MENU_SELECTED,
+                            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+                            &MainFrame::OnEditHighlightMode);
+                }
+            }
+        }
+    }
 
     tmpidx=mbar->FindMenu(_("&Tools"));
     if(tmpidx!=wxNOT_FOUND)
@@ -2069,6 +2098,31 @@ void MainFrame::OnEditAutoComplete(wxCommandEvent& event)
 		ed->AutoComplete();
 }
 
+void MainFrame::OnEditHighlightMode(wxCommandEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+    {
+        EditorColorSet* theme = Manager::Get()->GetEditorManager()->GetColorSet();
+        if (theme)
+        {
+            HighlightLanguage lang = theme->GetHighlightLanguage(_T(""));
+            if (event.GetId() != idEditHighlightModeText)
+            {
+                wxMenu* hl = 0;
+                GetMenuBar()->FindItem(idEditHighlightModeText, &hl);
+                if (hl)
+                {
+                    wxMenuItem* item = hl->FindItem(event.GetId());
+                    if (item)
+                        lang = theme->GetHighlightLanguage(item->GetLabel());
+                }
+            }
+            theme->Apply(lang, ed->GetControl());
+        }
+    }
+}
+
 void MainFrame::OnEditFoldAll(wxCommandEvent& event)
 {
     cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
@@ -2452,19 +2506,11 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idEditPaste, ed && canPaste);
     mbar->Enable(idEditSwapHeaderSource, ed);
     mbar->Enable(idEditGotoMatchingBrace, ed);
-    mbar->Enable(idEditFoldAll, ed);
-    mbar->Enable(idEditUnfoldAll, ed);
-    mbar->Enable(idEditToggleAllFolds, ed);
+    mbar->Enable(idEditHighlightMode, ed);
     mbar->Enable(idEditSelectAll, ed);
-    mbar->Enable(idEditBookmarksToggle, ed);
-    mbar->Enable(idEditBookmarksNext, ed);
-    mbar->Enable(idEditBookmarksPrevious, ed);
-	mbar->Enable(idEditFoldBlock, ed);
-	mbar->Enable(idEditUnfoldBlock, ed);
-	mbar->Enable(idEditToggleFoldBlock, ed);
-	mbar->Enable(idEditEOLCRLF, ed);
-	mbar->Enable(idEditEOLCR, ed);
-	mbar->Enable(idEditEOLLF, ed);
+    mbar->Enable(idEditBookmarks, ed);
+    mbar->Enable(idEditFolding, ed);
+    mbar->Enable(idEditEOLMode, ed);
 	mbar->Check(idEditEOLCRLF, eolMode == wxSCI_EOL_CRLF);
 	mbar->Check(idEditEOLCR, eolMode == wxSCI_EOL_CR);
 	mbar->Check(idEditEOLLF, eolMode == wxSCI_EOL_LF);
