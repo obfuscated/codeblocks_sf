@@ -3,7 +3,7 @@
 
 //#include "editorbase.h"
 
-extern wxString g_StartHereTitle;
+extern const wxString g_StartHereTitle;
 extern int idStartHerePageLink; // used to message the main frame
 extern int idStartHerePageVarSubst; // used to message the main frame
 
@@ -19,10 +19,12 @@ class StartHerePage : public EditorBase
 		bool LinkClicked(const wxHtmlLinkInfo& link);
 		void SetPageContent(const wxString& buffer); // set the HTML content
         virtual bool VisibleToTree() { return false; }
+        void Reload();
 	protected:
 
         wxEvtHandler* m_pOwner;
         wxHtmlWindow* m_pWin;
+        wxString m_OriginalPageContent;
 	private:
         DECLARE_EVENT_TABLE()
 };

@@ -1041,7 +1041,7 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
             if (filename != PRJMAN()->GetWorkspace()->GetFilename() &&
                 DoCloseCurrentWorkspace())
             {
-                PRJMAN()->LoadWorkspace(filename);
+                return PRJMAN()->LoadWorkspace(filename);
                 AddToRecentProjectsHistory(filename);
             }
             else
@@ -1294,33 +1294,62 @@ void MainFrame::OnStartHereLink(wxCommandEvent& event)
     }
     else if (link.StartsWith(_T("CB_CMD_OPEN_HISTORY_")))
     {
+        wxFileHistory* hist = link.StartsWith(_T("CB_CMD_OPEN_HISTORY_PROJECT_")) ? &m_ProjectsHistory : &m_FilesHistory;
 		unsigned long count;
 		link.AfterLast(_T('_')).ToULong(&count);
 		--count;
-		if(count < m_ProjectsHistory.GetCount())
-			OpenGeneric(m_ProjectsHistory.GetHistoryFile(count), true);
+        if(count < hist->GetCount())
+        {
+            if (!OpenGeneric(hist->GetHistoryFile(count), true))
+            {
+                // invalid file, update start here page
+                hist->RemoveFileFromHistory(count);
+                EditorBase* sh = EDMAN()->GetEditor(g_StartHereTitle);
+                if (sh)
+                    ((StartHerePage*)sh)->Reload();
+            }
+        }
     }
 }
 
 void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
 {
-	wxString buf = event.GetString();
+    EditorBase* sh = EDMAN()->GetEditor(g_StartHereTitle);
+	if (!sh)
+        return;
 
 	// replace history vars
-	for (int i = 0; i < 9; ++i)
-	{
-		wxString base;
-		base.Printf(_T("CB_VAR_HISTORY_FILE_%d"), i + 1);
-		if (i < (int)m_ProjectsHistory.GetCount())
-            buf.Replace(base, m_ProjectsHistory.GetHistoryFile(i));
-        else
-            buf.Replace(base, _T(""));
-	}
+
+	wxString buf = event.GetString();
+	wxString links;
+
+    if (m_ProjectsHistory.GetCount())
+    {
+        links << _T("<b>Recent projects</b><br>\n");
+        for (int i = 0; i < 5; ++i)
+        {
+            if (i >= (int)m_ProjectsHistory.GetCount())
+                break;
+            links << wxString::Format(_T("<a href=\"CB_CMD_OPEN_HISTORY_PROJECT_%d\">%s</a><br>\n"),
+                                        i + 1, m_ProjectsHistory.GetHistoryFile(i).c_str());
+        }
+    }
+
+    if (m_FilesHistory.GetCount())
+    {
+        links << _T("<br><b>Recent files</b><br>\n");
+        for (int i = 0; i < 5; ++i)
+        {
+            if (i >= (int)m_FilesHistory.GetCount())
+                break;
+            links << wxString::Format(_T("<a href=\"CB_CMD_OPEN_HISTORY_FILE_%d\">%s</a><br>\n"),
+                                        i + 1, m_FilesHistory.GetHistoryFile(i).c_str());
+        }
+    }
 
     // update page
-    EditorBase* sh = EDMAN()->GetEditor(g_StartHereTitle);
-	if (sh)
-        ((StartHerePage*)sh)->SetPageContent(buf);
+    buf.Replace(_T("CB_VAR_RECENT_FILES_AND_PROJECTS"), links);
+    ((StartHerePage*)sh)->SetPageContent(buf);
 }
 
 void MainFrame::InitializeRecentFilesHistory()
@@ -1594,8 +1623,16 @@ void MainFrame::OnFileOpen(wxCommandEvent& event)
 
 void MainFrame::OnFileReopenProject(wxCommandEvent& event)
 {
-    wxString fname = m_ProjectsHistory.GetHistoryFile(event.GetId() - wxID_FILE10);
-    OpenGeneric(fname, true);
+    size_t id = event.GetId() - wxID_FILE10;
+    wxString fname = m_ProjectsHistory.GetHistoryFile(id);
+    if (!OpenGeneric(fname, true))
+    {
+        m_ProjectsHistory.RemoveFileFromHistory(id);
+        // update start here page
+        EditorBase* sh = EDMAN()->GetEditor(g_StartHereTitle);
+        if (sh)
+            ((StartHerePage*)sh)->Reload();
+    }
 }
 
 void MainFrame::OnFileOpenRecentProjectClearHistory(wxCommandEvent& event)
@@ -1605,12 +1642,25 @@ void MainFrame::OnFileOpenRecentProjectClearHistory(wxCommandEvent& event)
         m_ProjectsHistory.RemoveFileFromHistory(0);
 	}
     Manager::Get()->GetConfigManager(_T("app"))->DeleteSubPath(_T("/recent_projects"));
+
+    // update start here page
+    EditorBase* sh = EDMAN()->GetEditor(g_StartHereTitle);
+	if (sh)
+        ((StartHerePage*)sh)->Reload();
 }
 
 void MainFrame::OnFileReopen(wxCommandEvent& event)
 {
-    wxString fname = m_FilesHistory.GetHistoryFile(event.GetId() - wxID_FILE1);
-    OpenGeneric(fname, true);
+    size_t id = event.GetId() - wxID_FILE1;
+    wxString fname = m_FilesHistory.GetHistoryFile(id);
+    if (!OpenGeneric(fname, true))
+    {
+        m_FilesHistory.RemoveFileFromHistory(id);
+        // update start here page
+        EditorBase* sh = EDMAN()->GetEditor(g_StartHereTitle);
+        if (sh)
+            ((StartHerePage*)sh)->Reload();
+    }
 }
 
 void MainFrame::OnFileOpenRecentClearHistory(wxCommandEvent& event)
@@ -1620,6 +1670,11 @@ void MainFrame::OnFileOpenRecentClearHistory(wxCommandEvent& event)
         m_FilesHistory.RemoveFileFromHistory(0);
 	}
     Manager::Get()->GetConfigManager(_T("app"))->DeleteSubPath(_T("/recent_files"));
+
+    // update start here page
+    EditorBase* sh = EDMAN()->GetEditor(g_StartHereTitle);
+    if (sh)
+        ((StartHerePage*)sh)->Reload();
 }
 
 void MainFrame::OnFileSave(wxCommandEvent& event)

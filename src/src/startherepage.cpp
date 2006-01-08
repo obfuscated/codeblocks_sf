@@ -13,7 +13,7 @@
 #include "startherepage.h"
 #include "appglobals.h"
 
-wxString g_StartHereTitle = _("Start here");
+const wxString g_StartHereTitle = _("Start here");
 int idStartHerePageLink = wxNewId();
 int idStartHerePageVarSubst = wxNewId();
 int idWin = wxNewId();
@@ -114,16 +114,8 @@ StartHerePage::StartHerePage(wxEvtHandler* owner, wxWindow* parent)
     buf.Replace(_T("CB_VAR_VERSION"), APP_ACTUAL_VERSION);
     m_pWin->SetPage(buf);
 
-    // ask our parent to perform any more substitutions
-    // (for unknown vars to this, as CB_VAR_HISTORY_FILE_*)
-    // if the parent performs substitutions, it should call
-    // SetPageContent() on this...
-    if (m_pOwner)
-    {
-        wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, idStartHerePageVarSubst);
-        evt.SetString(buf);
-        m_pOwner->ProcessEvent(evt); // direct call
-    }
+    m_OriginalPageContent = buf; // keep a copy of original for Reload()
+    Reload();
 
     bs->Add(m_pWin, 1, wxEXPAND);
     SetSizer(bs);
@@ -134,6 +126,20 @@ StartHerePage::~StartHerePage()
 {
 	//dtor
 	m_pWin->Destroy();
+}
+
+void StartHerePage::Reload()
+{
+    // ask our parent to perform any more substitutions
+    // (for unknown vars to this, as CB_VAR_HISTORY_FILE_*)
+    // if the parent performs substitutions, it should call
+    // SetPageContent() on this...
+    if (m_pOwner)
+    {
+        wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, idStartHerePageVarSubst);
+        evt.SetString(m_OriginalPageContent);
+        m_pOwner->ProcessEvent(evt); // direct call
+    }
 }
 
 void StartHerePage::SetPageContent(const wxString& buffer)
