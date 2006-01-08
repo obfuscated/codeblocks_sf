@@ -12,6 +12,9 @@
 #include <wx/file.h>
 #include <wx/utils.h>
 
+#define LOGIT Manager::Get()->GetMessageManager()->DebugLog
+#define TRAP asm("int3")
+
 int idSource = wxNewId();
 int idUser = wxNewId();
 int idRefresh = wxNewId();
@@ -33,6 +36,9 @@ ToDoListView::ToDoListView(int numCols, int widths[], const wxArrayString& title
     Connect(id, -1, wxEVT_COMMAND_LIST_ITEM_SELECTED,
             (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
             &ToDoListView::OnListItemSelected);
+    Connect(id, -1, wxEVT_COMMAND_LIST_ITEM_ACTIVATED, //pecan 1/2/2006 12PM
+            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+            &ToDoListView::OnDoubleClick);
 
 	wxSizer* bs = m_pList->GetContainingSizer();
 	if (bs)
@@ -379,4 +385,19 @@ void ToDoListView::OnListItemSelected(wxListEvent& event)
 void ToDoListView::OnRefresh(wxCommandEvent& event)
 {
     Parse();
+}
+
+void ToDoListView::OnDoubleClick( wxListEvent& event )
+{    //pecan 1/2/2006 12PM
+    FocusEntry(event.GetIndex());
+    OnListItemSelected(event);
+}
+
+void ToDoListView::FocusEntry(size_t index)                 //pecan 1/2/2006 12PM
+{
+    if (index >= 0 && index < (size_t)m_pList->GetItemCount())
+    {
+        m_pList->SetItemState(index, wxLIST_STATE_FOCUSED | wxLIST_STATE_SELECTED, wxLIST_STATE_FOCUSED | wxLIST_STATE_SELECTED);
+        m_pList->EnsureVisible(index);
+    }
 }

@@ -38,6 +38,8 @@ class ToDoListView : public SimpleListLog
         void OnComboChange(wxCommandEvent& event);
         void OnListItemSelected(wxListEvent& event);
         void OnRefresh(wxCommandEvent& event);
+        void OnDoubleClick( wxListEvent& event ); //pecan 1/2/2006 12PM
+        void FocusEntry(size_t index);            //pecan 1/2/2006 12PM
 
 		ToDoItems m_Items;
         wxComboBox* m_pSource;
