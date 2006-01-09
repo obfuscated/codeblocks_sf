@@ -83,7 +83,7 @@ EditorBase::EditorBase(wxWindow* parent, const wxString& filename)
 {
     Manager::Get()->GetEditorManager()->AddCustomEditor(this);
     InitFilename(filename);
-    SetTitle(filename);
+    SetTitle(m_Shortname);
 }
 
 EditorBase::~EditorBase()
