@@ -10,7 +10,7 @@
 
 BEGIN_EVENT_TABLE(DisassemblyDlg, wxPanel)
     EVT_BUTTON(XRCID("btnSave"), DisassemblyDlg::OnSave)
-    EVT_BUTTON(XRCID("btnRefresh"), DisassemblyDlg::OnRefresh)
+//    EVT_BUTTON(XRCID("btnRefresh"), DisassemblyDlg::OnRefresh)
 END_EVENT_TABLE()
 
 DisassemblyDlg::DisassemblyDlg(wxWindow* parent, DebuggerGDB* debugger)

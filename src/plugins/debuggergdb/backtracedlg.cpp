@@ -8,7 +8,7 @@
 
 BEGIN_EVENT_TABLE(BacktraceDlg, wxPanel)
     EVT_BUTTON(XRCID("btnSave"), BacktraceDlg::OnSave)
-    EVT_BUTTON(XRCID("btnRefresh"), BacktraceDlg::OnRefresh)
+//    EVT_BUTTON(XRCID("btnRefresh"), BacktraceDlg::OnRefresh)
     EVT_LIST_ITEM_ACTIVATED(XRCID("lstTrace"), BacktraceDlg::OnDblClick)
 END_EVENT_TABLE()
 
