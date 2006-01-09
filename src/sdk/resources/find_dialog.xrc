@@ -84,7 +84,7 @@
                                             <border>0</border>
                                             <object class="wxRadioBox" name="rbDirection">
                                                 <style>wxRA_SPECIFY_COLS</style>
-                                                <label>Radiobox</label>
+                                                <label>Direction</label>
                                                 <content>
                                                     <item>&amp;Up</item>
                                                     <item>&amp;Down</item>
@@ -96,7 +96,7 @@
                                             <border>0</border>
                                             <object class="wxRadioBox" name="rbOrigin">
                                                 <style>wxRA_SPECIFY_COLS</style>
-                                                <label>Radiobox</label>
+                                                <label>Origin</label>
                                                 <content>
                                                     <item>&amp;From cursor</item>
                                                     <item>&amp;Entire scope</item>
@@ -108,7 +108,7 @@
                                             <border>0</border>
                                             <object class="wxRadioBox" name="rbScope1">
                                                 <style>wxRA_SPECIFY_COLS</style>
-                                                <label>Radiobox</label>
+                                                <label>Scope</label>
                                                 <content>
                                                     <item>&amp;Global</item>
                                                     <item>&amp;Selected text</item>
@@ -201,7 +201,7 @@
                                             <border>0</border>
                                             <object class="wxRadioBox" name="rbScope2">
                                                 <style>wxRA_SPECIFY_COLS</style>
-                                                <label>Radiobox</label>
+                                                <label>Scope</label>
                                                 <content>
                                                     <item>&amp;Project files</item>
                                                     <item>&amp;Open files</item>
