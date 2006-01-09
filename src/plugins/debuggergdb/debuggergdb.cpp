@@ -424,13 +424,14 @@ bool DebuggerGDB::BuildToolBar(wxToolBar* toolBar)
 
 void DebuggerGDB::Log(const wxString& msg)
 {
-    Manager::Get()->GetMessageManager()->Log(m_PageIndex, msg);
+    if (m_IsAttached)
+        Manager::Get()->GetMessageManager()->Log(m_PageIndex, msg);
 }
 
 void DebuggerGDB::DebugLog(const wxString& msg)
 {
     // gdb debug messages
-    if (m_HasDebugLog)
+    if (m_IsAttached && m_HasDebugLog)
         Manager::Get()->GetMessageManager()->Log(m_DbgPageIndex, msg);
 }
 
