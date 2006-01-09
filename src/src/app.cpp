@@ -187,8 +187,6 @@ void CodeBlocksApp::InitExceptionHandler()
 
 void CodeBlocksApp::InitImageHandlers()
 {
-    wxImage::AddHandler(new wxBMPHandler);
-    wxImage::AddHandler(new wxPNGHandler);
 	wxInitAllImageHandlers();
 }
 
