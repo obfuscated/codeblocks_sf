@@ -89,9 +89,6 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
     // tab "Network"
     XRCCTRL(*this, "txtProxy", wxTextCtrl)->SetValue(cfg->Read(_T("/network_proxy")));
 
-    // tab "Tweaks"
-    XRCCTRL(*this, "chkSafebutSlow", wxCheckBox)->SetValue(mcfg->ReadBool(_T("/safe_but_slow"), false));
-
     // disable some windows-only settings, in other platforms
 #ifndef __WXMSW__
     XRCCTRL(*this, "chkDDE", wxCheckBox)->Enable(false);
@@ -204,9 +201,6 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
 
         // tab "Network"
         cfg->Write(_T("/network_proxy"),    XRCCTRL(*this, "txtProxy", wxTextCtrl)->GetValue());
-
-        // tab "Tweaks"
-        mcfg->Write(_T("/safe_but_slow"),   (bool) XRCCTRL(*this, "chkSafebutSlow", wxCheckBox)->GetValue());
     }
 
     wxDialog::EndModal(retCode);

@@ -496,22 +496,6 @@ http://wiki.codeblocks.org/index.php?title=Personalities</label>
               </object>
             </object>
           </object>
-          <object class="notebookpage">
-            <label>Tweaks</label>
-            <object class="wxPanel" name="tabTweaks">
-              <object class="wxBoxSizer">
-                <orient>wxVERTICAL</orient>
-                <object class="sizeritem">
-                  <object class="wxCheckBox" name="chkSafebutSlow">
-                    <label>Improved stability (experimental; use it only if C::B crashes on your machine)</label>
-                    <checked>0</checked>
-                  </object>
-                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
-                  <border>8</border>
-                </object>
-              </object>
-            </object>
-          </object>
         </object>
         <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
         <border>8</border>
