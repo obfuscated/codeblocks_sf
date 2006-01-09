@@ -111,7 +111,7 @@ wxPdfLineStyle::wxPdfLineStyle(double width,
                                const wxPdfArrayDouble& dash, double phase,
                                const wxColour& color)
 {
-  m_isSet = (width > 0) || (cap >= 0) || (join >= 0) || 
+  m_isSet = (width > 0) || (cap >= 0) || (join >= 0) ||
             (dash.GetCount() > 0) || color.Ok();
   m_width = width;
   m_cap   = cap;
@@ -255,7 +255,7 @@ wxPdfDocument::wxPdfDocument(int orientation, const wxString& unit, wxPaperSize 
     m_wPt = m_fwPt;
     m_hPt = m_fhPt;
   }
-  
+
   m_curOrientation = m_defOrientation;
   m_w = m_wPt / m_k;
   m_h = m_hPt / m_k;
@@ -265,20 +265,20 @@ wxPdfDocument::wxPdfDocument(int orientation, const wxString& unit, wxPaperSize 
   // Page margins (1 cm)
   double margin = 28.35 / m_k;
   SetMargins(margin, margin);
-  
+
   // Interior cell margin (1 mm)
   m_cMargin = margin / 10;
-  
+
   // Line width (0.2 mm)
   m_lineWidth = .567 / m_k;
-  
+
   // Automatic page break
   SetAutoPageBreak(true, 2*margin);
-  
+
   // Full width display mode
   SetDisplayMode(wxPDF_ZOOM_FULLWIDTH);
   m_zoomFactor = 100.;
-  
+
   // Enable compression
   SetCompression(true);
 
@@ -485,10 +485,10 @@ wxPdfDocument::AddPage(int orientation)
 
   // Start new page
   BeginPage(orientation);
-  
+
   // Set line cap style to square
   Out("2 J");
-  
+
   // Set line width
   m_lineWidth = lw;
   OutAscii(Double2String(lw*m_k,2)+wxString(_T(" w")));
@@ -498,7 +498,7 @@ wxPdfDocument::AddPage(int orientation)
   {
     SetFont(family, style, size);
   }
-  
+
   // Set colors
   m_drawColor = dc;
   if (dc != _T("0 G"))
@@ -528,7 +528,7 @@ wxPdfDocument::AddPage(int orientation)
   {
     SetFont(family, style, size);
   }
-  
+
   // Restore colors
   if (m_drawColor != dc)
   {
@@ -662,7 +662,7 @@ wxPdfDocument::RoundedRect(double x, double y, double w, double h,
     Rect(x, y, w, h, style);
   }
   else
-  { 
+  {
     // Rounded
     wxString op;
     // Draw a rectangle
@@ -727,7 +727,7 @@ wxPdfDocument::RoundedRect(double x, double y, double w, double h,
     xc = x + r;
     yc = y + r;
     OutLine(x, yc);
-    
+
     if (roundCorner & wxPDF_CORNER_BOTTOM_RIGHT)
     {
       OutCurve(xc - r, yc - (r * myArc), xc - (r * myArc), yc - r, xc, yc - r);
@@ -742,7 +742,7 @@ wxPdfDocument::RoundedRect(double x, double y, double w, double h,
 }
 
 void
-wxPdfDocument::Curve(double x0, double y0, double x1, double y1, 
+wxPdfDocument::Curve(double x0, double y0, double x1, double y1,
                      double x2, double y2, double x3, double y3,
                      int style)
 {
@@ -770,7 +770,7 @@ wxPdfDocument::Curve(double x0, double y0, double x1, double y1,
 }
 
 void
-wxPdfDocument::Ellipse(double x0, double y0, double rx, double ry, 
+wxPdfDocument::Ellipse(double x0, double y0, double rx, double ry,
                        double angle, double astart, double afinish,
                        int style, int nSeg)
 {
@@ -822,7 +822,7 @@ wxPdfDocument::Ellipse(double x0, double y0, double rx, double ry,
   if (angle != 0)
   {
     double a = -(pi * angle / 180.);
-    OutAscii(wxString(_T("q ")) + 
+    OutAscii(wxString(_T("q ")) +
              Double2String(cos(a),2) + wxString(_T(" ")) +
              Double2String(-1 * sin(a),2) + wxString(_T(" ")) +
              Double2String(sin(a),2) + wxString(_T(" ")) +
@@ -905,7 +905,7 @@ wxPdfDocument::Sector(double xc, double yc, double r, double astart, double afin
   {
     d = 2 * pi;
   }
-  
+
   wxString op;
   if ((style & wxPDF_STYLE_FILLDRAW) == wxPDF_STYLE_FILL)
   {
@@ -1018,7 +1018,7 @@ wxPdfDocument::Polygon(const wxPdfArrayDouble& x, const wxPdfArrayDouble& y, int
 }
 
 void
-wxPdfDocument::RegularPolygon(double x0, double y0, double r, int ns, double angle, bool circle, int style, 
+wxPdfDocument::RegularPolygon(double x0, double y0, double r, int ns, double angle, bool circle, int style,
                               int circleStyle, const wxPdfLineStyle& circleLineStyle, const wxColour& circleFillColor)
 {
   if (ns < 3)
@@ -1050,7 +1050,7 @@ wxPdfDocument::RegularPolygon(double x0, double y0, double r, int ns, double ang
 
 
 void
-wxPdfDocument::StarPolygon(double x0, double y0, double r, int nv, int ng, double angle, bool circle, int style, 
+wxPdfDocument::StarPolygon(double x0, double y0, double r, int nv, int ng, double angle, bool circle, int style,
                            int circleStyle, const wxPdfLineStyle& circleLineStyle, const wxColour& circleFillColor)
 {
   if (nv < 2)
@@ -1290,7 +1290,7 @@ wxPdfDocument::AddFontCJK(const wxString& family)
     fontName = font->second->GetName();
     fontName += wxString(_T(",Italic"));
     font->second->SetName(fontName);
-    
+
     AddFont(family, _T("BI"), fontFile);
     fontkey = lcFamily + wxString(_T("BI"));
     font = (*m_fonts).find(fontkey);
@@ -1618,7 +1618,7 @@ wxPdfDocument::Cell(double w, double h, const wxString& txt, int border, int ln,
     OutAscii(s, newline);
     s = _T("");
   }
-  
+
   if (txt.Length() > 0)
   {
     double width = GetStringWidth(txt);
@@ -1950,7 +1950,7 @@ wxPdfDocument::Image(const wxString& file, double x, double y, double w, double 
   {
     currentImage = image->second;
   }
-  
+
   // Automatic width and height calculation if needed
   if (w == 0 && h == 0)
   {
@@ -1994,7 +1994,7 @@ wxPdfDocument::Image(const wxString& file, double x, double y, double w, double 
            Double2String(sw,2) + wxString(_T(" 0 0 ")) +
            Double2String(sh,2) + wxString(_T(" ")) +
            Double2String(sx,2) + wxString(_T(" ")) +
-           Double2String(sy,2) + 
+           Double2String(sy,2) +
            wxString::Format(_T(" cm /I%d Do Q"),currentImage->GetIndex()));
 
   if (link.IsValid())
@@ -2217,7 +2217,7 @@ wxPdfDocument::Close()
   {
     AddPage();
   }
-  
+
   // Page footer
   m_inFooter = true;
   Footer();
@@ -2416,21 +2416,21 @@ wxPdfDocument::EndDoc()
   PutHeader();
   PutPages();
   PutResources();
-  
+
   // Info
   NewObj();
   Out("<<");
   PutInfo();
   Out(">>");
   Out("endobj");
-  
+
   // Catalog
   NewObj();
   Out("<<");
   PutCatalog();
   Out(">>");
   Out("endobj");
-  
+
   // Cross-Reference
   int o = m_buffer.TellO();
   Out("xref");
@@ -2441,7 +2441,7 @@ wxPdfDocument::EndDoc()
   {
     OutAscii(wxString::Format(_T("%010d 00000 n "),m_offsets[i]));
   }
-  
+
   // Trailer
   Out("trailer");
   Out("<<");
@@ -2547,7 +2547,7 @@ wxPdfDocument::NewObj()
 void
 wxPdfDocument::PutInfo()
 {
-  Out("/Producer ",false); 
+  Out("/Producer ",false);
   OutTextstring(wxString(wxPDF_PRODUCER));
   if (m_title.Length() > 0)
   {
@@ -2841,7 +2841,7 @@ wxPdfDocument::PutPages()
           BoolHashMap::iterator oChange = (*m_orientationChanges).find(link->GetPage());
           double h = (oChange != (*m_orientationChanges).end()) ? wPt : hPt;
           OutAscii(wxString::Format(_T("/Dest [%d 0 R /XYZ 0 "),1+2*link->GetPage()) +
-                   Double2String(h-link->GetPosition()*m_k,2) + 
+                   Double2String(h-link->GetPosition()*m_k,2) +
                    wxString(_T(" null]>>")),false);
         }
         delete pl;
@@ -2852,7 +2852,7 @@ wxPdfDocument::PutPages()
 
     OutAscii(wxString::Format(_T("/Contents %d 0 R>>"), m_n+1));
     Out("endobj");
-    
+
     // Page content
     wxMemoryOutputStream* p;
     if (m_compress)
@@ -2868,7 +2868,7 @@ wxPdfDocument::PutPages()
     }
 
     NewObj();
-    OutAscii(wxString(_T("<<")) + filter + wxString(_T("/Length ")) + 
+    OutAscii(wxString(_T("<<")) + filter + wxString(_T("/Length ")) +
              wxString::Format(_T("%d"), p->TellO()) + wxString(_T(">>")));
     PutStream(*p);
     Out("endobj");
@@ -2990,7 +2990,7 @@ wxPdfDocument::PutFonts()
         wxInputStream* fontStream = fontFile->GetStream();
         int fontLen = fontStream->GetSize();
         wxMemoryOutputStream* p = new wxMemoryOutputStream();
-        
+
         bool compressed = strFontFileName.Right(2) == _T(".z");
         if (!compressed && font->HasSize2())
         {
@@ -3043,7 +3043,7 @@ wxPdfDocument::PutFonts()
       }
     }
   }
-  
+
   fontIter = m_fonts->begin();
   for (fontIter = m_fonts->begin(); fontIter != m_fonts->end(); fontIter++)
   {
@@ -3137,14 +3137,14 @@ wxPdfDocument::PutFonts()
       OutAscii(wxString::Format(_T("/DescendantFonts [%d 0 R]"), (m_n + 1)));
       Out(">>");
       Out("endobj");
-      
+
       // CIDFontType2
       // A CIDFont whose glyph descriptions are based on TrueType font technology
       NewObj();
       Out("<</Type /Font");
       Out("/Subtype /CIDFontType2");
       OutAscii(wxString(_T("/BaseFont /")) + name);
-      OutAscii(wxString::Format(_T("/CIDSystemInfo %d 0 R"), (m_n + 1))); 
+      OutAscii(wxString::Format(_T("/CIDSystemInfo %d 0 R"), (m_n + 1)));
       OutAscii(wxString::Format(_T("/FontDescriptor %d 0 R"), (m_n + 2)));
 
       const wxPdfFontDescription& fd = font->GetDesc();
@@ -3153,12 +3153,12 @@ wxPdfDocument::PutFonts()
         // The default width for glyphs in the CIDFont MissingWidth
         OutAscii(wxString::Format(_T("/DW %d"), fd.GetMissingWidth()));
       }
-      
+
       OutAscii(wxString(_T("/W ")) + font->GetWidthsAsString()); // A description of the widths for the glyphs in the CIDFont
       OutAscii(wxString::Format(_T("/CIDToGIDMap %d 0 R"), (m_n + 3)));
       Out(">>");
       Out("endobj");
-      
+
       // CIDSystemInfo dictionary
       // TODO: Probably needs string encryption if encryption is used
       // A dictionary containing entries that define the character collectionof the CIDFont.
@@ -3171,7 +3171,7 @@ wxPdfDocument::PutFonts()
       Out("/Supplement 0");
       Out(">>");
       Out("endobj");
-      
+
       // Font descriptor
       // A font descriptor describing the CIDFonts default metrics other than its glyph widths
       NewObj();
@@ -3248,7 +3248,7 @@ wxPdfDocument::PutFonts()
       Out("/Subtype /CIDFontType0");
       OutAscii(wxString(_T("/BaseFont /")) + name);
       OutAscii(wxString(_T("/CIDSystemInfo <</Registry (Adobe) /Ordering (")) +
-               font->GetOrdering() + wxString(_T(") /Supplement ")) + 
+               font->GetOrdering() + wxString(_T(") /Supplement ")) +
                font->GetSupplement() + wxString(_T(">>")));
       OutAscii(wxString::Format(_T("/FontDescriptor %d 0 R"), (m_n+1)));
 
@@ -3540,7 +3540,7 @@ wxPdfDocument::PutResources()
 	PutShaders();
   PutFonts();
   PutImages();
-  
+
   // Resource dictionary
   m_offsets[2-1] = m_buffer.TellO();
   Out("2 0 obj");
@@ -3768,7 +3768,7 @@ wxPdfDocument::OutLineRelative(double dx, double dy)
 void
 wxPdfDocument::OutCurve(double x1, double y1, double x2, double y2, double x3, double y3)
 {
-  // Draws a Bézier curve from last draw point
+  // Draws a BÃ©zier curve from last draw point
   OutAscii(Double2String(x1 * m_k,2) + wxString(_T(" ")) +
            Double2String((m_h - y1) * m_k,2) + wxString(_T(" ")) +
            Double2String(x2 * m_k,2) + wxString(_T(" ")) +
@@ -3796,8 +3796,8 @@ wxPdfDocument::RGB2String(const wxColour& color)
   double r = color.Red();
   double g = color.Green();
   double b = color.Blue();
-  wxString rgb = Double2String(r/255.,3) + _T(" ") + 
-                 Double2String(g/255.,3) + _T(" ") + 
+  wxString rgb = Double2String(r/255.,3) + _T(" ") +
+                 Double2String(g/255.,3) + _T(" ") +
                  Double2String(b/255.,3);
   return rgb;
 }
@@ -3837,7 +3837,7 @@ wxPdfDocument::Double2String(double value, int precision)
   {
     number += wxString(_T("."));
     wxString fraction = wxString::Format(_T("%.0lf"), floor(localFraction));
-    if (fraction.Length() < precision)
+    if (fraction.Length() < static_cast<size_t>(precision)) // WARNING: COMPARISON BETWEEN SIGNED AND UNSIGNED
     {
       number += wxString(_T('0'), precision-fraction.Length());
     }
@@ -4110,7 +4110,7 @@ wxPdfDocument::Skew(double xAngle, double yAngle, double x, double y)
   }
 	if (xAngle <= -90 || xAngle >= 90 || yAngle <= -90 || yAngle >= 90)
   {
-			// TODO $this->Error('Please use values between -90° and 90° for skewing');
+			// TODO $this->Error('Please use values between -90Â° and 90Â° for skewing');
     return false;
   }
 	x *= m_k;
@@ -4193,7 +4193,7 @@ wxPdfDocument::RadialGradient(double x, double y, double w, double h,
 
 void
 wxPdfDocument::RadialGradient(double x, double y, double w, double h,
-                              const wxColour& col1, const wxColour& col2, 
+                              const wxColour& col1, const wxColour& col2,
                               double coords[5])
 {
 	ClippingRect(x, y, w, h, false);
@@ -4229,7 +4229,7 @@ wxPdfDocument::Marker(double x, double y, wxPdfMarker markerType, double size)
   static double b = 4. / 3.;
 
   Out("q");
-  switch (markerType) 
+  switch (markerType)
   {
 	  case wxPDF_MARKER_CIRCLE:
       SetLineWidth(size * 0.15);
