@@ -125,6 +125,7 @@ protected:
 	//! menuitem label and they are thus not considered...
 	//! (but they do still work !!!)
 	void Update();
+	void wxMenuCmd::RebuildMenuitem(); //+v0.4.6
 };
 
 

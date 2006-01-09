@@ -74,6 +74,7 @@ int wxFindMenuItem(wxMenuBar *p, const wxString &str)
 void wxMenuCmd::Update()
 // ----------------------------------------------------------------------------
 { //v0.4.4 changes to use bitmapped menuitems
+  //v0.4.6 Rebuild menuitems when bitmapped. Ownerdrawn were misaligned.
 
     //+v0.4
     // verify menu item has not changed its id or disappeared
@@ -102,20 +103,16 @@ void wxMenuCmd::Update()
 #endif
 
     wxAcceleratorEntry* pItemAccel = m_pItem->GetAccel();
-    //wxAcceleratorEntry* pItemAccel = wxGetAccelFromString(strText);
     // clearing previous shortcuts if none now assigned
 	if (m_nShortcuts <= 0) {
         if ( ! pItemAccel) return;
 		wxLogDebug(wxT("wxMenuCmd::Update - Removing shortcuts [%s] for [%s]"), strText.c_str(),newtext.c_str());
-		// set "un-ownerdrawn" text to preserve menu width
+		// set "non bitmapped" text to preserve menu width
         m_pItem->SetText(newtext);
         #if defined( __WXMSW__ )
-         //now redraw the menuitem if bitmapped
+         //now rebuild the menuitem if bitmapped
          if (m_pItem->GetBitmap().GetWidth())
-         {   m_pItem->SetOwnerDrawn();
-             m_pItem->SetText(newtext);
-         }
-        //-m_pItem->GetMenu()->UpdateAccel(m_pItem); //<--does nothing previous SetTExt() didnt
+             RebuildMenuitem(); //+v0.4.6
         #endif
         return;
     }
@@ -132,23 +129,43 @@ void wxMenuCmd::Update()
          && ( pItemAccel->GetKeyCode() == pPrfAccel->GetKeyCode() ) )
          return;
     wxLogDebug(wxT("wxMenuCmd::Update - Setting shortcuts for [%s]"), newtext.c_str());
-    // set "un-ownerdrawn" text to preserve menu width
     m_pItem->SetText(newtext);
-    //now redraw the menuitem if bitmapped
+    //now rebuild the menuitem if bitmapped
     if (m_pItem->GetBitmap().GetWidth())
-    {   m_pItem->SetOwnerDrawn();
-        //m_pItem->GetMenu()->UpdateAccel(m_pItem); //<-- does nothing that SetText() doesnt
-        m_pItem->SetText(newtext);
-    }
+        RebuildMenuitem(); //+v0.4.6
 #elif defined( __WXGTK__ )
 	// on GTK, the SetAccel() function doesn't have any effect...
 	m_pItem->SetText(newtext);
-  #ifdef __WXGTK20__
-	//   gtk_menu_item_set_accel_path(GTK_MENU_ITEM(m_pItem), wxGTK_CONV(newtext));
-  #endif //__WXGTK20__
+    #ifdef __WXGTK20__
+	 //   gtk_menu_item_set_accel_path(GTK_MENU_ITEM(m_pItem), wxGTK_CONV(newtext));
+    #endif //__WXGTK20__
 #endif //elif defined( __WXGTK__ )
 
 }//Update
+// ----------------------------------------------------------------------------
+// RebuildMenuitem
+// ----------------------------------------------------------------------------
+void wxMenuCmd::RebuildMenuitem()
+{//+v0.4.6 WXMSW
+	// ---------------------------------------------------------------
+	//  Do it the slow/hard way, remove and delete the menu item
+	// ---------------------------------------------------------------
+    wxMenu* pMenu = m_pItem->GetMenu();
+    wxMenuItemList items = pMenu->GetMenuItems();
+    int pos = items.IndexOf(m_pItem);
+   // rebuild the menuitem
+    wxMenuItem* pnewitem = new wxMenuItem(pMenu, m_nId, m_pItem->GetText(),
+                m_pItem->GetHelp(), m_pItem->GetKind(),
+                m_pItem->GetSubMenu() );
+    pnewitem->SetBitmap(m_pItem->GetBitmap() );
+    pnewitem->SetFont(m_pItem->GetFont() );
+    // remove the menuitem
+    pMenu->Destroy(m_pItem);
+    m_pItem = pnewitem;
+    // put the menuitem back on the menu
+    pMenu->Insert(pos, m_pItem);
+
+}//RebuildMenuitem
 // ----------------------------------------------------------------------------
 void wxMenuCmd::Exec(wxObject *origin, wxEvtHandler *client)
 // ----------------------------------------------------------------------------

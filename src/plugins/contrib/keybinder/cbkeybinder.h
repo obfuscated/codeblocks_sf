@@ -22,7 +22,7 @@
 
 // v0.4.4 1/7/2006 1
 // additions to keybinder::Update() for use of bitmapped menuitems
-// made keybinder "usableWindow" filter efficient (Attach())
+// made keybinder "usableWindow" filter efficient (cf. Attach())
 // add recursive "winExist" check to stop disappearing panels crash
 
 #ifndef CBKEYBINDER_H

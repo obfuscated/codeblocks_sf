@@ -552,7 +552,7 @@ wxCmd::wxCmdType *wxCmd::FindCmdType(int type)
 //// ----------------------------------------------------------------------------
 //wxCmd *wxCmd::CreateNew(int type, int id)
 //// ----------------------------------------------------------------------------
-//{-v0.3
+//{-v0.3 original code, removed in order to search by text, not id
 //	wxCmdType *found = FindCmdType(type);
 //	if (!found) return NULL;
 //
