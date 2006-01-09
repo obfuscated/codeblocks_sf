@@ -919,7 +919,7 @@ bool MainFrame::DoCheckCurrentLayoutForChanges(bool canCancel)
         AnnoyingDialog dlg(_("Layout changed"),
                             wxString::Format(_("The layout '%s' has changed. Do you want to save it?"), m_LastLayoutName.c_str()),
                             wxART_QUESTION,
-                            AnnoyingDialog::YES_NO_CANCEL,
+                            canCancel ? AnnoyingDialog::YES_NO_CANCEL : AnnoyingDialog::YES_NO,
                             wxID_YES);
         switch (dlg.ShowModal())
         {
