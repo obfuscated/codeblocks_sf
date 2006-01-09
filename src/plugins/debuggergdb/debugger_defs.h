@@ -7,6 +7,23 @@
 class DebuggerDriver;
 class DebuggerTree;
 
+extern const int DEBUGGER_CURSOR_CHANGED; ///< wxCommandEvent ID fired when the cursor has changed.
+
+/** Debugger cursor info.
+  *
+  * Contains info about the debugger's cursor, i.e. where it currently is at
+  * (file, line, function, address).
+  */
+struct Cursor
+{
+    Cursor() : line(-1), changed(false) {}
+    wxString file;
+    wxString address;
+    wxString function;
+    long int line; ///< If -1, no line info
+    bool changed;
+};
+
 /** Basic interface for debugger commands.
   *
   * Each command sent to the debugger, is a DebuggerCmd.

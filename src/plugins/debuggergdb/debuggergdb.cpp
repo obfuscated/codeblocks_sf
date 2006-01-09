@@ -143,6 +143,7 @@ BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
 	EVT_TIMER(idTimerPollDebugger, DebuggerGDB::OnTimer)
 
 	EVT_COMMAND(-1, cbCustom_WATCHES_CHANGED, DebuggerGDB::OnWatchesChanged)
+	EVT_COMMAND(-1, DEBUGGER_CURSOR_CHANGED, DebuggerGDB::OnCursorChanged)
 END_EVENT_TABLE()
 
 DebuggerGDB::DebuggerGDB()
@@ -431,6 +432,21 @@ void DebuggerGDB::DebugLog(const wxString& msg)
     // gdb debug messages
     if (m_HasDebugLog)
         Manager::Get()->GetMessageManager()->Log(m_DbgPageIndex, msg);
+}
+
+bool DebuggerGDB::IsWindowShown(wxWindow* win)
+{
+    // find out if a docked window is shown
+    // win->IsShown() is no good because we don't know if the
+    // actual dock window is shown or not...
+
+    while (win && win->IsShown())
+    {
+        win = win->GetParent();
+        if (!win)
+            return true;
+    }
+    return false;
 }
 
 void DebuggerGDB::DoWatches()
@@ -1153,19 +1169,6 @@ void DebuggerGDB::ParseOutput(const wxString& output)
     if (m_State.GetDriver())
     {
         m_State.GetDriver()->ParseOutput(output);
-
-        // is it still valid?
-        if (m_State.GetDriver())
-        {
-            if (m_State.GetDriver()->IsStopped() && m_State.GetDriver()->HasCursorChanged())
-            {
-                SyncEditor(m_State.GetDriver()->GetStopFile(), m_State.GetDriver()->GetStopLine());
-                m_HaltAtLine = m_State.GetDriver()->GetStopLine() - 1;
-                BringAppToFront();
-                DoWatches();
-                Log(wxString::Format(_("At %s:%d"), m_State.GetDriver()->GetStopFile().c_str(), m_State.GetDriver()->GetStopLine()));
-            }
-        }
     }
 }
 
@@ -1371,6 +1374,8 @@ void DebuggerGDB::OnViewWatches(wxCommandEvent& event)
     CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
     evt.pWindow = m_pTree;
     Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+
+    DoWatches();
 }
 
 void DebuggerGDB::OnBreakpoints(wxCommandEvent& event)
@@ -1566,6 +1571,45 @@ void DebuggerGDB::OnTimer(wxTimerEvent& event)
 void DebuggerGDB::OnWatchesChanged(wxCommandEvent& event)
 {
 	DoWatches();
+}
+
+void DebuggerGDB::OnCursorChanged(wxCommandEvent& event)
+{
+    if (m_State.GetDriver())
+    {
+        const Cursor& cursor = m_State.GetDriver()->GetCursor();
+        if (m_State.GetDriver()->IsStopped() && cursor.changed)
+        {
+            SyncEditor(cursor.file, cursor.line);
+            m_HaltAtLine = cursor.line - 1;
+            BringAppToFront();
+            if (cursor.line != -1)
+                Log(wxString::Format(_("At %s:%d"), cursor.file.c_str(), cursor.line));
+            else
+                Log(wxString::Format(_("In %s (%s)"), cursor.function.c_str(), cursor.file.c_str()));
+
+            // update watches
+            if (IsWindowShown(m_pTree))
+                DoWatches();
+
+            // update CPU registers
+            if (IsWindowShown(m_pCPURegisters))
+                RunCommand(CMD_REGISTERS);
+
+            // update callstack
+            if (IsWindowShown(m_pBacktrace))
+                RunCommand(CMD_BACKTRACE);
+
+            // update disassembly
+            if (IsWindowShown(m_pDisassembly))
+            {
+                long int addrL;
+                cursor.address.ToLong(&addrL, 16);
+                m_pDisassembly->SetActiveAddress(addrL);
+                RunCommand(CMD_DISASSEMBLE);
+            }
+        }
+    }
 }
 
 void DebuggerGDB::OnAddWatch(wxCommandEvent& event)

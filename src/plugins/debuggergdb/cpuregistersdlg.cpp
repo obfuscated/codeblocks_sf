@@ -2,11 +2,8 @@
 #include "cpuregistersdlg.h"
 #include "debuggergdb.h"
 #include <wx/intl.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/textctrl.h>
-#include <wx/button.h>
+#include <wx/sizer.h>
 #include <wx/listctrl.h>
-#include <wx/wfstream.h>
 
 // static
 wxString CPURegistersDlg::Registers[] = {
@@ -39,14 +36,19 @@ int CPURegistersDlg::RegisterIndexFromName(const wxString& name)
 }
 
 BEGIN_EVENT_TABLE(CPURegistersDlg, wxPanel)
-    EVT_BUTTON(XRCID("btnRefresh"), CPURegistersDlg::OnRefresh)
+//    EVT_BUTTON(XRCID("btnRefresh"), CPURegistersDlg::OnRefresh)
 END_EVENT_TABLE()
 
 CPURegistersDlg::CPURegistersDlg(wxWindow* parent, DebuggerGDB* debugger)
-    : m_pDbg(debugger)
+    : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize),
+    m_pDbg(debugger)
 {
 	//ctor
-	wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgCPURegisters"));
+	wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
+	m_pList = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_SINGLE_SEL);
+	sizer->Add(m_pList, 1, wxGROW);
+	SetSizer(sizer);
+	Layout();
 
     Clear();
 }
@@ -58,33 +60,30 @@ CPURegistersDlg::~CPURegistersDlg()
 
 void CPURegistersDlg::Clear()
 {
-    wxListCtrl* lc = XRCCTRL(*this, "lcRegisters", wxListCtrl);
-    lc->ClearAll();
-	lc->Freeze();
-	lc->DeleteAllItems();
-    lc->InsertColumn(0, _("Register"), wxLIST_FORMAT_LEFT);
-    lc->InsertColumn(1, _("Hex"), wxLIST_FORMAT_RIGHT);
-    lc->InsertColumn(2, _("Integer"), wxLIST_FORMAT_RIGHT);
-	lc->Thaw();
+    m_pList->ClearAll();
+	m_pList->Freeze();
+	m_pList->DeleteAllItems();
+    m_pList->InsertColumn(0, _("Register"), wxLIST_FORMAT_LEFT);
+    m_pList->InsertColumn(1, _("Hex"), wxLIST_FORMAT_RIGHT);
+    m_pList->InsertColumn(2, _("Integer"), wxLIST_FORMAT_RIGHT);
+	m_pList->Thaw();
 }
 
 void CPURegistersDlg::AddRegisterValue(int idx, long int value)
 {
     if (idx == -1)
         return;
-    wxListCtrl* lc = XRCCTRL(*this, "lcRegisters", wxListCtrl);
-	lc->Freeze();
-	lc->InsertItem(lc->GetItemCount(), Registers[idx]);
-	SetRegisterValue(lc->GetItemCount() - 1, value);
-	lc->Thaw();
+	m_pList->Freeze();
+	m_pList->InsertItem(m_pList->GetItemCount(), Registers[idx]);
+	SetRegisterValue(m_pList->GetItemCount() - 1, value);
+	m_pList->Thaw();
 }
 
 void CPURegistersDlg::SetRegisterValue(int idx, long int value)
 {
     if (idx == -1)
         return;
-    wxListCtrl* lc = XRCCTRL(*this, "lcRegisters", wxListCtrl);
-    if (!lc->GetItemCount())
+    if (!m_pList->GetItemCount())
     {
         Clear();
         for (int i = 0; i < 16; ++i)
@@ -92,17 +91,12 @@ void CPURegistersDlg::SetRegisterValue(int idx, long int value)
     }
 	wxString fmt;
 	fmt.Printf(_T("0x%x"), (size_t)value);
-    lc->SetItem(idx, 1, fmt);
+    m_pList->SetItem(idx, 1, fmt);
 	fmt.Printf(_T("%ld"), value);
-    lc->SetItem(idx, 2, fmt);
+    m_pList->SetItem(idx, 2, fmt);
 
 	for (int i = 0; i < 3; ++i)
 	{
-        lc->SetColumnWidth(i, wxLIST_AUTOSIZE);
+        m_pList->SetColumnWidth(i, wxLIST_AUTOSIZE);
 	}
-}
-
-void CPURegistersDlg::OnRefresh(wxCommandEvent& event)
-{
-    m_pDbg->CmdRegisters();
 }

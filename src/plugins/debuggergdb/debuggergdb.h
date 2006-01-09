@@ -66,6 +66,8 @@ class DebuggerGDB : public cbDebuggerPlugin
 
 		DebuggerState& GetState(){ return m_State; }
 
+		void BringAppToFront();
+
         static void ConvertToGDBFriendly(wxString& str);
         static void ConvertToGDBFile(wxString& str);
         static void ConvertToGDBDirectory(wxString& str, wxString base = _T(""), bool relative = true);
@@ -74,7 +76,6 @@ class DebuggerGDB : public cbDebuggerPlugin
         void AddSourceDir(const wxString& dir);
 	private:
 		void ParseOutput(const wxString& output);
-		void BringAppToFront();
 		void ClearActiveMarkFromAllEditors();
 		void DoWatches();
         wxString GetEditorWordAtCaret();
@@ -82,6 +83,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         int LaunchProcess(const wxString& cmd, const wxString& cwd);
         wxString GetDebuggee(ProjectBuildTarget* target);
         bool IsStopped();
+        bool IsWindowShown(wxWindow* win);
 
 		void OnUpdateUI(wxUpdateUIEvent& event);
 		void OnDebug(wxCommandEvent& event);
@@ -111,6 +113,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         void OnIdle(wxIdleEvent& event);
 		void OnTimer(wxTimerEvent& event);
 		void OnWatchesChanged(wxCommandEvent& event);
+		void OnCursorChanged(wxCommandEvent& event);
         void OnAddWatch(wxCommandEvent& event);
         void OnAttachToProcess(wxCommandEvent& event);
         void OnDetach(wxCommandEvent& event);

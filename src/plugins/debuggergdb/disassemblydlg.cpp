@@ -71,8 +71,8 @@ void DisassemblyDlg::AddAssemblerLine(unsigned long int addr, const wxString& li
 
 void DisassemblyDlg::SetActiveAddress(unsigned long int addr)
 {
-    if (addr == m_LastActiveAddr)
-        return;
+//    if (addr == m_LastActiveAddr)
+//        return;
     m_LastActiveAddr = addr;
     wxListCtrl* lc = XRCCTRL(*this, "lcCode", wxListCtrl);
     for (int i = 0; i < lc->GetItemCount(); ++i)

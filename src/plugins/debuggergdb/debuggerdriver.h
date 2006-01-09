@@ -113,14 +113,8 @@ class DebuggerDriver
 
         /** Is the program stopped? */
         virtual bool IsStopped(){ return m_ProgramIsStopped; }
-        /** Has the cursor changed? (cursor is the currently executing line of code) */
-        virtual bool HasCursorChanged(){ return m_CursorChanged; }
-        /** Get stopped address. */
-        virtual wxString GetStopAddress(){ return m_StopAddress; }
-        /** Get stopped file. */
-        virtual wxString GetStopFile(){ return m_StopFile; }
-        /** Get stopped line. */
-        virtual long int GetStopLine(){ return m_StopLine; }
+        /** Get debugger cursor. */
+        virtual const Cursor& GetCursor() const { return m_Cursor; }
 
 		void QueueCommand(DebuggerCmd* dcmd, QueuePriority prio = Low); ///< add a command in the queue. The DebuggerCmd will be deleted automatically when finished.
 		DebuggerCmd* CurrentCommand(); ///< returns the currently executing command
@@ -128,18 +122,27 @@ class DebuggerDriver
 		void RemoveTopCommand(bool deleteIt = true); ///< removes the top command (it has finished)
 		void ClearQueue(); ///< clears the queue
     protected:
+        /** Called by implementations to reset the cursor. */
+        virtual void ResetCursor();
+        /** Called by implementations to notify cursor changes. */
+        virtual void NotifyCursorChanged();
+
+        // the debugger plugin
         DebuggerGDB* m_pDBG;
+
+        // convenience properties for starting up
         wxArrayString m_Dirs;
         wxString m_WorkingDir;
-        bool m_ProgramIsStopped;
-        bool m_CursorChanged;
 
+        // cursor related
+        bool m_ProgramIsStopped;
+        wxString m_LastCursorAddress;
+        Cursor m_Cursor;
+
+        // debugging windows pointers
         BacktraceDlg* m_pBacktrace;
         DisassemblyDlg* m_pDisassembly;
         CPURegistersDlg* m_pCPURegisters;
-        wxString m_StopFile;
-        wxString m_StopAddress;
-        long int m_StopLine;
 
 		// commands
 		DebuggerCommands m_DCmds;

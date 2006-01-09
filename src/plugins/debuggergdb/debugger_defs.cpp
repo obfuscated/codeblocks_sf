@@ -6,6 +6,8 @@
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(WatchesArray);
 
+const int DEBUGGER_CURSOR_CHANGED = wxNewId();
+
 DebuggerCmd::DebuggerCmd(DebuggerDriver* driver, const wxString& cmd, bool logToNormalLog)
     : m_Cmd(cmd),
     m_pDriver(driver),

@@ -430,7 +430,7 @@ class GdbCmd_Backtrace : public DebuggerCmd
             : DebuggerCmd(driver),
             m_pDlg(dlg)
         {
-            m_Cmd << _T("bt");
+            m_Cmd << _T("bt 30");
         }
         void ParseOutput(const wxString& output)
         {
@@ -460,75 +460,6 @@ class GdbCmd_Backtrace : public DebuggerCmd
                     m_pDlg->AddFrame(sf);
     		    }
     		}
-//            m_pDriver->DebugLog(output);
-        }
-};
-
-/**
-  * Command to initialize a disassembly.
-  */
-class GdbCmd_DisassemblyInit : public DebuggerCmd
-{
-        DisassemblyDlg* m_pDlg;
-    public:
-        /** @param dlg The disassembly dialog. */
-        GdbCmd_DisassemblyInit(DebuggerDriver* driver, DisassemblyDlg* dlg)
-            : DebuggerCmd(driver),
-            m_pDlg(dlg)
-        {
-            m_Cmd << _T("frame");
-        }
-        void ParseOutput(const wxString& output)
-        {
-            // output is two lines describing the current frame:
-            //
-            // #0  main () at main.cpp:8
-            // C:/Devel/tmp/console/main.cpp:8:63:beg:0x4013ba
-
-            if (!m_pDlg)
-                return;
-
-            StackFrame sf;
-            wxArrayString lines = GetArrayFromString(output, _T('\n'));
-    		for (unsigned int i = 0; i < lines.GetCount(); ++i)
-    		{
-                if (!lines[i].StartsWith(g_EscapeChars)) // ->->
-                {
-                    // #0  main () at main.cpp:8
-                    wxRegEx re(_T("#([0-9]+)[ \t]+([A-Za-z0-9_:]+) \\(\\) at"));
-                    if (re.Matches(lines[i]))
-                    {
-                        re.GetMatch(lines[i], 1).ToLong(&sf.number);
-                        sf.function = re.GetMatch(lines[i], 2);
-                    }
-                }
-                else
-                {
-                    // C:/Devel/tmp/console/main.cpp:11:113:beg:0x4013cf
-                    lines[i].Remove(0, 2); // remove ->->
-                    wxRegEx reSource;
-                    #ifdef __WXMSW__
-                    reSource.Compile(_T("([A-Za-z]:)([ A-Za-z0-9_/\\.~-]*):([0-9]*):[0-9]*:[begmidl]+:(0x[0-9A-Za-z]*)"));
-                    #else
-                    reSource.Compile(_T("([ A-Za-z0-9_/\\.~-]*):([0-9]*):[0-9]*:[begmidl]+:(0x[0-9A-Za-z]*)"));
-                    #endif
-                    if ( reSource.Matches(lines[i]) )
-                    {
-                        sf.valid = true;
-                        #ifdef __WXMSW__
-                        sf.file = reSource.GetMatch(lines[i], 1) + reSource.GetMatch(lines[i], 2); // drive + path
-                        sf.line = reSource.GetMatch(lines[i], 3);
-                        reSource.GetMatch(lines[i], 4).ToULong(&sf.address, 16);
-                        #else
-                        sf.file = reSource.GetMatch(lines[i], 1);
-                        sf.line = reSource.GetMatch(lines[i], 2);
-                        reSource.GetMatch(lines[i], 3).ToULong(&sf.address, 16);
-                        #endif
-                        break; // we 're only interested for the top-level stack frame
-                    }
-                }
-    		}
-            m_pDlg->Clear(sf);
 //            m_pDriver->DebugLog(output);
         }
 };
@@ -589,7 +520,7 @@ class GdbCmd_InfoRegisters : public DebuggerCmd
 };
 
 /**
-  * Command to run a disassembly. Use this instead of GdbCmd_DisassemblyInit, which is chained-called.
+  * Command to run a disassembly.
   */
 class GdbCmd_Disassembly : public DebuggerCmd
 {
@@ -601,7 +532,6 @@ class GdbCmd_Disassembly : public DebuggerCmd
             m_pDlg(dlg)
         {
             m_Cmd << _T("disassemble");
-            m_pDriver->QueueCommand(new GdbCmd_DisassemblyInit(driver, dlg)); // chain call
         }
         void ParseOutput(const wxString& output)
         {
@@ -627,9 +557,64 @@ class GdbCmd_Disassembly : public DebuggerCmd
                     m_pDlg->AddAssemblerLine(addr, re.GetMatch(lines[i], 2));
                 }
     		}
-            m_pDlg->Show(true);
+//            m_pDlg->Show(true);
 //            m_pDriver->DebugLog(output);
         }
 };
+
+/**
+  * Command to initialize a disassembly. Use this instead of GdbCmd_Disassembly, which is chain-called by this.
+  */
+class GdbCmd_DisassemblyInit : public DebuggerCmd
+{
+        DisassemblyDlg* m_pDlg;
+        static wxString LastAddr;
+    public:
+        /** @param dlg The disassembly dialog. */
+        GdbCmd_DisassemblyInit(DebuggerDriver* driver, DisassemblyDlg* dlg)
+            : DebuggerCmd(driver),
+            m_pDlg(dlg)
+        {
+            m_Cmd << _T("info frame");
+        }
+        void ParseOutput(const wxString& output)
+        {
+            //Stack level 0, frame at 0x22ff80:
+            // eip = 0x401497 in main (main.cpp:16); saved eip 0x4011e7
+            // source language c++.
+            // Arglist at 0x22ff78, args: argc=1, argv=0x3e3cb0
+            // Locals at 0x22ff78, Previous frame's sp is 0x22ff80
+            // Saved registers:
+            //  ebx at 0x22ff6c, ebp at 0x22ff78, esi at 0x22ff70, edi at 0x22ff74, eip at 0x22ff7c
+            if (!m_pDlg)
+                return;
+
+            wxRegEx re(_T("^Stack level [0-9]+, frame at (0x[A-Fa-f0-9]+):"));
+            if (re.Matches(output))
+            {
+                StackFrame sf;
+                wxString addr = re.GetMatch(output, 1);
+                if (addr == LastAddr)
+                    return;
+                LastAddr = addr;
+                addr.ToLong((long int*)&sf.address, 16);
+
+                wxRegEx refunc(_T("eip = (0x[A-Fa-f0-9]+) in ([^;]*)"));
+                if (refunc.Matches(output))
+                {
+                    sf.function = refunc.GetMatch(output, 2);
+                    long int active;
+                    refunc.GetMatch(output, 1).ToLong(&active, 16);
+                    m_pDlg->SetActiveAddress(active);
+                }
+
+                sf.valid = true;
+                m_pDlg->Clear(sf);
+                m_pDriver->QueueCommand(new GdbCmd_Disassembly(m_pDriver, m_pDlg)); // chain call
+            }
+//            m_pDriver->DebugLog(output);
+        }
+};
+wxString GdbCmd_DisassemblyInit::LastAddr;
 
 #endif // DEBUGGER_COMMANDS_H

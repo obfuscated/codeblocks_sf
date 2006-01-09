@@ -456,14 +456,14 @@ class CdbCmd_InfoRegisters : public DebuggerCmd
 };
 
 /**
-  * Command to run a disassembly. Use this instead of CdbCmd_DisassemblyInit, which is chained-called.
+  * Command to run a disassembly.
   */
-class CdbCmd_DisassemblyStep2 : public DebuggerCmd
+class CdbCmd_Disassembly : public DebuggerCmd
 {
         DisassemblyDlg* m_pDlg;
     public:
         /** @param dlg The disassembly dialog. */
-        CdbCmd_DisassemblyStep2(DebuggerDriver* driver, DisassemblyDlg* dlg, const wxString& StopAddress)
+        CdbCmd_Disassembly(DebuggerDriver* driver, DisassemblyDlg* dlg, const wxString& StopAddress)
             : DebuggerCmd(driver),
             m_pDlg(dlg)
         {
@@ -480,59 +480,46 @@ class CdbCmd_DisassemblyStep2 : public DebuggerCmd
             if (!m_pDlg)
                 return;
 
-            bool hasInit = false;
             wxArrayString lines = GetArrayFromString(output, _T('\n'));
     		for (unsigned int i = 0; i < lines.GetCount(); ++i)
     		{
-                // Win32GUI!WinMain [c:\devel\tmp\win32 test\main.cpp @ 15]:
-                wxRegEx re1(_T("([^ \t]*)[ \t]+\\[(.+)[ \t]+@[ \t]+([0-9]+)\\]"));
-                if (!hasInit && re1.Matches(lines[i]))
+                //    15 00401020 55               push    ebp
+                //    61 004010f9 ff15dcc24000  call dword ptr [Win32GUI!_imp__GetMessageA (0040c2dc)]
+                //    71 0040111f c21000           ret     0x10
+                wxRegEx re(_T("^[0-9]+[ \t]+([A-Fa-f0-9]+)[ \t]+[A-Fa-f0-9]+[ \t]+(.*)$"));
+                if (re.Matches(lines[i]))
                 {
-                    StackFrame sf;
-                    sf.valid = true;
-                    sf.function = re1.GetMatch(lines[i], 1);
-                    sf.file = re1.GetMatch(lines[i], 2);
-                    sf.line = re1.GetMatch(lines[i], 3);
-                    m_pDlg->Clear(sf);
-                    hasInit = true;
-                }
-                else
-                {
-                    //    15 00401020 55               push    ebp
-                    //    61 004010f9 ff15dcc24000  call dword ptr [Win32GUI!_imp__GetMessageA (0040c2dc)]
-                    //    71 0040111f c21000           ret     0x10
-                    wxRegEx re(_T("^[0-9]+[ \t]+([A-Fa-f0-9]+)[ \t]+[A-Fa-f0-9]+[ \t]+(.*)$"));
-                    if (re.Matches(lines[i]))
-                    {
-                        long int addr;
-                        re.GetMatch(lines[i], 1).ToLong(&addr, 16);
-                        m_pDlg->AddAssemblerLine(addr, re.GetMatch(lines[i], 2));
-                    }
+                    long int addr;
+                    re.GetMatch(lines[i], 1).ToLong(&addr, 16);
+                    m_pDlg->AddAssemblerLine(addr, re.GetMatch(lines[i], 2));
                 }
     		}
-            m_pDlg->Show(true);
+//            m_pDlg->Show(true);
 //            m_pDriver->DebugLog(output);
         }
 };
 
 /**
-  * Command to run a disassembly. Use this instead of CdbCmd_DisassemblyStep2, which is chained-called.
+  * Command to run a disassembly. Use this instead of CdbCmd_Disassembly, which is chain-called.
   */
-class CdbCmd_Disassembly : public DebuggerCmd
+class CdbCmd_DisassemblyInit : public DebuggerCmd
 {
+        static wxString LastAddr;
         DisassemblyDlg* m_pDlg;
     public:
         /** @param dlg The disassembly dialog. */
-        CdbCmd_Disassembly(DebuggerDriver* driver, DisassemblyDlg* dlg)
+        CdbCmd_DisassemblyInit(DebuggerDriver* driver, DisassemblyDlg* dlg)
             : DebuggerCmd(driver),
             m_pDlg(dlg)
         {
-            // print stack frame
-            m_Cmd << _T("k n 1");
+            // print stack frame and nearest symbol (start of function)
+            m_Cmd << _T("k n 1; ln");
         }
         void ParseOutput(const wxString& output)
         {
+//            m_pDriver->QueueCommand(new CdbCmd_Disassembly(m_pDriver, m_pDlg, StopAddress)); // chain call
 
+            long int offset = 0;
             wxArrayString lines = GetArrayFromString(output, _T('\n'));
     		for (unsigned int i = 0; i < lines.GetCount(); ++i)
     		{
@@ -540,17 +527,43 @@ class CdbCmd_Disassembly : public DebuggerCmd
                 // 00 0012fe98 00401426 Win32GUI!WinMain+0x89 [c:\devel\tmp\win32 test\main.cpp @ 55]
                 if (lines[i].Contains(_T("ChildEBP")))
                 {
-                    wxRegEx ref(_T("[0-9]+[ \t]+[A-Fa-f0-9]+[ \t]+[A-Fa-f0-9]+[ \t]+(.*)\\[([A-Za-z]:)([ A-Za-z0-9_/\\.~-]*) @ ([0-9]+)\\]"));
+                    wxRegEx ref(_T("[0-9]+[ \t]+([A-Fa-f0-9]+)[ \t]+[A-Fa-f0-9]+[ \t]+(.*)\\[([A-Za-z]:)([ A-Za-z0-9_/\\.~-]*) @ ([0-9]+)\\]"));
                     if (ref.Matches(lines[i + 1]))
                     {
                         ++i; // we 're interested in the next line
-                        wxString StopAddress = ref.GetMatch(lines[i], 1);
-                        m_pDriver->QueueCommand(new CdbCmd_DisassemblyStep2(m_pDriver, m_pDlg, StopAddress)); // chain call
-                        break;
+
+                        StackFrame sf;
+                        wxString addr = ref.GetMatch(lines[i], 1);
+                        sf.function = ref.GetMatch(lines[i], 2);
+                        wxString offsetStr = sf.function.AfterLast(_T('+'));
+                        if (!offsetStr.IsEmpty())
+                            offsetStr.ToLong(&offset, 16);
+                        if (addr != LastAddr)
+                        {
+                            LastAddr = addr;
+                            addr.ToLong((long int*)&sf.address, 16);
+
+                            sf.valid = true;
+                            m_pDlg->Clear(sf);
+                            m_pDriver->QueueCommand(new CdbCmd_Disassembly(m_pDriver, m_pDlg, sf.function)); // chain call
+//                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    m_pDriver->Log(_T("Checking for current function start"));
+                    wxRegEx re(_T("^\\(([A-Fa-f0-9]+)\\)[ \t]+"));
+                    if (re.Matches(lines[i]))
+                    {
+                        long int start;
+                        re.GetMatch(lines[i], 1).ToLong(&start, 16);
+                        m_pDlg->SetActiveAddress(start + offset);
                     }
                 }
     		}
         }
 };
+wxString CdbCmd_DisassemblyInit::LastAddr;
 
 #endif // DEBUGGER_COMMANDS_H

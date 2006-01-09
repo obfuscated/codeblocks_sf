@@ -84,31 +84,37 @@ void GDB_driver::Prepare(bool isConsole)
 void GDB_driver::Start(bool breakOnEntry)
 {
     // start the process
+    ResetCursor();
     QueueCommand(new DebuggerCmd(this, breakOnEntry ? _T("start") : _T("run")));
 }
 
 void GDB_driver::Stop()
 {
+    ResetCursor();
     QueueCommand(new DebuggerCmd(this, _T("quit")));
 }
 
 void GDB_driver::Continue()
 {
+    ResetCursor();
     QueueCommand(new DebuggerCmd(this, _T("cont")));
 }
 
 void GDB_driver::Step()
 {
+    ResetCursor();
     QueueCommand(new DebuggerCmd(this, _T("next")));
 }
 
 void GDB_driver::StepIn()
 {
+    ResetCursor();
     QueueCommand(new DebuggerCmd(this, _T("step")));
 }
 
 void GDB_driver::StepOut()
 {
+    ResetCursor();
     NOT_IMPLEMENTED();
 }
 
@@ -117,15 +123,13 @@ void GDB_driver::Backtrace()
     if (!m_pBacktrace)
         return;
     QueueCommand(new GdbCmd_Backtrace(this, m_pBacktrace));
-    m_pBacktrace->Show();
 }
 
 void GDB_driver::Disassemble()
 {
     if (!m_pDisassembly)
         return;
-    QueueCommand(new GdbCmd_Disassembly(this, m_pDisassembly));
-    m_pDisassembly->Show();
+    QueueCommand(new GdbCmd_DisassemblyInit(this, m_pDisassembly));
 }
 
 void GDB_driver::CPURegisters()
@@ -133,7 +137,6 @@ void GDB_driver::CPURegisters()
     if (!m_pCPURegisters)
         return;
     QueueCommand(new GdbCmd_InfoRegisters(this, m_pCPURegisters));
-    m_pCPURegisters->Show();
 }
 
 void GDB_driver::AddBreakpoint(DebuggerBreakpoint* bp)
@@ -178,6 +181,7 @@ void GDB_driver::Detach()
 
 void GDB_driver::ParseOutput(const wxString& output)
 {
+    m_Cursor.changed = false;
     if (output.StartsWith(_T("gdb: ")) ||
         output.StartsWith(_T("ContinueDebugEvent ")))
     {
@@ -185,7 +189,6 @@ void GDB_driver::ParseOutput(const wxString& output)
     }
     static wxString buffer;
 	buffer << output << _T('\n');
-    m_CursorChanged = false;
 
 	m_pDBG->DebugLog(output);
 
@@ -246,6 +249,7 @@ void GDB_driver::ParseOutput(const wxString& output)
         else if (lines[i].StartsWith(_T("Program received signal")))
         {
             Log(lines[i]);
+            m_pDBG->BringAppToFront();
             if (wxMessageBox(wxString::Format(_("%s\nDo you want to view the backtrace?"), lines[i].c_str()), _("Question"), wxICON_QUESTION | wxYES_NO) == wxYES)
             {
                 Backtrace();
@@ -271,30 +275,40 @@ void GDB_driver::ParseOutput(const wxString& output)
 			#else
 				reSource.Compile(_T("([ A-Za-z0-9_/\\.~-]*):([0-9]*):[0-9]*:[begmidl]+:(0x[0-9A-Za-z]*)"));
 			#endif
-			if ( reSource.Matches(buffer) )
+			if ( reSource.Matches(lines[i]) )
 			{
                 m_ProgramIsStopped = true;
 			#ifdef __WXMSW__
-				wxString file = reSource.GetMatch(buffer, 1) + reSource.GetMatch(buffer, 2);
-				wxString lineStr = reSource.GetMatch(buffer, 3);
-				wxString addr = reSource.GetMatch(buffer, 4);
+				m_Cursor.file = reSource.GetMatch(lines[i], 1) + reSource.GetMatch(lines[i], 2);
+				wxString lineStr = reSource.GetMatch(lines[i], 3);
+				m_Cursor.address = reSource.GetMatch(lines[i], 4);
             #else
-				wxString file = reSource.GetMatch(buffer, 1);
-				wxString lineStr = reSource.GetMatch(buffer, 2);
-				wxString addr = reSource.GetMatch(buffer, 3);
+				m_Cursor.file = reSource.GetMatch(lines[i], 1);
+				wxString lineStr = reSource.GetMatch(lines[i], 2);
+				m_Cursor.address = reSource.GetMatch(lines[i], 3);
             #endif
+				lineStr.ToLong(&m_Cursor.line);
+                m_Cursor.changed = true;
+                NotifyCursorChanged();
+			}
+        }
+        else
+        {
+            // 0x7c9507a8 in ntdll!KiIntSystemCall () from C:\WINDOWS\system32\ntdll.dll
 
-                if (m_pDisassembly && m_pDisassembly->IsShown())
-                {
-                    long int addrL;
-                    addr.ToLong(&addrL, 16);
-                    m_pDisassembly->SetActiveAddress(addrL);
-                }
-                if (m_pCPURegisters && m_pCPURegisters->IsShown())
-                    QueueCommand(new GdbCmd_InfoRegisters(this, m_pCPURegisters));
-				lineStr.ToLong(&m_StopLine);
-				m_StopFile = file;
-                m_CursorChanged = true;
+            // other break info
+            wxRegEx re(_T("^(0x[A-z0-9]+) in (.*) from (.*)"));
+			if ( re.Matches(lines[i]) )
+			{
+                m_ProgramIsStopped = true;
+
+				m_Cursor.file = re.GetMatch(lines[i], 3);
+				m_Cursor.function = re.GetMatch(lines[i], 2);
+				wxString lineStr = _T("");
+				m_Cursor.address = re.GetMatch(lines[i], 1);
+				m_Cursor.line = -1;
+                m_Cursor.changed = true;
+                NotifyCursorChanged();
 			}
         }
     }

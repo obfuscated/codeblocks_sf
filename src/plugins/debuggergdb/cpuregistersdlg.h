@@ -4,6 +4,7 @@
 #include <wx/panel.h>
 
 class DebuggerGDB;
+class wxListCtrl;
 
 class CPURegistersDlg : public wxPanel
 {
@@ -21,6 +22,7 @@ class CPURegistersDlg : public wxPanel
         void OnRefresh(wxCommandEvent& event);
 
         DebuggerGDB* m_pDbg;
+        wxListCtrl* m_pList;
 	private:
         DECLARE_EVENT_TABLE();
 };

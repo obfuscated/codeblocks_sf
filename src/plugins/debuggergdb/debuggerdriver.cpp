@@ -5,7 +5,6 @@
 DebuggerDriver::DebuggerDriver(DebuggerGDB* plugin)
     : m_pDBG(plugin),
     m_ProgramIsStopped(true),
-    m_CursorChanged(false),
     m_pBacktrace(0),
     m_pDisassembly(0),
     m_QueueBusy(false)
@@ -50,6 +49,25 @@ void DebuggerDriver::AddDirectory(const wxString& dir)
 void DebuggerDriver::SetWorkingDirectory(const wxString& dir)
 {
     m_WorkingDir = dir;
+}
+
+void DebuggerDriver::NotifyCursorChanged()
+{
+    if (!m_Cursor.changed || m_LastCursorAddress == m_Cursor.address)
+        return;
+    m_LastCursorAddress = m_Cursor.address;
+    wxCommandEvent event(DEBUGGER_CURSOR_CHANGED);
+	m_pDBG->ProcessEvent(event);
+}
+
+void DebuggerDriver::ResetCursor()
+{
+    m_LastCursorAddress.Clear();
+    m_Cursor.address.Clear();
+    m_Cursor.file.Clear();
+    m_Cursor.function.Clear();
+    m_Cursor.line = -1;
+    m_Cursor.changed = false;
 }
 
 void DebuggerDriver::QueueCommand(DebuggerCmd* dcmd, QueuePriority prio)

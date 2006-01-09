@@ -101,16 +101,19 @@ void CDB_driver::Start(bool breakOnEntry)
 
 void CDB_driver::Stop()
 {
+    ResetCursor();
     QueueCommand(new DebuggerCmd(this, _T("q")));
 }
 
 void CDB_driver::Continue()
 {
+    ResetCursor();
     QueueCommand(new DebuggerCmd(this, _T("g")));
 }
 
 void CDB_driver::Step()
 {
+    ResetCursor();
     QueueCommand(new DebuggerCmd(this, _T("p")));
     // print a stack frame to find out about the file we 've stopped
     QueueCommand(new DebuggerCmd(this, _T("k n 1")));
@@ -118,12 +121,14 @@ void CDB_driver::Step()
 
 void CDB_driver::StepIn()
 {
+    ResetCursor();
 //    QueueCommand(new DebuggerCmd(this, _T("step")));
     NOT_IMPLEMENTED();
 }
 
 void CDB_driver::StepOut()
 {
+    ResetCursor();
     NOT_IMPLEMENTED();
 }
 
@@ -132,15 +137,13 @@ void CDB_driver::Backtrace()
     if (!m_pBacktrace)
         return;
     QueueCommand(new CdbCmd_Backtrace(this, m_pBacktrace));
-    m_pBacktrace->Show();
 }
 
 void CDB_driver::Disassemble()
 {
     if (!m_pDisassembly)
         return;
-    QueueCommand(new CdbCmd_Disassembly(this, m_pDisassembly));
-    m_pDisassembly->Show();
+    QueueCommand(new CdbCmd_DisassemblyInit(this, m_pDisassembly));
 }
 
 void CDB_driver::CPURegisters()
@@ -148,7 +151,6 @@ void CDB_driver::CPURegisters()
     if (!m_pCPURegisters)
         return;
     QueueCommand(new CdbCmd_InfoRegisters(this, m_pCPURegisters));
-    m_pCPURegisters->Show();
 }
 
 void CDB_driver::AddBreakpoint(DebuggerBreakpoint* bp)
@@ -194,9 +196,9 @@ void CDB_driver::Detach()
 
 void CDB_driver::ParseOutput(const wxString& output)
 {
+    m_Cursor.changed = false;
     static wxString buffer;
 	buffer << output << _T('\n');
-    m_CursorChanged = false;
 
 	m_pDBG->DebugLog(output);
 
@@ -244,13 +246,20 @@ void CDB_driver::ParseOutput(const wxString& output)
             DebuggerBreakpoint* bp = m_pDBG->GetState().GetBreakpoint(bpNum);
             if (bp)
             {
-                m_StopFile = bp->filename;
-                m_StopLine = bp->line + 1;
+                // force cursor notification because we don't have an actual address
+                // available...
+                m_Cursor.address = _T("deadbeef");
+
+                m_Cursor.file = bp->filename;
+                m_Cursor.line = bp->line + 1;
 //                if (bp->temporary)
 //                    m_pDBG->GetState().RemoveBreakpoint(bp->index);
             }
-            m_CursorChanged = true;
+            else
+                Log(wxString::Format(_T("Breakpoints inconsistency detected!\nNothing known about breakpoint %d"), bpNum));
+            m_Cursor.changed = true;
             m_ProgramIsStopped = true;
+            NotifyCursorChanged();
         }
         // one stack frame (to access current file; is there another way???)
         //  # ChildEBP RetAddr
@@ -262,93 +271,14 @@ void CDB_driver::ParseOutput(const wxString& output)
             if (ref.Matches(lines[i + 1]))
             {
                 ++i; // we 're interested in the next line
-                m_StopAddress = ref.GetMatch(lines[i], 1);
-                m_StopFile = ref.GetMatch(lines[i], 2) + ref.GetMatch(lines[i], 3);
-                ref.GetMatch(lines[i], 4).ToLong(&m_StopLine);
-                m_CursorChanged = true;
+                m_Cursor.address = ref.GetMatch(lines[i], 1);
+                m_Cursor.file = ref.GetMatch(lines[i], 2) + ref.GetMatch(lines[i], 3);
+                ref.GetMatch(lines[i], 4).ToLong(&m_Cursor.line);
+                m_Cursor.changed = true;
                 m_ProgramIsStopped = true;
-                if (m_pDisassembly && m_pDisassembly->IsShown())
-                {
-                    long int addrL;
-                    m_StopAddress.ToLong(&addrL, 16);
-                    m_pDisassembly->SetActiveAddress(addrL);
-                }
-                if (m_pCPURegisters && m_pCPURegisters->IsShown())
-                    QueueCommand(new CdbCmd_InfoRegisters(this, m_pCPURegisters));
+                NotifyCursorChanged();
             }
         }
-
-//        // log GDB's version
-//        if (lines[i].StartsWith(_T("GNU gdb")))
-//        {
-//            // it's the gdb banner. Just display the version and "eat" the rest
-//            m_pDBG->Log(_("Debugger name and version: ") + lines[i]);
-//            break;
-//        }
-//
-//        // Is the program running?
-//        else if (lines[i].StartsWith(_T("Starting program:")))
-//            m_ProgramIsStopped = false;
-//
-//        // Is the program exited?
-//        else if (lines[i].StartsWith(_T("Program exited")))
-//        {
-//            m_ProgramIsStopped = true;
-//            m_pDBG->Log(lines[i]);
-//            QueueCommand(new DebuggerCmd(this, _T("quit")));
-//        }
-//
-//        // no debug symbols?
-//        else if (lines[i].Contains(_T("(no debugging symbols found)")))
-//        {
-//            m_pDBG->Log(lines[i]);
-//        }
-//
-//        // signal
-//        else if (lines[i].StartsWith(_T("Program received signal")))
-//        {
-//            Log(lines[i]);
-//            if (wxMessageBox(wxString::Format(_("%s\nDo you want to view the backtrace?"), lines[i].c_str()), _("Question"), wxICON_QUESTION | wxYES_NO) == wxYES)
-//            {
-//                Backtrace();
-//            }
-//        }
-//
-//        // cursor change
-//        else if (lines[i].StartsWith(g_EscapeChars)) // ->->
-//        {
-//            //  breakpoint
-//            wxRegEx reSource;
-//			if (!reSource.IsValid())
-//			#ifdef __WXMSW__
-//				reSource.Compile(_T("([A-Za-z]:)([ A-Za-z0-9_/\\.~-]*):([0-9]*):[0-9]*:[begmidl]+:(0x[0-9A-Za-z]*)"));
-//			#else
-//				reSource.Compile(_T("([ A-Za-z0-9_/\\.~-]*):([0-9]*):[0-9]*:[begmidl]:(0x[0-9A-Za-z]*)"));
-//			#endif
-//			if ( reSource.Matches(buffer) )
-//			{
-//                m_ProgramIsStopped = true;
-//			#ifdef __WXMSW__
-//				wxString file = reSource.GetMatch(buffer, 1) + reSource.GetMatch(buffer, 2);
-//				wxString lineStr = reSource.GetMatch(buffer, 3);
-//				wxString addr = reSource.GetMatch(buffer, 4);
-//            #else
-//				wxString file = reSource.GetMatch(buffer, 1);
-//				wxString lineStr = reSource.GetMatch(buffer, 2);
-//				wxString addr = reSource.GetMatch(buffer, 3);
-//            #endif
-//                if (m_pDisassembly && m_pDisassembly->IsShown())
-//                {
-//                    long int addrL;
-//                    addr.ToLong(&addrL, 16);
-//                    m_pDisassembly->SetActiveAddress(addrL);
-//                    QueueCommand(new CdbCmd_InfoRegisters(this, m_pDisassembly));
-//                }
-//				lineStr.ToLong(&m_StopLine);
-//				m_StopFile = file;
-//                m_CursorChanged = true;
-//			}
-//        }
     }
     buffer.Clear();
 }
