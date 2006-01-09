@@ -42,6 +42,9 @@
 #include "cbplugin.h"
 #include "cbeditorprintout.h"
 
+
+const wxString EDITOR_MODIFIED(_T("*"));
+
 #define BOOKMARK_MARKER		0
 #define BOOKMARK_STYLE 		wxSCI_MARK_ARROW
 

@@ -1,8 +1,6 @@
 #ifndef EDITOR_H
 #define EDITOR_H
 
-#define EDITOR_MODIFIED             _T("*")
-
 #include <wx/wxscintilla.h>
 #include <wx/hashmap.h>
 #include <wx/datetime.h>
@@ -10,6 +8,8 @@
 #include "settings.h"
 #include "editorbase.h"
 #include "printing_types.h"
+
+extern const wxString EDITOR_MODIFIED;
 
 // forward decls
 struct cbEditorInternalData; // this is the private data struct used by the editor.
