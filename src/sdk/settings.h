@@ -87,7 +87,11 @@ from DLLs. Instead, we build "sdk" as a static library
 #define RESOURCE_FILES_FILTER       _("Resource files (*.xrc;*.rc)|*.xrc;*.rc")
 #define ALL_KNOWN_FILES_FILTER      _("All known files|*.workspace;*.cbp;*.c;*.cpp;*.cc;*.cxx;*.h;*.hpp;*.hh;*.hxx;*.xrc;*.rc")
 
+#ifdef __WXMSW__
 #define ALL_FILES_FILTER            _("All files (*.*)|*.*")
+#else
+#define ALL_FILES_FILTER            _("All files (*)|*")
+#endif
 
 #define SOURCE_FILES_DIALOG_FILTER  wxString(WORKSPACES_FILES_FILTER) + _T("|") + \
 									         CODEBLOCKS_FILES_FILTER + _T("|") + \
