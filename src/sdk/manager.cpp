@@ -77,6 +77,10 @@ Manager* Manager::Get(wxFrame *appWindow)
     return &instance;
 }
 
+void Manager::PrepareForShutdown()
+{
+    appShuttingDown = true;
+}
 
 void Manager::Shutdown()
 {

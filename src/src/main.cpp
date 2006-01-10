@@ -603,8 +603,8 @@ void MainFrame::CreateMenubar()
 	m_HelpPluginsMenu = pluginsM ? pluginsM : new wxMenu();
 
 	// core modules: create menus
-	PRJMAN()->CreateMenu(mbar);
-	EDMAN()->CreateMenu(mbar);
+	Manager::Get()->GetProjectManager()->CreateMenu(mbar);
+	Manager::Get()->GetEditorManager()->CreateMenu(mbar);
 	Manager::Get()->GetMessageManager()->CreateMenu(mbar);
 
 	// ask all plugins to rebuild their menus
@@ -1066,10 +1066,10 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
             // fallthrough
         case ftMSVSWorkspace:
             // verify that it's not the same as the one already open
-            if (filename != PRJMAN()->GetWorkspace()->GetFilename() &&
+            if (filename != Manager::Get()->GetProjectManager()->GetWorkspace()->GetFilename() &&
                 DoCloseCurrentWorkspace())
             {
-                return PRJMAN()->LoadWorkspace(filename);
+                return Manager::Get()->GetProjectManager()->LoadWorkspace(filename);
                 AddToRecentProjectsHistory(filename);
             }
             else
@@ -1119,7 +1119,7 @@ bool MainFrame::DoOpenProject(const wxString& filename, bool addToHistory)
         return false;
     }
 
-    cbProject* prj = PRJMAN()->LoadProject(filename);
+    cbProject* prj = Manager::Get()->GetProjectManager()->LoadProject(filename);
     if (prj)
     {
 		if (addToHistory)
@@ -1131,7 +1131,7 @@ bool MainFrame::DoOpenProject(const wxString& filename, bool addToHistory)
 
 bool MainFrame::DoOpenFile(const wxString& filename, bool addToHistory)
 {
-    if (EDMAN()->Open(filename))
+    if (Manager::Get()->GetEditorManager()->Open(filename))
     {
 		if (addToHistory)
 			AddToRecentFilesHistory(filename);
@@ -1142,7 +1142,7 @@ bool MainFrame::DoOpenFile(const wxString& filename, bool addToHistory)
 
 bool MainFrame::DoCloseCurrentWorkspace()
 {
-    return PRJMAN()->CloseWorkspace();
+    return Manager::Get()->GetProjectManager()->CloseWorkspace();
 }
 
 void MainFrame::DoCreateStatusBar()
@@ -1161,7 +1161,7 @@ void MainFrame::DoUpdateStatusBar()
 #if wxUSE_STATUSBAR
     if (!GetStatusBar())
         return;
-    cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
     {
         int pos = ed->GetControl()->GetCurrentPos();
@@ -1255,7 +1255,7 @@ void MainFrame::DoUpdateLayout()
 
 void MainFrame::DoUpdateAppTitle()
 {
-	EditorBase* ed = EDMAN() ? EDMAN()->GetActiveEditor() : 0L;
+	EditorBase* ed = Manager::Get()->GetEditorManager() ? Manager::Get()->GetEditorManager()->GetActiveEditor() : 0L;
 	cbProject* prj = 0;
 	if(ed && ed->IsBuiltinEditor())
 	{
@@ -1264,7 +1264,7 @@ void MainFrame::DoUpdateAppTitle()
             prj = prjf->GetParentProject();
 	}
 	else
-        prj = PRJMAN() ? PRJMAN()->GetActiveProject() : 0L;
+        prj = Manager::Get()->GetProjectManager() ? Manager::Get()->GetProjectManager()->GetActiveProject() : 0L;
 	wxString projname;
 	wxString edname;
 	wxString fulltitle;
@@ -1272,7 +1272,7 @@ void MainFrame::DoUpdateAppTitle()
 	{
         if(prj)
         {
-            if(PRJMAN()->GetActiveProject() == prj)
+            if(Manager::Get()->GetProjectManager()->GetActiveProject() == prj)
                 projname = wxString(_T(" [")) + prj->GetTitle() + _T("]");
             else
                 projname = wxString(_T(" (")) + prj->GetTitle() + _T(")");
@@ -1297,12 +1297,12 @@ void MainFrame::ShowHideStartPage(bool forceHasProject)
     if(Manager::isappShuttingDown())
         return;
     bool show = !forceHasProject &&
-                PRJMAN()->GetProjects()->GetCount() == 0 &&
+                Manager::Get()->GetProjectManager()->GetProjects()->GetCount() == 0 &&
                 Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/start_here_page"), true);
 
-    EditorBase* sh = EDMAN()->GetEditor(g_StartHereTitle);
+    EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
     if (show && !sh)
-        sh = new StartHerePage(this, EDMAN()->GetNotebook());
+        sh = new StartHerePage(this, Manager::Get()->GetEditorManager()->GetNotebook());
     else if (!show && sh)
         sh->Destroy();
 }
@@ -1337,7 +1337,7 @@ void MainFrame::OnStartHereLink(wxCommandEvent& event)
             {
                 // invalid file, update start here page
                 hist->RemoveFileFromHistory(count);
-                EditorBase* sh = EDMAN()->GetEditor(g_StartHereTitle);
+                EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
                 if (sh)
                     ((StartHerePage*)sh)->Reload();
             }
@@ -1347,7 +1347,7 @@ void MainFrame::OnStartHereLink(wxCommandEvent& event)
 
 void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
 {
-    EditorBase* sh = EDMAN()->GetEditor(g_StartHereTitle);
+    EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
 	if (!sh)
         return;
 
@@ -1585,10 +1585,10 @@ void MainFrame::OnHelpPluginMenu(wxCommandEvent& event)
 
 void MainFrame::OnFileNewEmpty(wxCommandEvent& event)
 {
-	cbProject* project = PRJMAN()->GetActiveProject();
+	cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
 	if (project)
         wxSetWorkingDirectory(project->GetBasePath());
-    cbEditor* ed = EDMAN()->New();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->New();
     if(ed)
     {
         AddToRecentFilesHistory(ed->GetFilename());
@@ -1602,16 +1602,16 @@ void MainFrame::OnFileNewEmpty(wxCommandEvent& event)
 					wxYES_NO | wxICON_QUESTION) == wxYES)
 	{
         wxArrayInt targets;
-		if (PRJMAN()->AddFileToProject(ed->GetFilename(), project, targets) != 0)
+		if (Manager::Get()->GetProjectManager()->AddFileToProject(ed->GetFilename(), project, targets) != 0)
 		{
             ProjectFile* pf = project->GetFileByFilename(ed->GetFilename(), false);
 			ed->SetProjectFile(pf);
-			PRJMAN()->RebuildTree();
+			Manager::Get()->GetProjectManager()->RebuildTree();
 		}
 	}
 	// verify that the open files are still in sync
 	// the new file might have overwritten an existing one)
-	EDMAN()->CheckForExternallyModifiedFiles();
+	Manager::Get()->GetEditorManager()->CheckForExternallyModifiedFiles();
 }
 
 bool MainFrame::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& files)
@@ -1668,7 +1668,7 @@ void MainFrame::OnFileReopenProject(wxCommandEvent& event)
     {
         m_ProjectsHistory.RemoveFileFromHistory(id);
         // update start here page
-        EditorBase* sh = EDMAN()->GetEditor(g_StartHereTitle);
+        EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
         if (sh)
             ((StartHerePage*)sh)->Reload();
     }
@@ -1683,7 +1683,7 @@ void MainFrame::OnFileOpenRecentProjectClearHistory(wxCommandEvent& event)
     Manager::Get()->GetConfigManager(_T("app"))->DeleteSubPath(_T("/recent_projects"));
 
     // update start here page
-    EditorBase* sh = EDMAN()->GetEditor(g_StartHereTitle);
+    EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
 	if (sh)
         ((StartHerePage*)sh)->Reload();
 }
@@ -1696,7 +1696,7 @@ void MainFrame::OnFileReopen(wxCommandEvent& event)
     {
         m_FilesHistory.RemoveFileFromHistory(id);
         // update start here page
-        EditorBase* sh = EDMAN()->GetEditor(g_StartHereTitle);
+        EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
         if (sh)
             ((StartHerePage*)sh)->Reload();
     }
@@ -1711,17 +1711,17 @@ void MainFrame::OnFileOpenRecentClearHistory(wxCommandEvent& event)
     Manager::Get()->GetConfigManager(_T("app"))->DeleteSubPath(_T("/recent_files"));
 
     // update start here page
-    EditorBase* sh = EDMAN()->GetEditor(g_StartHereTitle);
+    EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
     if (sh)
         ((StartHerePage*)sh)->Reload();
 }
 
 void MainFrame::OnFileSave(wxCommandEvent& event)
 {
-    if (!EDMAN()->SaveActive())
+    if (!Manager::Get()->GetEditorManager()->SaveActive())
     {
         wxString msg;
-        msg.Printf(_("File %s could not be saved..."), EDMAN()->GetActiveEditor()->GetFilename().c_str());
+        msg.Printf(_("File %s could not be saved..."), Manager::Get()->GetEditorManager()->GetActiveEditor()->GetFilename().c_str());
         wxMessageBox(msg, _("Error saving file"));
     }
     DoUpdateStatusBar();
@@ -1729,10 +1729,10 @@ void MainFrame::OnFileSave(wxCommandEvent& event)
 
 void MainFrame::OnFileSaveAs(wxCommandEvent& event)
 {
-    if (!EDMAN()->SaveActiveAs())
+    if (!Manager::Get()->GetEditorManager()->SaveActiveAs())
     {
         wxString msg;
-        msg.Printf(_("File %s could not be saved..."), EDMAN()->GetActiveEditor()->GetFilename().c_str());
+        msg.Printf(_("File %s could not be saved..."), Manager::Get()->GetEditorManager()->GetActiveEditor()->GetFilename().c_str());
         wxMessageBox(msg, _("Error saving file"));
     }
     DoUpdateStatusBar();
@@ -1740,49 +1740,49 @@ void MainFrame::OnFileSaveAs(wxCommandEvent& event)
 
 void MainFrame::OnFileSaveAllFiles(wxCommandEvent& event)
 {
-    EDMAN()->SaveAll();
+    Manager::Get()->GetEditorManager()->SaveAll();
     DoUpdateStatusBar();
 }
 
 void MainFrame::OnFileSaveWorkspace(wxCommandEvent& event)
 {
-    if (PRJMAN()->SaveWorkspace())
-        AddToRecentProjectsHistory(PRJMAN()->GetWorkspace()->GetFilename());
+    if (Manager::Get()->GetProjectManager()->SaveWorkspace())
+        AddToRecentProjectsHistory(Manager::Get()->GetProjectManager()->GetWorkspace()->GetFilename());
 }
 
 void MainFrame::OnFileSaveWorkspaceAs(wxCommandEvent& event)
 {
-    if (PRJMAN()->SaveWorkspaceAs(_T("")))
-        AddToRecentProjectsHistory(PRJMAN()->GetWorkspace()->GetFilename());
+    if (Manager::Get()->GetProjectManager()->SaveWorkspaceAs(_T("")))
+        AddToRecentProjectsHistory(Manager::Get()->GetProjectManager()->GetWorkspace()->GetFilename());
 }
 
 void MainFrame::OnFileCloseWorkspace(wxCommandEvent& event)
 {
-    PRJMAN()->CloseWorkspace();
+    Manager::Get()->GetProjectManager()->CloseWorkspace();
 }
 
 void MainFrame::OnFileClose(wxCommandEvent& WXUNUSED(event))
 {
-    EDMAN()->CloseActive();
+    Manager::Get()->GetEditorManager()->CloseActive();
     DoUpdateStatusBar();
     Refresh();
 }
 
 void MainFrame::OnFileCloseAll(wxCommandEvent& WXUNUSED(event))
 {
-    EDMAN()->CloseAll();
+    Manager::Get()->GetEditorManager()->CloseAll();
     DoUpdateStatusBar();
 }
 
 void MainFrame::OnFileNext(wxCommandEvent& event)
 {
-    EDMAN()->ActivateNext();
+    Manager::Get()->GetEditorManager()->ActivateNext();
     DoUpdateStatusBar();
 }
 
 void MainFrame::OnFilePrev(wxCommandEvent& event)
 {
-    EDMAN()->ActivatePrevious();
+    Manager::Get()->GetEditorManager()->ActivatePrevious();
     DoUpdateStatusBar();
 }
 
@@ -1790,7 +1790,7 @@ void MainFrame::OnFilePrint(wxCommandEvent& event)
 {
     PrintDialog dlg(this);
     if (dlg.ShowModal() == wxID_OK)
-        EDMAN()->Print(dlg.GetPrintScope(), dlg.GetPrintColorMode());
+        Manager::Get()->GetEditorManager()->Print(dlg.GetPrintScope(), dlg.GetPrintColorMode());
 }
 
 void MainFrame::OnFileRunScript(wxCommandEvent& WXUNUSED(event))
@@ -1843,6 +1843,8 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
         return;
     }
 
+    Manager::PrepareForShutdown();
+
     if (!DoCloseCurrentWorkspace())
     {
         event.Veto();
@@ -1871,76 +1873,76 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
 
 void MainFrame::OnEditSwapHeaderSource(wxCommandEvent& event)
 {
-    EDMAN()->SwapActiveHeaderSource();
+    Manager::Get()->GetEditorManager()->SwapActiveHeaderSource();
     DoUpdateStatusBar();
 }
 
 void MainFrame::OnEditGotoMatchingBrace(wxCommandEvent& event)
 {
-    cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
 		ed->GotoMatchingBrace();
 }
 
 void MainFrame::OnEditBookmarksToggle(wxCommandEvent& event)
 {
-    cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
 		ed->ToggleBookmark();
 }
 
 void MainFrame::OnEditBookmarksNext(wxCommandEvent& event)
 {
-    cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
 		ed->GotoNextBookmark();
 }
 
 void MainFrame::OnEditBookmarksPrevious(wxCommandEvent& event)
 {
-    cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
 		ed->GotoPreviousBookmark();
 }
 
 void MainFrame::OnEditUndo(wxCommandEvent& event)
 {
-    cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
         ed->GetControl()->Undo();
 }
 
 void MainFrame::OnEditRedo(wxCommandEvent& event)
 {
-    cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
         ed->GetControl()->Redo();
 }
 
 void MainFrame::OnEditCopy(wxCommandEvent& event)
 {
-    cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
         ed->GetControl()->Copy();
 }
 
 void MainFrame::OnEditCut(wxCommandEvent& event)
 {
-    cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
         ed->GetControl()->Cut();
 }
 
 void MainFrame::OnEditPaste(wxCommandEvent& event)
 {
-    cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
         ed->GetControl()->Paste();
 }
 
 void MainFrame::OnEditSelectAll(wxCommandEvent& event)
 {
-    cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
         ed->GetControl()->SelectAll();
 }
@@ -1951,7 +1953,7 @@ void MainFrame::OnEditSelectAll(wxCommandEvent& event)
  */
 void MainFrame::OnEditCommentSelected(wxCommandEvent& event)
 {
-    cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 	if( ed )
 	{
         ed->GetControl()->BeginUndoAction();
@@ -1995,7 +1997,7 @@ void MainFrame::OnEditCommentSelected(wxCommandEvent& event)
 /* See above (OnEditCommentSelected) for details. */
 void MainFrame::OnEditUncommentSelected(wxCommandEvent& event)
 {
-    cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 	if( ed )
 	{
         ed->GetControl()->BeginUndoAction();
@@ -2048,7 +2050,7 @@ void MainFrame::OnEditUncommentSelected(wxCommandEvent& event)
 
 void MainFrame::OnEditToggleCommentSelected(wxCommandEvent& event)
 {
-    cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 	if( ed )
 	{
         ed->GetControl()->BeginUndoAction();
@@ -2107,7 +2109,7 @@ void MainFrame::OnEditToggleCommentSelected(wxCommandEvent& event)
 
 void MainFrame::OnEditAutoComplete(wxCommandEvent& event)
 {
-    cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
 		ed->AutoComplete();
 }
@@ -2139,49 +2141,49 @@ void MainFrame::OnEditHighlightMode(wxCommandEvent& event)
 
 void MainFrame::OnEditFoldAll(wxCommandEvent& event)
 {
-    cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
 		ed->FoldAll();
 }
 
 void MainFrame::OnEditUnfoldAll(wxCommandEvent& event)
 {
-    cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
 		ed->UnfoldAll();
 }
 
 void MainFrame::OnEditToggleAllFolds(wxCommandEvent& event)
 {
-    cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
 		ed->ToggleAllFolds();
 }
 
 void MainFrame::OnEditFoldBlock(wxCommandEvent& event)
 {
-    cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
 		ed->FoldBlockFromLine();
 }
 
 void MainFrame::OnEditUnfoldBlock(wxCommandEvent& event)
 {
-    cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
 		ed->UnfoldBlockFromLine();
 }
 
 void MainFrame::OnEditToggleFoldBlock(wxCommandEvent& event)
 {
-    cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
 		ed->ToggleFoldBlockFromLine();
 }
 
 void MainFrame::OnEditEOLMode(wxCommandEvent& event)
 {
-    cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
     {
         int mode = -1;
@@ -2268,25 +2270,25 @@ void MainFrame::OnViewLayoutDelete(wxCommandEvent& event)
 
 void MainFrame::OnSearchFind(wxCommandEvent& event)
 {
-	EDMAN()->ShowFindDialog(false, event.GetId() == idSearchFindInFiles);
+	Manager::Get()->GetEditorManager()->ShowFindDialog(false, event.GetId() == idSearchFindInFiles);
 }
 
 void MainFrame::OnSearchFindNext(wxCommandEvent& event)
 {
 	if (event.GetId() == idSearchFindPrevious)
-		EDMAN()->FindNext(false);
+		Manager::Get()->GetEditorManager()->FindNext(false);
 	else
-		EDMAN()->FindNext(true);
+		Manager::Get()->GetEditorManager()->FindNext(true);
 }
 
 void MainFrame::OnSearchReplace(wxCommandEvent& event)
 {
-	EDMAN()->ShowFindDialog(true);
+	Manager::Get()->GetEditorManager()->ShowFindDialog(true);
 }
 
 void MainFrame::OnSearchGotoLine(wxCommandEvent& event)
 {
-    cbEditor* ed = EDMAN()->GetBuiltinActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 	if (!ed)
 		return;
 
@@ -2314,10 +2316,10 @@ void MainFrame::OnSearchGotoLine(wxCommandEvent& event)
 
 void MainFrame::OnProjectNewEmpty(wxCommandEvent& event)
 {
-    cbProject* prj = PRJMAN()->NewProject();
+    cbProject* prj = Manager::Get()->GetProjectManager()->NewProject();
 	// verify that the open files are still in sync
 	// the new file might have overwritten an existing one)
-	EDMAN()->CheckForExternallyModifiedFiles();
+	Manager::Get()->GetEditorManager()->CheckForExternallyModifiedFiles();
 	if(prj)
 	    AddToRecentProjectsHistory(prj->GetFilename());
 }
@@ -2327,7 +2329,7 @@ void MainFrame::OnProjectNew(wxCommandEvent& event)
     cbProject* prj = TemplateManager::Get()->NewProject();
 	// verify that the open files are still in sync
 	// the new file might have overwritten an existing one)
-	EDMAN()->CheckForExternallyModifiedFiles();
+	Manager::Get()->GetEditorManager()->CheckForExternallyModifiedFiles();
 	if(prj)
 	{
 	    prj->Save();
@@ -2357,28 +2359,28 @@ void MainFrame::OnProjectOpen(wxCommandEvent& event)
 
 void MainFrame::OnProjectSaveProject(wxCommandEvent& event)
 {
-    if (PRJMAN()->SaveActiveProject() ||
-        PRJMAN()->SaveActiveProjectAs())
-        AddToRecentProjectsHistory(PRJMAN()->GetActiveProject()->GetFilename());
+    if (Manager::Get()->GetProjectManager()->SaveActiveProject() ||
+        Manager::Get()->GetProjectManager()->SaveActiveProjectAs())
+        AddToRecentProjectsHistory(Manager::Get()->GetProjectManager()->GetActiveProject()->GetFilename());
     DoUpdateStatusBar();
 }
 
 void MainFrame::OnProjectSaveProjectAs(wxCommandEvent& event)
 {
-    if (PRJMAN()->SaveActiveProjectAs())
-        AddToRecentProjectsHistory(PRJMAN()->GetActiveProject()->GetFilename());
+    if (Manager::Get()->GetProjectManager()->SaveActiveProjectAs())
+        AddToRecentProjectsHistory(Manager::Get()->GetProjectManager()->GetActiveProject()->GetFilename());
     DoUpdateStatusBar();
 }
 
 void MainFrame::OnProjectSaveAllProjects(wxCommandEvent& event)
 {
-    PRJMAN()->SaveAllProjects();
+    Manager::Get()->GetProjectManager()->SaveAllProjects();
     DoUpdateStatusBar();
 }
 
 void MainFrame::OnProjectSaveTemplate(wxCommandEvent& event)
 {
-    TemplateManager::Get()->SaveUserTemplate(PRJMAN()->GetActiveProject());
+    TemplateManager::Get()->SaveUserTemplate(Manager::Get()->GetProjectManager()->GetActiveProject());
 }
 
 void MainFrame::OnProjectCloseProject(wxCommandEvent& event)
@@ -2390,7 +2392,7 @@ void MainFrame::OnProjectCloseProject(wxCommandEvent& event)
         wxBell();
         return;
     }
-    PRJMAN()->CloseActiveProject();
+    Manager::Get()->GetProjectManager()->CloseActiveProject();
     DoUpdateStatusBar();
 }
 
@@ -2401,7 +2403,7 @@ void MainFrame::OnProjectCloseAllProjects(wxCommandEvent& event)
         wxBell();
         return;
     }
-    PRJMAN()->CloseWorkspace();
+    Manager::Get()->GetProjectManager()->CloseWorkspace();
     DoUpdateStatusBar();
 }
 
@@ -2449,8 +2451,8 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
         event.Skip();
         return;
     }
-    EditorBase* ed = EDMAN() ? EDMAN()->GetActiveEditor() : 0;
-    cbProject* prj = PRJMAN() ? PRJMAN()->GetActiveProject() : 0L;
+    EditorBase* ed = Manager::Get()->GetEditorManager() ? Manager::Get()->GetEditorManager()->GetActiveEditor() : 0;
+    cbProject* prj = Manager::Get()->GetProjectManager() ? Manager::Get()->GetProjectManager()->GetActiveProject() : 0L;
     wxMenuBar* mbar = GetMenuBar();
 
     bool canCloseProject = (ProjectManager::CanShutdown() && EditorManager::CanShutdown());
@@ -2466,15 +2468,15 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idFileSaveAllFiles, ed);
     mbar->Enable(idFileSaveProject, prj && prj->GetModified() && canCloseProject);
     mbar->Enable(idFileSaveProjectAs, prj && canCloseProject);
-    mbar->Enable(idFileSaveWorkspace, PRJMAN() && canCloseProject);
-    mbar->Enable(idFileSaveWorkspaceAs, PRJMAN() && canCloseProject);
-    mbar->Enable(idFileCloseWorkspace, PRJMAN() && canCloseProject);
-    mbar->Enable(idFilePrint, EDMAN() && EDMAN()->GetBuiltinActiveEditor());
+    mbar->Enable(idFileSaveWorkspace, Manager::Get()->GetProjectManager() && canCloseProject);
+    mbar->Enable(idFileSaveWorkspaceAs, Manager::Get()->GetProjectManager() && canCloseProject);
+    mbar->Enable(idFileCloseWorkspace, Manager::Get()->GetProjectManager() && canCloseProject);
+    mbar->Enable(idFilePrint, Manager::Get()->GetEditorManager() && Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor());
 
 	if (m_pToolbar)
 	{
 		m_pToolbar->EnableTool(idFileSave, ed && ed->GetModified());
-        m_pToolbar->EnableTool(idFilePrint, EDMAN() && EDMAN()->GetBuiltinActiveEditor());
+        m_pToolbar->EnableTool(idFilePrint, Manager::Get()->GetEditorManager() && Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor());
 	}
 
 	event.Skip();
@@ -2495,8 +2497,8 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
     bool canPaste = false;
     int eolMode = -1;
 
-    if(EDMAN() && !Manager::isappShuttingDown())
-        ed = EDMAN()->GetBuiltinActiveEditor();
+    if(Manager::Get()->GetEditorManager() && !Manager::isappShuttingDown())
+        ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 
     wxMenuBar* mbar = GetMenuBar();
 
@@ -2553,7 +2555,7 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
         return;
     }
     wxMenuBar* mbar = GetMenuBar();
-    cbEditor* ed = EDMAN() ? EDMAN()->GetBuiltinActiveEditor() : 0;
+    cbEditor* ed = Manager::Get()->GetEditorManager() ? Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor() : 0;
     bool manVis = m_LayoutManager.GetPane(Manager::Get()->GetProjectManager()->GetNotebook()).IsShown();
 
     mbar->Check(idViewManager, manVis);
@@ -2593,7 +2595,7 @@ void MainFrame::OnSearchMenuUpdateUI(wxUpdateUIEvent& event)
         event.Skip();
         return;
     }
-    cbEditor* ed = EDMAN() ? EDMAN()->GetBuiltinEditor(EDMAN()->GetActiveEditor()) : 0;
+    cbEditor* ed = Manager::Get()->GetEditorManager() ? Manager::Get()->GetEditorManager()->GetBuiltinEditor(Manager::Get()->GetEditorManager()->GetActiveEditor()) : 0;
     wxMenuBar* mbar = GetMenuBar();
 
     // 'Find' is always enabled for find-in-files
@@ -2618,7 +2620,7 @@ void MainFrame::OnProjectMenuUpdateUI(wxUpdateUIEvent& event)
         event.Skip();
         return;
     }
-    cbProject* prj = PRJMAN() ? PRJMAN()->GetActiveProject() : 0L;
+    cbProject* prj = Manager::Get()->GetProjectManager() ? Manager::Get()->GetProjectManager()->GetActiveProject() : 0L;
     wxMenuBar* mbar = GetMenuBar();
 
     bool canCloseProject = (ProjectManager::CanShutdown() && EditorManager::CanShutdown());
@@ -2639,7 +2641,7 @@ void MainFrame::OnEditorUpdateUI(CodeBlocksEvent& event)
         event.Skip();
         return;
     }
-	if (EDMAN() && event.GetEditor() == EDMAN()->GetActiveEditor())
+	if (Manager::Get()->GetEditorManager() && event.GetEditor() == Manager::Get()->GetEditorManager()->GetActiveEditor())
 	{
 		DoUpdateStatusBar();
 	}
@@ -2654,8 +2656,8 @@ void MainFrame::OnEditorUpdateUI_NB(wxNotebookEvent& event)     //tiwag 050917
 
 void MainFrame::OnToggleOpenFilesTree(wxCommandEvent& event)
 {
-    if (EDMAN()->OpenFilesTreeSupported())
-        EDMAN()->ShowOpenFilesTree(!EDMAN()->IsOpenFilesTreeVisible());
+    if (Manager::Get()->GetEditorManager()->OpenFilesTreeSupported())
+        Manager::Get()->GetEditorManager()->ShowOpenFilesTree(!Manager::Get()->GetEditorManager()->IsOpenFilesTreeVisible());
 }
 
 void MainFrame::OnToggleBar(wxCommandEvent& event)
@@ -2706,7 +2708,7 @@ void MainFrame::OnToggleStatusBar(wxCommandEvent& event)
 
 void MainFrame::OnFocusEditor(wxCommandEvent& event)
 {
-    cbEditor* ed = EDMAN() ? EDMAN()->GetBuiltinEditor(EDMAN()->GetActiveEditor()) : 0;
+    cbEditor* ed = Manager::Get()->GetEditorManager() ? Manager::Get()->GetEditorManager()->GetBuiltinEditor(Manager::Get()->GetEditorManager()->GetActiveEditor()) : 0;
     if (ed)
         ed->GetControl()->SetFocus();
 }
@@ -2806,7 +2808,7 @@ void MainFrame::OnGlobalUserVars(wxCommandEvent& event)
 
 void MainFrame::OnSettingsEditor(wxCommandEvent& event)
 {
-	EDMAN()->Configure();
+	Manager::Get()->GetEditorManager()->Configure();
 }
 
 void MainFrame::OnSettingsPlugins(wxCommandEvent& event)
@@ -2873,7 +2875,7 @@ void MainFrame::OnPageChanged(wxNotebookEvent& event)
 
 void MainFrame::OnShiftTab(wxCommandEvent& event)
 {
-    cbEditor* ed = EDMAN()->GetBuiltinActiveEditor(); // Must make sure it's cbEditor and not EditorBase
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor(); // Must make sure it's cbEditor and not EditorBase
     if(ed)
         ed->DoUnIndent();
 }

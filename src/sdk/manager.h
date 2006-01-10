@@ -46,6 +46,7 @@ class DLLIMPORT Manager
     ~Manager();
 
 public:
+    static void PrepareForShutdown();
     static void Shutdown();
     bool ProcessEvent(CodeBlocksEvent& event);
 
