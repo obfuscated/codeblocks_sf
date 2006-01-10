@@ -1583,6 +1583,10 @@ void MainFrame::OnFileNewEmpty(wxCommandEvent& event)
 	if (project)
         wxSetWorkingDirectory(project->GetBasePath());
     cbEditor* ed = EDMAN()->New();
+    if(ed)
+    {
+        AddToRecentFilesHistory(ed->GetFilename());
+    }
 
 	if (!ed || !project)
 		return;
