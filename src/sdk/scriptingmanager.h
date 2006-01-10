@@ -2,16 +2,15 @@
 #define SCRIPTING_H
 
 #include "settings.h"
+#include "manager.h"
 #include <wx/intl.h>
 
 class asIScriptEngine;
 
-class DLLIMPORT ScriptingManager
+class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>
 {
+        friend class Mgr<ScriptingManager>;
     public:
-        static ScriptingManager* Get();
-        static void Free();
-
         ~ScriptingManager();
 
         asIScriptEngine* GetEngine(){ return m_pEngine; }

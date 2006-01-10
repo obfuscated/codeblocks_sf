@@ -47,7 +47,6 @@
 #include "filegroupsandmasks.h"
 #include "projectsfilemasksdlg.h"
 #include "projectdepsdlg.h"
-#include "managerproxy.h"
 #include "multiselectdlg.h"
 #include "cbworkspace.h"
 #include "cbeditor.h"
@@ -68,26 +67,6 @@ static const int idOpenWithInternal = wxNewId();
 // static
 bool ProjectManager::s_CanShutdown = true;
 
-ProjectManager* ProjectManager::Get()
-{
-    if(Manager::isappShuttingDown()) // The mother of all sanity checks
-        ProjectManager::Free();
-    else if (!ProjectManagerProxy::Get())
-	{
-		ProjectManagerProxy::Set(new ProjectManager());
-		Manager::Get()->GetMessageManager()->Log(_("ProjectManager initialized"));
-	}
-    return ProjectManagerProxy::Get();
-}
-
-void ProjectManager::Free()
-{
-	if (ProjectManagerProxy::Get())
-	{
-		delete ProjectManagerProxy::Get();
-		ProjectManagerProxy::Set( 0L );
-	}
-}
 
 int ID_ProjectManager = wxNewId();
 int idMenuSetActiveProject = wxNewId();
@@ -227,7 +206,6 @@ ProjectManager::ProjectManager()
     m_pProjects = new ProjectsArray;
     m_pProjects->Clear();
 	// m_pPanel = new wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
-    ProjectManagerProxy::Set(this);
     InitPane();
 
 	m_pFileGroups = new FilesGroupsAndMasks;

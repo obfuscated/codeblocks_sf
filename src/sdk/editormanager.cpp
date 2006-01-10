@@ -50,7 +50,6 @@
 #include "cbproject.h"
 #include "cbeditor.h"
 #include "globals.h"
-#include "managerproxy.h"
 #include "xtra_classes.h"
 #include "sdk_events.h"
 #include "searchresultslog.h"
@@ -150,28 +149,6 @@ struct EditorManagerInternalData
 // *********** End of EditorManagerInternalData **********
 
 
-EditorManager* EditorManager::Get()
-{
-    if(Manager::isappShuttingDown()) // The mother of all sanity checks
-        EditorManager::Free();
-    else
-    if (!EditorManagerProxy::Get())
-	{
-		EditorManagerProxy::Set( new EditorManager() );
-		Manager::Get()->GetMessageManager()->Log(_("EditorManager initialized"));
-	}
-    return EditorManagerProxy::Get();
-}
-
-void EditorManager::Free()
-{
-	if (EditorManagerProxy::Get())
-	{
-		delete EditorManagerProxy::Get();
-		EditorManagerProxy::Set( 0L );
-	}
-}
-
 BEGIN_EVENT_TABLE(EditorManager, wxEvtHandler)
     EVT_APP_STARTUP_DONE(EditorManager::OnAppDoneStartup)
     EVT_APP_START_SHUTDOWN(EditorManager::OnAppStartShutdown)
@@ -207,7 +184,6 @@ EditorManager::EditorManager()
     m_isCheckingForExternallyModifiedFiles(false)
 {
 	SC_CONSTRUCTOR_BEGIN
-	EditorManagerProxy::Set(this);
     m_pData = new EditorManagerInternalData(this);
 
 	m_pNotebook = new wxFlatNotebook(Manager::Get()->GetAppWindow(), ID_NBEditorManager, wxDefaultPosition, wxDefaultSize,  wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);

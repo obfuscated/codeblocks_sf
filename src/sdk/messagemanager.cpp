@@ -37,38 +37,13 @@
 #include "editormanager.h"
 #include "configmanager.h"
 #include "simpletextlog.h"
-#include "managerproxy.h"
 #include <wxFlatNotebook.h>
 
-#define CBYIELD() \
-  {                                                     \
-      wxTheApp->Yield();                                \
-  }
 
 static const int idNB = wxNewId();
 static const int idNB_TabTop = wxNewId();
 static const int idNB_TabBottom = wxNewId();
 
-MessageManager* MessageManager::Get()
-{
-    if(Manager::isappShuttingDown()) // The mother of all sanity checks
-        MessageManager::Free();
-    else if (!MessageManagerProxy::Get())
-	{
-		MessageManagerProxy::Set( new MessageManager() );
-		MessageManagerProxy::Get()->Log(_("MessageManager initialized"));
-	}
-    return MessageManagerProxy::Get();
-}
-
-void MessageManager::Free()
-{
-	if (MessageManagerProxy::Get())
-	{
-		delete MessageManagerProxy::Get();
-		MessageManagerProxy::Set( 0L );
-	}
-}
 
 BEGIN_EVENT_TABLE(MessageManager, wxEvtHandler)
     EVT_MENU(idNB_TabTop, MessageManager::OnTabPosition)
@@ -172,7 +147,7 @@ void MessageManager::Log(const wxChar* msg, ...)
     m_Logs[m_AppLog]->Refresh();
 
 	if(!Manager::isappShuttingDown())
-        CBYIELD();
+        wxTheApp->Yield(true);
 }
 
 void MessageManager::DebugLog(const wxChar* msg, ...)
@@ -196,7 +171,7 @@ void MessageManager::DebugLog(const wxChar* msg, ...)
     m_Logs[m_DebugLog]->Refresh();
 
 	if(!Manager::isappShuttingDown())
-        CBYIELD();
+        wxTheApp->Yield(true);
 }
 
 void MessageManager::DebugLogWarning(const wxChar* msg, ...)
@@ -282,7 +257,7 @@ void MessageManager::Log(int id, const wxChar* msg, ...)
     m_Logs[id]->Refresh();
 
     if(!Manager::isappShuttingDown())
-        CBYIELD();
+        wxTheApp->Yield(true);
 }
 
 void MessageManager::AppendLog(const wxChar* msg, ...)
@@ -298,7 +273,7 @@ void MessageManager::AppendLog(const wxChar* msg, ...)
     m_Logs[m_AppLog]->AddLog(tmp, false);
     m_Logs[m_AppLog]->Refresh();
 	if(!Manager::isappShuttingDown())
-        CBYIELD();
+        wxTheApp->Yield(true);
 }
 
 void MessageManager::AppendLog(int id, const wxChar* msg, ...)
@@ -317,7 +292,7 @@ void MessageManager::AppendLog(int id, const wxChar* msg, ...)
     m_Logs[id]->AddLog(tmp, false);
     m_Logs[id]->Refresh();
 	if(!Manager::isappShuttingDown())
-        CBYIELD();
+        wxTheApp->Yield(true);
 }
 
 // switch to log page

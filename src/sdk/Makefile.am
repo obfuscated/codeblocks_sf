@@ -154,7 +154,6 @@ noinst_HEADERS = Managers/Managers.h \
 				macrosmanager.h \
 				managedthread.h \
 				manager.h \
-				managerproxy.h \
 				menuitemsmanager.h \
 				messagelog.h \
 				messagemanager.h \

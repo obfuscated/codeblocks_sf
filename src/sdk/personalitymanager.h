@@ -1,7 +1,12 @@
 /*
-* This file is part of Code::Blocks Studio, an open-source cross-platform IDE
-* Copyright (C) 2003  Yiannis An. Mandravellos
+* This file is part of Code::Blocks Studio, and licensed under the terms of the
+* GNU General Public License version 2, or (at your option) any later version.
 *
+* Contact e-mail: Yiannis An. Mandravellos <mandrav@codeblocks.org>
+* Program URL   : http://www.codeblocks.org
+*
+* $Id$
+* $Date$
 */
 
 #ifndef PERSONALITYMANAGER_H
@@ -27,34 +32,23 @@
   * use the command-line switch "--personality". If "--personality=ask" is passed
   * in the command line, a selection box will be displayed for the user to choose
   * the desired personality.
-  *
-  * @note: This class must be initialized *after* OldConfigManager and MessageManager...
   */
-class DLLIMPORT PersonalityManager
+class DLLIMPORT PersonalityManager : public Mgr<PersonalityManager>
 {
+    static wxString pers;
+
+    PersonalityManager();
+
 	public:
+        friend class Mgr<PersonalityManager>;
         friend class Manager; // give Manager access to our private members
-        
+
         /// Use this once, on program startup to set the working personality
         void SetPersonality(const wxString& personality, bool createIfNotExist = false);
         /// Get the working personality string
-        const wxString& GetPersonality();
+        const wxString GetPersonality();
         /// Get a list of all the known personalities
-        const wxArrayString& GetPersonalitiesList();
-        /// Get the root configuration for personalities
-        const wxString& GetPersonalitiesRoot();
-        /// Get the current personality's configuration key (includes root key)
-        const wxString& GetPersonalityKey();
-	protected:
-        void ReadPersonalities();
-
-        wxArrayString m_Personalities;
-        int m_CurrentPersonalityIdx; // index to array
-	private:
-        static PersonalityManager* Get();
-		static void Free();
-		PersonalityManager();
-		~PersonalityManager();
+        const wxArrayString GetPersonalitiesList();
 };
 
 #endif // PERSONALITYMANAGER_H

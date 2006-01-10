@@ -24,9 +24,10 @@ class wxMenuBar;
 class wxMenu;
 class wxMenuItem;
 
-class DLLIMPORT ToolsManager : wxEvtHandler
+class DLLIMPORT ToolsManager : public Mgr<ToolsManager>, public wxEvtHandler
 {
 	public:
+        friend class Mgr<ToolsManager>;
         friend class Manager; // give Manager access to our private members
 		void CreateMenu(wxMenuBar* menuBar);
 		void ReleaseMenu(wxMenuBar* menuBar);
@@ -47,19 +48,17 @@ class DLLIMPORT ToolsManager : wxEvtHandler
 		void OnConfigure(wxCommandEvent& event);
 	protected:
 	private:
-        static ToolsManager* Get();
-		static void Free();
 		void DoRemoveTool(ToolsList::Node* node);
 		ToolsManager();
 		~ToolsManager();
-		
+
 		ToolsList m_Tools;
 		MenuItemsManager m_ItemsManager;
 		wxMenu* m_Menu;
-		
+
 		DECLARE_EVENT_TABLE()
 		DECLARE_SANITY_CHECK
-		
+
 };
 
 #endif // TOOLSMANAGER_H

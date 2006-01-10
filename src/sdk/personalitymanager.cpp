@@ -26,106 +26,37 @@
 #include "sdk_precomp.h"
 #include "personalitymanager.h"
 #include "manager.h"
-#include "managerproxy.h"
-#include "messagemanager.h"
 #include "configmanager.h"
 
 #include <wx/intl.h>
-
-PersonalityManager* PersonalityManager::Get()
-{
-    if(Manager::isappShuttingDown()) // The mother of all sanity checks
-        PersonalityManager::Free();
-    else if (!PersonalityManagerProxy::Get())
-        PersonalityManagerProxy::Set( new PersonalityManager() );
-    return PersonalityManagerProxy::Get();
-}
-
-void PersonalityManager::Free()
-{
-	if (PersonalityManagerProxy::Get())
-	{
-		delete PersonalityManagerProxy::Get();
-		PersonalityManagerProxy::Set( 0L );
-	}
-}
+#include <wx/dir.h>
+#include <wx/arrstr.h>
 
 PersonalityManager::PersonalityManager()
-    : m_CurrentPersonalityIdx(0)
 {
-	//ctor
-	ReadPersonalities();
-}
-
-PersonalityManager::~PersonalityManager()
-{
-	//dtor
-}
-
-void PersonalityManager::ReadPersonalities()
-{
-    m_Personalities.Clear();
-    m_Personalities.Add(_("Full IDE (default)"));
-
-//	wxString str;
-//	long cookie;
-
-//	OldConfigManager::Get()->SetPath(GetPersonalitiesRoot());
-//	bool cont = OldConfigManager::Get()->GetFirstGroup(str, cookie);
-//	while (cont)
-//	{
-//        m_Personalities.Add(str);
-//		cont = OldConfigManager::Get()->GetNextGroup(str, cookie);
-//	}
-//	OldConfigManager::Get()->SetPath(_T("/"));
+    PersonalityManager::pers = _T("default");
 }
 
 void PersonalityManager::SetPersonality(const wxString& personality, bool createIfNotExist)
 {
-    if (personality.IsEmpty())
-    {
-        m_CurrentPersonalityIdx = 0;
-        return;
-    }
-
-    m_CurrentPersonalityIdx = m_Personalities.Index(personality);
-    if (m_CurrentPersonalityIdx == -1)
-    {
-        if (createIfNotExist)
-        {
-            m_Personalities.Add(personality);
-            m_CurrentPersonalityIdx = m_Personalities.GetCount() - 1;
-        }
-        else
-            m_CurrentPersonalityIdx = 0;
-    }
+	pers = personality;
 }
 
-const wxString& PersonalityManager::GetPersonality()
+const wxString PersonalityManager::GetPersonality()
 {
-    static wxString pers;
-    pers = m_CurrentPersonalityIdx > 0 && m_CurrentPersonalityIdx < (int)m_Personalities.GetCount()
-            ? m_Personalities[m_CurrentPersonalityIdx]
-            : wxT("default");
     return pers;
 }
 
-const wxArrayString& PersonalityManager::GetPersonalitiesList()
+const wxArrayString PersonalityManager::GetPersonalitiesList()
 {
-    return m_Personalities;
+	wxArrayString list;
+	wxDir::GetAllFiles(ConfigManager::GetConfigFolder(), &list, _T("*.conf"), wxDIR_FILES);
+
+	for(size_t i = 0; i < list.GetCount(); ++i)
+        list[i] = wxFileName(list[i]).GetName();
+
+	return list;
 }
 
-const wxString& PersonalityManager::GetPersonalitiesRoot()
-{
-    static wxString root = _T("/personalities");
-    return root;
-}
+wxString PersonalityManager::pers;
 
-const wxString& PersonalityManager::GetPersonalityKey()
-{
-    static wxString key;
-    key = m_CurrentPersonalityIdx <= 0
-            ? wxT("") // default personality
-            : GetPersonalitiesRoot() + _T("/") + GetPersonality();
-    return key;
-}

@@ -37,8 +37,9 @@ struct cbFindReplaceData;
 /*
  * No description
  */
-class DLLIMPORT EditorManager : public wxEvtHandler
+class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
 {
+        friend class Mgr<EditorManager>;
         static bool s_CanShutdown;
     public:
         friend class Manager; // give Manager access to our private members
@@ -167,8 +168,6 @@ class DLLIMPORT EditorManager : public wxEvtHandler
 
         AutoCompleteMap m_AutoCompleteMap;
     private:
-        static EditorManager* Get();
-        static void Free();
         EditorManager();
         ~EditorManager();
         void CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFindReplaceData* data);

@@ -41,29 +41,9 @@
 #include "projectmanager.h"
 #include "cbproject.h"
 #include "globals.h"
-#include "managerproxy.h"
 #include "compilerfactory.h"
 
 int idMenuNewFromTemplate = wxNewId();
-
-TemplateManager* TemplateManager::Get()
-{
-	if (!TemplateManagerProxy::Get())
-	 {
-		TemplateManagerProxy::Set( new TemplateManager );
-		Manager::Get()->GetMessageManager()->Log(_("TemplateManager initialized"));
-	 }
-	 return TemplateManagerProxy::Get();
-}
-
-void TemplateManager::Free()
-{
-	if (TemplateManagerProxy::Get())
-	{
-		delete TemplateManagerProxy::Get();
-		TemplateManagerProxy::Set( 0L );
-	}
-}
 
 BEGIN_EVENT_TABLE(TemplateManager, wxEvtHandler)
 	EVT_MENU(idMenuNewFromTemplate, TemplateManager::OnNew)

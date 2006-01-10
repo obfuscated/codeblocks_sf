@@ -27,20 +27,7 @@ class asCOutputStream : public asIOutputStream
 
 //statics
 static asCOutputStream asOut;
-static ScriptingManager* pScripting = 0;
-ScriptingManager* ScriptingManager::Get()
-{
-    if (!pScripting)
-        pScripting = new ScriptingManager;
-    return pScripting;
-}
 
-void ScriptingManager::Free()
-{
-    assert(pScripting);
-    delete pScripting;
-    pScripting = 0;
-}
 
 ScriptingManager::ScriptingManager()
 {

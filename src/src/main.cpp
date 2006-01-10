@@ -51,7 +51,6 @@
 #include <pluginmanager.h>
 #include <templatemanager.h>
 #include <toolsmanager.h>
-#include <personalitymanager.h>
 #include <scriptingmanager.h>
 #include <cbexception.h>
 #include <annoyingdialog.h>
@@ -1866,8 +1865,7 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     // this stops it from crashing, when no plugins are loaded
     while (GetEventHandler() != this)
         PopEventHandler(false);
-
-	Manager::Get()->Free();
+	Manager::Shutdown(); // Shutdown() is not Free(), Manager is automatically destroyed at exit
     Destroy();
 }
 

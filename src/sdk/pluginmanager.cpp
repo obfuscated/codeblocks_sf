@@ -39,30 +39,7 @@
 #include "editormanager.h"
 #include "pluginsconfigurationdlg.h"
 #include "configmanager.h"
-#include "managerproxy.h"
 #include "personalitymanager.h"
-
-PluginManager* PluginManager::Get()
-{
-    if(Manager::isappShuttingDown()) // The mother of all sanity checks
-        PluginManager::Free();
-    else
-    if (!PluginManagerProxy::Get())
-	{
-        PluginManagerProxy::Set( new PluginManager() );
-		Manager::Get()->GetMessageManager()->Log(_("PluginManager initialized"));
-	}
-    return PluginManagerProxy::Get();
-}
-
-void PluginManager::Free()
-{
-	if (PluginManagerProxy::Get())
-	{
-		delete PluginManagerProxy::Get();
-		PluginManagerProxy::Set( 0L );
-	}
-}
 
 // class constructor
 PluginManager::PluginManager()

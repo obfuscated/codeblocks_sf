@@ -235,9 +235,10 @@ public:
 
 WX_DECLARE_STRING_HASH_MAP(ConfigManager*, NamespaceMap);
 
-class DLLIMPORT CfgMgrBldr
+class DLLIMPORT CfgMgrBldr : public Mgr<CfgMgrBldr>
 {
     friend class ConfigManager;
+    friend class Mgr<CfgMgrBldr>;
     NamespaceMap namespaces;
     TiXmlDocument *doc;
     TiXmlDocument *volatile_doc;
@@ -245,15 +246,17 @@ class DLLIMPORT CfgMgrBldr
     bool r;
     wxString cfg;
 
-    CfgMgrBldr();
-    ~CfgMgrBldr();
     void Close();
-    static inline CfgMgrBldr* Instance();
-    ConfigManager* Instantiate(const wxString& name_space);
-public:
-    static ConfigManager* Get(const wxString& name_space);
     void SwitchTo(const wxString& absFN);
     void SwitchToR(const wxString& absFN);
+    ConfigManager* Build(const wxString& name_space);
+
+protected:
+    CfgMgrBldr();
+    ~CfgMgrBldr();
+
+public:
+    static ConfigManager* GetConfigManager(const wxString& name_space);
 };
 
 

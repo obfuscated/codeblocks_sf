@@ -1,3 +1,14 @@
+/*
+* This file is part of Code::Blocks Studio, and licensed under the terms of the
+* GNU General Public License version 2, or (at your option) any later version.
+*
+* Contact e-mail: Yiannis An. Mandravellos <mandrav@codeblocks.org>
+* Program URL   : http://www.codeblocks.org
+*
+* $Id$
+* $Date$
+*/
+
 #ifndef MESSAGEMANAGER_H
 #define MESSAGEMANAGER_H
 
@@ -32,11 +43,12 @@ class wxFlatNotebookEvent;
 /*
  * No description
  */
-class DLLIMPORT MessageManager : public wxEvtHandler
+class DLLIMPORT MessageManager : public Mgr<MessageManager>, public wxEvtHandler
 {
 	public:
         typedef short int LockToken;
 
+        friend class Mgr<MessageManager>;
         friend class Manager; // give Manager access to our private members
 		void CreateMenu(wxMenuBar* menuBar);
 		void ReleaseMenu(wxMenuBar* menuBar);
@@ -97,8 +109,6 @@ class DLLIMPORT MessageManager : public wxEvtHandler
             return *this;
 		}        /** @brief Special streaming operator for target log */
     private:
-		static MessageManager* Get();
-		static void Free();
 		MessageManager();
 		~MessageManager();
         int DoAddLog(MessageLog* log, const wxString& title, const wxBitmap& bitmap = wxNullBitmap);

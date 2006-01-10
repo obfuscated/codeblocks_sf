@@ -15,10 +15,11 @@ class UserVariableManager;
 
 WX_DECLARE_STRING_HASH_MAP( wxString, MacrosMap );
 
-class DLLIMPORT MacrosManager
+class DLLIMPORT MacrosManager : public Mgr<MacrosManager>
 {
 public:
     friend class Manager;
+    friend class Mgr<MacrosManager>;
     void CreateMenu(wxMenuBar* menuBar);
     void ReleaseMenu(wxMenuBar* menuBar);
     void ReplaceMacros(wxString& buffer, bool envVarsToo = false, ProjectBuildTarget* target = 0);
@@ -40,8 +41,6 @@ protected:
 public:
     void Reset();
 private:
-    static MacrosManager* Get();
-    static void Free();
     MacrosManager();
     ~MacrosManager();
     DECLARE_SANITY_CHECK

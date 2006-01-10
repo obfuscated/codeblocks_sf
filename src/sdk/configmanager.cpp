@@ -31,6 +31,7 @@
 #include <string>
 #endif
 
+
 wxString ConfigManager::app_path = wxEmptyString;
 wxString ConfigManager::data_path = wxEmptyString;
 wxString ConfigManager::config_folder = wxEmptyString;
@@ -222,19 +223,13 @@ void CfgMgrBldr::Close()
 }
 
 
-ConfigManager* CfgMgrBldr::Get(const wxString& name_space)
+ConfigManager* CfgMgrBldr::GetConfigManager(const wxString& name_space)
 {
-    return Instance()->Instantiate(name_space);
-}
-
-CfgMgrBldr* CfgMgrBldr::Instance()
-{
-    static CfgMgrBldr instance;
-    return &instance;
+    return Get()->Build(name_space);
 }
 
 
-ConfigManager* CfgMgrBldr::Instantiate(const wxString& name_space)
+ConfigManager* CfgMgrBldr::Build(const wxString& name_space)
 {
     if(name_space.IsEmpty())
         cbThrow(_("You attempted to get a ConfigManager instance without providing a namespace."));
@@ -595,7 +590,7 @@ void ConfigManager::Clear()
 
 void ConfigManager::Delete()
 {
-    CfgMgrBldr * bld = CfgMgrBldr::Instance();
+    CfgMgrBldr * bld = CfgMgrBldr::Get();
     wxString ns(_U(root->Value()));
 
     root->Clear();
@@ -611,7 +606,7 @@ void ConfigManager::Delete()
 
 void ConfigManager::DeleteAll()
 {
-    CfgMgrBldr * bld = CfgMgrBldr::Instance();
+    CfgMgrBldr * bld = CfgMgrBldr::Get();
     wxString ns(_U(root->Value()));
 
     if(!ns.IsSameAs(_T("app")))

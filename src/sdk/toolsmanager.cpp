@@ -36,31 +36,8 @@
 #include "configmanager.h"
 #include "messagemanager.h"
 #include "configuretoolsdlg.h"
-#include "managerproxy.h"
 #include <wx/listimpl.cpp>
 WX_DEFINE_LIST(ToolsList);
-
-ToolsManager* ToolsManager::Get()
-{
-    if(Manager::isappShuttingDown()) // The mother of all sanity checks
-        ToolsManager::Free();
-    else
-    if (!ToolsManagerProxy::Get())
-	{
-        ToolsManagerProxy::Set( new ToolsManager() );
-		Manager::Get()->GetMessageManager()->Log(_("ToolsManager initialized"));
-	}
-    return ToolsManagerProxy::Get();
-}
-
-void ToolsManager::Free()
-{
-	if (ToolsManagerProxy::Get())
-	{
-		delete ToolsManagerProxy::Get();
-		ToolsManagerProxy::Set( 0L );
-	}
-}
 
 int idToolsConfigure = wxNewId();
 

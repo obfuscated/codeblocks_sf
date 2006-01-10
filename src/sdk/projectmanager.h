@@ -35,10 +35,11 @@ WX_DECLARE_HASH_MAP(cbProject*, ProjectsArray*, wxPointerHash, wxPointerEqual, D
   * the global Manager singleton.
   * E.g. Manager::Get()->GetProjectManager()
   */
-class DLLIMPORT ProjectManager : public wxEvtHandler
+class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
 {
         static bool s_CanShutdown;
 	public:
+        friend class Mgr<ProjectManager>;
         friend class Manager; // give Manager access to our private members
 
 		wxFlatNotebook* GetNotebook() { return m_pNotebook; }
@@ -335,8 +336,6 @@ class DLLIMPORT ProjectManager : public wxEvtHandler
 		/** @return The folder icon index in the image list. */
 		int FolderIconIndex();
     private:
-        static ProjectManager* Get();
-		static void Free();
 		ProjectManager();
 		~ProjectManager();
 

@@ -33,7 +33,6 @@
 #include "manager.h"
 #include "cbproject.h"
 #include "cbeditor.h"
-#include "managerproxy.h"
 #include "uservarmanager.h"
 #include "configmanager.h"
 #include "globals.h"
@@ -58,29 +57,6 @@
 
     ${AMP} TODO: implement AddMacro() for custom macros (like this)
 */
-
-MacrosManager* MacrosManager::Get()
-{
-    if(Manager::isappShuttingDown()) // The mother of all sanity checks
-        MacrosManager::Free();
-    else
-        if (!MacrosManagerProxy::Get())
-        {
-            MacrosManagerProxy::Set( new MacrosManager() );
-            Manager::Get()->GetMessageManager()->Log(_("MacrosManager initialized"));
-        }
-    return MacrosManagerProxy::Get();
-}
-
-void MacrosManager::Free()
-{
-    if (MacrosManagerProxy::Get())
-    {
-        delete MacrosManagerProxy::Get();
-        MacrosManagerProxy::Set( 0L );
-    }
-    UserVariableManager::Free();
-}
 
 MacrosManager::MacrosManager()
 {
@@ -316,7 +292,7 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo, ProjectBuil
         wxString right = m_re.GetMatch(buffer, 3);
         search = m_re.GetMatch(buffer, 0);
 
-        if (var[0] == _T('#'))
+        if (var.GetChar(0) == _T('#'))
         {
             replace = UnixFilename(m_uVarMan->Replace(var));
 			QuoteStringIfNeeded(replace);
@@ -329,7 +305,7 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo, ProjectBuil
         }
 
 
-		if(right.size() && (right[0] == _T('\\') || right[0] == _T('/'))) // workaround for foo\$variable\bar
+		if(right.size() && (right.GetChar(0) == _T('\\') || right.GetChar(0) == _T('/'))) // workaround for foo\$variable\bar
 			replace.append(right);
 
 //		Manager::Get()->GetMessageManager()->DebugLog(wxString(wxString("replacing ") << search << " (variable: " << var << ") " << "with: ") << replace);

@@ -10,11 +10,10 @@ class wxMenuBar;
 class wxMenu;
 class cbProject;
 
-class DLLIMPORT TemplateManager : public wxEvtHandler
+class DLLIMPORT TemplateManager : public Mgr<TemplateManager>, public wxEvtHandler
 {
+        friend class Mgr<TemplateManager>;
 	public:
-        static TemplateManager* Get();
-		static void Free();
 		void CreateMenu(wxMenuBar* menuBar);
 		void ReleaseMenu(wxMenuBar* menuBar);
 		void BuildToolsMenu(wxMenu* menu);

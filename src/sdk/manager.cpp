@@ -26,7 +26,6 @@
 #include "sdk_precomp.h"
 #include <wx/xrc/xmlres.h>
 #include <wx/fs_zip.h>
-#include <wx/notebook.h>
 #include <wx/menu.h>
 #include <wx/toolbar.h>
 
@@ -42,51 +41,58 @@
 #include "templatemanager.h"
 #include "personalitymanager.h"
 #include "uservarmanager.h"
-#include "managerproxy.h"
 #include "xtra_classes.h" // Our custom set of wxWidgets classes
 #include "xtra_res.h" // our new ToolBarAddOn handler
 
-static bool appShutingDown = false;
 
-Manager* Manager::Get(wxFrame* appWindow)
+Manager::Manager() : m_pAppWindow(0)
 {
-    if (!ManagerProxy::Get() && appWindow)
-	{
-        ManagerProxy::Set( new Manager(appWindow) );
-		ManagerProxy::Get()->GetMessageManager()->Log(_("Manager initialized"));
-	}
-    return ManagerProxy::Get();
 }
 
-void Manager::Free()
+Manager::~Manager()
 {
-    appShutingDown = true;
-	if (ManagerProxy::Get())
-	{
-		/**
-		@bug This is a dumb nasty bug. If ProjectManager is freed after ToolsManager, we get
-		a crash. Seems like wxRemoveEventHandler doesn't work correctly (it doesn't NULL the
-		prev event handler pointer)
-		*/
-		/*
-            mandrav: This bug seems to be solved after cbPlugin::Release() was
-                    changed to cbPlugin::Release(bool appShutDown). Please
-                    test under MSVC too...
-        */
-        ScriptingManager::Free();
-		MacrosManager::Free();
-		ToolsManager::Free();
-		TemplateManager::Free();
-		ProjectManager::Free();
-		EditorManager::Free();
-		PluginManager::Free();
-		PersonalityManager::Free();
-		MessageManager::Free();
-
-		delete ManagerProxy::Get();
-		ManagerProxy::Set( 0L );
-	}
+    Shutdown();
+    CfgMgrBldr::Free(); // only terminate config at the very last moment
 }
+
+
+Manager* Manager::Get(wxFrame *appWindow)
+{
+	static Manager instance;
+
+    if(appWindow)
+    {
+        if(instance.m_pAppWindow)
+        {
+            cbThrow(_T("Illegal argument to Manager::Get()"));
+        }
+        else
+        {
+            instance.m_pAppWindow = appWindow;
+            Initxrc(true);
+            Loadxrc(_T("/manager_resources.zip#zip:*.xrc"));
+            Get()->GetMessageManager()->Log(_("Manager initialized"));
+        }
+    }
+    return &instance;
+}
+
+
+void Manager::Shutdown()
+{
+    appShuttingDown = true;
+
+    ToolsManager::Free();
+	TemplateManager::Free();
+	PluginManager::Free();
+	ScriptingManager::Free();
+	ProjectManager::Free();
+	EditorManager::Free();
+	PersonalityManager::Free();
+	MacrosManager::Free();
+	MessageManager::Free();
+}
+
 
 bool Manager::SendEventTo(wxEvtHandler* handler, CodeBlocksEvent& event)
 {
@@ -111,33 +117,12 @@ bool Manager::ProcessEvent(CodeBlocksEvent& event)
     return false;
 }
 
-bool Manager::isappShutingDown()
-{
-    return(appShutingDown);
-}
-// stupid typo ;-P
+
 bool Manager::isappShuttingDown()
 {
-    return(appShutingDown);
+    return appShuttingDown;
 }
 
-// class constructor
-Manager::Manager(wxFrame* appWindow)
-	: m_pAppWindow(appWindow)
-{
-    // Basically, this is the very first place that will be called in the lib
-    // (through Manager::Get()), so it's a very good place to load and initialize
-    // any resources we 'll be using...
-
-    Initxrc(true);
-    Loadxrc(_T("/manager_resources.zip#zip:*.xrc"));
-}
-
-// class destructor
-Manager::~Manager()
-{
-    //delete m_Notebook;
-}
 
 void Manager::Initxrc(bool force)
 {
@@ -208,61 +193,60 @@ bool Manager::isToolBar16x16(wxToolBar* toolBar)
     return (mysize.GetWidth()<=16 && mysize.GetHeight()<=16);
 }
 
-wxFrame* Manager::GetAppWindow()
+wxFrame* Manager::GetAppWindow() const
 {
-	if(!this) return 0; // Fixes early-shutdown segfault
-	return m_pAppWindow;
+    return m_pAppWindow;
 }
 
-ProjectManager* Manager::GetProjectManager()
+ProjectManager* Manager::GetProjectManager() const
 {
-	return appShutingDown ? 0 : ProjectManager::Get();
+    return ProjectManager::Get();
 }
 
-EditorManager* Manager::GetEditorManager()
+EditorManager* Manager::GetEditorManager() const
 {
-	return appShutingDown ? 0 : EditorManager::Get();
+    return EditorManager::Get();
 }
 
-MessageManager* Manager::GetMessageManager()
+MessageManager* Manager::GetMessageManager() const
 {
-	return appShutingDown ? 0 : MessageManager::Get();
+    return MessageManager::Get();
 }
 
-PluginManager* Manager::GetPluginManager()
+PluginManager* Manager::GetPluginManager() const
 {
-	return appShutingDown ? 0 : PluginManager::Get();
+    return PluginManager::Get();
 }
 
-ToolsManager* Manager::GetToolsManager()
+ToolsManager* Manager::GetToolsManager() const
 {
-	return appShutingDown ? 0 : ToolsManager::Get();
+    return ToolsManager::Get();
 }
 
-MacrosManager* Manager::GetMacrosManager()
+MacrosManager* Manager::GetMacrosManager() const
 {
-	return appShutingDown ? 0 : MacrosManager::Get();
+    return MacrosManager::Get();
 }
 
-PersonalityManager* Manager::GetPersonalityManager()
+PersonalityManager* Manager::GetPersonalityManager() const
 {
-    return appShutingDown ? 0 : PersonalityManager::Get();
+    return PersonalityManager::Get();
 }
 
-UserVariableManager* Manager::GetUserVariableManager()
+UserVariableManager* Manager::GetUserVariableManager() const
 {
-    return appShutingDown ? 0 : UserVariableManager::Get();
+    return UserVariableManager::Get();
 }
 
-ScriptingManager* Manager::GetScriptingManager()
+ScriptingManager* Manager::GetScriptingManager() const
 {
-    return appShutingDown ? 0 : ScriptingManager::Get();
+    return ScriptingManager::Get();
 }
 
-ConfigManager* Manager::GetConfigManager(const wxString& name_space)
+ConfigManager* Manager::GetConfigManager(const wxString& name_space) const
 {
-    // do *not* check for appShutingDown here.
-    // ConfigManager is deleted at program exit automatically
-    // and it exists throught the whole lifetime of the application...
-    return CfgMgrBldr::Get(name_space);
+    return CfgMgrBldr::GetConfigManager(name_space);
 }
+
+
+bool Manager::appShuttingDown = false;

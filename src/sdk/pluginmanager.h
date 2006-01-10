@@ -28,9 +28,10 @@ WX_DEFINE_ARRAY(cbPlugin*, PluginsArray);
 /*
  * No description
  */
-class DLLIMPORT PluginManager
+class DLLIMPORT PluginManager : public Mgr<PluginManager>
 {
 	public:
+        friend class Mgr<PluginManager>;
         friend class Manager; // give Manager access to our private members
 		void CreateMenu(wxMenuBar* menuBar);
 		void ReleaseMenu(wxMenuBar* menuBar);
@@ -54,8 +55,6 @@ class DLLIMPORT PluginManager
         cbMimePlugin* GetMIMEHandlerForFile(const wxString& filename);
         int Configure();
     private:
-        static PluginManager* Get();
-		static void Free();
 		PluginManager();
 		~PluginManager();
         PluginElementsArray m_Plugins;
