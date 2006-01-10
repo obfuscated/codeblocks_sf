@@ -114,6 +114,29 @@ void EditorColorSet::LoadAvailableSets()
         lex.Load(path + _T("/") + filename);
         ok = dir.GetNext(&filename);
     }
+
+    // remove old settings, no longer used
+	for (int x = 0; x < HL_LAST; ++x)
+	{
+		wxString lang = m_Sets[x].m_Langs;
+		if (lang.IsEmpty())
+            continue;
+		unsigned int i = 0;
+		while (i < m_Sets[x].m_Colors.GetCount())
+		{
+			OptionColor* opt = m_Sets[x].m_Colors.Item(i);
+			// valid values are:
+			if (opt->value < 0 &&               // styles >= 0
+                opt->value != cbSELECTION &&    // cbSELECTION
+                opt->value != cbHIGHLIGHT_LINE) // cbHIGHLIGHT_LINE
+            {
+                m_Sets[x].m_Colors.Remove(opt);
+                delete opt;
+            }
+            else
+                ++i;
+		}
+	}
 }
 
 HighlightLanguage EditorColorSet::AddHighlightLanguage(int lexer, const wxString& name)
@@ -376,11 +399,11 @@ void EditorColorSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control)
                 else
                     control->SetSelBackground(false, wxColour(0xC0, 0xC0, 0xC0));
             }
-            else
-            {
-                control->MarkerDefine(-opt->value, 1);
-                control->MarkerSetBackground(-opt->value, opt->back);
-            }
+//            else
+//            {
+//                control->MarkerDefine(-opt->value, 1);
+//                control->MarkerSetBackground(-opt->value, opt->back);
+//            }
 		}
 	}
 	control->SetLexer(m_Sets[lang].m_Lexers);
@@ -458,6 +481,8 @@ void EditorColorSet::Load()
 		for (unsigned int i = 0; i < m_Sets[x].m_Colors.GetCount(); ++i)
 		{
 			OptionColor* opt = m_Sets[x].m_Colors.Item(i);
+			if (!opt)
+                continue;
 			wxString tmpKey;
 			tmpKey << key << _T("/style") << wxString::Format(_T("%d"), i);
 

@@ -148,6 +148,7 @@ All lines of text in Scintilla are the same height, and this height is calculate
 <li><a class="message" href="#GetStyledText">wxMemoryBuffer GetStyledText (int startPos, int endPos)</a></li>
 <li><a class="message" href="#SetStyleBits">void SetStyleBits (int bits)</a></li>
 <li><a class="message" href="#GetStyleBits">int GetStyleBits</a></li>
+<li><a class="message" href="#GetStyleBitsNeeded">int GetStyleBitsNeeded ()</a></li>
 </ul>
 
 <div class="divider2"></div>
@@ -274,6 +275,11 @@ Returns the style at <code>pos</code> in the document. If <code>pos</code> is ne
 Sets and reads back the number of bits in each cell to use for styling, to a maximum of 7 style bits. The remaining bits can be used as indicators. The default setting is <code>5</code> style bits.
 </p>
 
+<div class="divider2"></div>
+<h4><a name="GetStyleBitsNeeded">int GetStyleBitsNeeded ()</a></h4>
+<p>Retrieve the number of bits the current lexer needs for styling. This should normally be the argument to <a class="message" href="#SetStyleBits">SetStyleBits</a>.
+</p>
+
 <div class="divider1"></div>
 <h3 id="Searching">Searching</h3>
 
@@ -282,7 +288,7 @@ See also: <a class="jump" href="#SearchAndReplaceUsingTheTarget">Search and repl
 </p>
 
 <ul style="list-style-type:none">
-<li><a class="message" href="#FindText">int FindText (int minPos, int maxPos, const wxString& text, int flags=0)</a></li>
+<li><a class="message" href="#FindText">int FindText (int minPos, int maxPos, const wxString& text, int flags = 0, int* lengthFound = NULL)</a></li>
 <li><a class="message" href="#SearchAnchor">void SearchAnchor()</a></li>
 <li><a class="message" href="#SearchNext">int SearchNext (int flags, const wxString& text)</a></li>
 <li><a class="message" href="#SearchPrev">int SearchPrev (int flags, const wxString& text)</a></li>
@@ -362,9 +368,9 @@ In a regular expression, special characters interpreted are:
 </tbody></table>
 
 <div class="divider2"></div>
-<h4><a name="FindText">int FindText (int minPos, int maxPos, const wxString& text, int flags=0)</a></h4>
+<h4><a name="FindText">int FindText (int minPos, int maxPos, const wxString& text, int flags = 0, int* lengthFound = NULL)</a></h4>
 <p>
-FindText performs a straightforward text search through the entire document. The <code>minPos</code> and <code>maxPos</code> arguments specify the range within the Document to search.  No surprise, the <code>text</code> argument is a string object containing the string to search for. The <code>flags</code> argument controls the search. You can set <code>maxPos</code> less than <code>minPos</code> to search in reverse. Returns the start position of the found text, or wxSCI_INVALID_POSITION if it isn't found.
+FindText performs a straightforward text search through the entire document. The <code>minPos</code> and <code>maxPos</code> arguments specify the range within the Document to search.  No surprise, the <code>text</code> argument is a string object containing the string to search for. The <code>flags</code> argument controls the search. You can set <code>maxPos</code> less than <code>minPos</code> to search in reverse. Returns the start position of the found text, or wxSCI_INVALID_POSITION if it isn't found. If <code>lengthFound</code> is given the length of the found text is returned.
 </p>
 <p>
 See also: <code><a class="message" href="#SearchInTarget">SearchInTarget</a></code>
@@ -475,7 +481,9 @@ When overtype is enabled, each typed character replaces the character to the rig
 <li><a class="message" href="#Clear">void Clear()</a></li>
 <li><a class="message" href="#CanPaste">bool CanPaste()</a></li>
 <li><a class="message" href="#CopyRange">void CopyRange (int startPos, int endPos)</a></li>
-<li><a class="message" href="#CopyText">void CopyText (int length, const wxString& text)</a></li>
+<li><a class="message" href="#CopyText">void CopyText (int length, const wxString& text)</a>
+<li><a class="message" href="#SetPasteConvertEndings">void SetPasteConvertEndings (bool convert)
+</a><li><a class="message" href="#GetPasteConvertEndings">bool GetPasteConvertEndings ()</a></li>
 </ul>
 
 <div class="divider2"></div>
@@ -496,6 +504,13 @@ GTK+ does not really support <code>CanPaste</code> and always returns <code>true
     <a name="CopyText">void CopyText (int length, const wxString& text)</a></h4>
 <p>
 <code>CopyRange</code> copies a range of text from the document to the system clipboard and <code>CopyText</code> copies a supplied piece of text to the system clipboard.
+</p>
+
+<div class="divider2"></div>
+<h4><a name="SetPasteConvertEndings">void SetPasteConvertEndings (bool convert)</a><br />
+    <a name="GetPasteConvertEndings">bool GetPasteConvertEndings ()</a></h4>
+<p>
+If this property is set then when text is pasted any line ends are converted to match the document's end of line mode as set with <a class="message" href="#SetEOLMode">SetEOLMode</a>. Currently only changeable on Windows. On GTK+ pasted text is always converted.
 </p>
 
 <div class="divider1"></div>
@@ -631,7 +646,7 @@ Scintilla maintains a selection that stretches between two points, the anchor an
 <li><a class="message" href="#PointYFromPosition">PointYFromPosition: Currently not implemented!</a></li>
 <li><a class="message" href="#HideSelection">void HideSelection (bool hide)</a></li>
 <li><a class="message" href="#GetSelectedText">wxString GetSelectedText()</a></li>
-<li><a class="message" href="#GetCurLine">wxString GetCurLine (int* linePos=NULL)</a></li>
+<li><a class="message" href="#GetCurLine">wxString GetCurLine (int* linePos = NULL)</a></li>
 <li><a class="message" href="#SelectionIsRectangle">bool SelectionIsRectangle()</a></li>
 <li><a class="message" href="#SetSelectionMode">void SetSelectionMode (int mode)</a></li>
 <li><a class="message" href="#GetSelectionMode">int GetSelectionMode()</a></li>
@@ -793,7 +808,7 @@ See also: <code><a class="message" href="#GetCurLine">GetCurLine</a>, <a class="
 </p>
 
 <div class="divider2"></div>
-<h4><a name="GetCurLine">wxString GetCurLine (int* linePos=NULL)</a></h4>
+<h4><a name="GetCurLine">wxString GetCurLine (int* linePos = NULL)</a></h4>
 <p>
 Retrieves the text of the line containing the caret and returns the position within the line of the caret.
 </p>
@@ -1888,6 +1903,7 @@ The markers are drawn in the order of their numbers, so higher numbered markers 
 <li><a class="message" href="#MarkerSetForeground">void MarkerSetForeground (int markerNumber, const wxColour& fore)</a></li>
 <li><a class="message" href="#MarkerSetBackground">void MarkerSetBackground (int markerNumber, const wxColour& back)</a></li>
 <li><a class="message" href="#MarkerAdd">int MarkerAdd (int line, int markerNumber)</a></li>
+<li><a class="message" href="#MarkerAddSet">int MarkerAddSet (int line, int markerSet)</a></li>
 <li><a class="message" href="#MarkerDelete">void MarkerDelete (int line, int markerNumber)</a></li>
 <li><a class="message" href="#MarkerDeleteAll">void MarkerDeleteAll (int markerNumber)</a></li>
 <li><a class="message" href="#MarkerGet">int MarkerGet (int line)</a></li>
@@ -2020,6 +2036,12 @@ Set the foreground and background colour of a marker number. Default colours for
 <h4><a name="MarkerAdd">int MarkerAdd (int line, int markerNumber)</a></h4>
 <p>
 Adds marker number <code>markerNumber</code> to a line. It returns -1 if this fails (illegal line number, out of memory) or it returns a marker handle number that identifies the added marker. You can use this returned handle with <a class="message" href="#MarkerLineFromHandle"><code>MarkerLineFromHandle</code></a> to find where a marker is after moving or combining lines and with <a class="message" href="#MarkerDeleteHandle"><code>MarkerDeleteHandle</code></a> to delete the marker based on its handle. It does not check the value of markerNumber, nor does it check if the line already contains the marker.
+</p>
+
+<div class="divider2"></div>
+<h4><a name="MarkerAddSet">int MarkerAddSet (int line, int markerSet)</a></h4>
+<p>
+MarkerAddSet can add one or more markers to a line with a single call, specified in the same "one-bit-per-marker" 32-bit integer format returned by <a class="message" href="#MarkerGet"><code>MarkerGet</code></a> (and used by the mask-based marker search functions <a class="message" href="#MarkerNext"><code>MarkerNext</code></a> and <a class="message" href="#MarkerPrevious"><code>MarkerPrevious</code></a>). As with <a class="message" href="#MarkerAdd"><code>MarkerAdd</code></a>, no check is made to see if any of the markers are already present on the targeted line.
 </p>
 
 <div class="divider2"></div>
@@ -2517,6 +2539,8 @@ To allow the container application to perform any of the actions available to th
   <td><code>wxSCI_CMD_FORMFEED</code></td>
   <td><code>wxSCI_CMD_TAB</code></td>
   <td><code>wxSCI_CMD_BACKTAB</code></td>
+</tr><tr>
+  <td><code>wxSCI_CMD_SELECTIONDUPLICATE</code></td>
 </tr>
 </tbody></table>
 <p>
@@ -3475,9 +3499,9 @@ Scintilla also supports external lexers. These are DLLs (on Windows) or .so modu
 <li><a class="message" href="#LoadLexerLibrary">LoadLexerLibrary: Currently not implemented!</a></li>
 <li><a class="message" href="#Colourise">void Colourise (int start, int end)</a></li>
 <li><a class="message" href="#SetProperty">void SetProperty (const wxString& key, const wxString& value)</a></li>
-<li><a class="message" href="#GetProperty">void GetProperty(const wxString& key, wxString& value)</a></li>
-<li><a class="message" href="#GetPropertyExpanded">void GetPropertyExpanded(const wxString& key, wxString& value)</a></li>
-<li><a class="message" href="#GetProperty">int GetPropertyInt(const wxString& key)</a></li>
+<li><a class="message" href="#GetProperty">void GetProperty (const wxString& key, wxString& value)</a></li>
+<li><a class="message" href="#GetPropertyExpanded">void GetPropertyExpanded (const wxString& key, wxString& value)</a></li>
+<li><a class="message" href="#GetProperty">int GetPropertyInt (const wxString& key)</a></li>
 <li><a class="message" href="#SetKeyWords">void SetKeyWords (int keywordSet, const wxString& keyWords)</a></li>
 </ul>
 

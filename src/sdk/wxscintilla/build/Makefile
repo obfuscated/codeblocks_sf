@@ -93,9 +93,9 @@ vpath %.cpp ../src
 vpath %.cxx ../src/scintilla/src
 
 # additional header directories
-INC = -I../include/ \
-      -I../src/scintilla/include/ \
-      -I../src/scintilla/src/
+INC = -I../include \
+      -I../src/scintilla/include \
+      -I../src/scintilla/src
 
 DEF = -D__WX__=1 -DSCI_LEXER -DLINK_LEXERS
 

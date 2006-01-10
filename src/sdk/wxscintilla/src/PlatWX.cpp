@@ -625,12 +625,15 @@ void Window::SetCursor(Cursor curs) {
 #else
        wxCursor wc = wxCursor(cursorId) ;
 #endif
-       GETWIN(id)->SetCursor(wc);
+    if(curs != cursorLast) {
+        GETWIN(id)->SetCursor(wc);
+        cursorLast = curs;
+    }
 }
 
 
-void Window::SetTitle(const char *s) {
-    GETWIN(id)->SetTitle(sci2wx(s));
+void Window::SetTitle (const char *s) {
+    GETWIN(id)->SetLabel (sci2wx(s));
 }
 
 
@@ -1166,33 +1169,30 @@ void ListBoxImpl::SetDoubleClickAction(CallBackAction action, void *data) {
 }
 
 void ListBoxImpl::SetList(const char* list, char separator, char typesep) {
-    // copied and adapted from AutoComplete.cxx in wxSTC
-	Clear();
-	char *words = new char[strlen(list) + 1];
-	if (words) {
-		strcpy(words, list);
-		char *startword = words;
-		char *numword = NULL;
-		int i = 0;
-		for (; words && words[i]; i++) {
-			if (words[i] == separator) {
-				words[i] = '\0';
-				if (numword)
-					*numword = '\0';
-				Append(startword, numword?atoi(numword + 1):-1);
-				startword = words + i + 1;
-				numword = NULL;
-			} else if (words[i] == typesep) {
-				numword = words + i;
-			}
-		}
-		if (startword) {
-			if (numword)
-				*numword = '\0';
-			Append(startword, numword?atoi(numword + 1):-1);
-		}
-		delete []words;
-	}
+    Clear();
+    char *words = new char[strlen(list) + 1];
+    if (words) {
+        strcpy (words, list);
+        char *startword = words;
+        char *numword = NULL;
+        int i = 0;
+        for (; words && words[i]; i++) {
+            if (words[i] == separator) {
+                words[i] = '\0';
+                if (numword) *numword = '\0';
+                Append (startword, numword?atoi(numword + 1):-1);
+                startword = words + i + 1;
+                numword = NULL;
+            } else if (words[i] == typesep) {
+                numword = words + i;
+            }
+        }
+        if (startword) {
+            if (numword) *numword = '\0';
+            Append(startword, numword?atoi(numword + 1):-1);
+        }
+        delete []words;
+    }
 }
 
 

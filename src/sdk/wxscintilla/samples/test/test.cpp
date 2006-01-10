@@ -53,23 +53,28 @@
 // declarations
 //============================================================================
 
-#define APP_NAME _T("wxScintilla-Test")
-#define APP_DESCR _("See the wxScintilla website at wxCode")
+const wxString APP_NAME = _T("wxScintilla");
+const wxString APP_VENDOR = _T("wxCode");
+const wxString APP_VERSION = _T("1.0.0");
+const wxString APP_MAINT = _T("Otto Wyss");
+const wxString APP_LICENCE = _T("wxWindows");
+const wxString APP_COPYRIGTH = _T("(C) 2005 Otto Wyss");
 
-#define APP_MAINT _T("Otto Wyss")
-#define APP_VENDOR _T("wxCode")
-#define APP_COPYRIGTH _T("(C) 2003 Otto Wyss")
-#define APP_LICENCE _T("wxWindows")
+#define APP_DESCR _("\
+wxScintilla implements the Scintilla editing control (see \n\
+http://scintilla.sourceforge.net/) with the wxWidgets API. It's \n\
+derived from wxStyledTextCtrl and has the same functionality \n\
+and a rather similar API.\
+")
+const wxString APP_WEBSITE = _T("http://wxcode.sourceforge.net/");
+const wxString APP_WEBPAGE = _T("components/wxscintilla/website/index.html");
 
-#define APP_VERSION _T("1.0.0")
-#define APP_BUILD __DATE__
-
-#define APP_WEBSITE _T("http://wxcode.sourceforge.net/components/wxscintilla/index.html")
-#define APP_MAIL _T("http://wxcode.sourceforge.net/feedback.php?component=wxscintilla")
+const wxString APP_INFOS = _("\
+This application is derived from the demo sample of wyoGuide.\
+");
+const wxString APP_WYOGUIDE = _T("http://wyoguide.sourceforge.net");
 
 #define NONAME _("<untitled>")
-
-class AppBook;
 
 
 //----------------------------------------------------------------------------
@@ -79,6 +84,12 @@ wxString *g_appname = NULL;
 //! global print data, to remember settings during the session
 wxPrintData *g_printData = (wxPrintData*) NULL;
 wxPageSetupData *g_pageSetupData = (wxPageSetupData*) NULL;
+
+
+//----------------------------------------------------------------------------
+//! class declarations
+class AppFrame;
+class AppBook;
 
 
 //----------------------------------------------------------------------------
@@ -103,7 +114,7 @@ private:
 DECLARE_APP (App);
 
 //----------------------------------------------------------------------------
-//! frame of the application APP_VENDOR-APP_NAME.
+//! frame of the application
 class AppFrame: public wxFrame {
     friend class App;
     friend class AppBook;
@@ -161,8 +172,7 @@ class AppAbout: public wxDialog {
 public:
     //! constructor
     AppAbout (wxWindow *parent,
-              int milliseconds = 0,
-              long style = 0);
+              int milliseconds = 0);
 
     //! destructor
     ~AppAbout ();
@@ -197,6 +207,9 @@ bool App::OnInit () {
     SetVendorName (APP_VENDOR);
     g_appname = new wxString ();
     g_appname->Append (APP_NAME);
+
+    // about box shown for 3 seconds
+    AppAbout (NULL, 3000);
 
     // initialize print data and setup
     g_printData = new wxPrintData;
@@ -287,7 +300,7 @@ BEGIN_EVENT_TABLE (AppFrame, wxFrame)
 END_EVENT_TABLE ()
 
 AppFrame::AppFrame (const wxString &title)
-        : wxFrame ((wxFrame *)NULL, -1, title, wxDefaultPosition, wxDefaultSize,
+        : wxFrame ((wxFrame *)NULL, -1, title, wxDefaultPosition, wxSize (600,400),
                     wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE) {
 
     // intitialize important variables
@@ -297,9 +310,6 @@ AppFrame::AppFrame (const wxString &title)
     SetTitle (*g_appname);
     SetIcon (wxICON (mondrian));
     SetBackgroundColour (_T("WHITE"));
-
-    // about box shown for 5 seconds
-    AppAbout (this, 5000);
 
     // create menu
     m_menuBar = new wxMenuBar;
@@ -582,11 +592,10 @@ BEGIN_EVENT_TABLE (AppAbout, wxDialog)
 END_EVENT_TABLE ()
 
 AppAbout::AppAbout (wxWindow *parent,
-                    int milliseconds,
-                    long style)
-        : wxDialog (parent, -1, wxEmptyString,
+                    int milliseconds)
+        : wxDialog (parent, -1, _("About..."),
                     wxDefaultPosition, wxDefaultSize,
-                    style | wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER) {
+                    wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER) {
 
     // set timer if any
     m_timer = NULL;
@@ -595,53 +604,51 @@ AppAbout::AppAbout (wxWindow *parent,
         m_timer->Start (milliseconds, wxTIMER_ONE_SHOT);
     }
 
-    // sets the application title
-    SetTitle (_("About .."));
-
     // about info
-    wxGridSizer *aboutinfo = new wxGridSizer (2, 0, 2);
-    aboutinfo->Add (new wxStaticText(this, -1, _("Written by: ")),
-                    0, wxALIGN_LEFT);
-    aboutinfo->Add (new wxStaticText(this, -1, APP_MAINT),
-                    1, wxEXPAND | wxALIGN_LEFT);
-    aboutinfo->Add (new wxStaticText(this, -1, _("Version: ")),
-                    0, wxALIGN_LEFT);
-    aboutinfo->Add (new wxStaticText(this, -1, APP_VERSION),
-                    1, wxEXPAND | wxALIGN_LEFT);
-    aboutinfo->Add (new wxStaticText(this, -1, _("Licence type: ")),
-                    0, wxALIGN_LEFT);
-    aboutinfo->Add (new wxStaticText(this, -1, APP_LICENCE),
-                    1, wxEXPAND | wxALIGN_LEFT);
-    aboutinfo->Add (new wxStaticText(this, -1, _("Copyright: ")),
-                    0, wxALIGN_LEFT);
-    aboutinfo->Add (new wxStaticText(this, -1, APP_COPYRIGTH),
-                    1, wxEXPAND | wxALIGN_LEFT);
+    wxFlexGridSizer *aboutinfo = new wxFlexGridSizer (2, 0, 2);
+    aboutinfo->Add (new wxStaticText(this, -1, _("Vendor: ")),0, wxALIGN_LEFT);
+    aboutinfo->Add (new wxStaticText(this, -1, APP_VENDOR),0, wxALIGN_LEFT);
+    aboutinfo->Add (new wxStaticText(this, -1, _("Version: ")),0, wxALIGN_LEFT);
+    aboutinfo->Add (new wxStaticText(this, -1, APP_VERSION),0, wxALIGN_LEFT);
+    aboutinfo->Add (new wxStaticText(this, -1, _("Written by: ")),0, wxALIGN_LEFT);
+    aboutinfo->Add (new wxStaticText(this, -1, APP_MAINT),0, wxALIGN_LEFT);
+    aboutinfo->Add (new wxStaticText(this, -1, _("Licence type: ")),0, wxALIGN_LEFT);
+    aboutinfo->Add (new wxStaticText(this, -1, APP_LICENCE),0, wxALIGN_LEFT);
+    aboutinfo->Add (new wxStaticText(this, -1, _("Copyright: ")),0, wxALIGN_LEFT);
+    aboutinfo->Add (new wxStaticText(this, -1, APP_COPYRIGTH),0, wxALIGN_LEFT);
 
     // about icontitle//info
     wxBoxSizer *aboutpane = new wxBoxSizer (wxHORIZONTAL);
     wxBitmap bitmap = wxBitmap(wxICON (mondrian));
     aboutpane->Add (new wxStaticBitmap (this, -1, bitmap),
-                    0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 20);
-    aboutpane->Add (aboutinfo, 1, wxEXPAND);
-    aboutpane->Add (60, 0);
+                    1, wxALIGN_CENTER | wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 20);
+    aboutpane->Add (aboutinfo, 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+    aboutpane->Add (20, 0);
 
     // about complete
     wxBoxSizer *totalpane = new wxBoxSizer (wxVERTICAL);
-    totalpane->Add (0, 20);
-    wxStaticText *appname = new wxStaticText(this, -1, *g_appname);
-    appname->SetFont (wxFont (24, wxDEFAULT, wxNORMAL, wxBOLD));
+    totalpane->Add (0, 10);
+    wxStaticText *appname = new wxStaticText(this, -1, APP_NAME);
+    appname->SetFont (wxFont (20, wxDEFAULT, wxNORMAL, wxBOLD));
     totalpane->Add (appname, 0, wxALIGN_CENTER | wxLEFT | wxRIGHT, 40);
     totalpane->Add (0, 10);
-    totalpane->Add (aboutpane, 0, wxEXPAND | wxALL, 4);
-    totalpane->Add (new wxStaticText(this, -1, APP_DESCR),
-                    0, wxALIGN_CENTER | wxALL, 10);
+    totalpane->Add (aboutpane, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 10);
+    totalpane->Add (new wxStaticText(this, -1, wxGetTranslation(APP_DESCR)),
+                    0, wxALIGN_LEFT | wxLEFT | wxRIGHT, 10);
+    totalpane->Add (0, 6);
+    totalpane->Add (new wxStaticText(this, -1, APP_WEBSITE),
+                    0, wxALIGN_CENTER | wxLEFT | wxRIGHT | wxBOTTOM, 10);
+    totalpane->Add (new wxStaticText(this, -1, wxGetTranslation(APP_INFOS)),
+                    0, wxALIGN_LEFT | wxLEFT | wxRIGHT, 10);
+    totalpane->Add (0, 6);
+    totalpane->Add (new wxStaticText (this, -1, APP_WYOGUIDE),
+                    0, wxALIGN_CENTER | wxLEFT | wxRIGHT | wxBOTTOM, 10);
     wxButton *okButton = new wxButton (this, wxID_OK, _("OK"));
     okButton->SetDefault();
-    totalpane->Add (okButton, 0, wxALIGN_CENTER | wxLEFT | wxRIGHT | wxBOTTOM, 10);
+    totalpane->Add (okButton, 0, wxALIGN_CENTER | wxALL, 10);
 
     SetSizerAndFit (totalpane);
-
-    CenterOnScreen();
+    CentreOnParent();
     ShowModal();
 }
 

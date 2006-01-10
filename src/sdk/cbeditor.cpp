@@ -42,7 +42,6 @@
 #include "cbplugin.h"
 #include "cbeditorprintout.h"
 
-
 const wxString EDITOR_MODIFIED(_T("*"));
 
 #define BOOKMARK_MARKER		0
@@ -54,7 +53,8 @@ const wxString EDITOR_MODIFIED(_T("*"));
 #define DEBUG_MARKER		5
 #define DEBUG_STYLE 		wxSCI_MARK_ARROW
 
-#define ERROR_LINE			4
+#define ERROR_MARKER		4
+#define ERROR_STYLE			wxSCI_MARK_SMALLRECT
 
 BEGIN_EVENT_TABLE(cbStyledTextCtrl, wxScintilla)
 	EVT_CONTEXT_MENU(cbStyledTextCtrl::OnContextMenu)
@@ -551,13 +551,16 @@ void cbEditor::SetEditorStyle()
     m_pControl->SetMarginSensitive(1, 1);
     m_pControl->SetMarginMask(1, (1 << BOOKMARK_MARKER) |
                                  (1 << BREAKPOINT_MARKER) |
-                                 (1 << DEBUG_MARKER));
+                                 (1 << DEBUG_MARKER) |
+                                 (1 << ERROR_MARKER));
 	m_pControl->MarkerDefine(BOOKMARK_MARKER, BOOKMARK_STYLE);
 	m_pControl->MarkerSetBackground(BOOKMARK_MARKER, wxColour(0xA0, 0xA0, 0xFF));
 	m_pControl->MarkerDefine(BREAKPOINT_MARKER, BREAKPOINT_STYLE);
 	m_pControl->MarkerSetBackground(BREAKPOINT_MARKER, wxColour(0xFF, 0x00, 0x00));
 	m_pControl->MarkerDefine(DEBUG_MARKER, DEBUG_STYLE);
 	m_pControl->MarkerSetBackground(DEBUG_MARKER, wxColour(0xFF, 0xFF, 0x00));
+	m_pControl->MarkerDefine(ERROR_MARKER, ERROR_STYLE);
+	m_pControl->MarkerSetBackground(ERROR_MARKER, wxColour(0xFF, 0x00, 0x00));
 
     // EOL properties
     m_pData->m_strip_trailing_spaces = mgr->ReadBool(_T("/eol/strip_trailing_spaces"), true);
@@ -572,15 +575,18 @@ void cbEditor::SetEditorStyle()
 #endif
     switch (mgr->ReadInt(_T("/eol/eolmode"), (int)DEFAULT_EOL))
     {
+        case 1:
+            eolmode = wxSCI_EOL_CR;
+            break;
+
+        case 2:
+            eolmode = wxSCI_EOL_LF;
+            break;
+
     	case 0:
         default:
             eolmode = wxSCI_EOL_CRLF;
-        break;
-        case 1:
-            eolmode = wxSCI_EOL_CR;
-        break;
-        case 2:
-            eolmode = wxSCI_EOL_LF;
+            break;
     }
     m_pControl->SetEOLMode(eolmode);
 
@@ -1016,7 +1022,7 @@ void cbEditor::SetDebugLine(int line)
 
 void cbEditor::SetErrorLine(int line)
 {
-    MarkLine(ERROR_LINE, line);
+    MarkLine(ERROR_MARKER, line);
 }
 
 bool cbEditor::LineHasMarker(int marker, int line)
@@ -1056,12 +1062,7 @@ void cbEditor::MarkLine(int marker, int line)
 {
 	m_pControl->MarkerDeleteAll(marker);
 	if (line != -1)
-	{
 		m_pControl->MarkerAdd(line, marker);
-		m_pControl->SetCaretLineVisible(false);
-	}
-	else
-		m_pControl->SetCaretLineVisible(Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/highlight_caret_line"), true));
 }
 
 void cbEditor::GotoMatchingBrace()
@@ -1085,20 +1086,21 @@ void cbEditor::HighlightBraces()
     int newPos = m_pControl->BraceMatch(currPos);
     if (newPos == wxSCI_INVALID_POSITION)
     {
-        if(currPos > 0) currPos--;
+        if(currPos > 0)
+            currPos--;
         newPos = m_pControl->BraceMatch(currPos);
     }
-    if (newPos != wxSCI_INVALID_POSITION)
-        m_pControl->BraceHighlight(currPos, newPos);
-    else
+    wxChar ch = m_pControl->GetCharAt(currPos);
+    if (ch == _T('{') || ch == _T('[') || ch == _T('(') ||
+        ch == _T('}') || ch == _T(']') || ch == _T(')'))
     {
-        wxChar ch = m_pControl->GetCharAt(currPos);
-        if (ch == _T('{') || ch == _T('[') || ch == _T('(') || ch == _T('<') ||
-            ch == _T('}') || ch == _T(']') || ch == _T(')') || ch == _T('>'))
-            m_pControl->BraceBadLight(currPos);
+        if (newPos != wxSCI_INVALID_POSITION)
+            m_pControl->BraceHighlight(currPos, newPos);
         else
-            m_pControl->BraceHighlight(-1, -1);
+            m_pControl->BraceBadLight(currPos);
     }
+    else
+        m_pControl->BraceHighlight(-1, -1);
     m_pControl->Refresh(FALSE);
 }
 

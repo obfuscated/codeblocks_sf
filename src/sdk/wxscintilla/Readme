@@ -1,12 +1,13 @@
 Component:  wxScintilla
-Release:    1.66.0
+Release:    1.67.0
 Documents:  http://wxcode.sourceforge.net/components/wxscintilla/index.php
 wxWidgets:  2.6.1
 Maintainer: Otto Wyss (wyo)
 Subdir:     wxscintilla
 
 Description:
-wxScintilla is a wrapper around the Scintilla edit control (see
-http://www.scintilla.org). It's derived from wxStyledTextCtrl done by Robin Dunn.
+wxScintilla implements the Scintilla editing control (see
+http://scintilla.sourceforge.net/) with the wxWidgets API. It's derived
+from wxStyledTextCtrl and has the same functionality and a similar API.
 
 For further instructions see the BuildInfo.txt inside the "build" directory.
