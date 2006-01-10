@@ -44,8 +44,10 @@ class ToDoList : public cbPlugin
 		void OnAttach(); // fires when the plugin is attached to the application
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
 	protected:
+		void OnViewList(wxCommandEvent& event);
 		void OnAddItem(wxCommandEvent& event);
 		void OnReparse(CodeBlocksEvent& event);
+		void OnUpdateUI(wxUpdateUIEvent& event);
     private:
         void LoadTypes();
         void SaveTypes();

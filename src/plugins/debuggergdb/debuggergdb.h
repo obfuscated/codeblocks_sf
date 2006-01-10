@@ -83,7 +83,6 @@ class DebuggerGDB : public cbDebuggerPlugin
         int LaunchProcess(const wxString& cmd, const wxString& cwd);
         wxString GetDebuggee(ProjectBuildTarget* target);
         bool IsStopped();
-        bool IsWindowShown(wxWindow* win);
 
 		void OnUpdateUI(wxUpdateUIEvent& event);
 		void OnDebug(wxCommandEvent& event);

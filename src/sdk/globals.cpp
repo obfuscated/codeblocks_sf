@@ -436,3 +436,14 @@ wxString URLEncode(const wxString &str) // not sure this is 100% standards compl
     }
     return ret;
 }
+
+bool IsWindowReallyShown(wxWindow* win)
+{
+    while (win && win->IsShown())
+    {
+        win = win->GetParent();
+        if (!win)
+            return true;
+    }
+    return false;
+}

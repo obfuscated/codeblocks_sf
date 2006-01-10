@@ -107,4 +107,16 @@ extern DLLIMPORT wxString ChooseDirectory(wxWindow* parent,
 
 wxString URLEncode(const wxString &str);
 
+/** Finds out if a window is really shown.
+  *
+  * win->IsShown() is not that good because we don't know if the
+  * window's container (parent) is actually shown or not...
+  *
+  * This is usually used to find out if docked windows are shown.
+  *
+  * @param win The window in question.
+  * @return True if @c win is shown, false if not.
+  */
+extern DLLIMPORT bool IsWindowReallyShown(wxWindow* win);
+
 #endif // SDK_GLOBALS_H

@@ -435,21 +435,6 @@ void DebuggerGDB::DebugLog(const wxString& msg)
         Manager::Get()->GetMessageManager()->Log(m_DbgPageIndex, msg);
 }
 
-bool DebuggerGDB::IsWindowShown(wxWindow* win)
-{
-    // find out if a docked window is shown
-    // win->IsShown() is no good because we don't know if the
-    // actual dock window is shown or not...
-
-    while (win && win->IsShown())
-    {
-        win = win->GetParent();
-        if (!win)
-            return true;
-    }
-    return false;
-}
-
 void DebuggerGDB::DoWatches()
 {
 	if (!m_pProcess)
@@ -1256,12 +1241,15 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
 		mbar->Enable(idMenuToggleBreakpoint, en && ed && stopped);
 		mbar->Enable(idMenuSendCommandToGDB, m_pProcess && stopped);
  		mbar->Enable(idMenuAddSymbolFile, m_pProcess && stopped);
-// 		mbar->Enable(idMenuBacktrace, m_pProcess && stopped);
-// 		mbar->Enable(idMenuCPU, m_pProcess && stopped);
-// 		mbar->Enable(idMenuEditWatches, en && stopped);
         mbar->Enable(idMenuStop, m_pProcess && en);
         mbar->Enable(idMenuAttachToProcess, !m_pProcess);
         mbar->Enable(idMenuDetach, m_pProcess && m_PidToAttach != 0);
+
+ 		mbar->Check(idMenuBacktrace, IsWindowReallyShown(m_pBacktrace));
+ 		mbar->Check(idMenuCPU, IsWindowReallyShown(m_pDisassembly));
+ 		mbar->Check(idMenuWatches, IsWindowReallyShown(m_pTree));
+ 		mbar->Check(idMenuRegisters, IsWindowReallyShown(m_pCPURegisters));
+ 		mbar->Check(idMenuBreakpoints, IsWindowReallyShown(m_pBreakpointsWindow));
 	}
 
     #ifdef implement_debugger_toolbar
@@ -1356,33 +1344,52 @@ void DebuggerGDB::OnAddSymbolFile(wxCommandEvent& event)
 
 void DebuggerGDB::OnBacktrace(wxCommandEvent& event)
 {
-    CmdBacktrace();
+    // show it
+    CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
+    evt.pWindow = m_pBacktrace;
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+
+    if (event.IsChecked())
+        CmdBacktrace();
 }
 
 void DebuggerGDB::OnDisassemble(wxCommandEvent& event)
 {
-    CmdDisassemble();
+    // show it
+    CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
+    evt.pWindow = m_pDisassembly;
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+
+    if (event.IsChecked())
+        CmdDisassemble();
 }
 
 void DebuggerGDB::OnRegisters(wxCommandEvent& event)
 {
-    CmdRegisters();
+    // show it
+    CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
+    evt.pWindow = m_pCPURegisters;
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+
+    if (event.IsChecked())
+        CmdRegisters();
 }
 
 void DebuggerGDB::OnViewWatches(wxCommandEvent& event)
 {
     // show it
-    CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
+    CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
     evt.pWindow = m_pTree;
     Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 
-    DoWatches();
+    if (event.IsChecked())
+        DoWatches();
 }
 
 void DebuggerGDB::OnBreakpoints(wxCommandEvent& event)
 {
     // show it
-    CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
+    CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
     evt.pWindow = m_pBreakpointsWindow;
     Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 }
@@ -1590,19 +1597,19 @@ void DebuggerGDB::OnCursorChanged(wxCommandEvent& event)
                 Log(wxString::Format(_("In %s (%s)"), cursor.function.c_str(), cursor.file.c_str()));
 
             // update watches
-            if (IsWindowShown(m_pTree))
+            if (IsWindowReallyShown(m_pTree))
                 DoWatches();
 
             // update CPU registers
-            if (IsWindowShown(m_pCPURegisters))
+            if (IsWindowReallyShown(m_pCPURegisters))
                 RunCommand(CMD_REGISTERS);
 
             // update callstack
-            if (IsWindowShown(m_pBacktrace))
+            if (IsWindowReallyShown(m_pBacktrace))
                 RunCommand(CMD_BACKTRACE);
 
             // update disassembly
-            if (IsWindowShown(m_pDisassembly))
+            if (IsWindowReallyShown(m_pDisassembly))
             {
                 long int addrL;
                 cursor.address.ToLong(&addrL, 16);

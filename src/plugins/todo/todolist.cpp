@@ -34,9 +34,12 @@ WX_DEFINE_OBJARRAY(ToDoItems);
 
 CB_IMPLEMENT_PLUGIN(ToDoList);
 
+const int idViewTodo = wxNewId();
 const int idAddTodo = wxNewId();
 
 BEGIN_EVENT_TABLE(ToDoList, cbPlugin)
+	EVT_UPDATE_UI(idViewTodo, ToDoList::OnUpdateUI)
+	EVT_MENU(idViewTodo, ToDoList::OnViewList)
 	EVT_MENU(idAddTodo, ToDoList::OnAddItem)
     EVT_EDITOR_OPEN(ToDoList::OnReparse)
     EVT_EDITOR_SAVE(ToDoList::OnReparse)
@@ -82,9 +85,19 @@ void ToDoList::OnAttach()
 	titles.Add(_("Line"));
 	titles.Add(_("File"));
 
-    MessageManager* msgMan = Manager::Get()->GetMessageManager();
+//    MessageManager* msgMan = Manager::Get()->GetMessageManager();
 	m_pListLog = new ToDoListView(6, widths, titles, m_Types);
-	m_ListPageIndex = msgMan->AddLog(m_pListLog, m_PluginInfo.title);
+//	m_ListPageIndex = msgMan->AddLog(m_pListLog, m_PluginInfo.title);
+
+    CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
+    evt.name = _T("TodoListPane");
+    evt.title = _("To-Do list");
+    evt.pWindow = m_pListLog;
+    evt.dockSide = CodeBlocksDockEvent::dsFloating;
+    evt.desiredSize.Set(400, 150);
+    evt.floatingSize.Set(400, 150);
+    evt.minimumSize.Set(400, 150);
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 
     m_AutoRefresh = Manager::Get()->GetConfigManager(_T("todo_list"))->ReadBool(_T("auto_refresh"), true);
     LoadTypes();
@@ -92,13 +105,35 @@ void ToDoList::OnAttach()
 
 void ToDoList::OnRelease(bool appShutDown)
 {
-    if (Manager::Get()->GetMessageManager())
-        Manager::Get()->GetMessageManager()->RemoveLog(m_pListLog);
+    CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
+    evt.pWindow = m_pListLog;
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+
+    m_pListLog->Destroy();
+
+//    if (Manager::Get()->GetMessageManager())
+//        Manager::Get()->GetMessageManager()->RemoveLog(m_pListLog);
 }
 
 void ToDoList::BuildMenu(wxMenuBar* menuBar)
 {
-    // nothing to be added in menu
+    int idx = menuBar->FindMenu(_("View"));
+    if (idx != wxNOT_FOUND)
+    {
+        wxMenu* view = menuBar->GetMenu(idx);
+        wxMenuItemList& items = view->GetMenuItems();
+        // find the first separator and insert before it
+        for (size_t i = 0; i < items.GetCount(); ++i)
+        {
+            if (items[i]->IsSeparator())
+            {
+                view->InsertCheckItem(i, idViewTodo, _("To-Do list"), _("Toggle displaying the To-Do list"));
+                return;
+            }
+        }
+        // not found, just append
+        view->AppendCheckItem(idViewTodo, _("To-Do list"), _("Toggle displaying the To-Do list"));
+    }
 }
 
 void ToDoList::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg)
@@ -147,6 +182,18 @@ void ToDoList::SaveTypes()
 }
 
 // events
+
+void ToDoList::OnUpdateUI(wxUpdateUIEvent& event)
+{
+    Manager::Get()->GetAppWindow()->GetMenuBar()->Check(idViewTodo, IsWindowReallyShown(m_pListLog));
+}
+
+void ToDoList::OnViewList(wxCommandEvent& event)
+{
+    CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
+    evt.pWindow = m_pListLog;
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+}
 
 void ToDoList::OnAddItem(wxCommandEvent& event)
 {
