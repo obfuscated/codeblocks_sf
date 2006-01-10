@@ -277,7 +277,7 @@ void DebuggerGDB::OnRelease(bool appShutDown)
         CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
         evt.pWindow = m_pBreakpointsWindow;
         Manager::Get()->GetAppWindow()->ProcessEvent(evt);
-        delete m_pBreakpointsWindow;
+        m_pBreakpointsWindow->Destroy();
     }
     m_pBreakpointsWindow = 0;
 
@@ -286,7 +286,7 @@ void DebuggerGDB::OnRelease(bool appShutDown)
         CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
         evt.pWindow = m_pDisassembly;
         Manager::Get()->GetAppWindow()->ProcessEvent(evt);
-        delete m_pDisassembly;
+        m_pDisassembly->Destroy();
     }
     m_pDisassembly = 0;
 
@@ -295,7 +295,7 @@ void DebuggerGDB::OnRelease(bool appShutDown)
         CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
         evt.pWindow = m_pCPURegisters;
         Manager::Get()->GetAppWindow()->ProcessEvent(evt);
-        delete m_pCPURegisters;
+        m_pCPURegisters->Destroy();
     }
     m_pCPURegisters = 0;
 
@@ -304,7 +304,7 @@ void DebuggerGDB::OnRelease(bool appShutDown)
         CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
         evt.pWindow = m_pBacktrace;
         Manager::Get()->GetAppWindow()->ProcessEvent(evt);
-        delete m_pBacktrace;
+        m_pBacktrace->Destroy();
     }
     m_pBacktrace = 0;
 
@@ -313,7 +313,7 @@ void DebuggerGDB::OnRelease(bool appShutDown)
         CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
         evt.pWindow = m_pTree;
         Manager::Get()->GetAppWindow()->ProcessEvent(evt);
-        delete m_pTree;
+        m_pTree->Destroy();
 	}
     m_pTree = 0L;
 

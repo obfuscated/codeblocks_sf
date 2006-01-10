@@ -271,6 +271,7 @@ ProjectManager::~ProjectManager()
 	delete m_pFileGroups;m_pFileGroups = 0;
 
     delete m_pNotebook->GetImageList();
+    m_pNotebook->Destroy();
 
 	SC_DESTRUCTOR_END
 }

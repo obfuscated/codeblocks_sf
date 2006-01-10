@@ -128,6 +128,7 @@ MessageManager::~MessageManager()
     SC_DESTRUCTOR_BEGIN
     SC_DESTRUCTOR_END
     delete m_pNotebook->GetImageList();
+    m_pNotebook->Destroy();
 }
 
 void MessageManager::CreateMenu(wxMenuBar* menuBar)

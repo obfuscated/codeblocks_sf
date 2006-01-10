@@ -234,6 +234,11 @@ EditorManager::~EditorManager()
 	SC_DESTRUCTOR_BEGIN
 	SaveAutoComplete();
 
+    CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
+    evt.pWindow = m_pTree;
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    m_pTree->Destroy();
+
 	if (m_Theme)
 		delete m_Theme;
 
@@ -251,6 +256,7 @@ EditorManager::~EditorManager()
         delete m_pData;
         m_pData = NULL;
     }
+    m_pNotebook->Destroy();
 
     SC_DESTRUCTOR_END
 }

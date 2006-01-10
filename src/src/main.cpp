@@ -1840,6 +1840,11 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     }
 
     SaveWindowState();
+
+    m_LayoutManager.DetachPane(Manager::Get()->GetProjectManager()->GetNotebook());
+    m_LayoutManager.DetachPane(Manager::Get()->GetMessageManager()->GetNotebook());
+    m_LayoutManager.DetachPane(Manager::Get()->GetEditorManager()->GetNotebook());
+
 	m_LayoutManager.UnInit();
     TerminateRecentFilesHistory();
 
