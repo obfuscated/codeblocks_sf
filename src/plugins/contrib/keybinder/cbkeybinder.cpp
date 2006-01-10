@@ -12,6 +12,7 @@
 //commit 1/7/2006 9:06 PM v0.4.4
 //commit 1/7/2006 9:06 PM v0.4.5
 //commit 1/9/2006 5PM v0.4.6
+//commit 1/10/2006 6:01 PM v0.4.8
 
 // The majority of this code was lifted from wxKeyBinder and
 // its "minimal.cpp" sample program
@@ -56,10 +57,10 @@ cbKeyBinder::cbKeyBinder()
 	//ctor
 	m_PluginInfo.name = _T("cbKeyBinder");
 	m_PluginInfo.title = _("Keyboard shortcuts configuration");
-	m_PluginInfo.version = _T("0.4.6");
+	m_PluginInfo.version = _T("0.4.8");
 	m_PluginInfo.description <<_("CodeBlocks KeyBinder\n")
                             << _("NOTE: Ctrl+Alt+{UP|DOWN} unsupported.\n")
-                            << _("1/9/2006 9\n");
+                            << _("1/10/2006 5\n");
 	m_PluginInfo.author = _T("Pecan && Mispent Intent");
 	m_PluginInfo.authorEmail = _T("");
 	m_PluginInfo.authorWebsite = _T("");
@@ -115,10 +116,15 @@ void cbKeyBinder::OnAttach()
 
 	// Add window names to which keybinder may attach
 	// a "*" allows attaching to ALL windows for debugging
-    //wxKeyBinder::usableWindows.Add(_T("*"));            //+v0.4.4
-    wxKeyBinder::usableWindows.Add(_T("sciwindow"));            //+v0.4.4
-    wxKeyBinder::usableWindows.Add(_T("flat notebook"));        //+v0.4.4
-    //wxKeyBinder::usableWindows.Add(_T("panel"));                //+v0.4.4
+   #if LOGGING
+    //wxKeyBinder::usableWindows.Add(_T("*"));                 //+v0.4.4
+   #endif
+    wxKeyBinder::usableWindows.Add(_T("sciwindow"));           //+v0.4.4
+    wxKeyBinder::usableWindows.Add(_T("flat notebook"));       //+v0.4.4
+    //wxKeyBinder::usableWindows.Add(_T("panel"));             //+v0.4.4
+    //wxKeyBinder::usableWindows.Add(_T("list"));              //+v0.4.4
+    //wxKeyBinder::usableWindows.Add(_T("listctrl"));          //+v0.4.4
+    //wxKeyBinder::usableWindows.Add(_T("treectrl"));          //+v0.4.4
 
 	return;
 
@@ -133,6 +139,9 @@ void cbKeyBinder::OnRelease(bool appShutDown)
 	// which means you must not use any of the SDK Managers
 	// NOTE: after this function, the inherited member variable
 	// m_IsAttached will be FALSE...
+
+    // remove keyboard and window close event //+v0.4.7
+	m_pKeyProfArr->DetachAll();
 }
 // ----------------------------------------------------------------------------
 //  cbKeyBinder Configure
@@ -352,10 +361,6 @@ void cbKeyBinder::OnKeybindings()
 	int exitcode, sel;
 
     //=====================================================================//
-    // The following warnings don't apply anymore because this
-    // keybinder.h::wxKeyBinder::Attach() has been caged.
-    // It can only attach to SCIwindows and the C::B main window
-    //=====================================================================//
 	{ //<-------- Block declaration to enclose the dlg allocation -----------
 
         // we need to destroy MyDialog *before* the call to UpdateArr:()
@@ -365,20 +370,20 @@ void cbKeyBinder::OnKeybindings()
 		// then, when the dialog is destroyed, wxKeyBinder holds
 		// invalid pointers which will provoke a crash !!
 
-		MyDialog* pdlg= new MyDialog(*m_pKeyProfArr, Manager::Get()->GetAppWindow(),
+		MyDialog dlg(*m_pKeyProfArr, Manager::Get()->GetAppWindow(),
 		    wxT("Keybindings"), mode | wxKEYBINDER_SHOW_APPLYBUTTON);
 
         //following had no effect on crash problem
         //guanantee keyBinder won't attach dialog window
-        pdlg->SetExtraStyle(wxWS_EX_TRANSIENT);
+        dlg.SetExtraStyle(wxWS_EX_TRANSIENT);
 
 		// enable|disable keyprofiles combo box
-		pdlg->m_p->EnableKeyProfiles(bprofiles);
+		dlg.m_p->EnableKeyProfiles(bprofiles);
 
-		if ((exitcode = pdlg->ShowModal()) == wxID_OK)
+		if ((exitcode = dlg.ShowModal()) == wxID_OK)
 		 {
 			// update our array (we gave a copy of it to MyDialog)
-			*m_pKeyProfArr = pdlg->m_p->GetProfiles();
+			*m_pKeyProfArr = dlg.m_p->GetProfiles();
 		 }
 
 		 // Make sure we dont bind to the dialog window
@@ -389,8 +394,6 @@ void cbKeyBinder::OnKeybindings()
          // handler for wxID_CANCEL hides the dialog (if modeless) or calls EndModal(wxID_CANCEL)
          // (if modal). In other words, by default, the DIALOG IS NOT DESTROYED (it might have
          // been created on the stack, so the assumption of dynamic creation cannot be made).
-
-		 pdlg->Destroy();
 
 	}//**here, dlg is destroyed**<------- can now use UpdateArr(...)
      //============================================================//

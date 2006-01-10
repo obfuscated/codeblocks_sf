@@ -11,6 +11,7 @@
 //commit 12/14/2005 9:16 AM
 //commit 1/7/2006 9:04 PM v0.4.4
 //commit 1/8/2006 9:47 AM v0.4.5
+//commit 1/10/2006 5PM v0.4.8
 
 
 #ifdef __GNUG__
@@ -106,7 +107,7 @@ void wxMenuCmd::Update()
     // clearing previous shortcuts if none now assigned
 	if (m_nShortcuts <= 0) {
         if ( ! pItemAccel) return;
-		wxLogDebug(wxT("wxMenuCmd::Update - Removing shortcuts [%s] for [%s]"), strText.c_str(),newtext.c_str());
+		////wxLogDebug(wxT("wxMenuCmd::Update - Removing shortcuts [%s] for [%s]"), strText.c_str(),newtext.c_str());
 		// set "non bitmapped" text to preserve menu width
         m_pItem->SetText(newtext);
         #if defined( __WXMSW__ )
@@ -128,7 +129,7 @@ void wxMenuCmd::Update()
          && ( pItemAccel->GetFlags() == pPrfAccel->GetFlags() )
          && ( pItemAccel->GetKeyCode() == pPrfAccel->GetKeyCode() ) )
          return;
-    wxLogDebug(wxT("wxMenuCmd::Update - Setting shortcuts for [%s]"), newtext.c_str());
+    ////wxLogDebug(wxT("wxMenuCmd::Update - Setting shortcuts for [%s]"), newtext.c_str());
     m_pItem->SetText(newtext);
     //now rebuild the menuitem if bitmapped
     if (m_pItem->GetBitmap().GetWidth())
@@ -205,12 +206,19 @@ wxCmd *wxMenuCmd::CreateNew(wxString cmdName, int id)
 	// so the file loaded item may have a differenct item id
 	// search for a matching menu item
 
-    //wxLogDebug("CreateNew(): id:%d name:%s", id, cmdName.GetData());
+
     wxMenuItem* p = 0;
-	//find menu item id by name
-	int actualMenuID = wxFindMenuItem(m_pMenuBar,cmdName);
-	if (wxNOT_FOUND != actualMenuID)
-        p = m_pMenuBar->FindItem(actualMenuID);
+    // Try to match id and text to avoid duplicate named menu items //v0.4.8
+    wxMenuItem* p_ById = m_pMenuBar->FindItem(id);
+    if ( p_ById && (p_ById->GetLabel() == cmdName) )
+        p = p_ById;
+    else {
+        //find first menu item by this name
+        int actualMenuID = wxFindMenuItem(m_pMenuBar,cmdName);
+        if (wxNOT_FOUND != actualMenuID)
+            p = m_pMenuBar->FindItem(actualMenuID);
+    }
+    ////wxLogDebug(_T("CreateNew(): id:%d new:[%s],Menu[%s]"), id, cmdName.GetData(), p->GetLabel().GetData());
 	if (!p)
 	 {
             wxLogDebug(_T("CreateNew()UnMatched id:%d name:%s"), id, cmdName.GetData());

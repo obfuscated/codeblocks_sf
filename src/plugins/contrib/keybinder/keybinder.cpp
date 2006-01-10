@@ -12,7 +12,9 @@
 //commit 12/16/2005 8:54 PM
 //commit 1/2/2006 7:38 PM
 //commit 1/7/2006 9:05 PM v0.4.4
+//commit  1/10/2006 5 PM v0.4.8
 
+#define NOT !
 
 #ifdef __GNUG__
 #pragma implementation "keybinder.h"
@@ -44,7 +46,8 @@ IMPLEMENT_CLASS(wxKeyProfile, wxKeyBinder)
 
 
 // event table for wxKeyBinder
-IMPLEMENT_CLASS(wxKeyBinder, wxObject)//EvtHandler)
+IMPLEMENT_CLASS(wxKeyBinder, wxObject)
+
 IMPLEMENT_CLASS(wxBinderEvtHandler, wxEvtHandler)
 BEGIN_EVENT_TABLE(wxBinderEvtHandler, wxEvtHandler)
 
@@ -133,8 +136,9 @@ END_EVENT_TABLE()
 // some statics
 int wxCmd::m_nCmdTypes = 0;
 wxCmd::wxCmdType wxCmd::m_arrCmdType[];
-// window names allowd for which keybinder may attach()
+// window names allowed for which keybinder may attach()
 wxArrayString wxKeyBinder::usableWindows;                    //+v0.4.4
+//window used by AttachRecursively, App.TopWindow
 wxWindow* mainAppWindow = 0;
 
 
@@ -835,11 +839,15 @@ void wxKeyBinder::Attach(wxWindow *p)
 void wxKeyBinder::AttachRecursively(wxWindow *p)
 // ----------------------------------------------------------------------------
 {
-
  	if (!p)
 		return;
-    // memorize this main window pointer    //+v0.4.4
-    mainAppWindow = p ;                //+v0.4.4
+
+    // memorize this main window pointer and hook closing windows
+    // in order to remove the OnChar event handler    //+v0.4.4
+    if ( NOT mainAppWindow )
+    {
+        mainAppWindow = p ;
+    }
 
 	Attach(p);
 
@@ -854,6 +862,8 @@ void wxKeyBinder::AttachRecursively(wxWindow *p)
 		if (win)                             //v-0.1
 			AttachRecursively(win);
 	}
+	// we need to update our commands...
+	//UpdateAllCmd();
 }
 // ----------------------------------------------------------------------------
 wxWindow* wxKeyBinder::FindWindowRecursively(const wxWindow* parent, const wxWindow* handle)
@@ -906,6 +916,17 @@ wxWindow* wxKeyBinder::winExists(wxWindow *parent)
     return NULL;
 }
 // ----------------------------------------------------------------------------
+//  wxKeyBinder OnWinClosed
+// ----------------------------------------------------------------------------
+void wxKeyBinder::OnWinClosed(wxCloseEvent& event)
+{ //+v0.4.7
+    //make sure OnChar eventHandlers arn't orphaned
+    wxWindow* pwin = (wxWindow*)event.GetEventObject();
+    Detach( pwin);
+    event.Skip();
+    return;
+}//OnWinClosed
+// ----------------------------------------------------------------------------
 //  wxKeyBinder Detach
 // ----------------------------------------------------------------------------
 void wxKeyBinder::Detach(wxWindow *p)
@@ -913,8 +934,7 @@ void wxKeyBinder::Detach(wxWindow *p)
 	if (!p || !IsAttachedTo(p))
 		return;		// this is not attached...
 
-    //-if (winExists(p)) //+v0.1
-        wxLogDebug(wxT("wxKeyBinder::Detach - detaching from [%s] %p"), p->GetName().c_str(),p);
+    wxLogDebug(wxT("wxKeyBinder::Detach - detaching from [%s] %p"), p->GetName().c_str(),p);
 
 	// remove the event handler
 	int idx = FindHandlerIdxFor(p);
@@ -939,20 +959,24 @@ void wxKeyBinder::DetachAll()
 
 	for (int i=0; i < (int)m_arrHandlers.GetCount(); i++)
 	 {
-        pwin = ((wxBinderEvtHandler*)m_arrHandlers.Item(i))->GetTargetWnd();     //+v0.4
-        if ( winExists( pwin ) )
-        {
-            wxLogDebug( _T("WxKeyBinder:DetachAll:Deleteing EvtHdlr for [%s]%p"), pwin->GetLabel().GetData(), pwin);     //+v0.4
-            delete (wxBinderEvtHandler*)m_arrHandlers.Item(i);
-        } else {
-            //FIXIT Is this a memory leak with the eventhandler still on event chain??
-            wxLogDebug( _T("WxKeyBinder:DetachAll:window NOT found %p <----------"), pwin);     //+v0.4
-
+        wxBinderEvtHandler* pHdlr = (wxBinderEvtHandler*)m_arrHandlers.Item(i);
+        pwin = pHdlr->GetTargetWnd();     //+v0.4
+        if  ( NOT winExists( pwin ) )
+        {   //+v0.4.8
+            pHdlr->m_pTarget = 0; //tell dtor not to RemoveEventHander()
+            pHdlr->m_pTarget = mainAppWindow; //try using main window
+            wxLogDebug( _T("WxKeyBinder:DetachAll:window NOT found %p <----------"), pwin); //+v0.4.6
+            pwin = pHdlr->m_pTarget;
         }
+        #if LOGGING
+         ////wxLogDebug( _T("WxKeyBinder:DetachAll:Deleteing EvtHdlr for [%s] %p"), pwin->GetLabel().GetData(), pwin);     //+v0.4
+        #endif
+        delete pHdlr;
 	 }
 
 	// and clear the array
 	m_arrHandlers.Clear();
+
 }
 // ----------------------------------------------------------------------------
 //  wxKeyBinder ImportMenuBarCmd
@@ -1007,7 +1031,6 @@ void wxKeyBinder::OnChar(wxKeyEvent &event, wxEvtHandler *next)
 
 //		wxLogDebug(wxT("wxKeyBinder::OnChar - ignoring this keyevent [%d]"),
 //					event.GetKeyCode());
-//        //-wxLogDebug("\n");
 
 		event.Skip();		// ... skip it
 
@@ -1034,7 +1057,9 @@ void wxKeyBinder::OnChar(wxKeyEvent &event, wxEvtHandler *next)
 				wxT("wxCmd on the keycode [%d] (event timestamp: %ld)"),
 				p->GetName().c_str(), event.GetKeyCode(), event.m_timeStamp);
 		wxLogDebug(wxT("wxKeyBinder::OnChar - window[%s][%p]"),
-                ((wxWindow*)event.GetEventObject())->GetLabel().GetData(), event.GetEventObject());
+                ((wxWindow*)event.GetEventObject())->GetName().GetData(),
+                 event.GetEventObject() );
+
 		p->Exec(event.GetEventObject(),		// otherwise, tell wxCmd to send the
 				client);	// associated wxEvent to the next handler in the chain
 	}

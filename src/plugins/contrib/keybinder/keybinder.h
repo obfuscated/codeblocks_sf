@@ -11,8 +11,9 @@
 //commit 12/14/2005 9:15 AM
 //commit 12/16/2005 8:54 PM
 //commit 1/7/2006 9:04 PM v0.4.4
+//commit 1/10/2006 5PM v0.4.8
 
-
+#define NOT !
 
 #ifndef __KEYBINDER_G__
 #define __KEYBINDER_G__
@@ -476,6 +477,7 @@ class wxKeyBinder;
 class wxBinderEvtHandler : public wxEvtHandler
 // ----------------------------------------------------------------------------
 {
+    friend class wxKeyBinder;   //+v0.4.8
 	//! The wxKeyBinder called by wxBinderEvtHandler when receiving a wxKeyEvent.
 	wxKeyBinder *m_pBinder;
 
@@ -498,7 +500,11 @@ public:
 	//! Removes this event handler from the window you specified
 	//! during construction (the target window).
 	virtual ~wxBinderEvtHandler()
-		{ m_pTarget->RemoveEventHandler(this); }
+		{
+            if ( m_pTarget ) //+v0.4.8
+              if ( NOT m_pTarget->RemoveEventHandler(this))
+               LOGIT(_T("wxBinderEvtHandler::~RemoveEventhandler() failed"));
+        }
 
 
 	//! Returns TRUE if this event handler is attached to the given window.
@@ -835,6 +841,7 @@ public:		// miscellaneous
     wxWindow* FindWindowRecursively(const wxWindow* parent, const wxWindow* handle);
 
 private:
+    void OnWinClosed(wxCloseEvent& event); //+v0.4.7
 	DECLARE_CLASS(wxKeyBinder)
 };
 
