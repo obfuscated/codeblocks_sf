@@ -1402,7 +1402,6 @@ void MainFrame::InitializeRecentFilesHistory()
         if (recentFiles)
         {
             recentFiles->Remove(clear);
-            m_FilesHistory.UseMenu(recentFiles);
 
             wxArrayString files = Manager::Get()->GetConfigManager(_T("app"))->ReadArrayString(_T("/recent_files"));
             for (int i = (int)files.GetCount() - 1; i >= 0; --i)
@@ -1410,6 +1409,8 @@ void MainFrame::InitializeRecentFilesHistory()
 				if(wxFileExists(files[i]))
 					m_FilesHistory.AddFileToHistory(files[i]);
             }
+            m_FilesHistory.UseMenu(recentFiles);
+            m_FilesHistory.AddFilesToMenu(recentFiles);
             if (recentFiles->GetMenuItemCount())
                 recentFiles->AppendSeparator();
             recentFiles->Append(clear);
@@ -1419,7 +1420,6 @@ void MainFrame::InitializeRecentFilesHistory()
         if (recentProjects)
         {
             recentProjects->Remove(clear);
-            m_ProjectsHistory.UseMenu(recentProjects);
 
             wxArrayString files = Manager::Get()->GetConfigManager(_T("app"))->ReadArrayString(_T("/recent_projects"));
             for (int i = (int)files.GetCount() - 1; i >= 0; --i)
@@ -1427,6 +1427,8 @@ void MainFrame::InitializeRecentFilesHistory()
             	if(wxFileExists(files[i]))
 					m_ProjectsHistory.AddFileToHistory(files[i]);
             }
+            m_ProjectsHistory.UseMenu(recentProjects);
+            m_ProjectsHistory.AddFilesToMenu(recentProjects);
             if (recentProjects->GetMenuItemCount())
                 recentProjects->AppendSeparator();
             recentProjects->Append(clear);
