@@ -65,8 +65,12 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
     XRCCTRL(*this, "spnAuiCaption", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/environment/aui/caption_size"), m_pArt->GetMetric(wxAUI_ART_CAPTION_SIZE)));
     XRCCTRL(*this, "btnAuiBgColor", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/aui/bg_color"), m_pArt->GetColor(wxAUI_ART_BACKGROUND_COLOUR)));
     XRCCTRL(*this, "btnAuiSashColor", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/aui/sash_color"), m_pArt->GetColor(wxAUI_ART_SASH_COLOUR)));
-    XRCCTRL(*this, "btnAuiCaptionColor", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/aui/caption_color"), m_pArt->GetColor(wxAUI_ART_CAPTION_COLOUR)));
-    XRCCTRL(*this, "btnAuiCaptionTextColor", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/aui/caption_text_color"), m_pArt->GetColor(wxAUI_ART_CAPTION_TEXT_COLOUR)));
+    XRCCTRL(*this, "btnAuiActiveCaptionColor", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/aui/active_caption_color"), m_pArt->GetColor(wxAUI_ART_ACTIVE_CAPTION_COLOUR)));
+    XRCCTRL(*this, "btnAuiActiveCaptionGradientColor", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/aui/active_caption_gradient_color"), m_pArt->GetColor(wxAUI_ART_ACTIVE_CAPTION_GRADIENT_COLOUR)));
+    XRCCTRL(*this, "btnAuiActiveCaptionTextColor", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/aui/active_caption_text_color"), m_pArt->GetColor(wxAUI_ART_ACTIVE_CAPTION_TEXT_COLOUR)));
+    XRCCTRL(*this, "btnAuiInactiveCaptionColor", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/aui/inactive_caption_color"), m_pArt->GetColor(wxAUI_ART_INACTIVE_CAPTION_COLOUR)));
+    XRCCTRL(*this, "btnAuiInactiveCaptionGradientColor", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/aui/inactive_caption_gradient_color"), m_pArt->GetColor(wxAUI_ART_INACTIVE_CAPTION_GRADIENT_COLOUR)));
+    XRCCTRL(*this, "btnAuiInactiveCaptionTextColor", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/aui/inactive_caption_text_color"), m_pArt->GetColor(wxAUI_ART_INACTIVE_CAPTION_TEXT_COLOUR)));
     XRCCTRL(*this, "btnAuiBorderColor", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/aui/border_color"), m_pArt->GetColor(wxAUI_ART_BORDER_COLOUR)));
     XRCCTRL(*this, "btnAuiGripperColor", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/aui/gripper_color"), m_pArt->GetColor(wxAUI_ART_GRIPPER_COLOUR)));
 
@@ -167,17 +171,26 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         cfg->Write(_T("/environment/aui/caption_size"),         (int)XRCCTRL(*this, "spnAuiCaption", wxSpinCtrl)->GetValue());
         cfg->Write(_T("/environment/aui/bg_color"),             XRCCTRL(*this, "btnAuiBgColor", wxButton)->GetBackgroundColour());
         cfg->Write(_T("/environment/aui/sash_color"),           XRCCTRL(*this, "btnAuiSashColor", wxButton)->GetBackgroundColour());
-        cfg->Write(_T("/environment/aui/caption_color"),        XRCCTRL(*this, "btnAuiCaptionColor", wxButton)->GetBackgroundColour());
-        cfg->Write(_T("/environment/aui/caption_text_color"),   XRCCTRL(*this, "btnAuiCaptionTextColor", wxButton)->GetBackgroundColour());
-        cfg->Write(_T("/environment/aui/border_color"),         XRCCTRL(*this, "btnAuiBorderColor", wxButton)->GetBackgroundColour());
-        cfg->Write(_T("/environment/aui/gripper_color"),        XRCCTRL(*this, "btnAuiGripperColor", wxButton)->GetBackgroundColour());
+        cfg->Write(_T("/environment/aui/active_caption_color"),             XRCCTRL(*this, "btnAuiActiveCaptionColor", wxButton)->GetBackgroundColour());
+        cfg->Write(_T("/environment/aui/active_caption_gradient_color"),    XRCCTRL(*this, "btnAuiActiveCaptionGradientColor", wxButton)->GetBackgroundColour());
+        cfg->Write(_T("/environment/aui/active_caption_text_color"),        XRCCTRL(*this, "btnAuiActiveCaptionTextColor", wxButton)->GetBackgroundColour());
+        cfg->Write(_T("/environment/aui/inactive_caption_color"),           XRCCTRL(*this, "btnAuiInactiveCaptionColor", wxButton)->GetBackgroundColour());
+        cfg->Write(_T("/environment/aui/inactive_caption_gradient_color"),  XRCCTRL(*this, "btnAuiInactiveCaptionGradientColor", wxButton)->GetBackgroundColour());
+        cfg->Write(_T("/environment/aui/inactive_caption_text_color"),      XRCCTRL(*this, "btnAuiInactiveCaptionTextColor", wxButton)->GetBackgroundColour());
+        cfg->Write(_T("/environment/aui/border_color"),                     XRCCTRL(*this, "btnAuiBorderColor", wxButton)->GetBackgroundColour());
+        cfg->Write(_T("/environment/aui/gripper_color"),                    XRCCTRL(*this, "btnAuiGripperColor", wxButton)->GetBackgroundColour());
+
         m_pArt->SetMetric(wxAUI_ART_PANE_BORDER_SIZE,   XRCCTRL(*this, "spnAuiBorder", wxSpinCtrl)->GetValue());
         m_pArt->SetMetric(wxAUI_ART_SASH_SIZE,          XRCCTRL(*this, "spnAuiSash", wxSpinCtrl)->GetValue());
         m_pArt->SetMetric(wxAUI_ART_CAPTION_SIZE,       XRCCTRL(*this, "spnAuiCaption", wxSpinCtrl)->GetValue());
         m_pArt->SetColor(wxAUI_ART_BACKGROUND_COLOUR,   XRCCTRL(*this, "btnAuiBgColor", wxButton)->GetBackgroundColour());
         m_pArt->SetColor(wxAUI_ART_SASH_COLOUR,         XRCCTRL(*this, "btnAuiSashColor", wxButton)->GetBackgroundColour());
-        m_pArt->SetColor(wxAUI_ART_CAPTION_COLOUR,      XRCCTRL(*this, "btnAuiCaptionColor", wxButton)->GetBackgroundColour());
-        m_pArt->SetColor(wxAUI_ART_CAPTION_TEXT_COLOUR, XRCCTRL(*this, "btnAuiCaptionTextColor", wxButton)->GetBackgroundColour());
+        m_pArt->SetColor(wxAUI_ART_ACTIVE_CAPTION_COLOUR,           XRCCTRL(*this, "btnAuiActiveCaptionColor", wxButton)->GetBackgroundColour());
+        m_pArt->SetColor(wxAUI_ART_ACTIVE_CAPTION_GRADIENT_COLOUR,  XRCCTRL(*this, "btnAuiActiveCaptionGradientColor", wxButton)->GetBackgroundColour());
+        m_pArt->SetColor(wxAUI_ART_ACTIVE_CAPTION_TEXT_COLOUR,      XRCCTRL(*this, "btnAuiActiveCaptionTextColor", wxButton)->GetBackgroundColour());
+        m_pArt->SetColor(wxAUI_ART_INACTIVE_CAPTION_COLOUR,         XRCCTRL(*this, "btnAuiInactiveCaptionColor", wxButton)->GetBackgroundColour());
+        m_pArt->SetColor(wxAUI_ART_INACTIVE_CAPTION_GRADIENT_COLOUR,XRCCTRL(*this, "btnAuiInactiveCaptionGradientColor", wxButton)->GetBackgroundColour());
+        m_pArt->SetColor(wxAUI_ART_INACTIVE_CAPTION_TEXT_COLOUR,    XRCCTRL(*this, "btnAuiInactiveCaptionTextColor", wxButton)->GetBackgroundColour());
         m_pArt->SetColor(wxAUI_ART_BORDER_COLOUR,       XRCCTRL(*this, "btnAuiBorderColor", wxButton)->GetBackgroundColour());
         m_pArt->SetColor(wxAUI_ART_GRIPPER_COLOUR,      XRCCTRL(*this, "btnAuiGripperColor", wxButton)->GetBackgroundColour());
 

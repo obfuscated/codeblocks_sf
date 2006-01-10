@@ -96,7 +96,7 @@
             <Target title="sdk">
                 <Option output="devel/libcodeblocks.so" />
                 <Option working_dir="devel" />
-                <Option external_deps="sdk/tinyxml/libtxml.a;sdk/propgrid/libpropgrid.a;sdk/wxFlatNotebook/libwxflatnotebook.a;" />
+                <Option external_deps="sdk/tinyxml/libtxml.a;sdk/propgrid/libpropgrid.a;sdk/wxFlatNotebook/libwxflatnotebook.a;sdk/as/libangelscript.a;" />
                 <Option type="3" />
                 <Option compiler="0" />
                 <Option parameters="--debug-log --no-check-associations" />
@@ -139,7 +139,7 @@
             <Target title="src">
                 <Option output="devel/codeblocks" />
                 <Option working_dir="devel" />
-                <Option external_deps="../wxDockit/lib/libwxdockit.a;" />
+                <Option external_deps="src/wxAUI/libwxaui.a;" />
                 <Option type="0" />
                 <Option compiler="0" />
                 <Option parameters="--debug-log -ns" />

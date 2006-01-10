@@ -4,7 +4,7 @@
 // Author:      Benjamin I. Williams
 // Modified by:
 // Created:     2005-05-17
-// RCS-ID:
+// RCS-ID:      
 // Copyright:   (C) Copyright 2005, Kirix Corporation, All Rights Reserved.
 // Licence:     wxWindows Library Licence, Version 3.1
 ///////////////////////////////////////////////////////////////////////////////
@@ -26,9 +26,10 @@ enum wxFrameManagerDock
 enum wxFrameManagerOption
 {
     wxAUI_MGR_ALLOW_FLOATING        = 1 << 0,
-    wxAUI_MGR_TRANSPARENT_DRAG      = 1 << 1,
-    wxAUI_MGR_TRANSPARENT_HINT      = 1 << 2,
-    wxAUI_MGR_TRANSPARENT_HINT_FADE = 1 << 3,
+    wxAUI_MGR_ALLOW_ACTIVE_PANE     = 1 << 1,
+    wxAUI_MGR_TRANSPARENT_DRAG      = 1 << 2,
+    wxAUI_MGR_TRANSPARENT_HINT      = 1 << 3,
+    wxAUI_MGR_TRANSPARENT_HINT_FADE = 1 << 4,
 
     wxAUI_MGR_DEFAULT = wxAUI_MGR_ALLOW_FLOATING |
                         wxAUI_MGR_TRANSPARENT_HINT |
@@ -44,11 +45,23 @@ enum wxPaneDockArtSetting
     wxAUI_ART_PANE_BUTTON_SIZE = 4,
     wxAUI_ART_BACKGROUND_COLOUR = 5,
     wxAUI_ART_SASH_COLOUR = 6,
-    wxAUI_ART_CAPTION_COLOUR = 7,
-    wxAUI_ART_CAPTION_TEXT_COLOUR = 8,
-    wxAUI_ART_BORDER_COLOUR = 9,
-    wxAUI_ART_GRIPPER_COLOUR = 10,
-    wxAUI_ART_CAPTION_FONT = 11,
+    wxAUI_ART_ACTIVE_CAPTION_COLOUR = 7,
+    wxAUI_ART_ACTIVE_CAPTION_GRADIENT_COLOUR = 8,
+    wxAUI_ART_INACTIVE_CAPTION_COLOUR = 9,
+    wxAUI_ART_INACTIVE_CAPTION_GRADIENT_COLOUR = 10,
+    wxAUI_ART_ACTIVE_CAPTION_TEXT_COLOUR = 11,
+    wxAUI_ART_INACTIVE_CAPTION_TEXT_COLOUR = 12,
+    wxAUI_ART_BORDER_COLOUR = 13,
+    wxAUI_ART_GRIPPER_COLOUR = 14,
+    wxAUI_ART_CAPTION_FONT = 15,
+    wxAUI_ART_GRADIENT_TYPE = 16
+};
+
+enum wxPaneDockArtGradients
+{
+    wxAUI_GRADIENT_NONE = 0,
+    wxAUI_GRADIENT_VERTICAL = 1,
+    wxAUI_GRADIENT_HORIZONTAL = 2
 };
 
 enum wxPaneButtonState
@@ -68,7 +81,6 @@ enum wxPaneInsertLevel
 
 
 // forwards and array declarations
-class wxPaneInfo;
 class wxDockUIPart;
 class wxPaneButton;
 class wxPaneInfo;
@@ -89,7 +101,7 @@ extern wxPaneInfo wxNullPaneInfo;
 
 
 
-class wxPaneInfo
+class WXDLLEXPORT wxPaneInfo
 {
 public:
 
@@ -108,7 +120,7 @@ public:
         min_size = wxDefaultSize;
         max_size = wxDefaultSize;
         dock_proportion = 0;
-
+        
         DefaultPane();
     }
 
@@ -130,6 +142,7 @@ public:
         floating_size = c.floating_size;
         dock_proportion = c.dock_proportion;
         buttons = c.buttons;
+        rect = c.rect;
     }
 
     wxPaneInfo& operator=(const wxPaneInfo& c)
@@ -150,6 +163,7 @@ public:
         floating_size = c.floating_size;
         dock_proportion = c.dock_proportion;
         buttons = c.buttons;
+        rect = c.rect;
         return *this;
     }
 
@@ -173,7 +187,7 @@ public:
     bool HasMaximizeButton() const { return HasFlag(buttonMaximize); }
     bool HasMinimizeButton() const { return HasFlag(buttonMinimize); }
     bool HasPinButton() const { return HasFlag(buttonPin); }
-
+    
     wxPaneInfo& Window(wxWindow* w) { window = w; return *this; }
     wxPaneInfo& Name(const wxString& n) { name = n; return *this; }
     wxPaneInfo& Caption(const wxString& c) { caption = c; return *this; }
@@ -194,7 +208,9 @@ public:
     wxPaneInfo& MinSize(int x, int y) { min_size.Set(x,y); return *this; }
     wxPaneInfo& MaxSize(int x, int y) { max_size.Set(x,y); return *this; }
     wxPaneInfo& FloatingPosition(const wxPoint& pos) { floating_pos = pos; return *this; }
+    wxPaneInfo& FloatingPosition(int x, int y) { floating_pos.x = x; floating_pos.y = y; return *this; }
     wxPaneInfo& FloatingSize(const wxSize& size) { floating_size = size; return *this; }
+    wxPaneInfo& FloatingSize(int x, int y) { floating_size.Set(x,y); return *this; }
     wxPaneInfo& Fixed() { return SetFlag(optionResizable, false); }
     wxPaneInfo& Resizable(bool resizable = true) { return SetFlag(optionResizable, resizable); }
     wxPaneInfo& Dock() { return SetFlag(optionFloating, false); }
@@ -204,7 +220,7 @@ public:
     wxPaneInfo& CaptionVisible(bool visible = true) { return SetFlag(optionCaption, visible); }
     wxPaneInfo& PaneBorder(bool visible = true) { return SetFlag(optionPaneBorder, visible); }
     wxPaneInfo& Gripper(bool visible = true) { return SetFlag(optionGripper, visible); }
-    wxPaneInfo& CloseButton(bool visible = true) { return SetFlag(buttonClose, visible); }
+    wxPaneInfo& CloseButton(bool visible = true) { return SetFlag(buttonClose, visible); }  
     wxPaneInfo& MaximizeButton(bool visible = true) { return SetFlag(buttonMaximize, visible); }
     wxPaneInfo& MinimizeButton(bool visible = true) { return SetFlag(buttonMinimize, visible); }
     wxPaneInfo& PinButton(bool visible = true) { return SetFlag(buttonPin, visible); }
@@ -212,7 +228,7 @@ public:
     wxPaneInfo& TopDockable(bool b = true) { return SetFlag(optionTopDockable, b); }
     wxPaneInfo& BottomDockable(bool b = true) { return SetFlag(optionBottomDockable, b); }
     wxPaneInfo& LeftDockable(bool b = true) { return SetFlag(optionLeftDockable, b); }
-    wxPaneInfo& RightDockable(bool b = true) { return SetFlag(optionRightDockable, b); }
+    wxPaneInfo& RightDockable(bool b = true) { return SetFlag(optionRightDockable, b); } 
     wxPaneInfo& Floatable(bool b = true) { return SetFlag(optionFloatable, b); }
     wxPaneInfo& Movable(bool b = true) { return SetFlag(optionMovable, b); }
     wxPaneInfo& Dockable(bool b = true)
@@ -228,14 +244,14 @@ public:
                  optionCaption | optionPaneBorder | buttonClose;
         return *this;
     }
-
+    
     wxPaneInfo& CentrePane() { return CenterPane(); }
     wxPaneInfo& CenterPane()
     {
         state = 0;
         return Center().PaneBorder().Resizable();
     }
-
+     
     wxPaneInfo& ToolbarPane()
     {
         DefaultPane();
@@ -254,7 +270,7 @@ public:
             state &= ~flag;
         return *this;
     }
-
+    
     bool HasFlag(unsigned int flag) const
     {
         return (state & flag) ? true:false;
@@ -278,6 +294,7 @@ public:
         optionGripper         = 1 << 11,
         optionDestroyOnClose  = 1 << 12,
         optionToolbar         = 1 << 13,
+        optionActive          = 1 << 14,
 
         buttonClose           = 1 << 24,
         buttonMaximize        = 1 << 25,
@@ -311,13 +328,15 @@ public:
     int dock_proportion;  // proportion while docked
 
     wxPaneButtonArray buttons; // buttons on the pane
+
+    wxRect rect;              // current rectangle (populated by wxAUI)
 };
 
 
 
 
 
-class wxFrameManager : public wxEvtHandler
+class WXDLLEXPORT wxFrameManager : public wxEvtHandler
 {
 friend class wxFloatingPane;
 
@@ -327,13 +346,13 @@ public:
                    unsigned int flags = wxAUI_MGR_DEFAULT);
     virtual ~wxFrameManager();
     void UnInit();
-
+    
     void SetFlags(unsigned int flags);
     unsigned int GetFlags() const;
-
+    
     void SetFrame(wxFrame* frame);
     wxFrame* GetFrame() const;
-
+    
     void SetArtProvider(wxDockArt* art_provider);
     wxDockArt* GetArtProvider() const;
 
@@ -343,22 +362,22 @@ public:
 
     bool AddPane(wxWindow* window,
                  const wxPaneInfo& pane_info);
-
+                 
     bool AddPane(wxWindow* window,
                  int direction = wxLEFT,
                  const wxString& caption = wxEmptyString);
-
+                 
     bool InsertPane(wxWindow* window,
                  const wxPaneInfo& pane_info,
                  int insert_level = wxAUI_INSERT_PANE);
-
+                 
     bool DetachPane(wxWindow* window);
 
     wxString SavePerspective();
-
+    
     bool LoadPerspective(const wxString& perspective,
                  bool update = true);
-
+    
     void Update();
 
 private:
@@ -394,11 +413,12 @@ private:
     wxPaneInfo& LookupPane(wxWindow* window);
     wxPaneInfo& LookupPane(const wxString& name);
     wxDockUIPart* HitTest(int x, int y);
-    wxDockUIPart* GetPaneBorderPart(wxWindow* pane);
+    wxDockUIPart* GetPanePart(wxWindow* pane);
     int GetDockPixelOffset(wxPaneInfo& test);
     void OnFloatingPaneMoveStart(wxWindow* window);
     void OnFloatingPaneMoving(wxWindow* window);
     void OnFloatingPaneMoved(wxWindow* window);
+    void OnFloatingPaneActivated(wxWindow* window);
     void OnFloatingPaneClosed(wxWindow* window);
     void OnFloatingPaneResized(wxWindow* window, const wxSize& size);
     void Render(wxDC* dc);
@@ -425,6 +445,7 @@ private:
     void OnMotion(wxMouseEvent& event);
     void OnLeaveWindow(wxMouseEvent& event);
     void OnPaneButton(wxFrameManagerEvent& event);
+    void OnChildFocus(wxChildFocusEvent& event);
     void OnHintFadeTimer(wxTimerEvent& event);
 
 private:
@@ -462,7 +483,7 @@ private:
     wxWindow* m_hint_wnd;        // transparent hint window (for now, only msw)
     wxTimer m_hint_fadetimer;    // transparent fade timer (for now, only msw)
     int m_hint_fadeamt;          // transparent fade amount (for now, only msw)
-
+    
     DECLARE_EVENT_TABLE()
 };
 
@@ -470,7 +491,7 @@ private:
 
 // event declarations/classes
 
-class wxFrameManagerEvent : public wxEvent
+class WXDLLEXPORT wxFrameManagerEvent : public wxEvent
 {
 public:
     wxFrameManagerEvent(wxEventType type) : wxEvent(0, type)
@@ -519,7 +540,7 @@ public:
     virtual void SetColour(int id, const wxColor& colour) = 0;
     wxColor GetColor(int id) { return GetColour(id); }
     void SetColor(int id, const wxColor& color) { SetColour(id, color); }
-
+    
     virtual void DrawSash(wxDC& dc,
                           int orientation,
                           const wxRect& rect) = 0;
@@ -530,19 +551,22 @@ public:
 
     virtual void DrawCaption(wxDC& dc,
                           const wxString& text,
-                          const wxRect& rect) = 0;
+                          const wxRect& rect,
+                          wxPaneInfo& pane) = 0;
 
     virtual void DrawGripper(wxDC& dc,
-                          const wxRect& rect) = 0;
+                          const wxRect& rect,
+                          wxPaneInfo& pane) = 0;
 
     virtual void DrawBorder(wxDC& dc,
                           const wxRect& rect,
-                          unsigned int pane_state) = 0;
+                          wxPaneInfo& pane) = 0;
 
     virtual void DrawPaneButton(wxDC& dc,
                           int button,
                           int button_state,
-                          const wxRect& rect) = 0;
+                          const wxRect& rect,
+                          wxPaneInfo& pane) = 0;
 };
 
 
@@ -573,40 +597,53 @@ public:
 
     void DrawCaption(wxDC& dc,
                   const wxString& text,
-                  const wxRect& rect);
+                  const wxRect& rect,
+                  wxPaneInfo& pane);
 
     void DrawGripper(wxDC& dc,
-                     const wxRect& rect);
+                  const wxRect& rect,
+                  wxPaneInfo& pane);
 
     void DrawBorder(wxDC& dc,
                   const wxRect& rect,
-                  unsigned int pane_state);
+                  wxPaneInfo& pane);
 
     void DrawPaneButton(wxDC& dc,
                   int button,
                   int button_state,
-                  const wxRect& rect);
+                  const wxRect& rect,
+                  wxPaneInfo& pane);
 
-private:
+protected:
+
+    void DrawCaptionBackground(wxDC& dc, const wxRect& rect, bool active);
+
+protected:
+
     wxPen m_border_pen;
     wxBrush m_sash_brush;
     wxBrush m_background_brush;
-    wxBrush m_caption_brush;
     wxBrush m_gripper_brush;
     wxFont m_caption_font;
-    wxBitmap m_close_bitmap;
-    wxBitmap m_pin_bitmap;
-    wxBrush m_selectbutton_brush;
-    wxPen m_selectbutton_pen;
+    wxBitmap m_inactive_close_bitmap;
+    wxBitmap m_inactive_pin_bitmap;
+    wxBitmap m_active_close_bitmap;
+    wxBitmap m_active_pin_bitmap;
     wxPen m_gripper_pen1;
     wxPen m_gripper_pen2;
     wxPen m_gripper_pen3;
-    wxColour m_caption_text_colour;
+    wxColour m_active_caption_colour;
+    wxColour m_active_caption_gradient_colour;
+    wxColour m_active_caption_text_colour;
+    wxColour m_inactive_caption_colour;
+    wxColour m_inactive_caption_gradient_colour;
+    wxColour m_inactive_caption_text_colour;
     int m_border_size;
     int m_caption_size;
     int m_sash_size;
     int m_button_size;
     int m_gripper_size;
+    int m_gradient_type;
 };
 
 
@@ -718,7 +755,7 @@ public:
 // spectrum of events will be implemented in the next incremental version
 
 BEGIN_DECLARE_EVENT_TYPES()
-    DECLARE_EVENT_TYPE(wxEVT_AUI_PANEBUTTON, 0)
+    DECLARE_EVENT_TYPE(wxEVT_AUI_PANEBUTTON, 0)   
 END_DECLARE_EVENT_TYPES()
 
 typedef void (wxEvtHandler::*wxFrameManagerEventFunction)(wxFrameManagerEvent&);

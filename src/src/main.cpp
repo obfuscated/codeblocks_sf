@@ -1229,13 +1229,18 @@ void MainFrame::DoUpdateLayoutColors()
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
     wxDockArt* art = m_LayoutManager.GetArtProvider();
 
+    m_LayoutManager.SetFlags(wxAUI_MGR_DEFAULT | wxAUI_MGR_ALLOW_ACTIVE_PANE | wxAUI_MGR_TRANSPARENT_DRAG);
     art->SetMetric(wxAUI_ART_PANE_BORDER_SIZE,   cfg->ReadInt(_T("/environment/aui/border_size"), art->GetMetric(wxAUI_ART_PANE_BORDER_SIZE)));
     art->SetMetric(wxAUI_ART_SASH_SIZE,          cfg->ReadInt(_T("/environment/aui/sash_size"), art->GetMetric(wxAUI_ART_SASH_SIZE)));
     art->SetMetric(wxAUI_ART_CAPTION_SIZE,       cfg->ReadInt(_T("/environment/aui/caption_size"), art->GetMetric(wxAUI_ART_CAPTION_SIZE)));
     art->SetColor(wxAUI_ART_BACKGROUND_COLOUR,   cfg->ReadColour(_T("/environment/aui/bg_color"), art->GetColor(wxAUI_ART_BACKGROUND_COLOUR)));
     art->SetColor(wxAUI_ART_SASH_COLOUR,         cfg->ReadColour(_T("/environment/aui/sash_color"), art->GetColor(wxAUI_ART_SASH_COLOUR)));
-    art->SetColor(wxAUI_ART_CAPTION_COLOUR,      cfg->ReadColour(_T("/environment/aui/caption_color"), art->GetColor(wxAUI_ART_CAPTION_COLOUR)));
-    art->SetColor(wxAUI_ART_CAPTION_TEXT_COLOUR, cfg->ReadColour(_T("/environment/aui/caption_text_color"), art->GetColor(wxAUI_ART_CAPTION_TEXT_COLOUR)));
+    art->SetColor(wxAUI_ART_ACTIVE_CAPTION_COLOUR,              cfg->ReadColour(_T("/environment/aui/active_caption_color"), art->GetColor(wxAUI_ART_ACTIVE_CAPTION_COLOUR)));
+    art->SetColor(wxAUI_ART_ACTIVE_CAPTION_GRADIENT_COLOUR,     cfg->ReadColour(_T("/environment/aui/active_caption_gradient_color"), art->GetColor(wxAUI_ART_ACTIVE_CAPTION_GRADIENT_COLOUR)));
+    art->SetColor(wxAUI_ART_ACTIVE_CAPTION_TEXT_COLOUR,         cfg->ReadColour(_T("/environment/aui/active_caption_text_color"), art->GetColor(wxAUI_ART_ACTIVE_CAPTION_TEXT_COLOUR)));
+    art->SetColor(wxAUI_ART_INACTIVE_CAPTION_COLOUR,            cfg->ReadColour(_T("/environment/aui/inactive_caption_color"), art->GetColor(wxAUI_ART_INACTIVE_CAPTION_COLOUR)));
+    art->SetColor(wxAUI_ART_INACTIVE_CAPTION_GRADIENT_COLOUR,   cfg->ReadColour(_T("/environment/aui/inactive_caption_gradient_color"), art->GetColor(wxAUI_ART_INACTIVE_CAPTION_GRADIENT_COLOUR)));
+    art->SetColor(wxAUI_ART_INACTIVE_CAPTION_TEXT_COLOUR,       cfg->ReadColour(_T("/environment/aui/inactive_caption_text_color"), art->GetColor(wxAUI_ART_INACTIVE_CAPTION_TEXT_COLOUR)));
     art->SetColor(wxAUI_ART_BORDER_COLOUR,       cfg->ReadColour(_T("/environment/aui/border_color"), art->GetColor(wxAUI_ART_BORDER_COLOUR)));
     art->SetColor(wxAUI_ART_GRIPPER_COLOUR,      cfg->ReadColour(_T("/environment/aui/gripper_color"), art->GetColor(wxAUI_ART_GRIPPER_COLOUR)));
 

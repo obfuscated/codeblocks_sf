@@ -152,7 +152,7 @@
             </object>
           </object>
           <object class="notebookpage">
-            <label>Appearence</label>
+            <label>Appearance</label>
             <object class="wxPanel" name="tabAppearence">
               <object class="wxBoxSizer">
                 <orient>wxVERTICAL</orient>
@@ -203,6 +203,7 @@
                                   <label>Gradient style colors</label>
                                   <orient>wxVERTICAL</orient>
                                   <object class="sizeritem">
+                                    <flag>wxALIGN_CENTRE_VERTICAL</flag>
                                     <object class="wxFlexGridSizer">
                                       <object class="sizeritem">
                                         <object class="wxStaticText">
@@ -264,126 +265,202 @@
                           <object class="sizeritem">
                             <object class="wxStaticBoxSizer">
                               <label>Docking system settings</label>
-                              <orient>wxHORIZONTAL</orient>
+                              <orient>wxVERTICAL</orient>
                               <object class="sizeritem">
-                                <object class="wxFlexGridSizer">
-                                  <cols>2</cols>
+                                <object class="wxStaticBoxSizer">
+                                  <orient>wxHORIZONTAL</orient>
                                   <object class="sizeritem">
-                                    <object class="wxStaticText">
-                                      <label>Pane border size:</label>
+                                    <object class="wxFlexGridSizer">
+                                      <cols>2</cols>
+                                      <object class="sizeritem">
+                                        <object class="wxStaticText">
+                                          <label>Pane border size:</label>
+                                        </object>
+                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                                      </object>
+                                      <vgap>4</vgap>
+                                      <hgap>4</hgap>
+                                      <object class="sizeritem">
+                                        <object class="wxSpinCtrl" name="spnAuiBorder">
+                                          <value>1</value>
+                                          <min>0</min>
+                                        </object>
+                                      </object>
+                                      <object class="sizeritem">
+                                        <object class="wxStaticText">
+                                          <label>Sash size:</label>
+                                        </object>
+                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                                      </object>
+                                      <object class="sizeritem">
+                                        <object class="wxSpinCtrl" name="spnAuiSash">
+                                          <value>4</value>
+                                          <min>1</min>
+                                        </object>
+                                      </object>
+                                      <object class="sizeritem">
+                                        <object class="wxStaticText">
+                                          <label>Caption height:</label>
+                                        </object>
+                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                                      </object>
+                                      <object class="sizeritem">
+                                        <object class="wxSpinCtrl" name="spnAuiCaption">
+                                          <value>17</value>
+                                          <min>4</min>
+                                        </object>
+                                      </object>
                                     </object>
-                                    <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                                    <flag>wxALL|wxGROW</flag>
+                                    <border>4</border>
                                   </object>
-                                  <vgap>4</vgap>
-                                  <hgap>4</hgap>
                                   <object class="sizeritem">
-                                    <object class="wxSpinCtrl" name="spnAuiBorder">
-                                      <value>1</value>
-                                      <min>0</min>
+                                    <object class="wxFlexGridSizer">
+                                      <cols>2</cols>
+                                      <object class="sizeritem">
+                                        <object class="wxStaticText">
+                                          <label>Background color:</label>
+                                        </object>
+                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                                      </object>
+                                      <vgap>4</vgap>
+                                      <hgap>4</hgap>
+                                      <object class="sizeritem">
+                                        <object class="wxButton" name="btnAuiBgColor">
+                                          <label></label>
+                                        </object>
+                                      </object>
+                                      <object class="sizeritem">
+                                        <object class="wxStaticText">
+                                          <label>Sash color:</label>
+                                        </object>
+                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                                      </object>
+                                      <object class="sizeritem">
+                                        <object class="wxButton" name="btnAuiSashColor">
+                                          <label></label>
+                                        </object>
+                                      </object>
+                                      <object class="sizeritem">
+                                        <object class="wxStaticText">
+                                          <label>Border color:</label>
+                                        </object>
+                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                                      </object>
+                                      <object class="sizeritem">
+                                        <object class="wxButton" name="btnAuiBorderColor">
+                                          <label></label>
+                                        </object>
+                                      </object>
+                                      <object class="sizeritem">
+                                        <object class="wxStaticText">
+                                          <label>Gripper color:</label>
+                                        </object>
+                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                                      </object>
+                                      <object class="sizeritem">
+                                        <object class="wxButton" name="btnAuiGripperColor">
+                                          <label></label>
+                                        </object>
+                                      </object>
                                     </object>
-                                  </object>
-                                  <object class="sizeritem">
-                                    <object class="wxStaticText">
-                                      <label>Sash size:</label>
-                                    </object>
-                                    <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                                  </object>
-                                  <object class="sizeritem">
-                                    <object class="wxSpinCtrl" name="spnAuiSash">
-                                      <value>4</value>
-                                      <min>1</min>
-                                    </object>
-                                  </object>
-                                  <object class="sizeritem">
-                                    <object class="wxStaticText">
-                                      <label>Caption height:</label>
-                                    </object>
-                                    <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                                  </object>
-                                  <object class="sizeritem">
-                                    <object class="wxSpinCtrl" name="spnAuiCaption">
-                                      <value>17</value>
-                                      <min>4</min>
-                                    </object>
+                                    <flag>wxALL|wxGROW</flag>
+                                    <border>4</border>
                                   </object>
                                 </object>
-                                <flag>wxALL|wxGROW</flag>
-                                <border>4</border>
+                                <flag>wxTOP|wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
                               </object>
                               <object class="sizeritem">
-                                <object class="wxFlexGridSizer">
-                                  <cols>2</cols>
+                                <object class="wxStaticBoxSizer">
+                                  <orient>wxHORIZONTAL</orient>
                                   <object class="sizeritem">
-                                    <object class="wxStaticText">
-                                      <label>Background color:</label>
+                                    <object class="wxFlexGridSizer">
+                                      <cols>2</cols>
+                                      <object class="sizeritem">
+                                        <object class="wxStaticText">
+                                          <label>Active caption color:</label>
+                                        </object>
+                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                                      </object>
+                                      <vgap>4</vgap>
+                                      <hgap>4</hgap>
+                                      <object class="sizeritem">
+                                        <object class="wxButton" name="btnAuiActiveCaptionColor">
+                                          <label></label>
+                                        </object>
+                                      </object>
+                                      <object class="sizeritem">
+                                        <object class="wxStaticText">
+                                          <label>Active caption gradient color:</label>
+                                        </object>
+                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                                      </object>
+                                      <object class="sizeritem">
+                                        <object class="wxButton" name="btnAuiActiveCaptionGradientColor">
+                                          <label></label>
+                                        </object>
+                                      </object>
+                                      <object class="sizeritem">
+                                        <object class="wxStaticText">
+                                          <label>Active caption text color:</label>
+                                        </object>
+                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                                      </object>
+                                      <object class="sizeritem">
+                                        <object class="wxButton" name="btnAuiActiveCaptionTextColor">
+                                          <label></label>
+                                        </object>
+                                      </object>
                                     </object>
-                                    <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                                  </object>
-                                  <vgap>4</vgap>
-                                  <hgap>4</hgap>
-                                  <object class="sizeritem">
-                                    <object class="wxButton" name="btnAuiBgColor">
-                                      <label></label>
-                                    </object>
-                                  </object>
-                                  <object class="sizeritem">
-                                    <object class="wxStaticText">
-                                      <label>Sash color:</label>
-                                    </object>
-                                    <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                                  </object>
-                                  <object class="sizeritem">
-                                    <object class="wxButton" name="btnAuiSashColor">
-                                      <label></label>
-                                    </object>
-                                  </object>
-                                  <object class="sizeritem">
-                                    <object class="wxStaticText">
-                                      <label>Caption color:</label>
-                                    </object>
-                                    <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                                  </object>
-                                  <object class="sizeritem">
-                                    <object class="wxButton" name="btnAuiCaptionColor">
-                                      <label></label>
-                                    </object>
-                                  </object>
-                                  <object class="sizeritem">
-                                    <object class="wxStaticText">
-                                      <label>Caption text color:</label>
-                                    </object>
-                                    <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                                  </object>
-                                  <object class="sizeritem">
-                                    <object class="wxButton" name="btnAuiCaptionTextColor">
-                                      <label></label>
-                                    </object>
+                                    <flag>wxALL|wxGROW</flag>
+                                    <border>4</border>
                                   </object>
                                   <object class="sizeritem">
-                                    <object class="wxStaticText">
-                                      <label>Border color:</label>
+                                    <object class="wxFlexGridSizer">
+                                      <cols>2</cols>
+                                      <object class="sizeritem">
+                                        <object class="wxStaticText">
+                                          <label>Inactive caption color:</label>
+                                        </object>
+                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                                      </object>
+                                      <vgap>4</vgap>
+                                      <hgap>4</hgap>
+                                      <object class="sizeritem">
+                                        <object class="wxButton" name="btnAuiInactiveCaptionColor">
+                                          <label></label>
+                                        </object>
+                                      </object>
+                                      <object class="sizeritem">
+                                        <object class="wxStaticText">
+                                          <label>Inactive caption gradient color:</label>
+                                        </object>
+                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                                      </object>
+                                      <object class="sizeritem">
+                                        <object class="wxButton" name="btnAuiInactiveCaptionGradientColor">
+                                          <label></label>
+                                        </object>
+                                      </object>
+                                      <object class="sizeritem">
+                                        <object class="wxStaticText">
+                                          <label>Inactive caption text color:</label>
+                                        </object>
+                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                                      </object>
+                                      <object class="sizeritem">
+                                        <object class="wxButton" name="btnAuiInactiveCaptionTextColor">
+                                          <label></label>
+                                        </object>
+                                      </object>
                                     </object>
-                                    <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                                    <flag>wxALL|wxGROW</flag>
+                                    <border>4</border>
                                   </object>
-                                  <object class="sizeritem">
-                                    <object class="wxButton" name="btnAuiBorderColor">
-                                      <label></label>
-                                    </object>
-                                  </object>
-                                  <object class="sizeritem">
-                                    <object class="wxStaticText">
-                                      <label>Gripper color:</label>
-                                    </object>
-                                    <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                                  </object>
-                                  <object class="sizeritem">
-                                    <object class="wxButton" name="btnAuiGripperColor">
-                                      <label></label>
-                                    </object>
-                                  </object>
+                                  <flag>wxALL|wxGROW</flag>
+                                  <border>4</border>
                                 </object>
-                                <flag>wxALL|wxGROW</flag>
-                                <border>4</border>
+                                <flag>wxTOP|wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
                               </object>
                             </object>
                             <option>1</option>
