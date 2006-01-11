@@ -24,9 +24,7 @@ libcodeblocks_la_LIBADD =  $(WX_LIBS) \
 			wxFlatNotebook/libwxflatnotebook.la \
 			propgrid/libpropgrid.la
 
-libcodeblocks_la_SOURCES = Managers/Managers.cpp \
-						Managers/StdAfx.cpp \
-						annoyingdialog.cpp \
+libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						autodetectcompilers.cpp \
 						base64.cpp \
 						cbeditor.cpp \
@@ -106,9 +104,7 @@ libcodeblocks_la_SOURCES = Managers/Managers.cpp \
 						xtra_classes.cpp \
 						xtra_res.cpp
 
-noinst_HEADERS = Managers/Managers.h \
-				Managers/StdAfx.h \
-				annoyingdialog.h \
+noinst_HEADERS = annoyingdialog.h \
 				autodetectcompilers.h \
 				base64.h \
 				cbeditor.h \
