@@ -62,6 +62,13 @@ void GDB_driver::Prepare(bool isConsole)
     QueueCommand(new DebuggerCmd(this, _T("set disassembly-flavor intel")));
 #endif
 
+    // define utility functions
+    wxString cmd;
+    cmd << _T("define print_wxstring\n");
+    cmd << _T("  output /c (*$arg0.m_pchData)@(($slen=(unsigned int)$arg0.Len())>100?100:$slen)\n");
+    cmd << _T("end");
+    QueueCommand(new DebuggerCmd(this, cmd));
+
     // pass user init-commands
     wxString init = Manager::Get()->GetConfigManager(_T("debugger"))->Read(_T("init_commands"), wxEmptyString);
     wxArrayString initCmds = GetArrayFromString(init, _T('\n'));
@@ -167,7 +174,10 @@ void GDB_driver::UpdateWatches(bool doLocals, bool doArgs, DebuggerTree* tree)
     for (unsigned int i = 0; i < tree->GetWatches().GetCount(); ++i)
     {
         Watch& w = tree->GetWatches()[i];
-        QueueCommand(new GdbCmd_Watch(this, tree, &w));
+        if (w.format == Undefined)
+            QueueCommand(new GdbCmd_FindWatchType(this, tree, &w));
+        else
+            QueueCommand(new GdbCmd_Watch(this, tree, &w));
     }
 
     // run this action-only command to update the tree

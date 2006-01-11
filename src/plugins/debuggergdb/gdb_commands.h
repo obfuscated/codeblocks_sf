@@ -366,6 +366,7 @@ class GdbCmd_Watch : public DebuggerCmd
                 case Hex:           m_Cmd << _T("/x "); break;
                 case Binary:        m_Cmd << _T("/t "); break;
                 case Char:          m_Cmd << _T("/c "); break;
+                case cbWXString:    m_Cmd = _T("print_wxstring "); break;
                 default:            break;
             }
             m_Cmd << m_pWatch->keyword;
@@ -376,9 +377,76 @@ class GdbCmd_Watch : public DebuggerCmd
             wxString w;
     		w << m_pWatch->keyword << _T(" = ");
     		for (unsigned int i = 0; i < lines.GetCount(); ++i)
-                w << lines[i] << _T(',');
+    		{
+    		    if (m_pWatch->format == cbWXString)
+    		    {
+    		        // unicode wxString is a special case. The debugger will return something like this:
+    		        // {38 '&', 69 'E', 110 'n', 97 'a', 98 'b', 108 'l', 101 'e'}
+    		        // So, we quickly parse it and display the chars as a nice string :)
+    		        w << _T('"');
+    		        size_t len = lines[i].Len();
+    		        size_t c = 0;
+    		        while (c < len)
+    		        {
+    		            switch (lines[i][c])
+    		            {
+    		                case _T('\''):
+                                w << lines[i][c + 1];
+                                c += 2;
+                                break;
+
+                            default:
+                                break;
+    		            }
+    		            ++c;
+    		        }
+    		        w << _T("\",");
+    		    }
+    		    else
+                    w << lines[i] << _T(',');
+    		}
             w << _T('\n');
             m_pDTree->BuildTree(m_pWatch, w, wsfGDB);
+        }
+};
+
+/**
+  * Command to get a watched variable's type.
+  */
+class GdbCmd_FindWatchType : public DebuggerCmd
+{
+        DebuggerTree* m_pDTree;
+        Watch* m_pWatch;
+    public:
+        /** @param tree The tree to display the watch. */
+        GdbCmd_FindWatchType(DebuggerDriver* driver, DebuggerTree* dtree, Watch* watch)
+            : DebuggerCmd(driver),
+            m_pDTree(dtree),
+            m_pWatch(watch)
+        {
+            m_Cmd << _T("whatis ");
+            m_Cmd << m_pWatch->keyword;
+        }
+        void ParseOutput(const wxString& output)
+        {
+            // examples:
+            // type = wxString
+            // type = const wxChar
+            // type = Action *
+            // type = bool
+
+            wxString tmp = output.AfterFirst(_T('='));
+            tmp.Trim(false);
+            tmp.Trim(true);
+            if (!tmp.IsEmpty())
+            {
+                if (tmp.IsSameAs(_T("wxString")))
+                    m_pWatch->format = cbWXString;
+                else if (tmp.Contains(_T("wxChar")))
+                    m_pWatch->format = Char;
+            }
+            // in any case, actually add this watch with high priority
+            m_pDriver->QueueCommand(new GdbCmd_Watch(m_pDriver, m_pDTree, m_pWatch), DebuggerDriver::High);
         }
 };
 

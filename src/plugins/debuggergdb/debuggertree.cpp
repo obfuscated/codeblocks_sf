@@ -194,8 +194,13 @@ wxTreeItemId DebuggerTree::AddItem(wxTreeItemId& parent, const wxString& text, W
 
         if (value != oldvalue)
         {
-            m_pTree->EnsureVisible(result); // expand as necessary
             m_pTree->SetItemTextColour(result, *wxRED);
+            wxTreeItemId par = parent;
+            while (par.IsOk())
+            {
+                m_pTree->SetItemTextColour(par, *wxRED);
+                par = m_pTree->GetItemParent(par);
+            }
         }
         else
             m_pTree->SetItemTextColour(result, wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT));

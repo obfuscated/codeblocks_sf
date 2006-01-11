@@ -129,6 +129,8 @@ enum WatchFormat
     Binary, ///< Variable should be displayed as binary (e.g. 00011001).
     Char, ///< Variable should be displayed as a single character (e.g. 'x').
 
+    cbWXString, ///< Special case to evaluate as unicode wxString
+
     // do not remove these
     Last, ///< used for iterations
     Any ///< used for watches searches
