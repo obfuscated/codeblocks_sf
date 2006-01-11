@@ -48,7 +48,6 @@ class WXDLLIMPEXP_PG wxColourPropertyValue : public wxObject
 public:
     /** An integer value relating to the colour, and which exact
         meaning depends on the property with which it is used.
-    
         For wxSystemColourProperty:
 
         Any of wxSYS_COLOUR_XXX, or any web-colour ( use wxPG_TO_WEB_COLOUR
@@ -117,6 +116,7 @@ WX_PG_DECLARE_PROPERTY_WITH_DECL(wxCursorProperty,int,wxCURSOR_NONE,WXDLLIMPEXP_
 #if wxUSE_IMAGE
 #include <wx/image.h>
 WX_PG_DECLARE_PROPERTY_WITH_DECL(wxImageFileProperty,const wxString&,wxEmptyString,WXDLLIMPEXP_PG)
+WX_PG_DECLARE_PROPERTY_WITH_DECL(wxAdvImageFileProperty,const wxString&,wxEmptyString,WXDLLIMPEXP_PG)
 #endif
 
 WX_PG_DECLARE_CUSTOM_COLOUR_PROPERTY_USES_WXCOLOUR_WITH_DECL(wxColourProperty,WXDLLIMPEXP_PG)
@@ -272,6 +272,63 @@ protected:
 
 // -----------------------------------------------------------------------
 
+#if wxUSE_IMAGE
+
+
+class wxMyImageInfo
+{
+public:
+    wxString    m_path;
+    wxBitmap*   m_pThumbnail1; // smaller thumbnail
+    wxBitmap*   m_pThumbnail2; // larger thumbnail
+
+    wxMyImageInfo ( const wxString& str )
+    {
+        m_path = str;
+        m_pThumbnail1 = (wxBitmap*) NULL;
+        m_pThumbnail2 = (wxBitmap*) NULL;
+    }
+    ~wxMyImageInfo()
+    {
+        if ( m_pThumbnail1 )
+            delete m_pThumbnail1;
+        if ( m_pThumbnail2 )
+            delete m_pThumbnail2;
+    }
+
+};
+
+
+
+
+
+// Preferred thumbnail height.
+#define PREF_THUMBNAIL_HEIGHT       64
+
+class wxAdvImageFilePropertyClass : public wxFilePropertyClass
+{
+    WX_PG_DECLARE_PROPERTY_CLASS()
+public:
+
+    wxAdvImageFilePropertyClass( const wxString& label, const wxString& name,
+        const wxString& value );
+    virtual ~wxAdvImageFilePropertyClass ();
+
+    void DoSetValue ( wxPGVariant value ); // Override to allow image loading.
+
+    WX_PG_DECLARE_CHOICE_METHODS()
+    WX_PG_DECLARE_EVENT_METHODS()
+    WX_PG_DECLARE_CUSTOM_PAINT_METHODS()
+
+    void LoadThumbnails ( size_t n );
+
+protected:
+    wxImage*    m_pImage; // Temporary thumbnail data.
+
+    int m_index; // Index required for choice behaviour.
+};
+
+#endif // WXUSE_IMAGE
 #endif // _WX_PROPGRID_PROPDEV_H_
 
 #endif // _WX_PROPGRID_ADVPROPS_H_
