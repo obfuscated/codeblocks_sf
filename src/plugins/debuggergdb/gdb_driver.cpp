@@ -158,7 +158,7 @@ void GDB_driver::RemoveBreakpoint(DebuggerBreakpoint* bp)
 
 void GDB_driver::EvaluateSymbol(const wxString& symbol, wxTipWindow** tipWin, const wxRect& tipRect)
 {
-    QueueCommand(new GdbCmd_TooltipEvaluation(this, symbol, tipWin, tipRect));
+    QueueCommand(new GdbCmd_FindTooltipType(this, symbol, tipWin, tipRect));
 }
 
 void GDB_driver::UpdateWatches(bool doLocals, bool doArgs, DebuggerTree* tree)

@@ -21,6 +21,34 @@ static wxRegEx reBT1(_T("#([0-9]+)[ \t]+[0x]*([A-Fa-f0-9]*)[ \t]*[in]*[ \t]*([^(
 static wxRegEx reBT2(_T("\\)[ \t]+[atfrom]+[ \t]+(.*):([0-9]+)"));
 static wxRegEx reBT3(_T("\\)[ \t]+[atfrom]+[ \t]+(.*)"));
 
+// convenience function
+wxString ParseWXStringOutput(const wxString& output)
+{
+    // unicode wxString is a special case. The debugger will return something like this:
+    // {38 '&', 69 'E', 110 'n', 97 'a', 98 'b', 108 'l', 101 'e'}
+    // So, we quickly parse it and display the chars as a nice string :)
+    wxString w;
+    w << _T('"');
+    size_t len = output.Len();
+    size_t c = 0;
+    while (c < len)
+    {
+        switch (output[c])
+        {
+            case _T('\''):
+                w << output[c + 1];
+                c += 2;
+                break;
+
+            default:
+                break;
+        }
+        ++c;
+    }
+    w << _T('\"');
+    return w;
+}
+
 /**
   * Command to add a search directory for source files in debugger's paths.
   */
@@ -379,31 +407,10 @@ class GdbCmd_Watch : public DebuggerCmd
     		for (unsigned int i = 0; i < lines.GetCount(); ++i)
     		{
     		    if (m_pWatch->format == cbWXString)
-    		    {
-    		        // unicode wxString is a special case. The debugger will return something like this:
-    		        // {38 '&', 69 'E', 110 'n', 97 'a', 98 'b', 108 'l', 101 'e'}
-    		        // So, we quickly parse it and display the chars as a nice string :)
-    		        w << _T('"');
-    		        size_t len = lines[i].Len();
-    		        size_t c = 0;
-    		        while (c < len)
-    		        {
-    		            switch (lines[i][c])
-    		            {
-    		                case _T('\''):
-                                w << lines[i][c + 1];
-                                c += 2;
-                                break;
-
-                            default:
-                                break;
-    		            }
-    		            ++c;
-    		        }
-    		        w << _T("\",");
-    		    }
+                    w << ParseWXStringOutput(lines[i]);
     		    else
-                    w << lines[i] << _T(',');
+                    w << lines[i];
+                w << _T(',');
     		}
             w << _T('\n');
             m_pDTree->BuildTree(m_pWatch, w, wsfGDB);
@@ -458,18 +465,20 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
         wxTipWindow** m_pWin;
         wxRect m_WinRect;
         wxString m_What;
+        bool m_IsWXString;
     public:
         /** @param what The variable to evaluate.
             @param win A pointer to the tip window pointer.
             @param tiprect The tip window's rect.
         */
-        GdbCmd_TooltipEvaluation(DebuggerDriver* driver, const wxString& what, wxTipWindow** win, const wxRect& tiprect)
+        GdbCmd_TooltipEvaluation(DebuggerDriver* driver, const wxString& what, wxTipWindow** win, const wxRect& tiprect, bool isWXString = false)
             : DebuggerCmd(driver),
             m_pWin(win),
             m_WinRect(tiprect),
-            m_What(what)
+            m_What(what),
+            m_IsWXString(isWXString)
         {
-            m_Cmd << _T("output ") << what;
+            m_Cmd << (isWXString ? _T("print_wxstring ") : _T("output ")) << what;
         }
         void ParseOutput(const wxString& output)
         {
@@ -477,12 +486,56 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
             if (output.StartsWith(_T("No symbol ")) || output.StartsWith(_T("Attempt to ")))
                 tip = output;
             else
-                tip = m_What + _T("=") + output;
+            {
+                tip = m_What + _T("=");
+                if (m_IsWXString)
+                    tip << ParseWXStringOutput(output);
+                else
+                    tip << output;
+            }
 
             if (*m_pWin)
                 (*m_pWin)->Destroy();
             *m_pWin = new wxTipWindow(Manager::Get()->GetAppWindow(), tip, 640, m_pWin, &m_WinRect);
 //            m_pDriver->DebugLog(output);
+        }
+};
+
+/**
+  * Command to get a symbol's type and use it for tooltip evaluation.
+  */
+class GdbCmd_FindTooltipType : public DebuggerCmd
+{
+        wxTipWindow** m_pWin;
+        wxRect m_WinRect;
+        wxString m_What;
+    public:
+        /** @param tree The tree to display the watch. */
+        GdbCmd_FindTooltipType(DebuggerDriver* driver, const wxString& what, wxTipWindow** win, const wxRect& tiprect)
+            : DebuggerCmd(driver),
+            m_pWin(win),
+            m_WinRect(tiprect),
+            m_What(what)
+        {
+            m_Cmd << _T("whatis ");
+            m_Cmd << m_What;
+        }
+        void ParseOutput(const wxString& output)
+        {
+            // examples:
+            // type = wxString
+            // type = const wxChar
+            // type = Action *
+            // type = bool
+
+            wxString tmp = output.AfterFirst(_T('='));
+            tmp.Trim(false);
+            tmp.Trim(true);
+            bool isWXString = false;
+            if (!tmp.IsEmpty())
+                isWXString = tmp.IsSameAs(_T("wxString"));
+            // in any case, actually add this watch with high priority
+            m_pDriver->QueueCommand(new GdbCmd_TooltipEvaluation(m_pDriver, m_What, m_pWin, m_WinRect, isWXString), DebuggerDriver::High);
         }
 };
 
