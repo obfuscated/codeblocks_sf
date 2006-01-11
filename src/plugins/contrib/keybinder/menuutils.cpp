@@ -12,6 +12,8 @@
 //commit 1/7/2006 9:04 PM v0.4.4
 //commit 1/8/2006 9:47 AM v0.4.5
 //commit 1/10/2006 5PM v0.4.8
+//commit 1/11/2006 1:22 PM v0.4.9
+
 
 
 #ifdef __GNUG__
@@ -143,6 +145,7 @@ void wxMenuCmd::Update()
 #endif //elif defined( __WXGTK__ )
 
 }//Update
+#if defined( __WXMSW__ )
 // ----------------------------------------------------------------------------
 // RebuildMenuitem
 // ----------------------------------------------------------------------------
@@ -167,6 +170,7 @@ void wxMenuCmd::RebuildMenuitem()
     pMenu->Insert(pos, m_pItem);
 
 }//RebuildMenuitem
+#endif //#if defined( __WXMSW__ )
 // ----------------------------------------------------------------------------
 void wxMenuCmd::Exec(wxObject *origin, wxEvtHandler *client)
 // ----------------------------------------------------------------------------

@@ -13,6 +13,8 @@
 //commit 1/7/2006 9:06 PM v0.4.5
 //commit 1/9/2006 5PM v0.4.6
 //commit 1/10/2006 6:01 PM v0.4.8
+//commit 1/11/2006 1:22 PM v0.4.9
+
 
 // The majority of this code was lifted from wxKeyBinder and
 // its "minimal.cpp" sample program
@@ -57,10 +59,10 @@ cbKeyBinder::cbKeyBinder()
 	//ctor
 	m_PluginInfo.name = _T("cbKeyBinder");
 	m_PluginInfo.title = _("Keyboard shortcuts configuration");
-	m_PluginInfo.version = _T("0.4.8");
+	m_PluginInfo.version = _T("0.4.9");
 	m_PluginInfo.description <<_("CodeBlocks KeyBinder\n")
                             << _("NOTE: Ctrl+Alt+{UP|DOWN} unsupported.\n")
-                            << _("1/10/2006 5\n");
+                            << _("1/11/2006 1\n");
 	m_PluginInfo.author = _T("Pecan && Mispent Intent");
 	m_PluginInfo.authorEmail = _T("");
 	m_PluginInfo.authorWebsite = _T("");
@@ -117,7 +119,7 @@ void cbKeyBinder::OnAttach()
 	// Add window names to which keybinder may attach
 	// a "*" allows attaching to ALL windows for debugging
    #if LOGGING
-    //wxKeyBinder::usableWindows.Add(_T("*"));                 //+v0.4.4
+    wxKeyBinder::usableWindows.Add(_T("*"));                 //+v0.4.4
    #endif
     wxKeyBinder::usableWindows.Add(_T("sciwindow"));           //+v0.4.4
     wxKeyBinder::usableWindows.Add(_T("flat notebook"));       //+v0.4.4

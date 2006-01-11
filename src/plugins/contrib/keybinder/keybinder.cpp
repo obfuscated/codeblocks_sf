@@ -962,14 +962,14 @@ void wxKeyBinder::DetachAll()
         wxBinderEvtHandler* pHdlr = (wxBinderEvtHandler*)m_arrHandlers.Item(i);
         pwin = pHdlr->GetTargetWnd();     //+v0.4
         if  ( NOT winExists( pwin ) )
-        {   //+v0.4.8
-            pHdlr->m_pTarget = 0; //tell dtor not to RemoveEventHander()
-            pHdlr->m_pTarget = mainAppWindow; //try using main window
+        {   //+v0.4.9
+            // tell dtor not to crash by using RemoveEventHander()
+            pHdlr->SetWndInvalid(0);
             wxLogDebug( _T("WxKeyBinder:DetachAll:window NOT found %p <----------"), pwin); //+v0.4.6
-            pwin = pHdlr->m_pTarget;
         }
         #if LOGGING
-         ////wxLogDebug( _T("WxKeyBinder:DetachAll:Deleteing EvtHdlr for [%s] %p"), pwin->GetLabel().GetData(), pwin);     //+v0.4
+         if (pHdlr->GetTargetWnd())
+           wxLogDebug( _T("WxKeyBinder:DetachAll:Deleteing EvtHdlr for [%s] %p"), pwin->GetLabel().GetData(), pwin);     //+v0.4
         #endif
         delete pHdlr;
 	 }

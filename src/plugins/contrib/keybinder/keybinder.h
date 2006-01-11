@@ -477,7 +477,6 @@ class wxKeyBinder;
 class wxBinderEvtHandler : public wxEvtHandler
 // ----------------------------------------------------------------------------
 {
-    friend class wxKeyBinder;   //+v0.4.8
 	//! The wxKeyBinder called by wxBinderEvtHandler when receiving a wxKeyEvent.
 	wxKeyBinder *m_pBinder;
 
@@ -495,15 +494,15 @@ public:
 	//! Attaches this event handler to the given window.
 	//! The given keybinder will be called on each keyevent.
 	wxBinderEvtHandler(wxKeyBinder *p, wxWindow *tg)
-		: m_pBinder(p), m_pTarget(tg) { m_pTarget->PushEventHandler(this); }
+		: m_pBinder(p), m_pTarget(tg)
+    { m_pTarget->PushEventHandler(this);}
 
 	//! Removes this event handler from the window you specified
 	//! during construction (the target window).
 	virtual ~wxBinderEvtHandler()
 		{
-            if ( m_pTarget ) //+v0.4.8
-              if ( NOT m_pTarget->RemoveEventHandler(this))
-               LOGIT(_T("wxBinderEvtHandler::~RemoveEventhandler() failed"));
+            if ( m_pTarget ) //+v0.4.9
+                m_pTarget->RemoveEventHandler(this);
         }
 
 
@@ -518,6 +517,12 @@ public:
 	//! Returns the window which this event handler is filtering.
 	wxWindow *GetTargetWnd() const
 		{ return m_pTarget; }
+
+    //! If the window disappears, we have to have a way to say so
+	//! Set the window validity     //+v0.4.9
+	wxWindow* SetWndInvalid(wxWindow* pnewWnd=0)
+        { m_pTarget=pnewWnd; return m_pTarget; }
+
 
 private:
 	DECLARE_CLASS(wxBinderEvtHandler)
