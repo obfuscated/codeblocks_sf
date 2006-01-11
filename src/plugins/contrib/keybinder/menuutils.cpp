@@ -13,6 +13,7 @@
 //commit 1/8/2006 9:47 AM v0.4.5
 //commit 1/10/2006 5PM v0.4.8
 //commit 1/11/2006 1:22 PM v0.4.9
+//commit 1/11/2006 1:22 PM v0.4.10
 
 
 
@@ -73,8 +74,52 @@ int wxFindMenuItem(wxMenuBar *p, const wxString &str)
 // ----------------------------------------------------------------------------
 // wxMenuCmd
 // ----------------------------------------------------------------------------
+
+#ifdef __WXGTK__
 // ----------------------------------------------------------------------------
-void wxMenuCmd::Update()
+void wxMenuCmd::Update() //for __WXGTK__
+// ----------------------------------------------------------------------------
+{
+	wxString str = m_pItem->GetLabel();
+
+	// on GTK, an optimization in wxMenu::SetText checks
+	// if the new label is identic to the old and in this
+	// case, it returns without doing nothing... :-(
+	// to solve the problem, a space is added or removed
+	// from the label to ovverride this optimization check
+	str.Trim();
+	if (str == m_pItem->GetLabel())
+		str += wxT(" ");
+
+	if (m_nShortcuts <= 0) {
+
+		wxLogDebug(wxT("wxMenuCmd::Update - no shortcuts defined for [%s]"), str.c_str());
+
+		// no more shortcuts for this menuitem: SetText()
+		// will delete the hotkeys associated...
+		m_pItem->SetText(str);
+		return;
+	}
+
+	wxString newtext = str+wxT("\t")+GetShortcut(0)->GetStr();
+	wxLogDebug(wxT("wxMenuCmd::Update - setting the new text to [%s]"), newtext.c_str());
+
+
+	// on GTK, the SetAccel() function doesn't have any effect...
+	m_pItem->SetText(newtext);
+
+#ifdef __WXGTK20__
+
+	//   gtk_menu_item_set_accel_path(GTK_MENU_ITEM(m_pItem), wxGTK_CONV(newtext));
+
+#endif
+}
+#endif //update for __WXGTK__
+// ----------------------------------------------------------------------------
+
+#if defined( __WXMSW__ )
+// ----------------------------------------------------------------------------
+void wxMenuCmd::Update() // for __WXMSW__
 // ----------------------------------------------------------------------------
 { //v0.4.4 changes to use bitmapped menuitems
   //v0.4.6 Rebuild menuitems when bitmapped. Ownerdrawn were misaligned.
@@ -93,18 +138,6 @@ void wxMenuCmd::Update()
 	wxString strLabel = strText.BeforeFirst(_T('\t'));
     wxString newtext = strLabel; //no accel, contains mnemonic
 
-#ifdef __WXGTK__
-	// on GTK, an optimization in wxMenu::SetText checks
-	// if the new label is identic to the old and in this
-	// case, it returns without doing nothing... :-(
-	// to solve the problem, a space is added or removed
-	// from the label to ovverride this optimization check
-	newtext = m_pItem->GetLabel(); //v0.4.5
-	newtext.Trim();
-	if (newtext == m_pItem->GetLabel())
-		newtext += wxT(" ");
-#endif
-
     wxAcceleratorEntry* pItemAccel = m_pItem->GetAccel();
     // clearing previous shortcuts if none now assigned
 	if (m_nShortcuts <= 0) {
@@ -112,18 +145,15 @@ void wxMenuCmd::Update()
 		////wxLogDebug(wxT("wxMenuCmd::Update - Removing shortcuts [%s] for [%s]"), strText.c_str(),newtext.c_str());
 		// set "non bitmapped" text to preserve menu width
         m_pItem->SetText(newtext);
-        #if defined( __WXMSW__ )
          //now rebuild the menuitem if bitmapped
          if (m_pItem->GetBitmap().GetWidth())
              RebuildMenuitem(); //+v0.4.6
-        #endif
         return;
     }
 
     //make new Label+Accelerator string
 	newtext = strLabel+wxT("\t")+GetShortcut(0)->GetStr();
 
-#if defined( __WXMSW__ )
 	// change the accelerator...but only if it has changed
     wxAcceleratorEntry* pPrfAccel = wxGetAccelFromString(newtext);
     if ( ! pPrfAccel) return;
@@ -136,16 +166,8 @@ void wxMenuCmd::Update()
     //now rebuild the menuitem if bitmapped
     if (m_pItem->GetBitmap().GetWidth())
         RebuildMenuitem(); //+v0.4.6
-#elif defined( __WXGTK__ )
-	// on GTK, the SetAccel() function doesn't have any effect...
-	m_pItem->SetText(newtext);
-    #ifdef __WXGTK20__
-	 //   gtk_menu_item_set_accel_path(GTK_MENU_ITEM(m_pItem), wxGTK_CONV(newtext));
-    #endif //__WXGTK20__
-#endif //elif defined( __WXGTK__ )
 
 }//Update
-#if defined( __WXMSW__ )
 // ----------------------------------------------------------------------------
 // RebuildMenuitem
 // ----------------------------------------------------------------------------
@@ -171,6 +193,7 @@ void wxMenuCmd::RebuildMenuitem()
 
 }//RebuildMenuitem
 #endif //#if defined( __WXMSW__ )
+
 // ----------------------------------------------------------------------------
 void wxMenuCmd::Exec(wxObject *origin, wxEvtHandler *client)
 // ----------------------------------------------------------------------------

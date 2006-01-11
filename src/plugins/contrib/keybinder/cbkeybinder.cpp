@@ -11,9 +11,10 @@
 //commit 1/2/2006 7:38 PM
 //commit 1/7/2006 9:06 PM v0.4.4
 //commit 1/7/2006 9:06 PM v0.4.5
-//commit 1/9/2006 5PM v0.4.6
-//commit 1/10/2006 6:01 PM v0.4.8
-//commit 1/11/2006 1:22 PM v0.4.9
+//commit 1/9/2006 5 PM v0.4.6
+//commit 1/10/2006 6 PM v0.4.8
+//commit 1/11/2006 1 PM v0.4.9
+//commit 1/11/2006 3 PM v0.4.10
 
 
 // The majority of this code was lifted from wxKeyBinder and
@@ -59,7 +60,7 @@ cbKeyBinder::cbKeyBinder()
 	//ctor
 	m_PluginInfo.name = _T("cbKeyBinder");
 	m_PluginInfo.title = _("Keyboard shortcuts configuration");
-	m_PluginInfo.version = _T("0.4.9");
+	m_PluginInfo.version = _T("0.4.10");
 	m_PluginInfo.description <<_("CodeBlocks KeyBinder\n")
                             << _("NOTE: Ctrl+Alt+{UP|DOWN} unsupported.\n")
                             << _("1/11/2006 1\n");
