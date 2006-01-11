@@ -28,6 +28,7 @@
 #include <wx/app.h>
 #include <wx/log.h>
 #include <wx/msgdlg.h>
+#include <manager.h>
 #include <globals.h>
 
 #include <cctype>
@@ -141,7 +142,7 @@ void ParserThread::Log(const wxString& log)
 	event.SetString(log);
 	event.SetInt(m_Tokenizer.GetLineNumber());
 	wxPostEvent(m_pParent, event);
-	wxYield();
+	Manager::Yield();
 }
 
 void ParserThread::SetTokens(TokensTree* tokens)

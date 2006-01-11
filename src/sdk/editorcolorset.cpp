@@ -143,7 +143,7 @@ HighlightLanguage EditorColorSet::AddHighlightLanguage(int lexer, const wxString
 {
 	if (m_LanguageID == HL_LAST ||
         lexer <= wxSCI_LEX_NULL ||
-        lexer > wxSCI_LEX_CSOUND ||
+        lexer > wxSCI_LEX_FREEBASIC ||
         name.IsEmpty() ||
         GetHighlightLanguage(name) != HL_NONE)
     {

@@ -399,7 +399,7 @@ bool CodeBlocksApp::OnInit()
 
         CodeBlocksEvent event(cbEVT_APP_STARTUP_DONE);
         Manager::Get()->ProcessEvent(event);
-        wxYield();
+        Manager::Yield();
 
         // run startup script
         Manager::Get()->GetScriptingManager()->LoadScript(_T("startup.script"));
@@ -510,7 +510,7 @@ int CodeBlocksApp::BatchJob()
     while (compiler->IsRunning())
     {
         wxMilliSleep(10);
-        Yield(true);
+        Manager::Yield();
     }
     int exitCode = compiler->GetExitCode();
 

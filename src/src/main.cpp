@@ -1825,6 +1825,8 @@ void MainFrame::OnSize(wxSizeEvent& event)
 
 void MainFrame::OnApplicationClose(wxCloseEvent& event)
 {
+    Manager::BlockYields(true);
+
     ProjectManager* prjman = Manager::Get()->GetProjectManager();
     if(prjman)
     {
@@ -1833,6 +1835,7 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
         {
             event.Veto();
             wxBell();
+            Manager::BlockYields(false);
             return;
         }
     }
@@ -1840,14 +1843,14 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     {
         event.Veto();
         wxBell();
+        Manager::BlockYields(false);
         return;
     }
-
-    Manager::PrepareForShutdown();
 
     if (!DoCloseCurrentWorkspace())
     {
         event.Veto();
+        Manager::BlockYields(false);
         return;
     }
 

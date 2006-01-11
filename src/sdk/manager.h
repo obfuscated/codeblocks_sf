@@ -41,17 +41,21 @@ class DLLIMPORT Manager
     void OnMenu(wxCommandEvent& event);
     wxFrame* m_pAppWindow;
     static bool appShuttingDown;
+    static bool blockYields;
 
     Manager();
     ~Manager();
 
 public:
-    static void PrepareForShutdown();
+    /// Blocks/unblocks Manager::Yield(). Be carefull when using it. Actually, do *not* use it ;)
+    static void BlockYields(bool block);
+    /// Whenever you need to call wxYield(), call Manager::Yield(). It's safer.
+    static void Yield();
     static void Shutdown();
     bool ProcessEvent(CodeBlocksEvent& event);
 
 
-    /* Use Manager::Get() to get a pointer to its instance
+    /** Use Manager::Get() to get a pointer to its instance
      * Manager::Get() is guaranteed to never return an invalid pointer.
      */
     static Manager* Get(wxFrame* appWindow = 0);
@@ -60,7 +64,7 @@ public:
 
     static bool isappShuttingDown();
 
-    /* Functions returning pointers to the respective sub-manager instances.
+    /** Functions returning pointers to the respective sub-manager instances.
      * During application startup as well as during runtime, these functions will always return a valid pointer.
      * During application shutdown, these functions will continue to return a valid pointer until the requested manager shuts down.
      * From that point, the below functions will return null. If there is any chance that your code might execute
@@ -81,17 +85,17 @@ public:
 
 
     /////// XML Resource functions ///////
-    // Inits XML Resource system
+    /// Inits XML Resource system
     static void Initxrc(bool force=false);
-    // Loads XRC file(s) using data_path
+    /// Loads XRC file(s) using data_path
     static void Loadxrc(wxString relpath);
-    // Loads Menubar from XRC
+    /// Loads Menubar from XRC
     static wxMenuBar* LoadMenuBar(wxString resid,bool createonfailure=false);
-    // Loads Menu from XRC
+    /// Loads Menu from XRC
     static wxMenu* LoadMenu(wxString menu_id,bool createonfailure=false);
-    // Loads ToolBar from XRC
+    /// Loads ToolBar from XRC
     static wxToolBar *LoadToolBar(wxFrame *parent,wxString resid,bool defaultsmall=true);
-    // Loads ToolBarAddOn from XRC into existing Toolbar
+    /// Loads ToolBarAddOn from XRC into existing Toolbar
 
     static void AddonToolBar(wxToolBar* toolBar,wxString resid);
     static bool isToolBar16x16(wxToolBar* toolBar);

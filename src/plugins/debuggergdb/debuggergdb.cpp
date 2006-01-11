@@ -707,7 +707,7 @@ int DebuggerGDB::Debug()
             while (m_pCompiler->IsRunning())
             {
                 wxMilliSleep(10);
-                wxTheApp->Yield(true);
+                Manager::Yield();
             }
             msgMan->SwitchTo(m_PageIndex);
             if (m_pCompiler->GetExitCode() != 0)

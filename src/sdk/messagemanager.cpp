@@ -146,8 +146,7 @@ void MessageManager::Log(const wxChar* msg, ...)
     m_Logs[m_AppLog]->AddLog(tmp);
     m_Logs[m_AppLog]->Refresh();
 
-	if(!Manager::isappShuttingDown())
-        wxTheApp->Yield(true);
+	Manager::Yield();
 }
 
 void MessageManager::DebugLog(const wxChar* msg, ...)
@@ -170,8 +169,7 @@ void MessageManager::DebugLog(const wxChar* msg, ...)
 //    m_Logs[mltDebug]->AddLog(tmp);
     m_Logs[m_DebugLog]->Refresh();
 
-	if(!Manager::isappShuttingDown())
-        wxTheApp->Yield(true);
+	Manager::Yield();
 }
 
 void MessageManager::DebugLogWarning(const wxChar* msg, ...)
@@ -256,8 +254,7 @@ void MessageManager::Log(int id, const wxChar* msg, ...)
     m_Logs[id]->AddLog(tmp);
     m_Logs[id]->Refresh();
 
-    if(!Manager::isappShuttingDown())
-        wxTheApp->Yield(true);
+    Manager::Yield();
 }
 
 void MessageManager::AppendLog(const wxChar* msg, ...)
@@ -272,8 +269,7 @@ void MessageManager::AppendLog(const wxChar* msg, ...)
 
     m_Logs[m_AppLog]->AddLog(tmp, false);
     m_Logs[m_AppLog]->Refresh();
-	if(!Manager::isappShuttingDown())
-        wxTheApp->Yield(true);
+	Manager::Yield();
 }
 
 void MessageManager::AppendLog(int id, const wxChar* msg, ...)
@@ -291,8 +287,7 @@ void MessageManager::AppendLog(int id, const wxChar* msg, ...)
 
     m_Logs[id]->AddLog(tmp, false);
     m_Logs[id]->Refresh();
-	if(!Manager::isappShuttingDown())
-        wxTheApp->Yield(true);
+	Manager::Yield();
 }
 
 // switch to log page

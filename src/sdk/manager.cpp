@@ -77,9 +77,15 @@ Manager* Manager::Get(wxFrame *appWindow)
     return &instance;
 }
 
-void Manager::PrepareForShutdown()
+void Manager::BlockYields(bool block)
 {
-    appShuttingDown = true;
+    blockYields = block;
+}
+
+void Manager::Yield()
+{
+    if (!blockYields && !appShuttingDown)
+        wxTheApp->Yield(true);
 }
 
 void Manager::Shutdown()
@@ -96,7 +102,6 @@ void Manager::Shutdown()
 	MacrosManager::Free();
 	MessageManager::Free();
 }
-
 
 bool Manager::SendEventTo(wxEvtHandler* handler, CodeBlocksEvent& event)
 {
@@ -254,3 +259,4 @@ ConfigManager* Manager::GetConfigManager(const wxString& name_space) const
 
 
 bool Manager::appShuttingDown = false;
+bool Manager::blockYields = false;
