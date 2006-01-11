@@ -75,6 +75,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 	protected:
         void AddSourceDir(const wxString& dir);
 	private:
+        void DoSwitchLayout(const wxString& config_key);
 		void ParseOutput(const wxString& output);
 		void ClearActiveMarkFromAllEditors();
 		void DoWatches();

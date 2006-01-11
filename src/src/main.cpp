@@ -366,6 +366,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_SHOW_DOCK_WINDOW(MainFrame::OnRequestShowDockWindow)
 	EVT_HIDE_DOCK_WINDOW(MainFrame::OnRequestHideDockWindow)
 
+    EVT_SWITCH_VIEW_LAYOUT(MainFrame::OnLayoutSwitch)
+
     EVT_NOTEBOOK_PAGE_CHANGED(ID_NBEditorManager, MainFrame::OnPageChanged)
 
 	/// CloseFullScreen event handling
@@ -2938,4 +2940,9 @@ void MainFrame::OnRequestHideDockWindow(CodeBlocksDockEvent& event)
 {
     m_LayoutManager.GetPane(event.pWindow).Hide();
     DoUpdateLayout();
+}
+
+void MainFrame::OnLayoutSwitch(CodeBlocksLayoutEvent& event)
+{
+    LoadViewLayout(event.layout);
 }

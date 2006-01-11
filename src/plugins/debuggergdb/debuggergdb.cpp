@@ -435,6 +435,18 @@ void DebuggerGDB::DebugLog(const wxString& msg)
         Manager::Get()->GetMessageManager()->Log(m_DbgPageIndex, msg);
 }
 
+void DebuggerGDB::DoSwitchLayout(const wxString& config_key)
+{
+	ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("debugger"));
+    wxString layout = cfg->Read(config_key, wxEmptyString);
+    if (!layout.IsEmpty())
+    {
+        Manager::Get()->GetMessageManager()->DebugLog(_("Switching layout to \"%s\""), layout.c_str());
+        CodeBlocksLayoutEvent evt(cbEVT_SWITCH_VIEW_LAYOUT, layout);
+        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    }
+}
+
 void DebuggerGDB::DoWatches()
 {
 	if (!m_pProcess)
@@ -719,6 +731,9 @@ int DebuggerGDB::Debug()
             msgMan->Log(m_PageIndex, _("done"));
         }
     }
+
+    // switch to the user-defined layout for debugging
+    DoSwitchLayout(_T("layout_start"));
 
     // start debugger driver based on target compiler, or default compiler if no target
     if (!m_State.StartDriver(target))
@@ -1444,6 +1459,9 @@ void DebuggerGDB::OnGDBTerminated(wxCommandEvent& event)
                         _("Error"),
                         wxICON_STOP);
 	}
+
+    // switch to the user-defined layout when finished debugging
+	DoSwitchLayout(_T("layout_end"));
 }
 
 void DebuggerGDB::OnBreakpointAdd(CodeBlocksEvent& event)

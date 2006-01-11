@@ -50,7 +50,7 @@ class EVTIMPORT CodeBlocksEvent : public wxCommandEvent, public BlockAllocated<C
 typedef void (wxEvtHandler::*CodeBlocksEventFunction)(CodeBlocksEvent&);
 
 /** Event used to request from the main app to add a window to the docking system. */
-class EVTIMPORT CodeBlocksDockEvent : public wxEvent
+class EVTIMPORT CodeBlocksDockEvent : public wxEvent, public BlockAllocated<CodeBlocksDockEvent, 75>
 {
     public:
         enum DockSide
@@ -119,6 +119,23 @@ class EVTIMPORT CodeBlocksDockEvent : public wxEvent
 		DECLARE_DYNAMIC_CLASS(cbAddDockWindowEvent)
 };
 typedef void (wxEvtHandler::*CodeBlocksDockEventFunction)(CodeBlocksDockEvent&);
+
+/** Event used to request from the main app to manage the view layouts. */
+class EVTIMPORT CodeBlocksLayoutEvent : public wxEvent, public BlockAllocated<CodeBlocksDockEvent, 75>
+{
+    public:
+        CodeBlocksLayoutEvent(wxEventType commandType = wxEVT_NULL, const wxString& layout_name = wxEmptyString)
+            : wxEvent(wxID_ANY, commandType),
+            layout(layout_name)
+        {}
+        CodeBlocksLayoutEvent(const CodeBlocksLayoutEvent& rhs)
+            : layout(rhs.layout)
+        {}
+		virtual wxEvent *Clone() const { return new CodeBlocksLayoutEvent(*this); }
+
+        wxString layout;      ///< Layout's name.
+};
+typedef void (wxEvtHandler::*CodeBlocksLayoutEventFunction)(CodeBlocksLayoutEvent&);
 
 // app events
 DECLARE_CB_EVENT_TYPE(cbEVT_APP_STARTUP_DONE)
@@ -206,5 +223,9 @@ DECLARE_CB_EVENT_TYPE(cbEVT_SHOW_DOCK_WINDOW)
 // request app to hide a docked window
 DECLARE_CB_EVENT_TYPE(cbEVT_HIDE_DOCK_WINDOW)
 #define EVT_HIDE_DOCK_WINDOW(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_HIDE_DOCK_WINDOW, -1, -1, (wxObjectEventFunction) (wxEventFunction) (CodeBlocksDockEventFunction) & fn, (wxObject *) NULL ),
+
+// request app to switch view layout
+DECLARE_CB_EVENT_TYPE(cbEVT_SWITCH_VIEW_LAYOUT)
+#define EVT_SWITCH_VIEW_LAYOUT(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_SWITCH_VIEW_LAYOUT, -1, -1, (wxObjectEventFunction) (wxEventFunction) (CodeBlocksLayoutEventFunction) & fn, (wxObject *) NULL ),
 
 #endif // SDK_EVENTS_H
