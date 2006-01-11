@@ -224,7 +224,7 @@ void CCList::OnLeftClick(wxGridEvent& event)
 		msg << _T("Return value: ") << token->m_Type << _T('\n');
 		msg << _T("Actual return value: ") << token->m_ActualType << _T('\n');
 		msg << _T("Scope: ") << token->GetTokenScopeString() << _T("\n\n");
-		msg << _T("and is met in ") << token->m_Filename << _T(", at line ") << token->m_Line;
+		msg << _T("and is met in ") << token->GetFilename() << _T(", at line ") << token->m_Line;
 		wxMessageBox(msg);
 	}
 }

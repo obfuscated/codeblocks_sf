@@ -105,29 +105,27 @@ ParserThread::ParserThread(wxEvtHandler* parent,bool* abortflag,
 							const wxString& bufferOrFilename,
 							bool isLocal,
 							ParserThreadOptions& options,
-							TokensArray* tokens,
 							TokensTree* tree)
 	: m_pParent(parent),
-	m_pTokens(tokens),
-	m_pTree(tree),
-	m_pLastParent(0L),
+	m_pTokens(tree),
+	m_pLastParent(0),
+	m_File(0),
 	m_IsLocal(isLocal),
-	m_StartBlockIndex(0),
 	m_Options(options)
 {
 //	m_pAbort=abortflag;
 	//ctor
-	m_Tokens.m_Options.wantPreprocessor = options.wantPreprocessor;
+	m_Tokenizer.m_Options.wantPreprocessor = options.wantPreprocessor;
 
 	if (!bufferOrFilename.IsEmpty())
 	{
 		if (!options.useBuffer)
 		{
 			m_Filename = bufferOrFilename;
-			m_Tokens.Init(m_Filename);
+			m_Tokenizer.Init(m_Filename);
 		}
 		else
-			m_Tokens.InitFromBuffer(bufferOrFilename);
+			m_Tokenizer.InitFromBuffer(bufferOrFilename);
 	}
 	m_LastScope = tsUndefined;
 }
@@ -141,12 +139,12 @@ void ParserThread::Log(const wxString& log)
 {
 	wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, NEW_TOKEN);
 	event.SetString(log);
-	event.SetInt(m_Tokens.GetLineNumber());
+	event.SetInt(m_Tokenizer.GetLineNumber());
 	wxPostEvent(m_pParent, event);
 	wxYield();
 }
 
-void ParserThread::SetTokens(TokensArray* tokens)
+void ParserThread::SetTokens(TokensTree* tokens)
 {
     m_pTokens = tokens;
 }
@@ -171,14 +169,14 @@ void* ParserThread::DoRun()
 
 wxChar ParserThread::SkipToOneOfChars(const wxString& chars, bool supportNesting)
 {
-	unsigned int level = m_Tokens.GetNestingLevel();
+	unsigned int level = m_Tokenizer.GetNestingLevel();
 	while (1)
 	{
-		wxString token = m_Tokens.GetToken();
+		wxString token = m_Tokenizer.GetToken();
 		if (token.IsEmpty())
 			return '\0'; // eof
 
-		if (!supportNesting || m_Tokens.GetNestingLevel() == level)
+		if (!supportNesting || m_Tokenizer.GetNestingLevel() == level)
 		{
 			wxChar ch = token.GetChar(0);
 			if (chars.Find(ch) != wxNOT_FOUND)
@@ -195,15 +193,15 @@ void ParserThread::SkipBlock()
 	// this is the nesting level we start at
 	// we subtract 1 because we 're already inside the block
 	// (since we 've read the {)
-	unsigned int level = m_Tokens.GetNestingLevel() - 1;
+	unsigned int level = m_Tokenizer.GetNestingLevel() - 1;
 	while (1)
 	{
-		wxString token = m_Tokens.GetToken();
+		wxString token = m_Tokenizer.GetToken();
 		if (token.IsEmpty())
 			break; // eof
 
 		// if we reach the initial nesting level, we are done
-		if (level == m_Tokens.GetNestingLevel())
+		if (level == m_Tokenizer.GetNestingLevel())
 			break;
 	}
 }
@@ -213,7 +211,7 @@ void ParserThread::SkipAngleBraces()
     int nestLvl = 0;
     while (true)
     {
-        wxString tmp = m_Tokens.GetToken();
+        wxString tmp = m_Tokenizer.GetToken();
         if (tmp==ParserConsts::lt)
             ++nestLvl;
         else if (tmp==ParserConsts::gt)
@@ -221,7 +219,7 @@ void ParserThread::SkipAngleBraces()
         else if (tmp==ParserConsts::semicolon)
         {
         	// unget token - leave ; on the stack
-        	m_Tokens.UngetToken();
+        	m_Tokenizer.UngetToken();
             break;
         }
         else if (tmp.IsEmpty())
@@ -236,8 +234,8 @@ bool ParserThread::ParseBufferForFunctions(const wxString& buffer)
     if (!m_pTokens)
         return false;
 	m_pTokens->Clear();
-	m_Tokens.InitFromBuffer(buffer);
-	if (!m_Tokens.IsOK())
+	m_Tokenizer.InitFromBuffer(buffer);
+	if (!m_Tokenizer.IsOK())
 		return false;
 
 	m_Str.Clear();
@@ -248,7 +246,7 @@ bool ParserThread::ParseBufferForFunctions(const wxString& buffer)
         if (!m_pTokens || TestDestroy())
             return false;
 
-		wxString token = m_Tokens.GetToken();
+		wxString token = m_Tokenizer.GetToken();
 		if (token.IsEmpty())
 			break;
 #if 0
@@ -292,13 +290,13 @@ bool ParserThread::ParseBufferForFunctions(const wxString& buffer)
 		}
 		else if (token==ParserConsts::hash)
 		{
-			m_Tokens.GetToken();
-			m_Tokens.GetToken();
+			m_Tokenizer.GetToken();
+			m_Tokenizer.GetToken();
 			m_Str.Clear();
 		}
 		else
 		{
-			wxString peek = m_Tokens.PeekToken();
+			wxString peek = m_Tokenizer.PeekToken();
 			if (!peek.IsEmpty())
 			{
 				if (peek.GetChar(0) == '(')
@@ -309,15 +307,15 @@ bool ParserThread::ParseBufferForFunctions(const wxString& buffer)
 					{
 						// skip till after END_EVENT_TABLE
 						while (!token.IsEmpty() && token!=ParserConsts::end_event_table)
-							token = m_Tokens.GetToken(); // skip args
-						m_Tokens.GetToken(); // skip args
+							token = m_Tokenizer.GetToken(); // skip args
+						m_Tokenizer.GetToken(); // skip args
 					}
 					else if ( token.Matches(ParserConsts::x_event_table) ||
 						token==ParserConsts::implement_app ||
 						token.Matches(ParserConsts::wx_declare_x) ||
 						token.Matches(ParserConsts::wx_define_x) )
                     {
-                        m_Tokens.GetToken(); // skip args
+                        m_Tokenizer.GetToken(); // skip args
                     }
                     else
                     {
@@ -342,33 +340,56 @@ bool ParserThread::ParseBufferForFunctions(const wxString& buffer)
 
 bool ParserThread::Parse()
 {
+    wxCriticalSectionLocker* lock = 0;
+    bool can_parse = false;
     if (!m_pTokens)
         return false;
-#if 0
-	if (!m_Options.useBuffer)
-		Log("Parsing " + m_Filename);
-#endif
-
-	if (!m_Tokens.IsOK())
+	if (!m_Tokenizer.IsOK())
 	{
 		//Log("Cannot parse " + m_Filename);
 		return false;
     }
 
-	if (m_Options.useBuffer)
-		m_StartBlockIndex = m_pTokens->GetCount();
+    if(!m_Options.useBuffer) // Parse a file
+    {
+        lock = new wxCriticalSectionLocker(s_mutexProtection);
+        m_File = m_pTokens->ReserveFileForParsing(m_Filename);
+        delete lock;
+		if(m_File)
+		{
+            can_parse = true;
+//            Log("Parsing " + m_Filename);
+		}
+		else
+            can_parse = false;
+    }
     else
-        m_StartBlockIndex = 0;
+        can_parse = true;
+
+    if(!can_parse)
+        return false;
+    DoParse();
+
+    if(!m_Options.useBuffer) // Parsing a file
+    {
+        lock = new wxCriticalSectionLocker(s_mutexProtection);
+        m_pTokens->FlagFileAsParsed(m_Filename);
+        delete lock;
+    }
+    return true;
+}
+
+void ParserThread::DoParse()
+{
 	m_Str.Clear();
 	m_LastToken.Clear();
     m_EncounteredNamespaces.Clear();
-
 	while (1)
 	{
 		if (!m_pTokens || TestDestroy())
 			break;
 
-		wxString token = m_Tokens.GetToken();
+		wxString token = m_Tokenizer.GetToken();
 		if (token.IsEmpty())
 			break;
 #if 0
@@ -427,7 +448,7 @@ bool ParserThread::Parse()
 			if (!m_Options.useBuffer || m_Options.bufferSkipBlocks)
 				SkipToOneOfChars(ParserConsts::semicolonclbrace, true);
 			else
-				m_Tokens.GetToken(); //skip args
+				m_Tokenizer.GetToken(); //skip args
 			m_Str.Clear();
 		}
 		else if (token==ParserConsts::kw_typedef ||
@@ -440,15 +461,15 @@ bool ParserThread::Parse()
 		else if (token==ParserConsts::kw_extern)
 		{
             // check for "C"
-            m_Str = m_Tokens.GetToken();
+            m_Str = m_Tokenizer.GetToken();
             if (m_Str==ParserConsts::kw_C)
             {
-                m_Tokens.GetToken(); // "eat" {
-                Parse(); // time for recursion ;)
+                m_Tokenizer.GetToken(); // "eat" {
+                DoParse(); // time for recursion ;)
             }
             else
                 SkipToOneOfChars(ParserConsts::semicolon); // skip externs
-//                m_Tokens.UngetToken(); // nope, return the token back...
+//                m_Tokenizer.UngetToken(); // nope, return the token back...
             m_Str.Clear();
         }
         else if (token.StartsWith(ParserConsts::kw__asm))
@@ -465,7 +486,7 @@ bool ParserThread::Parse()
 		}
 		else if (token==ParserConsts::hash)
 		{
-			token = m_Tokens.GetToken();
+			token = m_Tokenizer.GetToken();
 			if (token==ParserConsts::kw_include)
 				HandleIncludes();
 			else if (token==ParserConsts::kw_define)
@@ -505,10 +526,10 @@ bool ParserThread::Parse()
 		else if (token==ParserConsts::kw_union)
         {
             SkipToOneOfChars(ParserConsts::opbracesemicolon);
-//            if (m_Tokens.GetToken() == "{")
+//            if (m_Tokenizer.GetToken() == "{")
             {
                 Token* oldparent = m_pLastParent;
-                Parse();
+                DoParse();
                 m_Str.Clear();
                 m_pLastParent = oldparent;
             }
@@ -519,15 +540,15 @@ bool ParserThread::Parse()
 			wxString func = token;
 			while (1)
 			{
-				token = m_Tokens.GetToken();
+				token = m_Tokenizer.GetToken();
 				if (!token.IsEmpty())
 				{
 					if (token.GetChar(0) == '(')
 					{
 						// check for operator()()
-						wxString peek = m_Tokens.PeekToken();
+						wxString peek = m_Tokenizer.PeekToken();
 						if (!peek.IsEmpty() && peek.GetChar(0) != '(')
-							m_Tokens.UngetToken();
+							m_Tokenizer.UngetToken();
 						else
 							func << token;
 						break;
@@ -544,7 +565,7 @@ bool ParserThread::Parse()
 #endif
 		else
 		{
-			wxString peek = m_Tokens.PeekToken();
+			wxString peek = m_Tokenizer.PeekToken();
 			if (!peek.IsEmpty())
 			{
 				if (peek.GetChar(0) == '(' && !m_Options.useBuffer)
@@ -557,8 +578,8 @@ bool ParserThread::Parse()
 						{
 							// skip till after END_EVENT_TABLE
 							while (!token.IsEmpty() && token!=ParserConsts::end_event_table)
-								token = m_Tokens.GetToken(); // skip args
-							m_Tokens.GetToken(); // skip args
+								token = m_Tokenizer.GetToken(); // skip args
+							m_Tokenizer.GetToken(); // skip args
 						}
 						else if (token.Matches(ParserConsts::x_event_table_x) ||
 							token==ParserConsts::implement_app ||
@@ -566,7 +587,7 @@ bool ParserThread::Parse()
 							token.Matches(ParserConsts::wx_declare_x) ||
 							token.Matches(ParserConsts::wx_define_x))
                         {
-							m_Tokens.GetToken(); // skip args
+							m_Tokenizer.GetToken(); // skip args
                         }
 						else
 						{
@@ -577,7 +598,7 @@ bool ParserThread::Parse()
 						}
 					}
 					else
-						m_Tokens.GetToken(); // eat args when parsing block
+						m_Tokenizer.GetToken(); // eat args when parsing block
 					m_Str.Clear();
 				}
 				else if (peek==ParserConsts::comma)
@@ -587,19 +608,19 @@ bool ParserThread::Parse()
                     // m_Str should hold the type (int)
                     DoAddToken(tkVariable, token);
                     // skip comma (we had peeked it)
-                    m_Tokens.GetToken();
+                    m_Tokenizer.GetToken();
 				}
 				else if (peek==ParserConsts::lt)
 				{
                     // a template, e.g. someclass<void>::memberfunc
                     // we have to skip <>, so we 're left with someclass::memberfunc
                     SkipAngleBraces();
-                    peek = m_Tokens.PeekToken();
+                    peek = m_Tokenizer.PeekToken();
                     if (peek==ParserConsts::dcolon)
                     {
     //                    Log("peek='::', token='" + token + "', m_LastToken='" + m_LastToken + "', m_Str='" + m_Str + "'");
                         m_EncounteredNamespaces.Add(token);
-                        m_Tokens.GetToken(); // eat ::
+                        m_Tokenizer.GetToken(); // eat ::
                     }
                     if (m_Str.IsEmpty())
                     {
@@ -611,7 +632,7 @@ bool ParserThread::Parse()
                 {
 //                    Log("peek='::', token='" + token + "', m_LastToken='" + m_LastToken + "', m_Str='" + m_Str + "'");
                     m_EncounteredNamespaces.Add(token);
-                    m_Tokens.GetToken(); // eat ::
+                    m_Tokenizer.GetToken(); // eat ::
                 }
 				else if ((peek==ParserConsts::semicolon || (m_Options.useBuffer && peek.GetChar(0) == _T('(')) && !m_Str.Contains(ParserConsts::dcolon)) && m_pTokens)
 				{
@@ -632,45 +653,18 @@ bool ParserThread::Parse()
 		}
 		m_LastToken = token;
 	}
-	return true;
 }
 
 Token* ParserThread::TokenExists(const wxString& name, Token* parent, short int kindMask)
 {
-
     if (!m_pTokens)
         return 0;
-    Token* token;
-#if 1
-    if(m_pTree)
-    {
-
-        token = m_pTree->TokenExists(name, parent, kindMask);
-        return token;
-    }
-#endif
-
-    if (!parent)
-    {
-        // when parsing a block, we must make sure the token does not already exist...
-        for (unsigned int i = m_StartBlockIndex; i < m_pTokens->GetCount(); ++i)
-        {
-            token = m_pTokens->Item(i);
-            if ((token->m_TokenKind & kindMask) && token->m_Name.Matches(name))
-                return token;
-        }
-    }
+    int parentidx;
+    if(!parent)
+        parentidx = -1;
     else
-    {
-        // search only under the parent token
-        for (unsigned int i = 0; i < parent->m_Children.GetCount(); ++i)
-        {
-            token = parent->m_Children.Item(i);
-            if ((token->m_TokenKind & kindMask) && token->m_Name==name)
-                return token;
-        }
-    }
-	return 0L;
+        parentidx = parent->GetSelf();
+    return m_pTokens->at(m_pTokens->TokenExists(name, parentidx, kindMask));
 }
 
 wxString ParserThread::GetActualTokenType()
@@ -711,7 +705,7 @@ wxString ParserThread::GetActualTokenType()
 	if (pos >= 0)
 	{
 		// we have the end of the word we 're interested in
-		int end = pos;
+        int end = pos;
 		// continue walking backwards until we find the start of the word
 		//                               const wxString&
 		// in this example, we would stop here ^
@@ -726,79 +720,66 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, const wxSt
 {
 	wxCriticalSectionLocker lock(s_mutexProtection);
 	if (m_Options.useBuffer && TokenExists(name))
-		return 0L;
-	Token* newToken = new Token;
+		return 0;
+	Token* newToken = 0;
+	wxString newname(name);
 	m_Str.Trim();
 	if (kind == tkDestructor)
 	{
 		// special class destructors case
-		newToken->m_Name = ParserConsts::tilde + name;
+		newname.Prepend(ParserConsts::tilde);
 		m_Str.Clear();
 	}
-	else
-		newToken->m_Name = name;
 
     // check for implementation member function
-    Token* localParent = 0;
-    if (m_EncounteredNamespaces.GetCount())
+    size_t count = m_EncounteredNamespaces.GetCount();
+    if (count)
     {
-        unsigned int count = m_EncounteredNamespaces.GetCount();
-        for (unsigned int i = 0; i < count; ++i)
+        Token* localParent = 0;
+        size_t i = 0;
+        do
         {
-//            Log("NS: '" + m_EncounteredNamespaces[i] + "' for " + newToken->m_Name);
             localParent = TokenExists(m_EncounteredNamespaces[i], localParent, tkClass | tkNamespace);
-
-            if (!localParent)
-                break;
-        }
+            i++;
+        }while(localParent && i < count);
         m_EncounteredNamespaces.Clear();
+        if (localParent)
+            newToken = TokenExists(newname, localParent);
     }
-    if (localParent)
+
+    if(newToken)
     {
-//        Log("Parent found for " + m_Str + " " + newToken->m_Name + ": " + localParent->m_DisplayName);
-        Token* existing = TokenExists(newToken->m_Name, localParent);
-        if (existing)
-        {
-//            Log("Existing found for " + newToken->m_Name);
-            // if the token exists, all we have to do is adjust the
-            // implementation file/line
-            existing->m_ImplFilename = m_Tokens.GetFilename();
-            existing->m_ImplLine = m_Tokens.GetLineNumber();
-            delete newToken;
-            return existing;
-        }
+        newToken->m_ImplFile = m_File;
+        newToken->m_ImplLine = m_Tokenizer.GetLineNumber();
+        m_pTokens->m_FilesMap[newToken->m_ImplFile].insert(newToken->GetSelf());
+        m_pTokens->m_modified = true;
     }
-
-	newToken->m_Type = m_Str;
-	newToken->m_ActualType = GetActualTokenType();
-	newToken->m_Args = args;
-	newToken->m_Scope = m_LastScope;
-	newToken->m_TokenKind = kind;
-	newToken->m_IsLocal = m_IsLocal;
-	newToken->m_pParent = m_pLastParent;
-	newToken->m_Filename = m_Tokens.GetFilename();
-	newToken->m_Line = m_Tokens.GetLineNumber();
-	newToken->m_ImplLine = 0;
-	newToken->m_IsOperator = isOperator;
-	newToken->m_IsTemporary = m_Options.useBuffer;
-//    Log("Added token " +name+ ", type '" +newToken->m_Type+ "', actual '" +newToken->m_ActualType+ "'");
-	if (m_pLastParent)
-		newToken->m_DisplayName << m_pLastParent->m_Name << _T("::");
-	newToken->m_DisplayName << newToken->m_Name << args;
-	if (!newToken->m_Type.IsEmpty())
-		newToken->m_DisplayName << _T(" : ") << newToken->m_Type;
-
-    if (m_pTokens)
-        m_pTokens->Add(newToken);
-    if (m_pLastParent)
-        m_pLastParent->AddChild(newToken);
-#if 1
-    if (m_pTree)
+    else
     {
-        m_pTree->AddToken(newToken->m_Name,newToken);
-    }
-#endif
+        newToken = new Token(newname,m_File,m_Tokenizer.GetLineNumber());
+        newToken->m_Type = m_Str;
+        newToken->m_ActualType = GetActualTokenType();
+        newToken->m_Args = args;
+        newToken->m_Scope = m_LastScope;
+        newToken->m_TokenKind = kind;
+        newToken->m_IsLocal = m_IsLocal;
+        newToken->m_ParentIndex = m_pLastParent ? (m_pLastParent->GetSelf()) : -1;
+        newToken->m_ImplLine = 0;
+        newToken->m_IsOperator = isOperator;
+        newToken->m_IsTemporary = m_Options.useBuffer;
+    //    Log("Added token " +name+ ", type '" +newToken->m_Type+ "', actual '" +newToken->m_ActualType+ "'");
+        if (m_pLastParent)
+            newToken->m_DisplayName << m_pLastParent->m_Name << _T("::");
+        newToken->m_DisplayName << newname << args;
+        if (!newToken->m_Type.IsEmpty())
+            newToken->m_DisplayName << _T(" : ") << newToken->m_Type;
 
+        int newidx = -1;
+        if (m_pTokens)
+            newidx=m_pTokens->insert(newToken);
+        if (m_pLastParent)
+            m_pLastParent->AddChild(newidx);
+    }
 	return newToken;
 }
 
@@ -806,7 +787,7 @@ void ParserThread::HandleIncludes()
 {
 	wxString filename;
 	bool isGlobal = !m_IsLocal;
-	wxString token = m_Tokens.GetToken();
+	wxString token = m_Tokenizer.GetToken();
 	// now token holds something like:
 	// "someheader.h"
 	// < and will follow iostream.h, >
@@ -825,7 +806,7 @@ void ParserThread::HandleIncludes()
 			// basically we 'll loop until >
 			while (1)
 			{
-				token = m_Tokens.GetToken();
+				token = m_Tokenizer.GetToken();
 				if (token.IsEmpty())
 					break;
 				if (token.GetChar(0) != '>')
@@ -855,7 +836,7 @@ void ParserThread::HandleIncludes()
 void ParserThread::HandleDefines()
 {
 	wxString filename;
-	wxString token = m_Tokens.GetToken();
+	wxString token = m_Tokenizer.GetToken();
 	m_Str.Clear();
 	// now token holds something like:
 	// BLAH_BLAH
@@ -868,8 +849,8 @@ void ParserThread::HandleDefines()
 		Token* newToken = DoAddToken(tkPreprocessor, token);
 		if (newToken)
             newToken->m_Line -= 1; // preprocessor definitions need correction for the line number
-		if (m_Tokens.PeekToken().GetChar(0) == '(') // TODO: find better way...
-			m_Tokens.GetToken(); // eat args
+		if (m_Tokenizer.PeekToken().GetChar(0) == '(') // TODO: find better way...
+			m_Tokenizer.GetToken(); // eat args
 
         m_pLastParent = oldParent;
 	}
@@ -877,8 +858,8 @@ void ParserThread::HandleDefines()
 
 void ParserThread::HandleNamespace()
 {
-    wxString ns = m_Tokens.GetToken();
-    wxString next = m_Tokens.PeekToken();
+    wxString ns = m_Tokenizer.GetToken();
+    wxString next = m_Tokenizer.PeekToken();
 
     if (next==ParserConsts::opbrace)
     {
@@ -889,7 +870,7 @@ void ParserThread::HandleNamespace()
         if (!newToken)
             return;
 
-        m_Tokens.GetToken(); // eat {
+        m_Tokenizer.GetToken(); // eat {
 
         Token* lastParent = m_pLastParent;
         TokenScope lastScope = m_LastScope;
@@ -898,7 +879,7 @@ void ParserThread::HandleNamespace()
         // default scope is: public for namespaces (actually no, but emulate it)
         m_LastScope = tsPublic;
 
-        Parse();
+        DoParse();
 
         m_pLastParent = lastParent;
         m_LastScope = lastScope;
@@ -909,28 +890,28 @@ void ParserThread::HandleNamespace()
 
 void ParserThread::HandleClass(bool isClass)
 {
-    int lineNr = m_Tokens.GetLineNumber();
+    int lineNr = m_Tokenizer.GetLineNumber();
 	wxString ancestors;
 	while (1)
 	{
-		wxString current = m_Tokens.GetToken();
-		wxString next = m_Tokens.PeekToken();
+		wxString current = m_Tokenizer.GetToken();
+		wxString next = m_Tokenizer.PeekToken();
 		if (!current.IsEmpty() && !next.IsEmpty())
 		{
 			if (next==ParserConsts::lt) // template specialization
 			{
                 SkipAngleBraces();
-                next = m_Tokens.PeekToken();
+                next = m_Tokenizer.PeekToken();
 			}
 
 			if (next==ParserConsts::colon) // has ancestor(s)
 			{
                 //Log("Class " + current + " has ancestors");
-				m_Tokens.GetToken(); // eat ":"
+				m_Tokenizer.GetToken(); // eat ":"
 				while (1)
 				{
-					wxString tmp = m_Tokens.GetToken();
-					next = m_Tokens.PeekToken();
+					wxString tmp = m_Tokenizer.GetToken();
+					next = m_Tokenizer.PeekToken();
 					if (!(
                         tmp==ParserConsts::comma ||
                         tmp==ParserConsts::gt ||
@@ -954,10 +935,10 @@ void ParserThread::HandleClass(bool isClass)
                     {
                         // template class
                         int nest = 0;
-                        m_Tokens.GetToken(); // eat "<"
+                        m_Tokenizer.GetToken(); // eat "<"
                         while (1)
                         {
-                            wxString tmp1 = m_Tokens.GetToken();
+                            wxString tmp1 = m_Tokenizer.GetToken();
                             if (tmp1==ParserConsts::lt)
                                 ++nest;
                             else if (tmp1==ParserConsts::gt)
@@ -968,7 +949,7 @@ void ParserThread::HandleClass(bool isClass)
                                 tmp1==ParserConsts::semicolon ||
                                 (tmp1==ParserConsts::gt && nest <= 0))
                             {
-                                m_Tokens.UngetToken(); // put it back before exiting
+                                m_Tokenizer.UngetToken(); // put it back before exiting
                                 break;
                             }
                         }
@@ -985,7 +966,7 @@ void ParserThread::HandleClass(bool isClass)
 				// default scope is: private for classes, public for structs
 				m_LastScope = isClass ? tsPrivate : tsPublic;
 
-				Parse();
+				DoParse();
 
 				m_pLastParent = lastParent;
 				m_LastScope = lastScope;
@@ -999,7 +980,7 @@ void ParserThread::HandleClass(bool isClass)
                 newToken->m_Line = lineNr; // correct line number (might be messed if class has ancestors)
 				newToken->m_AncestorsString = ancestors;
 
-                m_Tokens.GetToken(); // eat {
+                m_Tokenizer.GetToken(); // eat {
 
 				Token* lastParent = m_pLastParent;
 				TokenScope lastScope = m_LastScope;
@@ -1008,7 +989,7 @@ void ParserThread::HandleClass(bool isClass)
 				// default scope is: private for classes, public for structs
 				m_LastScope = isClass ? tsPrivate : tsPublic;
 
-				Parse();
+				DoParse();
 
 				m_pLastParent = lastParent;
 				m_LastScope = lastScope;
@@ -1030,7 +1011,7 @@ void ParserThread::HandleClass(bool isClass)
 void ParserThread::HandleFunction(const wxString& name, bool isOperator)
 {
     //Log("Adding function '"+name+"': m_Str='"+m_Str+"'");
-	wxString args = m_Tokens.GetToken();
+	wxString args = m_Tokenizer.GetToken();
 	if (!m_Str.StartsWith(ParserConsts::kw_friend))
 	{
 		TokenKind kind = tkFunction;
@@ -1063,7 +1044,7 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
 //        Log("Adding function '"+name+"': m_Str='"+m_Str+"'"+", enc_ns="+(m_EncounteredNamespaces.GetCount()?m_EncounteredNamespaces[0]:"nil"));
 		DoAddToken(kind, name, args, isOperator);
 	}
-	if (!m_Tokens.PeekToken()==ParserConsts::clbrace)
+	if (!m_Tokenizer.PeekToken()==ParserConsts::clbrace)
 		SkipToOneOfChars(ParserConsts::semicolonclbrace,true);
 }
 
@@ -1072,14 +1053,14 @@ void ParserThread::HandleEnum()
 	// enums have the following rough definition:
 	// enum [xxx] { type1 name1 [= 1][, [type2 name2 [= 2]]] };
 	bool isUnnamed = false;
-	wxString token = m_Tokens.GetToken();
+	wxString token = m_Tokenizer.GetToken();
 	if (token.IsEmpty())
 		return;
     else if (token==ParserConsts::opbrace)
 	{
         // we have an un-named enum
 		token = ParserConsts::unnamed;
-		m_Tokens.UngetToken(); // return '{' back
+		m_Tokenizer.UngetToken(); // return '{' back
 		isUnnamed = true;
     }
 
@@ -1087,7 +1068,7 @@ void ParserThread::HandleEnum()
 	unsigned int level = 0;
 	if (isalpha(token.GetChar(0)))
 	{
-		if (m_Tokens.PeekToken().GetChar(0) != '{')
+		if (m_Tokenizer.PeekToken().GetChar(0) != '{')
 			return;
 
         if (isUnnamed)
@@ -1099,24 +1080,24 @@ void ParserThread::HandleEnum()
 
         if (!newEnum) // either named or first unnamed enum
             newEnum = DoAddToken(tkEnum, token);
-		level = m_Tokens.GetNestingLevel();
-		m_Tokens.GetToken(); // skip {
+		level = m_Tokenizer.GetNestingLevel();
+		m_Tokenizer.GetToken(); // skip {
 	}
 	else
 	{
 		if (token.GetChar(0) != '{')
 			return;
-		level = m_Tokens.GetNestingLevel() - 1; // we 've already entered the { block
+		level = m_Tokenizer.GetNestingLevel() - 1; // we 've already entered the { block
 	}
 
 	while (1)
 	{
 		// process enumerators
-		token = m_Tokens.GetToken();
-		wxString peek = m_Tokens.PeekToken();
+		token = m_Tokenizer.GetToken();
+		wxString peek = m_Tokenizer.PeekToken();
 		if (token.IsEmpty() || peek.IsEmpty())
 			return; //eof
-		if (token==ParserConsts::clbrace && level == m_Tokens.GetNestingLevel())
+		if (token==ParserConsts::clbrace && level == m_Tokenizer.GetNestingLevel())
 			break;
 		// assignments (=xxx) are ignored by the tokenizer,
 		// so we don't have to worry about them here ;)
@@ -1140,7 +1121,7 @@ void ParserThread::HandleEnum()
 		}
 	}
 	// skip to ;
-	token = m_Tokens.GetToken();
+	token = m_Tokenizer.GetToken();
 	while (!token.IsEmpty() && token!=ParserConsts::semicolon)
-		token = m_Tokens.GetToken();
+		token = m_Tokenizer.GetToken();
 }

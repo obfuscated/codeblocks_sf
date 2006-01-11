@@ -39,11 +39,12 @@
 	#include <globals.h>
 #endif // STANDALONE
 
-static const char CACHE_MAGIC[] = "CCCACHE_1_0";
-static char CACHE_MAGIC_READ[] = "           ";
+static const char CACHE_MAGIC[] = "CCCACHE_1_1";
+
 static wxCriticalSection s_mutexListProtection;
 int PARSER_END = wxNewId();
 static int idPool = wxNewId();
+int TIMER_ID = wxNewId();
 
 BEGIN_EVENT_TABLE(Parser, wxEvtHandler)
 //	EVT_MENU(NEW_TOKEN, Parser::OnNewToken)
@@ -51,6 +52,7 @@ BEGIN_EVENT_TABLE(Parser, wxEvtHandler)
 	EVT_THREADTASK_STARTED(idPool, Parser::OnStartThread)
 	EVT_THREADTASK_ENDED(idPool, Parser::OnEndThread)
     EVT_THREADTASK_ALLDONE(idPool, Parser::OnAllThreadsDone)
+    EVT_TIMER(TIMER_ID, Parser::OnTimer)
 END_EVENT_TABLE()
 
 Parser::Parser(wxEvtHandler* parent)
@@ -61,10 +63,15 @@ Parser::Parser(wxEvtHandler* parent)
 #endif
     ,m_abort_flag(false),
     m_UsingCache(false),
-    m_CacheFilesCount(0),
-    m_CacheTokensCount(0),
-    m_Pool(this, idPool)
+    m_Pool(this, idPool),
+    m_pTokens(0),
+    m_pTempTokens(0),
+    m_NeedsReparse(false),
+    m_timer(this, TIMER_ID)
 {
+    m_pTokens = new TokensTree;
+    m_pTempTokens = new TokensTree;
+    m_LocalFiles.clear();
 	ReadOptions();
 #ifndef STANDALONE
 	m_pImageList = new wxImageList(16, 16);
@@ -126,6 +133,8 @@ Parser::~Parser()
 	Clear();
 #ifndef STANDALONE
 	delete m_pImageList;
+    delete m_pTempTokens;
+	delete m_pTokens;
 #endif // STANDALONE
 }
 
@@ -198,211 +207,16 @@ bool Parser::CacheNeedsUpdate()
 {
     if (m_UsingCache)
     {
-        ClearTemporaries(); // no temps in counting
-        if (m_CacheFilesCount == (int)m_ParsedFiles.GetCount() &&
-            m_CacheTokensCount == (int)m_Tokens.GetCount())
-        {
-            // in-mem data and cache seem to be in sync
-            // @warning: this is *not* bulletproof!
-            // consider a token name change, for example...
-            // maybe use a CRC of some kind?
-            return false;
-        }
+        wxCriticalSectionLocker lock(s_mutexProtection);
+        return m_pTokens->m_modified;
     }
-    return true;
-}
-
-bool Parser::ReadFromCache(wxInputStream* f)
-{
-    // File format is like this:
-    //
-    // CACHE_MAGIC
-    // Number of parsed files
-    // Number of tokens
-    // Parsed files
-    // Tokens
-    // EOF
-
-    // keep a backup of include dirs
-    wxPathList dirs = m_IncludeDirs;
-    Manager::Get()->GetMessageManager()->DebugLog(_("Clearing Cache"));
-    Clear();
-    // restore backup
-    m_IncludeDirs = dirs;
-
-    Manager::Get()->GetMessageManager()->DebugLog(_("Begin reading..."));
-    if (f->Read(CACHE_MAGIC_READ, sizeof(CACHE_MAGIC_READ)).LastRead() != sizeof(CACHE_MAGIC_READ) ||
-        strncmp(CACHE_MAGIC, CACHE_MAGIC_READ, sizeof(CACHE_MAGIC_READ) != 0))
-    {
-        return false;
-    }
-    int fcount = 0;
-    int tcount = 0;
-    Manager::Get()->GetMessageManager()->DebugLog(_("Reading fcount..."));
-    if (!LoadIntFromFile(f, &fcount)) return false;
-    Manager::Get()->GetMessageManager()->DebugLog(_("Reading tcount..."));
-    if (!LoadIntFromFile(f, &tcount)) return false;
-
-    wxProgressDialog* progress = 0;
-    unsigned int counter = 0;
-
-    // display cache progress?
-    if (Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("/show_cache_progress"), true))
-    {
-        Manager::Get()->GetMessageManager()->DebugLog(_("Creating progress dialog..."));
-        progress = new wxProgressDialog(_("Code-completion plugin"),
-                                        _("Please wait while loading code-completion cache..."),
-                                        fcount + tcount);
-    }
-
-    // m_ParsedFiles
-    Manager::Get()->GetMessageManager()->DebugLog(_("Reading data from cache NOW"));
-    wxString file;
-    for (int i = 0; i < fcount && !f->Eof(); ++i)
-    {
-        if (!LoadStringFromFile(f, file))
-        {
-            delete progress;
-            return false;
-        }
-        m_ParsedFiles.Add(file);
-        if (progress)
-            progress->Update(++counter);
-    }
-
-    Manager::Get()->GetMessageManager()->DebugLog(_("Calculating tokens..."));
-    // m_Tokens
-    for (int i = 0; i < tcount && !f->Eof(); ++i)
-    {
-        // update m_Int for inheritance to be serialized properly
-        Token* token = new Token;
-        token->m_Int = i;
-        m_Tokens.Add(token);
-    }
-    for (int i = 0; i < tcount && !f->Eof(); ++i)
-    {
-        Token* token = m_Tokens[i];
-        if (!token->SerializeIn(f))
-        {
-            delete progress;
-            return false;
-        }
-        if (progress)
-            progress->Update(++counter);
-    }
-
-    Manager::Get()->GetMessageManager()->DebugLog(_("Updating linking pointers..."));
-    // now we must update linking pointers in tokens
-    for (int i = 0; i < tcount; ++i)
-    {
-        Token* token = m_Tokens[i];
-        token->m_pParent = token->m_ParentIndex != -1 ? m_Tokens[token->m_ParentIndex] : 0;
-        // sanity check
-        if (token->m_pParent == token)
-            token->m_pParent = 0;
-
-        for (unsigned int j = 0; j < token->m_AncestorsIndices.GetCount(); ++j)
-        {
-            if (token->m_AncestorsIndices[j] != -1)
-            {
-                Token* ancestor = m_Tokens[token->m_AncestorsIndices[j]];
-                if (ancestor != token) // sanity check
-                    token->m_Ancestors.Add(ancestor);
-            }
-        }
-
-        for (unsigned int j = 0; j < token->m_ChildrenIndices.GetCount(); ++j)
-        {
-            if (token->m_ChildrenIndices[j] != -1)
-            {
-                Token* child = m_Tokens[token->m_ChildrenIndices[j]];
-                if (child != token) // sanity check
-                    token->m_Children.Add(child);
-            }
-        }
-    }
-
-//    LinkInheritance(); // fix ancestors relationships
-
-    Manager::Get()->GetMessageManager()->DebugLog(_("Cleaning up subroutine..."));
-    m_UsingCache = true;
-    m_CacheFilesCount = m_ParsedFiles.GetCount();
-    m_CacheTokensCount = m_Tokens.GetCount();
-
-    Manager::Get()->GetMessageManager()->DebugLog(_("Deleting progress dialog (if any)..."));
-    if (progress)
-        delete progress;
-
-    Manager::Get()->GetMessageManager()->DebugLog(_("Finished reading from cache."));
-    return true;
-}
-
-bool Parser::WriteToCache(wxOutputStream* f)
-{
-    // File format is like this:
-    //
-    // CACHE_MAGIC
-    // Number of parsed files
-    // Number of tokens
-    // Parsed files
-    // Tokens
-    // EOF
-
-    ClearTemporaries(); // no temps in cache
-
-    unsigned int tcount = m_Tokens.GetCount();
-    unsigned int fcount = m_ParsedFiles.GetCount();
-    unsigned int counter = 0;
-
-    wxProgressDialog* progress = 0;
-
-    // display cache progress?
-    if (Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("/show_cache_progress"), true))
-    {
-        progress = new wxProgressDialog(_("Code-completion plugin"),
-                                        _("Please wait while saving code-completion cache..."),
-                                        tcount + fcount);
-    }
-
-    // write cache magic
-    f->Write(CACHE_MAGIC, sizeof(CACHE_MAGIC));
-
-    SaveIntToFile(f, fcount); // num parsed files
-    SaveIntToFile(f, tcount); // num tokens
-
-    // m_ParsedFiles
-    for (unsigned int i = 0; i < fcount; ++i)
-    {
-        SaveStringToFile(f, m_ParsedFiles[i]);
-        if (progress)
-            progress->Update(++counter);
-    }
-
-    // m_Tokens
-    for (unsigned int i = 0; i < tcount; ++i)
-    {
-        // update m_Int for inheritance to be serialized properly
-        Token* token = m_Tokens[i];
-        token->m_Int = i;
-    }
-    for (unsigned int i = 0; i < tcount; ++i)
-    {
-        Token* token = m_Tokens[i];
-        token->SerializeOut(f);
-        if (progress)
-            progress->Update(++counter);
-    }
-
-    if (progress)
-        delete progress;
-
     return true;
 }
 
 unsigned int Parser::GetFilesCount()
 {
-	wxCriticalSectionLocker lock(s_mutexListProtection);
-	return m_ParsedFiles.GetCount();
+	wxCriticalSectionLocker lock(s_mutexProtection);
+	return m_pTokens->m_FilesMap.size();
 }
 
 bool Parser::Done()
@@ -491,154 +305,67 @@ int Parser::GetTokenKindImage(Token* token)
 
 Token* Parser::FindTokenByName(const wxString& name, bool globalsOnly, short int kindMask) const
 {
-//	for (unsigned int i = m_Tokens.GetCount() - 1; i >= 0; --i)
-    Token* res = 0;
-	for (unsigned int i = 0; i < m_Tokens.GetCount(); ++i)
-	{
-		Token* token = m_Tokens[i];
-		if (globalsOnly && token->m_pParent)
-			continue;
-		if ((token->m_TokenKind & kindMask) && token->m_Name.Matches(name))
-		{
-            res = token;
-//            Manager::Get()->GetMessageManager()->DebugLog("token=%s (%d)", name.c_str(), token->m_Children.GetCount());
-//            return token;
-        }
-	}
-//	return 0;
-	return res;
+    wxCriticalSectionLocker lock(s_mutexProtection);
+    int result = m_pTokens->TokenExists(name,-1,kindMask);
+    return m_pTokens->at(result);
 }
 
 Token* Parser::FindChildTokenByName(Token* parent, const wxString& name, bool useInheritance, short int kindMask) const
 {
 	if (!parent)
 		return FindTokenByName(name, false, kindMask);
-
-	for (unsigned int i = 0; i < parent->m_Children.GetCount(); ++i)
-	{
-		Token* token = parent->m_Children[i];
-		if ((token->m_TokenKind & kindMask) && token->m_Name.Matches(name))
-			return token;
-	}
-	// not found; check ancestors now...
-	if (useInheritance)
-	{
-		for (unsigned int i = 0; i < parent->m_Ancestors.GetCount(); ++i)
-		{
-			Token* inherited = FindChildTokenByName(parent->m_Ancestors[i], name, true, kindMask);
-			if (inherited)
-				return inherited;
-		}
-	}
-	return 0L;
+    Token* result = 0;
+    wxCriticalSectionLocker *lock = 0;
+    {
+        lock = new wxCriticalSectionLocker(s_mutexProtection);
+        result = m_pTokens->at(m_pTokens->TokenExists(name,parent->GetSelf(),kindMask));
+        delete lock;
+    }
+    if(!result && useInheritance)
+    {
+        lock = new wxCriticalSectionLocker(s_mutexProtection);
+        TokenIdxSet::iterator it;
+        for(it = parent->m_Ancestors.begin();it != parent->m_Ancestors.end();++it)
+        {
+            Token* ancestor = m_pTokens->at(*it);
+            result = FindChildTokenByName(ancestor, name, true, kindMask);
+            if(result)
+                break;
+        }
+        delete lock;
+    }
+    return result;
 }
 
 Token* Parser::FindTokenByDisplayName(const wxString& name) const
 {
-	for (unsigned int i = 0; i < m_Tokens.GetCount(); ++i)
-	{
-		Token* token = m_Tokens[i];
-		if (token->m_DisplayName.Matches(name))
-			return token;
-	}
-	return 0L;
+	wxCriticalSectionLocker lock(s_mutexProtection);
+	int idx = m_pTokens->FindTokenByDisplayName(name);
+	return m_pTokens->at(idx);
 }
 
-int TokensSortProc(Token** first, Token** second)
+size_t Parser::FindMatches(const wxString& s,TokenList& result,bool caseSensitive,bool is_prefix,bool markedonly)
 {
-	Token* parent1 = first[0]->m_pParent;
-	Token* parent2 = second[0]->m_pParent;
-	int diff = 0;
-	if (first[0]->m_IsTemporary != second[0]->m_IsTemporary)
-	{
-		// local block token, always first in list
-		return first[0]->m_IsTemporary ? -1 : 1;
-	}
-	else if (first[0]->m_IsLocal != second[0]->m_IsLocal)
-	{
-		// project tokens first, then global
-		return first[0]->m_IsLocal ? -1 : 1;
-	}
-	else if (parent1 && !parent2)
-	{
-		// first tokens that have a parent
-		return -1;
-	}
-	else if (!parent1 && parent2)
-	{
-		// first tokens that have a parent
-		return 1;
-	}
-	else if (parent1 && parent2)
-	{
-		if (parent1 != parent2)
-		{
-			// if both tokens have parent, order by *parent* name
-			diff = parent1->m_Name.CompareTo(parent2->m_Name);
-			if (diff)
-				return diff;
-		}
-	}
-	// order by token kind
-	int ret = first[0]->m_TokenKind - second[0]->m_TokenKind;
-	// finally order by token name, if all else fails...
-	if (!ret)
-		ret = first[0]->m_Name.CompareTo(second[0]->m_Name);
-	return ret;
-}
+    result.clear();
+    TokenIdxSet tmpresult;
+    wxCriticalSectionLocker lock(s_mutexProtection);
+    if(!m_pTokens->FindMatches(s,tmpresult,caseSensitive,is_prefix))
+        return 0;
 
-void Parser::SortAllTokens()
-{
-	m_Tokens.Sort(TokensSortProc);
+    TokenIdxSet::iterator it;
+    for(it = tmpresult.begin();it!=tmpresult.end();++it)
+    {
+        Token* token = m_pTokens->at(*it);
+        if(token && (!markedonly || token->m_Bool))
+        result.push_back(token);
+    }
+    return result.size();
 }
 
 void Parser::LinkInheritance(bool tempsOnly)
 {
-	//Manager::Get()->GetMessageManager()->DebugLog("Linking inheritance...");
-	for (unsigned int i = 0; i < m_Tokens.GetCount(); ++i)
-	{
-		Token* token = m_Tokens[i];
-
-		if (token->m_TokenKind != tkClass)
-			continue;
-
-		if (tempsOnly && !token->m_IsTemporary)
-			continue;
-
-		if (token->m_AncestorsString.IsEmpty())
-			continue;
-
-		// only local symbols might change inheritance
-		if (token->m_IsLocal)
-		{
-			//Manager::Get()->GetMessageManager()->DebugLog("Removing ancestors from %s", token->m_Name.c_str());
-			token->m_Ancestors.Clear();
-		}
-		else
-			continue;
-
-		//Manager::Get()->GetMessageManager()->DebugLog("Token %s, Ancestors %s", token->m_Name.c_str(), token->m_AncestorsString.c_str());
-		wxStringTokenizer tkz(token->m_AncestorsString, _T(","));
-		while (tkz.HasMoreTokens())
-		{
-			wxString ancestor = tkz.GetNextToken();
-			if (ancestor.IsEmpty() || ancestor == token->m_Name)
-				continue;
-			//Manager::Get()->GetMessageManager()->DebugLog("Ancestor %s", ancestor.c_str());
-			Token* ancestorToken = FindTokenByName(ancestor, tkClass);
-			//Manager::Get()->GetMessageManager()->DebugLog(ancestorToken ? "Found" : "not Found");
-			if (ancestorToken)
-			{
-				//Manager::Get()->GetMessageManager()->DebugLog("Adding ancestor %s to %s", ancestorToken->m_Name.c_str(), token->m_Name.c_str());
-				token->m_Ancestors.Add(ancestorToken);
-			}
-		}
-		if (!token->m_IsLocal) // global symbols are linked once
-		{
-			//Manager::Get()->GetMessageManager()->DebugLog("Removing ancestor string from %s", token->m_Name.c_str(), token->m_Name.c_str());
-			token->m_AncestorsString.Clear();
-		}
-	}
+	wxCriticalSectionLocker lock(s_mutexProtection);
+	(tempsOnly ? m_pTempTokens :  m_pTokens)->RecalcData();
 }
 
 bool Parser::ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBlocks)
@@ -658,6 +385,8 @@ void Parser::BatchParse(const wxArrayString& filenames)
     m_Pool.BatchEnd();
 }
 
+
+
 bool Parser::Parse(const wxString& filename, bool isLocal)
 {
 	ParserThreadOptions opts;
@@ -670,10 +399,15 @@ bool Parser::Parse(const wxString& filename, bool isLocal)
 bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadOptions& opts)
 {
 	wxString buffOrFile = bufferOrFilename;
-	bool parsed;
-	{
-	wxCriticalSectionLocker lock(s_mutexListProtection);
-	parsed = !opts.useBuffer && m_ParsedFiles.Index(buffOrFile) != wxNOT_FOUND;
+	bool parsed = false;
+
+	if(!opts.useBuffer){
+        wxCriticalSectionLocker lock(s_mutexProtection);
+        size_t index = m_pTokens->GetFileIndex(buffOrFile);
+        parsed = (m_pTokens->m_FilesMap.count(index) &&
+           m_pTokens->m_FilesStatus[index]!=fpsNotParsed &&
+           !m_pTokens->m_FilesToBeReparsed.count(index)
+           );
 	}
 	if (parsed)
 	{
@@ -687,12 +421,10 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
 											buffOrFile,
 											isLocal,
 											opts,
-											&m_Tokens,
-											&m_TokensTree);
-	if (!opts.useBuffer)
+											(opts.useBuffer ? m_pTempTokens : m_pTokens));
+    if (!opts.useBuffer)
 	{
 //		lock = new wxCriticalSectionLocker(s_mutexListProtection);
-		m_ParsedFiles.Add(buffOrFile);
 //	    LOGSTREAM << "Adding task for: " << buffOrFile << '\n';
 #ifdef CODECOMPLETION_PROFILING
         thread->Parse();
@@ -721,63 +453,43 @@ bool Parser::ParseBufferForFunctions(const wxString& buffer)
 											wxEmptyString,
 											false,
 											opts,
-											&m_Tokens,
-											&m_TokensTree);
+											m_pTokens);
 	return thread->ParseBufferForFunctions(buffer);
 }
 
 bool Parser::RemoveFile(const wxString& filename)
 {
-	wxCriticalSectionLocker lock(s_mutexListProtection);
-	wxCriticalSectionLocker lock1(s_mutexProtection);
-
+	if(!Done())
+        return false; // Can't alter the tokens tree if parsing has not finished
 	wxString file = UnixFilename(filename);
-	if (m_ParsedFiles.Index(file) != wxNOT_FOUND)
-	{
-		// only if it has been parsed before...
-		// delete any entries that belong to the file in question
-		// FIXME: what happens with entries *linked* to this entry?
-		unsigned int i = 0;
-		while (i < m_Tokens.GetCount())
-		{
-			if (m_Tokens[i]->m_Filename.Matches(file))
-				m_Tokens.RemoveAt(i);
-			else
-				++i;
-		}
-		m_ParsedFiles.Remove(file);
-	}
-	else
-		return false;
-	return true;
-}
+	wxCriticalSectionLocker lock(s_mutexProtection);
+    size_t index = m_pTokens->GetFileIndex(file);
+	bool result = m_pTokens->m_FilesStatus.count(index);
 
-void Parser::ReCreateTree()
-{
-    m_TokensTree.Clear();
-    unsigned int i;
-    for(i = 0; i < m_Tokens.GetCount();i++)
-    {
-        m_TokensTree.AddToken(m_Tokens[i]->m_Name,m_Tokens[i]);
-    }
+    m_pTokens->RemoveFile(filename);
+    m_pTokens->m_FilesMap.erase(index);
+    m_pTokens->m_FilesStatus.erase(index);
+    m_pTokens->m_FilesToBeReparsed.erase(index);
+    m_pTokens->m_modified = true;
+	return result;
 }
 
 bool Parser::Reparse(const wxString& filename, bool isLocal)
 {
 	if (!Done())
 		return false; // if still parsing, exit with error
-
 	wxString file = UnixFilename(filename);
-//	Manager::Get()->GetMessageManager()->DebugLog(_("Reparsing %s"), file.c_str());
-	RemoveFile(file);
-	ClearTemporaries();
-	ReCreateTree();
+	if(isLocal)
+        m_LocalFiles.insert(filename);
+    else
+        m_LocalFiles.erase(filename);
 	{
-	wxCriticalSectionLocker lock(s_mutexListProtection);
-	m_ReparsedFiles.Add(file);
+	    wxCriticalSectionLocker lock(s_mutexProtection);
+	    m_pTokens->FlagFileForReparsing(file);
 	}
-
-	return Parse(file, isLocal);
+    m_NeedsReparse = true;
+    m_timer.Start(200,wxTIMER_ONE_SHOT);
+    return true;
 }
 
 void Parser::Clear()
@@ -791,18 +503,15 @@ void Parser::Clear()
 
 	{
 	wxCriticalSectionLocker lockl(s_mutexListProtection);
-//    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Clearing 'm_ParsedFiles'..."));
-	m_ParsedFiles.Clear();
-//    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Clearing 'm_ReparsedFiles'..."));
-	m_ReparsedFiles.Clear();
 //    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Clearing 'm_IncludeDirs'..."));
 	m_IncludeDirs.Clear();
 	}
 
-//    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Locking s_mutexProtection and clearing m_Tokens..."));
+//    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Locking s_mutexProtection and clearing m_pTokens->.."));
 	wxCriticalSectionLocker lock(s_mutexProtection);
-	WX_CLEAR_ARRAY(m_Tokens);
-	m_Tokens.Clear();
+    m_pTokens->clear();
+    m_pTempTokens->clear();
+    m_LocalFiles.clear();
 
 //    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: wxSafeYield..."));
 	wxSafeYield();
@@ -810,26 +519,152 @@ void Parser::Clear()
 	ConnectEvents();
 
 	m_UsingCache = false;
-	m_CacheFilesCount = 0;
-	m_CacheTokensCount = 0;
 	m_abort_flag = false;
 //    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Done."));
 }
 
-void Parser::ClearTemporaries()
+bool Parser::ReadFromCache(wxInputStream* f)
 {
-	if (!Done())
-		return;
+    bool result = false;
+    wxCriticalSectionLocker lock(s_mutexProtection);
 
-	unsigned int i = 0;
-	while (i < m_Tokens.GetCount())
-	{
-		Token* token = m_Tokens[i];
-		if (token->m_IsTemporary)
-			m_Tokens.RemoveAt(i);
-		else
-			++i;
-	}
+    char CACHE_MAGIC_READ[] = "           ";
+    m_pTokens->clear(); // Clear data
+
+    // File format is like this:
+    //
+    // CACHE_MAGIC
+    // Number of parsed files
+    // Number of tokens
+    // Parsed files
+    // Tokens
+    // EOF
+
+//  Begin loading process
+    do
+    {
+
+        // keep a backup of include dirs
+        if (f->Read(CACHE_MAGIC_READ, sizeof(CACHE_MAGIC_READ)).LastRead() != sizeof(CACHE_MAGIC_READ) ||
+            strncmp(CACHE_MAGIC, CACHE_MAGIC_READ, sizeof(CACHE_MAGIC_READ) != 0))
+            break;
+        int fcount = 0, actual_fcount = 0;
+        int tcount = 0, actual_tcount = 0;
+        int idx;
+        if (!LoadIntFromFile(f, &fcount))
+            break;
+        if (!LoadIntFromFile(f, &tcount))
+            break;
+        if (fcount < 0)
+            break;
+        if (tcount < 0)
+            break;
+
+        wxString file;
+        int nonempty_token = 0;
+        Token* token = 0;
+        do // do while-false block
+        {
+            // Filenames
+            for (int i = 0; i < fcount && !f->Eof(); ++i)
+            {
+                if(!LoadIntFromFile(f,&idx)) // Filename index
+                    break;
+                if(!LoadStringFromFile(f,file)) // Filename data
+                    break;
+                if(!idx)
+                    file.Clear();
+                if(file.IsEmpty())
+                    idx = 0;
+                m_pTokens->m_FilenamesMap[file] = idx;
+                m_pTokens->m_InvFilenamesMap[idx] = file;
+                actual_fcount++;
+            }
+            result = (actual_fcount == fcount);
+            if(!result)
+                break;
+            if(tcount)
+                m_pTokens->m_Tokens.resize(tcount,0);
+            // Tokens
+            for (int i = 0; i < tcount && !f->Eof(); ++i)
+            {
+                token = 0;
+                if (!LoadIntFromFile(f, &nonempty_token))
+                break;
+                if(nonempty_token != 0)
+                {
+                    token = new Token();
+                    if (!token->SerializeIn(f))
+                    {
+                        delete token;
+                        token = 0;
+                        break;
+                    }
+                    m_pTokens->insert(i,token);
+                }
+                ++actual_tcount;
+            }
+            if(actual_tcount != tcount)
+                break;
+            m_pTokens->RecalcFreeList();
+            result = true;
+        }while(false);
+
+    }
+    while(false);
+
+//  End loading process
+
+    if(result)
+        m_UsingCache = true;
+    else
+        m_pTokens->clear();
+    m_pTokens->m_modified = false;
+    return result;
+}
+
+bool Parser::WriteToCache(wxOutputStream* f)
+{
+    bool result = false;
+    wxCriticalSectionLocker lock(s_mutexProtection);
+//  Begin saving process
+
+    TokenFilenamesMap::iterator fn_it;
+
+    size_t tcount = m_pTokens->m_Tokens.size();
+    size_t fcount = m_pTokens->m_FilenamesMap.size();
+
+    // write cache magic
+    f->Write(CACHE_MAGIC, sizeof(CACHE_MAGIC));
+
+    SaveIntToFile(f, fcount); // num parsed files
+    SaveIntToFile(f, tcount); // num tokens
+
+    // Filenames
+    for(fn_it = m_pTokens->m_FilenamesMap.begin(); fn_it != m_pTokens->m_FilenamesMap.end();fn_it++)
+    {
+        SaveIntToFile(f,fn_it->second);
+        SaveStringToFile(f,fn_it->first);
+    }
+
+    // Tokens
+
+    for (size_t i = 0; i < tcount; ++i)
+    {
+        // Manager::Get()->GetMessageManager()->DebugLog(_("Token #%d, offset %d"),i,f->TellO());
+        Token* token = m_pTokens->at(i);
+        SaveIntToFile(f,(token!=0) ? 1 : 0);
+        if(token)
+            token->SerializeOut(f);
+    }
+
+    result = true;
+
+    if(result)
+        m_pTokens->m_modified = false;
+    return result;
+//  End saving process
+    return result;
 }
 
 void Parser::TerminateAllThreads()
@@ -928,23 +763,7 @@ void Parser::OnParseFile(wxCommandEvent& event)
 	    filename = g;
 	}
 
-	if (m_ParsedFiles.Index(filename) != wxNOT_FOUND) // parsed file
-        return;
-//	Manager::Get()->GetMessageManager()->DebugLog("Adding in parse queue: %s", filename.c_str());
-
-	bool res = false;
-	if (m_ReparsedFiles.Index(src) != wxNOT_FOUND) // reparsing file
-		res = Reparse(filename, event.GetInt() == 0);
-	else
-		res = Parse(filename, event.GetInt() == 0);
-	if (res)
-	{
-#if 0
-#ifndef STANDALONE
-	Manager::Get()->GetMessageManager()->DebugLog("Adding in parse queue: %s", filename.c_str());
-#endif
-#endif
-	}
+    Parse(filename, event.GetInt() == 0);
 }
 
 void Parser::BuildTree(wxTreeCtrl& tree)
@@ -954,133 +773,174 @@ void Parser::BuildTree(wxTreeCtrl& tree)
 
 	tree.Freeze();
     tree.DeleteAllItems();
-
+    TokenFilesSet currset;
+    currset.clear();
+    Token* token = 0;
 #ifndef STANDALONE
 	tree.SetImageList(m_pImageList);
 
-    wxString fname;
+    wxString fname(_T(""));
     EditorBase* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
     if (ed)
-    {
         fname = ed->GetFilename().BeforeLast(_T('.'));
-        // wildcard match for extension
-        fname << _T(".*");
-    }
 
     // "mark" tokens based on scope
     bool fnameEmpty = fname.IsEmpty();
-    for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
+    fname.Append(_T('.'));
+    if(!fnameEmpty && !m_BrowserOptions.showAllSymbols)
     {
-        Token* token = m_Tokens[x];
-        token->m_Bool = m_BrowserOptions.showAllSymbols ||
-                        (!fnameEmpty &&
-                            (token->m_Filename.Matches(fname) ||
-                            token->m_ImplFilename.Matches(fname)));
+        for(TokenFilenamesMap::iterator it = m_pTokens->m_FilenamesMap.begin(); it!= m_pTokens->m_FilenamesMap.end(); it++)
+        {
+            if((it->first).StartsWith(fname))
+                currset.insert(it->second);
+        }
     }
+
 #endif
 
 	m_RootNode = tree.AddRoot(_("Symbols"), PARSER_IMG_SYMBOLS_FOLDER);
 	if (m_BrowserOptions.viewFlat)
 	{
-		for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
-		{
-			Token* token = m_Tokens[x];
-			if (!token->m_pParent && // base (no parent)
-				token->m_IsLocal && // local symbols only
-                token->m_Bool) // scope ok
-            {
-				AddTreeNode(tree, m_RootNode, token);
-            }
-		}
+        TokenIdxSet::iterator it,it_end;
+        it = m_pTokens->m_GlobalNameSpace.begin();
+        it_end = m_pTokens->m_GlobalNameSpace.end();
+
+        for(;it != it_end;++it)
+        {
+            token = m_pTokens->at(*it);
+            if(!token || !token->m_IsLocal || token->m_ParentIndex!=-1 || !token->MatchesFiles(currset))
+                continue;
+            AddTreeNode(tree, m_RootNode, token);
+        }
 		tree.SortChildren(m_RootNode);
-		tree.Expand(m_RootNode);
-		tree.Thaw();
-		return;
+	}
+	else
+	{
+        wxTreeItemId globalNS = tree.AppendItem(m_RootNode, _("Global namespace"), PARSER_IMG_NAMESPACE);
+        AddTreeNamespace(tree, globalNS, 0,currset);
+        BuildTreeNamespace(tree, m_RootNode, 0,currset);
 	}
 
-	wxTreeItemId globalNS = tree.AppendItem(m_RootNode, _("Global namespace"), PARSER_IMG_NAMESPACE);
-    AddTreeNamespace(tree, globalNS, 0L);
-    BuildTreeNamespace(tree, m_RootNode, 0L);
 	tree.Expand(m_RootNode);
 	tree.Thaw();
+	// wxString memdump = m_pTokens->m_Tree.Serialize();
+	// Manager::Get()->GetMessageManager()->DebugLog(memdump);
 }
 
-void Parser::BuildTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* parent)
+void Parser::BuildTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* parent, const TokenFilesSet& currset)
 {
-	for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
+	TokenIdxSet::iterator it,it_end;
+	int parentidx;
+	if(!parent)
 	{
-		Token* token = m_Tokens[x];
-		if (token->m_Bool && // scope ok
-            token->m_pParent == parent &&
-			token->m_IsLocal && // local symbols only
-			token->m_TokenKind == tkNamespace) // namespaces
-        {
-            ClassTreeData* ctd = new ClassTreeData(token);
-            wxTreeItemId newNS = tree.AppendItem(parentNode, token->m_Name, PARSER_IMG_NAMESPACE, -1, ctd);
-            BuildTreeNamespace(tree, newNS, token);
-            AddTreeNamespace(tree, newNS, token);
-        }
-		tree.SortChildren(parentNode);
+        it = m_pTokens->m_TopNameSpaces.begin();
+        it_end = m_pTokens->m_TopNameSpaces.end();
+        parentidx = -1;
 	}
+    else
+    {
+        it = parent->m_Children.begin();
+        it_end = parent->m_Children.end();
+        parentidx = parent->GetSelf();
+    }
+
+	for(;it != it_end; it++)
+	{
+	    Token* token = m_pTokens->at(*it);
+	    if(!token || /* !token->m_Bool || */ !token->m_IsLocal || token->m_TokenKind != tkNamespace)
+            continue;
+        if(currset.size() && !token->MatchesFiles(currset))
+            continue;
+        ClassTreeData* ctd = new ClassTreeData(token);
+        wxTreeItemId newNS = tree.AppendItem(parentNode, token->m_Name, PARSER_IMG_NAMESPACE, -1, ctd);
+        BuildTreeNamespace(tree, newNS, token, currset);
+        AddTreeNamespace(tree, newNS, token, currset);
+	}
+    tree.SortChildren(parentNode);
 }
 
-void Parser::AddTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* parent)
+void Parser::AddTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* parent,const TokenFilesSet& currset)
 {
-	wxTreeItemId node = tree.AppendItem(parentNode, _("Classes"), PARSER_IMG_CLASS_FOLDER);
-	for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
+	TokenIdxSet::iterator it,it_end;
+	int parentidx;
+	if(!parent)
 	{
-		Token* token = m_Tokens[x];
-		if (token->m_Bool && // scope ok
-            token->m_pParent == parent && // parent matches
-			token->m_IsLocal && // local symbols only
-			token->m_TokenKind == tkClass) // classes
-        {
-			AddTreeNode(tree, node, token);
-        }
+        it = m_pTokens->m_GlobalNameSpace.begin();
+        it_end = m_pTokens->m_GlobalNameSpace.end();
+        parentidx = -1;
 	}
-    tree.SortChildren(node);
-	node = tree.AppendItem(parentNode, _("Enums"), PARSER_IMG_ENUMS_FOLDER);
-	for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
+    else
+    {
+        it = parent->m_Children.begin();
+        it_end = parent->m_Children.end();
+        parentidx = parent->GetSelf();
+    }
+
+	bool has_classes = false,has_enums = false,has_preprocessor = false,has_others = false;
+	wxTreeItemId node_classes;
+	wxTreeItemId node_enums;
+	wxTreeItemId node_preprocessor;
+	wxTreeItemId node_others;
+	wxTreeItemId* curnode = 0;
+
+	for(;it != it_end; it++)
 	{
-		Token* token = m_Tokens[x];
-		if (token->m_Bool && // scope ok
-            token->m_pParent == parent && // parent matches
-			token->m_IsLocal && // local symbols only
-			token->m_TokenKind == tkEnum) // enums
+	    Token* token = m_pTokens->at(*it);
+	    if(!token || /* !token->m_Bool || */ !token->m_IsLocal)
+            continue;
+        if(currset.size() && !token->MatchesFiles(currset))
+            continue;
+
+        switch(token->m_TokenKind)
         {
-			AddTreeNode(tree, node, token);
+            case tkClass:
+                    if(!has_classes)
+                    {
+                        has_classes = true;
+                        node_classes = tree.AppendItem(parentNode, _("Classes"), PARSER_IMG_CLASS_FOLDER);
+                    }
+                    curnode = &node_classes;
+                    break;
+            case tkEnum:
+                    if(!has_enums)
+                    {
+                        has_enums = true;
+                        node_enums = node_enums = tree.AppendItem(parentNode, _("Enums"), PARSER_IMG_ENUMS_FOLDER);
+                    }
+                    curnode = &node_enums;
+                    break;
+            case tkPreprocessor:
+                    if(!has_preprocessor)
+                    {
+                        has_preprocessor = true;
+                        node_preprocessor = tree.AppendItem(parentNode, _("Preprocessor"), PARSER_IMG_PREPROC_FOLDER);
+                    }
+                    curnode = &node_preprocessor;
+                    break;
+            case tkEnumerator:
+            case tkFunction:
+            case tkVariable:
+            case tkUndefined:
+                    if(!has_others)
+                    {
+                        has_others = true;
+                        node_others = tree.AppendItem(parentNode, _("Others"), PARSER_IMG_OTHERS_FOLDER);
+                    }
+                    curnode = &node_others;
+                    break;
+            default:curnode = 0;
         }
+        if(curnode)
+            AddTreeNode(tree, *curnode, token);
 	}
-    tree.SortChildren(node);
-	node = tree.AppendItem(parentNode, _("Preprocessor"), PARSER_IMG_PREPROC_FOLDER);
-	for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
-	{
-		Token* token = m_Tokens[x];
-		if (token->m_Bool && // scope ok
-            token->m_pParent == parent && // parent matches
-			token->m_IsLocal && // local symbols only
-			token->m_TokenKind == tkPreprocessor) // preprocessor
-        {
-			AddTreeNode(tree, node, token);
-        }
-	}
-    tree.SortChildren(node);
-	node = tree.AppendItem(parentNode, _("Others"), PARSER_IMG_OTHERS_FOLDER);
-	for (unsigned int x = 0; x < m_Tokens.GetCount(); ++x)
-	{
-		Token* token = m_Tokens[x];
-		if (token->m_Bool && // scope ok
-            token->m_pParent == parent && // parent matches
-			token->m_IsLocal && // local symbols only
-			(token->m_TokenKind == tkEnumerator || // enumerators
-			token->m_TokenKind == tkFunction || // functions
-			token->m_TokenKind == tkVariable || // variables
-			token->m_TokenKind == tkUndefined)) // others
-        {
-			AddTreeNode(tree, node, token);
-        }
-	}
-    tree.SortChildren(node);
+    if(has_classes)
+        tree.SortChildren(node_classes);
+    if(has_enums)
+        tree.SortChildren(node_enums);
+    if(has_preprocessor)
+        tree.SortChildren(node_preprocessor);
+    if(has_others)
+        tree.SortChildren(node_others);
 }
 
 void Parser::AddTreeNode(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* token, bool childrenOnly)
@@ -1098,19 +958,54 @@ void Parser::AddTreeNode(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token
 	wxTreeItemId node = childrenOnly ? parentNode : tree.AppendItem(parentNode, str, image, -1, ctd);
 
 	// add children
-	for (unsigned int i = 0; i < token->m_Children.GetCount(); ++i)
+	TokenIdxSet::iterator it;
+	for(it=token->m_Children.begin();it!=token->m_Children.end();++it)
 	{
-		Token* childToken = token->m_Children[i];
-		AddTreeNode(tree, node, childToken);
+	    AddTreeNode(tree, node, m_pTokens->at(*it));
 	}
 
 	if (!m_BrowserOptions.showInheritance || (token->m_TokenKind != tkClass && token->m_TokenKind != tkNamespace))
 		return;
 	// add ancestor's children
-	for (unsigned int x = 0; x < token->m_Ancestors.GetCount(); ++x)
+	for(it=token->m_Ancestors.begin();it!=token->m_Ancestors.end();++it)
 	{
-		Token* ancestor = token->m_Ancestors[x];
-		AddTreeNode(tree, node, ancestor, true);
+	    AddTreeNode(tree, node, m_pTokens->at(*it),true);
 	}
+
     tree.SortChildren(node);
+}
+
+
+void Parser::OnTimer(wxTimerEvent& event)
+{
+    ReparseModifiedFiles();
+    event.Skip();
+}
+
+bool Parser::ReparseModifiedFiles()
+{
+    if(!m_NeedsReparse || !m_Pool.Done())
+        return false;
+    Manager::Get()->GetMessageManager()->DebugLog(_("Reparsing saved files..."));
+    m_NeedsReparse = false;
+    int numfiles = 0;
+    vector<wxString> files_list;
+    {
+        wxCriticalSectionLocker lock(s_mutexProtection);
+        TokenFilesSet::iterator it;
+        for(it = m_pTokens->m_FilesToBeReparsed.begin(); it != m_pTokens->m_FilesToBeReparsed.end(); ++it)
+        {
+            m_pTokens->RemoveFile(*it);
+            files_list.push_back(m_pTokens->m_InvFilenamesMap[*it]);
+            ++numfiles;
+        }
+    }
+    if(!numfiles)
+        return true;
+    StartTimer();
+    for(size_t i = 0; i < files_list.size();++i)
+    {
+        Parse(files_list[i],m_LocalFiles.count(files_list[i]));
+    }
+    return true;
 }

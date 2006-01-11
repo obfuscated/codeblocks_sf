@@ -81,8 +81,8 @@ class Parser : public wxEvtHandler
 		bool Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadOptions& opts);
 		bool ParseBuffer(const wxString& buffer, bool isLocal = true, bool bufferSkipBlocks = false);
 		bool ParseBufferForFunctions(const wxString& buffer);
-		void ReCreateTree();
 		bool Reparse(const wxString& filename, bool isLocal = true);
+        bool ReparseModifiedFiles();
 		bool RemoveFile(const wxString& filename);
 		void Clear();
 		void ReadOptions();
@@ -103,6 +103,7 @@ class Parser : public wxEvtHandler
 		Token* FindTokenByName(const wxString& name, bool globalsOnly = true, short int kindMask = 0xFFFF) const;
 		Token* FindChildTokenByName(Token* parent, const wxString& name, bool useInheritance = false, short int kindMask = 0xFFFF) const;
 		Token* FindTokenByDisplayName(const wxString& name) const;
+		size_t FindMatches(const wxString& s,TokenList& result,bool caseSensitive = true,bool is_prefix = true,bool markedonly = true);
 
 		ParserOptions& Options(){ return m_Options; }
 		BrowserOptions& ClassBrowserOptions(){ return m_BrowserOptions; }
@@ -111,8 +112,8 @@ class Parser : public wxEvtHandler
 		void AddIncludeDir(const wxString& dir);
 		wxString FindFileInIncludeDirs(const wxString& file);
 
-		const TokensArray& GetTokens(){ return m_Tokens; }
-		TokensTree& GetTokensTree() { return m_TokensTree; }
+		TokensTree* GetTokens(){ return m_pTokens; }
+		TokensTree* GetTempTokens() { return m_pTempTokens; }
 		unsigned int GetFilesCount();
 
 		bool Done();
@@ -126,28 +127,28 @@ class Parser : public wxEvtHandler
 		void TerminateAllThreads();
 		void PauseAllThreads();
 		void ResumeAllThreads();
-		void ClearTemporaries();
-		void SortAllTokens();
 	protected:
 		void OnStartThread(CodeBlocksEvent& event);
 		void OnEndThread(CodeBlocksEvent& event);
         void OnAllThreadsDone(CodeBlocksEvent& event);
 		void OnNewToken(wxCommandEvent& event);
 		void OnParseFile(wxCommandEvent& event);
+		void OnTimer(wxTimerEvent& event);
 	private:
         void ConnectEvents();
         void DisconnectEvents();
-        void BuildTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* parent);
-        void AddTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* parent);
+
+        /** Makes a tree of the namespaces in the project */
+        void BuildTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* parent, const TokenFilesSet& currset);
+
+        /** Adds the tokens to the corresponding namespace */
+        void AddTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* parent, const TokenFilesSet& currset);
+
 		void AddTreeNode(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* token, bool childrenOnly = false);
 		void LinkInheritance(bool tempsOnly = false);
 		ParserOptions m_Options;
 		BrowserOptions m_BrowserOptions;
 		unsigned int m_MaxThreadsCount;
-		TokensArray m_Tokens;
-		TokensTree m_TokensTree;
-		wxArrayString m_ParsedFiles;
-		wxArrayString m_ReparsedFiles;
 		wxPathList m_IncludeDirs;
 		wxEvtHandler* m_pParent;
 		wxTreeItemId m_RootNode;
@@ -158,10 +159,14 @@ class Parser : public wxEvtHandler
         // the following three members are used to detect changes between
         // in-mem data and cache
         bool m_UsingCache; // true if loaded from cache
-        int m_CacheFilesCount; // m_ParsedFiles.GetCount() when (if) loaded from cache
-        int m_CacheTokensCount; // m_Tokens.GetCount() when (if) loaded from cache
 
         cbThreadPool m_Pool;
+        TokensTree* m_pTokens;
+        TokensTree* m_pTempTokens;
+        set<wxString, less<wxString> > m_LocalFiles;
+        bool m_NeedsReparse;
+    private:
+        wxTimer m_timer;
 
 #endif // STANDALONE
 
@@ -169,4 +174,3 @@ class Parser : public wxEvtHandler
 };
 
 #endif // PARSER_H
-

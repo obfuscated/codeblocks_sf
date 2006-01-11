@@ -67,9 +67,10 @@ void InsertClassMethodDlg::FillClasses()
     wxListBox* lb = XRCCTRL(*this, "lstClasses", wxListBox);
     lb->Freeze();
     lb->Clear();
-    for (unsigned int i = 0; i < m_pParser->GetTokens().GetCount(); ++i)
+    TokensTree* tree = m_pParser->GetTokens();
+    for (size_t i = 0; i < tree->size(); ++i)
     {
-        Token* token = m_pParser->GetTokens()[i];
+        Token* token = tree->at(i);
         //Manager::Get()->GetMessageManager()->DebugLog("m_Filename=%s, token=%s", m_Filename.c_str(), token->m_Filename.c_str());
         if (token && token->m_TokenKind == tkClass) //&&
             //token->m_Filename == UnixFilename(m_Filename))
@@ -117,13 +118,20 @@ void InsertClassMethodDlg::DoFillMethodsFor(wxCheckListBox* clb,
 {
     if (!parentToken)
         return;
-
+    TokensTree* tree = parentToken->GetTree();
+    if (!tree)
+        return;
     //Manager::Get()->GetMessageManager()->DebugLog("Fill methods for %s", parentToken->m_DisplayName.c_str());
 
     // loop ascending the inheritance tree
-    for (unsigned int i = 0; i < parentToken->m_Children.GetCount(); ++i)
+
+    TokenIdxSet::iterator it;
+    int idx;
+    Token* token;
+    for (it = parentToken->m_Children.begin(); it != parentToken->m_Children.end(); it++)
     {
-        Token* token = parentToken->m_Children[i];
+        idx = *it;
+        token = tree->at(idx);
         if (!token)
             continue;
 
@@ -146,9 +154,13 @@ void InsertClassMethodDlg::DoFillMethodsFor(wxCheckListBox* clb,
     }
 
     // inheritance
-	for (unsigned int i = 0; i < parentToken->m_Ancestors.GetCount(); ++i)
+	for (it = parentToken->m_Ancestors.begin();it!=parentToken->m_Ancestors.end();it++)
     {
-        DoFillMethodsFor(clb, parentToken->m_Ancestors[i], ns, includePrivate, includeProtected, includePublic);
+        idx = *it;
+        token = tree->at(idx);
+        if (!token)
+            continue;
+        DoFillMethodsFor(clb, token, ns, includePrivate, includeProtected, includePublic);
     }
 }
 

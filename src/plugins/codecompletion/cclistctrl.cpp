@@ -71,7 +71,7 @@ CCListCtrl::~CCListCtrl()
 
 Token* CCListCtrl::GetTokenAt(unsigned int pos)
 {
-	if (pos >= 0 && pos < m_CCTokens.GetCount())
+	if (pos >= 0 && pos < m_CCTokens.size())
 		return m_CCTokens[pos];
 	return 0L;
 }
@@ -87,24 +87,9 @@ void CCListCtrl::PrepareTokens()
 	Freeze();
 
 	// build valid tokens list
-	m_CCTokens.Clear();
-	if (!m_pParser->Options().caseSensitive)
-		m_Initial.MakeLower();
-	for (unsigned int i = 0; i < m_pParser->GetTokens().GetCount(); ++i)
-	{
-		Token* token = m_pParser->GetTokens()[i];
+	m_CCTokens.clear();
 
-		wxString name = token->m_Name;
-		if (!m_pParser->Options().caseSensitive)
-			name.MakeLower();
-
-		if (token && // valid
-			token->m_Bool && // marked by AI
-			name.StartsWith(m_Initial)) // matches text start
-		{
-			m_CCTokens.Add(token);
-		}
-	}
+	m_pParser->FindMatches(m_Initial,m_CCTokens,m_pParser->Options().caseSensitive,true,true);
 
 	// this sets the grid to "virtual" mode
 	if (!m_pGridTable)

@@ -194,12 +194,12 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
 					if (token)
 					{
 						wxString msg;
-						if(!token->m_Filename.IsEmpty())
+						if(!token->GetFilename().IsEmpty())
 						{
 							msg.Printf(_("Find declaration of: '%s'"), txt.c_str());
 							menu->Insert(sep++, idGotoDeclaration, msg);
 						}
-						if(!token->m_ImplFilename.IsEmpty())
+						if(!token->GetImplFilename().IsEmpty())
 						{
 							msg.Printf(_("Find implementation of: '%s'"), txt.c_str());
 							menu->Insert(sep++, idGotoImplementation, msg);
@@ -561,13 +561,10 @@ void CodeCompletion::OnReparseActiveEditor(CodeBlocksEvent& event)
     	if (!ed)
     		return;
 		Parser* parser = m_NativeParsers.FindParserFromActiveEditor();
-		if (!parser || !parser->Done())
+		if (!parser)
 			return;
-
-		parser->StartTimer();
 		parser->Reparse(ed->GetFilename());
     }
-
     event.Skip();
 }
 
@@ -629,28 +626,30 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
 	parser.ParseBufferForFunctions(ed->GetControl()->GetText());
 
 	wxArrayString funcs;
-	const TokensArray& tokens = parser.GetTokens();
-	for (unsigned int i = 0; i < tokens.GetCount(); ++i)
-	{
-		funcs.Add(tokens[i]->m_DisplayName);// token->m_Name);
-	}
-	if (!funcs.GetCount())
+	TokensTree* tmptree = parser.GetTempTokens();
+
+	if (!tmptree->size())
 	{
 		wxMessageBox(_("No functions parsed in this file..."));
 		return;
 	}
-	IncrementalSelectListDlg dlg(Manager::Get()->GetAppWindow(), funcs, _("Select function..."), _("Please select function to go to:"));
+	wxArrayString tokens;
+	tokens.Clear();
+	for(size_t i = 0; i < tmptree->size();i++)
+	{
+	    Token* token = tmptree->at(i);
+	    if(token)
+            tokens.Add(token->m_DisplayName);
+	}
+	IncrementalSelectListDlg dlg(Manager::Get()->GetAppWindow(), tokens, _("Select function..."), _("Please select function to go to:"));
 	if (dlg.ShowModal() == wxID_OK)
 	{
         wxString sel = dlg.GetStringSelection();
-        for (unsigned int i = 0; i < tokens.GetCount(); ++i)
+        Token* token = tmptree->at(tmptree->FindTokenByDisplayName(sel));
+        if(token)
         {
-            Token* token = tokens[i];
-            if (token && token->m_DisplayName.Matches(sel))
-            {
-                Manager::Get()->GetMessageManager()->DebugLog(_("Token found at line %d"), token->m_Line);
-                ed->GotoLine(token->m_Line - 1);
-            }
+            Manager::Get()->GetMessageManager()->DebugLog(_("Token found at line %d"), token->m_Line);
+            ed->GotoLine(token->m_Line - 1);
         }
 	}
 }
@@ -680,7 +679,7 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     {
 		if(event.GetId() == idGotoImplementation)
 		{
-			cbEditor* ed = edMan->Open(token->m_ImplFilename);
+			cbEditor* ed = edMan->Open(token->GetImplFilename());
 			if (ed)
 			{
 				ed->GotoLine(token->m_ImplLine - 1);
@@ -689,7 +688,7 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
 		}
 		else
 		{
-			cbEditor* ed = edMan->Open(token->m_Filename);
+			cbEditor* ed = edMan->Open(token->GetFilename());
 			if (ed)
 			{
 				ed->GotoLine(token->m_Line - 1);

@@ -41,7 +41,7 @@ void CCRenderer::Draw(wxGrid& grid, wxGridCellAttr& attr, wxDC& dc, const wxRect
 		dc.DrawRectangle(rect);
 	}*/
 
-	Token* token = m_Tokens->Item(row);
+	Token* token = m_Tokens->at(row);
 	if (!token)
 		return;
 

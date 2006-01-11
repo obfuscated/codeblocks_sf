@@ -216,7 +216,7 @@ void ClassBrowser::ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, const wxPoint& pt
             case tkConstructor:
             case tkDestructor:
             case tkFunction:
-                if (ctd->GetToken()->m_ImplLine != 0 && !ctd->GetToken()->m_ImplFilename.IsEmpty())
+                if (ctd->GetToken()->m_ImplLine != 0 && !ctd->GetToken()->GetImplFilename().IsEmpty())
                     menu->Append(idMenuJumpToImplementation, _("Jump to &implementation"));
                 // intentionally fall through
             default:
@@ -314,9 +314,9 @@ void ClassBrowser::OnJumpTo(wxCommandEvent& event)
             wxString base = prj->GetBasePath();
             wxFileName fname;
             if (event.GetId() == idMenuJumpToImplementation)
-                fname.Assign(ctd->GetToken()->m_ImplFilename);
+                fname.Assign(ctd->GetToken()->GetImplFilename());
             else
-                fname.Assign(ctd->GetToken()->m_Filename);
+                fname.Assign(ctd->GetToken()->GetFilename());
             fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
         	cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname.GetFullPath());
 			if (ed)
@@ -348,7 +348,7 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
 			case tkConstructor:
             case tkDestructor:
             case tkFunction:
-                if (ctd->GetToken()->m_ImplLine != 0 && !ctd->GetToken()->m_ImplFilename.IsEmpty())
+                if (ctd->GetToken()->m_ImplLine != 0 && !ctd->GetToken()->GetImplFilename().IsEmpty())
                     toImp = true;
 				break;
 			default:
@@ -358,9 +358,9 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
             wxString base = prj->GetBasePath();
             wxFileName fname;
             if (toImp)
-                fname.Assign(ctd->GetToken()->m_ImplFilename);
+                fname.Assign(ctd->GetToken()->GetImplFilename());
             else
-                fname.Assign(ctd->GetToken()->m_Filename);
+                fname.Assign(ctd->GetToken()->GetFilename());
             fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
         	cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname.GetFullPath());
 			if (ed)

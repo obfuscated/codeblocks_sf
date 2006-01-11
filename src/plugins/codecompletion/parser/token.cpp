@@ -23,30 +23,75 @@
 * $Date$
 */
 
+#include <globals.h>
 #include <sdk.h>
 #include "token.h"
 #include <wx/intl.h>
+#include <wx/tokenzr.h>
+
+inline void SaveTokenIdxSetToFile(wxOutputStream* f,const TokenIdxSet& data)
+{
+    SaveIntToFile(f, (int)(data.size()));
+    for (TokenIdxSet::iterator it = data.begin(); it != data.end(); it++)
+    {
+        int num = *it;
+        SaveIntToFile(f, num);
+    }
+}
+
+bool LoadTokenIdxSetFromFile(wxInputStream* f,TokenIdxSet* data)
+{
+    if(!data)
+        return false;
+    bool result = true;
+    data->clear();
+    int size = 0;
+    do
+    {
+        if (!LoadIntFromFile(f, &size))
+        {
+            result = false;
+            break;
+        }
+        int i,num = 0;
+        for (i = 0; i < size; i++)
+        {
+            if(!LoadIntFromFile(f,&num))
+            {
+                result = false;
+                break;
+            }
+            data->insert(num);
+        }
+    }while(false);
+    return result;
+}
 
 Token::Token()
-	: m_Line(0),
+	:
+	m_File(0),
+	m_Line(0),
+	m_IsOperator(false),
+	m_IsTemporary(false),
+	m_ParentIndex(-1),
 	m_Bool(false),
-	m_Int(-1),
-	m_Data(0L),
-	m_ParentIndex(-1)
+	m_Data(0),
+	m_pTree(0),
+	m_Self(-1)
 {
 }
 
-Token::Token(const wxString& name, const wxString& filename, unsigned int line)
+Token::Token(const wxString& name, unsigned int file, unsigned int line)
 	: m_Name(name),
-	m_Filename(filename),
+	m_File(file),
 	m_Line(line),
 	m_IsOperator(false),
 	m_IsTemporary(false),
+	m_ParentIndex(-1),
 	m_Bool(false),
-	m_Int(-1),
-	m_Data(0L),
-	m_pParent(0L),
-	m_ParentIndex(-1)
+	m_Data(0),
+	m_pTree(0),
+	m_Self(-1)
 {
 	//ctor
 }
@@ -56,32 +101,75 @@ Token::~Token()
 	//dtor
 }
 
+Token* Token::GetParentToken()
+{
+    Token* the_token = 0;
+    if(!m_pTree)
+        return 0;
+    the_token = m_pTree->at(m_ParentIndex);
+    return the_token;
+}
+
+wxString Token::GetFilename() const
+{
+    if(!m_pTree)
+        return wxString(_T(""));
+    return m_pTree->GetFilename(m_File);
+}
+
+wxString Token::GetImplFilename() const
+{
+    if(!m_pTree)
+        return wxString(_T(""));
+    return m_pTree->GetFilename(m_ImplFile);
+}
+
+bool Token::MatchesFiles(const TokenFilesSet& files)
+{
+    if(!files.size())
+        return true;
+    if(!m_File && !m_ImplFile)
+        return true;
+    if((m_File && files.count(m_File)) || (m_ImplFile && files.count(m_ImplFile)))
+        return true;
+    return false;
+}
+
 wxString Token::GetNamespace() const
 {
+	const wxString dcolon(_T("::"));
 	wxString res;
-	Token* parent = m_pParent;
-	while (parent)
+	Token* parentToken = parentToken = m_pTree->at(m_ParentIndex);
+	while (parentToken)
 	{
-		res = parent->m_Name + _T("::") + res;
-		parent = parent->m_pParent;
+		res.Prepend(dcolon);
+		res.Prepend(parentToken->m_Name);
+		parentToken = parentToken->GetParentToken();
 	}
 	return res;
 }
 
-void Token::AddChild(Token* child)
+void Token::AddChild(int child)
 {
-	if (child)
-		m_Children.Add(child);
+	if (child >= 0)
+        m_Children.insert(child);
 }
 
-bool Token::InheritsFrom(Token* token) const
+bool Token::InheritsFrom(int idx) const
 {
-	if (!token)
+	if (idx < 0 || !m_pTree)
 		return false;
-	for (unsigned int i = 0; i < m_Ancestors.GetCount(); ++i)
+    Token* token = m_pTree->at(idx);
+    if(!token)
+        return false;
+
+	for (TokenIdxSet::iterator it = m_Ancestors.begin(); it != m_Ancestors.end(); it++)
 	{
-		Token* ancestor = m_Ancestors[i];
-		if (ancestor == token || ancestor->InheritsFrom(token))  // ##### is this intended?
+		int idx2 = *it;
+		Token* ancestor = m_pTree->at(idx2);
+		if(!ancestor)
+            continue;
+		if (ancestor == token || ancestor->InheritsFrom(idx))  // ##### is this intended?
 			return true;
 	}
 	return false;
@@ -117,149 +205,559 @@ wxString Token::GetTokenScopeString() const
 
 bool Token::SerializeIn(wxInputStream* f)
 {
-    if (!LoadIntFromFile(f, (int*)&m_ParentIndex)) return false;
-    if (!LoadStringFromFile(f, m_Type)) return false;
-    if (!LoadStringFromFile(f, m_ActualType)) return false;
-    if (!LoadStringFromFile(f, m_Name)) return false;
-    if (!LoadStringFromFile(f, m_DisplayName)) return false;
-    if (!LoadStringFromFile(f, m_Args)) return false;
-    if (!LoadStringFromFile(f, m_AncestorsString)) return false;
-    if (!LoadStringFromFile(f, m_Filename)) return false;
-    if (!LoadIntFromFile(f, (int*)&m_Line)) return false;
-    if (!LoadStringFromFile(f, m_ImplFilename)) return false;
-    if (!LoadIntFromFile(f, (int*)&m_ImplLine)) return false;
-    if (!LoadIntFromFile(f, (int*)&m_Scope)) return false;
-    if (!LoadIntFromFile(f, (int*)&m_TokenKind)) return false;
-    if (!LoadIntFromFile(f, (int*)&m_IsOperator)) return false;
-    if (!LoadIntFromFile(f, (int*)&m_IsLocal)) return false;
-
-    m_AncestorsIndices.Clear();
-    int count = 0;
-    LoadIntFromFile(f, &count);
-    for (int i = 0; i < count; ++i)
+    bool result = true;
+    do
     {
-        int idx = 0;
-        LoadIntFromFile(f, &idx);
-        m_AncestorsIndices.Add(idx);
-    }
-
-    m_ChildrenIndices.Clear();
-    count = 0;
-    LoadIntFromFile(f, &count);
-    for (int i = 0; i < count; ++i)
-    {
-        int idx = 0;
-        LoadIntFromFile(f, &idx);
-        m_ChildrenIndices.Add(idx);
-    }
-    // parent-child relationship is set in a post-processing step
-    return true;
+        if (!LoadIntFromFile(f, (int*)&m_Self))
+        {
+            result = false;
+            break;
+        }
+        if (!LoadIntFromFile(f, (int*)&m_ParentIndex))
+        {
+            result = false;
+            break;
+        }
+        if (!LoadStringFromFile(f, m_Type))
+        {
+            result = false;
+            break;
+        }
+        if (!LoadStringFromFile(f, m_ActualType))
+        {
+            result = false;
+            break;
+        }
+        if (!LoadStringFromFile(f, m_Name))
+        {
+            result = false;
+            break;
+        }
+        if (!LoadStringFromFile(f, m_DisplayName))
+        {
+            result = false;
+            break;
+        }
+        if (!LoadStringFromFile(f, m_Args))
+        {
+            result = false;
+            break;
+        }
+        if (!LoadStringFromFile(f, m_AncestorsString))
+        {
+            result = false;
+            break;
+        }
+        if (!LoadIntFromFile(f, (int*)&m_File))
+        {
+            result = false;
+            break;
+        }
+        if (!LoadIntFromFile(f, (int*)&m_Line))
+        {
+            result = false;
+            break;
+        }
+        if (!LoadIntFromFile(f, (int*)&m_ImplFile))
+        {
+            result = false;
+            break;
+        }
+        if (!LoadIntFromFile(f, (int*)&m_ImplLine))
+        {
+            result = false;
+            break;
+        }
+        if (!LoadIntFromFile(f, (int*)&m_Scope))
+        {
+            result = false;
+            break;
+        }
+        if (!LoadIntFromFile(f, (int*)&m_TokenKind))
+        {
+            result = false;
+            break;
+        }
+        if (!LoadIntFromFile(f, (int*)&m_IsOperator))
+        {
+            result = false;
+            break;
+        }
+        if (!LoadIntFromFile(f, (int*)&m_IsLocal))
+        {
+            result = false;
+            break;
+        }
+        if(!LoadTokenIdxSetFromFile(f, &m_Ancestors))
+        {
+            result = false;
+            break;
+        }
+        if(!LoadTokenIdxSetFromFile(f, &m_Children))
+        {
+            result = false;
+            break;
+        }
+        if(!LoadTokenIdxSetFromFile(f, &m_Descendants))
+        {
+            result = false;
+            break;
+        }
+    }while(false);
+    return result;
 }
 
 bool Token::SerializeOut(wxOutputStream* f)
 {
-    SaveIntToFile(f, m_pParent ? m_pParent->m_Int : -1);
+    SaveIntToFile(f, m_Self);
+    SaveIntToFile(f, m_ParentIndex);
     SaveStringToFile(f, m_Type);
     SaveStringToFile(f, m_ActualType);
     SaveStringToFile(f, m_Name);
     SaveStringToFile(f, m_DisplayName);
     SaveStringToFile(f, m_Args);
     SaveStringToFile(f, m_AncestorsString);
-    SaveStringToFile(f, m_Filename);
+    SaveIntToFile(f, m_File);
     SaveIntToFile(f, m_Line);
-    SaveStringToFile(f, m_ImplFilename);
+    SaveIntToFile(f, m_ImplFile);
     SaveIntToFile(f, m_ImplLine);
     SaveIntToFile(f, m_Scope);
     SaveIntToFile(f, m_TokenKind);
-    SaveIntToFile(f, m_IsOperator);
-    SaveIntToFile(f, m_IsLocal);
+    SaveIntToFile(f, m_IsOperator ? 1 : 0);
+    SaveIntToFile(f, m_IsLocal ? 1 : 0);
 
-    int tcount = (int)m_Ancestors.GetCount();
-    SaveIntToFile(f, tcount);
-    for (int i = 0; i < tcount; ++i)
-    {
-        Token* token = m_Ancestors[i];
-        SaveIntToFile(f, token->m_Int);
-    }
-
-    tcount = (int)m_Children.GetCount();
-    SaveIntToFile(f, tcount);
-    for (int i = 0; i < tcount; ++i)
-    {
-        Token* token = m_Children[i];
-        SaveIntToFile(f, token->m_Int);
-    }
-    // parent-child relationship is set in a post-processing step when serializing in
+    SaveTokenIdxSetToFile(f, m_Ancestors);
+    SaveTokenIdxSetToFile(f, m_Children);
+    SaveTokenIdxSetToFile(f, m_Descendants);
     return true;
 }
 
 // *** TokensTree ***
 
-TokensTree::TokensTree()
+TokensTree::TokensTree():
+m_modified(false)
 {
-#if 0
-    // Initialization: Pseudo-random numbers for distributing the string space
+    m_Tokens.clear();
+    m_FilenamesMap.clear();
+    m_InvFilenamesMap.clear();
+    m_FilesMap.clear();
+    m_FilesStatus.clear();
+    m_FreeTokens.clear();
+    m_FilesToBeReparsed.clear();
 
-    // Sequences obtained from www.random.org
-    unsigned int hash1[16] = { 0x98, 0xb0, 0xf0, 0xaa, 0xc2, 0xa2, 0xe6, 0x96, 0x0c, 0x18, 0xd4, 0xae, 0x1b, 0xd4, 0xab, 0xe8 };
-    unsigned int hash2[16] = { 0xfd, 0x3b, 0x18, 0x2b, 0xb4, 0x1c, 0xb6, 0x40, 0xdf, 0x1f, 0x99, 0xcd, 0x56, 0x22, 0xd7, 0xfe };
-    unsigned int hash3[16] = { 0xf1, 0xc2, 0x4f, 0x11, 0xac, 0x6f, 0x24, 0x55, 0xcf, 0x33, 0x35, 0x1f, 0xfc, 0x14, 0x71, 0xbc };
-    unsigned int hash4[16] = { 0xd6, 0x36, 0x93, 0xa7, 0x82, 0xf6, 0xa8, 0x83, 0xb7, 0xde, 0x9b, 0xfb, 0x46, 0x85, 0x75, 0x26 };
+    m_FilenamesMap[_T("")] = 0;
+    m_InvFilenamesMap[0] = _T("");
+}
 
-    unsigned int i;
-    for(i = 0; i < 256; i++)
+
+TokensTree::~TokensTree()
+{
+    clear();
+}
+
+void TokensTree::clear()
+{
+    m_Tree.clear();
+    m_DisplayNameTree.clear();
+    m_FilenamesMap.clear();
+    m_InvFilenamesMap.clear();
+    m_FilesMap.clear();
+    m_FilesStatus.clear();
+    m_FilesToBeReparsed.clear();
+    m_FreeTokens.clear();
+    size_t i;
+    for(i = 0;i < m_Tokens.size(); i++)
     {
-        m_hash1[i]=hash1[i & 15] ^ hash2[(i >> 4) & 15];
-        m_hash2[i]=hash3[i & 15] ^ hash4[(i >> 4) & 15];
+        Token* token = m_Tokens[i];
+        if(token)
+            delete token;
     }
-#endif
+    m_Tokens.clear();
+    m_FilenamesMap[_T("")] = 0;
+    m_InvFilenamesMap[0] = _T("");
 }
 
-#if 0
-inline size_t TokensTree::GetHash(const wxString& name)
+size_t TokensTree::size()
 {
-    return 0;
-    if(!name.Length())
-        return 0;
-    return 255 & (m_hash1[255 & name.Length()] ^ m_hash2[255 & (unsigned char)(name[0])]);
+    return m_Tokens.size();
 }
-#endif
 
-Token* TokensTree::TokenExists(const wxString& name, Token* parent, short int kindMask)
+int TokensTree::insert(Token* newToken)
 {
-//    TokenSearchTree* curtree = &m_Trees[GetHash(name)];
-    TokenSearchTree* curtree = &m_Tree;
-    int idx = curtree->GetItemNo(name);
-    if(idx==0)
+    if(!newToken)
+        return -1;
+    return AddToken(newToken, -1);
+}
+
+int TokensTree::insert(int loc, Token* newToken)
+{
+    if(!newToken)
+        return -1;
+
+    return AddToken(newToken, loc);
+}
+
+int TokensTree::erase(int loc)
+{
+    if(!m_Tokens[loc])
         return 0;
-    unsigned int i;
-    TokensArray* curlist = &(curtree->GetItemAtPos(idx));
-    for(i = 0; i < curlist->GetCount(); i++)
+    RemoveToken(loc);
+    return 1;
+}
+
+void TokensTree::erase(Token* oldToken)
+{
+    RemoveToken(oldToken);
+}
+
+int TokensTree::TokenExists(const wxString& name, int parent, short int kindMask)
+{
+    int idx = m_Tree.GetItemNo(name);
+    if(!idx)
+        return -1;
+    TokenIdxSet::iterator it;
+    TokenIdxSet& curlist = m_Tree.GetItemAtPos(idx);
+    int result = -1;
+    for(it = curlist.begin(); it != curlist.end(); it++)
     {
-        Token* curtoken = curlist->Item(i);
-        if((!parent || curtoken->m_pParent == parent) && curtoken->m_TokenKind & kindMask)
-            return curtoken;
+        result = *it;
+        if(result < 0 || (size_t)result >= m_Tokens.size())
+            continue;
+        Token* curtoken = m_Tokens[result];
+        if(!curtoken)
+            continue;
+        if((parent<0 || curtoken->m_ParentIndex == parent) && curtoken->m_TokenKind & kindMask)
+            return result;
     }
-    return 0;
+    return -1;
 }
 
-void TokensTree::AddToken(const wxString& name,Token* newToken)
+int TokensTree::FindTokenByDisplayName(const wxString& name)
 {
-    static TokensArray tmp_tokens;
-    tmp_tokens.Clear();
-//    TokenSearchTree* curtree = &m_Trees[GetHash(name)];
-    TokenSearchTree* curtree = &m_Tree;
-    size_t idx = curtree->AddItem(name,tmp_tokens,false);
-    TokensArray* curlist = &(curtree->GetItemAtPos(idx));
-    int subidx = curlist->Index(newToken);
-    if(subidx == wxNOT_FOUND)
-        curlist->Add(newToken);
+    return m_DisplayNameTree.GetItem(name);
 }
 
-void TokensTree::Clear()
+size_t TokensTree::FindMatches(const wxString& s,TokenIdxSet& result,bool caseSensitive,bool is_prefix)
 {
-    m_Tree.Clear();
-//    size_t i;
-//    for(i=0;i<255;i++)
-//        m_Trees[i].Clear();
+    set<size_t> lists;
+    result.clear();
+    int numitems = m_Tree.FindMatches(s,lists,caseSensitive,is_prefix);
+    if(!numitems)
+        return 0;
+    TokenIdxSet* curset;
+    set<size_t>::iterator it;
+    TokenIdxSet::iterator it2;
+    for(it = lists.begin(); it != lists.end(); it++)
+    {
+        curset = &(m_Tree.GetItemAtPos(*it));
+        for(it2 = curset->begin();it2 != curset->end(); it2++)
+            result.insert(*it2);
+    }
+    return result.size();
+}
+
+int TokensTree::AddToken(Token* newToken,int forceidx)
+{
+    if(!newToken)
+        return -1;
+
+    const wxString& name = newToken->m_Name;
+    TokenIdxSet tmp_tokens;
+    tmp_tokens.clear();
+
+
+    size_t idx2 = m_Tree.AddItem(name,tmp_tokens,false);
+    TokenIdxSet& curlist = m_Tree.GetItemAtPos(idx2);
+    TokenIdxSet::iterator it;
+    int idx = -1;
+    for(it = curlist.begin(); it != curlist.end(); it++)
+    {
+        idx = *it;
+        if(idx < 0 || (size_t)idx >= m_Tokens.size())
+            continue;
+        if(m_Tokens[idx]==newToken)
+            return idx; // Already there
+    }
+    int newitem = AddTokenToList(newToken,forceidx);
+    curlist.insert(newitem);
+    m_DisplayNameTree.AddItem(newToken->m_DisplayName,newitem,true);
+    m_FilesMap[newToken->m_File].insert(newitem);
+
+    return newitem;
+}
+
+void TokensTree::RemoveToken(int idx)
+{
+    if(idx<0 || (size_t)idx >= m_Tokens.size())
+        return;
+    RemoveToken(m_Tokens[idx]);
+}
+
+void TokensTree::RemoveToken(Token* oldToken)
+{
+    if(!oldToken)
+        return;
+    int idx = oldToken->m_Self;
+    if(m_Tokens[idx]!=oldToken)
+        return;
+
+    // Step 1: Detach token from its parent
+
+    Token* parentToken = 0;
+    if((size_t)(oldToken->m_ParentIndex) >= m_Tokens.size())
+        oldToken->m_ParentIndex = -1;
+    if(oldToken->m_ParentIndex >= 0)
+        parentToken = m_Tokens[oldToken->m_ParentIndex];
+    if(parentToken)
+        parentToken->m_Children.erase(idx);
+
+    TokenIdxSet nodes;
+    TokenIdxSet::iterator it;
+
+    // Step 2: Detach token from its ancestors
+    nodes = (oldToken->m_Ancestors);
+    for(it = nodes.begin();it!=nodes.end(); it++)
+    {
+        int ancestoridx = *it;
+        if(ancestoridx < 0 || (size_t)ancestoridx >= m_Tokens.size())
+            continue;
+        Token* ancestor = m_Tokens[ancestoridx];
+        if(ancestor)
+            ancestor->m_Descendants.erase(idx);
+    }
+    oldToken->m_Ancestors.clear();
+
+    // Step 3: Remove children
+    nodes = (oldToken->m_Children); // Copy the list to avoid interference
+    for(it = nodes.begin();it!=nodes.end(); it++)
+        RemoveToken(*it);
+    // m_Children SHOULD be empty by now - but clear anyway.
+    oldToken->m_Children.clear();
+
+    // Step 4: Remove descendants
+    nodes = oldToken->m_Descendants; // Copy the list to avoid interference
+    for(it = nodes.begin();it!=nodes.end(); it++)
+        RemoveToken(*it);
+    // m_Descendants SHOULD be empty by now - but clear anyway.
+    oldToken->m_Descendants.clear();
+
+    // Step 5: Detach token from the SearchTrees
+    int idx2 = m_Tree.GetItemNo(oldToken->m_Name);
+    if(idx2)
+    {
+        TokenIdxSet& curlist = m_Tree.GetItemAtPos(idx2);
+        curlist.erase(idx);
+    }
+
+    // Removing from the Display Tree is easier, just replace the contents with -1.
+    m_DisplayNameTree.AddItem(oldToken->m_DisplayName,-1,true);
+
+    // Now, from the global namespace (if applicable)
+    if(oldToken->m_ParentIndex == -1)
+    {
+        m_GlobalNameSpace.erase(idx);
+        m_TopNameSpaces.erase(idx);
+    }
+
+    // Step 6: Finally, remove it from the list.
+    RemoveTokenFromList(idx);
+}
+
+int TokensTree::AddTokenToList(Token* newToken,int forceidx)
+{
+    if(forceidx >= 0)
+    {
+        if((size_t)forceidx >= m_Tokens.size())
+        {
+            int max = 250*((forceidx + 250) / 250);
+            m_Tokens.resize((max),0); // fill next 250 items with null-values
+        }
+        m_Tokens[forceidx] = newToken;
+        newToken->m_Self = forceidx;
+        return forceidx;
+    }
+    if(!newToken)
+        return -1;
+    int result;
+    newToken->m_pTree = this;
+    if(m_FreeTokens.size())
+    {
+        result = m_FreeTokens[m_FreeTokens.size() - 1];
+        m_FreeTokens.pop_back();
+        m_Tokens[result] = newToken;
+    }
+    else
+    {
+        result = m_Tokens.size();
+        m_Tokens.push_back(newToken);
+    }
+    newToken->m_Self = result;
+    return result;
+}
+
+void TokensTree::RemoveTokenFromList(int idx)
+{
+    if(idx < 0 || (size_t)idx >= m_Tokens.size())
+        return;
+    Token* oldToken = m_Tokens[idx];
+    if(oldToken)
+    {
+        m_Tokens[idx] = 0;
+        m_FreeTokens.push_back(idx);
+        m_FilesToBeReparsed.insert(oldToken->m_File);
+        delete oldToken;
+    }
+}
+
+void TokensTree::RemoveFile(const wxString& filename)
+{
+    int index = GetFileIndex(filename);
+    RemoveFile(index);
+}
+
+void TokensTree::RemoveFile(int index)
+{
+    if(index <=0)
+        return;
+    TokenIdxSet& the_list = m_FilesMap[index];
+    TokenIdxSet::iterator it;
+    for(it = the_list.begin(); it != the_list.end();it++)
+    {
+        int idx = *it;
+        if(idx < 0 || (size_t)idx > m_Tokens.size())
+            continue;
+        Token* the_token = at(idx);
+        if(!the_token)
+            continue;
+        RemoveToken(the_token);
+    }
+    the_list.clear();
+}
+
+void TokensTree::RecalcFreeList()
+{
+    m_FreeTokens.clear();
+    int i;
+    for(i = m_Tokens.size() -1;i >= 0;i--)
+    {
+        if(!m_Tokens[i])
+            m_FreeTokens.push_back(i);
+    }
+}
+
+void TokensTree::RecalcData()
+{
+    //Manager::Get()->GetMessageManager()->DebugLog("Linking inheritance...");
+    m_TopNameSpaces.clear();
+    m_GlobalNameSpace.clear();
+    for (size_t i = 0; i < size(); ++i)
+    {
+        Token* token = at(i);
+        if (!token)
+            continue;
+
+        if(token->m_ParentIndex == -1)
+        {
+            m_GlobalNameSpace.insert(i);
+            if(token->m_TokenKind == tkNamespace)
+                m_TopNameSpaces.insert(i);
+        }
+
+        if (token->m_TokenKind != tkClass)
+            continue;
+        if (token->m_AncestorsString.IsEmpty())
+            continue;
+        // only local symbols might change inheritance
+        if (!token->m_IsLocal)
+            continue;
+
+        token->m_Ancestors.clear();
+
+        //Manager::Get()->GetMessageManager()->DebugLog("Token %s, Ancestors %s", token->m_Name.c_str(), token->m_AncestorsString.c_str());
+        wxStringTokenizer tkz(token->m_AncestorsString, _T(","));
+        while (tkz.HasMoreTokens())
+        {
+            wxString ancestor = tkz.GetNextToken();
+            if (ancestor.IsEmpty() || ancestor == token->m_Name)
+                continue;
+            //Manager::Get()->GetMessageManager()->DebugLog("Ancestor %s", ancestor.c_str());
+            int ancestorIdx = TokenExists(ancestor, -1, tkClass);
+            Token* ancestorToken = at(ancestorIdx);
+            //Manager::Get()->GetMessageManager()->DebugLog(ancestorToken ? "Found" : "not Found");
+            if (ancestorToken)
+            {
+                //Manager::Get()->GetMessageManager()->DebugLog("Adding ancestor %s to %s", ancestorToken->m_Name.c_str(), token->m_Name.c_str());
+                token->m_Ancestors.insert(ancestorIdx);
+                ancestorToken->m_Descendants.insert(i);
+            }
+        }
+        if (!token->m_IsLocal) // global symbols are linked once
+        {
+            //Manager::Get()->GetMessageManager()->DebugLog("Removing ancestor string from %s", token->m_Name.c_str(), token->m_Name.c_str());
+            token->m_AncestorsString.Clear();
+        }
+    }
+}
+
+Token* TokensTree::GetTokenAt(int idx)
+{
+    if(idx < 0 || (size_t)idx >= m_Tokens.size())
+        return 0;
+    return m_Tokens[idx];
+}
+
+size_t TokensTree::GetFileIndex(const wxString& filename)
+{
+    size_t result = 0;
+    if(!m_FilenamesMap.size())
+    {
+        m_FilenamesMap[_T("")] = 0;
+        m_InvFilenamesMap[0] = _T("");
+    }
+    size_t size = m_FilenamesMap.size();
+    if(!m_FilenamesMap.count(filename))
+    {
+        m_FilenamesMap[filename] = size;
+        m_InvFilenamesMap[size] = filename;
+        result = size;
+    }
+    else
+        result = m_FilenamesMap[filename];
+    return result;
+}
+
+wxString TokensTree::GetFilename(size_t idx) const
+{
+    wxString result(_T(""));
+    if(m_InvFilenamesMap.count(idx))
+    {
+        result = m_InvFilenamesMap.find(idx)->second;
+    }
+    return result;
+}
+
+size_t TokensTree::ReserveFileForParsing(const wxString& filename)
+{
+    size_t index = GetFileIndex(filename);
+    if(m_FilesToBeReparsed.count(index) &&
+       (!m_FilesStatus.count(index) || m_FilesStatus[index]==fpsDone))
+    {
+        RemoveFile(filename);
+        m_FilesToBeReparsed.erase(index);
+        m_FilesStatus[index]=fpsNotParsed;
+    }
+    if(m_FilesStatus.count(index) && m_FilesStatus[index] != fpsNotParsed)
+        return 0; // No parsing needed
+    m_FilesStatus[index]=fpsBeingParsed; // Reserve file
+    return index;
+}
+
+void TokensTree::FlagFileForReparsing(const wxString& filename)
+{
+    m_FilesToBeReparsed.insert(GetFileIndex(filename));
+}
+
+void TokensTree::FlagFileAsParsed(const wxString& filename)
+{
+    m_FilesStatus[GetFileIndex(filename)]=fpsDone;
 }

@@ -18,7 +18,11 @@ static wxCriticalSection s_mutexProtection;
 
 struct ParserThreadOptions
 {
-	bool useBuffer;
+    /** useBuffer specifies that we're not parsing a file,  but a temporary
+      * buffer. The resulting tokens will be temporary, too,
+      * and will be deleted when the next file is parsed.
+      */
+    bool useBuffer;
 	bool bufferSkipBlocks;
 	bool wantPreprocessor;
 };
@@ -30,17 +34,17 @@ class ParserThread : public cbThreadPoolTask
 					const wxString& bufferOrFilename,
 					bool isLocal,
 					ParserThreadOptions& options,
-					TokensArray* tokens,
 					TokensTree* tree);
 		virtual ~ParserThread();
 		int Execute(){ return Parse() ? 0 : 1; }
 		bool Parse();
 		bool ParseBufferForFunctions(const wxString& buffer);
 		virtual void* DoRun();
-        virtual void SetTokens(TokensArray* tokens);
+        virtual void SetTokens(TokensTree* tokens);
 		const wxString& GetFilename(){ return m_Filename; }
 	protected:
 		wxChar SkipToOneOfChars(const wxString& chars, bool supportNesting = false);
+		void DoParse();
 		void SkipBlock();
 		void SkipAngleBraces();
 		void HandleIncludes();
@@ -54,18 +58,17 @@ class ParserThread : public cbThreadPoolTask
 	private:
 		void Log(const wxString& log);
 		Token* TokenExists(const wxString& name, Token* parent = 0, short int kindMask = 0xFFFF); // if parent is 0, all tokens are searched
-		Tokenizer m_Tokens;
+		Tokenizer m_Tokenizer;
 		wxEvtHandler* m_pParent;
-		TokensArray* m_pTokens;
-		TokensTree* m_pTree;
+		TokensTree* m_pTokens;
 		Token* m_pLastParent;
 		TokenScope m_LastScope;
 		wxString m_Filename;
+		unsigned int m_File;
 		bool m_IsLocal;
-		int m_StartBlockIndex;
 		wxString m_Str;
 		wxString m_LastToken;
-		ParserThreadOptions m_Options;
+        ParserThreadOptions m_Options;
 		wxArrayString  m_EncounteredNamespaces; // for member funcs implementation
 };
 

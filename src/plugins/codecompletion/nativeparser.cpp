@@ -444,12 +444,16 @@ bool NativeParser::LoadCachedData(Parser* parser, cbProject* project)
         wxSafeShowMessage(_("Exception thrown!"),_("ERROR"));
         ret = false;
     }
-    DisplayStatus(parser, project);
+    if(!ret)
+        Manager::Get()->GetMessageManager()->DebugLog(_("Error reading Cache! Re-parsing from scratch."));
+    else
+        DisplayStatus(parser, project);
     return ret;
 }
 
 bool NativeParser::SaveCachedData(Parser* parser, const wxString& projectFilename)
 {
+    bool result = false;
     if (!parser)
         return false;
 
@@ -464,12 +468,15 @@ bool NativeParser::SaveCachedData(Parser* parser, const wxString& projectFilenam
         return false;
     }
 
-    wxFileOutputStream fs(f);
-    wxBufferedOutputStream fb(fs);
+    Manager::Get()->GetMessageManager()->DebugLog(_("Updating parser's cache: %s"), projectCache.GetFullPath().c_str());
 
     // write cache file
-    Manager::Get()->GetMessageManager()->DebugLog(_("Updating parser's cache: %s"), projectCache.GetFullPath().c_str());
-    return parser->WriteToCache(&fb);
+    wxFileOutputStream fs(f);
+    {
+        wxBufferedOutputStream fb(fs);
+        result = parser->WriteToCache(&fb);
+    }
+    return result;
 }
 
 void NativeParser::DisplayStatus(Parser* parser, cbProject* project)
@@ -480,7 +487,7 @@ void NativeParser::DisplayStatus(Parser* parser, cbProject* project)
     Manager::Get()->GetMessageManager()->DebugLog(_("Done parsing project %s (%d total parsed files, %d tokens in %d.%d seconds)."),
                     project->GetTitle().c_str(),
                     parser->GetFilesCount(),
-                    parser->GetTokens().GetCount(),
+                    parser->GetTokens()->size(),
                     tim / 1000,
                     tim % 1000);
 }
@@ -499,8 +506,6 @@ int NativeParser::MarkItemsByAI(bool reallyUseAI)
 		Manager::Get()->GetMessageManager()->DebugLog(_("C++ Parser is still parsing files..."));
 	else
 	{
-		// clear all temporary tokens
-		parser->ClearTemporaries();
 		bool sort = false;
 
 		// parse function's arguments
@@ -521,7 +526,7 @@ int NativeParser::MarkItemsByAI(bool reallyUseAI)
 					Manager::Get()->GetMessageManager()->DebugLog(_("Parsing arguments: \"%s\""), buffer.c_str());
 					if (!parser->ParseBuffer(buffer, false))
 						Manager::Get()->GetMessageManager()->DebugLog(_("ERROR parsing block:\n%s"), buffer.c_str());
-					sort = true;
+//					sort = true;
 				}
 			}
 		}
@@ -542,19 +547,21 @@ int NativeParser::MarkItemsByAI(bool reallyUseAI)
 		else
 			Manager::Get()->GetMessageManager()->DebugLog(_("Could not find current block start..."));
 
-		if (sort)
-			parser->SortAllTokens();
+//		if (sort)
+//			parser->SortAllTokens();
 
 		// clear previously marked tokens
-		const TokensArray& tokens = parser->GetTokens();
-		for (unsigned int i = 0; i < tokens.GetCount(); ++i)
+		TokensTree* tokens = parser->GetTokens();
+		for (unsigned int i = 0; i < tokens->size(); ++i)
 		{
-			Token* token = tokens[i];
+			Token* token = tokens->at(i);
+			if(!token)
+                continue;
 			token->m_Bool = !reallyUseAI;
 		}
 
         if (!reallyUseAI)
-            return tokens.GetCount();
+            return tokens->size();
 
         // AI will mark (m_Bool == true) every token we should include in list
         return AI(ed, parser);
@@ -573,10 +580,12 @@ const wxString& NativeParser::GetCodeCompletionItems()
 	int count = MarkItemsByAI();
 	if (count)
 	{
-		const TokensArray& tokens = parser->GetTokens();
-		for (unsigned int i = 0; i < tokens.GetCount(); ++i)
+		TokensTree* tokens = parser->GetTokens();
+		for (unsigned int i = 0; i < tokens->size(); ++i)
 		{
-			Token* token = tokens[i];
+			Token* token = tokens->at(i);
+			if(!token)
+                continue;
 			if (!token->m_Bool)
 				continue; // not marked by AI
 			token->m_Bool = false; // reset flag for next run
@@ -592,6 +601,7 @@ const wxString& NativeParser::GetCodeCompletionItems()
 const wxArrayString& NativeParser::GetCallTips()
 {
     m_CallTips.Clear();
+    wxCriticalSectionLocker lock(s_mutexProtection);
 
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 	if (!ed)
@@ -627,26 +637,31 @@ const wxArrayString& NativeParser::GetCallTips()
 	Manager::Get()->GetMessageManager()->DebugLog(_("Sending \"%s\" for call-tip"), lineText.c_str());
 
 	// clear previously marked tokens
-	const TokensArray& tokens = parser->GetTokens();
-	for (unsigned int i = 0; i < tokens.GetCount(); ++i)
+	TokensTree* tokens = parser->GetTokens();
 	{
-		Token* token = tokens[i];
-		token->m_Bool = false;
+        for (unsigned int i = 0; i < tokens->size(); ++i)
+        {
+            Token* token = tokens->at(i);
+            if(token)
+                token->m_Bool = false;
+        }
 	}
 
 	// AI will mark (m_Bool == true) every token we should include in list
 	if (!AI(ed, parser, lineText, true, true))
 		return m_CallTips;
 
-	for (unsigned int i = 0; i < tokens.GetCount(); ++i)
-	{
-		Token* token = tokens[i];
-		if (token->m_Bool && !token->m_Args.Matches(_T("()")))
-		{
-			m_CallTips.Add(token->m_Args);
-			token->m_Bool = false; // reset flag for next run
-		}
-	}
+    for (size_t i = 0; i < tokens->size(); ++i)
+    {
+        Token* token = tokens->at(i);
+        if(!token)
+            continue;
+        if (token->m_Bool && token->m_Args != _T("()"))
+        {
+            m_CallTips.Add(token->m_Args);
+            token->m_Bool = false; // reset flag for next run
+        }
+    }
 
 	return m_CallTips;
 }
@@ -824,6 +839,9 @@ int NativeParser::AI(cbEditor* editor, Parser* parser, const wxString& lineText,
 	wxString searchtext;
 	//Manager::Get()->GetMessageManager()->DebugLog("********* START **********");
 
+    TokensTree* tree = parser->GetTokens();
+    if(!tree)
+        return 0;
 	Token* parentToken = 0L;
 	ParserTokenType tokenType;
 	wxString actual;
@@ -886,7 +904,7 @@ int NativeParser::AI(cbEditor* editor, Parser* parser, const wxString& lineText,
 		{
 			Token* token = 0L;
 			// try #1 - special case
-			if (tok.Matches(_T("this"))) // <-- special case
+			if (tok==_T("this")) // <-- special case
 			{
                 token = scopeToken;
                 parentToken = scopeToken;
@@ -956,12 +974,16 @@ int NativeParser::AI(cbEditor* editor, Parser* parser, const wxString& lineText,
 		searchtext.MakeLower();
 
 	Manager::Get()->GetMessageManager()->DebugLog(_("Scope='%s'"), scopeToken ? scopeToken->m_Name.c_str() : _("Unknown"));
+    TokenIdxSet::iterator it,it2;
+    Token *token,*ctok;
 	if (parentToken)
 	{
-		Manager::Get()->GetMessageManager()->DebugLog(_("Final parent: '%s' (count=%d, search=%s)"), parentToken->m_Name.c_str(), parentToken->m_Children.GetCount(), searchtext.c_str());
-		for (unsigned int i = 0; i < parentToken->m_Children.GetCount(); ++i)
+		Manager::Get()->GetMessageManager()->DebugLog(_("Final parent: '%s' (count=%d, search=%s)"), parentToken->m_Name.c_str(), parentToken->m_Children.size(), searchtext.c_str());
+		for (it = parentToken->m_Children.begin();it != parentToken->m_Children.end();it++)
 		{
-			Token* token = parentToken->m_Children[i];
+            token = tree->at(*it);
+            if (!token)
+                continue;
 			if (token->m_IsOperator)
 				continue; // ignore operators
 
@@ -983,9 +1005,12 @@ int NativeParser::AI(cbEditor* editor, Parser* parser, const wxString& lineText,
             if (token->m_TokenKind == tkEnum)
             {
                 // enums children (enumerators), are added by default
-                for (unsigned int i2 = 0; i2 < token->m_Children.GetCount(); ++i2)
+
+                for (it2 = token->m_Children.begin();it2 != token->m_Children.end();it2++)
                 {
-                    Token* ctok = token->m_Children[i2];
+                    ctok = tree->at(*it2);
+                    if (!ctok)
+                        continue;
                     ctok->m_Bool = true;
                     ++count;
                 }
@@ -1015,9 +1040,11 @@ int NativeParser::AI(cbEditor* editor, Parser* parser, const wxString& lineText,
 		// just globals and current function's parent class members here...
 		Manager::Get()->GetMessageManager()->DebugLog(_("Procedure of class '%s' (0x%8.8x), name='%s'"), scopeName.c_str(), scopeToken, procName.c_str());
 
-		for (unsigned int i = 0; i < parser->GetTokens().GetCount(); ++i)
+		for (unsigned int i = 0; i < tree->size(); ++i)
 		{
-			Token* token = parser->GetTokens()[i];
+			Token* token = tree->at(i);
+			if(!token)
+                continue;
 			if (token->m_IsOperator)
 				continue; // ignore operators
 
@@ -1032,9 +1059,9 @@ int NativeParser::AI(cbEditor* editor, Parser* parser, const wxString& lineText,
 				textCondition = searchtext.IsEmpty() ? false : name.Matches(searchtext);
 
 			token->m_Bool = textCondition &&
-							(!token->m_pParent || // globals
+							(!token->GetParentToken() || // globals
 							token->m_TokenKind == tkEnumerator || // enumerators
-							token->m_pParent == scopeToken || // child of procToken
+							token->GetParentToken() == scopeToken || // child of procToken
 							!lineText.IsEmpty()); // locals too
 			if (token->m_Bool)
 				++count;
@@ -1050,23 +1077,32 @@ int NativeParser::DoInheritanceAI(Token* parentToken, Token* scopeToken, const w
 	int count = 0;
 	if (!parentToken)
 		return 0;
+	TokensTree* tree = parentToken->GetTree();
+	if(!tree)
+        return 0;
 	Manager::Get()->GetMessageManager()->DebugLog(_("Checking inheritance of %s"), parentToken->m_Name.c_str());
-	Manager::Get()->GetMessageManager()->DebugLog(_("- Has %d ancestor(s)"), parentToken->m_Ancestors.GetCount());
-	for (unsigned int i = 0; i < parentToken->m_Ancestors.GetCount(); ++i)
+	Manager::Get()->GetMessageManager()->DebugLog(_("- Has %d ancestor(s)"), parentToken->m_Ancestors.size());
+	TokenIdxSet::iterator it,x;
+	for (it = parentToken->m_Ancestors.begin();it != parentToken->m_Ancestors.end(); it++)
 	{
-		Token* ancestor = parentToken->m_Ancestors[i];
+		int ancestor_idx = *it;
+		Token* ancestor = tree->at(ancestor_idx);
+		if(!ancestor)
+            continue;
 		Manager::Get()->GetMessageManager()->DebugLog(_("- Checking ancestor %s"), ancestor->m_Name.c_str());
 		int bak = count;
-		for (unsigned int x = 0; x < ancestor->m_Children.GetCount(); ++x)
+		for (x = ancestor->m_Children.begin(); x != ancestor->m_Children.end(); x++)
 		{
-			Token* token = ancestor->m_Children[x];
+			Token* token = tree->at(*x);
+			if(!token)
+                continue;
 			wxString name = token->m_Name;
 			if (!caseSensitive)
 				name.MakeLower();
 			bool textCondition = searchText.IsEmpty() ? true : name.StartsWith(searchText);
 			//Manager::Get()->GetMessageManager()->DebugLog("- [%s] %s: %s", searchText.c_str(), name.c_str(), textCondition ? "match" : "no match");
 			token->m_Bool = textCondition &&
-							(token->m_Scope == tsPublic || (scopeToken && scopeToken->InheritsFrom(ancestor)));
+							(token->m_Scope == tsPublic || (scopeToken && scopeToken->InheritsFrom(ancestor_idx)));
 			if (token->m_Bool)
 				count++;
 		}
@@ -1229,7 +1265,7 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
 			Manager::Get()->GetMessageManager()->DebugLog(_("Parser aborted (project closed)."));
 
 		if (project == Manager::Get()->GetProjectManager()->GetActiveProject())
-		{
+        {
             Manager::Get()->GetMessageManager()->DebugLog(_("Updating class browser..."));
 			if (m_pClassBrowser)
 			{

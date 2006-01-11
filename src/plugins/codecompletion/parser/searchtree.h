@@ -18,6 +18,7 @@
 
 #include <vector>
 #include <map>
+#include <set>
 
 #ifdef __WXWINDOWS__
 
@@ -43,6 +44,8 @@ class BasicSearchTree;
 key, and the node is the value */
 typedef map<char,nSearchTreeNode,less<char> > SearchTreeLinkMap;
 
+typedef vector<SearchTreeLinkMap::iterator> SearchTreeStack;
+
 /** SearchTreeNodesArray contains all the nodes for a search tree */
 typedef vector<SearchTreeNode*> SearchTreeNodesArray;
 
@@ -52,6 +55,32 @@ typedef map<size_t,size_t,less<size_t> > SearchTreeItemsMap;
 /** SearchTreeLabelsArray contains the labels used by the nodes */
 typedef vector<string> SearchTreeLabelsArray;
 
+/** SearchTreeIterator lets us iterate through the nodes of a BasicSearchTree */
+class BasicSearchTreeIterator
+{
+    public:
+        BasicSearchTreeIterator();
+        BasicSearchTreeIterator(BasicSearchTree* tree);
+        virtual ~BasicSearchTreeIterator() {}
+        bool IsValid();
+        bool FindPrev(bool includechildren = true);
+        bool FindNext(bool includechildren = true);
+        const nSearchTreeNode& operator* () const { return m_CurNode; }
+        const BasicSearchTreeIterator& operator++() { FindNext(); return *this; }
+        const BasicSearchTreeIterator& operator--() { FindPrev(); return *this; }
+        bool FindNextSibling();
+        bool FindPrevSibling();
+        bool FindSibling(char ch);
+        bool eof() { return (!IsValid() || m_eof); }
+        nSearchTreeNode m_CurNode;
+        bool m_eof; // Reached end of tree
+    protected:
+        BasicSearchTree* m_pTree;
+        size_t m_LastTreeSize; // For checking validity
+        SearchTreeNode* m_LastAddedNode; // For checking validity
+        SearchTreeStack m_Stack;
+        vector<SearchTreeLinkMap*> m_Stack2;
+};
 
 class SearchTreePoint
 {
@@ -65,6 +94,7 @@ class SearchTreePoint
 class SearchTreeNode
 {
     friend class BasicSearchTree;
+    friend class BasicSearchTreeIterator;
     public:
         SearchTreeNode();
         SearchTreeNode(unsigned int depth,nSearchTreeNode parent,nSearchTreeLabel label, unsigned int labelstart, unsigned int labellen);
@@ -77,6 +107,7 @@ class SearchTreeNode
         SearchTreeNode* GetParent(BasicSearchTree* tree);
         SearchTreeNode* GetChild(BasicSearchTree* tree,char ch);
         string GetLabel(BasicSearchTree* tree);
+        char GetChar(BasicSearchTree* tree);
         const string& GetActualLabel(BasicSearchTree* tree);
         nSearchTreeLabel GetLabelNo() { return m_label; }
         unsigned int GetLabelStart() { return m_labelstart; }
@@ -97,8 +128,14 @@ class SearchTreeNode
         unsigned int GetDeepestMatchingPosition(BasicSearchTree* tree, const string& s,unsigned int StringStartDepth);
         string Serialize(BasicSearchTree* tree,nSearchTreeNode node_id,bool withchildren = false);
         void SearchTreeNode::dump(BasicSearchTree* tree,nSearchTreeNode node_id,const string& prefix,string& result);
+
+
         static string SerializeString(const string& s);
         static string u2s(unsigned int u);
+        static string i2s(int i);
+        static bool UnSerializeString(const string& s,string& result);
+        static bool s2u(const string& s,unsigned int& u);
+        static bool s2i(const string& s,int& i);
     protected:
         unsigned int m_depth;
         nSearchTreeNode m_parent;
@@ -111,15 +148,23 @@ class SearchTreeNode
 class BasicSearchTree
 {
     friend class SearchTreeNode;
+    friend class BasicSearchTreeIterator;
     public:
         BasicSearchTree();
         virtual ~BasicSearchTree();
         virtual size_t GetCount() const { return 0; } /// Gets the number of items stored
-        virtual void Clear(); /// Clears items and tree
+        virtual void clear(); /// Clears items and tree
         /// Tells if there is an item for string s
         bool HasItem(const string& s);
         /// Gets the array position defined by s
         size_t GetItemNo(const string& s);
+
+        /** Finds items that match a given string.
+            if is_prefix==true, it finds items that start with the string.
+            returns the number of matches.
+        */
+        size_t FindMatches(const string& s,set<size_t> &result,bool caseSensitive,bool is_prefix);
+
         /// Serializes the labels into an XML-compatible string
         string SerializeLabels();
         /// Dumps a graphical version of the tree
@@ -172,7 +217,7 @@ class SearchTree: public BasicSearchTree
     public:
         SearchTree();
         virtual ~SearchTree();
-        virtual void Clear(); /// Clears the tree
+        virtual void clear(); /// Clears the tree
         size_t GetCount() const; /// Gets the number of items stored
         size_t size() const; /// Same as GetCount
         bool SaveCacheTo(const string& filename); /// Stores the Tree and items into a file
@@ -215,10 +260,10 @@ SearchTree<T>::~SearchTree()
 }
 
 template <class T>
-void SearchTree<T>::Clear()
+void SearchTree<T>::clear()
 {
     ClearItems();
-    BasicSearchTree::Clear();
+    BasicSearchTree::clear();
     AddFirstNullItem();
 }
 

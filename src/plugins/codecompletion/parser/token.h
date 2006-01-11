@@ -7,11 +7,33 @@
 #include <settings.h>
 
 #include "blockallocated.h"
-
+#include <globals.h>
 #include "searchtree.h"
+#include <deque>
+using namespace std;
 
 class Token;
+class TokensTree;
+
+enum FileParsingStatus
+{
+    fpsNotParsed = 0,
+    fpsBeingParsed,
+    fpsDone
+};
+
 WX_DEFINE_ARRAY(Token*, TokensArray);
+
+typedef deque<Token*> TokenList;
+
+typedef deque<int> TokenIdxList;
+typedef set<int, less<int> > TokenIdxSet;
+typedef SearchTree<TokenIdxSet> TokenSearchTree;
+typedef map<wxString,size_t,less<wxString> > TokenFilenamesMap;
+typedef map<size_t,wxString,less<size_t> > TokenInvFilenamesMap;
+typedef map<size_t,TokenIdxSet,less<size_t> > TokenFilesMap;
+typedef map<size_t,FileParsingStatus,less<size_t> > TokenFilesStatus;
+typedef set<size_t,less<size_t> > TokenFilesSet;
 
 enum TokenScope
 {
@@ -38,19 +60,27 @@ enum TokenKind
 
 class Token  : public BlockAllocated<Token, 10000>
 {
+    friend class TokensTree;
 	public:
 		Token();
-		Token(const wxString& name, const wxString& filename, unsigned int line);
+		Token(const wxString& name, unsigned int file, unsigned int line);
 		~Token();
 
-		void AddChild(Token* child);
+		void AddChild(int child);
+		void RemoveChild(int child);
 		wxString GetNamespace() const;
-		bool InheritsFrom(Token* token) const;
+		bool InheritsFrom(int idx) const;
 		wxString GetTokenKindString() const;
 		wxString GetTokenScopeString() const;
+		wxString GetFilename() const;
+		wxString GetImplFilename() const;
+		bool MatchesFiles(const TokenFilesSet& files);
 
 		bool SerializeIn(wxInputStream* f);
 		bool SerializeOut(wxOutputStream* f);
+		int GetSelf() { return m_Self; } // current index in the tree
+		Token* GetParentToken();
+		TokensTree* GetTree() { return m_pTree; }
 
 		wxString m_Type; // this is the return value (if any): e.g. const wxString&
 		wxString m_ActualType; // this is what the parser believes is the actual return value: e.g. wxString
@@ -58,32 +88,105 @@ class Token  : public BlockAllocated<Token, 10000>
 		wxString m_DisplayName;
 		wxString m_Args;
 		wxString m_AncestorsString; // all ancestors comma-separated list
-		wxString m_Filename;
+		unsigned int m_File;
 		unsigned int m_Line;
-		wxString m_ImplFilename;
+		unsigned int m_ImplFile;
 		unsigned int m_ImplLine;
 		TokenScope m_Scope;
 		TokenKind m_TokenKind;
 		bool m_IsOperator;
 		bool m_IsLocal; // found in a local file?
 		bool m_IsTemporary;
-		TokensArray m_Ancestors; // after Parser::LinkInheritance() runs, contains all ancestor tokens (affected by m_AncestorsString)
-
-		wxString m_String; // custom string value
-		bool m_Bool; // custom bool value
-		int m_Int; // custom int value
-		void* m_Data; // custom pointer value
-
+#if 0
 		Token* m_pParent;
 		TokensArray m_Children;
-
+		TokensArray m_Ancestors; // after Parser::LinkInheritance() runs, contains all ancestor tokens (affected by m_AncestorsString)
+		TokensArray m_Descendants;
         // helper variables used in serialization
         int m_ParentIndex;
         wxArrayInt m_AncestorsIndices;
         wxArrayInt m_ChildrenIndices;
+        wxArrayInt m_DescendantsIndices;
+#else
+        int m_ParentIndex;
+        TokenIdxSet m_Children;
+        TokenIdxSet m_Ancestors;
+        TokenIdxSet m_Descendants;
+#endif
+		wxString m_String; // custom string value
+		bool m_Bool; // custom bool value
+		void* m_Data; // custom pointer value
 	protected:
+        TokensTree* m_pTree;
+		int m_Self; // current index in the tree
 	private:
 };
+
+class TokensTree
+{
+    public:
+        static const wxString s_version;
+        TokensTree();
+        inline void Clear() { clear(); }
+
+        // STL compatibility functions
+        void clear();
+        inline Token* operator[](int idx) { return GetTokenAt(idx); }
+        inline Token* at(int idx) { return GetTokenAt(idx); }
+        size_t size();
+        inline bool empty() { return size()==0; }
+        int insert(Token* newToken);
+        int insert(int loc, Token* newToken);
+        int erase(int loc);
+        void erase(Token* oldToken);
+
+        // Token specific functions
+        void RecalcFreeList();
+        void RecalcData();
+        int TokenExists(const wxString& name, int parent, short int kindMask);
+        int FindTokenByDisplayName(const wxString& name);
+        size_t FindMatches(const wxString& s,TokenIdxSet& result,bool caseSensitive,bool is_prefix);
+        void RemoveFile(const wxString& filename);
+        void RemoveFile(int index);
+        virtual ~TokensTree();
+
+        // Parsing related functions
+
+        size_t GetFileIndex(const wxString& filename);
+        wxString GetFilename(size_t idx) const;
+        size_t ReserveFileForParsing(const wxString& filename);
+        void FlagFileForReparsing(const wxString& filename);
+        void FlagFileAsParsed(const wxString& filename);
+
+
+        TokenList m_Tokens; /// Contains the pointers to all the tokens
+        TokenSearchTree m_Tree; /** Tree containing the indexes to the tokens
+          (the indexes will be used on m_Tokens) */
+        SearchTree<int> m_DisplayNameTree;
+
+        TokenFilenamesMap m_FilenamesMap; /** Map: filenames -> file indexes */
+        TokenInvFilenamesMap m_InvFilenamesMap; /** Map: file indexes -> filenames */
+        TokenFilesMap m_FilesMap; /** Map: file indexes -> Sets of TokenIndexes */
+        TokenFilesSet m_FilesToBeReparsed; /** Set: file indexes */
+        TokenIdxList m_FreeTokens; /** List of all the deleted (and available) tokens */
+
+        /** List of tokens belonging to the global namespace */
+        TokenIdxSet m_TopNameSpaces,
+        m_GlobalNameSpace;
+
+        TokenFilesStatus m_FilesStatus; /** Parse Status for each file */
+        bool m_modified;
+    protected:
+        Token* GetTokenAt(int idx);
+        int AddToken(Token* newToken,int forceidx = -1);
+
+        void RemoveToken(int idx);
+        void RemoveToken(Token* oldToken);
+
+        int AddTokenToList(Token* newToken,int forceidx = -1);
+        void RemoveTokenFromList(int idx);
+};
+
 
 inline void SaveIntToFile(wxOutputStream* f, int i)
 {
@@ -112,8 +215,8 @@ inline void SaveStringToFile(wxOutputStream* f, const wxString& str)
 {
     const wxWX2MBbuf psz = str.mb_str(wxConvUTF8);
     int size = psz ? strlen(psz) : 0;
-    if (size >= 512)
-        size = 512;
+    if (size >= 32767)
+        size = 32767;
     SaveIntToFile(f, size);
     if(size)
         f->Write(psz, size);
@@ -125,9 +228,9 @@ inline bool LoadStringFromFile(wxInputStream* f, wxString& str)
     if (!LoadIntFromFile(f, &size))
         return false;
     bool ok = true;
-    if (size > 0 && size <= 512)
+    if (size > 0 && size <= 32767)
     {
-        static char buf[513];
+        static char buf[32768];
         ok = f->Read(buf, size).LastRead() == (size_t)size;
         buf[size] = '\0';
         str = wxString(buf, wxConvUTF8);
@@ -141,20 +244,4 @@ inline bool LoadStringFromFile(wxInputStream* f, wxString& str)
     return ok;
 }
 
-typedef SearchTree<TokensArray> TokenSearchTree;
-class TokensTree
-{
-    public:
-        TokenSearchTree m_Tree;
-//        size_t GetHash(const wxString& name);
-        void Clear();
-        TokensTree();
-        Token* TokenExists(const wxString& name, Token* parent, short int kindMask);
-        void AddToken(const wxString& name,Token* newToken);
-        virtual ~TokensTree() {}
-//    private:
-//        unsigned int m_hash1[256],m_hash2[256];
-};
-
 #endif // TOKEN_H
-

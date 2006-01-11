@@ -5,13 +5,229 @@
 
   #define string wxString
   #define char wxChar
+  #define toupper(x) wxToupper(x)
+  #define tolower(x) wxTolower(x)
 
 #else
-
   #define _T(x) (x)
   #define _(x) (x)
 
 #endif
+
+// *** SearchTreeIterator ***
+
+BasicSearchTreeIterator::BasicSearchTreeIterator() :
+m_CurNode(0),
+m_eof(false),
+m_pTree(0),
+m_LastTreeSize(0),
+m_LastAddedNode(0)
+{
+    m_Stack.clear();
+    m_Stack2.clear();
+}
+
+BasicSearchTreeIterator::BasicSearchTreeIterator(BasicSearchTree* tree) :
+m_CurNode(0),
+m_eof(false),
+m_pTree(tree),
+m_LastTreeSize(0),
+m_LastAddedNode(0)
+{
+    if(m_pTree)
+    {
+        m_LastTreeSize = m_pTree->m_pNodes.size();
+        if(m_LastTreeSize)
+            m_LastAddedNode = m_pTree->GetNode(m_LastTreeSize - 1);
+    }
+    m_Stack.clear();
+    m_Stack2.clear();
+}
+
+bool BasicSearchTreeIterator::IsValid()
+{
+    if(!this || !m_pTree || m_LastTreeSize!= m_pTree->m_pNodes.size() || m_LastAddedNode != m_pTree->m_pNodes[m_LastTreeSize - 1])
+        return false;
+    return true;
+}
+
+bool BasicSearchTreeIterator::FindPrev(bool includechildren)
+{
+    bool result;
+    result = false;
+
+    SearchTreeLinkMap::iterator it;
+    do
+    {
+        if(!IsValid())
+            break;
+        SearchTreeNode* curnode = m_pTree->GetNode(m_CurNode);
+        if(!curnode)
+            break;
+
+        result = true;
+        while(m_CurNode)
+        {
+            m_eof = false;
+            result = FindPrevSibling();
+            if(!result)
+                return false;
+            if(!m_eof)
+                break;
+            m_CurNode = curnode->m_parent;
+            curnode = m_pTree->GetNode(m_CurNode);
+            if(!curnode)
+                return false;
+        }
+
+        if(includechildren)
+        {
+            while(curnode->m_Children.size())
+            {
+                it = curnode->m_Children.end();
+                --it;
+                m_CurNode = it->second;
+                curnode = m_pTree->GetNode(m_CurNode,true);
+                if(!curnode)
+                    return false;
+            }
+        }
+        m_eof = false;
+        break;
+    }while(true);
+    return result;
+}
+
+bool BasicSearchTreeIterator::FindNext(bool includechildren)
+{
+    bool result;
+    result = false;
+
+    SearchTreeLinkMap::iterator it;
+    do
+    {
+        if(!IsValid())
+            break;
+        SearchTreeNode* curnode = m_pTree->GetNode(m_CurNode);
+        if(!curnode)
+            break;
+
+        result = true;
+        if(includechildren)
+        {
+            it = curnode->m_Children.begin();
+            if(it != curnode->m_Children.end())
+            {
+                m_CurNode = it->second;
+                curnode = m_pTree->GetNode(m_CurNode);
+                if(!curnode)
+                {
+                    return false;
+                }
+                break;
+            }
+        }
+        m_eof = true;
+        while(m_CurNode)
+        {
+            m_eof = false;
+            result = FindNextSibling();
+            if(!m_eof)
+                break;
+            m_CurNode = curnode->m_parent;
+            curnode = m_pTree->GetNode(m_CurNode);
+            if(!curnode)
+                return false;
+        }
+        break;
+    }while(true);
+    return result;
+}
+
+bool BasicSearchTreeIterator::FindNextSibling()
+{
+    if(!IsValid())
+        return false;
+    if(!m_CurNode /* || !m_Stack.size() */)
+        m_eof = true;
+
+    SearchTreeNode* node = m_pTree->GetNode(m_CurNode);
+    if(!node)
+        return false;
+    char ch = node->GetChar(m_pTree);
+    node = node->GetParent(m_pTree);
+    if(!node)
+        return false;
+    SearchTreeLinkMap* the_map = &node->m_Children;
+    SearchTreeLinkMap::iterator it = the_map->find(ch);
+    if(it == the_map->end())
+        m_eof = true;
+    else
+    {
+        ++it;
+        if(it == the_map->end())
+            m_eof = true;
+        else
+            m_CurNode = it->second;
+    }
+    return true;
+}
+
+bool BasicSearchTreeIterator::FindPrevSibling()
+{
+    if(!IsValid())
+        return false;
+    if(!m_CurNode /* || !m_Stack.size() */)
+        m_eof = true;
+
+    SearchTreeNode* node = m_pTree->GetNode(m_CurNode);
+    if(!node)
+        return false;
+    char ch = node->GetChar(m_pTree);
+    node = node->GetParent(m_pTree);
+    if(!node)
+        return false;
+    SearchTreeLinkMap* the_map = &node->m_Children;
+    SearchTreeLinkMap::iterator it = the_map->find(ch);
+    if(it == the_map->end())
+        m_eof = true;
+    else
+    {
+        if(it == the_map->begin())
+            m_eof = true;
+        else
+        {
+            --it;
+            m_CurNode = it->second;
+        }
+    }
+    return true;
+}
+
+bool BasicSearchTreeIterator::FindSibling(char ch)
+{
+    if(!IsValid())
+        return false;
+    if(!m_CurNode /* || !m_Stack.size() */)
+        m_eof = true;
+
+    SearchTreeNode* node = m_pTree->GetNode(m_CurNode);
+    if(!node)
+        return false;
+    node = node->GetParent(m_pTree);
+    if(!node)
+        return false;
+
+    SearchTreeLinkMap* the_map = &node->m_Children;
+    SearchTreeLinkMap::iterator it = the_map->find(ch);
+    if(it == the_map->end())
+        m_eof = true;
+    else
+    {
+        m_CurNode = it->second;
+    }
+    return true;
+}
 
 // *** SearchTreeNode ***
 
@@ -87,6 +303,14 @@ string SearchTreeNode::GetLabel(BasicSearchTree* tree)
     if(!m_depth || m_label >= tree->m_Labels.size())
         return string(_T(""));
     return tree->m_Labels[m_label].substr(m_labelstart,m_labellen);
+}
+
+inline char SearchTreeNode::GetChar(BasicSearchTree* tree)
+{
+    if(!m_depth)
+        return 0;
+    const string& the_label = GetActualLabel(tree);
+    return the_label[m_labelstart];
 }
 
 inline const string& SearchTreeNode::GetActualLabel(BasicSearchTree* tree)
@@ -195,6 +419,15 @@ string SearchTreeNode::u2s(unsigned int u)
     return result;
 }
 
+string SearchTreeNode::i2s(int i)
+{
+    string result(_T(""));
+    if(i<0)
+        result << _T('-');
+    result << u2s(abs(i));
+    return result;
+}
+
 string SearchTreeNode::Serialize(BasicSearchTree* tree,nSearchTreeNode node_id,bool withchildren)
 {
     string result,children,sparent,sdepth,slabelno,slabelstart,slabellen;
@@ -292,7 +525,7 @@ BasicSearchTree::~BasicSearchTree()
     m_Labels.clear();
 }
 
-void BasicSearchTree::Clear()
+void BasicSearchTree::clear()
 {
     int i;
     SearchTreeNode* curnode;
@@ -482,6 +715,87 @@ size_t BasicSearchTree::GetItemNo(const string& s)
     return m_pNodes[resultpos.n]->GetItemNo(resultpos.depth);
 }
 
+size_t BasicSearchTree::FindMatches(const string& s,set<size_t> &result,bool caseSensitive,bool is_prefix)
+{
+
+    // NOTE: Current algorithm is suboptimal, but certainly it's much better
+    // than an exhaustive search.
+
+
+    result.clear();
+    string s2,curcmp,s3;
+    nSearchTreeNode ncurnode;
+    SearchTreeNode* curnode = 0;
+    BasicSearchTreeIterator it(this);
+    SearchTreeItemsMap::iterator it2;
+
+    bool matches;
+
+    if(!caseSensitive)
+        s2 = s.Lower();
+    else
+        s2 = s;
+
+    while(!it.eof())
+    {
+        matches = false;
+        ncurnode = *it;
+        curnode = m_pNodes[*it];
+        if(!curnode)
+            break; // Error! Found a NULL Node
+        if(curnode->m_depth < s.length())
+        {   // Node's string is shorter than S, therefore it CANNOT be a suffix
+            // However, we can test if it does NOT match the current string.
+            if(!curnode->m_depth)
+                matches = true;
+            else
+            {
+                s3 = s2.substr(curnode->GetLabelStartDepth(),curnode->GetLabelLen());
+                curcmp = curnode->GetLabel(this);
+                if(!caseSensitive)
+                    curcmp = curcmp.Lower();
+                matches = (s3 == curcmp);
+            }
+        }
+        else
+        {
+            if(curnode->GetLabelStartDepth() >= s2.length())
+                matches = is_prefix;
+            else
+            {
+                s3 = s2.substr(curnode->GetLabelStartDepth());
+                curcmp = curnode->GetLabel(this);
+                if(!caseSensitive)
+                    curcmp = curcmp.Lower();
+                matches = curcmp.StartsWith(s3);
+            }
+
+            if(matches)
+            {
+                // Begin items addition
+                if(!is_prefix)
+                {
+                    // Easy part: Only one length to search
+                    it2 = curnode->m_Items.find(s2.length());
+                    if(it2 != curnode->m_Items.end())
+                        result.insert(it2->second);
+                }
+                else
+                {
+                    for(it2 = curnode->m_Items.lower_bound(s2.length()); it2 != curnode->m_Items.end(); ++it2)
+                    {
+                        result.insert(it2->second);
+                    }
+                }
+                matches = is_prefix;
+                // End items addition
+            }
+        }
+        it.FindNext(matches);
+    }
+    return result.size();
+}
+
 size_t BasicSearchTree::AddItemNo(const string& s,size_t itemno)
 {
     size_t result = 0;
@@ -544,6 +858,114 @@ nSearchTreeNode BasicSearchTree::SplitBranch(nSearchTreeNode n,size_t depth)
     m_pNodes[old_parent]->m_Children[middle_char]=middle;
 
     return middle;
+}
+
+bool SearchTreeNode::UnSerializeString(const string& s,string& result)
+{
+    result.Clear();
+    size_t i;
+    int mode = 0;
+    wxString entity(_T(""));
+    unsigned int u;
+    for(i = 0;mode >=0 && i<s.length();i++)
+    {
+        wxChar ch = s[i];
+        if(ch==_T('"') || ch==_T('>') || ch==_T('<'))
+        {
+            mode = -1; // Error
+            break;
+        }
+        switch(mode)
+        {
+            case 0: // normal
+                if(ch==_T('&'))
+                {
+                    mode = 1;
+                    entity.Clear();
+                }
+                else
+                    result << ch;
+            case 1: // escaped
+                if(ch==_T('&'))
+                {
+                    mode = -1; // Error
+                    break;
+                }
+                else if(ch==_T(';'))
+                {
+                    mode = 0;
+                    if(entity==_T("quot"))
+                        ch = _T('"');
+                    else if(entity==_T("amp"))
+                        ch = _T('&');
+                    else if(entity==_T("apos"))
+                        ch = _T('\'');
+                    else if(entity==_T("lt"))
+                        ch = _T('<');
+                    else if(entity==_T("gt"))
+                        ch = _T('>');
+                    else if(entity[0]==_T('#') && s2u(entity.substr(1),u))
+                        ch = u;
+                    else
+                    {
+                        mode = -1; // Error: Unrecognized entity
+                        break;
+                    }
+                    result << ch;
+                }
+            break;
+        }
+    }
+    if(mode < 0)
+        result.Clear();
+    return (mode >= 0);
+}
+
+bool SearchTreeNode::s2u(const string& s,unsigned int& u)
+{
+    bool is_ok = true;
+    u = 0;
+    size_t i;
+    wxChar ch;
+    for(i = 0; is_ok && i < s.length();i++)
+    {
+        ch = s[i];
+        if(ch >= _T('0') && ch <= _T('9'))
+        {
+            u*=10;
+            u+=((unsigned int)ch) & 15;
+        }
+        else
+            is_ok = false; // error
+    }
+    if(!is_ok)
+        u = 0;
+    return is_ok;
+}
+
+bool SearchTreeNode::s2i(const string& s,int& i)
+{
+    bool is_ok = true;
+    i = 0;
+    unsigned int u = 0;
+    if(!s.IsEmpty())
+    {
+        if(s[0]==_T('-'))
+        {
+            if(!s2u(s.substr(1),u))
+                is_ok = false;
+            else
+                i = 0 - u;
+        }
+        else
+        {
+            if(!s2u(s.substr(1),u))
+                is_ok = false;
+            else
+                i = u;
+        }
+    }
+    return is_ok;
 }
 
 string SearchTreeNode::SerializeString(const string& s)
