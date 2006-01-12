@@ -95,8 +95,8 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
    	XRCCTRL(*this, "chkTabIndents", wxCheckBox)->SetValue(cfg->ReadBool(_T("/tab_indents"), true));
    	XRCCTRL(*this, "chkBackspaceUnindents", wxCheckBox)->SetValue(cfg->ReadBool(_T("/backspace_unindents"), true));
    	XRCCTRL(*this, "chkWordWrap", wxCheckBox)->SetValue(cfg->ReadBool(_T("/word_wrap"), false));
-   	XRCCTRL(*this, "chkShowLineNumbers", wxCheckBox)->SetValue(cfg->ReadBool(_T("/show_line_numbers"), false));
-   	XRCCTRL(*this, "chkHighlightCaretLine", wxCheckBox)->SetValue(cfg->ReadBool(_T("/highlight_caret_line"), true));
+   	XRCCTRL(*this, "chkShowLineNumbers", wxCheckBox)->SetValue(cfg->ReadBool(_T("/show_line_numbers"), true));
+   	XRCCTRL(*this, "chkHighlightCaretLine", wxCheckBox)->SetValue(cfg->ReadBool(_T("/highlight_caret_line"), false));
    	XRCCTRL(*this, "spnTabSize", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/tab_size"), 4));
    	XRCCTRL(*this, "cmbViewWS", wxComboBox)->SetSelection(cfg->ReadInt(_T("/view_whitespace"), false));
    	XRCCTRL(*this, "rbTabText", wxRadioBox)->SetSelection(cfg->ReadBool(_T("/tab_text_relative"), true) ? 1 : 0);
@@ -105,7 +105,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
    	// end-of-line
    	XRCCTRL(*this, "chkShowEOL", wxCheckBox)->SetValue(cfg->ReadBool(_T("/show_eol"), false));
    	XRCCTRL(*this, "chkStripTrailings", wxCheckBox)->SetValue(cfg->ReadBool(_T("/eol/strip_trailing_spaces"), true));
-   	XRCCTRL(*this, "chkEnsureFinalEOL", wxCheckBox)->SetValue(cfg->ReadBool(_T("/eol/ensure_final_line_end"), false));
+   	XRCCTRL(*this, "chkEnsureFinalEOL", wxCheckBox)->SetValue(cfg->ReadBool(_T("/eol/ensure_final_line_end"), true));
    	XRCCTRL(*this, "chkEnsureConsistentEOL", wxCheckBox)->SetValue(cfg->ReadBool(_T("/eol/ensure_consistent_line_ends"), false));
     XRCCTRL(*this, "cmbEOLMode", wxComboBox)->SetSelection(cfg->ReadInt(_T("/eol/eolmode"), 0));
 
@@ -118,7 +118,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
 
 	//gutter
     wxColour color = cfg->ReadColour(_T("/gutter/color"), *wxLIGHT_GREY);
-    XRCCTRL(*this, "lstGutterMode", wxChoice)->SetSelection(cfg->ReadInt(_T("/gutter/mode"), 1));
+    XRCCTRL(*this, "lstGutterMode", wxChoice)->SetSelection(cfg->ReadInt(_T("/gutter/mode"), 0));
     XRCCTRL(*this, "btnGutterColor", wxButton)->SetBackgroundColour(color);
     XRCCTRL(*this, "spnGutterColumn", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/gutter/column"), 80));
 

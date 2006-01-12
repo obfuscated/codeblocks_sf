@@ -67,12 +67,13 @@
 						bg="255,128,0"/>
 				<Style name="Matching brace highlight"
 						index="34"
-						fg="255,0,0"
-						bold="1"
-						underlined="1"/>
+						bg="128,255,255"
+						bold="1"/>
 				<Style name="No matching brace highlight"
 						index="35"
-						bg="255,0,0"/>
+						bg="255,255,255"
+						bg="255,0,0"
+						bold="1"/>
 				<Keywords>
 						<Language index="0"
 								value="asm auto bool break case catch char class const 

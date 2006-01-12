@@ -515,7 +515,7 @@ void cbEditor::SetEditorStyle()
 
 	m_pControl->SetMouseDwellTime(1000);
 
-	m_pControl->SetCaretLineVisible(mgr->ReadBool(_T("/highlight_caret_line"), true));
+	m_pControl->SetCaretLineVisible(mgr->ReadBool(_T("/highlight_caret_line"), false));
 	m_pControl->SetCaretLineBackground(GetOptionColour(_T("/highlight_caret_line_color"), wxColour(0xFF, 0xFF, 0x00)));
 
     m_pControl->SetUseTabs(mgr->ReadBool(_T("/use_tab"), false));
@@ -526,7 +526,7 @@ void cbEditor::SetEditorStyle()
     m_pControl->SetViewEOL(mgr->ReadBool(_T("/show_eol"), false));
     m_pControl->SetViewWhiteSpace(mgr->ReadBool(_T("/view_whitespace"), false));
 	//gutter
-    m_pControl->SetEdgeMode(mgr->ReadInt(_T("/gutter/mode"), 1));
+    m_pControl->SetEdgeMode(mgr->ReadInt(_T("/gutter/mode"), 0));
     m_pControl->SetEdgeColour(GetOptionColour(_T("/gutter/color"), *wxLIGHT_GREY));
     m_pControl->SetEdgeColumn(mgr->ReadInt(_T("/gutter/column"), 80));
 
@@ -536,7 +536,7 @@ void cbEditor::SetEditorStyle()
     m_pControl->SetTabWidth(mgr->ReadInt(_T("/tab_size"), 4));
 
     // line numbering
-   	if (mgr->ReadBool(_T("/show_line_numbers"), false))
+   	if (mgr->ReadBool(_T("/show_line_numbers"), true))
     {
 	    m_pControl->SetMarginType(0, wxSCI_MARGIN_NUMBER);
     	m_pControl->SetMarginWidth(0, 48);
@@ -564,7 +564,7 @@ void cbEditor::SetEditorStyle()
 
     // EOL properties
     m_pData->m_strip_trailing_spaces = mgr->ReadBool(_T("/eol/strip_trailing_spaces"), true);
-    m_pData->m_ensure_final_line_end = mgr->ReadBool(_T("/eol/ensure_final_line_end"), false);
+    m_pData->m_ensure_final_line_end = mgr->ReadBool(_T("/eol/ensure_final_line_end"), true);
     m_pData->m_ensure_consistent_line_ends = mgr->ReadBool(_T("/eol/ensure_consistent_line_ends"), false);
 
 #ifdef __WXMSW__
