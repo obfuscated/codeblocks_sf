@@ -14,6 +14,7 @@
                 <Option compiler="0" />
                 <Option host_application="./codeblocks.exe" />
                 <Option includeInTargetAll="1" />
+                <Option projectResourceIncludeDirsRelation="0" />
                 <Compiler>
                     <Add option="-g" />
                 </Compiler>
@@ -68,7 +69,7 @@
             <Add option="-Wl,--export-all-symbols" />
             <Add option="-Wl,--add-stdcall-alias" />
             <Add option="-i" />
-            <Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+            <Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
             <Add directory="$(#CB)\devel" />
             <Add directory="$(#CB)\sdk\tinyxml" />
             <Add directory="$(#CB)\sdk\propgrid" />
