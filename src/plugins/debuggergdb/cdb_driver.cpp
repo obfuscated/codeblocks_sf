@@ -6,6 +6,12 @@
 
 #define CDB_PROMPT _T("0:000>")
 
+static wxRegEx reBP(_T("Breakpoint ([0-9]+) hit"));
+// one stack frame (to access current file; is there another way???)
+//  # ChildEBP RetAddr
+// 00 0012fe98 00401426 Win32GUI!WinMain+0x89 [c:\devel\tmp\win32 test\main.cpp @ 55]
+static wxRegEx reFile(_T("[ \t]([A-z]+.*)[ \t]+\\[([A-z]:)(.*) @ ([0-9]+)\\]"));
+
 CDB_driver::CDB_driver(DebuggerGDB* plugin)
     : DebuggerDriver(plugin)
 {
@@ -224,7 +230,6 @@ void CDB_driver::ParseOutput(const wxString& output)
 
     // non-command messages (e.g. breakpoint hits)
     // break them up in lines
-    wxRegEx reBP(_T("Breakpoint ([0-9]+) hit"));
     wxArrayString lines = GetArrayFromString(buffer, _T('\n'));
     for (unsigned int i = 0; i < lines.GetCount(); ++i)
     {
@@ -233,6 +238,28 @@ void CDB_driver::ParseOutput(const wxString& output)
         if (lines[i].StartsWith(_T("Cannot execute ")))
         {
             Log(lines[i]);
+        }
+
+        else if (lines[i].Contains(_T("Access violation")))
+        {
+            Log(lines[i]);
+            m_pDBG->BringAppToFront();
+            if (IsWindowReallyShown(m_pBacktrace))
+            {
+                // don't ask; it's already shown
+                // just grab the user's attention
+                wxMessageBox(lines[i], _("Access violation"), wxICON_ERROR);
+                Backtrace();
+            }
+            else if (wxMessageBox(wxString::Format(_("%s\n\nDo you want to view the backtrace?"), lines[i].c_str()), _("Access violation"), wxICON_ERROR | wxYES_NO) == wxYES)
+            {
+                // show the backtrace window
+                CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
+                evt.pWindow = m_pBacktrace;
+                Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+                Backtrace();
+            }
+            break;
         }
 
         // Breakpoint 0 hit
@@ -262,18 +289,16 @@ void CDB_driver::ParseOutput(const wxString& output)
             NotifyCursorChanged();
         }
         // one stack frame (to access current file; is there another way???)
-        //  # ChildEBP RetAddr
-        // 00 0012fe98 00401426 Win32GUI!WinMain+0x89 [c:\devel\tmp\win32 test\main.cpp @ 55]
         else if (lines[i].Contains(_T("ChildEBP")))
         {
-//            wxRegEx ref(_T("([0-9]+) ([A-Fa-f0-9]+) ([A-Fa-f0-9]+) [^[]* \\[([A-Za-z]:)([ A-Za-z0-9_/\\.~-]*) @ ([0-9]+)\\]"));
-            wxRegEx ref(_T("[ \t]([A-Za-z]+.*)[ \t]+\\[([A-Za-z]:)([ A-Za-z0-9_/\\.~-]*) @ ([0-9]+)\\]"));
-            if (ref.Matches(lines[i + 1]))
+            if (reFile.Matches(lines[i + 1]))
             {
                 ++i; // we 're interested in the next line
-                m_Cursor.address = ref.GetMatch(lines[i], 1);
-                m_Cursor.file = ref.GetMatch(lines[i], 2) + ref.GetMatch(lines[i], 3);
-                ref.GetMatch(lines[i], 4).ToLong(&m_Cursor.line);
+                m_Cursor.address = reFile.GetMatch(lines[i], 1);
+                m_Cursor.file = reFile.GetMatch(lines[i], 2) + reFile.GetMatch(lines[i], 3);
+//                if (m_Cursor.file.Last() == _T(' '))
+//                    m_Cursor.file.RemoveLast(); // see regex reFile for the reason
+                reFile.GetMatch(lines[i], 4).ToLong(&m_Cursor.line);
                 m_Cursor.changed = true;
                 m_ProgramIsStopped = true;
                 NotifyCursorChanged();

@@ -20,6 +20,21 @@
 static wxRegEx reBT1(_T("#([0-9]+)[ \t]+[0x]*([A-Fa-f0-9]*)[ \t]*[in]*[ \t]*([^( \t]+)[ \t]+(\\([^)]*\\))"));
 static wxRegEx reBT2(_T("\\)[ \t]+[atfrom]+[ \t]+(.*):([0-9]+)"));
 static wxRegEx reBT3(_T("\\)[ \t]+[atfrom]+[ \t]+(.*)"));
+// Breakpoint 1 at 0x4013d6: file main.cpp, line 8.
+static wxRegEx reBreakpoint(_T("Breakpoint ([0-9]+) at (0x[0-9A-Fa-f]+)"));
+// eax            0x40e66666       1088841318
+static wxRegEx reRegisters(_T("([A-z0-9]+)[ \t]+(0x[0-9A-z]+)"));
+// 0x00401390 <main+0>:	push   ebp
+static wxRegEx reDisassembly(_T("(0x[0-9A-Za-z]+)[ \t]+<.*>:[ \t]+(.*)"));
+//Stack level 0, frame at 0x22ff80:
+// eip = 0x401497 in main (main.cpp:16); saved eip 0x4011e7
+// source language c++.
+// Arglist at 0x22ff78, args: argc=1, argv=0x3e3cb0
+// Locals at 0x22ff78, Previous frame's sp is 0x22ff80
+// Saved registers:
+//  ebx at 0x22ff6c, ebp at 0x22ff78, esi at 0x22ff70, edi at 0x22ff74, eip at 0x22ff7c
+static wxRegEx reDisassemblyInit(_T("^Stack level [0-9]+, frame at (0x[A-Fa-f0-9]+):"));
+static wxRegEx reDisassemblyInitFunc(_T("eip = (0x[A-Fa-f0-9]+) in ([^;]*)"));
 
 // convenience function
 wxString ParseWXStringOutput(const wxString& output)
@@ -249,15 +264,14 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
             // Breakpoint 1 at 0x4013d6: file main.cpp, line 8.
             // No line 100 in file "main.cpp".
             // No source file named main2.cpp.
-            wxRegEx re(_T("Breakpoint ([0-9]+) at (0x[0-9A-Fa-f]+)"));
-            if (re.Matches(output))
+            if (reBreakpoint.Matches(output))
             {
 //                m_pDriver->DebugLog(wxString::Format(_("Breakpoint added: file %s, line %d"), m_BP->filename.c_str(), m_BP->line + 1));
                 if (!m_BP->func.IsEmpty())
                     m_pDriver->DebugLog(_("(work-around for constructors activated)"));
 
-                re.GetMatch(output, 1).ToLong(&m_BP->bpNum);
-                re.GetMatch(output, 2).ToULong(&m_BP->address, 16);
+                reBreakpoint.GetMatch(output, 1).ToLong(&m_BP->bpNum);
+                reBreakpoint.GetMatch(output, 2).ToULong(&m_BP->address, 16);
 
                 // conditional breakpoint
                 if (m_BP->useCondition && !m_BP->condition.IsEmpty())
@@ -555,6 +569,7 @@ class GdbCmd_Backtrace : public DebuggerCmd
         }
         void ParseOutput(const wxString& output)
         {
+            m_pDlg->Clear();
             wxArrayString lines = GetArrayFromString(output, _T('\n'));
     		for (unsigned int i = 0; i < lines.GetCount(); ++i)
     		{
@@ -626,13 +641,11 @@ class GdbCmd_InfoRegisters : public DebuggerCmd
             wxArrayString lines = GetArrayFromString(output, _T('\n'));
     		for (unsigned int i = 0; i < lines.GetCount(); ++i)
     		{
-                // eax            0x40e66666       1088841318
-                wxRegEx re(_T("([A-Za-z0-9]+)[ \t]+(0x[0-9A-Za-z]+)"));
-                if (re.Matches(lines[i]))
+                if (reRegisters.Matches(lines[i]))
                 {
                     long int addr;
-                    re.GetMatch(lines[i], 2).ToLong(&addr, 16);
-                    m_pDlg->SetRegisterValue(CPURegistersDlg::RegisterIndexFromName(re.GetMatch(lines[i], 1)), addr);
+                    reRegisters.GetMatch(lines[i], 2).ToLong(&addr, 16);
+                    m_pDlg->SetRegisterValue(CPURegistersDlg::RegisterIndexFromName(reRegisters.GetMatch(lines[i], 1)), addr);
                 }
     		}
 //            m_pDlg->Show(true);
@@ -669,13 +682,11 @@ class GdbCmd_Disassembly : public DebuggerCmd
             wxArrayString lines = GetArrayFromString(output, _T('\n'));
     		for (unsigned int i = 0; i < lines.GetCount(); ++i)
     		{
-                // 0x00401390 <main+0>:	push   ebp
-                wxRegEx re(_T("(0x[0-9A-Za-z]+)[ \t]+<.*>:[ \t]+(.*)"));
-                if (re.Matches(lines[i]))
+                if (reDisassembly.Matches(lines[i]))
                 {
                     long int addr;
-                    re.GetMatch(lines[i], 1).ToLong(&addr, 16);
-                    m_pDlg->AddAssemblerLine(addr, re.GetMatch(lines[i], 2));
+                    reDisassembly.GetMatch(lines[i], 1).ToLong(&addr, 16);
+                    m_pDlg->AddAssemblerLine(addr, reDisassembly.GetMatch(lines[i], 2));
                 }
     		}
 //            m_pDlg->Show(true);
@@ -700,32 +711,23 @@ class GdbCmd_DisassemblyInit : public DebuggerCmd
         }
         void ParseOutput(const wxString& output)
         {
-            //Stack level 0, frame at 0x22ff80:
-            // eip = 0x401497 in main (main.cpp:16); saved eip 0x4011e7
-            // source language c++.
-            // Arglist at 0x22ff78, args: argc=1, argv=0x3e3cb0
-            // Locals at 0x22ff78, Previous frame's sp is 0x22ff80
-            // Saved registers:
-            //  ebx at 0x22ff6c, ebp at 0x22ff78, esi at 0x22ff70, edi at 0x22ff74, eip at 0x22ff7c
             if (!m_pDlg)
                 return;
 
-            wxRegEx re(_T("^Stack level [0-9]+, frame at (0x[A-Fa-f0-9]+):"));
-            if (re.Matches(output))
+            if (reDisassemblyInit.Matches(output))
             {
                 StackFrame sf;
-                wxString addr = re.GetMatch(output, 1);
+                wxString addr = reDisassemblyInit.GetMatch(output, 1);
                 if (addr == LastAddr)
                     return;
                 LastAddr = addr;
                 addr.ToLong((long int*)&sf.address, 16);
 
-                wxRegEx refunc(_T("eip = (0x[A-Fa-f0-9]+) in ([^;]*)"));
-                if (refunc.Matches(output))
+                if (reDisassemblyInitFunc.Matches(output))
                 {
-                    sf.function = refunc.GetMatch(output, 2);
+                    sf.function = reDisassemblyInitFunc.GetMatch(output, 2);
                     long int active;
-                    refunc.GetMatch(output, 1).ToLong(&active, 16);
+                    reDisassemblyInitFunc.GetMatch(output, 1).ToLong(&active, 16);
                     m_pDlg->SetActiveAddress(active);
                 }
 

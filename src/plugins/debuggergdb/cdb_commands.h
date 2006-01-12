@@ -11,6 +11,18 @@
 #include "debuggertree.h"
 #include "backtracedlg.h"
 
+static wxRegEx reWatch(_T("(\\+0x[A-Fa-f0-9]+ )"));
+static wxRegEx reBT1(_T("([0-9]+) ([A-Fa-f0-9]+) ([A-Fa-f0-9]+) ([^[]*)"));
+static wxRegEx reBT2(_T("\\[([A-z]:)(.*) @ ([0-9]+)\\]"));
+//    15 00401020 55               push    ebp
+//    61 004010f9 ff15dcc24000  call dword ptr [Win32GUI!_imp__GetMessageA (0040c2dc)]
+//    71 0040111f c21000           ret     0x10
+static wxRegEx reDisassembly(_T("^[0-9]+[ \t]+([A-Fa-f0-9]+)[ \t]+[A-Fa-f0-9]+[ \t]+(.*)$"));
+//  # ChildEBP RetAddr
+// 00 0012fe98 00401426 Win32GUI!WinMain+0x89 [c:\devel\tmp\win32 test\main.cpp @ 55]
+static wxRegEx reDisassemblyFile(_T("[0-9]+[ \t]+([A-Fa-f0-9]+)[ \t]+[A-Fa-f0-9]+[ \t]+(.*)\\[([A-z]:)(.*) @ ([0-9]+)\\]"));
+static wxRegEx reDisassemblyFunc(_T("^\\(([A-Fa-f0-9]+)\\)[ \t]+"));
+
 /**
   * Command to add a search directory for source files in debugger's paths.
   */
@@ -294,10 +306,9 @@ class CdbCmd_Watch : public DebuggerCmd
 //             "CodeBlocksWindowsApp"
 
             // just remove struct offsets
-            wxRegEx re(_T("(\\+0x[A-Fa-f0-9]+ )"));
             wxString lines = output;
-            if (re.Matches(lines))
-                re.ReplaceAll(&lines, wxEmptyString);
+            if (reWatch.Matches(lines))
+                reWatch.ReplaceAll(&lines, wxEmptyString);
 
             // replace : with =
             while (lines.Replace(_T(" : "), _T(" = ")))
@@ -381,27 +392,25 @@ class CdbCmd_Backtrace : public DebuggerCmd
             // so we have a two-steps process:
             // 1) Get match for the second version (without file/line info)
             // 2) See if we have file/line info and read it
+            m_pDlg->Clear();
             wxArrayString lines = GetArrayFromString(output, _T('\n'));
             if (!lines.GetCount() || !lines[0].Contains(_T("ChildEBP")))
                 return;
             // start from line 1
     		for (unsigned int i = 1; i < lines.GetCount(); ++i)
     		{
-                wxRegEx re1(_T("([0-9]+) ([A-Fa-f0-9]+) ([A-Fa-f0-9]+) ([^[]*)"));
-//                wxRegEx ref(_T("\\[([A-Za-z]:)([ A-Za-z0-9_/\\.~-]*) @ ([0-9]+)\\]"));
-    		    if (re1.Matches(lines[i]))
+    		    if (reBT1.Matches(lines[i]))
     		    {
                     StackFrame sf;
                     sf.valid = true;
-    		        re1.GetMatch(lines[i], 1).ToLong(&sf.number);
-    		        re1.GetMatch(lines[i], 2).ToULong(&sf.address, 16); // match 2 or 3 ???
-    		        sf.function = re1.GetMatch(lines[i], 4);
+    		        reBT1.GetMatch(lines[i], 1).ToLong(&sf.number);
+    		        reBT1.GetMatch(lines[i], 2).ToULong(&sf.address, 16); // match 2 or 3 ???
+    		        sf.function = reBT1.GetMatch(lines[i], 4);
     		        // do we have file/line info?
-                    wxRegEx re2(_T("\\[([A-Za-z]:)([ A-Za-z0-9_/\\.~-]*) @ ([0-9]+)\\]"));
-                    if (re2.Matches(lines[i]))
+                    if (reBT2.Matches(lines[i]))
                     {
-                        sf.file = re2.GetMatch(lines[i], 1) + re2.GetMatch(lines[i], 2);
-                        sf.line = re2.GetMatch(lines[i], 3);
+                        sf.file = reBT2.GetMatch(lines[i], 1) + reBT2.GetMatch(lines[i], 2);
+                        sf.line = reBT2.GetMatch(lines[i], 3);
                     }
                     m_pDlg->AddFrame(sf);
     		    }
@@ -483,15 +492,11 @@ class CdbCmd_Disassembly : public DebuggerCmd
             wxArrayString lines = GetArrayFromString(output, _T('\n'));
     		for (unsigned int i = 0; i < lines.GetCount(); ++i)
     		{
-                //    15 00401020 55               push    ebp
-                //    61 004010f9 ff15dcc24000  call dword ptr [Win32GUI!_imp__GetMessageA (0040c2dc)]
-                //    71 0040111f c21000           ret     0x10
-                wxRegEx re(_T("^[0-9]+[ \t]+([A-Fa-f0-9]+)[ \t]+[A-Fa-f0-9]+[ \t]+(.*)$"));
-                if (re.Matches(lines[i]))
+                if (reDisassembly.Matches(lines[i]))
                 {
                     long int addr;
-                    re.GetMatch(lines[i], 1).ToLong(&addr, 16);
-                    m_pDlg->AddAssemblerLine(addr, re.GetMatch(lines[i], 2));
+                    reDisassembly.GetMatch(lines[i], 1).ToLong(&addr, 16);
+                    m_pDlg->AddAssemblerLine(addr, reDisassembly.GetMatch(lines[i], 2));
                 }
     		}
 //            m_pDlg->Show(true);
@@ -523,18 +528,15 @@ class CdbCmd_DisassemblyInit : public DebuggerCmd
             wxArrayString lines = GetArrayFromString(output, _T('\n'));
     		for (unsigned int i = 0; i < lines.GetCount(); ++i)
     		{
-                //  # ChildEBP RetAddr
-                // 00 0012fe98 00401426 Win32GUI!WinMain+0x89 [c:\devel\tmp\win32 test\main.cpp @ 55]
                 if (lines[i].Contains(_T("ChildEBP")))
                 {
-                    wxRegEx ref(_T("[0-9]+[ \t]+([A-Fa-f0-9]+)[ \t]+[A-Fa-f0-9]+[ \t]+(.*)\\[([A-Za-z]:)([ A-Za-z0-9_/\\.~-]*) @ ([0-9]+)\\]"));
-                    if (ref.Matches(lines[i + 1]))
+                    if (reDisassemblyFile.Matches(lines[i + 1]))
                     {
                         ++i; // we 're interested in the next line
 
                         StackFrame sf;
-                        wxString addr = ref.GetMatch(lines[i], 1);
-                        sf.function = ref.GetMatch(lines[i], 2);
+                        wxString addr = reDisassemblyFile.GetMatch(lines[i], 1);
+                        sf.function = reDisassemblyFile.GetMatch(lines[i], 2);
                         wxString offsetStr = sf.function.AfterLast(_T('+'));
                         if (!offsetStr.IsEmpty())
                             offsetStr.ToLong(&offset, 16);
@@ -553,11 +555,10 @@ class CdbCmd_DisassemblyInit : public DebuggerCmd
                 else
                 {
                     m_pDriver->Log(_T("Checking for current function start"));
-                    wxRegEx re(_T("^\\(([A-Fa-f0-9]+)\\)[ \t]+"));
-                    if (re.Matches(lines[i]))
+                    if (reDisassemblyFunc.Matches(lines[i]))
                     {
                         long int start;
-                        re.GetMatch(lines[i], 1).ToLong(&start, 16);
+                        reDisassemblyFunc.GetMatch(lines[i], 1).ToLong(&start, 16);
                         m_pDlg->SetActiveAddress(start + offset);
                     }
                 }

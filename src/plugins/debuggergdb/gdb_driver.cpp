@@ -6,6 +6,13 @@
 
 #define GDB_PROMPT _T("(gdb)")
 
+static wxRegEx reBreak2(_T("^(0x[A-z0-9]+) in (.*) from (.*)"));
+#ifdef __WXMSW__
+    static wxRegEx reBreak(_T("([A-z]:)([^:]+):([0-9]+):[0-9]+:[begmidl]+:(0x[0-9A-z]+)"));
+#else
+    static wxRegEx reBreak(_T("([^:]+):([0-9]+):[0-9]+:[begmidl]+:(0x[0-9A-z]+)"));
+#endif
+
 GDB_driver::GDB_driver(DebuggerGDB* plugin)
     : DebuggerDriver(plugin)
 {
@@ -212,8 +219,8 @@ void GDB_driver::ParseOutput(const wxString& output)
 //            Log(_T("Command parsing output: ") + buffer.Left(idx));
             RemoveTopCommand(false);
             buffer.Remove(idx);
-            if (buffer[buffer.Length() - 1] == _T('\n'))
-                buffer.Remove(buffer.Length() - 1);
+            if (buffer.Last() == _T('\n'))
+                buffer.RemoveLast();
             cmd->ParseOutput(buffer.Left(idx));
             delete cmd;
             RunQueue();
@@ -260,10 +267,21 @@ void GDB_driver::ParseOutput(const wxString& output)
         {
             Log(lines[i]);
             m_pDBG->BringAppToFront();
-            if (wxMessageBox(wxString::Format(_("%s\nDo you want to view the backtrace?"), lines[i].c_str()), _("Question"), wxICON_QUESTION | wxYES_NO) == wxYES)
+            if (IsWindowReallyShown(m_pBacktrace))
             {
-                Backtrace();
+                // don't ask; it's already shown
+                // just grab the user's attention
+                wxMessageBox(lines[i], _("Signal received"), wxICON_ERROR);
             }
+            else if (wxMessageBox(wxString::Format(_("%s\nDo you want to view the backtrace?"), lines[i].c_str()), _("Signal received"), wxICON_ERROR | wxYES_NO) == wxYES)
+            {
+                // show the backtrace window
+                CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
+                evt.pWindow = m_pBacktrace;
+                Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+            }
+            // the backtrace will be generated when NotifyPlugins() is called
+            // and only if the backtrace window is shown
         }
 
         // pending breakpoint resolved?
@@ -277,25 +295,19 @@ void GDB_driver::ParseOutput(const wxString& output)
         // cursor change
         else if (lines[i].StartsWith(g_EscapeChars)) // ->->
         {
-            //  breakpoint
-            wxRegEx reSource;
-			if (!reSource.IsValid())
-			#ifdef __WXMSW__
-				reSource.Compile(_T("([A-Za-z]:)([ A-Za-z0-9_/\\.~-]*):([0-9]*):[0-9]*:[begmidl]+:(0x[0-9A-Za-z]*)"));
-			#else
-				reSource.Compile(_T("([ A-Za-z0-9_/\\.~-]*):([0-9]*):[0-9]*:[begmidl]+:(0x[0-9A-Za-z]*)"));
-			#endif
-			if ( reSource.Matches(lines[i]) )
+            // breakpoint, e.g.
+            // C:/Devel/tmp/test_console_dbg/tmp/main.cpp:14:171:beg:0x401428
+			if ( reBreak.Matches(lines[i]) )
 			{
                 m_ProgramIsStopped = true;
 			#ifdef __WXMSW__
-				m_Cursor.file = reSource.GetMatch(lines[i], 1) + reSource.GetMatch(lines[i], 2);
-				wxString lineStr = reSource.GetMatch(lines[i], 3);
-				m_Cursor.address = reSource.GetMatch(lines[i], 4);
+				m_Cursor.file = reBreak.GetMatch(lines[i], 1) + reBreak.GetMatch(lines[i], 2);
+				wxString lineStr = reBreak.GetMatch(lines[i], 3);
+				m_Cursor.address = reBreak.GetMatch(lines[i], 4);
             #else
-				m_Cursor.file = reSource.GetMatch(lines[i], 1);
-				wxString lineStr = reSource.GetMatch(lines[i], 2);
-				m_Cursor.address = reSource.GetMatch(lines[i], 3);
+				m_Cursor.file = reBreak.GetMatch(lines[i], 1);
+				wxString lineStr = reBreak.GetMatch(lines[i], 2);
+				m_Cursor.address = reBreak.GetMatch(lines[i], 3);
             #endif
 				lineStr.ToLong(&m_Cursor.line);
                 m_Cursor.changed = true;
@@ -304,18 +316,16 @@ void GDB_driver::ParseOutput(const wxString& output)
         }
         else
         {
+            // other break info, e.g.
             // 0x7c9507a8 in ntdll!KiIntSystemCall () from C:\WINDOWS\system32\ntdll.dll
-
-            // other break info
-            wxRegEx re(_T("^(0x[A-z0-9]+) in (.*) from (.*)"));
-			if ( re.Matches(lines[i]) )
+			if ( reBreak2.Matches(lines[i]) )
 			{
                 m_ProgramIsStopped = true;
 
-				m_Cursor.file = re.GetMatch(lines[i], 3);
-				m_Cursor.function = re.GetMatch(lines[i], 2);
+				m_Cursor.file = reBreak2.GetMatch(lines[i], 3);
+				m_Cursor.function = reBreak2.GetMatch(lines[i], 2);
 				wxString lineStr = _T("");
-				m_Cursor.address = re.GetMatch(lines[i], 1);
+				m_Cursor.address = reBreak2.GetMatch(lines[i], 1);
 				m_Cursor.line = -1;
                 m_Cursor.changed = true;
                 NotifyCursorChanged();
