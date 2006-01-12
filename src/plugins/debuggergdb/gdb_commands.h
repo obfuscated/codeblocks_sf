@@ -35,6 +35,9 @@ static wxRegEx reDisassembly(_T("(0x[0-9A-Za-z]+)[ \t]+<.*>:[ \t]+(.*)"));
 //  ebx at 0x22ff6c, ebp at 0x22ff78, esi at 0x22ff70, edi at 0x22ff74, eip at 0x22ff7c
 static wxRegEx reDisassemblyInit(_T("^Stack level [0-9]+, frame at (0x[A-Fa-f0-9]+):"));
 static wxRegEx reDisassemblyInitFunc(_T("eip = (0x[A-Fa-f0-9]+) in ([^;]*)"));
+// wxString and wxChar types regexes
+static wxRegEx reWXString(_T("[^[:alnum:]_]*wxString[^[:alnum:]_]*"));
+static wxRegEx reWXChar(_T("[^[:alnum:]_]*wxChar[^[:alnum:]_]*"));
 
 // convenience function
 wxString ParseWXStringOutput(const wxString& output)
@@ -457,15 +460,10 @@ class GdbCmd_FindWatchType : public DebuggerCmd
             // type = bool
 
             wxString tmp = output.AfterFirst(_T('='));
-            tmp.Trim(false);
-            tmp.Trim(true);
-            if (!tmp.IsEmpty())
-            {
-                if (tmp.IsSameAs(_T("wxString")))
-                    m_pWatch->format = cbWXString;
-                else if (tmp.Contains(_T("wxChar")))
-                    m_pWatch->format = Char;
-            }
+            if (reWXString.Matches(tmp))
+                m_pWatch->format = cbWXString;
+            else if (reWXChar.Matches(tmp))
+                m_pWatch->format = Char;
             // in any case, actually add this watch with high priority
             m_pDriver->QueueCommand(new GdbCmd_Watch(m_pDriver, m_pDTree, m_pWatch), DebuggerDriver::High);
         }
@@ -545,9 +543,7 @@ class GdbCmd_FindTooltipType : public DebuggerCmd
             wxString tmp = output.AfterFirst(_T('='));
             tmp.Trim(false);
             tmp.Trim(true);
-            bool isWXString = false;
-            if (!tmp.IsEmpty())
-                isWXString = tmp.IsSameAs(_T("wxString"));
+            bool isWXString = reWXString.Matches(tmp);
             // in any case, actually add this watch with high priority
             m_pDriver->QueueCommand(new GdbCmd_TooltipEvaluation(m_pDriver, m_What, m_pWin, m_WinRect, isWXString), DebuggerDriver::High);
         }
