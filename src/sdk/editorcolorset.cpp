@@ -355,6 +355,8 @@ void EditorColorSet::Apply(cbEditor* editor)
 
 void EditorColorSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control)
 {
+    if (lang == HL_NONE || !control)
+        return;
 	control->StyleClearAll();
 
     // first load the default colors to all styles (ignoring some built-in styles)
