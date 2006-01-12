@@ -5,6 +5,12 @@
 #include <settings.h>
 #include "parser/parser.h"
 
+#ifdef __WXMSW__
+    #define USE_CUST_CTRL true
+#else
+    #define USE_CUST_CTRL false
+#endif
+
 class CCOptionsDlg : public wxDialog
 {
 	public:

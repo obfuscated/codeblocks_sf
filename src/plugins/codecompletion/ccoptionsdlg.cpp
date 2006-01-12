@@ -97,6 +97,7 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent)
 	XRCCTRL(*this, "chkNoCC", wxCheckBox)->SetValue(!cfg->ReadBool(_T("/use_code_completion"), true));
 	XRCCTRL(*this, "chkSimpleMode", wxCheckBox)->SetValue(!m_Parser.Options().useSmartSense);
 	XRCCTRL(*this, "chkCaseSensitive", wxCheckBox)->SetValue(m_Parser.Options().caseSensitive);
+	XRCCTRL(*this, "chkCustomList", wxCheckBox)->SetValue(cfg->ReadBool(_T("/use_custom_control"), USE_CUST_CTRL));
 	XRCCTRL(*this, "chkInheritance", wxCheckBox)->SetValue(m_Parser.ClassBrowserOptions().showInheritance);
 	XRCCTRL(*this, "cmbCBView", wxComboBox)->SetSelection(m_Parser.ClassBrowserOptions().viewFlat ? 0 : 1);
 	XRCCTRL(*this, "chkUseCache", wxCheckBox)->SetValue(cfg->ReadBool(_T("/use_cache"), false));
@@ -158,21 +159,24 @@ void CCOptionsDlg::OnSliderScroll(wxScrollEvent& event)
 
 void CCOptionsDlg::OnOK(wxCommandEvent& event)
 {
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
+
 	m_Parser.Options().followLocalIncludes = XRCCTRL(*this, "chkLocals", wxCheckBox)->GetValue();
 	m_Parser.Options().followGlobalIncludes = XRCCTRL(*this, "chkGlobals", wxCheckBox)->GetValue();
 	m_Parser.Options().wantPreprocessor = XRCCTRL(*this, "chkPreprocessor", wxCheckBox)->GetValue();
 	m_Parser.Options().caseSensitive = XRCCTRL(*this, "chkCaseSensitive", wxCheckBox)->GetValue();
-	Manager::Get()->GetConfigManager(_T("code_completion"))->Write(_T("/use_code_completion"), !XRCCTRL(*this, "chkNoCC", wxCheckBox)->GetValue());
+	cfg->Write(_T("/use_custom_control"), XRCCTRL(*this, "chkCustomList", wxCheckBox)->GetValue());
+	cfg->Write(_T("/use_code_completion"), !XRCCTRL(*this, "chkNoCC", wxCheckBox)->GetValue());
 	m_Parser.Options().useSmartSense = !XRCCTRL(*this, "chkSimpleMode", wxCheckBox)->GetValue();
 	m_Parser.ClassBrowserOptions().showInheritance = XRCCTRL(*this, "chkInheritance", wxCheckBox)->GetValue();
 	m_Parser.ClassBrowserOptions().viewFlat = XRCCTRL(*this, "cmbCBView", wxComboBox)->GetSelection() == 0;
 	m_Parser.WriteOptions();
 
-	Manager::Get()->GetConfigManager(_T("code_completion"))->Write(_T("/use_cache"), XRCCTRL(*this, "chkUseCache", wxCheckBox)->GetValue());
-	Manager::Get()->GetConfigManager(_T("code_completion"))->Write(_T("/update_cache_always"), XRCCTRL(*this, "chkAlwaysUpdateCache", wxCheckBox)->GetValue());
-	Manager::Get()->GetConfigManager(_T("code_completion"))->Write(_T("/show_cache_progress"), XRCCTRL(*this, "chkShowCacheProgress", wxCheckBox)->GetValue());
+	cfg->Write(_T("/use_cache"), XRCCTRL(*this, "chkUseCache", wxCheckBox)->GetValue());
+	cfg->Write(_T("/update_cache_always"), XRCCTRL(*this, "chkAlwaysUpdateCache", wxCheckBox)->GetValue());
+	cfg->Write(_T("/show_cache_progress"), XRCCTRL(*this, "chkShowCacheProgress", wxCheckBox)->GetValue());
 
-    Manager::Get()->GetConfigManager(_T("code_completion"))->Write(_T("/color"), XRCCTRL(*this, "btnColor", wxButton)->GetBackgroundColour().Red());
+    cfg->Write(_T("/color"), XRCCTRL(*this, "btnColor", wxButton)->GetBackgroundColour().Red());
 
 	int timerDelay = XRCCTRL(*this, "sliderDelay", wxSlider)->GetValue() * 100;
 	Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("/cc_delay"), timerDelay);

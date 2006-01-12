@@ -265,6 +265,36 @@ void CodeCompletion::OnRelease(bool appShutDown)
 		m_SearchMenu->Delete(idMenuGotoFunction);
 }
 
+static int SortCCList(const wxString& first, const wxString& second)
+{
+    const wxChar* a = first.c_str();
+    const wxChar* b = second.c_str();
+	while (*a && *b)
+	{
+		if (*a != *b)
+        {
+            if (*a == _T('?') && *b != _T('?'))
+                return -1;
+            else if (*a != _T('?') && *b == _T('?'))
+                return 1;
+            else if (*a == _T('?') && *b == _T('?'))
+                return 0;
+            if (*a == _T('_') && *b != _T('_'))
+                return 1;
+            else if (*a != _T('_') && *b == _T('_'))
+                return -1;
+            wxChar lowerA = wxTolower(*a);
+            wxChar lowerB = wxTolower(*b);
+            if (lowerA != lowerB)
+                return lowerA - lowerB;
+        }
+		a++;
+		b++;
+	}
+	// Either *a or *b is null
+	return *a - *b;
+}
+
 int CodeCompletion::CodeComplete()
 {
 	if (!m_IsAttached)
@@ -290,8 +320,59 @@ int CodeCompletion::CodeComplete()
 
     if (m_NativeParsers.MarkItemsByAI(parser->Options().useSmartSense))
     {
-        CCList::Free(); // free any previously open cc list
-        CCList::Get(this, ed->GetControl(), parser)->Show();
+        if (Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("/use_custom_control"), USE_CUST_CTRL))
+        {
+            CCList::Free(); // free any previously open cc list
+            CCList::Get(this, ed->GetControl(), parser)->Show();
+        }
+        else
+        {
+            Manager::Get()->GetMessageManager()->DebugLog(_("Generating tokens list"));
+            int pos = ed->GetControl()->GetCurrentPos();
+            int start = ed->GetControl()->WordStartPosition(pos, true);
+
+            wxImageList* ilist = parser->GetImageList();
+            ed->GetControl()->ClearRegisteredImages();
+            wxArrayInt already_registered;
+            wxArrayString items;
+            TokensTree* tokens = parser->GetTokens();
+            for (size_t i = 0; i < tokens->size(); ++i)
+            {
+                Token* token = tokens->at(i);
+                if (!token || token->m_Name.IsEmpty())
+                    continue;
+                if (token->m_Bool)
+                {
+                    int iidx = parser->GetTokenKindImage(token);
+                    if (already_registered.Index(iidx) == wxNOT_FOUND)
+                    {
+                        ed->GetControl()->RegisterImage(iidx, ilist->GetBitmap(iidx));
+                        already_registered.Add(iidx);
+                    }
+                    wxString tmp;
+                    tmp << token->m_Name << wxString::Format(_T("?%d"), iidx);
+                    items.Add(tmp);
+                    token->m_Bool = false; // reset flag for next run
+                }
+            }
+
+            bool caseSens = parser ? parser->Options().caseSensitive : false;
+            if (caseSens)
+                items.Sort();
+            else
+                items.Sort(SortCCList);
+            Manager::Get()->GetMessageManager()->DebugLog(_("Done generating tokens list"));
+
+            ed->GetControl()->AutoCompSetIgnoreCase(!caseSens);
+            ed->GetControl()->AutoCompSetCancelAtStart(true);
+            ed->GetControl()->AutoCompSetFillUps(_T(">.;([="));
+            ed->GetControl()->AutoCompSetChooseSingle(true);
+            ed->GetControl()->AutoCompSetAutoHide(true);
+            ed->GetControl()->AutoCompSetDropRestOfWord(true);
+            wxString final = GetStringFromArray(items, _T(" "));
+            final.RemoveLast(); // remove last space
+            ed->GetControl()->AutoCompShow(pos - start, final);
+        }
         return 0;
     }
 	return -5;
