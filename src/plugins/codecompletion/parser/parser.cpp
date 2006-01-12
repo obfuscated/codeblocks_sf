@@ -453,7 +453,7 @@ bool Parser::ParseBufferForFunctions(const wxString& buffer)
 											wxEmptyString,
 											false,
 											opts,
-											m_pTokens);
+											m_pTempTokens);
 	return thread->ParseBufferForFunctions(buffer);
 }
 
