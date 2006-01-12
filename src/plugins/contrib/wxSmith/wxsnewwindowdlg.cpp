@@ -69,10 +69,7 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
     // Need to do some checks
 
     // First - validating name
-    const wxChar* ClassName = Class->GetValue().c_str();
-
-
-    if ( !wxsValidateIdentifier(ClassName) )
+    if ( !wxsValidateIdentifier(Class->GetValue()) )
     {
         wxMessageBox(_("Invalid class name"));
         return;
@@ -170,8 +167,16 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
         return;
     }
 
-    // Adding new files
+    // Updating content of resource
+    if ( !PrepareResource(NewWindow) )
+    {
+        delete NewWindow;
+        Close();
+        return;
+    }
+    NewWindow->Save();
 
+    // Adding new files to project
     wxArrayInt targets;
     Manager::Get()->GetProjectManager()->AddFileToProject(Header->GetValue(), Proj->GetCBProject(), targets);
     if (targets.GetCount() != 0)
@@ -180,14 +185,7 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
     }
     Manager::Get()->GetProjectManager()->RebuildTree();
 
-    if ( !PrepareResource(NewWindow) )
-    {
-        delete NewWindow;
-        Close();
-    }
-
     // Adding dialog to project and opening editor for it
-
     if ( Type == _T("Dialog") )
     {
         Proj->AddDialog((wxsDialogRes*)NewWindow);
@@ -202,7 +200,6 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
     }
 
     wxsSelectRes(NewWindow);
-    NewWindow->NotifyChange();
     Close();
 }
 

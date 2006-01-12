@@ -16,7 +16,7 @@ void wxsBlockSelectEvents(bool Block)
     else         wxsBlockSelectEventsCnt--;
 
     if ( wxsBlockSelectEventsCnt < 0 ) DBGLOG(_T("wxSmith: called unmatched wxsBlockSelectEvents(false)"));
-    if ( wxsBlockSelectEventsCnt > 1 ) DBGLOG(_T("wxSmith: recursive wxsBlockSelectEvents(true) call"));
+//    if ( wxsBlockSelectEventsCnt > 1 ) DBGLOG(_T("wxSmith: recursive wxsBlockSelectEvents(true) call"));
 }
 
 void wxsSelectWidget(wxsWidget* Widget)

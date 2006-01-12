@@ -204,7 +204,7 @@ void wxsWindowRes::Save()
         delete Doc;
     }
 
-    GetEditor()->SetModified(false);
+    if ( GetEditor() ) GetEditor()->SetModified(false);
 }
 
 TiXmlDocument* wxsWindowRes::GenerateXml()

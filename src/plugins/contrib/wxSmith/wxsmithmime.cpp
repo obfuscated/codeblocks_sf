@@ -118,6 +118,7 @@ int wxSmithMime::OpenFile(const wxString& FileName)
     else if ( FN.GetExt().Upper() == _T("XRC") )
     {
         wxsEXTRES()->OpenXrc(FileName);
+        return 0;
     }
     
     return 1;
