@@ -2,12 +2,6 @@
 <!DOCTYPE Code::Blocks_template_file>
 <Code::Blocks_template_file>
 	<Template name="wxWidgets" title="wxWidgets Application" category="GUI" bitmap="wxwidgets.png">
-		<Notice value="This template expects wxWidgets to be located at C:\wxWidgets-2.6.2.
-						If this is not the case, you will have to update the relevant 
-						custom variable accordingly.
-						
-						To do this, click on &quot;Project->Build options->Custom variables&quot;"
-				isWarning="1"/>
 		<FileSet name="s" title="No header file">
 			<File source="wx-main-s.cpp" destination="main.cpp"/>
 			<File source="wx_pch.h" destination="wx_pch.h"/>
