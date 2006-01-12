@@ -383,7 +383,7 @@ EditorBase* EditorManager::InternalGetEditorBase(int page)
 
 cbEditor* EditorManager::InternalGetBuiltinEditor(int page)
 {
-    EditorBase* eb = static_cast<EditorBase*>(m_pNotebook->GetPage(page));
+    EditorBase* eb = InternalGetEditorBase(page);
     if (eb && eb->IsBuiltinEditor())
         return (cbEditor*)eb;
     return 0;

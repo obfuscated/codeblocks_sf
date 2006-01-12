@@ -27,22 +27,25 @@
 #pragma warning(pop)
 #endif
 
+
 #include <wx/dcbuffer.h>
 #include <wx/dataobj.h>
 #include <wx/dnd.h>
 
-#include "TextDropTarget.h"
+//#include "textdroptarget.h"
+#include "wxFNBDropTarget.h"
 class wxPageContainer;
 
 #ifndef M_PI
 #define M_PI 3.14159265358979
 #endif
 
+
 typedef std::vector<wxBitmap> wxFlatNotebookImageList;
 
 
 ///  wxFlatNotebook styles
-#define wxFNB_DEFAULT_STYLE				wxFNB_MOUSE_MIDDLE_CLOSES_TABS | wxFNB_BORDER //| wxFNB_TOP
+#define wxFNB_DEFAULT_STYLE				wxFNB_MOUSE_MIDDLE_CLOSES_TABS | wxFNB_BORDER
 
 /// Use Visual Studio 2003 (VC7.1) Style for tabs
 #define wxFNB_VC71						1
@@ -66,6 +69,9 @@ typedef std::vector<wxBitmap> wxFlatNotebookImageList;
 /// at top
 #define wxFNB_BOTTOM					64
 
+/// Allow drag'n'drop between different wxFlatNotebooks
+#define wxFNB_ALLOW_FOREIGN_DND			128
+
 class wxMenu;
 
 /**
@@ -75,6 +81,7 @@ class wxMenu;
 class wxFlatNotebook : public wxPanel
 {
 private:
+
 	friend class wxPageContainer;
 
 public:
@@ -141,11 +148,11 @@ public:
 	\param page - page index
 	*/
 	wxWindow * GetPage(size_t page) const;
-	/// Returns the page index of the window object.
+    /// Returns the page index of the window object.
 	/**
-	\param win - window object
-	*/
-	int GetPageIndex(wxWindow* win) const;
+    \param win - window object
+    */
+    int GetPageIndex(wxWindow* win) const;
 
 	/// Returns the currently visible/selected notebook page 0 based index.
 	int GetSelection() const;
@@ -196,9 +203,6 @@ public:
 	void SetBookStyle(long style);
 
 	/// Query the current book style
-	/**
-	\param None
-	*/
 	long GetBookStyle();
 
 	/// Sets a right click menu to the notebook
@@ -254,20 +258,47 @@ public:
 	/// Returns an image list object associated with wxFlatNotebook
 	wxFlatNotebookImageList * GetImageList();
 
+	/**
+	* \brief Drop event handler, to be passed as function pointer to CTextDropTarget class.
+	* \param x X coordinate where the drop take place
+	* \param y Y coordinate where the drop take place
+	* \param nTabPage page index
+	* \param wnd_oldContainer pointer to wxPageContainer object that contained dragged page
+	* \return Drag operation identifier
+	*/
+	wxDragResult OnDropTarget(wxCoord x, wxCoord y, int nTabPage, wxWindow * wnd_oldContainer);
+
+	/// Enable / Disable page
+	/**
+	\param page - page to enable/diable
+	\param enabled - set to true to enable the tab, false otherwise
+	*/
+	void Enable(size_t page, bool enabled);
+
+	/// Return Returns true if if the page is enabled
+	/**
+	\param page - page index
+	*/
+	bool GetEnabled(size_t page);
+
 private:
+	/// Internal flag to force selection of page,
+	/// even if this page is disabled.
+	/// used incase such that the book itself need to update its selection.
+	/// e.g. after DeletePage()
+	bool m_bForceSelection;
+
 	wxBoxSizer* m_mainSizer;
 	wxPageContainer *m_pages;
 	/// vector of all the windows associated with the notebook pages.
 	std::vector<wxWindow*> m_windows;
+	wxFNBDropTarget<wxFlatNotebook> *m_pDropTarget;
 	int m_nFrom;
 	int m_nPadding;
 
 	DECLARE_DYNAMIC_CLASS(wxFlatNotebook)
 	DECLARE_EVENT_TABLE()
 	void OnNavigationKey(wxNavigationKeyEvent& event);
-	void OnPaint(wxPaintEvent& WXUNUSED(event));
-	void OnSize(wxSizeEvent& event);
-	void OnEraseBackground(wxEraseEvent& WXUNUSED(event)) { }
 };
 
 /**
@@ -287,17 +318,19 @@ public:
 	unsigned int m_TabAngle;
 	/// Page image index
 	int m_ImageIndex;
+	/// Page enable/disabled flag
+	bool m_bEnabled;
 public:
 
 	/// Default constructor
-	wxPageInfo(): m_strCaption(wxEmptyString), m_TabAngle(0), m_ImageIndex(-1){};
+	wxPageInfo(): m_strCaption(wxEmptyString), m_TabAngle(0), m_ImageIndex(-1), m_bEnabled(true){};
 	/// Parametrized constructor
 	/**
 	\param caption - page caption
 	\param imgindex - image index
 	*/
 	wxPageInfo(const wxString& caption, int imgindex) :
-	m_strCaption(caption), m_pos(-1, -1), m_size(-1, -1), m_TabAngle(0), m_ImageIndex(imgindex){}
+	m_strCaption(caption), m_pos(-1, -1), m_size(-1, -1), m_TabAngle(0), m_ImageIndex(imgindex), m_bEnabled(true){}
 	/// Destructor
 	~wxPageInfo(){};
 
@@ -344,6 +377,15 @@ public:
 
 	/// Returns an image index
 	int GetImageIndex() {return m_ImageIndex;}
+
+	/// Return true if the page is enabled
+	bool GetEnabled() { return m_bEnabled; }
+
+	/// Set the page enable/disable flag
+	/**
+	\param enabled - new page enable status
+	*/
+	void Enable(bool enabled) { m_bEnabled = enabled; }
 };
 
 /// Hit Test results
@@ -448,6 +490,20 @@ public:
 	*/
 	int GetPageImageIndex(size_t page);
 
+	/// Enable / Disable page
+	/**
+	\param page - page to enable/diable
+	\param enabled - set to true to enable the tab, false otherwise
+	*/
+	void Enable(size_t page, bool enabled);
+
+	/// Return Returns true if if the page is enabled
+	/**
+	\param page - page index
+	*/
+	bool GetEnabled(size_t page);
+
+
 	DECLARE_EVENT_TABLE()
 	// Event handlers
 	void OnPaint(wxPaintEvent& event);
@@ -508,10 +564,11 @@ protected:
 	* \brief Drop event handler, to be passed as function pointer to CTextDropTarget class.
 	* \param x X coordinate where the drop take place
 	* \param y Y coordinate where the drop take place
-	* \param data Dropped text
-	* \return Boolean values indicating the drop was successful or not
+	* \param nTabPage page index
+	* \param wnd_oldContainer pointer to wxPageContainer object that contained dragged page
+	* \return Drag operation identifier
 	*/
-	bool OnTextDropTarget(wxCoord x, wxCoord y, const wxString& data);
+	wxDragResult OnDropTarget(wxCoord x, wxCoord y, int nTabPage, wxWindow * wnd_oldContainer);
 
 	/**
 	* \brief Moves the tab page from one location to another
@@ -535,7 +592,7 @@ private:
 	bool m_bHoverX, m_bHoverLeftArrow, m_bHoverRightArrow;
 
 	/// Drop target for enabling drag'n'drop of tabs
-	CTextDropTarget<wxPageContainer> *m_pDropTarget;
+	wxFNBDropTarget<wxPageContainer> *m_pDropTarget;
 
 	/// Tabs style
 	unsigned long m_nStyle;
@@ -609,6 +666,6 @@ typedef void (wxEvtHandler::*wxFlatNotebookEventFunction)(wxFlatNotebookEvent&);
 	wx__DECLARE_EVT1(wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CLOSING, winid, wxFlatNotebookEventHandler(fn))
 
 #define EVT_FLATNOTEBOOK_CONTEXT_MENU(winid, fn) \
-	wx__DECLARE_EVT1(wxEVT_COMMAND_FLATNOTEBOOK_CONTEXT_MENU, winid, wxFlatNotebookEventHandler(fn))
+        wx__DECLARE_EVT1(wxEVT_COMMAND_FLATNOTEBOOK_CONTEXT_MENU, winid, wxFlatNotebookEventHandler(fn))
 
 #endif // WXFLATNOTEBOOK_H

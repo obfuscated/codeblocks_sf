@@ -1225,7 +1225,7 @@
             <Option target="Debugger" />
         </Unit>
         <Unit filename="plugins\debuggergdb\resources\disassembly.xrc">
-            <Option compilerVar="" />
+            <Option compilerVar="CPP" />
             <Option compile="0" />
             <Option link="0" />
             <Option target="Debugger" />
@@ -2968,7 +2968,7 @@
             <Option link="0" />
             <Option target="sdk" />
         </Unit>
-        <Unit filename="sdk\wxFlatNotebook\TextDropTarget.h">
+        <Unit filename="sdk\wxFlatNotebook\wxFNBDropTarget.h">
             <Option compilerVar="CPP" />
             <Option compile="0" />
             <Option link="0" />
