@@ -197,6 +197,17 @@
 #define wxsDWDefStrArrayX(Name,XrcParentName,XrcChildName,PropName,Default,SortFlag) \
         evStrArray(Name,_T(#Name),_T(XrcParentName),_T(XrcChildName),_T(PropName),Default,SortFlag);
 
+// TODO (super##): Adopt code for AdvImageProperty
+
+#define wxsDWDefAdvImage(Name,PropName,Default)                     \
+        evImage(Name,_T(#Name),_T(#Name),_T(PropName),_T(Default));
+
+#define wxsDWDefAdvImageX(Name,XrcName,PropName,Default)                     \
+        evImage(Name,_T(#Name),_T(XrcName),_T(PropName),_T(Default));
+
+
+
+
 /** Macro finalizing definition of class handling one of default widgets
  */
 #define wxsDWDefineEnd()                                                    \
@@ -249,6 +260,7 @@ class wxsDefWidget: public wxsWidget
         void ev2Int(int& Val1,int& Val2,const wxString& XrcName,const wxString& Name,const wxString& PropName,int DefValue1,int DefValue2);
         void evStr(wxString& Val,const wxString& Name,const wxString& XrcName,const wxString& PropName,wxString DefValue,bool Long);
         void evStrArray(wxArrayString& Val,const wxString& Name,const wxString& XrcParentName,const wxString& XrcChildName,const wxString& PropName, int& DefValue,int SortFlag);
+        void evImage(wxString& Val,const wxString& Name,const wxString& XrcName,const wxString& PropName,wxString DefValue);
 
         virtual void BuildExtVars() = 0;
         virtual wxString GetGeneratingCodeStr() = 0;

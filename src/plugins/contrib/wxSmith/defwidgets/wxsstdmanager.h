@@ -47,7 +47,8 @@ enum std_widgets
     wxsHtmlWindowId,
     wxsSliderId,
     wxsCheckListBoxId,
-    
+    wxsStaticBitmapId,
+
     wxsCustomWidgetId,
 
     /* Windows */

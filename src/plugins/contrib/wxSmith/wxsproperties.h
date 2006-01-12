@@ -9,6 +9,7 @@
 #include <wx/scrolwin.h>
 #include <wx/propgrid/propgrid.h>
 
+
 #include "wxsglobals.h"
 
 class wxsWidget;
@@ -64,7 +65,7 @@ class wxsProperty
 
         /** Properties object handling this property */
         wxsProperties* Props;
-        
+
         friend class wxsProperties;
         friend class wxsPropertyGrid;
 };
@@ -92,18 +93,21 @@ class wxsProperties
 		/** Adding new 2xinteger property */
 		void Add2IProperty(const wxString& Name,int& Value1,int& Value2,int Position=-1);
 
-		/** Adding new wxArrayStrting property */
+		/** Adding new wxArrayString property */
 		void AddProperty(const wxString& Name,wxArrayString& Array,int Position=-1);
 
-		/** Adding new wxArrayStrting property with additional "selected" flag */
+		/** Adding new wxArrayString property with additional "selected" flag */
 		void AddProperty(const wxString& Name,wxArrayString& Array,int& Selected,int SortFlag,int Position=-1);
+
+		/** Adding new AdvImageProperty property , adding a type to differentiate with wxsStringProperty*/
+		void AddProperty(const wxString& Name,wxString& Value,bool imageflag, int Position=-1);
 
 		/** Adding custom property */
 		void AddProperty(const wxString& Name,wxsProperty* Property,int Position=-1);
 
 		/** Generating new prop grid window */
 		wxWindow* GenerateWindow(wxWindow* Parent);
-		
+
 		/** Getting prop grid window previously created */
 		wxWindow* GetWindow();
 

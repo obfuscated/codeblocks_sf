@@ -208,7 +208,7 @@ wxWindow* wxsWidget::CreatePreview(wxWindow* Parent,wxsWindowEditor* Editor)
     int Cnt = IsContainer() ? GetChildCount() : 0;
     for ( int i=0; i<Cnt; i++ )
     {
-        GetChild(i)->CreatePreview(Preview,Editor);
+         GetChild(i)->CreatePreview(Preview,Editor);
     }
 
     MyFinalUpdatePreview(Preview);
@@ -877,7 +877,7 @@ void wxsWidget::BuildCodeParams(wxsCodeParams& Params)
 {
     Params.VarName = BaseProperties.VarName;
     Params.IdName = BaseProperties.IdName;
-    
+
     Params.Style = _T("");
     Params.InitCode = _T("");
 

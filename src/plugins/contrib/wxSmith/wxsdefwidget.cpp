@@ -3,6 +3,7 @@
 
 #include "properties/wxsstringlistproperty.h"
 #include "properties/wxsstringproperty.h"
+#include "properties/wxsadvimageproperty.h"
 #include "wxsglobals.h"
 
 wxsDefWidget::wxsDefWidget(wxsWidgetManager* Man,wxsWindowRes* Res):
@@ -342,6 +343,53 @@ void wxsDefWidget::evStrArray(wxArrayString& Val,const wxString& Name,const wxSt
         	if ( PropName.Length() )
         	{
                 Properties.AddProperty(PropName,Val,DefValue,SortFlag,-1);
+        	}
+        }
+    }
+}
+
+// TODO (super##): Modify code include AdvImageProperty
+
+
+void wxsDefWidget::evImage(wxString& Val,const wxString& Name,const wxString& XrcName,const wxString& PropName,wxString DefValue)
+{
+    switch ( evUse )
+    {
+        case Init:
+        {
+            Val = DefValue;
+            break;
+        }
+
+        case XmlL:
+        {
+            const wxString& Value = XmlGetVariable(XrcName);
+            Val = Value;
+            break;
+        }
+
+        case XmlS:
+        {
+            XmlSetVariable(XrcName,Val);
+            break;
+        }
+
+        case Destroy:
+        {
+            break;
+        }
+
+        case Code:
+        {
+            wxsCodeReplace(CodeResult,Name,wxsGetWxString(Val));
+            break;
+        }
+
+        case Props:
+        {
+        	if ( PropName.Length() )
+        	{
+                Properties.AddProperty(PropName, new wxsAdvImageProperty(Val));
         	}
         }
     }

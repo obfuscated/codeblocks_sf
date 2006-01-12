@@ -6,6 +6,7 @@
 #include "properties/wxsboolproperty.h"
 #include "properties/wxs2intproperty.h"
 #include "properties/wxsstringlistproperty.h"
+#include "properties/wxsadvimageproperty.h"
 #include "widget.h"
 
 #include <wx/stattext.h>
@@ -93,6 +94,14 @@ void wxsProperties::AddProperty(const wxString& Name,wxArrayString& Array,int& S
 {
 	AddProperty(Name,new wxsStringListProperty(Array,Selected,SortedFlag),Position);
 }
+
+// wxsAdvImageProperty
+void wxsProperties::AddProperty(const wxString& Name,wxString& AdvImage, bool imageflag,int Position)
+{
+    //wxString& AdvImagePath = (wxString &)wxPGVariantToString(AdvImage);
+	AddProperty(Name,AdvImage,Position);
+}
+
 
 void wxsProperties::AddProperty(const wxString& Name,wxsProperty* Prop,int Position)
 {
