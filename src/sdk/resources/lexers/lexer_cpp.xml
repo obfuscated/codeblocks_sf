@@ -71,7 +71,7 @@
 						bold="1"/>
 				<Style name="No matching brace highlight"
 						index="35"
-						bg="255,255,255"
+						fg="255,255,255"
 						bg="255,0,0"
 						bold="1"/>
 				<Keywords>
