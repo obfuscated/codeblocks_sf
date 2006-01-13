@@ -174,6 +174,10 @@ int DefaultMimeHandler::OpenFile(const wxString& filename)
                 default: break;
             }
         }
+        else
+        {
+            return 0;
+        }
     }
 	return -1;
 }
