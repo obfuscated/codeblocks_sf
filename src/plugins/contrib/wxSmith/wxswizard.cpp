@@ -684,7 +684,7 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
     wxString ProjectFileName = Dir + wxFileName::GetPathSeparator() +
         GetProjectFileName() + _T(".cbp");
 
-    cbProject* project = PRJMAN()->NewProject(ProjectFileName);
+    cbProject* project = Manager::Get()->GetProjectManager()->NewProject(ProjectFileName);
     if ( !project )
     {
         wxMessageBox(_("Couldn't create new project file"));
@@ -804,7 +804,7 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
         wxMessageBox(_("Error occured while creating files. Project may be corrupted."));
     }
 
-    PRJMAN()->RebuildTree();
+    Manager::Get()->GetProjectManager()->RebuildTree();
     if ( wxsPLUGIN() )
     {
         wxsProject* wxsProj = wxsPLUGIN()->GetSmithProject(project);

@@ -78,7 +78,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           * @return If the function succeeds, a pointer to the newly opened project
           * is returned. Else the return value is NULL.
           */
-        cbProject* LoadProject(const wxString& filename);
+        cbProject* LoadProject(const wxString& filename, bool activateIt = false);
         /** Save a project to disk.
           * @param project A pointer to the project to save.
           * @return True if saving was succesful, false if not.
@@ -110,15 +110,15 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           * @param project A pointer to the project to close.
           * @return True if project was closed, false if not.
           */
-        bool CloseProject(cbProject* project,bool dontsave=false);
+        bool CloseProject(cbProject* project, bool dontsave = false, bool refresh = true);
         /** Close the active project. Same as CloseProject(GetActiveProject()).
           * @return True if project was closed, false if not.
           */
-        bool CloseActiveProject(bool dontsave=false);
+        bool CloseActiveProject(bool dontsave = false);
         /** Close all projects.
           * @return True if all projects were closed, false if even one close operation failed.
           */
-        bool CloseAllProjects(bool dontsave=false);
+        bool CloseAllProjects(bool dontsave = false);
         /** Checks whether all projects are saved. If not, asks
           *  the user to save and saves accordingly.
           *  @return False if the user pressed cancel.

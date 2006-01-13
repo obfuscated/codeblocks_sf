@@ -562,7 +562,7 @@ wxMenu* ProjectManager::GetProjectMenu()
     return result;
 }
 
-cbProject* ProjectManager::LoadProject(const wxString& filename)
+cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt)
 {
     SANITY_CHECK(0L);
     cbProject* result = 0;
@@ -610,21 +610,26 @@ cbProject* ProjectManager::LoadProject(const wxString& filename)
 
         // to avoid tree flickering, we 'll manually call here the project's BuildTree
         // but before we do it, remove bold from current active project (if any)
-        if (m_pActiveProject)
-            m_pTree->SetItemBold(m_pActiveProject->GetProjectNode(), false);
+// Commented it by Heromyth. I don't think it is a good thing to activate the project imediately after opening one.
+//        if (m_pActiveProject)
+//            m_pTree->SetItemBold(m_pActiveProject->GetProjectNode(), false);
         // ok, set the new project
-        SetProject(project, false);
-        project->BuildTree(m_pTree, m_TreeRoot, m_TreeCategorize, m_TreeUseFolders, m_pFileGroups);
-        m_pTree->Expand(project->GetProjectNode());
-        m_pTree->SetItemBold(project->GetProjectNode(), true);
-        m_pTree->Expand(m_TreeRoot); // make sure the root node is open
 
-        if(!sanity_check())
+        if (!m_IsLoadingWorkspace)
+        {
+            project->BuildTree(m_pTree, m_TreeRoot, m_TreeCategorize, m_TreeUseFolders, m_pFileGroups);
+            m_pTree->Expand(project->GetProjectNode());
+            m_pTree->Expand(m_TreeRoot); // make sure the root node is open
+        }
+        if (activateIt)
+            SetProject(project, !m_IsLoadingWorkspace);
+
+        if (!sanity_check())
             break; // sanity check
 
         project->LoadLayout();
         project->SetModified(false);
-        if(!sanity_check())
+        if (!sanity_check())
             break; // sanity check
         if (m_pWorkspace)
             m_pWorkspace->SetModified(true);
@@ -636,11 +641,11 @@ cbProject* ProjectManager::LoadProject(const wxString& filename)
         // moved here from cbProject::Open() because code-completion
         // kicks in too early and the perceived loading time is long...
         CodeBlocksEvent event(cbEVT_PROJECT_OPEN);
-        event.SetProject(m_pActiveProject);
+        event.SetProject(project);
         Manager::Get()->GetPluginManager()->NotifyPlugins(event);
 
         break;
-    }while(false);
+    } while(false);
     // we 're done
 
     m_IsLoadingProject=false;
@@ -713,7 +718,9 @@ bool ProjectManager::CloseAllProjects(bool dontsave)
     FreezeTree();
     while (m_pProjects->GetCount() != 0)
     {
-        if (!CloseActiveProject(true))
+// Commented it by Heromyth
+//        if (!CloseActiveProject(true))
+        if (!CloseProject(m_pProjects->Item(0), true, false))
         {
             UnfreezeTree(true);
             return false;
@@ -726,70 +733,52 @@ bool ProjectManager::CloseAllProjects(bool dontsave)
     return true;
 }
 
-bool ProjectManager::CloseProject(cbProject* project,bool dontsave)
+bool ProjectManager::CloseProject(cbProject* project, bool dontsave, bool refresh)
 {
-    SANITY_CHECK(true);
+    SANITY_CHECK(false);
     if (!project)
         return true;
+    if(m_sanitycheck_shutdown) // if shutdown, don't ask.
+        dontsave = true;
     if(project->GetCurrentlyCompilingTarget())
         return false;
     if(!dontsave)
          if(!QueryCloseProject(project))
             return false;
 
-    cbProject* tmp = 0L;
-	bool same = (project == m_pActiveProject);
+	if (project == m_pActiveProject)
+	{
+	    m_pActiveProject = 0L;
+	}
 
-    if (!same)
-    {
-	    tmp = m_pActiveProject;
-    	SetProject(project);
-    }
+    int index = m_pProjects->Index(project);
+    if (index == wxNOT_FOUND)
+        return false;
+    Manager::Get()->GetEditorManager()->UpdateProjectFiles(project);
+    project->SaveTreeState(m_pTree);
+    project->SaveLayout();
 
-    // The project and its files should have been saved by now.
-    // It's safe to not save files now.
-    bool ret = CloseActiveProject(true);
+    if (m_pWorkspace)
+        m_pWorkspace->SetModified(true);
 
-    if (!same)
-	    SetProject(tmp);
+    project->CloseAllFiles(true);
+    RemoveProjectFromAllDependencies(project);
+    m_pProjects->Remove(project);
+    delete project;
+    if (refresh)
+        RebuildTree();
     if(!m_InitialDir.IsEmpty()) // Restore the working directory
         wxFileName::SetCwd(m_InitialDir);
-    return ret;
+    return true;
 }
 
 bool ProjectManager::CloseActiveProject(bool dontsave)
 {
     SANITY_CHECK(false);
-    if (!m_pActiveProject)
-        return true;
-    if(m_pActiveProject->GetCurrentlyCompilingTarget())
+    if (!CloseProject(m_pActiveProject, dontsave))
         return false;
-
-    if(m_sanitycheck_shutdown) // if shutdown, don't ask.
-        dontsave=true;
-    if(!dontsave)
-         if(!QueryCloseProject(m_pActiveProject))
-            return false;
-    int index = m_pProjects->Index(m_pActiveProject);
-    if (index == wxNOT_FOUND)
-        return false;
-	Manager::Get()->GetEditorManager()->UpdateProjectFiles(m_pActiveProject);
-	m_pActiveProject->SaveTreeState(m_pTree);
-    m_pActiveProject->SaveLayout();
-
-    if (m_pWorkspace)
-        m_pWorkspace->SetModified(true);
-
-    m_pActiveProject->CloseAllFiles(true);
-    m_pProjects->Remove(m_pActiveProject);
-    RemoveProjectFromAllDependencies(m_pActiveProject);
-    delete m_pActiveProject;
-	m_pActiveProject = 0L;
     if (m_pProjects->GetCount() > 0)
         SetProject(m_pProjects->Item(0));
-    else
-        SetProject(0L);
-
     return true;
 }
 
@@ -929,6 +918,9 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
         return false; // didn't close
     m_IsLoadingWorkspace=true;
     m_pWorkspace = new cbWorkspace(filename);
+    RebuildTree();
+    m_pTree->Expand(m_pActiveProject->GetProjectNode());
+    m_pTree->Expand(m_TreeRoot); // make sure the root node is open
     m_IsLoadingWorkspace=false;
     Manager::Get()->GetEditorManager()->RebuildOpenedFilesTree();
     SANITY_CHECK(false);
@@ -1781,7 +1773,7 @@ void ProjectManager::OnCloseProject(wxCommandEvent& event)
     SANITY_CHECK();
     wxTreeItemId sel = m_pTree->GetSelection();
     FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
-    cbProject *proj;
+    cbProject *proj=NULL;
     if (ftd)
         proj = ftd->GetProject();
     if(proj)
@@ -1793,6 +1785,8 @@ void ProjectManager::OnCloseProject(wxCommandEvent& event)
         else
             CloseProject(proj);
     }
+    if (m_pProjects->GetCount() > 0 && !m_pActiveProject)
+        SetProject(m_pProjects->Item(0));
     Manager::Get()->GetAppWindow()->Refresh();
 }
 
@@ -1966,3 +1960,4 @@ void ProjectManager::OnIdle(wxIdleEvent& event)
 {
     event.Skip();
 }
+

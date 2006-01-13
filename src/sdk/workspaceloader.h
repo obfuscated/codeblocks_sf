@@ -15,7 +15,6 @@ class WorkspaceLoader : public IBaseWorkspaceLoader
         bool Save(const wxString& title, const wxString& filename);
 	protected:
 	private:
-        cbProject* m_pActiveProj;
 };
 
 #endif // WORKSPACELOADER_H

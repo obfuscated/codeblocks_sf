@@ -144,7 +144,7 @@ void Exporter::OnUpdateUI(wxUpdateUIEvent &event)
 
   if (mbar)
   {
-    EditorManager *em = EDMAN();
+    EditorManager *em = Manager::Get()->GetEditorManager();
 
     // Enabled if there's a source file opened (be sure it isn't the "Start here" page)
     bool disable = !em || !em->GetActiveEditor() || !em->GetBuiltinActiveEditor();
@@ -189,7 +189,7 @@ void Exporter::ExportFile(BaseExporter *exp, const wxString &default_extension, 
     return;
   }
 
-  EditorManager *em = EDMAN();
+  EditorManager *em = Manager::Get()->GetEditorManager();
   cbEditor *cb = em->GetBuiltinActiveEditor();
   wxString filename = wxFileSelector(_("Choose the filename"), _T(""), wxFileName(cb->GetFilename()).GetName() + _T(".") + default_extension, default_extension, wildcard, wxSAVE | wxOVERWRITE_PROMPT);
 

@@ -11,7 +11,6 @@
 #include "tinyxml/tinyxml.h"
 
 WorkspaceLoader::WorkspaceLoader()
-    : m_pActiveProj(0L)
 {
 	//ctor
 }
@@ -47,7 +46,6 @@ bool WorkspaceLoader::Open(const wxString& filename)
     TiXmlElement* root;
     TiXmlElement* wksp;
     TiXmlElement* proj;
-    cbProject* loadedProject;
     wxString projectFilename;
     wxFileName wfname(filename);
 
@@ -89,29 +87,25 @@ bool WorkspaceLoader::Open(const wxString& filename)
         if (projectFilename.IsEmpty())
         {
             GetpMsg()->DebugLog(_("'Project' node exists, but no filename?!?"));
-            loadedProject = 0L;
         }
         else
         {
             wxFileName fname(projectFilename);
             fname.MakeAbsolute(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
-            loadedProject = GetpMan()->LoadProject(fname.GetFullPath());
-        }
-        if (loadedProject)
-        {
             int active = 0;
             int ret = proj->QueryIntAttribute("active", &active);
             switch (ret)
             {
                 case TIXML_SUCCESS:
                     if (active == 1)
-                        m_pActiveProj = loadedProject;
+                        GetpMan()->LoadProject(fname.GetFullPath(), true);
                     break;
                 case TIXML_WRONG_TYPE:
                     GetpMsg()->DebugLog(_("Error %s: %s"), doc.Value(), doc.ErrorDesc());
                     GetpMsg()->DebugLog(_("Wrong attribute type (expected 'int')"));
                     break;
                 default:
+                    GetpMan()->LoadProject(fname.GetFullPath());
                     break;
             }
         }
@@ -151,9 +145,6 @@ bool WorkspaceLoader::Open(const wxString& filename)
         }
         proj = proj->NextSiblingElement("Project");
     }
-
-    if (m_pActiveProj)
-        GetpMan()->SetProject(m_pActiveProj);
 
     return true;
 }

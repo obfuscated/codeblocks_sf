@@ -437,7 +437,7 @@ bool wxSmith::CheckIntegration()
 
 void wxSmith::OnConfigure(wxCommandEvent& event)
 {
-    cbProject* CP = PRJMAN()->GetActiveProject();
+    cbProject* CP = Manager::Get()->GetProjectManager()->GetActiveProject();
     if ( !CP ) return;
     wxsProject* SP = GetSmithProject(CP);
     if ( !SP ) return;

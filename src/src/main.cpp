@@ -1120,7 +1120,7 @@ bool MainFrame::DoOpenProject(const wxString& filename, bool addToHistory)
         return false;
     }
 
-    cbProject* prj = Manager::Get()->GetProjectManager()->LoadProject(filename);
+    cbProject* prj = Manager::Get()->GetProjectManager()->LoadProject(filename, !m_pPrjMan->GetActiveProject());
     if (prj)
     {
 		if (addToHistory)
