@@ -133,7 +133,14 @@ FindDlg::~FindDlg()
             previous.Add(combo->GetString(i));
     }
     wxString find = combo->GetValue();
-    if (combo->FindString(find) == -1)
+    int prev_pos = combo->FindString(find);
+    if (prev_pos > 0)
+    {
+        // if it's already in the list at a position other than the top, we'll bump it to the
+        // top by deleting the duplicate item before we add the current search item to the top
+        combo->Delete(prev_pos);
+    }
+    if (prev_pos != 0)
         previous.Insert(find, 0);
     wxString last = GetStringFromArray(previous);
     cfg->Write(CONF_GROUP _T("/last"), last);
