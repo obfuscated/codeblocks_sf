@@ -3,6 +3,10 @@ pkgdatadir = $(datadir)/@PACKAGE@/templates
 dist_pkgdata_DATA = dll.cbp \
 		dll-main.cpp \
 		dll.template \
+		fltk.cbp \
+		fltk.png \
+		fltk.template \
+		fltk-main.cpp \
 		glfw-static.cbp \
 		gui.png \
 		irr_gcc.cbp \
