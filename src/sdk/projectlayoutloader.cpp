@@ -164,5 +164,5 @@ bool ProjectLayoutLoader::Save(const wxString& filename)
             node->SetAttribute("folder", _C(en[i]));
 		}
 	}
-    return doc.SaveFile(_C(filename));
+    return cbSaveTinyXMLDocument(&doc, filename);
 }

@@ -199,5 +199,5 @@ bool WorkspaceLoader::Save(const wxString& title, const wxString& filename)
             }
         }
     }
-    return doc.SaveFile(_C(filename));
+    return cbSaveTinyXMLDocument(&doc, filename);
 }

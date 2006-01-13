@@ -981,9 +981,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
             AddElement(unitnode, "Option", "target", f->buildTargets[x]);
     }
 
-    if (doc.SaveFile(_C(filename)))
-        return true;
-    return false;
+    return cbSaveTinyXMLDocument(&doc, filename);
 }
 
 int ProjectLoader::GetValidCompilerIndex(int proposal, const wxString& scope)

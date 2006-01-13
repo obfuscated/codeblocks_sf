@@ -13,6 +13,7 @@
 
 #include "sdk_precomp.h"
 #include "configmanager.h"
+#include "globals.h"
 #include "personalitymanager.h"
 #include "cbexception.h"
 #include "crc32.h"
@@ -189,27 +190,9 @@ void CfgMgrBldr::Close()
     {
         if(!cfg.StartsWith(_T("http://")))
         {
-            const char *buffer; // UTF-8 encoded data
-			size_t len;
-
-#ifdef TIXML_USE_STL
-            std::string outSt;
-            outSt << *doc;
-            buffer = outSt.c_str();
-            len = outSt.length();
-#else
-            TiXmlOutStream outSt;
-            outSt << *doc;
-            buffer = outSt.c_str();
-            len = outSt.length();
-#endif
-
-            wxFile file(cfg, wxFile::write);
-            if(file.IsOpened())
-                file.Write(buffer, strlen(buffer));
-            else
+            if (!cbSaveTinyXMLDocument(doc, cfg))
             {
-                wxSafeShowMessage(_T("Could not open config file for writing."), _("Warning"));
+                wxSafeShowMessage(_T("Could not save config file..."), _("Warning"));
                 // TODO (thomas#1#): add "retry" option
             }
         }

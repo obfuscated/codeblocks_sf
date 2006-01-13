@@ -7,6 +7,8 @@
 #include <wx/file.h>
 #include <wx/intl.h>
 
+class TiXmlDocument;
+
 enum PluginType
 {
     ptNone = 1,
@@ -84,6 +86,8 @@ extern DLLIMPORT bool cbWrite(wxFile& file, const wxString& buff);
 /// Writes a wxString to a file. Takes care of unicode and uses a temporary file
 /// to save first and then it copies it over the original.
 extern DLLIMPORT bool cbSaveToFile(const wxString& filename, const wxString& contents);
+/// Saves a TinyXML document correctly, even if the path contains unicode characters.
+extern DLLIMPORT bool cbSaveTinyXMLDocument(TiXmlDocument* doc, const wxString& filename);
 
 extern DLLIMPORT wxString GetStringFromArray(const wxArrayString& array, const wxString& separator = DEFAULT_ARRAY_SEP);
 extern DLLIMPORT wxArrayString GetArrayFromString(const wxString& text, const wxString& separator = DEFAULT_ARRAY_SEP, bool trimSpaces = true);

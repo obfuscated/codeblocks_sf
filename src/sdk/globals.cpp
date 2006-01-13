@@ -24,7 +24,13 @@
 */
 
 #include "sdk_precomp.h"
+
+#ifdef TIXML_USE_STL
+    #include <string>
+#endif
+
 #include "globals.h"
+#include "tinyxml/tinyxml.h"
 #include <wx/tokenzr.h>
 #include <wx/filename.h>
 #include <wx/dirdlg.h>
@@ -339,7 +345,7 @@ wxString ChooseDirectory(wxWindow* parent,
     return path.GetFullPath();
 }
 
-/// Reads a wxString from a non-unicode file. File must be open. File is closed automatically.
+// Reads a wxString from a non-unicode file. File must be open. File is closed automatically.
 bool cbRead(wxFile& file, wxString& st)
 {
     st.Empty();
@@ -381,7 +387,7 @@ wxString cbReadFileContents(wxFile& file)
     return st;
 }
 
-/// Writes a wxString to a non-unicode file. File must be open. File is closed automatically.
+// Writes a wxString to a non-unicode file. File must be open. File is closed automatically.
 bool cbWrite(wxFile& file, const wxString& buff)
 {
     bool result = false;
@@ -395,8 +401,8 @@ bool cbWrite(wxFile& file, const wxString& buff)
     return result;
 }
 
-/// Writes a wxString to a file. Takes care of unicode and uses a temporary file
-/// to save first and then it copies it over the original.
+// Writes a wxString to a file. Takes care of unicode and uses a temporary file
+// to save first and then it copies it over the original.
 bool cbSaveToFile(const wxString& filename, const wxString& contents)
 {
     wxTempFile file(filename);
@@ -412,6 +418,39 @@ bool cbSaveToFile(const wxString& filename, const wxString& contents)
     return true;
 }
 
+// Saves a TinyXML document correctly, even if the path contains unicode characters.
+bool cbSaveTinyXMLDocument(TiXmlDocument* doc, const wxString& filename)
+{
+    if (!doc)
+        return false;
+
+    const char *buffer; // UTF-8 encoded data
+  	size_t len;
+
+  	#ifdef TIXML_USE_STL
+        std::string outSt;
+        outSt << *doc;
+        buffer = outSt.c_str();
+        len = outSt.length();
+  	#else
+        TiXmlOutStream outSt;
+        outSt << *doc;
+        buffer = outSt.c_str();
+        len = outSt.length();
+  	#endif
+
+    wxTempFile file(filename);
+    if (file.IsOpened())
+    {
+        if (!file.Write(buffer, strlen(buffer)))
+            return false;
+        if (!file.Commit())
+            return false;
+    }
+    else
+        return false;
+  	return true;
+}
 
 wxString URLEncode(const wxString &str) // not sure this is 100% standards compliant, but I hope so
 {
