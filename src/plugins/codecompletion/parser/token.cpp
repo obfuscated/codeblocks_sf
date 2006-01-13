@@ -218,6 +218,9 @@ bool Token::SerializeIn(wxInputStream* f)
             result = false;
             break;
         }
+        if(m_ParentIndex < 0)
+            m_ParentIndex = -1;
+
         if (!LoadStringFromFile(f, m_Type))
         {
             result = false;
@@ -344,6 +347,8 @@ m_modified(false)
     m_FilesStatus.clear();
     m_FreeTokens.clear();
     m_FilesToBeReparsed.clear();
+    m_TopNameSpaces.clear();
+    m_GlobalNameSpace.clear();
 
     m_FilenamesMap[_T("")] = 0;
     m_InvFilenamesMap[0] = _T("");
@@ -365,6 +370,9 @@ void TokensTree::clear()
     m_FilesStatus.clear();
     m_FilesToBeReparsed.clear();
     m_FreeTokens.clear();
+    m_TopNameSpaces.clear();
+    m_GlobalNameSpace.clear();
+
     size_t i;
     for(i = 0;i < m_Tokens.size(); i++)
     {
@@ -465,7 +473,7 @@ int TokensTree::AddToken(Token* newToken,int forceidx)
     TokenIdxSet tmp_tokens;
     tmp_tokens.clear();
 
-
+    // Insert the token's name and find the token in the list
     size_t idx2 = m_Tree.AddItem(name,tmp_tokens,false);
     TokenIdxSet& curlist = m_Tree.GetItemAtPos(idx2);
     TokenIdxSet::iterator it;
@@ -478,11 +486,22 @@ int TokensTree::AddToken(Token* newToken,int forceidx)
         if(m_Tokens[idx]==newToken)
             return idx; // Already there
     }
+    // The token was not present in the list, let's add it.
     int newitem = AddTokenToList(newToken,forceidx);
     curlist.insert(newitem);
     m_DisplayNameTree.AddItem(newToken->m_DisplayName,newitem,true);
     m_FilesMap[newToken->m_File].insert(newitem);
 
+    // Add Token (if applicable) to the namespaces indexes
+    if(newToken->m_ParentIndex < 0)
+    {
+        newToken->m_ParentIndex = -1;
+        m_GlobalNameSpace.insert(newitem);
+        if(newToken->m_TokenKind == tkNamespace)
+            m_TopNameSpaces.insert(newitem);
+    }
+
+    // All done!
     return newitem;
 }
 
@@ -565,7 +584,10 @@ void TokensTree::RemoveToken(Token* oldToken)
 
 int TokensTree::AddTokenToList(Token* newToken,int forceidx)
 {
-    if(forceidx >= 0)
+    int result = -1;
+    if(!newToken)
+        return -1;
+    if(forceidx >= 0) // Reading from Cache?
     {
         if((size_t)forceidx >= m_Tokens.size())
         {
@@ -573,25 +595,26 @@ int TokensTree::AddTokenToList(Token* newToken,int forceidx)
             m_Tokens.resize((max),0); // fill next 250 items with null-values
         }
         m_Tokens[forceidx] = newToken;
-        newToken->m_Self = forceidx;
-        return forceidx;
+        result = forceidx;
     }
-    if(!newToken)
-        return -1;
-    int result;
+    else // For Realtime Parsing
+    {
+        if(m_FreeTokens.size())
+        {
+            result = m_FreeTokens[m_FreeTokens.size() - 1];
+            m_FreeTokens.pop_back();
+            m_Tokens[result] = newToken;
+        }
+        else
+        {
+            result = m_Tokens.size();
+            m_Tokens.push_back(newToken);
+        }
+    }
+
     newToken->m_pTree = this;
-    if(m_FreeTokens.size())
-    {
-        result = m_FreeTokens[m_FreeTokens.size() - 1];
-        m_FreeTokens.pop_back();
-        m_Tokens[result] = newToken;
-    }
-    else
-    {
-        result = m_Tokens.size();
-        m_Tokens.push_back(newToken);
-    }
     newToken->m_Self = result;
+
     return result;
 }
 
@@ -648,20 +671,11 @@ void TokensTree::RecalcFreeList()
 void TokensTree::RecalcData()
 {
     //Manager::Get()->GetMessageManager()->DebugLog("Linking inheritance...");
-    m_TopNameSpaces.clear();
-    m_GlobalNameSpace.clear();
     for (size_t i = 0; i < size(); ++i)
     {
         Token* token = at(i);
         if (!token)
             continue;
-
-        if(token->m_ParentIndex == -1)
-        {
-            m_GlobalNameSpace.insert(i);
-            if(token->m_TokenKind == tkNamespace)
-                m_TopNameSpaces.insert(i);
-        }
 
         if (token->m_TokenKind != tkClass)
             continue;

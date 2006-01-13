@@ -264,7 +264,12 @@ void NativeParser::AddParser(cbProject* project, bool useCache)
     if (useCache && Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("/use_cache"), false))
     {
         if (LoadCachedData(parser, project))
+        {
+            wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, PARSER_END);
+            evt.SetClientData(parser);
+            this->ProcessEvent(evt);
             return;
+        }
     }
 
     wxArrayString files;
@@ -446,8 +451,8 @@ bool NativeParser::LoadCachedData(Parser* parser, cbProject* project)
     }
     if(!ret)
         Manager::Get()->GetMessageManager()->DebugLog(_("Error reading Cache! Re-parsing from scratch."));
-    else
-        DisplayStatus(parser, project);
+//    else
+//        DisplayStatus(parser, project);
     return ret;
 }
 
