@@ -2,7 +2,7 @@
 #include <new>
 #include <angelscript.h>
 #include "sc_wxstring.h"
-#include <settings.h>
+#include <globals.h>
 
 //--------------
 // constructors
