@@ -1,4 +1,4 @@
-<Code::Blocks_template_file>
+<CodeBlocks_template_file>
 	<Template name="staticlib" title="Static Library" category="Libraries" bitmap="dll.png">
 		<FileSet name="dflt" title="Default">
 			<File source="staticlib-sample.c" destination="sample.c"/>
@@ -7,4 +7,4 @@
 			<Project file="staticlib.cbp"/>
 		</Option>
 	</Template>
-</Code::Blocks_template_file>
+</CodeBlocks_template_file>

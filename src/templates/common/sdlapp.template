@@ -1,4 +1,4 @@
-<Code::Blocks_template_file>
+<CodeBlocks_template_file>
 	<Template name="sdlapp" title="SDL Application" category="2D/3D Graphics" bitmap="sdl.png">
 		<FileSet name="c++" title="Default">
 			<File source="sdl-main.cpp" destination="main.cpp"/>
@@ -8,4 +8,4 @@
 			<Project file="sdlapp.cbp"/>
 		</Option>
 	</Template>
-</Code::Blocks_template_file>
+</CodeBlocks_template_file>

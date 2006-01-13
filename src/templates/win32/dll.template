@@ -1,4 +1,4 @@
-<Code::Blocks_template_file>
+<CodeBlocks_template_file>
 	<Template name="dll" title="Dynamic Link Library" category="Libraries" bitmap="dll.png">
 		<FileSet name="c" title="C source">
 			<File source="dll-main.cpp" destination="main.c"/>
@@ -7,4 +7,4 @@
 			<Project file="dll.cbp"/>
 		</Option>
 	</Template>
-</Code::Blocks_template_file>
+</CodeBlocks_template_file>

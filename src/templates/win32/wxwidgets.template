@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<!DOCTYPE Code::Blocks_template_file>
-<Code::Blocks_template_file>
+<!DOCTYPE CodeBlocks_template_file>
+<CodeBlocks_template_file>
 	<Template name="wxWidgets" title="wxWidgets Application" category="GUI" bitmap="wxwidgets.png">
 		<FileSet name="s" title="No header file">
 			<File source="wx-main-s.cpp" destination="main.cpp"/>
@@ -31,4 +31,4 @@
 			<Project file="wxwidgets_static_u.cbp"/>
 		</Option>
 	</Template>
-</Code::Blocks_template_file>
+</CodeBlocks_template_file>

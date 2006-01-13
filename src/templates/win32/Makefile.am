@@ -20,6 +20,10 @@ dist_pkgdata_DATA = dll.cbp \
 		opengl.png \
 		opengl.template \
 		sdlapp.cbp \
+		SmartWin.cbp \
+		SmartWin.png \
+		SmartWin.template \
+		SmartWin-main.cbp \
 		win32.cbp \
 		win32gui.template \
 		win32-main.cpp \

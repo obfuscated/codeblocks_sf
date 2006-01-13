@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_project_file>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="1"/>
+	<Project>
+		<Option title="SmartWin Application"/>
+		<Option makefile="Makefile"/>
+		<Build>
+			<Target title="default">
+				<Option type="0"/>
+			</Target>
+			<Environment>
+				<Variable name="SMARTWIN_DIR" value="C:\SmartWin"/>
+			</Environment>
+		</Build>
+		<Compiler>
+			<Add option="-Wall"/>
+			<Add directory="$(SMARTWIN_DIR)\include\SmartWin"/>
+		</Compiler>
+		<Linker>
+			<Add library="smartwin"/>
+			<Add library="comctl32"/>
+			<Add library="gdi32"/>
+			<Add library="user32"/>
+			<Add library="kernel32"/>
+			<Add directory="$(SMARTWIN_DIR)\lib"/>
+		</Linker>
+	</Project>
+</CodeBlocks_project_file>
