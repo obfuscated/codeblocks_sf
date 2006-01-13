@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<!DOCTYPE Code::Blocks_lexer_properties>
-<Code::Blocks_lexer_properties>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
 		<Lexer name="nVidia cg"
 				index="3"
 				filemasks="*.cg,*.cgfx">
