@@ -185,20 +185,25 @@ cbProject* TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
     int filesetidx = dlg.GetFileSetIndex();
     TemplateOption& option = pt->m_TemplateOptions[optidx];
     FileSet& fileset = pt->m_FileSets[filesetidx];
-
-    if (!wxDirExists(dlg.GetProjectPath() + wxFILE_SEP_PATH))
+    wxString ProjectPath = dlg.GetProjectPath();
+    if(ProjectPath.Mid(ProjectPath.Length() - 1) == wxFILE_SEP_PATH)
     {
-        if (wxMessageBox(wxString::Format(_("The directory %s does not exist. Are you sure you want to create it?"), dlg.GetProjectPath().c_str()), _("Confirmation"), wxICON_QUESTION | wxYES_NO) != wxYES)
+        ProjectPath.RemoveLast();
+    }
+
+    if (!wxDirExists(ProjectPath + wxFILE_SEP_PATH))
+    {
+        if (wxMessageBox(wxString::Format(_("The directory %s does not exist. Are you sure you want to create it?"), ProjectPath.c_str()), _("Confirmation"), wxICON_QUESTION | wxYES_NO) != wxYES)
             return NULL;
     }
-    if (wxDirExists(dlg.GetProjectPath() + wxFILE_SEP_PATH + dlg.GetProjectName() + wxFILE_SEP_PATH))
+    if (wxDirExists(ProjectPath + wxFILE_SEP_PATH + dlg.GetProjectName() + wxFILE_SEP_PATH))
     {
-        if (wxMessageBox(wxString::Format(_("The directory %s already exists. Are you sure you want to create the new project there?"), wxString(dlg.GetProjectPath() + wxFILE_SEP_PATH + dlg.GetProjectName()).c_str()), _("Confirmation"), wxICON_QUESTION | wxYES_NO) != wxYES)
+        if (wxMessageBox(wxString::Format(_("The directory %s already exists. Are you sure you want to create the new project there?"), wxString(ProjectPath + wxFILE_SEP_PATH + dlg.GetProjectName()).c_str()), _("Confirmation"), wxICON_QUESTION | wxYES_NO) != wxYES)
             return NULL;
     }
 
     wxFileName fname;
-    fname.Assign(dlg.GetProjectPath() + wxFILE_SEP_PATH +
+    fname.Assign(ProjectPath + wxFILE_SEP_PATH +
                 dlg.GetProjectName() + wxFILE_SEP_PATH +
                 dlg.GetProjectName() + _T(".") + CODEBLOCKS_EXT);
     LOGSTREAM << _T("Creating ") << fname.GetPath() << _T('\n');
@@ -208,10 +213,10 @@ cbProject* TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
         return NULL;
     }
 
-    if (dlg.GetProjectPath() != Manager::Get()->GetConfigManager(_T("template_manager"))->Read(_T("/projects_path")))
+    if (ProjectPath != Manager::Get()->GetConfigManager(_T("template_manager"))->Read(_T("/projects_path")))
     {
-        if (wxMessageBox(wxString::Format(_("Do you want to set %s as the default directory for new projects?"), dlg.GetProjectPath().c_str()), _("Question"), wxICON_QUESTION | wxYES_NO) == wxYES)
-            Manager::Get()->GetConfigManager(_T("template_manager"))->Write(_T("/projects_path"), dlg.GetProjectPath());
+        if (wxMessageBox(wxString::Format(_("Do you want to set %s as the default directory for new projects?"), ProjectPath.c_str()), _("Question"), wxICON_QUESTION | wxYES_NO) == wxYES)
+            Manager::Get()->GetConfigManager(_T("template_manager"))->Write(_T("/projects_path"), ProjectPath);
     }
 
     wxString path = fname.GetPath(wxPATH_GET_VOLUME);
@@ -302,7 +307,13 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg)
     wxString sep = wxFileName::GetPathSeparator();
     wxString path = ChooseDirectory(0, _("Choose a directory to create the new project"));
     if (path.IsEmpty())
+    {
         return NULL;
+    }
+    else if(path.Mid(path.Length() - 1) == wxFILE_SEP_PATH)
+    {
+        path.RemoveLast();
+    }
 
     wxBusyCursor busy;
 
