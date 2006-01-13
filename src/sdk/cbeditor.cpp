@@ -377,6 +377,7 @@ void cbEditor::SetModified(bool modified)
     if (modified != m_Modified)
     {
         m_Modified = modified;
+        m_pControl->SetSavePoint();
         if (m_Modified)
             SetEditorTitle(EDITOR_MODIFIED + m_Shortname);
         else
