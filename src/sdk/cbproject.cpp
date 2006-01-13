@@ -280,7 +280,9 @@ void cbProject::Open()
              case ftDevCppProject: loader = new DevCppLoader(this); break;
              case ftMSVCProject: loader = new MSVCLoader(this); break;
              case ftMSVSProject: loader = new MSVC7Loader(this); break;
-             default: return;
+             default:
+                 Manager::Get()->GetMessageManager()->Log(_("failed."));
+                 return;
         }
 
         int compilerIdx = -1;
