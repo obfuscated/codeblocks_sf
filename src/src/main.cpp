@@ -1205,7 +1205,8 @@ void MainFrame::DoUpdateEditorStyle(wxFlatNotebook* target, const wxString& pref
             break;
     }
     nbstyle |= defaultStyle;
-    nbstyle |= cfg->ReadInt(_T("/environment/") + prefix + _T("_tabs_style"));
+    if (cfg->ReadBool(_T("/environment/") + prefix + _T("_tabs_bottom")))
+        nbstyle |= wxFNB_BOTTOM;
 
     target->SetBookStyle(nbstyle);
     target->SetGradientColorBorder(cfg->ReadColour(_T("/environment/gradient_border"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW))));

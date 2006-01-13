@@ -387,7 +387,8 @@ void MessageManager::OnTabPosition(wxCommandEvent& event)
     if (event.GetId() == idNB_TabBottom)
         style |= wxFNB_BOTTOM;
     m_pNotebook->SetBookStyle(style);
-    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/environment/message_tabs_style"), (int)style);
+    // (style & wxFNB_BOTTOM) saves info only about the the tabs position
+    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/environment/message_tabs_bottom"), (bool)(style & wxFNB_BOTTOM));
 }
 
 void MessageManager::OnAppDoneStartup(wxCommandEvent& event)
