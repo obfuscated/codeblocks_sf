@@ -225,7 +225,7 @@ bool CodeBlocksApp::InitXRCStuff()
 
 MainFrame* CodeBlocksApp::InitFrame()
 {
-    MainFrame *frame = new MainFrame(m_locale, (wxFrame*)0L);
+    MainFrame *frame = new MainFrame((wxFrame*)0L);
     SetTopWindow(0);
     frame->Hide(); // frame is shown by the caller
 #ifdef __WXMSW__
@@ -271,6 +271,7 @@ void CodeBlocksApp::CheckVersion()
 
 void CodeBlocksApp::InitLocale()
 {
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
     const wxString langs[] =
     {
         _T("(System default)")
@@ -292,7 +293,7 @@ void CodeBlocksApp::InitLocale()
 //        ,wxLANGUAGE_RUSSIAN
     };
 
-    long int lng = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/locale/language"),(long int)-2);
+    long int lng = cfg->ReadInt(_T("/locale/language"),(long int)-2);
 
     if (lng <= -2 && WXSIZEOF(langs)>=2) // ask only if undefined and there are at least 2 choices
     {
@@ -313,10 +314,30 @@ void CodeBlocksApp::InitLocale()
         wxLocale::AddCatalogLookupPathPrefix(ConfigManager::GetDataFolder() + _T("/locale"));
         wxLocale::AddCatalogLookupPathPrefix(wxT("."));
         wxLocale::AddCatalogLookupPathPrefix(wxT(".."));
-        m_locale.AddCatalog(wxT("codeblocks"));
+		int catalogNum = cfg->ReadInt(_T("/locale/catalogNum"), 0);
+		if (catalogNum == 0)
+		{
+			catalogNum = 1;
+			cfg->Write(_T("/locale/Domain1"), _T("codeblocks"));
+		}
+
+		for (int i = 1; i <= catalogNum; ++i)
+		{
+			wxString tempStr = wxString::Format(_T("/locale/Domain%d"), i);
+			wxString catalogName = cfg->Read(tempStr, wxEmptyString);
+			if (catalogName.IsEmpty())
+			{
+				cfg->Write(tempStr,
+                        cfg->Read(wxString::Format(_T("/locale/Domain%d"), catalogNum)));
+				catalogNum--;
+			}
+			else if (cfg->Read(_T("/plugins/") + catalogName))
+				m_locale.AddCatalog(catalogName);
+		}
+		cfg->Write(_T("/locale/catalogNum"), (int)catalogNum);
     }
 
-    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/locale/language"), (int)lng);
+    cfg->Write(_T("/locale/language"), (int)lng);
 }
 
 bool CodeBlocksApp::OnInit()

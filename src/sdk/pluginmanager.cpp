@@ -229,6 +229,8 @@ bool PluginManager::LoadPlugin(const wxString& pluginName)
         plugElem->plugin = plug;
         m_Plugins.Add(plugElem);
 
+        SetupLocaleDomain(plugName);
+
         ++libUseCount;
 
         msgMan->DebugLog(_("%s: loaded"), plugName.c_str());
@@ -572,4 +574,22 @@ int PluginManager::Configure()
     OldConfigManager::Get()->DeleteEntry(_T("/plugins/try_to_activate"));
 */
     return wxID_OK;
+}
+
+void PluginManager::SetupLocaleDomain(const wxString& DomainName)
+{
+    int catalogNum=Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/locale/catalogNum"),(int)0);
+    int i = 1;
+    for (; i <= catalogNum; ++i)
+    {
+        wxString catalogName=Manager::Get()->GetConfigManager(_T("app"))->Read(wxString::Format(_T("/locale/Domain%d"), i), wxEmptyString);
+        if (catalogName.Cmp(DomainName) == 0)
+            break;
+    }
+    if (i > catalogNum)
+    {
+        ++catalogNum;
+        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/locale/catalogNum"), (int)catalogNum);
+        Manager::Get()->GetConfigManager(_T("app"))->Write(wxString::Format(_T("/locale/Domain%d"), i), DomainName);
+    }
 }

@@ -378,10 +378,9 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
 END_EVENT_TABLE()
 
-MainFrame::MainFrame(wxLocale& lang, wxWindow* parent)
+MainFrame::MainFrame(wxWindow* parent)
        : wxFrame(parent, -1, _T("MainWin"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE),
 	   m_pAccel(0L),
-	   m_locale(lang),
 	   m_FilesHistory(9, wxID_FILE1), // default ctor
 	   m_ProjectsHistory(9, wxID_FILE10),
 	   m_pCloseFullScreenBtn(0L),
