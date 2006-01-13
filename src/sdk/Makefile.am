@@ -95,6 +95,7 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						sdk_events.cpp \
 						searchresultslog.cpp \
 						selecttargetdlg.cpp \
+						settings.cpp \
 						simplelistlog.cpp \
 						simpletextlog.cpp \
 						templatemanager.cpp \

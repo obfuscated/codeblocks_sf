@@ -1063,9 +1063,9 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
         //
         case ftCodeBlocksWorkspace:
             // fallthrough
-        case ftMSVCWorkspace:
+        case ftMSVC6Workspace:
             // fallthrough
-        case ftMSVSWorkspace:
+        case ftMSVC7Workspace:
             // verify that it's not the same as the one already open
             if (filename != Manager::Get()->GetProjectManager()->GetWorkspace()->GetFilename() &&
                 DoCloseCurrentWorkspace())
@@ -1084,9 +1084,9 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
             // fallthrough
         case ftDevCppProject:
             // fallthrough
-        case ftMSVCProject:
+        case ftMSVC6Project:
             // fallthrough
-        case ftMSVSProject:
+        case ftMSVC7Project:
             return DoOpenProject(filename, addToHistory);
 
         //
@@ -1623,7 +1623,7 @@ bool MainFrame::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& files)
     for (unsigned int i = 0; i < files.GetCount(); ++i)
     {
         FileType ft = FileTypeOf(files[i]);
-        if (ft == ftCodeBlocksWorkspace || ft == ftMSVCWorkspace || ft == ftMSVSWorkspace)
+        if (ft == ftCodeBlocksWorkspace || ft == ftMSVC6Workspace || ft == ftMSVC7Workspace)
         {
             foundWorkspace = files[i];
             break;
@@ -2419,22 +2419,22 @@ void MainFrame::OnProjectImportDevCpp(wxCommandEvent& event)
 
 void MainFrame::OnProjectImportMSVC(wxCommandEvent& event)
 {
-    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual C++ project"), MSVC_FILES_FILTER), false);
+    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual C++ 6.0 project"), MSVC6_FILES_FILTER), false);
 }
 
 void MainFrame::OnProjectImportMSVCWksp(wxCommandEvent& event)
 {
-    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual C++ workspace"), MSVC_WORKSPACE_FILES_FILTER), false);
+    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual C++ 6.0 workspace"), MSVC6_WORKSPACE_FILES_FILTER), false);
 }
 
 void MainFrame::OnProjectImportMSVS(wxCommandEvent& event)
 {
-    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual Studio project"), MSVS_FILES_FILTER), false);
+    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual Studio 7.0+ project"), MSVC7_FILES_FILTER), false);
 }
 
 void MainFrame::OnProjectImportMSVSWksp(wxCommandEvent& event)
 {
-    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual Studio solution"), MSVS_WORKSPACE_FILES_FILTER), false);
+    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual Studio 7.0+ solution"), MSVC7_WORKSPACE_FILES_FILTER), false);
 }
 
 void MainFrame::OnHelpAbout(wxCommandEvent& WXUNUSED(event))

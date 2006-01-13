@@ -278,8 +278,8 @@ void cbProject::Open()
         switch (ft)
         {
              case ftDevCppProject: loader = new DevCppLoader(this); break;
-             case ftMSVCProject: loader = new MSVCLoader(this); break;
-             case ftMSVSProject: loader = new MSVC7Loader(this); break;
+             case ftMSVC6Project: loader = new MSVCLoader(this); break;
+             case ftMSVC7Project: loader = new MSVC7Loader(this); break;
              default:
                  Manager::Get()->GetMessageManager()->Log(_("failed."));
                  return;

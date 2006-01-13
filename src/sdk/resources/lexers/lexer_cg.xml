@@ -164,4 +164,4 @@
 				<SampleCode value="lexer_cg.sample"
 						error_line="23"/>
 		</Lexer>
-</Code::Blocks_lexer_properties>
+</CodeBlocks_lexer_properties>

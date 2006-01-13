@@ -2874,6 +2874,10 @@
             <Option link="0" />
             <Option target="sdk" />
         </Unit>
+        <Unit filename="sdk\settings.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="sdk" />
+        </Unit>
         <Unit filename="sdk\settings.h">
             <Option compilerVar="" />
             <Option compile="0" />

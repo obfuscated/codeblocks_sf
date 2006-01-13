@@ -87,8 +87,8 @@ void cbWorkspace::Load()
 	switch (FileTypeOf(fname))
 	{
         case ftCodeBlocksWorkspace: pWsp = new WorkspaceLoader; modified = false; break;
-        case ftMSVCWorkspace: pWsp = new MSVCWorkspaceLoader; modified = true; break;
-        case ftMSVSWorkspace: pWsp = new MSVC7WorkspaceLoader; modified = true; break;
+        case ftMSVC6Workspace: pWsp = new MSVCWorkspaceLoader; modified = true; break;
+        case ftMSVC7Workspace: pWsp = new MSVC7WorkspaceLoader; modified = true; break;
         default: break;
     }
 	m_IsOK = pWsp && (pWsp->Open(fname) || m_IsDefault);

@@ -552,9 +552,9 @@ void CodeBlocksApp::ShowSplashScreen()
 	{
 		wxBitmap bitmap;
 		#ifdef __WXMSW__
-			#define SPLASH_IMAGE _T("/images/splash_new.png")
+			const wxString SPLASH_IMAGE = _T("/images/splash_new.png");
 		#else
-			#define SPLASH_IMAGE _T("/images/splash.png")
+			const wxString SPLASH_IMAGE = _T("/images/splash.png");
 		#endif
 		if (bitmap.LoadFile(ConfigManager::ReadDataPath() + SPLASH_IMAGE, wxBITMAP_TYPE_PNG))
 		{

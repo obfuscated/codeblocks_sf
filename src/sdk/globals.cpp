@@ -142,17 +142,17 @@ FileType FileTypeOf(const wxString& filename)
     else if (ext.Matches(DEVCPP_EXT))
         return ftDevCppProject;
 
-    else if (ext.Matches(MSVC_EXT))
-        return ftMSVCProject;
+    else if (ext.Matches(MSVC6_EXT))
+        return ftMSVC6Project;
 
-    else if (ext.Matches(MSVS_EXT))
-        return ftMSVSProject;
+    else if (ext.Matches(MSVC7_EXT))
+        return ftMSVC7Project;
 
-    else if (ext.Matches(MSVC_WORKSPACE_EXT))
-        return ftMSVCWorkspace;
+    else if (ext.Matches(MSVC6_WORKSPACE_EXT))
+        return ftMSVC6Workspace;
 
-    else if (ext.Matches(MSVS_WORKSPACE_EXT))
-        return ftMSVSWorkspace;
+    else if (ext.Matches(MSVC7_WORKSPACE_EXT))
+        return ftMSVC7Workspace;
 
     else if (ext.Matches(OBJECT_EXT))
         return ftObject;
@@ -450,6 +450,26 @@ bool cbSaveTinyXMLDocument(TiXmlDocument* doc, const wxString& filename)
     else
         return false;
   	return true;
+}
+
+// Return @c str as a proper unicode-compatible string
+wxString cbC2U(const char* str)
+{
+#if wxUSE_UNICODE
+    return wxString(str, wxConvLocal);
+#else
+    return wxString(str);
+#endif
+}
+
+// Return multibyte (C string) representation of the string
+wxWX2MBbuf cbU2C(const wxString& str)
+{
+#if wxUSE_UNICODE
+    return str.mb_str(wxConvLocal);
+#else
+    return str.mb_str();
+#endif
 }
 
 wxString URLEncode(const wxString &str) // not sure this is 100% standards compliant, but I hope so

@@ -36,10 +36,10 @@ enum FileType
 	ftCodeBlocksProject = 0,
     ftCodeBlocksWorkspace,
 	ftDevCppProject,
-	ftMSVCProject,
-	ftMSVSProject,
-	ftMSVCWorkspace,
-	ftMSVSWorkspace,
+	ftMSVC6Project,
+	ftMSVC7Project,
+	ftMSVC6Workspace,
+	ftMSVC7Workspace,
 	ftSource,
 	ftHeader,
 	ftObject,
@@ -88,6 +88,15 @@ extern DLLIMPORT bool cbWrite(wxFile& file, const wxString& buff);
 extern DLLIMPORT bool cbSaveToFile(const wxString& filename, const wxString& contents);
 /// Saves a TinyXML document correctly, even if the path contains unicode characters.
 extern DLLIMPORT bool cbSaveTinyXMLDocument(TiXmlDocument* doc, const wxString& filename);
+/// Return @c str as a proper unicode-compatible string
+wxString cbC2U(const char* str);
+/// Return multibyte (C string) representation of the string
+wxWX2MBbuf cbU2C(const wxString& str);
+
+// Convenience macros until we update the codebase...
+// TODO (mandrav##): Remove the leading underscores from the following macros
+#define _U(x) cbC2U(x)
+#define _C(x) cbU2C(x)
 
 extern DLLIMPORT wxString GetStringFromArray(const wxArrayString& array, const wxString& separator = DEFAULT_ARRAY_SEP);
 extern DLLIMPORT wxArrayString GetArrayFromString(const wxString& text, const wxString& separator = DEFAULT_ARRAY_SEP, bool trimSpaces = true);

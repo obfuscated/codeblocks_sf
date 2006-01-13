@@ -167,4 +167,4 @@
 				<SampleCode value="lexer_glsl.sample"
 						error_line="17"/>
 		</Lexer>
-</Code::Blocks_lexer_properties>
+</CodeBlocks_lexer_properties>
