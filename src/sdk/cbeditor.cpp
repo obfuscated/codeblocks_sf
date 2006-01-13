@@ -524,7 +524,7 @@ void cbEditor::SetEditorStyle()
     m_pControl->SetBackSpaceUnIndents(mgr->ReadBool(_T("/backspace_unindents"), true));
     m_pControl->SetWrapMode(mgr->ReadBool(_T("/word_wrap"), false));
     m_pControl->SetViewEOL(mgr->ReadBool(_T("/show_eol"), false));
-    m_pControl->SetViewWhiteSpace(mgr->ReadBool(_T("/view_whitespace"), false));
+    m_pControl->SetViewWhiteSpace(mgr->ReadInt(_T("/view_whitespace"), 0));
 	//gutter
     m_pControl->SetEdgeMode(mgr->ReadInt(_T("/gutter/mode"), 0));
     m_pControl->SetEdgeColour(GetOptionColour(_T("/gutter/color"), *wxLIGHT_GREY));
