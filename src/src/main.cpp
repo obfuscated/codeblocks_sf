@@ -1865,13 +1865,14 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
 	m_LayoutManager.UnInit();
     TerminateRecentFilesHistory();
 
-    // Hide the window
-    Hide();
-
     // remove all other event handlers from this window
     // this stops it from crashing, when no plugins are loaded
     while (GetEventHandler() != this)
         PopEventHandler(false);
+
+    // Hide the window
+    Hide();
+
 	Manager::Shutdown(); // Shutdown() is not Free(), Manager is automatically destroyed at exit
     Destroy();
 }
