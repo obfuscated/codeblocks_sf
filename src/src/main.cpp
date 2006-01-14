@@ -257,8 +257,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idViewFullScreen, MainFrame::OnViewMenuUpdateUI)
 
     EVT_EDITOR_UPDATE_UI(MainFrame::OnEditorUpdateUI)
-    EVT_NOTEBOOK_PAGE_CHANGED(-1, MainFrame::OnEditorUpdateUI_NB)   //tiwag 050917
-
     EVT_PLUGIN_ATTACHED(MainFrame::OnPluginLoaded)
     // EVT_PLUGIN_RELEASED(MainFrame::OnPluginUnloaded)
 
@@ -358,6 +356,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_PROJECT_CLOSE(MainFrame::OnProjectClosed)
 	EVT_EDITOR_CLOSE(MainFrame::OnEditorClosed)
 	EVT_EDITOR_OPEN(MainFrame::OnEditorOpened)
+	EVT_EDITOR_ACTIVATED(MainFrame::OnEditorActivated)
 	EVT_EDITOR_SAVE(MainFrame::OnEditorSaved)
 
 	// dock a window
@@ -2654,12 +2653,6 @@ void MainFrame::OnEditorUpdateUI(CodeBlocksEvent& event)
 	event.Skip();
 }
 
-void MainFrame::OnEditorUpdateUI_NB(wxNotebookEvent& event)     //tiwag 050917
-{                                                               //tiwag 050917
-    if (m_pEdMan ) DoUpdateStatusBar();                         //tiwag 050917
-    event.Skip();                                               //tiwag 050917
-}
-
 void MainFrame::OnToggleOpenFilesTree(wxCommandEvent& event)
 {
     if (Manager::Get()->GetEditorManager()->OpenFilesTreeSupported())
@@ -2848,14 +2841,19 @@ void MainFrame::OnProjectOpened(CodeBlocksEvent& event)
 
 void MainFrame::OnEditorOpened(CodeBlocksEvent& event)
 {
-//    UpdateKeyBinder(m_KeyProfiles);
     DoUpdateAppTitle();
+    event.Skip();
+}
+
+void MainFrame::OnEditorActivated(CodeBlocksEvent& event)
+{
+    DoUpdateAppTitle();
+    DoUpdateStatusBar();
     event.Skip();
 }
 
 void MainFrame::OnEditorClosed(CodeBlocksEvent& event)
 {
-//    UpdateKeyBinder(m_KeyProfiles);
     DoUpdateAppTitle();
     event.Skip();
 }

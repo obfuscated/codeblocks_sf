@@ -140,7 +140,6 @@ class MainFrame : public wxFrame
 
 		// general UpdateUI events
         void OnEditorUpdateUI(CodeBlocksEvent& event);
-        void OnEditorUpdateUI_NB(wxNotebookEvent& event);       //tiwag 050917
 
 		void OnFileMenuUpdateUI(wxUpdateUIEvent& event);
 		void OnEditMenuUpdateUI(wxUpdateUIEvent& event);
@@ -164,6 +163,7 @@ class MainFrame : public wxFrame
 
 		// editor changed events
 		void OnEditorOpened(CodeBlocksEvent& event);
+		void OnEditorActivated(CodeBlocksEvent& event);
 		void OnEditorClosed(CodeBlocksEvent& event);
 		void OnEditorSaved(CodeBlocksEvent& event);
 		void OnPageChanged(wxNotebookEvent& event);

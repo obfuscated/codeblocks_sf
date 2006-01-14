@@ -1230,15 +1230,14 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
     SANITY_CHECK();
 	FileType ft = FileTypeOf(filename);
 
-	if (ft == ftHeader ||
-		ft == ftSource)
+	if (ft == ftHeader || ft == ftSource)
 	{
         // C/C++ header/source files, always get opened inside Code::Blocks
         cbEditor* ed = Manager::Get()->GetEditorManager()->Open(filename);
         if (ed)
         {
             ed->SetProjectFile(pf);
-            ed->Show(true);
+            ed->Activate();
         }
         else
         {
