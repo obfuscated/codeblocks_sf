@@ -681,7 +681,7 @@ void MainFrame::CreateToolbars()
 		}
 	}
 
-	wxSafeYield();
+	Manager::Yield();
 }
 
 void MainFrame::AddToolbarItem(int id, const wxString& title, const wxString& shortHelp, const wxString& longHelp, const wxString& image)
@@ -2707,7 +2707,7 @@ void MainFrame::OnToggleStatusBar(wxCommandEvent& event)
 // under Windows, the statusbar doesn't disappear immediately...
 #ifdef __WXMSW__
     SendSizeEvent(); // make sure everything is laid out properly
-	wxSafeYield();
+	Manager::Yield();
 #endif // __WXMSW__
 	DoUpdateStatusBar();
 }
