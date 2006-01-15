@@ -65,12 +65,12 @@ debug_default="no"
 AC_ARG_ENABLE(debug, [AC_HELP_STRING([--enable-debug], [turn on debugging (default is OFF)])],,
                        enable_debug=$debug_default)
 if test "x$enable_debug" = "xyes"; then
-         CFLAGS="$CFLAGS -g -DDEBUG"
-         CXXFLAGS="$CXXFLAGS -g -DDEBUG"
+         CFLAGS="-g -DDEBUG $CFLAGS"
+         CXXFLAGS="-g -DDEBUG $CXXFLAGS"
 	AC_MSG_RESULT(yes)
 else
-	CFLAGS="$CFLAGS -O2 -ffast-math"
-	CXXFLAGS="$CXXFLAGS -O2 -ffast-math"
+	CFLAGS="-O2 -ffast-math $CFLAGS"
+	CXXFLAGS="-O2 -ffast-math $CXXFLAGS"
 	AC_MSG_RESULT(no)
 fi
 
