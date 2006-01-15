@@ -56,44 +56,54 @@ bool Associations::Check()
 
 void DoSetAssociation(const wxString& ext, const wxString& descr, const wxString& exe, const wxString& icoNum)
 {
-	wxRegKey key; // defaults to HKCR
+	// first determine which key to use
+	// win9x/ME/NT 4 ->ROOT, others USER
+	wxString BaseKeyName(_T("HKEY_CURRENT_USER\\Software\\Classes"));
+	int Major = 0;
+	int WinFamily = wxGetOsVersion(&Major, NULL);
+	if((WinFamily == wxWIN95) || ((WinFamily == wxWINDOWS_NT) && (Major < 5)))
+	{
+		BaseKeyName = _T("HKEY_CLASSES_ROOT");
+	}
+	BaseKeyName += _T("\\");
 
-	key.SetName(_T("HKEY_CLASSES_ROOT\\.") + ext);
+	wxRegKey key; // defaults to HKCR
+	key.SetName(BaseKeyName + _T(".") + ext);
 	key.Create();
 	key = _T("CodeBlocks.") + ext;
 
-	key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext);
+	key.SetName(BaseKeyName + _T("CodeBlocks.") + ext);
 	key.Create();
 	key = descr;
 
-	key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext + _T("\\DefaultIcon"));
+	key.SetName(BaseKeyName + _T("CodeBlocks.") + ext + _T("\\DefaultIcon"));
 	key.Create();
 	key = exe + _T(",") + icoNum;
 
-	key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext + _T("\\shell\\open\\command"));
+	key.SetName(BaseKeyName + _T("CodeBlocks.") + ext + _T("\\shell\\open\\command"));
 	key.Create();
 	key = _T("\"") + exe + _T("\" \"%1\"");
 
-	key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext + _T("\\shell\\open\\ddeexec"));
+	key.SetName(BaseKeyName + _T("CodeBlocks.") + ext + _T("\\shell\\open\\ddeexec"));
 	key.Create();
 	key = _T("[Open(\"%1\")]");
 
-	key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext + _T("\\shell\\open\\ddeexec\\Application"));
+	key.SetName(BaseKeyName + _T("CodeBlocks.") + ext + _T("\\shell\\open\\ddeexec\\Application"));
 	key.Create();
 	key = DDE_SERVICE;
 
-	key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext + _T("\\shell\\open\\ddeexec\\topic"));
+	key.SetName(BaseKeyName + _T("CodeBlocks.") + ext + _T("\\shell\\open\\ddeexec\\topic"));
 	key.Create();
 	key = DDE_TOPIC;
 
 	if(ext.IsSameAs(CODEBLOCKS_EXT) || ext.IsSameAs(WORKSPACE_EXT))
 	{
 	    wxString batchbuildargs = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/batch_build_args"), DEFAULT_BATCH_BUILD_ARGS);
-		key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext + _T("\\shell\\Build\\command"));
+		key.SetName(BaseKeyName + _T("CodeBlocks.") + ext + _T("\\shell\\Build\\command"));
 		key.Create();
 		key = _T("\"") + exe + _T("\" ") + batchbuildargs + _T(" --build \"%1\"");
 
-		key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext + _T("\\shell\\Rebuild (clean)\\command"));
+		key.SetName(BaseKeyName + _T("CodeBlocks.") + ext + _T("\\shell\\Rebuild (clean)\\command"));
 		key.Create();
 		key = _T("\"") + exe + _T("\" ") + batchbuildargs + _T(" --rebuild \"%1\"");
 	}
@@ -101,27 +111,36 @@ void DoSetAssociation(const wxString& ext, const wxString& descr, const wxString
 
 bool DoCheckAssociation(const wxString& ext, const wxString& descr, const wxString& exe, const wxString& icoNum)
 {
-    wxLogNull no_log_here;
+	// first determine which key to use
+	// win9x/ME/NT 4 ->ROOT, others USER
+	wxString BaseKeyName(_T("HKEY_CURRENT_USER\\Software\\Classes"));
+	int Major = 0;
+	int WinFamily = wxGetOsVersion(&Major, NULL);
+	if((WinFamily == wxWIN95) || ((WinFamily == wxWINDOWS_NT) && (Major < 5)))
+	{
+		BaseKeyName = _T("HKEY_CLASSES_ROOT");
+	}
+	BaseKeyName += _T("\\");
+
 	wxRegKey key; // defaults to HKCR
+	key.SetName(BaseKeyName + _T(".") + ext);
+	if (!key.Open())
+        return false;
+
+	key.SetName(BaseKeyName + _T("CodeBlocks.") + ext);
+	if (!key.Open())
+        return false;
+
+	key.SetName(BaseKeyName + _T("CodeBlocks.") + ext + _T("\\DefaultIcon"));
+	if (!key.Open())
+        return false;
 	wxString strVal;
-
-	key.SetName(wxString(_T("HKEY_CLASSES_ROOT\\.")) + ext);
-	if (!key.Open())
-        return false;
-
-	key.SetName(wxString(_T("HKEY_CLASSES_ROOT\\CodeBlocks.")) + ext);
-	if (!key.Open())
-        return false;
-
-	key.SetName(wxString(_T("HKEY_CLASSES_ROOT\\CodeBlocks.")) + ext + _T("\\DefaultIcon"));
-	if (!key.Open())
-        return false;
     if (!key.QueryValue(wxEmptyString, strVal))
         return false;
     if (strVal != wxString::Format(_T("%s,%s"), exe.c_str(), icoNum.c_str()))
         return false;
 
-	key.SetName(wxString(_T("HKEY_CLASSES_ROOT\\CodeBlocks.")) + ext + _T("\\shell\\open\\command"));
+	key.SetName(BaseKeyName + _T("CodeBlocks.") + ext + _T("\\shell\\open\\command"));
 	if (!key.Open())
         return false;
     if (!key.QueryValue(wxEmptyString, strVal))
@@ -129,7 +148,7 @@ bool DoCheckAssociation(const wxString& ext, const wxString& descr, const wxStri
     if (strVal != wxString::Format(_T("\"%s\" \"%%1\""), exe.c_str()))
         return false;
 
-	key.SetName(wxString(_T("HKEY_CLASSES_ROOT\\CodeBlocks.")) + ext + _T("\\shell\\open\\ddeexec"));
+	key.SetName(BaseKeyName + _T("CodeBlocks.") + ext + _T("\\shell\\open\\ddeexec"));
 	if (!key.Open())
         return false;
     if (!key.QueryValue(wxEmptyString, strVal))
@@ -137,7 +156,7 @@ bool DoCheckAssociation(const wxString& ext, const wxString& descr, const wxStri
     if (strVal != _T("[Open(\"%1\")]"))
         return false;
 
-	key.SetName(wxString(_T("HKEY_CLASSES_ROOT\\CodeBlocks.")) + ext + _T("\\shell\\open\\ddeexec\\application"));
+	key.SetName(BaseKeyName + _T("CodeBlocks.") + ext + _T("\\shell\\open\\ddeexec\\application"));
 	if (!key.Open())
         return false;
     if (!key.QueryValue(wxEmptyString, strVal))
@@ -145,7 +164,7 @@ bool DoCheckAssociation(const wxString& ext, const wxString& descr, const wxStri
     if (strVal != DDE_SERVICE)
         return false;
 
-	key.SetName(wxString(_T("HKEY_CLASSES_ROOT\\CodeBlocks.")) + ext + _T("\\shell\\open\\ddeexec\\topic"));
+	key.SetName(BaseKeyName + _T("CodeBlocks.") + ext + _T("\\shell\\open\\ddeexec\\topic"));
 	if (!key.Open())
         return false;
     if (!key.QueryValue(wxEmptyString, strVal))
@@ -156,7 +175,7 @@ bool DoCheckAssociation(const wxString& ext, const wxString& descr, const wxStri
 	if(ext.IsSameAs(CODEBLOCKS_EXT) || ext.IsSameAs(WORKSPACE_EXT))
 	{
 	    wxString batchbuildargs = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/batch_build_args"), DEFAULT_BATCH_BUILD_ARGS);
-		key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext + _T("\\shell\\Build\\command"));
+		key.SetName(BaseKeyName + _T("CodeBlocks.") + ext + _T("\\shell\\Build\\command"));
         if (!key.Open())
             return false;
         if (!key.QueryValue(wxEmptyString, strVal))
@@ -164,7 +183,7 @@ bool DoCheckAssociation(const wxString& ext, const wxString& descr, const wxStri
         if (strVal != _T("\"") + exe + _T("\" ") + batchbuildargs + _T(" --build \"%1\""))
             return false;
 
-		key.SetName(_T("HKEY_CLASSES_ROOT\\CodeBlocks.") + ext + _T("\\shell\\Rebuild (clean)\\command"));
+		key.SetName(BaseKeyName + _T("CodeBlocks.") + ext + _T("\\shell\\Rebuild (clean)\\command"));
         if (!key.Open())
             return false;
         if (!key.QueryValue(wxEmptyString, strVal))
