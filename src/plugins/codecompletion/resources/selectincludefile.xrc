@@ -1,0 +1,50 @@
+<resource>
+    <object class="wxDialog" name="SelectIncludeFile">
+        <title>Candidate include files</title>
+        <centered>1</centered>
+        <style>wxCAPTION|wxTHICK_FRAME|wxSYSTEM_MENU|wxRESIZE_BOX|wxCLOSE_BOX</style>
+        <object class="wxBoxSizer">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <option>1</option>
+                <border>5</border>
+                <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                <object class="wxStaticBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <label>Select the include file from this list</label>
+                    <object class="sizeritem">
+                        <option>1</option>
+                        <border>5</border>
+                        <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                        <object class="wxListBox" name="ID_LISTBOX1">
+                            <size>240,-1</size>
+                            <style>wxLB_HSCROLL</style>
+                        </object>
+                    </object>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <border>5</border>
+                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER</flag>
+                <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                        <border>5</border>
+                        <flag>wxALL|wxALIGN_CENTER</flag>
+                        <object class="wxButton" name="wxID_CANCEL">
+                            <label>Ok</label>
+                            <default>1</default>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <border>5</border>
+                        <flag>wxALL|wxALIGN_CENTER</flag>
+                        <object class="wxButton" name="ID_BUTTON1">
+                            <label>Cancel</label>
+                        </object>
+                    </object>
+                </object>
+            </object>
+        </object>
+    </object>
+</resource>

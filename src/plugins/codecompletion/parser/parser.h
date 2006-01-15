@@ -110,7 +110,7 @@ class Parser : public wxEvtHandler
 
 		void ClearIncludeDirs(){ m_IncludeDirs.Clear(); }
 		void AddIncludeDir(const wxString& dir);
-		wxString FindFileInIncludeDirs(const wxString& file);
+		wxArrayString FindFileInIncludeDirs(const wxString& file);
 
 		TokensTree* GetTokens(){ return m_pTokens; }
 		TokensTree* GetTempTokens() { return m_pTempTokens; }
@@ -118,7 +118,7 @@ class Parser : public wxEvtHandler
 
 		bool Done();
 
-		unsigned int GetMaxThreads(){ return m_MaxThreadsCount; }
+		unsigned int GetMaxThreads()const { return m_MaxThreadsCount; }
 		void SetMaxThreads(unsigned int max){ m_MaxThreadsCount = max; }
 
 		void BuildTree(wxTreeCtrl& tree);
@@ -149,7 +149,7 @@ class Parser : public wxEvtHandler
 		ParserOptions m_Options;
 		BrowserOptions m_BrowserOptions;
 		unsigned int m_MaxThreadsCount;
-		wxPathList m_IncludeDirs;
+		wxArrayString m_IncludeDirs;
 		wxEvtHandler* m_pParent;
 		wxTreeItemId m_RootNode;
 #ifndef STANDALONE

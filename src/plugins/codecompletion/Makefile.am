@@ -21,6 +21,7 @@ libcodecompletion_la_SOURCES = cclist.cpp \
 			codecompletion.cpp \
 			insertclassmethoddlg.cpp \
 			nativeparser.cpp \
+			selectincludefile.cpp \
 			parser/parser.cpp \
 			parser/parserthread.cpp \
 			parser/token.cpp \
@@ -35,6 +36,7 @@ noinst_HEADERS = cclist.h \
 			codecompletion.h \
 			insertclassmethoddlg.h \
 			nativeparser.h \
+			selectincludefile.h \
 			parser/parser.h \
 			parser/parserthread.h \
 			parser/token.h \

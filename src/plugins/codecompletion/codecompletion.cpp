@@ -42,6 +42,7 @@
 #include "ccoptionsdlg.h"
 #include "parser/parser.h"
 #include "cclist.h"
+#include "selectincludefile.h"
 
 CB_IMPLEMENT_PLUGIN(CodeCompletion);
 
@@ -785,17 +786,35 @@ void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
 {
     Parser* parser = m_NativeParsers.FindParserFromActiveEditor();
 	if (!parser)
+	{
 		parser = m_NativeParsers.FindParserFromActiveProject(); // get parser of active project, then
-    if (!parser)
-        return;
+	}
 
-    // search in all parser's include dirs
-    wxString tmp = parser->FindFileInIncludeDirs(m_LastIncludeFile);
-    if (!tmp.IsEmpty())
+    if (parser)
     {
-        EditorManager* edMan = Manager::Get()->GetEditorManager();
-        edMan->Open(tmp);
-        return;
+		// search in all parser's include dirs
+		wxString tmp;
+		wxArrayString FoundSet = parser->FindFileInIncludeDirs(m_LastIncludeFile);
+		if(FoundSet.GetCount() > static_cast<size_t>(1))
+		{	// more then 1 hit : let the user choose
+			SelectIncludeFile Dialog(Manager::Get()->GetAppWindow());
+			Dialog.AddListEntries(FoundSet);
+			if(Dialog.ShowModal() == wxID_OK)
+			{
+			  tmp = Dialog.GetIncludeFile();
+			}
+		}
+		else if(FoundSet.GetCount())
+		{
+			tmp = FoundSet[0];
+		}
+
+		if (!tmp.IsEmpty())
+		{
+			EditorManager* edMan = Manager::Get()->GetEditorManager();
+			edMan->Open(tmp);
+			return;
+		}
     }
 
     // look in the same dir as the source file
@@ -809,4 +828,4 @@ void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
     }
 
     wxMessageBox(wxString::Format(_("Not found: %s"), m_LastIncludeFile.c_str()), _("Warning"), wxICON_WARNING);
-}
+} // end of OnOpenIncludeFile

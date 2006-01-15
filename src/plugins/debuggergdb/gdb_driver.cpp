@@ -78,11 +78,12 @@ void GDB_driver::Prepare(bool isConsole)
 
     // pass user init-commands
     wxString init = Manager::Get()->GetConfigManager(_T("debugger"))->Read(_T("init_commands"), wxEmptyString);
-    wxArrayString initCmds = GetArrayFromString(init, _T('\n'));
-    for (unsigned int i = 0; i < initCmds.GetCount(); ++i)
-    {
-        QueueCommand(new DebuggerCmd(this, initCmds[i]));
-    }
+    QueueCommand(new DebuggerCmd(this, init));
+//    wxArrayString initCmds = GetArrayFromString(init, _T('\n'));
+//    for (unsigned int i = 0; i < initCmds.GetCount(); ++i)
+//    {
+//        QueueCommand(new DebuggerCmd(this, initCmds[i]));
+//    }
 
     // set working directory
     if (!m_WorkingDir.IsEmpty())

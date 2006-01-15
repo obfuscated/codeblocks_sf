@@ -39,6 +39,7 @@
 #include "classbrowser.h"
 #include "parser/parser.h"
 #include <compilerfactory.h>
+#include <wx/regex.h>
 #include <wxFlatNotebook/wxFlatNotebook.h>
 
 #include <wx/wfstream.h>
@@ -196,6 +197,12 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
         }
     }
 
+	// alloc array for target's compilers and project compiler
+	int nCompilers = 1 + project->GetBuildTargetsCount();
+	Compiler** Compilers = new Compiler* [nCompilers];
+	memset(Compilers, 0, sizeof(Compiler*) * nCompilers);
+	nCompilers = 0; // reset , use as insert index in the next for loop
+
     // get targets include dirs
     for (int i = 0; i < project->GetBuildTargetsCount(); ++i)
     {
@@ -218,13 +225,28 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
 //                    Manager::Get()->GetMessageManager()->DebugLog("Parser tgt dir: " + dir.GetFullPath());
                 }
             }
+            // get the compiler
+            int CompilerIndex = target->GetCompilerIndex();
+			if (CompilerFactory::Compilers.GetCount() > 0 && CompilerFactory::CompilerIndexOK(CompilerIndex))
+			{
+				// QUESTION for YIANNIS : can we assume that this pointer is not NULL ? I did.
+				Compilers[nCompilers] = CompilerFactory::Compilers[CompilerIndex];
+				Compilers[nCompilers]->GetCustomVars().ApplyVarsToEnvironment();
+				++nCompilers;
+			}
         }
-    }
-
+    } // end loop over the targets
+	// add the project compiler to the array of compilers
+	if(compiler)
+	{ // note it might be possible that this compiler is already in the list
+		// no need to worry since the compiler list of the parser will filter out duplicate
+		// entries in the include dir list
+		Compilers[nCompilers++] = compiler;
+	}
     // add compiler include dirs
-	if (compiler)
+	for (int idxCompiler = 0; idxCompiler < nCompilers; ++idxCompiler)
 	{
-		const wxArrayString& dirs = compiler->GetIncludeDirs();
+		const wxArrayString& dirs = (Compilers[idxCompiler])->GetIncludeDirs();
 		for (unsigned int i = 0; i < dirs.GetCount(); ++i)
 		{
 			//Manager::Get()->GetMessageManager()->Log(mltDevDebug, "Adding %s", dirs[i].c_str());
@@ -237,13 +259,79 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
             if (dir.IsOk())
             {
                 parser->AddIncludeDir(dir.GetFullPath());
-//                Manager::Get()->GetMessageManager()->DebugLog("Parser cmp dir: " + dir.GetFullPath());
-            }
+                Manager::Get()->GetMessageManager()->DebugLog(_T("Parser cmp dir: ") + dir.GetFullPath());
+			}
 		}
-	}
-	else
+		// find out which compiler, if gnu, do the special trick
+		// to find it's internal include paths
+		wxString CompilerName = (Compilers[idxCompiler])->GetName();
+		if(CompilerName == _("GNU GCC Compiler"))
+		{ // for starters , only do this for gnu compiler
+			Manager::Get()->GetMessageManager()->DebugLog(_T("CompilerName ") + CompilerName);
+			//	wxString Command("mingw32-g++ -v -E -x c++ - < nul");
+			// specifying "< nul", does not seem to work
+			// workaround : create a dummy file (let's hope it does not exist)
+			// do the trick only for c++, not needed then for C (since this is a subset of C++)
+			wxString DummyFileName = wxFileName::CreateTempFileName(_T("Dummy_z4hsdkl9nf7ba3L9nv41"));
+			if(!DummyFileName.IsEmpty())
+			{
+				// let's construct the command
+				wxString Command = ((Compilers[idxCompiler])->GetPrograms()).CPP;
+				Command += _(" -v -E -x c++ ") + DummyFileName;
+				// action time  (everything shows up on the error stream
+				wxArrayString Output, Errors;
+				wxExecute(Command, Output, Errors);
+				int nCount = Errors.GetCount();
+				// the include dir (1 per line) show up between the lines
+				// #include <...> search starts here:
+				// End of search list
+				//   let's hope this does not change too quickly, otherwise we need
+				// to adjust our search code (for several versions ...)
+				bool bStart = false;
+				for(int idxCount = 0; idxCount < nCount; ++idxCount)
+				{
+					if(Errors[idxCount] == _("#include <...> search starts here:"))
+					{
+						bStart = true;
+					}
+					else if(Errors[idxCount] == _("End of search list."))
+					{
+						bStart = false; // could jump out of for loop if we want
+					}
+					else if(bStart)
+					{
+						// Manager::Get()->GetMessageManager()->DebugLog("include dir " + Errors[idxCount]);
+						// get rid of the leading space (more general : any whitespace)in front
+						wxRegEx reg(_T("^[ \t]*(.*)"));
+						if(reg.Matches(Errors[idxCount]))
+						{
+							wxString out = reg.GetMatch(Errors[idxCount], 1);
+							if(!out.IsEmpty())
+							{
+								wxFileName dir(out);
+								wxLogNull ln; // hide the error log about "too many ..", if the relative path is invalid
+								if (!dir.IsAbsolute())
+									dir.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
+								if (dir.IsOk())
+								{
+									parser->AddIncludeDir(dir.GetFullPath());
+//									Manager::Get()->GetMessageManager()->DebugLog("Parser internal cmp dir: " + dir.GetFullPath());
+								}
+							}
+						}
+					}
+				} // end for : idx : idxCount
+				// clean up our temp file
+				::wxRemoveFile(DummyFileName);
+			} // Dummy is open
+		} // GNU GCC compiler
+	} // end of while loop over the found compilers
+	if(!nCompilers)
+	{
 		Manager::Get()->GetMessageManager()->DebugLog(_("No compilers found!"));
-}
+	}
+	delete [] Compilers;
+} // end of AddCompilerDirs
 
 void NativeParser::AddParser(cbProject* project, bool useCache)
 {

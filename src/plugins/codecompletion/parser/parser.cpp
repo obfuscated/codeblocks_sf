@@ -691,14 +691,30 @@ void Parser::ResumeAllThreads()
 
 void Parser::AddIncludeDir(const wxString& file)
 {
-    if (!m_IncludeDirs.Member(file))
-        m_IncludeDirs.Add(file);
-}
+	if(m_IncludeDirs.Index(file) == wxNOT_FOUND)
+	{
+//    	Manager::Get()->GetMessageManager()->DebugLog(_("Adding %s"), file.c_str());
+		m_IncludeDirs.Add(file);
+	}
+} // end of AddIncludeDir
 
-wxString Parser::FindFileInIncludeDirs(const wxString& file)
+wxArrayString Parser::FindFileInIncludeDirs(const wxString& file)
 {
-    return m_IncludeDirs.FindAbsoluteValidPath(file);
-}
+	wxArrayString FoundSet;
+	for(size_t idxSearch = 0; idxSearch < m_IncludeDirs.GetCount(); ++idxSearch)
+	{
+		wxString base = m_IncludeDirs[idxSearch];
+		wxFileName tmp = file;
+		tmp.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
+		if(wxFileExists(tmp.GetFullPath()))
+		{
+			FoundSet.Add(tmp.GetFullPath());
+		}
+	} // end for : idx : idxSearch
+//	Manager::Get()->GetMessageManager()->DebugLog(_("Searching %s"), file.c_str());
+//	Manager::Get()->GetMessageManager()->DebugLog(_("Found %d"), FoundSet.GetCount());
+	return FoundSet;
+} // end of FindFileInIncludeDirs
 
 void Parser::OnStartThread(CodeBlocksEvent& event)
 {
@@ -754,7 +770,9 @@ void Parser::OnParseFile(wxCommandEvent& event)
     // search
 	if (m_Options.followGlobalIncludes)
 	{
-	    wxString g = UnixFilename(m_IncludeDirs.FindAbsoluteValidPath(tgt));
+		wxArrayString FoundSet = FindFileInIncludeDirs(tgt);
+		wxString FirstFound = FoundSet.GetCount()?FoundSet[0]:_T("");
+		wxString g = UnixFilename(FirstFound);
 	    if (g.IsEmpty())
 	    {
 //            Manager::Get()->GetMessageManager()->DebugLog(_T("? No include looking for %s, ? %s"), tgt.c_str(), filename.c_str());
