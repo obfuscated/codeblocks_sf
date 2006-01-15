@@ -13,6 +13,7 @@
 #define MESSAGEMANAGER_H
 
 #include "settings.h"
+#include "manager.h"
 #include "messagelog.h"
 #include <wx/hashmap.h>
 #include <wx/menu.h>

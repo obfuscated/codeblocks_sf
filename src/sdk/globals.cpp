@@ -468,7 +468,7 @@ wxWX2MBbuf cbU2C(const wxString& str)
 #if wxUSE_UNICODE
     return str.mb_str(wxConvLocal);
 #else
-    return str.mb_str();
+    return (wxChar*)str.mb_str();
 #endif
 }
 

@@ -3,6 +3,7 @@
 
 #include <wx/event.h>
 #include "settings.h"
+#include "manager.h"
 #include "menuitemsmanager.h"
 #include "sanitycheck.h"
 

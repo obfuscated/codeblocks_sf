@@ -2,6 +2,7 @@
 #define TEMPLATEMANAGER_H
 
 #include "settings.h"
+#include "manager.h"
 #include "newfromtemplatedlg.h"
 #include <wx/event.h>
 

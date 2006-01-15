@@ -6,6 +6,7 @@
 #include <wx/hashmap.h>
 
 #include "settings.h"
+#include "manager.h"
 #include "sanitycheck.h"
 
 #include "openfilestree.h"

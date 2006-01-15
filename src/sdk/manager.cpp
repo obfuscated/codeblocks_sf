@@ -30,6 +30,7 @@
 #include <wx/toolbar.h>
 
 #include "manager.h" // class's header file
+#include "cbexception.h"
 #include "projectmanager.h"
 #include "editormanager.h"
 #include "messagemanager.h"

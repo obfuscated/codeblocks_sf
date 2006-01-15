@@ -7,6 +7,7 @@
 #include <wx/treectrl.h>
 #include "sanitycheck.h"
 #include "settings.h"
+#include "manager.h"
 
 // forward decls
 class wxMenuBar;

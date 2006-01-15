@@ -13,6 +13,7 @@
 #define PERSONALITYMANAGER_H
 
 #include "settings.h"
+#include "manager.h"
 #include <wx/dynarray.h>
 
 /** @brief Manage different personalities.

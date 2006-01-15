@@ -2,6 +2,7 @@
 #define MACROSMANAGER_H
 
 #include "settings.h"
+#include "manager.h"
 #include "sanitycheck.h"
 #include <wx/regex.h>
 #include <wx/filename.h>

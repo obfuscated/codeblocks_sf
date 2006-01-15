@@ -3,6 +3,7 @@
 
 #include <wx/dynarray.h>
 #include "settings.h"
+#include "manager.h"
 #include "sdk_events.h"
 #include "sanitycheck.h"
 
