@@ -413,10 +413,6 @@ void PluginWizardDlg::CreateFiles()
 		buffer << _T('\n');
 	}
 
-	buffer << _T("#if defined(__GNUG__) && !defined(__APPLE__)") << _T('\n');
-	buffer << _T("\t#pragma interface \"") << headerFname.GetFullName() << _T("\"") << _T('\n');
-	buffer << _T("#endif") << _T('\n');
-
 	buffer << _T("// For compilers that support precompilation, includes <wx/wx.h>") << _T('\n');
 	buffer << _T("#include <wx/wxprec.h>") << _T('\n');
 	buffer << _T('\n');
@@ -518,10 +514,6 @@ void PluginWizardDlg::CreateFiles()
 	buffer << _T(" * Copyright: (c) ") << m_Info.author <<  _T('\n');
 	buffer << _T(" * License:   GPL") << _T('\n');
 	buffer << _T(" **************************************************************/") << _T('\n');
-	buffer << _T('\n');
-	buffer << _T("#if defined(__GNUG__) && !defined(__APPLE__)") << _T('\n');
-	buffer << _T("\t#pragma implementation \"") << headerFname.GetFullName() << _T("\"") << _T('\n');
-	buffer << _T("#endif") << _T('\n');
 	buffer << _T('\n');
 	buffer << _T("#include \"") << headerFname.GetFullName() << _T("\"") << _T('\n');
 	buffer << _T("#include <licenses.h> // defines some common licenses (like the GPL)") << _T('\n');

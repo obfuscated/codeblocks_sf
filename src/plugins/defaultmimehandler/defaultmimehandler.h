@@ -10,11 +10,6 @@
 #ifndef DEFAULTMIMEHANDLER_H
 #define DEFAULTMIMEHANDLER_H
 
-#ifdef __WXMSW__
-    #if defined(__GNUG__) && !defined(__APPLE__)
-        #pragma interface "defaultmimehandler.h"
-    #endif
-#endif
 // For compilers that support precompilation, includes <wx/wx.h>
 #include <wx/wxprec.h>
 

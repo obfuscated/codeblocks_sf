@@ -10,9 +10,6 @@
 #ifndef ASTYLEPLUGIN_H
 #define ASTYLEPLUGIN_H
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-	#pragma interface "astyle.h"
-#endif
 // For compilers that support precompilation, includes <wx/wx.h>
 #include <wx/wxprec.h>
 

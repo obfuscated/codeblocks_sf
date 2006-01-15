@@ -10,11 +10,6 @@
 #ifndef MIMETYPESARRAY_H
 #define MIMETYPESARRAY_H
 
-#ifdef __WXMSW__
-    #if defined(__GNUG__) && !defined(__APPLE__)
-        #pragma interface "mimetypesarray.h"
-    #endif
-#endif
 // For compilers that support precompilation, includes <wx/wx.h>
 #include <wx/wxprec.h>
 
@@ -32,15 +27,15 @@ struct cbMimeType
 {
     // e.g. "*.xrc" - case insensitive
     wxString wildcard;
-    
+
     // e.g. "C:\Tools\XRCed.exe $(FILE)" - program to open this file
     // $(FILE) is substituted by the file in question
     // used only if useEditor == false
     wxString program;
-    
+
     // if true, open it in the Code::Blocks editor, else use "program"
     bool useEditor;
-    
+
     // should the IDE be disabled while working on this file?
     // valid only for external programs...
     bool programIsModal;

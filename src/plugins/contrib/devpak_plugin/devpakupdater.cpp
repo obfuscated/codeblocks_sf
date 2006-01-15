@@ -7,10 +7,6 @@
  * License:   GPL
  **************************************************************/
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-	#pragma implementation "devpakupdater.h"
-#endif
-
 #include "devpakupdater.h"
 #include "updatedlg.h"
 #include "conf.h"

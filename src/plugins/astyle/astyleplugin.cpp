@@ -9,10 +9,6 @@
 
 #include <sdk.h>
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-	#pragma implementation "astyle.h"
-#endif
-
 #include "astyleplugin.h"
 #include <cbexception.h>
 #include <licenses.h>

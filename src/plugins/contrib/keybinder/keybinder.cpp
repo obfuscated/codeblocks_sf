@@ -16,10 +16,6 @@
 
 #define NOT !
 
-#ifdef __GNUG__
-#pragma implementation "keybinder.h"
-#endif
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 

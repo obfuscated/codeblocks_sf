@@ -18,10 +18,6 @@
 #ifndef __KEYBINDER_G__
 #define __KEYBINDER_G__
 
-#ifdef __GNUG__
-#pragma interface "keybinder.h"
-#endif
-
 // required includes
 #include "keybinderdef.h"
 #include "wx/panel.h"

@@ -6,10 +6,6 @@
  * License:   GPL
  **************************************************************/
 
-#if defined(__GNUG__) && !defined(__APPLE__)
- #pragma implementation "exporter.h"
-#endif
-
 #include "exporter.h"
 #include <configmanager.h>
 #include <manager.h>

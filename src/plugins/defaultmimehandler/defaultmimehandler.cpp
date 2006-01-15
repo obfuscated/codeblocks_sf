@@ -9,10 +9,6 @@
 
 #include <sdk.h>
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-	#pragma implementation "defaultmimehandler.h"
-#endif
-
 #include "defaultmimehandler.h"
 #include <manager.h>
 #include <editormanager.h>

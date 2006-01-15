@@ -10,9 +10,6 @@
 #ifndef WXSMITH_H
 #define WXSMITH_H
 
-//#if defined(__GNUG__) && !defined(__APPLE__)
-//	#pragma interface "wxsmith.h"
-//#endif
 // For compilers that support precompilation, includes <wx/wx.h>
 #include <wx/wxprec.h>
 
@@ -98,7 +95,7 @@ class wxSmith : public cbPlugin
 
         /* Singleton object */
         static wxSmith* Singleton;
-        
+
         friend class wxSmithMime;
 
 		DECLARE_EVENT_TABLE()

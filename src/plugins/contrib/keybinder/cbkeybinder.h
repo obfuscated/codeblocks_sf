@@ -28,9 +28,6 @@
 #ifndef CBKEYBINDER_H
 #define CBKEYBINDER_H
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-	#pragma interface "cbkeybinder.h"
-#endif
 // For compilers that support precompilation, includes <wx/wx.h>
 #include <wx/wxprec.h>
 

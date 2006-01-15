@@ -10,9 +10,6 @@
 #ifndef TODOLIST_H
 #define TODOLIST_H
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-	#pragma interface "todolist.h"
-#endif
 // For compilers that support precompilation, includes <wx/wx.h>
 #include <wx/wxprec.h>
 

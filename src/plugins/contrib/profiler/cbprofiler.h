@@ -11,10 +11,6 @@
 #ifndef CBPROFILER_H
 #define CBPROFILER_H
 
-//#if defined(__GNUG__) && !defined(__APPLE__)
-//	#pragma interface "cbprofiler.h"
-//#endif
-// For compilers that support precompilation, includes <wx/wx.h>
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__

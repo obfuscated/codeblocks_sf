@@ -6,10 +6,6 @@
  * License:   wxWindows License
  **************************************************************/
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-	#pragma implementation "copystrings.h"
-#endif
-
 #include "copystrings.h"
 #include <licenses.h> // defines some common licenses (like the GPL)
 #include <wx/clipbrd.h>

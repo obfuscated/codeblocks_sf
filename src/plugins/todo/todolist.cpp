@@ -9,10 +9,6 @@
 
 #include <sdk.h>
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-	#pragma implementation "todolist.h"
-#endif
-
 #include <wx/intl.h>
 #include <wx/textdlg.h>
 #include <wx/xrc/xmlres.h>

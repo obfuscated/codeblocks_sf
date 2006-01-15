@@ -17,10 +17,6 @@
 
 
 
-#ifdef __GNUG__
-#pragma implementation "menuutils.h"
-#endif
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
