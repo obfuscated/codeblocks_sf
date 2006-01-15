@@ -498,7 +498,7 @@ void Parser::Clear()
     DisconnectEvents();
 //    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Terminating all threads..."));
 	TerminateAllThreads();
-    Manager::Yield();
+    Manager::ProcessPendingEvents();
 	wxSleep(0);
 
 	{
@@ -514,7 +514,7 @@ void Parser::Clear()
     m_LocalFiles.clear();
 
 //    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: wxSafeYield..."));
-	Manager::Yield();
+	Manager::ProcessPendingEvents();
 //    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: Connecting Events..."));
 	ConnectEvents();
 

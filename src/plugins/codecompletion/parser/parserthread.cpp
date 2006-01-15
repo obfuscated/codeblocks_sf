@@ -142,7 +142,7 @@ void ParserThread::Log(const wxString& log)
 	event.SetString(log);
 	event.SetInt(m_Tokenizer.GetLineNumber());
 	wxPostEvent(m_pParent, event);
-	Manager::Yield();
+	Manager::ProcessPendingEvents();
 }
 
 void ParserThread::SetTokens(TokensTree* tokens)

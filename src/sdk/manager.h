@@ -48,6 +48,7 @@ public:
     static void BlockYields(bool block);
     /// Whenever you need to call wxYield(), call Manager::Yield(). It's safer.
     static void Yield();
+    static void ProcessPendingEvents();
     static void Shutdown();
     bool ProcessEvent(CodeBlocksEvent& event);
 

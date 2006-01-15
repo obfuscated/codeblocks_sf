@@ -40,6 +40,7 @@ class DirectCommands
 		wxArrayString GetCleanCommands(ProjectBuildTarget* target, bool distclean = false);
 		wxArrayString GetCleanSingleFileCommand(const wxString& filename);
 		wxArrayString GetTargetCleanCommands(ProjectBuildTarget* target, bool distclean = false);
+		bool m_doYield;
 	protected:
         bool AreExternalDepsOutdated(const wxString& buildOutput, const wxString& additionalFiles, const wxString& externalDeps);
         bool IsObjectOutdated(const pfDetails& pfd);

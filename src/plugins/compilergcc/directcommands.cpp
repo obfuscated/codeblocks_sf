@@ -26,7 +26,8 @@ DirectCommands::DirectCommands(CompilerGCC* compilerPlugin,
                                 Compiler* compiler,
                                 cbProject* project,
                                 int logPageIndex)
-    : m_PageIndex(logPageIndex),
+    : m_doYield(false),
+    m_PageIndex(logPageIndex),
     m_pCompilerPlugin(compilerPlugin),
     m_pGenerator(generator),
     m_pCompiler(compiler),
@@ -106,6 +107,8 @@ MyFilesArray DirectCommands::GetProjectFilesSortedByWeight(ProjectBuildTarget* t
         if (target && (pf->buildTargets.Index(target->GetTitle()) == wxNOT_FOUND))
             continue;
         files.Add(pf);
+        if(m_doYield)
+            Manager::Yield();
     }
     files.Sort(MySortProjectFilesByWeight);
     return files;
@@ -371,6 +374,8 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
             wxArrayString filecmd = GetCompileFileCommand(target, pf);
             AppendArray(filecmd, ret);
         }
+        if(m_doYield)
+            Manager::Yield();
     }
 
     // add link command
@@ -403,6 +408,8 @@ wxArrayString DirectCommands::GetPreBuildCommands(ProjectBuildTarget* target)
             buildcmds.Insert(wxString(COMPILER_SIMPLE_LOG) + _("Running target pre-build steps"), 0);
         else
             buildcmds.Insert(wxString(COMPILER_SIMPLE_LOG) + _("Running project pre-build steps"), 0);
+        if(m_doYield)
+            Manager::Yield();
     }
     return buildcmds;
 }
@@ -426,6 +433,8 @@ wxArrayString DirectCommands::GetPostBuildCommands(ProjectBuildTarget* target)
             buildcmds.Insert(wxString(COMPILER_SIMPLE_LOG) + _("Running target post-build steps"), 0);
         else
             buildcmds.Insert(wxString(COMPILER_SIMPLE_LOG) + _("Running project post-build steps"), 0);
+        if(m_doYield)
+            Manager::Yield();
     }
     return buildcmds;
 }
@@ -511,6 +520,8 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
             if (objtime > outputtime)
                 force = true;
         }
+        if(m_doYield)
+            Manager::Yield();
     }
 
     if (!force)
@@ -623,6 +634,8 @@ wxArrayString DirectCommands::GetTargetCleanCommands(ProjectBuildTarget* target,
         ret.Add(pfd.object_file_absolute_native);
         if (distclean)
             ret.Add(pfd.dep_file_absolute_native);
+        if(m_doYield)
+            Manager::Yield();
     }
 
     // add target output

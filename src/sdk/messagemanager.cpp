@@ -144,9 +144,9 @@ void MessageManager::Log(const wxChar* msg, ...)
     va_end(arg_list);
 
     m_Logs[m_AppLog]->AddLog(tmp);
-    m_Logs[m_AppLog]->Refresh();
+//    m_Logs[m_AppLog]->Refresh();
 
-	Manager::Yield();
+	Manager::ProcessPendingEvents();
 }
 
 void MessageManager::DebugLog(const wxChar* msg, ...)
@@ -167,9 +167,9 @@ void MessageManager::DebugLog(const wxChar* msg, ...)
     m_Logs[m_DebugLog]->AddLog(_T("[") + ts + _T("]: ") + tmp);
 //    m_Logs[mltDebug]->AddLog(_T("[") + timestamp.Format(_T("%X.%l")) + _T("]: ") + tmp);
 //    m_Logs[mltDebug]->AddLog(tmp);
-    m_Logs[m_DebugLog]->Refresh();
+//    m_Logs[m_DebugLog]->Refresh();
 
-	Manager::Yield();
+	Manager::ProcessPendingEvents();
 }
 
 void MessageManager::DebugLogWarning(const wxChar* msg, ...)
@@ -252,9 +252,9 @@ void MessageManager::Log(int id, const wxChar* msg, ...)
     va_end(arg_list);
 
     m_Logs[id]->AddLog(tmp);
-    m_Logs[id]->Refresh();
+//    m_Logs[id]->Refresh();
 
-    Manager::Yield();
+    Manager::ProcessPendingEvents();
 }
 
 void MessageManager::AppendLog(const wxChar* msg, ...)
@@ -268,8 +268,8 @@ void MessageManager::AppendLog(const wxChar* msg, ...)
     va_end(arg_list);
 
     m_Logs[m_AppLog]->AddLog(tmp, false);
-    m_Logs[m_AppLog]->Refresh();
-	Manager::Yield();
+//    m_Logs[m_AppLog]->Refresh();
+	Manager::ProcessPendingEvents();
 }
 
 void MessageManager::AppendLog(int id, const wxChar* msg, ...)
@@ -286,8 +286,8 @@ void MessageManager::AppendLog(int id, const wxChar* msg, ...)
     va_end(arg_list);
 
     m_Logs[id]->AddLog(tmp, false);
-    m_Logs[id]->Refresh();
-	Manager::Yield();
+//    m_Logs[id]->Refresh();
+	Manager::ProcessPendingEvents();
 }
 
 // switch to log page

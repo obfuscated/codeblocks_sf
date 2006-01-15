@@ -420,7 +420,7 @@ bool CodeBlocksApp::OnInit()
 
         CodeBlocksEvent event(cbEVT_APP_STARTUP_DONE);
         Manager::Get()->ProcessEvent(event);
-        Manager::Yield();
+        Manager::ProcessPendingEvents();
 
         // run startup script
         Manager::Get()->GetScriptingManager()->LoadScript(_T("startup.script"));
@@ -563,7 +563,7 @@ void CodeBlocksApp::ShowSplashScreen()
 										6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
 										wxBORDER_NONE);
 		}
-		Manager::Yield();
+		Manager::ProcessPendingEvents();
 	}
 }
 

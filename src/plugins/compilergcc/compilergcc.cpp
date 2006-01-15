@@ -946,6 +946,7 @@ void CompilerGCC::DoPrepareQueue()
         DoClearErrors();
 		wxStartTimer();
 	}
+    Manager::Yield();
 }
 
 ProjectBuildTarget* CompilerGCC::DoAskForTarget()
@@ -1536,6 +1537,7 @@ BuildState CompilerGCC::GetNextStateBasedOnJob()
 
 void CompilerGCC::BuildStateManagement()
 {
+    Manager::Yield();
     if (!m_pBuildingProject)
     {
         ResetBuildState();
@@ -1576,6 +1578,7 @@ void CompilerGCC::BuildStateManagement()
 
     m_pBuildingProject->SetCurrentlyCompilingTarget(bt);
     DirectCommands dc(this, &m_Generator, CompilerFactory::Compilers[m_CompilerIdx], m_pBuildingProject, m_PageIndex);
+    dc.m_doYield = true;
 
 //    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("*****> m_BuildState=%s, m_NextBuildState=%s, m_pBuildingProject=%p, bt=%p"), StateToString(m_BuildState).c_str(), StateToString(m_NextBuildState).c_str(), m_pBuildingProject, bt);
     m_BuildState = m_NextBuildState;
@@ -1652,6 +1655,7 @@ void CompilerGCC::BuildStateManagement()
     }
     m_NextBuildState = GetNextStateBasedOnJob();
     AddToCommandQueue(cmds);
+    Manager::Yield();
 }
 
 int CompilerGCC::DoBuild(cbProject* prj)

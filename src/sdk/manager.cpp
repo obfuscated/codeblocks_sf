@@ -82,6 +82,12 @@ void Manager::BlockYields(bool block)
     blockYields = block;
 }
 
+void Manager::ProcessPendingEvents()
+{
+    if (!blockYields && !appShuttingDown)
+        wxTheApp->ProcessPendingEvents();
+}
+
 void Manager::Yield()
 {
     if (!blockYields && !appShuttingDown)
