@@ -45,11 +45,11 @@
 cbProject* g_LastUsedProject = 0;
 
 BEGIN_EVENT_TABLE(FindDlg, wxDialog)
-	EVT_TEXT(XRCID("cmbFind1"),			FindDlg::OnFindChange)
-	EVT_TEXT(XRCID("cmbFind2"),			FindDlg::OnFindChange)
-	EVT_CHECKBOX(XRCID("chkRegEx1"), 	FindDlg::OnRegEx)
-	EVT_BUTTON(XRCID("btnBrowsePath"), 	FindDlg::OnBrowsePath)
-	EVT_UPDATE_UI(-1, 	                FindDlg::OnUpdateUI)
+    EVT_NOTEBOOK_PAGE_CHANGED(XRCID("nbFind"), FindDlg::OnFindChange)
+    EVT_CHECKBOX(XRCID("chkRegEx1"),    FindDlg::OnRegEx)
+    EVT_BUTTON(XRCID("btnBrowsePath"),  FindDlg::OnBrowsePath)
+    EVT_RADIOBOX(XRCID("rbScope2"),     FindDlg::OnRadioBox)
+    EVT_ACTIVATE(                       FindDlg::OnActivate)
 END_EVENT_TABLE()
 
 FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection, bool findInFilesOnly)
@@ -90,6 +90,7 @@ FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection, b
 	XRCCTRL(*this, "chkRegEx2", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/regex2"), false));
 	XRCCTRL(*this, "chkDelOldSearchRes2", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/delete_old_searches2"), true));
 	XRCCTRL(*this, "rbScope2", wxRadioBox)->SetSelection(cfg->ReadInt(CONF_GROUP _T("/scope2"), 0));
+    UpdateUI();
 
 	// find in files search path options
     cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
@@ -100,17 +101,13 @@ FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection, b
     }
     else
         XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->SetValue(cfg->Read(CONF_GROUP _T("/search_path")));
+
     XRCCTRL(*this, "txtSearchMask", wxTextCtrl)->SetValue(cfg->Read(CONF_GROUP _T("/search_mask")));
     XRCCTRL(*this, "chkSearchRecursively", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/search_recursive"), false));
     XRCCTRL(*this, "chkSearchHidden", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/search_hidden"), false));
 
 	if (!m_Complete)
-    {
         XRCCTRL(*this, "nbFind", wxNotebook)->DeletePage(0); // no active editor, so only find-in-files
-        XRCCTRL(*this, "cmbFind2", wxComboBox)->SetFocus();
-    }
-    else
-        XRCCTRL(*this, "cmbFind1", wxComboBox)->SetFocus();
 }
 
 FindDlg::~FindDlg()
@@ -262,17 +259,29 @@ wxString FindDlg::GetSearchMask()
     return XRCCTRL(*this, "txtSearchMask", wxTextCtrl)->GetValue();
 }
 
+void FindDlg::UpdateUI()
+{
+    bool on = XRCCTRL(*this, "rbScope2", wxRadioBox)->GetSelection() == 2; // find in search path
+    XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->Enable(on);
+    XRCCTRL(*this, "txtSearchMask", wxTextCtrl)->Enable(on);
+    XRCCTRL(*this, "btnBrowsePath", wxButton)->Enable(on);
+}
+
 // events
 
-void FindDlg::OnFindChange(wxCommandEvent& event)
+void FindDlg::OnFindChange(wxNotebookEvent& event)
 {
     wxComboBox* cmbFind1 = XRCCTRL(*this, "cmbFind1", wxComboBox);
     wxComboBox* cmbFind2 = XRCCTRL(*this, "cmbFind2", wxComboBox);
 
-	if (cmbFind2 && event.GetId() == XRCID("cmbFind1"))
-		cmbFind2->SetValue(cmbFind1->GetValue());
-	else if (cmbFind1)
-		cmbFind1->SetValue(cmbFind2->GetValue());
+    if (cmbFind1 && cmbFind2)
+    {
+        if (XRCCTRL(*this, "nbFind", wxNotebook)->GetSelection() == 1)
+            cmbFind2->SetValue(cmbFind1->GetValue());
+        else
+            cmbFind1->SetValue(cmbFind2->GetValue());
+    }
+    event.Skip();
 }
 
 void FindDlg::OnRegEx(wxCommandEvent& event)
@@ -289,12 +298,19 @@ void FindDlg::OnBrowsePath(wxCommandEvent& event)
         XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->SetValue(dir);
 }
 
-void FindDlg::OnUpdateUI(wxUpdateUIEvent& event)
+void FindDlg::OnRadioBox(wxCommandEvent& event)
 {
-    bool on = XRCCTRL(*this, "rbScope2", wxRadioBox)->GetSelection() == 2; // find in search path
-    XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->Enable(on);
-    XRCCTRL(*this, "txtSearchMask", wxTextCtrl)->Enable(on);
-    XRCCTRL(*this, "btnBrowsePath", wxButton)->Enable(on);
+    UpdateUI();
+    event.Skip();
+}
+
+void FindDlg::OnActivate(wxActivateEvent& event)
+{
+    if (!m_Complete && XRCCTRL(*this, "cmbFind2", wxComboBox))
+        XRCCTRL(*this, "cmbFind2", wxComboBox)->SetFocus();
+    else
+        XRCCTRL(*this, "cmbFind1", wxComboBox)->SetFocus();
 
     event.Skip();
 }
+

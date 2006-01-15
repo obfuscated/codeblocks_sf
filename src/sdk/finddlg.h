@@ -23,11 +23,14 @@ class FindDlg : public FindReplaceBase
 		bool GetHidden(); // for find in search path
 		wxString GetSearchPath(); // for find in search path
 		wxString GetSearchMask(); // for find in search path
+        void UpdateUI();
 
-		void OnFindChange(wxCommandEvent& event);
+		void OnFindChange(wxNotebookEvent& event);
 		void OnRegEx(wxCommandEvent& event);
 		void OnBrowsePath(wxCommandEvent& event);
-		void OnUpdateUI(wxUpdateUIEvent& event);
+        void OnRadioBox(wxCommandEvent& event);
+        void OnActivate(wxActivateEvent& event);
+
 	private:
         bool m_Complete;
 		DECLARE_EVENT_TABLE()
