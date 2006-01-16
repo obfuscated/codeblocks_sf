@@ -316,6 +316,7 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
     int projectLinkerOptionsRelation = 3;
     int projectIncludeDirsRelation = 3;
     int projectLibDirsRelation = 3;
+    int projectResIncludeDirsRelation = 3;
 
     while (node)
     {
@@ -373,6 +374,15 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
         else if (node->Attribute("projectLibDirsRelation"))
             projectLibDirsRelation = atoi(node->Attribute("projectLibDirsRelation"));
 
+        else if (node->Attribute("projectResourceIncludeDirsRelation"))
+        {
+            projectResIncludeDirsRelation = atoi(node->Attribute("projectResourceIncludeDirsRelation"));
+            // there used to be a bug in this setting and it might have a negative or very big number
+            // detect this case and set as default
+            if (projectResIncludeDirsRelation < 0 || projectResIncludeDirsRelation >= ortLast)
+                projectResIncludeDirsRelation = 3;
+        }
+
         node = node->NextSiblingElement("Option");
     }
 
@@ -399,6 +409,7 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
         target->SetOptionRelation(ortLinkerOptions, (OptionsRelation)projectLinkerOptionsRelation);
         target->SetOptionRelation(ortIncludeDirs, (OptionsRelation)projectIncludeDirsRelation);
         target->SetOptionRelation(ortLibDirs, (OptionsRelation)projectLibDirsRelation);
+        target->SetOptionRelation(ortResDirs, (OptionsRelation)projectResIncludeDirsRelation);
 
         DoMakeCommands(parentNode->FirstChildElement("MakeCommands"), target);
     }
