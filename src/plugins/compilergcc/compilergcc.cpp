@@ -1973,6 +1973,7 @@ int CompilerGCC::CompileFile(const wxString& file)
     if (!pf)
     {
         // compile single file not belonging to a project
+        Manager::Get()->GetEditorManager()->Save(file);
 
         // switch to the default compiler
         SwitchCompiler(CompilerFactory::GetDefaultCompilerIndex());

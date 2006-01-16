@@ -278,7 +278,7 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo, ProjectBuil
     if(!target)
         target = project ? project->GetCurrentlyCompilingTarget() : 0;
 
-    if(project != m_lastProject || target != m_lastTarget)
+    if(project != m_lastProject || target != m_lastTarget || editor != m_lastEditor)
         RecalcVars(project, editor, target);
 
     wxString search;
@@ -310,9 +310,10 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo, ProjectBuil
 
 //		Manager::Get()->GetMessageManager()->DebugLog(wxString(wxString("replacing ") << search << " (variable: " << var << ") " << "with: ") << replace);
 
+        int c = 0;
         if (!replace.IsEmpty())
         {
-            buffer.Replace(search, replace);
+            c = buffer.Replace(search, replace);
         }
         else
         {
@@ -320,8 +321,14 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo, ProjectBuil
             {
                 wxString envactual;
                 wxGetEnv(var, &envactual);
-                buffer.Replace(search, envactual);
+                c = buffer.Replace(search, envactual);
             }
+        }
+
+        if (c == 0)
+        {
+            buffer.Replace(search, replace);
+            break; // avoid infinite loop when macro is invalid
         }
     }
 	QuoteStringIfNeeded(replace);
