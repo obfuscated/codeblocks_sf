@@ -54,8 +54,22 @@ wxString ParseWXStringOutput(const wxString& output)
         switch (output[c])
         {
             case _T('\''):
-                w << output[c + 1];
-                c += 2;
+                ++c;
+                while (true)
+                {
+                    switch (output[c])
+                    {
+                        case _T('\\'):
+                            w << output[c++];
+                            w << output[c++];
+                            break;
+                        default:
+                            w << output[c++];
+                            break;
+                    }
+                    if (output[c] == _T('\''))
+                        break;
+                }
                 break;
 
             default:
