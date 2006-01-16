@@ -386,6 +386,8 @@ void ProjectManager::SetProject(cbProject* project, bool refresh)
         if (m_pWorkspace)
             m_pWorkspace->SetModified(true);
     }
+    else
+        return; // already active
     if (m_pActiveProject)
         m_pTree->SetItemBold(m_pActiveProject->GetProjectNode(), false);
     m_pActiveProject = project;

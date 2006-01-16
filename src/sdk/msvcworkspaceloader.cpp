@@ -85,6 +85,7 @@ bool MSVCWorkspaceLoader::Open(const wxString& filename)
 
     int count = 0;
     cbProject* project = 0;
+    cbProject* firstproject = 0;
     wxFileName wfname = filename;
     wfname.Normalize();
     Manager::Get()->GetMessageManager()->DebugLog(_("Workspace dir: %s"), wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR).c_str());
@@ -137,7 +138,8 @@ bool MSVCWorkspaceLoader::Open(const wxString& filename)
           wxFileName fname(UnixFilename(prjFile));
           fname.Normalize(wxPATH_NORM_ALL, wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), wxPATH_NATIVE);
           Manager::Get()->GetMessageManager()->DebugLog(_("Found project '%s' in '%s'"), prjTitle.c_str(), fname.GetFullPath().c_str());
-          project = Manager::Get()->GetProjectManager()->LoadProject(fname.GetFullPath());
+          project = Manager::Get()->GetProjectManager()->LoadProject(fname.GetFullPath(), false);
+          if (!firstproject) firstproject = project;
           if (project) registerProject(project->GetTitle(), project);
         }
         /*
@@ -153,6 +155,7 @@ bool MSVCWorkspaceLoader::Open(const wxString& filename)
         }
     }
 
+    Manager::Get()->GetProjectManager()->SetProject(firstproject);
     updateProjects();
     ImportersGlobals::ResetDefaults();
 

@@ -87,6 +87,7 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename)
     int count = 0;
     wxArrayString keyvalue;
     cbProject* project = 0;
+    cbProject* firstproject = 0;
     wxString uuid;
     bool depSection = false;  // ProjectDependencies section?
     bool slnConfSection = false; // SolutionConfiguration section?
@@ -143,7 +144,8 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename)
             wxFileName fname(UnixFilename(prjFile));
             fname.Normalize(wxPATH_NORM_ALL, wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), wxPATH_NATIVE);
             Manager::Get()->GetMessageManager()->DebugLog(_("Found project '%s' in '%s'"), prjTitle.c_str(), fname.GetFullPath().c_str());
-            project = Manager::Get()->GetProjectManager()->LoadProject(fname.GetFullPath());
+            project = Manager::Get()->GetProjectManager()->LoadProject(fname.GetFullPath(), false);
+            if (!firstproject) firstproject = project;
             if (project) registerProject(uuid, project);
         }
         else if (line.StartsWith(_T("GlobalSection(ProjectDependencies)"))) {
@@ -198,6 +200,7 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename)
         }
     }
 
+    Manager::Get()->GetProjectManager()->SetProject(firstproject);
     updateProjects();
     ImportersGlobals::ResetDefaults();
 

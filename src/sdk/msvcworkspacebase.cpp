@@ -16,15 +16,15 @@ MSVCWorkspaceBase::~MSVCWorkspaceBase() {
 
 void MSVCWorkspaceBase::registerProject(const wxString& projectID, cbProject* project) {
     // just set the initial project dependencies as empty and register the idcode
-    _projects[projectID] = ProjectRecord(project);
+    _projects[projectID.Lower()] = ProjectRecord(project);
 }
 
 void MSVCWorkspaceBase::addDependency(const wxString& projectID, const wxString& dependencyID) {
     // add the dependency to the last project
-    HashProjects::iterator it = _projects.find(projectID);
+    HashProjects::iterator it = _projects.find(projectID.Lower());
     if (it != _projects.end()) {
-        if (it->second._dependencyList.Index(dependencyID) == wxNOT_FOUND) // not already in
-            it->second._dependencyList.Add(dependencyID);
+        if (it->second._dependencyList.Index(dependencyID.Lower()) == wxNOT_FOUND) // not already in
+            it->second._dependencyList.Add(dependencyID.Lower());
     }
     else {
         Manager::Get()->GetMessageManager()->DebugLog(_("ERROR: project id not found: %s"), projectID.c_str());
@@ -79,6 +79,8 @@ void MSVCWorkspaceBase::updateProjects() {
             depIt = _projects.find(proj._dependencyList[i]);
             if ( depIt != _projects.end()) { // dependency found
                 dep = depIt->second;
+
+                Manager::Get()->GetProjectManager()->AddProjectDependency(proj._project, dep._project);
 
                 // match target configurations
                 for (j=0; j<_workspaceConfigurations.GetCount(); ++j) {
