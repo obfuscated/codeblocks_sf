@@ -60,7 +60,9 @@ void RegisterBindings(asIScriptEngine* engine)
     // register wx types in script
     Register_wxString(engine);
     Register_wxArrayString(engine);
-    Register_IO(engine);
+
+    // IO is disabled, for security reasons
+//    Register_IO(engine);
 
     // register types
     engine->RegisterObjectType("Editor", 0, asOBJ_CLASS);
@@ -359,7 +361,7 @@ void Register_ProjectManager(asIScriptEngine* engine)
     engine->RegisterObjectMethod("ProjectManagerClass", "bool SaveWorkspace()", asMETHOD(ProjectManager, SaveWorkspace), asCALL_THISCALL);
     engine->RegisterObjectMethod("ProjectManagerClass", "bool SaveWorkspaceAs(const wxString& in)", asMETHOD(ProjectManager, SaveWorkspaceAs), asCALL_THISCALL);
     engine->RegisterObjectMethod("ProjectManagerClass", "bool CloseWorkspaceAs()", asMETHOD(ProjectManager, CloseWorkspace), asCALL_THISCALL);
-    engine->RegisterObjectMethod("ProjectManagerClass", "Project@ LoadProject(const wxString& in)", asMETHOD(ProjectManager, LoadProject), asCALL_THISCALL);
+    engine->RegisterObjectMethod("ProjectManagerClass", "Project@ LoadProject(const wxString& in, bool)", asMETHOD(ProjectManager, LoadProject), asCALL_THISCALL);
     engine->RegisterObjectMethod("ProjectManagerClass", "bool SaveProject(Project@)", asMETHOD(ProjectManager, SaveProject), asCALL_THISCALL);
     engine->RegisterObjectMethod("ProjectManagerClass", "bool SaveProjectAs(Project@)", asMETHOD(ProjectManager, SaveProjectAs), asCALL_THISCALL);
     engine->RegisterObjectMethod("ProjectManagerClass", "bool SaveActiveProject()", asMETHOD(ProjectManager, SaveActiveProject), asCALL_THISCALL);
