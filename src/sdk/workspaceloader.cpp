@@ -98,14 +98,14 @@ bool WorkspaceLoader::Open(const wxString& filename)
             {
                 case TIXML_SUCCESS:
                     if (active == 1)
-                        GetpMan()->LoadProject(fname.GetFullPath(), true);
+                        GetpMan()->LoadProject(fname.GetFullPath(), true); // activate it
                     break;
                 case TIXML_WRONG_TYPE:
                     GetpMsg()->DebugLog(_("Error %s: %s"), doc.Value(), doc.ErrorDesc());
                     GetpMsg()->DebugLog(_("Wrong attribute type (expected 'int')"));
                     break;
                 default:
-                    GetpMan()->LoadProject(fname.GetFullPath());
+                    GetpMan()->LoadProject(fname.GetFullPath(), false); // don;t activate it
                     break;
             }
         }

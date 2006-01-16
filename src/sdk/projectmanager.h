@@ -79,7 +79,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           * @return If the function succeeds, a pointer to the newly opened project
           * is returned. Else the return value is NULL.
           */
-        cbProject* LoadProject(const wxString& filename, bool activateIt = false);
+        cbProject* LoadProject(const wxString& filename, bool activateIt = true);
         /** Save a project to disk.
           * @param project A pointer to the project to save.
           * @return True if saving was succesful, false if not.
