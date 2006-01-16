@@ -1343,10 +1343,10 @@ int CompilerGCC::Clean(ProjectBuildTarget* target)
 
 //	Manager::Get()->GetMacrosManager()->Reset();
 
-    m_Generator.Init(m_Project);
-
     if (m_Project)
         wxSetWorkingDirectory(m_Project->GetBasePath());
+    m_Generator.Init(m_Project);
+
     if (UseMake(target))
     {
         wxString cmd = GetMakeCommandFor(mcClean, target);
@@ -1569,8 +1569,8 @@ void CompilerGCC::BuildStateManagement()
         if (m_pBuildingProject != m_pLastBuildingProject)
         {
             m_pLastBuildingProject = m_pBuildingProject;
-            m_Generator.Init(m_pBuildingProject);
             wxSetWorkingDirectory(m_pBuildingProject->GetBasePath());
+            m_Generator.Init(m_pBuildingProject);
         }
         if (bt != m_pLastBuildingTarget)
             m_pLastBuildingTarget = bt;

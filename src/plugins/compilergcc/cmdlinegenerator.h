@@ -11,6 +11,7 @@ class ProjectFile;
 class Compiler;
 
 WX_DECLARE_HASH_MAP(ProjectBuildTarget*, wxString, wxPointerHash, wxPointerEqual, OptionsMap);
+WX_DECLARE_STRING_HASH_MAP(wxString, BackticksMap);
 
 /** Generate command-lines needed to produce a build.
   *
@@ -56,6 +57,8 @@ class CmdLineGenerator
         OptionsMap m_LDAdd; ///< link libraries, per-target
         OptionsMap m_RCFlags; ///< resource compiler flags, per-target
     private:
+        void ExpandBackticks(wxString& str);
+        BackticksMap m_Backticks;
 };
 
 #endif // CMDLINEGENERATOR_H
