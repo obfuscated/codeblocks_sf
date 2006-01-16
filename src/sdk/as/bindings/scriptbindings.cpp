@@ -43,9 +43,9 @@ void Register_ProjectManager(asIScriptEngine* engine);
 // Globals
 //------------------------------------------------------------------------------
 void gShowMessage(const wxString& msg){ wxMessageBox(msg, _("Script message")); }
-void gShowMessageWarn(const wxString& msg){ wxMessageBox(msg, _("Script message"), wxICON_WARNING); }
-void gShowMessageError(const wxString& msg){ wxMessageBox(msg, _("Script message"), wxICON_ERROR); }
-void gShowMessageInfo(const wxString& msg){ wxMessageBox(msg, _("Script message"), wxICON_INFORMATION); }
+void gShowMessageWarn(const wxString& msg){ wxMessageBox(msg, _("Script message (warning)"), wxICON_WARNING); }
+void gShowMessageError(const wxString& msg){ wxMessageBox(msg, _("Script message (error)"), wxICON_ERROR); }
+void gShowMessageInfo(const wxString& msg){ wxMessageBox(msg, _("Script message (information)"), wxICON_INFORMATION); }
 void gDebugLog(const wxString& msg){ DBGLOG(msg); }
 wxString gReplaceMacros(const wxString& buffer, bool envVarsToo)
 {
@@ -109,7 +109,7 @@ void Register_ConfigManager(asIScriptEngine* engine)
     engine->RegisterObjectMethod("ConfigManagerClass", "void Write(const wxString& in,bool)", asMETHODPR(ConfigManager, Write, (const wxString&,bool), void), asCALL_THISCALL);
     engine->RegisterObjectMethod("ConfigManagerClass", "void Write(const wxString& in,const wxString& in,bool)", asMETHODPR(ConfigManager, Write, (const wxString&,const wxString&,bool), void), asCALL_THISCALL);
 
-    // actually bind EditorManager's instance
+    // actually bind ConfigManager's instance
     engine->RegisterGlobalProperty("ConfigManagerClass ConfigManager", Manager::Get()->GetConfigManager(_T("volatile:scripting")));
 }
 
@@ -132,6 +132,15 @@ template <class T> void Register_EditorBase(asIScriptEngine* engine, const wxStr
     engine->RegisterObjectMethod(_C(classname), "bool ThereAreOthers()", asMETHOD(T, ThereAreOthers), asCALL_THISCALL);
     engine->RegisterObjectMethod(_C(classname), "bool Close()", asMETHOD(T, Close), asCALL_THISCALL);
     engine->RegisterObjectMethod(_C(classname), "bool Close()", asMETHOD(T, Close), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "void GotoLine(int,bool)", asMETHOD(T, GotoLine), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "void ToggleBreakpoint(int,bool)", asMETHOD(T, ToggleBreakpoint), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "bool HasBreakpoint(int)", asMETHOD(T, HasBreakpoint), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "void GotoNextBreakpoint()", asMETHOD(T, GotoNextBreakpoint), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "void GotoPreviousBreakpoint()", asMETHOD(T, GotoPreviousBreakpoint), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "void ToggleBookmark(int)", asMETHOD(T, ToggleBookmark), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "bool HasBookmark(int)", asMETHOD(T, HasBookmark), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "void GotoNextBookmark()", asMETHOD(T, GotoNextBookmark), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "void GotoPreviousBookmark()", asMETHOD(T, GotoPreviousBookmark), asCALL_THISCALL);
 }
 
 //------------------------------------------------------------------------------
@@ -152,10 +161,14 @@ void Register_Editor(asIScriptEngine* engine)
     engine->RegisterObjectMethod("Editor", "void FoldBlockFromLine(int)", asMETHOD(cbEditor, FoldBlockFromLine), asCALL_THISCALL);
     engine->RegisterObjectMethod("Editor", "void UnfoldBlockFromLine(int)", asMETHOD(cbEditor, UnfoldBlockFromLine), asCALL_THISCALL);
     engine->RegisterObjectMethod("Editor", "void ToggleFoldBlockFromLine(int)", asMETHOD(cbEditor, ToggleFoldBlockFromLine), asCALL_THISCALL);
+    engine->RegisterObjectMethod("Editor", "int GetLineIndentInSpaces(int)", asMETHOD(cbEditor, GetLineIndentInSpaces), asCALL_THISCALL);
     engine->RegisterObjectMethod("Editor", "wxString GetLineIndentString(int)", asMETHOD(cbEditor, GetLineIndentString), asCALL_THISCALL);
     engine->RegisterObjectMethod("Editor", "void Touch()", asMETHOD(cbEditor, Touch), asCALL_THISCALL);
     engine->RegisterObjectMethod("Editor", "bool Reload()", asMETHOD(cbEditor, Reload), asCALL_THISCALL);
     engine->RegisterObjectMethod("Editor", "void Print(bool,int)", asMETHOD(cbEditor, Print), asCALL_THISCALL);
+    engine->RegisterObjectMethod("Editor", "void AutoComplete()", asMETHOD(cbEditor, AutoComplete), asCALL_THISCALL);
+    engine->RegisterObjectMethod("Editor", "bool AddBreakpoint(int,bool)", asMETHOD(cbEditor, AddBreakpoint), asCALL_THISCALL);
+    engine->RegisterObjectMethod("Editor", "bool RemoveBreakpoint(int,bool)", asMETHOD(cbEditor, RemoveBreakpoint), asCALL_THISCALL);
 }
 
 //------------------------------------------------------------------------------
@@ -183,7 +196,7 @@ void Register_EditorManager(asIScriptEngine* engine)
     engine->RegisterObjectMethod("EditorManagerClass", "bool SaveAs(int)", asMETHOD(EditorManager, SaveAs), asCALL_THISCALL);
     engine->RegisterObjectMethod("EditorManagerClass", "bool SaveActiveAs()", asMETHOD(EditorManager, SaveActiveAs), asCALL_THISCALL);
     engine->RegisterObjectMethod("EditorManagerClass", "bool SaveAll()", asMETHOD(EditorManager, SaveAll), asCALL_THISCALL);
-    engine->RegisterObjectMethod("EditorManagerClass", "int ShowFindDialog(bool)", asMETHOD(EditorManager, ShowFindDialog), asCALL_THISCALL);
+    engine->RegisterObjectMethod("EditorManagerClass", "int ShowFindDialog(bool,bool)", asMETHOD(EditorManager, ShowFindDialog), asCALL_THISCALL);
 
     // actually bind EditorManager's instance
     engine->RegisterGlobalProperty("EditorManagerClass EditorManager", Manager::Get()->GetEditorManager());
@@ -332,7 +345,9 @@ void Register_Project(asIScriptEngine* engine)
     engine->RegisterObjectMethod("Project", "bool SaveLayout()", asMETHOD(cbProject, SaveLayout), asCALL_THISCALL);
     engine->RegisterObjectMethod("Project", "bool LoadLayout()", asMETHOD(cbProject, LoadLayout), asCALL_THISCALL);
     engine->RegisterObjectMethod("Project", "bool ShowOptions()", asMETHOD(cbProject, ShowOptions), asCALL_THISCALL);
+    engine->RegisterObjectMethod("Project", "wxString GetCommonTopLevelPath()", asMETHOD(cbProject, GetCommonTopLevelPath), asCALL_THISCALL);
 
+    engine->RegisterObjectMethod("Project", "int GetFilesCount()", asMETHOD(cbProject, GetFilesCount), asCALL_THISCALL);
     engine->RegisterObjectMethod("Project", "ProjectFile@ GetFile(int)", asMETHOD(cbProject, GetFile), asCALL_THISCALL);
     engine->RegisterObjectMethod("Project", "bool RemoveFile(int)", asMETHOD(cbProject, RemoveFile), asCALL_THISCALL);
     engine->RegisterObjectMethod("Project", "ProjectFile@ AddFile(int,const wxString& in,bool,bool,uint16)", asMETHODPR(cbProject, AddFile, (int,const wxString&,bool,bool,unsigned short int), ProjectFile*), asCALL_THISCALL);
@@ -344,10 +359,20 @@ void Register_Project(asIScriptEngine* engine)
     engine->RegisterObjectMethod("Project", "BuildTarget@ AddBuildTarget(const wxString& in)", asMETHOD(cbProject, AddBuildTarget), asCALL_THISCALL);
     engine->RegisterObjectMethod("Project", "bool RenameBuildTarget(int,const wxString& in)", asMETHODPR(cbProject, RenameBuildTarget, (int, const wxString&), bool), asCALL_THISCALL);
     engine->RegisterObjectMethod("Project", "bool RenameBuildTarget(const wxString& in,const wxString& in)", asMETHODPR(cbProject, RenameBuildTarget, (const wxString&, const wxString&), bool), asCALL_THISCALL);
+    engine->RegisterObjectMethod("Project", "BuildTarget@ DuplicateBuildTarget(int,const wxString& in)", asMETHODPR(cbProject, DuplicateBuildTarget, (int, const wxString&), ProjectBuildTarget*), asCALL_THISCALL);
+    engine->RegisterObjectMethod("Project", "BuildTarget@ DuplicateBuildTarget(const wxString& in,const wxString& in)", asMETHODPR(cbProject, DuplicateBuildTarget, (const wxString&, const wxString&), ProjectBuildTarget*), asCALL_THISCALL);
     engine->RegisterObjectMethod("Project", "bool RemoveBuildTarget(int)", asMETHODPR(cbProject, RemoveBuildTarget, (int), bool), asCALL_THISCALL);
     engine->RegisterObjectMethod("Project", "bool RemoveBuildTarget(const wxString& in)", asMETHODPR(cbProject, RemoveBuildTarget, (const wxString&), bool), asCALL_THISCALL);
     engine->RegisterObjectMethod("Project", "bool SetActiveBuildTarget(int)", asMETHOD(cbProject, SetActiveBuildTarget), asCALL_THISCALL);
-    engine->RegisterObjectMethod("Project", "int GetActiveBuildTarget()", asMETHOD(cbProject, GetActiveBuildTarget), asCALL_THISCALL);
+    engine->RegisterObjectMethod("Project", "int GetActivedBuildTarget()", asMETHOD(cbProject, GetActiveBuildTarget), asCALL_THISCALL);
+    engine->RegisterObjectMethod("Project", "bool ExportTargetAsProject(int)", asMETHODPR(cbProject, ExportTargetAsProject, (int), bool), asCALL_THISCALL);
+    engine->RegisterObjectMethod("Project", "bool ExportTargetAsProject(const wxString& in)", asMETHODPR(cbProject, ExportTargetAsProject, (const wxString&), bool), asCALL_THISCALL);
+    engine->RegisterObjectMethod("Project", "int SelectTarget(int,bool)", asMETHOD(cbProject, SelectTarget), asCALL_THISCALL);
+    engine->RegisterObjectMethod("Project", "BuildTarget@ GetCurrentlyCompilingTarget()", asMETHOD(cbProject, GetCurrentlyCompilingTarget), asCALL_THISCALL);
+    engine->RegisterObjectMethod("Project", "void SetCurrentlyCompilingTarget(BuildTarget@)", asMETHOD(cbProject, SetCurrentlyCompilingTarget), asCALL_THISCALL);
+
+    engine->RegisterObjectMethod("Project", "void SetModeForPCH(int)", asMETHOD(cbProject, SetModeForPCH), asCALL_THISCALL);
+    engine->RegisterObjectMethod("Project", "int GetModeForPCH()", asMETHOD(cbProject, GetModeForPCH), asCALL_THISCALL);
 }
 
 //------------------------------------------------------------------------------
@@ -361,6 +386,7 @@ void Register_ProjectManager(asIScriptEngine* engine)
     engine->RegisterObjectMethod("ProjectManagerClass", "bool SaveWorkspace()", asMETHOD(ProjectManager, SaveWorkspace), asCALL_THISCALL);
     engine->RegisterObjectMethod("ProjectManagerClass", "bool SaveWorkspaceAs(const wxString& in)", asMETHOD(ProjectManager, SaveWorkspaceAs), asCALL_THISCALL);
     engine->RegisterObjectMethod("ProjectManagerClass", "bool CloseWorkspaceAs()", asMETHOD(ProjectManager, CloseWorkspace), asCALL_THISCALL);
+    engine->RegisterObjectMethod("ProjectManagerClass", "Project@ IsOpen(const wxString& in)", asMETHOD(ProjectManager, IsOpen), asCALL_THISCALL);
     engine->RegisterObjectMethod("ProjectManagerClass", "Project@ LoadProject(const wxString& in, bool)", asMETHOD(ProjectManager, LoadProject), asCALL_THISCALL);
     engine->RegisterObjectMethod("ProjectManagerClass", "bool SaveProject(Project@)", asMETHOD(ProjectManager, SaveProject), asCALL_THISCALL);
     engine->RegisterObjectMethod("ProjectManagerClass", "bool SaveProjectAs(Project@)", asMETHOD(ProjectManager, SaveProjectAs), asCALL_THISCALL);
