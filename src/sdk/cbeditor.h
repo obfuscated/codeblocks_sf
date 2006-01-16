@@ -208,6 +208,7 @@ class DLLIMPORT cbEditor : public EditorBase
         void OnEditorCharAdded(wxScintillaEvent& event);
 		void OnEditorDwellStart(wxScintillaEvent& event);
 		void OnEditorDwellEnd(wxScintillaEvent& event);
+		void OnEditorModified(wxScintillaEvent& event);
 		void OnUserListSelection(wxScintillaEvent& event);
         void OnTimer(wxTimerEvent& event);
 		void OnClose(wxCloseEvent& event);

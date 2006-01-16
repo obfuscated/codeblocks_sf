@@ -485,6 +485,9 @@ void cbEditor::CreateEditor()
     Connect( m_ID,  -1, wxEVT_SCI_USERLISTSELECTION,
                   (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction)
                   &cbEditor::OnUserListSelection );
+    Connect( m_ID,  -1, wxEVT_SCI_MODIFIED,
+                  (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction)
+                  &cbEditor::OnEditorModified );
 }
 
 wxColour cbEditor::GetOptionColour(const wxString& option, const wxColour _default)
@@ -687,8 +690,10 @@ bool cbEditor::Open()
     if (!file.IsOpened())
         return false;
 
+    m_pControl->SetModEventMask(0);
     m_pControl->InsertText(0, cbReadFileContents(file));
     m_pControl->EmptyUndoBuffer();
+    m_pControl->SetModEventMask(wxSCI_MODEVENTMASKALL);
 
     // mark the file read-only, if applicable
     bool read_only = !wxFile::Access(m_Filename.c_str(), wxFile::write);
@@ -1573,6 +1578,45 @@ void cbEditor::OnEditorDwellStart(wxScintillaEvent& event)
 void cbEditor::OnEditorDwellEnd(wxScintillaEvent& event)
 {
 	NotifyPlugins(cbEVT_EDITOR_TOOLTIP_CANCEL);
+}
+
+void cbEditor::OnEditorModified(wxScintillaEvent& event)
+{
+//    wxString txt = _T("OnEditorModified(): ");
+//    int flags = event.GetModificationType();
+//    if (flags & wxSCI_MOD_CHANGEMARKER) txt << _T("wxSCI_MOD_CHANGEMARKER, ");
+//    if (flags & wxSCI_MOD_INSERTTEXT) txt << _T("wxSCI_MOD_INSERTTEXT, ");
+//    if (flags & wxSCI_MOD_DELETETEXT) txt << _T("wxSCI_MOD_DELETETEXT, ");
+//    if (flags & wxSCI_MOD_CHANGEFOLD) txt << _T("wxSCI_MOD_CHANGEFOLD, ");
+//    if (flags & wxSCI_PERFORMED_USER) txt << _T("wxSCI_PERFORMED_USER, ");
+//    if (flags & wxSCI_MOD_BEFOREINSERT) txt << _T("wxSCI_MOD_BEFOREINSERT, ");
+//    if (flags & wxSCI_MOD_BEFOREDELETE) txt << _T("wxSCI_MOD_BEFOREDELETE, ");
+//    txt << _T("pos=")
+//        << wxString::Format(_T("%d"), event.GetPosition())
+//        << _T("line=")
+//        << wxString::Format(_T("%d"), event.GetLine())
+//        << _T(", linesAdded=")
+//        << wxString::Format(_T("%d"), event.GetLinesAdded());
+//    Manager::Get()->GetMessageManager()->DebugLog(txt);
+
+    // whenever event.GetLinesAdded() != 0, we must re-set breakpoints for lines greater
+    // than LineFromPosition(event.GetPosition())
+    int linesAdded = event.GetLinesAdded();
+    if (event.GetModificationType() & (wxSCI_MOD_INSERTTEXT | wxSCI_MOD_DELETETEXT)
+        && linesAdded != 0)
+    {
+        // just added/removed lines
+        int startline = m_pControl->LineFromPosition(event.GetPosition());
+        int line = m_pControl->MarkerPrevious(m_pControl->GetLineCount(), 1 << BREAKPOINT_MARKER);
+        while (line > startline)
+        {
+            // add breakpoint
+            NotifyPlugins(cbEVT_EDITOR_BREAKPOINT_ADD, line, m_Filename);
+            // remove old breakpoint
+            NotifyPlugins(cbEVT_EDITOR_BREAKPOINT_DELETE, line - linesAdded, m_Filename);
+            line = m_pControl->MarkerPrevious(line - 1, 1 << BREAKPOINT_MARKER);
+        }
+    }
 }
 
 void cbEditor::OnUserListSelection(wxScintillaEvent& event)
