@@ -145,8 +145,12 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
                 wxControl *control = wxDynamicCast(created, wxControl);
                 if (!IsOfClass(n, _T("tool")) &&
                     !IsOfClass(n, _T("separator")) &&
-                    control != NULL)
+                    control != NULL &&
+                    control != toolbar)
+                {
+                    wxLogDebug(_T("control=%p, parent=%p, toolbar=%p"), control, control->GetParent(), toolbar);
                     toolbar->AddControl(control);
+                }
             }
             n = n->GetNext();
         }
