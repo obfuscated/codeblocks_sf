@@ -45,6 +45,7 @@ static wxCriticalSection s_mutexListProtection;
 int PARSER_END = wxNewId();
 static int idPool = wxNewId();
 int TIMER_ID = wxNewId();
+int BATCH_TIMER_ID = wxNewId();
 
 BEGIN_EVENT_TABLE(Parser, wxEvtHandler)
 //	EVT_MENU(NEW_TOKEN, Parser::OnNewToken)
@@ -53,6 +54,7 @@ BEGIN_EVENT_TABLE(Parser, wxEvtHandler)
 	EVT_THREADTASK_ENDED(idPool, Parser::OnEndThread)
     EVT_THREADTASK_ALLDONE(idPool, Parser::OnAllThreadsDone)
     EVT_TIMER(TIMER_ID, Parser::OnTimer)
+    EVT_TIMER(BATCH_TIMER_ID, Parser::OnBatchTimer)
 END_EVENT_TABLE()
 
 Parser::Parser(wxEvtHandler* parent)
@@ -67,7 +69,9 @@ Parser::Parser(wxEvtHandler* parent)
     m_pTokens(0),
     m_pTempTokens(0),
     m_NeedsReparse(false),
-    m_timer(this, TIMER_ID)
+    m_IsBatch(false),
+    m_timer(this, TIMER_ID),
+    m_batchtimer(this,BATCH_TIMER_ID)
 {
     m_pTokens = new TokensTree;
     m_pTempTokens = new TokensTree;
@@ -379,13 +383,9 @@ bool Parser::ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBl
 
 void Parser::BatchParse(const wxArrayString& filenames)
 {
-    m_Pool.BatchBegin();
     for (unsigned int i = 0; i < filenames.GetCount(); ++i)
         Parse(filenames[i]);
-    m_Pool.BatchEnd();
 }
-
-
 
 bool Parser::Parse(const wxString& filename, bool isLocal)
 {
@@ -429,7 +429,17 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
 #ifdef CODECOMPLETION_PROFILING
         thread->Parse();
 #else
+		if(!m_IsBatch)
+		{
+            m_IsBatch = true;
+            m_Pool.BatchBegin();
+		}
 		m_Pool.AddTask(thread, true);
+        m_batchtimer.Start(100,wxTIMER_ONE_SHOT);
+        // For every parse, the timer is reset to -100 ms, so there is a
+        // 100 ms. tolerance for the next parse to get queued. After that,
+        // the timer will trigger the event that will start the batch job.
+
 #endif
 //		delete lock;
 		return true;
@@ -1001,6 +1011,17 @@ void Parser::OnTimer(wxTimerEvent& event)
     event.Skip();
 }
 
+void Parser::OnBatchTimer(wxTimerEvent& event)
+{
+    if(m_IsBatch)
+    {
+        m_IsBatch = false;
+        StartTimer(); // To add more to the confusion, we have a "timer"
+        // stopwatch to measure the parsing time.
+        m_Pool.BatchEnd();
+    }
+}
+
 bool Parser::ReparseModifiedFiles()
 {
     if(!m_NeedsReparse || !m_Pool.Done())
@@ -1021,7 +1042,6 @@ bool Parser::ReparseModifiedFiles()
     }
     if(!numfiles)
         return true;
-    StartTimer();
     for(size_t i = 0; i < files_list.size();++i)
     {
         Parse(files_list[i],m_LocalFiles.count(files_list[i]));

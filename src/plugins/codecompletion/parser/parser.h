@@ -134,6 +134,7 @@ class Parser : public wxEvtHandler
 		void OnNewToken(wxCommandEvent& event);
 		void OnParseFile(wxCommandEvent& event);
 		void OnTimer(wxTimerEvent& event);
+		void OnBatchTimer(wxTimerEvent& event);
 	private:
         void ConnectEvents();
         void DisconnectEvents();
@@ -165,8 +166,9 @@ class Parser : public wxEvtHandler
         TokensTree* m_pTempTokens;
         set<wxString, less<wxString> > m_LocalFiles;
         bool m_NeedsReparse;
+        bool m_IsBatch;
     private:
-        wxTimer m_timer;
+        wxTimer m_timer,m_batchtimer;
 
 #endif // STANDALONE
 

@@ -382,9 +382,7 @@ void NativeParser::AddParser(cbProject* project, bool useCache)
 			files.Add(pf->file.GetFullPath());
         }
 	}
-	if (files.IsEmpty())
-        Manager::Get()->GetMessageManager()->DebugLog(_("End parsing project %s (no files found?)"), project->GetTitle().c_str());
-    else
+	if (!files.IsEmpty())
     {
         parser->BatchParse(files);
     }
