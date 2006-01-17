@@ -280,7 +280,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
 				Command += _(" -v -E -x c++ ") + DummyFileName;
 				// action time  (everything shows up on the error stream
 				wxArrayString Output, Errors;
-				wxExecute(Command, Output, Errors);
+				wxExecute(Command, Output, Errors, wxEXEC_NODISABLE);
 				int nCount = Errors.GetCount();
 				// the include dir (1 per line) show up between the lines
 				// #include <...> search starts here:
