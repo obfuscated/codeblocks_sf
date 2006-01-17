@@ -42,6 +42,17 @@ void Register_ProjectManager(asIScriptEngine* engine);
 //------------------------------------------------------------------------------
 // Globals
 //------------------------------------------------------------------------------
+// dialog buttons
+const int scYES              = wxYES;
+const int scNO               = wxNO;
+const int scCANCEL           = wxCANCEL;
+const int scYES_NO           = wxYES_NO;
+const int scYES_NO_CANCEL    = wxYES_NO | wxCANCEL;
+const int scICON_QUESTION    = wxICON_QUESTION;
+const int scICON_INFORMATION = wxICON_INFORMATION;
+const int scICON_WARNING     = wxICON_WARNING;
+const int scICON_ERROR       = wxICON_ERROR;
+int gMessage(const wxString& msg, const wxString& caption, int buttons){ return wxMessageBox(msg, caption, buttons); }
 void gShowMessage(const wxString& msg){ wxMessageBox(msg, _("Script message")); }
 void gShowMessageWarn(const wxString& msg){ wxMessageBox(msg, _("Script message (warning)"), wxICON_WARNING); }
 void gShowMessageError(const wxString& msg){ wxMessageBox(msg, _("Script message (error)"), wxICON_ERROR); }
@@ -87,12 +98,24 @@ void RegisterBindings(asIScriptEngine* engine)
     Register_ProjectManager(engine);
 
     // register global functions
+    engine->RegisterGlobalFunction("int Message(const wxString& in, const wxString& in, int)", asFUNCTION(gMessage), asCALL_CDECL);
     engine->RegisterGlobalFunction("void ShowMessage(const wxString& in)", asFUNCTION(gShowMessage), asCALL_CDECL);
     engine->RegisterGlobalFunction("void ShowWarning(const wxString& in)", asFUNCTION(gShowMessageWarn), asCALL_CDECL);
     engine->RegisterGlobalFunction("void ShowError(const wxString& in)", asFUNCTION(gShowMessageError), asCALL_CDECL);
     engine->RegisterGlobalFunction("void ShowInfo(const wxString& in)", asFUNCTION(gShowMessageInfo), asCALL_CDECL);
     engine->RegisterGlobalFunction("void Log(const wxString& in)", asFUNCTION(gDebugLog), asCALL_CDECL);
     engine->RegisterGlobalFunction("wxString ReplaceMacros(const wxString& in, bool)", asFUNCTION(gReplaceMacros), asCALL_CDECL);
+
+    // register global constants
+    engine->RegisterGlobalProperty("const int scYES", (void*)&scYES);
+    engine->RegisterGlobalProperty("const int scNO", (void*)&scNO);
+    engine->RegisterGlobalProperty("const int scCANCEL", (void*)&scCANCEL);
+    engine->RegisterGlobalProperty("const int scYES_NO", (void*)&scYES_NO);
+    engine->RegisterGlobalProperty("const int scYES_NO_CANCEL", (void*)&scYES_NO_CANCEL);
+    engine->RegisterGlobalProperty("const int scICON_QUESTION", (void*)&scICON_QUESTION);
+    engine->RegisterGlobalProperty("const int scICON_INFORMATION", (void*)&scICON_INFORMATION);
+    engine->RegisterGlobalProperty("const int scICON_WARNING", (void*)&scICON_WARNING);
+    engine->RegisterGlobalProperty("const int scICON_ERROR", (void*)&scICON_ERROR);
 }
 
 //------------------------------------------------------------------------------
