@@ -39,6 +39,7 @@ wxslistbook.cpp \
 wxsnotebook.cpp \
 wxssplitterwindow.cpp \
 wxsstaticline.cpp \
+wxsstaticbitmap.cpp \
 wxslistbookparentqp.cpp \
 wxsnotebookparentqp.cpp \
 wxscalendarctrl.cpp \
@@ -83,6 +84,7 @@ wxslistbook.h \
 wxsnotebook.h \
 wxssplitterwindow.h \
 wxsstaticline.h \
+wxsstaticbitmap.h \
 wxslistbookparentqp.h \
 wxsnotebookparentqp.h \
 wxscalendarctrl.h \
