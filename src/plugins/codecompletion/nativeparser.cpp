@@ -580,7 +580,7 @@ void NativeParser::DisplayStatus(Parser* parser, cbProject* project)
     Manager::Get()->GetMessageManager()->DebugLog(_("Done parsing project %s (%d total parsed files, %d tokens in %d.%d seconds)."),
                     project->GetTitle().c_str(),
                     parser->GetFilesCount(),
-                    parser->GetTokens()->size(),
+                    parser->GetTokens()->realsize(),
                     tim / 1000,
                     tim % 1000);
 }
@@ -1033,7 +1033,7 @@ int NativeParser::AI(cbEditor* editor, Parser* parser, const wxString& lineText,
                         parentToken = parser->FindChildTokenByName(parentToken, srch.Left(colon), true);
                         if (!parentToken)
                             break;
-                        Manager::Get()->GetMessageManager()->DebugLog(_("searching under %s"), parentToken->m_DisplayName.c_str());
+                        Manager::Get()->GetMessageManager()->DebugLog(_("searching under %s"), parentToken->DisplayName().c_str());
                         srch.Remove(0, colon + 2); // plus two to compensate for "::"
                         colon = srch.Find(_T("::"));
                         if (colon == -1)

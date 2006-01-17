@@ -767,14 +767,9 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, const wxSt
         newToken->m_ParentIndex = m_pLastParent ? (m_pLastParent->GetSelf()) : -1;
         newToken->m_ImplLine = 0;
         newToken->m_IsOperator = isOperator;
-        newToken->m_IsTemporary = m_Options.useBuffer;
     //    Log("Added token " +name+ ", type '" +newToken->m_Type+ "', actual '" +newToken->m_ActualType+ "'");
         if (m_pLastParent)
-            newToken->m_DisplayName << m_pLastParent->m_Name << _T("::");
-        newToken->m_DisplayName << newname << args;
-        if (!newToken->m_Type.IsEmpty())
-            newToken->m_DisplayName << _T(" : ") << newToken->m_Type;
-
+            newToken->m_ParentName = m_pLastParent->m_Name;
         int newidx = -1;
         if (m_pTokens)
             newidx=m_pTokens->insert(newToken);

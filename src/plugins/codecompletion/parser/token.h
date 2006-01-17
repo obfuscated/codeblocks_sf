@@ -29,8 +29,7 @@ typedef deque<Token*> TokenList;
 typedef deque<int> TokenIdxList;
 typedef set<int, less<int> > TokenIdxSet;
 typedef SearchTree<TokenIdxSet> TokenSearchTree;
-typedef map<wxString,size_t,less<wxString> > TokenFilenamesMap;
-typedef map<size_t,wxString,less<size_t> > TokenInvFilenamesMap;
+typedef BasicSearchTree TokenFilenamesMap;
 typedef map<size_t,TokenIdxSet,less<size_t> > TokenFilesMap;
 typedef map<size_t,FileParsingStatus,less<size_t> > TokenFilesStatus;
 typedef set<size_t,less<size_t> > TokenFilesSet;
@@ -70,9 +69,10 @@ class Token  : public BlockAllocated<Token, 10000>
 		void RemoveChild(int child);
 		wxString GetNamespace() const;
 		bool InheritsFrom(int idx) const;
+		wxString DisplayName() const;
 		wxString GetTokenKindString() const;
 		wxString GetTokenScopeString() const;
-		wxString GetFilename() const;
+        wxString GetFilename() const;
 		wxString GetImplFilename() const;
 		bool MatchesFiles(const TokenFilesSet& files);
 
@@ -85,7 +85,7 @@ class Token  : public BlockAllocated<Token, 10000>
 		wxString m_Type; // this is the return value (if any): e.g. const wxString&
 		wxString m_ActualType; // this is what the parser believes is the actual return value: e.g. wxString
 		wxString m_Name;
-		wxString m_DisplayName;
+		wxString m_ParentName;
 		wxString m_Args;
 		wxString m_AncestorsString; // all ancestors comma-separated list
 		unsigned int m_File;
@@ -96,26 +96,13 @@ class Token  : public BlockAllocated<Token, 10000>
 		TokenKind m_TokenKind;
 		bool m_IsOperator;
 		bool m_IsLocal; // found in a local file?
-		bool m_IsTemporary;
-#if 0
-		Token* m_pParent;
-		TokensArray m_Children;
-		TokensArray m_Ancestors; // after Parser::LinkInheritance() runs, contains all ancestor tokens (affected by m_AncestorsString)
-		TokensArray m_Descendants;
-        // helper variables used in serialization
-        int m_ParentIndex;
-        wxArrayInt m_AncestorsIndices;
-        wxArrayInt m_ChildrenIndices;
-        wxArrayInt m_DescendantsIndices;
-#else
+
         int m_ParentIndex;
         TokenIdxSet m_Children;
         TokenIdxSet m_Ancestors;
         TokenIdxSet m_Descendants;
-#endif
-		wxString m_String; // custom string value
+
 		bool m_Bool; // custom bool value
-		void* m_Data; // custom pointer value
 	protected:
         TokensTree* m_pTree;
 		int m_Self; // current index in the tree
@@ -134,6 +121,7 @@ class TokensTree
         inline Token* operator[](int idx) { return GetTokenAt(idx); }
         inline Token* at(int idx) { return GetTokenAt(idx); }
         size_t size();
+        size_t realsize();
         inline bool empty() { return size()==0; }
         int insert(Token* newToken);
         int insert(int loc, Token* newToken);
@@ -153,11 +141,10 @@ class TokensTree
         // Parsing related functions
 
         size_t GetFileIndex(const wxString& filename);
-        wxString GetFilename(size_t idx) const;
+        const wxString GetFilename(size_t idx);
         size_t ReserveFileForParsing(const wxString& filename);
         void FlagFileForReparsing(const wxString& filename);
         void FlagFileAsParsed(const wxString& filename);
-
 
         TokenList m_Tokens; /// Contains the pointers to all the tokens
         TokenSearchTree m_Tree; /** Tree containing the indexes to the tokens
@@ -165,7 +152,6 @@ class TokensTree
         SearchTree<int> m_DisplayNameTree;
 
         TokenFilenamesMap m_FilenamesMap; /** Map: filenames -> file indexes */
-        TokenInvFilenamesMap m_InvFilenamesMap; /** Map: file indexes -> filenames */
         TokenFilesMap m_FilesMap; /** Map: file indexes -> Sets of TokenIndexes */
         TokenFilesSet m_FilesToBeReparsed; /** Set: file indexes */
         TokenIdxList m_FreeTokens; /** List of all the deleted (and available) tokens */

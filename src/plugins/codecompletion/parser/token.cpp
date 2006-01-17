@@ -72,10 +72,8 @@ Token::Token()
 	m_File(0),
 	m_Line(0),
 	m_IsOperator(false),
-	m_IsTemporary(false),
 	m_ParentIndex(-1),
 	m_Bool(false),
-	m_Data(0),
 	m_pTree(0),
 	m_Self(-1)
 {
@@ -86,10 +84,8 @@ Token::Token(const wxString& name, unsigned int file, unsigned int line)
 	m_File(file),
 	m_Line(line),
 	m_IsOperator(false),
-	m_IsTemporary(false),
 	m_ParentIndex(-1),
 	m_Bool(false),
-	m_Data(0),
 	m_pTree(0),
 	m_Self(-1)
 {
@@ -99,6 +95,17 @@ Token::Token(const wxString& name, unsigned int file, unsigned int line)
 Token::~Token()
 {
 	//dtor
+}
+
+wxString Token::DisplayName() const
+{
+    wxString result(_T(""));
+    if (!m_ParentName.IsEmpty())
+        result << m_ParentName << _T("::");
+    result << m_Name << m_Args;
+    if (!m_Type.IsEmpty())
+        result << _T(" : ") << m_Type;
+    return result;
 }
 
 Token* Token::GetParentToken()
@@ -236,7 +243,7 @@ bool Token::SerializeIn(wxInputStream* f)
             result = false;
             break;
         }
-        if (!LoadStringFromFile(f, m_DisplayName))
+        if (!LoadStringFromFile(f, m_ParentName))
         {
             result = false;
             break;
@@ -317,7 +324,7 @@ bool Token::SerializeOut(wxOutputStream* f)
     SaveStringToFile(f, m_Type);
     SaveStringToFile(f, m_ActualType);
     SaveStringToFile(f, m_Name);
-    SaveStringToFile(f, m_DisplayName);
+    SaveStringToFile(f, m_ParentName);
     SaveStringToFile(f, m_Args);
     SaveStringToFile(f, m_AncestorsString);
     SaveIntToFile(f, m_File);
@@ -342,7 +349,6 @@ m_modified(false)
 {
     m_Tokens.clear();
     m_FilenamesMap.clear();
-    m_InvFilenamesMap.clear();
     m_FilesMap.clear();
     m_FilesStatus.clear();
     m_FreeTokens.clear();
@@ -350,8 +356,6 @@ m_modified(false)
     m_TopNameSpaces.clear();
     m_GlobalNameSpace.clear();
 
-    m_FilenamesMap[_T("")] = 0;
-    m_InvFilenamesMap[0] = _T("");
 }
 
 
@@ -365,7 +369,6 @@ void TokensTree::clear()
     m_Tree.clear();
     m_DisplayNameTree.clear();
     m_FilenamesMap.clear();
-    m_InvFilenamesMap.clear();
     m_FilesMap.clear();
     m_FilesStatus.clear();
     m_FilesToBeReparsed.clear();
@@ -381,13 +384,18 @@ void TokensTree::clear()
             delete token;
     }
     m_Tokens.clear();
-    m_FilenamesMap[_T("")] = 0;
-    m_InvFilenamesMap[0] = _T("");
 }
 
 size_t TokensTree::size()
 {
     return m_Tokens.size();
+}
+
+size_t TokensTree::realsize()
+{
+    if(m_Tokens.size() <= m_FreeTokens.size())
+        return 0;
+    return m_Tokens.size() - m_FreeTokens.size();
 }
 
 int TokensTree::insert(Token* newToken)
@@ -470,26 +478,16 @@ int TokensTree::AddToken(Token* newToken,int forceidx)
         return -1;
 
     const wxString& name = newToken->m_Name;
-    TokenIdxSet tmp_tokens;
-    tmp_tokens.clear();
+    static TokenIdxSet tmp_tokens = TokenIdxSet();
+    // tmp_tokens.clear();
 
-    // Insert the token's name and find the token in the list
+    // Insert the token's name and the token in the (inserted?) list
     size_t idx2 = m_Tree.AddItem(name,tmp_tokens,false);
     TokenIdxSet& curlist = m_Tree.GetItemAtPos(idx2);
-    TokenIdxSet::iterator it;
-    int idx = -1;
-    for(it = curlist.begin(); it != curlist.end(); it++)
-    {
-        idx = *it;
-        if(idx < 0 || (size_t)idx >= m_Tokens.size())
-            continue;
-        if(m_Tokens[idx]==newToken)
-            return idx; // Already there
-    }
-    // The token was not present in the list, let's add it.
+
     int newitem = AddTokenToList(newToken,forceidx);
     curlist.insert(newitem);
-    m_DisplayNameTree.AddItem(newToken->m_DisplayName,newitem,true);
+    m_DisplayNameTree.AddItem(newToken->DisplayName(),newitem,true);
     m_FilesMap[newToken->m_File].insert(newitem);
 
     // Add Token (if applicable) to the namespaces indexes
@@ -569,7 +567,7 @@ void TokensTree::RemoveToken(Token* oldToken)
     }
 
     // Removing from the Display Tree is easier, just replace the contents with -1.
-    m_DisplayNameTree.AddItem(oldToken->m_DisplayName,-1,true);
+    m_DisplayNameTree.AddItem(oldToken->DisplayName(),-1,true);
 
     // Now, from the global namespace (if applicable)
     if(oldToken->m_ParentIndex == -1)
@@ -614,6 +612,13 @@ int TokensTree::AddTokenToList(Token* newToken,int forceidx)
 
     newToken->m_pTree = this;
     newToken->m_Self = result;
+    // Clean up extra string memory
+
+    newToken->m_Type.Shrink();
+    newToken->m_Name.Shrink();
+    newToken->m_ParentName.Shrink();
+    newToken->m_Args.Shrink();
+    newToken->m_AncestorsString.Shrink();
 
     return result;
 }
@@ -722,31 +727,15 @@ Token* TokensTree::GetTokenAt(int idx)
 
 size_t TokensTree::GetFileIndex(const wxString& filename)
 {
-    size_t result = 0;
-    if(!m_FilenamesMap.size())
-    {
-        m_FilenamesMap[_T("")] = 0;
-        m_InvFilenamesMap[0] = _T("");
-    }
-    size_t size = m_FilenamesMap.size();
-    if(!m_FilenamesMap.count(filename))
-    {
-        m_FilenamesMap[filename] = size;
-        m_InvFilenamesMap[size] = filename;
-        result = size;
-    }
-    else
-        result = m_FilenamesMap[filename];
+    size_t result = m_FilenamesMap.insert(filename);
+    // Insert does not alter the tree if the filename is already found.
     return result;
 }
 
-wxString TokensTree::GetFilename(size_t idx) const
+const wxString TokensTree::GetFilename(size_t idx)
 {
-    wxString result(_T(""));
-    if(m_InvFilenamesMap.count(idx))
-    {
-        result = m_InvFilenamesMap.find(idx)->second;
-    }
+
+    wxString result = m_FilenamesMap.GetString(idx);
     return result;
 }
 

@@ -39,7 +39,7 @@
 	#include <globals.h>
 #endif // STANDALONE
 
-static const char CACHE_MAGIC[] = "CCCACHE_1_1";
+static const char CACHE_MAGIC[] = "CCCACHE_1_2";
 
 static wxCriticalSection s_mutexListProtection;
 int PARSER_END = wxNewId();
@@ -566,9 +566,12 @@ bool Parser::ReadFromCache(wxInputStream* f)
         do // do while-false block
         {
             // Filenames
-            for (int i = 0; i < fcount && !f->Eof(); ++i)
+            int i;
+            for (i = 0; i < fcount && !f->Eof(); ++i)
             {
                 if(!LoadIntFromFile(f,&idx)) // Filename index
+                    break;
+                if(idx != i)
                     break;
                 if(!LoadStringFromFile(f,file)) // Filename data
                     break;
@@ -576,8 +579,7 @@ bool Parser::ReadFromCache(wxInputStream* f)
                     file.Clear();
                 if(file.IsEmpty())
                     idx = 0;
-                m_pTokens->m_FilenamesMap[file] = idx;
-                m_pTokens->m_InvFilenamesMap[idx] = file;
+                m_pTokens->m_FilenamesMap.insert(file);
                 actual_fcount++;
             }
             result = (actual_fcount == fcount);
@@ -586,7 +588,7 @@ bool Parser::ReadFromCache(wxInputStream* f)
             if(tcount)
                 m_pTokens->m_Tokens.resize(tcount,0);
             // Tokens
-            for (int i = 0; i < tcount && !f->Eof(); ++i)
+            for (i = 0; i < tcount && !f->Eof(); ++i)
             {
                 token = 0;
                 if (!LoadIntFromFile(f, &nonempty_token))
@@ -629,10 +631,9 @@ bool Parser::WriteToCache(wxOutputStream* f)
     wxCriticalSectionLocker lock(s_mutexProtection);
 //  Begin saving process
 
-    TokenFilenamesMap::iterator fn_it;
-
     size_t tcount = m_pTokens->m_Tokens.size();
     size_t fcount = m_pTokens->m_FilenamesMap.size();
+    size_t i = 0;
 
     // write cache magic
     f->Write(CACHE_MAGIC, sizeof(CACHE_MAGIC));
@@ -641,15 +642,15 @@ bool Parser::WriteToCache(wxOutputStream* f)
     SaveIntToFile(f, tcount); // num tokens
 
     // Filenames
-    for(fn_it = m_pTokens->m_FilenamesMap.begin(); fn_it != m_pTokens->m_FilenamesMap.end();fn_it++)
+    for(i = 0; i < fcount; ++i)
     {
-        SaveIntToFile(f,fn_it->second);
-        SaveStringToFile(f,fn_it->first);
+        SaveIntToFile(f,i);
+        SaveStringToFile(f,m_pTokens->m_FilenamesMap.GetString(i));
     }
 
     // Tokens
 
-    for (size_t i = 0; i < tcount; ++i)
+    for (i = 0; i < tcount; ++i)
     {
         // Manager::Get()->GetMessageManager()->DebugLog(_("Token #%d, offset %d"),i,f->TellO());
         Token* token = m_pTokens->at(i);
@@ -807,10 +808,10 @@ void Parser::BuildTree(wxTreeCtrl& tree)
     fname.Append(_T('.'));
     if(!fnameEmpty && !m_BrowserOptions.showAllSymbols)
     {
-        for(TokenFilenamesMap::iterator it = m_pTokens->m_FilenamesMap.begin(); it!= m_pTokens->m_FilenamesMap.end(); it++)
+        for(size_t i = 1; i < m_pTokens->m_FilenamesMap.size(); ++i)
         {
-            if((it->first).StartsWith(fname))
-                currset.insert(it->second);
+            if(m_pTokens->m_FilenamesMap.GetString(i).StartsWith(fname))
+                currset.insert(i);
         }
     }
 
@@ -1014,7 +1015,7 @@ bool Parser::ReparseModifiedFiles()
         for(it = m_pTokens->m_FilesToBeReparsed.begin(); it != m_pTokens->m_FilesToBeReparsed.end(); ++it)
         {
             m_pTokens->RemoveFile(*it);
-            files_list.push_back(m_pTokens->m_InvFilenamesMap[*it]);
+            files_list.push_back(m_pTokens->m_FilenamesMap.GetString(*it));
             ++numfiles;
         }
     }

@@ -39,6 +39,7 @@ typedef size_t nSearchTreeLabel;
 
 class SearchTreeNode;
 class BasicSearchTree;
+class SearchTreePoint;
 
 /** SearchTreeLinkMap is the list of the edges towards other nodes. The character is the
 key, and the node is the value */
@@ -48,6 +49,9 @@ typedef vector<SearchTreeLinkMap::iterator> SearchTreeStack;
 
 /** SearchTreeNodesArray contains all the nodes for a search tree */
 typedef vector<SearchTreeNode*> SearchTreeNodesArray;
+
+/** SearchTreePointsArray contains a list of tree points defining strings */
+typedef vector<SearchTreePoint> SearchTreePointsArray;
 
 /** SearchTreeItemsMap contains all the items belonging to an edge */
 typedef map<size_t,size_t,less<size_t> > SearchTreeItemsMap;
@@ -152,12 +156,25 @@ class BasicSearchTree
     public:
         BasicSearchTree();
         virtual ~BasicSearchTree();
-        virtual size_t GetCount() const { return 0; } /// Gets the number of items stored
+        virtual size_t size() const { return m_Points.size(); }
+        virtual size_t GetCount() const { return m_Points.size(); } /// Gets the number of items stored
         virtual void clear(); /// Clears items and tree
+
+        /** Adds an item number to position defined by s.
+            If the string already exists, returns the correspoinding item no. */
+        size_t insert(const string& s);
+
         /// Tells if there is an item for string s
         bool HasItem(const string& s);
+
+        /// std::map compatibility for the above
+        size_t count(const string& s) { return HasItem(s) ? 1 : 0; }
+
         /// Gets the array position defined by s
         size_t GetItemNo(const string& s);
+
+        /// Gets the key string for item n
+        const string GetString(size_t n);
 
         /** Finds items that match a given string.
             if is_prefix==true, it finds items that start with the string.
@@ -177,7 +194,7 @@ class BasicSearchTree
 
         /** Gets the string corresponding to the tree point 'nn'.
             If 'top' is specified, it gets the string that goes from node 'top' to point 'nn'. */
-        string GetString(SearchTreePoint nn,nSearchTreeNode top = 0);
+        string GetString(const SearchTreePoint &nn,nSearchTreeNode top = 0);
 
         /** Obtains the node with number n,NULL if n is invalid.
             If NullOnZero == true, returns NULL if n is 0. */
@@ -187,10 +204,6 @@ class BasicSearchTree
         /// Adds Suffix s starting from node nparent.
         SearchTreePoint AddNode(const string& s, nSearchTreeNode nparent = 0);
 
-        /** Adds an item number to position defined by s.
-            If an item no. already exists, returns the existing item no. */
-        size_t AddItemNo(const string& s,size_t itemno);
-
         /// Serializes given label into an XML-escaped string.
         string SerializeLabel(nSearchTreeLabel labelno);
 
@@ -198,6 +211,10 @@ class BasicSearchTree
         SearchTreeLabelsArray m_Labels;
         /// Nodes and their edges
         SearchTreeNodesArray m_pNodes;
+
+        /// Points defining the items' strings
+        SearchTreePointsArray m_Points;
+
     private:
         /// Creates the tree's root node.
         void CreateRootNode();
@@ -219,7 +236,7 @@ class SearchTree: public BasicSearchTree
         virtual ~SearchTree();
         virtual void clear(); /// Clears the tree
         size_t GetCount() const; /// Gets the number of items stored
-        size_t size() const; /// Same as GetCount
+        virtual size_t size() const; /// Same as GetCount
         bool SaveCacheTo(const string& filename); /// Stores the Tree and items into a file
         bool LoadCacheFrom(const string& filename); /// Loads the Tree and items from a file
         string Serialize();
@@ -313,8 +330,10 @@ T SearchTree<T>::GetItem(const string& s)
 template <class T>
 size_t SearchTree<T>::AddItem(const string& s,T item,bool replaceexisting)
 {
-    size_t itemno = AddItemNo(s,m_Items.size());
-    if(itemno == m_Items.size())
+    size_t itemno = insert(s);
+    if(itemno > m_Items.size())
+        m_Items.resize(itemno);
+    else if(itemno == m_Items.size())
         m_Items.push_back(item);
     else if(replaceexisting)
         m_Items[itemno] = item;

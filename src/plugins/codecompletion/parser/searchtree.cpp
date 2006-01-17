@@ -508,6 +508,7 @@ BasicSearchTree::BasicSearchTree()
 {
     m_pNodes.clear();
     m_Labels.clear();
+    m_Points.clear();
     CreateRootNode();
 }
 
@@ -523,6 +524,7 @@ BasicSearchTree::~BasicSearchTree()
     }
     m_pNodes.clear();
     m_Labels.clear();
+    m_Points.clear();
 }
 
 void BasicSearchTree::clear()
@@ -537,27 +539,38 @@ void BasicSearchTree::clear()
     }
     m_pNodes.clear();
     m_Labels.clear();
+    m_Points.clear();
     CreateRootNode();
 }
 
-string BasicSearchTree::GetString(SearchTreePoint nn,nSearchTreeNode top)
+const string BasicSearchTree::GetString(size_t n)
+{
+    if(n >= m_Points.size())
+        return _T("");
+    return GetString(m_Points[n],0);
+}
+
+string BasicSearchTree::GetString(const SearchTreePoint &nn,nSearchTreeNode top)
 {
     string result(_T(""));
     string tmplabel;
     if(!nn.n || nn.n==top)
         return result;
     SearchTreeNode *curnode;
+    vector<wxString> the_strings;
+    the_strings.clear();
     for(curnode = m_pNodes[nn.n];curnode && curnode->GetDepth();curnode = curnode->GetParent(this))
     {
         if(nn.depth <= curnode->GetLabelStartDepth()) // Is nn.depth is above this node's edge?
             continue;
-        tmplabel = curnode->GetLabel(this);
+        the_strings.push_back(curnode->GetLabel(this));
         if(nn.depth < curnode->GetDepth()) // is nn.depth somewhere in the middle of this node's edge?
-            tmplabel = tmplabel.substr(0,nn.depth - curnode->GetLabelStartDepth());
-        result << tmplabel;
+            the_strings[the_strings.size()-1] = the_strings[the_strings.size()-1].substr(0,nn.depth - curnode->GetLabelStartDepth());
         if(curnode->GetParent()==top)
             break;
     }
+    for(size_t i = the_strings.size();i > 0;--i)
+        result << the_strings[i - 1];
     return result;
 }
 
@@ -669,7 +682,10 @@ SearchTreePoint BasicSearchTree::AddNode(const string& s, nSearchTreeNode nparen
             // Since it's a leaf node, we just concatenate to the current label the missing part.
             unsigned int oldlen = newnode->GetDepth() - newnode->GetLabelStartDepth();
             if(oldlen < newlabel.length()) // Safety check against segfaults
+            {
                 m_Labels[newnode->GetLabelNo()] << newlabel.substr(oldlen);
+                m_Labels[newnode->GetLabelNo()].Shrink();
+            }
             newnode->SetLabel(newnode->GetLabelNo(),newnode->GetLabelStart(),newlabel.length());
             newnode->RecalcDepth(this);
         }
@@ -684,6 +700,7 @@ SearchTreePoint BasicSearchTree::AddNode(const string& s, nSearchTreeNode nparen
             // Now we create the new label to be accessed by the leaf node "newnode".
             m_Labels.push_back(newlabel);
             nSearchTreeLabel nlabel = m_Labels.size() - 1;
+            m_Labels[nlabel].Shrink();
 
             // Finally, we create the new node and link it to "middle".
             newnode = CreateNode(newdepth,middle,nlabel,0,newlabel.length());
@@ -796,18 +813,29 @@ size_t BasicSearchTree::FindMatches(const string& s,set<size_t> &result,bool cas
     return result.size();
 }
 
-size_t BasicSearchTree::AddItemNo(const string& s,size_t itemno)
+size_t BasicSearchTree::insert(const string& s)
 {
+    size_t itemno = m_Points.size();
     size_t result = 0;
     SearchTreePoint resultpos;
     resultpos = AddNode(s, 0);
     result = m_pNodes[resultpos.n]->AddItemNo(resultpos.depth,itemno);
+    if(m_Points.size() < result)
+    {
+        m_Points.resize(result,SearchTreePoint(0,0));
+        m_Points[result] = resultpos;
+    }
+    else if(m_Points.size() == result)
+    {
+        m_Points.push_back(resultpos);
+    }
     return result;
 }
 
 void BasicSearchTree::CreateRootNode()
 {
     m_pNodes.push_back(CreateNode(0,0,0,0,0));
+    m_Points.push_back(SearchTreePoint(0,0));
 }
 
 nSearchTreeNode BasicSearchTree::SplitBranch(nSearchTreeNode n,size_t depth)

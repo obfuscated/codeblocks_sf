@@ -721,7 +721,7 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
 	{
 	    Token* token = tmptree->at(i);
 	    if(token)
-            tokens.Add(token->m_DisplayName);
+            tokens.Add(token->DisplayName());
 	}
 	IncrementalSelectListDlg dlg(Manager::Get()->GetAppWindow(), tokens, _("Select function..."), _("Please select function to go to:"));
 	if (dlg.ShowModal() == wxID_OK)
