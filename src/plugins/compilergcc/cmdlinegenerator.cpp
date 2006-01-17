@@ -572,9 +572,9 @@ void CmdLineGenerator::ExpandBackticks(wxString& str)
         {
             wxArrayString output;
             if (wxGetOsVersion() == wxWINDOWS_NT)
-                wxExecute(_T("cmd /c ") + cmd, output);
+                wxExecute(_T("cmd /c ") + cmd, output, wxEXEC_NODISABLE);
             else
-                wxExecute(cmd, output);
+                wxExecute(cmd, output, wxEXEC_NODISABLE);
             bt = GetStringFromArray(output, _T(" "));
             // add it in the cache
             m_Backticks[cmd] = bt;
