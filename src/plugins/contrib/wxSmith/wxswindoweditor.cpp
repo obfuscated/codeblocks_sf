@@ -305,12 +305,7 @@ void wxsWindowEditor::Redo()
 	SetModified(UndoBuff->IsModified());
 }
 
-bool wxsWindowEditor::CanCut()
-{
-    return DragWnd && DragWnd->GetMultipleSelCount();
-}
-
-bool wxsWindowEditor::CanCopy()
+bool wxsWindowEditor::HasSelection()
 {
     return DragWnd && DragWnd->GetMultipleSelCount();
 }

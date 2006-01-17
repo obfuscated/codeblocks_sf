@@ -48,10 +48,7 @@ class wxsWindowEditor : public wxsEditor
 		virtual bool CanRedo();
 
 		/** Checking if we can cut */
-		virtual bool CanCut();
-
-		/** Checking if we can copy */
-		virtual bool CanCopy();
+		virtual bool HasSelection();
 
 		/** Checking if we can paste */
 		virtual bool CanPaste();
