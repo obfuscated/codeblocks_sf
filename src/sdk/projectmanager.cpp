@@ -316,8 +316,8 @@ void ProjectManager::BuildTree()
     }
     m_pTree->SetImageList(m_pImages);
 
-    // make sure tree is not "frozen"
-    UnfreezeTree(true);
+//    // make sure tree is not "frozen"
+//    UnfreezeTree(true);
 }
 
 void ProjectManager::CreateMenu(wxMenuBar* menuBar)

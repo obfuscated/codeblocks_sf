@@ -514,7 +514,7 @@ bool cbProject::LoadLayout()
                         eb->Activate();
                     }
                 }
-                Manager::Get()->GetAppWindow()->Thaw();
+//                Manager::Get()->GetAppWindow()->Thaw();
             }
             result = true;
         }

@@ -958,8 +958,8 @@ void MainFrame::DoSelectLayout(const wxString& name)
         wxMenuItemList& items = viewLayouts->GetMenuItems();
         for (size_t i = 0; i < items.GetCount(); ++i)
         {
-//            if (!items[i]->IsCheckable())
-//                continue;
+            if (!items[i]->IsCheckable())
+                continue;
             items[i]->Check(items[i]->GetText().IsSameAs(name));
         }
         Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/default"), name);

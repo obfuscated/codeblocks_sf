@@ -661,15 +661,15 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                     wxString val;
                     parser.Found(_T("prefix"), &m_Prefix);
 #ifdef __WXMSW__
-					m_NoDDE = parser.Found(_T("no-dde"), &val);
-					m_NoAssocs = parser.Found(_T("no-check-associations"), &val);
+					m_NoDDE = parser.Found(_T("no-dde"));
+					m_NoAssocs = parser.Found(_T("no-check-associations"));
 #else
                     m_NoDDE = false;
                     m_NoAssocs = false;
 #endif
-					m_NoSplash = parser.Found(_T("no-splash-screen"), &val);
-					m_ClearConf = parser.Found(_T("clear-configuration"), &val);
-					m_HasDebugLog = parser.Found(_T("debug-log"), &val);
+					m_NoSplash = parser.Found(_T("no-splash-screen"));
+					m_ClearConf = parser.Found(_T("clear-configuration"));
+					m_HasDebugLog = parser.Found(_T("debug-log"));
 					if (parser.Found(_T("personality"), &val) ||
                         parser.Found(_T("profile"), &val))
                     {
@@ -677,9 +677,9 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                     }
 
                     // batch jobs
-                    m_BatchNotify = parser.Found(_T("batch-build-notify"), &val);
-                    m_Build = parser.Found(_T("build"), &val);
-                    m_ReBuild = parser.Found(_T("rebuild"), &val);
+                    m_BatchNotify = parser.Found(_T("batch-build-notify"));
+                    m_Build = parser.Found(_T("build"));
+                    m_ReBuild = parser.Found(_T("rebuild"));
                     parser.Found(_T("target"), &m_BatchTarget);
 
                     // initial setting for batch flag (will be reset when ParseCmdLine() is called again).

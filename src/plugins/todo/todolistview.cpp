@@ -332,7 +332,7 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
 					if (c1 == _T(' ') || c1 == _T('\t'))
 					{
 						// allow one consecutive space
-						if (item.text.Last() != _T(' '))
+						if (item.text.IsEmpty() || item.text.Last() != _T(' '))
 							item.text << _T(' ');
 					}
 					else

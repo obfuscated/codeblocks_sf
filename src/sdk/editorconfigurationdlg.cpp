@@ -165,6 +165,7 @@ EditorConfigurationDlg::~EditorConfigurationDlg()
 
 void EditorConfigurationDlg::CreateColorsSample()
 {
+    Freeze();
 	if (m_TextColorControl)
 		delete m_TextColorControl;
 	m_TextColorControl = new cbStyledTextCtrl(this, wxID_ANY);
@@ -190,6 +191,7 @@ void EditorConfigurationDlg::CreateColorsSample()
 
 	FillColorComponents();
     wxXmlResource::Get()->AttachUnknownControl(_T("txtColorsSample"), m_TextColorControl);
+    Thaw();
 }
 
 void EditorConfigurationDlg::CreateAutoCompText()

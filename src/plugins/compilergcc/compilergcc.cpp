@@ -929,10 +929,14 @@ void CompilerGCC::DoUpdateTargetMenu()
     if (m_Project)
         m_Project->SetActiveBuildTarget(m_TargetIndex);
 
-	m_TargetMenu->Check(idMenuSelectTargetAll, m_TargetIndex == -1);
+    if (m_HasTargetAll)
+        m_TargetMenu->Check(idMenuSelectTargetAll, m_TargetIndex == -1);
 	for (int i = 0; i < MAX_TARGETS; ++i)
 	{
-		m_TargetMenu->Check(idMenuSelectTargetOther[i], i == m_TargetIndex);
+	    wxMenuItem* item = m_TargetMenu->FindItem(idMenuSelectTargetOther[i]);
+        if (!item || !item->IsCheckable())
+            continue;
+		item->Check(i == m_TargetIndex);
 	}
 	if (m_ToolTarget)
 		m_ToolTarget->SetSelection(m_TargetIndex + (m_HasTargetAll ? 1 : 0));
@@ -2346,18 +2350,18 @@ void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
     {
         mbar->Enable(idMenuCompile, !running && (prj || ed));
         mbar->Enable(idMenuCompileAll, !running && prj);
-        mbar->Enable(idMenuCompileFromProjectManager, !running && prj);
-        mbar->Enable(idMenuCompileTargetFromProjectManager, !running && prj);
+//        mbar->Enable(idMenuCompileFromProjectManager, !running && prj);
+//        mbar->Enable(idMenuCompileTargetFromProjectManager, !running && prj);
         mbar->Enable(idMenuCompileFile, !running && ed);
-        mbar->Enable(idMenuCompileFileFromProjectManager, !running && prj);
+//        mbar->Enable(idMenuCompileFileFromProjectManager, !running && prj);
         mbar->Enable(idMenuRebuild, !running && (prj || ed));
         mbar->Enable(idMenuRebuildAll, !running && prj);
-        mbar->Enable(idMenuRebuildFromProjectManager, !running && prj);
-        mbar->Enable(idMenuRebuildTargetFromProjectManager, !running && prj);
+//        mbar->Enable(idMenuRebuildFromProjectManager, !running && prj);
+//        mbar->Enable(idMenuRebuildTargetFromProjectManager, !running && prj);
         mbar->Enable(idMenuClean, !running && (prj || ed));
         mbar->Enable(idMenuCleanAll, !running && prj);
-        mbar->Enable(idMenuCleanFromProjectManager, !running && prj);
-        mbar->Enable(idMenuCleanTargetFromProjectManager, !running && prj);
+//        mbar->Enable(idMenuCleanFromProjectManager, !running && prj);
+//        mbar->Enable(idMenuCleanTargetFromProjectManager, !running && prj);
         mbar->Enable(idMenuCompileAndRun, !running && (prj || ed));
         mbar->Enable(idMenuRun, !running && (prj || ed));
         mbar->Enable(idMenuKillProcess, running);
