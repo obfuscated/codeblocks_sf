@@ -164,6 +164,15 @@ template <class T> void Register_EditorBase(asIScriptEngine* engine, const wxStr
     engine->RegisterObjectMethod(_C(classname), "bool HasBookmark(int)", asMETHOD(T, HasBookmark), asCALL_THISCALL);
     engine->RegisterObjectMethod(_C(classname), "void GotoNextBookmark()", asMETHOD(T, GotoNextBookmark), asCALL_THISCALL);
     engine->RegisterObjectMethod(_C(classname), "void GotoPreviousBookmark()", asMETHOD(T, GotoPreviousBookmark), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "void Undo()", asMETHOD(T, Undo), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "void Redo()", asMETHOD(T, Redo), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "void Cut()", asMETHOD(T, Cut), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "void Copy()", asMETHOD(T, Copy), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "void Paste()", asMETHOD(T, Paste), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "bool CanUndo()", asMETHOD(T, CanUndo), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "bool CanRedo()", asMETHOD(T, CanRedo), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "bool CanPaste()", asMETHOD(T, CanPaste), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "bool HasSelection()", asMETHOD(T, HasSelection), asCALL_THISCALL);
 }
 
 //------------------------------------------------------------------------------

@@ -175,6 +175,18 @@ class DLLIMPORT cbEditor : public EditorBase
         /** Highlight the specified line as error. */
         void SetErrorLine(int line);
 
+        // the following functions, although self-explanatory, are documented
+        // in EditorBase.
+        void Undo();
+        void Redo();
+        void Cut();
+        void Copy();
+        void Paste();
+        bool CanUndo();
+        bool CanRedo();
+        bool HasSelection();
+        bool CanPaste();
+
 		// Workaround for shift-tab bug in wx2.4.2
 		void DoIndent(); /// Indents current line/block
 		void DoUnIndent(); /// UnIndents current line/block

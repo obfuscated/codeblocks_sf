@@ -1891,58 +1891,58 @@ void MainFrame::OnEditGotoMatchingBrace(wxCommandEvent& event)
 
 void MainFrame::OnEditBookmarksToggle(wxCommandEvent& event)
 {
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    EditorBase* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
     if (ed)
 		ed->ToggleBookmark();
 }
 
 void MainFrame::OnEditBookmarksNext(wxCommandEvent& event)
 {
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    EditorBase* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
     if (ed)
 		ed->GotoNextBookmark();
 }
 
 void MainFrame::OnEditBookmarksPrevious(wxCommandEvent& event)
 {
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    EditorBase* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
     if (ed)
 		ed->GotoPreviousBookmark();
 }
 
 void MainFrame::OnEditUndo(wxCommandEvent& event)
 {
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    EditorBase* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
     if (ed)
-        ed->GetControl()->Undo();
+        ed->Undo();
 }
 
 void MainFrame::OnEditRedo(wxCommandEvent& event)
 {
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    EditorBase* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
     if (ed)
-        ed->GetControl()->Redo();
+        ed->Redo();
 }
 
 void MainFrame::OnEditCopy(wxCommandEvent& event)
 {
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    EditorBase* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
     if (ed)
-        ed->GetControl()->Copy();
+        ed->Copy();
 }
 
 void MainFrame::OnEditCut(wxCommandEvent& event)
 {
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    EditorBase* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
     if (ed)
-        ed->GetControl()->Cut();
+        ed->Cut();
 }
 
 void MainFrame::OnEditPaste(wxCommandEvent& event)
 {
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    EditorBase* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
     if (ed)
-        ed->GetControl()->Paste();
+        ed->Paste();
 }
 
 void MainFrame::OnEditSelectAll(wxCommandEvent& event)
@@ -2496,6 +2496,7 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
     }
 
     cbEditor* ed = NULL;
+    EditorBase* eb = NULL;
     bool hasSel = false;
     bool canUndo = false;
     bool canRedo = false;
@@ -2503,33 +2504,33 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
     int eolMode = -1;
 
     if(Manager::Get()->GetEditorManager() && !Manager::isappShuttingDown())
+    {
         ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+        eb = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    }
 
     wxMenuBar* mbar = GetMenuBar();
 
     if(ed)
-    {
         eolMode = ed->GetControl()->GetEOLMode();
-        canUndo = ed->GetControl()->CanUndo();
-        canRedo = ed->GetControl()->CanRedo();
-        hasSel = (ed->GetControl()->GetSelectionStart() != ed->GetControl()->GetSelectionEnd());
-#ifdef __WXGTK__
-        canPaste = true;
-#else
-        canPaste = ed->GetControl()->CanPaste();
-#endif
+    if(eb)
+    {
+        canUndo = eb->CanUndo();
+        canRedo = eb->CanRedo();
+        hasSel = eb->HasSelection();
+        canPaste = eb->CanPaste();
     }
 
-    mbar->Enable(idEditUndo, ed && canUndo);
-    mbar->Enable(idEditRedo, ed && canRedo);
-    mbar->Enable(idEditCut, ed && hasSel);
-    mbar->Enable(idEditCopy, ed && hasSel);
-    mbar->Enable(idEditPaste, ed && canPaste);
+    mbar->Enable(idEditUndo, eb && canUndo);
+    mbar->Enable(idEditRedo, eb && canRedo);
+    mbar->Enable(idEditCut, eb && hasSel);
+    mbar->Enable(idEditCopy, eb && hasSel);
+    mbar->Enable(idEditPaste, eb && canPaste);
     mbar->Enable(idEditSwapHeaderSource, ed);
     mbar->Enable(idEditGotoMatchingBrace, ed);
     mbar->Enable(idEditHighlightMode, ed);
     mbar->Enable(idEditSelectAll, ed);
-    mbar->Enable(idEditBookmarks, ed);
+    mbar->Enable(idEditBookmarks, eb);
     mbar->Enable(idEditFolding, ed);
     mbar->Enable(idEditEOLMode, ed);
 	mbar->Check(idEditEOLCRLF, eolMode == wxSCI_EOL_CRLF);
@@ -2542,11 +2543,11 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
 
 	if (m_pToolbar)
 	{
-		m_pToolbar->EnableTool(idEditUndo, ed && canUndo);
-		m_pToolbar->EnableTool(idEditRedo, ed && canRedo);
-		m_pToolbar->EnableTool(idEditCut, ed && hasSel);
-		m_pToolbar->EnableTool(idEditCopy, ed && hasSel);
-		m_pToolbar->EnableTool(idEditPaste, ed && canPaste);
+		m_pToolbar->EnableTool(idEditUndo, eb && canUndo);
+		m_pToolbar->EnableTool(idEditRedo, eb && canRedo);
+		m_pToolbar->EnableTool(idEditCut, eb && hasSel);
+		m_pToolbar->EnableTool(idEditCopy, eb && hasSel);
+		m_pToolbar->EnableTool(idEditPaste, eb && canPaste);
 	}
 
 	event.Skip();

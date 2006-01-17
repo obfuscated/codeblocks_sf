@@ -1033,6 +1033,63 @@ void cbEditor::SetErrorLine(int line)
     MarkLine(ERROR_MARKER, line);
 }
 
+void cbEditor::Undo()
+{
+    wxASSERT(m_pControl); m_pControl->Undo();
+}
+
+void cbEditor::Redo()
+{
+    wxASSERT(m_pControl);
+    m_pControl->Redo();
+}
+
+void cbEditor::Cut()
+{
+    wxASSERT(m_pControl);
+    m_pControl->Cut();
+}
+
+void cbEditor::Copy()
+{
+    wxASSERT(m_pControl);
+    m_pControl->Copy();
+}
+
+void cbEditor::Paste()
+{
+    wxASSERT(m_pControl);
+    m_pControl->Paste();
+}
+
+bool cbEditor::CanUndo()
+{
+    wxASSERT(m_pControl);
+    return m_pControl->CanUndo();
+}
+
+bool cbEditor::CanRedo()
+{
+    wxASSERT(m_pControl);
+    return m_pControl->CanRedo();
+}
+
+bool cbEditor::HasSelection()
+{
+    wxASSERT(m_pControl);
+    return m_pControl->GetSelectionStart() != m_pControl->GetSelectionEnd();
+}
+
+bool cbEditor::CanPaste()
+{
+    wxASSERT(m_pControl);
+#ifdef __WXGTK__
+    return true;
+#else
+    return m_pControl->CanPaste();
+#endif
+}
+
 bool cbEditor::LineHasMarker(int marker, int line)
 {
 	if (line == -1)

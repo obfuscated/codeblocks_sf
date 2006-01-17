@@ -85,6 +85,32 @@ class DLLIMPORT EditorBase : public wxPanel
         /** Highlight the specified line as error. */
         virtual void SetErrorLine(int line){}
 
+        /** Undo changes. */
+        virtual void Undo(){}
+
+        /** Redo changes. */
+        virtual void Redo(){}
+
+        /** Cut selected text/object to clipboard. */
+        virtual void Cut(){}
+
+        /** Copy selected text/object to clipboard. */
+        virtual void Copy(){}
+
+        /** Paste selected text/object from clipboard. */
+        virtual void Paste(){}
+
+        /** @return True if there is something to undo, false if not. */
+        virtual bool CanUndo(){ return false; }
+
+        /** @return True if there is something to redo, false if not. */
+        virtual bool CanRedo(){ return false; }
+
+        /** @return True if there is text/object selected, false if not. */
+        virtual bool HasSelection(){ return false; }
+
+        /** @return True if there is something to paste, false if not. */
+        virtual bool CanPaste(){ return false; }
     protected:
         /** Initializes filename data */
         virtual void InitFilename(const wxString& filename);
