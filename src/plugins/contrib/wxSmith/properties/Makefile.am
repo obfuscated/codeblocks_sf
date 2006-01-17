@@ -11,6 +11,7 @@ libwxsmith_properties_la_LIBADD = ../../../../sdk/libcodeblocks.la \
 				../../../../sdk/wxscintilla/libwxscintilla.la
 
 libwxsmith_properties_la_SOURCES = wxs2intproperty.cpp \
+wxsadvimageproperty.cpp \
 wxsboolproperty.cpp \
 wxsborderproperty.cpp \
 wxsenumproperty.cpp \
@@ -25,6 +26,7 @@ wxsstringlistcheckproperty.cpp \
 wxscheckstringseditor.cpp
 
 noinst_HEADERS = wxs2intproperty.h \
+wxsadvimageproperty.h \
 wxsboolproperty.h \
 wxsborderproperty.h \
 wxsenumproperty.h \
