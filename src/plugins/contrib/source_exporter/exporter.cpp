@@ -114,7 +114,7 @@ void Exporter::BuildMenu(wxMenuBar *menuBar)
   export_menu->Append(idFileExportRTF, _("As &RTF..."), _("Exports the current file to RTF"));
   export_menu->Append(idFileExportODT, _("As &ODT..."), _("Exports the current file to ODT"));
   export_menu->Append(idFileExportPDF, _("As &PDF..."), _("Exports the current file to PDF"));
-  file->Insert(printPos, new wxMenuItem(0, idFileExport, _("&Export"), _(""), wxITEM_NORMAL, export_menu));
+  file->Insert(printPos, new wxMenuItem(export_menu, idFileExport, _("&Export"), _(""), wxITEM_NORMAL));
 }
 
 void Exporter::RemoveMenu(wxMenuBar *menuBar)

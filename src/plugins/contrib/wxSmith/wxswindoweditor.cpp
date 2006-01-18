@@ -5,6 +5,7 @@
 #include <wx/settings.h>
 #include <wx/scrolwin.h>
 #include <wx/clipbrd.h>
+#include <manager.h>
 #include <configmanager.h>
 #include "wxspropertiesman.h"
 #include "wxsmith.h"
@@ -179,7 +180,7 @@ void wxsWindowEditor::BuildPreview()
                     Virtual.GetHeight() > Real.GetHeight() ? Virtual.GetHeight() : Real.GetHeight());
         // Waiting to reposition and resize all widgets
 // FIXME (SpOoN#1#): Don't ever use wxYield, just add pending event and do all required stuff in it's handler
-        ::wxYield();
+        Manager::Yield();
         DragWnd->SetSize(Drag);
         DragWnd->NotifySizeChange(Drag);
         DragWnd->SetWidget(TopWidget);

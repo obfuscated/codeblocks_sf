@@ -1033,11 +1033,11 @@ void wxsDragWindow::OnFetchBackground(wxTimerEvent& event)
 
     FetchArea.Clear();
 
-    ProcessPendingEvents();
+    Manager::ProcessPendingEvents();
 	PaintAfterFetch = true;
 	Show();
 	Update();
-	ProcessPendingEvents();
+	Manager::ProcessPendingEvents();
 }
 
 void wxsDragWindow::FindAbsolutePosition(wxsWidget* Widget,int* X,int* Y)
