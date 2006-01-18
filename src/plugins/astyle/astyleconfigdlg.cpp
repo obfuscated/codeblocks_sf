@@ -9,6 +9,8 @@
 #include <wx/textctrl.h>
 #include <wx/combobox.h>
 #include <wx/spinctrl.h>
+#include "dlgformattersettings.h"
+#include <string>
 
 BEGIN_EVENT_TABLE(AstyleConfigDlg, wxDialog)
   EVT_RADIOBUTTON(XRCID("rbAnsi"), AstyleConfigDlg::OnStyleChange)
@@ -17,6 +19,7 @@ BEGIN_EVENT_TABLE(AstyleConfigDlg, wxDialog)
   EVT_RADIOBUTTON(XRCID("rbGNU"), AstyleConfigDlg::OnStyleChange)
   EVT_RADIOBUTTON(XRCID("rbJava"), AstyleConfigDlg::OnStyleChange)
   EVT_RADIOBUTTON(XRCID("rbCustom"), AstyleConfigDlg::OnStyleChange)
+  EVT_BUTTON(XRCID("Preview"), AstyleConfigDlg::OnPreview)
 END_EVENT_TABLE()
 
 AstyleConfigDlg::AstyleConfigDlg(wxWindow* parent)
@@ -46,12 +49,12 @@ void AstyleConfigDlg::SetStyle(AStylePredefinedStyle style)
       break;
 
     case aspsKr:
-      sample = _T("namespace foospace {\n    int Foo() {\n        if (isBar) {\n            bar();\n            return 1;\n         } else\n            return 0;\n    }\n}");
+      sample = _T("namespace foospace {\n    int Foo() {\n        if (isBar) {\n            bar();\n            return 1;\n        } else\n            return 0;\n    }\n}");
       XRCCTRL(*this, "rbKr", wxRadioButton)->SetValue(true);
       break;
 
     case aspsLinux:
-      sample = _T("namespace foospace\n{\n        int Foo()\n        {\n                if (isBar) {\n                        bar();\n                        return 1;\n                 }\n                 else\n                        return 0;\n        }\n}");
+      sample = _T("namespace foospace\n{\n        int Foo()\n        {\n                if (isBar) {\n                        bar();\n                        return 1;\n                } else\n                        return 0;\n        }\n}");
       XRCCTRL(*this, "rbLinux", wxRadioButton)->SetValue(true);
       break;
 
@@ -61,7 +64,7 @@ void AstyleConfigDlg::SetStyle(AStylePredefinedStyle style)
       break;
 
     case aspsJava:
-      sample = _T("namespace foospace {\n    int Foo() {\n        if (isBar) {\n            bar();\n            return 1;\n         }\n         else\n            return 0;\n    }\n}");
+      sample = _T("namespace foospace {\n    int Foo() {\n        if (isBar) {\n            bar();\n            return 1;\n        } else\n            return 0;\n    }\n}");
       XRCCTRL(*this, "rbJava", wxRadioButton)->SetValue(true);
       break;
 
@@ -72,8 +75,10 @@ void AstyleConfigDlg::SetStyle(AStylePredefinedStyle style)
 
   bool en = style != aspsCustom;
 
-  XRCCTRL(*this, "txtSample", wxTextCtrl)->SetValue(sample);
-  XRCCTRL(*this, "txtSample", wxTextCtrl)->Enable(en);
+  if (!sample.IsEmpty())
+  {
+    XRCCTRL(*this, "txtSample", wxTextCtrl)->SetValue(sample);
+  }
 
   // disable/enable checkboxes based on style
   XRCCTRL(*this, "spnIndentation", wxSpinCtrl)->Enable(!en);
@@ -112,6 +117,38 @@ void AstyleConfigDlg::OnStyleChange(wxCommandEvent& event)
     SetStyle(aspsJava);
   else if (event.GetId() == XRCID("rbCustom"))
     SetStyle(aspsCustom);
+}
+
+void AstyleConfigDlg::OnPreview(wxCommandEvent& WXUNUSED(event))
+{
+  std::string text(XRCCTRL(*this, "txtSample", wxTextCtrl)->GetValue().mb_str());
+  wxString formattedText;
+
+  astyle::ASFormatter formatter;
+
+  // load settings
+  dlgFormatterSettings settings(this);
+  settings.ApplyTo(formatter);
+
+  if (text.size() && *text.rbegin() != '\r' && *text.rbegin() != '\n')
+  {
+    text += '\n';
+  }
+
+  istringstream iter(text);
+  formatter.init(iter);
+
+  while (formatter.hasMoreLines())
+  {
+    formattedText << _U(formatter.nextLine().c_str());
+
+    if (formatter.hasMoreLines())
+    {
+      formattedText << _T('\n');
+    }
+  }
+
+  XRCCTRL(*this, "txtSample", wxTextCtrl)->SetValue(formattedText);
 }
 
 void AstyleConfigDlg::LoadSettings()

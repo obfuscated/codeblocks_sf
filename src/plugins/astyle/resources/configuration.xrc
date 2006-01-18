@@ -69,12 +69,20 @@
                     <orient>wxVERTICAL</orient>
                     <object class="sizeritem">
                       <object class="wxTextCtrl" name="txtSample">
-                        <style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL</style>
+                        <style>wxTE_MULTILINE|wxHSCROLL</style>
                       </object>
                       <option>1</option>
                       <flag>wxALL|wxEXPAND</flag>
                       <border>8</border>
-                      <minsize>240,128</minsize>
+                      <minsize>320,288</minsize>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxButton" name="Preview">
+                        <label>Preview</label>
+                      </object>
+                      <option>0</option>
+                      <flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
+                      <border>5</border>
                     </object>
                   </object>
                   <option>1</option>

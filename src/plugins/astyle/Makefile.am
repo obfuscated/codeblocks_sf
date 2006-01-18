@@ -16,6 +16,7 @@ libastyle_la_LIBADD = ../../sdk/libcodeblocks.la \
 
 libastyle_la_SOURCES = astyleconfigdlg.cpp \
 			astyleplugin.cpp \
+			dlgformattersettings.cpp \
 			formattersettings.cpp \
 			astyle/ASBeautifier.cpp \
 			astyle/ASFormatter.cpp
@@ -23,6 +24,7 @@ libastyle_la_SOURCES = astyleconfigdlg.cpp \
 noinst_HEADERS = astyleconfigdlg.h \
 			astyleplugin.h \
 			formattersettings.h \
+			dlgformattersettings.h \
 			astyle/astyle.h \
 			astyle/compiler_defines.h
 

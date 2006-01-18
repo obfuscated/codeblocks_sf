@@ -21,6 +21,7 @@ class AstyleConfigDlg : public wxDialog
 
 	protected:
     void OnStyleChange(wxCommandEvent& event);
+    void OnPreview(wxCommandEvent& event);
 
     void LoadSettings();
     void SaveSettings();
