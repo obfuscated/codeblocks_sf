@@ -83,6 +83,7 @@ class DebuggerDriver
 
         /** Add a breakpoint.
             @param bp The breakpoint to add.
+            @param editor The editor this breakpoint is set (might be NULL).
         */
         virtual void AddBreakpoint(DebuggerBreakpoint* bp) = 0;
 

@@ -1121,11 +1121,8 @@ void DebuggerGDB::CmdRunToCursor()
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 	if (!ed)
 		return;
-
-//	wxString filename = UnixFilename(ed->GetFilename());
-//    ConvertToGDBFile(filename);
-//    m_State.AddBreakpoint(filename, ed->GetControl()->GetCurrentLine(), true);
-    m_State.AddBreakpoint(ed->GetFilename(), ed->GetControl()->GetCurrentLine(), true);
+    wxString lb = ed->GetControl()->GetLine(ed->GetControl()->GetCurrentLine());
+    m_State.AddBreakpoint(ed->GetFilename(), ed->GetControl()->GetCurrentLine(), true, lb);
 
 	if (m_pProcess)
 		CmdContinue();
@@ -1466,34 +1463,14 @@ void DebuggerGDB::OnGDBTerminated(wxCommandEvent& event)
 
 void DebuggerGDB::OnBreakpointAdd(CodeBlocksEvent& event)
 {
-    m_State.AddBreakpoint(event.GetString(), event.GetInt(), false);
+    EditorBase* base = event.GetEditor();
+    cbEditor* ed = base && base->IsBuiltinEditor() ? static_cast<cbEditor*>(base) : 0;
+    wxString lb;
+    if (ed)
+        lb = ed->GetControl()->GetLine(event.GetInt());
+    m_State.AddBreakpoint(event.GetString(), event.GetInt(), false, lb);
     if (m_pBreakpointsWindow)
         m_pBreakpointsWindow->Refresh();
-
-//    //Workaround for GDB to break on C++ constructor/destructor
-//    EditorBase* base = event.GetEditor();
-//    cbEditor* ed = base && base->IsBuiltinEditor() ? static_cast<cbEditor*>(base) : 0;
-//    if (ed)
-//    {
-//        wxString lb = ed->GetControl()->GetLine(bp->line);
-//        wxString cppClassName;
-//        wxString cppDestructor = _T("~");
-//        char bufBase[255], bufMethod[255];
-//        // NOTE (rickg22#1#): Had to do some changes to convert to unicode
-//        int i = sscanf(lb.mb_str(), "%[0-9A-Za-z_~]::%[0-9A-Za-z_~](", bufBase, bufMethod);
-//        if (i == 2)
-//        {
-//            wxString strBase = _U(bufBase);
-//            wxString strMethod = _U(bufMethod);
-//            cppClassName << strBase;
-//            cppDestructor << cppClassName;
-//            if (cppClassName.Matches(strMethod) || cppDestructor.Matches(strMethod))
-//                bp->func << cppClassName << _T("::") << strMethod;
-//            else
-//                bp->func.Clear();
-//        }
-//    }
-//    //end GDB workaround
 }
 
 void DebuggerGDB::OnBreakpointEdit(CodeBlocksEvent& event)

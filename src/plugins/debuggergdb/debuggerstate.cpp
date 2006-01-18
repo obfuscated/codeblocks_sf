@@ -53,7 +53,7 @@ void DebuggerState::CleanUp()
     m_Breakpoints.Clear();
 }
 
-int DebuggerState::AddBreakpoint(const wxString& file, int line, bool temp)
+int DebuggerState::AddBreakpoint(const wxString& file, int line, bool temp, const wxString& lineText)
 {
     // do we have a bp there?
     int idx = HasBreakpoint(file, line);
@@ -65,6 +65,7 @@ int DebuggerState::AddBreakpoint(const wxString& file, int line, bool temp)
     bp->filename = file;
     bp->line = line;
     bp->temporary = temp;
+    bp->lineText = lineText;
     return AddBreakpoint(bp);
 }
 

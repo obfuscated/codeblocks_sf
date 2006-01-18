@@ -262,11 +262,9 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
                 //Use function name if this is C++ constructor/destructor
                 else
                 {
-                    if (!m_BP->temporary)
-                        m_Cmd << _T("break ");
-                    else
-                        m_Cmd << _T("tbreak ");
-                    m_Cmd << m_BP->func;
+//                    if (m_BP->temporary)
+//                        cbThrow(_("Temporary breakpoint on constructor/destructor is not allowed"));
+                    m_Cmd << _T("rbreak ") << m_BP->func;
                 }
                 //end GDB workaround
 
@@ -285,7 +283,7 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
             {
 //                m_pDriver->DebugLog(wxString::Format(_("Breakpoint added: file %s, line %d"), m_BP->filename.c_str(), m_BP->line + 1));
                 if (!m_BP->func.IsEmpty())
-                    m_pDriver->DebugLog(_("(work-around for constructors activated)"));
+                    m_pDriver->Log(_("GDB workaround for constructor/destructor breakpoints activated."));
 
                 reBreakpoint.GetMatch(output, 1).ToLong(&m_BP->bpNum);
                 reBreakpoint.GetMatch(output, 2).ToULong(&m_BP->address, 16);

@@ -113,6 +113,7 @@ struct DebuggerBreakpoint
 	unsigned long int address; ///< The actual breakpoint address. This is read back from the debugger. *Don't* write to it.
 	long int bpNum; ///< The breakpoint number. This is read back from the debugger. *Don't* write to it.
 	bool alreadySet; ///< Is this already set? Used to mark temporary breakpoints for removal.
+	wxString lineText; ///< Optionally, the breakpoint line's text (used by GDB for setting breapoints on ctors/dtors).
 };
 WX_DEFINE_ARRAY(DebuggerBreakpoint*, BreakpointsList);
 

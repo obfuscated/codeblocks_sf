@@ -156,6 +156,29 @@ void GDB_driver::CPURegisters()
 
 void GDB_driver::AddBreakpoint(DebuggerBreakpoint* bp)
 {
+    //Workaround for GDB to break on C++ constructor/destructor
+    if (bp->func.IsEmpty() && !bp->lineText.IsEmpty())
+    {
+        wxRegEx reCtorDtor(_T("([0-9A-z_]+)::([~]?)([0-9A-z_]+)[ \t\(]*"));
+        if (reCtorDtor.Matches(bp->lineText))
+        {
+            wxString strBase = reCtorDtor.GetMatch(bp->lineText, 1);
+            wxString strDtor = reCtorDtor.GetMatch(bp->lineText, 2);
+            wxString strMethod = reCtorDtor.GetMatch(bp->lineText, 3);
+            if (strBase.IsSameAs(strMethod))
+            {
+                bp->func = strBase;
+                bp->func << _T("::");
+                bp->func << strDtor;
+                bp->func << strMethod;
+//                if (bp->temporary)
+//                    bp->temporary = false;
+                NotifyCursorChanged(); // to force breakpoints window update
+            }
+        }
+    }
+    //end GDB workaround
+
 	QueueCommand(new GdbCmd_AddBreakpoint(this, bp));
 }
 
