@@ -190,6 +190,8 @@ bool wxsCustomWidget::RebuildXmlDataDoc(bool Validate,bool Correct)
 
 bool wxsCustomWidget::MyPropertiesChanged(bool Validate,bool Correct)
 {
-    bool Ret = RebuildXmlDataDoc(Validate,Correct);
+    bool Ret = ( GetResource()->GetEditMode() == wxsREMSource ) ? 
+        true :
+        RebuildXmlDataDoc(Validate,Correct);
     return wxsWidget::PropertiesChanged(Validate,Correct) && Ret;
 }
