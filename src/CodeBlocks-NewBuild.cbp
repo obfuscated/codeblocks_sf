@@ -508,6 +508,16 @@
 			<Option link="0" />
 			<Option target="AStyle" />
 		</Unit>
+		<Unit filename="plugins\astyle\dlgformattersettings.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="AStyle" />
+		</Unit>
+		<Unit filename="plugins\astyle\dlgformattersettings.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="AStyle" />
+		</Unit>
 		<Unit filename="plugins\astyle\formattersettings.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="AStyle" />
