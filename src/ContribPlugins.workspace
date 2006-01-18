@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
     <Workspace title="All contrib plugins">
-        <Project filename="plugins\contrib\codestat\codestat-NewBuild.cbp" active="1" />
-        <Project filename="plugins\contrib\devpak_plugin\DevPakPlugin-NewBuild.cbp" />
-        <Project filename="plugins\contrib\help_plugin\help-plugin-NewBuild.cbp" />
+        <Project filename="plugins\contrib\codestat\codestat.cbp" active="1" />
+        <Project filename="plugins\contrib\devpak_plugin\DevPakPlugin.cbp" />
+        <Project filename="plugins\contrib\help_plugin\help-plugin.cbp" />
         <Project filename="plugins\contrib\keybinder\keybinder.cbp" />
-        <Project filename="plugins\contrib\profiler\cbprofiler-NewBuild.cbp" />
-        <Project filename="plugins\contrib\source_exporter\Exporter-NewBuild.cbp" />
-        <Project filename="plugins\contrib\wxSmith\wxSmith-NewBuild.cbp" />
+        <Project filename="plugins\contrib\profiler\cbprofiler.cbp" />
+        <Project filename="plugins\contrib\source_exporter\Exporter.cbp" />
+        <Project filename="plugins\contrib\wxSmith\wxSmith.cbp" />
     </Workspace>
 </CodeBlocks_workspace_file>
