@@ -24,6 +24,7 @@
 */
 
 #include "sdk_precomp.h"
+#include "manager.h"
 #include <wx/sizer.h>
 #include "simpletextlog.h" // class's header file
 
@@ -53,6 +54,6 @@ void SimpleTextLog::AddLog(const wxString& msg, bool addNewLine)
     // this is a hack to always show some text...
 	// (thanks to Kevin Altis's message in wx-users mailing list)
 	m_Text->ScrollLines(-1);
-	m_Text->ProcessPendingEvents();
+	Manager::ProcessPendingEvents();
 }
 
