@@ -15,10 +15,15 @@
 //commit 1/10/2006 6 PM v0.4.8
 //commit 1/11/2006 1 PM v0.4.9
 //commit 1/11/2006 3 PM v0.4.10
+//commit 1/17/2006 v0.4.11
 
 
 // The majority of this code was lifted from wxKeyBinder and
 // its "minimal.cpp" sample program
+
+#if defined(__GNUG__) && !defined(__APPLE__)
+	#pragma implementation "cbkeybinder.h"
+#endif
 
 #include "cbkeybinder.h"
 #include <licenses.h> // defines some common licenses (like the GPL)
@@ -56,10 +61,10 @@ cbKeyBinder::cbKeyBinder()
 	//ctor
 	m_PluginInfo.name = _T("cbKeyBinder");
 	m_PluginInfo.title = _("Keyboard shortcuts configuration");
-	m_PluginInfo.version = _T("0.4.10");
+	m_PluginInfo.version = _T("0.4.11");
 	m_PluginInfo.description <<_("CodeBlocks KeyBinder\n")
                             << _("NOTE: Ctrl+Alt+{UP|DOWN} unsupported.\n")
-                            << _("1/11/2006 1\n");
+                            << _("1/17/2006 9\n");
 	m_PluginInfo.author = _T("Pecan && Mispent Intent");
 	m_PluginInfo.authorEmail = _T("");
 	m_PluginInfo.authorWebsite = _T("");
@@ -187,10 +192,21 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
 
     //memorize the key file name as {%HOME%}\cbKeyBinder+{vers}.ini
     m_sKeyFilename = ConfigManager::GetConfigFolder();
+
+    //*bug* GTK GetConfigFolder is return double "//?, eg, "/home/pecan//.codeblocks"
+    LOGIT(_T("GetConfigFolder() is returning [%s]"), m_sKeyFilename.GetData());
+
+    // remove the double //s from filename //+v0.4.11
+    m_sKeyFilename.Replace(_T("//"),_T("/"));
+
+    // get version number from keybinder plugin
+    wxString sPluginVersion = m_PluginInfo.version.BeforeLast('.'); //+v0.4.1
+
     // remove the dots from version string (using first 3 chars)
-    wxString sPluginVersion=m_PluginInfo.version.BeforeLast('.'); //+v0.4.1
     sPluginVersion.Replace(_T("."),_T(""));
-    m_sKeyFilename = m_sKeyFilename<<wxFILE_SEP_PATH<<m_PluginInfo.name<<sPluginVersion
+    m_sKeyFilename = m_sKeyFilename
+         <<wxFILE_SEP_PATH
+        <<m_PluginInfo.name<<sPluginVersion
         <<_T("v")<<SDKverStr<<_T(".ini"); //+v0.4.1
 
     #if LOGGING
@@ -321,7 +337,7 @@ void cbKeyBinder::UpdateArr(wxKeyProfileArray &r)
         //-r.GetSelProfile()->AttachRecursively(Manager::Get()->GetAppWindow());
 
         r.GetSelProfile()->AttachRecursively(Manager::Get()->GetAppWindow());
-        //r.UpdateAllCmd();		// not necessary
+        r.UpdateAllCmd();		// necessary //+v04.11
 
     #if LOGGING
       LOGIT(_T("UpdateArr::End"));
@@ -527,8 +543,9 @@ void cbKeyBinder::OnSave()
       }//if (done..
 
 	wxString path = m_sKeyFilename;
-	path.Replace(_T(".ini"),_T(""));
-	wxFileConfig *cfg = new wxFileConfig(path);
+	//path.Replace(_T(".ini"),_T(""));
+	LOGIT( _T("cbKB:SavePath %s"), path.GetData() );
+	wxFileConfig *cfg = new wxFileConfig(wxEmptyString,wxEmptyString,path); //v04.11
 
 	if (m_pKeyProfArr->Save(cfg, wxEmptyString, TRUE))
 	 {
@@ -538,13 +555,13 @@ void cbKeyBinder::OnSave()
 			total += m_pKeyProfArr->Item(i)->GetCmdCount();
 
 		wxMessageBox(wxString::Format(wxT("All the [%d] keyprofiles ([%d] commands ")
-			wxT("in total) have been saved in \n\"")+path+wxT(".ini\""),
+			wxT("in total) have been saved in \n\"")+path, //+wxT(".ini\""),
             m_pKeyProfArr->GetCount(), total),
 			wxT("Save"));
 
 	 } else {
 
-		wxMessageBox(wxT("Something wrong while saving !"), wxT("Save Error"),
+		wxMessageBox(wxT("Keybinder:Error saving key file!"), wxT("Save Error"),
 			wxOK | wxICON_ERROR);
 	 }
 

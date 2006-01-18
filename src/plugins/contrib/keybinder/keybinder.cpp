@@ -16,6 +16,10 @@
 
 #define NOT !
 
+#ifdef __GNUG__
+#pragma implementation "keybinder.h"
+#endif
+
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -828,7 +832,7 @@ void wxKeyBinder::Attach(wxWindow *p)
 	m_arrHandlers.Add((void*)h);
 
 	// we need to update our commands...
-	UpdateAllCmd();
+	//-UpdateAllCmd(); This loop is executed for every attach. Stop it!
 }
 
 // ----------------------------------------------------------------------------

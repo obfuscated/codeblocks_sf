@@ -14,8 +14,13 @@
 //commit 1/10/2006 5PM v0.4.8
 //commit 1/11/2006 1:22 PM v0.4.9
 //commit 1/11/2006 1:22 PM v0.4.10
+//commit 1/17/2006 v0.4.11
 
 
+
+#ifdef __GNUG__
+#pragma implementation "menuutils.h"
+#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -76,6 +81,17 @@ int wxFindMenuItem(wxMenuBar *p, const wxString &str)
 void wxMenuCmd::Update() //for __WXGTK__
 // ----------------------------------------------------------------------------
 {
+    //+v0.4.11
+    // verify menu item has not changed its id or disappeared
+    if (m_pMenuBar->FindItem(m_nId) != m_pItem)
+        return;
+
+    //+v0.4.11
+    // leave numeric menu items alone. They get replaced by CodeBlocks
+    wxString strText = m_pItem->GetText();
+    if (strText.Left(1).IsNumber())
+      return;
+
 	wxString str = m_pItem->GetLabel();
 
 	// on GTK, an optimization in wxMenu::SetText checks
