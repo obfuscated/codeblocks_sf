@@ -2542,6 +2542,13 @@ void CompilerGCC::OnJobEnd()
             Manager::Get()->GetMessageManager()->Log(m_PageIndex, msg);
             Manager::Get()->GetMessageManager()->LogToStdOut(msg + _T('\n'));
         }
+        else
+        {
+            // last command was "Run"
+            // force exit code to zero (0) or else debugger will think build failed if last run returned non-zero...
+// TODO (mandrav##): Maybe create and use GetLastRunExitCode()? Is it needed?
+            m_LastExitCode = 0;
+        }
         m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
         Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T(" ")); // blank line
 
