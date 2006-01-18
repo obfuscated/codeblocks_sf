@@ -180,11 +180,17 @@ void ClassBrowser::Update()
 	if (m_pParser)
 	{
 		wxArrayString treeState;
-		::SaveTreeState(m_Tree, m_Tree->GetRootItem(), treeState);
+		wxTreeItemId root = m_Tree->GetRootItem();
+		if (root.IsOk())
+            ::SaveTreeState(m_Tree, root, treeState);
 		m_pParser->BuildTree(*m_Tree);
-		::RestoreTreeState(m_Tree, m_Tree->GetRootItem(), treeState);
-		if (!m_Tree->IsExpanded(m_Tree->GetRootItem()))
-            m_Tree->Expand(m_Tree->GetRootItem());
+		root = m_Tree->GetRootItem();
+		if (root.IsOk())
+		{
+            ::RestoreTreeState(m_Tree, root, treeState);
+            if (!m_Tree->IsExpanded(root))
+                m_Tree->Expand(root);
+		}
 	}
 	else
 		m_Tree->DeleteAllItems();
