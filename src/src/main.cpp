@@ -391,7 +391,8 @@ MainFrame::MainFrame(wxWindow* parent)
        m_SettingsMenu(0L),
        m_HelpPluginsMenu(0L),
        m_ReconfiguringPlugins(false),
-       m_StartupDone(false) // one-time flag
+       m_StartupDone(false), // one-time flag
+       m_InitiatedShutdown(false)
 {
     // tell wxFrameManager to manage this frame
     m_LayoutManager.SetFrame(this);
@@ -1295,8 +1296,15 @@ void MainFrame::ShowHideStartPage(bool forceHasProject)
     // we use the 'forceHasProject' param because when a project is opened
     // the EVT_PROJECT_OPEN event is fired *before* ProjectManager::GetProjects()
     // and ProjectManager::GetActiveProject() are updated...
-    if(Manager::isappShuttingDown())
+
+    if(m_InitiatedShutdown)
+    {
+        EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
+        if (sh)
+            sh->Destroy();
         return;
+    }
+
     bool show = !forceHasProject &&
                 Manager::Get()->GetProjectManager()->GetProjects()->GetCount() == 0 &&
                 Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/start_here_page"), true);
@@ -1826,6 +1834,7 @@ void MainFrame::OnSize(wxSizeEvent& event)
 
 void MainFrame::OnApplicationClose(wxCloseEvent& event)
 {
+    m_InitiatedShutdown = true;
     Manager::BlockYields(true);
 
     ProjectManager* prjman = Manager::Get()->GetProjectManager();
@@ -1836,6 +1845,7 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
         {
             event.Veto();
             wxBell();
+            m_InitiatedShutdown = false;
             Manager::BlockYields(false);
             return;
         }
@@ -1844,6 +1854,7 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     {
         event.Veto();
         wxBell();
+        m_InitiatedShutdown = false;
         Manager::BlockYields(false);
         return;
     }
@@ -1851,6 +1862,7 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     if (!DoCloseCurrentWorkspace())
     {
         event.Veto();
+        m_InitiatedShutdown = false;
         Manager::BlockYields(false);
         return;
     }

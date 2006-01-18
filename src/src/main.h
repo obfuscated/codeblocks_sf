@@ -238,6 +238,7 @@ class MainFrame : public wxFrame
         bool m_ReconfiguringPlugins;
         bool m_SmallToolBar;
         bool m_StartupDone;
+        bool m_InitiatedShutdown;
 
         wxString m_LastLayoutName;
         wxString m_LastLayoutData;
