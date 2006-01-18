@@ -133,12 +133,9 @@ bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry,cbEditor* Editor)
 
 	if ( Position == -1 )
 	{
-	    /*
-		wxMessageBox(wxString::Format(
-			_("Couldn't find code with header:\n\t\"%s\"\nin file '%s'"),
+	    DBGLOG(_("wxSmith: Couldn't find code with header:\n\t\"%s\"\nin file '%s'"),
 			Entry->BlockHeader.c_str(),
-			Editor->GetFilename().c_str()));
-        */
+			Editor->GetFilename().c_str());
 		return false;
 	}
 
@@ -148,37 +145,34 @@ bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry,cbEditor* Editor)
     int End = Ctrl->SearchInTarget(wxsBEnd());
     if ( End == -1 )
     {
-        /*
-        wxMessageBox(wxString::Format(
-            _("Unfinished block of auto-generated code with header:\n\t\"%s\"\nin file '%s'"),
+        DBGLOG(_("wxSmith: Unfinished block of auto-generated code with header:\n\t\"%s\"\nin file '%s'"),
             Entry->BlockHeader.c_str(),
-            Editor->GetFilename().c_str()));
-        */
+            Editor->GetFilename().c_str());
         return false;
     }
-    else
+
+    wxString BaseIndentation;
+    int IndentPos = Position;
+    while ( --IndentPos >= 0 )
     {
-        wxString BaseIndentation;
-        int IndentPos = Position;
-        while ( --IndentPos >= 0 )
-        {
-            wxChar ch = Ctrl->GetCharAt(IndentPos);
-            if ( (ch == _T('\n')) || (ch == _T('\r')) ) break;
-        }
-        while ( ++IndentPos < Position )
-        {
-            wxChar ch = Ctrl->GetCharAt(IndentPos);
-            BaseIndentation.Append(
-                ( ch == _T('\t') ) ? _T('\t') : _T(' '));
-        }
-
-        RebuildCode(BaseIndentation,Entry->Code);
-
-        Ctrl->SetTargetStart(Position);
-        Ctrl->SetTargetEnd(End);
-        Ctrl->ReplaceTarget(Entry->Code);
-        Editor->SetModified();
+        wxChar ch = Ctrl->GetCharAt(IndentPos);
+        if ( (ch == _T('\n')) || (ch == _T('\r')) ) break;
     }
+    while ( ++IndentPos < Position )
+    {
+        wxChar ch = Ctrl->GetCharAt(IndentPos);
+        BaseIndentation.Append(
+            ( ch == _T('\t') ) ? _T('\t') : _T(' '));
+    }
+
+    RebuildCode(BaseIndentation,Entry->Code);
+
+    if ( Ctrl->GetTextRange(Position,End) == Entry->Code ) return true;
+
+    Ctrl->SetTargetStart(Position);
+    Ctrl->SetTargetEnd(End);
+    Ctrl->ReplaceTarget(Entry->Code);
+    Editor->SetModified();
 
 	return true;
 }
@@ -188,35 +182,25 @@ bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry,const wxString& FileName)
     wxFFile File(FileName,_T("rb"));
     if ( !File.IsOpened() )
     {
-    	/*
-		wxMessageBox(wxString::Format(
-			_("Couldn't open file '%s' for reading"),
-			FileName.c_str()));
-        */
+    	DBGLOG(_("wxSmith: Couldn't open file '%s' for reading"),FileName.c_str());
     	return false;
     }
 
     wxString Content;
     if ( !File.ReadAll(&Content) )
     {
-    	/*
-		wxMessageBox(wxString::Format(
-			_("Couldn't read from file '%s'"),
-			FileName.c_str()));
-        */
+        DBGLOG(_("wxSmith: Couldn't read from file '%s'"),FileName.c_str());
     	return false;
     }
+    File.Close();
 
     int Position = Content.First(Entry->BlockHeader);
 
     if ( Position == -1 )
     {
-    	/*
-		wxMessageBox(wxString::Format(
-			_("Couldn't find code with header:\n\t\"%s\"\nin file '%s'"),
+    	DBGLOG(_("wxSmith: Couldn't find code with header:\n\t\"%s\"\nin file '%s'"),
 			Entry->BlockHeader.c_str(),
-			FileName.c_str()));
-        */
+			FileName.c_str());
 		return false;
     }
 
@@ -225,12 +209,9 @@ bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry,const wxString& FileName)
     Position = Content.First(wxsBEnd());
     if ( Position == -1 )
     {
-    	/*
-        wxMessageBox(wxString::Format(
-            _("Unfinished block of auto-generated code with header:\n\t\"%s\"\nin file '%s'"),
+        DBGLOG(_("wxSmith: Unfinished block of auto-generated code with header:\n\t\"%s\"\nin file '%s'"),
             Entry->BlockHeader.c_str(),
-            FileName.c_str()));
-        */
+            FileName.c_str());
         return false;
     }
 
@@ -249,29 +230,21 @@ bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry,const wxString& FileName)
     }
 
     RebuildCode(BaseIndentation,Entry->Code);
+    
+    if ( Content.Mid(0,Position) == Entry->Code ) return true;
 
     Result += Entry->Code;
     Result += Content.Remove(0,Position);
 
-    File.Close();
-
     if ( !File.Open(FileName,_T("wb")) )
     {
-    	/*
-		wxMessageBox(wxString::Format(
-			_("Couldn't open file '%s' for writing"),
-			FileName.c_str()));
-        */
+    	DBGLOG(_("wxSmith: Couldn't open file '%s' for writing"),FileName.c_str());
     	return false;
     }
 
     if ( !File.Write(Result) )
     {
-    	/*
-		wxMessageBox(wxString::Format(
-			_("Couldn't write to file '%s'"),
-			FileName.c_str()));
-        */
+    	DBGLOG(_("Couldn't write to file '%s'"),FileName.c_str());
     	return false;
     }
 
