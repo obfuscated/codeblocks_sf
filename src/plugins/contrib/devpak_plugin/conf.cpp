@@ -75,12 +75,12 @@ UpdateRec* ReadConf(const IniParser& ini, int* recCount, const wxString& current
         rec.desc.Replace(_T("<CR>"), _T("\n"));
         rec.desc.Replace(_T("<LF>"), _T("\r"));
         wxURL url(rec.remote_file);
-        if (!url.GetHostName().IsEmpty())
+        if (!url.GetServer().IsEmpty())
         {
-            rec.remote_server = url.GetProtocolName() + _T("://") + url.GetHostName();
-            int pos = rec.remote_file.Find(url.GetHostName());
+            rec.remote_server = url.GetScheme() + _T("://") + url.GetServer();
+            int pos = rec.remote_file.Find(url.GetServer());
             if (pos != wxNOT_FOUND)
-                rec.remote_file.Remove(0, pos + url.GetHostName().Length() + 1);
+                rec.remote_file.Remove(0, pos + url.GetServer().Length() + 1);
         }
         else
             rec.remote_server = currentServer;
