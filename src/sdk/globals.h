@@ -9,6 +9,7 @@
 
 class TiXmlDocument;
 
+/// Known plugin types
 enum PluginType
 {
     ptNone = 1,
@@ -21,16 +22,16 @@ enum PluginType
     ptOther
 };
 
+/// The type of module offering a context menu.
 enum ModuleType
 {
 	mtProjectManager = 1,
 	mtEditorManager,
 	mtMessageManager,
-	mtClassBrowser,
-	mtDocumentsManager,
 	mtUnknown
 };
 
+/// Known file types
 enum FileType
 {
 	ftCodeBlocksProject = 0,

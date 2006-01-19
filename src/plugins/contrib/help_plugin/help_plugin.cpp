@@ -168,7 +168,7 @@ void HelpPlugin::BuildMenu(wxMenuBar *menuBar)
   m_LastId = idHelpMenus[0] + counter;
 }
 
-void HelpPlugin::BuildModuleMenu(const ModuleType type, wxMenu *menu, const wxString &arg)
+void HelpPlugin::BuildModuleMenu(const ModuleType type, wxMenu *menu, const FileTreeData* data)
 {
   if (!menu || !m_IsAttached)
   {

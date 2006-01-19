@@ -62,7 +62,7 @@ class CompilerGCC : public cbCompilerPlugin
         virtual void OnAttach();
         virtual void OnRelease(bool appShutDown);
         virtual void BuildMenu(wxMenuBar* menuBar); // offer for menu space by host
-        virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg); // offer for menu space by a module
+        virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0); // offer for menu space by a module
         virtual bool BuildToolBar(wxToolBar* toolBar);
 
         virtual int Run(ProjectBuildTarget* target = 0L);

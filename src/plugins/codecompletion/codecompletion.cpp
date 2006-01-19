@@ -152,7 +152,7 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
     	Manager::Get()->GetMessageManager()->DebugLog(_("Could not find Search menu!"));
 }
 
-void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg)
+void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
 {
     // if not attached, exit
 	if (!menu || !m_IsAttached)

@@ -72,7 +72,7 @@ class cbKeyBinder : public cbPlugin
 		~cbKeyBinder();
 		int Configure();
 		void BuildMenu(wxMenuBar* menuBar);
-		void BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg);
+		void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
 		bool BuildToolBar(wxToolBar* toolBar);
 		void OnAttach(); // fires when the plugin is attached to the application
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application

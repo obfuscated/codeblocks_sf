@@ -27,7 +27,7 @@
 // it will change when the SDK interface breaks
 #define PLUGIN_SDK_VERSION_MAJOR 1
 #define PLUGIN_SDK_VERSION_MINOR 6
-#define PLUGIN_SDK_VERSION_RELEASE 4
+#define PLUGIN_SDK_VERSION_RELEASE 5
 
 // class decls
 class ProjectBuildTarget;
@@ -35,6 +35,7 @@ class wxMenuBar;
 class wxMenu;
 class wxToolBar;
 class cbProject;
+class FileTreeData;
 
 /** Information about the plugin */
 struct PluginInfo
@@ -123,7 +124,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 		  * @param menu pointer to the popup menu
 		  * @param arg a wxString argument. In the example above, it would contain the selected project file
 		  */
-        virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg) = 0;
+        virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0) = 0;
 		/** This method is called by Code::Blocks and is used by the plugin
 		  * to add any toolbar items it needs on Code::Blocks's toolbar.\n
 		  * It is a pure virtual method that needs to be implemented by all
@@ -331,7 +332,7 @@ class PLUGIN_EXPORT cbToolPlugin : public cbPlugin
         // "Hide" some virtual members, that are not needed in cbToolPlugin
         void BuildMenu(wxMenuBar* menuBar){}
         void RemoveMenu(wxMenuBar* menuBar){}
-        void BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg){}
+        void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0){}
         bool BuildToolBar(wxToolBar* toolBar){ return false; }
         void RemoveToolBar(wxToolBar* toolBar){}
 };
@@ -373,7 +374,7 @@ class PLUGIN_EXPORT cbMimePlugin : public cbPlugin
         // "Hide" some virtual members, that are not needed in cbMimePlugin
         void BuildMenu(wxMenuBar* menuBar){}
         void RemoveMenu(wxMenuBar* menuBar){}
-        void BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg){}
+        void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0){}
         bool BuildToolBar(wxToolBar* toolBar){ return false; }
         void RemoveToolBar(wxToolBar* toolBar){}
 };
@@ -421,7 +422,7 @@ class PLUGIN_EXPORT cbProjectWizardPlugin : public cbPlugin
         // "Hide" some virtual members, that are not needed in cbCreateWizardPlugin
         void BuildMenu(wxMenuBar* menuBar){}
         void RemoveMenu(wxMenuBar* menuBar){}
-        void BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg){}
+        void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0){}
         bool BuildToolBar(wxToolBar* toolBar){ return false; }
         void RemoveToolBar(wxToolBar* toolBar){}
 };

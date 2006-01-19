@@ -230,9 +230,6 @@ void ClassBrowser::ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, const wxPoint& pt
         }
     }
 
-    // ask any plugins to add items in this menu
-    Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtClassBrowser, menu, tree->GetItemText(id));
-
     if (tree == m_Tree)
     {
         if (menu->GetMenuItemCount() != 0)

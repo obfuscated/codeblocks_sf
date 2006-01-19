@@ -391,7 +391,7 @@ void CompilerGCC::BuildMenu(wxMenuBar* menuBar)
     }
 }
 
-void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg)
+void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
 {
 	if (!m_IsAttached)
 		return;
@@ -402,50 +402,33 @@ void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxS
 	if (!CheckProject())
 		return;
 
-    FileType ft = FileTypeOf(arg);
-
-    if (arg.IsEmpty())
+    if (!data || data->GetKind() == FileTreeData::ftdkUndefined)
     {
         // popup menu in empty space in ProjectManager
         menu->Append(idMenuCompileAll, _("Build workspace"));
         menu->Append(idMenuRebuildAll, _("Rebuild workspace"));
     }
-    else
+    else if (data && data->GetKind() == FileTreeData::ftdkProject)
     {
-        // see if the arg is a project name
-        bool found = false;
-        ProjectsArray* array = Manager::Get()->GetProjectManager()->GetProjects();
-        if (array)
-        {
-            for (size_t i = 0; i < array->GetCount(); ++i)
-            {
-                cbProject* cur = array->Item(i);
-                if (cur && cur->GetTitle() == arg)
-                {
-                    found = true;
-                    break;
-                }
-            }
-        }
-
-        if (found)
-        {
-            // popup menu on a project
-            menu->AppendSeparator();
-            menu->Append(idMenuCompileFromProjectManager, _("Build\tCtrl-F9"));
-            menu->Append(idMenuRebuildFromProjectManager, _("Rebuild\tCtrl-F11"));
-            menu->Append(idMenuCleanFromProjectManager, _("Clean"));
-            wxMenu* subMenu = new wxMenu();
-            subMenu->Append(idMenuCompileTargetFromProjectManager, _("Build"));
-            subMenu->Append(idMenuRebuildTargetFromProjectManager, _("Rebuild"));
-            subMenu->Append(idMenuCleanTargetFromProjectManager, _("Clean"));
-            subMenu->AppendSeparator();
-            subMenu->Append(idMenuTargetCompilerOptions, _("Build options"));
-            menu->Append(idMenuTargetCompilerOptionsSub, _("Specific build target..."), subMenu);
-            menu->AppendSeparator();
-            menu->Append(idMenuProjectCompilerOptions, _("Build options"));
-        }
-        else if (ft == ftSource || ft == ftHeader)
+        // popup menu on a project
+        menu->AppendSeparator();
+        menu->Append(idMenuCompileFromProjectManager, _("Build\tCtrl-F9"));
+        menu->Append(idMenuRebuildFromProjectManager, _("Rebuild\tCtrl-F11"));
+        menu->Append(idMenuCleanFromProjectManager, _("Clean"));
+        wxMenu* subMenu = new wxMenu();
+        subMenu->Append(idMenuCompileTargetFromProjectManager, _("Build"));
+        subMenu->Append(idMenuRebuildTargetFromProjectManager, _("Rebuild"));
+        subMenu->Append(idMenuCleanTargetFromProjectManager, _("Clean"));
+        subMenu->AppendSeparator();
+        subMenu->Append(idMenuTargetCompilerOptions, _("Build options"));
+        menu->Append(idMenuTargetCompilerOptionsSub, _("Specific build target..."), subMenu);
+        menu->AppendSeparator();
+        menu->Append(idMenuProjectCompilerOptions, _("Build options"));
+    }
+    else if (data && data->GetKind() == FileTreeData::ftdkFile)
+    {
+        FileType ft = FileTypeOf(data->GetProjectFile()->relativeFilename);
+        if (ft == ftSource || ft == ftHeader)
         {
             // popup menu on a compilable file
             menu->AppendSeparator();
@@ -665,7 +648,7 @@ FileTreeData* CompilerGCC::DoSwitchProjectTemporarily()
         return 0L;
     // copy ftd to a new instance, because after the SetProject() call
     // that follows, ftd will no longer be valid...
-    FileTreeData* newFtd = new FileTreeData(ftd->GetProject(), ftd->GetFileIndex());
+    FileTreeData* newFtd = new FileTreeData(*ftd);
     Manager::Get()->GetProjectManager()->SetProject(ftd->GetProject(), false);
     AskForActiveProject();
 

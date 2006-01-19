@@ -380,7 +380,7 @@ void DebuggerGDB::BuildMenu(wxMenuBar* menuBar)
     }
 }
 
-void DebuggerGDB::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg)
+void DebuggerGDB::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
 {
 	cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
 	if (!m_IsAttached)

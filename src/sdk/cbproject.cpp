@@ -710,7 +710,7 @@ void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, bool categ
     //sort list of files
     m_Files.Sort(filesSort);
 
-    FileTreeData* ftd = new FileTreeData(this);
+    FileTreeData* ftd = new FileTreeData(this, FileTreeData::ftdkProject);
     m_ProjectNode = tree->AppendItem(root, GetTitle(), prjIdx, prjIdx, ftd);
     wxTreeItemId others = m_ProjectNode;
 
@@ -721,7 +721,9 @@ void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, bool categ
         pGroupNodes = new wxTreeItemId[fgam->GetGroupsCount()];
         for (unsigned int i = 0; i < fgam->GetGroupsCount(); ++i)
         {
-            pGroupNodes[i] = tree->AppendItem(m_ProjectNode, fgam->GetGroupName(i), fldIdx, fldIdx);
+            ftd = new FileTreeData(this, FileTreeData::ftdkVirtualGroup);
+            ftd->SetFolder(fgam->GetGroupName(i));
+            pGroupNodes[i] = tree->AppendItem(m_ProjectNode, fgam->GetGroupName(i), fldIdx, fldIdx, ftd);
         }
         // add a default category "Others" for all non-matching file-types
         others = tree->AppendItem(m_ProjectNode, _("Others"), fldIdx, fldIdx);
@@ -732,7 +734,10 @@ void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, bool categ
     for (FilesList::Node* node = m_Files.GetFirst(); node; node = node->GetNext())
     {
         ProjectFile* f = node->GetData();
-        ftd = new FileTreeData(this, count++);
+        ftd = new FileTreeData(this, FileTreeData::ftdkFile);
+        ftd->SetFileIndex(count++);
+        ftd->SetProjectFile(f);
+        ftd->SetFolder(f->file.GetFullPath());
 
         wxTreeItemId parentNode = m_ProjectNode;
         // check if files grouping is enabled and find the group parent
@@ -771,6 +776,21 @@ void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, bool categ
     delete[] pGroupNodes;
 
     tree->Expand(m_ProjectNode);
+}
+
+// helper function used by AddTreeNode
+static wxString GetRelativeFolderPath(wxTreeCtrl* tree, wxTreeItemId parent)
+{
+    wxString fld;
+    while (parent.IsOk())
+    {
+        FileTreeData* ftd = (FileTreeData*)tree->GetItemData(parent);
+        if (!ftd || ftd->GetKind() != FileTreeData::ftdkFolder)
+            break;
+        fld.Prepend(tree->GetItemText(parent) + wxFILE_SEP_PATH);
+        parent = tree->GetItemParent(parent);
+    }
+    return fld;
 }
 
 wxTreeItemId cbProject::AddTreeNode(wxTreeCtrl* tree, const wxString& text, const wxTreeItemId& parent, bool useFolders, bool compiles, int image, FileTreeData* data)
@@ -829,20 +849,34 @@ wxTreeItemId cbProject::AddTreeNode(wxTreeCtrl* tree, const wxString& text, cons
 				{
 					if (folder.CompareTo(tree->GetItemText(child)) < 0)
 					{
-						newparent = tree->InsertItem(parent, lastChild, folder, fldIdx, fldIdx);
+					    FileTreeData* ftd = new FileTreeData(*data);
+					    ftd->SetKind(FileTreeData::ftdkFolder);
+					    ftd->SetFolder(m_BasePath + GetRelativeFolderPath(tree, parent) + folder + wxFILE_SEP_PATH);
+					    ftd->SetProjectFile(0);
+						newparent = tree->InsertItem(parent, lastChild, folder, fldIdx, fldIdx, ftd);
 						break;
 					}
 				}
 				else
 				{
-					newparent = tree->PrependItem(parent, folder, fldIdx, fldIdx);
+                    FileTreeData* ftd = new FileTreeData(*data);
+                    ftd->SetKind(FileTreeData::ftdkFolder);
+                    ftd->SetFolder(m_BasePath + GetRelativeFolderPath(tree, parent) + folder + wxFILE_SEP_PATH);
+                    ftd->SetProjectFile(0);
+					newparent = tree->PrependItem(parent, folder, fldIdx, fldIdx, ftd);
 					break;
 				}
 				lastChild = child;
 				child = tree->GetNextChild(parent, cookie2);
 			}
 			if (!newparent)
-				newparent = tree->AppendItem(parent, folder, fldIdx, fldIdx);
+			{
+                FileTreeData* ftd = new FileTreeData(*data);
+                ftd->SetKind(FileTreeData::ftdkFolder);
+                ftd->SetFolder(m_BasePath + GetRelativeFolderPath(tree, parent) + folder + wxFILE_SEP_PATH);
+                ftd->SetProjectFile(0);
+				newparent = tree->AppendItem(parent, folder, fldIdx, fldIdx, ftd);
+			}
 		}
 		//tree->SortChildren(parent);
         ret = AddTreeNode(tree, path, newparent, true, compiles, image, data);
@@ -850,7 +884,6 @@ wxTreeItemId cbProject::AddTreeNode(wxTreeCtrl* tree, const wxString& text, cons
     else
 	{
         ret = tree->AppendItem(parent, text, image, image, data);
-		// the following doesn't seem to work under wxMSW...
 		if (!compiles)
 			tree->SetItemTextColour(ret, wxColour(0x80, 0x80, 0x80));
 	}

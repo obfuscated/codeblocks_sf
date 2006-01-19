@@ -222,7 +222,7 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
 
 }//BuildMenu
 // ----------------------------------------------------------------------------
-void cbKeyBinder::BuildModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg)
+void cbKeyBinder::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
 // ----------------------------------------------------------------------------
 {
 	//Some library module is ready to display a pop-up menu.

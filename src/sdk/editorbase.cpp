@@ -232,7 +232,10 @@ void EditorBase::DisplayContextMenu(const wxPoint& position,bool noeditor)
         AddToContextMenu(popup,noeditor,false);
 
         // ask other editors / plugins if they need to add any entries in this menu...
-        Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtEditorManager, popup, m_Filename);
+        FileTreeData* ftd = new FileTreeData(0, FileTreeData::ftdkUndefined);
+        ftd->SetFolder(m_Filename);
+        Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtEditorManager, popup, ftd);
+        delete ftd;
 
         popup->AppendSeparator();
         // Extended functions, part 2 (virtual)

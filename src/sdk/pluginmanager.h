@@ -51,7 +51,7 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>
         PluginsArray GetCompilerOffers();
         PluginsArray GetCodeCompletionOffers();
         PluginsArray GetOffersFor(PluginType type);
-        void AskPluginsForModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg);
+        void AskPluginsForModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
         void NotifyPlugins(CodeBlocksEvent& event);
         cbMimePlugin* GetMIMEHandlerForFile(const wxString& filename);
         int Configure();

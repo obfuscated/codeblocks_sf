@@ -77,6 +77,7 @@ int idMenuAddFilePopup = wxNewId();
 int idMenuAddFilesRecursivelyPopup = wxNewId();
 int idMenuAddFile = wxNewId();
 int idMenuAddFilesRecursively = wxNewId();
+int idMenuRemoveFolderFilesPopup = wxNewId();
 int idMenuRemoveFilePopup = wxNewId();
 int idMenuRemoveFile = wxNewId();
 int idMenuProjectProperties = wxNewId();
@@ -160,6 +161,7 @@ BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
     EVT_MENU(idMenuRemoveFile, ProjectManager::OnRemoveFileFromProject)
     EVT_MENU(idMenuAddFilePopup, ProjectManager::OnAddFileToProject)
     EVT_MENU(idMenuAddFilesRecursivelyPopup, ProjectManager::OnAddFilesToProjectRecursively)
+    EVT_MENU(idMenuRemoveFolderFilesPopup, ProjectManager::OnRemoveFileFromProject)
     EVT_MENU(idMenuRemoveFilePopup, ProjectManager::OnRemoveFileFromProject)
     EVT_MENU(idMenuCloseProject, ProjectManager::OnCloseProject)
     EVT_MENU(idMenuCloseFile, ProjectManager::OnCloseFile)
@@ -414,12 +416,13 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
     wxMenu menu;
 
     FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(id);
+
     // if it is not the workspace, add some more options
-    if (ftd && id != m_TreeRoot)
+    if (ftd)
     {
 	    // if it is a project...
-    	if (ftd->GetFileIndex() == -1)
-        {
+    	if (ftd->GetKind() == FileTreeData::ftdkProject)
+    	{
 			if (ftd->GetProject() != m_pActiveProject)
 				menu.Append(idMenuSetActiveProject, _("Activate project"));
     		menu.Append(idMenuCloseProject, _("Close project"));
@@ -427,13 +430,13 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
     	    menu.Append(idMenuAddFilePopup, _("Add files..."));
     	    menu.Append(idMenuAddFilesRecursivelyPopup, _("Add files recursively..."));
             menu.Append(idMenuRemoveFile, _("Remove files..."));
-        }
+    	}
+
         // if it is a file...
-        else
-        {
+    	else if (ftd->GetKind() == FileTreeData::ftdkFile)
+    	{
 			// selected project file
-			int idx = ftd->GetFileIndex();
-			ProjectFile* pf = ftd->GetProject()->GetFile(idx);
+			ProjectFile* pf = ftd->GetProjectFile();
 			// is it already open in the editor?
             EditorBase* ed = Manager::Get()->GetEditorManager()->IsOpen(pf->file.GetFullPath());
 
@@ -471,17 +474,30 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
 
     		menu.AppendSeparator();
     	    menu.Append(idMenuRemoveFilePopup, _("Remove file from project"));
-        }
+    	}
+
+        // if it is a folder...
+    	else if (ftd->GetKind() == FileTreeData::ftdkFolder)
+    	{
+    	    menu.Append(idMenuAddFilePopup, _("Add files..."));
+    	    menu.Append(idMenuAddFilesRecursivelyPopup, _("Add files recursively..."));
+    		menu.AppendSeparator();
+            menu.Append(idMenuRemoveFile, _("Remove files..."));
+    		wxFileName f(ftd->GetFolder());
+    		f.MakeRelativeTo(ftd->GetProject()->GetBasePath());
+    	    menu.Append(idMenuRemoveFolderFilesPopup, wxString::Format(_("Remove %s*"), f.GetFullPath().c_str()));
+    	}
 
         // ask any plugins to add items in this menu
-        Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtProjectManager, &menu, m_pTree->GetItemText(id));
+        Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtProjectManager, &menu, ftd);
 
-        menu.AppendSeparator();
-        if (ftd->GetFileIndex() == -1)
+        // more project options
+        if (ftd->GetKind() == FileTreeData::ftdkProject)
         {
             // project
 /* FIXME (mandrav#1#): Move this submenu creation in a function.
 It is duplicated in CreateMenu() */
+            menu.AppendSeparator();
 
             ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("project_manager"));
 
@@ -497,16 +513,21 @@ it differs from the block currently in CreateMenu() by the following two IDs */
             treeprops->AppendCheckItem(idMenuViewCategorizePopup, _("Categorize by file types"));
             treeprops->AppendCheckItem(idMenuViewUseFoldersPopup, _("Display folders as on disk"));
             treeprops->Check(idMenuViewCategorizePopup, cfg->ReadBool(_T("/categorize_tree"), true));
-            treeprops->Check(idMenuViewUseFoldersPopup, cfg->ReadBool(_T("/categorize_tree"), true));
+            treeprops->Check(idMenuViewUseFoldersPopup, cfg->ReadBool(_T("/use_folders"), true));
             treeprops->Append(idMenuViewFileMasks, _("Edit file types && categories..."));
 
             menu.Append(idMenuProjectTreeProps, _("Project tree"), treeprops);
             menu.Append(idMenuTreeProjectProperties, _("Properties"));
         }
-        else
+
+        // more file options
+        else if (ftd->GetKind() == FileTreeData::ftdkFile)
+        {
+            menu.AppendSeparator();
             menu.Append(idMenuTreeFileProperties, _("Properties"));
+        }
     }
-    else if (id == m_TreeRoot && m_pWorkspace)
+    else if (!ftd && m_pWorkspace)
     {
         menu.Append(idMenuTreeRenameWorkspace, _("Rename workspace"));
         menu.AppendSeparator();
@@ -1470,7 +1491,7 @@ void ProjectManager::OnRightClick(wxCommandEvent& event)
     wxMenu menu;
 
     // ask any plugins to add items in this menu
-    Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtProjectManager, &menu, _T(""));
+    Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtProjectManager, &menu);
 
     // if plugins added to this menu, add a separator
     if (menu.GetMenuItemCount() != 0)
@@ -1699,12 +1720,17 @@ void ProjectManager::OnAddFileToProject(wxCommandEvent& event)
 void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
 {
     SANITY_CHECK();
+    wxTreeItemId sel = m_pTree->GetSelection();
+    FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
+    if (!ftd)
+        return;
+    cbProject* prj = ftd->GetProject();
+    if (!prj)
+        return;
+
     if (event.GetId() == idMenuRemoveFile)
     {
         // remove multiple-files
-        cbProject* prj = GetActiveProject();
-        if (!prj)
-            return;
         wxArrayString files;
         for (int i = 0; i < prj->GetFilesCount(); ++i)
         {
@@ -1746,26 +1772,47 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
             RebuildTree();
         }
     }
-    else
+    else if (event.GetId() == idMenuRemoveFilePopup)
     {
         // remove single file
-        wxTreeItemId sel = m_pTree->GetSelection();
-        FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
-        if (ftd)
+        wxString filename = ftd->GetProjectFile()->file.GetFullPath();
+        prj->RemoveFile(ftd->GetFileIndex());
+        prj->CalculateCommonTopLevelPath();
+        RebuildTree();
+        CodeBlocksEvent evt(cbEVT_PROJECT_FILE_REMOVED);
+        evt.SetProject(prj);
+        evt.SetString(filename);
+        Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
+    }
+    else if (event.GetId() == idMenuRemoveFolderFilesPopup)
+    {
+        // remove all files from a folder
+        if (wxMessageBox(_("Are you sure you want to recursively remove from the project all the files under this folder?"),
+                        _("Confirmation"),
+                        wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) != wxYES)
         {
-            cbProject* prj = ftd->GetProject();
-            if (!prj)
-                return;
-            int fileindex = ftd->GetFileIndex();
-            wxString filename = prj->GetFile(fileindex)->file.GetFullPath();
-            prj->RemoveFile(fileindex);
-            prj->CalculateCommonTopLevelPath();
-            RebuildTree();
-            CodeBlocksEvent evt(cbEVT_PROJECT_FILE_REMOVED);
-            evt.SetProject(prj);
-            evt.SetString(filename);
-            Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
+            return;
         }
+        int i = 0;
+        while (i >= 0 && i < prj->GetFilesCount())
+        {
+            ProjectFile* pf = prj->GetFile(i);
+            // ftd->GetFolder() ends with the path separator, so it is
+            // safe to just compare the two strings...
+            if (pf->file.GetFullPath().StartsWith(ftd->GetFolder()))
+            {
+                wxString filename = pf->file.GetFullPath();
+                prj->RemoveFile(i);
+                CodeBlocksEvent evt(cbEVT_PROJECT_FILE_REMOVED);
+                evt.SetProject(prj);
+                evt.SetString(filename);
+                Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
+            }
+            else
+                ++i;
+        }
+        prj->CalculateCommonTopLevelPath();
+        RebuildTree();
     }
 }
 

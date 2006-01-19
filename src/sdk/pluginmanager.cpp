@@ -481,7 +481,7 @@ PluginsArray PluginManager::GetOffersFor(PluginType type)
     return arr;
 }
 
-void PluginManager::AskPluginsForModuleMenu(const ModuleType type, wxMenu* menu, const wxString& arg)
+void PluginManager::AskPluginsForModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
 {
     SANITY_CHECK();
     for (unsigned int i = 0; i < m_Plugins.GetCount(); ++i)
@@ -491,7 +491,7 @@ void PluginManager::AskPluginsForModuleMenu(const ModuleType type, wxMenu* menu,
         {
             try
             {
-                plug->BuildModuleMenu(type, menu, arg);
+                plug->BuildModuleMenu(type, menu, data);
             }
             catch (cbException& exception)
             {
