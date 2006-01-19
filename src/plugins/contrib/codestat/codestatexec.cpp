@@ -28,8 +28,7 @@ int CodeStatExecDlg::Execute(LanguageDef languages[NB_FILETYPES])
    for (i=0; i<nb_files; i++)
    {
    	ProjectFile* pf = project->GetFile(i);
-      wxFileName filename;
-      filename = pf->file;
+   	wxFileName filename(pf->file.GetFullPath(), wxPATH_DOS);
    	if (!filename.FileExists())
    	{
    		nb_files_not_found++;
