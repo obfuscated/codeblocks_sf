@@ -1194,33 +1194,16 @@ void DebuggerGDB::SyncEditor(const wxString& filename, int line)
 {
 	ClearActiveMarkFromAllEditors();
 	cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
-	if (project)
-	{
-        wxFileName fname(filename);
-	    ProjectFile* f = project->GetFileByFilename(fname.GetFullPath(), false, true);
-    	if (f)
-        {
-        	cbEditor* ed = Manager::Get()->GetEditorManager()->Open(f->file.GetFullPath());
-            if (ed)
-			{
-				ed->SetProjectFile(f);
-            	ed->Show(true);
-				ed->GotoLine(line - 1, false);
-				ed->SetDebugLine(line - 1);
-			}
-        }
-        else
-        {
-            // no such file in project; maybe in another open project?
-        	cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname.GetFullPath());
-            if (ed)
-			{
-            	ed->Show(true);
-				ed->GotoLine(line - 1, false);
-				ed->SetDebugLine(line - 1);
-			}
-        }
-	}
+	ProjectFile* f = project ? project->GetFileByFilename(filename, false, true) : 0;
+    cbEditor* ed = Manager::Get()->GetEditorManager()->Open(filename);
+    if (ed)
+    {
+        ed->Show(true);
+        if (f)
+            ed->SetProjectFile(f);
+        ed->GotoLine(line - 1, false);
+        ed->SetDebugLine(line - 1);
+    }
 }
 
 wxString DebuggerGDB::GetEditorWordAtCaret()

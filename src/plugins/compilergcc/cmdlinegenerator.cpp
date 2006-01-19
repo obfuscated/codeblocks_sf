@@ -118,8 +118,11 @@ void CmdLineGenerator::CreateSingleFileCompileCmd(wxString& command,
 
     wxFileName fileCwd = file;
     wxString fileInc = fileCwd.GetPath();
-    QuoteStringIfNeeded(fileInc);
-    fileInc.Prepend(_T("-I"));
+    if (!fileInc.IsEmpty())
+    {
+        QuoteStringIfNeeded(fileInc);
+        fileInc.Prepend(_T("-I"));
+    }
 
     command.Replace(_T("$compiler"), compilerStr);
     command.Replace(_T("$linker"), compiler->GetPrograms().LD);

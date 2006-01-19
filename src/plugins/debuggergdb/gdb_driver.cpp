@@ -10,7 +10,7 @@ static wxRegEx reBreak2(_T("^(0x[A-z0-9]+) in (.*) from (.*)"));
 #ifdef __WXMSW__
     static wxRegEx reBreak(_T("([A-z]:)([^:]+):([0-9]+):[0-9]+:[begmidl]+:(0x[0-9A-z]+)"));
 #else
-    static wxRegEx reBreak(_T("([^:]+):([0-9]+):[0-9]+:[begmidl]+:(0x[0-9A-z]+)"));
+    static wxRegEx reBreak(_T("\032\032([^:]+):([0-9]+):[0-9]+:[begmidl]+:(0x[0-9A-z]+)"));
 #endif
 
 GDB_driver::GDB_driver(DebuggerGDB* plugin)
