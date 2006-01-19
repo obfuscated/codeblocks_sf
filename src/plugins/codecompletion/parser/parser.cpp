@@ -934,7 +934,7 @@ void Parser::AddTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, 
                     if(!has_enums)
                     {
                         has_enums = true;
-                        node_enums = node_enums = tree.AppendItem(parentNode, _("Enums"), PARSER_IMG_ENUMS_FOLDER);
+                        node_enums = tree.AppendItem(parentNode, _("Enums"), PARSER_IMG_ENUMS_FOLDER);
                     }
                     curnode = &node_enums;
                     break;

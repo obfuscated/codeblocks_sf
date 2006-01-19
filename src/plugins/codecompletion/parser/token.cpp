@@ -146,7 +146,7 @@ wxString Token::GetNamespace() const
 {
 	const wxString dcolon(_T("::"));
 	wxString res;
-	Token* parentToken = parentToken = m_pTree->at(m_ParentIndex);
+	Token* parentToken = m_pTree->at(m_ParentIndex);
 	while (parentToken)
 	{
 		res.Prepend(dcolon);
