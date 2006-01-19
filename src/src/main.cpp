@@ -1149,11 +1149,10 @@ bool MainFrame::DoCloseCurrentWorkspace()
 void MainFrame::DoCreateStatusBar()
 {
 #if wxUSE_STATUSBAR
-#define COUNT 5
-    CreateStatusBar(COUNT);
-    int statusWidths[COUNT] = {-1, 148, 64, 64, 96};
-    SetStatusWidths(COUNT, statusWidths);
-#undef COUNT
+    const int count = 5;
+    CreateStatusBar(count);
+    int statusWidths[count] = {-1, 148, 64, 64, 96};
+    SetStatusWidths(count, statusWidths);
 #endif // wxUSE_STATUSBAR
 }
 
@@ -1817,7 +1816,7 @@ void MainFrame::OnFileRunScript(wxCommandEvent& WXUNUSED(event))
 
 void MainFrame::OnFileQuit(wxCommandEvent& WXUNUSED(event))
 {
-    Close(TRUE);
+    Close(true);
 }
 
 void MainFrame::OnEraseBackground(wxEraseEvent& event)
