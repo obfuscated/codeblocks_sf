@@ -116,14 +116,19 @@ void CmdLineGenerator::CreateSingleFileCompileCmd(wxString& command,
             compilerStr = compiler->GetPrograms().CPP;
     }
 
+    wxFileName fileCwd = file;
+    wxString fileInc = fileCwd.GetPath();
+    QuoteStringIfNeeded(fileInc);
+    fileInc.Prepend(_T("-I"));
+
     command.Replace(_T("$compiler"), compilerStr);
     command.Replace(_T("$linker"), compiler->GetPrograms().LD);
     command.Replace(_T("$lib_linker"), compiler->GetPrograms().LIB);
     command.Replace(_T("$rescomp"), compiler->GetPrograms().WINDRES);
     command.Replace(_T("$options"), m_CFlags[target]);
     command.Replace(_T("$link_options"), m_LDFlags[target]);
-    command.Replace(_T("$includes"), m_Inc[target]);
-    command.Replace(_T("$res_includes"), m_RC[target]);
+    command.Replace(_T("$includes"), m_Inc[target] + fileInc);
+    command.Replace(_T("$res_includes"), m_RC[target] + fileInc);
     command.Replace(_T("$libdirs"), m_Lib[target]);
     command.Replace(_T("$libs"), m_LDAdd[target]);
     command.Replace(_T("$file"), file);
