@@ -35,8 +35,8 @@
 #include "messagemanager.h"
 #include "manager.h"
 
-#define cbHIGHLIGHT_LINE -98 // highlight line under caret virtual style
-#define cbSELECTION      -99 // selection virtual style
+const int cbHIGHLIGHT_LINE = -98; // highlight line under caret virtual style
+const int cbSELECTION      = -99; // selection virtual style
 
 EditorColorSet::EditorColorSet(const wxString& setName)
 	: m_LanguageID(0),
