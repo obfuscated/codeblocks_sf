@@ -22,8 +22,11 @@ class ClassBrowser : public wxSplitPanel
 		ClassBrowser(wxWindow* parent, NativeParser* np);
 		// class destructor
 		~ClassBrowser();
+		wxTreeCtrl* GetTree() { return m_Tree; }
 		void SetParser(Parser* parser);
 		const Parser& GetParser(){ return *m_pParser; }
+		const Parser* GetParserPtr() { return m_pParser; }
+		void UnlinkParser();
 		void Update();
     private:
         friend class myTextCtrl;

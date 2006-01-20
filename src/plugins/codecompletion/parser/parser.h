@@ -43,7 +43,6 @@
 #define PARSER_IMG_MAX PARSER_IMG_OTHERS_FOLDER
 
 extern int PARSER_END;
-
 class ClassTreeData : public BlockAllocated<ClassTreeData, 500>, public wxTreeItemData
 {
     public:
@@ -70,9 +69,12 @@ struct BrowserOptions
 	bool showAllSymbols; // default: false
 };
 
+class ClassBrowser;
+
 class Parser : public wxEvtHandler
 {
 	public:
+        friend class ClassBrowser;
 		Parser(wxEvtHandler* parent);
 		~Parser();
 
@@ -124,6 +126,8 @@ class Parser : public wxEvtHandler
 		void BuildTree(wxTreeCtrl& tree);
 		wxTreeItemId GetRootNode(){ return m_RootNode; }
 
+		void AbortBuildingTree(); // Reserved for future expansion
+
 		void TerminateAllThreads();
 		void PauseAllThreads();
 		void ResumeAllThreads();
@@ -167,6 +171,9 @@ class Parser : public wxEvtHandler
         set<wxString, less<wxString> > m_LocalFiles;
         bool m_NeedsReparse;
         bool m_IsBatch;
+        ClassBrowser* m_pClassBrowser; // Which class browser are we updating?
+        int m_TreeBuildingStatus; // 0 = Done; 1 = Needs update; 2 = Updating.
+        size_t m_TreeBuildingTokenIdx; // Bookmark for the tree-building process
     private:
         wxTimer m_timer,m_batchtimer;
 

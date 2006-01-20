@@ -31,6 +31,7 @@
 #include <wx/intl.h>
 #include <wx/progdlg.h>
 #include "parser.h"
+#include "../classbrowser.h"
 #ifndef STANDALONE
 	#include <configmanager.h>
 	#include <messagemanager.h>
@@ -70,6 +71,9 @@ Parser::Parser(wxEvtHandler* parent)
     m_pTempTokens(0),
     m_NeedsReparse(false),
     m_IsBatch(false),
+    m_pClassBrowser(0),
+    m_TreeBuildingStatus(0),
+    m_TreeBuildingTokenIdx(0),
     m_timer(this, TIMER_ID),
     m_batchtimer(this,BATCH_TIMER_ID)
 {
@@ -133,6 +137,11 @@ Parser::Parser(wxEvtHandler* parent)
 
 Parser::~Parser()
 {
+    if(m_pClassBrowser && m_pClassBrowser->GetParserPtr() == this)
+        m_pClassBrowser->UnlinkParser();
+    m_TreeBuildingStatus = 0;
+    m_pClassBrowser = NULL;
+
     DisconnectEvents();
 	Clear();
 #ifndef STANDALONE
@@ -1004,6 +1013,18 @@ void Parser::AddTreeNode(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token
     tree.SortChildren(node);
 }
 
+void Parser::AbortBuildingTree()
+{
+    if(m_TreeBuildingStatus == 2)
+    {
+        if(m_pClassBrowser && m_pClassBrowser->GetParserPtr() == this && m_pClassBrowser->GetTree())
+        {
+            m_pClassBrowser->GetTree()->DeleteAllItems();
+            m_pClassBrowser->GetTree()->Thaw();
+        }
+    }
+    m_TreeBuildingStatus = 0;
+}
 
 void Parser::OnTimer(wxTimerEvent& event)
 {

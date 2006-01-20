@@ -164,15 +164,35 @@ ClassBrowser::ClassBrowser(wxWindow* parent, NativeParser* np)
 // class destructor
 ClassBrowser::~ClassBrowser()
 {
+    UnlinkParser();
 }
 
 void ClassBrowser::SetParser(Parser* parser)
 {
 	if (parser != m_pParser)
 	{
-		m_pParser = parser;
-		Update();
+		UnlinkParser();
+		if(parser)
+		{
+            parser->AbortBuildingTree();
+            parser->m_pClassBrowser = this;
+            m_pParser = parser;
+            Update();
+		}
 	}
+}
+
+void ClassBrowser::UnlinkParser()
+{
+    if(m_pParser)
+    {
+        if(m_pParser->m_pClassBrowser == this)
+        {
+            m_pParser->AbortBuildingTree();
+            m_pParser->m_pClassBrowser = NULL;
+        }
+        m_pParser = NULL;
+    }
 }
 
 void ClassBrowser::Update()
