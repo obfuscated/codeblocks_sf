@@ -5,6 +5,7 @@
 #include "compilerfactory.h"
 #include "compiler.h"
 #include "manager.h"
+#include "configmanager.h"
 #include "messagemanager.h"
 #include "macrosmanager.h"
 
@@ -116,12 +117,22 @@ void CmdLineGenerator::CreateSingleFileCompileCmd(wxString& command,
             compilerStr = compiler->GetPrograms().CPP;
     }
 
-    wxFileName fileCwd = file;
-    wxString fileInc = fileCwd.GetPath();
-    if (!fileInc.IsEmpty())
+    wxString fileInc;
+    if (Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/include_file_cwd"), false))
     {
-        QuoteStringIfNeeded(fileInc);
-        fileInc.Prepend(_T("-I"));
+        // Because C::B doesn't compile each file by running in the same directory with it,
+        // it can cause some problems when the file #includes other files relative,
+        // e.g. #include "../a_lib/include/a.h"
+        //
+        // So here we add the currently compiling file's directory to the includes
+        // search dir so it works.
+        wxFileName fileCwd = file;
+        fileInc = fileCwd.GetPath();
+        if (!fileInc.IsEmpty()) // only if non-empty! (remember r1813 errors)
+        {
+            QuoteStringIfNeeded(fileInc);
+            fileInc.Prepend(compiler->GetSwitches().includeDirs);
+        }
     }
 
     command.Replace(_T("$compiler"), compilerStr);

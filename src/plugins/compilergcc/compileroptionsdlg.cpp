@@ -273,6 +273,10 @@ void CompilerOptionsDlg::DoFillVars(CustomVars* vars)
 
 void CompilerOptionsDlg::DoFillOthers()
 {
+    wxCheckBox* chk = XRCCTRL(*this, "chkIncludeFileCwd", wxCheckBox);
+    if (chk)
+        chk->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/include_file_cwd"), false));
+
     wxTextCtrl* txt = XRCCTRL(*this, "txtConsoleTerm", wxTextCtrl);
     if (txt)
     {
@@ -1592,6 +1596,9 @@ void CompilerOptionsDlg::EndModal(int retCode)
     }
 
 	//others
+    wxCheckBox* chk = XRCCTRL(*this, "chkIncludeFileCwd", wxCheckBox);
+    if (chk)
+        Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/include_file_cwd"), (bool)chk->IsChecked());
     wxTextCtrl* txt = XRCCTRL(*this, "txtConsoleShell", wxTextCtrl);
     if (txt)
         Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/console_shell"), txt->GetValue());
