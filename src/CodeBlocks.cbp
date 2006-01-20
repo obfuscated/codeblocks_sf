@@ -198,6 +198,8 @@
 					<Add library="librpcrt4.a" />
 					<Add library="libadvapi32.a" />
 					<Add library="libwsock32.a" />
+					<Add library="libshell32.a" />
+					<Add library="libshfolder.a" />
 					<Add directory="devel" />
 					<Add directory="src\wxAUI" />
 				</Linker>
