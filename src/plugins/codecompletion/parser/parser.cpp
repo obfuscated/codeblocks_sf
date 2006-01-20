@@ -430,7 +430,7 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
 											buffOrFile,
 											isLocal,
 											opts,
-											(opts.useBuffer ? m_pTempTokens : m_pTokens));
+											m_pTokens);//(opts.useBuffer ? m_pTempTokens : m_pTokens));
     if (!opts.useBuffer)
 	{
 //		lock = new wxCriticalSectionLocker(s_mutexListProtection);
