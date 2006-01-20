@@ -4,6 +4,10 @@
 #include <cbplugin.h> // the base class we 're inheriting
 #include <settings.h> // much of the SDK is here
 
+#ifndef __WXMSW__
+    #error This plugin is for use under Win32 only!
+#endif
+
 class WindowsXPLookNFeel : public cbToolPlugin
 {
 	public:
