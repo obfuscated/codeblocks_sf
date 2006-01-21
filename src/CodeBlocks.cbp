@@ -198,7 +198,6 @@
 					<Add library="librpcrt4.a" />
 					<Add library="libadvapi32.a" />
 					<Add library="libwsock32.a" />
-					<Add library="libshell32.a" />
 					<Add library="libshfolder.a" />
 					<Add directory="devel" />
 					<Add directory="src\wxAUI" />
@@ -2566,157 +2565,131 @@
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\configure_tools.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\confirm_replace.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\edit_array_order.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\edit_array_string.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\edit_path.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\edit_tool.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\editor_configuration.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\external_deps.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\find_dialog.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\generic_multi_select.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\global_user_vars.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\incremental_select_list.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_OgreMaterial.sample">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_OgreMaterial.xml">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_angelscript.sample">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_angelscript.xml">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_cg.sample">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_cg.xml">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_cpp.sample">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_cpp.xml">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_css.sample">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_css.xml">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_f77.sample">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_f77.xml">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_glsl.sample">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_glsl.xml">
 			<Option compilerVar="CPP" />
@@ -2728,115 +2701,96 @@
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_gm.xml">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_hitasm.sample">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_hitasm.xml">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_lua.sample">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_lua.xml">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_prg.sample">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_prg.xml">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_rc.sample">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_rc.xml">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_xml.sample">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_xml.xml">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\new_from_template.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\plugins_configuration.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\project_manager_file_types.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\project_options.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\projectfile_options.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\replace_dialog.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\select_target.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\sanitycheck.h">
 			<Option compilerVar="" />
@@ -3622,49 +3576,41 @@
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="src" />
 		</Unit>
 		<Unit filename="src\resources\dlg_about_plugin.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="src" />
 		</Unit>
 		<Unit filename="src\resources\env_settings.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="src" />
 		</Unit>
 		<Unit filename="src\resources\imp_exp_config.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="src" />
 		</Unit>
 		<Unit filename="src\resources\main_menu.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="src" />
 		</Unit>
 		<Unit filename="src\resources\main_toolbar.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="src" />
 		</Unit>
 		<Unit filename="src\resources\main_toolbar_16x16.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="src" />
 		</Unit>
 		<Unit filename="src\resources\print_dialog.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="src" />
 		</Unit>
 		<Unit filename="src\resources\resources.rc">
 			<Option compilerVar="WINDRES" />

@@ -5,12 +5,12 @@
                 index="2"
                 filemasks="*.py,*SConstruct,*SConscript">
                 <Style name="Default"
-index="0"
-fg="0,0,0"
-bg="255,255,255"
-bold="0"
-italics="0"
-underlined="0"/>
+                        index="0"
+                        fg="0,0,0"
+                        bg="255,255,255"
+                        bold="0"
+                        italics="0"
+                        underlined="0"/>
                 <Style name="Comment"
                         index="1"
                         fg="160,160,160"/>
@@ -54,7 +54,8 @@ underlined="0"/>
                 <Style name="User Keyword"
                         index="14"/>
                 <Style name="Decorator"
-                        index="15"/>
+                        index="15"
+                        fg="0,128,128"/>
                 <Keywords>
                         <Language index="0"
                                 value="and assert break class continue def del elif else except
@@ -88,21 +89,20 @@ underlined="0"/>
                                        UnicodeTranslateError ValueError WindowsError
                                        ZeroDivisionError Warning UserWarning
                                        DeprecationWarning PendingDeprecationWarning
-                                       SyntaxWarning RuntimeWarning FutureWarning
-                                      "/>
+                                       SyntaxWarning RuntimeWarning FutureWarning"/>
                         <User index="1"
                                 value="sys gc weakref fpectl atexit types UserDict UserList UserString
-                                    operator inspect traceback linecache pickle cPickle copy_reg
-                                    shelve copy marshal warnings imp zipimport pkgutil modulefinder
-                                    code codeop pprint repr new site user __builtin__ __main__
-                                    __future__
+                                       operator inspect traceback linecache pickle cPickle copy_reg
+                                       shelve copy marshal warnings imp zipimport pkgutil modulefinder
+                                       code codeop pprint repr new site user __builtin__ __main__
+                                       __future__
 
-                                    string re struct difflib fpformat StringIO cStringIO textwrap
-                                    codecs encodings.idna unicodedata stringprep
+                                       string re struct difflib fpformat StringIO cStringIO textwrap
+                                       codecs encodings.idna unicodedata stringprep
 
-                                    pydoc doctest unittest test test.test_support decimal math
-                                    cmath random whrandom bisect collections heapq array sets
-                                    itertools ConfigParser fileinput calendar cmd shlex
+                                       pydoc doctest unittest test test.test_support decimal math
+                                       cmath random whrandom bisect collections heapq array sets
+                                       itertools ConfigParser fileinput calendar cmd shlex
 
                                        os os.path dircache stat statcache statvfs filecmp subprocess
                                        popen2 datetime time sched mutex getpass curses curses.textpad
@@ -142,9 +142,7 @@ underlined="0"/>
                                        Tkinter Tix ScrolledText turtle
 
                                        parser symbol token keyword tokenize tabnanny pyclbr
-                                       py_compile compileall dis pickletools distutils
-
-                                      "/>
+                                       py_compile compileall dis pickletools distutils"/>
                         <Documentation index="2"
                                 value=""/>
                 </Keywords>
