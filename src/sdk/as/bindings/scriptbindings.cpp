@@ -39,6 +39,8 @@ void Register_ProjectBuildTarget(asIScriptEngine* engine);
 void Register_Project(asIScriptEngine* engine);
 void Register_ProjectManager(asIScriptEngine* engine);
 
+template <class T> void Register_CompileOptionsBase(asIScriptEngine* engine, const wxString& classname);
+
 //------------------------------------------------------------------------------
 // Globals
 //------------------------------------------------------------------------------
@@ -80,6 +82,8 @@ void RegisterBindings(asIScriptEngine* engine)
     ADD_DUMMY_REFCOUNT(engine, Editor);
     engine->RegisterObjectType("ProjectFile", 0, asOBJ_CLASS);
     ADD_DUMMY_REFCOUNT(engine, ProjectFile);
+    engine->RegisterObjectType("CompileOptionsBase", 0, asOBJ_CLASS);
+    ADD_DUMMY_REFCOUNT(engine, CompileOptionsBase);
     engine->RegisterObjectType("BuildTarget", 0, asOBJ_CLASS);
     ADD_DUMMY_REFCOUNT(engine, BuildTarget);
     engine->RegisterObjectType("Project", 0, asOBJ_CLASS);
@@ -93,6 +97,7 @@ void RegisterBindings(asIScriptEngine* engine)
     Register_Editor(engine);
     Register_EditorManager(engine);
     Register_ProjectFile(engine);
+    Register_CompileOptionsBase<CompileOptionsBase>(engine, _T("CompileOptionsBase"));
     Register_ProjectBuildTarget(engine);
     Register_Project(engine);
     Register_ProjectManager(engine);
@@ -249,14 +254,14 @@ template <class T> void Register_CompileOptionsBase(asIScriptEngine* engine, con
     engine->RegisterObjectMethod(_C(classname), "void SetCommandsBeforeBuild(const wxArrayString& in)", asMETHOD(T, SetCommandsBeforeBuild), asCALL_THISCALL);
     engine->RegisterObjectMethod(_C(classname), "void SetCommandsAfterBuild(const wxArrayString& in)", asMETHOD(T, SetCommandsAfterBuild), asCALL_THISCALL);
     engine->RegisterObjectMethod(_C(classname), "int& GetBuildConfiguration()", asMETHOD(T, GetBuildConfiguration), asCALL_THISCALL);
-    engine->RegisterObjectMethod(_C(classname), "wxArrayString& GetLinkerOptions()", asMETHOD(T, GetLinkerOptions), asCALL_THISCALL);
-    engine->RegisterObjectMethod(_C(classname), "wxArrayString& GetLinkLibs()", asMETHOD(T, GetLinkLibs), asCALL_THISCALL);
-    engine->RegisterObjectMethod(_C(classname), "wxArrayString& GetCompilerOptions()", asMETHOD(T, GetCompilerOptions), asCALL_THISCALL);
-    engine->RegisterObjectMethod(_C(classname), "wxArrayString& GetIncludeDirs()", asMETHOD(T, GetIncludeDirs), asCALL_THISCALL);
-    engine->RegisterObjectMethod(_C(classname), "wxArrayString& GetResourceIncludeDirs()", asMETHOD(T, GetResourceIncludeDirs), asCALL_THISCALL);
-    engine->RegisterObjectMethod(_C(classname), "wxArrayString& GetLibDirs()", asMETHOD(T, GetLibDirs), asCALL_THISCALL);
-    engine->RegisterObjectMethod(_C(classname), "wxArrayString& GetCommandsBeforeBuild()", asMETHOD(T, GetCommandsBeforeBuild), asCALL_THISCALL);
-    engine->RegisterObjectMethod(_C(classname), "wxArrayString& GetCommandsAfterBuild()", asMETHOD(T, GetCommandsAfterBuild), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "const wxArrayString& GetLinkerOptions()", asMETHOD(T, GetLinkerOptions), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "const wxArrayString& GetLinkLibs()", asMETHOD(T, GetLinkLibs), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "const wxArrayString& GetCompilerOptions()", asMETHOD(T, GetCompilerOptions), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "const wxArrayString& GetIncludeDirs()", asMETHOD(T, GetIncludeDirs), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "const wxArrayString& GetResourceIncludeDirs()", asMETHOD(T, GetResourceIncludeDirs), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "const wxArrayString& GetLibDirs()", asMETHOD(T, GetLibDirs), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "const wxArrayString& GetCommandsBeforeBuild()", asMETHOD(T, GetCommandsBeforeBuild), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "const wxArrayString& GetCommandsAfterBuild()", asMETHOD(T, GetCommandsAfterBuild), asCALL_THISCALL);
     engine->RegisterObjectMethod(_C(classname), "bool GetModified()", asMETHOD(T, GetModified), asCALL_THISCALL);
     engine->RegisterObjectMethod(_C(classname), "void SetModified(bool)", asMETHOD(T, SetModified), asCALL_THISCALL);
     engine->RegisterObjectMethod(_C(classname), "void AddLinkerOption(const wxString& in)", asMETHOD(T, AddLinkerOption), asCALL_THISCALL);
@@ -267,6 +272,14 @@ template <class T> void Register_CompileOptionsBase(asIScriptEngine* engine, con
     engine->RegisterObjectMethod(_C(classname), "void AddLibDir(const wxString& in)", asMETHOD(T, AddLibDir), asCALL_THISCALL);
     engine->RegisterObjectMethod(_C(classname), "void AddCommandsBeforeBuild(const wxString& in)", asMETHOD(T, AddCommandsBeforeBuild), asCALL_THISCALL);
     engine->RegisterObjectMethod(_C(classname), "void AddCommandsAfterBuild(const wxString& in)", asMETHOD(T, AddCommandsAfterBuild), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "void RemoveLinkerOption(const wxString& in)", asMETHOD(T, RemoveLinkerOption), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "void RemoveLinkLib(const wxString& in)", asMETHOD(T, RemoveLinkLib), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "void RemoveCompilerOption(const wxString& in)", asMETHOD(T, RemoveCompilerOption), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "void RemoveIncludeDir(const wxString& in)", asMETHOD(T, RemoveIncludeDir), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "void RemoveResourceIncludeDir(const wxString& in)", asMETHOD(T, RemoveResourceIncludeDir), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "void RemoveLibDir(const wxString& in)", asMETHOD(T, RemoveLibDir), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "void RemoveCommandsBeforeBuild(const wxString& in)", asMETHOD(T, RemoveCommandsBeforeBuild), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "void RemoveCommandsAfterBuild(const wxString& in)", asMETHOD(T, RemoveCommandsAfterBuild), asCALL_THISCALL);
     engine->RegisterObjectMethod(_C(classname), "bool GetAlwaysRunPostBuildSteps()", asMETHOD(T, GetAlwaysRunPostBuildSteps), asCALL_THISCALL);
     engine->RegisterObjectMethod(_C(classname), "void SetAlwaysRunPostBuildSteps(bool)", asMETHOD(T, SetAlwaysRunPostBuildSteps), asCALL_THISCALL);
 }

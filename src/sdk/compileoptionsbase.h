@@ -53,6 +53,8 @@ class DLLIMPORT CompileOptionsBase
 		virtual const wxArrayString& GetCommandsBeforeBuild();
 		virtual void SetCommandsAfterBuild(const wxArrayString& commands);
 		virtual const wxArrayString& GetCommandsAfterBuild();
+        virtual void SetBuildScripts(const wxArrayString& scripts);
+        virtual const wxArrayString& GetBuildScripts();
 		virtual bool GetModified();
 		virtual void SetModified(bool modified);
         virtual void AddLinkerOption(const wxString& option);
@@ -63,6 +65,16 @@ class DLLIMPORT CompileOptionsBase
         virtual void AddLibDir(const wxString& option);
 		virtual void AddCommandsBeforeBuild(const wxString& command);
 		virtual void AddCommandsAfterBuild(const wxString& command);
+        virtual void AddBuildScript(const wxString& script);
+        virtual void RemoveLinkerOption(const wxString& option);
+        virtual void RemoveLinkLib(const wxString& lib);
+        virtual void RemoveCompilerOption(const wxString& option);
+        virtual void RemoveIncludeDir(const wxString& option);
+        virtual void RemoveResourceIncludeDir(const wxString& option);
+        virtual void RemoveLibDir(const wxString& option);
+		virtual void RemoveCommandsBeforeBuild(const wxString& command);
+		virtual void RemoveCommandsAfterBuild(const wxString& command);
+        virtual void RemoveBuildScript(const wxString& script);
 		virtual bool GetAlwaysRunPostBuildSteps();
 		virtual void SetAlwaysRunPostBuildSteps(bool always);
         virtual void SetCustomVars(const CustomVars& vars); ///< Set the target's custom variables
@@ -77,9 +89,8 @@ class DLLIMPORT CompileOptionsBase
 		wxArrayString m_LibDirs;
 		wxArrayString m_CmdsBefore;
 		wxArrayString m_CmdsAfter;
+		wxArrayString m_Scripts;
 		bool m_Modified;
-		bool m_Cpp;
-		bool m_AlwaysRunPreCmds;
 		bool m_AlwaysRunPostCmds;
         CustomVars* m_pCustomVars;
 	private:

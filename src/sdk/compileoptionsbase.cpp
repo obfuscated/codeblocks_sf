@@ -33,8 +33,6 @@
 CompileOptionsBase::CompileOptionsBase()
 	: m_BuildConfiguration(bcDebug),
 	m_Modified(false),
-	m_Cpp(true),
-	m_AlwaysRunPreCmds(false),
 	m_AlwaysRunPostCmds(false)
 {
 	//ctor
@@ -44,18 +42,17 @@ CompileOptionsBase::CompileOptionsBase()
 CompileOptionsBase::CompileOptionsBase(const CompileOptionsBase& other)
 {
     m_BuildConfiguration = other.m_BuildConfiguration;
-    m_LinkerOptions = m_LinkerOptions;
-    m_LinkLibs = m_LinkLibs;
-    m_CompilerOptions = m_CompilerOptions;
-    m_IncludeDirs = m_IncludeDirs;
-    m_ResIncludeDirs = m_ResIncludeDirs;
-    m_LibDirs = m_LibDirs;
-    m_CmdsBefore = m_CmdsBefore;
-    m_CmdsAfter = m_CmdsAfter;
-    m_Modified = m_Modified;
-    m_Cpp = m_Cpp;
-    m_AlwaysRunPreCmds = m_AlwaysRunPreCmds;
-    m_AlwaysRunPostCmds = m_AlwaysRunPostCmds;
+    m_LinkerOptions = other.m_LinkerOptions;
+    m_LinkLibs = other.m_LinkLibs;
+    m_CompilerOptions = other.m_CompilerOptions;
+    m_IncludeDirs = other.m_IncludeDirs;
+    m_ResIncludeDirs = other.m_ResIncludeDirs;
+    m_LibDirs = other.m_LibDirs;
+    m_CmdsBefore = other.m_CmdsBefore;
+    m_CmdsAfter = other.m_CmdsAfter;
+    m_Scripts = other.m_Scripts;
+    m_Modified = other.m_Modified;
+    m_AlwaysRunPostCmds = other.m_AlwaysRunPostCmds;
     m_pCustomVars = new CustomVars(*other.m_pCustomVars);
 }
 
@@ -195,6 +192,32 @@ const wxArrayString& CompileOptionsBase::GetLibDirs()
 	return m_LibDirs;
 }
 
+void CompileOptionsBase::SetBuildScripts(const wxArrayString& scripts)
+{
+	if (m_Scripts == scripts)
+		return;
+
+    // make sure we don't have duplicate entries
+    // that's why we don't assign the array but rather copy it entry by entry...
+    bool casesens = true;
+#ifdef __WXMSW__
+    casesens = false;
+#endif
+    m_Scripts.Clear();
+    for (size_t i = 0; i < scripts.GetCount(); ++i)
+    {
+        wxString entry = UnixFilename(scripts[i]);
+        if (m_Scripts.Index(entry, casesens) == wxNOT_FOUND)
+            m_Scripts.Add(entry);
+    }
+	SetModified(true);
+}
+
+const wxArrayString& CompileOptionsBase::GetBuildScripts()
+{
+    return m_Scripts;
+}
+
 void CompileOptionsBase::SetCommandsBeforeBuild(const wxArrayString& commands)
 {
 	if (m_CmdsBefore == commands)
@@ -219,6 +242,19 @@ void CompileOptionsBase::SetCommandsAfterBuild(const wxArrayString& commands)
 const wxArrayString& CompileOptionsBase::GetCommandsAfterBuild()
 {
 	return m_CmdsAfter;
+}
+
+bool CompileOptionsBase::GetAlwaysRunPostBuildSteps()
+{
+    return m_AlwaysRunPostCmds;
+}
+
+void CompileOptionsBase::SetAlwaysRunPostBuildSteps(bool always)
+{
+    if (m_AlwaysRunPostCmds == always)
+        return;
+    m_AlwaysRunPostCmds = always;
+    SetModified(true);
 }
 
 bool CompileOptionsBase::GetModified()
@@ -331,17 +367,137 @@ void CompileOptionsBase::AddCommandsAfterBuild(const wxString& command)
 	SetModified(true);
 }
 
-bool CompileOptionsBase::GetAlwaysRunPostBuildSteps()
+void CompileOptionsBase::AddBuildScript(const wxString& script)
 {
-    return m_AlwaysRunPostCmds;
+    bool casesens = true;
+#ifdef __WXMSW__
+    casesens = false;
+#endif
+    wxString envopt = script;
+    if (m_Scripts.Index(envopt, casesens) == wxNOT_FOUND)
+    {
+        m_Scripts.Add(envopt);
+        SetModified(true);
+    }
 }
 
-void CompileOptionsBase::SetAlwaysRunPostBuildSteps(bool always)
+void CompileOptionsBase::RemoveLinkerOption(const wxString& option)
 {
-    if (m_AlwaysRunPostCmds == always)
-        return;
-    m_AlwaysRunPostCmds = always;
-    SetModified(true);
+    bool casesens = true;
+#ifdef __WXMSW__
+    casesens = false;
+#endif
+    wxString envopt = option;
+    int idx = m_LinkerOptions.Index(envopt, casesens);
+    if (idx != wxNOT_FOUND)
+    {
+        m_LinkerOptions.RemoveAt(idx);
+        SetModified(true);
+    }
+}
+
+void CompileOptionsBase::RemoveLinkLib(const wxString& lib)
+{
+    bool casesens = true;
+#ifdef __WXMSW__
+    casesens = false;
+#endif
+    wxString envopt = lib;
+    int idx = m_LinkLibs.Index(envopt, casesens);
+    if (idx != wxNOT_FOUND)
+    {
+        m_LinkLibs.RemoveAt(idx);
+        SetModified(true);
+    }
+}
+
+void CompileOptionsBase::RemoveCompilerOption(const wxString& option)
+{
+    bool casesens = true;
+#ifdef __WXMSW__
+    casesens = false;
+#endif
+    wxString envopt = option;
+    int idx = m_CompilerOptions.Index(envopt, casesens);
+    if (idx != wxNOT_FOUND)
+    {
+        m_CompilerOptions.RemoveAt(idx);
+        SetModified(true);
+    }
+}
+
+void CompileOptionsBase::RemoveIncludeDir(const wxString& option)
+{
+    bool casesens = true;
+#ifdef __WXMSW__
+    casesens = false;
+#endif
+    wxString entry = UnixFilename(option);
+    int idx = m_IncludeDirs.Index(entry, casesens);
+    if (idx != wxNOT_FOUND)
+    {
+        m_IncludeDirs.RemoveAt(idx);
+        SetModified(true);
+    }
+}
+
+void CompileOptionsBase::RemoveResourceIncludeDir(const wxString& option)
+{
+    bool casesens = true;
+#ifdef __WXMSW__
+    casesens = false;
+#endif
+    wxString entry = UnixFilename(option);
+    int idx = m_ResIncludeDirs.Index(entry, casesens);
+    if (idx != wxNOT_FOUND)
+    {
+        m_ResIncludeDirs.RemoveAt(idx);
+        SetModified(true);
+    }
+}
+
+void CompileOptionsBase::RemoveLibDir(const wxString& option)
+{
+    bool casesens = true;
+#ifdef __WXMSW__
+    casesens = false;
+#endif
+    wxString entry = UnixFilename(option);
+    int idx = m_LibDirs.Index(entry, casesens);
+    if (idx != wxNOT_FOUND)
+    {
+        m_LibDirs.RemoveAt(idx);
+        SetModified(true);
+    }
+}
+
+void CompileOptionsBase::RemoveCommandsBeforeBuild(const wxString& command)
+{
+    wxString envopt = command;
+	m_CmdsBefore.Remove(envopt);
+	SetModified(true);
+}
+
+void CompileOptionsBase::RemoveCommandsAfterBuild(const wxString& command)
+{
+    wxString envopt = command;
+	m_CmdsAfter.Remove(envopt);
+	SetModified(true);
+}
+
+void CompileOptionsBase::RemoveBuildScript(const wxString& script)
+{
+    bool casesens = true;
+#ifdef __WXMSW__
+    casesens = false;
+#endif
+    wxString envopt = script;
+    int idx = m_Scripts.Index(envopt, casesens);
+    if (idx != wxNOT_FOUND)
+    {
+        m_Scripts.RemoveAt(idx);
+        SetModified(true);
+    }
 }
 
 void CompileOptionsBase::SetCustomVars(const CustomVars& vars)

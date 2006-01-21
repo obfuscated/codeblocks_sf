@@ -8,6 +8,8 @@
 #include "configmanager.h"
 #include "messagemanager.h"
 #include "macrosmanager.h"
+#include "scriptingmanager.h"
+#include "scriptingcall.h"
 
 CmdLineGenerator::CmdLineGenerator()
 {
@@ -49,6 +51,9 @@ void CmdLineGenerator::Init(cbProject* project)
         return;
     }
 
+    // project pre-build scripts
+    DoBuildScripts(project, _T("SetBuildOptions"));
+
     // for each target
     for (int i = 0; i < project->GetBuildTargetsCount(); ++i)
     {
@@ -72,6 +77,9 @@ void CmdLineGenerator::Init(cbProject* project)
             continue;
         }
 
+        // target pre-build scripts
+        DoBuildScripts(target, _T("SetBuildOptions"));
+
         // access the compiler used for this target
         Compiler* compiler = CompilerFactory::Compilers[target->GetCompilerIndex()];
 
@@ -83,7 +91,13 @@ void CmdLineGenerator::Init(cbProject* project)
         SetupLinkerOptions(compiler, target);
         SetupLinkLibraries(compiler, target);
         SetupResourceCompilerOptions(compiler, target);
+
+        // target post-build scripts
+        DoBuildScripts(target, _T("UnsetBuildOptions"));
     }
+
+    // project post-build scripts
+    DoBuildScripts(project, _T("UnsetBuildOptions"));
 }
 
 void CmdLineGenerator::CreateSingleFileCompileCmd(wxString& command,
@@ -194,6 +208,24 @@ void CmdLineGenerator::CreateSingleFileCompileCmd(wxString& command,
     // finally, replace all macros in one go
     Manager::Get()->GetMacrosManager()->ReplaceMacros(command, true, target);
 }
+
+/// Apply pre-build scripts for @c base.
+void CmdLineGenerator::DoBuildScripts(CompileOptionsBase* base, const wxString& funcName)
+{
+    const wxString module = _T("build-scripts");
+    const wxArrayString& scripts = base->GetBuildScripts();
+    for (size_t i = 0; i < scripts.GetCount(); ++i)
+    {
+        Manager::Get()->GetScriptingManager()->LoadScript(scripts[i], module, false);
+
+        int funcID = Manager::Get()->GetScriptingManager()->FindFunctionByDeclaration(_T("void ") + funcName + _T("(CompileOptionsBase@ base)"), module);
+        if (funcID < 0)
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Invalid build script: '%s'"), scripts[i].c_str());
+        VoidExecutor<CompileOptionsBase*> exec(funcID);
+        exec.Call(base);
+    }
+}
+
 
 /// Setup output filename for build target.
 void CmdLineGenerator::SetupOutputFilenames(Compiler* compiler, ProjectBuildTarget* target)

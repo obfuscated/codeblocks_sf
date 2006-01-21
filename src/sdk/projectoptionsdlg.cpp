@@ -58,6 +58,12 @@ BEGIN_EVENT_TABLE(ProjectOptionsDlg, wxDialog)
 	EVT_BUTTON(    XRCID("btnToggleCheckmarks"),       ProjectOptionsDlg::OnFileToggleMarkClick)
 	EVT_LISTBOX(   XRCID("lstBuildTarget"),            ProjectOptionsDlg::OnBuildTargetChanged)
 	EVT_COMBOBOX(  XRCID("cmbProjectType"),            ProjectOptionsDlg::OnProjectTypeChanged)
+
+    EVT_TREE_SEL_CHANGED(XRCID("tcOverview"),          ProjectOptionsDlg::OnScriptsOverviewSelChanged)
+    EVT_BUTTON(XRCID("btnAddPreScripts"),              ProjectOptionsDlg::OnAddScript)
+    EVT_BUTTON(XRCID("btnRemovePreScripts"),           ProjectOptionsDlg::OnRemoveScript)
+    EVT_SPIN_UP(XRCID("spnPreScripts"),                ProjectOptionsDlg::OnScriptMoveUp)
+    EVT_SPIN_DOWN(XRCID("spnPreScripts"),              ProjectOptionsDlg::OnScriptMoveDown)
 END_EVENT_TABLE()
 
 // class constructor
@@ -88,12 +94,45 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
 	PluginsArray plugins = Manager::Get()->GetPluginManager()->GetCompilerOffers();
 	if (plugins.GetCount())
 		m_pCompiler = (cbCompilerPlugin*)plugins[0];
+
+    // scripts
+    BuildScriptsTree();
 }
 
 // class destructor
 ProjectOptionsDlg::~ProjectOptionsDlg()
 {
 	// insert your code here
+}
+
+void ProjectOptionsDlg::BuildScriptsTree()
+{
+	wxTreeCtrl* tc = XRCCTRL(*this, "tcOverview", wxTreeCtrl);
+	tc->DeleteAllItems();
+
+	wxTreeItemId root = tc->AddRoot(m_Project->GetTitle());
+    for (int x = 0; x < m_Project->GetBuildTargetsCount(); ++x)
+    {
+        ProjectBuildTarget* target = m_Project->GetBuildTarget(x);
+        tc->AppendItem(root, target->GetTitle());
+    }
+    tc->Expand(root);
+    tc->SelectItem(root);
+    FillScripts();
+}
+
+void ProjectOptionsDlg::FillScripts()
+{
+	wxTreeCtrl* tc = XRCCTRL(*this, "tcOverview", wxTreeCtrl);
+	wxTreeItemId sel = tc->GetSelection();
+    CompileOptionsBase* base = sel == tc->GetRootItem()
+                                ? static_cast<CompileOptionsBase*>(m_Project)
+                                : static_cast<CompileOptionsBase*>(m_Project->GetBuildTarget(tc->GetItemText(sel)));
+
+    wxListBox* lstScripts = XRCCTRL(*this, "lstPreScripts", wxListBox);
+    lstScripts->Clear();
+    for (size_t i = 0; i < base->GetBuildScripts().GetCount(); ++i)
+        lstScripts->Append(base->GetBuildScripts().Item(i));
 }
 
 void ProjectOptionsDlg::FillBuildTargets()
@@ -411,6 +450,7 @@ void ProjectOptionsDlg::OnAddBuildTargetClick(wxCommandEvent& event)
     lstTargets->Append(targetName);
     lstTargets->SetSelection(lstTargets->GetCount() - 1);
     DoTargetChange();
+    BuildScriptsTree();
 }
 
 void ProjectOptionsDlg::OnEditBuildTargetClick(wxCommandEvent& event)
@@ -436,6 +476,7 @@ void ProjectOptionsDlg::OnEditBuildTargetClick(wxCommandEvent& event)
     m_Project->RenameBuildTarget(targetIdx, newTargetName);
     lstTargets->SetString(targetIdx, newTargetName);
     lstTargets->SetSelection(targetIdx);
+    BuildScriptsTree();
 }
 
 void ProjectOptionsDlg::OnCopyBuildTargetClick(wxCommandEvent& event)
@@ -467,6 +508,7 @@ void ProjectOptionsDlg::OnCopyBuildTargetClick(wxCommandEvent& event)
     lstTargets->Append(newTargetName);
     lstTargets->SetSelection(lstTargets->GetCount() - 1);
     DoTargetChange();
+    BuildScriptsTree();
 }
 
 void ProjectOptionsDlg::OnRemoveBuildTargetClick(wxCommandEvent& event)
@@ -489,6 +531,7 @@ void ProjectOptionsDlg::OnRemoveBuildTargetClick(wxCommandEvent& event)
     lstTargets->SetSelection(targetIdx);
     m_Current_Sel = -1;
     DoTargetChange();
+    BuildScriptsTree();
 }
 
 void ProjectOptionsDlg::OnEditDepsClick(wxCommandEvent& event)
@@ -598,6 +641,110 @@ void ProjectOptionsDlg::OnFileToggleMarkClick(wxCommandEvent& event)
 	}
 }
 
+void ProjectOptionsDlg::OnScriptsOverviewSelChanged(wxTreeEvent& event)
+{
+    FillScripts();
+}
+
+void ProjectOptionsDlg::OnAddScript(wxCommandEvent& event)
+{
+    wxListBox* ctrl = XRCCTRL(*this, "lstPreScripts", wxListBox);
+    if (!ctrl)
+        return;
+
+    wxFileName fname;
+    fname.Assign(ctrl->GetStringSelection());
+    fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
+    wxFileDialog dlg(this,
+                    _("Select script file"),
+                    fname.GetPath(),
+                    fname.GetFullName(),
+                    _("Script files (*.script)|*.script"),
+                    wxOPEN);
+
+    if (dlg.ShowModal() != wxID_OK)
+        return;
+    fname.Assign(dlg.GetPath());
+    fname.MakeRelativeTo(m_Project->GetBasePath());
+    ctrl->Append(fname.GetFullPath());
+    ctrl->SetSelection(ctrl->GetCount());
+
+	wxTreeCtrl* tc = XRCCTRL(*this, "tcOverview", wxTreeCtrl);
+	wxTreeItemId sel = tc->GetSelection();
+    CompileOptionsBase* base = sel == tc->GetRootItem()
+                                ? static_cast<CompileOptionsBase*>(m_Project)
+                                : static_cast<CompileOptionsBase*>(m_Project->GetBuildTarget(tc->GetItemText(sel)));
+    base->AddBuildScript(fname.GetFullPath());
+}
+
+void ProjectOptionsDlg::OnRemoveScript(wxCommandEvent& event)
+{
+    wxListBox* ctrl = XRCCTRL(*this, "lstPreScripts", wxListBox);
+    if (!ctrl || ctrl->GetSelection() == -1)
+        return;
+    wxString script = ctrl->GetStringSelection();
+    if (script.IsEmpty())
+        return;
+
+	wxTreeCtrl* tc = XRCCTRL(*this, "tcOverview", wxTreeCtrl);
+	wxTreeItemId sel = tc->GetSelection();
+    CompileOptionsBase* base = sel == tc->GetRootItem()
+                                ? static_cast<CompileOptionsBase*>(m_Project)
+                                : static_cast<CompileOptionsBase*>(m_Project->GetBuildTarget(tc->GetItemText(sel)));
+    base->RemoveBuildScript(script);
+    int isel = ctrl->GetSelection();
+    ctrl->Delete(isel);
+    ctrl->SetSelection(isel < ctrl->GetCount() ? isel : --isel );
+}
+
+void ProjectOptionsDlg::OnScriptMoveUp(wxSpinEvent& event)
+{
+    wxListBox* ctrl = XRCCTRL(*this, "lstPreScripts", wxListBox);
+    if (!ctrl || ctrl->GetSelection() <= 0)
+        return;
+
+	wxTreeCtrl* tc = XRCCTRL(*this, "tcOverview", wxTreeCtrl);
+	wxTreeItemId sel = tc->GetSelection();
+    CompileOptionsBase* base = sel == tc->GetRootItem()
+                                ? static_cast<CompileOptionsBase*>(m_Project)
+                                : static_cast<CompileOptionsBase*>(m_Project->GetBuildTarget(tc->GetItemText(sel)));
+
+    int isel = ctrl->GetSelection();
+    wxString ssel = ctrl->GetStringSelection();
+    wxArrayString scripts = base->GetBuildScripts();
+    scripts.RemoveAt(isel);
+    ctrl->Delete(isel);
+    --isel;
+    ctrl->Insert(ssel, isel);
+    scripts.Insert(ssel, isel);
+    ctrl->SetSelection(isel);
+    base->SetBuildScripts(scripts);
+}
+
+void ProjectOptionsDlg::OnScriptMoveDown(wxSpinEvent& event)
+{
+    wxListBox* ctrl = XRCCTRL(*this, "lstPreScripts", wxListBox);
+    if (!ctrl || ctrl->GetSelection() == ctrl->GetCount() - 1)
+        return;
+
+	wxTreeCtrl* tc = XRCCTRL(*this, "tcOverview", wxTreeCtrl);
+	wxTreeItemId sel = tc->GetSelection();
+    CompileOptionsBase* base = sel == tc->GetRootItem()
+                                ? static_cast<CompileOptionsBase*>(m_Project)
+                                : static_cast<CompileOptionsBase*>(m_Project->GetBuildTarget(tc->GetItemText(sel)));
+
+    int isel = ctrl->GetSelection();
+    wxString ssel = ctrl->GetStringSelection();
+    wxArrayString scripts = base->GetBuildScripts();
+    scripts.RemoveAt(isel);
+    ctrl->Delete(isel);
+    ++isel;
+    ctrl->Insert(ssel, isel);
+    scripts.Insert(ssel, isel);
+    ctrl->SetSelection(isel);
+    base->SetBuildScripts(scripts);
+}
+
 void ProjectOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
 {
     wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
@@ -619,6 +766,17 @@ void ProjectOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
     XRCCTRL(*this, "btnProjectBuildOptions", wxButton)->Enable(m_pCompiler);
     XRCCTRL(*this, "btnTargetBuildOptions", wxButton)->Enable(m_pCompiler && en);
     XRCCTRL(*this, "btnExportTarget", wxButton)->Enable(en);
+
+    // scripts page
+	wxTreeCtrl* tc = XRCCTRL(*this, "tcOverview", wxTreeCtrl);
+	bool scrsel = tc->GetSelection().IsOk();
+
+    wxListBox* lstPreScripts = XRCCTRL(*this, "lstPreScripts", wxListBox);
+    lstPreScripts->Enable(scrsel);
+    bool presel = lstPreScripts->GetSelection() != -1;
+    XRCCTRL(*this, "btnAddPreScripts", wxButton)->Enable(scrsel);
+    XRCCTRL(*this, "btnRemovePreScripts", wxButton)->Enable(scrsel && presel);
+    XRCCTRL(*this, "spnPreScripts", wxSpinButton)->Enable(scrsel && presel && lstPreScripts->GetCount() > 1);
 }
 
 void ProjectOptionsDlg::OnOK(wxCommandEvent& event)

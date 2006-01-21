@@ -256,6 +256,15 @@ void ProjectLoader::DoBuild(TiXmlElement* parentNode)
     TiXmlElement* node = parentNode->FirstChildElement("Build");
     while (node)
     {
+        TiXmlElement* opt = node->FirstChildElement("Script");
+        while (opt)
+        {
+            if (opt->Attribute("file"))
+                m_pProject->AddBuildScript(_U(opt->Attribute("file")));
+
+            opt = opt->NextSiblingElement("Script");
+        }
+
         DoBuildTarget(node);
         DoEnvironment(node, m_pProject);
         node = node->NextSiblingElement("Build");
@@ -384,6 +393,15 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
         }
 
         node = node->NextSiblingElement("Option");
+    }
+
+    node = parentNode->FirstChildElement("Script");
+    while (node)
+    {
+        if (node->Attribute("file"))
+            target->AddBuildScript(_U(node->Attribute("file")));
+
+        node = node->NextSiblingElement("Script");
     }
 
     if (type != -1)
@@ -820,6 +838,11 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
     prjnode->InsertEndChild(TiXmlElement("Build"));
     TiXmlElement* buildnode = prjnode->FirstChildElement("Build");
 
+    for (size_t x = 0; x < m_pProject->GetBuildScripts().GetCount(); ++x)
+    {
+        AddElement(buildnode, "Script", "file", m_pProject->GetBuildScripts().Item(x));
+    }
+
     // now decide which target we 're exporting.
     // remember that if onlyTarget is empty, we export all targets (i.e. normal save).
     ProjectBuildTarget* onlytgt = m_pProject->GetBuildTarget(onlyTarget);
@@ -873,6 +896,11 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
             AddElement(tgtnode, "Option", "projectResourceIncludeDirsRelation", target->GetOptionRelation(ortResDirs));
         if (target->GetOptionRelation(ortLibDirs) != 3) // 3 is the default
             AddElement(tgtnode, "Option", "projectLibDirsRelation", target->GetOptionRelation(ortLibDirs));
+
+        for (size_t x = 0; x < target->GetBuildScripts().GetCount(); ++x)
+        {
+            AddElement(tgtnode, "Script", "file", target->GetBuildScripts().Item(x));
+        }
 
         TiXmlElement* node = AddElement(tgtnode, "Compiler", 0, 0);
         AddArrayOfElements(node, "Add", "option", target->GetCompilerOptions());

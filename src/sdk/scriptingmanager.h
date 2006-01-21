@@ -20,7 +20,7 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>
          * @return If the script has errors, -1 s returned, else the
          * script's return value is returned.
          */
-        int LoadScript(const wxString& filename, const wxString& module = _T(""));
+        int LoadScript(const wxString& filename, const wxString& module = _T(""), bool autorunMain = true);
         int FindFunctionByDeclaration(const wxString& decl, const wxString& module = _T(""));
         int FindFunctionByName(const wxString& name, const wxString& module = _T(""));
 

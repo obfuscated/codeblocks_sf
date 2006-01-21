@@ -90,7 +90,7 @@ bool ScriptingManager::DoLoadScript(const wxString& filename, wxString& script)
     return cbRead(file, script);
 }
 
-int ScriptingManager::LoadScript(const wxString& filename, const wxString& module)
+int ScriptingManager::LoadScript(const wxString& filename, const wxString& module, bool autorunMain)
 {
 //    wxString script;
     // try to load as-passed
@@ -131,26 +131,30 @@ int ScriptingManager::LoadScript(const wxString& filename, const wxString& modul
 	m_pEngine->AddScriptSection(_C(module), _C(filename), script, strlen(script), 0, false);
 	m_pEngine->Build(_C(module));
 
-    // locate and run "int main()"
-	int funcID = FindFunctionByDeclaration(_T("int main()"), module);
-	if (funcID < 0)
-        Manager::Get()->GetMessageManager()->DebugLog(_T("No 'int main()' in '%s': no autorun"), filename.c_str());
-	Executor<int> exec(funcID);
-	int ret = exec.Call();
-	if (!exec.Success())
-	{
-        if (wxMessageBox(_("An exception has been raised from the script:\n\n") +
-                        exec.CreateErrorString() +
-                        _("\n\nDo you want to open this script in the editor?"), _T("Script error"), wxICON_ERROR | wxYES_NO) == wxYES)
+    int ret = 0;
+    if (autorunMain)
+    {
+        // locate and run "int main()"
+        int funcID = FindFunctionByDeclaration(_T("int main()"), module);
+        if (funcID < 0)
+            Manager::Get()->GetMessageManager()->DebugLog(_T("No 'int main()' in '%s': no autorun"), filename.c_str());
+        Executor<int> exec(funcID);
+        ret = exec.Call();
+        if (!exec.Success())
         {
-            cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname);
-            if (ed && exec.GetLineNumber() != 0)
+            if (wxMessageBox(_("An exception has been raised from the script:\n\n") +
+                            exec.CreateErrorString() +
+                            _("\n\nDo you want to open this script in the editor?"), _T("Script error"), wxICON_ERROR | wxYES_NO) == wxYES)
             {
-                ed->GotoLine(exec.GetLineNumber() - 1);
-                ed->GetControl()->SetFocus();
+                cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname);
+                if (ed && exec.GetLineNumber() != 0)
+                {
+                    ed->GotoLine(exec.GetLineNumber() - 1);
+                    ed->GetControl()->SetFocus();
+                }
             }
         }
-	}
+    }
 
     // display errors (if any)
     if (!s_Errors.IsEmpty())

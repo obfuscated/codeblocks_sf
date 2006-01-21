@@ -443,6 +443,94 @@ from target...</label>
               </object>
             </object>
           </object>
+          <object class="notebookpage">
+            <label>Scripts</label>
+            <object class="wxPanel" name="tabScripts">
+              <object class="wxBoxSizer">
+                <orient>wxHORIZONTAL</orient>
+                <object class="sizeritem">
+                  <object class="wxBoxSizer">
+                    <orient>wxVERTICAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Project overview:</label>
+                      </object>
+                      <flag>wxBOTTOM|wxGROW</flag>
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxTreeCtrl" name="tcOverview">
+                        <style>wxTR_NO_BUTTONS|wxTR_SINGLE</style>
+                      </object>
+                      <option>1</option>
+                      <flag>wxGROW</flag>
+                      <minsize>240,-1</minsize>
+                    </object>
+                  </object>
+                  <flag>wxALL|wxGROW</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxBoxSizer">
+                    <orient>wxVERTICAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxBoxSizer">
+                        <orient>wxVERTICAL</orient>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                            <label>Attached build scripts:</label>
+                          </object>
+                          <flag>wxBOTTOM|wxGROW</flag>
+                          <border>4</border>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxBoxSizer">
+                            <orient>wxHORIZONTAL</orient>
+                            <object class="sizeritem">
+                              <object class="wxListBox" name="lstPreScripts">
+                                <content/>
+                              </object>
+                              <option>1</option>
+                              <flag>wxGROW</flag>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxSpinButton" name="spnPreScripts"/>
+                              <flag>wxLEFT|wxALIGN_CENTRE_VERTICAL</flag>
+                              <border>4</border>
+                            </object>
+                          </object>
+                          <option>1</option>
+                          <flag>wxGROW</flag>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxBoxSizer">
+                            <orient>wxHORIZONTAL</orient>
+                            <object class="sizeritem">
+                              <object class="wxButton" name="btnAddPreScripts">
+                                <label>Add</label>
+                              </object>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxButton" name="btnRemovePreScripts">
+                                <label>Remove</label>
+                              </object>
+                            </object>
+                          </object>
+                          <flag>wxTOP|wxALIGN_CENTRE_HORIZONTAL</flag>
+                          <border>8</border>
+                        </object>
+                      </object>
+                      <option>1</option>
+                      <flag>wxGROW</flag>
+                    </object>
+                  </object>
+                  <option>1</option>
+                  <flag>wxTOP|wxBOTTOM|wxRIGHT|wxGROW</flag>
+                  <border>8</border>
+                </object>
+              </object>
+            </object>
+          </object>
         </object>
         <option>1</option>
         <flag>wxALL|wxEXPAND</flag>

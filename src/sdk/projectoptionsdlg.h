@@ -36,7 +36,15 @@ class ProjectOptionsDlg : public wxDialog
 		void OnProjectDepsClick(wxCommandEvent& event);
 		void OnTargetBuildOptionsClick(wxCommandEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);
+
+		void OnScriptsOverviewSelChanged(wxTreeEvent& event);
+		void OnAddScript(wxCommandEvent& event);
+		void OnRemoveScript(wxCommandEvent& event);
+		void OnScriptMoveUp(wxSpinEvent& event);
+		void OnScriptMoveDown(wxSpinEvent& event);
     private:
+        void BuildScriptsTree();
+        void FillScripts();
         void FillBuildTargets();
         void DoTargetChange();
         void DoBeforeTargetChange(bool force = false);

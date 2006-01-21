@@ -128,6 +128,24 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
 {
 	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgCompilerOptions"));
 
+	if (project)
+	{
+        bool hasBuildScripts = project->GetBuildScripts().GetCount() != 0;
+        if (!hasBuildScripts)
+        {
+            // look in targets
+            for (int x = 0; x < project->GetBuildTargetsCount(); ++x)
+            {
+                ProjectBuildTarget* target = project->GetBuildTarget(x);
+                hasBuildScripts = target->GetBuildScripts().GetCount() != 0;
+                if (hasBuildScripts)
+                    break;
+            }
+        }
+
+        XRCCTRL(*this, "lblBuildScriptsNote", wxStaticText)->Show(hasBuildScripts);
+    }
+
 	DoFillCompilerSets();
 	DoFillCompilerPrograms();
 	DoFillOthers();
@@ -159,7 +177,6 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
 	{
         m_InitialCompilerIdx = project->GetCompilerIndex();
         // project settings
-        SetTitle(_("Project's Build options"));
 
         wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook);
         nb->DeletePage(7); // remove "Other" page
@@ -629,6 +646,7 @@ void CompilerOptionsDlg::DoLoadOptions(int compilerIdx, ScopeTreeData* data)
 		if (!data->GetTarget())
 		{
 			// project options
+			SetTitle(_("Project build options"));
 			m_pTarget = 0;
 			cbProject* project = data->GetProject();
 			m_IncludeDirs = project->GetIncludeDirs();
@@ -650,6 +668,7 @@ void CompilerOptionsDlg::DoLoadOptions(int compilerIdx, ScopeTreeData* data)
 		{
 			// target options
 			ProjectBuildTarget* target = data->GetTarget();
+			SetTitle(_("Target build options: ") + target->GetTitle());
 			m_pTarget = target;
 			m_IncludeDirs = target->GetIncludeDirs();
 			m_ResDirs = target->GetResourceIncludeDirs();

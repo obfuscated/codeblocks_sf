@@ -35,6 +35,7 @@ class CmdLineGenerator
                                         const wxString& object,
                                         const wxString& deps);
     protected:
+        void DoBuildScripts(CompileOptionsBase* base, const wxString& funcName);
         wxString GetOrderedOptions(ProjectBuildTarget* target, OptionsRelationType rel, const wxString& project_options, const wxString& target_options);
         void SetupOutputFilenames(Compiler* compiler, ProjectBuildTarget* target);
         void SetupIncludeDirs(Compiler* compiler, ProjectBuildTarget* target);
