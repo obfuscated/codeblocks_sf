@@ -5,6 +5,7 @@
 #include <wx/string.h>
 #include <wx/treectrl.h>
 #include <wx/file.h>
+#include <wx/filename.h>
 #include <wx/intl.h>
 
 class TiXmlDocument;
@@ -118,6 +119,8 @@ extern DLLIMPORT wxString ChooseDirectory(wxWindow* parent,
                                           const wxString& basePath = _T(""),
                                           bool askToMakeRelative = false, // relative to basePath
                                           bool showCreateDirButton = false); // where supported
+
+extern DLLIMPORT bool NormalizePath(wxFileName& f,const wxString& base);
 
 wxString URLEncode(const wxString &str);
 

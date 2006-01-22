@@ -187,14 +187,14 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
     	wxString out = project->GetIncludeDirs()[i];
     	Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out);
         wxFileName dir(out);
-        wxLogNull ln; // hide the error log about "too many ..", if the relative path is invalid
-        if (!dir.IsAbsolute())
-            dir.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
-        if (dir.IsOk())
+        if(NormalizePath(dir,base))
         {
             parser->AddIncludeDir(dir.GetFullPath());
 //            Manager::Get()->GetMessageManager()->DebugLog("Parser prj dir: " + dir.GetFullPath());
         }
+        else
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Error normalizing path: '%s' from '%s'"),out.c_str(),base.c_str());
+
     }
 
 	// alloc array for target's compilers and project compiler
@@ -217,13 +217,13 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
                 Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out);
                 wxFileName dir(out);
                 wxLogNull ln; // hide the error log about "too many ..", if the relative path is invalid
-                if (!dir.IsAbsolute())
-                    dir.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
-                if (dir.IsOk())
+                if(NormalizePath(dir,base))
                 {
                     parser->AddIncludeDir(dir.GetFullPath());
 //                    Manager::Get()->GetMessageManager()->DebugLog("Parser tgt dir: " + dir.GetFullPath());
                 }
+                else
+                    Manager::Get()->GetMessageManager()->DebugLog(_T("Error normalizing path: '%s' from '%s'"),out.c_str(),base.c_str());
             }
             // get the compiler
             int CompilerIndex = target->GetCompilerIndex();
@@ -254,20 +254,20 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
             Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out);
             wxFileName dir(out);
             wxLogNull ln; // hide the error log about "too many ..", if the relative path is invalid
-            if (!dir.IsAbsolute())
-                dir.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
-            if (dir.IsOk())
+            if (NormalizePath(dir,base))
             {
                 parser->AddIncludeDir(dir.GetFullPath());
-                Manager::Get()->GetMessageManager()->DebugLog(_T("Parser cmp dir: ") + dir.GetFullPath());
+//                Manager::Get()->GetMessageManager()->DebugLog(_T("Parser cmp dir: ") + dir.GetFullPath());
 			}
+            else
+                Manager::Get()->GetMessageManager()->DebugLog(_T("Error normalizing path: '%s' from '%s'"),out.c_str(),base.c_str());
 		}
 		// find out which compiler, if gnu, do the special trick
 		// to find it's internal include paths
 		wxString CompilerName = (Compilers[idxCompiler])->GetName();
 		if(CompilerName == _("GNU GCC Compiler"))
 		{ // for starters , only do this for gnu compiler
-			Manager::Get()->GetMessageManager()->DebugLog(_T("CompilerName ") + CompilerName);
+//			Manager::Get()->GetMessageManager()->DebugLog(_T("CompilerName ") + CompilerName);
 			//	wxString Command("mingw32-g++ -v -E -x c++ - < nul");
 			// specifying "< nul", does not seem to work
 			// workaround : create a dummy file (let's hope it does not exist)
@@ -310,13 +310,13 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
 							{
 								wxFileName dir(out);
 								wxLogNull ln; // hide the error log about "too many ..", if the relative path is invalid
-								if (!dir.IsAbsolute())
-									dir.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
-								if (dir.IsOk())
+								if (NormalizePath(dir,base))
 								{
 									parser->AddIncludeDir(dir.GetFullPath());
 //									Manager::Get()->GetMessageManager()->DebugLog("Parser internal cmp dir: " + dir.GetFullPath());
 								}
+                                else
+                                    Manager::Get()->GetMessageManager()->DebugLog(_T("Error normalizing path: '%s' from '%s'"),out.c_str(),base.c_str());
 							}
 						}
 					}

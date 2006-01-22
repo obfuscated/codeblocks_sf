@@ -408,58 +408,53 @@ bool Parser::Parse(const wxString& filename, bool isLocal)
 bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadOptions& opts)
 {
 	wxString buffOrFile = bufferOrFilename;
-	bool parsed = false;
+    bool result = false;
+    do
+    {
+        if(!opts.useBuffer)
+        {
+            wxCriticalSectionLocker lock(s_mutexProtection);
+            bool canparse = !m_pTokens->IsFileParsed(buffOrFile);
+            if(canparse)
+                canparse = m_pTokens->ReserveFileForParsing(buffOrFile,true) != 0;
+            if (!canparse)
+                break;
+        }
 
-	if(!opts.useBuffer){
-        wxCriticalSectionLocker lock(s_mutexProtection);
-        size_t index = m_pTokens->GetFileIndex(buffOrFile);
-        parsed = (m_pTokens->m_FilesMap.count(index) &&
-           m_pTokens->m_FilesStatus[index]!=fpsNotParsed &&
-           !m_pTokens->m_FilesToBeReparsed.count(index)
-           );
-	}
-	if (parsed)
-	{
-#ifndef STANDALONE
-//        Manager::Get()->GetMessageManager()->DebugLog("%s is already parsed", buffOrFile.c_str());
-#endif
-		return false; // already parsed
-    }
+        ParserThread* thread = new ParserThread(this,&this->m_abort_flag,
+                                                buffOrFile,
+                                                isLocal,
+                                                opts,
+                                                m_pTokens);//(opts.useBuffer ? m_pTempTokens : m_pTokens));
+        if (opts.useBuffer)
+        {
+            result = thread->Parse();
+            LinkInheritance(true);
+            delete thread;
+            break;
+        }
 
-	ParserThread* thread = new ParserThread(this,&this->m_abort_flag,
-											buffOrFile,
-											isLocal,
-											opts,
-											m_pTokens);//(opts.useBuffer ? m_pTempTokens : m_pTokens));
-    if (!opts.useBuffer)
-	{
-//		lock = new wxCriticalSectionLocker(s_mutexListProtection);
-//	    LOGSTREAM << "Adding task for: " << buffOrFile << '\n';
-#ifdef CODECOMPLETION_PROFILING
-        thread->Parse();
-#else
-		if(!m_IsBatch)
-		{
+        if(!m_IsBatch && wxThread::IsMain())
+        {
             m_IsBatch = true;
             m_Pool.BatchBegin();
-		}
-		m_Pool.AddTask(thread, true);
-        m_batchtimer.Start(100,wxTIMER_ONE_SHOT);
+        }
+//        Manager::Get()->GetMessageManager()->DebugLog(_T("parsing %s"),buffOrFile.c_str());
+        #ifdef CODECOMPLETION_PROFILING
+        thread->Parse();
+        if(wxThread::IsMain())
+            m_batchtimer.Start(500,wxTIMER_ONE_SHOT);
+        #else
+        m_Pool.AddTask(thread, true);
+        if(wxThread::IsMain())
+            m_batchtimer.Start(100,wxTIMER_ONE_SHOT);
         // For every parse, the timer is reset to -100 ms, so there is a
         // 100 ms. tolerance for the next parse to get queued. After that,
         // the timer will trigger the event that will start the batch job.
-
-#endif
-//		delete lock;
-		return true;
-	}
-	else
-	{
-		bool ret = thread->Parse();
-		LinkInheritance(true);
-		delete thread;
-		return ret;
-	}
+        #endif
+        result = true;
+    }while(false);
+    return result;
 }
 
 bool Parser::ParseBufferForFunctions(const wxString& buffer)
@@ -689,7 +684,7 @@ bool Parser::WriteToCache(wxOutputStream* f)
 
 void Parser::TerminateAllThreads()
 {
-    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::TerminateAllThreads: Aborting all tasks..."));
+    // Manager::Get()->GetMessageManager()->DebugLog(_("Parser::TerminateAllThreads: Aborting all tasks..."));
     m_Pool.AbortAllTasks();
 }
 
@@ -718,17 +713,20 @@ void Parser::AddIncludeDir(const wxString& file)
 	}
 } // end of AddIncludeDir
 
-wxArrayString Parser::FindFileInIncludeDirs(const wxString& file)
+wxArrayString Parser::FindFileInIncludeDirs(const wxString& file,bool firstonly)
 {
 	wxArrayString FoundSet;
 	for(size_t idxSearch = 0; idxSearch < m_IncludeDirs.GetCount(); ++idxSearch)
 	{
 		wxString base = m_IncludeDirs[idxSearch];
 		wxFileName tmp = file;
-		tmp.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
-		if(wxFileExists(tmp.GetFullPath()))
+		NormalizePath(tmp,base);
+		wxString fullname = tmp.GetFullPath();
+		if(wxFileExists(fullname))
 		{
-			FoundSet.Add(tmp.GetFullPath());
+			FoundSet.Add(fullname);
+			if(firstonly)
+                break;
 		}
 	} // end for : idx : idxSearch
 //	Manager::Get()->GetMessageManager()->DebugLog(_("Searching %s"), file.c_str());
@@ -790,7 +788,7 @@ void Parser::OnParseFile(wxCommandEvent& event)
     // search
 	if (m_Options.followGlobalIncludes)
 	{
-		wxArrayString FoundSet = FindFileInIncludeDirs(tgt);
+		wxArrayString FoundSet = FindFileInIncludeDirs(tgt,true);
 		wxString FirstFound = FoundSet.GetCount()?FoundSet[0]:_T("");
 		wxString g = UnixFilename(FirstFound);
 	    if (g.IsEmpty())

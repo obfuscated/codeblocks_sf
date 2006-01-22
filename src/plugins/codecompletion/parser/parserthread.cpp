@@ -342,42 +342,34 @@ bool ParserThread::ParseBufferForFunctions(const wxString& buffer)
 bool ParserThread::Parse()
 {
     wxCriticalSectionLocker* lock = 0;
-    bool can_parse = false;
-    if (!m_pTokens)
-        return false;
-	if (!m_Tokenizer.IsOK())
-	{
-		//Log("Cannot parse " + m_Filename);
-		return false;
-    }
+    bool result = false;
 
-    if(!m_Options.useBuffer) // Parse a file
+    do
     {
-        lock = new wxCriticalSectionLocker(s_mutexProtection);
-        m_File = m_pTokens->ReserveFileForParsing(m_Filename);
-        delete lock;
-		if(m_File)
-		{
-            can_parse = true;
-//            Log("Parsing " + m_Filename);
-		}
-		else
-            can_parse = false;
-    }
-    else
-        can_parse = true;
+        if (!m_pTokens || !m_Tokenizer.IsOK())
+            break;
 
-    if(!can_parse)
-        return false;
-    DoParse();
+        if(!m_Options.useBuffer) // Parse a file
+        {
+            lock = new wxCriticalSectionLocker(s_mutexProtection);
+            m_File = m_pTokens->ReserveFileForParsing(m_Filename);
+            delete lock;
+            if(!m_File)
+                break;
+        }
 
-    if(!m_Options.useBuffer) // Parsing a file
-    {
-        lock = new wxCriticalSectionLocker(s_mutexProtection);
-        m_pTokens->FlagFileAsParsed(m_Filename);
-        delete lock;
-    }
-    return true;
+        DoParse();
+
+        if(!m_Options.useBuffer) // Parsing a file
+        {
+            lock = new wxCriticalSectionLocker(s_mutexProtection);
+            m_pTokens->FlagFileAsParsed(m_Filename);
+            delete lock;
+        }
+        result = true;
+    }while(false);
+
+    return result;
 }
 
 void ParserThread::DoParse()

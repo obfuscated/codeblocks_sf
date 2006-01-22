@@ -112,7 +112,7 @@ class Parser : public wxEvtHandler
 
 		void ClearIncludeDirs(){ m_IncludeDirs.Clear(); }
 		void AddIncludeDir(const wxString& dir);
-		wxArrayString FindFileInIncludeDirs(const wxString& file);
+		wxArrayString FindFileInIncludeDirs(const wxString& file,bool firstonly = false);
 
 		TokensTree* GetTokens(){ return m_pTokens; }
 		TokensTree* GetTempTokens() { return m_pTempTokens; }

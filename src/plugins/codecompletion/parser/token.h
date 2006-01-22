@@ -18,6 +18,7 @@ class TokensTree;
 enum FileParsingStatus
 {
     fpsNotParsed = 0,
+    fpsAssigned,
     fpsBeingParsed,
     fpsDone
 };
@@ -142,9 +143,10 @@ class TokensTree
 
         size_t GetFileIndex(const wxString& filename);
         const wxString GetFilename(size_t idx);
-        size_t ReserveFileForParsing(const wxString& filename);
+        size_t ReserveFileForParsing(const wxString& filename,bool preliminary = false);
         void FlagFileForReparsing(const wxString& filename);
         void FlagFileAsParsed(const wxString& filename);
+        bool IsFileParsed(const wxString& filename);
 
         TokenList m_Tokens; /// Contains the pointers to all the tokens
         TokenSearchTree m_Tree; /** Tree containing the indexes to the tokens

@@ -739,7 +739,17 @@ const wxString TokensTree::GetFilename(size_t idx)
     return result;
 }
 
-size_t TokensTree::ReserveFileForParsing(const wxString& filename)
+bool TokensTree::IsFileParsed(const wxString& filename)
+{
+    size_t index = GetFileIndex(filename);
+    bool parsed = (m_FilesMap.count(index) &&
+                   m_FilesStatus[index]!=fpsNotParsed &&
+                  !m_FilesToBeReparsed.count(index)
+                  );
+    return parsed;
+}
+
+size_t TokensTree::ReserveFileForParsing(const wxString& filename,bool preliminary)
 {
     size_t index = GetFileIndex(filename);
     if(m_FilesToBeReparsed.count(index) &&
@@ -749,9 +759,22 @@ size_t TokensTree::ReserveFileForParsing(const wxString& filename)
         m_FilesToBeReparsed.erase(index);
         m_FilesStatus[index]=fpsNotParsed;
     }
-    if(m_FilesStatus.count(index) && m_FilesStatus[index] != fpsNotParsed)
-        return 0; // No parsing needed
-    m_FilesStatus[index]=fpsBeingParsed; // Reserve file
+    if(m_FilesStatus.count(index))
+    {
+        FileParsingStatus status = m_FilesStatus[index];
+        if(preliminary)
+        {
+            if(status >= fpsAssigned)
+                return 0; // Already assigned
+        }
+        else
+        {
+            if(status > fpsAssigned)
+                return 0; // No parsing needed
+        }
+    }
+    m_FilesToBeReparsed.erase(index);
+    m_FilesStatus[index]=preliminary ? fpsAssigned : fpsBeingParsed; // Reserve file
     return index;
 }
 
