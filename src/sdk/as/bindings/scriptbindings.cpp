@@ -45,15 +45,15 @@ template <class T> void Register_CompileOptionsBase(asIScriptEngine* engine, con
 // Globals
 //------------------------------------------------------------------------------
 // dialog buttons
-const int scYES              = wxYES;
-const int scNO               = wxNO;
-const int scCANCEL           = wxCANCEL;
-const int scYES_NO           = wxYES_NO;
-const int scYES_NO_CANCEL    = wxYES_NO | wxCANCEL;
-const int scICON_QUESTION    = wxICON_QUESTION;
-const int scICON_INFORMATION = wxICON_INFORMATION;
-const int scICON_WARNING     = wxICON_WARNING;
-const int scICON_ERROR       = wxICON_ERROR;
+static const int scYES              = wxYES;
+static const int scNO               = wxNO;
+static const int scCANCEL           = wxCANCEL;
+static const int scYES_NO           = wxYES_NO;
+static const int scYES_NO_CANCEL    = wxYES_NO | wxCANCEL;
+static const int scICON_QUESTION    = wxICON_QUESTION;
+static const int scICON_INFORMATION = wxICON_INFORMATION;
+static const int scICON_WARNING     = wxICON_WARNING;
+static const int scICON_ERROR       = wxICON_ERROR;
 int gMessage(const wxString& msg, const wxString& caption, int buttons){ return wxMessageBox(msg, caption, buttons); }
 void gShowMessage(const wxString& msg){ wxMessageBox(msg, _("Script message")); }
 void gShowMessageWarn(const wxString& msg){ wxMessageBox(msg, _("Script message (warning)"), wxICON_WARNING); }
@@ -64,6 +64,17 @@ wxString gReplaceMacros(const wxString& buffer, bool envVarsToo)
 {
     return Manager::Get()->GetMacrosManager()->ReplaceMacros(buffer, envVarsToo);
 }
+// platform constants
+static const int PLATFORM_MSW = 0;
+static const int PLATFORM_GTK = 1;
+static const int PLATFORM_UNKNOWN = 99;
+#ifdef __WXMSW__
+    static const int PLATFORM = PLATFORM_MSW;
+#elif __WXGTK__
+    static const int PLATFORM = PLATFORM_GTK;
+#else
+    static const int PLATFORM = PLATFORM_UNKNOWN;
+#endif
 
 //------------------------------------------------------------------------------
 // Actual registration
@@ -121,6 +132,11 @@ void RegisterBindings(asIScriptEngine* engine)
     engine->RegisterGlobalProperty("const int scICON_INFORMATION", (void*)&scICON_INFORMATION);
     engine->RegisterGlobalProperty("const int scICON_WARNING", (void*)&scICON_WARNING);
     engine->RegisterGlobalProperty("const int scICON_ERROR", (void*)&scICON_ERROR);
+    // platform related
+    engine->RegisterGlobalProperty("const int PLATFORM", (void*)&PLATFORM);
+    engine->RegisterGlobalProperty("const int PLATFORM_MSW", (void*)&PLATFORM_MSW);
+    engine->RegisterGlobalProperty("const int PLATFORM_GTK", (void*)&PLATFORM_GTK);
+    engine->RegisterGlobalProperty("const int PLATFORM_UNKNOWN", (void*)&PLATFORM_UNKNOWN);
 }
 
 //------------------------------------------------------------------------------
