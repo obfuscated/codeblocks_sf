@@ -33,6 +33,9 @@
 #include "compilerfactory.h"
 #include <wx/xrc/xmlres.h>
 #include <wx/radiobox.h>
+#include <wx/treectrl.h>
+#include <wx/spinctrl.h>
+#include <wx/button.h>
 #include "externaldepsdlg.h"
 #include "annoyingdialog.h"
 

@@ -7,6 +7,9 @@
 
 #include <wx/dialog.h>
 
+class wxTreeEvent;
+class wxSpinEvent;
+
 /*
  * No description
  */
