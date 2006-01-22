@@ -15,9 +15,8 @@ wxSmithWizard::wxSmithWizard()
 	m_PluginInfo.authorWebsite = _T("");
 	m_PluginInfo.thanksTo = _T("");
 	m_PluginInfo.license = LICENSE_GPL;
-	m_PluginInfo.hasConfigure = false;
     Bitmap.LoadFile(
-        ConfigManager::GetDataFolder() + 
+        ConfigManager::GetDataFolder() +
         _T("/images/wxsmith/wxsmith32x32.png"),
         wxBITMAP_TYPE_PNG);
 }

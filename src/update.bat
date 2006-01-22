@@ -6,6 +6,7 @@ if not exist output\share md output\share\
 if not exist output\share\CodeBlocks md output\share\CodeBlocks\
 if not exist output\share\CodeBlocks\lexers md output\share\CodeBlocks\lexers\
 if not exist output\share\CodeBlocks\images md output\share\CodeBlocks\images\
+if not exist output\share\CodeBlocks\images\settings md output\share\CodeBlocks\images\settings\
 if not exist output\share\CodeBlocks\images\16x16 md output\share\CodeBlocks\images\16x16\
 if not exist output\share\CodeBlocks\images\codecompletion md output\share\CodeBlocks\images\codecompletion\
 if not exist output\share\CodeBlocks\plugins md output\share\CodeBlocks\plugins\
@@ -16,6 +17,7 @@ if not exist devel\share md devel\share\
 if not exist devel\share\CodeBlocks md devel\share\CodeBlocks\
 if not exist devel\share\CodeBlocks\lexers md devel\share\CodeBlocks\lexers\
 if not exist devel\share\CodeBlocks\images md devel\share\CodeBlocks\images\
+if not exist devel\share\CodeBlocks\images\settings md devel\share\CodeBlocks\images\settings\
 if not exist devel\share\CodeBlocks\images\16x16 md devel\share\CodeBlocks\images\16x16\
 if not exist devel\share\CodeBlocks\images\codecompletion md devel\share\CodeBlocks\images\codecompletion\
 if not exist devel\share\CodeBlocks\plugins md devel\share\CodeBlocks\plugins\
@@ -61,7 +63,9 @@ copy /y %RESDIR%\*.zip output\share\codeblocks > nul
 copy /y sdk\resources\lexers\lexer_* %RESDIR%\lexers > nul
 copy /y sdk\resources\lexers\lexer_* output\share\codeblocks\lexers > nul
 copy /y src\resources\images\*.png %RESDIR%\images > nul
+copy /y src\resources\images\settings\*.png %RESDIR%\images\settings > nul
 copy /y src\resources\images\*.png output\share\codeblocks\images > nul
+copy /y src\resources\images\settings\*.png output\share\codeblocks\images\settings > nul
 copy /y src\resources\images\16x16\*.png %RESDIR%\images\16x16 > nul
 copy /y src\resources\images\16x16\*.png output\share\codeblocks\images\16x16 > nul
 copy /y plugins\codecompletion\resources\images\*.png %RESDIR%\images\codecompletion > nul

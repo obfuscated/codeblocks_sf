@@ -80,7 +80,6 @@ HelpPlugin::HelpPlugin()
   m_PluginInfo.authorWebsite = _T("www.codeblocks.org");
   m_PluginInfo.thanksTo = _T("Codeblocks dev team !\nBourricot for the initial version");
   m_PluginInfo.license = LICENSE_GPL;
-  m_PluginInfo.hasConfigure = true;
 
   // initialize IDs for Help and popup menu
   for (int i = 0; i < MAX_HELP_ITEMS; ++i)
@@ -111,12 +110,13 @@ void HelpPlugin::OnAttach()
   HelpCommon::LoadHelpFilesVector(m_Vector);
 }
 
-int HelpPlugin::Configure()
+cbConfigurationPanel* HelpPlugin::GetConfigurationPanel(wxWindow* parent)
 {
-  HelpConfigDialog dlg;
+  return new HelpConfigDialog(parent, this);
+}
 
-  if (dlg.ShowModal() == wxID_OK)
-  {
+void HelpPlugin::Reload()
+{
     // remove entries from help menu
     int counter = m_LastId - idHelpMenus[0];
     HelpCommon::HelpFilesVector::iterator it;
@@ -129,10 +129,6 @@ int HelpPlugin::Configure()
     // reload configuration (saved in the config dialog)
     HelpCommon::LoadHelpFilesVector(m_Vector);
     BuildMenu(m_pMenuBar);
-    return 0;
-  }
-
-  return -1;
 }
 
 void HelpPlugin::OnRelease(bool appShutDown)

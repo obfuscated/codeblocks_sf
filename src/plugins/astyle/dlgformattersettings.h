@@ -11,10 +11,10 @@
 class dlgFormatterSettings
 {
   private:
-    wxDialog *m_dlg;
+    wxWindow *m_dlg;
 
 	public:
-		dlgFormatterSettings(wxDialog *dlg);
+		dlgFormatterSettings(wxWindow *dlg);
 		virtual ~dlgFormatterSettings();
 
 		void ApplyTo(astyle::ASFormatter& formatter);

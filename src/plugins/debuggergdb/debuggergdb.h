@@ -35,6 +35,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 		DebuggerGDB();
 		~DebuggerGDB();
 		int Configure();
+        cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
 		void BuildMenu(wxMenuBar* menuBar);
 		void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
 		bool BuildToolBar(wxToolBar* toolBar);

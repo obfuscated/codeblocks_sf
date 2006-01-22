@@ -15,11 +15,13 @@
 
 #include <algorithm>
 
+#include "help_plugin.h"
+
 using std::find;
 using std::make_pair;
 using std::swap;
 
-BEGIN_EVENT_TABLE(HelpConfigDialog, wxDialog)
+BEGIN_EVENT_TABLE(HelpConfigDialog, wxPanel)
   EVT_UPDATE_UI( -1, HelpConfigDialog::UpdateUI)
   EVT_BUTTON(XRCID("btnAdd"), HelpConfigDialog::Add)
   EVT_BUTTON(XRCID("btnRename"), HelpConfigDialog::Rename)
@@ -27,16 +29,16 @@ BEGIN_EVENT_TABLE(HelpConfigDialog, wxDialog)
   EVT_BUTTON(XRCID("btnBrowse"), HelpConfigDialog::Browse)
   EVT_BUTTON(XRCID("btnUp"), HelpConfigDialog::OnUp)
   EVT_BUTTON(XRCID("btnDown"), HelpConfigDialog::OnDown)
-  EVT_BUTTON(XRCID("btnOK"), HelpConfigDialog::Ok)
   EVT_LISTBOX(XRCID("lstHelp"), HelpConfigDialog::ListChange)
   EVT_CHECKBOX(XRCID("chkDefault"), HelpConfigDialog::OnCheckbox)
 END_EVENT_TABLE()
 
 
-HelpConfigDialog::HelpConfigDialog()
-: m_LastSel(0)
+HelpConfigDialog::HelpConfigDialog(wxWindow* parent, HelpPlugin* plugin)
+: m_LastSel(0),
+m_pPlugin(plugin)
 {
-  wxXmlResource::Get()->LoadDialog(this, 0L, _T("HelpConfigDialog"));
+  wxXmlResource::Get()->LoadPanel(this, parent, _T("HelpConfigDialog"));
   HelpCommon::LoadHelpFilesVector(m_Vector);
 
   wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
@@ -308,10 +310,10 @@ void HelpConfigDialog::UpdateUI(wxUpdateUIEvent &event)
   }
 }
 
-void HelpConfigDialog::Ok(wxCommandEvent &event)
+void HelpConfigDialog::OnApply()
 {
   wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
   UpdateEntry(lst->GetSelection());
   HelpCommon::SaveHelpFilesVector(m_Vector);
-  wxDialog::EndModal(wxID_OK);
+  m_pPlugin->Reload();
 }

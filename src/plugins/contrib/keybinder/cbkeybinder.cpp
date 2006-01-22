@@ -49,8 +49,7 @@ END_EVENT_TABLE()
 // ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
-BEGIN_EVENT_TABLE(MyDialog, wxDialog)
-	EVT_BUTTON(wxID_APPLY, MyDialog::OnApply)
+BEGIN_EVENT_TABLE(MyDialog, wxPanel)
 END_EVENT_TABLE()
 // ----------------------------------------------------------------------------
 
@@ -70,7 +69,6 @@ cbKeyBinder::cbKeyBinder()
 	m_PluginInfo.authorWebsite = _T("");
 	m_PluginInfo.thanksTo = _("wxKeyBinder & CodeBlocks Developers");
 	m_PluginInfo.license = LICENSE_GPL;
-	m_PluginInfo.hasConfigure = true;
 
 }
 // ----------------------------------------------------------------------------
@@ -148,13 +146,13 @@ void cbKeyBinder::OnRelease(bool appShutDown)
 	m_pKeyProfArr->DetachAll();
 }
 // ----------------------------------------------------------------------------
-//  cbKeyBinder Configure
+//  cbKeyBinder GetConfigurationPanel
 // ----------------------------------------------------------------------------
-int cbKeyBinder::Configure()
+cbConfigurationPanel* cbKeyBinder::GetConfigurationPanel(wxWindow* parent)
 {
 	//create and display the configuration dialog for your plugin
 	//NotImplemented(_T("cbKeyBinder::Configure()"));
-    if(!m_IsAttached) {	return -1;}
+    if(!m_IsAttached) {	return 0;}
 
     // This calls the key definition dialog. This routine could be invoked
     // via a menuitem if desired, but its just as simple
@@ -163,8 +161,7 @@ int cbKeyBinder::Configure()
     // C::B plugin initialization.
 
     //call configuation dialogue
-    OnKeybindings();
-    return 0;
+    return OnKeybindings(parent);
 }
 // ----------------------------------------------------------------------------
 //  cbKeyBinder BuildMenu
@@ -345,7 +342,7 @@ void cbKeyBinder::UpdateArr(wxKeyProfileArray &r)
 
 }//cbKeyBinder::UpdateArr
 // ----------------------------------------------------------------------------
-void cbKeyBinder::OnKeybindings()
+cbConfigurationPanel* cbKeyBinder::OnKeybindings(wxWindow* parent)
 // ----------------------------------------------------------------------------
 {
     #ifdef LOGGING
@@ -353,7 +350,7 @@ void cbKeyBinder::OnKeybindings()
     #endif
 
     //wait for a good key file load()
-    if (!m_bBound) return;
+    if (!m_bBound) return 0;
 
     // Sets options and invokes the configuation dialog
     // The commented lines are from the original wxKeyBinder
@@ -373,7 +370,7 @@ void cbKeyBinder::OnKeybindings()
 	if (baddprofile) mode |= wxKEYBINDER_SHOW_ADDREMOVE_PROFILE;
 	if (bprofileedit) mode |= wxKEYBINDER_ENABLE_PROFILE_EDITING;
 
-	int exitcode, sel;
+//	int exitcode, sel;
 
     //=====================================================================//
 	{ //<-------- Block declaration to enclose the dlg allocation -----------
@@ -385,21 +382,23 @@ void cbKeyBinder::OnKeybindings()
 		// then, when the dialog is destroyed, wxKeyBinder holds
 		// invalid pointers which will provoke a crash !!
 
-		MyDialog dlg(*m_pKeyProfArr, Manager::Get()->GetAppWindow(),
-		    wxT("Keybindings"), mode | wxKEYBINDER_SHOW_APPLYBUTTON);
+		MyDialog* dlg = new MyDialog(this, *m_pKeyProfArr, parent,
+		    wxT("Keybindings"), mode);
 
         //following had no effect on crash problem
         //guanantee keyBinder won't attach dialog window
-        dlg.SetExtraStyle(wxWS_EX_TRANSIENT);
+        dlg->SetExtraStyle(wxWS_EX_TRANSIENT);
 
 		// enable|disable keyprofiles combo box
-		dlg.m_p->EnableKeyProfiles(bprofiles);
+		dlg->m_p->EnableKeyProfiles(bprofiles);
+		// when the configuration panel is closed with OK, OnKeybindingsDialogDone() will be called
+		return dlg;
 
-		if ((exitcode = dlg.ShowModal()) == wxID_OK)
-		 {
-			// update our array (we gave a copy of it to MyDialog)
-			*m_pKeyProfArr = dlg.m_p->GetProfiles();
-		 }
+//		if ((exitcode = dlg.ShowModal()) == wxID_OK)
+//		 {
+//			// update our array (we gave a copy of it to MyDialog)
+//			*m_pKeyProfArr = dlg.m_p->GetProfiles();
+//		 }
 
 		 // Make sure we dont bind to the dialog window
 		 // wxWdigets wxWindow Documentation states:
@@ -412,23 +411,49 @@ void cbKeyBinder::OnKeybindings()
 
 	}//**here, dlg is destroyed**<------- can now use UpdateArr(...)
      //============================================================//
-	if (exitcode == wxID_OK)
-	 {
-        //update Windows/EventHanders from changed wxKeyProfile
-        UpdateArr(*m_pKeyProfArr) ;
-		//Save the key profiles to file
-        OnSave();
-	    // select the right keyprofile
-		sel = m_pKeyProfArr->GetSelProfileIdx();
-
-		#if LOGGING
-            wxLogDebug(wxString::Format(wxT("Selected the #%d profile (named '%s')."),
-                sel+1, m_pKeyProfArr->Item(sel)->GetName().c_str()),
-                wxT("Profile selected"));
-        #endif
-
-	 }//if
+//	if (exitcode == wxID_OK)
+//	 {
+//        //update Windows/EventHanders from changed wxKeyProfile
+//        UpdateArr(*m_pKeyProfArr) ;
+//		//Save the key profiles to file
+//        OnSave();
+//	    // select the right keyprofile
+//		sel = m_pKeyProfArr->GetSelProfileIdx();
+//
+//		#if LOGGING
+//            wxLogDebug(wxString::Format(wxT("Selected the #%d profile (named '%s')."),
+//                sel+1, m_pKeyProfArr->Item(sel)->GetName().c_str()),
+//                wxT("Profile selected"));
+//        #endif
+//
+//	 }//if
 }//OnKeybindings
+// ----------------------------------------------------------------------------
+void cbKeyBinder::OnKeybindingsDialogDone(MyDialog* dlg)
+// ----------------------------------------------------------------------------
+{
+    // The configuration panel has run its OnApply() function.
+    // So here it's like we were using ShowModal() and it just returned wxID_OK.
+
+    // update our array (we gave a copy of it to MyDialog)
+    *m_pKeyProfArr = dlg->m_p->GetProfiles();
+
+    //update Windows/EventHanders from changed wxKeyProfile
+    UpdateArr(*m_pKeyProfArr) ;
+    //Save the key profiles to file
+    OnSave();
+    // select the right keyprofile
+    #if LOGGING
+    int sel =
+    #endif
+        m_pKeyProfArr->GetSelProfileIdx();
+
+    #if LOGGING
+        wxLogDebug(wxString::Format(wxT("Selected the #%d profile (named '%s')."),
+            sel+1, m_pKeyProfArr->Item(sel)->GetName().c_str()),
+            wxT("Profile selected"));
+    #endif
+}//OnKeybindingsDialogDone
 // ----------------------------------------------------------------------------
 void cbKeyBinder::OnLoad()
 // ----------------------------------------------------------------------------
@@ -554,10 +579,10 @@ void cbKeyBinder::OnSave()
 		for (int i=0; i<m_pKeyProfArr->GetCount(); i++)
 			total += m_pKeyProfArr->Item(i)->GetCmdCount();
 
-		wxMessageBox(wxString::Format(wxT("All the [%d] keyprofiles ([%d] commands ")
-			wxT("in total) have been saved in \n\"")+path, //+wxT(".ini\""),
-            m_pKeyProfArr->GetCount(), total),
-			wxT("Save"));
+//		wxMessageBox(wxString::Format(wxT("All the [%d] keyprofiles ([%d] commands ")
+//			wxT("in total) have been saved in \n\"")+path, //+wxT(".ini\""),
+//            m_pKeyProfArr->GetCount(), total),
+//			wxT("Save"));
 
 	 } else {
 
@@ -572,12 +597,14 @@ void cbKeyBinder::OnSave()
 // ----------------------------------------------------------------------------
 //     keybindings dialog: a super-simple wrapper for wxKeyConfigPanel
 // ----------------------------------------------------------------------------
-MyDialog::MyDialog(wxKeyProfileArray &prof,
+MyDialog::MyDialog(cbKeyBinder* binder, wxKeyProfileArray &prof,
 				   wxWindow *parent, const wxString &title, int mode)
 // ----------------------------------------------------------------------------
-    :wxDialog(parent, -1, title, wxDefaultPosition, wxDefaultSize,
-		wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
+    :m_pBinder(binder)
 {
+    cbConfigurationPanel::Create(parent, -1, wxDefaultPosition, wxDefaultSize,
+		wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+
 	// we can do our task in two ways:
 	// 1) we can use wxKeyConfigPanel::ImportMenuBarCmd which gives
 	//    better appearances (for me, at least, :-))
@@ -590,7 +617,7 @@ MyDialog::MyDialog(wxKeyProfileArray &prof,
 	m_p->AddProfiles(prof);
 
 	// STEP #3: populate the wxTreeCtrl widget of the panel
-	m_p->ImportMenuBarCmd(((wxFrame*)parent)->GetMenuBar());
+	m_p->ImportMenuBarCmd(((wxFrame*)Manager::Get()->GetAppWindow())->GetMenuBar());
 
 	// and embed it in a little sizer
 	wxBoxSizer *main = new wxBoxSizer(wxVERTICAL);
@@ -599,9 +626,9 @@ MyDialog::MyDialog(wxKeyProfileArray &prof,
 	main->SetSizeHints(this);
 
 	// this is a little modification to make dlg look nicer
-	wxSize sz(GetSizer()->GetMinSize());
-	SetSize(-1, -1, (int)(sz.GetWidth()*1.3), (int)(sz.GetHeight()*1.1));
-	CenterOnScreen();
+//	wxSize sz(GetSizer()->GetMinSize());
+//	SetSize(-1, -1, (int)(sz.GetWidth()*1.3), (int)(sz.GetHeight()*1.1));
+//	CenterOnScreen();
 }
 
 // ----------------------------------------------------------------------------
@@ -609,10 +636,10 @@ MyDialog::~MyDialog() {}
 // ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
-void MyDialog::OnApply(wxCommandEvent &)
+void MyDialog::OnApply()
 // ----------------------------------------------------------------------------
 {
-     EndModal(wxID_OK);
+    m_pBinder->OnKeybindingsDialogDone(this);
 }
 // ----------------------------------------------------------------------------
 void cbKeyBinder::OnProjectOpened(CodeBlocksEvent& event)

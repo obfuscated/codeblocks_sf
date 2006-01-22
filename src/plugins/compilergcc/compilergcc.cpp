@@ -38,6 +38,10 @@
 #include <customvars.h>
 #include <annoyingdialog.h>
 #include <wx/xrc/xmlres.h>
+#include <wx/sizer.h>
+#include <wx/button.h>
+#include <wx/stattext.h>
+#include <wx/statline.h>
 #include "makefilegenerator.h"
 #include "compileroptionsdlg.h"
 #include "directcommands.h"
@@ -57,6 +61,55 @@
 #define COLOUR_NAVY   wxColour(0x00, 0x00, 0xa0)
 
 CB_IMPLEMENT_PLUGIN(CompilerGCC);
+
+// A simple dialog that wraps compiler's cbConfigurationPanel*
+// Used for project build options...
+class ProjectConfigureDlg : public wxDialog
+{
+	public:
+		ProjectConfigureDlg(CompilerGCC* compiler, wxWindow* parent, cbProject* project, ProjectBuildTarget* target)
+            : wxDialog(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize)
+		{
+		    wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
+            m_pPanel = new CompilerOptionsDlg(this, compiler, project, target);
+            bs->Add(m_pPanel, 1, wxGROW | wxALL, 8);
+
+            wxStaticLine* line = new wxStaticLine(this);
+            bs->Add(line, 0, wxGROW | wxLEFT | wxRIGHT, 8);
+
+            m_pOK = new wxButton(this, wxID_OK, _("&OK"));
+            m_pOK->SetDefault();
+            m_pCancel = new wxButton(this, wxID_CANCEL, _("&Cancel"));
+            wxStdDialogButtonSizer* but = new wxStdDialogButtonSizer;
+            but->AddButton(m_pOK);
+            but->AddButton(m_pCancel);
+            but->Realize();
+            bs->Add(but, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 8);
+
+            if (project)
+                XRCCTRL(*m_pPanel, "lblTitle", wxStaticText)->SetLabel(_("Project compiler options"));
+
+            SetSizer(bs);
+            bs->SetSizeHints(this);
+            CenterOnParent();
+		}
+		~ProjectConfigureDlg(){}
+
+		void EndModal(int retCode)
+		{
+		    if (retCode == wxID_OK)
+                m_pPanel->OnApply();
+            else
+                m_pPanel->OnCancel();
+            wxDialog::EndModal(retCode);
+		}
+	protected:
+        cbConfigurationPanel* m_pPanel;
+        wxButton* m_pOK;
+        wxButton* m_pCancel;
+	private:
+
+};
 
 // menu IDS
 // just because we don't know other plugins' used identifiers,
@@ -197,7 +250,6 @@ CompilerGCC::CompilerGCC()
     m_PluginInfo.authorEmail = _T("info@codeblocks.org");
     m_PluginInfo.authorWebsite = _T("www.codeblocks.org");
     m_PluginInfo.thanksTo = _("All the free (and not) compilers out there");
-	m_PluginInfo.hasConfigure = false;
 
     m_timerIdleWakeUp.SetOwner(this, idTimerPollCompiler);
 
@@ -319,7 +371,7 @@ void CompilerGCC::OnRelease(bool appShutDown)
 
 int CompilerGCC::Configure(cbProject* project, ProjectBuildTarget* target)
 {
-    CompilerOptionsDlg dlg(Manager::Get()->GetAppWindow(), this, project, target);
+    ProjectConfigureDlg dlg(this, Manager::Get()->GetAppWindow(), project, target);
     if(dlg.ShowModal() == wxID_OK)
     {
         m_ConsoleTerm = Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
@@ -329,6 +381,12 @@ int CompilerGCC::Configure(cbProject* project, ProjectBuildTarget* target)
         Manager::Get()->GetMacrosManager()->Reset();
     }
     return 0;
+}
+
+cbConfigurationPanel* CompilerGCC::GetConfigurationPanel(wxWindow* parent)
+{
+    CompilerOptionsDlg* dlg = new CompilerOptionsDlg(parent, this, 0, 0);
+    return dlg;
 }
 
 void CompilerGCC::OnConfig(wxCommandEvent& event)
@@ -382,13 +440,13 @@ void CompilerGCC::BuildMenu(wxMenuBar* menuBar)
         prj->Insert(propsPos, idMenuProjectCompilerOptions, _("Build options"), _("Set the project's build options"));
         prj->InsertSeparator(propsPos);
     }
-    // Add entry in settings menu (outside "plugins")
-    int settingsMenuPos = menuBar->FindMenu(_("&Settings"));
-    if (settingsMenuPos != wxNOT_FOUND)
-    {
-        wxMenu* settingsmenu = menuBar->GetMenu(settingsMenuPos);
-        settingsmenu->Insert(2,idMenuSettings,_("&Compiler"),_("Global Compiler Options"));
-    }
+//    // Add entry in settings menu (outside "plugins")
+//    int settingsMenuPos = menuBar->FindMenu(_("&Settings"));
+//    if (settingsMenuPos != wxNOT_FOUND)
+//    {
+//        wxMenu* settingsmenu = menuBar->GetMenu(settingsMenuPos);
+//        settingsmenu->Insert(2,idMenuSettings,_("&Compiler"),_("Global Compiler Options"));
+//    }
 }
 
 void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)

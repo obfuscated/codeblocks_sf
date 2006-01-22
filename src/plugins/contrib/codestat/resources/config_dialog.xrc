@@ -1,22 +1,44 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <resource>
-  <object class="wxDialog" name="dlgCodeStatConfig">
-    <title>Code Statistics plugin configuration</title>
-    <centered>1</centered>
+  <object class="wxPanel" name="dlgCodeStatConfig">
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
-        <object class="wxComboBox" name="combo_Names">
-          
-          
-          <content/>
+        <object class="wxStaticText">
+          <label>Code statistics settings</label>
+          <fg>#FFFFFF</fg>
+          <bg>#004080</bg>
+          <font>
+            <size>14</size>
+            <family>default</family>
+            <style>normal</style>
+            <weight>bold</weight>
+            <underlined>0</underlined>
+          </font>
         </object>
-        
-        
-        <flag>wxALL|wxALIGN_CENTRE</flag>
-        
-        
-        <border>5</border>
+        <flag>wxEXPAND</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticLine"/>
+        <flag>wxEXPAND</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxStaticText">
+              <label>Language:</label>
+            </object>
+            <flag>wxALIGN_CENTRE_VERTICAL</flag>
+          </object>
+          <object class="sizeritem">
+            <object class="wxComboBox" name="combo_Names">
+              <content/>
+            </object>
+          </object>
+        </object>
+        <flag>wxTOP|wxALIGN_CENTRE</flag>
+        <border>8</border>
       </object>
       <object class="sizeritem">
         <object class="wxStaticBoxSizer">
@@ -28,147 +50,74 @@
               <rows>4</rows>
               <object class="sizeritem">
                 <object class="wxStaticText">
-                  
-                  
                   <label>Name:</label>
                 </object>
-                
-                
                 <flag>wxALIGN_CENTRE_VERTICAL</flag>
               </object>
               <object class="sizeritem">
                 <object class="wxTextCtrl" name="txt_Name">
-                  
                   <style>wxTE_READONLY</style>
                 </object>
-                
-                
                 <flag>wxALL</flag>
-                
-                
                 <border>3</border>
               </object>
               <object class="sizeritem">
                 <object class="wxStaticText">
-                  
-                  
                   <label>File types:</label>
                 </object>
-                
-                
                 <flag>wxALIGN_CENTRE_VERTICAL</flag>
               </object>
               <object class="sizeritem">
                 <object class="wxTextCtrl" name="txt_FileTypes">
-                  
                   <style>wxTE_READONLY</style>
                 </object>
-                
-                
                 <flag>wxALL</flag>
-                
-                
                 <border>3</border>
               </object>
               <object class="sizeritem">
                 <object class="wxStaticText">
-                  
-                  
                   <label>Single comment:</label>
                 </object>
-                
-                
                 <flag>wxALIGN_CENTRE_VERTICAL</flag>
               </object>
               <object class="sizeritem">
                 <object class="wxTextCtrl" name="txt_SingleComment">
-                  
                   <style>wxTE_READONLY</style>
                 </object>
-                
-                
                 <flag>wxALL</flag>
-                
-                
                 <border>3</border>
               </object>
               <object class="sizeritem">
                 <object class="wxStaticText">
-                  
-                  
                   <label>Multi-line comment begin:</label>
                 </object>
-                
-                
                 <flag>wxALIGN_CENTRE_VERTICAL</flag>
               </object>
               <object class="sizeritem">
                 <object class="wxTextCtrl" name="txt_MultiLineCommentBegin">
-                  
                   <style>wxTE_READONLY</style>
                 </object>
-                
-                
                 <flag>wxALL</flag>
-                
-                
                 <border>3</border>
               </object>
               <object class="sizeritem">
                 <object class="wxStaticText">
-                  
-                  
                   <label>Multi-line comment end:</label>
                 </object>
-                
-                
                 <flag>wxALIGN_CENTRE_VERTICAL</flag>
               </object>
               <object class="sizeritem">
                 <object class="wxTextCtrl" name="txt_MultiLineCommentEnd">
-                  
                   <style>wxTE_READONLY</style>
                 </object>
-                
-                
                 <flag>wxALL</flag>
-                
-                
                 <border>3</border>
               </object>
             </object>
           </object>
         </object>
-        
-        
-        <flag>wxLEFT|wxRIGHT</flag>
-        
-        
-        <border>5</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxBoxSizer">
-          <orient>wxHORIZONTAL</orient>
-          <object class="sizeritem">
-            <object class="wxButton" name="wxID_OK">
-              
-              
-              <label>Ok</label>
-              
-              
-              <default>1</default>
-            </object>
-            
-            
-            <flag>wxALL|wxALIGN_CENTRE</flag>
-            
-            
-            <border>5</border>
-          </object>
-        </object>
-        
-        
-        <flag>wxALIGN_CENTRE_HORIZONTAL</flag>
+        <flag>wxTOP|wxALIGN_CENTRE</flag>
+        <border>8</border>
       </object>
     </object>
   </object>

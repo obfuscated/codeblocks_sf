@@ -17,7 +17,7 @@
 #include <wx/xrc/xmlres.h>
 //*)
 
-class wxsSettingsDlg: public wxDialog
+class wxsSettingsDlg: public cbConfigurationPanel
 {
     public:
 
@@ -27,11 +27,13 @@ class wxsSettingsDlg: public wxDialog
         //(*Identifiers(wxsSettingsDlg)
         //*)
 
+        wxString GetTitle(){ return _("wxSmith settings"); }
+        wxString GetBitmapBaseName(){ return _T("wxsmith"); }
+        void OnApply();
+        void OnCancel(){}
     protected:
 
         //(*Handlers(wxsSettingsDlg)
-        void OnBtnOkClick(wxCommandEvent& event);
-        void OnBtnCancelClick(wxCommandEvent& event);
         void OnDragTargetColClick(wxCommandEvent& event);
         void OnDragParentColClick(wxCommandEvent& event);
         void OnDragAssistTypeSelect(wxCommandEvent& event);

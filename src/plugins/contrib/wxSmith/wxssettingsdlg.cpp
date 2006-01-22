@@ -6,20 +6,18 @@
 #include "wxsglobals.h"
 #include "wxswindoweditor.h"
 
-BEGIN_EVENT_TABLE(wxsSettingsDlg,wxDialog)
+BEGIN_EVENT_TABLE(wxsSettingsDlg,wxPanel)
 //(*EventTable(wxsSettingsDlg)
     EVT_COMBOBOX(XRCID("ID_COMBOBOX1"),wxsSettingsDlg::OnDragAssistTypeSelect)
     EVT_BUTTON(XRCID("ID_BUTTON1"),wxsSettingsDlg::OnDragTargetColClick)
     EVT_BUTTON(XRCID("ID_BUTTON2"),wxsSettingsDlg::OnDragParentColClick)
-    EVT_BUTTON(XRCID("ID_BUTTON3"),wxsSettingsDlg::OnBtnOkClick)
-    EVT_BUTTON(XRCID("ID_BUTTON4"),wxsSettingsDlg::OnBtnCancelClick)
 //*)
 END_EVENT_TABLE()
 
 wxsSettingsDlg::wxsSettingsDlg(wxWindow* parent,wxWindowID id)
 {
     //(*Initialize(wxsSettingsDlg)
-    wxXmlResource::Get()->LoadDialog(this,parent,_T("wxsSettingsDlg"));
+    wxXmlResource::Get()->LoadPanel(this,parent,_T("wxsSettingsDlg"));
     DragAssistType = XRCCTRL(*this,"ID_COMBOBOX1",wxComboBox);
     DragTargetCol = XRCCTRL(*this,"ID_BUTTON1",wxButton);
     DragParentCol = XRCCTRL(*this,"ID_BUTTON2",wxButton);
@@ -49,7 +47,7 @@ wxsSettingsDlg::~wxsSettingsDlg()
 {
 }
 
-void wxsSettingsDlg::OnBtnOkClick(wxCommandEvent& event)
+void wxsSettingsDlg::OnApply()
 {
     wxColour ColTarget = DragTargetCol->GetBackgroundColour();
     wxColour ColParent = DragParentCol->GetBackgroundColour();
@@ -63,12 +61,6 @@ void wxsSettingsDlg::OnBtnOkClick(wxCommandEvent& event)
     cfg->Write(_T("/paletteiconsize"),(int)(Icons16->GetValue()?16:32));
     cfg->Write(_T("/tooliconsize"),(int)(TIcons16->GetValue()?16:32));
     wxsWindowEditor::ReloadImages();
-    EndModal(wxID_OK);
-}
-
-void wxsSettingsDlg::OnBtnCancelClick(wxCommandEvent& event)
-{
-    EndModal(wxID_OK);
 }
 
 void wxsSettingsDlg::OnDragTargetColClick(wxCommandEvent& event)

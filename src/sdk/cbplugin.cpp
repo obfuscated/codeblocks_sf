@@ -49,7 +49,6 @@ cbPlugin::cbPlugin()
     m_PluginInfo.authorWebsite = _T("");
     m_PluginInfo.thanksTo = _T("");
     m_PluginInfo.license = LICENSE_GPL;
-	m_PluginInfo.hasConfigure = false;
 }
 
 cbPlugin::~cbPlugin()

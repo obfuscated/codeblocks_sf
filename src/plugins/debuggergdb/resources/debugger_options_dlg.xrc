@@ -1,100 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resource>
-  <object class="wxDialog" name="dlgDebuggerOptions">
-    <title>Debugger options</title>
-    <centered>1</centered>
+  <object class="wxPanel" name="dlgDebuggerOptions">
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
+        <object class="wxStaticText">
+          <label>Debugger settings</label>
+          <fg>#FFFFFF</fg>
+          <bg>#004080</bg>
+          <font>
+            <size>14</size>
+            <family>default</family>
+            <style>normal</style>
+            <weight>bold</weight>
+            <underlined>0</underlined>
+          </font>
+        </object>
+        <flag>wxEXPAND</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticLine"/>
+        <flag>wxEXPAND</flag>
+      </object>
+      <object class="sizeritem">
         <object class="wxStaticBoxSizer">
-          <label>Debugger intialisation commands</label>
+          <label>Debugger intialization commands</label>
           <orient>wxVERTICAL</orient>
           <object class="sizeritem">
             <object class="wxTextCtrl" name="txtInit">
-              
-              
-              
-              
-              
-              
               <style>wxTE_MULTILINE</style>
             </object>
-            
-            
-            
-            
-            
-            
             <option>1</option>
-            
-            
-            
-            
-            
-            
             <flag>wxALL|wxGROW</flag>
-            
-            
-            
-            
-            
-            
             <border>4</border>
-            
-            
-            
-            
-            
-            
             <minsize>240,128</minsize>
           </object>
           <object class="sizeritem">
             <object class="wxStaticText">
-              
-              
-              
-              
-              
-              
               <label>These commands will be sent to the debugger on each session start</label>
-              
-              
-              
-              
-              
-              
               <fg>#800000</fg>
             </object>
-            
-            
-            
-            
-            
-            
             <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
-            
-            
-            
-            
-            
-            
             <border>4</border>
           </object>
         </object>
-        
-        
-        
-        
-        
-        
-        <flag>wxALL|wxGROW</flag>
-        
-        
-        
-        
-        
-        
-        <border>4</border>
+        <flag>wxTOP|wxGROW</flag>
+        <border>8</border>
       </object>
       <object class="sizeritem">
         <object class="wxStaticBoxSizer">
@@ -107,66 +58,38 @@
               <hgap>4</hgap>
               <object class="sizeritem">
                 <object class="wxStaticText">
-                  
-                  
                   <label>Layout when session starts:</label>
                 </object>
-                
-                
                 <flag>wxALIGN_CENTRE_VERTICAL</flag>
               </object>
               <object class="sizeritem">
                 <object class="wxTextCtrl" name="txtLayoutStart">
-                  
                   <tooltip>The name of the layout you want enabled when the debugging session starts</tooltip>
                 </object>
-                
-                
                 <option>1</option>
-                
-                
                 <flag>wxGROW</flag>
               </object>
               <object class="sizeritem">
                 <object class="wxStaticText">
-                  
-                  
                   <label>Layout when session ends:</label>
-                  
                 </object>
-                
-                
                 <flag>wxALIGN_CENTRE_VERTICAL</flag>
               </object>
               <object class="sizeritem">
                 <object class="wxTextCtrl" name="txtLayoutEnd">
-                  
-                  
                   <tooltip>The name of the layout you want enabled when the debugging session ends</tooltip>
                 </object>
-                
-                
                 <option>1</option>
-                
-                
                 <flag>wxGROW</flag>
               </object>
               <growablecols>1</growablecols>
             </object>
-            
-            
             <flag>wxALL|wxGROW</flag>
-            
-            
             <border>4</border>
           </object>
         </object>
-        
-        
-        <flag>wxALL|wxGROW</flag>
-        
-        
-        <border>4</border>
+        <flag>wxTOP|wxGROW</flag>
+        <border>8</border>
       </object>
       <object class="sizeritem">
         <object class="wxFlexGridSizer">
@@ -175,194 +98,37 @@
           <growablecols>0</growablecols>
           <object class="sizeritem">
             <object class="wxCheckBox" name="chkWatchArgs">
-              
-              
-              
-              
-              
-              
               <label>Watch function arguments</label>
-              
-              
-              
-              
-              
-              
               <tooltip>Automatic watches are added for the current function's arguments</tooltip>
             </object>
           </object>
           <object class="sizeritem">
             <object class="wxCheckBox" name="chkWatchLocals">
-              
-              
-              
-              
-              
-              
               <label>Watch local variables</label>
-              
-              
-              
-              
-              
-              
               <tooltip>Automatic watches are added for all the local variables of the current function</tooltip>
             </object>
           </object>
           <object class="sizeritem">
             <object class="wxCheckBox" name="chkTooltipEval">
-              
-              
-              
-              
-              
-              
               <label>Evaluate expression under cursor</label>
-              
-              
-              
-              
-              
-              
               <tooltip>While debugging, leaving the mouse over a variable (or the selection) evaluates it in a tooltip</tooltip>
             </object>
           </object>
           <object class="sizeritem">
             <object class="wxCheckBox" name="chkDebugLog">
-              
-              
-              
-              
-              
-              
               <label>Display debugger's  log</label>
-              
-              
-              
-              
-              
-              
               <tooltip>If enabled, the debugger's raw input/output will be looged in a separate log page</tooltip>
             </object>
           </object>
           <object class="sizeritem">
             <object class="wxCheckBox" name="chkAddForeignDirs">
-              
-              
-              
-              
-              
-              
-              <label>Add other open projects' paths in the search list</label>
-              
-              
-              
-              
-              
-              
+              <label>Add other open projects' paths in the debugger's search list</label>
               <tooltip>If enabled, the other open projects' paths will be added in the debugger's search list</tooltip>
             </object>
           </object>
         </object>
-        
-        
-        
-        
-        
-        
         <option>1</option>
-        
-        
-        
-        
-        
-        
-        <flag>wxALL|wxGROW</flag>
-        
-        
-        
-        
-        
-        
-        <border>4</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStaticLine"/>
-        
-        
-        
-        
-        
-        
-        <flag>wxLEFT|wxRIGHT|wxGROW</flag>
-        
-        
-        
-        
-        
-        
-        <border>4</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxBoxSizer">
-          <orient>wxHORIZONTAL</orient>
-          <object class="sizeritem">
-            <object class="wxButton" name="wxID_OK">
-              
-              
-              
-              
-              
-              
-              <label>&amp;OK</label>
-              
-              
-              
-              
-              
-              
-              <default>1</default>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <object class="wxButton" name="wxID_CANCEL">
-              
-              
-              
-              
-              
-              
-              <label>&amp;Cancel</label>
-            </object>
-            
-            
-            
-            
-            
-            
-            <flag>wxLEFT</flag>
-            
-            
-            
-            
-            
-            
-            <border>8</border>
-          </object>
-        </object>
-        
-        
-        
-        
-        
-        
-        <flag>wxTOP|wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
-        
-        
-        
-        
-        
-        
+        <flag>wxTOP|wxGROW</flag>
         <border>8</border>
       </object>
     </object>

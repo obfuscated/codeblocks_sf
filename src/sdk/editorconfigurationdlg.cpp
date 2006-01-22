@@ -34,6 +34,7 @@
 #include <wx/radiobox.h>
 #include <wx/listbox.h>
 #include <wx/textctrl.h>
+#include <wx/listbook.h>
 
 #include "editorcolorset.h"
 #include "editorconfigurationdlg.h"
@@ -43,6 +44,18 @@
 #include "editormanager.h"
 #include "cbeditor.h"
 #include "globals.h"
+
+// images by order of pages
+const wxString base_imgs[] =
+{
+    _T("editor"),
+    _T("folding"),
+    _T("view"),
+    _T("syntax-highlight"),
+    _T("generic-plugin"),
+    _T("generic-plugin"),
+};
+const int IMAGES_COUNT = 6; // keep this in sync!
 
 // map cmbDefCodeFileType indexes to FileType values
 // if more entries are added to cmbDefCodeFileType, edit the mapping here
@@ -70,6 +83,8 @@ BEGIN_EVENT_TABLE(EditorConfigurationDlg, wxDialog)
 	EVT_LISTBOX(XRCID("lstAutoCompKeyword"),	EditorConfigurationDlg::OnAutoCompKeyword)
 	EVT_BUTTON(XRCID("btnAutoCompAdd"),	        EditorConfigurationDlg::OnAutoCompAdd)
 	EVT_BUTTON(XRCID("btnAutoCompDelete"),	    EditorConfigurationDlg::OnAutoCompDelete)
+
+    EVT_LISTBOOK_PAGE_CHANGED(XRCID("nbMain"), EditorConfigurationDlg::OnPageChanged)
 END_EVENT_TABLE()
 
 EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
@@ -149,6 +164,25 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "txtDefCode", wxTextCtrl)->SetValue(cfg->Read(key, wxEmptyString));
     wxFont tmpFont(8, wxMODERN, wxNORMAL, wxNORMAL);
     XRCCTRL(*this, "txtDefCode", wxTextCtrl)->SetFont(tmpFont);
+
+    // load listbook images
+    const wxString base = ConfigManager::GetDataFolder() + _T("/images/settings/");
+
+    wxImageList* images = new wxImageList(80, 80);
+    wxBitmap bmp;
+    for (int i = 0; i < IMAGES_COUNT; ++i)
+    {
+        bmp.LoadFile(base + base_imgs[i] + _T(".png"), wxBITMAP_TYPE_PNG);
+        images->Add(bmp);
+        bmp.LoadFile(base + base_imgs[i] + _T("-off.png"), wxBITMAP_TYPE_PNG);
+        images->Add(bmp);
+    }
+    wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
+    lb->AssignImageList(images);
+    UpdateListbookImages();
+
+    // make sure everything is laid out properly
+    GetSizer()->SetSizeHints(this);
 }
 
 EditorConfigurationDlg::~EditorConfigurationDlg()
@@ -161,6 +195,26 @@ EditorConfigurationDlg::~EditorConfigurationDlg()
 
     if (m_AutoCompTextControl)
         delete m_AutoCompTextControl;
+}
+
+void EditorConfigurationDlg::UpdateListbookImages()
+{
+    wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
+    int sel = lb->GetSelection();
+    // set page images according to their on/off status
+    for (int i = 0; i < IMAGES_COUNT; ++i)
+    {
+        lb->SetPageImage(i, (i * 2) + (sel == i ? 0 : 1));
+    }
+
+    // the selection color is ruining the on/off effect,
+    // so make sure no item is selected ;)
+    lb->GetListView()->Select(sel, false);
+}
+
+void EditorConfigurationDlg::OnPageChanged(wxListbookEvent& event)
+{
+    UpdateListbookImages();
 }
 
 void EditorConfigurationDlg::CreateColorsSample()

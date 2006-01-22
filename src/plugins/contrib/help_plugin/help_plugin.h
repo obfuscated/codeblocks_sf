@@ -17,12 +17,13 @@ class HelpPlugin : public cbPlugin
   public:
     HelpPlugin();
     ~HelpPlugin();
-    int Configure();
+    virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
     void BuildMenu(wxMenuBar *menuBar);
     void BuildModuleMenu(const ModuleType type, wxMenu *menu, const FileTreeData* data = 0);
     bool BuildToolBar(wxToolBar *toolBar);
     void OnAttach(); // fires when the plugin is attached to the application
     void OnRelease(bool appShutDown); // fires when the plugin is released from the application
+    void Reload(); // called after the settings have been applied
 
   protected:
     void OnFindItem(wxCommandEvent &event);

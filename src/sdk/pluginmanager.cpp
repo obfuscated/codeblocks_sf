@@ -411,20 +411,35 @@ int PluginManager::ExecutePlugin(const wxString& pluginName)
 
 int PluginManager::ConfigurePlugin(const wxString& pluginName)
 {
-    SANITY_CHECK(0);
-    cbPlugin* plug = FindPluginByName(pluginName);
-    if (plug)
+//    SANITY_CHECK(0);
+//    cbPlugin* plug = FindPluginByName(pluginName);
+//    if (plug)
+//    {
+//        try
+//        {
+//            return plug->Configure();
+//        }
+//        catch (cbException& exception)
+//        {
+//            exception.ShowErrorMessage(false);
+//        }
+//    }
+	return 0;
+}
+
+void PluginManager::GetAllConfigurationPanels(wxWindow* parent, ConfigurationPanelsArray& arrayToFill)
+{
+    arrayToFill.Clear();
+    for (unsigned int i = 0; i < m_Plugins.GetCount(); ++i)
     {
-        try
+        cbPlugin* plug = m_Plugins[i]->plugin;
+        if (plug && plug->IsAttached())
         {
-            return plug->Configure();
-        }
-        catch (cbException& exception)
-        {
-            exception.ShowErrorMessage(false);
+            cbConfigurationPanel* pnl = plug->GetConfigurationPanel(parent);
+            if (pnl)
+                arrayToFill.Add(pnl);
         }
     }
-	return 0;
 }
 
 PluginsArray PluginManager::GetToolOffers()

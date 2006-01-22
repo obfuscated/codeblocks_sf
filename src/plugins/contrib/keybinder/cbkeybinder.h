@@ -58,6 +58,7 @@
 #include "wx/app.h"
 #include "wx/utils.h"
 
+class MyDialog;
 
 // ----------------------------------------------------------------------------
 #include "debugging.h"
@@ -70,7 +71,7 @@ class cbKeyBinder : public cbPlugin
 	public:
 		cbKeyBinder();
 		~cbKeyBinder();
-		int Configure();
+        virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
 		void BuildMenu(wxMenuBar* menuBar);
 		void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
 		bool BuildToolBar(wxToolBar* toolBar);
@@ -97,26 +98,27 @@ class cbKeyBinder : public cbPlugin
         // utility function to update the menu key labels
         // and re-attach the window event handlers after key changes
         void UpdateArr(wxKeyProfileArray &r);
-        void cbKeyBinder::Rebind();
+        void Rebind();
         // key definition configuration dialog
-        void cbKeyBinder::OnKeybindings();
+        cbConfigurationPanel* OnKeybindings(wxWindow* parent);
+        void OnKeybindingsDialogDone(MyDialog* dlg);
 
         // save/load key definitions
-        void cbKeyBinder::OnSave();
-        void cbKeyBinder::OnLoad();
+        void OnSave();
+        void OnLoad();
 
     protected:
         wxADD_KEYBINDER_SUPPORT();
 
     private:
-        void cbKeyBinder::OnProjectOpened(CodeBlocksEvent& event);
-        void cbKeyBinder::OnProjectActivated(CodeBlocksEvent& event);
-        void cbKeyBinder::OnProjectClosed(CodeBlocksEvent& event);
-        void cbKeyBinder::OnProjectFileAdded(CodeBlocksEvent& event);
-        void cbKeyBinder::OnProjectFileRemoved(CodeBlocksEvent& event);
-        void cbKeyBinder::OnEditorOpen(CodeBlocksEvent& event);
-        void cbKeyBinder::OnEditorClose(CodeBlocksEvent& event);
-        void cbKeyBinder::OnAppStartupDone(CodeBlocksEvent& event);
+        void OnProjectOpened(CodeBlocksEvent& event);
+        void OnProjectActivated(CodeBlocksEvent& event);
+        void OnProjectClosed(CodeBlocksEvent& event);
+        void OnProjectFileAdded(CodeBlocksEvent& event);
+        void OnProjectFileRemoved(CodeBlocksEvent& event);
+        void OnEditorOpen(CodeBlocksEvent& event);
+        void OnEditorClose(CodeBlocksEvent& event);
+        void OnAppStartupDone(CodeBlocksEvent& event);
 
         wxWindow* pcbWindow;            //main app window
         wxArrayPtrVoid m_EditorPtrs;    //attached editor windows
@@ -128,19 +130,24 @@ class cbKeyBinder : public cbPlugin
 // ----------------------------------------------------------------------------
 //  MyDialog class declaration
 // ----------------------------------------------------------------------------
-class MyDialog : public wxDialog
+class MyDialog : public cbConfigurationPanel
 {
 public:
 	wxKeyConfigPanel *m_p;
 
 public:
     // ctor(s)
-    MyDialog(wxKeyProfileArray &arr, wxWindow *parent, const wxString& title, int);
+    MyDialog(cbKeyBinder* binder, wxKeyProfileArray &arr, wxWindow *parent, const wxString& title, int);
 	~MyDialog();
 
-	void OnApply( wxCommandEvent &ev );
+
+    wxString GetTitle(){ return _("Keyboard shortcuts"); }
+    wxString GetBitmapBaseName(){ return _T("generic-plugin"); }
+	void OnApply();
+	void OnCancel(){}
 
 private:
+    cbKeyBinder* m_pBinder;
     // any class wishing to process wxWindows events must use this macro
     DECLARE_EVENT_TABLE()
 };

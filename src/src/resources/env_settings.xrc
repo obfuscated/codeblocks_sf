@@ -6,19 +6,37 @@
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
-        <object class="wxNotebook" name="nbMain">
-          <usenotebooksizer>1</usenotebooksizer>
-          <object class="notebookpage">
-            <label>General</label>
+        <object class="wxListbook" name="nbMain">
+          <object class="listbookpage">
+            <label>General settings</label>
             <object class="wxPanel" name="tabGeneral">
               <object class="wxBoxSizer">
                 <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>General settings</label>
+                    <fg>#FFFFFF</fg>
+                    <bg>#004080</bg>
+                    <font>
+                      <size>14</size>
+                      <family>default</family>
+                      <style>normal</style>
+                      <weight>bold</weight>
+                      <underlined>0</underlined>
+                    </font>
+                  </object>
+                  <flag>wxEXPAND</flag>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticLine"/>
+                  <flag>wxEXPAND</flag>
+                </object>
                 <object class="sizeritem">
                   <object class="wxCheckBox" name="chkShowSplash">
                     <label>Show splash screen on start-up</label>
                     <checked>1</checked>
                   </object>
-                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <flag>wxTOP|wxEXPAND</flag>
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
@@ -26,7 +44,7 @@
                     <label>Run DDE server (Windows only)</label>
                     <checked>1</checked>
                   </object>
-                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <flag>wxTOP|wxEXPAND</flag>
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
@@ -34,7 +52,7 @@
                     <label>Allow only one running instance (needs application restart to take effect)</label>
                     <checked>1</checked>
                   </object>
-                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <flag>wxTOP|wxEXPAND</flag>
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
@@ -55,7 +73,7 @@
                       <border>8</border>
                     </object>
                   </object>
-                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <flag>wxTOP|wxEXPAND</flag>
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
@@ -63,7 +81,7 @@
                     <label>Check for externally modified files</label>
                     <checked>1</checked>
                   </object>
-                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <flag>wxTOP|wxEXPAND</flag>
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
@@ -71,17 +89,25 @@
                     <label>Display application's debug log</label>
                     <checked>0</checked>
                   </object>
-                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <flag>wxTOP|wxEXPAND</flag>
                   <border>8</border>
                 </object>
-              </object>
-            </object>
-          </object>
-          <object class="notebookpage">
-            <label>View</label>
-            <object class="wxPanel" name="tabView">
-              <object class="wxBoxSizer">
-                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxCheckBox" name="chkShowStartPage">
+                    <label>Show &quot;Start here&quot; page (shown only when there are no open projects)</label>
+                    <checked>1</checked>
+                  </object>
+                  <flag>wxTOP|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxCheckBox" name="chkAutoHideMessages">
+                    <label>Auto-hide message pane</label>
+                    <checked>1</checked>
+                  </object>
+                  <flag>wxTOP|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
                 <object class="sizeritem">
                   <object class="wxFlexGridSizer">
                     <object class="sizeritem">
@@ -129,401 +155,384 @@
                     <hgap>8</hgap>
                     <growablecols>1</growablecols>
                   </object>
-                  <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
-                  <border>8</border>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxCheckBox" name="chkShowStartPage">
-                    <label>Show &quot;Start here&quot; page (shown only when there are no open projects)</label>
-                    <checked>1</checked>
-                  </object>
-                  <flag>wxALL|wxGROW</flag>
-                  <border>8</border>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxCheckBox" name="chkAutoHideMessages">
-                    <label>Auto-hide message pane</label>
-                    <checked>1</checked>
-                  </object>
-                  <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
-                  <border>8</border>
+                  <flag>wxTOP|wxEXPAND</flag>
+                  <border>16</border>
                 </object>
               </object>
             </object>
           </object>
-          <object class="notebookpage">
-            <label>Appearance</label>
-            <object class="wxPanel" name="tabAppearence">
+          <object class="listbookpage">
+            <label>Notebooks appearence</label>
+            <object class="wxPanel" name="pblNotebooks">
               <object class="wxBoxSizer">
                 <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
-                  <object class="wxChoicebook" name="lbAppearence">
-                    <object class="choicebookpage">
-                      <label>Notebook settings</label>
-                      <object class="wxPanel" name="pblNotebooks">
-                        <object class="wxBoxSizer">
-                          <orient>wxVERTICAL</orient>
-                          <object class="sizeritem">
-                            <object class="wxStaticBoxSizer">
-                              <label>Notebook settings</label>
-                              <orient>wxVERTICAL</orient>
-                              <object class="sizeritem">
-                                <object class="wxFlexGridSizer">
-                                  <cols>2</cols>
-                                  <object class="sizeritem">
-                                    <object class="wxStaticText">
-                                      <label>Tabs style:</label>
-                                    </object>
-                                    <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                                    <border>4</border>
-                                  </object>
-                                  <object class="sizeritem">
-                                    <object class="wxComboBox" name="cmbEditorTabs">
-                                      <content>
-                                        <item>Default</item>
-                                        <item>Fancy gradient</item>
-                                        <item>Microsoft (tm) VisualStudio</item>
-                                      </content>
-                                      <selection>0</selection>
-                                      <style>wxCB_READONLY</style>
-                                    </object>
-                                    <option>1</option>
-                                    <flag>wxLEFT|wxRIGHT|wxGROW</flag>
-                                    <border>4</border>
-                                  </object>
-                                  <vgap>4</vgap>
-                                  <hgap>4</hgap>
-                                  <growablecols>1</growablecols>
-                                </object>
-                                <flag>wxALL|wxGROW</flag>
-                                <border>4</border>
-                              </object>
-                              <object class="sizeritem">
-                                <object class="wxStaticBoxSizer">
-                                  <label>Gradient style colors</label>
-                                  <orient>wxVERTICAL</orient>
-                                  <object class="sizeritem">
-                                    <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                                    <object class="wxFlexGridSizer">
-                                      <object class="sizeritem">
-                                        <object class="wxStaticText">
-                                          <label>Border color:</label>
-                                        </object>
-                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                                      </object>
-                                      <object class="sizeritem">
-                                        <object class="wxButton" name="btnFNBorder">
-                                          <label></label>
-                                        </object>
-                                      </object>
-                                      <object class="sizeritem">
-                                        <object class="wxStaticText">
-                                          <label>From color:</label>
-                                        </object>
-                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                                      </object>
-                                      <object class="sizeritem">
-                                        <object class="wxButton" name="btnFNFrom">
-                                          <label></label>
-                                        </object>
-                                      </object>
-                                      <object class="sizeritem">
-                                        <object class="wxStaticText">
-                                          <label>To color:</label>
-                                        </object>
-                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                                      </object>
-                                      <object class="sizeritem">
-                                        <object class="wxButton" name="btnFNTo">
-                                          <label></label>
-                                        </object>
-                                      </object>
-                                      <cols>2</cols>
-                                      <vgap>4</vgap>
-                                      <hgap>4</hgap>
-                                    </object>
-                                    <flag>wxALL|wxGROW</flag>
-                                    <border>4</border>
-                                  </object>
-                                </object>
-                                <flag>wxTOP|wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
-                                <border>8</border>
-                              </object>
-                            </object>
-                            <option>1</option>
-                            <flag>wxTOP|wxGROW</flag>
-                            <border>8</border>
-                          </object>
-                        </object>
+                  <object class="wxStaticText">
+                    <label>Notebooks appearence</label>
+                    <fg>#FFFFFF</fg>
+                    <bg>#004080</bg>
+                    <font>
+                      <size>14</size>
+                      <family>default</family>
+                      <style>normal</style>
+                      <weight>bold</weight>
+                      <underlined>0</underlined>
+                    </font>
+                  </object>
+                  <flag>wxEXPAND</flag>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticLine"/>
+                  <flag>wxEXPAND</flag>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxFlexGridSizer">
+                    <cols>2</cols>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Tabs style:</label>
                       </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                      <border>4</border>
                     </object>
-                    <object class="choicebookpage">
-                      <label>Docking system settings</label>
-                      <object class="wxPanel" name="pnlDocking">
-                        <object class="wxBoxSizer">
-                          <orient>wxHORIZONTAL</orient>
-                          <object class="sizeritem">
-                            <object class="wxStaticBoxSizer">
-                              <label>Docking system settings</label>
-                              <orient>wxVERTICAL</orient>
-                              <object class="sizeritem">
-                                <object class="wxStaticBoxSizer">
-                                  <orient>wxHORIZONTAL</orient>
-                                  <object class="sizeritem">
-                                    <object class="wxFlexGridSizer">
-                                      <cols>2</cols>
-                                      <object class="sizeritem">
-                                        <object class="wxStaticText">
-                                          <label>Pane border size:</label>
-                                        </object>
-                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                                      </object>
-                                      <vgap>4</vgap>
-                                      <hgap>4</hgap>
-                                      <object class="sizeritem">
-                                        <object class="wxSpinCtrl" name="spnAuiBorder">
-                                          <value>1</value>
-                                          <min>0</min>
-                                        </object>
-                                      </object>
-                                      <object class="sizeritem">
-                                        <object class="wxStaticText">
-                                          <label>Sash size:</label>
-                                        </object>
-                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                                      </object>
-                                      <object class="sizeritem">
-                                        <object class="wxSpinCtrl" name="spnAuiSash">
-                                          <value>4</value>
-                                          <min>1</min>
-                                        </object>
-                                      </object>
-                                      <object class="sizeritem">
-                                        <object class="wxStaticText">
-                                          <label>Caption height:</label>
-                                        </object>
-                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                                      </object>
-                                      <object class="sizeritem">
-                                        <object class="wxSpinCtrl" name="spnAuiCaption">
-                                          <value>17</value>
-                                          <min>4</min>
-                                        </object>
-                                      </object>
-                                    </object>
-                                    <flag>wxALL|wxGROW</flag>
-                                    <border>4</border>
-                                  </object>
-                                  <object class="sizeritem">
-                                    <object class="wxFlexGridSizer">
-                                      <cols>2</cols>
-                                      <object class="sizeritem">
-                                        <object class="wxStaticText">
-                                          <label>Background color:</label>
-                                        </object>
-                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                                      </object>
-                                      <vgap>4</vgap>
-                                      <hgap>4</hgap>
-                                      <object class="sizeritem">
-                                        <object class="wxButton" name="btnAuiBgColor">
-                                          <label></label>
-                                        </object>
-                                      </object>
-                                      <object class="sizeritem">
-                                        <object class="wxStaticText">
-                                          <label>Sash color:</label>
-                                        </object>
-                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                                      </object>
-                                      <object class="sizeritem">
-                                        <object class="wxButton" name="btnAuiSashColor">
-                                          <label></label>
-                                        </object>
-                                      </object>
-                                      <object class="sizeritem">
-                                        <object class="wxStaticText">
-                                          <label>Border color:</label>
-                                        </object>
-                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                                      </object>
-                                      <object class="sizeritem">
-                                        <object class="wxButton" name="btnAuiBorderColor">
-                                          <label></label>
-                                        </object>
-                                      </object>
-                                      <object class="sizeritem">
-                                        <object class="wxStaticText">
-                                          <label>Gripper color:</label>
-                                        </object>
-                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                                      </object>
-                                      <object class="sizeritem">
-                                        <object class="wxButton" name="btnAuiGripperColor">
-                                          <label></label>
-                                        </object>
-                                      </object>
-                                    </object>
-                                    <flag>wxALL|wxGROW</flag>
-                                    <border>4</border>
-                                  </object>
-                                </object>
-                                <flag>wxTOP|wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
-                              </object>
-                              <object class="sizeritem">
-                                <object class="wxStaticBoxSizer">
-                                  <orient>wxHORIZONTAL</orient>
-                                  <object class="sizeritem">
-                                    <object class="wxFlexGridSizer">
-                                      <cols>2</cols>
-                                      <object class="sizeritem">
-                                        <object class="wxStaticText">
-                                          <label>Active caption color:</label>
-                                        </object>
-                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                                      </object>
-                                      <vgap>4</vgap>
-                                      <hgap>4</hgap>
-                                      <object class="sizeritem">
-                                        <object class="wxButton" name="btnAuiActiveCaptionColor">
-                                          <label></label>
-                                        </object>
-                                      </object>
-                                      <object class="sizeritem">
-                                        <object class="wxStaticText">
-                                          <label>Active caption gradient color:</label>
-                                        </object>
-                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                                      </object>
-                                      <object class="sizeritem">
-                                        <object class="wxButton" name="btnAuiActiveCaptionGradientColor">
-                                          <label></label>
-                                        </object>
-                                      </object>
-                                      <object class="sizeritem">
-                                        <object class="wxStaticText">
-                                          <label>Active caption text color:</label>
-                                        </object>
-                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                                      </object>
-                                      <object class="sizeritem">
-                                        <object class="wxButton" name="btnAuiActiveCaptionTextColor">
-                                          <label></label>
-                                        </object>
-                                      </object>
-                                    </object>
-                                    <flag>wxALL|wxGROW</flag>
-                                    <border>4</border>
-                                  </object>
-                                  <object class="sizeritem">
-                                    <object class="wxFlexGridSizer">
-                                      <cols>2</cols>
-                                      <object class="sizeritem">
-                                        <object class="wxStaticText">
-                                          <label>Inactive caption color:</label>
-                                        </object>
-                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                                      </object>
-                                      <vgap>4</vgap>
-                                      <hgap>4</hgap>
-                                      <object class="sizeritem">
-                                        <object class="wxButton" name="btnAuiInactiveCaptionColor">
-                                          <label></label>
-                                        </object>
-                                      </object>
-                                      <object class="sizeritem">
-                                        <object class="wxStaticText">
-                                          <label>Inactive caption gradient color:</label>
-                                        </object>
-                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                                      </object>
-                                      <object class="sizeritem">
-                                        <object class="wxButton" name="btnAuiInactiveCaptionGradientColor">
-                                          <label></label>
-                                        </object>
-                                      </object>
-                                      <object class="sizeritem">
-                                        <object class="wxStaticText">
-                                          <label>Inactive caption text color:</label>
-                                        </object>
-                                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                                      </object>
-                                      <object class="sizeritem">
-                                        <object class="wxButton" name="btnAuiInactiveCaptionTextColor">
-                                          <label></label>
-                                        </object>
-                                      </object>
-                                    </object>
-                                    <flag>wxALL|wxGROW</flag>
-                                    <border>4</border>
-                                  </object>
-                                  <flag>wxALL|wxGROW</flag>
-                                  <border>4</border>
-                                </object>
-                                <flag>wxTOP|wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
-                              </object>
-                            </object>
-                            <option>1</option>
-                            <flag>wxTOP|wxGROW</flag>
-                            <border>8</border>
+                    <object class="sizeritem">
+                      <object class="wxComboBox" name="cmbEditorTabs">
+                        <content>
+                          <item>Default</item>
+                          <item>Fancy gradient</item>
+                          <item>Microsoft (tm) VisualStudio</item>
+                        </content>
+                        <selection>0</selection>
+                        <style>wxCB_READONLY</style>
+                      </object>
+                      <option>1</option>
+                      <flag>wxLEFT|wxGROW</flag>
+                      <border>4</border>
+                    </object>
+                    <vgap>4</vgap>
+                    <hgap>4</hgap>
+                    <growablecols>1</growablecols>
+                  </object>
+                  <flag>wxTOP|wxGROW</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticBoxSizer">
+                    <label>Gradient style colors</label>
+                    <orient>wxVERTICAL</orient>
+                    <object class="sizeritem">
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                      <object class="wxFlexGridSizer">
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                            <label>Border color:</label>
+                          </object>
+                          <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxButton" name="btnFNBorder">
+                            <label></label>
                           </object>
                         </object>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                            <label>From color:</label>
+                          </object>
+                          <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxButton" name="btnFNFrom">
+                            <label></label>
+                          </object>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                            <label>To color:</label>
+                          </object>
+                          <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxButton" name="btnFNTo">
+                            <label></label>
+                          </object>
+                        </object>
+                        <cols>2</cols>
+                        <vgap>4</vgap>
+                        <hgap>4</hgap>
                       </object>
+                      <flag>wxALL|wxGROW</flag>
+                      <border>4</border>
                     </object>
                   </object>
-                  <option>1</option>
-                  <flag>wxALL|wxGROW</flag>
+                  <flag>wxTOP|wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
                   <border>8</border>
                 </object>
               </object>
             </object>
           </object>
-          <object class="notebookpage">
-            <label>Dialogs</label>
+          <object class="listbookpage">
+            <label>Docking system</label>
+            <object class="wxPanel" name="pnlDocking">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>Docking system</label>
+                    <fg>#FFFFFF</fg>
+                    <bg>#004080</bg>
+                    <font>
+                      <size>14</size>
+                      <family>default</family>
+                      <style>normal</style>
+                      <weight>bold</weight>
+                      <underlined>0</underlined>
+                    </font>
+                  </object>
+                  <flag>wxEXPAND</flag>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticLine"/>
+                  <flag>wxEXPAND</flag>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxFlexGridSizer">
+                    <cols>2</cols>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Pane border size:</label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <vgap>4</vgap>
+                    <hgap>4</hgap>
+                    <object class="sizeritem">
+                      <object class="wxSpinCtrl" name="spnAuiBorder">
+                        <value>1</value>
+                        <min>0</min>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Sash size:</label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxSpinCtrl" name="spnAuiSash">
+                        <value>4</value>
+                        <min>1</min>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Caption height:</label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxSpinCtrl" name="spnAuiCaption">
+                        <value>17</value>
+                        <min>4</min>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Background color:</label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxButton" name="btnAuiBgColor">
+                        <label></label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Sash color:</label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxButton" name="btnAuiSashColor">
+                        <label></label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Border color:</label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxButton" name="btnAuiBorderColor">
+                        <label></label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Gripper color:</label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxButton" name="btnAuiGripperColor">
+                        <label></label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Active caption color:</label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxButton" name="btnAuiActiveCaptionColor">
+                        <label></label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Active caption gradient color:</label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxButton" name="btnAuiActiveCaptionGradientColor">
+                        <label></label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Active caption text color:</label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxButton" name="btnAuiActiveCaptionTextColor">
+                        <label></label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Inactive caption color:</label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxButton" name="btnAuiInactiveCaptionColor">
+                        <label></label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Inactive caption gradient color:</label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxButton" name="btnAuiInactiveCaptionGradientColor">
+                        <label></label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Inactive caption text color:</label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxButton" name="btnAuiInactiveCaptionTextColor">
+                        <label></label>
+                      </object>
+                    </object>
+                  </object>
+                  <flag>wxTOP|wxGROW</flag>
+                  <border>8</border>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object class="listbookpage">
+            <label>Disabled dialogs</label>
             <object class="wxPanel" name="tabDialogs">
               <object class="wxBoxSizer">
                 <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>Disabled dialogs</label>
+                    <fg>#FFFFFF</fg>
+                    <bg>#004080</bg>
+                    <font>
+                      <size>14</size>
+                      <family>default</family>
+                      <style>normal</style>
+                      <weight>bold</weight>
+                      <underlined>0</underlined>
+                    </font>
+                  </object>
+                  <flag>wxEXPAND</flag>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticLine"/>
+                  <flag>wxEXPAND</flag>
+                </object>
+                <object class="sizeritem">
                   <object class="wxStaticText" name="">
                     <label>Re-enable the following confirmation dialogs:</label>
                   </object>
-                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <flag>wxTOP|wxEXPAND</flag>
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
                   <object class="wxStaticText" name="">
                     <label>(list will be empty if all dialogs are enabled)</label>
                   </object>
-                  <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
-                  <border>8</border>
+                  <flag>wxEXPAND</flag>
                 </object>
                 <object class="sizeritem">
                   <object class="wxCheckList" name="chkDialogs">
                     <content/>
                   </object>
                   <option>1</option>
-                  <flag>wxALL|wxGROW</flag>
-                  <border>8</border>
+                  <flag>wxEXPAND</flag>
                 </object>
               </object>
             </object>
           </object>
-          <object class="notebookpage">
+          <object class="listbookpage">
             <label>Batch builds</label>
             <object class="wxPanel" name="tabBatchBuilds">
               <object class="wxBoxSizer">
                 <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>Batch builds</label>
+                    <fg>#FFFFFF</fg>
+                    <bg>#004080</bg>
+                    <font>
+                      <size>14</size>
+                      <family>default</family>
+                      <style>normal</style>
+                      <weight>bold</weight>
+                      <underlined>0</underlined>
+                    </font>
+                  </object>
+                  <flag>wxEXPAND</flag>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticLine"/>
+                  <flag>wxEXPAND</flag>
+                </object>
+                <object class="sizeritem">
                   <object class="wxStaticText" name="">
                     <label>Extra command-line arguments for batch-builds through shell extensions:</label>
                   </object>
-                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <flag>wxTOP|wxEXPAND</flag>
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
                   <object class="wxTextCtrl" name="txtBatchBuildsCmdLine"/>
-                  <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
-                  <border>8</border>
+                  <flag>wxEXPAND</flag>
                 </object>
                 <object class="spacer">
                   <size>0,0</size>
@@ -540,41 +549,62 @@ You could specify, for example, a personality to use for batch builds.
 For more info on personalities, read the Code::Blocks WiKi at
 http://wiki.codeblocks.org/index.php?title=Personalities</label>
                   </object>
-                  <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
-                  <border>8</border>
+                  <flag>wxEXPAND</flag>
                 </object>
               </object>
             </object>
           </object>
-          <object class="notebookpage">
-            <label>Network</label>
+          <object class="listbookpage">
+            <label>Network proxy</label>
             <object class="wxPanel" name="tabNetwork">
               <object class="wxBoxSizer">
                 <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>Network proxy</label>
+                    <fg>#FFFFFF</fg>
+                    <bg>#004080</bg>
+                    <font>
+                      <size>14</size>
+                      <family>default</family>
+                      <style>normal</style>
+                      <weight>bold</weight>
+                      <underlined>0</underlined>
+                    </font>
+                  </object>
+                  <flag>wxEXPAND</flag>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticLine"/>
+                  <flag>wxEXPAND</flag>
+                </object>
+                <object class="sizeritem">
                   <object class="wxStaticText" name="">
                     <label>Use the following proxy when making network connections:</label>
                   </object>
-                  <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                  <flag>wxTOP|wxEXPAND</flag>
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
                   <object class="wxStaticText" name="">
                     <label>Format: hostname:port</label>
                   </object>
-                  <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
-                  <border>8</border>
+                  <flag>wxEXPAND</flag>
                 </object>
                 <object class="sizeritem">
                   <object class="wxTextCtrl" name="txtProxy"/>
-                  <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
-                  <border>8</border>
+                  <flag>wxEXPAND</flag>
                 </object>
               </object>
             </object>
           </object>
         </object>
-        <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticLine"/>
+        <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
         <border>8</border>
       </object>
       <object class="sizeritem">

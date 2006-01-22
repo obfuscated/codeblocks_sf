@@ -10,25 +10,19 @@
 #ifndef EDITMIMETYPESDLG_H
 #define EDITMIMETYPESDLG_H
 
-// For compilers that support precompilation, includes <wx/wx.h>
-#include <wx/wxprec.h>
-
-#ifdef __BORLANDC__
-	#pragma hdrstop
-#endif
-
-#ifndef WX_PRECOMP
-	#include <wx/wx.h>
-#endif
-
-#include <wx/dialog.h>
+#include <cbplugin.h>
 #include "mimetypesarray.h"
 
-class EditMimeTypesDlg : public wxDialog
+class EditMimeTypesDlg : public cbConfigurationPanel
 {
 	public:
 		EditMimeTypesDlg(wxWindow* parent, MimeTypesArray& array);
 		virtual ~EditMimeTypesDlg();
+
+        virtual wxString GetTitle(){ return _T("Files extension handling"); }
+        virtual wxString GetBitmapBaseName(){ return _T("generic-plugin"); }
+        virtual void OnApply();
+        virtual void OnCancel(){}
 	protected:
         void FillList();
         void UpdateDisplay();
@@ -38,7 +32,6 @@ class EditMimeTypesDlg : public wxDialog
         void OnBrowseProgram(wxCommandEvent& event);
         void OnNew(wxCommandEvent& event);
         void OnDelete(wxCommandEvent& event);
-        void EndModal(int retCode);
 
         MimeTypesArray& m_Array;
         int m_Selection;

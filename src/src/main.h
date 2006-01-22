@@ -232,7 +232,6 @@ class MainFrame : public wxFrame
         PluginIDsMap m_PluginIDsMap;
         wxMenu* m_ToolsMenu;
 		wxMenu* m_PluginsMenu;
-        wxMenu* m_SettingsMenu;
         wxMenu* m_HelpPluginsMenu;
 
         bool m_ReconfiguringPlugins;

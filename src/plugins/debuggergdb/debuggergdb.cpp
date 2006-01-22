@@ -183,7 +183,6 @@ DebuggerGDB::DebuggerGDB()
     m_PluginInfo.authorWebsite = _T("www.codeblocks.org");
 	m_PluginInfo.thanksTo = _T("");
 	m_PluginInfo.license = LICENSE_GPL;
-	m_PluginInfo.hasConfigure = false; // make C::B *not* add a Settings->Plugins->Debugger menu
 
 	m_TimerPollDebugger.SetOwner(this, idTimerPollDebugger);
 }
@@ -336,14 +335,19 @@ DebuggerGDB::~DebuggerGDB()
 
 int DebuggerGDB::Configure()
 {
-	DebuggerOptionsDlg dlg(Manager::Get()->GetAppWindow());
-	int ret = dlg.ShowModal();
+//	DebuggerOptionsDlg dlg(Manager::Get()->GetAppWindow());
+//	int ret = dlg.ShowModal();
+//
+//	bool needsRestart = Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("debug_log"), false) != m_HasDebugLog;
+//	if (needsRestart)
+//        wxMessageBox(_("Code::Blocks needs to be restarted for the changes to take effect."), _("Information"), wxICON_INFORMATION);
+    return 0;
+}
 
-	bool needsRestart = Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("debug_log"), false) != m_HasDebugLog;
-	if (needsRestart)
-        wxMessageBox(_("Code::Blocks needs to be restarted for the changes to take effect."), _("Information"), wxICON_INFORMATION);
-
-	return ret;
+cbConfigurationPanel* DebuggerGDB::GetConfigurationPanel(wxWindow* parent)
+{
+	DebuggerOptionsDlg* dlg = new DebuggerOptionsDlg(parent);
+	return dlg;
 }
 
 void DebuggerGDB::BuildMenu(wxMenuBar* menuBar)
@@ -371,13 +375,13 @@ void DebuggerGDB::BuildMenu(wxMenuBar* menuBar)
 			finalPos = projcompMenuPos + 1;
 	}
     menuBar->Insert(finalPos, m_pMenu, _("&Debug"));
-    // Add entry in settings menu (outside "plugins")
-    int settingsMenuPos = menuBar->FindMenu(_("&Settings"));
-    if (settingsMenuPos != wxNOT_FOUND)
-    {
-        wxMenu* settingsmenu = menuBar->GetMenu(settingsMenuPos);
-        settingsmenu->Insert(3,idMenuSettings,_("&Debugger"),_("Debugger options"));
-    }
+//    // Add entry in settings menu (outside "plugins")
+//    int settingsMenuPos = menuBar->FindMenu(_("&Settings"));
+//    if (settingsMenuPos != wxNOT_FOUND)
+//    {
+//        wxMenu* settingsmenu = menuBar->GetMenu(settingsMenuPos);
+//        settingsmenu->Insert(3,idMenuSettings,_("&Debugger"),_("Debugger options"));
+//    }
 }
 
 void DebuggerGDB::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)

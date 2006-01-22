@@ -20,7 +20,7 @@
 #include <wx/filedlg.h>
 #include <wx/textdlg.h>
 
-BEGIN_EVENT_TABLE(EditMimeTypesDlg, wxDialog)
+BEGIN_EVENT_TABLE(EditMimeTypesDlg, wxPanel)
     EVT_BUTTON(XRCID("btnNew"), EditMimeTypesDlg::OnNew)
     EVT_BUTTON(XRCID("btnDelete"), EditMimeTypesDlg::OnDelete)
     EVT_BUTTON(XRCID("btnBrowse"), EditMimeTypesDlg::OnBrowseProgram)
@@ -34,7 +34,7 @@ EditMimeTypesDlg::EditMimeTypesDlg(wxWindow* parent, MimeTypesArray& array)
     m_LastSelection(-1)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgEditFilesHandling"));
+	wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgEditFilesHandling"));
 	FillList();
 	UpdateDisplay();
 }
@@ -166,8 +166,7 @@ void EditMimeTypesDlg::OnBrowseProgram(wxCommandEvent& event)
         XRCCTRL(*this, "txtProgram", wxTextCtrl)->SetValue(dlg->GetPath());
 }
 
-void EditMimeTypesDlg::EndModal(int retCode)
+void EditMimeTypesDlg::OnApply()
 {
     Save(m_Selection);
-    wxDialog::EndModal(retCode);
 }

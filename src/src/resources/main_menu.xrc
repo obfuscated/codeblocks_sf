@@ -463,9 +463,6 @@
         <label>&amp;Global variables</label>
         <help>Change global compiler variables</help>
       </object>
-      <object class="wxMenu" name="idSettingsConfigurePlugins">
-        <label>&amp;Plugins' settings</label>
-      </object>
     </object>
     <object class="wxMenu" name="menu_help">
       <label>&amp;Help</label>

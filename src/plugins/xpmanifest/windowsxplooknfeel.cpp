@@ -52,7 +52,6 @@ WindowsXPLookNFeel::WindowsXPLookNFeel()
     m_PluginInfo.authorWebsite = _T("www.codeblocks.org");
 	m_PluginInfo.thanksTo = _T("");
 	m_PluginInfo.license = LICENSE_GPL;
-	m_PluginInfo.hasConfigure = false;
 }
 
 WindowsXPLookNFeel::~WindowsXPLookNFeel()

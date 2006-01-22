@@ -8,6 +8,7 @@
 // forward decls
 class cbStyledTextCtrl;
 class EditorColorSet;
+class wxListbookEvent;
 
 class EditorConfigurationDlg : public wxDialog
 {
@@ -34,6 +35,8 @@ class EditorConfigurationDlg : public wxDialog
 		void OnAutoCompDelete(wxCommandEvent& event);
 		void UpdateSampleFont(bool askForNewFont);
     private:
+        void OnPageChanged(wxListbookEvent& event);
+        void UpdateListbookImages();
 		void CreateColorsSample();
 		void CreateAutoCompText();
 		void AutoCompUpdate(int index);

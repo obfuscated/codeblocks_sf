@@ -11,7 +11,7 @@
 #include "cbprofilerconfig.h"
 #include <configmanager.h>
 
-BEGIN_EVENT_TABLE(CBProfilerConfigDlg, wxDialog)
+BEGIN_EVENT_TABLE(CBProfilerConfigDlg, wxPanel)
 EVT_CHECKBOX(XRCID("chkAnnSource"), CBProfilerConfigDlg::CheckBoxEvent)
 EVT_CHECKBOX(XRCID("chkMinCount"), CBProfilerConfigDlg::CheckBoxEvent)
 END_EVENT_TABLE()
@@ -19,7 +19,7 @@ END_EVENT_TABLE()
 CBProfilerConfigDlg::CBProfilerConfigDlg(wxWindow* parent)
 {
     //ctor
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgCBProfilerConfig"));
+    wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgCBProfilerConfig"));
     //wxFont font(10, wxMODERN, wxNORMAL, wxNORMAL);
     //XRCCTRL(*this, "txtSample", wxTextCtrl)->SetFont(font);
 
@@ -91,13 +91,8 @@ void CBProfilerConfigDlg::SaveSettings()
     cfg->Write(_T("/extra_txt"), XRCCTRL(*this, "txtExtra", wxTextCtrl)->GetValue());
 }
 
-void CBProfilerConfigDlg::EndModal(int retCode)
+void CBProfilerConfigDlg::OnApply()
 {
-    if (retCode == wxID_OK)
-    {
-        // user pressed OK; save settings
-        SaveSettings();
-    }
-
-    wxDialog::EndModal(retCode);
+    // user pressed OK; save settings
+    SaveSettings();
 }

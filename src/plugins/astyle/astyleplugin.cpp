@@ -47,7 +47,6 @@ AStylePlugin::AStylePlugin()
 	m_PluginInfo.authorWebsite = _T("http://www.codeblocks.org");
 	m_PluginInfo.thanksTo = _T("AStyle team for the useful library.\nSee http://astyle.sourceforge.net");
 	m_PluginInfo.license = LICENSE_GPL;
-	m_PluginInfo.hasConfigure = true;
 }
 
 AStylePlugin::~AStylePlugin()
@@ -68,10 +67,18 @@ void AStylePlugin::OnRelease(bool appShutDown)
 
 int AStylePlugin::Configure()
 {
-  AstyleConfigDlg dlg(Manager::Get()->GetAppWindow());
-  dlg.ShowModal();
+//  AstyleConfigDlg dlg(Manager::Get()->GetAppWindow());
+//  dlg.ShowModal();
 
   return 0;
+}
+
+cbConfigurationPanel* AStylePlugin::GetConfigurationPanel(wxWindow* parent)
+{
+    AstyleConfigDlg* dlg = new AstyleConfigDlg(parent);
+    // deleted by the caller
+
+    return dlg;
 }
 
 int AStylePlugin::Execute()

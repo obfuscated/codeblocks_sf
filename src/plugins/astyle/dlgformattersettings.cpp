@@ -5,7 +5,7 @@
 #include <wx/spinctrl.h>
 #include <wx/xrc/xmlres.h>
 
-dlgFormatterSettings::dlgFormatterSettings(wxDialog *dlg)
+dlgFormatterSettings::dlgFormatterSettings(wxWindow *dlg)
 : m_dlg(dlg)
 {
 	//ctor

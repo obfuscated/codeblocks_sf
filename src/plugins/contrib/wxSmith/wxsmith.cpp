@@ -78,7 +78,6 @@ wxSmith::wxSmith()
           "\n"
           "Jaakko Salli for wxPropertyGrid");
 	m_PluginInfo.license = LICENSE_GPL;
-	m_PluginInfo.hasConfigure = true;
 
 	if ( Singleton == NULL ) Singleton = this;
 }
@@ -162,11 +161,10 @@ void wxSmith::OnRelease(bool appShutDown)
     ProjectMap.clear();
 }
 
-int wxSmith::Configure()
+cbConfigurationPanel* wxSmith::GetConfigurationPanel(wxWindow* parent)
 {
-	wxsSettingsDlg Dlg(NULL);
-	Dlg.ShowModal();
-	return 0;
+	wxsSettingsDlg* Dlg = new wxsSettingsDlg(parent);
+	return Dlg;
 }
 
 void wxSmith::BuildMenu(wxMenuBar* menuBar)

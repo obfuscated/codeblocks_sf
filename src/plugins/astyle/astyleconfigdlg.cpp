@@ -12,7 +12,7 @@
 #include "dlgformattersettings.h"
 #include <string>
 
-BEGIN_EVENT_TABLE(AstyleConfigDlg, wxDialog)
+BEGIN_EVENT_TABLE(AstyleConfigDlg, wxPanel)
   EVT_RADIOBUTTON(XRCID("rbAnsi"), AstyleConfigDlg::OnStyleChange)
   EVT_RADIOBUTTON(XRCID("rbKr"), AstyleConfigDlg::OnStyleChange)
   EVT_RADIOBUTTON(XRCID("rbLinux"), AstyleConfigDlg::OnStyleChange)
@@ -25,11 +25,11 @@ END_EVENT_TABLE()
 AstyleConfigDlg::AstyleConfigDlg(wxWindow* parent)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgAstyleConfig"));
+	wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgAstyleConfig"));
 	wxFont font(10, wxMODERN, wxNORMAL, wxNORMAL);
 	XRCCTRL(*this, "txtSample", wxTextCtrl)->SetFont(font);
 
-  LoadSettings();
+    LoadSettings();
 }
 
 AstyleConfigDlg::~AstyleConfigDlg()
@@ -219,15 +219,4 @@ void AstyleConfigDlg::SaveSettings()
   cfg->Write(_T("/pad_parentheses"), XRCCTRL(*this, "chkPadParens", wxCheckBox)->GetValue());
   cfg->Write(_T("/keep_complex"), XRCCTRL(*this, "chkKeepComplex", wxCheckBox)->GetValue());
   cfg->Write(_T("/keep_blocks"), XRCCTRL(*this, "chkKeepBlocks", wxCheckBox)->GetValue());
-}
-
-void AstyleConfigDlg::EndModal(int retCode)
-{
-  if (retCode == wxID_OK)
-  {
-    // user pressed OK; save settings
-    SaveSettings();
-  }
-
-  wxDialog::EndModal(retCode);
 }

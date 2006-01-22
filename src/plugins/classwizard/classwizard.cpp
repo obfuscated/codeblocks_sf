@@ -57,7 +57,6 @@ ClassWizard::ClassWizard()
     m_PluginInfo.authorEmail = _("info@codeblocks.org");
     m_PluginInfo.authorWebsite = _("www.codeblocks.org");
     m_PluginInfo.thanksTo = _T("");
-	m_PluginInfo.hasConfigure = false;
 }
 
 ClassWizard::~ClassWizard()

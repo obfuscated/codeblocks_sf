@@ -1,8 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resource>
-  <object class="wxDialog" name="dlgCompilerOptions">
+  <object class="wxPanel" name="dlgCompilerOptions">
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxStaticText" name="lblTitle">
+          <label>Global compiler settings</label>
+          <fg>#FFFFFF</fg>
+          <bg>#004080</bg>
+          <font>
+            <size>14</size>
+            <family>default</family>
+            <style>normal</style>
+            <weight>bold</weight>
+            <underlined>0</underlined>
+          </font>
+        </object>
+        <flag>wxEXPAND</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticLine" name="lblTitleLine"/>
+        <flag>wxEXPAND</flag>
+      </object>
       <object class="sizeritem">
         <object class="wxBoxSizer">
           <orient>wxHORIZONTAL</orient>
@@ -10,7 +29,7 @@
             <object class="wxTreeCtrl" name="tcScope">
               <style>wxTR_NO_BUTTONS|wxTR_SINGLE</style>
             </object>
-            <flag>wxEXPAND</flag>
+            <flag>wxRIGHT|wxEXPAND</flag>
             <border>8</border>
             <minsize>160,-1</minsize>
           </object>
@@ -77,7 +96,7 @@
                     </object>
                   </object>
                 </object>
-                <flag>wxBOTTOM|wxLEFT|wxEXPAND</flag>
+                <flag>wxBOTTOM|wxEXPAND</flag>
                 <border>8</border>
               </object>
               <object class="sizeritem">
@@ -1148,7 +1167,7 @@ or in any of the &quot;Additional paths&quot;...</label>
                   </object>
                 </object>
                 <option>1</option>
-                <flag>wxLEFT|wxEXPAND</flag>
+                <flag>wxEXPAND</flag>
                 <border>8</border>
                 <minsize>480,375</minsize>
               </object>
@@ -1158,32 +1177,9 @@ or in any of the &quot;Additional paths&quot;...</label>
           </object>
         </object>
         <option>1</option>
-        <flag>wxALL|wxEXPAND</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxBoxSizer">
-          <orient>wxHORIZONTAL</orient>
-          <object class="sizeritem">
-            <object class="wxButton" name="wxID_OK">
-              <label>&amp;Ok</label>
-              <default>1</default>
-            </object>
-            <flag>wxRIGHT</flag>
-            <border>16</border>
-          </object>
-          <object class="sizeritem">
-            <object class="wxButton" name="wxID_CANCEL">
-              <label>&amp;Cancel</label>
-            </object>
-          </object>
-        </object>
-        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <flag>wxTOP|wxEXPAND</flag>
         <border>8</border>
       </object>
     </object>
-    <title>Compiler Settings</title>
-    <centered>1</centered>
-    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxRESIZE_BOX</style>
   </object>
 </resource>

@@ -1,5 +1,5 @@
 <resource>
-    <object class="wxDialog" name="wxsSettingsDlg">
+    <object class="cbConfigurationPanel" name="wxsSettingsDlg">
         <title>wxSmith Configuration</title>
         <centered>1</centered>
         <object class="wxFlexGridSizer" variable="FlexGridSizer1" member="yes">
@@ -183,32 +183,6 @@
                                     </object>
                                 </object>
                             </object>
-                        </object>
-                    </object>
-                </object>
-            </object>
-            <object class="sizeritem">
-                <option>1</option>
-                <border>5</border>
-                <flag>wxALL|wxALIGN_CENTER</flag>
-                <object class="wxBoxSizer" variable="BoxSizer1" member="yes">
-                    <orient>wxHORIZONTAL</orient>
-                    <object class="sizeritem">
-                        <option>1</option>
-                        <border>5</border>
-                        <flag>wxALL|wxALIGN_CENTER</flag>
-                        <object class="wxButton" name="ID_BUTTON3" variable="BtnOk" member="no">
-                            <label>Ok</label>
-                            <handler entry="EVT_BUTTON" function="OnBtnOkClick" />
-                        </object>
-                    </object>
-                    <object class="sizeritem">
-                        <option>1</option>
-                        <border>5</border>
-                        <flag>wxALL|wxALIGN_CENTER</flag>
-                        <object class="wxButton" name="ID_BUTTON4" variable="BtnCancel" member="yes">
-                            <label>Cancel</label>
-                            <handler entry="EVT_BUTTON" function="OnBtnCancelClick" />
                         </object>
                     </object>
                 </object>

@@ -17,19 +17,23 @@
 #include <wx/checkbox.h>
 #include <wx/spinctrl.h>
 #include <wx/textctrl.h>
-#include <wx/dialog.h>
+#include <cbplugin.h>
 
-class CBProfilerConfigDlg : public wxDialog
+class CBProfilerConfigDlg : public cbConfigurationPanel
 {
 	public:
 		CBProfilerConfigDlg(wxWindow* parent);
 		virtual ~CBProfilerConfigDlg();
+
+        wxString GetTitle(){ return _("Profiler settings"); }
+        wxString GetBitmapBaseName(){ return _T("generic-plugin"); }
+        void OnApply();
+        void OnCancel(){}
 	protected:
         void CheckBoxEvent(wxCommandEvent& event);
 
         void LoadSettings();
         void SaveSettings();
-        void EndModal(int retCode);
 	private:
         DECLARE_EVENT_TABLE()
 };

@@ -2,6 +2,7 @@
 #define COMPILEROPTIONSDLG_H
 
 #include <settings.h>
+#include <cbplugin.h>
 #include <wx/spinbutt.h>
 #include "compilergcc.h"
 #include <compileroptions.h>
@@ -23,11 +24,16 @@ class DLLIMPORT ScopeTreeData : public wxTreeItemData
 };
 
 
-class CompilerOptionsDlg : public wxDialog
+class CompilerOptionsDlg : public cbConfigurationPanel
 {
 	public:
 		CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, cbProject* project = 0L, ProjectBuildTarget* target = 0L);
 		~CompilerOptionsDlg();
+
+        virtual wxString GetTitle(){ return _T("Global compiler settings"); }
+        virtual wxString GetBitmapBaseName(){ return _T("compiler"); }
+        virtual void OnApply();
+        virtual void OnCancel(){}
 	protected:
 	private:
 		void TextToOptions();
@@ -86,8 +92,6 @@ class CompilerOptionsDlg : public wxDialog
 		void OnRemoveExtraPathClick(wxCommandEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);
 		void OnMyCharHook(wxKeyEvent& event);
-
-		virtual void EndModal(int retCode);
 
 		CompilerGCC* m_Compiler;
 		CompilerOptions m_Options;

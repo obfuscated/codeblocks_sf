@@ -1,7 +1,7 @@
 #ifndef ASTYLECONFIGDLG_H
 #define ASTYLECONFIGDLG_H
 
-#include <wx/dialog.h>
+#include <cbplugin.h>
 
 enum AStylePredefinedStyle
 {
@@ -13,23 +13,27 @@ enum AStylePredefinedStyle
   aspsCustom
 };
 
-class AstyleConfigDlg : public wxDialog
+class AstyleConfigDlg : public cbConfigurationPanel
 {
 	public:
 		AstyleConfigDlg(wxWindow* parent);
 		virtual ~AstyleConfigDlg();
 
 	protected:
-    void OnStyleChange(wxCommandEvent& event);
-    void OnPreview(wxCommandEvent& event);
+        void OnStyleChange(wxCommandEvent& event);
+        void OnPreview(wxCommandEvent& event);
 
-    void LoadSettings();
-    void SaveSettings();
-    void SetStyle(AStylePredefinedStyle style);
-    void EndModal(int retCode);
+        virtual wxString GetTitle(){ return _T("AStyle source formatter"); }
+        virtual wxString GetBitmapBaseName(){ return _T("generic-plugin"); }
+        virtual void OnApply(){ SaveSettings(); }
+        virtual void OnCancel(){}
+
+        void LoadSettings();
+        void SaveSettings();
+        void SetStyle(AStylePredefinedStyle style);
 
 	private:
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // ASTYLECONFIGDLG_H

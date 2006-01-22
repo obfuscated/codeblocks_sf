@@ -34,7 +34,7 @@
 DebuggerOptionsDlg::DebuggerOptionsDlg(wxWindow* parent)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgDebuggerOptions"));
+	wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgDebuggerOptions"));
 
 	ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("debugger"));
 	XRCCTRL(*this, "txtInit", wxTextCtrl)->SetValue(cfg->Read(_T("init_commands"), wxEmptyString));
@@ -52,20 +52,15 @@ DebuggerOptionsDlg::~DebuggerOptionsDlg()
 	//dtor
 }
 
-void DebuggerOptionsDlg::EndModal(int retCode)
+void DebuggerOptionsDlg::OnApply()
 {
-    if (retCode == wxID_OK)
-    {
-        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("debugger"));
-        cfg->Write(_T("init_commands"), XRCCTRL(*this, "txtInit", wxTextCtrl)->GetValue());
-        cfg->Write(_T("layout_start"), XRCCTRL(*this, "txtLayoutStart", wxTextCtrl)->GetValue());
-        cfg->Write(_T("layout_end"), XRCCTRL(*this, "txtLayoutEnd", wxTextCtrl)->GetValue());
-        cfg->Write(_T("watch_args"), XRCCTRL(*this, "chkWatchArgs", wxCheckBox)->GetValue());
-        cfg->Write(_T("watch_locals"), XRCCTRL(*this, "chkWatchLocals", wxCheckBox)->GetValue());
-        cfg->Write(_T("eval_tooltip"), XRCCTRL(*this, "chkTooltipEval", wxCheckBox)->GetValue());
-        cfg->Write(_T("debug_log"), XRCCTRL(*this, "chkDebugLog", wxCheckBox)->GetValue());
-        cfg->Write(_T("add_other_search_dirs"), XRCCTRL(*this, "chkAddForeignDirs", wxCheckBox)->GetValue());
-    }
-
-    wxDialog::EndModal(retCode);
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("debugger"));
+    cfg->Write(_T("init_commands"), XRCCTRL(*this, "txtInit", wxTextCtrl)->GetValue());
+    cfg->Write(_T("layout_start"), XRCCTRL(*this, "txtLayoutStart", wxTextCtrl)->GetValue());
+    cfg->Write(_T("layout_end"), XRCCTRL(*this, "txtLayoutEnd", wxTextCtrl)->GetValue());
+    cfg->Write(_T("watch_args"), XRCCTRL(*this, "chkWatchArgs", wxCheckBox)->GetValue());
+    cfg->Write(_T("watch_locals"), XRCCTRL(*this, "chkWatchLocals", wxCheckBox)->GetValue());
+    cfg->Write(_T("eval_tooltip"), XRCCTRL(*this, "chkTooltipEval", wxCheckBox)->GetValue());
+    cfg->Write(_T("debug_log"), XRCCTRL(*this, "chkDebugLog", wxCheckBox)->GetValue());
+    cfg->Write(_T("add_other_search_dirs"), XRCCTRL(*this, "chkAddForeignDirs", wxCheckBox)->GetValue());
 }

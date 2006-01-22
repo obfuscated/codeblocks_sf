@@ -27,7 +27,6 @@ CodeStat::CodeStat()
     m_PluginInfo.authorWebsite = _("");
     m_PluginInfo.thanksTo = _("All the Code::Blocks team!");
     m_PluginInfo.license = LICENSE_GPL;
-    m_PluginInfo.hasConfigure = true;
 }
 
 CodeStat::~CodeStat()
@@ -54,20 +53,16 @@ void CodeStat::OnRelease(bool appShutDown)
     // m_IsAttached will be FALSE...
 }
 
-int CodeStat::Configure()
+cbConfigurationPanel* CodeStat::GetConfigurationPanel(wxWindow* parent)
 {
     // if not attached, exit
     if (!m_IsAttached)
-        return -1;
+        return 0;
 
     LanguageDef languages[NB_FILETYPES];
     LoadSettings(languages);
-    CodeStatConfigDlg dlg(Manager::Get()->GetAppWindow(), languages);
-    if (dlg.ShowModal() == wxID_OK)
-    {
-    }
-
-    return 0;
+    CodeStatConfigDlg* dlg = new CodeStatConfigDlg(parent, languages);
+    return dlg;
 }
 
 int CodeStat::Execute()

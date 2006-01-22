@@ -1,19 +1,25 @@
 #ifndef HELPCONFIGDIALOG_H
 #define HELPCONFIGDIALOG_H
 
-#include <wx/dialog.h>
+#include <cbplugin.h>
 #include "help_common.h"
 
-class HelpConfigDialog : public wxDialog
+class HelpPlugin;
+
+class HelpConfigDialog : public cbConfigurationPanel
 {
   private:
     HelpCommon::HelpFilesVector m_Vector;
     int m_LastSel;
-  
+
   public:
-    HelpConfigDialog();
+    HelpConfigDialog(wxWindow* parent, HelpPlugin* plugin);
     virtual ~HelpConfigDialog();
-  
+
+    virtual wxString GetTitle(){ return _("Help files"); }
+    virtual wxString GetBitmapBaseName(){ return _T("help-plugin"); }
+    virtual void OnApply();
+    virtual void OnCancel(){}
   protected:
     void Add(wxCommandEvent &event);
     void Rename(wxCommandEvent &event);
@@ -24,12 +30,12 @@ class HelpConfigDialog : public wxDialog
     void ListChange(wxCommandEvent &event);
     void OnCheckbox(wxCommandEvent &event);
     void UpdateUI(wxUpdateUIEvent &event);
-    void Ok(wxCommandEvent &event);
-  
+
   private:
     void UpdateEntry(int index);
     void ChooseFile();
-  
+    HelpPlugin* m_pPlugin;
+
     DECLARE_EVENT_TABLE()
 };
 

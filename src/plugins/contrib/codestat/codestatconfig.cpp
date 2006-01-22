@@ -9,13 +9,13 @@
 
 #include "codestatconfig.h"
 
-BEGIN_EVENT_TABLE (CodeStatConfigDlg, wxDialog)
+BEGIN_EVENT_TABLE (CodeStatConfigDlg, wxPanel)
 EVT_COMBOBOX(XRCID("combo_Names"), CodeStatConfigDlg::ComboBoxEvent)
 END_EVENT_TABLE ()
 
 CodeStatConfigDlg::CodeStatConfigDlg(wxWindow* parent, LanguageDef lang[NB_FILETYPES])
 {
-    wxXmlResource::Get()->LoadDialog(this, parent, _("dlgCodeStatConfig"));
+    wxXmlResource::Get()->LoadPanel(this, parent, _("dlgCodeStatConfig"));
     wxComboBox* combo_Names = XRCCTRL(*this, "combo_Names", wxComboBox);
 
     // Writing languages names in the combo-box and saving the language classes in a local variable
@@ -33,15 +33,10 @@ CodeStatConfigDlg::~CodeStatConfigDlg()
 {
 }
 
-void CodeStatConfigDlg::EndModal(int retCode)
+void CodeStatConfigDlg::OnApply()
 {
-    if (retCode == wxID_OK)
-    {
-        // user pressed OK; save settings
-        //SaveSettings();
-    }
-
-    wxDialog::EndModal(retCode);
+    // user pressed OK; save settings
+    //SaveSettings();
 }
 
 // Print the caracteristics for the language selected

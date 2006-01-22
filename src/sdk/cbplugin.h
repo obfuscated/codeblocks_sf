@@ -3,6 +3,7 @@
 
 #include <wx/dynarray.h>
 #include <wx/event.h>
+#include <wx/panel.h>
 
 #include "settings.h" // build settings
 #include "globals.h"
@@ -27,13 +28,14 @@
 // it will change when the SDK interface breaks
 #define PLUGIN_SDK_VERSION_MAJOR 1
 #define PLUGIN_SDK_VERSION_MINOR 6
-#define PLUGIN_SDK_VERSION_RELEASE 5
+#define PLUGIN_SDK_VERSION_RELEASE 6
 
 // class decls
 class ProjectBuildTarget;
 class wxMenuBar;
 class wxMenu;
 class wxToolBar;
+class wxPanel;
 class cbProject;
 class FileTreeData;
 
@@ -49,7 +51,23 @@ struct PluginInfo
     wxString authorWebsite;
     wxString thanksTo;
     wxString license;
-	bool hasConfigure;
+};
+
+/** @brief Base class for plugin configuration panels. */
+class PLUGIN_EXPORT cbConfigurationPanel : public wxPanel
+{
+    public:
+        cbConfigurationPanel(){}
+        virtual ~cbConfigurationPanel(){}
+
+        /// @return the panel's title.
+        virtual wxString GetTitle() = 0;
+        /// @return the panel's bitmap base name. You must supply two bitmaps: <basename>.png and <basename>-off.png...
+        virtual wxString GetBitmapBaseName() = 0;
+        /// Called when the user chooses to apply the configuration.
+        virtual void OnApply() = 0;
+        /// Called when the user chooses to cancel the configuration.
+        virtual void OnCancel() = 0;
 };
 
 /** @brief Base class for plugins
@@ -95,12 +113,11 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 
 		/** The plugin must return its info on request. */
         virtual PluginInfo const* GetInfo() const { return &m_PluginInfo; }
-		/** This is a pure virtual method that should be overriden by all
-		  * plugins. If a plugin provides some sort of configuration dialog,
-		  * this is the place to invoke it. If it does not support/allow
-		  * configuration, just return 0.
+		/** Return plugin's configuration panel.
+		  * @param parent The parent window.
+		  * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
 		  */
-        virtual int Configure() = 0;
+        virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent){ return 0; }
 		/** This method is called by Code::Blocks and is used by the plugin
 		  * to add any menu items it needs on Code::Blocks's menu bar.\n
 		  * It is a pure virtual method that needs to be implemented by all
@@ -163,12 +180,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
         virtual void OnRelease(bool appShutDown){}
 
 		/** This method logs a "Not implemented" message and is provided for
-		  * convenience only. For example, if the plugin *will* provide a
-		  * configuration dialog, but it's not implemented yet, the author
-		  * should create the Configure() method and put in there something
-		  * like: NotImplemented("myCustomPlugin::OnConfigure"). This would
-		  * log this message: "myCustomPlugin::OnConfigure : Not implemented"
-		  * in the Code::Blocks debug log.
+		  * convenience only.
 		  */
         virtual void NotImplemented(const wxString& log);
 		/** Holds the PluginInfo structure that describes the plugin. */
@@ -269,13 +281,6 @@ class PLUGIN_EXPORT cbCompilerPlugin: public cbPlugin
 
         /** @brief Display configuration dialog.
           *
-          * The default implementation calls Configure(NULL, NULL).
-          *
-          * @see Configure(cbProject*,ProjectBuildTarget*)
-          */
-		virtual int Configure(){ return Configure(0L, 0L); }
-        /** @brief Display configuration dialog.
-          *
           * @param project The selected project (can be NULL).
           * @param target The selected target (can be NULL).
           */
@@ -313,9 +318,7 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
   * This plugin is automatically managed by Code::Blocks, so the inherited
   * functions to build menus/toolbars are hidden.
   *
-  * Tool plugins are automatically added under the "Plugins" menu. If they
-  * provide a configuration dialog, they 're also added under the
-  * "Settings/Configure plugins" menu.
+  * Tool plugins are automatically added under the "Plugins" menu.
   */
 class PLUGIN_EXPORT cbToolPlugin : public cbPlugin
 {
@@ -323,7 +326,7 @@ class PLUGIN_EXPORT cbToolPlugin : public cbPlugin
         cbToolPlugin();
         /** @brief Execute the plugin.
           *
-          * This is the only function needed by a cbToolPlugin (and Configure() if needed).
+          * This is the only function needed by a cbToolPlugin.
           * This will be called when the user selects the plugin from the "Plugins"
           * menu.
           */

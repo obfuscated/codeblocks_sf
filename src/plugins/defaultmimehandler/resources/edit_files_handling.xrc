@@ -1,10 +1,27 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <resource>
-  <object class="wxDialog" name="dlgEditFilesHandling">
-    <title>Edit files handling</title>
-    <centered>1</centered>
+  <object class="wxPanel" name="dlgEditFilesHandling">
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxStaticText">
+          <label>Files extension handling</label>
+          <fg>#FFFFFF</fg>
+          <bg>#004080</bg>
+          <font>
+            <size>14</size>
+            <family>default</family>
+            <style>normal</style>
+            <weight>bold</weight>
+            <underlined>0</underlined>
+          </font>
+        </object>
+        <flag>wxEXPAND</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticLine"/>
+        <flag>wxEXPAND</flag>
+      </object>
       <object class="sizeritem">
         <object class="wxBoxSizer">
           <orient>wxHORIZONTAL</orient>
@@ -36,26 +53,24 @@
                     <border>8</border>
                   </object>
                 </object>
-                <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
+                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
                 <border>8</border>
               </object>
             </object>
             <flag>wxGROW</flag>
           </object>
           <object class="sizeritem">
-            <object class="wxStaticBoxSizer">
-              <label>Wildcard handling details</label>
+            <object class="wxBoxSizer">
               <orient>wxVERTICAL</orient>
               <object class="sizeritem">
                 <object class="wxStaticText">
                   <label>Wildcard:</label>
                 </object>
-                <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
-                <border>8</border>
+                <flag>wxGROW</flag>
               </object>
               <object class="sizeritem">
                 <object class="wxTextCtrl" name="txtWild"/>
-                <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                <flag>wxBOTTOM|wxGROW</flag>
                 <border>8</border>
               </object>
               <object class="sizeritem">
@@ -68,35 +83,33 @@
                   <dimension>1</dimension>
                   <style>wxRA_SPECIFY_COLS</style>
                 </object>
-                <flag>wxLEFT|wxRIGHT|wxGROW</flag>
-                <border>8</border>
+                <flag>wxGROW</flag>
               </object>
               <object class="sizeritem">
                 <object class="wxStaticText">
                   <label>External program:</label>
                 </object>
-                <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                <flag>wxTOP|wxGROW</flag>
                 <border>8</border>
               </object>
               <object class="sizeritem">
                 <object class="wxBoxSizer">
                   <orient>wxHORIZONTAL</orient>
                   <object class="sizeritem">
-                    <object class="wxTextCtrl" name="txtProgram"/>
+                    <object class="wxTextCtrl" name="txtProgram">
+                      <style></style>
+                    </object>
                     <option>1</option>
                     <flag>wxGROW</flag>
-                    <border>8</border>
                   </object>
                   <object class="sizeritem">
                     <object class="wxButton" name="btnBrowse">
                       <label>...</label>
+                      <size>22,22</size>
                     </object>
-                    <minsize>22,22</minsize>
                   </object>
                 </object>
-                <option>1</option>
-                <flag>wxLEFT|wxRIGHT|wxGROW</flag>
-                <border>8</border>
+                <flag>wxGROW</flag>
               </object>
               <object class="sizeritem">
                 <object class="wxBoxSizer">
@@ -112,8 +125,7 @@
                     <border>4</border>
                   </object>
                 </object>
-                <option>1</option>
-                <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+                <flag>wxLEFT|wxGROW</flag>
                 <border>8</border>
               </object>
             </object>
@@ -123,19 +135,7 @@
           </object>
         </object>
         <option>1</option>
-        <flag>wxALL|wxGROW</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxBoxSizer">
-          <orient>wxHORIZONTAL</orient>
-          <object class="sizeritem">
-            <object class="wxButton" name="wxID_CANCEL">
-              <label>&amp;Close</label>
-            </object>
-          </object>
-        </object>
-        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <flag>wxTOP|wxGROW</flag>
         <border>8</border>
       </object>
     </object>

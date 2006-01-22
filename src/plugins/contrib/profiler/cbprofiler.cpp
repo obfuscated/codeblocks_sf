@@ -30,7 +30,6 @@ CBProfiler::CBProfiler()
     m_PluginInfo.authorWebsite = _("");
     m_PluginInfo.thanksTo = _("Mandrav, for the n00b intro to profiling\nand the sources of his Source code\nformatter (AStyle) Plugin, whose clean\ncode structure served as a basis for this\nplugin\n:)");
     m_PluginInfo.license = LICENSE_GPL;
-    m_PluginInfo.hasConfigure = true;
 }
 CBProfiler::~CBProfiler()
 {
@@ -53,17 +52,14 @@ void CBProfiler::OnRelease(bool appShutDown)
     // NOTE: after this function, the inherited member variable
     // m_IsAttached will be FALSE...
 }
-int CBProfiler::Configure()
+cbConfigurationPanel* CBProfiler::GetConfigurationPanel(wxWindow* parent)
 {
     // if not attached, exit
     if (!m_IsAttached)
-        return -1;
+        return 0;
 
-    CBProfilerConfigDlg dlg(Manager::Get()->GetAppWindow());
-    if (dlg.ShowModal() == wxID_OK)
-    {
-    }
-    return 0;
+    CBProfilerConfigDlg* dlg = new CBProfilerConfigDlg(parent);
+    return dlg;
 }
 int CBProfiler::Execute()
 {

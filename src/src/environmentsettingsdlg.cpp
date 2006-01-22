@@ -1,7 +1,9 @@
 #include <sdk.h>
 #include <wx/xrc/xmlres.h>
+#include <manager.h>
 #include <configmanager.h>
 #include <wx/intl.h>
+#include <wx/listbook.h>
 #include <wx/combobox.h>
 #include <wx/checkbox.h>
 #include <wx/checklst.h>
@@ -15,6 +17,18 @@
 #ifdef __WXMSW__
     #include "associations.h"
 #endif
+
+// images by order of pages
+const wxString base_imgs[] =
+{
+    _T("general-prefs"),
+    _T("view"),
+    _T("colours"),
+    _T("dialogs"),
+    _T("batch"),
+    _T("net"),
+};
+const int IMAGES_COUNT = 6; // keep this in sync!
 
 BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxDialog)
     EVT_UPDATE_UI(-1, EnvironmentSettingsDlg::OnUpdateUI)
@@ -34,12 +48,16 @@ BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxDialog)
     EVT_BUTTON(XRCID("btnAuiInactiveCaptionColor"), EnvironmentSettingsDlg::OnChooseColor)
     EVT_BUTTON(XRCID("btnAuiInactiveCaptionGradientColor"), EnvironmentSettingsDlg::OnChooseColor)
     EVT_BUTTON(XRCID("btnAuiInactiveCaptionTextColor"), EnvironmentSettingsDlg::OnChooseColor)
+
+    EVT_LISTBOOK_PAGE_CHANGING(XRCID("nbMain"), EnvironmentSettingsDlg::OnPageChanging)
+    EVT_LISTBOOK_PAGE_CHANGED(XRCID("nbMain"), EnvironmentSettingsDlg::OnPageChanged)
 END_EVENT_TABLE()
 
 EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
     : m_pArt(art)
 {
     wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgEnvironmentSettings"));
+    LoadListbookImages();
 
     ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
     ConfigManager *pcfg = Manager::Get()->GetConfigManager(_T("project_manager"));
@@ -61,11 +79,13 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
     XRCCTRL(*this, "chkAutoHideMessages", wxCheckBox)->SetValue(mcfg->ReadBool(_T("/auto_hide"), false));
     XRCCTRL(*this, "chkShowStartPage", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/start_here_page"), true));
 
-    // tab "Appearence"
+    // tab "Notebook"
     XRCCTRL(*this, "cmbEditorTabs", wxComboBox)->SetSelection(cfg->ReadInt(_T("/environment/tabs_style"), 0));
     XRCCTRL(*this, "btnFNBorder", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/gradient_border"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW))));
     XRCCTRL(*this, "btnFNFrom", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/gradient_from"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE))));
     XRCCTRL(*this, "btnFNTo", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/gradient_to"), *wxWHITE));
+
+    // tab "Docking"
     XRCCTRL(*this, "spnAuiBorder", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/environment/aui/border_size"), m_pArt->GetMetric(wxAUI_ART_PANE_BORDER_SIZE)));
     XRCCTRL(*this, "spnAuiSash", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/environment/aui/sash_size"), m_pArt->GetMetric(wxAUI_ART_SASH_SIZE)));
     XRCCTRL(*this, "spnAuiCaption", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/environment/aui/caption_size"), m_pArt->GetMetric(wxAUI_ART_CAPTION_SIZE)));
@@ -81,14 +101,14 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
     XRCCTRL(*this, "btnAuiGripperColor", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/aui/gripper_color"), m_pArt->GetColor(wxAUI_ART_GRIPPER_COLOUR)));
 
     // tab "Dialogs"
-    wxCheckListBox* lb = XRCCTRL(*this, "chkDialogs", wxCheckListBox);
-    lb->Clear();
+    wxCheckListBox* clb = XRCCTRL(*this, "chkDialogs", wxCheckListBox);
+    clb->Clear();
     wxArrayString dialogs = acfg->EnumerateKeys(_T("/"));
     for (unsigned int i = 0; i < dialogs.GetCount(); ++i)
     {
         wxString caption = acfg->Read(dialogs[i]);
         if (!caption.IsEmpty())
-            lb->Append(caption);
+            clb->Append(caption);
     }
 
     // tab "Batch builds"
@@ -106,11 +126,83 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
     XRCCTRL(*this, "btnSetAssocs", wxButton)->Enable(false);
     XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->Enable(false);
 #endif
+
+    // add all plugins configuration panels
+    AddPluginPanels();
+
+    // make sure everything is laid out properly
+    GetSizer()->SetSizeHints(this);
 }
 
 EnvironmentSettingsDlg::~EnvironmentSettingsDlg()
 {
     //dtor
+}
+
+void EnvironmentSettingsDlg::AddPluginPanels()
+{
+    const wxString base = ConfigManager::GetDataFolder() + _T("/images/settings/");
+    wxBitmap bmp;
+
+    wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
+    Manager::Get()->GetPluginManager()->GetAllConfigurationPanels(lb, m_PluginPanels);
+
+    for (size_t i = 0; i < m_PluginPanels.GetCount(); ++i)
+    {
+        cbConfigurationPanel* panel = m_PluginPanels[i];
+        lb->AddPage(panel, panel->GetTitle());
+
+        bmp.LoadFile(base + panel->GetBitmapBaseName() + _T(".png"), wxBITMAP_TYPE_PNG);
+        lb->GetImageList()->Add(bmp);
+        bmp.LoadFile(base + panel->GetBitmapBaseName() + _T("-off.png"), wxBITMAP_TYPE_PNG);
+        lb->GetImageList()->Add(bmp);
+        lb->SetPageImage(lb->GetPageCount() - 1, lb->GetImageList()->GetImageCount() - 2);
+    }
+
+    UpdateListbookImages();
+}
+
+void EnvironmentSettingsDlg::LoadListbookImages()
+{
+    const wxString base = ConfigManager::GetDataFolder() + _T("/images/settings/");
+
+    wxImageList* images = new wxImageList(80, 80);
+    wxBitmap bmp;
+    for (int i = 0; i < IMAGES_COUNT; ++i)
+    {
+        bmp.LoadFile(base + base_imgs[i] + _T(".png"), wxBITMAP_TYPE_PNG);
+        images->Add(bmp);
+        bmp.LoadFile(base + base_imgs[i] + _T("-off.png"), wxBITMAP_TYPE_PNG);
+        images->Add(bmp);
+    }
+    wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
+    lb->AssignImageList(images);
+
+    UpdateListbookImages();
+}
+
+void EnvironmentSettingsDlg::UpdateListbookImages()
+{
+    wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
+    int sel = lb->GetSelection();
+    // set page images according to their on/off status
+    for (size_t i = 0; i < IMAGES_COUNT + m_PluginPanels.GetCount(); ++i)
+    {
+        lb->SetPageImage(i, (i * 2) + (sel == (int)i ? 0 : 1));
+    }
+
+    // the selection color is ruining the on/off effect,
+    // so make sure no item is selected ;)
+    lb->GetListView()->Select(sel, false);
+}
+
+void EnvironmentSettingsDlg::OnPageChanging(wxListbookEvent& event)
+{
+}
+
+void EnvironmentSettingsDlg::OnPageChanged(wxListbookEvent& event)
+{
+    UpdateListbookImages();
 }
 
 void EnvironmentSettingsDlg::OnSetAssocs(wxCommandEvent& event)
@@ -220,6 +312,22 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
 
         // tab "Network"
         cfg->Write(_T("/network_proxy"),    XRCCTRL(*this, "txtProxy", wxTextCtrl)->GetValue());
+
+        // finally, apply settings in all plugins' panels
+        for (size_t i = 0; i < m_PluginPanels.GetCount(); ++i)
+        {
+            cbConfigurationPanel* panel = m_PluginPanels[i];
+            panel->OnApply();
+        }
+    }
+    else
+    {
+        // finally, cancel settings in all plugins' panels
+        for (size_t i = 0; i < m_PluginPanels.GetCount(); ++i)
+        {
+            cbConfigurationPanel* panel = m_PluginPanels[i];
+            panel->OnCancel();
+        }
     }
 
     wxDialog::EndModal(retCode);

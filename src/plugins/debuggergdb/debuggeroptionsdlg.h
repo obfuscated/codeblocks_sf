@@ -9,15 +9,18 @@
 #ifndef DEBUGGEROPTIONSDLG_H
 #define DEBUGGEROPTIONSDLG_H
 
-#include <wx/dialog.h>
+#include <cbplugin.h>
 
-class DebuggerOptionsDlg : public wxDialog
+class DebuggerOptionsDlg : public cbConfigurationPanel
 {
 	public:
 		DebuggerOptionsDlg(wxWindow* parent);
 		virtual ~DebuggerOptionsDlg();
-		
-		void EndModal(int retCode);
+
+        virtual wxString GetTitle(){ return _T("Debugger settings"); }
+        virtual wxString GetBitmapBaseName(){ return _T("debugger"); }
+        virtual void OnApply();
+        virtual void OnCancel(){}
 	protected:
 	private:
 };

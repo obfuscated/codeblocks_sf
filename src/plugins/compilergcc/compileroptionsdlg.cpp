@@ -32,11 +32,12 @@
 #include <configmanager.h>
 #include <messagemanager.h>
 #include <projectmanager.h>
+#include <macrosmanager.h>
 #include <customvars.h>
 #include "editpathdlg.h"
 #include "editpairdlg.h"
 
-BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxDialog)
+BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxPanel)
     EVT_UPDATE_UI(			XRCID("btnEditDir"),	    CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnDelDir"),	        CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("spnDirs"),	        CompilerOptionsDlg::OnUpdateUI)
@@ -126,7 +127,7 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
 	m_pTarget(target),
 	m_BuildingTree(false)
 {
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgCompilerOptions"));
+	wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgCompilerOptions"));
 
 	if (project)
 	{
@@ -1586,7 +1587,7 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
     }
 }
 
-void CompilerOptionsDlg::EndModal(int retCode)
+void CompilerOptionsDlg::OnApply()
 {
 	wxTreeCtrl* tc = XRCCTRL(*this, "tcScope", wxTreeCtrl);
 	ScopeTreeData* data = (ScopeTreeData*)tc->GetItemData(tc->GetSelection());
@@ -1627,8 +1628,6 @@ void CompilerOptionsDlg::EndModal(int retCode)
     wxSpinCtrl* spn = XRCCTRL(*this, "spnMaxErrors", wxSpinCtrl);
     if (spn)
         Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/max_reported_errors"), spn->GetValue());
-
-	wxDialog::EndModal(retCode);
 }
 
 void CompilerOptionsDlg::OnMyCharHook(wxKeyEvent& event)
@@ -1675,4 +1674,11 @@ void CompilerOptionsDlg::OnMyCharHook(wxKeyEvent& event)
         wxCommandEvent newevent(wxEVT_COMMAND_BUTTON_CLICKED,myid);
         this->ProcessEvent(newevent);
     }
+
+    m_Compiler->m_ConsoleTerm = Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
+    m_Compiler->m_ConsoleShell = Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/console_shell"), DEFAULT_CONSOLE_SHELL);
+    m_Compiler->SaveOptions();
+    m_Compiler->SetupEnvironment();
+    Manager::Get()->GetMacrosManager()->Reset();
+
 }

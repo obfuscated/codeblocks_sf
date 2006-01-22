@@ -56,7 +56,6 @@ PluginWizard::PluginWizard()
     m_PluginInfo.authorEmail = _T("info@codeblocks.org");
     m_PluginInfo.authorWebsite = _T("www.codeblocks.org");
     m_PluginInfo.thanksTo = _T("");
-    m_PluginInfo.hasConfigure = false;
 }
 
 PluginWizard::~PluginWizard()

@@ -82,6 +82,7 @@ class CompilerGCC : public cbCompilerPlugin
 		virtual bool IsRunning() const;
 		virtual int GetExitCode() const { return m_LastExitCode; }
 		virtual int Configure(cbProject* project, ProjectBuildTarget* target = 0L);
+        cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
 
 		void SwitchCompiler(int compilerIdx);
 		int GetCurrentCompilerIndex();
@@ -114,6 +115,7 @@ class CompilerGCC : public cbCompilerPlugin
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnConfig(wxCommandEvent& event);
     private:
+        friend class CompilerOptionsDlg;
 		void SetupEnvironment();
 		void SetEnvironmentForCompilerIndex(int idx, wxString& envPath);
 		void OnProjectActivated(CodeBlocksEvent& event);

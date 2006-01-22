@@ -77,20 +77,21 @@ static const wxString g_SampleClasses =
 	"#define SOME_DEFINITION\n"
 	"#define SOME_DEFINITION_2\n\n");
 
-BEGIN_EVENT_TABLE(CCOptionsDlg, wxDialog)
-	EVT_BUTTON(XRCID("wxID_OK"), CCOptionsDlg::OnOK)
+BEGIN_EVENT_TABLE(CCOptionsDlg, wxPanel)
 	EVT_BUTTON(XRCID("btnColor"), CCOptionsDlg::OnChooseColor)
 	EVT_CHECKBOX(XRCID("chkInheritance"), CCOptionsDlg::OnInheritanceToggle)
 	EVT_COMBOBOX(XRCID("cmbCBView"), CCOptionsDlg::OnInheritanceToggle)
 	EVT_COMMAND_SCROLL(XRCID("sliderDelay"), CCOptionsDlg::OnSliderScroll)
 END_EVENT_TABLE()
 
-CCOptionsDlg::CCOptionsDlg(wxWindow* parent)
-	: m_Parser(this)
+CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np)
+	: m_Parser(this),
+	m_pNativeParsers(np)
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
 
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgCCSettings"));
+	wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgCCSettings"));
+
 	XRCCTRL(*this, "chkLocals", wxCheckBox)->SetValue(m_Parser.Options().followLocalIncludes);
 	XRCCTRL(*this, "chkGlobals", wxCheckBox)->SetValue(m_Parser.Options().followGlobalIncludes);
 	XRCCTRL(*this, "chkPreprocessor", wxCheckBox)->SetValue(m_Parser.Options().wantPreprocessor);
@@ -157,7 +158,7 @@ void CCOptionsDlg::OnSliderScroll(wxScrollEvent& event)
 	UpdateSliderLabel();
 }
 
-void CCOptionsDlg::OnOK(wxCommandEvent& event)
+void CCOptionsDlg::OnApply()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
 
@@ -181,5 +182,5 @@ void CCOptionsDlg::OnOK(wxCommandEvent& event)
 	int timerDelay = XRCCTRL(*this, "sliderDelay", wxSlider)->GetValue() * 100;
 	Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("/cc_delay"), timerDelay);
 
-	wxDialog::OnOK(event);
+    m_pNativeParsers->RereadParserOptions();
 }

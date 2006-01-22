@@ -102,7 +102,6 @@ CodeCompletion::CodeCompletion()
     m_PluginInfo.authorEmail = _T("info@codeblocks.org");
     m_PluginInfo.authorWebsite = _T("www.codeblocks.org");
     m_PluginInfo.thanksTo = _T("");
-	m_PluginInfo.hasConfigure = true;
 
     m_PageIndex = -1;
     m_EditMenu = 0L;
@@ -113,13 +112,19 @@ CodeCompletion::~CodeCompletion()
 {
 }
 
+cbConfigurationPanel* CodeCompletion::GetConfigurationPanel(wxWindow* parent)
+{
+	CCOptionsDlg* dlg = new CCOptionsDlg(parent, &m_NativeParsers);
+	return dlg;
+}
+
 int CodeCompletion::Configure()
 {
-	CCOptionsDlg dlg(Manager::Get()->GetAppWindow());
-	if (dlg.ShowModal() == wxID_OK)
-	{
-		m_NativeParsers.RereadParserOptions();
-	}
+//	CCOptionsDlg dlg(Manager::Get()->GetAppWindow());
+//	if (dlg.ShowModal() == wxID_OK)
+//	{
+//		m_NativeParsers.RereadParserOptions();
+//	}
 	return 0;
 }
 

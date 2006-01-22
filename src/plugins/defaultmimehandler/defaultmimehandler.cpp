@@ -39,7 +39,6 @@ DefaultMimeHandler::DefaultMimeHandler()
 	m_PluginInfo.authorWebsite = _("http://www.codeblocks.org");
 	m_PluginInfo.thanksTo = _T("Code::Blocks");
 	m_PluginInfo.license = LICENSE_GPL;
-	m_PluginInfo.hasConfigure = true;
 
     wxFileSystem::AddHandler(new wxZipFSHandler);
     wxXmlResource::Get()->InitAllHandlers();
@@ -105,9 +104,13 @@ void DefaultMimeHandler::OnRelease(bool appShutDown)
 
 int DefaultMimeHandler::Configure()
 {
-    EditMimeTypesDlg dlg(0, m_MimeTypes);
-    dlg.ShowModal();
     return 0;
+}
+
+cbConfigurationPanel* DefaultMimeHandler::GetConfigurationPanel(wxWindow* parent)
+{
+    EditMimeTypesDlg* dlg = new EditMimeTypesDlg(parent, m_MimeTypes);
+    return dlg;
 }
 
 bool DefaultMimeHandler::CanHandleFile(const wxString& filename) const

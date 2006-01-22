@@ -10,6 +10,7 @@
 //forward decls
 struct PluginInfo;
 class cbPlugin;
+class cbConfigurationPanel;
 class wxDynamicLibrary;
 class wxMenuBar;
 class wxMenu;
@@ -25,6 +26,7 @@ struct PluginElement
 
 WX_DEFINE_ARRAY(PluginElement*, PluginElementsArray);
 WX_DEFINE_ARRAY(cbPlugin*, PluginsArray);
+WX_DEFINE_ARRAY(cbConfigurationPanel*, ConfigurationPanelsArray);
 
 /*
  * No description
@@ -54,6 +56,7 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>
         void AskPluginsForModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
         void NotifyPlugins(CodeBlocksEvent& event);
         cbMimePlugin* GetMIMEHandlerForFile(const wxString& filename);
+        void GetAllConfigurationPanels(wxWindow* parent, ConfigurationPanelsArray& arrayToFill);
         int Configure();
 		void SetupLocaleDomain(const wxString& DomainName);
     private:

@@ -180,10 +180,8 @@ int idProjectImportMSVS = XRCID("idProjectImportMSVS");
 int idProjectImportMSVSWksp = XRCID("idProjectImportMSVSWksp");
 
 int idSettingsEnvironment = XRCID("idSettingsEnvironment");
-int idSettingsGlobalUserVars = XRCID("idSettingsGlobalUserVars");
 int idSettingsEditor = XRCID("idSettingsEditor");
 int idPluginsManagePlugins = XRCID("idPluginsManagePlugins");
-int idSettingsConfigurePlugins = XRCID("idSettingsConfigurePlugins");
 
 int idHelpTips = XRCID("idHelpTips");
 int idHelpPlugins = XRCID("idHelpPlugins");
@@ -341,7 +339,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idProjectImportMSVSWksp,  MainFrame::OnProjectImportMSVSWksp)
 
 	EVT_MENU(idSettingsEnvironment, MainFrame::OnSettingsEnvironment)
-	EVT_MENU(idSettingsGlobalUserVars, MainFrame::OnGlobalUserVars)
 	EVT_MENU(idSettingsEditor, MainFrame::OnSettingsEditor)
     EVT_MENU(idPluginsManagePlugins, MainFrame::OnSettingsPlugins)
 
@@ -388,7 +385,6 @@ MainFrame::MainFrame(wxWindow* parent)
 	   m_pMsgMan(0L),
 	   m_pToolbar(0L),
        m_ToolsMenu(0L),
-       m_SettingsMenu(0L),
        m_HelpPluginsMenu(0L),
        m_ReconfiguringPlugins(false),
        m_StartupDone(false), // one-time flag
@@ -545,7 +541,7 @@ void MainFrame::CreateMenubar()
 {
 	int tmpidx;
 	wxMenuBar* mbar=0L;
-	wxMenu *hl=0L, *tools=0L, *plugs=0L, *pluginsM=0L, *settingsPlugins=0L;
+	wxMenu *hl=0L, *tools=0L, *plugs=0L, *pluginsM=0L;
 	wxMenuItem *tmpitem=0L;
 
     wxString resPath = ConfigManager::GetDataFolder();
@@ -593,14 +589,11 @@ void MainFrame::CreateMenubar()
     if(tmpidx!=wxNOT_FOUND)
         plugs = mbar->GetMenu(tmpidx);
 
-    if((tmpitem = mbar->FindItem(idSettingsConfigurePlugins,NULL)))
-        settingsPlugins = tmpitem->GetSubMenu();
     if((tmpitem = mbar->FindItem(idHelpPlugins,NULL)))
         pluginsM = tmpitem->GetSubMenu();
 
 	m_ToolsMenu = tools ? tools : new wxMenu();
 	m_PluginsMenu = plugs ? plugs : new wxMenu();
-	m_SettingsMenu = settingsPlugins ? settingsPlugins : new wxMenu();
 	m_HelpPluginsMenu = pluginsM ? pluginsM : new wxMenu();
 
 	// core modules: create menus
@@ -752,12 +745,12 @@ void MainFrame::AddPluginInPluginsMenu(cbPlugin* plugin)
 
 void MainFrame::AddPluginInSettingsMenu(cbPlugin* plugin)
 {
-    if(!plugin)
-        return;
-    if (!plugin->GetInfo()->hasConfigure)
-        return;
-    AddPluginInMenus(m_SettingsMenu, plugin,
-                    (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)&MainFrame::OnPluginSettingsMenu);
+//    if(!plugin)
+//        return;
+//    if (!plugin->GetInfo()->hasConfigure)
+//        return;
+//    AddPluginInMenus(m_SettingsMenu, plugin,
+//                    (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)&MainFrame::OnPluginSettingsMenu);
 }
 
 void MainFrame::AddPluginInHelpPluginsMenu(cbPlugin* plugin)
@@ -799,7 +792,6 @@ void MainFrame::RemovePluginFromMenus(const wxString& pluginName)
 		m_PluginIDsMap.erase(id[i]);
 		m_PluginsMenu->Delete(id[i]);
 		m_HelpPluginsMenu->Delete(id[i]);
-		m_SettingsMenu->Delete(id[i]);
 	}
 }
 
@@ -1327,12 +1319,12 @@ void MainFrame::OnStartHereLink(wxCommandEvent& event)
         OnSettingsEnvironment(evt);
     else if (link.Matches(_T("CB_CMD_CONF_EDITOR")))
         Manager::Get()->GetEditorManager()->Configure();
-    else if (link.Matches(_T("CB_CMD_CONF_COMPILER")))
-    {
-        PluginsArray arr = Manager::Get()->GetPluginManager()->GetCompilerOffers();
-        if (arr.GetCount() != 0)
-            arr[0]->Configure();
-    }
+//    else if (link.Matches(_T("CB_CMD_CONF_COMPILER")))
+//    {
+//        PluginsArray arr = Manager::Get()->GetPluginManager()->GetCompilerOffers();
+//        if (arr.GetCount() != 0)
+//            arr[0]->Configure();
+//    }
     else if (link.StartsWith(_T("CB_CMD_OPEN_HISTORY_")))
     {
         wxFileHistory* hist = link.StartsWith(_T("CB_CMD_OPEN_HISTORY_PROJECT_")) ? &m_ProjectsHistory : &m_FilesHistory;
