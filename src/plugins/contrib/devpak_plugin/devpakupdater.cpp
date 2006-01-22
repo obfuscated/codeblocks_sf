@@ -38,7 +38,6 @@ DevPakUpdater::DevPakUpdater()
                             "\tcopyright (C) 1996-2000 Julian R Seward.\n"
                             "\tAll rights reserved.");
 	m_PluginInfo.license = LICENSE_GPL;
-	m_PluginInfo.hasConfigure = true;
 
     Manager::Get()->Loadxrc(_T("/devpakupdater.zip#zip:*.xrc"));
     g_MasterPath = Manager::Get()->GetConfigManager(_T("devpak_plugin"))->Read(_T("/master_path"));

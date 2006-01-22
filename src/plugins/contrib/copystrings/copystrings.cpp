@@ -34,7 +34,6 @@ copystrings::copystrings()
 	m_PluginInfo.authorWebsite = _T("http://www.codeblocks.org/");
 	m_PluginInfo.thanksTo = _("The Code::Blocks team");
 	m_PluginInfo.license = LICENSE_WXWINDOWS;
-	m_PluginInfo.hasConfigure = false;
 }
 
 copystrings::~copystrings()

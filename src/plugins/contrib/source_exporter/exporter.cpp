@@ -51,7 +51,6 @@ Exporter::Exporter()
   m_PluginInfo.authorWebsite = _T("");
   m_PluginInfo.thanksTo = _("Code::Blocks Development Team\nwxPdfDocument Development Team");
   m_PluginInfo.license = LICENSE_GPL;
-  m_PluginInfo.hasConfigure = false;
 }
 
 Exporter::~Exporter()
