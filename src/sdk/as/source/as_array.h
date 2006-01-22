@@ -1,6 +1,6 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2005 Andreas Jönsson
+   Copyright (c) 2003-2006 Andreas Jönsson
 
    This software is provided 'as-is', without any express or implied 
    warranty. In no event will the authors be held liable for any 
@@ -59,6 +59,8 @@ public:
 	T *AddressOf();
 
 	void Concatenate(const asCArray<T> &);
+
+	T* Find(const T &element);
 
 protected:
 	T   *array;
@@ -207,6 +209,15 @@ void asCArray<T>::Concatenate(const asCArray<T> &other)
 		array[length+n] = other.array[n];
 
 	length += other.length;
+}
+
+template <class T>
+T *asCArray<T>::Find(const T &e)
+{
+	for( asUINT n = 0; n < length; n++ )
+		if( array[n] == e ) return &array[n];
+
+	return 0;
 }
 
 END_AS_NAMESPACE

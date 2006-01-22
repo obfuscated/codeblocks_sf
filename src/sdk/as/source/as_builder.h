@@ -1,6 +1,6 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2005 Andreas Jönsson
+   Copyright (c) 2003-2006 Andreas Jönsson
 
    This software is provided 'as-is', without any express or implied 
    warranty. In no event will the authors be held liable for any 
@@ -39,15 +39,14 @@
 #ifndef AS_BUILDER_H
 #define AS_BUILDER_H
 
+#include "as_config.h"
 #include "as_scriptengine.h"
 #include "as_module.h"
-
 #include "as_array.h"
 #include "as_scriptcode.h"
 #include "as_scriptnode.h"
 #include "as_datatype.h"
 #include "as_property.h"
-#include "as_types.h"
 
 BEGIN_AS_NAMESPACE
 

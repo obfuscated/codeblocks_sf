@@ -1,6 +1,6 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2005 Andreas Jönsson
+   Copyright (c) 2003-2006 Andreas Jönsson
 
    This software is provided 'as-is', without any express or implied 
    warranty. In no event will the authors be held liable for any 
@@ -60,6 +60,8 @@ class asCVariableScope
 public:
 	asCVariableScope(asCVariableScope *parent);
 	~asCVariableScope();
+
+	void Reset();
 
 	int DeclareVariable(const char *name, const asCDataType &type, int stackOffset);
 	sVariable *GetVariable(const char *name);

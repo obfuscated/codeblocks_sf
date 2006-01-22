@@ -1,6 +1,6 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2005 Andreas Jönsson
+   Copyright (c) 2003-2006 Andreas Jönsson
 
    This software is provided 'as-is', without any express or implied 
    warranty. In no event will the authors be held liable for any 
@@ -44,18 +44,22 @@ BEGIN_AS_NAMESPACE
 asCVariableScope::asCVariableScope(asCVariableScope *parent)
 {
 	this->parent    = parent;
-	isBreakScope    = false;
-	isContinueScope = false;
+	Reset();
 }
 
 asCVariableScope::~asCVariableScope()
 {
-	for( asUINT n = 0; n < variables.GetLength(); n++ )
-	{
-		if( variables[n] ) delete variables[n];
+	Reset();
+}
 
-		variables[n] = 0;
-	}
+void asCVariableScope::Reset()
+{
+	isBreakScope = false;
+	isContinueScope = false;
+
+	for( asUINT n = 0; n < variables.GetLength(); n++ )
+		if( variables[n] ) delete variables[n];
+	variables.SetLength(0);
 }
 
 int asCVariableScope::DeclareVariable(const char *name, const asCDataType &type, int stackOffset)

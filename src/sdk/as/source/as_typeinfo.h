@@ -1,6 +1,6 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2005 Andreas Jönsson
+   Copyright (c) 2003-2006 Andreas Jönsson
 
    This software is provided 'as-is', without any express or implied 
    warranty. In no event will the authors be held liable for any 
@@ -40,8 +40,8 @@
 #ifndef AS_TYPEINFO_H
 #define AS_TYPEINFO_H
 
+#include "as_config.h"
 #include "as_datatype.h"
-#include "as_types.h"
 
 BEGIN_AS_NAMESPACE
 
@@ -49,6 +49,14 @@ struct asCTypeInfo
 {
 	asCTypeInfo();
 	void Set(const asCDataType &dataType);
+
+	void SetVariable(const asCDataType &dataType, int stackOffset, bool isTemporary);
+	void SetConstantQW(const asCDataType &dataType, asQWORD value);
+	void SetConstantDW(const asCDataType &dataType, asDWORD value);
+	void SetConstantF(const asCDataType &dataType, float value);
+	void SetConstantD(const asCDataType &dataType, double value);
+	void SetNullConstant();
+	void SetDummy();
 
 	bool IsNullConstant();
 

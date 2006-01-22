@@ -1,6 +1,6 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2005 Andreas Jönsson
+   Copyright (c) 2003-2006 Andreas Jönsson
 
    This software is provided 'as-is', without any express or implied 
    warranty. In no event will the authors be held liable for any 
@@ -60,6 +60,60 @@ void asCTypeInfo::Set(const asCDataType &dt)
 	isVariable       = false;
 	isExplicitHandle = false;
 	qwordValue       = 0;
+}
+
+void asCTypeInfo::SetVariable(const asCDataType &dt, int stackOffset, bool isTemporary)
+{
+	Set(dt);
+
+	this->isVariable  = true;
+	this->isTemporary = isTemporary;
+	this->stackOffset = stackOffset;
+}
+
+void asCTypeInfo::SetConstantQW(const asCDataType &dt, asQWORD value)
+{
+	Set(dt);
+
+	isConstant = true;
+	qwordValue = value;
+}
+
+void asCTypeInfo::SetConstantDW(const asCDataType &dt, asDWORD value)
+{
+	Set(dt);
+
+	isConstant = true;
+	dwordValue = value;
+}
+
+void asCTypeInfo::SetConstantF(const asCDataType &dt, float value)
+{
+	Set(dt);
+
+	isConstant = true;
+	floatValue = value;
+}
+
+void asCTypeInfo::SetConstantD(const asCDataType &dt, double value)
+{
+	Set(dt);
+
+	isConstant = true;
+	doubleValue = value;
+}
+
+void asCTypeInfo::SetNullConstant()
+{
+	Set(asCDataType::CreateNullHandle());
+	isConstant       = true;
+	isExplicitHandle = true;
+	qwordValue       = 0;
+}
+
+void asCTypeInfo::SetDummy()
+{
+	SetConstantQW(asCDataType::CreatePrimitive(ttInt, true), 0);
 }
 
 bool asCTypeInfo::IsNullConstant()

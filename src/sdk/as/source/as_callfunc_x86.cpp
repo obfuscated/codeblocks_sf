@@ -1,6 +1,6 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2005 Andreas Jönsson
+   Copyright (c) 2003-2006 Andreas Jönsson
 
    This software is provided 'as-is', without any express or implied
    warranty. In no event will the authors be held liable for any
@@ -257,7 +257,7 @@ const t_CallCDeclQW CallCDeclFunctionQWord = (t_CallCDeclQW)CallCDeclFunction;
 const t_CallCDeclQWObj CallCDeclFunctionQWordObjLast = (t_CallCDeclQWObj)CallCDeclFunctionObjLast;
 const t_CallCDeclQWObj CallCDeclFunctionQWordObjFirst = (t_CallCDeclQWObj)CallCDeclFunctionObjFirst;
 const t_CallCDeclRetByRef CallCDeclFunctionRetByRef = (t_CallCDeclRetByRef)CallCDeclFunctionRetByRef_impl;
-const t_CallCDeclObjRetByRef CallCDeclFunctionRetByRefObjLast = (t_CallCDeclObjRetByRef)CallCDeclFunctionRetByRefObjFirst_impl;
+const t_CallCDeclObjRetByRef CallCDeclFunctionRetByRefObjLast = (t_CallCDeclObjRetByRef)CallCDeclFunctionRetByRefObjLast_impl;
 const t_CallCDeclObjRetByRef CallCDeclFunctionRetByRefObjFirst = (t_CallCDeclObjRetByRef)CallCDeclFunctionRetByRefObjFirst_impl;
 const t_CallSTDCallQW CallSTDCallFunctionQWord = (t_CallSTDCallQW)CallSTDCallFunction;
 const t_CallThisCallQW CallThisCallFunctionQWord = (t_CallThisCallQW)CallThisCallFunction;
@@ -456,7 +456,7 @@ int CallSystemFunction(int id, asCContext *context, void *objectPointer)
 		    args++;
 
 		int spos = 0;
-		for(unsigned int n = 0; n < descr->parameterTypes.GetLength(); n++ )
+		for( size_t n = 0; n < descr->parameterTypes.GetLength(); n++ )
 		{
 			if( descr->parameterTypes[n].IsObject() &&
 				!descr->parameterTypes[n].IsReference() &&
@@ -506,14 +506,14 @@ int CallSystemFunction(int id, asCContext *context, void *objectPointer)
 		if( sysFunc->hostReturnFloat )
 		{
 			if( sysFunc->hostReturnSize == 1 )
-				*(asDWORD*)&context->returnVal = GetReturnedFloat();
+				*(asDWORD*)&context->register1 = GetReturnedFloat();
 			else
-				context->returnVal = GetReturnedDouble();
+				context->register1 = GetReturnedDouble();
 		}
 		else if( sysFunc->hostReturnSize == 1 )
-			*(asDWORD*)&context->returnVal = (asDWORD)retQW;
+			*(asDWORD*)&context->register1 = (asDWORD)retQW;
 		else
-			context->returnVal = retQW;
+			context->register1 = retQW;
 	}
 
 	if( sysFunc->hasAutoHandles )

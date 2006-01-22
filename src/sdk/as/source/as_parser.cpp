@@ -1,6 +1,6 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2005 Andreas Jönsson
+   Copyright (c) 2003-2006 Andreas Jönsson
 
    This software is provided 'as-is', without any express or implied 
    warranty. In no event will the authors be held liable for any 
@@ -532,8 +532,16 @@ asCScriptNode *asCParser::ParseTypeMod(bool isParam)
 
 		if( isParam )
 		{
-			int tokens[3] = {ttIn, ttOut, ttInOut};
-			node->AddChildLast(ParseOneOf(tokens, 3));
+#ifdef AS_ALLOW_UNSAFE_REFERENCES
+			GetToken(&t);
+			RewindTo(&t);
+
+			if( t.type == ttIn || t.type == ttOut || t.type == ttInOut )
+#endif
+			{
+				int tokens[3] = {ttIn, ttOut, ttInOut};
+				node->AddChildLast(ParseOneOf(tokens, 3));
+			}
 		}
 	}
 

@@ -1,6 +1,6 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2005 Andreas Jönsson
+   Copyright (c) 2003-2006 Andreas Jönsson
 
    This software is provided 'as-is', without any express or implied 
    warranty. In no event will the authors be held liable for any 
@@ -40,39 +40,49 @@
 #ifndef AS_SCRIPTFUNCTION_H
 #define AS_SCRIPTFUNCTION_H
 
+#include "as_config.h"
 #include "as_string.h"
 #include "as_array.h"
 #include "as_datatype.h"
-#include "as_types.h"
 
 BEGIN_AS_NAMESPACE
 
 class asCScriptEngine;
 
+struct asSScriptVariable
+{
+	asCString name;
+	asCDataType type;
+	int stackOffset;
+};
+
 class asCScriptFunction
 {
 public:
 	asCScriptFunction() {objectType = 0; name = ""; isReadOnly = false;}
+	~asCScriptFunction();
+
+	void AddVariable(asCString &name, asCDataType &type, int stackOffset);
 
 	int GetSpaceNeededForArguments();
 	int GetSpaceNeededForReturnValue();
 	asCString GetDeclaration(asCScriptEngine *engine);
 	int GetLineNumber(int programPosition);
 
-	asCString                name;
-	asCDataType              returnType;
-	asCArray<asCDataType>    parameterTypes;
-	asCArray<int>            inOutFlags;
-	int                      id;
-	int                      scriptSectionIdx;
-	asCArray<asBYTE>         byteCode;
-	asCArray<asCObjectType*> objVariableTypes;
-	asCArray<int>	         objVariablePos;
-	asCArray<int>            lineNumbers;
-	int                      stackNeeded;
-	bool                     isReadOnly;
-
-	asCObjectType *          objectType;
+	asCString                    name;
+	asCDataType                  returnType;
+	asCArray<asCDataType>        parameterTypes;
+	asCArray<int>                inOutFlags;
+	int                          id;
+	int                          scriptSectionIdx;
+	asCArray<asDWORD>            byteCode;
+	asCArray<asCObjectType*>     objVariableTypes;
+	asCArray<int>	             objVariablePos;
+	asCArray<int>                lineNumbers;
+	int                          stackNeeded;
+	bool                         isReadOnly;
+	asCObjectType *              objectType;
+	asCArray<asSScriptVariable*> variables;
 };
 
 END_AS_NAMESPACE

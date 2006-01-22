@@ -1,6 +1,6 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2005 Andreas Jönsson
+   Copyright (c) 2003-2006 Andreas Jönsson
 
    This software is provided 'as-is', without any express or implied 
    warranty. In no event will the authors be held liable for any 
@@ -64,6 +64,7 @@ protected:
 	void WriteDataType(const asCDataType *dt);
 	void WriteObjectType(asCObjectType *ot);
 	void WriteObjectTypeDeclaration(asCObjectType *ot);
+	void WriteGlobalVarPointers();
 
 	void ReadString(asCString *str);
 	void ReadFunction(asCScriptFunction *func);
@@ -71,9 +72,10 @@ protected:
 	void ReadDataType(asCDataType *dt);
 	asCObjectType *ReadObjectType();
 	void ReadObjectTypeDeclaration(asCObjectType *ot);
+	void ReadGlobalVarPointers();
 
-	void WriteByteCode(asBYTE *bc, int length);
-	void ReadByteCode(asBYTE *bc, int length);
+	void WriteByteCode(asDWORD *bc, int length);
+	void ReadByteCode(asDWORD *bc, int length);
 
 	int FindObjectTypeIdx(asCObjectType*);
 	asCObjectType *FindObjectType(int idx);

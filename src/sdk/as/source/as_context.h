@@ -1,6 +1,6 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2005 Andreas Jönsson
+   Copyright (c) 2003-2006 Andreas Jönsson
 
    This software is provided 'as-is', without any express or implied 
    warranty. In no event will the authors be held liable for any 
@@ -43,7 +43,6 @@
 #include "as_thread.h"
 #include "as_array.h"
 #include "as_string.h"
-#include "as_types.h"
 #include "as_objecttype.h"
 #include "as_callfunc.h"
 
@@ -102,6 +101,10 @@ public:
 	int GetCallstackFunction(int index);
 	int GetCallstackLineNumber(int index, int *column);
 
+	int GetVarCount(int stackLevel);
+	const char *GetVarName(int varIndex, int *length, int stackLevel);
+	const char *GetVarDeclaration(int varIndex, int *length, int stackLevel);
+	void *GetVarPointer(int varIndex, int stackLevel);
 
 	int  SetException(const char *descr);
 
@@ -119,7 +122,7 @@ public:
 
 	void DetachEngine();
 
-	void ExecuteNext(bool createRelocTable = false);
+	void ExecuteNext();
 	void CleanStack();
 	void CleanStackFrame();
 	void CleanReturnObject();
@@ -142,15 +145,15 @@ public:
 	bool doAbort;
 	bool externalSuspendRequest;
 	bool isCallingSystemFunction;
+	bool doProcessSuspend;
 
-	asBYTE *byteCode;
+	asDWORD *byteCode;
 
 	asCScriptFunction *currentFunction;
 	asDWORD *stackFramePointer;
 	bool isStackMemoryNotAllocated;
 
-	asDWORD tempReg;
-	asQWORD returnVal;
+	asQWORD register1;
 
 	asCArray<int> callStack;
 	asCArray<asDWORD *> stackBlocks;

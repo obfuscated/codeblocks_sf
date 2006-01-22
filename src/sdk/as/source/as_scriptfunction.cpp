@@ -1,6 +1,6 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2005 Andreas Jönsson
+   Copyright (c) 2003-2006 Andreas Jönsson
 
    This software is provided 'as-is', without any express or implied 
    warranty. In no event will the authors be held liable for any 
@@ -43,6 +43,12 @@
 #include "as_scriptengine.h"
 
 BEGIN_AS_NAMESPACE
+
+asCScriptFunction::~asCScriptFunction()
+{
+	for( asUINT n = 0; n < variables.GetLength(); n++ )
+		delete variables[n];
+}
 
 int asCScriptFunction::GetSpaceNeededForArguments()
 {
@@ -140,6 +146,15 @@ int asCScriptFunction::GetLineNumber(int programPosition)
 			return lineNumbers[i*2+1];
 		}
 	}
+}
+
+void asCScriptFunction::AddVariable(asCString &name, asCDataType &type, int stackOffset)
+{
+	asSScriptVariable *var = new asSScriptVariable;
+	var->name = name;
+	var->type = type;
+	var->stackOffset = stackOffset;
+	variables.PushLast(var);
 }
 
 END_AS_NAMESPACE

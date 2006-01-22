@@ -1,6 +1,6 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2005 Andreas Jönsson
+   Copyright (c) 2003-2006 Andreas Jönsson
 
    This software is provided 'as-is', without any express or implied 
    warranty. In no event will the authors be held liable for any 
@@ -73,6 +73,12 @@
 // AS_MAX_PORTABILITY
 // Disables all platform specific code. Only the asCALL_GENERIC calling 
 // convention will be available in with this flag set.
+
+// AS_ALLOW_UNSAFE_REFERENCES
+// When this flag is defined it is not required to define the in, out, or 
+// inout keywords for parameter references. The compiler will generate code 
+// that passes the true reference to functions. It is however possible to 
+// write scripts that could crash the application due to invalid references.
 
 
 
@@ -237,6 +243,24 @@
 	#endif
 #endif
 
+// Metrowerks CodeWarrior (experimental, let me know if something isn't working)
+#if defined(__MWERKS__)
+	#define MULTI_BASE_OFFSET(x) (*((asDWORD*)(&x)+1))
+	#define HAVE_VIRTUAL_BASE_OFFSET
+	#define VIRTUAL_BASE_OFFSET(x) (*((asDWORD*)(&x)+3))
+	#define THISCALL_RETURN_SIMPLE_IN_MEMORY
+	#define THISCALL_PASS_OBJECT_POINTER_IN_ECX
+	#define ASM_INTEL
+	#define vsnprintf(a, b, c, d) _vsnprintf(a, b, c, d)
+	#define THISCALL_CALLEE_POPS_ARGUMENTS
+	#define COMPLEX_MASK (asOBJ_CLASS_CONSTRUCTOR | asOBJ_CLASS_DESTRUCTOR | asOBJ_CLASS_ASSIGNMENT)
+	#define STDCALL __stdcall
+	#ifdef _M_IX86
+		#define AS_X86
+	#endif
+	#define __int64 long long
+#endif
+
 // GNU C
 #ifdef __GNUC__
 	#define GNU_STYLE_VIRTUAL_METHOD
@@ -272,28 +296,16 @@
 
 #ifdef AS_ALIGN
 	#define	ALIGN(b) (((b)+3)&(~3))
-	#define BCSIZE0	4
-	#define BCSIZE1 8
-	#define BCSIZE2 8
-	#define BCSIZE4 8
-	#define BCSIZE8 12
 #else
 	#define	ALIGN(b) (b)
-	#define BCSIZE0	4
-	#define BCSIZE1 5
-	#define BCSIZE2 6
-	#define BCSIZE4 8
-	#define BCSIZE8 12
 #endif
 
-#define	ARG_B(b) ((asBYTE*)&(b)[0])
-#define	ARG_W(b) ((asWORD*)&(b)[0])
-#define	ARG_DW(b) ((asDWORD*)&(b)[0])
-#define	ARG_QW(b) ((asQWORD*)&(b)[0])	
-#define	BCARG_B(b) ((asBYTE*)&(b)[4])
-#define	BCARG_W(b) ((asWORD*)&(b)[4])
-#define	BCARG_DW(b) ((asDWORD*)&(b)[4])
-#define	BCARG_QW(b) ((asQWORD*)&(b)[4])
+#define	ARG_W(b) ((asWORD*)&b)
+#define	ARG_DW(b) ((asDWORD*)&b)
+#define	ARG_QW(b) ((asQWORD*)&b)	
+#define	BCARG_W(b) ((asWORD*)&(b)[1])
+#define	BCARG_DW(b) ((asDWORD*)&(b)[1])
+#define	BCARG_QW(b) ((asQWORD*)&(b)[1])
 
 
 

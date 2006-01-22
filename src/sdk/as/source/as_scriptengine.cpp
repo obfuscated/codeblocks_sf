@@ -1,6 +1,6 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2005 Andreas Jönsson
+   Copyright (c) 2003-2006 Andreas Jönsson
 
    This software is provided 'as-is', without any express or implied 
    warranty. In no event will the authors be held liable for any 
@@ -36,11 +36,7 @@
 //
 
 
-#ifdef __FreeBSD__
-	#include <stdlib.h>
-#else
-	#include <malloc.h>
-#endif
+#include <malloc.h>
 
 #include "as_config.h"
 #include "as_scriptengine.h"
@@ -1143,9 +1139,11 @@ int asCScriptEngine::RegisterObjectBehaviour(const char *datatype, asDWORD behav
 		if( func.returnType != type )
 			return ConfigError(asINVALID_DECLARATION);
 
+#ifndef AS_ALLOW_UNSAFE_REFERENCES
 		// Verify that the rvalue is marked as in if a reference
 		if( func.parameterTypes[0].IsReference() && func.inOutFlags[0] != 1 )
 			return ConfigError(asINVALID_DECLARATION);
+#endif
 
 		if( behaviour == asBEHAVE_ASSIGNMENT && func.parameterTypes[0].IsEqualExceptConst(type) )
 		{
@@ -1249,12 +1247,6 @@ int asCScriptEngine::RegisterGlobalBehaviour(asDWORD behaviour, const char *decl
 		// Verify that at least one of the parameters is a registered type
 		if( !(func.parameterTypes[0].GetTokenType() == ttIdentifier) &&
 			!(func.parameterTypes[1].GetTokenType() == ttIdentifier) )
-			return ConfigError(asINVALID_DECLARATION);
-
-		// Verify that parameters by reference are marked as 'in'
-		// TODO: Allow 'out' references as well.
-		if( (func.parameterTypes[0].IsReference() && func.inOutFlags[0] != 1) ||
-			(func.parameterTypes[1].IsReference() && func.inOutFlags[1] != 1) )
 			return ConfigError(asINVALID_DECLARATION);
 
 		// TODO: Verify that the operator hasn't been registered with the same parameters already
@@ -2257,11 +2249,11 @@ void asCScriptEngine::CallGlobalFunction(void *param1, void *param2, asSSystemFu
 
 void *asCScriptEngine::CallAlloc(asCObjectType *type)
 {
-	void *(*custom_alloc)(asUINT);
+	asALLOCFUNC_t custom_alloc;
 	if( type->beh.alloc )
 	{
 		asSSystemFunctionInterface *intf = systemFunctionInterfaces[-type->beh.alloc - 1];
-		custom_alloc = (void *(*)(asUINT))intf->func;
+		custom_alloc = (asALLOCFUNC_t)intf->func;
 	}
 	else
 		custom_alloc = global_alloc;
@@ -2271,11 +2263,11 @@ void *asCScriptEngine::CallAlloc(asCObjectType *type)
 
 void asCScriptEngine::CallFree(asCObjectType *type, void *obj)
 {
-	void (*custom_free)(void *);
+	asFREEFUNC_t custom_free;
 	if( type->beh.free )
 	{
 		asSSystemFunctionInterface *intf = systemFunctionInterfaces[-type->beh.free - 1];
-		custom_free = (void (*)(void *))intf->func;
+		custom_free = (asFREEFUNC_t)intf->func;
 	}
 	else
 		custom_free = global_free;
