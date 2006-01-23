@@ -13,6 +13,7 @@
 //commit 1/2/2006 7:38 PM
 //commit 1/7/2006 9:05 PM v0.4.4
 //commit  1/10/2006 5 PM v0.4.8
+//commit 1/23/2006 v0.4.13
 
 #define NOT !
 
@@ -952,10 +953,10 @@ void wxKeyBinder::DetachAll()
     wxWindow* pwin;
 	wxLogDebug(wxT("wxKeyBinder::DetachAll - detaching from all my [%d] targets"), GetAttachedWndCount());
 
-	// delete all handlers (they will automatically remove themselves from
-	// event handler chains)
-    //	for (int i=0; i < (int)m_arrHandlers.GetCount(); i++)
-    //		delete (wxBinderEvtHandler*)m_arrHandlers.Item(i);
+	//- delete all handlers (they will automatically remove themselves from
+	//- event handler chains)
+    //-	for (int i=0; i < (int)m_arrHandlers.GetCount(); i++)
+    //-		delete (wxBinderEvtHandler*)m_arrHandlers.Item(i);
 
 	for (int i=0; i < (int)m_arrHandlers.GetCount(); i++)
 	 {

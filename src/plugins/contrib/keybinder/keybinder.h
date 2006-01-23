@@ -12,6 +12,7 @@
 //commit 12/16/2005 8:54 PM
 //commit 1/7/2006 9:04 PM v0.4.4
 //commit 1/10/2006 5PM v0.4.8
+//commit 1/23/2006 v0.4.13
 
 #define NOT !
 
@@ -102,6 +103,14 @@ public:
 
 	virtual ~wxKeyBind() {}
 
+    // Compare two wxKeyBinds       //v0.4.13
+	bool operator==(const wxKeyBind& tocomp) {
+	    if ( m_nFlags != tocomp.m_nFlags)
+            return false;
+        if ( m_nKeyCode != tocomp.m_nKeyCode )
+            return false;
+		return true;
+	}
 
 
 public:
@@ -281,6 +290,22 @@ public:
 	// Destructor
 	virtual ~wxCmd() {}
 
+    // Compare two wxCmds       //v0.4.13
+	bool operator==(const wxCmd& tocomp) {
+	    if ( m_strName != tocomp.m_strName)
+            return false;
+        if ( m_strDescription != tocomp.m_strDescription )
+            return false;
+        if ( m_nId != tocomp.m_nId)
+            return false;
+        if ( m_nShortcuts != tocomp.m_nShortcuts)
+            return false;
+		for (int i=0; i < m_nShortcuts; i++)
+			if ( m_keyShortcut[i] == tocomp.m_keyShortcut[i] )
+                continue;
+        else return false;
+		return true;
+	}
 
 public:
 
@@ -452,6 +477,17 @@ public:
 		DeepCopy(tocopy);
 		return *this;
 	}
+	bool operator==(const wxCmdArray &tocomp) { //v0.4.13
+	    if ( (not m_arr.GetCount()) || (not tocomp.m_arr.GetCount()) )
+            return false;
+        if ( m_arr.GetCount() != tocomp.m_arr.GetCount() )
+            return false;
+		for (size_t i=0; i < m_arr.GetCount(); i++)
+			if ( *((wxCmd*)m_arr.Item(i)) == *((wxCmd*)tocomp.m_arr.Item(i)) )
+                continue;
+        else return false;
+		return true;
+	}
 
 	void Add(wxCmd *p)			{ m_arr.Add(p); }
 	void Remove(int n);
@@ -459,7 +495,8 @@ public:
 
 	int GetCount() const		{ return m_arr.GetCount(); }
 	wxCmd *Item(int n) const	{ return (wxCmd *)m_arr.Item(n); }
-};
+
+};//wxCmdArray
 
 
 class wxKeyBinder;
@@ -593,7 +630,7 @@ public:		// accessors
 		{ return m_pGlobalBinder; }
 	wxEvtHandler *GetGlobalHandler() const
 		{ return m_pGlobalHdl ; }
-};
+};//wxBinderApp
 
 
 
@@ -697,6 +734,14 @@ public:		// miscellaneous
 	wxKeyBinder &operator=(const wxKeyBinder &tocopy) {
 		DeepCopy(tocopy);
 		return *this;
+	}
+    //v0.4.13 compare two wxCmd arrays        //v0.4.13
+	bool operator==(const wxKeyBinder &tocomp) {
+        for (int i=0; i < (int)m_arrCmd.GetCount(); i++)
+			if (*m_arrCmd.Item(i) == *tocomp.m_arrCmd.Item(i))
+                continue;
+            else return false;
+        return false;
 	}
 
 	//! Resets everything associated with this class.
@@ -848,7 +893,8 @@ public:		// miscellaneous
 private:
     void OnWinClosed(wxCloseEvent& event); //+v0.4.7
 	DECLARE_CLASS(wxKeyBinder)
-};
+};//wxKeyBinder
+// ----------------------------------------------------------------------------
 
 
 
@@ -892,6 +938,18 @@ public:
 		return *this;
 	}
 
+	//v0.4.13 compare two keyprofile array contents     //v0.4.13
+	bool operator==(const wxKeyProfile& tocomp) {
+        if (m_strName != tocomp.m_strName)
+            return false;
+        if (m_strDescription != tocomp.m_strDescription)
+            return false;
+        // compare wxKeyBinders contained within this wxKeyProfile
+        if (not (m_arrCmd == tocomp.m_arrCmd) )
+            return false;
+        return true;
+	}//operator==
+
 public:		// miscellaneous
 
 	void SetName(const wxString &name) { m_strName=name; }
@@ -906,7 +964,7 @@ public:		// miscellaneous
 
 private:
 	DECLARE_CLASS(wxKeyProfile)
-};
+};//wxKeyProfile
 
 
 
@@ -984,6 +1042,16 @@ public:
 		DeepCopy(tocopy);
 		return *this;
 	}
+    //v0.4.13 compare two wxKeyProfileArray contents        ///v0.4.13
+	bool operator==(const wxKeyProfileArray &tocomp) {
+        if  ( (not GetCount()) || (not tocomp.GetCount()) )
+            return false;
+        const wxKeyProfile* p1 = Item(0);
+        const wxKeyProfile* p2 = tocomp.Item(0);
+        // compare the wxKeyProfile name and description
+        if (not( (wxKeyProfile&)*p1 == (wxKeyProfile&)*p2) ) return false;
+        return true;
+	}
 
 	//! Deletes all the objects of the array.
 	//! Unlike #Clear() this function also deletes the objects and
@@ -1037,7 +1105,8 @@ public:
 	//! The keyprofiles entries are detected using the wxKEYPROFILE_CONFIG_PREFIX
 	//! prefix string.
 	bool Load(wxConfigBase *p, const wxString &key = wxEmptyString);
-};
+
+};//wxKeyProfileArray
 
 
 

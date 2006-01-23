@@ -16,6 +16,8 @@
 //commit 1/11/2006 1 PM v0.4.9
 //commit 1/11/2006 3 PM v0.4.10
 //commit 1/17/2006 v0.4.11
+//commit 1/23/2006 v0.4.13
+
 
 
 // The majority of this code was lifted from wxKeyBinder and
@@ -60,10 +62,10 @@ cbKeyBinder::cbKeyBinder()
 	//ctor
 	m_PluginInfo.name = _T("cbKeyBinder");
 	m_PluginInfo.title = _("Keyboard shortcuts configuration");
-	m_PluginInfo.version = _T("0.4.11");
-	m_PluginInfo.description <<_("CodeBlocks KeyBinder\n")
+	m_PluginInfo.version = _T("0.4.13");
+	m_PluginInfo.description <<_("Code::Blocks KeyBinder\n")
                             << _("NOTE: Ctrl+Alt+{UP|DOWN} unsupported.\n")
-                            << _("1/17/2006 9\n");
+                            << _("1/23/2006,4\n");
 	m_PluginInfo.author = _T("Pecan && Mispent Intent");
 	m_PluginInfo.authorEmail = _T("");
 	m_PluginInfo.authorWebsite = _T("");
@@ -119,7 +121,7 @@ void cbKeyBinder::OnAttach()
 	// Add window names to which keybinder may attach
 	// a "*" allows attaching to ALL windows for debugging
    #if LOGGING
-    wxKeyBinder::usableWindows.Add(_T("*"));                 //+v0.4.4
+    //wxKeyBinder::usableWindows.Add(_T("*"));                 //+v0.4.4
    #endif
     wxKeyBinder::usableWindows.Add(_T("sciwindow"));           //+v0.4.4
     wxKeyBinder::usableWindows.Add(_T("flat notebook"));       //+v0.4.4
@@ -154,12 +156,6 @@ cbConfigurationPanel* cbKeyBinder::GetConfigurationPanel(wxWindow* parent)
 	//NotImplemented(_T("cbKeyBinder::Configure()"));
     if(!m_IsAttached) {	return 0;}
 
-    // This calls the key definition dialog. This routine could be invoked
-    // via a menuitem if desired, but its just as simple
-    // to assign a key to the plugin via the plugin dialog itself.
-    // Then, when saved to a config file, the key will be enabled at
-    // C::B plugin initialization.
-
     //call configuation dialogue
     return OnKeybindings(parent);
 }
@@ -190,7 +186,7 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
     //memorize the key file name as {%HOME%}\cbKeyBinder+{vers}.ini
     m_sKeyFilename = ConfigManager::GetConfigFolder();
 
-    //*bug* GTK GetConfigFolder is return double "//?, eg, "/home/pecan//.codeblocks"
+    //*bug* GTK GetConfigFolder is returning double "//?, eg, "/home/pecan//.codeblocks"
     LOGIT(_T("GetConfigFolder() is returning [%s]"), m_sKeyFilename.GetData());
 
     // remove the double //s from filename //+v0.4.11
@@ -249,7 +245,7 @@ void cbKeyBinder::Rebind()
     // called when we can't do anything else. Makes a virgin key profile
     // array from the C::B menu items.
 
- 	wxKeyProfile *pPrimary;//-, *pSecondary;
+ 	wxKeyProfile *pPrimary;
 
 	pPrimary = new wxKeyProfile(wxT("Primary"), wxT("Our primary keyprofile"));
 	pPrimary->ImportMenuBarCmd(m_pMenuBar);
@@ -257,24 +253,6 @@ void cbKeyBinder::Rebind()
 	#if LOGGING
         LOGIT(_T("cbKB:ReBind:Imported"));
     #endif
-
-	//pSecondary = new wxKeyProfile(*pPrimary);
-	//-pSecondary = new wxKeyProfile(wxT("Secondary"), wxT("Our Secondary keyprofile"));
-
-	//pSecondary->SetName(wxT("Secondary"));
-	//pSecondary->SetDesc(wxT("Our secondary keyprofile"));
-
-	// re-import the current menu items
-    //-pSecondary->ImportMenuBarCmd(m_pMenuBar);
-
-        // The following lines from the original wxKeyBinder demo
-        //-	// just to show some features....
-        //-	pPrimary->AddShortcut(Minimal_Shortcut1, wxKeyBind(wxT("CTRL+SHIFT+E")));
-        //-
-        //-	// and to make some differences between the two key profiles
-        //-	pSecondary->GetCmd(Minimal_Shortcut1)->GetShortcut(0)->Set(wxKeyBind(wxT("ALT+F10")));
-        //-	pSecondary->GetCmd(Minimal_Shortcut2)->GetShortcut(0)->Set(wxKeyBind(wxT("ALT+F11")));
-        //-	pSecondary->GetCmd(Minimal_Shortcut3)->GetShortcut(0)->Set(wxKeyBind(wxT("ALT+F12")));
 
 	// remove keyprofiles from our array
     for (int i=0; i<m_pKeyProfArr->GetCount();i++)
@@ -286,7 +264,6 @@ void cbKeyBinder::Rebind()
 
 	wxMenuCmd::Register(m_pMenuBar);
 	m_pKeyProfArr->Add(pPrimary);
-	//-pArr->Add(pSecondary);
 
 	// attach to this window the default primary keybinder
 	m_pKeyProfArr->SetSelProfile(0);
@@ -305,16 +282,6 @@ void cbKeyBinder::Rebind()
 // ----------------------------------------------------------------------------
 void cbKeyBinder::UpdateArr(wxKeyProfileArray &r)
 {
-    //=====================================================================//
-    // The following warnings don't apply anymore because this
-    // keybinder.h::wxKeyBinder::Attach() has been caged.
-    // It can only attach to SCIwindows and the C::B main window
-    //=====================================================================//
-
-    //=================================================================//
-    //***do not use this routine until the dialog has been dismissed***//
-    //=================================================================//
-
     #if LOGGING
       LOGIT(_T("UpdateArr::Begin"));
     #endif
@@ -327,11 +294,7 @@ void cbKeyBinder::UpdateArr(wxKeyProfileArray &r)
 
         // VERY IMPORTANT: we should not use this function when we
         //                 have temporary children... they would be
-        //                 added to the binder and when
-        //                 deleted, the binder will reference invalid memory...
-
-        // either of the following two lines work
-        //-r.GetSelProfile()->AttachRecursively(Manager::Get()->GetAppWindow());
+        //                 added to the binder
 
         r.GetSelProfile()->AttachRecursively(Manager::Get()->GetAppWindow());
         r.UpdateAllCmd();		// necessary //+v04.11
@@ -370,63 +333,16 @@ cbConfigurationPanel* cbKeyBinder::OnKeybindings(wxWindow* parent)
 	if (baddprofile) mode |= wxKEYBINDER_SHOW_ADDREMOVE_PROFILE;
 	if (bprofileedit) mode |= wxKEYBINDER_ENABLE_PROFILE_EDITING;
 
-//	int exitcode, sel;
 
-    //=====================================================================//
-	{ //<-------- Block declaration to enclose the dlg allocation -----------
+    MyDialog* dlg = new MyDialog(this, *m_pKeyProfArr, parent,
+        wxT("Keybindings"), mode);
 
-        // we need to destroy MyDialog *before* the call to UpdateArr:()
-		// otherwise the call to wxKeyBinder::AttachRecursively() which
-		// is done inside UpdateArr() would attach to the binder all
-		// MyDialog subwindows which are children of the main frame.
-		// then, when the dialog is destroyed, wxKeyBinder holds
-		// invalid pointers which will provoke a crash !!
+    // enable|disable keyprofiles combo box
+    dlg->m_p->EnableKeyProfiles(bprofiles);
 
-		MyDialog* dlg = new MyDialog(this, *m_pKeyProfArr, parent,
-		    wxT("Keybindings"), mode);
+    // when the configuration panel is closed with OK, OnKeybindingsDialogDone() will be called
+    return dlg;
 
-        //following had no effect on crash problem
-        //guanantee keyBinder won't attach dialog window
-        dlg->SetExtraStyle(wxWS_EX_TRANSIENT);
-
-		// enable|disable keyprofiles combo box
-		dlg->m_p->EnableKeyProfiles(bprofiles);
-		// when the configuration panel is closed with OK, OnKeybindingsDialogDone() will be called
-		return dlg;
-
-//		if ((exitcode = dlg.ShowModal()) == wxID_OK)
-//		 {
-//			// update our array (we gave a copy of it to MyDialog)
-//			*m_pKeyProfArr = dlg.m_p->GetProfiles();
-//		 }
-
-		 // Make sure we dont bind to the dialog window
-		 // wxWdigets wxWindow Documentation states:
-         // The default close event handler for wxDialog simulates a Cancel command,
-         // generating a wxID_CANCEL event. Since the handler for this cancel event
-         // might itself call Close, there is a check for infinite looping. The default
-         // handler for wxID_CANCEL hides the dialog (if modeless) or calls EndModal(wxID_CANCEL)
-         // (if modal). In other words, by default, the DIALOG IS NOT DESTROYED (it might have
-         // been created on the stack, so the assumption of dynamic creation cannot be made).
-
-	}//**here, dlg is destroyed**<------- can now use UpdateArr(...)
-     //============================================================//
-//	if (exitcode == wxID_OK)
-//	 {
-//        //update Windows/EventHanders from changed wxKeyProfile
-//        UpdateArr(*m_pKeyProfArr) ;
-//		//Save the key profiles to file
-//        OnSave();
-//	    // select the right keyprofile
-//		sel = m_pKeyProfArr->GetSelProfileIdx();
-//
-//		#if LOGGING
-//            wxLogDebug(wxString::Format(wxT("Selected the #%d profile (named '%s')."),
-//                sel+1, m_pKeyProfArr->Item(sel)->GetName().c_str()),
-//                wxT("Profile selected"));
-//        #endif
-//
-//	 }//if
 }//OnKeybindings
 // ----------------------------------------------------------------------------
 void cbKeyBinder::OnKeybindingsDialogDone(MyDialog* dlg)
@@ -435,18 +351,41 @@ void cbKeyBinder::OnKeybindingsDialogDone(MyDialog* dlg)
     // The configuration panel has run its OnApply() function.
     // So here it's like we were using ShowModal() and it just returned wxID_OK.
 
-    // update our array (we gave a copy of it to MyDialog)
-    *m_pKeyProfArr = dlg->m_p->GetProfiles();
+    // Apply user keybinder changes to key profile array as if the
+    //  old EVT_BUTTON(wxID_APPLY, wxKeyConfigPanel::OnApplyChanges)
+    //  in keybinder.cpp had been hit
+
+    bool modified = false;
+    dlg->m_p->ApplyChanges();
+
+    // check if any key modifications //v0.4.13
+    wxKeyProfileArray* pKBA = new wxKeyProfileArray;
+    *pKBA = dlg->m_p->GetProfiles();
+
+    if (*pKBA == *m_pKeyProfArr)
+        LOGIT(_T("DialogDone: NO key changes"));
+    else
+    {   // update our array (we gave a copy of it to MyDialog)
+        modified = true;
+        *m_pKeyProfArr = dlg->m_p->GetProfiles();
+        LOGIT(_T("DialogDone keys MODIFIED"));
+    }
+    delete pKBA;
+    delete dlg;
 
     //update Windows/EventHanders from changed wxKeyProfile
-    UpdateArr(*m_pKeyProfArr) ;
-    //Save the key profiles to file
-    OnSave();
+    if ( modified )
+    {   // update attaches and menu items
+        UpdateArr(*m_pKeyProfArr) ;
+        //Save the key profiles to external storage
+        OnSave();
+    }//fi
+
     // select the right keyprofile
     #if LOGGING
-    int sel =
+        int sel =
     #endif
-        m_pKeyProfArr->GetSelProfileIdx();
+    m_pKeyProfArr->GetSelProfileIdx();
 
     #if LOGGING
         wxLogDebug(wxString::Format(wxT("Selected the #%d profile (named '%s')."),
@@ -558,14 +497,13 @@ void cbKeyBinder::OnSave()
     // Save the key profile(s) to a file
 
     // delete the key definition file (removes invalid menuitem id's)
-    // Removes file, returning true if successful.
     bool done = ::wxRemoveFile(m_sKeyFilename);
      if (done)
-      {
+    {
         #if LOGGING
           { LOGIT(_T("cbKB:File %s deleted."),m_sKeyFilename.GetData()); }
         #endif
-      }//if (done..
+    }//if (done..
 
 	wxString path = m_sKeyFilename;
 	//path.Replace(_T(".ini"),_T(""));
@@ -626,9 +564,9 @@ MyDialog::MyDialog(cbKeyBinder* binder, wxKeyProfileArray &prof,
 	main->SetSizeHints(this);
 
 	// this is a little modification to make dlg look nicer
-//	wxSize sz(GetSizer()->GetMinSize());
-//	SetSize(-1, -1, (int)(sz.GetWidth()*1.3), (int)(sz.GetHeight()*1.1));
-//	CenterOnScreen();
+	//wxSize sz(GetSizer()->GetMinSize());
+	//SetSize(-1, -1, (int)(sz.GetWidth()*1.3), (int)(sz.GetHeight()*1.1));
+	//CenterOnScreen();
 }
 
 // ----------------------------------------------------------------------------
