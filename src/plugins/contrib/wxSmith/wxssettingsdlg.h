@@ -6,7 +6,6 @@
 //(*Headers(wxsSettingsDlg)
 #include <wx/button.h>
 #include <wx/combobox.h>
-#include <wx/dialog.h>
 #include <wx/intl.h>
 #include <wx/notebook.h>
 #include <wx/panel.h>
@@ -49,7 +48,6 @@ class wxsSettingsDlg: public cbConfigurationPanel
         wxRadioButton* TIcons16;
         wxRadioButton* TIcons32;
         wxSpinCtrl* PrevFetchDelay;
-        wxButton* BtnCancel;
         //*)
 
     private:

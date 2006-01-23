@@ -1,8 +1,6 @@
 <resource>
-    <object class="cbConfigurationPanel" name="wxsSettingsDlg">
-        <title>wxSmith Configuration</title>
-        <centered>1</centered>
-        <object class="wxFlexGridSizer" variable="FlexGridSizer1" member="yes">
+    <object class="wxPanel" name="wxsSettingsDlg">
+        <object class="wxFlexGridSizer">
             <rows>0</rows>
             <cols>1</cols>
             <vgap>0</vgap>
@@ -18,7 +16,7 @@
                         <label>Editor</label>
                         <selected>1</selected>
                         <object class="wxPanel" name="ID_PANEL1" variable="Panel1" member="no">
-                            <object class="wxFlexGridSizer" variable="FlexGridSizer2" member="yes">
+                            <object class="wxFlexGridSizer">
                                 <rows>0</rows>
                                 <cols>2</cols>
                                 <vgap>0</vgap>
@@ -93,7 +91,7 @@
                                     <option>1</option>
                                     <border>5</border>
                                     <flag>wxALIGN_CENTER</flag>
-                                    <object class="wxFlexGridSizer" variable="FlexGridSizer3" member="yes">
+                                    <object class="wxFlexGridSizer">
                                         <rows>0</rows>
                                         <cols>0</cols>
                                         <vgap>0</vgap>
@@ -129,7 +127,7 @@
                                     <option>1</option>
                                     <border>5</border>
                                     <flag>wxALIGN_CENTER</flag>
-                                    <object class="wxFlexGridSizer" variable="FlexGridSizer4" member="yes">
+                                    <object class="wxFlexGridSizer">
                                         <rows>0</rows>
                                         <cols>0</cols>
                                         <vgap>0</vgap>
@@ -159,7 +157,7 @@
                     <object class="notebookpage">
                         <label>Advanced</label>
                         <object class="wxPanel" name="ID_PANEL2" variable="Panel2" member="no">
-                            <object class="wxFlexGridSizer" variable="FlexGridSizer5" member="yes">
+                            <object class="wxFlexGridSizer">
                                 <rows>0</rows>
                                 <cols>0</cols>
                                 <vgap>0</vgap>

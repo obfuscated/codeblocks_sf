@@ -28,6 +28,10 @@ wxsCustomWidget::~wxsCustomWidget()
 wxString wxsCustomWidget::GetProducingCode(const wxsCodeParams& Params)
 {
     wxString Result = CreatingCode;
+    // TODO: This may lead to some errors when string properties
+    //       will contain one of items declared before, replace this code
+    //       with better scanner.
+    // TODO: Replace $(...) and leave ...
     wxsCodeReplace(Result,_T("$(POS)"),Params.Pos);
     wxsCodeReplace(Result,_T("$(SIZE)"),Params.Size);
     wxsCodeReplace(Result,_T("$(STYLE)"),Style);
@@ -57,6 +61,7 @@ bool wxsCustomWidget::MyXmlLoad()
     {
         ClassName = XmlGetVariable(_T("class"));
         CreatingCode = XmlGetVariable(_T("creating_code"));
+        Style = XmlGetVariable(_T("style"));
     }
     else
     {
@@ -97,6 +102,7 @@ bool wxsCustomWidget::MyXmlSave()
     {
         XmlSetVariable(_T("class"),ClassName);
         XmlSetVariable(_T("creating_code"),CreatingCode);
+        XmlSetVariable(_T("style"),Style);
     }
     else
     {

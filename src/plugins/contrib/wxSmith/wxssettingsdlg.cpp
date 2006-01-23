@@ -8,9 +8,9 @@
 
 BEGIN_EVENT_TABLE(wxsSettingsDlg,wxPanel)
 //(*EventTable(wxsSettingsDlg)
-    EVT_COMBOBOX(XRCID("ID_COMBOBOX1"),wxsSettingsDlg::OnDragAssistTypeSelect)
-    EVT_BUTTON(XRCID("ID_BUTTON1"),wxsSettingsDlg::OnDragTargetColClick)
-    EVT_BUTTON(XRCID("ID_BUTTON2"),wxsSettingsDlg::OnDragParentColClick)
+EVT_COMBOBOX(XRCID("ID_COMBOBOX1"),wxsSettingsDlg::OnDragAssistTypeSelect)
+EVT_BUTTON(XRCID("ID_BUTTON1"),wxsSettingsDlg::OnDragTargetColClick)
+EVT_BUTTON(XRCID("ID_BUTTON2"),wxsSettingsDlg::OnDragParentColClick)
 //*)
 END_EVENT_TABLE()
 
@@ -27,7 +27,6 @@ wxsSettingsDlg::wxsSettingsDlg(wxWindow* parent,wxWindowID id)
     TIcons16 = XRCCTRL(*this,"ID_RADIOBUTTON3",wxRadioButton);
     TIcons32 = XRCCTRL(*this,"ID_RADIOBUTTON4",wxRadioButton);
     PrevFetchDelay = XRCCTRL(*this,"ID_SPINCTRL1",wxSpinCtrl);
-    BtnCancel = XRCCTRL(*this,"ID_BUTTON4",wxButton);
     //*)
 
     long ColTarget = wxsDWTargetCol;
