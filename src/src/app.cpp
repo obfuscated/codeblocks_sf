@@ -561,7 +561,7 @@ void CodeBlocksApp::ShowSplashScreen()
 			m_pSplash = new wxSplashScreen(bitmap,
 										wxSPLASH_CENTRE_ON_SCREEN| wxSPLASH_NO_TIMEOUT,
 										6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
-										wxBORDER_NONE | wxFRAME_NO_TASKBAR | wxSTAY_ON_TOP);
+										wxBORDER_NONE | wxFRAME_NO_TASKBAR);
 		}
 		Manager::ProcessPendingEvents();
 	}
