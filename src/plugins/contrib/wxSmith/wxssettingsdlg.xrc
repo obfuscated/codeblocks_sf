@@ -4,28 +4,9 @@
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
-        <object class="wxStaticText">
-          <label>wxSmith settings</label>
-          <fg>#FFFFFF</fg>
-          <bg>#004080</bg>
-          <font>
-            <size>14</size>
-            <family>default</family>
-            <style>normal</style>
-            <weight>bold</weight>
-            <underlined>0</underlined>
-          </font>
-        </object>
-        <flag>wxEXPAND</flag>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStaticLine"/>
-        <flag>wxEXPAND</flag>
-      </object>
-      <object class="sizeritem">
         <option>1</option>
         <border>8</border>
-        <flag>wxTOP|wxGROW</flag>
+        <flag>wxLEFT|wxGROW</flag>
         <object class="wxNotebook" name="ID_NOTEBOOK1">
           <object class="notebookpage">
             <label>Editor</label>
@@ -41,6 +22,7 @@
                   <border>5</border>
                   <flag>wxALL|wxALIGN_CENTER</flag>
                   <object class="wxStaticText" name="ID_STATICTEXT2">
+                    
                     <label>Drag Assistance Type</label>
                   </object>
                 </object>
@@ -49,12 +31,15 @@
                   <border>5</border>
                   <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
                   <object class="wxComboBox" name="ID_COMBOBOX1">
+                    
                     <selection>2</selection>
+                    
                     <content>
                       <item>None</item>
                       <item>Simple</item>
                       <item>Colour Mix</item>
                     </content>
+                    
                     <style>wxCB_READONLY</style>
                   </object>
                 </object>
@@ -63,6 +48,7 @@
                   <border>5</border>
                   <flag>wxALL|wxALIGN_CENTER</flag>
                   <object class="wxStaticText" name="ID_STATICTEXT3">
+                    
                     <label>Drag target colour</label>
                   </object>
                 </object>
@@ -71,6 +57,7 @@
                   <border>5</border>
                   <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
                   <object class="wxButton" name="ID_BUTTON1">
+                    
                     <label>...</label>
                   </object>
                 </object>
@@ -79,6 +66,7 @@
                   <border>5</border>
                   <flag>wxALL|wxALIGN_CENTER</flag>
                   <object class="wxStaticText" name="ID_STATICTEXT4">
+                    
                     <label>Drag Parent Colour</label>
                   </object>
                 </object>
@@ -87,6 +75,7 @@
                   <border>5</border>
                   <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
                   <object class="wxButton" name="ID_BUTTON2">
+                    
                     <label>...</label>
                   </object>
                 </object>
@@ -95,6 +84,7 @@
                   <border>5</border>
                   <flag>wxALL|wxALIGN_CENTER</flag>
                   <object class="wxStaticText" name="ID_STATICTEXT5">
+                    
                     <label>Palette icon size</label>
                   </object>
                 </object>
@@ -112,7 +102,9 @@
                       <border>5</border>
                       <flag>wxALL|wxALIGN_CENTER</flag>
                       <object class="wxRadioButton" name="ID_RADIOBUTTON1">
+                        
                         <label>16x16</label>
+                        
                         <style>wxRB_GROUP</style>
                       </object>
                     </object>
@@ -121,6 +113,7 @@
                       <border>5</border>
                       <flag>wxALL|wxALIGN_CENTER</flag>
                       <object class="wxRadioButton" name="ID_RADIOBUTTON2">
+                        
                         <label>32x32</label>
                       </object>
                     </object>
@@ -131,6 +124,7 @@
                   <border>5</border>
                   <flag>wxALL|wxALIGN_CENTER</flag>
                   <object class="wxStaticText" name="ID_STATICTEXT6">
+                    
                     <label>Tool icon size</label>
                   </object>
                 </object>
@@ -148,7 +142,9 @@
                       <border>5</border>
                       <flag>wxALL|wxALIGN_CENTER</flag>
                       <object class="wxRadioButton" name="ID_RADIOBUTTON3">
+                        
                         <label>16x16</label>
+                        
                         <style>wxRB_GROUP</style>
                       </object>
                     </object>
@@ -157,6 +153,7 @@
                       <border>5</border>
                       <flag>wxALL|wxALIGN_CENTER</flag>
                       <object class="wxRadioButton" name="ID_RADIOBUTTON4">
+                        
                         <label>32x32</label>
                       </object>
                     </object>
@@ -178,6 +175,7 @@
                   <border>5</border>
                   <flag>wxALL|wxALIGN_CENTER</flag>
                   <object class="wxStaticText" name="ID_STATICTEXT1">
+                    
                     <label>Preview fetch delay</label>
                   </object>
                 </object>
@@ -186,7 +184,9 @@
                   <border>5</border>
                   <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
                   <object class="wxSpinCtrl" name="ID_SPINCTRL1">
+                    
                     <value>50</value>
+                    
                     <max>500</max>
                   </object>
                 </object>
@@ -196,6 +196,5 @@
         </object>
       </object>
     </object>
-    <size>500,500</size>
   </object>
 </resource>

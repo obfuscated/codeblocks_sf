@@ -4,25 +4,6 @@
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
-        <object class="wxStaticText">
-          <label>Code-completion and class-browser</label>
-          <fg>#FFFFFF</fg>
-          <bg>#004080</bg>
-          <font>
-            <size>14</size>
-            <family>default</family>
-            <style>normal</style>
-            <weight>bold</weight>
-            <underlined>0</underlined>
-          </font>
-        </object>
-        <flag>wxEXPAND</flag>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStaticLine"/>
-        <flag>wxEXPAND</flag>
-      </object>
-      <object class="sizeritem">
         <object class="wxNotebook">
           <object class="notebookpage">
             <label>Code completion</label>
@@ -293,7 +274,7 @@
           </object>
         </object>
         <option>1</option>
-        <flag>wxTOP|wxEXPAND</flag>
+        <flag>wxLEFT|wxEXPAND</flag>
         <border>8</border>
       </object>
     </object>

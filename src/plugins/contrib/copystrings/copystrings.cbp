@@ -1,65 +1,66 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-    <FileVersion major="1" minor="2" />
-    <Project>
-        <Option title="copystrings" />
-        <Option compiler="0" />
-        <Build>
-            <Target title="default">
-                <Option output="..\..\..\devel\share\CodeBlocks\plugins\copystrings.dll" />
-                <Option type="3" />
-                <Option compiler="0" />
-            </Target>
-            <Environment>
-                <Variable name="WX_CFG" value="" />
-                <Variable name="WX_SUFFIX" value="u" />
-            </Environment>
-        </Build>
-        <Compiler>
-            <Add option="-Wall" />
-            <Add option="-g" />
-            <Add option="-pipe" />
-            <Add option="-mthreads" />
-            <Add option="-fmessage-length=0" />
-            <Add option="-fexceptions" />
-            <Add option="-Winvalid-pch" />
-            <Add option="-D__GNUWIN32__" />
-            <Add option="-DWXUSINGDLL" />
-            <Add option="-DBUILDING_PLUGIN" />
-            <Add option="-D__WXMSW__" />
-            <Add option="-DHAVE_W32API_H" />
-            <Add option="-DwxUSE_UNICODE" />
-            <Add directory="$(#WX.include)" />
-            <Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
-            <Add directory="$(#WX)\contrib\include" />
-            <Add directory="$(#CB.include)" />
-            <Add directory="$(#CB.include)\tinyxml" />
-            <Add directory="$(#CB.include)\wxscintilla\include" />
-            <Add directory="$(#CB)\sdk" />
-            <Add directory="$(#CB)\sdk\tinyxml" />
-            <Add directory="$(#CB)\sdk\wxscintilla\include" />
-        </Compiler>
-        <ResourceCompiler>
-            <Add directory="$(#WX.include)" />
-        </ResourceCompiler>
-        <Linker>
-            <Add library="codeblocks" />
-            <Add library="wxscintilla" />
-            <Add library="wxmsw26$(WX_SUFFIX)" />
-            <Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
-            <Add directory="$(#CB.lib)" />
-            <Add directory="$(#CB)\devel" />
-            <Add directory="$(#CB)\sdk\tinyxml" />
-        </Linker>
-        <Unit filename="copystrings.cpp">
-            <Option compilerVar="CPP" />
-            <Option target="default" />
-        </Unit>
-        <Unit filename="copystrings.h">
-            <Option compilerVar="CPP" />
-            <Option compile="0" />
-            <Option link="0" />
-            <Option target="default" />
-        </Unit>
-    </Project>
+	<FileVersion major="1" minor="2" />
+	<Project>
+		<Option title="copystrings" />
+		<Option compiler="0" />
+		<Build>
+			<Target title="default">
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\copystrings.dll" />
+				<Option type="3" />
+				<Option compiler="0" />
+				<Option includeInTargetAll="1" />
+			</Target>
+			<Environment>
+				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_SUFFIX" value="u" />
+			</Environment>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-g" />
+			<Add option="-pipe" />
+			<Add option="-mthreads" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-D__GNUWIN32__" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add directory="$(#WX.include)" />
+			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX)\contrib\include" />
+			<Add directory="$(#CB.include)" />
+			<Add directory="$(#CB.include)\tinyxml" />
+			<Add directory="$(#CB.include)\wxscintilla\include" />
+			<Add directory="$(#CB)\sdk" />
+			<Add directory="$(#CB)\sdk\tinyxml" />
+			<Add directory="$(#CB)\sdk\wxscintilla\include" />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WX.include)" />
+		</ResourceCompiler>
+		<Linker>
+			<Add library="codeblocks" />
+			<Add library="wxscintilla" />
+			<Add library="wxmsw26$(WX_SUFFIX)" />
+			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
+			<Add directory="$(#CB.lib)" />
+			<Add directory="$(#CB)\devel" />
+			<Add directory="$(#CB)\sdk\tinyxml" />
+		</Linker>
+		<Unit filename="copystrings.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="copystrings.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+	</Project>
 </CodeBlocks_project_file>

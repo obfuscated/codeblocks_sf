@@ -194,6 +194,13 @@ void EnvironmentSettingsDlg::UpdateListbookImages()
     // the selection color is ruining the on/off effect,
     // so make sure no item is selected ;)
     lb->GetListView()->Select(sel, false);
+
+    // update the page title
+    wxString label = lb->GetPageText(sel);
+    // replace any stray & with && because label makes it an underscore
+    while (label.Replace(_T(" & "), _T(" && ")))
+        ;
+    XRCCTRL(*this, "lblBigTitle", wxStaticText)->SetLabel(label);
 }
 
 void EnvironmentSettingsDlg::OnPageChanging(wxListbookEvent& event)

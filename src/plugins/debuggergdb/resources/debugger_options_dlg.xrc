@@ -4,25 +4,6 @@
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
-        <object class="wxStaticText">
-          <label>Debugger settings</label>
-          <fg>#FFFFFF</fg>
-          <bg>#004080</bg>
-          <font>
-            <size>14</size>
-            <family>default</family>
-            <style>normal</style>
-            <weight>bold</weight>
-            <underlined>0</underlined>
-          </font>
-        </object>
-        <flag>wxEXPAND</flag>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStaticLine"/>
-        <flag>wxEXPAND</flag>
-      </object>
-      <object class="sizeritem">
         <object class="wxStaticBoxSizer">
           <label>Debugger intialization commands</label>
           <orient>wxVERTICAL</orient>
@@ -44,7 +25,7 @@
             <border>4</border>
           </object>
         </object>
-        <flag>wxTOP|wxGROW</flag>
+        <flag>wxLEFT|wxGROW</flag>
         <border>8</border>
       </object>
       <object class="sizeritem">
@@ -88,7 +69,7 @@
             <border>4</border>
           </object>
         </object>
-        <flag>wxTOP|wxGROW</flag>
+        <flag>wxLEFT|wxTOP|wxGROW</flag>
         <border>8</border>
       </object>
       <object class="sizeritem">
@@ -128,7 +109,7 @@
           </object>
         </object>
         <option>1</option>
-        <flag>wxTOP|wxGROW</flag>
+        <flag>wxLEFT|wxTOP|wxGROW</flag>
         <border>8</border>
       </object>
     </object>

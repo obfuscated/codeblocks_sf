@@ -4,26 +4,7 @@
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
-        <object class="wxStaticText">
-          <label>Profiler settings</label>
-          <fg>#FFFFFF</fg>
-          <bg>#004080</bg>
-          <font>
-            <size>14</size>
-            <family>default</family>
-            <style>normal</style>
-            <weight>bold</weight>
-            <underlined>0</underlined>
-          </font>
-        </object>
-        <flag>wxEXPAND</flag>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStaticLine"/>
-        <flag>wxEXPAND</flag>
-      </object>
-      <object class="sizeritem">
-        <flag>wxTOP|wxEXPAND</flag>
+        <flag>wxLEFT|wxEXPAND</flag>
         <border>8</border>
         <option>1</option>
         <object class="wxNotebook" name="nbTabs">
@@ -43,7 +24,9 @@
                       <flag>wxALIGN_LEFT|wxALL|wxADJUST_MINSIZE</flag>
                       <border>8</border>
                       <object class="wxStaticText" name="stxtWarning">
+                        
                         <fg>#BB0000</fg>
+                        
                         <label>Specifying any of these options overrides the default,
 which prints a flat profile and call graph analysis for all functions</label>
                       </object>
@@ -57,8 +40,11 @@ which prints a flat profile and call graph analysis for all functions</label>
                           <flag>wxALIGN_TOP|wxTOP</flag>
                           <border>8</border>
                           <object class="wxCheckBox" name="chkAnnSource">
+                            
                             <label>Annotated Source</label>
+                            
                             <checked>0</checked>
+                            
                             <tooltip>This option causes gprof to print annotated source code</tooltip>
                           </object>
                         </object>
@@ -66,6 +52,7 @@ which prints a flat profile and call graph analysis for all functions</label>
                           <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
                           <border>0</border>
                           <object class="wxTextCtrl" name="txtAnnSource">
+                            
                             <tooltip>If specified, print output only for matching symbols</tooltip>
                           </object>
                         </object>
@@ -75,8 +62,11 @@ which prints a flat profile and call graph analysis for all functions</label>
                       <flag>wxALIGN_LEFT|wxTOP</flag>
                       <border>8</border>
                       <object class="wxCheckBox" name="chkBrief">
+                        
                         <label>Brief</label>
+                        
                         <checked>0</checked>
+                        
                         <tooltip>If selected, doesn't print the verbose blurbs that try to explain the meaning of all of the fields in the tables</tooltip>
                       </object>
                     </object>
@@ -84,8 +74,11 @@ which prints a flat profile and call graph analysis for all functions</label>
                       <flag>wxALIGN_LEFT|wxTOP</flag>
                       <border>8</border>
                       <object class="wxCheckBox" name="chkFileInfo">
+                        
                         <label>File Info</label>
+                        
                         <checked>0</checked>
+                        
                         <tooltip>This option causes gprof to display summary information about the profile data file(s) and then exit</tooltip>
                       </object>
                     </object>
@@ -110,8 +103,11 @@ which prints a flat profile and call graph analysis for all functions</label>
                       <flag>wxALIGN_LEFT|wxTOP</flag>
                       <border>8</border>
                       <object class="wxCheckBox" name="chkNoStatic">
+                        
                         <label>No static</label>
+                        
                         <checked>0</checked>
+                        
                         <tooltip>This option causes gprof to suppress the printing of statically declared (private) functions</tooltip>
                       </object>
                     </object>
@@ -124,8 +120,11 @@ which prints a flat profile and call graph analysis for all functions</label>
                           <flag>wxALIGN_TOP|wxTOP</flag>
                           <border>8</border>
                           <object class="wxCheckBox" name="chkMinCount">
+                            
                             <label>Minimum Count</label>
+                            
                             <checked>0</checked>
+                            
                             <tooltip>This option affects execution count output only: Symbols that are executed less than num times are suppressed</tooltip>
                           </object>
                         </object>
@@ -133,9 +132,13 @@ which prints a flat profile and call graph analysis for all functions</label>
                           <flag>wxALIGN_TOP|wxLEFT</flag>
                           <border>8</border>
                           <object class="wxSpinCtrl" name="spnMinCount">
+                            
                             <value>10</value>
+                            
                             <min>1</min>
+                            
                             <max>99</max>
+                            
                             <tooltip>This option affects execution count output only: Symbols that are executed less than num times are suppressed</tooltip>
                           </object>
                         </object>
@@ -162,8 +165,11 @@ which prints a flat profile and call graph analysis for all functions</label>
                       <flag>wxALIGN_LEFT|wxTOP</flag>
                       <border>8</border>
                       <object class="wxCheckBox" name="chkSum">
+                        
                         <label>Sum</label>
+                        
                         <checked>0</checked>
+                        
                         <tooltip>Causes gprof to summarize the information in the profile data files it read in a profile data file 'gmon.sum'</tooltip>
                       </object>
                     </object>
@@ -188,7 +194,9 @@ which prints a flat profile and call graph analysis for all functions</label>
                       <flag>wxALIGN_LEFT|wxALL|wxADJUST_MINSIZE</flag>
                       <border>8</border>
                       <object class="wxStaticText" name="stxtWarning">
+                        
                         <fg>#004080</fg>
+                        
                         <label>Here you can specify other options. Useful for advanced users
 that do not want to use the graphic option selection or when you
 need to specify an option multiple times, to use different symspecs</label>
@@ -199,6 +207,7 @@ need to specify an option multiple times, to use different symspecs</label>
                       <border>8</border>
                       <option>1</option>
                       <object class="wxTextCtrl" name="txtExtra">
+                        
                         <style>wxTE_MULTILINE</style>
                       </object>
                     </object>

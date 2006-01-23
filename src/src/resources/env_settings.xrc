@@ -6,6 +6,26 @@
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
+        <object class="wxStaticText" name="lblBigTitle">
+          <label>General settings</label>
+          <style>wxALIGN_CENTRE|wxST_NO_AUTORESIZE</style>
+          <fg>#FFFFFF</fg>
+          <bg>#004080</bg>
+          <font>
+            <size>14</size>
+            <family>default</family>
+            <style>normal</style>
+            <weight>bold</weight>
+            <underlined>0</underlined>
+          </font>
+        </object>
+        <flag>wxEXPAND</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticLine"/>
+        <flag>wxEXPAND</flag>
+      </object>
+      <object class="sizeritem">
         <object class="wxListbook" name="nbMain">
           <object class="listbookpage">
             <label>General settings</label>
@@ -13,30 +33,11 @@
               <object class="wxBoxSizer">
                 <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
-                  <object class="wxStaticText">
-                    <label>General settings</label>
-                    <fg>#FFFFFF</fg>
-                    <bg>#004080</bg>
-                    <font>
-                      <size>14</size>
-                      <family>default</family>
-                      <style>normal</style>
-                      <weight>bold</weight>
-                      <underlined>0</underlined>
-                    </font>
-                  </object>
-                  <flag>wxEXPAND</flag>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxStaticLine"/>
-                  <flag>wxEXPAND</flag>
-                </object>
-                <object class="sizeritem">
                   <object class="wxCheckBox" name="chkShowSplash">
                     <label>Show splash screen on start-up</label>
                     <checked>1</checked>
                   </object>
-                  <flag>wxTOP|wxEXPAND</flag>
+                  <flag>wxLEFT|wxEXPAND</flag>
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
@@ -44,7 +45,7 @@
                     <label>Run DDE server (Windows only)</label>
                     <checked>1</checked>
                   </object>
-                  <flag>wxTOP|wxEXPAND</flag>
+                  <flag>wxLEFT|wxTOP|wxEXPAND</flag>
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
@@ -52,7 +53,7 @@
                     <label>Allow only one running instance (needs application restart to take effect)</label>
                     <checked>1</checked>
                   </object>
-                  <flag>wxTOP|wxEXPAND</flag>
+                  <flag>wxLEFT|wxTOP|wxEXPAND</flag>
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
@@ -73,7 +74,7 @@
                       <border>8</border>
                     </object>
                   </object>
-                  <flag>wxTOP|wxEXPAND</flag>
+                  <flag>wxLEFT|wxTOP|wxEXPAND</flag>
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
@@ -81,7 +82,7 @@
                     <label>Check for externally modified files</label>
                     <checked>1</checked>
                   </object>
-                  <flag>wxTOP|wxEXPAND</flag>
+                  <flag>wxLEFT|wxTOP|wxEXPAND</flag>
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
@@ -89,7 +90,7 @@
                     <label>Display application's debug log</label>
                     <checked>0</checked>
                   </object>
-                  <flag>wxTOP|wxEXPAND</flag>
+                  <flag>wxLEFT|wxTOP|wxEXPAND</flag>
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
@@ -97,7 +98,7 @@
                     <label>Show &quot;Start here&quot; page (shown only when there are no open projects)</label>
                     <checked>1</checked>
                   </object>
-                  <flag>wxTOP|wxEXPAND</flag>
+                  <flag>wxLEFT|wxTOP|wxEXPAND</flag>
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
@@ -105,8 +106,11 @@
                     <label>Auto-hide message pane</label>
                     <checked>1</checked>
                   </object>
-                  <flag>wxTOP|wxEXPAND</flag>
+                  <flag>wxLEFT|wxTOP|wxEXPAND</flag>
                   <border>8</border>
+                </object>
+                <object class="spacer">
+                  <size>0,16</size>
                 </object>
                 <object class="sizeritem">
                   <object class="wxFlexGridSizer">
@@ -155,8 +159,8 @@
                     <hgap>8</hgap>
                     <growablecols>1</growablecols>
                   </object>
-                  <flag>wxTOP|wxEXPAND</flag>
-                  <border>16</border>
+                  <flag>wxLEFT|wxTOP|wxEXPAND</flag>
+                  <border>8</border>
                 </object>
               </object>
             </object>
@@ -166,25 +170,6 @@
             <object class="wxPanel" name="pblNotebooks">
               <object class="wxBoxSizer">
                 <orient>wxVERTICAL</orient>
-                <object class="sizeritem">
-                  <object class="wxStaticText">
-                    <label>Notebooks appearence</label>
-                    <fg>#FFFFFF</fg>
-                    <bg>#004080</bg>
-                    <font>
-                      <size>14</size>
-                      <family>default</family>
-                      <style>normal</style>
-                      <weight>bold</weight>
-                      <underlined>0</underlined>
-                    </font>
-                  </object>
-                  <flag>wxEXPAND</flag>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxStaticLine"/>
-                  <flag>wxEXPAND</flag>
-                </object>
                 <object class="sizeritem">
                   <object class="wxFlexGridSizer">
                     <cols>2</cols>
@@ -213,8 +198,11 @@
                     <hgap>4</hgap>
                     <growablecols>1</growablecols>
                   </object>
-                  <flag>wxTOP|wxGROW</flag>
+                  <flag>wxLEFT|wxGROW</flag>
                   <border>8</border>
+                </object>
+                <object class="spacer">
+                  <size>0,16</size>
                 </object>
                 <object class="sizeritem">
                   <object class="wxStaticBoxSizer">
@@ -264,7 +252,7 @@
                       <border>4</border>
                     </object>
                   </object>
-                  <flag>wxTOP|wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
+                  <flag>wxLEFT|wxTOP|wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
                   <border>8</border>
                 </object>
               </object>
@@ -275,25 +263,6 @@
             <object class="wxPanel" name="pnlDocking">
               <object class="wxBoxSizer">
                 <orient>wxVERTICAL</orient>
-                <object class="sizeritem">
-                  <object class="wxStaticText">
-                    <label>Docking system</label>
-                    <fg>#FFFFFF</fg>
-                    <bg>#004080</bg>
-                    <font>
-                      <size>14</size>
-                      <family>default</family>
-                      <style>normal</style>
-                      <weight>bold</weight>
-                      <underlined>0</underlined>
-                    </font>
-                  </object>
-                  <flag>wxEXPAND</flag>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxStaticLine"/>
-                  <flag>wxEXPAND</flag>
-                </object>
                 <object class="sizeritem">
                   <object class="wxFlexGridSizer">
                     <cols>2</cols>
@@ -446,7 +415,7 @@
                       </object>
                     </object>
                   </object>
-                  <flag>wxTOP|wxGROW</flag>
+                  <flag>wxLEFT|wxGROW</flag>
                   <border>8</border>
                 </object>
               </object>
@@ -458,43 +427,26 @@
               <object class="wxBoxSizer">
                 <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
-                  <object class="wxStaticText">
-                    <label>Disabled dialogs</label>
-                    <fg>#FFFFFF</fg>
-                    <bg>#004080</bg>
-                    <font>
-                      <size>14</size>
-                      <family>default</family>
-                      <style>normal</style>
-                      <weight>bold</weight>
-                      <underlined>0</underlined>
-                    </font>
-                  </object>
-                  <flag>wxEXPAND</flag>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxStaticLine"/>
-                  <flag>wxEXPAND</flag>
-                </object>
-                <object class="sizeritem">
                   <object class="wxStaticText" name="">
                     <label>Re-enable the following confirmation dialogs:</label>
                   </object>
-                  <flag>wxTOP|wxEXPAND</flag>
+                  <flag>wxLEFT|wxEXPAND</flag>
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
                   <object class="wxStaticText" name="">
                     <label>(list will be empty if all dialogs are enabled)</label>
                   </object>
-                  <flag>wxEXPAND</flag>
+                  <flag>wxLEFT|wxEXPAND</flag>
+                  <border>8</border>
                 </object>
                 <object class="sizeritem">
                   <object class="wxCheckList" name="chkDialogs">
                     <content/>
                   </object>
                   <option>1</option>
-                  <flag>wxEXPAND</flag>
+                  <flag>wxLEFT|wxEXPAND</flag>
+                  <border>8</border>
                 </object>
               </object>
             </object>
@@ -505,34 +457,16 @@
               <object class="wxBoxSizer">
                 <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
-                  <object class="wxStaticText">
-                    <label>Batch builds</label>
-                    <fg>#FFFFFF</fg>
-                    <bg>#004080</bg>
-                    <font>
-                      <size>14</size>
-                      <family>default</family>
-                      <style>normal</style>
-                      <weight>bold</weight>
-                      <underlined>0</underlined>
-                    </font>
-                  </object>
-                  <flag>wxEXPAND</flag>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxStaticLine"/>
-                  <flag>wxEXPAND</flag>
-                </object>
-                <object class="sizeritem">
                   <object class="wxStaticText" name="">
                     <label>Extra command-line arguments for batch-builds through shell extensions:</label>
                   </object>
-                  <flag>wxTOP|wxEXPAND</flag>
+                  <flag>wxLEFT|wxEXPAND</flag>
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
                   <object class="wxTextCtrl" name="txtBatchBuildsCmdLine"/>
-                  <flag>wxEXPAND</flag>
+                  <flag>wxLEFT|wxEXPAND</flag>
+                  <border>8</border>
                 </object>
                 <object class="spacer">
                   <size>0,0</size>
@@ -549,7 +483,8 @@ You could specify, for example, a personality to use for batch builds.
 For more info on personalities, read the Code::Blocks WiKi at
 http://wiki.codeblocks.org/index.php?title=Personalities</label>
                   </object>
-                  <flag>wxEXPAND</flag>
+                  <flag>wxLEFT|wxEXPAND</flag>
+                  <border>8</border>
                 </object>
               </object>
             </object>
@@ -560,40 +495,23 @@ http://wiki.codeblocks.org/index.php?title=Personalities</label>
               <object class="wxBoxSizer">
                 <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
-                  <object class="wxStaticText">
-                    <label>Network proxy</label>
-                    <fg>#FFFFFF</fg>
-                    <bg>#004080</bg>
-                    <font>
-                      <size>14</size>
-                      <family>default</family>
-                      <style>normal</style>
-                      <weight>bold</weight>
-                      <underlined>0</underlined>
-                    </font>
-                  </object>
-                  <flag>wxEXPAND</flag>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxStaticLine"/>
-                  <flag>wxEXPAND</flag>
-                </object>
-                <object class="sizeritem">
                   <object class="wxStaticText" name="">
                     <label>Use the following proxy when making network connections:</label>
                   </object>
-                  <flag>wxTOP|wxEXPAND</flag>
+                  <flag>wxLEFT|wxEXPAND</flag>
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
                   <object class="wxStaticText" name="">
                     <label>Format: hostname:port</label>
                   </object>
-                  <flag>wxEXPAND</flag>
+                  <flag>wxLEFT|wxEXPAND</flag>
+                  <border>8</border>
                 </object>
                 <object class="sizeritem">
                   <object class="wxTextCtrl" name="txtProxy"/>
-                  <flag>wxEXPAND</flag>
+                  <flag>wxLEFT|wxEXPAND</flag>
+                  <border>8</border>
                 </object>
               </object>
             </object>

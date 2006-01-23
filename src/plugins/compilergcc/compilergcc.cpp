@@ -68,11 +68,11 @@ class ProjectConfigureDlg : public wxDialog
 {
 	public:
 		ProjectConfigureDlg(CompilerGCC* compiler, wxWindow* parent, cbProject* project, ProjectBuildTarget* target)
-            : wxDialog(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize)
+            : wxDialog(parent, wxID_ANY, _("Project build options"), wxDefaultPosition, wxDefaultSize)
 		{
 		    wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
             m_pPanel = new CompilerOptionsDlg(this, compiler, project, target);
-            bs->Add(m_pPanel, 1, wxGROW | wxALL, 8);
+            bs->Add(m_pPanel, 1, wxGROW | wxRIGHT | wxTOP | wxBOTTOM, 8);
 
             wxStaticLine* line = new wxStaticLine(this);
             bs->Add(line, 0, wxGROW | wxLEFT | wxRIGHT, 8);
@@ -85,9 +85,6 @@ class ProjectConfigureDlg : public wxDialog
             but->AddButton(m_pCancel);
             but->Realize();
             bs->Add(but, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 8);
-
-            if (project)
-                XRCCTRL(*m_pPanel, "lblTitle", wxStaticText)->SetLabel(_("Project compiler options"));
 
             SetSizer(bs);
             bs->SetSizeHints(this);

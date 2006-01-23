@@ -30,10 +30,10 @@ CB_IMPLEMENT_PLUGIN(DefaultMimeHandler);
 DefaultMimeHandler::DefaultMimeHandler()
 {
 	//ctor
-	m_PluginInfo.name = _T("DefaultMimeHandler");
-	m_PluginInfo.title = _("Default MIME handler");
+	m_PluginInfo.name = _T("FilesExtensionHandler");
+	m_PluginInfo.title = _("Files extension handler");
 	m_PluginInfo.version = _T("1.0");
-	m_PluginInfo.description = _("This is the default MIME handler for Code::Blocks");
+	m_PluginInfo.description = _("This is the default files extension handler for Code::Blocks");
 	m_PluginInfo.author = _T("Yiannis An. Mandravellos");
 	m_PluginInfo.authorEmail = _T("mandrav@codeblocks.org");
 	m_PluginInfo.authorWebsite = _("http://www.codeblocks.org");

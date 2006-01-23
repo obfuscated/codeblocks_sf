@@ -4,27 +4,8 @@
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
-        <object class="wxStaticText">
-          <label>Help files</label>
-          <fg>#FFFFFF</fg>
-          <bg>#004080</bg>
-          <font>
-            <size>14</size>
-            <family>default</family>
-            <style>normal</style>
-            <weight>bold</weight>
-            <underlined>0</underlined>
-          </font>
-        </object>
-        <flag>wxEXPAND</flag>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStaticLine"/>
-        <flag>wxEXPAND</flag>
-      </object>
-      <object class="sizeritem">
         <option>1</option>
-        <flag>wxTOP|wxEXPAND</flag>
+        <flag>wxLEFT|wxEXPAND</flag>
         <object class="wxBoxSizer">
           <orient>wxVERTICAL</orient>
           <object class="sizeritem">
@@ -38,7 +19,9 @@
                 <flag>wxLEFT|wxTOP|wxBOTTOM|wxEXPAND</flag>
                 <border>5</border>
                 <object class="wxListBox" name="lstHelp">
+                  
                   <style>wxLB_SINGLE</style>
+                  
                   <content/>
                 </object>
               </object>
@@ -53,7 +36,9 @@
                     <flag>wxLEFT|wxRIGHT</flag>
                     <border>5</border>
                     <object class="wxButton" name="btnAdd">
+                      
                       <label>Add</label>
+                      
                       <default>0</default>
                     </object>
                   </object>
@@ -62,7 +47,9 @@
                     <flag>wxLEFT|wxRIGHT</flag>
                     <border>5</border>
                     <object class="wxButton" name="btnRename">
+                      
                       <label>Rename</label>
+                      
                       <default>0</default>
                     </object>
                   </object>
@@ -71,14 +58,20 @@
                     <flag>wxLEFT|wxRIGHT</flag>
                     <border>5</border>
                     <object class="wxButton" name="btnDelete">
+                      
                       <label>Delete</label>
+                      
                       <default>0</default>
                     </object>
                   </object>
                   <object class="spacer">
+                    
                     <size>10,10</size>
+                    
                     <option>0</option>
+                    
                     <flag>wxALL</flag>
+                    
                     <border>5</border>
                   </object>
                   <object class="sizeritem">
@@ -86,8 +79,11 @@
                     <flag>wxLEFT|wxRIGHT</flag>
                     <border>5</border>
                     <object class="wxButton" name="btnUp">
+                      
                       <enabled>0</enabled>
+                      
                       <label>Up</label>
+                      
                       <default>0</default>
                     </object>
                   </object>
@@ -96,8 +92,11 @@
                     <flag>wxLEFT|wxRIGHT</flag>
                     <border>5</border>
                     <object class="wxButton" name="btnDown">
+                      
                       <enabled>0</enabled>
+                      
                       <label>Down</label>
+                      
                       <default>0</default>
                     </object>
                   </object>
@@ -116,6 +115,7 @@
                 <flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
                 <border>5</border>
                 <object class="wxTextCtrl" name="txtHelp">
+                  
                   <value></value>
                 </object>
               </object>
@@ -124,8 +124,11 @@
                 <flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
                 <border>5</border>
                 <object class="wxButton" name="btnBrowse">
+                  
                   <size>22,-1</size>
+                  
                   <label>...</label>
+                  
                   <default>0</default>
                 </object>
               </object>
@@ -136,10 +139,12 @@
             <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
             <border>5</border>
             <object class="wxCheckBox" name="chkDefault">
+              
               <label>This is the default help file (shortcut: F1)</label>
             </object>
           </object>
         </object>
+        
         <border>8</border>
       </object>
     </object>

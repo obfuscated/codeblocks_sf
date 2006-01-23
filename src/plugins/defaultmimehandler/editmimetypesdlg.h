@@ -20,7 +20,7 @@ class EditMimeTypesDlg : public cbConfigurationPanel
 		virtual ~EditMimeTypesDlg();
 
         virtual wxString GetTitle(){ return _T("Files extension handling"); }
-        virtual wxString GetBitmapBaseName(){ return _T("generic-plugin"); }
+        virtual wxString GetBitmapBaseName(){ return _T("extensions"); }
         virtual void OnApply();
         virtual void OnCancel(){}
 	protected:

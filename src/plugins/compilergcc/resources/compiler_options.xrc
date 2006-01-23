@@ -4,25 +4,6 @@
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
-        <object class="wxStaticText" name="lblTitle">
-          <label>Global compiler settings</label>
-          <fg>#FFFFFF</fg>
-          <bg>#004080</bg>
-          <font>
-            <size>14</size>
-            <family>default</family>
-            <style>normal</style>
-            <weight>bold</weight>
-            <underlined>0</underlined>
-          </font>
-        </object>
-        <flag>wxEXPAND</flag>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStaticLine" name="lblTitleLine"/>
-        <flag>wxEXPAND</flag>
-      </object>
-      <object class="sizeritem">
         <object class="wxBoxSizer">
           <orient>wxHORIZONTAL</orient>
           <object class="sizeritem">
@@ -1177,7 +1158,7 @@ or in any of the &quot;Additional paths&quot;...</label>
           </object>
         </object>
         <option>1</option>
-        <flag>wxTOP|wxEXPAND</flag>
+        <flag>wxLEFT|wxEXPAND</flag>
         <border>8</border>
       </object>
     </object>
