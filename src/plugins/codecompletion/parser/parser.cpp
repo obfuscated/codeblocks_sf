@@ -80,6 +80,7 @@ Parser::Parser(wxEvtHandler* parent)
     m_pTokens = new TokensTree;
     m_pTempTokens = new TokensTree;
     m_LocalFiles.clear();
+    m_GlobalIncludes.clear();
 	ReadOptions();
 #ifndef STANDALONE
 	m_pImageList = new wxImageList(16, 16);
@@ -385,6 +386,8 @@ bool Parser::ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBl
 {
 	ParserThreadOptions opts;
 	opts.wantPreprocessor = m_Options.wantPreprocessor;
+	opts.followLocalIncludes = m_Options.followLocalIncludes;
+	opts.followGlobalIncludes = m_Options.followGlobalIncludes;
 	opts.useBuffer = true;
 	opts.bufferSkipBlocks = bufferSkipBlocks;
 	return Parse(buffer, isLocal, opts);
@@ -402,6 +405,8 @@ bool Parser::Parse(const wxString& filename, bool isLocal)
 	opts.wantPreprocessor = m_Options.wantPreprocessor;
 	opts.useBuffer = false;
 	opts.bufferSkipBlocks = false;
+	opts.followLocalIncludes = m_Options.followLocalIncludes;
+	opts.followGlobalIncludes = m_Options.followGlobalIncludes;
 	return Parse(UnixFilename(filename), isLocal, opts);
 }
 
@@ -526,6 +531,7 @@ void Parser::Clear()
     m_pTokens->clear();
     m_pTempTokens->clear();
     m_LocalFiles.clear();
+    m_GlobalIncludes.clear();
 
 //    Manager::Get()->GetMessageManager()->DebugLog(_("Parser::Clear: wxSafeYield..."));
 	Manager::ProcessPendingEvents();
@@ -713,6 +719,21 @@ void Parser::AddIncludeDir(const wxString& file)
 	}
 } // end of AddIncludeDir
 
+wxString Parser::FindFirstFileInIncludeDirs(const wxString& file)
+{
+    wxString FirstFound = m_GlobalIncludes.GetItem(file);
+    if(FirstFound.IsEmpty())
+    {
+        wxArrayString FoundSet = FindFileInIncludeDirs(file,true);
+        if(FoundSet.GetCount())
+        {
+            FirstFound = UnixFilename(FoundSet[0]);
+            m_GlobalIncludes.AddItem(file,FirstFound);
+        }
+    }
+    return FirstFound;
+}
+
 wxArrayString Parser::FindFileInIncludeDirs(const wxString& file,bool firstonly)
 {
 	wxArrayString FoundSet;
@@ -759,6 +780,25 @@ void Parser::OnNewToken(wxCommandEvent& event)
 #endif
 }
 
+wxString Parser::GetFullFileName(const wxString& src,const wxString& tgt, bool isGlobal)
+{
+    wxString fullname(_T("")); // Initialize with Empty String
+    if(isGlobal)
+        fullname = FindFirstFileInIncludeDirs(tgt);
+    else // local files are more tricky, since they depend on two filenames
+    {
+        wxFileName fname(tgt);
+        wxFileName source(src);
+        if(NormalizePath(fname,source.GetPath(wxPATH_GET_VOLUME)))
+        {
+            fullname = fname.GetFullPath();
+            if(!wxFileExists(fullname))
+                fullname.Clear();
+        }
+    }
+    return fullname;
+}
+
 void Parser::OnParseFile(wxCommandEvent& event)
 {
 //    LOGSTREAM << "Parser::OnParseFile: " << event.GetString() << "\n";
@@ -771,34 +811,8 @@ void Parser::OnParseFile(wxCommandEvent& event)
 
 	// the string is thread's_filename+included_filename
 	wxString filename = event.GetString();
-	int idx = filename.First('+');
-	wxFileName fname;
-	wxFileName source;
-	wxString base;
-
-	if (idx == -1)
-		return;
-	wxString tgt = filename.AfterFirst(_T('+'));
-	if (tgt.IsEmpty())
+	if (filename.IsEmpty())
         return;
-	wxString src = filename.BeforeFirst(_T('+'));
-	fname.Assign(tgt);
-	source.Assign(src);
-
-    // search
-	if (m_Options.followGlobalIncludes)
-	{
-		wxArrayString FoundSet = FindFileInIncludeDirs(tgt,true);
-		wxString FirstFound = FoundSet.GetCount()?FoundSet[0]:_T("");
-		wxString g = UnixFilename(FirstFound);
-	    if (g.IsEmpty())
-	    {
-//            Manager::Get()->GetMessageManager()->DebugLog(_T("? No include looking for %s, ? %s"), tgt.c_str(), filename.c_str());
-            return;
-	    }
-	    filename = g;
-	}
-
     Parse(filename, event.GetInt() == 0);
 }
 

@@ -75,6 +75,7 @@ class Parser : public wxEvtHandler
 {
 	public:
         friend class ClassBrowser;
+        friend class ParserThread;
 		Parser(wxEvtHandler* parent);
 		~Parser();
 
@@ -112,6 +113,8 @@ class Parser : public wxEvtHandler
 
 		void ClearIncludeDirs(){ m_IncludeDirs.Clear(); }
 		void AddIncludeDir(const wxString& dir);
+        wxString GetFullFileName(const wxString& src,const wxString& tgt, bool isGlobal);
+        wxString FindFirstFileInIncludeDirs(const wxString& file);
 		wxArrayString FindFileInIncludeDirs(const wxString& file,bool firstonly = false);
 
 		TokensTree* GetTokens(){ return m_pTokens; }
@@ -154,6 +157,7 @@ class Parser : public wxEvtHandler
 		ParserOptions m_Options;
 		BrowserOptions m_BrowserOptions;
 		unsigned int m_MaxThreadsCount;
+		SearchTree<wxString> m_GlobalIncludes;
 		wxArrayString m_IncludeDirs;
 		wxEvtHandler* m_pParent;
 		wxTreeItemId m_RootNode;

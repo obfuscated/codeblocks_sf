@@ -34,6 +34,8 @@ class CodeCompletion : public cbCodeCompletionPlugin
         void OnClassMethod(wxCommandEvent& event);
 		void OnGotoDeclaration(wxCommandEvent& event);
 		void OnOpenIncludeFile(wxCommandEvent& event);
+		void OnAppDoneStartup(CodeBlocksEvent& event);
+		void OnStartParsingProjects(wxTimerEvent& event);
 		void OnProjectOpened(CodeBlocksEvent& event);
 		void OnProjectActivated(CodeBlocksEvent& event);
 		void OnProjectClosed(CodeBlocksEvent& event);
@@ -46,6 +48,7 @@ class CodeCompletion : public cbCodeCompletionPlugin
 		void DoInsertCodeCompleteToken(wxString tokName);
         int DoClassMethodDeclImpl();
         int m_PageIndex;
+        bool m_InitDone;
 
         wxString m_LastIncludeFileFrom;
         wxString m_LastIncludeFile;
@@ -55,6 +58,7 @@ class CodeCompletion : public cbCodeCompletionPlugin
     	wxMenu* m_SearchMenu;
 		NativeParser m_NativeParsers;
 		ProjectBuildTarget* m_Target;
+		wxTimer m_timer;
         DECLARE_EVENT_TABLE()
 };
 

@@ -25,6 +25,7 @@
 
 #include <sdk.h>
 #include "parserthread.h"
+#include "parser.h"
 #include <wx/app.h>
 #include <wx/log.h>
 #include <wx/msgdlg.h>
@@ -102,7 +103,7 @@ namespace ParserConsts
     const wxString tilde(_T("~"));
 };
 
-ParserThread::ParserThread(wxEvtHandler* parent,bool* abortflag,
+ParserThread::ParserThread(Parser* parent,bool* abortflag,
 							const wxString& bufferOrFilename,
 							bool isLocal,
 							ParserThreadOptions& options,
@@ -773,6 +774,7 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, const wxSt
 
 void ParserThread::HandleIncludes()
 {
+	static wxCriticalSection s_mysection;
 	wxString filename;
 	bool isGlobal = !m_IsLocal;
 	wxString token = m_Tokenizer.GetToken();
@@ -807,17 +809,34 @@ void ParserThread::HandleIncludes()
 
 	if (!filename.IsEmpty())
 	{
-		wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, FILE_NEEDS_PARSING);
-		event.SetString(m_Filename + _T("+") + filename);
-		// setting all #includes as global
-		// it's amazing how many projects use #include "..." for global headers (MSVC mainly - booh)
-		event.SetInt(1);//isGlobal);
-//		wxPostEvent(m_pParent, event);
+		do
+		{
+            // setting all #includes as global
+            // it's amazing how many projects use #include "..." for global headers (MSVC mainly - booh)
+            isGlobal = true;
+            wxString real_filename(_T(""));
+            if(!(isGlobal ? m_Options.followGlobalIncludes : m_Options.followLocalIncludes))
+                break; // Nothing to do!
 
-        // since we 'll be calling directly the parser's method, let's make it thread-safe
-		static wxMutex lock;
-		wxMutexLocker l(lock);
-		m_pParent->ProcessEvent(event);
+            {
+                wxCriticalSectionLocker lock(s_mutexProtection);
+                real_filename = m_pParent->GetFullFileName(m_Filename,filename,isGlobal);
+                if(real_filename.IsEmpty())
+                    break; // File not found, do nothing.
+
+                if(m_pTokens->IsFileParsed(real_filename))
+                    break; // Already being parsed elsewhere
+            }
+
+            // since we 'll be calling directly the parser's method, let's make it thread-safe
+    		{
+                wxCriticalSectionLocker lock1(s_mysection);
+                wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, FILE_NEEDS_PARSING);
+                event.SetString(real_filename);
+                event.SetInt(isGlobal ? 1 : 0);
+                m_pParent->OnParseFile(event);
+    		}
+		}while(false);
 	}
 }
 

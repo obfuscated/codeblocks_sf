@@ -58,7 +58,7 @@ int idClassMethod = wxNewId();
 int idGotoDeclaration = wxNewId();
 int idGotoImplementation = wxNewId();
 int idOpenIncludeFile = wxNewId();
-
+int idStartParsingProjects = wxNewId();
 BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
 	EVT_UPDATE_UI_RANGE(idMenuCodeComplete, idMenuGotoFunction, CodeCompletion::OnUpdateUI)
 
@@ -69,6 +69,7 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
 	EVT_MENU(idGotoDeclaration, CodeCompletion::OnGotoDeclaration)
 	EVT_MENU(idGotoImplementation, CodeCompletion::OnGotoDeclaration)
 	EVT_MENU(idOpenIncludeFile, CodeCompletion::OnOpenIncludeFile)
+	EVT_TIMER(idStartParsingProjects, CodeCompletion::OnStartParsingProjects)
 
 	EVT_EDITOR_AUTOCOMPLETE(CodeCompletion::OnCodeComplete)
 	EVT_EDITOR_CALLTIP(CodeCompletion::OnShowCallTip)
@@ -76,6 +77,7 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
 	EVT_EDITOR_SAVE(CodeCompletion::OnReparseActiveEditor)
 	EVT_EDITOR_ACTIVATED(CodeCompletion::OnEditorActivated)
 
+    EVT_APP_STARTUP_DONE(CodeCompletion::OnAppDoneStartup)
 	EVT_PROJECT_OPEN(CodeCompletion::OnProjectOpened)
 	EVT_PROJECT_ACTIVATE(CodeCompletion::OnProjectActivated)
 	EVT_PROJECT_CLOSE(CodeCompletion::OnProjectClosed)
@@ -85,7 +87,8 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
 	EVT_CCLIST_CODECOMPLETE(CodeCompletion::OnCodeComplete)
 END_EVENT_TABLE()
 
-CodeCompletion::CodeCompletion()
+CodeCompletion::CodeCompletion() :
+m_timer(this, idStartParsingProjects)
 {
     wxFileSystem::AddHandler(new wxZipFSHandler);
     wxXmlResource::Get()->InitAllHandlers();
@@ -104,6 +107,7 @@ CodeCompletion::CodeCompletion()
     m_PluginInfo.thanksTo = _T("");
 
     m_PageIndex = -1;
+    m_InitDone = false;
     m_EditMenu = 0L;
 	m_SearchMenu = 0L;
 }
@@ -131,7 +135,7 @@ int CodeCompletion::Configure()
 void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
 {
     // if not attached, exit
-    if (!m_IsAttached)
+    if (!m_IsAttached || !m_InitDone)
         return;
 
 //	if (m_EditMenu)
@@ -160,7 +164,7 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
 void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
 {
     // if not attached, exit
-	if (!menu || !m_IsAttached)
+	if (!menu || !m_IsAttached || !m_InitDone)
 		return;
 
 	if (type == mtEditorManager)
@@ -248,11 +252,6 @@ bool CodeCompletion::BuildToolBar(wxToolBar* toolBar)
 void CodeCompletion::OnAttach()
 {
 	m_NativeParsers.CreateClassBrowser();
-
-	// parse all active projects
-	ProjectManager* prjMan = Manager::Get()->GetProjectManager();
-	for (unsigned int i = 0; i < prjMan->GetProjects()->GetCount(); ++i)
-		m_NativeParsers.AddParser(prjMan->GetProjects()->Item(i));
 }
 
 void CodeCompletion::OnRelease(bool appShutDown)
@@ -303,7 +302,7 @@ static int SortCCList(const wxString& first, const wxString& second)
 
 int CodeCompletion::CodeComplete()
 {
-	if (!m_IsAttached)
+	if (!m_IsAttached || !m_InitDone)
 		return -1;
 
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
@@ -386,7 +385,7 @@ int CodeCompletion::CodeComplete()
 
 void CodeCompletion::CodeCompleteIncludes()
 {
-	if (!m_IsAttached)
+	if (!m_IsAttached || !m_InitDone)
 		return;
 
     cbProject* pPrj = Manager::Get()->GetProjectManager()->GetActiveProject();
@@ -464,7 +463,7 @@ void CodeCompletion::CodeCompleteIncludes()
 
 wxArrayString CodeCompletion::GetCallTips()
 {
-	if (!m_IsAttached)
+	if (!m_IsAttached || !m_InitDone)
 	{
 		wxArrayString items;
 		return items;
@@ -474,7 +473,7 @@ wxArrayString CodeCompletion::GetCallTips()
 
 void CodeCompletion::ShowCallTip()
 {
-	if (!m_IsAttached)
+	if (!m_IsAttached || !m_InitDone)
 		return;
 
 	if (!Manager::Get()->GetEditorManager())
@@ -501,7 +500,7 @@ void CodeCompletion::ShowCallTip()
 
 int CodeCompletion::DoClassMethodDeclImpl()
 {
-	if (!m_IsAttached)
+	if (!m_IsAttached || !m_InitDone)
 		return -1;
 
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
@@ -594,44 +593,59 @@ void CodeCompletion::DoInsertCodeCompleteToken(wxString tokName)
 
 // events
 
+void CodeCompletion::OnAppDoneStartup(CodeBlocksEvent& event)
+{
+    // Let the app startup before parsing
+    m_timer.Start(200,wxTIMER_ONE_SHOT);
+}
+
+void CodeCompletion::OnStartParsingProjects(wxTimerEvent& event)
+{
+	// parse all active projects
+	ProjectManager* prjMan = Manager::Get()->GetProjectManager();
+	for (unsigned int i = 0; i < prjMan->GetProjects()->GetCount(); ++i)
+		m_NativeParsers.AddParser(prjMan->GetProjects()->Item(i));
+    m_InitDone = true;
+}
+
 void CodeCompletion::OnProjectOpened(CodeBlocksEvent& event)
 {
-    if (m_IsAttached)
+    if (m_IsAttached && m_InitDone)
 		m_NativeParsers.AddParser(event.GetProject());
     event.Skip();
 }
 
 void CodeCompletion::OnProjectActivated(CodeBlocksEvent& event)
 {
-    if (m_IsAttached)
+    if (m_IsAttached && m_InitDone)
 		m_NativeParsers.SetClassBrowserProject(event.GetProject());
     event.Skip();
 }
 
 void CodeCompletion::OnProjectClosed(CodeBlocksEvent& event)
 {
-    if (m_IsAttached)
+    if (m_IsAttached && m_InitDone)
 		m_NativeParsers.RemoveParser(event.GetProject());
     event.Skip();
 }
 
 void CodeCompletion::OnProjectFileAdded(CodeBlocksEvent& event)
 {
-    if (m_IsAttached)
+    if (m_IsAttached && m_InitDone)
 		m_NativeParsers.AddFileToParser(event.GetProject(), event.GetString());
 	event.Skip();
 }
 
 void CodeCompletion::OnProjectFileRemoved(CodeBlocksEvent& event)
 {
-    if (m_IsAttached)
+    if (m_IsAttached && m_InitDone)
 		m_NativeParsers.RemoveFileFromParser(event.GetProject(), event.GetString());
 	event.Skip();
 }
 
 void CodeCompletion::OnUserListSelection(CodeBlocksEvent& event)
 {
-    if (m_IsAttached)
+    if (m_IsAttached && m_InitDone)
     {
 		wxString tokName = event.GetString();
 		DoInsertCodeCompleteToken(event.GetString());
@@ -642,7 +656,7 @@ void CodeCompletion::OnUserListSelection(CodeBlocksEvent& event)
 
 void CodeCompletion::OnReparseActiveEditor(CodeBlocksEvent& event)
 {
-    if (m_IsAttached)
+    if (m_IsAttached && m_InitDone)
     {
     	EditorBase* ed = event.GetEditor();
     	if (!ed)
@@ -658,7 +672,7 @@ void CodeCompletion::OnReparseActiveEditor(CodeBlocksEvent& event)
 void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
 {
     static EditorBase* m_LastActiveEditor = event.GetEditor();
-    if (m_LastActiveEditor != event.GetEditor())
+    if (m_IsAttached && m_InitDone && m_LastActiveEditor != event.GetEditor())
     {
         m_LastActiveEditor = event.GetEditor();
         m_NativeParsers.OnEditorActivated(event.GetEditor());
@@ -688,14 +702,14 @@ void CodeCompletion::OnCodeComplete(wxCommandEvent& event)
 {
     if (!Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("/use_code_completion"), true))
         return;
-    if (m_IsAttached)
+    if (m_IsAttached && m_InitDone)
 		DoCodeComplete();
     event.Skip();
 }
 
 void CodeCompletion::OnShowCallTip(wxCommandEvent& event)
 {
-    if (m_IsAttached)
+    if (m_IsAttached && m_InitDone)
 		ShowCallTip();
     event.Skip();
 }

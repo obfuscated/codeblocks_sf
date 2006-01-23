@@ -14,6 +14,7 @@
 extern int NEW_TOKEN;
 extern int FILE_NEEDS_PARSING;
 
+class Parser;
 static wxCriticalSection s_mutexProtection;
 
 struct ParserThreadOptions
@@ -25,12 +26,14 @@ struct ParserThreadOptions
     bool useBuffer;
 	bool bufferSkipBlocks;
 	bool wantPreprocessor;
+	bool followLocalIncludes;
+	bool followGlobalIncludes;
 };
 
 class ParserThread : public cbThreadPoolTask
 {
 	public:
-		ParserThread(wxEvtHandler* parent,bool* abortflag,
+		ParserThread(Parser* parent,bool* abortflag,
 					const wxString& bufferOrFilename,
 					bool isLocal,
 					ParserThreadOptions& options,
@@ -59,7 +62,7 @@ class ParserThread : public cbThreadPoolTask
 		void Log(const wxString& log);
 		Token* TokenExists(const wxString& name, Token* parent = 0, short int kindMask = 0xFFFF); // if parent is 0, all tokens are searched
 		Tokenizer m_Tokenizer;
-		wxEvtHandler* m_pParent;
+		Parser* m_pParent;
 		TokensTree* m_pTokens;
 		Token* m_pLastParent;
 		TokenScope m_LastScope;
