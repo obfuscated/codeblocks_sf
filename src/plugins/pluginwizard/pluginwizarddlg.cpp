@@ -69,7 +69,7 @@ void PluginWizardDlg::DoAddHeaderOption(wxString& buffer, bool has, const wxStri
 	if (has)
 		buffer << _T(";") << _T('\n');
 	else
-		buffer << _T("{ return") << retVal << _T("; }") << _T('\n');
+		buffer << _T("{ return ") << retVal << _T("; }") << _T('\n');
 }
 
 void PluginWizardDlg::DoAddHeaderTool(wxString& buffer)
