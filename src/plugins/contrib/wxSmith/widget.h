@@ -463,7 +463,7 @@ class wxsWidget
 
         // Added by cyberkoa
         /** Getting a series of string with given parent element and child element name */
-        virtual bool wxsWidget::XmlGetStringArray(const wxString &ParentName,const wxString& ChildName, wxArrayString& stringArray);
+        virtual bool XmlGetStringArray(const wxString &ParentName,const wxString& ChildName, wxArrayString& stringArray);
         //End Add
 
         /** Setting string value */
@@ -485,7 +485,7 @@ class wxsWidget
         void XmlAssignElement(TiXmlElement* Element);
 
         /** Set a series of string with the same given element name */
-        virtual bool wxsWidget::XmlSetStringArray(const wxString &ParentName,const wxString& ChildName, wxArrayString& stringArray);
+        virtual bool XmlSetStringArray(const wxString &ParentName,const wxString& ChildName, wxArrayString& stringArray);
 
         /** Reading all default values for widget */
         inline bool XmlLoadDefaults() { return XmlLoadDefaultsT(GetBPType()); }
