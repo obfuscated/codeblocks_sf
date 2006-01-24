@@ -1306,8 +1306,7 @@ void ProjectManager::DoOpenSelectedFile()
 
     if (ftd)
     {
-	    cbProject* project = ftd->GetProject();
-	    ProjectFile* f = project->GetFile(ftd->GetFileIndex());
+	    ProjectFile* f = ftd->GetProjectFile();
     	if (f)
         {
 			DoOpenFile(f, f->file.GetFullPath());
