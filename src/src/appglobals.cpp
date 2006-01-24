@@ -2,7 +2,7 @@
 #include "appglobals.h"
 #include <autorevision.h>
 
-const wxString g_ApVendor               = _T("Code::Blocks");
+const wxString g_AppVendor              = _T("Code::Blocks");
 const wxString g_AppName			    = _T("Code::Blocks");
 const wxString g_AppVersion				= _T("1.0");
 const wxString g_AppActualVersionVerb	= _T("1.0 revision " SVN_REVISION);
