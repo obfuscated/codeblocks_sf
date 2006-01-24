@@ -101,7 +101,7 @@ unsigned int FilesGroupsAndMasks::AddGroup(const wxString& name)
 
 void FilesGroupsAndMasks::RenameGroup(unsigned int group, const wxString& newName)
 {
-    if (group < 0 || group >= m_Groups.GetCount())
+    if (group >= m_Groups.GetCount())
         return;
 
     FileGroups* fg = m_Groups[group];
@@ -110,7 +110,7 @@ void FilesGroupsAndMasks::RenameGroup(unsigned int group, const wxString& newNam
 
 void FilesGroupsAndMasks::DeleteGroup(unsigned int group)
 {
-    if (group < 0 || group >= m_Groups.GetCount())
+    if (group >= m_Groups.GetCount())
         return;
 
     FileGroups* fg = m_Groups[group];
@@ -120,7 +120,7 @@ void FilesGroupsAndMasks::DeleteGroup(unsigned int group)
 
 void FilesGroupsAndMasks::SetFileMasks(unsigned int group, const wxString& masks)
 {
-    if (group < 0 || group >= m_Groups.GetCount())
+    if (group >= m_Groups.GetCount())
         return;
 
     FileGroups* fg = m_Groups[group];
@@ -134,7 +134,7 @@ unsigned int FilesGroupsAndMasks::GetGroupsCount() const
 
 wxString FilesGroupsAndMasks::GetGroupName(unsigned int group) const
 {
-    if (group < 0 || group >= m_Groups.GetCount())
+    if (group >= m_Groups.GetCount())
         return wxEmptyString;
     FileGroups* fg = m_Groups[group];
     return fg->groupName;
@@ -142,7 +142,7 @@ wxString FilesGroupsAndMasks::GetGroupName(unsigned int group) const
 
 wxString FilesGroupsAndMasks::GetFileMasks(unsigned int group) const
 {
-    if (group < 0 || group >= m_Groups.GetCount())
+    if (group >= m_Groups.GetCount())
         return wxEmptyString;
     FileGroups* fg = m_Groups[group];
     return GetStringFromArray(fg->fileMasks);
@@ -150,7 +150,7 @@ wxString FilesGroupsAndMasks::GetFileMasks(unsigned int group) const
 
 bool FilesGroupsAndMasks::MatchesMask(const wxString& ext, unsigned int group)
 {
-    if (ext.IsEmpty() || group < 0 || group >= m_Groups.GetCount())
+    if (ext.IsEmpty() || group >= m_Groups.GetCount())
         return false;
     FileGroups* fg = m_Groups[group];
     for (unsigned int i = 0; i < fg->fileMasks.GetCount(); ++i)
