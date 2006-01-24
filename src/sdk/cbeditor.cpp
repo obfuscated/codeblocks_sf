@@ -42,7 +42,7 @@
 #include "cbplugin.h"
 #include "cbeditorprintout.h"
 
-const wxString EDITOR_MODIFIED(_T("*"));
+const wxString g_EditorModified = _T("*");
 
 #define BOOKMARK_MARKER		0
 #define BOOKMARK_STYLE 		wxSCI_MARK_ARROW
@@ -378,7 +378,7 @@ void cbEditor::SetModified(bool modified)
     {
         m_Modified = modified;
         if (m_Modified)
-            SetEditorTitle(EDITOR_MODIFIED + m_Shortname);
+            SetEditorTitle(g_EditorModified + m_Shortname);
         else
         {
             m_pControl->SetSavePoint();

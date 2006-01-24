@@ -3,15 +3,15 @@
 
 #include <wx/string.h>
 
-extern const wxString APP_VENDOR;
-extern const wxString APP_NAME;
-extern const wxString APP_VERSION;
-extern const wxString APP_ACTUAL_VERSION_VERB;
-extern const wxString APP_ACTUAL_VERSION;
-extern const wxString APP_URL;
-extern const wxString APP_CONTACT_EMAIL;
-extern const wxString APP_PLATFORM;
-extern const wxString APP_WXANSI_UNICODE;
-extern const wxString APP_BUILD_TIMESTAMP;
+extern const wxString g_AppVendor;
+extern const wxString g_AppName;
+extern const wxString g_AppVersion;
+extern const wxString g_AppActualVersionVerb;
+extern const wxString g_AppActualVersion;
+extern const wxString g_AppUrl;
+extern const wxString g_AppContactEmail;
+extern const wxString g_AppPlatform;
+extern const wxString g_AppWXAnsiUnicode;
+extern const wxString g_AppBuildTimestamp;
 
 #endif // APPGLOBALS_H

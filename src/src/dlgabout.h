@@ -1,4 +1,3 @@
-
 #ifndef DLGABOUT_H
 #define DLGABOUT_H
 
@@ -15,9 +14,6 @@
 #include <wx/dialog.h> // inheriting class's header file
 #include <wx/xrc/xmlres.h>
 
-/*
- * No description
- */
 class dlgAbout : public wxDialog
 {
 	public:

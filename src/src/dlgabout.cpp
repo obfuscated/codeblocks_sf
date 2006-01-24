@@ -29,37 +29,28 @@
 #include "../sdk/licenses.h"
 #include "../sdk/configmanager.h"
 
-#define DESCR		(_("Welcome to ")+wxString(APP_NAME)+wxString(_T(" v"))+wxString(APP_VERSION)+wxString(_T("!\n")) +\
-					wxString(APP_NAME)+_(" is a full-featured IDE (Integrated Development Environment) " \
-					"aiming to make the individual developer (and the development team) " \
-					"work in a nice programming environment offering everything he/they " \
-					"would ever need from a program of that kind.\n" \
-					"Its pluggable architecture allows you, the developer, to add " \
-					"any kind of functionality to the core program, through the use of " \
-					"plugins...\n"))
-
-/*
-#define DESCR		_("Welcome to "APP_NAME" v"APP_VERSION"!\n" \
-					APP_NAME" is a full-featured IDE (Integrated Development Environment) " \
-					"aiming to make the individual developer (and the development team) " \
-					"work in a nice programming environment offering everything he/they " \
-					"would ever need from a program of that kind.\n" \
-					"Its pluggable architecture allows you, the developer, to add " \
-					"any kind of functionality to the core program, through the use of " \
-					"plugins...\n")
-*/
 // class constructor
 
 dlgAbout::dlgAbout(wxWindow* parent)
 {
 	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgAbout"));
 
+    const wxString description = _("Welcome to ") + g_AppName + _T(" v") +
+                                 g_AppVersion + _T("!\n") + g_AppName +
+					             _(" is a full-featured IDE (Integrated Development Environment) "
+					"aiming to make the individual developer (and the development team) "
+					"work in a nice programming environment offering everything he/they "
+					"would ever need from a program of that kind.\n"
+					"Its pluggable architecture allows you, the developer, to add "
+					"any kind of functionality to the core program, through the use of "
+					"plugins...\n");
+
 	wxBitmap bmp;
 	wxString file = ConfigManager::ReadDataPath() + _T("/images/splash.png");
 	bmp.LoadFile(file, wxBITMAP_TYPE_PNG);
 	XRCCTRL(*this, "lblTitle", wxStaticBitmap)->SetBitmap(bmp);
-	XRCCTRL(*this, "lblBuildTimestamp", wxStaticText)->SetLabel(wxString(_T("Build: ")) + APP_BUILD_TIMESTAMP);
-	XRCCTRL(*this, "txtDescription", wxTextCtrl)->SetValue(DESCR);
+	XRCCTRL(*this, "lblBuildTimestamp", wxStaticText)->SetLabel(wxString(_T("Build: ")) + g_AppBuildTimestamp);
+	XRCCTRL(*this, "txtDescription", wxTextCtrl)->SetValue(description);
 	XRCCTRL(*this, "txtThanksTo", wxTextCtrl)->SetValue(_T(
         "Developers:\n"
         "--------------\n"
@@ -87,11 +78,11 @@ dlgAbout::dlgAbout(wxWindow* parent)
         "Last, but not least, the open-source community."
         ));
 	XRCCTRL(*this, "txtLicense", wxTextCtrl)->SetValue(LICENSE_GPL);
-	XRCCTRL(*this, "lblName", wxStaticText)->SetLabel(APP_NAME);
-	XRCCTRL(*this, "lblVersion", wxStaticText)->SetLabel(APP_ACTUAL_VERSION_VERB);
+	XRCCTRL(*this, "lblName", wxStaticText)->SetLabel(g_AppName);
+	XRCCTRL(*this, "lblVersion", wxStaticText)->SetLabel(g_AppActualVersionVerb);
 	XRCCTRL(*this, "lblAuthor", wxStaticText)->SetLabel(_("The Code::Blocks Team"));
-	XRCCTRL(*this, "lblEmail", wxStaticText)->SetLabel(APP_CONTACT_EMAIL);
-	XRCCTRL(*this, "lblWebsite", wxStaticText)->SetLabel(APP_URL);
+	XRCCTRL(*this, "lblEmail", wxStaticText)->SetLabel(g_AppContactEmail);
+	XRCCTRL(*this, "lblWebsite", wxStaticText)->SetLabel(g_AppUrl);
 }
 
 // class destructor

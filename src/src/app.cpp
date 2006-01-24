@@ -138,7 +138,7 @@ void CodeBlocksApp::InitAssociations()
 		{
             HideSplashScreen();
             wxString msg;
-            msg.Printf(_("%s is not currently the default application for C/C++ source files\nDo you want to set it as default?"), APP_NAME.c_str());
+            msg.Printf(_("%s is not currently the default application for C/C++ source files\nDo you want to set it as default?"), g_AppName.c_str());
             int answer = wxMessageBox(msg,
                                         _("File associations"),
                                         wxICON_QUESTION | wxYES_NO | wxYES_DEFAULT);
@@ -254,7 +254,7 @@ void CodeBlocksApp::CheckVersion()
     // for windows users only, display a message that no compiler is provided
     ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
 
-    if (cfg->Read(_T("version")) != APP_ACTUAL_VERSION)
+    if (cfg->Read(_T("version")) != g_AppActualVersion)
     {
         // this is a (probably) newer version; show a message box with
         // important notes
@@ -264,7 +264,7 @@ void CodeBlocksApp::CheckVersion()
         // setup files including a compiler...
 
         // update the version
-        cfg->Write(_T("version"), APP_ACTUAL_VERSION);
+        cfg->Write(_T("version"), g_AppActualVersion);
     }
 #endif
 }
@@ -504,7 +504,7 @@ void CodeBlocksApp::OnFatalException()
 #else
     wxMessageBox(wxString::Format(_("Something has gone wrong inside %s and it "
                                     "will terminate immediately.\n"
-                                    "We are sorry for the inconvenience..."), APP_NAME.c_str()));
+                                    "We are sorry for the inconvenience..."), g_AppName.c_str()));
 #endif
 }
 
@@ -539,7 +539,7 @@ int CodeBlocksApp::BatchJob()
     {
         wxString msg;
         msg.Printf(_("Batch build is complete.\nProcess exited with status code %d."), exitCode);
-        wxMessageBox(msg, APP_NAME, exitCode == 0 ? wxICON_INFORMATION : wxICON_WARNING);
+        wxMessageBox(msg, g_AppName, exitCode == 0 ? wxICON_INFORMATION : wxICON_WARNING);
     }
     return exitCode;
 }
@@ -552,11 +552,11 @@ void CodeBlocksApp::ShowSplashScreen()
 	{
 		wxBitmap bitmap;
 		#ifdef __WXMSW__
-			const wxString SPLASH_IMAGE = _T("/images/splash_new.png");
+			const wxString splashImage = _T("/images/splash_new.png");
 		#else
-			const wxString SPLASH_IMAGE = _T("/images/splash.png");
+			const wxString splashImage = _T("/images/splash.png");
 		#endif
-		if (bitmap.LoadFile(ConfigManager::ReadDataPath() + SPLASH_IMAGE, wxBITMAP_TYPE_PNG))
+		if (bitmap.LoadFile(ConfigManager::ReadDataPath() + splashImage, wxBITMAP_TYPE_PNG))
 		{
 			m_pSplash = new wxSplashScreen(bitmap,
 										wxSPLASH_CENTRE_ON_SCREEN| wxSPLASH_NO_TIMEOUT,
@@ -587,9 +587,9 @@ bool CodeBlocksApp::CheckResource(const wxString& res)
     		"to point where %s is installed,\n"
     		"or try re-installing the application..."),
     		res.c_str(),
-    		APP_NAME.c_str(),
+    		g_AppName.c_str(),
     		ConfigManager::ReadDataPath().c_str(),
-    		APP_NAME.c_str());
+    		g_AppName.c_str());
     	wxMessageBox(msg);
     	return false;
     }

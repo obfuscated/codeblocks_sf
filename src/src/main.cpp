@@ -429,10 +429,10 @@ MainFrame::MainFrame(wxWindow* parent)
 
     DoCreateStatusBar();
 #if wxUSE_STATUSBAR
-    SetStatusText(_("Welcome to ")+ APP_NAME + _T("!"));
+    SetStatusText(_("Welcome to ")+ g_AppName + _T("!"));
 #endif // wxUSE_STATUSBAR
 
-    SetTitle(APP_NAME + _T(" v") + APP_VERSION);
+    SetTitle(g_AppName + _T(" v") + g_AppVersion);
 
     ScanForPlugins();
     // save default view
@@ -1169,7 +1169,7 @@ void MainFrame::DoUpdateStatusBar()
     }
     else
     {
-        SetStatusText(_("Welcome to ") + APP_NAME + _T("!"));             //tiwag 050917
+        SetStatusText(_("Welcome to ") + g_AppName + _T("!"));             //tiwag 050917
         SetStatusText(wxEmptyString, 1);
         SetStatusText(wxEmptyString, 2);
         SetStatusText(wxEmptyString, 3);
@@ -1278,9 +1278,9 @@ void MainFrame::DoUpdateAppTitle()
         if(!fulltitle.IsEmpty())
             fulltitle.Append(_T(" - "));
 	}
-    fulltitle.Append(APP_NAME);
+    fulltitle.Append(g_AppName);
     fulltitle.Append(_T(" v"));
-    fulltitle.Append(APP_VERSION);
+    fulltitle.Append(g_AppVersion);
     SetTitle(fulltitle);
 }
 

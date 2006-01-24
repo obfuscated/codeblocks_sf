@@ -9,7 +9,7 @@
 #include "editorbase.h"
 #include "printing_types.h"
 
-extern const wxString EDITOR_MODIFIED;
+extern const wxString g_EditorModified;
 
 // forward decls
 struct cbEditorInternalData; // this is the private data struct used by the editor.

@@ -406,10 +406,10 @@ EditorBase* EditorManager::IsOpen(const wxString& filename)
         wxString fname = eb->GetFilename();
 #ifdef __WXMSW__
         // MSW must use case-insensitive comparison
-        if (fname.IsSameAs(uFilename,false) || fname.IsSameAs(EDITOR_MODIFIED + uFilename,false))
+        if (fname.IsSameAs(uFilename,false) || fname.IsSameAs(g_EditorModified + uFilename,false))
             return eb;
 #else
-        if (fname.IsSameAs(uFilename) || fname.IsSameAs(EDITOR_MODIFIED + uFilename))
+        if (fname.IsSameAs(uFilename) || fname.IsSameAs(g_EditorModified + uFilename))
             return eb;
 #endif
 	}

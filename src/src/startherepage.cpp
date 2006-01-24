@@ -99,19 +99,19 @@ StartHerePage::StartHerePage(wxEvtHandler* owner, wxWindow* parent)
 	wxString revInfo;
 	#ifdef __GNUC__
 	revInfo.Printf(_T("Version %s (gcc %d.%d.%d %s/%s, build: %s %s)"),
-					APP_ACTUAL_VERSION_VERB.c_str(),
-					__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__, APP_PLATFORM.c_str(), APP_WXANSI_UNICODE.c_str(),
+					g_AppActualVersionVerb.c_str(),
+					__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__, g_AppPlatform.c_str(), g_AppWXAnsiUnicode.c_str(),
 					wxT(__DATE__), wxT(__TIME__));
 	#else
 	revInfo.Printf(_T("Version %s (%s/%s, build: %s %s)"),
-					APP_ACTUAL_VERSION_VERB.c_str(),
-					APP_PLATFORM.c_str(), APP_WXANSI_UNICODE.c_str(),
+					g_AppActualVersionVerb.c_str(),
+					g_AppPlatform.c_str(), g_AppWXAnsiUnicode.c_str(),
 					wxT(__DATE__), wxT(__TIME__));
 	#endif
     // perform var substitution
     buf.Replace(_T("CB_VAR_REVISION_INFO"), revInfo);
-    buf.Replace(_T("CB_VAR_VERSION_VERB"), APP_ACTUAL_VERSION_VERB);
-    buf.Replace(_T("CB_VAR_VERSION"), APP_ACTUAL_VERSION);
+    buf.Replace(_T("CB_VAR_VERSION_VERB"), g_AppActualVersionVerb);
+    buf.Replace(_T("CB_VAR_VERSION"), g_AppActualVersion);
     m_pWin->SetPage(buf);
 
     m_OriginalPageContent = buf; // keep a copy of original for Reload()
