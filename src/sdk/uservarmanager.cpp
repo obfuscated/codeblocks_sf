@@ -41,30 +41,6 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
-UserVariableManager* UserVariableManager::instance = 0;
-
-UserVariableManager::UserVariableManager()
-{}
-
-UserVariableManager* UserVariableManager::Get()
-{
-    if(Manager::isappShuttingDown()) // The mother of all sanity checks
-        Free();
-    else if(!instance)
-    {
-        instance = new UserVariableManager;
-    }
-    return instance;
-}
-
-void UserVariableManager::Free()
-{
-    if(instance)
-    {
-        delete instance;
-        instance = 0;
-    }
-}
 
 void UserVariableManager::Configure()
 {

@@ -3,16 +3,12 @@
 
 #include "settings.h"
 
-class DLLIMPORT UserVariableManager
+class DLLIMPORT UserVariableManager : public Mgr<UserVariableManager>
 {
         friend class Manager;
+        friend class Mgr<MacrosManager>;
         friend class MacrosManager;
         static UserVariableManager* instance;
-
-        static UserVariableManager* Get();
-        static void Free();
-
-        UserVariableManager();
 
     public:
         wxString Replace(const wxString& variable);

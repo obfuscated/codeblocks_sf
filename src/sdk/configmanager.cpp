@@ -160,7 +160,7 @@ void CfgMgrBldr::SwitchToR(const wxString& absFileName)
                 delete is;
                 return;
             }
-            if(Manager::Get() && Manager::Get()->GetMessageManager())
+            if(Manager::Get()->GetMessageManager())
             {
                 Manager::Get()->GetMessageManager()->DebugLog(_T("##### Error loading or parsing remote config file"));
                 Manager::Get()->GetMessageManager()->DebugLog(_U(doc->ErrorDesc()));

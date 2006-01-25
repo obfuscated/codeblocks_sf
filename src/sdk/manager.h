@@ -128,8 +128,7 @@ public:
     static void Free()
     {
         isShutdown = true;
-        if(instance)
-            delete instance;
+        delete instance;
         instance = 0;
     }
 };

@@ -306,8 +306,9 @@ int CodeCompletion::CodeComplete()
 		return -1;
 
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
-    if (!edMan)
-		return -2;
+//  Plugins are destroyed prior to EditorManager, so this is guaranteed to be valid at all times
+//    if (!edMan)
+//		return -2;
     cbEditor* ed = edMan->GetBuiltinActiveEditor();
     if (!ed)
 		return -3;
@@ -393,8 +394,8 @@ void CodeCompletion::CodeCompleteIncludes()
         return;
 
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
-    if (!edMan)
-		return;
+//    if (!edMan)
+//		return;
     cbEditor* ed = edMan->GetBuiltinActiveEditor();
     if (!ed)
 		return;
@@ -504,8 +505,8 @@ int CodeCompletion::DoClassMethodDeclImpl()
 		return -1;
 
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
-    if (!edMan)
-		return -2;
+//    if (!edMan)
+//		return -2;
     cbEditor* ed = edMan->GetBuiltinActiveEditor();
     if (!ed)
 		return -3;
@@ -549,8 +550,8 @@ int CodeCompletion::DoClassMethodDeclImpl()
 void CodeCompletion::DoCodeComplete()
 {
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
-    if (!edMan)
-    	return;
+//    if (!edMan)
+//    	return;
     cbEditor* ed = edMan->GetBuiltinActiveEditor();
     if (!ed)
     	return;
@@ -578,8 +579,8 @@ void CodeCompletion::DoInsertCodeCompleteToken(wxString tokName)
 		tokName.Remove(pos);
 
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
-    if (!edMan)
-    	return;
+//    if (!edMan)
+//    	return;
     cbEditor* ed = edMan->GetBuiltinActiveEditor();
     if (!ed)
     	return;
@@ -717,8 +718,8 @@ void CodeCompletion::OnShowCallTip(wxCommandEvent& event)
 void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
 {
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
-   	if (!edMan)
-   		return;
+//   	if (!edMan)
+//   		return;
     cbEditor* ed = edMan->GetBuiltinActiveEditor();
    	if (!ed)
 		return;
@@ -763,8 +764,8 @@ void CodeCompletion::OnClassMethod(wxCommandEvent& event)
 void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
 {
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
-   	if (!edMan)
-   		return;
+//   	if (!edMan)
+//   		return;
 
     wxString txt = m_LastKeyword;
 //    Manager::Get()->GetMessageManager()->DebugLog(_("Go to decl for '%s'"), txt.c_str());

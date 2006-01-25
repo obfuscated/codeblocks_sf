@@ -107,6 +107,7 @@ void Manager::Shutdown()
 	EditorManager::Free();
 	PersonalityManager::Free();
 	MacrosManager::Free();
+	UserVariableManager::Free();
 	MessageManager::Free();
 }
 

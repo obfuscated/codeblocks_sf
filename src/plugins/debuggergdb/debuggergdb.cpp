@@ -1184,8 +1184,9 @@ void DebuggerGDB::BringAppToFront()
 void DebuggerGDB::ClearActiveMarkFromAllEditors()
 {
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
-	if (!edMan)
-        return;
+//  Plugins are destroyed prior to EditorManager, so this is guaranteed to be valid at all times
+//	if (!edMan)
+//        return;
 	for (int i = 0; i < edMan->GetEditorsCount(); ++i)
 	{
         cbEditor* ed = edMan->GetBuiltinEditor(i);
