@@ -23,7 +23,7 @@
 const wxString base_imgs[] =
 {
     _T("general-prefs"),
-    _T("view"),
+    _T("notebook-appearance"),
     _T("colours"),
     _T("dialogs"),
     _T("batch"),
