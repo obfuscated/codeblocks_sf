@@ -10,6 +10,7 @@ mkdir -p output/share/codeblocks/plugins
 mkdir -p output/share/codeblocks/templates
 mkdir -p output/share/codeblocks/scripts
 mkdir -p devel/share/codeblocks/lexers
+mkdir -p devel/share/codeblocks/images/settings
 mkdir -p devel/share/codeblocks/images/codecompletion
 mkdir -p devel/share/codeblocks/images/16x16
 mkdir -p devel/share/codeblocks/plugins
