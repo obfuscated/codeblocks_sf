@@ -52,7 +52,7 @@ const wxString base_imgs[] =
     _T("folding"),
     _T("gutter-margin"),
     _T("syntax-highlight"),
-    _T("generic-plugin"),
+    _T("abbrev"),
     _T("default-code"),
 };
 const int IMAGES_COUNT = 6; // keep this in sync!
