@@ -36,6 +36,7 @@ BEGIN_EVENT_TABLE(SelectTargetDlg, wxDialog)
 	EVT_BUTTON(XRCID("btnOK"), SelectTargetDlg::OnOK)
 	EVT_CHECKBOX(XRCID("chkSetAsDefaultExec"), SelectTargetDlg::OnCheckboxSelection)
 	EVT_LISTBOX(XRCID("lstItems"), SelectTargetDlg::OnListboxSelection)
+	EVT_LISTBOX_DCLICK(XRCID("lstItems"), SelectTargetDlg::OnOK)
 END_EVENT_TABLE()
 
 SelectTargetDlg::SelectTargetDlg(wxWindow* parent, cbProject* project, int selected)
