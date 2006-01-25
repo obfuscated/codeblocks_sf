@@ -19,7 +19,7 @@ class DLLIMPORT cbThreadPoolTask
 		virtual int Execute() = 0;
 		virtual void Abort(){ m_Abort = true; }
     protected:
-        virtual bool TestDestroy(){ return m_Abort; }
+        inline bool TestDestroy() { return m_Abort; }
         bool m_Abort;
 };
 

@@ -139,6 +139,8 @@ ParserThread::~ParserThread()
 
 void ParserThread::Log(const wxString& log)
 {
+    if(TestDestroy())
+        return;
 	wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, NEW_TOKEN);
 	event.SetString(log);
 	event.SetInt(m_Tokenizer.GetLineNumber());
@@ -174,6 +176,8 @@ wxChar ParserThread::SkipToOneOfChars(const wxString& chars, bool supportNesting
 	unsigned int level = m_Tokenizer.GetNestingLevel();
 	while (1)
 	{
+        if(TestDestroy())
+            return '\0';
 		wxString token = m_Tokenizer.GetToken();
 		if (token.IsEmpty())
 			return '\0'; // eof
@@ -198,6 +202,8 @@ void ParserThread::SkipBlock()
 	unsigned int level = m_Tokenizer.GetNestingLevel() - 1;
 	while (1)
 	{
+        if(TestDestroy())
+            return;
 		wxString token = m_Tokenizer.GetToken();
 		if (token.IsEmpty())
 			break; // eof
@@ -213,6 +219,8 @@ void ParserThread::SkipAngleBraces()
     int nestLvl = 0;
     while (true)
     {
+        if(TestDestroy())
+            return;
         wxString tmp = m_Tokenizer.GetToken();
         if (tmp==ParserConsts::lt)
             ++nestLvl;
@@ -233,6 +241,8 @@ void ParserThread::SkipAngleBraces()
 
 bool ParserThread::ParseBufferForFunctions(const wxString& buffer)
 {
+    if(TestDestroy())
+        return false;
     if (!m_pTokens)
         return false;
 	m_pTokens->Clear();
@@ -342,7 +352,6 @@ bool ParserThread::ParseBufferForFunctions(const wxString& buffer)
 
 bool ParserThread::Parse()
 {
-    wxCriticalSectionLocker* lock = 0;
     bool result = false;
 
     do
@@ -352,9 +361,9 @@ bool ParserThread::Parse()
 
         if(!m_Options.useBuffer) // Parse a file
         {
-            lock = new wxCriticalSectionLocker(s_mutexProtection);
+            s_mutexProtection.Enter();
             m_File = m_pTokens->ReserveFileForParsing(m_Filename);
-            delete lock;
+            s_mutexProtection.Leave();
             if(!m_File)
                 break;
         }
@@ -363,9 +372,9 @@ bool ParserThread::Parse()
 
         if(!m_Options.useBuffer) // Parsing a file
         {
-            lock = new wxCriticalSectionLocker(s_mutexProtection);
+            s_mutexProtection.Enter();
             m_pTokens->FlagFileAsParsed(m_Filename);
-            delete lock;
+            s_mutexProtection.Leave();
         }
         result = true;
     }while(false);
@@ -733,6 +742,8 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, const wxSt
         size_t i = 0;
         do
         {
+            if(TestDestroy())
+                return 0;
             localParent = TokenExists(m_EncounteredNamespaces[i], localParent, tkClass | tkNamespace);
             i++;
         }while(localParent && i < count);
@@ -750,6 +761,8 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, const wxSt
     }
     else
     {
+        if(TestDestroy())
+            return 0;
         newToken = new Token(newname,m_File,m_Tokenizer.GetLineNumber());
         newToken->m_Type = m_Str;
         newToken->m_ActualType = GetActualTokenType();
@@ -774,13 +787,14 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, const wxSt
 
 void ParserThread::HandleIncludes()
 {
-	static wxCriticalSection s_mysection;
 	wxString filename;
 	bool isGlobal = !m_IsLocal;
 	wxString token = m_Tokenizer.GetToken();
 	// now token holds something like:
 	// "someheader.h"
 	// < and will follow iostream.h, >
+    if(TestDestroy())
+        return;
 	if (!token.IsEmpty())
 	{
 		if (token.GetChar(0) == '"')
@@ -814,23 +828,25 @@ void ParserThread::HandleIncludes()
             // setting all #includes as global
             // it's amazing how many projects use #include "..." for global headers (MSVC mainly - booh)
             isGlobal = true;
-            wxString real_filename(_T(""));
+
             if(!(isGlobal ? m_Options.followGlobalIncludes : m_Options.followLocalIncludes))
                 break; // Nothing to do!
 
+            wxString real_filename = m_pParent->GetFullFileName(m_Filename,filename,isGlobal);
+            // Parser::GetFullFileName is thread-safe :)
+
+            if(real_filename.IsEmpty())
+                break; // File not found, do nothing.
+
             {
                 wxCriticalSectionLocker lock(s_mutexProtection);
-                real_filename = m_pParent->GetFullFileName(m_Filename,filename,isGlobal);
-                if(real_filename.IsEmpty())
-                    break; // File not found, do nothing.
-
                 if(m_pTokens->IsFileParsed(real_filename))
                     break; // Already being parsed elsewhere
             }
 
             // since we 'll be calling directly the parser's method, let's make it thread-safe
     		{
-                wxCriticalSectionLocker lock1(s_mysection);
+                wxCriticalSectionLocker lock2(s_mutexListProtection);
                 wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, FILE_NEEDS_PARSING);
                 event.SetString(real_filename);
                 event.SetInt(isGlobal ? 1 : 0);

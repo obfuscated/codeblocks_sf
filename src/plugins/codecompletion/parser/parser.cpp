@@ -42,7 +42,6 @@
 
 static const char CACHE_MAGIC[] = "CCCACHE_1_2";
 
-static wxCriticalSection s_mutexListProtection;
 int PARSER_END = wxNewId();
 static int idPool = wxNewId();
 int TIMER_ID = wxNewId();
@@ -452,9 +451,9 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
         #else
         m_Pool.AddTask(thread, true);
         if(wxThread::IsMain())
-            m_batchtimer.Start(100,wxTIMER_ONE_SHOT);
-        // For every parse, the timer is reset to -100 ms, so there is a
-        // 100 ms. tolerance for the next parse to get queued. After that,
+            m_batchtimer.Start(800,wxTIMER_ONE_SHOT);
+        // For every parse, the timer is reset to -N ms, so there is a
+        // N ms. tolerance for the next parse to get queued. After that,
         // the timer will trigger the event that will start the batch job.
         #endif
         result = true;
@@ -782,6 +781,7 @@ void Parser::OnNewToken(wxCommandEvent& event)
 
 wxString Parser::GetFullFileName(const wxString& src,const wxString& tgt, bool isGlobal)
 {
+    wxCriticalSectionLocker lock(s_mutexListProtection);
     wxString fullname(_T("")); // Initialize with Empty String
     if(isGlobal)
         fullname = FindFirstFileInIncludeDirs(tgt);

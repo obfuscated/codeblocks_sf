@@ -20,21 +20,32 @@ class PrivateThread : public wxThread
 		PrivateThread(cbThreadPool* pool)
         : wxThread(wxTHREAD_JOINABLE),
           m_pPool(pool),
+          m_pTask(0),
         m_Abort(false)
         {
         }
 		~PrivateThread(){}
 
-		void Abort(bool abort = true){ m_Abort = abort; }
+		void Abort()
+		{
+		    // m_pTask is accessed by more than one thread, hence the Critical Section
+		    m_pPool->m_CounterCriticalSection.Enter();
+		    if(m_pTask)
+                m_pTask->Abort();
+		    m_Abort = true;
+		    m_pPool->m_CounterCriticalSection.Leave();
+        }
 
 		virtual ExitCode Entry()
         {
             // continuous loop, until we abort
             while (1)
             {
+                m_pPool->m_CounterCriticalSection.Enter();
+                m_pTask = 0;
+                m_pPool->m_CounterCriticalSection.Leave();
                 if (TestDestroy())
                     break;
-
                 // wait for signal from pool
                 m_pPool->m_Semaphore.Wait();
 
@@ -53,13 +64,15 @@ class PrivateThread : public wxThread
                     // increment the "busy" counter
                     m_pPool->m_CounterCriticalSection.Enter();
                     ++m_pPool->m_Counter;
+                    m_pTask = elem.task;
                     m_pPool->m_CounterCriticalSection.Leave();
 
-                    elem.task->Execute();
+                    m_pTask->Execute();
                     doneWork = true;
 
                     // decrement the "busy" counter
                     m_pPool->m_CounterCriticalSection.Enter();
+                    m_pTask = 0;
                     --m_pPool->m_Counter;
                     m_pPool->m_CounterCriticalSection.Leave();
                 }
@@ -76,6 +89,7 @@ class PrivateThread : public wxThread
         }
 
         cbThreadPool* m_pPool;
+        cbThreadPoolTask* m_pTask;
 		bool m_Abort;
 };
 
@@ -112,6 +126,7 @@ void cbThreadPool::SetConcurrentThreads(int concurrentThreads)
     if (m_ConcurrentThreads == -1)
         m_ConcurrentThreads = 1;
 
+    m_ConcurrentThreads += m_ConcurrentThreads;
 	Manager::Get()->GetMessageManager()->DebugLog(_T("Concurrent threads for pool set to %d"), m_ConcurrentThreads);
 
     // alloc (or dealloc) based on new thread count
