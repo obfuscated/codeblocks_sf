@@ -47,6 +47,7 @@
 #include <manager.h>
 #include <scriptingmanager.h>
 #include <wxFlatNotebook.h>
+#include "globals.h"
 
 #ifndef __WXMSW__
     #include "prefix.h" // binreloc
@@ -556,13 +557,10 @@ void CodeBlocksApp::ShowSplashScreen()
 		#else
 			const wxString splashImage = _T("/images/splash.png");
 		#endif
-		if (bitmap.LoadFile(ConfigManager::ReadDataPath() + splashImage, wxBITMAP_TYPE_PNG))
-		{
-			m_pSplash = new wxSplashScreen(bitmap,
-										wxSPLASH_CENTRE_ON_SCREEN| wxSPLASH_NO_TIMEOUT,
+		m_pSplash = new wxSplashScreen(LoadPNGWindows2000Hack(ConfigManager::ReadDataPath() + splashImage),
+                                        wxSPLASH_CENTRE_ON_SCREEN| wxSPLASH_NO_TIMEOUT,
 										6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
 										wxBORDER_NONE | wxFRAME_NO_TASKBAR);
-		}
 		Manager::ProcessPendingEvents();
 	}
 }

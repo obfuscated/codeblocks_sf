@@ -122,7 +122,9 @@ extern DLLIMPORT wxString ChooseDirectory(wxWindow* parent,
 
 extern DLLIMPORT bool NormalizePath(wxFileName& f,const wxString& base);
 
-wxString URLEncode(const wxString &str);
+extern DLLIMPORT wxString URLEncode(const wxString &str);
+
+extern DLLIMPORT wxBitmap LoadPNGWindows2000Hack(const wxString& filename);
 
 /** Finds out if a window is really shown.
   *

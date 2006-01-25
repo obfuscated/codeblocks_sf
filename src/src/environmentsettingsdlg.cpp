@@ -12,6 +12,7 @@
 #include <wx/colordlg.h>
 #include <wx/msgdlg.h>
 #include "wxAUI/manager.h"
+#include "globals.h"
 
 #include "environmentsettingsdlg.h"
 #ifdef __WXMSW__
@@ -142,7 +143,6 @@ EnvironmentSettingsDlg::~EnvironmentSettingsDlg()
 void EnvironmentSettingsDlg::AddPluginPanels()
 {
     const wxString base = ConfigManager::GetDataFolder() + _T("/images/settings/");
-    wxBitmap bmp;
 
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
     Manager::Get()->GetPluginManager()->GetAllConfigurationPanels(lb, m_PluginPanels);
@@ -152,10 +152,8 @@ void EnvironmentSettingsDlg::AddPluginPanels()
         cbConfigurationPanel* panel = m_PluginPanels[i];
         lb->AddPage(panel, panel->GetTitle());
 
-        bmp.LoadFile(base + panel->GetBitmapBaseName() + _T(".png"), wxBITMAP_TYPE_PNG);
-        lb->GetImageList()->Add(bmp);
-        bmp.LoadFile(base + panel->GetBitmapBaseName() + _T("-off.png"), wxBITMAP_TYPE_PNG);
-        lb->GetImageList()->Add(bmp);
+        lb->GetImageList()->Add(LoadPNGWindows2000Hack(base + panel->GetBitmapBaseName() + _T(".png")));
+        lb->GetImageList()->Add(LoadPNGWindows2000Hack(base + panel->GetBitmapBaseName() + _T("-off.png")));
         lb->SetPageImage(lb->GetPageCount() - 1, lb->GetImageList()->GetImageCount() - 2);
     }
 

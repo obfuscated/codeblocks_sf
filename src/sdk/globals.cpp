@@ -518,3 +518,26 @@ bool NormalizePath(wxFileName& f,const wxString& base)
     }
     return result;
 }
+
+
+inline bool IsRunningWindows2000()
+{
+    int major = 0;
+    int minor = 0;
+    if(wxGetOsVersion(&major, &minor) == wxWINDOWS_NT && major < 5)
+        return true;
+    return false;
+};
+
+wxBitmap LoadPNGWindows2000Hack(const wxString& filename)
+{
+    static bool isWindows2000 = IsRunningWindows2000();
+
+    wxImage im;
+    im.LoadFile(filename, wxBITMAP_TYPE_PNG);
+    if(isWindows2000)
+        im.ConvertAlphaToMask();
+
+    wxBitmap bmp(im);
+    return bmp;
+}
