@@ -194,6 +194,8 @@ DECLARE_CB_EVENT_TYPE(cbEVT_PROJECT_FILE_REMOVED)
 #define EVT_PROJECT_FILE_REMOVED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PROJECT_FILE_REMOVED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 DECLARE_CB_EVENT_TYPE(cbEVT_PROJECT_POPUP_MENU)
 #define EVT_PROJECT_POPUP_MENU(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PROJECT_POPUP_MENU, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+DECLARE_CB_EVENT_TYPE(cbEVT_PROJECT_TARGETS_MODIFIED)
+#define EVT_PROJECT_TARGETS_MODIFIED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PROJECT_TARGETS_MODIFIED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 
 // pipedprocess events
 DECLARE_CB_EVENT_TYPE(cbEVT_PIPEDPROCESS_STDOUT)
