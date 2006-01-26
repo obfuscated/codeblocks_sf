@@ -56,7 +56,7 @@ const wxString base_imgs[] =
     _T("abbrev"),
     _T("default-code"),
 };
-const int IMAGES_COUNT = 6; // keep this in sync!
+const int IMAGES_COUNT = sizeof(base_imgs) / sizeof(wxString);
 
 // map cmbDefCodeFileType indexes to FileType values
 // if more entries are added to cmbDefCodeFileType, edit the mapping here

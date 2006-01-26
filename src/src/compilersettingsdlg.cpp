@@ -18,7 +18,7 @@ const wxString base_imgs[] =
 {
     _T("batch"),
 };
-const int IMAGES_COUNT = 1; // keep this in sync!
+const int IMAGES_COUNT = sizeof(base_imgs) / sizeof(wxString);
 
 BEGIN_EVENT_TABLE(CompilerSettingsDlg, wxDialog)
     EVT_LISTBOOK_PAGE_CHANGING(XRCID("nbMain"), CompilerSettingsDlg::OnPageChanging)

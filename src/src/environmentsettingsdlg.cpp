@@ -27,10 +27,9 @@ const wxString base_imgs[] =
     _T("notebook-appearance"),
     _T("colours"),
     _T("dialogs"),
-    _T("batch"),
     _T("net"),
 };
-const int IMAGES_COUNT = 6; // keep this in sync!
+const int IMAGES_COUNT = sizeof(base_imgs) / sizeof(wxString);
 
 BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxDialog)
     EVT_UPDATE_UI(-1, EnvironmentSettingsDlg::OnUpdateUI)
@@ -112,11 +111,6 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
         if (!caption.IsEmpty())
             clb->Append(caption);
     }
-
-    // tab "Batch builds"
-#ifdef __WXMSW__
-    XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->SetValue(cfg->Read(_T("/batch_build_args"), g_DefaultBatchBuildArgs));
-#endif
 
     // tab "Network"
     XRCCTRL(*this, "txtProxy", wxTextCtrl)->SetValue(cfg->Read(_T("/network_proxy")));
@@ -306,16 +300,6 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
             if (lb->IsChecked(i))
                 acfg->UnSet(lb->GetString(i));
         }
-
-        // tab "Batch builds"
-#ifdef __WXMSW__
-        wxString bbargs = XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->GetValue();
-        if (bbargs != cfg->Read(_T("/batch_build_args"), g_DefaultBatchBuildArgs))
-        {
-            cfg->Write(_T("/batch_build_args"), bbargs);
-            Associations::SetBatchBuildOnly();
-        }
-#endif
 
         // tab "Network"
         cfg->Write(_T("/network_proxy"),    XRCCTRL(*this, "txtProxy", wxTextCtrl)->GetValue());
