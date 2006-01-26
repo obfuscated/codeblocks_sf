@@ -17,7 +17,6 @@
 #include "directcommands.h"
 #include "cmdlinegenerator.h"
 #include "compilergcc.h"
-#include "customvars.h"
 #include "cbexception.h"
 #include <depslib.h>
 
@@ -69,7 +68,7 @@ DirectCommands::~DirectCommands()
     depsDone();
 }
 
-void DirectCommands::AddCommandsToArray(const wxString& cmds, wxArrayString& array)
+void DirectCommands::AddCommandsToArray(const wxString& cmds, wxArrayString& array, bool isWaitCmd)
 {
     wxString cmd = cmds;
     while (!cmd.IsEmpty())
@@ -79,7 +78,11 @@ void DirectCommands::AddCommandsToArray(const wxString& cmds, wxArrayString& arr
         cmdpart.Trim(false);
         cmdpart.Trim(true);
         if (!cmdpart.IsEmpty())
+        {
+            if (isWaitCmd)
+                array.Add(wxString(COMPILER_WAIT));
             array.Add(cmdpart);
+        }
         if (idx == -1)
             break;
         cmd.Remove(0, idx + 1);
@@ -195,6 +198,8 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
                 break;
         }
         AddCommandsToArray(compilerCmd, ret);
+        if (isHeader)
+            ret.Add(wxString(COMPILER_WAIT));
 
         // if it's a PCH, delete the previously generated PCH to avoid problems
         // (it 'll be recreated anyway)
@@ -598,7 +603,9 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
         if (target && ret.GetCount() != 0)
             ret.Add(wxString(COMPILER_TARGET_CHANGE) + target->GetTitle());
 
-        AddCommandsToArray(compilerCmd, ret);
+        // the 'true' will make sure all commands will be prepended by
+        // COMPILER_WAIT signal
+        AddCommandsToArray(compilerCmd, ret, true);
     }
     return ret;
 }

@@ -54,6 +54,14 @@ void CompilerQueue::Add(CompilerQueue* queue)
     }
 }
 
+CompilerCommand* CompilerQueue::Peek()
+{
+    wxCompilerCommandsNode* node = m_Commands.GetFirst();
+    if (!node)
+        return 0;
+    return node->GetData();
+}
+
 CompilerCommand* CompilerQueue::Next()
 {
     wxCompilerCommandsNode* node = m_Commands.GetFirst();

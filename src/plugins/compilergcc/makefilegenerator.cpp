@@ -30,7 +30,6 @@
 #include <messagemanager.h>
 #include <wx/file.h>
 #include <compilerfactory.h>
-#include <customvars.h>
 
 // TODO (mandrav#1#): Fix Makefile for targets using different compilers
 
@@ -665,47 +664,47 @@ void MakefileGenerator::DoGetMakefileLDFlags(wxString& buffer, ProjectBuildTarge
 
 void MakefileGenerator::DoAddVarsSet(wxString& buffer, CustomVars& vars)
 {
-    const VarsArray& v = vars.GetVars();
-    for (unsigned int i = 0; i < v.GetCount(); ++i)
-    {
-    	wxString out = v[i].value;
-        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out);
-        ConvertToMakefileFriendly(out);
-        QuoteStringIfNeeded(out);
-        buffer << v[i].name << _T("=") << out << _T('\n');
-    }
+//    const VarsArray& v = vars.GetVars();
+//    for (unsigned int i = 0; i < v.GetCount(); ++i)
+//    {
+//    	wxString out = v[i].value;
+//        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out);
+//        ConvertToMakefileFriendly(out);
+//        QuoteStringIfNeeded(out);
+//        buffer << v[i].name << _T("=") << out << _T('\n');
+//    }
 }
 
 void MakefileGenerator::DoAddMakefileVars(wxString& buffer)
 {
-    buffer << _T("### Variables used in this Makefile") << _T('\n');
-
-    // compiler global vars
-    DoAddVarsSet(buffer, CompilerFactory::Compilers[m_Project->GetCompilerIndex()]->GetCustomVars());
-    // project vars
-    DoAddVarsSet(buffer, m_Project->GetCustomVars());
-    int targetsCount = m_Project->GetBuildTargetsCount();
-    for (int x = 0; x < targetsCount; ++x)
-    {
-        ProjectBuildTarget* target = m_Project->GetBuildTarget(x);
-        if (!IsTargetValid(target))
-            continue;
-        Compiler* compilerSet = CompilerFactory::Compilers[target->GetCompilerIndex()];
-
-        // target vars
-        DoAddVarsSet(buffer, compilerSet->GetCustomVars());
-
-        // compiler vars
-        // defined last so even if the user sets custom vars
-        // by these names, ours will have precedence...
-        buffer << target->GetTitle() << _T("_CC=") << compilerSet->GetPrograms().C << _T('\n');
-        buffer << target->GetTitle() << _T("_CPP=") << compilerSet->GetPrograms().CPP << _T('\n');
-        buffer << target->GetTitle() << _T("_LD=") << compilerSet->GetPrograms().LD << _T('\n');
-        buffer << target->GetTitle() << _T("_LIB=") << compilerSet->GetPrograms().LIB << _T('\n');
-        buffer << target->GetTitle() << _T("_RESCOMP=") << compilerSet->GetPrograms().WINDRES << _T('\n');
-    }
-
-    buffer << _T('\n');
+//    buffer << _T("### Variables used in this Makefile") << _T('\n');
+//
+//    // compiler global vars
+//    DoAddVarsSet(buffer, CompilerFactory::Compilers[m_Project->GetCompilerIndex()]->GetCustomVars());
+//    // project vars
+//    DoAddVarsSet(buffer, m_Project->GetCustomVars());
+//    int targetsCount = m_Project->GetBuildTargetsCount();
+//    for (int x = 0; x < targetsCount; ++x)
+//    {
+//        ProjectBuildTarget* target = m_Project->GetBuildTarget(x);
+//        if (!IsTargetValid(target))
+//            continue;
+//        Compiler* compilerSet = CompilerFactory::Compilers[target->GetCompilerIndex()];
+//
+//        // target vars
+//        DoAddVarsSet(buffer, compilerSet->GetCustomVars());
+//
+//        // compiler vars
+//        // defined last so even if the user sets custom vars
+//        // by these names, ours will have precedence...
+//        buffer << target->GetTitle() << _T("_CC=") << compilerSet->GetPrograms().C << _T('\n');
+//        buffer << target->GetTitle() << _T("_CPP=") << compilerSet->GetPrograms().CPP << _T('\n');
+//        buffer << target->GetTitle() << _T("_LD=") << compilerSet->GetPrograms().LD << _T('\n');
+//        buffer << target->GetTitle() << _T("_LIB=") << compilerSet->GetPrograms().LIB << _T('\n');
+//        buffer << target->GetTitle() << _T("_RESCOMP=") << compilerSet->GetPrograms().WINDRES << _T('\n');
+//    }
+//
+//    buffer << _T('\n');
 }
 
 #ifdef __WXMSW__

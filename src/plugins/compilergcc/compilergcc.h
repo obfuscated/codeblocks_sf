@@ -82,6 +82,8 @@ class CompilerGCC : public cbCompilerPlugin
 		virtual bool IsRunning() const;
 		virtual int GetExitCode() const { return m_LastExitCode; }
 		virtual int Configure(cbProject* project, ProjectBuildTarget* target = 0L);
+
+		int GetConfigurationGroup(){ return cgCompiler; }
         cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
 
 		void SwitchCompiler(int compilerIdx);
@@ -116,6 +118,14 @@ class CompilerGCC : public cbCompilerPlugin
         void OnConfig(wxCommandEvent& event);
     private:
         friend class CompilerOptionsDlg;
+
+        bool ReAllocProcesses();
+        void AllocProcesses();
+        void FreeProcesses();
+		bool IsProcessRunning(int idx = -1) const;
+		int GetNextAvailableProcessIndex() const;
+		int GetActiveProcessCount() const;
+
 		void SetupEnvironment();
 		void SetEnvironmentForCompilerIndex(int idx, wxString& envPath);
 		void OnProjectActivated(CodeBlocksEvent& event);
@@ -124,7 +134,7 @@ class CompilerGCC : public cbCompilerPlugin
 		void OnGCCOutput(CodeBlocksEvent& event);
 		void OnGCCError(CodeBlocksEvent& event);
 		void OnGCCTerminated(CodeBlocksEvent& event);
-        void OnJobEnd();
+        void OnJobEnd(size_t procIndex, int exitCode);
 
 		void SaveOptions();
 		void LoadOptions();
@@ -180,9 +190,10 @@ class CompilerGCC : public cbCompilerPlugin
 		int m_TargetIndex;
         wxMenu* m_ErrorsMenu;
         cbProject* m_Project;
-        wxProcess* m_Process;
+        wxProcess** m_Processes;
+        size_t m_ParallelProcessCount;
         wxToolBar* m_pTbar;
-        long int m_Pid;
+        long int* m_Pid;
         wxTimer m_timerIdleWakeUp;
         SimpleTextLog* m_Log;
         CompilerMessages* m_pListLog;
@@ -191,7 +202,7 @@ class CompilerGCC : public cbCompilerPlugin
 		bool m_RunAfterCompile;
 		wxString m_CdRun;
 		wxString m_RunCmd;
-		bool m_LastExitCode;
+		int m_LastExitCode;
 		CompilerErrors m_Errors;
 		bool m_HasTargetAll;
 		wxString m_LastTargetName;

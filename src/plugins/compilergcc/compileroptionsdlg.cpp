@@ -33,7 +33,6 @@
 #include <messagemanager.h>
 #include <projectmanager.h>
 #include <macrosmanager.h>
-#include <customvars.h>
 #include "editpathdlg.h"
 #include "editpairdlg.h"
 
@@ -266,26 +265,24 @@ void CompilerOptionsDlg::DoFillCompilerPrograms()
     }
 }
 
-void CompilerOptionsDlg::DoFillVars(CustomVars* vars)
+void CompilerOptionsDlg::DoFillVars(const StringHash* vars)
 {
 	wxListBox* lst = XRCCTRL(*this, "lstVars", wxListBox);
 	if (!lst)
         return;
 	lst->Clear();
 	if (!vars)
-        vars = GetCustomVars();
+	{
+	    CompileOptionsBase* base = GetVarsOwner();
+	    if (base)
+            vars = &base->GetAllVars();
+	}
     if (!vars)
         return;
-	const VarsArray& varsarr = vars->GetVars();
-	//Manager::Get()->GetMessageManager()->DebugLog("[0x%8.8x] Current var count is %d (0x%8.8x)", m_Compiler, vars.GetCount(), &vars);
-	for (unsigned int i = 0; i < varsarr.GetCount(); ++i)
-	{
-		Var* v = &varsarr[i];
-		if (!v->builtin)
-		{
-            wxString text = v->name + _T(" = ") + v->value;
-            lst->Append(text, static_cast<void*>(v));
-		}
+    for (StringHash::const_iterator it = vars->begin(); it != vars->end(); ++it)
+    {
+        wxString text = it->first + _T(" = ") + it->second;
+        lst->Append(text);
 	}
 }
 
@@ -318,7 +315,14 @@ void CompilerOptionsDlg::DoFillOthers()
         txt->Enable(false);
 #endif
     }
-    wxSpinCtrl* spn = XRCCTRL(*this, "spnMaxErrors", wxSpinCtrl);
+    wxSpinCtrl* spn = XRCCTRL(*this, "spnParallelProcesses", wxSpinCtrl);
+    if (spn)
+    {
+        spn->SetRange(1, 16);
+        spn->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/parallel_processes"), 1));
+    }
+
+    spn = XRCCTRL(*this, "spnMaxErrors", wxSpinCtrl);
     if (spn)
     {
         spn->SetRange(0, 1000);
@@ -980,29 +984,18 @@ wxListBox* CompilerOptionsDlg::GetDirsListBox()
     return 0;
 }
 
-CustomVars* CompilerOptionsDlg::GetCustomVars()
+CompileOptionsBase* CompilerOptionsDlg::GetVarsOwner()
 {
 	wxTreeCtrl* tc = XRCCTRL(*this, "tcScope", wxTreeCtrl);
     ScopeTreeData* data = tc ? (ScopeTreeData*)tc->GetItemData(tc->GetSelection()) : 0;
-    CustomVars* vars = 0;
     if (!data)
-        vars = GetCustomVars(0);
-    else
     {
-        if (data->GetTarget())
-            vars = &data->GetTarget()->GetCustomVars();
-        else
-            vars = &m_pProject->GetCustomVars();
+        Compiler* compiler = CompilerFactory::Compilers[m_LastCompilerIdx];
+        return compiler;
     }
-    return vars;
-}
-
-CustomVars* CompilerOptionsDlg::GetCustomVars(CompileOptionsBase* base)
-{
-	if (base)
-        return &base->GetCustomVars();
-    Compiler* compiler = CompilerFactory::Compilers[m_LastCompilerIdx];
-    return compiler ? &compiler->GetCustomVars() : 0;
+    if (data->GetTarget())
+        return data->GetTarget();
+    return m_pProject;
 }
 
 void CompilerOptionsDlg::OnCategoryChanged(wxCommandEvent& event)
@@ -1073,8 +1066,8 @@ void CompilerOptionsDlg::OnRemoveDirClick(wxCommandEvent& event)
 
 void CompilerOptionsDlg::OnAddVarClick(wxCommandEvent& event)
 {
-    CustomVars* vars = GetCustomVars();
-    if (!vars)
+    CompileOptionsBase* base = GetVarsOwner();
+    if (!base)
         return;
 
     wxString key;
@@ -1082,8 +1075,8 @@ void CompilerOptionsDlg::OnAddVarClick(wxCommandEvent& event)
     EditPairDlg dlg(this, key, value, _("Add new variable"), EditPairDlg::bmBrowseForDirectory);
     if (dlg.ShowModal() == wxID_OK)
     {
-        vars->Add(key, value);
-        DoFillVars(vars);
+        base->SetVar(key, value);
+        XRCCTRL(*this, "lstVars", wxListBox)->Append(key + _T(" = ") + value);
     }
 }
 
@@ -1093,23 +1086,26 @@ void CompilerOptionsDlg::OnEditVarClick(wxCommandEvent& event)
 	if (sel == -1)
 		return;
 
-	Var* var = static_cast<Var*>(XRCCTRL(*this, "lstVars", wxListBox)->GetClientData(sel));
-	if (!var)
-		return;
+    CompileOptionsBase* base = GetVarsOwner();
+    if (!base)
+        return;
 
-    wxString key = var->name;
-    wxString value = var->value;
+    wxString key = XRCCTRL(*this, "lstVars", wxListBox)->GetStringSelection().BeforeFirst(_T('=')).Trim(true);
+	if (key.IsEmpty())
+		return;
+    wxString old_key = key;
+    wxString value = XRCCTRL(*this, "lstVars", wxListBox)->GetStringSelection().AfterFirst(_T('=')).Trim();
+    wxString old_value = value;
+
     EditPairDlg dlg(this, key, value, _("Edit variable"), EditPairDlg::bmBrowseForDirectory);
     if (dlg.ShowModal() == wxID_OK)
     {
-        if (value != var->value)
+        if (value != old_value)
         {
-            var->name = key;
-            var->value = value;
-            CustomVars* vars = GetCustomVars();
-            if (vars)
-                vars->SetModified(true);
-            XRCCTRL(*this, "lstVars", wxListBox)->SetString(sel, var->name + _T(" = ") + var->value);
+            if (key != old_key)
+                base->UnsetVar(key);
+            base->SetVar(key, value);
+            XRCCTRL(*this, "lstVars", wxListBox)->SetString(sel, key + _T(" = ") + value);
         }
 	}
 }
@@ -1119,20 +1115,21 @@ void CompilerOptionsDlg::OnRemoveVarClick(wxCommandEvent& event)
 	int sel = XRCCTRL(*this, "lstVars", wxListBox)->GetSelection();
 	if (sel == -1)
 		return;
+
+    CompileOptionsBase* base = GetVarsOwner();
+    if (!base)
+        return;
+
+    wxString key = XRCCTRL(*this, "lstVars", wxListBox)->GetStringSelection().BeforeFirst(_T('=')).Trim(true);
+	if (key.IsEmpty())
+		return;
+
 	if (wxMessageBox(_("Are you sure you want to delete this variable?"),
 					_("Confirmation"),
-					wxOK | wxCANCEL | wxICON_QUESTION) == wxOK)
+					wxYES | wxNO | wxICON_QUESTION) == wxYES)
 	{
-		Var* var = static_cast<Var*>(XRCCTRL(*this, "lstVars", wxListBox)->GetClientData(sel));
-		if (var)
-		{
-            CustomVars* vars = GetCustomVars();
-            if (vars)
-            {
-    			vars->DeleteVar(var);
-                DoFillVars(vars);
-            }
-		}
+	    base->UnsetVar(key);
+        XRCCTRL(*this, "lstVars", wxListBox)->Delete(sel);
 	}
 }
 
@@ -1625,9 +1622,20 @@ void CompilerOptionsDlg::OnApply()
     txt = XRCCTRL(*this, "txtConsoleTerm", wxTextCtrl);
     if (txt)
         Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/console_terminal"), txt->GetValue());
-    wxSpinCtrl* spn = XRCCTRL(*this, "spnMaxErrors", wxSpinCtrl);
+    wxSpinCtrl* spn = XRCCTRL(*this, "spnParallelProcesses", wxSpinCtrl);
     if (spn)
-        Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/max_reported_errors"), spn->GetValue());
+    {
+        if (m_Compiler->IsRunning())
+            wxMessageBox(_("You can't change the number of parallel processes while building!\nSetting ignored..."), _("Warning"), wxICON_WARNING);
+        else
+        {
+            Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/parallel_processes"), (int)spn->GetValue());
+            m_Compiler->ReAllocProcesses();
+        }
+    }
+    spn = XRCCTRL(*this, "spnMaxErrors", wxSpinCtrl);
+    if (spn)
+        Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/max_reported_errors"), (int)spn->GetValue());
 }
 
 void CompilerOptionsDlg::OnMyCharHook(wxKeyEvent& event)
@@ -1680,5 +1688,4 @@ void CompilerOptionsDlg::OnMyCharHook(wxKeyEvent& event)
     m_Compiler->SaveOptions();
     m_Compiler->SetupEnvironment();
     Manager::Get()->GetMacrosManager()->Reset();
-
 }

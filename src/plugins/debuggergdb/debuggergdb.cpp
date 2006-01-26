@@ -317,7 +317,7 @@ void DebuggerGDB::OnRelease(bool appShutDown)
     m_pTree = 0L;
 
     //Close debug session when appShutDown
-	CmdStop();
+	Stop();
 
     m_State.CleanUp();
 
@@ -1018,7 +1018,57 @@ void DebuggerGDB::RunCommand(int cmd)
     }
 }
 
-void DebuggerGDB::CmdRegisters()
+bool DebuggerGDB::AddBreakpoint(const wxString& file, int line)
+{
+    if (!IsStopped())
+        return false;
+    m_State.AddBreakpoint(file, line, false);
+    if (m_pBreakpointsWindow)
+        m_pBreakpointsWindow->Refresh();
+    return true;
+}
+
+bool DebuggerGDB::AddBreakpoint(const wxString& functionSignature)
+{
+    if (!IsStopped())
+        return false;
+    m_State.AddBreakpoint(wxEmptyString, -1, false, functionSignature);
+    if (m_pBreakpointsWindow)
+        m_pBreakpointsWindow->Refresh();
+    return true;
+}
+
+bool DebuggerGDB::RemoveBreakpoint(const wxString& file, int line)
+{
+    if (!IsStopped())
+        return false;
+    m_State.RemoveBreakpoint(file, line);
+    if (m_pBreakpointsWindow)
+        m_pBreakpointsWindow->Refresh();
+    return true;
+}
+
+bool DebuggerGDB::RemoveBreakpoint(const wxString& functionSignature)
+{
+//    if (!IsStopped())
+        return false;
+//    m_State.RemoveBreakpoint(wxEmptyString, event.GetInt());
+//    if (m_pBreakpointsWindow)
+//        m_pBreakpointsWindow->Refresh();
+//    return true;
+}
+
+bool DebuggerGDB::RemoveAllBreakpoints(const wxString& file)
+{
+    if (!IsStopped())
+        return false;
+    m_State.RemoveAllBreakpoints(file);
+    if (m_pBreakpointsWindow)
+        m_pBreakpointsWindow->Refresh();
+    return true;
+}
+
+void DebuggerGDB::Registers()
 {
     // show it
     CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
@@ -1028,7 +1078,7 @@ void DebuggerGDB::CmdRegisters()
     RunCommand(CMD_REGISTERS);
 }
 
-void DebuggerGDB::CmdDisassemble()
+void DebuggerGDB::Disassemble()
 {
     // show it
     CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
@@ -1038,7 +1088,7 @@ void DebuggerGDB::CmdDisassemble()
     RunCommand(CMD_DISASSEMBLE);
 }
 
-void DebuggerGDB::CmdBacktrace()
+void DebuggerGDB::Backtrace()
 {
     m_pBacktrace->Clear();
 
@@ -1050,17 +1100,17 @@ void DebuggerGDB::CmdBacktrace()
     RunCommand(CMD_BACKTRACE);
 }
 
-void DebuggerGDB::CmdContinue()
+void DebuggerGDB::Continue()
 {
     RunCommand(CMD_CONTINUE);
 }
 
-void DebuggerGDB::CmdNext()
+void DebuggerGDB::Next()
 {
     RunCommand(CMD_STEP);
 }
 
-void DebuggerGDB::CmdStep()
+void DebuggerGDB::Step()
 {
     RunCommand(CMD_STEPIN);
 }
@@ -1086,7 +1136,7 @@ bool DebuggerGDB::Validate(const wxString& line, const char cb)
 	return bResult;
 }
 
-void DebuggerGDB::CmdStepOut()
+void DebuggerGDB::StepOut()
 {
 	cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 	if (!ed) return;
@@ -1111,16 +1161,16 @@ void DebuggerGDB::CmdStepOut()
             lineBuf = stc->GetLine(++line);
 	}
 	if (line == stc->GetCurrentLine())
-		CmdNext();
+		Next();
 	else
 	{
         ConvertToGDBFile(filename);
         m_State.AddBreakpoint(filename, line, true);
-		CmdContinue();
+		Continue();
 	}
 }
 
-void DebuggerGDB::CmdRunToCursor()
+void DebuggerGDB::RunToCursor()
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 	if (!ed)
@@ -1129,21 +1179,21 @@ void DebuggerGDB::CmdRunToCursor()
     m_State.AddBreakpoint(ed->GetFilename(), ed->GetControl()->GetCurrentLine(), true, lb);
 
 	if (m_pProcess)
-		CmdContinue();
+		Continue();
 	else
 		Debug();
 }
 
-void DebuggerGDB::CmdToggleBreakpoint()
+void DebuggerGDB::ToggleBreakpoint()
 {
-	ClearActiveMarkFromAllEditors();
+//	ClearActiveMarkFromAllEditors();
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 	if (!ed)
 		return;
 	ed->ToggleBreakpoint();
 }
 
-void DebuggerGDB::CmdStop()
+void DebuggerGDB::Stop()
 {
 	if (m_pProcess && m_Pid)
 	{
@@ -1274,18 +1324,18 @@ void DebuggerGDB::OnDebug(wxCommandEvent& event)
     else
     {
         if (IsStopped())
-            CmdContinue();
+            Continue();
     }
 }
 
 void DebuggerGDB::OnContinue(wxCommandEvent& event)
 {
-	CmdContinue();
+	Continue();
 }
 
 void DebuggerGDB::OnNext(wxCommandEvent& event)
 {
-	CmdNext();
+	Next();
 }
 
 void DebuggerGDB::OnStep(wxCommandEvent& event)
@@ -1295,27 +1345,27 @@ void DebuggerGDB::OnStep(wxCommandEvent& event)
 		m_BreakOnEntry = true;
 		Debug();
 	}
-	else CmdStep();
+	else Step();
 }
 
 void DebuggerGDB::OnStepOut(wxCommandEvent& event)
 {
-	CmdStepOut();
+	StepOut();
 }
 
 void DebuggerGDB::OnRunToCursor(wxCommandEvent& event)
 {
-	CmdRunToCursor();
+	RunToCursor();
 }
 
 void DebuggerGDB::OnToggleBreakpoint(wxCommandEvent& event)
 {
-	CmdToggleBreakpoint();
+	ToggleBreakpoint();
 }
 
 void DebuggerGDB::OnStop(wxCommandEvent& event)
 {
-	CmdStop();
+	Stop();
 }
 
 void DebuggerGDB::OnSendCommandToGDB(wxCommandEvent& event)
@@ -1350,7 +1400,7 @@ void DebuggerGDB::OnBacktrace(wxCommandEvent& event)
     Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 
     if (event.IsChecked())
-        CmdBacktrace();
+        Backtrace();
 }
 
 void DebuggerGDB::OnDisassemble(wxCommandEvent& event)
@@ -1361,7 +1411,7 @@ void DebuggerGDB::OnDisassemble(wxCommandEvent& event)
     Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 
     if (event.IsChecked())
-        CmdDisassemble();
+        Disassemble();
 }
 
 void DebuggerGDB::OnRegisters(wxCommandEvent& event)
@@ -1372,7 +1422,7 @@ void DebuggerGDB::OnRegisters(wxCommandEvent& event)
     Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 
     if (event.IsChecked())
-        CmdRegisters();
+        Registers();
 }
 
 void DebuggerGDB::OnViewWatches(wxCommandEvent& event)
@@ -1451,14 +1501,14 @@ void DebuggerGDB::OnGDBTerminated(wxCommandEvent& event)
 
 void DebuggerGDB::OnBreakpointAdd(CodeBlocksEvent& event)
 {
-    EditorBase* base = event.GetEditor();
-    cbEditor* ed = base && base->IsBuiltinEditor() ? static_cast<cbEditor*>(base) : 0;
-    wxString lb;
-    if (ed)
-        lb = ed->GetControl()->GetLine(event.GetInt());
-    m_State.AddBreakpoint(event.GetString(), event.GetInt(), false, lb);
-    if (m_pBreakpointsWindow)
-        m_pBreakpointsWindow->Refresh();
+//    EditorBase* base = event.GetEditor();
+//    cbEditor* ed = base && base->IsBuiltinEditor() ? static_cast<cbEditor*>(base) : 0;
+//    wxString lb;
+//    if (ed)
+//        lb = ed->GetControl()->GetLine(event.GetInt());
+//    m_State.AddBreakpoint(event.GetString(), event.GetInt(), false, lb);
+//    if (m_pBreakpointsWindow)
+//        m_pBreakpointsWindow->Refresh();
 }
 
 void DebuggerGDB::OnBreakpointEdit(CodeBlocksEvent& event)
@@ -1478,9 +1528,9 @@ void DebuggerGDB::OnBreakpointEdit(CodeBlocksEvent& event)
 
 void DebuggerGDB::OnBreakpointDelete(CodeBlocksEvent& event)
 {
-    m_State.RemoveBreakpoint(event.GetString(), event.GetInt());
-    if (m_pBreakpointsWindow)
-        m_pBreakpointsWindow->Refresh();
+//    m_State.RemoveBreakpoint(event.GetString(), event.GetInt());
+//    if (m_pBreakpointsWindow)
+//        m_pBreakpointsWindow->Refresh();
 }
 
 void DebuggerGDB::OnValueTooltip(CodeBlocksEvent& event)

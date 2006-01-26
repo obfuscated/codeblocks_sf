@@ -16,6 +16,7 @@ class CodeCompletion : public cbCodeCompletionPlugin
 
         virtual void OnAttach();
         virtual void OnRelease(bool appShutDown);
+        int GetConfigurationGroup(){ return cgEditor; }
         cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
         virtual int Configure();
         virtual void BuildMenu(wxMenuBar* menuBar); // offer for menu space by host

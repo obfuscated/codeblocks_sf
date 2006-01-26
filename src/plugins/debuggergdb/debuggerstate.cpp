@@ -112,6 +112,21 @@ DebuggerBreakpoint* DebuggerState::RemoveBreakpoint(int idx, bool deleteit)
     return bp;
 }
 
+void DebuggerState::RemoveAllBreakpoints(const wxString& file, bool deleteit)
+{
+    bool fileonly = !file.IsEmpty();
+    for (int i = m_Breakpoints.GetCount() - 1; i >= 0; --i)
+    {
+        if (fileonly)
+        {
+            DebuggerBreakpoint* bp = m_Breakpoints[i];
+            if (bp->filename != file)
+                continue;
+        }
+        RemoveBreakpoint(i, deleteit);
+    }
+}
+
 int DebuggerState::HasBreakpoint(const wxString& file, int line)
 {
 //    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("Looking for breakpoint at %s, line %d"), file.c_str(), line);

@@ -98,7 +98,7 @@ void DoSetAssociation(const wxString& ext, const wxString& descr, const wxString
 
 	if(ext.IsSameAs(CODEBLOCKS_EXT) || ext.IsSameAs(WORKSPACE_EXT))
 	{
-	    wxString batchbuildargs = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/batch_build_args"), DEFAULT_BATCH_BUILD_ARGS);
+	    wxString batchbuildargs = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/batch_build_args"), g_DefaultBatchBuildArgs);
 		key.SetName(BaseKeyName + _T("CodeBlocks.") + ext + _T("\\shell\\Build\\command"));
 		key.Create();
 		key = _T("\"") + exe + _T("\" ") + batchbuildargs + _T(" --build \"%1\"");
@@ -174,7 +174,7 @@ bool DoCheckAssociation(const wxString& ext, const wxString& descr, const wxStri
 
 	if(ext.IsSameAs(CODEBLOCKS_EXT) || ext.IsSameAs(WORKSPACE_EXT))
 	{
-	    wxString batchbuildargs = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/batch_build_args"), DEFAULT_BATCH_BUILD_ARGS);
+	    wxString batchbuildargs = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/batch_build_args"), g_DefaultBatchBuildArgs);
 		key.SetName(BaseKeyName + _T("CodeBlocks.") + ext + _T("\\shell\\Build\\command"));
         if (!key.Open())
             return false;

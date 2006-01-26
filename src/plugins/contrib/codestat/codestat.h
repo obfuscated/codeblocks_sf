@@ -40,7 +40,8 @@ class CodeStat : public cbToolPlugin
 	public:
 		CodeStat();
 		~CodeStat();
-        virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
+		int GetConfigurationGroup(){ return cgEditor; }
+        cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
 		int Execute();
 		void OnAttach(); // fires when the plugin is attached to the application
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application

@@ -31,6 +31,7 @@ class DefaultMimeHandler : public cbMimePlugin
 		DefaultMimeHandler();
 		~DefaultMimeHandler();
 		int Configure();
+		int GetConfigurationGroup(){ return cgCorePlugin; }
         cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
         bool HandlesEverything() const { return true; }
 		bool CanHandleFile(const wxString& filename) const;

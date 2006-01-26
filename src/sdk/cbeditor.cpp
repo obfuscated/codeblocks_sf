@@ -959,9 +959,19 @@ bool cbEditor::AddBreakpoint(int line, bool notifyDebugger)
         return false;
 	if (line == -1)
 		line = m_pControl->GetCurrentLine();
-    MarkerToggle(BREAKPOINT_MARKER, line);
-    if (notifyDebugger)
-        NotifyPlugins(cbEVT_EDITOR_BREAKPOINT_ADD, line, m_Filename);
+
+    if (!notifyDebugger)
+    {
+        MarkerToggle(BREAKPOINT_MARKER, line);
+        return false;
+    }
+
+    PluginsArray arr = Manager::Get()->GetPluginManager()->GetOffersFor(ptDebugger);
+    if (!arr.GetCount())
+        return false;
+    cbDebuggerPlugin* debugger = (cbDebuggerPlugin*)arr[0];
+    if (debugger->AddBreakpoint(m_Filename, line))
+        MarkerToggle(BREAKPOINT_MARKER, line);
     return true;
 }
 
@@ -971,18 +981,46 @@ bool cbEditor::RemoveBreakpoint(int line, bool notifyDebugger)
         return false;
 	if (line == -1)
 		line = m_pControl->GetCurrentLine();
-    MarkerToggle(BREAKPOINT_MARKER, line);
-    if (notifyDebugger)
-        NotifyPlugins(cbEVT_EDITOR_BREAKPOINT_DELETE, line, m_Filename);
+
+    if (!notifyDebugger)
+    {
+        MarkerToggle(BREAKPOINT_MARKER, line);
+        return false;
+    }
+
+    PluginsArray arr = Manager::Get()->GetPluginManager()->GetOffersFor(ptDebugger);
+    if (!arr.GetCount())
+        return false;
+    cbDebuggerPlugin* debugger = (cbDebuggerPlugin*)arr[0];
+    if (debugger->RemoveBreakpoint(m_Filename, line))
+        MarkerToggle(BREAKPOINT_MARKER, line);
     return true;
 }
 
 void cbEditor::ToggleBreakpoint(int line, bool notifyDebugger)
 {
+	if (line == -1)
+		line = m_pControl->GetCurrentLine();
+    if (!notifyDebugger)
+    {
+        MarkerToggle(BREAKPOINT_MARKER, line);
+        return;
+    }
+
+    PluginsArray arr = Manager::Get()->GetPluginManager()->GetOffersFor(ptDebugger);
+    if (!arr.GetCount())
+        return;
+    cbDebuggerPlugin* debugger = (cbDebuggerPlugin*)arr[0];
     if (HasBreakpoint(line))
-        RemoveBreakpoint(line, notifyDebugger);
+    {
+        if (debugger->RemoveBreakpoint(m_Filename, line))
+            MarkerToggle(BREAKPOINT_MARKER, line);
+    }
     else
-        AddBreakpoint(line, notifyDebugger);
+    {
+        if (debugger->AddBreakpoint(m_Filename, line))
+            MarkerToggle(BREAKPOINT_MARKER, line);
+    }
 }
 
 bool cbEditor::HasBreakpoint(int line)

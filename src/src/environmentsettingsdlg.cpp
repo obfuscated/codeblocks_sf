@@ -2,6 +2,7 @@
 #include <wx/xrc/xmlres.h>
 #include <manager.h>
 #include <configmanager.h>
+#include <pluginmanager.h>
 #include <wx/intl.h>
 #include <wx/listbook.h>
 #include <wx/combobox.h>
@@ -12,7 +13,7 @@
 #include <wx/colordlg.h>
 #include <wx/msgdlg.h>
 #include "wxAUI/manager.h"
-#include "globals.h"
+#include "appglobals.h"
 
 #include "environmentsettingsdlg.h"
 #ifdef __WXMSW__
@@ -114,7 +115,7 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
 
     // tab "Batch builds"
 #ifdef __WXMSW__
-    XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->SetValue(cfg->Read(_T("/batch_build_args"), DEFAULT_BATCH_BUILD_ARGS));
+    XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->SetValue(cfg->Read(_T("/batch_build_args"), g_DefaultBatchBuildArgs));
 #endif
 
     // tab "Network"
@@ -145,7 +146,8 @@ void EnvironmentSettingsDlg::AddPluginPanels()
     const wxString base = ConfigManager::GetDataFolder() + _T("/images/settings/");
 
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
-    Manager::Get()->GetPluginManager()->GetAllConfigurationPanels(lb, m_PluginPanels);
+    // get all configuration panels which are *not* about compiler, debugger and editor.
+    Manager::Get()->GetPluginManager()->GetConfigurationPanels(~(cgCompiler | cgDebugger | cgEditor), lb, m_PluginPanels);
 
     for (size_t i = 0; i < m_PluginPanels.GetCount(); ++i)
     {
@@ -308,7 +310,7 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         // tab "Batch builds"
 #ifdef __WXMSW__
         wxString bbargs = XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->GetValue();
-        if (bbargs != cfg->Read(_T("/batch_build_args"), DEFAULT_BATCH_BUILD_ARGS))
+        if (bbargs != cfg->Read(_T("/batch_build_args"), g_DefaultBatchBuildArgs))
         {
             cfg->Write(_T("/batch_build_args"), bbargs);
             Associations::SetBatchBuildOnly();

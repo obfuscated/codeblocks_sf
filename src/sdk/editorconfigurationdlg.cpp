@@ -41,6 +41,7 @@
 #include "editkeywordsdlg.h"
 #include "manager.h"
 #include "configmanager.h"
+#include "pluginmanager.h"
 #include "editormanager.h"
 #include "cbeditor.h"
 #include "globals.h"
@@ -179,7 +180,9 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     }
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
     lb->AssignImageList(images);
-    UpdateListbookImages();
+
+    // add all plugins configuration panels
+    AddPluginPanels();
 
     // make sure everything is laid out properly
     GetSizer()->SetSizeHints(this);
@@ -197,14 +200,35 @@ EditorConfigurationDlg::~EditorConfigurationDlg()
         delete m_AutoCompTextControl;
 }
 
+void EditorConfigurationDlg::AddPluginPanels()
+{
+    const wxString base = ConfigManager::GetDataFolder() + _T("/images/settings/");
+
+    wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
+    // get all configuration panels which are about the editor.
+    Manager::Get()->GetPluginManager()->GetConfigurationPanels(cgEditor, lb, m_PluginPanels);
+
+    for (size_t i = 0; i < m_PluginPanels.GetCount(); ++i)
+    {
+        cbConfigurationPanel* panel = m_PluginPanels[i];
+        lb->AddPage(panel, panel->GetTitle());
+
+        lb->GetImageList()->Add(LoadPNGWindows2000Hack(base + panel->GetBitmapBaseName() + _T(".png")));
+        lb->GetImageList()->Add(LoadPNGWindows2000Hack(base + panel->GetBitmapBaseName() + _T("-off.png")));
+        lb->SetPageImage(lb->GetPageCount() - 1, lb->GetImageList()->GetImageCount() - 2);
+    }
+
+    UpdateListbookImages();
+}
+
 void EditorConfigurationDlg::UpdateListbookImages()
 {
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
     int sel = lb->GetSelection();
     // set page images according to their on/off status
-    for (int i = 0; i < IMAGES_COUNT; ++i)
+    for (size_t i = 0; i < IMAGES_COUNT + m_PluginPanels.GetCount(); ++i)
     {
-        lb->SetPageImage(i, (i * 2) + (sel == i ? 0 : 1));
+        lb->SetPageImage(i, (i * 2) + (sel == (int)i ? 0 : 1));
     }
 
     // the selection color is ruining the on/off effect,

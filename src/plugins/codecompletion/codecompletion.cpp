@@ -107,7 +107,7 @@ m_timer(this, idStartParsingProjects)
     m_PluginInfo.thanksTo = _T("");
 
     m_PageIndex = -1;
-    m_InitDone = false;
+    m_InitDone = true;
     m_EditMenu = 0L;
 	m_SearchMenu = 0L;
 }
@@ -603,6 +603,7 @@ void CodeCompletion::OnAppDoneStartup(CodeBlocksEvent& event)
 void CodeCompletion::OnStartParsingProjects(wxTimerEvent& event)
 {
 	// parse all active projects
+	m_InitDone = false;
 	ProjectManager* prjMan = Manager::Get()->GetProjectManager();
 	for (unsigned int i = 0; i < prjMan->GetProjects()->GetCount(); ++i)
 		m_NativeParsers.AddParser(prjMan->GetProjects()->Item(i));

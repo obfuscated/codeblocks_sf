@@ -48,7 +48,8 @@ class CBProfiler : public cbToolPlugin
 	public:
 		CBProfiler();
 		~CBProfiler();
-        virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
+		int GetConfigurationGroup(){ return cgCompiler; }
+        cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
 		int Execute();
 		void OnAttach(); // fires when the plugin is attached to the application
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application

@@ -211,6 +211,7 @@ void CDB_driver::ParseOutput(const wxString& output)
     int idx = buffer.First(CDB_PROMPT);
     if (idx != wxNOT_FOUND)
     {
+        m_ProgramIsStopped = true;
         m_QueueBusy = false;
         DebuggerCmd* cmd = CurrentCommand();
         if (cmd)
@@ -226,7 +227,10 @@ void CDB_driver::ParseOutput(const wxString& output)
         }
     }
     else
+    {
+        m_ProgramIsStopped = false;
         return; // come back later
+    }
 
     // non-command messages (e.g. breakpoint hits)
     // break them up in lines
@@ -285,7 +289,6 @@ void CDB_driver::ParseOutput(const wxString& output)
             else
                 Log(wxString::Format(_T("Breakpoints inconsistency detected!\nNothing known about breakpoint %d"), bpNum));
             m_Cursor.changed = true;
-            m_ProgramIsStopped = true;
             NotifyCursorChanged();
         }
         // one stack frame (to access current file; is there another way???)
@@ -300,7 +303,6 @@ void CDB_driver::ParseOutput(const wxString& output)
 //                    m_Cursor.file.RemoveLast(); // see regex reFile for the reason
                 reFile.GetMatch(lines[i], 4).ToLong(&m_Cursor.line);
                 m_Cursor.changed = true;
-                m_ProgramIsStopped = true;
                 NotifyCursorChanged();
             }
         }

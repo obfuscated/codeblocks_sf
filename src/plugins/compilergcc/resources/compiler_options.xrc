@@ -1069,6 +1069,20 @@ or in any of the &quot;Additional paths&quot;...</label>
                                 <cols>2</cols>
                                 <object class="sizeritem">
                                   <object class="wxStaticText">
+                                    <label>Number of processes for parallel builds:</label>
+                                  </object>
+                                  <flag>wxTOP|wxRIGHT</flag>
+                                  <border>4</border>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxSpinCtrl" name="spnParallelProcesses">
+                                    <value>1</value>
+                                    <min>1</min>
+                                    <max>16</max>
+                                  </object>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxStaticText">
                                     <label>Max nr. of errors to log (0=unlimited):</label>
                                   </object>
                                   <flag>wxTOP|wxRIGHT</flag>

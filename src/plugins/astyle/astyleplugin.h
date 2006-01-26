@@ -30,6 +30,7 @@ class AStylePlugin : public cbToolPlugin
     AStylePlugin();
     ~AStylePlugin();
     int Configure();
+    int GetConfigurationGroup(){ return cgEditor; }
     cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
     int Execute();
     void OnAttach(); // fires when the plugin is attached to the application

@@ -21,6 +21,7 @@ codeblocks_LDADD =  $(WX_LIBS) \
 
 codeblocks_SOURCES = app.cpp \
 			appglobals.cpp \
+			compilersettingsdlg.cpp \
 			dlgabout.cpp \
 			dlgaboutplugin.cpp \
 			environmentsettingsdlg.cpp \
@@ -31,6 +32,7 @@ codeblocks_SOURCES = app.cpp \
 
 noinst_HEADERS = app.h \
 			appglobals.h \
+			compilersettingsdlg.h \
 			dlgabout.h \
 			dlgaboutplugin.h \
 			environmentsettingsdlg.h \

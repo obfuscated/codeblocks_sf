@@ -103,7 +103,7 @@ int PluginManager::ScanForPlugins(const wxString& path)
 bool PluginManager::LoadPlugin(const wxString& pluginName)
 {
     SANITY_CHECK(false);
-    wxLogNull zero; // no need for error messages; we check everything ourselves...
+//    wxLogNull zero; // no need for error messages; we check everything ourselves...
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
 
     wxDynamicLibrary* lib = new wxDynamicLibrary();
@@ -411,29 +411,29 @@ int PluginManager::ExecutePlugin(const wxString& pluginName)
 
 int PluginManager::ConfigurePlugin(const wxString& pluginName)
 {
-//    SANITY_CHECK(0);
-//    cbPlugin* plug = FindPluginByName(pluginName);
-//    if (plug)
-//    {
-//        try
-//        {
-//            return plug->Configure();
-//        }
-//        catch (cbException& exception)
-//        {
-//            exception.ShowErrorMessage(false);
-//        }
-//    }
+    SANITY_CHECK(0);
+    cbPlugin* plug = FindPluginByName(pluginName);
+    if (plug)
+    {
+        try
+        {
+            return plug->Configure();
+        }
+        catch (cbException& exception)
+        {
+            exception.ShowErrorMessage(false);
+        }
+    }
 	return 0;
 }
 
-void PluginManager::GetAllConfigurationPanels(wxWindow* parent, ConfigurationPanelsArray& arrayToFill)
+void PluginManager::GetConfigurationPanels(int group, wxWindow* parent, ConfigurationPanelsArray& arrayToFill)
 {
     arrayToFill.Clear();
     for (unsigned int i = 0; i < m_Plugins.GetCount(); ++i)
     {
         cbPlugin* plug = m_Plugins[i]->plugin;
-        if (plug && plug->IsAttached())
+        if (plug && plug->IsAttached() && (plug->GetConfigurationGroup() & group))
         {
             cbConfigurationPanel* pnl = plug->GetConfigurationPanel(parent);
             if (pnl)
@@ -455,6 +455,11 @@ PluginsArray PluginManager::GetMimeOffers()
 PluginsArray PluginManager::GetCompilerOffers()
 {
     return GetOffersFor(ptCompiler);
+}
+
+PluginsArray PluginManager::GetDebuggerOffers()
+{
+    return GetOffersFor(ptDebugger);
 }
 
 PluginsArray PluginManager::GetCodeCompletionOffers()

@@ -7,7 +7,6 @@
 #include <configmanager.h>
 #include <manager.h>
 #include <messagemanager.h>
-#include <customvars.h>
 #include "wxsmith.h"
 
 /* ************************************************************************** */
@@ -691,7 +690,7 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
         return;
     }
 
-    CustomVars vars;
+    bool addedVars = false;
     #ifdef __WXMSW__
 
         // Configuring paths
@@ -706,7 +705,8 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
                 project->AddLibDir(_T("$(#WX.lib)\\gcc_dll\\msw"));
                 project->AddLibDir(_T("$(#WX.lib)\\gcc_dll$(WX_CFG)"));
                 project->AddResourceIncludeDir(_T("$(#WX.include)"));
-                vars.Add(_T("WX_CFG"),_T(""));
+                project->SetVar(_T("WX_CFG"),_T(""));
+                addedVars = true;
                 break;
 
             case 1: // Custom variables
@@ -718,8 +718,9 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
                 project->AddLibDir(_T("$(WX_DIR)\\lib\\gcc_dll\\msw"));
                 project->AddLibDir(_T("$(WX_DIR)\\lib\\gcc_dll$(WX_CFG)"));
                 project->AddResourceIncludeDir(_T("$(WX_DIR)\\include"));
-                vars.Add(_T("WX_DIR"),_T("C:\\wxWidgets-2.6.2"));
-                vars.Add(_T("WX_CFG"),_T(""));
+                project->SetVar(_T("WX_DIR"),_T("C:\\wxWidgets-2.6.2"));
+                project->SetVar(_T("WX_CFG"),_T(""));
+                addedVars = true;
                 break;
 
             case 2:
@@ -781,7 +782,6 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
         project->AddCompilerOption(_T("`wx-config --cflags`"));
         project->AddLinkerOption(_T("`wx-config --libs`"));
     #endif
-    project->SetCustomVars(vars);
 
     int flags = 0;
     if ( UseXrc->GetValue() )    flags |= wxsSrcXrc;
@@ -816,7 +816,7 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
     }
     project->Save();
     Manager::Get()->GetConfigManager(_T("wxsmith"))->Write(_T("wizardbasepath"),BaseDir->GetValue());
-    if ( !vars.GetVars().empty() )
+    if ( addedVars )
     {
         wxMessageBox(_("New project created. But You may need\nto adjust some custom vars in project options"));
     }

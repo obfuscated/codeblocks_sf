@@ -4,7 +4,6 @@
 #include "messagemanager.h"
 #include "configmanager.h"
 #include "globals.h"
-#include "customvars.h"
 #include <wx/intl.h>
 #include <wx/regex.h>
 
@@ -147,7 +146,13 @@ void Compiler::SaveSettings(const wxString& baseKey)
     }
 
     // custom vars
-    m_pCustomVars->Save(tmp + _T("/custom_variables"));
+    wxString configpath = tmp + _T("/custom_variables/");
+	cfg->DeleteSubPath(configpath);
+    const StringHash& v = GetAllVars();
+    for (StringHash::const_iterator it = v.begin(); it != v.end(); ++it)
+    {
+        cfg->Write(configpath + it->first, it->second);
+    }
 }
 
 void Compiler::LoadSettings(const wxString& baseKey)
@@ -232,8 +237,11 @@ void Compiler::LoadSettings(const wxString& baseKey)
     }
 
     // custom vars
-    m_pCustomVars->Load(tmp + _T("/custom_variables"));
-    m_pCustomVars->SetModified(false);
+    wxString configpath = tmp + _T("/custom_variables/");
+	UnsetAllVars();
+	wxArrayString list = cfg->EnumerateKeys(configpath);
+	for (unsigned int i = 0; i < list.GetCount(); ++i)
+		SetVar(list[i], cfg->Read(configpath + _T('/') + list[i]), false);
 }
 
 CompilerLineType Compiler::CheckForWarningsAndErrors(const wxString& line)

@@ -13,7 +13,6 @@
 #include "projectloader.h"
 #include "compilerfactory.h"
 #include "globals.h"
-#include "customvars.h"
 
 ProjectLoader::ProjectLoader(cbProject* project)
     : m_pProject(project),
@@ -609,8 +608,6 @@ void ProjectLoader::DoEnvironment(TiXmlElement* parentNode, CompileOptionsBase* 
 {
 	if (!base)
         return;
-    CustomVars& vars = base->GetCustomVars();
-
     TiXmlElement* node = parentNode->FirstChildElement("Environment");
     while (node)
     {
@@ -620,7 +617,7 @@ void ProjectLoader::DoEnvironment(TiXmlElement* parentNode, CompileOptionsBase* 
             wxString name = _U(child->Attribute("name"));
             wxString value = _U(child->Attribute("value"));
             if (!name.IsEmpty())
-            	vars.Add(name, value);
+            	base->SetVar(name, value);
 
             child = child->NextSiblingElement("Variable");
         }
@@ -770,19 +767,18 @@ void ProjectLoader::AddArrayOfElements(TiXmlElement* parent, const char* name, c
 }
 
 // convenience function, used in Save()
-void ProjectLoader::SaveEnvironment(TiXmlElement* parent, CustomVars* vars)
+void ProjectLoader::SaveEnvironment(TiXmlElement* parent, CompileOptionsBase* base)
 {
-    if (!vars)
+    if (!base)
         return;
-    const VarsArray& v = vars->GetVars();
-    if (v.GetCount() == 0)
+    const StringHash& v = base->GetAllVars();
+    if (v.empty())
         return;
     TiXmlElement* node = AddElement(parent, "Environment", 0, 0);
-    for (unsigned int i = 0; i < v.GetCount(); ++i)
+    for (StringHash::const_iterator it = v.begin(); it != v.end(); ++it)
     {
-        Var& var = v[i];
-        TiXmlElement* elem = AddElement(node, "Variable", "name", var.name);
-        elem->SetAttribute("value", _C(var.value));
+        TiXmlElement* elem = AddElement(node, "Variable", "name", it->first);
+        elem->SetAttribute("value", _C(it->second));
     }
 }
 
@@ -798,7 +794,6 @@ bool ProjectLoader::Save(const wxString& filename)
 
 bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxString& onlyTarget)
 {
-    CustomVars* vars = 0;
     const char* ROOT_TAG = "CodeBlocks_project_file";
 
     TiXmlDocument doc;
@@ -931,8 +926,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
                 AddElement(node, "Mode", "after", wxString(_T("always")));
         }
 
-        vars = &target->GetCustomVars();
-        SaveEnvironment(tgtnode, vars);
+        SaveEnvironment(tgtnode, target);
 
         if (target->MakeCommandsModified())
         {
@@ -944,8 +938,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
         }
     }
 
-    vars = &m_pProject->GetCustomVars();
-    SaveEnvironment(buildnode, vars);
+    SaveEnvironment(buildnode, m_pProject);
 
     TiXmlElement* node = AddElement(prjnode, "Compiler", 0, 0);
     AddArrayOfElements(node, "Add", "option", m_pProject->GetCompilerOptions());

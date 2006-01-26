@@ -36,6 +36,7 @@ class EditorConfigurationDlg : public wxDialog
 		void UpdateSampleFont(bool askForNewFont);
     private:
         void OnPageChanged(wxListbookEvent& event);
+        void AddPluginPanels();
         void UpdateListbookImages();
 		void CreateColorsSample();
 		void CreateAutoCompText();
@@ -55,6 +56,8 @@ class EditorConfigurationDlg : public wxDialog
 		bool m_ThemeModified;
 		int m_LastAutoCompKeyword;
 		AutoCompleteMap m_AutoCompMap;
+        ConfigurationPanelsArray m_PluginPanels;
+
     	DECLARE_EVENT_TABLE()
 };
 

@@ -1,0 +1,78 @@
+////////////////////////////////////////////////////////////////////////////////
+// Parses GDB's output of unicode wxString and turns it to human-readable
+////////////////////////////////////////////////////////////////////////////////
+//
+// Example input:
+// {38 '&', 69 'E', 110 'n', 97 'a', 98 'b', 108 'l', 101 'e'}
+//
+// Example output:
+// "&Enable"
+////////////////////////////////////////////////////////////////////////////////
+
+// Entry point for testing.
+// This is here only for testing the parsing function inside the IDE (while writing it).
+// It is *not* used when the script runs in the debugger...
+// So, it can safely be removed.
+int main()
+{
+    wxString r;
+    GDB_ParseWXString("{38 '&', 69 'E', 110 'n', 97 'a', 98 'b', 108 'l', 101 'e'}", r);
+    Log(r);
+
+    return 0;
+}
+
+void RegisterTypes(DebuggerDriver@ driver)
+{
+    driver.RegisterType(
+        // The type's name (must be unique, the debugger driver won't accept duplicates).
+        "wxString",
+        // Regular expression for type matching.
+        "[^[:alnum:]_]*wxString[^[:alnum:]_]*",
+        // Parser function's name (defined below).
+        "GDB_ParseWXString",
+        // Define the print function body (this will become a GDB function named print_wxstring).
+        // Note that we 're using the m_pchData member of wxString to access
+        // its actual data...
+        // Also note that we 'll be printing at most 100 chars, i.e. we 're setting a limit.
+        "output /c (*$arg0.m_pchData)@(($slen=(unsigned int)$arg0.Len())>100?100:$slen)"
+    );
+}
+
+// This function parses GDB's output.
+// When it returns, the "result" argument contains the parsing result.
+void GDB_ParseWXString(const wxString& in a_str, wxString& out result)
+{
+    result = "\"";
+    uint len = a_str.length();
+    uint c = 0;
+    while (c < len)
+    {
+        switch (a_str[c])
+        {
+            case '\'':
+                ++c;
+                while (c < len)
+                {
+                    switch (a_str[c])
+                    {
+                        case '\\':
+                            result += a_str[c++];
+                            result += a_str[c++];
+                            break;
+                        default:
+                            result += a_str[c++];
+                            break;
+                    }
+                    if (a_str[c] == '\'')
+                        break;
+                }
+                break;
+
+            default:
+                break;
+        }
+        ++c;
+    }
+    result += "\"";
+}

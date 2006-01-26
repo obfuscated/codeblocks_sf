@@ -51,12 +51,13 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>
         PluginsArray GetToolOffers();
         PluginsArray GetMimeOffers();
         PluginsArray GetCompilerOffers();
+        PluginsArray GetDebuggerOffers();
         PluginsArray GetCodeCompletionOffers();
         PluginsArray GetOffersFor(PluginType type);
         void AskPluginsForModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
         void NotifyPlugins(CodeBlocksEvent& event);
         cbMimePlugin* GetMIMEHandlerForFile(const wxString& filename);
-        void GetAllConfigurationPanels(wxWindow* parent, ConfigurationPanelsArray& arrayToFill);
+        void GetConfigurationPanels(int group, wxWindow* parent, ConfigurationPanelsArray& arrayToFill);
         int Configure();
 		void SetupLocaleDomain(const wxString& DomainName);
     private:

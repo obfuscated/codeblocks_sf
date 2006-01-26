@@ -35,7 +35,6 @@
 #include <configmanager.h>
 #include <projectmanager.h>
 #include <cbproject.h>
-#include <customvars.h>
 #include "pluginwizarddlg.h"
 
 CB_IMPLEMENT_PLUGIN(PluginWizard);
@@ -128,10 +127,8 @@ int PluginWizard::Execute()
 // TODO (mandrav#1#): Make these read from LibManager
     wxString wxver = _T("26");
     wxString wxcfg = _T("");
-    CustomVars vars;
-    vars.Add(_T("WX_CFG"), wxcfg);
-    vars.Add(_T("WX_VER"), wxver);
-    project->SetCustomVars(vars);
+    project->SetVar(_T("WX_CFG"), wxcfg);
+    project->SetVar(_T("WX_VER"), wxver);
 #endif
 
     // cross-platform options

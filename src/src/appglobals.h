@@ -14,4 +14,6 @@ extern const wxString g_AppPlatform;
 extern const wxString g_AppWXAnsiUnicode;
 extern const wxString g_AppBuildTimestamp;
 
+extern const wxString g_DefaultBatchBuildArgs;
+
 #endif // APPGLOBALS_H

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resource>
+  <object class="wxDialog" name="dlgCompilerSettings">
+    <title>Compiler and debugger settings</title>
+    <centered>1</centered>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxStaticText" name="lblBigTitle">
+          <label>General settings</label>
+          <style>wxALIGN_CENTRE|wxST_NO_AUTORESIZE</style>
+          <fg>#FFFFFF</fg>
+          <bg>#004080</bg>
+          <font>
+            <size>14</size>
+            <family>default</family>
+            <style>normal</style>
+            <weight>bold</weight>
+            <underlined>0</underlined>
+          </font>
+        </object>
+        <flag>wxEXPAND</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticLine"/>
+        <flag>wxEXPAND</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxListbook" name="nbMain">
+          <object class="listbookpage">
+            <label>Batch builds</label>
+            <object class="wxPanel" name="tabBatchBuilds">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxStaticText" name="">
+                    <label>Extra command-line arguments for batch-builds through shell extensions:</label>
+                  </object>
+                  <flag>wxLEFT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxTextCtrl" name="txtBatchBuildsCmdLine"/>
+                  <flag>wxLEFT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="spacer">
+                  <size>0,0</size>
+                  <option>1</option>
+                  <flag>wxGROW</flag>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticText" name="">
+                    <label>If you right-click a Code::Blocks project/workspace in explorer, you will see
+two extensions: &quot;Build&quot; and &quot;Rebuild (clean)&quot;.
+The arguments configured here, are used by those two extensions.
+You could specify, for example, a personality to use for batch builds.
+
+For more info on personalities, read the Code::Blocks WiKi at
+http://wiki.codeblocks.org/index.php?title=Personalities</label>
+                  </object>
+                  <flag>wxLEFT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+              </object>
+            </object>
+          </object>
+        </object>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticLine"/>
+        <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_OK">
+              <label>&amp;OK</label>
+              <default>1</default>
+            </object>
+          </object>
+          <object class="spacer">
+            <size>8,0</size>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_CANCEL">
+              <label>&amp;Cancel</label>
+            </object>
+          </object>
+        </object>
+        <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <border>8</border>
+      </object>
+    </object>
+  </object>
+</resource>

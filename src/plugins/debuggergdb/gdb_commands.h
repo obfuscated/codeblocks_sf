@@ -1,15 +1,42 @@
 #ifndef GDB_DEBUGGER_COMMANDS_H
 #define GDB_DEBUGGER_COMMANDS_H
 
+// get rid of wxWidgets debug ugliness
+#ifdef new
+    #undef new
+#endif
+
+#include <map>
+
 #include <wx/string.h>
 #include <wx/regex.h>
 #include <wx/tipwin.h>
 #include <globals.h>
 #include <manager.h>
+#include <scriptingmanager.h>
+#include <scriptingcall.h>
 #include "debugger_defs.h"
 #include "debuggergdb.h"
+#include "gdb_driver.h"
 #include "debuggertree.h"
 #include "backtracedlg.h"
+
+static int GetScriptParserFuncID(const wxString& parseFunc)
+{
+    static std::map<wxString, int> scriptParserFuncs;
+
+    // add it in the cache, if not exists
+    int funcID = -1;
+    std::map<wxString, int>::iterator it = scriptParserFuncs.find(parseFunc);
+    if (it == scriptParserFuncs.end())
+    {
+        funcID = Manager::Get()->GetScriptingManager()->FindFunctionByName(parseFunc, _T("debugger-scripts"));
+        scriptParserFuncs[parseFunc] = funcID;
+    }
+    else
+        funcID = it->second;
+    return funcID;
+}
 
 //#0 wxEntry () at main.cpp:5
 //#8  0x77d48734 in USER32!GetDC () from C:\WINDOWS\system32\user32.dll
@@ -35,51 +62,6 @@ static wxRegEx reDisassembly(_T("(0x[0-9A-Za-z]+)[ \t]+<.*>:[ \t]+(.*)"));
 //  ebx at 0x22ff6c, ebp at 0x22ff78, esi at 0x22ff70, edi at 0x22ff74, eip at 0x22ff7c
 static wxRegEx reDisassemblyInit(_T("^Stack level [0-9]+, frame at (0x[A-Fa-f0-9]+):"));
 static wxRegEx reDisassemblyInitFunc(_T("eip = (0x[A-Fa-f0-9]+) in ([^;]*)"));
-// wxString and wxChar types regexes
-static wxRegEx reWXString(_T("[^[:alnum:]_]*wxString[^[:alnum:]_]*"));
-static wxRegEx reWXChar(_T("[^[:alnum:]_]*wxChar[^[:alnum:]_]*"));
-
-// convenience function
-wxString ParseWXStringOutput(const wxString& output)
-{
-    // unicode wxString is a special case. The debugger will return something like this:
-    // {38 '&', 69 'E', 110 'n', 97 'a', 98 'b', 108 'l', 101 'e'}
-    // So, we quickly parse it and display the chars as a nice string :)
-    wxString w;
-    w << _T('"');
-    size_t len = output.Len();
-    size_t c = 0;
-    while (c < len)
-    {
-        switch (output[c])
-        {
-            case _T('\''):
-                ++c;
-                while (true)
-                {
-                    switch (output[c])
-                    {
-                        case _T('\\'):
-                            w << output[c++];
-                            w << output[c++];
-                            break;
-                        default:
-                            w << output[c++];
-                            break;
-                    }
-                    if (output[c] == _T('\''))
-                        break;
-                }
-                break;
-
-            default:
-                break;
-        }
-        ++c;
-    }
-    w << _T('\"');
-    return w;
-}
 
 /**
   * Command to add a search directory for source files in debugger's paths.
@@ -408,39 +390,56 @@ class GdbCmd_Watch : public DebuggerCmd
 {
         DebuggerTree* m_pDTree;
         Watch* m_pWatch;
+        wxString m_ParseFunc;
     public:
         /** @param tree The tree to display the watch. */
-        GdbCmd_Watch(DebuggerDriver* driver, DebuggerTree* dtree, Watch* watch)
+        GdbCmd_Watch(DebuggerDriver* driver, DebuggerTree* dtree, Watch* watch, const wxString& w_type = wxEmptyString)
             : DebuggerCmd(driver),
             m_pDTree(dtree),
             m_pWatch(watch)
         {
-            m_Cmd << _T("output ");
-            switch (m_pWatch->format)
+            m_Cmd = static_cast<GDB_driver*>(m_pDriver)->GetScriptedTypeCommand(w_type, m_ParseFunc);
+            if (m_Cmd.IsEmpty())
             {
-                case Decimal:       m_Cmd << _T("/d "); break;
-                case Unsigned:      m_Cmd << _T("/u "); break;
-                case Hex:           m_Cmd << _T("/x "); break;
-                case Binary:        m_Cmd << _T("/t "); break;
-                case Char:          m_Cmd << _T("/c "); break;
-                case cbWXString:    m_Cmd = _T("print_wxstring "); break;
-                default:            break;
+                m_pDriver->Log(w_type + _T("No scripted command"));
+                m_Cmd << _T("output ");
+                switch (m_pWatch->format)
+                {
+                    case Decimal:       m_Cmd << _T("/d "); break;
+                    case Unsigned:      m_Cmd << _T("/u "); break;
+                    case Hex:           m_Cmd << _T("/x "); break;
+                    case Binary:        m_Cmd << _T("/t "); break;
+                    case Char:          m_Cmd << _T("/c "); break;
+                    default:            break;
+                }
             }
+            else
+                m_Cmd << _T(' ');
             m_Cmd << m_pWatch->keyword;
         }
         void ParseOutput(const wxString& output)
         {
-            wxArrayString lines = GetArrayFromString(output, _T('\n'));
             wxString w;
     		w << m_pWatch->keyword << _T(" = ");
-    		for (unsigned int i = 0; i < lines.GetCount(); ++i)
-    		{
-    		    if (m_pWatch->format == cbWXString)
-                    w << ParseWXStringOutput(lines[i]);
-    		    else
-                    w << lines[i];
-                w << _T(',');
-    		}
+            if (!m_ParseFunc.IsEmpty())
+            {
+                int funcID = GetScriptParserFuncID(m_ParseFunc);
+                if (funcID >= 0)
+                {
+                    wxString r;
+                    VoidExecutor<const wxString&, wxString&> exec(funcID);
+                    exec.Call(output, r);
+                    w << r;
+                }
+            }
+            else
+            {
+                wxArrayString lines = GetArrayFromString(output, _T('\n'));
+                for (unsigned int i = 0; i < lines.GetCount(); ++i)
+                {
+                    w << lines[i] << _T(',');
+                }
+            }
             w << _T('\n');
             m_pDTree->BuildTree(m_pWatch, w, wsfGDB);
         }
@@ -472,12 +471,8 @@ class GdbCmd_FindWatchType : public DebuggerCmd
             // type = bool
 
             wxString tmp = output.AfterFirst(_T('='));
-            if (reWXString.Matches(tmp))
-                m_pWatch->format = cbWXString;
-            else if (reWXChar.Matches(tmp))
-                m_pWatch->format = Char;
-            // in any case, actually add this watch with high priority
-            m_pDriver->QueueCommand(new GdbCmd_Watch(m_pDriver, m_pDTree, m_pWatch), DebuggerDriver::High);
+            // actually add this watch with high priority
+            m_pDriver->QueueCommand(new GdbCmd_Watch(m_pDriver, m_pDTree, m_pWatch, tmp), DebuggerDriver::High);
         }
 };
 
@@ -489,20 +484,24 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
         wxTipWindow** m_pWin;
         wxRect m_WinRect;
         wxString m_What;
-        bool m_IsWXString;
+        wxString m_ParseFunc;
     public:
         /** @param what The variable to evaluate.
             @param win A pointer to the tip window pointer.
             @param tiprect The tip window's rect.
         */
-        GdbCmd_TooltipEvaluation(DebuggerDriver* driver, const wxString& what, wxTipWindow** win, const wxRect& tiprect, bool isWXString = false)
+        GdbCmd_TooltipEvaluation(DebuggerDriver* driver, const wxString& what, wxTipWindow** win, const wxRect& tiprect, const wxString& w_type = wxEmptyString)
             : DebuggerCmd(driver),
             m_pWin(win),
             m_WinRect(tiprect),
-            m_What(what),
-            m_IsWXString(isWXString)
+            m_What(what)
         {
-            m_Cmd << (isWXString ? _T("print_wxstring ") : _T("output ")) << what;
+            m_Cmd = static_cast<GDB_driver*>(m_pDriver)->GetScriptedTypeCommand(w_type, m_ParseFunc);
+            if (m_Cmd.IsEmpty())
+                m_Cmd << _T("output ");
+            else
+                m_Cmd << _T(' ');
+            m_Cmd << what;
         }
         void ParseOutput(const wxString& output)
         {
@@ -512,8 +511,17 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
             else
             {
                 tip = m_What + _T("=");
-                if (m_IsWXString)
-                    tip << ParseWXStringOutput(output);
+    		    if (!m_ParseFunc.IsEmpty())
+    		    {
+    		        int funcID = GetScriptParserFuncID(m_ParseFunc);
+                    if (funcID >= 0)
+                    {
+                        wxString r;
+                        VoidExecutor<const wxString&, wxString&> exec(funcID);
+                        exec.Call(output, r);
+                        tip << r;
+                    }
+    		    }
                 else
                     tip << output;
             }
@@ -553,11 +561,8 @@ class GdbCmd_FindTooltipType : public DebuggerCmd
             // type = bool
 
             wxString tmp = output.AfterFirst(_T('='));
-            tmp.Trim(false);
-            tmp.Trim(true);
-            bool isWXString = reWXString.Matches(tmp);
-            // in any case, actually add this watch with high priority
-            m_pDriver->QueueCommand(new GdbCmd_TooltipEvaluation(m_pDriver, m_What, m_pWin, m_WinRect, isWXString), DebuggerDriver::High);
+            // actually add this watch with high priority
+            m_pDriver->QueueCommand(new GdbCmd_TooltipEvaluation(m_pDriver, m_What, m_pWin, m_WinRect, tmp), DebuggerDriver::High);
         }
 };
 

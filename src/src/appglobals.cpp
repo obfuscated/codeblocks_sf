@@ -29,3 +29,5 @@ const wxString g_AppContactEmail		= _T("info@codeblocks.org");
 #endif
 
 const wxString g_AppBuildTimestamp = (wxString(wxT(__DATE__)) + wxT(", ") + wxT(__TIME__) + wxT(" - wx") + wxString(wxT(wxVERSION_NUM_DOT_STRING)) + wxT(" (") + g_AppPlatform + wxT(", ") + g_AppWXAnsiUnicode + wxT(")") );
+
+const wxString g_DefaultBatchBuildArgs = _T("-na -nd -ns --batch-build-notify");

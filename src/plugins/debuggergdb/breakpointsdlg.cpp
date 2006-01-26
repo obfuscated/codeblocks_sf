@@ -5,6 +5,7 @@
 #include <cbeditor.h>
 #include "editbreakpointdlg.h"
 #include "debuggerstate.h"
+#include "debuggerdriver.h"
 #include <wx/intl.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/textctrl.h>
@@ -99,8 +100,19 @@ void BreakpointsDlg::OnRemove(wxCommandEvent& event)
 
 void BreakpointsDlg::OnRemoveAll(wxCommandEvent& event)
 {
-    for (int i = m_pList->GetItemCount() - 1; i >= 0; --i)
-        RemoveBreakpoint(i);
+    if (!m_State.GetDriver() || !m_State.GetDriver()->IsStopped())
+        return;
+    while (m_State.GetBreakpoints().GetCount())
+    {
+        DebuggerBreakpoint* bp = m_State.GetBreakpoints()[0];
+        if (!bp)
+            continue;
+        cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(bp->filename);
+        if (ed)
+            ed->RemoveBreakpoint(bp->line, false);
+        m_State.RemoveBreakpoint(0);
+    }
+    FillBreakpoints();
 }
 
 void BreakpointsDlg::OnProperties(wxCommandEvent& event)

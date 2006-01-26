@@ -28,51 +28,42 @@
 #include "sdk_events.h"
 #include "manager.h"
 #include "macrosmanager.h"
-#include "customvars.h"
+
+static const wxString s_KnownPlatforms[] =
+{
+    _T("any"),
+    _T("windows"),
+    _T("unix"),
+};
 
 CompileOptionsBase::CompileOptionsBase()
-	: m_BuildConfiguration(bcDebug),
-	m_Modified(false),
+	: m_Modified(false),
 	m_AlwaysRunPostCmds(false)
 {
 	//ctor
-	m_pCustomVars = new CustomVars;
-}
-
-CompileOptionsBase::CompileOptionsBase(const CompileOptionsBase& other)
-{
-    m_BuildConfiguration = other.m_BuildConfiguration;
-    m_LinkerOptions = other.m_LinkerOptions;
-    m_LinkLibs = other.m_LinkLibs;
-    m_CompilerOptions = other.m_CompilerOptions;
-    m_IncludeDirs = other.m_IncludeDirs;
-    m_ResIncludeDirs = other.m_ResIncludeDirs;
-    m_LibDirs = other.m_LibDirs;
-    m_CmdsBefore = other.m_CmdsBefore;
-    m_CmdsAfter = other.m_CmdsAfter;
-    m_Scripts = other.m_Scripts;
-    m_Modified = other.m_Modified;
-    m_AlwaysRunPostCmds = other.m_AlwaysRunPostCmds;
-    m_pCustomVars = new CustomVars(*other.m_pCustomVars);
 }
 
 CompileOptionsBase::~CompileOptionsBase()
 {
 	//dtor
-	delete m_pCustomVars;
 }
 
-void CompileOptionsBase::SetBuildConfiguration(const BuildConfiguration& bc)
+const wxString* CompileOptionsBase::GetSupportedPlatforms() const
 {
-	if (m_BuildConfiguration == bc)
+    return s_KnownPlatforms;
+}
+
+void CompileOptionsBase::SetPlatform(const wxString& platform)
+{
+	if (m_Platform == platform)
 		return;
-	m_BuildConfiguration = bc;
+	m_Platform = platform;
 	SetModified(true);
 }
 
-const BuildConfiguration& CompileOptionsBase::GetBuildConfiguration()
+const wxString& CompileOptionsBase::GetPlatform() const
 {
-	return m_BuildConfiguration;
+	return m_Platform;
 }
 
 void CompileOptionsBase::SetLinkerOptions(const wxArrayString& linkerOpts)
@@ -83,7 +74,7 @@ void CompileOptionsBase::SetLinkerOptions(const wxArrayString& linkerOpts)
 	SetModified(true);
 }
 
-const wxArrayString& CompileOptionsBase::GetLinkerOptions()
+const wxArrayString& CompileOptionsBase::GetLinkerOptions() const
 {
 	return m_LinkerOptions;
 }
@@ -96,7 +87,7 @@ void CompileOptionsBase::SetLinkLibs(const wxArrayString& linkLibs)
     SetModified(true);
 }
 
-const wxArrayString& CompileOptionsBase::GetLinkLibs()
+const wxArrayString& CompileOptionsBase::GetLinkLibs() const
 {
     return m_LinkLibs;
 }
@@ -109,7 +100,7 @@ void CompileOptionsBase::SetCompilerOptions(const wxArrayString& compilerOpts)
 	SetModified(true);
 }
 
-const wxArrayString& CompileOptionsBase::GetCompilerOptions()
+const wxArrayString& CompileOptionsBase::GetCompilerOptions() const
 {
 	return m_CompilerOptions;
 }
@@ -135,7 +126,7 @@ void CompileOptionsBase::SetIncludeDirs(const wxArrayString& includeDirs)
 	SetModified(true);
 }
 
-const wxArrayString& CompileOptionsBase::GetIncludeDirs()
+const wxArrayString& CompileOptionsBase::GetIncludeDirs() const
 {
 	return m_IncludeDirs;
 }
@@ -161,7 +152,7 @@ void CompileOptionsBase::SetResourceIncludeDirs(const wxArrayString& resIncludeD
 	SetModified(true);
 }
 
-const wxArrayString& CompileOptionsBase::GetResourceIncludeDirs()
+const wxArrayString& CompileOptionsBase::GetResourceIncludeDirs() const
 {
     return m_ResIncludeDirs;
 }
@@ -187,7 +178,7 @@ void CompileOptionsBase::SetLibDirs(const wxArrayString& libDirs)
 	SetModified(true);
 }
 
-const wxArrayString& CompileOptionsBase::GetLibDirs()
+const wxArrayString& CompileOptionsBase::GetLibDirs() const
 {
 	return m_LibDirs;
 }
@@ -213,7 +204,7 @@ void CompileOptionsBase::SetBuildScripts(const wxArrayString& scripts)
 	SetModified(true);
 }
 
-const wxArrayString& CompileOptionsBase::GetBuildScripts()
+const wxArrayString& CompileOptionsBase::GetBuildScripts() const
 {
     return m_Scripts;
 }
@@ -226,7 +217,7 @@ void CompileOptionsBase::SetCommandsBeforeBuild(const wxArrayString& commands)
 	SetModified(true);
 }
 
-const wxArrayString& CompileOptionsBase::GetCommandsBeforeBuild()
+const wxArrayString& CompileOptionsBase::GetCommandsBeforeBuild() const
 {
 	return m_CmdsBefore;
 }
@@ -239,12 +230,12 @@ void CompileOptionsBase::SetCommandsAfterBuild(const wxArrayString& commands)
 	SetModified(true);
 }
 
-const wxArrayString& CompileOptionsBase::GetCommandsAfterBuild()
+const wxArrayString& CompileOptionsBase::GetCommandsAfterBuild() const
 {
 	return m_CmdsAfter;
 }
 
-bool CompileOptionsBase::GetAlwaysRunPostBuildSteps()
+bool CompileOptionsBase::GetAlwaysRunPostBuildSteps() const
 {
     return m_AlwaysRunPostCmds;
 }
@@ -257,16 +248,14 @@ void CompileOptionsBase::SetAlwaysRunPostBuildSteps(bool always)
     SetModified(true);
 }
 
-bool CompileOptionsBase::GetModified()
+bool CompileOptionsBase::GetModified() const
 {
-	return m_Modified || m_pCustomVars->GetModified();
+	return m_Modified;
 }
 
 void CompileOptionsBase::SetModified(bool modified)
 {
 	m_Modified = modified;
-	if (!modified)
-        m_pCustomVars->SetModified(modified);
 }
 
 void CompileOptionsBase::AddLinkerOption(const wxString& option)
@@ -500,13 +489,50 @@ void CompileOptionsBase::RemoveBuildScript(const wxString& script)
     }
 }
 
-void CompileOptionsBase::SetCustomVars(const CustomVars& vars)
+bool CompileOptionsBase::SetVar(const wxString& key, const wxString& value, bool onlyIfExists)
 {
-	*m_pCustomVars = vars;
+    if (onlyIfExists)
+    {
+        StringHash::iterator it = m_Vars.find(key);
+        if (it == m_Vars.end())
+            return false;
+        it->second = value;
+        return true;
+    }
+
+    m_Vars[key] = value;
     SetModified(true);
+    return true;
 }
 
-CustomVars& CompileOptionsBase::GetCustomVars()
+bool CompileOptionsBase::UnsetVar(const wxString& key)
 {
-	return *m_pCustomVars;
+    StringHash::iterator it = m_Vars.find(key);
+    if (it != m_Vars.end())
+    {
+        m_Vars.erase(it);
+        SetModified(true);
+        return true;
+    }
+    return false;
+}
+
+void CompileOptionsBase::UnsetAllVars()
+{
+    m_Vars.clear();
+}
+
+const wxString& CompileOptionsBase::GetVar(const wxString& key) const
+{
+    StringHash::const_iterator it = m_Vars.find(key);
+    if (it != m_Vars.end())
+        return it->second;
+
+    static wxString emptystring = wxEmptyString;
+    return emptystring;
+}
+
+const StringHash& CompileOptionsBase::GetAllVars() const
+{
+    return m_Vars;
 }

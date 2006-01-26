@@ -9,10 +9,10 @@ class ProjectBuildTarget;
 struct CompilerCommand
 {
     CompilerCommand(const wxString& cmd, const wxString& msg, cbProject* prj, ProjectBuildTarget* tgt, bool is_run = false)
-        : command(cmd), message(msg), project(prj), target(tgt), isRun(is_run)
+        : command(cmd), message(msg), project(prj), target(tgt), isRun(is_run), mustWait(false)
     {}
     CompilerCommand(const CompilerCommand& rhs)
-        : command(rhs.command), message(rhs.message), project(rhs.project), target(rhs.target), isRun(rhs.isRun)
+        : command(rhs.command), message(rhs.message), project(rhs.project), target(rhs.target), isRun(rhs.isRun), mustWait(rhs.mustWait)
     {}
     wxString command;
     wxString message;
@@ -20,6 +20,7 @@ struct CompilerCommand
     cbProject* project;
     ProjectBuildTarget* target;
     bool isRun; ///< if it's a command to run the target.
+    bool mustWait; ///< wait for all previous commands to finish (for parallel builds).
 };
 WX_DECLARE_LIST(CompilerCommand, CompilerCommands);
 
@@ -46,6 +47,7 @@ class CompilerQueue
           * This means that the caller must delete it.
           */
         CompilerCommand* Next();
+        CompilerCommand* Peek();
     protected:
         CompilerCommands m_Commands;
         bool m_LastWasRun;

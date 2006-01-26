@@ -3,6 +3,12 @@
 #include "gdb_commands.h"
 #include <manager.h>
 #include <configmanager.h>
+#include <scriptingmanager.h>
+#include <scriptingcall.h>
+#include <angelscript.h>
+
+#include <wx/arrimpl.cpp> // this is a magic incantation which must be done!
+WX_DEFINE_OBJARRAY(TypesArray);
 
 #define GDB_PROMPT _T("(gdb)")
 
@@ -22,6 +28,87 @@ GDB_driver::GDB_driver(DebuggerGDB* plugin)
 GDB_driver::~GDB_driver()
 {
     //dtor
+}
+
+void DummyAddRef(DebuggerDriver& p){}
+void DummyRelease(DebuggerDriver& p){}
+
+void GDB_driver::InitializeScripting()
+{
+    // get a pointer to scripting engine
+    asIScriptEngine* engine = Manager::Get()->GetScriptingManager()->GetEngine();
+    if (!engine)
+    {
+        m_pDBG->Log(_("Scripting engine not running. Debugger scripts disabled..."));
+        return; // no scripting support...
+    }
+
+    const wxString module = _T("debugger-scripts");
+    const wxString script = _T("gdb_wx.script");
+
+    // discard any old instance
+    int r = engine->Discard(_C(module));
+
+    if (r != 0)
+    {
+        // create a new object type for scripts, named DebuggerDriver
+        engine->RegisterObjectType("DebuggerDriver", 0, asOBJ_CLASS);
+        engine->RegisterObjectBehaviour("DebuggerDriver", asBEHAVE_ADDREF, "void f()", asFUNCTION(DummyAddRef), asCALL_CDECL_OBJLAST);
+        engine->RegisterObjectBehaviour("DebuggerDriver", asBEHAVE_RELEASE, "void f()", asFUNCTION(DummyRelease), asCALL_CDECL_OBJLAST);
+        engine->RegisterObjectMethod("DebuggerDriver", "void RegisterType(const wxString& in,const wxString& in,const wxString& in,const wxString& in)", asMETHOD(GDB_driver, RegisterType), asCALL_THISCALL);
+    }
+
+    // run all scripts
+    Manager::Get()->GetScriptingManager()->LoadScript(script, module, false);
+
+    int funcID = Manager::Get()->GetScriptingManager()->FindFunctionByDeclaration(_T("void RegisterTypes(DebuggerDriver@ driver)"), module);
+    if (funcID < 0)
+        m_pDBG->Log(wxString::Format(_T("Invalid debugger script: '%s'"), script.c_str()));
+
+    VoidExecutor<DebuggerDriver*> exec(funcID);
+    exec.Call(this);
+}
+
+void GDB_driver::RegisterType(const wxString& name, const wxString& regex, const wxString& parse_func, const wxString& print_func)
+{
+    // check if this type already exists
+    for (size_t i = 0; i < m_Types.GetCount(); ++i)
+    {
+        ScriptedType& st = m_Types[i];
+        if (st.name == name)
+            return; // exists already...
+    }
+
+    ScriptedType st;
+    st.name = name;
+    st.regex_str = regex;
+    st.regex.Compile(regex);
+    st.parse_func = parse_func;
+    st.print_func = print_func;
+
+    // create the gdb function name
+    // e.g. if st.name==wxString, gdb_func=print_wxstring
+    while (st.name.Replace(_T(" "), _T("_")))
+        ;
+    st.gdb_func = _T("print_") + st.name.Lower();
+
+    m_Types.Add(st);
+    m_pDBG->Log(_("Registered new type: ") + st.name + _T(" (") + st.gdb_func + _T(")"));
+}
+
+wxString GDB_driver::GetScriptedTypeCommand(const wxString& gdb_type, wxString& parse_func)
+{
+    for (size_t i = 0; i < m_Types.GetCount(); ++i)
+    {
+        ScriptedType& st = m_Types[i];
+        if (st.regex.Matches(gdb_type))
+        {
+//            Log(_T("Function to print '") + gdb_type + _T("' is ") + st.parse_func);
+            parse_func = st.parse_func;
+            return st.gdb_func;
+        }
+    }
+    return _T("");
 }
 
 wxString GDB_driver::GetCommandLine(const wxString& debugger, const wxString& debuggee)
@@ -69,15 +156,23 @@ void GDB_driver::Prepare(bool isConsole)
     QueueCommand(new DebuggerCmd(this, _T("set disassembly-flavor intel")));
 #endif
 
-    // define utility functions
-    wxString cmd;
-    cmd << _T("define print_wxstring\n");
-    cmd << _T("  output /c (*$arg0.m_pchData)@(($slen=(unsigned int)$arg0.Len())>100?100:$slen)\n");
-    cmd << _T("end");
-    QueueCommand(new DebuggerCmd(this, cmd));
+    // define all scripted types
+    m_Types.Clear();
+    InitializeScripting();
+    for (size_t i = 0; i < m_Types.GetCount(); ++i)
+    {
+        ScriptedType& st = m_Types[i];
+        wxString cmd;
+        cmd << _T("define ") + st.gdb_func + _T("\n");
+        cmd << _T("  ") << st.print_func << _T("\n");
+        cmd << _T("end");
+        QueueCommand(new DebuggerCmd(this, cmd));
+    }
 
     // pass user init-commands
     wxString init = Manager::Get()->GetConfigManager(_T("debugger"))->Read(_T("init_commands"), wxEmptyString);
+    // commands are passed in one go, in case the user defines functions in there
+    // or else it would lock up...
     QueueCommand(new DebuggerCmd(this, init));
 //    wxArrayString initCmds = GetArrayFromString(init, _T('\n'));
 //    for (unsigned int i = 0; i < initCmds.GetCount(); ++i)
@@ -236,6 +331,7 @@ void GDB_driver::ParseOutput(const wxString& output)
     int idx = buffer.First(GDB_PROMPT);
     if (idx != wxNOT_FOUND)
     {
+        m_ProgramIsStopped = true;
         m_QueueBusy = false;
         DebuggerCmd* cmd = CurrentCommand();
         if (cmd)
@@ -251,7 +347,10 @@ void GDB_driver::ParseOutput(const wxString& output)
         }
     }
     else
+    {
+        m_ProgramIsStopped = false;
         return; // come back later
+    }
 
     // non-command messages (e.g. breakpoint hits)
     // break them up in lines
@@ -268,14 +367,9 @@ void GDB_driver::ParseOutput(const wxString& output)
             break;
         }
 
-        // Is the program running?
-        else if (lines[i].StartsWith(_T("Starting program:")))
-            m_ProgramIsStopped = false;
-
         // Is the program exited?
         else if (lines[i].StartsWith(_T("Program exited")))
         {
-            m_ProgramIsStopped = true;
             m_pDBG->Log(lines[i]);
             QueueCommand(new DebuggerCmd(this, _T("quit")));
         }
@@ -323,7 +417,6 @@ void GDB_driver::ParseOutput(const wxString& output)
             // C:/Devel/tmp/test_console_dbg/tmp/main.cpp:14:171:beg:0x401428
 			if ( reBreak.Matches(lines[i]) )
 			{
-                m_ProgramIsStopped = true;
 			#ifdef __WXMSW__
 				m_Cursor.file = reBreak.GetMatch(lines[i], 1) + reBreak.GetMatch(lines[i], 2);
 				wxString lineStr = reBreak.GetMatch(lines[i], 3);
@@ -344,8 +437,6 @@ void GDB_driver::ParseOutput(const wxString& output)
             // 0x7c9507a8 in ntdll!KiIntSystemCall () from C:\WINDOWS\system32\ntdll.dll
 			if ( reBreak2.Matches(lines[i]) )
 			{
-                m_ProgramIsStopped = true;
-
 				m_Cursor.file = reBreak2.GetMatch(lines[i], 3);
 				m_Cursor.function = reBreak2.GetMatch(lines[i], 2);
 				wxString lineStr = _T("");

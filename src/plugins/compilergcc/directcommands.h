@@ -6,6 +6,7 @@
 
 #define COMPILER_SIMPLE_LOG _T("CB_SLOG:")
 #define COMPILER_TARGET_CHANGE  _T("TARGET:")
+#define COMPILER_WAIT  _T("WAIT")
 
 // forward decls
 class CompilerGCC;
@@ -46,7 +47,7 @@ class DirectCommands
         bool IsObjectOutdated(const pfDetails& pfd);
         void DepsSearchStart(ProjectBuildTarget* target);
         MyFilesArray GetProjectFilesSortedByWeight(ProjectBuildTarget* target, bool compile, bool link);
-        void AddCommandsToArray(const wxString& cmds, wxArrayString& array);
+        void AddCommandsToArray(const wxString& cmds, wxArrayString& array, bool isWaitCmd = false);
 
         int m_PageIndex;
         CompilerGCC* m_pCompilerPlugin;

@@ -2,8 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="2" />
 	<Project>
-		<Option title="Code::Blocks (wx2.6)" />
-		<Option makefile="Makefile.wx2.6" />
+		<Option title="Code::Blocks" />
 		<Option pch_mode="2" />
 		<Option default_target="9" />
 		<Option compiler="0" />
@@ -280,6 +279,7 @@
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="sdk" />
+					<Add directory="sdk\as\include" />
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base" />
@@ -287,7 +287,9 @@
 					<Add library="libcodeblocks.a" />
 					<Add library="libwxscintilla.a" />
 					<Add library="wxmsw26$(WX_SUFFIX)" />
+					<Add library="libangelscript.a" />
 					<Add directory="devel" />
+					<Add directory="sdk\as" />
 				</Linker>
 			</Target>
 			<Target title="Code-completion">
@@ -1953,6 +1955,12 @@
 			<Option link="0" />
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk\configurationpanel.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk\configuretoolsdlg.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="sdk" />
@@ -1978,16 +1986,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\crc32.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk\customvars.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk\customvars.h">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
@@ -3526,6 +3524,16 @@
 			<Option link="0" />
 			<Option target="src" />
 		</Unit>
+		<Unit filename="src\compilersettingsdlg.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\compilersettingsdlg.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="src" />
+		</Unit>
 		<Unit filename="src\dlgabout.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="src" />
@@ -3572,6 +3580,12 @@
 		</Unit>
 		<Unit filename="src\printdlg.h">
 			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\resources\app_compiler_settings.xrc">
+			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="src" />

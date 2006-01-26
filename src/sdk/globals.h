@@ -76,6 +76,7 @@ enum FileVisualState
     fvsLast
 };
 
+
 #define DEFAULT_ARRAY_SEP _T(";")
 
 // global helper funcs
@@ -91,9 +92,9 @@ extern DLLIMPORT bool cbSaveToFile(const wxString& filename, const wxString& con
 /// Saves a TinyXML document correctly, even if the path contains unicode characters.
 extern DLLIMPORT bool cbSaveTinyXMLDocument(TiXmlDocument* doc, const wxString& filename);
 /// Return @c str as a proper unicode-compatible string
-wxString cbC2U(const char* str);
+extern DLLIMPORT wxString cbC2U(const char* str);
 /// Return multibyte (C string) representation of the string
-wxWX2MBbuf cbU2C(const wxString& str);
+extern DLLIMPORT wxWX2MBbuf cbU2C(const wxString& str);
 
 // Convenience macros until we update the codebase...
 // TODO (mandrav##): Remove the leading underscores from the following macros

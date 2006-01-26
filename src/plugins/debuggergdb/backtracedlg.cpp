@@ -135,5 +135,5 @@ void BacktraceDlg::OnSave(wxCommandEvent& event)
 
 void BacktraceDlg::OnRefresh(wxCommandEvent& event)
 {
-    m_pDbg->CmdBacktrace();
+    m_pDbg->Backtrace();
 }

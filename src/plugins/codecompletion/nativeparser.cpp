@@ -32,7 +32,6 @@
 #include <messagemanager.h>
 #include <editormanager.h>
 #include <macrosmanager.h>
-#include <customvars.h>
 #include <cbeditor.h>
 #include <cbproject.h>
 #include <cbexception.h>
@@ -231,7 +230,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
 			{
 				// QUESTION for YIANNIS : can we assume that this pointer is not NULL ? I did.
 				Compilers[nCompilers] = CompilerFactory::Compilers[CompilerIndex];
-				Compilers[nCompilers]->GetCustomVars().ApplyVarsToEnvironment();
+//				Compilers[nCompilers]->GetCustomVars().ApplyVarsToEnvironment();
 				++nCompilers;
 			}
         }

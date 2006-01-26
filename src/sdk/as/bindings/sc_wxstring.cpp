@@ -97,6 +97,12 @@ static scWxString &AssignBitsToString(asDWORD i, scWxString &dest)
 	return dest;
 }
 
+static scWxString &AssignCharToString(char i, scWxString &dest)
+{
+	dest.buffer.Printf(_T("%c"), i);
+	return dest;
+}
+
 static scWxString &AssignUIntToString(unsigned int i, scWxString &dest)
 {
 	dest.buffer.Printf(_T("%ud"), i);
@@ -128,6 +134,12 @@ static scWxString &AssignDoubleToString(double f, scWxString &dest)
 static scWxString &AddAssignBitsToString(asDWORD i, scWxString &dest)
 {
 	dest.buffer << wxString::Format(_T("%ld"), i);
+	return dest;
+}
+
+static scWxString &AddAssignCharToString(char i, scWxString &dest)
+{
+	dest.buffer << wxString::Format(_T("%c"), i);
 	return dest;
 }
 
@@ -164,6 +176,11 @@ static scWxString *AddStringBits(const scWxString &str, asDWORD i)
 	return new scWxString(str.buffer + wxString::Format(_T("%ld"), i));
 }
 
+static scWxString *AddStringChar(const scWxString &str, char i)
+{
+	return new scWxString(str.buffer + wxString::Format(_T("%c"), i));
+}
+
 static scWxString *AddStringUInt(const scWxString &str, unsigned int i)
 {
 	return new scWxString(str.buffer + wxString::Format(_T("%ud"), i));
@@ -196,6 +213,11 @@ static scWxString *AddBitsString(asDWORD i, const scWxString &str)
 static scWxString *AddIntString(int i, const scWxString &str)
 {
 	return new scWxString(wxString::Format(_T("%d"), i) + str.buffer);
+}
+
+static scWxString *AddCharString(char i, const scWxString &str)
+{
+	return new scWxString(wxString::Format(_T("%c"), i) + str.buffer);
 }
 
 static scWxString *AddUIntString(unsigned int i, const scWxString &str)
@@ -309,7 +331,14 @@ void Register_wxString(asIScriptEngine *engine)
 	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_INDEX, "const uint8 &f(uint) const", asFUNCTION(StringCharAt), asCALL_CDECL_OBJLAST); assert( r >= 0 );
 
 	// Register the object methods
-	r = engine->RegisterObjectMethod("wxString", "uint length() const", asMETHOD(wxString,size), asCALL_THISCALL); assert( r >= 0 );
+	r = engine->RegisterObjectMethod("wxString", "uint Length() const", asMETHOD(wxString,size), asCALL_THISCALL); assert( r >= 0 );
+	r = engine->RegisterObjectMethod("wxString", "uint Replace(const wxString& in,const wxString& in,bool)", asMETHOD(wxString,Replace), asCALL_THISCALL); assert( r >= 0 );
+	r = engine->RegisterObjectMethod("wxString", "wxString BeforeFirst(uint8) const", asMETHOD(wxString,BeforeFirst), asCALL_THISCALL); assert( r >= 0 );
+	r = engine->RegisterObjectMethod("wxString", "wxString AfterFirst(uint8) const", asMETHOD(wxString,AfterFirst), asCALL_THISCALL); assert( r >= 0 );
+	r = engine->RegisterObjectMethod("wxString", "wxString BeforeLast(uint8) const", asMETHOD(wxString,BeforeLast), asCALL_THISCALL); assert( r >= 0 );
+	r = engine->RegisterObjectMethod("wxString", "wxString AfterLast(uint8) const", asMETHOD(wxString,AfterLast), asCALL_THISCALL); assert( r >= 0 );
+	r = engine->RegisterObjectMethod("wxString", "int Find(uint8,bool) const", asMETHODPR(wxString,Find,(wxChar, bool) const, int), asCALL_THISCALL); assert( r >= 0 );
+	r = engine->RegisterObjectMethod("wxString", "int Find(const wxString& in) const", asMETHODPR(wxString,Find,(const wxChar*) const, int), asCALL_THISCALL); assert( r >= 0 );
 
 	// Automatic conversion from values
 	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ASSIGNMENT, "wxString &f(double)", asFUNCTION(AssignDoubleToString), asCALL_CDECL_OBJLAST); assert( r >= 0 );
@@ -331,6 +360,11 @@ void Register_wxString(asIScriptEngine *engine)
 	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ADD_ASSIGN, "wxString &f(uint)", asFUNCTION(AddAssignUIntToString), asCALL_CDECL_OBJLAST); assert( r >= 0 );
 	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(const wxString &in, uint)", asFUNCTION(AddStringUInt), asCALL_CDECL); assert( r >= 0 );
 	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(uint, const wxString &in)", asFUNCTION(AddUIntString), asCALL_CDECL); assert( r >= 0 );
+
+	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ASSIGNMENT, "wxString &f(uint8)", asFUNCTION(AssignCharToString), asCALL_CDECL_OBJLAST); assert( r >= 0 );
+	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ADD_ASSIGN, "wxString &f(uint8)", asFUNCTION(AddAssignCharToString), asCALL_CDECL_OBJLAST); assert( r >= 0 );
+	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(const wxString &in, uint8)", asFUNCTION(AddStringChar), asCALL_CDECL); assert( r >= 0 );
+	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(uint8, const wxString &in)", asFUNCTION(AddCharString), asCALL_CDECL); assert( r >= 0 );
 
 	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ASSIGNMENT, "wxString &f(bits)", asFUNCTION(AssignBitsToString), asCALL_CDECL_OBJLAST); assert( r >= 0 );
 	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ADD_ASSIGN, "wxString &f(bits)", asFUNCTION(AddAssignBitsToString), asCALL_CDECL_OBJLAST); assert( r >= 0 );

@@ -14,8 +14,6 @@
 	#endif
 #endif
 
-#define DEFAULT_BATCH_BUILD_ARGS _T("-na -nd -ns --batch-build-notify")
-
 namespace Associations
 {
     void Set();

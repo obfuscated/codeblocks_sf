@@ -58,7 +58,7 @@ class DLLIMPORT ProjectLoader : public IBaseLoader
         TiXmlElement* AddElement(TiXmlElement* parent, const char* name, const char* attr, const wxString& attribute);
         TiXmlElement* AddElement(TiXmlElement* parent, const char* name, const char* attr, int attribute);
         void AddArrayOfElements(TiXmlElement* parent, const char* name, const char* attr, const wxArrayString& array);
-        void SaveEnvironment(TiXmlElement* parent, CustomVars* vars);
+        void SaveEnvironment(TiXmlElement* parent, CompileOptionsBase* base);
 
         // accepts a questionable compiler index and returns a valid compiler index
         // (popping up a selection dialog if needed)

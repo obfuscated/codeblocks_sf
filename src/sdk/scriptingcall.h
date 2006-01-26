@@ -40,6 +40,14 @@ template <> inline void ExecuteSetArg(asIScriptContext* ctx, int arg, int op){ c
 template <> inline void ExecuteSetArg(asIScriptContext* ctx, int arg, double op){ ctx->SetArgDouble(arg, op); }
 template <> inline void ExecuteSetArg(asIScriptContext* ctx, int arg, float op){ ctx->SetArgFloat(arg, op); }
 template <> inline void ExecuteSetArg(asIScriptContext* ctx, int arg, void* op){ ctx->SetArgObject(arg, op); }
+template <> inline void ExecuteSetArg(asIScriptContext* ctx, int arg, wxString* op){ ctx->SetArgObject(arg, op); }
+template <> inline void ExecuteSetArg(asIScriptContext* ctx, int arg, const wxString* op){ ctx->SetArgObject(arg, (void*)op); }
+template <> inline void ExecuteSetArg(asIScriptContext* ctx, int arg, wxString& op){ ctx->SetArgObject(arg, (void*)&op); }
+template <> inline void ExecuteSetArg(asIScriptContext* ctx, int arg, const wxString& op){ ctx->SetArgObject(arg, (void*)&op); }
+template <> inline void ExecuteSetArg(asIScriptContext* ctx, int arg, wxArrayString* op){ ctx->SetArgObject(arg, op); }
+template <> inline void ExecuteSetArg(asIScriptContext* ctx, int arg, const wxArrayString* op){ ctx->SetArgObject(arg, (void*)op); }
+template <> inline void ExecuteSetArg(asIScriptContext* ctx, int arg, wxArrayString& op){ ctx->SetArgObject(arg, (void*)&op); }
+template <> inline void ExecuteSetArg(asIScriptContext* ctx, int arg, const wxArrayString& op){ ctx->SetArgObject(arg, (void*)&op); }
 
 /*
     The following functions return the context's return value after execution.

@@ -40,7 +40,7 @@ class CompilerOptionsDlg : public cbConfigurationPanel
 		void OptionsToText();
 		void DoFillCompilerSets();
 		void DoFillCompilerPrograms();
-		void DoFillVars(CustomVars* vars = 0);
+		void DoFillVars(const StringHash* vars = 0);
 		void DoFillOthers();
 		void DoFillCategories();
 		void DoFillOptions();
@@ -57,8 +57,7 @@ class CompilerOptionsDlg : public cbConfigurationPanel
 		void UpdateCompilerForTargets(int compilerIdx);
 		void AutoDetectCompiler();
 		wxListBox* GetDirsListBox();
-        CustomVars* GetCustomVars();
-        CustomVars* GetCustomVars(CompileOptionsBase* base);
+        CompileOptionsBase* GetVarsOwner();
 
 		void OnTreeSelectionChange(wxTreeEvent& event);
 		void OnTreeSelectionChanging(wxTreeEvent& event);

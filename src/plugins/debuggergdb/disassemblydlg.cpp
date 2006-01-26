@@ -120,5 +120,5 @@ void DisassemblyDlg::OnSave(wxCommandEvent& event)
 
 void DisassemblyDlg::OnRefresh(wxCommandEvent& event)
 {
-    m_pDbg->CmdDisassemble();
+    m_pDbg->Disassemble();
 }

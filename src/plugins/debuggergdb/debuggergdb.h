@@ -35,6 +35,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 		DebuggerGDB();
 		~DebuggerGDB();
 		int Configure();
+		int GetConfigurationGroup(){ return cgDebugger; }
         cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
 		void BuildMenu(wxMenuBar* menuBar);
 		void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
@@ -43,18 +44,24 @@ class DebuggerGDB : public cbDebuggerPlugin
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
 
 		void RunCommand(int cmd);
-		void CmdDisassemble();
-		void CmdRegisters();
-		void CmdBacktrace();
+		void Disassemble();
+		void Registers();
+		void Backtrace();
+
+		bool AddBreakpoint(const wxString& file, int line);
+		bool AddBreakpoint(const wxString& functionSignature);
+		bool RemoveBreakpoint(const wxString& file, int line);
+		bool RemoveBreakpoint(const wxString& functionSignature);
+		bool RemoveAllBreakpoints(const wxString& file = wxEmptyString);
 
 		int Debug();
-		void CmdContinue();
-		void CmdNext();
-		void CmdStep();
-		void CmdStepOut();
-		void CmdRunToCursor();
-		void CmdToggleBreakpoint();
-		void CmdStop();
+		void Continue();
+		void Next();
+		void Step();
+		void StepOut();
+		void RunToCursor();
+		void ToggleBreakpoint();
+		void Stop();
 		bool Validate(const wxString& line, const char cb);
 		bool IsRunning() const { return m_pProcess; }
 		int GetExitCode() const { return m_LastExitCode; }

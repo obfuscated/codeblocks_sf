@@ -7,6 +7,7 @@
 
 #include "settings.h" // build settings
 #include "globals.h"
+#include "configurationpanel.h"
 
 #ifdef __WXMSW__
 	#ifndef PLUGIN_EXPORT
@@ -28,7 +29,7 @@
 // it will change when the SDK interface breaks
 #define PLUGIN_SDK_VERSION_MAJOR 1
 #define PLUGIN_SDK_VERSION_MINOR 6
-#define PLUGIN_SDK_VERSION_RELEASE 6
+#define PLUGIN_SDK_VERSION_RELEASE 7
 
 // class decls
 class ProjectBuildTarget;
@@ -38,6 +39,14 @@ class wxToolBar;
 class wxPanel;
 class cbProject;
 class FileTreeData;
+
+// Define basic groups for plugins' configuration.
+static const int cgCompiler         = 0x01; ///< Compiler related.
+static const int cgDebugger         = 0x02; ///< Debugger related.
+static const int cgEditor           = 0x04; ///< Editor related.
+static const int cgCorePlugin       = 0x08; ///< One of the core plugins.
+static const int cgContribPlugin    = 0x10; ///< One of the contrib plugins (or any third-party plugin for that matter).
+static const int cgUnknown          = 0x20; ///< Unknown. This will be probably grouped with cgContribPlugin.
 
 /** Information about the plugin */
 struct PluginInfo
@@ -51,23 +60,6 @@ struct PluginInfo
     wxString authorWebsite;
     wxString thanksTo;
     wxString license;
-};
-
-/** @brief Base class for plugin configuration panels. */
-class PLUGIN_EXPORT cbConfigurationPanel : public wxPanel
-{
-    public:
-        cbConfigurationPanel(){}
-        virtual ~cbConfigurationPanel(){}
-
-        /// @return the panel's title.
-        virtual wxString GetTitle() = 0;
-        /// @return the panel's bitmap base name. You must supply two bitmaps: <basename>.png and <basename>-off.png...
-        virtual wxString GetBitmapBaseName() = 0;
-        /// Called when the user chooses to apply the configuration.
-        virtual void OnApply() = 0;
-        /// Called when the user chooses to cancel the configuration.
-        virtual void OnCancel() = 0;
 };
 
 /** @brief Base class for plugins
@@ -113,6 +105,15 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 
 		/** The plugin must return its info on request. */
         virtual PluginInfo const* GetInfo() const { return &m_PluginInfo; }
+		/** If a plugin provides some sort of configuration dialog,
+		  * this is the place to invoke it.
+		  */
+        virtual int Configure(){ return 0; }
+        /** Return the configuration group for this plugin. Default is cgUnknown.
+          * Notice that you can logically AND more than one configuration groups,
+          * so you could set it, for example, as "cgCompiler | cgContribPlugin".
+          */
+        virtual int GetConfigurationGroup(){ return cgUnknown; }
 		/** Return plugin's configuration panel.
 		  * @param parent The parent window.
 		  * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
@@ -297,16 +298,43 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
 {
 	public:
 		cbDebuggerPlugin();
+		/** @brief Request to add a breakpoint.
+		  * @param file The file to add the breakpoint based on a file/line pair.
+		  * @param line The line number to put the breakpoint in @c file.
+		  * @return True if succeeded, false if not.
+		  */
+		virtual bool AddBreakpoint(const wxString& file, int line) = 0;
+		/** @brief Request to add a breakpoint based on a function signature.
+		  * @param functionSignature The function signature to add the breakpoint.
+		  * @return True if succeeded, false if not.
+		  */
+		virtual bool AddBreakpoint(const wxString& functionSignature) = 0;
+		/** @brief Request to remove a breakpoint based on a file/line pair.
+		  * @param file The file to remove the breakpoint.
+		  * @param line The line number the breakpoint is in @c file.
+		  * @return True if succeeded, false if not.
+		  */
+		virtual bool RemoveBreakpoint(const wxString& file, int line) = 0;
+		/** @brief Request to remove a breakpoint based on a function signature.
+		  * @param functionSignature The function signature to remove the breakpoint.
+		  * @return True if succeeded, false if not.
+		  */
+		virtual bool RemoveBreakpoint(const wxString& functionSignature) = 0;
+		/** @brief Request to remove all breakpoints from a file.
+		  * @param file The file to remove all breakpoints in. If the argument is empty, all breakpoints are removed from all files.
+		  * @return True if succeeded, false if not.
+		  */
+		virtual bool RemoveAllBreakpoints(const wxString& file = wxEmptyString) = 0;
 		/** @brief Start a new debugging process. */
 		virtual int Debug() = 0;
 		/** @brief Continue running the debugged program. */
-		virtual void CmdContinue() = 0;
+		virtual void Continue() = 0;
 		/** @brief Execute the next instruction and return control to the debugger. */
-		virtual void CmdNext() = 0;
+		virtual void Next() = 0;
 		/** @brief Execute the next instruction, stepping into function calls if needed, and return control to the debugger. */
-		virtual void CmdStep() = 0;
+		virtual void Step() = 0;
 		/** @brief Stop the debugging process. */
-		virtual void CmdStop() = 0;
+		virtual void Stop() = 0;
         /** @brief Is the plugin currently debugging? */
 		virtual bool IsRunning() const = 0;
         /** @brief Get the exit code of the last debug process. */

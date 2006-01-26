@@ -30,7 +30,6 @@
 #include "projectmanager.h"
 #include "macrosmanager.h"
 #include "globals.h"
-#include "customvars.h"
 
 // class constructor
 ProjectBuildTarget::ProjectBuildTarget(cbProject* parentProject) : m_Project(parentProject)

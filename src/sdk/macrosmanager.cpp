@@ -36,7 +36,6 @@
 #include "uservarmanager.h"
 #include "configmanager.h"
 #include "globals.h"
-#include "customvars.h"
 
 /*
     standard macros are:
@@ -213,11 +212,10 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
 
 	if(project)
 	{
-        VarsArray vars = project->GetCustomVars().GetVars();
-
-        for(size_t i = 0; i < vars.GetCount(); ++i)
+        const StringHash& v = project->GetAllVars();
+        for (StringHash::const_iterator it = v.begin(); it != v.end(); ++it)
         {
-            macros[vars[i].name.Upper()] = vars[i].value;
+            macros[it->first.Upper()] = it->second;
         }
 	}
 
@@ -236,11 +234,10 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
 
 	if(target)
 	{
-        VarsArray vars = target->GetCustomVars().GetVars();
-
-        for(size_t i = 0; i < vars.GetCount(); ++i)
+        const StringHash& v = target->GetAllVars();
+        for (StringHash::const_iterator it = v.begin(); it != v.end(); ++it)
         {
-            macros[vars[i].name.Upper()] = vars[i].value;
+            macros[it->first.Upper()] = it->second;
         }
 	}
 

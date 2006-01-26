@@ -96,6 +96,7 @@ void DebuggerDriver::RunQueue()
     {
         m_QueueBusy = true;
         m_pDBG->SendCommand(CurrentCommand()->m_Cmd);
+        m_ProgramIsStopped = false;
     }
 
     // Call Action()

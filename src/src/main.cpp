@@ -28,6 +28,7 @@
 #include "main.h"
 #include "appglobals.h"
 #include "environmentsettingsdlg.h"
+#include "compilersettingsdlg.h"
 #include <cbworkspace.h>
 
 #if defined(_MSC_VER) && defined( _DEBUG )
@@ -182,6 +183,7 @@ int idProjectImportMSVSWksp = XRCID("idProjectImportMSVSWksp");
 int idSettingsEnvironment = XRCID("idSettingsEnvironment");
 int idSettingsGlobalUserVars = XRCID("idSettingsGlobalUserVars");
 int idSettingsEditor = XRCID("idSettingsEditor");
+int idSettingsCompilerDebugger = XRCID("idSettingsCompilerDebugger");
 int idPluginsManagePlugins = XRCID("idPluginsManagePlugins");
 
 int idHelpTips = XRCID("idHelpTips");
@@ -342,6 +344,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_MENU(idSettingsEnvironment, MainFrame::OnSettingsEnvironment)
 	EVT_MENU(idSettingsGlobalUserVars, MainFrame::OnGlobalUserVars)
 	EVT_MENU(idSettingsEditor, MainFrame::OnSettingsEditor)
+	EVT_MENU(idSettingsCompilerDebugger, MainFrame::OnSettingsCompilerDebugger)
     EVT_MENU(idPluginsManagePlugins, MainFrame::OnSettingsPlugins)
 
     EVT_MENU(wxID_ABOUT, MainFrame::OnHelpAbout)
@@ -1321,12 +1324,8 @@ void MainFrame::OnStartHereLink(wxCommandEvent& event)
         OnSettingsEnvironment(evt);
     else if (link.Matches(_T("CB_CMD_CONF_EDITOR")))
         Manager::Get()->GetEditorManager()->Configure();
-//    else if (link.Matches(_T("CB_CMD_CONF_COMPILER")))
-//    {
-//        PluginsArray arr = Manager::Get()->GetPluginManager()->GetCompilerOffers();
-//        if (arr.GetCount() != 0)
-//            arr[0]->Configure();
-//    }
+    else if (link.Matches(_T("CB_CMD_CONF_COMPILER")))
+        OnSettingsCompilerDebugger(evt);
     else if (link.StartsWith(_T("CB_CMD_OPEN_HISTORY_")))
     {
         wxFileHistory* hist = link.StartsWith(_T("CB_CMD_OPEN_HISTORY_PROJECT_")) ? &m_ProjectsHistory : &m_FilesHistory;
@@ -2814,6 +2813,12 @@ void MainFrame::OnGlobalUserVars(wxCommandEvent& event)
 void MainFrame::OnSettingsEditor(wxCommandEvent& event)
 {
 	Manager::Get()->GetEditorManager()->Configure();
+}
+
+void MainFrame::OnSettingsCompilerDebugger(wxCommandEvent& event)
+{
+	CompilerSettingsDlg dlg(this);
+	dlg.ShowModal();
 }
 
 void MainFrame::OnSettingsPlugins(wxCommandEvent& event)
