@@ -12,8 +12,8 @@ void Associations::SetBatchBuildOnly()
 	wxChar name[MAX_PATH] = {0};
 	GetModuleFileName(0L, name, MAX_PATH);
 
-	DoSetAssociation(CODEBLOCKS_EXT, wxString(g_AppName) + _(" project file"), name, _T("1"));
-	DoSetAssociation(WORKSPACE_EXT, wxString(g_AppName) +  _("workspace file"), name, _T("1"));
+	DoSetAssociation(CODEBLOCKS_EXT, g_AppName + _(" project file"), name, _T("1"));
+	DoSetAssociation(WORKSPACE_EXT, g_AppName +  _("workspace file"), name, _T("1"));
 
 	SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, 0L, 0L);
 }
@@ -23,8 +23,8 @@ void Associations::Set()
 	wxChar name[MAX_PATH] = {0};
 	GetModuleFileName(0L, name, MAX_PATH);
 
-	DoSetAssociation(CODEBLOCKS_EXT, wxString(g_AppName) + _(" project file"), name, _T("1"));
-	DoSetAssociation(WORKSPACE_EXT, wxString(g_AppName) +  _("workspace file"), name, _T("1"));
+	DoSetAssociation(CODEBLOCKS_EXT, g_AppName + _(" project file"), name, _T("1"));
+	DoSetAssociation(WORKSPACE_EXT, g_AppName +  _("workspace file"), name, _T("1"));
 	DoSetAssociation(C_EXT, _("C source file"), name, _T("2"));
 	DoSetAssociation(CPP_EXT, _("C++ source file"), name, _T("3"));
 	DoSetAssociation(CC_EXT, _("C++ source file"), name, _T("3"));
@@ -42,8 +42,8 @@ bool Associations::Check()
 	wxChar name[MAX_PATH] = {0};
 	GetModuleFileName(0L, name, MAX_PATH);
 
-	return DoCheckAssociation(CODEBLOCKS_EXT, wxString(g_AppName) + _(" project file"), name, _T("1")) &&
-            DoCheckAssociation(WORKSPACE_EXT, wxString(g_AppName) + _(" workspace file"), name, _T("1")) &&
+	return DoCheckAssociation(CODEBLOCKS_EXT, g_AppName + _(" project file"), name, _T("1")) &&
+            DoCheckAssociation(WORKSPACE_EXT, g_AppName + _(" workspace file"), name, _T("1")) &&
             DoCheckAssociation(C_EXT, _T("C source file"), name, _T("2")) &&
             DoCheckAssociation(CPP_EXT, _T("C++ source file"), name, _T("3")) &&
             DoCheckAssociation(CC_EXT, _T("C++ source file"), name, _T("3")) &&
