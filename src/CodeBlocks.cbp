@@ -1955,6 +1955,10 @@
 			<Option link="0" />
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk\configurationpanel.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk\configurationpanel.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
