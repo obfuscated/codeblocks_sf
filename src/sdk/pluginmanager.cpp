@@ -103,7 +103,7 @@ int PluginManager::ScanForPlugins(const wxString& path)
 bool PluginManager::LoadPlugin(const wxString& pluginName)
 {
     SANITY_CHECK(false);
-//    wxLogNull zero; // no need for error messages; we check everything ourselves...
+    wxLogNull zero; // no need for error messages; we check everything ourselves...
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
 
     wxDynamicLibrary* lib = new wxDynamicLibrary();

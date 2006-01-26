@@ -373,8 +373,9 @@ void CompilerGCC::OnRelease(bool appShutDown)
 
 int CompilerGCC::Configure(cbProject* project, ProjectBuildTarget* target)
 {
-    cbConfigurationPanel* panel = new CompilerOptionsDlg(0, this, project, target);
-    cbConfigurationDialog dlg(Manager::Get()->GetAppWindow(), wxID_ANY, _("Project build options"), panel);
+    cbConfigurationDialog dlg(Manager::Get()->GetAppWindow(), wxID_ANY, _("Project build options"));
+    cbConfigurationPanel* panel = new CompilerOptionsDlg(&dlg, this, project, target);
+    dlg.AttachConfigurationPanel(panel);
     if(dlg.ShowModal() == wxID_OK)
     {
         m_ConsoleTerm = Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
@@ -383,7 +384,7 @@ int CompilerGCC::Configure(cbProject* project, ProjectBuildTarget* target)
         SetupEnvironment();
         Manager::Get()->GetMacrosManager()->Reset();
     }
-    delete panel;
+//    delete panel;
     return 0;
 }
 
