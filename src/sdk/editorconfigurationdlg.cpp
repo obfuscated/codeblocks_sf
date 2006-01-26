@@ -596,7 +596,7 @@ void EditorConfigurationDlg::OnChangeDefCodeFileType(wxCommandEvent& event)
 {
     wxString key;
 	int sel = XRCCTRL(*this, "cmbDefCodeFileType", wxComboBox)->GetSelection();
-	if (sel != m_DefCodeFileType)
+//	if (sel != m_DefCodeFileType)
 	{
         key.Printf(_T("/default_code/set%d"), IdxToFileType[m_DefCodeFileType]);
         Manager::Get()->GetConfigManager(_T("editor"))->Write(key, XRCCTRL(*this, "txtDefCode", wxTextCtrl)->GetValue());
