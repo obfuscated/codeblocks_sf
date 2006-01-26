@@ -316,7 +316,7 @@ void EditorManager::LogSearch(const wxString& file, int line, const wxString& li
 void EditorManager::LoadAutoComplete()
 {
 	m_AutoCompleteMap.clear();
-	wxArrayString list = Manager::Get()->GetConfigManager(_T("editor"))->EnumerateKeys(_T("/auto_complete"));
+	wxArrayString list = Manager::Get()->GetConfigManager(_T("editor"))->EnumerateSubPaths(_T("/auto_complete"));
 	for (unsigned int i = 0; i < list.GetCount(); ++i)
 	{
         wxString name = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/auto_complete/") + list[i] + _T("/name"), wxEmptyString);
