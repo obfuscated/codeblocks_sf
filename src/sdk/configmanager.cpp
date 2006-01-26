@@ -12,12 +12,12 @@
 */
 
 #include "sdk_precomp.h"
-#include "configmanager.h"
-#include "globals.h"
-#include "personalitymanager.h"
-#include "cbexception.h"
+// sdk_precomp.h already includes these:
+//  #include "configmanager.h"
+//  #include "globals.h"
+//  #include "personalitymanager.h"
+//  #include "cbexception.h"
 #include "crc32.h"
-#include "autorevision.h"
 
 #include <wx/file.h>
 #include <wx/dir.h>
@@ -275,16 +275,6 @@ ConfigManager* CfgMgrBldr::Build(const wxString& name_space)
 wxString ConfigManager::GetProxy()
 {
     return Manager::Get()->GetConfigManager(_T("app"))->Read(_T("network_proxy"));
-}
-
-wxString ConfigManager::GetRevisionString()
-{
-    return wxString(autorevision::svnRevision);
-}
-
-unsigned int ConfigManager::GetRevisionNumber()
-{
-    return autorevision::svn_revision;
 }
 
 wxString ConfigManager::GetExecutableFolder()

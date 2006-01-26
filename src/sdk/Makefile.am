@@ -39,6 +39,7 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						compileroptions.cpp \
 						compiletargetbase.cpp \
 						configmanager.cpp \
+						configmanager-revision.cpp \
 						configuretoolsdlg.cpp \
 						confirmreplacedlg.cpp \
 						crc32.cpp \
