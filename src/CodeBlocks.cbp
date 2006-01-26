@@ -1939,6 +1939,10 @@
 			<Option link="0" />
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk\configmanager-revision.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk\configmanager.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="sdk" />
