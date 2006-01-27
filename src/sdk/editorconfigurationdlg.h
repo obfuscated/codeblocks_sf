@@ -16,7 +16,6 @@ class EditorConfigurationDlg : public wxDialog
 		EditorConfigurationDlg(wxWindow* parent);
     	~EditorConfigurationDlg();
 
-		void OnOK(wxCommandEvent& event);
 		void OnChooseFont(wxCommandEvent& event);
         void OnChooseColor(wxCommandEvent& event);
         void OnBoldItalicUline(wxCommandEvent& event);
@@ -34,6 +33,8 @@ class EditorConfigurationDlg : public wxDialog
 		void OnAutoCompAdd(wxCommandEvent& event);
 		void OnAutoCompDelete(wxCommandEvent& event);
 		void UpdateSampleFont(bool askForNewFont);
+
+		void EndModal(int retCode);
     private:
         void OnPageChanged(wxListbookEvent& event);
         void AddPluginPanels();

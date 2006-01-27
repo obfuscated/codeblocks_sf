@@ -819,7 +819,7 @@
         <object class="wxBoxSizer">
           <orient>wxHORIZONTAL</orient>
           <object class="sizeritem">
-            <object class="wxButton" name="btnOK">
+            <object class="wxButton" name="wxID_OK">
               <label>OK</label>
               <default>1</default>
             </object>

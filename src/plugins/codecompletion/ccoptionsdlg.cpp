@@ -166,21 +166,21 @@ void CCOptionsDlg::OnApply()
 	m_Parser.Options().followGlobalIncludes = XRCCTRL(*this, "chkGlobals", wxCheckBox)->GetValue();
 	m_Parser.Options().wantPreprocessor = XRCCTRL(*this, "chkPreprocessor", wxCheckBox)->GetValue();
 	m_Parser.Options().caseSensitive = XRCCTRL(*this, "chkCaseSensitive", wxCheckBox)->GetValue();
-	cfg->Write(_T("/use_custom_control"), XRCCTRL(*this, "chkCustomList", wxCheckBox)->GetValue());
-	cfg->Write(_T("/use_code_completion"), !XRCCTRL(*this, "chkNoCC", wxCheckBox)->GetValue());
+	cfg->Write(_T("/use_custom_control"), (bool)XRCCTRL(*this, "chkCustomList", wxCheckBox)->GetValue());
+	cfg->Write(_T("/use_code_completion"), (bool)!XRCCTRL(*this, "chkNoCC", wxCheckBox)->GetValue());
 	m_Parser.Options().useSmartSense = !XRCCTRL(*this, "chkSimpleMode", wxCheckBox)->GetValue();
 	m_Parser.ClassBrowserOptions().showInheritance = XRCCTRL(*this, "chkInheritance", wxCheckBox)->GetValue();
 	m_Parser.ClassBrowserOptions().viewFlat = XRCCTRL(*this, "cmbCBView", wxComboBox)->GetSelection() == 0;
 	m_Parser.WriteOptions();
 
-	cfg->Write(_T("/use_cache"), XRCCTRL(*this, "chkUseCache", wxCheckBox)->GetValue());
-	cfg->Write(_T("/update_cache_always"), XRCCTRL(*this, "chkAlwaysUpdateCache", wxCheckBox)->GetValue());
-	cfg->Write(_T("/show_cache_progress"), XRCCTRL(*this, "chkShowCacheProgress", wxCheckBox)->GetValue());
+	cfg->Write(_T("/use_cache"), (bool)XRCCTRL(*this, "chkUseCache", wxCheckBox)->GetValue());
+	cfg->Write(_T("/update_cache_always"), (bool)XRCCTRL(*this, "chkAlwaysUpdateCache", wxCheckBox)->GetValue());
+	cfg->Write(_T("/show_cache_progress"), (bool)XRCCTRL(*this, "chkShowCacheProgress", wxCheckBox)->GetValue());
 
-    cfg->Write(_T("/color"), XRCCTRL(*this, "btnColor", wxButton)->GetBackgroundColour().Red());
+    cfg->Write(_T("/color"), XRCCTRL(*this, "btnColor", wxButton)->GetBackgroundColour());
 
 	int timerDelay = XRCCTRL(*this, "sliderDelay", wxSlider)->GetValue() * 100;
-	Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("/cc_delay"), timerDelay);
+	Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("/cc_delay"), (int)timerDelay);
 
     m_pNativeParsers->RereadParserOptions();
 }
