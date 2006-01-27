@@ -107,7 +107,7 @@ m_timer(this, idStartParsingProjects)
     m_PluginInfo.thanksTo = _T("");
 
     m_PageIndex = -1;
-    m_InitDone = true;
+    m_InitDone = false;
     m_EditMenu = 0L;
 	m_SearchMenu = 0L;
 }
@@ -597,6 +597,9 @@ void CodeCompletion::DoInsertCodeCompleteToken(wxString tokName)
 void CodeCompletion::OnAppDoneStartup(CodeBlocksEvent& event)
 {
     // Let the app startup before parsing
+    // This is to prevent the Splash Screen from delaying so much. By adding the
+    // timer, the splash screen is closed and Code::Blocks doesn't take so long
+    // in starting.
     m_timer.Start(200,wxTIMER_ONE_SHOT);
 }
 

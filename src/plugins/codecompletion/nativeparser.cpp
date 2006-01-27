@@ -346,11 +346,13 @@ void NativeParser::AddParser(cbProject* project, bool useCache)
 	m_Parsers[project] = parser;
 	m_ParsersFilenames[project] = project->GetFilename();
 	AddCompilerDirs(parser, project);
-	parser->StartTimer();
 
     if (useCache && Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("/use_cache"), false))
     {
-        if (LoadCachedData(parser, project))
+        parser->StartStopWatch();
+        bool could_load_cache = LoadCachedData(parser, project);
+        parser->EndStopWatch();
+        if (could_load_cache)
         {
             wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, PARSER_END);
             evt.SetClientData(parser);
@@ -406,10 +408,11 @@ void NativeParser::RemoveParser(cbProject* project, bool useCache)
 	m_Parsers.erase(project);
 	m_ParsersFilenames.erase(project);
 	if (parser)
+	{
 		delete parser;
+	}
     if (m_pClassBrowser)
 		m_pClassBrowser->SetParser(0L);
-	Manager::Get()->GetMessageManager()->DebugLog(_("C++ Parser freed"));
 }
 
 void NativeParser::AddFileToParser(cbProject* project, const wxString& filename)
@@ -573,12 +576,13 @@ void NativeParser::DisplayStatus(Parser* parser, cbProject* project)
 {
     if (!parser || !project)
         return;
-    long int tim = parser->GetElapsedTime();
-    Manager::Get()->GetMessageManager()->DebugLog(_("Done parsing project %s (%d total parsed files, %d tokens in %d.%d seconds)."),
+    long int tim = parser->LastParseTime();
+    Manager::Get()->GetMessageManager()->DebugLog(_("Done parsing project %s (%d total parsed files, %d tokens in %d minute(s), %d.%d seconds)."),
                     project->GetTitle().c_str(),
                     parser->GetFilesCount(),
                     parser->GetTokens()->realsize(),
-                    tim / 1000,
+                    (tim / 60000),
+                    ((tim / 1000) %60),
                     tim % 1000);
 }
 

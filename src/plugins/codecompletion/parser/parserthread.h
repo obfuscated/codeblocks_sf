@@ -34,8 +34,8 @@ struct ParserThreadOptions
 class ParserThread : public cbThreadPoolTask
 {
 	public:
-		ParserThread(Parser* parent,bool* abortflag,
-					const wxString& bufferOrFilename,
+		ParserThread(Parser* parent,
+                    const wxString& bufferOrFilename,
 					bool isLocal,
 					ParserThreadOptions& options,
 					TokensTree* tree);

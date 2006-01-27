@@ -103,7 +103,7 @@ namespace ParserConsts
     const wxString tilde(_T("~"));
 };
 
-ParserThread::ParserThread(Parser* parent,bool* abortflag,
+ParserThread::ParserThread(Parser* parent,
 							const wxString& bufferOrFilename,
 							bool isLocal,
 							ParserThreadOptions& options,
@@ -115,7 +115,6 @@ ParserThread::ParserThread(Parser* parent,bool* abortflag,
 	m_IsLocal(isLocal),
 	m_Options(options)
 {
-//	m_pAbort=abortflag;
 	//ctor
 	m_Tokenizer.m_Options.wantPreprocessor = options.wantPreprocessor;
 
@@ -847,10 +846,7 @@ void ParserThread::HandleIncludes()
             // since we 'll be calling directly the parser's method, let's make it thread-safe
     		{
                 wxCriticalSectionLocker lock2(s_mutexListProtection);
-                wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, FILE_NEEDS_PARSING);
-                event.SetString(real_filename);
-                event.SetInt(isGlobal ? 1 : 0);
-                m_pParent->OnParseFile(event);
+                m_pParent->OnParseFile(real_filename, isGlobal ? 1 : 0);
     		}
 		}while(false);
 	}

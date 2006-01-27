@@ -418,13 +418,14 @@ bool CodeBlocksApp::OnInit()
         }
 
         CheckVersion();
+    	Manager::Get()->GetMessageManager()->DebugLog(_("Initializing plugins..."));
 
         CodeBlocksEvent event(cbEVT_APP_STARTUP_DONE);
         Manager::Get()->ProcessEvent(event);
-        Manager::ProcessPendingEvents();
 
         // run startup script
         Manager::Get()->GetScriptingManager()->LoadScript(_T("startup.script"));
+        Manager::ProcessPendingEvents();
 
         // finally, show the app
         HideSplashScreen();

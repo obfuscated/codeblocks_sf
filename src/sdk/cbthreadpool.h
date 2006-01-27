@@ -58,6 +58,7 @@ class DLLIMPORT cbThreadPool
         virtual void SetConcurrentThreads(int concurrentThreads);
         virtual void ClearTaskQueue();
         virtual void AllocThreads();
+        virtual void RunThreads();
         virtual void FreeThreads();
         virtual void OnThreadTaskDone(PrivateThread* thread);
 
@@ -71,10 +72,10 @@ class DLLIMPORT cbThreadPool
         bool m_Batching;
 
     private:
-        wxSemaphore m_Semaphore;
         wxCriticalSection m_CriticalSection;
         int m_Counter;
         wxCriticalSection m_CounterCriticalSection;
+        bool m_Aborting;
 };
 
 #endif // CBTHREADPOOL_H

@@ -94,8 +94,11 @@ class Parser : public wxEvtHandler
 		bool WriteToCache(wxOutputStream* f);
 		bool CacheNeedsUpdate();
 
-		void StartTimer(){ wxStartTimer(); }
-		unsigned long int GetElapsedTime(){ return wxGetElapsedTime(); }
+		void StartStopWatch();
+		void EndStopWatch();
+		long EllapsedTime();
+		long LastParseTime();
+
 #ifndef STANDALONE
 		int GetTokenKindImage(Token* token);
 		void SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxBitmap& mask = wxNullBitmap);
@@ -130,16 +133,10 @@ class Parser : public wxEvtHandler
 		wxTreeItemId GetRootNode(){ return m_RootNode; }
 
 		void AbortBuildingTree(); // Reserved for future expansion
-
 		void TerminateAllThreads();
-		void PauseAllThreads();
-		void ResumeAllThreads();
 	protected:
-		void OnStartThread(CodeBlocksEvent& event);
-		void OnEndThread(CodeBlocksEvent& event);
+		void OnParseFile(const wxString& filename,int flags);
         void OnAllThreadsDone(CodeBlocksEvent& event);
-		void OnNewToken(wxCommandEvent& event);
-		void OnParseFile(wxCommandEvent& event);
 		void OnTimer(wxTimerEvent& event);
 		void OnBatchTimer(wxTimerEvent& event);
 	private:
@@ -164,7 +161,6 @@ class Parser : public wxEvtHandler
 #ifndef STANDALONE
 		wxImageList* m_pImageList;
     protected:
-        bool m_abort_flag;
         // the following three members are used to detect changes between
         // in-mem data and cache
         bool m_UsingCache; // true if loaded from cache
@@ -180,6 +176,11 @@ class Parser : public wxEvtHandler
         size_t m_TreeBuildingTokenIdx; // Bookmark for the tree-building process
     private:
         wxTimer m_timer,m_batchtimer;
+        wxStopWatch m_StopWatch;
+        bool m_StopWatchRunning;
+        long m_LastStopWatchTime;
+        bool m_IgnoreThreadEvents;
+        bool m_ShuttingDown;
 
 #endif // STANDALONE
 
