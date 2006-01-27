@@ -1401,6 +1401,16 @@
 			<Option link="0" />
 			<Option target="XP look &amp; feel" />
 		</Unit>
+		<Unit filename="scripts\gdb_wx.script">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="scripts\startup.script">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Unit filename="sdk\annoyingdialog.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="sdk" />

@@ -331,7 +331,10 @@ void Register_wxString(asIScriptEngine *engine)
 	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_INDEX, "const uint8 &f(uint) const", asFUNCTION(StringCharAt), asCALL_CDECL_OBJLAST); assert( r >= 0 );
 
 	// Register the object methods
+	r = engine->RegisterObjectMethod("wxString", "uint length() const", asMETHOD(wxString,size), asCALL_THISCALL); assert( r >= 0 );
 	r = engine->RegisterObjectMethod("wxString", "uint Length() const", asMETHOD(wxString,size), asCALL_THISCALL); assert( r >= 0 );
+	r = engine->RegisterObjectMethod("wxString", "uint Len() const", asMETHOD(wxString,size), asCALL_THISCALL); assert( r >= 0 );
+	r = engine->RegisterObjectMethod("wxString", "uint size() const", asMETHOD(wxString,size), asCALL_THISCALL); assert( r >= 0 );
 	r = engine->RegisterObjectMethod("wxString", "uint Replace(const wxString& in,const wxString& in,bool)", asMETHOD(wxString,Replace), asCALL_THISCALL); assert( r >= 0 );
 	r = engine->RegisterObjectMethod("wxString", "wxString BeforeFirst(uint8) const", asMETHOD(wxString,BeforeFirst), asCALL_THISCALL); assert( r >= 0 );
 	r = engine->RegisterObjectMethod("wxString", "wxString AfterFirst(uint8) const", asMETHOD(wxString,AfterFirst), asCALL_THISCALL); assert( r >= 0 );

@@ -128,8 +128,19 @@ int ScriptingManager::LoadScript(const wxString& filename, const wxString& modul
     s_Errors.Clear();
 
     // build script
-	m_pEngine->AddScriptSection(_C(module), _C(filename), script, strlen(script), 0, false);
-	m_pEngine->Build(_C(module));
+    int r;
+	r = m_pEngine->AddScriptSection(_C(module), _C(filename), script, strlen(script), 0, false);
+	if (r < 0)
+	{
+	    wxMessageBox(wxString::Format(_("Error returned from scripting AddScriptSection():\nError code: %d\nMessage: %s"), r, GetErrorDescription(r).c_str()), _("Scripting error"), wxICON_ERROR);
+	    return r;
+	}
+	r = m_pEngine->Build(_C(module));
+	if (r < 0)
+	{
+	    wxMessageBox(wxString::Format(_("Error returned from scripting Build():\nError code: %d\nMessage: %s"), r, GetErrorDescription(r).c_str()), _("Scripting error"), wxICON_ERROR);
+	    return r;
+	}
 
     int ret = 0;
     if (autorunMain)
