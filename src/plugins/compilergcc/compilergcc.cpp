@@ -1931,14 +1931,23 @@ int CompilerGCC::Build(const wxString& target)
     DoClearErrors();
 	DoPrepareQueue();
 
-    InitBuildState(bjProject, target);
-    CalculateProjectDependencies(m_Project);
-    m_BuildingProjectIdx = m_BuildDeps[m_BuildDepsIndex];
-    m_pBuildingProject = Manager::Get()->GetProjectManager()->GetProjects()->Item(m_BuildingProjectIdx);
-    if (m_BuildDeps.GetCount() > 1)
-        m_BuildJob = bjWorkspace;
-    if (DoBuild(m_pBuildingProject))
-        return -2;
+    ProjectBuildTarget* bt = m_Project->GetBuildTarget(target);
+    if (UseMake(bt))
+    {
+        wxString cmd = GetMakeCommandFor(mcBuild, bt);
+        m_CommandQueue.Add(new CompilerCommand(cmd, wxEmptyString, m_Project, bt));
+    }
+    else
+    {
+        InitBuildState(bjProject, target);
+        CalculateProjectDependencies(m_Project);
+        m_BuildingProjectIdx = m_BuildDeps[m_BuildDepsIndex];
+        m_pBuildingProject = Manager::Get()->GetProjectManager()->GetProjects()->Item(m_BuildingProjectIdx);
+        if (m_BuildDeps.GetCount() > 1)
+            m_BuildJob = bjWorkspace;
+        if (DoBuild(m_pBuildingProject))
+            return -2;
+    }
     return DoRunQueue();
 }
 
@@ -2042,18 +2051,20 @@ int CompilerGCC::KillProcess()
     ResetBuildState();
     m_RunAfterCompile = false;
     if (!IsProcessRunning())
-        return -1;
+        return 0;
     wxKillError ret;
-    bool isdirect=(!UseMake());
 
     m_CommandQueue.Clear();
 
     for (size_t i = 0; i < m_ParallelProcessCount; ++i)
     {
+        if (!m_Processes[i])
+            continue;
+
         // Close input pipe
         m_Processes[i]->CloseOutput();
         ret = wxProcess::Kill(m_Pid[i], wxSIGTERM);
-        if(isdirect && ret!=wxKILL_OK)
+        if(ret != wxKILL_OK)
         {
             // No need to tell the user about the errors - just keep him waiting.
             Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Aborting process %d..."), i);
