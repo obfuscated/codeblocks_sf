@@ -3,6 +3,7 @@
 
 #include "settings.h"
 #include <wx/dialog.h>
+#include <wx/panel.h>
 #include <wx/string.h>
 
 class wxButton;

@@ -36,7 +36,10 @@ template <> inline void ExecuteSetArg(asIScriptContext* ctx, int arg, DummyOpera
 template <> inline void ExecuteSetArg(asIScriptContext* ctx, int arg, asQWORD op){ ctx->SetArgQWord(arg, op); }
 template <> inline void ExecuteSetArg(asIScriptContext* ctx, int arg, asDWORD op){ ctx->SetArgDWord(arg, op); }
 template <> inline void ExecuteSetArg(asIScriptContext* ctx, int arg, bool op){ ctx->SetArgDWord(arg, op ? 1 : 0); }
+template <> inline void ExecuteSetArg(asIScriptContext* ctx, int arg, char op){ ctx->SetArgDWord(arg, op); }
 template <> inline void ExecuteSetArg(asIScriptContext* ctx, int arg, int op){ ctx->SetArgDWord(arg, op); }
+template <> inline void ExecuteSetArg(asIScriptContext* ctx, int arg, short int op){ ctx->SetArgDWord(arg, op); }
+template <> inline void ExecuteSetArg(asIScriptContext* ctx, int arg, unsigned int op){ ctx->SetArgDWord(arg, op); }
 template <> inline void ExecuteSetArg(asIScriptContext* ctx, int arg, double op){ ctx->SetArgDouble(arg, op); }
 template <> inline void ExecuteSetArg(asIScriptContext* ctx, int arg, float op){ ctx->SetArgFloat(arg, op); }
 template <> inline void ExecuteSetArg(asIScriptContext* ctx, int arg, void* op){ ctx->SetArgObject(arg, op); }

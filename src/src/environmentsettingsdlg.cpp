@@ -120,7 +120,6 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
     XRCCTRL(*this, "chkDDE", wxCheckBox)->Enable(false);
     XRCCTRL(*this, "chkAssociations", wxCheckBox)->Enable(false);
     XRCCTRL(*this, "btnSetAssocs", wxButton)->Enable(false);
-    XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->Enable(false);
 #endif
 
     // add all plugins configuration panels

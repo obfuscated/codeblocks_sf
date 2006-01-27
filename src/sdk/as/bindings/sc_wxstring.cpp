@@ -105,7 +105,7 @@ static scWxString &AssignCharToString(char i, scWxString &dest)
 
 static scWxString &AssignUIntToString(unsigned int i, scWxString &dest)
 {
-	dest.buffer.Printf(_T("%ud"), i);
+	dest.buffer.Printf(_T("%d"), i);
 	return dest;
 }
 
@@ -145,7 +145,7 @@ static scWxString &AddAssignCharToString(char i, scWxString &dest)
 
 static scWxString &AddAssignUIntToString(unsigned int i, scWxString &dest)
 {
-	dest.buffer << wxString::Format(_T("%ud"), i);
+	dest.buffer << wxString::Format(_T("%d"), i);
 	return dest;
 }
 
@@ -183,7 +183,7 @@ static scWxString *AddStringChar(const scWxString &str, char i)
 
 static scWxString *AddStringUInt(const scWxString &str, unsigned int i)
 {
-	return new scWxString(str.buffer + wxString::Format(_T("%ud"), i));
+	return new scWxString(str.buffer + wxString::Format(_T("%d"), i));
 }
 
 static scWxString *AddStringInt(const scWxString &str, int i)
@@ -222,7 +222,7 @@ static scWxString *AddCharString(char i, const scWxString &str)
 
 static scWxString *AddUIntString(unsigned int i, const scWxString &str)
 {
-	return new scWxString(wxString::Format(_T("%ud"), i) + str.buffer);
+	return new scWxString(wxString::Format(_T("%d"), i) + str.buffer);
 }
 
 static scWxString *AddFloatString(float f, const scWxString &str)

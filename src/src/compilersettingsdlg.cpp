@@ -40,6 +40,8 @@ CompilerSettingsDlg::CompilerSettingsDlg(wxWindow* parent)
     // tab "Batch builds"
 #ifdef __WXMSW__
     XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->SetValue(cfg->Read(_T("/batch_build_args"), g_DefaultBatchBuildArgs));
+#else
+    XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->Enable(false);
 #endif
 
     // add all plugins configuration panels
