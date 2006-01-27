@@ -1,117 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resource>
-    <object class="wxDialog" name="dlgEditWatches">
-        <title>Edit debugger watches</title>
-        <centered>1</centered>
+  <object class="wxDialog" name="dlgEditWatches">
+    <title>Edit debugger watches</title>
+    <centered>1</centered>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
         <object class="wxBoxSizer">
-            <orient>wxVERTICAL</orient>
-            <object class="sizeritem">
-                <border>8</border>
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                <object class="wxBoxSizer">
-                    <orient>wxHORIZONTAL</orient>
-                    <object class="sizeritem">
-                        <option>1</option>
-                        <flag>wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                        <object class="wxBoxSizer">
-                            <orient>wxVERTICAL</orient>
-                            <object class="sizeritem">
-                                <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                                <object class="wxStaticText" name="ID_STATICTEXT1">
-                                    <label>Watches:</label>
-                                </object>
-                            </object>
-                            <object class="sizeritem">
-                                <option>1</option>
-                                <flag>wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                                <object class="wxListBox" name="lstWatches" />
-                            </object>
-                            <object class="sizeritem">
-                                <border>8</border>
-                                <flag>wxTOP|wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP</flag>
-                                <object class="wxBoxSizer">
-                                    <orient>wxHORIZONTAL</orient>
-                                    <object class="sizeritem">
-                                        <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                                        <object class="wxButton" name="btnAdd">
-                                            <label>&amp;Add</label>
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <border>8</border>
-                                        <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                                        <object class="wxButton" name="btnRemove">
-                                            <label>&amp;Remove</label>
-                                        </object>
-                                    </object>
-                                </object>
-                            </object>
-                        </object>
-                    </object>
-                    <object class="sizeritem">
-                        <option>1</option>
-                        <border>8</border>
-                        <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                        <object class="wxBoxSizer">
-                            <orient>wxVERTICAL</orient>
-                            <object class="sizeritem">
-                                <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                                <object class="wxStaticText" name="ID_STATICTEXT2">
-                                    <label>Keyword:</label>
-                                </object>
-                            </object>
-                            <object class="sizeritem">
-                                <flag>wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                                <object class="wxTextCtrl" name="txtKeyword">
-                                    <value></value>
-                                </object>
-                            </object>
-                            <object class="sizeritem">
-                                <border>8</border>
-                                <flag>wxTOP|wxALIGN_CENTER|wxEXPAND</flag>
-                                <object class="wxRadioBox" name="rbFormat">
-                                    <label>Format</label>
-                                    <content>
-                                        <item>Undefined</item>
-                                        <item>Decimal</item>
-                                        <item>Unsigned</item>
-                                        <item>Hexadecimal</item>
-                                        <item>Binary</item>
-                                        <item>Character</item>
-                                    </content>
-                                    <dimension>2</dimension>
-                                    <style>wxRA_SPECIFY_COLS</style>
-                                </object>
-                            </object>
-                        </object>
-                    </object>
+          <object class="sizeritem">
+            <object class="wxBoxSizer">
+              <orient>wxVERTICAL</orient>
+              <object class="sizeritem">
+                <object class="wxStaticText">
+                  <label>Watches:</label>
                 </object>
-            </object>
-            <object class="sizeritem">
-                <border>8</border>
-                <flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                <object class="wxStaticLine" name="ID_STATICLINE1" />
-            </object>
-            <object class="sizeritem">
-                <border>8</border>
-                <flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP</flag>
-                <object class="wxBoxSizer">
-                    <orient>wxHORIZONTAL</orient>
-                    <object class="sizeritem">
-                        <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                        <object class="wxButton" name="wxID_OK">
-                            <label>&amp;OK</label>
-                            <default>1</default>
-                        </object>
-                    </object>
-                    <object class="sizeritem">
-                        <border>8</border>
-                        <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                        <object class="wxButton" name="wxID_CANCEL">
-                            <label>&amp;Cancel</label>
-                        </object>
-                    </object>
+              </object>
+              <object class="sizeritem">
+                <object class="wxListBox" name="lstWatches">
+                  <content/>
                 </object>
+                <option>1</option>
+                <flag>wxGROW</flag>
+              </object>
+              <object class="sizeritem">
+                <object class="wxBoxSizer">
+                  <orient>wxHORIZONTAL</orient>
+                  <object class="sizeritem">
+                    <object class="wxButton" name="btnAdd">
+                      <label>&amp;Add</label>
+                    </object>
+                  </object>
+                  <object class="sizeritem">
+                    <object class="wxButton" name="btnRemove">
+                      <label>&amp;Remove</label>
+                    </object>
+                    <flag>wxLEFT</flag>
+                    <border>8</border>
+                  </object>
+                </object>
+                <flag>wxTOP|wxALIGN_CENTRE_HORIZONTAL</flag>
+                <border>8</border>
+              </object>
             </object>
+            <option>1</option>
+            <flag>wxGROW</flag>
+          </object>
+          <object class="sizeritem">
+            <object class="wxBoxSizer">
+              <orient>wxVERTICAL</orient>
+              <object class="sizeritem">
+                <object class="wxStaticText">
+                  <label>Keyword:</label>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <object class="wxTextCtrl" name="txtKeyword"/>
+                <flag>wxGROW</flag>
+              </object>
+              <object class="sizeritem">
+                <object class="wxRadioBox" name="rbFormat">
+                  <label>Format</label>
+                  <content>
+                    <item>Undefined</item>
+                    <item>Decimal</item>
+                    <item>Unsigned</item>
+                    <item>Hexadecimal</item>
+                    <item>Binary</item>
+                    <item>Character</item>
+                  </content>
+                  <selection>0</selection>
+                  <dimension>2</dimension>
+                  <style>wxRA_SPECIFY_COLS</style>
+                </object>
+                <flag>wxTOP|wxGROW|wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL</flag>
+                <border>8</border>
+              </object>
+            </object>
+            <option>1</option>
+            <flag>wxLEFT|wxGROW</flag>
+            <border>8</border>
+          </object>
+          <orient>wxHORIZONTAL</orient>
         </object>
+        <flag>wxALL|wxGROW</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticLine"/>
+        <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_OK">
+              <label>&amp;OK</label>
+              <default>1</default>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_CANCEL">
+              <label>&amp;Cancel</label>
+            </object>
+            <flag>wxLEFT</flag>
+            <border>8</border>
+          </object>
+        </object>
+        <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <border>8</border>
+      </object>
     </object>
+  </object>
+  <object class="wxDialog" name="dlgEditWatch">
+    <title>Edit watch</title>
+    <centered>1</centered>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxVERTICAL</orient>
+          <object class="sizeritem">
+            <object class="wxStaticText">
+              <label>Keyword:</label>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxTextCtrl" name="txtKeyword"/>
+            <flag>wxGROW</flag>
+          </object>
+          <object class="sizeritem">
+            <object class="wxRadioBox" name="rbFormat">
+              <label>Format</label>
+              <content>
+                <item>Undefined</item>
+                <item>Decimal</item>
+                <item>Unsigned</item>
+                <item>Hexadecimal</item>
+                <item>Binary</item>
+                <item>Character</item>
+              </content>
+              <selection>0</selection>
+              <dimension>2</dimension>
+              <style>wxRA_SPECIFY_COLS</style>
+            </object>
+            <flag>wxTOP|wxGROW|wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL</flag>
+            <border>8</border>
+          </object>
+        </object>
+        <option>1</option>
+        <flag>wxALL|wxGROW</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticLine"/>
+        <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_OK">
+              <label>&amp;OK</label>
+              <default>1</default>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="wxID_CANCEL">
+              <label>&amp;Cancel</label>
+            </object>
+            <flag>wxLEFT</flag>
+            <border>8</border>
+          </object>
+        </object>
+        <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <border>8</border>
+      </object>
+    </object>
+  </object>
 </resource>
