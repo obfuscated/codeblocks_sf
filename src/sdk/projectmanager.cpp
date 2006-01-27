@@ -24,33 +24,39 @@
 */
 
 #include "sdk_precomp.h"
-#include <wx/imaglist.h>
-#include <wx/menu.h>
+
+#ifndef CB_PRECOMP
+    #include <wx/imaglist.h>
+    #include <wx/menu.h>
+    #include <wx/splitter.h>
+    #include <wx/filename.h>
+
+    #include "projectmanager.h" // class's header file
+    #include "sdk_events.h"
+    #include "manager.h"
+    #include "configmanager.h"
+    #include "cbproject.h"
+    #include "messagemanager.h"
+    #include "pluginmanager.h"
+    #include "editormanager.h"
+    #include "workspaceloader.h"
+    #include "cbworkspace.h"
+    #include "cbeditor.h"
+    #include "xtra_classes.h"
+    #include <wx/dir.h>
+#endif
+
 #include <wx/utils.h>
-#include <wx/dir.h>
 #include <wx/textdlg.h>
-#include <wx/splitter.h>
-#include <wx/filename.h>
 #include <wx/progdlg.h>
 #include <wxFlatNotebook.h>
 
-#include "projectmanager.h" // class's header file
-#include "sdk_events.h"
-#include "manager.h"
-#include "configmanager.h"
-#include "cbproject.h"
 #include "incrementalselectlistdlg.h"
-#include "messagemanager.h"
-#include "pluginmanager.h"
-#include "editormanager.h"
-#include "workspaceloader.h"
 #include "filegroupsandmasks.h"
 #include "projectsfilemasksdlg.h"
 #include "projectdepsdlg.h"
 #include "multiselectdlg.h"
-#include "cbworkspace.h"
-#include "cbeditor.h"
-#include "xtra_classes.h"
+
 
 // maximum number of items in "Open with" context menu
 static const unsigned int MAX_OPEN_WITH_ITEMS = 20; // keep it in sync with below array!

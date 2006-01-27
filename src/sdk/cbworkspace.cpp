@@ -24,16 +24,22 @@
 */
 
 #include "sdk_precomp.h"
-#include "cbworkspace.h"
-#include "globals.h"
-#include "manager.h"
-#include "configmanager.h"
-#include "messagemanager.h"
-#include "workspaceloader.h"
+
+#ifndef CB_PRECOMP
+    #include "cbworkspace.h"
+    #include "globals.h"
+    #include "manager.h"
+    #include "configmanager.h"
+    #include "messagemanager.h"
+    #include "workspaceloader.h"
+
+    #include <wx/intl.h>
+#endif
+
 #include "msvcworkspaceloader.h"
 #include "msvc7workspaceloader.h"
 #include <wx/filedlg.h>
-#include <wx/intl.h>
+
 
 cbWorkspace::cbWorkspace(const wxString& filename)
 {

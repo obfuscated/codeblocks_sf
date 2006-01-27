@@ -1,9 +1,13 @@
 #include "sdk_precomp.h"
+
+#ifndef CB_PRECOMP
+    #include "manager.h"
+    #include "editormanager.h"
+    #include "cbeditor.h"
+    #include <wx/filename.h>
+#endif
+
 #include "searchresultslog.h"
-#include "manager.h"
-#include "editormanager.h"
-#include "cbeditor.h"
-#include <wx/filename.h>
 
 BEGIN_EVENT_TABLE(SearchResultsLog, SimpleListLog)
 //

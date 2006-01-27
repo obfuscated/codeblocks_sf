@@ -24,36 +24,43 @@
 */
 
 #include "sdk_precomp.h"
-#include <wx/notebook.h>
-#include <wx/menu.h>
-#include <wx/splitter.h>
-#include <wx/imaglist.h>
-#include <wx/bmpbuttn.h>
-#include <wx/file.h>
-#include <wx/progdlg.h>
-#include <wx/dir.h>
 
-#include "editormanager.h" // class's header file
-#include "configmanager.h"
-#include <wx/xrc/xmlres.h>
-#include "messagemanager.h"
-#include "projectmanager.h"
-#include "pluginmanager.h"
-#include "manager.h"
-#include "sdk_events.h"
+#ifndef CB_PRECOMP
+    #include <wx/notebook.h>
+    #include <wx/menu.h>
+    #include <wx/splitter.h>
+    #include <wx/imaglist.h>
+
+    #include "editormanager.h" // class's header file
+    #include "configmanager.h"
+    #include <wx/xrc/xmlres.h>
+    #include "messagemanager.h"
+    #include "projectmanager.h"
+    #include "pluginmanager.h"
+    #include "manager.h"
+    #include "sdk_events.h"
+    #include "projectbuildtarget.h"
+    #include "cbproject.h"
+    #include "cbeditor.h"
+    #include "globals.h"
+    #include "xtra_classes.h"
+    #include "sdk_events.h"
+    #include <wx/file.h>
+    #include <wx/dir.h>
+#endif
+
+#include <wx/bmpbuttn.h>
+#include <wx/progdlg.h>
+
 #include "editorcolorset.h"
 #include "editorconfigurationdlg.h"
 #include "finddlg.h"
 #include "replacedlg.h"
 #include "confirmreplacedlg.h"
-#include "projectbuildtarget.h"
-#include "cbproject.h"
-#include "cbeditor.h"
-#include "globals.h"
-#include "xtra_classes.h"
-#include "sdk_events.h"
 #include "searchresultslog.h"
+
 #include <wxFlatNotebook.h>
+
 
 #define MIN(a,b) (a<b?a:b)
 #define MAX(a,b) (a>b?a:b)

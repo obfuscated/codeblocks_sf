@@ -24,15 +24,21 @@
 */
 
 #include "sdk_precomp.h"
+
+#ifndef CB_PRECOMP
+    #include <wx/xrc/xmlres.h>
+    #include <wx/intl.h>
+    #include <wx/button.h>
+    #include "manager.h"
+    #include "configmanager.h"
+    #include "pluginmanager.h"
+    #include "personalitymanager.h"
+    #include <wx/checklst.h>
+#endif
+
 #include "pluginsconfigurationdlg.h" // class's header file
-#include <wx/xrc/xmlres.h>
-#include <wx/intl.h>
-#include <wx/checklst.h>
-#include <wx/button.h>
-#include "manager.h"
-#include "configmanager.h"
-#include "pluginmanager.h"
-#include "personalitymanager.h"
+
+
 
 BEGIN_EVENT_TABLE(PluginsConfigurationDlg, wxDialog)
 	EVT_BUTTON(XRCID("btnOK"), PluginsConfigurationDlg::OnOK)

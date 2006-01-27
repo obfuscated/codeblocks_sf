@@ -24,12 +24,15 @@
 */
 
 #include "sdk_precomp.h"
-#include "personalitymanager.h"
-#include "manager.h"
-#include "configmanager.h"
 
-#include <wx/intl.h>
-#include <wx/dir.h>
+#ifndef CB_PRECOMP
+    #include "personalitymanager.h"
+    #include "manager.h"
+    #include "configmanager.h"
+    #include <wx/intl.h>
+    #include <wx/dir.h>
+#endif
+
 #include <wx/arrstr.h>
 
 PersonalityManager::PersonalityManager()

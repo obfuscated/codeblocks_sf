@@ -1,8 +1,12 @@
 #include "sdk_precomp.h"
+
+#ifndef CB_PRECOMP
+    #include <manager.h>
+    #include <messagemanager.h>
+#endif
+
 #include "cbeditorprintout.h"
 #include "printing_types.h"
-#include <manager.h>
-#include <messagemanager.h>
 
 cbEditorPrintout::cbEditorPrintout(const wxString& title, cbStyledTextCtrl* control, bool selectionOnly)
         : wxPrintout(title),

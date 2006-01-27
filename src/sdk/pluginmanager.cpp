@@ -24,22 +24,27 @@
 */
 
 #include "sdk_precomp.h"
-#include <wx/string.h>
-#include <wx/dir.h>
-#include <wx/menu.h>
-#include <wx/dynlib.h>
-#include <wx/intl.h>
 
-#include "pluginmanager.h" // class's header file
+#ifndef CB_PRECOMP
+    #include <wx/string.h>
+    #include <wx/menu.h>
+    #include <wx/intl.h>
+
+    #include "pluginmanager.h"
+    #include "cbexception.h"
+    #include "cbplugin.h"
+    #include "messagemanager.h"
+    #include "manager.h"
+    #include "editormanager.h"
+    #include "configmanager.h"
+    #include "personalitymanager.h"
+    #include <wx/dir.h>
+#endif
+
+#include <wx/dynlib.h>
+
 #include "annoyingdialog.h"
-#include "cbexception.h"
-#include "cbplugin.h"
-#include "messagemanager.h"
-#include "manager.h"
-#include "editormanager.h"
 #include "pluginsconfigurationdlg.h"
-#include "configmanager.h"
-#include "personalitymanager.h"
 
 // class constructor
 PluginManager::PluginManager()

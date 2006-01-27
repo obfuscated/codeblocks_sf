@@ -26,14 +26,25 @@
 #include "sdk_precomp.h"
 
 #ifndef wxUSE_CHOICEDLG
-#define wxUSE_CHOICEDLG 1
+    #define wxUSE_CHOICEDLG 1
 #endif
 
 #include <wx/choicdlg.h>
-#include "cbproject.h" // class's header file
-#include "sdk_events.h"
-#include "manager.h"
-#include "cbeditor.h"
+
+#ifndef CB_PRECOMP
+    #include "cbproject.h" // class's header file
+    #include "sdk_events.h"
+    #include "manager.h"
+    #include "cbeditor.h"
+    #include "globals.h"
+    #include "pluginmanager.h"
+    #include "projectmanager.h"
+    #include "messagemanager.h"
+    #include "editormanager.h"
+    #include "configmanager.h"
+    #include "compilerfactory.h"
+#endif
+
 #include "projectoptionsdlg.h"
 #include "projectloader.h"
 #include "devcpploader.h"
@@ -41,14 +52,7 @@
 #include "msvc7loader.h"
 #include "projectlayoutloader.h"
 #include "selecttargetdlg.h"
-#include "globals.h"
-#include "pluginmanager.h"
-#include "projectmanager.h"
-#include "messagemanager.h"
-#include "editormanager.h"
-#include "configmanager.h"
 #include "filegroupsandmasks.h"
-#include "compilerfactory.h"
 #include "importers_globals.h"
 
 // class constructor

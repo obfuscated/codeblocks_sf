@@ -1,8 +1,11 @@
 #include <sdk_precomp.h>
 #include "sc_io.h"
 #include <angelscript.h>
-#include <globals.h>
-#include <wx/string.h>
+
+#ifndef CB_PRECOMP
+    #include <globals.h>
+    #include <wx/string.h>
+#endif
 
 class IOLib
 {

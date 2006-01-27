@@ -24,14 +24,18 @@
 */
 
 #include "sdk_precomp.h"
-#include <wx/xrc/xmlres.h>
-#include <wx/intl.h>
-#include <wx/listbox.h>
-#include <wx/textctrl.h>
-#include <wx/stattext.h>
+
+#ifndef CB_PRECOMP
+    #include <wx/xrc/xmlres.h>
+    #include <wx/intl.h>
+    #include <wx/textctrl.h>
+    #include <wx/stattext.h>
+    #include "manager.h"
+    #include <wx/listbox.h>
+#endif
 
 #include "incrementalselectlistdlg.h"
-#include "manager.h"
+
 
 BEGIN_EVENT_TABLE(myHandler, wxEvtHandler)
 END_EVENT_TABLE()

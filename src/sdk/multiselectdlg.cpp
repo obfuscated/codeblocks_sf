@@ -1,11 +1,15 @@
 #include "sdk_precomp.h"
-#include <wx/xrc/xmlres.h>
-#include <wx/checklst.h>
+
+#ifndef CB_PRECOMP
+    #include <wx/xrc/xmlres.h>
+    #include <wx/msgdlg.h>
+    #include "globals.h"
+    #include <wx/checklst.h>
+#endif
+
 #include <wx/stattext.h>
 #include <wx/textdlg.h>
-#include <wx/msgdlg.h>
 
-#include "globals.h"
 #include "multiselectdlg.h"
 
 BEGIN_EVENT_TABLE(MultiSelectDlg, wxDialog)

@@ -1,11 +1,14 @@
 #include "sdk_precomp.h"
 #include "autodetectcompilers.h"
-#include "compilerfactory.h"
-#include <wx/xrc/xmlres.h>
-#include <wx/intl.h>
-#include <wx/listctrl.h>
-#include <wx/button.h>
-#include <wx/stattext.h>
+
+#ifndef CB_PRECOMP
+    #include "compilerfactory.h"
+    #include <wx/xrc/xmlres.h>
+    #include <wx/intl.h>
+    #include <wx/listctrl.h>
+    #include <wx/button.h>
+    #include <wx/stattext.h>
+#endif
 
 BEGIN_EVENT_TABLE(AutoDetectCompilers, wxDialog)
     EVT_UPDATE_UI(-1, AutoDetectCompilers::OnUpdateUI)

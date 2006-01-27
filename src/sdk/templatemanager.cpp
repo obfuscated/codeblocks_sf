@@ -24,24 +24,29 @@
 */
 
 #include "sdk_precomp.h"
+
+#ifndef CB_PRECOMP
+    #include <wx/intl.h>
+    #include <wx/menu.h>
+    #include <wx/filename.h>
+    #include <wx/msgdlg.h>
+    #include <wx/log.h>
+
+    #include "templatemanager.h"
+    #include "manager.h"
+    #include "configmanager.h"
+    #include "messagemanager.h"
+    #include "projectmanager.h"
+    #include "cbproject.h"
+    #include "globals.h"
+    #include "compilerfactory.h"
+    #include <wx/dir.h>
+#endif
+
 #include <wx/mdi.h>
-#include <wx/intl.h>
-#include <wx/dir.h>
-#include <wx/menu.h>
-#include <wx/log.h>
 #include <wx/filedlg.h>
-#include <wx/filename.h>
-#include <wx/msgdlg.h>
 #include <wx/textdlg.h>
 
-#include "templatemanager.h"
-#include "manager.h"
-#include "configmanager.h"
-#include "messagemanager.h"
-#include "projectmanager.h"
-#include "cbproject.h"
-#include "globals.h"
-#include "compilerfactory.h"
 
 int idMenuNewFromTemplate = wxNewId();
 

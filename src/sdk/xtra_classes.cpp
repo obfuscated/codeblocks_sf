@@ -4,8 +4,13 @@
   */
 
 #include "sdk_precomp.h"
-#include "xtra_classes.h"
-#include "configmanager.h"
+
+#ifndef CB_PRECOMP
+    #include "xtra_classes.h"
+    #include "configmanager.h"
+#endif
+
+
 
 /** A simple panel with included wxSplitterWindow and sizer. Nothing more
   *

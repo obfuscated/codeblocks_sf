@@ -1,5 +1,9 @@
 #include "sdk_precomp.h"
-#include "menuitemsmanager.h"
+
+#ifndef CB_PRECOMP
+    #include "menuitemsmanager.h"
+#endif
+
 
 MenuItemsManager::MenuItemsManager()
     : m_Menu(0L)

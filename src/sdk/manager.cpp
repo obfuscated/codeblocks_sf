@@ -24,26 +24,32 @@
 */
 
 #include "sdk_precomp.h"
-#include <wx/xrc/xmlres.h>
-#include <wx/fs_zip.h>
-#include <wx/menu.h>
+
+#ifndef CB_PRECOMP
+    #include <wx/xrc/xmlres.h>
+    #include <wx/fs_zip.h>
+    #include <wx/menu.h>
+
+    #include "manager.h" // class's header file
+    #include "cbexception.h"
+    #include "projectmanager.h"
+    #include "editormanager.h"
+    #include "messagemanager.h"
+    #include "pluginmanager.h"
+    #include "toolsmanager.h"
+    #include "macrosmanager.h"
+    #include "configmanager.h"
+    #include "scriptingmanager.h"
+    #include "templatemanager.h"
+    #include "personalitymanager.h"
+    #include "uservarmanager.h"
+    #include "xtra_classes.h" // Our custom set of wxWidgets classes
+    #include "xtra_res.h" // our new ToolBarAddOn handler
+#endif
+
 #include <wx/toolbar.h>
 
-#include "manager.h" // class's header file
-#include "cbexception.h"
-#include "projectmanager.h"
-#include "editormanager.h"
-#include "messagemanager.h"
-#include "pluginmanager.h"
-#include "toolsmanager.h"
-#include "macrosmanager.h"
-#include "configmanager.h"
-#include "scriptingmanager.h"
-#include "templatemanager.h"
-#include "personalitymanager.h"
-#include "uservarmanager.h"
-#include "xtra_classes.h" // Our custom set of wxWidgets classes
-#include "xtra_res.h" // our new ToolBarAddOn handler
+
 
 
 Manager::Manager() : m_pAppWindow(0)

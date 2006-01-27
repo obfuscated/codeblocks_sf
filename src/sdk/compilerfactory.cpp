@@ -1,8 +1,12 @@
 #include "sdk_precomp.h"
-#include "compilerfactory.h"
-#include "manager.h"
-#include "messagemanager.h"
-#include "configmanager.h"
+
+#ifndef CB_PRECOMP
+    #include "compilerfactory.h"
+    #include "manager.h"
+    #include "messagemanager.h"
+    #include "configmanager.h"
+#endif
+
 #include "autodetectcompilers.h"
 
 // statics

@@ -24,18 +24,21 @@
 */
 
 #include "sdk_precomp.h"
-#include <wx/intl.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/combobox.h>
-#include <wx/checkbox.h>
-#include <wx/button.h>
-#include <wx/listbox.h>
-#include <wx/textctrl.h>
-#include <wx/notebook.h>
+
+#ifndef CB_PRECOMP
+    #include <wx/intl.h>
+    #include <wx/xrc/xmlres.h>
+    #include <wx/combobox.h>
+    #include <wx/checkbox.h>
+    #include <wx/button.h>
+    #include <wx/textctrl.h>
+    #include <wx/notebook.h>
+    #include <wx/listbox.h>
+    #include "manager.h"
+    #include "configmanager.h"
+#endif
 
 #include "newfromtemplatedlg.h"
-#include "manager.h"
-#include "configmanager.h"
 
 #define COMPILER_WARN_MSG(b) ((b)?_T("WARNING: This template/option pair will NOT use the default compiler."):_(""))
 

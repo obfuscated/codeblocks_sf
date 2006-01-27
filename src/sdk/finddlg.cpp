@@ -24,20 +24,26 @@
 */
 
 #include "sdk_precomp.h"
+
+#ifndef CB_PRECOMP
+    #include "globals.h"
+    #include "configmanager.h"
+    #include "manager.h"
+    #include "projectmanager.h"
+    #include "cbproject.h"
+    #include <wx/xrc/xmlres.h>
+    #include <wx/intl.h>
+    #include <wx/combobox.h>
+    #include <wx/checkbox.h>
+    #include <wx/button.h>
+    #include <wx/textctrl.h>
+    #include <wx/notebook.h>
+#endif
+
 #include "finddlg.h"
-#include "globals.h"
-#include "configmanager.h"
-#include "manager.h"
-#include "projectmanager.h"
-#include "cbproject.h"
-#include <wx/xrc/xmlres.h>
-#include <wx/intl.h>
-#include <wx/combobox.h>
-#include <wx/checkbox.h>
+
 #include <wx/radiobox.h>
-#include <wx/button.h>
-#include <wx/textctrl.h>
-#include <wx/notebook.h>
+
 
 #define CONF_GROUP _T("/find_options")
 

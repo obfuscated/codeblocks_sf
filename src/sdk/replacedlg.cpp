@@ -24,15 +24,21 @@
 */
 
 #include "sdk_precomp.h"
-#include "globals.h"
+
+#ifndef CB_PRECOMP
+    #include "globals.h"
+    #include "configmanager.h"
+
+    #include <wx/xrc/xmlres.h>
+    #include <wx/intl.h>
+    #include <wx/combobox.h>
+    #include <wx/checkbox.h>
+    #include <wx/button.h>
+#endif
+
 #include "replacedlg.h"
-#include "configmanager.h"
-#include <wx/xrc/xmlres.h>
-#include <wx/intl.h>
-#include <wx/combobox.h>
-#include <wx/checkbox.h>
+
 #include <wx/radiobox.h>
-#include <wx/button.h>
 
 #define CONF_GROUP _T("/replace_options")
 

@@ -1,10 +1,14 @@
 #include "sdk_precomp.h"
-#include "editorlexerloader.h"
-#include "globals.h"
+
+#ifndef CB_PRECOMP
+    #include "globals.h"
+    #include "manager.h"
+    #include "messagemanager.h"
+    #include <wx/dynarray.h>
+#endif
+
 #include "editorcolorset.h"
-#include "manager.h"
-#include "messagemanager.h"
-#include <wx/dynarray.h>
+#include "editorlexerloader.h"
 
 EditorLexerLoader::EditorLexerLoader(EditorColorSet* target)
     : m_pTarget(target)

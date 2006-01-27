@@ -1,20 +1,25 @@
 #include "sdk_precomp.h"
+
+#ifndef CB_PRECOMP
+    #include <wx/txtstrm.h>
+    #include <wx/dynarray.h>
+    #include <wx/filename.h>
+    #include <wx/msgdlg.h>
+
+    #include "globals.h"
+    #include "manager.h"
+    #include "messagemanager.h"
+    #include "projectmanager.h"
+    #include "compilerfactory.h"
+    #include "compiler.h"
+    #include <wx/wfstream.h>
+#endif
+
 #include <wx/stream.h>
-#include <wx/wfstream.h>
-#include <wx/txtstrm.h>
-#include <wx/dynarray.h>
-#include <wx/filename.h>
-#include <wx/msgdlg.h>
 
 #include "msvc7workspaceloader.h"
-
-#include "globals.h"
 #include "importers_globals.h"
-#include "manager.h"
-#include "messagemanager.h"
-#include "projectmanager.h"
-#include "compilerfactory.h"
-#include "compiler.h"
+
 
 MSVC7WorkspaceLoader::MSVC7WorkspaceLoader()
 {

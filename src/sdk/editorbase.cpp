@@ -1,13 +1,17 @@
 #include "sdk_precomp.h"
-#include <wx/filename.h>
-#include <wx/wfstream.h>
-#include <wx/notebook.h>
-#include <wx/menu.h>
-#include "manager.h"
-#include "editorbase.h"
-#include "cbeditor.h"
-#include "editormanager.h"
-#include "pluginmanager.h"
+
+#ifndef CB_PRECOMP
+    #include <wx/filename.h>
+    #include <wx/notebook.h>
+    #include <wx/menu.h>
+    #include "manager.h"
+    #include "editorbase.h"
+    #include "cbeditor.h"
+    #include "editormanager.h"
+    #include "pluginmanager.h"
+    #include <wx/wfstream.h>
+#endif
+
 #include <wxFlatNotebook.h>
 
 // needed for initialization of variables

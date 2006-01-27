@@ -24,18 +24,22 @@
 */
 
 #include "sdk_precomp.h"
-#include <wx/menu.h>
 
-#include "projectmanager.h"
-#include "editormanager.h"
-#include "messagemanager.h"
-#include "macrosmanager.h"
-#include "manager.h"
-#include "cbproject.h"
-#include "cbeditor.h"
-#include "uservarmanager.h"
-#include "configmanager.h"
-#include "globals.h"
+#ifndef CB_PRECOMP
+    #include <wx/menu.h>
+
+    #include "projectmanager.h"
+    #include "editormanager.h"
+    #include "messagemanager.h"
+    #include "macrosmanager.h"
+    #include "manager.h"
+    #include "cbproject.h"
+    #include "cbeditor.h"
+    #include "uservarmanager.h"
+    #include "configmanager.h"
+    #include "globals.h"
+#endif
+
 
 /*
     standard macros are:

@@ -1,16 +1,23 @@
 #include "sdk_precomp.h"
-#include <wx/intl.h>
-#include <wx/msgdlg.h>
+
+#ifndef CB_PRECOMP
+    #include <wx/intl.h>
+    #include <wx/msgdlg.h>
+
+    #include "manager.h"
+    #include "messagemanager.h"
+    #include "cbproject.h"
+    #include "globals.h"
+    #include "compilerfactory.h"
+    #include "compiler.h"
+#endif
+
 #include <wx/choicdlg.h>
-#include "manager.h"
-#include "messagemanager.h"
-#include "cbproject.h"
-#include "globals.h"
+
 #include "msvc7loader.h"
 #include "multiselectdlg.h"
 #include "importers_globals.h"
-#include "compilerfactory.h"
-#include "compiler.h"
+
 
 MSVC7Loader::MSVC7Loader(cbProject* project)
     : m_pProject(project),

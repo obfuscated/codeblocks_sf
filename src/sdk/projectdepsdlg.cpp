@@ -1,13 +1,18 @@
-#include "projectdepsdlg.h"
-#include "cbproject.h"
-#include "manager.h"
-#include "projectmanager.h"
+#include "sdk_precomp.h"
 
-#include <wx/intl.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/combobox.h>
-#include <wx/checklst.h>
-#include <wx/msgdlg.h>
+#ifndef CB_PRECOMP
+    #include "cbproject.h"
+    #include "manager.h"
+    #include "projectmanager.h"
+    #include <wx/intl.h>
+    #include <wx/xrc/xmlres.h>
+    #include <wx/combobox.h>
+    #include <wx/msgdlg.h>
+    #include <wx/checklst.h>
+#endif
+
+#include "projectdepsdlg.h"
+
 
 BEGIN_EVENT_TABLE(ProjectDepsDlg, wxDialog)
     EVT_COMBOBOX(XRCID("cmbProject"), ProjectDepsDlg::OnProjectChange)

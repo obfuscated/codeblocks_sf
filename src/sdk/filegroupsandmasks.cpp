@@ -1,10 +1,16 @@
 #include "sdk_precomp.h"
-#include <wx/intl.h>
-#include "globals.h"
-#include "configmanager.h"
+
+#ifndef CB_PRECOMP
+    #include <wx/intl.h>
+    #include "globals.h"
+    #include "configmanager.h"
+    #include "manager.h"
+    #include "messagemanager.h"
+#endif
+
 #include "filegroupsandmasks.h"
-#include "manager.h"
-#include "messagemanager.h"
+
+
 
 FilesGroupsAndMasks::FilesGroupsAndMasks()
 {

@@ -24,8 +24,13 @@
 */
 
 #include "sdk_precomp.h"
-#include "pipedprocess.h" // class' header file
-#include "sdk_events.h"
+
+#ifndef CB_PRECOMP
+    #include "pipedprocess.h" // class' header file
+    #include "sdk_events.h"
+#endif
+
+
 
 // The folowing class is created to override wxTextStream::ReadLine()
 class cbTextInputStream : public wxTextInputStream

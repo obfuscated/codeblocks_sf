@@ -3,7 +3,13 @@
 *  It's bad enough we have to re-link the SDK...
 */
 
-#include "sdk_precomp.h" // contains "configmanager.h" and <wx/string.h>
+#include "sdk_precomp.h"
+
+#ifndef CB_PRECOMP
+    #include "configmanager.h"
+    #include <wx/string.h>
+#endif
+
 #include "autorevision.h"
 
 wxString ConfigManager::GetRevisionString()

@@ -24,16 +24,20 @@
 */
 
 #include "sdk_precomp.h"
-#include <wx/log.h>
-#include <wx/dir.h>
 
-#include "globals.h"
-#include "cbeditor.h"
+#ifndef CB_PRECOMP
+    #include "globals.h"
+    #include "cbeditor.h"
+    #include "configmanager.h"
+    #include "messagemanager.h"
+    #include "manager.h"
+    #include <wx/log.h>
+    #include <wx/dir.h>
+#endif
+
+
 #include "editorcolorset.h"
 #include "editorlexerloader.h"
-#include "configmanager.h"
-#include "messagemanager.h"
-#include "manager.h"
 
 const int cbHIGHLIGHT_LINE = -98; // highlight line under caret virtual style
 const int cbSELECTION      = -99; // selection virtual style

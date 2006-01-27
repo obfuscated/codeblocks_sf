@@ -1,13 +1,20 @@
 #include "sdk_precomp.h"
-#include <wx/confbase.h>
-#include <wx/fileconf.h>
-#include <wx/log.h>
-#include <wx/intl.h>
-#include "manager.h"
-#include "projectmanager.h"
-#include "messagemanager.h"
-#include "cbproject.h"
-#include "workspaceloader.h"
+
+#ifndef CB_PRECOMP
+    #include <wx/confbase.h>
+    #include <wx/fileconf.h>
+    #include <wx/intl.h>
+    #include <wx/log.h>
+
+    #include "manager.h"
+    #include "projectmanager.h"
+    #include "messagemanager.h"
+    #include "cbproject.h"
+    #include "workspaceloader.h"
+#endif
+
+
+
 #include "tinyxml/tinyxml.h"
 
 WorkspaceLoader::WorkspaceLoader()

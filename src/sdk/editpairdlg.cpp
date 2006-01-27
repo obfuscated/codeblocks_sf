@@ -1,10 +1,15 @@
 #include "sdk_precomp.h"
-#include <wx/xrc/xmlres.h>
-#include <wx/button.h>
-#include <wx/textctrl.h>
+
+#ifndef CB_PRECOMP
+    #include <wx/xrc/xmlres.h>
+    #include <wx/button.h>
+    #include <wx/textctrl.h>
+    #include "globals.h"
+#endif
+
 #include <wx/filedlg.h>
 #include "editpairdlg.h"
-#include "globals.h"
+
 
 BEGIN_EVENT_TABLE(EditPairDlg, wxDialog)
     EVT_BUTTON(XRCID("btnBrowse"), EditPairDlg::OnBrowse)

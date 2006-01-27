@@ -1,15 +1,23 @@
 #include "sdk_precomp.h"
-#include <wx/confbase.h>
-#include <wx/fileconf.h>
-#include <wx/log.h>
-#include <wx/intl.h>
-#include <wx/filename.h>
-#include "manager.h"
-#include "projectmanager.h"
-#include "messagemanager.h"
-#include "cbproject.h"
-#include "globals.h"
+
+
+#ifndef CB_PRECOMP
+    #include <wx/confbase.h>
+    #include <wx/intl.h>
+    #include <wx/filename.h>
+    #include <wx/log.h>
+
+    #include "manager.h"
+    #include "projectmanager.h"
+    #include "messagemanager.h"
+    #include "cbproject.h"
+    #include "globals.h"
+#endif
+
 #include "devcpploader.h"
+
+#include <wx/fileconf.h>
+
 
 DevCppLoader::DevCppLoader(cbProject* project)
     : m_pProject(project)

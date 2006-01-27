@@ -24,9 +24,13 @@
 */
 
 #include "sdk_precomp.h"
+
+#ifndef CB_PRECOMP
+    #include <wx/xrc/xmlres.h>
+    #include <wx/stattext.h>
+#endif
+
 #include "confirmreplacedlg.h"
-#include <wx/xrc/xmlres.h>
-#include <wx/stattext.h>
 
 BEGIN_EVENT_TABLE(ConfirmReplaceDlg, wxDialog)
 	EVT_BUTTON(XRCID("btnYes"), 	ConfirmReplaceDlg::OnYes)

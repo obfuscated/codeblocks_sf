@@ -5,6 +5,21 @@
 #ifndef SDK_H
 #define SDK_H
 
+
+/*
+ * Enable backwards-compatibility for gcc 3.3 and lower.
+ * Although the compiler does not support precompiled headers, the build might still use them.
+ * We might significantly reduce the compile time for old compilers, by undefining CB_PRECOMP and thus
+ * not including every header file twice.
+ * This also allows us to reliably shortcut some includes for compilers that *do* support precompilation.
+ */
+#ifdef __GNUC__
+    #if ( (__GNUC__ < 3) || ( (__GNUC__ == 3) && (__GNUC_MINOR__ < 4) ) )
+        #undef CB_PRECOMP
+    #endif
+#endif
+
+
 #if ( defined(CB_PRECOMP) && !defined(WX_PRECOMP) )
     #define WX_PRECOMP
 #endif // CB_PRECOMP
@@ -62,6 +77,11 @@
     #include <wx/button.h>
     #include <wx/stattext.h>
     #include <wx/wxscintilla.h>
+    #include <wx/listbox.h>
+    #include <wx/radiobox.h>
+    #include <wx/colordlg.h>
+    #include <wx/regex.h>
+    #include <wx/log.h>
 
     // basic headers
     #include <settings.h>

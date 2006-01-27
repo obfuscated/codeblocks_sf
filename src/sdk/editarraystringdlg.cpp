@@ -1,11 +1,15 @@
 #include "sdk_precomp.h"
-#include <wx/intl.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/button.h>
-#include <wx/listbox.h>
-#include <wx/textdlg.h>
-#include <wx/msgdlg.h>
+
+#ifndef CB_PRECOMP
+    #include <wx/intl.h>
+    #include <wx/xrc/xmlres.h>
+    #include <wx/button.h>
+    #include <wx/msgdlg.h>
+    #include <wx/listbox.h>
+#endif
+
 #include "editarraystringdlg.h"
+#include <wx/textdlg.h>
 
 BEGIN_EVENT_TABLE(EditArrayStringDlg, wxDialog)
 	EVT_LISTBOX_DCLICK(XRCID("lstItems"), EditArrayStringDlg::OnEdit)

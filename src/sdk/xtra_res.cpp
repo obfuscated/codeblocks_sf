@@ -1,6 +1,10 @@
 #include "sdk_precomp.h"
-#include "xtra_res.h"
-#include <wx/wx.h>
+
+#ifndef CB_PRECOMP
+    #include "xtra_res.h"
+    #include <wx/wx.h>
+#endif
+
 
 /////////////////////////////////////////////////////////////////////////////
 // Name:        xh_toolb.cpp

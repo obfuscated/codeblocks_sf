@@ -24,14 +24,19 @@
 */
 
 #include "sdk_precomp.h"
-#include <wx/intl.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/listbox.h>
-#include <wx/button.h>
-#include <wx/msgdlg.h>
 
-#include "manager.h"
-#include "toolsmanager.h"
+#ifndef CB_PRECOMP
+    #include <wx/intl.h>
+    #include <wx/xrc/xmlres.h>
+    #include <wx/button.h>
+    #include <wx/msgdlg.h>
+    #include <wx/listbox.h>
+
+    #include "manager.h"
+    #include "toolsmanager.h"
+#endif
+
+
 #include "configuretoolsdlg.h"
 #include "edittooldlg.h"
 

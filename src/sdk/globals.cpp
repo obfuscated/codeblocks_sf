@@ -29,13 +29,16 @@
     #include <string>
 #endif
 
-#include "globals.h"
+#ifndef CB_PRECOMP
+    #include "globals.h"
+    #include <wx/filename.h>
+    #include <wx/file.h>
+#endif
+
 #include "tinyxml/tinyxml.h"
 #include <wx/tokenzr.h>
-#include <wx/filename.h>
 #include <wx/dirdlg.h>
 #include <wx/msgdlg.h>
-#include <wx/file.h>
 
 wxString GetStringFromArray(const wxArrayString& array, const wxString& separator)
 {

@@ -1,9 +1,14 @@
 #include "sdk_precomp.h"
+
+#ifndef CB_PRECOMP
+    #include "sdk_events.h"
+    #include "manager.h"
+    #include "messagemanager.h"
+    #include <wx/log.h>
+#endif
+
 #include "cbthreadpool.h"
-#include "sdk_events.h"
-#include "manager.h"
-#include "messagemanager.h"
-#include <wx/log.h>
+
 
 #include <wx/listimpl.cpp>
 WX_DEFINE_LIST(cbTaskList);

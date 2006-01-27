@@ -1,8 +1,12 @@
 #include "sdk_precomp.h"
-#include <wx/wx.h>
+
+#ifndef CB_PRECOMP
+    #include <wx/wx.h>
+    #include "configmanager.h"
+    #include "cbexception.h"
+#endif
+
 #include "annoyingdialog.h"
-#include "configmanager.h"
-#include "cbexception.h"
 
 BEGIN_EVENT_TABLE(AnnoyingDialog, wxDialog)
     EVT_BUTTON(-1, AnnoyingDialog::OnButton)

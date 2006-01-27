@@ -24,16 +24,20 @@
 */
 
 #include "sdk_precomp.h"
-#include <wx/menu.h>
+
+#ifndef CB_PRECOMP
+    #include <wx/menu.h>
+    #include "cbplugin.h"
+    #include "sdk_events.h"
+    #include "manager.h"
+    #include "licenses.h" // license macros
+    #include "projectbuildtarget.h"
+    #include "cbproject.h"
+    #include "messagemanager.h"
+#endif
+
 #include <wx/toolbar.h>
 
-#include "cbplugin.h"
-#include "sdk_events.h"
-#include "manager.h"
-#include "licenses.h" // license macros
-#include "projectbuildtarget.h"
-#include "cbproject.h"
-#include "messagemanager.h"
 
 cbPlugin::cbPlugin()
     : m_Type(ptNone),

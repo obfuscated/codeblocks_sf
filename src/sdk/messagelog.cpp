@@ -24,8 +24,12 @@
 */
 
 #include "sdk_precomp.h"
-#include "messagelog.h" // class's header file
-#include "manager.h"
+
+#ifndef CB_PRECOMP
+    #include "messagelog.h" // class's header file
+    #include "manager.h"
+#endif
+
 
 // class constructor
 MessageLog::MessageLog()

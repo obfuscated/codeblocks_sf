@@ -24,19 +24,23 @@
 */
 
 #include "sdk_precomp.h"
-#include <wx/intl.h>
-#include <wx/process.h>
-#include <wx/menu.h>
-#include <wx/mdi.h>
-#include <wx/msgdlg.h>
 
-#include "toolsmanager.h"
-#include "manager.h"
-#include "macrosmanager.h"
-#include "configmanager.h"
-#include "messagemanager.h"
-#include "configuretoolsdlg.h"
+#ifndef CB_PRECOMP
+    #include <wx/intl.h>
+    #include <wx/process.h>
+    #include <wx/menu.h>
+    #include <wx/msgdlg.h>
+    #include "toolsmanager.h"
+    #include "manager.h"
+    #include "macrosmanager.h"
+    #include "configmanager.h"
+    #include "messagemanager.h"
+#endif
+
+#include <wx/mdi.h>
 #include <wx/listimpl.cpp>
+#include "configuretoolsdlg.h"
+
 WX_DEFINE_LIST(ToolsList);
 
 int idToolsConfigure = wxNewId();

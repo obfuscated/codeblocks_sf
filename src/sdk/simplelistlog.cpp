@@ -24,8 +24,13 @@
 */
 
 #include "sdk_precomp.h"
-#include <wx/sizer.h>
-#include "simplelistlog.h" // class's header file
+
+#ifndef CB_PRECOMP
+    #include <wx/sizer.h>
+    #include "simplelistlog.h" // class's header file
+#endif
+
+
 
 int ID_List = wxNewId();
 

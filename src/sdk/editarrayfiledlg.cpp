@@ -1,9 +1,13 @@
 #include "sdk_precomp.h"
-#include <wx/intl.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/button.h>
-#include <wx/listbox.h>
-#include <wx/msgdlg.h>
+
+#ifndef CB_PRECOMP
+    #include <wx/intl.h>
+    #include <wx/xrc/xmlres.h>
+    #include <wx/button.h>
+    #include <wx/msgdlg.h>
+    #include <wx/listbox.h>
+#endif
+
 #include <wx/filedlg.h>
 #include "editarrayfiledlg.h"
 

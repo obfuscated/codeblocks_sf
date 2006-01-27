@@ -24,7 +24,11 @@
 */
 
 #include "sdk_precomp.h"
-#include "sdk_events.h"
+
+#ifndef CB_PRECOMP
+    #include "sdk_events.h"
+#endif
+
 
 IMPLEMENT_DYNAMIC_CLASS(CodeBlocksEvent, wxEvent)
 IMPLEMENT_DYNAMIC_CLASS(CodeBlocksDockEvent, wxEvent)

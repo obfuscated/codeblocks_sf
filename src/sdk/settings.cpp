@@ -1,5 +1,10 @@
-#include <wx/wx.h>
-#include "settings.h"
+#include "sdk_precomp.h"
+
+#ifndef CB_PRECOMP
+    #include <wx/wx.h>
+    #include "settings.h"
+#endif
+
 
 const wxString DEFAULT_WORKSPACE			= _T("default.workspace");
 

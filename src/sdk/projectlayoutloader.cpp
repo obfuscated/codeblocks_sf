@@ -1,14 +1,18 @@
 #include "sdk_precomp.h"
-#include <wx/confbase.h>
-#include <wx/fileconf.h>
-#include <wx/log.h>
-#include <wx/intl.h>
-#include "manager.h"
-#include "projectmanager.h"
-#include "messagemanager.h"
-#include "editormanager.h"
-#include "cbeditor.h"
-#include "cbproject.h"
+
+#ifndef CB_PRECOMP
+    #include <wx/confbase.h>
+    #include <wx/fileconf.h>
+    #include <wx/intl.h>
+    #include <wx/log.h>
+    #include "manager.h"
+    #include "projectmanager.h"
+    #include "messagemanager.h"
+    #include "editormanager.h"
+    #include "cbeditor.h"
+    #include "cbproject.h"
+#endif
+
 #include "projectlayoutloader.h"
 #include "tinyxml/tinyxml.h"
 

@@ -24,13 +24,18 @@
 */
 
 #include "sdk_precomp.h"
+
+
+#ifndef CB_PRECOMP
+    #include <wx/xrc/xmlres.h>
+    #include <wx/intl.h>
+    #include <wx/checkbox.h>
+    #include <wx/button.h>
+    #include <wx/textctrl.h>
+    #include <wx/listbox.h>
+#endif
+
 #include "selecttargetdlg.h"
-#include <wx/xrc/xmlres.h>
-#include <wx/intl.h>
-#include <wx/checkbox.h>
-#include <wx/listbox.h>
-#include <wx/button.h>
-#include <wx/textctrl.h>
 
 BEGIN_EVENT_TABLE(SelectTargetDlg, wxDialog)
 	EVT_BUTTON(XRCID("btnOK"), SelectTargetDlg::OnOK)

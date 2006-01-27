@@ -24,9 +24,12 @@
 */
 
 #include "sdk_precomp.h"
-#include "compileroptions.h"
-#include "manager.h"
-#include "messagemanager.h"
+
+#ifndef CB_PRECOMP
+    #include "compileroptions.h"
+    #include "manager.h"
+    #include "messagemanager.h"
+#endif
 
 CompilerOptions::CompilerOptions()
 {

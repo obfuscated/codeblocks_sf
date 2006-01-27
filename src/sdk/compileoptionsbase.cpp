@@ -24,10 +24,13 @@
 */
 
 #include "sdk_precomp.h"
-#include "compileoptionsbase.h"
-#include "sdk_events.h"
-#include "manager.h"
-#include "macrosmanager.h"
+
+#ifndef CB_PRECOMP
+    #include "compileoptionsbase.h"
+    #include "sdk_events.h"
+    #include "manager.h"
+    #include "macrosmanager.h"
+#endif
 
 static const wxString s_KnownPlatforms[] =
 {

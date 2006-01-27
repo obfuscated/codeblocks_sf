@@ -1,7 +1,11 @@
 #include <sdk_precomp.h>
-#include <wx/intl.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/textctrl.h>
+
+#ifndef CB_PRECOMP
+    #include <wx/intl.h>
+    #include <wx/xrc/xmlres.h>
+    #include <wx/textctrl.h>
+#endif
+
 #include "editkeywordsdlg.h"
 
 EditKeywordsDlg::EditKeywordsDlg(wxWindow* parent, EditorColorSet* theme, HighlightLanguage lang)

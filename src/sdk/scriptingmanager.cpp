@@ -1,18 +1,24 @@
 #include <sdk_precomp.h>
+
+#ifndef CB_PRECOMP
+    #include "scriptingmanager.h"
+    #include "cbexception.h"
+    #include "manager.h"
+    #include "editormanager.h"
+    #include "messagemanager.h"
+    #include "configmanager.h"
+    #include "cbeditor.h"
+    #include <settings.h>
+
+    #include <wx/msgdlg.h>
+    #include <wx/file.h>
+    #include <wx/regex.h>
+#endif
+
 #include <angelscript.h>
-#include "scriptingmanager.h"
-#include "cbexception.h"
-#include "manager.h"
-#include "editormanager.h"
-#include "messagemanager.h"
-#include "configmanager.h"
 #include "scriptingcall.h"
-#include "cbeditor.h"
 #include "as/bindings/scriptbindings.h"
-#include <wx/msgdlg.h>
-#include <wx/file.h>
-#include <wx/regex.h>
-#include <settings.h>
+
 
 static wxString s_Errors;
 

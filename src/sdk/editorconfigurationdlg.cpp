@@ -24,27 +24,32 @@
 */
 
 #include "sdk_precomp.h"
-#include <wx/xrc/xmlres.h>
-#include <wx/colordlg.h>
+
+#ifndef CB_PRECOMP
+    #include <wx/xrc/xmlres.h>
+    #include <wx/spinctrl.h>
+    #include <wx/combobox.h>
+
+    #include "manager.h"
+    #include "configmanager.h"
+    #include "pluginmanager.h"
+    #include "editormanager.h"
+    #include "cbeditor.h"
+    #include "globals.h"
+    #include <wx/listbox.h>
+    #include <wx/colordlg.h>
+    #include <wx/radiobox.h>
+#endif
+
 #include <wx/fontdlg.h>
 #include <wx/fontutil.h>
 #include <wx/fontmap.h>
-#include <wx/spinctrl.h>
-#include <wx/combobox.h>
-#include <wx/radiobox.h>
-#include <wx/listbox.h>
 #include <wx/textctrl.h>
 #include <wx/listbook.h>
 
 #include "editorcolorset.h"
 #include "editorconfigurationdlg.h"
 #include "editkeywordsdlg.h"
-#include "manager.h"
-#include "configmanager.h"
-#include "pluginmanager.h"
-#include "editormanager.h"
-#include "cbeditor.h"
-#include "globals.h"
 
 // images by order of pages
 const wxString base_imgs[] =

@@ -12,16 +12,21 @@
 */
 
 #include "sdk_precomp.h"
-#include "uservarmanager.h"
-#include "configmanager.h"
-#include "messagemanager.h"
-#include "manager.h"
-#include "cbexception.h"
-#include <wx/dialog.h>
-#include <wx/intl.h>
-#include <wx/xrc/xmlres.h>
+
+#ifndef CB_PRECOMP
+    #include "uservarmanager.h"
+    #include "configmanager.h"
+    #include "messagemanager.h"
+    #include "manager.h"
+    #include "cbexception.h"
+
+    #include <wx/dialog.h>
+    #include <wx/intl.h>
+    #include <wx/xrc/xmlres.h>
+    #include <wx/textctrl.h>
+#endif
+
 #include <wx/choice.h>
-#include <wx/textctrl.h>
 
 class UsrGlblMgrEditDialog : public wxDialog
 {

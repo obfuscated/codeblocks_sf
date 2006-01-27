@@ -1,8 +1,13 @@
 #include "sdk_precomp.h"
-#include "manager.h"
-#include "messagemanager.h"
+
+#ifndef CB_PRECOMP
+    #include "manager.h"
+    #include "messagemanager.h"
+#endif
+
 #include "projecttemplateloader.h"
 #include <wx/arrimpl.cpp>
+
 WX_DEFINE_OBJARRAY(FileSetFileArray);
 WX_DEFINE_OBJARRAY(FileSetArray);
 WX_DEFINE_OBJARRAY(TemplateOptionArray);

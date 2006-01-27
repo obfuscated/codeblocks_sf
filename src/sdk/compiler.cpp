@@ -1,11 +1,16 @@
 #include "sdk_precomp.h"
-#include "compiler.h"
-#include "manager.h"
-#include "messagemanager.h"
-#include "configmanager.h"
-#include "globals.h"
-#include <wx/intl.h>
-#include <wx/regex.h>
+
+#ifndef CB_PRECOMP
+    #include "compiler.h"
+    #include "manager.h"
+    #include "messagemanager.h"
+    #include "configmanager.h"
+    #include "globals.h"
+
+    #include <wx/intl.h>
+    #include <wx/regex.h>
+#endif
+
 
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(RegExArray);

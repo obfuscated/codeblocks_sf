@@ -24,10 +24,14 @@
 */
 
 #include "sdk_precomp.h"
-#include <wx/filename.h>
-#include "compiletargetbase.h"
-#include "compilerfactory.h"
-#include "globals.h"
+
+#ifndef CB_PRECOMP
+    #include <wx/filename.h>
+
+    #include "compiletargetbase.h"
+    #include "compilerfactory.h"
+    #include "globals.h"
+#endif
 
 CompileTargetBase::CompileTargetBase()
     : m_TargetType(ttExecutable),

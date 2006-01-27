@@ -1,10 +1,14 @@
 #include "sdk_precomp.h"
+
+#ifndef CB_PRECOMP
+    #include "manager.h"
+    #include "messagemanager.h"
+    #include "projectmanager.h"
+    #include "compilerfactory.h"
+    #include "compiler.h"
+#endif
+
 #include "msvcworkspacebase.h"
-#include "manager.h"
-#include "messagemanager.h"
-#include "projectmanager.h"
-#include "compilerfactory.h"
-#include "compiler.h"
 
 MSVCWorkspaceBase::MSVCWorkspaceBase() {
     // nothing to do

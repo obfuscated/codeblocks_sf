@@ -1,11 +1,15 @@
 #include "sdk_precomp.h"
-#include <wx/xrc/xmlres.h>
-#include <wx/intl.h>
-#include <wx/listbox.h>
-#include <wx/button.h>
-#include <wx/textctrl.h>
+
+#ifndef CB_PRECOMP
+    #include <wx/xrc/xmlres.h>
+    #include <wx/intl.h>
+    #include <wx/button.h>
+    #include <wx/textctrl.h>
+    #include <wx/msgdlg.h>
+    #include <wx/listbox.h>
+#endif
+
 #include <wx/textdlg.h>
-#include <wx/msgdlg.h>
 #include "projectsfilemasksdlg.h"
 
 BEGIN_EVENT_TABLE(ProjectsFileMasksDlg, wxDialog)

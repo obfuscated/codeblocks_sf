@@ -1,10 +1,14 @@
 #include "sdk_precomp.h"
+
+#ifndef CB_PRECOMP
+    #include "cbproject.h"
+    #include "projectbuildtarget.h"
+    #include <wx/xrc/xmlres.h>
+    #include <wx/button.h>
+    #include <wx/listbox.h>
+#endif
+
 #include "externaldepsdlg.h"
-#include "cbproject.h"
-#include "projectbuildtarget.h"
-#include <wx/xrc/xmlres.h>
-#include <wx/button.h>
-#include <wx/listbox.h>
 #include <wx/msgdlg.h>
 #include "editpathdlg.h"
 

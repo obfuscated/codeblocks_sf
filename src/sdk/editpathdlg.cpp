@@ -1,16 +1,20 @@
 #include "sdk_precomp.h"
+
+#ifndef CB_PRECOMP
+    #include <wx/intl.h>
+    #include <wx/xrc/xmlres.h>
+    #include <wx/textctrl.h>
+    #include <wx/button.h>
+    #include <wx/filename.h>
+    #include <wx/stattext.h>
+    #include "globals.h"
+    #include "manager.h"
+    #include "macrosmanager.h"
+#endif
+
 #include "editpathdlg.h"
-#include <wx/intl.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/textctrl.h>
-#include <wx/button.h>
 #include <wx/filedlg.h>
-#include <wx/filename.h>
 #include <wx/msgdlg.h>
-#include <wx/stattext.h>
-#include "globals.h"
-#include "manager.h"
-#include "macrosmanager.h"
 
 // remember last path, when supplied path is empty
 static wxString s_LastPath;

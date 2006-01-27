@@ -1,27 +1,31 @@
 #include "sdk_precomp.h"
-#include <wx/confbase.h>
-#include <wx/fileconf.h>
-#include <wx/msgdlg.h>
-#include <wx/log.h>
-#include <wx/intl.h>
-#include <wx/filename.h>
-#include <wx/msgdlg.h>
+
+#ifndef CB_PRECOMP
+    #include <wx/confbase.h>
+    #include <wx/fileconf.h>
+    #include <wx/msgdlg.h>
+    #include <wx/intl.h>
+    #include <wx/filename.h>
+    #include <wx/txtstrm.h>
+    #include <wx/dynarray.h>
+
+    #include "manager.h"
+    #include "projectmanager.h"
+    #include "messagemanager.h"
+    #include "cbproject.h"
+    #include "globals.h"
+    #include "compilerfactory.h"
+    #include "compiler.h"
+    #include <wx/wfstream.h>
+    #include <wx/log.h>
+#endif
 
 #include <wx/stream.h>
-#include <wx/wfstream.h>
-#include <wx/txtstrm.h>
-#include <wx/dynarray.h>
 
-#include "manager.h"
-#include "projectmanager.h"
-#include "messagemanager.h"
-#include "cbproject.h"
-#include "globals.h"
 #include "importers_globals.h"
 #include "msvcloader.h"
-#include "compilerfactory.h"
-#include "compiler.h"
 #include "multiselectdlg.h"
+
 
 MSVCLoader::MSVCLoader(cbProject* project)
     : m_pProject(project),

@@ -1,12 +1,16 @@
 #include "sdk_precomp.h"
-#include "projectfile.h"
-#include "projectbuildtarget.h"
-#include "cbproject.h"
+
+#ifndef CB_PRECOMP
+    #include "projectfile.h"
+    #include "projectbuildtarget.h"
+    #include "cbproject.h"
+    #include "compilerfactory.h"
+    #include "manager.h"
+    #include "projectmanager.h"
+    #include "macrosmanager.h"
+#endif
+
 #include "projectfileoptionsdlg.h"
-#include "compilerfactory.h"
-#include "manager.h"
-#include "projectmanager.h"
-#include "macrosmanager.h"
 
 #include <wx/listimpl.cpp>
 WX_DEFINE_LIST(FilesList);

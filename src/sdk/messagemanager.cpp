@@ -24,19 +24,23 @@
 */
 
 #include "sdk_precomp.h"
-#include <wx/intl.h>
-#include <wx/datetime.h>
-#include <wx/menu.h>
-#include <wx/log.h>
+
+#ifndef CB_PRECOMP
+    #include <wx/intl.h>
+    #include <wx/datetime.h>
+    #include <wx/menu.h>
+    #include <wx/log.h>
+    #include "manager.h"
+    #include "messagemanager.h" // class's header file
+    #include "editormanager.h"
+    #include "configmanager.h"
+    #include "simpletextlog.h"
+#endif
+
 #include <wx/laywin.h>
 #include <wx/settings.h>
 #include <wx/bitmap.h>
 
-#include "manager.h"
-#include "messagemanager.h" // class's header file
-#include "editormanager.h"
-#include "configmanager.h"
-#include "simpletextlog.h"
 #include <wxFlatNotebook.h>
 
 

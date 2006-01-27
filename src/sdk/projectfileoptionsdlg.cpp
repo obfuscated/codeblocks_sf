@@ -24,18 +24,22 @@
 */
 
 #include "sdk_precomp.h"
+
+#ifndef CB_PRECOMP
+    #include "cbproject.h"
+    #include <wx/xrc/xmlres.h>
+    #include <wx/intl.h>
+    #include <wx/checkbox.h>
+    #include <wx/textctrl.h>
+    #include <wx/button.h>
+    #include <wx/filename.h>
+    #include <wx/file.h>
+    #include <wx/checklst.h>
+#endif
+
 #include "projectfileoptionsdlg.h"
-#include "cbproject.h"
-#include <wx/xrc/xmlres.h>
-#include <wx/intl.h>
-#include <wx/checklst.h>
-#include <wx/checkbox.h>
 #include <wx/slider.h>
-#include <wx/textctrl.h>
-#include <wx/button.h>
 #include <wx/textfile.h>
-#include <wx/file.h>
-#include <wx/filename.h>
 
 BEGIN_EVENT_TABLE(ProjectFileOptionsDlg, wxDialog)
 	EVT_UPDATE_UI(-1, ProjectFileOptionsDlg::OnUpdateUI)

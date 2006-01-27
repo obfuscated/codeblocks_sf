@@ -24,18 +24,24 @@
 */
 
 #include "sdk_precomp.h"
+
+#ifndef CB_PRECOMP
+    #include "manager.h"
+    #include "pluginmanager.h"
+    #include "projectmanager.h"
+    #include "compilerfactory.h"
+
+    #include <wx/xrc/xmlres.h>
+    #include <wx/treectrl.h>
+    #include <wx/spinctrl.h>
+    #include <wx/button.h>
+#endif
+
+#include <wx/radiobox.h>
+
 #include "projectoptionsdlg.h" // class's header file
-#include "manager.h"
 #include "editarrayorderdlg.h"
 #include "editarrayfiledlg.h"
-#include "pluginmanager.h"
-#include "projectmanager.h"
-#include "compilerfactory.h"
-#include <wx/xrc/xmlres.h>
-#include <wx/radiobox.h>
-#include <wx/treectrl.h>
-#include <wx/spinctrl.h>
-#include <wx/button.h>
 #include "externaldepsdlg.h"
 #include "annoyingdialog.h"
 

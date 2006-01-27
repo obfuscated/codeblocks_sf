@@ -12,15 +12,18 @@
 */
 
 #include "sdk_precomp.h"
-// sdk_precomp.h already includes these:
-//  #include "configmanager.h"
-//  #include "globals.h"
-//  #include "personalitymanager.h"
-//  #include "cbexception.h"
+
+#ifndef CB_PRECOMP
+    #include "configmanager.h"
+    #include "globals.h"
+    #include "personalitymanager.h"
+    #include "cbexception.h"
+    #include <wx/file.h>
+    #include <wx/dir.h>
+#endif
+
 #include "crc32.h"
 
-#include <wx/file.h>
-#include <wx/dir.h>
 #include <wx/url.h>
 #include <wx/stream.h>
 
