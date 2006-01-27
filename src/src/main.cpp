@@ -1067,8 +1067,10 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
             if (filename != Manager::Get()->GetProjectManager()->GetWorkspace()->GetFilename() &&
                 DoCloseCurrentWorkspace())
             {
-                return Manager::Get()->GetProjectManager()->LoadWorkspace(filename);
-                AddToRecentProjectsHistory(filename);
+                bool ret = Manager::Get()->GetProjectManager()->LoadWorkspace(filename);
+                if (ret && addToHistory)
+                    AddToRecentProjectsHistory(filename);
+                return ret;
             }
             else
                 return false;
@@ -1117,7 +1119,7 @@ bool MainFrame::DoOpenProject(const wxString& filename, bool addToHistory)
         return false;
     }
 
-    cbProject* prj = Manager::Get()->GetProjectManager()->LoadProject(filename, !m_pPrjMan->GetActiveProject());
+    cbProject* prj = Manager::Get()->GetProjectManager()->LoadProject(filename, true);
     if (prj)
     {
 		if (addToHistory)

@@ -769,16 +769,15 @@ bool ProjectManager::CloseProject(cbProject* project, bool dontsave, bool refres
          if(!QueryCloseProject(project))
             return false;
 
-	if (project == m_pActiveProject)
-	{
+    bool wasActive = project == m_pActiveProject;
+	if (wasActive)
 	    m_pActiveProject = 0L;
-	}
 
     int index = m_pProjects->Index(project);
     if (index == wxNOT_FOUND)
         return false;
     Manager::Get()->GetEditorManager()->UpdateProjectFiles(project);
-    project->SaveTreeState(m_pTree);
+//    project->SaveTreeState(m_pTree);
     project->SaveLayout();
 
     if (m_pWorkspace)
@@ -787,9 +786,13 @@ bool ProjectManager::CloseProject(cbProject* project, bool dontsave, bool refres
     project->CloseAllFiles(true);
     RemoveProjectFromAllDependencies(project);
     m_pProjects->Remove(project);
-    delete project;
     if (refresh)
-        RebuildTree();
+        m_pTree->Delete(project->GetProjectNode());
+    if (wasActive && m_pProjects->GetCount())
+        SetProject(m_pProjects->Item(0), refresh);
+    delete project;
+//    if (refresh)
+//        RebuildTree();
     if(!m_InitialDir.IsEmpty()) // Restore the working directory
         wxFileName::SetCwd(m_InitialDir);
     return true;
@@ -940,6 +943,10 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
     if (!CloseWorkspace())
         return false; // didn't close
     m_IsLoadingWorkspace=true;
+    FreezeTree();
+    m_pTree->AppendItem(m_pTree->GetRootItem(), _("Loading workspace..."));
+    m_pTree->Expand(m_pTree->GetRootItem());
+    UnfreezeTree();
     m_pWorkspace = new cbWorkspace(filename);
     RebuildTree();
     m_pTree->Expand(m_pActiveProject->GetProjectNode());
@@ -1833,7 +1840,7 @@ void ProjectManager::OnCloseProject(wxCommandEvent& event)
             CloseProject(proj);
     }
     if (m_pProjects->GetCount() > 0 && !m_pActiveProject)
-        SetProject(m_pProjects->Item(0));
+        SetProject(m_pProjects->Item(0), false);
     Manager::Get()->GetAppWindow()->Refresh();
 }
 
