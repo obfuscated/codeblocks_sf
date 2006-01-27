@@ -427,18 +427,34 @@ int PluginManager::ConfigurePlugin(const wxString& pluginName)
 	return 0;
 }
 
+int SortByConfigurationPriority(cbPlugin** first, cbPlugin** second)
+{
+    return (*first)->GetConfigurationPriority() - (*second)->GetConfigurationPriority();
+}
+
 void PluginManager::GetConfigurationPanels(int group, wxWindow* parent, ConfigurationPanelsArray& arrayToFill)
 {
-    arrayToFill.Clear();
+    // build an array of Plugins* because we need to order it by configuration priority
+    PluginsArray arr;
     for (unsigned int i = 0; i < m_Plugins.GetCount(); ++i)
     {
         cbPlugin* plug = m_Plugins[i]->plugin;
+        // all check are done here
         if (plug && plug->IsAttached() && (plug->GetConfigurationGroup() & group))
-        {
-            cbConfigurationPanel* pnl = plug->GetConfigurationPanel(parent);
-            if (pnl)
-                arrayToFill.Add(pnl);
-        }
+            arr.Add(plug);
+    }
+
+    // sort the array
+    arr.Sort(SortByConfigurationPriority);
+
+    // now enumerate the array and fill the supplied configurations panel array
+    arrayToFill.Clear();
+    for (unsigned int i = 0; i < arr.GetCount(); ++i)
+    {
+        cbPlugin* plug = arr[i];
+        cbConfigurationPanel* pnl = plug->GetConfigurationPanel(parent);
+        if (pnl)
+            arrayToFill.Add(pnl);
     }
 }
 

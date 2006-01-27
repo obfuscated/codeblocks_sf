@@ -83,6 +83,7 @@ class CompilerGCC : public cbCompilerPlugin
 		virtual int GetExitCode() const { return m_LastExitCode; }
 		virtual int Configure(cbProject* project, ProjectBuildTarget* target = 0L);
 
+        int GetConfigurationPriority(){ return 0; }
 		int GetConfigurationGroup(){ return cgCompiler; }
         cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
 

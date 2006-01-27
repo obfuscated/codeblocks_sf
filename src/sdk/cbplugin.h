@@ -29,7 +29,7 @@
 // it will change when the SDK interface breaks
 #define PLUGIN_SDK_VERSION_MAJOR 1
 #define PLUGIN_SDK_VERSION_MINOR 6
-#define PLUGIN_SDK_VERSION_RELEASE 7
+#define PLUGIN_SDK_VERSION_RELEASE 8
 
 // class decls
 class ProjectBuildTarget;
@@ -109,6 +109,12 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 		  * this is the place to invoke it.
 		  */
         virtual int Configure(){ return 0; }
+        /** Return the plugin's configuration priority.
+          * This is a number (default is 50) that is used to sort plugins
+          * in configuration dialogs. Lower numbers mean the plugin's
+          * configuration is put higher in the list.
+          */
+        virtual int GetConfigurationPriority(){ return 50; }
         /** Return the configuration group for this plugin. Default is cgUnknown.
           * Notice that you can logically AND more than one configuration groups,
           * so you could set it, for example, as "cgCompiler | cgContribPlugin".
