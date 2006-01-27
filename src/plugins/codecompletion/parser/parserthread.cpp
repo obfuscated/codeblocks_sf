@@ -244,7 +244,9 @@ bool ParserThread::ParseBufferForFunctions(const wxString& buffer)
         return false;
     if (!m_pTokens)
         return false;
+	s_mutexProtection.Enter();
 	m_pTokens->Clear();
+	s_mutexProtection.Leave();
 	m_Tokenizer.InitFromBuffer(buffer);
 	if (!m_Tokenizer.IsOK())
 		return false;
@@ -659,6 +661,7 @@ void ParserThread::DoParse()
 
 Token* ParserThread::TokenExists(const wxString& name, Token* parent, short int kindMask)
 {
+    Token* result;
     if (!m_pTokens)
         return 0;
     int parentidx;
@@ -666,7 +669,10 @@ Token* ParserThread::TokenExists(const wxString& name, Token* parent, short int 
         parentidx = -1;
     else
         parentidx = parent->GetSelf();
-    return m_pTokens->at(m_pTokens->TokenExists(name, parentidx, kindMask));
+    s_mutexProtection.Enter();
+    result = m_pTokens->at(m_pTokens->TokenExists(name, parentidx, kindMask));
+    s_mutexProtection.Leave();
+    return result;
 }
 
 wxString ParserThread::GetActualTokenType()
