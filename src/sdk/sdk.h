@@ -82,6 +82,11 @@
     #include <wx/colordlg.h>
     #include <wx/regex.h>
     #include <wx/log.h>
+    #include <wx/dir.h>
+    #include <wx/file.h>
+    #include <wx/checklst.h>
+    #include <wx/listbox.h>
+    #include <wx/wfstream.h>
 
     // basic headers
     #include <settings.h>
