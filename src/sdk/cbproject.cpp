@@ -989,24 +989,18 @@ bool cbProject::CloseAllFiles(bool dontsave)
             return false;
 
 	// now free the rest of the project files
-    int count = m_Files.GetCount();
     Manager::Get()->GetEditorManager()->HideNotebook();
     FilesList::Node* node = m_Files.GetFirst();
     while(node)
     {
         ProjectFile* f = node->GetData();
-        if (Manager::Get()->GetEditorManager()->Close(f->file.GetFullPath(),true))
-        {
-            FilesList::Node* oldNode = node;
-            node = node->GetNext();
-            m_Files.DeleteNode(oldNode);
-            --count;
-        }
-        else
-            node = node->GetNext();
+        Manager::Get()->GetEditorManager()->Close(f->file.GetFullPath(),true);
+        delete f;
+        delete node;
+        node = m_Files.GetFirst();
     }
     Manager::Get()->GetEditorManager()->ShowNotebook();
-    return count == 0;
+    return true;
 }
 
 bool cbProject::SaveAllFiles()

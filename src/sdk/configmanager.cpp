@@ -185,6 +185,7 @@ CfgMgrBldr::~CfgMgrBldr()
     }
     namespaces.clear();
     Close();
+    delete volatile_doc;
 }
 
 void CfgMgrBldr::Close()

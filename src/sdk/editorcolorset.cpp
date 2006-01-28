@@ -263,8 +263,8 @@ void EditorColorSet::AddOption(HighlightLanguage lang,
 	opt->underlined = underlined;
 	opt->isStyle = isStyle;
 
-	if (!AddOption(lang, opt))
-        delete opt;
+	AddOption(lang, opt);
+    delete opt;
 }
 
 OptionColor* EditorColorSet::GetOptionByName(HighlightLanguage lang, const wxString& name)
