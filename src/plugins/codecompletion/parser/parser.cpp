@@ -59,7 +59,7 @@ Parser::Parser(wxEvtHandler* parent)
 	,m_pImageList(0L),
 #endif
     m_UsingCache(false),
-    m_Pool(this, idPool),
+    m_Pool(this, idPool,1),
     m_pTokens(0),
     m_pTempTokens(0),
     m_NeedsReparse(false),
