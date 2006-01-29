@@ -108,7 +108,6 @@ class Parser : public wxEvtHandler
 #endif // STANDALONE
 		Token* FindTokenByName(const wxString& name, bool globalsOnly = true, short int kindMask = 0xFFFF) const;
 		Token* FindChildTokenByName(Token* parent, const wxString& name, bool useInheritance = false, short int kindMask = 0xFFFF) const;
-		Token* FindTokenByDisplayName(const wxString& name) const;
 		size_t FindMatches(const wxString& s,TokenList& result,bool caseSensitive = true,bool is_prefix = true,bool markedonly = true);
 
 		ParserOptions& Options(){ return m_Options; }

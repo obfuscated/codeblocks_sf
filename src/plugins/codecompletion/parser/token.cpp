@@ -97,11 +97,26 @@ Token::~Token()
 	//dtor
 }
 
-wxString Token::DisplayName() const
+const wxString Token::GetParentName()
+{
+    wxString parentname = _T("");
+    wxCriticalSectionLocker* lock = 0;
+    if(m_pTree)
+        lock = new wxCriticalSectionLocker(m_pTree->m_Protection);
+    Token* parent = GetParentToken();
+    if(parent)
+        parentname = parent->m_Name;
+    if(lock)
+        delete lock;
+    return parentname;
+}
+
+const wxString Token::DisplayName()
 {
     wxString result(_T(""));
-    if (!m_ParentName.IsEmpty())
-        result << m_ParentName << _T("::");
+    wxString parentname = GetParentName();
+    if (!parentname.IsEmpty())
+        result << parentname << _T("::");
     result << m_Name << m_Args;
     if (!m_Type.IsEmpty())
         result << _T(" : ") << m_Type;
@@ -243,11 +258,6 @@ bool Token::SerializeIn(wxInputStream* f)
             result = false;
             break;
         }
-        if (!LoadStringFromFile(f, m_ParentName))
-        {
-            result = false;
-            break;
-        }
         if (!LoadStringFromFile(f, m_Args))
         {
             result = false;
@@ -324,7 +334,6 @@ bool Token::SerializeOut(wxOutputStream* f)
     SaveStringToFile(f, m_Type);
     SaveStringToFile(f, m_ActualType);
     SaveStringToFile(f, m_Name);
-    SaveStringToFile(f, m_ParentName);
     SaveStringToFile(f, m_Args);
     SaveStringToFile(f, m_AncestorsString);
     SaveIntToFile(f, m_File);
@@ -367,7 +376,6 @@ TokensTree::~TokensTree()
 void TokensTree::clear()
 {
     m_Tree.clear();
-    m_DisplayNameTree.clear();
     m_FilenamesMap.clear();
     m_FilesMap.clear();
     m_FilesStatus.clear();
@@ -448,11 +456,6 @@ int TokensTree::TokenExists(const wxString& name, int parent, short int kindMask
     return -1;
 }
 
-int TokensTree::FindTokenByDisplayName(const wxString& name)
-{
-    return m_DisplayNameTree.GetItem(name);
-}
-
 size_t TokensTree::FindMatches(const wxString& s,TokenIdxSet& result,bool caseSensitive,bool is_prefix)
 {
     set<size_t> lists;
@@ -487,7 +490,6 @@ int TokensTree::AddToken(Token* newToken,int forceidx)
 
     int newitem = AddTokenToList(newToken,forceidx);
     curlist.insert(newitem);
-    m_DisplayNameTree.AddItem(newToken->DisplayName(),newitem,true);
     m_FilesMap[newToken->m_File].insert(newitem);
 
     // Add Token (if applicable) to the namespaces indexes
@@ -566,9 +568,6 @@ void TokensTree::RemoveToken(Token* oldToken)
         curlist.erase(idx);
     }
 
-    // Removing from the Display Tree is easier, just replace the contents with -1.
-    m_DisplayNameTree.AddItem(oldToken->DisplayName(),-1,true);
-
     // Now, from the global namespace (if applicable)
     if(oldToken->m_ParentIndex == -1)
     {
@@ -616,7 +615,6 @@ int TokensTree::AddTokenToList(Token* newToken,int forceidx)
 
     newToken->m_Type.Shrink();
     newToken->m_Name.Shrink();
-    newToken->m_ParentName.Shrink();
     newToken->m_Args.Shrink();
     newToken->m_AncestorsString.Shrink();
 

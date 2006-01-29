@@ -695,68 +695,68 @@ const wxString& NativeParser::GetCodeCompletionItems()
 const wxArrayString& NativeParser::GetCallTips()
 {
     m_CallTips.Clear();
-    wxCriticalSectionLocker lock(s_mutexProtection);
-
+    Parser* parser = 0;
+    int end = 0;
+    wxString lineText = _T("");
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-	if (!ed)
-		return m_CallTips;
+    wxCriticalSectionLocker* lock = 0;
+    do
+    {
+        if(!ed)
+            break;
+        parser = FindParserFromActiveEditor();
+        if(!parser)
+            break;
+        if(!parser->Done())
+            break;
+        int line = ed->GetControl()->GetCurrentLine();
+        lineText = ed->GetControl()->GetLine(line);
+        end = lineText.Length();
+        int nest = 0;
+        while (end > 0)
+        {
+            --end;
+            if (lineText.GetChar(end) == ')')
+                --nest;
+            else if (lineText.GetChar(end) == '(')
+            {
+                ++nest;
+                if (nest != 0)
+                    break;
+            }
+        }
+        if (!end)
+            break;
+        lineText.Remove(end);
+        Manager::Get()->GetMessageManager()->DebugLog(_("Sending \"%s\" for call-tip"), lineText.c_str());
+        // clear previously marked tokens
+        TokensTree* tokens = parser->GetTokens();
+        lock = new wxCriticalSectionLocker(tokens->m_Protection);
 
-	Parser* parser = FindParserFromActiveEditor();
-	if (!parser)
-		return m_CallTips;
-
-	if (!parser->Done())
-		return m_CallTips;
-
-	int line = ed->GetControl()->GetCurrentLine();
-	wxString lineText = ed->GetControl()->GetLine(line);
-	int end = lineText.Length();
-	int nest = 0;
-	while (end > 0)
-	{
-		--end;
-		if (lineText.GetChar(end) == ')')
-			--nest;
-		else if (lineText.GetChar(end) == '(')
-		{
-			++nest;
-			if (nest != 0)
-				break;
-		}
-	}
-	if (end == 0)
-		return m_CallTips; // no (
-
-	lineText.Remove(end);
-	Manager::Get()->GetMessageManager()->DebugLog(_("Sending \"%s\" for call-tip"), lineText.c_str());
-
-	// clear previously marked tokens
-	TokensTree* tokens = parser->GetTokens();
-	{
         for (unsigned int i = 0; i < tokens->size(); ++i)
         {
             Token* token = tokens->at(i);
             if(token)
                 token->m_Bool = false;
         }
-	}
 
-	// AI will mark (m_Bool == true) every token we should include in list
-	if (!AI(ed, parser, lineText, true, true))
-		return m_CallTips;
-
-    for (size_t i = 0; i < tokens->size(); ++i)
-    {
-        Token* token = tokens->at(i);
-        if(!token)
-            continue;
-        if (token->m_Bool && token->m_Args != _T("()"))
+        // AI will mark (m_Bool == true) every token we should include in list
+        if (!AI(ed, parser, lineText, true, true))
+            break;
+        for (size_t i = 0; i < tokens->size(); ++i)
         {
-            m_CallTips.Add(token->m_Args);
-            token->m_Bool = false; // reset flag for next run
+            Token* token = tokens->at(i);
+            if(!token)
+                continue;
+            if (token->m_Bool && token->m_Args != _T("()"))
+            {
+                m_CallTips.Add(token->m_Args);
+                token->m_Bool = false; // reset flag for next run
+            }
         }
-    }
-
+    }while(false);
+    if(lock)
+        delete lock;
 	return m_CallTips;
 }
 

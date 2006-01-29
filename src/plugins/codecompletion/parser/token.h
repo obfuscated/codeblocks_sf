@@ -4,6 +4,7 @@
 #include <wx/string.h>
 #include <wx/dynarray.h>
 #include <wx/file.h>
+#include <wx/thread.h>
 #include <settings.h>
 
 #include "blockallocated.h"
@@ -70,7 +71,7 @@ class Token  : public BlockAllocated<Token, 10000>
 		void RemoveChild(int child);
 		wxString GetNamespace() const;
 		bool InheritsFrom(int idx) const;
-		wxString DisplayName() const;
+		const wxString DisplayName();
 		wxString GetTokenKindString() const;
 		wxString GetTokenScopeString() const;
         wxString GetFilename() const;
@@ -80,13 +81,13 @@ class Token  : public BlockAllocated<Token, 10000>
 		bool SerializeIn(wxInputStream* f);
 		bool SerializeOut(wxOutputStream* f);
 		int GetSelf() { return m_Self; } // current index in the tree
+		const wxString GetParentName();
 		Token* GetParentToken();
 		TokensTree* GetTree() { return m_pTree; }
 
 		wxString m_Type; // this is the return value (if any): e.g. const wxString&
 		wxString m_ActualType; // this is what the parser believes is the actual return value: e.g. wxString
 		wxString m_Name;
-		wxString m_ParentName;
 		wxString m_Args;
 		wxString m_AncestorsString; // all ancestors comma-separated list
 		unsigned int m_File;
@@ -133,7 +134,6 @@ class TokensTree
         void RecalcFreeList();
         void RecalcData();
         int TokenExists(const wxString& name, int parent, short int kindMask);
-        int FindTokenByDisplayName(const wxString& name);
         size_t FindMatches(const wxString& s,TokenIdxSet& result,bool caseSensitive,bool is_prefix);
         void RemoveFile(const wxString& filename);
         void RemoveFile(int index);
@@ -151,7 +151,6 @@ class TokensTree
         TokenList m_Tokens; /// Contains the pointers to all the tokens
         TokenSearchTree m_Tree; /** Tree containing the indexes to the tokens
           (the indexes will be used on m_Tokens) */
-        SearchTree<int> m_DisplayNameTree;
 
         TokenFilenamesMap m_FilenamesMap; /** Map: filenames -> file indexes */
         TokenFilesMap m_FilesMap; /** Map: file indexes -> Sets of TokenIndexes */
@@ -164,6 +163,7 @@ class TokensTree
 
         TokenFilesStatus m_FilesStatus; /** Parse Status for each file */
         bool m_modified;
+        wxCriticalSection m_Protection;
     protected:
         Token* GetTokenAt(int idx);
         int AddToken(Token* newToken,int forceidx = -1);

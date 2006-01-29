@@ -144,7 +144,6 @@ void cbThreadPool::SetConcurrentThreads(int concurrentThreads)
     if (m_ConcurrentThreads == -1)
         m_ConcurrentThreads = 1;
 
-    m_ConcurrentThreads += 1; // Just an extra thread for now.
 	Manager::Get()->GetMessageManager()->DebugLog(_T("Concurrent threads for pool set to %d"), m_ConcurrentThreads);
 
     // alloc (or dealloc) based on new thread count

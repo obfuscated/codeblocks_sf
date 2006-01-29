@@ -135,7 +135,7 @@ int CodeCompletion::Configure()
 void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
 {
     // if not attached, exit
-    if (!m_IsAttached || !m_InitDone)
+    if (!m_IsAttached)
         return;
 
 //	if (m_EditMenu)
@@ -740,18 +740,22 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
 		return;
 	}
 	wxArrayString tokens;
+	SearchTree<Token*> tmpsearch;
 	tokens.Clear();
 	for(size_t i = 0; i < tmptree->size();i++)
 	{
 	    Token* token = tmptree->at(i);
 	    if(token)
+	    {
             tokens.Add(token->DisplayName());
+            tmpsearch.AddItem(token->DisplayName(),token);
+	    }
 	}
 	IncrementalSelectListDlg dlg(Manager::Get()->GetAppWindow(), tokens, _("Select function..."), _("Please select function to go to:"));
 	if (dlg.ShowModal() == wxID_OK)
 	{
         wxString sel = dlg.GetStringSelection();
-        Token* token = tmptree->at(tmptree->FindTokenByDisplayName(sel));
+        Token* token = tmpsearch.GetItem(sel);
         if(token)
         {
             Manager::Get()->GetMessageManager()->DebugLog(_("Token found at line %d"), token->m_Line);
