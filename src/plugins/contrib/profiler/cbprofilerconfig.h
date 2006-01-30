@@ -26,7 +26,7 @@ class CBProfilerConfigDlg : public cbConfigurationPanel
 		virtual ~CBProfilerConfigDlg();
 
         wxString GetTitle(){ return _("Profiler settings"); }
-        wxString GetBitmapBaseName(){ return _T("generic-plugin"); }
+        wxString GetBitmapBaseName(){ return _T("profiler"); }
         void OnApply();
         void OnCancel(){}
 	protected:

@@ -143,7 +143,7 @@ public:
 
 
     wxString GetTitle(){ return _("Keyboard shortcuts"); }
-    wxString GetBitmapBaseName(){ return _T("generic-plugin"); }
+    wxString GetBitmapBaseName(){ return _T("onekeytobindthem"); }
 	void OnApply();
 	void OnCancel(){}
 
