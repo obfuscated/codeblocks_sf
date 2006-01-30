@@ -46,9 +46,10 @@ CompilerErrors::~CompilerErrors()
 	//dtor
 }
 
-void CompilerErrors::AddError(const wxString& filename, long int line, const wxString& error, bool isWarning)
+void CompilerErrors::AddError(cbProject* project, const wxString& filename, long int line, const wxString& error, bool isWarning)
 {
 	CompileError err;
+	err.project = project;
 	err.isWarning = isWarning;
 	err.filename = filename;
 	err.line = line;
@@ -149,7 +150,7 @@ void CompilerErrors::DoGotoError(const CompileError& error)
     if (error.line <= 0)
         return;
 	DoClearErrorMarkFromAllEditors();
-	cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
+	cbProject* project = error.project ? error.project : Manager::Get()->GetProjectManager()->GetActiveProject();
 	if (project)
 	{
         wxString filename = error.filename;

@@ -3,8 +3,11 @@
 
 #include <settings.h>
 
+class cbProject;
+
 struct CompileError
 {
+    cbProject* project;
     bool isWarning;
 	wxString filename;
 	long int line;
@@ -17,9 +20,9 @@ class CompilerErrors
 	public:
 		CompilerErrors();
 		virtual ~CompilerErrors();
-		
-		void AddError(const wxString& filename, long int line, const wxString& error, bool isWarning);
-		
+
+		void AddError(cbProject* project, const wxString& filename, long int line, const wxString& error, bool isWarning);
+
         void GotoError(int nr);
 		void Next();
 		void Previous();
@@ -28,10 +31,10 @@ class CompilerErrors
 		bool HasPreviousError();
 		int GetCount(){ return m_Errors.GetCount(); }
 		wxString GetErrorString(int index);
-		
+
 		unsigned int GetErrorsCount();
 		unsigned int GetWarningsCount();
-        
+
         int GetFocusedError(){ return m_ErrorIndex; }
 	protected:
 		void DoAddError(const CompileError& error);

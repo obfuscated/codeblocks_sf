@@ -2612,8 +2612,8 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColor)
         else if (m_Errors.GetErrorsCount() == maxErrors)
         {
             // if we reached the max errors count, notify about it
-            m_Errors.AddError(_T(""), 0, _("More errors follow but not being shown."), false);
-            m_Errors.AddError(_T(""), 0, _("Edit the max errors limit in compiler options..."), false);
+            m_Errors.AddError(0, _T(""), 0, _("More errors follow but not being shown."), false);
+            m_Errors.AddError(0, _T(""), 0, _("Edit the max errors limit in compiler options..."), false);
             return;
         }
     }
@@ -2654,7 +2654,8 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColor)
         m_pListLog->GetListControl()->SetItemTextColour(m_pListLog->GetListControl()->GetItemCount() - 1,
                                                         clt == cltWarning ? COLOUR_NAVY : *wxRED);
 
-        m_Errors.AddError(compiler->GetLastErrorFilename(),
+        m_Errors.AddError(m_pBuildingProject,
+                          compiler->GetLastErrorFilename(),
                           !compiler->GetLastErrorLine().IsEmpty() ? atoi(compiler->GetLastErrorLine().mb_str()) : 0,
                           compiler->GetLastError(),
                           clt == cltWarning);
