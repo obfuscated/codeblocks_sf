@@ -470,6 +470,16 @@
             <Option link="0" />
             <Option target="wxSmith" />
         </Unit>
+		<Unit filename="defwidgets\wxsstddialogbuttonsizer.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="wxSmith" />
+		</Unit>
+		<Unit filename="defwidgets\wxsstddialogbuttonsizer.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="wxSmith" />
+		</Unit>
         <Unit filename="defwidgets\wxsstdmanager.cpp">
             <Option compilerVar="CPP" />
             <Option target="wxSmith" />

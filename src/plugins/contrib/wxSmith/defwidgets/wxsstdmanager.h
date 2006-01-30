@@ -12,6 +12,7 @@ enum std_widgets
     wxsBoxSizerId,
     wxsStaticBoxSizerId,
     wxsFlexGridSizerId,
+    wxsStdDialogButtonSizerId,
 
     /* Spacer */
     wxsSpacerId,

@@ -15,6 +15,7 @@
 #include "wxsboxsizer.h"
 #include "wxsstaticboxsizer.h"
 #include "wxsflexgridsizer.h"
+#include "wxsstddialogbuttonsizer.h"
 #include "wxstextctrl.h"
 #include "wxsgauge.h"
 #include "wxsradiobutton.h"
@@ -198,6 +199,7 @@ static wxsWidgetInfo StdInfos[] =
     SizerEntry(BoxSizer,"wx_wxboxsizer.html#wxboxsizer","<wx/sizer.h>")
     SizerEntry(StaticBoxSizer,"wx_wxstaticboxsizer.html#wxstaticboxsizer","<wx/sizer.h>")
     SizerEntry(FlexGridSizer,"wx_wxflexgridsizer.html#wxflexgridsizer","<wx/sizer.h>")
+    SizerEntry(StdDialogButtonSizer,"wx_wxstddialogbuttonsizer.html#wxstddialogbuttonsizer","<wx/sizer.h>")
     SpacerEntry()
 
     Entry(Button,      "wx_wxbutton.htm#wxbutton","<wx/button.h>")
@@ -349,6 +351,7 @@ wxsWidget* wxsStdManagerT::ProduceWidget(int Id,wxsWindowRes* Res)
         ITEM(BoxSizer)
         ITEM(StaticBoxSizer)
         ITEM(FlexGridSizer)
+        ITEM(StdDialogButtonSizer)
         ITEM(Button)
         ITEM(CheckBox)
         ITEM(StaticText)

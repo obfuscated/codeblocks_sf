@@ -47,6 +47,29 @@ wxWindow* wxsHtmlWindow::MyCreatePreview(wxWindow* Parent)
     return Wnd;
 }
 
+bool wxsHtmlWindow::MyXmlLoad()
+{
+    borders = XmlGetInteger(_T("borders"));
+	url = XmlGetVariable(_T("url"));
+	htmlcode = XmlGetVariable(_T("htmlcode"));
+
+    return true;
+}
+
+bool wxsHtmlWindow::MyXmlSave()
+{
+    if ( borders )
+        XmlSetInteger(_T("borders"), borders);
+
+    if ( !url.empty() )
+        XmlSetVariable(_T("url"), url);
+
+    if ( !htmlcode.empty() )
+        XmlSetVariable(_T("htmlcode"), htmlcode);
+
+    return true;
+}
+
 wxString wxsHtmlWindow::GetProducingCode(const wxsCodeParams& Params)
 {
     wxString Code;

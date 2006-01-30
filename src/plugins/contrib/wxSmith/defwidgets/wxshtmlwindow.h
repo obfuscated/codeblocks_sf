@@ -23,6 +23,8 @@ class wxsHtmlWindow: public wxsHtmlWindowBase
     protected:
         virtual wxWindow* MyCreatePreview(wxWindow* Parent);
         virtual wxString GetProducingCode(const wxsCodeParams& Params);
+        virtual bool MyXmlLoad();
+        virtual bool MyXmlSave();
 };
 
 #endif
