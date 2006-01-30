@@ -1739,6 +1739,7 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
     cbProject* prj = ftd->GetProject();
     if (!prj)
         return;
+    wxString oldpath = prj->GetCommonTopLevelPath();
 
     if (event.GetId() == idMenuRemoveFile)
     {
@@ -1790,7 +1791,10 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
         wxString filename = ftd->GetProjectFile()->file.GetFullPath();
         prj->RemoveFile(ftd->GetFileIndex());
         prj->CalculateCommonTopLevelPath();
-        RebuildTree();
+        if (prj->GetCommonTopLevelPath() != oldpath)
+            RebuildTree();
+        else
+            m_pTree->Delete(sel);
         CodeBlocksEvent evt(cbEVT_PROJECT_FILE_REMOVED);
         evt.SetProject(prj);
         evt.SetString(filename);
@@ -1824,7 +1828,10 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
                 ++i;
         }
         prj->CalculateCommonTopLevelPath();
-        RebuildTree();
+        if (prj->GetCommonTopLevelPath() != oldpath)
+            RebuildTree();
+        else
+            m_pTree->Delete(sel);
     }
 }
 
