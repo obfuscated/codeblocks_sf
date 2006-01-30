@@ -731,7 +731,7 @@ const wxArrayString& NativeParser::GetCallTips()
         Manager::Get()->GetMessageManager()->DebugLog(_("Sending \"%s\" for call-tip"), lineText.c_str());
         // clear previously marked tokens
         TokensTree* tokens = parser->GetTokens();
-        lock = new wxCriticalSectionLocker(tokens->m_Protection);
+        lock = new wxCriticalSectionLocker(s_MutexProtection);
 
         for (unsigned int i = 0; i < tokens->size(); ++i)
         {

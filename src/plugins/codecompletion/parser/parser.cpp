@@ -216,7 +216,7 @@ bool Parser::CacheNeedsUpdate()
 {
     if (m_UsingCache)
     {
-        wxCriticalSectionLocker lock(m_pTokens->m_Protection);
+        wxCriticalSectionLocker lock(s_MutexProtection);
         return m_pTokens->m_modified;
     }
     return true;
@@ -224,7 +224,7 @@ bool Parser::CacheNeedsUpdate()
 
 unsigned int Parser::GetFilesCount()
 {
-	wxCriticalSectionLocker lock(m_pTokens->m_Protection);
+	wxCriticalSectionLocker lock(s_MutexProtection);
 	return m_pTokens->m_FilesMap.size();
 }
 
@@ -314,7 +314,7 @@ int Parser::GetTokenKindImage(Token* token)
 
 Token* Parser::FindTokenByName(const wxString& name, bool globalsOnly, short int kindMask) const
 {
-    wxCriticalSectionLocker lock(m_pTokens->m_Protection);
+    wxCriticalSectionLocker lock(s_MutexProtection);
     int result = m_pTokens->TokenExists(name,-1,kindMask);
     return m_pTokens->at(result);
 }
@@ -326,13 +326,13 @@ Token* Parser::FindChildTokenByName(Token* parent, const wxString& name, bool us
     Token* result = 0;
     wxCriticalSectionLocker *lock = 0;
     {
-        lock = new wxCriticalSectionLocker(m_pTokens->m_Protection);
+        lock = new wxCriticalSectionLocker(s_MutexProtection);
         result = m_pTokens->at(m_pTokens->TokenExists(name,parent->GetSelf(),kindMask));
         delete lock;
     }
     if(!result && useInheritance)
     {
-        lock = new wxCriticalSectionLocker(m_pTokens->m_Protection);
+        lock = new wxCriticalSectionLocker(s_MutexProtection);
         TokenIdxSet::iterator it;
         for(it = parent->m_Ancestors.begin();it != parent->m_Ancestors.end();++it)
         {
@@ -350,7 +350,7 @@ size_t Parser::FindMatches(const wxString& s,TokenList& result,bool caseSensitiv
 {
     result.clear();
     TokenIdxSet tmpresult;
-    wxCriticalSectionLocker lock(m_pTokens->m_Protection);
+    wxCriticalSectionLocker lock(s_MutexProtection);
     if(!m_pTokens->FindMatches(s,tmpresult,caseSensitive,is_prefix))
         return 0;
 
@@ -366,7 +366,7 @@ size_t Parser::FindMatches(const wxString& s,TokenList& result,bool caseSensitiv
 
 void Parser::LinkInheritance(bool tempsOnly)
 {
-	wxCriticalSectionLocker lock(m_pTokens->m_Protection);
+	wxCriticalSectionLocker lock(s_MutexProtection);
 	(tempsOnly ? m_pTempTokens :  m_pTokens)->RecalcData();
 }
 
@@ -412,7 +412,7 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
     {
         if(!opts.useBuffer)
         {
-            wxCriticalSectionLocker lock(m_pTokens->m_Protection);
+            wxCriticalSectionLocker lock(s_MutexProtection);
             bool canparse = !m_pTokens->IsFileParsed(buffOrFile);
             if(canparse)
                 canparse = m_pTokens->ReserveFileForParsing(buffOrFile,true) != 0;
@@ -481,7 +481,7 @@ bool Parser::RemoveFile(const wxString& filename)
     bool result = false;
 	wxString file = UnixFilename(filename);
 	{
-        wxCriticalSectionLocker lock(m_pTokens->m_Protection);
+        wxCriticalSectionLocker lock(s_MutexProtection);
         size_t index = m_pTokens->GetFileIndex(file);
         result = m_pTokens->m_FilesStatus.count(index);
 
@@ -504,7 +504,7 @@ bool Parser::Reparse(const wxString& filename, bool isLocal)
     else
         m_LocalFiles.erase(filename);
 	{
-	    wxCriticalSectionLocker lock(m_pTokens->m_Protection);
+	    wxCriticalSectionLocker lock(s_MutexProtection);
 	    m_pTokens->FlagFileForReparsing(file);
 	}
     m_NeedsReparse = true;
@@ -546,7 +546,7 @@ void Parser::Clear()
 bool Parser::ReadFromCache(wxInputStream* f)
 {
     bool result = false;
-    wxCriticalSectionLocker lock(m_pTokens->m_Protection);
+    wxCriticalSectionLocker lock(s_MutexProtection);
 
     char CACHE_MAGIC_READ[] = "           ";
     m_pTokens->clear(); // Clear data
@@ -648,7 +648,7 @@ bool Parser::ReadFromCache(wxInputStream* f)
 bool Parser::WriteToCache(wxOutputStream* f)
 {
     bool result = false;
-    wxCriticalSectionLocker lock(m_pTokens->m_Protection);
+    wxCriticalSectionLocker lock(s_MutexProtection);
 //  Begin saving process
 
     size_t tcount = m_pTokens->m_Tokens.size();
@@ -1068,7 +1068,7 @@ bool Parser::ReparseModifiedFiles()
     int numfiles = 0;
     vector<wxString> files_list;
     {
-        wxCriticalSectionLocker lock(m_pTokens->m_Protection);
+        wxCriticalSectionLocker lock(s_MutexProtection);
         TokenFilesSet::iterator it;
         for(it = m_pTokens->m_FilesToBeReparsed.begin(); it != m_pTokens->m_FilesToBeReparsed.end(); ++it)
         {

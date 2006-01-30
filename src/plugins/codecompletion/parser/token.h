@@ -16,6 +16,7 @@ using namespace std;
 class Token;
 class TokensTree;
 
+static wxCriticalSection s_MutexProtection;
 enum FileParsingStatus
 {
     fpsNotParsed = 0,
@@ -163,7 +164,6 @@ class TokensTree
 
         TokenFilesStatus m_FilesStatus; /** Parse Status for each file */
         bool m_modified;
-        wxCriticalSection m_Protection;
     protected:
         Token* GetTokenAt(int idx);
         int AddToken(Token* newToken,int forceidx = -1);

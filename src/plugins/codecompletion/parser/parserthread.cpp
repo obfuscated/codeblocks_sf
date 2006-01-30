@@ -244,9 +244,9 @@ bool ParserThread::ParseBufferForFunctions(const wxString& buffer)
         return false;
     if (!m_pTokens)
         return false;
-	m_pTokens->m_Protection.Enter();
+	s_MutexProtection.Enter();
 	m_pTokens->Clear();
-	m_pTokens->m_Protection.Leave();
+	s_MutexProtection.Leave();
 	m_Tokenizer.InitFromBuffer(buffer);
 	if (!m_Tokenizer.IsOK())
 		return false;
@@ -362,9 +362,9 @@ bool ParserThread::Parse()
 
         if(!m_Options.useBuffer) // Parse a file
         {
-            m_pTokens->m_Protection.Enter();
+            s_MutexProtection.Enter();
             m_File = m_pTokens->ReserveFileForParsing(m_Filename);
-            m_pTokens->m_Protection.Leave();
+            s_MutexProtection.Leave();
             if(!m_File)
                 break;
         }
@@ -373,9 +373,9 @@ bool ParserThread::Parse()
 
         if(!m_Options.useBuffer) // Parsing a file
         {
-            m_pTokens->m_Protection.Enter();
+            s_MutexProtection.Enter();
             m_pTokens->FlagFileAsParsed(m_Filename);
-            m_pTokens->m_Protection.Leave();
+            s_MutexProtection.Leave();
         }
         result = true;
     }while(false);
@@ -669,9 +669,9 @@ Token* ParserThread::TokenExists(const wxString& name, Token* parent, short int 
         parentidx = -1;
     else
         parentidx = parent->GetSelf();
-    m_pTokens->m_Protection.Enter();
+    s_MutexProtection.Enter();
     result = m_pTokens->at(m_pTokens->TokenExists(name, parentidx, kindMask));
-    m_pTokens->m_Protection.Leave();
+    s_MutexProtection.Leave();
     return result;
 }
 
@@ -730,7 +730,7 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, const wxSt
         return 0;
 	if (m_Options.useBuffer && TokenExists(name))
 		return 0;
-    m_pTokens->m_Protection.Enter();
+    s_MutexProtection.Enter();
 	Token* newToken = 0;
 	wxString newname(name);
 	m_Str.Trim();
@@ -782,7 +782,7 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, const wxSt
         if (m_pLastParent)
             m_pLastParent->AddChild(newidx);
     }
-    m_pTokens->m_Protection.Leave();
+    s_MutexProtection.Leave();
 	return newToken;
 }
 
@@ -840,7 +840,7 @@ void ParserThread::HandleIncludes()
                 break; // File not found, do nothing.
 
             {
-                wxCriticalSectionLocker lock(m_pTokens->m_Protection);
+                wxCriticalSectionLocker lock(s_MutexProtection);
                 if(m_pTokens->IsFileParsed(real_filename))
                     break; // Already being parsed elsewhere
             }
@@ -1043,7 +1043,7 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
             unsigned int count = m_EncounteredNamespaces.GetCount();
             if (count)
             {
-                m_pTokens->m_Protection.Enter();
+                s_MutexProtection.Enter();
                 Token* localParent = 0;
                 for (unsigned int i = 0; i < count; ++i)
                 {
@@ -1052,7 +1052,7 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
                         break;
                 }
                 CtorDtor = localParent && name.Matches(localParent->m_Name);
-                m_pTokens->m_Protection.Leave();
+                s_MutexProtection.Leave();
             }
 		}
 
