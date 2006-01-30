@@ -48,17 +48,17 @@
 
 const wxString g_EditorModified = _T("*");
 
-#define BOOKMARK_MARKER		0
+#define ERROR_MARKER		1
+#define ERROR_STYLE			wxSCI_MARK_SMALLRECT
+
+#define BOOKMARK_MARKER		2
 #define BOOKMARK_STYLE 		wxSCI_MARK_ARROW
 
-#define BREAKPOINT_MARKER	1
+#define BREAKPOINT_MARKER	3
 #define BREAKPOINT_STYLE 	wxSCI_MARK_CIRCLE
 
-#define DEBUG_MARKER		5
+#define DEBUG_MARKER		4
 #define DEBUG_STYLE 		wxSCI_MARK_ARROW
-
-#define ERROR_MARKER		4
-#define ERROR_STYLE			wxSCI_MARK_SMALLRECT
 
 BEGIN_EVENT_TABLE(cbStyledTextCtrl, wxScintilla)
 	EVT_CONTEXT_MENU(cbStyledTextCtrl::OnContextMenu)
@@ -1167,9 +1167,10 @@ void cbEditor::MarkerPrevious(int marker)
 
 void cbEditor::MarkLine(int marker, int line)
 {
-	m_pControl->MarkerDeleteAll(marker);
-	if (line != -1)
-		m_pControl->MarkerAdd(line, marker);
+	if (line == -1)
+        m_pControl->MarkerDeleteAll(marker);
+    else
+        m_pControl->MarkerAdd(line, marker);
 }
 
 void cbEditor::GotoMatchingBrace()
