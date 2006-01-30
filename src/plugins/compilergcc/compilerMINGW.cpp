@@ -221,8 +221,9 @@ AutoDetectResult CompilerMINGW::AutoDetectInstallationDir()
     AutoDetectResult ret = wxFileExists(m_MasterPath + sep + _T("bin") + sep + m_Programs.C) ? adrDetected : adrGuessed;
     if (ret == adrDetected)
     {
-        AddIncludeDir(m_MasterPath + sep + _T("include"));
-        AddLibDir(m_MasterPath + sep + _T("lib"));
+        // don't add dirs. GCC knows where its files are located
+//        AddIncludeDir(m_MasterPath + sep + _T("include"));
+//        AddLibDir(m_MasterPath + sep + _T("lib"));
     }
     return ret;
 }
