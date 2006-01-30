@@ -41,6 +41,7 @@ class ProjectOptionsDlg : public wxDialog
 		void OnUpdateUI(wxUpdateUIEvent& event);
 
 		void OnScriptsOverviewSelChanged(wxTreeEvent& event);
+		void OnCheckScripts(wxCommandEvent& event);
 		void OnAddScript(wxCommandEvent& event);
 		void OnRemoveScript(wxCommandEvent& event);
 		void OnScriptMoveUp(wxSpinEvent& event);
@@ -51,6 +52,8 @@ class ProjectOptionsDlg : public wxDialog
         void FillBuildTargets();
         void DoTargetChange();
         void DoBeforeTargetChange(bool force = false);
+        bool DoCheckScripts(CompileTargetBase* base);
+        bool IsScriptValid(const wxString& script);
         cbProject* m_Project;
         int m_Current_Sel; // current target selection (when selection changes it is the old selection - handy, eh?)
     	cbCompilerPlugin* m_pCompiler;

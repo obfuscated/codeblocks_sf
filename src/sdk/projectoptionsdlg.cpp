@@ -44,6 +44,7 @@
 #include "editarrayfiledlg.h"
 #include "externaldepsdlg.h"
 #include "annoyingdialog.h"
+#include "angelscript.h"
 
 BEGIN_EVENT_TABLE(ProjectOptionsDlg, wxDialog)
     EVT_UPDATE_UI( -1,                                 ProjectOptionsDlg::OnUpdateUI)
@@ -69,6 +70,7 @@ BEGIN_EVENT_TABLE(ProjectOptionsDlg, wxDialog)
 	EVT_COMBOBOX(  XRCID("cmbProjectType"),            ProjectOptionsDlg::OnProjectTypeChanged)
 
     EVT_TREE_SEL_CHANGED(XRCID("tcOverview"),          ProjectOptionsDlg::OnScriptsOverviewSelChanged)
+    EVT_BUTTON(XRCID("btnCheckScripts"),               ProjectOptionsDlg::OnCheckScripts)
     EVT_BUTTON(XRCID("btnAddPreScripts"),              ProjectOptionsDlg::OnAddScript)
     EVT_BUTTON(XRCID("btnRemovePreScripts"),           ProjectOptionsDlg::OnRemoveScript)
     EVT_SPIN_UP(XRCID("spnPreScripts"),                ProjectOptionsDlg::OnScriptMoveUp)
@@ -665,6 +667,44 @@ void ProjectOptionsDlg::OnFileToggleMarkClick(wxCommandEvent& event)
 void ProjectOptionsDlg::OnScriptsOverviewSelChanged(wxTreeEvent& event)
 {
     FillScripts();
+}
+
+bool ProjectOptionsDlg::IsScriptValid(const wxString& script)
+{
+    int r = Manager::Get()->GetScriptingManager()->LoadScript(m_Project->GetBasePath() + wxFILE_SEP_PATH + script, _T("test_module"), false);
+    Manager::Get()->GetScriptingManager()->GetEngine()->Discard("test_module");
+    return r == 0;
+}
+
+bool ProjectOptionsDlg::DoCheckScripts(CompileTargetBase* base)
+{
+    const wxArrayString& scripts = base->GetBuildScripts();
+    for (size_t i = 0; i < scripts.GetCount(); ++i)
+    {
+        if (!IsScriptValid(scripts[i]))
+        {
+            wxString msg;
+            msg << _("Invalid build script: ") + scripts[i] << _T('\n');
+            msg << _("First seen in: ") + base->GetTitle() << _T('\n');
+            wxMessageBox(msg, _("Error"), wxICON_ERROR);
+            return false;
+        }
+    }
+    return true;
+}
+
+void ProjectOptionsDlg::OnCheckScripts(wxCommandEvent& event)
+{
+    if (!DoCheckScripts(m_Project))
+        return;
+
+    for (int i = 0; i < m_Project->GetBuildTargetsCount(); ++i)
+    {
+        if (!DoCheckScripts(m_Project->GetBuildTarget(i)))
+            return;
+    }
+
+    wxMessageBox(_("All scripts seem to be valid!"), _("Information"), wxICON_INFORMATION);
 }
 
 void ProjectOptionsDlg::OnAddScript(wxCommandEvent& event)

@@ -464,9 +464,16 @@ from target...</label>
                       </object>
                       <option>1</option>
                       <flag>wxGROW</flag>
-                      <minsize>240,-1</minsize>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxButton" name="btnCheckScripts">
+                        <label>Validate all attached scripts</label>
+                      </object>
+                      <flag>wxTOP|wxALIGN_CENTRE_HORIZONTAL</flag>
+                      <border>8</border>
                     </object>
                   </object>
+                  <option>1</option>
                   <flag>wxALL|wxGROW</flag>
                   <border>8</border>
                 </object>
@@ -524,7 +531,7 @@ from target...</label>
                       <flag>wxGROW</flag>
                     </object>
                   </object>
-                  <option>1</option>
+                  <option>2</option>
                   <flag>wxTOP|wxBOTTOM|wxRIGHT|wxGROW</flag>
                   <border>8</border>
                 </object>
