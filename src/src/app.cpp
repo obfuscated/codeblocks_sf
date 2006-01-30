@@ -495,8 +495,7 @@ bool CodeBlocksApp::OnCmdLineParsed(wxCmdLineParser& parser)
 
 void CodeBlocksApp::OnFatalException()
 {
-#if wxCHECK_VERSION(2,6,0) && wxUSE_DEBUGREPORT && wxUSE_XML \
-    && defined(__WXGTK__) // doesn't seem to work on windows...
+#if wxCHECK_VERSION(2,6,0) && wxUSE_DEBUGREPORT && wxUSE_XML && wxUSE_ON_FATAL_EXCEPTION
     wxDebugReport report;
     wxDebugReportPreviewStd preview;
 
