@@ -1245,19 +1245,24 @@ void DebuggerGDB::ClearActiveMarkFromAllEditors()
 	}
 }
 
-void DebuggerGDB::SyncEditor(const wxString& filename, int line)
+void DebuggerGDB::SyncEditor(const wxString& filename, int line, bool setMarker)
 {
-	ClearActiveMarkFromAllEditors();
+    if (setMarker)
+        ClearActiveMarkFromAllEditors();
 	cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
 	ProjectFile* f = project ? project->GetFileByFilename(filename, false, true) : 0;
-    cbEditor* ed = Manager::Get()->GetEditorManager()->Open(filename);
+	wxFileName fname(filename);
+	if (project && fname.IsRelative())
+        fname.MakeAbsolute(project->GetBasePath());
+    cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname.GetFullPath());
     if (ed)
     {
         ed->Show(true);
         if (f)
             ed->SetProjectFile(f);
         ed->GotoLine(line - 1, false);
-        ed->SetDebugLine(line - 1);
+        if (setMarker)
+            ed->SetDebugLine(line - 1);
     }
 }
 

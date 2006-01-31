@@ -44,7 +44,7 @@ void GDB_driver::InitializeScripting()
     }
 
     const wxString module = _T("debugger-scripts");
-    const wxString script = _T("gdb_wx.script");
+    const wxString script = _T("gdb_types.script");
 
     // discard any old instance
     int r = engine->Discard(_C(module));
@@ -69,7 +69,7 @@ void GDB_driver::InitializeScripting()
     exec.Call(this);
 }
 
-void GDB_driver::RegisterType(const wxString& name, const wxString& regex, const wxString& parse_func, const wxString& print_func)
+void GDB_driver::RegisterType(const wxString& name, const wxString& regex, const wxString& eval_func, const wxString& parse_func)
 {
     // check if this type already exists
     for (size_t i = 0; i < m_Types.GetCount(); ++i)
@@ -83,17 +83,11 @@ void GDB_driver::RegisterType(const wxString& name, const wxString& regex, const
     st.name = name;
     st.regex_str = regex;
     st.regex.Compile(regex);
+    st.eval_func = eval_func;
     st.parse_func = parse_func;
-    st.print_func = print_func;
-
-    // create the gdb function name
-    // e.g. if st.name==wxString, gdb_func=print_wxstring
-    while (st.name.Replace(_T(" "), _T("_")))
-        ;
-    st.gdb_func = _T("print_") + st.name.Lower();
 
     m_Types.Add(st);
-    m_pDBG->Log(_("Registered new type: ") + st.name + _T(" (") + st.gdb_func + _T(")"));
+    m_pDBG->Log(_("Registered new type: ") + st.name);
 }
 
 wxString GDB_driver::GetScriptedTypeCommand(const wxString& gdb_type, wxString& parse_func)
@@ -105,7 +99,7 @@ wxString GDB_driver::GetScriptedTypeCommand(const wxString& gdb_type, wxString& 
         {
 //            Log(_T("Function to print '") + gdb_type + _T("' is ") + st.parse_func);
             parse_func = st.parse_func;
-            return st.gdb_func;
+            return st.eval_func;
         }
     }
     return _T("");
@@ -159,15 +153,6 @@ void GDB_driver::Prepare(bool isConsole)
     // define all scripted types
     m_Types.Clear();
     InitializeScripting();
-    for (size_t i = 0; i < m_Types.GetCount(); ++i)
-    {
-        ScriptedType& st = m_Types[i];
-        wxString cmd;
-        cmd << _T("define ") + st.gdb_func + _T("\n");
-        cmd << _T("  ") << st.print_func << _T("\n");
-        cmd << _T("end");
-        QueueCommand(new DebuggerCmd(this, cmd));
-    }
 
     // pass user init-commands
     wxString init = Manager::Get()->GetConfigManager(_T("debugger"))->Read(_T("init_commands"), wxEmptyString);
@@ -348,7 +333,7 @@ void GDB_driver::ParseOutput(const wxString& output)
     }
     else
     {
-        m_ProgramIsStopped = false;
+//        m_ProgramIsStopped = false;
         return; // come back later
     }
 

@@ -7,22 +7,19 @@
 
 struct ScriptedType
 {
-    wxString name;
-    wxString regex_str;
+    wxString name;          // STL String
+    wxString regex_str;     // [^[:alnum:]_]*string[^[:alnum:]_]*
     wxRegEx regex;
-    wxString parse_func;
-    wxString print_func;
-
-    wxString gdb_func; // set by the driver
+    wxString eval_func;     // Evaluate_StlString
+    wxString parse_func;    // Parse_StlString
 
     ScriptedType(){}
     ScriptedType(const ScriptedType& rhs)
     {
         name = rhs.name;
         regex_str = rhs.regex_str;
+        eval_func = rhs.eval_func;
         parse_func = rhs.parse_func;
-        print_func = rhs.print_func;
-        gdb_func = rhs.gdb_func;
 
         regex.Compile(regex_str);
     }
@@ -61,7 +58,7 @@ class GDB_driver : public DebuggerDriver
     protected:
     private:
         void InitializeScripting();
-        void RegisterType(const wxString& name, const wxString& regex, const wxString& parse_func, const wxString& print_func);
+        void RegisterType(const wxString& name, const wxString& regex, const wxString& eval_func, const wxString& parse_func);
 
         TypesArray m_Types;
 };

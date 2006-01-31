@@ -41,10 +41,10 @@ static int GetScriptParserFuncID(const wxString& parseFunc)
 //#0 wxEntry () at main.cpp:5
 //#8  0x77d48734 in USER32!GetDC () from C:\WINDOWS\system32\user32.dll
 //#9  0x001b04fe in ?? ()
-//#29 0x100b07bc in wxEntry () from C:\WINDOWS\system32\wxmsw26_gcc_cb.dll
 //#30 0x00403c0a in WinMain (hInstance=0x400000, hPrevInstance=0x0, lpCmdLine=0x241ef9 "", nCmdShow=10) at C:/Devel/wxSmithTest/app.cpp:297
 //#31 0x004076ca in main () at C:/Devel/wxWidgets-2.6.1/include/wx/intl.h:555
-static wxRegEx reBT1(_T("#([0-9]+)[ \t]+[0x]*([A-Fa-f0-9]*)[ \t]*[in]*[ \t]*([^( \t]+)[ \t]+(\\([^)]*\\))"));
+static wxRegEx reBT0(_T("#([0-9]+)[ \t]+([^( \t]+)[ \t]+(\\([^)]*\\))")); // case #0
+static wxRegEx reBT1(_T("#([0-9]+)[ \t]+0x([A-f0-9]+)[ \t]+in[ \t]+([^( \t]+)[ \t]+(\\([^)]*\\))")); // all other cases
 static wxRegEx reBT2(_T("\\)[ \t]+[atfrom]+[ \t]+(.*):([0-9]+)"));
 static wxRegEx reBT3(_T("\\)[ \t]+[atfrom]+[ \t]+(.*)"));
 // Breakpoint 1 at 0x4013d6: file main.cpp, line 8.
@@ -401,7 +401,6 @@ class GdbCmd_Watch : public DebuggerCmd
             m_Cmd = static_cast<GDB_driver*>(m_pDriver)->GetScriptedTypeCommand(w_type, m_ParseFunc);
             if (m_Cmd.IsEmpty())
             {
-                m_pDriver->Log(w_type + _T("No scripted command"));
                 m_Cmd << _T("output ");
                 switch (m_pWatch->format)
                 {
@@ -412,10 +411,19 @@ class GdbCmd_Watch : public DebuggerCmd
                     case Char:          m_Cmd << _T("/c "); break;
                     default:            break;
                 }
+                m_Cmd << m_pWatch->keyword;
             }
             else
-                m_Cmd << _T(' ');
-            m_Cmd << m_pWatch->keyword;
+            {
+                int funcID = GetScriptParserFuncID(m_Cmd);
+                if (funcID >= 0)
+                {
+                    wxString r;
+                    VoidExecutor<const wxString&, const wxString&, unsigned int, unsigned int, wxString&> exec(funcID);
+                    exec.Call(w_type, m_pWatch->keyword, watch->array_start, watch->array_count, r);
+                    m_Cmd = r;
+                }
+            }
         }
         void ParseOutput(const wxString& output)
         {
@@ -427,8 +435,8 @@ class GdbCmd_Watch : public DebuggerCmd
                 if (funcID >= 0)
                 {
                     wxString r;
-                    VoidExecutor<const wxString&, wxString&> exec(funcID);
-                    exec.Call(output, r);
+                    VoidExecutor<const wxString&, unsigned int, wxString&> exec(funcID);
+                    exec.Call(output, m_pWatch->array_start, r);
                     w << r;
                 }
             }
@@ -498,10 +506,21 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
         {
             m_Cmd = static_cast<GDB_driver*>(m_pDriver)->GetScriptedTypeCommand(w_type, m_ParseFunc);
             if (m_Cmd.IsEmpty())
+            {
                 m_Cmd << _T("output ");
+                m_Cmd << what;
+            }
             else
-                m_Cmd << _T(' ');
-            m_Cmd << what;
+            {
+                int funcID = GetScriptParserFuncID(m_Cmd);
+                if (funcID >= 0)
+                {
+                    wxString r;
+                    VoidExecutor<const wxString&, const wxString&, unsigned int, unsigned int, wxString&> exec(funcID);
+                    exec.Call(w_type, what, 0, 0, r);
+                    m_Cmd = r;
+                }
+            }
         }
         void ParseOutput(const wxString& output)
         {
@@ -517,8 +536,8 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
                     if (funcID >= 0)
                     {
                         wxString r;
-                        VoidExecutor<const wxString&, wxString&> exec(funcID);
-                        exec.Call(output, r);
+                        VoidExecutor<const wxString&, unsigned int, wxString&> exec(funcID);
+                        exec.Call(output, 0, r);
                         tip << r;
                     }
     		    }
@@ -590,15 +609,27 @@ class GdbCmd_Backtrace : public DebuggerCmd
     		    // reBT2 matches filename and line (optional)
     		    // reBT3 matches filename only (for DLLs) (optional)
 
+                StackFrame sf;
+                bool matched = false;
     		    // #0  main (argc=1, argv=0x3e2440) at my main.cpp:15
     		    if (reBT1.Matches(lines[i]))
     		    {
 //                    m_pDriver->DebugLog(_T("MATCH!"));
-                    StackFrame sf;
-                    sf.valid = true;
     		        reBT1.GetMatch(lines[i], 1).ToLong(&sf.number);
     		        reBT1.GetMatch(lines[i], 2).ToULong(&sf.address, 16);
     		        sf.function = reBT1.GetMatch(lines[i], 3) + reBT1.GetMatch(lines[i], 4);
+    		        matched = true;
+    		    }
+    		    else if (reBT0.Matches(lines[i]))
+    		    {
+    		        reBT0.GetMatch(lines[i], 1).ToLong(&sf.number);
+    		        sf.function = reBT0.GetMatch(lines[i], 2) + reBT1.GetMatch(lines[i], 3);
+    		        matched = true;
+    		    }
+
+    		    if (matched)
+    		    {
+                    sf.valid = true;
                     if (reBT2.Matches(lines[i]))
                     {
                         sf.file = reBT2.GetMatch(lines[i], 1);

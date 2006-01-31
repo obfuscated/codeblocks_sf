@@ -148,10 +148,12 @@ enum WatchStringFormat
   */
 struct Watch
 {
-    Watch(const wxString& k, WatchFormat f = Undefined) : keyword(k), format(f) {}
-    Watch(const Watch& rhs) : keyword(rhs.keyword), format(rhs.format) {}
+    Watch(const wxString& k, WatchFormat f = Undefined) : keyword(k), format(f), array_start(0), array_count(0) {}
+    Watch(const Watch& rhs) : keyword(rhs.keyword), format(rhs.format), array_start(rhs.array_start), array_count(rhs.array_count) {}
     wxString keyword; ///< The symbol to watch.
     WatchFormat format; ///< The format to use for display.
+    size_t array_start; ///< The array start (valid for array types only).
+    size_t array_count; ///< The array count (valid for array types only).
 };
 WX_DECLARE_OBJARRAY(Watch, WatchesArray);
 

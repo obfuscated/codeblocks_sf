@@ -1,0 +1,140 @@
+// Registers new types with driver
+void RegisterTypes(DebuggerDriver@ driver)
+{
+//    signature:
+//    driver.RegisterType(type_name, regex, eval_func, parse_func);
+
+    // wxString
+    driver.RegisterType(
+        "wxString",
+        "[^[:alnum:]_]*wxString[^[:alnum:]_]*",
+        "Evaluate_wxString",
+        "Parse_wxString"
+    );
+
+    // STL String
+    driver.RegisterType(
+        "STL String",
+        "[^[:alnum:]_]+string[^[:alnum:]_]*",
+        "Evaluate_StlString",
+        "Parse_StlString"
+    );
+
+    // STL Vector
+    driver.RegisterType(
+        "STL Vector",
+        "[^[:alnum:]_]*vector<.*",
+        "Evaluate_StlVector",
+        "Parse_StlVector"
+    );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// wxString
+////////////////////////////////////////////////////////////////////////////////
+
+// This function tells the driver how to evaluate this type.
+// a_str contains the variable.
+// start contains the starting position. Useful for arrays.
+// count contains the count of evaluation. Useful for arrays. If 0, evaluate from start (variable) to end of array.
+// result must contain the debugger's command when it returns.
+void Evaluate_wxString(const wxString& in type, const wxString& in a_str, uint start, uint count, wxString& out result)
+{
+    result = "output /c " + a_str + ".c_str()[" + start + "]@";
+    if (count != 0)
+        result += count;
+    else
+        result += a_str + ".size()";
+}
+
+// This function parses driver's output.
+// When it returns, the "result" argument contains the parsing result.
+void Parse_wxString(const wxString& in a_str, uint start, wxString& out result)
+{
+    result = "\"";
+    uint len = a_str.length();
+    uint c = 0;
+    while (c < len)
+    {
+        switch (a_str[c])
+        {
+            case '\'':
+                ++c;
+                while (c < len)
+                {
+                    switch (a_str[c])
+                    {
+                        case '\\':
+                            result += a_str[c++];
+                            result += a_str[c++];
+                            break;
+                        default:
+                            result += a_str[c++];
+                            break;
+                    }
+                    if (a_str[c] == '\'')
+                        break;
+                }
+                break;
+
+            default:
+                break;
+        }
+        ++c;
+    }
+    result += "\"";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// STL String
+////////////////////////////////////////////////////////////////////////////////
+
+void Evaluate_StlString(const wxString& in type, const wxString& in a_str, uint start, uint count, wxString& out result)
+{
+    result = "output " + a_str + ".c_str()[" + start + "]@";
+    if (count != 0)
+        result += count;
+    else
+        result += a_str + ".size()";
+}
+
+void Parse_StlString(const wxString& in a_str, uint start, wxString& out result)
+{
+    // nothing needs to be done
+    result = a_str;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// STL Vector
+////////////////////////////////////////////////////////////////////////////////
+
+void Evaluate_StlVector(const wxString& in type, const wxString& in a_str, uint start, uint count, wxString& out result)
+{
+    wxString t = type.AfterFirst('<').BeforeFirst(',');
+    result = "output ((" + t + "*)" + a_str + ".begin())[" + start + "]@";
+    if (count != 0)
+        result += count;
+    else
+        result += a_str + ".size() - " + start;
+}
+
+void Parse_StlVector(const wxString& in a_str, uint start, wxString& out result)
+{
+    // add [] indexes in front of each value
+    int len = a_str.length();
+    int c = 0;
+    int index = start;
+    while (c < len)
+    {
+        result += a_str[c];
+        switch (a_str[c])
+        {
+            case '{':
+            case ',':
+                result += "[" + index++ + "] = ";
+                break;
+            default: break;
+        }
+        ++c;
+    }
+}

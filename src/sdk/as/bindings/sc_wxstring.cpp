@@ -239,7 +239,7 @@ static scWxString *AddDoubleString(double f, const scWxString &str)
 // wxString[]
 //----------
 
-static char *StringCharAt(unsigned int i, scWxString &str)
+static char& StringCharAt(unsigned int i, scWxString &str)
 {
 	if( i >= str.buffer.size() )
 	{
@@ -248,13 +248,11 @@ static char *StringCharAt(unsigned int i, scWxString &str)
 		ctx->SetException("Out of range");
 
 		// Return a null pointer
-		return 0;
+		static char c = '\0';
+		return c;
 	}
 
-    const char* s = _C(str.buffer);
-    return (char*)&s[i];
-//    static char c = str.buffer.GetChar(i);
-//	return &c;
+    return (char&)str.buffer[i];
 }
 
 //-----------------------

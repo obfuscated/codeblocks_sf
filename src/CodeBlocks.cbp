@@ -1401,10 +1401,11 @@
 			<Option link="0" />
 			<Option target="XP look &amp; feel" />
 		</Unit>
-		<Unit filename="scripts\gdb_wx.script">
+		<Unit filename="scripts\gdb_types.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
+			<Option target="Debugger" />
 		</Unit>
 		<Unit filename="scripts\startup.script">
 			<Option compilerVar="CPP" />

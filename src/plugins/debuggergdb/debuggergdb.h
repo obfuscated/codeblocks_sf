@@ -67,7 +67,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 		bool IsRunning() const { return m_pProcess; }
 		int GetExitCode() const { return m_LastExitCode; }
 
-		void SyncEditor(const wxString& filename, int line);
+		void SyncEditor(const wxString& filename, int line, bool setMarker = true);
 
 		void Log(const wxString& msg);
 		void DebugLog(const wxString& msg);
