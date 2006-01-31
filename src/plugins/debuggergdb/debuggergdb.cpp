@@ -1254,7 +1254,10 @@ void DebuggerGDB::SyncEditor(const wxString& filename, int line, bool setMarker)
 	wxFileName fname(filename);
 	if (project && fname.IsRelative())
         fname.MakeAbsolute(project->GetBasePath());
-    cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname.GetFullPath());
+	// gdb can't work with spaces in filenames, so we have passed it the shorthand form (C:\MYDOCU~1 etc)
+	// revert this change now so the file can be located and opened...
+	// we do this by calling GetLongPath()
+    cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname.GetLongPath());
     if (ed)
     {
         ed->Show(true);

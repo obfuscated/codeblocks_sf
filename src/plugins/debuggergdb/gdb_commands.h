@@ -623,7 +623,7 @@ class GdbCmd_Backtrace : public DebuggerCmd
     		    else if (reBT0.Matches(lines[i]))
     		    {
     		        reBT0.GetMatch(lines[i], 1).ToLong(&sf.number);
-    		        sf.function = reBT0.GetMatch(lines[i], 2) + reBT1.GetMatch(lines[i], 3);
+    		        sf.function = reBT0.GetMatch(lines[i], 2) + reBT0.GetMatch(lines[i], 3);
     		        matched = true;
     		    }
 
