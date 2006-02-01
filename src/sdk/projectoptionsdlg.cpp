@@ -828,9 +828,19 @@ void ProjectOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
     XRCCTRL(*this, "btnTargetBuildOptions", wxButton)->Enable(m_pCompiler && en);
     XRCCTRL(*this, "btnExportTarget", wxButton)->Enable(en);
 
+    // disable some stuff if using a custom makefile
+    bool customMake = XRCCTRL(*this, "chkCustomMakefile", wxCheckBox)->GetValue();
+    XRCCTRL(*this, "rbPCHStrategy", wxRadioBox)->Enable(!customMake);
+    XRCCTRL(*this, "txtObjectDir", wxTextCtrl)->Enable(!customMake && en);
+    XRCCTRL(*this, "txtObjectDir", wxTextCtrl)->Enable(!customMake && en);
+    XRCCTRL(*this, "btnBrowseObjectDir", wxButton)->Enable(!customMake && en);
+    XRCCTRL(*this, "btnToggleCheckmarks", wxButton)->Enable(!customMake && en);
+    list->Enable(!customMake);
+
     // scripts page
 	wxTreeCtrl* tc = XRCCTRL(*this, "tcOverview", wxTreeCtrl);
-	bool scrsel = tc->GetSelection().IsOk();
+	tc->Enable(!customMake);
+	bool scrsel = !customMake && tc->GetSelection().IsOk();
 
     wxListBox* lstPreScripts = XRCCTRL(*this, "lstPreScripts", wxListBox);
     lstPreScripts->Enable(scrsel);
@@ -838,6 +848,7 @@ void ProjectOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
     XRCCTRL(*this, "btnAddPreScripts", wxButton)->Enable(scrsel);
     XRCCTRL(*this, "btnRemovePreScripts", wxButton)->Enable(scrsel && presel);
     XRCCTRL(*this, "spnPreScripts", wxSpinButton)->Enable(scrsel && presel && lstPreScripts->GetCount() > 1);
+    XRCCTRL(*this, "btnCheckScripts", wxSpinButton)->Enable(!customMake);
 }
 
 void ProjectOptionsDlg::OnOK(wxCommandEvent& event)
