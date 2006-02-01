@@ -149,7 +149,7 @@ bool wxsWindowRes::Load()
 
 	Clear();
 
-    TiXmlDocument Doc(WxsFile.mb_str());
+    TiXmlDocument Doc(_C(WxsFile));
     TiXmlElement* Resource;
 
     if ( !  Doc.LoadFile() ||
@@ -165,8 +165,8 @@ bool wxsWindowRes::Load()
     while ( XmlWindow )
     {
     	wxString TypeName = GetWidgetClass(false);
-        if ( !strcmp(XmlWindow->Attribute("class"),TypeName.mb_str()) &&
-             !strcmp(XmlWindow->Attribute("name"),ClassName.mb_str()) )
+        if ( !strcmp(XmlWindow->Attribute("class"),_C(TypeName)) &&
+             !strcmp(XmlWindow->Attribute("name"),_C(ClassName)) )
         {
             break;
         }
@@ -200,7 +200,7 @@ void wxsWindowRes::Save()
 
     if ( Doc )
     {
-        Doc->SaveFile(WxsFile.mb_str());
+        Doc->SaveFile(_C(WxsFile));
         delete Doc;
     }
 
@@ -212,8 +212,8 @@ TiXmlDocument* wxsWindowRes::GenerateXml()
     TiXmlDocument* NewDoc = new TiXmlDocument;
     TiXmlElement* Resource = NewDoc->InsertEndChild(TiXmlElement("resource"))->ToElement();
     TiXmlElement* XmlDialog = Resource->InsertEndChild(TiXmlElement("object"))->ToElement();
-    XmlDialog->SetAttribute("class",wxString(GetWidgetClass()).mb_str());
-    XmlDialog->SetAttribute("name",ClassName.mb_str());
+    XmlDialog->SetAttribute("class",_C(GetWidgetClass()));
+    XmlDialog->SetAttribute("name",_C(ClassName));
     if ( !RootWidget->XmlSave(XmlDialog) )
     {
         delete NewDoc;
@@ -275,22 +275,22 @@ bool wxsWindowRes::GenerateEmptySources()
     wxString Include = IncludeFN.GetFullPath();
 
 
-    FILE* Fl = fopen(GetProject()->GetProjectFileName(HFile).mb_str(),"wt");
+    FILE* Fl = fopen(_C(GetProject()->GetProjectFileName(HFile)),"wt");
     if ( !Fl ) return false;
     wxString Content = EmptyHeader;
     Content.Replace(_T("$(Guard)"),Guard,true);
     Content.Replace(_T("$(ClassName)"),ClassName,true);
     Content.Replace(_T("$(BaseClassName)"),GetWidgetClass(),true);
-    fprintf(Fl,"%s",(const char*)Content.mb_str());
+    fprintf(Fl,"%s",(const char*)_C(Content));
     fclose(Fl);
 
-    Fl = fopen(GetProject()->GetProjectFileName(SrcFile).mb_str(),"wt");
+    Fl = fopen(_C(GetProject()->GetProjectFileName(SrcFile)),"wt");
     if ( !Fl ) return false;
     Content = EmptySource;
     Content.Replace(_T("$(Include)"),Include,true);
     Content.Replace(_T("$(ClassName)"),ClassName,true);
     Content.Replace(_T("$(BaseClassName)"),GetWidgetClass(),true);
-    fprintf(Fl,"%s",(const char*)Content.mb_str());
+    fprintf(Fl,"%s",(const char*)_C(Content));
     fclose(Fl);
     return true;
 }
@@ -354,7 +354,7 @@ void wxsWindowRes::RebuildCode()
         TiXmlDocument* Doc = GenerateXrc();
         if ( Doc )
         {
-            Doc->SaveFile(GetProject()->GetProjectFileName(XrcFile).mb_str());
+            Doc->SaveFile(_C(GetProject()->GetProjectFileName(XrcFile)));
             delete Doc;
         }
 

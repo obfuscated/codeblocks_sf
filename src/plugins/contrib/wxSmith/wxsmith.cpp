@@ -305,7 +305,7 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
 
     // Loading xrc file into xml document
 
-    TiXmlDocument Doc(FileName.mb_str());
+    TiXmlDocument Doc(_C(FileName));
     TiXmlElement* Resource;     if (! Doc.LoadFile() ||
         ! (Resource = Doc.FirstChildElement("resource")) )
     {
@@ -357,7 +357,7 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
     Element = Resource->FirstChildElement("object");
     while ( Element )
     {
-        if ( !strcmp(Element->Attribute("name"),Name.mb_str()) )
+        if ( !strcmp(Element->Attribute("name"),_C(Name)) )
         {
             break;
         }

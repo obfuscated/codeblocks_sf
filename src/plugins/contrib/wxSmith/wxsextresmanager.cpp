@@ -20,7 +20,7 @@ wxsExtResManager::~wxsExtResManager()
 int wxsExtResManager::OpenXrc(const wxString& FileName)
 {
     TiXmlDocument Doc;
-    if ( !Doc.LoadFile(FileName.mb_str()) )
+    if ( !Doc.LoadFile(_C(FileName)) )
     {
         wxMessageBox(_("Error occured while loading XRC file"));
         return 1;

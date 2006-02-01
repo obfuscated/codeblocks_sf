@@ -145,8 +145,8 @@ void wxsWidgetEvents::XmlSaveFunctions(TiXmlElement* Element)
     	if ( Event->FunctionName.Length() )
     	{
     		TiXmlElement* Handler = Element->InsertEndChild( TiXmlElement(HandlerXmlElementName) ) -> ToElement();
-    		Handler->SetAttribute(HandlerXmlEntryName,Event->EventEntry.mb_str());
-    		Handler->SetAttribute(HandlerXmlFunctionName,Event->FunctionName.mb_str());
+    		Handler->SetAttribute(HandlerXmlEntryName,_C(Event->EventEntry));
+    		Handler->SetAttribute(HandlerXmlFunctionName,_C(Event->FunctionName));
     	}
     }
 }

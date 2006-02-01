@@ -106,7 +106,7 @@ bool wxsCustomWidget::MyXmlSave()
     }
     else
     {
-        XmlElem()->SetAttribute("class",ClassName.mb_str());
+        XmlElem()->SetAttribute("class",_C(ClassName));
         XmlSetVariable(_T("style"),Style);
         
         for ( TiXmlElement* Elem = XmlDataDoc.FirstChildElement();
@@ -178,7 +178,7 @@ void wxsCustomWidget::RebuildXmlData()
 bool wxsCustomWidget::RebuildXmlDataDoc(bool Validate,bool Correct)
 {
     XmlDataDoc.Clear();
-    XmlDataDoc.Parse(XmlData.mb_str());
+    XmlDataDoc.Parse(_C(XmlData));
     if ( !Validate ) return true;
     if ( !XmlDataDoc.Error() ) return true;
     if ( Correct )

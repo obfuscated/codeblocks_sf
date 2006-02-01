@@ -24,7 +24,7 @@ void wxsWindowResDataObject::GetAllFormats(wxDataFormat *formats, Direction dir)
 bool wxsWindowResDataObject::GetDataHere(const wxDataFormat& format, void *buf) const
 {
 	wxString XmlData = GetXmlData();
-    memcpy(buf,XmlData.mb_str(),XmlData.Length()+1);
+    memcpy(buf,_C(XmlData),XmlData.Length()+1);
    	return true;
 }
 
@@ -65,7 +65,7 @@ bool wxsWindowResDataObject::AddWidget(wxsWidget* Widget)
 	if ( !Widget ) return false;
     TiXmlElement* Elem = XmlElem->InsertEndChild(TiXmlElement("object"))->ToElement();
     if ( !Elem ) return false;
-    Elem->SetAttribute("class",Widget->GetInfo().Name.mb_str());
+    Elem->SetAttribute("class",_C(Widget->GetInfo().Name));
     if ( !Widget->XmlSave(Elem) )
     {
         XmlElem->RemoveChild(Elem);
@@ -111,7 +111,7 @@ bool wxsWindowResDataObject::SetXmlData(const wxString& Data)
 {
     XmlDoc.Clear();
     WidgetsCount = 0;
-	XmlDoc.Parse(Data.mb_str());
+	XmlDoc.Parse(_C(Data));
     if ( XmlDoc.Error() )
     {
         DBGLOG(_T("wxSmith: Error loading Xml data -> ") + _U(XmlDoc.ErrorDesc()));

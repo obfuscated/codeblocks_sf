@@ -113,7 +113,7 @@ bool wxsCheckListBox::MyXmlSave()
         TiXmlElement* Item = Elem->InsertEndChild(TiXmlElement("item"))->ToElement();
         if ( !Item ) return false;
         Item->SetAttribute("checked",arrayChecks[i]?"1":"0");
-        Item->InsertEndChild(TiXmlText(arrayChoices[i].mb_str()));
+        Item->InsertEndChild(TiXmlText(_C(arrayChoices[i])));
     }
     
     return true;
