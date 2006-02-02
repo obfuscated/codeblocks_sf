@@ -34,6 +34,7 @@
 #include <wx/choicdlg.h>
 #include <wx/notebook.h>
 #include <wx/clipbrd.h>
+#include <wx/taskbar.h>
 #include <cbexception.h>
 #if wxCHECK_VERSION(2,6,0)
     #include <wx/debugrpt.h>
@@ -514,6 +515,8 @@ int CodeBlocksApp::BatchJob()
     if (!m_Batch)
         return -1;
 
+    wxTaskBarIcon tbicon;
+
     // find compiler plugin
     PluginsArray arr = Manager::Get()->GetPluginManager()->GetCompilerOffers();
     if (arr.GetCount() == 0)
@@ -522,6 +525,14 @@ int CodeBlocksApp::BatchJob()
     cbCompilerPlugin* compiler = static_cast<cbCompilerPlugin*>(arr[0]);
     if (!compiler)
         return -3;
+
+#ifdef __WXMSW__
+    tbicon.SetIcon(wxICON(A_MAIN_ICON),_("Building ")
+        +wxFileNameFromPath(wxString(argv[argc-1])));
+#else
+    tbicon.SetIcon(wxIcon(app),_("Building ")
+        +wxFileNameFromPath(wxString(argv[argc-1])));
+#endif // __WXMSW__
 
     if (m_ReBuild)
         compiler->RebuildWorkspace(m_BatchTarget);
@@ -542,6 +553,9 @@ int CodeBlocksApp::BatchJob()
         msg.Printf(_("Batch build is complete.\nProcess exited with status code %d."), exitCode);
         wxMessageBox(msg, g_AppName, exitCode == 0 ? wxICON_INFORMATION : wxICON_WARNING);
     }
+
+    tbicon.RemoveIcon();
+
     return exitCode;
 }
 
