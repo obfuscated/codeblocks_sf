@@ -91,7 +91,7 @@ public:
     PersonalityManager* GetPersonalityManager() const;
     UserVariableManager* GetUserVariableManager() const;
     ScriptingManager* GetScriptingManager() const;
-    ConfigManager* Manager::GetConfigManager(const wxString& name_space) const;
+    ConfigManager* GetConfigManager(const wxString& name_space) const;
 
 
 

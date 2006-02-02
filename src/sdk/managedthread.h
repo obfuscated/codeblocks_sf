@@ -11,8 +11,8 @@ WX_DEFINE_ARRAY(ManagedThread*, ManagedThreadsArray);
 class ManagedThread : public wxThread
 {
 public:
-    ManagedThread::ManagedThread(bool* abortflag  = 0L);
-    virtual ManagedThread::~ManagedThread();
+    ManagedThread(bool* abortflag  = 0L);
+    virtual ~ManagedThread();
     static unsigned long count_running();
     static unsigned long count_threads();
     static void abort_all(); // Warning! Once set, can't be reset!

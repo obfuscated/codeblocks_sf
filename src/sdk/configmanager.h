@@ -192,7 +192,7 @@ public:
     *  cfg->Read<MySerializableClass>("name", (ConfigManagerContainer::SerializableObjectMap*) &objMap);
     *  map["somekey"]->DoSomething();
     */
-    void ConfigManager::Write(const wxString& name, const ConfigManagerContainer::SerializableObjectMap* map);
+    void Write(const wxString& name, const ConfigManagerContainer::SerializableObjectMap* map);
     template <class T> void Read(const wxString& name, ConfigManagerContainer::SerializableObjectMap *map)
     {
         wxString key(name);

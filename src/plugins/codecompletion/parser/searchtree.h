@@ -131,7 +131,7 @@ class SearchTreeNode
             */
         unsigned int GetDeepestMatchingPosition(BasicSearchTree* tree, const string& s,unsigned int StringStartDepth);
         string Serialize(BasicSearchTree* tree,nSearchTreeNode node_id,bool withchildren = false);
-        void SearchTreeNode::dump(BasicSearchTree* tree,nSearchTreeNode node_id,const string& prefix,string& result);
+        void dump(BasicSearchTree* tree,nSearchTreeNode node_id,const string& prefix,string& result);
 
 
         static string SerializeString(const string& s);

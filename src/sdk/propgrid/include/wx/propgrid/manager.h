@@ -93,7 +93,7 @@ class WXDLLIMPEXP_PG wxPropertyGridManager : public wxPanel, public wxPropertyCo
 
 public:
 
-	/** Two step constructor. Call Create when this constructor is called to build up the 
+	/** Two step constructor. Call Create when this constructor is called to build up the
 	    wxPropertyGridManager.
 	*/
     wxPropertyGridManager();
@@ -184,7 +184,7 @@ public:
         wxASSERT ( m_targetState );
         return m_targetState->Insert((wxPGPropertyWithChildren*)(wxPGProperty*)m_targetState->BaseGetPropertyByName(name),-1,property);
     }
-    
+
     void ClearModifiedStatus ( wxPGId id );
 
     inline void ClearModifiedStatus ()
@@ -198,7 +198,7 @@ public:
 
     bool ClearPropertyValue( wxPGId id );
     bool ClearPropertyValue( wxPGNameStr name );
-    
+
     /** Collapses given item. Returns TRUE if it was collapsable and previously expanded. */
     bool Collapse ( wxPGId id );
     bool Collapse ( wxPGNameStr name );
@@ -345,7 +345,7 @@ public:
         return wxPGId(p.Last());
     }
     inline wxPGId GetLastChild ( wxPGNameStr name ) { return GetLastChild ( GetPropertyByName(name) ); }
-    
+
     /** Returns id of next category after a given property (which does not have to be category). */
     inline wxPGId GetNextCategory ( wxPGId id ) const
     {
@@ -592,7 +592,7 @@ public:
     /** Sets y coordinate of the description box splitter. */
     void SetDescBoxHeight ( int ht, bool refresh = TRUE );
 
-    /** All properties added/inserted will have given priority by default. 
+    /** All properties added/inserted will have given priority by default.
         \param
         priority can be wxPG_HIGH (default) or wxPG_LOW.
     */
@@ -658,9 +658,9 @@ public:
     void SetPropertyValue ( wxPGNameStr name, wxObject* value );
     void SetPropertyValue ( wxPGNameStr name, void* value );
     void SetPropertyValue ( wxPGNameStr name, wxVariant& value );
-    wxPG_IMPLEMENT_PGMAN_METHOD_NORET1(SetPropertyValue,const wxPoint&)
-    wxPG_IMPLEMENT_PGMAN_METHOD_NORET1(SetPropertyValue,const wxSize&)
-    wxPG_IMPLEMENT_PGMAN_METHOD_NORET1(SetPropertyValue,const wxArrayInt&)
+    /*wxPG_IMPLEMENT_PGMAN_METHOD_NORET1*/void SetPropertyValue(const wxPoint&);
+    /*wxPG_IMPLEMENT_PGMAN_METHOD_NORET1*/void SetPropertyValue(const wxSize&);
+    /*wxPG_IMPLEMENT_PGMAN_METHOD_NORET1*/void SetPropertyValue(const wxArrayInt&);
 
     inline void SetPropertyValue ( wxPGId id, wxObject& value )
     {

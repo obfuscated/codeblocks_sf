@@ -129,7 +129,7 @@ protected:
 	//! (but they do still work !!!)
 	void Update();
 	#if defined( __WXMSW__ )
-	void wxMenuCmd::RebuildMenuitem(); //+v0.4.6
+	void RebuildMenuitem(); //+v0.4.6
 	#endif
 };
 

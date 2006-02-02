@@ -124,7 +124,7 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
 
         /** Builds Opened Files tree in the Projects tab
           */
-        wxTreeCtrl *EditorManager::GetTree();
+        wxTreeCtrl* GetTree();
         wxTreeItemId FindTreeFile(const wxString& filename);
         wxString GetTreeItemFilename(wxTreeItemId item);
         void BuildOpenedFilesTree(wxWindow* parent);

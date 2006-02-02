@@ -70,7 +70,7 @@
 class wxMyFileDropTarget : public wxFileDropTarget
 {
 public:
-    wxMyFileDropTarget::wxMyFileDropTarget(MainFrame *frame):m_frame(frame){}
+    wxMyFileDropTarget(MainFrame *frame):m_frame(frame){}
     virtual bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames)
     {
         if(!m_frame) return false;

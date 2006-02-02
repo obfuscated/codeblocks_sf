@@ -98,14 +98,14 @@ protected:
 			return 0;
     };
 
-    wxChar Tokenizer::NextChar() const
+    wxChar NextChar() const
     {
         if ((m_TokenIndex + 1) >= m_BufferLen) //    m_TokenIndex + 1) < 0  can never be true
             return 0;
         return m_Buffer.GetChar(m_TokenIndex + 1);
     };
 
-    wxChar Tokenizer::PreviousChar() const
+    wxChar PreviousChar() const
     {
         if ((m_TokenIndex - 1) < 0)       //   (m_TokenIndex - 1) >= m_BufferLen can never be true
             return 0;
