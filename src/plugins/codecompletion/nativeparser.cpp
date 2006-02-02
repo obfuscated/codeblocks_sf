@@ -289,15 +289,15 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
 				bool bStart = false;
 				for(int idxCount = 0; idxCount < nCount; ++idxCount)
 				{
-					if(Errors[idxCount] == _("#include <...> search starts here:"))
+					if (!bStart && Errors[idxCount] == _("#include <...> search starts here:"))
 					{
 						bStart = true;
 					}
-					else if(Errors[idxCount] == _("End of search list."))
+					else if (bStart && Errors[idxCount] == _("End of search list."))
 					{
 						bStart = false; // could jump out of for loop if we want
 					}
-					else if(bStart)
+					else if (bStart)
 					{
 						// Manager::Get()->GetMessageManager()->DebugLog("include dir " + Errors[idxCount]);
 						// get rid of the leading space (more general : any whitespace)in front
@@ -312,7 +312,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
 								if (NormalizePath(dir,base))
 								{
 									parser->AddIncludeDir(dir.GetFullPath());
-//									Manager::Get()->GetMessageManager()->DebugLog("Parser internal cmp dir: " + dir.GetFullPath());
+//									Manager::Get()->GetMessageManager()->DebugLog(_T("Parser internal cmp dir: ") + dir.GetFullPath());
 								}
                                 else
                                     Manager::Get()->GetMessageManager()->DebugLog(_T("Error normalizing path: '%s' from '%s'"),out.c_str(),base.c_str());

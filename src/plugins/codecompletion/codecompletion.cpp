@@ -831,6 +831,8 @@ void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
 			{
 			  tmp = Dialog.GetIncludeFile();
 			}
+			else
+                return; // user cancelled the dialog...
 		}
 		else if(FoundSet.GetCount())
 		{
