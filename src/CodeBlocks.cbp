@@ -1856,6 +1856,10 @@
 			<Option link="0" />
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk\cbexception.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk\cbexception.h">
 			<Option compilerVar="" />
 			<Option compile="0" />

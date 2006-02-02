@@ -121,7 +121,7 @@ class EVTIMPORT CodeBlocksDockEvent : public wxEvent, public BlockAllocated<Code
 typedef void (wxEvtHandler::*CodeBlocksDockEventFunction)(CodeBlocksDockEvent&);
 
 /** Event used to request from the main app to manage the view layouts. */
-class EVTIMPORT CodeBlocksLayoutEvent : public wxEvent, public BlockAllocated<CodeBlocksDockEvent, 75>
+class EVTIMPORT CodeBlocksLayoutEvent : public wxEvent, public BlockAllocated<CodeBlocksLayoutEvent, 75>
 {
     public:
         CodeBlocksLayoutEvent(wxEventType commandType = wxEVT_NULL, const wxString& layout_name = wxEmptyString)

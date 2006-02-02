@@ -68,7 +68,20 @@ public:
      * From that point, the below functions will return null. If there is any chance that your code might execute
      * during application shutdown, you MUST check for a null pointer.
      * The one notable exception to this rule is ConfigManager, which has the same lifetime as Manager itself.
+     *
+     * The order of destruction is:
+     * ----------------------------
+     *   ToolsManager,       TemplateManager, PluginManager,
+	 *   ScriptingManager,   ProjectManager,  EditorManager,
+	 *   PersonalityManager, MacrosManager,   UserVariableManager,
+	 *   MessageManager
+	 *   The ConfigManager is destroyed immediately before the applicaton terminates, so it can be
+	 *   considered being omnipresent.
+     *
+     * For plugin developers, this means that most managers (except for the ones you probably don't use anyway)
+     * will be available throughout the entire lifetime of your plugins.
      */
+
     ProjectManager* GetProjectManager() const;
     EditorManager* GetEditorManager() const;
     MessageManager* GetMessageManager() const;
