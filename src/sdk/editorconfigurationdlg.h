@@ -2,6 +2,7 @@
 #define EDITORCONFIGURATION_H
 
 #include <wx/dialog.h>
+#include <wx/arrstr.h>
 #include "settings.h"
 #include "editormanager.h"
 
@@ -54,6 +55,7 @@ class EditorConfigurationDlg : public wxDialog
 		EditorColorSet* m_Theme;
 		HighlightLanguage m_Lang;
 		int m_DefCodeFileType;
+		wxArrayString m_DefaultCode;  //!< will store the default code during configuration for each type
 		bool m_ThemeModified;
 		int m_LastAutoCompKeyword;
 		AutoCompleteMap m_AutoCompMap;

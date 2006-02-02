@@ -169,6 +169,13 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "txtDefCode", wxTextCtrl)->SetValue(cfg->Read(key, wxEmptyString));
     wxFont tmpFont(8, wxMODERN, wxNORMAL, wxNORMAL);
     XRCCTRL(*this, "txtDefCode", wxTextCtrl)->SetFont(tmpFont);
+	// read them all in the array
+	for(size_t idx = 0; idx < sizeof(IdxToFileType)/sizeof(*IdxToFileType); ++ idx)
+	{
+		wxString key;
+		key.Printf(_T("/default_code/set%d"), IdxToFileType[idx]);
+		m_DefaultCode.Add(cfg->Read(key, wxEmptyString));
+	}// end for : idx
 
     // load listbook images
     const wxString base = ConfigManager::GetDataFolder() + _T("/images/settings/");
@@ -622,16 +629,13 @@ void EditorConfigurationDlg::OnChangeLang(wxCommandEvent& event)
 
 void EditorConfigurationDlg::OnChangeDefCodeFileType(wxCommandEvent& event)
 {
-    wxString key;
 	int sel = XRCCTRL(*this, "cmbDefCodeFileType", wxComboBox)->GetSelection();
-//	if (sel != m_DefCodeFileType)
-	{
-        key.Printf(_T("/default_code/set%d"), IdxToFileType[m_DefCodeFileType]);
-        Manager::Get()->GetConfigManager(_T("editor"))->Write(key, XRCCTRL(*this, "txtDefCode", wxTextCtrl)->GetValue());
+	if (sel != m_DefCodeFileType)
+	{	// update array for previous selected and show the code for the newly selected
+		m_DefaultCode[m_DefCodeFileType] = XRCCTRL(*this, "txtDefCode", wxTextCtrl)->GetValue();
+		m_DefCodeFileType = sel;
+		XRCCTRL(*this, "txtDefCode", wxTextCtrl)->SetValue(m_DefaultCode[m_DefCodeFileType]);
 	}
-	m_DefCodeFileType = sel;
-    key.Printf(_T("/default_code/set%d"), IdxToFileType[m_DefCodeFileType]);
-    XRCCTRL(*this, "txtDefCode", wxTextCtrl)->SetValue(Manager::Get()->GetConfigManager(_T("editor"))->Read(key, wxEmptyString));
 }
 
 void EditorConfigurationDlg::OnChooseColor(wxCommandEvent& event)
@@ -779,10 +783,18 @@ void EditorConfigurationDlg::EndModal(int retCode)
         cfg->Write(_T("/gutter/color"),		    XRCCTRL(*this, "btnGutterColor", wxButton)->GetBackgroundColour());
         cfg->Write(_T("/gutter/column"), 		XRCCTRL(*this, "spnGutterColumn", wxSpinCtrl)->GetValue());
 
-        int sel = XRCCTRL(*this, "cmbDefCodeFileType", wxComboBox)->GetSelection();
-        wxString key;
-        key.Printf(_T("/default_code/set%d"), IdxToFileType[sel]);
-        cfg->Write(key, XRCCTRL(*this, "txtDefCode", wxTextCtrl)->GetValue());
+		// default code : first update what's in the current txtCtrl,
+		// and then write them all to the config file (even if unmodified)
+		int sel = XRCCTRL(*this, "cmbDefCodeFileType", wxComboBox)->GetSelection();
+		m_DefaultCode[sel] = XRCCTRL(*this, "txtDefCode", wxTextCtrl)->GetValue();
+		for(size_t idx = 0; idx < sizeof(IdxToFileType)/sizeof(*IdxToFileType); ++ idx)
+		{
+			wxString key;
+			key.Printf(_T("/default_code/set%d"), IdxToFileType[idx]);
+			m_DefaultCode.Add(cfg->Read(key, wxEmptyString));
+			cfg->Write(key, m_DefaultCode[idx]);
+		}// end for : idx
+
 
         if (m_Theme)
         {
