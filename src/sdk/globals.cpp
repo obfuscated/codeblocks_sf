@@ -125,7 +125,8 @@ FileType FileTypeOf(const wxString& filename)
     if (ext.Matches(CPP_EXT) ||
             ext.Matches(C_EXT) ||
             ext.Matches(CC_EXT) ||
-            ext.Matches(CXX_EXT)
+            ext.Matches(CXX_EXT) ||
+            ext.Matches(D_EXT)
        )
         return ftSource;
 

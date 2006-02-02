@@ -1,0 +1,33 @@
+/*
+ * Sample preview code
+ * This is a block comment
+ */
+ 
+/++
+	A Super Block
+ ++/
+
+import std.file;
+
+/**
+  * This is a documentation comment block
+  * @param xxx does this (this is the documentation keyword)
+  * @authr some user (this is the documentation keyword error)
+  */
+
+int main(char[] args)
+{
+	/// This is a documentation comment line
+	int[20] numbers;
+	int average = 0;
+	char ch = '\n';
+	for (int i = 0; i < 20; ++i) // a breakpoint is set
+	{
+		numbers[i] = i; // active line (during debugging)
+		total += i; // error line
+	}
+	average = total / 20;
+	printf("%d\n%d\n", numbers[0], numbers[19]);
+	printf("total: %d average: %d\n", total, average);
+}
+

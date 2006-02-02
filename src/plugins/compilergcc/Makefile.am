@@ -22,8 +22,10 @@ libcompiler_la_SOURCES = advancedcompileroptionsdlg.cpp \
 			compilerBCC.cpp \
 			compiler_defs.cpp \
 			compilerDMC.cpp \
+			compilerDMD.cpp \
 			compilererrors.cpp \
 			compilergcc.cpp \
+			compilerGDC.cpp \
 			compilerICC.cpp \
 			compilermessages.cpp \
 			compilerMINGW.cpp \
@@ -39,8 +41,10 @@ noinst_HEADERS = advancedcompileroptionsdlg.h \
 			compilerBCC.h \
 			compiler_defs.h \
 			compilerDMC.h \
+			compilerDMD.h \
 			compilererrors.h \
 			compilergcc.h \
+			compilerGDC.h \
 			compilerICC.h \
 			compilermessages.h \
 			compilerMINGW.h \

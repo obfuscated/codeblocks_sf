@@ -33,6 +33,7 @@ void Associations::Set()
 	DoSetAssociation(HPP_EXT, _("C/C++ header file"), name, _T("4"));
 	DoSetAssociation(HH_EXT, _("C/C++ header file"), name, _T("4"));
 	DoSetAssociation(HXX_EXT, _("C/C++ header file"), name, _T("4"));
+	DoSetAssociation(D_EXT, _("D source file"), name, _T("5"));
 
 	SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, 0L, 0L);
 }
@@ -51,7 +52,8 @@ bool Associations::Check()
             DoCheckAssociation(H_EXT, _T("C/C++ header file"), name, _T("4")) &&
             DoCheckAssociation(HPP_EXT, _T("C/C++ header file"), name, _T("4")) &&
             DoCheckAssociation(HH_EXT, _T("C/C++ header file"), name, _T("4")) &&
-            DoCheckAssociation(HXX_EXT, _T("C/C++ header file"), name, _T("4"));
+            DoCheckAssociation(HXX_EXT, _T("C/C++ header file"), name, _T("4")) &&
+            DoCheckAssociation(D_EXT, _T("D source file"), name, _T("5"));
 }
 
 void DoSetAssociation(const wxString& ext, const wxString& descr, const wxString& exe, const wxString& icoNum)

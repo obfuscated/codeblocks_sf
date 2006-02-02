@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+		<Lexer name="D"
+				index="3"
+				filemasks="*.d,*.dmd">
+				<Style name="Default"
+						index="0"
+						fg="0,0,0"
+						bg="255,255,255"
+						bold="0"
+						italics="0"
+						underlined="0"/>
+				<Style name="Comment (normal)"
+						index="1,2"
+						fg="160,160,160"/>
+				<Style name="Comment (documentation)"
+						index="3,15"
+						fg="128,128,255"
+						bold="1"/>
+				<Style name="Comment keyword (documentation)"
+						index="17"
+						fg="0,128,128"/>
+				<Style name="Comment keyword error (documentation)"
+						index="18"
+						fg="128,0,0"/>
+				<Style name="Number"
+						index="4"
+						fg="240,0,240"/>
+				<Style name="Keyword"
+						index="5"
+						fg="0,0,160"
+						bold="1"/>
+				<Style name="User keyword"
+						index="16"
+						fg="0,160,0"
+						bold="1"/>
+				<Style name="String"
+						index="6,12"
+						fg="0,0,255"/>
+				<Style name="Character"
+						index="7"
+						fg="224,160,0"/>
+				<Style name="UUID"
+						index="8"
+						fg="0,0,0"/>
+				<Style name="Preprocessor"
+						index="9"
+						fg="0,160,0"/>
+				<Style name="Operator"
+						index="10"
+						fg="255,0,0"/>
+				<Style name="Selection"
+						index="-99"
+						bg="192,192,192"/>
+				<Style name="Active line"
+						index="-98"
+						bg="255,255,160"/>
+				<Style name="Breakpoint line"
+						index="-2"
+						bg="255,160,160"/>
+				<Style name="Debugger active line"
+						index="-3"
+						bg="160,160,255"/>
+				<Style name="Compiler error line"
+						index="-4"
+						bg="255,128,0"/>
+				<Style name="Matching brace highlight"
+						index="34"
+						fg="255,0,0"
+						bold="1"
+						underlined="1"/>
+				<Style name="No matching brace highlight"
+						index="35"
+						bg="255,0,0"/>
+				<Keywords>
+						<Language index="0"
+								value="abstract alias align asm assert auto 
+								bit body break byte case cast catch cdouble
+								cent cfloat char class const continue
+								creal dchar debug default delegate delete
+								deprecated do double else enum export
+								extern false final finally float for foreach
+								function goto idouble if ifloat import in
+								inout int interface invariant ireal is 	long
+								mixin module new null out override 	package
+								pragma private protected public real return
+								short static struct super switch synchronized
+								template this throw true try typedef typeid
+								typeof ubyte ucent uint ulong union unittest
+								ushort version void volatile wchar while with"/>
+						<User index="1"/>
+						<Documentation index="2"
+								value="a addindex addtogroup anchor arg attention
+								author b brief bug c class code date def defgroup deprecated dontinclude
+								e em endcode endhtmlonly endif endlatexonly endlink endverbatim enum example exception
+								f$ f[ f] file fn hideinitializer htmlinclude htmlonly
+								if image include ingroup internal invariant interface latexonly li line link
+								mainpage name namespace nosubgrouping note overload
+								p page par param post pre ref relates remarks return retval
+								sa section see showinitializer since skip skipline struct subsection
+								test throw todo typedef union until
+								var verbatim verbinclude version warning weakgroup $ @ \ & < > # { }"/>
+				</Keywords>
+				<SampleCode value="lexer_d.sample"
+						breakpoint_line="20"
+						debug_line="22"
+						error_line="23"/>
+		</Lexer>
+</CodeBlocks_lexer_properties>

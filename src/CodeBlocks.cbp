@@ -761,6 +761,26 @@
 			<Option link="0" />
 			<Option target="Compiler" />
 		</Unit>
+		<Unit filename="plugins\compilergcc\compilerDMD.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerDMD.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerGDC.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerGDC.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Compiler" />
+		</Unit>
 		<Unit filename="plugins\compilergcc\compilerICC.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Compiler" />

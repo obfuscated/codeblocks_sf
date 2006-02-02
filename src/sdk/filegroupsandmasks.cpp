@@ -21,7 +21,7 @@ FilesGroupsAndMasks::FilesGroupsAndMasks()
 	{
 		// only add default groups if none were loaded...
 		unsigned int group = AddGroup(_("Sources"));
-		SetFileMasks(group, _T("*.c;*.cpp;*.cc;*.cxx;*.C;*.CPP;*.CC;*.CXX") );
+		SetFileMasks(group, _T("*.c;*.cpp;*.cc;*.cxx;*.C;*.CPP;*.CC;*.CXX;*.d;*.D") );
 		group = AddGroup(_("Headers"));
 		SetFileMasks(group, _T("*.h;*.hpp;*.hh;*.hxx;*.H;*.HPP;*.HH;*.HXX") );
 		group = AddGroup(_("Resources"));
