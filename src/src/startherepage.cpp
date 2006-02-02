@@ -33,11 +33,7 @@ class MyHtmlWin : public wxHtmlWindow
             {
                 if (!m_pOwner->LinkClicked(link))
                 {
-                #ifdef __WXMSW__
-                    ShellExecute(0,0,link.GetHref().c_str(),0,_T(""),SW_SHOWNORMAL);
-                #else
-                    wxMessageBox(_("We 're sorry but currently this is not supported in your platform"), _("Information"), wxICON_INFORMATION);
-                #endif
+                    wxLaunchDefaultBrowser(link.GetHref());
                 }
             }
         }
