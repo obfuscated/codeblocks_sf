@@ -1942,6 +1942,9 @@ int CompilerGCC::Build(const wxString& target)
     ProjectBuildTarget* bt = m_Project->GetBuildTarget(target);
     if (UseMake(bt))
     {
+        // make sure all project files are saved
+        if (m_Project && !m_Project->SaveAllFiles())
+            Manager::Get()->GetMessageManager()->Log(_("Could not save all files..."));
         wxString cmd = GetMakeCommandFor(mcBuild, bt);
         m_CommandQueue.Add(new CompilerCommand(cmd, wxEmptyString, m_Project, bt));
     }
