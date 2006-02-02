@@ -381,13 +381,11 @@ void cbEditor::SetModified(bool modified)
     if (modified != m_Modified)
     {
         m_Modified = modified;
-        if (m_Modified)
-            SetEditorTitle(g_EditorModified + m_Shortname);
-        else
+        if (!m_Modified)
         {
             m_pControl->SetSavePoint();
-            SetEditorTitle(m_Shortname);
         }
+		SetEditorTitle(m_Shortname);
         Manager::Get()->GetEditorManager()->RefreshOpenedFilesTree();
     }
     // visual state
@@ -397,7 +395,14 @@ void cbEditor::SetModified(bool modified)
 
 void cbEditor::SetEditorTitle(const wxString& title)
 {
-    SetTitle(title);
+	if(m_Modified)
+	{
+		SetTitle(g_EditorModified + title);
+	}
+	else
+	{
+		SetTitle(title);
+	}
 }
 
 void cbEditor::SetProjectFile(ProjectFile* project_file, bool preserve_modified)
