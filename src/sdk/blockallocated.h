@@ -19,8 +19,6 @@
 *          Standard operator new is a lot more conservative with heap space, it performs just fine in most cases, it does not
 *          depend on proper parameter tuning, and it is guaranteed to work with any kind of class without any malign behaviour.
 *
-*          Defining DEBUG_BLOCKALLOC will collect performance data and enable leak detection.
-*
 * $Id$
 * $Date$
 */
@@ -28,14 +26,22 @@
 #ifndef __BLOCKALLOC_H__
 #define __BLOCKALLOC_H__
 
-#ifdef new
 #undef new
-#endif
 
 #include <vector>
 #include <wx/file.h>
+#include <typeinfo>
 
-template <class T, unsigned int pool_size, const unsigned int dbg_id>
+namespace BlkAllc
+{
+    void DebugLog(wxString cn, int blockSize, int poolSize, int max_refs, int total_refs, int ref_count);
+
+    const bool enable_global_debug = false;
+    const bool verbose = false;
+};
+
+
+template <class T, unsigned int pool_size, const bool debug>
 class BlockAllocator
 {
     template <class U>
@@ -86,24 +92,16 @@ public:
     BlockAllocator() : first(0), last(0), ref_count(0), max_refs(0), total_refs(0)
     {
 	#ifdef __GNUC__
-	assert(__builtin_constant_p(dbg_id));
+	assert(__builtin_constant_p(debug));
 	#endif
 	};
 
     ~BlockAllocator()
     {
-        if(dbg_id)
-        {
-            wxString s;
-            wxFile f(wxString(_T("blockalloc_debug_")) << wxString::Format(_T("%d"), dbg_id) << _T(".log"), wxFile::write);
-            s.Printf(_T("%d reserved pools of size %d (%d total objects)\n"
-            "Maximum number of allocated objects: %d\n"
-            "Total number of allocations: %d\n"
-            "Number of stale objects: %d %s"),
-            allocBlocks.size(), pool_size, allocBlocks.size() * pool_size,
-            max_refs, total_refs, ref_count, (ref_count == 0 ? _T("") : _T("(smells of memory leak...)")));
-            f.Write(s);
-		}
+        if(debug)
+            BlkAllc::DebugLog(_U(typeid(T).name()), allocBlocks.size(), pool_size, max_refs, total_refs, ref_count);
+        else if(BlkAllc::enable_global_debug && (BlkAllc::verbose || ref_count != 0))
+            BlkAllc::DebugLog(_U(typeid(T).name()), allocBlocks.size(), pool_size, max_refs, total_refs, ref_count);
 
         for(unsigned int i = 0; i < allocBlocks.size(); ++i)
             delete[] allocBlocks[i];
@@ -111,7 +109,7 @@ public:
 
     inline void* New()
     {
-        if(dbg_id)
+        if(BlkAllc::enable_global_debug || debug)
         {
             ++ref_count;
             ++total_refs;
@@ -128,7 +126,7 @@ public:
 
     inline void Delete(void *ptr)
     {
-        if(dbg_id)
+        if(BlkAllc::enable_global_debug || debug)
             --ref_count;
 
         PushFront((LinkedBlock<T> *) ((char *) ptr - sizeof(void*)));
@@ -136,10 +134,10 @@ public:
 };
 
 
-template <class T, unsigned int pool_size, const unsigned int dbg_id = 0>
+template <class T, unsigned int pool_size, const bool debug = 0>
 class BlockAllocated
 {
-    static BlockAllocator<T, pool_size, dbg_id> allocator;
+    static BlockAllocator<T, pool_size, debug> allocator;
 
 public:
 
@@ -155,8 +153,8 @@ public:
         allocator.Delete(ptr);
     };
 };
-template<class T, unsigned int pool_size, unsigned int dbg_id>
-BlockAllocator<T, pool_size, dbg_id> BlockAllocated<T, pool_size, dbg_id>::allocator;
+template<class T, unsigned int pool_size, const bool debug>
+BlockAllocator<T, pool_size, debug> BlockAllocated<T, pool_size, debug>::allocator;
 
 
 

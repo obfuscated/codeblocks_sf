@@ -1830,6 +1830,10 @@
 			<Option link="0" />
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk\blockallocated.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk\blockallocated.h">
 			<Option compilerVar="" />
 			<Option compile="0" />
