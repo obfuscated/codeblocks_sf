@@ -85,6 +85,8 @@ void cbWorkspace::Load()
 		wxString msg;
 		msg.Printf(_("Workspace '%s' does not exist..."), fname.c_str());
 		wxMessageBox(msg, _("Error"), wxOK | wxCENTRE | wxICON_ERROR);
+		// workspace wasn't loaded succesfully
+		m_IsOK = false;
 		return;
 	}
 

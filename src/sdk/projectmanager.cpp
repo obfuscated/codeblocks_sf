@@ -954,17 +954,19 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
     m_pTree->Expand(m_pTree->GetRootItem());
     UnfreezeTree();
     m_pWorkspace = new cbWorkspace(filename);
-    RebuildTree();
-    m_pTree->Expand(m_pActiveProject->GetProjectNode());
-    m_pTree->Expand(m_TreeRoot); // make sure the root node is open
-    m_IsLoadingWorkspace=false;
-    Manager::Get()->GetEditorManager()->RebuildOpenedFilesTree();
-    SANITY_CHECK(false);
-    m_pTree->SetItemText(m_TreeRoot, m_pWorkspace->GetTitle());
-    if(m_pTopEditor)
-        m_pTopEditor->Activate();
-    Manager::Get()->GetEditorManager()->RefreshOpenedFilesTree(true);
-    UnfreezeTree(true);
+    if (m_pWorkspace->IsOK()) {
+        RebuildTree();
+        m_pTree->Expand(m_pActiveProject->GetProjectNode());
+        m_pTree->Expand(m_TreeRoot); // make sure the root node is open
+        m_IsLoadingWorkspace=false;
+        Manager::Get()->GetEditorManager()->RebuildOpenedFilesTree();
+        SANITY_CHECK(false);
+        m_pTree->SetItemText(m_TreeRoot, m_pWorkspace->GetTitle());
+        if(m_pTopEditor)
+            m_pTopEditor->Activate();
+        Manager::Get()->GetEditorManager()->RefreshOpenedFilesTree(true);
+        UnfreezeTree(true);
+    }
     return m_pWorkspace->IsOK();
 }
 
