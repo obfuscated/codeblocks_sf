@@ -325,7 +325,7 @@ void CompilerGCC::OnAttach()
     // set default compiler for new projects
     CompilerFactory::SetDefaultCompilerIndex(Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/default_compiler"), 0));
 	LoadOptions();
-	SetupEnvironment();
+//	SetupEnvironment();
 }
 
 void CompilerGCC::OnRelease(bool appShutDown)
@@ -381,7 +381,7 @@ int CompilerGCC::Configure(cbProject* project, ProjectBuildTarget* target)
         m_ConsoleTerm = Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
         m_ConsoleShell = Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/console_shell"), DEFAULT_CONSOLE_SHELL);
         SaveOptions();
-        SetupEnvironment();
+//        SetupEnvironment();
         Manager::Get()->GetMacrosManager()->Reset();
     }
 //    delete panel;
@@ -525,7 +525,7 @@ void CompilerGCC::SetupEnvironment()
     m_EnvironmentMsg.Clear();
 
 	wxString path;
-	Manager::Get()->GetMessageManager()->DebugLog(_("Setting up compiler environment..."));
+//	Manager::Get()->GetMessageManager()->DebugLog(_("Setting up compiler environment..."));
 
     // reset PATH to original value
     if (!m_OriginalPath.IsEmpty())
@@ -537,23 +537,25 @@ void CompilerGCC::SetupEnvironment()
         if (m_OriginalPath.IsEmpty())
             m_OriginalPath = path;
 
-        wxArrayInt compilers;
-        if(m_Project)
-        {
-            for (int x = 0; x < m_Project->GetBuildTargetsCount(); ++x)
-            {
-                ProjectBuildTarget* target = m_Project->GetBuildTarget(x);
-                int idx = target->GetCompilerIndex();
+        SetEnvironmentForCompilerIndex(m_CompilerIdx, path);
 
-                // one time per compiler
-                if (compilers.Index(idx) != wxNOT_FOUND || !CompilerFactory::CompilerIndexOK(idx))
-                    continue;
-                compilers.Add(idx);
-                SetEnvironmentForCompilerIndex(idx, path);
-            }
-        }
-        else
-            SetEnvironmentForCompilerIndex(CompilerFactory::GetDefaultCompilerIndex(), path);
+//        wxArrayInt compilers;
+//        if(m_Project)
+//        {
+//            for (int x = 0; x < m_Project->GetBuildTargetsCount(); ++x)
+//            {
+//                ProjectBuildTarget* target = m_Project->GetBuildTarget(x);
+//                int idx = target->GetCompilerIndex();
+//
+//                // one time per compiler
+//                if (compilers.Index(idx) != wxNOT_FOUND || !CompilerFactory::CompilerIndexOK(idx))
+//                    continue;
+//                compilers.Add(idx);
+//                SetEnvironmentForCompilerIndex(idx, path);
+//            }
+//        }
+//        else
+//            SetEnvironmentForCompilerIndex(CompilerFactory::GetDefaultCompilerIndex(), path);
 	}
 	else
 		m_EnvironmentMsg = _("Could not read the PATH environment variable!\n"
