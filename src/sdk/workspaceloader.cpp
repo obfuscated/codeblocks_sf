@@ -105,14 +105,26 @@ bool WorkspaceLoader::Open(const wxString& filename)
             {
                 case TIXML_SUCCESS:
                     if (active == 1)
-                        GetpMan()->LoadProject(fname.GetFullPath(), true); // activate it
+					{
+						cbProject* pProject = GetpMan()->LoadProject(fname.GetFullPath(), true); // activate it
+						if(!pProject)
+						{
+							wxMessageBox(_("Unable to open ") + projectFilename,
+							 _("Opening WorkSpace") + filename, wxICON_WARNING);
+						}
+					}
                     break;
                 case TIXML_WRONG_TYPE:
                     GetpMsg()->DebugLog(_("Error %s: %s"), doc.Value(), doc.ErrorDesc());
                     GetpMsg()->DebugLog(_("Wrong attribute type (expected 'int')"));
                     break;
                 default:
-                    GetpMan()->LoadProject(fname.GetFullPath(), false); // don;t activate it
+					cbProject* pProject = GetpMan()->LoadProject(fname.GetFullPath(), false); // don;t activate it
+					if(!pProject)
+					{
+						wxMessageBox(_("Unable to open ") + projectFilename,
+						 _("Opening WorkSpace") + filename, wxICON_WARNING);
+					}
                     break;
             }
         }

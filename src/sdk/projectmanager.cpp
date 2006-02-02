@@ -954,9 +954,11 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
     m_pTree->Expand(m_pTree->GetRootItem());
     UnfreezeTree();
     m_pWorkspace = new cbWorkspace(filename);
-    if (m_pWorkspace->IsOK()) {
+    if (m_pWorkspace->IsOK())
+    {
         RebuildTree();
-        m_pTree->Expand(m_pActiveProject->GetProjectNode());
+        if (m_pActiveProject)
+            m_pTree->Expand(m_pActiveProject->GetProjectNode());
         m_pTree->Expand(m_TreeRoot); // make sure the root node is open
         m_IsLoadingWorkspace=false;
         Manager::Get()->GetEditorManager()->RebuildOpenedFilesTree();
