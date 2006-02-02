@@ -287,7 +287,7 @@ void CDB_driver::ParseOutput(const wxString& output)
 //                    m_pDBG->GetState().RemoveBreakpoint(bp->index);
             }
             else
-                Log(wxString::Format(_T("Breakpoints inconsistency detected!\nNothing known about breakpoint %d"), bpNum));
+                Log(wxString::Format(_T("Breakpoints inconsistency detected!\nNothing known about breakpoint %ld"), bpNum));
             m_Cursor.changed = true;
             NotifyCursorChanged();
         }
