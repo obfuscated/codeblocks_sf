@@ -192,7 +192,7 @@ void EditorBase::BasicAddToContextMenu(wxMenu* popup,bool noeditor)
     }
 }
 
-void EditorBase::DisplayContextMenu(const wxPoint& position,bool noeditor)
+void EditorBase::DisplayContextMenu(const wxPoint& position, bool noeditor)
 {
     // noeditor:
     // True if context menu belongs to open files tree;
@@ -204,13 +204,15 @@ void EditorBase::DisplayContextMenu(const wxPoint& position,bool noeditor)
 
     wxMenu* popup = new wxMenu;
 
-
     if(!noeditor && wxGetKeyState(WXK_CONTROL))
     {
         cbStyledTextCtrl* control = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()->GetControl();
         wxString text = control->GetSelectedText();
-        if(text.IsEmpty())
-            text = control->GetTextRange(control->WordStartPosition(control->GetCurrentPos(), true), control->WordEndPosition(control->GetCurrentPos(), true));
+        if (text.IsEmpty())
+        {
+            const int pos = control->GetCurrentPos();
+            text = control->GetTextRange(control->WordStartPosition(pos, true), control->WordEndPosition(pos, true));
+        }
 
         popup->Append(idGoogle, _("Search Google for \"") + text + _("\""));
         popup->Append(idMsdn, _("Search MSDN for \"") + text + _("\""));
@@ -228,7 +230,6 @@ void EditorBase::DisplayContextMenu(const wxPoint& position,bool noeditor)
     }
     else
     {
-
         // Basic functions
         BasicAddToContextMenu(popup,noeditor);
 
@@ -249,42 +250,71 @@ void EditorBase::DisplayContextMenu(const wxPoint& position,bool noeditor)
     OnAfterBuildContextMenu(noeditor);
 
     // display menu
-    wxPoint pos = ScreenToClient(position);
-    PopupMenu(popup, pos.x, pos.y);
+    wxPoint clientpos;
+    if (position==wxDefaultPosition) // "context menu" key
+    {
+        // obtain the caret point (on the screen) as we assume
+        // that the user wants to work with the keyboard
+        cbStyledTextCtrl* const control = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()->GetControl();
+        clientpos = control->PointFromPosition(control->GetCurrentPos());
+    }
+    else
+    {
+        clientpos = ScreenToClient(position);
+    }
 
+    PopupMenu(popup, clientpos);
     delete popup;
 }
 
 void EditorBase::OnContextMenuEntry(wxCommandEvent& event)
 {
-  // we have a single event handler for all popup menu entries
-  // This was ported from cbEditor and used for the basic operations:
-  // Switch to, close, save, etc.
+    // we have a single event handler for all popup menu entries
+    // This was ported from cbEditor and used for the basic operations:
+    // Switch to, close, save, etc.
 
-  const int id = event.GetId();
+    const int id = event.GetId();
 
-//  if (id == idCloseMe)
-//    Manager::Get()->GetEditorManager()->Close(this);
-//  else if (id == idCloseAll)
-//    Manager::Get()->GetEditorManager()->CloseAll();
-//  else if (id == idCloseAllOthers)
-//    Manager::Get()->GetEditorManager()->CloseAllExcept(this);
-//  else if (id == idSaveMe)
-//    Save();
-//  else if (id == idSaveAll)
-//    Manager::Get()->GetEditorManager()->SaveAll();
-  if (id >= idSwitchFile1 && id <= idSwitchFileMax)
+//    if (id == idCloseMe)
+//    {
+//        Manager::Get()->GetEditorManager()->Close(this);
+//    }
+//    else if (id == idCloseAll)
+//    {
+//        Manager::Get()->GetEditorManager()->CloseAll();
+//    }
+//    else if (id == idCloseAllOthers)
+//    {
+//        Manager::Get()->GetEditorManager()->CloseAllExcept(this);
+//    }
+//    else if (id == idSaveMe)
+//    {
+//        Save();
+//    }
+//    else if (id == idSaveAll)
+//    {
+//        Manager::Get()->GetEditorManager()->SaveAll();
+//    }
+    if (id >= idSwitchFile1 && id <= idSwitchFileMax)
     {
         // "Switch to..." item
-        EditorBase* ed = m_SwitchTo[id];
+        EditorBase *const ed = m_SwitchTo[id];
         if (ed)
+        {
             Manager::Get()->GetEditorManager()->SetActiveEditor(ed);
+        }
         m_SwitchTo.clear();
     }
     else if (id == idGoogle)/////////////////// TODO: UrlEncode
+    {
         wxLaunchDefaultBrowser(wxString(_T("http://www.google.com/search?q=")) << URLEncode(lastWord));
+    }
     else if (id == idMsdn)
+    {
         wxLaunchDefaultBrowser(wxString(_T("http://search.microsoft.com/search/results.aspx?qu=")) << URLEncode(lastWord) << _T("&View=msdn"));
+    }
     else
+    {
         event.Skip();
+    }
 }

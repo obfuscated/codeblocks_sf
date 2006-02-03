@@ -81,7 +81,13 @@ cbStyledTextCtrl::~cbStyledTextCtrl()
 void cbStyledTextCtrl::OnContextMenu(wxContextMenuEvent& event)
 {
 	if (m_pParent)
-		((cbEditor*)m_pParent)->DisplayContextMenu(event.GetPosition());
+	{
+	    /*  or use noeditor to handle "contect menu" key?
+	     */
+	    const bool is_right_click = event.GetPosition()!=wxDefaultPosition;
+	    const wxPoint mp(is_right_click ? event.GetPosition() : wxDefaultPosition);
+		reinterpret_cast<cbEditor*>(m_pParent)->DisplayContextMenu(mp);
+	}
 }
 
 /* This struct holds private data for the cbEditor class.
@@ -1366,13 +1372,16 @@ void cbEditor::AddToContextMenu(wxMenu* popup,bool noeditor,bool pluginsdone)
 
 bool cbEditor::OnBeforeBuildContextMenu(const wxPoint& position, bool noeditor)
 {
-    if (!noeditor)
+    if (!noeditor && position!=wxDefaultPosition)
     {
-        wxPoint clientpos = ScreenToClient(position);
-        if (clientpos.x < (48 + 16)) // 48, 16 are the margins widths (line 498)
-        {
-            // margin right-click
+        // right mouse click inside the editor
 
+        const wxPoint clientpos(m_pControl->ScreenToClient(position));
+        const int margin = m_pControl->GetMarginWidth(0) + // numbers, if present
+                           m_pControl->GetMarginWidth(1) + // breakpoints, bookmarks... if present
+                           m_pControl->GetMarginWidth(2);  // folding, if present
+        if (clientpos.x < margin)
+        {
             // keep the line
             int pos = m_pControl->PositionFromPoint(clientpos);
             m_pData->m_LastMarginMenuLine = m_pControl->LineFromPosition(pos);
@@ -1386,17 +1395,23 @@ bool cbEditor::OnBeforeBuildContextMenu(const wxPoint& position, bool noeditor)
                 popup->Append(idBreakpointRemove, _("Remove breakpoint"));
             }
             else
+            {
                 popup->Append(idBreakpointAdd, _("Add breakpoint"));
+            }
 
             popup->AppendSeparator();
 
             if (LineHasMarker(BOOKMARK_MARKER, m_pData->m_LastMarginMenuLine))
+            {
                 popup->Append(idBookmarkRemove, _("Remove bookmark"));
+            }
             else
+            {
                 popup->Append(idBookmarkAdd, _("Add bookmark"));
+            }
 
-            // display menu
-            PopupMenu(popup, clientpos.x, clientpos.y);
+            // display menu... wxWindows help says not to force the position
+            PopupMenu(popup, clientpos);
 
             delete popup;
             return false;
@@ -1405,9 +1420,15 @@ bool cbEditor::OnBeforeBuildContextMenu(const wxPoint& position, bool noeditor)
         // before the context menu creation, move the caret to where mouse is
 
         // get caret position and line from mouse cursor
-        int pos = m_pControl->PositionFromPoint(m_pControl->ScreenToClient(wxGetMousePosition()));
-        if(m_pControl->GetSelectionStart() > pos || m_pControl->GetSelectionEnd() < pos) // this re-enables 1-click "Find declaration of..."
-			m_pControl->GotoPos(pos);                                              // but avoids losing selection for cut/copy
+        const int pos = m_pControl->PositionFromPoint(m_pControl->ScreenToClient(wxGetMousePosition()));
+
+        // this re-enables 1-click "Find declaration of..."
+        // but avoids losing selection for cut/copy
+        if(m_pControl->GetSelectionStart() > pos ||
+           m_pControl->GetSelectionEnd() < pos)
+        {
+            m_pControl->GotoPos(pos);
+        }
     }
 
     // follow default strategy
