@@ -1,3 +1,15 @@
+/*
+* Block allocator template classes for use with:
+* Code::Blocks Studio, an open-source cross-platform IDE
+* Copyright (C) 2003  Yiannis An. Mandravellos
+*
+* Author:  Thomas Denk
+*
+* $Revision$
+* $Id$
+* $HeadURL$
+*/
+
 #include <sdk_precomp.h>
 
 #ifndef CB_PRECOMP

@@ -19,8 +19,9 @@
 * Contact e-mail: Yiannis An. Mandravellos <mandrav@codeblocks.org>
 * Program URL   : http://www.codeblocks.org
 *
+* $Revision$
 * $Id$
-* $Date: 2005-10-19 16:50:49 +0300 (ΞΒΞ’ΒΞβ€™Ξ’Β¤ΞΒΞ’ΒΞβ€™Ξ’ΒµΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ’Β, 19 ΞΒΞ’ΒΞβ€™Ξ’ΒΞΒΞ’ΒΞΒΞ’ΒΞΒΞ’ΒΞΒ²Ξ²β€Β¬Ξ’Β 2005) $
+* $HeadURL$
 */
 
 #include "sdk_precomp.h"

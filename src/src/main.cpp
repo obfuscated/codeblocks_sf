@@ -19,8 +19,9 @@
 * Contact e-mail: Yiannis An. Mandravellos <mandrav@codeblocks.org>
 * Program URL   : http://www.codeblocks.org
 *
+* $Revision$
 * $Id$
-* $Date$
+* $HeadURL$
 */
 
 #include <sdk.h>
@@ -2446,6 +2447,7 @@ void MainFrame::OnProjectImportMSVSWksp(wxCommandEvent& event)
 void MainFrame::OnHelpAbout(wxCommandEvent& WXUNUSED(event))
 {
     dlgAbout* dlg = new dlgAbout(this);
+//    PlaceWindow(dlg, pdlHead);
     dlg->ShowModal();
     delete dlg;
 }

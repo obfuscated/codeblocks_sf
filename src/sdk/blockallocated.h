@@ -1,26 +1,9 @@
 /*
-*          Block allocator template classes for use with:
-*          Code::Blocks Studio, an open-source cross-platform IDE
-*          Copyright (C) 2003  Yiannis An. Mandravellos
+* Block allocator template classes for use with:
+* Code::Blocks Studio, an open-source cross-platform IDE
+* Copyright (C) 2003  Yiannis An. Mandravellos
 *
 * Author:  Thomas Denk
-*
-* WARNING: These template classes are NOT thread-safe and NOT inheritance-safe and are certain to crash your application
-*          in an evil, unpredictable, and hard to debug way if you use them incorrectly. The allocator was designed
-*          to work with a limited, known subset of classes without any intent of being general or reusable (or being reused).
-*          Allocated pools are not freed until the application terminates, even if all of the subnodes have been deleted.
-*          This is intended behaviour, and obviously unsuitable for scenarios with huge peak allocations.
-*          Only use these classes if you know EXACTLY what you are doing. I will not provide any kind of support.
-*
-*          Although the allocator is up to 200 times faster than standard operator new/delete, the possible gains
-*          for most applications are neglegible, as most applications do not spend significant time in new/delete anyway.
-*          Unless you use new/delete 10.000+ times per second, using the block allocator will buy you no noticeable benefit.
-*
-*          Standard operator new is a lot more conservative with heap space, it performs just fine in most cases, it does not
-*          depend on proper parameter tuning, and it is guaranteed to work with any kind of class without any malign behaviour.
-*
-* $Id$
-* $Date$
 */
 
 #ifndef __BLOCKALLOC_H__

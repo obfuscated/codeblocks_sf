@@ -7,8 +7,9 @@
 *
 * Author: Thomas Denk
 *
+* $Revision$
 * $Id$
-* $Date$
+* $HeadURL$
 */
 
 #include "sdk_precomp.h"

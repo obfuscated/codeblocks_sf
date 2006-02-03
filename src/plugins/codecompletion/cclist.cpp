@@ -19,8 +19,9 @@
 * Contact e-mail: Yiannis An. Mandravellos <mandrav@codeblocks.org>
 * Program URL   : http://www.codeblocks.org
 *
+* $Revision$
 * $Id$
-* $Date$
+* $HeadURL$
 */
 
 #include <sdk.h>
@@ -99,16 +100,16 @@ void CCList::PositionMe()
 	int h = Manager::Get()->GetConfigManager(_T("code_completion"))->ReadInt(_T("/size/height"), 160);
 	int screenW = wxSystemSettings::GetMetric(wxSYS_SCREEN_X);
 	int screenH = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y);
-	// sanity check
+	 sanity check
 	if (w > screenW)
 		w = screenW;
 	if (h > screenH)
 		h = screenH;
 
-	// now we 're where we want to be, but check that the whole window is visible...
-	// the main goal here is that the caret *should* be visible...
+	 now we 're where we want to be, but check that the whole window is visible...
+	 the main goal here is that the caret *should* be visible...
 
-	// for the horizontal axis, easy stuff
+	 for the horizontal axis, easy stuff
 	if (pt.x + w > screenW)
 		pt.x = screenW - w;
 
@@ -134,6 +135,7 @@ void CCList::PositionMe()
 	}
 	// we should be OK now
 	SetSize(pt.x, pt.y, w, h);
+//	PlaceWindow(this, pdlConstrain, true);
 }
 
 void CCList::SelectCurrent(wxChar ch)
