@@ -1,7 +1,7 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "cbexception.cpp"
+    #include "cbexception.h"
 #endif
 
 
