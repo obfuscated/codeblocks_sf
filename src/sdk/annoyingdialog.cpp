@@ -32,7 +32,8 @@ AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message,
         dontAnnoy(false),
         defRet(defaultReturn)
 {
-    if (Manager::Get()->GetConfigManager(_T("an_dlg"))->Exists(caption))
+    ConfigManagerContainer::StringSet disabled = Manager::Get()->GetConfigManager(_T("an_dlg"))->ReadSSet(_T("/disabled"));
+    if(disabled.find(caption) != disabled.end())
     {
         dontAnnoy = true;
         return;
@@ -132,7 +133,11 @@ void AnnoyingDialog::OnButton(wxCommandEvent& event)
         cbThrow(_T("Ow... null pointer."));
 
     if(cb->IsChecked())
-        Manager::Get()->GetConfigManager(_T("an_dlg"))->Write(GetTitle(), GetTitle());
+    {
+        ConfigManagerContainer::StringSet disabled = Manager::Get()->GetConfigManager(_T("an_dlg"))->ReadSSet(_T("/disabled"));
+        disabled.insert(GetTitle());
+        Manager::Get()->GetConfigManager(_T("an_dlg"))->Write(_T("/disabled"), disabled);
+    }
     EndModal(event.GetId());
 }
 

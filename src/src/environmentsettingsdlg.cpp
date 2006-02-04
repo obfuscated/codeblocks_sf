@@ -116,13 +116,10 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
     // tab "Dialogs"
     wxCheckListBox* clb = XRCCTRL(*this, "chkDialogs", wxCheckListBox);
     clb->Clear();
-    wxArrayString dialogs = acfg->EnumerateKeys(_T("/"));
-    for (unsigned int i = 0; i < dialogs.GetCount(); ++i)
-    {
-        wxString caption = acfg->Read(dialogs[i]);
-        if (!caption.IsEmpty())
-            clb->Append(caption);
-    }
+
+    ConfigManagerContainer::StringSet dialogs = acfg->ReadSSet(_T("/disabled"));
+    for (ConfigManagerContainer::StringSet::iterator i = dialogs.begin(); i != dialogs.end(); ++i)
+            clb->Append(*i);
 
     // tab "Network"
     XRCCTRL(*this, "txtProxy", wxTextCtrl)->SetValue(cfg->Read(_T("/network_proxy")));
@@ -306,11 +303,16 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
 
         // tab "Dialogs"
         wxCheckListBox* lb = XRCCTRL(*this, "chkDialogs", wxCheckListBox);
+
+        ConfigManagerContainer::StringSet dialogs = acfg->ReadSSet(_T("/disabled"));
+
         for (int i = 0; i < lb->GetCount(); ++i)
         {
             if (lb->IsChecked(i))
-                acfg->UnSet(lb->GetString(i));
+                dialogs.erase(lb->GetString(i));
         }
+
+        acfg->Write(_T("/disabled"), dialogs);
 
         // tab "Network"
         cfg->Write(_T("/network_proxy"),    XRCCTRL(*this, "txtProxy", wxTextCtrl)->GetValue());
