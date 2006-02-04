@@ -1206,7 +1206,7 @@ void MainFrame::DoUpdateEditorStyle(wxFlatNotebook* target, const wxString& pref
     if (cfg->ReadBool(_T("/environment/") + prefix + _T("_tabs_bottom")))
         nbstyle |= wxFNB_BOTTOM;
 
-    target->SetBookStyle(nbstyle);
+    target->SetWindowStyleFlag(nbstyle);
     target->SetGradientColorBorder(cfg->ReadColour(_T("/environment/gradient_border"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW))));
     target->SetGradientColorFrom(cfg->ReadColour(_T("/environment/gradient_from"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE))));
     target->SetGradientColorTo(cfg->ReadColour(_T("/environment/gradient_to"), *wxWHITE));
@@ -2541,9 +2541,17 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idEditBookmarks, eb);
     mbar->Enable(idEditFolding, ed);
     mbar->Enable(idEditEOLMode, ed);
-	mbar->Check(idEditEOLCRLF, eolMode == wxSCI_EOL_CRLF);
-	mbar->Check(idEditEOLCR, eolMode == wxSCI_EOL_CR);
-	mbar->Check(idEditEOLLF, eolMode == wxSCI_EOL_LF);
+    if (ed)
+    {
+        // OK... this was the strangest/silliest/most-frustrating bug ever in the computer programs history...
+        // Under wxGTK it seems that if you try to Check() a menu item if its container Menu is disabled,
+        // you enter an endless message loop eating 100% CPU...
+        // DARN!
+        // This fixes the dreaded 'linux-hang-on-close-project' bug.
+        mbar->Check(idEditEOLCRLF, eolMode == wxSCI_EOL_CRLF);
+        mbar->Check(idEditEOLCR, eolMode == wxSCI_EOL_CR);
+        mbar->Check(idEditEOLLF, eolMode == wxSCI_EOL_LF);
+    }
 	mbar->Enable(idEditCommentSelected, ed);
 	mbar->Enable(idEditAutoComplete, ed);
 	mbar->Enable(idEditUncommentSelected, ed);

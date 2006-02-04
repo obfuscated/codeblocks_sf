@@ -68,7 +68,7 @@ MessageManager::MessageManager()
     SC_CONSTRUCTOR_BEGIN
 
     m_pNotebook = new wxFlatNotebook(Manager::Get()->GetAppWindow(), idNB);
-    m_pNotebook->SetBookStyle(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/environment/message_tabs_style"), wxFNB_BOTTOM | wxFNB_NO_X_BUTTON));
+    m_pNotebook->SetWindowStyleFlag(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/environment/message_tabs_style"), wxFNB_BOTTOM | wxFNB_NO_X_BUTTON));
     m_pNotebook->SetImageList(new wxFlatNotebookImageList);
 
     wxMenu* NBmenu = new wxMenu(); // deleted automatically by wxFlatNotebook
@@ -373,12 +373,12 @@ void MessageManager::Unlock(bool force)
 
 void MessageManager::OnTabPosition(wxCommandEvent& event)
 {
-    long style = m_pNotebook->GetBookStyle();
+    long style = m_pNotebook->GetWindowStyleFlag();
     style &= ~wxFNB_BOTTOM;
 
     if (event.GetId() == idNB_TabBottom)
         style |= wxFNB_BOTTOM;
-    m_pNotebook->SetBookStyle(style);
+    m_pNotebook->SetWindowStyleFlag(style);
     // (style & wxFNB_BOTTOM) saves info only about the the tabs position
     Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/environment/message_tabs_bottom"), (bool)(style & wxFNB_BOTTOM));
 }

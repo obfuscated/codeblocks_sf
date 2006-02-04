@@ -194,8 +194,8 @@ EditorManager::EditorManager()
 	SC_CONSTRUCTOR_BEGIN
     m_pData = new EditorManagerInternalData(this);
 
-	m_pNotebook = new wxFlatNotebook(Manager::Get()->GetAppWindow(), ID_NBEditorManager, wxDefaultPosition, wxDefaultSize,  wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);
-	m_pNotebook->SetBookStyle(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/environment/editor_tabs_style"), wxFNB_DEFAULT_STYLE | wxFNB_MOUSE_MIDDLE_CLOSES_TABS));
+	m_pNotebook = new wxFlatNotebook(Manager::Get()->GetAppWindow(), ID_NBEditorManager, wxDefaultPosition, wxDefaultSize, wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);
+    m_pNotebook->SetWindowStyleFlag(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/environment/editor_tabs_style"), wxFNB_DEFAULT_STYLE | wxFNB_MOUSE_MIDDLE_CLOSES_TABS));
 
     #ifdef USE_OPENFILES_TREE
     m_pData->m_TreeNeedsRefresh = false;
@@ -218,10 +218,13 @@ EditorManager::~EditorManager()
 	SC_DESTRUCTOR_BEGIN
 	SaveAutoComplete();
 
-    CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
-    evt.pWindow = m_pTree;
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
-    m_pTree->Destroy();
+    if (m_pTree)
+    {
+        CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
+        evt.pWindow = m_pTree;
+        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        m_pTree->Destroy();
+    }
 
 	if (m_Theme)
 		delete m_Theme;
@@ -767,7 +770,7 @@ bool EditorManager::Close(EditorBase* editor,bool dontsave)
                     return false;
             wxString filename = editor->GetFilename();
 //            LOGSTREAM << wxString::Format(_T("Close(): ed=%p, title=%s\n"), editor, editor ? editor->GetTitle().c_str() : _T(""));
-            m_pNotebook->DeletePage(idx);
+            m_pNotebook->DeletePage(idx, false);
 		}
 	}
     m_pData->m_NeedsRefresh = true;
@@ -1608,6 +1611,7 @@ void EditorManager::OnPageChanged(wxFlatNotebookEvent& event)
 void EditorManager::OnPageChanging(wxFlatNotebookEvent& event)
 {
     EditorBase* eb = static_cast<EditorBase*>(m_pNotebook->GetPage(event.GetSelection()));
+//    LOGSTREAM << wxString::Format(_T("OnPageChanging(): ed=%p, title=%s\n"), eb, eb ? eb->GetTitle().c_str() : _T(""));
     CodeBlocksEvent evt(cbEVT_EDITOR_DEACTIVATED, -1, 0, eb);
     Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
 
@@ -1687,12 +1691,12 @@ void EditorManager::OnSaveAll(wxCommandEvent& event)
 
 void EditorManager::OnTabPosition(wxCommandEvent& event)
 {
-    long style = m_pNotebook->GetBookStyle();
+    long style = m_pNotebook->GetWindowStyleFlag();
     style &= ~wxFNB_BOTTOM;
 
     if (event.GetId() == idNBTabBottom)
         style |= wxFNB_BOTTOM;
-    m_pNotebook->SetBookStyle(style);
+    m_pNotebook->SetWindowStyleFlag(style);
     // (style & wxFNB_BOTTOM) saves info only about the the tabs position
     Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/environment/editor_tabs_bottom"), (bool)(style & wxFNB_BOTTOM));
 }
@@ -1861,23 +1865,23 @@ void EditorManager::AddFiletoTree(EditorBase* ed)
 
 void EditorManager::HideNotebook()
 {
-    if(!this)
-        return;
-    if(m_pNotebook)
-        m_pNotebook->Hide();
-    m_pData->m_NeedsRefresh = false;
-    return;
+//    if(!this)
+//        return;
+//    if(m_pNotebook)
+//        m_pNotebook->Hide();
+//    m_pData->m_NeedsRefresh = false;
+//    return;
 }
 
 void EditorManager::ShowNotebook()
 {
-    if(!this)
-        return;
-    if(m_pNotebook)
-        m_pNotebook->Show();
-    m_pData->m_NeedsRefresh = true;
-    m_pData->InvalidateTree();
-    return;
+//    if(!this)
+//        return;
+//    if(m_pNotebook)
+//        m_pNotebook->Show();
+//    m_pData->m_NeedsRefresh = true;
+//    m_pData->InvalidateTree();
+//    return;
 }
 
 bool EditorManager::RenameTreeFile(const wxString& oldname, const wxString& newname)

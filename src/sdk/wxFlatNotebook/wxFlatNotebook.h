@@ -1,12 +1,11 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:		wxFlatNotebook.h
-// Purpose:     generic declaration of flat style notebook class.
-// Author:      Eran Ifrah <admin@eistware.com>
-// Modified by: Priyank Bolia <soft@priyank.in>
-// URL:			http://www.eistware.com/ and http://www.priyank.in
+// Purpose:     Generic declaration of flat style notebook class.
+// Author:      Eran Ifrah <eranif@bezeqint.net>
+// Modified by: Priyank Bolia <soft@priyank.in>, Matteo Casalin <olorin@users.berlios.de>
 // Created:     30/12/2005
 // Modified:    01/01/2006
-// Copyright:   All contributors.
+// Copyright:   Eran Ifrah (c)
 // Licence:     wxWindows license <http://www.wxwidgets.org/licence3.txt>
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -22,17 +21,14 @@
 
 #include <vector>
 
-
 #ifdef __VISUALC__
 #pragma warning(pop)
 #endif
-
 
 #include <wx/dcbuffer.h>
 #include <wx/dataobj.h>
 #include <wx/dnd.h>
 
-//#include "textdroptarget.h"
 #include "wxFNBDropTarget.h"
 class wxPageContainer;
 
@@ -45,7 +41,7 @@ typedef std::vector<wxBitmap> wxFlatNotebookImageList;
 
 
 ///  wxFlatNotebook styles
-#define wxFNB_DEFAULT_STYLE				wxFNB_MOUSE_MIDDLE_CLOSES_TABS | wxFNB_BORDER
+#define wxFNB_DEFAULT_STYLE				wxFNB_MOUSE_MIDDLE_CLOSES_TABS
 
 /// Use Visual Studio 2003 (VC7.1) Style for tabs
 #define wxFNB_VC71						1
@@ -54,7 +50,7 @@ typedef std::vector<wxBitmap> wxFlatNotebookImageList;
 #define wxFNB_FANCY_TABS				2
 
 /// Draw thin border around the page
-#define wxFNB_BORDER					4
+#define wxFNB_TABS_BORDER_SIMPLE		4
 
 /// Do not display the 'X' button
 #define wxFNB_NO_X_BUTTON				8
@@ -69,11 +65,13 @@ typedef std::vector<wxBitmap> wxFlatNotebookImageList;
 /// at top
 #define wxFNB_BOTTOM					64
 
+/// Disable dragging of tabs
+#define wxFNB_NODRAG					128
+
 /// Allow drag'n'drop between different wxFlatNotebooks
-#define wxFNB_ALLOW_FOREIGN_DND			128
+#define wxFNB_ALLOW_FOREIGN_DND			256
 
 class wxMenu;
-
 /**
 * \brief Nice cross-platform flat notebook with X-button :)
 */
@@ -81,7 +79,6 @@ class wxMenu;
 class wxFlatNotebook : public wxPanel
 {
 private:
-
 	friend class wxPageContainer;
 
 public:
@@ -148,11 +145,11 @@ public:
 	\param page - page index
 	*/
 	wxWindow * GetPage(size_t page) const;
-    /// Returns the page index of the window object.
+        /// Returns the page index of the window object.
 	/**
-    \param win - window object
-    */
-    int GetPageIndex(wxWindow* win) const;
+        \param win - window object
+        */
+        int GetPageIndex(wxWindow* win) const;
 
 	/// Returns the currently visible/selected notebook page 0 based index.
 	int GetSelection() const;
@@ -200,10 +197,7 @@ public:
 	/**
 	\param style - new value of notebook style
 	*/
-	void SetBookStyle(long style);
-
-	/// Query the current book style
-	long GetBookStyle();
+	virtual void SetWindowStyleFlag(long style);
 
 	/// Sets a right click menu to the notebook
 	/**
@@ -306,7 +300,7 @@ private:
 */
 class wxPageInfo
 {
-public:
+private:
 	// Members
 	/// Page caption
 	wxString m_strCaption;
@@ -386,6 +380,14 @@ public:
 	\param enabled - new page enable status
 	*/
 	void Enable(bool enabled) { m_bEnabled = enabled; }
+};
+
+/// Button status
+enum
+{
+	wxFNB_BTN_PRESSED,
+	wxFNB_BTN_HOVER,
+	wxFNB_BTN_NONE
 };
 
 /// Hit Test results
@@ -510,12 +512,17 @@ public:
 	void OnSize(wxSizeEvent& WXUNUSED(event));
 	void OnMouseMove(wxMouseEvent& event);
 	void OnLeftDown(wxMouseEvent& event);
+	void OnLeftUp(wxMouseEvent& event);
 	void OnRightDown(wxMouseEvent& event);
 	void OnMiddleDown(wxMouseEvent& event);
 	void OnEraseBackground(wxEraseEvent& WXUNUSED(event)) { }
 	void OnMouseLeave(wxMouseEvent& event);
+	void OnMouseEnterWindow(wxMouseEvent& event);
 
 protected:
+	/// Return the button area space
+	int GetButtonAreaWidth(void);
+
 	/// File a tab with gradient color
 	void FillGradientColor(wxBufferedDC& dc, const wxRect& rect);
 
@@ -542,13 +549,13 @@ protected:
 	void DoSetSelection(size_t page);
 
 	/// Draw right arrow button to the right area of the tabs
-	void DrawRightArrow(bool hover, wxDC &dc);
+	void DrawRightArrow(wxDC &dc);
 
 	/// Draw left arrow button to the right area of the tabs
-	void DrawLeftArrow (bool hover, wxDC &dc);
+	void DrawLeftArrow (wxDC &dc);
 
 	/// Draw 'x' button to the right area of the tabs
-	void DrawX         (bool hover, wxDC &dc);
+	void DrawX         (wxDC &dc);
 
 	/// Return the index of the last visible index
 	int  GetLastVisibleTab();
@@ -585,17 +592,24 @@ protected:
 	bool CanFitToScreen(size_t page);
 
 private:
+	// Functions
+	void DrawVC71Tab(wxBufferedPaintDC& dc, const int& posx, const int &tabIdx, const bool& hasImage, const int &tabWidth, const int &tabHeight);
+	void DrawFancyTab(wxBufferedPaintDC& dc, const int& posx, const int &tabIdx, const bool& hasImage, const int &tabWidth, const int &tabHeight);
+	void DrawStandardTab(wxBufferedPaintDC& dc, const int& posx, const int &tabIdx, const bool& hasImage, const int &tabWidth, const int &tabHeight);
+
+	// Navigation buttons position
+	int GetLeftButtonPos();
+	int GetRightButtonPos();
+	int GetXPos();
+	int GetButtonsAreaLength();
+
+private:
 	std::vector<wxPageInfo> m_pagesInfoVec;
 	int m_iActivePage;
 	int m_nFrom;
-	wxRect x_rect;
-	bool m_bHoverX, m_bHoverLeftArrow, m_bHoverRightArrow;
 
 	/// Drop target for enabling drag'n'drop of tabs
 	wxFNBDropTarget<wxPageContainer> *m_pDropTarget;
-
-	/// Tabs style
-	unsigned long m_nStyle;
 
 	/// Pointer to the parent window
 	wxWindow *m_pParent;
@@ -605,6 +619,15 @@ private:
 
 	/// Gradient colors
 	wxColour m_colorFrom, m_colorTo, m_colorBorder;
+
+	/// X,>,< buttons status, can be one of
+	/// - Pressed
+	/// - Hover
+	/// - None
+	int m_nXButtonStatus, m_nLeftButtonStatus, m_nRightButtonStatus;
+
+	/// holds the button id in case a left click is done on one of them
+    int m_nLeftClickZone;
 };
 
 /**

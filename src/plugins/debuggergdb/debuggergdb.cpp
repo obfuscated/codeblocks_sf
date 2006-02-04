@@ -515,6 +515,11 @@ int DebuggerGDB::LaunchProcess(const wxString& cmd, const wxString& cwd)
     if (m_pProcess)
         return -1;
 
+    #ifndef __WXMSW__
+        // setup dynamic linker path
+		wxSetEnv(_T("LD_LIBRARY_PATH"), _T(".:$LD_LIBRARY_PATH"));
+    #endif
+
     // start the gdb process
 	wxLogNull ln; // we perform our own error handling and logging
     m_pProcess = new PipedProcess((void**)&m_pProcess, this, idGDBProcess, true, cwd);
