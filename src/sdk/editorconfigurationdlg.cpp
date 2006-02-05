@@ -558,7 +558,6 @@ void EditorConfigurationDlg::OnDeleteColorTheme(wxCommandEvent& event)
 
 void EditorConfigurationDlg::OnRenameColorTheme(wxCommandEvent& event)
 {
-#ifdef __WXMSW__
     wxTextEntryDialog dlg(this, _("Please enter the new name of the new color theme:"), _("New theme name"), m_Theme->GetName());
     if (dlg.ShowModal() != wxID_OK)
         return;
@@ -570,9 +569,6 @@ void EditorConfigurationDlg::OnRenameColorTheme(wxCommandEvent& event)
         cmbThemes->SetString(idx, name);
     Manager::Get()->GetConfigManager(_T("editor"))->DeleteSubPath(_T("/color_sets/") + m_Theme->GetName());
     m_Theme->SetName(name);
-#else
-	#warning "wxComboBox::SetString() doesn't work under non-win32 platforms"
-#endif
 }
 
 void EditorConfigurationDlg::OnEditKeywords(wxCommandEvent& event)

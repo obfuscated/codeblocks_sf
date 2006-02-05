@@ -639,7 +639,7 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 
     wxString fullFilename = fname.GetFullPath();
     f->file.Assign(fname);
-    f->relativeFilename = filename;
+    f->relativeFilename = UnixFilename(filename);
 
     // now check if we have already added this file
     // if we have, return the existing file, but add the specified target
@@ -954,8 +954,11 @@ ProjectFile* cbProject::GetFileByFilename(const wxString& filename, bool isRelat
         // make sure filename doesn't start with ".\"
         // our own relative files don't have it, so the search would fail
         // this happens when importing MS projects...
-        if (tmp.StartsWith(_T(".\\")))
+        if (tmp.StartsWith(_T(".\\")) ||
+            tmp.StartsWith(_T("./")))
+        {
             tmp.Remove(0, 2);
+        }
     }
 
     if (isUnixFilename)

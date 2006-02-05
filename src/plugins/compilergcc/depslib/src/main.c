@@ -4,6 +4,8 @@
 
 #ifdef DEPSLIB_WINDOWS
     #include <io.h> // for getcwd
+#elif DEPSLIB_UNIX
+    #include <unistd.h> // for getcwd
 #endif
 
 #if 0

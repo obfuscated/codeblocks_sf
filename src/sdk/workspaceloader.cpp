@@ -102,7 +102,7 @@ bool WorkspaceLoader::Open(const wxString& filename)
     {
         if(Manager::isappShuttingDown() || !GetpMan() || !GetpMsg())
             return false;
-        projectFilename = _U(proj->Attribute("filename"));
+        projectFilename = UnixFilename(_U(proj->Attribute("filename")));
         if (projectFilename.IsEmpty())
         {
             GetpMsg()->DebugLog(_("'Project' node exists, but no filename?!?"));
@@ -131,7 +131,7 @@ bool WorkspaceLoader::Open(const wxString& filename)
                     GetpMsg()->DebugLog(_("Wrong attribute type (expected 'int')"));
                     break;
                 default:
-					cbProject* pProject = GetpMan()->LoadProject(fname.GetFullPath(), false); // don;t activate it
+					cbProject* pProject = GetpMan()->LoadProject(fname.GetFullPath(), false); // don't activate it
 					if(!pProject)
 					{
 						wxMessageBox(_("Unable to open ") + projectFilename,
@@ -148,7 +148,7 @@ bool WorkspaceLoader::Open(const wxString& filename)
     while (proj)
     {
         cbProject* thisprj = 0;
-        projectFilename = _U(proj->Attribute("filename"));
+        projectFilename = UnixFilename(_U(proj->Attribute("filename")));
         if (projectFilename.IsEmpty())
         {
             GetpMsg()->DebugLog(_("'Project' node exists, but no filename?!?"));
@@ -166,7 +166,7 @@ bool WorkspaceLoader::Open(const wxString& filename)
             TiXmlElement* dep = proj->FirstChildElement("Depends");
             while (dep)
             {
-                wxFileName fname(_U(dep->Attribute("filename")));
+                wxFileName fname(UnixFilename(_U(dep->Attribute("filename"))));
                 fname.MakeAbsolute(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
                 cbProject* depprj = Manager::Get()->GetProjectManager()->IsOpen(fname.GetFullPath());
                 if (depprj)

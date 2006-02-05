@@ -47,10 +47,10 @@ CompilerSettingsDlg::CompilerSettingsDlg(wxWindow* parent)
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
     wxImageList* images = new wxImageList(80, 80);
     lb->AssignImageList(images);
-    ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
 
     // tab "Batch builds"
 #ifdef __WXMSW__
+    ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
     XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->SetValue(cfg->Read(_T("/batch_build_args"), g_DefaultBatchBuildArgs));
 #else
     XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->Enable(false);
@@ -162,10 +162,9 @@ void CompilerSettingsDlg::EndModal(int retCode)
 {
     if (retCode == wxID_OK)
     {
-        ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
-
         // tab "Batch builds"
 #ifdef __WXMSW__
+        ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
         wxString bbargs = XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->GetValue();
         if (bbargs != cfg->Read(_T("/batch_build_args"), g_DefaultBatchBuildArgs))
         {

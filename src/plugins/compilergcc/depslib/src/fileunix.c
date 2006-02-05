@@ -9,7 +9,7 @@
  * This file is part of jam.
  *
  * License is hereby granted to use this software and distribute it
- * freely, as long as this copyright notice is retained and modifications 
+ * freely, as long as this copyright notice is retained and modifications
  * are clearly marked.
  *
  * ALL WARRANTIES ARE HEREBY DISCLAIMED.
@@ -64,7 +64,7 @@
 # if defined( OS_SEQUENT ) || \
      defined( OS_DGUX ) || \
      defined( OS_SCO ) || \
-     defined( OS_ISC ) 
+     defined( OS_ISC )
 # define PORTAR 1
 # endif
 
@@ -74,14 +74,15 @@
 /* need unistd for rhapsody's proper lseek */
 # include <sys/dir.h>
 # include <unistd.h>
-# define STRUCT_DIRENT struct direct 
+# define STRUCT_DIRENT struct direct
 # else
 # include <dirent.h>
-# define STRUCT_DIRENT struct dirent 
+# define STRUCT_DIRENT struct dirent
 # endif
 
 // needed under SuSE 9.2 at least
 #include <sys/stat.h>
+#include <unistd.h>
 
 # ifdef OS_COHERENT
 # include <arcoff.h>
@@ -89,7 +90,7 @@
 # endif
 
 # if defined( OS_MVS ) || \
-     defined( OS_INTERIX ) 
+     defined( OS_INTERIX )
 
 #define	ARMAG	"!<arch>\n"
 #define	SARMAG	8
@@ -122,14 +123,14 @@ struct ar_hdr		/* archive file member header - printable ascii */
 # define __AR_BIG__
 # endif
 # include <ar.h>
-# endif	
+# endif
 
 /*
  * file_dirscan() - scan a directory for files
  */
 
 void
-file_dirscan( 
+file_dirscan(
 	const char *dir,
 	scanback func,
 	void *closure )
@@ -161,7 +162,7 @@ file_dirscan(
 	if( DEBUG_BINDSCAN )
 	    printf( "scan directory %s\n", dir );
 
-	while( dirent = readdir( d ) )
+	while( (dirent = readdir( d )) )
 	{
 # ifdef old_sinix
 	    /* Broken structure definition on sinix. */
@@ -298,8 +299,8 @@ file_archscan(
 
 	    *dst = 0;
 
-	    /* Modern (BSD4.4) long names: if the name is "#1/nnnn", 
-	    ** then the actual name is the nnnn bytes after the header.  
+	    /* Modern (BSD4.4) long names: if the name is "#1/nnnn",
+	    ** then the actual name is the nnnn bytes after the header.
 	    */
 
 	    if( !strcmp( lar_name, "#1" ) )

@@ -350,22 +350,22 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
             use_console_runner = strncmp(node->Attribute("use_console_runner"), "0", 1) != 0;
 
         else if (node->Attribute("output"))
-            output = _U(node->Attribute("output"));
+            output = UnixFilename(_U(node->Attribute("output")));
 
         else if (node->Attribute("working_dir"))
-            working_dir = _U(node->Attribute("working_dir"));
+            working_dir = UnixFilename(_U(node->Attribute("working_dir")));
 
         else if (node->Attribute("object_output"))
-            obj_output = _U(node->Attribute("object_output"));
+            obj_output = UnixFilename(_U(node->Attribute("object_output")));
 
         else if (node->Attribute("deps_output"))
-            deps_output = _U(node->Attribute("deps_output"));
+            deps_output = UnixFilename(_U(node->Attribute("deps_output")));
 
         else if (node->Attribute("external_deps"))
-            deps = _U(node->Attribute("external_deps"));
+            deps = UnixFilename(_U(node->Attribute("external_deps")));
 
         else if (node->Attribute("additional_output"))
-            added = _U(node->Attribute("additional_output"));
+            added = UnixFilename(_U(node->Attribute("additional_output")));
 
         else if (node->Attribute("type"))
             type = atoi(node->Attribute("type"));
@@ -377,7 +377,7 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
             parameters = _U(node->Attribute("parameters"));
 
         else if (node->Attribute("host_application"))
-            hostApplication = _U(node->Attribute("host_application"));
+            hostApplication = UnixFilename(_U(node->Attribute("host_application")));
 
         else if (node->Attribute("includeInTargetAll"))
             includeInTargetAll = atoi(node->Attribute("includeInTargetAll")) != 0;
@@ -416,7 +416,7 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
     while (node)
     {
         if (node->Attribute("file"))
-            target->AddBuildScript(_U(node->Attribute("file")));
+            target->AddBuildScript(UnixFilename(_U(node->Attribute("file"))));
 
         node = node->NextSiblingElement("Script");
     }
@@ -459,8 +459,8 @@ void ProjectLoader::DoCompilerOptions(TiXmlElement* parentNode, ProjectBuildTarg
     TiXmlElement* child = node->FirstChildElement("Add");
     while (child)
     {
-        wxString option = _U(child->Attribute("option"));
-        wxString dir = _U(child->Attribute("directory"));
+        wxString option = UnixFilename(_U(child->Attribute("option")));
+        wxString dir = UnixFilename(_U(child->Attribute("directory")));
         if (!option.IsEmpty())
         {
             if (target)
@@ -489,7 +489,7 @@ void ProjectLoader::DoResourceCompilerOptions(TiXmlElement* parentNode, ProjectB
     TiXmlElement* child = node->FirstChildElement("Add");
     while (child)
     {
-        wxString dir = _U(child->Attribute("directory"));
+        wxString dir = UnixFilename(_U(child->Attribute("directory")));
         if (!dir.IsEmpty())
         {
             if (target)
@@ -511,9 +511,9 @@ void ProjectLoader::DoLinkerOptions(TiXmlElement* parentNode, ProjectBuildTarget
     TiXmlElement* child = node->FirstChildElement("Add");
     while (child)
     {
-        wxString option = _U(child->Attribute("option"));
-        wxString dir = _U(child->Attribute("directory"));
-        wxString lib = _U(child->Attribute("library"));
+        wxString option = UnixFilename(_U(child->Attribute("option")));
+        wxString dir = UnixFilename(_U(child->Attribute("directory")));
+        wxString lib = UnixFilename(_U(child->Attribute("library")));
         if (!option.IsEmpty())
         {
             if (target)
@@ -549,7 +549,7 @@ void ProjectLoader::DoIncludesOptions(TiXmlElement* parentNode, ProjectBuildTarg
     TiXmlElement* child = node->FirstChildElement("Add");
     while (child)
     {
-        wxString option = _U(child->Attribute("option"));
+        wxString option = UnixFilename(_U(child->Attribute("option")));
         if (!option.IsEmpty())
         {
             if (target)
@@ -571,7 +571,7 @@ void ProjectLoader::DoLibsOptions(TiXmlElement* parentNode, ProjectBuildTarget* 
     TiXmlElement* child = node->FirstChildElement("Add");
     while (child)
     {
-        wxString option = _U(child->Attribute("option"));
+        wxString option = UnixFilename(_U(child->Attribute("option")));
         if (!option.IsEmpty())
         {
             if (target)
@@ -612,9 +612,9 @@ void ProjectLoader::DoExtraCommands(TiXmlElement* parentNode, ProjectBuildTarget
                 after = _U(child->Attribute("after"));
 
             if (!before.IsEmpty())
-                base->AddCommandsBeforeBuild(before);
+                base->AddCommandsBeforeBuild(UnixFilename(before));
             if (!after.IsEmpty())
-                base->AddCommandsAfterBuild(after);
+                base->AddCommandsAfterBuild(UnixFilename(after));
 
             child = child->NextSiblingElement("Add");
         }
@@ -635,7 +635,7 @@ void ProjectLoader::DoEnvironment(TiXmlElement* parentNode, CompileOptionsBase* 
             wxString name = _U(child->Attribute("name"));
             wxString value = _U(child->Attribute("value"));
             if (!name.IsEmpty())
-            	base->SetVar(name, value);
+            	base->SetVar(name, UnixFilename(value));
 
             child = child->NextSiblingElement("Variable");
         }
@@ -653,7 +653,7 @@ void ProjectLoader::DoUnits(TiXmlElement* parentNode)
         wxString filename = _U(unit->Attribute("filename"));
         if (!filename.IsEmpty())
         {
-            ProjectFile* file = m_pProject->AddFile(-1, filename);
+            ProjectFile* file = m_pProject->AddFile(-1, UnixFilename(filename));
             if (!file)
                 Manager::Get()->GetMessageManager()->DebugLog(_T("Can't load file '%s'"), filename.c_str());
             else
@@ -732,7 +732,7 @@ void ProjectLoader::DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file)
             if (ft != ftResource && ft != ftResourceBin)
             {
                 if (objName.GetExt() != CompilerFactory::Compilers[m_pProject->GetCompilerIndex()]->GetSwitches().objectExtension)
-                    file->SetObjName(file->relativeFilename);
+                    file->SetObjName(UnixFilename(file->relativeFilename));
             }
         }
         //

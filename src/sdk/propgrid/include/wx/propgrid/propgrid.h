@@ -1429,7 +1429,7 @@ public:
     inline void DoSetName(const wxString& str) { m_name = str; }
 #endif
 
-    /** Gets pre-calculated top y coordinate of property graphics. 
+    /** Gets pre-calculated top y coordinate of property graphics.
         This cannot be relied on all times (wxPropertyGrid knows when :) ),
         and value is -1 if property is not visible.
     */
@@ -1842,7 +1842,7 @@ protected:
 class WXDLLIMPEXP_PG wxPGConstants
 {
 public:
-    
+
     /** Basic constructor. */
     wxPGConstants();
 
@@ -2079,13 +2079,13 @@ WX_PG_DECLARE_STRING_PROPERTY_WITH_DECL(wxDirProperty,WXDLLIMPEXP_PG)
 // Enum and Flags Properties require special attention.
 extern WXDLLIMPEXP_PG wxPGProperty* wxEnumProperty( const wxString&, const wxString&, const wxChar** labels = (const wxChar**) NULL,
     const long* values = NULL, unsigned int itemcount = 0, int value = 0 );
-extern WXDLLIMPEXP_PG wxPGProperty* wxEnumProperty( const wxString& label, const wxString& name, 
+extern WXDLLIMPEXP_PG wxPGProperty* wxEnumProperty( const wxString& label, const wxString& name,
     wxPGConstants& constants, int value = 0 );
 extern WXDLLIMPEXP_PG wxPGPropertyClassInfo wxEnumPropertyClassInfo;
 
 extern WXDLLIMPEXP_PG wxPGProperty* wxFlagsProperty( const wxString&, const wxString&, const wxChar** labels = (const wxChar**) NULL,
     const long* values = NULL, unsigned int itemcount = 0, int value = 0 );
-extern WXDLLIMPEXP_PG wxPGProperty* wxFlagsProperty( const wxString& label, const wxString& name, 
+extern WXDLLIMPEXP_PG wxPGProperty* wxFlagsProperty( const wxString& label, const wxString& name,
     wxPGConstants& constants, int value = 0 );
 extern WXDLLIMPEXP_PG wxPGPropertyClassInfo wxFlagsPropertyClassInfo;
 
@@ -2292,7 +2292,7 @@ public:
         //SetPropertyValue ( p, wxPG_VALUETYPE(void), (void*)&value );
         SetPropertyValue ( p, wxT("wxArrayInt"), (void*)&value );
     }
-    
+
     void SetPropertyValues ( const wxList& list, wxPGId default_category );
 
     void SetPropertyValueUnspecified ( wxPGProperty* p );
@@ -2352,7 +2352,10 @@ class WXDLLIMPEXP_PG wxPropertyContainerMethods
 {
 public:
 
-    /** Adds choice to a property that can accept one. 
+    // needed because this class has virtual functions
+    virtual ~wxPropertyContainerMethods(){}
+
+    /** Adds choice to a property that can accept one.
         \remarks
         - If you need to make sure that you modify only the set of choices of
           a single property (and not also choices of other properties with initially
@@ -2558,7 +2561,7 @@ public:
     */
 #if wxPG_EMBED_VARIANT
     inline const wxVariant& GetPropertyValue ( wxPGId id )
-#else    
+#else
     inline wxVariant GetPropertyValue ( wxPGId id )
 #endif
     {
@@ -2571,7 +2574,7 @@ public:
     */
 #if wxPG_EMBED_VARIANT
     inline const wxVariant& GetPropertyValue ( wxPGNameStr name )
-#else    
+#else
     inline wxVariant GetPropertyValue ( wxPGNameStr name )
 #endif
     {
@@ -2588,12 +2591,12 @@ public:
     static const wxArrayString& GetPropertyValueAsArrayString ( wxPGId id );
     static const wxObject* GetPropertyValueAsWxObjectPtr ( wxPGId id );
     static void* GetPropertyValueAsVoidPtr ( wxPGId id );
-    
+
     static inline const wxPoint& GetPropertyValueAsPoint ( wxPGId id )
     {
         wxPGProperty* p = wxPGIdToPtr(id);
         wxASSERT ( p );
-    
+
         if ( wxStrcmp(p->GetValueType()->GetCustomTypeName(),wxT("wxPoint")) != 0 )
         {
             wxPGGetFailed(p,wxT("wxPoint"));
@@ -3028,8 +3031,8 @@ class WXDLLIMPEXP_PG wxPropertyGrid : public wxScrolledWindow, public wxProperty
 	DECLARE_CLASS(wxPropertyGrid)
 
 public:
-	/** Two step constructor. Call Create when this constructor is called to build up the 
-	    wxPropertyGrid 
+	/** Two step constructor. Call Create when this constructor is called to build up the
+	    wxPropertyGrid
 	*/
     wxPropertyGrid();
 
@@ -3129,7 +3132,7 @@ public:
     */
     static void AutoGetTranslation ( bool enable );
 
-    /** Centers the splitter. If argument is TRUE, automatic splitter centering is 
+    /** Centers the splitter. If argument is TRUE, automatic splitter centering is
         enabled (only applicapple if style wxPG_SPLITTERAUTOCENTER was defined).
     */
     void CenterSplitter ( bool enable_auto_centering );
@@ -3252,7 +3255,7 @@ public:
     /** Scrolls and/or expands items to ensure that the given item is visible.
         Returns TRUE if something was actually done.
     */
-    inline bool EnsureVisible ( wxPGNameStr name ) 
+    inline bool EnsureVisible ( wxPGNameStr name )
     {
         return EnsureVisible ( GetPropertyByName(name) );
     }
@@ -3492,7 +3495,7 @@ public:
     {
         return GetPropertyColour(GetPropertyByName(name));
     }
-    
+
     /** Returns id of property with given label (case-sensitive). If there is no
         property with such label, returned property id is invalid ( i.e. it will return
         FALSE with IsOk method). If there are multiple properties with identical name,
@@ -4049,12 +4052,12 @@ public:
     inline void ShowLowPriority() { Compact ( FALSE ); }
 
     /** Shows an brief error message that is related to a property. */
-    inline void ShowPropertyError( wxPGId id, const wxString& msg ) 
+    inline void ShowPropertyError( wxPGId id, const wxString& msg )
     {
         wxASSERT ( wxPGIdIsOk(id) );
         wxPGIdToPtr(id)->ShowError(msg);
     }
-    inline void ShowPropertyError( wxPGNameStr name, const wxString& msg ) 
+    inline void ShowPropertyError( wxPGNameStr name, const wxString& msg )
     {
         ShowPropertyError (GetPropertyByName(name), msg);
     }
@@ -4078,7 +4081,7 @@ public:
     */
     virtual void SetWindowStyleFlag( long style );
 
-    /** All properties added/inserted will have given priority by default. 
+    /** All properties added/inserted will have given priority by default.
         \param
         priority can be wxPG_HIGH (default) or wxPG_LOW.
     */
@@ -4228,7 +4231,7 @@ public:
     // Displays what dynamic arrays are allocated
     static void DumpAllocatedChoiceSets();
 #endif
-    /** Creates a "permanent" choices array. Has zero refcount, 
+    /** Creates a "permanent" choices array. Has zero refcount,
         so Ref has to be called.
     */
     static wxPGConstants* CreateConstantsArray(size_t id);
@@ -4250,7 +4253,7 @@ public:
 
     /** Font change helper */
     void SetCurControlBoldFont();
-   
+
 // Simple way to make doxygen skip protected members
 // Used wx/window.h include guard because had trouble
 // getting doxygen definitions work.
@@ -4364,7 +4367,7 @@ protected:
 #endif
 
 	int                 m_fontHeight;  // height of the font
-    
+
     // Most recently added category.
     //wxPGPropertyWithChildren*   m_currentCategory;
 
@@ -4403,7 +4406,7 @@ protected:
 
     /** When drawing next time, clear this many item slots at the end. */
     int                 m_clearThisMany;
-    
+
     /** Pointer to selected property. Note that this is duplicated in
         m_state for better transiency between pages so that the selected
         item can be retained.
@@ -4415,7 +4418,7 @@ protected:
     int                 m_splitterx; // x position for the vertical line dividing name and value
 
 #if !wxPG_USE_CUSTOM_CONTROLS
-            
+
     int                 m_ctrlXAdjust; // x relative to splitter (needed for resize).
 #endif
 
@@ -4474,7 +4477,7 @@ protected:
     bool HandleMouseUp ( int x, unsigned int y, wxMouseEvent &event );
     void HandleKeyEvent( wxKeyEvent &event );
     bool HandleChildKey ( wxKeyEvent& event, bool canDestroy ); // Handle TAB and ESCAPE in control
-    
+
     void OnMouseEntry ( wxMouseEvent &event );
 
     //void OnSetFocus ( wxFocusEvent &event );
@@ -4837,7 +4840,7 @@ BEGIN_DECLARE_EVENT_TYPES()
     DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_PG, wxEVT_PG_HIGHLIGHTED,        1777)
     DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_PG, wxEVT_PG_RIGHT_CLICK,        1778)
     DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_PG, wxEVT_PG_PAGE_CHANGED,       1779)
-    
+
 END_DECLARE_EVENT_TYPES()
 #else
     enum {
@@ -4887,7 +4890,7 @@ public:
     /** Destructor. */
     ~wxPropertyGridPopulator();
 
-    /** Adds a new set of choices with given id, labels and optional values. 
+    /** Adds a new set of choices with given id, labels and optional values.
         \remarks
         choicesId can be any id unique in source (so it does not conflict
         with sets of choices created before population process).

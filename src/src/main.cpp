@@ -141,6 +141,19 @@ int idEditEOLMode = XRCID("idEditEOLMode");
 int idEditEOLCRLF = XRCID("idEditEOLCRLF");
 int idEditEOLCR = XRCID("idEditEOLCR");
 int idEditEOLLF = XRCID("idEditEOLLF");
+int idEditEncoding = XRCID("idEditEncoding");
+int idEditEncodingDefault = XRCID("idEditEncodingDefault");
+int idEditEncodingUseBom = XRCID("idEditEncodingUseBom");
+int idEditEncodingAscii = XRCID("idEditEncodingAscii");
+int idEditEncodingUtf7 = XRCID("idEditEncodingUtf7");
+int idEditEncodingUtf8 = XRCID("idEditEncodingUtf8");
+int idEditEncodingUnicode = XRCID("idEditEncodingUnicode");
+int idEditEncodingUtf16 = XRCID("idEditEncodingUtf16");
+int idEditEncodingUtf32 = XRCID("idEditEncodingUtf32");
+int idEditEncodingUnicode16BE = XRCID("idEditEncodingUnicode16BE");
+int idEditEncodingUnicode16LE = XRCID("idEditEncodingUnicode16LE");
+int idEditEncodingUnicode32BE = XRCID("idEditEncodingUnicode32BE");
+int idEditEncodingUnicode32LE = XRCID("idEditEncodingUnicode32LE");
 int idEditSelectAll = XRCID("idEditSelectAll");
 int idEditCommentSelected = XRCID("idEditCommentSelected");
 int idEditUncommentSelected = XRCID("idEditUncommentSelected");
@@ -235,6 +248,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idEditEOLCRLF, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditEOLCR, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditEOLLF, MainFrame::OnEditMenuUpdateUI)
+    EVT_UPDATE_UI(idEditEncoding, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditSelectAll, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditBookmarksToggle, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditBookmarksNext, MainFrame::OnEditMenuUpdateUI)
@@ -301,6 +315,18 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idEditEOLCRLF,  MainFrame::OnEditEOLMode)
     EVT_MENU(idEditEOLCR,  MainFrame::OnEditEOLMode)
     EVT_MENU(idEditEOLLF,  MainFrame::OnEditEOLMode)
+    EVT_MENU(idEditEncodingDefault,  MainFrame::OnEditEncoding)
+    EVT_MENU(idEditEncodingUseBom,  MainFrame::OnEditEncoding)
+    EVT_MENU(idEditEncodingAscii,  MainFrame::OnEditEncoding)
+    EVT_MENU(idEditEncodingUtf7,  MainFrame::OnEditEncoding)
+    EVT_MENU(idEditEncodingUtf8,  MainFrame::OnEditEncoding)
+    EVT_MENU(idEditEncodingUnicode,  MainFrame::OnEditEncoding)
+    EVT_MENU(idEditEncodingUtf16,  MainFrame::OnEditEncoding)
+    EVT_MENU(idEditEncodingUtf32,  MainFrame::OnEditEncoding)
+    EVT_MENU(idEditEncodingUnicode16BE,  MainFrame::OnEditEncoding)
+    EVT_MENU(idEditEncodingUnicode16LE,  MainFrame::OnEditEncoding)
+    EVT_MENU(idEditEncodingUnicode32BE,  MainFrame::OnEditEncoding)
+    EVT_MENU(idEditEncodingUnicode32LE,  MainFrame::OnEditEncoding)
     EVT_MENU(idEditSelectAll,  MainFrame::OnEditSelectAll)
     EVT_MENU(idEditBookmarksToggle,  MainFrame::OnEditBookmarksToggle)
     EVT_MENU(idEditBookmarksNext,  MainFrame::OnEditBookmarksNext)
@@ -361,6 +387,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_EDITOR_OPEN(MainFrame::OnEditorOpened)
 	EVT_EDITOR_ACTIVATED(MainFrame::OnEditorActivated)
 	EVT_EDITOR_SAVE(MainFrame::OnEditorSaved)
+	EVT_EDITOR_MODIFIED(MainFrame::OnEditorModified)
 
 	// dock a window
 	EVT_ADD_DOCK_WINDOW(MainFrame::OnRequestDockWindow)
@@ -661,6 +688,7 @@ void MainFrame::CreateToolbars()
     m_pToolbar = new wxToolBar(this, -1, wxDefaultPosition, size, wxTB_FLAT | wxTB_NODIVIDER);
     m_pToolbar->SetToolBitmapSize(size);
     Manager::Get()->AddonToolBar(m_pToolbar,xrcToolbarName);
+
 	m_pToolbar->Realize();
 
     // add toolbars in docking system
@@ -1149,9 +1177,9 @@ bool MainFrame::DoCloseCurrentWorkspace()
 void MainFrame::DoCreateStatusBar()
 {
 #if wxUSE_STATUSBAR
-    const int count = 5;
+    const int count = 6;
     CreateStatusBar(count);
-    int statusWidths[count] = {-1, 148, 64, 64, 96};
+    int statusWidths[count] = {-1, 96, 148, 64, 64, 96};
     SetStatusWidths(count, statusWidths);
 #endif // wxUSE_STATUSBAR
 }
@@ -1164,22 +1192,26 @@ void MainFrame::DoUpdateStatusBar()
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
     {
+        int panel = 0;
         int pos = ed->GetControl()->GetCurrentPos();
         wxString msg;
         msg.Printf(_("Line %d, Column %d"), ed->GetControl()->GetCurrentLine() + 1, ed->GetControl()->GetColumn(pos) + 1);
-        SetStatusText(msg, 1);
-        SetStatusText(ed->GetControl()->GetOvertype() ? _("Overwrite") : _("Insert"), 2);
-        SetStatusText(ed->GetModified() ? _("Modified") : wxEmptyString, 3);
-        SetStatusText(ed->GetControl()->GetReadOnly() ? _("Read only") : _("Read/Write"), 4);
-        SetStatusText(ed->GetFilename(), 0);                    //tiwag 050917
+        SetStatusText(ed->GetFilename(), panel++);                    //tiwag 050917
+        SetStatusText(ed->GetEncodingName(), panel++);
+        SetStatusText(msg, panel++);
+        SetStatusText(ed->GetControl()->GetOvertype() ? _("Overwrite") : _("Insert"), panel++);
+        SetStatusText(ed->GetModified() ? _("Modified") : wxEmptyString, panel++);
+        SetStatusText(ed->GetControl()->GetReadOnly() ? _("Read only") : _("Read/Write"), panel++);
     }
     else
     {
-        SetStatusText(_("Welcome to ") + g_AppName + _T("!"));             //tiwag 050917
-        SetStatusText(wxEmptyString, 1);
-        SetStatusText(wxEmptyString, 2);
-        SetStatusText(wxEmptyString, 3);
-        SetStatusText(wxEmptyString, 4);
+        int panel = 0;
+        SetStatusText(_("Welcome to ") + g_AppName + _T("!"), panel++);             //tiwag 050917
+        SetStatusText(wxEmptyString, panel++);
+        SetStatusText(wxEmptyString, panel++);
+        SetStatusText(wxEmptyString, panel++);
+        SetStatusText(wxEmptyString, panel++);
+        SetStatusText(wxEmptyString, panel++);
     }
 #endif // wxUSE_STATUSBAR
 }
@@ -2217,6 +2249,46 @@ void MainFrame::OnEditEOLMode(wxCommandEvent& event)
     }
 }
 
+void MainFrame::OnEditEncoding(wxCommandEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (!ed)
+        return;
+
+    if ( event.GetId() == idEditEncodingUseBom )
+    {
+        ed->SetUseBom( !ed->GetUseBom() );
+        return;
+    }
+
+    wxFontEncoding encoding = wxFONTENCODING_SYSTEM;
+
+    if ( event.GetId() == idEditEncodingDefault )
+        encoding = wxFONTENCODING_SYSTEM;
+    else if ( event.GetId() == idEditEncodingAscii )
+        encoding = wxFONTENCODING_ISO8859_1;
+    else if ( event.GetId() == idEditEncodingUtf7 )
+        encoding = wxFONTENCODING_UTF7;
+    else if ( event.GetId() == idEditEncodingUtf8 )
+        encoding = wxFONTENCODING_UTF8;
+    else if ( event.GetId() == idEditEncodingUtf16 )
+        encoding = wxFONTENCODING_UTF16;
+    else if ( event.GetId() == idEditEncodingUtf32 )
+        encoding = wxFONTENCODING_UTF32;
+    else if ( event.GetId() == idEditEncodingUnicode )
+        encoding = wxFONTENCODING_UNICODE;
+    else if ( event.GetId() == idEditEncodingUnicode16BE )
+        encoding = wxFONTENCODING_UTF16BE;
+    else if ( event.GetId() == idEditEncodingUnicode16LE )
+        encoding = wxFONTENCODING_UTF16LE;
+    else if ( event.GetId() == idEditEncodingUnicode32BE )
+        encoding = wxFONTENCODING_UTF32BE;
+    else if ( event.GetId() == idEditEncodingUnicode32LE )
+        encoding = wxFONTENCODING_UTF32LE;
+
+    ed->SetEncoding(encoding);
+}
+
 void MainFrame::OnViewLayout(wxCommandEvent& event)
 {
     LoadViewLayout(m_PluginIDsMap[event.GetId()]);
@@ -2541,6 +2613,12 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idEditBookmarks, eb);
     mbar->Enable(idEditFolding, ed);
     mbar->Enable(idEditEOLMode, ed);
+    mbar->Enable(idEditEncoding, ed);
+	mbar->Enable(idEditCommentSelected, ed);
+	mbar->Enable(idEditAutoComplete, ed);
+	mbar->Enable(idEditUncommentSelected, ed);
+	mbar->Enable(idEditToggleCommentSelected, ed);
+
     if (ed)
     {
         // OK... this was the strangest/silliest/most-frustrating bug ever in the computer programs history...
@@ -2551,11 +2629,22 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
         mbar->Check(idEditEOLCRLF, eolMode == wxSCI_EOL_CRLF);
         mbar->Check(idEditEOLCR, eolMode == wxSCI_EOL_CR);
         mbar->Check(idEditEOLLF, eolMode == wxSCI_EOL_LF);
+
+        bool defenc = ed && (ed->GetEncoding() == wxFONTENCODING_SYSTEM || ed->GetEncoding() == wxLocale::GetSystemEncoding());
+
+        mbar->Check(idEditEncodingDefault, defenc);
+        mbar->Check(idEditEncodingUseBom, ed && ed->GetUseBom());
+        mbar->Check(idEditEncodingAscii, ed && ed->GetEncoding() == wxFONTENCODING_ISO8859_1);
+        mbar->Check(idEditEncodingUtf7, ed && ed->GetEncoding() == wxFONTENCODING_UTF7);
+        mbar->Check(idEditEncodingUtf8, ed && ed->GetEncoding() == wxFONTENCODING_UTF8);
+        mbar->Check(idEditEncodingUnicode, ed && ed->GetEncoding() == wxFONTENCODING_UNICODE);
+        mbar->Check(idEditEncodingUtf16, ed && ed->GetEncoding() == wxFONTENCODING_UTF16);
+        mbar->Check(idEditEncodingUtf32, ed && ed->GetEncoding() == wxFONTENCODING_UTF32);
+        mbar->Check(idEditEncodingUnicode16BE, ed && ed->GetEncoding() == wxFONTENCODING_UTF16BE);
+        mbar->Check(idEditEncodingUnicode16LE, ed && ed->GetEncoding() == wxFONTENCODING_UTF16LE);
+        mbar->Check(idEditEncodingUnicode32BE, ed && ed->GetEncoding() == wxFONTENCODING_UTF32BE);
+        mbar->Check(idEditEncodingUnicode32LE, ed && ed->GetEncoding() == wxFONTENCODING_UTF32LE);
     }
-	mbar->Enable(idEditCommentSelected, ed);
-	mbar->Enable(idEditAutoComplete, ed);
-	mbar->Enable(idEditUncommentSelected, ed);
-	mbar->Enable(idEditToggleCommentSelected, ed);
 
 	if (m_pToolbar)
 	{
@@ -2882,6 +2971,12 @@ void MainFrame::OnEditorClosed(CodeBlocksEvent& event)
 }
 
 void MainFrame::OnEditorSaved(CodeBlocksEvent& event)
+{
+    DoUpdateAppTitle();
+    event.Skip();
+}
+
+void MainFrame::OnEditorModified(CodeBlocksEvent& event)
 {
     DoUpdateAppTitle();
     event.Skip();

@@ -4,10 +4,12 @@
 #include <wx/wxscintilla.h>
 #include <wx/hashmap.h>
 #include <wx/datetime.h>
+#include <wx/fontmap.h>
 
 #include "settings.h"
 #include "editorbase.h"
 #include "printing_types.h"
+#include "editorcolorset.h"
 
 extern const wxString g_EditorModified;
 
@@ -128,7 +130,7 @@ class DLLIMPORT cbEditor : public EditorBase
         /** Sets the last modification time for the file to 'now'. Used to detect modifications outside the editor. */
         void Touch();
         /** Reloads the file from disk. @return True on success, False on failure. */
-        bool Reload();
+        bool Reload(bool detectEncoding = true);
         /** Print the file.
           * @param selectionOnly Should the selected text be printed only?
           * @param pcm The color mode to use when printing
@@ -195,6 +197,15 @@ class DLLIMPORT cbEditor : public EditorBase
         virtual wxMenu* CreateContextSubMenu(long id);
         virtual void AddToContextMenu(wxMenu* popup,bool noeditor,bool pluginsdone);
 
+        HighlightLanguage GetLanguage( ) { return m_lang; }
+        void SetLanguage( HighlightLanguage lang = HL_AUTO );
+
+        wxFontEncoding GetEncoding( );
+        wxString GetEncodingName( );
+        void SetEncoding( wxFontEncoding encoding );
+
+        bool GetUseBom( );
+        void SetUseBom( bool bom );
     private:
         // functions
         bool LineHasMarker(int marker, int line = -1);
@@ -208,7 +219,8 @@ class DLLIMPORT cbEditor : public EditorBase
 		bool DoFoldLine(int line, int fold); // 0=unfold, 1=fold, 2=toggle
         void CreateEditor();
         void SetEditorStyle();
-        bool Open();
+        void DetectEncoding();
+        bool Open(bool detectEncoding = true);
         void DoAskForCodeCompletion(); // relevant to code-completion plugins
 		wxColour GetOptionColour(const wxString& option, const wxColour _default);
 		void NotifyPlugins(wxEventType type, int intArg = 0, const wxString& strArg = wxEmptyString, int xArg = 0, int yArg = 0);
@@ -239,6 +251,7 @@ class DLLIMPORT cbEditor : public EditorBase
         wxTimer m_timerWait;
 		ProjectFile* m_pProjectFile;
 		EditorColorSet* m_pTheme;
+		HighlightLanguage m_lang;
 		short int m_ActiveCalltipsNest;
         wxDateTime m_LastModified; // to check if the file was modified outside the editor
 

@@ -160,7 +160,15 @@ asCScriptEngine::~asCScriptEngine()
 	// object types from the config groups
 	asUINT n;
 	for( n = 0; n < scriptModules.GetLength(); n++ )
-		if( scriptModules[n] ) delete scriptModules[n];
+	{
+		if( scriptModules[n] ) 
+		{
+			if( scriptModules[n]->CanDelete() )
+				delete scriptModules[n];
+			else
+				assert(false);
+		}
+	}
 	scriptModules.SetLength(0);
 
 	// Do one more garbage collect to free gc objects that were global variables
@@ -168,12 +176,19 @@ asCScriptEngine::~asCScriptEngine()
 
 	ClearUnusedTypes();
 
-	if( configGroups.GetLength() )
+	mapTypeIdToDataType.MoveFirst();
+	while( mapTypeIdToDataType.IsValidCursor() )
 	{
-		// Remove config groups in the right order
-		for( int n = configGroups.GetLength() - 1; n >= 0; n-- )
-			delete configGroups[n];
-		configGroups.SetLength(0);
+		delete mapTypeIdToDataType.GetValue();
+		mapTypeIdToDataType.Erase(true);
+	}
+
+	while( configGroups.GetLength() )
+	{
+		// Delete config groups in the right order
+		asCConfigGroup *grp = configGroups.PopLast();
+		if( grp ) 
+			delete grp;
 	}
 
 	for( n = 0; n < globalProps.GetLength(); n++ )
@@ -187,23 +202,22 @@ asCScriptEngine::~asCScriptEngine()
 	for( n = 0; n < arrayTypes.GetLength(); n++ )
 	{
 		if( arrayTypes[n] )
+		{
+			arrayTypes[n]->subType = 0;
 			delete arrayTypes[n];
+		}
 	}
 	arrayTypes.SetLength(0);
 	
 	for( n = 0; n < objectTypes.GetLength(); n++ )
 	{
 		if( objectTypes[n] )
+		{
+			objectTypes[n]->subType = 0;
 			delete objectTypes[n];
+		}
 	}
 	objectTypes.SetLength(0);
-
-	mapTypeIdToDataType.MoveFirst();
-	while( mapTypeIdToDataType.IsValidCursor() )
-	{
-		delete mapTypeIdToDataType.GetValue();
-		mapTypeIdToDataType.Erase(true);
-	}
 
 	for( n = 0; n < systemFunctions.GetLength(); n++ )
 		if( systemFunctions[n] )
@@ -937,7 +951,7 @@ int asCScriptEngine::RegisterSpecialObjectBehaviour(asCObjectType *objType, asDW
 		if( func.parameterTypes.GetLength() != 1 )
 			return ConfigError(asINVALID_DECLARATION);
 
-		if( objType->flags & (asOBJ_SCRIPT_STRUCT | asOBJ_SCRIPT_ARRAY) )
+		if( objType->flags & (asOBJ_SCRIPT_STRUCT | asOBJ_SCRIPT_ARRAY | asOBJ_SCRIPT_ANY) )
 		{
 			if( beh->copy )
 				return ConfigError(asALREADY_REGISTERED);

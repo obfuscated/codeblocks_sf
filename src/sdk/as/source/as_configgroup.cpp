@@ -159,9 +159,7 @@ void asCConfigGroup::RemoveConfiguration(asCScriptEngine *engine)
 
 	// Release other config groups
 	for( n = 0; n < referencedConfigGroups.GetLength(); n++ )
-	{
 		referencedConfigGroups[n]->refCount--;
-	}
 	referencedConfigGroups.SetLength(0);
 }
 

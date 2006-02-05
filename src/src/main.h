@@ -81,6 +81,7 @@ class MainFrame : public wxFrame
         void OnEditUnfoldBlock(wxCommandEvent& event);
         void OnEditToggleFoldBlock(wxCommandEvent& event);
         void OnEditEOLMode(wxCommandEvent& event);
+        void OnEditEncoding(wxCommandEvent& event);
         void OnEditSelectAll(wxCommandEvent& event);
         void OnEditCommentSelected(wxCommandEvent& event);
         void OnEditUncommentSelected(wxCommandEvent& event);
@@ -167,6 +168,7 @@ class MainFrame : public wxFrame
 		void OnEditorActivated(CodeBlocksEvent& event);
 		void OnEditorClosed(CodeBlocksEvent& event);
 		void OnEditorSaved(CodeBlocksEvent& event);
+		void OnEditorModified(CodeBlocksEvent& event);
 		void OnPageChanged(wxNotebookEvent& event);
         void OnShiftTab(wxCommandEvent& event);
     protected:

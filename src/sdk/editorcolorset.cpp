@@ -347,14 +347,17 @@ void EditorColorSet::DoApplyStyle(cbStyledTextCtrl* control, int value, OptionCo
 	control->StyleSetUnderline(value, option->underlined);
 }
 
-void EditorColorSet::Apply(cbEditor* editor)
+HighlightLanguage EditorColorSet::Apply(cbEditor* editor, HighlightLanguage lang)
 {
 	if (!editor)
-		return;
-	HighlightLanguage lang = GetLanguageForFilename(editor->GetFilename());
-	if (lang == HL_NONE)
-		return;
+		return HL_NONE;
+
+    if (lang == HL_AUTO)
+        lang = GetLanguageForFilename(editor->GetFilename());
+
 	Apply(lang, editor->GetControl());
+
+	return lang;
 }
 
 
@@ -363,6 +366,9 @@ void EditorColorSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control)
     if (lang == HL_NONE || !control)
         return;
 	control->StyleClearAll();
+
+	if (lang == HL_NONE)
+        return;
 
     // first load the default colors to all styles (ignoring some built-in styles)
     OptionColor* defaults = GetOptionByName(lang, _("Default"));

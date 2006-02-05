@@ -1393,12 +1393,13 @@ asCDataType asCBuilder::CreateDataTypeFromNode(asCScriptNode *node, asCScriptCod
 		asCObjectType *ot = GetObjectType(str.AddressOf());
 		if( ot == 0 )
 		{
-			str.Format(TXT_IDENTIFIER_s_NOT_DATA_TYPE, (const char *)str.AddressOf());
+			asCString msg;
+			msg.Format(TXT_IDENTIFIER_s_NOT_DATA_TYPE, (const char *)str.AddressOf());
 
 			int r, c;
 			file->ConvertPosToRowCol(n->tokenPos, &r, &c);
 
-			WriteError(file->name.AddressOf(), str.AddressOf(), r, c);
+			WriteError(file->name.AddressOf(), msg.AddressOf(), r, c);
 
 			dt.SetTokenType(ttInt);
 		}
@@ -1413,12 +1414,13 @@ asCDataType asCBuilder::CreateDataTypeFromNode(asCScriptNode *node, asCScriptCod
 			}
 			else
 			{
-				str.Format(TXT_TYPE_s_NOT_AVAILABLE_FOR_MODULE, (const char *)str.AddressOf());
+				asCString msg;
+				msg.Format(TXT_TYPE_s_NOT_AVAILABLE_FOR_MODULE, (const char *)str.AddressOf());
 
 				int r, c;
 				file->ConvertPosToRowCol(n->tokenPos, &r, &c);
 
-				WriteError(file->name.AddressOf(), str.AddressOf(), r, c);
+				WriteError(file->name.AddressOf(), msg.AddressOf(), r, c);
 
 				dt.SetTokenType(ttInt);
 			}

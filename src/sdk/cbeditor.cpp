@@ -120,8 +120,11 @@ struct cbEditorInternalData
         m_ensure_final_line_end(false),
         m_ensure_consistent_line_ends(true),
         m_LastMarginMenuLine(-1),
-        m_LastDebugLine(-1)
-    {}
+        m_LastDebugLine(-1),
+        m_useByteOrderMark(false)
+    {
+        m_encoding = wxLocale::GetSystemEncoding();
+    }
     cbEditor* m_pOwner;
 
     // add member vars/funcs below
@@ -252,6 +255,9 @@ struct cbEditorInternalData
     int m_LastMarginMenuLine;
     int m_LastDebugLine;
 
+    wxFontEncoding m_encoding;
+    bool m_useByteOrderMark;
+
 };
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -326,6 +332,7 @@ cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColorSet* t
 	m_Index(-1),
 	m_pProjectFile(0L),
 	m_pTheme(theme),
+	m_lang(HL_AUTO),
 	m_ActiveCalltipsNest(0)
 {
     // first thing to do!
@@ -393,6 +400,7 @@ void cbEditor::SetModified(bool modified)
             m_pControl->SetSavePoint();
         }
 		SetEditorTitle(m_Shortname);
+		NotifyPlugins(cbEVT_EDITOR_MODIFIED);
         Manager::Get()->GetEditorManager()->RefreshOpenedFilesTree();
     }
     // visual state
@@ -651,24 +659,74 @@ void cbEditor::SetEditorStyle()
 	else
 		m_pControl->SetMarginWidth(2, 0);
 
-	if (m_pTheme)
-		m_pTheme->Apply(this);
+	SetLanguage( HL_AUTO );
 }
 
 void cbEditor::SetColorSet(EditorColorSet* theme)
 {
 	m_pTheme = theme;
-	if (m_pTheme)
-		m_pTheme->Apply(this);
+	SetLanguage( m_lang );
 }
 
-bool cbEditor::Reload()
+wxFontEncoding cbEditor::GetEncoding( )
+{
+    if (!m_pData)
+        return wxFONTENCODING_SYSTEM;
+    return m_pData->m_encoding;
+}
+
+wxString cbEditor::GetEncodingName( )
+{
+    return wxFontMapper::GetEncodingName(GetEncoding());
+}
+
+void cbEditor::SetEncoding( wxFontEncoding encoding )
+{
+    if (!m_pData)
+        return;
+
+    if ( encoding == wxFONTENCODING_SYSTEM )
+        encoding = wxLocale::GetSystemEncoding();
+
+    if ( encoding == GetEncoding() )
+        return;
+
+    m_pData->m_encoding = encoding;
+
+    wxString msg;
+    msg.Printf(_("Do you want to reload the file with the new encoding (you will lose any unsaved work)?"));
+    if (wxMessageBox(msg, _("Reload file?"), wxYES_NO) == wxYES)
+        Reload(false);
+    else
+        SetModified(true);
+}
+
+bool cbEditor::GetUseBom( )
+{
+    if (!m_pData)
+        return false;
+    return m_pData->m_useByteOrderMark;
+}
+
+void cbEditor::SetUseBom( bool bom )
+{
+    if (!m_pData)
+        return;
+
+    if ( bom == GetUseBom() )
+        return;
+
+    m_pData->m_useByteOrderMark = bom;
+    SetModified(true);
+}
+
+bool cbEditor::Reload(bool detectEncoding)
 {
     // keep current pos
     int pos = m_pControl ? m_pControl->GetCurrentPos() : 0;
 
     // call open
-    if (!Open())
+    if (!Open(detectEncoding))
         return false;
 
     // return (if possible) to old pos
@@ -683,7 +741,66 @@ void cbEditor::Touch()
 	m_LastModified = wxDateTime::Now();
 }
 
-bool cbEditor::Open()
+void cbEditor::DetectEncoding( )
+{
+    if (!m_pData)
+        return;
+
+    m_pData->m_useByteOrderMark = false;
+    // FIXME: Should this default to local encoding or latin-1? (IOW, implement proper encoding detection)
+//    m_pData->m_encoding = wxLocale::GetSystemEncoding();
+    m_pData->m_encoding = wxFONTENCODING_ISO8859_1;
+
+    // Simple BOM detection
+    wxFile file(m_Filename);
+    if (!file.IsOpened())
+        return;
+
+    // BOM is max 4 bytes
+    char buff[4] = {};
+    file.Read((void*)buff, 4);
+    file.Close();
+
+    if (memcmp(buff, "\xEF\xBB\xBF", 3) == 0)
+    {
+        m_pData->m_useByteOrderMark = true;
+        m_pData->m_encoding = wxFONTENCODING_UTF8;
+    }
+    else if (memcmp(buff, "\xFE\xFF", 2) == 0)
+    {
+        m_pData->m_useByteOrderMark = true;
+        m_pData->m_encoding = wxFONTENCODING_UTF16BE;
+    }
+    else if (memcmp(buff, "\xFF\xFE", 2) == 0)
+    {
+        m_pData->m_useByteOrderMark = true;
+        m_pData->m_encoding = wxFONTENCODING_UTF16LE;
+    }
+    else if (memcmp(buff, "\x00\x00\xFE\xFF", 4) == 0)
+    {
+        m_pData->m_useByteOrderMark = true;
+        m_pData->m_encoding = wxFONTENCODING_UTF32BE;
+    }
+    else if (memcmp(buff, "\xFF\xFE\x00\x00", 4) == 0)
+    {
+        m_pData->m_useByteOrderMark = true;
+        m_pData->m_encoding = wxFONTENCODING_UTF32LE;
+    }
+}
+
+void cbEditor::SetLanguage( HighlightLanguage lang )
+{
+    if (m_pTheme)
+    {
+        m_lang = m_pTheme->Apply(this, lang);
+    }
+    else
+    {
+        m_lang = HL_NONE;
+    }
+}
+
+bool cbEditor::Open(bool detectEncoding)
 {
     if (m_pProjectFile)
     {
@@ -707,7 +824,9 @@ bool cbEditor::Open()
         return false;
 
     m_pControl->SetModEventMask(0);
-    m_pControl->InsertText(0, cbReadFileContents(file));
+    if (detectEncoding)
+        DetectEncoding();
+    m_pControl->InsertText(0, cbReadFileContents(file, GetEncoding()));
     m_pControl->EmptyUndoBuffer();
     m_pControl->SetModEventMask(wxSCI_MODEVENTMASKALL);
 
@@ -715,8 +834,7 @@ bool cbEditor::Open()
     bool read_only = !wxFile::Access(m_Filename.c_str(), wxFile::write);
     m_pControl->SetReadOnly(read_only);
     // if editor is read-only, override bg color for *all* styles...
-    if(m_pTheme)
-        m_pTheme->Apply(this); //Apply default theme 1st
+    SetLanguage(HL_AUTO);
     if (read_only)
     {
         for (int i = 0; i < wxSCI_STYLE_MAX; ++i)
@@ -757,7 +875,7 @@ bool cbEditor::Save()
         return SaveAs();
     }
 
-    if(!cbSaveToFile(m_Filename, m_pControl->GetText()))
+    if(!cbSaveToFile(m_Filename, m_pControl->GetText(),GetEncoding(),GetUseBom()))
         return false; // failed; file is read-only?
 
     wxFileName fname(m_Filename);
@@ -794,8 +912,7 @@ bool cbEditor::SaveAs()
     //Manager::Get()->GetMessageManager()->Log(mltDevDebug, "Filename=%s\nShort=%s", m_Filename.c_str(), m_Shortname.c_str());
     m_IsOK = true;
     SetModified(true);
-	if(m_pTheme)
-        m_pTheme->Apply(this);
+    SetLanguage( HL_AUTO );
     return Save();
 }
 

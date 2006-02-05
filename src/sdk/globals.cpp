@@ -39,6 +39,7 @@
 #include <wx/tokenzr.h>
 #include <wx/dirdlg.h>
 #include <wx/msgdlg.h>
+#include <wx/fontmap.h>
 
 wxString GetStringFromArray(const wxArrayString& array, const wxString& separator)
 {
@@ -350,7 +351,7 @@ wxString ChooseDirectory(wxWindow* parent,
 }
 
 // Reads a wxString from a non-unicode file. File must be open. File is closed automatically.
-bool cbRead(wxFile& file, wxString& st)
+bool cbRead(wxFile& file, wxString& st, wxFontEncoding encoding)
 {
     st.Empty();
     if (!file.IsOpened())
@@ -371,7 +372,10 @@ bool cbRead(wxFile& file, wxString& st)
     file.Read((void*)buff, len);
     file.Close();
     buff[len]='\0';
-    st = wxString((const char *)buff, wxConvLocal);
+
+    wxCSConv conv(encoding);
+    st = wxString((const char *)buff, conv);
+
     delete[] buff;
 #else
 
@@ -384,20 +388,21 @@ bool cbRead(wxFile& file, wxString& st)
     return true;
 }
 
-wxString cbReadFileContents(wxFile& file)
+wxString cbReadFileContents(wxFile& file, wxFontEncoding encoding)
 {
     wxString st;
-    cbRead(file,st);
+    cbRead(file, st, encoding);
     return st;
 }
 
 // Writes a wxString to a non-unicode file. File must be open. File is closed automatically.
-bool cbWrite(wxFile& file, const wxString& buff)
+bool cbWrite(wxFile& file, const wxString& buff, wxFontEncoding encoding)
 {
     bool result = false;
     if (file.IsOpened())
     {
-        result = file.Write(buff,wxConvUTF8);
+        wxCSConv conv(encoding);
+        result = file.Write(buff,conv);
         if(result)
             file.Flush();
         file.Close();
@@ -407,12 +412,55 @@ bool cbWrite(wxFile& file, const wxString& buff)
 
 // Writes a wxString to a file. Takes care of unicode and uses a temporary file
 // to save first and then it copies it over the original.
-bool cbSaveToFile(const wxString& filename, const wxString& contents)
+bool cbSaveToFile(const wxString& filename, const wxString& contents, wxFontEncoding encoding, bool bom)
 {
+    wxCSConv conv(encoding);
+
     wxTempFile file(filename);
     if (file.IsOpened())
     {
-        if (!file.Write(contents, wxConvLocal))
+        if (bom)
+        {
+            char* mark = NULL;
+            int mark_length = 0;
+            /* TODO: write byte order mark */
+            switch (encoding)
+            {
+            case wxFONTENCODING_UTF7:
+                /* TODO: utf-7 bom is weird */
+                break;
+            case wxFONTENCODING_UTF8:
+                mark = "\xEF\xBB\xBF";
+                mark_length = 3;
+                break;
+            case wxFONTENCODING_UTF16BE:
+                mark = "\xFE\xFF";
+                mark_length = 2;
+                break;
+            case wxFONTENCODING_UTF16LE:
+                mark = "\xFF\xFE";
+                mark_length = 2;
+                break;
+            case wxFONTENCODING_UTF32BE:
+                mark = "\x00\x00\xFE\xFF";
+                mark_length = 4;
+                break;
+            case wxFONTENCODING_UTF32LE:
+                mark = "\xFF\xFE\x00\x00";
+                mark_length = 4;
+                break;
+            case wxFONTENCODING_SYSTEM:
+            default:
+                /* can't do anything here */
+                break;
+            }
+            if (mark_length>0 && mark)
+            {
+                if (!file.Write((void*)mark, mark_length))
+                    return false;
+            }
+        }
+        if (!file.Write(contents, conv))
             return false;
         if (!file.Commit())
             return false;

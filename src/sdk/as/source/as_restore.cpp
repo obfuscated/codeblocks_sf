@@ -161,7 +161,7 @@ int asCRestore::Restore()
 
 	// globalMem size
 	READ_NUM(count);
-	module->globalMem.Allocate(count, 0);
+	module->globalMem.SetLength(count);
 
 	// globalVarPointers[]
 	ReadGlobalVarPointers();

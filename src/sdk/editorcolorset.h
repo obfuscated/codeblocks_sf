@@ -13,6 +13,7 @@ class cbStyledTextCtrl;
 #define COLORSET_DEFAULT	_T("default")
 
 typedef short int HighlightLanguage;
+#define HL_AUTO     -2
 #define HL_NONE     -1
 #define HL_LAST     100
 // up to 100 language definitions; should be enough ;)
@@ -76,7 +77,7 @@ class EditorColorSet
 		wxString GetLanguageName(HighlightLanguage lang);
 		wxString GetName(){ return m_Name; }
 		void SetName(const wxString& name){ m_Name = name; }
-		void Apply(cbEditor* editor);
+		HighlightLanguage Apply(cbEditor* editor, HighlightLanguage lang=HL_AUTO);
 		void Apply(HighlightLanguage lang, cbStyledTextCtrl* control);
 		void Save();
 		void Reset(HighlightLanguage lang);

@@ -57,7 +57,7 @@ BEGIN_AS_NAMESPACE
 #define ANGELSCRIPT_VERSION_MAJOR  2
 #define ANGELSCRIPT_VERSION_MINOR  5
 #define ANGELSCRIPT_VERSION_BUILD  0
-#define ANGELSCRIPT_VERSION_STRING "2.5.0a"
+#define ANGELSCRIPT_VERSION_STRING "2.5.0b"
 
 // Data types
 
@@ -534,12 +534,14 @@ protected:
 class asIOutputStream
 {
 public:
+    virtual ~asIOutputStream() {}
 	virtual void Write(const char *text) = 0;
 };
 
 class asIBinaryStream
 {
 public:
+    virtual ~asIBinaryStream() {}
 	virtual void Read(void *ptr, asUINT size) = 0;
 	virtual void Write(const void *ptr, asUINT size) = 0;
 };

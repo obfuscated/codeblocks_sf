@@ -2128,7 +2128,7 @@ void asCContext::ExecuteNext()
 		{
 			// TODO: Pointer size
 			asDWORD *a = *(asDWORD**)(l_fp - SWORDARG0(l_bc));
-			if( *a == 0 )
+			if( a == 0 )
 			{
 				byteCode = l_bc;
 				stackPointer = l_sp;
