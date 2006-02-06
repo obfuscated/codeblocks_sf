@@ -336,6 +336,7 @@ wxString ChooseDirectory(wxWindow* parent,
                     _T(""),
                     (showCreateDirButton ? wxDD_NEW_DIR_BUTTON : 0) | wxRESIZE_BORDER);
     dlg.SetPath(initialPath);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return wxEmptyString;
 

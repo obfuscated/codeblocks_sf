@@ -113,6 +113,7 @@ void EditPathDlg::OnBrowse(wxCommandEvent& event)
         wxFileDialog dlg(this, m_Message, (fname.GetPath().IsEmpty() ? s_LastPath : fname.GetPath()),
                 fname.GetFullName(), m_Filter, wxCHANGE_DIR | (m_AllowMultiSel ? wxMULTIPLE : 0) );
 
+        PlaceWindow(&dlg);
         if (dlg.ShowModal() == wxID_OK)
         {
             if (m_AllowMultiSel)

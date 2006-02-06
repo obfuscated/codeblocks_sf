@@ -262,6 +262,7 @@ void EditorManager::Configure()
 {
     SANITY_CHECK();
 	EditorConfigurationDlg dlg(Manager::Get()->GetAppWindow());
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
     	// tell all open editors to re-create their styles
@@ -953,6 +954,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
                             ed->GetFilename().c_str());
                 ConfirmReplaceDlg dlg(Manager::Get()->GetAppWindow(), msg);
                 dlg.SetTitle(_("Reload file?"));
+                PlaceWindow(&dlg);
                 ret = dlg.ShowModal();
                 reloadAll = ret == crAll;
             }
@@ -1116,6 +1118,8 @@ int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
 		dlg = new FindDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection, explicitly_find_in_files || !ed);
 	else
 		dlg = new ReplaceDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection);
+
+    PlaceWindow(dlg);
 	if (dlg->ShowModal() == wxID_CANCEL)
 	{
 		delete dlg;
@@ -1242,6 +1246,9 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
 		{
 			ConfirmReplaceDlg dlg(Manager::Get()->GetAppWindow());
             dlg.CalcPosition(control);
+            // TODO (thomas#1#): Check whether the existing code actually works with twin view
+            // else, we need something like:
+            //PlaceWindow(&dlg, pdlRelative);
 			switch (dlg.ShowModal())
 			{
 				case crYes:

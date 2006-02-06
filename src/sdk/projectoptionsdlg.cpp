@@ -31,6 +31,7 @@
     #include "pluginmanager.h"
     #include "projectmanager.h"
     #include "compilerfactory.h"
+    #include "globals.h"
 
     #include <wx/xrc/xmlres.h>
     #include <wx/treectrl.h>
@@ -403,6 +404,7 @@ void ProjectOptionsDlg::OnBuildOrderClick(wxCommandEvent& event)
         array.Add(m_Project->GetBuildTarget(i)->GetTitle());
 
     EditArrayOrderDlg dlg(this, array);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
         DoBeforeTargetChange(); // save changes in current target
@@ -544,6 +546,7 @@ void ProjectOptionsDlg::OnRemoveBuildTargetClick(wxCommandEvent& event)
                         caption,
                         _("Confirmation"),
                         wxYES_NO | wxNO_DEFAULT | wxCENTRE | wxICON_QUESTION);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_NO)
         return;
 
@@ -566,6 +569,7 @@ void ProjectOptionsDlg::OnEditDepsClick(wxCommandEvent& event)
 		return;
 
 	ExternalDepsDlg dlg(this, m_Project, target);
+    PlaceWindow(&dlg);
 	dlg.ShowModal();
 }
 
@@ -628,6 +632,7 @@ void ProjectOptionsDlg::OnBrowseOutputFilenameClick(wxCommandEvent& event)
                     ALL_FILES_FILTER,
                     wxSAVE | wxOVERWRITE_PROMPT);
 
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
     fname.Assign(dlg.GetPath());
@@ -724,6 +729,7 @@ void ProjectOptionsDlg::OnAddScript(wxCommandEvent& event)
                     _("Script files (*.script)|*.script"),
                     wxOPEN);
 
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
     fname.Assign(dlg.GetPath());

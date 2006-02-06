@@ -45,6 +45,7 @@
     #include "cbeditor.h"
     #include "xtra_classes.h"
     #include <wx/dir.h>
+    #include "globals.h"
 #endif
 
 #include <wx/utils.h>
@@ -1260,6 +1261,7 @@ wxArrayInt ProjectManager::AskForMultiBuildTargetIndex(cbProject* project)
 		array.Add(prj->GetBuildTarget(i)->GetTitle());
 
     MultiSelectDlg dlg(0, array, false, _("Select the targets this file should belong to:"));
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
         indices = dlg.GetSelectedIndices();
 
@@ -1466,6 +1468,7 @@ const ProjectsArray* ProjectManager::GetDependenciesForProject(cbProject* base)
 void ProjectManager::ConfigureProjectDependencies(cbProject* base)
 {
     ProjectDepsDlg dlg(Manager::Get()->GetAppWindow(), base);
+    PlaceWindow(&dlg);
     dlg.ShowModal();
 }
 
@@ -1687,6 +1690,7 @@ void ProjectManager::OnAddFilesToProjectRecursively(wxCommandEvent& event)
 // TODO (mandrav#1#): Make these masks configurable
     wxString wild = _T("*.c;*.cc;*.cpp;*.cxx;*.h;*.hh;*.hpp;*.hxx;*.inl;*.rc;*.xrc");
     MultiSelectDlg dlg(0, array, wild, _("Select the files to add to the project:"));
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
     array = dlg.GetSelectedStrings();
@@ -1720,6 +1724,7 @@ void ProjectManager::OnAddFileToProject(wxCommandEvent& event)
                     wxOPEN | wxMULTIPLE | wxFILE_MUST_EXIST);
     dlg.SetFilterIndex(KNOWN_SOURCES_FILTER_INDEX);
 
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
 		wxArrayInt targets;
@@ -1757,6 +1762,7 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
         wxString msg;
         msg.Printf(_("Select files to remove from %s:"), prj->GetTitle().c_str());
         MultiSelectDlg dlg(0, files, false, msg);
+        PlaceWindow(&dlg);
         if (dlg.ShowModal() == wxID_OK)
         {
             wxArrayInt indices = dlg.GetSelectedIndices();
@@ -1989,6 +1995,7 @@ void ProjectManager::OnGotoFile(wxCommandEvent& event)
 		files.Add(m_pActiveProject->GetFile(i)->relativeFilename);
 
 	IncrementalSelectListDlg dlg(m_pTree, files, _("Select file..."), _("Please select file to open:"));
+    PlaceWindow(&dlg);
 	if (dlg.ShowModal() == wxID_OK)
 	{
 		ProjectFile* pf = m_pActiveProject->GetFileByFilename(dlg.GetStringSelection(), true);
@@ -2021,6 +2028,7 @@ void ProjectManager::OnViewFileMasks(wxCommandEvent& event)
 {
     SANITY_CHECK();
 	ProjectsFileMasksDlg dlg(Manager::Get()->GetAppWindow(), m_pFileGroups);
+    PlaceWindow(&dlg);
 	if (dlg.ShowModal() == wxID_OK)
 	{
 		m_pFileGroups->Save();

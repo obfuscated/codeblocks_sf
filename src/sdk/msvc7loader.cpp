@@ -155,6 +155,7 @@ bool MSVC7Loader::DoSelectConfiguration(TiXmlElement* root)
     {
         // ask the user to select a configuration - multiple choice ;)
         MultiSelectDlg dlg(0, configurations, true, _("Select configurations to import:"), m_pProject->GetTitle());
+        PlaceWindow(&dlg);
         if (dlg.ShowModal() == wxID_CANCEL)
         {
 	            Manager::Get()->GetMessageManager()->DebugLog(_("Canceled..."));

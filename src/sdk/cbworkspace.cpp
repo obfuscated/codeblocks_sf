@@ -139,6 +139,7 @@ bool cbWorkspace::SaveAs(const wxString& filename)
                             m_Filename.GetFullName(),
                             WORKSPACES_FILES_FILTER,
                             wxSAVE | wxOVERWRITE_PROMPT);
+    PlaceWindow(dlg);
     if (dlg->ShowModal() != wxID_OK)
         return false;
     SANITY_CHECK(false);

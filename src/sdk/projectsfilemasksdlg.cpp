@@ -19,6 +19,7 @@
     #include <wx/textctrl.h>
     #include <wx/msgdlg.h>
     #include <wx/listbox.h>
+    #include "globals.h"
 #endif
 
 #include <wx/textdlg.h>
@@ -123,6 +124,7 @@ void ProjectsFileMasksDlg::OnDelete(wxCommandEvent& event)
                         caption,
                         _("Confirmation"),
                         wxYES_NO | wxNO_DEFAULT | wxCENTRE | wxICON_QUESTION);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_NO)
         return;
 	m_FileGroups.DeleteGroup(pList->GetSelection());

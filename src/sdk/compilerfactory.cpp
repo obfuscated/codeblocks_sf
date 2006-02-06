@@ -144,6 +144,7 @@ void CompilerFactory::LoadSettings()
     if (needAutoDetection)
     {
         AutoDetectCompilers adc(0L);
+        PlaceWindow(&adc);
         adc.ShowModal();
     }
 }

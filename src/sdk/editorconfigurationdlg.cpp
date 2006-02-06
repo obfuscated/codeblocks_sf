@@ -426,6 +426,7 @@ void EditorConfigurationDlg::UpdateSampleFont(bool askForNewFont)
     data.SetInitialFont(tmpFont);
 
 	wxFontDialog dlg(this, &data);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
     	wxFont font = dlg.GetFontData().GetChosenFont();
@@ -532,6 +533,7 @@ void EditorConfigurationDlg::OnColorTheme(wxCommandEvent& event)
 void EditorConfigurationDlg::OnAddColorTheme(wxCommandEvent& event)
 {
     wxTextEntryDialog dlg(this, _("Please enter the name of the new color theme:"), _("New theme name"));
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
 
@@ -559,6 +561,7 @@ void EditorConfigurationDlg::OnDeleteColorTheme(wxCommandEvent& event)
 void EditorConfigurationDlg::OnRenameColorTheme(wxCommandEvent& event)
 {
     wxTextEntryDialog dlg(this, _("Please enter the new name of the new color theme:"), _("New theme name"), m_Theme->GetName());
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
 
@@ -576,6 +579,7 @@ void EditorConfigurationDlg::OnEditKeywords(wxCommandEvent& event)
 	if (m_Theme && m_Lang != HL_NONE)
 	{
 	    EditKeywordsDlg dlg(0, m_Theme, m_Lang);
+        PlaceWindow(&dlg);
 	    if (dlg.ShowModal() == wxID_OK)
 	    {
 			m_Theme->SetKeywords(m_Lang, 0, dlg.GetLangKeywords());
@@ -642,6 +646,7 @@ void EditorConfigurationDlg::OnChooseColor(wxCommandEvent& event)
     data.SetColour(sender->GetBackgroundColour());
 
 	wxColourDialog dlg(this, &data);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
     	wxColour color = dlg.GetColourData().GetColour();

@@ -35,6 +35,7 @@
 
     #include "manager.h"
     #include "toolsmanager.h"
+    #include "globals.h"
 #endif
 
 
@@ -80,6 +81,7 @@ bool ConfigureToolsDlg::DoEditTool(Tool* tool)
 		return false;
 	EditToolDlg dlg(this, tool);
 	DoFillList();
+    PlaceWindow(&dlg);
 	return dlg.ShowModal() == wxID_OK;
 }
 

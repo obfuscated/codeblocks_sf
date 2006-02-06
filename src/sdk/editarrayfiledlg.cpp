@@ -18,6 +18,7 @@
     #include <wx/button.h>
     #include <wx/msgdlg.h>
     #include <wx/listbox.h>
+    #include "globals.h"
 #endif
 
 #include <wx/filedlg.h>
@@ -84,6 +85,7 @@ void EditArrayFileDlg::OnAdd(wxCommandEvent& event)
                     ALL_FILES_FILTER,
                     wxOPEN);
 
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
     wxFileName fname;
@@ -103,6 +105,7 @@ void EditArrayFileDlg::OnEdit(wxCommandEvent& event)
                     ALL_FILES_FILTER,
                     wxOPEN);
 
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
     wxFileName fname;

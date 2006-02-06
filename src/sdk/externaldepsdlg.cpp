@@ -18,6 +18,7 @@
     #include <wx/xrc/xmlres.h>
     #include <wx/button.h>
     #include <wx/listbox.h>
+    #include "globals.h"
 #endif
 
 #include "externaldepsdlg.h"
@@ -102,6 +103,7 @@ void ExternalDepsDlg::EndModal(int retCode)
                     message,                                \
                     wxEmptyString,                          \
                     false);                                 \
+    PlaceWindow(&dlg);                                      \
     if (dlg.ShowModal() == wxID_OK)                         \
         lst->Append(dlg.GetPath());                         \
 }
@@ -119,6 +121,7 @@ void ExternalDepsDlg::EndModal(int retCode)
                     message,                                \
                     wxEmptyString,                          \
                     false);                                 \
+    PlaceWindow(&dlg);                                      \
     if (dlg.ShowModal() == wxID_OK)                         \
         lst->SetString(sel, dlg.GetPath());                 \
 }

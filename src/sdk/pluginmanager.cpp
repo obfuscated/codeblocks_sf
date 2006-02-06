@@ -39,6 +39,7 @@
     #include "editormanager.h"
     #include "configmanager.h"
     #include "personalitymanager.h"
+    #include "globals.h"
     #include <wx/dir.h>
 #endif
 
@@ -590,6 +591,7 @@ int PluginManager::Configure()
 {
     SANITY_CHECK(wxID_CANCEL);
     PluginsConfigurationDlg dlg(Manager::Get()->GetAppWindow());
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_CANCEL)
         return wxID_CANCEL;
 

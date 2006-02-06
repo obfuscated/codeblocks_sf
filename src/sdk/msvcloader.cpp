@@ -78,6 +78,7 @@ bool MSVCLoader::Open(const wxString& filename)
     {
         // ask the user to select a configuration - multiple choice ;)
         MultiSelectDlg dlg(0, m_Configurations, true, _("Select configurations to import:"), m_Filename.GetName());
+        PlaceWindow(&dlg);
         if (dlg.ShowModal() == wxID_CANCEL)
         {
             Manager::Get()->GetMessageManager()->DebugLog(_T("Canceled..."));

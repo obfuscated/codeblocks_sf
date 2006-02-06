@@ -20,6 +20,7 @@
     #include "manager.h"
     #include "projectmanager.h"
     #include "macrosmanager.h"
+    #include "globals.h"
 #endif
 
 #include "projectfileoptionsdlg.h"
@@ -92,6 +93,7 @@ void ProjectFile::RemoveBuildTarget(const wxString& targetName)
 bool ProjectFile::ShowOptions(wxWindow* parent)
 {
     ProjectFileOptionsDlg dlg(parent, this);
+    PlaceWindow(&dlg);
     return dlg.ShowModal() == wxID_OK;
 }
 
