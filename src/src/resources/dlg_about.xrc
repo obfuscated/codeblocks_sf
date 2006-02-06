@@ -8,7 +8,7 @@
       <object class="sizeritem">
         <object class="wxStaticBitmap" name="lblTitle">
           
-          <size>500,147</size>
+          <size>460,135</size>
           
           <font>
             
