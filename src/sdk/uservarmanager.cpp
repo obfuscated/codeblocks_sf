@@ -20,6 +20,7 @@
     #include "messagemanager.h"
     #include "manager.h"
     #include "cbexception.h"
+    #include "globals.h"
 
     #include <wx/dialog.h>
     #include <wx/intl.h>
@@ -51,6 +52,7 @@ private:
 void UserVariableManager::Configure()
 {
     UsrGlblMgrEditDialog d(Manager::Get()->GetAppWindow(), wxEmptyString);
+    PlaceWindow(&d);
     d.ShowModal();
 }
 
@@ -69,6 +71,7 @@ wxString UserVariableManager::Replace(const wxString& variable)
         wxMessageBox(_("At least one global variable is used but not yet defined.\n"
                        "Please define it now..."), _("Warning"), wxICON_WARNING);
         UsrGlblMgrEditDialog d(Manager::Get()->GetAppWindow(), package);
+        PlaceWindow(&d);
         d.ShowModal();
     }
 
@@ -230,7 +233,10 @@ void UsrGlblMgrEditDialog::OnFS(wxCommandEvent& event)
 void UsrGlblMgrEditDialog::OnDelete(wxCommandEvent& event)
 {
     wxString g(XRCCTRL(*this, "variable", wxChoice)->GetStringSelection());
-    if(wxMessageDialog(Manager::Get()->GetAppWindow(), wxString::Format(_("Delete the global variable %s?"), g.c_str()), _("Delete"), wxYES_NO).ShowModal() == wxID_YES)
+
+    wxMessageDialog dlg(Manager::Get()->GetAppWindow(), wxString::Format(_("Delete the global variable %s?"), g.c_str()), _("Delete"), wxYES_NO);
+    PlaceWindow(&dlg);
+    if(dlg.ShowModal() == wxID_YES)
         Manager::Get()->GetConfigManager(_T("global_uservars"))->DeleteSubPath(g);
     curr = wxEmptyString;
     List();

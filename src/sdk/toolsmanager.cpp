@@ -36,6 +36,7 @@
     #include "macrosmanager.h"
     #include "configmanager.h"
     #include "messagemanager.h"
+    #include "globals.h"
 #endif
 
 #include <wx/mdi.h>
@@ -289,6 +290,7 @@ int ToolsManager::Configure()
 {
     SANITY_CHECK(0);
 	ConfigureToolsDlg dlg(Manager::Get()->GetAppWindow());
+    PlaceWindow(&dlg);
 	dlg.ShowModal();
 	SaveTools();
 	BuildToolsMenu(m_Menu);

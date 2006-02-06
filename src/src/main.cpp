@@ -1073,6 +1073,7 @@ wxString MainFrame::ShowOpenFileDialog(const wxString& caption, const wxString& 
                             filter,
                             wxOPEN);
     wxString sel;
+    PlaceWindow(dlg);
     if (dlg->ShowModal() == wxID_OK)
 		sel = dlg->GetPath();
     delete dlg;
@@ -1615,9 +1616,9 @@ void MainFrame::OnHelpPluginMenu(wxCommandEvent& event)
             Manager::Get()->GetMessageManager()->DebugLog(_("No plugin info for %s!"), pluginName.c_str());
             return;
         }
-        dlgAboutPlugin* dlg = new dlgAboutPlugin(this, pi);
-        dlg->ShowModal();
-        delete dlg;
+        dlgAboutPlugin dlg(this, pi);
+        PlaceWindow(&dlg);
+        dlg.ShowModal();
     }
     else
         Manager::Get()->GetMessageManager()->DebugLog(_("No plugin found for ID %d"), event.GetId());
@@ -1690,6 +1691,7 @@ void MainFrame::OnFileOpen(wxCommandEvent& event)
                             wxOPEN | wxMULTIPLE);
     dlg->SetFilterIndex(SOURCE_FILES_FILTER_INDEX);
 
+    PlaceWindow(dlg);
     if (dlg->ShowModal() == wxID_OK)
     {
         wxArrayString files;
@@ -1829,6 +1831,7 @@ void MainFrame::OnFilePrev(wxCommandEvent& event)
 void MainFrame::OnFilePrint(wxCommandEvent& event)
 {
     PrintDialog dlg(this);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
         Manager::Get()->GetEditorManager()->Print(dlg.GetPrintScope(), dlg.GetPrintColorMode());
 }
@@ -1841,6 +1844,7 @@ void MainFrame::OnFileRunScript(wxCommandEvent& WXUNUSED(event))
                             wxEmptyString,
                             _T("Script files (*.script)|*.script"),
                             wxOPEN);
+    PlaceWindow(dlg);
     if (dlg->ShowModal() == wxID_OK)
         Manager::Get()->GetScriptingManager()->LoadScript(dlg->GetPath());
     delete dlg;
@@ -2435,6 +2439,7 @@ void MainFrame::OnProjectOpen(wxCommandEvent& event)
                             CODEBLOCKS_FILES_FILTER,
                             wxOPEN | wxMULTIPLE);
 
+    PlaceWindow(dlg);
     if (dlg->ShowModal() == wxID_OK)
     {
         wxArrayString files;
@@ -2924,6 +2929,7 @@ void MainFrame::OnSettingsEditor(wxCommandEvent& event)
 void MainFrame::OnSettingsCompilerDebugger(wxCommandEvent& event)
 {
 	CompilerSettingsDlg dlg(this);
+    PlaceWindow(&dlg);
 	dlg.ShowModal();
 }
 

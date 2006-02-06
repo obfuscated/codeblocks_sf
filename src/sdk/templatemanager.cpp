@@ -156,6 +156,7 @@ cbProject* TemplateManager::NewProject()
 	LoadTemplates();
 	LoadUserTemplates();
 	NewFromTemplateDlg dlg(m_Templates, m_UserTemplates);
+    PlaceWindow(&dlg);
 	if (dlg.ShowModal() == wxID_OK)
 	{
         if (dlg.SelectedUserTemplate())
@@ -268,6 +269,7 @@ cbProject* TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
                                         dst,
                                         SOURCE_FILES_FILTER,
                                         wxSAVE);
+                    PlaceWindow(&fdlg);
                     if (fdlg.ShowModal() == wxID_CANCEL)
                     {
                         msg.Printf(_("File %s is skipped..."), dst.c_str());
@@ -404,6 +406,7 @@ void TemplateManager::SaveUserTemplate(cbProject* prj)
     {
         // ask for template title (unique)
         wxTextEntryDialog dlg(0, _("Enter a title for this template"), _("Enter title"), title);
+        PlaceWindow(&dlg);
         if (dlg.ShowModal() != wxID_OK)
             return;
 

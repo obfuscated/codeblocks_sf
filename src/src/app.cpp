@@ -543,7 +543,9 @@ int CodeBlocksApp::BatchJob()
     else if (m_Build)
         compiler->BuildWorkspace(m_BatchTarget);
 
-    Manager::Get()->GetMessageManager()->GetBatchBuildDialog()->ShowModal();
+    wxDialog *dlg = Manager::Get()->GetMessageManager()->GetBatchBuildDialog();
+    PlaceWindow(dlg);
+    dlg->ShowModal();
     tbIcon->RemoveIcon();
     delete tbIcon;
 
@@ -744,6 +746,7 @@ void CodeBlocksApp::SetupPersonality(const wxString& personality)
 #else
                                 Manager::Get()->GetPersonalityManager()->GetPersonalitiesList());
 #endif
+        PlaceWindow(&dlg);
         if (dlg.ShowModal() == wxID_OK)
             Manager::Get()->GetPersonalityManager()->SetPersonality(dlg.GetStringSelection());
 #if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)

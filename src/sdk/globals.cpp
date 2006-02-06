@@ -708,7 +708,7 @@ void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
         break;
     }
 
-    w->SetSize(windowRect);
+    w->SetSize(windowRect.x,  windowRect.y, windowRect.width, windowRect.height, wxSIZE_ALLOW_MINUS_ONE);
 }
 
 
@@ -764,7 +764,7 @@ void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
         y1 = std::max(y1, parentRect.y);
         y2 = std::min(y2, parentRect.GetBottom());
 
-        w->SetSize(wxRect(x1, y1, x2-x1, y2-y1));
+        w->SetSize(x1, y1, x2-x1, y2-y1, wxSIZE_ALLOW_MINUS_ONE);
     }
 }
 

@@ -238,6 +238,7 @@ void EnvironmentSettingsDlg::OnChooseColor(wxCommandEvent& event)
     data.SetColour(sender->GetBackgroundColour());
 
 	wxColourDialog dlg(this, &data);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
     	wxColour color = dlg.GetColourData().GetColour();
